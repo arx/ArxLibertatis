@@ -206,38 +206,28 @@ bool ARX_PLAYER_IsInFightMode() {
 
 	return false;
 }
-//*************************************************************************************
-//*************************************************************************************
-// KEYRING FUNCTIONS
-//-------------------------------------------------------------------------------------
 
-//*************************************************************************************
-// void ARX_KEYRING_Init()
-//-------------------------------------------------------------------------------------
-// FUNCTION/RESULT:
-//   Init/Reset player Keyring structures
-//*************************************************************************************
+/*!
+ * \brief Init/Reset player Keyring structures
+ */
 void ARX_KEYRING_Init() {
 	Keyring.clear();
 }
-//*************************************************************************************
-// void ARX_KEYRING_Add(char * key)
-//-------------------------------------------------------------------------------------
-// FUNCTION/RESULT:
-//   Add a key to Keyring
-//*************************************************************************************
+
+/*!
+ * \brief Add a key to Keyring
+ * \param key
+ */
 void ARX_KEYRING_Add(const std::string & key) {
 	Keyring.resize(Keyring.size() + 1);
 	memset(&Keyring.back(), 0, sizeof(KEYRING_SLOT));
 	strcpy(Keyring.back().slot, key.c_str());
 }
 
-//*************************************************************************************
-// void ARX_KEYRING_Combine(Entity * io)
-//-------------------------------------------------------------------------------------
-// FUNCTION/RESULT:
-//   Sends COMBINE event to "io" for each keyring entry
-//*************************************************************************************
+/*!
+ * \brief Sends COMBINE event to "io" for each keyring entry
+ * \param io
+ */
 void ARX_KEYRING_Combine(Entity * io) {
 	for(size_t i = 0; i < Keyring.size(); i++) {
 		if(SendIOScriptEvent(io, SM_COMBINE, Keyring[i].slot) == REFUSE) {
@@ -245,17 +235,11 @@ void ARX_KEYRING_Combine(Entity * io) {
 		}
 	}
 }
-//-----------------------------------------------------------------------------
-// KEYRING FUNCTIONS end
-//******************************************************************************
 
-//-----------------------------------------------------------------------------
-//*************************************************************************************
-// void ARX_PLAYER_FrontPos(EERIE_3D * pos)
-//-------------------------------------------------------------------------------------
-// FUNCTION/RESULT:
-//   Fills "pos" with player "front pos" for sound purpose
-//*************************************************************************************
+/*!
+ * \brief Fills "pos" with player "front pos" for sound purpose
+ * \param pos
+ */
 void ARX_PLAYER_FrontPos(Vec3f * pos)
 {
 	pos->x = player.pos.x - EEsin(radians(MAKEANGLE(player.angle.b))) * 100.f;
@@ -263,8 +247,9 @@ void ARX_PLAYER_FrontPos(Vec3f * pos)
 	pos->z = player.pos.z + EEcos(radians(MAKEANGLE(player.angle.b))) * 100.f;
 }
 
-// FUNCTION/RESULT:
-//   Reset all extra-rotation groups of player
+/*!
+ * \brief Reset all extra-rotation groups of player
+ */
 void ARX_PLAYER_RectifyPosition() {
 	Entity * io = entities.player();
 	if(io && io->_npcdata->ex_rotate) {
@@ -275,9 +260,6 @@ void ARX_PLAYER_RectifyPosition() {
 	}
 }
 
-//******************************************************************************
-// PLAYER TORCH FUNCTIONS
-//-----------------------------------------------------------------------------
 void ARX_PLAYER_KillTorch() {
 	
 	ARX_SOUND_PlaySFX(SND_TORCH_END);
@@ -290,7 +272,6 @@ void ARX_PLAYER_KillTorch() {
 	DynLight[0].exist = 0;
 }
 
-//-----------------------------------------------------------------------------
 void ARX_PLAYER_ClickedOnTorch(Entity * io)
 {
 	if (io == NULL)
@@ -399,28 +380,19 @@ static void ARX_PLAYER_ManageTorch() {
 		}
 	}
 }
-//-----------------------------------------------------------------------------
-// PLAYER TORCH FUNCTIONS end
-//******************************************************************************
 
-
-//*************************************************************************************
-// void ARX_PLAYER_Quest_Init()
-//-------------------------------------------------------------------------------------
-// FUNCTION/RESULT:
-//   Init/Reset player Quest structures
-//*************************************************************************************
+/*!
+ * \brief Init/Reset player Quest structures
+ */
 void ARX_PLAYER_Quest_Init() {
 	PlayerQuest.clear();
 	gui::updateQuestBook();
 }
 
-//*************************************************************************************
-// void ARX_Player_Rune_Add(unsigned long _ulRune)
-//-------------------------------------------------------------------------------------
-// FUNCTION/RESULT:
-//   Add _ulRune to player runes
-//*************************************************************************************
+/*!
+ * \brief Add _ulRune to player runes
+ * \param _ulRune
+ */
 void ARX_Player_Rune_Add(RuneFlag _ulRune)
 {
 	int iNbSpells = 0;
@@ -484,23 +456,20 @@ void ARX_Player_Rune_Add(RuneFlag _ulRune)
 	}
 }
 
-//*************************************************************************************
-// void ARX_Player_Rune_Remove(unsigned long _ulRune
-//-------------------------------------------------------------------------------------
-// FUNCTION/RESULT:
-//   Remove _ulRune from player runes
-//*************************************************************************************
+/*!
+ * \brief Remove _ulRune from player runes
+ * \param _ulRune
+ */
 void ARX_Player_Rune_Remove(RuneFlag _ulRune)
 {
 	player.rune_flags &= ~_ulRune;
 }
 
-//*************************************************************************************
-// void ARX_PLAYER_Quest_Add(char * quest)
-//-------------------------------------------------------------------------------------
-// FUNCTION/RESULT:
-//   Add quest "quest" to player Questbook
-//*************************************************************************************
+/*!
+ * \brief Add quest "quest" to player Questbook
+ * \param quest
+ * \param _bLoad
+ */
 void ARX_PLAYER_Quest_Add(const std::string & quest, bool _bLoad) {
 	
 	PlayerQuest.push_back(STRUCT_QUEST());
@@ -511,12 +480,9 @@ void ARX_PLAYER_Quest_Add(const std::string & quest, bool _bLoad) {
 	gui::updateQuestBook();
 }
 
-//*************************************************************************************
-// void ARX_PLAYER_Remove_Invisibility()
-//-------------------------------------------------------------------------------------
-// FUNCTION/RESULT:
-//   Removes player invisibility by killing Invisibility spells on him
-//*************************************************************************************
+/*!
+ * \brief Removes player invisibility by killing Invisibility spells on him
+ */
 void ARX_PLAYER_Remove_Invisibility() {
 	for(size_t i = 0; i < MAX_SPELLS; i++) {
 		if(spells[i].exist && spells[i].type == SPELL_INVISIBILITY && spells[i].caster == 0) {
@@ -655,12 +621,9 @@ static float ARX_PLAYER_Get_Skill_Defense(long type) {
 	}
 }
 
-//*************************************************************************************
-// void ARX_PLAYER_ComputePlayerStats()
-//-------------------------------------------------------------------------------------
-// FUNCTION/RESULT:
-//   Compute secondary attributes for player
-//*************************************************************************************
+/*!
+ * \brief Compute secondary attributes for player
+ */
 static void ARX_PLAYER_ComputePlayerStats() {
 	
 	player.maxlife = (float)player.Attribute_Constitution * (float)(player.level + 2);
@@ -689,13 +652,11 @@ static void ARX_PLAYER_ComputePlayerStats() {
 }
 extern long cur_mr;
 extern long SPECIAL_PNUX;
-//*************************************************************************************
-// void ARX_PLAYER_ComputePlayerFullStats()
-//-------------------------------------------------------------------------------------
-// FUNCTION/RESULT:
-//   Compute FULL versions of player stats including Equiped Items
-//   and spells, and any other effect altering them.
-//*************************************************************************************
+
+/*!
+ * \brief Compute FULL versions of player stats including Equiped Items and spells,
+ *        and any other effect altering them.
+ */
 void ARX_PLAYER_ComputePlayerFullStats()
 {
 	ARX_PLAYER_ComputePlayerStats();
@@ -992,12 +953,9 @@ void ARX_PLAYER_ComputePlayerFullStats()
 	player.mana = std::min(player.mana, player.Full_maxmana);
 }
 
-//*************************************************************************************
-// void ARX_PLAYER_MakeFreshHero()
-//-------------------------------------------------------------------------------------
-// FUNCTION/RESULT:
-//   Creates a Fresh hero
-//*************************************************************************************
+/*!
+ * \brief Creates a Fresh hero
+ */
 void ARX_PLAYER_MakeFreshHero()
 {
 	player.Attribute_Strength = 6;
@@ -1074,12 +1032,10 @@ void ARX_PLAYER_MakeSpHero()
 	SKIN_MOD = 0;
 	QUICK_MOD = 0;
 }
-//*************************************************************************************
-// void ARX_PLAYER_MakePowerfullHero()
-//-------------------------------------------------------------------------------------
-// FUNCTION/RESULT:
-//   Creates a POWERFULL hero
-//*************************************************************************************
+
+/*!
+ * \brief Creates a POWERFULL hero
+ */
 void ARX_PLAYER_MakePowerfullHero()
 {
 	player.Attribute_Strength = 18;
@@ -1114,12 +1070,9 @@ void ARX_PLAYER_MakePowerfullHero()
 	player.SpellToMemorize.bSpell = false;
 }
 
-//*************************************************************************************
-// void ARX_PLAYER_MakeAverageHero()
-//-------------------------------------------------------------------------------------
-// FUNCTION/RESULT:
-//   Creates an Average hero
-//*************************************************************************************
+/*!
+ * \brief Creates an Average hero
+ */
 void ARX_PLAYER_MakeAverageHero()
 {
 	ARX_PLAYER_MakeFreshHero();
@@ -1149,12 +1102,9 @@ void ARX_PLAYER_MakeAverageHero()
 	ARX_PLAYER_ComputePlayerStats();
 }
 
-//*************************************************************************************
-// void ARX_PLAYER_QuickGeneration()
-//-------------------------------------------------------------------------------------
-// FUNCTION/RESULT:
-//   Quickgenerate a random hero
-//*************************************************************************************
+/*!
+ * \brief Quickgenerate a random hero
+ */
 void ARX_PLAYER_QuickGeneration() {
 	
 	char old_skin = player.skin;
@@ -1245,12 +1195,11 @@ void ARX_PLAYER_QuickGeneration() {
 	ARX_PLAYER_ComputePlayerStats();
 }
 
-//*************************************************************************************
-// long GetXPforLevel(long level)
-//-------------------------------------------------------------------------------------
-// FUNCTION/RESULT:
-//   Returns necessary Experience for a given level
-//*************************************************************************************
+/*!
+ * \brief Returns necessary Experience for a given level
+ * \param level
+ * \return
+ */
 long GetXPforLevel(long level)
 {
 	const long XP_FOR_LEVEL[] = { 
@@ -1279,12 +1228,9 @@ long GetXPforLevel(long level)
 	return xpNeeded;	
 }
 
-//*************************************************************************************
-// void ARX_PLAYER_LEVEL_UP()
-//-------------------------------------------------------------------------------------
-// FUNCTION/RESULT:
-//   Manages Player Level Up event
-//*************************************************************************************
+/*!
+ * \brief Manages Player Level Up event
+ */
 void ARX_PLAYER_LEVEL_UP()
 {
 	ARX_SOUND_PlayInterface(SND_PLAYER_LEVEL_UP);
@@ -1306,12 +1252,10 @@ void ARX_PLAYER_LEVEL_UP()
 	SendIOScriptEvent(entities.player(), SM_NULL, "", "level_up");
 }
 
-//*************************************************************************************
-// void ARX_PLAYER_Modify_XP(long val)
-//-------------------------------------------------------------------------------------
-// FUNCTION/RESULT:
-//   Modify player XP by adding "val" to it
-//*************************************************************************************
+/*!
+ * \brief Modify player XP by adding "val" to it
+ * \param val
+ */
 void ARX_PLAYER_Modify_XP(long val) {
 	
 	player.xp += val;
@@ -1323,12 +1267,10 @@ void ARX_PLAYER_Modify_XP(long val) {
 	}
 }
 
-//*************************************************************************************
-// void ARX_PLAYER_Poison(float val)
-//-------------------------------------------------------------------------------------
-// FUNCTION/RESULT:
-//   Function to poison player by "val" poison level
-//*************************************************************************************
+/*!
+ * \brief Function to poison player by "val" poison level
+ * \param val
+ */
 void ARX_PLAYER_Poison(float val)
 {
 	// Make a poison saving throw to see if player is affected
@@ -1340,12 +1282,12 @@ void ARX_PLAYER_Poison(float val)
 }
 long PLAYER_PARALYSED = 0;
 
-// FUNCTION/RESULT:
-//   updates some player stats depending on time:
-//		.life/mana recovery
-//		.poison evolution
-//		.hunger check
-//		.invisibility
+/*!
+ * \brief updates some player stats depending on time
+ * \param Framedelay
+ *
+ * Updates: life/mana recovery, poison evolution, hunger, invisibility
+ */
 void ARX_PLAYER_FrameCheck(float Framedelay)
 {
 	//	ARX_PLAYER_QuickGeneration();
@@ -1502,7 +1444,9 @@ void ARX_PLAYER_Restore_Skin() {
 		tmpTC->LoadFile(tx4);
 }
 
-//Load Mesh & anims for hero
+/*!
+ * \brief Load Mesh & anims for hero
+ */
 void ARX_PLAYER_LoadHeroAnimsAndMesh(){
 	
 	const char OBJECT_HUMAN_BASE[] = "graph/obj3d/interactive/npc/human_base/human_base.teo"; 
@@ -1578,12 +1522,9 @@ void ARX_PLAYER_StartFall()
 	}
 }
 
-//*************************************************************************************
-// void ARX_PLAYER_BecomesDead()
-//-------------------------------------------------------------------------------------
-// FUNCTION/RESULT:
-//   Called When player has just died
-//*************************************************************************************
+/*!
+ * \brief Called When player has just died
+ */
 void ARX_PLAYER_BecomesDead()
 {
 	STARTED_A_GAME = 0;
@@ -1611,9 +1552,9 @@ long LAST_ON_PLATFORM = 0;
 extern long MOVE_PRECEDENCE;
 extern bool EXTERNALVIEW;
 
-// Manages Player visual
-// Choose the set of animations to use to represent current player
-// situation.
+/*!
+ * \brief Choose the set of animations to use to represent current player situation.
+ */
 void ARX_PLAYER_Manage_Visual() {
 	
 	unsigned long tim = (unsigned long)(arxtime);
@@ -2166,7 +2107,9 @@ nochanges:
 	}
 }
 
-// Init Local Player Data
+/*!
+ * \brief Init Local Player Data
+ */
 void ARX_PLAYER_InitPlayer() {
 	player.Interface = INTER_MINIBOOK | INTER_MINIBACK | INTER_LIFE_MANA;
 	player.physics.cyl.height = player.baseHeight();
@@ -2184,7 +2127,10 @@ void ARX_PLAYER_InitPlayer() {
 	ARX_PLAYER_MakeFreshHero();
 }
 
-// Forces player orientation to look at an IO
+/*!
+ * \brief Forces player orientation to look at an IO
+ * \param io
+ */
 void ForcePlayerLookAtIO(Entity * io) {
 	
 	arx_assert(io);
@@ -2224,13 +2170,9 @@ extern long CURRENT_BASE_FOCAL;
 extern long TRAP_DETECT;
 extern long TRAP_SECRET;
 
-
-//*************************************************************************************
-// void ARX_PLAYER_Frame_Update()
-//-------------------------------------------------------------------------------------
-// FUNCTION/RESULT:
-//   Updates Many player infos each frame...
-//*************************************************************************************
+/*!
+ * \brief Updates Many player infos each frame
+ */
 void ARX_PLAYER_Frame_Update()
 {
 	if(ARX_SPELLS_GetSpellOn(entities.player(), SPELL_PARALYSE) >= 0) {
@@ -2298,7 +2240,9 @@ void ARX_PLAYER_Frame_Update()
 	ARX_PLAYER_ManageTorch();
 }
 
-// Emit player step noise
+/*!
+ * \brief Emit player step noise
+ */
 static void ARX_PLAYER_MakeStepNoise() {
 	
 	if(ARX_SPELLS_GetSpellOn(entities.player(), SPELL_LEVITATE) >= 0) {
@@ -2924,9 +2868,10 @@ lasuite:
 		}
 	}
 }
-//******************************************************************************
-// Manage Player Death Visual
-//******************************************************************************
+
+/*!
+ * \brief Manage Player Death Visual
+ */
 void ARX_PLAYER_Manage_Death()
 {
 	PLAYER_PARALYSED = 0;
@@ -2947,15 +2892,19 @@ void ARX_PLAYER_Manage_Death()
 
 	}
 }
-//******************************************************************************
-// Specific for color checks
-//******************************************************************************
+
+/*!
+ * \brief Specific for color checks
+ * \return
+ */
 float GetPlayerStealth()
 {
 	return 15 + player.Full_Skill_Stealth * ( 1.0f / 10 );
 }
 
-// Teleport player to any poly...
+/*!
+ * \brief Teleport player to any poly
+ */
 void ARX_PLAYER_GotoAnyPoly() {
 	for(long j = 0; j < ACTIVEBKG->Zsize; j++) {
 		for(long i = 0; i < ACTIVEBKG->Xsize; i++) {
@@ -2967,7 +2916,10 @@ void ARX_PLAYER_GotoAnyPoly() {
 	}
 }
 
-// Force Player to standard stance... (Need some improvements...)
+/*!
+ * \brief Force Player to standard stance
+ * \param val
+ */
 void ARX_PLAYER_PutPlayerInNormalStance(long val) {
 	
 	if(player.Current_Movement & PLAYER_CROUCH) {
@@ -3011,7 +2963,10 @@ void ARX_PLAYER_PutPlayerInNormalStance(long val) {
 	}
 }
 
-// Add gold to player purse
+/*!
+ * \brief Add gold to player purse
+ * \param _lValue
+ */
 void ARX_PLAYER_AddGold(long _lValue) {
 	player.gold += _lValue;
 	bGoldHalo = true;
@@ -3049,7 +3004,6 @@ void ARX_PLAYER_Start_New_Quest() {
 	entities.player()->halo.flags = 0;
 }
 
-//-----------------------------------------------------------------------------
 void ARX_PLAYER_AddBag()
 {
 	++player.bag;
@@ -3058,7 +3012,6 @@ void ARX_PLAYER_AddBag()
 		player.bag = 3;
 }
 
-//-----------------------------------------------------------------------------
 bool ARX_PLAYER_CanStealItem(Entity * _io)
 {
 	if (_io->_itemdata->stealvalue > 0)
