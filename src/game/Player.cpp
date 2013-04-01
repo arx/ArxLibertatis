@@ -278,47 +278,14 @@ void ARX_PLAYER_ClickedOnTorch(Entity * io)
 		return;
 	}
 
-	if (CURRENT_TORCH == NULL)
-	{
-		if (io->durability > 0)
-		{
-			if (io->ignition > 0)
-			{
-				if (ValidDynLight(io->ignit_light))
-					DynLight[io->ignit_light].exist = 0;
-
-				io->ignit_light = -1;
-
-				if (io->ignit_sound != audio::INVALID_ID)
-				{
-					ARX_SOUND_Stop(io->ignit_sound);
-					io->ignit_sound = audio::INVALID_ID;
-				}
-
-				io->ignition = 0;
-			}
-
-			SHOW_TORCH = 1;
-			ARX_SOUND_PlaySFX(SND_TORCH_START);
-			ARX_SOUND_PlaySFX(SND_TORCH_LOOP, NULL, 1.0F, ARX_SOUND_PLAY_LOOPED);
-			RemoveFromAllInventories(io);
-			CURRENT_TORCH = io;
-			io->show = SHOW_FLAG_ON_PLAYER;
-
-			if (DRAGINTER == io)
-			{
-				DRAGINTER = NULL;
-			}
-		}
+	if(CURRENT_TORCH == io) {
+		ARX_PLAYER_KillTorch();
+		return;
 	}
-	else if (CURRENT_TORCH == io)
-	{
+
+	if(CURRENT_TORCH)
 		ARX_PLAYER_KillTorch();
 
-	}
-	else
-	{
-		ARX_PLAYER_KillTorch();
 
 		if (io->durability > 0)
 		{
@@ -350,7 +317,6 @@ void ARX_PLAYER_ClickedOnTorch(Entity * io)
 				DRAGINTER = NULL;
 			}
 		}
-	}
 }
 
 static void ARX_PLAYER_ManageTorch() {
