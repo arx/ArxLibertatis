@@ -2135,7 +2135,6 @@ static void ARX_SPELLS_Fizzle(long num) {
 
 static bool ARX_SPELLS_AnalyseSPELL() {
 	
-	long caster = 0; // Local Player
 	SpellcastFlags flags = 0;
 	
 	if(GInput->actionPressed(CONTROLS_CUST_STEALTHMODE) || bPrecastSpell) {
@@ -2167,7 +2166,7 @@ static bool ARX_SPELLS_AnalyseSPELL() {
 		return false;
 	}
 	
-	return ARX_SPELLS_Launch(spell, caster, flags);
+	return ARX_SPELLS_Launch(spell, 0 /* player */, flags);
 	
 }
 
@@ -2812,7 +2811,6 @@ void ARX_SPELLS_Precast_Check() {
 
 struct TARGETING_SPELL {
 	Spell typ;
-	long source;
 	SpellcastFlags flags;
 	long level;
 	long target;
@@ -2830,7 +2828,8 @@ void ARX_SPELLS_CancelSpellTarget() {
 
 void ARX_SPELLS_LaunchSpellTarget(Entity * io) {
 	if(io) {
-		ARX_SPELLS_Launch(t_spell.typ, t_spell.source, t_spell.flags, t_spell.level, io->index(), t_spell.duration);
+		ARX_SPELLS_Launch(t_spell.typ, 0 /* player */, t_spell.flags, t_spell.level,
+		                  io->index(), t_spell.duration);
 	}
 }
 
@@ -2992,7 +2991,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 				LOOKING_FOR_SPELL_TARGET_TIME	= (unsigned long)(arxtime);	
 			LOOKING_FOR_SPELL_TARGET		= 1;
 			t_spell.typ						= typ;
-			t_spell.source					= source;
 			t_spell.flags					= flags;
 			t_spell.level					= level;
 			t_spell.target					= target;
@@ -3004,7 +3002,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 				LOOKING_FOR_SPELL_TARGET_TIME	= (unsigned long)(arxtime);
 			LOOKING_FOR_SPELL_TARGET		= 2;
 			t_spell.typ						= typ;
-			t_spell.source					= source;
 			t_spell.flags					= flags;
 			t_spell.level					= level;
 			t_spell.target					= target;
@@ -3041,7 +3038,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 				LOOKING_FOR_SPELL_TARGET_TIME	= (unsigned long)(arxtime);
 			LOOKING_FOR_SPELL_TARGET		= 1;
 			t_spell.typ						= typ;
-			t_spell.source					= source;
 			t_spell.flags					= flags;
 			t_spell.level					= level;
 			t_spell.target					= target;
