@@ -148,7 +148,6 @@ ARXCHARACTER player;
 EERIE_3DOBJ * hero = NULL;
 float currentdistance = 0.f;
 float CURRENT_PLAYER_COLOR = 0;
-float DeadCameraDistance = 0.f;
 float PLAYER_ROTATION = 0;
 
 long USE_PLAYERCOLLISIONS = 1;
@@ -1535,7 +1534,6 @@ void ARX_PLAYER_BecomesDead()
 	{
 		player.Interface &= ~INTER_COMBATMODE;
 		player.Interface = 0;
-		DeadCameraDistance = 40.f;
 		DeadTime = 0;
 	}
 
