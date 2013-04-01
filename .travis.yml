@@ -12,5 +12,5 @@ notifications:
   recipients:
     - hennr@hennr.name
   email:
-    on_success: change
+    on_success: always
     on_failure: always
