@@ -196,18 +196,20 @@ float ARX_DAMAGES_DamagePlayer(float dmg, DamageType type, long source) {
 
 	float damagesdone = 0.f;
 
-	if (player.life == 0.f) return damagesdone;
+	if(player.life == 0.f)
+		return damagesdone;
 
-	if (dmg > player.life) damagesdone = dmg;
-	else damagesdone = player.life;
+	if(dmg > player.life)
+		damagesdone = dmg;
+	else
+		damagesdone = player.life;
 
 	entities.player()->dmg_sum += dmg;
 
-	if (float(arxtime) > entities.player()->ouch_time + 500)
-	{
+	if(float(arxtime) > entities.player()->ouch_time + 500) {
 		Entity * oes = EVENT_SENDER;
 
-		if (ValidIONum(source))
+		if(ValidIONum(source))
 			EVENT_SENDER = entities[source];
 		else
 			EVENT_SENDER = NULL;
@@ -222,53 +224,48 @@ float ARX_DAMAGES_DamagePlayer(float dmg, DamageType type, long source) {
 		entities.player()->dmg_sum = 0.f;
 	}
 
-	if (dmg > 0.f)
-	{
-		if (ValidIONum(source))
-		{
+	if(dmg > 0.f) {
+		if(ValidIONum(source)) {
 			Entity * pio = NULL;
 
-			if (entities[source]->ioflags & IO_NPC)
-			{
+			if(entities[source]->ioflags & IO_NPC) {
 				pio = entities[source]->_npcdata->weapon;
 
-				if ((pio) && ((pio->poisonous == 0) || (pio->poisonous_count == 0)))
+				if(pio && (pio->poisonous == 0 || pio->poisonous_count == 0))
 					pio = NULL;
 			}
 
-			if (!pio) pio = entities[source];
+			if(!pio)
+				pio = entities[source];
 
-			if (pio && pio->poisonous && (pio->poisonous_count != 0))
-			{
-				if (rnd() * 100.f > player.resist_poison)
-				{
+			if(pio && pio->poisonous && pio->poisonous_count != 0) {
+				if(rnd() * 100.f > player.resist_poison) {
 					player.poison += pio->poisonous;
 				}
 
-				if (pio->poisonous_count != -1)
+				if(pio->poisonous_count != -1)
 					pio->poisonous_count--;
 			}
 		}
 
 		long alive;
 
-		if (player.life > 0) alive = 1;
-		else alive = 0;
+		if(player.life > 0)
+			alive = 1;
+		else
+			alive = 0;
 
-		if (!BLOCK_PLAYER_CONTROLS)
+		if(!BLOCK_PLAYER_CONTROLS)
 			player.life -= dmg;
 
-		if (player.life <= 0.f)
-		{
+		if(player.life <= 0.f) {
 			player.life = 0.f;
 
-			if (alive) 
-			{
+			if(alive) {
 				REFUSE_GAME_RETURN = 1;
 				ARX_PLAYER_BecomesDead();
 
-				if ((type & DAMAGE_TYPE_FIRE) || (type & DAMAGE_TYPE_FAKEFIRE))
-				{
+				if((type & DAMAGE_TYPE_FIRE) || (type & DAMAGE_TYPE_FAKEFIRE)) {
 					ARX_SOUND_PlayInterface(SND_PLAYER_DEATH_BY_FIRE);
 				}
 
@@ -294,11 +291,12 @@ float ARX_DAMAGES_DamagePlayer(float dmg, DamageType type, long source) {
 			}
 		}
 
-		if (player.maxlife <= 0.f) return damagesdone;
+		if(player.maxlife <= 0.f)
+			return damagesdone;
 
 		float t = dmg / player.maxlife;
 
-		if (Blood_Pos == 0.f) {
+		if(Blood_Pos == 0.f) {
 			Blood_Pos = 0.000001f;
 			Blood_Duration = 100 + (t * 200.f);
 		} else {
