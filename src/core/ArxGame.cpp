@@ -1312,7 +1312,7 @@ void ArxGame::renderLevel() {
 
 	ARX_PLAYER_Manage_Visual();
 
-	ARX_MINIMAP_ValidatePlayerPos();
+	g_miniMap.validatePlayerPos();
 
 	for(size_t i = 0; i < entities.size(); i++) {
 		Entity *entity = entities[i];
@@ -1622,7 +1622,7 @@ finish:
 		long SHOWLEVEL = ARX_LEVELS_GetRealNum(CURRENTLEVEL);
 
 		if(SHOWLEVEL >= 0 && SHOWLEVEL < 32)
-			ARX_MINIMAP_Show(SHOWLEVEL, 1, 1);
+			g_miniMap.show(SHOWLEVEL, 1, 1);
 	}
 
 	//-------------------------------------------------------------------------
