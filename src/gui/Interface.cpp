@@ -646,16 +646,12 @@ void ARX_INTERFACE_HALO_Flush() {
 //-----------------------------------------------------------------------------
 bool NeedHalo(Entity * io)
 {
-	if (	(!io)
-		||	(!(io->ioflags & IO_ITEM))	)
+	if(!io || !(io->ioflags & IO_ITEM))
 		return false;
 
-	if (io->halo.flags & HALO_ACTIVE)
-	{
-		if (io->inv)
-		{
+	if(io->halo.flags & HALO_ACTIVE) {
+		if(io->inv)
 			io->inv->getHalo();
-		}
 
 		return true;
 	}
@@ -666,43 +662,35 @@ bool NeedHalo(Entity * io)
 //-----------------------------------------------------------------------------
 void InventoryOpenClose(unsigned long t) // 0 switch 1 forceopen 2 forceclose
 {
-	if ((t==1) && (player.Interface & INTER_INVENTORY)) return;
+	if(t == 1 && (player.Interface & INTER_INVENTORY))
+		return;
 
-	if ((t==2) && (!(player.Interface & INTER_INVENTORY))) return;
+	if(t == 2 && !(player.Interface & INTER_INVENTORY))
+		return;
 
 	ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
 
-	if ((player.Interface & INTER_INVENTORY)||(player.Interface & INTER_INVENTORYALL))
-	{
+	if((player.Interface & INTER_INVENTORY) || (player.Interface & INTER_INVENTORYALL)) {
 		bInventoryClosing = true;
 
-		if (WILLRETURNTOFREELOOK)
-		{
+		if(WILLRETURNTOFREELOOK) {
 			TRUE_PLAYER_MOUSELOOK_ON = true;
 			SLID_START=float(arxtime);
 			WILLRETURNTOFREELOOK = 0;
 		}
-	}
-	else
-	{
+	} else {
 		player.Interface |= INTER_INVENTORY;
 		InventoryY = static_cast<long>(INTERFACE_RATIO(100.f));
 
-		if (TRUE_PLAYER_MOUSELOOK_ON)
-		{
+		if(TRUE_PLAYER_MOUSELOOK_ON)
 			WILLRETURNTOFREELOOK = 1;
-		}
 	}
 
-	if ((((player.Interface & INTER_INVENTORYALL)||(TRUE_PLAYER_MOUSELOOK_ON)))&&(player.Interface & INTER_NOTE))
-	{
+	if(((player.Interface & INTER_INVENTORYALL) || TRUE_PLAYER_MOUSELOOK_ON) && (player.Interface & INTER_NOTE))
 		ARX_INTERFACE_NoteClose();
-	}
 
-	if (!bInventoryClosing && config.input.autoReadyWeapon == false)
-	{
+	if(!bInventoryClosing && config.input.autoReadyWeapon == false)
 		TRUE_PLAYER_MOUSELOOK_ON = false;
-	}
 }
 
 void ARX_INTERFACE_NoteClear() {
@@ -787,13 +775,14 @@ void ARX_INTERFACE_NoteManage() {
 //-----------------------------------------------------------------------------
 void ARX_INTERFACE_BookOpenClose(unsigned long t) // 0 switch 1 forceopen 2 forceclose
 {
-	if ((t==1) && (player.Interface & INTER_MAP)) return;
+	if(t == 1 && (player.Interface & INTER_MAP))
+		return;
 
-	if ((t==2) && (!(player.Interface & INTER_MAP))) return;
+	if(t == 2 && !(player.Interface & INTER_MAP))
+		return;
 
 
-	if (player.Interface & INTER_MAP)
-	{
+	if(player.Interface & INTER_MAP) {
 		ARX_SOUND_PlayInterface(SND_BOOK_CLOSE, 0.9F + 0.2F * rnd());
 		SendIOScriptEvent(entities.player(),SM_BOOK_CLOSE);
 		player.Interface &=~ INTER_MAP;
@@ -806,9 +795,7 @@ void ARX_INTERFACE_BookOpenClose(unsigned long t) // 0 switch 1 forceopen 2 forc
 			free(ARXmenu.mda);
 			ARXmenu.mda=NULL;
 		}
-	}
-	else
-	{
+	} else {
 		SendIOScriptEvent(entities.player(),SM_NULL,"","book_open");
 
 		ARX_SOUND_PlayInterface(SND_BOOK_OPEN, 0.9F + 0.2F * rnd());
@@ -817,12 +804,13 @@ void ARX_INTERFACE_BookOpenClose(unsigned long t) // 0 switch 1 forceopen 2 forc
 		player.Interface |= INTER_MAP;
 		Book_MapPage=ARX_LEVELS_GetRealNum(CURRENTLEVEL)+1;
 
-		if (Book_MapPage>8) Book_MapPage=8;
+		if(Book_MapPage > 8)
+			Book_MapPage = 8;
 
-		if (Book_MapPage<1) Book_MapPage=1;
+		if(Book_MapPage < 1)
+			Book_MapPage = 1;
 
-		if(!ARXmenu.mda)
-		{
+		if(!ARXmenu.mda) {
 //			ARXmenu.mda = (MENU_DYNAMIC_DATA *)malloc(sizeof(MENU_DYNAMIC_DATA));
 //			memset(ARXmenu.mda,0,sizeof(MENU_DYNAMIC_DATA));
 			ARXmenu.mda = new MENU_DYNAMIC_DATA();
@@ -857,14 +845,12 @@ void ARX_INTERFACE_BookOpenClose(unsigned long t) // 0 switch 1 forceopen 2 forc
 		}
 	}
 
-	if (player.Interface&INTER_COMBATMODE)
-	{
+	if(player.Interface & INTER_COMBATMODE) {
 		player.Interface&=~INTER_COMBATMODE;
 		ARX_EQUIPMENT_LaunchPlayerUnReadyWeapon();
 	}
 
-	if (player.Interface & INTER_INVENTORYALL)
-	{
+	if(player.Interface & INTER_INVENTORYALL) {
 		ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
 		bInventoryClosing = true;
 	}
@@ -895,28 +881,22 @@ void ReleaseInfosCombine() {
 	if (player.bag)
 	for (int iNbBag=0; iNbBag<player.bag; iNbBag++)
 	for (size_t j=0;j<INVENTORY_Y;j++)
-	for (size_t i=0;i<INVENTORY_X;i++)
-	{
+	for (size_t i=0;i<INVENTORY_X;i++) {
 		io = inventory[iNbBag][i][j].io;
 
 		if(io)
-		{
-			io->ioflags&=~IO_CAN_COMBINE;
-		}
+			io->ioflags &= ~IO_CAN_COMBINE;
 	}
 
-	if (SecondaryInventory)
-	{
-		for (long j=0;j<SecondaryInventory->sizey;j++)
-			for (long i=0;i<SecondaryInventory->sizex;i++)
-			{
+	if(SecondaryInventory) {
+		for(long j=0;j<SecondaryInventory->sizey;j++) {
+			for(long i=0;i<SecondaryInventory->sizex;i++) {
 				io=SecondaryInventory->slot[i][j].io;
 
-				if ( io )
-				{
-					io->ioflags&=~IO_CAN_COMBINE;
-				}
+				if(io)
+					io->ioflags &= ~IO_CAN_COMBINE;
 			}
+		}
 	}
 }
 
@@ -934,26 +914,20 @@ char* findParam(char* pcToken, const char* param)
 void GetInfosCombineWithIO(Entity * _pWithIO)
 {
 	if(!COMBINE)
-	{
 		return;
-	}
 
 	std::string tcIndent = COMBINE->long_name();
 
 		char tTxtCombineDest[256];
 
-		if(	(_pWithIO)&&
-			(_pWithIO!=COMBINE)&&
-			(_pWithIO->script.data) )
-		{
+		if(_pWithIO && _pWithIO != COMBINE && _pWithIO->script.data) {
 			char* pCopyScript=new char[_pWithIO->script.size + 1];
 			pCopyScript[_pWithIO->script.size] = '\0';
 			memcpy(pCopyScript,_pWithIO->script.data,_pWithIO->script.size);
 
 			char* pCopyOverScript=NULL;
 
-			if(_pWithIO->over_script.data)
-			{
+			if(_pWithIO->over_script.data) {
 				pCopyOverScript=new char[_pWithIO->over_script.size + 1];
 				pCopyOverScript[_pWithIO->over_script.size] = '\0';
 				memcpy(pCopyOverScript,_pWithIO->over_script.data,_pWithIO->over_script.size);
@@ -961,23 +935,19 @@ void GetInfosCombineWithIO(Entity * _pWithIO)
 
 			char *pcFound=NULL;
 
-			if(pCopyOverScript)
-			{
+			if(pCopyOverScript) {
 				pcFound=strstr((char*)pCopyOverScript,"on combine");
 
-				if(pcFound)
-				{
+				if(pcFound) {
 					unsigned int uiNbOpen=0;
 
 					char *pcToken=strtok(pcFound,"\r\n");
 
-					if(strstr(pcToken,"{"))
-					{
+					if(strstr(pcToken,"{")) {
 						uiNbOpen++;
 					}
 
-					while(pcToken)
-					{
+					while(pcToken) {
 						pcToken=strtok(NULL,"\r\n");
 	
 						bool bCanCombine=false;
