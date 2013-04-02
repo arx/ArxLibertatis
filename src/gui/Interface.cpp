@@ -2894,28 +2894,30 @@ void ARX_INTERFACE_SetCinemascope(long status,long smooth)
 //-----------------------------------------------------------------------------
 void ARX_INTERFACE_PlayerInterfaceModify(long showhide,long smooth)
 {
-	if (showhide == 0)
-	{
+	if(showhide == 0) {
 		InventoryOpenClose(2);
 		ARX_INTERFACE_BookOpenClose(2);
 		ARX_INTERFACE_NoteClose();
 	}
 
-	if (showhide) PLAYER_INTERFACE_HIDE_COUNT = 0;
-	else PLAYER_INTERFACE_HIDE_COUNT = 1;
-
-	if (PLAYER_INTERFACE_HIDE_COUNT<0)
-		PLAYER_INTERFACE_HIDE_COUNT=0;
-
-	if (smooth)
-	{
-		if (showhide) SMOOTHSLID=-1;
-		else SMOOTHSLID=1;
-	}
+	if(showhide)
+		PLAYER_INTERFACE_HIDE_COUNT = 0;
 	else
-	{
-		if (showhide) SLID_VALUE=0.f;
-		else SLID_VALUE=100.f;
+		PLAYER_INTERFACE_HIDE_COUNT = 1;
+
+	if(PLAYER_INTERFACE_HIDE_COUNT < 0)
+		PLAYER_INTERFACE_HIDE_COUNT = 0;
+
+	if(smooth) {
+		if(showhide)
+			SMOOTHSLID = -1;
+		else
+			SMOOTHSLID = 1;
+	} else {
+		if(showhide)
+			SLID_VALUE = 0.f;
+		else
+			SLID_VALUE = 100.f;
 
 		lSLID_VALUE = SLID_VALUE;
 	}
