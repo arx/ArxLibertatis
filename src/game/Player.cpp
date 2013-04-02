@@ -3199,7 +3199,7 @@ void ARX_GAME_Reset(long type) {
 	
 	LAST_JUMP_ENDTIME = 0;
 	FlyingOverIO = NULL;
-	ARX_MAPMARKER_Init();
+	g_miniMap.mapMarkerInit();
 	ClearDynLights();
 
 	if(!DONT_ERASE_PLAYER && entities.player()) {
@@ -3336,7 +3336,7 @@ void ARX_GAME_Reset(long type) {
 	// Player Init
 	if (!DONT_ERASE_PLAYER)
 	{
-		ARX_MAPMARKER_Init();
+		g_miniMap.mapMarkerInit();
 		GLOBAL_MAGIC_MODE = 1;
 
 		// Linked Objects

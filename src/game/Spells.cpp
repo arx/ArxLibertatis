@@ -7534,7 +7534,7 @@ void MakeSpCol() {
 
 static void ApplyCurSOS() {
 	MakeSpCol();
-	ARX_MINIMAP_Reveal();
+	g_miniMap.reveal();
 	strcpy(sp_max_ch,"!!!_Temple of Elemental Lavis_!!!");
 	sp_max_nb=strlen(sp_max_ch);
 	sp_max_start=arxtime.get_updated();

@@ -1015,7 +1015,7 @@ void ArxGame::Render() {
 	ARX_PLAYER_Manage_Visual();
 
 	if (FRAME_COUNT<=0)
-		ARX_MINIMAP_ValidatePlayerPos();
+		g_miniMap.validatePlayerPos();
 
 	// SUBJECTIVE VIEW UPDATE START  *********************************************************
 	{
@@ -1874,8 +1874,8 @@ void ArxGame::Render() {
 	{
 			long SHOWLEVEL = ARX_LEVELS_GetRealNum(CURRENTLEVEL);
 
-		if ((SHOWLEVEL>=0) && (SHOWLEVEL<32))
-			ARX_MINIMAP_Show(SHOWLEVEL,1,1);
+		if(SHOWLEVEL >= 0 && SHOWLEVEL < 32)
+			g_miniMap.show(SHOWLEVEL, 1, 1);
 	}
 
 		//-------------------------------------------------------------------------

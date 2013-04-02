@@ -182,12 +182,12 @@ struct SavedMapMarkerData {
 	s32 lvl;
 	char name[STRING_SIZE];
 	
-	inline SavedMapMarkerData(const MAPMARKER_DATA & b) {
-		x = b.x;
-		y = b.y;
-		lvl = b.lvl;
-		arx_assert(STRING_SIZE > b.name.length());
-		strcpy(name, b.name.c_str());
+	inline SavedMapMarkerData(const MiniMap::MapMarkerData &b) {
+		x = b.m_x;
+		y = b.m_y;
+		lvl = b.m_lvl;
+		arx_assert(STRING_SIZE > b.m_name.length());
+		strcpy(name, b.m_name.c_str());
 	}
 	
 };
@@ -257,32 +257,32 @@ struct SavedMiniMap {
 	f32 height;
 	u8 revealed[MAX_X][MAX_Z];
 	
-	inline operator MINI_MAP_DATA() const {
-		MINI_MAP_DATA a;
-		a.tc = NULL;
-		a.offsetx = offsetx;
-		a.offsety = offsety;
-		a.xratio = xratio;
-		a.yratio = yratio;
-		a.width = width;
-		a.height = height;
+	inline operator MiniMap::MiniMapData() const {
+		MiniMap::MiniMapData a;
+		a.m_texContainer = NULL;
+		a.m_offsetX = offsetx;
+		a.m_offsetY = offsety;
+		a.m_ratioX = xratio;
+		a.m_ratioY = yratio;
+		a.m_width = width;
+		a.m_height = height;
 		BOOST_STATIC_ASSERT(SavedMiniMap::MAX_X == MINIMAP_MAX_X);
 		BOOST_STATIC_ASSERT(SavedMiniMap::MAX_Z == MINIMAP_MAX_Z);
-		std::copy(&revealed[0][0], &revealed[0][0] + (SavedMiniMap::MAX_X * SavedMiniMap::MAX_Z), &a.revealed[0][0]);
+		std::copy(&revealed[0][0], &revealed[0][0] + (SavedMiniMap::MAX_X * SavedMiniMap::MAX_Z), &a.m_revealed[0][0]);
 		return a;
 	}
 	
-	inline SavedMiniMap & operator=(const MINI_MAP_DATA & b) {
+	inline SavedMiniMap & operator=(const MiniMap::MiniMapData & b) {
 		padding = 0;
-		offsetx = b.offsetx;
-		offsety = b.offsety;
-		xratio = b.xratio;
-		yratio = b.yratio;
-		width = b.width;
-		height = b.height;
+		offsetx = b.m_offsetX;
+		offsety = b.m_offsetY;
+		xratio = b.m_ratioX;
+		yratio = b.m_ratioY;
+		width = b.m_width;
+		height = b.m_height;
 		BOOST_STATIC_ASSERT(SavedMiniMap::MAX_X == MINIMAP_MAX_X);
 		BOOST_STATIC_ASSERT(SavedMiniMap::MAX_Z == MINIMAP_MAX_Z);
-		std::copy(&b.revealed[0][0], &b.revealed[0][0] + (SavedMiniMap::MAX_X * SavedMiniMap::MAX_Z), &revealed[0][0]);
+		std::copy(&b.m_revealed[0][0], &b.m_revealed[0][0] + (SavedMiniMap::MAX_X * SavedMiniMap::MAX_Z), &revealed[0][0]);
 		return *this;
 	}
 	

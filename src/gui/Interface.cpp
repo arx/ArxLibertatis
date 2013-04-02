@@ -805,7 +805,7 @@ void ARX_INTERFACE_BookOpenClose(unsigned long t) // 0 switch 1 forceopen 2 forc
 		ARX_SOUND_PlayInterface(SND_BOOK_CLOSE, 0.9F + 0.2F * rnd());
 		SendIOScriptEvent(entities.player(),SM_BOOK_CLOSE);
 		player.Interface &=~ INTER_MAP;
-		ARX_MINIMAP_PurgeTC();
+		g_miniMap.purgeTexContainer();
 
 		if(ARXmenu.mda) {
 			for(long i = 0; i < MAX_FLYOVER; i++) {
@@ -5902,12 +5902,12 @@ void ARX_INTERFACE_ManageOpenedBook()
 		long SHOWLEVEL = Book_MapPage - 1;
 
 		if (SHOWLEVEL >= 0 && SHOWLEVEL < 32)
-			ARX_MINIMAP_Show( SHOWLEVEL, 0);
+			g_miniMap.show(SHOWLEVEL, 0);
 
 		SHOWLEVEL = ARX_LEVELS_GetRealNum(CURRENTLEVEL);
 
 		if (SHOWLEVEL >= 0 && SHOWLEVEL < 32)
-			ARX_MINIMAP_Show( SHOWLEVEL, 1);
+			g_miniMap.show(SHOWLEVEL, 1);
 		
 	}
 
