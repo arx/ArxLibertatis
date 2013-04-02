@@ -3917,37 +3917,31 @@ void ManageSpellIcon(long i,float rrr,long flag)
 
 	bool bOk=true;
 
-	if (spells[i].bDuration)
-	{
-		if(	(player.mana<20)||
-			((spells[i].timcreation+spells[i].tolive - float(arxtime)) < 2000) )
-		{
-			if(ucFlick&1) bOk=false;
+	if(spells[i].bDuration) {
+		if(player.mana < 20 || spells[i].timcreation+spells[i].tolive - float(arxtime) < 2000) {
+			if(ucFlick&1)
+				bOk=false;
 		}
-	}
-	else
-	{
-		if(player.mana<20)
-		{
-			if(ucFlick&1) bOk=false;
+	} else {
+		if(player.mana<20) {
+			if(ucFlick&1)
+				bOk=false;
 		}
 	}
 
-	if ( ( (bOk) && (typ>=0) &&	((size_t)typ<SPELL_COUNT) ) || (flag == 2) )
+	if((bOk && typ >= 0 && (size_t)typ < SPELL_COUNT) || (flag == 2))
 		StdDraw(posx,posy,color,spellicons[typ].tc,flag,i);
 
 	currpos += static_cast<long>(INTERFACE_RATIO(33.f));
 }
 extern float GLOBAL_LIGHT_FACTOR;
-//-----------------------------------------------------------------------------
+
 void ARX_INTERFACE_ManageOpenedBook_Finish()
 {
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 
-	if ((player.Interface & INTER_MAP ) &&  (!(player.Interface & INTER_COMBATMODE)))
-	{
-		if (Book_Mode == BOOKMODE_SPELLS)
-		{
+	if((player.Interface & INTER_MAP) && !(player.Interface & INTER_COMBATMODE)) {
+		if(Book_Mode == BOOKMODE_SPELLS) {
 			Anglef angle;
 			Vec3f pos;
 
@@ -3982,9 +3976,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 			long ypos=0;
 
 			for(size_t i = 0; i < RUNE_COUNT; i++) {
-				
-				if (necklace.runes[i])
-				{
+				if(necklace.runes[i]) {
 					bookcam.center.x = (382 + xpos * 45 + BOOKDECX) * Xratio;
 					bookcam.center.y = (100 + ypos * 64 + BOOKDECY) * Yratio;
 
@@ -3994,21 +3986,20 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 					// First draw the lace
 					angle.b=0.f;
 
-					if (player.rune_flags & (RuneFlag)(1<<i))
-					{
-						DrawEERIEInter(necklace.lacet,&angle,&pos,NULL);
+					if(player.rune_flags & (RuneFlag)(1<<i)) {
+						DrawEERIEInter(necklace.lacet, &angle, &pos, NULL);
 
-						if (necklace.runes[i]->angle.b!=0.f)
-						{
-							if (necklace.runes[i]->angle.b>300.f)
-								necklace.runes[i]->angle.b=300.f;
+						if(necklace.runes[i]->angle.b != 0.f) {
+							if(necklace.runes[i]->angle.b > 300.f)
+								necklace.runes[i]->angle.b = 300.f;
 
-							angle.b=EEsin(arxtime.get_updated() * ( 1.0f / 200 ))*necklace.runes[i]->angle.b*( 1.0f / 40 );
+							angle.b = EEsin(arxtime.get_updated() * (1.0f / 200)) * necklace.runes[i]->angle.b * (1.0f / 40);
 						}
 
-						necklace.runes[i]->angle.b-=framedelay*0.2f;
+						necklace.runes[i]->angle.b -= framedelay * 0.2f;
 
-						if (necklace.runes[i]->angle.b<0.f) necklace.runes[i]->angle.b=0.f;
+						if(necklace.runes[i]->angle.b < 0.f)
+							necklace.runes[i]->angle.b = 0.f;
 
 						DynLight[0].exist=0;
 						
@@ -4033,31 +4024,25 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 
 						xpos++;
 
-						if (xpos > 4)
-						{
+						if(xpos > 4) {
 							xpos = 0;
 							ypos++;
 						}
 
 						// Checks for Mouse floating over a rune...
-						if ((!found2) &&
-							MouseInRect(BBOXMIN.x, BBOXMIN.y, BBOXMAX.x, BBOXMAX.y))
-						{
+						if(!found2 && MouseInRect(BBOXMIN.x, BBOXMIN.y, BBOXMAX.x, BBOXMAX.y)) {
 							long r=0;
 
-							for (size_t j=0;j<necklace.runes[i]->facelist.size();j++)
-							{
-								n=PtIn2DPolyProj( necklace.runes[i], &necklace.runes[i]->facelist[j] , (float)DANAEMouse.x, (float)DANAEMouse.y);
+							for(size_t j = 0; j < necklace.runes[i]->facelist.size(); j++) {
+								n=PtIn2DPolyProj(necklace.runes[i], &necklace.runes[i]->facelist[j], (float)DANAEMouse.x, (float)DANAEMouse.y);
 
-								if (n!=0.f)
-								{
+								if(n!=0.f) {
 									r=1;
 									break;
 								}
 							}
 
-							if (r)
-							{
+							if(r) {
 								GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 								GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 								DrawEERIEInter(necklace.runes[i],&angle,&pos,NULL);
@@ -4070,9 +4055,8 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 
 								SpecialCursor=CURSOR_INTERACTION_ON;
 
-								if ((EERIEMouseButton & 1)  && !(LastMouseClick & 1))
-									if ((size_t)LastRune!=i)
-									{
+								if((EERIEMouseButton & 1) && !(LastMouseClick & 1))
+									if((size_t)LastRune != i) {
 										switch(i)
 										{
 										case RUNE_AAM:
@@ -4167,7 +4151,8 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 
 			GRenderer->SetCulling(Renderer::CullCCW);
 
-			if (!found2) LastRune=-1;
+			if(!found2)
+				LastRune=-1;
 
 			// Now Draws Spells for this level...
 			ARX_PLAYER_ComputePlayerFullStats();
@@ -4178,32 +4163,26 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 			float fPosY = 0;
 			bool	bFlyingOver = false;
 
-			for (size_t i=0; i < SPELL_COUNT; i++)
-			{
-				if ((spellicons[i].level==Book_SpellPage) && (!spellicons[i].bSecret))
-				{
+			for(size_t i=0; i < SPELL_COUNT; i++) {
+				if(spellicons[i].level==Book_SpellPage && !spellicons[i].bSecret) {
 					// check if player can cast it
 					bool bOk = true;
 					long j = 0;
 
-					while ((j < 4) && (spellicons[i].symbols[j] != RUNE_NONE))
-					{
-						if (!(player.rune_flags & (RuneFlag)(1<<spellicons[i].symbols[j])))
-						{
+					while(j < 4 && (spellicons[i].symbols[j] != RUNE_NONE)) {
+						if(!(player.rune_flags & (RuneFlag)(1<<spellicons[i].symbols[j]))) {
 							bOk = false;
 						}
 
 						j++;
 					}
 
-					if (bOk)
-					{
-						fPosX = 170.f+posx*85.f;
-						fPosY = 135.f+posy*70.f;
+					if(bOk) {
+						fPosX = 170.f + posx * 85.f;
+						fPosY = 135.f + posy * 70.f;
 						long flyingover = 0;
 
-						if (MouseInBookRect(fPosX, fPosY, fPosX+48, fPosY+48))
-						{
+						if(MouseInBookRect(fPosX, fPosY, fPosX + 48, fPosY + 48)) {
 							bFlyingOver = true;
 							flyingover = 1;
 
@@ -4230,23 +4209,22 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 
 							long count = 0;
 							
-							for (long j = 0; j < 6; ++j)
-								if (spellicons[i].symbols[j] != RUNE_NONE)
+							for(long j = 0; j < 6; ++j)
+								if(spellicons[i].symbols[j] != RUNE_NONE)
 									++count;
 
 							GRenderer->GetTextureStage(0)->SetMagFilter(TextureStage::FilterLinear);
 							for(int j = 0; j < 6; ++j) {
 								if(spellicons[i].symbols[j] != RUNE_NONE) {
-									pos.x = (240-(count*32)*0.5f+j*32);
-									pos.y = (306);
+									pos.x = 240 - (count * 32) * 0.5f + j * 32;
+									pos.y = 306;
 									DrawBookInterfaceItem(necklace.pTexTab[spellicons[i].symbols[j]], pos.x, pos.y);
 								}
 							}
 							GRenderer->GetTextureStage(0)->SetMagFilter(TextureStage::FilterNearest);
 						}
 
-						if (spellicons[i].tc)
-						{
+						if(spellicons[i].tc) {
 							GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 							GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
 							
@@ -4254,12 +4232,10 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 							if(flyingover) {
 								color = Color::white;
 
-								if ((EERIEMouseButton & 1)  && !(LastMouseClick & 1))
-								{
+								if((EERIEMouseButton & 1)  && !(LastMouseClick & 1)) {
 									player.SpellToMemorize.bSpell = true;
 
-									for (long j=0;j<6;j++)
-									{
+									for(long j = 0; j < 6; j++) {
 										player.SpellToMemorize.iSpellSymbols[j] = spellicons[i].symbols[j];
 									}
 
@@ -4278,8 +4254,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 
 						posx ++;
 
-						if (posx>=2)
-						{
+						if(posx >= 2) {
 							posx = 0;
 							posy ++;
 						}
@@ -4287,8 +4262,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 				}
 			}
 
-			if (!bFlyingOver)
-			{
+			if(!bFlyingOver) {
 				OLD_FLYING_OVER = -1;
 				FLYING_OVER = -1;
 			}
@@ -4298,8 +4272,6 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 			PrepareCamera(oldcam);
 		}
 	}
-	
-	
 }
 
 //-----------------------------------------------------------------------------
@@ -4390,15 +4362,12 @@ void ARX_INTERFACE_ManageOpenedBook()
 				break;
 			}
 		}
-	}
-	else
-	{
+	} else {
 		float x = 0;
 		
-		if ( ITC.Get("playerbook") )
-		{
-			x = static_cast<float>( ( 640 - ITC.Get("playerbook")->m_dwWidth ) / 2 );
-			float y = static_cast<float>( ( 480 - ITC.Get("playerbook")->m_dwHeight ) / 2 );
+		if(ITC.Get("playerbook")) {
+			x = static_cast<float>((640 - ITC.Get("playerbook")->m_dwWidth) / 2);
+			float y = static_cast<float>((480 - ITC.Get("playerbook")->m_dwHeight) / 2);
 
 			DrawBookInterfaceItem(ITC.Get("playerbook"), x, y);
 		}
@@ -4407,27 +4376,22 @@ void ARX_INTERFACE_ManageOpenedBook()
 		BOOKDECY = x - 64 + 19;
 	}
 	
-	if (ARXmenu.currentmode != AMCM_NEWQUEST)
-	{
+	if(ARXmenu.currentmode != AMCM_NEWQUEST) {
 		bool bOnglet[11];
 		long max_onglet = 0;
 		long Book_Page = 1;
 
-		//---------------------------------------------------------------------
 		// Checks Clicks in bookmarks
 		
 		// Character Sheet
-		if (Book_Mode != BOOKMODE_STATS)
-		{
+		if(Book_Mode != BOOKMODE_STATS) {
 			float px=BOOKMARKS_POS_X;
 			float py=BOOKMARKS_POS_Y;
 			TextureContainer* tcBookmarkChar = ITC.Get("bookmark_char");
 			DrawBookInterfaceItem(tcBookmarkChar, px, py);
 
 			// Check for cursor on charcter sheet bookmark
-			if (	tcBookmarkChar
-				&&	MouseInBookRect(px,py,px+tcBookmarkChar->m_dwWidth,py+tcBookmarkChar->m_dwHeight))
-			{
+			if(tcBookmarkChar && MouseInBookRect(px, py, px + tcBookmarkChar->m_dwWidth, py + tcBookmarkChar->m_dwHeight)) {
 				// Draw highlighted Character sheet icon
 				GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 				GRenderer->SetRenderState(Renderer::AlphaBlending, true);
@@ -4438,8 +4402,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 				SpecialCursor=CURSOR_INTERACTION_ON;
 
 				// Check for click
-				if (bookclick.x!=-1)
-				{
+				if(bookclick.x!=-1) {
 					ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
 					Book_Mode = BOOKMODE_STATS;
 					pTextManage->Clear();
@@ -4447,11 +4410,9 @@ void ARX_INTERFACE_ManageOpenedBook()
 			}
 		}
 
-		if (Book_Mode != BOOKMODE_SPELLS)
-		{
-			if (player.rune_flags)
-			{
-				float px=BOOKMARKS_POS_X+32;
+		if(Book_Mode != BOOKMODE_SPELLS) {
+			if(player.rune_flags) {
+				float px=BOOKMARKS_POS_X + 32;
 				float py=BOOKMARKS_POS_Y;
 				DrawBookInterfaceItem(ITC.Get("bookmark_magic"), px, py);
 
@@ -4463,7 +4424,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 				}
 				
 				if (	ITC.Get("bookmark_magic") 
-					&&	MouseInBookRect(px,py,px+ITC.Get("bookmark_magic")->m_dwWidth,py+ITC.Get("bookmark_magic")->m_dwHeight))
+					&&	MouseInBookRect(px, py, px + ITC.Get("bookmark_magic")->m_dwWidth, py + ITC.Get("bookmark_magic")->m_dwHeight))
 				{
 					// Draw highlighted Magic sheet icon
 					GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
@@ -4475,8 +4436,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 					SpecialCursor=CURSOR_INTERACTION_ON;
 
 					// Check for click
-					if (bookclick.x!=-1)
-					{
+					if(bookclick.x!=-1) {
 						ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
 						Book_Mode = BOOKMODE_SPELLS;
 						pTextManage->Clear();
@@ -4485,15 +4445,14 @@ void ARX_INTERFACE_ManageOpenedBook()
 			}
 		}
 
-		if (Book_Mode != BOOKMODE_MINIMAP)
-		{
-			float px=BOOKMARKS_POS_X+64;
+		if(Book_Mode != BOOKMODE_MINIMAP) {
+			float px=BOOKMARKS_POS_X + 64;
 			float py=BOOKMARKS_POS_Y;
 
 			DrawBookInterfaceItem(ITC.Get("bookmark_map"), px, py);
 
 			if (	ITC.Get("bookmark_map")
-				&&	MouseInBookRect(px,py,px+ITC.Get("bookmark_map")->m_dwWidth,py+ITC.Get("bookmark_map")->m_dwHeight))
+				&&	MouseInBookRect(px, py, px + ITC.Get("bookmark_map")->m_dwWidth, py + ITC.Get("bookmark_map")->m_dwHeight))
 			{
 				GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 				GRenderer->SetRenderState(Renderer::AlphaBlending, true);
@@ -4504,8 +4463,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 				SpecialCursor=CURSOR_INTERACTION_ON;
 
 				// Check for click
-				if (bookclick.x!=-1)
-				{
+				if(bookclick.x!=-1) {
 					ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
 					Book_Mode = BOOKMODE_MINIMAP;
 					pTextManage->Clear();
@@ -4513,14 +4471,13 @@ void ARX_INTERFACE_ManageOpenedBook()
 			}
 		}
 
-		if (Book_Mode != BOOKMODE_QUESTS)
-		{
-			float px=BOOKMARKS_POS_X+96;
+		if(Book_Mode != BOOKMODE_QUESTS) {
+			float px=BOOKMARKS_POS_X + 96;
 			float py=BOOKMARKS_POS_Y;
 			DrawBookInterfaceItem(ITC.Get("bookmark_quest"), px, py);
 
 			if (	ITC.Get("bookmark_quest")
-				&&	MouseInBookRect(px,py,px+ITC.Get("bookmark_quest")->m_dwWidth,py+ITC.Get("bookmark_quest")->m_dwHeight))
+				&&	MouseInBookRect(px, py, px + ITC.Get("bookmark_quest")->m_dwWidth, py + ITC.Get("bookmark_quest")->m_dwHeight))
 			{
 				GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 				GRenderer->SetRenderState(Renderer::AlphaBlending, true);
@@ -4531,8 +4488,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 				SpecialCursor=CURSOR_INTERACTION_ON;
 
 				// Check for click
-				if (bookclick.x!=-1)
-				{
+				if(bookclick.x!=-1) {
 					ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
 					Book_Mode = BOOKMODE_QUESTS;
 					pTextManage->Clear();
@@ -4540,21 +4496,22 @@ void ARX_INTERFACE_ManageOpenedBook()
 			}
 		}
 		
-		if (Book_Mode == BOOKMODE_MINIMAP) max_onglet=8;
-		else max_onglet=10;
+		if(Book_Mode == BOOKMODE_MINIMAP)
+			max_onglet=8;
+		else
+			max_onglet=10;
 
-		if (Book_Mode == BOOKMODE_SPELLS) Book_Page = Book_SpellPage;
-		else Book_Page = Book_MapPage;
+		if(Book_Mode == BOOKMODE_SPELLS)
+			Book_Page = Book_SpellPage;
+		else
+			Book_Page = Book_MapPage;
 
 		std::fill_n(bOnglet, 11, false);
 
 		// calcul de la page de spells
-		if (Book_Mode == BOOKMODE_SPELLS)
-		{
-			for (size_t i = 0; i < SPELL_COUNT; ++i)
-			{
-				if (spellicons[i].bSecret == false)
-				{
+		if(Book_Mode == BOOKMODE_SPELLS) {
+			for(size_t i = 0; i < SPELL_COUNT; ++i) {
+				if(spellicons[i].bSecret == false) {
 					bool bOk = true;
 
 					for(long j = 0; j < 4 && spellicons[i].symbols[j] != RUNE_NONE; ++j) {
@@ -4562,18 +4519,15 @@ void ARX_INTERFACE_ManageOpenedBook()
 							bOk = false;
 					}
 
-					if (bOk)
+					if(bOk)
 						bOnglet[spellicons[i].level] = true;
 				}
 			}
-		}
-		else
-		{
+		} else {
 			memset(bOnglet, true, (max_onglet + 1) * sizeof(*bOnglet));
 		}
 		
-		if ((Book_Mode==BOOKMODE_SPELLS) || (Book_Mode==BOOKMODE_MINIMAP))
-		{
+		if(Book_Mode == BOOKMODE_SPELLS || Book_Mode == BOOKMODE_MINIMAP) {
 			if(bOnglet[1]) {
 				if(Book_Page!=1) {
 					float px=100.f;
@@ -4784,8 +4738,10 @@ void ARX_INTERFACE_ManageOpenedBook()
 				else DrawBookInterfaceItem(ITC.Get("current_10"), 104.f, 331.f);
 			}		
 
-			if (Book_Mode==1) Book_SpellPage=Book_Page;
-			else if (Book_Mode==2) Book_MapPage=Book_Page;
+			if(Book_Mode == 1)
+				Book_SpellPage = Book_Page;
+			else if(Book_Mode == 2)
+				Book_MapPage = Book_Page;
 		}
 
 		bookclick.x=-1;
