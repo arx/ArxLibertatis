@@ -3751,42 +3751,38 @@ void ARX_INTERFACE_ERRORSOUND()
 bool CheckAttributeClick(float x, float y, float * val, TextureContainer * tc)
 {
 	bool rval=false;
-	float t;
-	t=*val;
+	float t = *val;
 
-	if (MouseInBookRect(x,y,x+32,y+32))
-	{
-		rval=true;
+	if(MouseInBookRect(x, y, x + 32, y + 32)) {
+		rval = true;
 
-		if (((BOOKBUTTON & 1) || (BOOKBUTTON & 2))&& (tc))
+		if(((BOOKBUTTON & 1) || (BOOKBUTTON & 2)) && tc)
 			DrawBookInterfaceItem(tc, x, y);
 
-		if (!(BOOKBUTTON & 1) && (LASTBOOKBUTTON & 1))
-		{
-			if ((player.Attribute_Redistribute > 0))
-			{
+		if(!(BOOKBUTTON & 1) && (LASTBOOKBUTTON & 1)) {
+			if(player.Attribute_Redistribute > 0) {
 				player.Attribute_Redistribute--;
 				t++;
 				*val=t;
 				ARX_INTERFACE_RELEASESOUND();
 			}
-			else ARX_INTERFACE_ERRORSOUND();
+			else
+				ARX_INTERFACE_ERRORSOUND();
 		}
 
-		if (!(BOOKBUTTON & 2) && (LASTBOOKBUTTON & 2))
-		{
-			if (ARXmenu.currentmode == AMCM_NEWQUEST)
-			{
-				if ((t >6) && (player.level==0))
-				{
+		if(!(BOOKBUTTON & 2) && (LASTBOOKBUTTON & 2)) {
+			if(ARXmenu.currentmode == AMCM_NEWQUEST) {
+				if(t > 6 && player.level == 0) {
 					player.Attribute_Redistribute++;
 					t --;
 					*val=t;
 					ARX_INTERFACE_RELEASESOUND();
 				}
-				else ARX_INTERFACE_ERRORSOUND();
+				else
+					ARX_INTERFACE_ERRORSOUND();
 			}
-			else ARX_INTERFACE_ERRORSOUND();
+			else
+				ARX_INTERFACE_ERRORSOUND();
 		}
 	}
 
@@ -3797,43 +3793,40 @@ bool CheckAttributeClick(float x, float y, float * val, TextureContainer * tc)
 bool CheckSkillClick(float x, float y, float * val, TextureContainer * tc, float * oldval)
 {
 	bool rval=false;
-	float t,ot;
-	t=*val;
-	ot=*oldval;
 
-	if ( MouseInBookRect( x, y, x + 32, y + 32 ) )
-	{
+	float t = *val;
+	float ot = *oldval;
+
+	if(MouseInBookRect( x, y, x + 32, y + 32)) {
 		rval=true;
 
-		if (((BOOKBUTTON & 1) || (BOOKBUTTON & 2))&& (tc))
+		if(((BOOKBUTTON & 1) || (BOOKBUTTON & 2)) && tc)
 			DrawBookInterfaceItem(tc, x, y);
 
-		if (!(BOOKBUTTON & 1) && (LASTBOOKBUTTON & 1))
-		{
-			if ((player.Skill_Redistribute > 0))
-			{
+		if(!(BOOKBUTTON & 1) && (LASTBOOKBUTTON & 1)) {
+			if(player.Skill_Redistribute > 0) {
 				player.Skill_Redistribute--;
 				t++;
 				*val=t;
 				ARX_INTERFACE_RELEASESOUND();
 			}
-			else ARX_INTERFACE_ERRORSOUND();
+			else
+				ARX_INTERFACE_ERRORSOUND();
 		}
 
-		if (!(BOOKBUTTON & 2) && (LASTBOOKBUTTON & 2))
-		{
-			if (ARXmenu.currentmode == AMCM_NEWQUEST)
-			{
-				if ((t > ot) && (player.level==0))
-				{
+		if(!(BOOKBUTTON & 2) && (LASTBOOKBUTTON & 2)) {
+			if(ARXmenu.currentmode == AMCM_NEWQUEST) {
+				if(t > ot && player.level == 0) {
 					player.Skill_Redistribute++;
 					t --;
 					*val=t;
 					ARX_INTERFACE_RELEASESOUND();
 				}
-				else ARX_INTERFACE_ERRORSOUND();
+				else
+					ARX_INTERFACE_ERRORSOUND();
 			}
-			else ARX_INTERFACE_ERRORSOUND();
+			else
+				ARX_INTERFACE_ERRORSOUND();
 		}
 	}
 
