@@ -5626,9 +5626,9 @@ float ARX_SPELLS_ApplyColdProtection(Entity * io,float damages)
 	return damages;
 }
 
-//*************************************************************************************
-// Updates all currently working spells.
-//*************************************************************************************
+/*!
+ * \brief Updates all currently working spells.
+ */
 void ARX_SPELLS_Update()
 {
 	
@@ -5641,87 +5641,68 @@ void ARX_SPELLS_Update()
 
 	for(size_t i = 0; i < MAX_SPELLS; i++) {
 
-		if (!GLOBAL_MAGIC_MODE) spells[i].tolive=0;
+		if(!GLOBAL_MAGIC_MODE)
+			spells[i].tolive=0;
 
-		if (spells[i].exist) 
-		{
-			if (spells[i].bDuration && !CanPayMana(i,spells[i].fManaCostPerSecond * (float)framedelay * ( 1.0f / 1000 ), false))
+		if(spells[i].exist) {
+			if(spells[i].bDuration && !CanPayMana(i, spells[i].fManaCostPerSecond * (float)framedelay * (1.0f/1000), false))
 				ARX_SPELLS_Fizzle(i);
 
-			framediff=spells[i].timcreation+spells[i].tolive-tim;
-			framediff3=tim-spells[i].lastupdate;
+			framediff = spells[i].timcreation + spells[i].tolive - tim;
+			framediff3 = tim - spells[i].lastupdate;
 
-			if (framediff<0) 
-			{
+			if(framediff < 0) {
 				SPELLEND_Notify(i);
 
-				switch (spells[i].type)
-				{
-				//----------------------------------------------------------------------------
+				switch(spells[i].type) {
 				case SPELL_TELEPORT:
 					ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE, &spells[i].caster_pos);
 				break;
-				//----------------------------------------------------------------------------
-				
 				//****************************************************************************
-				// LEVEL 1 SPELLS -----------------------------------------------------------------------------
-				//----------------------------------------------------------------------------
+				// LEVEL 1 SPELLS
 				case SPELL_MAGIC_SIGHT:
 
-					if (spells[i].caster==0)
-					{
+					if(spells[i].caster==0) {
 						Project.improve=0;
 						ARX_SOUND_Stop(spells[i].snd_loop);
 					}
 
 					ARX_SOUND_PlaySFX(SND_SPELL_VISION_START, &spells[i].caster_pos);					
 				break;
-				//-----------------------------------------------------------------------------
 				case SPELL_MAGIC_MISSILE:
 				{
-					if (spells[i].longinfo!=-1) 		
-						DynLight[spells[i].longinfo].exist=0;							
+					if(spells[i].longinfo != -1)
+						DynLight[spells[i].longinfo].exist = 0;
 				}
 				break;
-				//----------------------------------------------------------------------------
 				case SPELL_IGNIT:
 				{
-					CIgnit *pIgnit;
-					pIgnit=(CIgnit *)spells[i].pSpellFx;
+					CIgnit *pIgnit = (CIgnit *)spells[i].pSpellFx;
 					pIgnit->Action(1);					
 				}
 				break;
-				//----------------------------------------------------------------------------
 				case SPELL_DOUSE:
 				{
-					CDoze *pDoze;
-					pDoze=(CDoze *)spells[i].pSpellFx;
+					CDoze *pDoze = (CDoze *)spells[i].pSpellFx;
 					pDoze->Action(0);					
 				}
 				break;
-				//----------------------------------------------------------------------------------
-				//**********************************************************************************
-				// LEVEL 2 -------------------------------------------------------------------------
-				//----------------------------------------------------------------------------------				
+				//****************************************************************************
+				// LEVEL 2
 				case SPELL_DETECT_TRAP:
-
-					if (spells[i].caster==0)
-					{
-						ARX_SOUND_Stop(spells[i].snd_loop);
-					}					
+					if(spells[i].caster == 0)
+						ARX_SOUND_Stop(spells[i].snd_loop);				
 
 					ARX_SPELLS_RemoveSpellOn(spells[i].target,i);
 
-				break;					
-				//----------------------------------------------------------------------------
+				break;
 				case SPELL_ARMOR:
 				{
 					ARX_SOUND_Stop(spells[i].snd_loop);
 					ARX_SOUND_PlaySFX(SND_SPELL_ARMOR_END, &spells[i].caster_pos);					
 					Entity * io=entities[spells[i].target];
 
-					if (spells[i].longinfo)
-					{
+					if(spells[i].longinfo) {
 						io->halo.flags&=~HALO_ACTIVE;
 						ARX_HALO_SetToNative(io);
 					}
@@ -5729,13 +5710,11 @@ void ARX_SPELLS_Update()
 					ARX_SPELLS_RemoveSpellOn(spells[i].target,i);
 				}
 				break;
-				//----------------------------------------------------------------------------
 				case SPELL_LOWER_ARMOR:
 				{
 					Entity * io=entities[spells[i].target];
 
-					if (spells[i].longinfo)
-					{
+					if(spells[i].longinfo) {
 						io->halo.flags&=~HALO_ACTIVE;
 						ARX_HALO_SetToNative(io);
 					}
@@ -5743,87 +5722,73 @@ void ARX_SPELLS_Update()
 					ARX_SPELLS_RemoveSpellOn(spells[i].target,i);					
 				}
 				break;					
-				//----------------------------------------------------------------------------------
-				//**********************************************************************************
-				// LEVEL 3 -------------------------------------------------------------------------
-				//----------------------------------------------------------------------------------
+				//****************************************************************************
+				// LEVEL 3
 				case SPELL_SPEED:						
 
 					ARX_SPELLS_RemoveSpellOn(spells[i].target,i);
 
-					if(spells[i].target >= 0 && spells[i].target < long(entities.size()))
-					{
-						if (entities[spells[i].target])
-							entities[spells[i].target]->speed_modif-=spells[i].caster_level*( 1.0f / 10 );
+					if(spells[i].target >= 0 && spells[i].target < long(entities.size())) {
+						if(entities[spells[i].target])
+							entities[spells[i].target]->speed_modif -= spells[i].caster_level * (1.0f/10);
 					}
 
-					if (spells[i].caster == 0) ARX_SOUND_Stop(spells[i].snd_loop);
+					if(spells[i].caster == 0)
+						ARX_SOUND_Stop(spells[i].snd_loop);
 
 					ARX_SOUND_PlaySFX(SND_SPELL_SPEED_END, &spells[i].caster_pos);
 				break;
-				//----------------------------------------------------------------------------------
 				case SPELL_FIREBALL:
 					ARX_SOUND_Stop(spells[i].snd_loop);					
 				break;
-				//----------------------------------------------------------------------------------
-				//**********************************************************************************
-				// LEVEL 4 -------------------------------------------------------------------------
-				//----------------------------------------------------------------------------------
+				//****************************************************************************
+				// LEVEL 4
 				case SPELL_BLESS:
 					ARX_SPELLS_RemoveSpellOn(spells[i].target,i);
 				break;
 				case SPELL_CURSE:
 					ARX_SPELLS_RemoveSpellOn(spells[i].target,i);
 				break;
-				//----------------------------------------------------------------------------
 				case SPELL_TELEKINESIS:						
-
-					if (spells[i].caster==0)
-						Project.telekinesis=0;
+					if(spells[i].caster == 0)
+						Project.telekinesis = 0;
 
 					ARX_SOUND_PlaySFX(SND_SPELL_TELEKINESIS_END, &spells[i].caster_pos);					
 				break;
 				case SPELL_FIRE_PROTECTION:
 					ARX_SOUND_Stop(spells[i].snd_loop);
 					ARX_SOUND_PlaySFX(SND_SPELL_FIRE_PROTECTION_END);
-					ARX_SPELLS_RemoveSpellOn(spells[i].target,i);;
+					ARX_SPELLS_RemoveSpellOn(spells[i].target, i);
 
-					if (ValidIONum(spells[i].target))
+					if(ValidIONum(spells[i].target))
 						ARX_HALO_SetToNative(entities[spells[i].target]);
 
 				break;
 				case SPELL_COLD_PROTECTION:
 					ARX_SOUND_Stop(spells[i].snd_loop);
 					ARX_SOUND_PlaySFX(SND_SPELL_COLD_PROTECTION_END);
-					ARX_SPELLS_RemoveSpellOn(spells[i].target,i);;
+					ARX_SPELLS_RemoveSpellOn(spells[i].target, i);
 
-					if (ValidIONum(spells[i].target))
+					if(ValidIONum(spells[i].target))
 						ARX_HALO_SetToNative(entities[spells[i].target]);
 
 				break;
-				//----------------------------------------------------------------------------------
-				//**********************************************************************************
-				// LEVEL 5 -------------------------------------------------------------------------
-				//----------------------------------------------------------------------------------
-				//----------------------------------------------------------------------------
+				//****************************************************************************
+				// LEVEL 5
 				case SPELL_LEVITATE:
 				{
- 
 					ARX_SPELLS_RemoveSpellOn(spells[i].target,i);
 
 					if (spells[i].target==0)
 						player.levitate=0;
 				}
 				break;
-				//----------------------------------------------------------------------------------
-				//**********************************************************************************
-				// LEVEL 6 SPELLS ------------------------------------------------------------------
-				//----------------------------------------------------------------------------------
+				//****************************************************************************
+				// LEVEL 6 SPELLS
 				case SPELL_PARALYSE:
 					ARX_SPELLS_RemoveSpellOn(spells[i].target,i);
 					entities[spells[i].target]->ioflags&=~IO_FREEZESCRIPT;
 				break;
-				//----------------------------------------------------------------------------------
 				case SPELL_RISE_DEAD:
 					ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &spells[i].caster_pos);
 
@@ -5851,7 +5816,6 @@ void ARX_SPELLS_Update()
 							ARX_INTERACTIVE_DestroyIO(entities[spells[i].longinfo]);
 						}
 					}					
-
 				break;
 				case SPELL_CREATE_FIELD:
 					CCreateField * pCreateField;
@@ -5867,9 +5831,7 @@ void ARX_SPELLS_Update()
 					if(ValidIONum(spells[i].longinfo)) {
 						delete entities[spells[i].longinfo];
 					}
-
 				break;
-				//----------------------------------------------------------------------------
 				case SPELL_SLOW_DOWN:
 					ARX_SPELLS_RemoveSpellOn(spells[i].target,i);
 
@@ -5880,79 +5842,63 @@ void ARX_SPELLS_Update()
 					}
 
 				break;				
-				//----------------------------------------------------------------------------------
-				//**********************************************************************************
-				// LEVEL 7 -------------------------------------------------------------------------
-				//----------------------------------------------------------------------------------				
+				//****************************************************************************
+				// LEVEL 7
 				case SPELL_ICE_FIELD:
-
 					if (spells[i].longinfo!=-1)
 						damages[spells[i].longinfo].exist=false;					
 
 				break;
 				case SPELL_FIRE_FIELD:
-
 					if (spells[i].longinfo!=-1)
 						damages[spells[i].longinfo].exist=false;					
 
 				break;
-				//----------------------------------------------------------------------------
 				case SPELL_LIGHTNING_STRIKE:					
 					ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &spells[i].caster_pos);					
 				break;
-				//----------------------------------------------------------------------------
 				case SPELL_FLYING_EYE:					
 					ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE, &entities[spells[i].caster]->pos);
 				break;
 				case SPELL_CONFUSE:
 					ARX_SPELLS_RemoveSpellOn(spells[i].target,i);
 				break;
-				//----------------------------------------------------------------------------------
-				//**********************************************************************************
-				// LEVEL 8 -------------------------------------------------------------------------
-				//----------------------------------------------------------------------------------
+				//****************************************************************************
+				// LEVEL 8
 				case SPELL_EXPLOSION:					
 				break;
-				//----------------------------------------------------------------------------
 				case SPELL_INVISIBILITY:	
 					{
-						if (ValidIONum(spells[i].target))
-						{
+						if(ValidIONum(spells[i].target)) {
 							entities[spells[i].target]->gameFlags&=~GFLAG_INVISIBILITY;											
 							ARX_SOUND_PlaySFX(SND_SPELL_INVISIBILITY_END, &entities[spells[i].target]->pos);					
 							ARX_SPELLS_RemoveSpellOn(spells[i].target,i);
 						}
 					}
 				break;
-				//----------------------------------------------------------------------------------
-				//**********************************************************************************
-				// LEVEL 9 -------------------------------------------------------------------------
-				//----------------------------------------------------------------------------------
-				//----------------------------------------------------------------------------
+				//****************************************************************************
+				// LEVEL 9
 				case SPELL_MASS_PARALYSE:
 					{
 						long * ptr=(long *)spells[i].misc;
 
-						for (long in=0;in<spells[i].longinfo2;in++)
-						{
-							
-							if (ValidIONum(ptr[in]))
-							{
+						for(long in=0;in<spells[i].longinfo2;in++) {
+							if(ValidIONum(ptr[in])) {
 								ARX_SPELLS_RemoveSpellOn(ptr[in],i);
 								entities[ptr[in]]->ioflags&=~IO_FREEZESCRIPT;											
 							}
 						}
 
-						if (ptr) free(spells[i].misc);
+						if(ptr)
+							free(spells[i].misc);
 
 						spells[i].misc=NULL;
 					}
 				break;
 				case SPELL_SUMMON_CREATURE :
-						ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &spells[i].caster_pos);						
+						ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &spells[i].caster_pos);
 
-						if (spells[i].pSpellFx->lLightId > -1)
-					{
+					if(spells[i].pSpellFx->lLightId > -1) {
 						long id = spells[i].pSpellFx->lLightId;
 						DynLight[id].exist = 0;
 						spells[i].pSpellFx->lLightId=-1;
@@ -5963,8 +5909,7 @@ void ARX_SPELLS_Update()
 				case SPELL_FAKE_SUMMON :
 					ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &spells[i].caster_pos);						
 
-					if (spells[i].pSpellFx->lLightId > -1)
-					{
+					if(spells[i].pSpellFx->lLightId > -1) {
 						long id = spells[i].pSpellFx->lLightId;
 						DynLight[id].exist = 0;
 						spells[i].pSpellFx->lLightId=-1;
@@ -5976,10 +5921,8 @@ void ARX_SPELLS_Update()
 					ARX_SOUND_Stop(spells[i].snd_loop);
 					ARX_SOUND_PlaySFX(SND_SPELL_INCINERATE_END, &spells[i].caster_pos);
 				break;
-				//----------------------------------------------------------------------------------
-				//**********************************************************************************
-				// LEVEL 10 ------------------------------------------------------------------------
-				//----------------------------------------------------------------------------------
+				//****************************************************************************
+				// LEVEL 10
 				case SPELL_FREEZE_TIME: {
 					GLOBAL_SLOWDOWN += spells[i].siz;
 					ARX_SOUND_PlaySFX(SND_SPELL_TELEKINESIS_END, &spells[i].caster_pos);
@@ -5990,65 +5933,51 @@ void ARX_SPELLS_Update()
 					ARX_SOUND_Stop(spells[i].snd_loop);
 					ARX_SOUND_PlaySFX(SND_SPELL_INCINERATE_END, &spells[i].caster_pos);
 				break;
-				default: break;
-				//----------------------------------------------------------------------------------
+				default:
+					break;
 			}				
 
 			ARX_SPELLS_Kill(i);
 			continue;			
 		}
-			
-		//******************************************************************************************
-		//******************************************************************************************
-		//******************************************************************************************
-		//******************************************************************************************
-		//******************************************************************************************
-		//******************************************************************************************
 
-	if (spells[i].exist) 
-		switch (spells[i].type)
-		{
-			case SPELL_DISPELL_FIELD: break;
-			case SPELL_NONE: break;
-			//**************************************************************************************
-			// LEVEL 1 -----------------------------------------------------------------------------
+	if(spells[i].exist)
+		switch(spells[i].type) {
+			case SPELL_DISPELL_FIELD:
+			break;
+			case SPELL_NONE:
+			break;
+			//****************************************************************************
+			// LEVEL 1
 			case SPELL_MAGIC_MISSILE:
 				{
 					CSpellFx *pCSpellFX = spells[i].pSpellFx;
 
-					if (pCSpellFX)
-					{
+					if(pCSpellFX) {
 						CMultiMagicMissile *pMMM = (CMultiMagicMissile *) pCSpellFX;
-							pMMM->CheckCollision();
+						pMMM->CheckCollision();
 						
 						// Update
 						pCSpellFX->Update(framedelay);
 
-						if (pCSpellFX->Render()==-1)
-							spells[i].tolive=0;
+						if(pCSpellFX->Render() == -1)
+							spells[i].tolive = 0;
 					}
 				}
 			break;
-			//---------------------------------------------------------------------------------------
 			case SPELL_IGNIT:
 			case SPELL_DOUSE:
 			{
 				CSpellFx *pCSpellFX = spells[i].pSpellFx;
 
-				if (pCSpellFX)
-				{
+				if(pCSpellFX)
 					pCSpellFX->Update(framedelay);
-				}
 			} 
 			break;
-			//---------------------------------------------------------------------------------------
 			case SPELL_ACTIVATE_PORTAL:
-			{
-			} 
 			break;
-			//---------------------------------------------------------------------------------------
-			//***************************************************************************************	
-			// LEVEL 2 -----------------------------------------------------------------------------
+			//****************************************************************************
+			// LEVEL 2
 			case SPELL_HEAL: // guérit les ennemis collés
 			{
 				CSpellFx *pCSpellFX = spells[i].pSpellFx;
@@ -6090,7 +6019,6 @@ void ARX_SPELLS_Update()
 				}
 			}
 			break;
-			//------------------------------------------------------------------------------------
 			case SPELL_DETECT_TRAP:				
 			{
 				if (spells[i].caster == 0)
@@ -6107,7 +6035,6 @@ void ARX_SPELLS_Update()
 				}
 			} 
 			break;
-			//------------------------------------------------------------------------------------
 			case SPELL_ARMOR:
 			case SPELL_LOWER_ARMOR:
 			{
@@ -6120,7 +6047,6 @@ void ARX_SPELLS_Update()
 				}
 			} 
 			break;
-			//--------------------------------------------------------------------------------------
 			case SPELL_HARM:
 			{						
 				if ( (cabal!=NULL) )
@@ -6196,9 +6122,8 @@ void ARX_SPELLS_Update()
 				}
 			}
 			break;				
-			//--------------------------------------------------------------------------------------
-			//**************************************************************************************
-			// LEVEL 3 SPELLS -----------------------------------------------------------------------------
+			//****************************************************************************
+			// LEVEL 3 SPELLS
 			case SPELL_FIREBALL:
 			{
 				CSpellFx *pCSpellFX = spells[i].pSpellFx;
@@ -6273,11 +6198,9 @@ void ARX_SPELLS_Update()
 				}
 			}
 			break;
-			//-----------------------------------------------------------------------------------------
 			case SPELL_SPEED:
 
-			if (spells[i].pSpellFx)
-			{
+			if(spells[i].pSpellFx) {
 				spells[i].pSpellFx->Update(framedelay);
 				spells[i].pSpellFx->Render();
 
@@ -6285,7 +6208,6 @@ void ARX_SPELLS_Update()
 			}
 
 			break;
-			//-----------------------------------------------------------------------------------------
 			case SPELL_CREATE_FOOD:
 			case SPELL_ICE_PROJECTILE:
 			case SPELL_DISPELL_ILLUSION:
@@ -6297,9 +6219,8 @@ void ARX_SPELLS_Update()
 			}
 
 			break;
-			//-----------------------------------------------------------------------------------------
-			//*****************************************************************************************
-			// LEVEL 4 SPELLS -----------------------------------------------------------------------------
+			//****************************************************************************
+			// LEVEL 4 SPELLS
 			case SPELL_BLESS:
 			{
 				if (spells[i].pSpellFx)
@@ -6327,7 +6248,6 @@ void ARX_SPELLS_Update()
 				}
 			}
 			break;
-			//-----------------------------------------------------------------------------------------
 			case SPELL_CURSE:
 
 			if (spells[i].pSpellFx)
@@ -6351,30 +6271,24 @@ void ARX_SPELLS_Update()
 			}
 
 			break;
-			//-----------------------------------------------------------------------------------------
 			case SPELL_FIRE_PROTECTION:
 				spells[i].pSpellFx->Update(framedelay);
 				spells[i].pSpellFx->Render();
 			break;
-			//-----------------------------------------------------------------------------------------
 			case SPELL_COLD_PROTECTION:
 				spells[i].pSpellFx->Update(framedelay);
 				spells[i].pSpellFx->Render();
 			break;
-			//-----------------------------------------------------------------------------------------
-			//*****************************************************************************************				
-			// LEVEL 5 SPELLS -----------------------------------------------------------------------------
-			//-----------------------------------------------------------------------------------------
+			//****************************************************************************
+			// LEVEL 5 SPELLS
 			case SPELL_CURE_POISON:
 			{
-				if (spells[i].pSpellFx)
-				{
+				if(spells[i].pSpellFx) {
 					spells[i].pSpellFx->Update(framedelay);
 					spells[i].pSpellFx->Render();					
 				}
 			}
 			break;
-			//-----------------------------------------------------------------------------------------
 			case SPELL_RUNE_OF_GUARDING:
 			{
 				if (spells[i].pSpellFx)
@@ -6403,8 +6317,7 @@ void ARX_SPELLS_Update()
 			break;
 			case SPELL_REPEL_UNDEAD:
 			{
-				if (spells[i].pSpellFx)
-				{
+				if(spells[i].pSpellFx) {
 					spells[i].pSpellFx->Update(framedelay);
 					spells[i].pSpellFx->Render();					
 
@@ -6413,17 +6326,14 @@ void ARX_SPELLS_Update()
 				}
 			}
 			break;
-			//-----------------------------------------------------------------------------------------
 			case SPELL_POISON_PROJECTILE:
 
-			if (spells[i].pSpellFx)
-			{
+			if(spells[i].pSpellFx) {
 				spells[i].pSpellFx->Update(framedelay);
 				spells[i].pSpellFx->Render();
-						}
+			}
 
 			break;
-			//-----------------------------------------------------------------------------------------	
 			case SPELL_LEVITATE:
 			{
 				CLevitate *pLevitate=(CLevitate *)spells[i].pSpellFx;
@@ -6455,9 +6365,8 @@ void ARX_SPELLS_Update()
 				}
 			}
 			break;
-			//-----------------------------------------------------------------------------------------
-			//*****************************************************************************************
-			// LEVEL 6 SPELLS -----------------------------------------------------------------------------
+			//****************************************************************************
+			// LEVEL 6 SPELLS
 			case SPELL_RISE_DEAD:
 			{
 				CSpellFx *pCSpellFX = spells[i].pSpellFx;
@@ -6565,14 +6474,11 @@ void ARX_SPELLS_Update()
 					}
 			}
 			break;
-								
-			//-----------------------------------------------------------------------------------------
 			case SPELL_SLOW_DOWN:
 			{
 				CSpellFx *pCSpellFX = spells[i].pSpellFx;
 
-				if (pCSpellFX)
-				{
+				if(pCSpellFX) {
 					pCSpellFX->Update(framedelay);
 					pCSpellFX->Render();
 				}					
@@ -6609,16 +6515,13 @@ void ARX_SPELLS_Update()
 				}					
 			}
 			break;
-
-			//-----------------------------------------------------------------------------------------
-			//*****************************************************************************************
-			// LEVEL 7 SPELLS -----------------------------------------------------------------------------
+			//****************************************************************************
+			// LEVEL 7 SPELLS
 			case SPELL_CONFUSE:
 			{
 				CSpellFx *pCSpellFX = spells[i].pSpellFx;
 
-				if (pCSpellFX)
-				{
+				if(pCSpellFX) {
 					pCSpellFX->Update(framedelay);
 					pCSpellFX->Render();
 				}
@@ -6742,26 +6645,24 @@ void ARX_SPELLS_Update()
 				{
 					CSpellFx *pCSpellFX = spells[i].pSpellFx;
 
-					if (pCSpellFX)
-					{
+					if(pCSpellFX) {
 						pCSpellFX->Update(framedelay);
 						pCSpellFX->Render();
 					}
-						}
+				}
 			break;
-			//-----------------------------------------------------------------------------------------
-			//*****************************************************************************************
-			// LEVEL 8 SPELLS -----------------------------------------------------------------------------
+			//****************************************************************************
+			// LEVEL 8 SPELLS
 			case SPELL_ENCHANT_WEAPON:
 			{
 				CSpellFx *pCSpellFX = spells[i].pSpellFx;
 
-				if (pCSpellFX)
-				{
+				if(pCSpellFX) {
 					pCSpellFX->Update(framedelay);
 					pCSpellFX->Render();
 				}
 			}
+			//TODO Missing break ?
 			case SPELL_EXPLOSION:
 			{
 				if (spells[i].longinfo2 == -1)
@@ -6806,17 +6707,12 @@ void ARX_SPELLS_Update()
 				}
 			}
 			break;
-			//-----------------------------------------------------------------------------------------
-			//*****************************************************************************************	
-			// LEVEL 9 SPELLS -------------------------------------------------------------------------
-			//-----------------------------------------------------------------------------------------
+			//****************************************************************************
+			// LEVEL 9 SPELLS
 			case SPELL_SUMMON_CREATURE:
 			{
- 
-
 				if (!arxtime.is_paused())
 				{
-
 					if (float(arxtime)-(float)spells[i].timcreation<=4000)
 					{
 						if (rnd()>0.7f) 
@@ -6958,8 +6854,6 @@ void ARX_SPELLS_Update()
 			break;
 			case SPELL_FAKE_SUMMON:
 			{
- 
-
 					if (!arxtime.is_paused())
 						if(rnd() > 0.7f) {
 							CSummonCreature * pSummon = (CSummonCreature *)spells[i].pSpellFx;
@@ -6978,8 +6872,6 @@ void ARX_SPELLS_Update()
 				}					
 			}
 			break;
-			//-----------------------------------------------------------------------------------------	
-			
 			case SPELL_INCINERATE:
 			{
 				if (ValidIONum(spells[i].caster))
@@ -7004,14 +6896,10 @@ void ARX_SPELLS_Update()
 			break;
 			case SPELL_MASS_PARALYSE:
 			break;
-			//*******************************************************************************************	
-			// LEVEL 10 SPELLS -----------------------------------------------------------------------------
-			//-----------------------------------------------------------------------------------------
+			//****************************************************************************
+			// LEVEL 10 SPELLS
 			case SPELL_FREEZE_TIME:
-			{
-			}
-			break;
-			//-----------------------------------------------------------------------------------------				
+			break;			
 			case SPELL_CONTROL_TARGET:
 			{
 				CSpellFx *pCSpellFX = spells[i].pSpellFx;
@@ -7031,7 +6919,6 @@ void ARX_SPELLS_Update()
 				}
 			}
 			break;
-			//-----------------------------------------------------------------------------------------
 			case SPELL_MASS_LIGHTNING_STRIKE:
 			{
 				CSpellFx *pCSpellFX = spells[i].pSpellFx;
@@ -7086,8 +6973,7 @@ void ARX_SPELLS_Update()
 					DynLight[spells[i].longinfo].rgb = Color3f::red * fxx;
 				}
 			}
-		break;
-		//-----------------------------------------------------------------------------------------				
+		break;		
 		case SPELL_TELEPORT:
 				{
 					float TELEPORT = (float)(((float)tim-(float)spells[i].timcreation)/(float)spells[i].tolive);
@@ -7103,7 +6989,6 @@ void ARX_SPELLS_Update()
 					}
 				}
 				break;				
-				//-----------------------------------------------------------------------------------------
 				case SPELL_MAGIC_SIGHT:
 
 					if (spells[i].caster == 0)
@@ -7114,10 +6999,8 @@ void ARX_SPELLS_Update()
 					}
 
 				break;
-				//-----------------------------------------------------------------------------------------
 				case SPELL_TELEKINESIS:
 				break;
-				//-----------------------------------------------------------------------------------------
 				case SPELL_INVISIBILITY:
 
 					if (spells[i].target!=0)
@@ -7129,7 +7012,6 @@ void ARX_SPELLS_Update()
 						}
 					}
 				break;				
-				//-----------------------------------------------------------------------------------------
 				case SPELL_MANA_DRAIN:
 					{
 						
@@ -7231,7 +7113,6 @@ void ARX_SPELLS_Update()
 					}
 					}
 				break;				
-				//-----------------------------------------------------------------------------------------
 				case SPELL_LIFE_DRAIN:
 
 					{
@@ -7328,7 +7209,6 @@ void ARX_SPELLS_Update()
 						}
 					}
 				break;
-				
 				case SPELL_FLYING_EYE: {
 					
 						eyeball.floating = EEsin(spells[i].lastupdate-spells[i].timcreation * 0.001f);
