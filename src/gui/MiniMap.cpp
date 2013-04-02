@@ -288,6 +288,436 @@ void MiniMap::purgeTexContainer() {
 	}
 }
 
+void MiniMap::showPlayerMiniMap(int showLevel) {
+	
+	const float miniMapSize = 300.f; // size of the minimap
+	const Rect miniMapRect(390, 135, 590, 295); // minimap rect on a 640*480 screen
+	const float playerSize = 4.f; // red arrow size
+	
+	const float decalY = -150;
+	const float decalX = +40;
+	
+	if(!m_pTexDetect) {
+		m_pTexDetect = TextureContainer::Load("graph/particles/flare");
+	}
+	
+	// First Load Minimap TC & DATA if needed
+	if(m_data[showLevel].m_texContainer == NULL) {
+		getData(showLevel);
+	}
+
+	if(m_data[showLevel].m_texContainer) {
+		
+		GRenderer->SetRenderState(Renderer::DepthTest, false);
+		
+		float startX, startY, caseX, caseY, ratio;
+		float modX = (float)MAX_BKGX / (float)MINIMAP_MAX_X;
+		float modZ = (float)MAX_BKGZ / (float)MINIMAP_MAX_Z;
+
+        startX = 0;
+        startY = 0;
+        caseX = miniMapSize / (float)MINIMAP_MAX_X;
+        caseY = miniMapSize / (float)MINIMAP_MAX_Z;
+        ratio = miniMapSize / 250.f;
+
+		float ofx, ofx2, ofy, ofy2, px, py;
+		px = 0.f;
+		py = 0.f;
+
+		ofx	= m_miniOffsetX[CURRENTLEVEL];
+		ofx2 = m_data[showLevel].m_ratioX;
+		ofy	= m_miniOffsetY[CURRENTLEVEL];
+		ofy2 = m_data[showLevel].m_ratioY;
+
+        // Computes playerpos
+        ofx = m_miniOffsetX[CURRENTLEVEL];
+        ofx2 = m_data[showLevel].m_ratioX;
+        ofy = m_miniOffsetY[CURRENTLEVEL];
+        ofy2 = m_data[showLevel].m_ratioY;
+    
+        px = startX + ((player.pos.x + ofx - ofx2) * ( 1.0f / 100 ) * caseX
+                       + m_miniOffsetX[CURRENTLEVEL] * ratio * modX) / modX ; //( 1.0f / 100 )*2;
+        py = startY + ((m_mapMaxY[showLevel] - ofy - ofy2) * ( 1.0f / 100 ) * caseY
+                       - (player.pos.z + ofy - ofy2) * ( 1.0f / 100 ) * caseY + m_miniOffsetY[CURRENTLEVEL] * ratio * modZ) / modZ ;    //( 1.0f / 100 )*2;
+
+        startX = 490.f - px;
+        startY = 220.f - py;
+        px += startX;
+        py += startY;
+
+		TexturedVertex verts[4];
+		GRenderer->SetTexture(0, m_data[showLevel].m_texContainer);
+
+		for(int k = 0; k < 4; k++) {
+            
+			verts[k].color = 0xFFFFFFFF;
+			verts[k].rhw = 1;
+			verts[k].p.z = 0.00001f;
+		}
+
+		float div = (1.0f / 25);
+		TextureContainer * tc = m_data[showLevel].m_texContainer;
+		float dw = 1.f / tc->m_pTexture->getStoredSize().x; 
+		float dh = 1.f / tc->m_pTexture->getStoredSize().y;
+		
+		float vx2 = 4.f * dw * modX;
+		float vy2 = 4.f * dh * modZ;
+
+		float _px;
+		Rect boundaries(0, 0, 0, 0);
+
+        float blur = 20.f;
+        float blurDiv = 1.f/blur;
+        
+        boundaries.left = checked_range_cast<Rect::Num>((miniMapRect.left + blur) * Xratio);
+        boundaries.right = checked_range_cast<Rect::Num>((miniMapRect.right - blur) * Xratio);
+        boundaries.top = checked_range_cast<Rect::Num>((miniMapRect.top + blur) * Yratio);
+        boundaries.bottom = checked_range_cast<Rect::Num>((miniMapRect.bottom - blur) * Yratio);
+
+        GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+        GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
+        GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
+
+        GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendInvSrcColor);
+
+		for(int j = -2; j < MINIMAP_MAX_Z + 2; j++) {
+			for(int i = -2; i < MINIMAP_MAX_X + 2; i++) {
+                
+				float vx, vy, vxx, vyy;
+				vxx = ((float)i * (float)ACTIVEBKG->Xdiv * modX);
+				vyy = ((float)j * (float)ACTIVEBKG->Zdiv * modZ);
+				vx = (vxx * div) * dw;
+				vy = (vyy * div) * dh;
+
+				bool inBounds = 1;
+				float posx = (startX + i * caseX) * Xratio;
+				float posy = (startY + j * caseY) * Yratio;
+
+                inBounds = true;
+
+                if((posx < miniMapRect.left * Xratio)
+                        ||	(posx > miniMapRect.right * Xratio)
+                        ||	(posy < miniMapRect.top * Yratio)
+                        ||	(posy > miniMapRect.bottom * Yratio)) {
+                    inBounds = false;
+                }
+
+				if(inBounds) {
+
+					verts[3].p.x = verts[0].p.x = (posx);
+					verts[1].p.y = verts[0].p.y = (posy);
+					verts[2].p.x = verts[1].p.x = posx + (caseX * Xratio);
+					verts[3].p.y = verts[2].p.y = posy + (caseY * Yratio);
+
+					verts[3].uv.x = verts[0].uv.x = vx;
+					verts[1].uv.y = verts[0].uv.y = vy;
+					verts[2].uv.x = verts[1].uv.x = vx + vx2;
+					verts[3].uv.y = verts[2].uv.y = vy + vy2;
+
+                    
+                    float v;
+                    float oo = 0.f;
+
+                    if((i < 0) || (i >= MINIMAP_MAX_X) || (j < 0) || (j >= MINIMAP_MAX_Z)) {
+                        v = 0;
+                    }
+                    else {
+                        v = ((float)m_data[showLevel].m_revealed[i][j]) * (1.0f / 255);
+                    }
+                        
+                    int vert = 0;
+                    _px = verts[vert].p.x - boundaries.left;
+
+                    if(_px < 0.f) {
+                        v = 0.f;
+                    }
+                    else if(_px < blur) {
+                        v *= _px * blurDiv;
+                    }
+
+                    _px = boundaries.right - verts[vert].p.x;
+
+                    if(_px < 0.f) {
+                        v = 0.f;
+                    }
+                    else if(_px < blur) {
+                        v *= _px * blurDiv;
+                    }
+
+                    _px = verts[vert].p.y - boundaries.top;
+
+                    if(_px < 0.f) {
+                        v = 0.f;
+                    }
+                    else if(_px < blur) {
+                        v *= _px * blurDiv;
+                    }
+
+                    _px = boundaries.bottom - verts[vert].p.y;
+
+                    if(_px < 0.f) {
+                        v = 0.f;
+                    }
+                    else if(_px < blur) {
+                        v *= _px * blurDiv;
+                    }
+
+                    verts[0].color = Color::gray(v * (1.f/2)).toBGR();
+
+                    oo += v;
+
+                    if((i + 1 < 0) || (i + 1 >= MINIMAP_MAX_X) || (j < 0) || (j >= MINIMAP_MAX_Z)) {
+                        v = 0;
+                    }
+                    
+                    else {
+                        v = ((float)m_data[showLevel].m_revealed[min((int)i+1, MINIMAP_MAX_X-1)][j]) * (1.0f / 255);
+                    }
+                        
+                    vert = 1;
+                    _px = verts[vert].p.x - boundaries.left;
+
+                    if(_px < 0.f) {
+                        v = 0.f;
+                    }
+                    else if(_px < blur) {
+                        v *= _px * blurDiv;
+                    }
+                    
+                    _px = boundaries.right - verts[vert].p.x;
+
+                    if(_px < 0.f) {
+                        v = 0.f;
+                    }
+                    else if(_px < blur) {
+                        v *= _px * blurDiv;
+                    }
+                    
+                    _px = verts[vert].p.y - boundaries.top;
+
+                    if(_px < 0.f) {
+                        v = 0.f;
+                    }
+                    else if(_px < blur) {
+                        v *= _px * blurDiv;
+                    }
+
+                    _px = boundaries.bottom - verts[vert].p.y;
+
+                    if(_px < 0.f) {
+                        v = 0.f;
+                    }
+                    else if(_px < blur) {
+                        v *= _px * blurDiv;
+                    }
+
+                    verts[1].color = Color::gray(v * ( 1.0f / 2 )).toBGR();
+
+                    oo += v;
+
+                    if((i + 1 < 0) || (i + 1 >= MINIMAP_MAX_X) || (j + 1 < 0) || (j + 1 >= MINIMAP_MAX_Z)) {
+                        v = 0;
+                    }
+                    else {
+                        v = ((float)m_data[showLevel].m_revealed[min((int)i+1, MINIMAP_MAX_X-1)][min((int)j+1, MINIMAP_MAX_Z-1)]) * ( 1.0f / 255 );
+                    }
+                        
+                    vert = 2;
+                    _px = verts[vert].p.x - boundaries.left;
+
+                    if(_px < 0.f) {
+                        v = 0.f;
+                    }
+                    else if(_px < blur) {
+                        v *= _px * blurDiv;
+                    }
+
+                    _px = boundaries.right - verts[vert].p.x;
+
+                    if(_px < 0.f) {
+                        v = 0.f;
+                    }
+                    else if(_px < blur) {
+                        v *= _px * blurDiv;
+                    }
+
+                    _px = verts[vert].p.y - boundaries.top;
+
+                    if(_px < 0.f) {
+                        v = 0.f;
+                    }
+                    else if(_px < blur) {
+                        v *= _px * blurDiv;
+                    }
+
+                    _px = boundaries.bottom - verts[vert].p.y;
+
+                    if(_px < 0.f) {
+                        v = 0.f;
+                    }
+                    else if(_px < blur) {
+                        v *= _px * blurDiv;
+                    }
+
+                    verts[2].color = Color::gray(v * (1.f/2)).toBGR();
+
+                    oo += v;
+
+                    if((i < 0) || (i >= MINIMAP_MAX_X) || (j + 1 < 0) || (j + 1 >= MINIMAP_MAX_Z)) {
+                        v = 0;
+                    }
+                    else {
+                        v = ((float)m_data[showLevel].m_revealed[i][min((int)j+1, MINIMAP_MAX_Z-1)]) * ( 1.0f / 255 );
+                    }
+                        
+                    vert = 3;
+                    _px = verts[vert].p.x - boundaries.left;
+
+                    if(_px < 0.f) {
+                        v = 0.f;
+                    }
+                    else if(_px < blur) {
+                        v *= _px * blurDiv;
+                    }
+
+                    _px = boundaries.right - verts[vert].p.x;
+
+                    if(_px < 0.f) {
+                        v = 0.f;
+                    }
+                    else if(_px < blur) {
+                        v *= _px * blurDiv;
+                    }
+
+                    _px = verts[vert].p.y - boundaries.top;
+
+                    if(_px < 0.f) {
+                        v = 0.f;
+                    }
+                    else if(_px < blur) {
+                        v *= _px * blurDiv;
+                    }
+
+                    _px = boundaries.bottom - verts[vert].p.y;
+
+                    if(_px < 0.f) {
+                        v = 0.f;
+                    }
+                    else if(_px < blur) {
+                        v *= _px * blurDiv;
+                    }
+
+                    verts[3].color = Color::gray(v * (1.f/2)).toBGR();
+
+                    oo += v;
+
+                    if(oo > 0.f) {
+                        
+                        verts[0].p.x += decalX * Xratio;
+                        verts[0].p.y += decalY * Yratio;
+                        verts[1].p.x += decalX * Xratio;
+                        verts[1].p.y += decalY * Yratio;
+                        verts[2].p.x += decalX * Xratio;
+                        verts[2].p.y += decalY * Yratio;
+                        verts[3].p.x += decalX * Xratio;
+                        verts[3].p.y += decalY * Yratio;
+
+                        EERIEDRAWPRIM(Renderer::TriangleFan, verts, 4);
+                    }
+				}
+			}
+		}
+ 
+        GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
+        GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+
+        if(showLevel == ARX_LEVELS_GetRealNum(CURRENTLEVEL)) {
+            
+            // Now Draws Playerpos/angle
+            verts[0].color = 0xFFFF0000;
+            verts[1].color = 0xFFFF0000;
+            verts[2].color = 0xFFFF0000;
+
+            float val = playerSize;
+
+            float rx = 0.f;
+            float ry = -val * 1.8f;
+            float rx2 = -val * (1.0f / 2);
+            float ry2 = val;
+            float rx3 = val * (1.0f / 2);
+            float ry3 = val;
+
+            float angle = radians(player.angle.b);
+            float ca = EEcos(angle);
+            float sa = EEsin(angle);
+
+            verts[0].p.x = (px + rx2 * ca + ry2 * sa) * Xratio;
+            verts[0].p.y = (py + ry2 * ca - rx2 * sa) * Yratio;
+            verts[1].p.x = (px + rx * ca + ry * sa) * Xratio;
+            verts[1].p.y = (py + ry * ca - rx * sa) * Yratio;
+            verts[2].p.x = (px + rx3 * ca + ry3 * sa) * Xratio;
+            verts[2].p.y = (py + ry3 * ca - rx3 * sa) * Yratio;
+
+            GRenderer->ResetTexture(0);
+            
+            GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+            verts[0].p.x += decalX * Xratio;
+            verts[0].p.y += decalY * Yratio;
+            verts[1].p.x += decalX * Xratio;
+            verts[1].p.y += decalY * Yratio;
+            verts[2].p.x += decalX * Xratio;
+            verts[2].p.y += decalY * Yratio;
+
+            EERIEDRAWPRIM(Renderer::TriangleFan, verts);
+
+            GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+        }
+
+		// tsu
+		for(size_t lnpc = 1; lnpc < entities.size(); lnpc++) {
+			if((entities[lnpc] != NULL) && (entities[lnpc]->ioflags & IO_NPC)) {
+				if(entities[lnpc]->_npcdata->life > 0.f) {
+					if (!((entities[lnpc]->gameFlags & GFLAG_MEGAHIDE) || (entities[lnpc]->show == SHOW_FLAG_MEGAHIDE))
+							&& (entities[lnpc]->show == SHOW_FLAG_IN_SCENE)) {
+						if (!(entities[lnpc]->show == SHOW_FLAG_HIDDEN)) {
+							if(entities[lnpc]->_npcdata->fDetect >= 0) {
+								if(player.Full_Skill_Etheral_Link >= entities[lnpc]->_npcdata->fDetect) {
+                                    
+                                    float fpx = startX + ((entities[lnpc]->pos.x - 100 + ofx - ofx2) * ( 1.0f / 100 ) * caseX
+										                + m_miniOffsetX[CURRENTLEVEL] * ratio * modX) / modX; 
+                                    float fpy = startY + ((m_mapMaxY[showLevel] - ofy - ofy2) * ( 1.0f / 100 ) * caseY
+										                - (entities[lnpc]->pos.z + 200 + ofy - ofy2) * ( 1.0f / 100 ) * caseY + m_miniOffsetY[CURRENTLEVEL] * ratio * modZ) / modZ;
+
+									float d = fdist(Vec2f(player.pos.x, player.pos.z), Vec2f(entities[lnpc]->pos.x, entities[lnpc]->pos.z));
+
+									if((d <= 800) && (fabs(entities.player()->pos.y - entities[lnpc]->pos.y) < 250.f)) {
+                                        
+										float col = 1.f;
+
+										if(d > 600.f) {
+											col = 1.f - (d - 600.f) * ( 1.0f / 200 );
+										}
+
+                                        GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+                                        
+                                        fpx += decalX * Xratio;
+                                        fpy += (decalY + 15) * Yratio;
+
+										fpx *= Xratio;
+										fpy *= Yratio;
+										EERIEDrawBitmap(fpx, fpy, 5.f * ratio, 5.f * ratio, 0, m_pTexDetect,
+										                Color3f(col, 0, 0).to<u8>());
+									}
+								}
+							}
+						}
+                    }
+                }
+			}
+		}
+	}
+}
+
 void MiniMap::show(int showLevel, int flag, int fl2) {
 	
 	// Nuky - centralized some constants and dezoomed ingame minimap
@@ -298,8 +728,8 @@ void MiniMap::show(int showLevel, int flag, int fl2) {
 	const int FL2_BOTTOM = 295;
 	const float FL2_PLAYERSIZE = 4.f;
 	
-	const float DECALY = -150;
-	const float DECALX = +40;
+	const float decalY = -150;
+	const float decalX = +40;
 	
 	if(!m_pTexDetect) {
 		m_pTexDetect = TextureContainer::Load("graph/particles/flare");
@@ -315,35 +745,35 @@ void MiniMap::show(int showLevel, int flag, int fl2) {
 		GRenderer->SetRenderState(Renderer::DepthTest, false);
 		
 		float sstartx, sstarty;
-		float startx, starty, casex, casey, ratio;
-		float mod_x = (float)MAX_BKGX / (float)MINIMAP_MAX_X;
-		float mod_z = (float)MAX_BKGZ / (float)MINIMAP_MAX_Z;
+		float startX, startY, caseX, caseY, ratio;
+		float modX = (float)MAX_BKGX / (float)MINIMAP_MAX_X;
+		float modZ = (float)MAX_BKGZ / (float)MINIMAP_MAX_Z;
 
 		if(flag == 1) {
 		    
-			startx = 0;
-			starty = 0;
-			casex = (900) / ((float)MINIMAP_MAX_X);
-			casey = (900) / ((float)MINIMAP_MAX_Z);
+			startX = 0;
+			startY = 0;
+			caseX = (900) / ((float)MINIMAP_MAX_X);
+			caseY = (900) / ((float)MINIMAP_MAX_Z);
 			ratio = 900.f / 250.f;
             
 			if(fl2) {
-				casex = (FL2_SIZE) / ((float)MINIMAP_MAX_X);
-				casey = (FL2_SIZE) / ((float)MINIMAP_MAX_Z);
+				caseX = (FL2_SIZE) / ((float)MINIMAP_MAX_X);
+				caseY = (FL2_SIZE) / ((float)MINIMAP_MAX_Z);
 				ratio = FL2_SIZE / 250.f;
 			}
 		}
 		else {
 		    
-			startx = (140); 
-			starty = (120);
-			casex = (250) / ((float)MINIMAP_MAX_X);
-			casey = (250) / ((float)MINIMAP_MAX_Z);
+			startX = (140);
+			startY = (120);
+			caseX = (250) / ((float)MINIMAP_MAX_X);
+			caseY = (250) / ((float)MINIMAP_MAX_Z);
 			ratio = 1.f;
 		}
 
-		sstartx = startx;
-		sstarty = starty;
+		sstartx = startX;
+		sstarty = startY;
 
 
 		float ofx, ofx2, ofy, ofy2, px, py;
@@ -363,19 +793,20 @@ void MiniMap::show(int showLevel, int flag, int fl2) {
 			ofy = m_miniOffsetY[CURRENTLEVEL];
 			ofy2 = m_data[showLevel].m_ratioY;
 		
-			px = startx + ((player.pos.x + ofx - ofx2) * ( 1.0f / 100 ) * casex
-			               + m_miniOffsetX[CURRENTLEVEL] * ratio * mod_x) / mod_x ; //( 1.0f / 100 )*2;
-			py = starty + ((m_mapMaxY[showLevel] - ofy - ofy2) * ( 1.0f / 100 ) * casey
-			               - (player.pos.z + ofy - ofy2) * ( 1.0f / 100 ) * casey + m_miniOffsetY[CURRENTLEVEL] * ratio * mod_z) / mod_z ;    //( 1.0f / 100 )*2;
+			px = startX + ((player.pos.x + ofx - ofx2) * ( 1.0f / 100 ) * caseX
+			               + m_miniOffsetX[CURRENTLEVEL] * ratio * modX) / modX ; //( 1.0f / 100 )*2;
+			py = startY + ((m_mapMaxY[showLevel] - ofy - ofy2) * ( 1.0f / 100 ) * caseY
+			               - (player.pos.z + ofy - ofy2) * ( 1.0f / 100 ) * caseY + m_miniOffsetY[CURRENTLEVEL] * ratio * modZ) / modZ ;    //( 1.0f / 100 )*2;
 
 			if(flag == 1) {
-				sstartx = startx;
-				sstarty = starty;
+                
+				sstartx = startX;
+				sstarty = startY;
 
-				startx = 490.f - px;
-				starty = 220.f - py;
-				px += startx;
-				py += starty;
+				startX = 490.f - px;
+				startY = 220.f - py;
+				px += startX;
+				py += startY;
 			}
 		}
 
@@ -394,33 +825,33 @@ void MiniMap::show(int showLevel, int flag, int fl2) {
 		float dw = 1.f / tc->m_pTexture->getStoredSize().x; 
 		float dh = 1.f / tc->m_pTexture->getStoredSize().y;
 		
-		float vx2 = 4.f * dw * mod_x;
-		float vy2 = 4.f * dh * mod_z;
+		float vx2 = 4.f * dw * modX;
+		float vy2 = 4.f * dh * modZ;
 
 		float _px;
 		Rect boundaries;
-		float MOD20, MOD20DIV, divXratio, divYratio;
+		float blur, blurDiv, divXratio, divYratio;
 
 		boundaries.bottom = boundaries.left = boundaries.right = boundaries.top = 0;
-		MOD20 = MOD20DIV = divXratio = divYratio = 0.f;
+		blur = blurDiv = divXratio = divYratio = 0.f;
 
 		if(flag != 2) {
 			if (flag == 1) {
                 
-				MOD20 = 20.f * Xratio;
-				MOD20DIV = 1.f / (MOD20);
+				blur = 20.f * Xratio;
+				blurDiv = 1.f / (blur);
 				//@PERF do if(fl2){}else{} to make 4 and not 8 flot op if fl2.
 
-				boundaries.left = checked_range_cast<Rect::Num>((360 + MOD20) * Xratio);
-				boundaries.right = checked_range_cast<Rect::Num>((555 - MOD20) * Xratio);
-				boundaries.top = checked_range_cast<Rect::Num>((85 + MOD20) * Yratio);
-				boundaries.bottom = checked_range_cast<Rect::Num>((355 - MOD20) * Yratio);
+				boundaries.left = checked_range_cast<Rect::Num>((360 + blur) * Xratio);
+				boundaries.right = checked_range_cast<Rect::Num>((555 - blur) * Xratio);
+				boundaries.top = checked_range_cast<Rect::Num>((85 + blur) * Yratio);
+				boundaries.bottom = checked_range_cast<Rect::Num>((355 - blur) * Yratio);
 
 				if(fl2) {
-					boundaries.left = checked_range_cast<Rect::Num>((FL2_LEFT + MOD20) * Xratio);
-					boundaries.right = checked_range_cast<Rect::Num>((FL2_RIGHT - MOD20) * Xratio);
-					boundaries.top = checked_range_cast<Rect::Num>((FL2_TOP + MOD20) * Yratio);
-					boundaries.bottom = checked_range_cast<Rect::Num>((FL2_BOTTOM - MOD20) * Yratio);
+					boundaries.left = checked_range_cast<Rect::Num>((FL2_LEFT + blur) * Xratio);
+					boundaries.right = checked_range_cast<Rect::Num>((FL2_RIGHT - blur) * Xratio);
+					boundaries.top = checked_range_cast<Rect::Num>((FL2_TOP + blur) * Yratio);
+					boundaries.bottom = checked_range_cast<Rect::Num>((FL2_BOTTOM - blur) * Yratio);
 				}
 			}
 
@@ -441,14 +872,14 @@ void MiniMap::show(int showLevel, int flag, int fl2) {
 			for(int i = -2; i < MINIMAP_MAX_X + 2; i++) {
                 
 				float vx, vy, vxx, vyy;
-				vxx = ((float)i * (float)ACTIVEBKG->Xdiv * mod_x);
-				vyy = ((float)j * (float)ACTIVEBKG->Zdiv * mod_z);
+				vxx = ((float)i * (float)ACTIVEBKG->Xdiv * modX);
+				vyy = ((float)j * (float)ACTIVEBKG->Zdiv * modZ);
 				vx = (vxx * div) * dw;
 				vy = (vyy * div) * dh;
 
-				long okay = 1;
-				float posx = (startx + i * casex) * Xratio;
-				float posy = (starty + j * casey) * Yratio;
+				bool inBounds = true;
+				float posx = (startX + i * caseX) * Xratio;
+				float posy = (startY + j * caseY) * Yratio;
 
 				if(flag == 1) {
                     
@@ -456,34 +887,34 @@ void MiniMap::show(int showLevel, int flag, int fl2) {
 							||	(posx > 555 * Xratio)
 							||	(posy < 85 * Yratio)
 							||	(posy > 355 * Yratio)) {
-						okay = 0;
+						inBounds = false;
                     }
 
 					if(fl2) {
                         
-						okay = 1;
+						inBounds = true;
 
 						if((posx < FL2_LEFT * Xratio)
 						        ||	(posx > FL2_RIGHT * Xratio)
 						        ||	(posy < FL2_TOP * Yratio)
 						        ||	(posy > FL2_BOTTOM * Yratio)) {
-							okay = 0;
+							inBounds = false;
 						}
 					}
 				}
 				else {
                     if((posx > 345 * Xratio) ||	(posy > 290 * Yratio)) {
-                        okay = 0;
+                        inBounds = false;
                     }
 				}
 
-				if(okay){
+				if(inBounds){
                     
 					if((flag == 2)
 							&& (i >= 0) && (i < MINIMAP_MAX_X)
 							&& (j >= 0) && (j < MINIMAP_MAX_Z)) {
                         
-						float d = fdist(Vec2f(posx * divXratio + casex * ( 1.0f / 2 ), posy * divYratio), Vec2f(px, py));
+						float d = fdist(Vec2f(posx * divXratio + caseX * ( 1.0f / 2 ), posy * divYratio), Vec2f(px, py));
 
 						if(d <= 6.f) {
                         
@@ -511,8 +942,8 @@ void MiniMap::show(int showLevel, int flag, int fl2) {
 
 					verts[3].p.x = verts[0].p.x = (posx);
 					verts[1].p.y = verts[0].p.y = (posy);
-					verts[2].p.x = verts[1].p.x = posx + (casex * Xratio);
-					verts[3].p.y = verts[2].p.y = posy + (casey * Yratio);
+					verts[2].p.x = verts[1].p.x = posx + (caseX * Xratio);
+					verts[3].p.y = verts[2].p.y = posy + (caseY * Yratio);
 
 					verts[3].uv.x = verts[0].uv.x = vx;
 					verts[1].uv.y = verts[0].uv.y = vy;
@@ -539,8 +970,8 @@ void MiniMap::show(int showLevel, int flag, int fl2) {
 							if(_px < 0.f) {
                                 v = 0.f;
 							}
-							else if(_px < MOD20) {
-                                v *= _px * MOD20DIV;
+							else if(_px < blur) {
+                                v *= _px * blurDiv;
 							}
 
 							_px = boundaries.right - verts[vert].p.x;
@@ -548,8 +979,8 @@ void MiniMap::show(int showLevel, int flag, int fl2) {
 							if(_px < 0.f) {
                                 v = 0.f;
 							}
-							else if(_px < MOD20) {
-                                v *= _px * MOD20DIV;
+							else if(_px < blur) {
+                                v *= _px * blurDiv;
 							}
 
 							_px = verts[vert].p.y - boundaries.top;
@@ -557,8 +988,8 @@ void MiniMap::show(int showLevel, int flag, int fl2) {
 							if(_px < 0.f) {
                                 v = 0.f;
 							}
-							else if(_px < MOD20) {
-                                v *= _px * MOD20DIV;
+							else if(_px < blur) {
+                                v *= _px * blurDiv;
 							}
 
 							_px = boundaries.bottom - verts[vert].p.y;
@@ -566,8 +997,8 @@ void MiniMap::show(int showLevel, int flag, int fl2) {
 							if(_px < 0.f) {
                                 v = 0.f;
 							}
-							else if(_px < MOD20) {
-                                v *= _px * MOD20DIV;
+							else if(_px < blur) {
+                                v *= _px * blurDiv;
                             }
 						}
 
@@ -591,8 +1022,8 @@ void MiniMap::show(int showLevel, int flag, int fl2) {
 							if(_px < 0.f) {
                                 v = 0.f;
 							}
-							else if(_px < MOD20) {
-                                v *= _px * MOD20DIV;
+							else if(_px < blur) {
+                                v *= _px * blurDiv;
 							}
 							
 							_px = boundaries.right - verts[vert].p.x;
@@ -600,8 +1031,8 @@ void MiniMap::show(int showLevel, int flag, int fl2) {
 							if(_px < 0.f) {
                                 v = 0.f;
 							}
-							else if(_px < MOD20) {
-                                v *= _px * MOD20DIV;
+							else if(_px < blur) {
+                                v *= _px * blurDiv;
 							}
 							
 							_px = verts[vert].p.y - boundaries.top;
@@ -609,8 +1040,8 @@ void MiniMap::show(int showLevel, int flag, int fl2) {
 							if(_px < 0.f) {
                                 v = 0.f;
 							}
-							else if(_px < MOD20) {
-                                v *= _px * MOD20DIV;
+							else if(_px < blur) {
+                                v *= _px * blurDiv;
 							}
 
 							_px = boundaries.bottom - verts[vert].p.y;
@@ -618,8 +1049,8 @@ void MiniMap::show(int showLevel, int flag, int fl2) {
 							if(_px < 0.f) {
                                 v = 0.f;
 							}
-							else if(_px < MOD20) {
-                                v *= _px * MOD20DIV;
+							else if(_px < blur) {
+                                v *= _px * blurDiv;
 							}
 						}
 
@@ -642,8 +1073,8 @@ void MiniMap::show(int showLevel, int flag, int fl2) {
 							if(_px < 0.f) {
                                 v = 0.f;
 							}
-							else if(_px < MOD20) {
-                                v *= _px * MOD20DIV;
+							else if(_px < blur) {
+                                v *= _px * blurDiv;
 							}
 
 							_px = boundaries.right - verts[vert].p.x;
@@ -651,8 +1082,8 @@ void MiniMap::show(int showLevel, int flag, int fl2) {
 							if(_px < 0.f) {
                                 v = 0.f;
 							}
-							else if(_px < MOD20) {
-                                v *= _px * MOD20DIV;
+							else if(_px < blur) {
+                                v *= _px * blurDiv;
 							}
 
 							_px = verts[vert].p.y - boundaries.top;
@@ -660,8 +1091,8 @@ void MiniMap::show(int showLevel, int flag, int fl2) {
 							if(_px < 0.f) {
                                 v = 0.f;
 							}
-							else if(_px < MOD20) {
-                                v *= _px * MOD20DIV;
+							else if(_px < blur) {
+                                v *= _px * blurDiv;
 							}
 
 							_px = boundaries.bottom - verts[vert].p.y;
@@ -669,8 +1100,8 @@ void MiniMap::show(int showLevel, int flag, int fl2) {
 							if(_px < 0.f) {
                                 v = 0.f;
 							}
-							else if(_px < MOD20) {
-                                v *= _px * MOD20DIV;
+							else if(_px < blur) {
+                                v *= _px * blurDiv;
 							}
 						}
 
@@ -693,8 +1124,8 @@ void MiniMap::show(int showLevel, int flag, int fl2) {
 							if(_px < 0.f) {
                                 v = 0.f;
 							}
-							else if(_px < MOD20) {
-                                v *= _px * MOD20DIV;
+							else if(_px < blur) {
+                                v *= _px * blurDiv;
                             }
 
 							_px = boundaries.right - verts[vert].p.x;
@@ -702,8 +1133,8 @@ void MiniMap::show(int showLevel, int flag, int fl2) {
 							if(_px < 0.f) {
                                 v = 0.f;
 							}
-							else if(_px < MOD20) {
-                                v *= _px * MOD20DIV;
+							else if(_px < blur) {
+                                v *= _px * blurDiv;
 							}
 
 							_px = verts[vert].p.y - boundaries.top;
@@ -711,8 +1142,8 @@ void MiniMap::show(int showLevel, int flag, int fl2) {
 							if(_px < 0.f) {
                                 v = 0.f;
 							}
-							else if(_px < MOD20) {
-                                v *= _px * MOD20DIV;
+							else if(_px < blur) {
+                                v *= _px * blurDiv;
 							}
 
 							_px = boundaries.bottom - verts[vert].p.y;
@@ -720,8 +1151,8 @@ void MiniMap::show(int showLevel, int flag, int fl2) {
 							if(_px < 0.f) {
                                 v = 0.f;
 							}
-							else if(_px < MOD20) {
-                                v *= _px * MOD20DIV;
+							else if(_px < blur) {
+                                v *= _px * blurDiv;
 							}
 						}
 
@@ -733,14 +1164,14 @@ void MiniMap::show(int showLevel, int flag, int fl2) {
                             
 							if(fl2) {
 							    
-								verts[0].p.x += DECALX * Xratio;
-								verts[0].p.y += DECALY * Yratio;
-								verts[1].p.x += DECALX * Xratio;
-								verts[1].p.y += DECALY * Yratio;
-								verts[2].p.x += DECALX * Xratio;
-								verts[2].p.y += DECALY * Yratio;
-								verts[3].p.x += DECALX * Xratio;
-								verts[3].p.y += DECALY * Yratio;
+								verts[0].p.x += decalX * Xratio;
+								verts[0].p.y += decalY * Yratio;
+								verts[1].p.x += decalX * Xratio;
+								verts[1].p.y += decalY * Yratio;
+								verts[2].p.x += decalX * Xratio;
+								verts[2].p.y += decalY * Yratio;
+								verts[3].p.x += decalX * Xratio;
+								verts[3].p.y += decalY * Yratio;
 							}
 
 							EERIEDRAWPRIM(Renderer::TriangleFan, verts, 4);
@@ -797,12 +1228,12 @@ void MiniMap::show(int showLevel, int flag, int fl2) {
 				if(fl2) {
                     
 					GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-					verts[0].p.x += DECALX * Xratio;
-					verts[0].p.y += DECALY * Yratio;
-					verts[1].p.x += DECALX * Xratio;
-					verts[1].p.y += DECALY * Yratio;
-					verts[2].p.x += DECALX * Xratio;
-					verts[2].p.y += DECALY * Yratio;
+					verts[0].p.x += decalX * Xratio;
+					verts[0].p.y += decalY * Yratio;
+					verts[1].p.x += decalX * Xratio;
+					verts[1].p.y += decalY * Yratio;
+					verts[2].p.x += decalX * Xratio;
+					verts[2].p.y += decalY * Yratio;
 				}
 
 				EERIEDRAWPRIM(Renderer::TriangleFan, verts);
@@ -826,17 +1257,17 @@ void MiniMap::show(int showLevel, int flag, int fl2) {
 									float fpx;
 									float fpy;
 								
-									fpx = sstartx + ((entities[lnpc]->pos.x - 100 + ofx - ofx2) * ( 1.0f / 100 ) * casex
-									                 + m_miniOffsetX[CURRENTLEVEL] * ratio * mod_x) / mod_x; 
-									fpy = sstarty + ((m_mapMaxY[showLevel] - ofy - ofy2) * ( 1.0f / 100 ) * casey
-									                 - (entities[lnpc]->pos.z + 200 + ofy - ofy2) * ( 1.0f / 100 ) * casey + m_miniOffsetY[CURRENTLEVEL] * ratio * mod_z) / mod_z; 
+									fpx = sstartx + ((entities[lnpc]->pos.x - 100 + ofx - ofx2) * ( 1.0f / 100 ) * caseX
+									                 + m_miniOffsetX[CURRENTLEVEL] * ratio * modX) / modX; 
+									fpy = sstarty + ((m_mapMaxY[showLevel] - ofy - ofy2) * ( 1.0f / 100 ) * caseY
+									                 - (entities[lnpc]->pos.z + 200 + ofy - ofy2) * ( 1.0f / 100 ) * caseY + m_miniOffsetY[CURRENTLEVEL] * ratio * modZ) / modZ; 
 
 									if(flag == 1) {
 
-										fpx = startx + ((entities[lnpc]->pos.x - 100 + ofx - ofx2) * ( 1.0f / 100 ) * casex
-										                + m_miniOffsetX[CURRENTLEVEL] * ratio * mod_x) / mod_x; 
-										fpy = starty + ((m_mapMaxY[showLevel] - ofy - ofy2) * ( 1.0f / 100 ) * casey
-										                - (entities[lnpc]->pos.z + 200 + ofy - ofy2) * ( 1.0f / 100 ) * casey + m_miniOffsetY[CURRENTLEVEL] * ratio * mod_z) / mod_z;
+										fpx = startX + ((entities[lnpc]->pos.x - 100 + ofx - ofx2) * ( 1.0f / 100 ) * caseX
+										                + m_miniOffsetX[CURRENTLEVEL] * ratio * modX) / modX; 
+										fpy = startY + ((m_mapMaxY[showLevel] - ofy - ofy2) * ( 1.0f / 100 ) * caseY
+										                - (entities[lnpc]->pos.z + 200 + ofy - ofy2) * ( 1.0f / 100 ) * caseY + m_miniOffsetY[CURRENTLEVEL] * ratio * modZ) / modZ;
 									}
 
 									float d = fdist(Vec2f(player.pos.x, player.pos.z), Vec2f(entities[lnpc]->pos.x, entities[lnpc]->pos.z));
@@ -858,8 +1289,8 @@ void MiniMap::show(int showLevel, int flag, int fl2) {
 										}
 
 										if(fl2) {
-											fpx += DECALX * Xratio;
-											fpy += (DECALY + 15) * Yratio;
+											fpx += decalX * Xratio;
+											fpy += (decalY + 15) * Yratio;
 										}
 
 										fpx *= Xratio;
@@ -883,8 +1314,8 @@ void MiniMap::show(int showLevel, int flag, int fl2) {
 			for(size_t i = 0; i < m_mapMarkers.size(); i++) {
 				if(m_mapMarkers[i].m_lvl == showLevel + 1) {
                     
-					float pos_x = m_mapMarkers[i].m_x * 8 * ratio * ACTIVEBKG->Xmul * casex + startx;
-					float pos_y = m_mapMarkers[i].m_y * 8 * ratio * ACTIVEBKG->Zmul * casey + starty;
+					float pos_x = m_mapMarkers[i].m_x * 8 * ratio * ACTIVEBKG->Xmul * caseX + startX;
+					float pos_y = m_mapMarkers[i].m_y * 8 * ratio * ACTIVEBKG->Zmul * caseY + startY;
 					float size = 5.f * ratio;
 					verts[0].color = 0xFFFF0000;
 					verts[1].color = 0xFFFF0000;
@@ -928,14 +1359,14 @@ void MiniMap::show(int showLevel, int flag, int fl2) {
 
 					if(fl2) {
                         
-						verts[0].p.x += DECALX * Xratio;
-						verts[0].p.y += DECALY * Yratio;
-						verts[1].p.x += DECALX * Xratio;
-						verts[1].p.y += DECALY * Yratio;
-						verts[2].p.x += DECALX * Xratio;
-						verts[2].p.y += DECALY * Yratio;
-						verts[3].p.x += DECALX * Xratio;
-						verts[3].p.y += DECALY * Yratio;
+						verts[0].p.x += decalX * Xratio;
+						verts[0].p.y += decalY * Yratio;
+						verts[1].p.x += decalX * Xratio;
+						verts[1].p.y += decalY * Yratio;
+						verts[2].p.x += decalX * Xratio;
+						verts[2].p.y += decalY * Yratio;
+						verts[3].p.x += decalX * Xratio;
+						verts[3].p.y += decalY * Yratio;
 					}
 
 					EERIEDRAWPRIM(Renderer::TriangleFan, verts, 4);
