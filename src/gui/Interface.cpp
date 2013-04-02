@@ -3839,17 +3839,16 @@ static void StdDraw(float posx, float posy, Color color, TextureContainer * tcc,
 	
 	TextureContainer * tc;
 
-	if (tcc==NULL)
-	{
-		if (ITC.Get("unknown")==NULL)
+	if(!tcc) {
+		if(!ITC.Get("unknown"))
 			ITC.Set("unknown", TextureContainer::Load("graph/interface/icons/spell_unknown"));
 
-		tc=ITC.Get("unknown");
+		tc = ITC.Get("unknown");
 	}
-	else tc=tcc;
+	else
+		tc = tcc;
 
-	if (tc)
-	{
+	if(tc) {
 		EERIEDrawBitmap(posx, posy, INTERFACE_RATIO_DWORD(tc->m_dwWidth) * 0.5f, INTERFACE_RATIO_DWORD(tc->m_dwHeight) * 0.5f, 0.01f, tc, color);
 
 		if(flag & 2) {
@@ -3859,40 +3858,30 @@ static void StdDraw(float posx, float posy, Color color, TextureContainer * tcc,
 			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 		}
 
-		if (!(flag & 1))
-		{
-			if (!(player.Interface & INTER_COMBATMODE))
-				if (MouseInRect(posx,posy, posx+INTERFACE_RATIO(32),posy+INTERFACE_RATIO(32)))
-				{
+		if(!(flag & 1)) {
+			if(!(player.Interface & INTER_COMBATMODE))
+				if(MouseInRect(posx, posy, posx + INTERFACE_RATIO(32), posy + INTERFACE_RATIO(32))) {
 					SpecialCursor=CURSOR_INTERACTION_ON;
 
-					if ((LastMouseClick & 1) && (!(EERIEMouseButton & 1)) )
-					{
-						if (flag & 2)
-						{
-							if (Precast[PRECAST_NUM].typ >= 0)
+					if((LastMouseClick & 1) && !(EERIEMouseButton & 1)) {
+						if(flag & 2) {
+							if(Precast[PRECAST_NUM].typ >= 0)
 								WILLADDSPEECH = spellicons[Precast[PRECAST_NUM].typ].name;
 
 							WILLADDSPEECHTIME = (unsigned long)(arxtime);
-						}
-						else
-						{
-							if (spells[i].type >= 0)
+						} else {
+							if(spells[i].type >= 0)
 								WILLADDSPEECH = spellicons[spells[i].type].name;
 
 							WILLADDSPEECHTIME = (unsigned long)(arxtime);
 						}
 					}
 
-					if (EERIEMouseButton & 4)
-					{
-						if (flag & 2)
-						{
+					if(EERIEMouseButton & 4) {
+						if(flag & 2) {
 							ARX_SPELLS_Precast_Launch(PRECAST_NUM);
 							EERIEMouseButton&=~4;
-						}
-						else
-						{
+						} else {
 							ARX_SPELLS_AbortSpellSound();
 							EERIEMouseButton&=~4;
 							spells[i].tolive=0;
