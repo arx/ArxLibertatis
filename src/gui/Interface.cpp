@@ -3188,9 +3188,9 @@ void ArxGame::manageKeyMouse() {
 	if(!BLOCK_PLAYER_CONTROLS) {
 		GetInventoryObj_INVENTORYUSE(&DANAEMouse);
 
-		if ((!(player.Interface & INTER_MAP )) || ((player.Interface & INTER_MAP ) && ((!(ARX_MOUSE_OVER & ARX_MOUSE_OVER_BOOK & (Book_Mode != BOOKMODE_MINIMAP))/*ARX_INTERFACE_MouseInBook()*/) || (Book_Mode == BOOKMODE_MINIMAP) || (Book_Mode == BOOKMODE_QUESTS) || (Book_Mode != -1)))
-			||
-			(player.Interface & INTER_COMBATMODE))
+		if(!(player.Interface & INTER_MAP)
+				|| ((player.Interface & INTER_MAP) && ((!(ARX_MOUSE_OVER & ARX_MOUSE_OVER_BOOK & (Book_Mode != BOOKMODE_MINIMAP))/*ARX_INTERFACE_MouseInBook()*/) || (Book_Mode == BOOKMODE_MINIMAP) || (Book_Mode == BOOKMODE_QUESTS) || (Book_Mode != -1)))
+				|| (player.Interface & INTER_COMBATMODE))
 		{
 			static int flPushTimeX[2]={0,0};
 			static int flPushTimeY[2]={0,0};
@@ -3202,7 +3202,7 @@ void ArxGame::manageKeyMouse() {
 
 				if(GInput->actionPressed(CONTROLS_CUST_TURNLEFT)) {
 					if(!flPushTimeX[0])
-						flPushTimeX[0]	=	iTime;
+						flPushTimeX[0] = iTime;
 
 					bKeySpecialMove = true;
 				}
@@ -3211,7 +3211,7 @@ void ArxGame::manageKeyMouse() {
 
 				if(GInput->actionPressed(CONTROLS_CUST_TURNRIGHT)) {
 					if(!flPushTimeX[1])
-						flPushTimeX[1]	=	iTime;
+						flPushTimeX[1] = iTime;
 
 					bKeySpecialMove = true;
 				}
@@ -3225,7 +3225,7 @@ void ArxGame::manageKeyMouse() {
 
 				if(GInput->actionPressed(CONTROLS_CUST_LOOKUP)) {
 					if(!flPushTimeY[0])
-						flPushTimeY[0]	=	iTime;
+						flPushTimeY[0] = iTime;
 
 					bKeySpecialMove = true;
 				}
@@ -3234,7 +3234,7 @@ void ArxGame::manageKeyMouse() {
 
 				if(GInput->actionPressed(CONTROLS_CUST_LOOKDOWN)) {
 					if(!flPushTimeY[1])
-						flPushTimeY[1]	=	iTime;
+						flPushTimeY[1] = iTime;
 
 					bKeySpecialMove = true;
 				}
@@ -3276,7 +3276,7 @@ void ArxGame::manageKeyMouse() {
 						mouseDiffX=mousePosRel.x;
 						bKeySpecialMove=true;
 					} else {
-						if(!DANAEMouse.x&& mousePosRel.x < -8) {
+						if(!DANAEMouse.x && mousePosRel.x < -8) {
 							mouseDiffY=0;
 							mouseDiffX=mousePosRel.x;
 							bKeySpecialMove=true;
@@ -3297,8 +3297,7 @@ void ArxGame::manageKeyMouse() {
 				}
 			}
 
-			if(GInput->actionPressed(CONTROLS_CUST_CENTERVIEW))
-			{
+			if(GInput->actionPressed(CONTROLS_CUST_CENTERVIEW)) {
 				eyeball.angle.a=eyeball.angle.g=0.f;
 				player.desiredangle.a=player.angle.a=0.f;
 				player.desiredangle.g=player.angle.g=0.f;
@@ -3306,10 +3305,10 @@ void ArxGame::manageKeyMouse() {
 
 			float mouseSensitivity = (((float)GInput->getMouseSensitivity()) + 1.f) * 0.1f * ((640.f / (float)DANAESIZX));
 			if (mouseSensitivity > 200) {
-				mouseSensitivity=200;
+				mouseSensitivity = 200;
 			}			
 
-			mouseSensitivity *= ((float)DANAESIZX) * ( 1.0f / 640 );
+			mouseSensitivity *= (float)DANAESIZX * ( 1.0f / 640 );
 			mouseSensitivity *= (1.0f / 5);
 
 			float mouseSensitivityY = mouseSensitivity;
@@ -3365,8 +3364,8 @@ void ArxGame::manageKeyMouse() {
 		}
 	}
 
-	if ((!BLOCK_PLAYER_CONTROLS) && !(player.Interface & INTER_COMBATMODE)) {
-		if (DRAGINTER == NULL) {
+	if((!BLOCK_PLAYER_CONTROLS) && !(player.Interface & INTER_COMBATMODE)) {
+		if(!DRAGINTER) {
 			if(config.input.autoDescription || ((LastMouseClick & 1) && !(EERIEMouseButton & 1) && !(EERIEMouseButton & 4) && !(LastMouseClick & 4)))
 			{
 				Entity * temp;
