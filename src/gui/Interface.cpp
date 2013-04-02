@@ -3462,37 +3462,28 @@ void ARX_INTERFACE_DrawSecondaryInventory(bool _bSteal) {
 
 	ARX_INTERFACE_DrawItem(ITC.Get("ingame_inventory"), INTERFACE_RATIO(InventoryX), 0.f);
 
+	for(long j = 0; j < TSecondaryInventory->sizey; j++) {
+		for(long i = 0; i < TSecondaryInventory->sizex; i++) {
+			Entity *io = TSecondaryInventory->slot[i][j].io;
 
-	long i,j;
-
-	for (j=0;j<TSecondaryInventory->sizey;j++)
-	{
-		for (i=0;i<TSecondaryInventory->sizex;i++)
-		{
-			Entity * io=TSecondaryInventory->slot[i][j].io;
-
-			if (io!=NULL)
-			{
+			if(io) {
 				bool bItemSteal = false;
-				TextureContainer * tc=io->inv;
-				TextureContainer * tc2=NULL;
+				TextureContainer *tc = io->inv;
+				TextureContainer *tc2 = NULL;
 
-				if (NeedHalo(io)) tc2 = io->inv->getHalo();
+				if(NeedHalo(io))
+					tc2 = io->inv->getHalo();
 
-				if (_bSteal)
-				{
-					if (!ARX_PLAYER_CanStealItem(io))
-					{
+				if(_bSteal) {
+					if(!ARX_PLAYER_CanStealItem(io)) {
 						bItemSteal = true;
 						tc = ITC.Get("item_cant_steal");
 						tc2 = NULL;
 					}
 				}
 
-				if ((tc!=NULL) && (TSecondaryInventory->slot[i][j].show || bItemSteal) )
-				{
-					if (io->ioflags & IO_GOLD)
-					{
+				if(tc && (TSecondaryInventory->slot[i][j].show || bItemSteal)) {
+					if(io->ioflags & IO_GOLD) {
 						long num=0;
 
 						if (io->_itemdata->price<=3)
@@ -3536,14 +3527,11 @@ void ARX_INTERFACE_DrawSecondaryInventory(bool _bSteal) {
 						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 					}
 
-					if (tc2!=NULL)
-					{
-						ARX_INTERFACE_HALO_Draw(io,tc,tc2,
-							px,
-							py, INTERFACE_RATIO(1), INTERFACE_RATIO(1));
+					if(tc2) {
+						ARX_INTERFACE_HALO_Draw(io, tc, tc2, px, py, INTERFACE_RATIO(1), INTERFACE_RATIO(1));
 					}
 
-					if ((io->ioflags & IO_ITEM) && (io->_itemdata->count!=1))
+					if((io->ioflags & IO_ITEM) && io->_itemdata->count != 1)
 						ARX_INTERFACE_DrawNumber(px, py, io->_itemdata->count, 3, Color::white);
 				}
 			}
