@@ -54,49 +54,86 @@ class TextureContainer;
 
 #define MINIMAP_MAX_X 50
 #define MINIMAP_MAX_Z 50
+#define MAX_MINIMAP_DATA 32
 
-struct MINI_MAP_DATA
-{
-    TextureContainer*   tc;
-    float               offsetx; // start of scene pos x
-    float               offsety;
-    float               xratio; // multiply x by xratio to obtain real-world pos
-    float               yratio;
-    float               width; // bitmap width/height
-    float               height;
-    unsigned char       revealed[MINIMAP_MAX_X][MINIMAP_MAX_Z];
+class MiniMap {
+
+public:
+    
+    //! MiniMap data
+    struct MiniMapData {
+        
+        TextureContainer* m_texContainer;
+        
+        //! Start of scene pos x
+        float m_offsetX;
+        float m_offsetY;
+        
+        //! Multiply x by ratioX to obtain real-world pos
+        float m_ratioX;
+        float m_ratioY;
+        
+        //! Bitmap width/height
+        float m_width;
+        float m_height;
+        
+        unsigned char m_revealed[MINIMAP_MAX_X][MINIMAP_MAX_Z];
+    };
+    
+    MiniMapData m_data[MAX_MINIMAP_DATA];
+    
+    //! Map markers
+    struct MapMarkerData {
+
+        float m_x;
+        float m_y;
+        int m_lvl;
+        std::string m_name;
+        std::string m_text;
+    };
+    
+    std::vector<MapMarkerData> m_mapMarkers;
+    
+    void mapMarkerRemove(const std::string &name);
+    void mapMarkerAdd(float x, float y, int lvl, const std::string &name);
+    void mapMarkerInit();
+    
+    void firstInit(); // This should be a constructor
+    void reset();
+    void purgeTexContainer();
+    void validatePlayerPos();
+    
+    void show(int showLevel, int flag, int fl2 = 0);
+    void reveal();
+    
+    void clearMarkerTexCont();
+    
+private:
+
+    float m_miniOffsetX[MAX_MINIMAP_DATA];
+    float m_miniOffsetY[MAX_MINIMAP_DATA];
+    float m_mapMaxY[MAX_MINIMAP_DATA];
+    
+    TextureContainer *m_pTexDetect;
+    TextureContainer *m_mapMarkerTexCont;
+    
+    float m_playerLastPosX;
+    float m_playerLastPosZ;
+    
+    void getData(int showLevel);
+    void resetData();
+    void loadOffsets();
+    void validatePos();
+    
+    /*! 
+    * Gets the id from the MapMarker's name. Returns -1 when not found.
+    *
+    * @param std::string name
+    * @return MapMarker's id (int).
+    */
+    int mapMarkerGetID(const std::string &name);
 };
 
-
-const unsigned long MAX_MINIMAPS(32);
-extern MINI_MAP_DATA minimap[MAX_MINIMAPS];
-//-----------------------------------------------------------------------------
-// MINIMAP
-//-----------------------------------------------------------------------------
-void ARX_MINIMAP_Load_Offsets();
-void ARX_MINIMAP_FirstInit();
-void ARX_MINIMAP_Reset();
-void ARX_MINIMAP_PurgeTC();
- 
-void ARX_MINIMAP_Show(long SHOWLEVEL, long flag, long fl2 = 0);
-void ARX_MINIMAP_FirstInit();
-void ARX_MINIMAP_PurgeTC();
-void ARX_MINIMAP_ValidatePos();
-void ARX_MINIMAP_ValidatePlayerPos();
-void ARX_MINIMAP_Reveal();
-
-struct MAPMARKER_DATA {
-	float x;
-	float y;
-	long lvl;
-	std::string name;
-	std::string text;
-};
-
-extern std::vector<MAPMARKER_DATA> Mapmarkers;
-
-void ARX_MAPMARKER_Remove(const std::string & temp);
-void ARX_MAPMARKER_Add(float x, float y, long lvl, const std::string & temp);
-void ARX_MAPMARKER_Init();
+extern MiniMap g_miniMap;
 
 #endif // ARX_GUI_MINIMAP_H

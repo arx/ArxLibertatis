@@ -1105,7 +1105,6 @@ long DanaeLoadLevel(const res::path & file, bool loadEntities) {
 }
 
 void MCache_ClearAll();
-extern TextureContainer * MapMarkerTc;
 long FAST_RELEASE = 0;
 extern Entity * FlyingOverIO;
 extern unsigned long LAST_JUMP_ENDTIME;
@@ -1120,14 +1119,14 @@ extern long JUST_RELOADED;
 void DanaeClearLevel(long flag)
 {
 	JUST_RELOADED = 0;
-	ARX_MINIMAP_Reset();
+	g_miniMap.reset();
 
 	FADEDIR = 0;
 	FADEDURATION = 0;
 	LAST_JUMP_ENDTIME = 0;
 	FAST_RELEASE = 1;
 	MCache_ClearAll();
-	ARX_MINIMAP_PurgeTC();
+	g_miniMap.purgeTexContainer();
 	ARX_GAME_Reset(flag);
 	FlyingOverIO = NULL;
 
@@ -1157,7 +1156,7 @@ void DanaeClearLevel(long flag)
 	delete stone1, stone1 = NULL, stone1_count = 0;
 	
 	TextureContainer::DeleteAll(TextureContainer::Level);
-	MapMarkerTc = NULL;
+	g_miniMap.clearMarkerTexCont();
 	
 	arxtime.init();
 	
