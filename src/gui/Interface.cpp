@@ -3763,20 +3763,19 @@ void ARX_INTERFACE_Draw_Stealth_Gauge() {
 //-----------------------------------------------------------------------------
 void ARX_INTERFACE_DrawDamagedEquipment()
 {
-	if (CINEMASCOPE || BLOCK_PLAYER_CONTROLS) return;
+	if(CINEMASCOPE || BLOCK_PLAYER_CONTROLS)
+		return;
 
-	if (player.Interface & INTER_INVENTORYALL) return;
+	if(player.Interface & INTER_INVENTORYALL)
+		return;
 
 	long needdraw=0;
 
-	for (long i=0;i<5;i++)
-	{
-		if (iconequip[i])
-		{
+	for(long i = 0; i < 5; i++) {
+		if(iconequip[i]) {
 			long eq=-1;
 
-			switch (i)
-			{
+			switch (i) {
 				case 0:
 					eq = EQUIP_SLOT_WEAPON;
 					break;
@@ -3794,21 +3793,17 @@ void ARX_INTERFACE_DrawDamagedEquipment()
 					break;
 			}
 
-			if (player.equiped[eq]>0)
-			{
-				Entity * io=entities[player.equiped[eq]];
-				float ratio=io->durability/io->max_durability;
+			if(player.equiped[eq] > 0) {
+				Entity *io = entities[player.equiped[eq]];
+				float ratio = io->durability / io->max_durability;
 
-				if (ratio<=0.5f)
-				{
-					needdraw|=1<<i;
-				}
+				if(ratio <= 0.5f)
+					needdraw |= 1<<i;
 			}
 		}
 	}
 
-	if (needdraw)
-	{
+	if(needdraw) {
 		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 		GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 
@@ -3818,19 +3813,16 @@ void ARX_INTERFACE_DrawDamagedEquipment()
 
 		float px = INTERFACE_RATIO(InventoryX) + INTERFACE_RATIO(10 + 32 + 100);
 
-		if ( px < INTERFACE_RATIO( 10 + 32 ) ) px = INTERFACE_RATIO( 10 + 32 );
+		if(px < INTERFACE_RATIO( 10 + 32 ))
+			px = INTERFACE_RATIO( 10 + 32 );
 
 		float py = DANAESIZY - INTERFACE_RATIO(158);
 
-		for (long i=0;i<5;i++)
-		{
-			if ( (needdraw&(1<<i))&&
-				 (iconequip[i]) )
-			{
+		for(long i = 0; i < 5; i++) {
+			if((needdraw & (1<<i)) && iconequip[i]) {
 				long eq=-1;
 
-				switch (i)
-				{
+				switch(i) {
 					case 0:
 						eq = EQUIP_SLOT_WEAPON;
 						break;
@@ -3848,10 +3840,9 @@ void ARX_INTERFACE_DrawDamagedEquipment()
 						break;
 				}
 
-				if (player.equiped[eq]>0)
-				{
-					Entity * io=entities[player.equiped[eq]];
-					float ratio=io->durability/io->max_durability;
+				if(player.equiped[eq] > 0) {
+					Entity *io = entities[player.equiped[eq]];
+					float ratio = io->durability / io->max_durability;
 					Color col = Color3f(1.f-ratio, ratio, 0).to<u8>();
 					EERIEDrawBitmap2(px, py, INTERFACE_RATIO_DWORD(iconequip[i]->m_dwWidth),
 					                 INTERFACE_RATIO_DWORD(iconequip[i]->m_dwHeight), 0.001f, iconequip[i], col);
