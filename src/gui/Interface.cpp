@@ -1205,22 +1205,18 @@ void GetInfosCombine()
 {
 	Entity * io = NULL;
 
-	if (player.bag)
-	for (int iNbBag=0; iNbBag<player.bag; iNbBag++)
-	for (size_t j=0;j<INVENTORY_Y;j++)
-	for (size_t i=0;i<INVENTORY_X;i++)
-	{
+	if(player.bag)
+	for(int iNbBag = 0; iNbBag < player.bag; iNbBag++)
+	for(size_t j = 0; j < INVENTORY_Y; j++)
+	for(size_t i = 0; i < INVENTORY_X; i++) {
 		io = inventory[iNbBag][i][j].io;
 		GetInfosCombineWithIO(io);
 	}
 
-	if (SecondaryInventory)
-	{
-		for (long j=0;j<SecondaryInventory->sizey;j++)
-		{
-			for (long i=0;i<SecondaryInventory->sizex;i++)
-			{
-				io=SecondaryInventory->slot[i][j].io;
+	if(SecondaryInventory) {
+		for(long j = 0; j < SecondaryInventory->sizey; j++) {
+			for(long i = 0; i < SecondaryInventory->sizex; i++) {
+				io = SecondaryInventory->slot[i][j].io;
 				GetInfosCombineWithIO(io);
 			}
 		}
@@ -1442,7 +1438,7 @@ bool ArxGame::manageEditorControls() {
 						eMouseState = MOUSE_IN_REDIST_ICON;
 						SpecialCursor = CURSOR_INTERACTION_ON;
 
-						if ((EERIEMouseButton & 1) && !(LastMouseClick & 1)) {
+						if((EERIEMouseButton & 1) && !(LastMouseClick & 1)) {
 							ARX_INTERFACE_BookOpenClose(1);
 							EERIEMouseButton &=~1;
 						}
@@ -1525,11 +1521,11 @@ bool ArxGame::manageEditorControls() {
 						}
 
 						EERIEMouseButton &=~1;
-					} else if ((EERIEMouseButton & 2) && !(LastMouseClick & 2)) {
+					} else if((EERIEMouseButton & 2) && !(LastMouseClick & 2)) {
 						ARX_INTERFACE_BookOpenClose(2);
 						ARX_INVENTORY_OpenClose(NULL);
 
-						if (player.Interface & INTER_INVENTORYALL) {
+						if(player.Interface & INTER_INVENTORYALL) {
 							bInventoryClosing = true;
 						} else {
 							if(player.Interface & INTER_INVENTORY) {
@@ -1555,33 +1551,28 @@ bool ArxGame::manageEditorControls() {
 						TRUE_PLAYER_MOUSELOOK_ON = false;
 					}
 
-					if (DRAGINTER == NULL)
+					if(DRAGINTER == NULL)
 						return false;
 				}
 			}
 
 			// steal
-			if (player.Interface & INTER_STEAL)
-			{
+			if(player.Interface & INTER_STEAL) {
 				px = static_cast<float>(-lSLID_VALUE);
 				py = DANAESIZY - INTERFACE_RATIO(78 + 32);
 
-				if (MouseInRect(px, py, px + INTERFACE_RATIO(32), py + INTERFACE_RATIO(32)))
-				{
+				if(MouseInRect(px, py, px + INTERFACE_RATIO(32), py + INTERFACE_RATIO(32))) {
 					eMouseState=MOUSE_IN_STEAL_ICON;
 					SpecialCursor=CURSOR_INTERACTION_ON;
 
-					if ((EERIEMouseButton & 1) && !(LastMouseClick & 1))
-					{
+					if((EERIEMouseButton & 1) && !(LastMouseClick & 1)) {
 						ARX_INVENTORY_OpenClose(ioSteal);
 
-						if (player.Interface&(INTER_INVENTORY | INTER_INVENTORYALL))
-						{
+						if(player.Interface&(INTER_INVENTORY | INTER_INVENTORYALL)) {
 							ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
 						}
 
-						if (SecondaryInventory != NULL)
-						{
+						if(SecondaryInventory) {
 							SendIOScriptEvent(ioSteal, SM_STEAL);
 
 							bForceEscapeFreeLook=true;
@@ -1591,7 +1582,7 @@ bool ArxGame::manageEditorControls() {
 						EERIEMouseButton &=~1;
 					}
 
-					if (DRAGINTER == NULL)
+					if(DRAGINTER == NULL)
 						return false;
 				}
 			}
@@ -1599,16 +1590,13 @@ bool ArxGame::manageEditorControls() {
 	}
 
 	// gros player book
-	if (player.Interface & INTER_MAP)
-	{
+	if(player.Interface & INTER_MAP) {
 		px = 97 * Xratio;
 		py = 64 * Yratio;
 		
 		TextureContainer* playerbook = ITC.Get("playerbook");
-		if (playerbook)
-		{
-			if (MouseInRect(px, py, px + playerbook->m_dwWidth * Xratio, py + playerbook->m_dwHeight * Yratio))
-			{
+		if(playerbook) {
+			if(MouseInRect(px, py, px + playerbook->m_dwWidth * Xratio, py + playerbook->m_dwHeight * Yratio)) {
 				eMouseState = MOUSE_IN_BOOK;
 			}
 		}
@@ -1622,23 +1610,18 @@ bool ArxGame::manageEditorControls() {
 		}
 	}
 	
-	if (!PLAYER_INTERFACE_HIDE_COUNT && (TSecondaryInventory!=NULL))
-	{
+	if(!PLAYER_INTERFACE_HIDE_COUNT && TSecondaryInventory) {
 		px = INTERFACE_RATIO(InventoryX) + INTERFACE_RATIO(16);
 		py = INTERFACE_RATIO_DWORD(BasicInventorySkin->m_dwHeight) - INTERFACE_RATIO(16);
 		Entity * temp=(Entity *)TSecondaryInventory->io;
 
-		if (temp && !(temp->ioflags & IO_SHOP) && !(temp == ioSteal))
-		{
-			if (MouseInRect(px,py, px + INTERFACE_RATIO(16), py + INTERFACE_RATIO(16)))
-			{
+		if(temp && !(temp->ioflags & IO_SHOP) && !(temp == ioSteal)) {
+			if(MouseInRect(px,py, px + INTERFACE_RATIO(16), py + INTERFACE_RATIO(16))) {
 				eMouseState = MOUSE_IN_INVENTORY_PICKALL_ICON;
 				SpecialCursor=CURSOR_INTERACTION_ON;
 
-				if ((EERIEMouseButton & 1) && !(LastMouseClick & 1))
-				{
-					if (TSecondaryInventory)
-					{
+				if((EERIEMouseButton & 1) && !(LastMouseClick & 1)) {
+					if(TSecondaryInventory) {
 						// play un son que si un item est pris
 						ARX_INVENTORY_TakeAllFromSecondaryInventory();
 					}
@@ -1646,7 +1629,7 @@ bool ArxGame::manageEditorControls() {
 					EERIEMouseButton &=~1;
 				}
 
-				if (DRAGINTER == NULL)
+				if(DRAGINTER == NULL)
 					return false;
 			}
 		}
@@ -1654,26 +1637,19 @@ bool ArxGame::manageEditorControls() {
 		//py = 20;
 		px = INTERFACE_RATIO(InventoryX) + INTERFACE_RATIO_DWORD(BasicInventorySkin->m_dwWidth) - INTERFACE_RATIO(32);
 
-		if (MouseInRect(px,py, px + INTERFACE_RATIO(16), py + INTERFACE_RATIO(16)))
-		{
+		if(MouseInRect(px,py, px + INTERFACE_RATIO(16), py + INTERFACE_RATIO(16))) {
 			eMouseState = MOUSE_IN_INVENTORY_CLOSE_ICON;
 			SpecialCursor=CURSOR_INTERACTION_ON;
 
-			if ((EERIEMouseButton & 1) && !(LastMouseClick & 1))
-			{
+			if((EERIEMouseButton & 1) && !(LastMouseClick & 1)) {
 				Entity * io = NULL;
 
-				if (SecondaryInventory!=NULL)
-				{
+				if(SecondaryInventory)
 					io = (Entity *)SecondaryInventory->io;
-				}
 				else if (player.Interface & INTER_STEAL)
-				{
 					io = ioSteal;
-				}
 
-				if (io!=NULL)
-				{
+				if(io) {
 					ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
 					InventoryDir=-1;
 					SendIOScriptEvent(io,SM_INVENTORY2_CLOSE);
@@ -1684,7 +1660,7 @@ bool ArxGame::manageEditorControls() {
 				EERIEMouseButton &=~1;
 			}
 
-			if (DRAGINTER == NULL)
+			if(DRAGINTER == NULL)
 				return false;
 		}
 	}
@@ -1833,39 +1809,31 @@ bool ArxGame::manageEditorControls() {
 			}
 		}
 
-	if (COMBINE)
-	{
-		if ((!CURRENT_TORCH) || (CURRENT_TORCH && (COMBINE != CURRENT_TORCH)))
-		{
+	if(COMBINE) {
+		if(!CURRENT_TORCH || (CURRENT_TORCH && (COMBINE != CURRENT_TORCH))) {
 			Vec3f pos;
 
-			if (GetItemWorldPosition(COMBINE,&pos))
-			{
+			if(GetItemWorldPosition(COMBINE, &pos)) {
 				if(fartherThan(pos, player.pos, 300.f))
 					COMBINE=NULL;
 			}
-			else COMBINE=NULL;
+			else
+				COMBINE=NULL;
 		}
 	}
 
-	if ((EERIEMouseButton & 1) && !(LastMouseClick & 1) && ((COMBINE !=NULL) || COMBINEGOLD))
-	{
-			ReleaseInfosCombine();
+	if((EERIEMouseButton & 1) && !(LastMouseClick & 1) && (COMBINE || COMBINEGOLD)) {
+		ReleaseInfosCombine();
 
 		Entity * io;
 
-		if ((io=FlyingOverIO)!=NULL)
-		{
-			if (COMBINEGOLD)
-			{
+		if((io=FlyingOverIO)!=NULL) {
+			if(COMBINEGOLD) {
 				char temp[256];
 				strcpy(temp,"gold_coin");
 				SendIOScriptEvent(io,SM_COMBINE,temp);
-			}
-			else
-			{
-				if (io!=COMBINE)
-				{
+			} else {
+				if(io != COMBINE) {
 					std::string temp = COMBINE->long_name();
 					EVENT_SENDER=COMBINE;
 
@@ -1876,37 +1844,29 @@ bool ArxGame::manageEditorControls() {
 					}
 				}
 			}
-		}
-
-		else // GLights
-		{
+		} else { // GLights
 			float fMaxdist = 300;
 
-			if (Project.telekinesis) fMaxdist = 850;
+			if(Project.telekinesis)
+				fMaxdist = 850;
 
 			for(size_t i = 0; i < MAX_LIGHTS; i++) {
 				if ((GLight[i]!=NULL) &&
 					(GLight[i]->exist) &&
 					!fartherThan(GLight[i]->pos, player.pos, fMaxdist) &&
-					(!(GLight[i]->extras & EXTRAS_NO_IGNIT)))
+					!(GLight[i]->extras & EXTRAS_NO_IGNIT))
 				{
-					if (MouseInRect(GLight[i]->mins.x, GLight[i]->mins.y, GLight[i]->maxs.x, GLight[i]->maxs.y))
-					{
-						if (COMBINE->ioflags & IO_ITEM)
-						{
-							if ((COMBINE == CURRENT_TORCH) || (COMBINE->_itemdata->LightValue == 1))
-							{
-								if (GLight[i]->status != 1)
-								{
+					if(MouseInRect(GLight[i]->mins.x, GLight[i]->mins.y, GLight[i]->maxs.x, GLight[i]->maxs.y)) {
+						if(COMBINE->ioflags & IO_ITEM) {
+							if((COMBINE == CURRENT_TORCH) || (COMBINE->_itemdata->LightValue == 1)) {
+								if(GLight[i]->status != 1) {
 									GLight[i]->status = 1;
 									ARX_SOUND_PlaySFX(SND_TORCH_START, &GLight[i]->pos);
 								}
 							}
 
-							if (COMBINE->_itemdata->LightValue == 0)
-							{
-								if (GLight[i]->status != 0)
-								{
+							if(COMBINE->_itemdata->LightValue == 0) {
+								if(GLight[i]->status != 0) {
 									GLight[i]->status = 0;
 									ARX_SOUND_PlaySFX(SND_TORCH_END, &GLight[i]->pos);
 									SendIOScriptEvent(COMBINE, SM_CUSTOM, "douse");
@@ -1921,60 +1881,51 @@ bool ArxGame::manageEditorControls() {
 		COMBINEGOLD=0;
 		bool bQuitCombine = true;
 
-		if ((player.Interface & INTER_INVENTORY))
-		{
-			if (player.bag)
-			{
+		if((player.Interface & INTER_INVENTORY)) {
+			if(player.bag) {
 
-					float fCenterX	= DANAECENTERX + INTERFACE_RATIO(-320 + 35) + INTERFACE_RATIO_DWORD(ITC.Get("hero_inventory")->m_dwWidth) - INTERFACE_RATIO(32 + 3) ;
-					float fSizY		= DANAESIZY - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY) + INTERFACE_RATIO(- 3 + 25) ;
-
+				float fCenterX	= DANAECENTERX + INTERFACE_RATIO(-320 + 35) + INTERFACE_RATIO_DWORD(ITC.Get("hero_inventory")->m_dwWidth) - INTERFACE_RATIO(32 + 3) ;
+				float fSizY		= DANAESIZY - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY) + INTERFACE_RATIO(- 3 + 25) ;
 
 				float posx = ARX_CAST_TO_INT_THEN_FLOAT( fCenterX );
 				float posy = ARX_CAST_TO_INT_THEN_FLOAT( fSizY );
 
-				if (sActiveInventory > 0)
-				{
-					if (MouseInRect(posx, posy, posx+INTERFACE_RATIO(32), posy+INTERFACE_RATIO(32)))
+				if(sActiveInventory > 0) {
+					if(MouseInRect(posx, posy, posx+INTERFACE_RATIO(32), posy+INTERFACE_RATIO(32)))
 						bQuitCombine = false;
 				}
 
-				if (sActiveInventory < player.bag-1)
-				{
-
-					float fRatio	= INTERFACE_RATIO(32 + 5);
+				if(sActiveInventory < player.bag-1) {
+					float fRatio = INTERFACE_RATIO(32 + 5);
 
 					posy += checked_range_cast<int>(fRatio);
 
-					if (MouseInRect(posx, posy, posx+INTERFACE_RATIO(32), posy+INTERFACE_RATIO(32)))
+					if(MouseInRect(posx, posy, posx+INTERFACE_RATIO(32), posy+INTERFACE_RATIO(32)))
 						bQuitCombine = false;
 				}
 			}
 		}
 
-		if (bQuitCombine)
-		{
+		if(bQuitCombine) {
 			COMBINE=NULL;
 			EERIEMouseButton &= ~1;
 		}
 	}
 
-		//lights
-	if (COMBINE)
-	{
+	//lights
+	if(COMBINE) {
 		float fMaxdist = 300;
 
-		if (Project.telekinesis) fMaxdist = 850;
+		if(Project.telekinesis)
+			fMaxdist = 850;
 
 		for(size_t i = 0; i < MAX_LIGHTS; i++) {
 			if ((GLight[i]!=NULL) &&
 				(GLight[i]->exist) &&
-
 				!fartherThan(GLight[i]->pos, player.pos, fMaxdist) &&
-				(!(GLight[i]->extras & EXTRAS_NO_IGNIT)))
+				!(GLight[i]->extras & EXTRAS_NO_IGNIT))
 			{
-				if (MouseInRect(GLight[i]->mins.x, GLight[i]->mins.y, GLight[i]->maxs.x, GLight[i]->maxs.y))
-				{
+				if(MouseInRect(GLight[i]->mins.x, GLight[i]->mins.y, GLight[i]->maxs.x, GLight[i]->maxs.y)) {
 					SpecialCursor = CURSOR_INTERACTION_ON;
 				}
 			}
@@ -1982,33 +1933,28 @@ bool ArxGame::manageEditorControls() {
 	}
 
 	// Double Clicked and not already combining.
-	if ((EERIEMouseButton & 4) && (COMBINE==NULL))
-	{
+	if((EERIEMouseButton & 4) && (COMBINE==NULL)) {
 		long accept_combine=1;
 
-		if ((SecondaryInventory!=NULL) && (InSecondaryInventoryPos(&DANAEMouse)))
-		{
+		if((SecondaryInventory!=NULL) && (InSecondaryInventoryPos(&DANAEMouse))) {
 			Entity * io=(Entity *)SecondaryInventory->io;
 
 			if (io->ioflags & IO_SHOP) accept_combine=0;
 		}
 
-		if (accept_combine)
-		{
-
-			if ((FlyingOverIO) &&
-				( (FlyingOverIO->ioflags & IO_ITEM) && !(FlyingOverIO->ioflags & IO_MOVABLE)))
-			{
+		if(accept_combine) {
+			if(FlyingOverIO && ((FlyingOverIO->ioflags & IO_ITEM) && !(FlyingOverIO->ioflags & IO_MOVABLE))) {
 				COMBINE=FlyingOverIO;
 				GetInfosCombine();
-				EERIEMouseButton&=~4;
+				EERIEMouseButton &= ~4;
 			}
-			else if (InInventoryPos(&DANAEMouse)) EERIEMouseButton&=4;
+			else if(InInventoryPos(&DANAEMouse))
+				EERIEMouseButton &= 4;
 		}
 	}
 
 	// Checks for Object Dragging
-	if (!EDITMODE)
+	if(!EDITMODE)
 		if (( DRAGGING && !PLAYER_MOUSELOOK_ON &&
 			(!GInput->actionPressed(CONTROLS_CUST_MAGICMODE)) &&
 			(DRAGINTER==NULL)
@@ -2019,51 +1965,40 @@ bool ArxGame::manageEditorControls() {
 			(DRAGINTER==NULL))
 			)
 		{
-			if ( !TakeFromInventory(&STARTDRAG))
-			{
+			if(!TakeFromInventory(&STARTDRAG)) {
 				bool bOk = false;
 
 				Entity *io = InterClick(&STARTDRAG);
 
-				if (io && !BLOCK_PLAYER_CONTROLS)
-				{
-					if (ARX_MOUSE_OVER & ARX_MOUSE_OVER_BOOK)
-					{
-						if (io->show == SHOW_FLAG_ON_PLAYER)
+				if(io && !BLOCK_PLAYER_CONTROLS) {
+					if(ARX_MOUSE_OVER & ARX_MOUSE_OVER_BOOK) {
+						if(io->show == SHOW_FLAG_ON_PLAYER)
 							bOk = true;
-					}
-					else
-					{
+					} else {
 						bOk = true;
 					}
 				}
 
-				if (bOk)
-				{
+				if(bOk) {
 					Set_DragInter(io);
 
-					if (io!=NULL)
-					{
+					if(io) {
 						ARX_PLAYER_Remove_Invisibility();
 
-						if (DRAGINTER->show==SHOW_FLAG_ON_PLAYER)
-						{
+						if(DRAGINTER->show==SHOW_FLAG_ON_PLAYER) {
 							ARX_EQUIPMENT_UnEquip(entities.player(),DRAGINTER);
 							RemoveFromAllInventories(DRAGINTER);
 							DRAGINTER->bbox2.x=-1;
-									}
+						}
 
-						if (!EDITMODE)
-						{
-							if ((io->ioflags & IO_NPC) || (io->ioflags & IO_FIX))
-							{
+						if(!EDITMODE) {
+							if((io->ioflags & IO_NPC) || (io->ioflags & IO_FIX)) {
 								Set_DragInter(NULL);
 								goto suivant;
 							}
 						}
 
-						if (io->ioflags & IO_UNDERWATER)
-						{
+						if(io->ioflags & IO_UNDERWATER) {
 							io->ioflags&=~IO_UNDERWATER;
 							ARX_SOUND_PlayInterface(SND_PLOUF, 0.8F + 0.4F * rnd());
 						}
@@ -2078,7 +2013,8 @@ bool ArxGame::manageEditorControls() {
 				suivant:
 					;
 			}
-			else ARX_PLAYER_Remove_Invisibility();
+			else
+				ARX_PLAYER_Remove_Invisibility();
 		}
 	
 	}
