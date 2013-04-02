@@ -3552,21 +3552,18 @@ void ARX_INTERFACE_DrawInventory(short _sNum, int _iX=0, int _iY=0)
 
 	ARX_INTERFACE_DrawItem(ITC.Get("hero_inventory"), fPosX, fPosY - INTERFACE_RATIO(5));
 
-	for (size_t j=0;j<INVENTORY_Y;j++)
-		for (size_t i=0;i<INVENTORY_X;i++)
-		{
-			Entity * io = inventory[_sNum][i][j].io;
+	for(size_t j = 0; j < INVENTORY_Y; j++) {
+		for(size_t i = 0; i < INVENTORY_X; i++) {
+			Entity *io = inventory[_sNum][i][j].io;
 
-			if ((io!=NULL) && (inventory[_sNum][i][j].show))
-			{
-				TextureContainer * tc=io->inv;
-				TextureContainer * tc2=NULL;
+			if(io && inventory[_sNum][i][j].show) {
+				TextureContainer *tc = io->inv;
+				TextureContainer *tc2 = NULL;
 
-				if (NeedHalo(io))
+				if(NeedHalo(io))
 					tc2 = io->inv->getHalo();
 
-				if(tc != NULL) {
-					
+				if(tc) {
 					float px = fPosX + i*INTERFACE_RATIO(32) + INTERFACE_RATIO(7);
 					float py = fPosY + j*INTERFACE_RATIO(32) + INTERFACE_RATIO(6);
 					
@@ -3590,8 +3587,7 @@ void ARX_INTERFACE_DrawInventory(short _sNum, int _iX=0, int _iY=0)
 						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 					}
 
-					if (tc2)
-					{
+					if(tc2) {
 						ARX_INTERFACE_HALO_Render(
 							io->halo.color.r, io->halo.color.g, io->halo.color.b,
 							io->halo.flags,
@@ -3600,11 +3596,12 @@ void ARX_INTERFACE_DrawInventory(short _sNum, int _iX=0, int _iY=0)
 							py, INTERFACE_RATIO(1), INTERFACE_RATIO(1));
 					}
 
-					if ((io->ioflags & IO_ITEM) && (io->_itemdata->count!=1))
+					if((io->ioflags & IO_ITEM) && io->_itemdata->count != 1)
 						ARX_INTERFACE_DrawNumber(px, py, io->_itemdata->count, 3, Color::white);
 				}
 			}
 		}
+	}
 }
 
 extern TextureContainer * stealth_gauge_tc;
