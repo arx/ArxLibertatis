@@ -1875,7 +1875,7 @@ void ArxGame::Render() {
 			long SHOWLEVEL = ARX_LEVELS_GetRealNum(CURRENTLEVEL);
 
 		if(SHOWLEVEL >= 0 && SHOWLEVEL < 32)
-			g_miniMap.show(SHOWLEVEL, 1, 1);
+			g_miniMap.showPlayerMiniMap(SHOWLEVEL);
 	}
 
 		//-------------------------------------------------------------------------

@@ -103,13 +103,35 @@ public:
     void purgeTexContainer();
     void validatePlayerPos();
     
-    void show(int showLevel, int flag, int fl2 = 0);
+    /*! 
+    * Shows the top right minimap
+    *
+    * @param int showLevel
+    */
+    void showPlayerMiniMap(int showLevel);
+    
+    /*! 
+    * Shows the zoomed in minimap in the book
+    *
+    * @param int showLevel
+    */
+    //void showBookMiniMap(int showLevel);
+    
+    /*! 
+    * Shows the entire map in the book
+    *
+    * @param int showLevel
+    */
+    //void showBookEntireMap(int showLevel);
+    
+    void show(int showLevel, int flag, int fl2=0);
+    
     void reveal();
     
     void clearMarkerTexCont();
     
 private:
-
+    
     float m_miniOffsetX[MAX_MINIMAP_DATA];
     float m_miniOffsetY[MAX_MINIMAP_DATA];
     float m_mapMaxY[MAX_MINIMAP_DATA];
