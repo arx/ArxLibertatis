@@ -2030,41 +2030,38 @@ bool ArxGame::manageEditorControls() {
 //-----------------------------------------------------------------------------
 void ARX_INTERFACE_Combat_Mode(long i)
 {
-	if ( (i>=1) &&  (player.Interface & INTER_COMBATMODE) ) return;
+	if(i >= 1 && (player.Interface & INTER_COMBATMODE))
+		return;
 
-	if ( (i==0) &&  !(player.Interface & INTER_COMBATMODE) ) return;
+	if(i == 0 && !(player.Interface & INTER_COMBATMODE))
+		return;
 
-	if (EDITMODE) return;
+	if(EDITMODE)
+		return;
 
-	if  ((player.Interface & INTER_COMBATMODE) && (entities.player()))
-	{
+	if((player.Interface & INTER_COMBATMODE) && entities.player()) {
 		player.Interface&=~INTER_COMBATMODE;
 		player.Interface&=~INTER_NO_STRIKE;
 
 		ARX_EQUIPMENT_LaunchPlayerUnReadyWeapon();
 		long weapontype=ARX_EQUIPMENT_GetPlayerWeaponType();
 
-		if (entities.player() && arrowobj && (weapontype == WEAPON_BOW))
-		{
+		if(entities.player() && arrowobj && (weapontype == WEAPON_BOW)) {
 			EERIE_LINKEDOBJ_UnLinkObjectFromObject(entities.player()->obj, arrowobj);
 		}
 
 		player.doingmagic=0;
-	}
-
-	else  if (((entities.player()->animlayer[1].cur_anim == NULL) || (entities.player()->animlayer[1].cur_anim == entities.player()->anims[ANIM_WAIT]))
-		&& (entities.player()))
+	} else if((!entities.player()->animlayer[1].cur_anim || entities.player()->animlayer[1].cur_anim == entities.player()->anims[ANIM_WAIT])
+		&& entities.player())
 	{
 		ARX_INTERFACE_BookOpenClose(2);
 
 		player.Interface|=INTER_COMBATMODE;
 
-		if (i==2)
-		{
+		if(i==2) {
 			player.Interface|=INTER_NO_STRIKE;
 
-			if (config.input.mouseLookToggle)
-			{
+			if(config.input.mouseLookToggle) {
 				TRUE_PLAYER_MOUSELOOK_ON = true;
 				SLID_START=float(arxtime);
 			}
