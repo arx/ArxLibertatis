@@ -2862,45 +2862,33 @@ void ARX_INTERFACE_Reset()
 //-----------------------------------------------------------------------------
 void ARX_INTERFACE_SetCinemascope(long status,long smooth)
 {
-	if (status)
-	{
+	if(status) {
 		CINEMASCOPE=1;//++;
 		g_TimeStartCinemascope = arxtime.get_updated();
-	}
-	else
-	{
+	} else {
 		CINEMASCOPE=0;//--;
 		g_TimeStartCinemascope = 0;
 	}
 
 	arx_assert(CINEMASCOPE >= 0);
 
-	if (CINEMASCOPE)
-	{
-		if (smooth)
-		{
+	if(CINEMASCOPE) {
+		if(smooth)
 			CINEMA_INC=1;
-		}
-		else CINEMA_DECAL=100;
-	}
-	else
-	{
-		if (smooth)
-		{
+		else
+			CINEMA_DECAL=100;
+	} else {
+		if(smooth)
 			CINEMA_INC=-1;
-		}
-		else CINEMA_DECAL=0;
+		else
+			CINEMA_DECAL=0;
 	}
 
-	if (player.Interface & INTER_INVENTORY)
-	{
+	if(player.Interface & INTER_INVENTORY)
 		player.Interface &=~ INTER_INVENTORY;
-	}
 
-	if (player.Interface & INTER_INVENTORYALL)
-	{
+	if(player.Interface & INTER_INVENTORYALL)
 		player.Interface &=~ INTER_INVENTORYALL;
-	}
 }
 
 //-----------------------------------------------------------------------------
