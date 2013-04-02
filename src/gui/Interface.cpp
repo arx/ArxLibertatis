@@ -3607,23 +3607,26 @@ void ARX_INTERFACE_DrawInventory(short _sNum, int _iX=0, int _iY=0)
 extern TextureContainer * stealth_gauge_tc;
 extern float CURRENT_PLAYER_COLOR;
 
-// Stealth Gauge Drawing
+/*!
+ * \brief Stealth Gauge Drawing
+ */
 void ARX_INTERFACE_Draw_Stealth_Gauge() {
 	
-	if ((stealth_gauge_tc) && (!CINEMASCOPE))
-	{
+	if(stealth_gauge_tc && !CINEMASCOPE) {
 		float v=GetPlayerStealth();
 
-		if (CURRENT_PLAYER_COLOR<v)
-		{
+		if(CURRENT_PLAYER_COLOR < v) {
 			float px = INTERFACE_RATIO(InventoryX) + INTERFACE_RATIO(110);
-			if (px < INTERFACE_RATIO(10)) px = INTERFACE_RATIO(10);
+			if(px < INTERFACE_RATIO(10))
+				px = INTERFACE_RATIO(10);
 
 			float py = DANAESIZY - INTERFACE_RATIO(126 + 32);
-			float t=v-CURRENT_PLAYER_COLOR;
+			float t = v - CURRENT_PLAYER_COLOR;
 
-			if (t>=15) v=1.f;
-			else v=(t*( 1.0f / 15 ))*0.9f+0.1f;
+			if(t >= 15)
+				v = 1.f;
+			else
+				v = (t*( 1.0f / 15 ))* 0.9f + 0.1f;
 
 			GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
