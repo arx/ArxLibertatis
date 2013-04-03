@@ -630,7 +630,7 @@ static long ARX_CHANGELEVEL_Push_Player(long level) {
 	long allocsize = sizeof(ARX_CHANGELEVEL_PLAYER) + 48000;
 	allocsize += Keyring.size() * 64;
 	allocsize += 80 * PlayerQuest.size();
-	allocsize += sizeof(SavedMapMarkerData) * Mapmarkers.size();
+	allocsize += sizeof(SavedMapMarkerData) * g_miniMap.m_mapMarkers.size();
 
 	char * dat = new char[allocsize];
 
@@ -686,7 +686,7 @@ static long ARX_CHANGELEVEL_Push_Player(long level) {
 		}
 	}
 
-	std::copy(minimap, minimap + SAVED_MAX_MINIMAPS, asp->minimap);
+	std::copy(g_miniMap.m_levels, g_miniMap.m_levels + SAVED_MAX_MINIMAPS, asp->minimap);
 
 	asp->falling = player.falling;
 	asp->gold = player.gold;
@@ -758,7 +758,7 @@ static long ARX_CHANGELEVEL_Push_Player(long level) {
 	asp->nb_PlayerQuest = PlayerQuest.size();
 	asp->keyring_nb = Keyring.size();
 	asp->Global_Magic_Mode = GLOBAL_MAGIC_MODE;
-	asp->Nb_Mapmarkers = Mapmarkers.size();
+	asp->Nb_Mapmarkers = g_miniMap.m_mapMarkers.size();
 	
 	asp->LAST_VALID_POS = LastValidPlayerPos;
 	
@@ -794,9 +794,9 @@ static long ARX_CHANGELEVEL_Push_Player(long level) {
 		pos += SAVED_KEYRING_SLOT_SIZE;
 	}
 	
-	for(size_t i = 0; i < Mapmarkers.size(); i++) {
+	for(size_t i = 0; i < g_miniMap.m_mapMarkers.size(); i++) {
 		SavedMapMarkerData * acmd = reinterpret_cast<SavedMapMarkerData *>(dat + pos);
-		*acmd = Mapmarkers[i];
+		*acmd = g_miniMap.m_mapMarkers[i];
 		pos += sizeof(SavedMapMarkerData);
 	}
 	
@@ -1763,9 +1763,9 @@ static long ARX_CHANGELEVEL_Pop_Player() {
 	player.xp = asp->xp;
 	GLOBAL_MAGIC_MODE = asp->Global_Magic_Mode;
 	
-	ARX_MINIMAP_PurgeTC();
+	g_miniMap.purgeTexContainer();
 	assert(SAVED_MAX_MINIMAPS == MAX_MINIMAPS);
-	std::copy(asp->minimap, asp->minimap + SAVED_MAX_MINIMAPS, minimap);
+	std::copy(asp->minimap, asp->minimap + SAVED_MAX_MINIMAPS, g_miniMap.m_levels);
 	
 	Entity & io = *entities.player();
 	assert(SAVED_MAX_ANIMS == MAX_ANIMS);
@@ -1814,13 +1814,13 @@ static long ARX_CHANGELEVEL_Pop_Player() {
 		LogError << "Truncated data";
 		return -1;
 	}
-	ARX_MAPMARKER_Init();
-	arx_assert(Mapmarkers.empty());
-	Mapmarkers.reserve(asp->Nb_Mapmarkers);
+	g_miniMap.mapMarkerInit();
+	arx_assert(g_miniMap.m_mapMarkers.empty());
+	g_miniMap.m_mapMarkers.reserve(asp->Nb_Mapmarkers);
 	for(int i = 0; i < asp->Nb_Mapmarkers; i++) {
 		const SavedMapMarkerData * acmd = reinterpret_cast<const SavedMapMarkerData *>(dat + pos);
 		pos += sizeof(SavedMapMarkerData);
-		ARX_MAPMARKER_Add(acmd->x, acmd->y, acmd->lvl, script::loadUnlocalized(boost::to_lower_copy(util::loadString(acmd->name))));
+		g_miniMap.mapMarkerAdd(acmd->x, acmd->y, acmd->lvl, script::loadUnlocalized(boost::to_lower_copy(util::loadString(acmd->name))));
 	}
 	
 	ARX_PLAYER_Restore_Skin();
