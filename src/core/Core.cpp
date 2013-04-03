@@ -569,7 +569,7 @@ static bool initializeGame() {
 	
 	CalcFPS(true);
 	
-	ARX_MAPMARKER_Init();
+	g_miniMap.mapMarkerInit();
 	
 	memset(scursor, 0, sizeof(scursor));
 	
@@ -655,7 +655,7 @@ static bool initializeGame() {
 	ARXMenu_Options_Control_SetInvertMouse(config.input.invertMouse);
 	ARXMenu_Options_Control_SetMouseSensitivity(config.input.mouseSensitivity);
 	
-	ARX_MINIMAP_FirstInit();
+	g_miniMap.firstInit();
 	
 	Project.torch = Color3f(1.f, 0.8f, 0.66666f);
 	LogDebug("InitializeDanae");
@@ -3330,7 +3330,7 @@ void shutdownGame() {
 	
 	mainApp->getWindow()->hide();
 	
-	ARX_MINIMAP_PurgeTC();
+	g_miniMap.purgeTexContainer();
 	
 	KillInterfaceTextureContainers();
 	Menu2_Close();

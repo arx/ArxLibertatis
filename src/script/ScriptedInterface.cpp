@@ -330,7 +330,7 @@ public:
 			
 			DebugScript(' ' << options << ' ' << marker);
 			
-			ARX_MAPMARKER_Remove(marker);
+			g_miniMap.mapMarkerRemove(marker);
 			
 		} else {
 			
@@ -342,7 +342,7 @@ public:
 			
 			DebugScript(' ' << options << ' ' << x << ' ' << y << ' ' << level << ' ' << marker);
 			
-			ARX_MAPMARKER_Add(x, y, level, marker);
+			g_miniMap.mapMarkerAdd(x, y, level, marker);
 			
 		}
 		
