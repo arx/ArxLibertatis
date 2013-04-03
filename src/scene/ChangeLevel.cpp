@@ -1764,7 +1764,7 @@ static long ARX_CHANGELEVEL_Pop_Player() {
 	GLOBAL_MAGIC_MODE = asp->Global_Magic_Mode;
 	
 	g_miniMap.purgeTexContainer();
-	assert(SAVED_MAX_MINIMAPS == MAX_MINIMAPS);
+	assert(SAVED_MAX_MINIMAPS == MAX_MINIMAP_LEVELS);
 	std::copy(asp->minimap, asp->minimap + SAVED_MAX_MINIMAPS, g_miniMap.m_levels);
 	
 	Entity & io = *entities.player();
