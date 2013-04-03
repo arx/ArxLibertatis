@@ -686,7 +686,7 @@ static long ARX_CHANGELEVEL_Push_Player(long level) {
 		}
 	}
 
-	std::copy(g_miniMap.m_data, g_miniMap.m_data + SAVED_MAX_MINIMAPS, asp->minimap);
+	std::copy(g_miniMap.m_levels, g_miniMap.m_levels + SAVED_MAX_MINIMAPS, asp->minimap);
 
 	asp->falling = player.falling;
 	asp->gold = player.gold;
@@ -1765,7 +1765,7 @@ static long ARX_CHANGELEVEL_Pop_Player() {
 	
 	g_miniMap.purgeTexContainer();
 	assert(SAVED_MAX_MINIMAPS == MAX_MINIMAPS);
-	std::copy(asp->minimap, asp->minimap + SAVED_MAX_MINIMAPS, g_miniMap.m_data);
+	std::copy(asp->minimap, asp->minimap + SAVED_MAX_MINIMAPS, g_miniMap.m_levels);
 	
 	Entity & io = *entities.player();
 	assert(SAVED_MAX_ANIMS == MAX_ANIMS);
