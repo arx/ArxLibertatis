@@ -111,11 +111,11 @@ public:
     void showPlayerMiniMap(int showLevel);
     
     /*! 
-    * Shows the zoomed in minimap in the book
+    * Shows the zoomed-in minimap in the book
     *
     * @param int showLevel
     */
-    //void showBookMiniMap(int showLevel);
+    void showBookMiniMap(int showLevel);
     
     /*! 
     * Shows the entire map in the book
