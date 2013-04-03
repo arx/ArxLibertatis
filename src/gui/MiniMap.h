@@ -54,7 +54,7 @@ class TextureContainer;
 
 #define MINIMAP_MAX_X 50
 #define MINIMAP_MAX_Z 50
-#define MAX_MINIMAP_DATA 32
+#define MAX_MINIMAP_LEVELS 32
 
 class MiniMap {
 
@@ -80,7 +80,7 @@ public:
         unsigned char m_revealed[MINIMAP_MAX_X][MINIMAP_MAX_Z];
     };
     
-    MiniMapData m_data[MAX_MINIMAP_DATA];
+    MiniMapData m_levels[MAX_MINIMAP_LEVELS];
     
     //! Map markers
     struct MapMarkerData {
@@ -122,19 +122,18 @@ public:
     *
     * @param int showLevel
     */
-    //void showBookEntireMap(int showLevel);
+    void showBookEntireMap(int showLevel);
     
-    void show(int showLevel, int flag, int fl2=0);
-    
+    //! Reveals entirely all levels
     void reveal();
     
     void clearMarkerTexCont();
     
 private:
     
-    float m_miniOffsetX[MAX_MINIMAP_DATA];
-    float m_miniOffsetY[MAX_MINIMAP_DATA];
-    float m_mapMaxY[MAX_MINIMAP_DATA];
+    float m_miniOffsetX[MAX_MINIMAP_LEVELS];
+    float m_miniOffsetY[MAX_MINIMAP_LEVELS];
+    float m_mapMaxY[MAX_MINIMAP_LEVELS];
     
     TextureContainer *m_pTexDetect;
     TextureContainer *m_mapMarkerTexCont;
@@ -143,9 +142,16 @@ private:
     float m_playerLastPosZ;
     
     void getData(int showLevel);
-    void resetData();
+    void resetLevels();
     void loadOffsets();
     void validatePos();
+    
+    /*! 
+    * Reveals the direct surroundings of the player
+    *
+    * @param int showLevel
+    */
+    void revealPlayerPos(int showLevel);
     
     /*! 
     * Gets the id from the MapMarker's name. Returns -1 when not found.

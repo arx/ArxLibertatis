@@ -5902,7 +5902,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 		long SHOWLEVEL = Book_MapPage - 1;
 
 		if (SHOWLEVEL >= 0 && SHOWLEVEL < 32)
-			g_miniMap.show(SHOWLEVEL, 0);
+			g_miniMap.showBookEntireMap(SHOWLEVEL);
 
 		SHOWLEVEL = ARX_LEVELS_GetRealNum(CURRENTLEVEL);
 
