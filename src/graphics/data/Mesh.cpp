@@ -631,7 +631,7 @@ static void camEE_RTP(TexturedVertex * in, TexturedVertex * out, EERIE_CAMERA * 
 	}
 
 	tout.rhw = cam->orgTrans.use_focal * out->rhw;
-	out->p.z = out->p.z * cam->Zmul();
+	out->p.z = out->p.z * (1.f / cam->Zdiv);
 	out->p.x = cam->orgTrans.mod.x + (tout.p.x * tout.rhw);
 	out->p.y = cam->orgTrans.mod.y + (tout.p.y * tout.rhw) ;
 }

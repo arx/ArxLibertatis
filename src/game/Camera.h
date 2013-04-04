@@ -72,9 +72,6 @@ struct EERIE_CAMERA {
 
 	float smoothing;
 	float Zdiv;
-	float Zmul() {
-		return 1.f / Zdiv;
-	}
 
 	Color bkgcolor; // TODO was BGR!
 	float cdepth;
