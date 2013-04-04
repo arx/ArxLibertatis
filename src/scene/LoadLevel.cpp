@@ -1178,47 +1178,38 @@ void DanaeClearAll()
 	DanaeClearLevel();
 }
 
-//*************************************************************************************
-//*************************************************************************************
-
 void RestoreLastLoadedLightning()
 {
 	long pos = 0;
 	long bcount = CountBkgVertex();
 
-	if (LastLoadedLightningNb <= 0) return;
+	if(LastLoadedLightningNb <= 0)
+		return;
 
-	if (LastLoadedLightning == NULL) return;
+	if(LastLoadedLightning == NULL)
+		return;
 
-	if (bcount != LastLoadedLightningNb)
-	{
+	if(bcount != LastLoadedLightningNb) {
 		free(LastLoadedLightning);
 		LastLoadedLightning = NULL;
 		LastLoadedLightningNb = 0;
 		return;
 	}
 
-	EERIE_BKG_INFO * eg;
-
 	EERIE_BACKGROUND * eb = ACTIVEBKG;
 
 	bcount = LastLoadedLightningNb;
 
-	EERIEPOLY * ep;
+	for(long j = 0; j < eb->Zsize; j++)
+		for(long i = 0; i < eb->Xsize; i++) {
+			EERIE_BKG_INFO *eg = (EERIE_BKG_INFO *)&eb->Backg[i+j*eb->Xsize];
 
-	for (long j = 0; j < eb->Zsize; j++)
-		for (long i = 0; i < eb->Xsize; i++)
-		{
-			eg = (EERIE_BKG_INFO *)&eb->Backg[i+j*eb->Xsize];
-
-			for (long l = 0; l < eg->nbpoly; l++)
-			{
-				ep = &eg->polydata[l];
+			for(long l = 0; l < eg->nbpoly; l++) {
+				EERIEPOLY *ep = &eg->polydata[l];
 
 				long nbvert = (ep->type & POLY_QUAD) ? 4 : 3;
 
-				for (long k = 0; k < nbvert; k++)
-				{
+				for(long k = 0; k < nbvert; k++) {
 					u32 dc = LastLoadedLightning[pos];
 					pos++;
 					dc = dc | 0xFF000000;
@@ -1226,7 +1217,8 @@ void RestoreLastLoadedLightning()
 					ep->tv[k].specular = ep->v[k].specular = 0xFF000000;
 					bcount--;
 
-					if (bcount <= 0) goto plusloin;
+					if(bcount <= 0)
+						goto plusloin;
 				}
 			}
 		}
@@ -1237,14 +1229,11 @@ plusloin:
 	LastLoadedLightning = NULL;
 	LastLoadedLightningNb = 0;
 
-	for (size_t i = 0; i < MAX_ACTIONS; i++)
-	{
-		if (actions[i].exist)
-		{
+	for(size_t i = 0; i < MAX_ACTIONS; i++) {
+		if(actions[i].exist) {
 			long modd = 0;
 
-			switch (actions[i].type)
-			{
+			switch(actions[i].type) {
 				case ACT_FIRE:
 					modd = 1;
 					break;
