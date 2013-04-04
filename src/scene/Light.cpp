@@ -348,9 +348,7 @@ float my_CheckInPoly(float x, float y, float z, EERIEPOLY * mon_ep, EERIE_LIGHT 
 
 static void ARX_EERIE_LIGHT_Make(EERIEPOLY * ep, float * epr, float * epg, float * epb, EERIE_LIGHT * light)
 {
-	int		i;				// iterator
 	float	distance[4];	// distance from light to each vertex
-	float	fRes;			// value of light intensity for a given vertex
 
 	if (ep->type & POLY_IGNORE)
 		return;
@@ -359,55 +357,43 @@ static void ARX_EERIE_LIGHT_Make(EERIEPOLY * ep, float * epr, float * epg, float
 	int nbvert = (ep->type & POLY_QUAD) ? 4 : 3;
 
 	// compute light - vertex distance
-	for(i = 0; i < nbvert; i++) {
+	for(int i = 0; i < nbvert; i++) {
 		distance[i] = dist(light->pos, ep->v[i].p);
 	}
 
-	for (i = 0; i < nbvert; i++)
-	{
-		fRes = 1.0f;
+	for(int i = 0; i < nbvert; i++) {
+		// value of light intensity for a given vertex
+		float fRes = 1.0f;
 
-		if (distance[i] < light->fallend)
-		{
-			//---------------------- start MODE_NORMALS
-			if (ModeLight & MODE_NORMALS)
-			{
+		if(distance[i] < light->fallend) {
+			//MODE_NORMALS
+			if(ModeLight & MODE_NORMALS) {
 				Vec3f vLight = (light->pos - ep->v[i].p).getNormalized(); // vector (light to vertex)
 
 				fRes = dot(vLight, ep->nrml[i]);
 
-				if (fRes < 0.0f)
-				{
+				if(fRes < 0.0f)
 					fRes = 0.0f;
-				}
 			}
 
-			//---------------------- end MODE_NORMALS
-
-			//---------------------- start MODE_RAYLAUNCH
-			if ((ModeLight & MODE_RAYLAUNCH) && !(light->extras & EXTRAS_NOCASTED))
-			{
+			//MODE_RAYLAUNCH
+			if((ModeLight & MODE_RAYLAUNCH) && !(light->extras & EXTRAS_NOCASTED)) {
 				Vec3f orgn = light->pos, dest = ep->v[i].p, hit;
 
-				if (ModeLight & MODE_SMOOTH)
+				if(ModeLight & MODE_SMOOTH)
 					fRes *= my_CheckInPoly(ep->v[i].p.x, ep->v[i].p.y, ep->v[i].p.z, ep, light);
 				else
 					fRes *= Visible(&orgn, &dest, ep, &hit);
 			}
 
-			//---------------------- fin MODE_RAYLAUNCH
-
 			float fTemp1 = light->intensity * fRes * GLOBAL_LIGHT_FACTOR;
 			float fr, fg, fb;
 
-			if (distance[i] <= light->fallstart)
-			{
+			if(distance[i] <= light->fallstart) {
 				fr = light->rgb.r * fTemp1;
 				fg = light->rgb.g * fTemp1;
 				fb = light->rgb.b * fTemp1;
-			}
-			else
-			{
+			} else {
 				float intensity = (light->falldiff - (distance[i] - light->fallstart)) * light->falldiffmul;
 				float fTemp2 = fTemp1 * intensity;
 				fr = light->rgb.r * fTemp2;
@@ -432,7 +418,8 @@ void ComputeLight2DPos(EERIE_LIGHT * _pL) {
 		float siz = 50;
 		float fMaxdist = 300;
 
-		if (Project.telekinesis) fMaxdist = 850;
+		if(Project.telekinesis)
+			fMaxdist = 850;
 
 		float t = siz * (1.0f - 1.0f / (out.rhw * fMaxdist)) + 10;
 
@@ -469,11 +456,9 @@ void TreatBackgroundDynlights()
 				ComputeLight2DPos(GLight[i]);
 			}
 
-			if (GLight[i]->status == 0)
-			{
+			if(GLight[i]->status == 0) {
 				// just extinguished
-				if (GLight[i]->tl > 0)
-				{
+				if(GLight[i]->tl > 0) {
 					DynLight[GLight[i]->tl].exist = 0;
 					GLight[i]->tl = -1;
 					Vec3f _pos2;
@@ -487,12 +472,9 @@ void TreatBackgroundDynlights()
 						}
 					}
 				}
-			}
-			else
-			{
+			} else {
 				// just light up
-				if (GLight[i]->tl <= 0)
-				{
+				if(GLight[i]->tl <= 0) {
 					Vec3f _pos2;
 
 					for(size_t l = 0; l < entities.size(); l++) {
@@ -531,7 +513,6 @@ void TreatBackgroundDynlights()
 				}
 			}
 		}
-
 	}
 }
 
