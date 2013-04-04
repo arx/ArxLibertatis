@@ -62,8 +62,8 @@ enum ViewModeFlag {
 	VIEWMODE_NOLIGHTSOURCES = (1<<3),
 	VIEWMODE_INFOTEXT       = (1<<4)
 };
-DECLARE_FLAGS(ViewModeFlag, ViewModeFlags);
-DECLARE_FLAGS_OPERATORS(ViewModeFlags);
+DECLARE_FLAGS(ViewModeFlag, ViewModeFlags)
+DECLARE_FLAGS_OPERATORS(ViewModeFlags)
 
 enum LightModeFlag {
 	MODE_STATICLIGHT  = (1<<0),
@@ -73,18 +73,22 @@ enum LightModeFlag {
 	MODE_RAYLAUNCH    = (1<<4),
 	MODE_SMOOTH       = (1<<5)
 };
-DECLARE_FLAGS(LightModeFlag, LightMode);
-DECLARE_FLAGS_OPERATORS(LightMode);
+DECLARE_FLAGS(LightModeFlag, LightMode)
+DECLARE_FLAGS_OPERATORS(LightMode)
 
 struct PROJECT {
 	
-	PROJECT() : improve(0), telekinesis(0), demo(0), torch(Color3f::black) { }
+	PROJECT() :
+		improve(0),
+		telekinesis(0),
+		demo(0),
+		torch(Color3f::black)
+	{}
 	
 	long improve;
 	long telekinesis;
 	long demo;
 	Color3f torch;
-	
 };
 
 extern PROJECT Project;
