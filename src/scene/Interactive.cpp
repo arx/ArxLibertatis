@@ -213,7 +213,8 @@ static void ARX_INTERACTIVE_ForceIOLeaveZone(Entity * io, long flags) {
 
 void ARX_INTERACTIVE_DestroyDynamicInfo(Entity * io)
 {
-	if (!io) return;
+	if(!io)
+		return;
 
 	long n = io->index();
 
@@ -221,12 +222,8 @@ void ARX_INTERACTIVE_DestroyDynamicInfo(Entity * io)
 
 	ARX_INTERACTIVE_ForceIOLeaveZone(io, 0);
 
-	for (long i = 0; i < MAX_EQUIPED; i++)
-	{
-		if ((player.equiped[i])
-		        &&	(player.equiped[i] == n)
-		        &&	ValidIONum(player.equiped[i]))
-		{
+	for(long i = 0; i < MAX_EQUIPED; i++) {
+		if(player.equiped[i] && player.equiped[i] == n && ValidIONum(player.equiped[i])) {
 			ARX_EQUIPMENT_UnEquip(entities.player(), entities[player.equiped[i]], 1);
 			player.equiped[i] = 0;
 		}
@@ -236,23 +233,17 @@ void ARX_INTERACTIVE_DestroyDynamicInfo(Entity * io)
 	
 	ARX_SCRIPT_EventStackClearForIo(io);
 	
-	if (ValidIONum(n))
-	{
-		for (size_t i = 0; i < MAX_SPELLS; i++)
-		{
-			if ((spells[i].exist) && (spells[i].caster == n))
-			{
+	if(ValidIONum(n)) {
+		for(size_t i = 0; i < MAX_SPELLS; i++) {
+			if(spells[i].exist && spells[i].caster == n) {
 				spells[i].tolive = 0;
 			}
 		}
 	}
 
-	if (io->flarecount)
-	{
-		for (long i = 0; i < MAX_FLARES; i++)
-		{
-			if ((flare[i].exist)
-			        &&	(flare[i].io == io))
+	if(io->flarecount) {
+		for(long i = 0; i < MAX_FLARES; i++) {
+			if(flare[i].exist && flare[i].io == io)
 				flare[i].io = NULL;
 		}
 	}
@@ -274,18 +265,14 @@ void ARX_INTERACTIVE_DestroyDynamicInfo(Entity * io)
 
 	io->dynlight = -1;
 
-	if (io->obj)
-	{
+	if(io->obj) {
 		EERIE_3DOBJ * eobj = io->obj;
 
-		for (long k = 0; k < eobj->nblinked; k++)
-		{
-			if ((eobj->linked[k].lgroup != -1) && eobj->linked[k].obj)
-			{
+		for(long k = 0; k < eobj->nblinked; k++) {
+			if(eobj->linked[k].lgroup != -1 && eobj->linked[k].obj) {
 				Entity * ioo = (Entity *)eobj->linked[k].io;
 
-				if ((ioo) && ValidIOAddress(ioo))
-				{
+				if(ioo && ValidIOAddress(ioo)) {
 					long ll = eobj->linked[k].lidx;
 					Vec3f pos, vector;
 					pos = io->obj->vertexlist3[ll].v;
