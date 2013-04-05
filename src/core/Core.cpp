@@ -1454,7 +1454,8 @@ static void PlayerLaunchArrow_Test(float aimratio, float poisonous, Vec3f * pos,
 	QuatFromMatrix(quat,mat);
 	float velocity = aimratio + 0.3f;
 
-	if (velocity<0.9f) velocity=0.9f;
+	if(velocity < 0.9f)
+		velocity = 0.9f;
 
 	Vec3f v1,v2;
 	Vec3f vv(0,0,1);
@@ -1469,25 +1470,13 @@ static void PlayerLaunchArrow_Test(float aimratio, float poisonous, Vec3f * pos,
 	MatrixSetByVectors(&tmat,&v1,&v2);
 	QuatFromMatrix(quat,tmat);
 
-	float wd=(float)ARX_EQUIPMENT_Apply(
-		entities.player(),IO_EQUIPITEM_ELEMENT_Damages,1);
+	float wd = (float)ARX_EQUIPMENT_Apply(entities.player(), IO_EQUIPITEM_ELEMENT_Damages, 1);
 
 	float weapon_damages=wd;
 
-	float damages=
-		weapon_damages
-		*(1.f+
-		(float)(player.Full_Skill_Projectile + player.Full_Attribute_Dexterity )*( 1.0f / 50 ));
+	float damages = weapon_damages*(1.f + (float)(player.Full_Skill_Projectile + player.Full_Attribute_Dexterity )*( 1.0f / 50 ));
 
-	ARX_THROWN_OBJECT_Throw(
-										0, //source
-										&position,
-										&vect,
-										&upvect,
-										&quat,
-							velocity,
-										damages,
-										poisonous); //damages
+	ARX_THROWN_OBJECT_Throw(/*source*/0, &position, &vect, &upvect, &quat, velocity, damages, poisonous);
 }
 
 extern long sp_max;
