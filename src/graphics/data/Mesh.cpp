@@ -464,11 +464,8 @@ EERIEPOLY * GetMaxPoly(float x, float y, float z) {
 		
 		EERIEPOLY * ep = feg->polyin[k];
 		
-		if(ep->type & POLY_WATER) continue;
-		
-		if(ep->type & POLY_TRANS) continue;
-		
-		if(ep->type & POLY_NOCOL) continue;
+		if(ep->type & (POLY_WATER | POLY_TRANS | POLY_NOCOL))
+			continue;
 		
 		if(PointIn2DPolyXZ(ep, x, z)) {
 			float ret;
