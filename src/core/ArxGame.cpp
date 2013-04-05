@@ -1000,9 +1000,7 @@ void ArxGame::speechControlledCinematic() {
 		float itime=1.f-rtime;
 
 		if(rtime >= 0.f && rtime <= 1.f && io) {
-			float alpha,beta,distance,_dist;
-
-			switch (acs->type) {
+			switch(acs->type) {
 			case ARX_CINE_SPEECH_KEEP: {
 				subj.orgTrans.pos = acs->pos1;
 				subj.angle.a=acs->pos2.x;
@@ -1013,9 +1011,9 @@ void ArxGame::speechControlledCinematic() {
 									   }
 			case ARX_CINE_SPEECH_ZOOM: {
 				//need to compute current values
-				alpha=acs->startangle.a*itime+acs->endangle.a*rtime;
-				beta=acs->startangle.b*itime+acs->endangle.b*rtime;
-				distance=acs->startpos*itime+acs->endpos*rtime;
+				float alpha = acs->startangle.a * itime + acs->endangle.a * rtime;
+				float beta = acs->startangle.b * itime + acs->endangle.b * rtime;
+				float distance = acs->startpos * itime + acs->endpos * rtime;
 				Vec3f targetpos = acs->pos1;
 				conversationcamera.orgTrans.pos.x=-EEsin(radians(MAKEANGLE(io->angle.b+beta)))*distance+targetpos.x;
 				conversationcamera.orgTrans.pos.y= EEsin(radians(MAKEANGLE(io->angle.a+alpha)))*distance+targetpos.y;
@@ -1043,9 +1041,9 @@ void ArxGame::speechControlledCinematic() {
 						Vector_RotateY(&vect2,&vect,90);
 					}
 
-					distance=acs->f0*itime+acs->f1*rtime;
+					float distance=acs->f0*itime+acs->f1*rtime;
 					vect2 *= distance;
-					_dist = dist(from, to);
+					float _dist = dist(from, to);
 					Vec3f tfrom = from + vect * acs->startpos * (1.0f / 100) * _dist;
 					Vec3f tto = from + vect * acs->endpos * (1.0f / 100) * _dist;
 					Vec3f targetpos;
@@ -1081,7 +1079,7 @@ void ArxGame::speechControlledCinematic() {
 						targetpos = acs->pos2;
 					}
 
-					distance=(acs->startpos*itime+acs->endpos*rtime)*( 1.0f / 100 );
+					float distance = (acs->startpos * itime + acs->endpos * rtime) * (1.0f/100);
 
 					Vec3f vect = conversationcamera.orgTrans.pos - targetpos;
 					Vec3f vect2;
