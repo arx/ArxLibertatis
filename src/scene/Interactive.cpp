@@ -3295,34 +3295,32 @@ bool HaveCommonGroup(Entity * io, Entity * ioo) {
 	return io && ioo && intersect(io->groups, ioo->groups);
 }
 
-float ARX_INTERACTIVE_GetArmorClass(Entity * io)
-{
-	if (!io) return -1;
+float ARX_INTERACTIVE_GetArmorClass(Entity * io) {
 
-	if (!(io->ioflags & IO_NPC)) return -1;
+	if(!io || !(io->ioflags & IO_NPC))
+		return -1;
 
 	float ac = io->_npcdata->armor_class;
 
-	for (long i = 0; i < io->nb_spells_on; i++)
-	{
+	for(long i = 0; i < io->nb_spells_on; i++) {
 		long n = io->spells_on[i];
 
-		if (spells[n].exist)
-		{
-			switch (spells[n].type)
-			{
+		if(spells[n].exist) {
+			switch(spells[n].type) {
 				case SPELL_ARMOR:
 					ac += spells[n].caster_level;
 					break;
 				case SPELL_LOWER_ARMOR:
 					ac -= spells[n].caster_level;
 					break;
-				default: break;
+				default:
+				break;
 			}
 		}
 	}
 
-	if (ac < 0) ac = 0;
+	if(ac < 0)
+		ac = 0;
 
 	return ac;
 }
