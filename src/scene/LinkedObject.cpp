@@ -51,21 +51,17 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "scene/Object.h"
 
-using std::free;
-using std::realloc;
-using std::memcpy;
-
 /*!
  * \brief Releases Data for linked objects
  * \param obj
  */
 void EERIE_LINKEDOBJ_ReleaseData(EERIE_3DOBJ * obj) {
 	
-	if(!obj) {
+	if(!obj)
 		return;
-	}
 	
-	free(obj->linked), obj->linked = NULL;
+	std::free(obj->linked);
+	obj->linked = NULL;
 	obj->nblinked = 0;
 }
 
@@ -75,7 +71,8 @@ void EERIE_LINKEDOBJ_ReleaseData(EERIE_3DOBJ * obj) {
  */
 void EERIE_LINKEDOBJ_InitData(EERIE_3DOBJ * obj)
 {
-	if (obj == NULL) return;
+	if(!obj)
+		return;
 
 	obj->nblinked = 0;
 	obj->linked = NULL;
@@ -88,9 +85,10 @@ void EERIE_LINKEDOBJ_InitData(EERIE_3DOBJ * obj)
  */
 static long EERIE_LINKEDOBJ_Create(EERIE_3DOBJ * obj)
 {
-	if (obj == NULL) return -1;
+	if(!obj)
+		return -1;
 
-	obj->linked = (EERIE_LINKED *)realloc(obj->linked, sizeof(EERIE_LINKED) * (obj->nblinked + 1));
+	obj->linked = (EERIE_LINKED *)std::realloc(obj->linked, sizeof(EERIE_LINKED) * (obj->nblinked + 1));
 	obj->linked[obj->nblinked].lgroup = -1;
 	obj->linked[obj->nblinked].lidx = -1;
 	obj->linked[obj->nblinked].obj = NULL;
@@ -117,19 +115,18 @@ static void EERIE_LINKEDOBJ_Remove(EERIE_3DOBJ * obj, long num)
 		return;
 	}
 
-	memcpy(&obj->linked[num], &obj->linked[num+1], sizeof(EERIE_LINKED)*(obj->nblinked - num - 1));
-	obj->linked = (EERIE_LINKED *)realloc(obj->linked, sizeof(EERIE_LINKED) * (obj->nblinked - 1));
+	std::memcpy(&obj->linked[num], &obj->linked[num+1], sizeof(EERIE_LINKED)*(obj->nblinked - num - 1));
+	obj->linked = (EERIE_LINKED *)std::realloc(obj->linked, sizeof(EERIE_LINKED) * (obj->nblinked - 1));
 	obj->nblinked--;
 }
 
 
 void EERIE_LINKEDOBJ_UnLinkObjectFromObject(EERIE_3DOBJ * obj, EERIE_3DOBJ * tounlink) {
 	
-	if(!obj || !tounlink) {
+	if(!obj || !tounlink)
 		return;
-	}
 	
-	for (long k = 0; k < obj->nblinked; k++) {
+	for(long k = 0; k < obj->nblinked; k++) {
 		if(obj->linked[k].lgroup != -1 && obj->linked[k].obj == tounlink) {
 			for(size_t i = 0; i < tounlink->vertexlist.size(); i++) {
 				tounlink->vertexlist[i].vert.p = tounlink->vertexlist[i].v;
