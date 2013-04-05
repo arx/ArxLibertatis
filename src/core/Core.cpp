@@ -378,16 +378,13 @@ void SendGameReadyMsg()
 	SendMsgToAllIO(SM_GAME_READY);
 }
 
-void DANAE_KillCinematic()
-{
-	if (	(ControlCinematique)
-		&&	(ControlCinematique->projectload)	)
-	{
-		ControlCinematique->projectload=false;
+void DANAE_KillCinematic() {
+	if(ControlCinematique && ControlCinematique->projectload) {
+		ControlCinematique->projectload = false;
 		ControlCinematique->OneTimeSceneReInit();
 		ControlCinematique->DeleteDeviceObjects();
-		PLAY_LOADED_CINEMATIC=0;
-		CINE_PRELOAD=0;
+		PLAY_LOADED_CINEMATIC = 0;
+		CINE_PRELOAD = 0;
 	}
 }
 
@@ -692,7 +689,6 @@ static bool initializeGame() {
 void runGame() {
 	
 	if(initializeGame()) {
-		
 		// Init all done, start the main loop
 		mainApp->run();
 		
@@ -719,12 +715,13 @@ Entity * FlyingOverObject(Vec2s * pos)
 {
 	Entity* io = NULL;
 
-	if ((io = GetFromInventory(pos)) != NULL)
+	if((io = GetFromInventory(pos)) != NULL)
 		return io;
-	if (InInventoryPos(pos))
+
+	if(InInventoryPos(pos))
 		return NULL;
 
-	if ((io = InterClick(pos)) != NULL)
+	if((io = InterClick(pos)) != NULL)
 		return io;
 
 	return NULL;
@@ -732,23 +729,20 @@ Entity * FlyingOverObject(Vec2s * pos)
 
 extern long ARX_NPC_ApplyCuts(Entity * io);
 
-//*************************************************************************************
-
 void LoadSysTextures()
 {
 	char temp[256];
 
-	for (long i=1;i<10;i++)
-	{
+	for(long i = 1; i < 10; i++) {
 		sprintf(temp,"graph/particles/shine%ld", i);
 		flaretc.shine[i]=TextureContainer::LoadUI(temp);
-
 	}
 
-	for (size_t i=0;i<SPELL_COUNT;i++)
-	{
+	for(size_t i = 0; i < SPELL_COUNT; i++) {
 		// TODO use constructor for initialization
-		for (long j = 0; j < 6; j++) spellicons[i].symbols[j] = RUNE_NONE;
+		for(long j = 0; j < 6; j++)
+			spellicons[i].symbols[j] = RUNE_NONE;
+
 		spellicons[i].level = 0;
 		spellicons[i].spellid = SPELL_NONE;
 		spellicons[i].tc = NULL;
@@ -757,8 +751,6 @@ void LoadSysTextures()
 		spellicons[i].bAudibleAtStart = false;
 	}
 	
-	long i;
-
 	SPELL_ICON * current;
 
 	// Magic_Sight Level 1
@@ -1354,8 +1346,7 @@ void LoadSysTextures()
 	mecanism_tc=		TextureContainer::LoadUI("graph/interface/cursors/mecanism");
 	arrow_left_tc=		TextureContainer::LoadUI("graph/interface/icons/arrow_left");
 
-	for (i=0;i<MAX_EXPLO;i++)
-	{
+	for(long i = 0; i < MAX_EXPLO; i++) {
 		char temp[256];
 		sprintf(temp,"graph/particles/fireb_%02ld",i+1);
 		explo[i]= TextureContainer::LoadUI(temp);
@@ -1415,7 +1406,7 @@ void LoadSysTextures()
 	TextureContainer::LoadUI("graph/interface/cursors/drop");
 	TextureContainer::LoadUI("graph/interface/cursors/throw");
 	
-	for(i = 0; i < 8; i++) {
+	for(long i = 0; i < 8; i++) {
 		char temp[256];
 		sprintf(temp,"graph/interface/cursors/cursor%02ld", i);
 		scursor[i] = TextureContainer::LoadUI(temp);
