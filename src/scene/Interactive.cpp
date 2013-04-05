@@ -1484,9 +1484,8 @@ void ComputeVVPos(Entity * io)
 
 void ARX_INTERACTIVE_Teleport(Entity * io, Vec3f * target, bool flag) {
 	
-	if(!io) {
+	if(!io)
 		return;
-	}
 	
 	io->gameFlags &= ~GFLAG_NOCOMPUTATION;
 	io->room_flags |= 1;
@@ -1553,9 +1552,8 @@ Entity * AddInteractive(const res::path & classPath, EntityInstance instance, Ad
 
 void SetWeapon_On(Entity * io) {
 	
-	if(!io || !(io->ioflags & IO_NPC)) {
+	if(!io || !(io->ioflags & IO_NPC))
 		return;
-	}
 	
 	Entity * ioo = io->_npcdata->weapon;
 	
@@ -1567,27 +1565,25 @@ void SetWeapon_On(Entity * io) {
 
 void SetWeapon_Back(Entity * io) {
 	
-	if(!io || !(io->ioflags & IO_NPC)) {
+	if(!io || !(io->ioflags & IO_NPC))
 		return;
-	}
 	
 	Entity * ioo = io->_npcdata->weapon;
 	
 	if(ioo && ioo->obj) {
-		
 		EERIE_LINKEDOBJ_UnLinkObjectFromObject(io->obj, ioo->obj);
 
-		if (io->gameFlags & GFLAG_HIDEWEAPON) return;
+		if(io->gameFlags & GFLAG_HIDEWEAPON)
+			return;
 
 		long ni = io->obj->fastaccess.weapon_attach;
 
-		if (ni >= 0)
+		if(ni >= 0) {
 			EERIE_LINKEDOBJ_LinkObjectToObject(io->obj, ioo->obj, "weapon_attach", "primary_attach", ioo);
-		else
-		{
+		} else {
 			ni = io->obj->fastaccess.secondary_attach;
 
-			if (ni >= 0)
+			if(ni >= 0)
 				EERIE_LINKEDOBJ_LinkObjectToObject(io->obj, ioo->obj, "secondary_attach", "primary_attach", ioo);
 		}
 	}
@@ -1622,12 +1618,13 @@ static void GetIOScript(Entity * io, const res::path & script) {
 	loadScript(io->script, resources->getFile(script));
 }
 
-// Links an Interactive Object to another interactive object using an attach point
+/*!
+ * \brief Links an Interactive Object to another interactive object using an attach point
+ */
 void LinkObjToMe(Entity * io, Entity * io2, const std::string & attach) {
 	
-	if(!io || !io2) {
+	if(!io || !io2)
 		return;
-	}
 	
 	RemoveFromAllInventories(io2);
 	io2->show = SHOW_FLAG_LINKED;
@@ -2109,15 +2106,12 @@ void ReloadAllScripts() {
  * \param io
  */
 void MakeIOIdent(Entity * io) {
-	
-	if(!io) {
+	if(!io)
 		return;
-	}
 	
 	long t = 1;
 	
-	while(io->ident == 0) {
-		
+	while(io->ident == 0) {	
 		fs::path temp = fs::paths.user / io->full_name().string();
 		
 		if(!fs::is_directory(temp)) {
@@ -2297,50 +2291,47 @@ Entity * GetFirstInterAtPos(Vec2s * pos, long flag, Vec3f * _pRef, Entity ** _pT
 	Entity * foundPixel = NULL;
 	bool bPlayerEquiped = false;
 
-	if (Project.telekinesis)
-	{
+	if(Project.telekinesis) {
 		fMaxDist = 850;
 	}
 
 	int nStart = 1;
 	int nEnd = entities.size();
 
-	if ((flag == 3) && _pTable && _pnNbInTable)
-	{
+	if(flag == 3 && _pTable && _pnNbInTable) {
 		nStart = 0;
 		nEnd = *_pnNbInTable;
 	}
 
-	for (long i = nStart; i < nEnd; i++)
-	{
+	for(long i = nStart; i < nEnd; i++) {
 		bool bPass = true;
 
 		Entity * io;
 		
-		if ((flag == 3) && _pTable && _pnNbInTable) {
+		if(flag == 3 && _pTable && _pnNbInTable) {
 			io = _pTable[i];
 		} else {
 			io = entities[i];
 		}
 
 		// Is Object Valid ??
-		if (io == NULL) continue;
+		if(!io)
+			continue;
 
-		if (((io->ioflags & IO_CAMERA) || (io->ioflags & IO_MARKER))
-		        && (EDITMODE != 1)) continue;
+		if(((io->ioflags & IO_CAMERA) || (io->ioflags & IO_MARKER)) && EDITMODE != 1)
+			continue;
 
-		if ((!(io->gameFlags & GFLAG_INTERACTIVITY)) && (!EDITMODE)) continue;
+		if(!(io->gameFlags & GFLAG_INTERACTIVITY) && !EDITMODE)
+			continue;
 
 		// Is Object in TreatZone ??
 		bPlayerEquiped = IsEquipedByPlayer(io);
-		if ((bPlayerEquiped  && (player.Interface & INTER_MAP))
-		    || (io->gameFlags & GFLAG_ISINTREATZONE))
+		if ((bPlayerEquiped  && (player.Interface & INTER_MAP)) || (io->gameFlags & GFLAG_ISINTREATZONE))
 
 			// Is Object Displayed on screen ???
 			if ((io->show == SHOW_FLAG_IN_SCENE) || (bPlayerEquiped && flag) || (bPlayerEquiped  && (player.Interface & INTER_MAP) && (Book_Mode == BOOKMODE_STATS))) //((io->show==9) && (player.Interface & INTER_MAP)) )
 			{
-				if ((flag == 2) && _pTable && _pnNbInTable && ((*_pnNbInTable) < 256))
-				{
+				if(flag == 2 && _pTable && _pnNbInTable && ((*_pnNbInTable) < 256)) {
 					_pTable[ *_pnNbInTable ] = io;
 					(*_pnNbInTable)++;
 					continue;
@@ -2349,8 +2340,7 @@ Entity * GetFirstInterAtPos(Vec2s * pos, long flag, Vec3f * _pRef, Entity ** _pT
 				if ((pos->x >= io->bbox1.x) && (pos->x <= io->bbox2.x)
 				        && (pos->y >= io->bbox1.y) && (pos->y <= io->bbox2.y))
 				{
-					if (flag && _pRef)
-					{
+					if(flag && _pRef) {
 						float flDistanceToRef = distSqr(ACTIVECAM->orgTrans.pos, *_pRef);
 						float flDistanceToIO = distSqr(ACTIVECAM->orgTrans.pos, io->pos);
 						bPass = bPlayerEquiped || (flDistanceToIO < flDistanceToRef);
@@ -2358,21 +2348,18 @@ Entity * GetFirstInterAtPos(Vec2s * pos, long flag, Vec3f * _pRef, Entity ** _pT
 
 					float fp = fdist(io->pos, player.pos);
 
-					if ((!flag && (fp <= fMaxDist)) && ((foundBB == NULL) || (fp < fdistBB)))
-					{
+					if((!flag && fp <= fMaxDist) && (!foundBB || fp < fdistBB)) {
 						fdistBB = fp;
 						foundBB = io;
 					}
 
-					if ((io->ioflags & (IO_CAMERA | IO_MARKER | IO_GOLD)) || (bPlayerEquiped && !flag))
-					{
-						if (bPlayerEquiped)
+					if((io->ioflags & (IO_CAMERA | IO_MARKER | IO_GOLD)) || (bPlayerEquiped && !flag)) {
+						if(bPlayerEquiped)
 							fp = 0.f;
 						else
 							fp = fdist(io->pos, player.pos);
 
-						if ((fp < fdistBB) || (foundBB == NULL))
-						{
+						if(fp < fdistBB || !foundBB) {
 							fdistBB = fp;
 							foundBB = io;
 							foundPixel = io;
@@ -2389,15 +2376,13 @@ Entity * GetFirstInterAtPos(Vec2s * pos, long flag, Vec3f * _pRef, Entity ** _pT
 							n = PtIn2DPolyProj(io->obj, &io->obj->facelist[j] , pos->x, pos->y);
 						}
 
-						if (n > 0.f) 
-						{
-							if (bPlayerEquiped)
+						if(n > 0.f) {
+							if(bPlayerEquiped)
 								fp = 0.f;
 							else
 								fp = fdist(io->pos, player.pos);
 
-							if ((bPass && (fp <= fMaxDist)) && ((fp < _fdist) || (foundPixel == NULL)))
-							{
+							if((bPass && fp <= fMaxDist) && (fp < _fdist || !foundPixel)) {
 								{
 									_fdist = fp;
 									foundPixel = io;
@@ -2413,7 +2398,8 @@ Entity * GetFirstInterAtPos(Vec2s * pos, long flag, Vec3f * _pRef, Entity ** _pT
 			}
 	}
 
-	if (foundPixel) return foundPixel;
+	if(foundPixel)
+		return foundPixel;
 
 	return foundBB;
 }
