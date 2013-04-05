@@ -858,16 +858,12 @@ long ARX_SOUND_PlayCinematic(const res::path & name, bool isSpeech) {
 	channel.falloff.end = ARX_SOUND_DEFAULT_FALLEND;
 	
 	if (ACTIVECAM) {
-		Vec3f front, up;
-		float t;
-		t = radians(MAKEANGLE(ACTIVECAM->angle.b));
-		front.x = -EEsin(t);
-		front.y = 0.f;
-		front.z = EEcos(t);
+		float t = radians(MAKEANGLE(ACTIVECAM->angle.b));
+		Vec3f front(-EEsin(t), 0.f, EEcos(t));
 		front.normalize();
-		up.x = 0.f;
-		up.y = 1.f;
-		up.z = 0.f;
+
+		//TODO Hardcoded up vector
+		Vec3f up(0.f, 1.f, 0.f);
 		ARX_SOUND_SetListener(&ACTIVECAM->orgTrans.pos, &front, &up);
 	}
 	
