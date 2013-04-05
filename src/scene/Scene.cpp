@@ -1957,25 +1957,24 @@ void ARX_SCENE_Render() {
 	if(USE_PORTALS && portals)
 		ARX_PORTALS_Frustrum_RenderRooms_TransparencyT();
 
-	if(HALOCUR>0) {
+	if(HALOCUR > 0) {
 		GRenderer->ResetTexture(0);
 		GRenderer->SetBlendFunc(Renderer::BlendSrcColor, Renderer::BlendOne);
 		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 		GRenderer->SetCulling(Renderer::CullNone);
 		GRenderer->SetRenderState(Renderer::DepthWrite, false);
 
-		for(long i=0; i<HALOCUR; i++) {
-			//blue halo rendering (keyword : BLUE HALO RENDERING HIGHLIGHT AURA)
-			TexturedVertex * vert=&LATERDRAWHALO[(i<<2)];
+		for(int i=0; i < HALOCUR; i++) {
+			TexturedVertex *vert = &LATERDRAWHALO[(i<<2)];
 
 			if(vert[2].color == 0) {
 				GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
 				vert[2].color =0xFF000000;
 				EERIEDRAWPRIM(Renderer::TriangleFan, vert, 4);
 				GRenderer->SetBlendFunc(Renderer::BlendSrcColor, Renderer::BlendOne);
-			}
-			else
+			} else {
 				EERIEDRAWPRIM(Renderer::TriangleFan, vert, 4);
+			}
 		}
 
 		HALOCUR = 0;

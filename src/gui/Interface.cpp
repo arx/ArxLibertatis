@@ -5614,11 +5614,10 @@ void ARX_INTERFACE_ManageOpenedBook()
 			if(!BOOKZOOM)
 				ARX_EQUIPMENT_AttachPlayerWeaponToBack();
 
-			//blue halo rendering (keyword : BLUE HALO RENDERING HIGHLIGHT AURA)
 			if(HALOCUR > 0) {
 				GRenderer->ResetTexture(0);
 				GRenderer->SetBlendFunc(Renderer::BlendSrcColor, Renderer::BlendOne);
-				GRenderer->SetRenderState(Renderer::AlphaBlending, true);			
+				GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 				GRenderer->SetCulling(Renderer::CullNone);
 				GRenderer->SetRenderState(Renderer::DepthWrite, false);
 
@@ -5628,10 +5627,10 @@ void ARX_INTERFACE_ManageOpenedBook()
 					if(vert[2].color == 0) {
 						GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
 						vert[2].color =0xFF000000;
-						EERIEDRAWPRIM(Renderer::TriangleFan, vert, 4); //>>> DO NOT USE VERTEX BUFFER HERE <<<
+						EERIEDRAWPRIM(Renderer::TriangleFan, vert, 4);
 						GRenderer->SetBlendFunc(Renderer::BlendSrcColor, Renderer::BlendOne);
 					} else {
-						EERIEDRAWPRIM(Renderer::TriangleFan, vert, 4); //>>> DO NOT USE VERTEX BUFFER HERE <<<
+						EERIEDRAWPRIM(Renderer::TriangleFan, vert, 4);
 					}
 				}
 
