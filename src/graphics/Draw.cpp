@@ -201,24 +201,22 @@ bool TryToQuadify(EERIEPOLY * ep,EERIE_3DOBJ * eobj)
 	long fz = std::min(posz + 1, ACTIVEBKG->Zsize - 1L);
 	float tolerance=0.1f;
 
-	for (long kl = 0; kl < 2; kl++)
-	for (long zz=dz;zz<=fz;zz++)
-	for (long xx=dx;xx<=fx;xx++)
-	{
+	for(long kl = 0; kl < 2; kl++)
+	for(long zz = dz; zz <= fz; zz++)
+	for(long xx = dx; xx <= fx; xx++) {
 		long val1 = 0;
 
 		long type, val2;
-		if (!GetNameInfo(eobj->name, type, val1, val2))
+		if(!GetNameInfo(eobj->name, type, val1, val2))
 			return false;
 
-		if (type!=TYPE_ROOM)
+		if(type != TYPE_ROOM)
 			return false;
 
 		EERIE_BKG_INFO *eg = (EERIE_BKG_INFO *)&ACTIVEBKG->Backg[xx+zz*ACTIVEBKG->Xsize];
 
-		if (eg)
-		for (long n=0;n<eg->nbpoly;n++)
-		{
+		if(eg)
+		for(long n = 0; n < eg->nbpoly; n++) {
 			EERIEPOLY *ep2 = (EERIEPOLY *)&eg->polydata[n];
 
 			if(ep2->room != val1)
@@ -227,14 +225,11 @@ bool TryToQuadify(EERIEPOLY * ep,EERIE_3DOBJ * eobj)
 			if(ep == ep2)
 				continue;
 
-			if(kl == 0 && (ep2->type & POLY_QUAD) )
-			{
-				if(Quadable(ep,ep2,tolerance))
+			if(kl == 0 && (ep2->type & POLY_QUAD)) {
+				if(Quadable(ep, ep2, tolerance))
 					return true;
-			}
-			else if(kl == 1 && !(ep2->type & POLY_QUAD) )
-			{
-				if(Quadable(ep,ep2,tolerance))
+			} else if(kl == 1 && !(ep2->type & POLY_QUAD)) {
+				if(Quadable(ep, ep2, tolerance))
 					return true;
 			}
 		}
@@ -353,31 +348,26 @@ void EERIEDrawCircle(float x0, float y0, float r, Color col, float z) {
 	}
 }
 
-//*************************************************************************************
-//*************************************************************************************
-
 void EERIEDrawTrue3DLine(const Vec3f & orgn, const Vec3f & dest, Color col) {
 	
 	Vec3f vect = dest - orgn;
 	float m = ffsqrt(vect.lengthSqr());
 
-	if (m<=0) return;
+	if(m <= 0)
+		return;
 
 	vect *= 1 / m;
 	
 	Vec3f cpos = orgn;
 
-	while (m>0)
-	{
+	while(m > 0) {
 		float dep=std::min(m,30.f);
 		Vec3f tpos = cpos + (vect * dep);
 		EERIEDraw3DLine(cpos, tpos, col);
 		cpos = tpos;
-		m-=dep;
+		m -= dep;
 	}
 }
-//*************************************************************************************
-//*************************************************************************************
 
 void EERIEDraw3DLine(const Vec3f & orgn, const Vec3f & dest, Color col) {
 	
@@ -524,23 +514,23 @@ void EERIEPOLY_DrawWired(EERIEPOLY * ep, Color color) {
 	ltv[2].p.z-=0.0002f;
 	ltv[3].p.z-=0.0002f;
 
-	if (to==4) 
-	{
+	if(to == 4) {
 		memcpy(&ltv[2],&ep->tv[3],sizeof(TexturedVertex));
 		memcpy(&ltv[3],&ep->tv[2],sizeof(TexturedVertex));
 		memcpy(&ltv[4],&ep->tv[0],sizeof(TexturedVertex));
 		ltv[4].p.z-=0.0002f;
-	}
-	else memcpy(&ltv[to],&ltv[0],sizeof(TexturedVertex));
+	} else
+		memcpy(&ltv[to],&ltv[0],sizeof(TexturedVertex));
 
 	GRenderer->ResetTexture(0);
 
 	ColorBGRA col = color.toBGRA();
-	if (col)
-	 ltv[0].color=ltv[1].color=ltv[2].color=ltv[3].color=ltv[4].color=col;
-	else if (to==4)
-			ltv[0].color=ltv[1].color=ltv[2].color=ltv[3].color=ltv[4].color=0xFF00FF00;
-	else ltv[0].color=ltv[1].color=ltv[2].color=ltv[3].color=0xFFFFFF00;
+	if(col)
+		ltv[0].color=ltv[1].color=ltv[2].color=ltv[3].color=ltv[4].color=col;
+	else if(to == 4)
+		ltv[0].color=ltv[1].color=ltv[2].color=ltv[3].color=ltv[4].color=0xFF00FF00;
+	else
+		ltv[0].color=ltv[1].color=ltv[2].color=ltv[3].color=0xFFFFFF00;
 	
 	EERIEDRAWPRIM(Renderer::LineStrip, ltv, to + 1);
 }
