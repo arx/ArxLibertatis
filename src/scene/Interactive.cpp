@@ -113,7 +113,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "script/ScriptEvent.h"
 
 using std::min;
-using std::string;
 using std::vector;
 
 extern Entity * CAMERACONTROLLER;
@@ -128,10 +127,8 @@ long NbIOSelected = 0;
 #endif
 
 static bool IsCollidingInter(Entity * io, Vec3f * pos);
-static Entity * AddCamera(const res::path & classPath,
-                          EntityInstance instance = -1);
-static Entity * AddMarker(const res::path & classPath,
-                          EntityInstance instance = -1);
+static Entity * AddCamera(const res::path & classPath, EntityInstance instance = -1);
+static Entity * AddMarker(const res::path & classPath, EntityInstance instance = -1);
 
 float STARTED_ANGLE = 0;
 void Set_DragInter(Entity * io)
@@ -401,7 +398,7 @@ void ARX_INTERACTIVE_HideGore(Entity * io, long flag)
 	long gorenum = -1;
 
 	for(size_t nn = 0; nn < io->obj->texturecontainer.size(); nn++) {
-		if(io->obj->texturecontainer[nn] && io->obj->texturecontainer[nn]->m_texName.string().find("gore") != string::npos) {
+		if(io->obj->texturecontainer[nn] && io->obj->texturecontainer[nn]->m_texName.string().find("gore") != std::string::npos) {
 			gorenum = nn;
 			break;
 		}
@@ -1599,10 +1596,9 @@ void ARX_INTERACTIVE_Teleport(Entity * io, Vec3f * target, bool flag) {
 	ResetVVPos(io);
 }
 
-Entity * AddInteractive(const res::path & classPath, EntityInstance instance,
-                        AddInteractiveFlags flags) {
+Entity * AddInteractive(const res::path & classPath, EntityInstance instance, AddInteractiveFlags flags) {
 	
-	const string & ficc = classPath.string();
+	const std::string & ficc = classPath.string();
 	
 	Entity * io = NULL;
 	if(boost::contains(ficc, "items")) {
@@ -1759,8 +1755,7 @@ static void MakeTemporaryIOIdent(Entity * io) {
 	}
 }
 
-Entity * AddFix(const res::path & classPath, EntityInstance instance,
-                AddInteractiveFlags flags) {
+Entity * AddFix(const res::path & classPath, EntityInstance instance, AddInteractiveFlags flags) {
 	
 	res::path object = classPath + ".teo";
 	res::path script = classPath + ".asl";
@@ -1830,8 +1825,7 @@ Entity * AddFix(const res::path & classPath, EntityInstance instance,
 	return io;
 }
 
-static Entity * AddCamera(const res::path & classPath,
-                          EntityInstance instance) {
+static Entity * AddCamera(const res::path & classPath, EntityInstance instance) {
 	
 	res::path object = classPath + ".teo";
 	res::path script = classPath + ".asl";
@@ -1885,8 +1879,7 @@ static Entity * AddCamera(const res::path & classPath,
 	return io;
 }
 
-static Entity * AddMarker(const res::path & classPath,
-                          EntityInstance instance) {
+static Entity * AddMarker(const res::path & classPath, EntityInstance instance) {
 	
 	res::path object = classPath + ".teo";
 	res::path script = classPath + ".asl";
@@ -2061,8 +2054,7 @@ IO_NPCDATA::~IO_NPCDATA() {
 	free(pathfind.list);
 }
 
-Entity * AddNPC(const res::path & classPath, EntityInstance instance,
-                AddInteractiveFlags flags) {
+Entity * AddNPC(const res::path & classPath, EntityInstance instance, AddInteractiveFlags flags) {
 	
 	res::path object = classPath + ".teo";
 	res::path script = classPath + ".asl";
@@ -2137,9 +2129,10 @@ Entity * AddNPC(const res::path & classPath, EntityInstance instance,
 	return io;
 }
 
-//*************************************************************************************
-// Reload Scripts (Class & Local) for an IO
-//*************************************************************************************
+/*!
+ * \brief Reload Scripts (Class & Local) for an IO
+ * \param io
+ */
 void ReloadScript(Entity * io) {
 	
 	ARX_SCRIPT_Timer_Clear_For_IO(io);
@@ -2167,7 +2160,9 @@ void ReloadScript(Entity * io) {
 	}
 }
 
-// Reloads All Scripts for all IOs
+/*!
+ * \brief Reloads All Scripts for all IOs
+ */
 void ReloadAllScripts() {
 	ARX_SCRIPT_Timer_ClearAll();
 	for(size_t i = 0; i < entities.size(); i++) {
@@ -2179,7 +2174,10 @@ void ReloadAllScripts() {
 
 #ifdef BUILD_EDIT_LOADSAVE
 
-// Creates an unique identifier for an IO
+/*!
+ * \brief Creates an unique identifier for an IO
+ * \param io
+ */
 void MakeIOIdent(Entity * io) {
 	
 	if(!io) {
@@ -2349,9 +2347,15 @@ Entity * AddItem(const res::path & classPath_, EntityInstance instance, AddInter
 	return io;
 }
 
-//*************************************************************************************
-// Returns nearest interactive object found at position x,y
-//*************************************************************************************
+/*!
+ * \brief Returns nearest interactive object found at position x, y
+ * \param pos
+ * \param flag
+ * \param _pRef
+ * \param _pTable
+ * \param _pnNbInTable
+ * \return
+ */
 Entity * GetFirstInterAtPos(Vec2s * pos, long flag, Vec3f * _pRef, Entity ** _pTable, int * _pnNbInTable)
 {
 	float n;
@@ -3238,9 +3242,6 @@ void ARX_INTERACTIVE_DestroyIO(Entity * ioo)
 		}
 }
 
-//*************************************************************************************
-//
-//*************************************************************************************
 bool IsSameObject(Entity * io, Entity * ioo)
 {
 	if ((io == NULL)
@@ -3352,10 +3353,9 @@ void ARX_INTERACTIVE_ActivatePhysics(long t)
 	}
 }
 
-//-------------------------------------------------------------------------
-string GetMaterialString(const res::path & texture) {
+std::string GetMaterialString(const res::path & texture) {
 	
-	const string & origin = texture.string();
+	const std::string & origin = texture.string();
 	
 	// need to be precomputed !!!
 	if(boost::contains(origin, "stone")) return "stone";
