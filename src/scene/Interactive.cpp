@@ -2403,19 +2403,20 @@ Entity * GetFirstInterAtPos(Vec2s * pos, long flag, Vec3f * _pRef, Entity ** _pT
 
 	return foundBB;
 }
+
 bool IsEquipedByPlayer(const Entity * io)
 {
-	if (!io)
+	if(!io)
 		return false;
 
-	if ((io->ioflags & IO_ICONIC) && (io->show == SHOW_FLAG_ON_PLAYER))
+	if((io->ioflags & IO_ICONIC) && (io->show == SHOW_FLAG_ON_PLAYER))
 		return true;
 
 	long num = io->index();
 
-	for (long i = 0; i < MAX_EQUIPED; i++)
-	{
-		if ((player.equiped[i] != 0) && (player.equiped[i] == num)) return true;
+	for(long i = 0; i < MAX_EQUIPED; i++) {
+		if(player.equiped[i] != 0 && player.equiped[i] == num)
+			return true;
 	}
 
 	return false;
@@ -2424,8 +2425,7 @@ bool IsEquipedByPlayer(const Entity * io)
 extern long LOOKING_FOR_SPELL_TARGET;
 Entity * InterClick(Vec2s * pos) {
 	
-	if (IsFlyingOverInventory(pos))
-	{
+	if(IsFlyingOverInventory(pos)) {
 		return NULL;
 	}
 
@@ -2438,20 +2438,14 @@ Entity * InterClick(Vec2s * pos) {
 
 	Entity * io = GetFirstInterAtPos(pos);
 
-	if(io != NULL)
-	{
+	if(io) {
 		if(io->ioflags & IO_NPC) {
 			if(closerThan(player.pos, io->pos, dist_Threshold)) {
 				return io;
 			}
-		}
-		else if ((Project.telekinesis) || (EDITMODE))
-		{
+		} else if(Project.telekinesis || EDITMODE) {
 			return io;
-		}
-		else if (IsEquipedByPlayer(io)
-		         || closerThan(player.pos, io->pos, dist_Threshold))
-		{
+		} else if(IsEquipedByPlayer(io) || closerThan(player.pos, io->pos, dist_Threshold)) {
 			return io;
 		}
 	}
