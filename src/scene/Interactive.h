@@ -197,15 +197,10 @@ Entity * GetFirstInterAtPos(Vec2s * pos, long flag = 0, Vec3f * _pRef = NULL, En
  * Creates an IO Ident for added object if necessary
  * @param flags can be IO_IMMEDIATELOAD (1) to FORCE loading
  */
-Entity * AddInteractive(const res::path & classPath,
-                        EntityInstance instance = -1,
-                        AddInteractiveFlags flags = 0);
-Entity * AddItem(const res::path & classPath, EntityInstance instance = -1,
-                 AddInteractiveFlags flags = 0);
-Entity * AddNPC(const res::path & classPath, EntityInstance instance = -1,
-                AddInteractiveFlags flags = 0);
-Entity * AddFix(const res::path & classPath, EntityInstance instance = -1,
-                AddInteractiveFlags flags = 0);
+Entity * AddInteractive(const res::path & classPath, EntityInstance instance = -1, AddInteractiveFlags flags = 0);
+Entity * AddItem(const res::path & classPath, EntityInstance instance = -1, AddInteractiveFlags flags = 0);
+Entity * AddNPC(const res::path & classPath, EntityInstance instance = -1, AddInteractiveFlags flags = 0);
+Entity * AddFix(const res::path & classPath, EntityInstance instance = -1, AddInteractiveFlags flags = 0);
 
 void UpdateCameras();
 
