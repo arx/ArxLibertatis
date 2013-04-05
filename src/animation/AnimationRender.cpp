@@ -1579,14 +1579,10 @@ static bool Cedric_IO_Visible(Entity * io) {
 
 void Cedric_AnimateDrawEntityRender(EERIE_3DOBJ *eobj, Vec3f *pos, Vec3f &ftr, Entity *io);
 
-/* Apply animation and draw object */
-void Cedric_AnimateDrawEntity(EERIE_3DOBJ * eobj,
-                              ANIM_USE * animuse,
-                              Anglef * angle,
-                              Vec3f * pos,
-                              Entity * io,
-                              bool render,
-                              bool update_movement) {
+/*!
+ * \brief Apply animation and draw object
+ */
+void Cedric_AnimateDrawEntity(EERIE_3DOBJ *eobj, ANIM_USE *animuse, Anglef *angle, Vec3f *pos, Entity *io, bool render, bool update_movement) {
 	
 	// Init some data
 	Cedric_ResetBoundingBox(io);
