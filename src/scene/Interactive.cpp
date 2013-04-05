@@ -133,17 +133,13 @@ static Entity * AddMarker(const res::path & classPath, EntityInstance instance =
 float STARTED_ANGLE = 0;
 void Set_DragInter(Entity * io)
 {
-	if (io != DRAGINTER)
+	if(io != DRAGINTER)
 		STARTED_ANGLE = player.angle.b;
 
 	DRAGINTER = io;
 
-	if (io)
-	{
-		if ((io->obj) && (io->obj->pbox))
-		{
-			io->obj->pbox->active = 0;
-		}
+	if(io && io->obj && io->obj->pbox) {
+		io->obj->pbox->active = 0;
 	}
 }
 
@@ -155,9 +151,8 @@ bool ValidIONum(long num) {
 
 long ValidIOAddress(const Entity * io) {
 	
-	if(!io) {
+	if(!io)
 		return 0;
-	}
 	
 	for(size_t i = 0; i < entities.size(); i++) {
 		if(entities[i] == io) {
@@ -170,19 +165,19 @@ long ValidIOAddress(const Entity * io) {
 
 static float ARX_INTERACTIVE_fGetPrice(Entity * io, Entity * shop) {
 	
-	if ((!io)
-	        ||	(!(io->ioflags & IO_ITEM)))
+	if(!io || !(io->ioflags & IO_ITEM))
 		return 0;
 
 	float durability_ratio = io->durability / io->max_durability;
 	float shop_multiply = 1.f;
 
-	if (shop)
+	if(shop)
 		shop_multiply = shop->shop_multiply;
 
 	return io->_itemdata->price * shop_multiply * durability_ratio;
 
 }
+
 long ARX_INTERACTIVE_GetPrice(Entity * io, Entity * shop) {
 	return ARX_INTERACTIVE_fGetPrice(io, shop);
 }
@@ -191,19 +186,16 @@ static void ARX_INTERACTIVE_ForceIOLeaveZone(Entity * io, long flags) {
 	
 	ARX_PATH * op = io->inzone;
 
-	if (op)
-	{
+	if(op) {
 		std::string temp = op->name;
 
-		if (flags & 1) // no need when being destroyed !
+		if(flags & 1) // no need when being destroyed !
 			SendIOScriptEvent(io, SM_LEAVEZONE, temp);
 
-		if(!op->controled.empty())
-		{
+		if(!op->controled.empty()) {
 			long t = entities.getById(op->controled);
 
-			if (t >= 0)
-			{
+			if(t >= 0) {
 				std::string str = io->long_name() + ' ' + temp;
 				SendIOScriptEvent( entities[t], SM_CONTROLLEDZONE_LEAVE, str ); 
 			}
@@ -258,8 +250,7 @@ void ARX_INTERACTIVE_DestroyDynamicInfo(Entity * io)
 		memset(&io->_npcdata->pathfind, 0, sizeof(IO_PATHFIND));
 	}
 	
-	if (ValidDynLight(io->dynlight))
-	{
+	if(ValidDynLight(io->dynlight)) {
 		DynLight[io->dynlight].exist = 0;
 	}
 
@@ -295,7 +286,7 @@ void ARX_INTERACTIVE_DestroyDynamicInfo(Entity * io)
 
 bool ARX_INTERACTIVE_Attach(long n_source, long n_target, const std::string& ap_source, const std::string& ap_target)
 {
-	if (!ValidIONum(n_source) || !ValidIONum(n_target))
+	if(!ValidIONum(n_source) || !ValidIONum(n_target))
 		return false;
 
 	entities[n_source]->show = SHOW_FLAG_LINKED;
@@ -303,10 +294,10 @@ bool ARX_INTERACTIVE_Attach(long n_source, long n_target, const std::string& ap_
 	return EERIE_LINKEDOBJ_LinkObjectToObject(entities[n_target]->obj,
 	        entities[n_source]->obj, ap_target, ap_source, entities[n_source]);
 }
+
 void ARX_INTERACTIVE_Detach(long n_source, long n_target)
 {
-	if (!ValidIONum(n_source)
-	        ||	!ValidIONum(n_target))
+	if(!ValidIONum(n_source) || !ValidIONum(n_target))
 		return;
 
 	entities[n_source]->show = SHOW_FLAG_IN_SCENE;
@@ -341,7 +332,6 @@ void ARX_INTERACTIVE_Show_Hide_1st(Entity * io, long state)
 	ARX_INTERACTIVE_HideGore(entities.player(), 1);
 }
 
-
 void ARX_INTERACTIVE_RemoveGoreOnIO(Entity * io)
 {
 	if (!io || !io->obj || io->obj->texturecontainer.empty())
@@ -349,28 +339,22 @@ void ARX_INTERACTIVE_RemoveGoreOnIO(Entity * io)
 
 	long gorenum = -1;
 
-	for (size_t nn = 0; nn < io->obj->texturecontainer.size(); nn++)
-	{
-		if (io->obj->texturecontainer[nn] && ( io->obj->texturecontainer[nn]->m_texName.string().find("gore") != std::string::npos ) )
-		{
+	for(size_t nn = 0; nn < io->obj->texturecontainer.size(); nn++) {
+		if(io->obj->texturecontainer[nn] && io->obj->texturecontainer[nn]->m_texName.string().find("gore") != std::string::npos) {
 			gorenum = nn;
 			break;
 		}
 	}
 
-	if (gorenum > -1)
-	{
-		for (size_t nn = 0; nn < io->obj->facelist.size(); nn++)
-		{
-			if (io->obj->facelist[nn].texid == gorenum)
-			{
+	if(gorenum > -1) {
+		for(size_t nn = 0; nn < io->obj->facelist.size(); nn++) {
+			if(io->obj->facelist[nn].texid == gorenum) {
 				io->obj->facelist[nn].facetype |= POLY_HIDE;
 				io->obj->facelist[nn].texid = -1;
 			}
 		}
 	}
 }
-
 
 // flag & 1 == no unhide non-gore
 // TODO very simmilar to ARX_INTERACTIVE_RemoveGoreOnIO
@@ -455,12 +439,9 @@ void TREATZONE_Release() {
 
 void TREATZONE_RemoveIO(Entity * io)
 {
-	if (treatio)
-	{
-		for (long i = 0; i < TREATZONE_CUR; i++)
-		{
-			if (treatio[i].io == io)
-			{
+	if(treatio) {
+		for(long i = 0; i < TREATZONE_CUR; i++) {
+			if(treatio[i].io == io) {
 				treatio[i].io = NULL;
 				treatio[i].ioflags = 0;
 				treatio[i].show = 0;
@@ -472,22 +453,21 @@ void TREATZONE_RemoveIO(Entity * io)
 // flag & 1 IO_JUST_COLLIDE
 void TREATZONE_AddIO(Entity * io, long flag)
 {
-	if (TREATZONE_MAX == TREATZONE_CUR)
-	{
+	if(TREATZONE_MAX == TREATZONE_CUR) {
 		TREATZONE_MAX++;
 		treatio = (TREATZONE_IO *)realloc(treatio, sizeof(TREATZONE_IO) * TREATZONE_MAX);
 	}
 
-	for (long i = 0; i < TREATZONE_CUR; i++)
-	{
-		if (treatio[i].io == io)
+	for(long i = 0; i < TREATZONE_CUR; i++) {
+		if(treatio[i].io == io)
 			return;
 	}
 
 	treatio[TREATZONE_CUR].io = io;
 	treatio[TREATZONE_CUR].ioflags = io->ioflags;
 
-	if (flag & 1) treatio[TREATZONE_CUR].ioflags |= IO_JUST_COLLIDE;
+	if(flag & 1)
+		treatio[TREATZONE_CUR].ioflags |= IO_JUST_COLLIDE;
 
 	treatio[TREATZONE_CUR].show = io->show;
 	treatio[TREATZONE_CUR].num = io->index();
@@ -698,14 +678,10 @@ void PrepareIOTreatZone(long flag)
 	}
 }
 
-//*************************************************************************************
-//*************************************************************************************
 long GetNumNodeByName(char * name)
 {
-	for (long i = 0; i < nodes.nbmax; i++)
-	{
-		if ((nodes.nodes[i].exist)
-		        &&	(!strcmp(name, nodes.nodes[i].name)))
+	for(long i = 0; i < nodes.nbmax; i++) {
+		if(nodes.nodes[i].exist && !strcmp(name, nodes.nodes[i].name))
 			return i;
 	}
 
@@ -727,14 +703,12 @@ void ClearNode(long i, long first = 0) {
 	nodes.nodes[i].exist = 0;
 	nodes.nodes[i].selected = 0;
 
-	for (size_t j = 0; j < MAX_LINKS; j++)
-	{
-		if ((nodes.nodes[i].link[j] != -1) && (!first))
-		{
+	for(size_t j = 0; j < MAX_LINKS; j++) {
+		if((nodes.nodes[i].link[j] != -1) && !first) {
 			long k = nodes.nodes[i].link[j];
 
-			for (size_t l = 0; l < MAX_LINKS; l++)
-				if (nodes.nodes[k].link[l] == i)
+			for(size_t l = 0; l < MAX_LINKS; l++)
+				if(nodes.nodes[k].link[l] == i)
 					nodes.nodes[k].link[l] = -1;
 		}
 
@@ -750,22 +724,20 @@ void ClearNodes()
 {
 	static long first = 1;
 
-	for (long i = 0; i < nodes.nbmax; i++)
-	{
+	for(long i = 0; i < nodes.nbmax; i++) {
 		ClearNode(i, first);
 	}
 
 	first = 0;
 }
-//*************************************************************************************
-//*************************************************************************************
+
 void SelectNode(long i)
 {
-	if ((i >= nodes.nbmax)
-	        ||	(i < 0))
+	if(i >= nodes.nbmax || i < 0)
 		return;
 
-	if (nodes.nodes[i].exist)  nodes.nodes[i].selected = 1;
+	if(nodes.nodes[i].exist)
+		nodes.nodes[i].selected = 1;
 }
 
 void UnselectAllNodes() {
@@ -786,13 +758,12 @@ void TranslateSelectedNodes(Vec3f * trans) {
 
 bool IsLinkedNode(long i, long j)
 {
-	if ((!nodes.nodes[i].exist)
-	        ||	(!nodes.nodes[j].exist))
+	if(!nodes.nodes[i].exist || !nodes.nodes[j].exist)
 		return false;
 
-	for (size_t k = 0; k < MAX_LINKS; k++)
-	{
-		if (nodes.nodes[i].link[k] == j) return true;
+	for(size_t k = 0; k < MAX_LINKS; k++) {
+		if(nodes.nodes[i].link[k] == j)
+			return true;
 	}
 
 	return false;
@@ -810,87 +781,67 @@ long CountNodes() {
 
 void AddLink(long i, long j)
 {
-	if ((!nodes.nodes[i].exist)
-	        ||	(!nodes.nodes[j].exist))
+	if(!nodes.nodes[i].exist || !nodes.nodes[j].exist)
 		return;
 
-	for (size_t k = 0; k < MAX_LINKS; k++)
-	{
-		if (nodes.nodes[i].link[k] == -1)
-		{
+	for(size_t k = 0; k < MAX_LINKS; k++) {
+		if(nodes.nodes[i].link[k] == -1) {
 			nodes.nodes[i].link[k] = j;
 			return;
 		}
 	}
 }
-//*************************************************************************************
-//*************************************************************************************
+
 void RemoveLink(long i, long j)
 {
-	if ((!nodes.nodes[i].exist)
-	        ||	(!nodes.nodes[j].exist))
+	if(!nodes.nodes[i].exist || !nodes.nodes[j].exist)
 		return;
 
-	for (size_t k = 0; k < MAX_LINKS; k++)
-	{
-		if (nodes.nodes[i].link[k] == j)
-		{
+	for(size_t k = 0; k < MAX_LINKS; k++) {
+		if(nodes.nodes[i].link[k] == j) {
 			nodes.nodes[i].link[k] = -1;
 			return;
 		}
 	}
 }
-//*************************************************************************************
-//*************************************************************************************
+
 void LinkNodeToNode(long i, long j)
 {
-	if ((!IsLinkedNode(i, j))
-	        ||	(!IsLinkedNode(j, i)))
+	if(!IsLinkedNode(i, j) || !IsLinkedNode(j, i))
 		return;
 
 	AddLink(i, j);
 	AddLink(j, i);
 }
-//*************************************************************************************
-//*************************************************************************************
+
 void UnLinkNodeFromNode(long i, long j)
 {
-	if ((!IsLinkedNode(i, j))
-	        ||	(!IsLinkedNode(j, i)))
+	if(!IsLinkedNode(i, j) || !IsLinkedNode(j, i))
 		return;
 
 	RemoveLink(i, j);
 	RemoveLink(j, i);
 }
-//*************************************************************************************
-//*************************************************************************************
+
 void ClearSelectedNodes()
 {
-	for (long i = 0; i < nodes.nbmax; i++)
-	{
-		if ((nodes.nodes[i].exist)
-		        &&	(nodes.nodes[i].selected))
-		{
+	for(long i = 0; i < nodes.nbmax; i++) {
+		if(nodes.nodes[i].exist && nodes.nodes[i].selected) {
 			ClearNode(i, 0);
 		}
 	}
 }
 
-//*************************************************************************************
-//*************************************************************************************
 bool ExistNodeName(char * name)
 {
-	for (long i = 0; i < nodes.nbmax; i++)
-	{
-		if ((nodes.nodes[i].exist)
-		        &&	(!strcmp(name, nodes.nodes[i].name)))
+	for(long i = 0; i < nodes.nbmax; i++) {
+		if(nodes.nodes[i].exist && !strcmp(name, nodes.nodes[i].name))
 			return true;
 	}
 
 	return false;
 }
-//*************************************************************************************
-//*************************************************************************************
+
 void MakeNodeName(long i)
 {
 	char name[64];
@@ -898,8 +849,7 @@ void MakeNodeName(long i)
 	//float f;
 	sprintf(name, "node_%08ld", i);
 
-	while (ExistNodeName(name))
-	{
+	while(ExistNodeName(name)) {
 		//f=rnd()*99999999.f;
 		//o=(long)f;
 		o = rnd() * 99999999.f;
@@ -909,11 +859,10 @@ void MakeNodeName(long i)
 	strcpy(nodes.nodes[i].name, name);
 }
 
-//*************************************************************************************
-//*************************************************************************************
 void InitNodes(long nb)
 {
-	if (nb < 1) nb = 1;
+	if(nb < 1)
+		nb = 1;
 
 	nodes.init = 1;
 	nodes.nbmax = nb;
@@ -921,13 +870,12 @@ void InitNodes(long nb)
 	memset(nodes.nodes, 0, sizeof(ARX_NODE)*nodes.nbmax);
 	ClearNodes();
 }
-//*************************************************************************************
-//*************************************************************************************
+
 long GetFreeNode()
 {
-	for (long i = 0; i < nodes.nbmax; i++)
-	{
-		if (!nodes.nodes[i].exist) return i;
+	for(long i = 0; i < nodes.nbmax; i++) {
+		if(!nodes.nodes[i].exist)
+			return i;
 	}
 
 	return -1;
@@ -938,7 +886,9 @@ void ReleaseNode() {
 	nodes.nbmax = 0;
 }
 
-// Removes an IO loaded by a script command
+/*!
+ * \brief Removes an IO loaded by a script command
+ */
 void CleanScriptLoadedIO() {
 	for(size_t i = 1; i < entities.size(); i++) {
 		Entity * io = entities[i];
@@ -953,7 +903,9 @@ void CleanScriptLoadedIO() {
 	}
 }
 
-// Restores an IO to its initial status (Game start Status)
+/*!
+ * \brief Restores an IO to its initial status (Game start Status)
+ */
 void RestoreInitialIOStatus() {
 	ARX_INTERACTIVE_HideGore(entities.player());
 	ARX_NPC_Behaviour_ResetAll();
@@ -1168,10 +1120,8 @@ void RestoreInitialIOStatusOfIO(Entity * io)
 		//HALO_NEGATIVE;
 		io->no_collide = -1;
 
-		for (long i = 0; i < MAX_FLARES; i++)
-		{
-			if ((flare[i].exist)  && (flare[i].io == io))
-			{
+		for(long i = 0; i < MAX_FLARES; i++) {
+			if(flare[i].exist && flare[i].io == io) {
 				flare[i].io = NULL;
 			}
 		}
@@ -1210,7 +1160,8 @@ void RestoreInitialIOStatusOfIO(Entity * io)
 		io->ignit_light = -1;
 		io->ignit_sound = audio::INVALID_ID;
 
-		if ((io->obj) && (io->obj->pbox)) io->obj->pbox->active = 0;
+		if(io->obj && io->obj->pbox)
+			io->obj->pbox->active = 0;
 
 		io->room = -1;
 		io->room_flags = 1;
@@ -1219,21 +1170,20 @@ void RestoreInitialIOStatusOfIO(Entity * io)
 		io->lastanimtime = 1;
 		io->secretvalue = -1;
 
-		if (io->damagedata >= 0) damages[io->damagedata].exist = 0;
+		if(io->damagedata >= 0)
+			damages[io->damagedata].exist = 0;
 
 		io->damagedata = -1;
 		io->poisonous = 0;
 		io->poisonous_count = 0;
 
-		for (long count = 0; count < MAX_ANIM_LAYERS; count++)
-		{
+		for(long count = 0; count < MAX_ANIM_LAYERS; count++) {
 			memset(&io->animlayer[count], 0, sizeof(ANIM_USE));
 			io->animlayer[count].cur_anim = NULL;
 			io->animlayer[count].next_anim = NULL;
 		}
 
-		if ((io->obj) && (io->obj->pbox))
-		{
+		if(io->obj && io->obj->pbox) {
 			io->obj->pbox->storedtiming = 0;
 		}
 		
@@ -1247,8 +1197,7 @@ void RestoreInitialIOStatusOfIO(Entity * io)
 		io->summoner = -1;
 		io->spark_n_blood = 0;
 
-		if (io->ioflags & IO_NPC)
-		{
+		if(io->ioflags & IO_NPC) {
 			io->_npcdata->climb_count = 0;
 			io->_npcdata->vvpos = -99999.f;
 			io->_npcdata->SPLAT_DAMAGES = 0;
@@ -1291,11 +1240,9 @@ void RestoreInitialIOStatusOfIO(Entity * io)
 			io->_npcdata->npcflags = 0;
 			io->_npcdata->backstab_skill = 0;
 			io->_npcdata->fDetect = -1;
-
 		}
 
-		if (io->ioflags & IO_ITEM)
-		{
+		if(io->ioflags & IO_ITEM) {
 			io->collision = COLLIDE_WITH_PLAYER;
 			io->_itemdata->count = 1;
 			io->_itemdata->maxcount = 1;
@@ -1306,8 +1253,7 @@ void RestoreInitialIOStatusOfIO(Entity * io)
 		}
 		else io->collision = 0;
 
-		if (io->ioflags & IO_FIX)
-		{
+		if(io->ioflags & IO_FIX) {
 			memset(io->_fixdata, 0, sizeof(IO_FIXDATA));
 			io->_fixdata->trapvalue = -1;
 		}
@@ -1316,9 +1262,8 @@ void RestoreInitialIOStatusOfIO(Entity * io)
 
 void ARX_INTERACTIVE_TWEAK_Icon(Entity * io, const res::path & s1) {
 	
-	if(!io || s1.empty()) {
+	if(!io || s1.empty())
 		return;
-	}
 	
 	res::path icontochange = io->classPath().parent() / s1;
 	
@@ -1329,7 +1274,6 @@ void ARX_INTERACTIVE_TWEAK_Icon(Entity * io, const res::path & s1) {
 	}
 	
 	if(tc) {
-		
 		unsigned long w = tc->m_dwWidth >> 5;
 		unsigned long h = tc->m_dwHeight >> 5; 
 
@@ -1349,7 +1293,10 @@ void ARX_INTERACTIVE_TWEAK_Icon(Entity * io, const res::path & s1) {
 	}
 }
 
-// Count IO number ignoring ScriptLoaded IOs
+/*!
+ * \brief Count IO number ignoring ScriptLoaded IOs
+ * \return
+ */
 long GetNumberInterWithOutScriptLoad() {
 	long count = 0;
 	for(size_t i = 1; i < entities.size(); i++) {
@@ -1445,16 +1392,16 @@ bool ARX_INTERACTIVE_ConvertToValidPosForIO(Entity * io, Vec3f * target) {
 
 	return false;
 }
+
 void ARX_INTERACTIVE_TeleportBehindTarget(Entity * io)
 {
-	if (!io) return;
+	if(!io)
+		return;
 
-	if (ARX_SCRIPT_GetSystemIOScript(io, "_r_a_t_") < 0)
-	{
+	if(ARX_SCRIPT_GetSystemIOScript(io, "_r_a_t_") < 0) {
 		long num = ARX_SCRIPT_Timer_GetFree();
 
-		if (num != -1)
-		{
+		if(num != -1) {
 			long t = io->index();
 			ActiveTimers++;
 			scr_timer[num].es = NULL;
@@ -1480,19 +1427,19 @@ void ARX_INTERACTIVE_TeleportBehindTarget(Entity * io)
 		}
 	}
 }
+
 void ResetVVPos(Entity * io)
 {
-	if ((io) && (io->ioflags & IO_NPC))
+	if(io && (io->ioflags & IO_NPC))
 		io->_npcdata->vvpos = io->pos.y;
 }
+
 void ComputeVVPos(Entity * io)
 {
-	if (io->ioflags & IO_NPC)
-	{
+	if(io->ioflags & IO_NPC) {
 		float vvp = io->_npcdata->vvpos;
 
-		if ((vvp == -99999.f) || (vvp == io->pos.y))
-		{
+		if(vvp == -99999.f || vvp == io->pos.y) {
 			io->_npcdata->vvpos = io->pos.y;
 			return;
 		}
@@ -1501,41 +1448,37 @@ void ComputeVVPos(Entity * io)
 		float fdiff = EEfabs(diff);
 		float eediff = fdiff;
 
-		if (fdiff > 120.f) 
-		{
+		if(fdiff > 120.f) {
 			fdiff = 120.f;
-		}
-		else
-		{
+		} else {
 			float mul = ((fdiff * ( 1.0f / 120 )) * 0.9f + 0.6f);
 
-			if ((eediff < 15.f))
-			{
+			if(eediff < 15.f) {
 				float val = (float)framedelay * ( 1.0f / 4 ) * mul;
 
-				if (eediff < 10.f)
+				if(eediff < 10.f) {
 					val *= ( 1.0f / 10 );
-				else
-				{
+				} else {
 					float ratio = (eediff - 10.f) * ( 1.0f / 5 );
 					val = val * ratio + val * (1.f - ratio); 
 				}
 
 				fdiff -= val;
-			}
-			else
-			{
+			} else {
 				fdiff -= (float)framedelay * ( 1.0f / 4 ) * mul;
 			}
 		}
 
-		if (fdiff > eediff)
+		if(fdiff > eediff)
 			fdiff = eediff;
 
-		if (fdiff < 0.f) fdiff = 0.f;
+		if(fdiff < 0.f)
+			fdiff = 0.f;
 
-		if (diff < 0.f) io->_npcdata->vvpos = io->pos.y + fdiff;
-		else io->_npcdata->vvpos = io->pos.y - fdiff;
+		if(diff < 0.f)
+			io->_npcdata->vvpos = io->pos.y + fdiff;
+		else
+			io->_npcdata->vvpos = io->pos.y - fdiff;
 	}
 }
 
