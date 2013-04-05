@@ -2909,13 +2909,11 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 	SpellcastFlags flags = flagss;
 	long level = levell;
 
-	if ( cur_rf == 3 )
-	{ 
+	if(cur_rf == 3) {
 		flags |= SPELLCAST_FLAG_NOCHECKCANCAST | SPELLCAST_FLAG_NOMANA;	
 	}
 
-	if ( sp_max ) 
-	{ 
+	if(sp_max) {
 		level = std::max( level, 15L );
 	}
 	
@@ -2934,34 +2932,27 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 	
 	float Player_Magic_Level = 0;
 	
-	if ( !source )
-	{
+	if(!source) {
 		ARX_SPELLS_ResetRecognition();
 
-		if ( player.SpellToMemorize.bSpell )
-		{
+		if(player.SpellToMemorize.bSpell) {
 			CurrSpellSymbol					= 0;
 			player.SpellToMemorize.bSpell	= false;
 		}
 
 		ARX_PLAYER_ComputePlayerFullStats();
 
-		if ( level == -1 )
-		{
+		if(level == -1) {
 			Player_Magic_Level = (float) player.Full_Skill_Casting + player.Full_Attribute_Mind;
 			Player_Magic_Level = clamp(Player_Magic_Level * 0.1f, 1.0f, 10.0f);
-		}
-		else 
-		{
+		} else {
 			Player_Magic_Level = static_cast<float>(level);
 		}
 	}
 
 	arx_assert( !( source && (flags & SPELLCAST_FLAG_PRECAST) ) );
 
-
-	if ( flags & SPELLCAST_FLAG_PRECAST )
-	{
+	if(flags & SPELLCAST_FLAG_PRECAST) {
 		int l = level;
 
 		if(l <= 0) {
@@ -2976,11 +2967,8 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 	
 	static TextureContainer * tc4 = TextureContainer::Load("graph/particles/smoke");
 
-
-	if ((target < 0)
-		&&	( source == 0 )	)
-	switch ( typ )
-	{
+	if(target < 0 && source == 0)
+	switch(typ) {
 		case SPELL_LOWER_ARMOR:
 		case SPELL_CURSE:
 		case SPELL_PARALYSE:				
@@ -3011,9 +2999,9 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 		break;
 		case SPELL_CONTROL_TARGET:
 		{
-			long		tcount = 0;
+			long tcount = 0;
 
-			if ( !ValidIONum( source ) )
+			if(!ValidIONum(source))
 				return false;
 
 			Vec3f cpos = entities[source]->pos;
@@ -3028,13 +3016,13 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 				}
 			}
 
-			if ( tcount == 0 ) 
-			{
+			if(tcount == 0) {
 				ARX_SOUND_PlaySFX( SND_MAGIC_FIZZLE, &cpos );
 				return false;
 			}
 
 			ARX_SOUND_PlaySpeech("player_follower_attack");
+
 				LOOKING_FOR_SPELL_TARGET_TIME	= (unsigned long)(arxtime);
 			LOOKING_FOR_SPELL_TARGET		= 1;
 			t_spell.typ						= typ;
@@ -3048,17 +3036,14 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 		default: break;
 	}
 
-	if ( source == 0 )
-	{
+	if(source == 0) {
 		ARX_SPELLS_CancelSpellTarget();
 	}
-
 
 	// Try to create a new spell instance
 	long i = ARX_SPELLS_GetFree();
 
-	if ( i < 0 )
-	{
+	if(i < 0) {
 		return false;
 	}
 	
@@ -3069,16 +3054,13 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 	spells[i].caster = source;	// Caster...
 	spells[i].target = target;	// No target if <0
 
-	if ( target < 0 )
+	if(target < 0)
 		spells[i].target = TemporaryGetSpellTarget( &entities[spells[i].caster]->pos );
 
 	// Create hand position if a hand is defined
-	if ( spells[i].caster == 0 ) 
-	{
+	if(spells[i].caster == 0) {
 		spells[i].hand_group = entities[spells[i].caster]->obj->fastaccess.primary_attach;
-	}
-	else 
-	{
+	} else {
 		spells[i].hand_group = entities[spells[i].caster]->obj->fastaccess.left_attach;
 	}
 
