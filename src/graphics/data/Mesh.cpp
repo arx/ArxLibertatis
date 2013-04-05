@@ -103,22 +103,19 @@ static void EERIE_PORTAL_Release();
 float Xratio = 1.f;
 float Yratio = 1.f;
 
-
 static int RayIn3DPolyNoCull(Vec3f * orgn, Vec3f * dest, EERIEPOLY * epp);
 
 EERIEMATRIX ProjectionMatrix;
 
 void ReleaseAnimFromIO(Entity * io, long num)
 {
-	for (long count = 0; count < MAX_ANIM_LAYERS; count++)
-	{
-		if (io->animlayer[count].cur_anim == io->anims[num])
-		{
+	for(long count = 0; count < MAX_ANIM_LAYERS; count++) {
+		if(io->animlayer[count].cur_anim == io->anims[num]) {
 			memset(&io->animlayer[count], 0, sizeof(ANIM_USE));
 			io->animlayer[count].cur_anim = NULL;
 		}
 
-		if (io->animlayer[count].next_anim == io->anims[num])
+		if(io->animlayer[count].next_anim == io->anims[num])
 			io->animlayer[count].next_anim = NULL;
 	}
 
@@ -143,15 +140,13 @@ void DebugSphere(float x, float y, float z, float siz, long tim, Color color) {
 	pd->rgb = color.to<float>();
 }
 
-
-
 static bool IntersectLinePlane(const Vec3f & l1, const Vec3f & l2, const EERIEPOLY * ep, Vec3f * intersect) {
 	
 	Vec3f v = l2 - l1;
 	
 	float d = dot(v, ep->norm);
 	
-	if (d != 0.0f) {
+	if(d != 0.0f) {
 		Vec3f v1 = ep->center - l2;
 		d = dot(v1, ep->norm) / d;
 		
@@ -165,9 +160,9 @@ static bool IntersectLinePlane(const Vec3f & l1, const Vec3f & l2, const EERIEPO
 
 bool RayCollidingPoly(Vec3f * orgn, Vec3f * dest, EERIEPOLY * ep, Vec3f * hit)
 {
-	if (IntersectLinePlane(*orgn, *dest, ep, hit))
-	{
-		if (RayIn3DPolyNoCull(orgn, dest, ep)) return true;
+	if(IntersectLinePlane(*orgn, *dest, ep, hit)) {
+		if(RayIn3DPolyNoCull(orgn, dest, ep))
+			return true;
 	}
 
 	return false;
@@ -204,39 +199,39 @@ long MakeTopObjString(Entity * io,  string & dest) {
 	
 	dest = "";
 	
-	if ((player.pos.x > boxmin.x)
-			&& (player.pos.x < boxmax.x)
-			&& (player.pos.z > boxmin.z)
-			&& (player.pos.z < boxmax.z))
+	if(player.pos.x > boxmin.x
+			&& player.pos.x < boxmax.x
+			&& player.pos.z > boxmin.z
+			&& player.pos.z < boxmax.z)
 	{
 		{
-			if (EEfabs(player.pos.y + 160.f - boxmin.y) < 50.f)
+			if(EEfabs(player.pos.y + 160.f - boxmin.y) < 50.f)
 				dest += " player";
 		}
 	}
 
 	for(size_t i = 0; i < entities.size(); i++) {
 		if(entities[i] && entities[i] != io) {
-				if (entities[i]->show == SHOW_FLAG_IN_SCENE)
-					if ((entities[i]->ioflags & IO_NPC) || (entities[i]->ioflags & IO_ITEM))
+				if(entities[i]->show == SHOW_FLAG_IN_SCENE) {
+					if((entities[i]->ioflags & IO_NPC) || (entities[i]->ioflags & IO_ITEM))
 					{
-						if (((entities[i]->pos.x) > boxmin.x)
-								&& ((entities[i]->pos.x) < boxmax.x)
-								&& ((entities[i]->pos.z) > boxmin.z)
-								&& ((entities[i]->pos.z) < boxmax.z))
+						if(entities[i]->pos.x > boxmin.x
+								&& entities[i]->pos.x < boxmax.x
+								&& entities[i]->pos.z > boxmin.z
+								&& entities[i]->pos.z < boxmax.z)
 						{
-							if (EEfabs(entities[i]->pos.y - boxmin.y) < 40.f)
-							{
+							if(EEfabs(entities[i]->pos.y - boxmin.y) < 40.f) {
 								dest += ' ' + entities[i]->long_name();
-								
 							}
 						}
 
+					}
 				}
 		}
 	}
 
-	if (dest.length() == 0) dest = "none";
+	if(dest.length() == 0)
+		dest = "none";
 
 	return -1;
 }
