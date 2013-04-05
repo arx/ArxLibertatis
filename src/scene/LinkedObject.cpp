@@ -55,7 +55,10 @@ using std::free;
 using std::realloc;
 using std::memcpy;
 
-// Releases Data for linked objects
+/*!
+ * \brief Releases Data for linked objects
+ * \param obj
+ */
 void EERIE_LINKEDOBJ_ReleaseData(EERIE_3DOBJ * obj) {
 	
 	if(!obj) {
@@ -66,9 +69,10 @@ void EERIE_LINKEDOBJ_ReleaseData(EERIE_3DOBJ * obj) {
 	obj->nblinked = 0;
 }
 
-//*************************************************************************************
-//*************************************************************************************
-// Init Data for linked objects
+/*!
+ * \brief Init Data for linked objects
+ * \param obj
+ */
 void EERIE_LINKEDOBJ_InitData(EERIE_3DOBJ * obj)
 {
 	if (obj == NULL) return;
@@ -77,9 +81,11 @@ void EERIE_LINKEDOBJ_InitData(EERIE_3DOBJ * obj)
 	obj->linked = NULL;
 }
 
-//*************************************************************************************
-//*************************************************************************************
-// Add New Data field for a linked object to an object
+/*!
+ * \brief Add New Data field for a linked object to an object
+ * \param obj
+ * \return
+ */
 static long EERIE_LINKEDOBJ_Create(EERIE_3DOBJ * obj)
 {
 	if (obj == NULL) return -1;
@@ -94,9 +100,11 @@ static long EERIE_LINKEDOBJ_Create(EERIE_3DOBJ * obj)
 	return (obj->nblinked - 1);
 }
 
-//*************************************************************************************
-//*************************************************************************************
-// Removes a linked object Data field from an object
+/*!
+ * \brief Removes a linked object Data field from an object
+ * \param obj
+ * \param num
+ */
 static void EERIE_LINKEDOBJ_Remove(EERIE_3DOBJ * obj, long num)
 {
 	if(!obj || !obj->linked || num < 0 || num >= obj->nblinked)
