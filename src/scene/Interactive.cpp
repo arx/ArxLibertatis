@@ -3014,25 +3014,22 @@ void ARX_INTERACTIVE_UnfreezeAll() {
 
 void UpdateIOInvisibility(Entity * io)
 {
-	if (io && (io->invisibility <= 1.f))
-	{
-		if ((io->gameFlags & GFLAG_INVISIBILITY) && (io->invisibility < 1.f))
-		{
+	if(io && io->invisibility <= 1.f) {
+		if((io->gameFlags & GFLAG_INVISIBILITY) && io->invisibility < 1.f) {
 			io->invisibility += framedelay * ( 1.0f / 1000 );
 
-			if (io->invisibility > 1.f) io->invisibility = 1.f;
-		}
-		else if ((!(io->gameFlags & GFLAG_INVISIBILITY)) && (io->invisibility != 0.f))
-		{
+			if(io->invisibility > 1.f)
+				io->invisibility = 1.f;
+		} else if ((!(io->gameFlags & GFLAG_INVISIBILITY)) && (io->invisibility != 0.f)) {
 			io->invisibility -= framedelay * ( 1.0f / 1000 );
 
-			if (io->invisibility < 0.f) io->invisibility = 0.f;
+			if(io->invisibility < 0.f)
+				io->invisibility = 0.f;
 		}
 	}
 }
+
 extern Entity * DESTROYED_DURING_RENDERING;
-
-
 
 EERIEMATRIX convertToMatrixForDrawEERIEInter(const PHYSICS_BOX_DATA &box) {
 	Vec3f tmp = box.vert[14].pos - box.vert[13].pos;
