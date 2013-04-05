@@ -3307,13 +3307,13 @@ float ARX_INTERACTIVE_GetArmorClass(Entity * io) {
 
 		if(spells[n].exist) {
 			switch(spells[n].type) {
-				case SPELL_ARMOR:
-					ac += spells[n].caster_level;
-					break;
-				case SPELL_LOWER_ARMOR:
-					ac -= spells[n].caster_level;
-					break;
-				default:
+			case SPELL_ARMOR:
+				ac += spells[n].caster_level;
+				break;
+			case SPELL_LOWER_ARMOR:
+				ac -= spells[n].caster_level;
+				break;
+			default:
 				break;
 			}
 		}
@@ -3327,18 +3327,16 @@ float ARX_INTERACTIVE_GetArmorClass(Entity * io) {
 
 void ARX_INTERACTIVE_ActivatePhysics(long t)
 {
-	if (ValidIONum(t))
-	{
+	if(ValidIONum(t)) {
 		Entity * io = entities[t];
 
-		if ((io == DRAGINTER)
-		        ||	(io->show != SHOW_FLAG_IN_SCENE))
+		if(io == DRAGINTER || (io->show != SHOW_FLAG_IN_SCENE))
 			return;
 
 		float yy;
 		EERIEPOLY * ep = CheckInPoly(io->pos.x, io->pos.y, io->pos.z, &yy);
 
-		if ((ep) && (yy - io->pos.y < 10.f))
+		if(ep && (yy - io->pos.y < 10.f))
 			return;
 
 		io->obj->pbox->active = 1;
