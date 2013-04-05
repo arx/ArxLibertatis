@@ -204,29 +204,25 @@ long MakeTopObjString(Entity * io,  string & dest) {
 			&& player.pos.z > boxmin.z
 			&& player.pos.z < boxmax.z)
 	{
-		{
-			if(EEfabs(player.pos.y + 160.f - boxmin.y) < 50.f)
-				dest += " player";
-		}
+		if(EEfabs(player.pos.y + 160.f - boxmin.y) < 50.f)
+			dest += " player";
 	}
 
 	for(size_t i = 0; i < entities.size(); i++) {
 		if(entities[i] && entities[i] != io) {
-				if(entities[i]->show == SHOW_FLAG_IN_SCENE) {
-					if((entities[i]->ioflags & IO_NPC) || (entities[i]->ioflags & IO_ITEM))
+			if(entities[i]->show == SHOW_FLAG_IN_SCENE) {
+				if((entities[i]->ioflags & IO_NPC) || (entities[i]->ioflags & IO_ITEM)) {
+					if(entities[i]->pos.x > boxmin.x
+							&& entities[i]->pos.x < boxmax.x
+							&& entities[i]->pos.z > boxmin.z
+							&& entities[i]->pos.z < boxmax.z)
 					{
-						if(entities[i]->pos.x > boxmin.x
-								&& entities[i]->pos.x < boxmax.x
-								&& entities[i]->pos.z > boxmin.z
-								&& entities[i]->pos.z < boxmax.z)
-						{
-							if(EEfabs(entities[i]->pos.y - boxmin.y) < 40.f) {
-								dest += ' ' + entities[i]->long_name();
-							}
+						if(EEfabs(entities[i]->pos.y - boxmin.y) < 40.f) {
+							dest += ' ' + entities[i]->long_name();
 						}
-
 					}
 				}
+			}
 		}
 	}
 
