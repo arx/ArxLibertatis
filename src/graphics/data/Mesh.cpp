@@ -431,12 +431,9 @@ EERIEPOLY * GetMinPoly(float x, float y, float z) {
 	for (long k = 0; k < feg->nbpolyin; k++) {
 		
 		EERIEPOLY * ep = feg->polyin[k];
-		
-		if(ep->type & POLY_WATER) continue;
-		
-		if(ep->type & POLY_TRANS) continue;
-		
-		if(ep->type & POLY_NOCOL) continue;
+
+		if(ep->type & (POLY_WATER | POLY_TRANS | POLY_NOCOL))
+			continue;
 		
 		if(PointIn2DPolyXZ(ep, x, z)) {
 			float ret;
