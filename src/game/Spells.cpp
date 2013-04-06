@@ -6605,8 +6605,6 @@ void ARX_SPELLS_Update()
 
 					pCSpellFX->Render();
 				}
-
-				GRenderer->SetCulling(Renderer::CullNone);
 			}
 			break;
 			//-----------------------------------------------------------------------------------------
