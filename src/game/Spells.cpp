@@ -6483,10 +6483,8 @@ void ARX_SPELLS_Update()
 							spells[i].tolive=0;
 						}
 					
-						pCSpellFX->Update(framedelay);
-
-						if (VisibleSphere(ccf->eSrc.x,ccf->eSrc.y-120.f,ccf->eSrc.z,400.f))					
-							pCSpellFX->Render();
+						pCSpellFX->Update(framedelay);			
+						pCSpellFX->Render();
 					}
 				}					
 			}
