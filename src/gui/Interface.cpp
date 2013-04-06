@@ -1224,7 +1224,7 @@ void GetInfosCombine()
 }
 
 //-----------------------------------------------------------------------------
-bool ArxGame::manageEditorControls() {
+void ArxGame::manageEditorControls() {
 
 	eMouseState = MOUSE_IN_WORLD;
 
@@ -1442,7 +1442,7 @@ bool ArxGame::manageEditorControls() {
 							ARX_INTERFACE_BookOpenClose(1);
 							EERIEMouseButton &=~1;
 						}
-						return false;
+						return;
 					}
 				}
 
@@ -1465,7 +1465,7 @@ bool ArxGame::manageEditorControls() {
 						}
 
 						if(!DRAGINTER)
-							return false;
+							return;
 					}
 				}
 
@@ -1481,7 +1481,7 @@ bool ArxGame::manageEditorControls() {
 						ARX_INTERFACE_BookOpenClose(0);
 						EERIEMouseButton &=~1;
 					}
-					return false;
+					return;
 				}
 
 				// inventaire
@@ -1503,10 +1503,10 @@ bool ArxGame::manageEditorControls() {
 					} else if(((EERIEMouseButton & 1) && !(LastMouseClick & 1)) || flDelay) {
 						if(!flDelay) {
 							flDelay=arxtime.get_updated();
-							return false;
+							return;
 						} else {
 							if((arxtime.get_updated() - flDelay) < 300) {
-								return false;
+								return;
 							} else {
 								flDelay=0;
 							}
@@ -1552,7 +1552,7 @@ bool ArxGame::manageEditorControls() {
 					}
 
 					if(DRAGINTER == NULL)
-						return false;
+						return;
 				}
 			}
 
@@ -1583,7 +1583,7 @@ bool ArxGame::manageEditorControls() {
 					}
 
 					if(DRAGINTER == NULL)
-						return false;
+						return;
 				}
 			}
 		}
@@ -1606,7 +1606,7 @@ bool ArxGame::manageEditorControls() {
 	if(player.Interface & INTER_NOTE) {
 		if(openNote.area().contains(Vec2f(DANAEMouse))) {
 			eMouseState = MOUSE_IN_NOTE;
-			return false;
+			return;
 		}
 	}
 	
@@ -1630,7 +1630,7 @@ bool ArxGame::manageEditorControls() {
 				}
 
 				if(DRAGINTER == NULL)
-					return false;
+					return;
 			}
 		}
 
@@ -1661,7 +1661,7 @@ bool ArxGame::manageEditorControls() {
 			}
 
 			if(DRAGINTER == NULL)
-				return false;
+				return;
 		}
 	}
 
@@ -2018,8 +2018,6 @@ bool ArxGame::manageEditorControls() {
 		}
 	
 	}
-	
-	return false;
 }
 
 //-----------------------------------------------------------------------------

@@ -68,7 +68,7 @@ protected:
 	void render();	
 
 	void manageKeyMouse();
-	bool manageEditorControls();
+	void manageEditorControls();
 	void managePlayerControls();
 	void drawAllInterface();
 	void drawAllInterfaceFinish();

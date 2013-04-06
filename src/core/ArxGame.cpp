@@ -1298,8 +1298,7 @@ void ArxGame::renderCinematic() {
 void ArxGame::renderLevel() {
 
 	if(!PLAYER_PARALYSED) {
-		if(manageEditorControls())
-			goto finish;
+		manageEditorControls();
 	}
 
 	if(!BLOCK_PLAYER_CONTROLS && !PLAYER_PARALYSED) {
@@ -1551,8 +1550,6 @@ void ArxGame::renderLevel() {
 
 	// Manage Notes/Books opened on screen
 	GRenderer->SetRenderState(Renderer::Fog, false);
-
-finish:
 
 	// Update spells
 	ARX_SPELLS_Update();
