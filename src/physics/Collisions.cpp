@@ -1686,14 +1686,13 @@ bool IO_Visible(Vec3f * orgn, Vec3f * dest, EERIEPOLY * epp, Vec3f * hit)
 {
 	float ix,iy,iz;
 	long px,pz;
-	EERIEPOLY * ep;
+	EERIEPOLY *ep;
 
-	FAST_BKG_DATA * feg;
-	float pas=35.f;
+	FAST_BKG_DATA *feg;
+	float pas = 35.f;
  
-
 	Vec3f found_hit = Vec3f::ZERO;
-	EERIEPOLY * found_ep=NULL;
+	EERIEPOLY *found_ep = NULL;
 	float iter,t;
 
 	//current ray pos
@@ -1705,7 +1704,7 @@ bool IO_Visible(Vec3f * orgn, Vec3f * dest, EERIEPOLY * epp, Vec3f * hit)
 	float nearest = distance = fdist(*orgn, *dest);
 
 	if(distance < pas)
-		pas = distance * ( 1.0f / 2 );
+		pas = distance * .5f;
 
 	// ray incs
 	float dx = (dest->x - orgn->x);
@@ -1717,40 +1716,27 @@ bool IO_Visible(Vec3f * orgn, Vec3f * dest, EERIEPOLY * epp, Vec3f * hit)
 	float ady = EEfabs(dy);
 	float adz = EEfabs(dz);
 
-	if ( (adx>=ady) && (adx>=adz)) 
-	{
-		if (adx != dx)
-		{
+	if(adx >= ady && adx >= adz) {
+		if(adx != dx)
 			ix = -pas;
-		}
 		else
-		{
 			ix = pas;
-		}
 
-		iter=adx/pas;
-		t=1.f/(iter);
-		iy=dy*t;
-		iz=dz*t;
-	}
-	else if ( (ady>=adx) && (ady>=adz)) 
-	{
-		if (ady != dy)
-		{
+		iter = adx / pas;
+		t = 1.f / (iter);
+		iy = dy * t;
+		iz = dz * t;
+	} else if(ady >= adx && ady >= adz) {
+		if(ady != dy)
 			iy = -pas;
-		}
 		else
-		{
 			iy = pas;
-		}
 
-		iter=ady/pas;
-		t=1.f/(iter);
-		ix=dx*t;
-		iz=dz*t;
-	}
-	else 
-	{
+		iter = ady / pas;
+		t = 1.f / (iter);
+		ix = dx * t;
+		iz = dz * t;
+	} else {
 		if (adz != dz)
 		{
 			iz = -pas;

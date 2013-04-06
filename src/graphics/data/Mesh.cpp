@@ -998,14 +998,16 @@ int EERIELaunchRay3(Vec3f * orgn, Vec3f * dest,  Vec3f * hit, EERIEPOLY * epp, l
 // Computes the visibility from a point to another... (sort of...)
 bool Visible(Vec3f * orgn, Vec3f * dest, EERIEPOLY * epp, Vec3f * hit)
 {
-	float			ix, iy, iz;
-	long			px, pz;
-	EERIEPOLY	*	ep;
-	EERIE_BKG_INFO	* eg;
-	float			pas			=	35.f;
+	float ix,iy,iz;
+	long px,pz;
+	EERIEPOLY *ep;
+
+	EERIE_BKG_INFO *eg;
+	float pas = 35.f;
+
 	Vec3f found_hit = Vec3f::ZERO;
-	EERIEPOLY	*	found_ep	=	NULL;
-	float iter, t;
+	EERIEPOLY *found_ep = NULL;
+	float iter,t;
 	
 	//current ray pos
 	float x = orgn->x;
