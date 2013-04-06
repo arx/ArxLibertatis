@@ -88,7 +88,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "util/Unicode.h"
 
 extern TextManager * pTextManage;
-extern Anglef ePlayerAngle;
 extern float Xratio, Yratio;
 extern ARX_INTERFACE_BOOK_MODE Book_Mode;
 extern long START_NEW_QUEST;
@@ -288,7 +287,6 @@ void ARX_MENU_Clicked_NEWQUEST() {
 	ARX_PLAYER_Start_New_Quest();
 	Book_Mode = BOOKMODE_STATS;
 	player.skin = 0;
-	ePlayerAngle.b = -25.f;
 	ARX_PLAYER_Restore_Skin();
 	ARXmenu.currentmode = AMCM_NEWQUEST;
 }
@@ -632,22 +630,6 @@ bool ARX_Menu_Render() {
 					player.skin++;
 
 					if (player.skin > 3)  player.skin = 0;
-
-					switch (player.skin)
-					{
-						case 0:
-							ePlayerAngle.b = -25.f;
-							break;
-						case 1:
-							ePlayerAngle.b = -10.f;
-							break;
-						case 2:
-							ePlayerAngle.b = 20.f;
-							break;
-						case 3:
-							ePlayerAngle.b = 35.f;
-							break;
-					}
 
 					ARX_PLAYER_Restore_Skin();
 				}
