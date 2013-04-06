@@ -6338,7 +6338,6 @@ void ARX_SPELLS_Update()
 				{
 					pCSpellFX->Update(framedelay);
 					pCSpellFX->Render();
-					GRenderer->SetCulling(Renderer::CullNone);
 				}
 			}
 			break;
