@@ -1605,7 +1605,7 @@ void ARX_PLAYER_Manage_Visual() {
 		ANIM_HANDLE * ChangeMoveAnim = NULL;
 		ANIM_HANDLE * ChangeMoveAnim2 = NULL;
 		long ChangeMA_Loop = 1;
-		long ChangeMA_Stopend = 0;
+		bool ChangeMA_Stopend = false;
 		
 		if(io->ioflags & IO_FREEZESCRIPT) {
 			goto nochanges;
@@ -1616,7 +1616,7 @@ void ARX_PLAYER_Manage_Visual() {
 			io->animlayer[1].cur_anim = NULL;
 			ChangeMoveAnim = alist[ANIM_DIE];
 			ChangeMA_Loop = 0;
-			ChangeMA_Stopend = 1;
+			ChangeMA_Stopend = true;
 			goto makechanges;
 		}
 		
