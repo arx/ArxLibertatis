@@ -1092,8 +1092,8 @@ bool Visible(Vec3f * orgn, Vec3f * dest, EERIEPOLY * epp, Vec3f * hit)
 				dd = fdist(*orgn, *hit);
 
 				if(dd < nearest) {
-					nearest		=	dd;
-					found_ep	=	ep;
+					nearest = dd;
+					found_ep = ep;
 					found_hit = *hit;
 				}
 			}

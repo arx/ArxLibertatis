@@ -1785,25 +1785,23 @@ bool IO_Visible(Vec3f * orgn, Vec3f * dest, EERIEPOLY * epp, Vec3f * hit)
 			}
 		}
 
-		px=(long)(x* ACTIVEBKG->Xmul);
-		pz=(long)(z* ACTIVEBKG->Zmul);
+		px = (long)(x * ACTIVEBKG->Xmul);
+		pz = (long)(z * ACTIVEBKG->Zmul);
 
 		if(px < 0 || px >= ACTIVEBKG->Xsize || pz < 0 || pz >= ACTIVEBKG->Zsize)
 			goto fini;
 
-			feg=&ACTIVEBKG->fastdata[px][pz];
+			feg = &ACTIVEBKG->fastdata[px][pz];
 
-			for (long k=0;k<feg->nbpolyin;k++)
-			{
-				ep=feg->polyin[k];	
+			for (long k = 0; k < feg->nbpolyin; k++) {
+				ep = feg->polyin[k];
 
 				if (!(ep->type & (POLY_WATER | POLY_TRANS | POLY_NOCOL) ) )
-				if ((ep->min.y-pas<y) && (ep->max.y+pas>y))
-				if ((ep->min.x-pas<x) && (ep->max.x+pas>x))
-				if ((ep->min.z-pas<z) && (ep->max.z+pas>z))
+				if ((ep->min.y - pas < y) && (ep->max.y + pas > y))
+				if ((ep->min.x - pas < x) && (ep->max.x + pas > x))
+				if ((ep->min.z - pas < z) && (ep->max.z + pas > z))
 				{
-					if (RayCollidingPoly(orgn,dest,ep,hit)) 
-					{
+					if(RayCollidingPoly(orgn, dest, ep, hit)) {
 						dd = fdist(*orgn, *hit);
 						if(dd < nearest) {
 							nearest = dd;
@@ -1819,11 +1817,14 @@ bool IO_Visible(Vec3f * orgn, Vec3f * dest, EERIEPOLY * epp, Vec3f * hit)
 fini:
 	;
 	
-	if ( found_ep == NULL ) return true;
+	if(!found_ep)
+		return true;
 
-	if ( found_ep == epp ) return true;
+	if(found_ep == epp)
+		return true;
 	
 	*hit = found_hit;
+
 	return false;
 }
 
