@@ -59,34 +59,28 @@ CSpellFx::CSpellFx() :
 {
 	SetDuration(1000);
 	SetAngle(fBeta);
-};
+}
 
-//-----------------------------------------------------------------------------
-void CSpellFx::SetDuration(const unsigned long ulaDuration)
-{
+void CSpellFx::SetDuration(const unsigned long ulaDuration) {
 	ulDuration = ulaDuration;
 
-	if (ulDuration <= 0) ulDuration = 100;
+	if(ulDuration <= 0)
+		ulDuration = 100;
 
 	fOneOnDuration = 1.f / (float)(ulDuration);
 
 	ulCurrentTime = 0;
-};
+}
 
-//-----------------------------------------------------------------------------
 unsigned long CSpellFx::getCurrentTime() {
 	return ulCurrentTime;
-};
+}
 
-//-----------------------------------------------------------------------------
-unsigned long CSpellFx::GetDuration()
-{
+unsigned long CSpellFx::GetDuration() {
 	return ulDuration;
-};
+}
 
-//-----------------------------------------------------------------------------
-void CSpellFx::SetAngle(float afAngle)
-{
+void CSpellFx::SetAngle(float afAngle) {
 	fBeta = afAngle;
 	fBetaRad = radians(fBeta);
 	fBetaRadCos = (float) cos(fBetaRad);
@@ -251,7 +245,6 @@ void Split(TexturedVertex * v, int a, int b, float fX, float fMulX, float fY, fl
 	}
 }
 
-//-----------------------------------------------------------------------------
 void Split(TexturedVertex * v, int a, int b, float yo, float fMul)
 {
 	if (a != b)
