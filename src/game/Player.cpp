@@ -1604,7 +1604,7 @@ void ARX_PLAYER_Manage_Visual() {
 		
 		ANIM_HANDLE * ChangeMoveAnim = NULL;
 		ANIM_HANDLE * ChangeMoveAnim2 = NULL;
-		long ChangeMA_Loop = 1;
+		bool ChangeMA_Loop = true;
 		bool ChangeMA_Stopend = false;
 		
 		if(io->ioflags & IO_FREEZESCRIPT) {
@@ -1615,7 +1615,7 @@ void ARX_PLAYER_Manage_Visual() {
 			HERO_SHOW_1ST = -1;
 			io->animlayer[1].cur_anim = NULL;
 			ChangeMoveAnim = alist[ANIM_DIE];
-			ChangeMA_Loop = 0;
+			ChangeMA_Loop = false;
 			ChangeMA_Stopend = true;
 			goto makechanges;
 		}
@@ -1629,7 +1629,7 @@ void ARX_PLAYER_Manage_Visual() {
 			} else {
 				ChangeMoveAnim = alist[ANIM_WAIT_SHORT];
 			}
-			ChangeMA_Loop = 1;
+			ChangeMA_Loop = true;
 		}
 		
 		if(ROTATE_START && player.angle.a > 60.f && player.angle.a < 180.f
@@ -1647,7 +1647,7 @@ void ARX_PLAYER_Manage_Visual() {
 				else	ChangeMoveAnim = alist[ANIM_U_TURN_RIGHT];
 			}
 
-			ChangeMA_Loop = 1;
+			ChangeMA_Loop = true;
 
 			if ((ause0->cur_anim == alist[ANIM_U_TURN_LEFT])
 			        ||	(ause0->cur_anim == alist[ANIM_U_TURN_LEFT_FIGHT]))
@@ -1756,7 +1756,7 @@ void ARX_PLAYER_Manage_Visual() {
 			else
 				ChangeMoveAnim = alist[ANIM_WAIT_SHORT];
 
-			ChangeMA_Loop = 1;
+			ChangeMA_Loop = true;
 		}
 
 		// Finally update anim
@@ -1798,12 +1798,12 @@ void ARX_PLAYER_Manage_Visual() {
 		        && !player.levitate)
 		{
 			ChangeMoveAnim = alist[ANIM_CROUCH_START];
-			ChangeMA_Loop = 0;
+			ChangeMA_Loop = false;
 		}
 		else if (!(player.Current_Movement & PLAYER_CROUCH) && (player.Last_Movement & PLAYER_CROUCH))
 		{
 			ChangeMoveAnim = alist[ANIM_CROUCH_END];
-			ChangeMA_Loop = 0;
+			ChangeMA_Loop = false;
 		}
 		else if (player.Current_Movement & PLAYER_CROUCH)
 		{
@@ -1812,12 +1812,12 @@ void ARX_PLAYER_Manage_Visual() {
 				if (!(ause0->flags & EA_ANIMEND))
 				{
 					ChangeMoveAnim = alist[ANIM_CROUCH_START];
-					ChangeMA_Loop = 0;
+					ChangeMA_Loop = false;
 				}
 				else
 				{
 					ChangeMoveAnim = alist[ANIM_CROUCH_WAIT];
-					ChangeMA_Loop = 1;
+					ChangeMA_Loop = true;
 					player.physics.cyl.height = player.crouchHeight();
 				}
 			}
@@ -1829,7 +1829,7 @@ void ARX_PLAYER_Manage_Visual() {
 				   )
 				{
 					ChangeMoveAnim = alist[ANIM_CROUCH_STRAFE_LEFT];
-					ChangeMA_Loop = 1;
+					ChangeMA_Loop = true;
 				}
 				else if ((ChangeMoveAnim == alist[ANIM_STRAFE_RIGHT])
 				         ||	(ChangeMoveAnim == alist[ANIM_STRAFE_RUN_RIGHT])
@@ -1837,7 +1837,7 @@ void ARX_PLAYER_Manage_Visual() {
 				        )
 				{
 					ChangeMoveAnim = alist[ANIM_CROUCH_STRAFE_RIGHT];
-					ChangeMA_Loop = 1;
+					ChangeMA_Loop = true;
 				}
 				else if ((ChangeMoveAnim == alist[ANIM_WALK])
 				         ||	(ChangeMoveAnim == alist[ANIM_RUN])
@@ -1845,19 +1845,19 @@ void ARX_PLAYER_Manage_Visual() {
 				        )
 				{
 					ChangeMoveAnim = alist[ANIM_CROUCH_WALK];
-					ChangeMA_Loop = 1;
+					ChangeMA_Loop = true;
 				}
 				else if ((ChangeMoveAnim == alist[ANIM_WALK_BACKWARD])
 				         || (ChangeMoveAnim == alist[ANIM_FIGHT_WALK_BACKWARD])
 				        )
 				{
 					ChangeMoveAnim = alist[ANIM_CROUCH_WALK_BACKWARD];
-					ChangeMA_Loop = 1;
+					ChangeMA_Loop = true;
 				}
 				else
 				{
 					ChangeMoveAnim = alist[ANIM_CROUCH_WAIT];
-					ChangeMA_Loop = 1;
+					ChangeMA_Loop = true;
 				}
 			}
 		}
@@ -1875,7 +1875,7 @@ void ARX_PLAYER_Manage_Visual() {
 			light = 1;
 
 			ChangeMoveAnim = alist[ANIM_MEDITATION];
-			ChangeMA_Loop = 1;
+			ChangeMA_Loop = true;
 
 			EERIE_3DOBJ * eobj = io->obj;
 			long pouet = 2;
@@ -1933,7 +1933,7 @@ void ARX_PLAYER_Manage_Visual() {
 		else if (ARX_SPELLS_GetSpellOn(io, SPELL_LEVITATE) >= 0)
 		{
 			ChangeMoveAnim = alist[ANIM_LEVITATE];
-			ChangeMA_Loop = 1;
+			ChangeMA_Loop = true;
 			goto makechanges;
 			
 		} else if(player.jumpphase != NotJumping) {
