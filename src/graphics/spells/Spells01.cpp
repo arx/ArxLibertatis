@@ -72,7 +72,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 extern ParticleManager * pParticleManager;
  
 extern long cur_mr;
-//-----------------------------------------------------------------------------
+
 void LaunchMagicMissileExplosion(Vec3f & _ePos, int t = 0, long spellinstance = -1)
 {
 	// système de partoches pour l'explosion
@@ -98,8 +98,7 @@ void LaunchMagicMissileExplosion(Vec3f & _ePos, int t = 0, long spellinstance = 
 	cp.fEndSize = 0;
 	cp.fEndSizeRandom = 2;
 
-	if ((spellinstance >= 0) && (spells[spellinstance].caster == 0) && (cur_mr == 3))
-	{
+	if(spellinstance >= 0 && spells[spellinstance].caster == 0 && cur_mr == 3) {
 		cp.fStartSize = 20;
 		cp.fSpeed = 13;
 		cp.fSpeedRandom = 10;
@@ -117,9 +116,7 @@ void LaunchMagicMissileExplosion(Vec3f & _ePos, int t = 0, long spellinstance = 
 		cp.fEndColor[2] = 120;
 		cp.fEndColor[3] = 10;//55;
 		pPS->SetTexture("graph/particles/(fx)_mr", 0, 500);
-	}
-	else
-	{
+	} else {
 		cp.fStartColorRandom[0] = 100;
 		cp.fStartColorRandom[1] = 100;
 		cp.fStartColorRandom[2] = 100;
@@ -152,21 +149,17 @@ void LaunchMagicMissileExplosion(Vec3f & _ePos, int t = 0, long spellinstance = 
 
 	long id = GetFreeDynLight();
 
-	if (id != -1)
-	{
+	if(id != -1) {
 		DynLight[id].exist = 1;
 		DynLight[id].intensity = 2.3f;
 		DynLight[id].fallstart = 250.f;
 		DynLight[id].fallend   = 420.f;
 
-		if ((spellinstance >= 0) && (spells[spellinstance].caster == 0) && (cur_mr == 3))
-		{
+		if(spellinstance >= 0 && spells[spellinstance].caster == 0 && cur_mr == 3) {
 			DynLight[id].rgb.r = 1.f;
 			DynLight[id].rgb.g = 0.3f;
 			DynLight[id].rgb.b = .8f;
-		}
-		else
-		{
+		} else {
 			DynLight[id].rgb.r = 0.f;
 			DynLight[id].rgb.g = 0.f;
 			DynLight[id].rgb.b = .8f;
@@ -176,10 +169,8 @@ void LaunchMagicMissileExplosion(Vec3f & _ePos, int t = 0, long spellinstance = 
 		DynLight[id].duration = 1500;
 	}
 
-	if (pParticleManager)
-	{
+	if(pParticleManager)
 		pParticleManager->AddSystem(pPS);
-	}
 
 	ARX_SOUND_PlaySFX(SND_SPELL_MM_HIT, &_ePos);
 }
@@ -191,7 +182,7 @@ CMagicMissile::CMagicMissile() : CSpellFx(), fColor(Color3f::white), eSrc(Vec3f:
 
 	tex_mm = TextureContainer::Load("graph/obj3d/textures/(fx)_bandelette_blue");
 
-	if (!smissile)
+	if(!smissile)
 		smissile = LoadTheObj("graph/obj3d/interactive/fix_inter/fx_magic_missile/fx_magic_missile.teo");
 
 	smissile_count++;
@@ -200,39 +191,32 @@ CMagicMissile::CMagicMissile() : CSpellFx(), fColor(Color3f::white), eSrc(Vec3f:
 	bMove = true;
 }
 
-//-----------------------------------------------------------------------------
 CMagicMissile::~CMagicMissile()
 {
 	smissile_count--;
 
-	if (smissile && (smissile_count <= 0))
-	{
+	if(smissile && smissile_count <= 0) {
 		smissile_count = 0;
 		delete smissile;
 		smissile = NULL;
 	}
 
-	if (this->lLightId != -1)
-	{
+	if(this->lLightId != -1) {
 		this->lLightId = -1;
 	}
 
 	ARX_SOUND_Stop(snd_loop);
 }
 
-//-----------------------------------------------------------------------------
 void CMagicMissile::Create(const Vec3f & aeSrc, const Anglef & angles)
 {
-	Vec3f s, e;
-
 	SetDuration(ulDuration);
 	SetAngle(angles.b);
 
 	this->angles = angles;
 	eCurPos = eSrc = aeSrc;
 
-	s = eSrc;
-	e = eSrc;
+	Vec3f e = eSrc;
 
 	int i = 40;
 	e.x -= fBetaRadSin * 50 * i;
@@ -243,10 +227,8 @@ void CMagicMissile::Create(const Vec3f & aeSrc, const Anglef & angles)
 	pathways[5].p = e;
 	Split(pathways, 0, 5, 50, 0.5f);
 
-	for (i = 0; i < 6; i++)
-	{
-		if (pathways[i].p.y >= eSrc.y + 150)
-		{
+	for(i = 0; i < 6; i++) {
+		if(pathways[i].p.y >= eSrc.y + 150) {
 			pathways[i].p.y = eSrc.y + 150;
 		}
 	}
@@ -268,7 +250,6 @@ void CMagicMissile::SetColor(Color3f color) {
 	fColor = color;
 }
 
-//-----------------------------------------------------------------------------
 void CMagicMissile::SetTTL(unsigned long aulTTL)
 {
 	unsigned long t = ulCurrentTime;
@@ -277,14 +258,11 @@ void CMagicMissile::SetTTL(unsigned long aulTTL)
 	ulCurrentTime = t;
 
 	// Light
-	if (lLightId != -1)
-	{
+	if(lLightId != -1) {
 		lLightId = -1;
 	}
 }
 
-
-//-----------------------------------------------------------------------------
 void CMagicMissile::Update(unsigned long aulTime)
 {
 	ARX_SOUND_RefreshPosition(snd_loop, &eCurPos);
@@ -292,58 +270,42 @@ void CMagicMissile::Update(unsigned long aulTime)
 	ulCurrentTime += aulTime;
 }
 
-//-----------------------------------------------------------------------------
 float CMagicMissile::Render()
-{
-	int i = 0;
- 
+{ 
 	Vec3f lastpos, newpos;
 	Vec3f v;
-	Anglef stiteangle;
-	Vec3f stitepos;
-	Vec3f stitescale;
-	Color3f stitecolor;
-	Vec3f av;
 
-	if (ulCurrentTime >= ulDuration)
-	{
+	if(ulCurrentTime >= ulDuration)
 		return 0.f;
-	}
 
-	// Set Appropriate Renderstates -------------------------------------------
+	// Set Appropriate Renderstates
 	GRenderer->SetCulling(Renderer::CullNone);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
-	// Set Texture ------------------------------------------------------------
-	if (tex_mm)
-	{
-		if ((spells[spellinstance].caster == 0) && (cur_mr == 3))
+	// Set Texture
+	if(tex_mm) {
+		if(spells[spellinstance].caster == 0 && cur_mr == 3)
 			GRenderer->ResetTexture(0);
 		else
 			GRenderer->SetTexture(0, tex_mm);
 	}
 
-	// ------------------------------------------------------------------------
-
-	if (bMove)
-	{
+	if(bMove)
 		fTrail = (ulCurrentTime * fOneOnDuration) * (iBezierPrecision + 2) * 5;
-	}
 	
 	newpos = lastpos = pathways[0].p;
 	
-	for (i = 0; i < 5; i++)
-	{
+	for(int i = 0; i < 5; i++) {
 		int kp = i;
 		int kpprec = (i > 0) ? kp - 1 : kp ;
 		int kpsuiv = kp + 1 ;
 		int kpsuivsuiv = (i < (5 - 2)) ? kpsuiv + 1 : kpsuiv;
 
-		for (int toto = 1; toto < iBezierPrecision; toto++)
-		{
-			if (fTrail < i * iBezierPrecision + toto) break;
+		for(int toto = 1; toto < iBezierPrecision; toto++) {
+			if(fTrail < i * iBezierPrecision + toto)
+				break;
 
 			float t = toto * fOneOnBezierPrecision;
 
@@ -372,23 +334,20 @@ float CMagicMissile::Render()
 
 			newpos = v;
 
-			if (!((fTrail - (i * iBezierPrecision + toto)) > iLength))
-			{
+			if(!((fTrail - (i * iBezierPrecision + toto)) > iLength)) {
 				float c;
 
-				if (fTrail < iLength)
-				{
+				if(fTrail < iLength) {
 					c = 1.0f - ((fTrail - (i * iBezierPrecision + toto)) / fTrail);
-				}
-				else
-				{
+				} else {
 					c = 1.0f - ((fTrail - (i * iBezierPrecision + toto)) / (float)iLength);
 				}
 
 				float fsize = c;
 				float alpha = c - 0.2f;
 
-				if (alpha < 0.2f) alpha = 0.2f;
+				if(alpha < 0.2f)
+					alpha = 0.2f;
 
 				c += frand2() * 0.1f;
 
@@ -397,7 +356,7 @@ float CMagicMissile::Render()
 
 				Color color = (fColor * (c * alpha)).to<u8>();
 
-				if (fsize < 0.5f)
+				if(fsize < 0.5f)
 					fsize = fsize * 2 * 3;
 				else
 					fsize = (1.0f - fsize + 0.5f) * 2 * (3 * 0.5f);
@@ -413,44 +372,42 @@ float CMagicMissile::Render()
 		}
 	}
 	
-	av = newpos - lastpos;
+	Vec3f av = newpos - lastpos;
 	
 	float bubu = getAngle(av.x, av.z, 0, 0);
 	float bubu1 = getAngle(av.x, av.y, 0, 0);
 	
-	stitepos = lastpos;
+	Vec3f stitepos = lastpos;
 
+	Anglef stiteangle;
 	stiteangle.b = -degrees(bubu);
 	stiteangle.a = 0;
 	stiteangle.g = -(degrees(bubu1));
 
-	if (av.x < 0)
+	if(av.x < 0)
 		stiteangle.g -= 90;
 
-	if (av.x > 0)
+	if(av.x > 0)
 		stiteangle.g += 90;
 
-	if (stiteangle.g < 0)
+	if(stiteangle.g < 0)
 		stiteangle.g += 360.0f;
 
-	if ((spells[spellinstance].caster == 0) && (cur_mr == 3))
-	{
+	Color3f stitecolor;
+	if(spells[spellinstance].caster == 0 && cur_mr == 3) {
 		stitecolor.r = 1.f;
 		stitecolor.g = 0.f;
 		stitecolor.b = 0.2f;
-	}
-	else
-	{
+	} else {
 		stitecolor.r = 0.3f;
 		stitecolor.g = 0.3f;
 		stitecolor.b = 0.5f;
 	}
 
-	stitescale = Vec3f::ONE;
-	{
-		if ((smissile))
-			DrawEERIEObjEx(smissile, &stiteangle, &stitepos, &stitescale, stitecolor);
-	}
+	Vec3f stitescale = Vec3f::ONE;
+
+	if(smissile)
+		DrawEERIEObjEx(smissile, &stiteangle, &stitepos, &stitescale, stitecolor);
 
 	eCurPos = lastpos;
 
