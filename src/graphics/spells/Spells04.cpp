@@ -375,6 +375,8 @@ float CCurse::Render() {
 		pd->special = ROTATING | MODULATE_ROTATION | DISSIPATING | SUBSTRACT | GRAVITY;
 		pd->fparam = 0.0000001f;
 	}
+
+	GRenderer->SetCulling(Renderer::CullNone);
 	
 	return 1;
 }
