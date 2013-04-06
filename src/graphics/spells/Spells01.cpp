@@ -695,12 +695,9 @@ void CMultiMagicMissile::CheckCollision()
 //-----------------------------------------------------------------------------
 void CMultiMagicMissile::Update(unsigned long _ulTime)
 {
-	if (pTab)
-	{
-		for (unsigned int i = 0 ; i < uiNumber ; i++)
-		{
-			if (pTab[i])
-			{
+	if(pTab) {
+		for(unsigned int i = 0 ; i < uiNumber ; i++) {
+			if(pTab[i]) {
 				pTab[i]->Update(_ulTime);
 			}
 		}
@@ -712,31 +709,28 @@ float CMultiMagicMissile::Render()
 {
 	long nbmissiles	= 0;
  
-
-	if (pTab)
-	{
-		for (unsigned int i = 0 ; i < uiNumber ; i++)
-		{
-			if (pTab[i])
-			{
+	if(pTab) {
+		for(unsigned int i = 0; i < uiNumber; i++) {
+			if(pTab[i]) {
 				float fa = pTab[i]->Render();
 
 				CMagicMissile * pMM = (CMagicMissile *) pTab[i];
 
-				if (pMM->lLightId != -1)
-				{
+				if(pMM->lLightId != -1) {
 					EERIE_LIGHT * el	= &DynLight[pMM->lLightId];
 					el->intensity		= 0.7f + 2.3f * fa;
 					el->pos = pMM->eCurPos;
 					el->time_creation	= (unsigned long)(arxtime);
 				}
 
-				if (pMM->bMove) nbmissiles++;
+				if(pMM->bMove)
+					nbmissiles++;
 			}
 		}
 	}
 
-	if (nbmissiles == 0) return -1;
+	if(nbmissiles == 0)
+		return -1;
 
 	return 1;
 }
