@@ -1235,32 +1235,34 @@ void FaceTarget2(Entity * io)
 	io->angle.b = MAKEANGLE(io->angle.b - rot); // -tt
 }
 
-//***********************************************************************************************
-//***********************************************************************************************
 void StareAtTarget(Entity * io)
 {
-	if (io->_npcdata->ex_rotate == NULL)
-	{
+	if(io->_npcdata->ex_rotate == NULL) {
 		ARX_NPC_CreateExRotateData(io);
 	}
 
-	if (!io->show) return;
+	if(!io->show)
+		return;
 
-	if (io->ioflags & IO_NPC)
-	{
-		if (io->_npcdata->life <= 0.f) return;
+	if(io->ioflags & IO_NPC) {
+		if(io->_npcdata->life <= 0.f)
+			return;
 
-		if ((io->_npcdata->pathfind.listnb <= 0) && (io->_npcdata->behavior & BEHAVIOUR_FLEE)) return;
+		if(io->_npcdata->pathfind.listnb <= 0 && (io->_npcdata->behavior & BEHAVIOUR_FLEE))
+			return;
 	}
 
-	if (io->_npcdata->behavior & BEHAVIOUR_NONE) return;
+	if(io->_npcdata->behavior & BEHAVIOUR_NONE)
+		return;
 
 	GetTargetPos(io);
 	Vec3f tv = io->pos;
 
-	if (dist(tv, io->target) <= 20.f) return; // To fix "stupid" rotation near target
+	if(dist(tv, io->target) <= 20.f)
+		return; // To fix "stupid" rotation near target
 
-	if (((io->target.x - tv.x) == 0) && ((io->target.z - tv.z) == 0)) return;
+	if(io->target.x - tv.x == 0 && io->target.z - tv.z == 0)
+		return;
 
 	float rot = 0.27f * framedelay;
 	float alpha = MAKEANGLE(io->angle.b);
@@ -1271,50 +1273,56 @@ void StareAtTarget(Entity * io)
 
 	if (A == 0.f) rot = 0.f;
 
-	if ((B < 180) && (B > 90))
-	{
-		if (rot > A) rot = A;
-	}
-	else if ((B > 180) && (B < 270)) 
-	{
-		if (rot > 360 - A) rot = -(360 - A);
-		else rot = -rot;
-	}
-	else if (A < 180)
-	{
-		if (rot > A) rot = A;
-	}
-	else
-	{
-		if (rot > 360 - A) rot = -(360 - A);
-		else rot = -rot;
+	if ((B < 180) && (B > 90)) {
+		if(rot > A)
+			rot = A;
+	} else if ((B > 180) && (B < 270)) {
+		if(rot > 360 - A)
+			rot = -(360 - A);
+		else
+			rot = -rot;
+	} else if(A < 180) {
+		if(rot > A)
+			rot = A;
+	} else {
+		if(rot > 360 - A)
+			rot = -(360 - A);
+		else
+			rot = -rot;
 	}
 
 	// Needed angle to turn toward target
 	rot *= ( 1.0f / 2 );
 	float HEAD_ANGLE_THRESHOLD;
 
-	if ((io) && (io->ioflags & IO_NPC))
+	if(io && (io->ioflags & IO_NPC))
 		HEAD_ANGLE_THRESHOLD = 45.f * io->_npcdata->stare_factor;
-	else HEAD_ANGLE_THRESHOLD = 45.f;
+	else
+		HEAD_ANGLE_THRESHOLD = 45.f;
 
 	io->head_rot += rot;
 
-	if (io->head_rot > 120.f) io->head_rot = 120.f;
+	if(io->head_rot > 120.f)
+		io->head_rot = 120.f;
 
-	if (io->head_rot < -120.f) io->head_rot = -120.f;
+	if(io->head_rot < -120.f)
+		io->head_rot = -120.f;
 
 	io->_npcdata->ex_rotate->group_rotate[0].b = io->head_rot * 1.5f;
 
-	if (io->_npcdata->ex_rotate->group_rotate[0].b > HEAD_ANGLE_THRESHOLD) io->_npcdata->ex_rotate->group_rotate[0].b = HEAD_ANGLE_THRESHOLD;
+	if(io->_npcdata->ex_rotate->group_rotate[0].b > HEAD_ANGLE_THRESHOLD)
+		io->_npcdata->ex_rotate->group_rotate[0].b = HEAD_ANGLE_THRESHOLD;
 
-	if (io->_npcdata->ex_rotate->group_rotate[0].b < -HEAD_ANGLE_THRESHOLD) io->_npcdata->ex_rotate->group_rotate[0].b = -HEAD_ANGLE_THRESHOLD;
+	if(io->_npcdata->ex_rotate->group_rotate[0].b < -HEAD_ANGLE_THRESHOLD)
+		io->_npcdata->ex_rotate->group_rotate[0].b = -HEAD_ANGLE_THRESHOLD;
 
 	io->_npcdata->ex_rotate->group_rotate[1].b = io->head_rot * ( 1.0f / 2 );
 
-	if (io->_npcdata->ex_rotate->group_rotate[1].b > HEAD_ANGLE_THRESHOLD) io->_npcdata->ex_rotate->group_rotate[1].b = HEAD_ANGLE_THRESHOLD;
+	if(io->_npcdata->ex_rotate->group_rotate[1].b > HEAD_ANGLE_THRESHOLD)
+		io->_npcdata->ex_rotate->group_rotate[1].b = HEAD_ANGLE_THRESHOLD;
 
-	if (io->_npcdata->ex_rotate->group_rotate[1].b < -HEAD_ANGLE_THRESHOLD) io->_npcdata->ex_rotate->group_rotate[1].b = -HEAD_ANGLE_THRESHOLD;
+	if(io->_npcdata->ex_rotate->group_rotate[1].b < -HEAD_ANGLE_THRESHOLD)
+		io->_npcdata->ex_rotate->group_rotate[1].b = -HEAD_ANGLE_THRESHOLD;
 
 	//MAKEANGLE(io->angle.b-rot); // -tt
 	return;
