@@ -2197,9 +2197,9 @@ extern bool bInventoryClosing;
 //-----------------------------------------------------------------------------
 void ARX_INVENTORY_OpenClose(Entity * _io)
 {
-	if ((_io && (SecondaryInventory == _io->inventory)) || (_io == NULL)) // CLOSING
-	{
-		if (SecondaryInventory && (SecondaryInventory->io != NULL))
+	// CLOSING
+	if((_io && SecondaryInventory == _io->inventory) || !_io) {
+		if(SecondaryInventory && SecondaryInventory->io)
 			SendIOScriptEvent(SecondaryInventory->io, SM_INVENTORY2_CLOSE);
 
 		InventoryDir = -1;
@@ -2207,28 +2207,24 @@ void ARX_INVENTORY_OpenClose(Entity * _io)
 		SecondaryInventory = NULL;
 		EERIEMouseButton &= ~4;
 
-		if (DRAGGING) DRAGGING = 0;
-	}
-	else
-	{
-		if (TSecondaryInventory
-		        && TSecondaryInventory->io) SendIOScriptEvent(TSecondaryInventory->io, SM_INVENTORY2_CLOSE);
+		if(DRAGGING)
+			DRAGGING = 0;
+	} else {
+		if(TSecondaryInventory && TSecondaryInventory->io)
+			SendIOScriptEvent(TSecondaryInventory->io, SM_INVENTORY2_CLOSE);
 
 		InventoryDir = 1;
 		TSecondaryInventory = SecondaryInventory = _io->inventory;
 
-		if (SecondaryInventory && SecondaryInventory->io != NULL)
-		{
-			if (SendIOScriptEvent(SecondaryInventory->io, SM_INVENTORY2_OPEN) == REFUSE)
-			{
+		if(SecondaryInventory && SecondaryInventory->io != NULL) {
+			if(SendIOScriptEvent(SecondaryInventory->io, SM_INVENTORY2_OPEN) == REFUSE) {
 				InventoryDir = -1;
 				TSecondaryInventory = SecondaryInventory = NULL;
 				return;
 			}
 		}
 
-		if (player.Interface & INTER_COMBATMODE)
-		{
+		if(player.Interface & INTER_COMBATMODE) {
 			ARX_INTERFACE_Combat_Mode(0);
 		}
 
@@ -2236,17 +2232,16 @@ void ARX_INVENTORY_OpenClose(Entity * _io)
 			TRUE_PLAYER_MOUSELOOK_ON = false;
 		}
 
-		if (SecondaryInventory && SecondaryInventory->io
-		        && (SecondaryInventory->io->ioflags & IO_SHOP))
+		if(SecondaryInventory && SecondaryInventory->io && (SecondaryInventory->io->ioflags & IO_SHOP))
 			ARX_INVENTORY_ReOrder();
 
 		EERIEMouseButton &= ~4;
 
-		if (DRAGGING) DRAGGING = 0;
+		if(DRAGGING)
+			DRAGGING = 0;
 	}
 
-	if (player.Interface & INTER_INVENTORYALL)
-	{
+	if(player.Interface & INTER_INVENTORYALL) {
 		ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
 		bInventoryClosing = true;
 	}
