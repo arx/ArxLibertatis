@@ -6196,14 +6196,11 @@ void ARX_SPELLS_Update()
 			// LEVEL 4 SPELLS
 			case SPELL_BLESS:
 			{
-				if (spells[i].pSpellFx)
-				{
+				if(spells[i].pSpellFx) {
 					CBless * pBless=(CBless *)spells[i].pSpellFx;
 
-					if (pBless)
-					{
-						if (ValidIONum(spells[i].target))
-						{
+					if(pBless) {
+						if(ValidIONum(spells[i].target)) {
 							pBless->eSrc = entities[spells[i].target]->pos;
 							Anglef angle = Anglef::ZERO;
 
@@ -6223,17 +6220,17 @@ void ARX_SPELLS_Update()
 			break;
 			case SPELL_CURSE:
 
-			if (spells[i].pSpellFx)
-			{
+			if(spells[i].pSpellFx) {
 				CCurse * curse=(CCurse *)spells[i].pSpellFx;
 				Vec3f target = Vec3f::ZERO;
 					
-				if ((spells[i].target>=0) && (entities[spells[i].target]))
-				{
+				if(spells[i].target >= 0 && entities[spells[i].target]) {
 					target = entities[spells[i].target]->pos;
 
-					if (spells[i].target==0) target.y-=200.f;
-					else target.y+=entities[spells[i].target]->physics.cyl.height-30.f;
+					if(spells[i].target == 0)
+						target.y -= 200.f;
+					else
+						target.y += entities[spells[i].target]->physics.cyl.height - 30.f;
 				}
 				
 				curse->Update(checked_range_cast<unsigned long>(framedelay));
@@ -6311,26 +6308,22 @@ void ARX_SPELLS_Update()
 				CLevitate *pLevitate=(CLevitate *)spells[i].pSpellFx;
 				Vec3f target;
 
-				if (spells[i].target==0)
-				{
+				if(spells[i].target == 0) {
 					target.x=player.pos.x;
 					target.y=player.pos.y+150.f;
 					target.z=player.pos.z;
 					player.levitate=1;
-				}
-				else
-				{
-					target.x=entities[spells[i].caster]->pos.x;
-							target.y = entities[spells[i].caster]->pos.y; 
-					target.z=entities[spells[i].caster]->pos.z;
+				} else {
+					target.x = entities[spells[i].caster]->pos.x;
+					target.y = entities[spells[i].caster]->pos.y;
+					target.z = entities[spells[i].caster]->pos.z;
 				}
 
 				pLevitate->ChangePos(&target);
 					
 				CSpellFx *pCSpellFX = spells[i].pSpellFx;
 
-				if (pCSpellFX)
-				{
+				if(pCSpellFX) {
 					pCSpellFX->Update(framedelay);
 					pCSpellFX->Render();
 				}
@@ -6342,10 +6335,8 @@ void ARX_SPELLS_Update()
 			{
 				CSpellFx *pCSpellFX = spells[i].pSpellFx;
 
-				if (pCSpellFX)
-				{				
-					if (spells[i].longinfo==-2) 
-					{
+				if(pCSpellFX) {
+					if(spells[i].longinfo==-2) {
 						pCSpellFX->lLightId=-1;
 						break;
 					}
@@ -6353,47 +6344,41 @@ void ARX_SPELLS_Update()
 					spells[i].tolive+=200;
 				
 					pCSpellFX->Update(framedelay);
-							pCSpellFX->Render();
+					pCSpellFX->Render();
 
-					if (pCSpellFX->lLightId > -1)
-					{
+					if(pCSpellFX->lLightId > -1) {
 						long id=pCSpellFX->lLightId;
 						DynLight[id].exist=1;
-								DynLight[id].intensity = 0.7f + 2.3f;
+						DynLight[id].intensity = 0.7f + 2.3f;
 						DynLight[id].fallend = 500.f;
 						DynLight[id].fallstart = 400.f;
 						DynLight[id].rgb.r = 0.8f;
 						DynLight[id].rgb.g = 0.2f;
 						DynLight[id].rgb.b = 0.2f;
 						DynLight[id].duration=800;
-								DynLight[id].time_creation = (unsigned long)(arxtime);
+						DynLight[id].time_creation = (unsigned long)(arxtime);
 					}
 
 					unsigned long tim=pCSpellFX->getCurrentTime();
 
-					if ((tim>3000) && (spells[i].longinfo==-1))
-					{
+					if(tim > 3000 && spells[i].longinfo == -1) {
 						ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &spells[i].caster_pos);
-						CRiseDead *prise;
-						prise= (CRiseDead *)spells[i].pSpellFx;
+						CRiseDead *prise = (CRiseDead *)spells[i].pSpellFx;
 
-						if (prise)
-						{	
+						if(prise) {
 							EERIE_CYLINDER phys;
 							phys.height=-200;
 							phys.radius=50;
 							phys.origin=spells[i].target_pos;
 	
-									float anything = CheckAnythingInCylinder(&phys, NULL, CFLAG_JUST_TEST);
+							float anything = CheckAnythingInCylinder(&phys, NULL, CFLAG_JUST_TEST);
 
 							if(EEfabs(anything) < 30) {
 								
-								const char * cls =
-									"graph/obj3d/interactive/npc/undead_base/undead_base";
+								const char * cls = "graph/obj3d/interactive/npc/undead_base/undead_base";
 								Entity * io = AddNPC(cls, -1, IO_IMMEDIATELOAD);
 								
 								if(io) {
-									
 									ARX_INTERACTIVE_HideGore(io);
 									RestoreInitialIOStatusOfIO(io);
 									
@@ -6416,24 +6401,19 @@ void ARX_SPELLS_Update()
 									SendIOScriptEvent(io,SM_SUMMONED);
 										
 									Vec3f pos;
-										{
-											pos.x=prise->eSrc.x+rnd()*100.f-50.f;
-											pos.y=prise->eSrc.y+100+rnd()*100.f-50.f;
-											pos.z=prise->eSrc.z+rnd()*100.f-50.f;
-											MakeCoolFx(&pos);
-										}
-									}
-
-									pCSpellFX->lLightId=-1;
+									pos.x=prise->eSrc.x+rnd()*100.f-50.f;
+									pos.y=prise->eSrc.y+100+rnd()*100.f-50.f;
+									pos.z=prise->eSrc.z+rnd()*100.f-50.f;
+									MakeCoolFx(&pos);
 								}
-								else
-								{
+
+								pCSpellFX->lLightId=-1;
+								} else {
 									ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE);
 									spells[i].longinfo=-2;
 									spells[i].tolive=0;
 								}
 							}
-							
 						} else if(!arxtime.is_paused() && tim < 4000) {
 						  if(rnd() > 0.95f) {
 								CRiseDead *pRD = (CRiseDead*)pCSpellFX;
