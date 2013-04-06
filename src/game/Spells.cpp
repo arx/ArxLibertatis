@@ -5966,8 +5966,7 @@ void ARX_SPELLS_Update()
 			{
 				CSpellFx *pCSpellFX = spells[i].pSpellFx;
 
-				if (pCSpellFX)
-				{
+				if(pCSpellFX) {
 					pCSpellFX->Update(framedelay);
 					pCSpellFX->Render();
 				}
@@ -5979,25 +5978,26 @@ void ARX_SPELLS_Update()
 					if ((entities[ii])
 						&& (entities[ii]->show==SHOW_FLAG_IN_SCENE) 
 						&& (entities[ii]->gameFlags & GFLAG_ISINTREATZONE)
-								        && (entities[ii]->ioflags & IO_NPC)
+						&& (entities[ii]->ioflags & IO_NPC)
 						&& (entities[ii]->_npcdata->life>0.f)
 						)
 					{
 						float dist;
 
-						if (long(ii) == spells[i].caster) dist=0;
-						else dist=fdist(ch->eSrc, entities[ii]->pos);
+						if(long(ii) == spells[i].caster)
+							dist=0;
+						else
+							dist=fdist(ch->eSrc, entities[ii]->pos);
 
-						if (dist<300.f)
-						{
+						if(dist<300.f) {
 							float gain=((rnd()*1.6f+0.8f)*spells[i].caster_level)*(300.f-dist)*( 1.0f / 300 )*framedelay*( 1.0f / 1000 );
 
-							if (ii==0) 
-							{
+							if(ii==0) {
 								if (!BLOCK_PLAYER_CONTROLS)
 									player.life=std::min(player.life+gain,player.Full_maxlife);									
 							}
-							else entities[ii]->_npcdata->life=std::min(entities[ii]->_npcdata->life+gain,entities[ii]->_npcdata->maxlife);
+							else
+								entities[ii]->_npcdata->life = std::min(entities[ii]->_npcdata->life+gain, entities[ii]->_npcdata->maxlife);
 						}
 					}
 				}
@@ -6005,15 +6005,12 @@ void ARX_SPELLS_Update()
 			break;
 			case SPELL_DETECT_TRAP:				
 			{
-				if (spells[i].caster == 0)
-				{
-					ARX_SOUND_RefreshPosition(spells[i].snd_loop);						
-				}
+				if(spells[i].caster == 0)
+					ARX_SOUND_RefreshPosition(spells[i].snd_loop);
 
 				CSpellFx *pCSpellFX = spells[i].pSpellFx;
 
-				if (pCSpellFX)
-				{
+				if(pCSpellFX) {
 					pCSpellFX->Update(framedelay);
 					pCSpellFX->Render();
 				}
@@ -6024,8 +6021,7 @@ void ARX_SPELLS_Update()
 			{
 				CSpellFx *pCSpellFX = spells[i].pSpellFx;
 
-				if (pCSpellFX)
-				{
+				if(pCSpellFX) {
 					pCSpellFX->Update(framedelay);
 					pCSpellFX->Render();
 				}
@@ -6033,36 +6029,33 @@ void ARX_SPELLS_Update()
 			break;
 			case SPELL_HARM:
 			{						
-				if ( (cabal!=NULL) )
-				{
+				if(cabal) {
 					float refpos;
 					float scaley;
 
-					if (spells[i].caster==0) scaley=90.f;
-					else scaley=EEfabs(entities[spells[i].caster]->physics.cyl.height*( 1.0f / 2 ))+30.f;
+					if(spells[i].caster==0)
+						scaley=90.f;
+					else
+						scaley = EEfabs(entities[spells[i].caster]->physics.cyl.height*( 1.0f / 2 ))+30.f;
 
  
 					float mov=EEsin((float)arxtime.get_frame_time()*( 1.0f / 800 ))*scaley;
 
-					if (spells[i].caster==0)
-					{
-								cabalpos.x = player.pos.x; 
-						cabalpos.y=player.pos.y+60.f-mov;
-								cabalpos.z = player.pos.z; 
+					if(spells[i].caster==0) {
+						cabalpos.x = player.pos.x;
+						cabalpos.y = player.pos.y + 60.f - mov;
+						cabalpos.z = player.pos.z;
 						refpos=player.pos.y+60.f;							
-					}
-					else
-					{							
-								cabalpos.x = entities[spells[i].caster]->pos.x; 
-						cabalpos.y=entities[spells[i].caster]->pos.y-scaley-mov;
-								cabalpos.z = entities[spells[i].caster]->pos.z; 
+					} else {
+						cabalpos.x = entities[spells[i].caster]->pos.x;
+						cabalpos.y = entities[spells[i].caster]->pos.y - scaley - mov;
+						cabalpos.z = entities[spells[i].caster]->pos.z;
 						refpos=entities[spells[i].caster]->pos.y-scaley;							
 					}
 
 					float Es=EEsin((float)arxtime.get_frame_time()*( 1.0f / 800 ) + radians(scaley));
 
-					if (spells[i].longinfo2!=-1)
-					{
+					if(spells[i].longinfo2!=-1) {
 						DynLight[spells[i].longinfo2].pos.x = cabalpos.x;
 						DynLight[spells[i].longinfo2].pos.y = refpos;
 						DynLight[spells[i].longinfo2].pos.z = cabalpos.z; 
