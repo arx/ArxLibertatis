@@ -725,20 +725,14 @@ extern unsigned long ulHitFlash;
 //*************************************************************************************
 float ARX_DAMAGES_DamageNPC(Entity * io, float dmg, long source, long flags, Vec3f * pos) {
 	
-	if ((!io)
-	        ||	(!io->show)
-	        ||	(io->ioflags & IO_INVULNERABILITY)
-	        ||	(!(io->ioflags & IO_NPC)))
+	if(!io || !io->show || (io->ioflags & IO_INVULNERABILITY) || !(io->ioflags & IO_NPC))
 		return 0.f;
 
 	float damagesdone = 0.f;
 
-	if (io->_npcdata->life <= 0.f)
-	{
-		if ((source != 0)
-		        ||	((source == 0) &&	(player.equiped[EQUIP_SLOT_WEAPON] > 0)))
-		{
-			if ((dmg >= io->_npcdata->maxlife * 0.4f) && pos)
+	if(io->_npcdata->life <= 0.f) {
+		if(source != 0 || (source == 0 && player.equiped[EQUIP_SLOT_WEAPON] > 0)) {
+			if(dmg >= io->_npcdata->maxlife * 0.4f && pos)
 				ARX_NPC_TryToCutSomething(io, pos);
 
 			return damagesdone;
@@ -749,48 +743,36 @@ float ARX_DAMAGES_DamageNPC(Entity * io, float dmg, long source, long flags, Vec
 
 	io->dmg_sum += dmg;
 
-	if (float(arxtime) > io->ouch_time + 500)
-	{
-		if (ValidIONum(source))
-		{
+	if(float(arxtime) > io->ouch_time + 500) {
+		if(ValidIONum(source))
 			EVENT_SENDER = entities[source];
-
-		}
 		else
 			EVENT_SENDER = NULL;
 
 		io->ouch_time = (unsigned long)(arxtime);
 		char tex[32];
 
-		if (EVENT_SENDER && (EVENT_SENDER->summoner == 0))
-		{
+		if(EVENT_SENDER && EVENT_SENDER->summoner == 0) {
 			EVENT_SENDER = entities.player();
 			sprintf(tex, "%5.2f summoned", io->dmg_sum);
-		}
-		else
+		} else {
 			sprintf(tex, "%5.2f", io->dmg_sum);
+		}
 
 		SendIOScriptEvent(io, SM_OUCH, tex);
 		io->dmg_sum = 0.f;
 		long n = ARX_SPELLS_GetSpellOn(io, SPELL_CONFUSE);
 
-		if (n >= 0)
-		{
+		if(n >= 0)
 			spells[n].tolive = 0;
-		}
 	}
 
-	if (dmg >= 0.f)
-	{
-		if (ValidIONum(source))
-		{
+	if(dmg >= 0.f) {
+		if(ValidIONum(source)) {
 			Entity * pio = NULL;
 
-			if (source == 0)
-			{
-				if ((player.equiped[EQUIP_SLOT_WEAPON] != 0)
-				        &&	ValidIONum(player.equiped[EQUIP_SLOT_WEAPON]))
-				{
+			if(source == 0) {
+				if(player.equiped[EQUIP_SLOT_WEAPON] != 0 && ValidIONum(player.equiped[EQUIP_SLOT_WEAPON])) {
 					pio = entities[player.equiped[EQUIP_SLOT_WEAPON]];
 
 					if((pio && (pio->poisonous == 0 || pio->poisonous_count == 0)) || (flags & 1)) {
@@ -806,12 +788,11 @@ float ARX_DAMAGES_DamageNPC(Entity * io, float dmg, long source, long flags, Vec
 				}
 			}
 
-			if (!pio) pio = entities[source];
+			if(!pio)
+				pio = entities[source];
 
-			if (pio && pio->poisonous && (pio->poisonous_count != 0))
-			{
-				if (rnd() * 100.f > io->_npcdata->resist_poison)
-				{
+			if(pio && pio->poisonous && (pio->poisonous_count != 0)) {
+				if(rnd() * 100.f > io->_npcdata->resist_poison) {
 					io->_npcdata->poisonned += pio->poisonous;
 				}
 
@@ -820,25 +801,21 @@ float ARX_DAMAGES_DamageNPC(Entity * io, float dmg, long source, long flags, Vec
 			}
 		}
 
-		if (io->script.data != NULL)
-		{
-			if (source >= 0)
-			{
-				if (ValidIONum(source))
+		if(io->script.data != NULL) {
+			if(source >= 0) {
+				if(ValidIONum(source))
 					EVENT_SENDER = entities[source]; 
 				else
 					EVENT_SENDER = NULL;
 
 				char dmm[256];
 
-				if (EVENT_SENDER == entities.player())
-				{
-					if (flags & 1)
-					{
+				if(EVENT_SENDER == entities.player()) {
+					if(flags & 1) {
 						sprintf(dmm, "%f spell", dmg);
 					}
-					else switch	(ARX_EQUIPMENT_GetPlayerWeaponType())
-						{
+					else
+						switch (ARX_EQUIPMENT_GetPlayerWeaponType()) {
 							case WEAPON_BARE:
 								sprintf(dmm, "%f bare", dmg);
 								break;
@@ -859,17 +836,16 @@ float ARX_DAMAGES_DamageNPC(Entity * io, float dmg, long source, long flags, Vec
 								break;
 						}
 				}
-				else sprintf(dmm, "%f", dmg);
+				else
+					sprintf(dmm, "%f", dmg);
 
-				if ((EVENT_SENDER)
-				        &&	(EVENT_SENDER->summoner == 0))
-				{
+				if(EVENT_SENDER && EVENT_SENDER->summoner == 0) {
 					EVENT_SENDER = entities.player();
 					sprintf(dmm, "%f summoned", dmg);
 				}
 
-				if (SendIOScriptEvent(io, SM_HIT, dmm) != ACCEPT) return damagesdone;
-
+				if(SendIOScriptEvent(io, SM_HIT, dmm) != ACCEPT)
+					return damagesdone;
 			}
 		}
 
@@ -878,34 +854,27 @@ float ARX_DAMAGES_DamageNPC(Entity * io, float dmg, long source, long flags, Vec
 
 		bHitFlash = true;
 
-		if (io->_npcdata->life <= 0)
-		{
+		if(io->_npcdata->life <= 0) {
 			fHitFlash = 0;
-		}
-		else
-		{
+		} else {
 			fHitFlash = io->_npcdata->life / io->_npcdata->maxlife;
 		}
 
 		ulHitFlash = 0;
 
-		if (io->_npcdata->life <= 0.f)
-		{
+		if(io->_npcdata->life <= 0.f) {
 			io->_npcdata->life = 0.f;
 
-			if ((source != 0)
-			        ||	((source == 0) &&	(player.equiped[EQUIP_SLOT_WEAPON] > 0)))
-			{
-				if ((dmg >= io->_npcdata->maxlife * ( 1.0f / 2 )) && pos)
+			if(source != 0 || (source == 0 && player.equiped[EQUIP_SLOT_WEAPON] > 0)) {
+				if((dmg >= io->_npcdata->maxlife * ( 1.0f / 2 )) && pos)
 					ARX_NPC_TryToCutSomething(io, pos);
 			}
 
-			if (ValidIONum(source))
-			{
+			if(ValidIONum(source)) {
 				long xp = io->_npcdata->xpvalue;
 				ARX_DAMAGES_ForceDeath(io, entities[source]);
 
-				if (source == 0)
+				if(source == 0)
 					ARX_PLAYER_Modify_XP(xp);
 			}
 			else ARX_DAMAGES_ForceDeath(io, NULL);
