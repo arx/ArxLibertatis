@@ -180,9 +180,14 @@ void CCreateField::Update(unsigned long _ulTime)
 	ulCurrentTime += _ulTime;
 }
 
+extern bool VisibleSphere(float x, float y, float z, float radius);
+
 //-----------------------------------------------------------------------------
 float CCreateField::Render()
 {
+	if(!VisibleSphere(eSrc.x, eSrc.y - 120.f, eSrc.z, 400.f))
+		return 0.f;
+
 	if (ulCurrentTime >= ulDuration) return 0.f;
 
 	falpha = 1.f - (((float)(ulCurrentTime)) * fOneOnDuration);
