@@ -6603,12 +6603,7 @@ void ARX_SPELLS_Update()
 						el->extras=0;						
 					}
 
- 
-
-					if (VisibleSphere(pf->eSrc.x,pf->eSrc.y-120.f,pf->eSrc.z,350.f))
-					{
-						pCSpellFX->Render();
-					}
+					pCSpellFX->Render();
 				}
 
 				GRenderer->SetCulling(Renderer::CullNone);

@@ -1022,9 +1022,13 @@ void CIceField::Update(unsigned long _ulTime)
 	ulCurrentTime += _ulTime;
 }
 
-//---------------------------------------------------------------------
+extern bool VisibleSphere(float x, float y, float z, float radius);
+
 float CIceField::Render()
 {
+	if(!VisibleSphere(eSrc.x, eSrc.y - 120.f, eSrc.z, 350.f))
+		return 0.f;
+
 	int i = 0;
 
 	
