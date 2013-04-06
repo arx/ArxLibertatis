@@ -6245,7 +6245,6 @@ void ARX_SPELLS_Update()
 				
 				curse->eTarget = target;
 				curse->Render();
-				GRenderer->SetCulling(Renderer::CullNone);
 			}
 
 			break;
