@@ -6408,21 +6408,21 @@ void ARX_SPELLS_Update()
 								}
 
 								pCSpellFX->lLightId=-1;
-								} else {
-									ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE);
-									spells[i].longinfo=-2;
-									spells[i].tolive=0;
-								}
-							}
-						} else if(!arxtime.is_paused() && tim < 4000) {
-						  if(rnd() > 0.95f) {
-								CRiseDead *pRD = (CRiseDead*)pCSpellFX;
-								Vec3f pos = pRD->eSrc;
-								MakeCoolFx(&pos);
+							} else {
+								ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE);
+								spells[i].longinfo=-2;
+								spells[i].tolive=0;
 							}
 						}
-						
+					} else if(!arxtime.is_paused() && tim < 4000) {
+					  if(rnd() > 0.95f) {
+							CRiseDead *pRD = (CRiseDead*)pCSpellFX;
+							Vec3f pos = pRD->eSrc;
+							MakeCoolFx(&pos);
+						}
 					}
+
+				}
 			}
 			break;
 			case SPELL_SLOW_DOWN:
