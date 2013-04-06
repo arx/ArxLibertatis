@@ -548,13 +548,15 @@ long ARX_NPC_GetNextAttainableNodeIncrement(Entity * io)
 //*****************************************************************************
 // Checks for nearest VALID anchor for a cylinder from a position
 //*****************************************************************************
-static long AnchorData_GetNearest(Vec3f * pos, EERIE_CYLINDER * cyl) {
+static long AnchorData_GetNearest(Vec3f * pos, EERIE_CYLINDER * cyl, long except = -1) {
 	long returnvalue = -1;
 	float distmax = std::numeric_limits<float>::max();
 	EERIE_BACKGROUND * eb = ACTIVEBKG;
 
 	for (long i = 0; i < eb->nbanchors; i++)
 	{
+		if (except != -1 && i == except) continue;
+
 		if (eb->anchors[i].nblinked)
 		{
 			float d = distSqr(eb->anchors[i].pos, *pos);
@@ -583,33 +585,6 @@ static long AnchorData_GetNearest_2(float beta, Vec3f * pos, EERIE_CYLINDER * cy
 	posi.y = pos->y;
 	posi.z = pos->z + vect.x * 50.f;
 	return AnchorData_GetNearest(&posi, cyl);
-}
-
-static long AnchorData_GetNearest_Except(Vec3f * pos, EERIE_CYLINDER * cyl, long except) {
-	
-	long returnvalue = -1;
-	float distmax = std::numeric_limits<float>::max();
-	EERIE_BACKGROUND * eb = ACTIVEBKG;
-
-	for (long i = 0; i < eb->nbanchors; i++)
-	{
-		if (i == except) continue;
-
-		if (eb->anchors[i].nblinked)
-		{
-			float d = distSqr(eb->anchors[i].pos, *pos);
-
-			if ((d < distmax) && (eb->anchors[i].height <= cyl->height)
-			        && (eb->anchors[i].radius >= cyl->radius)
-			        && (!(eb->anchors[i].flags & ANCHOR_FLAG_BLOCKED)))
-			{
-				returnvalue = i;
-				distmax = d;
-			}
-		}
-	}
-
-	return returnvalue;
 }
 
 bool ARX_NPC_LaunchPathfind(Entity * io, long target)
@@ -743,7 +718,7 @@ wander:
 	long to;
 
 	if (io->_npcdata->behavior & BEHAVIOUR_FLEE)
-		to = AnchorData_GetNearest_Except(&pos2, &io->physics.cyl, from);
+		to = AnchorData_GetNearest(&pos2, &io->physics.cyl, from);
 	else if (io->_npcdata->behavior & BEHAVIOUR_WANDER_AROUND)
 		to = from;
 	else to = AnchorData_GetNearest(&pos2, &io->physics.cyl); 
