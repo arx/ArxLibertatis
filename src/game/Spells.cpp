@@ -6932,14 +6932,12 @@ void ARX_SPELLS_Update()
 				}
 				break;				
 				case SPELL_MAGIC_SIGHT:
-
-					if (spells[i].caster == 0)
-					{
+					if(spells[i].caster == 0) {
 						ARX_SOUND_RefreshPosition(spells[i].snd_loop);
 
-						if (subj.focal>IMPROVED_FOCAL) subj.focal-=DEC_FOCAL;
+						if(subj.focal > IMPROVED_FOCAL)
+							subj.focal -= DEC_FOCAL;
 					}
-
 				break;
 				case SPELL_TELEKINESIS:
 				break;
