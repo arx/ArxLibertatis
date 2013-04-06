@@ -1737,32 +1737,27 @@ bool IO_Visible(Vec3f * orgn, Vec3f * dest, EERIEPOLY * epp, Vec3f * hit)
 		ix = dx * t;
 		iz = dz * t;
 	} else {
-		if (adz != dz)
-		{
+		if(adz != dz)
 			iz = -pas;
-		}
 		else
-		{
 			iz = pas;
-		}
 
-		iter=adz/pas;
-		t=1.f/(iter);
-		ix=dx*t;
-		iy=dy*t;
+		iter = adz / pas;
+		t = 1.f / (iter);
+		ix = dx * t;
+		iy = dy * t;
 	}
 
 	float dd;
-	x-=ix;
-	y-=iy;
-	z-=iz;
+	x -= ix;
+	y -= iy;
+	z -= iz;
 
-	while (iter>0.f) 
-	{
-		iter-=1.f;
-		x+=ix;
-		y+=iy;
-		z+=iz;
+	while(iter > 0.f) {
+		iter -= 1.f;
+		x += ix;
+		y += iy;
+		z += iz;
 
 		EERIE_SPHERE sphere;
 		sphere.origin.x=x;
@@ -1831,6 +1826,7 @@ fini:
 	*hit = found_hit;
 	return false;
 }
+
 void ANCHOR_BLOCK_Clear()
 {
 	EERIE_BACKGROUND * eb=ACTIVEBKG;
