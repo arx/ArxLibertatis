@@ -841,12 +841,10 @@ float CIgnit::Render() {
 //-----------------------------------------------------------------------------
 void Split(Vec3f * v, int a, int b, float yo)
 {
-	if (a != b)
-	{
+	if(a != b) {
 		int i = (int)((a + b) * 0.5f);
 
-		if ((i != a) && (i != b))
-		{
+		if(i != a && i != b) {
 			v[i].x = (v[a].x + v[b].x) * 0.5f + yo * frand2(); 
 			v[i].y = (v[a].y + v[b].y) * 0.5f; 
 			v[i].z = (v[a].z + v[b].z) * 0.5f + yo * frand2();
@@ -856,7 +854,6 @@ void Split(Vec3f * v, int a, int b, float yo)
 	}
 }
 
-//-----------------------------------------------------------------------------
 void GenereArcElectrique(Vec3f * pos, Vec3f * end, Vec3f * tabdef, int nbseg)
 {
 	tabdef[0] = *pos;
@@ -866,13 +863,10 @@ void GenereArcElectrique(Vec3f * pos, Vec3f * end, Vec3f * tabdef, int nbseg)
 	Split(tabdef, 0, nbseg - 1, 20);
 }
 
-//-----------------------------------------------------------------------------
 void DrawArcElectrique(Vec3f * tabdef, int nbseg, TextureContainer * tex, float fBeta, int tsp)
 {
 	TexturedVertex v[4];
 	TexturedVertex v2[4];
-
-	long i;
 
 	//-------------------------------------------------------------------------
 	// rendu
@@ -883,7 +877,7 @@ void DrawArcElectrique(Vec3f * tabdef, int nbseg, TextureContainer * tex, float 
 	
 	v2[0].color = v2[1].color = v2[2].color = v2[3].color = Color::grayb(tsp).toBGR();
 	
-	for(i = 0; i < nbseg - 2; i++) {
+	for(long i = 0; i < nbseg - 2; i++) {
 		
 		Vec3f astart = tabdef[i];
 		Vec3f a = tabdef[i + 1];
@@ -932,22 +926,20 @@ CPortal::~CPortal() {
 	}
 }
 
-//-----------------------------------------------------------------------------
 void CPortal::AddNewEclair(Vec3f * endpos, int nbseg, int duration, int numpt)
 {
-	if (arxtime.is_paused()) return;
+	if(arxtime.is_paused())
+		return;
 
 	int	nb = 256;
 
-	if ((this->nbeclair > 255) || (nbseg > 256)) return;
-
+	if(this->nbeclair > 255 || nbseg > 256)
+		return;
 
 	short sNbSeg = static_cast<short>(nbseg);
 
-	while (nb--)
-	{
-		if (!this->tabeclair[nb].actif)
-		{
+	while(nb--) {
+		if(!this->tabeclair[nb].actif) {
 			this->nbeclair++;
 			this->tabeclair[nb].actif = 1;
 			this->tabeclair[nb].duration = duration;
@@ -958,50 +950,42 @@ void CPortal::AddNewEclair(Vec3f * endpos, int nbseg, int duration, int numpt)
 			GenereArcElectrique(&this->pos, endpos, this->tabeclair[nb].seg, this->tabeclair[nb].nbseg);
 			break;
 		}
-
-
-
 	}
 }
-/*--------------------------------------------------------------------------*/
+
 void CPortal::DrawAllEclair()
 {
 	int nb = 256;
 
-	while (nb--)
-	{
-		if (this->tabeclair[nb].actif)
-		{
-			float a;
+	while(nb--){
+		if(this->tabeclair[nb].actif) {
+			float a = 1.f - ((float)this->tabeclair[nb].currduration / (float)this->tabeclair[nb].duration);
 
-			a = 1.f - ((float)this->tabeclair[nb].currduration / (float)this->tabeclair[nb].duration);
-
-			if (a < 0.f) a = 0.f;
+			if(a < 0.f)
+				a = 0.f;
 
 			DrawArcElectrique(this->tabeclair[nb].seg, this->tabeclair[nb].nbseg, this->te, rnd() * 360.f, (int)(255.f * a));
 
-			if (!arxtime.is_paused()) this->tabeclair[nb].currduration += this->currframe;
+			if(!arxtime.is_paused())
+				this->tabeclair[nb].currduration += this->currframe;
 
-			if (this->tabeclair[nb].currduration >= this->tabeclair[nb].duration)
-			{
+			if(this->tabeclair[nb].currduration >= this->tabeclair[nb].duration) {
 				this->tabeclair[nb].actif = 0;
 				this->nbeclair--;
 			}
 		}
 	}
 }
-/*--------------------------------------------------------------------------*/
+
 void CPortal::Update(unsigned long _ulTime)
 {
 	float a;
 
-	switch (this->key)
-	{
+	switch(this->key) {
 		case 0:
 			a = (float)this->currduration / (float)this->duration;
 
-			if (a > 1.f)
-			{
+			if(a > 1.f) {
 				a = 1.f;
 				this->key++;
 			}
@@ -1009,28 +993,29 @@ void CPortal::Update(unsigned long _ulTime)
 			this->pos = this->sphereposdep + (this->sphereposend - this->sphereposdep) * a;
 			this->spherealpha = a * .5f;
 
-			if (!arxtime.is_paused()) this->currduration += _ulTime;
+			if(!arxtime.is_paused())
+				this->currduration += _ulTime;
 
 			break;
 		case 1:
 			this->spherealpha = 0.5f + rnd();
 
-			if (this->spherealpha > 1.f) this->spherealpha = 1.f;
+			if(this->spherealpha > 1.f)
+				this->spherealpha = 1.f;
 
 			this->spherealpha *= .25f;
 
 			//getion eclair dans boule
 			this->currframe = _ulTime;
 
-			if (!arxtime.is_paused()) this->timeneweclair -= _ulTime;
+			if(!arxtime.is_paused())
+				this->timeneweclair -= _ulTime;
 
-			if (this->timeneweclair <= 0)
-			{
+			if(this->timeneweclair <= 0) {
 				this->timeneweclair = Random::get(100, 300);
 
-				Vec3f endpos;
 				int	numpt = Random::get(0, this->spherenbpt - 1);
-				endpos = this->spherevertex[numpt] + this->pos;
+				Vec3f endpos = this->spherevertex[numpt] + this->pos;
 
 				this->AddNewEclair(&endpos, 32, Random::get(1000, 2000), numpt);
 			}
@@ -1038,13 +1023,12 @@ void CPortal::Update(unsigned long _ulTime)
 			break;
 	}
 
-	if (this->lLightId >= 0)
-	{
+	if(this->lLightId >= 0) {
 		DynLight[this->lLightId].pos = this->pos;
 		DynLight[this->lLightId].intensity = 0.7f + 2.f * rnd();
 	}
 }
-/*--------------------------------------------------------------------------*/
+
 float CPortal::Render()
 {
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
@@ -1057,8 +1041,7 @@ float CPortal::Render()
 	Vec3f	* pt = this->spherevertex;
 	int col = Color(0, (int)(200.f * this->spherealpha), (int)(255.f * this->spherealpha)).toBGRA();
 
-	while (nb)
-	{
+	while(nb) {
 		d3dvs.p.x = pt->x + this->pos.x;	//pt du bas
 		d3dvs.p.y = pt->y + this->pos.y;
 		d3dvs.p.z = pt->z + this->pos.z;
@@ -1074,18 +1057,14 @@ float CPortal::Render()
 	//update les couleurs aux impacts
 	nb = 256;
 
-	while (nb--)
-	{
-		if (this->tabeclair[nb].actif)
-		{
-			float a;
+	while(nb--) {
+		if(this->tabeclair[nb].actif) {
+			float a = 1.f - ((float)this->tabeclair[nb].currduration / (float)this->tabeclair[nb].duration);
 
-			a = 1.f - ((float)this->tabeclair[nb].currduration / (float)this->tabeclair[nb].duration);
+			if(a < 0.f)
+				a = 0.f;
 
-			if (a < 0.f) a = 0.f;
-
-			if (this->tabeclair[nb].numpt >= 0)
-			{
+			if(this->tabeclair[nb].numpt >= 0) {
 				int r = (int)((0.f + (255.f - 0.f) * a) * this->spherealpha * 3.f);
 
 				if (r > 255) r = 255;
@@ -1098,12 +1077,11 @@ float CPortal::Render()
 
 				if (b > 255) b = 255;
 
-				if (!arxtime.is_paused()) this->sphered3d[this->tabeclair[nb].numpt].color = Color(r, g, b).toBGRA();
+				if(!arxtime.is_paused())
+					this->sphered3d[this->tabeclair[nb].numpt].color = Color(r, g, b).toBGRA();
 			}
-
 		}
 	}
-
 
 	//affichage de la sphere back
 	GRenderer->SetCulling(Renderer::CullCW);
@@ -1143,4 +1121,3 @@ float CPortal::Render()
 
 	return 0;
 }
-/*--------------------------------------------------------------------------*/
