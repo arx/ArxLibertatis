@@ -620,29 +620,21 @@ long ARX_SOUND_PlaySpeech(const res::path & name, const Entity * io)
 	channel.falloff.start = ARX_SOUND_DEFAULT_FALLSTART;
 	channel.falloff.end = ARX_SOUND_DEFAULT_FALLEND;
 
-	if (io)
-	{
-		if (((io == entities.player()) && !EXTERNALVIEW) ||
-		        (io->ioflags & IO_CAMERA && io == CAMERACONTROLLER))
+	if(io) {
+		if((io == entities.player() && !EXTERNALVIEW) || ((io->ioflags & IO_CAMERA) && io == CAMERACONTROLLER))
 			ARX_SOUND_IOFrontPos(io, channel.position);
 		else
-		{
 			channel.position = io->pos;
-		}
 
 		if(ACTIVECAM && distSqr(ACTIVECAM->orgTrans.pos, io->pos) > square(ARX_SOUND_REFUSE_DISTANCE)) {
 			return ARX_SOUND_TOO_FAR; // TODO sample is never freed!
 		}
 
-		if (io->ioflags & IO_NPC && io->_npcdata->speakpitch != 1.f)
-		{
+		if(io->ioflags & IO_NPC && io->_npcdata->speakpitch != 1.f) {
 			channel.flags |= FLAG_PITCH;
 			channel.pitch = io->_npcdata->speakpitch;
 		}
-
-	}
-	else
-	{
+	} else {
 		channel.flags |= FLAG_RELATIVE;
 		channel.position = Vec3f::Z_AXIS * 100.f;
 	}
