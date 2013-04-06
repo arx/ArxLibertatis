@@ -688,6 +688,22 @@ void CMultiMagicMissile::CheckCollision()
 	}
 }
 
+bool CMultiMagicMissile::CheckAllDestroyed()
+{
+	if(!pTab)
+		return true;
+
+	long nbmissiles	= 0;
+
+	for(unsigned int i = 0; i < uiNumber; i++) {
+		CMagicMissile *pMM = pTab[i];
+		if(pMM && pMM->bMove)
+			nbmissiles++;
+	}
+
+	return nbmissiles == 0;
+}
+
 //-----------------------------------------------------------------------------
 void CMultiMagicMissile::Update(unsigned long _ulTime)
 {
@@ -702,9 +718,7 @@ void CMultiMagicMissile::Update(unsigned long _ulTime)
 
 //-----------------------------------------------------------------------------
 float CMultiMagicMissile::Render()
-{
-	long nbmissiles	= 0;
- 
+{ 
 	if(pTab) {
 		for(unsigned int i = 0; i < uiNumber; i++) {
 			if(pTab[i]) {
@@ -718,15 +732,9 @@ float CMultiMagicMissile::Render()
 					el->pos = pMM->eCurPos;
 					el->time_creation	= (unsigned long)(arxtime);
 				}
-
-				if(pMM->bMove)
-					nbmissiles++;
 			}
 		}
 	}
-
-	if(nbmissiles == 0)
-		return -1;
 
 	return 1;
 }

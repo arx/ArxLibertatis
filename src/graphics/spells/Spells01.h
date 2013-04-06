@@ -93,6 +93,7 @@ public:
 	~CMultiMagicMissile();
 	
 	void CheckCollision();
+	bool CheckAllDestroyed();
 	
 	void Create();
 	void Update(unsigned long);

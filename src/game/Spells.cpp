@@ -5938,12 +5938,14 @@ void ARX_SPELLS_Update()
 					if(pCSpellFX) {
 						CMultiMagicMissile *pMMM = (CMultiMagicMissile *) pCSpellFX;
 						pMMM->CheckCollision();
-						
+
 						// Update
 						pCSpellFX->Update(framedelay);
 
-						if(pCSpellFX->Render() == -1)
+						if(pMMM->CheckAllDestroyed())
 							spells[i].tolive = 0;
+
+						pCSpellFX->Render();
 					}
 				}
 			break;
