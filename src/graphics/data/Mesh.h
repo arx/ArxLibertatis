@@ -242,7 +242,6 @@ long GetFreeDynLight();
 //****************************************************************************
 // CAMERA FUNCTIONS START
 void PrepareCamera(EERIE_CAMERA *cam);
-void PrepareActiveCamera();
 // CAMERA FUNCTIONS END
 //****************************************************************************
 

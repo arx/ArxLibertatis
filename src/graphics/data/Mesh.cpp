@@ -1657,16 +1657,6 @@ void EERIE_CreateMatriceProj(float _fWidth, float _fHeight, float _fFOV,
 	GRenderer->SetViewport(Rect(static_cast<s32>(_fWidth), static_cast<s32>(_fHeight)));
 }
 
-void PrepareActiveCamera() {	
-	ACTIVECAM->orgTrans.updateFromAngle(ACTIVECAM->angle);
-	ACTIVECAM->orgTrans.mod = (ACTIVECAM->center + ACTIVECAM->clip.origin).to<float>();
-		
-	EERIE_CreateMatriceProj(static_cast<float>(DANAESIZX),
-	                        static_cast<float>(DANAESIZY),
-	                        EERIE_TransformOldFocalToNewFocal(ACTIVECAM->focal),
-	                        1.f, ACTIVECAM->cdepth);
-}
-
 void F_PrepareCamera(EERIE_CAMERA * cam)
 {
 	cam->orgTrans.use_focal = cam->focal * Xratio;
