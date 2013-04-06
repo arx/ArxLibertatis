@@ -1869,8 +1869,6 @@ void ARX_SCENE_Render() {
 	long lcval = clip3D + 4;
 
 	{
-	PrepareActiveCamera();
-
 	long camXsnap = ACTIVECAM->orgTrans.pos.x * ACTIVEBKG->Xmul;
 	long camZsnap = ACTIVECAM->orgTrans.pos.z * ACTIVEBKG->Zmul;
 	camXsnap = clamp(camXsnap, 0, ACTIVEBKG->Xsize - 1L);
