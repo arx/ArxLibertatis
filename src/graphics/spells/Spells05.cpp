@@ -1620,5 +1620,7 @@ float CLevitate::Render()
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 
+	GRenderer->SetCulling(Renderer::CullNone);
+
 	return 0;
 }
