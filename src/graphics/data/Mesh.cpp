@@ -1473,37 +1473,29 @@ void EERIEPOLY_Compute_PolyIn()
 		}
 }
 
-float GetTileMinY(long i, long j)
-{
+float GetTileMinY(long i, long j) {
 	float minf = 9999999999.f;
-	EERIE_BKG_INFO * eg;
-	eg = &ACTIVEBKG->Backg[i+j*ACTIVEBKG->Xsize];
+	EERIE_BKG_INFO *eg = &ACTIVEBKG->Backg[i+j*ACTIVEBKG->Xsize];
 
-	for (long kk = 0; kk < eg->nbpolyin; kk++)
-	{
+	for (long kk = 0; kk < eg->nbpolyin; kk++) {
 		EERIEPOLY * ep = eg->polyin[kk];
 		minf = min(minf, ep->min.y);
 	}
 
 	return minf;
 }
-float GetTileMaxY(long i, long j)
-{
-	float maxf = -9999999999.f;
-	EERIE_BKG_INFO * eg;
-	eg = &ACTIVEBKG->Backg[i+j*ACTIVEBKG->Xsize];
 
-	for (long kk = 0; kk < eg->nbpolyin; kk++)
-	{
+float GetTileMaxY(long i, long j) {
+	float maxf = -9999999999.f;
+	EERIE_BKG_INFO *eg = &ACTIVEBKG->Backg[i+j*ACTIVEBKG->Xsize];
+
+	for(long kk = 0; kk < eg->nbpolyin; kk++) {
 		EERIEPOLY * ep = eg->polyin[kk];
 		maxf = max(maxf, ep->max.y);
 	}
 
 	return maxf;
 }
-
-//*************************************************************************************
-//*************************************************************************************
 
 #define TYPE_PORTAL	1
 #define TYPE_ROOM	2
@@ -1546,8 +1538,7 @@ void EERIE_PORTAL_Blend_Portals_And_Rooms() {
 	if(!portals)
 		return;
 
-	for (long num = 0; num < portals->nb_total; num++)
-	{
+	for(long num = 0; num < portals->nb_total; num++) {
 		CalcFaceNormal(&portals->portals[num].poly, portals->portals[num].poly.v);
 		EERIEPOLY * ep = &portals->portals[num].poly;
 		ep->center = ep->v[0].p;
@@ -1627,8 +1618,7 @@ float EERIE_TransformOldFocalToNewFocal(float _fOldFocal)
 		return 33.5f;
 }
 
-void EERIE_CreateMatriceProj(float _fWidth, float _fHeight, float _fFOV,
-							 float _fZNear, float _fZFar) {
+void EERIE_CreateMatriceProj(float _fWidth, float _fHeight, float _fFOV, float _fZNear, float _fZFar) {
 
 	float fAspect = _fHeight / _fWidth;
 	float fFOV = radians(_fFOV);
@@ -1724,13 +1714,11 @@ long GetFreeDynLight() {
 	return -1;
 }
 
-//*************************************************************************************
-//*************************************************************************************
 long CountBkgVertex() {
 
 	long count = 0;
 
-	for(long j = 0; j < ACTIVEBKG->Zsize; j++)
+	for(long j = 0; j < ACTIVEBKG->Zsize; j++) {
 		for(long i = 0; i < ACTIVEBKG->Xsize; i++) {
 			EERIE_BKG_INFO *eg = &ACTIVEBKG->Backg[i + j*ACTIVEBKG->Xsize];
 
@@ -1745,6 +1733,7 @@ long CountBkgVertex() {
 				}
 			}
 		}
+	}
 
 	return count;
 }
@@ -1988,8 +1977,7 @@ bool FastSceneLoad(const res::path & partial_path) {
 }
 
 
-static bool loadFastScene(const res::path & file, const char * data,
-                          const char * end) {
+static bool loadFastScene(const res::path & file, const char * data, const char * end) {
 	
 	// Read the scene header
 	const FAST_SCENE_HEADER * fsh = fts_read<FAST_SCENE_HEADER>(data, end);
@@ -2305,19 +2293,18 @@ void EERIEPOLY_FillMissingVertex(EERIEPOLY * po, EERIEPOLY * ep)
 {
 	long missing = -1;
 
-	for (long i = 0; i < 3; i++)
-	{
+	for(long i = 0; i < 3; i++) {
 		long same = 0;
 
-		for (long j = 0; j < 3; j++)
-		{
-			if	((po->v[j].p.x == ep->v[i].p.x)
-					&&	(po->v[j].p.y == ep->v[i].p.y)
-					&&	(po->v[j].p.z == ep->v[i].p.z))
+		for(long j = 0; j < 3; j++) {
+			if((po->v[j].p.x == ep->v[i].p.x)
+				&& (po->v[j].p.y == ep->v[i].p.y)
+				&& (po->v[j].p.z == ep->v[i].p.z))
 				same = 1;
 		}
 
-		if (!same) missing = i;
+		if(!same)
+			missing = i;
 	}
 	
 	if(missing >= 0) {
@@ -2589,12 +2576,9 @@ static int BkgAddPoly(EERIEPOLY * ep, EERIE_3DOBJ * eobj) {
 	long t = (((eg->nbpoly) >> 1) << 1) + 2; 
 	long tt = (((eg->nbpoly - 1) >> 1) << 1) + 2; 
 
-	if (eg->polydata == NULL)
-	{
+	if(!eg->polydata) {
 		eg->polydata = (EERIEPOLY *)malloc(sizeof(EERIEPOLY) * t);
-	}
-	else if (tt != t)
-	{
+	} else if(tt != t) {
 		eg->polydata = (EERIEPOLY *)realloc(eg->polydata, sizeof(EERIEPOLY) * t);
 	}
 
@@ -2688,8 +2672,7 @@ static void SceneAddObjToBackground(EERIE_3DOBJ * eobj) {
 	Zcos = (float)EEcos(tempAngle);
 	Zsin = (float)EEsin(tempAngle);
 
-	for (size_t i = 0; i < eobj->vertexlist.size(); i++)
-	{
+	for(size_t i = 0; i < eobj->vertexlist.size(); i++) {
 		//Local Transform
 		Vec3f p = eobj->vertexlist[i].v - eobj->point0;
 		Vec3f rp;
