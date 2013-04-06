@@ -175,8 +175,11 @@ void LaunchMagicMissileExplosion(Vec3f & _ePos, int t = 0, long spellinstance = 
 	ARX_SOUND_PlaySFX(SND_SPELL_MM_HIT, &_ePos);
 }
 
-CMagicMissile::CMagicMissile() : CSpellFx(), fColor(Color3f::white), eSrc(Vec3f::ZERO) {
-	
+CMagicMissile::CMagicMissile() :
+	CSpellFx(),
+	eSrc(Vec3f::ZERO),
+	fColor(Color3f::white)
+{
 	SetDuration(2000);
 	ulCurrentTime = ulDuration + 1;
 
