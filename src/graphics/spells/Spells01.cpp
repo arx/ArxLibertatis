@@ -670,22 +670,19 @@ CIgnit::CIgnit()
 {
 }
 
-//-----------------------------------------------------------------------------
 CIgnit::~CIgnit()
 {
 	this->Kill();
 }
 
-//-----------------------------------------------------------------------------
 void CIgnit::Kill(void)
 {
 	int nb = this->nblight;
 
-	while (nb--)
-	{
+	while(nb--) {
 		int id = this->tablight[nb].idl;
 
-		if (ValidDynLight(id))
+		if(ValidDynLight(id))
 			DynLight[id].exist = 0;
 
 		this->tablight[nb].idl = -1;
@@ -694,7 +691,6 @@ void CIgnit::Kill(void)
 	this->nblight = 0;
 }
 
-//-----------------------------------------------------------------------------
 void CIgnit::Create(Vec3f * posc, float perim, int speed)
 {
 	this->pos = *posc;
@@ -706,8 +702,7 @@ void CIgnit::Create(Vec3f * posc, float perim, int speed)
 
 	int	nb = 256;
 
-	while (nb--)
-	{
+	while(nb--) {
 		this->tablight[nb].actif = 0;
 		this->tablight[nb].idl = -1;
 	}
@@ -716,32 +711,25 @@ void CIgnit::Create(Vec3f * posc, float perim, int speed)
 	this->ChangeRGBMask(1.f, 1.f, 1.f, Color(255, 200, 0).toBGRA());
 }
 
-//-----------------------------------------------------------------------------
 void CIgnit::Action(int aiMode)
 {
-
 	short sMode = checked_range_cast<short>(aiMode);
 
-	for (int i = 0; i < nblight; i++)
-	{
+	for(int i = 0; i < nblight; i++) {
 		GLight[tablight[i].iLightNum]->status = sMode;
 
-
-		if (aiMode == 1)
-		{
+		if(aiMode == 1) {
 			ARX_SOUND_PlaySFX(SND_SPELL_IGNITE, &spells[spellinstance].caster_pos);
-		}
-		else if (aiMode == 0)
-		{
+		} else if(aiMode == 0) {
 			ARX_SOUND_PlaySFX(SND_SPELL_DOUSE, &spells[spellinstance].caster_pos);
 		}
 	}
 }
 
-//-----------------------------------------------------------------------------
 void CIgnit::AddLight(int aiLight)
 {
-	if (arxtime.is_paused())  return;
+	if(arxtime.is_paused())
+		return;
 
 	this->tablight[this->nblight].actif = 1;
 	this->tablight[this->nblight].iLightNum = aiLight;
@@ -749,8 +737,7 @@ void CIgnit::AddLight(int aiLight)
 
 	this->tablight[this->nblight].idl = GetFreeDynLight();
 
-	if (this->tablight[this->nblight].idl > 0)
-	{
+	if(this->tablight[this->nblight].idl > 0) {
 		int id = this->tablight[this->nblight].idl;
 		EERIE_LIGHT * el = &DynLight[id];
 		el->exist = 1;
@@ -764,36 +751,31 @@ void CIgnit::AddLight(int aiLight)
 	this->nblight++;
 }
 
-//-----------------------------------------------------------------------------
 void CIgnit::Update(unsigned long _ulTime) 
 {
 	float	a;
 	int		nb;
 
-	if (this->currduration >= this->duration)
-	{
+	if(this->currduration >= this->duration) {
 		this->key++;
 	}
 
-	switch (this->key)
-	{
+	switch(this->key) {
 		case 0:
 			a = (((float)this->currduration)) / ((float)this->duration);
 
-			if (a >= 1.f) a = 1.f;
+			if(a >= 1.f)
+				a = 1.f;
 
 			nb = this->nblight;
 
-			while (nb--)
-			{
-				if (this->tablight[nb].actif)
-				{
+			while(nb--) {
+				if(this->tablight[nb].actif) {
 					this->tablight[nb].posfx = this->pos + (this->tablight[nb].poslight - this->pos) * a;
 
 					int id = this->tablight[nb].idl;
 
-					if (id > 0)
-					{
+					if(id > 0) {
 						DynLight[id].intensity = 0.7f + 2.f * rnd();
 						DynLight[id].pos = this->tablight[nb].posfx;
 					}
@@ -804,7 +786,8 @@ void CIgnit::Update(unsigned long _ulTime)
 			break;
 	}
 
-	if (!arxtime.is_paused()) this->currduration += _ulTime;
+	if(!arxtime.is_paused())
+		this->currduration += _ulTime;
 }
 
 void CDoze::CreateDoze(Vec3f * posc, float perim, int speed) {
@@ -813,10 +796,10 @@ void CDoze::CreateDoze(Vec3f * posc, float perim, int speed) {
 	this->ChangeRGBMask(0.f, .7f, 1.f, 0xFF0000FF);
 }
 
-//-----------------------------------------------------------------------------
 void CDoze::AddLightDoze(int aiLight)
 {
-	if (arxtime.is_paused())  return;
+	if(arxtime.is_paused())
+		return;
 
 	this->tablight[this->nblight].actif = 1;
 	this->tablight[this->nblight].iLightNum = aiLight;
@@ -826,28 +809,21 @@ void CDoze::AddLightDoze(int aiLight)
 	this->nblight++;
 }
 
-//-----------------------------------------------------------------------------
 float CIgnit::Render() {
 	
-	int nb;
-
-	switch (this->key)
-	{
+	switch(this->key) {
 		case 0:
 
-			if (this->currduration > this->duration) this->key++;
+			if(this->currduration > this->duration)
+				this->key++;
 
-			if (!arxtime.is_paused())
-			{
+			if(!arxtime.is_paused()) {
 				float unsuri = (1.f - this->interp);
-				nb = this->nblight;
+				int nb = this->nblight;
 
-				while (nb--)
-				{
-					if ((this->tablight[nb].actif) && (rnd() > .5f))
-					{
-						createSphericalSparks(tablight[nb].posfx, rnd() * 20.f * unsuri, tp,
-						                      rgb, mask);
+				while(nb--) {
+					if(this->tablight[nb].actif && rnd() > .5f) {
+						createSphericalSparks(tablight[nb].posfx, rnd() * 20.f * unsuri, tp, rgb, mask);
 					}
 				}
 			}
