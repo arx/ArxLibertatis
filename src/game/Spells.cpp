@@ -6178,10 +6178,11 @@ void ARX_SPELLS_Update()
 			case SPELL_SPEED:
 
 			if(spells[i].pSpellFx) {
+				if(spells[i].caster == 0)
+					ARX_SOUND_RefreshPosition(spells[i].snd_loop);
+
 				spells[i].pSpellFx->Update(framedelay);
 				spells[i].pSpellFx->Render();
-
-				if (spells[i].caster == 0) ARX_SOUND_RefreshPosition(spells[i].snd_loop);
 			}
 
 			break;
