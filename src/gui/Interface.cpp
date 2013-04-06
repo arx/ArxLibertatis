@@ -252,7 +252,6 @@ long				FLYING_OVER		= 0;
 long				OLD_FLYING_OVER	= 0;
 long				LastRune=-1;
 long				BOOKZOOM=0;
-Anglef			ePlayerAngle;
 long				CURCURTIME=0;
 long				CURCURDELAY=70;
 long				CURCURPOS=0;
@@ -5359,6 +5358,8 @@ void ARX_INTERFACE_ManageOpenedBook()
 		SetActiveCamera(&bookcam);
 		PrepareCamera(&bookcam);
 
+		Anglef ePlayerAngle;
+
 		ePlayerAngle.a=0.f;
 		ePlayerAngle.g=0.f;
 
@@ -5369,6 +5370,22 @@ void ARX_INTERFACE_ManageOpenedBook()
 			vp.right = static_cast<int>(rec.right - 21.f * Xratio);
 			vp.bottom = static_cast<int>(rec.bottom - 17.f * Yratio);
 			GRenderer->SetViewport(vp);
+
+			switch (player.skin)
+			{
+				case 0:
+					ePlayerAngle.b = -25.f;
+					break;
+				case 1:
+					ePlayerAngle.b = -10.f;
+					break;
+				case 2:
+					ePlayerAngle.b = 20.f;
+					break;
+				case 3:
+					ePlayerAngle.b = 35.f;
+					break;
+			}
 
 			pos.x=8;
 			pos.y=162.f;
