@@ -423,11 +423,8 @@ CMultiMagicMissile::CMultiMagicMissile(long nbmissiles) : CSpellFx()
 	pTab = NULL;
 	pTab = new CMagicMissile*[uiNumber]();
 
-
-	if (pTab)
-	{
-		for (unsigned int i = 0 ; i < uiNumber ; i++)
-		{
+	if(pTab) {
+		for(unsigned int i = 0; i < uiNumber; i++) {
 			pTab[i] = NULL;
 			pTab[i] = new CMagicMissile();
 			pTab[i]->spellinstance = this->spellinstance;
@@ -435,15 +432,11 @@ CMultiMagicMissile::CMultiMagicMissile(long nbmissiles) : CSpellFx()
 	}
 }
 
-//-----------------------------------------------------------------------------
 CMultiMagicMissile::~CMultiMagicMissile()
 {
-	for (unsigned int i = 0 ; i < uiNumber ; i++)
-	{
-		if (pTab[i])
-		{
-			if (pTab[i]->lLightId != -1)
-			{
+	for(unsigned int i = 0; i < uiNumber; i++) {
+		if(pTab[i]) {
+			if(pTab[i]->lLightId != -1) {
 				// no need to kill it because it's a duration light !
 				pTab[i]->lLightId = -1;
 			}
@@ -455,16 +448,12 @@ CMultiMagicMissile::~CMultiMagicMissile()
 	delete [] pTab;
 }
 
-//-----------------------------------------------------------------------------
 void CMultiMagicMissile::Create()
 {
 	
 	long lMax = 0;
 
-	if (pTab)
-	{
-		
-
+	if(pTab) {
 		spells[spellinstance].hand_group = GetActionPointIdx(entities[spells[spellinstance].caster]->obj, "primary_attach");
 		
 		if(spells[spellinstance].hand_group != -1) {
@@ -475,8 +464,7 @@ void CMultiMagicMissile::Create()
 		
 		Vec3f aePos;
 		float afAlpha, afBeta;
-		if (spells[spellinstance].caster == 0) // player
-		{
+		if(spells[spellinstance].caster == 0) { // player
 			afBeta = player.angle.b;
 			afAlpha = player.angle.a;
 			Vec3f vector;
@@ -484,19 +472,14 @@ void CMultiMagicMissile::Create()
 			vector.y = EEsin(radians(afAlpha)) * 60.f;
 			vector.z = EEcos(radians(afBeta)) * EEcos(radians(afAlpha)) * 60.f;
 
-			if (spells[spellinstance].hand_group != -1)
-			{
+			if(spells[spellinstance].hand_group != -1) {
 				aePos = spells[spellinstance].hand_pos + vector;
-			}
-			else
-			{
+			} else {
 				aePos.x = player.pos.x - EEsin(radians(afBeta)) + vector.x; 
 				aePos.y = player.pos.y + vector.y; //;
 				aePos.z = player.pos.z + EEcos(radians(afBeta)) + vector.z; 
 			}
-		}
-		else
-		{
+		} else {
 			afAlpha = 0;
 			afBeta = entities[spells[spellinstance].caster]->angle.b;
 			Vec3f vector;
@@ -504,46 +487,37 @@ void CMultiMagicMissile::Create()
 			vector.y = EEsin(radians(afAlpha)) * 60;
 			vector.z = EEcos(radians(afBeta)) * EEcos(radians(afAlpha)) * 60;
 
-			if (spells[spellinstance].hand_group != -1)
-			{
+			if(spells[spellinstance].hand_group != -1) {
 				aePos = spells[spellinstance].hand_pos + vector;
-			}
-			else
-			{
+			} else {
 				aePos = entities[spells[spellinstance].caster]->pos + vector;
 			}
 
 			Entity * io = entities[spells[spellinstance].caster];
 
-			if (ValidIONum(io->targetinfo))
-			{
+			if(ValidIONum(io->targetinfo)) {
 				Vec3f * p1 = &spells[spellinstance].caster_pos;
 				Vec3f * p2 = &entities[io->targetinfo]->pos;
 				afAlpha = -(degrees(getAngle(p1->y, p1->z, p2->y, p2->z + dist(Vec2f(p2->x, p2->z), Vec2f(p1->x, p1->z))))); //alpha entre orgn et dest;
-			}
-			else if (ValidIONum(spells[spellinstance].target))
-			{
+			} else if (ValidIONum(spells[spellinstance].target)) {
 				Vec3f * p1 = &spells[spellinstance].caster_pos;
 				Vec3f * p2 = &entities[spells[spellinstance].target]->pos;
 				afAlpha = -(degrees(getAngle(p1->y, p1->z, p2->y, p2->z + dist(Vec2f(p2->x, p2->z), Vec2f(p1->x, p1->z))))); //alpha entre orgn et dest;
 			}
 		}
 
-		for (unsigned int i = 0 ; i < uiNumber ; i++)
-		{
-			if (pTab[i])
-			{
+		for(unsigned int i = 0; i < uiNumber; i++) {
+			if(pTab[i]) {
 				Anglef angles(afAlpha, afBeta, 0.f);
 
-				if (i > 0)
-				{
+				if(i > 0) {
 					angles.a += frand2() * 4.0f;
 					angles.b += frand2() * 6.0f;
 				}
 
 				pTab[i]->Create(aePos, angles);  
 
-				float	fTime	= ulDuration + frand2() * 1000.0f;
+				float fTime = ulDuration + frand2() * 1000.0f;
 				long lTime = checked_range_cast<long>(fTime);
 
 				lTime		= std::max(1000L, lTime);
@@ -561,22 +535,18 @@ void CMultiMagicMissile::Create()
 
 				pTab[i]->lLightId = GetFreeDynLight();
 
-				if (pTab[i]->lLightId != -1)
-				{
+				if(pTab[i]->lLightId != -1) {
 					EERIE_LIGHT * el = &DynLight[pTab[i]->lLightId];
 					el->exist		= 1;
 					el->intensity	= 0.7f + 2.3f;
 					el->fallend		= 190.f;
 					el->fallstart	= 80.f;
 
-					if ((spells[spellinstance].caster == 0) && (cur_mr == 3))
-					{
+					if(spells[spellinstance].caster == 0 && cur_mr == 3) {
 						el->rgb.r = 1;
 						el->rgb.g = 0.3f;
 						el->rgb.b = 0.8f;
-					}
-					else
-					{
+					} else {
 						el->rgb.r = 0;
 						el->rgb.g = 0;
 						el->rgb.b = 1;
@@ -585,7 +555,6 @@ void CMultiMagicMissile::Create()
 					el->pos	 = pMM->eSrc;
 					el->duration = 300;
 				}
-
 			}
 		}
 	}
@@ -593,13 +562,11 @@ void CMultiMagicMissile::Create()
 	SetDuration(lMax + 1000);
 }
 
-//-----------------------------------------------------------------------------
 void CMultiMagicMissile::CheckCollision()
 {
 	if(!pTab)
 		return;
 
-	{
 		for(unsigned int i = 0; i < uiNumber; i++) {
 			if(pTab[i]) {
 				CMagicMissile * pMM = (CMagicMissile *) pTab[i];
@@ -642,7 +609,6 @@ void CMultiMagicMissile::CheckCollision()
 				}
 			}
 		}
-	}
 }
 
 bool CMultiMagicMissile::CheckAllDestroyed()
@@ -661,7 +627,6 @@ bool CMultiMagicMissile::CheckAllDestroyed()
 	return nbmissiles == 0;
 }
 
-//-----------------------------------------------------------------------------
 void CMultiMagicMissile::Update(unsigned long _ulTime)
 {
 	if(pTab) {
@@ -673,7 +638,6 @@ void CMultiMagicMissile::Update(unsigned long _ulTime)
 	}
 }
 
-//-----------------------------------------------------------------------------
 float CMultiMagicMissile::Render()
 { 
 	if(pTab) {
