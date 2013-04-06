@@ -6105,14 +6105,13 @@ void ARX_SPELLS_Update()
 			{
 				CSpellFx *pCSpellFX = spells[i].pSpellFx;
 
-				if (pCSpellFX)
-				{
+				if(pCSpellFX) {
 					CFireBall *pCF = (CFireBall*) pCSpellFX;
 						
-					if (spells[i].longinfo==-1) spells[i].longinfo=GetFreeDynLight();
+					if(spells[i].longinfo == -1)
+						spells[i].longinfo = GetFreeDynLight();
 
-					if (spells[i].longinfo!=-1)
-					{
+					if(spells[i].longinfo!=-1) {
 						long id=spells[i].longinfo;
 						EERIE_LIGHT * el=&DynLight[id];
 						el->exist=1;
@@ -6130,31 +6129,27 @@ void ARX_SPELLS_Update()
 					sphere.radius=std::max(spells[i].caster_level*2.f,12.f);
 					#define MIN_TIME_FIREBALL 2000 
 
-					if (pCF->pPSFire.iParticleNbMax)
-					{
-						if (pCF->ulCurrentTime > MIN_TIME_FIREBALL)
-						{
+					if(pCF->pPSFire.iParticleNbMax) {
+						if(pCF->ulCurrentTime > MIN_TIME_FIREBALL) {
 							SpawnFireballTail(&pCF->eCurPos,&pCF->eMove,(float)spells[i].caster_level,0);
-						}
-						else
-						{
-							if (rnd()<0.9f)
-							{
+						} else {
+							if(rnd()<0.9f) {
 								Vec3f move = Vec3f::ZERO;
 								float dd=(float)pCF->ulCurrentTime / (float)MIN_TIME_FIREBALL*10;
 
-								if (dd>spells[i].caster_level) dd=spells[i].caster_level;
+								if(dd > spells[i].caster_level)
+									dd = spells[i].caster_level;
 
-								if (dd<1) dd=1;
+								if(dd < 1)
+									dd = 1;
 
 								SpawnFireballTail(&pCF->eCurPos,&move,(float)dd,1);
 							}
 						}
 					}
 
-					if (pCF->bExplo == false)
-					if (CheckAnythingInSphere(&sphere,spells[i].caster,CAS_NO_SAME_GROUP))
-					{
+					if(!pCF->bExplo)
+					if(CheckAnythingInSphere(&sphere, spells[i].caster, CAS_NO_SAME_GROUP)) {
 						ARX_BOOMS_Add(&pCF->eCurPos);
 						LaunchFireballBoom(&pCF->eCurPos,(float)spells[i].caster_level);
 						pCF->pPSFire.iParticleNbMax = 0;
@@ -6168,7 +6163,7 @@ void ARX_SPELLS_Update()
 						spells[i].tolive=0;
 						ARX_SOUND_PlaySFX(SND_SPELL_FIRE_HIT, &sphere.origin);
 						ARX_NPC_SpawnAudibleSound(&sphere.origin, entities[spells[i].caster]);
-								}
+					}
 
 					pCSpellFX->Update(framedelay);
 					ARX_SOUND_RefreshPosition(spells[i].snd_loop, &pCF->eCurPos);
