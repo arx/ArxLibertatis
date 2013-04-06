@@ -1681,14 +1681,9 @@ bool ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip,Entity * io,float MOVE_CYLINDER
 	return true;
 }
 
-//-----------------------------------------------------------------------------
-bool IO_Visible(Vec3f * orgn, Vec3f * dest,EERIEPOLY * epp,Vec3f * hit)
+//TODO copy-paste
+bool IO_Visible(Vec3f * orgn, Vec3f * dest, EERIEPOLY * epp, Vec3f * hit)
 {
-	
-
-	float x,y,z; //current ray pos
-	float dx,dy,dz; // ray incs
-	float adx,ady,adz; // absolute ray incs
 	float ix,iy,iz;
 	long px,pz;
 	EERIEPOLY * ep;
@@ -1701,20 +1696,26 @@ bool IO_Visible(Vec3f * orgn, Vec3f * dest,EERIEPOLY * epp,Vec3f * hit)
 	EERIEPOLY * found_ep=NULL;
 	float iter,t;
 
-	x=orgn->x;
-	y=orgn->y;
-	z=orgn->z;
+	//current ray pos
+	float x = orgn->x;
+	float y = orgn->y;
+	float z = orgn->z;
+
 	float distance;
 	float nearest = distance = fdist(*orgn, *dest);
 
-	if (distance<pas) pas=distance*( 1.0f / 2 );
+	if(distance < pas)
+		pas = distance * ( 1.0f / 2 );
 
-	dx=(dest->x-orgn->x);
-	adx=EEfabs(dx);
-	dy=(dest->y-orgn->y);
-	ady=EEfabs(dy);
-	dz=(dest->z-orgn->z);
-	adz=EEfabs(dz);
+	// ray incs
+	float dx = (dest->x - orgn->x);
+	float dy = (dest->y - orgn->y);
+	float dz = (dest->z - orgn->z);
+
+	// absolute ray incs
+	float adx = EEfabs(dx);
+	float ady = EEfabs(dy);
+	float adz = EEfabs(dz);
 
 	if ( (adx>=ady) && (adx>=adz)) 
 	{
