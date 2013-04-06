@@ -1333,6 +1333,26 @@ void ArxGame::renderLevel() {
 			ManageCombatModeAnimationsEND();
 	}
 
+	updateFirstPersonCamera();
+	updateConversationCamera();
+
+	////////////////////////
+	// Checks SCRIPT TIMERS.
+	ARX_SCRIPT_Timer_Check();
+
+	speechControlledCinematic();
+
+	handlePlayerDeath();
+
+	/////////////////////////////////////
+
+	handleCameraController();
+
+	UpdateCameras();
+
+	///////////////////////////////////////////
+	ARX_PLAYER_FrameCheck(Original_framedelay);
+
 	// SUBJECTIVE VIEW UPDATE START  *********************************************************
 
 	// Clear screen & Z buffers
@@ -1362,26 +1382,6 @@ void ArxGame::renderLevel() {
 
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-
-	updateFirstPersonCamera();
-	updateConversationCamera();
-
-	////////////////////////
-	// Checks SCRIPT TIMERS.
-	ARX_SCRIPT_Timer_Check();
-
-	speechControlledCinematic();
-
-	handlePlayerDeath();
-
-	/////////////////////////////////////
-
-	handleCameraController();
-
-	UpdateCameras();
-
-	///////////////////////////////////////////
-	ARX_PLAYER_FrameCheck(Original_framedelay);
 
 	updateActiveCamera();
 
