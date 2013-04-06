@@ -639,12 +639,12 @@ void CMultiMagicMissile::Create()
 //-----------------------------------------------------------------------------
 void CMultiMagicMissile::CheckCollision()
 {
-	if (pTab)
+	if(!pTab)
+		return;
+
 	{
-		for (unsigned int i = 0 ; i < uiNumber ; i++)
-		{
-			if (pTab[i])
-			{
+		for(unsigned int i = 0; i < uiNumber; i++) {
+			if(pTab[i]) {
 				CMagicMissile * pMM = (CMagicMissile *) pTab[i];
 
 				if(!pMM->bExplo) {
@@ -653,9 +653,8 @@ void CMultiMagicMissile::CheckCollision()
 					sphere.origin = pMM->eCurPos;
 					sphere.radius	= 10.f;
 
-					if ((spellinstance != -1) && (CheckAnythingInSphere(&sphere, spells[spellinstance].caster, CAS_NO_SAME_GROUP)))
+					if(spellinstance != -1 && (CheckAnythingInSphere(&sphere, spells[spellinstance].caster, CAS_NO_SAME_GROUP)))
 					{
- 
 						LaunchMagicMissileExplosion(pMM->eCurPos, 0, spellinstance);
 						ARX_NPC_SpawnAudibleSound(&pMM->eCurPos, entities[spells[spellinstance].caster]);
 
@@ -663,15 +662,12 @@ void CMultiMagicMissile::CheckCollision()
 						pMM->bExplo = true;
 						pMM->bMove  = false;
 
-						if (pMM->lLightId != -1)
-						{
+						if(pMM->lLightId != -1)
 							pMM->lLightId = -1;
-						}
 
 						long ttt = ARX_DAMAGES_GetFree();
 
-						if (ttt != -1)
-						{
+						if(ttt != -1) {
 							damages[ttt].pos = pMM->eCurPos;
 							damages[ttt].radius	= 80.f;
 							damages[ttt].damages = (4 + spells[spellinstance].caster_level * ( 1.0f / 5 )) * .8f; 
