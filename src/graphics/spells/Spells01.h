@@ -83,12 +83,10 @@ private:
 class CMultiMagicMissile : public CSpellFx {
 	
 private:
-	
 	CMagicMissile ** pTab;
 	unsigned int uiNumber;
 	
 public:
-	
 	explicit CMultiMagicMissile(long nb);
 	~CMultiMagicMissile();
 	
@@ -98,14 +96,12 @@ public:
 	void Create();
 	void Update(unsigned long);
 	float Render();
-	
 };
 
 // Done By : Sébastien Scieux
 class CIgnit : public CSpellFx {
 	
 private:
-	
 	Vec3f pos;
 	float perimetre;
 	short key;
@@ -126,7 +122,6 @@ private:
 	};
 	
 public:
-	
 	unsigned char nblight;
 	T_LINKLIGHTTOFX tablight[256];
 	
@@ -135,7 +130,7 @@ public:
 	
 	unsigned long GetDuration(void) {
 		return this->duration;
-	};
+	}
 	
 	void Create(Vec3f * posc, float perim, int speed);
 	void Update(unsigned long time);
@@ -149,14 +144,13 @@ public:
 		this->mask = mask;
 	}
 	
-	void	ChangeTexture(TextureContainer * tc) {
+	void ChangeTexture(TextureContainer * tc) {
 		this->tp = tc;
 	}
 	
-	float	GetPerimetre(void) {
+	float GetPerimetre(void) {
 		return this->perimetre;
 	}
-	
 };
 
 // Done By : Sébastien Scieux
@@ -209,13 +203,13 @@ public:
 	
 	unsigned long GetDuration(void) {
 		return this->duration;
-	};
+	}
 	
 	void AddNewEclair(Vec3f * endpos, int nbseg, int duration, int numpt);
 	void DrawAllEclair();
+
 	void Update(unsigned long);
 	float Render();
-	
 };
 
 #endif // ARX_GRAPHICS_SPELLS_SPELLS01_H
