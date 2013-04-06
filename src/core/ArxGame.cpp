@@ -1411,11 +1411,6 @@ void ArxGame::renderLevel() {
 
 	// NOW DRAW the player (Really...)
 	if(entities.player() && entities.player()->animlayer[0].cur_anim) {
-		float restore = ACTIVECAM->orgTrans.use_focal;
-
-		if(!EXTERNALVIEW && !BOW_FOCAL) {
-			ACTIVECAM->orgTrans.use_focal = PLAYER_ARMS_FOCAL * Xratio;
-		}
 
 		if(entities.player()->invisibility > 0.9f)
 			entities.player()->invisibility = 0.9f;
@@ -1423,8 +1418,6 @@ void ArxGame::renderLevel() {
 		arx_assert(entities.player()->obj);
 		EERIEDrawAnimQuat(entities.player()->obj, &entities.player()->animlayer[0], &entities.player()->angle,
 			&entities.player()->pos, 0, entities.player());
-
-		ACTIVECAM->orgTrans.use_focal = restore;
 	}
 
 	// SUBJECTIVE VIEW UPDATE START  *********************************************************
