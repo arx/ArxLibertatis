@@ -1135,6 +1135,8 @@ float CIceField::Render()
 			
 		}
 	}
+
+	GRenderer->SetCulling(Renderer::CullNone);
 	
 	return 1;
 }
