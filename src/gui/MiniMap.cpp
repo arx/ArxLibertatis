@@ -69,6 +69,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/log/Logger.h"
 
 #include "scene/Interactive.h"
+#include "scene/SaveFormat.h"
 
 MiniMap g_miniMap; // TODO: remove this
 
@@ -400,7 +401,7 @@ void MiniMap::showBookEntireMap(int showLevel) {
             playerPos.y += startY;
         }
 
-        drawBackground(showLevel, Rect(0, 0, 345, 290), startX, startY, 250.f);
+        drawBackground(showLevel, Rect(0, 0, 345, 290), startX, startY, zoom);
 
         GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
 
@@ -409,7 +410,7 @@ void MiniMap::showBookEntireMap(int showLevel) {
         }
 
         // tsu
-        drawDetectedEntities(showLevel, startX, startY, 250.f);
+        drawDetectedEntities(showLevel, startX, startY, zoom);
 
 
         TexturedVertex verts[4];
@@ -420,8 +421,8 @@ void MiniMap::showBookEntireMap(int showLevel) {
             verts[k].p.z = 0.00001f;
         }
 
-        float caseX = 250.f / ((float)MINIMAP_MAX_X);
-        float caseY = 250.f / ((float)MINIMAP_MAX_Z);
+        float caseX = zoom / ((float)MINIMAP_MAX_X);
+        float caseY = zoom / ((float)MINIMAP_MAX_Z);
         float ratio = 1.f;
 
         for(size_t i = 0; i < m_mapMarkers.size(); i++) {
@@ -502,7 +503,7 @@ void MiniMap::revealPlayerPos(int showLevel) {
                 inBounds = false;
             }
 
-            if(inBounds){
+            if(inBounds) {
 
                 if((i >= 0) && (i < MINIMAP_MAX_X) && (j >= 0) && (j < MINIMAP_MAX_Z)) {
 
@@ -815,8 +816,19 @@ void MiniMap::clearMarkerTexCont() {
     m_mapMarkerTexCont = NULL;
 }
 
-void MiniMap::mapMarkerInit() {
+void MiniMap::load(const SavedMiniMap *saved, size_t size) {
+    std::copy(saved, saved + size, m_levels);
+}
+
+void MiniMap::save(SavedMiniMap *toSave, size_t size) {
+    std::copy(m_levels, m_levels + size, toSave);
+}
+
+void MiniMap::mapMarkerInit(size_t reserveSize) {
     m_mapMarkers.clear();
+    
+    if(reserveSize > 0)
+        m_mapMarkers.reserve(reserveSize);
 }
 
 int MiniMap::mapMarkerGetID(const std::string &name) {
@@ -861,4 +873,14 @@ void MiniMap::mapMarkerRemove(const std::string &name) {
     }
 
     m_mapMarkers.erase(m_mapMarkers.begin() + num);
+}
+
+size_t MiniMap::mapMarkerCount() {
+    return m_mapMarkers.size();
+}
+
+MiniMap::MapMarkerData MiniMap::mapMarkerGet(size_t id) {
+    
+    assert(id < m_mapMarkers.size());
+    return m_mapMarkers[id];
 }
