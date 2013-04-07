@@ -131,80 +131,80 @@ static void CheckHit(Entity * io, float ratioaim) {
 		return;
 
 	{
-		Vec3f ppos, pos, to;
-		Vec3f from(0.f, 0.f, -90.f);
-		Vector_RotateY(&to, &from, MAKEANGLE(180.f - io->angle.b));
-		ppos.x = io->pos.x;
-		pos.x = ppos.x + to.x;
-		ppos.y = io->pos.y - (80.f);
-		pos.y = ppos.y + to.y;
-		ppos.z = io->pos.z;
-		pos.z = ppos.z + to.z;
+	Vec3f ppos, pos, to;
+	Vec3f from(0.f, 0.f, -90.f);
+	Vector_RotateY(&to, &from, MAKEANGLE(180.f - io->angle.b));
+	ppos.x = io->pos.x;
+	pos.x = ppos.x + to.x;
+	ppos.y = io->pos.y - (80.f);
+	pos.y = ppos.y + to.y;
+	ppos.z = io->pos.z;
+	pos.z = ppos.z + to.z;
 
 #ifdef BUILD_EDITOR
-		if(DEBUGNPCMOVE) {
-			EERIEDrawTrue3DLine(ppos, pos, Color::red);
-		}
+	if(DEBUGNPCMOVE) {
+		EERIEDrawTrue3DLine(ppos, pos, Color::red);
+	}
 #endif
 
-		float dmg;
+	float dmg;
 
-		if(io->ioflags & IO_NPC)
-			dmg = io->_npcdata->damages;
-		else
-			dmg = 40.f;
+	if(io->ioflags & IO_NPC)
+		dmg = io->_npcdata->damages;
+	else
+		dmg = 40.f;
 
-		long i = io->targetinfo;
+	long i = io->targetinfo;
 
-		if(!ValidIONum(i))
-			return;
+	if(!ValidIONum(i))
+		return;
 
+	{
+	Entity * ioo = entities[i];
+
+	if(!ioo)
+		return;
+
+	if(ioo->ioflags & (IO_MARKER | IO_CAMERA))
+		return;
+
+	if (ioo->gameFlags & GFLAG_ISINTREATZONE)
+	if (ioo->show == SHOW_FLAG_IN_SCENE)
+	if (ioo->obj)
+	if (ioo->pos.y >	(io->pos.y + io->physics.cyl.height))
+	if (io->pos.y >	(ioo->pos.y + ioo->physics.cyl.height))
+	{
+		float dist_limit = io->_npcdata->reach + io->physics.cyl.radius;
+		long count = 0;
+		float mindist = std::numeric_limits<float>::max();
+
+		for (size_t k = 0; k < ioo->obj->vertexlist.size(); k += 2)
 		{
-			Entity * ioo = entities[i];
+			float dist = fdist(pos, entities[i]->obj->vertexlist3[k].v);
 
-			if(!ioo)
-				return;
+			if ((dist <= dist_limit)
+					&&	(EEfabs(pos.y - entities[i]->obj->vertexlist3[k].v.y) < 60.f))
+			{
+				count++;
 
-			if(ioo->ioflags & (IO_MARKER | IO_CAMERA))
-				return;
-
-			if (ioo->gameFlags & GFLAG_ISINTREATZONE)
-				if (ioo->show == SHOW_FLAG_IN_SCENE)
-					if (ioo->obj)
-						if (ioo->pos.y >	(io->pos.y + io->physics.cyl.height))
-							if (io->pos.y >	(ioo->pos.y + ioo->physics.cyl.height))
-							{
-								float dist_limit = io->_npcdata->reach + io->physics.cyl.radius;
-								long count = 0;
-								float mindist = std::numeric_limits<float>::max();
-
-								for (size_t k = 0; k < ioo->obj->vertexlist.size(); k += 2)
-								{
-									float dist = fdist(pos, entities[i]->obj->vertexlist3[k].v);
-
-									if ((dist <= dist_limit)
-											&&	(EEfabs(pos.y - entities[i]->obj->vertexlist3[k].v.y) < 60.f))
-									{
-										count++;
-
-										if(dist < mindist) mindist = dist;
-									}
-								}
-
-								float ratio = ((float)count / ((float)ioo->obj->vertexlist.size() * ( 1.0f / 2 )));
-
-								if(ioo->ioflags & IO_NPC) {
-
-									if(mindist <= dist_limit) {
-										ARX_EQUIPMENT_ComputeDamages(io, ioo, ratioaim);
-									}
-								} else {
-									if(mindist <= 120.f) {
-										ARX_DAMAGES_DamageFIX(ioo, dmg * ratio, io->index(), 0);
-									}
-								}
-							}
+				if(dist < mindist) mindist = dist;
+			}
 		}
+
+		float ratio = ((float)count / ((float)ioo->obj->vertexlist.size() * ( 1.0f / 2 )));
+
+		if(ioo->ioflags & IO_NPC) {
+
+			if(mindist <= dist_limit) {
+				ARX_EQUIPMENT_ComputeDamages(io, ioo, ratioaim);
+			}
+		} else {
+			if(mindist <= 120.f) {
+				ARX_DAMAGES_DamageFIX(ioo, dmg * ratio, io->index(), 0);
+			}
+		}
+	}
+	}
 
 
 	}
