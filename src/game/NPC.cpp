@@ -212,13 +212,13 @@ static void CheckHit(Entity * io, float ratioaim) {
 
 void ARX_NPC_Kill_Spell_Launch(Entity * io)
 {
-	if (io)
+	if(!io)
+		return;
+
 	{
-		if (io->flarecount)
-		{
-			for (long i = 0; i < MAX_FLARES; i++)
-			{
-				if ((flare[i].exist)  && (flare[i].io == io))
+		if (io->flarecount) {
+			for(long i = 0; i < MAX_FLARES; i++) {
+				if(flare[i].exist && flare[i].io == io)
 					flare[i].io = NULL;
 			}
 		}
@@ -227,7 +227,10 @@ void ARX_NPC_Kill_Spell_Launch(Entity * io)
 	}
 }
 
-// Releases Pathfinder info from an NPC
+/*!
+ * \brief Releases Pathfinder info from an NPC
+ * \param io
+ */
 void ARX_NPC_ReleasePathFindInfo(Entity * io) {
 	
 	// Checks for valid IO/NPC
@@ -242,7 +245,10 @@ void ARX_NPC_ReleasePathFindInfo(Entity * io) {
 	io->_npcdata->pathfind.pathwait = 0;
 }
 
-// Creates an extra rotations structure for a NPC
+/*!
+ * \brief Creates an extra rotations structure for a NPC
+ * \param io
+ */
 void ARX_NPC_CreateExRotateData(Entity * io) {
 	
 	if(!io || !(io->ioflags & IO_NPC) || io->_npcdata->ex_rotate) {
@@ -269,15 +275,14 @@ void ARX_NPC_CreateExRotateData(Entity * io) {
 	io->_npcdata->look_around_inc = 0.f;
 }
 
-//***********************************************************************************************
-// Resurects an NPC
-//-----------------------------------------------------------------------------------------------
-// VERIFIED (Cyril 2001/10/15)
-//***********************************************************************************************
+/*!
+ * \brief Resurects an NPC
+ * \param io
+ * \param flags
+ */
 void ARX_NPC_Revive(Entity * io, long flags)
 {
-	if ((TSecondaryInventory) && (TSecondaryInventory->io == io))
-	{
+	if(TSecondaryInventory && TSecondaryInventory->io == io) {
 		TSecondaryInventory = NULL;
 	}
 
@@ -324,15 +329,16 @@ void ARX_NPC_Revive(Entity * io, long flags)
 	if (io->ioflags & IO_NPC)
 		io->_npcdata->cuts = 0;
 }
-//***********************************************************************************************
-// Sets a new behaviour for NPC
-//-----------------------------------------------------------------------------------------------
-// VERIFIED (Cyril 2001/10/15)
-//***********************************************************************************************
+
+/*!
+ * \brief Sets a new behaviour for NPC
+ * \param io
+ * \param behavior
+ * \param behavior_param
+ */
 void ARX_NPC_Behaviour_Change(Entity * io, Behaviour behavior, long behavior_param)
 {
-	if ((!io)
-	        ||	(!(io->ioflags & IO_NPC)))
+	if(!io || !(io->ioflags & IO_NPC))
 		return;
 
 	if ((io->_npcdata->behavior & BEHAVIOUR_FIGHT) && !(behavior & BEHAVIOUR_FIGHT))
@@ -379,24 +385,25 @@ void ARX_NPC_Behaviour_Change(Entity * io, Behaviour behavior, long behavior_par
 	io->_npcdata->behavior = behavior;
 	io->_npcdata->behavior_param = (float)behavior_param;
 }
-//***********************************************************************************************
-// Resets all behaviour data from a NPC
-//-----------------------------------------------------------------------------------------------
-// VERIFIED (Cyril 2001/10/15)
-//***********************************************************************************************
+
+/*!
+ * \brief Resets all behaviour data from a NPC
+ * \param io
+ */
 void ARX_NPC_Behaviour_Reset(Entity * io)
 {
-	if ((!io)
-	        ||	(!(io->ioflags & IO_NPC)))
+	if(!io || !(io->ioflags & IO_NPC))
 		return;
 
 	io->_npcdata->behavior = BEHAVIOUR_NONE;
 
-	for (long i = 0; i < MAX_STACKED_BEHAVIOR; i++)
+	for(long i = 0; i < MAX_STACKED_BEHAVIOR; i++)
 		io->_npcdata->stacked[i].exist = 0;
 }
 
-// Reset all Behaviours from all NPCs
+/*!
+ * \brief Reset all Behaviours from all NPCs
+ */
 void ARX_NPC_Behaviour_ResetAll() {
 	for(size_t i = 0; i < entities.size(); i++) {
 		if(entities[i]) {
@@ -405,11 +412,13 @@ void ARX_NPC_Behaviour_ResetAll() {
 	}
 }
 
-// Stacks an NPC behaviour
+/*!
+ * \brief Stacks an NPC behaviour
+ * \param io
+ */
 void ARX_NPC_Behaviour_Stack(Entity * io) {
 	
-	if ((!io)
-	        ||	(!(io->ioflags & IO_NPC)))
+	if(!io || !(io->ioflags & IO_NPC))
 		return;
 
 	for (long i = 0; i < MAX_STACKED_BEHAVIOR; i++)
@@ -434,15 +443,13 @@ void ARX_NPC_Behaviour_Stack(Entity * io) {
 	}
 }
 
-//***********************************************************************************************
-// Unstacks One stacked behaviour from an NPC
-//-----------------------------------------------------------------------------------------------
-// VERIFIED (Cyril 2001/10/15)
-//***********************************************************************************************
+/*!
+ * \brief Unstacks One stacked behaviour from an NPC
+ * \param io
+ */
 void ARX_NPC_Behaviour_UnStack(Entity * io)
 {
-	if ((!io)
-	        ||	(!(io->ioflags & IO_NPC)))
+	if(!io || !(io->ioflags & IO_NPC))
 		return;
 
 	for (long i = MAX_STACKED_BEHAVIOR - 1; i >= 0; i--)
@@ -469,14 +476,14 @@ void ARX_NPC_Behaviour_UnStack(Entity * io)
 		}
 	}
 }
+
 extern void GetIOCyl(Entity * io, EERIE_CYLINDER * cyl);
-//***********************************************************************************************
-// long ARX_NPC_GetNextAttainableNodeIncrement(Entity * io)
-// Description:
-//			Checks for any direct shortcut between NPC and future anchors...
-//-----------------------------------------------------------------------------------------------
-// VERIFIED (Cyril 2001/10/15)
-//***********************************************************************************************
+
+/*!
+ * \brief Checks for any direct shortcut between NPC and future anchors...
+ * \param io
+ * \return
+ */
 long ARX_NPC_GetNextAttainableNodeIncrement(Entity * io)
 {
 	arx_assert(io);
@@ -537,9 +544,10 @@ long ARX_NPC_GetNextAttainableNodeIncrement(Entity * io)
 
 	return 0;
 }
-//*****************************************************************************
-// Checks for nearest VALID anchor for a cylinder from a position
-//*****************************************************************************
+
+/*!
+ * \brief Checks for nearest VALID anchor for a cylinder from a position
+ */
 static long AnchorData_GetNearest(Vec3f * pos, EERIE_CYLINDER * cyl, long except = -1) {
 	long returnvalue = -1;
 	float distmax = std::numeric_limits<float>::max();
@@ -581,8 +589,7 @@ static long AnchorData_GetNearest_2(float beta, Vec3f * pos, EERIE_CYLINDER * cy
 
 bool ARX_NPC_LaunchPathfind(Entity * io, long target)
 {
-	// Check Validity
-	if ((!io) || (!(io->ioflags & IO_NPC)))
+	if(!io || !(io->ioflags & IO_NPC))
 		return false;
 
 	long MUST_SELECT_Start_Anchor = -1;
@@ -843,15 +850,13 @@ void ARX_TEMPORARY_TrySound(float volume) {
 		}
 	}
 }
-//***********************************************************************************************
-// Sets a New MoveMode for a NPC
-//-----------------------------------------------------------------------------------------------
-// VERIFIED (Cyril 2001/10/15)
-//***********************************************************************************************
+
+/*!
+ * \brief Sets a New MoveMode for a NPC
+ */
 void ARX_NPC_ChangeMoveMode(Entity * io, MoveMode MOVEMODE)
 {
-	if ((!io)
-	        ||	(!(io->ioflags & IO_NPC)))
+	if(!io || !(io->ioflags & IO_NPC))
 		return;
 
 	ANIM_USE * ause0 = &io->animlayer[0];
@@ -910,11 +915,11 @@ void ARX_NPC_ChangeMoveMode(Entity * io, MoveMode MOVEMODE)
 
 	io->_npcdata->movemode = MOVEMODE;
 }
-//***********************************************************************************************
-// Diminishes life of a Poisoned NPC
-//-----------------------------------------------------------------------------------------------
-// VERIFIED (Cyril 2001/10/15)
-//***********************************************************************************************
+
+/*!
+ * \brief Diminishes life of a Poisoned NPC
+ * \param io
+ */
 void ARX_NPC_ManagePoison(Entity * io)
 {
 	float cp = io->_npcdata->poisonned;
@@ -942,13 +947,14 @@ void ARX_NPC_ManagePoison(Entity * io)
 	if (io->_npcdata->poisonned < 0.1f) io->_npcdata->poisonned = 0.f;
 }
 
-// FUNCTION:
-//   Checks if the bottom of an IO is underwater.
-// RESULT:
-//   Plays Water sounds
-//   Decrease/stops Ignition of this IO if necessary
-// WARNINGS:
-// io must be valid (no check !)
+/*!
+ * \brief Checks if the bottom of an IO is underwater.
+ * \param io
+ * \warning io must be valid (no check !)
+ *
+ * Plays Water sounds
+ * Decrease/stops Ignition of this IO if necessary
+ */
 static void CheckUnderWaterIO(Entity * io) {
 	
 	Vec3f ppos = io->pos;
@@ -1148,8 +1154,7 @@ void ARX_PHYSICS_Apply() {
 		}
 	}
 }
-//*************************************************************************************
-//*************************************************************************************
+
 void FaceTarget2(Entity * io)
 {
 	Vec3f tv;
@@ -1316,7 +1321,11 @@ float GetTRUETargetDist(Entity * io) {
 
 extern Entity * EVENT_SENDER;
 
-// Checks If a NPC is dead
+/*!
+ * \brief Checks If a NPC is dead
+ * \param io
+ * \return
+ */
 bool IsDeadNPC(Entity * io) {
 	
 	if(!io || !(io->ioflags & IO_NPC)) {
@@ -1325,8 +1334,7 @@ bool IsDeadNPC(Entity * io) {
 	
 	return (io->_npcdata->life <= 0 || io->mainevent == "dead");
 }
-//***********************************************************************************************
-//***********************************************************************************************
+
 long IsInGroup(EERIE_3DOBJ * obj, long vert, long tw)
 {
 	if (obj == NULL) return -1;
@@ -1346,8 +1354,6 @@ long IsInGroup(EERIE_3DOBJ * obj, long vert, long tw)
 	return -1;
 }
 
-//***********************************************************************************************
-//***********************************************************************************************
 long IsNearSelection(EERIE_3DOBJ * obj, long vert, long tw)
 {
 	if (obj == NULL) return -1;
@@ -1368,7 +1374,11 @@ long IsNearSelection(EERIE_3DOBJ * obj, long vert, long tw)
 	return -1;
 }
 
-// Spawns a body part from NPC
+/*!
+ * \brief Spawns a body part from NPC
+ * \param ioo
+ * \param num
+ */
 void ARX_NPC_SpawnMember(Entity * ioo, long num) {
 	
 	if (!ioo) return;
@@ -1638,7 +1648,7 @@ static short GetCutFlag(const string & str) {
 
 long GetCutSelection(Entity * io, short flag)
 {
-	if ((!io) || (!(io->ioflags & IO_NPC)) || flag == 0)
+	if(!io || !(io->ioflags & IO_NPC) || flag == 0)
 		return -1;
 
 	std::string tx;
@@ -1674,7 +1684,7 @@ long GetCutSelection(Entity * io, short flag)
 
 void ReComputeCutFlags(Entity * io)
 {
-	if ((!io) || (!(io->ioflags & IO_NPC)))
+	if(!io || !(io->ioflags & IO_NPC))
 		return;
 
 	if (io->_npcdata->cuts & FLAG_CUT_TORSO)
@@ -1684,6 +1694,7 @@ void ReComputeCutFlags(Entity * io)
 		io->_npcdata->cuts &= ~FLAG_CUT_RARM;
 	}
 }
+
 bool IsAlreadyCut(Entity * io, short fl)
 {
 	if (io->_npcdata->cuts & fl)
@@ -1761,9 +1772,12 @@ long ARX_NPC_ApplyCuts(Entity * io)
 
 	return hid;
 }
-//***********************************************************************************************
-// Attempt to cut something on NPC
-//***********************************************************************************************
+
+/*!
+ * \brief Attempt to cut something on NPC
+ * \param target
+ * \param pos
+ */
 void ARX_NPC_TryToCutSomething(Entity * target, Vec3f * pos)
 {
 	//return;
@@ -1854,10 +1868,11 @@ void ARX_NPC_TryToCutSomething(Entity * target, Vec3f * pos)
 
 
 extern float STRIKE_AIMTIME;
-//***********************************************************************************************
-// IsPlayerStriking()
-// Checks if Player is currently striking.
-//***********************************************************************************************
+
+/*!
+ * \brief Checks if Player is currently striking.
+ * \return
+ */
 bool IsPlayerStriking()
 {
 	Entity * io = entities.player();
@@ -1918,8 +1933,7 @@ bool IsPlayerStriking()
 
 	return false;
 }
-//***********************************************************************************************
-//***********************************************************************************************
+
 void ARX_NPC_Manage_NON_Fight(Entity * io)
 {
 	ANIM_USE * ause1 = &io->animlayer[1];
@@ -1934,15 +1948,16 @@ void ARX_NPC_Manage_NON_Fight(Entity * io)
 		}
 	}
 }
-//***********************************************************************************************
-//***********************************************************************************************
+
 void Strike_StartTickCount(Entity * io)
 {
 	io->_npcdata->strike_time = 0;
 }
-//***********************************************************************************************
-//***********************************************************************************************
-// NPC IS in fight mode and close to target...
+
+/*!
+ * \brief NPC IS in fight mode and close to target...
+ * \param io
+ */
 void ARX_NPC_Manage_Fight(Entity * io)
 {
 	if (!(io->ioflags & IO_NPC)) return;
@@ -2087,8 +2102,7 @@ void ARX_NPC_Manage_Fight(Entity * io)
 		}
 	}
 }
-//***********************************************************************************************
-//***********************************************************************************************
+
 void ARX_NPC_Manage_Anims_End(Entity * io)
 {
 	ANIM_USE * ause = &io->animlayer[0];
@@ -2132,7 +2146,8 @@ void ARX_NPC_Manage_Anims_End(Entity * io)
 }
 bool TryIOAnimMove(Entity * io, long animnum)
 {
-	if ((!io) || (!io->anims[animnum])) return false;
+	if(!io || !io->anims[animnum])
+		return false;
 
 	Vec3f trans, trans2;
 	GetAnimTotalTranslate(io->anims[animnum], 0, &trans);
@@ -2153,7 +2168,8 @@ bool TryIOAnimMove(Entity * io, long animnum)
 }
 void TryAndCheckAnim(Entity * io, long animnum, long layer)
 {
-	if (!io) return;
+	if(!io)
+		return;
 
 	ANIM_USE * ause = &io->animlayer[layer];
 
@@ -2168,13 +2184,17 @@ void TryAndCheckAnim(Entity * io, long animnum, long layer)
 		}
 	}
 }
+
 //Define Time of Strike Damage
 #define STRIKE_MUL 0.25f 
 #define STRIKE_MUL2 0.8f 
 #define STRIKE_DISTANCE 220
-// Main animations management
-//***********************************************************************************************
-//***********************************************************************************************
+
+/*!
+ * \brief Main animations management
+ * \param io
+ * \param TOLERANCE
+ */
 void ARX_NPC_Manage_Anims(Entity * io, float TOLERANCE)
 {
 	io->_npcdata->strike_time += (short)framedelay;
@@ -2566,6 +2586,7 @@ void ARX_NPC_Manage_Anims(Entity * io, float TOLERANCE)
 
 
 }
+
 float GetIOHeight(Entity * io)
 {
 	if (io == entities.player())
@@ -2595,11 +2616,12 @@ void GetIOCyl(Entity * io, EERIE_CYLINDER * cyl) {
 	cyl->origin = io->pos;
 }
 
-//***********************************************************************************************
-// Computes distance tolerance between NPC and its target
-//-----------------------------------------------------------------------------------------------
-// VERIFIED (Cyril 2001/10/15)
-//***********************************************************************************************
+/*!
+ * \brief Computes distance tolerance between NPC and its target
+ * \param io
+ * \param targ
+ * \param dst
+ */
 void ComputeTolerance(Entity * io, long targ, float * dst) {
 	
 	float TOLERANCE = 30.f;
@@ -3577,15 +3599,16 @@ float AngularDifference(float a1, float a2)
 
 }
 extern float CURRENT_PLAYER_COLOR;
-//***********************************************************************************************
-// Entity * ARX_NPC_GetFirstNPCInSight(Entity * ioo)
-//-----------------------------------------------------------------------------------------------
-// FUNCTION:
-//   returns the "first" NPC in sight for another NPC (ioo)
-//***********************************************************************************************
+
+/*!
+ * \brief ARX_NPC_GetFirstNPCInSight
+ * \param ioo
+ * \return the "first" NPC in sight for another NPC (ioo)
+ */
 Entity * ARX_NPC_GetFirstNPCInSight(Entity * ioo)
 {
-	if (!ioo) return NULL;
+	if(!ioo)
+		return NULL;
 
 	// Basic Clipping to avoid performance loss
 	if(distSqr(ACTIVECAM->orgTrans.pos, ioo->pos) > square(2500)) {
@@ -3705,17 +3728,14 @@ Entity * ARX_NPC_GetFirstNPCInSight(Entity * ioo)
 	return found_io;
 }
 extern float CURRENT_PLAYER_COLOR;
- 
-//***********************************************************************************************
-// void CheckNPC(Entity * io)
-//-----------------------------------------------------------------------------------------------
-// FUNCTION
-//   Checks if a NPC is dead to prevent further Layers Animation
-//***********************************************************************************************
+
+/*!
+ * \brief Checks if a NPC is dead to prevent further Layers Animation
+ * \param io
+ */
 void CheckNPC(Entity * io)
 {
-	if ((!io)
-	        ||	(io->show != SHOW_FLAG_IN_SCENE))
+	if(!io || (io->show != SHOW_FLAG_IN_SCENE))
 		return;
 
 	if (IsDeadNPC(io))
@@ -3731,13 +3751,14 @@ void CheckNPC(Entity * io)
 	}
 }
 
-// Checks an NPC Visibility Field (Player Detect)
-// NECESSARY:
-//   Uses Invisibility/Confuse/Torch infos.
-// RESULT:
-//   Sends appropriate Detectplayer/Undetectplayer events to the IO
-// WARNINGS:
-//   io and io->obj must be valid (no check !)
+/*!
+ * \brief Checks an NPC Visibility Field (Player Detect)
+ * Sends appropriate Detectplayer/Undetectplayer events to the IO
+ * \param io
+ *
+ * \remarks Uses Invisibility/Confuse/Torch infos.
+ * \warning io and io->obj must be valid (no check !)
+ */
 void CheckNPCEx(Entity * io) {
 	
 	// Distance Between Player and IO
@@ -3836,12 +3857,11 @@ void ARX_NPC_NeedStepSound(Entity * io, Vec3f * pos, const float volume, const f
 	
 	ARX_SOUND_PlayCollision(*step_material, floor_material, volume, power, pos, io);
 }
-//-------------------------------------------------------------------------
-//***********************************************************************************************
-// ARX_NPC_SpawnAudibleSound
-// Sends ON HEAR events to NPCs for audible sounds
-// factor > 1.0F harder to hear, < 0.0F easier to hear
-//***********************************************************************************************
+
+/*!
+ * \brief Sends ON HEAR events to NPCs for audible sounds
+ * \note factor > 1.0F harder to hear, < 0.0F easier to hear
+ */
 void ARX_NPC_SpawnAudibleSound(Vec3f * pos, Entity * source, const float factor, const float presence)
 {
 	float max_distance;
@@ -3906,10 +3926,10 @@ extern Entity * CURRENT_TORCH;
 
 void createFireParticles(Vec3f &pos,const int particlesToCreate, const int particleDelayFactor);
 
-//-------------------------------------------------------------------------
 void ManageIgnition(Entity * io)
 {
-	if (!io) return;
+	if(!io)
+		return;
 
 	if (CURRENT_TORCH == io)
 	{
@@ -4070,7 +4090,8 @@ void createFireParticles(Vec3f &pos, const int particlesToCreate, const int part
 
 void ManageIgnition_2(Entity * io) {
 	
-	if (!io) return;
+	if(!io)
+		return;
 
 	if (io->ignition > 0.f)
 	{
@@ -4145,9 +4166,8 @@ extern EERIE_BACKGROUND * ACTIVEBKG;
 
 void GetTargetPos(Entity * io, unsigned long smoothing) {
 	
-	if(!io) {
+	if(!io)
 		return;
-	}
 	
 	if(io->ioflags & IO_NPC) {
 		
