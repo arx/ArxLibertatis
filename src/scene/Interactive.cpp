@@ -968,9 +968,8 @@ void ARX_INTERACTIVE_APPLY_TWEAK_INFO(Entity * io) {
 
 void ARX_INTERACTIVE_ClearIODynData(Entity * io) {
 	
-	if(!io) {
+	if(!io)
 		return;
-	}
 	
 	if(ValidDynLight(io->dynlight)) {
 		DynLight[io->dynlight].exist = 0;
@@ -989,7 +988,9 @@ void ARX_INTERACTIVE_ClearIODynData(Entity * io) {
 
 void ARX_INTERACTIVE_ClearIODynData_II(Entity * io)
 {
-	if (io)
+	if(!io)
+		return;
+
 	{
 		ARX_INTERACTIVE_ClearIODynData(io);
 
@@ -1070,7 +1071,10 @@ void ARX_INTERACTIVE_ClearAllDynData() {
 }
 
 static void RestoreIOInitPos(Entity * io) {
-	if(io) {
+	if(!io)
+		return;
+
+	{
 		ARX_INTERACTIVE_Teleport(io, &io->initpos);
 		io->pos = io->lastpos = io->initpos;
 		io->move = Vec3f::ZERO;
@@ -1093,7 +1097,9 @@ void ARX_HALO_SetToNative(Entity * io) {
 
 void RestoreInitialIOStatusOfIO(Entity * io)
 {
-	if (io)
+	if(!io)
+		return;
+
 	{
 		ARX_INTERACTIVE_ClearIODynData_II(io);
 
@@ -1361,23 +1367,19 @@ bool ARX_INTERACTIVE_ConvertToValidPosForIO(Entity * io, Vec3f * target) {
 	
 	phys.origin = *target;
 	long count = 0;
-	float modx, modz;
 	
 	while(count < 600) {
-		
-		modx = -EEsin(count) * (float)count * ( 1.0f / 3 );
-		modz = EEcos(count) * (float)count * ( 1.0f / 3 );
+		float modx = -EEsin(count) * (float)count * ( 1.0f / 3 );
+		float modz = EEcos(count) * (float)count * ( 1.0f / 3 );
 		phys.origin.x = target->x + modx;
 		phys.origin.z = target->z + modz;
 		float anything = CheckAnythingInCylinder(&phys, io, CFLAG_JUST_TEST);
 
-		if (EEfabs(anything) < 150.f)
-		{
+		if(EEfabs(anything) < 150.f) {
 			EERIEPOLY * ep = CheckInPoly(phys.origin.x, phys.origin.y + anything - 20.f, phys.origin.z);
 			EERIEPOLY * ep2 = CheckTopPoly(phys.origin.x, phys.origin.y + anything, phys.origin.z);
 
-			if (ep && ep2 && (EEfabs((phys.origin.y + anything) - ep->center.y) < 20.f))
-			{
+			if(ep && ep2 && EEfabs((phys.origin.y + anything) - ep->center.y) < 20.f) {
 				target->x = phys.origin.x;
 				target->y = phys.origin.y + anything;
 				target->z = phys.origin.z;
@@ -1542,12 +1544,11 @@ Entity * AddInteractive(const res::path & classPath, EntityInstance instance, Ad
 	
 	return io;
 }
-//***********************************************************************************
-// SetWeapon:
-// Links an object designed by path "temp" to the primary attach of interactive object
-// "io".
-//***********************************************************************************
 
+/*!
+ * \brief Links an object designed by path "temp" to the primary attach of interactive object "io"
+ * \param io
+ */
 void SetWeapon_On(Entity * io) {
 	
 	if(!io || !(io->ioflags & IO_NPC))
@@ -1629,12 +1630,14 @@ void LinkObjToMe(Entity * io, Entity * io2, const std::string & attach) {
 	EERIE_LINKEDOBJ_LinkObjectToObject(io->obj, io2->obj, attach, attach, io2);
 }
 
-// Creates a Temporary IO Ident
+/*!
+ * \brief Creates a Temporary IO Ident
+ * \param io
+ */
 static void MakeTemporaryIOIdent(Entity * io) {
 	
-	if(!io) {
+	if(!io)
 		return;
-	}
 	
 	// TODO keep the current game open all the time (or even in memory)
 	ARX_Changelevel_CurGame_Open();
@@ -2466,9 +2469,8 @@ long IsCollidingAnyInter(float x, float y, float z, Vec3f * size) {
 		        && (io->show == SHOW_FLAG_IN_SCENE)
 		   )
 		{
-			if (io->ioflags & IO_NPC)
-			{
-				if (io->_npcdata->life <= 0.f)
+			if(io->ioflags & IO_NPC) {
+				if(io->_npcdata->life <= 0.f)
 					goto suitet;
 			}
 
@@ -2476,11 +2478,13 @@ long IsCollidingAnyInter(float x, float y, float z, Vec3f * size) {
 			pos.y = y;
 			pos.z = z;
 
-			if (IsCollidingInter(io, &pos)) return i;
+			if(IsCollidingInter(io, &pos))
+				return i;
 
 			pos.y += size->y;
 
-			if (IsCollidingInter(io, &pos)) return i;
+			if(IsCollidingInter(io, &pos))
+				return i;
 
 		suitet:
 			;
@@ -2495,31 +2499,25 @@ long IsCollidingAnyInter(float x, float y, float z, Vec3f * size) {
 //*************************************************************************************
 static bool IsCollidingInter(Entity * io, Vec3f * pos) {
 	
-	if ((!io)
-	        ||	(!io->obj))
+	if(!io || !io->obj)
 		return false;
 
 	if(closerThan(*pos, io->pos, 190.f)) {
 		
 		vector<EERIE_VERTEX> & vlist = io->obj->vertexlist3;
 
-		if (io->obj->nbgroups > 4)
-		{
-			for (long i = 0; i < io->obj->nbgroups; i++)
-			{
+		if(io->obj->nbgroups > 4) {
+			for(long i = 0; i < io->obj->nbgroups; i++) {
 				long idx = io->obj->grouplist[i].origin;
 
 				if(!fartherThan(*pos, vlist[idx].v, 50.f)) {
 					return true;
 				}
 			}
-		}
-		else
-		{
+		} else {
 			long nbv = io->obj->vertexlist3.size();
-			for (long i = 0; i < nbv; i++)
-			{
-				if (i != io->obj->origin)
+			for(long i = 0; i < nbv; i++) {
+				if(i != io->obj->origin)
 					if(!fartherThan(*pos, vlist[i].v, 30.f)) {
 						return true;
 					}
@@ -2606,10 +2604,10 @@ bool ARX_INTERACTIVE_CheckCollision(EERIE_3DOBJ * obj, long kk, long source)
 
 	return col;
 }
+
 bool ARX_INTERACTIVE_CheckFULLCollision(EERIE_3DOBJ * obj, long source)
 {
 	bool col = false;
-	long i;
 	long avoid = -1;
 	Entity * io_source = NULL;
 	Entity * io = NULL;
@@ -2619,22 +2617,22 @@ bool ARX_INTERACTIVE_CheckFULLCollision(EERIE_3DOBJ * obj, long source)
 		avoid = io_source->no_collide;
 	}
 
-	for(i = 0; i < TREATZONE_CUR; i++) {
+	for(long i = 0; i < TREATZONE_CUR; i++) {
 		if((treatio[i].show != SHOW_FLAG_IN_SCENE) || ((treatio[i].ioflags & IO_NO_COLLISIONS)) || (!treatio[i].io))
 			continue;
 
 		io = treatio[i].io;
 
-		if((io == io_source) || (!io->obj) || (io == entities.player()))
+		if(io == io_source || !io->obj || io == entities.player())
 			continue;
 
 		if(treatio[i].num == avoid)
 			continue;
 
-		if((io->ioflags & (IO_CAMERA | IO_MARKER | IO_ITEM)) || (io->usepath))
+		if((io->ioflags & (IO_CAMERA | IO_MARKER | IO_ITEM)) || io->usepath)
 			continue;
 
-		if ((io->ioflags & IO_NPC) && (io_source) && (io_source->ioflags & IO_NO_NPC_COLLIDE))
+		if((io->ioflags & IO_NPC) && io_source && (io_source->ioflags & IO_NO_NPC_COLLIDE))
 			continue;
 
 		if(distSqr(io->pos, obj->pbox->vert[0].pos) < square(600.f)
@@ -2646,8 +2644,7 @@ bool ARX_INTERACTIVE_CheckFULLCollision(EERIE_3DOBJ * obj, long source)
 						return true;
 			} else if(io->ioflags & IO_FIX) {
 				long step;
-				long nbv;
-				nbv = io->obj->vertexlist.size();
+				long nbv = io->obj->vertexlist.size();
 				EERIE_SPHERE sp;
 				sp.radius = 28.f;
 
@@ -2770,7 +2767,10 @@ void UpdateCameras() {
 	for(size_t i = 1; i < entities.size(); i++) {
 		Entity * io = entities[i];
 		
-		if(io) {
+		if(!io)
+			continue;
+
+		{
 			// interpolate & send events
 			if(io->usepath) {
 
@@ -2932,7 +2932,7 @@ void UpdateIOInvisibility(Entity * io)
 
 			if(io->invisibility > 1.f)
 				io->invisibility = 1.f;
-		} else if ((!(io->gameFlags & GFLAG_INVISIBILITY)) && (io->invisibility != 0.f)) {
+		} else if(!(io->gameFlags & GFLAG_INVISIBILITY) && io->invisibility != 0.f) {
 			io->invisibility -= framedelay * ( 1.0f / 1000 );
 
 			if(io->invisibility < 0.f)
