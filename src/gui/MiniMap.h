@@ -49,6 +49,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <string>
 #include <vector>
+#include "math/MathFwd.h"
 
 class TextureContainer;
 
@@ -59,29 +60,29 @@ class TextureContainer;
 class MiniMap {
 
 public:
-    
+
     //! MiniMap data
     struct MiniMapData {
-        
+
         TextureContainer* m_texContainer;
-        
+
         //! Start of scene pos x
         float m_offsetX;
         float m_offsetY;
-        
+
         //! Multiply x by ratioX to obtain real-world pos
         float m_ratioX;
         float m_ratioY;
-        
+
         //! Bitmap width/height
         float m_width;
         float m_height;
-        
+
         unsigned char m_revealed[MINIMAP_MAX_X][MINIMAP_MAX_Z];
     };
-    
+
     MiniMapData m_levels[MAX_MINIMAP_LEVELS];
-    
+
     //! Map markers
     struct MapMarkerData {
 
@@ -91,68 +92,71 @@ public:
         std::string m_name;
         std::string m_text;
     };
-    
+
     std::vector<MapMarkerData> m_mapMarkers;
-    
+
     void mapMarkerRemove(const std::string &name);
     void mapMarkerAdd(float x, float y, int lvl, const std::string &name);
     void mapMarkerInit();
-    
+
     void firstInit(); // This should be a constructor
     void reset();
     void purgeTexContainer();
     void validatePlayerPos();
-    
+
     /*! 
     * Shows the top right minimap
     *
     * @param int showLevel
     */
     void showPlayerMiniMap(int showLevel);
-    
+
     /*! 
     * Shows the zoomed-in minimap in the book
     *
     * @param int showLevel
     */
     void showBookMiniMap(int showLevel);
-    
+
     /*! 
     * Shows the entire map in the book
     *
     * @param int showLevel
     */
     void showBookEntireMap(int showLevel);
-    
+
     //! Reveals entirely all levels
     void reveal();
-    
+
     void clearMarkerTexCont();
-    
+
 private:
-    
+
     float m_miniOffsetX[MAX_MINIMAP_LEVELS];
     float m_miniOffsetY[MAX_MINIMAP_LEVELS];
     float m_mapMaxY[MAX_MINIMAP_LEVELS];
-    
+
     TextureContainer *m_pTexDetect;
     TextureContainer *m_mapMarkerTexCont;
-    
+
     float m_playerLastPosX;
     float m_playerLastPosZ;
-    
+
+    /*const */float m_modX; // used everywhere, calculate it once
+    /*const */float m_modZ; // should and will be const
+
     void getData(int showLevel);
     void resetLevels();
     void loadOffsets();
     void validatePos();
-    
+
     /*! 
     * Reveals the direct surroundings of the player
     *
     * @param int showLevel
     */
     void revealPlayerPos(int showLevel);
-    
+
     /*! 
     * Gets the id from the MapMarker's name. Returns -1 when not found.
     *
@@ -160,6 +164,11 @@ private:
     * @return MapMarker's id (int).
     */
     int mapMarkerGetID(const std::string &name);
+
+    Vec2f computePlayerPos(float zoom);
+    void drawBackground(int showLevel, Rect boundaries, float startX, float startY, float zoom, float fadeBorder = 0.f, float decalX = 0.f, float decalY = 0.f, bool invColor = false, float alpha = 1.f);
+    void drawPlayer(float playerSize, float playerX, float playerY, bool alphaBlending = false);
+    void drawDetectedEntities(int showLevel, float startX, float startY, float zoom);
 };
 
 extern MiniMap g_miniMap;
