@@ -52,6 +52,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "math/MathFwd.h"
 
 class TextureContainer;
+struct SavedMiniMap;
 
 #define MINIMAP_MAX_X 50
 #define MINIMAP_MAX_Z 50
@@ -60,7 +61,7 @@ class TextureContainer;
 class MiniMap {
 
 public:
-
+    
     //! MiniMap data
     struct MiniMapData {
 
@@ -80,9 +81,7 @@ public:
 
         unsigned char m_revealed[MINIMAP_MAX_X][MINIMAP_MAX_Z];
     };
-
-    MiniMapData m_levels[MAX_MINIMAP_LEVELS];
-
+    
     //! Map markers
     struct MapMarkerData {
 
@@ -93,11 +92,11 @@ public:
         std::string m_text;
     };
 
-    std::vector<MapMarkerData> m_mapMarkers;
-
     void mapMarkerRemove(const std::string &name);
     void mapMarkerAdd(float x, float y, int lvl, const std::string &name);
-    void mapMarkerInit();
+    void mapMarkerInit(size_t reserveSize = 0);
+    size_t mapMarkerCount();
+    MapMarkerData mapMarkerGet(size_t id);
 
     void firstInit(); // This should be a constructor
     void reset();
@@ -129,6 +128,9 @@ public:
     void reveal();
 
     void clearMarkerTexCont();
+    
+    void load(const SavedMiniMap *saved, size_t size);
+    void save(SavedMiniMap *toSave, size_t size);
 
 private:
 
@@ -144,20 +146,24 @@ private:
 
     /*const */float m_modX; // used everywhere, calculate it once
     /*const */float m_modZ; // should and will be const
+    
+    std::vector<MapMarkerData> m_mapMarkers;
+    
+    MiniMapData m_levels[MAX_MINIMAP_LEVELS];
 
     void getData(int showLevel);
     void resetLevels();
     void loadOffsets();
     void validatePos();
 
-    /*! 
+    /*!
     * Reveals the direct surroundings of the player
     *
     * @param int showLevel
     */
     void revealPlayerPos(int showLevel);
 
-    /*! 
+    /*!
     * Gets the id from the MapMarker's name. Returns -1 when not found.
     *
     * @param std::string name
