@@ -127,10 +127,8 @@ void StareAtTarget(Entity * io);
 
 static void CheckHit(Entity * io, float ratioaim) {
 
-	if (io == NULL) return;
-
-
-
+	if(!io)
+		return;
 
 	{
 		Vec3f ppos, pos, to;
@@ -151,27 +149,24 @@ static void CheckHit(Entity * io, float ratioaim) {
 
 		float dmg;
 
-		if (io->ioflags & IO_NPC)
-		{
+		if(io->ioflags & IO_NPC)
 			dmg = io->_npcdata->damages;
-		}
-		else dmg = 40.f;
-
-
+		else
+			dmg = 40.f;
 
 		long i = io->targetinfo;
 
-		if (!ValidIONum(i)) return;
+		if(!ValidIONum(i))
+			return;
 
 		{
 			Entity * ioo = entities[i];
 
-			if (! ioo) return;
+			if(!ioo)
+				return;
 
-			if (ioo->ioflags & IO_MARKER) return;
-
-			if (ioo->ioflags & IO_CAMERA) return;
-
+			if(ioo->ioflags & (IO_MARKER | IO_CAMERA))
+				return;
 
 			if (ioo->gameFlags & GFLAG_ISINTREATZONE)
 				if (ioo->show == SHOW_FLAG_IN_SCENE)
@@ -198,14 +193,11 @@ static void CheckHit(Entity * io, float ratioaim) {
 
 								float ratio = ((float)count / ((float)ioo->obj->vertexlist.size() * ( 1.0f / 2 )));
 
-								if (ioo->ioflags & IO_NPC)
-								{
+								if(ioo->ioflags & IO_NPC) {
 
-									if (mindist <= dist_limit)
-									{
+									if(mindist <= dist_limit) {
 										ARX_EQUIPMENT_ComputeDamages(io, ioo, ratioaim);
 									}
-
 								} else {
 									if(mindist <= 120.f) {
 										ARX_DAMAGES_DamageFIX(ioo, dmg * ratio, io->index(), 0);
