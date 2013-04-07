@@ -73,195 +73,198 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 MiniMap g_miniMap; // TODO: remove this
 
 void MiniMap::getData(int showLevel) {
-	
-	if(m_levels[showLevel].m_texContainer == NULL) {
-		
-		char name[256];
-		char levelMap[256];
-		GetLevelNameByNum(showLevel, name);
 
-		sprintf(levelMap, "graph/levels/level%s/map", name);
-		m_levels[showLevel].m_texContainer = TextureContainer::Load(levelMap);
+    if(m_levels[showLevel].m_texContainer == NULL) {
 
-		if(m_levels[showLevel].m_texContainer) { // 4 pix/meter
-            
-			//TODO-RENDERING: SpecialBorderSurface...
-			//SpecialBorderSurface(m_data[showLevel].m_texContainer, m_data[showLevel].m_texContainer->m_dwWidth, m_data[showLevel].m_texContainer->m_dwHeight);
+        char name[256];
+        char levelMap[256];
+        GetLevelNameByNum(showLevel, name);
 
-			m_levels[showLevel].m_height = static_cast<float>(m_levels[showLevel].m_texContainer->m_dwHeight); 
-			m_levels[showLevel].m_width = static_cast<float>(m_levels[showLevel].m_texContainer->m_dwWidth);
+        sprintf(levelMap, "graph/levels/level%s/map", name);
+        m_levels[showLevel].m_texContainer = TextureContainer::Load(levelMap);
 
-			float minX = std::numeric_limits<float>::max();
-			float maxX = std::numeric_limits<float>::min();
-			float minY = std::numeric_limits<float>::max();
-			float maxY = std::numeric_limits<float>::min();
-			
-			EERIEPOLY *ep = NULL;
-			EERIE_BKG_INFO *eg = NULL;
+        if(m_levels[showLevel].m_texContainer) { // 4 pix/meter
 
-			for(int j = 0; j < ACTIVEBKG->Zsize; j++) {
-				for(int i = 0; i < ACTIVEBKG->Xsize; i++) {
-                    
-					eg = &ACTIVEBKG->Backg[i+j*ACTIVEBKG->Xsize];
+            //TODO-RENDERING: SpecialBorderSurface...
+            //SpecialBorderSurface(m_data[showLevel].m_texContainer, m_data[showLevel].m_texContainer->m_dwWidth, m_data[showLevel].m_texContainer->m_dwHeight);
 
-					for(int k = 0; k < eg->nbpoly; k++) {
-                        
-						ep = &eg->polydata[k];
+            m_levels[showLevel].m_height = static_cast<float>(m_levels[showLevel].m_texContainer->m_dwHeight); 
+            m_levels[showLevel].m_width = static_cast<float>(m_levels[showLevel].m_texContainer->m_dwWidth);
 
-						if(ep) {
-							minX = min(minX, ep->min.x);
-							maxX = max(maxX, ep->max.x);
-							minY = min(minY, ep->min.z);
-							maxY = max(maxY, ep->max.z);
-						}
-					}
-				}
+            float minX = std::numeric_limits<float>::max();
+            float maxX = std::numeric_limits<float>::min();
+            float minY = std::numeric_limits<float>::max();
+            float maxY = std::numeric_limits<float>::min();
 
-				m_mapMaxY[showLevel] = maxY;
-				m_levels[showLevel].m_ratioX = minX;
-				m_levels[showLevel].m_ratioY = minY;
+            EERIEPOLY *ep = NULL;
+            EERIE_BKG_INFO *eg = NULL;
 
-				for(int l = 0; l < MAX_MINIMAP_LEVELS; l++) {
-					m_levels[l].m_offsetX = 0;
-					m_levels[l].m_offsetY = 0;
-				}
-			}
-		}
-	}
+            for(int j = 0; j < ACTIVEBKG->Zsize; j++) {
+                for(int i = 0; i < ACTIVEBKG->Xsize; i++) {
+
+                    eg = &ACTIVEBKG->Backg[i+j*ACTIVEBKG->Xsize];
+
+                    for(int k = 0; k < eg->nbpoly; k++) {
+
+                        ep = &eg->polydata[k];
+
+                        if(ep) {
+                            minX = min(minX, ep->min.x);
+                            maxX = max(maxX, ep->max.x);
+                            minY = min(minY, ep->min.z);
+                            maxY = max(maxY, ep->max.z);
+                        }
+                    }
+                }
+
+                m_mapMaxY[showLevel] = maxY;
+                m_levels[showLevel].m_ratioX = minX;
+                m_levels[showLevel].m_ratioY = minY;
+
+                for(int l = 0; l < MAX_MINIMAP_LEVELS; l++) {
+                    m_levels[l].m_offsetX = 0;
+                    m_levels[l].m_offsetY = 0;
+                }
+            }
+        }
+    }
 }
 
 extern long Book_MapPage;
 
 void MiniMap::validatePos() {
-	
-	int showLevel = ARX_LEVELS_GetRealNum(CURRENTLEVEL); 
 
-	if((showLevel >= 0) && (showLevel < MAX_MINIMAP_LEVELS)) {
-        
-		if(m_levels[showLevel].m_texContainer == NULL) {
-			getData(showLevel);
-		}
+    int showLevel = ARX_LEVELS_GetRealNum(CURRENTLEVEL); 
 
-		if(m_levels[CURRENTLEVEL].m_texContainer == NULL){
-			getData(CURRENTLEVEL);
-		}
+    if((showLevel >= 0) && (showLevel < MAX_MINIMAP_LEVELS)) {
 
-		if(m_levels[showLevel].m_texContainer) {
-			revealPlayerPos(ARX_LEVELS_GetRealNum(CURRENTLEVEL));
-		}
-	}
+        if(m_levels[showLevel].m_texContainer == NULL) {
+            getData(showLevel);
+        }
+
+        if(m_levels[CURRENTLEVEL].m_texContainer == NULL){
+            getData(CURRENTLEVEL);
+        }
+
+        if(m_levels[showLevel].m_texContainer) {
+            revealPlayerPos(ARX_LEVELS_GetRealNum(CURRENTLEVEL));
+        }
+    }
 }
 
 void MiniMap::validatePlayerPos() {
-    
-	if(BLOCK_PLAYER_CONTROLS) {
+
+    if(BLOCK_PLAYER_CONTROLS) {
         return;
-	}
+    }
 
-	float req;
+    float req;
 
-	if((player.Interface & INTER_MAP) && (!(player.Interface & INTER_COMBATMODE)) && (Book_Mode == BOOKMODE_MINIMAP)) {
-		req = 20.f;
-	}
-	else {
+    if((player.Interface & INTER_MAP) && (!(player.Interface & INTER_COMBATMODE)) && (Book_Mode == BOOKMODE_MINIMAP)) {
+        req = 20.f;
+    }
+    else {
         req = 80.f;
-	}
+    }
 
-	if(fartherThan(Vec2f(m_playerLastPosX, m_playerLastPosZ), Vec2f(player.pos.x, player.pos.z), req)) {
-		m_playerLastPosX = player.pos.x;
-		m_playerLastPosZ = player.pos.z;
-		validatePos();
-	}
+    if(fartherThan(Vec2f(m_playerLastPosX, m_playerLastPosZ), Vec2f(player.pos.x, player.pos.z), req)) {
+        m_playerLastPosX = player.pos.x;
+        m_playerLastPosZ = player.pos.z;
+        validatePos();
+    }
 }
 
 void MiniMap::loadOffsets() {
-    
-	std::string iniMiniOffsets = "graph/levels/mini_offsets.ini";
-	
-	PakFile *file = resources->getFile(iniMiniOffsets.c_str());
-	
-	if(!file) {
-		LogError << "Missing " << iniMiniOffsets;
-		return;
-	}
-	
-	size_t fileSize = file->size();
-	char *dat = new char[fileSize + 2];
-	dat[fileSize + 1] = '\0';
-	//dat[fileSize] = dat[fileSize + 1]; // TODO remove
-	
-	file->read(dat);
-	
-	if(dat) {
-        
-		size_t pos = 0;
-        
-		for(int i = 0; i < 29; i++) { // Why 29?
-            
+
+    std::string iniMiniOffsets = "graph/levels/mini_offsets.ini";
+
+    PakFile *file = resources->getFile(iniMiniOffsets.c_str());
+
+    if(!file) {
+        LogError << "Missing " << iniMiniOffsets;
+        return;
+    }
+
+    size_t fileSize = file->size();
+    char *dat = new char[fileSize + 2];
+    dat[fileSize + 1] = '\0';
+    //dat[fileSize] = dat[fileSize + 1]; // TODO remove
+
+    file->read(dat);
+
+    if(dat) {
+
+        size_t pos = 0;
+
+        for(int i = 0; i < 29; i++) { // Why 29?
+
             char t[512];
             int nRead = sscanf(dat + pos, "%s %f %f", t, &m_miniOffsetX[i], &m_miniOffsetY[i]);
-        
+
             if(nRead != 3) {
                 LogError << "Error parsing line " << i << " of mini_offsets.ini: read " << nRead;
             }
-            
+
             while((pos < fileSize) && (dat[pos] != '\n')) {
                 pos++;
             }
-            
+
             pos++;
-            
+
             if(pos >= fileSize) {
                 break;
             }
-		}
-		
-		delete[] dat;
-	}
+        }
 
-	m_miniOffsetX[0] = 0;
-	m_miniOffsetY[0] = -0.5;
-	m_miniOffsetX[1] = 0;
-	m_miniOffsetY[1] = 0;
-	m_miniOffsetX[14] = 130;
-	m_miniOffsetY[14] = 0;
-	m_miniOffsetX[15] = 31;
-	m_miniOffsetY[15] = -3.5;
+        delete[] dat;
+    }
+
+    m_miniOffsetX[0] = 0;
+    m_miniOffsetY[0] = -0.5;
+    m_miniOffsetX[1] = 0;
+    m_miniOffsetY[1] = 0;
+    m_miniOffsetX[14] = 130;
+    m_miniOffsetY[14] = 0;
+    m_miniOffsetX[15] = 31;
+    m_miniOffsetY[15] = -3.5;
 }
 
 void MiniMap::reveal() {
-    
-	for(int d = 0; d < MAX_MINIMAP_LEVELS; d++) {
-		for(int j = 0; j < MINIMAP_MAX_Z; j++) {
-			for(int i = 0; i < MINIMAP_MAX_X; i++) {
-				m_levels[d].m_revealed[i][j] = 255;
-			}
-		}
-	}
+
+    for(int d = 0; d < MAX_MINIMAP_LEVELS; d++) {
+        for(int j = 0; j < MINIMAP_MAX_Z; j++) {
+            for(int i = 0; i < MINIMAP_MAX_X; i++) {
+                m_levels[d].m_revealed[i][j] = 255;
+            }
+        }
+    }
 }
 
 void MiniMap::firstInit() {
-    
+
     m_pTexDetect = NULL;
     m_mapMarkerTexCont = NULL;
-    
+
     m_playerLastPosX = -999999.f;
     m_playerLastPosZ = -999999.f;
-    
-    resetLevels();
-    
-	for(int i = 0; i < MAX_MINIMAP_LEVELS; i++) {
-		m_miniOffsetX[i] = 0;
-		m_miniOffsetY[i] = 0;
-	}
 
-	loadOffsets();
+    m_modX = (float)MAX_BKGX / (float)MINIMAP_MAX_X;
+    m_modZ = (float)MAX_BKGZ / (float)MINIMAP_MAX_Z;
+
+    resetLevels();
+
+    for(int i = 0; i < MAX_MINIMAP_LEVELS; i++) {
+        m_miniOffsetX[i] = 0;
+        m_miniOffsetY[i] = 0;
+    }
+
+    loadOffsets();
 }
 
 void MiniMap::resetLevels() {
-    
+
     for(int i = 0; i < MAX_MINIMAP_LEVELS; i++) {
-        
+
         m_levels[i].m_texContainer = NULL;
         m_levels[i].m_offsetX = 0.f;
         m_levels[i].m_offsetY = 0.f;
@@ -270,36 +273,32 @@ void MiniMap::resetLevels() {
         m_levels[i].m_width = 0.f;
         m_levels[i].m_height = 0.f;
         memset(m_levels[i].m_revealed, 0, sizeof(m_levels[i].m_revealed[0][0] * MINIMAP_MAX_X * MINIMAP_MAX_Z)); // Sets the whole array to 0
-	}
+    }
 }
 
 void MiniMap::reset() {
-    
-	purgeTexContainer();
-	resetLevels();
+
+    purgeTexContainer();
+    resetLevels();
 }
 
 void MiniMap::purgeTexContainer() {
-    
-	for(int i = 0; i < MAX_MINIMAP_LEVELS; i++) {
-        
-		delete m_levels[i].m_texContainer;
-		m_levels[i].m_texContainer = NULL;
-	}
+
+    for(int i = 0; i < MAX_MINIMAP_LEVELS; i++) {
+
+        delete m_levels[i].m_texContainer;
+        m_levels[i].m_texContainer = NULL;
+    }
 }
 
 void MiniMap::showPlayerMiniMap(int showLevel) {
-	
-    const float miniMapSize = 300.f; // size of the minimap
+
+    const float miniMapZoom = 300.f; // zoom of the minimap
     const Rect miniMapRect(390, 135, 590, 295); // minimap rect on a 640*480 screen
     const float playerSize = 4.f; // red arrow size
 
     const float decalY = -150;
     const float decalX = +40;
-
-    if(!m_pTexDetect) {
-        m_pTexDetect = TextureContainer::Load("graph/particles/flare");
-    }
 
     // First Load Minimap TC & DATA if needed
     if(m_levels[showLevel].m_texContainer == NULL) {
@@ -309,32 +308,111 @@ void MiniMap::showPlayerMiniMap(int showLevel) {
     if(m_levels[showLevel].m_texContainer) {
 
         GRenderer->SetRenderState(Renderer::DepthTest, false);
-        
-        float modX = (float)MAX_BKGX / (float)MINIMAP_MAX_X;
-        float modZ = (float)MAX_BKGZ / (float)MINIMAP_MAX_Z;
-        float caseX = miniMapSize / (float)MINIMAP_MAX_X;
-        float caseY = miniMapSize / (float)MINIMAP_MAX_Z;
-        float ratio = miniMapSize / 250.f;
 
-        // Computes playerpos
-        float ofx = m_miniOffsetX[CURRENTLEVEL];
-        float ofx2 = m_levels[showLevel].m_ratioX;
-        float ofy = m_miniOffsetY[CURRENTLEVEL];
-        float ofy2 = m_levels[showLevel].m_ratioY;
+        float startX = 0.f;
+        float startY = 0.f;
 
-        float px = ((player.pos.x + ofx - ofx2) * ( 1.0f / 100 ) * caseX
-        + m_miniOffsetX[CURRENTLEVEL] * ratio * modX) / modX;
-        float py = ((m_mapMaxY[showLevel] - ofy - ofy2) * ( 1.0f / 100 ) * caseY
-        - (player.pos.z + ofy - ofy2) * ( 1.0f / 100 ) * caseY + m_miniOffsetY[CURRENTLEVEL] * ratio * modZ) / modZ;
+        Vec2f playerPos(0.f, 0.f);
 
-        float startX = 490.f - px;
-        float startY = 220.f - py;
-        px += startX;
-        py += startY;
+        if((showLevel == ARX_LEVELS_GetRealNum(CURRENTLEVEL))) {
+
+            playerPos = computePlayerPos(miniMapZoom);
+            startX = 490.f - playerPos.x;
+            startY = 220.f - playerPos.y;
+            playerPos.x += startX;
+            playerPos.y += startY;
+        }
+
+        // Draw the background
+        drawBackground(showLevel, Rect(360, 85, 555, 355), startX, startY, miniMapZoom, 20.f, decalX, decalY, true, 0.5f);
+
+        GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
+
+        // Draw the player (red arrow)
+        if(showLevel == ARX_LEVELS_GetRealNum(CURRENTLEVEL)) {
+            drawPlayer(playerSize, playerPos.x + decalX, playerPos.y + decalY, true);
+        }
+
+        drawDetectedEntities(showLevel, startX, startY, miniMapZoom);
+    }
+}
+
+void MiniMap::showBookMiniMap(int showLevel) {
+
+    // First Load Minimap TC & DATA if needed
+    if(m_levels[showLevel].m_texContainer == NULL) {
+        getData(showLevel);
+    }
+
+    if(m_levels[showLevel].m_texContainer) {
+
+        GRenderer->SetRenderState(Renderer::DepthTest, false);
+
+        float zoom = 900.f;
+        float startX = 0.f;
+        float startY = 0.f;
+
+        Vec2f playerPos(0.f, 0.f);
+
+        if((showLevel == ARX_LEVELS_GetRealNum(CURRENTLEVEL))) {
+
+            playerPos = computePlayerPos(zoom);
+            startX = 490.f - playerPos.x;
+            startY = 220.f - playerPos.y;
+            playerPos.x += startX;
+            playerPos.y += startY;
+        }
+
+        drawBackground(showLevel, Rect(360, 85, 555, 355), startX, startY, zoom, 20.f);
+
+        GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
+
+        if(showLevel == ARX_LEVELS_GetRealNum(CURRENTLEVEL)) {
+            drawPlayer(6.f, playerPos.x, playerPos.y);
+        }
+
+        // tsu
+        drawDetectedEntities(showLevel, startX, startY, zoom);
+    }
+}
+
+void MiniMap::showBookEntireMap(int showLevel) {
+
+    // First Load Minimap TC & DATA if needed
+    if(m_levels[showLevel].m_texContainer == NULL) {
+        getData(showLevel);
+    }
+
+    if(m_levels[showLevel].m_texContainer) {
+
+        GRenderer->SetRenderState(Renderer::DepthTest, false);
+
+        float zoom = 250.f;
+        float startX = 140.f;
+        float startY = 120.f;
+
+        Vec2f playerPos(0.f, 0.f);
+
+        if(showLevel == ARX_LEVELS_GetRealNum(CURRENTLEVEL)) {
+
+            playerPos = computePlayerPos(zoom);
+            playerPos.x += startX;
+            playerPos.y += startY;
+        }
+
+        drawBackground(showLevel, Rect(0, 0, 345, 290), startX, startY, 250.f);
+
+        GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
+
+        if(showLevel == ARX_LEVELS_GetRealNum(CURRENTLEVEL)) {
+            drawPlayer(3.f, playerPos.x, playerPos.y);
+        }
+
+        // tsu
+        drawDetectedEntities(showLevel, startX, startY, 250.f);
+
 
         TexturedVertex verts[4];
-        GRenderer->SetTexture(0, m_levels[showLevel].m_texContainer);
-
         for(int k = 0; k < 4; k++) {
 
             verts[k].color = 0xFFFFFFFF;
@@ -342,722 +420,13 @@ void MiniMap::showPlayerMiniMap(int showLevel) {
             verts[k].p.z = 0.00001f;
         }
 
-        float div = (1.0f / 25);
-        TextureContainer * tc = m_levels[showLevel].m_texContainer;
-        float dw = 1.f / tc->m_pTexture->getStoredSize().x; 
-        float dh = 1.f / tc->m_pTexture->getStoredSize().y;
-
-        float vx2 = 4.f * dw * modX;
-        float vy2 = 4.f * dh * modZ;
-
-        Rect boundaries(0, 0, 0, 0);
-        float blur = 20.f;
-        float blurDiv = 1.f/blur;
-
-        boundaries.left = checked_range_cast<Rect::Num>((miniMapRect.left + blur) * Xratio);
-        boundaries.right = checked_range_cast<Rect::Num>((miniMapRect.right - blur) * Xratio);
-        boundaries.top = checked_range_cast<Rect::Num>((miniMapRect.top + blur) * Yratio);
-        boundaries.bottom = checked_range_cast<Rect::Num>((miniMapRect.bottom - blur) * Yratio);
-
-        GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-        GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
-        GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
-
-        GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendInvSrcColor);
-
-        for(int j = -2; j < MINIMAP_MAX_Z + 2; j++) {
-            for(int i = -2; i < MINIMAP_MAX_X + 2; i++) {
-
-                float vx, vy, vxx, vyy;
-                vxx = ((float)i * (float)ACTIVEBKG->Xdiv * modX);
-                vyy = ((float)j * (float)ACTIVEBKG->Zdiv * modZ);
-                vx = (vxx * div) * dw;
-                vy = (vyy * div) * dh;
-
-                bool inBounds = 1;
-                float posx = (startX + i * caseX) * Xratio;
-                float posy = (startY + j * caseY) * Yratio;
-
-                inBounds = true;
-
-                if((posx < miniMapRect.left * Xratio)
-                ||	(posx > miniMapRect.right * Xratio)
-                ||	(posy < miniMapRect.top * Yratio)
-                ||	(posy > miniMapRect.bottom * Yratio)) {
-                    inBounds = false;
-                }
-
-                if(inBounds) {
-
-                    verts[3].p.x = verts[0].p.x = (posx);
-                    verts[1].p.y = verts[0].p.y = (posy);
-                    verts[2].p.x = verts[1].p.x = posx + (caseX * Xratio);
-                    verts[3].p.y = verts[2].p.y = posy + (caseY * Yratio);
-
-                    verts[3].uv.x = verts[0].uv.x = vx;
-                    verts[1].uv.y = verts[0].uv.y = vy;
-                    verts[2].uv.x = verts[1].uv.x = vx + vx2;
-                    verts[3].uv.y = verts[2].uv.y = vy + vy2;
-
-
-                    float v;
-                    float oo = 0.f;
-
-                    for(int vert = 0; vert < 4; vert++) {
-                        
-                        // Array offset according to "vert"
-                        int iOffset = 0;
-                        int jOffset = 0;
-                        
-                        if(vert == 1 || vert == 2)
-                            iOffset = 1;
-                        if(vert == 2 || vert == 3)
-                            jOffset = 1;
-                        
-                        if((i + iOffset < 0) || (i + iOffset >= MINIMAP_MAX_X) || (j + jOffset < 0) || (j + jOffset >= MINIMAP_MAX_Z)) {
-                            v = 0;
-                        }
-                        else {
-                            v = ((float)m_levels[showLevel].m_revealed[min(i+iOffset, MINIMAP_MAX_X-iOffset)][min(j+jOffset, MINIMAP_MAX_Z-jOffset)]) * (1.0f / 255);
-                        }
-                        
-                        float _px = verts[vert].p.x - boundaries.left;
-
-                        if(_px < 0.f) {
-                            v = 0.f;
-                        }
-                        else if(_px < blur) {
-                            v *= _px * blurDiv;
-                        }
-
-                        _px = boundaries.right - verts[vert].p.x;
-
-                        if(_px < 0.f) {
-                            v = 0.f;
-                        }
-                        else if(_px < blur) {
-                            v *= _px * blurDiv;
-                        }
-
-                        _px = verts[vert].p.y - boundaries.top;
-
-                        if(_px < 0.f) {
-                            v = 0.f;
-                        }
-                        else if(_px < blur) {
-                            v *= _px * blurDiv;
-                        }
-
-                        _px = boundaries.bottom - verts[vert].p.y;
-
-                        if(_px < 0.f) {
-                            v = 0.f;
-                        }
-                        else if(_px < blur) {
-                            v *= _px * blurDiv;
-                        }
-
-                        verts[vert].color = Color::gray(v * (1.f/2.f)).toBGR();
-
-                        oo += v;
-                    }
-
-                    if(oo > 0.f) {
-
-                        verts[0].p.x += decalX * Xratio;
-                        verts[0].p.y += decalY * Yratio;
-                        verts[1].p.x += decalX * Xratio;
-                        verts[1].p.y += decalY * Yratio;
-                        verts[2].p.x += decalX * Xratio;
-                        verts[2].p.y += decalY * Yratio;
-                        verts[3].p.x += decalX * Xratio;
-                        verts[3].p.y += decalY * Yratio;
-
-                        EERIEDRAWPRIM(Renderer::TriangleFan, verts, 4);
-                    }
-                }
-            }
-        }
-
-        GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
-        GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-
-        if(showLevel == ARX_LEVELS_GetRealNum(CURRENTLEVEL)) {
-
-            // Now Draws Playerpos/angle
-            verts[0].color = 0xFFFF0000;
-            verts[1].color = 0xFFFF0000;
-            verts[2].color = 0xFFFF0000;
-            
-            float rx = 0.f;
-            float ry = -playerSize * 1.8f;
-            float rx2 = -playerSize * (1.0f / 2);
-            float ry2 = playerSize;
-            float rx3 = playerSize * (1.0f / 2);
-            float ry3 = playerSize;
-
-            float angle = radians(player.angle.b);
-            float ca = EEcos(angle);
-            float sa = EEsin(angle);
-
-            verts[0].p.x = (px + rx2 * ca + ry2 * sa) * Xratio;
-            verts[0].p.y = (py + ry2 * ca - rx2 * sa) * Yratio;
-            verts[1].p.x = (px + rx * ca + ry * sa) * Xratio;
-            verts[1].p.y = (py + ry * ca - rx * sa) * Yratio;
-            verts[2].p.x = (px + rx3 * ca + ry3 * sa) * Xratio;
-            verts[2].p.y = (py + ry3 * ca - rx3 * sa) * Yratio;
-
-            GRenderer->ResetTexture(0);
-
-            GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-            verts[0].p.x += decalX * Xratio;
-            verts[0].p.y += decalY * Yratio;
-            verts[1].p.x += decalX * Xratio;
-            verts[1].p.y += decalY * Yratio;
-            verts[2].p.x += decalX * Xratio;
-            verts[2].p.y += decalY * Yratio;
-
-            EERIEDRAWPRIM(Renderer::TriangleFan, verts);
-
-            GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-        }
-
-        // tsu
-        for(size_t lnpc = 1; lnpc < entities.size(); lnpc++) {
-            if((entities[lnpc] != NULL) && (entities[lnpc]->ioflags & IO_NPC)) {
-                if(entities[lnpc]->_npcdata->life > 0.f) {
-                    if (!((entities[lnpc]->gameFlags & GFLAG_MEGAHIDE) || (entities[lnpc]->show == SHOW_FLAG_MEGAHIDE))
-                        && (entities[lnpc]->show == SHOW_FLAG_IN_SCENE)) {
-                        if (!(entities[lnpc]->show == SHOW_FLAG_HIDDEN)) {
-                            if(entities[lnpc]->_npcdata->fDetect >= 0) {
-                                if(player.Full_Skill_Etheral_Link >= entities[lnpc]->_npcdata->fDetect) {
-
-                                    float fpx = startX + ((entities[lnpc]->pos.x - 100 + ofx - ofx2) * ( 1.0f / 100 ) * caseX
-                                    + m_miniOffsetX[CURRENTLEVEL] * ratio * modX) / modX; 
-                                    float fpy = startY + ((m_mapMaxY[showLevel] - ofy - ofy2) * ( 1.0f / 100 ) * caseY
-                                    - (entities[lnpc]->pos.z + 200 + ofy - ofy2) * ( 1.0f / 100 ) * caseY + m_miniOffsetY[CURRENTLEVEL] * ratio * modZ) / modZ;
-
-                                    float d = fdist(Vec2f(player.pos.x, player.pos.z), Vec2f(entities[lnpc]->pos.x, entities[lnpc]->pos.z));
-
-                                    if((d <= 800) && (fabs(entities.player()->pos.y - entities[lnpc]->pos.y) < 250.f)) {
-
-                                        float col = 1.f;
-
-                                        if(d > 600.f) {
-                                            col = 1.f - (d - 600.f) * ( 1.0f / 200 );
-                                        }
-
-                                        GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-
-                                        fpx += decalX * Xratio;
-                                        fpy += (decalY + 15) * Yratio;
-
-                                        fpx *= Xratio;
-                                        fpy *= Yratio;
-                                        EERIEDrawBitmap(fpx, fpy, 5.f * ratio, 5.f * ratio, 0, m_pTexDetect,
-                                        Color3f(col, 0, 0).to<u8>());
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-
-void MiniMap::showBookMiniMap(int showLevel) {
-	
-	if(!m_pTexDetect) {
-		m_pTexDetect = TextureContainer::Load("graph/particles/flare");
-	}
-	
-	// First Load Minimap TC & DATA if needed
-	if(m_levels[showLevel].m_texContainer == NULL) {
-		getData(showLevel);
-	}
-
-	if(m_levels[showLevel].m_texContainer) {
-		
-		GRenderer->SetRenderState(Renderer::DepthTest, false);
-		
-		float modX = (float)MAX_BKGX / (float)MINIMAP_MAX_X;
-		float modZ = (float)MAX_BKGZ / (float)MINIMAP_MAX_Z;
- 
-        float startX = 0.f;
-        float startY = 0.f;
-        float caseX = 900.f / ((float)MINIMAP_MAX_X);
-        float caseY = 900.f / ((float)MINIMAP_MAX_Z);
-        float ratio = 900.f / 250.f;
-
-		float px = 0.f;
-		float py = 0.f;
-        
-        // Computes playerpos
-		float ofx	= m_miniOffsetX[CURRENTLEVEL];
-		float ofx2 = m_levels[showLevel].m_ratioX;
-		float ofy	= m_miniOffsetY[CURRENTLEVEL];
-		float ofy2 = m_levels[showLevel].m_ratioY;
-
-		if((showLevel == ARX_LEVELS_GetRealNum(CURRENTLEVEL))) {
-			
-			px = ((player.pos.x + ofx - ofx2) * ( 1.0f / 100 ) * caseX
-			               + m_miniOffsetX[CURRENTLEVEL] * ratio * modX) / modX ; //( 1.0f / 100 )*2;
-			py = ((m_mapMaxY[showLevel] - ofy - ofy2) * ( 1.0f / 100 ) * caseY
-			               - (player.pos.z + ofy - ofy2) * ( 1.0f / 100 ) * caseY + m_miniOffsetY[CURRENTLEVEL] * ratio * modZ) / modZ ;    //( 1.0f / 100 )*2;
-
-
-            startX = 490.f - px;
-            startY = 220.f - py;
-            px += startX;
-            py += startY;
-		}
-
-		TexturedVertex verts[4];
-		GRenderer->SetTexture(0, m_levels[showLevel].m_texContainer);
-
-		for(int k = 0; k < 4; k++) {
-            
-			verts[k].color = 0xFFFFFFFF;
-			verts[k].rhw = 1;
-			verts[k].p.z = 0.00001f;
-		}
-
-		float div = (1.0f / 25);
-		TextureContainer * tc = m_levels[showLevel].m_texContainer;
-		float dw = 1.f / tc->m_pTexture->getStoredSize().x; 
-		float dh = 1.f / tc->m_pTexture->getStoredSize().y;
-		
-		float vx2 = 4.f * dw * modX;
-		float vy2 = 4.f * dh * modZ;
-		
-		Rect boundaries(0, 0, 0, 0);
-        float blur = 20.f;
-        float blurDiv = 1.f / (blur);
-
-        boundaries.left = checked_range_cast<Rect::Num>((360 + blur) * Xratio);
-        boundaries.right = checked_range_cast<Rect::Num>((555 - blur) * Xratio);
-        boundaries.top = checked_range_cast<Rect::Num>((85 + blur) * Yratio);
-        boundaries.bottom = checked_range_cast<Rect::Num>((355 - blur) * Yratio);
-
-        GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-        GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
-        GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
-
-		for(int j = -2; j < MINIMAP_MAX_Z + 2; j++) {
-			for(int i = -2; i < MINIMAP_MAX_X + 2; i++) {
-                
-				float vxx = ((float)i * (float)ACTIVEBKG->Xdiv * modX);
-				float vyy = ((float)j * (float)ACTIVEBKG->Zdiv * modZ);
-				float vx = (vxx * div) * dw;
-				float vy = (vyy * div) * dh;
-
-				bool inBounds = true;
-				float posx = (startX + i * caseX) * Xratio;
-				float posy = (startY + j * caseY) * Yratio;
-  
-                if((posx < 360 * Xratio)
-                        ||	(posx > 555 * Xratio)
-                        ||	(posy < 85 * Yratio)
-                        ||	(posy > 355 * Yratio)) {
-                    inBounds = false;
-                }
-
-				if(inBounds){
-                    
-					verts[3].p.x = verts[0].p.x = (posx);
-					verts[1].p.y = verts[0].p.y = (posy);
-					verts[2].p.x = verts[1].p.x = posx + (caseX * Xratio);
-					verts[3].p.y = verts[2].p.y = posy + (caseY * Yratio);
-
-					verts[3].uv.x = verts[0].uv.x = vx;
-					verts[1].uv.y = verts[0].uv.y = vy;
-					verts[2].uv.x = verts[1].uv.x = vx + vx2;
-					verts[3].uv.y = verts[2].uv.y = vy + vy2;
-
-                    float v;
-                    float oo = 0.f;
-                    
-                    for(int vert = 0; vert < 4; vert++) {
-                        
-                        // Array offset according to "vert"
-                        int iOffset = 0;
-                        int jOffset = 0;
-                        
-                        if(vert == 1 || vert == 2)
-                            iOffset = 1;
-                        if(vert == 2 || vert == 3)
-                            jOffset = 1;
-                        
-                        if((i + iOffset < 0) || (i + iOffset >= MINIMAP_MAX_X) || (j + jOffset < 0) || (j + jOffset >= MINIMAP_MAX_Z)) {
-                            v = 0;
-                        }
-                        else {
-                            v = ((float)m_levels[showLevel].m_revealed[min(i+iOffset, MINIMAP_MAX_X-iOffset)][min(j+jOffset, MINIMAP_MAX_Z-jOffset)]) * (1.0f / 255);
-                        }
-                        
-                        float _px = verts[vert].p.x - boundaries.left;
-
-                        if(_px < 0.f) {
-                            v = 0.f;
-                        }
-                        else if(_px < blur) {
-                            v *= _px * blurDiv;
-                        }
-
-                        _px = boundaries.right - verts[vert].p.x;
-
-                        if(_px < 0.f) {
-                            v = 0.f;
-                        }
-                        else if(_px < blur) {
-                            v *= _px * blurDiv;
-                        }
-
-                        _px = verts[vert].p.y - boundaries.top;
-
-                        if(_px < 0.f) {
-                            v = 0.f;
-                        }
-                        else if(_px < blur) {
-                            v *= _px * blurDiv;
-                        }
-
-                        _px = boundaries.bottom - verts[vert].p.y;
-
-                        if(_px < 0.f) {
-                            v = 0.f;
-                        }
-                        else if(_px < blur) {
-                            v *= _px * blurDiv;
-                        }
-
-                        verts[vert].color = Color::gray(v).toBGR();
-
-                        oo += v;
-                    }
-                    
-                    if(oo > 0.f) {
-                        EERIEDRAWPRIM(Renderer::TriangleFan, verts, 4);
-                    }
-				}
-			}
-		}
-
-        GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
-        GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-
-        if(showLevel == ARX_LEVELS_GetRealNum(CURRENTLEVEL)) {
-            
-            // Now Draws Playerpos/angle
-            verts[0].color = 0xFFFF0000;
-            verts[1].color = 0xFFFF0000;
-            verts[2].color = 0xFFFF0000;
-            
-            float playerSize = 6.f;
-
-            float rx = 0.f;
-            float ry = -playerSize * 1.8f;
-            float rx2 = -playerSize * (1.0f / 2);
-            float ry2 = playerSize;
-            float rx3 = playerSize * (1.0f / 2);
-            float ry3 = playerSize;
-
-            float angle = radians(player.angle.b);
-            float ca = EEcos(angle);
-            float sa = EEsin(angle);
-
-            verts[0].p.x = (px + rx2 * ca + ry2 * sa) * Xratio;
-            verts[0].p.y = (py + ry2 * ca - rx2 * sa) * Yratio;
-            verts[1].p.x = (px + rx * ca + ry * sa) * Xratio;
-            verts[1].p.y = (py + ry * ca - rx * sa) * Yratio;
-            verts[2].p.x = (px + rx3 * ca + ry3 * sa) * Xratio;
-            verts[2].p.y = (py + ry3 * ca - rx3 * sa) * Yratio;
-
-            GRenderer->ResetTexture(0);
-
-            EERIEDRAWPRIM(Renderer::TriangleFan, verts);
-        }
-
-		// tsu
-		for(size_t lnpc = 1; lnpc < entities.size(); lnpc++) {
-			if((entities[lnpc] != NULL) && (entities[lnpc]->ioflags & IO_NPC)) {
-				if(entities[lnpc]->_npcdata->life > 0.f) {
-					if (!((entities[lnpc]->gameFlags & GFLAG_MEGAHIDE) || (entities[lnpc]->show == SHOW_FLAG_MEGAHIDE))
-							&& (entities[lnpc]->show == SHOW_FLAG_IN_SCENE)) {
-						if (!(entities[lnpc]->show == SHOW_FLAG_HIDDEN)) {
-							if(entities[lnpc]->_npcdata->fDetect >= 0) {
-								if(player.Full_Skill_Etheral_Link >= entities[lnpc]->_npcdata->fDetect) {
-                                    
-                                    float fpx = startX + ((entities[lnpc]->pos.x - 100 + ofx - ofx2) * ( 1.0f / 100 ) * caseX
-                                                    + m_miniOffsetX[CURRENTLEVEL] * ratio * modX) / modX; 
-                                    float fpy = startY + ((m_mapMaxY[showLevel] - ofy - ofy2) * ( 1.0f / 100 ) * caseY
-                                                    - (entities[lnpc]->pos.z + 200 + ofy - ofy2) * ( 1.0f / 100 ) * caseY + m_miniOffsetY[CURRENTLEVEL] * ratio * modZ) / modZ;
-
-									float d = fdist(Vec2f(player.pos.x, player.pos.z), Vec2f(entities[lnpc]->pos.x, entities[lnpc]->pos.z));
-
-									if((d <= 800) && (fabs(entities.player()->pos.y - entities[lnpc]->pos.y) < 250.f)) {
-                                        
-										float col = 1.f;
-
-										if(d > 600.f) {
-											col = 1.f - (d - 600.f) * ( 1.0f / 200 );
-										}
-
-                                        GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-                                        GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-
-										fpx *= Xratio;
-										fpy *= Yratio;
-										EERIEDrawBitmap(fpx, fpy, 5.f * ratio, 5.f * ratio, 0, m_pTexDetect,
-										                Color3f(col, 0, 0).to<u8>());
-
-                                        GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-									}
-								}
-							}
-						}
-                    }
-                }
-			}
-		}
-	}
-}
-
-void MiniMap::showBookEntireMap(int showLevel) {
-	
-	if(!m_pTexDetect) {
-		m_pTexDetect = TextureContainer::Load("graph/particles/flare");
-	}
-	
-	// First Load Minimap TC & DATA if needed
-	if(m_levels[showLevel].m_texContainer == NULL) {
-		getData(showLevel);
-	}
-
-	if(m_levels[showLevel].m_texContainer) {
-		
-		GRenderer->SetRenderState(Renderer::DepthTest, false);
-		
-		float modX = (float)MAX_BKGX / (float)MINIMAP_MAX_X;
-		float modZ = (float)MAX_BKGZ / (float)MINIMAP_MAX_Z;
-
-        float startX = 140.f;
-        float startY = 120.f;
         float caseX = 250.f / ((float)MINIMAP_MAX_X);
         float caseY = 250.f / ((float)MINIMAP_MAX_Z);
         float ratio = 1.f;
 
-		float sstartx = startX;
-		float sstarty = startY;
-		
-		float px = 0.f;
-		float py = 0.f;
-        
-        // Computes playerpos
-		float ofx	= m_miniOffsetX[CURRENTLEVEL];
-		float ofx2 = m_levels[showLevel].m_ratioX;
-		float ofy	= m_miniOffsetY[CURRENTLEVEL];
-		float ofy2 = m_levels[showLevel].m_ratioY;
-
-		if((showLevel == ARX_LEVELS_GetRealNum(CURRENTLEVEL))) {
-
-			px = startX + ((player.pos.x + ofx - ofx2) * ( 1.0f / 100 ) * caseX
-			               + m_miniOffsetX[CURRENTLEVEL] * ratio * modX) / modX ; //( 1.0f / 100 )*2;
-			py = startY + ((m_mapMaxY[showLevel] - ofy - ofy2) * ( 1.0f / 100 ) * caseY
-			               - (player.pos.z + ofy - ofy2) * ( 1.0f / 100 ) * caseY + m_miniOffsetY[CURRENTLEVEL] * ratio * modZ) / modZ ;    //( 1.0f / 100 )*2;
-		}
-
-		TexturedVertex verts[4];
-		GRenderer->SetTexture(0, m_levels[showLevel].m_texContainer);
-
-		for(int k = 0; k < 4; k++) {
-            
-			verts[k].color = 0xFFFFFFFF;
-			verts[k].rhw = 1;
-			verts[k].p.z = 0.00001f;
-		}
-
-		float div = (1.0f / 25);
-		TextureContainer * tc = m_levels[showLevel].m_texContainer;
-		float dw = 1.f / tc->m_pTexture->getStoredSize().x; 
-		float dh = 1.f / tc->m_pTexture->getStoredSize().y;
-		
-		float vx2 = 4.f * dw * modX;
-		float vy2 = 4.f * dh * modZ;
-
-		Rect boundaries(0, 0, 0, 0);
-		
-        GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-        GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
-        GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
-
-		for(int j = -2; j < MINIMAP_MAX_Z + 2; j++) {
-			for(int i = -2; i < MINIMAP_MAX_X + 2; i++) {
-                
-				float vxx = ((float)i * (float)ACTIVEBKG->Xdiv * modX);
-				float vyy = ((float)j * (float)ACTIVEBKG->Zdiv * modZ);
-				float vx = (vxx * div) * dw;
-				float vy = (vyy * div) * dh;
-
-				bool inBounds = true;
-				float posx = (startX + i * caseX) * Xratio;
-				float posy = (startY + j * caseY) * Yratio;
-
-                if((posx > 345 * Xratio) ||	(posy > 290 * Yratio)) {
-                    inBounds = false;
-                }
-
-				if(inBounds){
-
-					verts[3].p.x = verts[0].p.x = (posx);
-					verts[1].p.y = verts[0].p.y = (posy);
-					verts[2].p.x = verts[1].p.x = posx + (caseX * Xratio);
-					verts[3].p.y = verts[2].p.y = posy + (caseY * Yratio);
-
-					verts[3].uv.x = verts[0].uv.x = vx;
-					verts[1].uv.y = verts[0].uv.y = vy;
-					verts[2].uv.x = verts[1].uv.x = vx + vx2;
-					verts[3].uv.y = verts[2].uv.y = vy + vy2;
-
-                    float v;
-                    float oo = 0.f;
-
-                    if((i < 0) || (i >= MINIMAP_MAX_X) || (j < 0) || (j >= MINIMAP_MAX_Z)) {
-                        v = 0;
-                    }
-                    else {
-                        v = ((float)m_levels[showLevel].m_revealed[i][j]) * (1.0f / 255);
-                    }
-
-                    verts[0].color = Color::gray(v).toBGR();
-
-                    oo += v;
-
-                    if((i + 1 < 0) || (i + 1 >= MINIMAP_MAX_X) || (j < 0) || (j >= MINIMAP_MAX_Z)) {
-                        v = 0;
-                    }
-                    
-                    else {
-                        v = ((float)m_levels[showLevel].m_revealed[min((int)i+1, MINIMAP_MAX_X-1)][j]) * (1.0f / 255);
-                    }
-
-                    verts[1].color = Color::gray(v).toBGR();
-
-                    oo += v;
-
-                    if((i + 1 < 0) || (i + 1 >= MINIMAP_MAX_X) || (j + 1 < 0) || (j + 1 >= MINIMAP_MAX_Z)) {
-                        v = 0;
-                    }
-                    else {
-                        v = ((float)m_levels[showLevel].m_revealed[min((int)i+1, MINIMAP_MAX_X-1)][min((int)j+1, MINIMAP_MAX_Z-1)]) * ( 1.0f / 255 );
-                    }
-
-                    verts[2].color = Color::gray(v).toBGR();
-
-                    oo += v;
-
-                    if((i < 0) || (i >= MINIMAP_MAX_X) || (j + 1 < 0) || (j + 1 >= MINIMAP_MAX_Z)) {
-                        v = 0;
-                    }
-                    else {
-                        v = ((float)m_levels[showLevel].m_revealed[i][min((int)j+1, MINIMAP_MAX_Z-1)]) * ( 1.0f / 255 );
-                    }
-
-                    verts[3].color = Color::gray(v).toBGR();
-
-                    oo += v;
-
-                    if(oo > 0.f) {
-
-                        EERIEDRAWPRIM(Renderer::TriangleFan, verts, 4);
-                    }
-				}
-			}
-		}
-		
-        GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
-        GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-
-        if(showLevel == ARX_LEVELS_GetRealNum(CURRENTLEVEL)) {
-            
-            // Now Draws Playerpos/angle
-            verts[0].color = 0xFFFF0000;
-            verts[1].color = 0xFFFF0000;
-            verts[2].color = 0xFFFF0000;
-
-            float playerSize = 3.f;
-
-            float rx = 0.f;
-            float ry = -playerSize * 1.8f;
-            float rx2 = -playerSize * (1.0f / 2);
-            float ry2 = playerSize;
-            float rx3 = playerSize * (1.0f / 2);
-            float ry3 = playerSize;
-
-            float angle = radians(player.angle.b);
-            float ca = EEcos(angle);
-            float sa = EEsin(angle);
-
-            verts[0].p.x = (px + rx2 * ca + ry2 * sa) * Xratio;
-            verts[0].p.y = (py + ry2 * ca - rx2 * sa) * Yratio;
-            verts[1].p.x = (px + rx * ca + ry * sa) * Xratio;
-            verts[1].p.y = (py + ry * ca - rx * sa) * Yratio;
-            verts[2].p.x = (px + rx3 * ca + ry3 * sa) * Xratio;
-            verts[2].p.y = (py + ry3 * ca - rx3 * sa) * Yratio;
-
-            GRenderer->ResetTexture(0);
-
-            EERIEDRAWPRIM(Renderer::TriangleFan, verts);
-        }
-
-		// tsu
-		for(size_t lnpc = 1; lnpc < entities.size(); lnpc++) {
-			if((entities[lnpc] != NULL) && (entities[lnpc]->ioflags & IO_NPC)) {
-				if(entities[lnpc]->_npcdata->life > 0.f) {
-					if (!((entities[lnpc]->gameFlags & GFLAG_MEGAHIDE) || (entities[lnpc]->show == SHOW_FLAG_MEGAHIDE))
-							&& (entities[lnpc]->show == SHOW_FLAG_IN_SCENE)) {
-						if (!(entities[lnpc]->show == SHOW_FLAG_HIDDEN)) {
-							if(entities[lnpc]->_npcdata->fDetect >= 0) {
-								if(player.Full_Skill_Etheral_Link >= entities[lnpc]->_npcdata->fDetect) {
-                                    
-									float fpx = sstartx + ((entities[lnpc]->pos.x - 100 + ofx - ofx2) * ( 1.0f / 100 ) * caseX
-									                 + m_miniOffsetX[CURRENTLEVEL] * ratio * modX) / modX; 
-									float fpy = sstarty + ((m_mapMaxY[showLevel] - ofy - ofy2) * ( 1.0f / 100 ) * caseY
-									                 - (entities[lnpc]->pos.z + 200 + ofy - ofy2) * ( 1.0f / 100 ) * caseY + m_miniOffsetY[CURRENTLEVEL] * ratio * modZ) / modZ;
-
-									float d = fdist(Vec2f(player.pos.x, player.pos.z), Vec2f(entities[lnpc]->pos.x, entities[lnpc]->pos.z));
-
-									if((d <= 800) && (fabs(entities.player()->pos.y - entities[lnpc]->pos.y) < 250.f)) {
-                                        
-										float col = 1.f;
-
-										if(d > 600.f) {
-											col = 1.f - (d - 600.f) * ( 1.0f / 200 );
-										}
-
-                                        GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-                                        GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-
-										fpx *= Xratio;
-										fpy *= Yratio;
-										EERIEDrawBitmap(fpx, fpy, 5.f * ratio, 5.f * ratio, 0, m_pTexDetect,
-										                Color3f(col, 0, 0).to<u8>());
-
-                                        GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-									}
-								}
-							}
-						}
-                    }
-                }
-			}
-		}
-
         for(size_t i = 0; i < m_mapMarkers.size(); i++) {
             if(m_mapMarkers[i].m_lvl == showLevel + 1) {
-                
+
                 float pos_x = m_mapMarkers[i].m_x * 8 * ratio * ACTIVEBKG->Xmul * caseX + startX;
                 float pos_y = m_mapMarkers[i].m_y * 8 * ratio * ACTIVEBKG->Zmul * caseY + startY;
                 float size = 5.f * ratio;
@@ -1077,10 +446,10 @@ void MiniMap::showBookEntireMap(int showLevel) {
                 verts[1].uv = Vec2f::X_AXIS;
                 verts[2].uv = Vec2f::ONE;
                 verts[3].uv = Vec2f::Y_AXIS;
-                
+
                 if(MouseInRect(verts[0].p.x, verts[0].p.y, verts[2].p.x, verts[2].p.y)) {
                     if(!m_mapMarkers[i].m_text.empty()) {
-                        
+
                         Rect bRect(140, 290, 140 + 205, 358);
 
                         Rect::Num left = checked_range_cast<Rect::Num>((bRect.left) * Xratio);
@@ -1109,30 +478,19 @@ void MiniMap::showBookEntireMap(int showLevel) {
 
 void MiniMap::revealPlayerPos(int showLevel) {
 
-    float modX = (float)MAX_BKGX / (float)MINIMAP_MAX_X;
-    float modZ = (float)MAX_BKGZ / (float)MINIMAP_MAX_Z;
-
+    float zoom = 250.f;
     float startX = 140.f;
     float startY = 120.f;
-    float caseX = 250.f / ((float)MINIMAP_MAX_X);
-    float caseY = 250.f / ((float)MINIMAP_MAX_Z);
-    float ratio = 1.f;
-    
-    // Computes playerpos
-    float ofx	= m_miniOffsetX[CURRENTLEVEL];
-    float ofx2 = m_levels[showLevel].m_ratioX;
-    float ofy = m_miniOffsetY[CURRENTLEVEL];
-    float ofy2 = m_levels[showLevel].m_ratioY;
+    float caseX = zoom / ((float)MINIMAP_MAX_X);
+    float caseY = zoom / ((float)MINIMAP_MAX_Z);
 
-    float px = startX + ((player.pos.x + ofx - ofx2) * ( 1.0f / 100 ) * caseX
-                   + m_miniOffsetX[CURRENTLEVEL] * ratio * modX) / modX;
-    float py = startY + ((m_mapMaxY[showLevel] - ofy - ofy2) * ( 1.0f / 100 ) * caseY
-                   - (player.pos.z + ofy - ofy2) * ( 1.0f / 100 ) * caseY + m_miniOffsetY[CURRENTLEVEL] * ratio * modZ) / modZ;
-    
-    
+    Vec2f playerPos = computePlayerPos(zoom);
+    playerPos.x += startX;
+    playerPos.y += startY;
+
     float divXratio = 1.f / Xratio;
     float divYratio = 1.f / Yratio;
-    
+
     for(int j = -2; j < MINIMAP_MAX_Z + 2; j++) {
         for(int i = -2; i < MINIMAP_MAX_X + 2; i++) {
 
@@ -1145,13 +503,13 @@ void MiniMap::revealPlayerPos(int showLevel) {
             }
 
             if(inBounds){
-                
+
                 if((i >= 0) && (i < MINIMAP_MAX_X) && (j >= 0) && (j < MINIMAP_MAX_Z)) {
-                    
-                    float d = fdist(Vec2f(posx * divXratio + caseX * ( 1.0f / 2 ), posy * divYratio), Vec2f(px, py));
+
+                    float d = fdist(Vec2f(posx * divXratio + caseX * ( 1.0f / 2 ), posy * divYratio), playerPos);
 
                     if(d <= 6.f) {
-                    
+
                         int r;
                         float vv = (6 - d) * ( 1.0f / 6 );
 
@@ -1176,54 +534,331 @@ void MiniMap::revealPlayerPos(int showLevel) {
     }
 }
 
+Vec2f MiniMap::computePlayerPos(float zoom) {
+
+    float caseX = zoom / ((float)MINIMAP_MAX_X);
+    float caseY = zoom / ((float)MINIMAP_MAX_Z);
+    float ratio = zoom / 250.f;
+
+    Vec2f pos(0.f, 0.f);
+
+    float ofx = m_miniOffsetX[CURRENTLEVEL];
+    float ofx2 = m_levels[CURRENTLEVEL].m_ratioX;
+    float ofy = m_miniOffsetY[CURRENTLEVEL];
+    float ofy2 = m_levels[CURRENTLEVEL].m_ratioY;
+
+    pos.x = ((player.pos.x + ofx - ofx2) * ( 1.0f / 100 ) * caseX
+    + m_miniOffsetX[CURRENTLEVEL] * ratio * m_modX) / m_modX;
+    pos.y = ((m_mapMaxY[CURRENTLEVEL] - ofy - ofy2) * ( 1.0f / 100 ) * caseY
+    - (player.pos.z + ofy - ofy2) * ( 1.0f / 100 ) * caseY + m_miniOffsetY[CURRENTLEVEL] * ratio * m_modZ) / m_modZ;
+
+    return pos;
+}
+
+void MiniMap::drawBackground(int showLevel, Rect boundaries, float startX, float startY, float zoom, float fadeBorder, float decalX, float decalY, bool invColor, float alpha) {
+
+    float caseX = zoom / ((float)MINIMAP_MAX_X);
+    float caseY = zoom / ((float)MINIMAP_MAX_Z);
+
+    TexturedVertex verts[4];
+    GRenderer->SetTexture(0, m_levels[showLevel].m_texContainer);
+
+    for(int k = 0; k < 4; k++) {
+
+        verts[k].color = 0xFFFFFFFF;
+        verts[k].rhw = 1;
+        verts[k].p.z = 0.00001f;
+    }
+
+    float div = (1.0f / 25);
+    TextureContainer * tc = m_levels[showLevel].m_texContainer;
+    float dw = 1.f / tc->m_pTexture->getStoredSize().x; 
+    float dh = 1.f / tc->m_pTexture->getStoredSize().y;
+
+    float vx2 = 4.f * dw * m_modX;
+    float vy2 = 4.f * dh * m_modZ;
+
+    float fadeDiv = 0.f;
+    Rect fadeBounds(0, 0, 0, 0);
+
+    if(fadeBorder > 0.f) {
+
+        fadeDiv = 1.f/fadeBorder;
+        fadeBounds.left = checked_range_cast<Rect::Num>((boundaries.left + fadeBorder) * Xratio);
+        fadeBounds.right = checked_range_cast<Rect::Num>((boundaries.right - fadeBorder) * Xratio);
+        fadeBounds.top = checked_range_cast<Rect::Num>((boundaries.top + fadeBorder) * Yratio);
+        fadeBounds.bottom = checked_range_cast<Rect::Num>((boundaries.bottom - fadeBorder) * Yratio);
+    }
+
+    GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+    GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
+    GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
+
+    if(invColor)
+        GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendInvSrcColor);
+
+    for(int j = -2; j < MINIMAP_MAX_Z + 2; j++) {
+        for(int i = -2; i < MINIMAP_MAX_X + 2; i++) {
+
+            float vx, vy, vxx, vyy;
+            vxx = ((float)i * (float)ACTIVEBKG->Xdiv * m_modX);
+            vyy = ((float)j * (float)ACTIVEBKG->Zdiv * m_modZ);
+            vx = (vxx * div) * dw;
+            vy = (vyy * div) * dh;
+
+            bool inBounds = 1;
+            float posx = (startX + i * caseX) * Xratio;
+            float posy = (startY + j * caseY) * Yratio;
+
+            inBounds = true;
+
+            if((posx < boundaries.left * Xratio)
+            ||	(posx > boundaries.right * Xratio)
+            ||	(posy < boundaries.top * Yratio)
+            ||	(posy > boundaries.bottom * Yratio)) {
+                inBounds = false;
+            }
+
+            if(inBounds) {
+
+                verts[3].p.x = verts[0].p.x = (posx);
+                verts[1].p.y = verts[0].p.y = (posy);
+                verts[2].p.x = verts[1].p.x = posx + (caseX * Xratio);
+                verts[3].p.y = verts[2].p.y = posy + (caseY * Yratio);
+
+                verts[3].uv.x = verts[0].uv.x = vx;
+                verts[1].uv.y = verts[0].uv.y = vy;
+                verts[2].uv.x = verts[1].uv.x = vx + vx2;
+                verts[3].uv.y = verts[2].uv.y = vy + vy2;
+
+
+                float v;
+                float oo = 0.f;
+
+                for(int vert = 0; vert < 4; vert++) {
+
+                    // Array offset according to "vert"
+                    int iOffset = 0;
+                    int jOffset = 0;
+
+                    if(vert == 1 || vert == 2)
+                        iOffset = 1;
+                    if(vert == 2 || vert == 3)
+                        jOffset = 1;
+
+                    if((i + iOffset < 0) || (i + iOffset >= MINIMAP_MAX_X) || (j + jOffset < 0) || (j + jOffset >= MINIMAP_MAX_Z)) {
+                        v = 0;
+                    }
+                    else {
+                        v = ((float)m_levels[showLevel].m_revealed[min(i+iOffset, MINIMAP_MAX_X-iOffset)][min(j+jOffset, MINIMAP_MAX_Z-jOffset)]) * (1.0f / 255);
+                    }
+
+                    if(fadeBorder > 0.f) {
+
+                        float _px = verts[vert].p.x - fadeBounds.left;
+
+                        if(_px < 0.f) {
+                            v = 0.f;
+                        }
+                        else if(_px < fadeBorder) {
+                            v *= _px * fadeDiv;
+                        }
+
+                        _px = fadeBounds.right - verts[vert].p.x;
+
+                        if(_px < 0.f) {
+                            v = 0.f;
+                        }
+                        else if(_px < fadeBorder) {
+                            v *= _px * fadeDiv;
+                        }
+
+                        _px = verts[vert].p.y - fadeBounds.top;
+
+                        if(_px < 0.f) {
+                            v = 0.f;
+                        }
+                        else if(_px < fadeBorder) {
+                            v *= _px * fadeDiv;
+                        }
+
+                        _px = fadeBounds.bottom - verts[vert].p.y;
+
+                        if(_px < 0.f) {
+                            v = 0.f;
+                        }
+                        else if(_px < fadeBorder) {
+                            v *= _px * fadeDiv;
+                        }
+                    }
+
+                    verts[vert].color = Color::gray(v * alpha).toBGR();
+
+                    oo += v;
+                }
+
+                if(oo > 0.f) {
+
+                    verts[0].p.x += decalX * Xratio;
+                    verts[0].p.y += decalY * Yratio;
+                    verts[1].p.x += decalX * Xratio;
+                    verts[1].p.y += decalY * Yratio;
+                    verts[2].p.x += decalX * Xratio;
+                    verts[2].p.y += decalY * Yratio;
+                    verts[3].p.x += decalX * Xratio;
+                    verts[3].p.y += decalY * Yratio;
+
+                    EERIEDRAWPRIM(Renderer::TriangleFan, verts, 4);
+                }
+            }
+        }
+    }
+}
+
+void MiniMap::drawPlayer(float playerSize, float playerX, float playerY, bool alphaBlending) {
+
+    TexturedVertex verts[4];
+
+    for(int k = 0; k < 4; k++) {
+
+        verts[k].color = 0xFFFF0000; // red
+        verts[k].rhw = 1;
+        verts[k].p.z = 0.00001f;
+    }
+
+    float rx = 0.f;
+    float ry = -playerSize * 1.8f;
+    float rx2 = -playerSize * (1.0f / 2);
+    float ry2 = playerSize;
+    float rx3 = playerSize * (1.0f / 2);
+    float ry3 = playerSize;
+
+    float angle = radians(player.angle.b);
+    float ca = EEcos(angle);
+    float sa = EEsin(angle);
+
+    verts[0].p.x = (playerX + rx2 * ca + ry2 * sa) * Xratio;
+    verts[0].p.y = (playerY + ry2 * ca - rx2 * sa) * Yratio;
+    verts[1].p.x = (playerX + rx * ca + ry * sa) * Xratio;
+    verts[1].p.y = (playerY + ry * ca - rx * sa) * Yratio;
+    verts[2].p.x = (playerX + rx3 * ca + ry3 * sa) * Xratio;
+    verts[2].p.y = (playerY + ry3 * ca - rx3 * sa) * Yratio;
+
+    GRenderer->ResetTexture(0);
+    GRenderer->SetRenderState(Renderer::AlphaBlending, alphaBlending);
+
+    EERIEDRAWPRIM(Renderer::TriangleFan, verts);
+
+    GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+}
+
+void MiniMap::drawDetectedEntities(int showLevel, float startX, float startY, float zoom) {
+
+    float caseX = zoom / ((float)MINIMAP_MAX_X);
+    float caseY = zoom / ((float)MINIMAP_MAX_Z);
+    float ratio = zoom / 250.f;
+
+    if(!m_pTexDetect) {
+        m_pTexDetect = TextureContainer::Load("graph/particles/flare");
+    }
+
+    // Computes playerpos
+    float ofx = m_miniOffsetX[CURRENTLEVEL];
+    float ofx2 = m_levels[showLevel].m_ratioX;
+    float ofy = m_miniOffsetY[CURRENTLEVEL];
+    float ofy2 = m_levels[showLevel].m_ratioY;
+
+    for(size_t lnpc = 1; lnpc < entities.size(); lnpc++) {
+        if((entities[lnpc] != NULL) && (entities[lnpc]->ioflags & IO_NPC)) {
+            if(entities[lnpc]->_npcdata->life > 0.f) {
+                if (!((entities[lnpc]->gameFlags & GFLAG_MEGAHIDE) || (entities[lnpc]->show == SHOW_FLAG_MEGAHIDE))
+                && (entities[lnpc]->show == SHOW_FLAG_IN_SCENE)) {
+                    if (!(entities[lnpc]->show == SHOW_FLAG_HIDDEN)) {
+                        if(entities[lnpc]->_npcdata->fDetect >= 0) {
+                            if(player.Full_Skill_Etheral_Link >= entities[lnpc]->_npcdata->fDetect) {
+
+                                float fpx = startX + ((entities[lnpc]->pos.x - 100 + ofx - ofx2) * ( 1.0f / 100 ) * caseX
+                                + m_miniOffsetX[CURRENTLEVEL] * ratio * m_modX) / m_modX; 
+                                float fpy = startY + ((m_mapMaxY[showLevel] - ofy - ofy2) * ( 1.0f / 100 ) * caseY
+                                - (entities[lnpc]->pos.z + 200 + ofy - ofy2) * ( 1.0f / 100 ) * caseY + m_miniOffsetY[CURRENTLEVEL] * ratio * m_modZ) / m_modZ;
+
+                                float d = fdist(Vec2f(player.pos.x, player.pos.z), Vec2f(entities[lnpc]->pos.x, entities[lnpc]->pos.z));
+
+                                if((d <= 800) && (fabs(entities.player()->pos.y - entities[lnpc]->pos.y) < 250.f)) {
+
+                                    float col = 1.f;
+
+                                    if(d > 600.f) {
+                                        col = 1.f - (d - 600.f) * ( 1.0f / 200 );
+                                    }
+
+                                    GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+                                    GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+
+                                    fpx *= Xratio;
+                                    fpy *= Yratio;
+                                    EERIEDrawBitmap(fpx, fpy, 5.f * ratio, 5.f * ratio, 0, m_pTexDetect,
+                                    Color3f(col, 0, 0).to<u8>());
+
+                                    GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
 void MiniMap::clearMarkerTexCont() {
     m_mapMarkerTexCont = NULL;
 }
 
 void MiniMap::mapMarkerInit() {
-	m_mapMarkers.clear();
+    m_mapMarkers.clear();
 }
 
 int MiniMap::mapMarkerGetID(const std::string &name) {
-	
-	for(unsigned int i = 0; i < m_mapMarkers.size(); i++) {
-		if(m_mapMarkers[i].m_name == name) {
-			return i;
-		}
-	}
-	
-	return -1;
+
+    for(size_t i = 0; i < m_mapMarkers.size(); i++) {
+        if(m_mapMarkers[i].m_name == name) {
+            return i;
+        }
+    }
+
+    return -1;
 }
 
 void MiniMap::mapMarkerAdd(float x, float y, int lvl, const std::string &name) {
-	
-	int num = mapMarkerGetID(name);
-	
-	if(num >= 0) {
-		// Already exists, update it
-		m_mapMarkers[num].m_lvl = lvl;
-		m_mapMarkers[num].m_x = x;
-		m_mapMarkers[num].m_y = y;
-		return;
-	}
-	
-	// Else, create one
-	MapMarkerData newMMD;
-	newMMD.m_lvl = lvl;
-	newMMD.m_x = x;
-	newMMD.m_y = y;
-	newMMD.m_name = name;
-	newMMD.m_text = getLocalised(name);
-	m_mapMarkers.push_back(newMMD);
+
+    int num = mapMarkerGetID(name);
+
+    if(num >= 0) {
+        // Already exists, update it
+        m_mapMarkers[num].m_lvl = lvl;
+        m_mapMarkers[num].m_x = x;
+        m_mapMarkers[num].m_y = y;
+        return;
+    }
+
+    // Else, create one
+    MapMarkerData newMMD;
+    newMMD.m_lvl = lvl;
+    newMMD.m_x = x;
+    newMMD.m_y = y;
+    newMMD.m_name = name;
+    newMMD.m_text = getLocalised(name);
+    m_mapMarkers.push_back(newMMD);
 }
 
 void MiniMap::mapMarkerRemove(const std::string &name) {
-	
-	int num = mapMarkerGetID(name);
-	
-	if(num < 0) {
-		return; // Doesn't exist
-	}
-	
-	m_mapMarkers.erase(m_mapMarkers.begin() + num);
+
+    int num = mapMarkerGetID(name);
+
+    if(num < 0) {
+        return; // Doesn't exist
+    }
+
+    m_mapMarkers.erase(m_mapMarkers.begin() + num);
 }
