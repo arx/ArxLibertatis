@@ -653,9 +653,7 @@ void PrepareIOTreatZone(long flag)
 		            ||	(io->show == SHOW_FLAG_ON_PLAYER)
 		            ||	(io->show == SHOW_FLAG_HIDDEN)))   // show 5 = ininventory; 15 = destroyed
 		{
-			if((io->ioflags & IO_CAMERA)
-			        ||	(io->ioflags & IO_ITEM)
-			        ||	(io->ioflags & IO_MARKER))
+			if(io->ioflags & (IO_CAMERA | IO_ITEM | IO_MARKER))
 				continue;
 
 			long toadd = 0;
