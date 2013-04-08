@@ -973,9 +973,9 @@ void ARX_DAMAGES_UpdateDamage(long j, float tim) {
 	
 	Vec3f sub;
 
-	if (damages[j].exist)
-	{
-		if (!damages[j].active) return;
+	if(damages[j].exist) {
+		if(!damages[j].active)
+			return;
 		
 		if(damages[j].flags & DAMAGE_FLAG_FOLLOW_SOURCE) {
 			if(damages[j].source == 0) {
@@ -988,12 +988,13 @@ void ARX_DAMAGES_UpdateDamage(long j, float tim) {
 		float dmg;
 		if (damages[j].flags & DAMAGE_NOT_FRAME_DEPENDANT)
 			dmg = damages[j].damages;
-		else if (damages[j].duration == -1) dmg = damages[j].damages;
+		else if(damages[j].duration == -1)
+			dmg = damages[j].damages;
 		else
 		{
 			float FD = (float)framedelay;
 
-			if (tim > damages[j].start_time + damages[j].duration)
+			if(tim > damages[j].start_time + damages[j].duration)
 				FD -= damages[j].start_time + damages[j].duration - tim;
 
 			dmg = damages[j].damages * FD * ( 1.0f / 1000 );
@@ -1015,8 +1016,7 @@ void ARX_DAMAGES_UpdateDamage(long j, float tim) {
 			                && (!(damages[j].flags & DAMAGE_FLAG_DONT_HURT_SOURCE))))
 			   )
 			{
-				if (io->ioflags & IO_NPC) 
-				{
+				if(io->ioflags & IO_NPC) {
 					if ((i != 0) && (damages[j].source != 0)
 					        && validsource && (HaveCommonGroup(io, entities[damages[j].source])))
 						continue;
@@ -1025,17 +1025,14 @@ void ARX_DAMAGES_UpdateDamage(long j, float tim) {
 					sphere.origin = damages[j].pos;
 					sphere.radius = damages[j].radius - 10.f;
 
-					if (CheckIOInSphere(&sphere, i, true))
-					{
+					if(CheckIOInSphere(&sphere, i, true)) {
 						sub.x = io->pos.x;
 						sub.y = io->pos.y - 60.f;
 						sub.z = io->pos.z;
 						float dist = fdist(damages[j].pos, sub);
 
-						if (damages[j].type & DAMAGE_TYPE_FIELD)
-						{
-							if (float(arxtime) > io->collide_door_time + 500) 
-							{
+						if(damages[j].type & DAMAGE_TYPE_FIELD) {
+							if(float(arxtime) > io->collide_door_time + 500) {
 								EVENT_SENDER = NULL;
 								io->collide_door_time = (unsigned long)(arxtime); 
 								char param[64];
@@ -1052,8 +1049,7 @@ void ARX_DAMAGES_UpdateDamage(long j, float tim) {
 							}
 						}
 
-						switch (damages[j].area)
-						{
+						switch(damages[j].area) {
 							case DAMAGE_AREA:
 							{
 								float ratio = (damages[j].radius - dist) * divradius;
@@ -1077,67 +1073,51 @@ void ARX_DAMAGES_UpdateDamage(long j, float tim) {
 							case DAMAGE_FULL: break;
 						}
 
-						if (dmg <= 0.f) continue;
+						if(dmg <= 0.f)
+							continue;
 
-						if (damages[j].flags & DAMAGE_FLAG_ADD_VISUAL_FX)
-						{
+						if(damages[j].flags & DAMAGE_FLAG_ADD_VISUAL_FX) {
 							if ((entities[i]->ioflags & IO_NPC)
 							        &&	(entities[i]->_npcdata->life > 0.f))
 								ARX_DAMAGES_AddVisual(&damages[j], &sub, dmg, entities[i]);
 						}
 
-						if (damages[j].type & DAMAGE_TYPE_DRAIN_MANA)
-						{
+						if(damages[j].type & DAMAGE_TYPE_DRAIN_MANA) {
 							float manadrained;
 
-							if (i == 0)
-							{
+							if(i == 0) {
 								manadrained = min(dmg, player.mana);
 								player.mana -= manadrained;
-							}
-							else
-							{
+							} else {
 								manadrained = dmg;
 
-								if ((io) && (io->_npcdata))
-								{
+								if(io && io->_npcdata) {
 									manadrained = min(dmg, io->_npcdata->mana);
 									io->_npcdata->mana -= manadrained;
 								}
 							}
 
-							if (damages[j].source == 0)
-							{
+							if (damages[j].source == 0) {
 								player.mana = min(player.mana + manadrained, player.Full_maxmana);
-							}
-							else
-							{
-								if (ValidIONum(damages[j].source) && (entities[damages[j].source]->_npcdata))
-								{
+							} else {
+								if(ValidIONum(damages[j].source) && (entities[damages[j].source]->_npcdata)) {
 									entities[damages[j].source]->_npcdata->mana = min(entities[damages[j].source]->_npcdata->mana + manadrained, entities[damages[j].source]->_npcdata->maxmana);
 								}
 							}
-						}
-						else
-						{
+						} else {
 							float damagesdone;
 
-							if (i == 0)
-							{
-
-								if (damages[j].type & DAMAGE_TYPE_POISON)
-								{
-									if (rnd() * 100.f > player.resist_poison)
-									{
+							if(i == 0) {
+								if(damages[j].type & DAMAGE_TYPE_POISON) {
+									if(rnd() * 100.f > player.resist_poison) {
 										// Failed Saving Throw
 										damagesdone = dmg; 
 										player.poison += damagesdone;
 
 									}
-									else damagesdone = 0;
-								}
-								else
-								{
+									else
+										damagesdone = 0;
+								} else {
 									if ((damages[j].type & DAMAGE_TYPE_MAGICAL)
 									        &&	(!(damages[j].type & DAMAGE_TYPE_FIRE))
 									        &&	(!(damages[j].type & DAMAGE_TYPE_COLD))
@@ -1147,37 +1127,29 @@ void ARX_DAMAGES_UpdateDamage(long j, float tim) {
 										dmg = max(0.0f, dmg);
 									}
 
-									if (damages[j].type & DAMAGE_TYPE_FIRE)
-									{
+									if(damages[j].type & DAMAGE_TYPE_FIRE) {
 										dmg = ARX_SPELLS_ApplyFireProtection(entities.player(), dmg);
 										ARX_DAMAGES_IgnitIO(entities.player(), dmg);
 									}
 
-									if (damages[j].type & DAMAGE_TYPE_COLD)
-									{
+									if(damages[j].type & DAMAGE_TYPE_COLD) {
 										dmg = ARX_SPELLS_ApplyColdProtection(entities.player(), dmg);
 									}
 
 									damagesdone = ARX_DAMAGES_DamagePlayer(dmg, damages[j].type, damages[j].source);
 								}
-							}
-							else
-							{
+							} else {
 								if ((entities[i]->ioflags & IO_NPC)
 								        && (damages[j].type & DAMAGE_TYPE_POISON))
 								{
-									if (rnd() * 100.f > entities[i]->_npcdata->resist_poison)
-									{
+									if(rnd() * 100.f > entities[i]->_npcdata->resist_poison) {
 										// Failed Saving Throw
 										damagesdone = dmg; 
 										entities[i]->_npcdata->poisonned += damagesdone;
 									}
 									else damagesdone = 0;
-								}
-								else
-								{
-									if (damages[j].type & DAMAGE_TYPE_FIRE)
-									{
+								} else {
+									if(damages[j].type & DAMAGE_TYPE_FIRE) {
 										dmg = ARX_SPELLS_ApplyFireProtection(entities[i], dmg);
 										ARX_DAMAGES_IgnitIO(entities[i], dmg);
 									}
@@ -1191,46 +1163,39 @@ void ARX_DAMAGES_UpdateDamage(long j, float tim) {
 										dmg = max(0.0f, dmg);
 									}
 
-									if (damages[j].type & DAMAGE_TYPE_COLD)
-									{
+									if(damages[j].type & DAMAGE_TYPE_COLD) {
 										dmg = ARX_SPELLS_ApplyColdProtection(entities[i], dmg);
 									}
 
 									damagesdone = ARX_DAMAGES_DamageNPC(entities[i], dmg, damages[j].source, 1, &damages[j].pos);
 								}
 
-								if ((damagesdone > 0) && (damages[j].flags & DAMAGE_SPAWN_BLOOD))
-								{
+								if(damagesdone > 0 && (damages[j].flags & DAMAGE_SPAWN_BLOOD)) {
 									ARX_PARTICLES_Spawn_Blood(&damages[j].pos, damagesdone, damages[j].source);
 								}
 							}
 
-							if (damages[j].type & DAMAGE_TYPE_DRAIN_LIFE) 
-							{
-								if (ValidIONum(damages[j].source))
+							if(damages[j].type & DAMAGE_TYPE_DRAIN_LIFE) {
+								if(ValidIONum(damages[j].source))
 									ARX_DAMAGES_HealInter(entities[damages[j].source], damagesdone);
 							}
 						}
 					}
-
-				}
-				else if ((io->ioflags & IO_FIX)
-				         &&	(!(damages[j].type & DAMAGE_TYPE_NO_FIX)))
-				{
+				} else if((io->ioflags & IO_FIX) && !(damages[j].type & DAMAGE_TYPE_NO_FIX)) {
 					EERIE_SPHERE sphere;
 					sphere.origin = damages[j].pos;
 					sphere.radius = damages[j].radius + 15.f;
 
-					if (CheckIOInSphere(&sphere, i))
-					{
+					if(CheckIOInSphere(&sphere, i)) {
 						ARX_DAMAGES_DamageFIX(io, dmg, damages[j].source, 1);
 					}
 				}
 			}
 		}
 
-		if (damages[j].duration == -1) damages[j].exist = false;
-		else if (tim > damages[j].start_time + damages[j].duration)
+		if(damages[j].duration == -1)
+			damages[j].exist = false;
+		else if(tim > damages[j].start_time + damages[j].duration)
 			damages[j].exist = false;
 	}
 }
