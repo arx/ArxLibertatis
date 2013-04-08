@@ -131,18 +131,15 @@ void ARX_DAMAGE_Show_Hit_Blood()
 	static float Last_Blood_Pos = 0.f;
 	static long duration;
 
-	if (Blood_Pos > 2.f) // end of blood flash
-	{
+	if(Blood_Pos > 2.f) { // end of blood flash
 		Blood_Pos = 0.f;
 		duration = 0;
-	}
-	else if (Blood_Pos > 1.f)
-	{
+	} else if (Blood_Pos > 1.f) {
 		GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendSrcColor);
 		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 		GRenderer->SetRenderState(Renderer::DepthWrite, false);
 
-		if (player.poison > 1.f)
+		if(player.poison > 1.f)
 			color = Color3f(Blood_Pos - 1.f, 1.f, Blood_Pos - 1.f).to<u8>();
 		else
 			color = Color3f(1.f, Blood_Pos - 1.f, Blood_Pos - 1.f).to<u8>();
@@ -150,14 +147,12 @@ void ARX_DAMAGE_Show_Hit_Blood()
 		EERIEDrawBitmap(0.f, 0.f, (float)DANAESIZX, (float)DANAESIZY, 0.00009f, NULL, color);
 		GRenderer->SetRenderState(Renderer::DepthWrite, true);
 		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-	}
-	else if (Blood_Pos > 0.f)
-	{
+	} else if(Blood_Pos > 0.f) {
 		GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendSrcColor);
 		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 		GRenderer->SetRenderState(Renderer::DepthWrite, false);
 
-		if (player.poison > 1.f)
+		if(player.poison > 1.f)
 			color = Color3f(1.f - Blood_Pos, 1.f, 1.f - Blood_Pos).to<u8>();
 		else
 			color = Color3f(1.f, 1.f - Blood_Pos, 1.f - Blood_Pos).to<u8>();
@@ -167,22 +162,20 @@ void ARX_DAMAGE_Show_Hit_Blood()
 		GRenderer->SetRenderState(Renderer::DepthWrite, true);
 	}
 
-	if (Blood_Pos > 0.f)
-	{
-		if (Blood_Pos > 1.f)
-		{
-			if ((Last_Blood_Pos <= 1.f)) 
-			{
+	if(Blood_Pos > 0.f) {
+		if(Blood_Pos > 1.f) {
+			if(Last_Blood_Pos <= 1.f) {
 				Blood_Pos = 1.0001f;
 				duration = 0;
 			}
 
-			if (duration > Blood_Duration)
+			if(duration > Blood_Duration)
 				Blood_Pos += (float)framedelay * ( 1.0f / 300 );
 
 			duration += static_cast<long>(framedelay);
 		}
-		else Blood_Pos += (float)framedelay * ( 1.0f / 40 );
+		else
+			Blood_Pos += (float)framedelay * ( 1.0f / 40 );
 	}
 
 	Last_Blood_Pos = Blood_Pos;
