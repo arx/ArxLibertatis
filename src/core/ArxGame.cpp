@@ -1352,6 +1352,32 @@ void ArxGame::renderLevel() {
 	///////////////////////////////////////////
 	ARX_PLAYER_FrameCheck(Original_framedelay);
 
+
+	updateActiveCamera();
+
+	ARX_GLOBALMODS_Apply(); //TODO this method changes the renderer fog state
+
+	// Set Listener Position
+	{
+		float t = radians(MAKEANGLE(ACTIVECAM->angle.b));
+		Vec3f front(-EEsin(t), 0.f, EEcos(t));
+		front.normalize();
+
+		//TODO Hardcoded up vector
+		Vec3f up(0.f, 1.f, 0.f);
+		ARX_SOUND_SetListener(&ACTIVECAM->orgTrans.pos, &front, &up);
+	}
+
+	// Check For Hiding/unHiding Player Gore
+	if(EXTERNALVIEW || player.life <= 0) {
+		ARX_INTERACTIVE_Show_Hide_1st(entities.player(), 0);
+	}
+
+	if(!EXTERNALVIEW) {
+		ARX_INTERACTIVE_Show_Hide_1st(entities.player(), 1);
+	}
+
+
 	// SUBJECTIVE VIEW UPDATE START  *********************************************************
 
 	// Clear screen & Z buffers
@@ -1382,32 +1408,10 @@ void ArxGame::renderLevel() {
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 
-	updateActiveCamera();
-
-	ARX_GLOBALMODS_Apply();
+	//TODO Set renderer fog parameters here
 
 	if(EDITMODE)
 		GRenderer->SetRenderState(Renderer::Fog, false);
-
-	// Set Listener Position
-	{
-		float t = radians(MAKEANGLE(ACTIVECAM->angle.b));
-		Vec3f front(-EEsin(t), 0.f, EEcos(t));
-		front.normalize();
-
-		//TODO Hardcoded up vector
-		Vec3f up(0.f, 1.f, 0.f);
-		ARX_SOUND_SetListener(&ACTIVECAM->orgTrans.pos, &front, &up);
-	}
-
-	// Check For Hiding/unHiding Player Gore
-	if(EXTERNALVIEW || player.life <= 0) {
-		ARX_INTERACTIVE_Show_Hide_1st(entities.player(), 0);
-	}
-
-	if(!EXTERNALVIEW) {
-		ARX_INTERACTIVE_Show_Hide_1st(entities.player(), 1);
-	}
 
 	// NOW DRAW the player (Really...)
 	if(entities.player() && entities.player()->animlayer[0].cur_anim) {
