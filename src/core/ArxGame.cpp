@@ -1014,8 +1014,10 @@ void ArxGame::Render() {
 
 	ARX_PLAYER_Manage_Visual();
 
-	if (FRAME_COUNT<=0)
-		g_miniMap.validatePlayerPos();
+	if(FRAME_COUNT <= 0) {
+		g_miniMap.setActiveBackground(ACTIVEBKG);
+		g_miniMap.validatePlayerPos(CURRENTLEVEL, BLOCK_PLAYER_CONTROLS, Book_Mode);
+	}
 
 	// SUBJECTIVE VIEW UPDATE START  *********************************************************
 	{
