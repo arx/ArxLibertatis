@@ -773,7 +773,7 @@ void MiniMap::drawDetectedEntities(int showLevel, float startX, float startY, fl
     float ofy = m_miniOffsetY[m_currentLevel];
     float ofy2 = m_levels[showLevel].m_ratioY;
     
-    const EntityManager &ents = *m_entities; // for convinience
+    const EntityManager &ents = *m_entities; // for convenience
     
     for(size_t lnpc = 1; lnpc < ents.size(); lnpc++) {
         if((ents[lnpc] != NULL) && (ents[lnpc]->ioflags & IO_NPC)) {
