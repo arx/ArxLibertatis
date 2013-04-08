@@ -1377,6 +1377,13 @@ void ArxGame::renderLevel() {
 		ARX_INTERACTIVE_Show_Hide_1st(entities.player(), 1);
 	}
 
+	PrepareIOTreatZone();
+	ARX_PHYSICS_Apply();
+
+	PrecalcIOLighting(&ACTIVECAM->orgTrans.pos, ACTIVECAM->cdepth * 0.6f);
+
+	ACTIVECAM->fadecolor = current.depthcolor;
+
 
 	// SUBJECTIVE VIEW UPDATE START  *********************************************************
 
@@ -1427,13 +1434,6 @@ void ArxGame::renderLevel() {
 	// SUBJECTIVE VIEW UPDATE START  *********************************************************
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 	GRenderer->SetRenderState(Renderer::DepthTest, true);
-
-	PrepareIOTreatZone();
-	ARX_PHYSICS_Apply();
-
-	PrecalcIOLighting(&ACTIVECAM->orgTrans.pos, ACTIVECAM->cdepth * 0.6f);
-
-	ACTIVECAM->fadecolor = current.depthcolor;
 
 	if(uw_mode)
 		GRenderer->GetTextureStage(0)->SetMipMapLODBias(10.f);
