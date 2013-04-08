@@ -50,6 +50,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <string>
 #include <vector>
 #include "math/MathFwd.h"
+#include "gui/Interface.h"
+#include "gui/Text.h"
+#include "io/resource/PakReader.h"
+#include "game/EntityManager.h"
+#include "game/Player.h"
+#include "graphics/data/Mesh.h"
 
 class TextureContainer;
 struct SavedMiniMap;
@@ -98,10 +104,18 @@ public:
     size_t mapMarkerCount();
     MapMarkerData mapMarkerGet(size_t id);
 
-    void firstInit(); // This should be a constructor
+    void firstInit(ARXCHARACTER *pl, PakReader *pakRes, EntityManager *entityMng, Font *font); // This should be a constructor
     void reset();
     void purgeTexContainer();
-    void validatePlayerPos();
+    
+    /*! 
+    * Calls revealPlayerPos if the player moved, also sets m_currentLevel and m_playerPos
+    *
+    * @param int currentLevel
+    * @param long blockPlayerControls
+    * @param ARX_INTERFACE_BOOK_MODE bookMode
+    */
+    void validatePlayerPos(int currentLevel, long blockPlayerControls, ARX_INTERFACE_BOOK_MODE bookMode);
 
     /*! 
     * Shows the top right minimap
@@ -131,9 +145,16 @@ public:
     
     void load(const SavedMiniMap *saved, size_t size);
     void save(SavedMiniMap *toSave, size_t size);
+    
+    void setActiveBackground(EERIE_BACKGROUND *activeBkg);
 
 private:
-
+    
+    int m_currentLevel;
+    EntityManager *m_entities;
+    EERIE_BACKGROUND *m_activeBkg;
+    Font *m_font;
+    
     float m_miniOffsetX[MAX_MINIMAP_LEVELS];
     float m_miniOffsetY[MAX_MINIMAP_LEVELS];
     float m_mapMaxY[MAX_MINIMAP_LEVELS];
@@ -141,6 +162,7 @@ private:
     TextureContainer *m_pTexDetect;
     TextureContainer *m_mapMarkerTexCont;
 
+    ARXCHARACTER *m_player;
     float m_playerLastPosX;
     float m_playerLastPosZ;
 
@@ -148,12 +170,12 @@ private:
     /*const */float m_modZ; // should and will be const
     
     std::vector<MapMarkerData> m_mapMarkers;
-    
     MiniMapData m_levels[MAX_MINIMAP_LEVELS];
+    
 
     void getData(int showLevel);
     void resetLevels();
-    void loadOffsets();
+    void loadOffsets(PakReader *pakRes);
     void validatePos();
 
     /*!
@@ -171,7 +193,7 @@ private:
     */
     int mapMarkerGetID(const std::string &name);
 
-    Vec2f computePlayerPos(float zoom);
+    Vec2f computePlayerPos(float zoom, int showLevel);
     void drawBackground(int showLevel, Rect boundaries, float startX, float startY, float zoom, float fadeBorder = 0.f, float decalX = 0.f, float decalY = 0.f, bool invColor = false, float alpha = 1.f);
     void drawPlayer(float playerSize, float playerX, float playerY, bool alphaBlending = false);
     void drawDetectedEntities(int showLevel, float startX, float startY, float zoom);
