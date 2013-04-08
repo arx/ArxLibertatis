@@ -1309,7 +1309,8 @@ void ArxGame::renderLevel() {
 
 	ARX_PLAYER_Manage_Visual();
 
-	g_miniMap.validatePlayerPos();
+	g_miniMap.setActiveBackground(ACTIVEBKG);
+	g_miniMap.validatePlayerPos(CURRENTLEVEL, BLOCK_PLAYER_CONTROLS, Book_Mode);
 
 	for(size_t i = 0; i < entities.size(); i++) {
 		Entity *entity = entities[i];

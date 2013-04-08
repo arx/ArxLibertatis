@@ -65,7 +65,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/texture/TextureStage.h"
 #include "graphics/texture/Texture.h"
 
-#include "io/resource/PakReader.h"
 #include "io/log/Logger.h"
 
 #include "scene/Interactive.h"
@@ -100,10 +99,10 @@ void MiniMap::getData(int showLevel) {
             EERIEPOLY *ep = NULL;
             EERIE_BKG_INFO *eg = NULL;
 
-            for(int j = 0; j < ACTIVEBKG->Zsize; j++) {
-                for(int i = 0; i < ACTIVEBKG->Xsize; i++) {
+            for(int j = 0; j < m_activeBkg->Zsize; j++) {
+                for(int i = 0; i < m_activeBkg->Xsize; i++) {
 
-                    eg = &ACTIVEBKG->Backg[i+j*ACTIVEBKG->Xsize];
+                    eg = &m_activeBkg->Backg[i+j*m_activeBkg->Xsize];
 
                     for(int k = 0; k < eg->nbpoly; k++) {
 
@@ -131,11 +130,9 @@ void MiniMap::getData(int showLevel) {
     }
 }
 
-extern long Book_MapPage;
-
 void MiniMap::validatePos() {
 
-    int showLevel = ARX_LEVELS_GetRealNum(CURRENTLEVEL); 
+    int showLevel = ARX_LEVELS_GetRealNum(m_currentLevel); 
 
     if((showLevel >= 0) && (showLevel < MAX_MINIMAP_LEVELS)) {
 
@@ -143,43 +140,44 @@ void MiniMap::validatePos() {
             getData(showLevel);
         }
 
-        if(m_levels[CURRENTLEVEL].m_texContainer == NULL){
-            getData(CURRENTLEVEL);
+        if(m_levels[m_currentLevel].m_texContainer == NULL) {
+            getData(m_currentLevel);
         }
 
         if(m_levels[showLevel].m_texContainer) {
-            revealPlayerPos(ARX_LEVELS_GetRealNum(CURRENTLEVEL));
+            revealPlayerPos(ARX_LEVELS_GetRealNum(m_currentLevel));
         }
     }
 }
 
-void MiniMap::validatePlayerPos() {
+void MiniMap::validatePlayerPos(int currentLevel, long blockPlayerControls, ARX_INTERFACE_BOOK_MODE bookMode) {
+    
+    m_currentLevel = currentLevel;
+    
+    if(!blockPlayerControls) {
 
-    if(BLOCK_PLAYER_CONTROLS) {
-        return;
-    }
+        float req;
 
-    float req;
-
-    if((player.Interface & INTER_MAP) && (!(player.Interface & INTER_COMBATMODE)) && (Book_Mode == BOOKMODE_MINIMAP)) {
-        req = 20.f;
-    }
-    else {
-        req = 80.f;
-    }
-
-    if(fartherThan(Vec2f(m_playerLastPosX, m_playerLastPosZ), Vec2f(player.pos.x, player.pos.z), req)) {
-        m_playerLastPosX = player.pos.x;
-        m_playerLastPosZ = player.pos.z;
-        validatePos();
+        if((m_player->Interface & INTER_MAP) && (!(m_player->Interface & INTER_COMBATMODE)) && (bookMode == BOOKMODE_MINIMAP)) {
+            req = 20.f;
+        }
+        else {
+            req = 80.f;
+        }
+        
+        if(fartherThan(Vec2f(m_playerLastPosX, m_playerLastPosZ), Vec2f(m_player->pos.x, m_player->pos.z), req)) {
+            m_playerLastPosX = m_player->pos.x;
+            m_playerLastPosZ = m_player->pos.z;
+            validatePos();
+        }
     }
 }
 
-void MiniMap::loadOffsets() {
+void MiniMap::loadOffsets(PakReader *pakRes) {
 
     std::string iniMiniOffsets = "graph/levels/mini_offsets.ini";
 
-    PakFile *file = resources->getFile(iniMiniOffsets.c_str());
+    PakFile *file = pakRes->getFile(iniMiniOffsets.c_str());
 
     if(!file) {
         LogError << "Missing " << iniMiniOffsets;
@@ -241,16 +239,22 @@ void MiniMap::reveal() {
     }
 }
 
-void MiniMap::firstInit() {
+void MiniMap::firstInit(ARXCHARACTER *pl, PakReader *pakRes, EntityManager *entityMng, Font *font) {
 
     m_pTexDetect = NULL;
     m_mapMarkerTexCont = NULL;
-
+    
+    m_player = pl;
     m_playerLastPosX = -999999.f;
     m_playerLastPosZ = -999999.f;
 
     m_modX = (float)MAX_BKGX / (float)MINIMAP_MAX_X;
     m_modZ = (float)MAX_BKGZ / (float)MINIMAP_MAX_Z;
+    
+    m_currentLevel = 0;
+    m_entities = entityMng;
+    m_activeBkg = NULL;
+    m_font = font;
 
     resetLevels();
 
@@ -259,7 +263,7 @@ void MiniMap::firstInit() {
         m_miniOffsetY[i] = 0;
     }
 
-    loadOffsets();
+    loadOffsets(pakRes);
 }
 
 void MiniMap::resetLevels() {
@@ -315,9 +319,9 @@ void MiniMap::showPlayerMiniMap(int showLevel) {
 
         Vec2f playerPos(0.f, 0.f);
 
-        if((showLevel == ARX_LEVELS_GetRealNum(CURRENTLEVEL))) {
+        if((showLevel == ARX_LEVELS_GetRealNum(m_currentLevel))) {
 
-            playerPos = computePlayerPos(miniMapZoom);
+            playerPos = computePlayerPos(miniMapZoom, showLevel);
             startX = 490.f - playerPos.x;
             startY = 220.f - playerPos.y;
             playerPos.x += startX;
@@ -330,7 +334,7 @@ void MiniMap::showPlayerMiniMap(int showLevel) {
         GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
 
         // Draw the player (red arrow)
-        if(showLevel == ARX_LEVELS_GetRealNum(CURRENTLEVEL)) {
+        if(showLevel == ARX_LEVELS_GetRealNum(m_currentLevel)) {
             drawPlayer(playerSize, playerPos.x + decalX, playerPos.y + decalY, true);
         }
 
@@ -355,9 +359,9 @@ void MiniMap::showBookMiniMap(int showLevel) {
 
         Vec2f playerPos(0.f, 0.f);
 
-        if((showLevel == ARX_LEVELS_GetRealNum(CURRENTLEVEL))) {
+        if((showLevel == ARX_LEVELS_GetRealNum(m_currentLevel))) {
 
-            playerPos = computePlayerPos(zoom);
+            playerPos = computePlayerPos(zoom, showLevel);
             startX = 490.f - playerPos.x;
             startY = 220.f - playerPos.y;
             playerPos.x += startX;
@@ -368,7 +372,7 @@ void MiniMap::showBookMiniMap(int showLevel) {
 
         GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
 
-        if(showLevel == ARX_LEVELS_GetRealNum(CURRENTLEVEL)) {
+        if(showLevel == ARX_LEVELS_GetRealNum(m_currentLevel)) {
             drawPlayer(6.f, playerPos.x, playerPos.y);
         }
 
@@ -394,9 +398,9 @@ void MiniMap::showBookEntireMap(int showLevel) {
 
         Vec2f playerPos(0.f, 0.f);
 
-        if(showLevel == ARX_LEVELS_GetRealNum(CURRENTLEVEL)) {
+        if(showLevel == ARX_LEVELS_GetRealNum(m_currentLevel)) {
 
-            playerPos = computePlayerPos(zoom);
+            playerPos = computePlayerPos(zoom, showLevel);
             playerPos.x += startX;
             playerPos.y += startY;
         }
@@ -405,7 +409,7 @@ void MiniMap::showBookEntireMap(int showLevel) {
 
         GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
 
-        if(showLevel == ARX_LEVELS_GetRealNum(CURRENTLEVEL)) {
+        if(showLevel == ARX_LEVELS_GetRealNum(m_currentLevel)) {
             drawPlayer(3.f, playerPos.x, playerPos.y);
         }
 
@@ -428,8 +432,8 @@ void MiniMap::showBookEntireMap(int showLevel) {
         for(size_t i = 0; i < m_mapMarkers.size(); i++) {
             if(m_mapMarkers[i].m_lvl == showLevel + 1) {
 
-                float pos_x = m_mapMarkers[i].m_x * 8 * ratio * ACTIVEBKG->Xmul * caseX + startX;
-                float pos_y = m_mapMarkers[i].m_y * 8 * ratio * ACTIVEBKG->Zmul * caseY + startY;
+                float pos_x = m_mapMarkers[i].m_x * 8 * ratio * m_activeBkg->Xmul * caseX + startX;
+                float pos_y = m_mapMarkers[i].m_y * 8 * ratio * m_activeBkg->Zmul * caseY + startY;
                 float size = 5.f * ratio;
                 verts[0].color = 0xFFFF0000;
                 verts[1].color = 0xFFFF0000;
@@ -459,9 +463,9 @@ void MiniMap::showBookEntireMap(int showLevel) {
                         Rect::Num bottom = checked_range_cast<Rect::Num>((bRect.bottom) * Yratio);
                         Rect rRect = Rect(left, top, right, bottom);
 
-                        long lLengthDraw = ARX_UNICODE_ForceFormattingInRect(hFontInGameNote, m_mapMarkers[i].m_text, rRect);
+                        long lLengthDraw = ARX_UNICODE_ForceFormattingInRect(m_font, m_mapMarkers[i].m_text, rRect);
 
-                        DrawBookTextInRect(hFontInGameNote, float(bRect.left), float(bRect.top), float(bRect.right), m_mapMarkers[i].m_text.substr(0, lLengthDraw), Color::none);
+                        DrawBookTextInRect(m_font, float(bRect.left), float(bRect.top), float(bRect.right), m_mapMarkers[i].m_text.substr(0, lLengthDraw), Color::none);
                     }
                 }
 
@@ -485,7 +489,7 @@ void MiniMap::revealPlayerPos(int showLevel) {
     float caseX = zoom / ((float)MINIMAP_MAX_X);
     float caseY = zoom / ((float)MINIMAP_MAX_Z);
 
-    Vec2f playerPos = computePlayerPos(zoom);
+    Vec2f playerPos = computePlayerPos(zoom, showLevel);
     playerPos.x += startX;
     playerPos.y += startY;
 
@@ -535,7 +539,7 @@ void MiniMap::revealPlayerPos(int showLevel) {
     }
 }
 
-Vec2f MiniMap::computePlayerPos(float zoom) {
+Vec2f MiniMap::computePlayerPos(float zoom, int showLevel) {
 
     float caseX = zoom / ((float)MINIMAP_MAX_X);
     float caseY = zoom / ((float)MINIMAP_MAX_Z);
@@ -543,15 +547,15 @@ Vec2f MiniMap::computePlayerPos(float zoom) {
 
     Vec2f pos(0.f, 0.f);
 
-    float ofx = m_miniOffsetX[CURRENTLEVEL];
-    float ofx2 = m_levels[CURRENTLEVEL].m_ratioX;
-    float ofy = m_miniOffsetY[CURRENTLEVEL];
-    float ofy2 = m_levels[CURRENTLEVEL].m_ratioY;
+    float ofx = m_miniOffsetX[m_currentLevel];
+    float ofx2 = m_levels[showLevel].m_ratioX;
+    float ofy = m_miniOffsetY[m_currentLevel];
+    float ofy2 = m_levels[showLevel].m_ratioY;
 
-    pos.x = ((player.pos.x + ofx - ofx2) * ( 1.0f / 100 ) * caseX
-    + m_miniOffsetX[CURRENTLEVEL] * ratio * m_modX) / m_modX;
-    pos.y = ((m_mapMaxY[CURRENTLEVEL] - ofy - ofy2) * ( 1.0f / 100 ) * caseY
-    - (player.pos.z + ofy - ofy2) * ( 1.0f / 100 ) * caseY + m_miniOffsetY[CURRENTLEVEL] * ratio * m_modZ) / m_modZ;
+    pos.x = ((m_player->pos.x + ofx - ofx2) * ( 1.0f / 100 ) * caseX
+    + m_miniOffsetX[m_currentLevel] * ratio * m_modX) / m_modX;
+    pos.y = ((m_mapMaxY[showLevel] - ofy - ofy2) * ( 1.0f / 100 ) * caseY
+    - (m_player->pos.z + ofy - ofy2) * ( 1.0f / 100 ) * caseY + m_miniOffsetY[m_currentLevel] * ratio * m_modZ) / m_modZ;
 
     return pos;
 }
@@ -602,8 +606,8 @@ void MiniMap::drawBackground(int showLevel, Rect boundaries, float startX, float
         for(int i = -2; i < MINIMAP_MAX_X + 2; i++) {
 
             float vx, vy, vxx, vyy;
-            vxx = ((float)i * (float)ACTIVEBKG->Xdiv * m_modX);
-            vyy = ((float)j * (float)ACTIVEBKG->Zdiv * m_modZ);
+            vxx = ((float)i * (float)m_activeBkg->Xdiv * m_modX);
+            vyy = ((float)j * (float)m_activeBkg->Zdiv * m_modZ);
             vx = (vxx * div) * dw;
             vy = (vyy * div) * dh;
 
@@ -734,7 +738,7 @@ void MiniMap::drawPlayer(float playerSize, float playerX, float playerY, bool al
     float rx3 = playerSize * (1.0f / 2);
     float ry3 = playerSize;
 
-    float angle = radians(player.angle.b);
+    float angle = radians(m_player->angle.b);
     float ca = EEcos(angle);
     float sa = EEsin(angle);
 
@@ -764,28 +768,30 @@ void MiniMap::drawDetectedEntities(int showLevel, float startX, float startY, fl
     }
 
     // Computes playerpos
-    float ofx = m_miniOffsetX[CURRENTLEVEL];
+    float ofx = m_miniOffsetX[m_currentLevel];
     float ofx2 = m_levels[showLevel].m_ratioX;
-    float ofy = m_miniOffsetY[CURRENTLEVEL];
+    float ofy = m_miniOffsetY[m_currentLevel];
     float ofy2 = m_levels[showLevel].m_ratioY;
+    
+    const EntityManager &ents = *m_entities; // for convinience
+    
+    for(size_t lnpc = 1; lnpc < ents.size(); lnpc++) {
+        if((ents[lnpc] != NULL) && (ents[lnpc]->ioflags & IO_NPC)) {
+            if(ents[lnpc]->_npcdata->life > 0.f) {
+                if (!((ents[lnpc]->gameFlags & GFLAG_MEGAHIDE) || (ents[lnpc]->show == SHOW_FLAG_MEGAHIDE))
+                && (ents[lnpc]->show == SHOW_FLAG_IN_SCENE)) {
+                    if (!(ents[lnpc]->show == SHOW_FLAG_HIDDEN)) {
+                        if(ents[lnpc]->_npcdata->fDetect >= 0) {
+                            if(player.Full_Skill_Etheral_Link >= ents[lnpc]->_npcdata->fDetect) {
 
-    for(size_t lnpc = 1; lnpc < entities.size(); lnpc++) {
-        if((entities[lnpc] != NULL) && (entities[lnpc]->ioflags & IO_NPC)) {
-            if(entities[lnpc]->_npcdata->life > 0.f) {
-                if (!((entities[lnpc]->gameFlags & GFLAG_MEGAHIDE) || (entities[lnpc]->show == SHOW_FLAG_MEGAHIDE))
-                && (entities[lnpc]->show == SHOW_FLAG_IN_SCENE)) {
-                    if (!(entities[lnpc]->show == SHOW_FLAG_HIDDEN)) {
-                        if(entities[lnpc]->_npcdata->fDetect >= 0) {
-                            if(player.Full_Skill_Etheral_Link >= entities[lnpc]->_npcdata->fDetect) {
-
-                                float fpx = startX + ((entities[lnpc]->pos.x - 100 + ofx - ofx2) * ( 1.0f / 100 ) * caseX
-                                + m_miniOffsetX[CURRENTLEVEL] * ratio * m_modX) / m_modX; 
+                                float fpx = startX + ((ents[lnpc]->pos.x - 100 + ofx - ofx2) * ( 1.0f / 100 ) * caseX
+                                + m_miniOffsetX[m_currentLevel] * ratio * m_modX) / m_modX; 
                                 float fpy = startY + ((m_mapMaxY[showLevel] - ofy - ofy2) * ( 1.0f / 100 ) * caseY
-                                - (entities[lnpc]->pos.z + 200 + ofy - ofy2) * ( 1.0f / 100 ) * caseY + m_miniOffsetY[CURRENTLEVEL] * ratio * m_modZ) / m_modZ;
+                                - (ents[lnpc]->pos.z + 200 + ofy - ofy2) * ( 1.0f / 100 ) * caseY + m_miniOffsetY[m_currentLevel] * ratio * m_modZ) / m_modZ;
 
-                                float d = fdist(Vec2f(player.pos.x, player.pos.z), Vec2f(entities[lnpc]->pos.x, entities[lnpc]->pos.z));
+                                float d = fdist(Vec2f(m_player->pos.x, m_player->pos.z), Vec2f(ents[lnpc]->pos.x, ents[lnpc]->pos.z));
 
-                                if((d <= 800) && (fabs(entities.player()->pos.y - entities[lnpc]->pos.y) < 250.f)) {
+                                if((d <= 800) && (fabs(ents.player()->pos.y - ents[lnpc]->pos.y) < 250.f)) {
 
                                     float col = 1.f;
 
@@ -883,4 +889,8 @@ MiniMap::MapMarkerData MiniMap::mapMarkerGet(size_t id) {
     
     assert(id < m_mapMarkers.size());
     return m_mapMarkers[id];
+}
+
+void MiniMap::setActiveBackground(EERIE_BACKGROUND *activeBkg) {
+    m_activeBkg = activeBkg;
 }
