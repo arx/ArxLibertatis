@@ -1376,7 +1376,8 @@ bool DoSphericDamage(Vec3f * pos, float dmg, float radius, DamageArea flags, Dam
 	sub.y = player.pos.y + 90.f;
 	sub.z = player.pos.z;
 
-	if (radius <= 0.f) return damagesdone;
+	if(radius <= 0.f)
+		return damagesdone;
 
 	float rad = 1.f / radius;
 	bool validsource = ValidIONum(numsource);
@@ -1384,32 +1385,29 @@ bool DoSphericDamage(Vec3f * pos, float dmg, float radius, DamageArea flags, Dam
 	for(size_t i = 0; i < entities.size(); i++) {
 		Entity * ioo = entities[i];
 
-		if ((ioo) && (long(i) != numsource) && (ioo->obj))
-		{
+		if((ioo) && (long(i) != numsource) && (ioo->obj)) {
 			if ((i != 0) && (numsource != 0)
 			        && validsource && (HaveCommonGroup(ioo, entities[numsource])))
 				continue;
 
-			if ((ioo->ioflags & IO_CAMERA) || (ioo->ioflags & IO_MARKER)) continue;
+			if((ioo->ioflags & IO_CAMERA) || (ioo->ioflags & IO_MARKER))
+				continue;
 
 			long count = 0;
 			long count2 = 0;
 			float mindist = std::numeric_limits<float>::max();
 
-			for (size_t k = 0; k < ioo->obj->vertexlist.size(); k += 1)
-			{
-				if (ioo->obj->vertexlist.size() < 120)
-				{
-					for (size_t kk = 0; kk < ioo->obj->vertexlist.size(); kk += 1)
-					{
-						if (kk != k)
-						{
+			for(size_t k = 0; k < ioo->obj->vertexlist.size(); k += 1) {
+				if(ioo->obj->vertexlist.size() < 120) {
+					for(size_t kk = 0; kk < ioo->obj->vertexlist.size(); kk += 1) {
+						if(kk != k) {
 							Vec3f posi = (entities[i]->obj->vertexlist3[k].v
 							              + entities[i]->obj->vertexlist3[kk].v) * 0.5f;
 							float dist = fdist(*pos, posi);
 							if(dist <= radius) {
 								count2++;
-								if (dist < mindist) mindist = dist;
+								if(dist < mindist)
+									mindist = dist;
 							}
 						}
 					}
@@ -1418,28 +1416,26 @@ bool DoSphericDamage(Vec3f * pos, float dmg, float radius, DamageArea flags, Dam
 				{
 					float dist = fdist(*pos, entities[i]->obj->vertexlist3[k].v);
 
-					if (dist <= radius)
-					{
+					if(dist <= radius) {
 						count++;
 
-						if (dist < mindist) mindist = dist;
+						if(dist < mindist)
+							mindist = dist;
 					}
 				}
 			}
 
 			float ratio = ((float)count / ((float)ioo->obj->vertexlist.size() * ( 1.0f / 2 )));
 
-			if (count2 > count)
+			if(count2 > count)
 				ratio = ((float)count2 / ((float)ioo->obj->vertexlist.size() * ( 1.0f / 2 )));
 
-			if (ratio > 2.f) ratio = 2.f;
+			if(ratio > 2.f)
+				ratio = 2.f;
 
-			if (ioo->ioflags & IO_NPC)
-			{
-				if (mindist <= radius + 30.f)
-				{
-					switch (flags)
-					{
+			if(ioo->ioflags & IO_NPC) {
+				if(mindist <= radius + 30.f) {
+					switch (flags) {
 						case DAMAGE_AREA:
 							dmg = dmg * (radius + 30 - mindist) * rad;
 							break;
@@ -1449,60 +1445,50 @@ bool DoSphericDamage(Vec3f * pos, float dmg, float radius, DamageArea flags, Dam
 						case DAMAGE_FULL: break;
 					}
 
-					if (i == 0)
-					{
-						if (typ & DAMAGE_TYPE_FIRE)
-						{
+					if(i == 0) {
+						if(typ & DAMAGE_TYPE_FIRE) {
 							dmg = ARX_SPELLS_ApplyFireProtection(ioo, dmg);
 							ARX_DAMAGES_IgnitIO(entities.player(), dmg);
 						}
 
-						if (typ & DAMAGE_TYPE_COLD)
-						{
+						if(typ & DAMAGE_TYPE_COLD) {
 							dmg = ARX_SPELLS_ApplyColdProtection(ioo, dmg);
 						}
 
 						ARX_DAMAGES_DamagePlayer(dmg, typ, numsource);
 						ARX_DAMAGES_DamagePlayerEquipment(dmg);
-					}
-					else
-					{
-						if (typ & DAMAGE_TYPE_FIRE)
-						{
+					} else {
+						if(typ & DAMAGE_TYPE_FIRE) {
 							dmg = ARX_SPELLS_ApplyFireProtection(ioo, dmg * ratio);
 							ARX_DAMAGES_IgnitIO(ioo, dmg);
 						}
 
-						if (typ & DAMAGE_TYPE_COLD)
-						{
+						if(typ & DAMAGE_TYPE_COLD) {
 							dmg = ARX_SPELLS_ApplyColdProtection(ioo, dmg * ratio);
 						}
 
 						ARX_DAMAGES_DamageNPC(ioo, dmg * ratio, numsource, 1, pos);
 					}
 
-					if (dmg > 1) damagesdone = true;
+					if(dmg > 1)
+						damagesdone = true;
 				}
-			}
-			else
-			{
-				if (mindist <= radius + 30.f)
-				{
-					if (typ & DAMAGE_TYPE_FIRE)
-					{
+			} else {
+				if(mindist <= radius + 30.f) {
+					if(typ & DAMAGE_TYPE_FIRE) {
 						dmg = ARX_SPELLS_ApplyFireProtection(ioo, dmg * ratio);
 						ARX_DAMAGES_IgnitIO(entities[i], dmg);
 					}
 
-					if (typ & DAMAGE_TYPE_COLD)
-					{
+					if(typ & DAMAGE_TYPE_COLD) {
 						dmg = ARX_SPELLS_ApplyColdProtection(ioo, dmg * ratio);
 					}
 
-					if (entities[i]->ioflags & IO_FIX)
+					if(entities[i]->ioflags & IO_FIX)
 						ARX_DAMAGES_DamageFIX(entities[i], dmg * ratio, numsource, 1);
 
-					if (dmg > 0.2f) damagesdone = true;
+					if(dmg > 0.2f)
+						damagesdone = true;
 				}
 			}
 		}
@@ -1516,24 +1502,21 @@ bool DoSphericDamage(Vec3f * pos, float dmg, float radius, DamageArea flags, Dam
 
 void ARX_DAMAGES_DurabilityRestore(Entity * io, float percent)
 {
-	if (!io) return;
+	if(!io)
+		return;
 
 	if (io->durability <= 0) return;
 
 	if (io->durability == io->max_durability) return;
 
-	if (percent >= 100.f)
-	{
+	if (percent >= 100.f) {
 		io->durability = io->max_durability;
-	}
-	else
-	{
+	} else {
 		float ratio			= percent * ( 1.0f / 100 );
 		float to_restore	= (io->max_durability - io->durability) * ratio;
 		float v				= rnd() * 100.f - percent;
 
-		if (v <= 0.f)
-		{
+		if (v <= 0.f) {
 			float mloss = 1.f;
 
 			if(io->ioflags & IO_ITEM) {
@@ -1541,17 +1524,14 @@ void ARX_DAMAGES_DurabilityRestore(Entity * io, float percent)
 			}
 
 			io->max_durability -= mloss;
-		}
-		else
-		{
+		} else {
 			if (v > 50.f)
 				v = 50.f;
 
 			v *= ( 1.0f / 100 );
 			float mloss = io->max_durability * v;
 
-			if (io->ioflags & IO_ITEM)
-			{
+			if(io->ioflags & IO_ITEM) {
 				io->_itemdata->price -= static_cast<long>(io->_itemdata->price * v);
 			}
 
@@ -1560,9 +1540,10 @@ void ARX_DAMAGES_DurabilityRestore(Entity * io, float percent)
 
 		io->durability += to_restore;
 
-		if (io->durability > io->max_durability) io->durability = io->max_durability;
+		if(io->durability > io->max_durability)
+			io->durability = io->max_durability;
 
-		if (io->max_durability <= 0.f)
+		if(io->max_durability <= 0.f)
 			ARX_DAMAGES_DurabilityLoss(io, 100);
 	}
 
@@ -1570,22 +1551,22 @@ void ARX_DAMAGES_DurabilityRestore(Entity * io, float percent)
 
 void ARX_DAMAGES_DurabilityCheck(Entity * io, float ratio)
 {
-	if (!io) return;
+	if(!io)
+		return;
 
-	if (rnd() * 100.f > io->durability)
-	{
+	if(rnd() * 100.f > io->durability) {
 		ARX_DAMAGES_DurabilityLoss(io, ratio);
 	}
 }
 
 void ARX_DAMAGES_DurabilityLoss(Entity * io, float loss)
 {
-	if (!io) return;
+	if(!io)
+		return;
 
 	io->durability -= loss;
 
-	if (io->durability <= 0)
-	{
+	if(io->durability <= 0) {
 		SendIOScriptEvent(io, SM_BREAK);
 	}
 }
@@ -1594,12 +1575,11 @@ void ARX_DAMAGES_DamagePlayerEquipment(float damages)
 {
 	float ratio = damages * ( 1.0f / 20 );
 
-	if (ratio > 1.f) ratio = 1.f;
+	if(ratio > 1.f)
+		ratio = 1.f;
 
-	for (long i = 0; i < MAX_EQUIPED; i++)
-	{
-		if (player.equiped[i] != 0)
-		{
+	for(long i = 0; i < MAX_EQUIPED; i++) {
+		if(player.equiped[i] != 0) {
 			Entity * todamage = entities[player.equiped[i]];
 			ARX_DAMAGES_DurabilityCheck(todamage, ratio);
 		}
@@ -1608,22 +1588,22 @@ void ARX_DAMAGES_DamagePlayerEquipment(float damages)
 
 float ARX_DAMAGES_ComputeRepairPrice(Entity * torepair, Entity * blacksmith)
 {
-	if ((!torepair) || (!blacksmith)) return -1.f;
+	if(!torepair || !blacksmith) return -1.f;
 
-	if (!(torepair->ioflags & IO_ITEM)) return -1.f;
+	if(!(torepair->ioflags & IO_ITEM)) return -1.f;
 
-	if (torepair->max_durability <= 0.f) return -1.f;
+	if(torepair->max_durability <= 0.f) return -1.f;
 
-	if (torepair->durability == torepair->max_durability) return -1.f;
+	if(torepair->durability == torepair->max_durability) return -1.f;
 
 	float ratio = (torepair->max_durability - torepair->durability) / torepair->max_durability;
 	float price = torepair->_itemdata->price * ratio;
 
-	if (blacksmith->shop_multiply != 0.f)
+	if(blacksmith->shop_multiply != 0.f)
 		price *= blacksmith->shop_multiply;
 
-	if ((price > 0.f) &&
-	        (price < 1.f)) price = 1.f;
+	if(price > 0.f && price < 1.f)
+		price = 1.f;
 
 	return price;
 }
