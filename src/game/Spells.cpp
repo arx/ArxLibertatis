@@ -5344,10 +5344,7 @@ void ARX_SPELLS_Kill(long i) {
 	delete spells[i].pSpellFx, spells[i].pSpellFx = NULL;
 }
 
-
 EYEBALL_DEF eyeball;
-
-Anglef cabalangle;
 
 float ARX_SPELLS_ApplyFireProtection(Entity * io,float damages)
 {
@@ -5848,10 +5845,10 @@ void ARX_SPELLS_Update()
 					GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 					GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 					GRenderer->SetRenderState(Renderer::DepthWrite, false);
+
+					Anglef cabalangle(0.f, 0.f, 0.f);
 					cabalangle.b=spells[i].fdata+(float)framedelay*0.1f;
 					spells[i].fdata=cabalangle.b;
-
-					cabalangle.g = 0.f;
 
 					Vec3f cabalscale = Vec3f::repeat(Es);
 					Color3f cabalcolor = Color3f(0.8f, 0.4f, 0.f);
@@ -6778,10 +6775,10 @@ void ARX_SPELLS_Update()
 						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 						GRenderer->SetRenderState(Renderer::DepthWrite, false);
+
+						Anglef cabalangle(0.f, 0.f, 0.f);
 						cabalangle.b=spells[i].fdata+(float)framedelay*0.1f;
 						spells[i].fdata=cabalangle.b;
-
-						cabalangle.g = 0.f;
 												
 						Vec3f cabalscale = Vec3f::repeat(Es);
 						Color3f cabalcolor = Color3f(0.4f, 0.4f, 0.8f);
@@ -6876,9 +6873,10 @@ void ARX_SPELLS_Update()
 						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 						GRenderer->SetRenderState(Renderer::DepthWrite, false);
+
+						Anglef cabalangle(0.f, 0.f, 0.f);
 						cabalangle.b=spells[i].fdata+(float)framedelay*0.1f;
 						spells[i].fdata=cabalangle.b;
-							cabalangle.g = 0.f;
 
 						Vec3f cabalscale = Vec3f::repeat(Es);
 						Color3f cabalcolor = Color3f(0.8f, 0.f, 0.f);
