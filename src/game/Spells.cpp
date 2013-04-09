@@ -2968,7 +2968,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 		case SPELL_SLOW_DOWN:
 		case SPELL_CONFUSE:
 		{
-				LOOKING_FOR_SPELL_TARGET_TIME	= (unsigned long)(arxtime);	
+			LOOKING_FOR_SPELL_TARGET_TIME	= (unsigned long)(arxtime);
 			LOOKING_FOR_SPELL_TARGET		= 1;
 			t_spell.typ						= typ;
 			t_spell.flags					= flags;
@@ -2979,7 +2979,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 		}			
 		case SPELL_ENCHANT_WEAPON:		
 		{
-				LOOKING_FOR_SPELL_TARGET_TIME	= (unsigned long)(arxtime);
+			LOOKING_FOR_SPELL_TARGET_TIME	= (unsigned long)(arxtime);
 			LOOKING_FOR_SPELL_TARGET		= 2;
 			t_spell.typ						= typ;
 			t_spell.flags					= flags;
@@ -3015,7 +3015,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 
 			ARX_SOUND_PlaySpeech("player_follower_attack");
 
-				LOOKING_FOR_SPELL_TARGET_TIME	= (unsigned long)(arxtime);
+			LOOKING_FOR_SPELL_TARGET_TIME	= (unsigned long)(arxtime);
 			LOOKING_FOR_SPELL_TARGET		= 1;
 			t_spell.typ						= typ;
 			t_spell.flags					= flags;
@@ -3110,88 +3110,66 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 	
 	// Check spell-specific preconditions
 	switch(typ) {
-		
-		case SPELL_MAGIC_SIGHT: {
-			if(ARX_SPELLS_ExistAnyInstanceForThisCaster(typ, spells[i].caster)) {
+		case SPELL_MAGIC_SIGHT:
+			if(ARX_SPELLS_ExistAnyInstanceForThisCaster(typ, spells[i].caster))
 				return false;
-			}
+
 			break;
-		}
-		
-		case SPELL_HEAL: {
-			if(ARX_SPELLS_ExistAnyInstanceForThisCaster(typ, spells[i].caster)) {
+		case SPELL_HEAL:
+			if(ARX_SPELLS_ExistAnyInstanceForThisCaster(typ, spells[i].caster))
 				return false;
-			}
+
 			break;
-		}
-		
-		case SPELL_BLESS: {
-			if(ARX_SPELLS_ExistAnyInstance(typ)) {
+		case SPELL_BLESS:
+			if(ARX_SPELLS_ExistAnyInstance(typ))
 				return false;
-			}
+
 			break;
-		}
-		
-		case SPELL_TELEKINESIS: {
-			if(ARX_SPELLS_ExistAnyInstanceForThisCaster(typ, spells[i].caster)) {
+		case SPELL_TELEKINESIS:
+			if(ARX_SPELLS_ExistAnyInstanceForThisCaster(typ, spells[i].caster))
 				return false;
-			}
+
 			break;
-		}
-		
-		case SPELL_FLYING_EYE: {
-			if(eyeball.exist) {
+		case SPELL_FLYING_EYE:
+			if(eyeball.exist)
 				return false;
-			}
-			if(ARX_SPELLS_ExistAnyInstanceForThisCaster(typ,spells[i].caster)) {
+
+			if(ARX_SPELLS_ExistAnyInstanceForThisCaster(typ,spells[i].caster))
 				return false;
-			}
+
+			break;		
+		case SPELL_INVISIBILITY:
+			if(ARX_SPELLS_ExistAnyInstanceForThisCaster(typ, spells[i].caster))
+				return false;
+
+			break;		
+		case SPELL_MANA_DRAIN:
+			if(ARX_SPELLS_ExistAnyInstanceForThisCaster(typ, spells[i].caster))
+				return false;
+
 			break;
-		}
-		
-		case SPELL_INVISIBILITY: {
-			if(ARX_SPELLS_ExistAnyInstanceForThisCaster(typ, spells[i].caster)) {
+		case SPELL_LIFE_DRAIN:
+			if(ARX_SPELLS_ExistAnyInstanceForThisCaster(typ, spells[i].caster))
 				return false;
-			}
-			break;
-		}
-		
-		case SPELL_MANA_DRAIN: {
-			if(ARX_SPELLS_ExistAnyInstanceForThisCaster(typ, spells[i].caster)) {
+
+			break;		
+		case SPELL_CONTROL_TARGET:
+			if(ARX_SPELLS_ExistAnyInstanceForThisCaster(typ, spells[i].caster))
 				return false;
-			}
-			break;
-		}
-		
-		case SPELL_LIFE_DRAIN: {
-			if(ARX_SPELLS_ExistAnyInstanceForThisCaster(typ, spells[i].caster)) {
+
+			break;		
+		case SPELL_FREEZE_TIME:
+			if(ARX_SPELLS_ExistAnyInstanceForThisCaster(typ, spells[i].caster))
 				return false;
-			}
+
 			break;
-		}
-		
-		case SPELL_CONTROL_TARGET: {
-			if(ARX_SPELLS_ExistAnyInstanceForThisCaster(typ, spells[i].caster)) {
+		case SPELL_TELEPORT:
+			if(ARX_SPELLS_ExistAnyInstanceForThisCaster(typ, spells[i].caster))
 				return false;
-			}
-			break;
-		}
-		
-		case SPELL_FREEZE_TIME: {
-			if(ARX_SPELLS_ExistAnyInstanceForThisCaster(typ, spells[i].caster)) {
-				return false;
-			}
-			break;
-		}
-		
-		case SPELL_TELEPORT: {
-			if(ARX_SPELLS_ExistAnyInstanceForThisCaster(typ, spells[i].caster)) {
-				return false;
-			}
-			break;
-		}
-		
-		default: break; // no preconditions to check
+
+			break;		
+	default:
+		break; // no preconditions to check
 	}
 	
 	if(!CanPayMana(i, ARX_SPELLS_GetManaCost(typ, i))) {
