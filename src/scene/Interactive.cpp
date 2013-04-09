@@ -3094,60 +3094,60 @@ void ARX_INTERACTIVE_DestroyIO(Entity * ioo)
 	if(!ioo)
 		return;
 
-		if(ioo->show == SHOW_FLAG_DESTROYED)
-			return;
+	if(ioo->show == SHOW_FLAG_DESTROYED)
+		return;
 
-		ARX_INTERACTIVE_ForceIOLeaveZone(ioo, 0);
+	ARX_INTERACTIVE_ForceIOLeaveZone(ioo, 0);
 
-		if(DRAGINTER == ioo)
-			Set_DragInter(NULL);
+	if(DRAGINTER == ioo)
+		Set_DragInter(NULL);
 
-		if(FlyingOverIO == ioo)
-			FlyingOverIO = NULL;
+	if(FlyingOverIO == ioo)
+		FlyingOverIO = NULL;
 
-		if(COMBINE == ioo)
-			COMBINE = NULL;
+	if(COMBINE == ioo)
+		COMBINE = NULL;
 
-		if((ioo->ioflags & IO_ITEM) && ioo->_itemdata->count > 1) {
-			ioo->_itemdata->count--;
-		} else {
-			// Kill all spells
-			long numm = ioo->index();
+	if((ioo->ioflags & IO_ITEM) && ioo->_itemdata->count > 1) {
+		ioo->_itemdata->count--;
+	} else {
+		// Kill all spells
+		long numm = ioo->index();
 
-			if(ValidIONum(numm))
-				ARX_SPELLS_FizzleAllSpellsFromCaster(numm);
+		if(ValidIONum(numm))
+			ARX_SPELLS_FizzleAllSpellsFromCaster(numm);
 
-			// Need To Kill timers
-			ARX_SCRIPT_Timer_Clear_By_IO(ioo);
-			ioo->show = SHOW_FLAG_DESTROYED;
-			ioo->gameFlags &= ~GFLAG_ISINTREATZONE;
+		// Need To Kill timers
+		ARX_SCRIPT_Timer_Clear_By_IO(ioo);
+		ioo->show = SHOW_FLAG_DESTROYED;
+		ioo->gameFlags &= ~GFLAG_ISINTREATZONE;
 
-			if(!FAST_RELEASE)
-				RemoveFromAllInventories(ioo);
+		if(!FAST_RELEASE)
+			RemoveFromAllInventories(ioo);
 
-			if(ioo->obj) {
-				EERIE_3DOBJ * eobj = ioo->obj;
+		if(ioo->obj) {
+			EERIE_3DOBJ * eobj = ioo->obj;
 
-				while(eobj->nblinked) {
-					long k = 0;
+			while(eobj->nblinked) {
+				long k = 0;
 
-					if(eobj->linked[k].lgroup != -1 && eobj->linked[k].obj) {
-						Entity * iooo = (Entity *)eobj->linked[k].io;
+				if(eobj->linked[k].lgroup != -1 && eobj->linked[k].obj) {
+					Entity * iooo = (Entity *)eobj->linked[k].io;
 
-						if(iooo && ValidIOAddress(iooo)) {
-							EERIE_LINKEDOBJ_UnLinkObjectFromObject(ioo->obj, iooo->obj);
-							ARX_INTERACTIVE_DestroyIO(iooo);
-						}
+					if(iooo && ValidIOAddress(iooo)) {
+						EERIE_LINKEDOBJ_UnLinkObjectFromObject(ioo->obj, iooo->obj);
+						ARX_INTERACTIVE_DestroyIO(iooo);
 					}
 				}
 			}
-
-			ARX_INTERACTIVE_DestroyDynamicInfo(ioo);
-
-			if(ioo->scriptload) {
-				delete ioo;
-			}
 		}
+
+		ARX_INTERACTIVE_DestroyDynamicInfo(ioo);
+
+		if(ioo->scriptload) {
+			delete ioo;
+		}
+	}
 }
 
 bool IsSameObject(Entity * io, Entity * ioo)
