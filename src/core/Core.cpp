@@ -1920,17 +1920,18 @@ float GLOBAL_SLOWDOWN=1.f;
 bool StrikeAimtime()
 {
 	ARX_PLAYER_Remove_Invisibility();
-	STRIKE_AIMTIME=float(arxtime)-(float)AimTime;
-	STRIKE_AIMTIME=STRIKE_AIMTIME*(1.f+(1.f-GLOBAL_SLOWDOWN));
+	STRIKE_AIMTIME = float(arxtime) - (float)AimTime;
+	STRIKE_AIMTIME = STRIKE_AIMTIME * (1.f+(1.f-GLOBAL_SLOWDOWN));
 
-	if (STRIKE_AIMTIME>player.Full_AimTime)
+	if(STRIKE_AIMTIME > player.Full_AimTime)
 		STRIKE_AIMTIME=1.f;
 	else
-		STRIKE_AIMTIME=(float)STRIKE_AIMTIME/(float)player.Full_AimTime;
+		STRIKE_AIMTIME = (float)STRIKE_AIMTIME / (float)player.Full_AimTime;
 
-	if (STRIKE_AIMTIME<0.1f) STRIKE_AIMTIME=0.1f;
+	if(STRIKE_AIMTIME < 0.1f)
+		STRIKE_AIMTIME = 0.1f;
 
-	if (STRIKE_AIMTIME>0.8f)
+	if(STRIKE_AIMTIME > 0.8f)
 		return true;
 
 	return false;
