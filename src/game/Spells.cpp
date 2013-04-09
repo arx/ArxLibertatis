@@ -5355,24 +5355,22 @@ Color3f cabalcolor;
 
 float ARX_SPELLS_ApplyFireProtection(Entity * io,float damages)
 {
-	if (io)
-	{
+	if(io) {
 		long idx=ARX_SPELLS_GetSpellOn(io,SPELL_FIRE_PROTECTION);
 
-		if (idx>=0)
-		{
-			float modif=1.f-((float)spells[idx].caster_level*( 1.0f / 10 ));
+		if(idx >= 0) {
+			float modif = 1.f-((float)spells[idx].caster_level*( 1.0f / 10 ));
 
 			modif = clamp(modif, 0.f, 1.f);
 
-			damages*=modif;
+			damages *= modif;
 		}
 
-		if (io->ioflags & IO_NPC)
-		{
-			damages-=io->_npcdata->resist_fire*( 1.0f / 100 )*damages;
+		if(io->ioflags & IO_NPC) {
+			damages -= io->_npcdata->resist_fire*( 1.0f / 100 )*damages;
 
-			if (damages<0.f) damages=0.f;
+			if(damages < 0.f)
+				damages=0.f;
 		}
 	}
 
@@ -5383,13 +5381,12 @@ float ARX_SPELLS_ApplyColdProtection(Entity * io,float damages)
 {
 	long idx=ARX_SPELLS_GetSpellOn(io,SPELL_COLD_PROTECTION);
 
-	if (idx>=0)
-	{
+	if(idx >= 0) {
 		float modif=1.f-((float)spells[idx].caster_level*( 1.0f / 10 ));
 
 		modif = clamp(modif, 0.f, 1.f);
 
-		damages*=modif;
+		damages *= modif;
 	}
 
 	return damages;
