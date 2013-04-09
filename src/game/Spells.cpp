@@ -6727,44 +6727,41 @@ void ARX_SPELLS_Update()
 						}
 					}
 				break;				
-				case SPELL_MANA_DRAIN:
-					{
-						
-					if ( (cabal!=NULL) )
-					{
+				case SPELL_MANA_DRAIN: {
+					if(cabal) {
 						float refpos;
 						float scaley;
 
-						if (spells[i].caster==0) scaley=90.f;
-						else scaley=EEfabs(entities[spells[i].caster]->physics.cyl.height*( 1.0f / 2 ))+30.f;
+						if(spells[i].caster==0)
+							scaley=90.f;
+						else
+							scaley=EEfabs(entities[spells[i].caster]->physics.cyl.height*( 1.0f / 2 ))+30.f;
 
 						float mov1=EEsin((float)arxtime.get_last_frame_time()*( 1.0f / 800 ))*scaley;
 						float mov=EEsin((float)arxtime.get_frame_time()*( 1.0f / 800 ))*scaley;
 
-						if ((mov1<scaley-10.f) && (mov>scaley-10.f)) ARX_SOUND_PlaySFX(SND_SPELL_MAGICAL_SHIELD, &spells[i].caster_pos, 0.4F);
+						if(mov1 < scaley - 10.f && mov > scaley - 10.f)
+							ARX_SOUND_PlaySFX(SND_SPELL_MAGICAL_SHIELD, &spells[i].caster_pos, 0.4F);
 
-						if ((mov1>-scaley+10.f) && (mov<-scaley+10.f)) ARX_SOUND_PlaySFX(SND_SPELL_MAGICAL_SHIELD, &spells[i].caster_pos, 0.4F);
+						if(mov1 > -scaley + 10.f && mov < -scaley + 10.f)
+							ARX_SOUND_PlaySFX(SND_SPELL_MAGICAL_SHIELD, &spells[i].caster_pos, 0.4F);
 
 						Vec3f cabalpos;
-						if (spells[i].caster==0)
-						{
-								cabalpos.x = player.pos.x; 
-							cabalpos.y=player.pos.y+60.f-mov;
-								cabalpos.z = player.pos.z; 
+						if(spells[i].caster == 0) {
+							cabalpos.x = player.pos.x;
+							cabalpos.y = player.pos.y + 60.f - mov;
+							cabalpos.z = player.pos.z;
 							refpos=player.pos.y+60.f;							
-						}
-						else
-						{							
-								cabalpos.x = entities[spells[i].caster]->pos.x; 
-							cabalpos.y=entities[spells[i].caster]->pos.y-scaley-mov;
-								cabalpos.z = entities[spells[i].caster]->pos.z; 
+						} else {
+							cabalpos.x = entities[spells[i].caster]->pos.x;
+							cabalpos.y = entities[spells[i].caster]->pos.y - scaley - mov;
+							cabalpos.z = entities[spells[i].caster]->pos.z;
 							refpos=entities[spells[i].caster]->pos.y-scaley;							
 						}
 
 						float Es=EEsin((float)arxtime.get_frame_time()*( 1.0f / 800 ) + radians(scaley));
 
-						if (spells[i].longinfo2!=-1)
-						{
+						if(spells[i].longinfo2 != -1) {
 							DynLight[spells[i].longinfo2].pos.x = cabalpos.x;
 							DynLight[spells[i].longinfo2].pos.y = refpos;
 							DynLight[spells[i].longinfo2].pos.z = cabalpos.z;
@@ -6828,40 +6825,34 @@ void ARX_SPELLS_Update()
 					}
 					}
 				break;				
-				case SPELL_LIFE_DRAIN:
-
-					{
-					if ( (cabal!=NULL) )
-					{
+				case SPELL_LIFE_DRAIN: {
+					if(cabal) {
 						float refpos;
 						float scaley;
 
-						if (spells[i].caster==0) scaley=90.f;
-						else scaley=EEfabs(entities[spells[i].caster]->physics.cyl.height*( 1.0f / 2 ))+30.f;
+						if(spells[i].caster==0)
+							scaley=90.f;
+						else
+							scaley=EEfabs(entities[spells[i].caster]->physics.cyl.height*( 1.0f / 2 ))+30.f;
 
- 
 						float mov=EEsin((float)arxtime.get_frame_time()*( 1.0f / 800 ))*scaley;
 
 						Vec3f cabalpos;
-						if (spells[i].caster==0)
-						{
-								cabalpos.x = player.pos.x; 
-							cabalpos.y=player.pos.y+60.f-mov;
-								cabalpos.z = player.pos.z; 
+						if(spells[i].caster == 0) {
+							cabalpos.x = player.pos.x;
+							cabalpos.y = player.pos.y + 60.f - mov;
+							cabalpos.z = player.pos.z;
 							refpos=player.pos.y+60.f;							
-						}
-						else
-						{							
-								cabalpos.x = entities[spells[i].caster]->pos.x; 
-							cabalpos.y=entities[spells[i].caster]->pos.y-scaley-mov;
-								cabalpos.z = entities[spells[i].caster]->pos.z; 
+						} else {
+							cabalpos.x = entities[spells[i].caster]->pos.x;
+							cabalpos.y = entities[spells[i].caster]->pos.y - scaley-mov;
+							cabalpos.z = entities[spells[i].caster]->pos.z;
 							refpos=entities[spells[i].caster]->pos.y-scaley;							
 						}
 
 						float Es=EEsin((float)arxtime.get_frame_time()*( 1.0f / 800 ) + radians(scaley));
 
-						if (spells[i].longinfo2!=-1)
-						{
+						if(spells[i].longinfo2 != -1) {
 							DynLight[spells[i].longinfo2].pos.x = cabalpos.x;
 							DynLight[spells[i].longinfo2].pos.y = refpos;
 							DynLight[spells[i].longinfo2].pos.z = cabalpos.z; 
