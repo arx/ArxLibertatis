@@ -68,6 +68,8 @@ public:
 	Vec3f eSrc;
 	Vec3f eCurPos;
 
+	float lightIntensityFactor;
+
 private:
 	int iLength;
 	int	iBezierPrecision;
