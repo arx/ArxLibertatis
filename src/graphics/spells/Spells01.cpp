@@ -271,6 +271,11 @@ void CMagicMissile::Update(unsigned long aulTime)
 	ARX_SOUND_RefreshPosition(snd_loop, &eCurPos);
 
 	ulCurrentTime += aulTime;
+
+	if(ulCurrentTime >= ulDuration)
+		lightIntensityFactor = 0.f;
+	else
+		lightIntensityFactor = 1 - 0.5f * rnd();
 }
 
 float CMagicMissile::Render()
@@ -414,7 +419,7 @@ float CMagicMissile::Render()
 
 	eCurPos = lastpos;
 
-	return 1 - 0.5f * rnd();
+	return 0.f;
 }
 
 //-----------------------------------------------------------------------------
@@ -646,13 +651,13 @@ float CMultiMagicMissile::Render()
 	if(pTab) {
 		for(unsigned int i = 0; i < uiNumber; i++) {
 			if(pTab[i]) {
-				float fa = pTab[i]->Render();
+				pTab[i]->Render();
 
 				CMagicMissile * pMM = (CMagicMissile *) pTab[i];
 
 				if(pMM->lLightId != -1) {
 					EERIE_LIGHT * el	= &DynLight[pMM->lLightId];
-					el->intensity		= 0.7f + 2.3f * fa;
+					el->intensity		= 0.7f + 2.3f * pMM->lightIntensityFactor;
 					el->pos = pMM->eCurPos;
 					el->time_creation	= (unsigned long)(arxtime);
 				}
