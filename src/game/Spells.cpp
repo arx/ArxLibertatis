@@ -519,8 +519,7 @@ bool GetSpellPosition(Vec3f * pos,long i)
 		default: break;
 	}
 
-	if (ValidIONum(spells[i].caster))
-	{
+	if(ValidIONum(spells[i].caster)) {
 		*pos = entities[spells[i].caster]->pos;
 		return true;
 	}
@@ -530,15 +529,13 @@ bool GetSpellPosition(Vec3f * pos,long i)
 
 void LaunchAntiMagicField(size_t ident) {
 	
-	for(size_t n = 0 ; n < MAX_SPELLS; n++) {
+	for(size_t n = 0; n < MAX_SPELLS; n++) {
 		
-		if(!spells[n].exist || n == ident) {
+		if(!spells[n].exist || n == ident)
 			continue;
-		}
 		
-		if(spells[ident].caster_level < spells[n].caster_level) {
+		if(spells[ident].caster_level < spells[n].caster_level)
 			continue;
-		}
 		
 		Vec3f pos;
 		GetSpellPosition(&pos,n);
@@ -552,30 +549,29 @@ void LaunchAntiMagicField(size_t ident) {
 	}
 }
 
-//-----------------------------------------------------------------------------
 void ARX_SPELLS_AddSpellOn(const long &caster, const long &spell)
 {
-	if (caster < 0 ||  spell < 0 || !entities[caster]) return;
+	if(caster < 0 ||  spell < 0 || !entities[caster])
+		return;
 
 	Entity *io = entities[caster];
 	void *ptr;
 
 	ptr = realloc(io->spells_on, sizeof(long) * (io->nb_spells_on + 1));
-
-	if (!ptr) return;
+	if(!ptr)
+		return;
 
 	io->spells_on = (long *)ptr;
 	io->spells_on[io->nb_spells_on] = spell;
 	io->nb_spells_on++;
 }
 
-//-----------------------------------------------------------------------------
 long ARX_SPELLS_GetSpellOn(const Entity * io, Spell spellid)
 {
-	if (!io) return -1;
+	if(!io)
+		return -1;
 
-	for (long i(0); i < io->nb_spells_on; i++)
-	{		
+	for(long i(0); i < io->nb_spells_on; i++) {
 		if (	(spells[io->spells_on[i]].type == spellid)
 			&&	(spells[io->spells_on[i]].exist)	)
 			return io->spells_on[i];
@@ -584,17 +580,17 @@ long ARX_SPELLS_GetSpellOn(const Entity * io, Spell spellid)
 	return -1;
 }
 
-//-----------------------------------------------------------------------------
 void ARX_SPELLS_RemoveSpellOn(const long &caster, const long &spell)
 {
-	if (caster < 0 || spell < 0) return;
+	if(caster < 0 || spell < 0)
+		return;
 
 	Entity *io = entities[caster];
 
-	if (!io || !io->nb_spells_on) return;
+	if(!io || !io->nb_spells_on)
+		return;
 
-	if (io->nb_spells_on == 1) 
-	{
+	if(io->nb_spells_on == 1) {
 		free(io->spells_on);
 		io->spells_on = NULL;
 		io->nb_spells_on = 0;
@@ -603,10 +599,12 @@ void ARX_SPELLS_RemoveSpellOn(const long &caster, const long &spell)
 
 	long i(0);
 
-	for (; i < io->nb_spells_on; i++)
-		if (io->spells_on[i] == spell) break;
+	for(; i < io->nb_spells_on; i++)
+		if(io->spells_on[i] == spell)
+			break;
 
-	if ( i >= io->nb_spells_on) return;
+	if(i >= io->nb_spells_on)
+		return;
 
 	io->nb_spells_on--;
 	memcpy(&io->spells_on[i], &io->spells_on[i + 1], sizeof(long) * (io->nb_spells_on - i));
@@ -621,7 +619,9 @@ void ARX_SPELLS_RemoveMultiSpellOn(long spell_id) {
 }
 
 void ARX_SPELLS_RemoveAllSpellsOn(Entity *io) {
-	free(io->spells_on), io->spells_on = NULL, io->nb_spells_on = 0;
+	free(io->spells_on);
+	io->spells_on = NULL;
+	io->nb_spells_on = 0;
 }
 
 void ARX_SPELLS_RequestSymbolDraw(Entity *io, const string & name, float duration) {
@@ -655,7 +655,8 @@ void ARX_SPELLS_RequestSymbolDraw(Entity *io, const string & name, float duratio
 
 	io->symboldraw = (SYMBOL_DRAW *)realloc(io->symboldraw, sizeof(SYMBOL_DRAW));
 
-	if (!io->symboldraw) return;
+	if(!io->symboldraw)
+		return;
 
 	SYMBOL_DRAW *sd = io->symboldraw;
 
@@ -682,7 +683,7 @@ static void ARX_SPELLS_RequestSymbolDraw2(Entity *io, Rune symb, float duration)
 
 	switch (symb)
 	{
-		case RUNE_AAM   :
+		case RUNE_AAM:
 			iPosX = 0, iPosY = 2, sequence = "6666";
 			break;
 		case RUNE_CETRIUS:
@@ -749,7 +750,8 @@ static void ARX_SPELLS_RequestSymbolDraw2(Entity *io, Rune symb, float duration)
 	SYMBOL_DRAW * ptr;
 	ptr = (SYMBOL_DRAW *)realloc(io->symboldraw, sizeof(SYMBOL_DRAW));
 
-	if (!ptr) return;
+	if(!ptr)
+		return;
 
 	io->symboldraw = ptr;
 
@@ -767,10 +769,8 @@ static void ARX_SPELLS_RequestSymbolDraw2(Entity *io, Rune symb, float duration)
 	sd->cPosStartY = checked_range_cast<char>(iPosY);
 
 	io->gameFlags &= ~GFLAG_INVISIBILITY;
-
 }
 
-//-----------------------------------------------------------------------------
 void ARX_SPELLS_RequestSymbolDraw3(const char *_pcName,char *_pcRes)
 {
 	if		(!strcmp(_pcName, "aam"))		strcpy(_pcRes, "6666");
@@ -799,11 +799,9 @@ void ARX_SPELLS_RequestSymbolDraw3(const char *_pcName,char *_pcRes)
 #define OFFSET_X 8*2//0
 #define OFFSET_Y 6*2//0
 
-//-----------------------------------------------------------------------------
 void GetSymbVector(char c,Vec2s * vec)
 {
-	switch (c)
-	{
+	switch(c) {
 		case '1' :
 			vec->x = -OFFSET_X, vec->y =  OFFSET_Y;
 			break;
@@ -1018,19 +1016,14 @@ static bool MakeSpellName(char * spell, Spell num) {
 
 void SPELLCAST_Notify(long num) {
 	
-	if(num < 0) {
+	if(num < 0 || size_t(num) >= MAX_SPELLS)
 		return;
-	}
-	
-	if(size_t(num) >= MAX_SPELLS) {
-		return;
-	}
-	
+		
 	char spell[128];
 	long source = spells[num].caster;
-	if(!MakeSpellName(spell, spells[num].type)) {
+
+	if(!MakeSpellName(spell, spells[num].type))
 		return;
-	}
 	
 	for(size_t i = 0; i < entities.size(); i++) {
 		if(entities[i] != NULL) {
@@ -1042,22 +1035,22 @@ void SPELLCAST_Notify(long num) {
 	}
 }
 
-//-----------------------------------------------------------------------------
 void SPELLCAST_NotifyOnlyTarget(long num)
 {
-	if (num < 0) return;
+	if(num < 0 || size_t(num) >= MAX_SPELLS)
+		return;
 
-	if ((size_t)num >= MAX_SPELLS) return;
-
-	if(spells[num].target<0) return;
+	if(spells[num].target<0)
+		return;
 
 	char spell[128];
 	long source = spells[num].caster;
 
-	if (MakeSpellName(spell,spells[num].type))
-	{
-		if (source >= 0) EVENT_SENDER = entities[source];
-		else EVENT_SENDER = NULL;
+	if(MakeSpellName(spell, spells[num].type)) {
+		if(source >= 0)
+			EVENT_SENDER = entities[source];
+		else
+			EVENT_SENDER = NULL;
 
 		char param[256];
 		sprintf(param,"%s %ld",spell,(long)spells[num].caster_level);
@@ -1065,19 +1058,16 @@ void SPELLCAST_NotifyOnlyTarget(long num)
 	}	
 }
 
-//-----------------------------------------------------------------------------
 void SPELLEND_Notify(long num)
 {
-	if(num < 0 || (size_t)num >= MAX_SPELLS) {
+	if(num < 0 || size_t(num) >= MAX_SPELLS)
 		return;
-	}
 
 	char spell[128];
 	long source=spells[num].caster;
 
-	if (spells[num].type==SPELL_CONFUSE)
-	{
-		if (ValidIONum(source))
+	if(spells[num].type == SPELL_CONFUSE) {
+		if(ValidIONum(source))
 			EVENT_SENDER = entities[source];
 		else 
 			EVENT_SENDER = NULL;
@@ -1116,8 +1106,7 @@ void ReCenterSequence(char *_pcSequence, int & _iMinX, int & _iMinY,
 	_iMaxX=_iMaxY=0;
 	int iLenght=strlen(_pcSequence);
 
-	for(int iI=0;iI<iLenght;iI++)
-	{
+	for(int iI = 0; iI < iLenght; iI++) {
 		Vec2s es2dVector;
 		GetSymbVector(_pcSequence[iI],&es2dVector);
 		iSizeX+=es2dVector.x;
@@ -1486,12 +1475,10 @@ static void ARX_SPELLS_AnalyseSYMBOL() {
 		case 136	:
 		case 12369	:
 		case 1236	:
-
-				if ((cur_arm>=0) && (cur_arm & 1) )
-				{
+				if(cur_arm >= 0 && (cur_arm & 1)){
 					cur_arm++;					
 
-					if (cur_arm>20)
+					if(cur_arm > 20)
 						ApplySPArm();
 				}
 				else
@@ -1515,7 +1502,8 @@ static void ARX_SPELLS_AnalyseSYMBOL() {
 		case 838   :
 				SpellSymbol[CurrSpellSymbol++] = RUNE_STREGUM;
 
-				if (CurrSpellSymbol>=MAX_SPELL_SYMBOLS) CurrSpellSymbol=MAX_SPELL_SYMBOLS-1;
+				if(CurrSpellSymbol >= MAX_SPELL_SYMBOLS)
+					CurrSpellSymbol = MAX_SPELL_SYMBOLS - 1;
 
 				ARX_SOUND_PlaySFX(SND_SYMB_STREGUM);
 			break;
@@ -1526,7 +1514,8 @@ static void ARX_SPELLS_AnalyseSYMBOL() {
 		case 62    :
 				SpellSymbol[CurrSpellSymbol++] = RUNE_MORTE;
 
-				if (CurrSpellSymbol>=MAX_SPELL_SYMBOLS) CurrSpellSymbol=MAX_SPELL_SYMBOLS-1;
+				if(CurrSpellSymbol >= MAX_SPELL_SYMBOLS)
+					CurrSpellSymbol = MAX_SPELL_SYMBOLS - 1;
 
 				ARX_SOUND_PlaySFX(SND_SYMB_MORTE);
 			break;
@@ -1537,7 +1526,8 @@ static void ARX_SPELLS_AnalyseSYMBOL() {
 		case 8626862 : 
 				SpellSymbol[CurrSpellSymbol++] = RUNE_TEMPUS;
 
-				if (CurrSpellSymbol>=MAX_SPELL_SYMBOLS) CurrSpellSymbol=MAX_SPELL_SYMBOLS-1;
+				if(CurrSpellSymbol >= MAX_SPELL_SYMBOLS)
+					CurrSpellSymbol = MAX_SPELL_SYMBOLS - 1;
 
 				ARX_SOUND_PlaySFX(SND_SYMB_TEMPUS);
 			break;
@@ -1556,7 +1546,8 @@ static void ARX_SPELLS_AnalyseSYMBOL() {
 		case 616: 
 				SpellSymbol[CurrSpellSymbol++] = RUNE_MOVIS;
 
-				if (CurrSpellSymbol>=MAX_SPELL_SYMBOLS) CurrSpellSymbol=MAX_SPELL_SYMBOLS-1;
+				if(CurrSpellSymbol >= MAX_SPELL_SYMBOLS)
+					CurrSpellSymbol = MAX_SPELL_SYMBOLS - 1;
 
 				ARX_SOUND_PlaySFX(SND_SYMB_MOVIS);
 			break;
@@ -1566,7 +1557,8 @@ static void ARX_SPELLS_AnalyseSYMBOL() {
 		case 4:
 				SpellSymbol[CurrSpellSymbol++] = RUNE_NHI;
 
-				if (CurrSpellSymbol>=MAX_SPELL_SYMBOLS) CurrSpellSymbol=MAX_SPELL_SYMBOLS-1;
+				if(CurrSpellSymbol >= MAX_SPELL_SYMBOLS)
+					CurrSpellSymbol = MAX_SPELL_SYMBOLS - 1;
 
 				ARX_SOUND_PlaySFX(SND_SYMB_NHI);
 			break;
@@ -1576,7 +1568,8 @@ static void ARX_SPELLS_AnalyseSYMBOL() {
 		case 6:
 				SpellSymbol[CurrSpellSymbol++] = RUNE_AAM;
 
-				if (CurrSpellSymbol>=MAX_SPELL_SYMBOLS) CurrSpellSymbol=MAX_SPELL_SYMBOLS-1;
+				if(CurrSpellSymbol >= MAX_SPELL_SYMBOLS)
+					CurrSpellSymbol = MAX_SPELL_SYMBOLS - 1;
 
 				ARX_SOUND_PlaySFX(SND_SYMB_AAM);
 			break;
@@ -1592,7 +1585,8 @@ static void ARX_SPELLS_AnalyseSYMBOL() {
 		case 268:
 				SpellSymbol[CurrSpellSymbol++] = RUNE_YOK;
 
-				if (CurrSpellSymbol>=MAX_SPELL_SYMBOLS) CurrSpellSymbol=MAX_SPELL_SYMBOLS-1;
+				if(CurrSpellSymbol >= MAX_SPELL_SYMBOLS)
+					CurrSpellSymbol = MAX_SPELL_SYMBOLS - 1;
 
 				ARX_SOUND_PlaySFX(SND_SYMB_YOK);
 			break;
@@ -1603,7 +1597,8 @@ static void ARX_SPELLS_AnalyseSYMBOL() {
 		case 626:
 				SpellSymbol[CurrSpellSymbol++] = RUNE_TAAR;
 
-				if (CurrSpellSymbol>=MAX_SPELL_SYMBOLS) CurrSpellSymbol=MAX_SPELL_SYMBOLS-1;
+				if(CurrSpellSymbol >= MAX_SPELL_SYMBOLS)
+					CurrSpellSymbol = MAX_SPELL_SYMBOLS - 1;
 
 				ARX_SOUND_PlaySFX(SND_SYMB_TAAR);
 			break;
@@ -1611,17 +1606,15 @@ static void ARX_SPELLS_AnalyseSYMBOL() {
 		// MEGA
 		case 82:
 		case 8:
-
-				if ((cur_arm>=0) && !(cur_arm & 1) )
-				{
+				if(cur_arm >= 0 && !(cur_arm & 1))
 					cur_arm++;					
-				}
 				else
 					cur_arm=-1;
 
 				SpellSymbol[CurrSpellSymbol++] = RUNE_MEGA;
 
-				if (CurrSpellSymbol>=MAX_SPELL_SYMBOLS) CurrSpellSymbol=MAX_SPELL_SYMBOLS-1;
+				if(CurrSpellSymbol >= MAX_SPELL_SYMBOLS)
+					CurrSpellSymbol = MAX_SPELL_SYMBOLS - 1;
 
 				ARX_SOUND_PlaySFX(SND_SYMB_MEGA);
 			break;
@@ -1638,7 +1631,8 @@ static void ARX_SPELLS_AnalyseSYMBOL() {
 		case 31:
 				SpellSymbol[CurrSpellSymbol++] = RUNE_VISTA;
 
-				if (CurrSpellSymbol>=MAX_SPELL_SYMBOLS) CurrSpellSymbol=MAX_SPELL_SYMBOLS-1;
+				if(CurrSpellSymbol >= MAX_SPELL_SYMBOLS)
+					CurrSpellSymbol = MAX_SPELL_SYMBOLS - 1;
 
 				ARX_SOUND_PlaySFX(SND_SYMB_VISTA);
 			break;
@@ -1648,7 +1642,8 @@ static void ARX_SPELLS_AnalyseSYMBOL() {
 		case 68:
 			SpellSymbol[CurrSpellSymbol++] = RUNE_VITAE;
 
-			if (CurrSpellSymbol>=MAX_SPELL_SYMBOLS) CurrSpellSymbol=MAX_SPELL_SYMBOLS-1;
+			if(CurrSpellSymbol >= MAX_SPELL_SYMBOLS)
+				CurrSpellSymbol = MAX_SPELL_SYMBOLS - 1;
 
 			ARX_SOUND_PlaySFX(SND_SYMB_VITAE);
 			break;
@@ -1660,9 +1655,9 @@ static void ARX_SPELLS_AnalyseSYMBOL() {
 		case 2398:
 		case 23898:
 		case 236987:
-		case 23698:
-				
-			if (uw_mode_pos == 0) uw_mode_pos++;
+		case 23698:	
+			if(uw_mode_pos == 0)
+				uw_mode_pos++;
 		
 			goto failed; 
 		break;
@@ -1723,11 +1718,8 @@ static void ARX_SPELLS_AnalyseSYMBOL() {
 		case 2982398:
 		case 238298:
 		case 3939:
-
-			if (uw_mode_pos == 1)
-			{
+			if(uw_mode_pos == 1)
 				ApplySPuw();
-			}
 
 			goto failed; 
 		break;
