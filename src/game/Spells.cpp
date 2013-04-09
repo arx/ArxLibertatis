@@ -5348,7 +5348,6 @@ void ARX_SPELLS_Kill(long i) {
 EYEBALL_DEF eyeball;
 
 Anglef cabalangle;
-Vec3f cabalpos;
 
 float ARX_SPELLS_ApplyFireProtection(Entity * io,float damages)
 {
@@ -5822,6 +5821,7 @@ void ARX_SPELLS_Update()
  
 					float mov=EEsin((float)arxtime.get_frame_time()*( 1.0f / 800 ))*scaley;
 
+					Vec3f cabalpos;
 					if(spells[i].caster==0) {
 						cabalpos.x = player.pos.x;
 						cabalpos.y = player.pos.y + 60.f - mov;
@@ -6748,6 +6748,7 @@ void ARX_SPELLS_Update()
 
 						if ((mov1>-scaley+10.f) && (mov<-scaley+10.f)) ARX_SOUND_PlaySFX(SND_SPELL_MAGICAL_SHIELD, &spells[i].caster_pos, 0.4F);
 
+						Vec3f cabalpos;
 						if (spells[i].caster==0)
 						{
 								cabalpos.x = player.pos.x; 
@@ -6844,6 +6845,7 @@ void ARX_SPELLS_Update()
  
 						float mov=EEsin((float)arxtime.get_frame_time()*( 1.0f / 800 ))*scaley;
 
+						Vec3f cabalpos;
 						if (spells[i].caster==0)
 						{
 								cabalpos.x = player.pos.x; 
