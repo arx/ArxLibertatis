@@ -726,6 +726,11 @@ void CPoisonProjectile::Update(unsigned long _ulTime)
 
 		fTrail = ((ulCurrentTime - 750) * (1.0f / (ulDuration - 750.0f))) * 9 * (BEZIERPrecision + 2);
 	}
+
+	if(ulCurrentTime >= ulDuration)
+		lightIntensityFactor = 0.f;
+	else
+		lightIntensityFactor = 1.f;
 }
 
 float CPoisonProjectile::Render() {
@@ -934,7 +939,7 @@ float CMultiPoisonProjectile::Render()
 
 	for (unsigned int i = 0 ; i < uiNumber ; i++)
 	{
-		float fa = pTab[i]->Render();
+		pTab[i]->Render();
 
 		CPoisonProjectile * pPoisonProjectile = (CPoisonProjectile *) pTab[i];
 
@@ -942,7 +947,7 @@ float CMultiPoisonProjectile::Render()
 		{
 			long id					= pPoisonProjectile->lLightId;
 			DynLight[id].exist		= 1;
-			DynLight[id].intensity	= 2.3f * fa;
+			DynLight[id].intensity	= 2.3f * pPoisonProjectile->lightIntensityFactor;
 			DynLight[id].fallend	= 250.f;
 			DynLight[id].fallstart	= 150.f;
 			DynLight[id].rgb = Color3f::green;

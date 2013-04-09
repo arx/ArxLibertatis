@@ -197,6 +197,8 @@ public:
 	TexturedVertex pathways[40];
 	ParticleSystem pPS;
 	ParticleSystem pPSStream;
+
+	float lightIntensityFactor;
 	
 	CPoisonProjectile();
 	
