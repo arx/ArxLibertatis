@@ -1335,23 +1335,16 @@ void ArxGame::renderLevel() {
 	updateFirstPersonCamera();
 	updateConversationCamera();
 
-	////////////////////////
-	// Checks SCRIPT TIMERS.
 	ARX_SCRIPT_Timer_Check();
 
 	speechControlledCinematic();
 
 	handlePlayerDeath();
 
-	/////////////////////////////////////
-
 	handleCameraController();
-
 	UpdateCameras();
 
-	///////////////////////////////////////////
 	ARX_PLAYER_FrameCheck(Original_framedelay);
-
 
 	updateActiveCamera();
 
@@ -1395,8 +1388,7 @@ void ArxGame::renderLevel() {
 		GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer, subj.bkgcolor);
 	}
 
-	//-------------------------------------------------------------------------------
-	//               DRAW CINEMASCOPE 16/9
+	// DRAW CINEMASCOPE 16/9
 	if(CINEMA_DECAL != 0.f) {
 		Rect rectz[2];
 		rectz[0].left = rectz[1].left = 0;
@@ -1408,7 +1400,6 @@ void ArxGame::renderLevel() {
 		rectz[1].bottom = DANAESIZY;
 		GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer, Color::none, 0.0f, 2, rectz);
 	}
-	//-------------------------------------------------------------------------------
 
 	GRenderer->BeginScene();
 
@@ -1431,7 +1422,6 @@ void ArxGame::renderLevel() {
 			&entities.player()->pos, 0, entities.player());
 	}
 
-	// SUBJECTIVE VIEW UPDATE START  *********************************************************
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 	GRenderer->SetRenderState(Renderer::DepthTest, true);
 
@@ -1453,6 +1443,7 @@ void ArxGame::renderLevel() {
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+
 	ARX_FOGS_Render();
 	
 	ARX_PARTICLES_Render(&subj);
@@ -1550,6 +1541,7 @@ void ArxGame::renderLevel() {
 
 	// Update spells
 	ARX_SPELLS_Update();
+
 	GRenderer->SetCulling(Renderer::CullNone);
 	GRenderer->SetRenderState(Renderer::Fog, true);
 
@@ -1588,7 +1580,9 @@ void ArxGame::renderLevel() {
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 
 	GRenderer->SetRenderState(Renderer::Fog, true);
+
 	goFor2DFX();
+
 	GRenderer->SetRenderState(Renderer::Fog, false);
 	GRenderer->Clear(Renderer::DepthBuffer);
 
@@ -1616,8 +1610,6 @@ void ArxGame::renderLevel() {
 		if(SHOWLEVEL >= 0 && SHOWLEVEL < 32)
 			g_miniMap.showPlayerMiniMap(SHOWLEVEL);
 	}
-
-	//-------------------------------------------------------------------------
 
 	// CURSOR Rendering
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
