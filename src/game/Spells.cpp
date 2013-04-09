@@ -3111,11 +3111,10 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 	bool notifyAll = true;
 	
 	switch(typ) {
-		
-		case SPELL_NONE: return true;
-		
-		// level 1 spells
-		
+		case SPELL_NONE:
+		return true;
+		//****************************************************************************
+		// LEVEL 1
 		case SPELL_MAGIC_SIGHT: {
 			
 			spells[i].exist = true;
@@ -3134,7 +3133,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			
 			break;
 		}
-		
 		case SPELL_MAGIC_MISSILE: {
 			
 			spells[i].exist = true;
@@ -3156,7 +3154,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			
 			break;
 		}
-		
 		case SPELL_IGNIT: {
 			
 			spells[i].exist = true;
@@ -3235,7 +3232,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			
 			break;
 		}
-		
 		case SPELL_DOUSE: {
 			
 			spells[i].exist = true;
@@ -3328,7 +3324,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			
 			break;
 		}
-		
 		case SPELL_ACTIVATE_PORTAL: {
 			
 			ARX_SOUND_PlayInterface(SND_SPELL_ACTIVATE_PORTAL);
@@ -3337,11 +3332,9 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			
 			break;
 		}
-		
-		// level 2 spells
-		
+		//****************************************************************************
+		// LEVEL 2
 		case SPELL_HEAL: {
-			
 			if(!(spells[i].flags & SPELLCAST_FLAG_NOSOUND)) {
 				ARX_SOUND_PlaySFX(SND_SPELL_HEALING, &spells[i].caster_pos);
 			}
@@ -3361,9 +3354,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			
 			break;
 		}
-		
 		case SPELL_DETECT_TRAP: {
-			
 			long iCancel = ARX_SPELLS_GetInstanceForThisCaster(typ, spells[i].caster);
 			if(iCancel > -1) {
 				spells[iCancel].tolive = 0;
@@ -3392,9 +3383,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			
 			break;
 		}
-		
 		case SPELL_ARMOR: {
-			
 			long idx = ARX_SPELLS_GetSpellOn(entities[spells[i].target], typ);
 			if(idx >= 0) {
 				spells[idx].tolive = 0;
@@ -3451,7 +3440,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			
 			break;
 		}
-		
 		case SPELL_LOWER_ARMOR: {
 			
 			long idx = ARX_SPELLS_GetSpellOn(entities[spells[i].target], typ);
@@ -3506,7 +3494,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			
 			break;
 		}
-		
 		case SPELL_HARM: {
 			
 			if(!(spells[i].flags & SPELLCAST_FLAG_NOSOUND)) {
@@ -3562,11 +3549,9 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			
 			break;
 		}
-		
-		// level 3 spells
-		
+		//****************************************************************************
+		// LEVEL 3
 		case SPELL_SPEED: {
-			
 			spells[i].bDuration = true;
 			spells[i].fManaCostPerSecond = 2.f;
 			
@@ -3603,9 +3588,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			
 			break;
 		}
-		
 		case SPELL_DISPELL_ILLUSION: {
-			
 			ARX_SOUND_PlaySFX(SND_SPELL_DISPELL_ILLUSION);
 			spells[i].exist = true;
 			spells[i].tolive = 1000;
@@ -3629,12 +3612,9 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 					}
 				}
 			}
-			
 			break;
 		}
-		
 		case SPELL_FIREBALL: {
-			
 			spells[i].exist = true;
 			spells[i].lastupdate = spells[i].timcreation = (unsigned long)(arxtime);
 			spells[i].tolive = 20000; // TODO probably never read
@@ -3698,7 +3678,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 		}
 		
 		case SPELL_CREATE_FOOD: {
-			
 			ARX_SOUND_PlaySFX(SND_SPELL_CREATE_FOOD, &spells[i].caster_pos);
 			spells[i].exist = true;
 			spells[i].tolive = (duration > -1) ? duration : 3500;
@@ -3716,7 +3695,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			
 			break;
 		}
-		
 		case SPELL_ICE_PROJECTILE: {
 			
 			ARX_SOUND_PlaySFX(SND_SPELL_ICE_PROJECTILE_LAUNCH, &spells[i].caster_pos);
@@ -3746,11 +3724,9 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			
 			break;
 		}
-		
-		// level 4 spells
-		
+		//****************************************************************************
+		// LEVEL 4
 		case SPELL_BLESS: {
-			
 			if(spells[i].caster == 0) {
 				spells[i].target = 0;
 			}
@@ -3779,7 +3755,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			
 			break;
 		}
-		
 		case SPELL_DISPELL_FIELD: {
 			
 			spells[i].tolive = 10;
@@ -3844,7 +3819,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			
 			break;
 		}
-		
 		case SPELL_FIRE_PROTECTION: {
 			
 			ARX_SOUND_PlaySFX(SND_SPELL_FIRE_PROTECTION);
@@ -3901,9 +3875,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			
 			break;
 		}
-		
 		case SPELL_COLD_PROTECTION: {
-			
 			long idx = ARX_SPELLS_GetSpellOn(entities[spells[i].target], typ);
 			if(idx >= 0) {
 				spells[idx].tolive = 0;
@@ -3958,9 +3930,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			
 			break;
 		}
-		
 		case SPELL_TELEKINESIS: {
-			
 			spells[i].exist = true;
 			spells[i].tolive = (duration > -1) ? duration : 6000000;
 			spells[i].bDuration = true;
@@ -3974,9 +3944,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			
 			break;
 		}
-		
 		case SPELL_CURSE: {
-			
 			long iCancel = ARX_SPELLS_GetInstanceForThisCaster(typ, spells[i].target);
 			if(iCancel > -1) {
 				spells[iCancel].tolive = 0;
@@ -4008,11 +3976,9 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			
 			break;
 		}
-		
-		// level 5 spells
-		
+		//****************************************************************************
+		// LEVEL 5
 		case SPELL_RUNE_OF_GUARDING: {
-			
 			long iCancel = ARX_SPELLS_GetInstanceForThisCaster(typ, spells[i].caster);
 			if(iCancel > -1) {
 				spells[iCancel].tolive = 0;
@@ -4031,9 +3997,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			
 			break;
 		}
-		
 		case SPELL_LEVITATE: {
-			
 			long iCancel = ARX_SPELLS_GetInstanceForThisCaster(typ, spells[i].caster);
 			if(iCancel > -1) {
 				spells[iCancel].tolive = 0;
@@ -4066,9 +4030,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			
 			break;
 		}
-		
 		case SPELL_CURE_POISON: {
-			
 			if(spells[i].caster == 0) {
 				spells[i].target = 0;
 			}
@@ -4098,9 +4060,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			
 			break;
 		}
-		
 		case SPELL_REPEL_UNDEAD: {
-			
 			long iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_REPEL_UNDEAD, spells[i].caster);
 			if(iCancel > -1) {
 				spells[iCancel].tolive = 0;
@@ -4131,7 +4091,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			
 			break;
 		}
-		
 		case SPELL_POISON_PROJECTILE: {
 			
 			ARX_SOUND_PlaySFX(SND_SPELL_POISON_PROJECTILE_LAUNCH,
@@ -4156,9 +4115,8 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			
 			break;
 		}
-		
-		// level 6 spells
-		
+		//****************************************************************************
+		// LEVEL 6
 		case SPELL_RISE_DEAD: {
 			
 			long iCancel = ARX_SPELLS_GetInstanceForThisCaster(typ, spells[i].caster);
@@ -4224,9 +4182,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			
 			break;
 		}
-		
 		case SPELL_PARALYSE: {
-			
 			ARX_SOUND_PlaySFX(SND_SPELL_PARALYSE, &spells[i].caster_pos);
 			
 			spells[i].exist = true;
@@ -4250,9 +4206,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			
 			break;
 		}
-		
 		case SPELL_CREATE_FIELD: {
-			
 			spells[i].exist = true;
 			
 			unsigned long start = (unsigned long)(arxtime);
@@ -4331,9 +4285,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			
 			break;
 		}
-		
 		case SPELL_DISARM_TRAP: {
-			
 			ARX_SOUND_PlaySFX(SND_SPELL_DISARM_TRAP);
 			
 			spells[i].exist = true;
@@ -4373,9 +4325,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			
 			break;
 		}
-		
 		case SPELL_SLOW_DOWN: {
-			
 			long target = spells[i].target;
 			
 			Entity * io = entities[target];
@@ -4412,9 +4362,8 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			
 			break;
 		}
-		
-		// level 7 spells
-		
+		//****************************************************************************
+		// LEVEL 7
 		case SPELL_FLYING_EYE: {
 			
 			if(spells[i].caster == 0) {
@@ -4465,9 +4414,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			
 			break;
 		}
-		
 		case SPELL_FIRE_FIELD: {
-			
 			long iCancel = ARX_SPELLS_GetInstanceForThisCaster(typ, spells[i].caster);
 			if(iCancel > -1) {
 				spells[iCancel].tolive = 0;
@@ -4531,9 +4478,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			
 			break;
 		}
-		
 		case SPELL_ICE_FIELD: {
-			
 			long iCancel = ARX_SPELLS_GetInstanceForThisCaster(typ, spells[i].caster);
 			if(iCancel > -1) {
 				spells[iCancel].tolive = 0;
@@ -4599,9 +4544,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			
 			break;
 		}
-		
 		case SPELL_LIGHTNING_STRIKE: {
-			
 			spells[i].exist = true;
 			
 			CLightning * effect = new CLightning();
@@ -4621,9 +4564,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			
 			break;
 		}
-		
 		case SPELL_CONFUSE: {
-			
 			ARX_SOUND_PlaySFX(SND_SPELL_CONFUSE);
 			
 			spells[i].exist = true;
@@ -4649,11 +4590,9 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			
 			break;
 		}
-		
-		// level 8 spells
-		
+		//****************************************************************************
+		// LEVEL 8
 		case SPELL_INVISIBILITY: {
-			
 			spells[i].exist = true;
 			spells[i].tolive = (duration > -1) ? duration : 6000000;
 			spells[i].bDuration = true;
@@ -4672,9 +4611,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			
 			break;
 		}
-		
 		case SPELL_MANA_DRAIN: {
-			
 			long iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_LIFE_DRAIN,
 			                                                   spells[i].caster);
 			if(iCancel > -1) {
@@ -4726,9 +4663,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			
 			break;
 		}
-		
 		case SPELL_EXPLOSION: {
-			
 			ARX_SOUND_PlaySFX(SND_SPELL_EXPLOSION);
 			
 			spells[i].exist = true;
@@ -4792,9 +4727,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			
 			break;
 		}
-		
 		case SPELL_ENCHANT_WEAPON: {
-			
 			spells[i].exist = true;
 			spells[i].tolive = 20;
 			
@@ -4802,9 +4735,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			
 			break;
 		}
-		
 		case SPELL_LIFE_DRAIN: {
-			
 			long iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_HARM,
 			                                                   spells[i].caster);
 			if(iCancel > -1) {
@@ -4856,9 +4787,8 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			
 			break;
 		}
-		
-		// level 9 spells
-		
+		//****************************************************************************
+		// LEVEL 9
 		case SPELL_SUMMON_CREATURE: {
 			
 			ARX_SOUND_PlaySFX(SND_SPELL_SUMMON_CREATURE);
@@ -4920,9 +4850,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			
 			break;
 		}
-		
 		case SPELL_FAKE_SUMMON: {
-			
 			if(spells[i].caster <= 0 || !ValidIONum(spells[i].target)) {
 				return false;
 			}
@@ -4965,9 +4893,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			
 			break;
 		}
-		
 		case SPELL_NEGATE_MAGIC: {
-			
 			ARX_SOUND_PlaySFX(SND_SPELL_NEGATE_MAGIC);
 			
 			spells[i].exist = true;
@@ -4993,9 +4919,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			
 			break;
 		}
-		
 		case SPELL_INCINERATE: {
-			
 			Entity * tio = entities[spells[i].target];
 			if((tio->ioflags & IO_NPC) && tio->_npcdata->life <= 0.f) {
 				return false;
@@ -5018,9 +4942,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			
 			break;
 		}
-		
 		case SPELL_MASS_PARALYSE: {
-			
 			ARX_SOUND_PlaySFX(SND_SPELL_MASS_PARALYSE);
 			
 			spells[i].exist = true;
@@ -5060,11 +4982,9 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			
 			break;
 		}
-		
-		// level 10 spells
-		
+		//****************************************************************************
+		// LEVEL 10
 		case SPELL_MASS_LIGHTNING_STRIKE: {
-			
 			for(size_t ii = 0; ii < MAX_SPELLS; ii++) {
 				if(spells[ii].exist && spells[ii].type == typ) {
 					if(spells[ii].longinfo != -1) {
@@ -5126,9 +5046,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			
 			break;
 		}
-		
 		case SPELL_CONTROL_TARGET: {
-			
 			if(!ValidIONum(spells[i].target)) {
 				return false;
 			}
@@ -5175,9 +5093,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			
 			break;
 		}
-		
 		case SPELL_FREEZE_TIME: {
-			
 			ARX_SOUND_PlaySFX(SND_SPELL_FREEZETIME);
 			
 			float max_slowdown = std::max(0.f, GLOBAL_SLOWDOWN - 0.01f);
@@ -5192,9 +5108,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			
 			break;
 		}
-		
 		case SPELL_MASS_INCINERATE: {
-			
 			ARX_SOUND_PlaySFX(SND_SPELL_MASS_INCINERATE);
 			
 			spells[i].exist = true;
@@ -5233,9 +5147,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			
 			break;
 		}
-		
 		case SPELL_TELEPORT: {
-			
 			spells[i].exist = true;
 			spells[i].tolive = 7000;
 			
