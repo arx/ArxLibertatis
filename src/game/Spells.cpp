@@ -5349,7 +5349,6 @@ EYEBALL_DEF eyeball;
 
 Anglef cabalangle;
 Vec3f cabalpos;
-Vec3f cabalscale;
 
 float ARX_SPELLS_ApplyFireProtection(Entity * io,float damages)
 {
@@ -5854,7 +5853,7 @@ void ARX_SPELLS_Update()
 
 					cabalangle.g = 0.f;
 
-					cabalscale = Vec3f::repeat(Es);
+					Vec3f cabalscale = Vec3f::repeat(Es);
 					Color3f cabalcolor = Color3f(0.8f, 0.4f, 0.f);
 					DrawEERIEObjEx(cabal,&cabalangle,&cabalpos,&cabalscale, cabalcolor);
 
@@ -6783,7 +6782,7 @@ void ARX_SPELLS_Update()
 
 						cabalangle.g = 0.f;
 												
-						cabalscale = Vec3f::repeat(Es);
+						Vec3f cabalscale = Vec3f::repeat(Es);
 						Color3f cabalcolor = Color3f(0.4f, 0.4f, 0.8f);
 						DrawEERIEObjEx(cabal,&cabalangle,&cabalpos,&cabalscale, cabalcolor);
 
@@ -6879,7 +6878,7 @@ void ARX_SPELLS_Update()
 						spells[i].fdata=cabalangle.b;
 							cabalangle.g = 0.f;
 
-						cabalscale = Vec3f::repeat(Es);
+						Vec3f cabalscale = Vec3f::repeat(Es);
 						Color3f cabalcolor = Color3f(0.8f, 0.f, 0.f);
 						DrawEERIEObjEx(cabal,&cabalangle,&cabalpos,&cabalscale, cabalcolor);
 
