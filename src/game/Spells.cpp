@@ -237,83 +237,86 @@ unsigned char ucFlick=0;
 
 bool GetSpellPosition(Vec3f * pos,long i)
 {
- 
-
-	switch (spells[i].type)
-	{
-				//*********************************************************************************************
-		// LEVEL 1 SPELLS -----------------------------------------------------------------------------
-		case SPELL_MAGIC_SIGHT: // Launching MAGIC_SIGHT			
+	switch(spells[i].type) {
+		//****************************************************************************
+		// LEVEL 1
+		case SPELL_MAGIC_SIGHT:
 		break;
-		//----------------------------------------------------------------------------------------------
-		case SPELL_MAGIC_MISSILE: // Launching MAGIC_MISSILE
+		case SPELL_MAGIC_MISSILE:
 		break;
-		//----------------------------------------------------------------------------------------------
-		case SPELL_IGNIT:// Launching IGNIT
+		case SPELL_IGNIT:
 		break;
-		//---------------------------------------------------------------------------------------------
-		case SPELL_DOUSE:// Launching DOUSE
+		case SPELL_DOUSE:
 		break;
-		//---------------------------------------------------------------------------------------------
-		case SPELL_ACTIVATE_PORTAL:// Launching ACTIVATE_PORTAL
+		case SPELL_ACTIVATE_PORTAL:
 		break;			
-		//*************************************************************************************************
-		// LEVEL 2 SPELLS -----------------------------------------------------------------------------
-		case SPELL_HEAL:// Launching HEAL
+		//****************************************************************************
+		// LEVEL 2
+		case SPELL_HEAL:
 		break;
-		//---------------------------------------------------------------------------------------------
-		case SPELL_DETECT_TRAP:// Launching DETECT_TRAP
+		case SPELL_DETECT_TRAP:
 		break;
-		//---------------------------------------------------------------------------------------------
-		case SPELL_ARMOR:// Launching ARMOR
-
+		case SPELL_ARMOR:
 			if (ValidIONum(spells[i].target))
 			{
 				*pos = entities[spells[i].target]->pos;
 				return true;
 			}
-
 		break;
-		//------------------------------------------------------------------------------------------------
-		case SPELL_LOWER_ARMOR:// Launching LOWER_ARMOR
-
+		case SPELL_LOWER_ARMOR:
 			if (ValidIONum(spells[i].target))
 			{
 				*pos = entities[spells[i].target]->pos;
 				return true;
 			}
-
 		break;
-		//------------------------------------------------------------------------------------------------
-		case SPELL_HARM:// Launching HARM
+		case SPELL_HARM:
 		break;			
-		//**********************************************************************************************
-		// LEVEL 3 SPELLS -----------------------------------------------------------------------------
+		//****************************************************************************
+		// LEVEL 3
 		case SPELL_SPEED:// Launching SPEED
-
 			if (ValidIONum(spells[i].target))
 			{
 				*pos = entities[spells[i].target]->pos;
 				return true;
 			}
-
 		break;
-		//--------------------------------------------------------------------------------------------------
 		case SPELL_DISPELL_ILLUSION:// Launching DISPELL_ILLUSION (REVEAL)
 		break;
-		//----------------------------------------------------------------------------------------------
-		case SPELL_FIREBALL:// Launching FIREBALL
+		case SPELL_FIREBALL:
 		break;
-		//-------------------------------------------------------------------------------------------------
-		case SPELL_CREATE_FOOD:// Launching CREATE_FOOD
+		case SPELL_CREATE_FOOD:
 		break;
-		//----------------------------------------------------------------------------------------------
-		case SPELL_ICE_PROJECTILE:// Launching ICE_PROJECTILE
+		case SPELL_ICE_PROJECTILE:
 		break;
-		//***********************************************************************************************	
-		// LEVEL 4 SPELLS -----------------------------------------------------------------------------
+		//****************************************************************************
+		// LEVEL 4
 		case SPELL_BLESS:// Launching BLESS
-
+			if (ValidIONum(spells[i].target))
+			{
+				*pos = entities[spells[i].target]->pos;
+				return true;
+			}
+		break;
+		case SPELL_DISPELL_FIELD:
+		break;
+		case SPELL_FIRE_PROTECTION:
+			if (ValidIONum(spells[i].target))
+			{
+				*pos = entities[spells[i].target]->pos;
+				return true;
+			}
+		break;
+		case SPELL_COLD_PROTECTION:
+			if (ValidIONum(spells[i].target))
+			{
+				*pos = entities[spells[i].target]->pos;
+				return true;
+			}
+		break;
+		case SPELL_TELEKINESIS:
+		break;
+		case SPELL_CURSE:
 			if (ValidIONum(spells[i].target))
 			{
 				*pos = entities[spells[i].target]->pos;
@@ -321,97 +324,48 @@ bool GetSpellPosition(Vec3f * pos,long i)
 			}
 
 		break;
-		//-----------------------------------------------------------------------------------------------
-		case SPELL_DISPELL_FIELD:// Launching DISPELL_FIELD
-		break;
-		//-----------------------------------------------------------------------------------------------
-		case SPELL_FIRE_PROTECTION:// Launching FIRE_PROTECTION
-
-			if (ValidIONum(spells[i].target))
-			{
-				*pos = entities[spells[i].target]->pos;
-				return true;
-			}
-
-		break;
-		//----------------------------------------------------------------------------------------------
-		case SPELL_COLD_PROTECTION:// Launching COLD_PROTECTION
-
-			if (ValidIONum(spells[i].target))
-			{
-				*pos = entities[spells[i].target]->pos;
-				return true;
-			}
-
-		break;
-		//----------------------------------------------------------------------------------------------
-		case SPELL_TELEKINESIS:// Launching TELEKINESIS
-		break;
-		//-----------------------------------------------------------------------------------------------
-		case SPELL_CURSE:// Launching CURSE
-
-			if (ValidIONum(spells[i].target))
-			{
-				*pos = entities[spells[i].target]->pos;
-				return true;
-			}
-
-		break;
-		//*********************************************************************
-		// LEVEL 5 SPELLS -----------------------------------------------------------------------------
+		//****************************************************************************
+		// LEVEL 5
 		case SPELL_RUNE_OF_GUARDING:
 		break;
-		//----------------------------------------------------------------------------
 		case SPELL_LEVITATE:
 		break;
-		//----------------------------------------------------------------------------
 		case SPELL_CURE_POISON:
 		break;
-		//----------------------------------------------------------------------------
 		case SPELL_REPEL_UNDEAD:
 		break;
-		//----------------------------------------------------------------------------
 		case SPELL_POISON_PROJECTILE:
 		break;
-		//***************************************************************************
-		// LEVEL 6 -----------------------------------------------------------------------------
+		//****************************************************************************
+		// LEVEL 6
 		case SPELL_RISE_DEAD:
 		break;
-		//----------------------------------------------------------------------------
 		case SPELL_PARALYSE:
-
 			if (ValidIONum(spells[i].target))
 			{
 				*pos = entities[spells[i].target]->pos;
 				return true;
 			}
-
 		break;
-		//----------------------------------------------------------------------------
 		case SPELL_CREATE_FIELD:
 		break;
-		//----------------------------------------------------------------------------
 		case SPELL_DISARM_TRAP:
 		break;
-		//----------------------------------------------------------------------------
 		case SPELL_SLOW_DOWN:
-
 			if (ValidIONum(spells[i].target))
 			{
 				*pos = entities[spells[i].target]->pos;
 				return true;
 			}
-
 		break;
-		//****************************************************************************************
-		// LEVEL 7 SPELLS -----------------------------------------------------------------------------
+		//****************************************************************************
+		// LEVEL 7
 		case SPELL_FLYING_EYE:
 		{	
 			*pos = eyeball.pos;
 			return true;
 		}	
 		break;
-		//----------------------------------------------------------------------------
 		case SPELL_FIRE_FIELD:
 			CSpellFx *pCSpellFX;
 			pCSpellFX = spells[i].pSpellFx;
@@ -423,100 +377,74 @@ bool GetSpellPosition(Vec3f * pos,long i)
 				*pos = pFireField->pos;
 				return true;
 			}
-
 		break;
-		//----------------------------------------------------------------------------
 		case SPELL_ICE_FIELD:
 		break;
-		//----------------------------------------------------------------------------
 		case SPELL_LIGHTNING_STRIKE:
 		break;
-		//----------------------------------------------------------------------------
 		case SPELL_CONFUSE:
-
 			if (ValidIONum(spells[i].target))
 			{
 				*pos = entities[spells[i].target]->pos;
 				return true;
 			}
-
 		break;
-		//*********************************************************************************
-		// LEVEL 8 SPELLS -----------------------------------------------------------------------------
+		//****************************************************************************
+		// LEVEL 8
 		case SPELL_INVISIBILITY:
-
 			if (ValidIONum(spells[i].target))
 			{
 				*pos = entities[spells[i].target]->pos;
 				return true;
 			}
-
 		break;
-		//----------------------------------------------------------------------------
 		case SPELL_MANA_DRAIN:				
-
 			if (ValidIONum(spells[i].target))
 			{
 				*pos = entities[spells[i].target]->pos;
 				return true;
 			}
-
 		break;
-		//----------------------------------------------------------------------------
 		case SPELL_EXPLOSION:
 		break;
-		//----------------------------------------------------------------------------
 		case SPELL_ENCHANT_WEAPON:
 		break;			
-		//----------------------------------------------------------------------------
 		case SPELL_LIFE_DRAIN:
-
 			if (ValidIONum(spells[i].target))
 			{
 				*pos = entities[spells[i].target]->pos;
 				return true;
 			}
-
 		break;
-		//*****************************************************************************************
-		// LEVEL 9 SPELLS -----------------------------------------------------------------------------
+		//****************************************************************************
+		// LEVEL 9
 		case SPELL_SUMMON_CREATURE:
 		break;
-		//----------------------------------------------------------------------------
 		case SPELL_NEGATE_MAGIC:
 		break;
-		//----------------------------------------------------------------------------
 		case SPELL_INCINERATE:
-
 			if (ValidIONum(spells[i].target))
 			{
 				*pos = entities[spells[i].target]->pos;
 				return true;
 			}
-
 		break;
-		//----------------------------------------------------------------------------
 		case SPELL_MASS_PARALYSE:
 		break;
-		//----------------------------------------------------------------------------
-		//********************************************************************************************
-		// LEVEL 10 SPELLS -----------------------------------------------------------------------------
+		//****************************************************************************
+		// LEVEL 10
 		case SPELL_MASS_LIGHTNING_STRIKE:
 		break;
-		//----------------------------------------------------------------------------
 		case SPELL_CONTROL_TARGET:
 		break;
-		//----------------------------------------------------------------------------
 		case SPELL_FREEZE_TIME:
 		break;
-		//----------------------------------------------------------------------------
 		case SPELL_MASS_INCINERATE:
 		break;
-		//----------------------------------------------------------------------------
 		case SPELL_TELEPORT:
 		break;
-		//----------------------------------------------------------------------------
-		default: break;
+		default:
+		break;
 	}
 
 	if(ValidIONum(spells[i].caster)) {
