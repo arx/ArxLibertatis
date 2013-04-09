@@ -5523,8 +5523,7 @@ float ARX_SPELLS_ApplyFireProtection(Entity * io,float damages)
 		{
 			float modif=1.f-((float)spells[idx].caster_level*( 1.0f / 10 ));
 
-			if (modif>1.f) modif=1.f;
-			else if (modif<0.f) modif=0.f;
+			modif = clamp(modif, 0.f, 1.f);
 
 			damages*=modif;
 		}
@@ -5539,6 +5538,7 @@ float ARX_SPELLS_ApplyFireProtection(Entity * io,float damages)
 
 	return damages;
 }
+
 float ARX_SPELLS_ApplyColdProtection(Entity * io,float damages)
 {
 	long idx=ARX_SPELLS_GetSpellOn(io,SPELL_COLD_PROTECTION);
@@ -5547,8 +5547,7 @@ float ARX_SPELLS_ApplyColdProtection(Entity * io,float damages)
 	{
 		float modif=1.f-((float)spells[idx].caster_level*( 1.0f / 10 ));
 
-		if (modif>1.f) modif=1.f;
-		else if (modif<0.f) modif=0.f;
+		modif = clamp(modif, 0.f, 1.f);
 
 		damages*=modif;
 	}
