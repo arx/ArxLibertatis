@@ -5347,9 +5347,7 @@ void ARX_SPELLS_Kill(long i) {
 	}
 
 	switch(spells[i].type) {
-		
 		case SPELL_FIREBALL: {
-			
 			if(spells[i].longinfo != -1) {
 				DynLight[spells[i].longinfo].duration = 500;
 				DynLight[spells[i].longinfo].time_creation = (unsigned long)(arxtime);
@@ -5358,9 +5356,7 @@ void ARX_SPELLS_Kill(long i) {
 			
 			break;
 		}
-		
 		case SPELL_LIGHTNING_STRIKE: {
-			
 			if(spells[i].longinfo != -1) {
 				DynLight[spells[i].longinfo].duration = 200;
 				DynLight[spells[i].longinfo].time_creation = (unsigned long)(arxtime);
@@ -5372,9 +5368,7 @@ void ARX_SPELLS_Kill(long i) {
 			
 			break;
 		}
-		
 		case SPELL_MASS_LIGHTNING_STRIKE: {
-			
 			if(spells[i].longinfo != -1) {
 				DynLight[spells[i].longinfo].duration = 200;
 				DynLight[spells[i].longinfo].time_creation = (unsigned long)(arxtime);
@@ -5386,9 +5380,7 @@ void ARX_SPELLS_Kill(long i) {
 			
 			break;
 		}
-		
 		case SPELL_REPEL_UNDEAD: {
-			
 			if(spells[i].longinfo != -1) {
 				DynLight[spells[i].longinfo].duration = 200;
 				DynLight[spells[i].longinfo].time_creation = (unsigned long)(arxtime);
@@ -5399,11 +5391,9 @@ void ARX_SPELLS_Kill(long i) {
 			
 			break;
 		}
-		
 		case SPELL_HARM:
 		case SPELL_LIFE_DRAIN:
 		case SPELL_MANA_DRAIN: {
-			
 			if(spells[i].longinfo != -1) {
 				damages[spells[i].longinfo].exist = false;
 			}
@@ -5416,9 +5406,7 @@ void ARX_SPELLS_Kill(long i) {
 			ARX_SOUND_Stop(spells[i].snd_loop);
 			break;
 		}
-		
 		case SPELL_FLYING_EYE : {
-			
 			ARX_SOUND_PlaySFX(SND_SPELL_EYEBALL_OUT);
 			eyeball.exist = -100;
 			
@@ -5445,35 +5433,27 @@ void ARX_SPELLS_Kill(long i) {
 			
 			break;
 		}
-		
 		// Level 06
-		
 		case SPELL_PARALYSE: {
 			ARX_SOUND_PlaySFX(SND_SPELL_PARALYSE_END);
 			break;
 		}
-		
 		// Level 7
-		
 		case SPELL_FIRE_FIELD: {
 			ARX_SOUND_Stop(spells[i].snd_loop);
 			ARX_SOUND_PlaySFX(SND_SPELL_FIRE_FIELD_END);
 			break;
 		}
-		
 		case SPELL_ICE_FIELD: {
 			ARX_SOUND_Stop(spells[i].snd_loop); 
 			ARX_SOUND_PlaySFX(SND_SPELL_ICE_FIELD_END); 
 			break; 
 		}
-		
 		case SPELL_MASS_PARALYSE: {
 			ARX_SOUND_PlaySFX(SND_SPELL_PARALYSE_END);
 			break;
 		}
-		
 		case SPELL_SUMMON_CREATURE: {
-			
 			if(spells[i].pSpellFx->lLightId > -1) {
 				long id = spells[i].pSpellFx->lLightId;
 				DynLight[id].exist = 0;
@@ -5508,9 +5488,7 @@ void ARX_SPELLS_Kill(long i) {
 			spells[i].longinfo2 = 0;
 			break;
 		}
-		
 		case SPELL_FAKE_SUMMON: {
-			
 			if(spells[i].pSpellFx->lLightId > -1) {
 				long id = spells[i].pSpellFx->lLightId;
 				DynLight[id].exist = 0;
