@@ -5854,30 +5854,27 @@ void ARX_SPELLS_Update()
 					cabalangle.b=spells[i].fdata+(float)framedelay*0.1f;
 					spells[i].fdata=cabalangle.b;
 
-							cabalangle.g = 0.f; 
-							cabalcolor.r = 0.8f;
-							cabalcolor.g = 0.4f;
-							cabalcolor.b = 0.f;
+					cabalangle.g = 0.f;
+
 					cabalscale = Vec3f::repeat(Es);
+					Color3f cabalcolor = Color3f(0.8f, 0.4f, 0.f);
 					DrawEERIEObjEx(cabal,&cabalangle,&cabalpos,&cabalscale, cabalcolor);
+
 					mov=EEsin((float)(arxtime.get_frame_time()-30.f)*( 1.0f / 800 ))*scaley;
 					cabalpos.y = refpos - mov;
-							cabalcolor.b = 0.f;
-							cabalcolor.g = 3.f;
-							cabalcolor.r = 0.5f;
+					cabalcolor = Color3f(0.5f, 3.f, 0.f);
 					DrawEERIEObjEx(cabal,&cabalangle,&cabalpos,&cabalscale, cabalcolor);
+
 					mov=EEsin((float)(arxtime.get_frame_time()-60.f)*( 1.0f / 800 ))*scaley;
 					cabalpos.y=refpos-mov;
-							cabalcolor.b = 0.f;
-							cabalcolor.g = 0.1f;
-							cabalcolor.r = 0.25f;
+					cabalcolor = Color3f(0.25f, 0.1f, 0.f);
 					DrawEERIEObjEx(cabal,&cabalangle,&cabalpos,&cabalscale, cabalcolor);
+
 					mov=EEsin((float)(arxtime.get_frame_time()-120.f)*( 1.0f / 800 ))*scaley;
 					cabalpos.y=refpos-mov;
-							cabalcolor.b = 0.f;
-							cabalcolor.g = 0.1f;
-							cabalcolor.r = 0.15f;
+					cabalcolor = Color3f(0.15f, 0.1f, 0.f);
 					DrawEERIEObjEx(cabal,&cabalangle,&cabalpos,&cabalscale, cabalcolor);
+
 					GRenderer->SetRenderState(Renderer::AlphaBlending, false);		
 					GRenderer->SetRenderState(Renderer::DepthWrite, true);	
 				}
