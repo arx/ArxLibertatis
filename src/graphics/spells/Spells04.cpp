@@ -89,7 +89,7 @@ void CBless::Set_Angle(const Anglef & angle)
 {
 	fBeta = angle.b;
 }
-//-----------------------------------------------------------------------------
+
 void CBless::Update(unsigned long _ulTime)
 {
 	ulCurrentTime += _ulTime;
@@ -97,7 +97,6 @@ void CBless::Update(unsigned long _ulTime)
 	fRot += _ulTime * fRotPerMSec;
 }
 
-//---------------------------------------------------------------------
 void CBless::Render()
 {
 	int i = 0;
@@ -216,13 +215,11 @@ void CDispellField::Render() {
 	DrawEERIEObjEx(srune, &stiteangle, &stitepos, &stitescale, stitecolor);
 }
 
-//-----------------------------------------------------------------------------
 CTelekinesis::~CTelekinesis()
 {
 	ssol_count--;
 
-	if (ssol && (ssol_count <= 0))
-	{
+	if(ssol && ssol_count <= 0) {
 		ssol_count = 0;
 		delete ssol;
 		ssol = NULL;
@@ -230,8 +227,7 @@ CTelekinesis::~CTelekinesis()
 
 	slight_count--;
 
-	if (slight && (slight_count <= 0))
-	{
+	if(slight && slight_count <= 0) {
 		slight_count = 0;
 		delete slight;
 		slight = NULL;
@@ -239,8 +235,7 @@ CTelekinesis::~CTelekinesis()
 
 	srune_count--;
 
-	if (srune && (srune_count <= 0))
-	{
+	if(srune && srune_count <= 0) {
 		srune_count = 0;
 		delete srune;
 		srune = NULL;
@@ -328,7 +323,6 @@ void CCurse::Create(Vec3f aeSrc, float afBeta) {
 	fRotPerMSec = 0.25f;
 }
 
-//---------------------------------------------------------------------
 void CCurse::Update(unsigned long _ulTime)
 {
 	ulCurrentTime += _ulTime;
@@ -368,8 +362,6 @@ void CCurse::Render() {
 	GRenderer->SetCulling(Renderer::CullNone);
 }
 
-
-
 //-----------------------------------------------------------------------------
 //	FIRE PROTECTION
 //-----------------------------------------------------------------------------
@@ -377,15 +369,12 @@ CFireProtection::CFireProtection()
 {
 }
 
-//-----------------------------------------------------------------------------
 CFireProtection::~CFireProtection()
 {
-	Entity * io;
 	long iNpc = spells[spellinstance].target;
 
-	if (ValidIONum(iNpc))
-	{
-		io = entities[iNpc];
+	if(ValidIONum(iNpc)) {
+		Entity *io = entities[iNpc];
 		io->halo.flags = 0;
 		io->halo.color.r = 0.8f;
 		io->halo.color.g = 0.8f;
@@ -395,17 +384,14 @@ CFireProtection::~CFireProtection()
 	}
 }
 
-//-----------------------------------------------------------------------------
 void CFireProtection::Create(long _ulDuration)
 {
 	SetDuration(_ulDuration);
 
 	long iNpc = spells[spellinstance].target;
-	Entity * io;
 
-	if (ValidIONum(iNpc))
-	{
-		io = entities[iNpc];
+	if(ValidIONum(iNpc)) {
+		Entity *io = entities[iNpc];
 		io->halo.flags = HALO_ACTIVE;
 		io->halo.color.r = 0.5f;
 		io->halo.color.g = 0.3f;
@@ -415,17 +401,15 @@ void CFireProtection::Create(long _ulDuration)
 	}
 }
 
-//-----------------------------------------------------------------------------
 void CFireProtection::Update(unsigned long _ulTime)
 {
-	if (!arxtime.is_paused()) ulCurrentTime += _ulTime;
+	if(!arxtime.is_paused())
+		ulCurrentTime += _ulTime;
 
 	long iNpc = spells[spellinstance].target;
-	Entity * io;
 
-	if (ValidIONum(iNpc))
-	{
-		io = entities[iNpc];
+	if(ValidIONum(iNpc)) {
+		Entity *io = entities[iNpc];
 		io->halo.flags = HALO_ACTIVE;
 		io->halo.color.r = 0.5f;
 		io->halo.color.g = 0.3f;
@@ -435,7 +419,6 @@ void CFireProtection::Update(unsigned long _ulTime)
 	}
 }
 
-//-----------------------------------------------------------------------------
 void CFireProtection::Render() {
 	
 }
@@ -447,15 +430,12 @@ CColdProtection::CColdProtection()
 {
 }
 
-//-----------------------------------------------------------------------------
 CColdProtection::~CColdProtection()
 {
-	Entity * io;
 	long iNpc = spells[spellinstance].target;
 
-	if (ValidIONum(iNpc))
-	{
-		io = entities[iNpc];
+	if(ValidIONum(iNpc)) {
+		Entity *io = entities[iNpc];
 		io->halo.flags = 0;
 		io->halo.color.r = 0.8f;
 		io->halo.color.g = 0.8f;
@@ -465,17 +445,14 @@ CColdProtection::~CColdProtection()
 	}
 }
 
-//-----------------------------------------------------------------------------
 void CColdProtection::Create(long _ulDuration, int _iNpc)
 {
 	SetDuration(_ulDuration);
 
 	iNpc = _iNpc;
-	Entity * io;
 
-	if (ValidIONum(iNpc))
-	{
-		io = entities[iNpc];
+	if(ValidIONum(iNpc)) {
+		Entity *io = entities[iNpc];
 		io->halo.flags = HALO_ACTIVE;
 		io->halo.color.r = 0.2f;
 		io->halo.color.g = 0.2f;
@@ -485,17 +462,15 @@ void CColdProtection::Create(long _ulDuration, int _iNpc)
 	}
 }
 
-//-----------------------------------------------------------------------------
 void CColdProtection::Update(unsigned long _ulTime)
 {
-	if (!arxtime.is_paused()) ulCurrentTime += _ulTime;
+	if(!arxtime.is_paused())
+		ulCurrentTime += _ulTime;
 
 	long iNpc = spells[spellinstance].target;
-	Entity * io;
 
-	if (ValidIONum(iNpc))
-	{
-		io = entities[iNpc];
+	if(ValidIONum(iNpc)) {
+		Entity *io = entities[iNpc];
 		io->halo.flags = HALO_ACTIVE;
 		io->halo.color.r = 0.2f;
 		io->halo.color.g = 0.2f;
