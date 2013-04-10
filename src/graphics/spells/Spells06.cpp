@@ -103,10 +103,7 @@ void CCreateField::RenderQuad(TexturedVertex p1, TexturedVertex p2, TexturedVert
 	TexturedVertex v[5];
 	TexturedVertex v2[5];
 
- 
-
-	if (rec < 3)
-	{
+	if(rec < 3) {
 		rec ++;
 
 		// milieu
@@ -142,9 +139,7 @@ void CCreateField::RenderQuad(TexturedVertex p1, TexturedVertex p2, TexturedVert
 		RenderQuad(v[4], p2, v[2], v[0], rec, norm);
 		RenderQuad(v[0], v[2], p3, v[3], rec, norm);
 		RenderQuad(v[1], v[0], v[3], p4, rec, norm);
-	}
-	else if (rec == 3)
-	{
+	} else if(rec == 3) {
 		float zab = (float) sin(radians(ft));
 		v2[0].uv.x = 0 + zab;
 		v2[0].uv.y = 0 + zab;
@@ -173,7 +168,6 @@ void CCreateField::RenderSubDivFace(TexturedVertex * b, TexturedVertex * t, int 
 	RenderQuad(b[b1], b[b2], t[t1], t[t2], 1, norm);
 }
 
-//-----------------------------------------------------------------------------
 void CCreateField::Update(unsigned long _ulTime)
 {
 	ulCurrentTime += _ulTime;
@@ -181,7 +175,6 @@ void CCreateField::Update(unsigned long _ulTime)
 
 extern bool VisibleSphere(float x, float y, float z, float radius);
 
-//-----------------------------------------------------------------------------
 void CCreateField::Render()
 {
 	if(!VisibleSphere(eSrc.x, eSrc.y - 120.f, eSrc.z, 400.f))
@@ -202,29 +195,23 @@ void CCreateField::Render()
 
 	//-------------------------------------------------------------------------
 	// rendu
-	if (youp)
-	{
+	if(youp) {
 		fglow += 0.5f;
 
-		if (fglow >= 50)
-		{
+		if(fglow >= 50) {
 			youp = false;
 		}
-	}
-	else
-	{
+	} else {
 		fglow -= 0.5f;
 
-		if (fglow <= 0)
-		{
+		if(fglow <= 0) {
 			youp = true;
 		}
 	}
 
 	ysize = min(1.0f, ulCurrentTime * 0.001f);
 
-	if (ysize >= 1.0f)
-	{
+	if(ysize >= 1.0f) {
 		size = min(1.0f, (ulCurrentTime - 1000) * 0.001f);
 		size = max(size, 0.1f);
 	}
@@ -232,17 +219,16 @@ void CCreateField::Render()
 	// ondulation
 	ft += 0.01f;
 
-	if (ft > 360.0f)
-	{
+	if(ft > 360.0f) {
 		ft = 0.0f;
 	}
 
 	falpha = (float) sin(radians(fglow)) + rnd() * 0.2f;
 
-	if (falpha > 1.0f)
+	if(falpha > 1.0f)
 		falpha = 1.0f;
 
-	if (falpha < 0.0f)
+	if(falpha < 0.0f)
 		falpha = 0.0f;
 
 	float x = eSrc.x;
@@ -302,8 +288,7 @@ void CCreateField::Render()
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 
-	if (lLightId != -1)
-	{
+	if(lLightId != -1) {
 		DynLight[lLightId].exist = 1;
 		DynLight[lLightId].intensity = 0.7f + 2.3f * falpha;
 		DynLight[lLightId].fallend = 500.f;
@@ -351,8 +336,7 @@ CSlowDown::~CSlowDown()
 {
 	ssol_count--;
 
-	if (ssol && (ssol_count <= 0))
-	{
+	if(ssol && ssol_count <= 0) {
 		ssol_count = 0;
 		delete ssol;
 		ssol = NULL;
@@ -360,8 +344,7 @@ CSlowDown::~CSlowDown()
 
 	slight_count--;
 
-	if (slight && (slight_count <= 0))
-	{
+	if(slight && slight_count <= 0) {
 		slight_count = 0;
 		delete slight;
 		slight = NULL;
@@ -369,8 +352,7 @@ CSlowDown::~CSlowDown()
 
 	srune_count--;
 
-	if (srune && (srune_count <= 0))
-	{
+	if(srune && srune_count <= 0) {
 		srune_count = 0;
 		delete srune;
 		srune = NULL;
@@ -410,8 +392,7 @@ CRiseDead::~CRiseDead()
 {
 	stone0_count--;
 
-	if (stone0 && (stone0_count <= 0))
-	{
+	if(stone0 && stone0_count <= 0) {
 		stone0_count = 0;
 		delete stone0;
 		stone0 = NULL;
@@ -419,8 +400,7 @@ CRiseDead::~CRiseDead()
 
 	stone1_count--;
 
-	if (stone1 && (stone1_count <= 0))
-	{
+	if(stone1 && stone1_count <= 0) {
 		stone1_count = 0;
 		delete stone1;
 		stone1 = NULL;
@@ -462,21 +442,14 @@ CRiseDead::CRiseDead() {
 	tex_light = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu4");
 }
 
-//-----------------------------------------------------------------------------
-
 void CRiseDead::SetDuration(const unsigned long alDuration)
 {
 	ulDurationIntro			= alDuration;
 
-	if (ulDurationIntro <= 0)
-	{
+	if(ulDurationIntro <= 0)
 		ulDurationIntro = 100;
-	}
-	else if (ulDurationIntro >= 100000)
-	{
+	else if(ulDurationIntro >= 100000)
 		ulDurationIntro = 100000;
-	}
-
 
 	fOneOnDurationIntro		= 1.f / (float)(ulDurationIntro);
 
@@ -489,23 +462,28 @@ void CRiseDead::SetDuration(const unsigned long alDuration)
 	ulCurrentTime = 0;
 }
 
-//-----------------------------------------------------------------------------
 void CRiseDead::SetDuration(unsigned long alDurationIntro, unsigned long alDurationRender, unsigned long alDurationOuttro)
 {
-	if (alDurationIntro <= 0) alDurationIntro = 100;
-	else if (alDurationIntro >= 100000) alDurationIntro = 100000;
+	if(alDurationIntro <= 0)
+		alDurationIntro = 100;
+	else if(alDurationIntro >= 100000)
+		alDurationIntro = 100000;
 
 	ulDurationIntro = alDurationIntro;
 	fOneOnDurationIntro = 1.f / (float)(ulDurationIntro);
 
-	if (alDurationRender <= 0) alDurationRender = 100;
-	else if (alDurationRender >= 100000) alDurationRender = 100000;
+	if(alDurationRender <= 0)
+		alDurationRender = 100;
+	else if(alDurationRender >= 100000)
+		alDurationRender = 100000;
 
 	ulDurationRender = alDurationRender;
 	fOneOnDurationRender = 1.f / (float)(ulDurationRender);
 
-	if (alDurationOuttro <= 0) alDurationOuttro = 100;
-	else if (alDurationOuttro >= 100000) alDurationOuttro = 100000;
+	if(alDurationOuttro <= 0)
+		alDurationOuttro = 100;
+	else if(alDurationOuttro >= 100000)
+		alDurationOuttro = 100000;
 
 	ulDurationOuttro = alDurationOuttro;
 	fOneOnDurationOuttro = 1.f / (float)(ulDurationOuttro);
@@ -513,7 +491,6 @@ void CRiseDead::SetDuration(unsigned long alDurationIntro, unsigned long alDurat
 	ulCurrentTime = 0;
 }
 
-//-----------------------------------------------------------------------------
 void CRiseDead::SetColorBorder(float afRed, float afGreen, float afBlue)
 {
 	fColorBorder[0] = afRed;
@@ -521,7 +498,6 @@ void CRiseDead::SetColorBorder(float afRed, float afGreen, float afBlue)
 	fColorBorder[2] = afBlue;
 }
 
-//-----------------------------------------------------------------------------
 void CRiseDead::SetColorRays1(float afRed, float afGreen, float afBlue)
 {
 	fColorRays1[0] = afRed;
@@ -529,7 +505,6 @@ void CRiseDead::SetColorRays1(float afRed, float afGreen, float afBlue)
 	fColorRays1[2] = afBlue;
 }
 
-//-----------------------------------------------------------------------------
 void CRiseDead::SetColorRays2(float afRed, float afGreen, float afBlue)
 {
 	fColorRays2[0] = afRed;
@@ -537,7 +512,6 @@ void CRiseDead::SetColorRays2(float afRed, float afGreen, float afBlue)
 	fColorRays2[2] = afBlue;
 }
 
-//-----------------------------------------------------------------------------
 void CRiseDead::Create(Vec3f aeSrc, float afBeta)
 {
 	int i;
@@ -559,8 +533,7 @@ void CRiseDead::Create(Vec3f aeSrc, float afBeta)
 	end = 40 - 1;
 	bIntro = true;
 
-	for (i = 0; i < 40; i++)
-	{
+	for(i = 0; i < 40; i++) {
 		tfRaysa[i] = 0.4f * rnd();
 		tfRaysb[i] = 0.4f * rnd();
 	}
@@ -663,21 +636,17 @@ void CRiseDead::AddStone(Vec3f * pos) {
 	}
 }
 
-/*--------------------------------------------------------------------------*/
 void CRiseDead::DrawStone()
 {
 	int	nb = 256;
 	GRenderer->SetBlendFunc(Renderer::BlendInvDstColor, Renderer::BlendOne);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
-	while (nb--)
-	{
-		if (this->tstone[nb].actif)
-		{
+	while(nb--) {
+		if(this->tstone[nb].actif) {
 			float a = (float)this->tstone[nb].currtime / (float)this->tstone[nb].time;
 
-			if (a > 1.f)
-			{
+			if(a > 1.f) {
 				a = 1.f;
 				this->tstone[nb].actif = 0;
 			}
@@ -698,8 +667,7 @@ void CRiseDead::DrawStone()
 			}
 			
 			//update mvt
-			if (!arxtime.is_paused())
-			{
+			if(!arxtime.is_paused()) {
 				a = (((float)this->currframetime) * 100.f) / (float)this->tstone[nb].time;
 				tstone[nb].pos.y += tstone[nb].yvel * a;
 				tstone[nb].ang += tstone[nb].angvel * a;
@@ -714,15 +682,12 @@ void CRiseDead::DrawStone()
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 }
 
-//-----------------------------------------------------------------------------
 void CRiseDead::Split(TexturedVertex * v, int a, int b, float yo)
 {
-	if (a != b)
-	{
+	if(a != b) {
 		int i = (int)((a + b) * 0.5f);
 
-		if ((i != a) && (i != b))
-		{
+		if(i != a && i != b) {
 			v[i].p.x = (v[a].p.x + v[b].p.x) * 0.5f + yo * frand2() * fBetaRadCos;
 			v[i].p.y = v[0].p.y;// + (i+1)*5;
 			v[i].p.z = (v[a].p.z + v[b].p.z) * 0.5f + yo * frand2() * fBetaRadSin;
@@ -732,7 +697,6 @@ void CRiseDead::Split(TexturedVertex * v, int a, int b, float yo)
 	}
 }
 
-//-----------------------------------------------------------------------------
 void CRiseDead::RenderFissure()
 {
 	int i;
@@ -750,16 +714,11 @@ void CRiseDead::RenderFissure()
 	// computation des sommets
 	float fTempCos, fTempSin;
 
-	for (i = 0; i <= min(end, (int)fSizeIntro); i++)
-	{
-		if (i <= end * 0.5f)
-		{
+	for(i = 0; i <= min(end, (int)fSizeIntro); i++) {
+		if(i <= end * 0.5f)
 			ff = i / (end * 0.5f);
-		}
 		else
-		{
 			ff = 1.0f - ((i - (end + 1) * 0.5f) / (end * 0.5f));
-		}
 
 		fTempCos = ff * fBetaRadCos;
 		fTempSin = ff * fBetaRadSin;
@@ -783,37 +742,23 @@ void CRiseDead::RenderFissure()
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	vr[0].color = vr[1].color = vr[2].color = vr[3].color = Color::black.toBGR();
 
-	if (bIntro)
-	{
-		for (i = 0; i < min(end, (int)fSizeIntro); i++)
-		{
+	if(bIntro) {
+		for(i = 0; i < min(end, (int)fSizeIntro); i++) {
 			EE_RT2(&v1a[i], &vr[0]);
 			EE_RT2(&v1b[i], &vr[1]);
 			EE_RT2(&v1a[i+1], &vr[2]);
 			EE_RT2(&v1b[i+1], &vr[3]);
-			ARX_DrawPrimitive(&vr[0],
-			                             &vr[1],
-			                             &vr[2]);
-			ARX_DrawPrimitive(&vr[1],
-			                             &vr[2],
-			                             &vr[3]);
-
+			ARX_DrawPrimitive(&vr[0], &vr[1], &vr[2]);
+			ARX_DrawPrimitive(&vr[1], &vr[2], &vr[3]);
 		}
-	}
-	else
-	{
-		for (i = 0; i < min(end, (int)fSizeIntro); i++)
-		{
+	} else {
+		for(i = 0; i < min(end, (int)fSizeIntro); i++) {
 			EE_RT2(&va[i], &vr[0]);
 			EE_RT2(&vb[i], &vr[1]);
 			EE_RT2(&va[i+1], &vr[2]);
 			EE_RT2(&vb[i+1], &vr[3]);
-			ARX_DrawPrimitive(&vr[0],
-			                             &vr[1],
-			                             &vr[2]);
-			ARX_DrawPrimitive(&vr[1],
-			                             &vr[2],
-			                             &vr[3]);
+			ARX_DrawPrimitive(&vr[0], &vr[1], &vr[2]);
+			ARX_DrawPrimitive(&vr[1], &vr[2], &vr[3]);
 		}
 	}
 
@@ -823,8 +768,7 @@ void CRiseDead::RenderFissure()
 	vr[0].color = vr[1].color = Color::black.toBGR();
 	vr[2].color = vr[3].color = Color3f(fColorBorder[0], fColorBorder[1], fColorBorder[2]).toBGR();
 
-	for (i = 0; i < min(end, (int)fSizeIntro); i++)
-	{
+	for(i = 0; i < min(end, (int)fSizeIntro); i++) {
 		vt[2].p = va[i].p - (va[i].p - eSrc) * 0.2f;
 		vt[3].p = va[i + 1].p - (va[i + 1].p - eSrc) * 0.2f;
 		
@@ -872,69 +816,64 @@ void CRiseDead::RenderFissure()
 	vr[3].uv.x = 1 + fTexWrap;
 	vr[3].uv.y = 0;
 
-	for (i = 0; i < end - 1; i++)
-	{
+	for(i = 0; i < end - 1; i++) {
 		float t = rnd();
 
-		if (t <= 0.15f)
-		{
-			if (tfRaysa[i] < 1.0f)
+		if(t <= 0.15f) {
+			if(tfRaysa[i] < 1.0f)
 				tfRaysa[i] += 0.02f;
 
-			if (tfRaysa[i+1] < 1.0f)
+			if(tfRaysa[i+1] < 1.0f)
 				tfRaysa[i+1] += 0.01f;
 
-			if (tfRaysa[i] > 1.0f)
+			if(tfRaysa[i] > 1.0f)
 				tfRaysa[i] = 1.0f;
 
-			if (tfRaysa[i+1] > 1.0f)
+			if(tfRaysa[i+1] > 1.0f)
 				tfRaysa[i+1] = 1.0f;
 		}
 
-		if (t >= 0.9f)
-		{
-			if (tfRaysa[i] > 0.0f)
+		if(t >= 0.9f) {
+			if(tfRaysa[i] > 0.0f)
 				tfRaysa[i] -= 0.02f;
 
-			if (tfRaysa[i+1] > 0.0f)
+			if(tfRaysa[i+1] > 0.0f)
 				tfRaysa[i+1] -= 0.01f;
 
-			if (tfRaysa[i] < 0.0f)
+			if(tfRaysa[i] < 0.0f)
 				tfRaysa[i] = 0.0f;
 
-			if (tfRaysa[i+1] < 0.0f)
+			if(tfRaysa[i+1] < 0.0f)
 				tfRaysa[i+1] = 0.0f;
 		}
 
 		float t2 = rnd();
 
-		if (t2 <= 0.15f)
-		{
-			if (tfRaysb[i] < 1.0f)
+		if(t2 <= 0.15f) {
+			if(tfRaysb[i] < 1.0f)
 				tfRaysb[i] += 0.02f;
 
-			if (tfRaysb[i+1] < 1.0f)
+			if(tfRaysb[i+1] < 1.0f)
 				tfRaysb[i+1] += 0.01f;
 
-			if (tfRaysb[i] > 1.0f)
+			if(tfRaysb[i] > 1.0f)
 				tfRaysb[i] = 1.0f;
 
-			if (tfRaysb[i+1] > 1.0f)
+			if(tfRaysb[i+1] > 1.0f)
 				tfRaysb[i+1] = 1.0f;
 		}
 
-		if (t2 >= 0.9f)
-		{
-			if (tfRaysb[i] > 0.0f)
+		if(t2 >= 0.9f) {
+			if(tfRaysb[i] > 0.0f)
 				tfRaysb[i] -= 0.02f;
 
-			if (tfRaysb[i+1] > 0.0f)
+			if(tfRaysb[i+1] > 0.0f)
 				tfRaysb[i+1] -= 0.01f;
 
-			if (tfRaysb[i] < 0.0f)
+			if(tfRaysb[i] < 0.0f)
 				tfRaysb[i] = 0.0f;
 
-			if (tfRaysb[i+1] < 0.0f)
+			if(tfRaysb[i+1] < 0.0f)
 				tfRaysb[i+1] = 0.0f;
 		}
 		
@@ -957,12 +896,8 @@ void CRiseDead::RenderFissure()
 			EE_RT2(&vt[1], &vr[1]);
 			EE_RT2(&vt[2], &vr[2]);
 			EE_RT2(&vt[3], &vr[3]);
-			ARX_DrawPrimitive(&vr[0],
-			                             &vr[1],
-			                             &vr[2]);
-			ARX_DrawPrimitive(&vr[1],
-			                             &vr[2],
-			                             &vr[3]);
+			ARX_DrawPrimitive(&vr[0], &vr[1], &vr[2]);
+			ARX_DrawPrimitive(&vr[1], &vr[2], &vr[3]);
 		}
 		
 		if(i < fSizeIntro) {
@@ -984,24 +919,19 @@ void CRiseDead::RenderFissure()
 			EE_RT2(&vt[1], &vr[1]);
 			EE_RT2(&vt[2], &vr[2]);
 			EE_RT2(&vt[3], &vr[3]);
-			ARX_DrawPrimitive(&vr[0],
-			                             &vr[1],
-			                             &vr[2]);
-			ARX_DrawPrimitive(&vr[1],
-			                             &vr[2],
-			                             &vr[3]);
+			ARX_DrawPrimitive(&vr[0], &vr[1], &vr[2]);
+			ARX_DrawPrimitive(&vr[1], &vr[2], &vr[3]);
 		}
-		
 	}
 }
 
-//-----------------------------------------------------------------------------
 void CRiseDead::Update(unsigned long _ulTime)
 {
 	ulCurrentTime += _ulTime;
 	currframetime = _ulTime;
 
-	if (!arxtime.is_paused()) this->timestone -= _ulTime;
+	if(!arxtime.is_paused())
+		this->timestone -= _ulTime;
 }
 
 //-----------------------------------------------------------------------------
@@ -1019,25 +949,17 @@ void CRiseDead::Render()
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
-	//-------------------------------------------------------------------------
-
-	if (fTexWrap >= 1.0f)
-	{
+	if(fTexWrap >= 1.0f)
 		fTexWrap -= 1.0f;
-	}
 
 	//-------------------------------------------------------------------------
 	// render intro (opening + rays)
-	if (ulCurrentTime < ulDurationIntro)
-	{
-		if (ulCurrentTime < ulDurationIntro * 0.666f)
-		{
+	if(ulCurrentTime < ulDurationIntro) {
+		if(ulCurrentTime < ulDurationIntro * 0.666f) {
 			fSizeIntro = (end + 2) * fOneOnDurationIntro * (1.5f) * ulCurrentTime;
 			sizeF = 1;
-		}
-		else
-		{
-			if (bIntro != false)
+		} else {
+			if(bIntro != false)
 				bIntro = false;
 
 			sizeF = (iSize) * (fOneOnDurationIntro * 3) * (ulCurrentTime - ulDurationIntro * 0.666f);
@@ -1060,8 +982,7 @@ void CRiseDead::Render()
 	RenderFissure();
 
 	//cailloux
-	if (this->timestone <= 0)
-	{
+	if(this->timestone <= 0) {
 		this->timestone = Random::get(50, 150);
 		Vec3f	pos;
 		float r = 80.f * frand2();
@@ -1093,50 +1014,41 @@ CParalyse::CParalyse()
 	prismind = NULL;
 }
 
-//-----------------------------------------------------------------------------
 CParalyse::~CParalyse()
 {
 	Kill();
 }
 
-//-----------------------------------------------------------------------------
 void CParalyse::Kill()
 {
-	if (prismd3d)
-	{
+	if(prismd3d) {
 		delete [] prismd3d;
 		prismd3d = NULL;
 	}
 
-	if (prismvertex)
-	{
+	if(prismvertex) {
 		delete [] prismvertex;
 		prismvertex = NULL;
 	}
 
-	if (prismind)
-	{
+	if(prismind) {
 		delete [] prismind;
 		prismind = NULL;
 	}
 
-	for (int i = 0; i < 100; i++)
-	{
-		if (tabprism[i].vertex)
-		{
+	for(int i = 0; i < 100; i++) {
+		if(tabprism[i].vertex) {
 			delete [] tabprism[i].vertex;
 			tabprism[i].vertex = NULL;
 		}
 	}
 
-	if (lLightId >= 0)
-	{
+	if(lLightId >= 0) {
 		DynLight[lLightId].exist = 0;
 		lLightId = -1;
 	}
 }
 
-//-----------------------------------------------------------------------------
 void CParalyse::CreatePrismTriangleList(float arayon, float ahcapuchon, float ahauteur, int adef)
 {
 	float		a, da;
@@ -1153,8 +1065,7 @@ void CParalyse::CreatePrismTriangleList(float arayon, float ahcapuchon, float ah
 	v->z = 0.f;
 	v++;
 
-	while (nb)
-	{
+	while(nb) {
 		v->x = arayon * EEcos(radians(a));
 		v->y = -ahauteur + rnd() * ahauteur * 0.2f;
 		v->z = arayon * EEsin(radians(a));
@@ -1171,8 +1082,7 @@ void CParalyse::CreatePrismTriangleList(float arayon, float ahcapuchon, float ah
 	pind = this->prismind;
 	nb = adef - 1;
 
-	while (nb)
-	{
+	while(nb) {
 		*pind++ = 0;
 		*pind++ = ind;
 		*pind++ = ind + 2;
@@ -1187,8 +1097,7 @@ void CParalyse::CreatePrismTriangleList(float arayon, float ahcapuchon, float ah
 	ind = 1;
 	nb = adef - 1;
 
-	while (nb)
-	{
+	while(nb) {
 		*pind++ = ind++;
 		*pind++ = ind++;
 		*pind++ = ind;
@@ -1208,23 +1117,20 @@ void CParalyse::CreatePrismTriangleList(float arayon, float ahcapuchon, float ah
 	*pind++ = 2;
 }
 
-//-----------------------------------------------------------------------------
 void CParalyse::CreateLittlePrismTriangleList()
 {
 	float		sc;
 	Vec3f	* v, *vd;
 	Vec3f	vt;
 
-	for (int i = 0; i < 50; i++)
-	{
+	for(int i = 0; i < 50; i++) {
 		v = prismvertex;
 		vd = tabprism[i].vertex;
 
 		float randd = rnd() * 360.f;
 		float fd = i * 3.0f;
 
-		if (fd < 40 || fd > 120)
-		{
+		if(fd < 40 || fd > 120) {
 			fd = 40 + rnd() * 80.0f;
 		}
 
@@ -1234,8 +1140,7 @@ void CParalyse::CreateLittlePrismTriangleList()
 		tabprism[i].pos.y = pos.y;
 		tabprism[i].pos.z = pos.z + EEcos(randd) * fd;
 
-		for (int j = 0; j < prismnbpt; j++)
-		{
+		for(int j = 0; j < prismnbpt; j++) {
 			sc = 0.2f + rnd() * 0.8f;
 
 			vt.x = v->x * sc * .85f;
@@ -1265,7 +1170,8 @@ void CParalyse::CreateLittlePrismTriangleList()
 //!!!!!!! def non impair
 void CParalyse::Create(int adef, float arayon, float ahcapuchon, float ahauteur, Vec3f * aePos, int aduration)
 {
-	if (adef < 3) return;
+	if(adef < 3)
+		return;
 
 	key = -1;
 	pos = *aePos;
@@ -1283,8 +1189,7 @@ void CParalyse::Create(int adef, float arayon, float ahcapuchon, float ahauteur,
 	prismvertex = new Vec3f[prismnbpt];
 	prismind = new unsigned short [prismnbface*3];
 
-	for (int i = 0; i < 100; i++)
-	{
+	for(int i = 0; i < 100; i++) {
 		tabprism[i].vertex = new Vec3f[prismnbpt];
 	}
 
@@ -1296,8 +1201,7 @@ void CParalyse::Create(int adef, float arayon, float ahcapuchon, float ahauteur,
 	CreatePrismTriangleList(arayon, ahcapuchon, ahauteur, adef);
 	CreateLittlePrismTriangleList();
 
-	if (lLightId >= 0)
-	{
+	if(lLightId >= 0) {
 		int id = lLightId;
 		DynLight[id].exist = 1;
 		DynLight[id].intensity = 1.4f + 4.f * rnd();
@@ -1310,7 +1214,6 @@ void CParalyse::Create(int adef, float arayon, float ahcapuchon, float ahauteur,
 		DynLight[id].pos.y = pos.y - ahcapuchon * .5f;
 		DynLight[id].pos.z = pos.z;
 	}
-
 
 	// système de partoches pour la poussière
 	ParticleSystem * pPS = new ParticleSystem();
@@ -1441,62 +1344,52 @@ void CParalyse::Create(int adef, float arayon, float ahcapuchon, float ahauteur,
 	}
 }
 
-//-----------------------------------------------------------------------------
 void CParalyse::Update(unsigned long aulTime)
 {
 	float a;
 
-	switch (key)
-	{
+	switch(key) {
 		case -1:
 			a = (float)currduration / 200.f;
 
-			if (a > 1.f)
-			{
+			if(a > 1.f) {
 				a = 0.f;
 				key++;
 				currduration = 0;
 			}
-
 			scale = a;
 			break;
 		case 0:
 			a = (float)currduration / 300.f;
 
-			if (a > 1.f)
-			{
+			if (a > 1.f) {
 				a = 1.f;
 				key++;
 				currduration = 0;
 			}
-
 			scale = a;
 			break;
 		case 1:
 			a = (float)currduration / (float)duration;
 			scale = a;
 
-			if (a > 1.f)
-			{
+			if(a > 1.f) {
 				key++;
 			}
 
 			prisminterpcol = (float)colduration / 1000.f;
 
-			if (prisminterpcol > 1.f)
-			{
+			if(prisminterpcol > 1.f) {
 				prisminterpcol = 0.f;
 				colduration = 0;
 				InversePrismCol();
 			}
-
 			break;
 	}
 
 	currduration += aulTime;
 }
 
-//-----------------------------------------------------------------------------
 void CParalyse::Render()
 {
 	if(key > 1)
@@ -1518,8 +1411,7 @@ void CParalyse::Render()
 	vd3d++;
 	nb = (this->prismnbpt - 1) >> 2;
 
-	while (nb)
-	{
+	while(nb) {
 		vd3d->uv.x = 0.5f;
 		vd3d->uv.y = 0.f;
 		vd3d++;
@@ -1545,14 +1437,12 @@ void CParalyse::Render()
 		case -1: {
 			
 			//calcul des chtis prism
-			while (nb2--)
-			{
+			while(nb2--) {
 				vertex = this->tabprism[nb2].vertex;
 				vd3d = this->prismd3d;
 				nb = this->prismnbpt;
 
-				while (nb)
-				{
+				while(nb) {
 					d3ds.p = tabprism[nb2].pos + *vertex * scale + tabprism[nb2].offset;
 		
 					EE_RTP(&d3ds, vd3d);
@@ -1586,15 +1476,12 @@ void CParalyse::Render()
 		
 		case 0: {
 			
-			while (nb2--)
-			{
+			while(nb2--) {
 				vertex = this->tabprism[nb2].vertex;
 				vd3d = this->prismd3d;
 				nb = this->prismnbpt;
 
-				while (nb)
-				{
-
+				while(nb) {
 					float px = tabprism[nb2].pos.x ;
 					float py = tabprism[nb2].pos.y ;
 					float pz = tabprism[nb2].pos.z ;
@@ -1673,14 +1560,12 @@ void CParalyse::Render()
 			}
 
 
-			while (nb2--)
-			{
+			while(nb2--) {
 				vertex = this->tabprism[nb2].vertex;
 				vd3d = this->prismd3d;
 				nb = this->prismnbpt;
 
-				while (nb)
-				{
+				while(nb) {
 					float px = tabprism[nb2].pos.x ;
 					float py = tabprism[nb2].pos.y ;
 					float pz = tabprism[nb2].pos.z ;
@@ -1711,8 +1596,7 @@ void CParalyse::Render()
 			vd3d = this->prismd3d;
 			nb = this->prismnbpt;
 
-			while (nb)
-			{
+			while(nb) {
 				d3ds.p = this->pos + *vertex;
 				EE_RTP(&d3ds, vd3d);
 				vd3d->color = col;
@@ -1802,8 +1686,7 @@ CDisarmTrap::~CDisarmTrap()
 {
 	smotte_count--;
 
-	if (smotte && (smotte_count <= 0))
-	{
+	if(smotte && smotte_count <= 0) {
 		smotte_count = 0;
 		delete smotte;
 		smotte = NULL;
@@ -1811,8 +1694,7 @@ CDisarmTrap::~CDisarmTrap()
 
 	slight_count--;
 
-	if (slight && (slight_count <= 0))
-	{
+	if(slight && slight_count <= 0) {
 		slight_count = 0;
 		delete slight;
 		slight = NULL;
@@ -1820,8 +1702,7 @@ CDisarmTrap::~CDisarmTrap()
 
 	srune_count--;
 
-	if (srune && (srune_count <= 0))
-	{
+	if(srune && srune_count <= 0) {
 		srune_count = 0;
 		delete srune;
 		srune = NULL;
@@ -1889,5 +1770,3 @@ void CDisarmTrap::Render() {
 	stitescale.x = 1.8f;
 	DrawEERIEObjEx(srune, &stiteangle, &stitepos, &stitescale, stitecolor);
 }
-
-//-----------------------------------------------------------------------------
