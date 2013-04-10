@@ -121,7 +121,7 @@ class CParalyse : public CSpellFx
 
 		void	Create(int, float, float, float, Vec3f *, int);
 		void	Update(unsigned long);
-		float	Render();
+		void Render();
 		void	Kill();
 };
 
@@ -158,7 +158,7 @@ class CCreateField: public CSpellFx
 		void	Create(Vec3f, float afBeta = 0);
 		void	Kill();
 		void	Update(unsigned long);
-		float	Render();
+		void Render();
 };
 
 class CDisarmTrap: public CSpellFx
@@ -186,7 +186,7 @@ class CDisarmTrap: public CSpellFx
 		void	Create(Vec3f, float afBeta = 0);
 		void	Kill();
 		void	Update(unsigned long);
-		float	Render();
+		void Render();
 };
 
 class CSlowDown: public CSpellFx
@@ -215,7 +215,7 @@ class CSlowDown: public CSpellFx
 		void	Create(Vec3f, float afBeta = 0);
 		void	Kill();
 		void	Update(unsigned long);
-		float	Render();
+		void Render();
 };
 
 // Done By : Didier Pedreno
@@ -297,7 +297,7 @@ class CRiseDead: public CSpellFx
 		void	Create(Vec3f, float afBeta = 0);
 		void	Kill();
 		void	Update(unsigned long);
-		float	Render();
+		void Render();
 };
 
 #endif // ARX_GRAPHICS_SPELLS_SPELLS06_H

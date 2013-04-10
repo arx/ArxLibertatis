@@ -61,7 +61,7 @@ public:
 	// surcharge
 	void Create(const Vec3f &, const Anglef &);
 	void Update(unsigned long);
-	float Render();
+	void Render();
 
 	bool bExplo;
 	bool bMove;
@@ -97,7 +97,7 @@ public:
 	
 	void Create();
 	void Update(unsigned long);
-	float Render();
+	void Render();
 };
 
 // Done By : Sébastien Scieux
@@ -136,7 +136,7 @@ public:
 	
 	void Create(Vec3f * posc, float perim, int speed);
 	void Update(unsigned long time);
-	float Render();
+	void Render();
 	void Kill();
 	void AddLight(int iLight);
 	void Action(int mode);
@@ -211,7 +211,7 @@ public:
 	void DrawAllEclair();
 
 	void Update(unsigned long);
-	float Render();
+	void Render();
 };
 
 #endif // ARX_GRAPHICS_SPELLS_SPELLS01_H

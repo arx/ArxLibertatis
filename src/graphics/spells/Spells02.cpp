@@ -222,16 +222,12 @@ void CHeal::Update(unsigned long aulTime)
 }
 
 //---------------------------------------------------------------------
-float CHeal::Render()
+void CHeal::Render()
 {
-	if (ulCurrentTime >= ulDuration)
-	{
-		return 0.f;
-	}
+	if(ulCurrentTime >= ulDuration)
+		return;
 
 	pPS->Render();
-
-	return 1;
 }
 
 //-----------------------------------------------------------------------------
@@ -277,9 +273,8 @@ void CArmor::Update(unsigned long _ulTime)
 }
 
 //-----------------------------------------------------------------------------
-float CArmor::Render() {
+void CArmor::Render() {
 	
-	return 0;
 }
 
 
@@ -325,7 +320,6 @@ void CLowerArmor::Update(unsigned long _ulTime)
 }
 
 //-----------------------------------------------------------------------------
-float CLowerArmor::Render() {
-	
-	return 0;
+void CLowerArmor::Render() {
+
 }

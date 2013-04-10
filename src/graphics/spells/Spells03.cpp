@@ -366,10 +366,10 @@ void CFireBall::Update(unsigned long aulTime)
 	pPSFire2.Update(aulTime);
 }
 
-float CFireBall::Render() {
+void CFireBall::Render() {
 	
 	if(ulCurrentTime >= ulDuration) {
-		return 0.f;
+		return;
 	}
 	
 	GRenderer->SetCulling(Renderer::CullNone);
@@ -379,8 +379,6 @@ float CFireBall::Render() {
 	pPSFire.Render();
 	pPSFire2.Render();
 	pPSSmoke.Render();
-	
-	return 1 - 0.5f * rnd();
 }
 
 //-----------------------------------------------------------------------------
@@ -566,11 +564,12 @@ void CIceProjectile::Update(unsigned long aulTime)
 }
 
 //---------------------------------------------------------------------
-float CIceProjectile::Render()
+void CIceProjectile::Render()
 {
 	int i = 0;
 
-	if (ulCurrentTime >= ulDuration) return 0.f;
+	if(ulCurrentTime >= ulDuration)
+		return;
 
 	GRenderer->SetCulling(Renderer::CullCW);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
@@ -670,8 +669,6 @@ float CIceProjectile::Render()
 			
 		}
 	}
-	
-	return 1;
 }
 
 //-----------------------------------------------------------------------------
@@ -865,7 +862,7 @@ void CSpeed::DrawRuban(int num, float size, int dec, float r, float g, float b, 
 }
 
 //-----------------------------------------------------------------------------
-float CSpeed::Render()
+void CSpeed::Render()
 {
 	GRenderer->SetCulling(Renderer::CullNone);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
@@ -884,8 +881,6 @@ float CSpeed::Render()
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendZero);
-
-	return 0;
 }
 
 CCreateFood::CCreateFood() {
@@ -1006,10 +1001,8 @@ if (ulCurrentTime >= ulDuration)
 }
 
 //---------------------------------------------------------------------
-float CCreateFood::Render()
+void CCreateFood::Render()
 {
 	pPS->Render();
-
-	return 1;
 }
 

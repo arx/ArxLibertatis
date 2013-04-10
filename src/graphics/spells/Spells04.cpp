@@ -99,7 +99,7 @@ void CBless::Update(unsigned long _ulTime)
 }
 
 //---------------------------------------------------------------------
-float CBless::Render()
+void CBless::Render()
 {
 	int i = 0;
 
@@ -107,10 +107,8 @@ float CBless::Render()
 	float y = eSrc.y - 5;
 	float z = eSrc.z;
 
-	if (ulCurrentTime >= ulDuration)
-	{
-		return 0.f;
-	}
+	if(ulCurrentTime >= ulDuration)
+		return;
 
 	GRenderer->SetCulling(Renderer::CullNone);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
@@ -179,8 +177,6 @@ float CBless::Render()
 	GRenderer->SetCulling(Renderer::CullNone);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	
-	return 1;
 }
 
 void CDispellField::Create(Vec3f aeSrc, float afBeta) {
@@ -200,11 +196,10 @@ void CDispellField::Update(unsigned long _ulTime) {
 	ulCurrentTime += _ulTime;
 }
 
-float CDispellField::Render() {
+void CDispellField::Render() {
 	
-	if (ulCurrentTime >= ulDuration) {
-		return 0.f;
-	}
+	if(ulCurrentTime >= ulDuration)
+		return;
 	
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	GRenderer->SetTexture(0, tex_p2);
@@ -220,8 +215,6 @@ float CDispellField::Render() {
 	stitecolor = Color3f::white;
 	stitescale = Vec3f::repeat(1.8f);
 	DrawEERIEObjEx(srune, &stiteangle, &stitepos, &stitescale, stitecolor);
-	
-	return 1;
 }
 
 //-----------------------------------------------------------------------------
@@ -272,11 +265,10 @@ void CTelekinesis::Update(unsigned long _ulTime) {
 	ulCurrentTime += _ulTime;
 }
 
-float CTelekinesis::Render() {
+void CTelekinesis::Render() {
 	
-	if(ulCurrentTime >= ulDuration) {
-		return 0.f;
-	}
+	if(ulCurrentTime >= ulDuration)
+		return;
 	
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
@@ -292,8 +284,6 @@ float CTelekinesis::Render() {
 	stitecolor = Color3f::white;
 	stitescale = Vec3f::repeat(1.8f);
 	DrawEERIEObjEx(srune, &stiteangle, &stitepos, &stitescale, stitecolor);
-	
-	return 1;
 }
 
 CCurse::~CCurse() {
@@ -346,7 +336,7 @@ void CCurse::Update(unsigned long _ulTime)
 	fRot += fRotPerMSec * _ulTime;
 }
 
-float CCurse::Render() {
+void CCurse::Render() {
 	
 	GRenderer->SetCulling(Renderer::CullCW);
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
@@ -377,8 +367,6 @@ float CCurse::Render() {
 	}
 
 	GRenderer->SetCulling(Renderer::CullNone);
-	
-	return 1;
 }
 
 
@@ -449,9 +437,8 @@ void CFireProtection::Update(unsigned long _ulTime)
 }
 
 //-----------------------------------------------------------------------------
-float CFireProtection::Render() {
+void CFireProtection::Render() {
 	
-	return 0;
 }
 
 //-----------------------------------------------------------------------------
@@ -519,7 +506,6 @@ void CColdProtection::Update(unsigned long _ulTime)
 	}
 }
 
-float CColdProtection::Render() {
-	
-	return 0;
+void CColdProtection::Render() {
+
 }

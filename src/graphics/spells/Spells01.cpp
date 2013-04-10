@@ -278,13 +278,13 @@ void CMagicMissile::Update(unsigned long aulTime)
 		lightIntensityFactor = 1 - 0.5f * rnd();
 }
 
-float CMagicMissile::Render()
+void CMagicMissile::Render()
 { 
 	Vec3f lastpos, newpos;
 	Vec3f v;
 
 	if(ulCurrentTime >= ulDuration)
-		return 0.f;
+		return;
 
 	// Set Appropriate Renderstates
 	GRenderer->SetCulling(Renderer::CullNone);
@@ -418,8 +418,6 @@ float CMagicMissile::Render()
 		DrawEERIEObjEx(smissile, &stiteangle, &stitepos, &stitescale, stitecolor);
 
 	eCurPos = lastpos;
-
-	return 0.f;
 }
 
 //-----------------------------------------------------------------------------
@@ -646,7 +644,7 @@ void CMultiMagicMissile::Update(unsigned long _ulTime)
 	}
 }
 
-float CMultiMagicMissile::Render()
+void CMultiMagicMissile::Render()
 { 
 	if(pTab) {
 		for(unsigned int i = 0; i < uiNumber; i++) {
@@ -664,8 +662,6 @@ float CMultiMagicMissile::Render()
 			}
 		}
 	}
-
-	return 1;
 }
 
 //-----------------------------------------------------------------------------
@@ -814,7 +810,7 @@ void CDoze::AddLightDoze(int aiLight)
 	this->nblight++;
 }
 
-float CIgnit::Render() {
+void CIgnit::Render() {
 	
 	switch(this->key) {
 		case 0:
@@ -837,8 +833,6 @@ float CIgnit::Render() {
 		default:
 			break;
 	}
-
-	return 0;
 }
 
 //-----------------------------------------------------------------------------
@@ -1034,7 +1028,7 @@ void CPortal::Update(unsigned long _ulTime)
 	}
 }
 
-float CPortal::Render()
+void CPortal::Render()
 {
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
@@ -1123,6 +1117,4 @@ float CPortal::Render()
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	GRenderer->SetCulling(Renderer::CullNone);
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
-
-	return 0;
 }

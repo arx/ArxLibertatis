@@ -80,7 +80,7 @@ class CBless: public CSpellFx
 	public:
 		void	Create(Vec3f, float afBeta = 0);
 		void	Update(unsigned long);
-		float	Render();
+		void Render();
 		void	Kill();
 };
 
@@ -102,7 +102,7 @@ class CDispellField: public CSpellFx
 		void	Create(Vec3f, float afBeta = 0);
 		void	Kill();
 		void	Update(unsigned long);
-		float	Render();
+		void Render();
 };
 
 class CFireProtection: public CSpellFx {
@@ -114,7 +114,7 @@ public:
 	
 	void Create(long);
 	void Update(unsigned long);
-	float Render();
+	void Render();
 	
 };
 
@@ -130,7 +130,7 @@ class CColdProtection: public CSpellFx
 		// surcharge
 		void	Create(long, int);
 		void	Update(unsigned long);
-		float	Render();
+		void Render();
  
 };
 
@@ -155,7 +155,7 @@ class CTelekinesis: public CSpellFx
 		void	Create(Vec3f, float afBeta = 0);
 		void	Kill();
 		void	Update(unsigned long);
-		float	Render();
+		void Render();
 };
 
 class CCurse: public CSpellFx
@@ -179,7 +179,7 @@ class CCurse: public CSpellFx
 		void	Create(Vec3f, float afBeta = 0);
 		void	Kill();
 		void	Update(unsigned long);
-		float	Render();
+		void Render();
 };
 
 #endif // ARX_GRAPHICS_SPELLS_SPELLS04_H

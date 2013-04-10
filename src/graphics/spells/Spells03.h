@@ -79,7 +79,7 @@ private:
 		void	Create(Vec3f, float afBeta, float afAlpha,  float);
 		void	Kill();
 		void	Update(unsigned long);
-		float	Render();
+		void Render();
 };
 
 class CSpeed: public CSpellFx
@@ -126,7 +126,7 @@ class CSpeed: public CSpellFx
 		void	AddRubanDef(int origin, float size, int dec, float r, float g, float b, float r2, float g2, float b2);
 		void	Create(int numinteractive, int duration);
 		void	Update(unsigned long);
-		float	Render();
+		void Render();
  
 };
 
@@ -162,7 +162,7 @@ class CIceProjectile: public CSpellFx
 		void	Create(Vec3f, float, float);
 		void	Kill();
 		void	Update(unsigned long);
-		float	Render();
+		void Render();
 };
 
 // Done By : did
@@ -182,7 +182,7 @@ class CCreateFood: public CSpellFx
 	public:
 		void	Create();
 		void	Update(unsigned long);
-		float	Render();
+		void Render();
  
 };
 

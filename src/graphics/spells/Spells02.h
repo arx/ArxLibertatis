@@ -66,7 +66,7 @@ class CHeal: public CSpellFx
 	public:
 		void	Create();
 		void	Update(unsigned long);
-		float	Render();
+		void Render();
  
 };
 
@@ -80,7 +80,7 @@ public:
 	void Create(long);
 	void Kill();
 	void Update(unsigned long);
-	float Render();
+	void Render();
 	
 };
 
@@ -93,7 +93,7 @@ public:
 	
 	void Create(long);
 	void Update(unsigned long);
-	float Render();
+	void Render();
 	
 };
 

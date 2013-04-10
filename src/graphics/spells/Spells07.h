@@ -111,7 +111,7 @@ class CLightning: public CSpellFx
 	public:
 		void	Create(Vec3f, Vec3f, float beta = 0);
 		void	Update(unsigned long);
-		float	Render();
+		void Render();
 		void	Kill();
 };
 
@@ -151,7 +151,7 @@ class CConfuse: public CSpellFx
 		void	Create(Vec3f, float afBeta = 0);
 		void	Kill();
 		void	Update(unsigned long);
-		float	Render();
+		void Render();
 };
 
 class CFireField: public CSpellFx
@@ -171,7 +171,7 @@ class CFireField: public CSpellFx
 	public:
 		void	Create(float largeur, Vec3f * pos, int duration);
 		void	Update(unsigned long);
-		float	Render();
+		void Render();
  
 };
 
@@ -205,7 +205,7 @@ class CIceField: public CSpellFx
 		void	Create(Vec3f, float afBeta = 0);
 		void	Kill();
 		void	Update(unsigned long);
-		float	Render();
+		void Render();
 };
 
 #endif // ARX_GRAPHICS_SPELLS_SPELLS07_H

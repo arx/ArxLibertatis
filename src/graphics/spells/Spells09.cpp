@@ -432,9 +432,10 @@ void CSummonCreature::Update(unsigned long _ulTime)
 
 //-----------------------------------------------------------------------------
 // rendu de la déchirure spatio temporelle
-float CSummonCreature::Render()
+void CSummonCreature::Render()
 {
-	if (ulCurrentTime >= (ulDurationIntro + ulDurationRender + ulDurationOuttro)) return 0.f;
+	if(ulCurrentTime >= (ulDurationIntro + ulDurationRender + ulDurationOuttro))
+		return;
 
 	GRenderer->ResetTexture(0);
 	GRenderer->SetCulling(Renderer::CullNone);
@@ -489,7 +490,7 @@ float CSummonCreature::Render()
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
 
-	return (fSizeIntro / end);
+	//return (fSizeIntro / end);
 }
 
 // INCINERATE
@@ -690,7 +691,7 @@ void CIncinerate::Update(unsigned long _ulTime)
 	pPSStream.SetPos(et);
 }
 
-float CIncinerate::Render() {
+void CIncinerate::Render() {
 	
 	GRenderer->SetCulling(Renderer::CullNone);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
@@ -706,8 +707,6 @@ float CIncinerate::Render() {
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	
 	pPSStream.Render();
-	
-	return 1;
 }
 
 //-----------------------------------------------------------------------------
@@ -761,7 +760,7 @@ void CNegateMagic::Update(unsigned long _ulTime) {
 	ulCurrentTime += _ulTime;
 }
 
-float CNegateMagic::Render() {
+void CNegateMagic::Render() {
 	
 	int i = 0;
 	
@@ -773,10 +772,8 @@ float CNegateMagic::Render() {
 	
 	Vec3f stitepos = eSrc - Vec3f(0.f, 10.f, 0.f);
 
-	if (ulCurrentTime >= ulDuration)
-	{
-		return 0.f;
-	}
+	if(ulCurrentTime >= ulDuration)
+		return;
 
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
@@ -817,8 +814,6 @@ float CNegateMagic::Render() {
 	stitecolor = Color3f(.5f, 0.f, .5f);
 	stitescale = Vec3f::repeat(3.1f);
 	DrawEERIEObjEx(ssol, &stiteangle, &stitepos, &stitescale, stitecolor);
-
-	return 1;
 }
 
 //----------------------------------------------------------------------
@@ -866,9 +861,10 @@ void CMassParalyse::Update(unsigned long _ulTime)
 }
 
 //----------------------------------------------------------------------
-float CMassParalyse::Render()
+void CMassParalyse::Render()
 {
-	if (ulCurrentTime > ulDuration) return 0;
+	if(ulCurrentTime > ulDuration)
+		return;
 
 	int	nb = iNbParalyse;
 
@@ -876,6 +872,4 @@ float CMassParalyse::Render()
 	{
 		(tabparalyse[nb].paralyse)->Render();
 	}
-
-	return 0;
 }
