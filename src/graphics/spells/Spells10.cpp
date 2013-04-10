@@ -58,22 +58,18 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "scene/Interactive.h"
 
-//-----------------------------------------------------------------------------
-//-----------------------------------------------------------------------------
 CMassLightning::CMassLightning(long nbmissiles)
 {
 	SetDuration(2000);
 	pTab = new CLightning*[10];
 	number = std::min(10L, nbmissiles);
 
-	for (int i = 0; i < number; i++)
-	{
+	for(int i = 0; i < number; i++) {
 		pTab[i] = new CLightning();
 		pTab[i]->fDamage = 2;
 	}
 }
 
-//-----------------------------------------------------------------------------
 void CMassLightning::Create(Vec3f aePos, float afBeta = 0) {
 	
 	(void)afBeta;
@@ -82,8 +78,7 @@ void CMassLightning::Create(Vec3f aePos, float afBeta = 0) {
 	Vec3f eTarget;
 	float ft = 360.0f / (float)number;
 
-	for (int i = 0; i < number; i++)
-	{
+	for(int i = 0; i < number; i++) {
 		eTarget.x = aePos.x - EEsin(radians(i * ft)) * 500.0f;
 		eTarget.y = aePos.y;
 		eTarget.z = aePos.z + EEcos(radians(i * ft)) * 500.0f;
@@ -99,20 +94,16 @@ void CMassLightning::Create(Vec3f aePos, float afBeta = 0) {
 	SetDuration(lMax + 1000);
 }
 
-//-----------------------------------------------------------------------------
 void CMassLightning::Update(unsigned long _ulTime)
 {
-	for (int i = 0; i < number; i++)
-	{
+	for(int i = 0; i < number; i++) {
 		pTab[i]->Update(_ulTime);
 	}
 }
 
-//-----------------------------------------------------------------------------
 void CMassLightning::Render()
 {
-	for (int i = 0; i < number; i++)
-	{
+	for(int i = 0; i < number; i++) {
 		pTab[i]->Render();
 	}
 }
@@ -188,7 +179,6 @@ void CControlTarget::Update(unsigned long _ulTime) {
 	ulCurrentTime += _ulTime;
 }
 
-//---------------------------------------------------------------------
 void CControlTarget::Render()
 {
 	int i = 0;
@@ -215,16 +205,15 @@ void CControlTarget::Render()
 	Vec3f newpos = Vec3f::ZERO;
 	Vec3f lastpos = pathways[0].p;
 	
-	for (i = 0; i < 9; i++)
-	{
+	for(i = 0; i < 9; i++) {
 		int kp		= i;
 		int kpprec	= (i > 0) ? kp - 1 : kp ;
 		int kpsuiv	= kp + 1 ;
 		int kpsuivsuiv = (i < (9 - 2)) ? kpsuiv + 1 : kpsuiv;
 
-		for (int toto = 1; toto < n; toto++)
-		{
-			if (fTrail < i * n + toto) break;
+		for(int toto = 1; toto < n; toto++) {
+			if(fTrail < i * n + toto)
+				break;
 
 			float t = toto * delta;
 
@@ -288,39 +277,31 @@ void CControlTarget::Render()
 	eCurPos = lastpos;
 }
 
-//---------------------------------------------------------------------
 CMassIncinerate::~CMassIncinerate()
 {
 }
 
-//---------------------------------------------------------------------
 void CMassIncinerate::Create(Vec3f aePos, float afBeta = 0) {
 	
 	(void)afBeta;
 	
 	aePos.y += 150.0f;
 
-	for (int i = 0; i < 10; i++)
-	{
+	for(int i = 0; i < 10; i++) {
 		pTabIncinerate[i]->Create(aePos, i * 36.f);
 	}
 }
 
-//---------------------------------------------------------------------
 void CMassIncinerate::Update(unsigned long _ulTime)
 {
-	for (int i = 0; i < 10; i++)
-	{
+	for(int i = 0; i < 10; i++) {
 		pTabIncinerate[i]->Update(_ulTime);
 	}
-
 }
 
-//---------------------------------------------------------------------
 void CMassIncinerate::Render()
 {
-	for (int i = 0; i < 10; i++)
-	{
+	for(int i = 0; i < 10; i++) {
 		pTabIncinerate[i]->Render();
 	}
 }
