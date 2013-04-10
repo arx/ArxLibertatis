@@ -258,18 +258,16 @@ void EERIEDrawLight(EERIE_LIGHT * el)
 
 void ARXDRAW_DrawAllLights(long x0,long z0,long x1,long z1) {
 	for(size_t i = 0; i < MAX_LIGHTS; i++) {
-		if (GLight[i]!=NULL)
-		{
-			
-			long tx = GLight[i]->pos.x * ACTIVEBKG->Xmul;
-			long tz = GLight[i]->pos.z * ACTIVEBKG->Zmul;
-			GLight[i]->mins.x=9999999999.f;
+		EERIE_LIGHT *light = GLight[i];
 
-			if ((tx>=x0) && (tx<=x1) &&
-				(tz>=z0) && (tz<=z1)) 
-			{
-				GLight[i]->treat=1;
-				EERIEDrawLight(GLight[i]);
+		if(light) {
+			long tx = light->pos.x * ACTIVEBKG->Xmul;
+			long tz = light->pos.z * ACTIVEBKG->Zmul;
+			light->mins.x = 9999999999.f;
+
+			if(tx >= x0 && tx <= x1 && tz >= z0 && tz <= z1)  {
+				light->treat = 1;
+				EERIEDrawLight(light);
 			}
 		}
 	}
