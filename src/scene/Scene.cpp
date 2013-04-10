@@ -1860,6 +1860,8 @@ extern long SPECIAL_DRAGINTER_RENDER;
 ///////////////////////////////////////////////////////////
 void ARX_SCENE_Render() {
 
+	arx_assert(USE_PORTALS && portals);
+
 	unsigned long tim = (unsigned long)(arxtime);
 	
 	WATEREFFECT+=0.0005f*framedelay;
@@ -1868,7 +1870,6 @@ void ARX_SCENE_Render() {
 	long clip3D = (l / (long)BKG_SIZX) + 1;
 	long lcval = clip3D + 4;
 
-	{
 	long camXsnap = ACTIVECAM->orgTrans.pos.x * ACTIVEBKG->Xmul;
 	long camZsnap = ACTIVECAM->orgTrans.pos.z * ACTIVEBKG->Zmul;
 	camXsnap = clamp(camXsnap, 0, ACTIVEBKG->Xsize - 1L);
@@ -1900,9 +1901,6 @@ void ARX_SCENE_Render() {
 		}
 	}
 
-	arx_assert(USE_PORTALS && portals);
-
-	if(USE_PORTALS && portals) {
 		long room_num=ARX_PORTALS_GetRoomNumForPosition(&ACTIVECAM->orgTrans.pos,1);
 		if(room_num>-1) {
 			ARX_PORTALS_InitDrawnRooms();
@@ -1914,7 +1912,6 @@ void ARX_SCENE_Render() {
 				ARX_PORTALS_Frustrum_RenderRoomTCullSoft(RoomDrawList[i], &RoomDraw[RoomDrawList[i]].frustrum, tim);
 			}
 		}
-	}
 
 	if(!Project.improve) {
 		ARXDRAW_DrawInterShadows();
@@ -1939,8 +1936,6 @@ void ARX_SCENE_Render() {
 	}
 
 	PopAllTriangleList();
-	
-	}
 		
 	if(eyeball.exist != 0 && eyeballobj)
 		ARXDRAW_DrawEyeBall();
@@ -1952,8 +1947,7 @@ void ARX_SCENE_Render() {
 
 	PopAllTriangleListTransparency();
 
-	if(USE_PORTALS && portals)
-		ARX_PORTALS_Frustrum_RenderRooms_TransparencyT();
+	ARX_PORTALS_Frustrum_RenderRooms_TransparencyT();
 
 	if(HALOCUR > 0) {
 		GRenderer->ResetTexture(0);
