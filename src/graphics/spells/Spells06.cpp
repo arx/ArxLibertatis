@@ -183,12 +183,13 @@ void CCreateField::Update(unsigned long _ulTime)
 extern bool VisibleSphere(float x, float y, float z, float radius);
 
 //-----------------------------------------------------------------------------
-float CCreateField::Render()
+void CCreateField::Render()
 {
 	if(!VisibleSphere(eSrc.x, eSrc.y - 120.f, eSrc.z, 400.f))
-		return 0.f;
+		return;
 
-	if (ulCurrentTime >= ulDuration) return 0.f;
+	if(ulCurrentTime >= ulDuration)
+		return;
 
 	falpha = 1.f - (((float)(ulCurrentTime)) * fOneOnDuration);
 
@@ -317,7 +318,7 @@ float CCreateField::Render()
 		DynLight[lLightId].duration = 800;
 	}
 
-	return falpha;
+	//return falpha;
 }
 
 CSlowDown::CSlowDown() {
@@ -394,16 +395,13 @@ void CSlowDown::Update(unsigned long _ulTime) {
 	ulCurrentTime += _ulTime;
 }
 
-float CSlowDown::Render() {
+void CSlowDown::Render() {
 	
-	if(ulCurrentTime >= ulDuration) {
-		return 0.f;
-	}
+	if(ulCurrentTime >= ulDuration)
+		return;
 	
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	
-	return 1;
 }
 
 //-----------------------------------------------------------------------------
@@ -1009,9 +1007,10 @@ void CRiseDead::Update(unsigned long _ulTime)
 
 //-----------------------------------------------------------------------------
 // rendu de la déchirure spatio temporelle
-float CRiseDead::Render()
+void CRiseDead::Render()
 {
-	if (ulCurrentTime >= (ulDurationIntro + ulDurationRender + ulDurationOuttro)) return 0.f;
+	if(ulCurrentTime >= (ulDurationIntro + ulDurationRender + ulDurationOuttro))
+		return;
 
 	GRenderer->ResetTexture(0);
 	GRenderer->SetCulling(Renderer::CullNone);
@@ -1081,7 +1080,8 @@ float CRiseDead::Render()
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 	GRenderer->SetCulling(Renderer::CullNone);
-	return (fSizeIntro / end);
+
+	//return (fSizeIntro / end);
 }
 
 //-----------------------------------------------------------------------------
@@ -1498,9 +1498,10 @@ void CParalyse::Update(unsigned long aulTime)
 }
 
 //-----------------------------------------------------------------------------
-float CParalyse::Render()
+void CParalyse::Render()
 {
-	if (key > 1) return 0;
+	if(key > 1)
+		return;
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
@@ -1770,8 +1771,6 @@ float CParalyse::Render()
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendZero);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
-
-	return 0;
 }
 
 CDisarmTrap::CDisarmTrap() {
@@ -1847,15 +1846,14 @@ void CDisarmTrap::Update(unsigned long _ulTime) {
 	ulCurrentTime += _ulTime;
 }
 
-float CDisarmTrap::Render() {
+void CDisarmTrap::Render() {
 	
 	float x = eSrc.x;
 	float y = eSrc.y;
 	float z = eSrc.z;
 	
-	if(ulCurrentTime >= ulDuration) {
-		return 0.f;
-	}
+	if(ulCurrentTime >= ulDuration)
+		return;
 	
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
@@ -1891,8 +1889,6 @@ float CDisarmTrap::Render() {
 	stitescale.y = 1.8f;
 	stitescale.x = 1.8f;
 	DrawEERIEObjEx(srune, &stiteangle, &stitepos, &stitescale, stitecolor);
-
-	return 1;
 }
 
 //-----------------------------------------------------------------------------

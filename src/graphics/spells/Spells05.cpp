@@ -264,16 +264,12 @@ void CCurePoison::Update(unsigned long aulTime)
 }
 
 //---------------------------------------------------------------------
-float CCurePoison::Render()
+void CCurePoison::Render()
 {
-	if (ulCurrentTime >= ulDuration)
-	{
-		return 0.f;
-	}
+	if(ulCurrentTime >= ulDuration)
+		return;
 
 	pPS->Render();
-
-	return 1;
 }
 
 CRuneOfGuarding::CRuneOfGuarding() {
@@ -379,7 +375,7 @@ void CRuneOfGuarding::Update(unsigned long _ulTime) {
 }
 
 //---------------------------------------------------------------------
-float CRuneOfGuarding::Render()
+void CRuneOfGuarding::Render()
 {
  
 
@@ -445,8 +441,6 @@ float CRuneOfGuarding::Render()
 		pd->siz = 0.3f;
 		pd->rgb = Color3f(.4f, .4f, .6f);
 	}
-	
-	return 1.0f - rnd() * 0.3f;
 }
 
 void LaunchPoisonExplosion(Vec3f * aePos) {
@@ -733,11 +727,10 @@ void CPoisonProjectile::Update(unsigned long _ulTime)
 		lightIntensityFactor = 1.f;
 }
 
-float CPoisonProjectile::Render() {
+void CPoisonProjectile::Render() {
 	
-	if(ulCurrentTime >= ulDuration) {
-		return 0.f;
-	}
+	if(ulCurrentTime >= ulDuration)
+		return;
 	
 	GRenderer->SetCulling(Renderer::CullNone);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
@@ -803,8 +796,6 @@ float CPoisonProjectile::Render() {
 	GRenderer->SetCulling(Renderer::CullNone);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	
-	return 1;
 }
 
 //-----------------------------------------------------------------------------
@@ -933,7 +924,7 @@ void CMultiPoisonProjectile::Update(unsigned long _ulTime)
 }
 
 //-----------------------------------------------------------------------------
-float CMultiPoisonProjectile::Render()
+void CMultiPoisonProjectile::Render()
 {
  
 
@@ -975,8 +966,6 @@ float CMultiPoisonProjectile::Render()
 			damages[t].exist	= true;
 		}
 	}
-
-	return 1;
 }
 
 CRepelUndead::CRepelUndead() {
@@ -1062,11 +1051,10 @@ void CRepelUndead::Update(unsigned long _ulTime) {
 	}
 }
 
-float CRepelUndead::Render() {
+void CRepelUndead::Render() {
 	
-	if(ulCurrentTime >= ulDuration) {
-		return 0.f;
-	}
+	if(ulCurrentTime >= ulDuration)
+		return;
 	
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
@@ -1133,8 +1121,6 @@ float CRepelUndead::Render() {
 		DynLight[id].duration = 200;
 		DynLight[id].time_creation = (unsigned long)(arxtime);
 	}
-	
-	return 1;
 }
 
 //-----------------------------------------------------------------------------
@@ -1399,9 +1385,10 @@ void CLevitate::Update(unsigned long _ulTime)
 }
 
 /*--------------------------------------------------------------------------*/
-float CLevitate::Render()
+void CLevitate::Render()
 {
-	if (this->key > 1) return 0;
+	if(this->key > 1)
+		return;
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
@@ -1626,6 +1613,4 @@ float CLevitate::Render()
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 
 	GRenderer->SetCulling(Renderer::CullNone);
-
-	return 0;
 }

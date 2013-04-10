@@ -93,10 +93,7 @@ class CSpellFx
 		long			spellinstance;
 		virtual void	Update(unsigned long) { }
 		void			Update(float time);
-		virtual float	Render()
-		{
-			return 1;
-		};
+		virtual void	Render() {}
 };
 
 #define frand2() (1.0f - (2.0f * rnd()))

@@ -386,12 +386,13 @@ void GetChestPos(long num, Vec3f * p)
 	}
 }
 //------------------------------------------------------------------------------
-float CLightning::Render()
+void CLightning::Render()
 {
 	TexturedVertex v[4];
 	TexturedVertex v2[4];
 
-	if (ulCurrentTime >= ulDuration) return 0.f;
+	if(ulCurrentTime >= ulDuration)
+		return;
 
 	falpha = 1.f - (((float)(ulCurrentTime)) * fOneOnDuration); 
 
@@ -574,7 +575,7 @@ float CLightning::Render()
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	
-	return falpha;
+	//return falpha;
 }
 
 //-----------------------------------------------------------------------------
@@ -642,15 +643,14 @@ void CConfuse::Update(unsigned long _ulTime) {
 	iElapsedTime = _ulTime;
 }
 
-float CConfuse::Render() {
+void CConfuse::Render() {
 	
 	int i = 0;
 	
 	eTarget = entities[spells[spellinstance].target]->pos;
 	
-	if(ulCurrentTime >= ulDuration) {
-		return 0.f;
-	}
+	if(ulCurrentTime >= ulDuration)
+		return;
 
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
@@ -719,8 +719,6 @@ float CConfuse::Render() {
 		DynLight[id].duration = 200;
 		DynLight[id].extras = 0;
 	}
-
-	return 1;
 }
 //-----------------------------------------------------------------------------
 //
@@ -874,9 +872,10 @@ void CFireField::Update(unsigned long _ulTime)
 }
 
 /*--------------------------------------------------------------------------*/
-float CFireField::Render()
+void CFireField::Render()
 {
-	if (this->key > 1) return 0;
+	if(this->key > 1)
+		return;
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
@@ -892,8 +891,6 @@ float CFireField::Render()
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendZero);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
-
-	return 0;
 }
 
 //-----------------------------------------------------------------------------
@@ -1024,10 +1021,10 @@ void CIceField::Update(unsigned long _ulTime)
 
 extern bool VisibleSphere(float x, float y, float z, float radius);
 
-float CIceField::Render()
+void CIceField::Render()
 {
 	if(!VisibleSphere(eSrc.x, eSrc.y - 120.f, eSrc.z, 350.f))
-		return 0.f;
+		return;
 
 	int i = 0;
 
@@ -1137,6 +1134,4 @@ float CIceField::Render()
 	}
 
 	GRenderer->SetCulling(Renderer::CullNone);
-	
-	return 1;
 }

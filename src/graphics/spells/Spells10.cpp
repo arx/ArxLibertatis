@@ -110,14 +110,12 @@ void CMassLightning::Update(unsigned long _ulTime)
 }
 
 //-----------------------------------------------------------------------------
-float CMassLightning::Render()
+void CMassLightning::Render()
 {
 	for (int i = 0; i < number; i++)
 	{
 		pTab[i]->Render();
 	}
-
-	return 1;
 }
 
 CControlTarget::CControlTarget() {
@@ -192,7 +190,7 @@ void CControlTarget::Update(unsigned long _ulTime) {
 }
 
 //---------------------------------------------------------------------
-float CControlTarget::Render()
+void CControlTarget::Render()
 {
 	int i = 0;
 
@@ -289,8 +287,6 @@ float CControlTarget::Render()
 	arx_assert(arx_check_init >= 0);
 	
 	eCurPos = lastpos;
-	
-	return 1;
 }
 
 //---------------------------------------------------------------------
@@ -322,13 +318,11 @@ void CMassIncinerate::Update(unsigned long _ulTime)
 }
 
 //---------------------------------------------------------------------
-float CMassIncinerate::Render()
+void CMassIncinerate::Render()
 {
 	for (int i = 0; i < 10; i++)
 	{
 		pTabIncinerate[i]->Render();
 	}
-
-	return 0;
 }
 

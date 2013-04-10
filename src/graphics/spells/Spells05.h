@@ -97,7 +97,7 @@ class CRuneOfGuarding: public CSpellFx
 		void	Create(Vec3f, float afBeta = 0);
 		void	Kill();
 		void	Update(unsigned long);
-		float	Render();
+		void Render();
 };
 
 // Done By : Sébastien Scieux
@@ -158,7 +158,7 @@ class CLevitate: public CSpellFx
 
 		void	Create(int def, float rout, float rhaut, float hauteur, Vec3f * pos, unsigned long);
 		void	Update(unsigned long);
-		float	Render();
+		void Render();
  
 };
 
@@ -179,7 +179,7 @@ class CCurePoison: public CSpellFx
 	public:
 		void	Create();
 		void	Update(unsigned long);
-		float	Render();
+		void Render();
  
 };
 
@@ -205,7 +205,7 @@ public:
 	// surcharge
 	void Create(Vec3f, float afBeta = 0);
 	void Update(unsigned long);
-	float Render();
+	void Render();
 	
 };
 
@@ -226,7 +226,7 @@ class CMultiPoisonProjectile: public CSpellFx
 		void	Create(Vec3f, float);
 		void	Kill();
 		void	Update(unsigned long);
-		float	Render();
+		void Render();
 };
 
 // Done By : did
@@ -254,7 +254,7 @@ class CRepelUndead: public CSpellFx
 		void	Create(Vec3f, float afBeta = 0);
 		void	Kill();
 		void	Update(unsigned long);
-		float	Render();
+		void Render();
 };
 
 #endif // ARX_GRAPHICS_SPELLS_SPELLS05_H
