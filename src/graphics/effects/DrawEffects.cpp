@@ -78,11 +78,6 @@ extern Color ulBKGColor;
 
 void EE_RT2(TexturedVertex*,TexturedVertex*);
 
-//***********************************************************************************************
-// hum... to be checked again for performance and result quality.
-//-----------------------------------------------------------------------------------------------
-// VERIFIED (Cyril 2001/10/15)
-//***********************************************************************************************
 void ARXDRAW_DrawInterShadows()
 {	
 	GRenderer->SetFogColor(Color::none);
@@ -110,7 +105,6 @@ void ARXDRAW_DrawInterShadows()
 		}
 
 		if(!(io->ioflags & IO_NOSHADOW) && io->show==SHOW_FLAG_IN_SCENE && !(io->ioflags & IO_GOLD)) {
-			EERIEPOLY * ep;
 			TexturedVertex in;
 
 			TexturedVertex ltv[4];
@@ -119,20 +113,18 @@ void ARXDRAW_DrawInterShadows()
 			ltv[2] = TexturedVertex(Vec3f(0, 0, 0.001f), 1.f, 0, 1, Vec2f(0.7f, 0.7f));
 			ltv[3] = TexturedVertex(Vec3f(0, 0, 0.001f), 1.f, 0, 1, Vec2f(0.3f, 0.7f));
 
-			if (io->obj->nbgroups<=1)
-			{
-				for (size_t k=0;k<io->obj->vertexlist.size();k+=9)
-				{
-					ep=EECheckInPoly(&io->obj->vertexlist3[k].v);
+			if(io->obj->nbgroups <= 1) {
+				for(size_t k=0; k < io->obj->vertexlist.size(); k += 9) {
+					EERIEPOLY *ep = EECheckInPoly(&io->obj->vertexlist3[k].v);
 
-					if (ep!=NULL)
-					{
+					if(ep) {
 						in.p.y=ep->min.y-3.f;
 						float r=0.5f-((float)EEfabs(io->obj->vertexlist3[k].v.y-in.p.y))*( 1.0f / 500 );
 						r-=io->invisibility;
 						r*=io->scale;
 
-						if (r<=0.f) continue;
+						if(r<=0.f)
+							continue;
 
 						float s1=16.f*io->scale;
 						float s2=s1*( 1.0f / 2 );
@@ -143,8 +135,7 @@ void ARXDRAW_DrawInterShadows()
 						long lv = r;
 						ltv[0].color=ltv[1].color=ltv[2].color=ltv[3].color=0xFF000000 | lv<<16 | lv<<8 | lv;
 
-						if (first)
-						{
+						if(first) {
 							first=0;
 							GRenderer->SetRenderState(Renderer::DepthWrite, false);
 							GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
@@ -166,22 +157,19 @@ void ARXDRAW_DrawInterShadows()
 						}
 					}
 				}
-			}
-			else
-			{
-				for (long k=0;k<io->obj->nbgroups;k++)
-				{
+			} else {
+				for(long k = 0; k < io->obj->nbgroups; k++) {
 					long origin=io->obj->grouplist[k].origin;
-					ep=EECheckInPoly(	&io->obj->vertexlist3[origin].v );
+					EERIEPOLY *ep = EECheckInPoly(&io->obj->vertexlist3[origin].v);
 
-					if (ep!=NULL)
-					{
+					if(ep) {
 						in.p.y=ep->min.y-3.f;
 						float r=0.8f-((float)EEfabs(io->obj->vertexlist3[origin].v.y-in.p.y))*( 1.0f / 500 );
 						r*=io->obj->grouplist[k].siz;
 						r-=io->invisibility;
 
-						if (r<=0.f) continue;
+						if(r<=0.f)
+							continue;
 
 						float s1=io->obj->grouplist[k].siz*44.f;
 						float s2=s1*( 1.0f / 2 );
@@ -192,8 +180,7 @@ void ARXDRAW_DrawInterShadows()
 						long lv = r;
 						ltv[0].color=ltv[1].color=ltv[2].color=ltv[3].color=0xFF000000 | lv<<16 | lv<<8 | lv;
 
-						if (first)
-						{
+						if(first) {
 							first=0;
 							GRenderer->SetRenderState(Renderer::DepthWrite, false);
 							GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
@@ -208,6 +195,7 @@ void ARXDRAW_DrawInterShadows()
 						EE_RT2(&in,&ltv[2]);
 						in.p.x-=s1;
 						EE_RT2(&in,&ltv[3]);
+
 						ARX_DrawPrimitive(&ltv[0], &ltv[1], &ltv[2]);
 						ARX_DrawPrimitive(&ltv[0], &ltv[2], &ltv[3]);
 					}
