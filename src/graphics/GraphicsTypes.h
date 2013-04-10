@@ -127,11 +127,6 @@ struct EERIE_LIGHT {
 
 #define TYP_SPECIAL1 1
 
-
-//*************************************************************************************
-// EERIE Types
-//*************************************************************************************
-
 enum PolyTypeFlag {
 	POLY_NO_SHADOW    = (1<<0),
 	POLY_DOUBLESIDED  = (1<<1),
@@ -162,8 +157,8 @@ enum PolyTypeFlag {
 	POLY_ANGULAR_IDX3 = (1<<26),
 	POLY_LATE_MIP     = (1<<27)
 };
-DECLARE_FLAGS(PolyTypeFlag, PolyType);
-DECLARE_FLAGS_OPERATORS(PolyType);
+DECLARE_FLAGS(PolyTypeFlag, PolyType)
+DECLARE_FLAGS_OPERATORS(PolyType)
 
 struct EERIEPOLY {
 	PolyType type;
@@ -203,10 +198,6 @@ struct EERIE_FACE {
 	
 };
 
-
-//***********************************************************************
-//*		BEGIN EERIE OBJECT STRUCTURES									*
-//***********************************************************************
 struct NEIGHBOURS_DATA {
 	short nb_Nvertex;
 	short nb_Nfaces;
