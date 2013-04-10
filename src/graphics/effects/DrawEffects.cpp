@@ -224,9 +224,10 @@ void EERIEDrawLight(EERIE_LIGHT * el)
 	TexturedVertex center;
 	GRenderer->SetCulling(Renderer::CullNone);
 	
-	if (el!=NULL)
-	if (el->treat)
-	{
+	if(!el || !el->treat)
+		return;
+
+
 		el->mins.x=999999999.f;
 		in.p = el->pos;
 
@@ -236,16 +237,13 @@ void EERIEDrawLight(EERIE_LIGHT * el)
 			el->mins = SPRmins;
 			el->maxs = SPRmaxs;
 
-			if (el->selected)
-			{
-				if ((el->mins.x>=-200.f) && (el->mins.x<=1000.f))
-				if ((el->mins.y>=-200.f) && (el->mins.y<=1000.f))
-				{
+			if(el->selected) {
+				if((el->mins.x>=-200.f) && (el->mins.x<=1000.f))
+				if((el->mins.y>=-200.f) && (el->mins.y<=1000.f)) {
 					in.p = el->pos;
 					EERIETreatPoint(&in,&center);	
 
-					if ((center.p.z>0.f) && (center.p.z<1000.f))
-					{
+					if(center.p.z > 0.f && center.p.z < 1000.f) {
 						float t=(1.f-center.p.z)*ACTIVECAM->orgTrans.use_focal*( 1.0f / 3000 );
 						float rad=el->fallstart*t;
 						EERIEDrawCircle(center.p.x, center.p.y, rad, Color::yellow, 0.0001f);
@@ -255,8 +253,7 @@ void EERIEDrawLight(EERIE_LIGHT * el)
 						EERIEDrawCircle(center.p.x, center.p.y, rad, Color::green, 0.0001f);
 					}
 				}
-			}			
-	}
+			}
 }
 
 void ARXDRAW_DrawAllLights(long x0,long z0,long x1,long z1) {
