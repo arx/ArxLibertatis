@@ -51,34 +51,32 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Done By : Didier Pedreno
 class CFireBall: public CSpellFx
 {
-	public:
-		Vec3f eSrc;
-		Vec3f eCurPos;
-		Vec3f eMove;
-		bool bExplo;
-		float fLevel;
-		//private:
-		ParticleSystem pPSFire;
-		ParticleSystem pPSFire2;
-		ParticleSystem pPSSmoke;
+public:
+	CFireBall();
+	~CFireBall();
+
+	void SetTTL(unsigned long);
+
+	void Create(Vec3f, float afBeta, float afAlpha,  float);
+	void Kill();
+
+	void Update(unsigned long);
+	void Render();
+
+	Vec3f eSrc;
+	Vec3f eCurPos;
+	Vec3f eMove;
+	bool bExplo;
+	float fLevel;
+
+	ParticleSystem pPSFire;
+	ParticleSystem pPSFire2;
+	ParticleSystem pPSSmoke;
+
 private:
 	ParticleParams fire_1;
 	ParticleParams fire_2;
 	ParticleParams smoke;
-
-	public:
-		CFireBall();
-		~CFireBall();
-
-		// surcharge
-	public:
-		void	SetTTL(unsigned long);
-
-	public:
-		void	Create(Vec3f, float afBeta, float afAlpha,  float);
-		void	Kill();
-		void	Update(unsigned long);
-		void Render();
 };
 
 class CSpeed: public CSpellFx
