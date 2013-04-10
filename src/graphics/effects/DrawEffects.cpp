@@ -228,32 +228,32 @@ void EERIEDrawLight(EERIE_LIGHT * el)
 		return;
 
 
-		el->mins.x=999999999.f;
-		in.p = el->pos;
+	el->mins.x=999999999.f;
+	in.p = el->pos;
 
-		EERIEDrawSprite(&in, 11.f, lightsource_tc, el->rgb.to<u8>(), 2.f);
+	EERIEDrawSprite(&in, 11.f, lightsource_tc, el->rgb.to<u8>(), 2.f);
 
-			
-			el->mins = SPRmins;
-			el->maxs = SPRmaxs;
 
-			if(el->selected) {
-				if((el->mins.x>=-200.f) && (el->mins.x<=1000.f))
-				if((el->mins.y>=-200.f) && (el->mins.y<=1000.f)) {
-					in.p = el->pos;
-					EERIETreatPoint(&in,&center);	
+	el->mins = SPRmins;
+	el->maxs = SPRmaxs;
 
-					if(center.p.z > 0.f && center.p.z < 1000.f) {
-						float t=(1.f-center.p.z)*ACTIVECAM->orgTrans.use_focal*( 1.0f / 3000 );
-						float rad=el->fallstart*t;
-						EERIEDrawCircle(center.p.x, center.p.y, rad, Color::yellow, 0.0001f);
-						rad=el->fallend*t;
-						EERIEDrawCircle(center.p.x, center.p.y, rad, Color::red, 0.0001f);
-						rad=el->intensity*200.f*t;
-						EERIEDrawCircle(center.p.x, center.p.y, rad, Color::green, 0.0001f);
-					}
-				}
+	if(el->selected) {
+		if((el->mins.x>=-200.f) && (el->mins.x<=1000.f))
+		if((el->mins.y>=-200.f) && (el->mins.y<=1000.f)) {
+			in.p = el->pos;
+			EERIETreatPoint(&in,&center);
+
+			if(center.p.z > 0.f && center.p.z < 1000.f) {
+				float t=(1.f-center.p.z)*ACTIVECAM->orgTrans.use_focal*( 1.0f / 3000 );
+				float rad=el->fallstart*t;
+				EERIEDrawCircle(center.p.x, center.p.y, rad, Color::yellow, 0.0001f);
+				rad=el->fallend*t;
+				EERIEDrawCircle(center.p.x, center.p.y, rad, Color::red, 0.0001f);
+				rad=el->intensity*200.f*t;
+				EERIEDrawCircle(center.p.x, center.p.y, rad, Color::green, 0.0001f);
 			}
+		}
+	}
 }
 
 void ARXDRAW_DrawAllLights(long x0,long z0,long x1,long z1) {
