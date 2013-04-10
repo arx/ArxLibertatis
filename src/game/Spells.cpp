@@ -6902,20 +6902,23 @@ void ARX_SPELLS_Update()
 
 void TryToCastSpell(Entity * io, Spell spellid, long level, long target, SpellcastFlags flags, long duration)
 {
-	if (!io || io->spellcast_data.castingspell != SPELL_NONE) return;
+	if(!io || io->spellcast_data.castingspell != SPELL_NONE)
+		return;
 
-	if (!(flags & SPELLCAST_FLAG_NOMANA)
-			&& (io->ioflags & IO_NPC) && (io->_npcdata->mana<=0.f))
+	if(!(flags & SPELLCAST_FLAG_NOMANA) && (io->ioflags & IO_NPC) && (io->_npcdata->mana<=0.f))
 		return;
 
 	unsigned long i(0);
 
-	for (; i < SPELL_COUNT; i++)
-		if (spellicons[i].spellid == spellid) break;
+	for(; i < SPELL_COUNT; i++)
+		if(spellicons[i].spellid == spellid)
+			break;
 
-	if ( i >= SPELL_COUNT) return; // not an existing spell...
+	if(i >= SPELL_COUNT)
+		return; // not an existing spell...
 
-	for (unsigned long j(0); j < 4; j++) io->spellcast_data.symb[j] = RUNE_NONE;
+	for(unsigned long j(0); j < 4; j++)
+		io->spellcast_data.symb[j] = RUNE_NONE;
 
 	// checks for symbol drawing...
 	if(!flags.has(SPELLCAST_FLAG_NOANIM) && io->ioflags.has(IO_NPC)) {
@@ -6930,11 +6933,9 @@ void TryToCastSpell(Entity * io, Spell spellid, long level, long target, Spellca
 	}
 
 	io->spellcast_data.castingspell = spellid;
-	
 
 	io->spellcast_data.spell_flags = flags;
 	io->spellcast_data.spell_level = checked_range_cast<short>(level);
-
 
 	io->spellcast_data.duration = duration;
 	io->spellcast_data.target = target;
