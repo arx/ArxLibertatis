@@ -6407,12 +6407,9 @@ void ARX_SPELLS_Update()
 			// LEVEL 9 SPELLS
 			case SPELL_SUMMON_CREATURE:
 			{
-				if (!arxtime.is_paused())
-				{
-					if (float(arxtime)-(float)spells[i].timcreation<=4000)
-					{
-						if (rnd()>0.7f) 
-						{
+				if(!arxtime.is_paused()) {
+					if(float(arxtime) - (float)spells[i].timcreation <= 4000) {
+						if(rnd() > 0.7f) {
 							CSummonCreature * pSummon = (CSummonCreature *)spells[i].pSpellFx;
 							if(pSummon) {
 								Vec3f pos = pSummon->eSrc;
@@ -6422,19 +6419,16 @@ void ARX_SPELLS_Update()
 
 						CSpellFx *pCSpellFX = spells[i].pSpellFx;
 
-						if (pCSpellFX)
-						{
+						if(pCSpellFX) {
 							pCSpellFX->Update(framedelay);
 							pCSpellFX->Render();
 						}	
 
 						spells[i].longinfo=1;
 						spells[i].longinfo2=-1;
-					}
-					else if (spells[i].longinfo)
-					{
-						if (spells[i].pSpellFx->lLightId > -1)
-						{
+
+					} else if(spells[i].longinfo) {
+						if(spells[i].pSpellFx->lLightId > -1) {
 							long id = spells[i].pSpellFx->lLightId;
 							DynLight[id].exist = 0;
 							spells[i].pSpellFx->lLightId=-1;
@@ -6445,16 +6439,14 @@ void ARX_SPELLS_Update()
 						CSummonCreature *pSummon;
 						pSummon= (CSummonCreature *)spells[i].pSpellFx;
 
-						if (pSummon)
-						{			
+						if(pSummon) {
 							EERIE_CYLINDER phys;
 							phys.height=-200;
 							phys.radius=50;
 							phys.origin=spells[i].target_pos;
-									float anything = CheckAnythingInCylinder(&phys, NULL, CFLAG_JUST_TEST);
+							float anything = CheckAnythingInCylinder(&phys, NULL, CFLAG_JUST_TEST);
 
-							if (EEfabs(anything)<30)
-							{
+							if(EEfabs(anything) < 30) {
 							
 							long tokeep;
 							res::path cls;
@@ -6493,12 +6485,10 @@ void ARX_SPELLS_Update()
 							}
 							
 							if(io) {
-								
 								RestoreInitialIOStatusOfIO(io);
 								
 								long lSpellsCaster = spells[i].caster ; 
 								io->summoner = checked_range_cast<short>(lSpellsCaster);
-
 
 								io->scriptload = 1;
 								
@@ -6509,8 +6499,7 @@ void ARX_SPELLS_Update()
 								io->pos = phys.origin;
 								SendInitScriptEvent(io);
 
-								if (tokeep<0)
-								{
+								if(tokeep < 0) {
 									io->scale=1.65f;
 									io->physics.cyl.radius=25;
 									io->physics.cyl.height=-43;
@@ -6525,25 +6514,24 @@ void ARX_SPELLS_Update()
 
 								SendIOScriptEvent(io,SM_SUMMONED);
 								
-											Vec3f pos;
+								Vec3f pos;
 								
-								for (long j=0;j<3;j++)
-								{
+								for(long j = 0; j < 3; j++) {
 									pos.x=pSummon->eSrc.x+rnd()*100.f-50.f;
 									pos.y=pSummon->eSrc.y+100+rnd()*100.f-50.f;
 									pos.z=pSummon->eSrc.z+rnd()*100.f-50.f;
 									MakeCoolFx(&pos);
 								}
 
-								if (tokeep==1)	spells[i].longinfo2 = io->index();
-								else spells[i].longinfo2=-1;
+								if(tokeep==1)
+									spells[i].longinfo2 = io->index();
+								else
+									spells[i].longinfo2 = -1;
 							}
 							}
-					}
-					}
-					else if (spells[i].longinfo2<=0)
-					{
-						spells[i].tolive=0;
+						}
+					} else if(spells[i].longinfo2 <= 0) {
+						spells[i].tolive = 0;
 					}
 				}
 			}
@@ -6561,8 +6549,7 @@ void ARX_SPELLS_Update()
 
 				CSpellFx *pCSpellFX = spells[i].pSpellFx;
 
-				if (pCSpellFX)
-				{
+				if(pCSpellFX) {
 					pCSpellFX->Update(framedelay);
 					pCSpellFX->Render();
 				}					
@@ -6570,21 +6557,19 @@ void ARX_SPELLS_Update()
 			break;
 			case SPELL_INCINERATE:
 			{
-				if (ValidIONum(spells[i].caster))
-				{
+				if(ValidIONum(spells[i].caster)) {
 					ARX_SOUND_RefreshPosition(spells[i].snd_loop, &entities[spells[i].caster]->pos);
 				}
 			}
 			break;
 			case SPELL_NEGATE_MAGIC:
 			{
-				if (ValidIONum(spells[i].target))
+				if(ValidIONum(spells[i].target))
 					LaunchAntiMagicField(i);
 
 				CSpellFx *pCSpellFX = spells[i].pSpellFx;
 
-				if (pCSpellFX)
-				{
+				if(pCSpellFX) {
 					pCSpellFX->Update(framedelay);
 					pCSpellFX->Render();
 				}
@@ -6600,8 +6585,7 @@ void ARX_SPELLS_Update()
 			{
 				CSpellFx *pCSpellFX = spells[i].pSpellFx;
 
-				if (pCSpellFX)
-				{
+				if(pCSpellFX) {
 					pCSpellFX->Update(framedelay);
 					pCSpellFX->Render();
 				}
@@ -6609,8 +6593,7 @@ void ARX_SPELLS_Update()
 			break;
 			case SPELL_MASS_INCINERATE:
 			{
-				if (ValidIONum(spells[i].caster))
-				{
+				if(ValidIONum(spells[i].caster)) {
 					ARX_SOUND_RefreshPosition(spells[i].snd_loop, &entities[spells[i].caster]->pos);
 				}
 			}
@@ -6619,17 +6602,16 @@ void ARX_SPELLS_Update()
 			{
 				CSpellFx *pCSpellFX = spells[i].pSpellFx;
 
-				if (pCSpellFX)
-				{
+				if(pCSpellFX) {
 					pCSpellFX->Update(framedelay);
 					pCSpellFX->Render();
 				}
 				
-						Vec3f _source = spells[i].vsource;
-						float _fx;
-						_fx = 0.5f;
-						unsigned long _gct;
-						_gct = 0;
+				Vec3f _source = spells[i].vsource;
+				float _fx;
+				_fx = 0.5f;
+				unsigned long _gct;
+				_gct = 0;
 
 				Vec3f position;
 
@@ -6650,18 +6632,18 @@ void ARX_SPELLS_Update()
 					ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &position, 0.8F + 0.4F * rnd());
 				}
 				
-				if ((_gct>spells[i].tolive-1800) && (spells[i].siz==0))
-				{
-					spells[i].siz=1;
+				if((_gct > spells[i].tolive - 1800) && (spells[i].siz == 0)) {
+					spells[i].siz = 1;
 					ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, NULL, 0.8F + 0.4F * rnd());
 				}
 
-				if (spells[i].longinfo!=-1)
-				{
+				if(spells[i].longinfo!=-1) {
 					float fxx;
 
-					if (_fx>0.2f)  fxx=1.f;
-					else fxx=_fx*5.f;
+					if(_fx > 0.2f)
+						fxx = 1.f;
+					else
+						fxx = _fx * 5.f;
 
 					DynLight[spells[i].longinfo].intensity=1.3f+rnd()*1.f;
 					DynLight[spells[i].longinfo].fallend=850.f;
@@ -6669,8 +6651,8 @@ void ARX_SPELLS_Update()
 					DynLight[spells[i].longinfo].rgb = Color3f::red * fxx;
 				}
 			}
-		break;		
-		case SPELL_TELEPORT:
+			break;
+			case SPELL_TELEPORT:
 				{
 					float TELEPORT = (float)(((float)tim-(float)spells[i].timcreation)/(float)spells[i].tolive);
 
@@ -6918,12 +6900,6 @@ void ARX_SPELLS_Update()
 	}
 }
 
-////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////
 void TryToCastSpell(Entity * io, Spell spellid, long level, long target, SpellcastFlags flags, long duration)
 {
 	if (!io || io->spellcast_data.castingspell != SPELL_NONE) return;
