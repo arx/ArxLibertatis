@@ -5420,28 +5420,24 @@ void ARX_SPELLS_Update()
 				//****************************************************************************
 				// LEVEL 1 SPELLS
 				case SPELL_MAGIC_SIGHT:
-
-					if(spells[i].caster==0) {
-						Project.improve=0;
+					if(spells[i].caster == 0) {
+						Project.improve = 0;
 						ARX_SOUND_Stop(spells[i].snd_loop);
 					}
 
 					ARX_SOUND_PlaySFX(SND_SPELL_VISION_START, &spells[i].caster_pos);					
 				break;
-				case SPELL_MAGIC_MISSILE:
-				{
+				case SPELL_MAGIC_MISSILE: {
 					if(spells[i].longinfo != -1)
 						DynLight[spells[i].longinfo].exist = 0;
 				}
 				break;
-				case SPELL_IGNIT:
-				{
+				case SPELL_IGNIT: {
 					CIgnit *pIgnit = (CIgnit *)spells[i].pSpellFx;
 					pIgnit->Action(1);					
 				}
 				break;
-				case SPELL_DOUSE:
-				{
+				case SPELL_DOUSE: {
 					CDoze *pDoze = (CDoze *)spells[i].pSpellFx;
 					pDoze->Action(0);					
 				}
@@ -5452,39 +5448,35 @@ void ARX_SPELLS_Update()
 					if(spells[i].caster == 0)
 						ARX_SOUND_Stop(spells[i].snd_loop);				
 
-					ARX_SPELLS_RemoveSpellOn(spells[i].target,i);
-
+					ARX_SPELLS_RemoveSpellOn(spells[i].target, i);
 				break;
-				case SPELL_ARMOR:
-				{
+				case SPELL_ARMOR: {
 					ARX_SOUND_Stop(spells[i].snd_loop);
 					ARX_SOUND_PlaySFX(SND_SPELL_ARMOR_END, &spells[i].caster_pos);					
-					Entity * io=entities[spells[i].target];
+					Entity *io = entities[spells[i].target];
 
 					if(spells[i].longinfo) {
-						io->halo.flags&=~HALO_ACTIVE;
+						io->halo.flags &= ~HALO_ACTIVE;
 						ARX_HALO_SetToNative(io);
 					}
 
-					ARX_SPELLS_RemoveSpellOn(spells[i].target,i);
+					ARX_SPELLS_RemoveSpellOn(spells[i].target, i);
 				}
 				break;
-				case SPELL_LOWER_ARMOR:
-				{
-					Entity * io=entities[spells[i].target];
+				case SPELL_LOWER_ARMOR: {
+					Entity *io = entities[spells[i].target];
 
 					if(spells[i].longinfo) {
-						io->halo.flags&=~HALO_ACTIVE;
+						io->halo.flags &= ~HALO_ACTIVE;
 						ARX_HALO_SetToNative(io);
 					}
 
-					ARX_SPELLS_RemoveSpellOn(spells[i].target,i);					
+					ARX_SPELLS_RemoveSpellOn(spells[i].target, i);
 				}
 				break;					
 				//****************************************************************************
 				// LEVEL 3
 				case SPELL_SPEED:						
-
 					ARX_SPELLS_RemoveSpellOn(spells[i].target,i);
 
 					if(spells[i].target >= 0 && spells[i].target < long(entities.size())) {
@@ -5521,7 +5513,6 @@ void ARX_SPELLS_Update()
 
 					if(ValidIONum(spells[i].target))
 						ARX_HALO_SetToNative(entities[spells[i].target]);
-
 				break;
 				case SPELL_COLD_PROTECTION:
 					ARX_SOUND_Stop(spells[i].snd_loop);
@@ -5530,34 +5521,31 @@ void ARX_SPELLS_Update()
 
 					if(ValidIONum(spells[i].target))
 						ARX_HALO_SetToNative(entities[spells[i].target]);
-
 				break;
 				//****************************************************************************
 				// LEVEL 5
-				case SPELL_LEVITATE:
-				{
+				case SPELL_LEVITATE: {
 					ARX_SPELLS_RemoveSpellOn(spells[i].target,i);
 
-					if (spells[i].target==0)
-						player.levitate=0;
+					if(spells[i].target == 0)
+						player.levitate = 0;
 				}
 				break;
 				//****************************************************************************
 				// LEVEL 6 SPELLS
 				case SPELL_PARALYSE:
 					ARX_SPELLS_RemoveSpellOn(spells[i].target,i);
-					entities[spells[i].target]->ioflags&=~IO_FREEZESCRIPT;
+					entities[spells[i].target]->ioflags &= ~IO_FREEZESCRIPT;
 				break;
 				case SPELL_RISE_DEAD:
 					ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &spells[i].caster_pos);
 
-					if (ValidIONum(spells[i].longinfo) && spells[i].longinfo!=0)
-					{				
-						if (	(entities[spells[i].longinfo]->scriptload)
-							&&	(entities[spells[i].longinfo]->ioflags & IO_NOSAVE)	)
-						{
-							AddRandomSmoke(entities[spells[i].longinfo],100);
-							Vec3f posi = entities[spells[i].longinfo]->pos;
+					if(ValidIONum(spells[i].longinfo) && spells[i].longinfo != 0) {
+						Entity *entity = entities[spells[i].longinfo];
+
+						if(entity->scriptload && (entity->ioflags & IO_NOSAVE)) {
+							AddRandomSmoke(entity,100);
+							Vec3f posi = entity->pos;
 							posi.y-=100.f;
 							MakeCoolFx(&posi);
 							long nn=GetFreeDynLight();
@@ -5572,17 +5560,14 @@ void ARX_SPELLS_Update()
 								DynLight[nn].duration = 600;
 							}
 
-							ARX_INTERACTIVE_DestroyIO(entities[spells[i].longinfo]);
+							ARX_INTERACTIVE_DestroyIO(entity);
 						}
-					}					
+					}
 				break;
-				case SPELL_CREATE_FIELD:
-					CCreateField * pCreateField;
-					pCreateField = (CCreateField *) spells[i].pSpellFx;
+				case SPELL_CREATE_FIELD: {
+					CCreateField *pCreateField = (CCreateField *) spells[i].pSpellFx;
 
-					if (	(pCreateField)
-						&&	(pCreateField->lLightId != -1)	)
-					{
+					if(pCreateField && pCreateField->lLightId != -1) {
 						long id=pCreateField->lLightId;
 						DynLight[id].duration=800;
 					}
@@ -5590,16 +5575,15 @@ void ARX_SPELLS_Update()
 					if(ValidIONum(spells[i].longinfo)) {
 						delete entities[spells[i].longinfo];
 					}
+				}
 				break;
 				case SPELL_SLOW_DOWN:
 					ARX_SPELLS_RemoveSpellOn(spells[i].target,i);
 
-					if(spells[i].target >= 0 && spells[i].target < long(entities.size()))
-					{
-						if (entities[spells[i].target])
-							entities[spells[i].target]->speed_modif+=spells[i].caster_level*( 1.0f / 20 );
+					if(spells[i].target >= 0 && spells[i].target < long(entities.size())) {
+						if(entities[spells[i].target])
+							entities[spells[i].target]->speed_modif += spells[i].caster_level * (1.0f/20);
 					}
-
 				break;				
 				//****************************************************************************
 				// LEVEL 7
