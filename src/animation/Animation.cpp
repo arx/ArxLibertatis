@@ -1003,33 +1003,8 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 	if(!modinfo && ARX_SCENE_PORTAL_ClipIO(io, &pos))
 		return;
 	
-	EERIE_QUAT qInvert;
-
-	if(mat) {
-		QuatFromMatrix(qInvert, *mat);
-	} else {
-		Anglef vt1;
-
-		if(angle) {
-			vt1 = *angle;
-		} else {
-			if(io)
-				vt1 = io->angle;
-			else
-				vt1 = eobj->angle;
-		}
-
-		//TODO WTF
-		if(io && (io->ioflags & IO_ANGULAR))
-			vt1 = Anglef(radians(vt1.a), radians(vt1.b), radians(vt1.g));
-		else
-			vt1 = Anglef(radians(MAKEANGLE(-vt1.g)), radians(MAKEANGLE(vt1.b)), radians(MAKEANGLE(vt1.a)));
-
-		QuatFromAngles(&qInvert, &vt1);
-	}
-
 	// Precalc local lights for this object then interpolate
-	MakeCLight(io, &infra, &qInvert, &pos, eobj);
+	MakeCLight(io, &infra, &rotation, &pos, eobj);
 	
 	long special_color_flag = 0;
 	Color3f special_color = Color3f::black;
@@ -1068,7 +1043,7 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 			continue;
 
 		if(io && (io->ioflags & IO_ANGULAR))
-			MakeCLight2(io, &infra, &qInvert, &pos, eobj, i);
+			MakeCLight2(io, &infra, &rotation, &pos, eobj, i);
 
 		float fTransp = 0.f;
 
