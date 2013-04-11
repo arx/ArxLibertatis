@@ -1034,21 +1034,6 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 
 	// Precalc local lights for this object then interpolate
 	MakeCLight(io, &infra, &qInvert, &pos, eobj);
-
-	float ddist = 0;
-	long need_halo = 0;
-
-	if(io && (io->halo.flags & HALO_ACTIVE)) {
-		
-		float mdist=ACTIVECAM->cdepth;
-		ddist = mdist-fdist(pos, ACTIVECAM->orgTrans.pos);
-		ddist = ddist/mdist;
-		ddist = std::pow(ddist, 6);
-
-		ddist = clamp(ddist, 0.25f, 0.9f);
-
-		need_halo=1;
-	}
 	
 	{
 	long special_color_flag = 0;
@@ -1197,9 +1182,16 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 			CalculateInterZMapp(eobj,i,paf,pTex,vert_list);
 		}
 
-		////////////////////////////////////////////////////////////////////////
 		// HALO HANDLING START
-		if(need_halo) {
+		if(io && (io->halo.flags & HALO_ACTIVE)) {
+
+			float mdist=ACTIVECAM->cdepth;
+			float ddist = mdist-fdist(pos, ACTIVECAM->orgTrans.pos);
+			ddist = ddist/mdist;
+			ddist = std::pow(ddist, 6);
+
+			ddist = clamp(ddist, 0.25f, 0.9f);
+
 			Ncam.orgTrans.updateFromAngle(subj.angle);
 
 			Ncam.orgTrans.xcos = 1.f;
@@ -1319,9 +1311,6 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 			}
 		}
 	}
-
-// HALO HANDLING END
-////////////////////////////////////////////////////////////////////////
 	}
 
 	// storing 2D Bounding Box info
