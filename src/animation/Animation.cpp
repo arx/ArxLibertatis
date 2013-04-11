@@ -886,9 +886,8 @@ void EE_P(Vec3f * in, TexturedVertex * out);
 
 void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, EERIEMATRIX *mat, EERIE_MOD_INFO *modinfo) {
 
-	if(!eobj) {
+	if(!eobj)
 		return;
-	}
 	
 	DESTROYED_DURING_RENDERING = NULL;
 
@@ -942,7 +941,6 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 	}
 	
 	// Test for Mipmeshing then pre-computes vertices
-	{
 		ResetBBox3D( io );
 
 		for(size_t i = 0 ; i < eobj->vertexlist.size(); i++) {
@@ -957,7 +955,7 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 			
 			if(!angle) {
 				if(io && !modinfo) {
-					vert_list_static[0].p -= io->obj->pbox->vert[0].initpos * scale-io->obj->point0;
+					vert_list_static[0].p -= io->obj->pbox->vert[0].initpos * scale - io->obj->point0;
 				}
 
 				VectorMatrixMultiply(&vert_list_static[1].p, &vert_list_static[0].p, mat);
@@ -968,9 +966,9 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 			}
 
 			eobj->vertexlist3[i].v = vert_list_static[1].p += pos;
-			EE_RT( &vert_list_static[1], &eobj->vertexlist[i].vworld);
-			EE_P( &eobj->vertexlist[i].vworld, &eobj->vertexlist[i].vert);
 
+			EE_RT(&vert_list_static[1], &eobj->vertexlist[i].vworld);
+			EE_P(&eobj->vertexlist[i].vworld, &eobj->vertexlist[i].vert);
 
 			// Memorizes 2D Bounding Box using vertex min/max x,y pos
 			if(eobj->vertexlist[i].vert.rhw > 0.f) {
@@ -989,7 +987,6 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 
 			AddToBBox3D(io,&eobj->vertexlist3[i].v);
 		}
-	}
 	
 	if(BBOXMAX.x <= 1 || BBOXMIN.x >= DANAESIZX - 1 || BBOXMAX.y <= 1 || BBOXMIN.y >= DANAESIZY - 1) {
 		// storing 2D Bounding Box info
@@ -1002,10 +999,9 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 		return;
 	}
 
-	if(!modinfo && ARX_SCENE_PORTAL_ClipIO(io,&pos))
+	if(!modinfo && ARX_SCENE_PORTAL_ClipIO(io, &pos))
 		return;
 	
-
 	EERIE_QUAT qInvert;
 
 	if(mat) {
@@ -1031,11 +1027,9 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 		QuatFromAngles(&qInvert, &vt1);
 	}
 
-
 	// Precalc local lights for this object then interpolate
 	MakeCLight(io, &infra, &qInvert, &pos, eobj);
 	
-	{
 	long special_color_flag = 0;
 	Color3f special_color = Color3f::black;
 
@@ -1052,16 +1046,14 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 		Vec3f nrm = eobj->vertexlist3[paf[0]].v - ACTIVECAM->orgTrans.pos;
 
 		if(!(eobj->facelist[i].facetype&POLY_DOUBLESIDED)) {
-			Vec3f normV10;
-			Vec3f normV20;
-			normV10 = eobj->vertexlist3[paf[1]].v - eobj->vertexlist3[paf[0]].v;
-			normV20 = eobj->vertexlist3[paf[2]].v - eobj->vertexlist3[paf[0]].v;
+			Vec3f normV10 = eobj->vertexlist3[paf[1]].v - eobj->vertexlist3[paf[0]].v;
+			Vec3f normV20 = eobj->vertexlist3[paf[2]].v - eobj->vertexlist3[paf[0]].v;
 			Vec3f normFace;
 			normFace.x=(normV10.y*normV20.z)-(normV10.z*normV20.y);
 			normFace.y=(normV10.z*normV20.x)-(normV10.x*normV20.z);
 			normFace.z=(normV10.x*normV20.y)-(normV10.y*normV20.x);
 
-			if(dot(normFace ,nrm) > 0.f)
+			if(dot(normFace, nrm) > 0.f)
 				continue;
 		}
 
@@ -1100,7 +1092,7 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 				vert_list = PushVertexInTableCull_TSubstractive(pTex);
 			}
 		} else {
-			vert_list=PushVertexInTableCull(pTex);
+			vert_list = PushVertexInTableCull(pTex);
 		}
 
 		vert_list[0]=eobj->vertexlist[paf[0]].vert;
@@ -1116,7 +1108,7 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 
 		// Treat WATER Polys (modify UVs)
 		if(eobj->facelist[i].facetype & POLY_WATER) {
-			for(long k=0; k<3; k++) {
+			for(long k = 0; k < 3; k++) {
 				vert_list[k].uv.x=eobj->facelist[i].u[k];
 				vert_list[k].uv.y=eobj->facelist[i].v[k];
 				ApplyWaterFXToVertex(&eobj->vertexlist[eobj->facelist[i].vid[k]].v, &vert_list[k], 0.3f);
@@ -1126,16 +1118,15 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 		if(eobj->facelist[i].facetype & POLY_GLOW) { // unaffected by light
 			vert_list[0].color=vert_list[1].color=vert_list[2].color=0xffffffff;
 		} else { // Normal Illuminations
-			for(long j=0;j<3;j++) {
+			for(long j = 0; j < 3; j++) {
 				vert_list[j].color=eobj->vertexlist3[paf[j]].vert.color;
 			}
 		}
 
-		if(io) {
-			if(Project.improve) {
+		if(io && Project.improve) {
 				int to=3;
 
-				for (long k=0; k<to; k++) {
+				for(long k = 0; k < to; k++) {
 					long lr=(vert_list[k].color>>16) & 255;
 					float ffr=(float)(lr);
 					
@@ -1146,8 +1137,10 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 					float fb=((1.f-dd)*6.f + (EEfabs(eobj->vertexlist[paf[k]].norm.x) + EEfabs(eobj->vertexlist[paf[k]].norm.y))) * 0.125f;
 					float fr=((.6f-dd)*6.f + (EEfabs(eobj->vertexlist[paf[k]].norm.z) + EEfabs(eobj->vertexlist[paf[k]].norm.y))) * 0.125f;
 
-					if (fr<0.f) fr=0.f;
-					else fr=max(ffr,fr*255.f);
+					if(fr < 0.f)
+						fr = 0.f;
+					else
+						fr = max(ffr, fr * 255.f);
 
 					fr=min(fr,255.f);
 					fb*=255.f;
@@ -1157,7 +1150,6 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 					u8 lfg = 0x1E;
 					vert_list[k].color = (0xff000000L | (lfr << 16) | (lfg << 8) | (lfb));
 				}
-			}
 		}
 		
 		if(special_color_flag & 1) {
@@ -1170,7 +1162,7 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 			}
 		}
 	
-		for(long j=0; j<3; j++)
+		for(long j = 0; j < 3; j++)
 			eobj->facelist[i].color[j]=Color::fromBGRA(vert_list[j].color);
 
 		// Transparent poly: storing info to draw later
@@ -1310,7 +1302,6 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 				}
 			}
 		}
-	}
 	}
 
 	// storing 2D Bounding Box info
