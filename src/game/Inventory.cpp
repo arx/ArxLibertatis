@@ -230,52 +230,39 @@ static Entity * GetInventoryObj(Vec2s * pos) {
 	return NULL;
 }
 
-
-//*************************************************************************************
-// Entity * GetInventoryObj_INVENTORYUSE(EERIE_S2D * pos)
-//-------------------------------------------------------------------------------------
-// FUNCTION/RESULT:
-//
-//*************************************************************************************
 Entity * GetInventoryObj_INVENTORYUSE(Vec2s * pos)
 {
 	Entity * io = GetFromInventory(pos);
 
-	if (io != NULL)
-	{
-		if (HERO_OR_SECONDARY == 2)
-		{
-			if (SecondaryInventory != NULL)
-			{
-				Entity * temp = (Entity *)SecondaryInventory->io;
+	if(io) {
+		if(HERO_OR_SECONDARY == 2) {
+			if(SecondaryInventory) {
+				Entity *temp = SecondaryInventory->io;
 
-				if (temp->ioflags & IO_SHOP) return NULL;
+				if(temp->ioflags & IO_SHOP)
+					return NULL;
 			}
 		}
 
 		return io;
 	}
 
-	if (InInventoryPos(pos)) return NULL;
+	if(InInventoryPos(pos))
+		return NULL;
 
-	if ((io = InterClick(pos)) != NULL)
-	{
-		return io;
-	}
+	io = InterClick(pos);
 
-	return NULL;
-
+	return io;
 }
 
-//*************************************************************************************
-// void PutInFrontOfPlayer(Entity * io,long flag)
-//-------------------------------------------------------------------------------------
-// FUNCTION/RESULT:
-//   Puts an IO in front of the player
-//*************************************************************************************
+/*!
+ * \brief Puts an IO in front of the player
+ * \param io
+ */
 void PutInFrontOfPlayer(Entity * io)
 {
-	if (io == NULL) return;
+	if(!io)
+		return;
 
 	float t = radians(player.angle.b);
 	io->pos.x = player.pos.x - (float)EEsin(t) * 80.f;
@@ -290,8 +277,7 @@ void PutInFrontOfPlayer(Entity * io)
 	io->stopped = 0;
 	io->show = SHOW_FLAG_IN_SCENE;
 
-	if (io->obj && io->obj->pbox)
-	{
+	if(io->obj && io->obj->pbox) {
 		Vec3f vector = Vec3f(0.f, 100.f, 0.f);
 		Vec3f pos = io->pos;
 		io->soundtime = 0;
@@ -300,16 +286,15 @@ void PutInFrontOfPlayer(Entity * io)
 	}
 }
 
-//*************************************************************************************
-// void IO_Drop_Item(Entity * io_src,Entity * io)
-//-------------------------------------------------------------------------------------
-// FUNCTION/RESULT:
-//   forces "io_scr" IO to drop "io" item with physics
-//*************************************************************************************
+/*!
+ * \brief forces "io_scr" IO to drop "io" item with physics
+ * \param io_src
+ * \param io
+ */
 void IO_Drop_Item(Entity * io_src, Entity * io)
 {
-	// Validity Check
-	if ((!io) || (!io_src)) return;
+	if(!io || !io_src)
+		return;
 
 	float t = radians(io_src->angle.b);
 	io->velocity.x = -(float)EEsin(t) * 50.f;
