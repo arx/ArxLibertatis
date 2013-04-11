@@ -1715,7 +1715,7 @@ void Cedric_AnimateDrawEntityRender(EERIE_3DOBJ *eobj, Vec3f *pos, Vec3f &ftr, E
 	}
 }
 
-void MakeCLight(Entity * io, Color3f * infra, Anglef * angle, Vec3f * pos, EERIE_3DOBJ * eobj, EERIEMATRIX * BIGMAT)
+void MakeCLight(Entity * io, Color3f * infra, EERIE_QUAT *qInvert, Vec3f * pos, EERIE_3DOBJ * eobj)
 {
 	if(Project.improve && !io) {
 		infra->r = 0.6f;
@@ -1751,25 +1751,7 @@ void MakeCLight(Entity * io, Color3f * infra, Anglef * angle, Vec3f * pos, EERIE
 		return;
 
 	Vec3f vTLights[32];
-	EERIE_QUAT qInvert;
 
-	if(BIGMAT) {
-		QuatFromMatrix(qInvert, *BIGMAT);
-	} else {
-		Anglef vt1;
-
-		if(angle) {
-			vt1 = *angle;
-		} else {
-			if(io)
-				vt1 = io->angle;
-			else
-				vt1 = eobj->angle;
-		}
-
-		vt1 = Anglef(radians(MAKEANGLE(-vt1.g)), radians(MAKEANGLE(vt1.b)), radians(MAKEANGLE(vt1.a)));
-		QuatFromAngles(&qInvert, &vt1);
-	}
 		
 	for (size_t i = 0; i < eobj->vertexlist.size(); i++) {
 		Color3f tempColor;
@@ -1788,7 +1770,7 @@ void MakeCLight(Entity * io, Color3f * infra, Anglef * angle, Vec3f * pos, EERIE
 				float cosangle;
 				Vec3f vLight = (llights[l]->pos - *posVert).getNormalized();
 
-				TransformInverseVertexQuat(&qInvert, &vLight, &vTLights[l]);
+				TransformInverseVertexQuat(qInvert, &vLight, &vTLights[l]);
 				Vec3f * Cur_vLights = &vTLights[l];
 
 				// Get cos angle between light and vertex norm
@@ -1845,28 +1827,9 @@ void MakeCLight(Entity * io, Color3f * infra, Anglef * angle, Vec3f * pos, EERIE
 	}
 }
 
-void MakeCLight2(Entity *io, Color3f *infra, Anglef *angle, Vec3f *pos, EERIE_3DOBJ *eobj, EERIEMATRIX *BIGMAT, long ii) {
+void MakeCLight2(Entity *io, Color3f *infra, EERIE_QUAT *qInvert, Vec3f *pos, EERIE_3DOBJ *eobj, long ii) {
 
 	Vec3f vTLights[32];
-	EERIE_QUAT qInvert;
-
-	if(BIGMAT) {
-		QuatFromMatrix(qInvert, *BIGMAT);
-	} else {
-		Anglef vt1;
-
-		if(angle) {
-			vt1 = *angle;
-		} else {
-			if(io)
-				vt1 = io->angle;
-			else
-				vt1 = eobj->angle;
-		}
-
-		vt1 = Anglef(radians(vt1.a), radians(vt1.b), radians(vt1.g));
-		QuatFromAngles(&qInvert, &vt1);
-	}
 
 	Vec3f tv = *pos;
 
@@ -1878,7 +1841,7 @@ void MakeCLight2(Entity *io, Color3f *infra, Anglef *angle, Vec3f *pos, EERIE_3D
 	for(long l = 0; l != MAX_LLIGHTS; l++) {
 		if(llights[l]) {
 			Vec3f vLight = (llights[l]->pos - tv) / dists[l];
-			TransformInverseVertexQuat(&qInvert, &vLight, &vTLights[l]);
+			TransformInverseVertexQuat(qInvert, &vLight, &vTLights[l]);
 		} else {
 			break;
 		}
@@ -1907,7 +1870,7 @@ void MakeCLight2(Entity *io, Color3f *infra, Anglef *angle, Vec3f *pos, EERIE_3D
 				float oolength = 1.f / fdist(*posVert, Cur_llights->pos);
 				Vec3f vLight = (llights[l]->pos - *posVert) * oolength;
 
-				TransformInverseVertexQuat(&qInvert, &vLight, &vTLights[l]);
+				TransformInverseVertexQuat(qInvert, &vLight, &vTLights[l]);
 				Vec3f * Cur_vLights = &vTLights[l];
 	
 				cosangle = (eobj->facelist[ii].norm.x * Cur_vLights->x +
