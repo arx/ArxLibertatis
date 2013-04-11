@@ -932,12 +932,17 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 	if(!io && INVISIBILITY_OVERRIDE != 0.f)
 		invisibility = INVISIBILITY_OVERRIDE;
 	
+	EERIE_QUAT rotation;
+	Quat_Init(&rotation);
+
 	// Precalc rotations
 	if(angle) {
-		Anglef tempAngle = *angle;
-		arx_assert(!modinfo);
+		Anglef tempAngle = Anglef(radians(angle->a), radians(angle->b), radians(angle->g));
+		QuatFromAngles(&rotation, &tempAngle);
+	}
 
-		Ncam.orgTrans.updateFromAngle(tempAngle);
+	if(mat) {
+		QuatFromMatrix(rotation, *mat);
 	}
 	
 	// Test for Mipmeshing then pre-computes vertices
@@ -957,13 +962,9 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 			if(io && !modinfo) {
 				vert_list_static[0].p -= io->obj->pbox->vert[0].initpos * scale - io->obj->point0;
 			}
-
-			VectorMatrixMultiply(&vert_list_static[1].p, &vert_list_static[0].p, mat);
-		} else {
-			YRotatePoint(&vert_list_static[0].p, &vert_list_static[1].p, Ncam.orgTrans.ycos, Ncam.orgTrans.ysin);
-			XRotatePoint(&vert_list_static[1].p, &vert_list_static[0].p, Ncam.orgTrans.xcos, Ncam.orgTrans.xsin);
-			ZRotatePoint(&vert_list_static[0].p, &vert_list_static[1].p, Ncam.orgTrans.zcos, Ncam.orgTrans.zsin);
 		}
+
+		TransformVertexQuat(&rotation, &vert_list_static[0].p, &vert_list_static[1].p);
 
 		eobj->vertexlist3[i].v = vert_list_static[1].p += pos;
 
