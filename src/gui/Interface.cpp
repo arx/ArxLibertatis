@@ -86,6 +86,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/data/Mesh.h"
 #include "graphics/data/TextureContainer.h"
 #include "graphics/effects/DrawEffects.h"
+#include "graphics/effects/Halo.h"
 #include "graphics/particle/ParticleEffects.h"
 #include "graphics/texture/TextureStage.h"
 #include "graphics/texture/Texture.h"
@@ -169,7 +170,6 @@ static long lSLID_VALUE = 0;
 extern long CHANGE_LEVEL_ICON;
 extern long BLOCK_PLAYER_CONTROLS;
 extern long DeadTime;
-extern long HALOCUR;
 extern long ALLOW_CHEATS;
 extern long LOOKING_FOR_SPELL_TARGET;
 extern long WILLRETURNTOFREELOOK;
@@ -5629,29 +5629,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 			if(!BOOKZOOM)
 				ARX_EQUIPMENT_AttachPlayerWeaponToBack();
 
-			if(HALOCUR > 0) {
-				GRenderer->ResetTexture(0);
-				GRenderer->SetBlendFunc(Renderer::BlendSrcColor, Renderer::BlendOne);
-				GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-				GRenderer->SetCulling(Renderer::CullNone);
-				GRenderer->SetRenderState(Renderer::DepthWrite, false);
-
-				for(int i=0; i < HALOCUR; i++) {
-					TexturedVertex *vert = &LATERDRAWHALO[(i<<2)];
-
-					if(vert[2].color == 0) {
-						GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
-						vert[2].color =0xFF000000;
-						EERIEDRAWPRIM(Renderer::TriangleFan, vert, 4);
-						GRenderer->SetBlendFunc(Renderer::BlendSrcColor, Renderer::BlendOne);
-					} else {
-						EERIEDRAWPRIM(Renderer::TriangleFan, vert, 4);
-					}
-				}
-
-				HALOCUR = 0;
-				GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-			}
+			Halo_Render();
 		}
 	}	
 }

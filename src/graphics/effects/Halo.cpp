@@ -16,3 +16,38 @@
  * You should have received a copy of the GNU General Public License
  * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+#include "graphics/effects/Halo.h"
+
+#include "graphics/Draw.h"
+#include "graphics/Vertex.h"
+
+#include "animation/Animation.h"
+
+extern long HALOCUR;
+
+void Halo_Render() {
+	if(HALOCUR > 0) {
+		GRenderer->ResetTexture(0);
+		GRenderer->SetBlendFunc(Renderer::BlendSrcColor, Renderer::BlendOne);
+		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+		GRenderer->SetCulling(Renderer::CullNone);
+		GRenderer->SetRenderState(Renderer::DepthWrite, false);
+
+		for(int i=0; i < HALOCUR; i++) {
+			TexturedVertex *vert = &LATERDRAWHALO[(i<<2)];
+
+			if(vert[2].color == 0) {
+				GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
+				vert[2].color =0xFF000000;
+				EERIEDRAWPRIM(Renderer::TriangleFan, vert, 4);
+				GRenderer->SetBlendFunc(Renderer::BlendSrcColor, Renderer::BlendOne);
+			} else {
+				EERIEDRAWPRIM(Renderer::TriangleFan, vert, 4);
+			}
+		}
+
+		HALOCUR = 0;
+		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+	}
+}

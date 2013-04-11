@@ -21,5 +21,6 @@
 #define ARX_GRAPHICS_EFFECTS_HALO_H
 
 
+void Halo_Render();
 
 #endif // ARX_GRAPHICS_EFFECTS_HALO_H
