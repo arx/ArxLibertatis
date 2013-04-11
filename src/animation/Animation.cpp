@@ -922,8 +922,6 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 
 	TexturedVertex vert_list_static[4];
 	
-	Vec3f temporary3D;
-	EERIE_CAMERA Ncam;
 	Color3f infra;
 
 	float scale = Cedric_GetScale(io);
@@ -1160,19 +1158,13 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 
 			ddist = clamp(ddist, 0.25f, 0.9f);
 
-			Ncam.orgTrans.updateFromAngle(subj.angle);
-
-			Ncam.orgTrans.xcos = 1.f;
-			Ncam.orgTrans.xsin = 0.f;
-			Ncam.orgTrans.zcos = 1.f;
-			Ncam.orgTrans.zsin = 0.f;
-
 			float tot=0;
 			float _ffr[3];
 
 			TexturedVertex * workon=vert_list;
 
 			for(long o = 0; o < 3; o++) {
+				Vec3f temporary3D;
 				TransformVertexQuat(&rotation, &eobj->vertexlist[paf[o]].norm, &temporary3D);
 
 				float power = 255.f-(float)EEfabs(255.f*(temporary3D.z)*( 1.0f / 2 ));
