@@ -574,6 +574,7 @@ set(GRAPHICS_SOURCES
 	src/graphics/effects/DrawEffects.cpp
 	src/graphics/effects/Fog.cpp
 	src/graphics/effects/SpellEffects.cpp
+        src/graphics/effects/Halo.cpp
 	src/graphics/font/Font.cpp
 	src/graphics/font/FontCache.cpp
 	src/graphics/image/Image.cpp
