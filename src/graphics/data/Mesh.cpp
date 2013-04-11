@@ -1754,20 +1754,23 @@ void DrawEERIEObjExEx(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *pos, Vec3f *scale
 	if(!eobj)
 		return;
 
-	float Xcos, Ycos, Zcos, Xsin, Ysin, Zsin;
 	TexturedVertex v;
 	TexturedVertex rv;
 	TexturedVertex vert_list[4];
 
-	Zsin = radians(angle->a);
-	Xcos = (float)EEcos(Zsin);
-	Xsin = (float)EEsin(Zsin);
-	Zsin = radians(angle->b);
-	Ycos = (float)EEcos(Zsin);
-	Ysin = (float)EEsin(Zsin);
-	Zsin = radians(angle->g);
-	Zcos = (float)EEcos(Zsin);
-	Zsin = (float)EEsin(Zsin);
+	float temp;
+
+	temp = radians(angle->a);
+	float Xcos = (float)EEcos(temp);
+	float Xsin = (float)EEsin(temp);
+
+	temp = radians(angle->b);
+	float Ycos = (float)EEcos(temp);
+	float Ysin = (float)EEsin(temp);
+
+	temp = radians(angle->g);
+	float Zcos = (float)EEcos(temp);
+	float Zsin = (float)EEsin(temp);
 
 	for(size_t i = 0; i < eobj->vertexlist.size(); i++) {
 		v.p = eobj->vertexlist[i].v * *scale;
