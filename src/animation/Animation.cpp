@@ -1198,11 +1198,7 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 			TexturedVertex * workon=vert_list;
 
 			for(long o = 0; o < 3; o++) {
-				if(mat) {
-					VectorMatrixMultiply(&temporary3D, &eobj->vertexlist[paf[o]].norm, mat);
-				} else {
-					YXZRotatePoint(&eobj->vertexlist[paf[o]].norm, &temporary3D, &Ncam);
-				}
+				TransformVertexQuat(&rotation, &eobj->vertexlist[paf[o]].norm, &temporary3D);
 
 				float power = 255.f-(float)EEfabs(255.f*(temporary3D.z)*( 1.0f / 2 ));
 
