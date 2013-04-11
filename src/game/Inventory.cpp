@@ -122,10 +122,8 @@ short sInventoryY = -1;
  * Sends appropriate INVENTORYIN Event to player AND concerned io.
  */
 static void ARX_INVENTORY_Declare_InventoryIn(Entity * io) {
-	
-	if(!io) {
+	if(!io)
 		return;
-	}
 	
 	io->show = SHOW_FLAG_IN_INVENTORY;
 	
@@ -151,12 +149,9 @@ static void ARX_INVENTORY_Declare_InventoryIn(Entity * io) {
 	EVENT_SENDER = NULL;
 }
 
-//*************************************************************************************
-// void CleanInventory()
-//-------------------------------------------------------------------------------------
-// FUNCTION/RESULT:
-//   Cleans Player inventory
-//*************************************************************************************
+/*!
+ * \brief Cleans Player inventory
+ */
 void CleanInventory() {
 	
 	for(long iNbBag = 0; iNbBag < 3; iNbBag++) {
@@ -179,64 +174,50 @@ extern long DANAECENTERY;
 
 static Entity * GetInventoryObj(Vec2s * pos) {
 	
-	long tx, ty;
-
-
 	float fCenterX	= DANAECENTERX - INTERFACE_RATIO(320) + INTERFACE_RATIO(35);
 	float fSizY		= DANAESIZY - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY);
 
 	int iPosX = checked_range_cast<int>(fCenterX);
 	int iPosY = checked_range_cast<int>(fSizY);
 
+	if(player.Interface & INTER_INVENTORY) {
+		long tx = pos->x - iPosX; //-4
+		long ty = pos->y - iPosY; //-2
 
-	if (player.Interface & INTER_INVENTORY)
-	{
-		tx = pos->x - iPosX; //-4
-		ty = pos->y - iPosY; //-2
-
-		if ((tx >= 0) && (ty >= 0))
-		{
-
+		if(tx >= 0 && ty >= 0) {
 			tx = checked_range_cast<long>(tx / INTERFACE_RATIO(32));
 			ty = checked_range_cast<long>(ty / INTERFACE_RATIO(32));
 
+			if((tx >= 0) && ((size_t)tx < INVENTORY_X) && (ty >= 0) && ((size_t)ty < INVENTORY_Y)) {
+				Entity *result = inventory[sActiveInventory][tx][ty].io;
 
-			if ((tx >= 0) && ((size_t)tx < INVENTORY_X) && (ty >= 0) && ((size_t)ty < INVENTORY_Y))
-			{
-				if ((inventory[sActiveInventory][tx][ty].io)
-				        &&	(inventory[sActiveInventory][tx][ty].io->gameFlags & GFLAG_INTERACTIVITY))
-				{
+				if(result && (result->gameFlags & GFLAG_INTERACTIVITY)) {
 					HERO_OR_SECONDARY = 1;
-					return (inventory[sActiveInventory][tx][ty].io);
+					return result;
 				}
 			}
 
 			return NULL;
 		}
-	}
-	else if (player.Interface & INTER_INVENTORYALL)
-	{
+	} else if(player.Interface & INTER_INVENTORYALL) {
 
 		float fBag	= (player.bag - 1) * INTERFACE_RATIO(-121);
 
 		int iY = checked_range_cast<int>(fBag);
 
-
-		for (int i = 0; i < player.bag; i++)
-		{
-			tx = pos->x - iPosX;
-			ty = pos->y - iPosY - iY;
+		for(int i = 0; i < player.bag; i++) {
+			long tx = pos->x - iPosX;
+			long ty = pos->y - iPosY - iY;
 
 			tx = checked_range_cast<long>(tx / INTERFACE_RATIO(32));
 			ty = checked_range_cast<long>(ty / INTERFACE_RATIO(32));
 
-			if ((tx >= 0) && ((size_t)tx < INVENTORY_X) && (ty >= 0) && ((size_t)ty < INVENTORY_Y))
-			{
-				if ((inventory[i][tx][ty].io)
-					&&	(inventory[i][tx][ty].io->gameFlags & GFLAG_INTERACTIVITY))
-				{
+			if((tx >= 0) && ((size_t)tx < INVENTORY_X) && (ty >= 0) && ((size_t)ty < INVENTORY_Y)) {
+				Entity *result = inventory[i][tx][ty].io;
+
+				if(result && (result->gameFlags & GFLAG_INTERACTIVITY)) {
 					HERO_OR_SECONDARY = 1;
-					return (inventory[i][tx][ty].io);
+					return result;
 				}
 
 				return NULL;
