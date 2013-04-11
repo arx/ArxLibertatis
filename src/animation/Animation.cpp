@@ -941,52 +941,52 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 	}
 	
 	// Test for Mipmeshing then pre-computes vertices
-		ResetBBox3D( io );
+	ResetBBox3D( io );
 
-		for(size_t i = 0 ; i < eobj->vertexlist.size(); i++) {
-			
-			vert_list_static[0].p = eobj->vertexlist[i].v;
+	for(size_t i = 0 ; i < eobj->vertexlist.size(); i++) {
 
-			if(modinfo && !angle && mat) {
-				vert_list_static[0].p -= modinfo->link_position;
-			}
+		vert_list_static[0].p = eobj->vertexlist[i].v;
 
-			vert_list_static[0].p *= scale;
-			
-			if(!angle) {
-				if(io && !modinfo) {
-					vert_list_static[0].p -= io->obj->pbox->vert[0].initpos * scale - io->obj->point0;
-				}
-
-				VectorMatrixMultiply(&vert_list_static[1].p, &vert_list_static[0].p, mat);
-			} else {
-				YRotatePoint(&vert_list_static[0].p, &vert_list_static[1].p, Ncam.orgTrans.ycos, Ncam.orgTrans.ysin);
-				XRotatePoint(&vert_list_static[1].p, &vert_list_static[0].p, Ncam.orgTrans.xcos, Ncam.orgTrans.xsin);
-				ZRotatePoint(&vert_list_static[0].p, &vert_list_static[1].p, Ncam.orgTrans.zcos, Ncam.orgTrans.zsin);
-			}
-
-			eobj->vertexlist3[i].v = vert_list_static[1].p += pos;
-
-			EE_RT(&vert_list_static[1], &eobj->vertexlist[i].vworld);
-			EE_P(&eobj->vertexlist[i].vworld, &eobj->vertexlist[i].vert);
-
-			// Memorizes 2D Bounding Box using vertex min/max x,y pos
-			if(eobj->vertexlist[i].vert.rhw > 0.f) {
-				
-				if ((eobj->vertexlist[i].vert.p.x >= -32000) &&
-					(eobj->vertexlist[i].vert.p.x <= 32000) &&
-					(eobj->vertexlist[i].vert.p.y >= -32000) &&
-					(eobj->vertexlist[i].vert.p.y <= 32000))
-				{
-					BBOXMIN.x=min(BBOXMIN.x,eobj->vertexlist[i].vert.p.x);
-					BBOXMAX.x=max(BBOXMAX.x,eobj->vertexlist[i].vert.p.x);
-					BBOXMIN.y=min(BBOXMIN.y,eobj->vertexlist[i].vert.p.y);
-					BBOXMAX.y=max(BBOXMAX.y,eobj->vertexlist[i].vert.p.y);
-				}
-			}
-
-			AddToBBox3D(io,&eobj->vertexlist3[i].v);
+		if(modinfo && !angle && mat) {
+			vert_list_static[0].p -= modinfo->link_position;
 		}
+
+		vert_list_static[0].p *= scale;
+
+		if(!angle) {
+			if(io && !modinfo) {
+				vert_list_static[0].p -= io->obj->pbox->vert[0].initpos * scale - io->obj->point0;
+			}
+
+			VectorMatrixMultiply(&vert_list_static[1].p, &vert_list_static[0].p, mat);
+		} else {
+			YRotatePoint(&vert_list_static[0].p, &vert_list_static[1].p, Ncam.orgTrans.ycos, Ncam.orgTrans.ysin);
+			XRotatePoint(&vert_list_static[1].p, &vert_list_static[0].p, Ncam.orgTrans.xcos, Ncam.orgTrans.xsin);
+			ZRotatePoint(&vert_list_static[0].p, &vert_list_static[1].p, Ncam.orgTrans.zcos, Ncam.orgTrans.zsin);
+		}
+
+		eobj->vertexlist3[i].v = vert_list_static[1].p += pos;
+
+		EE_RT(&vert_list_static[1], &eobj->vertexlist[i].vworld);
+		EE_P(&eobj->vertexlist[i].vworld, &eobj->vertexlist[i].vert);
+
+		// Memorizes 2D Bounding Box using vertex min/max x,y pos
+		if(eobj->vertexlist[i].vert.rhw > 0.f) {
+
+			if ((eobj->vertexlist[i].vert.p.x >= -32000) &&
+				(eobj->vertexlist[i].vert.p.x <= 32000) &&
+				(eobj->vertexlist[i].vert.p.y >= -32000) &&
+				(eobj->vertexlist[i].vert.p.y <= 32000))
+			{
+				BBOXMIN.x=min(BBOXMIN.x,eobj->vertexlist[i].vert.p.x);
+				BBOXMAX.x=max(BBOXMAX.x,eobj->vertexlist[i].vert.p.x);
+				BBOXMIN.y=min(BBOXMIN.y,eobj->vertexlist[i].vert.p.y);
+				BBOXMAX.y=max(BBOXMAX.y,eobj->vertexlist[i].vert.p.y);
+			}
+		}
+
+		AddToBBox3D(io,&eobj->vertexlist3[i].v);
+	}
 	
 	if(BBOXMAX.x <= 1 || BBOXMIN.x >= DANAESIZX - 1 || BBOXMAX.y <= 1 || BBOXMIN.y >= DANAESIZY - 1) {
 		// storing 2D Bounding Box info
@@ -1124,32 +1124,32 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 		}
 
 		if(io && Project.improve) {
-				int to=3;
+			int to=3;
 
-				for(long k = 0; k < to; k++) {
-					long lr=(vert_list[k].color>>16) & 255;
-					float ffr=(float)(lr);
-					
-					float dd = vert_list[k].rhw;
+			for(long k = 0; k < to; k++) {
+				long lr=(vert_list[k].color>>16) & 255;
+				float ffr=(float)(lr);
 
-					dd = clamp(dd, 0.f, 1.f);
-					
-					float fb=((1.f-dd)*6.f + (EEfabs(eobj->vertexlist[paf[k]].norm.x) + EEfabs(eobj->vertexlist[paf[k]].norm.y))) * 0.125f;
-					float fr=((.6f-dd)*6.f + (EEfabs(eobj->vertexlist[paf[k]].norm.z) + EEfabs(eobj->vertexlist[paf[k]].norm.y))) * 0.125f;
+				float dd = vert_list[k].rhw;
 
-					if(fr < 0.f)
-						fr = 0.f;
-					else
-						fr = max(ffr, fr * 255.f);
+				dd = clamp(dd, 0.f, 1.f);
 
-					fr=min(fr,255.f);
-					fb*=255.f;
-					fb=min(fb,255.f);
-					u8 lfr = fr;
-					u8 lfb = fb;
-					u8 lfg = 0x1E;
-					vert_list[k].color = (0xff000000L | (lfr << 16) | (lfg << 8) | (lfb));
-				}
+				float fb=((1.f-dd)*6.f + (EEfabs(eobj->vertexlist[paf[k]].norm.x) + EEfabs(eobj->vertexlist[paf[k]].norm.y))) * 0.125f;
+				float fr=((.6f-dd)*6.f + (EEfabs(eobj->vertexlist[paf[k]].norm.z) + EEfabs(eobj->vertexlist[paf[k]].norm.y))) * 0.125f;
+
+				if(fr < 0.f)
+					fr = 0.f;
+				else
+					fr = max(ffr, fr * 255.f);
+
+				fr=min(fr,255.f);
+				fb*=255.f;
+				fb=min(fb,255.f);
+				u8 lfr = fr;
+				u8 lfb = fb;
+				u8 lfg = 0x1E;
+				vert_list[k].color = (0xff000000L | (lfr << 16) | (lfg << 8) | (lfb));
+			}
 		}
 		
 		if(special_color_flag & 1) {
