@@ -789,26 +789,26 @@ static Entity * PHYSICS_CURIO = NULL;
 
 void ARX_TEMPORARY_TrySound(float volume) {
 	
-	if (PHYSICS_CURIO)
-	{
-		if (PHYSICS_CURIO->ioflags & IO_BODY_CHUNK)
+	if(PHYSICS_CURIO) {
+		if(PHYSICS_CURIO->ioflags & IO_BODY_CHUNK)
 			return;
 
 		unsigned long at = (unsigned long)(arxtime);
 
-		if (at > PHYSICS_CURIO->soundtime)
-		{
+		if(at > PHYSICS_CURIO->soundtime) {
 
 			PHYSICS_CURIO->soundcount++;
 
-			if (PHYSICS_CURIO->soundcount < 5)
-			{
+			if(PHYSICS_CURIO->soundcount < 5) {
 				long material;
-				if ( EEIsUnderWater( &PHYSICS_CURIO->pos ) ) material = MATERIAL_WATER;
-				else if (PHYSICS_CURIO->material) material = PHYSICS_CURIO->material;
-				else material = MATERIAL_STONE;
+				if(EEIsUnderWater(&PHYSICS_CURIO->pos))
+					material = MATERIAL_WATER;
+				else if(PHYSICS_CURIO->material)
+					material = PHYSICS_CURIO->material;
+				else
+					material = MATERIAL_STONE;
 
-				if (volume > 1.f)
+				if(volume > 1.f)
 					volume = 1.f;
 
 				PHYSICS_CURIO->soundtime = at + (ARX_SOUND_PlayCollision(material, CUR_COLLISION_MATERIAL, volume, 1.f, &PHYSICS_CURIO->pos, PHYSICS_CURIO) >> 4) + 50;
@@ -828,10 +828,8 @@ void ARX_NPC_ChangeMoveMode(Entity * io, MoveMode MOVEMODE)
 	ANIM_USE * ause0 = &io->animlayer[0];
 	ANIM_HANDLE ** alist = io->anims;
 
-	switch (MOVEMODE)
-	{
+	switch(MOVEMODE) {
 		case RUNMODE:
-
 			if (((ause0->cur_anim == alist[ANIM_WALK]) && (alist[ANIM_WALK]))
 			        || ((ause0->cur_anim == alist[ANIM_WALK_SNEAK]) && (alist[ANIM_WALK_SNEAK])))
 			{
@@ -840,10 +838,8 @@ void ARX_NPC_ChangeMoveMode(Entity * io, MoveMode MOVEMODE)
 				ANIM_Set(ause0, alist[ANIM_RUN]);
 				ause0->altidx_cur = 0;
 			}
-
 			break;
 		case WALKMODE:
-
 			if (((ause0->cur_anim == alist[ANIM_RUN]) && (alist[ANIM_RUN]))
 			        || ((ause0->cur_anim == alist[ANIM_WALK_SNEAK]) && (alist[ANIM_WALK_SNEAK])))
 			{
@@ -851,10 +847,8 @@ void ARX_NPC_ChangeMoveMode(Entity * io, MoveMode MOVEMODE)
 				FinishAnim(io, ause0->cur_anim);
 				ANIM_Set(ause0, alist[ANIM_WALK]);
 			}
-
 			break;
 		case NOMOVEMODE:
-
 			if (((ause0->cur_anim == alist[ANIM_WALK]) && (alist[ANIM_WALK]))
 			        || ((ause0->cur_anim == alist[ANIM_RUN]) && (alist[ANIM_RUN]))
 			        || ((ause0->cur_anim == alist[ANIM_WALK_SNEAK]) && (alist[ANIM_WALK_SNEAK])))
@@ -864,10 +858,8 @@ void ARX_NPC_ChangeMoveMode(Entity * io, MoveMode MOVEMODE)
 				ANIM_Set(ause0, alist[ANIM_WAIT]);
 				ause0->altidx_cur = 0;
 			}
-
 			break;
 		case SNEAKMODE:
-
 			if (((ause0->cur_anim == alist[ANIM_WALK]) && (alist[ANIM_WALK]))
 			        || ((ause0->cur_anim == alist[ANIM_RUN]) && (alist[ANIM_RUN])))
 			{
@@ -875,7 +867,6 @@ void ARX_NPC_ChangeMoveMode(Entity * io, MoveMode MOVEMODE)
 				FinishAnim(io, ause0->cur_anim);
 				ANIM_Set(ause0, alist[ANIM_WALK_SNEAK]);
 			}
-
 			break;
 	}
 
@@ -892,25 +883,27 @@ void ARX_NPC_ManagePoison(Entity * io)
 	cp *= ( 1.0f / 2 ) * framedelay * ( 1.0f / 1000 ) * ( 1.0f / 2 );
 	float faster = 10.f - io->_npcdata->poisonned;
 
-	if (faster < 0.f) faster = 0.f;
+	if(faster < 0.f)
+		faster = 0.f;
 
-	if (rnd() * 100.f > io->_npcdata->resist_poison + faster)
-	{
+	if(rnd() * 100.f > io->_npcdata->resist_poison + faster) {
 		float dmg = cp * ( 1.0f / 3 );
 
-		if ((io->_npcdata->life > 0) && (io->_npcdata->life - dmg <= 0.f))
-		{
+		if(io->_npcdata->life > 0 && io->_npcdata->life - dmg <= 0.f) {
 			long xp = io->_npcdata->xpvalue;
 			ARX_DAMAGES_DamageNPC(io, dmg, -1, 0, NULL);
 			ARX_PLAYER_Modify_XP(xp);
 		}
-		else io->_npcdata->life -= dmg;
+		else
+			io->_npcdata->life -= dmg;
 
 		io->_npcdata->poisonned -= cp * ( 1.0f / 10 );
 	}
-	else io->_npcdata->poisonned -= cp;
+	else
+		io->_npcdata->poisonned -= cp;
 
-	if (io->_npcdata->poisonned < 0.1f) io->_npcdata->poisonned = 0.f;
+	if(io->_npcdata->poisonned < 0.1f)
+		io->_npcdata->poisonned = 0.f;
 }
 
 /*!
@@ -926,32 +919,26 @@ static void CheckUnderWaterIO(Entity * io) {
 	Vec3f ppos = io->pos;
 	EERIEPOLY * ep = EEIsUnderWater(&ppos);
 
-	if (io->ioflags & IO_UNDERWATER)
-	{
-		if (!ep)
-		{
+	if(io->ioflags & IO_UNDERWATER) {
+		if(!ep) {
 			io->ioflags &= ~IO_UNDERWATER;
 			ARX_SOUND_PlaySFX(SND_PLOUF, &ppos);
 			ARX_PARTICLES_SpawnWaterSplash(&ppos);
 		}
-	}
-	else if (ep)
-	{
+	} else if(ep) {
 		io->ioflags |= IO_UNDERWATER;
 		ARX_SOUND_PlaySFX(SND_PLOUF, &ppos);
 		ARX_PARTICLES_SpawnWaterSplash(&ppos);
 
-		if (io->ignition > 0.f)
-		{
+		if(io->ignition > 0.f) {
 			ARX_SOUND_PlaySFX(SND_TORCH_END, &ppos);
 
-			if (ValidDynLight(io->ignit_light))
+			if(ValidDynLight(io->ignit_light))
 				DynLight[io->ignit_light].exist = 0;
 
 			io->ignit_light = -1;
 
-			if (io->ignit_sound != audio::INVALID_ID)
-			{
+			if(io->ignit_sound != audio::INVALID_ID) {
 				ARX_SOUND_Stop(io->ignit_sound);
 				io->ignit_sound = audio::INVALID_ID;
 			}
@@ -1125,17 +1112,19 @@ void FaceTarget2(Entity * io)
 {
 	Vec3f tv;
 
-	if (!io->show) return;
+	if(!io->show)
+		return;
 
-	if (io->ioflags & IO_NPC)
-	{
-		if (io->_npcdata->life <= 0.f) return;
+	if(io->ioflags & IO_NPC) {
+		if(io->_npcdata->life <= 0.f)
+			return;
 
-		if (io->_npcdata->behavior & BEHAVIOUR_NONE) return;
+		if(io->_npcdata->behavior & BEHAVIOUR_NONE)
+			return;
 
-		if ((io->_npcdata->pathfind.listnb <= 0)
-		        && (io->_npcdata->behavior & BEHAVIOUR_FLEE)) return;
-
+		if((io->_npcdata->pathfind.listnb <= 0)
+				&& (io->_npcdata->behavior & BEHAVIOUR_FLEE))
+			return;
 	}
 	
 	GetTargetPos(io);
@@ -1145,22 +1134,25 @@ void FaceTarget2(Entity * io)
 		return;
 	}
 
-	float cangle, tangle;
-	tangle = MAKEANGLE(180.f + degrees(getAngle(io->target.x, io->target.z, tv.x, tv.z)));
-	cangle = io->angle.b;
+	float tangle = MAKEANGLE(180.f + degrees(getAngle(io->target.x, io->target.z, tv.x, tv.z)));
+	float cangle = io->angle.b;
 
 	float tt = (cangle - tangle);
 
-	if (tt == 0) return;
+	if(tt == 0)
+		return;
 
 	float rot = 0.33f * framedelay; 
 
-	if (EEfabs(tt) < rot) rot = (float)EEfabs(tt);
+	if(EEfabs(tt) < rot)
+		rot = (float)EEfabs(tt);
 
 	rot = -rot;
 
-	if ((tt > 0.f) && (tt < 180.f)) rot = -rot;
-	else if ((tt < -180.f)) rot = -rot;
+	if(tt > 0.f && tt < 180.f)
+		rot = -rot;
+	else if(tt < -180.f)
+		rot = -rot;
 	
 	if(rot != 0) {
 		Vec3f temp = io->move;
@@ -1209,12 +1201,13 @@ void StareAtTarget(Entity * io)
 	float A = MAKEANGLE((MAKEANGLE(alpha + beta) - pouet));
 	float B = MAKEANGLE(alpha - pouet);
 
-	if (A == 0.f) rot = 0.f;
+	if(A == 0.f)
+		rot = 0.f;
 
-	if ((B < 180) && (B > 90)) {
+	if(B < 180 && B > 90) {
 		if(rot > A)
 			rot = A;
-	} else if ((B > 180) && (B < 270)) {
+	} else if(B > 180 && B < 270) {
 		if(rot > 360 - A)
 			rot = -(360 - A);
 		else
