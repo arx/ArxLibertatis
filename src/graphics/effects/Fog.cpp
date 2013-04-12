@@ -69,18 +69,15 @@ void ARX_FOGS_Set_Object(EERIE_3DOBJ * _fogobj)
 {
 	fogobj = _fogobj;
 }
-//*************************************************************************************
-//*************************************************************************************
+
 void ARX_FOGS_FirstInit()
 {
 	ARX_FOGS_Clear();
 }
-//*************************************************************************************
-//*************************************************************************************
+
 void ARX_FOGS_Clear()
 {
-	for (long i = 0; i < MAX_FOG; i++)
-	{
+	for(long i = 0; i < MAX_FOG; i++) {
 		memset(&fogs[i], 0, sizeof(FOG_DEF));
 	}
 }
@@ -95,62 +92,57 @@ void ARX_FOGS_TranslateSelected(Vec3f * trans) {
 
 void ARX_FOGS_UnselectAll()
 {
-	for (long i = 0; i < MAX_FOG; i++)
-	{
+	for(long i = 0; i < MAX_FOG; i++) {
 		fogs[i].selected = 0;
 	}
 }
-//*************************************************************************************
-//*************************************************************************************
+
 void ARX_FOGS_Select(long n)
 {
-	if (fogs[n].selected) fogs[n].selected = 0;
-	else fogs[n].selected = 1;
+	if(fogs[n].selected)
+		fogs[n].selected = 0;
+	else
+		fogs[n].selected = 1;
 }
-//*************************************************************************************
-//*************************************************************************************
+
 void ARX_FOGS_KillByIndex(long num)
 {
-	if ((num >= 0) && (num < MAX_FOG))
-	{
+	if(num >= 0 && num < MAX_FOG) {
 		memset(&fogs[num], 0, sizeof(FOG_DEF));
 	}
 }
 
 void ARX_FOGS_KillSelected()
 {
-	for (long i = 0; i < MAX_FOG; i++)
-	{
-		if (fogs[i].selected)
-		{
+	for(long i = 0; i < MAX_FOG; i++) {
+		if(fogs[i].selected) {
 			ARX_FOGS_KillByIndex(i);
 		}
 	}
 }
-//*************************************************************************************
-//*************************************************************************************
+
 long ARX_FOGS_GetFree()
 {
-	for (long i = 0; i < MAX_FOG; i++)
-	{
-		if (!fogs[i].exist)  return i;
+	for(long i = 0; i < MAX_FOG; i++) {
+		if(!fogs[i].exist)
+			return i;
 	}
 
 	return -1;
 }
-//*************************************************************************************
-//*************************************************************************************
+
 long ARX_FOGS_Count()
 {
 	long count = 0;
 
-	for (long i = 0; i < MAX_FOG; i++)
-	{
-		if (fogs[i].exist)  count++;
+	for(long i = 0; i < MAX_FOG; i++) {
+		if(fogs[i].exist)
+			count++;
 	}
 
 	return count;
 }
+
 void ARX_FOGS_TimeReset()
 {
 }
@@ -201,15 +193,15 @@ void ARX_FOGS_Render() {
 	float flDiv = static_cast<float>(1 << iDiv);
 	
 	for(long i = 0; i < MAX_FOG; i++) {
+		FOG_DEF *fog = &fogs[i];
 		
-		if(!fogs[i].exist) {
+		if(!fog->exist)
 			continue;
-		}
 		
 		long count = std::max(1l, checked_range_cast<long>(framedelay / flDiv));
 		while(count--) {
 			
-			if(rnd() * 2000.f >= fogs[i].frequency) {
+			if(rnd() * 2000.f >= fog->frequency) {
 				continue;
 			}
 			
@@ -219,23 +211,23 @@ void ARX_FOGS_Render() {
 			}
 			
 			pd->special = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
-			if(fogs[i].special & FOG_DIRECTIONAL) {
-				pd->ov = fogs[i].pos;
-				pd->move = fogs[i].move * (fogs[i].speed * 0.1f);
+			if(fog->special & FOG_DIRECTIONAL) {
+				pd->ov = fog->pos;
+				pd->move = fog->move * (fog->speed * 0.1f);
 			} else {
-				pd->ov = fogs[i].pos + randomVec(-100.f, 100.f);
-				pd->move = Vec3f::repeat(fogs[i].speed) - randomVec(0.f, 2.f);
-				pd->move *= Vec3f(fogs[i].speed * 0.2f,  1.f / 15, fogs[i].speed * 0.2f);
+				pd->ov = fog->pos + randomVec(-100.f, 100.f);
+				pd->move = Vec3f::repeat(fog->speed) - randomVec(0.f, 2.f);
+				pd->move *= Vec3f(fog->speed * 0.2f,  1.f / 15, fog->speed * 0.2f);
 			}
-			pd->scale = Vec3f::repeat(fogs[i].scale);
-			pd->tolive = fogs[i].tolive + Random::get(0, fogs[i].tolive);
+			pd->scale = Vec3f::repeat(fog->scale);
+			pd->tolive = fog->tolive + Random::get(0, fog->tolive);
 			pd->tc = TC_smoke;
-			pd->siz = (fogs[i].size + rnd() * fogs[i].size * 2.f) * (1.0f / 3);
-			pd->rgb = fogs[i].rgb;
-			pd->fparam = fogs[i].rotatespeed;
+			pd->siz = (fog->size + rnd() * fog->size * 2.f) * (1.0f / 3);
+			pd->rgb = fog->rgb;
+			pd->fparam = fog->rotatespeed;
 		}
 		
-		fogs[i].lastupdate = (unsigned long)(arxtime);
+		fog->lastupdate = (unsigned long)(arxtime);
 	}
 }
 
@@ -245,26 +237,27 @@ void ARX_FOGS_RenderAll() {
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 
-	for (long i = 0; i < MAX_FOG; i++)
-	{
-		if (fogs[i].exist)
-		{
-			if (fogobj)
-				DrawEERIEInter(fogobj, &angle, &fogs[i].pos, NULL);
+	for(long i = 0; i < MAX_FOG; i++) {
+		FOG_DEF *fog = &fogs[i];
 
-			fogs[i].bboxmin = BBOXMIN;
-			fogs[i].bboxmax = BBOXMAX;
+		if(!fog->exist)
+			continue;
 
-			if(fogs[i].special & FOG_DIRECTIONAL) {
-				EERIEDraw3DLine(fogs[i].pos, fogs[i].pos + fogs[i].move * 50.f, Color::white); 
+			if(fogobj)
+				DrawEERIEInter(fogobj, &angle, &fog->pos, NULL);
+
+			fog->bboxmin = BBOXMIN;
+			fog->bboxmax = BBOXMAX;
+
+			if(fog->special & FOG_DIRECTIONAL) {
+				EERIEDraw3DLine(fog->pos, fog->pos + fog->move * 50.f, Color::white);
 			}
 
-			if(fogs[i].selected) {
-				EERIEDraw2DLine(fogs[i].bboxmin.x, fogs[i].bboxmin.y, fogs[i].bboxmax.x, fogs[i].bboxmin.y, 0.01f, Color::yellow);
-				EERIEDraw2DLine(fogs[i].bboxmax.x, fogs[i].bboxmin.y, fogs[i].bboxmax.x, fogs[i].bboxmax.y, 0.01f, Color::yellow);
-				EERIEDraw2DLine(fogs[i].bboxmax.x, fogs[i].bboxmax.y, fogs[i].bboxmin.x, fogs[i].bboxmax.y, 0.01f, Color::yellow);
-				EERIEDraw2DLine(fogs[i].bboxmin.x, fogs[i].bboxmax.y, fogs[i].bboxmin.x, fogs[i].bboxmin.y, 0.01f, Color::yellow);
+			if(fog->selected) {
+				EERIEDraw2DLine(fog->bboxmin.x, fog->bboxmin.y, fog->bboxmax.x, fog->bboxmin.y, 0.01f, Color::yellow);
+				EERIEDraw2DLine(fog->bboxmax.x, fog->bboxmin.y, fog->bboxmax.x, fog->bboxmax.y, 0.01f, Color::yellow);
+				EERIEDraw2DLine(fog->bboxmax.x, fog->bboxmax.y, fog->bboxmin.x, fog->bboxmax.y, 0.01f, Color::yellow);
+				EERIEDraw2DLine(fog->bboxmin.x, fog->bboxmax.y, fog->bboxmin.x, fog->bboxmin.y, 0.01f, Color::yellow);
 			}
-		}
 	}
 }
