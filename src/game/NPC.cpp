@@ -1854,10 +1854,8 @@ void ARX_NPC_Manage_NON_Fight(Entity * io)
 {
 	ANIM_USE * ause1 = &io->animlayer[1];
 
-	if ((ause1->flags & EA_ANIMEND) && (ause1->cur_anim != NULL))
-	{
-		if (!(ause1->flags & EA_FORCEPLAY))
-		{
+	if((ause1->flags & EA_ANIMEND) && (ause1->cur_anim != NULL)) {
+		if(!(ause1->flags & EA_FORCEPLAY)) {
 			AcquireLastAnim(io);
 			FinishAnim(io, ause1->cur_anim);
 			ause1->cur_anim = NULL;
@@ -1876,21 +1874,23 @@ void Strike_StartTickCount(Entity * io)
  */
 void ARX_NPC_Manage_Fight(Entity * io)
 {
-	if (!(io->ioflags & IO_NPC)) return;
+	if(!(io->ioflags & IO_NPC))
+		return;
 
 	Entity * ioo = io->_npcdata->weapon;
 
 	if (ioo)
 		io->_npcdata->weapontype = ioo->type_flags;
-	else io->_npcdata->weapontype = 0;
+	else
+		io->_npcdata->weapontype = 0;
 
-	if ((io->_npcdata->weapontype != 0) && (io->_npcdata->weaponinhand != 1))
+	if(io->_npcdata->weapontype != 0 && io->_npcdata->weaponinhand != 1)
 		return;
 
 	ANIM_USE * ause = &io->animlayer[1];
-	{
+
 		// BARE HANDS fight !!! *******************************
-		if (io->_npcdata->weapontype == 0)
+		if(io->_npcdata->weapontype == 0)
 		{
 			if (((ause->cur_anim != io->anims[ANIM_BARE_WAIT])
 			        &&	(ause->cur_anim != io->anims[ANIM_BARE_READY])
@@ -2016,43 +2016,38 @@ void ARX_NPC_Manage_Fight(Entity * io)
 		{
 			////////////// later...
 		}
-	}
 }
 
 void ARX_NPC_Manage_Anims_End(Entity * io)
 {
 	ANIM_USE * ause = &io->animlayer[0];
 
-	if ((ause->flags & EA_ANIMEND) && (ause->cur_anim != NULL))
-	{
-		if (ause->flags & EA_FORCEPLAY)
-		{
+	if((ause->flags & EA_ANIMEND) && ause->cur_anim) {
+		if(ause->flags & EA_FORCEPLAY) {
 			AcquireLastAnim(io);
 			FinishAnim(io, ause->cur_anim);
 			ANIM_Set(ause, io->anims[ANIM_DEFAULT]);
 
-			if (io->_npcdata->behavior & BEHAVIOUR_FRIENDLY) ause->altidx_cur = 0;
+			if(io->_npcdata->behavior & BEHAVIOUR_FRIENDLY)
+				ause->altidx_cur = 0;
 		}
 
 		// some specific code for combat animation end management
-		if (ause->cur_anim == io->anims[ANIM_FIGHT_STRAFE_LEFT])
-		{
+		if(ause->cur_anim == io->anims[ANIM_FIGHT_STRAFE_LEFT]) {
 			AcquireLastAnim(io);
 			FinishAnim(io, ause->cur_anim);
 			ANIM_Set(ause, io->anims[ANIM_FIGHT_WAIT]);
 			ause->flags |= EA_LOOP;
 		}
 
-		if (ause->cur_anim == io->anims[ANIM_FIGHT_STRAFE_RIGHT])
-		{
+		if(ause->cur_anim == io->anims[ANIM_FIGHT_STRAFE_RIGHT]) {
 			AcquireLastAnim(io);
 			FinishAnim(io, ause->cur_anim);
 			ANIM_Set(ause, io->anims[ANIM_FIGHT_WAIT]);
 			ause->flags |= EA_LOOP;
 		}
 
-		if (ause->cur_anim == io->anims[ANIM_FIGHT_WALK_BACKWARD])
-		{
+		if(ause->cur_anim == io->anims[ANIM_FIGHT_WALK_BACKWARD]) {
 			AcquireLastAnim(io);
 			FinishAnim(io, ause->cur_anim);
 			ANIM_Set(ause, io->anims[ANIM_FIGHT_WAIT]);
@@ -2060,6 +2055,7 @@ void ARX_NPC_Manage_Anims_End(Entity * io)
 		}
 	}
 }
+
 bool TryIOAnimMove(Entity * io, long animnum)
 {
 	if(!io || !io->anims[animnum])
@@ -2077,7 +2073,7 @@ bool TryIOAnimMove(Entity * io, long animnum)
 	phys.targetpos = io->pos + trans2;
 	bool res = ARX_COLLISION_Move_Cylinder(&phys, io, 30, CFLAG_JUST_TEST | CFLAG_NPC);
 
-	if (res && (EEfabs(phys.cyl.origin.y - io->pos.y) < 20.f))
+	if(res && EEfabs(phys.cyl.origin.y - io->pos.y) < 20.f)
 		return true;
 
 	return false;
@@ -2089,11 +2085,8 @@ void TryAndCheckAnim(Entity * io, long animnum, long layer)
 
 	ANIM_USE * ause = &io->animlayer[layer];
 
-	if ((ause->cur_anim != io->anims[animnum])
-	        && (ause->cur_anim != NULL))
-	{
-		if (TryIOAnimMove(io, animnum))
-		{
+	if(ause->cur_anim != io->anims[animnum] && ause->cur_anim) {
+		if(TryIOAnimMove(io, animnum)) {
 			AcquireLastAnim(io);
 			FinishAnim(io, ause->cur_anim);
 			ANIM_Set(ause, io->anims[animnum]);
@@ -2118,19 +2111,15 @@ void ARX_NPC_Manage_Anims(Entity * io, float TOLERANCE)
 	ANIM_USE * ause1 = &io->animlayer[1];
 	float tdist = std::numeric_limits<float>::max();
 
-	if ((io->_npcdata->pathfind.listnb) && (ValidIONum(io->_npcdata->pathfind.truetarget))) {
+	if(io->_npcdata->pathfind.listnb && ValidIONum(io->_npcdata->pathfind.truetarget)) {
 		tdist = distSqr(io->pos, entities[io->_npcdata->pathfind.truetarget]->pos);
 	} else if(ValidIONum(io->targetinfo)) {
 		tdist = distSqr(io->pos, entities[io->targetinfo]->pos);
 	}
 
-
-
-
-
 	Entity * ioo = io->_npcdata->weapon;
 
-	if (ValidIOAddress(ioo))
+	if(ValidIOAddress(ioo))
 		io->_npcdata->weapontype = ioo->type_flags;
 	else
 		io->_npcdata->weapontype = 0;
@@ -2145,11 +2134,12 @@ void ARX_NPC_Manage_Anims(Entity * io, float TOLERANCE)
 			{
 				float r = rnd();
 
-				if (tdist < square(TOLERANCE - 20)) r = 0;
+				if(tdist < square(TOLERANCE - 20))
+					r = 0;
 
-				if (r < 0.1f)
+				if(r < 0.1f)
 					TryAndCheckAnim(io, ANIM_FIGHT_WALK_BACKWARD, 0);
-				else if (r < 0.55f)
+				else if(r < 0.55f)
 					TryAndCheckAnim(io, ANIM_FIGHT_STRAFE_LEFT, 0);
 				else
 					TryAndCheckAnim(io, ANIM_FIGHT_STRAFE_RIGHT, 0);
@@ -2170,11 +2160,12 @@ void ARX_NPC_Manage_Anims(Entity * io, float TOLERANCE)
 				FinishAnim(io, ause->cur_anim);
 				float r = rnd();
 
-				if (tdist < square(340)) r = 0;
+				if(tdist < square(340))
+					r = 0;
 
-				if (r < 0.33f)
+				if(r < 0.33f)
 					TryAndCheckAnim(io, ANIM_FIGHT_WALK_BACKWARD, 0);
-				else if (r < 0.66f)
+				else if(r < 0.66f)
 					TryAndCheckAnim(io, ANIM_FIGHT_STRAFE_LEFT, 0);
 				else
 					TryAndCheckAnim(io, ANIM_FIGHT_STRAFE_RIGHT, 0);
@@ -2183,8 +2174,7 @@ void ARX_NPC_Manage_Anims(Entity * io, float TOLERANCE)
 	}
 
 
-	if (IsPlayerStriking())
-	{
+	if(IsPlayerStriking()) {
 		if ((ause->cur_anim == io->anims[ANIM_FIGHT_WAIT])
 		        && (ause->cur_anim != NULL))
 		{
@@ -2192,19 +2182,15 @@ void ARX_NPC_Manage_Anims(Entity * io, float TOLERANCE)
 			FinishAnim(io, ause->cur_anim);
 			float r = rnd();
 
-			if (r < 0.2f)
+			if(r < 0.2f)
 				TryAndCheckAnim(io, ANIM_FIGHT_WALK_BACKWARD, 0);
-			else if (r < 0.6f)
+			else if(r < 0.6f)
 				TryAndCheckAnim(io, ANIM_FIGHT_STRAFE_LEFT, 0);
 			else
 				TryAndCheckAnim(io, ANIM_FIGHT_STRAFE_RIGHT, 0);
 		}
 	}
 	long j;
-
-
-
-
 
 
 	// MAGICAL FIGHT
@@ -2338,11 +2324,11 @@ void ARX_NPC_Manage_Anims(Entity * io, float TOLERANCE)
 	{
 		long ANIMBase = 0;
 
-		if (io->_npcdata->weapontype & OBJECT_TYPE_1H)
+		if(io->_npcdata->weapontype & OBJECT_TYPE_1H)
 			ANIMBase = 0;
-		else if (io->_npcdata->weapontype & OBJECT_TYPE_2H)
+		else if(io->_npcdata->weapontype & OBJECT_TYPE_2H)
 			ANIMBase = ANIM_2H_READY_PART_1 - ANIM_1H_READY_PART_1;
-		else if (io->_npcdata->weapontype & OBJECT_TYPE_DAGGER)
+		else if(io->_npcdata->weapontype & OBJECT_TYPE_DAGGER)
 			ANIMBase = ANIM_DAGGER_READY_PART_1 - ANIM_1H_READY_PART_1;
 
 		// desire to remove weapon
@@ -2498,9 +2484,6 @@ void ARX_NPC_Manage_Anims(Entity * io, float TOLERANCE)
 	{
 		////////////// later...
 	}
-
-
-
 }
 
 float GetIOHeight(Entity * io)
@@ -2512,7 +2495,8 @@ float GetIOHeight(Entity * io)
 
 	float v = (io->original_height * io->scale);
 
-	if (v < -165.f) return -165.f;
+	if(v < -165.f)
+		return -165.f;
 
 	return min(v, -45.f);
 }
