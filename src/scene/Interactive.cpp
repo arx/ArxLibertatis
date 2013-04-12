@@ -3152,12 +3152,11 @@ void ARX_INTERACTIVE_DestroyIO(Entity * ioo)
 
 bool IsSameObject(Entity * io, Entity * ioo)
 {
-	if ((io == NULL)
-	        ||	(ioo == NULL)
-	        ||	io->classPath() != ioo->classPath()
-	        ||	(io->ioflags & IO_UNIQUE)
-	        ||	(io->durability != ioo->durability)
-	        ||	(io->max_durability != ioo->max_durability))
+	if(!io || !ioo
+			|| io->classPath() != ioo->classPath()
+			|| (io->ioflags & IO_UNIQUE)
+			|| io->durability != ioo->durability
+			|| io->max_durability != ioo->max_durability)
 		return false;
 
 	if	((io->ioflags & IO_ITEM)

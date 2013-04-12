@@ -148,7 +148,6 @@ short ANIM_GetAltIdx(ANIM_HANDLE * ah, long old) {
 	}
 }
 
-//-----------------------------------------------------------------------------
 void ANIM_Set(ANIM_USE *au, ANIM_HANDLE *anim)
 {
 	if(!au || !anim)
@@ -170,7 +169,8 @@ void ANIM_Set(ANIM_USE *au, ANIM_HANDLE *anim)
 
 ANIM_HANDLE::ANIM_HANDLE() : path() {
 	
-	anims = NULL, alt_nb = 0;
+	anims = NULL;
+	alt_nb = 0;
 	
 	locks = 0;
 }
@@ -190,11 +190,13 @@ void EERIE_ANIMMANAGER_PurgeUnused() {
 }
 
 void EERIE_ANIMMANAGER_ReleaseHandle(ANIM_HANDLE * anim) {
-	if(anim) {
-		anim->locks--;
-		if(anim->locks < 0) {
-			anim->locks = 0;
-		}
+
+	if(!anim)
+		return;
+
+	anim->locks--;
+	if(anim->locks < 0) {
+		anim->locks = 0;
 	}
 }
 
@@ -290,8 +292,9 @@ ANIM_HANDLE * EERIE_ANIMMANAGER_Load_NoWarning(const res::path & path) {
 	return NULL;
 }
 
-//-----------------------------------------------------------------------------
-// tex Must be of sufficient size...
+/*!
+ * \note tex Must be of sufficient size...
+ */
 long EERIE_ANIMMANAGER_Count( std::string& tex, long * memsize)
 {
 	char temp[512];
@@ -300,8 +303,7 @@ long EERIE_ANIMMANAGER_Count( std::string& tex, long * memsize)
 
 	for(size_t i = 0; i < MAX_ANIMATIONS; i++) {
 		
-		if(!animations[i].path.empty())
-		{
+		if(!animations[i].path.empty()) {
 			count++;
 			char txx[256];
 			strcpy(txx,animations[i].path.string().c_str());
@@ -317,12 +319,14 @@ long EERIE_ANIMMANAGER_Count( std::string& tex, long * memsize)
 	return count;
 }
 
-// Fill "pos" with "eanim" total translation
+//
+/*!
+ * \brief Fill "pos" with "eanim" total translation
+ */
 void GetAnimTotalTranslate( ANIM_HANDLE * eanim, long alt_idx, Vec3f * pos) {
 	
-	if(!pos) {
+	if(!pos)
 		return;
-	}
 	
 	if(!eanim || !eanim->anims[alt_idx] || !eanim->anims[alt_idx]->frames
 	   || eanim->anims[alt_idx]->nb_key_frames <= 0) {
@@ -333,16 +337,14 @@ void GetAnimTotalTranslate( ANIM_HANDLE * eanim, long alt_idx, Vec3f * pos) {
 	}
 }
 
-// Main Procedure to draw an animated object
-//------------------------------------------
-// Needs some update...
-//  EERIE_3DOBJ * eobj    main object data
-//  EERIE_ANIM * eanim    Animation data
-//  EERIE_3D * angle      Object Angle
-//  EERIE_3D  * pos       Object Position
-//  unsigned long time    Time increment to current animation in Ms
-//  Entity * io  Referrence to Interactive Object (NULL if no IO)
-//  long typ              Misc Type 0=World View 1=1st Person View
+/*!
+ * \brief Main Procedure to draw an animated object
+ *
+ * \param eobj main object data
+ * \param eanim Animation data
+ * \param time Time increment to current animation in Ms
+ * \param io Referrence to Interactive Object (NULL if no IO)
+ */
 void PrepareAnim(EERIE_3DOBJ *eobj, ANIM_USE *eanim, unsigned long time, Entity *io) {
 	
 	if(!eobj || !eanim)
@@ -441,16 +443,16 @@ suite:
 		return;
 
 	long tim;
-	if (eanim->flags & EA_REVERSE)
-		tim=eanim->cur_anim->anims[eanim->altidx_cur]->anim_time - eanim->ctime;
+	if(eanim->flags & EA_REVERSE)
+		tim = eanim->cur_anim->anims[eanim->altidx_cur]->anim_time - eanim->ctime;
 	else
-		tim=eanim->ctime;
+		tim = eanim->ctime;
 
 	eanim->fr=eanim->cur_anim->anims[eanim->altidx_cur]->nb_key_frames-2;
 	eanim->pour=1.f;
 
 	long fr;
-	for(long i=1; i<eanim->cur_anim->anims[eanim->altidx_cur]->nb_key_frames; i++) {
+	for(long i = 1; i < eanim->cur_anim->anims[eanim->altidx_cur]->nb_key_frames; i++) {
 		long tcf = (long)eanim->cur_anim->anims[eanim->altidx_cur]->frames[i-1].time;
 		long tnf = (long)eanim->cur_anim->anims[eanim->altidx_cur]->frames[i].time;
 
@@ -466,14 +468,14 @@ suite:
 			if(!(eanim->flags & EA_ANIMEND) && time
 			   && (eanim->cur_anim->anims[eanim->altidx_cur]->frames[fr].sample != -1)
 			   && (eanim->lastframe != fr)) {
+
+				Vec3f * position = io ? &io->pos : NULL;
 				
 				if(eanim->lastframe < fr && eanim->lastframe != -1) {
-					for(long n = eanim->lastframe+1; n <= fr; n++)
-						ARX_SOUND_PlayAnim(eanim->cur_anim->anims[eanim->altidx_cur]->frames[n].sample,
-						                   io ? &io->pos : NULL);
+					for(long n = eanim->lastframe + 1; n <= fr; n++)
+						ARX_SOUND_PlayAnim(eanim->cur_anim->anims[eanim->altidx_cur]->frames[n].sample, position);
 				} else {
-					ARX_SOUND_PlayAnim(eanim->cur_anim->anims[eanim->altidx_cur]->frames[fr].sample,
-					                   io ? &io->pos : NULL);
+					ARX_SOUND_PlayAnim(eanim->cur_anim->anims[eanim->altidx_cur]->frames[fr].sample, position);
 				}
 			}
 

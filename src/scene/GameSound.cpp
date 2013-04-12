@@ -804,7 +804,8 @@ long ARX_SOUND_PlayScript(const res::path & name, const Entity * io, float pitch
 
 long ARX_SOUND_PlayAnim(SourceId & sample_id, const Vec3f * position)
 {
-	if (!bIsActive || sample_id == INVALID_ID) return INVALID_ID;
+	if(!bIsActive || sample_id == INVALID_ID)
+		return INVALID_ID;
 
 	audio::Channel channel;
 
