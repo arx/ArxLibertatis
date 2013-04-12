@@ -130,7 +130,6 @@ static void CheckHit(Entity * io, float ratioaim) {
 	if(!io)
 		return;
 
-	{
 	Vec3f ppos, pos, to;
 	Vec3f from(0.f, 0.f, -90.f);
 	Vector_RotateY(&to, &from, MAKEANGLE(180.f - io->angle.b));
@@ -159,7 +158,6 @@ static void CheckHit(Entity * io, float ratioaim) {
 	if(!ValidIONum(i))
 		return;
 
-	{
 	Entity * ioo = entities[i];
 
 	if(!ioo)
@@ -168,33 +166,30 @@ static void CheckHit(Entity * io, float ratioaim) {
 	if(ioo->ioflags & (IO_MARKER | IO_CAMERA))
 		return;
 
-	if (ioo->gameFlags & GFLAG_ISINTREATZONE)
-	if (ioo->show == SHOW_FLAG_IN_SCENE)
-	if (ioo->obj)
-	if (ioo->pos.y >	(io->pos.y + io->physics.cyl.height))
-	if (io->pos.y >	(ioo->pos.y + ioo->physics.cyl.height))
+	if(ioo->gameFlags & GFLAG_ISINTREATZONE)
+	if(ioo->show == SHOW_FLAG_IN_SCENE)
+	if(ioo->obj)
+	if(ioo->pos.y > (io->pos.y + io->physics.cyl.height))
+	if(io->pos.y >	(ioo->pos.y + ioo->physics.cyl.height))
 	{
 		float dist_limit = io->_npcdata->reach + io->physics.cyl.radius;
 		long count = 0;
 		float mindist = std::numeric_limits<float>::max();
 
-		for (size_t k = 0; k < ioo->obj->vertexlist.size(); k += 2)
-		{
+		for(size_t k = 0; k < ioo->obj->vertexlist.size(); k += 2) {
 			float dist = fdist(pos, entities[i]->obj->vertexlist3[k].v);
 
-			if ((dist <= dist_limit)
-					&&	(EEfabs(pos.y - entities[i]->obj->vertexlist3[k].v.y) < 60.f))
-			{
+			if(dist <= dist_limit && EEfabs(pos.y - entities[i]->obj->vertexlist3[k].v.y) < 60.f) {
 				count++;
 
-				if(dist < mindist) mindist = dist;
+				if(dist < mindist)
+					mindist = dist;
 			}
 		}
 
-		float ratio = ((float)count / ((float)ioo->obj->vertexlist.size() * ( 1.0f / 2 )));
+		float ratio = (float)count / ((float)ioo->obj->vertexlist.size() * ( 1.0f / 2 ));
 
 		if(ioo->ioflags & IO_NPC) {
-
 			if(mindist <= dist_limit) {
 				ARX_EQUIPMENT_ComputeDamages(io, ioo, ratioaim);
 			}
@@ -204,10 +199,6 @@ static void CheckHit(Entity * io, float ratioaim) {
 			}
 		}
 	}
-	}
-
-
-	}
 }
 
 void ARX_NPC_Kill_Spell_Launch(Entity * io)
@@ -215,7 +206,6 @@ void ARX_NPC_Kill_Spell_Launch(Entity * io)
 	if(!io)
 		return;
 
-	{
 		if (io->flarecount) {
 			for(long i = 0; i < MAX_FLARES; i++) {
 				if(flare[i].exist && flare[i].io == io)
@@ -224,7 +214,6 @@ void ARX_NPC_Kill_Spell_Launch(Entity * io)
 		}
 
 		io->spellcast_data.castingspell = SPELL_NONE;
-	}
 }
 
 /*!
@@ -233,10 +222,8 @@ void ARX_NPC_Kill_Spell_Launch(Entity * io)
  */
 void ARX_NPC_ReleasePathFindInfo(Entity * io) {
 	
-	// Checks for valid IO/NPC
-	if(!io || !(io->ioflags & IO_NPC)) {
+	if(!io || !(io->ioflags & IO_NPC))
 		return;
-	}
 	
 	// Releases data & resets vars
 	free(io->_npcdata->pathfind.list), io->_npcdata->pathfind.list = NULL;
@@ -251,9 +238,8 @@ void ARX_NPC_ReleasePathFindInfo(Entity * io) {
  */
 void ARX_NPC_CreateExRotateData(Entity * io) {
 	
-	if(!io || !(io->ioflags & IO_NPC) || io->_npcdata->ex_rotate) {
+	if(!io || !(io->ioflags & IO_NPC) || io->_npcdata->ex_rotate)
 		return;
-	}
 	
 	io->_npcdata->ex_rotate = (EERIE_EXTRA_ROTATE *)malloc(sizeof(EERIE_EXTRA_ROTATE));
 	io->head_rot = 0;
@@ -288,8 +274,7 @@ void ARX_NPC_Revive(Entity * io, long flags)
 
 	ARX_SCRIPT_SetMainEvent(io, "main");
 
-	if (io->ioflags & IO_NPC)
-	{
+	if(io->ioflags & IO_NPC) {
 		io->ioflags &= ~IO_NO_COLLISIONS;
 		io->_npcdata->life = io->_npcdata->maxlife;
 		ARX_SCRIPT_ResetObject(io, 1);
@@ -303,8 +288,7 @@ void ARX_NPC_Revive(Entity * io, long flags)
 	
 	long goretex = -1;
 
-	for (size_t i = 0; i < io->obj->texturecontainer.size(); i++)
-	{
+	for(size_t i = 0; i < io->obj->texturecontainer.size(); i++) {
 		if (!io->obj->texturecontainer.empty()
 		        &&	io->obj->texturecontainer[i]
 		        &&	(boost::contains(io->obj->texturecontainer[i]->m_texName.string(), "gore")))
@@ -314,19 +298,14 @@ void ARX_NPC_Revive(Entity * io, long flags)
 		}
 	}
 
-	for (size_t ll = 0; ll < io->obj->facelist.size(); ll++)
-	{
-		if (io->obj->facelist[ll].texid != goretex)
-		{
+	for(size_t ll = 0; ll < io->obj->facelist.size(); ll++) {
+		if(io->obj->facelist[ll].texid != goretex)
 			io->obj->facelist[ll].facetype &= ~POLY_HIDE;
-		}
 		else
-		{
 			io->obj->facelist[ll].facetype |= POLY_HIDE;
-		}
 	}
 
-	if (io->ioflags & IO_NPC)
+	if(io->ioflags & IO_NPC)
 		io->_npcdata->cuts = 0;
 }
 
@@ -341,16 +320,14 @@ void ARX_NPC_Behaviour_Change(Entity * io, Behaviour behavior, long behavior_par
 	if(!io || !(io->ioflags & IO_NPC))
 		return;
 
-	if ((io->_npcdata->behavior & BEHAVIOUR_FIGHT) && !(behavior & BEHAVIOUR_FIGHT))
-	{
+	if((io->_npcdata->behavior & BEHAVIOUR_FIGHT) && !(behavior & BEHAVIOUR_FIGHT)) {
 		ANIM_USE * ause1 = &io->animlayer[1];
 		AcquireLastAnim(io);
 		FinishAnim(io, ause1->cur_anim);
 		ause1->cur_anim = NULL;
 	}
 
-	if ((behavior & BEHAVIOUR_NONE) || (behavior == 0))
-	{
+	if((behavior & BEHAVIOUR_NONE) || (behavior == 0)) {
 		ANIM_USE * ause0 = &io->animlayer[0];
 		AcquireLastAnim(io);
 		FinishAnim(io, ause0->cur_anim);
@@ -369,12 +346,9 @@ void ARX_NPC_Behaviour_Change(Entity * io, Behaviour behavior, long behavior_par
 		FinishAnim(io, ause2->cur_anim);
 		ause2->cur_anim = NULL;
 		ause2->flags &= ~EA_LOOP;
-
-
 	}
 
-	if (behavior & BEHAVIOUR_FRIENDLY)
-	{
+	if(behavior & BEHAVIOUR_FRIENDLY) {
 		ANIM_USE * ause0 = &io->animlayer[0];
 		AcquireLastAnim(io);
 		FinishAnim(io, ause0->cur_anim);
@@ -421,12 +395,10 @@ void ARX_NPC_Behaviour_Stack(Entity * io) {
 	if(!io || !(io->ioflags & IO_NPC))
 		return;
 
-	for (long i = 0; i < MAX_STACKED_BEHAVIOR; i++)
-	{
+	for(long i = 0; i < MAX_STACKED_BEHAVIOR; i++) {
 		IO_BEHAVIOR_DATA * bd = &io->_npcdata->stacked[i];
 
-		if (bd->exist == 0)
-		{
+		if(bd->exist == 0) {
 			bd->behavior = io->_npcdata->behavior;
 			bd->behavior_param = io->_npcdata->behavior_param;
 			bd->tactics = io->_npcdata->tactics;
@@ -452,12 +424,10 @@ void ARX_NPC_Behaviour_UnStack(Entity * io)
 	if(!io || !(io->ioflags & IO_NPC))
 		return;
 
-	for (long i = MAX_STACKED_BEHAVIOR - 1; i >= 0; i--)
-	{
+	for(long i = MAX_STACKED_BEHAVIOR - 1; i >= 0; i--) {
 		IO_BEHAVIOR_DATA * bd = &io->_npcdata->stacked[i];
 
-		if (bd->exist)
-		{
+		if(bd->exist) {
 			AcquireLastAnim(io);
 			io->_npcdata->behavior = bd->behavior;
 			io->_npcdata->behavior_param = bd->behavior_param;
@@ -467,8 +437,7 @@ void ARX_NPC_Behaviour_UnStack(Entity * io)
 			bd->exist = 0;
 			ARX_NPC_LaunchPathfind(io, bd->target);
 
-			if (io->_npcdata->behavior & BEHAVIOUR_NONE)
-			{
+			if(io->_npcdata->behavior & BEHAVIOUR_NONE) {
 				memcpy(io->animlayer, bd->animlayer, sizeof(ANIM_USE)*MAX_ANIM_LAYERS);
 			}
 
@@ -502,30 +471,31 @@ long ARX_NPC_GetNextAttainableNodeIncrement(Entity * io)
 	else
 		MAX_TEST = 4; //3;
 
-	for (long l_try = MAX_TEST; l_try > 1; l_try--)
-	{
-		if (io->_npcdata->pathfind.listpos + l_try > io->_npcdata->pathfind.listnb - 1) continue;
+	for(long l_try = MAX_TEST; l_try > 1; l_try--) {
+		if(io->_npcdata->pathfind.listpos + l_try > io->_npcdata->pathfind.listnb - 1)
+			continue;
 
 		float tot = 0.f;
 
-		for (long aa = l_try; aa > 1; aa--)
-		{
+		for(long aa = l_try; aa > 1; aa--) {
 			long v = io->_npcdata->pathfind.list[io->_npcdata->pathfind.listpos+aa];
 			tot += ACTIVEBKG->anchors[v].nblinked;
 
-			if (aa == l_try)
+			if(aa == l_try)
 				tot += ACTIVEBKG->anchors[v].nblinked;
 		}
 
 		tot /= (float)(l_try + 1);
 
-		if (tot <= 3.5f) continue;
+		if(tot <= 3.5f)
+			continue;
 
 		io->physics.startpos = io->pos;
 		long pos = io->_npcdata->pathfind.list[io->_npcdata->pathfind.listpos+l_try];
 		io->physics.targetpos = ACTIVEBKG->anchors[pos].pos;
 
-		if (EEfabs(io->physics.startpos.y - io->physics.targetpos.y) > 60.f) continue;
+		if(EEfabs(io->physics.startpos.y - io->physics.targetpos.y) > 60.f)
+			continue;
 
 		io->physics.targetpos.y += 60.f; // FAKE Gravity !
 		IO_PHYSICS phys;
@@ -553,12 +523,11 @@ static long AnchorData_GetNearest(Vec3f * pos, EERIE_CYLINDER * cyl, long except
 	float distmax = std::numeric_limits<float>::max();
 	EERIE_BACKGROUND * eb = ACTIVEBKG;
 
-	for (long i = 0; i < eb->nbanchors; i++)
-	{
-		if (except != -1 && i == except) continue;
+	for(long i = 0; i < eb->nbanchors; i++) {
+		if(except != -1 && i == except)
+			continue;
 
-		if (eb->anchors[i].nblinked)
-		{
+		if(eb->anchors[i].nblinked) {
 			float d = distSqr(eb->anchors[i].pos, *pos);
 
 			if ((d < distmax) && (eb->anchors[i].height <= cyl->height)
@@ -596,17 +565,14 @@ bool ARX_NPC_LaunchPathfind(Entity * io, long target)
 	io->physics.cyl.origin = io->pos;
 	long old_target = io->targetinfo;
 
-	if	((!(io->ioflags & IO_PHYSICAL_OFF)))
-	{
-		if (!ForceNPC_Above_Ground(io))
-		{
+	if(!(io->ioflags & IO_PHYSICAL_OFF)) {
+		if(!ForceNPC_Above_Ground(io)) {
 			io->_npcdata->pathfind.pathwait = 0;
 			return false;
 		}
 	}
 
-	if (io->_npcdata->behavior & BEHAVIOUR_FRIENDLY)
-	{
+	if(io->_npcdata->behavior & BEHAVIOUR_FRIENDLY) {
 		io->targetinfo = target;
 		io->_npcdata->pathfind.pathwait = 0;
 		return false;
@@ -627,11 +593,10 @@ bool ARX_NPC_LaunchPathfind(Entity * io, long target)
 		goto wander;
 	}
 	
-	if ((target < 0) || (io->_npcdata->behavior & BEHAVIOUR_GO_HOME)) 
-	{
+	if(target < 0 || (io->_npcdata->behavior & BEHAVIOUR_GO_HOME)) {
 		target = io->index();
 
-		if (target == -1)
+		if(target == -1)
 			goto failure;
 
 		io->_npcdata->pathfind.truetarget = target;
@@ -646,9 +611,7 @@ bool ARX_NPC_LaunchPathfind(Entity * io, long target)
 		goto suite;
 	}
 
-	if ((ValidIONum(target))
-	        &&	(entities[target] == io))
-	{
+	if(ValidIONum(target) && entities[target] == io) {
 		io->_npcdata->pathfind.pathwait = 0;
 		return false; // cannot pathfind self...
 	}
@@ -720,11 +683,11 @@ wander:
 		to = AnchorData_GetNearest(&pos2, &io->physics.cyl, from);
 	else if (io->_npcdata->behavior & BEHAVIOUR_WANDER_AROUND)
 		to = from;
-	else to = AnchorData_GetNearest(&pos2, &io->physics.cyl); 
+	else
+		to = AnchorData_GetNearest(&pos2, &io->physics.cyl);
 
-	if ((from != -1) && (to != -1))
-	{
-		if ((from == to) && !(io->_npcdata->behavior & BEHAVIOUR_WANDER_AROUND))
+	if(from != -1 && to != -1) {
+		if(from == to && !(io->_npcdata->behavior & BEHAVIOUR_WANDER_AROUND))
 			return true;
 
 		if ((io->_npcdata->behavior & BEHAVIOUR_WANDER_AROUND) ||
@@ -741,15 +704,16 @@ wander:
 					goto failure;
 			}
 
-			if (io->_npcdata->behavior & BEHAVIOUR_WANDER_AROUND)
-			{
+			if(io->_npcdata->behavior & BEHAVIOUR_WANDER_AROUND) {
 				io->_npcdata->pathfind.truetarget = TARGET_NONE;
 			}
 			
 			io->_npcdata->pathfind.listnb = -1;
 			io->_npcdata->pathfind.listpos = 0;
 			io->_npcdata->pathfind.pathwait = 1;
-			free(io->_npcdata->pathfind.list), io->_npcdata->pathfind.list = NULL;
+
+			free(io->_npcdata->pathfind.list);
+			io->_npcdata->pathfind.list = NULL;
 			
 			PATHFINDER_REQUEST tpr;
 			tpr.from = from;
@@ -759,7 +723,7 @@ wander:
 			tpr.ioid = io;
 			tpr.isvalid = true;
 
-			if (EERIE_PATHFINDER_Add_To_Queue(&tpr))
+			if(EERIE_PATHFINDER_Add_To_Queue(&tpr))
 				return true;
 		}
 	}
@@ -768,11 +732,13 @@ failure:
 	;
 	io->_npcdata->pathfind.pathwait = 0;
 
-	if (io->_npcdata->pathfind.list) ARX_NPC_ReleasePathFindInfo(io);
+	if(io->_npcdata->pathfind.list)
+		ARX_NPC_ReleasePathFindInfo(io);
 
 	io->_npcdata->pathfind.listnb = -2;
 
-	if (io->_npcdata->pathfind.flags & PATHFIND_ALWAYS) return false; // TODO was BEHAVIOUR_NONE
+	if(io->_npcdata->pathfind.flags & PATHFIND_ALWAYS)
+		return false; // TODO was BEHAVIOUR_NONE
 
 	SendIOScriptEvent(io, SM_PATHFINDER_FAILURE);
 	return false;
