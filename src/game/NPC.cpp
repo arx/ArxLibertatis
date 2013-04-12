@@ -1877,58 +1877,49 @@ bool IsPlayerStriking()
 {
 	Entity * io = entities.player();
 
-	if (!io) return false;
+	if(!io)
+		return false;
 
 	ANIM_USE * useanim = &io->animlayer[1];
 	WeaponType weapontype = ARX_EQUIPMENT_GetPlayerWeaponType();
-	long j;
 
-	switch (weapontype)
-	{
-		case WEAPON_BARE:
+	switch(weapontype) {
+	case WEAPON_BARE:
+		for(long j = 0; j < 4; j++) {
+			if(STRIKE_AIMTIME > 300 && useanim->cur_anim == io->anims[ANIM_BARE_STRIKE_LEFT_CYCLE+j*3])
+				return true;
 
-			for (j = 0; j < 4; j++)
-			{
-				if ((STRIKE_AIMTIME > 300)
-				        && (useanim->cur_anim == io->anims[ANIM_BARE_STRIKE_LEFT_CYCLE+j*3])) return true;
+			if(useanim->cur_anim == io->anims[ANIM_BARE_STRIKE_LEFT+j*3])
+				return true;
+		}
+		break;
+	case WEAPON_DAGGER:
+		for(long j = 0; j < 4; j++) {
+			if(STRIKE_AIMTIME > 300 && useanim->cur_anim == io->anims[ANIM_DAGGER_STRIKE_LEFT_CYCLE+j*3])
+				return true;
 
-				if (useanim->cur_anim == io->anims[ANIM_BARE_STRIKE_LEFT+j*3]) return true;
-			}
+			if(useanim->cur_anim == io->anims[ANIM_DAGGER_STRIKE_LEFT+j*3])
+				return true;
+		}
+		break;
+	case WEAPON_1H:
+		for(long j = 0; j < 4; j++) {
+			if(STRIKE_AIMTIME > 300 && useanim->cur_anim == io->anims[ANIM_1H_STRIKE_LEFT_CYCLE+j*3])
+				return true;
 
-			break;
-		case WEAPON_DAGGER:
+			if(useanim->cur_anim == io->anims[ANIM_1H_STRIKE_LEFT+j*3])
+				return true;
+		}
+		break;
+	case WEAPON_2H:
+		for(long j = 0; j < 4; j++) {
+			if(STRIKE_AIMTIME > 300 && useanim->cur_anim == io->anims[ANIM_2H_STRIKE_LEFT_CYCLE+j*3])
+				return true;
 
-			for (j = 0; j < 4; j++)
-			{
-				if ((STRIKE_AIMTIME > 300)
-				        && (useanim->cur_anim == io->anims[ANIM_DAGGER_STRIKE_LEFT_CYCLE+j*3])) return true;
-
-				if (useanim->cur_anim == io->anims[ANIM_DAGGER_STRIKE_LEFT+j*3]) return true;
-			}
-
-			break;
-		case WEAPON_1H:
-
-			for (j = 0; j < 4; j++)
-			{
-				if ((STRIKE_AIMTIME > 300)
-				        && (useanim->cur_anim == io->anims[ANIM_1H_STRIKE_LEFT_CYCLE+j*3])) return true;
-
-				if (useanim->cur_anim == io->anims[ANIM_1H_STRIKE_LEFT+j*3]) return true;
-			}
-
-			break;
-		case WEAPON_2H:
-
-			for (j = 0; j < 4; j++)
-			{
-				if ((STRIKE_AIMTIME > 300)
-				        && (useanim->cur_anim == io->anims[ANIM_2H_STRIKE_LEFT_CYCLE+j*3])) return true;
-
-				if (useanim->cur_anim == io->anims[ANIM_2H_STRIKE_LEFT+j*3]) return true;
-			}
-
-			break;
+			if(useanim->cur_anim == io->anims[ANIM_2H_STRIKE_LEFT+j*3])
+				return true;
+		}
+		break;
 	}
 
 	return false;
