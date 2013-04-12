@@ -268,24 +268,27 @@ long DanaeSaveLevel(const fs::path & _fic) {
 	}
 	
 	for(size_t i = 0; i < MAX_FOG; i++) {
-		if(fogs[i].exist) {
+		FOG_DEF *fog = &fogs[i];
+
+		if(!fog->exist)
+			continue;
+
 			DANAE_LS_FOG dlf;
 			memset(&dlf, 0, sizeof(DANAE_LS_FOG));
-			dlf.rgb = fogs[i].rgb;
-			dlf.angle = fogs[i].angle;
-			dlf.pos = fogs[i].pos - Mscenepos;
-			dlf.blend = fogs[i].blend;
-			dlf.frequency = fogs[i].frequency;
-			dlf.move = fogs[i].move;
-			dlf.rotatespeed = fogs[i].rotatespeed;
-			dlf.scale = fogs[i].scale;
-			dlf.size = fogs[i].size;
-			dlf.special = fogs[i].special;
-			dlf.speed = fogs[i].speed;
-			dlf.tolive = fogs[i].tolive;
+			dlf.rgb = fog->rgb;
+			dlf.angle = fog->angle;
+			dlf.pos = fog->pos - Mscenepos;
+			dlf.blend = fog->blend;
+			dlf.frequency = fog->frequency;
+			dlf.move = fog->move;
+			dlf.rotatespeed = fog->rotatespeed;
+			dlf.scale = fog->scale;
+			dlf.size = fog->size;
+			dlf.special = fog->special;
+			dlf.speed = fog->speed;
+			dlf.tolive = fog->tolive;
 			memcpy(dat + pos, &dlf, sizeof(DANAE_LS_FOG));
 			pos += sizeof(DANAE_LS_FOG);
-		}
 	}
 	
 	for(long i = 0; i < nodes.nbmax; i++) {
