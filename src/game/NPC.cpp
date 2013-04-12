@@ -3795,15 +3795,13 @@ void ManageIgnition(Entity * io)
 		io->ignition = 25.f;
 		io->durability -= framedelay * ( 1.0f / 10000 );
 
-		if (io->durability <= 0.F)
-		{
-			if (ValidDynLight(io->ignit_light))
+		if(io->durability <= 0.F) {
+			if(ValidDynLight(io->ignit_light))
 				DynLight[io->ignit_light].exist = 0;
 
 			io->ignit_light = -1;
 
-			if (io->ignit_sound != audio::INVALID_ID)
-			{
+			if(io->ignit_sound != audio::INVALID_ID) {
 				ARX_SOUND_Stop(io->ignit_sound);
 				io->ignit_sound = audio::INVALID_ID;
 			}
@@ -3816,7 +3814,7 @@ void ManageIgnition(Entity * io)
 			ARX_INTERACTIVE_DestroyDynamicInfo(io);
 			ARX_SOUND_PlaySFX(SND_TORCH_END, &io->pos);
 
-			if (io == DRAGINTER)
+			if(io == DRAGINTER)
 				Set_DragInter(NULL);
 
 			ARX_INTERACTIVE_DestroyIO(io);
@@ -3896,32 +3894,24 @@ void ManageIgnition_2(Entity * io) {
 	if(!io)
 		return;
 
-	if (io->ignition > 0.f)
-	{
-		if (io->ignition > 100.f)
+	if(io->ignition > 0.f) {
+		if(io->ignition > 100.f)
 			io->ignition = 100.f;
 
 		Vec3f position;
 
-		if (io->obj && (io->obj->fastaccess.fire >= 0))
-		{
-			if (io == DRAGINTER)
+		if(io->obj && io->obj->fastaccess.fire >= 0)
+			if(io == DRAGINTER)
 				position = player.pos;
 			else
-			{
 				position = io->obj->vertexlist3[io->obj->fastaccess.fire].v;
-			}
-		}
 		else
-		{
 			position = io->pos;
-		}
 
-		if (io->ignit_light == -1)
+		if(io->ignit_light == -1)
 			io->ignit_light = GetFreeDynLight();
 
-		if (io->ignit_light != -1)
-		{
+		if(io->ignit_light != -1) {
 			long id = io->ignit_light;
 			DynLight[id].exist = 1;
 
@@ -3940,30 +3930,27 @@ void ManageIgnition_2(Entity * io) {
 			DynLight[id].extras |= EXTRAS_FLARE;
 		}
 
-		if (io->ignit_sound == audio::INVALID_ID)
-		{
+		if(io->ignit_sound == audio::INVALID_ID) {
 			io->ignit_sound = SND_FIREPLACE;
 			ARX_SOUND_PlaySFX(io->ignit_sound, &position, 0.95F + 0.1F * rnd(), ARX_SOUND_PLAY_LOOPED);
 		}
-		else ARX_SOUND_RefreshPosition(io->ignit_sound, &position);
+		else
+			ARX_SOUND_RefreshPosition(io->ignit_sound, &position);
 
-		if (rnd() > 0.9f) CheckForIgnition(&position, io->ignition, 1);
-	}
-	else
-	{
-		if (ValidDynLight(io->ignit_light))
+		if(rnd() > 0.9f)
+			CheckForIgnition(&position, io->ignition, 1);
+	} else {
+		if(ValidDynLight(io->ignit_light))
 			DynLight[io->ignit_light].exist = 0;
 
 		io->ignit_light = -1;
 
-		if (io->ignit_sound != audio::INVALID_ID)
-		{
+		if(io->ignit_sound != audio::INVALID_ID) {
 			ARX_SOUND_Stop(io->ignit_sound);
 			io->ignit_sound = audio::INVALID_ID;
 		}
 	}
 }
-
 
 extern EERIE_BACKGROUND * ACTIVEBKG;
 
@@ -4010,6 +3997,7 @@ void GetTargetPos(Entity * io, unsigned long smoothing) {
 		
 		ARX_USE_PATH * aup = io->usepath;
 		aup->_curtime += smoothing + 100;
+
 		Vec3f tp;
 		long wp = ARX_PATHS_Interpolate(aup, &tp);
 		if(wp >= 0) {
