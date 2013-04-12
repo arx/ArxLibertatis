@@ -1287,46 +1287,35 @@ extern Entity * EVENT_SENDER;
  */
 bool IsDeadNPC(Entity * io) {
 	
-	if(!io || !(io->ioflags & IO_NPC)) {
+	if(!io || !(io->ioflags & IO_NPC))
 		return false;
-	}
 	
 	return (io->_npcdata->life <= 0 || io->mainevent == "dead");
 }
 
-long IsInGroup(EERIE_3DOBJ * obj, long vert, long tw)
-{
-	if (obj == NULL) return -1;
+long IsInGroup(EERIE_3DOBJ * obj, long vert, long tw) {
 
-	if (tw < 0) return -1;
+	if(!obj || tw < 0 || tw > obj->nbgroups || vert < 0)
+		return -1;
 
-	if (tw > obj->nbgroups) return -1;
-
-	if (vert < 0) return -1;
-
-	for (size_t i = 0; i < obj->grouplist[tw].indexes.size(); i++)
-	{
-		if (obj->grouplist[tw].indexes[i] == vert)
+	for(size_t i = 0; i < obj->grouplist[tw].indexes.size(); i++) {
+		if(obj->grouplist[tw].indexes[i] == vert)
 			return i;
 	}
 
 	return -1;
 }
 
-long IsNearSelection(EERIE_3DOBJ * obj, long vert, long tw)
-{
-	if (obj == NULL) return -1;
+long IsNearSelection(EERIE_3DOBJ * obj, long vert, long tw) {
 
-	if (tw < 0) return -1;
+	if(!obj || tw < 0 || vert < 0)
+		return -1;
 
-	if (vert < 0) return -1;
-
-	for (size_t i = 0; i < obj->selections[tw].selected.size(); i++)
-	{
+	for(size_t i = 0; i < obj->selections[tw].selected.size(); i++) {
 		float d = dist(obj->vertexlist[obj->selections[tw].selected[i]].v,
 		               obj->vertexlist[vert].v);
 
-		if (d < 8.f)
+		if(d < 8.f)
 			return i;
 	}
 
@@ -1340,24 +1329,24 @@ long IsNearSelection(EERIE_3DOBJ * obj, long vert, long tw)
  */
 void ARX_NPC_SpawnMember(Entity * ioo, long num) {
 	
-	if (!ioo) return;
+	if(!ioo)
+		return;
 
 	EERIE_3DOBJ * from = ioo->obj;
 
-	if ((!from) ||	(num < 0) || ((size_t)num >= from->selections.size()))
+	if(!from || num < 0 || (size_t)num >= from->selections.size())
 		return;
 
 	EERIE_3DOBJ * nouvo = new EERIE_3DOBJ(); 
 
-	if (!nouvo)
+	if(!nouvo)
 		return;
 
 	size_t nvertex = from->selections[num].selected.size();
 
 	long gore = -1;
 
-	for (size_t k = 0; k < from->texturecontainer.size(); k++)
-	{
+	for(size_t k = 0; k < from->texturecontainer.size(); k++) {
 		if (from->texturecontainer[k]
 		        && (boost::contains(from->texturecontainer[k]->m_texName.string(), "gore")))
 		{
@@ -1366,10 +1355,8 @@ void ARX_NPC_SpawnMember(Entity * ioo, long num) {
 		}
 	}
 
-	for (size_t k = 0; k < from->facelist.size(); k++)
-	{
-		if (from->facelist[k].texid == gore)
-		{
+	for(size_t k = 0; k < from->facelist.size(); k++) {
+		if(from->facelist[k].texid == gore) {
 			if	((IsNearSelection(from, from->facelist[k].vid[0], num) >= 0)
 			        ||	(IsNearSelection(from, from->facelist[k].vid[1], num) >= 0)
 			        ||	(IsNearSelection(from, from->facelist[k].vid[2], num) >= 0))
@@ -1397,8 +1384,6 @@ void ARX_NPC_SpawnMember(Entity * ioo, long num) {
 		inpos = from->selections[num].selected[k];
 		equival[from->selections[num].selected[k]] = k;
 		
-		
-		
 		nouvo->vertexlist[k] = from->vertexlist[from->selections[num].selected[k]];
 		nouvo->vertexlist[k].v = from->vertexlist3[from->selections[num].selected[k]].v;
 		nouvo->vertexlist[k].v -= ioo->pos;
@@ -1412,8 +1397,7 @@ void ARX_NPC_SpawnMember(Entity * ioo, long num) {
 
 	size_t count = from->selections[num].selected.size();
 
-	for(size_t k = 0; k < from->facelist.size(); k++)
-	{
+	for(size_t k = 0; k < from->facelist.size(); k++) {
 		if (from->facelist[k].texid == gore)
 		{
 			if ((IsNearSelection(from, from->facelist[k].vid[0], num) >= 0)
@@ -1445,8 +1429,7 @@ void ARX_NPC_SpawnMember(Entity * ioo, long num) {
 	long nummm = 0;
 
 	for(size_t k = 1; k < nouvo->vertexlist.size(); k++) {
-		if (nouvo->vertexlist[k].vert.p.y > min)
-		{
+		if(nouvo->vertexlist[k].vert.p.y > min) {
 			min = nouvo->vertexlist[k].vert.p.y;
 			nummm = k;
 		}
@@ -1477,12 +1460,10 @@ void ARX_NPC_SpawnMember(Entity * ioo, long num) {
 			nfaces++;
 	}
 
-	if (nfaces)
-	{
+	if(nfaces) {
 		nouvo->facelist.reserve(nfaces);
 
-		for (size_t k = 0; k < from->facelist.size(); k++)
-		{
+		for(size_t k = 0; k < from->facelist.size(); k++) {
 			if ((equival[from->facelist[k].vid[0]] != -1)
 			        &&	(equival[from->facelist[k].vid[1]] != -1)
 			        &&	(equival[from->facelist[k].vid[2]] != -1))
@@ -1509,7 +1490,7 @@ void ARX_NPC_SpawnMember(Entity * ioo, long num) {
 		for(size_t k = 0; k < nouvo->facelist.size(); k++) {
 			nouvo->facelist[k].facetype &= ~POLY_HIDE;
 
-			if (nouvo->facelist[k].texid == gore)
+			if(nouvo->facelist[k].texid == gore)
 				nouvo->facelist[k].facetype |= POLY_DOUBLESIDED;
 		}
 		
@@ -1646,8 +1627,7 @@ void ReComputeCutFlags(Entity * io)
 	if(!io || !(io->ioflags & IO_NPC))
 		return;
 
-	if (io->_npcdata->cuts & FLAG_CUT_TORSO)
-	{
+	if(io->_npcdata->cuts & FLAG_CUT_TORSO) {
 		io->_npcdata->cuts &= ~FLAG_CUT_HEAD;
 		io->_npcdata->cuts &= ~FLAG_CUT_LARM;
 		io->_npcdata->cuts &= ~FLAG_CUT_RARM;
@@ -1656,18 +1636,17 @@ void ReComputeCutFlags(Entity * io)
 
 bool IsAlreadyCut(Entity * io, short fl)
 {
-	if (io->_npcdata->cuts & fl)
+	if(io->_npcdata->cuts & fl)
 		return true;
 
-	if (io->_npcdata->cuts & FLAG_CUT_TORSO)
-	{
-		if (fl == FLAG_CUT_HEAD)
+	if(io->_npcdata->cuts & FLAG_CUT_TORSO) {
+		if(fl == FLAG_CUT_HEAD)
 			return true;
 
-		if (fl == FLAG_CUT_LARM)
+		if(fl == FLAG_CUT_LARM)
 			return true;
 
-		if (fl == FLAG_CUT_RARM)
+		if(fl == FLAG_CUT_RARM)
 			return true;
 	}
 
@@ -1675,17 +1654,16 @@ bool IsAlreadyCut(Entity * io, short fl)
 }
 long ARX_NPC_ApplyCuts(Entity * io)
 {
-	if ((!io) || (!(io->ioflags & IO_NPC)))
-		return 0 ;
+	if(!io || !(io->ioflags & IO_NPC))
+		return 0;
 
-	if (io->_npcdata->cuts == 0)
+	if(io->_npcdata->cuts == 0)
 		return 0;	// No cuts
 
 	ReComputeCutFlags(io);
 	long goretex = -1;
 
-	for (size_t i = 0; i < io->obj->texturecontainer.size(); i++)
-	{
+	for(size_t i = 0; i < io->obj->texturecontainer.size(); i++) {
 		if (io->obj->texturecontainer[i]
 		        &&	(boost::contains(io->obj->texturecontainer[i]->m_texName.string(), "gore")))
 		{
@@ -1696,28 +1674,24 @@ long ARX_NPC_ApplyCuts(Entity * io)
 
 	long hid = 0;
 
-	for (size_t nn = 0; nn < io->obj->facelist.size(); nn++)
-	{
+	for(size_t nn = 0; nn < io->obj->facelist.size(); nn++) {
 		io->obj->facelist[nn].facetype &= ~POLY_HIDE;
 	}
 
-	for (long jj = 0; jj < 6; jj++)
-	{
+	for(long jj = 0; jj < 6; jj++) {
 		short flg = 1 << jj;
 		long numsel = GetCutSelection(io, flg);
 
-		if ((io->_npcdata->cuts & flg) && (numsel >= 0))
-		{
-			for (size_t ll = 0; ll < io->obj->facelist.size(); ll++)
+		if((io->_npcdata->cuts & flg) && numsel >= 0) {
+			for(size_t ll = 0; ll < io->obj->facelist.size(); ll++)
 			{
 				if	((IsInSelection(io->obj, io->obj->facelist[ll].vid[0], numsel) != -1)
 				        ||	(IsInSelection(io->obj, io->obj->facelist[ll].vid[1], numsel) != -1)
 				        ||	(IsInSelection(io->obj, io->obj->facelist[ll].vid[2], numsel) != -1)
 				   )
 				{
-					if (!(io->obj->facelist[ll].facetype & POLY_HIDE))
-					{
-						if (io->obj->facelist[ll].texid != goretex)
+					if(!(io->obj->facelist[ll].facetype & POLY_HIDE)) {
+						if(io->obj->facelist[ll].texid != goretex)
 							hid = 1;
 					}
 
@@ -1740,11 +1714,10 @@ long ARX_NPC_ApplyCuts(Entity * io)
 void ARX_NPC_TryToCutSomething(Entity * target, Vec3f * pos)
 {
 	//return;
-	if (!target) return;
+	if(!target || !(target->ioflags & IO_NPC))
+		return;
 
-	if (!(target->ioflags & IO_NPC)) return;
-
-	if	(target->gameFlags & GFLAG_NOGORE)
+	if(target->gameFlags & GFLAG_NOGORE)
 		return;
 
 	float mindistSqr = std::numeric_limits<float>::max();
@@ -1766,36 +1739,31 @@ void ARX_NPC_TryToCutSomething(Entity * target, Vec3f * pos)
 		if ((target->obj->selections[i].selected.size() > 0)
 		        &&	(boost::contains(target->obj->selections[i].name, "cut_")))
 		{
-			short fll = GetCutFlag( target->obj->selections[i].name );
+			short fll = GetCutFlag(target->obj->selections[i].name);
 
-			if (IsAlreadyCut(target, fll))
+			if(IsAlreadyCut(target, fll))
 				continue;
 
 			long out = 0;
 
-			for (size_t ll = 0; ll < target->obj->facelist.size(); ll++)
-			{
-				if (target->obj->facelist[ll].texid != goretex)
-				{
+			for(size_t ll = 0; ll < target->obj->facelist.size(); ll++) {
+				if(target->obj->facelist[ll].texid != goretex) {
 					if	((IsInSelection(target->obj, target->obj->facelist[ll].vid[0], i) != -1)
 					        ||	(IsInSelection(target->obj, target->obj->facelist[ll].vid[1], i) != -1)
 					        ||	(IsInSelection(target->obj, target->obj->facelist[ll].vid[2], i) != -1)
 					   )
 					{
-						if (target->obj->facelist[ll].facetype & POLY_HIDE)
-						{
+						if(target->obj->facelist[ll].facetype & POLY_HIDE) {
 							out++;
 						}
 					}
 				}
 			}
 
-			if (out < 3)
-			{
+			if(out < 3) {
 				float dist = distSqr(*pos, target->obj->vertexlist3[target->obj->selections[i].selected[0]].v);
 
-				if (dist < mindistSqr)
-				{
+				if(dist < mindistSqr) {
 					mindistSqr = dist;
 					numsel = i;
 				}
@@ -1803,17 +1771,15 @@ void ARX_NPC_TryToCutSomething(Entity * target, Vec3f * pos)
 		}
 	}
 
-	if (numsel == -1) return; // Nothing to cut...
+	if(numsel == -1)
+		return; // Nothing to cut...
 
 	long hid = 0;
 
-	if (mindistSqr < square(60)) // can only cut a close part...
-	{
+	if(mindistSqr < square(60)) { // can only cut a close part...
 		short fl = GetCutFlag( target->obj->selections[numsel].name );
 
-		if ((fl)
-		        &&	(!(target->_npcdata->cuts & fl)))
-		{
+		if(fl && !(target->_npcdata->cuts & fl)) {
 			target->_npcdata->cuts |= fl;
 			hid = ARX_NPC_ApplyCuts(target);
 		}
