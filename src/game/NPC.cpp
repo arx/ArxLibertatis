@@ -3406,12 +3406,12 @@ float AngularDifference(float a1, float a2)
 	a1 = MAKEANGLE(a1);
 	a2 = MAKEANGLE(a2);
 
-	if (a1 == a2) return 0;
+	if(a1 == a2)
+		return 0;
 
 	float ret;
 
-	if (a1 < a2)
-	{
+	if(a1 < a2) {
 		ret = a2;
 		a2 = a1;
 		a1 = ret;
@@ -3442,27 +3442,21 @@ Entity * ARX_NPC_GetFirstNPCInSight(Entity * ioo)
 	Entity * found_io = NULL;
 	float found_dist = std::numeric_limits<float>::max();
 
-	for (size_t i = 0; i < entities.size(); i++)
-	{
+	for(size_t i = 0; i < entities.size(); i++) {
 		Entity * io = entities[i];
 
-		if ((!io)
-		        ||	(IsDeadNPC(io))
-		        ||	(io == ioo)
-		        ||	(!(io->ioflags & IO_NPC))
-		        ||	(io->show != SHOW_FLAG_IN_SCENE))
+		if(!io || IsDeadNPC(io) || io == ioo
+				|| !(io->ioflags & IO_NPC)
+				|| io->show != SHOW_FLAG_IN_SCENE)
 			continue;
 
 		float dist_io = distSqr(io->pos, ioo->pos);
 
-		if ((dist_io > found_dist)
-		        ||	(dist_io > square(1800)))
+		if(dist_io > found_dist || dist_io > square(1800))
 			continue; // too far
 
-		if (dist_io < square(130))
-		{
-			if (found_dist > dist_io)
-			{
+		if(dist_io < square(130)) {
+			if(found_dist > dist_io) {
 				found_io = io;
 				found_dist = dist_io;
 			}
@@ -3476,26 +3470,26 @@ Entity * ARX_NPC_GetFirstNPCInSight(Entity * ioo)
 
 		long grp = ioo->obj->fastaccess.head_group_origin;
 
-		if (grp < 0)
-		{
+		if(grp < 0) {
 			orgn.x = ioo->pos.x;
 			orgn.y = ioo->pos.y - 90.f;
 			orgn.z = ioo->pos.z;
 
-			if (ioo == entities.player())	orgn.y = player.pos.y + 90.f;
+			if(ioo == entities.player())
+				orgn.y = player.pos.y + 90.f;
 		}
 		else
 			GetVertexPos(ioo, ioo->obj->fastaccess.head_group_origin, &orgn);
 
 		grp = io->obj->fastaccess.head_group_origin;
 
-		if (grp < 0)
-		{
+		if(grp < 0) {
 			dest.x = io->pos.x;
 			dest.y = io->pos.y - 90.f;
 			dest.z = io->pos.z;
 
-			if (io == entities.player())	dest.y = player.pos.y + 90.f;
+			if(io == entities.player())
+				dest.y = player.pos.y + 90.f;
 		}
 		else
 			GetVertexPos(io, io->obj->fastaccess.head_group_origin, &dest);
@@ -3504,45 +3498,32 @@ Entity * ARX_NPC_GetFirstNPCInSight(Entity * ioo)
 		float aa = getAngle(orgn.x, orgn.z, dest.x, dest.z);
 		aa = MAKEANGLE(degrees(aa));
 
-		if (EEfabs(AngularDifference(aa, ab)) < 110.f)
-		{
-			if (dist_io < square(200))
-			{
-				if (found_dist > dist_io)
-				{
+		if(EEfabs(AngularDifference(aa, ab)) < 110.f) {
+			if(dist_io < square(200)) {
+				if(found_dist > dist_io) {
 					found_io = io;
 					found_dist = dist_io;
 				}
-
 				continue;
 			}
 
-			
 			float grnd_color = CURRENT_PLAYER_COLOR - GetPlayerStealth(); 
 
-			if (grnd_color > 0) 
-			{
+			if(grnd_color > 0)  {
 				Vec3f ppos;
 				EERIEPOLY * epp = NULL;
 
-				if (IO_Visible(&orgn, &dest, epp, &ppos))
-				{
-					if (found_dist > dist_io)
-					{
+				if(IO_Visible(&orgn, &dest, epp, &ppos)) {
+					if(found_dist > dist_io) {
 						found_io = io;
 						found_dist = dist_io;
 					}
-
 					continue;
-				}
-				else if (distSqr(ppos, dest) < square(25.f))
-				{
-					if (found_dist > dist_io)
-					{
+				} else if(distSqr(ppos, dest) < square(25.f)) {
+					if(found_dist > dist_io) {
 						found_io = io;
 						found_dist = dist_io;
 					}
-
 					continue;
 				}
 			}
@@ -3562,8 +3543,7 @@ void CheckNPC(Entity * io)
 	if(!io || (io->show != SHOW_FLAG_IN_SCENE))
 		return;
 
-	if (IsDeadNPC(io))
-	{
+	if(IsDeadNPC(io)) {
 		io->animlayer[1].cur_anim = NULL;
 		io->animlayer[2].cur_anim = NULL;
 		io->animlayer[3].cur_anim = NULL;
@@ -3705,7 +3685,7 @@ void ARX_NPC_SpawnAudibleSound(Vec3f * pos, Entity * source, const float factor,
 	long Source_Room = ARX_PORTALS_GetRoomNumForPosition(pos, 1);
 
 
-	for (size_t i = 0; i < entities.size(); i++)
+	for(size_t i = 0; i < entities.size(); i++) {
 		if ((entities[i])
 		        &&	(entities[i]->ioflags & IO_NPC)
 		        &&	(entities[i]->gameFlags & GFLAG_ISINTREATZONE)
@@ -3717,17 +3697,14 @@ void ARX_NPC_SpawnAudibleSound(Vec3f * pos, Entity * source, const float factor,
 		{
 			float distance = fdist(*pos, entities[i]->pos);
 
-			if (distance < max_distance)
-			{
-				if (entities[i]->room_flags & 1)
+			if(distance < max_distance) {
+				if(entities[i]->room_flags & 1)
 					UpdateIORoom(entities[i]);
 
-				if ((Source_Room > -1) && (entities[i]->room > -1))
-				{
+				if(Source_Room > -1 && entities[i]->room > -1) {
 					float fdist = SP_GetRoomDist(pos, &entities[i]->pos, Source_Room, entities[i]->room);
 
-					if (fdist < max_distance * 1.5f)
-					{
+					if(fdist < max_distance * 1.5f) {
 						long ldistance = fdist;
 						char temp[64];
 
@@ -3745,7 +3722,9 @@ void ARX_NPC_SpawnAudibleSound(Vec3f * pos, Entity * source, const float factor,
 				}
 			}
 		}
+	}
 }
+
 extern Entity * CURRENT_TORCH;
 
 void createFireParticles(Vec3f &pos,const int particlesToCreate, const int particleDelayFactor);
