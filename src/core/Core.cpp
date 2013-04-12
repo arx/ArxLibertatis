@@ -1965,7 +1965,7 @@ void ManageCombatModeAnimations()
 	ANIM_USE * useanim=&io->animlayer[1];
 
 	ANIM_HANDLE ** alist=io->anims;
-	long weapontype = ARX_EQUIPMENT_GetPlayerWeaponType();
+	WeaponType weapontype = ARX_EQUIPMENT_GetPlayerWeaponType();
 
 	if(weapontype == WEAPON_BARE && LAST_WEAPON_TYPE != weapontype) {
 		if(useanim->cur_anim != alist[ANIM_BARE_WAIT]) {
@@ -2397,7 +2397,7 @@ void ManageCombatModeAnimationsEND()
 
 	if (useanim->flags & EA_ANIMEND)
 	{
-		long weapontype=ARX_EQUIPMENT_GetPlayerWeaponType();
+		WeaponType weapontype = ARX_EQUIPMENT_GetPlayerWeaponType();
 
 		if (useanim->cur_anim &&
 			(	(useanim->cur_anim==io->anims[ANIM_BARE_UNREADY])

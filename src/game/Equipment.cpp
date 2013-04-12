@@ -416,7 +416,7 @@ void ARX_EQUIPMENT_AttachPlayerWeaponToBack()
 	}
 }
 
-long ARX_EQUIPMENT_GetPlayerWeaponType()
+WeaponType ARX_EQUIPMENT_GetPlayerWeaponType()
 {
 	Entity * io = entities.player();
 	if(!io)
@@ -450,7 +450,7 @@ void ARX_EQUIPMENT_LaunchPlayerUnReadyWeapon()
 		return;
 
 	ANIM_HANDLE * anim;
-	long type = ARX_EQUIPMENT_GetPlayerWeaponType();
+	WeaponType type = ARX_EQUIPMENT_GetPlayerWeaponType();
 
 	switch(type) {
 		case WEAPON_DAGGER:
@@ -925,7 +925,7 @@ void ARX_EQUIPMENT_LaunchPlayerReadyWeapon()
 	if(!io)
 		return;
 
-	long type = ARX_EQUIPMENT_GetPlayerWeaponType();
+	WeaponType type = ARX_EQUIPMENT_GetPlayerWeaponType();
 	ANIM_HANDLE * anim = NULL;
 
 	switch(type) {

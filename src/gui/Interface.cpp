@@ -2041,7 +2041,7 @@ void ARX_INTERFACE_Combat_Mode(long i)
 		player.Interface&=~INTER_NO_STRIKE;
 
 		ARX_EQUIPMENT_LaunchPlayerUnReadyWeapon();
-		long weapontype=ARX_EQUIPMENT_GetPlayerWeaponType();
+		WeaponType weapontype = ARX_EQUIPMENT_GetPlayerWeaponType();
 
 		if(entities.player() && arrowobj && (weapontype == WEAPON_BOW)) {
 			EERIE_LINKEDOBJ_UnLinkObjectFromObject(entities.player()->obj, arrowobj);
@@ -2996,7 +2996,7 @@ void ArxGame::manageKeyMouse() {
 
 							Entity * io=entities.player();
 							ANIM_USE * useanim=&io->animlayer[1];
-							long type=ARX_EQUIPMENT_GetPlayerWeaponType();
+							WeaponType type = ARX_EQUIPMENT_GetPlayerWeaponType();
 
 							switch (type)
 							{

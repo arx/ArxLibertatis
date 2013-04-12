@@ -1880,7 +1880,7 @@ bool IsPlayerStriking()
 	if (!io) return false;
 
 	ANIM_USE * useanim = &io->animlayer[1];
-	long weapontype = ARX_EQUIPMENT_GetPlayerWeaponType();
+	WeaponType weapontype = ARX_EQUIPMENT_GetPlayerWeaponType();
 	long j;
 
 	switch (weapontype)
