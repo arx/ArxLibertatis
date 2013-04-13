@@ -203,7 +203,6 @@ struct ARX_THROWN_OBJECT {
 const size_t MAX_THROWN_OBJECTS = 100;
 
 extern ARX_THROWN_OBJECT Thrown[MAX_THROWN_OBJECTS];
-extern long Thrown_Count;
 
 class CRuban {
 	

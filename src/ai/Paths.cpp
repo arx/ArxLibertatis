@@ -604,11 +604,10 @@ long ARX_PATHS_Interpolate(ARX_USE_PATH * aup, Vec3f * pos) {
 // THROWN OBJECTS MANAGEMENT
 
 ARX_THROWN_OBJECT Thrown[MAX_THROWN_OBJECTS];
-long Thrown_Count = 0;
+
 void ARX_THROWN_OBJECT_Kill(long num) {
 	if(num >= 0 && size_t(num) < MAX_THROWN_OBJECTS) {
 		Thrown[num].flags = 0;
-		Thrown_Count--;
 		delete Thrown[num].pRuban, Thrown[num].pRuban = NULL;
 	}
 }
@@ -619,8 +618,6 @@ void ARX_THROWN_OBJECT_KillAll()
 	{
 		ARX_THROWN_OBJECT_Kill(i);
 	}
-
-	Thrown_Count = 0;
 }
 
 long ARX_THROWN_OBJECT_GetFree()
@@ -682,7 +679,6 @@ long ARX_THROWN_OBJECT_Throw(long source, Vec3f * position, Vec3f * vect, Vec3f 
 		{
 			thrownObj->creation_time = (unsigned long)(arxtime);
 			thrownObj->flags |= ATO_EXIST | ATO_MOVING;
-			Thrown_Count++;
 		}
 
 		if ((source == 0)
@@ -899,9 +895,6 @@ extern void createFireParticles(Vec3f &pos, const int particlesToCreate, const i
 
 void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 {
-	if(Thrown_Count <= 0)
-		return;
-
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 	GRenderer->SetRenderState(Renderer::DepthTest, true);
 
