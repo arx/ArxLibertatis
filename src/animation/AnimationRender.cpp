@@ -1475,19 +1475,19 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity *
 	}
 }
 
-void Cedric_BlendAnimation(EERIE_3DOBJ * eobj, float timm) {
-	for (long i = 0; i < eobj->c_data->nb_bones; i++)
+void Cedric_BlendAnimation(EERIE_C_DATA *c_data, float timm) {
+	for (long i = 0; i < c_data->nb_bones; i++)
 	{
 		EERIE_QUAT tquat;
-		Quat_Copy(&tquat, &eobj->c_data->bones[i].quatinit);
+		Quat_Copy(&tquat, &c_data->bones[i].quatinit);
 		EERIE_QUAT q2;
-		Quat_Copy(&q2, &eobj->c_data->bones[i].quatlast);
+		Quat_Copy(&q2, &c_data->bones[i].quatlast);
 
-		Quat_Slerp(&eobj->c_data->bones[i].quatinit , &q2, &tquat, timm);
+		Quat_Slerp(&c_data->bones[i].quatinit , &q2, &tquat, timm);
 
-		eobj->c_data->bones[i].transinit = eobj->c_data->bones[i].translast
-		                                   + (eobj->c_data->bones[i].transinit
-		                                      - eobj->c_data->bones[i].translast) * timm;
+		c_data->bones[i].transinit = c_data->bones[i].translast
+										   + (c_data->bones[i].transinit
+											  - c_data->bones[i].translast) * timm;
 	}
 }
 
@@ -1596,7 +1596,7 @@ void Cedric_AnimateDrawEntity(EERIE_3DOBJ *eobj, ANIM_USE *animuse, Anglef *angl
 	// Check for Animation Blending in Local space
 	if(io) {
 		if(timm > 0.f)
-			Cedric_BlendAnimation(eobj, timm);
+			Cedric_BlendAnimation(eobj->c_data, timm);
 
 		Cedric_SaveBlendData(io->obj->c_data);
 	}
