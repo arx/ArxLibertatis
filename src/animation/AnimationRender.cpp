@@ -317,7 +317,7 @@ static void Cedric_AnimateObject(Entity *io, EERIE_3DOBJ *eobj, ANIM_USE *animus
 }
 
 /* Apply transformations on all bones */
-static void Cedric_ConcatenateTM(Entity *io, EERIE_C_DATA *obj, Anglef *angle, Vec3f *pos, Vec3f &ftr, float g_scale) {
+static void Cedric_ConcatenateTM(EERIE_C_DATA *obj, EERIE_QUAT *rotation, Vec3f *pos, Vec3f &ftr, float g_scale) {
 
 	if(!obj)
 		return;
@@ -335,36 +335,12 @@ static void Cedric_ConcatenateTM(Entity *io, EERIE_C_DATA *obj, Anglef *angle, V
 			/* Scale */
 			obj->bones[i].scaleanim = (obj->bones[i].scaleinit + Vec3f::ONE) * obj->bones[obj->bones[i].father].scaleanim;
 		} else { // Root Bone
-			EERIE_QUAT	qt2;
-
 			// Rotation
-			if(io && !(io->ioflags & IO_NPC)) {
-				// To correct invalid angle in Animated FIX/ITEMS
-				Anglef ang = *angle;
-				ang.a = (360 - ang.a);
-				ang.b = (ang.b);
-				ang.g = (ang.g);
-				EERIEMATRIX mat;
-				Vec3f vect(0, 0, 1);
-				Vec3f up(0, 1, 0);
-				VRotateY(&vect, ang.b);
-				VRotateX(&vect, ang.a);
-				VRotateZ(&vect, ang.g);
-				VRotateY(&up, ang.b);
-				VRotateX(&up, ang.a);
-				VRotateZ(&up, ang.g);
-				MatrixSetByVectors(&mat, &vect, &up);
-				QuatFromMatrix(qt2, mat);
-			} else {
-				Anglef vt1 = Anglef(radians(angle->a), radians(angle->b), radians(angle->g));
-				QuatFromAngles(&qt2, &vt1);
-			}
-
-			Quat_Multiply(&obj->bones[i].quatanim, &qt2, &obj->bones[i].quatinit);
+			Quat_Multiply(&obj->bones[i].quatanim, rotation, &obj->bones[i].quatinit);
 
 			// Translation
 			Vec3f vt1 = obj->bones[i].transinit + ftr;
-			TransformVertexQuat(&qt2, &vt1, &obj->bones[i].transanim);
+			TransformVertexQuat(rotation, &vt1, &obj->bones[i].transanim);
 			obj->bones[i].transanim *= g_scale;
 			obj->bones[i].transanim = *pos + obj->bones[i].transanim;
 
@@ -1625,8 +1601,34 @@ void Cedric_AnimateDrawEntity(EERIE_3DOBJ *eobj, ANIM_USE *animuse, Anglef *angl
 		Cedric_SaveBlendData(io);
 	}
 
+
+	EERIE_QUAT	qt2;
+
+	// Rotation
+	if(io && !(io->ioflags & IO_NPC)) {
+		// To correct invalid angle in Animated FIX/ITEMS
+		Anglef ang = *angle;
+		ang.a = (360 - ang.a);
+		ang.b = (ang.b);
+		ang.g = (ang.g);
+		EERIEMATRIX mat;
+		Vec3f vect(0, 0, 1);
+		Vec3f up(0, 1, 0);
+		VRotateY(&vect, ang.b);
+		VRotateX(&vect, ang.a);
+		VRotateZ(&vect, ang.g);
+		VRotateY(&up, ang.b);
+		VRotateX(&up, ang.a);
+		VRotateZ(&up, ang.g);
+		MatrixSetByVectors(&mat, &vect, &up);
+		QuatFromMatrix(qt2, mat);
+	} else {
+		Anglef vt1 = Anglef(radians(angle->a), radians(angle->b), radians(angle->g));
+		QuatFromAngles(&qt2, &vt1);
+	}
+
 	// Build skeleton in Object Space
-	Cedric_ConcatenateTM(io, eobj->c_data, angle, pos, ftr, scale);
+	Cedric_ConcatenateTM(eobj->c_data, &qt2, pos, ftr, scale);
 
 	/* Display the object */
 	EERIE_C_DATA *obj = eobj->c_data;
