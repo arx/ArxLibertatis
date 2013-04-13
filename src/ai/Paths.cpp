@@ -907,7 +907,10 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 
 	for(size_t i = 0; i < MAX_THROWN_OBJECTS; i++) {
 		ARX_THROWN_OBJECT *thrownObj = &Thrown[i];
-		if(thrownObj->flags & ATO_EXIST) {
+		if(!(thrownObj->flags & ATO_EXIST))
+			continue;
+
+		{
 			// Is Object Visible & Near ?
 			if(fartherThan(ACTIVECAM->orgTrans.pos, thrownObj->position, ACTIVECAM->cdepth * fZFogEnd + 50.f))
 				continue;
