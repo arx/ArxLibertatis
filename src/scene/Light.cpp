@@ -387,19 +387,15 @@ static void ARX_EERIE_LIGHT_Make(EERIEPOLY * ep, float * epr, float * epg, float
 			}
 
 			float fTemp1 = light->intensity * fRes * GLOBAL_LIGHT_FACTOR;
-			float fr, fg, fb;
 
-			if(distance[i] <= light->fallstart) {
-				fr = light->rgb.r * fTemp1;
-				fg = light->rgb.g * fTemp1;
-				fb = light->rgb.b * fTemp1;
-			} else {
+			if(distance[i] > light->fallstart) {
 				float intensity = (light->falldiff - (distance[i] - light->fallstart)) * light->falldiffmul;
-				float fTemp2 = fTemp1 * intensity;
-				fr = light->rgb.r * fTemp2;
-				fg = light->rgb.g * fTemp2;
-				fb = light->rgb.b * fTemp2;
+				fTemp1 *= intensity;
 			}
+
+			float fr = light->rgb.r * fTemp1;
+			float fg = light->rgb.g * fTemp1;
+			float fb = light->rgb.b * fTemp1;
 
 			epr[i] += fr; 
 			epg[i] += fg; 
