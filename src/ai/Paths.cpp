@@ -660,28 +660,28 @@ long ARX_THROWN_OBJECT_Throw(long source, Vec3f * position, Vec3f * vect, Vec3f 
 	
 	long num = ARX_THROWN_OBJECT_GetFree();
 
-	if (num >= 0)
-	{
+	if(num >= 0) {
+		ARX_THROWN_OBJECT *thrownObj = &Thrown[num];
 
-		Thrown[num].damages = damages;
-		Thrown[num].position = *position;
-		Thrown[num].initial_position = *position;
-		Thrown[num].vector = *vect;
-		Thrown[num].upvect = *upvect;
-		Quat_Copy(&Thrown[num].quat, quat);
-		Thrown[num].source = source;
-		Thrown[num].obj = NULL;
-		Thrown[num].velocity = velocity;
-		Thrown[num].poisonous = poison;
-		Thrown[num].pRuban = new CRuban();
-		Thrown[num].pRuban->Create(num, 2000);
+		thrownObj->damages = damages;
+		thrownObj->position = *position;
+		thrownObj->initial_position = *position;
+		thrownObj->vector = *vect;
+		thrownObj->upvect = *upvect;
+		Quat_Copy(&thrownObj->quat, quat);
+		thrownObj->source = source;
+		thrownObj->obj = NULL;
+		thrownObj->velocity = velocity;
+		thrownObj->poisonous = poison;
+		thrownObj->pRuban = new CRuban();
+		thrownObj->pRuban->Create(num, 2000);
 
-		Thrown[num].obj = arrowobj;
+		thrownObj->obj = arrowobj;
 
-		if (Thrown[num].obj)
+		if (thrownObj->obj)
 		{
-			Thrown[num].creation_time = (unsigned long)(arxtime);
-			Thrown[num].flags |= ATO_EXIST | ATO_MOVING;
+			thrownObj->creation_time = (unsigned long)(arxtime);
+			thrownObj->flags |= ATO_EXIST | ATO_MOVING;
 			Thrown_Count++;
 		}
 
@@ -692,7 +692,7 @@ long ARX_THROWN_OBJECT_Throw(long source, Vec3f * position, Vec3f * vect, Vec3f 
 			Entity * tio = entities[player.equiped[EQUIP_SLOT_WEAPON]];
 
 			if (tio->ioflags & IO_FIERY)
-				Thrown[num].flags |= ATO_FIERY;
+				thrownObj->flags |= ATO_FIERY;
 		}
 
 	}
