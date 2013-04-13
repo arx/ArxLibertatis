@@ -355,12 +355,12 @@ static void Cedric_ConcatenateTM(Entity *io, EERIE_C_DATA *obj, Anglef *angle, V
 				VRotateZ(&up, ang.g);
 				MatrixSetByVectors(&mat, &vect, &up);
 				QuatFromMatrix(qt2, mat);
-				Quat_Multiply(&obj->bones[i].quatanim, &qt2, &obj->bones[i].quatinit);
 			} else {
 				Anglef vt1 = Anglef(radians(angle->a), radians(angle->b), radians(angle->g));
 				QuatFromAngles(&qt2, &vt1);
-				Quat_Multiply(&obj->bones[i].quatanim, &qt2, &obj->bones[i].quatinit);
 			}
+
+			Quat_Multiply(&obj->bones[i].quatanim, &qt2, &obj->bones[i].quatinit);
 
 			// Translation
 			Vec3f vt1 = obj->bones[i].transinit + ftr;
