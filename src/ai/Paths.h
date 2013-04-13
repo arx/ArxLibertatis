@@ -187,7 +187,6 @@ DECLARE_FLAGS_OPERATORS(ThrownObjectFlags)
 struct ARX_THROWN_OBJECT {
 	ThrownObjectFlags flags;
 	Vec3f vector;
-	Vec3f upvect;
 	EERIE_QUAT quat;
 	Vec3f initial_position;
 	float velocity;
@@ -246,7 +245,7 @@ public:
 };
 
 long ARX_THROWN_OBJECT_GetFree();
-long ARX_THROWN_OBJECT_Throw(long source, Vec3f * position, Vec3f * vect, Vec3f * upvect, EERIE_QUAT * quat, float velocity, float damages, float poisonous);
+long ARX_THROWN_OBJECT_Throw(long source, Vec3f * position, Vec3f * vect, EERIE_QUAT * quat, float velocity, float damages, float poisonous);
 void ARX_THROWN_OBJECT_KillAll();
 void ARX_THROWN_OBJECT_Manage(unsigned long time_offset);
 void EERIE_PHYSICS_BOX_Launch_NOCOL(Entity * io, EERIE_3DOBJ * obj, Vec3f * pos, Vec3f * vect, long flags = 0, Anglef * angle = NULL);

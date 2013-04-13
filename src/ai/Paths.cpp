@@ -652,7 +652,7 @@ long ARX_THROWN_OBJECT_GetFree()
 
 extern EERIE_3DOBJ * arrowobj;
 
-long ARX_THROWN_OBJECT_Throw(long source, Vec3f * position, Vec3f * vect, Vec3f * upvect,
+long ARX_THROWN_OBJECT_Throw(long source, Vec3f * position, Vec3f * vect,
                              EERIE_QUAT * quat, float velocity, float damages, float poison) {
 	
 	long num = ARX_THROWN_OBJECT_GetFree();
@@ -664,7 +664,6 @@ long ARX_THROWN_OBJECT_Throw(long source, Vec3f * position, Vec3f * vect, Vec3f 
 		thrownObj->position = *position;
 		thrownObj->initial_position = *position;
 		thrownObj->vector = *vect;
-		thrownObj->upvect = *upvect;
 		Quat_Copy(&thrownObj->quat, quat);
 		thrownObj->source = source;
 		thrownObj->obj = NULL;

@@ -1476,7 +1476,7 @@ static void PlayerLaunchArrow_Test(float aimratio, float poisonous, Vec3f * pos,
 
 	float damages = weapon_damages*(1.f + (float)(player.Full_Skill_Projectile + player.Full_Attribute_Dexterity )*( 1.0f / 50 ));
 
-	ARX_THROWN_OBJECT_Throw(/*source*/0, &position, &vect, &upvect, &quat, velocity, damages, poisonous);
+	ARX_THROWN_OBJECT_Throw(/*source*/0, &position, &vect, &quat, velocity, damages, poisonous);
 }
 
 extern long sp_max;
