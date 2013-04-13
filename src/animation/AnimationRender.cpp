@@ -1491,14 +1491,14 @@ void Cedric_BlendAnimation(EERIE_3DOBJ * eobj, float timm) {
 	}
 }
 
-void Cedric_SaveBlendData(Entity * io) {
-	if (io->obj->c_data)
+void Cedric_SaveBlendData(EERIE_C_DATA *c_data) {
+	if (c_data)
 	{
-		for (long i = 0; i < io->obj->c_data->nb_bones; i++)
+		for (long i = 0; i < c_data->nb_bones; i++)
 		{
-			Quat_Copy(&io->obj->c_data->bones[i].quatlast, &io->obj->c_data->bones[i].quatinit);
-			io->obj->c_data->bones[i].scalelast = io->obj->c_data->bones[i].scaleinit;
-			io->obj->c_data->bones[i].translast = io->obj->c_data->bones[i].transinit;
+			Quat_Copy(&c_data->bones[i].quatlast, &c_data->bones[i].quatinit);
+			c_data->bones[i].scalelast = c_data->bones[i].scaleinit;
+			c_data->bones[i].translast = c_data->bones[i].transinit;
 		}
 	}
 }
@@ -1598,7 +1598,7 @@ void Cedric_AnimateDrawEntity(EERIE_3DOBJ *eobj, ANIM_USE *animuse, Anglef *angl
 		if(timm > 0.f)
 			Cedric_BlendAnimation(eobj, timm);
 
-		Cedric_SaveBlendData(io);
+		Cedric_SaveBlendData(io->obj->c_data);
 	}
 
 
