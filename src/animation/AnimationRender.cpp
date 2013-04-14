@@ -1771,38 +1771,38 @@ void MakeCLight(Entity * io, Color3f * infra, EERIE_QUAT *qInvert, Vec3f * pos, 
 			if(!Cur_llights)
 				break;
 
-				float cosangle;
-				Vec3f vLight = (llights[l]->pos - *posVert).getNormalized();
+			float cosangle;
+			Vec3f vLight = (llights[l]->pos - *posVert).getNormalized();
 
-				TransformInverseVertexQuat(qInvert, &vLight, &vTLights[l]);
-				Vec3f * Cur_vLights = &vTLights[l];
+			TransformInverseVertexQuat(qInvert, &vLight, &vTLights[l]);
+			Vec3f * Cur_vLights = &vTLights[l];
 
-				// Get cos angle between light and vertex norm
-				cosangle = (eobj->vertexlist[i].norm.x * Cur_vLights->x +
-							eobj->vertexlist[i].norm.y * Cur_vLights->y +
-							eobj->vertexlist[i].norm.z * Cur_vLights->z);
+			// Get cos angle between light and vertex norm
+			cosangle = (eobj->vertexlist[i].norm.x * Cur_vLights->x +
+						eobj->vertexlist[i].norm.y * Cur_vLights->y +
+						eobj->vertexlist[i].norm.z * Cur_vLights->z);
 
-				// If light visible
-				if(cosangle > 0.f) {
-					float distance = fdist(*posVert, Cur_llights->pos);
+			// If light visible
+			if(cosangle > 0.f) {
+				float distance = fdist(*posVert, Cur_llights->pos);
 
-					// Evaluate its intensity depending on the distance Light<->Object
-					if(distance <= Cur_llights->fallstart)
-						cosangle *= Cur_llights->precalc;
+				// Evaluate its intensity depending on the distance Light<->Object
+				if(distance <= Cur_llights->fallstart)
+					cosangle *= Cur_llights->precalc;
+				else
+				{
+					float p = ((Cur_llights->fallend - distance) * Cur_llights->falldiffmul);
+
+					if (p <= 0.f)
+						cosangle = 0.f;
 					else
-					{
-						float p = ((Cur_llights->fallend - distance) * Cur_llights->falldiffmul);
-
-						if (p <= 0.f)
-							cosangle = 0.f;
-						else
-							cosangle *= p * Cur_llights->precalc;
-					}
-
-					tempColor.r += Cur_llights->rgb255.r * cosangle;
-					tempColor.g += Cur_llights->rgb255.g * cosangle;
-					tempColor.b += Cur_llights->rgb255.b * cosangle;
+						cosangle *= p * Cur_llights->precalc;
 				}
+
+				tempColor.r += Cur_llights->rgb255.r * cosangle;
+				tempColor.g += Cur_llights->rgb255.g * cosangle;
+				tempColor.b += Cur_llights->rgb255.b * cosangle;
+			}
 		}
 
 		if(eobj->drawflags & DRAWFLAG_HIGHLIGHT) {
