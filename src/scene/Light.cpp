@@ -489,25 +489,27 @@ void TreatBackgroundDynlights()
 				
 				long n = light->tl;
 				if(n != -1) {
-					DynLight[n].pos = light->pos;
-					DynLight[n].exist		=	1;
-					DynLight[n].fallstart	=	light->fallstart;
-					DynLight[n].fallend		=	light->fallend;
-					DynLight[n].type		=	TYP_SPECIAL1;
-					DynLight[n].intensity	=	light->intensity;
-					DynLight[n].ex_flaresize =	light->ex_flaresize;
-					DynLight[n].extras		=	light->extras;
-					DynLight[n].duration = std::numeric_limits<long>::max();
+					EERIE_LIGHT *dynamicLight = &DynLight[n];
 
-					DynLight[n].rgb.r = light->rgb.r - light->rgb.r * light->ex_flicker.r * rnd() * ( 1.0f / 2 );
-					DynLight[n].rgb.g = light->rgb.g - light->rgb.g * light->ex_flicker.g * rnd() * ( 1.0f / 2 );
-					DynLight[n].rgb.b = light->rgb.b - light->rgb.b * light->ex_flicker.b * rnd() * ( 1.0f / 2 );
+					dynamicLight->pos = light->pos;
+					dynamicLight->exist		=	1;
+					dynamicLight->fallstart	=	light->fallstart;
+					dynamicLight->fallend		=	light->fallend;
+					dynamicLight->type		=	TYP_SPECIAL1;
+					dynamicLight->intensity	=	light->intensity;
+					dynamicLight->ex_flaresize =	light->ex_flaresize;
+					dynamicLight->extras		=	light->extras;
+					dynamicLight->duration = std::numeric_limits<long>::max();
+
+					dynamicLight->rgb.r = light->rgb.r - light->rgb.r * light->ex_flicker.r * rnd() * ( 1.0f / 2 );
+					dynamicLight->rgb.g = light->rgb.g - light->rgb.g * light->ex_flicker.g * rnd() * ( 1.0f / 2 );
+					dynamicLight->rgb.b = light->rgb.b - light->rgb.b * light->ex_flicker.b * rnd() * ( 1.0f / 2 );
 					
-					DynLight[n].rgb = componentwise_max(DynLight[n].rgb, Color3f::black);
-					DynLight[n].rgb255 = DynLight[n].rgb * 255.f;
-					DynLight[n].falldiff = DynLight[n].fallend - DynLight[n].fallstart;
-					DynLight[n].falldiffmul = 1.f / DynLight[n].falldiff;
-					DynLight[n].precalc = DynLight[n].intensity * GLOBAL_LIGHT_FACTOR;
+					dynamicLight->rgb = componentwise_max(dynamicLight->rgb, Color3f::black);
+					dynamicLight->rgb255 = dynamicLight->rgb * 255.f;
+					dynamicLight->falldiff = dynamicLight->fallend - dynamicLight->fallstart;
+					dynamicLight->falldiffmul = 1.f / dynamicLight->falldiff;
+					dynamicLight->precalc = dynamicLight->intensity * GLOBAL_LIGHT_FACTOR;
 				}
 			}
 		}
