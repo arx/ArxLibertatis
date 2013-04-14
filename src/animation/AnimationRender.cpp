@@ -634,11 +634,10 @@ static bool Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity 
 		/* Get light value for each vertex */
 		for(int v = 0; v != obj->bones[i].nb_idxvertices; v++) {
 			float r, g, b;
-			long  ir, ig, ib;
 
 			Vec3f posVert = eobj->vertexlist[obj->bones[i].idxvertices[v]].norm;
 
-			/* Ambient light */
+			// Ambient light
 			if(io && (io->ioflags & (IO_NPC | IO_ITEM))) {
 				r = g = b = NPC_ITEMS_AMBIENT_VALUE_255;
 			} else {
@@ -647,7 +646,7 @@ static bool Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity 
 				b = ACTIVEBKG->ambient255.b;
 			}
 
-			/* Dynamic lights */
+			// Dynamic lights
 			for(int l = 0; l != MAX_LLIGHTS; l++) {
 				EERIE_LIGHT *Cur_llights = llights[l];
 
@@ -655,23 +654,23 @@ static bool Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity 
 					break;
 
 				Vec3f tl = Cur_llights->pos - eobj->vertexlist3[obj->bones[i].idxvertices[v]].v;
-				float dista = ffsqrt(tl.lengthSqr());
+				float distance = ffsqrt(tl.lengthSqr());
 
-				if(dista < Cur_llights->fallend) {
-					tl *= 1.f / dista;
+				if(distance < Cur_llights->fallend) {
+					tl *= 1.f / distance;
 
 					Vec3f Cur_vTLights;
 					VectorMatrixMultiply(&Cur_vTLights, &tl, &matrix);
 
 					float cosangle = dot(posVert, Cur_vTLights);
 
-					/* If light visible */
-					if(cosangle > 0.0f) {
-						/* Evaluate its intensity depending on the distance Light<->Object */
-						if(dista <= Cur_llights->fallstart) {
+					// If light visible
+					if(cosangle > 0.f) {
+						// Evaluate its intensity depending on the distance Light<->Object
+						if(distance <= Cur_llights->fallstart) {
 							cosangle *= Cur_llights->precalc;
 						} else {
-							float p = ((Cur_llights->fallend - dista) * Cur_llights->falldiffmul);
+							float p = ((Cur_llights->fallend - distance) * Cur_llights->falldiffmul);
 
 							if(p <= 0.f)
 								cosangle = 0.f;
@@ -707,12 +706,11 @@ static bool Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity 
 				b += special_color.b;
 			}
 
-			/* PACK color */
-			ir = clipByte255(r);
-			ig = clipByte255(g);
-			ib = clipByte255(b);
+			u8 ir = clipByte255(r);
+			u8 ig = clipByte255(g);
+			u8 ib = clipByte255(b);
 
-			eobj->vertexlist3[obj->bones[i].idxvertices[v]].vert.color = (0xFF000000L | ((ir) << 16) | ((ig) << 8) | (ib));
+			eobj->vertexlist3[obj->bones[i].idxvertices[v]].vert.color = (0xFF000000L | (ir << 16) | (ig << 8) | (ib));
 		}
 	}
 
@@ -1758,6 +1756,7 @@ void MakeCLight(Entity * io, Color3f * infra, EERIE_QUAT *qInvert, Vec3f * pos, 
 	for (size_t i = 0; i < eobj->vertexlist.size(); i++) {
 		Color3f tempColor;
 
+		// Ambient light
 		if(io && (io->ioflags & (IO_NPC | IO_ITEM)))
 			tempColor = Color3f::gray(NPC_ITEMS_AMBIENT_VALUE_255);
 		else
@@ -1765,8 +1764,9 @@ void MakeCLight(Entity * io, Color3f * infra, EERIE_QUAT *qInvert, Vec3f * pos, 
 
 		Vec3f * posVert = &eobj->vertexlist3[i].v;
 
+		// Dynamic lights
 		for(int l = 0; l != MAX_LLIGHTS; l++) {
-			EERIE_LIGHT * Cur_llights = llights[l];
+			EERIE_LIGHT *Cur_llights = llights[l];
 
 			if(!Cur_llights)
 				break;
@@ -1787,13 +1787,12 @@ void MakeCLight(Entity * io, Color3f * infra, EERIE_QUAT *qInvert, Vec3f * pos, 
 				float distance = fdist(*posVert, Cur_llights->pos);
 
 				// Evaluate its intensity depending on the distance Light<->Object
-				if(distance <= Cur_llights->fallstart)
+				if(distance <= Cur_llights->fallstart) {
 					cosangle *= Cur_llights->precalc;
-				else
-				{
+				} else {
 					float p = ((Cur_llights->fallend - distance) * Cur_llights->falldiffmul);
 
-					if (p <= 0.f)
+					if(p <= 0.f)
 						cosangle = 0.f;
 					else
 						cosangle *= p * Cur_llights->precalc;
