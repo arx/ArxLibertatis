@@ -442,27 +442,29 @@ void ComputeLight2DPos(EERIE_LIGHT * _pL) {
 void TreatBackgroundDynlights()
 {
 	for(size_t i = 0; i < MAX_LIGHTS; i++) {
-		if(GLight[i] && (GLight[i]->extras & EXTRAS_SEMIDYNAMIC)) {
+		EERIE_LIGHT *light = GLight[i];
+
+		if(light && (light->extras & EXTRAS_SEMIDYNAMIC)) {
 
 			float fMaxdist = 300;
 			if(Project.telekinesis)
 				fMaxdist = 850;
 
-			if(!fartherThan(GLight[i]->pos, ACTIVECAM->orgTrans.pos, fMaxdist)) {
-				ComputeLight2DPos(GLight[i]);
+			if(!fartherThan(light->pos, ACTIVECAM->orgTrans.pos, fMaxdist)) {
+				ComputeLight2DPos(light);
 			}
 
-			if(GLight[i]->status == 0) {
+			if(light->status == 0) {
 				// just extinguished
-				if(GLight[i]->tl > 0) {
-					DynLight[GLight[i]->tl].exist = 0;
-					GLight[i]->tl = -1;
+				if(light->tl > 0) {
+					DynLight[light->tl].exist = 0;
+					light->tl = -1;
 					Vec3f _pos2;
 
 					for(size_t l = 0; l < entities.size(); l++) {
 						if(entities[l] && (entities[l]->ioflags & IO_MARKER)) {
 							GetItemWorldPosition(entities[l], &_pos2);
-							if(!fartherThan(GLight[i]->pos, _pos2, 300.f)) {
+							if(!fartherThan(light->pos, _pos2, 300.f)) {
 								SendIOScriptEvent(entities[l], SM_CUSTOM, "douse");
 							}
 						}
@@ -470,36 +472,36 @@ void TreatBackgroundDynlights()
 				}
 			} else {
 				// just light up
-				if(GLight[i]->tl <= 0) {
+				if(light->tl <= 0) {
 					Vec3f _pos2;
 
 					for(size_t l = 0; l < entities.size(); l++) {
 						if(entities[l] && (entities[l]->ioflags & IO_MARKER)) {
 							GetItemWorldPosition(entities[l], &_pos2);
-							if(!fartherThan(GLight[i]->pos, _pos2, 300.f)) {
+							if(!fartherThan(light->pos, _pos2, 300.f)) {
 								SendIOScriptEvent(entities[l], SM_CUSTOM, "fire");
 							}
 						}
 					}
 
-					GLight[i]->tl = GetFreeDynLight();
+					light->tl = GetFreeDynLight();
 				}
 				
-				long n = GLight[i]->tl;
+				long n = light->tl;
 				if(n != -1) {
-					DynLight[n].pos = GLight[i]->pos;
+					DynLight[n].pos = light->pos;
 					DynLight[n].exist		=	1;
-					DynLight[n].fallstart	=	GLight[i]->fallstart;
-					DynLight[n].fallend		=	GLight[i]->fallend;
+					DynLight[n].fallstart	=	light->fallstart;
+					DynLight[n].fallend		=	light->fallend;
 					DynLight[n].type		=	TYP_SPECIAL1;
-					DynLight[n].intensity	=	GLight[i]->intensity;
-					DynLight[n].ex_flaresize =	GLight[i]->ex_flaresize;
-					DynLight[n].extras		=	GLight[i]->extras;
+					DynLight[n].intensity	=	light->intensity;
+					DynLight[n].ex_flaresize =	light->ex_flaresize;
+					DynLight[n].extras		=	light->extras;
 					DynLight[n].duration = std::numeric_limits<long>::max();
 
-					DynLight[n].rgb.r = GLight[i]->rgb.r - GLight[i]->rgb.r * GLight[i]->ex_flicker.r * rnd() * ( 1.0f / 2 ); 
-					DynLight[n].rgb.g = GLight[i]->rgb.g - GLight[i]->rgb.g * GLight[i]->ex_flicker.g * rnd() * ( 1.0f / 2 ); 
-					DynLight[n].rgb.b = GLight[i]->rgb.b - GLight[i]->rgb.b * GLight[i]->ex_flicker.b * rnd() * ( 1.0f / 2 ); 
+					DynLight[n].rgb.r = light->rgb.r - light->rgb.r * light->ex_flicker.r * rnd() * ( 1.0f / 2 );
+					DynLight[n].rgb.g = light->rgb.g - light->rgb.g * light->ex_flicker.g * rnd() * ( 1.0f / 2 );
+					DynLight[n].rgb.b = light->rgb.b - light->rgb.b * light->ex_flicker.b * rnd() * ( 1.0f / 2 );
 					
 					DynLight[n].rgb = componentwise_max(DynLight[n].rgb, Color3f::black);
 					DynLight[n].rgb255 = DynLight[n].rgb * 255.f;
