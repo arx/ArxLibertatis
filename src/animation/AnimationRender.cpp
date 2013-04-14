@@ -1733,18 +1733,18 @@ void MakeCLight(Entity * io, Color3f * infra, EERIE_QUAT *qInvert, Vec3f * pos, 
 	else
 		tv.y -= 90.f;
 
-	for(long i = 0; i < TOTIOPDL; i++) {
-		if (IO_PDL[i]->fallend + 500.f < 0)
+	for(int i = 0; i < TOTIOPDL; i++) {
+		if(IO_PDL[i]->fallend + 500.f < 0)
 			continue;
 
-		Insertllight(IO_PDL[i], fdist(IO_PDL[i]->pos, tv)); 
+		Insertllight(IO_PDL[i], dist(IO_PDL[i]->pos, tv));
 	}
 
 	for(int i = 0; i < TOTPDL; i++) {
-		if (PDL[i]->fallend + 500.f < 0)
+		if(PDL[i]->fallend + 500.f < 0)
 			continue;
 
-		Insertllight(PDL[i], fdist(PDL[i]->pos, tv)); 
+		Insertllight(PDL[i], dist(PDL[i]->pos, tv));
 	}
 
 	Preparellights(&tv);
@@ -1768,7 +1768,9 @@ void MakeCLight(Entity * io, Color3f * infra, EERIE_QUAT *qInvert, Vec3f * pos, 
 		for(int l = 0; l != MAX_LLIGHTS; l++) {
 			EERIE_LIGHT * Cur_llights = llights[l];
 
-			if(Cur_llights) {
+			if(!Cur_llights)
+				break;
+
 				float cosangle;
 				Vec3f vLight = (llights[l]->pos - *posVert).getNormalized();
 
@@ -1801,9 +1803,6 @@ void MakeCLight(Entity * io, Color3f * infra, EERIE_QUAT *qInvert, Vec3f * pos, 
 					tempColor.g += Cur_llights->rgb255.g * cosangle;
 					tempColor.b += Cur_llights->rgb255.b * cosangle;
 				}
-			}
-			else
-				break;
 		}
 
 		if(eobj->drawflags & DRAWFLAG_HIGHLIGHT) {
