@@ -623,13 +623,7 @@ static bool Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity 
 	/* Apply light on all vertices */
 	for(int i = 0; i != obj->nb_bones; i++) {
 
-		EERIEMATRIX matrix;//,omatrix;
-
-		EERIE_QUAT qt1;
-		Quat_Copy(&qt1, &obj->bones[i].quatanim);
-		Quat_Reverse(&qt1);
-		MatrixFromQuat(&matrix, &qt1);
-		//	FMatrixInvert(matrix,omatrix);
+		EERIE_QUAT *qt1 = &obj->bones[i].quatanim;
 
 		/* Get light value for each vertex */
 		for(int v = 0; v != obj->bones[i].nb_idxvertices; v++) {
@@ -657,7 +651,7 @@ static bool Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity 
 					tl *= 1.f / distance;
 
 					Vec3f Cur_vTLights;
-					VectorMatrixMultiply(&Cur_vTLights, &tl, &matrix);
+					TransformInverseVertexQuat(qt1, &tl, &Cur_vTLights);
 
 					float cosangle = dot(posVert, Cur_vTLights);
 
@@ -1746,11 +1740,8 @@ void MakeCLight(Entity * io, Color3f * infra, EERIE_QUAT *qInvert, Vec3f * pos, 
 
 	if(io && (io->ioflags & IO_ANGULAR))
 		return;
-
-	Vec3f vTLights[32];
-
 		
-	for (size_t i = 0; i < eobj->vertexlist.size(); i++) {
+	for(size_t i = 0; i < eobj->vertexlist.size(); i++) {
 		Color3f tempColor;
 
 		// Ambient light
@@ -1770,11 +1761,11 @@ void MakeCLight(Entity * io, Color3f * infra, EERIE_QUAT *qInvert, Vec3f * pos, 
 
 			Vec3f vLight = (llights[l]->pos - *posVert).getNormalized();
 
-			TransformInverseVertexQuat(qInvert, &vLight, &vTLights[l]);
-			Vec3f * Cur_vLights = &vTLights[l];
+			Vec3f Cur_vLights;
+			TransformInverseVertexQuat(qInvert, &vLight, &Cur_vLights);
 
 			// Get cos angle between light and vertex norm
-			float cosangle = dot(eobj->vertexlist[i].norm, *Cur_vLights);
+			float cosangle = dot(eobj->vertexlist[i].norm, Cur_vLights);
 
 			// If light visible
 			if(cosangle > 0.f) {
