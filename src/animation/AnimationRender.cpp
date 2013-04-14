@@ -633,18 +633,15 @@ static bool Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity 
 
 		/* Get light value for each vertex */
 		for(int v = 0; v != obj->bones[i].nb_idxvertices; v++) {
-			float r, g, b;
-
-			Vec3f posVert = eobj->vertexlist[obj->bones[i].idxvertices[v]].norm;
+			Color3f tempColor;
 
 			// Ambient light
-			if(io && (io->ioflags & (IO_NPC | IO_ITEM))) {
-				r = g = b = NPC_ITEMS_AMBIENT_VALUE_255;
-			} else {
-				r = ACTIVEBKG->ambient255.r;
-				g = ACTIVEBKG->ambient255.g;
-				b = ACTIVEBKG->ambient255.b;
-			}
+			if(io && (io->ioflags & (IO_NPC | IO_ITEM)))
+				tempColor = Color3f::gray(NPC_ITEMS_AMBIENT_VALUE_255);
+			else
+				tempColor = ACTIVEBKG->ambient255;
+
+			Vec3f posVert = eobj->vertexlist[obj->bones[i].idxvertices[v]].norm;
 
 			// Dynamic lights
 			for(int l = 0; l != MAX_LLIGHTS; l++) {
@@ -678,37 +675,37 @@ static bool Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity 
 								cosangle *= p * Cur_llights->precalc;
 						}
 
-						r += Cur_llights->rgb255.r * cosangle;
-						g += Cur_llights->rgb255.g * cosangle;
-						b += Cur_llights->rgb255.b * cosangle;
+						tempColor.r += Cur_llights->rgb255.r * cosangle;
+						tempColor.g += Cur_llights->rgb255.g * cosangle;
+						tempColor.b += Cur_llights->rgb255.b * cosangle;
 					}
 				}
 			}
 
 			/* Fake adjust */
 			if(Project.improve) {
-				r *= infra.r;
-				g *= infra.g;
-				b *= infra.b;
+				tempColor.r *= infra.r;
+				tempColor.g *= infra.g;
+				tempColor.b *= infra.b;
 			}
 
 			if(special_color_flag & 1) {
-				r *= special_color.r;
-				g *= special_color.g;
-				b *= special_color.b;
+				tempColor.r *= special_color.r;
+				tempColor.g *= special_color.g;
+				tempColor.b *= special_color.b;
 			} else if(special_color_flag & 2) {
-				r = 1.f;
-				g = 0.f;
-				b = 0.f;
+				tempColor.r = 1.f;
+				tempColor.g = 0.f;
+				tempColor.b = 0.f;
 			} else if(special_color_flag & 4) { // HIGHLIGHT
-				r += special_color.r;
-				g += special_color.g;
-				b += special_color.b;
+				tempColor.r += special_color.r;
+				tempColor.g += special_color.g;
+				tempColor.b += special_color.b;
 			}
 
-			u8 ir = clipByte255(r);
-			u8 ig = clipByte255(g);
-			u8 ib = clipByte255(b);
+			u8 ir = clipByte255(tempColor.r);
+			u8 ig = clipByte255(tempColor.g);
+			u8 ib = clipByte255(tempColor.b);
 
 			eobj->vertexlist3[obj->bones[i].idxvertices[v]].vert.color = (0xFF000000L | (ir << 16) | (ig << 8) | (ib));
 		}
@@ -1771,16 +1768,13 @@ void MakeCLight(Entity * io, Color3f * infra, EERIE_QUAT *qInvert, Vec3f * pos, 
 			if(!Cur_llights)
 				break;
 
-			float cosangle;
 			Vec3f vLight = (llights[l]->pos - *posVert).getNormalized();
 
 			TransformInverseVertexQuat(qInvert, &vLight, &vTLights[l]);
 			Vec3f * Cur_vLights = &vTLights[l];
 
 			// Get cos angle between light and vertex norm
-			cosangle = (eobj->vertexlist[i].norm.x * Cur_vLights->x +
-						eobj->vertexlist[i].norm.y * Cur_vLights->y +
-						eobj->vertexlist[i].norm.z * Cur_vLights->z);
+			float cosangle = dot(eobj->vertexlist[i].norm, *Cur_vLights);
 
 			// If light visible
 			if(cosangle > 0.f) {
@@ -1823,7 +1817,7 @@ void MakeCLight(Entity * io, Color3f * infra, EERIE_QUAT *qInvert, Vec3f * pos, 
 		u8 ir = clipByte255(tempColor.r);
 		u8 ig = clipByte255(tempColor.g);
 		u8 ib = clipByte255(tempColor.b);
-		eobj->vertexlist3[i].vert.color = (0xff000000L | (ir << 16) | (ig << 8) | (ib));
+		eobj->vertexlist3[i].vert.color = (0xFF000000L | (ir << 16) | (ig << 8) | (ib));
 	}
 }
 
