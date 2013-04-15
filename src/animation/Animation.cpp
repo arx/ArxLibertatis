@@ -883,6 +883,34 @@ void CalculateInterZMapp(EERIE_3DOBJ * _pobj3dObj, long lIdList, long * _piInd,
 	}
 }
 
+
+void worldAngleToQuat(EERIE_QUAT *dest, Anglef *src, bool isNpc = false) {
+
+	//TODO copy-paste
+	if(!isNpc) {
+		// To correct invalid angle in Animated FIX/ITEMS
+		Anglef ang = *src;
+		ang.a = (360 - ang.a);
+		ang.b = (ang.b);
+		ang.g = (ang.g);
+		EERIEMATRIX mat;
+		Vec3f vect(0, 0, 1);
+		Vec3f up(0, 1, 0);
+		VRotateY(&vect, ang.b);
+		VRotateX(&vect, ang.a);
+		VRotateZ(&vect, ang.g);
+		VRotateY(&up, ang.b);
+		VRotateX(&up, ang.a);
+		VRotateZ(&up, ang.g);
+		MatrixSetByVectors(&mat, &vect, &up);
+		QuatFromMatrix(*dest, mat);
+	} else {
+		Anglef vt1 = Anglef(radians(src->a), radians(src->b), radians(src->g));
+		QuatFromAngles(dest, &vt1);
+	}
+}
+
+
 void EE_RT(TexturedVertex * in, Vec3f * out);
 void EE_P(Vec3f * in, TexturedVertex * out);
 
@@ -937,8 +965,7 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 
 	// Precalc rotations
 	if(angle) {
-		Anglef tempAngle = Anglef(radians(angle->a), radians(angle->b), radians(angle->g));
-		QuatFromAngles(&rotation, &tempAngle);
+		worldAngleToQuat(&rotation, angle);
 	}
 
 	if(mat) {
