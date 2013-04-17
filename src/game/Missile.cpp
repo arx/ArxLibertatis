@@ -171,49 +171,42 @@ void ARX_MISSILES_Spawn(Entity * io, ARX_SPELLS_MISSILE_TYPE type, const Vec3f *
 // Updates all currently launched projectiles
 void ARX_MISSILES_Update()
 {
-	long framediff, framediff3;
-	Vec3f orgn, dest, hit;
 	TextureContainer * tc = TC_fire; 
-	EERIEPOLY *tp = NULL;
+
 	unsigned long tim = (unsigned long)(arxtime);
 
-	for (unsigned long i(0); i < MAX_MISSILES; i++) 
-	{
-		if (missiles[i].type == MISSILE_NONE) continue;
+	for(unsigned long i(0); i < MAX_MISSILES; i++) {
+		if(missiles[i].type == MISSILE_NONE)
+			continue;
 
-		framediff = missiles[i].timecreation + missiles[i].tolive - tim;
+		long framediff = missiles[i].timecreation + missiles[i].tolive - tim;
 
-		if (framediff < 0)
-		{
+		if(framediff < 0) {
 			ARX_MISSILES_Kill(i);
 			continue;
 		}
 
-		framediff3 = tim - missiles[i].timecreation;
+		long framediff3 = tim - missiles[i].timecreation;
 
-		switch (missiles[i].type)
-		{
-			case MISSILE_NONE: break;
+		switch(missiles[i].type) {
+			case MISSILE_NONE:
+			break;
 			case MISSILE_FIREBALL: {
 				Vec3f pos;
 
 				pos = missiles[i].startpos + missiles[i].velocity * framediff3;
 
-				if (missiles[i].longinfo != -1)
-				{
+				if(missiles[i].longinfo != -1) {
 					DynLight[missiles[i].longinfo].pos = pos;
 				}
 
-				orgn = missiles[i].lastpos;
-				dest = pos;
-				
-				EERIEPOLY *ep;
-				EERIEPOLY *epp;
+				Vec3f orgn = missiles[i].lastpos;
+				Vec3f dest = pos;
 				
 				Vec3f tro = Vec3f::repeat(70.f);
 				
-				ep = GetMinPoly(dest.x, dest.y, dest.z);
-				epp = GetMaxPoly(dest.x, dest.y, dest.z);
+				EERIEPOLY *ep = GetMinPoly(dest.x, dest.y, dest.z);
+				EERIEPOLY *epp = GetMaxPoly(dest.x, dest.y, dest.z);
 
 				if(closerThan(player.pos, pos, 200.f)) {
 					ARX_MISSILES_Kill(i);
@@ -223,8 +216,7 @@ void ARX_MISSILES_Update()
 					break;
 				}
 
-				if (ep  && ep->center.y < dest.y)
-				{
+				if(ep && ep->center.y < dest.y) {
 					ARX_MISSILES_Kill(i);
 					ARX_BOOMS_Add(&dest);
 					Add3DBoom(&dest);
@@ -232,8 +224,7 @@ void ARX_MISSILES_Update()
 					break;
 				}
 
-				if (epp && epp->center.y > dest.y)
-				{
+				if(epp && epp->center.y > dest.y) {
 					ARX_MISSILES_Kill(i);
 					ARX_BOOMS_Add(&dest);
 					Add3DBoom(&dest);
@@ -241,8 +232,9 @@ void ARX_MISSILES_Update()
 					break;
 				}
 
-				if (EERIELaunchRay3(&orgn, &dest, &hit, tp, 1))
-				{
+				Vec3f hit;
+				EERIEPOLY *tp = NULL;
+				if(EERIELaunchRay3(&orgn, &dest, &hit, tp, 1)) {
 					ARX_MISSILES_Kill(i);
 					ARX_BOOMS_Add(&hit);
 					Add3DBoom(&hit);
@@ -250,8 +242,7 @@ void ARX_MISSILES_Update()
 					break;
 				}
 
-				if ( !EECheckInPoly(&dest) || EEIsUnderWater(&dest) )
-				{
+				if(!EECheckInPoly(&dest) || EEIsUnderWater(&dest)) {
 					ARX_MISSILES_Kill(i);
 					ARX_BOOMS_Add(&dest);
 					Add3DBoom(&dest);
@@ -261,8 +252,7 @@ void ARX_MISSILES_Update()
 
 				long ici = IsCollidingAnyInter(dest.x, dest.y, dest.z, &tro);
 
-				if (ici != -1 && ici != missiles[i].owner)
-				{
+				if(ici != -1 && ici != missiles[i].owner) {
 					ARX_MISSILES_Kill(i);
 					ARX_BOOMS_Add(&dest);
 					Add3DBoom(&dest);
