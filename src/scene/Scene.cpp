@@ -1419,7 +1419,7 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num, EERIE_FRUSTRUM_DATA
 				continue;
 			}
 
-			fDist-=ep->v[0].rhw;
+			fDist -= ep->v[0].rhw;
 
 			Vec3f nrm = ep->v[2].p - ACTIVECAM->orgTrans.pos;
 			int to = (ep->type & POLY_QUAD) ? 4 : 3;
@@ -1469,44 +1469,45 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num, EERIE_FRUSTRUM_DATA
 
 			SMY_VERTEX *pMyVertexCurr;
 
-			*pIndicesCurr++=ep->uslInd[0];
-			*pIndicesCurr++=ep->uslInd[1];
-			*pIndicesCurr++=ep->uslInd[2];
+			*pIndicesCurr++ = ep->uslInd[0];
+			*pIndicesCurr++ = ep->uslInd[1];
+			*pIndicesCurr++ = ep->uslInd[2];
+			*pNumIndices += 3;
 
-			if(to&4) {
-				*pIndicesCurr++=ep->uslInd[3];
-				*pIndicesCurr++=ep->uslInd[2];
-				*pIndicesCurr++=ep->uslInd[1];
-				*pNumIndices+=6;
-			} else {
-				*pNumIndices+=3;
+			if(to == 4) {
+				*pIndicesCurr++ = ep->uslInd[3];
+				*pIndicesCurr++ = ep->uslInd[2];
+				*pIndicesCurr++ = ep->uslInd[1];
+				*pNumIndices += 3;
 			}
 
 			pMyVertexCurr = &pMyVertex[ep->tex->tMatRoom[room_num].uslStartVertex];
 		
-			if (!Project.improve)  // Normal View...			
-			{
+			if(!Project.improve) { // Normal View...
 				if(ep->type & POLY_GLOW) {
-					pMyVertexCurr[ep->uslInd[0]].color=pMyVertexCurr[ep->uslInd[1]].color=pMyVertexCurr[ep->uslInd[2]].color=0xFFFFFFFF;
-					if(to&4) {
-						pMyVertexCurr[ep->uslInd[3]].color=0xFFFFFFFF;
+					pMyVertexCurr[ep->uslInd[0]].color = 0xFFFFFFFF;
+					pMyVertexCurr[ep->uslInd[1]].color = 0xFFFFFFFF;
+					pMyVertexCurr[ep->uslInd[2]].color = 0xFFFFFFFF;
+
+					if(to == 4) {
+						pMyVertexCurr[ep->uslInd[3]].color = 0xFFFFFFFF;
 					}
 				} else {
 					if(ep->type & POLY_LAVA) {
 						if(!(ep->type & POLY_TRANS)) {
-								ApplyDynLight(ep);
+							ApplyDynLight(ep);
 						}
 
 						ManageLava_VertexBuffer(ep, to, tim, pMyVertexCurr);
 
 						vPolyLava.push_back(ep);
 
-						pMyVertexCurr[ep->uslInd[0]].color=ep->tv[0].color;
-						pMyVertexCurr[ep->uslInd[1]].color=ep->tv[1].color;
-						pMyVertexCurr[ep->uslInd[2]].color=ep->tv[2].color;
+						pMyVertexCurr[ep->uslInd[0]].color = ep->tv[0].color;
+						pMyVertexCurr[ep->uslInd[1]].color = ep->tv[1].color;
+						pMyVertexCurr[ep->uslInd[2]].color = ep->tv[2].color;
 
 						if(to&4) {
-							pMyVertexCurr[ep->uslInd[3]].color=ep->tv[3].color;
+							pMyVertexCurr[ep->uslInd[3]].color = ep->tv[3].color;
 						}
 					} else {
 						if(!(ep->type & POLY_TRANS)) {
@@ -1514,7 +1515,7 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num, EERIE_FRUSTRUM_DATA
 						}
 
 						if(ep->type & POLY_WATER) {
-							ManageWater_VertexBuffer(ep,to,tim,pMyVertexCurr);
+							ManageWater_VertexBuffer(ep, to, tim, pMyVertexCurr);
 							vPolyWater.push_back(ep);
 						}
 					}
@@ -1531,7 +1532,7 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num, EERIE_FRUSTRUM_DATA
 
 					ApplyDynLight(ep);
 				
-					for(long k=0; k<to; k++) {
+					for(int k = 0; k < to; k++) {
 						long lr=(ep->tv[k].color>>16) & 255;
 						float ffr=(float)(lr);
 						
@@ -1555,12 +1556,12 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num, EERIE_FRUSTRUM_DATA
 						ep->tv[k].color = (0xff000000L | (lfr << 16) | (lfg << 8) | (lfb));
 					}
 
-					pMyVertexCurr[ep->uslInd[0]].color=ep->tv[0].color;
-					pMyVertexCurr[ep->uslInd[1]].color=ep->tv[1].color;
-					pMyVertexCurr[ep->uslInd[2]].color=ep->tv[2].color;
+					pMyVertexCurr[ep->uslInd[0]].color = ep->tv[0].color;
+					pMyVertexCurr[ep->uslInd[1]].color = ep->tv[1].color;
+					pMyVertexCurr[ep->uslInd[2]].color = ep->tv[2].color;
 
-					if(to&4) {
-						pMyVertexCurr[ep->uslInd[3]].color=ep->tv[3].color;
+					if(to == 4) {
+						pMyVertexCurr[ep->uslInd[3]].color = ep->tv[3].color;
 					}
 				}
 			}
@@ -1647,28 +1648,23 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num, EERIE_FRUSTRUM_DATA
 					float tu[4];
 					float tv[4];
 					float _fTransp[4];
-					unsigned short nu;
-					long nrm=0;
 					
-					if	(	(EEfabs(ep->nrml[0].y)>=0.9f)
-						||	(EEfabs(ep->nrml[1].y)>=0.9f)
-						||	(EEfabs(ep->nrml[2].y)>=0.9f)	)
-						nrm=1;
+					bool nrm = EEfabs(ep->nrml[0].y) >= 0.9f || EEfabs(ep->nrml[1].y) >= 0.9f || EEfabs(ep->nrml[2].y) >= 0.9f;
 					
-					for(nu = 0; nu < iNbVertex; nu++) {
+					for(int nu = 0; nu < iNbVertex; nu++) {
 						if(nrm) {
-							tu[nu]=(ep->v[nu].p.x*( 1.0f / 50 ));
-							tv[nu]=(ep->v[nu].p.z*( 1.0f / 50 ));
+							tu[nu] = ep->v[nu].p.x * (1.0f/50);
+							tv[nu] = ep->v[nu].p.z * (1.0f/50);
 						} else {
-							tu[nu]=ep->v[nu].uv.x*4.f;
-							tv[nu]=ep->v[nu].uv.y*4.f;						
+							tu[nu] = ep->v[nu].uv.x * 4.f;
+							tv[nu] = ep->v[nu].uv.y * 4.f;
 						}
 						
 						float t = max(10.f, fdist(ACTIVECAM->orgTrans.pos, ep->v[nu].p) - 80.f);
 						
 						_fTransp[nu] = (150.f - t) * 0.006666666f;
 						
-						if (_fTransp[nu] < 0.f)
+						if(_fTransp[nu] < 0.f)
 							_fTransp[nu] = 0.f;
 						// t cannot be greater than 1.f (b should be negative for that)
 					}
@@ -1687,7 +1683,7 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num, EERIE_FRUSTRUM_DATA
 						dynamicVertices.nbindices++;
 					}
 					
-					if(iNbVertex & 4) {
+					if(iNbVertex == 4) {
 						*pussInd++ = iNbIndice-2;
 						*pussInd++ = iNbIndice-3;
 						dynamicVertices.nbindices += 2;
