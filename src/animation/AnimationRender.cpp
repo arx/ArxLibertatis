@@ -1912,34 +1912,29 @@ void MakeCLight2(Entity *io, Color3f *infra, EERIE_QUAT *qInvert, Vec3f *pos, EE
 
 void ApplyDynLight(EERIEPOLY * ep)
 {
-	long i;
+	int nbvert = (ep->type & POLY_QUAD) ? 4 : 3;
 
-	long nbvert = (ep->type & POLY_QUAD) ? 4 : 3;
-
-	if (TOTPDL == 0)
-	{
-		for (i = 0; i < nbvert; i++)
+	if(TOTPDL == 0) {
+		for(int i = 0; i < nbvert; i++)
 			ep->tv[i].color = ep->v[i].color;
 
 		return;
 	}
 
 	Color3f rgb;
-	long j;
 
 	float epr[4];
 	float epg[4];
 	float epb[4];
 
-	for (i = 0; i < nbvert; i++)
-	{
+	for(int i = 0; i < nbvert; i++) {
 		long c = ep->v[i].color;
 		epr[i] = (float)((c >> 16) & 255);
 		epg[i] = (float)((c >> 8) & 255);
 		epb[i] = (float)(c & 255);
 	}
 
-	for(i = 0; i < TOTPDL; i++) {
+	for(int i = 0; i < TOTPDL; i++) {
 		EERIE_LIGHT * el = PDL[i];
 
 		if(el->fallend + 35.f < 0) {
@@ -1955,7 +1950,7 @@ void ApplyDynLight(EERIEPOLY * ep)
 				rgb = el->rgb255;
 			}
 
-			for(j = 0; j < nbvert; j++) {
+			for(int j = 0; j < nbvert; j++) {
 				Vec3f v(ep->v[j].p.x, ep->v[j].p.y, ep->v[j].p.z);
 				if(el->fallend < 0) {
 					TSU_TEST_NB ++;
@@ -1995,7 +1990,7 @@ void ApplyDynLight(EERIEPOLY * ep)
 		}
 	}
 
-	for(j = 0; j < nbvert; j++) {
+	for(int j = 0; j < nbvert; j++) {
 		u8 lepr = clipByte255(epr[j]);
 		u8 lepg = clipByte255(epg[j]);
 		u8 lepb = clipByte255(epb[j]);
