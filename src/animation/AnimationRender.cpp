@@ -1961,15 +1961,11 @@ void ApplyDynLight(EERIEPOLY * ep)
 
 				if(d <= el->fallend) {
 					float divd = 1.f / d;
-					float nvalue;
 
 					Vec3f v1 = (el->pos - ep->v[j].p) * divd;
-					nvalue = dot(v1, ep->nrml[j]) * (1.0f / 2);
+					float nvalue = dot(v1, ep->nrml[j]) * (1.0f / 2);
 
-					if(nvalue > 1.f)
-						nvalue = 1.f;
-					else if(nvalue < 0.f)
-						nvalue = 0.f;
+					nvalue = clamp(nvalue, 0.f, 1.f);
 
 					if(nvalue > 0.f) {
 						if(d <= el->fallstart) {
