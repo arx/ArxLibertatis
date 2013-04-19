@@ -1856,20 +1856,13 @@ void ARX_PORTALS_Frustrum_ComputeRoom(long room_num,EERIE_FRUSTRUM * frustrum)
 	}
 }
 
-extern long SPECIAL_DRAGINTER_RENDER;
-//*************************************************************************************
-// Main Background Rendering Proc.
-// ie: Big Mess
-//*************************************************************************************
-///////////////////////////////////////////////////////////
-void ARX_SCENE_Render() {
-
+void ARX_SCENE_Update() {
 	arx_assert(USE_PORTALS && portals);
 
 	unsigned long tim = (unsigned long)(arxtime);
-	
+
 	WATEREFFECT+=0.0005f*framedelay;
-	
+
 	long l = ACTIVECAM->cdepth * 0.42f;
 	long clip3D = (l / (long)BKG_SIZX) + 1;
 	long lcval = clip3D + 4;
@@ -1887,7 +1880,7 @@ void ARX_SCENE_Render() {
 	ACTIVEBKG->Backg[camXsnap + camZsnap * ACTIVEBKG->Xsize].treat = 1;
 
 		PrecalcDynamicLighting(x0, z0, x1, z1);
-	
+
 	// Go for a growing-square-spirallike-render around the camera position
 	// (To maximize Z-Buffer efficiency)
 
@@ -1905,18 +1898,31 @@ void ARX_SCENE_Render() {
 		}
 	}
 
-		long room_num=ARX_PORTALS_GetRoomNumForPosition(&ACTIVECAM->orgTrans.pos,1);
-		if(room_num>-1) {
-			ARX_PORTALS_InitDrawnRooms();
-			EERIE_FRUSTRUM frustrum;
-			CreateScreenFrustrum(&frustrum);
-			ARX_PORTALS_Frustrum_ComputeRoom(room_num, &frustrum);
-			GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
-			for(long i=0; i<NbRoomDrawList; i++) {
-				ARX_PORTALS_Frustrum_RenderRoomTCullSoft(RoomDrawList[i], &RoomDraw[RoomDrawList[i]].frustrum, tim);
-				ARX_PORTALS_Frustrum_RenderRoomTCullSoftRender(RoomDrawList[i]);
-			}
+	long room_num=ARX_PORTALS_GetRoomNumForPosition(&ACTIVECAM->orgTrans.pos,1);
+	if(room_num>-1) {
+		ARX_PORTALS_InitDrawnRooms();
+		EERIE_FRUSTRUM frustrum;
+		CreateScreenFrustrum(&frustrum);
+		ARX_PORTALS_Frustrum_ComputeRoom(room_num, &frustrum);
+
+		for(long i=0; i<NbRoomDrawList; i++) {
+			ARX_PORTALS_Frustrum_RenderRoomTCullSoft(RoomDrawList[i], &RoomDraw[RoomDrawList[i]].frustrum, tim);
 		}
+	}
+}
+
+extern long SPECIAL_DRAGINTER_RENDER;
+//*************************************************************************************
+// Main Background Rendering Proc.
+// ie: Big Mess
+//*************************************************************************************
+///////////////////////////////////////////////////////////
+void ARX_SCENE_Render() {
+
+	GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
+	for(long i=0; i<NbRoomDrawList; i++) {
+		ARX_PORTALS_Frustrum_RenderRoomTCullSoftRender(RoomDrawList[i]);
+	}
 
 	if(!Project.improve) {
 		ARXDRAW_DrawInterShadows();
@@ -1961,8 +1967,25 @@ void ARX_SCENE_Render() {
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 
 #ifdef BUILD_EDITOR
+	{
+		//TODO copy-paste
+		long l = ACTIVECAM->cdepth * 0.42f;
+		long clip3D = (l / (long)BKG_SIZX) + 1;
+		long lcval = clip3D + 4;
+
+		long camXsnap = ACTIVECAM->orgTrans.pos.x * ACTIVEBKG->Xmul;
+		long camZsnap = ACTIVECAM->orgTrans.pos.z * ACTIVEBKG->Zmul;
+		camXsnap = clamp(camXsnap, 0, ACTIVEBKG->Xsize - 1L);
+		camZsnap = clamp(camZsnap, 0, ACTIVEBKG->Zsize - 1L);
+
+		long x0 = std::max(camXsnap - lcval, 0L);
+		long x1 = std::min(camXsnap + lcval, ACTIVEBKG->Xsize - 1L);
+		long z0 = std::max(camZsnap - lcval, 0L);
+		long z1 = std::min(camZsnap + lcval, ACTIVEBKG->Zsize - 1L);
+
 	if (EDITION==EDITION_LIGHTS)
 		ARXDRAW_DrawAllLights(x0,z0,x1,z1);
+	}
 #endif
 
 }

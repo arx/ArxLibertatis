@@ -1429,6 +1429,7 @@ void ArxGame::renderLevel() {
 	if(uw_mode)
 		GRenderer->GetTextureStage(0)->SetMipMapLODBias(10.f);
 
+	ARX_SCENE_Update();
 	ARX_SCENE_Render();
 
 	if(uw_mode)
