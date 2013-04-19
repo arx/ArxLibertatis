@@ -1359,354 +1359,361 @@ void ClearTileLights() {
 }
 
 void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num, EERIE_FRUSTRUM_DATA *frustrums, long tim) {
-	if(RoomDraw[room_num].count) {
-		if(!portals->room[room_num].pVertexBuffer) {
-			// No need to spam this for every frame as there will already be an
-			// earlier warning
-			LogDebug("no vertex data for room " << room_num);
-			return;
+	if(!RoomDraw[room_num].count)
+		return;
+
+	if(!portals->room[room_num].pVertexBuffer) {
+		// No need to spam this for every frame as there will already be an
+		// earlier warning
+		LogDebug("no vertex data for room " << room_num);
+		return;
+	}
+
+	SMY_VERTEX * pMyVertex = portals->room[room_num].pVertexBuffer->lock(NoOverwrite);
+
+	unsigned short *pIndices=portals->room[room_num].pussIndice;
+
+	EP_DATA *pEPDATA = &portals->room[room_num].epdata[0];
+
+	for(long lll=0; lll<portals->room[room_num].nb_polys; lll++, pEPDATA++) {
+		FAST_BKG_DATA *feg = &ACTIVEBKG->fastdata[pEPDATA->px][pEPDATA->py];
+
+		if(!feg->treat) {
+			long ix = std::max(pEPDATA->px - 1, 0);
+			long ax = std::min(pEPDATA->px + 1, ACTIVEBKG->Xsize - 1);
+			long iz = std::max(pEPDATA->py - 1, 0);
+			long az = std::min(pEPDATA->py + 1, ACTIVEBKG->Zsize - 1);
+
+			(void)checked_range_cast<short>(iz);
+			(void)checked_range_cast<short>(ix);
+			(void)checked_range_cast<short>(az);
+			(void)checked_range_cast<short>(ax);
+
+			for(long nz=iz; nz<=az; nz++)
+			for(long nx=ix; nx<=ax; nx++) {
+				FAST_BKG_DATA * feg2 = &ACTIVEBKG->fastdata[nx][nz];
+
+				if(!feg2->treat) {
+					feg2->treat=1;
+					ComputeTileLights(static_cast<short>(nx), static_cast<short>(nz));
+				}
+			}
 		}
-		
-		SMY_VERTEX * pMyVertex = portals->room[room_num].pVertexBuffer->lock(NoOverwrite);
-		
-		unsigned short *pIndices=portals->room[room_num].pussIndice;
 
-		EP_DATA *pEPDATA = &portals->room[room_num].epdata[0];
+		EERIEPOLY *ep = &feg->polydata[pEPDATA->idx];
 
-		for(long lll=0; lll<portals->room[room_num].nb_polys; lll++, pEPDATA++) {
-			FAST_BKG_DATA *feg = &ACTIVEBKG->fastdata[pEPDATA->px][pEPDATA->py];
+		if(!ep->tex) {
+			continue;
+		}
 
-			if(!feg->treat) {
-				long ix = std::max(pEPDATA->px - 1, 0);
-				long ax = std::min(pEPDATA->px + 1, ACTIVEBKG->Xsize - 1);
-				long iz = std::max(pEPDATA->py - 1, 0);
-				long az = std::min(pEPDATA->py + 1, ACTIVEBKG->Zsize - 1);
-				
-				(void)checked_range_cast<short>(iz);
-				(void)checked_range_cast<short>(ix);
-				(void)checked_range_cast<short>(az);
-				(void)checked_range_cast<short>(ax);
+		if(ep->type & (POLY_IGNORE | POLY_NODRAW| POLY_HIDE)) {
+			continue;
+		}
 
-				for(long nz=iz; nz<=az; nz++)
-				for(long nx=ix; nx<=ax; nx++) {
-					FAST_BKG_DATA * feg2 = &ACTIVEBKG->fastdata[nx][nz];
+		if(FrustrumsClipPoly(frustrums,ep)) {
+			continue;
+		}
 
-					if(!feg2->treat) {
-						feg2->treat=1;
-						ComputeTileLights(static_cast<short>(nx), static_cast<short>(nz));
-					}
-				}
-			}
+		//Clipp ZNear + Distance pour les ZMapps!!!
+		float fDist=(ep->center.x*efpPlaneNear.a + ep->center.y*efpPlaneNear.b + ep->center.z*efpPlaneNear.c + efpPlaneNear.d);
 
-			EERIEPOLY *ep = &feg->polydata[pEPDATA->idx];
+		if(ep->v[0].rhw<-fDist) {
+			continue;
+		}
 
-			if(!ep->tex) {
+		fDist -= ep->v[0].rhw;
+
+		Vec3f nrm = ep->v[2].p - ACTIVECAM->orgTrans.pos;
+		int to = (ep->type & POLY_QUAD) ? 4 : 3;
+
+		if(to == 4) {
+			if(	(!(ep->type&POLY_DOUBLESIDED))&&
+				(dot( ep->norm , nrm )>0.f)&&
+				(dot( ep->norm2 , nrm )>0.f) )
+			{
 				continue;
 			}
-
-			if(ep->type & (POLY_IGNORE | POLY_NODRAW| POLY_HIDE)) {
+		} else {
+			if(	(!(ep->type&POLY_DOUBLESIDED))&&
+				(dot( ep->norm , nrm )>0.f) )
+			{
 				continue;
 			}
-			
-			if(FrustrumsClipPoly(frustrums,ep)) {
-				continue;
+		}
+
+		unsigned short *pIndicesCurr;
+		unsigned long *pNumIndices;
+
+		if(ep->type & POLY_TRANS) {
+			if(ep->transval>=2.f) { //MULTIPLICATIVE
+				pIndicesCurr=pIndices+ep->tex->tMatRoom[room_num].uslStartCull_TMultiplicative+ep->tex->tMatRoom[room_num].uslNbIndiceCull_TMultiplicative;
+				pNumIndices=&ep->tex->tMatRoom[room_num].uslNbIndiceCull_TMultiplicative;
+			}else if(ep->transval>=1.f) { //ADDITIVE
+				pIndicesCurr=pIndices+ep->tex->tMatRoom[room_num].uslStartCull_TAdditive+ep->tex->tMatRoom[room_num].uslNbIndiceCull_TAdditive;
+				pNumIndices=&ep->tex->tMatRoom[room_num].uslNbIndiceCull_TAdditive;
+			} else if(ep->transval>0.f) { //NORMAL TRANS
+				pIndicesCurr=pIndices+ep->tex->tMatRoom[room_num].uslStartCull_TNormalTrans+ep->tex->tMatRoom[room_num].uslNbIndiceCull_TNormalTrans;
+				pNumIndices=&ep->tex->tMatRoom[room_num].uslNbIndiceCull_TNormalTrans;
+			} else { //SUBTRACTIVE
+				pIndicesCurr=pIndices+ep->tex->tMatRoom[room_num].uslStartCull_TSubstractive+ep->tex->tMatRoom[room_num].uslNbIndiceCull_TSubstractive;
+				pNumIndices=&ep->tex->tMatRoom[room_num].uslNbIndiceCull_TSubstractive;
 			}
+		} else {
+			pIndicesCurr=pIndices+ep->tex->tMatRoom[room_num].uslStartCull+ep->tex->tMatRoom[room_num].uslNbIndiceCull;
+			pNumIndices=&ep->tex->tMatRoom[room_num].uslNbIndiceCull;
 
-			//Clipp ZNear + Distance pour les ZMapps!!!
-			float fDist=(ep->center.x*efpPlaneNear.a + ep->center.y*efpPlaneNear.b + ep->center.z*efpPlaneNear.c + efpPlaneNear.d);
-
-			if(ep->v[0].rhw<-fDist) {
-				continue;
-			}
-
-			fDist -= ep->v[0].rhw;
-
-			Vec3f nrm = ep->v[2].p - ACTIVECAM->orgTrans.pos;
-			int to = (ep->type & POLY_QUAD) ? 4 : 3;
-
-			if(to == 4) {
-				if(	(!(ep->type&POLY_DOUBLESIDED))&&
-					(dot( ep->norm , nrm )>0.f)&&
-					(dot( ep->norm2 , nrm )>0.f) )
-				{
-					continue;
-				}
-			} else {
-				if(	(!(ep->type&POLY_DOUBLESIDED))&&
-					(dot( ep->norm , nrm )>0.f) )
-				{
-					continue;
+			if(ZMAPMODE) {
+				if((fDist<200)&&(ep->tex->TextureRefinement)) {
+					ep->tex->TextureRefinement->vPolyZMap.push_back(ep);
 				}
 			}
+		}
 
-			unsigned short *pIndicesCurr;
-			unsigned long *pNumIndices;
+		SMY_VERTEX *pMyVertexCurr;
 
-			if(ep->type & POLY_TRANS) {
-				if(ep->transval>=2.f) { //MULTIPLICATIVE
-					pIndicesCurr=pIndices+ep->tex->tMatRoom[room_num].uslStartCull_TMultiplicative+ep->tex->tMatRoom[room_num].uslNbIndiceCull_TMultiplicative;
-					pNumIndices=&ep->tex->tMatRoom[room_num].uslNbIndiceCull_TMultiplicative;
-				}else if(ep->transval>=1.f) { //ADDITIVE
-					pIndicesCurr=pIndices+ep->tex->tMatRoom[room_num].uslStartCull_TAdditive+ep->tex->tMatRoom[room_num].uslNbIndiceCull_TAdditive;
-					pNumIndices=&ep->tex->tMatRoom[room_num].uslNbIndiceCull_TAdditive;
-				} else if(ep->transval>0.f) { //NORMAL TRANS
-					pIndicesCurr=pIndices+ep->tex->tMatRoom[room_num].uslStartCull_TNormalTrans+ep->tex->tMatRoom[room_num].uslNbIndiceCull_TNormalTrans;
-					pNumIndices=&ep->tex->tMatRoom[room_num].uslNbIndiceCull_TNormalTrans;
-				} else { //SUBTRACTIVE
-					pIndicesCurr=pIndices+ep->tex->tMatRoom[room_num].uslStartCull_TSubstractive+ep->tex->tMatRoom[room_num].uslNbIndiceCull_TSubstractive;
-					pNumIndices=&ep->tex->tMatRoom[room_num].uslNbIndiceCull_TSubstractive;
-				}
-			} else {
-				pIndicesCurr=pIndices+ep->tex->tMatRoom[room_num].uslStartCull+ep->tex->tMatRoom[room_num].uslNbIndiceCull;
-				pNumIndices=&ep->tex->tMatRoom[room_num].uslNbIndiceCull;
-				
-				if(ZMAPMODE) {
-					if((fDist<200)&&(ep->tex->TextureRefinement)) {
-						ep->tex->TextureRefinement->vPolyZMap.push_back(ep);
-					}
-				}
-			}
+		*pIndicesCurr++ = ep->uslInd[0];
+		*pIndicesCurr++ = ep->uslInd[1];
+		*pIndicesCurr++ = ep->uslInd[2];
+		*pNumIndices += 3;
 
-			SMY_VERTEX *pMyVertexCurr;
-
-			*pIndicesCurr++ = ep->uslInd[0];
-			*pIndicesCurr++ = ep->uslInd[1];
+		if(to == 4) {
+			*pIndicesCurr++ = ep->uslInd[3];
 			*pIndicesCurr++ = ep->uslInd[2];
+			*pIndicesCurr++ = ep->uslInd[1];
 			*pNumIndices += 3;
+		}
 
-			if(to == 4) {
-				*pIndicesCurr++ = ep->uslInd[3];
-				*pIndicesCurr++ = ep->uslInd[2];
-				*pIndicesCurr++ = ep->uslInd[1];
-				*pNumIndices += 3;
-			}
+		pMyVertexCurr = &pMyVertex[ep->tex->tMatRoom[room_num].uslStartVertex];
 
-			pMyVertexCurr = &pMyVertex[ep->tex->tMatRoom[room_num].uslStartVertex];
-		
-			if(!Project.improve) { // Normal View...
-				if(ep->type & POLY_GLOW) {
-					pMyVertexCurr[ep->uslInd[0]].color = 0xFFFFFFFF;
-					pMyVertexCurr[ep->uslInd[1]].color = 0xFFFFFFFF;
-					pMyVertexCurr[ep->uslInd[2]].color = 0xFFFFFFFF;
+		if(!Project.improve) { // Normal View...
+			if(ep->type & POLY_GLOW) {
+				pMyVertexCurr[ep->uslInd[0]].color = 0xFFFFFFFF;
+				pMyVertexCurr[ep->uslInd[1]].color = 0xFFFFFFFF;
+				pMyVertexCurr[ep->uslInd[2]].color = 0xFFFFFFFF;
 
-					if(to == 4) {
-						pMyVertexCurr[ep->uslInd[3]].color = 0xFFFFFFFF;
-					}
-				} else {
-					if(ep->type & POLY_LAVA) {
-						if(!(ep->type & POLY_TRANS)) {
-							ApplyDynLight(ep);
-						}
-
-						ManageLava_VertexBuffer(ep, to, tim, pMyVertexCurr);
-
-						vPolyLava.push_back(ep);
-
-						pMyVertexCurr[ep->uslInd[0]].color = ep->tv[0].color;
-						pMyVertexCurr[ep->uslInd[1]].color = ep->tv[1].color;
-						pMyVertexCurr[ep->uslInd[2]].color = ep->tv[2].color;
-
-						if(to&4) {
-							pMyVertexCurr[ep->uslInd[3]].color = ep->tv[3].color;
-						}
-					} else {
-						if(!(ep->type & POLY_TRANS)) {
-							ApplyDynLight_VertexBuffer_2(ep, pEPDATA->px, pEPDATA->py, pMyVertexCurr, ep->uslInd[0], ep->uslInd[1], ep->uslInd[2], ep->uslInd[3]);
-						}
-
-						if(ep->type & POLY_WATER) {
-							ManageWater_VertexBuffer(ep, to, tim, pMyVertexCurr);
-							vPolyWater.push_back(ep);
-						}
-					}
+				if(to == 4) {
+					pMyVertexCurr[ep->uslInd[3]].color = 0xFFFFFFFF;
 				}
-
-				if((ViewMode & VIEWMODE_WIRE) && EERIERTPPoly(ep))
-					EERIEPOLY_DrawWired(ep);
-
-			} else { // Improve Vision Activated
-				if(!(ep->type & POLY_TRANS)) {
-					if(!EERIERTPPoly(ep)) { // RotTransProject Vertices
-						continue; 
+			} else {
+				if(ep->type & POLY_LAVA) {
+					if(!(ep->type & POLY_TRANS)) {
+						ApplyDynLight(ep);
 					}
 
-					ApplyDynLight(ep);
-				
-					for(int k = 0; k < to; k++) {
-						long lr=(ep->tv[k].color>>16) & 255;
-						float ffr=(float)(lr);
-						
-						float dd= ep->tv[k].rhw;
+					ManageLava_VertexBuffer(ep, to, tim, pMyVertexCurr);
 
-						dd = clamp(dd, 0.f, 1.f);
-						
-						float fb=((1.f-dd)*6.f + (EEfabs(ep->nrml[k].x)+EEfabs(ep->nrml[k].y)))*0.125f;
-						float fr=((.6f-dd)*6.f + (EEfabs(ep->nrml[k].z)+EEfabs(ep->nrml[k].y)))*0.125f;
-
-						if (fr<0.f) fr=0.f;
-						else fr=max(ffr,fr*255.f);
-
-						fr=min(fr,255.f);
-						fb*=255.f;
-						fb=min(fb,255.f);
-						u8 lfr = fr;
-						u8 lfb = fb;
-						u8 lfg = 0x1E;
-				
-						ep->tv[k].color = (0xff000000L | (lfr << 16) | (lfg << 8) | (lfb));
-					}
+					vPolyLava.push_back(ep);
 
 					pMyVertexCurr[ep->uslInd[0]].color = ep->tv[0].color;
 					pMyVertexCurr[ep->uslInd[1]].color = ep->tv[1].color;
 					pMyVertexCurr[ep->uslInd[2]].color = ep->tv[2].color;
 
-					if(to == 4) {
+					if(to&4) {
 						pMyVertexCurr[ep->uslInd[3]].color = ep->tv[3].color;
 					}
+				} else {
+					if(!(ep->type & POLY_TRANS)) {
+						ApplyDynLight_VertexBuffer_2(ep, pEPDATA->px, pEPDATA->py, pMyVertexCurr, ep->uslInd[0], ep->uslInd[1], ep->uslInd[2], ep->uslInd[3]);
+					}
+
+					if(ep->type & POLY_WATER) {
+						ManageWater_VertexBuffer(ep, to, tim, pMyVertexCurr);
+						vPolyWater.push_back(ep);
+					}
+				}
+			}
+
+			if((ViewMode & VIEWMODE_WIRE) && EERIERTPPoly(ep))
+				EERIEPOLY_DrawWired(ep);
+
+		} else { // Improve Vision Activated
+			if(!(ep->type & POLY_TRANS)) {
+				if(!EERIERTPPoly(ep)) { // RotTransProject Vertices
+					continue;
+				}
+
+				ApplyDynLight(ep);
+
+				for(int k = 0; k < to; k++) {
+					long lr=(ep->tv[k].color>>16) & 255;
+					float ffr=(float)(lr);
+
+					float dd= ep->tv[k].rhw;
+
+					dd = clamp(dd, 0.f, 1.f);
+
+					float fb=((1.f-dd)*6.f + (EEfabs(ep->nrml[k].x)+EEfabs(ep->nrml[k].y)))*0.125f;
+					float fr=((.6f-dd)*6.f + (EEfabs(ep->nrml[k].z)+EEfabs(ep->nrml[k].y)))*0.125f;
+
+					if (fr<0.f) fr=0.f;
+					else fr=max(ffr,fr*255.f);
+
+					fr=min(fr,255.f);
+					fb*=255.f;
+					fb=min(fb,255.f);
+					u8 lfr = fr;
+					u8 lfb = fb;
+					u8 lfg = 0x1E;
+
+					ep->tv[k].color = (0xff000000L | (lfr << 16) | (lfg << 8) | (lfb));
+				}
+
+				pMyVertexCurr[ep->uslInd[0]].color = ep->tv[0].color;
+				pMyVertexCurr[ep->uslInd[1]].color = ep->tv[1].color;
+				pMyVertexCurr[ep->uslInd[2]].color = ep->tv[2].color;
+
+				if(to == 4) {
+					pMyVertexCurr[ep->uslInd[3]].color = ep->tv[3].color;
 				}
 			}
 		}
-
-		portals->room[room_num].pVertexBuffer->unlock();
-	
-		//render opaque
-		GRenderer->SetCulling(Renderer::CullNone);
-		int iNbTex=portals->room[room_num].usNbTextures;
-		TextureContainer **ppTexCurr=portals->room[room_num].ppTextureContainer;
-
-		while(iNbTex--) {
-			TextureContainer *pTexCurr=*ppTexCurr;
-
-			if(ViewMode & VIEWMODE_FLAT)
-				GRenderer->ResetTexture(0);
-			else
-				GRenderer->SetTexture(0, pTexCurr);
-
-			if(pTexCurr->userflags & POLY_METAL)
-				GRenderer->GetTextureStage(0)->SetColorOp(TextureStage::OpModulate2X);
-			else
-				GRenderer->GetTextureStage(0)->SetColorOp(TextureStage::OpModulate);
-			
-			if(pTexCurr->tMatRoom[room_num].uslNbIndiceCull)
-			{
-				GRenderer->SetAlphaFunc(Renderer::CmpGreater, .5f);
-				portals->room[room_num].pVertexBuffer->drawIndexed(Renderer::TriangleList, pTexCurr->tMatRoom[room_num].uslNbVertex, pTexCurr->tMatRoom[room_num].uslStartVertex,
-					&portals->room[room_num].pussIndice[pTexCurr->tMatRoom[room_num].uslStartCull],
-					pTexCurr->tMatRoom[room_num].uslNbIndiceCull);
-				GRenderer->SetAlphaFunc(Renderer::CmpNotEqual, 0.f);
-				
-				EERIEDrawnPolys += pTexCurr->tMatRoom[room_num].uslNbIndiceCull;
-				pTexCurr->tMatRoom[room_num].uslNbIndiceCull = 0;
-			}
-						
-			ppTexCurr++;
-		}
-
-		//////////////////////////////
-		// ZMapp
-		GRenderer->GetTextureStage(0)->SetColorOp(TextureStage::OpModulate);
-
-		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-		GRenderer->SetRenderState(Renderer::DepthWrite, false);
-
-		iNbTex=portals->room[room_num].usNbTextures;
-		ppTexCurr=portals->room[room_num].ppTextureContainer;
-		
-		// For each tex in portals->room[room_num]
-		while(iNbTex--) {
-			TextureContainer * pTexCurr	= *ppTexCurr;
-
-			if(pTexCurr->TextureRefinement && pTexCurr->TextureRefinement->vPolyZMap.size()) {
-				
-				GRenderer->SetTexture(0, pTexCurr->TextureRefinement);
-				
-				dynamicVertices.lock();
-				unsigned short *pussInd = dynamicVertices.indices;
-				unsigned short iNbIndice = 0;
-
-				vector<EERIEPOLY *>::iterator it = pTexCurr->TextureRefinement->vPolyZMap.begin();
-
-				for(;it != pTexCurr->TextureRefinement->vPolyZMap.end(); ++it) {
-					EERIEPOLY * ep = *it;
-					
-					unsigned short iNbVertex = (ep->type & POLY_QUAD) ? 4 : 3;
-					SMY_VERTEX3 *pVertex = dynamicVertices.append(iNbVertex);
-					
-					if(!pVertex) {
-						dynamicVertices.unlock();
-						if(dynamicVertices.nbindices) {
-							dynamicVertices.draw(Renderer::TriangleList);
-						}
-						dynamicVertices.reset();
-						dynamicVertices.lock();
-						iNbIndice = 0;
-						pussInd = dynamicVertices.indices;
-						pVertex = dynamicVertices.append(iNbVertex);
-					}
-					
-					// PRECALCUL
-					float tu[4];
-					float tv[4];
-					float _fTransp[4];
-					
-					bool nrm = EEfabs(ep->nrml[0].y) >= 0.9f || EEfabs(ep->nrml[1].y) >= 0.9f || EEfabs(ep->nrml[2].y) >= 0.9f;
-					
-					for(int nu = 0; nu < iNbVertex; nu++) {
-						if(nrm) {
-							tu[nu] = ep->v[nu].p.x * (1.0f/50);
-							tv[nu] = ep->v[nu].p.z * (1.0f/50);
-						} else {
-							tu[nu] = ep->v[nu].uv.x * 4.f;
-							tv[nu] = ep->v[nu].uv.y * 4.f;
-						}
-						
-						float t = max(10.f, fdist(ACTIVECAM->orgTrans.pos, ep->v[nu].p) - 80.f);
-						
-						_fTransp[nu] = (150.f - t) * 0.006666666f;
-						
-						if(_fTransp[nu] < 0.f)
-							_fTransp[nu] = 0.f;
-						// t cannot be greater than 1.f (b should be negative for that)
-					}
-					
-					// FILL DATA
-					for(int idx = 0; idx < iNbVertex; ++idx) {
-						pVertex->p.x     =  ep->v[idx].p.x;
-						pVertex->p.y     = -ep->v[idx].p.y;
-						pVertex->p.z     =  ep->v[idx].p.z;
-						pVertex->color   = Color::gray(_fTransp[idx]).toBGR();
-						pVertex->uv[0].x = tu[idx];
-						pVertex->uv[0].y = tv[idx];
-						pVertex++;
-						
-						*pussInd++ = iNbIndice++;
-						dynamicVertices.nbindices++;
-					}
-					
-					if(iNbVertex == 4) {
-						*pussInd++ = iNbIndice-2;
-						*pussInd++ = iNbIndice-3;
-						dynamicVertices.nbindices += 2;
-					}
-				}
-
-				// CLEAR CURRENT ZMAP
-				pTexCurr->TextureRefinement->vPolyZMap.clear();
-				
-				dynamicVertices.unlock();
-				if(dynamicVertices.nbindices) {
-					dynamicVertices.draw(Renderer::TriangleList);
-				}
-				dynamicVertices.done();
-				
-			}
-			
-			ppTexCurr++;
-		}
-		
-		GRenderer->SetRenderState(Renderer::DepthWrite, true);
-		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	}
+
+	portals->room[room_num].pVertexBuffer->unlock();
+}
+
+
+void ARX_PORTALS_Frustrum_RenderRoomTCullSoftRender(long room_num) {
+	if(!RoomDraw[room_num].count)
+		return;
+
+	//render opaque
+	GRenderer->SetCulling(Renderer::CullNone);
+	int iNbTex=portals->room[room_num].usNbTextures;
+	TextureContainer **ppTexCurr=portals->room[room_num].ppTextureContainer;
+
+	while(iNbTex--) {
+		TextureContainer *pTexCurr=*ppTexCurr;
+
+		if(ViewMode & VIEWMODE_FLAT)
+			GRenderer->ResetTexture(0);
+		else
+			GRenderer->SetTexture(0, pTexCurr);
+
+		if(pTexCurr->userflags & POLY_METAL)
+			GRenderer->GetTextureStage(0)->SetColorOp(TextureStage::OpModulate2X);
+		else
+			GRenderer->GetTextureStage(0)->SetColorOp(TextureStage::OpModulate);
+
+		if(pTexCurr->tMatRoom[room_num].uslNbIndiceCull)
+		{
+			GRenderer->SetAlphaFunc(Renderer::CmpGreater, .5f);
+			portals->room[room_num].pVertexBuffer->drawIndexed(Renderer::TriangleList, pTexCurr->tMatRoom[room_num].uslNbVertex, pTexCurr->tMatRoom[room_num].uslStartVertex,
+				&portals->room[room_num].pussIndice[pTexCurr->tMatRoom[room_num].uslStartCull],
+				pTexCurr->tMatRoom[room_num].uslNbIndiceCull);
+			GRenderer->SetAlphaFunc(Renderer::CmpNotEqual, 0.f);
+
+			EERIEDrawnPolys += pTexCurr->tMatRoom[room_num].uslNbIndiceCull;
+			pTexCurr->tMatRoom[room_num].uslNbIndiceCull = 0;
+		}
+
+		ppTexCurr++;
+	}
+
+	//////////////////////////////
+	// ZMapp
+	GRenderer->GetTextureStage(0)->SetColorOp(TextureStage::OpModulate);
+
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+	GRenderer->SetRenderState(Renderer::DepthWrite, false);
+
+	iNbTex=portals->room[room_num].usNbTextures;
+	ppTexCurr=portals->room[room_num].ppTextureContainer;
+
+	// For each tex in portals->room[room_num]
+	while(iNbTex--) {
+		TextureContainer * pTexCurr	= *ppTexCurr;
+
+		if(pTexCurr->TextureRefinement && pTexCurr->TextureRefinement->vPolyZMap.size()) {
+
+			GRenderer->SetTexture(0, pTexCurr->TextureRefinement);
+
+			dynamicVertices.lock();
+			unsigned short *pussInd = dynamicVertices.indices;
+			unsigned short iNbIndice = 0;
+
+			vector<EERIEPOLY *>::iterator it = pTexCurr->TextureRefinement->vPolyZMap.begin();
+
+			for(;it != pTexCurr->TextureRefinement->vPolyZMap.end(); ++it) {
+				EERIEPOLY * ep = *it;
+
+				unsigned short iNbVertex = (ep->type & POLY_QUAD) ? 4 : 3;
+				SMY_VERTEX3 *pVertex = dynamicVertices.append(iNbVertex);
+
+				if(!pVertex) {
+					dynamicVertices.unlock();
+					if(dynamicVertices.nbindices) {
+						dynamicVertices.draw(Renderer::TriangleList);
+					}
+					dynamicVertices.reset();
+					dynamicVertices.lock();
+					iNbIndice = 0;
+					pussInd = dynamicVertices.indices;
+					pVertex = dynamicVertices.append(iNbVertex);
+				}
+
+				// PRECALCUL
+				float tu[4];
+				float tv[4];
+				float _fTransp[4];
+
+				bool nrm = EEfabs(ep->nrml[0].y) >= 0.9f || EEfabs(ep->nrml[1].y) >= 0.9f || EEfabs(ep->nrml[2].y) >= 0.9f;
+
+				for(int nu = 0; nu < iNbVertex; nu++) {
+					if(nrm) {
+						tu[nu] = ep->v[nu].p.x * (1.0f/50);
+						tv[nu] = ep->v[nu].p.z * (1.0f/50);
+					} else {
+						tu[nu] = ep->v[nu].uv.x * 4.f;
+						tv[nu] = ep->v[nu].uv.y * 4.f;
+					}
+
+					float t = max(10.f, fdist(ACTIVECAM->orgTrans.pos, ep->v[nu].p) - 80.f);
+
+					_fTransp[nu] = (150.f - t) * 0.006666666f;
+
+					if(_fTransp[nu] < 0.f)
+						_fTransp[nu] = 0.f;
+					// t cannot be greater than 1.f (b should be negative for that)
+				}
+
+				// FILL DATA
+				for(int idx = 0; idx < iNbVertex; ++idx) {
+					pVertex->p.x     =  ep->v[idx].p.x;
+					pVertex->p.y     = -ep->v[idx].p.y;
+					pVertex->p.z     =  ep->v[idx].p.z;
+					pVertex->color   = Color::gray(_fTransp[idx]).toBGR();
+					pVertex->uv[0].x = tu[idx];
+					pVertex->uv[0].y = tv[idx];
+					pVertex++;
+
+					*pussInd++ = iNbIndice++;
+					dynamicVertices.nbindices++;
+				}
+
+				if(iNbVertex == 4) {
+					*pussInd++ = iNbIndice-2;
+					*pussInd++ = iNbIndice-3;
+					dynamicVertices.nbindices += 2;
+				}
+			}
+
+			// CLEAR CURRENT ZMAP
+			pTexCurr->TextureRefinement->vPolyZMap.clear();
+
+			dynamicVertices.unlock();
+			if(dynamicVertices.nbindices) {
+				dynamicVertices.draw(Renderer::TriangleList);
+			}
+			dynamicVertices.done();
+
+		}
+
+		ppTexCurr++;
+	}
+
+	GRenderer->SetRenderState(Renderer::DepthWrite, true);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 }
 
 //-----------------------------------------------------------------------------
@@ -1907,6 +1914,7 @@ void ARX_SCENE_Render() {
 			GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
 			for(long i=0; i<NbRoomDrawList; i++) {
 				ARX_PORTALS_Frustrum_RenderRoomTCullSoft(RoomDrawList[i], &RoomDraw[RoomDrawList[i]].frustrum, tim);
+				ARX_PORTALS_Frustrum_RenderRoomTCullSoftRender(RoomDrawList[i]);
 			}
 		}
 
