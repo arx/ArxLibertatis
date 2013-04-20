@@ -503,7 +503,6 @@ bool Cedric_ApplyLightingFirstPartRefactor(Entity *io, Color3f &special_color, l
 					} else if(elapsed < 6000.f) { // 5 seconds to White
 						float ratio = (elapsed - 3000.f) * (1.0f / 3000);
 						special_color = Color3f(1.f, ratio, ratio);
-						special_color_flag = 2;
 						AddRandomSmoke(io, 2);
 					} else { // SFX finish
 						special_color_flag = 0;
@@ -687,10 +686,6 @@ static bool Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity 
 				tempColor.r *= special_color.r;
 				tempColor.g *= special_color.g;
 				tempColor.b *= special_color.b;
-			} else if(special_color_flag & 2) {
-				tempColor.r = 1.f;
-				tempColor.g = 0.f;
-				tempColor.b = 0.f;
 			} else if(special_color_flag & 4) { // HIGHLIGHT
 				tempColor.r += special_color.r;
 				tempColor.g += special_color.g;
@@ -1228,10 +1223,6 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity *
 							   | (((long)((float)((long)((tv[j].color >> 8) & 255)) * special_color.g) & 255) << 8)
 							   | ((long)((float)((long)(tv[j].color & 255)) * (special_color.b)) & 255);
 			}
-		} else if(special_color_flag & 2) {
-			for (long j = 0; j < 3; j++) {
-				tv[j].color = 0xFFFF0000;
-			}
 		}
 
 		if((eobj->facelist[i].facetype & POLY_TRANS) || invisibility > 0.f) {
@@ -1447,18 +1438,6 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity *
 				paf[o] = eface->vid[o];
 				tv[o].color = eobj->vertexlist3[paf[o]].vert.color;
 			}
-		}
-
-		////////////////////////////////////////////////////////////////////////
-		// HALO HANDLING END
-		////////////////////////////////////////////////////////////////////////
-
-		if(special_color_flag & 2) {
-			TexturedVertex * tv2 = PushVertexInTableCull(&TexSpecialColor);
-
-			memcpy(tv2, tv, sizeof(TexturedVertex) * 3);
-
-			tv2[0].color = tv2[1].color = tv2[2].color = Color::gray(special_color.r).toBGR();
 		}
 	}
 	}
