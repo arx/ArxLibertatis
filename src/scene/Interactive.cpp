@@ -1287,11 +1287,8 @@ void ARX_INTERACTIVE_TWEAK_Icon(Entity * io, const res::path & s1) {
 		if ((h << 5) != tc->m_dwHeight) io->sizey = (char)(h + 1);
 		else io->sizey = (char)(h);
 
-		if (io->sizex < 1) io->sizex = 1;
-		else if (io->sizex > 3) io->sizex = 3;
-
-		if (io->sizey < 1) io->sizey = 1;
-		else if (io->sizey > 3) io->sizey = 3;
+		io->sizex = clamp(io->sizex, 1, 3);
+		io->sizey = clamp(io->sizey, 1, 3);
 
 		io->inv = tc;
 	}
