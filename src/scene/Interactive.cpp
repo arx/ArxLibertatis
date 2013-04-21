@@ -2248,15 +2248,8 @@ Entity * AddItem(const res::path & classPath_, EntityInstance instance, AddInter
 		else
 			io->sizey = (char)(h);
 
-		if (io->sizex < 1)
-			io->sizex = 1;
-		else if (io->sizex > 3)
-			io->sizex = 3;
-
-		if (io->sizey < 1)
-			io->sizey = 1;
-		else if (io->sizey > 3)
-			io->sizey = 3;
+		io->sizex = clamp(io->sizex, 1, 3);
+		io->sizey = clamp(io->sizey, 1, 3);
 
 		io->inv = tc;
 	}
