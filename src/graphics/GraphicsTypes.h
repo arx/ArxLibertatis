@@ -339,8 +339,6 @@ struct EERIE_SELECTIONS {
 	std::vector<long> selected;
 };
 
-#define DRAWFLAG_HIGHLIGHT	1
-
 struct EERIE_FASTACCESS
 {
 	short	view_attach;
@@ -410,7 +408,6 @@ struct EERIE_3DOBJ
 		origin = 0;
 		ident = 0;
 		nbgroups = 0;
-		drawflags = 0;
 
 		vertexlocal = NULL;
 
@@ -471,7 +468,6 @@ struct EERIE_3DOBJ
 	long origin;
 	long ident;
 	long nbgroups;
-	unsigned long drawflags;
 	EERIE_3DPAD * vertexlocal;
 	std::vector<EERIE_VERTEX> vertexlist;
 	std::vector<EERIE_VERTEX> vertexlist3;

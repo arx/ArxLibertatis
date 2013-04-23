@@ -3001,9 +3001,6 @@ void RenderInter(float from, float to) {
 				else
 					diff = static_cast<long>(framedelay);
 
-				if(io == FlyingOverIO && !(io->ioflags & IO_NPC) && io->obj)
-					io->obj->drawflags |= DRAWFLAG_HIGHLIGHT;
-
 				Vec3f pos = io->pos;
 
 				if(io->ioflags & IO_NPC) {
@@ -3015,8 +3012,6 @@ void RenderInter(float from, float to) {
 
 				EERIEDrawAnimQuat(io->obj, &io->animlayer[0], &temp, &pos, diff, io, render);
 
-				if(io->obj)
-					io->obj->drawflags &= ~DRAWFLAG_HIGHLIGHT;
 			} else {
 				if(!EDITMODE && ARX_SCENE_PORTAL_Basic_ClipIO(io))
 					continue;
@@ -3042,9 +3037,6 @@ void RenderInter(float from, float to) {
 
 				if(!(io->ioflags & IO_NPC) || EDITMODE) {
 					if(io->obj) {
-						if(io == FlyingOverIO&& !(io->ioflags & IO_NPC)) {
-							io->obj->drawflags |= DRAWFLAG_HIGHLIGHT;
-						}
 
 						if(io->obj->pbox && io->obj->pbox->active) {
 							EERIEMATRIX mat = convertToMatrixForDrawEERIEInter(*io->obj->pbox);
@@ -3052,8 +3044,6 @@ void RenderInter(float from, float to) {
 						} else {
 							DrawEERIEInter(io->obj, &temp, &io->pos, io);
 						}
-
-						io->obj->drawflags &= ~DRAWFLAG_HIGHLIGHT;
 					}
 				}
 			}

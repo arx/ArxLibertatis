@@ -6598,7 +6598,6 @@ long Manage3DCursor(long flags)
 
 	if(iterating == -1 && closerThan(player.pos, pos, 300.f)) {
 		if(flags & 1) {
-			io->obj->drawflags |= DRAWFLAG_HIGHLIGHT;
 			ARX_INTERACTIVE_Teleport(io, &pos, true);
 
 			io->gameFlags		&=	~GFLAG_NOCOMPUTATION;
@@ -6621,7 +6620,6 @@ long Manage3DCursor(long flags)
 			PrecalcIOLighting(NULL,0,1);
 
 			if(!SPECIAL_DRAGINTER_RENDER){
-				io->obj->drawflags&=~DRAWFLAG_HIGHLIGHT;
 
 				if (io->ignition>0.f)
 					ManageIgnition(io);

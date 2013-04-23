@@ -93,7 +93,6 @@ extern long FORCE_NO_HIDE;
 
 extern float dists[];
 extern long BH_MODE;
-extern int iHighLight;
 
 extern TextureContainer TexSpecialColor;
 
@@ -582,12 +581,7 @@ bool Cedric_ApplyLightingFirstPartRefactor(Entity *io, Color3f &special_color, l
 
 /* Object dynamic lighting */
 static bool Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity * io, Vec3f * pos, Color3f &special_color, long &special_color_flag) {
-	
-	if(eobj->drawflags & DRAWFLAG_HIGHLIGHT) {
-		special_color_flag = 4;
-		special_color = Color3f::gray(float(iHighLight));
-	}
-	
+		
 	Color3f infra = Color3f::black;
 	if(Project.improve) {
 		infra = (io) ? io->infracolor : Color3f(0.6f, 0.f, 1.f);
@@ -1686,11 +1680,6 @@ void Cedric_AnimateDrawEntityRender(EERIE_3DOBJ *eobj, Vec3f *pos, Vec3f &ftr, E
 
 void MakeCLight(Entity * io, Color3f * infra, EERIE_QUAT *qInvert, Vec3f * pos, EERIE_3DOBJ * eobj, Color3f &special_color, long &special_color_flag)
 {
-	if(eobj->drawflags & DRAWFLAG_HIGHLIGHT) {
-		special_color_flag = 4;
-		special_color = Color3f::gray(float(iHighLight));
-	}
-
 	if(Project.improve && !io) {
 		infra->r = 0.6f;
 		infra->g = 0.f;
@@ -1800,11 +1789,6 @@ void MakeCLight(Entity * io, Color3f * infra, EERIE_QUAT *qInvert, Vec3f * pos, 
 }
 
 void MakeCLight2(Entity *io, Color3f *infra, EERIE_QUAT *qInvert, Vec3f *pos, EERIE_3DOBJ *eobj, long ii, Color3f &special_color, long &special_color_flag) {
-
-	if(eobj->drawflags & DRAWFLAG_HIGHLIGHT) {
-		special_color_flag = 4;
-		special_color = Color3f::gray(float(iHighLight));
-	}
 
 	Vec3f vTLights[32];
 

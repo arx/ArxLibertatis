@@ -1184,7 +1184,6 @@ void EERIE_3DOBJ::clear() {
 		origin = 0;
 		ident = 0;
 		nbgroups = 0;
-		drawflags = 0;
 
 		vertexlocal = NULL;
 		vertexlist.clear();
@@ -1293,7 +1292,6 @@ EERIE_3DOBJ * Eerie_Copy(const EERIE_3DOBJ * obj) {
 	nouvo->cub.ymin = obj->cub.ymin;
 	nouvo->cub.zmax = obj->cub.zmax;
 	nouvo->cub.zmin = obj->cub.zmin;
-	nouvo->drawflags = obj->drawflags;
 	
 	if ( !obj->file.empty() )
 		nouvo->file = obj->file;

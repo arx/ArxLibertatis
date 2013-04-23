@@ -1295,6 +1295,7 @@ void ArxGame::renderCinematic() {
 	DANAE_Manage_Cinematic();
 }
 
+extern int iHighLight;
 extern bool Cedric_ApplyLightingFirstPartRefactor(Entity *io, Color3f &special_color, long &special_color_flag);
 
 void ArxGame::renderLevel() {
@@ -1320,8 +1321,15 @@ void ArxGame::renderLevel() {
 		if(entity && (entity->ignition > 0.f || (entity->ioflags & IO_FIERY)))
 			ManageIgnition(entity);
 
-		if(entity)
+		if(entity) {
 			Cedric_ApplyLightingFirstPartRefactor(entity, entity->special_color, entity->special_color_flag);
+
+			//Highlight entity
+			if(entity == FlyingOverIO && !(entity->ioflags & IO_NPC)) {
+				entity->special_color_flag = 4;
+				entity->special_color = Color3f::gray(float(iHighLight));
+			}
+		}
 	}
 
 	if(entities.player() && entities.player()->animlayer[0].cur_anim) {
