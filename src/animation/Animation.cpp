@@ -1024,9 +1024,6 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 	if(!modinfo && ARX_SCENE_PORTAL_ClipIO(io, &pos))
 		return;
 	
-	// Precalc local lights for this object then interpolate
-	MakeCLight(io, &infra, &rotation, &pos, eobj);
-	
 	long special_color_flag = 0;
 	Color3f special_color = Color3f::black;
 	if(io) {
@@ -1034,6 +1031,9 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 		special_color = io->special_color;
 	}
 
+	// Precalc local lights for this object then interpolate
+	MakeCLight(io, &infra, &rotation, &pos, eobj, special_color, special_color_flag);
+	
 	for(size_t i = 0; i < eobj->facelist.size(); i++) {
 		long paf[3];
 		paf[0]=eobj->facelist[i].vid[0];
@@ -1065,7 +1065,7 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 			continue;
 
 		if(io && (io->ioflags & IO_ANGULAR))
-			MakeCLight2(io, &infra, &rotation, &pos, eobj, i);
+			MakeCLight2(io, &infra, &rotation, &pos, eobj, i, special_color, special_color_flag);
 
 		float fTransp = 0.f;
 
@@ -1147,16 +1147,6 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 				u8 lfb = fb;
 				u8 lfg = 0x1E;
 				vert_list[k].color = (0xff000000L | (lfr << 16) | (lfg << 8) | (lfb));
-			}
-		}
-		
-		if(special_color_flag & 1) {
-			for(long j = 0 ; j < 3 ; j++) {
-				Color color = Color::fromBGR(vert_list[j].color);
-				color.r = long(color.r * special_color.r) & 255;
-				color.g = long(color.g * special_color.g) & 255;
-				color.b = long(color.b * special_color.b) & 255;
-				vert_list[j].color = color.toBGR();
 			}
 		}
 	

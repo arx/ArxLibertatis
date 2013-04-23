@@ -1684,8 +1684,13 @@ void Cedric_AnimateDrawEntityRender(EERIE_3DOBJ *eobj, Vec3f *pos, Vec3f &ftr, E
 	}
 }
 
-void MakeCLight(Entity * io, Color3f * infra, EERIE_QUAT *qInvert, Vec3f * pos, EERIE_3DOBJ * eobj)
+void MakeCLight(Entity * io, Color3f * infra, EERIE_QUAT *qInvert, Vec3f * pos, EERIE_3DOBJ * eobj, Color3f &special_color, long &special_color_flag)
 {
+	if(eobj->drawflags & DRAWFLAG_HIGHLIGHT) {
+		special_color_flag = 4;
+		special_color = Color3f::gray(float(iHighLight));
+	}
+
 	if(Project.improve && !io) {
 		infra->r = 0.6f;
 		infra->g = 0.f;
@@ -1767,12 +1772,6 @@ void MakeCLight(Entity * io, Color3f * infra, EERIE_QUAT *qInvert, Vec3f * pos, 
 			}
 		}
 
-		if(eobj->drawflags & DRAWFLAG_HIGHLIGHT) {
-			tempColor.r += iHighLight;
-			tempColor.g += iHighLight;
-			tempColor.b += iHighLight;
-		}
-
 		if(Project.improve && !io) {
 			tempColor.r *= infra->r;
 			tempColor.g *= infra->g;
@@ -1783,6 +1782,16 @@ void MakeCLight(Entity * io, Color3f * infra, EERIE_QUAT *qInvert, Vec3f * pos, 
 			tempColor.b += infra->b * 400.f;
 		}
 
+		if(special_color_flag & 1) {
+			tempColor.r *= special_color.r;
+			tempColor.g *= special_color.g;
+			tempColor.b *= special_color.b;
+		} else if(special_color_flag & 4) { // HIGHLIGHT
+			tempColor.r += special_color.r;
+			tempColor.g += special_color.g;
+			tempColor.b += special_color.b;
+		}
+
 		u8 ir = clipByte255(tempColor.r);
 		u8 ig = clipByte255(tempColor.g);
 		u8 ib = clipByte255(tempColor.b);
@@ -1790,7 +1799,12 @@ void MakeCLight(Entity * io, Color3f * infra, EERIE_QUAT *qInvert, Vec3f * pos, 
 	}
 }
 
-void MakeCLight2(Entity *io, Color3f *infra, EERIE_QUAT *qInvert, Vec3f *pos, EERIE_3DOBJ *eobj, long ii) {
+void MakeCLight2(Entity *io, Color3f *infra, EERIE_QUAT *qInvert, Vec3f *pos, EERIE_3DOBJ *eobj, long ii, Color3f &special_color, long &special_color_flag) {
+
+	if(eobj->drawflags & DRAWFLAG_HIGHLIGHT) {
+		special_color_flag = 4;
+		special_color = Color3f::gray(float(iHighLight));
+	}
 
 	Vec3f vTLights[32];
 
@@ -1868,16 +1882,20 @@ void MakeCLight2(Entity *io, Color3f *infra, EERIE_QUAT *qInvert, Vec3f *pos, EE
 				break;
 		}
 
-		if(eobj->drawflags & DRAWFLAG_HIGHLIGHT) {
-			tempColor.r += iHighLight;
-			tempColor.g += iHighLight;
-			tempColor.b += iHighLight;
-		}
-
 		if(Project.improve) {
 			tempColor.r *= infra->r;
 			tempColor.g *= infra->g;
 			tempColor.b *= infra->b;
+		}
+
+		if(special_color_flag & 1) {
+			tempColor.r *= special_color.r;
+			tempColor.g *= special_color.g;
+			tempColor.b *= special_color.b;
+		} else if(special_color_flag & 4) { // HIGHLIGHT
+			tempColor.r += special_color.r;
+			tempColor.g += special_color.g;
+			tempColor.b += special_color.b;
 		}
 
 		u8 ir = clipByte255(tempColor.r);

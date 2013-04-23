@@ -58,8 +58,8 @@ void Cedric_AnimateDrawEntity(EERIE_3DOBJ * eobj, ANIM_USE * animuse, Anglef * a
 
 void ARX_DrawPrimitive(TexturedVertex *, TexturedVertex *, TexturedVertex *, float _fAdd = 0.0f);
 
-void MakeCLight(Entity * io, Color3f * infra, EERIE_QUAT *qInvert, Vec3f * pos, EERIE_3DOBJ * eobj);
-void MakeCLight2(Entity * io, Color3f * infra, EERIE_QUAT *qInvert, Vec3f * pos, EERIE_3DOBJ * eobj, long i);
+void MakeCLight(Entity * io, Color3f * infra, EERIE_QUAT *qInvert, Vec3f * pos, EERIE_3DOBJ * eobj, Color3f &special_color, long &special_color_flag);
+void MakeCLight2(Entity * io, Color3f * infra, EERIE_QUAT *qInvert, Vec3f * pos, EERIE_3DOBJ * eobj, long i, Color3f &special_color, long &special_color_flag);
 
 float Cedric_GetScale(Entity *io);
 float Cedric_GetInvisibility(Entity *io);
