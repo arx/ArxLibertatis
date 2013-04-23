@@ -1035,9 +1035,10 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 	
 	long special_color_flag = 0;
 	Color3f special_color = Color3f::black;
-
-	if(!Cedric_ApplyLightingFirstPartRefactor(io, special_color, special_color_flag))
-		return;
+	if(io) {
+		special_color_flag = io->special_color_flag;
+		special_color = io->special_color;
+	}
 
 	for(size_t i = 0; i < eobj->facelist.size(); i++) {
 		long paf[3];

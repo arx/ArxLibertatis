@@ -378,6 +378,9 @@ public:
 	short inzone_show;
 	short summoner;
 	long spark_n_blood;
+
+	Color3f special_color;
+	long special_color_flag;
 	
 	/*!
 	 * Return the short name for this Object where only the name

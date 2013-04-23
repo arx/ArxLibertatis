@@ -1295,6 +1295,8 @@ void ArxGame::renderCinematic() {
 	DANAE_Manage_Cinematic();
 }
 
+extern bool Cedric_ApplyLightingFirstPartRefactor(Entity *io, Color3f &special_color, long &special_color_flag);
+
 void ArxGame::renderLevel() {
 
 	if(!PLAYER_PARALYSED) {
@@ -1317,6 +1319,9 @@ void ArxGame::renderLevel() {
 
 		if(entity && (entity->ignition > 0.f || (entity->ioflags & IO_FIERY)))
 			ManageIgnition(entity);
+
+		if(entity)
+			Cedric_ApplyLightingFirstPartRefactor(entity, entity->special_color, entity->special_color_flag);
 	}
 
 	if(entities.player() && entities.player()->animlayer[0].cur_anim) {

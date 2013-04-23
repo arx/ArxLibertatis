@@ -432,6 +432,9 @@ extern float GLOBAL_LIGHT_FACTOR;
 bool Cedric_ApplyLightingFirstPartRefactor(Entity *io, Color3f &special_color, long &special_color_flag) {
 
 	if(io) {
+		special_color = Color3f::black;
+		special_color_flag = 0;
+
 		float poisonpercent = 0.f;
 		float trappercent = 0.f;
 		float secretpercent = 0.f;
@@ -1621,10 +1624,11 @@ void Cedric_AnimateDrawEntityRender(EERIE_3DOBJ *eobj, Vec3f *pos, Vec3f &ftr, E
 		return;
 
 	long special_color_flag = 0;
-	Color3f special_color;
-
-	if(!Cedric_ApplyLightingFirstPartRefactor(io, special_color, special_color_flag))
-		return;
+	Color3f special_color = Color3f::black;
+	if(io) {
+		special_color_flag = io->special_color_flag;
+		special_color = io->special_color;
+	}
 
 	if(!Cedric_ApplyLighting(eobj, obj, io, pos, special_color, special_color_flag))
 		return;

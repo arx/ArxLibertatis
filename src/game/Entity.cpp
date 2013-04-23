@@ -190,6 +190,9 @@ Entity::Entity(const res::path & classPath)
 	inzone_show = 0;
 	summoner = 0;
 	spark_n_blood = 0;
+
+	special_color = Color3f::black;
+	special_color_flag = 0;
 	
 	ARX_SCRIPT_SetMainEvent(this, "main");
 	
