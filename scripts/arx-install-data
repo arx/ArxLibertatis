@@ -675,10 +675,12 @@ if [ $gui = 1 ] ; then
 		# Not all terminals accept command arguments in the same way.
 		# Instead of hacking terminal-specific code, use a magic environment
 		# variable to tell the sub-process how to behave.
-		export _arx_install_data_force_cli=1
+		_arx_install_data_force_cli=1
+		export _arx_install_data_force_cli
 		for var in batch install patch probe_patch sourcefile datadir \
 			patchfile patchfile_jp disabled_commands ; do
-			eval "export _arx_install_data_force_$var=\"\$$var\""
+			eval "_arx_install_data_force_$var=\"\$$var\""
+			eval "export _arx_install_data_force_$var"
 		done
 		if [ $is_kde = 1 ] ; then preferred=konsole ; else preferred=x-terminal-emulator ; fi
 		for backend in x-terminal-emulator $preferred \
@@ -776,7 +778,7 @@ pipe_destroy() {
 pipe_exists() {
 	[ -z "$pipe_file" ] && return $false
 	[ "$pipe_pid" = 0 ] && return $false
-	kill -0 "$pipe_pid" > /dev/null 2>&1
+	kill -s 0 "$pipe_pid" > /dev/null 2>&1
 }
 
 # Send a message to the remote process
