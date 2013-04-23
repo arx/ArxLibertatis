@@ -508,8 +508,6 @@ suite:
 extern long cur_mr;
 extern long cur_rf;
 
-Entity * DESTROYED_DURING_RENDERING=NULL;
-
 void EERIEDrawAnimQuat(EERIE_3DOBJ *eobj, ANIM_USE *eanim, Anglef *angle, Vec3f *pos, unsigned long time, Entity *io, bool render, bool update_movement) {
 	
 	if(io && io != entities.player()) {
@@ -564,8 +562,6 @@ void EERIEDrawAnimQuat(EERIE_3DOBJ *eobj, ANIM_USE *eanim, Anglef *angle, Vec3f 
 			}
 		}
 	}
-
-	DESTROYED_DURING_RENDERING=NULL;
 
 	Cedric_AnimateDrawEntity(eobj, eanim, angle, pos, io, render, update_movement);
 }
@@ -919,8 +915,6 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 	if(!eobj)
 		return;
 	
-	DESTROYED_DURING_RENDERING = NULL;
-
 	// Resets 2D Bounding Box
 	BBOXMIN.y = BBOXMIN.x = 32000;
 	BBOXMAX.y = BBOXMAX.x = -32000;

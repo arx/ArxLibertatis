@@ -6403,7 +6403,6 @@ void ArxGame::drawAllInterface() {
 	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
 }
 
-extern Entity * DESTROYED_DURING_RENDERING;
 extern float STARTED_ANGLE;
 long SPECIAL_DRAGINTER_RENDER=0;
 long CANNOT_PUT_IT_HERE=0;
@@ -6621,7 +6620,7 @@ long Manage3DCursor(long flags)
 
 			PrecalcIOLighting(NULL,0,1);
 
-			if(!SPECIAL_DRAGINTER_RENDER && !DESTROYED_DURING_RENDERING){
+			if(!SPECIAL_DRAGINTER_RENDER){
 				io->obj->drawflags&=~DRAWFLAG_HIGHLIGHT;
 
 				if (io->ignition>0.f)

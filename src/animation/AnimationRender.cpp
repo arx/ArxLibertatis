@@ -421,7 +421,6 @@ int Cedric_TransformVerts(Entity *io, EERIE_3DOBJ *eobj, EERIE_C_DATA *obj, Vec3
 
 	return true;
 }
-extern Entity * DESTROYED_DURING_RENDERING;
 
 extern long TRAP_DETECT;
 extern long TRAP_SECRET;
@@ -570,7 +569,6 @@ bool Cedric_ApplyLightingFirstPartRefactor(Entity *io, Color3f &special_color, l
 							} else {
 								io->sfx_flag &= ~SFX_TYPE_YLSIDE_DEATH;
 								ARX_INTERACTIVE_DestroyIO(io);
-								DESTROYED_DURING_RENDERING = io;
 								return false;
 							}
 						}

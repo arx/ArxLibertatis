@@ -2931,8 +2931,6 @@ void UpdateIOInvisibility(Entity * io)
 	}
 }
 
-extern Entity * DESTROYED_DURING_RENDERING;
-
 EERIEMATRIX convertToMatrixForDrawEERIEInter(const PHYSICS_BOX_DATA &box) {
 	Vec3f tmp = box.vert[14].pos - box.vert[13].pos;
 	Vec3f up  = box.vert[2].pos  - box.vert[1].pos;
@@ -3017,9 +3015,6 @@ void RenderInter(float from, float to) {
 
 				EERIEDrawAnimQuat(io->obj, &io->animlayer[0], &temp, &pos, diff, io, render);
 
-				if(DESTROYED_DURING_RENDERING)
-					continue;
-
 				if(io->obj)
 					io->obj->drawflags &= ~DRAWFLAG_HIGHLIGHT;
 			} else {
@@ -3057,9 +3052,6 @@ void RenderInter(float from, float to) {
 						} else {
 							DrawEERIEInter(io->obj, &temp, &io->pos, io);
 						}
-
-						if(DESTROYED_DURING_RENDERING)
-							continue;
 
 						io->obj->drawflags &= ~DRAWFLAG_HIGHLIGHT;
 					}
