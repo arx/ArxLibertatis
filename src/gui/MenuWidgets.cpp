@@ -452,21 +452,16 @@ bool Menu2_Render() {
 	MENUSTATE eOldMenuState=NOP;
 	MENUSTATE eM;
 
-	if(!pMenu)
-	{
-		eM=NOP;
-	}
-	else
-	{
-		eM=pMenu->eOldMenuWindowState;
+	if(!pMenu) {
+		eM = NOP;
+	} else {
+		eM = pMenu->eOldMenuWindowState;
 	}
 
 	Color lColor = Color(232, 204, 142);
 
-	if(    (!pMenu)|| ((pMenu)&&(pMenu->bReInitAll)) )
-	{
-		std::string szMenuText;
-		bool bBOOL = false;
+	if(!pMenu || (pMenu && pMenu->bReInitAll)) {
+
 		CMenuElementText *me;
 		
 		if(pMenu && pMenu->bReInitAll) {
@@ -501,18 +496,14 @@ bool Menu2_Render() {
 
 	bool bScroll=true;
 	{
-		if(pMenuElementResume)
-		{
+		if(pMenuElementResume) {
 			bool bTemp;
 			ARXMenu_GetResumeGame(bTemp);
 
-			if(bTemp)
-			{
+			if(bTemp) {
 				pMenuElementResume->SetCheckOn();
 				((CMenuElementText*)pMenuElementResume)->lColor=lColor;
-			}
-			else
-			{
+			} else {
 				pMenuElementResume->SetCheckOff();
 				((CMenuElementText*)pMenuElementResume)->lColor=Color(127,127,127);
 			}
@@ -520,14 +511,12 @@ bool Menu2_Render() {
 
 		MENUSTATE eMenuState = pMenu->Update(checked_range_cast<int>(ARXDiffTimeMenu));
 
-		if(eOldMenuState!=NOP)
-		{
+		if(eOldMenuState != NOP) {
 			eMenuState=eOldMenuState;
 			bScroll=false;
 		}
 
-		if( eMenuState == RESUME_GAME )
-		{
+		if(eMenuState == RESUME_GAME) {
 			pTextManage->Clear();
 			ARXmenu.currentmode = AMCM_OFF;
 			pMenu->eMenuState = NOP;
@@ -543,9 +532,7 @@ bool Menu2_Render() {
 			GRenderer->EndScene();
 
 			return true;
-		}
-		else if (eMenuState!=NOP )
-		{
+		} else if(eMenuState != NOP) {
 			pMenu->eOldMenuState=eMenuState;
 			
 			delete pWindowMenu, pWindowMenu = NULL;
@@ -576,19 +563,14 @@ bool Menu2_Render() {
 
 			pWindowMenu = new CWindowMenu(iWindowMenuPosX,iWindowMenuPosY,iWindowMenuWidth,iWindowMenuHeight,1);
 
-			switch(eMenuState)
-			{
-			//------------------ START NEW_QUEST
-			case NEW_QUEST:
-				{
+			switch(eMenuState) {
+			case NEW_QUEST: {
 					std::string szMenuText;
 					bool bBOOL = false;
 					ARXMenu_GetResumeGame(bBOOL);
 
-					if (!bBOOL)
-					{
+					if(!bBOOL)
 						break;
-					}
 
 					CMenuElement *me = NULL;
 					CWindowMenuConsole *pWindowMenuConsole=new CWindowMenuConsole(iWindowConsoleOffsetX,iWindowConsoleOffsetY,iWindowConsoleWidth,iWindowConsoleHeight,NEW_QUEST);
@@ -619,11 +601,10 @@ bool Menu2_Render() {
 					pWindowMenu->AddConsole(pWindowMenuConsole);
 					pWindowMenu->eCurrentMenuState=NEW_QUEST;
 
-					}
+
 				break;
-			//------------------ END NEW_QUEST
-			case EDIT_QUEST:
-				{
+			}
+			case EDIT_QUEST: {
 					CMenuElement *me;
 					CMenuElement *me01;
 					CMenuPanel *pPanel;
@@ -641,8 +622,7 @@ bool Menu2_Render() {
 					bool bBOOL;
 					ARXMenu_GetResumeGame(bBOOL);
 
-					if (!bBOOL)
-					{
+					if(!bBOOL) {
 						me->SetCheckOff();
 						((CMenuElementText*)me)->lColor=Color(127,127,127);
 					}
@@ -872,8 +852,7 @@ bool Menu2_Render() {
 					pWindowMenu->AddConsole(pWindowMenuConsole);
 					}
 				break;
-			case OPTIONS:
-				{
+			case OPTIONS: {
 					std::string szMenuText;
 					CMenuElement *me;
 					CMenuPanel *pc;
@@ -1559,8 +1538,7 @@ bool Menu2_Render() {
 				}
 				break;
 
-			case QUIT:
-				{
+			case QUIT: {
 					std::string szMenuText;
 					CMenuElement *me = NULL;
 					CWindowMenuConsole *pWindowMenuConsole=new CWindowMenuConsole(iWindowConsoleOffsetX,iWindowConsoleOffsetY,iWindowConsoleWidth,iWindowConsoleHeight,QUIT);
@@ -1591,9 +1569,9 @@ bool Menu2_Render() {
 					pWindowMenu->AddConsole(pWindowMenuConsole);
 					pWindowMenu->eCurrentMenuState=QUIT;
 
-				}
+
 				break;
-				
+			}
 			default: break; // Unhandled menu state.
 			}
 
@@ -1601,22 +1579,18 @@ bool Menu2_Render() {
 	}
 	pMenu->Render();
 
-	if(pWindowMenu)
-	{
-		if(!bScroll)
-		{
+	if(pWindowMenu) {
+		if(!bScroll) {
 			pWindowMenu->fAngle=90.f;
 			pWindowMenu->eCurrentMenuState=pMenu->eOldMenuWindowState;
 		}
 
 		pWindowMenu->Update(ARXDiffTimeMenu);
 
-		if (pWindowMenu)
-		{
+		if(pWindowMenu) {
 			MENUSTATE eMS=pWindowMenu->Render();
 
-			if(eMS!=NOP)
-			{
+			if(eMS != NOP) {
 				pMenu->eOldMenuWindowState=eMS;
 			}
 		}
@@ -1628,8 +1602,7 @@ bool Menu2_Render() {
 
 	// If the menu needs to be reinitialized, then the text in the TextManager is probably using bad fonts that were deleted already
 	// Skip one update in this case
-	if(pTextManage && !pMenu->bReInitAll)
-	{
+	if(pTextManage && !pMenu->bReInitAll) {
 		pTextManage->Update(ARXDiffTimeMenu);
 		pTextManage->Render();
 	}
@@ -1642,17 +1615,15 @@ bool Menu2_Render() {
 	GRenderer->SetCulling(Renderer::CullNone);
 	pMenuCursor->DrawCursor();
 
-	if (pTextureLoadRender)
-	{
+	if(pTextureLoadRender) {
 		GRenderer->SetRenderState(Renderer::DepthTest, false);
 
 		int iOffsetX = 0;
 		int iOffsetY=0;
 
-		if ((DANAEMouse.y + INTERFACE_RATIO_DWORD(pTextureLoad->m_dwHeight)) > DANAESIZY)
-		{
+		if((DANAEMouse.y + INTERFACE_RATIO_DWORD(pTextureLoad->m_dwHeight)) > DANAESIZY) {
 			
-			float fOffestY    = iOffsetY - INTERFACE_RATIO_DWORD(pTextureLoad->m_dwHeight) ;
+			float fOffestY = iOffsetY - INTERFACE_RATIO_DWORD(pTextureLoad->m_dwHeight) ;
 			iOffsetY = checked_range_cast<int>(fOffestY);
 		}
 
@@ -1672,10 +1643,8 @@ bool Menu2_Render() {
 		pTextureLoadRender=NULL;
 	}
 
-	if(ProcessFadeInOut(bFadeInOut,0.1f))
-	{
-		switch(iFadeAction)
-		{
+	if(ProcessFadeInOut(bFadeInOut,0.1f)) {
+		switch(iFadeAction) {
 		case AMCM_CREDITS:
 			ARX_MENU_Clicked_CREDITS();
 			iFadeAction=-1;
