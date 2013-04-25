@@ -373,6 +373,37 @@ bool ProcessFadeInOut(bool _bFadeIn,float _fspeed)
 
 //-----------------------------------------------------------------------------
 
+void MACRO_MENU_PRINCIPALE(int iPosMenuPrincipaleX,
+						   int & iPosMenuPrincipaleY,
+						   int iDecMenuPrincipaleY,
+						   Color lColor,
+						   int MACRO_button,
+						   MENUSTATE MACRO_menu,
+						   const char * MACRO_locate,
+						   int MACRO_check)
+{
+	std::string szMenuText = getLocalised( MACRO_locate );
+	CMenuElementText *me = new CMenuElementText(MACRO_button, hFontMainMenu, szMenuText, RATIO_X(iPosMenuPrincipaleX), RATIO_Y(iPosMenuPrincipaleY), lColor, 1.8f, MACRO_menu);
+	if(MACRO_check)
+	{
+		pMenuElementResume=me;
+		bool bBOOL;
+		ARXMenu_GetResumeGame(bBOOL);
+		if (bBOOL)
+		{
+			me->SetCheckOn();
+		}
+		else
+		{
+			me->SetCheckOff();
+			me->lColor=Color(127,127,127);
+		}
+	}
+	pMenu->AddMenuElement(me);
+	iPosMenuPrincipaleY+=iDecMenuPrincipaleY;
+}
+
+
 bool Menu2_Render() {
 	
 	if(pMenuCursor == NULL)
@@ -449,37 +480,17 @@ bool Menu2_Render() {
 
 		pMenu->pTexBackGround = TextureContainer::LoadUI("graph/interface/menus/menu_main_background", TextureContainer::NoColorKey);
 
-		int iPosMenuPrincipaleX = 370;
-	int iPosMenuPrincipaleY=100;
-	int iDecMenuPrincipaleY=50;
-#define MACRO_MENU_PRINCIPALE(MACRO_button,MACRO_menu,MACRO_locate,MACRO_check){\
-		szMenuText = getLocalised( MACRO_locate );\
-		me = new CMenuElementText(MACRO_button, hFontMainMenu, szMenuText, RATIO_X(iPosMenuPrincipaleX), RATIO_Y(iPosMenuPrincipaleY), lColor, 1.8f, MACRO_menu);\
-		if(MACRO_check)\
-		{\
-			pMenuElementResume=me;\
-			ARXMenu_GetResumeGame(bBOOL);\
-			if (bBOOL)\
-			{\
-				me->SetCheckOn();\
-			}\
-			else\
-			{\
-				me->SetCheckOff();\
-				me->lColor=Color(127,127,127);\
-			}\
-		}\
-		pMenu->AddMenuElement(me);\
-		iPosMenuPrincipaleY+=iDecMenuPrincipaleY;\
-	}
+		int mainPosX = 370;
+		int mainPosY = 100;
+		int mainDecY = 50;
 
-	MACRO_MENU_PRINCIPALE(BUTTON_MENUMAIN_RESUMEGAME,RESUME_GAME,"system_menus_main_resumegame",1);
-	MACRO_MENU_PRINCIPALE(BUTTON_MENUMAIN_NEWQUEST,NEW_QUEST,"system_menus_main_newquest",0);
-	MACRO_MENU_PRINCIPALE(-1,EDIT_QUEST,"system_menus_main_editquest",0);
-	MACRO_MENU_PRINCIPALE(BUTTON_MENUMAIN_OPTIONS,OPTIONS,"system_menus_main_options",0);
-	MACRO_MENU_PRINCIPALE(BUTTON_MENUMAIN_CREDITS,CREDITS,"system_menus_main_credits",0);
-	MACRO_MENU_PRINCIPALE(-1,QUIT,"system_menus_main_quit",0);
-#undef MACRO_MENU_PRINCIPALE
+	MACRO_MENU_PRINCIPALE(mainPosX, mainPosY, mainDecY, lColor, BUTTON_MENUMAIN_RESUMEGAME,RESUME_GAME,"system_menus_main_resumegame",1);
+	MACRO_MENU_PRINCIPALE(mainPosX, mainPosY, mainDecY, lColor, BUTTON_MENUMAIN_NEWQUEST,NEW_QUEST,"system_menus_main_newquest",0);
+	MACRO_MENU_PRINCIPALE(mainPosX, mainPosY, mainDecY, lColor, -1,EDIT_QUEST,"system_menus_main_editquest",0);
+	MACRO_MENU_PRINCIPALE(mainPosX, mainPosY, mainDecY, lColor, BUTTON_MENUMAIN_OPTIONS,OPTIONS,"system_menus_main_options",0);
+	MACRO_MENU_PRINCIPALE(mainPosX, mainPosY, mainDecY, lColor, BUTTON_MENUMAIN_CREDITS,CREDITS,"system_menus_main_credits",0);
+	MACRO_MENU_PRINCIPALE(mainPosX, mainPosY, mainDecY, lColor, -1,QUIT,"system_menus_main_quit",0);
+
 		float verPosX = RATIO_X(620) - hFontControls->getTextSize(version).x;
 		me = new CMenuElementText( -1, hFontControls, version, verPosX, RATIO_Y(80), lColor, 1.0f, NOP );
 		
