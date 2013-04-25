@@ -6618,12 +6618,6 @@ long Manage3DCursor(long flags)
 			}
 
 			PrecalcIOLighting(NULL,0,1);
-
-			if(!SPECIAL_DRAGINTER_RENDER){
-
-				if (io->ignition>0.f)
-					ManageIgnition(io);
-			}
 		} else {
 			if(EEfabs(lastanything) > std::min(EEfabs(height), 12.0f)) {
 				Entity * io=DRAGINTER;
