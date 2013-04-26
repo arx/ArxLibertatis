@@ -3603,7 +3603,7 @@ void CheckNPCEx(Entity * io) {
 			if(EEfabs(AngularDifference(aa, ab)) < 110.f) {
 				
 				// Check for Darkness/Stealth
-				if(CURRENT_PLAYER_COLOR > GetPlayerStealth() || SHOW_TORCH
+				if(CURRENT_PLAYER_COLOR > GetPlayerStealth() || player.torch
 				   || ds < square(200.f)) {
 					Vec3f ppos;
 					// Check for Geometrical Visibility

@@ -109,7 +109,6 @@ extern long DEBUGNPCMOVE;
 #else
 const long EDITMODE = 0;
 #endif
-extern long SHOW_TORCH;
 extern long CURRENTLEVEL;
 extern long TELEPORT_TO_ANGLE;
 extern long DANAESIZX;

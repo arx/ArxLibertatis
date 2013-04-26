@@ -659,7 +659,7 @@ void ManageTorch() {
 	
 	EERIE_LIGHT * el = &DynLight[0];
 	
-	if(SHOW_TORCH) {
+	if(player.torch) {
 		
 		float rr = rnd();
 		el->pos = player.pos;

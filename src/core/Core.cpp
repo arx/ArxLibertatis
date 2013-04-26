@@ -306,7 +306,6 @@ long CINE_PRELOAD=0;
 long PLAY_LOADED_CINEMATIC=0;
 float BOW_FOCAL=0;
 long PlayerWeaponBlocked=-1;
-long SHOW_TORCH=0;
 float GLOBAL_LIGHT_FACTOR=0.85f;
 
 long STOP_KEYBOARD_INPUT= 0;
@@ -1727,9 +1726,6 @@ void FirstFrameHandling() {
 
 	if(player.torch) {
 		ARX_SOUND_PlaySFX(SND_TORCH_LOOP, NULL, 1.0F, ARX_SOUND_PLAY_LOOPED);
-		SHOW_TORCH = 1;
-	} else {
-		SHOW_TORCH = 0;
 	}
 	
 	Kam = &subj;

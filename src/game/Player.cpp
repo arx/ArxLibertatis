@@ -265,7 +265,6 @@ void ARX_PLAYER_KillTorch() {
 	giveToPlayer(player.torch);
 	
 	player.torch = NULL;
-	SHOW_TORCH = 0;
 	DynLight[0].exist = 0;
 }
 
@@ -297,7 +296,6 @@ void ARX_PLAYER_ClickedOnTorch(Entity * io)
 			io->ignition = 0;
 		}
 
-		SHOW_TORCH = 1;
 		ARX_SOUND_PlaySFX(SND_TORCH_START);
 		ARX_SOUND_PlaySFX(SND_TORCH_LOOP, NULL, 1.0F, ARX_SOUND_PLAY_LOOPED);
 		RemoveFromAllInventories(io);
@@ -326,7 +324,6 @@ static void ARX_PLAYER_ManageTorch() {
 			ARX_SOUND_Stop(SND_TORCH_LOOP);
 			ARX_INTERACTIVE_DestroyIO(player.torch);
 			player.torch = NULL;
-			SHOW_TORCH = 0;
 			DynLight[0].exist = 0;
 		}
 	}
