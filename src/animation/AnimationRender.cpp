@@ -87,9 +87,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 using std::min;
 using std::max;
 
-unsigned char * grps = NULL;
-static long max_grps = 0;
-
 extern float dists[];
 extern long BH_MODE;
 
@@ -256,6 +253,8 @@ static void Cedric_AnimCalcTranslation(Entity * io, ANIM_USE * animuse, float sc
 static void Cedric_AnimateObject(Entity *io, EERIE_3DOBJ *eobj, ANIM_USE *animuse)
 {
 	EERIE_C_DATA	* obj = eobj->c_data;
+
+	std::vector<unsigned char> grps(eobj->nbgroups);
 
 	for(long count = MAX_ANIM_LAYERS - 1; count >= 0; count--) {
 		EERIE_QUAT		t, temp;
@@ -1532,13 +1531,7 @@ void Cedric_AnimateDrawEntity(EERIE_3DOBJ *eobj, ANIM_USE *animuse, Anglef *angl
 	float timm = Cedric_GetTime(io);
 	
 	// Buffer size check
-	if(eobj->nbgroups > max_grps) {
-		//todo free
-		grps = (unsigned char *)realloc(grps, eobj->nbgroups);
-		max_grps = eobj->nbgroups;
-	}
-	
-	memset(grps, 0, eobj->nbgroups);
+
 	
 	Vec3f ftr;
 	Cedric_AnimCalcTranslation(io, animuse, scale, ftr, update_movement);

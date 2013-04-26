@@ -115,7 +115,6 @@ TexturedVertex LATERDRAWHALO[HALOMAX * 4];
 EERIE_LIGHT * llights[32];
 float dists[32];
 float values[32];
-extern unsigned char * grps;
 long TRAP_DETECT = -1;
 long TRAP_SECRET = -1;
 long HALOCUR = 0;
@@ -1379,8 +1378,6 @@ void EERIE_ANIMMANAGER_ClearAll() {
 			EERIE_ANIMMANAGER_Clear(i);
 		}
 	}
-	
-	free(grps), grps = NULL;
 }
 
 void EERIE_ANIMMANAGER_ReloadAll() {
