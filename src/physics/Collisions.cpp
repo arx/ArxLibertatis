@@ -1152,81 +1152,81 @@ bool CheckAnythingInSphere(EERIE_SPHERE * sphere, long source, CASFlags flags, l
 		if(treatio[i].num != 0 && source != 0 && validsource && HaveCommonGroup(io,entities[source]))
 			continue;
 
-			if(io->gameFlags & GFLAG_PLATFORM) {
-					float miny,maxy;
-					miny=io->bbox3D.min.y;
-					maxy=io->bbox3D.max.y;
+		if(io->gameFlags & GFLAG_PLATFORM) {
+			float miny,maxy;
+			miny=io->bbox3D.min.y;
+			maxy=io->bbox3D.max.y;
 
-					if (	(maxy> sphere->origin.y-sphere->radius) 
-						||	(miny< sphere->origin.y+sphere->radius) )
-					if (In3DBBoxTolerance(&sphere->origin,&io->bbox3D,sphere->radius))
-					{
-						if(closerThan(Vec2f(io->pos.x, io->pos.z), Vec2f(sphere->origin.x, sphere->origin.z), 440.f + sphere->radius)) {
-							
-							EERIEPOLY ep;
-							ep.type=0;
+			if (	(maxy> sphere->origin.y-sphere->radius)
+				||	(miny< sphere->origin.y+sphere->radius) )
+			if (In3DBBoxTolerance(&sphere->origin,&io->bbox3D,sphere->radius))
+			{
+				if(closerThan(Vec2f(io->pos.x, io->pos.z), Vec2f(sphere->origin.x, sphere->origin.z), 440.f + sphere->radius)) {
 
-							for(size_t ii = 0; ii < io->obj->facelist.size(); ii++) {
-								float cx=0;
-								float cz=0;
+					EERIEPOLY ep;
+					ep.type=0;
 
-								for(long kk = 0; kk < 3; kk++) {
-									cx+=ep.v[kk].p.x=io->obj->vertexlist3[io->obj->facelist[ii].vid[kk]].v.x;
-										ep.v[kk].p.y=io->obj->vertexlist3[io->obj->facelist[ii].vid[kk]].v.y;
-									cz+=ep.v[kk].p.z=io->obj->vertexlist3[io->obj->facelist[ii].vid[kk]].v.z;
-								}
+					for(size_t ii = 0; ii < io->obj->facelist.size(); ii++) {
+						float cx=0;
+						float cz=0;
 
-								cx*=( 1.0f / 3 );
-								cz*=( 1.0f / 3 );
-
-								for(int kk = 0; kk < 3; kk++) {
-									ep.v[kk].p.x=(ep.v[kk].p.x-cx)*3.5f+cx;
-									ep.v[kk].p.z=(ep.v[kk].p.z-cz)*3.5f+cz;
-								}
-
-								if(PointIn2DPolyXZ(&ep, sphere->origin.x, sphere->origin.z)) {
-									if(num)
-										*num=treatio[i].num;
-
-									return true;
-								}
-							}
+						for(long kk = 0; kk < 3; kk++) {
+							cx+=ep.v[kk].p.x=io->obj->vertexlist3[io->obj->facelist[ii].vid[kk]].v.x;
+								ep.v[kk].p.y=io->obj->vertexlist3[io->obj->facelist[ii].vid[kk]].v.y;
+							cz+=ep.v[kk].p.z=io->obj->vertexlist3[io->obj->facelist[ii].vid[kk]].v.z;
 						}
-					}
-				}
 
-			if(distSqr(io->pos, sphere->origin) < square(sr180)) {
-				long amount=1;
-				vector<EERIE_VERTEX> & vlist=io->obj->vertexlist3;
+						cx*=( 1.0f / 3 );
+						cz*=( 1.0f / 3 );
 
-				if(io->obj->nbgroups > 4) {
-					for(long ii = 0; ii < io->obj->nbgroups; ii++) {
-						if(distSqr(vlist[io->obj->grouplist[ii].origin].v, sphere->origin) < square(sr40)) {
+						for(int kk = 0; kk < 3; kk++) {
+							ep.v[kk].p.x=(ep.v[kk].p.x-cx)*3.5f+cx;
+							ep.v[kk].p.z=(ep.v[kk].p.z-cz)*3.5f+cz;
+						}
+
+						if(PointIn2DPolyXZ(&ep, sphere->origin.x, sphere->origin.z)) {
 							if(num)
-								*num = treatio[i].num;
+								*num=treatio[i].num;
 
 							return true;
 						}
 					}
-
-					amount=2;
 				}
+			}
+		}
 
-				for(size_t ii = 0; ii < io->obj->facelist.size(); ii += amount) {
+		if(distSqr(io->pos, sphere->origin) < square(sr180)) {
+			long amount=1;
+			vector<EERIE_VERTEX> & vlist=io->obj->vertexlist3;
 
-					if(io->obj->facelist[ii].facetype & POLY_HIDE)
-						continue;
-
-					if(distSqr(vlist[io->obj->facelist[ii].vid[0]].v, sphere->origin) < square(sr30)
-					   || distSqr(vlist[io->obj->facelist[ii].vid[1]].v, sphere->origin) < square(sr30)) {
+			if(io->obj->nbgroups > 4) {
+				for(long ii = 0; ii < io->obj->nbgroups; ii++) {
+					if(distSqr(vlist[io->obj->grouplist[ii].origin].v, sphere->origin) < square(sr40)) {
 						if(num)
 							*num = treatio[i].num;
 
 						return true;
 					}
 				}
+
+				amount=2;
+			}
+
+			for(size_t ii = 0; ii < io->obj->facelist.size(); ii += amount) {
+
+				if(io->obj->facelist[ii].facetype & POLY_HIDE)
+					continue;
+
+				if(distSqr(vlist[io->obj->facelist[ii].vid[0]].v, sphere->origin) < square(sr30)
+				   || distSqr(vlist[io->obj->facelist[ii].vid[1]].v, sphere->origin) < square(sr30)) {
+					if(num)
+						*num = treatio[i].num;
+
+					return true;
+				}
 			}
 		}
+	}
 
 	return false;	
 }
