@@ -160,7 +160,6 @@ extern long sp_max;
 short uw_mode=0;
 static short uw_mode_pos=0;
 extern long MAGICMODE;
-extern Entity * CURRENT_TORCH;
 extern float GLOBAL_SLOWDOWN;
 extern void ARX_SPSound();
 extern float sp_max_y[64];
@@ -3273,9 +3272,8 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 				}
 			}
 			
-			if(CURRENT_TORCH
-			   && closerThan(target, player.pos, effect->GetPerimetre())) {
-				ARX_PLAYER_ClickedOnTorch(CURRENT_TORCH);
+			if(player.torch && closerThan(target, player.pos, effect->GetPerimetre())) {
+				ARX_PLAYER_ClickedOnTorch(player.torch);
 			}
 			
 			for(size_t n = 0; n < MAX_SPELLS; n++) {

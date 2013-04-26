@@ -119,7 +119,6 @@ extern long		CHANGE_LEVEL_ICON;
 extern long		DONT_ERASE_PLAYER;
 extern long		GLOBAL_MAGIC_MODE;
 extern QUAKE_FX_STRUCT QuakeFx;
-extern Entity * CURRENT_TORCH;
 extern Entity * CAMERACONTROLLER;
 extern ParticleManager * pParticleManager;
 
@@ -165,7 +164,6 @@ ANIM_HANDLE * herowait_2h = NULL;
 ARX_NECKLACE necklace;
 
 vector<KEYRING_SLOT> Keyring;
-Entity * CURRENT_TORCH = NULL;
 
 static unsigned long FALLING_TIME = 0;
 
@@ -264,9 +262,9 @@ void ARX_PLAYER_KillTorch() {
 	ARX_SOUND_PlaySFX(SND_TORCH_END);
 	ARX_SOUND_Stop(SND_TORCH_LOOP);
 	
-	giveToPlayer(CURRENT_TORCH);
+	giveToPlayer(player.torch);
 	
-	CURRENT_TORCH = NULL;
+	player.torch = NULL;
 	SHOW_TORCH = 0;
 	DynLight[0].exist = 0;
 }
@@ -276,12 +274,12 @@ void ARX_PLAYER_ClickedOnTorch(Entity * io)
 	if(!io)
 		return;
 
-	if(CURRENT_TORCH == io) {
+	if(player.torch == io) {
 		ARX_PLAYER_KillTorch();
 		return;
 	}
 
-	if(CURRENT_TORCH)
+	if(player.torch)
 		ARX_PLAYER_KillTorch();
 
 	if(io->durability > 0) {
@@ -303,7 +301,7 @@ void ARX_PLAYER_ClickedOnTorch(Entity * io)
 		ARX_SOUND_PlaySFX(SND_TORCH_START);
 		ARX_SOUND_PlaySFX(SND_TORCH_LOOP, NULL, 1.0F, ARX_SOUND_PLAY_LOOPED);
 		RemoveFromAllInventories(io);
-		CURRENT_TORCH = io;
+		player.torch = io;
 		io->show = SHOW_FLAG_ON_PLAYER;
 
 		if(DRAGINTER == io)
@@ -312,25 +310,22 @@ void ARX_PLAYER_ClickedOnTorch(Entity * io)
 }
 
 static void ARX_PLAYER_ManageTorch() {
-	if (CURRENT_TORCH)
-	{
-		CURRENT_TORCH->ignition = 0;
-		CURRENT_TORCH->durability -= framedelay * ( 1.0f / 10000 );
+	if(player.torch) {
+		player.torch->ignition = 0;
+		player.torch->durability -= framedelay * ( 1.0f / 10000 );
 
-		if (CURRENT_TORCH->durability <= 0)
-		{
-
-			ARX_SPEECH_ReleaseIOSpeech(CURRENT_TORCH);
+		if(player.torch->durability <= 0) {
+			ARX_SPEECH_ReleaseIOSpeech(player.torch);
 			// Need To Kill timers
-			ARX_SCRIPT_Timer_Clear_By_IO(CURRENT_TORCH);
-			CURRENT_TORCH->show = SHOW_FLAG_KILLED;
-			CURRENT_TORCH->gameFlags &= ~GFLAG_ISINTREATZONE;
-			RemoveFromAllInventories(CURRENT_TORCH);
-			ARX_INTERACTIVE_DestroyDynamicInfo(CURRENT_TORCH);
+			ARX_SCRIPT_Timer_Clear_By_IO(player.torch);
+			player.torch->show = SHOW_FLAG_KILLED;
+			player.torch->gameFlags &= ~GFLAG_ISINTREATZONE;
+			RemoveFromAllInventories(player.torch);
+			ARX_INTERACTIVE_DestroyDynamicInfo(player.torch);
 			ARX_SOUND_PlaySFX(SND_TORCH_END);
 			ARX_SOUND_Stop(SND_TORCH_LOOP);
-			ARX_INTERACTIVE_DestroyIO(CURRENT_TORCH);
-			CURRENT_TORCH = NULL;
+			ARX_INTERACTIVE_DestroyIO(player.torch);
+			player.torch = NULL;
 			SHOW_TORCH = 0;
 			DynLight[0].exist = 0;
 		}
@@ -2076,6 +2071,7 @@ void ARX_PLAYER_InitPlayer() {
 	player.leftIO = NULL;
 	player.equipsecondaryIO = NULL;
 	player.equipshieldIO = NULL;
+	player.torch = NULL;
 	player.gold = 0;
 	player.bag = 1;
 	player.doingmagic = 0;
@@ -2945,7 +2941,7 @@ void ARX_PLAYER_Start_New_Quest() {
 	EERIE_PATHFINDER_Clear();
 	EERIE_PATHFINDER_Release();
 	ARX_PLAYER_MakeFreshHero();
-	CURRENT_TORCH = NULL;
+	player.torch = NULL;
 	entities.clear();
 	SecondaryInventory = NULL;
 	TSecondaryInventory = NULL;
@@ -3146,10 +3142,11 @@ void ARX_GAME_Reset(long type) {
 	// Player Torch
 	if (type & 1)
 	{
-		if (CURRENT_TORCH) ARX_PLAYER_ClickedOnTorch(CURRENT_TORCH);
+		if(player.torch)
+			ARX_PLAYER_ClickedOnTorch(player.torch);
 	}
 	else
-		CURRENT_TORCH = NULL;
+		player.torch = NULL;
 
 	// Player Quests
 	ARX_PLAYER_Quest_Init();

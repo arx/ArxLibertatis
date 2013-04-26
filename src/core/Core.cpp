@@ -172,7 +172,6 @@ static void shutdownGame();
 extern TextManager	*pTextManage;
 extern float FORCE_TIME_RESTORE;
 extern CMenuState		*pMenu;
-extern Entity * CURRENT_TORCH;
 extern EERIE_3DOBJ * fogobj;
 extern float	InventoryX;
 extern float	PROGRESS_BAR_COUNT;
@@ -1726,7 +1725,7 @@ void FirstFrameHandling() {
 		LoadLevelScreen();
 	}
 
-	if(CURRENT_TORCH) {
+	if(player.torch) {
 		ARX_SOUND_PlaySFX(SND_TORCH_LOOP, NULL, 1.0F, ARX_SOUND_PLAY_LOOPED);
 		SHOW_TORCH = 1;
 	} else {

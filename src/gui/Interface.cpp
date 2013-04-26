@@ -156,7 +156,6 @@ extern TextureContainer * pTCCrossHair;
 extern TextureContainer * mecanism_tc;
 extern TextureContainer * arrow_left_tc;
 extern TexturedVertex LATERDRAWHALO[];
-extern Entity * CURRENT_TORCH;
 extern Notification speech[];
 extern std::string WILLADDSPEECH;
 extern float PLAYER_ROTATION;
@@ -1357,18 +1356,18 @@ void ArxGame::manageEditorControls() {
 
 				py = DANAESIZY - INTERFACE_RATIO(158+32);
 
-				if(CURRENT_TORCH) {
+				if(player.torch) {
 					if(MouseInRect(px, py, px + INTERFACE_RATIO(32), py + INTERFACE_RATIO(64))) {
 						eMouseState=MOUSE_IN_TORCH_ICON;
 						SpecialCursor=CURSOR_INTERACTION_ON;
 
 						if((LastMouseClick & 1) && !(EERIEMouseButton & 1)) {
-							Entity * temp = CURRENT_TORCH;
+							Entity * temp = player.torch;
 
 							if(temp && !temp->locname.empty()) {
-								if (((CURRENT_TORCH->ioflags & IO_ITEM) && CURRENT_TORCH->_itemdata->equipitem)
+								if(((player.torch->ioflags & IO_ITEM) && player.torch->_itemdata->equipitem)
 									&& (player.Full_Skill_Object_Knowledge + player.Full_Attribute_Mind
-									>= CURRENT_TORCH->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Identify_Value].value) )
+										>= player.torch->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Identify_Value].value) )
 								{
 									SendIOScriptEvent(FlyingOverIO,SM_IDENTIFY);
 								}
@@ -1405,22 +1404,22 @@ void ArxGame::manageEditorControls() {
 						}
 
 						if(!DRAGINTER && !PLAYER_MOUSELOOK_ON && DRAGGING) {
-							Entity * io=CURRENT_TORCH;
-							CURRENT_TORCH->show=SHOW_FLAG_IN_SCENE;
+							Entity * io=player.torch;
+							player.torch->show=SHOW_FLAG_IN_SCENE;
 							ARX_SOUND_PlaySFX(SND_TORCH_END);
 							ARX_SOUND_Stop(SND_TORCH_LOOP);
-							CURRENT_TORCH=NULL;
+							player.torch=NULL;
 							SHOW_TORCH=0;
 							DynLight[0].exist=0;
 							Set_DragInter(io);
 							DRAGINTER->ignition=1;
 						} else {
 							if((EERIEMouseButton & 4) && !COMBINE) {
-								COMBINE = CURRENT_TORCH;
+								COMBINE = player.torch;
 							}
 
 							if(!(EERIEMouseButton & 2) && (LastMouseClick & 2)) {
-								ARX_PLAYER_ClickedOnTorch(CURRENT_TORCH);
+								ARX_PLAYER_ClickedOnTorch(player.torch);
 								EERIEMouseButton &= ~2;
 								TRUE_PLAYER_MOUSELOOK_ON = false;
 							}
@@ -1809,7 +1808,7 @@ void ArxGame::manageEditorControls() {
 		}
 
 	if(COMBINE) {
-		if(!CURRENT_TORCH || (CURRENT_TORCH && (COMBINE != CURRENT_TORCH))) {
+		if(!player.torch || (player.torch && (COMBINE != player.torch))) {
 			Vec3f pos;
 
 			if(GetItemWorldPosition(COMBINE, &pos)) {
@@ -1857,7 +1856,7 @@ void ArxGame::manageEditorControls() {
 				{
 					if(MouseInRect(GLight[i]->mins.x, GLight[i]->mins.y, GLight[i]->maxs.x, GLight[i]->maxs.y)) {
 						if(COMBINE->ioflags & IO_ITEM) {
-							if((COMBINE == CURRENT_TORCH) || (COMBINE->_itemdata->LightValue == 1)) {
+							if((COMBINE == player.torch) || (COMBINE->_itemdata->LightValue == 1)) {
 								if(GLight[i]->status != 1) {
 									GLight[i]->status = 1;
 									ARX_SOUND_PlaySFX(SND_TORCH_START, &GLight[i]->pos);
@@ -2389,7 +2388,7 @@ void ArxGame::managePlayerControls()
 	}
 
 	if(GInput->actionNowPressed(CONTROLS_CUST_TORCH)) {
-		if(CURRENT_TORCH) {
+		if(player.torch) {
 			ARX_PLAYER_KillTorch();
 		} else {
 			Entity * io = ARX_INVENTORY_GetTorchLowestDurability();
@@ -5697,9 +5696,10 @@ void ARX_INTERFACE_DrawCurrentTorch() {
 	float px = INTERFACE_RATIO(std::max(InventoryX + 110.f, 10.f));
 	float py = DANAESIZY - INTERFACE_RATIO(158.f + 32.f);
 	
-	EERIEDrawBitmap(px, py, INTERFACE_RATIO_DWORD(CURRENT_TORCH->inv->m_dwWidth),
-	                INTERFACE_RATIO_DWORD(CURRENT_TORCH->inv->m_dwHeight),
-	                0.001f, CURRENT_TORCH->inv, Color::white);
+	EERIEDrawBitmap(px, py,
+					INTERFACE_RATIO_DWORD(player.torch->inv->m_dwWidth),
+					INTERFACE_RATIO_DWORD(player.torch->inv->m_dwHeight),
+					0.001f, player.torch->inv, Color::white);
 	
 	if(rnd() <= 0.2f) {
 		return;
@@ -6175,7 +6175,7 @@ void ArxGame::drawAllInterface() {
 				}
 			}
 
-			if(CURRENT_TORCH)
+			if(player.torch)
 				ARX_INTERFACE_DrawCurrentTorch();
 		}
 

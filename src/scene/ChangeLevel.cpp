@@ -92,7 +92,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 using std::string;
 
-extern Entity * CURRENT_TORCH;
 extern long GLOBAL_MAGIC_MODE;
 float FORCE_TIME_RESTORE = 0;
 extern Vec3f WILL_RESTORE_PLAYER_POSITION;
@@ -398,7 +397,7 @@ bool IsPlayerEquipedWith(Entity * io) {
 	
 	long num = io->index();
 	
-	if(io == CURRENT_TORCH) {
+	if(io == player.torch) {
 		return true;
 	}
 	
@@ -672,7 +671,7 @@ static long ARX_CHANGELEVEL_Push_Player(long level) {
 	FillIOIdent(asp->equipshieldIO, player.equipshieldIO);
 	FillIOIdent(asp->leftIO, player.leftIO);
 	FillIOIdent(asp->rightIO, player.rightIO);
-	FillIOIdent(asp->curtorch, CURRENT_TORCH);
+	FillIOIdent(asp->curtorch, player.torch);
 
 	std::copy(Precast, Precast + SAVED_MAX_PRECAST, asp->precast);
 
@@ -1833,7 +1832,7 @@ static long ARX_CHANGELEVEL_Pop_Player() {
 	player.equipshieldIO = ConvertToValidIO(asp->equipshieldIO);
 	player.leftIO = ConvertToValidIO(asp->leftIO);
 	player.rightIO = ConvertToValidIO(asp->rightIO);
-	CURRENT_TORCH = ConvertToValidIO(asp->curtorch);
+	player.torch = ConvertToValidIO(asp->curtorch);
 	PROGRESS_BAR_COUNT += 1.f;
 	LoadLevelScreen();
 	

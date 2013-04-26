@@ -161,6 +161,7 @@ struct ARXCHARACTER {
 	Entity * leftIO;
 	Entity * equipsecondaryIO;
 	Entity * equipshieldIO;
+	Entity * torch;
 	
 	short equiped[MAX_EQUIPED]; 
 	

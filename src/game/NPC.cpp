@@ -3725,8 +3725,6 @@ void ARX_NPC_SpawnAudibleSound(Vec3f * pos, Entity * source, const float factor,
 	}
 }
 
-extern Entity * CURRENT_TORCH;
-
 void createFireParticles(Vec3f &pos,const int particlesToCreate, const int particleDelayFactor);
 
 void ManageIgnition(Entity * io)
@@ -3734,8 +3732,7 @@ void ManageIgnition(Entity * io)
 	if(!io)
 		return;
 
-	if (CURRENT_TORCH == io)
-	{
+	if(player.torch == io) {
 		if (ValidDynLight(io->ignit_light))
 			DynLight[io->ignit_light].exist = 0;
 
