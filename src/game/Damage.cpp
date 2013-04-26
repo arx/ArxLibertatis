@@ -1054,8 +1054,7 @@ void ARX_DAMAGES_UpdateDamage(long j, float tim) {
 							{
 								float ratio = (damages[j].radius - dist) * divradius;
 
-								if (ratio > 1.f) ratio = 1.f;
-								else if (ratio < 0.f) ratio = 0.f;
+								ratio = clamp(ratio, 0.f, 1.f);
 
 								dmg = dmg * ratio + 1.f;
 							}
@@ -1064,8 +1063,7 @@ void ARX_DAMAGES_UpdateDamage(long j, float tim) {
 							{
 								float ratio = (damages[j].radius - (dist * ( 1.0f / 2 ))) * divradius;
 
-								if (ratio > 1.f) ratio = 1.f;
-								else if (ratio < 0.f) ratio = 0.f;
+								ratio = clamp(ratio, 0.f, 1.f);
 
 								dmg = dmg * ratio + 1.f;
 							}
