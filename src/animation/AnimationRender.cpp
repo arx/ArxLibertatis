@@ -89,7 +89,6 @@ using std::max;
 
 unsigned char * grps = NULL;
 static long max_grps = 0;
-extern long FORCE_NO_HIDE;
 
 extern float dists[];
 extern long BH_MODE;
@@ -1132,7 +1131,7 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity *
 
 		EERIE_FACE *eface = &eobj->facelist[i];
 
-		if((eface->facetype & POLY_HIDE) && !FORCE_NO_HIDE)
+		if((eface->facetype & POLY_HIDE) && !IN_BOOK_DRAW)
 			continue;
 
 		//CULL3D

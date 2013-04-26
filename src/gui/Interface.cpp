@@ -163,7 +163,6 @@ extern float SLID_VALUE;
 
 extern long BOOKBUTTON;
 extern long LASTBOOKBUTTON;
-extern long FORCE_NO_HIDE;
 static long lSLID_VALUE = 0;
 
 extern long CHANGE_LEVEL_ICON;
@@ -5412,7 +5411,6 @@ void ARX_INTERFACE_ManageOpenedBook()
 		if (INVISIBILITY_OVERRIDE>0.5f)
 			INVISIBILITY_OVERRIDE=0.5f;
 
-		FORCE_NO_HIDE=1;
 		IN_BOOK_DRAW=1;
 		std::vector<EERIE_VERTEX> vertexlist = entities.player()->obj->vertexlist3;
 
@@ -5423,7 +5421,6 @@ void ARX_INTERFACE_ManageOpenedBook()
 
 		INVISIBILITY_OVERRIDE=0;
 		IN_BOOK_DRAW=0;
-		FORCE_NO_HIDE=0;
 
 		if(ARXmenu.currentmode == AMCM_NEWQUEST) {
 			GRenderer->SetRenderState(Renderer::DepthTest, true);

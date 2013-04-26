@@ -115,7 +115,6 @@ TexturedVertex LATERDRAWHALO[HALOMAX * 4];
 EERIE_LIGHT * llights[32];
 float dists[32];
 float values[32];
-long FORCE_NO_HIDE = 0;
 extern unsigned char * grps;
 long TRAP_DETECT = -1;
 long TRAP_SECRET = -1;
