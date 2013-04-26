@@ -1826,9 +1826,7 @@ void ArxGame::manageEditorControls() {
 
 		if((io=FlyingOverIO)!=NULL) {
 			if(COMBINEGOLD) {
-				char temp[256];
-				strcpy(temp,"gold_coin");
-				SendIOScriptEvent(io,SM_COMBINE,temp);
+				SendIOScriptEvent(io, SM_COMBINE, "gold_coin");
 			} else {
 				if(io != COMBINE) {
 					std::string temp = COMBINE->long_name();
