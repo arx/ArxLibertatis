@@ -1,0 +1,16 @@
+language: cpp
+compiler:
+  - gcc
+before_install:
+ - sudo apt-get update -qq
+ - sudo apt-get install -qq build-essential cmake zlib1g-dev libfreetype6-dev libopenal1 libopenal-dev mesa-common-dev libgl1-mesa-dev libboost-all-dev libsdl1.2-dev libglew-dev qt-sdk gdb
+script: mkdir build && cd build && cmake .. && make -j1
+branches:
+  only:
+    - master
+notifications:
+  irc:
+    channels:
+      - "irc.freenode.net#arxfatalis"
+    on_success: change
+    on_failure: always
