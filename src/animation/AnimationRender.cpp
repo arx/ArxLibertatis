@@ -1815,39 +1815,39 @@ void MakeCLight2(Entity *io, Color3f *infra, EERIE_QUAT *qInvert, Vec3f *pos, EE
 			if(!Cur_llights)
 				break;
 
-				float cosangle;
-				float oolength = 1.f / fdist(*posVert, Cur_llights->pos);
-				Vec3f vLight = (llights[l]->pos - *posVert) * oolength;
+			float cosangle;
+			float oolength = 1.f / fdist(*posVert, Cur_llights->pos);
+			Vec3f vLight = (llights[l]->pos - *posVert) * oolength;
 
-				TransformInverseVertexQuat(qInvert, &vLight, &vTLights[l]);
-				Vec3f * Cur_vLights = &vTLights[l];
-	
-				cosangle = (eobj->facelist[ii].norm.x * Cur_vLights->x +
-				            eobj->facelist[ii].norm.y * Cur_vLights->y +
-							eobj->facelist[ii].norm.z * Cur_vLights->z);
+			TransformInverseVertexQuat(qInvert, &vLight, &vTLights[l]);
+			Vec3f * Cur_vLights = &vTLights[l];
 
-				cosangle *= 0.5f;
+			cosangle = (eobj->facelist[ii].norm.x * Cur_vLights->x +
+						eobj->facelist[ii].norm.y * Cur_vLights->y +
+						eobj->facelist[ii].norm.z * Cur_vLights->z);
 
-				// If light visible
-				if(cosangle > 0.f) {
-					float distance = fdist(*posVert, Cur_llights->pos);
+			cosangle *= 0.5f;
 
-					// Evaluate its intensity depending on the distance Light<->Object
-					if(distance <= Cur_llights->fallstart) {
-						cosangle *= Cur_llights->precalc;
-					} else {
-						float p = ((Cur_llights->fallend - distance) * Cur_llights->falldiffmul);
+			// If light visible
+			if(cosangle > 0.f) {
+				float distance = fdist(*posVert, Cur_llights->pos);
 
-						if(p <= 0.f)
-							cosangle = 0.f;
-						else
-							cosangle *= p * Cur_llights->precalc;
-					}
+				// Evaluate its intensity depending on the distance Light<->Object
+				if(distance <= Cur_llights->fallstart) {
+					cosangle *= Cur_llights->precalc;
+				} else {
+					float p = ((Cur_llights->fallend - distance) * Cur_llights->falldiffmul);
 
-					tempColor.r += Cur_llights->rgb255.r * cosangle;
-					tempColor.g += Cur_llights->rgb255.g * cosangle;
-					tempColor.b += Cur_llights->rgb255.b * cosangle;
+					if(p <= 0.f)
+						cosangle = 0.f;
+					else
+						cosangle *= p * Cur_llights->precalc;
 				}
+
+				tempColor.r += Cur_llights->rgb255.r * cosangle;
+				tempColor.g += Cur_llights->rgb255.g * cosangle;
+				tempColor.b += Cur_llights->rgb255.b * cosangle;
+			}
 		}
 
 		if(Project.improve) {
