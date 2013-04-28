@@ -323,16 +323,17 @@ static void Cedric_ConcatenateTM(EERIE_C_DATA *obj, EERIE_QUAT *rotation, Vec3f 
 		EERIE_BONE * bone = &obj->bones[i];
 
 		if(bone->father >= 0) { // Child Bones
+			EERIE_BONE * parent = &obj->bones[bone->father];
 			// Rotation
-			Quat_Multiply(&bone->quatanim, &obj->bones[bone->father].quatanim, &bone->quatinit);
+			Quat_Multiply(&bone->quatanim, &parent->quatanim, &bone->quatinit);
 
 			// Translation
-			bone->transanim = bone->transinit * obj->bones[bone->father].scaleanim;
-			TransformVertexQuat(&obj->bones[bone->father].quatanim, &bone->transanim, &bone->transanim);
-			bone->transanim = obj->bones[bone->father].transanim + bone->transanim;
+			bone->transanim = bone->transinit * parent->scaleanim;
+			TransformVertexQuat(&parent->quatanim, &bone->transanim, &bone->transanim);
+			bone->transanim = parent->transanim + bone->transanim;
 
 			/* Scale */
-			bone->scaleanim = (bone->scaleinit + Vec3f::ONE) * obj->bones[bone->father].scaleanim;
+			bone->scaleanim = (bone->scaleinit + Vec3f::ONE) * parent->scaleanim;
 		} else { // Root Bone
 			// Rotation
 			Quat_Multiply(&bone->quatanim, rotation, &bone->quatinit);
