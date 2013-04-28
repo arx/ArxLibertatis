@@ -1047,7 +1047,7 @@ void ARX_DrawPrimitive(TexturedVertex * _pVertex1, TexturedVertex * _pVertex2, T
 extern long IN_BOOK_DRAW;
 
 /* Render object */
-static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity * io, Vec3f * pos, Vec3f & ftr, float invisibility, Color3f &special_color, long &special_color_flag) {
+static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity * io, Vec3f * pos, Vec3f & ftr, float invisibility) {
 	
 	float MAX_ZEDE = 0.f;
 
@@ -1207,15 +1207,6 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity *
 			tv[n].uv.x	= eface->u[n];
 			tv[n].uv.y	= eface->v[n];
 			tv[n].color = eobj->vertexlist3[paf[n]].vert.color;
-		}
-
-		if(special_color_flag & 1) {
-			for(long j = 0; j < 3; j++) {
-				tv[j].color = 0xFF000000L
-							   | (((long)((float)((long)((tv[j].color >> 16) & 255)) * (special_color.r)) & 255) << 16)
-							   | (((long)((float)((long)((tv[j].color >> 8) & 255)) * special_color.g) & 255) << 8)
-							   | ((long)((float)((long)(tv[j].color & 255)) * (special_color.b)) & 255);
-			}
 		}
 
 		if((eobj->facelist[i].facetype & POLY_TRANS) || invisibility > 0.f) {
@@ -1620,7 +1611,7 @@ void Cedric_AnimateDrawEntityRender(EERIE_3DOBJ *eobj, Vec3f *pos, Vec3f &ftr, E
 	if(!Cedric_ApplyLighting(eobj, obj, io, pos, special_color, special_color_flag))
 		return;
 
-	Cedric_RenderObject(eobj, obj, io, pos, ftr, invisibility, special_color, special_color_flag);
+	Cedric_RenderObject(eobj, obj, io, pos, ftr, invisibility);
 
 	if(io) {
 		io->bbox1.x = (short)BBOXMIN.x;
