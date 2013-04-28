@@ -1812,7 +1812,9 @@ void MakeCLight2(Entity *io, Color3f *infra, EERIE_QUAT *qInvert, Vec3f *pos, EE
 		for(int l = 0; l != MAX_LLIGHTS; l++) {
 			EERIE_LIGHT * Cur_llights = llights[l];
 
-			if(Cur_llights) {
+			if(!Cur_llights)
+				break;
+
 				float cosangle;
 				float oolength = 1.f / fdist(*posVert, Cur_llights->pos);
 				Vec3f vLight = (llights[l]->pos - *posVert) * oolength;
@@ -1831,13 +1833,12 @@ void MakeCLight2(Entity *io, Color3f *infra, EERIE_QUAT *qInvert, Vec3f *pos, EE
 					float distance = fdist(*posVert, Cur_llights->pos);
 
 					// Evaluate its intensity depending on the distance Light<->Object
-					if(distance <= Cur_llights->fallstart)
+					if(distance <= Cur_llights->fallstart) {
 						cosangle *= Cur_llights->precalc;
-					else
-					{
+					} else {
 						float p = ((Cur_llights->fallend - distance) * Cur_llights->falldiffmul);
 
-						if (p <= 0.f)
+						if(p <= 0.f)
 							cosangle = 0.f;
 						else
 							cosangle *= p * Cur_llights->precalc;
@@ -1847,9 +1848,6 @@ void MakeCLight2(Entity *io, Color3f *infra, EERIE_QUAT *qInvert, Vec3f *pos, EE
 					tempColor.g += Cur_llights->rgb255.g * cosangle;
 					tempColor.b += Cur_llights->rgb255.b * cosangle;
 				}
-			}
-			else
-				break;
 		}
 
 		if(Project.improve) {
