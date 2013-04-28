@@ -6724,6 +6724,22 @@ void ARX_INTERFACE_RenderCursorInternal(long flag)
 				SpecialCursor = CURSOR_COMBINEOFF;
 		}
 
+		if(!SPECIAL_DRAGINTER_RENDER) {
+			if(FlyingOverIO || DRAGINTER) {
+				fHighLightAng += (float)(framedelay*0.5);
+
+				if(fHighLightAng>90.f)
+					fHighLightAng=90.f;
+
+				float fHLight = 100.f * sin(radians(fHighLightAng));
+
+				iHighLight = checked_range_cast<int>(fHLight);
+			} else {
+				fHighLightAng = 0.f;
+				iHighLight = 0;
+			}
+		}
+
 		if ((SpecialCursor) || !PLAYER_MOUSELOOK_ON || (DRAGINTER!=NULL)
 		        || ((FlyingOverIO) && PLAYER_MOUSELOOK_ON && !(ARX_MOUSE_OVER & ARX_MOUSE_OVER_BOOK)
 			&& (eMouseState != MOUSE_IN_NOTE)
@@ -6732,22 +6748,6 @@ void ARX_INTERFACE_RenderCursorInternal(long flag)
 			&& (config.input.autoReadyWeapon == false))
 			|| ((MAGICMODE==1) && PLAYER_MOUSELOOK_ON))
 		{
-
-			if(!SPECIAL_DRAGINTER_RENDER) {
-				if(FlyingOverIO || DRAGINTER) {
-					fHighLightAng += (float)(framedelay*0.5);
-
-					if(fHighLightAng>90.f)
-						fHighLightAng=90.f;
-
-					float fHLight = 100.f * sin(radians(fHighLightAng));
-
-					iHighLight = checked_range_cast<int>(fHLight);
-				} else {
-					fHighLightAng = 0.f;
-					iHighLight = 0;
-				}
-			}
 
 			CANNOT_PUT_IT_HERE=0;
 			float ag=player.angle.a;
@@ -6996,18 +6996,6 @@ void ARX_INTERFACE_RenderCursorInternal(long flag)
 		} else { //mode system shock
 			if(SPECIAL_DRAGINTER_RENDER)
 				return;
-
-			if(FlyingOverIO || DRAGINTER) {
-				fHighLightAng+=(float)(framedelay*0.5f);
-
-				if(fHighLightAng>90.f) fHighLightAng=90.f;
-
-				float fHLight	= 100.f*sin(radians(fHighLightAng));
-				iHighLight = checked_range_cast<int>(fHLight);
-			} else {
-				fHighLightAng=0.f;
-				iHighLight = 0;
-			}
 
 			if(TRUE_PLAYER_MOUSELOOK_ON && config.video.showCrosshair) {
 				if(!(player.Interface & (INTER_COMBATMODE | INTER_NOTE | INTER_MAP))) {
