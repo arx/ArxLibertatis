@@ -1712,7 +1712,7 @@ void MakeCLight(Entity * io, Color3f * infra, EERIE_QUAT *qInvert, Vec3f * pos, 
 
 		// Dynamic lights
 		for(int l = 0; l != MAX_LLIGHTS; l++) {
-			EERIE_LIGHT *Cur_llights = llights[l];
+			EERIE_LIGHT * Cur_llights = llights[l];
 
 			if(!Cur_llights)
 				break;
@@ -1815,16 +1815,13 @@ void MakeCLight2(Entity *io, Color3f *infra, EERIE_QUAT *qInvert, Vec3f *pos, EE
 			if(!Cur_llights)
 				break;
 
-			float cosangle;
 			float oolength = 1.f / fdist(*posVert, Cur_llights->pos);
 			Vec3f vLight = (llights[l]->pos - *posVert) * oolength;
 
 			TransformInverseVertexQuat(qInvert, &vLight, &vTLights[l]);
 			Vec3f * Cur_vLights = &vTLights[l];
 
-			cosangle = (eobj->facelist[ii].norm.x * Cur_vLights->x +
-						eobj->facelist[ii].norm.y * Cur_vLights->y +
-						eobj->facelist[ii].norm.z * Cur_vLights->z);
+			float cosangle = dot(eobj->facelist[ii].norm, *Cur_vLights);
 
 			cosangle *= 0.5f;
 
@@ -1869,7 +1866,7 @@ void MakeCLight2(Entity *io, Color3f *infra, EERIE_QUAT *qInvert, Vec3f *pos, EE
 		u8 ir = clipByte255(tempColor.r);
 		u8 ig = clipByte255(tempColor.g);
 		u8 ib = clipByte255(tempColor.b);
-		eobj->vertexlist3[paf[i]].vert.color = (0xff000000L | (ir << 16) | (ig << 8) | (ib));
+		eobj->vertexlist3[paf[i]].vert.color = (0xFF000000L | (ir << 16) | (ig << 8) | (ib));
 	}
 }
 
