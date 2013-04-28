@@ -320,29 +320,31 @@ static void Cedric_ConcatenateTM(EERIE_C_DATA *obj, EERIE_QUAT *rotation, Vec3f 
 		return;
 
 	for(int i = 0; i != obj->nb_bones; i++) {
-		if(obj->bones[i].father >= 0) { // Child Bones
+		EERIE_BONE * bone = &obj->bones[i];
+
+		if(bone->father >= 0) { // Child Bones
 			// Rotation
-			Quat_Multiply(&obj->bones[i].quatanim, &obj->bones[obj->bones[i].father].quatanim, &obj->bones[i].quatinit);
+			Quat_Multiply(&bone->quatanim, &obj->bones[bone->father].quatanim, &bone->quatinit);
 
 			// Translation
-			obj->bones[i].transanim = obj->bones[i].transinit * obj->bones[obj->bones[i].father].scaleanim;
-			TransformVertexQuat(&obj->bones[obj->bones[i].father].quatanim, &obj->bones[i].transanim, &obj->bones[i].transanim);
-			obj->bones[i].transanim = obj->bones[obj->bones[i].father].transanim + obj->bones[i].transanim;
+			bone->transanim = bone->transinit * obj->bones[bone->father].scaleanim;
+			TransformVertexQuat(&obj->bones[bone->father].quatanim, &bone->transanim, &bone->transanim);
+			bone->transanim = obj->bones[bone->father].transanim + bone->transanim;
 
 			/* Scale */
-			obj->bones[i].scaleanim = (obj->bones[i].scaleinit + Vec3f::ONE) * obj->bones[obj->bones[i].father].scaleanim;
+			bone->scaleanim = (bone->scaleinit + Vec3f::ONE) * obj->bones[bone->father].scaleanim;
 		} else { // Root Bone
 			// Rotation
-			Quat_Multiply(&obj->bones[i].quatanim, rotation, &obj->bones[i].quatinit);
+			Quat_Multiply(&bone->quatanim, rotation, &bone->quatinit);
 
 			// Translation
-			Vec3f vt1 = obj->bones[i].transinit + ftr;
-			TransformVertexQuat(rotation, &vt1, &obj->bones[i].transanim);
-			obj->bones[i].transanim *= g_scale;
-			obj->bones[i].transanim = *pos + obj->bones[i].transanim;
+			Vec3f vt1 = bone->transinit + ftr;
+			TransformVertexQuat(rotation, &vt1, &bone->transanim);
+			bone->transanim *= g_scale;
+			bone->transanim = *pos + bone->transanim;
 
 			// Compute Global Object Scale AND Global Animation Scale
-			obj->bones[i].scaleanim = (obj->bones[i].scaleinit + Vec3f::ONE) * g_scale;
+			bone->scaleanim = (bone->scaleinit + Vec3f::ONE) * g_scale;
 		}
 	}
 }
