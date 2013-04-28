@@ -354,7 +354,7 @@ void EE_RT(TexturedVertex * in, Vec3f * out);
 void EE_P(Vec3f * in, TexturedVertex * out);
 
 /* Transform object vertices  */
-int Cedric_TransformVerts(Entity *io, EERIE_3DOBJ *eobj, EERIE_C_DATA *obj, Vec3f *pos) {
+void Cedric_TransformVerts(Entity *io, EERIE_3DOBJ *eobj, EERIE_C_DATA *obj, Vec3f *pos) {
 
 	EERIE_3DPAD * inVert;
 	EERIE_VERTEX * outVert;
@@ -408,18 +408,6 @@ int Cedric_TransformVerts(Entity *io, EERIE_3DOBJ *eobj, EERIE_C_DATA *obj, Vec3
 			BBOXMAX.y = max(BBOXMAX.y, outVert->vert.p.y);
 		}
 	}
-
-	if(io && (io->ioflags & IO_NPC) && (io->_npcdata->behavior & BEHAVIOUR_FIGHT) && distSqr(io->pos, player.pos) < square(240.f))
-		return true;
-
-	if(io != entities.player() && !EXTERNALVIEW && !eobj->cdata
-			&& ((BBOXMIN.x >= DANAESIZX - 1) || (BBOXMAX.x <= 1) || (BBOXMIN.y >= DANAESIZY - 1) || (BBOXMAX.y <= 1)))
-		return false;
-
-	if(ARX_SCENE_PORTAL_ClipIO(io, pos))
-		return false;
-
-	return true;
 }
 
 extern long TRAP_DETECT;
@@ -1582,8 +1570,18 @@ void Cedric_AnimateDrawEntity(EERIE_3DOBJ *eobj, ANIM_USE *animuse, Anglef *angl
 	if(!obj)
 		return;
 
-	if(!Cedric_TransformVerts(io, eobj, obj, pos))
-		return;
+	Cedric_TransformVerts(io, eobj, obj, pos);
+
+
+	if( !(io && (io->ioflags & IO_NPC) && (io->_npcdata->behavior & BEHAVIOUR_FIGHT) && distSqr(io->pos, player.pos) < square(240.f))) {
+
+		if(io != entities.player() && !EXTERNALVIEW && !eobj->cdata
+				&& ((BBOXMIN.x >= DANAESIZX - 1) || (BBOXMAX.x <= 1) || (BBOXMIN.y >= DANAESIZY - 1) || (BBOXMAX.y <= 1)))
+			return;
+
+		if(ARX_SCENE_PORTAL_ClipIO(io, pos))
+			return;
+	}
 
 	if(render)
 		Cedric_AnimateDrawEntityRender(eobj, pos, ftr, io);
