@@ -182,8 +182,6 @@ enum ARX_PARTICLES_TYPE_FLAG {
 //-----------------------------------------------------------------------------
 #define BOOM_RADIUS 420.f
 #define BOOM_RADIUS2 250.f
-#define MAX_OBJFX			30
-#define SPECIAL_RAYZ		1
 #define FLARELINESTEP		7
 #define FLARELINERND		6
 #define MAX_EXPLO			24 
@@ -207,7 +205,7 @@ void RestoreAllLightsInitialStatus();
 void TreatBackgroundActions();
 void TreatBackgroundDynlights();
 void MakeBookFX(const Vec3f & pos);
-void UpdateObjFx() ;
+
 void Add3DBoom(Vec3f * position);
 void AddRandomSmoke(Entity * io, long amount = 1);
 void AddFlare(Vec2s * pos, float sm, short typ, Entity * io = NULL);
