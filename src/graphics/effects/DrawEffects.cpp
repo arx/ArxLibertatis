@@ -241,7 +241,7 @@ void EERIEDrawLight(EERIE_LIGHT * el)
 		if((el->mins.x>=-200.f) && (el->mins.x<=1000.f))
 		if((el->mins.y>=-200.f) && (el->mins.y<=1000.f)) {
 			in.p = el->pos;
-			EERIETreatPoint(&in,&center);
+			EE_RTP(&in, &center);
 
 			if(center.p.z > 0.f && center.p.z < 1000.f) {
 				float t=(1.f-center.p.z)*ACTIVECAM->orgTrans.use_focal*( 1.0f / 3000 );

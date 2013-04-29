@@ -399,7 +399,8 @@ void EERIEDrawSprite(TexturedVertex * in, float siz, TextureContainer * tex, Col
 	
 	TexturedVertex out;
 	
-	EERIETreatPoint(in, &out, 3000.f);
+	EE_RTP(in, &out);
+	out.rhw *= 3000.f;
 
 	if ((out.p.z>0.f) && (out.p.z<1000.f)
 		&& (out.p.x>-1000) && (out.p.x<2500.f)
@@ -449,7 +450,9 @@ void EERIEDrawRotatedSprite(TexturedVertex * in, float siz, TextureContainer * t
                             float Zpos, float rot) {
 	
 	TexturedVertex out;
-	EERIETreatPoint(in, &out, 3000.f);
+
+	EE_RTP(in, &out);
+	out.rhw *= 3000.f;
 	
 	if(out.p.z > 0.f && out.p.z < 1000.f) {
 		float use_focal = BASICFOCAL * Xratio;

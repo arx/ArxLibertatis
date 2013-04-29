@@ -546,11 +546,6 @@ void SetActiveCamera(EERIE_CAMERA * cam)
 	if (ACTIVECAM != cam) ACTIVECAM = cam;
 }
 
-void EERIETreatPoint(TexturedVertex * in, TexturedVertex * out, float rhwScale) {
-	EE_RTP(in, out);
-	out->rhw = out->rhw * rhwScale;
-}
-
 void EE_RT(TexturedVertex * in, Vec3f * out) {
 	
 	EERIE_TRANSFORM * et = (EERIE_TRANSFORM *)&ACTIVECAM->orgTrans;

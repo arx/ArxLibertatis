@@ -1389,7 +1389,7 @@ void ARX_PARTICLES_Render(EERIE_CAMERA * cam)  {
 			
 			EERIE_SPHERE sp;
 			sp.origin = in.p;
-			EERIETreatPoint(&inn, &out);
+			EE_RTP(&inn, &out);
 			if(out.rhw < 0 || out.p.z > cam->cdepth * fZFogEnd) {
 				continue;
 			}
@@ -1418,10 +1418,10 @@ void ARX_PARTICLES_Render(EERIE_CAMERA * cam)  {
 				tv[0].rhw = out.rhw;
 				TexturedVertex temp;
 				temp.p = in.p + Vec3f(rnd() * 0.5f, 0.8f, rnd() * 0.5f);
-				EERIETreatPoint(&temp, &tv[1]);
+				EE_RTP(&temp, &tv[1]);
 				temp.p = in.p + vect * part->fparam;
 				
-				EERIETreatPoint(&temp, &tv[2]);
+				EE_RTP(&temp, &tv[2]);
 				GRenderer->ResetTexture(0);
 				
 				EERIEDRAWPRIM(Renderer::TriangleStrip, tv);

@@ -408,7 +408,7 @@ void ComputeLight2DPos(EERIE_LIGHT * _pL) {
 	
 	TexturedVertex in, out;
 	in.p = _pL->pos;
-	EERIETreatPoint(&in, &out);
+	EE_RTP(&in, &out);
 	
 	if(out.p.z > 0.f && out.p.z < 1000.f && out.rhw > 0) {
 		float siz = 50;
