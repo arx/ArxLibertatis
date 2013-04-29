@@ -1230,8 +1230,6 @@ void ARX_PARTICLES_Render(EERIE_CAMERA * cam)  {
 		return;
 	}
 	
-	TreatBackgroundActions();
-	
 	if(ParticleCount == 0) {
 		return;
 	}

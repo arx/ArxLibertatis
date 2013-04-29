@@ -1460,7 +1460,8 @@ void ArxGame::renderLevel() {
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
 	ARX_FOGS_Render();
-	
+
+	TreatBackgroundActions();
 	ARX_PARTICLES_Render(&subj);
 
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
