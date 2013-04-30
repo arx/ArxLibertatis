@@ -1754,8 +1754,8 @@ void AddFlare(Vec2s * pos, float sm, short typ, Entity * io) {
 		fl->flags = 0;
 	}
 	
-	fl->x = pos->x - rnd() * 4.f;
-	fl->y = pos->y - rnd() * 4.f - 50.f;
+	fl->x = float(pos->x) - rnd() * 4.f;
+	fl->y = float(pos->y) - rnd() * 4.f - 50.f;
 	fl->tv.rhw = fl->v.rhw = 1.f;
 	fl->tv.specular = fl->v.specular = 1;
 	
@@ -1844,6 +1844,7 @@ void AddFlare(Vec2s * pos, float sm, short typ, Entity * io) {
 		if(!io) {
 			pd->special |= PARTICLE_NOZBUFFER;
 		}
+
 		pd->ov = fl->v.p + randomVec(-5.f, 5.f);
 		pd->move = Vec3f(0.f, 5.f, 0.f);
 		pd->scale = Vec3f::repeat(-2.f);
@@ -1889,8 +1890,10 @@ void AddFlare2(Vec2s * pos, float sm, short typ, Entity * io) {
 	fl->y = float(pos->y) - rnd() * 4.f - 50.f;
 	fl->tv.rhw = fl->v.rhw = 1.f;
 	fl->tv.specular = fl->v.specular = 1;
+
 	fl->tv.p = Vec3f(fl->x, fl->y, 0.001f);
-	switch(PIPOrgb)  {
+
+	switch(PIPOrgb) {
 		case 0: {
 			fl->rgb = Color3f(rnd() * (2.f/3) + .4f, rnd() * (2.f/3), rnd() * (2.f/3) + .4f);
 			break;
@@ -1941,19 +1944,21 @@ void AddFlare2(Vec2s * pos, float sm, short typ, Entity * io) {
 		}
 		
 		pd->special = FADE_IN_AND_OUT;
+
 		pd->ov = fl->v.p + randomVec(-5.f, 5.f);
 		pd->move = Vec3f(0.f, 5.f, 0.f);
 		pd->scale = Vec3f::repeat(-2.f);
 		pd->tolive = 1300 + kk * 100 + Random::get(0, 800);
 		pd->tc = fire2;
 		if(kk == 1) {
-			pd->move.y = 4.f; 
+			pd->move.y = 4.f;
 			pd->siz = 1.5f;
 		} else {
 			pd->siz = 1.f + rnd();
 		}
 		pd->rgb = Color3f(fl->rgb.r * (2.f/3), fl->rgb.g * (2.f/3), fl->rgb.b * (2.f/3));
 		pd->fparam = 1.2f;
+
 		pd->type = PARTICLE_2D;
 	}
 }
