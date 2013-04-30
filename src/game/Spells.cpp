@@ -1240,7 +1240,7 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 							pos.x=(short)(pos1.x*Xratio);	
 							pos.y=(short)(pos1.y*Yratio);
 
-							AddFlare2(&pos,0.1f,1,entities[i]);
+							AddFlare(&pos, 0.1f, 1, entities[i], true);
 
 							break;
 						}

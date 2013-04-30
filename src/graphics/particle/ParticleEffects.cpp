@@ -1729,7 +1729,7 @@ void ARX_MAGICAL_FLARES_KillAll()
 	flarenum=0;
 }
 
-void AddFlare(Vec2s * pos, float sm, short typ, Entity * io) {
+void AddFlare(Vec2s * pos, float sm, short typ, Entity * io, bool bookDraw) {
 	
 	long i;
 	for(i = 0; i < MAX_FLARES; i++) {
@@ -1744,8 +1744,12 @@ void AddFlare(Vec2s * pos, float sm, short typ, Entity * io) {
 	FLARES * fl = &flare[i];
 	fl->exist = 1;
 	flarenum++;
-	
-	fl->bDrawBitmap = 0;
+
+	if(!bookDraw)
+		fl->bDrawBitmap = 0;
+	else
+		fl->bDrawBitmap = 1;
+
 	fl->io = io;
 	if(io) {
 		fl->flags = 1;
@@ -1759,6 +1763,7 @@ void AddFlare(Vec2s * pos, float sm, short typ, Entity * io) {
 	fl->tv.rhw = fl->v.rhw = 1.f;
 	fl->tv.specular = fl->v.specular = 1;
 	
+	if(!bookDraw) {
 	EERIE_CAMERA ka = *Kam;
 	ka.angle = Anglef(360.f, 360.f, 360.f) - ka.angle;
 	EERIE_CAMERA * oldcam = ACTIVECAM;
@@ -1789,6 +1794,9 @@ void AddFlare(Vec2s * pos, float sm, short typ, Entity * io) {
 	}
 	fl->tv.p = fl->v.p;
 	SetActiveCamera(oldcam);
+	} else {
+		fl->tv.p = Vec3f(fl->x, fl->y, 0.001f);
+	}
 	
 	switch(PIPOrgb) {
 		case 0: {
@@ -1840,110 +1848,14 @@ void AddFlare(Vec2s * pos, float sm, short typ, Entity * io) {
 			break;
 		}
 		
+		if(!bookDraw) {
 		pd->special = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
 		if(!io) {
 			pd->special |= PARTICLE_NOZBUFFER;
 		}
-
-		pd->ov = fl->v.p + randomVec(-5.f, 5.f);
-		pd->move = Vec3f(0.f, 5.f, 0.f);
-		pd->scale = Vec3f::repeat(-2.f);
-		pd->tolive = 1300 + kk * 100 + Random::get(0, 800);
-		pd->tc = fire2;
-		if(kk == 1) {
-			pd->move.y = 4.f;
-			pd->siz = 1.5f;
 		} else {
-			pd->siz = 1.f + rnd();
+			pd->special = FADE_IN_AND_OUT;
 		}
-		pd->rgb = Color3f(fl->rgb.r * (2.f/3), fl->rgb.g * (2.f/3), fl->rgb.b * (2.f/3));
-		pd->fparam = 1.2f;
-	}
-}
-
-void AddFlare2(Vec2s * pos, float sm, short typ, Entity * io) {
-	
-	long i;
-	for(i = 0; i < MAX_FLARES; i++) {
-		if(!flare[i].exist) {
-			break;
-		}
-	}
-	if(i >= MAX_FLARES) {
-		return;
-	}
-	
-	FLARES * fl = &flare[i];
-	fl->exist = 1;
-	flarenum++;
-	
-	fl->bDrawBitmap = 1;
-	fl->io = io;
-	if(io) {
-		fl->flags = 1;
-		io->flarecount++;
-	} else {
-		fl->flags = 0;
-	}
-	
-	fl->x = float(pos->x) - rnd() * 4.f;
-	fl->y = float(pos->y) - rnd() * 4.f - 50.f;
-	fl->tv.rhw = fl->v.rhw = 1.f;
-	fl->tv.specular = fl->v.specular = 1;
-
-	fl->tv.p = Vec3f(fl->x, fl->y, 0.001f);
-
-	switch(PIPOrgb) {
-		case 0: {
-			fl->rgb = Color3f(rnd() * (2.f/3) + .4f, rnd() * (2.f/3), rnd() * (2.f/3) + .4f);
-			break;
-		}
-		case 1: {
-			fl->rgb = Color3f(rnd() * .625f + .5f, rnd() * .625f + .5f, rnd() * .55f);
-			break;
-		}
-		case 2: {
-			fl->rgb = Color3f(rnd() * (2.f/3) + .4f, rnd() * .55f, rnd() * .55f);
-			break;
-		}
-	}
-	
-	if(typ == -1) {
-		float zz = (EERIEMouseButton & 1) ? 0.29f : ((sm > 0.5f) ? rnd() : 1.f);
-		if(zz < 0.2f) {
-			fl->type = 2;
-			fl->size = rnd() * 42.f + 42.f;
-			fl->tolive = (800.f + rnd() * 800.f) * FLARE_MUL;
-		} else if(zz < 0.5f) {
-			fl->type = 3;
-			fl->size = rnd() * 52.f + 16.f;
-			fl->tolive = (800.f + rnd() * 800.f) * FLARE_MUL;
-		} else {
-			fl->type = 1;
-			fl->size = (rnd() * 24.f + 32.f) * sm;
-			fl->tolive = (1700.f + rnd() * 500.f) * FLARE_MUL;
-		}
-	} else {
-		fl->type = (rnd() > 0.8f) ? 1 : 4;
-		fl->size = (rnd() * 38.f + 64.f) * sm;
-		fl->tolive = (1700.f + rnd() * 500.f) * FLARE_MUL;
-	}
-	
-	fl->dynlight = -1;
-	fl->move = OPIPOrgb;
-	
-	for(long kk = 0; kk < 3; kk++) {
-		
-		if(rnd() < 0.5f) {
-			continue;
-		}
-		
-		PARTICLE_DEF * pd = createParticle();
-		if(!pd) {
-			break;
-		}
-		
-		pd->special = FADE_IN_AND_OUT;
 
 		pd->ov = fl->v.p + randomVec(-5.f, 5.f);
 		pd->move = Vec3f(0.f, 5.f, 0.f);
@@ -1959,7 +1871,8 @@ void AddFlare2(Vec2s * pos, float sm, short typ, Entity * io) {
 		pd->rgb = Color3f(fl->rgb.r * (2.f/3), fl->rgb.g * (2.f/3), fl->rgb.b * (2.f/3));
 		pd->fparam = 1.2f;
 
-		pd->type = PARTICLE_2D;
+		if(bookDraw)
+			pd->type = PARTICLE_2D;
 	}
 }
 
