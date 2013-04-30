@@ -1764,36 +1764,36 @@ void AddFlare(Vec2s * pos, float sm, short typ, Entity * io, bool bookDraw) {
 	fl->tv.specular = fl->v.specular = 1;
 	
 	if(!bookDraw) {
-	EERIE_CAMERA ka = *Kam;
-	ka.angle = Anglef(360.f, 360.f, 360.f) - ka.angle;
-	EERIE_CAMERA * oldcam = ACTIVECAM;
-	SetActiveCamera(&ka);
-	PrepareCamera(&ka);
-	fl->v.p += ka.orgTrans.pos;
-	EE_RTP(&fl->tv, &fl->v);
-	fl->v.p += ka.orgTrans.pos;
-	
-	float vx = -(fl->x - subj.center.x) * 0.2173913f;
-	float vy = (fl->y - subj.center.y) * 0.1515151515151515f;
-	if(io) {
-		fl->v.p.x = io->pos.x - EEsin(radians(MAKEANGLE(io->angle.b + vx))) * 100.f;
-		fl->v.p.y = io->pos.y + EEsin(radians(MAKEANGLE(io->angle.a + vy))) * 100.f - 150.f;
-		fl->v.p.z = io->pos.z + EEcos(radians(MAKEANGLE(io->angle.b + vx))) * 100.f;
-	} else {
-		fl->v.p.x = float(pos->x - (DANAESIZX / 2)) * 150.f / float(DANAESIZX);
-		fl->v.p.y = float(pos->y - (DANAESIZY / 2)) * 150.f / float(DANAESIZX);
-		fl->v.p.z = 75.f;
-		ka = *oldcam;
+		EERIE_CAMERA ka = *Kam;
+		ka.angle = Anglef(360.f, 360.f, 360.f) - ka.angle;
+		EERIE_CAMERA * oldcam = ACTIVECAM;
 		SetActiveCamera(&ka);
 		PrepareCamera(&ka);
-		float temp = (fl->v.p.y * -ka.orgTrans.xsin) + (fl->v.p.z * ka.orgTrans.xcos);
-		fl->v.p.y = (fl->v.p.y * ka.orgTrans.xcos) - (-fl->v.p.z * ka.orgTrans.xsin);
-		fl->v.p.z = (temp * ka.orgTrans.ycos) - (-fl->v.p.x * ka.orgTrans.ysin);
-		fl->v.p.x = (temp * -ka.orgTrans.ysin) + (fl->v.p.x * ka.orgTrans.ycos);
-		fl->v.p += oldcam->orgTrans.pos;
-	}
-	fl->tv.p = fl->v.p;
-	SetActiveCamera(oldcam);
+		fl->v.p += ka.orgTrans.pos;
+		EE_RTP(&fl->tv, &fl->v);
+		fl->v.p += ka.orgTrans.pos;
+
+		float vx = -(fl->x - subj.center.x) * 0.2173913f;
+		float vy = (fl->y - subj.center.y) * 0.1515151515151515f;
+		if(io) {
+			fl->v.p.x = io->pos.x - EEsin(radians(MAKEANGLE(io->angle.b + vx))) * 100.f;
+			fl->v.p.y = io->pos.y + EEsin(radians(MAKEANGLE(io->angle.a + vy))) * 100.f - 150.f;
+			fl->v.p.z = io->pos.z + EEcos(radians(MAKEANGLE(io->angle.b + vx))) * 100.f;
+		} else {
+			fl->v.p.x = float(pos->x - (DANAESIZX / 2)) * 150.f / float(DANAESIZX);
+			fl->v.p.y = float(pos->y - (DANAESIZY / 2)) * 150.f / float(DANAESIZX);
+			fl->v.p.z = 75.f;
+			ka = *oldcam;
+			SetActiveCamera(&ka);
+			PrepareCamera(&ka);
+			float temp = (fl->v.p.y * -ka.orgTrans.xsin) + (fl->v.p.z * ka.orgTrans.xcos);
+			fl->v.p.y = (fl->v.p.y * ka.orgTrans.xcos) - (-fl->v.p.z * ka.orgTrans.xsin);
+			fl->v.p.z = (temp * ka.orgTrans.ycos) - (-fl->v.p.x * ka.orgTrans.ysin);
+			fl->v.p.x = (temp * -ka.orgTrans.ysin) + (fl->v.p.x * ka.orgTrans.ycos);
+			fl->v.p += oldcam->orgTrans.pos;
+		}
+		fl->tv.p = fl->v.p;
+		SetActiveCamera(oldcam);
 	} else {
 		fl->tv.p = Vec3f(fl->x, fl->y, 0.001f);
 	}
@@ -1849,10 +1849,10 @@ void AddFlare(Vec2s * pos, float sm, short typ, Entity * io, bool bookDraw) {
 		}
 		
 		if(!bookDraw) {
-		pd->special = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
-		if(!io) {
-			pd->special |= PARTICLE_NOZBUFFER;
-		}
+			pd->special = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
+			if(!io) {
+				pd->special |= PARTICLE_NOZBUFFER;
+			}
 		} else {
 			pd->special = FADE_IN_AND_OUT;
 		}
