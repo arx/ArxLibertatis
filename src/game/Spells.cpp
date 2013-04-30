@@ -1576,8 +1576,9 @@ static void ARX_SPELLS_AnalyseSYMBOL() {
 			break;
 
 //--------------------------------------------------------------------------------------------------------------------
+// Cheat spells
 
-			// Special UW mode
+		// Special UW mode
 		case 238:
 		case 2398:
 		case 23898:
@@ -1652,24 +1653,27 @@ static void ARX_SPELLS_AnalyseSYMBOL() {
 		break;
 		case 161:
 		case 1621:
-		case 1261:
+		case 1261: {
+			if(cur_sm == 0)
+				cur_sm++;
 
-			if (cur_sm==0) cur_sm++;
+			if(cur_bh == 0)
+				cur_bh++;
 
-			if (cur_bh==0) cur_bh++;
+			if(cur_bh == 2)
+				cur_bh++;
 
-			if (cur_bh==2) cur_bh++;
+			if(cur_sos == 0)
+				cur_sos++;
 
-			if (cur_sos==0) cur_sos++;
-
-			if (cur_sos == 2)
-			{
+			if(cur_sos == 2) {
 				cur_sos = 0;
 				ApplyCurSOS();
 			}
 
 			goto failed;
 			break;
+		}
 		case 83614:
 		case 8361:
 		case 8341:
@@ -1683,29 +1687,27 @@ static void ARX_SPELLS_AnalyseSYMBOL() {
 		case 834:
 		case 823:
 		case 8234:
-		case 8231:  
+		case 8231: {
+			if(cur_pom == 0)
+				cur_pom++;
 
-			if (cur_pom==0) cur_pom++; 
+			if(cur_pnux == 0)
+				cur_pnux++;
 
-			if (cur_pnux==0) cur_pnux++;
+			if(cur_pnux == 2)
+				cur_pnux++;
 
-			if (cur_pnux==2) cur_pnux++;			
-
-			if (cur_bh == 1)
-			{
+			if(cur_bh == 1)
 				cur_bh++;
-			}
 
-			if (cur_bh == 3)
-			{
+			if(cur_bh == 3) {
 				cur_bh = 0;
 				EERIE_OBJECT_SetBHMode();
 			}
 
-			goto failed;				  
+			goto failed;
 			break;
-		break;
-
+		}
 		case 83692:
 		case 823982:
 		case 83982:
@@ -1713,98 +1715,81 @@ static void ARX_SPELLS_AnalyseSYMBOL() {
 		case 82392:
 		case 83892:
 		case 823282:
-		case 8392:
-		{
-			if (cur_sm == 2)
-			{
+		case 8392: {
+			if(cur_sm == 2) {
 				cur_sm++;
 				ApplySPBow();
 			}
 
-			if (cur_mx == 0)
-			{
+			if(cur_mx == 0)
 				cur_mx = 1;
-			}
 
-			if (cur_mr == 0)
-			{
+			if(cur_mr == 0)
 				cur_mr = 1;
-			}
 
-			if (cur_pom == 2)
-			{
+			if(cur_pom == 2) {
 				cur_pom++;
 				ApplySPWep();
 			}
 
-				goto failed;
-			}
-			break;			
+			goto failed;
+			break;
+		}
 		case 98324:
 		case 92324:
 		case 89324:
 		case 9324:
 		case 9892324:
 		case 9234:
-		case 934:
-		{
-			if (cur_mr == 1)
-			{
+		case 934: {
+			if(cur_mr == 1) {
 				cur_mr = 2;
 				MakeCoolFx(&player.pos);
 			}
 
-			if (cur_mx == 1)
-			{
+			if(cur_mx == 1) {
 				cur_mx = 2;
 				MakeCoolFx(&player.pos);
 			}
 
-			if (cur_rf == 1)
-			{
+			if(cur_rf == 1) {
 				cur_rf = 2;
 				MakeCoolFx(&player.pos);
 			}
 
-				if (cur_sm==1) cur_sm++;
+			if(cur_sm == 1)
+				cur_sm++;
 
-				goto failed;
-			}
+			goto failed;
 			break;
+		}
 		case 3249:
 		case 2349:
 		case 323489:
 		case 23249:
 		case 3489:
 		case 32498:
-		case 349:
-		{
-			if (cur_mx == 2)
-			{
+		case 349: {
+			if(cur_mx == 2) {
 				cur_mx = 3;
 				ApplySPMax();
 			}
 
-				goto failed;				
-			}
-		break;
-
-		case 26:
-		{
-			if (cur_pnux == 1)
-			{
+			goto failed;
+			break;
+		}
+		case 26: {
+			if(cur_pnux == 1)
 				cur_pnux++;
-				   }
 
-			if (cur_pnux == 3)
-		{
+			if(cur_pnux == 3) {
 				cur_pnux++;
 				ApplyCurPNux();
 			}
 
 			goto failed;
+			break;
 		}
-		break;
 		case 9232187:
 		case 93187:
 		case 9234187:
@@ -1812,81 +1797,71 @@ static void ARX_SPELLS_AnalyseSYMBOL() {
 		case 923187:
 		case 932187:
 		case 93217:
-		case 9317:
-		{
-			if (cur_pom==1) cur_pom++; 
+		case 9317: {
+			if(cur_pom == 1)
+				cur_pom++;
 
-			if (cur_sos==1) cur_sos++;
+			if(cur_sos == 1)
+				cur_sos++;
 
 			goto failed;
+			break;
 		}
-		break;
 		case 82313:
 		case 8343:
 		case 82343:
 		case 83413:
-		case 8313:
-		{
-			if (cur_mr == 2)
-			{
+		case 8313: {
+			if(cur_mr == 2) {
 				cur_mr = 3;
 				MakeCoolFx(&player.pos);
 				ApplyCurMr();
 			}
 
-			if (cur_rf == 0)
-			{
+			if(cur_rf == 0)
 				cur_rf = 1;
+
+			goto failed;
+			break;
+		}
+		case 86: {
+			if(cur_rf == 2) {
+				cur_rf = 3;
+				MakeCoolFx(&player.pos);
+				ApplySPRf();
 			}
 
 			goto failed;
 			break;
 		}
-		case 86:
-
-			if (cur_rf == 2)
-		{
-				cur_rf = 3;
-				MakeCoolFx(&player.pos);
-				ApplySPRf();
-		}
-
-			goto failed;
-			break;
-
-		case 626262: 
-		{
+		case 626262: {
 			passwall++;
 
-			if (passwall==3)
-			{
+			if(passwall == 3) {
 				passwall=0;
 				ApplyPasswall(); 
 			}
 		}
 		break;
-		case 828282: 
-		{
+		case 828282: {
 			player.skin++;
 
-			if ((player.skin==4) && (rnd()<0.9f))
+			if(player.skin == 4 && rnd() < 0.9f)
 				player.skin++;
 
-			if (player.skin>5)
-				player.skin=0;
+			if(player.skin > 5)
+				player.skin = 0;
 
 			ARX_EQUIPMENT_RecreatePlayerMesh();
-			 goto failed; 
+			goto failed;
+			break;
 		}
-		break;
-
-		default:
-		{
+		default: {
 		failed:
 			;
 			std::string tex;
 
-			if (SpellMoves.length()>=127)
+			if(SpellMoves.length()>=127)
 				SpellMoves.resize(127);
 
 			LAST_FAILED_SEQUENCE = SpellMoves;
@@ -1898,8 +1873,7 @@ static void ARX_SPELLS_AnalyseSYMBOL() {
 	bPrecastSpell = false;
 
 	// wanna precast?
-	if (GInput->actionPressed(CONTROLS_CUST_STEALTHMODE))
-	{
+	if(GInput->actionPressed(CONTROLS_CUST_STEALTHMODE)) {
 		bPrecastSpell = true;
 	}
 }
