@@ -1888,22 +1888,22 @@ void AddLFlare(float x, float y,Entity * io)
 //-----------------------------------------------------------------------------
 void FlareLine(Vec2s * pos0, Vec2s * pos1, Entity * io) 
 {
-	float dx,dy,adx,ady,m;
+	float m;
 	long i;
 	long z;
-	float x0=pos0->x;
-	float x1=pos1->x;
-	float y0=pos0->y;
-	float y1=pos1->y;
-	dx=(x1-x0);
-	adx=EEfabs(dx);
-	dy=(y1-y0);
-	ady=EEfabs(dy);
 
-	if (adx>ady) 
-	{
-		if (x0>x1) 
-		{
+	float x0 = pos0->x;
+	float x1 = pos1->x;
+	float y0 = pos0->y;
+	float y1 = pos1->y;
+
+	float dx = (x1 - x0);
+	float adx = EEfabs(dx);
+	float dy = (y1 - y0);
+	float ady = EEfabs(dy);
+
+	if(adx > ady) {
+		if(x0 > x1) {
 			z = x1;
 			x1 = x0;
 			x0 = z;
@@ -1911,72 +1911,58 @@ void FlareLine(Vec2s * pos0, Vec2s * pos1, Entity * io)
 			y0 = z;
 		}
 
-		if (x0<x1) 
-		{
-			m=dy/dx;
-		
+		if(x0 < x1) {
+			m = dy / dx;
 			i = x0;
 
-			while(i<x1) 
-			{
-				z = rnd()*FLARELINERND;
-				z+=FLARELINESTEP;
-				i+=z;
-				y0+=m*z;
+			while(i < x1) {
+				z = rnd() * FLARELINERND;
+				z += FLARELINESTEP;
+				i += z;
+				y0 += m * z;
 				AddLFlare((float)i,y0,io);				
 			}
-		}
-		else 
-		{
+		} else {
 			m = dy / dx;
 			i = x1;
 
-			while(i<x0) 
-			{
-				z = rnd()*FLARELINERND;
-				z+=FLARELINESTEP;
-				i+=z;
-				y0+=m*z;
+			while(i < x0) {
+				z = rnd() * FLARELINERND;
+				z += FLARELINESTEP;
+				i += z;
+				y0 += m * z;
 				AddLFlare((float)i,y0,io);				
 			}
 		}				
-	}
-	else 
-	{
-		if (y0>y1) 
-		{
+	} else {
+		if(y0 > y1) {
 			z = x1;
-			x0=z;
+			x0 = z;
 			z = y1;
-			y1=y0;
-			y0=z;
+			y1 = y0;
+			y0 = z;
 		}
 
-		if (y0<y1) 
-		{
-			m = dx/dy;
+		if(y0 < y1) {
+			m = dx / dy;
 			i = y0;
 
-			while(i<y1) 
-			{
-				z = rnd()*FLARELINERND;
-			    z+=FLARELINESTEP;
-				i+=z;
-				x0+=m*z;
+			while(i < y1) {
+				z = rnd() * FLARELINERND;
+				z += FLARELINESTEP;
+				i += z;
+				x0 += m * z;
 				AddLFlare(x0,(float)i,io);				
 			}			
-		} 
-		else 
-		{
-			m=dx/dy;
+		} else {
+			m = dx / dy;
 			i = y1;
 
-			while(i<y0) 
-			{
-				z = rnd()*FLARELINERND;
-				z+=FLARELINESTEP;
-				i+=z;
-				x0+=m*z;
+			while(i < y0) {
+				z = rnd() * FLARELINERND;
+				z += FLARELINESTEP;
+				i += z;
+				x0 += m * z;
 				AddLFlare(x0,(float)i,io);				
 			} 
 		}	
