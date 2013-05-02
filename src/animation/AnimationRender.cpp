@@ -358,9 +358,6 @@ void EE_P(Vec3f * in, TexturedVertex * out);
 /* Transform object vertices  */
 void Cedric_TransformVerts(Entity *io, EERIE_3DOBJ *eobj, EERIE_C_DATA *obj, Vec3f *pos) {
 
-	EERIE_3DPAD * inVert;
-	EERIE_VERTEX * outVert;
-
  	/* Transform & project all vertices */
 	for(long i = 0; i != obj->nb_bones; i++) {
 		EERIEMATRIX	 matrix;
@@ -382,8 +379,8 @@ void Cedric_TransformVerts(Entity *io, EERIE_3DOBJ *eobj, EERIE_C_DATA *obj, Vec
 		matrix._33 *= obj->bones[i].scaleanim.z;
 		
 		for(int v = 0; v != obj->bones[i].nb_idxvertices; v++) {
-			inVert  = &eobj->vertexlocal[obj->bones[i].idxvertices[v]];
-			outVert = &eobj->vertexlist3[obj->bones[i].idxvertices[v]];
+			EERIE_3DPAD * inVert  = &eobj->vertexlocal[obj->bones[i].idxvertices[v]];
+			EERIE_VERTEX * outVert = &eobj->vertexlist3[obj->bones[i].idxvertices[v]];
 			TransformVertexMatrix(&matrix, inVert, &outVert->v);
 			outVert->v += vector;
 			outVert->vert.p = outVert->v;
@@ -397,7 +394,7 @@ void Cedric_TransformVerts(Entity *io, EERIE_3DOBJ *eobj, EERIE_C_DATA *obj, Vec
 	}
 
 	for(size_t i = 0; i < eobj->vertexlist.size(); i++) {
-		outVert = &eobj->vertexlist3[i];
+		EERIE_VERTEX * outVert = &eobj->vertexlist3[i];
 		AddToBBox3D(io, &outVert->v);
 		EE_RT(&outVert->vert, &outVert->vworld);
 		EE_P(&outVert->vworld, &outVert->vert);
