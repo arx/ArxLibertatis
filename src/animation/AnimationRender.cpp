@@ -200,18 +200,11 @@ static void CalcTranslation(ANIM_USE * animuse, Vec3f & ftr) {
 
 
 /* Evaluate main entity translation */
-static void Cedric_AnimCalcTranslation(Entity * io, ANIM_USE * animuse, Vec3f & ftr) {
+static void Cedric_AnimCalcTranslation(Entity * io, Vec3f & ftr) {
 	
-	// Resets Frame Translate
-	ftr = Vec3f::ZERO;
-
 	// Fill frame translate values with multi-layer translate informations...
 	for(int count = MAX_ANIM_LAYERS - 1; count >= 0; count--) {
-
-		if(!io)
-			count = -1;
-		else
-			animuse = &io->animlayer[count];
+		ANIM_USE *animuse = &io->animlayer[count];
 
 		CalcTranslation(animuse, ftr);
 	}
@@ -1520,12 +1513,16 @@ void Cedric_AnimateDrawEntity(EERIE_3DOBJ *eobj, ANIM_USE *animuse, Anglef *angl
 	
 	// Is There any Between-Animations Interpolation to make ? timm>0.f
 	float timm = Cedric_GetTime(io);
-	
-	// Buffer size check
 
-	
-	Vec3f ftr;
-	Cedric_AnimCalcTranslation(io, animuse, ftr);
+
+	// Reset Frame Translate
+	Vec3f ftr = Vec3f::ZERO;
+
+	if(!io)
+		CalcTranslation(animuse, ftr);
+	else
+		Cedric_AnimCalcTranslation(io, ftr);
+
 
 	StoreEntityMovement(io, ftr, scale, update_movement);
 	
