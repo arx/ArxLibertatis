@@ -134,7 +134,16 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "window/SDLWindow.h"
 #endif
 
-static bool showFPS = false;
+enum InfoPanels {
+	InfoPanelNone,
+	InfoPanelFps,
+	InfoPanelDebug,
+	InfoPanelTest,
+
+	InfoPanelEnumSize
+};
+
+static InfoPanels showInfo = InfoPanelNone;
 
 using std::string;
 
@@ -1260,7 +1269,11 @@ void ArxGame::updateInput() {
 	}
 
 	if(GInput->isKeyPressedNowPressed(Keyboard::Key_F11)) {
-		showFPS = !showFPS;
+
+		showInfo = static_cast<InfoPanels>(showInfo + 1);
+
+		if(showInfo == InfoPanelEnumSize)
+			showInfo = InfoPanelNone;
 	}
 
 	if(GInput->isKeyPressedNowPressed(Keyboard::Key_F10)) {
@@ -1755,10 +1768,24 @@ void ArxGame::render() {
 		renderLevel();
 	}
 	
-	if(showFPS) {
+	if(showInfo != InfoPanelNone) {
 		GRenderer->BeginScene();
-		CalcFPS();
-		ShowFPS();
+		switch(showInfo) {
+		case InfoPanelFps: {
+			CalcFPS();
+			ShowFPS();
+			break;
+		}
+		case InfoPanelDebug: {
+			ShowInfoText();
+			break;
+		}
+		case InfoPanelTest: {
+			ShowTestText();
+			break;
+		}
+		default: break;
+		}
 		GRenderer->EndScene();
 	}
 	

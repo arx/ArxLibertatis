@@ -175,7 +175,9 @@ bool EERIE_PATHFINDER_Add_To_Queue(PATHFINDER_REQUEST * req) {
 }
 
 long EERIE_PATHFINDER_Get_Queued_Number() {
-	
+	if(!mutex)
+		return 0;
+
 	Autolock lock(mutex);
 	
 	PATHFINDER_QUEUE_ELEMENT * cur = pathfinder_queue_start;
