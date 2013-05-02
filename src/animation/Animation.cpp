@@ -947,7 +947,7 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 
 		vert_list_static[0].p = eobj->vertexlist[i].v;
 
-		if(modinfo && !angle && mat) {
+		if(modinfo) {
 			vert_list_static[0].p -= modinfo->link_position;
 		}
 
