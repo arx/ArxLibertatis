@@ -884,7 +884,7 @@ void CalculateInterZMapp(EERIE_3DOBJ * _pobj3dObj, long lIdList, long * _piInd,
 void EE_RT(TexturedVertex * in, Vec3f * out);
 void EE_P(Vec3f * in, TexturedVertex * out);
 
-void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, EERIEMATRIX *mat, EERIE_MOD_INFO *modinfo) {
+void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, EERIEMATRIX *mat, EERIE_MOD_INFO *modinfo, bool thrownEntity) {
 
 	if(!eobj)
 		return;
@@ -953,10 +953,8 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 
 		vert_list_static[0].p *= scale;
 
-		if(!angle) {
-			if(io && !modinfo) {
-				vert_list_static[0].p -= io->obj->pbox->vert[0].initpos * scale - io->obj->point0;
-			}
+		if(thrownEntity) {
+			vert_list_static[0].p -= io->obj->pbox->vert[0].initpos * scale - io->obj->point0;
 		}
 
 		TransformVertexQuat(&rotation, &vert_list_static[0].p, &vert_list_static[1].p);

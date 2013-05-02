@@ -89,6 +89,6 @@ void EERIE_ANIMMANAGER_ReloadAll();
 
 void EERIEDrawAnimQuat(EERIE_3DOBJ *eobj, ANIM_USE *eanim, Anglef *angle, Vec3f *pos, unsigned long time, Entity *io, bool render = true, bool update_movement = true);
 
-void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *pos, Entity *io, EERIEMATRIX *mat = NULL, EERIE_MOD_INFO *modinfo = NULL);
+void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *pos, Entity *io, EERIEMATRIX *mat = NULL, EERIE_MOD_INFO *modinfo = NULL, bool thrownEntity = false);
 
 #endif // ARX_ANIMATION_ANIMATION_H

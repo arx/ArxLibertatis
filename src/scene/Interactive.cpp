@@ -3040,7 +3040,7 @@ void RenderInter(float from, float to) {
 
 						if(io->obj->pbox && io->obj->pbox->active) {
 							EERIEMATRIX mat = convertToMatrixForDrawEERIEInter(*io->obj->pbox);
-							DrawEERIEInter(io->obj, NULL, &io->pos, io, &mat);
+							DrawEERIEInter(io->obj, NULL, &io->pos, io, &mat, NULL, true);
 						} else {
 							DrawEERIEInter(io->obj, &temp, &io->pos, io);
 						}
