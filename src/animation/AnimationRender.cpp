@@ -169,8 +169,7 @@ static float Cedric_GetTime(Entity * io) {
 }
 
 /* Evaluate main entity translation */
-static void Cedric_AnimCalcTranslation(Entity * io, ANIM_USE * animuse, float scale,
-                                       Vec3f & ftr, bool update_movement) {
+static void Cedric_AnimCalcTranslation(Entity * io, ANIM_USE * animuse, Vec3f & ftr) {
 	
 	// Resets Frame Translate
 	ftr = Vec3f::ZERO;
@@ -214,7 +213,10 @@ static void Cedric_AnimCalcTranslation(Entity * io, ANIM_USE * animuse, float sc
 			ftr = sFrame->translate + (eFrame->translate - sFrame->translate) * animuse->pour;
 		}
 	}
-	
+}
+
+static void StoreEntityMovement(Entity * io, Vec3f & ftr, float scale, bool update_movement) {
+
 	if(io && update_movement) {
 
 		Vec3f ftr2 = Vec3f::ZERO;
@@ -236,7 +238,7 @@ static void Cedric_AnimCalcTranslation(Entity * io, ANIM_USE * animuse, float sc
 		}
 
 		if(io->animlayer[0].cur_anim) {
-		
+
 			// Use calculated value to notify the Movement engine of the translation to do
 			if(io->ioflags & IO_NPC) {
 				ftr = Vec3f::ZERO;
@@ -250,6 +252,8 @@ static void Cedric_AnimCalcTranslation(Entity * io, ANIM_USE * animuse, float sc
 		}
 	}
 }
+
+
 
 
 // Animate skeleton
@@ -1519,7 +1523,9 @@ void Cedric_AnimateDrawEntity(EERIE_3DOBJ *eobj, ANIM_USE *animuse, Anglef *angl
 
 	
 	Vec3f ftr;
-	Cedric_AnimCalcTranslation(io, animuse, scale, ftr, update_movement);
+	Cedric_AnimCalcTranslation(io, animuse, ftr);
+
+	StoreEntityMovement(io, ftr, scale, update_movement);
 	
 	if(!Cedric_IO_Visible(io))
 		return;
