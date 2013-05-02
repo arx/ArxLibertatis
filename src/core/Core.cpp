@@ -1432,8 +1432,6 @@ void ClearSysTextures() {
 static void PlayerLaunchArrow_Test(float aimratio, float poisonous, Vec3f * pos, Anglef * angle) {
 	
 	Vec3f vect;
-	Vec3f dvect;
-	EERIEMATRIX mat;
 	EERIE_QUAT quat;
 	
 	Vec3f position = *pos;
@@ -1442,14 +1440,7 @@ static void PlayerLaunchArrow_Test(float aimratio, float poisonous, Vec3f * pos,
 	vect.x=-EEsin(angleb)*EEcos(anglea);
 	vect.y= EEsin(anglea);
 	vect.z= EEcos(angleb)*EEcos(anglea);
-	Vec3f upvect(0,0,-1);
-	VRotateX(&upvect,anglea);
-	VRotateY(&upvect,angleb);
-	upvect = Vec3f(0,-1,0);
-	VRotateX(&upvect,anglea);
-	VRotateY(&upvect,angleb);
-	MatrixSetByVectors(&mat,&dvect,&upvect);
-	QuatFromMatrix(quat,mat);
+
 	float velocity = aimratio + 0.3f;
 
 	if(velocity < 0.9f)
