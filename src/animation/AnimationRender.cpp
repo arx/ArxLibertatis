@@ -168,6 +168,37 @@ static float Cedric_GetTime(Entity * io) {
 	return timm;
 }
 
+static void CalcTranslation(ANIM_USE * animuse, Vec3f & ftr) {
+	if(!animuse || !animuse->cur_anim)
+		return;
+
+	EERIE_ANIM	*eanim = animuse->cur_anim->anims[animuse->altidx_cur];
+
+	if(!eanim)
+		return;
+
+	//Avoiding impossible cases
+	if(animuse->fr < 0) {
+		animuse->fr = 0;
+		animuse->pour = 0.f;
+	} else if(animuse->fr >= eanim->nb_key_frames - 1) {
+		animuse->fr = eanim->nb_key_frames - 2;
+		animuse->pour = 1.f;
+	}
+	animuse->pour = clamp(animuse->pour, 0.f, 1.f);
+
+
+	// FRAME TRANSLATE : Gives the Virtual pos of Main Object
+	if(eanim->frames[animuse->fr].f_translate && !(animuse->flags & EA_STATICANIM)) {
+		EERIE_FRAME *sFrame = &eanim->frames[animuse->fr];
+		EERIE_FRAME *eFrame = &eanim->frames[animuse->fr+1];
+
+		// Linear interpolation of object translation (MOVE)
+		ftr = sFrame->translate + (eFrame->translate - sFrame->translate) * animuse->pour;
+	}
+}
+
+
 /* Evaluate main entity translation */
 static void Cedric_AnimCalcTranslation(Entity * io, ANIM_USE * animuse, Vec3f & ftr) {
 	
@@ -182,36 +213,7 @@ static void Cedric_AnimCalcTranslation(Entity * io, ANIM_USE * animuse, Vec3f & 
 		else
 			animuse = &io->animlayer[count];
 
-		if(!animuse)
-			continue;
-
-		if(!animuse->cur_anim)
-			continue;
-
-		EERIE_ANIM	*eanim = animuse->cur_anim->anims[animuse->altidx_cur];
-
-		if(!eanim)
-			continue;
-
-		//Avoiding impossible cases
-		if(animuse->fr < 0) {
-			animuse->fr = 0;
-			animuse->pour = 0.f;
-		} else if(animuse->fr >= eanim->nb_key_frames - 1) {
-			animuse->fr = eanim->nb_key_frames - 2;
-			animuse->pour = 1.f;
-		}
-		animuse->pour = clamp(animuse->pour, 0.f, 1.f);
-
-
-		// FRAME TRANSLATE : Gives the Virtual pos of Main Object
-		if(eanim->frames[animuse->fr].f_translate && !(animuse->flags & EA_STATICANIM)) {
-			EERIE_FRAME *sFrame = &eanim->frames[animuse->fr];
-			EERIE_FRAME *eFrame = &eanim->frames[animuse->fr+1];
-
-			// Linear interpolation of object translation (MOVE)
-			ftr = sFrame->translate + (eFrame->translate - sFrame->translate) * animuse->pour;
-		}
+		CalcTranslation(animuse, ftr);
 	}
 }
 
