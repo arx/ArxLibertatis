@@ -58,17 +58,17 @@ using std::realloc;
 using std::memcpy;
 using std::memmove;
 
-/*----------------------------------------------------------------------*/
 CinematicTrack	* CKTrack;
 
-/*----------------------------------------------------------------------*/
 bool AllocTrack(int sf, int ef, float fps)
 {
-	if (CKTrack) return false;
+	if(CKTrack)
+		return false;
 
 	CKTrack = (CinematicTrack *)malloc(sizeof(CinematicTrack));
 
-	if (!CKTrack) return false;
+	if(!CKTrack)
+		return false;
 
 	CKTrack->startframe = sf;
 	CKTrack->endframe = ef;
@@ -83,27 +83,24 @@ bool AllocTrack(int sf, int ef, float fps)
 
 bool DeleteTrack() {
 	
-	if(!CKTrack) {
+	if(!CKTrack)
 		return false;
-	}
 	
 	free(CKTrack->key);
-	free(CKTrack), CKTrack = NULL;
+	free(CKTrack);
+	CKTrack = NULL;
 	
 	return true;
 }
 
 static C_KEY * SearchAndMoveKey(int f)
 {
-	int		nb;
-	C_KEY	* k;
+	C_KEY * k = CKTrack->key + CKTrack->nbkey - 1;
+	int nb = CKTrack->nbkey;
 
-	k = CKTrack->key + CKTrack->nbkey - 1;
-	nb = CKTrack->nbkey;
-
-	while (nb)
-	{
-		if (f > k->frame) break;
+	while(nb) {
+		if(f > k->frame)
+			break;
 
 		k--;
 		nb--;
@@ -111,28 +108,23 @@ static C_KEY * SearchAndMoveKey(int f)
 
 	nb = CKTrack->nbkey - nb;
 
-	if (nb)
-	{
+	if(nb) {
 		memmove((void *)(k + 2), (void *)(k + 1), sizeof(C_KEY)*nb);
 	}
 
 	return k + 1;
 }
-/*----------------------------------------------------------------------*/
+
 C_KEY * SearchKey(int f, int * num)
 {
-	int		nb;
-	C_KEY	* k;
+	if(!CKTrack || !CKTrack->nbkey)
+		return NULL;
 
-	if (!CKTrack || !CKTrack->nbkey) return NULL;
+	C_KEY * k = CKTrack->key;
+	int nb = CKTrack->nbkey;
 
-	k = CKTrack->key;
-	nb = CKTrack->nbkey;
-
-	while (nb)
-	{
-		if (f == k->frame)
-		{
+	while(nb) {
+		if(f == k->frame) {
 			*num = CKTrack->nbkey - nb;
 			return k;
 		}
@@ -144,26 +136,24 @@ C_KEY * SearchKey(int f, int * num)
 	return NULL;
 }
  
-/*----------------------------------------------------------------------*/
 void UpDateKeyLight(int frame)
 {
-	C_KEY	* k, *klightprev, *klightnext, *klightprev2, *klightnext2;
-	int		num;
+	C_KEY *klightprev2, *klightnext2;
+	int num;
 
-	k = SearchKey(frame, &num);
-	klightprev = klightnext = k;
+	C_KEY * k = SearchKey(frame, &num);
+	C_KEY * klightprev = k;
+	C_KEY * klightnext = k;
 	
 	C_KEY * kbase = k;
 	int num2 = num;
 
 	//on cherche le range de deux lights
 	//prev
-	while (num2)
-	{
+	while(num2) {
 		k--;
 
-		if ((k->fx & 0xFF000000) == FX_LIGHT)
-		{
+		if((k->fx & 0xFF000000) == FX_LIGHT) {
 			klightprev = k;
 			break;
 		}
@@ -175,12 +165,10 @@ void UpDateKeyLight(int frame)
 	k = kbase;
 	num2 = num;
 
-	while (num2 < (CKTrack->nbkey - 1))
-	{
+	while(num2 < (CKTrack->nbkey - 1)) {
 		k++;
 
-		if ((k->fx & 0xFF000000) == FX_LIGHT)
-		{
+		if((k->fx & 0xFF000000) == FX_LIGHT) {
 			klightnext = k;
 			break;
 		}
@@ -192,12 +180,9 @@ void UpDateKeyLight(int frame)
 	kbase->light.prev = klightprev;
 	kbase->light.next = klightnext;
 
-	if ((kbase->fx & 0xFF000000) == FX_LIGHT)
-	{
+	if((kbase->fx & 0xFF000000) == FX_LIGHT) {
 		klightprev2 = klightnext2 = kbase;
-	}
-	else
-	{
+	} else {
 		kbase->light.intensity = -1.f;
 		klightprev2 = klightprev;
 		klightnext2 = klightnext;
@@ -206,16 +191,15 @@ void UpDateKeyLight(int frame)
 	//prev
 	k = kbase - 1;
 
-	while (k >= CKTrack->key)
-	{
-		if (klightprev == kbase)
-		{
+	while(k >= CKTrack->key) {
+		if(klightprev == kbase) {
 			k->light.intensity = -1.f;
 		}
 
 		k->light.next = klightnext2;
 
-		if ((k->fx & 0xFF000000) == FX_LIGHT) break;
+		if((k->fx & 0xFF000000) == FX_LIGHT)
+			break;
 
 		k->light.prev = klightprev;
 		k--;
@@ -224,54 +208,45 @@ void UpDateKeyLight(int frame)
 	//next
 	k = kbase + 1;
 
-	while (k < (CKTrack->key + CKTrack->nbkey))
-	{
-		if (klightnext == kbase)
-		{
+	while(k < (CKTrack->key + CKTrack->nbkey)) {
+		if(klightnext == kbase) {
 			k->light.intensity = -1.f;
 		}
 
 		k->light.prev = klightprev2;
 
-		if ((k->fx & 0xFF000000) == FX_LIGHT) break;
+		if((k->fx & 0xFF000000) == FX_LIGHT)
+			break;
 
 		k->light.next = klightnext;
 		k++;
 	}
 }
-/*----------------------------------------------------------------------*/
+
 void UpDateAllKeyLight(void)
 {
-	C_KEY	* kk;
-	int		nb;
-
 	//update les lights
-	kk = CKTrack->key;
-	nb = CKTrack->nbkey;
+	C_KEY * kk = CKTrack->key;
+	int nb = CKTrack->nbkey;
 
-	while (nb--)
-	{
+	while(nb--) {
 		UpDateKeyLight(kk->frame);
 		kk++;
 	}
 }
-/*----------------------------------------------------------------------*/
+
 bool AddKey(C_KEY * key, bool writecolor, bool writecolord, bool writecolorf)
 {
-	C_KEY	*	k;
 	int			num;
 
-	if (!CKTrack || (key->frame < CKTrack->startframe) || (key->frame > CKTrack->endframe)) return false;
+	if(!CKTrack || (key->frame < CKTrack->startframe) || (key->frame > CKTrack->endframe))
+		return false;
 
-	k = SearchKey(key->frame, &num);
-	if (!k)
-	{
-		if (!CKTrack->nbkey)
-		{
+	C_KEY * k = SearchKey(key->frame, &num);
+	if(!k) {
+		if(!CKTrack->nbkey) {
 			CKTrack->key = k = (C_KEY *)malloc(sizeof(C_KEY));
-		}
-		else
-		{
+		} else {
 			CKTrack->key = (C_KEY *)realloc(CKTrack->key, sizeof(C_KEY) * (CKTrack->nbkey + 1));
 			k = SearchAndMoveKey(key->frame);
 		}
@@ -281,54 +256,51 @@ bool AddKey(C_KEY * key, bool writecolor, bool writecolord, bool writecolorf)
 		k->frame = key->frame;
 	}
 
-	if (key->numbitmap > -2) k->numbitmap = key->numbitmap;
+	if(key->numbitmap > -2)
+		k->numbitmap = key->numbitmap;
 
-	if (key->fx > -2)
-	{
-		if ((key->fx > 255) && (k->fx > 0))
-		{
+	if(key->fx > -2) {
+		if((key->fx > 255) && (k->fx > 0)) {
 			k->fx |= key->fx;
-		}
-		else
-		{
-			if ((k->fx >= 255) && (key->fx >= 0))
-			{
+		} else {
+			if((k->fx >= 255) && (key->fx >= 0)) {
 				k->fx |= key->fx;
-			}
-			else
-			{
+			} else {
 				k->fx = key->fx;
 			}
 		}
 	}
 
-	if (key->speed > -1.f)
-	{
+	if(key->speed > -1.f) {
 		k->speed = key->speed;
 	}
 
-	if (writecolor) k->color = key->color;
+	if(writecolor)
+		k->color = key->color;
 
-	if (writecolord) k->colord = key->colord;
+	if(writecolord)
+		k->colord = key->colord;
 
-	if (writecolorf) k->colorf = key->colorf;
+	if(writecolorf)
+		k->colorf = key->colorf;
 
 	if(key->idsound > -2) {
 		k->idsound = key->idsound;
 	}
 
-	if (key->force > -2) k->force = key->force;
+	if(key->force > -2)
+		k->force = key->force;
 
 	k->frame = key->frame;
 	k->pos = key->pos;
 	k->angz = key->angz;
 
-	if (key->typeinterp > -2) k->typeinterp = key->typeinterp;
+	if(key->typeinterp > -2)
+		k->typeinterp = key->typeinterp;
 
 	float a = -2.f;
 
-	if (C_NEQUAL_F32(key->light.intensity, a))
-	{
+	if(C_NEQUAL_F32(key->light.intensity, a)) {
 		k->light = key->light;
 	}
 
