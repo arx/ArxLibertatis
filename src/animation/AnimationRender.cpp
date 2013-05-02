@@ -174,8 +174,6 @@ static void Cedric_AnimCalcTranslation(Entity * io, ANIM_USE * animuse, float sc
 	
 	// Resets Frame Translate
 	ftr = Vec3f::ZERO;
-	Vec3f ftr2 = Vec3f::ZERO;
-
 
 	// Fill frame translate values with multi-layer translate informations...
 	for(int count = MAX_ANIM_LAYERS - 1; count >= 0; count--) {
@@ -214,37 +212,42 @@ static void Cedric_AnimCalcTranslation(Entity * io, ANIM_USE * animuse, float sc
 
 			// Linear interpolation of object translation (MOVE)
 			ftr = sFrame->translate + (eFrame->translate - sFrame->translate) * animuse->pour;
-
-			if(io && update_movement) {
-				ftr *= scale;
-
-				float temp;
-				if (io == entities.player()) {
-					temp = radians(MAKEANGLE(180.f - player.angle.b));
-				} else {
-					temp = radians(MAKEANGLE(180.f - io->angle.b));
-				}
-
-				YRotatePoint(&ftr, &ftr2, (float)EEcos(temp), (float)EEsin(temp));
-
-				// stores Translations for a later use
-				io->move = ftr2;
-			}
 		}
 	}
 	
-	if(io && io->animlayer[0].cur_anim && update_movement) {
-		
-		// Use calculated value to notify the Movement engine of the translation to do
-		if(io->ioflags & IO_NPC) {
-			ftr = Vec3f::ZERO;
-			io->move -= io->lastmove;
-		} else if (io->gameFlags & GFLAG_ELEVATOR) {
-			// Must recover translations for NON-NPC IO
-			PushIO_ON_Top(io, io->move.y - io->lastmove.y);
+	if(io && update_movement) {
+
+		Vec3f ftr2 = Vec3f::ZERO;
+
+		if(ftr != Vec3f::ZERO) {
+			ftr *= scale;
+
+			float temp;
+			if (io == entities.player()) {
+				temp = radians(MAKEANGLE(180.f - player.angle.b));
+			} else {
+				temp = radians(MAKEANGLE(180.f - io->angle.b));
+			}
+
+			YRotatePoint(&ftr, &ftr2, (float)EEcos(temp), (float)EEsin(temp));
+
+			// stores Translations for a later use
+			io->move = ftr2;
 		}
+
+		if(io->animlayer[0].cur_anim) {
 		
-		io->lastmove = ftr2;
+			// Use calculated value to notify the Movement engine of the translation to do
+			if(io->ioflags & IO_NPC) {
+				ftr = Vec3f::ZERO;
+				io->move -= io->lastmove;
+			} else if (io->gameFlags & GFLAG_ELEVATOR) {
+				// Must recover translations for NON-NPC IO
+				PushIO_ON_Top(io, io->move.y - io->lastmove.y);
+			}
+
+			io->lastmove = ftr2;
+		}
 	}
 }
 
