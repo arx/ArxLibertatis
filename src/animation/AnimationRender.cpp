@@ -1633,9 +1633,7 @@ void Cedric_AnimateDrawEntityRender(EERIE_3DOBJ *eobj, Vec3f *pos, Vec3f &ftr, E
 			Vec3f * posi = &eobj->vertexlist3[ll].v;
 			Quat_Copy(&quat, &eobj->c_data->bones[eobj->linked[k].lgroup].quatanim);
 
-			EERIEMATRIX matrix;
-			MatrixFromQuat(&matrix, &quat);
-			DrawEERIEInter(obj, NULL, posi, ioo, &matrix, &eobj->linked[k].modinfo);
+			DrawEERIEInter(obj, &quat, posi, ioo, &eobj->linked[k].modinfo);
 
 			// Restore item invisibility flag
 			if(ioo)
@@ -1644,7 +1642,7 @@ void Cedric_AnimateDrawEntityRender(EERIE_3DOBJ *eobj, Vec3f *pos, Vec3f &ftr, E
 	}
 }
 
-void MakeCLight(Entity * io, Color3f * infra, EERIE_QUAT *qInvert, Vec3f * pos, EERIE_3DOBJ * eobj, Color3f &special_color, long &special_color_flag)
+void MakeCLight(Entity * io, Color3f * infra, const EERIE_QUAT *qInvert, Vec3f * pos, EERIE_3DOBJ * eobj, Color3f &special_color, long &special_color_flag)
 {
 	if(Project.improve && !io) {
 		infra->r = 0.6f;
@@ -1754,7 +1752,7 @@ void MakeCLight(Entity * io, Color3f * infra, EERIE_QUAT *qInvert, Vec3f * pos, 
 	}
 }
 
-void MakeCLight2(Entity *io, Color3f *infra, EERIE_QUAT *qInvert, Vec3f *pos, EERIE_3DOBJ *eobj, long ii, Color3f &special_color, long &special_color_flag) {
+void MakeCLight2(Entity *io, Color3f *infra, const EERIE_QUAT *qInvert, Vec3f *pos, EERIE_3DOBJ *eobj, long ii, Color3f &special_color, long &special_color_flag) {
 
 	Vec3f vTLights[32];
 

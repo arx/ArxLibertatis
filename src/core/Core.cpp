@@ -2729,13 +2729,14 @@ void DrawMagicSightInterface()
 
 void RenderAllNodes() {
 	
-	Anglef angle(Anglef::ZERO);
+	EERIE_QUAT rotation;
+	Quat_Init(&rotation);
 	
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	
 	for(long i=0; i<nodes.nbmax; i++) {
 		if (nodes.nodes[i].exist) {
-			DrawEERIEInter(nodeobj, &angle,&nodes.nodes[i].pos, NULL);
+			DrawEERIEInter(nodeobj, &rotation, &nodes.nodes[i].pos, NULL);
 
 			nodes.nodes[i].bboxmin.x=(short)BBOXMIN.x;
 			nodes.nodes[i].bboxmin.y=(short)BBOXMIN.y;

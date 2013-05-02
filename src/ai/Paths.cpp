@@ -922,10 +922,7 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 		if(!thrownObj->obj)
 			continue;
 
-		EERIEMATRIX mat;
-		MatrixFromQuat(&mat, &thrownObj->quat);
-
-		DrawEERIEInter(thrownObj->obj, NULL, &thrownObj->position, NULL, &mat);
+		DrawEERIEInter(thrownObj->obj, &thrownObj->quat, &thrownObj->position, NULL);
 
 		if((thrownObj->flags & ATO_FIERY) && (thrownObj->flags & ATO_MOVING)
 		   && !(thrownObj->flags & ATO_UNDERWATER)) {

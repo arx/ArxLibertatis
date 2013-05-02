@@ -232,7 +232,7 @@ inline void TransformVertexMatrix(EERIEMATRIX * mat, Vec3f * vertexin, Vec3f * v
 }
 
 // Transforms a Vertex by a quaternion
-inline void TransformVertexQuat(EERIE_QUAT * quat, Vec3f * vertexin, Vec3f * vertexout) {
+inline void TransformVertexQuat(const EERIE_QUAT * quat, Vec3f * vertexin, Vec3f * vertexout) {
 	
 	float rx = vertexin->x * quat->w - vertexin->y * quat->z + vertexin->z * quat->y;
 	float ry = vertexin->y * quat->w - vertexin->z * quat->x + vertexin->x * quat->z;

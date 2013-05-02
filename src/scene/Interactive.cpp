@@ -3040,9 +3040,19 @@ void RenderInter(float from, float to) {
 
 						if(io->obj->pbox && io->obj->pbox->active) {
 							EERIEMATRIX mat = convertToMatrixForDrawEERIEInter(*io->obj->pbox);
-							DrawEERIEInter(io->obj, NULL, &io->pos, io, &mat, NULL, true);
+							EERIE_QUAT rotation;
+							Quat_Init(&rotation);
+
+							QuatFromMatrix(rotation, mat);
+
+							DrawEERIEInter(io->obj, &rotation, &io->pos, io, NULL, true);
 						} else {
-							DrawEERIEInter(io->obj, &temp, &io->pos, io);
+							EERIE_QUAT rotation;
+							Quat_Init(&rotation);
+
+							worldAngleToQuat(&rotation, &temp);
+
+							DrawEERIEInter(io->obj, &rotation, &io->pos, io);
 						}
 					}
 				}

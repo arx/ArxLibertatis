@@ -233,7 +233,8 @@ void ARX_FOGS_Render() {
 
 void ARX_FOGS_RenderAll() {
 	
-	Anglef angle = Anglef::ZERO;
+	EERIE_QUAT rotation;
+	Quat_Init(&rotation);
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 
@@ -244,7 +245,7 @@ void ARX_FOGS_RenderAll() {
 			continue;
 
 			if(fogobj)
-				DrawEERIEInter(fogobj, &angle, &fog->pos, NULL);
+				DrawEERIEInter(fogobj, &rotation, &fog->pos, NULL);
 
 			fog->bboxmin = BBOXMIN;
 			fog->bboxmax = BBOXMAX;

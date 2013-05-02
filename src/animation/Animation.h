@@ -51,6 +51,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <string>
 
 #include "math/MathFwd.h"
+#include "graphics/BaseGraphicsTypes.h"
 
 class TextureContainer;
 class Entity;
@@ -89,6 +90,6 @@ void EERIE_ANIMMANAGER_ReloadAll();
 
 void EERIEDrawAnimQuat(EERIE_3DOBJ *eobj, ANIM_USE *eanim, Anglef *angle, Vec3f *pos, unsigned long time, Entity *io, bool render = true, bool update_movement = true);
 
-void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *pos, Entity *io, EERIEMATRIX *mat = NULL, EERIE_MOD_INFO *modinfo = NULL, bool thrownEntity = false);
+void DrawEERIEInter(EERIE_3DOBJ *eobj, const EERIE_QUAT *rotation, Vec3f *pos, Entity *io, EERIE_MOD_INFO *modinfo = NULL, bool thrownEntity = false);
 
 #endif // ARX_ANIMATION_ANIMATION_H

@@ -884,7 +884,7 @@ void CalculateInterZMapp(EERIE_3DOBJ * _pobj3dObj, long lIdList, long * _piInd,
 void EE_RT(TexturedVertex * in, Vec3f * out);
 void EE_P(Vec3f * in, TexturedVertex * out);
 
-void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, EERIEMATRIX *mat, EERIE_MOD_INFO *modinfo, bool thrownEntity) {
+void DrawEERIEInter(EERIE_3DOBJ *eobj, const EERIE_QUAT * rotation, Vec3f *poss, Entity *io, EERIE_MOD_INFO *modinfo, bool thrownEntity) {
 
 	if(!eobj)
 		return;
@@ -928,18 +928,7 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 	if(!io && INVISIBILITY_OVERRIDE != 0.f)
 		invisibility = INVISIBILITY_OVERRIDE;
 	
-	EERIE_QUAT rotation;
-	Quat_Init(&rotation);
 
-	// Precalc rotations
-	if(angle) {
-		worldAngleToQuat(&rotation, angle);
-	}
-
-	if(mat) {
-		QuatFromMatrix(rotation, *mat);
-	}
-	
 	// Test for Mipmeshing then pre-computes vertices
 	ResetBBox3D( io );
 
@@ -957,7 +946,7 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 			vert_list_static[0].p -= io->obj->pbox->vert[0].initpos * scale - io->obj->point0;
 		}
 
-		TransformVertexQuat(&rotation, &vert_list_static[0].p, &vert_list_static[1].p);
+		TransformVertexQuat(rotation, &vert_list_static[0].p, &vert_list_static[1].p);
 
 		eobj->vertexlist3[i].v = vert_list_static[1].p += pos;
 
@@ -1004,7 +993,7 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 	}
 
 	// Precalc local lights for this object then interpolate
-	MakeCLight(io, &infra, &rotation, &pos, eobj, special_color, special_color_flag);
+	MakeCLight(io, &infra, rotation, &pos, eobj, special_color, special_color_flag);
 	
 	for(size_t i = 0; i < eobj->facelist.size(); i++) {
 		long paf[3];
@@ -1037,7 +1026,7 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 			continue;
 
 		if(io && (io->ioflags & IO_ANGULAR))
-			MakeCLight2(io, &infra, &rotation, &pos, eobj, i, special_color, special_color_flag);
+			MakeCLight2(io, &infra, rotation, &pos, eobj, i, special_color, special_color_flag);
 
 		float fTransp = 0.f;
 
@@ -1151,7 +1140,7 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 
 			for(long o = 0; o < 3; o++) {
 				Vec3f temporary3D;
-				TransformVertexQuat(&rotation, &eobj->vertexlist[paf[o]].norm, &temporary3D);
+				TransformVertexQuat(rotation, &eobj->vertexlist[paf[o]].norm, &temporary3D);
 
 				float power = 255.f-(float)EEfabs(255.f*(temporary3D.z)*( 1.0f / 2 ));
 
