@@ -312,29 +312,24 @@ bool AddKey(C_KEY * key, bool writecolor, bool writecolord, bool writecolorf)
 
 	return true;
 }
-/*----------------------------------------------------------------------*/
+
 bool AddKeyLoad(C_KEY * key)
 {
-	C_KEY	*	k;
-	int			num;
+	int num;
 
-	if (!CKTrack || (key->frame < CKTrack->startframe) || (key->frame > CKTrack->endframe)) return false;
+	if(!CKTrack || (key->frame < CKTrack->startframe) || (key->frame > CKTrack->endframe))
+		return false;
 	
-	k = SearchKey(key->frame, &num);
-	if (!k)
-	{
-		if (!CKTrack->nbkey)
-		{
+	C_KEY * k = SearchKey(key->frame, &num);
+	if(!k) {
+		if(!CKTrack->nbkey) {
 			CKTrack->key = k = (C_KEY *)malloc(sizeof(C_KEY));
-		}
-		else
-		{
+		} else {
 			CKTrack->key = (C_KEY *)realloc(CKTrack->key, sizeof(C_KEY) * (CKTrack->nbkey + 1));
 			k = SearchAndMoveKey(key->frame);
 		}
 
 		CKTrack->nbkey++;
-
 	}
 
 	k->numbitmap = key->numbitmap;
@@ -359,18 +354,14 @@ bool AddKeyLoad(C_KEY * key)
 
 C_KEY * GetKey(int f, int * num)
 {
-	int		nb;
-	C_KEY	* k;
+	if(!CKTrack || !CKTrack->key)
+		return NULL;
 
-	if (!CKTrack || !CKTrack->key) return NULL;
+	C_KEY * k = CKTrack->key + CKTrack->nbkey - 1;
+	int nb = CKTrack->nbkey;
 
-	k = CKTrack->key + CKTrack->nbkey - 1;
-	nb = CKTrack->nbkey;
-
-	while (nb)
-	{
-		if (f >= k->frame)
-		{
+	while(nb) {
+		if(f >= k->frame) {
 			*num = nb;
 			return k;
 		}
@@ -381,39 +372,39 @@ C_KEY * GetKey(int f, int * num)
 
 	return NULL;
 }
-/*----------------------------------------------------------------------*/
+
 float GetAngleInterpolation(float d, float e)
 {
-	float	da;
+	float da = e - d;
 
-	da = e - d;
-
-	if (fabs(da) > 180.f)
-	{
-		if (da > 0.f) da -= 360.f;
-		else da += 360.f;
+	if(fabs(da) > 180.f) {
+		if(da > 0.f)
+			da -= 360.f;
+		else
+			da += 360.f;
 	}
 
 	return da;
 }
-/*----------------------------------------------------------------------*/
+
 bool GereTrack(Cinematic * c, float fpscurr)
 {
-	C_KEY	* k, *ksuiv;
 	float	a, unmoinsa, alight = 0, unmoinsalight = 0;
 	int		num;
 	C_KEY	* kprec, *ksuivsuiv;
 	float	t1, t2, t3, f0, f1, f2, f3, p0, p1, temp;
 	C_KEY	* lightprec, *lightnext;
 
-	if (!CKTrack || !CKTrack->nbkey) return false;
+	if(!CKTrack || !CKTrack->nbkey)
+		return false;
 
-	if (CKTrack->pause) return true;
+	if(CKTrack->pause)
+		return true;
 
-	k = GetKey((int)CKTrack->currframe, &num);
-	ksuiv = (num == CKTrack->nbkey) ? k : k + 1;
+	C_KEY * k = GetKey((int)CKTrack->currframe, &num);
+	C_KEY * ksuiv = (num == CKTrack->nbkey) ? k : k + 1;
 
-	if (ksuiv->frame != k->frame)
+	if(ksuiv->frame != k->frame)
 		a = (CKTrack->currframe - (float)k->frame) / ((float)(ksuiv->frame - k->frame));
 	else
 		a = 1.f;
@@ -432,30 +423,24 @@ bool GereTrack(Cinematic * c, float fpscurr)
 	c->idsound			= k->idsound;
 	c->force			= k->force;
 
-	if ((k->fx & 0xFF000000) == FX_LIGHT)
-	{
+	if((k->fx & 0xFF000000) == FX_LIGHT) {
 		lightprec = k;
-	}
-	else
-	{
+	} else {
 		lightprec = k->light.prev;
 	}
 
 	lightnext = k->light.next;
 	c->lightd = lightnext->light;
 
-	if ((lightprec != lightnext))
-	{
+	if(lightprec != lightnext) {
 		alight = (CKTrack->currframe - (float)lightprec->frame) / ((float)(lightnext->frame - lightprec->frame));
 
-		if (alight > 1.f) alight = 1.f;
+		if(alight > 1.f)
+			alight = 1.f;
 
 		unmoinsalight = 1.0f - alight;
-	}
-	else
-	{
-		if (k == (CKTrack->key + CKTrack->nbkey - 1))
-		{
+	} else {
+		if(k == (CKTrack->key + CKTrack->nbkey - 1)) {
 			alight			= 1.f;
 			unmoinsalight	= 0.f;
 		}
@@ -485,8 +470,7 @@ consequences on light :
 	c->posgrillesuiv  = ksuiv->posgrille;
 	c->angzgrillesuiv = ksuiv->angzgrille;
 
-	switch (k->typeinterp)
-	{
+	switch(k->typeinterp) {
 		case INTERP_NO:
 			c->pos = k->pos;
 			c->angz = k->angz;
@@ -504,22 +488,16 @@ consequences on light :
 				CinematicLight ldep;
 				CinematicLight lend;
 
-				if (lightprec->light.intensity < 0.f)
-				{
+				if(lightprec->light.intensity < 0.f) {
 					c->light.intensity = -1;
 					break;
-				}
-				else
-				{
+				} else {
 					ldep = lightprec->light;
 				}
 
-				if (c->lightd.intensity < 0.f)
-				{
+				if(c->lightd.intensity < 0.f) {
 					break;
-				}
-				else
-				{
+				} else {
 					lend = c->lightd;
 				}
 
@@ -550,10 +528,12 @@ consequences on light :
 			p0 = 0.5f * (temp - kprec->pos.x);
 			p1 = 0.5f * (ksuivsuiv->pos.x - k->pos.x);
 			c->pos.x = f0 * k->pos.x + f1 * temp + f2 * p0 + f3 * p1;
+
 			temp = ksuiv->pos.y;
 			p0 = 0.5f * (temp - kprec->pos.y);
 			p1 = 0.5f * (ksuivsuiv->pos.y - k->pos.y);
 			c->pos.y = f0 * k->pos.y + f1 * temp + f2 * p0 + f3 * p1;
+
 			temp = ksuiv->pos.z;
 			p0 = 0.5f * (temp - kprec->pos.z);
 			p1 = 0.5f * (ksuivsuiv->pos.z - k->pos.z);
@@ -570,22 +550,16 @@ consequences on light :
 				CinematicLight ldep;
 				CinematicLight lend;
 
-				if (lightprec->light.intensity < 0.f)
-				{
+				if(lightprec->light.intensity < 0.f) {
 					c->light.intensity = -1;
 					break;
-				}
-				else
-				{
+				} else {
 					ldep = lightprec->light;
 				}
 
-				if (c->lightd.intensity < 0.f)
-				{
+				if(c->lightd.intensity < 0.f) {
 					break;
-				}
-				else
-				{
+				} else {
 					lend = c->lightd;
 				}
 
@@ -600,8 +574,7 @@ consequences on light :
 			break;
 	}
 
-	if (k != c->key)
-	{
+	if(k != c->key) {
 		c->key = k;
 		c->changekey = true;
 	}
@@ -609,8 +582,7 @@ consequences on light :
 	c->flTime += fpscurr;
 	CKTrack->currframe = (((float)(c->flTime)) / 1000.f) * ((float)(GetEndFrame() - GetStartFrame())) / (float)GetTimeKeyFramer();
 
-	if (CKTrack->currframe > (float)CKTrack->endframe)
-	{
+	if(CKTrack->currframe > (float)CKTrack->endframe) {
 		CKTrack->currframe = (float)CKTrack->startframe;
 		c->key = NULL;
 		c->flTime = arxtime.get_updated();
@@ -618,25 +590,26 @@ consequences on light :
 
 	return true;
 }
-/*----------------------------------------------------------------------*/
+
 bool GereTrackNoPlay(Cinematic * c)
 {
-	C_KEY	* k, *ksuiv;
 	float	a, unmoinsa, alight = 0, unmoinsalight = 0;
 	int		num;
 	C_KEY	* kprec, *ksuivsuiv;
 	float	t1, t2, t3, f0, f1, f2, f3, p0, p1, temp;
 	C_KEY	* lightprec, *lightnext;
 
-	if (!CKTrack || !CKTrack->nbkey || !CKTrack->pause) return false;
+	if(!CKTrack || !CKTrack->nbkey || !CKTrack->pause)
+		return false;
 
-	k = GetKey((int) CKTrack->currframe, &num);
+	C_KEY * k = GetKey((int) CKTrack->currframe, &num);
 
-	if (!k) return false;
+	if(!k)
+		return false;
 
-	ksuiv = (num == CKTrack->nbkey) ? k : k + 1;
+	C_KEY * ksuiv = (num == CKTrack->nbkey) ? k : k + 1;
 
-	if (ksuiv->frame != k->frame)
+	if(ksuiv->frame != k->frame)
 		a = (CKTrack->currframe - (float)k->frame) / ((float)(ksuiv->frame - k->frame));
 	else
 		a = 1.f;
@@ -655,35 +628,27 @@ bool GereTrackNoPlay(Cinematic * c)
 	c->idsound			= k->idsound;
 	c->force			= k->force;
 
-	if ((k->fx & 0xFF000000) == FX_LIGHT)
-	{
+	if((k->fx & 0xFF000000) == FX_LIGHT) {
 		lightprec = k;
-	}
-	else
-	{
+	} else {
 		lightprec = k->light.prev;
 	}
 
 	lightnext = k->light.next;
 	c->lightd = lightnext->light;
 
-	if ((lightprec != lightnext))
-	{
+	if(lightprec != lightnext) {
 		alight = (CKTrack->currframe - (float)lightprec->frame) / ((float)(lightnext->frame - lightprec->frame));
 
-		if (alight > 1.f) alight = 1.f;
+		if(alight > 1.f)
+			alight = 1.f;
 
 		unmoinsalight = 1.0f - alight;
-	}
-	else
-	{
-		if (k == (CKTrack->key + CKTrack->nbkey - 1))
-		{
+	} else {
+		if(k == (CKTrack->key + CKTrack->nbkey - 1)) {
 			alight			= 1.f;
 			unmoinsalight	= 0.f;
-		}
-		else
-		{
+		} else {
 			//ARX_BEGIN: jycorbel (2010-06-28) - clean warning 'variable used without having been initialized'. @BUG
 			//alight can't be used because it is not initialized but the game used un initialized alight...
 //ARX_BEGIN: jycorbel (2010-07-19) - Set light coeff to 0 to keep null all possibly light created from uninitialyzed var.
@@ -708,10 +673,10 @@ bool GereTrackNoPlay(Cinematic * c)
 	c->posgrillesuiv	= ksuiv->posgrille;
 	c->angzgrillesuiv	= ksuiv->angzgrille;
 
-	if ((k->numbitmap < 0) || (ksuiv->numbitmap < 0)) return false;
+	if(k->numbitmap < 0 || ksuiv->numbitmap < 0)
+		return false;
 
-	switch (k->typeinterp)
-	{
+	switch(k->typeinterp) {
 		case INTERP_NO:
 			c->pos		= k->pos;
 			c->angz		= k->angz;
@@ -730,22 +695,16 @@ bool GereTrackNoPlay(Cinematic * c)
 				CinematicLight ldep;
 				CinematicLight lend;
 
-				if (lightprec->light.intensity < 0.f)
-				{
+				if(lightprec->light.intensity < 0.f) {
 					c->light.intensity = -1.f;
 					break;
-				}
-				else
-				{
+				} else {
 					ldep = lightprec->light;
 				}
 
-				if (c->lightd.intensity < 0.f)
-				{
+				if(c->lightd.intensity < 0.f) {
 					break;
-				}
-				else
-				{
+				} else {
 					lend = c->lightd;
 				}
 
@@ -775,10 +734,12 @@ bool GereTrackNoPlay(Cinematic * c)
 			p0 = 0.5f * (temp - kprec->pos.x);
 			p1 = 0.5f * (ksuivsuiv->pos.x - k->pos.x);
 			c->pos.x = f0 * k->pos.x + f1 * temp + f2 * p0 + f3 * p1;
+
 			temp = ksuiv->pos.y;
 			p0 = 0.5f * (temp - kprec->pos.y);
 			p1 = 0.5f * (ksuivsuiv->pos.y - k->pos.y);
 			c->pos.y = f0 * k->pos.y + f1 * temp + f2 * p0 + f3 * p1;
+
 			temp = ksuiv->pos.z;
 			p0 = 0.5f * (temp - kprec->pos.z);
 			p1 = 0.5f * (ksuivsuiv->pos.z - k->pos.z);
@@ -795,22 +756,16 @@ bool GereTrackNoPlay(Cinematic * c)
 				CinematicLight ldep;
 				CinematicLight lend;
 
-				if (lightprec->light.intensity < 0.f)
-				{
+				if(lightprec->light.intensity < 0.f) {
 					c->light.intensity = -1;
 					break;
-				}
-				else
-				{
+				} else {
 					ldep = lightprec->light;
 				}
 
-				if (c->lightd.intensity < 0.f)
-				{
+				if(c->lightd.intensity < 0.f) {
 					break;
-				}
-				else
-				{
+				} else {
 					lend = c->lightd;
 				}
 
@@ -825,8 +780,7 @@ bool GereTrackNoPlay(Cinematic * c)
 			break;
 	}
 
-	if (k != c->key)
-	{
+	if(k != c->key) {
 		c->key = k;
 		c->changekey = true;
 	}
@@ -834,32 +788,33 @@ bool GereTrackNoPlay(Cinematic * c)
 	return true;
 }
 
-/*----------------------------------------------------------------------*/
 void PlayTrack(Cinematic * c)
 {
-	if (!CKTrack || !CKTrack->pause) return;
+	if(!CKTrack || !CKTrack->pause)
+		return;
 
 	CKTrack->pause = false;
 	c->flTime = 0; 
 }
-/*----------------------------------------------------------------------*/
+
 int GetCurrentFrame(void)
 {
-	if (!CKTrack) return -1;
+	if(!CKTrack)
+		return -1;
 
 	return (int)CKTrack->currframe;
 }
-/*----------------------------------------------------------------------*/
+
 float GetTimeKeyFramer()
 {
-	if (!CKTrack) return 0.f;
+	if(!CKTrack)
+		return 0.f;
 
 	float t = 0.f;
 	C_KEY * k = CKTrack->key, *ksuiv;
 	int nb = CKTrack->nbkey - 1;
 
-	while (nb--)
-	{
+	while(nb--) {
 		ksuiv = k + 1;
 		t += ((float)(ksuiv->frame - k->frame)) / (CKTrack->fps * k->speedtrack);
 		k++;
@@ -867,31 +822,35 @@ float GetTimeKeyFramer()
 
 	return t;
 }
-/*----------------------------------------------------------------------*/
+
 int GetStartFrame(void)
 {
-	if (!CKTrack) return -1;
+	if(!CKTrack)
+		return -1;
 
 	return CKTrack->startframe;
 }
-/*----------------------------------------------------------------------*/
+
 int GetEndFrame(void)
 {
-	if (!CKTrack) return -1;
+	if(!CKTrack)
+		return -1;
 
 	return CKTrack->endframe;
 }
-/*----------------------------------------------------------------------*/
+
 float GetTrackFPS(void)
 {
-	if (!CKTrack) return -1;
+	if(!CKTrack)
+		return -1;
 
 	return CKTrack->fps;
 }
-/*----------------------------------------------------------------------*/
+
 void SetCurrFrame(int frame)
 {
-	if (!CKTrack) return ;
+	if(!CKTrack)
+		return;
 
 	CKTrack->currframe = (float)CKTrack->startframe + (float)frame;
 }
