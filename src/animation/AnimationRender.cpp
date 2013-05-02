@@ -568,7 +568,7 @@ bool Cedric_ApplyLightingFirstPartRefactor(Entity *io, Color3f &special_color, l
 }
 
 /* Object dynamic lighting */
-static bool Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity * io, Vec3f * pos, Color3f &special_color, long &special_color_flag) {
+static void Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity * io, Vec3f * pos, Color3f &special_color, long &special_color_flag) {
 		
 	Color3f infra = Color3f::black;
 	if(Project.improve) {
@@ -679,8 +679,6 @@ static bool Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity 
 			eobj->vertexlist3[obj->bones[i].idxvertices[v]].vert.color = (0xFF000000L | (ir << 16) | (ig << 8) | (ib));
 		}
 	}
-
-	return true;
 }
 
 void Cedric_PrepareHalo(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj) {
@@ -1611,8 +1609,7 @@ void Cedric_AnimateDrawEntityRender(EERIE_3DOBJ *eobj, Vec3f *pos, Vec3f &ftr, E
 		special_color = io->special_color;
 	}
 
-	if(!Cedric_ApplyLighting(eobj, obj, io, pos, special_color, special_color_flag))
-		return;
+	Cedric_ApplyLighting(eobj, obj, io, pos, special_color, special_color_flag);
 
 	Cedric_RenderObject(eobj, obj, io, pos, ftr, invisibility);
 
