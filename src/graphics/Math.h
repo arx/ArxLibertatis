@@ -251,6 +251,8 @@ void Quat_Multiply(EERIE_QUAT * dest , const EERIE_QUAT * q1, const EERIE_QUAT *
 void Quat_Slerp(EERIE_QUAT * result, const EERIE_QUAT * from, EERIE_QUAT * to, float t);
 void Quat_Reverse(EERIE_QUAT * quat);
 
+void worldAngleToQuat(EERIE_QUAT *dest, Anglef *src, bool isNpc = false);
+
 // VECTORS Functions
 
 void Vector_RotateY(Vec3f * dest, const Vec3f * src, const float angle);

@@ -657,6 +657,32 @@ void QuatFromAngles(EERIE_QUAT * q, const Anglef * angle)
 
 }
 
+void worldAngleToQuat(EERIE_QUAT *dest, Anglef *src, bool isNpc) {
+
+	if(!isNpc) {
+		// To correct invalid angle in Animated FIX/ITEMS
+		Anglef ang = *src;
+		ang.a = (360 - ang.a);
+		ang.b = (ang.b);
+		ang.g = (ang.g);
+		EERIEMATRIX mat;
+		Vec3f vect(0, 0, 1);
+		Vec3f up(0, 1, 0);
+		VRotateY(&vect, ang.b);
+		VRotateX(&vect, ang.a);
+		VRotateZ(&vect, ang.g);
+		VRotateY(&up, ang.b);
+		VRotateX(&up, ang.a);
+		VRotateZ(&up, ang.g);
+		MatrixSetByVectors(&mat, &vect, &up);
+		QuatFromMatrix(*dest, mat);
+	} else {
+		Anglef vt1 = Anglef(radians(src->a), radians(src->b), radians(src->g));
+		QuatFromAngles(dest, &vt1);
+	}
+}
+
+
 //*************************************************************************************
 // Converts a unit quaternion into a rotation matrix.
 //*************************************************************************************

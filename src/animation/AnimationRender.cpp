@@ -1541,28 +1541,8 @@ void Cedric_AnimateDrawEntity(EERIE_3DOBJ *eobj, ANIM_USE *animuse, Anglef *angl
 
 	EERIE_QUAT	qt2;
 
-	// Rotation
-	if(io && !(io->ioflags & IO_NPC)) {
-		// To correct invalid angle in Animated FIX/ITEMS
-		Anglef ang = *angle;
-		ang.a = (360 - ang.a);
-		ang.b = (ang.b);
-		ang.g = (ang.g);
-		EERIEMATRIX mat;
-		Vec3f vect(0, 0, 1);
-		Vec3f up(0, 1, 0);
-		VRotateY(&vect, ang.b);
-		VRotateX(&vect, ang.a);
-		VRotateZ(&vect, ang.g);
-		VRotateY(&up, ang.b);
-		VRotateX(&up, ang.a);
-		VRotateZ(&up, ang.g);
-		MatrixSetByVectors(&mat, &vect, &up);
-		QuatFromMatrix(qt2, mat);
-	} else {
-		Anglef vt1 = Anglef(radians(angle->a), radians(angle->b), radians(angle->g));
-		QuatFromAngles(&qt2, &vt1);
-	}
+	bool isNpc = io && (io->ioflags & IO_NPC);
+	worldAngleToQuat(&qt2, angle, isNpc);
 
 	// Build skeleton in Object Space
 	Cedric_ConcatenateTM(eobj->c_data, &qt2, pos, ftr, scale);
