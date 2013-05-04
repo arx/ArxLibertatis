@@ -336,7 +336,7 @@ void CCurse::Render() {
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	
 	if(svoodoo) {
-		Anglef stiteangle = Anglef(fRot, 0, 0);
+		Anglef stiteangle = Anglef(0, fRot, 0);
 		Vec3f stitepos = eTarget;
 		Vec3f stitescale = Vec3f::ONE;
 		Color3f stitecolor = Color3f::white;
