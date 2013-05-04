@@ -426,9 +426,8 @@ void Cinematic::Render(float FDIFF) {
 		m_camera.setTargetCamera(m_camera.orgTrans.pos.x, m_camera.orgTrans.pos.y, 0.f);
 		m_camera.angle.b = 0;
 		m_camera.angle.g = angz;
-		m_camera.clip.right = LargeurRender;
-		m_camera.clip.bottom = HauteurRender;
-		m_camera.center = Vec2i(LargeurRender / 2, HauteurRender / 2);
+		m_camera.clip = Rect(LargeurRender, HauteurRender);
+		m_camera.center = m_camera.clip.center();
 		PrepareCamera(&m_camera);
 		SetActiveCamera(&m_camera);
 
