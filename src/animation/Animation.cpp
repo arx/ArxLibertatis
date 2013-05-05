@@ -548,8 +548,6 @@ void EERIEDrawAnimQuat(EERIE_3DOBJ *eobj, ANIM_USE *eanim, Anglef *angle, Vec3f 
 	}
 
 	if(time > 0) {
-		//TODO remove ?
-		if (time>200) time=200; // TO REMOVE !!!!!!!!!
 		PrepareAnim(eobj,eanim,time,io);
 
 		if(io) {
