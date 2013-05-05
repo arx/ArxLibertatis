@@ -534,9 +534,6 @@ void EERIEDrawAnimQuat(EERIE_3DOBJ *eobj, ANIM_USE *eanim, Anglef *angle, Vec3f 
 			speedfactor = 0;
 
 		time = Original_framedelay * speedfactor;
-
-		if(entities.player()->ioflags & IO_FREEZESCRIPT)
-			time = 0;
 	}
 
 	if(time > 0) {
