@@ -508,32 +508,21 @@ extern long cur_rf;
 
 void EERIEDrawAnimQuat(EERIE_3DOBJ *eobj, ANIM_USE *eanim, Anglef *angle, Vec3f *pos, unsigned long time, Entity *io, bool render, bool update_movement) {
 	
-	if(io && io != entities.player()) {
+	if(io) {
 		float speedfactor = io->basespeed + io->speed_modif;
 
-		if(speedfactor < 0)
-			speedfactor = 0;
+		if(io == entities.player()) {
+			if(cur_mr==3)
+				speedfactor+=0.5f;
 
-		float tim=(float)time * speedfactor;
-
-		if(tim<=0.f)
-			time=0;
-		else
-			time=(unsigned long)tim;
-	}
-
-	if(!render && !update_movement) {
-		float speedfactor = entities.player()->basespeed + entities.player()->speed_modif;
-		if(cur_mr==3)
-			speedfactor+=0.5f;
-
-		if(cur_rf==3)
-			speedfactor+=1.5f;
+			if(cur_rf==3)
+				speedfactor+=1.5f;
+		}
 
 		if(speedfactor < 0)
 			speedfactor = 0;
 
-		time = Original_framedelay * speedfactor;
+		time = time * speedfactor;
 	}
 
 	if(time > 0) {

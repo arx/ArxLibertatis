@@ -1350,7 +1350,7 @@ void ArxGame::renderLevel() {
 
 		arx_assert(entities.player()->obj);
 		EERIEDrawAnimQuat(entities.player()->obj, &entities.player()->animlayer[0], &entities.player()->angle,
-			&entities.player()->pos, 0, entities.player(), false, false);
+			&entities.player()->pos, Original_framedelay, entities.player(), false, false);
 
 		if((player.Interface & INTER_COMBATMODE) && entities.player()->animlayer[1].cur_anim)
 			ManageCombatModeAnimations();
