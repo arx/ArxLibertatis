@@ -146,28 +146,6 @@ float Cedric_GetInvisibility(Entity *io) {
 	}
 }
 
-static float Cedric_GetTime(Entity * io) {
-	
-	if(!io || !io->nb_lastanimvertex) {
-		return 0.f;
-	}
-	
-	float timm = (arxtime.get_frame_time() - io->lastanimtime) + 0.0001f;
-	
-	if(timm >= 300.f) {
-		timm = 0.f;
-		io->nb_lastanimvertex = 0;
-	} else {
-		timm *= ( 1.0f / 300 );
-		if(timm >= 1.f) {
-			timm = 0.f;
-		} else if(timm < 0.f) {
-			timm = 0.f;
-		}
-	}
-	return timm;
-}
-
 static void CalcTranslation(ANIM_USE * animuse, Vec3f & ftr) {
 	if(!animuse || !animuse->cur_anim)
 		return;
@@ -1412,19 +1390,35 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity *
 	}
 }
 
-void Cedric_BlendAnimation(EERIE_C_DATA *c_data, float timm) {
-	for (long i = 0; i < c_data->nb_bones; i++)
-	{
+void Cedric_BlendAnimation(Entity *io, EERIE_C_DATA *c_data) {
+
+	if(!io || !io->nb_lastanimvertex) {
+		return;
+	}
+
+	float timm = (arxtime.get_frame_time() - io->lastanimtime) + 0.0001f;
+
+	if(timm >= 300.f) {
+		io->nb_lastanimvertex = 0;
+		return;
+	} else {
+		timm *= ( 1.0f / 300 );
+
+		if(timm < 0.f || timm >= 1.f)
+			return;
+	}
+
+	for(long i = 0; i < c_data->nb_bones; i++) {
+		EERIE_BONE * bone = &c_data->bones[i];
+
 		EERIE_QUAT tquat;
-		Quat_Copy(&tquat, &c_data->bones[i].quatinit);
+		Quat_Copy(&tquat, &bone->quatinit);
 		EERIE_QUAT q2;
-		Quat_Copy(&q2, &c_data->bones[i].quatlast);
+		Quat_Copy(&q2, &bone->quatlast);
 
-		Quat_Slerp(&c_data->bones[i].quatinit , &q2, &tquat, timm);
+		Quat_Slerp(&bone->quatinit , &q2, &tquat, timm);
 
-		c_data->bones[i].transinit = c_data->bones[i].translast
-										   + (c_data->bones[i].transinit
-											  - c_data->bones[i].translast) * timm;
+		bone->transinit = bone->translast + (bone->transinit - bone->translast) * timm;
 	}
 }
 
@@ -1503,12 +1497,6 @@ void Cedric_AnimateDrawEntity(EERIE_3DOBJ *eobj, ANIM_USE *animuse, Anglef *angl
 	// Set scale and invisibility factors
 	float scale = Cedric_GetScale(io);
 
-	// Flag linked objects
-	//Cedric_FlagLinkedObjects(eobj); ???
-	
-	// Is There any Between-Animations Interpolation to make ? timm>0.f
-	float timm = Cedric_GetTime(io);
-
 
 	// Reset Frame Translate
 	Vec3f ftr = Vec3f::ZERO;
@@ -1532,8 +1520,8 @@ void Cedric_AnimateDrawEntity(EERIE_3DOBJ *eobj, ANIM_USE *animuse, Anglef *angl
 
 	// Check for Animation Blending in Local space
 	if(io) {
-		if(timm > 0.f)
-			Cedric_BlendAnimation(eobj->c_data, timm);
+		// Is There any Between-Animations Interpolation to make ?
+		Cedric_BlendAnimation(io, eobj->c_data);
 
 		Cedric_SaveBlendData(io->obj->c_data);
 	}
