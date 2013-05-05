@@ -520,14 +520,6 @@ void EERIEDrawAnimQuat(EERIE_3DOBJ *eobj, ANIM_USE *eanim, Anglef *angle, Vec3f 
 			time=0;
 		else
 			time=(unsigned long)tim;
-
-		io->frameloss += tim - time;
-
-		if(io->frameloss > 1.f) { // recover lost time...
-			long tt = io->frameloss;
-			io->frameloss -= tt;
-			time += tt;
-		}
 	}
 
 	if(!render && !update_movement) {

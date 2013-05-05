@@ -341,7 +341,6 @@ public:
 	short flarecount;
 	short no_collide;
 	float invisibility;
-	float frameloss;
 	float basespeed;
 	
 	float speed_modif;

@@ -1134,7 +1134,6 @@ void RestoreInitialIOStatusOfIO(Entity * io)
 		io->inzone = NULL;
 		io->speed_modif = 0.f;
 		io->basespeed = 1.f;
-		io->frameloss = 0.f;
 		io->sfx_flag = 0;
 		io->max_durability = io->durability = 100;
 		io->gameFlags &= ~GFLAG_INVISIBILITY;
