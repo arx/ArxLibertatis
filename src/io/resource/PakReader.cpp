@@ -22,6 +22,7 @@
 #include <cstring>
 #include <algorithm>
 #include <iomanip>
+#include <ios>
 
 #include <boost/algorithm/string/case_conv.hpp>
 #include <boost/foreach.hpp>

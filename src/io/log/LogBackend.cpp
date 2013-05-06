@@ -19,6 +19,7 @@
 
 #include "io/log/LogBackend.h"
 
+#include <ios>
 #include <iomanip>
 
 #include "platform/Platform.h"

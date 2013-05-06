@@ -233,7 +233,7 @@ bool				LAST_PLAYER_MOUSELOOK_ON = false;
 static bool MEMO_PLAYER_MOUSELOOK_ON = false;
 
 long				COMBINEGOLD=0;
-ARX_INTERFACE_BOOK_MODE	Book_Mode=BOOKMODE_STATS;
+ARX_INTERFACE_BOOK_MODE Book_Mode = BOOKMODE_STATS;
 long				Book_MapPage=1;
 long				Book_SpellPage=1;
 long				CINEMASCOPE=0;
@@ -769,7 +769,15 @@ void ARX_INTERFACE_NoteManage() {
 	openNote.render();
 }
 
-//-----------------------------------------------------------------------------
+static void onBookClosePage() {
+	
+	if(Book_Mode == BOOKMODE_SPELLS) {
+		// Closing spell page - clean up any rune flares
+		ARX_SPELLS_ClearAllSymbolDraw();
+	}
+	
+}
+
 void ARX_INTERFACE_BookOpenClose(unsigned long t) // 0 switch 1 forceopen 2 forceclose
 {
 	if(t == 1 && (player.Interface & INTER_MAP))
@@ -792,6 +800,8 @@ void ARX_INTERFACE_BookOpenClose(unsigned long t) // 0 switch 1 forceopen 2 forc
 			free(ARXmenu.mda);
 			ARXmenu.mda=NULL;
 		}
+		
+		onBookClosePage();
 	} else {
 		SendIOScriptEvent(entities.player(),SM_NULL,"","book_open");
 
@@ -2066,6 +2076,84 @@ void ARX_INTERFACE_Combat_Mode(long i)
 long CSEND=0;
 long MOVE_PRECEDENCE=0;
 
+static bool canOpenBookPage(ARX_INTERFACE_BOOK_MODE page) {
+	switch(page) {
+		case BOOKMODE_SPELLS:  return !!player.rune_flags;
+		default:               return true;
+	}
+}
+
+static void openBookPage(ARX_INTERFACE_BOOK_MODE newPage, bool toggle = false) {
+	
+	if((player.Interface & INTER_MAP) && Book_Mode == newPage) {
+		
+		if(toggle) {
+			// Close the book
+			ARX_INTERFACE_BookOpenClose(2);
+		}
+		
+		return; // nothing to do
+	}
+	
+	if(!canOpenBookPage(newPage)) {
+		return;
+	}
+	
+	if(player.Interface & INTER_MAP) {
+		
+		onBookClosePage();
+		
+		// If the book is already open, play the page turn sound
+		ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
+		
+	} else {
+		// Otherwise open the book
+		ARX_INTERFACE_BookOpenClose(0);
+	}
+	
+	Book_Mode = newPage;
+}
+
+static ARX_INTERFACE_BOOK_MODE nextBookPage() {
+	ARX_INTERFACE_BOOK_MODE nextPage = Book_Mode, oldPage;
+	do {
+		oldPage = nextPage;
+		
+		switch(oldPage) {
+			case BOOKMODE_STATS:   nextPage = BOOKMODE_SPELLS;  break;
+			case BOOKMODE_SPELLS:  nextPage = BOOKMODE_MINIMAP; break;
+			case BOOKMODE_MINIMAP: nextPage = BOOKMODE_QUESTS;  break;
+			case BOOKMODE_QUESTS:  nextPage = BOOKMODE_QUESTS;  break;
+		}
+		
+		if(canOpenBookPage(nextPage)) {
+			return nextPage;
+		}
+		
+	} while(nextPage != oldPage);
+	return Book_Mode;
+}
+
+static ARX_INTERFACE_BOOK_MODE prevBookPage() {
+	ARX_INTERFACE_BOOK_MODE prevPage = Book_Mode, oldPage;
+	do {
+		oldPage = prevPage;
+		
+		switch(oldPage) {
+			case BOOKMODE_STATS:   prevPage = BOOKMODE_STATS;   break;
+			case BOOKMODE_SPELLS:  prevPage = BOOKMODE_STATS;   break;
+			case BOOKMODE_MINIMAP: prevPage = BOOKMODE_SPELLS;  break;
+			case BOOKMODE_QUESTS:  prevPage = BOOKMODE_MINIMAP; break;
+		}
+		
+		if(canOpenBookPage(prevPage)) {
+			return prevPage;
+		}
+		
+	} while(prevPage != oldPage);
+	return Book_Mode;
+}
+
 extern unsigned long REQUEST_JUMP;
 //-----------------------------------------------------------------------------
 void ArxGame::managePlayerControls()
@@ -2409,51 +2497,48 @@ void ArxGame::managePlayerControls()
 		SHOW_INGAME_MINIMAP = !SHOW_INGAME_MINIMAP;
 	}
 
-	if(GInput->actionNowPressed(CONTROLS_CUST_PREVIOUS)) {
-		if(eMouseState == MOUSE_IN_BOOK) {
-			if(player.Interface & INTER_MAP) {
-				if(Book_Mode > BOOKMODE_STATS) {
-					if(Book_Mode == BOOKMODE_QUESTS)
-						Book_Mode = BOOKMODE_MINIMAP;
-					else if(Book_Mode == BOOKMODE_MINIMAP)
-						Book_Mode = BOOKMODE_SPELLS;
-					else if(Book_Mode == BOOKMODE_SPELLS)
-						Book_Mode = BOOKMODE_STATS;
-
-					ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
-				}
+	if (GInput->actionNowPressed(CONTROLS_CUST_PREVIOUS))
+	{
+		if (eMouseState == MOUSE_IN_BOOK)
+		{
+			if (player.Interface & INTER_MAP)
+			{
+				openBookPage(prevBookPage());
 			}
-		} else if(InPlayerInventoryPos(&DANAEMouse)) {
-			if(!PLAYER_INTERFACE_HIDE_COUNT) {
-				if(player.Interface & INTER_INVENTORY) {
-					if(player.bag) {
-						if(sActiveInventory > 0) {
+		}
+		else if (InPlayerInventoryPos(&DANAEMouse))
+		{
+			if (!PLAYER_INTERFACE_HIDE_COUNT)
+			{
+				if ((player.Interface & INTER_INVENTORY))
+				{
+					if (player.bag)
+					{
+						if (sActiveInventory > 0)
+						{
 							ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
 							sActiveInventory --;
 						}
 					}
 				}
 			}
-		} else {
-			if(player.Interface & INTER_MAP) {
-				if(Book_Mode > BOOKMODE_STATS) {
-					if(Book_Mode == BOOKMODE_QUESTS)
-						Book_Mode = BOOKMODE_MINIMAP;
-					else if(Book_Mode == BOOKMODE_MINIMAP)
-						Book_Mode = BOOKMODE_SPELLS;
-					else if(Book_Mode == BOOKMODE_SPELLS)
-						Book_Mode = BOOKMODE_STATS;
-
-					ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
-				}
-			} else {
-				if(!PLAYER_INTERFACE_HIDE_COUNT) {
-					if(player.Interface & INTER_INVENTORY) {
-						if(player.bag) {
-							if(sActiveInventory > 0) {
-								ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
-								sActiveInventory --;
-							}
+		}
+		else if (player.Interface & INTER_MAP)
+		{
+			openBookPage(prevBookPage());
+		}
+		else
+		{
+			if (!PLAYER_INTERFACE_HIDE_COUNT)
+			{
+				if ((player.Interface & INTER_INVENTORY))
+				{
+					if (player.bag)
+					{
+						if (sActiveInventory > 0)
+						{
+							ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
+							sActiveInventory --;
 						}
 					}
 				}
@@ -2461,104 +2546,71 @@ void ArxGame::managePlayerControls()
 		}
 	}
 
-	if(GInput->actionNowPressed(CONTROLS_CUST_NEXT)) {
-		if(eMouseState == MOUSE_IN_BOOK) {
-			if(player.Interface & INTER_MAP) {
-				if(Book_Mode < BOOKMODE_QUESTS) {
-					if(Book_Mode == BOOKMODE_STATS)
-						Book_Mode = BOOKMODE_SPELLS;
-					else if(Book_Mode == BOOKMODE_SPELLS)
-						Book_Mode = BOOKMODE_MINIMAP;
-					else if(Book_Mode == BOOKMODE_MINIMAP)
-						Book_Mode = BOOKMODE_QUESTS;
-
-					ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
-				}
+	if (GInput->actionNowPressed(CONTROLS_CUST_NEXT))
+	{
+		if (eMouseState == MOUSE_IN_BOOK)
+		{
+			if (player.Interface & INTER_MAP)
+			{
+				openBookPage(nextBookPage());
 			}
-		} else if(InPlayerInventoryPos(&DANAEMouse)) {
-			if(!PLAYER_INTERFACE_HIDE_COUNT) {
-				if(player.Interface & INTER_INVENTORY) {
-					if(player.bag) {
-						if(sActiveInventory < player.bag - 1) {
+		}
+		else if (InPlayerInventoryPos(&DANAEMouse))
+		{
+			if (!PLAYER_INTERFACE_HIDE_COUNT)
+			{
+				if ((player.Interface & INTER_INVENTORY))
+				{
+					if (player.bag)
+					{
+						if (sActiveInventory < player.bag - 1)
+						{
 							ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
 							sActiveInventory ++;
 						}
 					}
 				}
 			}
-		} else {
-			if(player.Interface & INTER_MAP) {
-				if(Book_Mode < BOOKMODE_QUESTS) {
-					if(Book_Mode == BOOKMODE_STATS)
-						Book_Mode = BOOKMODE_SPELLS;
-					else if(Book_Mode == BOOKMODE_SPELLS)
-						Book_Mode = BOOKMODE_MINIMAP;
-					else if(Book_Mode == BOOKMODE_MINIMAP)
-						Book_Mode = BOOKMODE_QUESTS;
-
-					ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
-				}
-			} else {
-				if(!PLAYER_INTERFACE_HIDE_COUNT) {
-					if(player.Interface & INTER_INVENTORY) {
-						if(player.bag) {
-							if(sActiveInventory < player.bag - 1) {
-								ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
-								sActiveInventory ++;
-							}
+		}
+		else if (player.Interface & INTER_MAP)
+		{
+			openBookPage(nextBookPage());
+		}
+		else
+		{
+			if (!PLAYER_INTERFACE_HIDE_COUNT)
+			{
+				if ((player.Interface & INTER_INVENTORY))
+				{
+					if (player.bag)
+					{
+						if (sActiveInventory < player.bag - 1)
+						{
+							ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
+							sActiveInventory ++;
 						}
 					}
 				}
 			}
 		}
 	}
-
+	
 	if(GInput->actionNowPressed(CONTROLS_CUST_BOOKCHARSHEET)) {
-		if(!(player.Interface & INTER_MAP)) {
-			Book_Mode = BOOKMODE_STATS;
-			ARX_INTERFACE_BookOpenClose(0);
-		} else if((player.Interface & INTER_MAP) && Book_Mode != BOOKMODE_STATS) {
-			Book_Mode = BOOKMODE_STATS;
-		} else {
-			ARX_INTERFACE_BookOpenClose(2);
-		}
+		openBookPage(BOOKMODE_STATS, true);
 	}
-
-	if(GInput->actionNowPressed(CONTROLS_CUST_BOOKSPELL)) {
-		if(!(player.Interface & INTER_MAP)) {
-			if(player.rune_flags) {
-				Book_Mode = BOOKMODE_SPELLS;
-				ARX_INTERFACE_BookOpenClose(0);
-			}
-		} else if((player.Interface & INTER_MAP) && Book_Mode != BOOKMODE_SPELLS) {
-			Book_Mode = BOOKMODE_SPELLS;
-		} else {
-			ARX_INTERFACE_BookOpenClose(2);
-		}	  
+	
+	if(GInput->actionNowPressed(CONTROLS_CUST_BOOKSPELL) && player.rune_flags) {
+		openBookPage(BOOKMODE_SPELLS, true);
 	}
-
+	
 	if(GInput->actionNowPressed(CONTROLS_CUST_BOOKMAP)) {
-		if (!(player.Interface & INTER_MAP)) {
-			Book_Mode = BOOKMODE_MINIMAP;
-			ARX_INTERFACE_BookOpenClose(0);
-		} else if((player.Interface & INTER_MAP) && Book_Mode != BOOKMODE_MINIMAP) {
-			Book_Mode = BOOKMODE_MINIMAP;
-		} else {
-			ARX_INTERFACE_BookOpenClose(2);
-		}
+		openBookPage(BOOKMODE_MINIMAP, true);
 	}
-
+	
 	if(GInput->actionNowPressed(CONTROLS_CUST_BOOKQUEST)) {
-		if(!(player.Interface & INTER_MAP)) {
-			Book_Mode = BOOKMODE_QUESTS;
-			ARX_INTERFACE_BookOpenClose(0);
-		} else if((player.Interface & INTER_MAP) && Book_Mode != BOOKMODE_QUESTS) {
-			Book_Mode = BOOKMODE_QUESTS;
-		} else {
-			ARX_INTERFACE_BookOpenClose(2);
-		}
+		openBookPage(BOOKMODE_QUESTS, true);
 	}
-
+	
 	if(GInput->actionNowPressed(CONTROLS_CUST_CANCELCURSPELL)) {
 		for(long i = MAX_SPELLS - 1; i >= 0; i--) {
 			if(spells[i].exist && spells[i].caster == 0)
@@ -4405,9 +4457,9 @@ void ARX_INTERFACE_ManageOpenedBook()
 				SpecialCursor=CURSOR_INTERACTION_ON;
 
 				// Check for click
-				if(bookclick.x!=-1) {
+				if(bookclick.x != -1) {
 					ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
-					Book_Mode = BOOKMODE_STATS;
+					openBookPage(BOOKMODE_STATS);
 					pTextManage->Clear();
 				}
 			}
@@ -4439,9 +4491,9 @@ void ARX_INTERFACE_ManageOpenedBook()
 					SpecialCursor=CURSOR_INTERACTION_ON;
 
 					// Check for click
-					if(bookclick.x!=-1) {
+					if(bookclick.x != -1) {
 						ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
-						Book_Mode = BOOKMODE_SPELLS;
+						openBookPage(BOOKMODE_SPELLS);
 						pTextManage->Clear();
 					}
 				}
@@ -4466,9 +4518,9 @@ void ARX_INTERFACE_ManageOpenedBook()
 				SpecialCursor=CURSOR_INTERACTION_ON;
 
 				// Check for click
-				if(bookclick.x!=-1) {
+				if(bookclick.x != -1) {
 					ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
-					Book_Mode = BOOKMODE_MINIMAP;
+					openBookPage(BOOKMODE_MINIMAP);
 					pTextManage->Clear();
 				}
 			}
@@ -4491,9 +4543,9 @@ void ARX_INTERFACE_ManageOpenedBook()
 				SpecialCursor=CURSOR_INTERACTION_ON;
 
 				// Check for click
-				if(bookclick.x!=-1) {
+				if(bookclick.x != -1) {
 					ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
-					Book_Mode = BOOKMODE_QUESTS;
+					openBookPage(BOOKMODE_QUESTS);
 					pTextManage->Clear();
 				}
 			}
@@ -5304,8 +5356,8 @@ void ARX_INTERFACE_ManageOpenedBook()
 		Rect rec;
 		if (BOOKZOOM) {
 			
-			rec = Rect(s32((118.f + BOOKDECX) * Xratio), s32((69.f + BOOKDECY) * Yratio),
-			           s32((280.f + BOOKDECY) * Xratio), s32((310.f + BOOKDECY) * Yratio));
+			rec = Rect(s32((120.f + BOOKDECX) * Xratio), s32((69.f + BOOKDECY) * Yratio),
+			           s32((330.f + BOOKDECX) * Xratio), s32((300.f + BOOKDECY) * Yratio));
 			GRenderer->Clear(Renderer::DepthBuffer, Color::none, 1.f, 1, &rec);
 
 			if(ARXmenu.currentmode != AMCM_OFF) {
