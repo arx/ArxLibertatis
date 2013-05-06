@@ -85,9 +85,6 @@ void MiniMap::getData(int showLevel) {
 		
 		if(m_levels[showLevel].m_texContainer) { // 4 pix/meter
 			
-			//TODO-RENDERING: SpecialBorderSurface...
-			//SpecialBorderSurface(m_data[showLevel].m_texContainer, m_data[showLevel].m_texContainer->m_dwWidth, m_data[showLevel].m_texContainer->m_dwHeight);
-			
 			m_levels[showLevel].m_height = static_cast<float>(m_levels[showLevel].m_texContainer->m_dwHeight); 
 			m_levels[showLevel].m_width = static_cast<float>(m_levels[showLevel].m_texContainer->m_dwWidth);
 			
@@ -183,7 +180,6 @@ void MiniMap::loadOffsets(PakReader *pakRes) {
 	size_t fileSize = file->size();
 	char *dat = new char[fileSize + 2];
 	dat[fileSize + 1] = '\0';
-	//dat[fileSize] = dat[fileSize + 1]; // TODO remove
 	
 	file->read(dat);
 	
