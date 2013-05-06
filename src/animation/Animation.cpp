@@ -910,19 +910,19 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, const EERIE_QUAT * rotation, Vec3f *poss,
 
 	for(size_t i = 0 ; i < eobj->vertexlist.size(); i++) {
 
-		vert_list_static[0].p = eobj->vertexlist[i].v;
+		Vec3f temp = eobj->vertexlist[i].v;
 
 		if(modinfo) {
-			vert_list_static[0].p -= modinfo->link_position;
+			temp -= modinfo->link_position;
 		}
 
-		vert_list_static[0].p *= scale;
+		temp *= scale;
 
 		if(thrownEntity) {
-			vert_list_static[0].p -= io->obj->pbox->vert[0].initpos * scale - io->obj->point0;
+			temp -= io->obj->pbox->vert[0].initpos * scale - io->obj->point0;
 		}
 
-		TransformVertexQuat(rotation, &vert_list_static[0].p, &vert_list_static[1].p);
+		TransformVertexQuat(rotation, &temp, &vert_list_static[1].p);
 
 		eobj->vertexlist3[i].v = vert_list_static[1].p += pos;
 
