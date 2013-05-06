@@ -478,30 +478,20 @@ void MiniMap::revealPlayerPos(int showLevel) {
 	playerPos.x += startX;
 	playerPos.y += startY;
 	
-	// TODO this seems fishy - why should revealing the minimap care about the display
-	// aspect ratio?
-	float divXratio = 1.f / Xratio;
-	float divYratio = 1.f / Yratio;
-	
 	// TODO this is inefficient - we don't really need to iterate over the whole minimap!
 	// only the area around the player will be modified
 	for(int j = 0; j < MINIMAP_MAX_Z; j++) {
 		for(int i = 0; i < MINIMAP_MAX_X; i++) {
 			
-			float posx = (startX + i * caseX) * Xratio;
-			float posy = (startY + j * caseY) * Yratio;
+			float posx = startX + i * caseX;
+			float posy = startY + j * caseY;
 			
-			if(posx > 345 * Xratio || posy > 290 * Yratio) {
-				continue; // out of bounds
-			}
-			
-			float d = fdist(Vec2f(posx * divXratio + caseX * ( 1.0f / 2 ), posy * divYratio), playerPos);
+			float d = fdist(Vec2f(posx + caseX * 0.5f, posy), playerPos);
 			if(d > 6.f) {
 				continue;
 			}
 			
-			int r;
-			float vv = (6 - d) * ( 1.0f / 6 );
+			float vv = (6 - d) * (1.f / 6);
 			
 			if(vv >= 0.5f) {
 				vv = 1.f;
@@ -511,7 +501,7 @@ void MiniMap::revealPlayerPos(int showLevel) {
 				vv = 0.f;
 			}
 			
-			r = vv * 255.f;
+			int r = vv * 255.f;
 			
 			int ucLevel =  max(r, (int)m_levels[showLevel].m_revealed[i][j]);
 			m_levels[showLevel].m_revealed[i][j] = checked_range_cast<unsigned char>(ucLevel);
