@@ -5955,8 +5955,8 @@ void ARX_INTERFACE_ManageOpenedBook()
 		Rect rec;
 		if (BOOKZOOM) {
 			
-			rec = Rect(s32((118.f + BOOKDECX) * Xratio), s32((69.f + BOOKDECY) * Yratio),
-			           s32((280.f + BOOKDECY) * Xratio), s32((310.f + BOOKDECY) * Yratio));
+			rec = Rect(s32((120.f + BOOKDECX) * Xratio), s32((69.f + BOOKDECY) * Yratio),
+			           s32((330.f + BOOKDECX) * Xratio), s32((300.f + BOOKDECY) * Yratio));
 			GRenderer->Clear(Renderer::DepthBuffer, Color::none, 1.f, 1, &rec);
 
 			if(ARXmenu.currentmode != AMCM_OFF) {
