@@ -1845,6 +1845,7 @@ bool IsPlayerStriking()
 				return true;
 		}
 		break;
+	case WEAPON_BOW: break; // Bows cannot be used as melee weapons
 	}
 
 	return false;
