@@ -325,9 +325,9 @@ void MiniMap::showPlayerMiniMap(int showLevel) {
 		// Draw the player (red arrow)
 		if(showLevel == ARX_LEVELS_GetRealNum(m_currentLevel)) {
 			drawPlayer(playerSize, playerPos.x + decalX, playerPos.y + decalY, true);
+			drawDetectedEntities(showLevel, startX + decalX, startY + decalY, miniMapZoom);
 		}
 		
-		drawDetectedEntities(showLevel, startX, startY, miniMapZoom);
 	}
 }
 
@@ -362,10 +362,9 @@ void MiniMap::showBookMiniMap(int showLevel) {
 		
 		if(showLevel == ARX_LEVELS_GetRealNum(m_currentLevel)) {
 			drawPlayer(6.f, playerPos.x, playerPos.y);
+			drawDetectedEntities(showLevel, startX, startY, zoom);
 		}
 		
-		// tsu
-		drawDetectedEntities(showLevel, startX, startY, zoom);
 	}
 }
 
@@ -400,10 +399,8 @@ void MiniMap::showBookEntireMap(int showLevel) {
 	
 	if(showLevel == ARX_LEVELS_GetRealNum(m_currentLevel)) {
 		drawPlayer(3.f, playerPos.x, playerPos.y);
+		drawDetectedEntities(showLevel, startX, startY, zoom);
 	}
-	
-	// tsu
-	drawDetectedEntities(showLevel, startX, startY, zoom);
 	
 	TexturedVertex verts[4];
 	for(int k = 0; k < 4; k++) {
