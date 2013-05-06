@@ -693,6 +693,8 @@ void MiniMap::drawBackground(int showLevel, Rect boundaries, float startX, float
 			}
 		}
 	}
+	
+	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 }
 
 void MiniMap::drawPlayer(float playerSize, float playerX, float playerY, bool alphaBlending) {
