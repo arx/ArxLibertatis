@@ -1458,16 +1458,15 @@ void Cedric_ManageExtraRotationsFirst(Entity * io, EERIE_3DOBJ * obj)
 	}
 }
 
-static bool Cedric_IO_Visible(Entity * io) {
-	if(io == entities.player())
-		return true;
+bool Cedric_IO_Visible(Vec3f * pos) {
 
-	if(ACTIVEBKG && io) {	
-		if(distSqr(io->pos, ACTIVECAM->orgTrans.pos) > square(ACTIVECAM->cdepth) * square(0.6f))
-			return false;
+	if(ACTIVEBKG) {
+		//TODO maybe readd this
+		//if(distSqr(io->pos, ACTIVECAM->orgTrans.pos) > square(ACTIVECAM->cdepth) * square(0.6f))
+		//	return false;
 
-		long xx = io->pos.x * ACTIVEBKG->Xmul;
-		long yy = io->pos.z * ACTIVEBKG->Zmul;
+		long xx = pos->x * ACTIVEBKG->Xmul;
+		long yy = pos->z * ACTIVEBKG->Zmul;
 
 		if(xx >= 1 && yy >= 1 && xx < ACTIVEBKG->Xsize-1 && yy < ACTIVEBKG->Zsize-1) {
 			for(long ky = yy - 1; ky <= yy + 1; ky++)
@@ -1509,7 +1508,7 @@ void Cedric_AnimateDrawEntity(EERIE_3DOBJ *eobj, ANIM_USE *animuse, Anglef *angl
 
 	StoreEntityMovement(io, ftr, scale, update_movement);
 	
-	if(!Cedric_IO_Visible(io))
+	if(io && io != entities.player() && !Cedric_IO_Visible(&io->pos))
 		return;
 		
 	// Manage Extra Rotations in Local Space
