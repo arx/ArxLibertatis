@@ -297,7 +297,7 @@ void MiniMap::showPlayerMiniMap(int showLevel) {
 	
 	// First Load Minimap TC & DATA if needed
 	if(m_levels[showLevel].m_texContainer == NULL) {
-			getData(showLevel);
+		getData(showLevel);
 	}
 	
 	if(m_levels[showLevel].m_texContainer) {
@@ -376,93 +376,96 @@ void MiniMap::showBookEntireMap(int showLevel) {
 		getData(showLevel);
 	}
 	
-	if(m_levels[showLevel].m_texContainer) {
+	if(!m_levels[showLevel].m_texContainer) {
+		return;
+	}
+	
+	GRenderer->SetRenderState(Renderer::DepthTest, false);
+	
+	float zoom = 250.f;
+	float startX = 140.f;
+	float startY = 120.f;
+	
+	Vec2f playerPos(0.f, 0.f);
+	
+	if(showLevel == ARX_LEVELS_GetRealNum(m_currentLevel)) {
+		playerPos = computePlayerPos(zoom, showLevel);
+		playerPos.x += startX;
+		playerPos.y += startY;
+	}
+	
+	drawBackground(showLevel, Rect(0, 0, 345, 290), startX, startY, zoom);
+	
+	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
+	
+	if(showLevel == ARX_LEVELS_GetRealNum(m_currentLevel)) {
+		drawPlayer(3.f, playerPos.x, playerPos.y);
+	}
+	
+	// tsu
+	drawDetectedEntities(showLevel, startX, startY, zoom);
+	
+	TexturedVertex verts[4];
+	for(int k = 0; k < 4; k++) {
+		verts[k].color = 0xFFFFFFFF;
+		verts[k].rhw = 1;
+		verts[k].p.z = 0.00001f;
+	}
+	
+	float caseX = zoom / ((float)MINIMAP_MAX_X);
+	float caseY = zoom / ((float)MINIMAP_MAX_Z);
+	float ratio = 1.f;
+	
+	for(size_t i = 0; i < m_mapMarkers.size(); i++) {
 		
-		GRenderer->SetRenderState(Renderer::DepthTest, false);
-		
-		float zoom = 250.f;
-		float startX = 140.f;
-		float startY = 120.f;
-		
-		Vec2f playerPos(0.f, 0.f);
-		
-		if(showLevel == ARX_LEVELS_GetRealNum(m_currentLevel)) {
-			playerPos = computePlayerPos(zoom, showLevel);
-			playerPos.x += startX;
-			playerPos.y += startY;
+		if(m_mapMarkers[i].m_lvl != showLevel + 1) {
+			continue;
 		}
 		
-		drawBackground(showLevel, Rect(0, 0, 345, 290), startX, startY, zoom);
+		float pos_x = m_mapMarkers[i].m_x * 8 * ratio * m_activeBkg->Xmul * caseX + startX;
+		float pos_y = m_mapMarkers[i].m_y * 8 * ratio * m_activeBkg->Zmul * caseY + startY;
+		float size = 5.f * ratio;
+		verts[0].color = 0xFFFF0000;
+		verts[1].color = 0xFFFF0000;
+		verts[2].color = 0xFFFF0000;
+		verts[3].color = 0xFFFF0000;
+		verts[0].p.x = (pos_x - size) * Xratio;
+		verts[0].p.y = (pos_y - size) * Yratio;
+		verts[1].p.x = (pos_x + size) * Xratio;
+		verts[1].p.y = (pos_y - size) * Yratio;
+		verts[2].p.x = (pos_x + size) * Xratio;
+		verts[2].p.y = (pos_y + size) * Yratio;
+		verts[3].p.x = (pos_x - size) * Xratio;
+		verts[3].p.y = (pos_y + size) * Yratio;
+		verts[0].uv = Vec2f::ZERO;
+		verts[1].uv = Vec2f::X_AXIS;
+		verts[2].uv = Vec2f::ONE;
+		verts[3].uv = Vec2f::Y_AXIS;
 		
-		GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
-		
-		if(showLevel == ARX_LEVELS_GetRealNum(m_currentLevel)) {
-			drawPlayer(3.f, playerPos.x, playerPos.y);
-		}
-		
-		// tsu
-		drawDetectedEntities(showLevel, startX, startY, zoom);
-		
-		TexturedVertex verts[4];
-		for(int k = 0; k < 4; k++) {
-			verts[k].color = 0xFFFFFFFF;
-			verts[k].rhw = 1;
-			verts[k].p.z = 0.00001f;
-		}
-		
-		float caseX = zoom / ((float)MINIMAP_MAX_X);
-		float caseY = zoom / ((float)MINIMAP_MAX_Z);
-		float ratio = 1.f;
-		
-		for(size_t i = 0; i < m_mapMarkers.size(); i++) {
-			if(m_mapMarkers[i].m_lvl == showLevel + 1) {
+		if(MouseInRect(verts[0].p.x, verts[0].p.y, verts[2].p.x, verts[2].p.y)) {
+			if(!m_mapMarkers[i].m_text.empty()) {
 				
-				float pos_x = m_mapMarkers[i].m_x * 8 * ratio * m_activeBkg->Xmul * caseX + startX;
-				float pos_y = m_mapMarkers[i].m_y * 8 * ratio * m_activeBkg->Zmul * caseY + startY;
-				float size = 5.f * ratio;
-				verts[0].color = 0xFFFF0000;
-				verts[1].color = 0xFFFF0000;
-				verts[2].color = 0xFFFF0000;
-				verts[3].color = 0xFFFF0000;
-				verts[0].p.x = (pos_x - size) * Xratio;
-				verts[0].p.y = (pos_y - size) * Yratio;
-				verts[1].p.x = (pos_x + size) * Xratio;
-				verts[1].p.y = (pos_y - size) * Yratio;
-				verts[2].p.x = (pos_x + size) * Xratio;
-				verts[2].p.y = (pos_y + size) * Yratio;
-				verts[3].p.x = (pos_x - size) * Xratio;
-				verts[3].p.y = (pos_y + size) * Yratio;
-				verts[0].uv = Vec2f::ZERO;
-				verts[1].uv = Vec2f::X_AXIS;
-				verts[2].uv = Vec2f::ONE;
-				verts[3].uv = Vec2f::Y_AXIS;
+				Rect bRect(140, 290, 140 + 205, 358);
 				
-				if(MouseInRect(verts[0].p.x, verts[0].p.y, verts[2].p.x, verts[2].p.y)) {
-					if(!m_mapMarkers[i].m_text.empty()) {
-						
-						Rect bRect(140, 290, 140 + 205, 358);
-						
-						Rect::Num left = checked_range_cast<Rect::Num>((bRect.left) * Xratio);
-						Rect::Num right = checked_range_cast<Rect::Num>((bRect.right) * Xratio);
-						Rect::Num top = checked_range_cast<Rect::Num>((bRect.top) * Yratio);
-						Rect::Num bottom = checked_range_cast<Rect::Num>((bRect.bottom) * Yratio);
-						Rect rRect = Rect(left, top, right, bottom);
-						
-						long lLengthDraw = ARX_UNICODE_ForceFormattingInRect(m_font, m_mapMarkers[i].m_text, rRect);
-						
-						DrawBookTextInRect(m_font, float(bRect.left), float(bRect.top), float(bRect.right), m_mapMarkers[i].m_text.substr(0, lLengthDraw), Color::none);
-					}
-				}
+				Rect::Num left = checked_range_cast<Rect::Num>((bRect.left) * Xratio);
+				Rect::Num right = checked_range_cast<Rect::Num>((bRect.right) * Xratio);
+				Rect::Num top = checked_range_cast<Rect::Num>((bRect.top) * Yratio);
+				Rect::Num bottom = checked_range_cast<Rect::Num>((bRect.bottom) * Yratio);
+				Rect rRect = Rect(left, top, right, bottom);
 				
-				if(m_mapMarkerTexCont == NULL) {
-					m_mapMarkerTexCont = TextureContainer::Load("graph/interface/icons/mapmarker");
-				}
+				long lLengthDraw = ARX_UNICODE_ForceFormattingInRect(m_font, m_mapMarkers[i].m_text, rRect);
 				
-				GRenderer->SetTexture(0, m_mapMarkerTexCont);
-				
-				EERIEDRAWPRIM(Renderer::TriangleFan, verts, 4);
+				DrawBookTextInRect(m_font, float(bRect.left), float(bRect.top), float(bRect.right), m_mapMarkers[i].m_text.substr(0, lLengthDraw), Color::none);
 			}
 		}
+		
+		if(m_mapMarkerTexCont == NULL) {
+			m_mapMarkerTexCont = TextureContainer::Load("graph/interface/icons/mapmarker");
+		}
+		
+		GRenderer->SetTexture(0, m_mapMarkerTexCont);
+		
+		EERIEDRAWPRIM(Renderer::TriangleFan, verts, 4);
 	}
 }
 
@@ -478,46 +481,43 @@ void MiniMap::revealPlayerPos(int showLevel) {
 	playerPos.x += startX;
 	playerPos.y += startY;
 	
+	// TODO this seems fishy - why should revealing the minimap care about the display
+	// aspect ratio?
 	float divXratio = 1.f / Xratio;
 	float divYratio = 1.f / Yratio;
 	
-	for(int j = -2; j < MINIMAP_MAX_Z + 2; j++) {
-		for(int i = -2; i < MINIMAP_MAX_X + 2; i++) {
+	// TODO this is inefficient - we don't really need to iterate over the whole minimap!
+	// only the area around the player will be modified
+	for(int j = 0; j < MINIMAP_MAX_Z; j++) {
+		for(int i = 0; i < MINIMAP_MAX_X; i++) {
 			
-			bool inBounds = true;
 			float posx = (startX + i * caseX) * Xratio;
 			float posy = (startY + j * caseY) * Yratio;
 			
-			if((posx > 345 * Xratio) ||	(posy > 290 * Yratio)) {
-				inBounds = false;
+			if(posx > 345 * Xratio || posy > 290 * Yratio) {
+				continue; // out of bounds
 			}
 			
-			if(inBounds) {
-				
-				if((i >= 0) && (i < MINIMAP_MAX_X) && (j >= 0) && (j < MINIMAP_MAX_Z)) {
-					
-					float d = fdist(Vec2f(posx * divXratio + caseX * ( 1.0f / 2 ), posy * divYratio), playerPos);
-					
-					if(d <= 6.f) {
-						
-						int r;
-						float vv = (6 - d) * ( 1.0f / 6 );
-						
-						if(vv >= 0.5f) {
-							vv = 1.f;
-						} else if (vv > 0.f) {
-							vv = vv * 2.f;
-						} else {
-							vv = 0.f;
-						}
-						
-						r = vv * 255.f;
-						
-						int ucLevel =  max(r, (int)m_levels[showLevel].m_revealed[i][j]);
-						m_levels[showLevel].m_revealed[i][j] = checked_range_cast<unsigned char>(ucLevel);
-					}
-				}
+			float d = fdist(Vec2f(posx * divXratio + caseX * ( 1.0f / 2 ), posy * divYratio), playerPos);
+			if(d > 6.f) {
+				continue;
 			}
+			
+			int r;
+			float vv = (6 - d) * ( 1.0f / 6 );
+			
+			if(vv >= 0.5f) {
+				vv = 1.f;
+			} else if(vv > 0.f) {
+				vv = vv * 2.f;
+			} else {
+				vv = 0.f;
+			}
+			
+			r = vv * 255.f;
+			
+			int ucLevel =  max(r, (int)m_levels[showLevel].m_revealed[i][j]);
+			m_levels[showLevel].m_revealed[i][j] = checked_range_cast<unsigned char>(ucLevel);
 		}
 	}
 }
