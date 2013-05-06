@@ -709,6 +709,9 @@ void MiniMap::drawPlayer(float playerSize, float playerX, float playerY, bool al
 	
 	GRenderer->ResetTexture(0);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, alphaBlending);
+	if(alphaBlending) {
+		GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendInvSrcColor);
+	}
 	
 	EERIEDRAWPRIM(Renderer::TriangleFan, verts);
 	
