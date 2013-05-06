@@ -318,7 +318,7 @@ void MiniMap::showPlayerMiniMap(int showLevel) {
 		}
 		
 		// Draw the background
-		drawBackground(showLevel, Rect(360, 85, 555, 355), startX, startY, miniMapZoom, 20.f, decalX, decalY, true, 0.5f);
+		drawBackground(showLevel, Rect(390, 135, 590, 295), startX, startY, miniMapZoom, 20.f, decalX, decalY, true, 0.5f);
 		
 		GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
 		
