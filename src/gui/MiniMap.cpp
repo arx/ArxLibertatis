@@ -577,11 +577,12 @@ void MiniMap::drawBackground(int showLevel, Rect boundaries, float startX, float
 	}
 	
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
-	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
-	
-	if(invColor)
+	if(invColor) {
 		GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendInvSrcColor);
+	} else {
+		GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
+	}
+	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
 	
 	for(int j = -2; j < MINIMAP_MAX_Z + 2; j++) {
 		for(int i = -2; i < MINIMAP_MAX_X + 2; i++) {
@@ -592,104 +593,98 @@ void MiniMap::drawBackground(int showLevel, Rect boundaries, float startX, float
 			vx = (vxx * div) * dw;
 			vy = (vyy * div) * dh;
 			
-			bool inBounds = 1;
 			float posx = (startX + i * caseX) * Xratio;
 			float posy = (startY + j * caseY) * Yratio;
-			
-			inBounds = true;
 			
 			if((posx < boundaries.left * Xratio)
 			   || (posx > boundaries.right * Xratio)
 			   || (posy < boundaries.top * Yratio)
 			   || (posy > boundaries.bottom * Yratio)) {
-				inBounds = false;
+				continue; // out of bounds
 			}
 			
-			if(inBounds) {
+			verts[3].p.x = verts[0].p.x = (posx);
+			verts[1].p.y = verts[0].p.y = (posy);
+			verts[2].p.x = verts[1].p.x = posx + (caseX * Xratio);
+			verts[3].p.y = verts[2].p.y = posy + (caseY * Yratio);
+			
+			verts[3].uv.x = verts[0].uv.x = vx;
+			verts[1].uv.y = verts[0].uv.y = vy;
+			verts[2].uv.x = verts[1].uv.x = vx + vx2;
+			verts[3].uv.y = verts[2].uv.y = vy + vy2;
+			
+			float v;
+			float oo = 0.f;
+			
+			for(int vert = 0; vert < 4; vert++) {
 				
-				verts[3].p.x = verts[0].p.x = (posx);
-				verts[1].p.y = verts[0].p.y = (posy);
-				verts[2].p.x = verts[1].p.x = posx + (caseX * Xratio);
-				verts[3].p.y = verts[2].p.y = posy + (caseY * Yratio);
+				// Array offset according to "vert"
+				int iOffset = 0;
+				int jOffset = 0;
 				
-				verts[3].uv.x = verts[0].uv.x = vx;
-				verts[1].uv.y = verts[0].uv.y = vy;
-				verts[2].uv.x = verts[1].uv.x = vx + vx2;
-				verts[3].uv.y = verts[2].uv.y = vy + vy2;
+				if(vert == 1 || vert == 2)
+					iOffset = 1;
+				if(vert == 2 || vert == 3)
+					jOffset = 1;
 				
-				float v;
-				float oo = 0.f;
-				
-				for(int vert = 0; vert < 4; vert++) {
-					
-					// Array offset according to "vert"
-					int iOffset = 0;
-					int jOffset = 0;
-					
-					if(vert == 1 || vert == 2)
-						iOffset = 1;
-					if(vert == 2 || vert == 3)
-						jOffset = 1;
-					
-					if((i + iOffset < 0) || (i + iOffset >= MINIMAP_MAX_X) || (j + jOffset < 0) || (j + jOffset >= MINIMAP_MAX_Z)) {
-						v = 0;
-					} else {
-						v = ((float)m_levels[showLevel].m_revealed[min(i+iOffset, MINIMAP_MAX_X-iOffset)][min(j+jOffset, MINIMAP_MAX_Z-jOffset)]) * (1.0f / 255);
-					}
-					
-					if(fadeBorder > 0.f) {
-						
-						float _px = verts[vert].p.x - fadeBounds.left;
-						
-						if(_px < 0.f) {
-							v = 0.f;
-						} else if(_px < fadeBorder) {
-							v *= _px * fadeDiv;
-						}
-						
-						_px = fadeBounds.right - verts[vert].p.x;
-						
-						if(_px < 0.f) {
-							v = 0.f;
-						} else if(_px < fadeBorder) {
-							v *= _px * fadeDiv;
-						}
-						
-						_px = verts[vert].p.y - fadeBounds.top;
-						
-						if(_px < 0.f) {
-							v = 0.f;
-						} else if(_px < fadeBorder) {
-							v *= _px * fadeDiv;
-						}
-						
-						_px = fadeBounds.bottom - verts[vert].p.y;
-						
-						if(_px < 0.f) {
-							v = 0.f;
-						} else if(_px < fadeBorder) {
-							v *= _px * fadeDiv;
-						}
-					}
-					
-					verts[vert].color = Color::gray(v * alpha).toBGR();
-					
-					oo += v;
+				if((i + iOffset < 0) || (i + iOffset >= MINIMAP_MAX_X) || (j + jOffset < 0) || (j + jOffset >= MINIMAP_MAX_Z)) {
+					v = 0;
+				} else {
+					v = ((float)m_levels[showLevel].m_revealed[min(i+iOffset, MINIMAP_MAX_X-iOffset)][min(j+jOffset, MINIMAP_MAX_Z-jOffset)]) * (1.0f / 255);
 				}
 				
-				if(oo > 0.f) {
+				if(fadeBorder > 0.f) {
 					
-					verts[0].p.x += decalX * Xratio;
-					verts[0].p.y += decalY * Yratio;
-					verts[1].p.x += decalX * Xratio;
-					verts[1].p.y += decalY * Yratio;
-					verts[2].p.x += decalX * Xratio;
-					verts[2].p.y += decalY * Yratio;
-					verts[3].p.x += decalX * Xratio;
-					verts[3].p.y += decalY * Yratio;
+					float _px = verts[vert].p.x - fadeBounds.left;
 					
-					EERIEDRAWPRIM(Renderer::TriangleFan, verts, 4);
+					if(_px < 0.f) {
+						v = 0.f;
+					} else if(_px < fadeBorder) {
+						v *= _px * fadeDiv;
+					}
+					
+					_px = fadeBounds.right - verts[vert].p.x;
+					
+					if(_px < 0.f) {
+						v = 0.f;
+					} else if(_px < fadeBorder) {
+						v *= _px * fadeDiv;
+					}
+					
+					_px = verts[vert].p.y - fadeBounds.top;
+					
+					if(_px < 0.f) {
+						v = 0.f;
+					} else if(_px < fadeBorder) {
+						v *= _px * fadeDiv;
+					}
+					
+					_px = fadeBounds.bottom - verts[vert].p.y;
+					
+					if(_px < 0.f) {
+						v = 0.f;
+					} else if(_px < fadeBorder) {
+						v *= _px * fadeDiv;
+					}
 				}
+				
+				verts[vert].color = Color::gray(v * alpha).toBGR();
+				
+				oo += v;
+			}
+			
+			if(oo > 0.f) {
+				
+				verts[0].p.x += decalX * Xratio;
+				verts[0].p.y += decalY * Yratio;
+				verts[1].p.x += decalX * Xratio;
+				verts[1].p.y += decalY * Yratio;
+				verts[2].p.x += decalX * Xratio;
+				verts[2].p.y += decalY * Yratio;
+				verts[3].p.x += decalX * Xratio;
+				verts[3].p.y += decalY * Yratio;
+				
+				EERIEDRAWPRIM(Renderer::TriangleFan, verts, 4);
 			}
 		}
 	}
@@ -740,7 +735,7 @@ void MiniMap::drawDetectedEntities(int showLevel, float startX, float startY, fl
 	float ratio = zoom / 250.f;
 	
 	if(!m_pTexDetect) {
-			m_pTexDetect = TextureContainer::Load("graph/particles/flare");
+		m_pTexDetect = TextureContainer::Load("graph/particles/flare");
 	}
 	
 	// Computes playerpos
@@ -749,49 +744,56 @@ void MiniMap::drawDetectedEntities(int showLevel, float startX, float startY, fl
 	float ofy = m_miniOffsetY[m_currentLevel];
 	float ofy2 = m_levels[showLevel].m_ratioY;
 	
-	const EntityManager &ents = *m_entities; // for convenience
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	
+	const EntityManager &ents = *m_entities; // for convenience
 	for(size_t lnpc = 1; lnpc < ents.size(); lnpc++) {
-		if((ents[lnpc] != NULL) && (ents[lnpc]->ioflags & IO_NPC)) {
-			if(ents[lnpc]->_npcdata->life > 0.f) {
-				if(!((ents[lnpc]->gameFlags & GFLAG_MEGAHIDE) || (ents[lnpc]->show == SHOW_FLAG_MEGAHIDE))
-				   && (ents[lnpc]->show == SHOW_FLAG_IN_SCENE)) {
-					if(!(ents[lnpc]->show == SHOW_FLAG_HIDDEN)) {
-						if(ents[lnpc]->_npcdata->fDetect >= 0) {
-							if(player.Full_Skill_Etheral_Link >= ents[lnpc]->_npcdata->fDetect) {
-								
-								float fpx = startX + ((ents[lnpc]->pos.x - 100 + ofx - ofx2) * ( 1.0f / 100 ) * caseX
-								+ m_miniOffsetX[m_currentLevel] * ratio * m_modX) / m_modX; 
-								float fpy = startY + ((m_mapMaxY[showLevel] - ofy - ofy2) * ( 1.0f / 100 ) * caseY
-								- (ents[lnpc]->pos.z + 200 + ofy - ofy2) * ( 1.0f / 100 ) * caseY + m_miniOffsetY[m_currentLevel] * ratio * m_modZ) / m_modZ;
-								
-								float d = fdist(Vec2f(m_player->pos.x, m_player->pos.z), Vec2f(ents[lnpc]->pos.x, ents[lnpc]->pos.z));
-								
-								if((d <= 800) && (fabs(ents.player()->pos.y - ents[lnpc]->pos.y) < 250.f)) {
-									
-									float col = 1.f;
-									
-									if(d > 600.f) {
-										col = 1.f - (d - 600.f) * ( 1.0f / 200 );
-									}
-									
-									GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-									GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-									
-									fpx *= Xratio;
-									fpy *= Yratio;
-									EERIEDrawBitmap(fpx, fpy, 5.f * ratio, 5.f * ratio, 0, m_pTexDetect,
-									Color3f(col, 0, 0).to<u8>());
-									
-									GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-								}
-							}
-						}
-					}
-				}
-			}
+		Entity * npc = ents[lnpc];
+		
+		if(!npc || !(npc->ioflags & IO_NPC)) {
+			continue; // only NPCs can be detected
 		}
+		
+		if(npc->_npcdata->life < 0.f) {
+			continue; // don't show dead NPCs
+		}
+		
+		if((npc->gameFlags & GFLAG_MEGAHIDE) || npc->show != SHOW_FLAG_IN_SCENE) {
+			continue; // don't show hidden NPCs
+		}
+		
+		if(npc->_npcdata->fDetect < 0) {
+			continue; // don't show undetectable NPCs
+		}
+		
+		if(player.Full_Skill_Etheral_Link < npc->_npcdata->fDetect) {
+			continue; // the player doesn't have enough skill to detect this NPC
+		}
+		
+		float fpx = startX + ((npc->pos.x - 100 + ofx - ofx2) * ( 1.0f / 100 ) * caseX
+		+ m_miniOffsetX[m_currentLevel] * ratio * m_modX) / m_modX; 
+		float fpy = startY + ((m_mapMaxY[showLevel] - ofy - ofy2) * ( 1.0f / 100 ) * caseY
+		- (npc->pos.z + 200 + ofy - ofy2) * ( 1.0f / 100 ) * caseY + m_miniOffsetY[m_currentLevel] * ratio * m_modZ) / m_modZ;
+		
+		float d = fdist(Vec2f(m_player->pos.x, m_player->pos.z), Vec2f(npc->pos.x, npc->pos.z));
+		if(d > 800 || fabs(ents.player()->pos.y - npc->pos.y) > 250.f) {
+			continue; // the NPC is too far away to be detected
+		}
+		
+		float col = 1.f;
+		
+		if(d > 600.f) {
+			col = 1.f - (d - 600.f) * ( 1.0f / 200 );
+		}
+		
+		fpx *= Xratio;
+		fpy *= Yratio;
+		EERIEDrawBitmap(fpx, fpy, 5.f * ratio, 5.f * ratio, 0, m_pTexDetect,
+		Color3f(col, 0, 0).to<u8>());
 	}
+	
+	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 }
 
 void MiniMap::clearMarkerTexCont() {
