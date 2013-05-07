@@ -91,7 +91,7 @@ bool create_directories(const path & p) {
 
 bool copy_file(const path & from_p, const path & to_p, bool overwrite) {
 	error_code ec;
-	fs_boost::copy_option::enum_type o;
+	BOOST_SCOPED_ENUM(fs_boost::copy_option) o;
 	if(overwrite) {
 		o = fs_boost::copy_option::overwrite_if_exists;
 	} else {
