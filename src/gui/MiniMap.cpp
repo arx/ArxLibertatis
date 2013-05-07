@@ -309,7 +309,7 @@ void MiniMap::showPlayerMiniMap(int showLevel) {
 		
 		Vec2f playerPos(0.f, 0.f);
 		
-		if((showLevel == ARX_LEVELS_GetRealNum(m_currentLevel))) {
+		if(showLevel == ARX_LEVELS_GetRealNum(m_currentLevel)) {
 			playerPos = computePlayerPos(miniMapZoom, showLevel);
 			startX = 490.f - playerPos.x;
 			startY = 220.f - playerPos.y;
@@ -348,7 +348,7 @@ void MiniMap::showBookMiniMap(int showLevel) {
 		
 		Vec2f playerPos(0.f, 0.f);
 		
-		if((showLevel == ARX_LEVELS_GetRealNum(m_currentLevel))) {
+		if(showLevel == ARX_LEVELS_GetRealNum(m_currentLevel)) {
 			playerPos = computePlayerPos(zoom, showLevel);
 			startX = 490.f - playerPos.x;
 			startY = 220.f - playerPos.y;
