@@ -522,8 +522,9 @@ void EERIEPOLY_DrawWired(EERIEPOLY * ep, Color color) {
 		memcpy(&ltv[3],&ep->tv[2],sizeof(TexturedVertex));
 		memcpy(&ltv[4],&ep->tv[0],sizeof(TexturedVertex));
 		ltv[4].p.z-=0.0002f;
-	} else
+	} else {
 		memcpy(&ltv[to],&ltv[0],sizeof(TexturedVertex));
+	}
 
 	GRenderer->ResetTexture(0);
 

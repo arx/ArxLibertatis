@@ -495,8 +495,9 @@ void PrepareIOTreatZone(long flag)
 	if(flag || status == -1) {
 		status = 0;
 		lastpos = ACTIVECAM->orgTrans.pos;
-	} else if(status == 3)
+	} else if(status == 3) {
 		status = 0;
+	}
 
 	if(distSqr(ACTIVECAM->orgTrans.pos, lastpos) > square(100.f)) {
 		status = 0;

@@ -2053,9 +2053,9 @@ void ARX_INTERFACE_Combat_Mode(long i)
 		}
 
 		player.doingmagic=0;
-	} else if((!entities.player()->animlayer[1].cur_anim || entities.player()->animlayer[1].cur_anim == entities.player()->anims[ANIM_WAIT])
-		&& entities.player())
-	{
+	} else if((!entities.player()->animlayer[1].cur_anim
+	           || entities.player()->animlayer[1].cur_anim == entities.player()->anims[ANIM_WAIT])
+	          && entities.player()) {
 		ARX_INTERFACE_BookOpenClose(2);
 
 		player.Interface|=INTER_COMBATMODE;
