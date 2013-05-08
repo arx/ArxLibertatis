@@ -414,7 +414,7 @@ aalError DSoundBackend::setRoomRolloffFactor(float factor) {
 	
 	if(FAILED(environment->Set(DSPROPSETID_EAX_ListenerProperties,
 			                       DSPROPERTY_EAXLISTENER_ROOMROLLOFFFACTOR | DSPROPERTY_EAXLISTENER_DEFERRED,
-			                       NULL, 0, &rolloff, sizeof(float)))) {
+			                       NULL, 0, &rolloff, sizeof(rolloff)))) {
 		return AAL_ERROR_SYSTEM;
 	}
 	
