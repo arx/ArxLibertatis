@@ -57,6 +57,7 @@ function(check_compile RESULT FILE FLAG TYPE)
 		            "-DCMAKE_EXE_LINKER_FLAGS=${CMAKE_EXE_LINKER_FLAGS}"
 		            "-DCMAKE_SHARED_LINKER_FLAGS=${CMAKE_SHARED_LINKER_FLAGS}"
 		            "-DCMAKE_MODULE_LINKER_FLAGS=${CMAKE_MODULE_LINKER_FLAGS}"
+		            "-DLINK_LIBRARIES=${ARGV4}"
 		OUTPUT_VARIABLE ERRORLOG
 	)
 	
@@ -66,8 +67,13 @@ function(check_compile RESULT FILE FLAG TYPE)
 	set(CMAKE_SHARED_LINKER_FLAGS "${old_CMAKE_SHARED_LINKER_FLAGS}")
 	set(CMAKE_MODULE_LINKER_FLAGS "${old_CMAKE_MODULE_LINKER_FLAGS}")
 	
+	set(errormsg "unsupported")
+	if(${ARGC} GREATER 4)
+		set(errormsg "${ARGV5}")
+	endif()
+	
 	if(NOT check_compiler_flag)
-		message(STATUS "Checking ${TYPE}: ${FLAG} - unsupported")
+		message(STATUS "Checking ${TYPE}: ${FLAG} - ${errormsg}")
 		set(${RESULT} "" PARENT_SCOPE)
 		set("${cachevar}" 0 CACHE INTERNAL "...")
 	else()
@@ -80,7 +86,7 @@ function(check_compile RESULT FILE FLAG TYPE)
 		endforeach()
 		
 		if(has_warning)
-			message(STATUS "Checking ${TYPE}: ${FLAG} - unsupported (warning)")
+			message(STATUS "Checking ${TYPE}: ${FLAG} - ${errormsg} (warning)")
 			set(${RESULT} "" PARENT_SCOPE)
 			set("${cachevar}" 0 CACHE INTERNAL "...")
 		else()

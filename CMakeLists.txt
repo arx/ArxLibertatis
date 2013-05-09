@@ -824,6 +824,24 @@ elseif(NOT ${Boost_VERSION} LESS 104400)
 	add_definitions(-DBOOST_FILESYSTEM_NO_DEPRECATED)
 	list(APPEND IO_FILESYSTEM_SOURCES ${IO_FILESYSTEM_BOOST_SOURCES})
 	list(APPEND BASE_LIBRARIES ${Boost_LIBRARIES})
+	
+	# BOOST_SCOPED_ENUM is implemented differently if compiled with C++11 support
+	# This means the Boost.Filesystem ABI depends on what C++ version was used
+	# to compile the library - check for that!
+	check_compile(boost_filesystem_abi_matches
+		"${CMAKE_MODULE_PATH}/boostfs_cxx11_scoped_enum.cpp"
+		"scoped enum" "Boost ABI"
+		"${Boost_LIBRARIES}"
+		"mismatch, fixing"
+	)
+	if(NOT boost_filesystem_abi_matches)
+		add_definitions(
+			# Different names for different Boost versions :/
+			-DBOOST_NO_SCOPED_ENUMS=1
+			-DBOOST_NO_CXX11_SCOPED_ENUMS=1
+		)
+	endif()
+	
 else()
 	message(FATAL_ERROR "You need either Boost >= 1.44 or Windows API"
 	        "or enough POSIX functionality; Found boost version ${Boost_VERSION}")
