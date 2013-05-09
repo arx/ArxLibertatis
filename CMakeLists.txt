@@ -390,11 +390,13 @@ if(NOT MSVC)
 	
 	check_symbol_exists(nanosleep "time.h" ARX_HAVE_NANOSLEEP)
 	
+	set(CMAKE_REQUIRED_LIBRARIES "${CMAKE_THREAD_LIBS_INIT}")
 	check_symbol_exists(pthread_setname_np "pthread.h" ARX_HAVE_PTHREAD_SETNAME_NP)
 	if(NOT ARX_HAVE_PTHREAD_SETNAME_NP)
 		check_symbol_exists(pthread_set_name_np "pthread_np.h" ARX_HAVE_PTHREAD_SET_NAME_NP)
 	endif()
 	check_symbol_exists(prctl "sys/prctl.h" ARX_HAVE_PRCTL)
+	unset(CMAKE_REQUIRED_LIBRARIES)
 	
 	check_symbol_exists(uname "sys/utsname.h" ARX_HAVE_UNAME)
 	check_symbol_exists(getrusage "sys/resource.h" ARX_HAVE_GETRUSAGE)
