@@ -907,16 +907,12 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 		if(fartherThan(ACTIVECAM->orgTrans.pos, thrownObj->position, ACTIVECAM->cdepth * fZFogEnd + 50.f))
 			continue;
 
-		long xx = thrownObj->position.x * ACTIVEBKG->Xmul;
-		long yy = thrownObj->position.z * ACTIVEBKG->Zmul;
 
-		if(xx < 0 || xx >= ACTIVEBKG->Xsize || yy < 0 || yy >= ACTIVEBKG->Zsize)
+		FAST_BKG_DATA * bkgData = getFastBackgroundData(thrownObj->position.x, thrownObj->position.z);
+
+		if(!bkgData || !bkgData->treat) {
 			continue;
-
-		FAST_BKG_DATA * feg = (FAST_BKG_DATA *)&ACTIVEBKG->fastdata[xx][yy];
-
-		if(!feg->treat)
-			continue;
+		}
 
 		// Now render object !
 		if(!thrownObj->obj)

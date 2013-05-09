@@ -151,6 +151,8 @@ void FaceTarget(Entity * io);
 
 void DebugSphere(float x, float y, float z, float siz, long tim, Color color);
 
+FAST_BKG_DATA * getFastBackgroundData(float x, float z);
+
 EERIEPOLY * CheckTopPoly(float x,float y,float z);
 EERIEPOLY * CheckPolyOnTop(float x,float y,float z);
 EERIEPOLY * CheckInPoly(float x,float y,float z,float * needY = NULL);

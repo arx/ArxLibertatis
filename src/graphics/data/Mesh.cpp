@@ -345,7 +345,7 @@ EERIEPOLY * EECheckInPoly(const Vec3f * pos, float * needY) {
 	return CheckInPoly(pos->x, pos->y, pos->z, needY);
 }
 
-static FAST_BKG_DATA * getFastBackgroundData(float x, float z) {
+FAST_BKG_DATA * getFastBackgroundData(float x, float z) {
 	
 	long px = x * ACTIVEBKG->Xmul;
 	long pz = z * ACTIVEBKG->Zmul;

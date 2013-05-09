@@ -94,14 +94,10 @@ void ARXDRAW_DrawInterShadows()
 		if(!io->obj || (io->ioflags & IO_JUST_COLLIDE))
 			continue;
 
-		long xx = io->pos.x * ACTIVEBKG->Xmul;
-		long yy = io->pos.z * ACTIVEBKG->Zmul;
 
-		if(xx >= 1 && yy >= 1 && xx < ACTIVEBKG->Xsize-1 && yy < ACTIVEBKG->Zsize-1) {
-			FAST_BKG_DATA *feg = (FAST_BKG_DATA *)&ACTIVEBKG->fastdata[xx][yy];
-
-			if(!feg->treat)
-				continue;
+		FAST_BKG_DATA * bkgData = getFastBackgroundData(io->pos.x, io->pos.z);
+		if(bkgData && !bkgData->treat) { //TODO is that correct ?
+			continue;
 		}
 
 		if(!(io->ioflags & IO_NOSHADOW) && io->show==SHOW_FLAG_IN_SCENE && !(io->ioflags & IO_GOLD)) {
