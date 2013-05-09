@@ -391,7 +391,9 @@ if(NOT MSVC)
 	check_symbol_exists(nanosleep "time.h" ARX_HAVE_NANOSLEEP)
 	
 	check_symbol_exists(pthread_setname_np "pthread.h" ARX_HAVE_PTHREAD_SETNAME_NP)
-	check_symbol_exists(pthread_set_name_np "pthread.h" ARX_HAVE_PTHREAD_SET_NAME_NP)
+	if(NOT ARX_HAVE_PTHREAD_SETNAME_NP)
+		check_symbol_exists(pthread_set_name_np "pthread_np.h" ARX_HAVE_PTHREAD_SET_NAME_NP)
+	endif()
 	check_symbol_exists(prctl "sys/prctl.h" ARX_HAVE_PRCTL)
 	
 	check_symbol_exists(uname "sys/utsname.h" ARX_HAVE_UNAME)

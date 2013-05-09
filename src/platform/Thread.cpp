@@ -36,6 +36,10 @@ void Thread::setThreadName(const std::string & _threadName) {
 #include <sys/prctl.h>
 #endif
 
+#if defined(ARX_HAVE_PTHREAD_SET_NAME_NP)
+#include <pthread_np.h>
+#endif
+
 Thread::Thread() : started(false) {
 	setPriority(Normal);
 }
