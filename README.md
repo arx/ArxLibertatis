@@ -8,7 +8,7 @@
 
 Cross-platform port of Arx Fatalis
 
-Arx Libertatisis based on the publicly released [Arx Fatalis source code](http://www.arkane-studios.com/uk/arx_downloads.php).
+Arx Libertatis is based on the publicly released [Arx Fatalis source code](http://www.arkane-studios.com/uk/arx_downloads.php).
 GPLv3 - read ARX_PUBLIC_LICENSE.txt
 
 ## Contact
