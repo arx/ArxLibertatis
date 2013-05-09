@@ -360,7 +360,6 @@ if(NOT MSVC)
 	
 	if(USE_STATIC_LIBS)
 		add_ldflag("-static-libstdc++")
-		add_ldflag("-static-libgcc")
 	endif()
 	
 	if(${Boost_VERSION} LESS 104800)
