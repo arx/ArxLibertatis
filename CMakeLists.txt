@@ -903,7 +903,7 @@ set(ARX_SOURCES
 
 # Set the icon for the Windows executable by adding this resource file to the sources
 if(WIN32)
-	SET(ARX_SOURCES ${ARX_SOURCES} data/icons/arx-libertatis.rc)
+	list(APPEND ARX_SOURCES data/icons/arx-libertatis.rc)
 endif()
 
 
