@@ -141,7 +141,6 @@ extern EERIE_CAMERA * ACTIVECAM;
 extern float Xratio;
 extern float Yratio;
 
-float FirstPolyPosY(float x,float z);
 void SetActiveCamera(EERIE_CAMERA* cam);
 //	Entity Struct End
 

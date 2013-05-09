@@ -408,15 +408,6 @@ bool IsAnyPolyThere(float x, float z) {
 	return false;
 }
 
-float FirstPolyPosY(float x, float z)
-{
-	EERIEPOLY * ep = GetMinPoly(x, 0.f, z);
-
-	if (ep == NULL) return 99999999.f;
-
-	return ep->max.y;
-}
-
 EERIEPOLY * GetMinPoly(float x, float y, float z) {
 	
 	FAST_BKG_DATA * feg = getFastBackgroundData(x, z);
