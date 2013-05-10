@@ -1321,12 +1321,6 @@ void ArxGame::renderLevel() {
 		managePlayerControls();
 	}
 
-	ARX_PLAYER_Manage_Movement();
-
-	ARX_PLAYER_Manage_Visual();
-
-	g_miniMap.setActiveBackground(ACTIVEBKG);
-	g_miniMap.validatePlayerPos(CURRENTLEVEL, BLOCK_PLAYER_CONTROLS, Book_Mode);
 
 	for(size_t i = 0; i < entities.size(); i++) {
 		Entity *entity = entities[i];
@@ -1343,7 +1337,40 @@ void ArxGame::renderLevel() {
 				entity->special_color = Color3f::gray(float(iHighLight));
 			}
 		}
+
+		if(entity) {
+			float speedModifier = 0.f;
+
+			if(entity == entities.player()) {
+				if(cur_mr == 3)
+					speedModifier += 0.5f;
+
+				if(cur_rf == 3)
+					speedModifier += 1.5f;
+			}
+
+			long speedSpellIndex = ARX_SPELLS_GetSpellOn(entity, SPELL_SPEED);
+			if(speedSpellIndex > -1) {
+				speedModifier += spells[speedSpellIndex].caster_level * 0.1f;
+			}
+
+			long slowSpellIndex = ARX_SPELLS_GetSpellOn(entity, SPELL_SLOW_DOWN);
+			if(slowSpellIndex > -1) {
+				speedModifier -= spells[slowSpellIndex].caster_level * 0.05f;
+			}
+
+			entity->speed_modif = speedModifier;
+		}
 	}
+
+
+	ARX_PLAYER_Manage_Movement();
+
+	ARX_PLAYER_Manage_Visual();
+
+	g_miniMap.setActiveBackground(ACTIVEBKG);
+	g_miniMap.validatePlayerPos(CURRENTLEVEL, BLOCK_PLAYER_CONTROLS, Book_Mode);
+
 
 	if(entities.player() && entities.player()->animlayer[0].cur_anim) {
 		ManageNONCombatModeAnimations();

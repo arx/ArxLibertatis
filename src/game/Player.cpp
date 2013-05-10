@@ -2273,12 +2273,6 @@ void ARX_PLAYER_Manage_Movement() {
 	if(speedfactor < 0)
 		speedfactor = 0;
 
-	if(cur_mr == 3)
-		speedfactor += 0.5f;
-
-	if(cur_rf == 3)
-		speedfactor += 1.5f;
-
 	static float StoredTime = 0;
 	// Compute time things
 	float DeltaTime = StoredTime;

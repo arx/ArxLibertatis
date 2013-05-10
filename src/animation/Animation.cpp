@@ -511,14 +511,6 @@ void EERIEDrawAnimQuat(EERIE_3DOBJ *eobj, ANIM_USE *eanim, Anglef *angle, Vec3f 
 	if(io) {
 		float speedfactor = io->basespeed + io->speed_modif;
 
-		if(io == entities.player()) {
-			if(cur_mr==3)
-				speedfactor+=0.5f;
-
-			if(cur_rf==3)
-				speedfactor+=1.5f;
-		}
-
 		if(speedfactor < 0)
 			speedfactor = 0;
 

@@ -3551,13 +3551,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			
 			ARX_SPELLS_AddSpellOn(spells[i].target, i);
 			
-			if(spells[i].caster >= 0 && spells[i].target < long(entities.size())) {
-				Entity * t = entities[spells[i].target];
-				if(t) {
-					t->speed_modif += spells[i].caster_level * 0.1f;
-				}
-			}
-			
 			break;
 		}
 		case SPELL_DISPELL_ILLUSION: {
@@ -4327,10 +4320,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			spells[i].tolive = effect->GetDuration();
 			
 			ARX_SPELLS_AddSpellOn(target, i);
-			
-			if(ValidIONum(target)) {
-				entities[target]->speed_modif -= spells[i].caster_level * 0.05f;
-			}
 			
 			break;
 		}
@@ -5451,11 +5440,6 @@ void ARX_SPELLS_Update()
 				case SPELL_SPEED:						
 					ARX_SPELLS_RemoveSpellOn(spells[i].target,i);
 
-					if(spells[i].target >= 0 && spells[i].target < long(entities.size())) {
-						if(entities[spells[i].target])
-							entities[spells[i].target]->speed_modif -= spells[i].caster_level * (1.0f/10);
-					}
-
 					if(spells[i].caster == 0)
 						ARX_SOUND_Stop(spells[i].snd_loop);
 
@@ -5551,11 +5535,6 @@ void ARX_SPELLS_Update()
 				break;
 				case SPELL_SLOW_DOWN:
 					ARX_SPELLS_RemoveSpellOn(spells[i].target,i);
-
-					if(spells[i].target >= 0 && spells[i].target < long(entities.size())) {
-						if(entities[spells[i].target])
-							entities[spells[i].target]->speed_modif += spells[i].caster_level * (1.0f/20);
-					}
 				break;				
 				//****************************************************************************
 				// LEVEL 7
