@@ -385,6 +385,13 @@ void Cedric_TransformVerts(Entity *io, EERIE_3DOBJ *eobj, EERIE_C_DATA *obj, Vec
 			BBOXMAX.y = max(BBOXMAX.y, outVert->vert.p.y);
 		}
 	}
+
+	if(io) {
+		io->bbox1.x = (short)BBOXMIN.x;
+		io->bbox2.x = (short)BBOXMAX.x;
+		io->bbox1.y = (short)BBOXMIN.y;
+		io->bbox2.y = (short)BBOXMAX.y;
+	}
 }
 
 extern long TRAP_DETECT;
@@ -1014,14 +1021,6 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity *
 	
 	float MAX_ZEDE = 0.f;
 
-	// Sets IO BBox to calculated BBox :)
-	if(io) {
-		io->bbox1.x = (short) BBOXMIN.x;
-		io->bbox2.x = (short) BBOXMAX.x;
-		io->bbox1.y = (short) BBOXMIN.y;
-		io->bbox2.y = (short) BBOXMAX.y;
-	}
-
 	if(invisibility == 1.f)
 		return;
 
@@ -1580,12 +1579,7 @@ void Cedric_AnimateDrawEntityRender(EERIE_3DOBJ *eobj, Vec3f *pos, Vec3f &ftr, E
 
 	Cedric_RenderObject(eobj, obj, io, pos, ftr, invisibility);
 
-	if(io) {
-		io->bbox1.x = (short)BBOXMIN.x;
-		io->bbox2.x = (short)BBOXMAX.x;
-		io->bbox1.y = (short)BBOXMIN.y;
-		io->bbox2.y = (short)BBOXMAX.y;
-	}
+
 
 	// Now we can render Linked Objects
 

@@ -919,15 +919,15 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, const EERIE_QUAT * rotation, Vec3f *poss,
 
 		AddToBBox3D(io,&eobj->vertexlist3[i].v);
 	}
-	
+
+	if(io) {
+		io->bbox1.x=(short)BBOXMIN.x;
+		io->bbox2.x=(short)BBOXMAX.x;
+		io->bbox1.y=(short)BBOXMIN.y;
+		io->bbox2.y=(short)BBOXMAX.y;
+	}
+
 	if(BBOXMAX.x <= 1 || BBOXMIN.x >= DANAESIZX - 1 || BBOXMAX.y <= 1 || BBOXMIN.y >= DANAESIZY - 1) {
-		// storing 2D Bounding Box info
-		if(io) {
-			io->bbox1.x=(short)BBOXMIN.x;
-			io->bbox2.x=(short)BBOXMAX.x;
-			io->bbox1.y=(short)BBOXMIN.y;
-			io->bbox2.y=(short)BBOXMAX.y;
-		}
 		return;
 	}
 
@@ -1190,14 +1190,6 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, const EERIE_QUAT * rotation, Vec3f *poss,
 				}
 			}
 		}
-	}
-
-	// storing 2D Bounding Box info
-	if(io) {
-		io->bbox1.x=(short)BBOXMIN.x;
-		io->bbox2.x=(short)BBOXMAX.x;
-		io->bbox1.y=(short)BBOXMIN.y;
-		io->bbox2.y=(short)BBOXMAX.y;
 	}
 }
 
