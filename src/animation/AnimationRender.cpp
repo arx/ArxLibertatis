@@ -1482,12 +1482,12 @@ bool Cedric_IO_Visible(Vec3f * pos) {
 	return true;
 }
 
-void Cedric_AnimateDrawEntityRender(EERIE_3DOBJ *eobj, Vec3f *pos, Vec3f &ftr, Entity *io);
+
 
 /*!
  * \brief Apply animation and draw object
  */
-void Cedric_AnimateDrawEntity(EERIE_3DOBJ *eobj, ANIM_USE *animuse, Anglef *angle, Vec3f *pos, Entity *io, bool render, bool update_movement) {
+void Cedric_AnimateDrawEntity(EERIE_3DOBJ *eobj, ANIM_USE *animuse, Anglef *angle, Vec3f *pos, Entity *io, bool update_movement, Vec3f & ftr) {
 	
 	// Init some data
 	Cedric_ResetBoundingBox(io);
@@ -1495,9 +1495,6 @@ void Cedric_AnimateDrawEntity(EERIE_3DOBJ *eobj, ANIM_USE *animuse, Anglef *angl
 	// Set scale and invisibility factors
 	float scale = Cedric_GetScale(io);
 
-
-	// Reset Frame Translate
-	Vec3f ftr = Vec3f::ZERO;
 
 	if(!io)
 		CalcTranslation(animuse, ftr);
@@ -1540,20 +1537,6 @@ void Cedric_AnimateDrawEntity(EERIE_3DOBJ *eobj, ANIM_USE *animuse, Anglef *angl
 		return;
 
 	Cedric_TransformVerts(io, eobj, obj, pos);
-
-
-	if( !(io && (io->ioflags & IO_NPC) && (io->_npcdata->behavior & BEHAVIOUR_FIGHT) && distSqr(io->pos, player.pos) < square(240.f))) {
-
-		if(io != entities.player() && !EXTERNALVIEW && !eobj->cdata
-				&& ((BBOXMIN.x >= DANAESIZX - 1) || (BBOXMAX.x <= 1) || (BBOXMIN.y >= DANAESIZY - 1) || (BBOXMAX.y <= 1)))
-			return;
-
-		if(ARX_SCENE_PORTAL_ClipIO(io, pos))
-			return;
-	}
-
-	if(render)
-		Cedric_AnimateDrawEntityRender(eobj, pos, ftr, io);
 }
 
 void Cedric_AnimateDrawEntityRender(EERIE_3DOBJ *eobj, Vec3f *pos, Vec3f &ftr, Entity *io) {
