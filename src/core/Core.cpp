@@ -2062,7 +2062,7 @@ void ManageCombatModeAnimations()
 		break;
 		case WEAPON_DAGGER: // DAGGER PLAYER MANAGEMENT
 			// Waiting and receiving Strike Impulse
-			if(useanim->cur_anim==alist[ANIM_DAGGER_WAIT]) {
+			if(useanim->cur_anim == alist[ANIM_DAGGER_WAIT]) {
 				AimTime = 0;
 
 				if(EERIEMouseButton & 1) {
@@ -2089,11 +2089,11 @@ void ManageCombatModeAnimations()
 					CurrFightPos=0;
 					AimTime=0;
 				} else if(useanim->cur_anim == alist[ANIM_DAGGER_STRIKE_LEFT+j*3]) {
-					if (	(useanim->ctime > useanim->cur_anim->anims[useanim->altidx_cur]->anim_time*0.3f)
-						&&	(useanim->ctime < useanim->cur_anim->anims[useanim->altidx_cur]->anim_time*0.7f))
+					if ((useanim->ctime > useanim->cur_anim->anims[useanim->altidx_cur]->anim_time*0.3f)
+						&& (useanim->ctime < useanim->cur_anim->anims[useanim->altidx_cur]->anim_time*0.7f))
 					{
 						if ((PlayerWeaponBlocked==-1)
-						&& (ARX_EQUIPMENT_Strike_Check(io,entities[player.equiped[EQUIP_SLOT_WEAPON]],STRIKE_AIMTIME,0)))
+							&& (ARX_EQUIPMENT_Strike_Check(io,entities[player.equiped[EQUIP_SLOT_WEAPON]],STRIKE_AIMTIME,0)) )
 						{
 							PlayerWeaponBlocked=useanim->ctime;
 						}
@@ -2111,14 +2111,13 @@ void ManageCombatModeAnimations()
 
 					if(PlayerWeaponBlocked != -1 && useanim->ctime < useanim->cur_anim->anims[useanim->altidx_cur]->anim_time * 0.9f)
 						ARX_EQUIPMENT_Strike_Check(io,entities[player.equiped[EQUIP_SLOT_WEAPON]],STRIKE_AIMTIME,1);
-
 				}
 			}
 
 		break;
 		case WEAPON_1H: // 1HANDED PLAYER MANAGEMENT
 			// Waiting and Received Strike Impulse
-			if(useanim->cur_anim==alist[ANIM_1H_WAIT]) {
+			if(useanim->cur_anim == alist[ANIM_1H_WAIT]) {
 				AimTime = 0;
 
 				if(EERIEMouseButton & 1) {
@@ -2161,7 +2160,7 @@ void ManageCombatModeAnimations()
 						useanim->flags&=~(EA_PAUSED | EA_REVERSE);
 						useanim->flags|=EA_LOOP;
 						CurrFightPos=0;
-						AimTime=0;
+						AimTime = 0;
 						PlayerWeaponBlocked=-1;
 					}
 
@@ -2215,7 +2214,7 @@ void ManageCombatModeAnimations()
 						useanim->flags&=~(EA_PAUSED | EA_REVERSE);
 						useanim->flags|=EA_LOOP;
 						CurrFightPos=0;
-						AimTime=0;
+						AimTime = 0;
 						PlayerWeaponBlocked=-1;
 					}
 
