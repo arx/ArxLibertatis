@@ -2073,18 +2073,13 @@ void ManageCombatModeAnimations()
 			}
 
 			// Now go for strike cycle...
-			for (long j=0;j<4;j++)
-			{
-				if ((useanim->cur_anim==alist[ANIM_DAGGER_STRIKE_LEFT_START+j*3])&& (useanim->flags & EA_ANIMEND))
-				{
+			for(long j = 0; j < 4; j++) {
+				if(useanim->cur_anim == alist[ANIM_DAGGER_STRIKE_LEFT_START+j*3] && (useanim->flags & EA_ANIMEND)) {
 					AcquireLastAnim(io);
 					ANIM_Set(useanim,alist[ANIM_DAGGER_STRIKE_LEFT_CYCLE+j*3]);
 					AimTime = (unsigned long)(arxtime);
 					useanim->flags|=EA_LOOP;
-				}
-				else if ((useanim->cur_anim==alist[ANIM_DAGGER_STRIKE_LEFT_CYCLE+j*3])
-						&& !(EERIEMouseButton & 1))
-				{
+				} else if(useanim->cur_anim == alist[ANIM_DAGGER_STRIKE_LEFT_CYCLE+j*3] && !(EERIEMouseButton & 1)) {
 					AcquireLastAnim(io);
 					ANIM_Set(useanim,alist[ANIM_DAGGER_STRIKE_LEFT+j*3]);
 
@@ -2093,9 +2088,7 @@ void ManageCombatModeAnimations()
 					SendIOScriptEvent(io,SM_STRIKE,"dagger");
 					CurrFightPos=0;
 					AimTime=0;
-				}
-				else if (useanim->cur_anim==alist[ANIM_DAGGER_STRIKE_LEFT+j*3])
-				{
+				} else if(useanim->cur_anim == alist[ANIM_DAGGER_STRIKE_LEFT+j*3]) {
 					if (	(useanim->ctime > useanim->cur_anim->anims[useanim->altidx_cur]->anim_time*0.3f)
 						&&	(useanim->ctime < useanim->cur_anim->anims[useanim->altidx_cur]->anim_time*0.7f))
 					{
@@ -2106,8 +2099,7 @@ void ManageCombatModeAnimations()
 						}
 					}
 
-					if (useanim->flags & EA_ANIMEND)
-					{
+					if(useanim->flags & EA_ANIMEND) {
 						AcquireLastAnim(io);
 						ANIM_Set(useanim,alist[ANIM_DAGGER_WAIT]);
 						useanim->flags&=~(EA_PAUSED | EA_REVERSE);
@@ -2117,8 +2109,7 @@ void ManageCombatModeAnimations()
 						PlayerWeaponBlocked=-1;
 					}
 
-					if ((PlayerWeaponBlocked!=-1)
-						&& (useanim->ctime<useanim->cur_anim->anims[useanim->altidx_cur]->anim_time*0.9f))
+					if(PlayerWeaponBlocked != -1 && useanim->ctime < useanim->cur_anim->anims[useanim->altidx_cur]->anim_time * 0.9f)
 						ARX_EQUIPMENT_Strike_Check(io,entities[player.equiped[EQUIP_SLOT_WEAPON]],STRIKE_AIMTIME,1);
 
 				}
