@@ -2947,13 +2947,10 @@ EERIEMATRIX convertToMatrixForDrawEERIEInter(const PHYSICS_BOX_DATA &box) {
 	return mat;
 }
 
-//*************************************************************************************
-// Renders Interactive objects.
-// Will render objects between distance "from" (included)
-// to distance "to" (not included)
-// from camera position.
-//*************************************************************************************
-void RenderInter(float from, float to) {
+/**
+ * @brief Render entities
+ */
+void RenderInter() {
 
 	for(size_t i = 1; i < entities.size(); i++) { // Player isn't rendered here...		
 		Entity * io = entities[i];
@@ -2967,16 +2964,6 @@ void RenderInter(float from, float to) {
 
 		if(!EDITMODE && ((io->ioflags & IO_CAMERA) || (io->ioflags & IO_MARKER))) {
 			continue;
-		}
-
-		if( !((io->ioflags & IO_NPC) && (io->_npcdata->pathfind.flags & PATHFIND_ALWAYS)) ) {
-			Vec3f posToCheck = io->pos;
-			if(io->obj && io->obj->pbox && io->obj->pbox->active) {
-				posToCheck = io->obj->pbox->vert[0].pos;
-			}
-			float dist = fdist(ACTIVECAM->orgTrans.pos, posToCheck);
-			if ((dist < from) || (dist >= to))
-				continue;
 		}
 
 		UpdateIOInvisibility(io);

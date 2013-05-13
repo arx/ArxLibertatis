@@ -1933,7 +1933,7 @@ void ARX_SCENE_Render() {
 	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
 	GRenderer->GetTextureStage(0)->SetMipMapLODBias(-0.6f);
 
-	RenderInter(0.f, 3200.f);
+	RenderInter();
 
 	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
 	GRenderer->GetTextureStage(0)->SetMipMapLODBias(-0.3f);
