@@ -96,6 +96,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "script/Script.h"
 
+#include "physics/Collisions.h"
+
 using std::min;
 using std::max;
 using std::string;
@@ -503,6 +505,89 @@ suite:
 	}
 }
 
+
+static void CalcTranslation(ANIM_USE * animuse, Vec3f & ftr) {
+	if(!animuse || !animuse->cur_anim)
+		return;
+
+	EERIE_ANIM	*eanim = animuse->cur_anim->anims[animuse->altidx_cur];
+
+	if(!eanim)
+		return;
+
+	//Avoiding impossible cases
+	if(animuse->fr < 0) {
+		animuse->fr = 0;
+		animuse->pour = 0.f;
+	} else if(animuse->fr >= eanim->nb_key_frames - 1) {
+		animuse->fr = eanim->nb_key_frames - 2;
+		animuse->pour = 1.f;
+	}
+	animuse->pour = clamp(animuse->pour, 0.f, 1.f);
+
+
+	// FRAME TRANSLATE : Gives the Virtual pos of Main Object
+	if(eanim->frames[animuse->fr].f_translate && !(animuse->flags & EA_STATICANIM)) {
+		EERIE_FRAME *sFrame = &eanim->frames[animuse->fr];
+		EERIE_FRAME *eFrame = &eanim->frames[animuse->fr+1];
+
+		// Linear interpolation of object translation (MOVE)
+		ftr = sFrame->translate + (eFrame->translate - sFrame->translate) * animuse->pour;
+	}
+}
+
+
+/* Evaluate main entity translation */
+static void Cedric_AnimCalcTranslation(Entity * io, Vec3f & ftr) {
+
+	// Fill frame translate values with multi-layer translate informations...
+	for(int count = MAX_ANIM_LAYERS - 1; count >= 0; count--) {
+		ANIM_USE *animuse = &io->animlayer[count];
+
+		CalcTranslation(animuse, ftr);
+	}
+}
+
+static void StoreEntityMovement(Entity * io, Vec3f & ftr, float scale, bool update_movement) {
+
+	if(io && update_movement) {
+
+		Vec3f ftr2 = Vec3f::ZERO;
+
+		if(ftr != Vec3f::ZERO) {
+			ftr *= scale;
+
+			float temp;
+			if (io == entities.player()) {
+				temp = radians(MAKEANGLE(180.f - player.angle.b));
+			} else {
+				temp = radians(MAKEANGLE(180.f - io->angle.b));
+			}
+
+			YRotatePoint(&ftr, &ftr2, (float)EEcos(temp), (float)EEsin(temp));
+
+			// stores Translations for a later use
+			io->move = ftr2;
+		}
+
+		if(io->animlayer[0].cur_anim) {
+
+			// Use calculated value to notify the Movement engine of the translation to do
+			if(io->ioflags & IO_NPC) {
+				ftr = Vec3f::ZERO;
+				io->move -= io->lastmove;
+			} else if (io->gameFlags & GFLAG_ELEVATOR) {
+				// Must recover translations for NON-NPC IO
+				PushIO_ON_Top(io, io->move.y - io->lastmove.y);
+			}
+
+			io->lastmove = ftr2;
+		}
+	}
+}
+
+
+
 extern bool EXTERNALVIEW;
 
 void EERIEDrawAnimQuat(EERIE_3DOBJ *eobj, ANIM_USE *eanim, Anglef *angle, Vec3f *pos, unsigned long time, Entity *io, bool render, bool update_movement) {
@@ -531,7 +616,22 @@ void EERIEDrawAnimQuat(EERIE_3DOBJ *eobj, ANIM_USE *eanim, Anglef *angle, Vec3f 
 	// Reset Frame Translate
 	Vec3f ftr = Vec3f::ZERO;
 
-	Cedric_AnimateDrawEntity(eobj, eanim, angle, pos, io, update_movement, ftr);
+	// Set scale and invisibility factors
+	float scale = Cedric_GetScale(io);
+
+
+	if(!io)
+		CalcTranslation(eanim, ftr);
+	else
+		Cedric_AnimCalcTranslation(io, ftr);
+
+	StoreEntityMovement(io, ftr, scale, update_movement);
+
+	if(io && io != entities.player() && !Cedric_IO_Visible(&io->pos))
+		return;
+
+
+	Cedric_AnimateDrawEntity(eobj, eanim, angle, pos, io, ftr, scale);
 
 
 	bool isFightingNpc = io &&
