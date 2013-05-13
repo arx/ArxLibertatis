@@ -2957,7 +2957,10 @@ void RenderInter(float from, float to) {
 
 	for(size_t i = 1; i < entities.size(); i++) { // Player isn't rendered here...		
 		Entity * io = entities[i];
-		if(io && (io != DRAGINTER) && (io->gameFlags & GFLAG_ISINTREATZONE)) {
+
+		if(!io || io == DRAGINTER || !(io->gameFlags & GFLAG_ISINTREATZONE))
+			continue;
+
 			if(io->show != SHOW_FLAG_IN_SCENE) {
 				continue;
 			}
@@ -3067,7 +3070,6 @@ void RenderInter(float from, float to) {
 					EERIEDraw2DLine(io->bbox1.x, io->bbox2.y, io->bbox1.x, io->bbox1.y, 0.01f, color);
 				}
 			}
-		}
 	}
 }
 
