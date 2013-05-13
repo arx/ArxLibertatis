@@ -941,10 +941,6 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, const EERIE_QUAT * rotation, Vec3f *poss,
 		io->bbox2.y=(short)BBOXMAX.y;
 	}
 
-	if(BBOXMAX.x <= 1 || BBOXMIN.x >= DANAESIZX - 1 || BBOXMAX.y <= 1 || BBOXMIN.y >= DANAESIZY - 1) {
-		return;
-	}
-
 	if(!modinfo && ARX_SCENE_PORTAL_ClipIO(io, &pos))
 		return;
 	
