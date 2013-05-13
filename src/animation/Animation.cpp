@@ -534,15 +534,13 @@ void EERIEDrawAnimQuat(EERIE_3DOBJ *eobj, ANIM_USE *eanim, Anglef *angle, Vec3f 
 	Cedric_AnimateDrawEntity(eobj, eanim, angle, pos, io, update_movement, ftr);
 
 
-	if( !(io && (io->ioflags & IO_NPC) && (io->_npcdata->behavior & BEHAVIOUR_FIGHT) && distSqr(io->pos, player.pos) < square(240.f))) {
+	bool isFightingNpc = io &&
+						 (io->ioflags & IO_NPC) &&
+						 (io->_npcdata->behavior & BEHAVIOUR_FIGHT) &&
+						 distSqr(io->pos, player.pos) < square(240.f);
 
-		if(io != entities.player() && !EXTERNALVIEW && !eobj->cdata
-				&& ((BBOXMIN.x >= DANAESIZX - 1) || (BBOXMAX.x <= 1) || (BBOXMIN.y >= DANAESIZY - 1) || (BBOXMAX.y <= 1)))
-			return;
-
-		if(ARX_SCENE_PORTAL_ClipIO(io, pos))
-			return;
-	}
+	if(!isFightingNpc && ARX_SCENE_PORTAL_ClipIO(io, pos))
+		return;
 
 	if(render)
 		Cedric_AnimateDrawEntityRender(eobj, pos, ftr, io);
