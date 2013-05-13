@@ -2961,115 +2961,115 @@ void RenderInter(float from, float to) {
 		if(!io || io == DRAGINTER || !(io->gameFlags & GFLAG_ISINTREATZONE))
 			continue;
 
-			if(io->show != SHOW_FLAG_IN_SCENE) {
-				continue;
-			}
-			
-			if(!EDITMODE && ((io->ioflags & IO_CAMERA) || (io->ioflags & IO_MARKER))) {
-				continue;
-			}
-			
-			if( !((io->ioflags & IO_NPC) && (io->_npcdata->pathfind.flags & PATHFIND_ALWAYS)) ) {
-				Vec3f posToCheck = io->pos;
-				if(io->obj && io->obj->pbox && io->obj->pbox->active) {
-					posToCheck = io->obj->pbox->vert[0].pos;
-				}
-				float dist = fdist(ACTIVECAM->orgTrans.pos, posToCheck);
-				if ((dist < from) || (dist >= to))
-					continue;
-			}
+		if(io->show != SHOW_FLAG_IN_SCENE) {
+			continue;
+		}
 
-			UpdateIOInvisibility(io);
+		if(!EDITMODE && ((io->ioflags & IO_CAMERA) || (io->ioflags & IO_MARKER))) {
+			continue;
+		}
 
-			io->bbox1.x = 9999;
-			io->bbox2.x = -1;
+		if( !((io->ioflags & IO_NPC) && (io->_npcdata->pathfind.flags & PATHFIND_ALWAYS)) ) {
+			Vec3f posToCheck = io->pos;
+			if(io->obj && io->obj->pbox && io->obj->pbox->active) {
+				posToCheck = io->obj->pbox->vert[0].pos;
+			}
+			float dist = fdist(ACTIVECAM->orgTrans.pos, posToCheck);
+			if ((dist < from) || (dist >= to))
+				continue;
+		}
+
+		UpdateIOInvisibility(io);
+
+		io->bbox1.x = 9999;
+		io->bbox2.x = -1;
 
 #ifdef BUILD_EDITOR
-			if((io->obj) && (io->obj->pbox) && DEBUGNPCMOVE)
-				EERIE_PHYSICS_BOX_Show(io->obj);
+		if((io->obj) && (io->obj->pbox) && DEBUGNPCMOVE)
+			EERIE_PHYSICS_BOX_Show(io->obj);
 #endif
 
-			Anglef temp = io->angle;
+		Anglef temp = io->angle;
+
+		if(io->ioflags & IO_NPC) {
+			temp.b = MAKEANGLE(180.f - temp.b);
+		} else {
+			temp.b = MAKEANGLE(270.f - temp.b);
+		}
+
+		if(io->animlayer[0].cur_anim) {
+			long diff;
+			if(io->animlayer[0].flags & EA_PAUSED)
+				diff = 0;
+			else
+				diff = static_cast<long>(framedelay);
+
+			Vec3f pos = io->pos;
 
 			if(io->ioflags & IO_NPC) {
-				temp.b = MAKEANGLE(180.f - temp.b);
-			} else {
-				temp.b = MAKEANGLE(270.f - temp.b);
+				ComputeVVPos(io);
+				pos.y = io->_npcdata->vvpos;
 			}
 
-			if(io->animlayer[0].cur_anim) {
-				long diff;
-				if(io->animlayer[0].flags & EA_PAUSED)
-					diff = 0;
-				else
-					diff = static_cast<long>(framedelay);
+			bool render = (EDITMODE || !ARX_SCENE_PORTAL_Basic_ClipIO(io));
 
-				Vec3f pos = io->pos;
+			EERIEDrawAnimQuat(io->obj, &io->animlayer[0], &temp, &pos, diff, io, render);
 
-				if(io->ioflags & IO_NPC) {
-					ComputeVVPos(io);
-					pos.y = io->_npcdata->vvpos;
+		} else {
+			if(!EDITMODE && ARX_SCENE_PORTAL_Basic_ClipIO(io))
+				continue;
+
+			if((io->ioflags & IO_GOLD) && io->obj) {
+				if(io->_itemdata->price <= 3) {
+					io->obj = GoldCoinsObj[io->_itemdata->price-1];
+					io->inv = GoldCoinsTC[io->_itemdata->price-1];
+				} else if(io->_itemdata->price <= 8) {
+					io->obj = GoldCoinsObj[3];
+					io->inv = GoldCoinsTC[3];
+				} else if(io->_itemdata->price <= 20) {
+					io->obj = GoldCoinsObj[4];
+					io->inv = GoldCoinsTC[4];
+				} else if(io->_itemdata->price <= 50) {
+					io->obj = GoldCoinsObj[5];
+					io->inv = GoldCoinsTC[5];
+				} else {
+					io->obj = GoldCoinsObj[6];
+					io->inv = GoldCoinsTC[6];
 				}
+			}
 
-				bool render = (EDITMODE || !ARX_SCENE_PORTAL_Basic_ClipIO(io));
+			if(!(io->ioflags & IO_NPC) || EDITMODE) {
+				if(io->obj) {
 
-				EERIEDrawAnimQuat(io->obj, &io->animlayer[0], &temp, &pos, diff, io, render);
+					if(io->obj->pbox && io->obj->pbox->active) {
+						EERIEMATRIX mat = convertToMatrixForDrawEERIEInter(*io->obj->pbox);
+						EERIE_QUAT rotation;
+						Quat_Init(&rotation);
 
-			} else {
-				if(!EDITMODE && ARX_SCENE_PORTAL_Basic_ClipIO(io))
-					continue;
-								
-				if((io->ioflags & IO_GOLD) && io->obj) {
-					if(io->_itemdata->price <= 3) {
-						io->obj = GoldCoinsObj[io->_itemdata->price-1];
-						io->inv = GoldCoinsTC[io->_itemdata->price-1];
-					} else if(io->_itemdata->price <= 8) {
-						io->obj = GoldCoinsObj[3];
-						io->inv = GoldCoinsTC[3];
-					} else if(io->_itemdata->price <= 20) {
-						io->obj = GoldCoinsObj[4];
-						io->inv = GoldCoinsTC[4];
-					} else if(io->_itemdata->price <= 50) {
-						io->obj = GoldCoinsObj[5];
-						io->inv = GoldCoinsTC[5];
+						QuatFromMatrix(rotation, mat);
+
+						DrawEERIEInter(io->obj, &rotation, &io->pos, io, NULL, true);
 					} else {
-						io->obj = GoldCoinsObj[6];
-						io->inv = GoldCoinsTC[6];
-					}
-				}
+						EERIE_QUAT rotation;
+						Quat_Init(&rotation);
 
-				if(!(io->ioflags & IO_NPC) || EDITMODE) {
-					if(io->obj) {
+						worldAngleToQuat(&rotation, &temp);
 
-						if(io->obj->pbox && io->obj->pbox->active) {
-							EERIEMATRIX mat = convertToMatrixForDrawEERIEInter(*io->obj->pbox);
-							EERIE_QUAT rotation;
-							Quat_Init(&rotation);
-
-							QuatFromMatrix(rotation, mat);
-
-							DrawEERIEInter(io->obj, &rotation, &io->pos, io, NULL, true);
-						} else {
-							EERIE_QUAT rotation;
-							Quat_Init(&rotation);
-
-							worldAngleToQuat(&rotation, &temp);
-
-							DrawEERIEInter(io->obj, &rotation, &io->pos, io);
-						}
+						DrawEERIEInter(io->obj, &rotation, &io->pos, io);
 					}
 				}
 			}
+		}
 
-			if(EDITMODE) {
-				Color color = Color::blue;
-				if(io->bbox1.x != io->bbox2.x && io->bbox1.x < DANAESIZX) {
-					EERIEDraw2DLine(io->bbox1.x, io->bbox1.y, io->bbox2.x, io->bbox1.y, 0.01f, color);
-					EERIEDraw2DLine(io->bbox2.x, io->bbox1.y, io->bbox2.x, io->bbox2.y, 0.01f, color);
-					EERIEDraw2DLine(io->bbox2.x, io->bbox2.y, io->bbox1.x, io->bbox2.y, 0.01f, color);
-					EERIEDraw2DLine(io->bbox1.x, io->bbox2.y, io->bbox1.x, io->bbox1.y, 0.01f, color);
-				}
+		if(EDITMODE) {
+			Color color = Color::blue;
+			if(io->bbox1.x != io->bbox2.x && io->bbox1.x < DANAESIZX) {
+				EERIEDraw2DLine(io->bbox1.x, io->bbox1.y, io->bbox2.x, io->bbox1.y, 0.01f, color);
+				EERIEDraw2DLine(io->bbox2.x, io->bbox1.y, io->bbox2.x, io->bbox2.y, 0.01f, color);
+				EERIEDraw2DLine(io->bbox2.x, io->bbox2.y, io->bbox1.x, io->bbox2.y, 0.01f, color);
+				EERIEDraw2DLine(io->bbox1.x, io->bbox2.y, io->bbox1.x, io->bbox1.y, 0.01f, color);
 			}
+		}
 	}
 }
 
