@@ -265,7 +265,7 @@ EERIE_3DOBJ * nodeobj=NULL;				// Node 3D Object		// NEEDTO: Remove for Final
 EERIE_3DOBJ * eyeballobj=NULL;			// EyeBall 3D Object	// NEEDTO: Load dynamically
 EERIE_3DOBJ * cabal=NULL;				// Cabalistic 3D Object // NEEDTO: Load dynamically
 static EERIE_BACKGROUND DefaultBkg;
-EERIE_CAMERA TCAM[32];
+
 EERIE_CAMERA subj,bookcam,raycam,conversationcamera;
 
 string WILLADDSPEECH;
@@ -509,10 +509,6 @@ void InitializeDanae() {
 	bookcam.angle = Anglef::ZERO;
 	bookcam.orgTrans.pos = Vec3f::ZERO;
 	bookcam.focal = BASE_FOCAL;
-		
-	for(size_t i = 0; i < 32; i++) {
-		memcpy(&TCAM[i],&subj,sizeof(EERIE_CAMERA));
-	}
 	
 	ACTIVEBKG->ambient = Color3f(0.09f, 0.09f, 0.09f);
 	ACTIVEBKG->ambient255 = ACTIVEBKG->ambient * 255.f;

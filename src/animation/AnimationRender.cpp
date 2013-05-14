@@ -1540,8 +1540,6 @@ void MakeCLight(Entity * io, Color3f * infra, const EERIE_QUAT *qInvert, Vec3f *
 		Insertllight(PDL[i], dist(PDL[i]->pos, tv));
 	}
 
-	Preparellights(&tv);
-
 	if(io && (io->ioflags & IO_ANGULAR))
 		return;
 		

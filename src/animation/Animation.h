@@ -72,8 +72,8 @@ extern EERIE_LIGHT * llights[32];
 
 long EERIE_ANIMMANAGER_Count(std::string & tex, long * memsize);
 void EERIE_ANIMMANAGER_ClearAll();
+
 void llightsInit();
-void Preparellights(Vec3f * pos);
 void Insertllight(EERIE_LIGHT * el, float dist);
 
 void PopAllTriangleList();

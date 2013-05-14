@@ -1362,18 +1362,6 @@ void Insertllight(EERIE_LIGHT * el,float dist)
 	}
 }
 
-// Precalcs some misc things for lights
-void Preparellights(Vec3f * pos) {
-	for (long i = 0; i < MAX_LLIGHTS; i++) {
-		EERIE_LIGHT * el = llights[i];
-		if(el) {
-			TCAM[i].orgTrans.pos = el->pos;
-			TCAM[i].setTargetCamera(*pos);
-			F_PrepareCamera(&TCAM[i]);
-		}
-	}
-}
-
 void EERIE_ANIMMANAGER_Clear(long i) {
 	
 	for(long k = 0; k < animations[i].alt_nb; k++) {

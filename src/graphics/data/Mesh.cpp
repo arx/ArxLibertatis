@@ -642,7 +642,6 @@ float GetColorz(float x, float y, float z) {
 			Insertllight(PDL[i], fdist(PDL[i]->pos, pos) - PDL[i]->fallstart);
 	}
 
-	Preparellights(&pos);
 	ffr = 0;
 	ffg = 0;
 	ffb = 0;
@@ -1633,12 +1632,6 @@ void EERIE_CreateMatriceProj(float _fWidth, float _fHeight, float _fFOV, float _
 	ProjectionMatrix._43 = Q;
 
 	GRenderer->SetViewport(Rect(static_cast<s32>(_fWidth), static_cast<s32>(_fHeight)));
-}
-
-void F_PrepareCamera(EERIE_CAMERA * cam)
-{
-	cam->orgTrans.use_focal = cam->focal * Xratio;
-	cam->orgTrans.updateFromAngle(cam->angle);
 }
 
 void PrepareCamera(EERIE_CAMERA * cam)
