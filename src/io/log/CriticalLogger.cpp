@@ -34,8 +34,8 @@ CriticalErrorDialog::~CriticalErrorDialog() {
 		
 		fs::path logfile = fs::paths.user / "arx.log";
 		if(fs::exists(logfile)) {
-			fullText += "\n\nYou might want to take a look at "
-			         + logfile.string() + " for more details.";
+			fullText += "\n\nYou might want to take a look at the log for more details:\n";
+			fullText += logfile.string();
 		}
 		
 		dialog::showError(fullText, "Critical Error - " + version);

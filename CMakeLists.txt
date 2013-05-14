@@ -360,7 +360,6 @@ if(NOT MSVC)
 	
 	if(USE_STATIC_LIBS)
 		add_ldflag("-static-libstdc++")
-		add_ldflag("-static-libgcc")
 	endif()
 	
 	if(${Boost_VERSION} LESS 104800)
@@ -390,9 +389,13 @@ if(NOT MSVC)
 	
 	check_symbol_exists(nanosleep "time.h" ARX_HAVE_NANOSLEEP)
 	
+	set(CMAKE_REQUIRED_LIBRARIES "${CMAKE_THREAD_LIBS_INIT}")
 	check_symbol_exists(pthread_setname_np "pthread.h" ARX_HAVE_PTHREAD_SETNAME_NP)
-	check_symbol_exists(pthread_set_name_np "pthread.h" ARX_HAVE_PTHREAD_SET_NAME_NP)
+	if(NOT ARX_HAVE_PTHREAD_SETNAME_NP)
+		check_symbol_exists(pthread_set_name_np "pthread_np.h" ARX_HAVE_PTHREAD_SET_NAME_NP)
+	endif()
 	check_symbol_exists(prctl "sys/prctl.h" ARX_HAVE_PRCTL)
+	unset(CMAKE_REQUIRED_LIBRARIES)
 	
 	check_symbol_exists(uname "sys/utsname.h" ARX_HAVE_UNAME)
 	check_symbol_exists(getrusage "sys/resource.h" ARX_HAVE_GETRUSAGE)
@@ -825,6 +828,24 @@ elseif(NOT ${Boost_VERSION} LESS 104400)
 	add_definitions(-DBOOST_FILESYSTEM_NO_DEPRECATED)
 	list(APPEND IO_FILESYSTEM_SOURCES ${IO_FILESYSTEM_BOOST_SOURCES})
 	list(APPEND BASE_LIBRARIES ${Boost_LIBRARIES})
+	
+	# BOOST_SCOPED_ENUM is implemented differently if compiled with C++11 support
+	# This means the Boost.Filesystem ABI depends on what C++ version was used
+	# to compile the library - check for that!
+	check_compile(boost_filesystem_abi_matches
+		"${CMAKE_MODULE_PATH}/boostfs_cxx11_scoped_enum.cpp"
+		"scoped enum" "Boost ABI"
+		"${Boost_LIBRARIES}"
+		"mismatch, fixing"
+	)
+	if(NOT boost_filesystem_abi_matches)
+		add_definitions(
+			# Different names for different Boost versions :/
+			-DBOOST_NO_SCOPED_ENUMS=1
+			-DBOOST_NO_CXX11_SCOPED_ENUMS=1
+		)
+	endif()
+	
 else()
 	message(FATAL_ERROR "You need either Boost >= 1.44 or Windows API"
 	        "or enough POSIX functionality; Found boost version ${Boost_VERSION}")
@@ -883,7 +904,7 @@ set(ARX_SOURCES
 
 # Set the icon for the Windows executable by adding this resource file to the sources
 if(WIN32)
-	SET(ARX_SOURCES ${ARX_SOURCES} data/icons/arx-libertatis.rc)
+	list(APPEND ARX_SOURCES data/icons/arx-libertatis.rc)
 endif()
 
 

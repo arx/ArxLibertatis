@@ -8,7 +8,7 @@
 
 Cross-platform port of Arx Fatalis
 
-Arx Libertatisis based on the publicly released [Arx Fatalis source code](http://www.arkane-studios.com/uk/arx_downloads.php).
+Arx Libertatis is based on the publicly released [Arx Fatalis source code](http://www.arkane-studios.com/uk/arx_downloads.php).
 GPLv3 - read ARX_PUBLIC_LICENSE.txt
 
 ## Contact
@@ -107,9 +107,13 @@ Advanced options not listed here are documented in **OPTIONS.md**.
 
 ## Data file, config and savegame locations
 
-You will need to [get either the full game or demo data of Arx Fatalis](http://wiki.arx-libertatis.org/Getting_the_game_data).
+You will need to [get either the full game or demo data of Arx Fatalis](http://wiki.arx-libertatis.org/Getting_the_game_data). To install the data files run
+
+    $ arx-install-data
 
 Where arx will look for data files and write config and save files depends on the operating system and environment - the wiki has a page detailing the [full data directory detection algorithm](http://wiki.arx-libertatis.org/Data_directories).
+
+The game will try to automatically rename all used files in the user directory (but not the data directory) to lowercase on the first run if possible. System-wide installations with case-sensitive filesystems always need to manually rename the files to lowercase - this is done automatically by the `arx-install-data` script.
 
 To print all directories searched by arx, run
 
@@ -138,15 +142,13 @@ To use the current working directory for user, config and data files (e.g. for a
 
     $ arx --no-data-dir --user-dir=. --config-dir=.
 
-See the `arx --help` and `man arx` output for more details.
-
 ## Run
 
 Provided the data files are installed at the correct location, you can simply play the game using the installed shortcut or by running
 
     $ arx
 
-The game will try to automatically rename all used files in the user directory (but not the data directory) to lowercase on the first run if possible. System-wide installations with case-sensitive filesystems always need to manually rename the files to lowercase - you can use the `arx-install-data` script.
+See the `arx --help` and `man arx` output for more details.
 
 ## Tools
 
@@ -160,7 +162,7 @@ The game will try to automatically rename all used files in the user directory (
 
 ## Scripts
 
-The `arx-install-data` script can extract and install the game data under Linux and FreeBSD from the CD, demo, [GOG.com](http://www.gog.com/) installer or any Arx Fatalis install (such as on Steam) respectively - simply run it and follow the GUI dialogs. Also see the [wiki page on installing the game data under Linux](http://wiki.arx-libertatis.org/Installing_the_game_data_under_Linux).
+The `arx-install-data` script can extract and install the game data under Linux and FreeBSD from the CD, demo, [GOG.com](http://www.gog.com/) installer or any Arx Fatalis install (such as on Steam) - simply run it and follow the GUI dialogs. Also see the [wiki page on installing the game data under Linux](http://wiki.arx-libertatis.org/Installing_the_game_data_under_Linux).
 
 Or, if you prefer a command-line interface, run it as
 

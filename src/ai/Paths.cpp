@@ -1336,6 +1336,7 @@ void ARX_ApplySpring(PHYSVERT * phys, long k, long l, float PHYSICS_constant,
 	// Computes Spring Magnitude
 	deltaP = pv_k->pos - pv_l->pos;
 	float dist = deltaP.length(); // Magnitude of delta
+	dist = std::max(dist, 0.000001f); //TODO workaround for division by zero
 	float divdist = 1.f / dist;
 	Hterm = (dist - restlength) * PHYSICS_constant;
 
