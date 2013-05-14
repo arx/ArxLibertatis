@@ -283,6 +283,16 @@ struct PHYSVERT
 	Vec3f	force;
 	Vec3f	inertia;
 	float		mass;
+
+	PHYSVERT()
+		: initpos(Vec3f::ZERO)
+		, temp(Vec3f::ZERO)
+		, pos(Vec3f::ZERO)
+		, velocity(Vec3f::ZERO)
+		, force(Vec3f::ZERO)
+		, inertia(Vec3f::ZERO)
+		, mass(0.f)
+	{}
 };
 
 struct PHYSICS_BOX_DATA
