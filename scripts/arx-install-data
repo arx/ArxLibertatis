@@ -368,6 +368,8 @@ list_append extract_zip_reqs '7z' 'p7zip'
 extract_ms_cab_reqs=''
 list_append extract_ms_cab_reqs 'bsdtar' 'with libarchive 3.1+'
 list_append extract_ms_cab_reqs 'cabextract' "$cabextract_url"
+list_append extract_ms_cab_reqs '7za'
+list_append extract_ms_cab_reqs '7z' 'p7zip'
 extract_installshield_reqs=''
 list_append extract_installshield_reqs 'unshield'
 extract_innosetup_reqs=''
@@ -2105,8 +2107,7 @@ extract_cab_check_bsdtar() {
 }
 have_extract_ms_cab() {
 	extract_cab_check_bsdtar && return $true
-	have cabextract && return $true
-	return $false
+	have cabextract || have 7za || have 7z
 }
 extract_ms_cab() {
 	
@@ -2121,6 +2122,13 @@ extract_ms_cab() {
 		cabextract "$1"
 		return $?
 	fi
+	
+	for sz in 7za 7z ; do
+		if have $sz ; then
+			$sz x "$1"
+			return $?
+		fi
+	done
 	
 	die "no program to extract $1"
 }
