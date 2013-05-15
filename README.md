@@ -113,7 +113,7 @@ You will need to [get either the full game or demo data of Arx Fatalis](http://w
 
 Where arx will look for data files and write config and save files depends on the operating system and environment - the wiki has a page detailing the [full data directory detection algorithm](http://wiki.arx-libertatis.org/Data_directories).
 
-The game will try to automatically rename all used files in the user directory (but not the data directory) to lowercase on the first run if possible. System-wide installations with case-sensitive filesystems always need to manually rename the files to lowercase - this is done automatically by the `arx-install-data` script.
+The game will try to rename all used files in the user directory (but not the data directory) to lowercase on the first run. System-wide installations with case-sensitive filesystems always need to manually rename the files to lowercase - this is done automatically by the `arx-install-data` script.
 
 To print all directories searched by arx, run
 
@@ -152,13 +152,18 @@ See the `arx --help` and `man arx` output for more details.
 
 ## Tools
 
-* `arxunpak <pakfile> [<pakfile>...]` - Extracts the .pak files containing the game assets.
+* `arxunpak <pakfile> [<pakfile>...]` <br>
+  Extracts the .pak files containing the game assets.
 
 * `arxsavetool <command> <savefile> [<options>...]` - commands are:
-  * `extract <savefile>` - Extract the contents of the given savefile to the current directly.
-  * `add <savefile> [<files>...]` - Add files to a savefile, create it if needed.
-  * `fix <savefile>` - Fix savegame issues created by previous builds of Arx Libertatis
-  * `view <savefile> <ident>` - Print savegame information.
+  * `extract <savefile>` <br>
+    Extract the contents of the given savefile to the current directory
+  * `add <savefile> [<files>...]` <br>
+    Add files to a savefile, create it if needed
+  * `fix <savefile>` <br>
+    Fix savegame issues created by previous builds of Arx Libertatis
+  * `view <savefile> [<ident>]` <br>
+    Print savegame information - leave out `<ident>` to list root files
 
 ## Scripts
 
