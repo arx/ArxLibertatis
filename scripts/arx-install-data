@@ -269,10 +269,30 @@ list_append() {
 	eval "$1__list_count=\$((\$$1__list_count + 1))"
 }
 
+# Append one list to another, preserving comments.
+# Usage: list_merge <list-var> <append-list-var>
+list_merge() {
+	eval "_list_append=\"\$$2\""
+	[ -z "$_list_append" ] && return
+	eval "
+		_list_merge_i=0
+		for entry in $_list_append ; do
+			list_append $1 \"\$entry\" \"\$(list_comment $2 \$_list_merge_i)\"
+			_list_merge_i=\$((\$_list_merge_i + 1))
+		done
+	"
+}
+
 # Get a comment associated with alist entry
 # Usage: list_comment <list-var> <index>
 list_comment() {
 	eval "print \"\$$1__list_comment_$2\""
+}
+
+# Set a comment associated with alist entry
+# Usage: list_comment <list-var> <index> <comment>
+set_list_comment() {
+	eval "$1__list_comment_$2=\"\$3\""
 }
 
 # Append a string to a whitespace separated list if it isn't already in the list.
@@ -340,6 +360,25 @@ probe_files() {
 ##########################################################################################
 # Parse command-line arguments
 
+extract_zip_reqs=''
+list_append extract_zip_reqs 'bsdtar' 'libarchive'
+list_append extract_zip_reqs 'unzip'
+extract_ms_cab_reqs=''
+list_append extract_ms_cab_reqs 'bsdtar' 'with libarchive 3.1+'
+list_append extract_ms_cab_reqs 'cabextract' "$cabextract_url"
+extract_installshield_reqs=''
+list_append extract_installshield_reqs 'unshield'
+extract_innosetup_reqs=''
+list_append extract_innosetup_reqs 'innoextract' "$innoextract_url"
+mount_cdrom_reqs=''
+list_append mount_cdrom_reqs 'fuseiso'
+extract_iso_reqs=''
+list_append extract_iso_reqs 'isoinfo'
+list_append extract_iso_reqs 'bsdtar' 'libarchive'
+extract_cdrom_reqs=''
+list_merge extract_cdrom_reqs mount_cdrom_reqs
+list_merge extract_cdrom_reqs extract_iso_reqs
+
 printf '%s %s\n' "${white}Welome to the ${green}Arx Fatalis${white} ${patch_ver} data" \
      "install script for UNIX-like systems!${reset}"
 
@@ -403,17 +442,23 @@ Usage: $command [directory]" ;;
 *) # non-compatibility mode
 
 # Print elements in a list, joined by ' or '
-# Usage: print_help_or <list-var>
+# Usage: print_help_or <list-var> [color]
 print_help_or() {
-	_print_help_or_first=1
-	eval "set -- $1"
-	for entry ; do
-		if [ $_print_help_or_first = 1 ]
-			then _print_help_or_first=0
-			else printf ' or '
-		fi
-		printf '%s' "$entry"
-	done
+	_print_help_or_var=$1
+	eval "_print_help_or_list=\"\$$1\""
+	_print_help_or_color="$2"
+	[ -z "$1" ] && return
+	eval "
+		_print_help_or_i=0
+		for entry in $_print_help_or_list ; do
+			[ \$_print_help_or_i = 0 ] || printf ' or '
+			printf '%s%s' \"\$_print_help_or_color\" \"\$entry\"
+			[ -z \"\$_print_help_or_color\" ] || printf '%s' \"\$reset\"
+			_print_help_or_comment=\"\$(list_comment \$_print_help_or_var \$_print_help_or_i)\"
+			[ -z \"\$_print_help_or_comment\" ] || printf ' (%s)' \"\$_print_help_or_comment\"
+			_print_help_or_i=\$((\$_print_help_or_i + 1))
+		done
+	"
 }
 
 # Print elements in a list, one per line.
@@ -421,13 +466,20 @@ print_help_or() {
 # prefi-format will receive one argument: the list index starting at 1
 print_help_list() {
 	_print_help_list_prefix="$1"
-	eval "set -- $2"
-	_print_help_list_i=1
-	for entry ; do
-		printf "$_print_help_list_prefix" $_print_help_list_i
-		printf "%s${reset}\n" "$entry"
-		_print_help_list_i=$(($_print_help_list_i + 1))
-	done
+	_print_help_list_var=$2
+	eval "_print_help_list_list=\"\$$2\""
+	[ -z "$1" ] && return
+	eval "
+		_print_help_list_i=0
+		for entry in $_print_help_list_list ; do
+			printf \"\$_print_help_list_prefix\" \$((\$_print_help_list_i + 1))
+			printf \"%s\${reset}\" \"\$entry\"
+			_print_help_list_comment=\"\$(list_comment \$_print_help_list_var \$_print_help_list_i)\"
+			[ -z \"\$_print_help_list_comment\" ] || printf ' (%s)' \"\$_print_help_list_comment\"
+			printf '\n'
+			_print_help_list_i=\$((\$_print_help_list_i + 1))
+		done
+	"
 }
 
 # Print help output.
@@ -467,17 +519,18 @@ Usage: $command [--source] source [--patch patchfile] [[--data-dir] datadir]
 --gui is enabled by default if there are no arguments
 "
 	[ ! -z "${1-}" ] && exit $false
-	help_innosetup="${dim_pink}innoextract${reset}"
-	help_cdrom="${dim_pink}bsdtar${reset} (libarchive) *or* ${dim_pink}isoinfo${reset} *or* ${dim_pink}fuseiso${reset} *or* root access"
-	help_cab="${dim_pink}bsdtar${reset} with libarchive 3.1+ *or* ${dim_pink}cabextract${reset}"
-	help_zip="${dim_pink}bsdtar${reset} *or* ${dim_pink}unzip${reset}"
-	help_unshield="${dim_pink}unshield${reset}"
+	help_innosetup="$(print_help_or extract_innosetup_reqs "$dim_pink")"
+	help_cdrom="$(print_help_or extract_cdrom_reqs "$dim_pink") or root access"
+	help_cab="$(print_help_or extract_ms_cab_reqs "$dim_pink")"
+	help_zip="$(print_help_or extract_zip_reqs "$dim_pink")"
+	help_unshield="$(print_help_or extract_installshield_reqs "$dim_pink")"
 	help_optpatch="may use the 1.21 patch file and require ${help_innosetup} if not already patched"
 	help_probe_file_dirst="
    a) the current working directory  (\$PWD):              $user_pwd
    b) the user's downloads directory (\$HOME):             $HOME
    c) the user's home directory      (\$XDG_DOWNLOAD_DIR): $downloads_dir
    d) the temp directory             (\$TMPDIR):           $tempdir"
+  help_probed_files="$gog_names $demo_names"
 	print "
 The ${pink}dependencies${reset} required by the ${command} script depend on the source files.
 However, you always need either ${dim_pink}md5sum${reset} or ${dim_pink}md5${reset}.
@@ -498,7 +551,7 @@ The ${green}source${reset} can be one of many things:
     - ${help_innosetup}
    needs the 1.21 patch file
 
- * ${white}Arx Fatalis installer from ${green}GOG.com${white}${reset} ($(print_help_or "$gog_names"))
+ * ${white}Arx Fatalis installer from ${green}GOG.com${white}${reset} ($(print_help_or gog_names))
    requires:
     - ${help_innosetup}
    never uses the 1.21 patch file
@@ -508,7 +561,7 @@ The ${green}source${reset} can be one of many things:
    ${help_optpatch}
    get it from ${dim_green}${steam_url}${reset}
 
- * ${white}Arx Fatalis ${green}demo${white} zip${reset} ($(print_help_or "$demo_names"))
+ * ${white}Arx Fatalis ${green}demo${white} zip${reset} ($(print_help_or demo_names))
    requires:
     - ${help_zip}
     - ${help_cab}
@@ -525,7 +578,7 @@ The ${green}source${reset} can be one of many things:
 
 If no source is specified, these files will be probed:
 1. The following files in${help_probe_file_dirst}
-$(print_help_list "   1.%d ${green}" "$gog_names $demo_names")
+$(print_help_list "   1.%d ${green}" help_probed_files)
 2. If \$WINEPREFIX is set, any installation in there
 3. Any installation in the default WINEPREFIX (${green}~/.wine${reset})
 4. Any mounted ${green}cdrom${reset} or ISO file
@@ -539,14 +592,14 @@ the --no-patch option wasn't specified specified:
         Where <LANG> is one of EN, ES, FR, GE, IT, RU,
         depending on the language of the data files.
 2. Downloaded from:
-$(print_help_list " - ${dim_blue}" "$patch_urls")
+$(print_help_list " - ${dim_blue}" patch_urls)
 Extracting the ${patch_ver} patch file requires ${help_innosetup}.
 
 For the Japanese version, if no ${blue}patch-jp${reset} file is specified,
 but is needed and the --no-patch option wasn't specified specified:
 1. Try to find ${blue}${patch_jp_name}${reset} in${help_probe_file_dirst}
 2. Downloaded from:
-$(print_help_list " - ${dim_blue}" "$patch_jp_urls")
+$(print_help_list " - ${dim_blue}" patch_jp_urls)
 Extracting the Japanese patch file requires:
     - ${help_unshield}
     - ${help_cab}.
@@ -900,6 +953,16 @@ dialog_select_path() {
 	return $true
 }
 
+dialog_retry() {
+	zenity_run 'Error' --question --no-wrap --text="$1" \
+		--ok-label='Retry' --cancel-label='Ignore'
+	case $? in
+		0) dialog_retry_choice='retry' ;;
+		1) dialog_retry_choice='ignore' ;;
+		*) dialog_retry_choice='abort' ;;
+	esac
+}
+
 ;;
 
 #----------------------------------------------------------------------------------------#
@@ -1027,6 +1090,17 @@ dialog_select_path() {
 	return $true
 }
 
+dialog_retry() {
+	kdialog_run 'Error' \
+		--yes-label 'Retry' --no-label 'Ignore' --cancel-label 'Abort' \
+		--warningyesnocancel "$1" 2>&1
+	case $? in
+		0) dialog_retry_choice='retry' ;;
+		1) dialog_retry_choice='ignore' ;;
+		*) dialog_retry_choice='abort' ;;
+	esac
+}
+
 ;;
 
 #----------------------------------------------------------------------------------------#
@@ -1133,6 +1207,15 @@ dialog_select_path() {
 	[ -z "$_Xdialog_select_path" ] && return $false
 	eval "$2=\"\$_Xdialog_select_path\""
 	return $true
+}
+
+dialog_retry() {
+	Xdialog_run 'Error' --ok-label='Retry' --cancel-label='Ignore' --yesno "$1" 0 0
+	case $? in
+		0) dialog_retry_choice='retry' ;;
+		1) dialog_retry_choice='ignore' ;;
+		*) dialog_retry_choice='abort' ;;
+	esac
 }
 
 ;;
@@ -1263,6 +1346,20 @@ dialog_select_path() {
 	[ -z "$_cli_select_path_r" ] && return $false
 	eval "$_cli_select_path_var=\"\$_cli_select_path_r\""
 	return $true
+}
+
+dialog_retry() {
+	printf '\n%s\n' "${red}Error:${reset} $1"
+	while true ; do
+		print "Abort / [Retry] / Ignore"
+		printf '> '
+		read -r _cli_dialog_retry_r
+		case "$_cli_dialog_retry_r" in
+			a|A|abort|Abort|ABORT)    dialog_retry_choice='abort'  ; return ;;
+			''|r|R|retry|Retry|RETRY) dialog_retry_choice='retry'  ; return ;;
+			i|I|ignore|Ignore|IGNORE) dialog_retry_choice='ignore' ; return ;;
+		esac
+	done
 }
 
 esac
@@ -1807,8 +1904,56 @@ checksum() {
 	die "You need either md5sum or md5."
 }
 
+have_extract() {
+	for type ; do
+		eval "_have_extract_p=\"\$extract_${1}_reqs\""
+		eval "for program in $_have_extract_p ; do have \$program && return $true ; done"
+		return $false
+		
+		"have_extract_$type"
+	done
+}
+# Extract an archive file to the current directory.
+# Usage: extract <file> <types>...
+extract() {
+	_extract_file="$1" ; shift
+	
+	while true ; do
+		
+		_extract_missing=''
+		for type ; do
+			
+			if "have_extract_$type" ; then
+				"extract_$type" "$_extract_file" && return "$true"
+			else
+				list_merge _extract_missing extract_${type}_reqs
+			fi
+			
+		done
+		
+		_extract_msg="${white}Could not extract $(basename "$_extract_file")${reset}"
+		[ -z "$_extract_missing" ] \
+			|| _extract_msg="$_extract_msg
+
+Please install one or more of the following:
+$(print_help_list " - $dim_pink" _extract_missing)"
+		
+		[ $batch = 1 ] && die "Error: $_extract_msg"
+		
+		dialog_retry "$_extract_msg"
+		case $dialog_retry_choice in
+			abort)  die "Error extracting files" ;;
+			retry)  continue ;;
+			ignore) return $true ;;
+		esac
+		
+	done
+	
+}
+
 # Extract a .zip file to the current directory.
 # Usage: extract_zip <zipfile>
+have_extract_zip() { have_extract zip ; }
 extract_zip() {
 	
 	if have bsdtar ; then
@@ -1823,11 +1968,16 @@ extract_zip() {
 		return $?
 	fi
 	
-	die "You need either bsdtar or unzip to install from zip files: $1"
+	die "no program to extract $1"
 }
 
 # Mount a .iso file or CDROM using fuseiso if available  or normal mount if root.
 # Usage: mount_cdrom <cdromfile> <mountpoint>
+have_mount_cdrom() {
+	have fuseiso && have fusermount && return $true
+	have mount && have umount && [ $is_root = 1 ] && return $true
+	return $false
+}
 mount_cdrom() {
 	
 	if have fuseiso && have fusermount &&  fuseiso "$1" "$2" ; then
@@ -1840,7 +1990,7 @@ mount_cdrom() {
 		return $true
 	fi
 	
-	return $false
+	die "no program to extract $1"
 }
 
 # Unmount a CDROM that was mounted using mount_cdrom.
@@ -1885,14 +2035,17 @@ extract_isoinfo() {
 }
 
 # Extract a .iso file or CDROM to the current directory.
-# Usage: extract_cdrom <cdromfile>
-extract_cdrom() {
+# Usage: extract_iso <cdromfile>
+have_extract_iso() { have_extract iso ; }
+extract_iso() {
 	
 	if have isoinfo ; then
 		printf 'Extracting %s using isoinfo\n' "$1"
 		extract_isoinfo "$1"
 		return $?
 	fi
+	
+	ret=$false
 	
 	if have bsdtar ; then
 		printf 'Extracting %s using bsdtar\n' "$1"
@@ -1905,27 +2058,23 @@ extract_cdrom() {
 			eval "for f in $_extrac_cdrom_f ; do mv \"\$f\" \"\$(print \"\$f\" | sed 's:;1$::')\" ; done"
 		fi
 		
-		# For some iso files bsdtar just does nothing - at least let the user know
-		if [ ! -d "$PWD/bin" ] || ! icontains "$PWD/bin" 'arx.ttf' ; then
-			print "${yellow}It looks like bsdtar didn't do what it was supposed to!${reset}"
-			printf '%s%s\n' "You might have better luck with ${dim_pink}isoinfo${reset}" \
-			     " or ${dim_pink}fuseiso${reset}, or by manually mounting the CD/ISO."
-		fi
-		
-		return $ret
 	fi
 	
-	return $false
+	# For some iso files bsdtar just does nothing - at least let the user know
+	if [ ! -d "$PWD/bin" ] || ! icontains "$PWD/bin" 'arx.ttf' ; then
+		_extract_iso_err="${yellow}It looks like bsdtar didn't do what it was supposed to - this will likely fail!${reset}
+
+You might have better luck with ${dim_pink}isoinfo${reset} or ${dim_pink}fuseiso${reset}, or by manually mounting the CD/ISO."
+		printf '%s\n' "$_extract_iso_err"
+		[ $batch = 0 ] && dialog_message "$_extract_iso_err"
+	fi
+	
+	return $ret
 }
 
-extract_ms_cab_reqs="bsdtar with libarchive 3.1+, or cabextract ($cabextract_url)"
-have_extract_ms_cab() {
-	have bsdtar || have cabextract
-}
 # Extract a microsoft .cab or .exe file to the current directory.
 # Usage: extract_ms_cab <cabfile>
-extract_ms_cab() {
-	
+extract_cab_check_bsdtar() {
 	if have bsdtar ; then
 		case "$(bsdtar --version)" in
 			# These versions have bugs that cause corrupted files
@@ -1936,10 +2085,22 @@ extract_ms_cab() {
 			*'libarchive 3.0.'*) ;;
 			# Newer versions should work fine
 			*)
-			printf 'Extracting %s using bsdtar\n' "$1"
-			bsdtar xvf "$1"
-			return 
+			return $true
 		esac
+	fi
+	return $false
+}
+have_extract_ms_cab() {
+	extract_cab_check_bsdtar && return $true
+	have cabextract && return $true
+	return $false
+}
+extract_ms_cab() {
+	
+	if extract_cab_check_bsdtar ; then
+		printf 'Extracting %s using bsdtar\n' "$1"
+		bsdtar xvf "$1"
+		return $?
 	fi
 	
 	if have cabextract ; then
@@ -1948,15 +2109,12 @@ extract_ms_cab() {
 		return $?
 	fi
 	
-	die "You need either $extract_ms_cab_reqs to install from cdrom / demo files: $1"
+	die "no program to extract $1"
 }
 
-extract_installshield_reqs="unshield"
-have_extract_installshield() {
-	have unshield
-}
 # Extract an InstallShield .cab or .exe file to the current directory.
 # Usage: extract_installshield <cabfile>
+have_extract_installshield() { have_extract installshield ; }
 extract_installshield() {
 	
 	if have unshield ; then
@@ -1965,48 +2123,24 @@ extract_installshield() {
 		return $?
 	fi
 	
-	die "You need $extract_installshield_reqs to install from Japanse patch files: $1"
+	die "no program to extract $1"
 }
 
-extract_innosetup_reqs="innoextract ($innoextract_url)"
-have_extract_innosetup() {
-	have innoextract
-}
 # Extract an Inno Setup .exe file to the current directory.
 # Usage: extract_innosetup <exefile>
+have_extract_innosetup() { have innoextract ; }
+innosetup_language=''
 extract_innosetup() {
 	
 	if have innoextract ; then
 		printf 'innoextract: '
-		innoextract --color=off "$@"
-		return $?
-	fi
-	
-	die "You need innoextract to install from GOG.com or patch files: $1"
-}
-
-# Extract an unknown file to the current directory.
-# Usage: extract_any <file> <types>...
-extract_any() {
-	_extract_exe_file="$1" ; shift
-	
-	_extract_exe_missing=''
-	_extract_exe_sep=''
-	for type ; do
-		
-		if "have_extract_$type" ; then
-			"extract_$type" "$_extract_exe_file" && return "$true"
-		else
-			eval "_extract_exe_reqs=\"\$extract_${type}_reqs\""
-			_extract_exe_missing="$_extract_exe_missing$_extract_exe_sep$_extract_exe_reqs"
-			_extract_exe_sep=' and/or '
+		if [ -z "$innosetup_language" ]
+			then innoextract --color=off "$1" ; return $?
+			else innoextract --color=off --language="$innosetup_language" "$1" ; return $?
 		fi
-		
-	done
-	
-	if [ ! -z "$_extract_exe_missing" ] ; then
-		die "Could not extract $_extract_exe_file - try installing $_extract_exe_missing."
 	fi
+	
+	die "no program to extract $1"
 }
 
 # Extract all .cab files in a directory.
@@ -2034,8 +2168,8 @@ extract_cab_files() {
 		
 		cd "$_extract_cab_files_cabdir"
 		case "$(basename "$_extract_cab_files_cabfile")" in
-			data*) extract_any "$_extract_cab_files_cabfile" installshield ms_cab ;;
-			*)     extract_any "$_extract_cab_files_cabfile" ms_cab installshield ;;
+			data*) extract "$_extract_cab_files_cabfile" installshield ms_cab ;;
+			*)     extract "$_extract_cab_files_cabfile" ms_cab installshield ;;
 		esac
 		
 		_extract_cab_files_i=$(($_extract_cab_files_i + 1))
@@ -2122,13 +2256,29 @@ extract_source_exe() {
 	
 	cd "$sourcedir_exe" || die
 	case "$(basename "$1")" in
-		arx_jpn_*.exe) extract_any "$1" ms_cab installshield innosetup ;; # Japanese demo
-		*)             extract_any "$1" innosetup ms_cab installshield ;; # GOG.com setup
+		arx_jpn_*.exe) extract "$1" ms_cab installshield innosetup ;; # Japanese demo
+		*)             extract "$1" innosetup ms_cab installshield ;; # GOG.com setup
 	esac
 	[ $? = $true ] || die "Could not extract source exe!"
 	
 	extract_source_dir "$sourcedir_exe"
 	
+}
+
+# Wrap mount_cdrom et al so we can use them with extract()
+extract_mount_cdrom_reqs=''
+list_merge extract_mount_cdrom_reqs mount_cdrom_reqs
+have_extract_mount_cdrom() { have_mount_cdrom ; }
+extract_mount_cdrom() {
+	# Ignore the current working directory, always mount to $cdromdir
+	if mount_cdrom "$1" "$cdromdir" ; then
+		# Pretent the mountpoint is the original source
+		sourcefile="$cdromdir"
+		sourcedir_cdrom="$cdromdir"
+		return $true
+	else
+		return $false
+	fi
 }
 
 cdromdir=''
@@ -2145,26 +2295,16 @@ extract_source_cdrom() {
 	cleanup_cdrom
 	on_exit cleanup_cdrom
 	create_dir "$cdromdir" 'mount work'
-	if mount_cdrom "$1" "$cdromdir" ; then
-		# Pretent the mountpoint is the original source
-		sourcefile="$workdir/cdrom"
-		# Extract any cab files on the CDROM
-		extract_source_dir "$sourcefile"
-		return $true
-	fi
 	
-	# Otherwise, extract the files from the CDROM if the have the required tools
+	# Otherwise, extract the files from the CDROM if we have the required tools
 	sourcedir_cdrom="$sourcedir/cdrom"
 	create_dir "$sourcedir_cdrom" 'cdrom work'
 	cd "$sourcedir_cdrom" || die
-	if extract_cdrom "$1" ; then
-		# Extract any cab files on the CDROM
-		extract_source_dir "$sourcedir_cdrom"
-		return $true
-	fi
 	
-	die "You need either bsdtar, isoinfo, fuseiso, or root access" \
-		"to install from cdrom / iso files: $1"
+	extract "$1" mount_cdrom iso
+	
+	# Extract any cab files on the CDROM
+	extract_source_dir "$sourcedir_cdrom"
 }
 
 # Extract a source executable into $sourcedir/zip.
@@ -2176,7 +2316,7 @@ extract_source_zip() {
 	create_dir "$sourcedir_zip" 'zip work'
 	
 	cd "$sourcedir_zip" || die
-	extract_zip "$1" || die "Could not extract source zip!"
+	extract "$1" zip || die "Could not extract source zip!"
 	
 	extract_source_dir "$sourcedir_zip"
 }
@@ -2351,7 +2491,8 @@ patch_check_file_name() {
 	_user_patch_name="$(basename "$1")"
 	if ! list_contains "$2" "$_user_patch_name" ; then
 		printf "${yellow}Warning: unexpected patch file name: %s" "$_user_patch_name" >&2
-		printf "Expected %s${reset}\n" "$(print_help_or "$2")" >&2
+		_patch_check_file_names="$2"
+		printf "Expected %s${reset}\n" "$(print_help_or _patch_check_file_names)" >&2
 	fi
 }
 
@@ -2449,8 +2590,9 @@ extract_patch() {
 		_patchdir_main="$patchdir/main"
 		create_dir "$_patchdir_main" 'main patch work'
 		cd "$_patchdir_main"
-		extract_innosetup "$patchfile" --language="$_extract_patch_lang" \
-			|| die "Could not extract patch file!"
+		innosetup_language="$_extract_patch_lang"
+		extract "$patchfile" innosetup
+		innosetup_language=''
 	fi
 	
 	if [ ! -z "$patchfile_jp" ] ; then
@@ -2459,7 +2601,7 @@ extract_patch() {
 		_patchdir_jp="$patchdir/main"
 		create_dir "$_patchdir_jp" 'jp patch work'
 		cd "$_patchdir_jp"
-		extract_ms_cab "$patchfile_jp" || die "Could not extract jp patch file!"
+		extract "$patchfile_jp" ms_cab
 		
 		# Also extract contained files
 		extract_cab_files "$_patchdir_jp" "$patchdir"
@@ -2519,8 +2661,8 @@ required_file() {
 		printf "${red}Missing ${dim_red}%s${red}!${reset}\n" "$_name" >&2
 	else
 		printf "${red}Checksum failed for ${dim_red}%s${reset}:\n" "$_name" >&2
-		printf "  expected: ${dim_red}%s${reset}\n" "$(print_help_or "$_valid")" >&2
-		printf "  actual:   ${dim_red}%s${reset}\n" "$(print_help_or "$_checksums")" >&2
+		printf "  expected: ${dim_red}%s${reset}\n" "$(print_help_or _valid)" >&2
+		printf "  actual:   ${dim_red}%s${reset}\n" "$(print_help_or _checksums)" >&2
 	fi
 	
 	# Be optimistic, copy the first result even if the checksum doesn't match!
