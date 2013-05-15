@@ -377,6 +377,7 @@ list_append mount_cdrom_reqs 'fuseiso'
 extract_iso_reqs=''
 list_append extract_iso_reqs 'isoinfo'
 list_append extract_iso_reqs 'bsdtar' 'libarchive'
+list_append extract_iso_reqs '7z' 'p7zip'
 extract_cdrom_reqs=''
 list_merge extract_cdrom_reqs mount_cdrom_reqs
 list_merge extract_cdrom_reqs extract_iso_reqs
@@ -2025,7 +2026,7 @@ extract_isoinfo() {
 		# Remove leading / and trailing ;1 from filenames
 		_extract_isoinfo_f="$(print "$_extract_isoinfo_e" | sed 's:^/*::;s:;1$::')"
 		[ -z "$_extract_isoinfo_f" ] && continue
-		printff ' - %s\n' "$_extract_isoinfo_f"
+		printf ' - %s\n' "$_extract_isoinfo_f"
 		
 		# Create subdirectories as needed
 		_extract_isoinfo_d="$(dirname "$_extract_isoinfo_f")"
@@ -2067,11 +2068,14 @@ extract_iso() {
 			eval "for f in $_extrac_cdrom_f ; do mv \"\$f\" \"\$(print \"\$f\" | sed 's:;1$::')\" ; done"
 		fi
 		
-	fi
+	else if have 7z ; then
+		7z x -tiso "$1"
+		ret="$?"
+	fi ; fi
 	
 	# For some iso files bsdtar just does nothing - at least let the user know
 	if [ ! -d "$PWD/bin" ] || ! icontains "$PWD/bin" 'arx.ttf' ; then
-		_extract_iso_err="${yellow}It looks like bsdtar didn't do what it was supposed to - this will likely fail!${reset}
+		_extract_iso_err="${yellow}It looks like bsdtar/p7zip didn't do what it was supposed to - this will likely fail!${reset}
 
 You might have better luck with ${dim_pink}isoinfo${reset} or ${dim_pink}fuseiso${reset}, or by manually mounting the CD/ISO."
 		printf '%s\n' "$_extract_iso_err"
@@ -2498,9 +2502,9 @@ download_patch() {
 # Usage: patch_check_file_name <file> <expected-name-list>
 patch_check_file_name() {
 	_user_patch_name="$(basename "$1")"
-	if ! list_contains "$2" "$_user_patch_name" ; then
-		printf "${yellow}Warning: unexpected patch file name: %s" "$_user_patch_name" >&2
-		_patch_check_file_names="$2"
+	_patch_check_file_names="$2"
+	if ! list_contains _patch_check_file_names "$_user_patch_name" ; then
+		print "${yellow}Warning: unexpected patch file name: %s" "$_user_patch_name" >&2
 		printf "Expected %s${reset}\n" "$(print_help_or _patch_check_file_names)" >&2
 	fi
 }
