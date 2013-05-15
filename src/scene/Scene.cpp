@@ -1289,7 +1289,13 @@ void ARX_PORTALS_Frustrum_RenderRooms_TransparencyT() {
 	GRenderer->SetAlphaFunc(Renderer::CmpGreater, .5f);
 	
 	for(long i=0; i<NbRoomDrawList; i++) {
-		ARX_PORTALS_Frustrum_RenderRoom_TransparencyTSoftCull(RoomDrawList[i]);
+
+		long room_num = RoomDrawList[i];
+
+		if(!RoomDraw[room_num].count)
+			continue;
+
+		ARX_PORTALS_Frustrum_RenderRoom_TransparencyTSoftCull(room_num);
 	}
 	
 	GRenderer->SetAlphaFunc(Renderer::CmpNotEqual, 0.f);
@@ -1719,8 +1725,6 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoftRender(long room_num) {
 
 void ARX_PORTALS_Frustrum_RenderRoom_TransparencyTSoftCull(long room_num)
 {
-	if (RoomDraw[room_num].count)
-	{
 		//render transparency
 		int iNbTex=portals->room[room_num].usNbTextures;
 		TextureContainer **ppTexCurr=portals->room[room_num].ppTextureContainer;
@@ -1781,7 +1785,6 @@ void ARX_PORTALS_Frustrum_RenderRoom_TransparencyTSoftCull(long room_num)
 
 			ppTexCurr++;
 		}
-	}
 }
 
 void ARX_PORTALS_Frustrum_ComputeRoom(long room_num,EERIE_FRUSTRUM * frustrum)
