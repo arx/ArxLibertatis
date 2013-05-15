@@ -1574,8 +1574,7 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num, EERIE_FRUSTRUM_DATA
 
 
 void ARX_PORTALS_Frustrum_RenderRoomTCullSoftRender(long room_num) {
-	if(!RoomDraw[room_num].count)
-		return;
+
 
 	//render opaque
 	GRenderer->SetCulling(Renderer::CullNone);
@@ -1921,7 +1920,13 @@ void ARX_SCENE_Render() {
 
 	GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
 	for(long i=0; i<NbRoomDrawList; i++) {
-		ARX_PORTALS_Frustrum_RenderRoomTCullSoftRender(RoomDrawList[i]);
+
+		long room_num = RoomDrawList[i];
+
+		if(!RoomDraw[room_num].count)
+			continue;
+
+		ARX_PORTALS_Frustrum_RenderRoomTCullSoftRender(room_num);
 	}
 
 	if(!Project.improve) {
