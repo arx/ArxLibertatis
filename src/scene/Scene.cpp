@@ -1725,66 +1725,66 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoftRender(long room_num) {
 
 void ARX_PORTALS_Frustrum_RenderRoom_TransparencyTSoftCull(long room_num)
 {
-		//render transparency
-		int iNbTex=portals->room[room_num].usNbTextures;
-		TextureContainer **ppTexCurr=portals->room[room_num].ppTextureContainer;
+	//render transparency
+	int iNbTex=portals->room[room_num].usNbTextures;
+	TextureContainer **ppTexCurr=portals->room[room_num].ppTextureContainer;
 
-		while(iNbTex--) {
-			
-			TextureContainer * pTexCurr = *ppTexCurr;
-			GRenderer->SetTexture(0, pTexCurr);
+	while(iNbTex--) {
 
-			//NORMAL TRANS
-			if(pTexCurr->tMatRoom[room_num].uslNbIndiceCull_TNormalTrans)
-			{
-				SetZBias(2);
-				GRenderer->SetBlendFunc(Renderer::BlendSrcColor, Renderer::BlendDstColor);
-			
-				portals->room[room_num].pVertexBuffer->drawIndexed(Renderer::TriangleList, pTexCurr->tMatRoom[room_num].uslNbVertex, pTexCurr->tMatRoom[room_num].uslStartVertex, &portals->room[room_num].pussIndice[pTexCurr->tMatRoom[room_num].uslStartCull_TNormalTrans], pTexCurr->tMatRoom[room_num].uslNbIndiceCull_TNormalTrans);
-				
-				EERIEDrawnPolys+=pTexCurr->tMatRoom[room_num].uslNbIndiceCull_TNormalTrans;
-				pTexCurr->tMatRoom[room_num].uslNbIndiceCull_TNormalTrans=0;
-			}
+		TextureContainer * pTexCurr = *ppTexCurr;
+		GRenderer->SetTexture(0, pTexCurr);
 
-			//MULTIPLICATIVE
-			if(pTexCurr->tMatRoom[room_num].uslNbIndiceCull_TMultiplicative)
-			{
-				SetZBias(2);
-				GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-				
-				portals->room[room_num].pVertexBuffer->drawIndexed(Renderer::TriangleList, pTexCurr->tMatRoom[room_num].uslNbVertex, pTexCurr->tMatRoom[room_num].uslStartVertex, &portals->room[room_num].pussIndice[pTexCurr->tMatRoom[room_num].uslStartCull_TMultiplicative], pTexCurr->tMatRoom[room_num].uslNbIndiceCull_TMultiplicative);
-				
-				EERIEDrawnPolys+=pTexCurr->tMatRoom[room_num].uslNbIndiceCull_TMultiplicative;
-				pTexCurr->tMatRoom[room_num].uslNbIndiceCull_TMultiplicative=0;
-			}
+		//NORMAL TRANS
+		if(pTexCurr->tMatRoom[room_num].uslNbIndiceCull_TNormalTrans)
+		{
+			SetZBias(2);
+			GRenderer->SetBlendFunc(Renderer::BlendSrcColor, Renderer::BlendDstColor);
 
-			//ADDITIVE
-			if(pTexCurr->tMatRoom[room_num].uslNbIndiceCull_TAdditive)
-			{
-				SetZBias(2);
-				GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-				
-				portals->room[room_num].pVertexBuffer->drawIndexed(Renderer::TriangleList, pTexCurr->tMatRoom[room_num].uslNbVertex, pTexCurr->tMatRoom[room_num].uslStartVertex, &portals->room[room_num].pussIndice[pTexCurr->tMatRoom[room_num].uslStartCull_TAdditive], pTexCurr->tMatRoom[room_num].uslNbIndiceCull_TAdditive);
-				
-				EERIEDrawnPolys+=pTexCurr->tMatRoom[room_num].uslNbIndiceCull_TAdditive;
-				pTexCurr->tMatRoom[room_num].uslNbIndiceCull_TAdditive=0;
-			}
+			portals->room[room_num].pVertexBuffer->drawIndexed(Renderer::TriangleList, pTexCurr->tMatRoom[room_num].uslNbVertex, pTexCurr->tMatRoom[room_num].uslStartVertex, &portals->room[room_num].pussIndice[pTexCurr->tMatRoom[room_num].uslStartCull_TNormalTrans], pTexCurr->tMatRoom[room_num].uslNbIndiceCull_TNormalTrans);
 
-			//SUBSTRACTIVE
-			if(pTexCurr->tMatRoom[room_num].uslNbIndiceCull_TSubstractive)
-			{
-				SetZBias(8);
-
-				GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
-				
-				portals->room[room_num].pVertexBuffer->drawIndexed(Renderer::TriangleList, pTexCurr->tMatRoom[room_num].uslNbVertex, pTexCurr->tMatRoom[room_num].uslStartVertex, &portals->room[room_num].pussIndice[pTexCurr->tMatRoom[room_num].uslStartCull_TSubstractive], pTexCurr->tMatRoom[room_num].uslNbIndiceCull_TSubstractive);
-				
-				EERIEDrawnPolys+=pTexCurr->tMatRoom[room_num].uslNbIndiceCull_TSubstractive;
-				pTexCurr->tMatRoom[room_num].uslNbIndiceCull_TSubstractive=0;
-			}
-
-			ppTexCurr++;
+			EERIEDrawnPolys+=pTexCurr->tMatRoom[room_num].uslNbIndiceCull_TNormalTrans;
+			pTexCurr->tMatRoom[room_num].uslNbIndiceCull_TNormalTrans=0;
 		}
+
+		//MULTIPLICATIVE
+		if(pTexCurr->tMatRoom[room_num].uslNbIndiceCull_TMultiplicative)
+		{
+			SetZBias(2);
+			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+
+			portals->room[room_num].pVertexBuffer->drawIndexed(Renderer::TriangleList, pTexCurr->tMatRoom[room_num].uslNbVertex, pTexCurr->tMatRoom[room_num].uslStartVertex, &portals->room[room_num].pussIndice[pTexCurr->tMatRoom[room_num].uslStartCull_TMultiplicative], pTexCurr->tMatRoom[room_num].uslNbIndiceCull_TMultiplicative);
+
+			EERIEDrawnPolys+=pTexCurr->tMatRoom[room_num].uslNbIndiceCull_TMultiplicative;
+			pTexCurr->tMatRoom[room_num].uslNbIndiceCull_TMultiplicative=0;
+		}
+
+		//ADDITIVE
+		if(pTexCurr->tMatRoom[room_num].uslNbIndiceCull_TAdditive)
+		{
+			SetZBias(2);
+			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+
+			portals->room[room_num].pVertexBuffer->drawIndexed(Renderer::TriangleList, pTexCurr->tMatRoom[room_num].uslNbVertex, pTexCurr->tMatRoom[room_num].uslStartVertex, &portals->room[room_num].pussIndice[pTexCurr->tMatRoom[room_num].uslStartCull_TAdditive], pTexCurr->tMatRoom[room_num].uslNbIndiceCull_TAdditive);
+
+			EERIEDrawnPolys+=pTexCurr->tMatRoom[room_num].uslNbIndiceCull_TAdditive;
+			pTexCurr->tMatRoom[room_num].uslNbIndiceCull_TAdditive=0;
+		}
+
+		//SUBSTRACTIVE
+		if(pTexCurr->tMatRoom[room_num].uslNbIndiceCull_TSubstractive)
+		{
+			SetZBias(8);
+
+			GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
+
+			portals->room[room_num].pVertexBuffer->drawIndexed(Renderer::TriangleList, pTexCurr->tMatRoom[room_num].uslNbVertex, pTexCurr->tMatRoom[room_num].uslStartVertex, &portals->room[room_num].pussIndice[pTexCurr->tMatRoom[room_num].uslStartCull_TSubstractive], pTexCurr->tMatRoom[room_num].uslNbIndiceCull_TSubstractive);
+
+			EERIEDrawnPolys+=pTexCurr->tMatRoom[room_num].uslNbIndiceCull_TSubstractive;
+			pTexCurr->tMatRoom[room_num].uslNbIndiceCull_TSubstractive=0;
+		}
+
+		ppTexCurr++;
+	}
 }
 
 void ARX_PORTALS_Frustrum_ComputeRoom(long room_num,EERIE_FRUSTRUM * frustrum)
