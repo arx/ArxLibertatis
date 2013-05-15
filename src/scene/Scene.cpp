@@ -266,7 +266,7 @@ long EERIERTPPoly2(EERIEPOLY *ep)
 }
 
 
-bool IsSphereInFrustrum(float radius,Vec3f * point,EERIE_FRUSTRUM * frustrum);
+bool IsSphereInFrustrum(float radius, const Vec3f *point, const EERIE_FRUSTRUM *frustrum);
 bool FrustrumsClipSphere(EERIE_FRUSTRUM_DATA * frustrums,EERIE_SPHERE * sphere)
 {
 	float dists=sphere->origin.x*efpPlaneNear.a + sphere->origin.y*efpPlaneNear.b + sphere->origin.z*efpPlaneNear.c + efpPlaneNear.d;
@@ -755,7 +755,7 @@ bool IsInFrustrum(Vec3f * point, EERIE_FRUSTRUM *frustrum)
 }
 
 
-bool IsSphereInFrustrum(float radius, Vec3f *point, EERIE_FRUSTRUM *frustrum)
+bool IsSphereInFrustrum(float radius, const Vec3f *point, const EERIE_FRUSTRUM *frustrum)
 {
 	float dists[4];
 	dists[0]=point->x*frustrum->plane[0].a + point->y*frustrum->plane[0].b + point->z*frustrum->plane[0].c + frustrum->plane[0].d;
@@ -925,7 +925,7 @@ void RoomDrawListAdd(long num) {
 	NbRoomDrawList++;
 }
 
-void RoomFrustrumAdd(long num,EERIE_FRUSTRUM * fr)
+void RoomFrustrumAdd(long num, const EERIE_FRUSTRUM * fr)
 {
 	if (RoomDraw[num].frustrum.nb_frustrums<MAX_FRUSTRUMS-1)
 	{
@@ -1787,7 +1787,7 @@ void ARX_PORTALS_Frustrum_RenderRoom_TransparencyTSoftCull(long room_num)
 	}
 }
 
-void ARX_PORTALS_Frustrum_ComputeRoom(long room_num,EERIE_FRUSTRUM * frustrum)
+void ARX_PORTALS_Frustrum_ComputeRoom(long room_num, const EERIE_FRUSTRUM * frustrum)
 {
 	arx_assert(portals);
 
