@@ -781,19 +781,6 @@ bool FrustrumsClipPoly(EERIE_FRUSTRUM_DATA *frustrums, EERIEPOLY *ep){
 
 	return true;
 }
- 
- 
-void ARX_PORTALS_BlendBBox(long room_num, EERIE_2D_BBOX *bbox) {
-	if(RoomDraw[room_num].count == 0) {
-		RoomDraw[room_num].bbox.min = bbox->min;
-		RoomDraw[room_num].bbox.max = bbox->max;
-	} else {
-		RoomDraw[room_num].bbox.min.x = min(RoomDraw[room_num].bbox.min.x, bbox->min.x);
-		RoomDraw[room_num].bbox.min.y = min(RoomDraw[room_num].bbox.min.y, bbox->min.y);
-		RoomDraw[room_num].bbox.max.x = max(RoomDraw[room_num].bbox.max.x, bbox->max.x);
-		RoomDraw[room_num].bbox.max.y = max(RoomDraw[room_num].bbox.max.y, bbox->max.y);
-	}
-}
 
 void Frustrum_Set(EERIE_FRUSTRUM * fr,long plane,float a,float b,float c,float d)
 {
