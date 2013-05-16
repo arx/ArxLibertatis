@@ -719,30 +719,6 @@ void ARX_PORTALS_InitDrawnRooms()
 	}
 }
 
-bool BBoxClipPoly(EERIE_2D_BBOX * bbox,EERIEPOLY * ep)
-{
-	EERIE_2D_BBOX n_bbox;
-
-	long nbv = (ep->type & POLY_QUAD) ? 4 : 3;
-
-	n_bbox.max.x=n_bbox.min.x=ep->tv[0].p.x;
-	n_bbox.max.y=n_bbox.min.y=ep->tv[0].p.y;	
-
-	for (long i=1;i<nbv;i++)
-	{
-		n_bbox.min.x=min(n_bbox.min.x , ep->tv[i].p.x);
-		n_bbox.min.y=min(n_bbox.min.y , ep->tv[i].p.y);
-		n_bbox.max.x=max(n_bbox.max.x , ep->tv[i].p.x);
-		n_bbox.max.y=max(n_bbox.max.y , ep->tv[i].p.y);
-	}
-
-	if (	bbox->min.x > n_bbox.max.x || n_bbox.min.x > bbox->max.x
-		||	bbox->min.y > n_bbox.max.y || n_bbox.min.y > bbox->max.y)
-		return true;
-
-	return false;
-
-}
 bool IsInFrustrum(Vec3f * point, EERIE_FRUSTRUM *frustrum)
 {
 	if (	((point->x*frustrum->plane[0].a + point->y*frustrum->plane[0].b + point->z*frustrum->plane[0].c + frustrum->plane[0].d)>0)
