@@ -904,9 +904,6 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 
 		{
 		// Is Object Visible & Near ?
-		if(fartherThan(ACTIVECAM->orgTrans.pos, thrownObj->position, ACTIVECAM->cdepth * fZFogEnd + 50.f))
-			continue;
-
 
 		FAST_BKG_DATA * bkgData = getFastBackgroundData(thrownObj->position.x, thrownObj->position.z);
 
