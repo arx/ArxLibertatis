@@ -457,42 +457,43 @@ void ARX_SPEECH_Update() {
 		ARX_CONVERSATION_CheckAcceleratedSpeech();
 
 	for(size_t i = 0; i < MAX_ASPEECH; i++) {
-		if(aspeech[i].exist) {
-			Entity * io = aspeech[i].io;
+		if(!aspeech[i].exist)
+			continue;
 
-			// updates animations
-			if(io) {
-				if(aspeech[i].flags & ARX_SPEECH_FLAG_OFFVOICE)
-					ARX_SOUND_RefreshSpeechPosition(aspeech[i].sample);
-				else
-					ARX_SOUND_RefreshSpeechPosition(aspeech[i].sample, io);
+		Entity * io = aspeech[i].io;
 
-				if((io != entities.player() || (io == entities.player() && EXTERNALVIEW)) && ValidIOAddress(io))
-				{
-					if(!io->anims[aspeech[i].mood])
-						aspeech[i].mood = ANIM_TALK_NEUTRAL;
+		// updates animations
+		if(io) {
+			if(aspeech[i].flags & ARX_SPEECH_FLAG_OFFVOICE)
+				ARX_SOUND_RefreshSpeechPosition(aspeech[i].sample);
+			else
+				ARX_SOUND_RefreshSpeechPosition(aspeech[i].sample, io);
 
-					if(io->anims[aspeech[i].mood]) {
-						if ((io->animlayer[2].cur_anim != io->anims[aspeech[i].mood])
-								||	(io->animlayer[2].flags & EA_ANIMEND))
-						{
-							AcquireLastAnim(io);
-							ANIM_Set(&io->animlayer[2], io->anims[aspeech[i].mood]);
-						}
+			if((io != entities.player() || (io == entities.player() && EXTERNALVIEW)) && ValidIOAddress(io))
+			{
+				if(!io->anims[aspeech[i].mood])
+					aspeech[i].mood = ANIM_TALK_NEUTRAL;
+
+				if(io->anims[aspeech[i].mood]) {
+					if ((io->animlayer[2].cur_anim != io->anims[aspeech[i].mood])
+							||	(io->animlayer[2].flags & EA_ANIMEND))
+					{
+						AcquireLastAnim(io);
+						ANIM_Set(&io->animlayer[2], io->anims[aspeech[i].mood]);
 					}
 				}
 			}
+		}
 
-			// checks finished speech
-			if(tim >= aspeech[i].time_creation + aspeech[i].duration) {
-				EERIE_SCRIPT *es = aspeech[i].es;
-				Entity *io = aspeech[i].ioscript;
-				long scrpos = aspeech[i].scrpos;
-				ARX_SPEECH_Release(i);
+		// checks finished speech
+		if(tim >= aspeech[i].time_creation + aspeech[i].duration) {
+			EERIE_SCRIPT *es = aspeech[i].es;
+			Entity *io = aspeech[i].ioscript;
+			long scrpos = aspeech[i].scrpos;
+			ARX_SPEECH_Release(i);
 
-				if(es && ValidIOAddress(io))
-					ScriptEvent::send(es, SM_EXECUTELINE, "", io, "", scrpos);
-			}
+			if(es && ValidIOAddress(io))
+				ScriptEvent::send(es, SM_EXECUTELINE, "", io, "", scrpos);
 		}
 	}
 
