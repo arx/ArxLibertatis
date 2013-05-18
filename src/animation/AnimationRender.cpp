@@ -249,7 +249,7 @@ static void Cedric_ConcatenateTM(EERIE_C_DATA *obj, EERIE_QUAT *rotation, Vec3f 
 	}
 }
 
-void EE_RT(TexturedVertex * in, Vec3f * out);
+void EE_RT(Vec3f * in, Vec3f * out);
 void EE_P(Vec3f * in, TexturedVertex * out);
 
 /* Transform object vertices  */
@@ -293,7 +293,7 @@ void Cedric_TransformVerts(Entity *io, EERIE_3DOBJ *eobj, EERIE_C_DATA *obj, Vec
 	for(size_t i = 0; i < eobj->vertexlist.size(); i++) {
 		EERIE_VERTEX * outVert = &eobj->vertexlist3[i];
 		AddToBBox3D(io, &outVert->v);
-		EE_RT(&outVert->vert, &outVert->vworld);
+		EE_RT(&outVert->vert.p, &outVert->vworld);
 		EE_P(&outVert->vworld, &outVert->vert);
 
 		// Updates 2D Bounding Box

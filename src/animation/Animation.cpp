@@ -960,10 +960,7 @@ void CalculateInterZMapp(EERIE_3DOBJ * _pobj3dObj, long lIdList, long * _piInd,
 }
 
 
-
-
-
-void EE_RT(TexturedVertex * in, Vec3f * out);
+void EE_RT(Vec3f * in, Vec3f * out);
 void EE_P(Vec3f * in, TexturedVertex * out);
 
 void DrawEERIEInter(EERIE_3DOBJ *eobj, const EERIE_QUAT * rotation, Vec3f *poss, Entity *io, EERIE_MOD_INFO *modinfo, bool thrownEntity) {
@@ -1013,7 +1010,7 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, const EERIE_QUAT * rotation, Vec3f *poss,
 
 		eobj->vertexlist3[i].v = vert_list_static[1].p += pos;
 
-		EE_RT(&vert_list_static[1], &eobj->vertexlist[i].vworld);
+		EE_RT(&vert_list_static[1].p, &eobj->vertexlist[i].vworld);
 		EE_P(&eobj->vertexlist[i].vworld, &eobj->vertexlist[i].vert);
 
 		// Memorizes 2D Bounding Box using vertex min/max x,y pos
