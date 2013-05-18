@@ -2317,20 +2317,34 @@ Entity * GetFirstInterAtPos(Vec2s * pos, long flag, Vec3f * _pRef, Entity ** _pT
 
 		// Is Object in TreatZone ??
 		bPlayerEquiped = IsEquipedByPlayer(io);
-		if ((bPlayerEquiped  && (player.Interface & INTER_MAP)) || (io->gameFlags & GFLAG_ISINTREATZONE))
 
-			// Is Object Displayed on screen ???
-			if ((io->show == SHOW_FLAG_IN_SCENE) || (bPlayerEquiped && flag) || (bPlayerEquiped  && (player.Interface & INTER_MAP) && (Book_Mode == BOOKMODE_STATS))) //((io->show==9) && (player.Interface & INTER_MAP)) )
-			{
-				if(flag == 2 && _pTable && _pnNbInTable && ((*_pnNbInTable) < 256)) {
-					_pTable[ *_pnNbInTable ] = io;
-					(*_pnNbInTable)++;
-					continue;
-				}
+		if( !((bPlayerEquiped  && (player.Interface & INTER_MAP)) || (io->gameFlags & GFLAG_ISINTREATZONE)) )
+			continue;
 
-				if ((pos->x >= io->bbox1.x) && (pos->x <= io->bbox2.x)
-				        && (pos->y >= io->bbox1.y) && (pos->y <= io->bbox2.y))
-				{
+		// Is Object Displayed on screen ???
+		if( !((io->show == SHOW_FLAG_IN_SCENE) ||
+			  (bPlayerEquiped && flag) ||
+			  (bPlayerEquiped && (player.Interface & INTER_MAP) && (Book_Mode == BOOKMODE_STATS))) )
+			//((io->show==9) && (player.Interface & INTER_MAP)) )
+		{
+			continue;
+		}
+
+		if(flag == 2 && _pTable && _pnNbInTable && ((*_pnNbInTable) < 256)) {
+			_pTable[ *_pnNbInTable ] = io;
+			(*_pnNbInTable)++;
+			continue;
+		}
+
+		if(pos->x < io->bbox1.x ||
+		   pos->x > io->bbox2.x ||
+		   pos->y < io->bbox1.y ||
+		   pos->y > io->bbox2.y)
+		{
+			continue;
+		}
+
+
 					if(flag && _pRef) {
 						float flDistanceToRef = distSqr(ACTIVECAM->orgTrans.pos, *_pRef);
 						float flDistanceToIO = distSqr(ACTIVECAM->orgTrans.pos, io->pos);
@@ -2385,8 +2399,6 @@ Entity * GetFirstInterAtPos(Vec2s * pos, long flag, Vec3f * _pRef, Entity ** _pT
 
 				suite:
 					;
-				}
-			}
 	}
 
 	if(foundPixel)
