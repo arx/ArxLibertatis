@@ -500,98 +500,97 @@ void ARX_SPEECH_Update() {
 	for(size_t i = 0; i < MAX_ASPEECH; i++) {
 		ARX_SPEECH *speech = &aspeech[i];
 
-		if(speech->exist) {
-			if(!speech->text.empty()) {
-				if(ARX_CONVERSATION && speech->io) {
-					long ok = 0;
+		if(!speech->exist)
+			continue;
 
-					for(long j = 0; j < main_conversation.actors_nb; j++) {
-						if(main_conversation.actors[j] >= 0)
-							if(speech->io == entities[main_conversation.actors[j]]) {
-								ok = 1;
-							}
+		if(speech->text.empty())
+			continue;
+
+		if(ARX_CONVERSATION && speech->io) {
+			long ok = 0;
+
+			for(long j = 0; j < main_conversation.actors_nb; j++) {
+				if(main_conversation.actors[j] >= 0)
+					if(speech->io == entities[main_conversation.actors[j]]) {
+						ok = 1;
 					}
-
-					if(!ok)
-						goto next;
-				}
-
-				if(CINEMASCOPE) {
-					if(CINEMA_DECAL >= 100.f) {
-						Vec2i sSize = hFontInBook->getTextSize(speech->text);
-						
-						float fZoneClippHeight	=	static_cast<float>(sSize.y * 3);
-						float fStartYY			=	100 * Yratio;
-						float fStartY			=	static_cast<float>(((int)fStartYY - (int)fZoneClippHeight) >> 1);
-						float fDepY				=	((float)DANAESIZY) - fStartYY + fStartY - speech->fDeltaY + sSize.y;
-						float fZoneClippY		=	fDepY + speech->fDeltaY;
-
-						float fAdd = fZoneClippY + fZoneClippHeight ;
-
-						Rect::Num y = checked_range_cast<Rect::Num>(fZoneClippY);
-						Rect::Num h = checked_range_cast<Rect::Num>(fAdd);
-						Rect clippingRect(0, y+1, DANAESIZX, h);
-						float iTaille = (float)ARX_TEXT_DrawRect(
-						                    hFontInBook,
-						                    10.f,
-						                    fDepY + fZoneClippHeight,
-						                    -10.f + (float)DANAESIZX,
-						                    speech->text,
-						                    Color::white,
-						                    &clippingRect);
-						
-						GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
-						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-						GRenderer->SetRenderState(Renderer::DepthTest, false);
-						EERIEDrawFill2DRectDegrad(0.f, fZoneClippY - 1.f,  static_cast<float>(DANAESIZX),
-						                          fZoneClippY + (sSize.y * 3 / 4), 0.f, Color::white, Color::black);
-						EERIEDrawFill2DRectDegrad(0.f, fZoneClippY + fZoneClippHeight - (sSize.y * 3 / 4),
-						                          static_cast<float>(DANAESIZX), fZoneClippY + fZoneClippHeight,
-						                          0.f, Color::black, Color::white);
-						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendZero);
-						GRenderer->SetRenderState(Renderer::DepthTest, true);
-						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-						
-						iTaille += (int)fZoneClippHeight;
-
-						if(((int)speech->fDeltaY) <= iTaille) {
-							//vitesse du scroll
-							float fDTime;
-
-							if(speech->sample) {
-								float duration = ARX_SOUND_GetDuration(speech->sample);
-								if(duration == 0.0f) {
-									duration = 4000.0f;
-								}
-								
-								fDTime = ((float)iTaille * (float)framedelay) / duration; //speech->duration;
-								float fTimeOneLine = ((float)sSize.y) * fDTime;
-
-								if(((float)speech->iTimeScroll) >= fTimeOneLine) {
-									float fResteLine = (float)sSize.y - speech->fPixelScroll;
-									float fTimePlus = ((float)fResteLine * (float)framedelay) / duration;
-									fDTime -= fTimePlus;
-									speech->fPixelScroll = 0.f;
-									speech->iTimeScroll = 0;
-								}
-								speech->iTimeScroll	+= checked_range_cast<int>(framedelay);
-							} else {
-								fDTime = ((float)iTaille * (float)framedelay) / 4000.0f;
-							}
-
-							speech->fDeltaY			+= fDTime;
-							speech->fPixelScroll	+= fDTime;
-						}
-					}
-				}
 			}
 
-		next:
-			;
+			if(!ok)
+				continue;
+		}
+
+		if(!CINEMASCOPE)
+			continue;
+
+		if(CINEMA_DECAL < 100.f)
+			continue;
+
+		Vec2i sSize = hFontInBook->getTextSize(speech->text);
+
+		float fZoneClippHeight	=	static_cast<float>(sSize.y * 3);
+		float fStartYY			=	100 * Yratio;
+		float fStartY			=	static_cast<float>(((int)fStartYY - (int)fZoneClippHeight) >> 1);
+		float fDepY				=	((float)DANAESIZY) - fStartYY + fStartY - speech->fDeltaY + sSize.y;
+		float fZoneClippY		=	fDepY + speech->fDeltaY;
+
+		float fAdd = fZoneClippY + fZoneClippHeight ;
+
+		Rect::Num y = checked_range_cast<Rect::Num>(fZoneClippY);
+		Rect::Num h = checked_range_cast<Rect::Num>(fAdd);
+		Rect clippingRect(0, y+1, DANAESIZX, h);
+		float iTaille = (float)ARX_TEXT_DrawRect(
+							hFontInBook,
+							10.f,
+							fDepY + fZoneClippHeight,
+							-10.f + (float)DANAESIZX,
+							speech->text,
+							Color::white,
+							&clippingRect);
+
+		GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
+		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+		GRenderer->SetRenderState(Renderer::DepthTest, false);
+		EERIEDrawFill2DRectDegrad(0.f, fZoneClippY - 1.f,  static_cast<float>(DANAESIZX),
+								  fZoneClippY + (sSize.y * 3 / 4), 0.f, Color::white, Color::black);
+		EERIEDrawFill2DRectDegrad(0.f, fZoneClippY + fZoneClippHeight - (sSize.y * 3 / 4),
+								  static_cast<float>(DANAESIZX), fZoneClippY + fZoneClippHeight,
+								  0.f, Color::black, Color::white);
+		GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendZero);
+		GRenderer->SetRenderState(Renderer::DepthTest, true);
+		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+
+		iTaille += (int)fZoneClippHeight;
+
+		if(((int)speech->fDeltaY) <= iTaille) {
+			//vitesse du scroll
+			float fDTime;
+
+			if(speech->sample) {
+				float duration = ARX_SOUND_GetDuration(speech->sample);
+				if(duration == 0.0f) {
+					duration = 4000.0f;
+				}
+
+				fDTime = ((float)iTaille * (float)framedelay) / duration; //speech->duration;
+				float fTimeOneLine = ((float)sSize.y) * fDTime;
+
+				if(((float)speech->iTimeScroll) >= fTimeOneLine) {
+					float fResteLine = (float)sSize.y - speech->fPixelScroll;
+					float fTimePlus = ((float)fResteLine * (float)framedelay) / duration;
+					fDTime -= fTimePlus;
+					speech->fPixelScroll = 0.f;
+					speech->iTimeScroll = 0;
+				}
+				speech->iTimeScroll	+= checked_range_cast<int>(framedelay);
+			} else {
+				fDTime = ((float)iTaille * (float)framedelay) / 4000.0f;
+			}
+
+			speech->fDeltaY			+= fDTime;
+			speech->fPixelScroll	+= fDTime;
 		}
 	}
-
-
 }
 
 bool ApplySpeechPos(EERIE_CAMERA * conversationcamera, long is) {
