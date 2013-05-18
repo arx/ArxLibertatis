@@ -24,6 +24,12 @@
 
 #include "platform/Platform.h"
 
+enum ExitStatus {
+	ExitSuccess,
+	ExitFailure,
+	RunProgram
+};
+
 std::string expandEnvironmentVariables(const std::string & in);
 
 bool getSystemConfiguration(const std::string & name, std::string & result);

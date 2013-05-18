@@ -24,32 +24,54 @@
 #include <ostream>
 
 #include "io/fs/FilePath.h"
+#include "platform/Environment.h"
 
 namespace fs {
 
 //! Localtions where files are stored on the system
 struct SystemPaths {
 	
+	struct InitParams {
+		/*! An overwrite value to use for the user dir.
+		 *  If this is non-empty, standard search is skipped.
+		 *  If this does not exists, the user dir is left empty.
+		 */
+		path forceUser;
+		
+		/*! An overwrite value to use for the config dir.
+		 *  If this is non-empty, standard search is skipped.
+		 *  If this does not exists, the config dir is left empty.
+		 */
+		path forceConfig;
+		
+		/*! Additional values for the data search path.
+		 *  Will have higher priority than other system paths, but
+		 *  higher lower priority than the user dir. 
+		 */
+		std::vector<path> dataDirs;
+		
+		bool findData;
+		bool displaySearchDirs;
+
+		InitParams() : findData(true), displaySearchDirs(false) {}
+	};
+
 	path user; //!< Directory for saves and user-specific data files
 	path config; //!< Directory for config files
 	std::vector<path> data; //!< Directories for data files
 	
 	/*!
-	 * Initialize the system resource paths.
-	 *
-	 * @param forceUser an overwrite value to use for the user dir.
-	 *                  If this is non-empty, standard search is skipped.
-	 *                  If this does not exists, the user dir is left empty.
-	 * @param forceConfig an overwrite value to use for the config dir.
-	 *                    If this is non-empty, standard search is skipped.
-	 *                    If this does not exists, the config dir is left empty.
-	 * @param addData additional values for the data search path.
-	 *                Will have higher priority than other system paths, but
-	 *                higher lower priority than the user dir.
+	 * Initialize the system resource paths, using arguments provided on the
+	 * command line, if any.
 	 */
-	void init(const path & forceUser = path(), const path & forceConfig = path(),
-	          const std::vector<path> & addData = std::vector<path>(),
-	          bool findData = true, bool create = true);
+	ExitStatus init();
+
+	/*!
+	 * Initialize the system resource paths using the specified parameters.
+	 * @note This version of init() will ignore arguments provided on the
+	 * command line.
+	 */
+	ExitStatus init(const InitParams& initParams);
 	
 	std::vector<path> getSearchPaths(bool filterMissing = false) const;
 	
@@ -67,12 +89,11 @@ struct SystemPaths {
 	 * @return an empty path or an existing file.
 	 */
 	path find(const path & resource) const;
-	
+
+private:
 	void list(std::ostream & os, const std::string & forceUser = std::string(),
 	          const std::string & forceConfig = std::string(),
 	          const std::string & forceData = std::string());
-	
-private:
 	
 	std::vector<path> addData_;
 	bool findData_;

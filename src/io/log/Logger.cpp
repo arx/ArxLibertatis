@@ -30,7 +30,9 @@
 #include "io/log/ConsoleLogger.h"
 #include "io/log/LogBackend.h"
 #include "io/log/MsvcLogger.h"
+
 #include "platform/Lock.h"
+#include "platform/ProgramOptions.h"
 
 #include "Configure.h"
 
@@ -302,10 +304,11 @@ void Logger::shutdown() {
 	LogManager::deleteAllBackends();
 }
 
-
 void Logger::quickShutdown() {
 	for(LogManager::Backends::const_iterator i = LogManager::backends.begin();
 	    i != LogManager::backends.end(); ++i) {
 		(*i)->quickShutdown();
 	}
 }
+
+ARX_PROGRAM_OPTION("debug", "g", "Log level settings", &Logger::configure);
