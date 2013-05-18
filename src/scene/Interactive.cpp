@@ -2369,36 +2369,30 @@ Entity * GetFirstInterAtPos(Vec2s * pos, long flag, Vec3f * _pRef, Entity ** _pT
 				foundBB = io;
 				foundPixel = io;
 			}
+		} else {
+			for(size_t j = 0; j < io->obj->facelist.size(); j++) {
 
-			goto suite;
-		}
+				if(io->animlayer[0].cur_anim != NULL) {
+					n = CEDRIC_PtIn2DPolyProjV2(io->obj, &io->obj->facelist[j] , pos->x, pos->y);
+				} else {
+					n = PtIn2DPolyProj(io->obj, &io->obj->facelist[j] , pos->x, pos->y);
+				}
 
-		for(size_t j = 0; j < io->obj->facelist.size(); j++) {
+				if(n > 0.f) {
+					if(bPlayerEquiped)
+						fp = 0.f;
+					else
+						fp = fdist(io->pos, player.pos);
 
-			if(io->animlayer[0].cur_anim != NULL) {
-				n = CEDRIC_PtIn2DPolyProjV2(io->obj, &io->obj->facelist[j] , pos->x, pos->y);
-			} else {
-				n = PtIn2DPolyProj(io->obj, &io->obj->facelist[j] , pos->x, pos->y);
-			}
+					if((bPass && fp <= fMaxDist) && (fp < _fdist || !foundPixel)) {
 
-			if(n > 0.f) {
-				if(bPlayerEquiped)
-					fp = 0.f;
-				else
-					fp = fdist(io->pos, player.pos);
-
-				if((bPass && fp <= fMaxDist) && (fp < _fdist || !foundPixel)) {
-					{
 						_fdist = fp;
 						foundPixel = io;
-						goto suite;
+						break;
 					}
 				}
 			}
 		}
-
-	suite:
-		;
 	}
 
 	if(foundPixel)
