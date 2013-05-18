@@ -239,13 +239,15 @@ ExitStatus SystemPaths::init() {
 }
 
 ExitStatus SystemPaths::init(const InitParams& initParams) {
-	
+
 	user = findUserPath("user", initParams.forceUser, "UserDir",
 	                    user_dir_prefixes, user_dir, current_path(), !initParams.displaySearchDirs);
-	
+
 	config = findUserPath("config", initParams.forceConfig, "ConfigDir",
 	                      config_dir_prefixes, config_dir, user, !initParams.displaySearchDirs);
-	
+
+	addData_ = initParams.dataDirs;
+
 	findData_ = initParams.findData;
 	
 	data = getSearchPaths(true);
