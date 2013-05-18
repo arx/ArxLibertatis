@@ -72,7 +72,10 @@ protected:
 	void managePlayerControls();
 	void drawAllInterface();
 	void drawAllInterfaceFinish();
+
+	void update2DFX();
 	void goFor2DFX();
+
 	bool beforeRun();
 		
 public:

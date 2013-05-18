@@ -1641,6 +1641,7 @@ void ArxGame::renderLevel() {
 
 	GRenderer->SetRenderState(Renderer::Fog, true);
 
+	update2DFX();
 	goFor2DFX();
 
 	GRenderer->SetRenderState(Renderer::Fog, false);
@@ -1839,7 +1840,7 @@ void ArxGame::render() {
 
 void EE_RT(TexturedVertex * in, Vec3f * out);
 
-void ArxGame::goFor2DFX()
+void ArxGame::update2DFX()
 {
 	TexturedVertex lv,ltvv;
 
@@ -1925,9 +1926,11 @@ void ArxGame::goFor2DFX()
 			el->temp = clamp(el->temp, 0.f, .8f);
 		}
 	}
+}
 
-	// End 2D Pass ***************************************************************************
-
+void ArxGame::goFor2DFX()
+{
+	TexturedVertex lv,ltvv;
 
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
@@ -1967,8 +1970,6 @@ void ArxGame::goFor2DFX()
 	}
 
 	GRenderer->SetRenderState(Renderer::DepthTest, true);
-
-
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 }
 
