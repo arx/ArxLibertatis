@@ -90,43 +90,39 @@ ARX_SPEECH aspeech[MAX_ASPEECH];
 Notification speech[MAX_SPEECH];
 
 
-//-----------------------------------------------------------------------------
-void ARX_SPEECH_Init()
-{
-	for (size_t i = 0 ; i < MAX_SPEECH ; i++ )
+void ARX_SPEECH_Init() {
+
+	for(size_t i = 0 ; i < MAX_SPEECH ; i++ )
 		speech[i].clear();
 }
 
-//-----------------------------------------------------------------------------
-void ARX_SPEECH_MoveUp()
-{
-	if (speech[0].timecreation != 0)
-	{
-			speech[0].text.clear();
-	}
+void ARX_SPEECH_MoveUp() {
 
-	for (size_t j = 0; j < MAX_SPEECH - 1; j++)
-	{
+	if(speech[0].timecreation != 0)
+		speech[0].text.clear();
+
+	for(size_t j = 0; j < MAX_SPEECH - 1; j++) {
 		speech[j] = speech[j+1];
 	}
 
 	speech[MAX_SPEECH-1].clear();
 }
 
-//-----------------------------------------------------------------------------
 void ARX_SPEECH_ClearAll()
 {
-	for (size_t i = 0; i < MAX_SPEECH; i++)
-	{
-		if (speech[i].timecreation != 0) {
-			speech[i].clear();
-		}
+	for(size_t i = 0; i < MAX_SPEECH; i++) {
+
+		if(speech[i].timecreation == 0)
+			continue;
+
+		speech[i].clear();
 	}
 }
 
 long ARX_SPEECH_Add(const string & text, long duration) {
 	
-	if(text.empty()) return -1;
+	if(text.empty())
+		return -1;
 	
 	unsigned long tim = (unsigned long)(arxtime);
 	if(tim == 0) {
@@ -138,9 +134,9 @@ long ARX_SPEECH_Add(const string & text, long duration) {
 	}
 	
 	for(size_t i = 0; i < MAX_SPEECH; i++) {
-		if(speech[i].timecreation != 0) {
+
+		if(speech[i].timecreation != 0)
 			continue;
-		}
 		
 		// Sets creation time
 		speech[i].timecreation = tim;
@@ -164,9 +160,12 @@ long ARX_SPEECH_Add(const string & text, long duration) {
 static bool isLastSpeech(size_t index) {
 	
 	for(size_t i = index + 1; i < MAX_SPEECH; i++) {
-		if(speech[i].timecreation != 0 && !speech[i].text.empty()) {
+
+		if(speech[i].timecreation == 0)
+			continue;
+
+		if(!speech[i].text.empty())
 			return false;
-		}
 	}
 	
 	return true;
@@ -232,31 +231,31 @@ void ARX_SPEECH_Check()
 		ARX_SPEECH_Render();
 }
 
-//-----------------------------------------------------------------------------
 void ARX_SPEECH_Launch_No_Unicode_Seek(const string & text, Entity * io_source, long mood)
 {
 	mood = ANIM_TALK_NEUTRAL;
 	long speechnum = ARX_SPEECH_AddSpeech(io_source, text, mood, ARX_SPEECH_FLAG_NOTEXT);
 
-	if (speechnum >= 0)
-	{
+	if(speechnum >= 0) {
 		aspeech[speechnum].scrpos = -1;
 		aspeech[speechnum].es = NULL;
 		aspeech[speechnum].ioscript = io_source;
 		aspeech[speechnum].flags = 0;
+
 		CinematicSpeech acs;
 		acs.type = ARX_CINE_SPEECH_NONE;
 		aspeech[speechnum].cine = acs;
 	}
 }
 
-
 ARX_CONVERSATION_STRUCT main_conversation;
+
 void ARX_CONVERSATION_FirstInit()
 {
 	main_conversation.actors_nb = 0;
 	main_conversation.current = -1;
 }
+
 void ARX_CONVERSATION_Reset()
 {
 	main_conversation.actors_nb = 0;
@@ -274,7 +273,6 @@ void ARX_CONVERSATION_CheckAcceleratedSpeech() {
 		REQUEST_SPEECH_SKIP = 0;
 	}
 }
-
 
 void ARX_SPEECH_FirstInit() {
 	for(size_t i = 0 ; i < MAX_ASPEECH ; i++) {
