@@ -210,30 +210,26 @@ void ARX_SPEECH_Check()
 	bool bClear = false;
 	long exist = 0;
 
-	for (size_t i = 0; i < MAX_SPEECH; i++)
-	{
-		if (speech[i].timecreation != 0)
-		{
-			if (float(arxtime) > speech[i].timecreation + speech[i].duration)
-			{
-				ARX_SPEECH_MoveUp();
-				i--;
-			}
-			else exist++;
+	for(size_t i = 0; i < MAX_SPEECH; i++) {
+		if(speech[i].timecreation == 0)
+			continue;
 
-			bClear = true;
+		if(float(arxtime) > speech[i].timecreation + speech[i].duration) {
+			ARX_SPEECH_MoveUp();
+			i--;
+		} else {
+			exist++;
 		}
+
+		bClear = true;
 	}
 
-	if (bClear)
-	{
-		if (pTextManage)
-		{
-			pTextManage->Clear();
-		}
+	if(bClear && pTextManage) {
+		pTextManage->Clear();
 	}
 
-	if (exist) ARX_SPEECH_Render();
+	if(exist)
+		ARX_SPEECH_Render();
 }
 
 //-----------------------------------------------------------------------------
