@@ -1639,12 +1639,9 @@ void ArxGame::renderLevel() {
 	PopAllTriangleListTransparency();
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 
-	GRenderer->SetRenderState(Renderer::Fog, true);
-
 	update2DFX();
 	goFor2DFX();
 
-	GRenderer->SetRenderState(Renderer::Fog, false);
 	GRenderer->Clear(Renderer::DepthBuffer);
 
 	// Speech Management
@@ -1932,6 +1929,7 @@ void ArxGame::goFor2DFX()
 {
 	TexturedVertex lv,ltvv;
 
+	GRenderer->SetRenderState(Renderer::Fog, true);
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
@@ -1971,6 +1969,7 @@ void ArxGame::goFor2DFX()
 
 	GRenderer->SetRenderState(Renderer::DepthTest, true);
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
+	GRenderer->SetRenderState(Renderer::Fog, false);
 }
 
 
