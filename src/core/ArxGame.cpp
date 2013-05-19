@@ -102,11 +102,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/effects/LightFlare.h"
 #include "graphics/font/Font.h"
 #include "graphics/opengl/GLDebug.h"
+#include "graphics/opengl/GLPostProcess.h"
 #include "graphics/particle/ParticleEffects.h"
 #include "graphics/particle/ParticleManager.h"
 #include "graphics/particle/MagicFlare.h"
 #include "graphics/particle/Spark.h"
 #include "graphics/texture/TextureStage.h"
+#include "graphics/opengl/GLRenderTexture.h"
 
 #include "gui/Console.h"
 #include "gui/Cursor.h"
@@ -988,6 +990,7 @@ bool ArxGame::addPaks() {
 		g_resources->addFiles(base / "misc", "misc");
 		g_resources->addFiles(base / "sfx", "sfx");
 		g_resources->addFiles(base / "speech", "speech");
+		g_resources->addFiles(base / "shaders", "shaders");
 	}
 	
 	return true;
@@ -2055,6 +2058,8 @@ void ArxGame::renderLevel() {
 	
 }
 
+GLPostProcess * g_postProcess;
+
 void ArxGame::render() {
 	
 	SetActiveCamera(&g_playerCamera);
@@ -2107,22 +2112,46 @@ void ArxGame::render() {
 	if(g_debugTriggers[1])
 		g_hudRoot.bookIconGui.requestFX();
 	
+	
+	if(!g_postProcess) {
+		g_postProcess = new GLPostProcess(Vec2s(g_size.width(), g_size.height()));
+	}
+	
+	{
+		// TODO proper resizing
+		Vec2s screenSize = Vec2s(g_size.bottomRight());
+		if(g_postProcess->size() != screenSize) {
+			g_postProcess->resize(screenSize);
+		}
+	}
+	
+	
 	if(ARXmenu.mode() != Mode_InGame) {
 		benchmark::begin(benchmark::Menu);
 		ARX_Menu_Render();
 		GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat); // << NEEDED?
 	} else if(isInCinematic()) {
 		benchmark::begin(benchmark::Cinematic);
+		
+		g_postProcess->use();
+		
 		cinematicRender();
+		
+		g_postProcess->render(g_size);
 	} else {
 		benchmark::begin(cinematicBorder.CINEMA_DECAL != 0.f ? benchmark::Cutscene : benchmark::Scene);
 		updateLevel();
+		
+		g_postProcess->use();
+		
 		renderLevel();
 		#ifdef ARX_DEBUG
 		if(g_debugToggles[9]) {
 			renderLevel();
 		}
 		#endif
+		
+		g_postProcess->render(g_size);
 	}
 	
 	if(g_debugInfo != InfoPanelNone) {

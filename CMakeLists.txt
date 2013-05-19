@@ -1003,9 +1003,12 @@ set(GRAPHICS_SOURCES
 
 set(GRAPHICS_OPENGL_SOURCES
 	src/graphics/opengl/GLDebug.cpp
+	src/graphics/opengl/GLPostProcess.cpp
 	src/graphics/opengl/GLTexture.cpp
 	src/graphics/opengl/GLTextureStage.cpp
 	src/graphics/opengl/GLVertexBuffer.cpp
+	src/graphics/opengl/GLRenderTexture.cpp
+	src/graphics/opengl/GLProgram.cpp
 	src/graphics/opengl/OpenGLRenderer.cpp
 )
 
