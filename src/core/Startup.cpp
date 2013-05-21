@@ -26,6 +26,7 @@
 #include <set>
 #include <sstream>
 #include <algorithm>
+#include <cstdlib>
 
 #include "platform/Platform.h"
 
@@ -87,6 +88,8 @@ void ShowHelp() {
 	
 	std::cout << "Arx Libertatis Options:" << std::endl;
 	std::cout << cli << std::endl;
+	
+	std::exit(EXIT_SUCCESS);
 }
 
 ARX_PROGRAM_OPTION("help", "h", "Show supported options", &ShowHelp);

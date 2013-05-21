@@ -32,6 +32,7 @@ namespace fs {
 struct SystemPaths {
 	
 	struct InitParams {
+		
 		/*! An overwrite value to use for the user dir.
 		 *  If this is non-empty, standard search is skipped.
 		 *  If this does not exists, the user dir is left empty.
@@ -52,10 +53,11 @@ struct SystemPaths {
 		
 		bool findData;
 		bool displaySearchDirs;
-
+		
 		InitParams() : findData(true), displaySearchDirs(false) {}
+		
 	};
-
+	
 	path user; //!< Directory for saves and user-specific data files
 	path config; //!< Directory for config files
 	std::vector<path> data; //!< Directories for data files
@@ -65,7 +67,7 @@ struct SystemPaths {
 	 * command line, if any.
 	 */
 	ExitStatus init();
-
+	
 	/*!
 	 * Initialize the system resource paths using the specified parameters.
 	 * @note This version of init() will ignore arguments provided on the
@@ -89,8 +91,9 @@ struct SystemPaths {
 	 * @return an empty path or an existing file.
 	 */
 	path find(const path & resource) const;
-
+	
 private:
+	
 	void list(std::ostream & os, const std::string & forceUser = std::string(),
 	          const std::string & forceConfig = std::string(),
 	          const std::string & forceData = std::string());
