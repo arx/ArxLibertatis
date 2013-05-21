@@ -55,7 +55,7 @@
 namespace {
 
 struct ParsedOption {
-
+	
 	enum OptionType {
 		Invalid,
 		Long,
@@ -65,25 +65,26 @@ struct ParsedOption {
 	OptionType                  m_type;
 	std::string                 m_name;
 	std::list<std::string>      m_arguments;
-
+	
 	ParsedOption() : m_type(Invalid) {
 	}
-
+	
 	void reset() {
 		m_type = Invalid;
 		m_name.clear();
 		m_arguments.clear();
 	}
+	
 };
 
 } // anonymous namespace
 
 void ShowHelp() {
-
+	
 	// Register all program options in the command line interpreter
 	interpreter<std::string> cli;
 	BaseOption::registerAll(cli);
-
+	
 	std::cout << "Arx Libertatis Options:" << std::endl;
 	std::cout << cli << std::endl;
 }
@@ -91,21 +92,21 @@ void ShowHelp() {
 ARX_PROGRAM_OPTION("help", "h", "Show supported options", &ShowHelp);
 
 static ExitStatus parseCommandLine(int argc, char ** argv) {
-
+	
 	defineSystemDirectories(argv[0]);
-
+	
 	// Register all program options in the command line interpreter
 	interpreter<std::string> cli;
 	BaseOption::registerAll(cli);
-
+	
 	std::vector<std::string> args;
 	std::copy(argv+1, argv+argc+!argc, std::inserter(args, args.end()));
-		
+	
 	std::list<ParsedOption> allOptions;
 	ParsedOption currentOption;
-
+	
 	BOOST_FOREACH(std::string& token, args) {
-
+		
 		ParsedOption::OptionType newOptionType(ParsedOption::Invalid);
 		
 		if(boost::algorithm::starts_with(token, "--")) {                  // handle long options
@@ -120,16 +121,16 @@ static ExitStatus parseCommandLine(int argc, char ** argv) {
 			// ERROR: invalid command line
 			break;
 		}
-
+		
 		if(newOptionType != ParsedOption::Invalid) {
-
+			
 			if(currentOption.m_type != ParsedOption::Invalid) {
 				allOptions.push_back(currentOption);
 				currentOption.reset();
 			}
-
+			
 			currentOption.m_type = newOptionType;
-
+			
 			std::string::size_type p = token.find('=');
 			if(p != token.npos) {
 				currentOption.m_name = token.substr(0, p);
@@ -142,18 +143,17 @@ static ExitStatus parseCommandLine(int argc, char ** argv) {
 			} else {
 				currentOption.m_name = token.substr(0, p);
 			}
-
+			
 		}
 	}
-
+	
 	if(currentOption.m_type != ParsedOption::Invalid) {
 		allOptions.push_back(currentOption);
 		currentOption.reset();
 	}
-
+	
 	// Process all command line options received
 	try {
-
 		interpreter<std::string>::type_cast_t tc;
 		BOOST_FOREACH(const ParsedOption& option, allOptions) {
 			cli.invoke(option.m_name, option.m_arguments.begin(), option.m_arguments.end(), tc);
@@ -163,7 +163,7 @@ static ExitStatus parseCommandLine(int argc, char ** argv) {
 		ShowHelp();
 		return ExitFailure;
 	}
-
+	
 	return RunProgram;
 }
 
@@ -205,12 +205,12 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
 	
 	// Parse the command line and process options
 	ExitStatus status = parseCommandLine(argc, argv);
-
+	
 	// Setup user, config and data directories
 	if(status == RunProgram) {
 		status = fs::paths.init();
 	}
-
+	
 	if(status == RunProgram) {
 		
 		// Configure the crash report location
@@ -225,7 +225,7 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
 		}
 		
 		Time::init();
-
+		
 		// Start the game already!
 		LogInfo << "Starting " << version;
 		runGame();
