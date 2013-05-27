@@ -1782,15 +1782,14 @@ void DeclareEGInfo(float x, float z)
 	eg->nothing = 0;
 }
 
-void EERIEPOLY_Add_PolyIn(EERIE_BKG_INFO * eg, EERIEPOLY * ep)
-{
-	for (long i = 0; i < eg->nbpolyin; i++)
-	{
+void EERIEPOLY_Add_PolyIn(EERIE_BKG_INFO * eg, EERIEPOLY * ep) {
+	
+	for(long i = 0; i < eg->nbpolyin; i++) {
 		if (eg->polyin[i] == ep) return;
 	}
-
-	eg->polyin = (EERIEPOLY **)realloc(eg->polyin, sizeof(EERIEPOLY) * (eg->nbpolyin + 1));
-
+	
+	eg->polyin = (EERIEPOLY **)realloc(eg->polyin, sizeof(EERIEPOLY *) * (eg->nbpolyin + 1));
+	
 	eg->polyin[eg->nbpolyin] = ep;
 	eg->nbpolyin++;
 }
