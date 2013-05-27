@@ -28,7 +28,11 @@
 
 const char * getGLErrorString(GLenum error);
 
+#ifdef ARX_DEBUG
 #define CHECK_GL if(GLenum error = glGetError()) \
 	LogError << "GL error in " << __func__ << ": " << error << " = " << getGLErrorString(error)
+#else
+#define CHECK_GL
+#endif
 
 #endif // ARX_GRAPHICS_OPENGL_OPENGLUTIL_H
