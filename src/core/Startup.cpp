@@ -195,7 +195,7 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
 		Time::init();
 		
 		// 14: Start the game already!
-		LogInfo << "Starting " << version;
+		LogInfo << "Starting " << arx_version;
 		runGame();
 		
 	}

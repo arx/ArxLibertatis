@@ -22,7 +22,8 @@
 
 #include <string>
 
-extern const std::string version;
+extern const std::string arx_version;
+extern const std::string arx_release_codename;
 
 extern const int tbg_version_id;
 

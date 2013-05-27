@@ -3356,7 +3356,7 @@ void ShowTestText()
 {
 	char tex[256];
 
-	mainApp->OutputText(0, 16, version);
+	mainApp->OutputText(0, 16, arx_version);
 
 	sprintf(tex,"Level : %s", LastLoadedScene.string().c_str());
 	mainApp->OutputText( 0, 32, tex );

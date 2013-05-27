@@ -461,6 +461,12 @@ bool Menu2_Render() {
 	MACRO_MENU_PRINCIPALE(BUTTON_MENUMAIN_CREDITS,CREDITS,"system_menus_main_credits",0);
 	MACRO_MENU_PRINCIPALE(-1,QUIT,"system_menus_main_quit",0);
 #undef MACRO_MENU_PRINCIPALE
+		std::string version = arx_version;
+		if(!arx_release_codename.empty()) {
+			version += " \"";
+			version += arx_release_codename;
+			version += "\"";
+		}
 		float verPosX = RATIO_X(620) - hFontControls->getTextSize(version).x;
 		me = new CMenuElementText( -1, hFontControls, version, verPosX, RATIO_Y(80), lColor, 1.0f, NOP );
 		
