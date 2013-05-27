@@ -3608,225 +3608,186 @@ void ArxGame::ManageKeyMouse() {
 	if(bRestoreCoordMouse) {
 		DANAEMouse=GInput->getMousePosAbs();
 	}
-
+	
 	// Player/Eyeball Freelook Management
-	if (!BLOCK_PLAYER_CONTROLS)
-	{
+	if(!BLOCK_PLAYER_CONTROLS) {
+		
 		GetInventoryObj_INVENTORYUSE(&DANAEMouse);
-
-		if ((!(player.Interface & INTER_MAP )) || ((player.Interface & INTER_MAP ) && ((!(ARX_MOUSE_OVER & ARX_MOUSE_OVER_BOOK & (Book_Mode != BOOKMODE_MINIMAP))/*ARX_INTERFACE_MouseInBook()*/) || (Book_Mode == BOOKMODE_MINIMAP) || (Book_Mode == BOOKMODE_QUESTS) || (Book_Mode != -1)))
-			||
-			(player.Interface & INTER_COMBATMODE))
-		{
-			static int flPushTimeX[2]={0,0};
-			static int flPushTimeY[2]={0,0};
-			bool bKeySpecialMove=false;
-
-			if(!GInput->actionPressed(CONTROLS_CUST_STRAFE))
-			{
-
-				float fTime = arxtime.get_updated();
-
-				int	iTime = checked_range_cast<int>(fTime);
-
-				if(GInput->actionPressed(CONTROLS_CUST_TURNLEFT))
-				{
-					if(!flPushTimeX[0])
-					{
-						flPushTimeX[0]	=	iTime;
-					}
-
-					bKeySpecialMove=true;
+		
+		static int flPushTimeX[2] = { 0, 0 };
+		static int flPushTimeY[2] = { 0, 0 };
+		bool bKeySpecialMove=false;
+		
+		if(!GInput->actionPressed(CONTROLS_CUST_STRAFE)) {
+			float fTime = arxtime.get_updated();
+			int iTime = checked_range_cast<int>(fTime);
+			if(GInput->actionPressed(CONTROLS_CUST_TURNLEFT)) {
+				if(!flPushTimeX[0]) {
+					flPushTimeX[0] = iTime;
 				}
-				else flPushTimeX[0]=0;
-
-				if(GInput->actionPressed(CONTROLS_CUST_TURNRIGHT))
-				{
-					if(!flPushTimeX[1])
-					{
-						flPushTimeX[1]	=	iTime;
-					}
-
-					bKeySpecialMove=true;
-				}
-				else flPushTimeX[1]=0;
+				bKeySpecialMove = true;
+			} else {
+				flPushTimeX[0] = 0;
 			}
-
-			if (USE_PLAYERCOLLISIONS)
-			{
-
-				float fTime = arxtime.get_updated();
-				int iTime = checked_range_cast<int>(fTime);
-
-				if(GInput->actionPressed(CONTROLS_CUST_LOOKUP))
-				{
-					if(!flPushTimeY[0])
-					{
-						flPushTimeY[0]	=	iTime;
-					}
-
-					bKeySpecialMove=true;
+			if(GInput->actionPressed(CONTROLS_CUST_TURNRIGHT)) {
+				if(!flPushTimeX[1]) {
+					flPushTimeX[1] = iTime;
 				}
-				else flPushTimeY[0]=0;
-
-				if(GInput->actionPressed(CONTROLS_CUST_LOOKDOWN))
-				{
-					if(!flPushTimeY[1])
-					{
-						flPushTimeY[1]	=	iTime;
-					}
-
-					bKeySpecialMove=true;
-				}
-				else flPushTimeY[1]=0;
+				bKeySpecialMove = true;
+			} else {
+				flPushTimeX[1] = 0;
 			}
-
-			if(bKeySpecialMove)
-			{
-				int iAction=0;
-
-				if(	flPushTimeX[0]||
-					flPushTimeX[1] )
-				{
-					if(flPushTimeX[0]<flPushTimeX[1]) mouseDiffX=10;
-					else mouseDiffX=-10;
-
-					iAction|=1;
-				}
-
-				if(	flPushTimeY[0]||
-					flPushTimeY[1] )
-				{
-					if(flPushTimeY[0]<flPushTimeY[1]) mouseDiffY=10;
-					else mouseDiffY=-10;
-
-					iAction|=2;
-				}
-
-				if(!(iAction&1)) mouseDiffX=0;
-
-				if(!(iAction&2)) mouseDiffY=0;
-			}
-			else
-			{
-				if (bRenderInCursorMode)
-				{
-					Vec2s mousePosRel = GInput->getMousePosRel();
-					if(	(DANAEMouse.x==(DANAESIZX-1))&&
-							(mousePosRel.x > 8) )
-					{
-						mouseDiffY=0;
-						mouseDiffX=mousePosRel.x;
-						bKeySpecialMove=true;
-					}
-					else
-					{
-						if( (!DANAEMouse.x)&&
-								(mousePosRel.x < -8))
-						{
-							mouseDiffY=0;
-							mouseDiffX=mousePosRel.x;
-							bKeySpecialMove=true;
-						}
-					}
-
-					if(	(DANAEMouse.y==(DANAESIZY-1))&&
-						    (mousePosRel.y > 8))
-					{
-						mouseDiffY=mousePosRel.y;
-						mouseDiffX=0;
-						bKeySpecialMove=true;
-					}
-					else
-					{
-						if(	(!DANAEMouse.y)&&
-							    (mousePosRel.y < -8))
-						{
-							mouseDiffY=mousePosRel.y;
-							mouseDiffX=0;
-							bKeySpecialMove=true;
-						}
-					}
-				}
-			}
-
-			if(GInput->actionPressed(CONTROLS_CUST_CENTERVIEW))
-			{
-				eyeball.angle.a=eyeball.angle.g=0.f;
-				player.desiredangle.a=player.desiredangle.g=player.angle.a=player.angle.g=0.f;
-			}
-
-			float fd = (((float)GInput->getMouseSensitivity()) + 1.f) * 0.1f * ((640.f / (float)DANAESIZX));
-			if (fd > 200) {
-				fd=200;
-			}			
-
-			fd *= ((float)DANAESIZX) * ( 1.0f / 640 ); 
-
-			if ((eyeball.exist==2) && (PLAYER_MOUSELOOK_ON||bKeySpecialMove))
-			{
-				if (mouseDiffY!=0)
-				{
-					float ia=((float)mouseDiffY*( 1.0f / 5 ))*fd;
-
-					if (INVERTMOUSE) ia=-ia;
-
-					if (eyeball.angle.a<70.f)
-					{
-						if (eyeball.angle.a+ia<70.f) eyeball.angle.a+=ia;
-					}
-					else if (eyeball.angle.a>300.f)
-					{
-						if (eyeball.angle.a+ia>300.f) eyeball.angle.a+=ia;
-					}
-
-					eyeball.angle.a=MAKEANGLE(eyeball.angle.a);
-				}
-
-				if (mouseDiffX!=0)
-				{
-					float ib=((float)mouseDiffX*( 1.0f / 5 ))*fd;
-
-					eyeball.angle.b=MAKEANGLE(eyeball.angle.b-ib);
-				}
-			}
-			else if (PLAYER_MOUSELOOK_ON || bKeySpecialMove)
-				if (ARXmenu.currentmode != AMCM_NEWQUEST)
-					{
-					if ((mouseDiffY != 0))
-						{
-							float ia = ((float)mouseDiffY * ( 1.0f / 5 ) * fd);
-
-							if ((entities.player()) && EEfabs(ia)>2.f) entities.player()->lastanimtime=0;
-
-							if (INVERTMOUSE) ia=-ia;
-
-							float iangle=player.angle.a;
-
-							player.desiredangle.a=player.angle.a;
-							player.desiredangle.a+=ia;
-							player.desiredangle.a=MAKEANGLE(player.desiredangle.a);
-
-							if ((player.desiredangle.a>=74.9f) && (player.desiredangle.a<=301.f))
-							{
-								if (iangle<75.f) player.desiredangle.a=74.9f; //69
-								else player.desiredangle.a=301.f;
-							}
-
-						}
-
-					if ((mouseDiffX != 0))
-						{
-							float ib = ((float)mouseDiffX * ( 1.0f / 5 ) * fd); 
-
-							if (ib!=0.f) player.Current_Movement|=PLAYER_ROTATE;
-
-							player.desiredangle.b=player.angle.b;
-							player.desiredangle.b=MAKEANGLE(player.desiredangle.b-ib);
-							PLAYER_ROTATION=ib;
-						}
-				}
 		}
+		
+		if(USE_PLAYERCOLLISIONS) {
+			float fTime = arxtime.get_updated();
+			int iTime = checked_range_cast<int>(fTime);
+			if(GInput->actionPressed(CONTROLS_CUST_LOOKUP)) {
+				if(!flPushTimeY[0]) {
+					flPushTimeY[0] = iTime;
+				}
+				bKeySpecialMove = true;
+			} else {
+				flPushTimeY[0] = 0;
+			}
+			if(GInput->actionPressed(CONTROLS_CUST_LOOKDOWN)) {
+				if(!flPushTimeY[1]) {
+					flPushTimeY[1] = iTime;
+				}
+				bKeySpecialMove = true;
+			} else {
+				flPushTimeY[1] = 0;
+			}
+		}
+		
+		if(bKeySpecialMove) {
+			
+			int iAction = 0;
+			if(flPushTimeX[0] || flPushTimeX[1]) {
+				if(flPushTimeX[0] < flPushTimeX[1]) {
+					mouseDiffX = 10;
+				} else {
+					mouseDiffX = -10;
+				}
+				iAction |= 1;
+			}
+			if(flPushTimeY[0] || flPushTimeY[1]) {
+				if(flPushTimeY[0] < flPushTimeY[1]) {
+					mouseDiffY = 10;
+				} else {
+					mouseDiffY = -10;
+				}
+				iAction |= 2;
+			}
+			if(!(iAction & 1)) {
+				mouseDiffX = 0;
+			}
+			if(!(iAction & 2)) {
+				mouseDiffY = 0;
+			}
+			
+		} else {
+			
+			if(bRenderInCursorMode) {
+				Vec2s mousePosRel = GInput->getMousePosRel();
+				if(DANAEMouse.x == DANAESIZX - 1 && mousePosRel.x > 8) {
+					mouseDiffY = 0;
+					mouseDiffX = mousePosRel.x;
+					bKeySpecialMove = true;
+				} else if(DANAEMouse.x == 0 && mousePosRel.x < -8) {
+					mouseDiffY = 0;
+					mouseDiffX = mousePosRel.x;
+					bKeySpecialMove = true;
+				}
+				if(DANAEMouse.y == DANAESIZY - 1 && mousePosRel.y > 8) {
+					mouseDiffY = mousePosRel.y;
+					mouseDiffX = 0;
+					bKeySpecialMove = true;
+				} else if(DANAEMouse.y == 0 && mousePosRel.y < -8) {
+					mouseDiffY = mousePosRel.y;
+					mouseDiffX = 0;
+					bKeySpecialMove = true;
+				}
+			}
+			
+		}
+		
+		if(GInput->actionPressed(CONTROLS_CUST_CENTERVIEW))
+		{
+			eyeball.angle.a=eyeball.angle.g=0.f;
+			player.desiredangle.a=player.desiredangle.g=player.angle.a=player.angle.g=0.f;
+		}
+
+		float fd = (((float)GInput->getMouseSensitivity()) + 1.f) * 0.1f * ((640.f / (float)DANAESIZX));
+		if (fd > 200) {
+			fd=200;
+		}			
+
+		fd *= ((float)DANAESIZX) * ( 1.0f / 640 ); 
+
+		if ((eyeball.exist==2) && (PLAYER_MOUSELOOK_ON||bKeySpecialMove))
+		{
+			if (mouseDiffY!=0)
+			{
+				float ia=((float)mouseDiffY*( 1.0f / 5 ))*fd;
+
+				if (INVERTMOUSE) ia=-ia;
+
+				if (eyeball.angle.a<70.f)
+				{
+					if (eyeball.angle.a+ia<70.f) eyeball.angle.a+=ia;
+				}
+				else if (eyeball.angle.a>300.f)
+				{
+					if (eyeball.angle.a+ia>300.f) eyeball.angle.a+=ia;
+				}
+
+				eyeball.angle.a=MAKEANGLE(eyeball.angle.a);
+			}
+
+			if (mouseDiffX!=0)
+			{
+				float ib=((float)mouseDiffX*( 1.0f / 5 ))*fd;
+
+				eyeball.angle.b=MAKEANGLE(eyeball.angle.b-ib);
+			}
+		}
+		else if (PLAYER_MOUSELOOK_ON || bKeySpecialMove)
+			if (ARXmenu.currentmode != AMCM_NEWQUEST)
+				{
+				if ((mouseDiffY != 0))
+					{
+						float ia = ((float)mouseDiffY * ( 1.0f / 5 ) * fd);
+
+						if ((entities.player()) && EEfabs(ia)>2.f) entities.player()->lastanimtime=0;
+
+						if (INVERTMOUSE) ia=-ia;
+
+						float iangle=player.angle.a;
+
+						player.desiredangle.a=player.angle.a;
+						player.desiredangle.a+=ia;
+						player.desiredangle.a=MAKEANGLE(player.desiredangle.a);
+
+						if ((player.desiredangle.a>=74.9f) && (player.desiredangle.a<=301.f))
+						{
+							if (iangle<75.f) player.desiredangle.a=74.9f; //69
+							else player.desiredangle.a=301.f;
+						}
+
+					}
+
+				if ((mouseDiffX != 0))
+					{
+						float ib = ((float)mouseDiffX * ( 1.0f / 5 ) * fd); 
+
+						if (ib!=0.f) player.Current_Movement|=PLAYER_ROTATE;
+
+						player.desiredangle.b=player.angle.b;
+						player.desiredangle.b=MAKEANGLE(player.desiredangle.b-ib);
+						PLAYER_ROTATION=ib;
+					}
+			}
 	}
 
 	{
@@ -5388,10 +5349,13 @@ void ARX_INTERFACE_ManageOpenedBook()
 					}
 				}
 				else DrawBookInterfaceItem(ITC.Get("current_10"), 104.f, 331.f);
-			}		
-
-			if (Book_Mode==1) Book_SpellPage=Book_Page;
-			else if (Book_Mode==2) Book_MapPage=Book_Page;
+			}
+			
+			if(Book_Mode == BOOKMODE_SPELLS) {
+				Book_SpellPage = Book_Page;
+			} else if(Book_Mode == BOOKMODE_MINIMAP) {
+				Book_MapPage = Book_Page;
+			}
 		}
 
 		bookclick.x=-1;
