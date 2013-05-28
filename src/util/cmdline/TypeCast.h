@@ -31,8 +31,8 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef UTIL_CMDLINE_TYPECAST_H
-#define UTIL_CMDLINE_TYPECAST_H
+#ifndef ARX_UTIL_CMDLINE_TYPECAST_H
+#define ARX_UTIL_CMDLINE_TYPECAST_H
 
 #include <boost/lexical_cast.hpp>
 
@@ -46,4 +46,4 @@ struct type_cast {
 	}
 };
 
-#endif // UTIL_CMDLINE_TYPECAST_H
+#endif // ARX_UTIL_CMDLINE_TYPECAST_H

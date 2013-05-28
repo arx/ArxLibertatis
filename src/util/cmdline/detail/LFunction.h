@@ -31,8 +31,8 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef UTIL_CMDLINE_DETAIL_LFUNCTION_H
-#define UTIL_CMDLINE_DETAIL_LFUNCTION_H
+#ifndef ARX_UTIL_CMDLINE_DETAIL_LFUNCTION_H
+#define ARX_UTIL_CMDLINE_DETAIL_LFUNCTION_H
 
 #include <boost/config.hpp>
 #include <boost/preprocessor/cat.hpp>
@@ -78,4 +78,4 @@ lfunction<FnSign,Function> make_lfunction(Function const& fn) {
 #undef BOOST_COMMAND_LINE_MAX_FUNCTION_ARGS
 #undef BOOST_PP_ITERATION_LIMITS
 
-#endif // UTIL_CMDLINE_DETAIL_LFUNCTION_H
+#endif // ARX_UTIL_CMDLINE_DETAIL_LFUNCTION_H

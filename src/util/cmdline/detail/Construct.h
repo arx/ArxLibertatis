@@ -31,8 +31,8 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef UTIL_CMDLINE_DETAIL_CONSTRUCT_H
-#define UTIL_CMDLINE_DETAIL_CONSTRUCT_H
+#ifndef ARX_UTIL_CMDLINE_DETAIL_CONSTRUCT_H
+#define ARX_UTIL_CMDLINE_DETAIL_CONSTRUCT_H
 
 #include "util/cmdline/CommandLineException.h"
 
@@ -74,4 +74,4 @@ optional<T> construct(SourceType & arg, optional<T> const* = 0) {
 	return ret;
 }
 
-#endif // UTIL_CMDLINE_DETAIL_CONSTRUCT_H
+#endif // ARX_UTIL_CMDLINE_DETAIL_CONSTRUCT_H

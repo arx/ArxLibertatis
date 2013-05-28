@@ -47,7 +47,7 @@ struct arg_impl<A,N> {
 	explicit arg_impl(T const& t) : BOOST_PP_CAT(arg,N)(t) {
 	}
 
-	arg_impl(self_t const& rh) : BOOST_PP_CAT(arg,N)(rh.BOOST_PP_CAT(arg,N)) {
+	explicit arg_impl(self_t const& rh) : BOOST_PP_CAT(arg,N)(rh.BOOST_PP_CAT(arg,N)) {
 	}
 };
 

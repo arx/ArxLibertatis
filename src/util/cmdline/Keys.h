@@ -31,8 +31,8 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef UTIL_CMDLINE_KEYS_H
-#define UTIL_CMDLINE_KEYS_H
+#ifndef ARX_UTIL_CMDLINE_KEYS_H
+#define ARX_UTIL_CMDLINE_KEYS_H
 
 #include <vector>
 
@@ -86,4 +86,4 @@ private:
 	size_t     m_argCount;
 };
 
-#endif // UTIL_CMDLINE_KEYS_H
+#endif // ARX_UTIL_CMDLINE_KEYS_H

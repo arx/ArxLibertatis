@@ -31,8 +31,8 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef UTIL_CMDLINE_DETAIL_LEXICALCALL_H
-#define UTIL_CMDLINE_DETAIL_LEXICALCALL_H
+#ifndef ARX_UTIL_CMDLINE_DETAIL_LEXICALCALL_H
+#define ARX_UTIL_CMDLINE_DETAIL_LEXICALCALL_H
 
 #include <boost/function.hpp>
 #include "util/cmdline/detail/ArgsAdapter.h"
@@ -94,7 +94,7 @@ private:
 	struct proxy_function {
 		Fn fn;
 
-		proxy_function(Fn const& fn) : fn(fn) {
+		explicit proxy_function(Fn const& fn) : fn(fn) {
 		}
 
 		result_type operator() (argument_type args) { //TODO: add  : if(!is_reference<argument_type>)   argument_type = reference<argument_type>
@@ -123,14 +123,14 @@ class lexical_call_t<_Result(_ValueType,_ValueType,_TypeCast)> {
 	typedef _TypeCast type_cast_t;
 
 	struct Args {
-		type_cast_t & cast_;
+		type_cast_t & m_cast;
 
-		Args(type_cast_t & cast_) : cast_(cast_) {
+		explicit Args(type_cast_t& cast) : m_cast(cast) {
 		}
 
 		template<typename R>
 		R front() {
-			return cast_.template cast<R>(v_front());
+			return m_cast.template cast<R>(v_front());
 		}
 
 		virtual _ValueType v_front() const = 0;
@@ -146,36 +146,36 @@ class lexical_call_t<_Result(_ValueType,_ValueType,_TypeCast)> {
 
 	template<typename Iterator>
 	struct VArgs: Args {
-		Iterator begin, end;
+		Iterator m_begin, m_end;
 
 		VArgs(type_cast_t & cast, Iterator begin, Iterator end) 
 			: Args(cast)
-			, begin(begin)
-			, end(end) {
+			, m_begin(begin)
+			, m_end(end) {
 		}
 
 		virtual _ValueType v_front() const {
-			return *begin;
+			return *m_begin;
 		}
 
 		virtual void pop() {
-			++begin;
+			++m_begin;
 		}
 
 		virtual bool empty() const {
-			return begin == end;
+			return m_begin == m_end;
 		}
 	};
 
 	typedef lexical_call_t<_Result(Args&)> impl_t;
 	typedef lexical_call_t self_t;
-	impl_t  impl;
+	impl_t  m_impl;
 
-	explicit lexical_call_t(impl_t const& impl) : impl(impl) {
+	explicit lexical_call_t(impl_t const& impl) : m_impl(impl) {
 	}
 
 public:
-	lexical_call_t() : impl() {
+	lexical_call_t() : m_impl() {
 	}
 
 	template<typename FnSign, typename Function>
@@ -196,14 +196,14 @@ public:
 	template<typename Iterator>
 	_Result operator() (Iterator begin, Iterator end, _TypeCast& cast) {
 		VArgs<Iterator> args(cast,begin,end);
-		impl(args); 
+		m_impl(args); 
 	}
 
 	template<typename Iterator>
 	_Result operator() (Iterator begin, Iterator end, _TypeCast& cast) const {
 		VArgs<Iterator> args(cast,begin,end);
-		impl(args); 
+		m_impl(args); 
 	}
 };
 
-#endif // UTIL_CMDLINE_DETAIL_LEXICALCALL_H
+#endif // ARX_UTIL_CMDLINE_DETAIL_LEXICALCALL_H

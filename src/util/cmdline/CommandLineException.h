@@ -31,8 +31,8 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef UTIL_CMDLINE_COMMANDLINEEXCEPTION_H
-#define UTIL_CMDLINE_COMMANDLINEEXCEPTION_H
+#ifndef ARX_UTIL_CMDLINE_COMMANDLINEEXCEPTION_H
+#define ARX_UTIL_CMDLINE_COMMANDLINEEXCEPTION_H
 
 #include <exception>
 #include <cassert>
@@ -48,7 +48,7 @@ public:
 		cmd_not_found,
 	} exception_code;
 
-	command_line_exception(exception_code c) : m_code(c) {
+	explicit command_line_exception(exception_code c) : m_code(c) {
 	}
 
 	virtual const char *what( ) const throw( ) {
@@ -85,4 +85,4 @@ protected:
 	}
 };
 
-#endif //UTIL_CMDLINE_COMMANDLINEEXCEPTION_H
+#endif //ARX_UTIL_CMDLINE_COMMANDLINEEXCEPTION_H

@@ -31,8 +31,8 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef UTIL_CMDLINE_ELLIPSIS_H
-#define UTIL_CMDLINE_ELLIPSIS_H
+#ifndef ARX_UTIL_CMDLINE_ELLIPSIS_H
+#define ARX_UTIL_CMDLINE_ELLIPSIS_H
 
 #include <vector>
 
@@ -117,4 +117,4 @@ public:
 	}
 };
 
-#endif // UTIL_CMDLINE_ELLIPSIS_H
+#endif // ARX_UTIL_CMDLINE_ELLIPSIS_H

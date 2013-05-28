@@ -31,8 +31,8 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef UTIL_CMDLINE_INTERPRETER_H
-#define UTIL_CMDLINE_INTERPRETER_H
+#ifndef ARX_UTIL_CMDLINE_INTERPRETER_H
+#define ARX_UTIL_CMDLINE_INTERPRETER_H
 
 #include "util/cmdline/detail/Interpreter.h"
 #include "util/cmdline/Keys.h"
@@ -164,7 +164,7 @@ public:
 	/**
 	 * Constructor
 	 */
-	interpreter(interpreter const& rh) : super_t(rh) {
+	explicit interpreter(interpreter const& rh) : super_t(rh) {
 	}
 
 	/**
@@ -279,4 +279,4 @@ std::basic_ostream<CharType>& operator << (std::basic_ostream<CharType>& os,
 }
 
 
-#endif // UTIL_CMDLINE_INTERPRETER_H
+#endif // ARX_UTIL_CMDLINE_INTERPRETER_H

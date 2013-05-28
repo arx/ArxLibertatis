@@ -31,8 +31,8 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef UTIL_CMDLINE_OPTIONAL_H
-#define UTIL_CMDLINE_OPTIONAL_H
+#ifndef ARX_UTIL_CMDLINE_OPTIONAL_H
+#define ARX_UTIL_CMDLINE_OPTIONAL_H
 
 /**
  * This class is a kind of pointer storage.
@@ -55,7 +55,7 @@ struct optional {
 	explicit optional(U const& rh) : m_ptr(new T(rh)) {
 	}
 
-	optional(optional const& rh)
+	explicit optional(optional const& rh)
 		: m_ptr(rh.m_ptr ? new T(*rh.m_ptr) : 0) {
 	}
 
@@ -140,4 +140,4 @@ template<
 bool operator == ( optional<T> const& lh , bool rh)
 { return rh == lh; }
 
-#endif // UTIL_CMDLINE_OPTIONAL_H
+#endif // ARX_UTIL_CMDLINE_OPTIONAL_H

@@ -31,8 +31,8 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef UTIL_CMDLINE_DETAIL_ARGSADAPTER_H
-#define UTIL_CMDLINE_DETAIL_ARGSADAPTER_H
+#ifndef ARX_UTIL_CMDLINE_DETAIL_ARGSADAPTER_H
+#define ARX_UTIL_CMDLINE_DETAIL_ARGSADAPTER_H
 
 #include <boost/config.hpp>
 #include <boost/preprocessor/cat.hpp>
@@ -60,17 +60,17 @@ namespace detail
 	public:
 		template<typename SourceType>
 		explicit args_adapter(SourceType& source)
-			: impl(source) {
+			: m_impl(source) {
 		}
 
 		template<int N>
 		typename type_impl<impl_t,N>::result& get() {
 			typedef typename type_impl<impl_t,N>::result result;
-			return get_t<N>::template get<result&>(impl); 
+			return get_t<N>::template get<result&>(m_impl); 
 		}
 
 	private:
-		impl_t impl;
+		impl_t m_impl;
 	};
 
 	template<typename A, int>
@@ -88,4 +88,4 @@ namespace detail
 
 } //namespace detail
 
-#endif // UTIL_CMDLINE_DETAIL_ARGSADAPTER_H
+#endif // ARX_UTIL_CMDLINE_DETAIL_ARGSADAPTER_H
