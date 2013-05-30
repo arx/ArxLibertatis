@@ -5784,11 +5784,8 @@ void ARX_SPELLS_Update()
 					ARX_SOUND_PlaySFX(SND_SPELL_ARMOR_END, &entities[spells[i].target]->pos);					
 					Entity * io=entities[spells[i].target];
 
-					if (spells[i].longinfo)
-					{
-						io->halo.flags&=~HALO_ACTIVE;
-						ARX_HALO_SetToNative(io);
-					}
+					if (ValidIONum(spells[i].target))
+						ARX_HALO_SetToNative(entities[spells[i].target]);
 
 					ARX_SPELLS_RemoveSpellOn(spells[i].target,i);
 				}
