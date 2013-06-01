@@ -33,43 +33,42 @@
 
 #ifdef BOOST_PP_IS_ITERATING
 
-namespace detail
-{
+namespace detail {
 
-	template<typename R BOOST_PP_COMMA_IF(N) BOOST_PP_ENUM_PARAMS(N, typename ARG)>
-	struct lfn_invoker<R(BOOST_PP_ENUM_PARAMS(N,ARG))> {
-		typedef R result_type;
-		static const size_t argument_count = N;
+template<typename R BOOST_PP_COMMA_IF(N) BOOST_PP_ENUM_PARAMS(N, typename ARG)>
+struct lfn_invoker<R(BOOST_PP_ENUM_PARAMS(N,ARG))> {
+	typedef R result_type;
+	static const size_t argument_count = N;
+	
+	template<typename Function, typename Args>
+	R operator()(Function & function, Args & args) const {
+		
+		#define BOOST_COMMAND_LINE_LFN_INVOKER(unused_1, i, unused_2) \
+			BOOST_PP_COMMA_IF(i) args.template get<i>()
+		
+		return function(BOOST_PP_REPEAT_FROM_TO(0, N, BOOST_COMMAND_LINE_LFN_INVOKER, ~));
+		
+		#undef BOOST_COMMAND_LINE_LFN_INVOKER
+	}
+};
 
-		template<typename Function, typename Args>
-		R operator()(Function & function, Args & args) const {
-
-			#define BOOST_COMMAND_LINE_LFN_INVOKER(unused_1, i, unused_2) \
-				BOOST_PP_COMMA_IF(i) args.template get<i>()
-
-			return function(BOOST_PP_REPEAT_FROM_TO(0, N, BOOST_COMMAND_LINE_LFN_INVOKER, ~));
-
-	#undef BOOST_COMMAND_LINE_LFN_INVOKER
-		}
-	};
-
-	template<BOOST_PP_ENUM_PARAMS(N, typename ARG)>
-	struct lfn_invoker<void(BOOST_PP_ENUM_PARAMS(N,ARG))> {
-		typedef void result_type;
-		static const size_t argument_count = N;
-
-		template<typename Function, typename Args>
-		void operator()(Function & function, Args & args) const {
-
-			#define BOOST_COMMAND_LINE_LFN_INVOKER(unused_1, i, unused_2) \
-				BOOST_PP_COMMA_IF(i) args.template get<i>()
-
-			function(BOOST_PP_REPEAT_FROM_TO(0, N, BOOST_COMMAND_LINE_LFN_INVOKER, ~));
-
-	#undef BOOST_COMMAND_LINE_LFN_INVOKER
-		}
-	};
+template<BOOST_PP_ENUM_PARAMS(N, typename ARG)>
+struct lfn_invoker<void(BOOST_PP_ENUM_PARAMS(N,ARG))> {
+	typedef void result_type;
+	static const size_t argument_count = N;
+	
+	template<typename Function, typename Args>
+	void operator()(Function & function, Args & args) const {
+		
+		#define BOOST_COMMAND_LINE_LFN_INVOKER(unused_1, i, unused_2) \
+			BOOST_PP_COMMA_IF(i) args.template get<i>()
+		
+		function(BOOST_PP_REPEAT_FROM_TO(0, N, BOOST_COMMAND_LINE_LFN_INVOKER, ~));
+		
+		#undef BOOST_COMMAND_LINE_LFN_INVOKER
+	}
+};
 
 } // namespace detail
 
-#endif //BOOST_PP_IS_ITERATING
+#endif // BOOST_PP_IS_ITERATING

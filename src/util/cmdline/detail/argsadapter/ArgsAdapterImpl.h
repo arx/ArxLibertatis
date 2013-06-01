@@ -68,4 +68,4 @@ struct args_adapter_impl<R(BOOST_PP_ENUM_PARAMS(N, A))>
 	: args_adapter_impl<void(BOOST_PP_ENUM_PARAMS(N, A))> {
 };
 
-#endif //BOOST_PP_IS_ITERATING
+#endif // BOOST_PP_IS_ITERATING

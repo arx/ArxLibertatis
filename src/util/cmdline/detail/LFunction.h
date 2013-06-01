@@ -41,8 +41,7 @@
 #include <boost/preprocessor/repeat_from_to.hpp>
 #include <boost/preprocessor/iteration/iterate.hpp>
 
-namespace detail
-{
+namespace detail {
 	template<typename FnSign>
 	struct lfn_invoker;
 } // namespace detail
@@ -51,12 +50,12 @@ template<typename FnSign, typename Function>
 struct lfunction {
 	typedef FnSign                          signature;
 	typedef detail::lfn_invoker<signature>  lfn_invoker;
-
+	
 	Function function;
-
+	
 	explicit lfunction(Function const& function) : function(function) {
 	}
-
+	
 	template<typename Args>
 	typename lfn_invoker::result_type operator()(Args & args) {
 		return lfn_invoker()(function,args);

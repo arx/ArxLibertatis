@@ -38,12 +38,13 @@
 
 /// default strategy for types convertation
 struct type_cast {
-
+	
 	/// converts input parameter to value which type is Dest
 	template<typename Dest, typename Source>
 	Dest cast(Source const& str) const {
 		return boost::lexical_cast<Dest>(str);
 	}
+	
 };
 
 #endif // ARX_UTIL_CMDLINE_TYPECAST_H

@@ -50,9 +50,9 @@
  */
 template<typename T, typename Alloc = typename std::vector<T>::allocator_type>
 class ellipsis : std::vector<T, Alloc> {
-
+	
 	typedef std::vector<T> super_t;
-
+	
 public:
 	typedef typename super_t::allocator_type allocator_type;
 	typedef typename super_t::size_type size_type;
@@ -66,7 +66,7 @@ public:
 	typedef typename super_t::const_iterator const_iterator;
 	typedef typename super_t::reverse_iterator reverse_iterator;
 	typedef typename super_t::const_reverse_iterator const_reverse_iterator;
-
+	
 	using super_t::reserve;
 	using super_t::capacity;
 	using super_t::begin;
@@ -77,41 +77,41 @@ public:
 	using super_t::size;
 	using super_t::max_size;
 	using super_t::empty;
-
+	
 	using super_t::at;
 	using super_t::operator[];
 	using super_t::front;
 	using super_t::back;
 	using super_t::push_back;
 	using super_t::pop_back;
-
+	
 	using super_t::assign;
 	using super_t::insert;
 	using super_t::erase;
 	using super_t::clear;
 	using super_t::get_allocator;
-
-
+	
+	
 	explicit ellipsis(allocator_type const& a = allocator_type()) : super_t(a) {
 	}
-
+	
 	explicit ellipsis(size_type s, value_type const& v = value_type(), const allocator_type& a = allocator_type())
 		: super_t(s,v,a) {
 	}
-
+	
 	template<typename Iter>
 	ellipsis(Iter b, Iter e, const allocator_type& a = allocator_type())
 		: super_t(b,e,a) {
 	}
-
+	
 	ellipsis(const ellipsis& rh) : super_t(rh) {
 	}
-
+	
 	ellipsis& operator=(const ellipsis& rh) {
 		static_cast<super_t&>(*this) = rh;
 		return *this;
 	}
-
+	
 	void swap(ellipsis& rh) {
 		super_t::swap(rh);
 	}

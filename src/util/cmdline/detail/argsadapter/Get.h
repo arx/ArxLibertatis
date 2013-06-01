@@ -39,4 +39,4 @@ struct get_t<N> {
 	static R get(T & t) { return t.BOOST_PP_CAT(arg,N); }
 };
 
-#endif //BOOST_PP_IS_ITERATING
+#endif // BOOST_PP_IS_ITERATING

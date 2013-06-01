@@ -47,13 +47,13 @@ public:
 		already_exists,
 		cmd_not_found,
 	} exception_code;
-
+	
 	explicit command_line_exception(exception_code c) : m_code(c) {
 	}
-
+	
 	virtual const char *what( ) const throw( ) {
 		const char *msg = "unknown error";
-
+		
 		switch(m_code) {
 		case no_exception:
 			msg = "uninitialized exception";
@@ -76,13 +76,13 @@ public:
 		}
 		return msg;
 	}
-
+	
 public:
 	exception_code m_code;
-
+	
 protected:
 	command_line_exception() : m_code(no_exception) {
 	}
 };
 
-#endif //ARX_UTIL_CMDLINE_COMMANDLINEEXCEPTION_H
+#endif // ARX_UTIL_CMDLINE_COMMANDLINEEXCEPTION_H

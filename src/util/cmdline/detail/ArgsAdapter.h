@@ -42,50 +42,51 @@
 
 #include "util/cmdline/detail/Construct.h"
 
-namespace detail
-{
-	template<typename FS>
-	struct args_adapter_impl;
+namespace detail {
 
-	template<typename T, int>
-	struct type_impl;
+template<typename FS>
+struct args_adapter_impl;
 
-	template<int>
-	struct get_t;
+template<typename T, int>
+struct type_impl;
 
-	template<typename FS>
-	struct args_adapter {
-		typedef args_adapter_impl<FS> impl_t;
+template<int>
+struct get_t;
 
-	public:
-		template<typename SourceType>
-		explicit args_adapter(SourceType& source)
-			: m_impl(source) {
-		}
+template<typename FS>
+struct args_adapter {
+	
+	typedef args_adapter_impl<FS> impl_t;
+	
+public:
+	template<typename SourceType>
+	explicit args_adapter(SourceType& source)
+		: m_impl(source) {
+	}
+	
+	template<int N>
+	typename type_impl<impl_t,N>::result& get() {
+		typedef typename type_impl<impl_t,N>::result result;
+		return get_t<N>::template get<result&>(m_impl); 
+	}
+	
+private:
+	impl_t m_impl;
+};
 
-		template<int N>
-		typename type_impl<impl_t,N>::result& get() {
-			typedef typename type_impl<impl_t,N>::result result;
-			return get_t<N>::template get<result&>(m_impl); 
-		}
+template<typename A, int>
+struct arg_impl;
 
-	private:
-		impl_t m_impl;
-	};
+#define BOOST_PP_FILENAME_1                  "util/cmdline/detail/argsadapter/Preprocessed.h"
+#define BOOST_COMMAND_LINE_MAX_FUNCTION_ARGS 10
+#define BOOST_PP_ITERATION_LIMITS            (0, BOOST_COMMAND_LINE_MAX_FUNCTION_ARGS)
 
-	template<typename A, int>
-	struct arg_impl;
+#include BOOST_PP_ITERATE()
 
-	#define BOOST_PP_FILENAME_1                  "util/cmdline/detail/argsadapter/Preprocessed.h"
-	#define BOOST_COMMAND_LINE_MAX_FUNCTION_ARGS 10
-	#define BOOST_PP_ITERATION_LIMITS            (0, BOOST_COMMAND_LINE_MAX_FUNCTION_ARGS)
+#undef BOOST_PP_FILENAME_1
+#undef BOOST_COMMAND_LINE_MAX_FUNCTION_ARGS
+#undef BOOST_PP_ITERATION_LIMITS
 
-	#include BOOST_PP_ITERATE()
-
-	#undef BOOST_PP_FILENAME_1
-	#undef BOOST_COMMAND_LINE_MAX_FUNCTION_ARGS
-	#undef BOOST_PP_ITERATION_LIMITS
-
-} //namespace detail
+} // namespace detail
 
 #endif // ARX_UTIL_CMDLINE_DETAIL_ARGSADAPTER_H

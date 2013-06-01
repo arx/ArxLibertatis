@@ -8,7 +8,6 @@
 
 #ifdef BOOST_PP_IS_ITERATING
 
-
 #define N BOOST_PP_ITERATION()
 
 #include "util/cmdline/detail/lfunction/LFNInvoker.h"
@@ -22,11 +21,9 @@
 #include "util/cmdline/detail/lfunction/MakeLFunctionOp.h"
 #undef FUNCTION_SPECIFICATION
 
-
 #define FUNCTION_SPECIFICATION volatile
 #include "util/cmdline/detail/lfunction/MakeLFunctionOp.h"
 #undef FUNCTION_SPECIFICATION
-
 
 #define FUNCTION_SPECIFICATION const volatile
 #include "util/cmdline/detail/lfunction/MakeLFunctionOp.h"
@@ -34,4 +31,4 @@
 
 #undef N
 
-#endif //BOOST_PP_IS_ITERATING
+#endif // BOOST_PP_IS_ITERATING

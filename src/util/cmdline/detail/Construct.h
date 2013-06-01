@@ -44,10 +44,11 @@ struct optional;
 
 template<typename SourceType, typename R>
 R construct(SourceType & arg , R const* = 0) {
+	
 	if(arg.empty()) {
 		throw command_line_exception(command_line_exception::invalid_arg_count);
 	}
-
+	
 	R ret(arg.template front<R>());
 	arg.pop();
 	return ret;
@@ -55,21 +56,23 @@ R construct(SourceType & arg , R const* = 0) {
 
 template<typename SourceType, typename P, typename Alloc>
 ellipsis<P,Alloc> construct(SourceType & arg, ellipsis<P,Alloc> const* = 0) {
+	
 	ellipsis<P,Alloc> ret;
-
+	
 	while(!arg.empty()) {
 		ret.push_back(construct(arg,static_cast<P const*>(0)));
 	}
-
+	
 	return ret;
 }
 
 template<typename SourceType, typename T>
 optional<T> construct(SourceType & arg, optional<T> const* = 0) {
+	
 	if(arg.empty()) {
 		return optional<T>();
 	}
-
+	
 	optional<T> ret(construct(arg,static_cast<T const*>(0)));
 	return ret;
 }

@@ -43,162 +43,165 @@ class lexical_call_t;
 
 template<typename _Result, typename _Args>
 class lexical_call_t<_Result(_Args)> {
+	
 	typedef lexical_call_t<_Result(_Args)> self_t;
-
+	
 public:
+	
 	typedef _Args argument_type;
 	typedef _Result result_type;
-
+	
 	template<typename FnSign, typename Function>
 	static self_t construct(Function const& fn) {
 		self_t ret;
 		ret.set_(make_lfunction<FnSign>(fn)); 
 		return ret;
 	}
-
+	
 	template<typename Function>
 	static self_t construct(Function * fn) {
 		self_t ret;
 		ret.set_(make_lfunction(fn)); 
 		return ret;
 	}
-
+	
 	template<typename FnSign, typename Function>
 	static self_t construct(Function * fn) {
 		self_t ret;
 		ret.set_(make_lfunction<FnSign>(fn));
 		return ret;
 	}
-
+	
 	template<typename Function>
 	static self_t construct(Function const& fn) {
 		self_t ret;
 		ret.set_(make_lfunction(fn,&Function::operator()));
 		return ret;
 	}
-
+	
 	result_type operator() (argument_type args) {
 		return function(args);
 	}
-
+	
 	result_type operator() (argument_type args) const { //TODO: add  : if(!is_reference<argument_type>)   argument_type = reference<argument_type>
 		return function(args);
 	}
-
+	
 	void swap(self_t & rh) {
 		function.swap(rh.swap());
 	}
-
+	
 private:
+	
 	template<typename Fn>
 	struct proxy_function {
 		Fn fn;
-
+		
 		explicit proxy_function(Fn const& fn) : fn(fn) {
 		}
-
+		
 		result_type operator() (argument_type args) { //TODO: add  : if(!is_reference<argument_type>)   argument_type = reference<argument_type>
 			detail::args_adapter<typename Fn::signature> decode_args(args);
-
+			
 			if(!args.empty()) {
 				throw command_line_exception(command_line_exception::invalid_arg_count);
 			}
-
+			
 			return fn(decode_args);
 		}
 	};
-
+	
 	template<typename Function>
 	void set_(Function const& fn) {
 		function = proxy_function<Function>(fn);
 	}
-
+	
 	typedef boost::function<_Result(_Args)> function_t;
-
+	
 	function_t function;
 };
 
 template<typename _Result, typename _ValueType, typename _TypeCast>
 class lexical_call_t<_Result(_ValueType,_ValueType,_TypeCast)> {
 	typedef _TypeCast type_cast_t;
-
+	
 	struct Args {
 		type_cast_t & m_cast;
-
+		
 		explicit Args(type_cast_t& cast) : m_cast(cast) {
 		}
-
+		
 		template<typename R>
 		R front() {
 			return m_cast.template cast<R>(v_front());
 		}
-
+		
 		virtual _ValueType v_front() const = 0;
 		virtual void pop() {}
 		virtual bool empty() const=0;
-
+		
 		virtual ~Args() {}
-
+		
 	private:
 		Args(Args&);
 		Args&operator=(Args&);
 	};
-
+	
 	template<typename Iterator>
 	struct VArgs: Args {
 		Iterator m_begin, m_end;
-
+		
 		VArgs(type_cast_t & cast, Iterator begin, Iterator end) 
 			: Args(cast)
 			, m_begin(begin)
 			, m_end(end) {
 		}
-
+		
 		virtual _ValueType v_front() const {
 			return *m_begin;
 		}
-
+		
 		virtual void pop() {
 			++m_begin;
 		}
-
+		
 		virtual bool empty() const {
 			return m_begin == m_end;
 		}
 	};
-
+	
 	typedef lexical_call_t<_Result(Args&)> impl_t;
 	typedef lexical_call_t self_t;
 	impl_t  m_impl;
-
+	
 	explicit lexical_call_t(impl_t const& impl) : m_impl(impl) {
 	}
-
+	
 public:
 	lexical_call_t() : m_impl() {
 	}
-
+	
 	template<typename FnSign, typename Function>
 	static self_t construct(Function const& fn) {
 		return self_t(impl_t::template construct<FnSign>(fn));
 	}
-
+	
 	template<typename Function>
 	static self_t construct(Function * fn) {
 		return self_t(impl_t::construct(fn));
 	}
-
+	
 	template<typename Function>
 	static self_t construct(Function const& fn) {
 		return self_t(impl_t::construct(fn));
 	}
-
+	
 	template<typename Iterator>
 	_Result operator() (Iterator begin, Iterator end, _TypeCast& cast) {
 		VArgs<Iterator> args(cast,begin,end);
 		m_impl(args); 
 	}
-
+	
 	template<typename Iterator>
 	_Result operator() (Iterator begin, Iterator end, _TypeCast& cast) const {
 		VArgs<Iterator> args(cast,begin,end);

@@ -41,9 +41,9 @@ template<
 lfunction<R (BOOST_PP_ENUM_PARAMS(N, ARG)),R (*) (BOOST_PP_ENUM_PARAMS(N, ARG))> 
 make_lfunction(R (*c_function) (BOOST_PP_ENUM_PARAMS(N, ARG))) {
 	return lfunction<
-			R (BOOST_PP_ENUM_PARAMS(N, ARG)),
-			R (*) (BOOST_PP_ENUM_PARAMS(N, ARG))
-			>(c_function);
+		R (BOOST_PP_ENUM_PARAMS(N, ARG)),
+		R (*) (BOOST_PP_ENUM_PARAMS(N, ARG))
+	>(c_function);
 }
 
-#endif //BOOST_PP_IS_ITERATING
+#endif // BOOST_PP_IS_ITERATING

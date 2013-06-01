@@ -37,18 +37,18 @@ template<typename A>
 struct arg_impl<A,N> {
 	typedef A BOOST_PP_CAT(BOOST_PP_CAT(arg,N),_t);
 	BOOST_PP_CAT(BOOST_PP_CAT(arg,N),_t) BOOST_PP_CAT(arg,N);
-
+	
 	typedef arg_impl<A,N> self_t;
-
+	
 	arg_impl() : BOOST_PP_CAT(arg,N) () {
 	}
-
+	
 	template<typename T>
 	explicit arg_impl(T const& t) : BOOST_PP_CAT(arg,N)(t) {
 	}
-
+	
 	explicit arg_impl(self_t const& rh) : BOOST_PP_CAT(arg,N)(rh.BOOST_PP_CAT(arg,N)) {
 	}
 };
 
-#endif //BOOST_PP_IS_ITERATING
+#endif // BOOST_PP_IS_ITERATING

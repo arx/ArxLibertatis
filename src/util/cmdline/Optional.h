@@ -41,24 +41,24 @@
  */
 template<typename T>
 struct optional {
-
+	
 	/**
 	 * Constructor
 	 */
 	optional() : m_ptr(0) {
 	}
-
+	
 	/**
 	 * Constructor
 	 */
 	template<typename U>
 	explicit optional(U const& rh) : m_ptr(new T(rh)) {
 	}
-
+	
 	explicit optional(optional const& rh)
 		: m_ptr(rh.m_ptr ? new T(*rh.m_ptr) : 0) {
 	}
-
+	
 	/**
 	 * operator =
 	 */
@@ -67,7 +67,7 @@ struct optional {
 		optional(rh).swap(*this);
 		return *this;
 	}
-
+	
 	/**
 	 * operator =
 	 */
@@ -75,14 +75,14 @@ struct optional {
 		optional(rh).swap(*this);
 		return *this;
 	}
-
+	
 	/**
 	 * Destructor
 	 */
 	~optional() {
 		delete m_ptr;
 	}
-
+	
 	/**
 	 * This function exchanges the content of the optional by the content
 	 * of optional, which is another optional of the same type.
@@ -94,36 +94,36 @@ struct optional {
 		m_ptr = rh.m_ptr;
 		rh.m_ptr = tmp ;
 	}
-
+	
 	const T& operator*() const { // never throws
 		return *m_ptr;
 	}
-
+	
 	T& operator*() { // never throws
 		return const_cast<T&>(static_cast<optional const*>(this)->operator*());
 	}
-
+	
 	const T* operator->() const { // never throws
 		return &**this;
 	}
-
+	
 	T* operator->() { // never throws
 		return &**this;
 	}
-
+	
 private:
 	struct dummy { void nonnull() {}; };
 	typedef void (dummy::*safe_bool)();
-
+	
 public:
 	bool operator ! () const {
 		return m_ptr == 0;
 	}
-
+	
 	operator safe_bool () const {
 		return (!*this)?0:&dummy::nonnull;
 	}
-
+	
 private:
 	T* m_ptr;
 };

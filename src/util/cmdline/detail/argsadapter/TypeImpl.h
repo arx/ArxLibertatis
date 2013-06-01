@@ -38,4 +38,4 @@ struct type_impl<T,N> {
 	typedef typename T::BOOST_PP_CAT(BOOST_PP_CAT(arg,N),_t) result;
 };
 
-#endif //BOOST_PP_IS_ITERATING
+#endif // BOOST_PP_IS_ITERATING

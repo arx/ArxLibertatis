@@ -42,48 +42,52 @@
  */
 template<typename StringType>
 class key_type : std::vector<StringType> {
+	
 	typedef std::vector<StringType> super_t;
-
+	
 public:
+	
 	typedef typename super_t::value_type value_type;
 	typedef typename super_t::const_iterator const_iterator;
 	typedef typename super_t::iterator iterator;
-
+	
 	using super_t::front;
 	using super_t::empty;
 	using super_t::begin;
 	using super_t::end;
 	using super_t::erase;
-
+	
 	explicit key_type(value_type const& v) : m_argCount(0) {
 		(*this)(v);
 	}
-
+	
 	key_type & operator() (value_type const&v) {
 		return super_t::push_back(v), *this;
 	}
-
+	
 	key_type & description(value_type const& d) {
 		m_description = d;
 		return *this;
 	}
-
+	
 	value_type get_description() const {
 		return m_description;
 	}
-
+	
 	key_type & arg_count(size_t argCount) {
 		m_argCount = argCount;
 		return *this;
 	}
-
+	
 	size_t has_args() const {
 		return m_argCount != 0;
 	}
-
+	
 private:
+	
 	StringType m_description;
 	size_t     m_argCount;
+	
 };
 
 #endif // ARX_UTIL_CMDLINE_KEYS_H
