@@ -28,6 +28,8 @@
 //! \cond docNever
 
 #include <QtGui>
+#include <QScrollArea>
+#include <QUndoStack>
 
 #include "crashreporter/qhexedit/XByteArray.h"
 

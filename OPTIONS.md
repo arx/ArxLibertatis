@@ -74,3 +74,6 @@ The following options can be used to customize where `make install` puts the var
 By default, optional components will be automatically disabled if their dependencies could not be found. This might be undesirable in some situations, so the following option can be used to change this behavior:
 
 * `STRICT_USE` (default: OFF): Abort the configure step if one of the dependencies enabled with a `USE_*` configuration variable could not be found or if one of the components enabled with a `BUILD_*`configuration variable has missing dependencies. As most dependencies are enabled by default, you may need to explicitly disable some of them. Windows-specifc dependencies are still automatically disabled on non-Windows systems.
+* `USE_QT5` (default=ON): Use Qt 5 libraries for the crash reporter if available^1
+* `USE_QT4` (default=ON): Use Qt 4 libraries for the crash reporter if available^1
+1. If both `USE_QT5` and `USE_QT4` are enabled we will try to use Qt 5 if available and then fall back to Qt 4. Both are ignored if `BUILD_CRASHREPORTER` is disabled.
