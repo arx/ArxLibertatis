@@ -229,16 +229,6 @@ bool Input::init() {
 		
 		bool matched = false;
 		
-		#ifdef ARX_HAVE_DINPUT8
-		if(!backend && first == (autoBackend || config.input.backend == "DirectInput8")) {
-			matched = true;
-			backend = new DInput8Backend;
-			if(!backend->init()) {
-				delete backend, backend = NULL;
-			}
-		}
-		#endif
-
 		#ifdef ARX_HAVE_SDL
 		if(!backend && first == (autoBackend || config.input.backend == "SDL")) {
 			matched = true;
@@ -249,6 +239,15 @@ bool Input::init() {
 		}
 		#endif
 		
+		#ifdef ARX_HAVE_DINPUT8
+		if(!backend && first == (autoBackend || config.input.backend == "DirectInput8")) {
+			matched = true;
+			backend = new DInput8Backend;
+			if(!backend->init()) {
+				delete backend, backend = NULL;
+			}
+		}
+		#endif
 		
 		if(first && !matched) {
 			LogError << "Unknown backend: " << config.input.backend;
