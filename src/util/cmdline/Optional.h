@@ -64,7 +64,7 @@ struct optional {
 	 */
 	template<typename U>
 	optional& operator = (U const& rh) {
-		optional(rh).swap(*this);
+		swap(optional(rh));
 		return *this;
 	}
 	
@@ -72,7 +72,7 @@ struct optional {
 	 * operator =
 	 */
 	optional& operator = (optional const& rh) {
-		optional(rh).swap(*this);
+		swap(optional(rh));
 		return *this;
 	}
 	
@@ -90,7 +90,7 @@ struct optional {
 	 * @param rh
 	 */
 	void swap(optional& rh) { // never throws
-		T *  tmp(m_ptr);
+		T * tmp(m_ptr);
 		m_ptr = rh.m_ptr;
 		rh.m_ptr = tmp ;
 	}

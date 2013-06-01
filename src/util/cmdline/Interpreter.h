@@ -172,7 +172,7 @@ public:
 	 */
 	interpreter& operator = (interpreter const& rh) {
 		if(this != &rh) {
-			interpreter(rh).swap(*this);
+			swap(interpreter(rh));
 		}
 		return *this;
 	}
