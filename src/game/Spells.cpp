@@ -5480,7 +5480,7 @@ void ARX_SPELLS_Kill(long i) {
 			spells[i].longinfo = -1;
 			
 			ARX_SOUND_Stop(spells[i].snd_loop);
-			ARX_SOUND_PlaySFX(SND_SPELL_LIGHTNING_END);
+			ARX_SOUND_PlaySFX(SND_SPELL_LIGHTNING_END, &entities[spells[i].caster]->pos);
 			
 			break;
 		}
@@ -6819,7 +6819,9 @@ void ARX_SPELLS_Update()
 						pCSpellFX->Update(FrameDiff);
 						pCSpellFX->Render();
 					}
-						}
+
+					ARX_SOUND_RefreshPosition(spells[i].snd_loop, &entities[spells[i].caster]->pos);
+				}
 			break;
 			//-----------------------------------------------------------------------------------------
 			//*****************************************************************************************
