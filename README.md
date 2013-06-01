@@ -29,7 +29,7 @@ Reddit: [http://www.reddit.com/r/ArxFatalis/](http://www.reddit.com/r/ArxFatalis
 * **zlib**
 * **Boost 1.39**+ (headers, `program_options` library)
 * **Freetype**
-* **OpenAL 1.1**+ *and/or* **DirectSound 9**
+* **OpenAL 1.1**+ (OpenAL Soft strongly recommended!) *and/or* **DirectSound 9**
 
 Systems without Win32 or POSIX filesystem support will also need **Boost 1.44** or newer including the `filesystem` and `system` libraries.
 
