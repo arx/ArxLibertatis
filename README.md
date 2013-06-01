@@ -25,11 +25,11 @@ Reddit: [http://www.reddit.com/r/ArxFatalis/](http://www.reddit.com/r/ArxFatalis
 
 ## Dependencies
 
-* **CMake 2.8**+ (compile-time only, 2.8.5+ under Windows)
-* **zlib**
-* **Boost 1.39**+ (headers, `program_options` library)
-* **Freetype**
-* **OpenAL 1.1**+ (OpenAL Soft strongly recommended!) *and/or* **DirectSound 9**
+* **[CMake](http://www.cmake.org/) 2.8**+ (compile-time only, 2.8.5+ under Windows)
+* **[zlib](http://zlib.net/)**
+* **[Boost](http://www.boost.org/) 1.39**+ (headers, `program_options` library)
+* **[Freetype](http://www.freetype.org/)**
+* **OpenAL 1.1**+ ([OpenAL Soft](http://kcat.strangesoft.net/openal.html) strongly recommended!) *and/or* **DirectSound 9**
 
 Systems without Win32 or POSIX filesystem support will also need **Boost 1.44** or newer including the `filesystem` and `system` libraries.
 
@@ -37,9 +37,9 @@ Systems without Win32 or POSIX filesystem support will also need **Boost 1.44** 
 
 There are rendering backends for both OpenGL and Direct3D. You need either:
 
-* **SDL 1.2.10**+
+* **[SDL](http://www.libsdl.org/) 1.2.10**+
 * **OpenGL 1.5**+ (OpenGL 2.1 or newer is recommended)
-* **GLEW 1.5.2**+
+* **[GLEW](http://glew.sourceforge.net/) 1.5.2**+
 
 *and/or*
 
