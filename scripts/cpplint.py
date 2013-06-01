@@ -10,6 +10,7 @@
 #  - Don't require two spaces between code and comments
 #  - Warn if spaces are used for identation.
 #  - Allow //! comments
+#  - Allow #ifdef BOOST_PP_IS_ITERATING + #endif in place of header guards
 #
 # Copyright (c) 2009 Google Inc. All rights reserved.
 #
@@ -1070,22 +1071,25 @@ def CheckForHeaderGuard(filename, lines, error):
   define = None
   endif = None
   endif_linenum = 0
+  boostppiterating = None
   for linenum, line in enumerate(lines):
     linesplit = line.split()
     if len(linesplit) >= 2:
+      if not ifndef and linesplit[0] == '#ifdef' and linesplit[1] == 'BOOST_PP_IS_ITERATING':
+        boostppiterating = linesplit[1]
       # find the first occurrence of #ifndef and #define, save arg
-      if not ifndef and linesplit[0] == '#ifndef':
+      if not boostppiterating and not ifndef and linesplit[0] == '#ifndef':
         # set ifndef to the header guard presented on the #ifndef line.
         ifndef = linesplit[1]
         ifndef_linenum = linenum
-      if not define and linesplit[0] == '#define':
+      if not boostppiterating and not define and linesplit[0] == '#define':
         define = linesplit[1]
     # find the last occurrence of #endif, save entire line
     if line.startswith('#endif'):
       endif = line
       endif_linenum = linenum
 
-  if not ifndef or not define or ifndef != define:
+  if not boostppiterating and (not ifndef or not define or ifndef != define):
     error(filename, 0, 'build/header_guard', 5,
           'No #ifndef header guard found, suggested CPP variable is: %s' %
           cppvar)
@@ -1093,7 +1097,7 @@ def CheckForHeaderGuard(filename, lines, error):
 
   # The guard should be PATH_FILE_H_, but we also allow PATH_FILE_H__
   # for backward compatibility.
-  if ifndef != cppvar:
+  if not boostppiterating and ifndef != cppvar:
     error_level = 0
     if ifndef != cppvar + '_':
       error_level = 5
@@ -1103,7 +1107,7 @@ def CheckForHeaderGuard(filename, lines, error):
     error(filename, ifndef_linenum, 'build/header_guard', error_level,
           '#ifndef header guard has wrong style, please use: %s' % cppvar)
 
-  if endif != ('#endif // %s' % cppvar):
+  if not boostppiterating and endif != ('#endif // %s' % cppvar):
     error_level = 0
     if endif != ('#endif // %s' % (cppvar + '_')):
       error_level = 5
@@ -1112,6 +1116,14 @@ def CheckForHeaderGuard(filename, lines, error):
                             error)
     error(filename, endif_linenum, 'build/header_guard', error_level,
           '#endif line should be "#endif // %s"' % cppvar)
+
+  if boostppiterating and endif != ('#endif // %s' % boostppiterating):
+    error_level = 5
+
+    ParseNolintSuppressions(filename, lines[endif_linenum], endif_linenum,
+                            error)
+    error(filename, endif_linenum, 'build/header_guard', error_level,
+          '#endif line should be "#endif // %s"' % boostppiterating)
 
 
 def CheckForUnicodeReplacementCharacters(filename, lines, error):
