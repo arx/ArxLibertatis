@@ -2782,7 +2782,7 @@ if [ $install = 1 ] ; then
 	user_select_entry --existing --any sourcefiles sourcefile \
 		"source file or directory to install from" "$green" "$dim_green"
 	case "$sourcefile" in
-		'Patch existing install')      install=0 ; patch=1 ;;
+		'Patch existing install')       install=0 ; patch=1 ;;
 		'Verify existing install only') install=0 ; patch=0 ;;
 		*) [ -e "$sourcefile" ] || die "Missing source file: $sourcefile"
 	esac
@@ -2790,10 +2790,13 @@ fi
 
 # Select destination data directory
 probe_data_dirs
-if [ $install = 1 ]
-	then verb='install to' ; access=--writable
-	else verb='verify'     ; access=--existing
-fi
+if [ $install = 1 ] ; then
+	verb='install to' ; access=--writable
+else if [ $patch = 1 ] ; then
+	verb='patch' ; access=--existing
+else
+	verb='verify'     ; access=--existing
+fi ; fi
 user_select_entry $access --dir datadirs datadir \
 	"data directory to $verb" "$cyan" "$dim_cyan"
 [ -z "$datadir" ] && die "Missing data dir."
