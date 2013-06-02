@@ -103,6 +103,7 @@ innoextract_url='http://constexpr.org/innoextract/'
 # Standard directories
 
 user_pwd="$PWD"
+user_pwd="${user_pwd%/}"
 platform="$(uname)"
 command="$(basename "$0")"
 scommand="$(printf '%s' "$command" | tr - _)"
@@ -126,7 +127,9 @@ else
 	[ -f "${config_home}/user-dirs.dirs" ] && . "${config_home}/user-dirs.dirs"
 	downloads_dir="${XDG_DOWNLOAD_DIR:-"$HOME/Downloads"}"
 fi
+downloads_dir="${downloads_dir%/}"
 tempdir="${TMPDIR:-"/tmp"}"
+tempdir="${tempdir%/}"
 eval "data_path=\"\$${scommand}_PATH\""
 [ -z "$data_path" ] && data_path="$arx_PATH"
 
@@ -175,7 +178,7 @@ on_exit() {
 cleanup() {
 	_cleanup_functions="$cleanup_functions" ; cleanup_functions=''
 	[ -z "$_cleanup_functions" ] && return
-	eval "for func in $_cleanup_functions ; do \"\$func\" \"\$@\" ; done"
+	eval "for _cleanup_func in $_cleanup_functions ; do \"\$_cleanup_func\" \"\$@\" ; done"
 }
 
 # Register our cleanup handler.
@@ -197,7 +200,7 @@ die() {
 	_die_message=''
 	if [ $# -gt 0 ] ; then
 		_die_message="$1" ; shift
-		for arg ; do _die_message="$_die_message $arg" ; done
+		for _die_arg ; do _die_message="$_die_message $_die_arg" ; done
 		_die_message="$_die_message
 
 If you think this is a bug in the install script
@@ -247,8 +250,8 @@ lines_to_list() {
 list_contains() {
 	eval "_list_contents=\"\$$1\""
 	[ -z "$_list_contents" ] && return $false
-	eval "for entry in $_list_contents ; do" \
-		" [ \"\$entry\" = \"\$2\" ] && return \$true ; done"
+	eval "for _list_contains_entry in $_list_contents ; do" \
+		" [ \"\$_list_contains_entry\" = \"\$2\" ] && return \$true ; done"
 	return $false
 }
 
@@ -276,8 +279,8 @@ list_merge() {
 	[ -z "$_list_append" ] && return
 	eval "
 		_list_merge_i=0
-		for entry in $_list_append ; do
-			list_append $1 \"\$entry\" \"\$(list_comment $2 \$_list_merge_i)\"
+		for _list_merge_entry in $_list_append ; do
+			list_append $1 \"\$_list_merge_entry\" \"\$(list_comment $2 \$_list_merge_i)\"
 			_list_merge_i=\$((\$_list_merge_i + 1))
 		done
 	"
@@ -338,13 +341,17 @@ disable_command() {
 	disabled_commands="$disabled_commands$1 "
 }
 
+probe_file_dirs=''
+set_append probe_file_dirs "$user_pwd"
+set_append probe_file_dirs "$downloads_dir"
+set_append probe_file_dirs "$HOME"
+set_append probe_file_dirs "$tempdir"
+
 # Find a file in standard directories.
 # Usage: probe_file <command> <filename> [comment]
 # Will call `command <file>` for each file found.
 probe_file() {
-	for d in "$user_pwd" "$downloads_dir" "$HOME" "$tempdir" ; do
-		[ -f "$d/$2" ] && $1 "$d/$2" "$3" && return $true
-	done
+	eval "for _probe_file_d in $probe_file_dirs ; do [ -f \"\$_probe_file_d/\$2\" ] && \$1 \"\$_probe_file_d/\$2\" \"\$3\" && return \$true ; done"
 }
 
 # Find files in standard directories.
@@ -352,7 +359,7 @@ probe_file() {
 # Will call `command <file>` for each file found.
 probe_files() {
 	[ -z "$2" ] && return $false
-	eval "for file in $2 ; do probe_file \"\$1\" \"\$file\" \"\$3\" && return \$true ; done"
+	eval "for _probe_files_file in $2 ; do probe_file \"\$1\" \"\$_probe_files_file\" \"\$3\" && return \$true ; done"
 	return $false
 }
 
@@ -383,6 +390,10 @@ list_append extract_iso_reqs '7z' 'p7zip'
 extract_cdrom_reqs=''
 list_merge extract_cdrom_reqs mount_cdrom_reqs
 list_merge extract_cdrom_reqs extract_iso_reqs
+download_reqs=''
+list_append download_reqs 'wget'
+list_append download_reqs 'curl'
+list_append download_reqs 'fetch' 'FreeBSD'
 
 printf '%s %s\n' "${white}Welome to the ${green}Arx Fatalis${white} ${patch_ver} data" \
      "install script for UNIX-like systems!${reset}"
@@ -455,9 +466,9 @@ print_help_or() {
 	[ -z "$1" ] && return
 	eval "
 		_print_help_or_i=0
-		for entry in $_print_help_or_list ; do
+		for _print_help_or_entry in $_print_help_or_list ; do
 			[ \$_print_help_or_i = 0 ] || printf ' or '
-			printf '%s%s' \"\$_print_help_or_color\" \"\$entry\"
+			printf '%s%s' \"\$_print_help_or_color\" \"\$_print_help_or_entry\"
 			[ -z \"\$_print_help_or_color\" ] || printf '%s' \"\$reset\"
 			_print_help_or_comment=\"\$(list_comment \$_print_help_or_var \$_print_help_or_i)\"
 			[ -z \"\$_print_help_or_comment\" ] || printf ' (%s)' \"\$_print_help_or_comment\"
@@ -476,9 +487,9 @@ print_help_list() {
 	[ -z "$1" ] && return
 	eval "
 		_print_help_list_i=0
-		for entry in $_print_help_list_list ; do
+		for _print_help_list_entry in $_print_help_list_list ; do
 			printf \"\$_print_help_list_prefix\" \$((\$_print_help_list_i + 1))
-			printf \"%s\${reset}\" \"\$entry\"
+			printf \"%s\${reset}\" \"\$_print_help_list_entry\"
 			_print_help_list_comment=\"\$(list_comment \$_print_help_list_var \$_print_help_list_i)\"
 			[ -z \"\$_print_help_list_comment\" ] || printf ' (%s)' \"\$_print_help_list_comment\"
 			printf '\n'
@@ -529,6 +540,7 @@ Usage: $command [--source] source [--patch patchfile] [[--data-dir] datadir]
 	help_cab="$(print_help_or extract_ms_cab_reqs "$dim_pink")"
 	help_zip="$(print_help_or extract_zip_reqs "$dim_pink")"
 	help_unshield="$(print_help_or extract_installshield_reqs "$dim_pink")"
+	help_download="$(print_help_or download_reqs "$dim_pink")"
 	help_optpatch="may use the 1.21 patch file and require ${help_innosetup} if not already patched"
 	help_probe_file_dirst="
    a) the current working directory  (\$PWD):              $user_pwd
@@ -598,6 +610,7 @@ the --no-patch option wasn't specified specified:
         depending on the language of the data files.
 2. Downloaded from:
 $(print_help_list " - ${dim_blue}" patch_urls)
+Downloading the patch file requires ${help_download}.
 Extracting the ${patch_ver} patch file requires ${help_innosetup}.
 
 For the Japanese version, if no ${blue}patch-jp${reset} file is specified,
@@ -605,6 +618,7 @@ but is needed and the --no-patch option wasn't specified specified:
 1. Try to find ${blue}${patch_jp_name}${reset} in${help_probe_file_dirst}
 2. Downloaded from:
 $(print_help_list " - ${dim_blue}" patch_jp_urls)
+Downloading the patch file requires ${help_download}.
 Extracting the Japanese patch file requires:
     - ${help_unshield}
     - ${help_cab}.
@@ -633,8 +647,7 @@ print "3. \"\${XDG_DATA_HOME:-\"\$HOME/.local/share\"}\" / \"$user_dir_suffixes\
 		printf "   3.%d. ${dim_cyan}%s${reset}\\n" $i "$data_home/$suffix"
 			i=$(($i + 1))
 	done
-	printf '\n%s\n' "
-If needed, ${help_innosetup} can be downloaded from ${innoextract_url}"
+	print
 	exit $true
 }
 
@@ -1772,9 +1785,9 @@ probe_cdrom() {
 	)"
 	
 	eval "set -- $_probe_cdrom_mountpoints"
-	for line ; do
-		eval "probe_cd $(escape "$line" ' ' | sed 's/\\\\\040/\\ /g')"  # space-separated
-		eval "probe_cd $(print "$line" | tr '\t' '\n' | lines_to_list)" # tab-separated
+	for _probe_cdrom_line ; do
+		eval "probe_cd $(escape "$_probe_cdrom_line" ' ' | sed 's/\\\\\040/\\ /g')"  # space-separated
+		eval "probe_cd $(print "$_probe_cdrom_line" | tr '\t' '\n' | lines_to_list)" # tab-separated
 	done
 	
 }
@@ -1855,30 +1868,35 @@ probe_data_dirs() {
 	
 	status 10 "Searching for destination directories..."
 	
-	for must_exists in 1 0 ; do
+	for _probe_data_dirs_existing in 1 0 ; do
 		
 		# Try paths supplied by wrapper scripts
 		if [ ! -z "$data_path" ] ; then
 			eval "set -- $(to_list "$data_path")"
-			for path ; do
-				probe_data_dir $must_exists "$path" "portable" && return $true
+			for _probe_data_dirs_path ; do
+				probe_data_dir $_probe_data_dirs_existing "$_probe_data_dirs_path" "portable" \
+					&& return $true
 			done
 		fi
 		
 		# Try system paths
 		eval "set -- $(to_list "$data_dirs")"
-		for prefix in "$@" ; do
+		for _probe_data_dirs_prefix in "$@" ; do
 			eval "set -- $(to_list "$data_dir_suffixes")"
-			for suffix ; do
-				probe_data_dir $must_exists "$prefix/$suffix" "system" && return $true
+			for _probe_data_dirs_suffix ; do
+				probe_data_dir $_probe_data_dirs_existing \
+					"$_probe_data_dirs_prefix/$_probe_data_dirs_suffix" "system" \
+					&& return $true
 			done
 		done
 		
 		# Try user paths
 		if [ $is_root = 0 ] ; then
 			eval "set -- $(to_list "$user_dir_suffixes")"
-			for suffix ; do
-				probe_data_dir $must_exists "$data_home/$suffix" "user" && return $true
+			for _probe_data_dirs_suffix ; do
+				probe_data_dir $_probe_data_dirs_existing \
+					"$data_home/$_probe_data_dirs_suffix" "user" \
+					&& return $true
 			done
 		fi
 		
@@ -1909,29 +1927,29 @@ checksum() {
 	die "You need either md5sum or md5."
 }
 
-have_extract() {
-	for type ; do
-		eval "_have_extract_p=\"\$extract_${1}_reqs\""
-		eval "for program in $_have_extract_p ; do have \$program && return $true ; done"
-		return $false
-		
-		"have_extract_$type"
-	done
+have_run() {
+	eval "_have_run_p=\"\$${1}_reqs\""
+	eval "for _have_run_program in $_have_run_p ; do have \$_have_run_program && return $true ; done"
+	return $false
 }
+
 # Extract an archive file to the current directory.
 # Usage: extract <file> <types>...
+have_extract() {
+	have_run "extract_$1"
+}
 extract() {
 	_extract_file="$1" ; shift
 	
 	while true ; do
 		
 		_extract_missing=''
-		for type ; do
+		for _extract_type ; do
 			
-			if "have_extract_$type" ; then
-				"extract_$type" "$_extract_file" && return "$true"
+			if "have_extract_${_extract_type}" ; then
+				"extract_${_extract_type}" "$_extract_file" && return "$true"
 			else
-				list_merge _extract_missing extract_${type}_reqs
+				list_merge _extract_missing extract_${_extract_type}_reqs
 			fi
 			
 		done
@@ -1973,9 +1991,9 @@ extract_zip() {
 		return $?
 	fi
 	
-	for sz in 7za 7z ; do
-		if have $sz ; then
-			$sz x "$1"
+	for _extract_zip_sz in 7za 7z ; do
+		if have $_extract_zip_sz ; then
+			$_extract_zip_sz x "$1"
 			return $?
 		fi
 	done
@@ -2067,7 +2085,7 @@ extract_iso() {
 		# Older versions of bsdtar don't always get the names right - fix them
 		_extrac_cdrom_f="$(find "$PWD" -depth -iname '*;1' | lines_to_list)"
 		if [ ! -z "$_extrac_cdrom_f" ] ; then
-			eval "for f in $_extrac_cdrom_f ; do mv \"\$f\" \"\$(print \"\$f\" | sed 's:;1$::')\" ; done"
+			eval "for _extract_iso_f in $_extrac_cdrom_f ; do mv \"\$_extract_iso_f\" \"\$(print \"\$_extract_iso_f\" | sed 's:;1$::')\" ; done"
 		fi
 		
 	else if have 7z ; then
@@ -2123,9 +2141,9 @@ extract_ms_cab() {
 		return $?
 	fi
 	
-	for sz in 7za 7z ; do
-		if have $sz ; then
-			$sz x "$1"
+	for _extract_ms_cab_sz in 7za 7z ; do
+		if have $_extract_ms_cab_sz ; then
+			$_extract_ms_cab_sz x "$1"
 			return $?
 		fi
 	done
@@ -2198,6 +2216,9 @@ extract_cab_files() {
 	
 }
 
+# Download a file.
+# Usage: download_file <url> <destination>
+have_download() { have_run download ; }
 download_impl() {
 	
 	if have wget ; then
@@ -2215,12 +2236,9 @@ download_impl() {
 		return $?
 	fi
 	
-	die "Could now download $1. Install wget, curl or fetch - or manually download it."
-	
+	die "no program to download $1"
 }
-# Download a file.
-# Usage: download <url> <destination>
-download() {
+download_file() {
 	
 	download_impl "$1" "$2" || return $false
 	
@@ -2236,11 +2254,51 @@ download() {
 }
 
 # Download a file from a list of mirrors.
-# Usage: download_any <mirror-list> <destination>
-download_any() {
-	[ -z "$1" ] && return $false
-	eval "for url in $1 ; do download \"\$url\" \"\$2\" && return $true ; done"
-	return $false
+# Usage: download <callback> <name> <names> <urls> <destdir>
+download() {
+	_download_callback="$1"
+	_download_name="$2"
+	_download_names="$3"
+	_download_urls="$4"
+	_download_dest="$5"
+	
+	while true ; do
+		
+		probe_files "$_download_callback" "$_download_names" && return $true
+		
+		_download_missing=''
+		if have_download ; then
+			eval "for _download_url in $_download_urls ; do download_file \"\$_download_url\" \"\$_download_dest\" && \$_download_callback \"\$_download_dest\" && return $true ; done"
+		else
+			list_merge _download_missing download_reqs
+		fi
+		
+		_download_msg="${white}Could not download ${_download_name}${reset}"
+		[ -z "$_download_missing" ] \
+			|| _download_msg="$_download_msg
+
+Please install one of the following:
+$(print_help_list " - $dim_pink" _download_missing)"
+		
+		_download_msg="$_download_msg
+
+You can download the file manually from
+$(print_help_list " - $dim_blue" _download_urls)
+
+and put it in one of these locations:
+$(print_help_list " - $dim_white" probe_file_dirs)"
+		
+		[ $batch = 1 ] && die "Error: $_download_msg"
+		
+		dialog_retry "$_download_msg"
+		case $dialog_retry_choice in
+			abort)  die "Error downloading files" ;;
+			retry)  continue ;;
+			ignore) return $true ;;
+		esac
+		
+	done
+	
 }
 
 
@@ -2280,7 +2338,6 @@ extract_source_exe() {
 		arx_jpn_*.exe) extract "$1" ms_cab installshield innosetup ;; # Japanese demo
 		*)             extract "$1" innosetup ms_cab installshield ;; # GOG.com setup
 	esac
-	[ $? = $true ] || die "Could not extract source exe!"
 	
 	extract_source_dir "$sourcedir_exe"
 	
@@ -2337,7 +2394,7 @@ extract_source_zip() {
 	create_dir "$sourcedir_zip" 'zip work'
 	
 	cd "$sourcedir_zip" || die
-	extract "$1" zip || die "Could not extract source zip!"
+	extract "$1" zip
 	
 	extract_source_dir "$sourcedir_zip"
 }
@@ -2487,25 +2544,6 @@ detect_data_langauge() {
 ##########################################################################################
 # Get the patch file
 
-# Download a patch file into the working directory.
-# Usage: download_patch <callback> <url-list> <filename>
-# <callback> receives a path to the downloaded file
-download_patch() {
-	_download_patch_func="$1"
-	_download_patch_urls="$2"
-	_download_patch_name="$3"
-	
-	status --temp "${white}Downloading patch ${blue}${_download_patch_name}${reset}..."
-	
-	create_workdir
-	_download_patch_path="$workdir/$_download_patch_name"
-	if download_any "$_download_patch_urls" "$_download_patch_path" ; then
-		"$_download_patch_func" "$_download_patch_path" && return $true
-	fi
-	
-	die "Could not download ${_download_patch_name}!"
-}
-
 # Warn if the user-supplied patch file has a suspicious name.
 # Usage: patch_check_file_name <file> <expected-name-list>
 patch_check_file_name() {
@@ -2518,25 +2556,37 @@ patch_check_file_name() {
 }
 
 # Find or download a patch file.
-# Usage: probe_patch_file_impl <user-supplied-file> <expected-name-list> <callback> \
-#                              <url-list> <name>
+# Usage: probe_patch_file_impl <callback> <name> <user-supplied-file> \
+#                              <expected-name-list> <url-list> \
 # <callback> will be called with the patch file
 probe_patch_file_impl() {
 	
-	if [ ! -z "$1" ] ; then
+	_patch_found="$1"
+	_patch_name="$2"
+	_patch_file="$3"
+	_patch_names="$4"
+	_patch_urls="$5"
+	
+	if [ ! -z "$_patch_file" ] ; then
 		
 		# Check the filename of user-supplied patchse
-		patch_check_file_name "$1" "$2"
+		patch_check_file_name "$_file" "$_patch_names"
 		
-		"$3" "$1"
+		"$_patch_found" "$_patch_file"
 		return $true
 	fi
 	
 	[ $probe_patch = 0 ] && return $true
 	
-	probe_files "$3" "$2" && return $true
+	# Probe local files now so we don't lie abut downloading it
+	probe_files "$_patch_found" "$_patch_names" && return $true
 	
-	download_patch "$3" "$4" "$5" && return $true
+	status --temp "${white}Downloading patch ${blue}${_patch_name}${reset}..."
+	
+	create_workdir
+	download "$_patch_found" "$_patch_name" \
+	         "$_patch_names" "$_patch_urls" "${workdir}/${_patch_name}" \
+		&& return $true
 	
 }
 
@@ -2571,8 +2621,8 @@ probe_patch_file() {
 		'japanese')
 			_patch_jp_names=''
 			list_append _patch_jp_names "$patch_jp_name"
-			probe_patch_file_impl "$patchfile_jp" "$_patch_jp_names" patch_jp_found \
-			                      "$patch_jp_urls" "$patch_jp_name"
+			probe_patch_file_impl patch_jp_found "$patch_jp_name" "$patchfile_jp" \
+			                      "$_patch_jp_names" "$patch_jp_urls"
 		;;
 	esac
 	_patch_names=''
@@ -2581,8 +2631,8 @@ probe_patch_file() {
 		list_append _patch_names "$(printf "$patch_name_localized" "$_patch_file_lang")"
 	fi
 	
-	probe_patch_file_impl "$patchfile" "$_patch_names" patch_found \
-	                      "$patch_urls" "$patch_name"
+	probe_patch_file_impl patch_found "$patch_name" "$patchfile" \
+	                      "$_patch_names" "$patch_urls"
 	
 }
 
