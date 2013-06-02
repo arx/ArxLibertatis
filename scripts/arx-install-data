@@ -532,7 +532,7 @@ Usage: $command [--source] source [--patch patchfile] [[--data-dir] datadir]
                      rxvt, gnome-terminal, konsole, xterm, gxmessage, xmessage,
                      md5sum, md5.
 
---gui is enabled by default if there are no arguments
+--gui is enabled by default if there are no arguments *and* stdin, stdout or stderr is not a terminal
 "
 	[ ! -z "${1-}" ] && exit $false
 	help_innosetup="$(print_help_or extract_innosetup_reqs "$dim_pink")"
@@ -652,7 +652,9 @@ print "3. \"\${XDG_DATA_HOME:-\"\$HOME/.local/share\"}\" / \"$user_dir_suffixes\
 }
 
 user_is_sane=1
-[ $# = 0 ] && gui=1
+if [ ! -t 0 ] || [ ! -t 1 ] || [ ! -t 2 ] ; then
+	[ $# = 0 ] && gui=1
+fi
 while [ $# -gt 0 ] ; do
 	case "$1" in
 		--source=*)               sourcefile="${1#--source=}"   ; install=1 ;;
@@ -791,6 +793,10 @@ $message"
 	print "Enabling GUI mode, standard output/error saved to $logfile"
 	print "Use the --cli option for an interactive command-line interface."
 	exec > "$logfile" 2>&1
+	
+else
+	
+	print "Enabling CLI mode, use the --gui option for a graphical interface."
 	
 fi
 
