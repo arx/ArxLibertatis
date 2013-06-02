@@ -1524,17 +1524,17 @@ user_select_entry() {
 		# Add entries for custom files/diectories
 		if [ $_user_select_entry_t = --any ] && [ $dialog_select_path_any = 1 ] ; then
 			list_append _user_select_entry_tlist $_user_select_entry_i
-			list_append _user_select_entry_tlist "Use another file or directory"
+			list_append _user_select_entry_tlist "Select file or directory to install from..."
 		else
 			_user_select_entry_ii=$_user_select_entry_i
 			if [ $_user_select_entry_t = --any ] || [ $_user_select_entry_t = --file ] ; then
 				list_append _user_select_entry_tlist $_user_select_entry_ii
-				list_append _user_select_entry_tlist "Use another file"
+				list_append _user_select_entry_tlist "Select file to install from..."
 				_user_select_entry_ii=$(($_user_select_entry_ii + 1))
 			fi
 			if [ $_user_select_entry_t = --any ] || [ $_user_select_entry_t = --dir ] ; then
 				list_append _user_select_entry_tlist $_user_select_entry_ii
-				list_append _user_select_entry_tlist "Use another directory"
+				list_append _user_select_entry_tlist "Select directory to install from..."
 				_user_select_entry_ii=$(($_user_select_entry_ii + 1))
 			fi
 		fi
