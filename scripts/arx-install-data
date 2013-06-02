@@ -1457,7 +1457,7 @@ error() {
 # Let the user select an item from a list or enter a custom one.
 # In batch mode, select the first one if --first is given, die otherwise.
 # Usage: user_select_entry (--existing|--writable) (--any|--file|--dir) \
-#                          <list> <result-var> <desc> <desc-color> <list-color>
+#                          <list> <result-var> <desc> <desc-color> <list-color> <verb>
 user_select_entry() {
 	
 	_user_select_entry_access="$1"
@@ -1468,6 +1468,7 @@ user_select_entry() {
 	_user_select_entry_desc="$5"
 	_user_select_entry_color1="$6"
 	_user_select_entry_color2="$7"
+	_user_select_entry_verb="$8"
 	
 	# Select the first element if in batch mode
 	eval "_user_select_entry_current=\"\$$_user_select_entry_var\""
@@ -1530,17 +1531,17 @@ user_select_entry() {
 		# Add entries for custom files/diectories
 		if [ $_user_select_entry_t = --any ] && [ $dialog_select_path_any = 1 ] ; then
 			list_append _user_select_entry_tlist $_user_select_entry_i
-			list_append _user_select_entry_tlist "Select file or directory to install from..."
+			list_append _user_select_entry_tlist "Select file or directory to $_user_select_entry_verb.."
 		else
 			_user_select_entry_ii=$_user_select_entry_i
 			if [ $_user_select_entry_t = --any ] || [ $_user_select_entry_t = --file ] ; then
 				list_append _user_select_entry_tlist $_user_select_entry_ii
-				list_append _user_select_entry_tlist "Select file to install from..."
+				list_append _user_select_entry_tlist "Select file to $_user_select_entry_verb..."
 				_user_select_entry_ii=$(($_user_select_entry_ii + 1))
 			fi
 			if [ $_user_select_entry_t = --any ] || [ $_user_select_entry_t = --dir ] ; then
 				list_append _user_select_entry_tlist $_user_select_entry_ii
-				list_append _user_select_entry_tlist "Select directory to install from..."
+				list_append _user_select_entry_tlist "Select directory to $_user_select_entry_verb..."
 				_user_select_entry_ii=$(($_user_select_entry_ii + 1))
 			fi
 		fi
@@ -2780,7 +2781,7 @@ if [ $install = 1 ] ; then
 		list_append sourcefiles 'Verify existing install only' ''
 	fi
 	user_select_entry --existing --any sourcefiles sourcefile \
-		"source file or directory to install from" "$green" "$dim_green"
+		"source file or directory to install from" "$green" "$dim_green" 'install from'
 	case "$sourcefile" in
 		'Patch existing install')       install=0 ; patch=1 ;;
 		'Verify existing install only') install=0 ; patch=0 ;;
@@ -2798,7 +2799,7 @@ else
 	verb='verify'     ; access=--existing
 fi ; fi
 user_select_entry $access --dir datadirs datadir \
-	"data directory to $verb" "$cyan" "$dim_cyan"
+	"data directory to $verb" "$cyan" "$dim_cyan" "$verb"
 [ -z "$datadir" ] && die "Missing data dir."
 if [ $install = 1 ] ; then
 	create_dir "$datadir" 'data'
