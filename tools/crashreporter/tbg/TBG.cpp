@@ -24,6 +24,12 @@
 #include <QEventLoop>
 #include <QXmlStreamReader>
 
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+#include <QUrlQuery>
+#else
+typedef QUrl QUrlQuery;
+#endif
+
 #include <boost/range/size.hpp>
 
 namespace TBG
@@ -35,9 +41,17 @@ Server::Server(const QString& serverAddress)
 {
 }
 
+static QByteArray qUrlQueryToPostData(const QUrlQuery & query) {
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+	return query.encodedQuery();
+#else
+	return query.query(QUrl::FullyEncoded).toUtf8();
+#endif
+}
+
 bool Server::login(const QString& username, const QString& password)
 {
-	QUrl params;
+	QUrlQuery params;
 	
 	params.addQueryItem("tbg3_password", password);
 	params.addQueryItem("tbg3_referer", m_ServerAddress);
@@ -47,7 +61,7 @@ bool Server::login(const QString& username, const QString& password)
 	QNetworkRequest request(loginUrl);
 	request.setHeader(QNetworkRequest::ContentTypeHeader,"application/x-www-form-urlencoded");
 	
-	QByteArray data = params.encodedQuery();
+	QByteArray data = qUrlQueryToPostData(params);
 	m_CurrentReply = m_NetAccessManager.post(request, data);
 	
 	// TBG redirects to the account page if there is no previous page
@@ -60,7 +74,7 @@ bool Server::login(const QString& username, const QString& password)
 
 bool Server::createCrashReport(const QString& title, const QString& description, const QString& reproSteps, int version_id, int& issue_id)
 {
-	QUrl params;
+	QUrlQuery params;
 	
 	params.addQueryItem("project_id", "2");
 	params.addQueryItem("issuetype_id", "7");
@@ -80,7 +94,7 @@ bool Server::createCrashReport(const QString& title, const QString& description,
 	QNetworkRequest request(newIssueUrl);
 	request.setHeader(QNetworkRequest::ContentTypeHeader,"application/x-www-form-urlencoded");
 	
-	QByteArray data = params.encodedQuery();
+	QByteArray data = qUrlQueryToPostData(params);
 	
 	m_CurrentReply = m_NetAccessManager.post(request, data);
 	bool bSucceeded = waitForReply();
@@ -96,7 +110,7 @@ bool Server::createCrashReport(const QString& title, const QString& description,
 
 bool Server::addComment(int issue_id, const QString& comment)
 {
-	QUrl params;
+	QUrlQuery params;
 
 	params.addQueryItem("comment_visibility", "1");
 	params.addQueryItem("comment_body", comment);
@@ -108,7 +122,7 @@ bool Server::addComment(int issue_id, const QString& comment)
 	QNetworkRequest request(newIssueUrl);
 	request.setHeader(QNetworkRequest::ContentTypeHeader,"application/x-www-form-urlencoded");
 
-	QByteArray data = params.encodedQuery();
+	QByteArray data = qUrlQueryToPostData(params);
 
 	m_CurrentReply = m_NetAccessManager.post(request, data);
 	bool bSucceeded = waitForReply();
@@ -149,7 +163,7 @@ bool Server::attachFile(int issue_id, const QString& filePath, const QString& fi
 	
 	QFileInfo fileInfo(file);	
 
-	QByteArray boundaryRegular(QString("--"+QString::number(qrand(), 10)).toAscii());
+	QByteArray boundaryRegular(QString("--"+QString::number(qrand(), 10)).toLatin1());
 	QByteArray boundary("\r\n--"+boundaryRegular+"\r\n");
 	QByteArray boundaryLast("\r\n--"+boundaryRegular+"--\r\n");
 

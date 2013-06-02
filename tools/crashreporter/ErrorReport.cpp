@@ -121,7 +121,7 @@ bool ErrorReport::Initialize()
 	for(int i = 0; i < m_pCrashInfo->nbFilesAttached; i++)
 		AddFile(m_pCrashInfo->attachedFiles[i]);
 
-	m_ReportFolder = fs::path(m_pCrashInfo->crashReportFolder) / fs::path(m_CrashDateTime.toString("yyyy.MM.dd hh.mm.ss").toAscii());
+	m_ReportFolder = fs::path(m_pCrashInfo->crashReportFolder) / fs::path(m_CrashDateTime.toString("yyyy.MM.dd hh.mm.ss").toUtf8());
 
 	if(!fs::create_directories(m_ReportFolder))
 	{
@@ -850,16 +850,27 @@ void ErrorReport::ReleaseApplicationLock() {
 #endif
 }
 
-void ErrorReport::AddSSLCertificate()
-{
+void ErrorReport::AddSSLCertificate() {
+	
 	QFile file(":/startcom.cer", 0);
-	if(file.open(QIODevice::ReadOnly))
-	{
+	if(file.open(QIODevice::ReadOnly)) {
 		QSslCertificate certificate(file.readAll(), QSsl::Der);
-		if(certificate.isValid() && !certificate.isNull())
-		{
-			QSslSocket::addDefaultCaCertificate(certificate);
+		
+		if(certificate.isNull()) {
+			return;
 		}
+		
+		#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+		if(!certificate.isValid()) {
+			return;
+		}
+		#else
+		if(certificate.isBlacklisted()) {
+			return;
+		}
+		#endif
+		
+		QSslSocket::addDefaultCaCertificate(certificate);
 	}
 }
 

@@ -44,6 +44,8 @@ option(USE_D3D9 "Build the Direct3D 9 renderer backend" ON)
 option(USE_SDL "Build the SDL windowing backend" ON)
 option(USE_DINPUT8 "Build the DirectInput 8 input backend" ON)
 option(USE_NATIVE_FS "Use the native filesystem backend directly instead of boost" ON)
+option(USE_QT5 "Use Qt 5 if available" ON)
+option(USE_QT4 "Use Qt 4 if available" ON)
 
 # Build types
 option(UNITY_BUILD "Unity build" OFF)
@@ -332,19 +334,59 @@ list(APPEND ARX_LIBRARIES ${Boost_LIBRARIES})
 # Qt and DbgHelp
 set(ARX_HAVE_CRASHREPORTER 0)
 if(BUILD_CRASHREPORTER)
+	
+	# Try to find Qt 5 modules
+	if(NOT HAVE_QT AND USE_QT5)
+		if(USE_QT4)
+			# Missing Qt5*Config.cmake files are not errors, reuduce log spam
+			set(Qt_OPTIONAL_DEPENDENCY QUIET)
+		else()
+			set(Qt_OPTIONAL_DEPENDENCY ${OPTIONAL_DEPENDENCY})
+		endif()
+		find_package(Qt5Core ${Qt_OPTIONAL_DEPENDENCY})
+		find_package(Qt5Gui ${Qt_OPTIONAL_DEPENDENCY})
+		find_package(Qt5Widgets ${Qt_OPTIONAL_DEPENDENCY})
+		find_package(Qt5Network ${Qt_OPTIONAL_DEPENDENCY})
+		if(Qt5Core_FOUND AND Qt5Gui_FOUND AND Qt5Widgets_FOUND AND Qt5Network_FOUND)
+			message(STATUS "Using Qt 5")
+			set(HAVE_QT5 1)
+			set(HAVE_QT 1)
+		endif()
+	endif()
+	
+	# Otherwise, look for Qt 4
+	if(NOT HAVE_QT AND USE_QT4)
+		find_package(Qt4 COMPONENTS QtCore QtGui QtNetwork ${OPTIONAL_DEPENDENCY})
+		if(QT_FOUND)
+			if(NOT MSVC)
+				check_link_library(QtCore QT_QTCORE_LIBRARY_RELEASE QT_QTCORE)
+				check_link_library(QtGui QT_QTGUI_LIBRARY_RELEASE QT_QTGUI)
+				check_link_library(QtNetwork QT_QTNETWORK_LIBRARY_RELEASE QT_QTNETWORK)
+			endif()
+			message(STATUS "Using Qt 4")
+			set(HAVE_QT4 1)
+			set(HAVE_QT 1)
+		endif()
+	endif()
+	
 	# Needed by the crash reporter
-	find_package(Qt4 COMPONENTS QtCore QtGui QtNetwork ${OPTIONAL_DEPENDENCY})
-	if(QT_FOUND)
+	
+	if(HAVE_QT)
 		if(MSVC)
 			find_package(DbgHelp ${OPTIONAL_DEPENDENCY})
 			if(DBGHELP_FOUND)
 				set(ARX_HAVE_CRASHREPORTER 1)
 			endif()
 		else()
-			check_link_library(QtCore QT_QTCORE_LIBRARY_RELEASE QT_QTCORE)
-			check_link_library(QtGui QT_QTGUI_LIBRARY_RELEASE QT_QTGUI)
-			check_link_library(QtNetwork QT_QTNETWORK_LIBRARY_RELEASE QT_QTNETWORK)
 			set(ARX_HAVE_CRASHREPORTER 1)
+		endif()
+	endif()
+	
+	if(ARX_HAVE_CRASHREPORTER)
+		if(HAVE_QT5)
+			set(ARX_HAVE_CRASHREPORTER_QT5 1)
+		elseif(HAVE_QT4)
+			set(ARX_HAVE_CRASHREPORTER_QT4 1)
 		endif()
 	endif()
 endif()
@@ -938,14 +980,35 @@ add_executable_shared(arx WIN32 "${ARX_SOURCES}" "${ARX_LIBRARIES}"
 
 if(ARX_HAVE_CRASHREPORTER)
 	
-	add_definitions(${QT_DEFINITIONS} -DQT_NO_DEBUG)
-	
-	include_directories(SYSTEM
-		"${QT_INCLUDE_DIR}"
-		"${QT_QTCORE_INCLUDE_DIR}"
-		"${QT_QTGUI_INCLUDE_DIR}"
-		"${QT_QTNETWORK_INCLUDE_DIR}"
-	)
+	if(HAVE_QT5)
+		
+		add_definitions(
+			${Qt5Core_DEFINITIONS}
+			${Qt5Gui_DEFINITIONS}
+			${Qt5Widgets_DEFINITIONS}
+			${Qt5Network_DEFINITIONS}
+			-DQT_NO_DEBUG
+		)
+		
+		include_directories(SYSTEM
+			${Qt5Core_INCLUDES}
+			${Qt5Gui_INCLUDES}
+			${Qt5Widgets_INCLUDES}
+			${Qt5Network_INCLUDES}
+		)
+		
+	elseif(HAVE_QT4)
+		
+		add_definitions(${QT_DEFINITIONS} -DQT_NO_DEBUG)
+		
+		include_directories(SYSTEM
+			${QT_INCLUDE_DIR}
+			${QT_QTCORE_INCLUDE_DIR}
+			${QT_QTGUI_INCLUDE_DIR}
+			${QT_QTNETWORK_INCLUDE_DIR}
+		)
+		
+	endif()
 	
 	set(arxcrashreporter_SOURCES
 		${PLATFORM_SOURCES}
@@ -993,21 +1056,41 @@ if(ARX_HAVE_CRASHREPORTER)
 	
 	set(arxcrashreporter_MANUAL_SOURCES "${arxcrashreporter_SOURCES}")
 	
-	qt4_wrap_ui(arxcrashreporter_SOURCES ${arxcrashreporter_UIs})
-	qt4_wrap_cpp(arxcrashreporter_SOURCES ${arxcrashreporter_MOC_HEADERS})
-	qt4_add_resources(arxcrashreporter_SOURCES ${arxcrashreporter_RESOURCES})
-	
 	set(SRC_DIR tools/crashreporter/)
 	
 	create_source_groups(arxcrashreporter_SOURCES)
 	
 	set(arxcrashreporter_LIBRARIES
 		${BASE_LIBRARIES}
-		${QT_QTCORE_LIBRARY_RELEASE}
-		${QT_QTGUI_LIBRARY_RELEASE}
-		${QT_QTNETWORK_LIBRARY_RELEASE}
 		${CMAKE_THREAD_LIBS_INIT}
 	)
+	
+	if(HAVE_QT5)
+		
+		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${Qt5Core_EXECUTABLE_COMPILE_FLAGS}")
+		
+		qt5_wrap_ui(arxcrashreporter_SOURCES ${arxcrashreporter_UIs})
+		qt5_wrap_cpp(arxcrashreporter_SOURCES ${arxcrashreporter_MOC_HEADERS})
+		qt5_add_resources(arxcrashreporter_SOURCES ${arxcrashreporter_RESOURCES})
+		
+		list(APPEND arxcrashreporter_LIBRARIES
+			${Qt5Widgets_LIBRARIES}
+			${Qt5Network_LIBRARIES}
+		)
+		
+	elseif(HAVE_QT4)
+		
+		qt4_wrap_ui(arxcrashreporter_SOURCES ${arxcrashreporter_UIs})
+		qt4_wrap_cpp(arxcrashreporter_SOURCES ${arxcrashreporter_MOC_HEADERS})
+		qt4_add_resources(arxcrashreporter_SOURCES ${arxcrashreporter_RESOURCES})
+		
+		list(APPEND arxcrashreporter_LIBRARIES
+			${QT_QTCORE_LIBRARY_RELEASE}
+			${QT_QTGUI_LIBRARY_RELEASE}
+			${QT_QTNETWORK_LIBRARY_RELEASE}
+		)
+		
+	endif()
 	
 	if(MSVC)
 		list(APPEND arxcrashreporter_LIBRARIES winmm psapi imm32)
@@ -1172,8 +1255,9 @@ print_configuration("Crash handler"
 	ARX_HAVE_CRASHHANDLER_WINDOWS "Win32"
 )
 print_configuration("Crash reporter" FIRST
-	ARX_HAVE_CRASHREPORTER "enabled"
-	1                      "disabled"
+	ARX_HAVE_CRASHREPORTER_QT5 "Qt 5"
+	ARX_HAVE_CRASHREPORTER_QT4 "Qt 4"
+	1                          "disabled"
 )
 print_configuration("Tools" FIRST
 	BUILD_TOOLS "enabled"
