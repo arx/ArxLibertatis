@@ -14,19 +14,19 @@
 #include "util/cmdline/detail/lfunction/MakeLFunctionC.h"
 
 #define FUNCTION_SPECIFICATION
-#include "util/cmdline/detail/lfunction/MakeLFunctionOp.h"
+#include "util/cmdline/detail/lfunction/MakeLFunctionOp.h" // duplicate-include
 #undef FUNCTION_SPECIFICATION
 
 #define FUNCTION_SPECIFICATION const
-#include "util/cmdline/detail/lfunction/MakeLFunctionOp.h"
+#include "util/cmdline/detail/lfunction/MakeLFunctionOp.h" // duplicate-include
 #undef FUNCTION_SPECIFICATION
 
 #define FUNCTION_SPECIFICATION volatile
-#include "util/cmdline/detail/lfunction/MakeLFunctionOp.h"
+#include "util/cmdline/detail/lfunction/MakeLFunctionOp.h" // duplicate-include
 #undef FUNCTION_SPECIFICATION
 
 #define FUNCTION_SPECIFICATION const volatile
-#include "util/cmdline/detail/lfunction/MakeLFunctionOp.h"
+#include "util/cmdline/detail/lfunction/MakeLFunctionOp.h" // duplicate-include
 #undef FUNCTION_SPECIFICATION
 
 #undef N

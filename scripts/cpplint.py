@@ -2186,6 +2186,7 @@ def CheckStyle(filename, clean_lines, linenum, file_extension, error):
   CheckCheck(filename, clean_lines, linenum, error)
 
 
+_RE_PATTERN_INCLUDE_DUPLICATE = re.compile('// +duplicate-include')
 _RE_PATTERN_INCLUDE_NEW_STYLE = re.compile(r'#include +"[^/]+\.h"')
 _RE_PATTERN_INCLUDE_QT = re.compile(r'#include +"(ui_|moc_)[^/]+\.h"')
 _RE_PATTERN_INCLUDE = re.compile(r'^\s*#\s*include\s*([<"])([^>"]*)[>"].*$')
@@ -2332,7 +2333,7 @@ def CheckIncludeLine(filename, clean_lines, linenum, include_state, error):
   if match:
     include = match.group(2)
     is_system = (match.group(1) == '<')
-    if include in include_state:
+    if include in include_state and not _RE_PATTERN_INCLUDE_DUPLICATE.search(clean_lines.raw_lines[linenum]):
       error(filename, linenum, 'build/include', 4,
             '"%s" already included at %s:%s' %
             (include, filename, include_state[include]))
