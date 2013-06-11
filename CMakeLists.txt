@@ -432,6 +432,17 @@ if(NOT MSVC)
 		endif()
 	endif()
 	
+	# Not a symbol, so we can't use check_symbol_exists
+	check_compile(ARX_HAVE_BUILTIN_TRAP
+		"${CMAKE_MODULE_PATH}/check_compiler_builtin_trap.cpp"
+		"__builtin_trap" "compiler feature"
+	)
+	
+	check_compile(ARX_HAVE_ATTRIBUTE_FORMAT_PRINTF
+		"${CMAKE_MODULE_PATH}/check_compiler_attribute_format_printf.cpp"
+		"__attribute__((format(printf, i, j)))" "compiler feature"
+	)
+	
 	check_symbol_exists(nanosleep "time.h" ARX_HAVE_NANOSLEEP)
 	
 	set(CMAKE_REQUIRED_LIBRARIES "${CMAKE_THREAD_LIBS_INIT}")
@@ -524,12 +535,6 @@ if(NOT MSVC)
 		endif()
 		
 	endif(USE_NATIVE_FS)
-	
-	# check support for __attribute__((format(printf, i, j)))
-	check_cxx_source_compiles(
-		"void my_printf(const char *, ...) __attribute__((format(printf, 1, 2))); int main() { return 0; };\n"
-		ARX_HAVE_ATTRIBUTE_FORMAT_PRINTF
-	)
 	
 endif(NOT MSVC)
 
@@ -877,7 +882,7 @@ elseif(NOT ${Boost_VERSION} LESS 104400)
 	# This means the Boost.Filesystem ABI depends on what C++ version was used
 	# to compile the library - check for that!
 	check_compile(boost_filesystem_abi_matches
-		"${CMAKE_MODULE_PATH}/boostfs_cxx11_scoped_enum.cpp"
+		"${CMAKE_MODULE_PATH}/check_boostfs_cxx11_scoped_enum.cpp"
 		"scoped enum" "Boost ABI"
 		"${Boost_LIBRARIES}"
 		"mismatch, fixing"

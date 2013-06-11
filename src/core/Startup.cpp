@@ -51,6 +51,7 @@
 #include "io/log/FileLogger.h"
 #include "io/log/Logger.h"
 #include "math/Random.h"
+#include "platform/Compiler.h"
 #include "platform/CrashHandler.h"
 #include "platform/Environment.h"
 #include "platform/Time.h"

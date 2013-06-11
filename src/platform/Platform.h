@@ -21,6 +21,7 @@
 #define ARX_PLATFORM_PLATFORM_H
 
 #include <stddef.h>
+#include <cstdlib>
 
 #include "platform/PlatformConfig.h"
 
@@ -57,57 +58,12 @@
                           Compilers
 ------------------------------------------------------------*/
 
-#define ARX_COMPILER_UNKNOWN 0
-#define ARX_COMPILER_VC9     1
-#define ARX_COMPILER_VC10    2
-#define ARX_COMPILER_GCC     3
-#define ARX_COMPILER_CLANG   4
-#define ARX_COMPILER_MINGW   5
-#define ARX_COMPILER_VC11	 6
-
-#if defined(__clang__)
-	#define ARX_COMPILER                ARX_COMPILER_CLANG
-	#define ARX_COMPILER_NAME           "Clang"
-	#define ARX_COMPILER_VERSION        (__clang_major__ * 10000 + __clang_minor__ * 100 \
-	                                     + __clang_patchlevel__)
-	#define ARX_COMPILER_VERNAME        ARX_COMPILER_NAME " " __clang_version__
-#elif defined(__MINGW32__)
-	#define ARX_COMPILER                ARX_COMPILER_MINGW
-	#define ARX_COMPILER_NAME           "MinGW32"
-	#define ARX_COMPILER_VERSION        (__MINGW32_MAJOR_VERSION * 10000 + __MINGW32_MINOR_VERSION * 100)
-	#define ARX_COMPILER_VERNAME        ARX_COMPILER_NAME " " \
-	                                    ARX_STR(__MINGW32_MAJOR_VERSION) \
-	                                    "." ARX_STR(__MINGW32_MINOR_VERSION)
-#elif defined(__GNUC__)
-	#define ARX_COMPILER                ARX_COMPILER_GCC
-	#define ARX_COMPILER_NAME           "GCC"
-	#define ARX_COMPILER_VERSION        (__GNUC__ * 10000 + __GNUC_MINOR__ * 100 + __GNUC_PATCHLEVEL__)
-	#define ARX_COMPILER_VERNAME        ARX_COMPILER_NAME " " __VERSION__
-#elif defined(_MSC_VER)
-	#if _MSC_VER < 1600
-		#define ARX_COMPILER              ARX_COMPILER_VC9
-		#define ARX_COMPILER_NAME         "VC9"
-	#elif _MSC_VER < 1700
-		#define ARX_COMPILER              ARX_COMPILER_VC10
-		#define ARX_COMPILER_NAME         "VC10"
-	#elif _MSC_VER < 1800
-		#define ARX_COMPILER              ARX_COMPILER_VC11
-		#define ARX_COMPILER_NAME         "VC11"
-	#endif
-	#define ARX_COMPILER_VERSION        _MSC_VER
-	#define ARX_COMPILER_VERNAME        ARX_COMPILER_NAME " " ARX_STR(ARX_COMPILER_VERSION)
-#else
-	#define ARX_COMPILER                ARX_COMPILER_UNKNOWN
-	#define ARX_COMPILER_NAME           "Unknown"
-	#define ARX_COMPILER_VERSION        0
-	#define ARX_COMPILER_VERNAME        ARX_COMPILER_NAME
-#endif
-
-#define ARX_COMPILER_MSVC ((ARX_COMPILER == ARX_COMPILER_VC9) || (ARX_COMPILER == ARX_COMPILER_VC10) || (ARX_COMPILER == ARX_COMPILER_VC11))
+// This is used in many places, keep it for now
+#define ARX_COMPILER_MSVC defined(_MSC_VER)
 
 #if ARX_COMPILER_MSVC
 	#include <direct.h>
-	#define __func__ __FUNCTION__	// MSVC doesn't know about C99 __func__
+	#define __func__ __FUNCTION__ // MSVC doesn't know about C99 __func__
 #endif
 
 /* ---------------------------------------------------------
@@ -154,40 +110,56 @@ typedef double f64; // 64 bits double float
                           Break
 ------------------------------------------------------------*/
 
+/*!
+ * ARX_DEBUG_BREAK() - halt execution and notify any attached debugger
+ */
 #if ARX_COMPILER_MSVC
 	#define ARX_DEBUG_BREAK() __debugbreak()
-#elif ARX_COMPILER == ARX_COMPILER_GCC || ARX_COMPILER == ARX_COMPILER_CLANG || ARX_COMPILER == ARX_COMPILER_MINGW
+#elif ARX_HAVE_BUILTIN_TRAP
 	#define ARX_DEBUG_BREAK() __builtin_trap()
 #else
-	// TODO we should check for existence of these functions in CMakeLists.txt and provide a fallback (divide by zero...)
-	#define ARX_DEBUG_BREAK() ((void)0)
+	#define ARX_DEBUG_BREAK() std::abort()
 #endif
 
 /* ---------------------------------------------------------
                 Compiler-specific attributes
 ------------------------------------------------------------*/
 
-#if ARX_COMPILER_MSVC  // MS compilers support noop which discards everything inside the parens
+//! ARX_DISCARD(...) - Discard parameters from a macro
+#if ARX_COMPILER_MSVC
+	// MS compilers support noop which discards everything inside the parens
 	#define ARX_DISCARD(...) __noop
 #else
 	#define ARX_DISCARD(...) ((void)0)
 #endif
 
-#ifdef ARX_HAVE_ATTRIBUTE_FORMAT_PRINTF
-
+/*!
+ * Declare that a function argument is a printf-like format string.
+ * 
+ * Usage: T function(args, message, ...) ARX_FORMAT_PRINTF(message_arg, param_vararg)
+ * 
+ * @param message_arg index of the format string arg (1 for the first)
+ * @param param_vararg index of the vararg for the parameters
+ * 
+ * This is useful to
+ *  a) Let the compiler check the format string and parameters when calling the function
+ *  b) Prevent warnings due to a non-literal format string in the implementation
+ */
+#if ARX_HAVE_ATTRIBUTE_FORMAT_PRINTF
 #define ARX_FORMAT_PRINTF(message_arg, param_vararg) \
 	__attribute__((format(printf, message_arg, param_vararg)))
-
-#else // ARX_HAVE_ATTRIBUTE_FORMAT_PRINTF
-
+#else
 #define ARX_FORMAT_PRINTF(message_arg, param_vararg)
-
-#endif // ARX_HAVE_ATTRIBUTE_FORMAT_PRINTF
+#endif
 
 /* ---------------------------------------------------------
                      Macro for assertion
 ------------------------------------------------------------*/
 
+/*!
+ * Log that an assertion has failed.
+ * This is a low-level implementation, use arx_assert() or arx_assert_msg() instead!
+ */
 void assertionFailed(const char * expression, const char * file, unsigned line,
                      const char * message = NULL, ...) ARX_FORMAT_PRINTF(4, 5);
 
@@ -215,7 +187,7 @@ void assertionFailed(const char * expression, const char * file, unsigned line,
                             Define
 ------------------------------------------------------------*/
 
-// Get the number of items in a static array
+//! Get the number of items in a static array
 #define ARRAY_SIZE(a) ((sizeof(a) / sizeof(*(a))) / static_cast<size_t>(!(sizeof(a) % sizeof(*(a)))))
 
 /* ---------------------------------------------------------
@@ -224,7 +196,10 @@ void assertionFailed(const char * expression, const char * file, unsigned line,
 
 #define ARX_DEAD_CODE() arx_assert(false)
 
-// Remove warnings about unused but necessary variable (unused params, variables only used for asserts...)
+/*!
+ * Remove warnings about unused but necessary variable
+ * (unused params, variables only used for asserts...)
+ */
 #define ARX_UNUSED(x) ((void)&x)
 
 /* ---------------------------------------------------------
