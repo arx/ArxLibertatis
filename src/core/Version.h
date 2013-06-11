@@ -25,6 +25,8 @@
 extern const std::string arx_version;
 extern const std::string arx_release_codename;
 
+extern const std::string arx_credits;
+
 extern const int tbg_version_id;
 
 #endif // ARX_CORE_VERSION_H

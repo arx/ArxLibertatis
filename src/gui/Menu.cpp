@@ -53,11 +53,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "Configure.h"
 
-#include "core/Config.h"
-#include "core/GameTime.h"
 #include "core/Application.h"
-#include "core/Localisation.h"
+#include "core/Config.h"
 #include "core/Core.h"
+#include "core/GameTime.h"
+#include "core/Localisation.h"
+#include "core/Version.h"
 
 #include "game/Player.h"
 
@@ -211,33 +212,9 @@ void ARX_Menu_Resources_Create() {
 		
 		LogDebug("Loaded credits file: " << creditsFile << " of size " << creditsSize);
 		
-		// TODO move this to an external file once we ship our own resources
-		ARXmenu.mda->credits =
-			"~ARX LIBERTATIS CONTRIBUTORS\n\n"
-			"Philippe Cavalaria (Nuky)\n"
-			"Dimoks\n"
-			"Chris Gray (chrismgray)\n"
-			"guidoj\n"
-			"Thomas Leroy (LordSk)\n"
-			"Erik Lund (Akhilla)\n"
-			"Sebastien Lussier (BobJelly)\n"
-			"Jonathan Powell (jfpowell)\n"
-			"Elliot Rigets (adejr)\n"
-			"Fabian Roth (Eli2)\n"
-			"Lubosz Sarnecki (lubosz)\n"
-			"Daniel Scharrer (dscharrer)\n"
-			"vytautas (aka. ProzacR)\n"
-			"\n\n~Arx Libertatis is free software:\n"
-			"you can redistribute it and/or modify it under the terms of the"
-			" GNU General Public License as published by the Free Software Foundation,"
-			" either version 3 of the License, or (at your option) any later version.\n\n"
-			"Arx Libertatis is distributed in the hope that it will be useful,"
-			" but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY"
-			" or FITNESS FOR A PARTICULAR PURPOSE."
-			"  See the GNU General Public License for more details.\n\n"
-			"You should have received a copy of the GNU General Public License"
-			" along with Arx Libertatis. If not, see <http://www.gnu.org/licenses/>.\n\n"
-			"\n~ORIGINAL ARX FATALIS CREDITS:\n\n\n";
+		ARXmenu.mda->credits = arx_credits;
+		
+		ARXmenu.mda->credits += "\n\n\n~ORIGINAL ARX FATALIS CREDITS:\n\n\n";
 		
 		ARXmenu.mda->credits += util::convertUTF16LEToUTF8(credits, credits + creditsSize);
 		

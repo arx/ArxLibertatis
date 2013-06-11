@@ -25,11 +25,14 @@
  * For available variables see cmake/VersionString.cmake.
  */
 
-#if ${BASE_VERSION_COUNT} != 4 && ${BASE_VERSION_COUNT} != 5
+#if ${VERSION_COUNT} != 4 && ${VERSION_COUNT} != 5
 #error "Configure error - the VERSION file should specify three or five non-empty lines!"
 #endif
 
-const std::string arx_version = "${BASE_VERSION_0}${GIT_SUFFIX_5}";
-const std::string arx_release_codename = "${BASE_VERSION_4}";
+const std::string arx_version = "${VERSION_0}${GIT_SUFFIX_5}";
+const std::string arx_release_codename = "${VERSION_4}";
 
-const int tbg_version_id = ${BASE_VERSION_2};
+// TODO move this to an external file once we ship our own resources
+const std::string arx_credits = "${AUTHORS}";
+
+const int tbg_version_id = ${VERSION_2};

@@ -972,9 +972,11 @@ file(MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/platform")
 set(PLATFORM_CONFIG_H "platform/PlatformConfig.h")
 configure_file("${SRC_DIR}/${PLATFORM_CONFIG_H}.in" "${PLATFORM_CONFIG_H}" ESCAPE_QUOTES)
 
-set(VERSION_FILE "${CMAKE_BINARY_DIR}/core/Version.cpp")
+set(VERSION_TEMPLATE "${SRC_DIR}/core/Version.cpp.in")
+set(VERSION_FILE     "${CMAKE_BINARY_DIR}/core/Version.cpp")
+set(VERSION_SOURCES  VERSION "VERSION" AUTHORS "AUTHORS")
 file(MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/core")
-version_file("${SRC_DIR}/core/Version.cpp.in" "${VERSION_FILE}" "VERSION" ".git")
+version_file("${VERSION_TEMPLATE}" "${VERSION_FILE}" "${VERSION_SOURCES}" ".git")
 list(APPEND ARX_SOURCES "${VERSION_FILE}")
 
 
