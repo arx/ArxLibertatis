@@ -59,7 +59,11 @@
 ------------------------------------------------------------*/
 
 // This is used in many places, keep it for now
-#define ARX_COMPILER_MSVC defined(_MSC_VER)
+#if defined(_MSC_VER)
+#define ARX_COMPILER_MSVC 1
+#else
+#define ARX_COMPILER_MSVC 0
+#endif
 
 #if ARX_COMPILER_MSVC
 	#include <direct.h>
