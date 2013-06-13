@@ -103,7 +103,10 @@ static ExitStatus parseCommandLine(int argc, char ** argv) {
 	BaseOption::registerAll(cli);
 	
 	std::vector<std::string> args;
-	std::copy(argv+1, argv+argc+!argc, std::inserter(args, args.end()));
+
+	if(argc) {
+		std::copy(argv + 1, argv + argc, std::inserter(args, args.end()));
+	}
 	
 	std::list<ParsedOption> allOptions;
 	ParsedOption currentOption;
