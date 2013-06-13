@@ -408,6 +408,7 @@ install=1         # Install new non-patch files
 installed_stuff=0 # Have we already installed anything?
 patch=1           # Install patch files if needed
 probe_patch=1     # Look for patch files in standard locations and download if needed
+redirect_log=1    # Redirect standard output/error output to a log file in GUI mode
 
 # Enable compatiblity with old install-* scripts.
 # Usage: enable_compat_mode <help-flag> <sourcefile> <patchfile> <datadir>
@@ -524,6 +525,7 @@ Usage: $command [--source] source [--patch patchfile] [[--data-dir] datadir]
                      If none of them are available the script is re-launched
                      in a terminal emulator.
  -c, --cli           Interactively ask the user to select files/directories (no GUI)
+ --no-redirect-log   Don't redirect output to a log file when in GUI mode
  --disable-COMMAND   Don't use the given tool, even if it exists.
                      Valid values are unzip, bsdtar, cabextract, isoinfo,
                      fuseiso, fusermount, mount, umount and innoextract,
@@ -671,6 +673,7 @@ while [ $# -gt 0 ] ; do
 		-b|--batch)       batch=1         ;;
 		-g|--gui)                   gui=1 ;;
 		-c|--cui|--cli)   batch=0 ; gui=0 ;;
+		--no-redirect-log) redirect_log=0 ;;
 		--i-am-insane)    user_is_sane=0  ;;
 		--disable-*)              disable_command "${1#--disable-}" ;;
 		--disable)        shift ; disable_command "${1#--disable-}" ;;
@@ -784,15 +787,20 @@ $message"
 	# We don't need colors for the UI, but they may cause problems - get rit of them
 	disable_color
 	
-	# Redirect all further output into a log file
-	logfile="$(readlink -f "$(mktemp -t arx-install-data-XXXXX.log)")"
-	clean_logfile() {
-		[ -z "$logfile" ] || rm "$logfile"
-	}
-	on_exit clean_logfile
-	print "Enabling GUI mode, standard output/error saved to $logfile"
-	print "Use the --cli option for an interactive command-line interface."
-	exec > "$logfile" 2>&1
+	if [ $redirect_log = 1 ] ; then
+		# Redirect all further output into a log file
+		logfile="$(readlink -f "$(mktemp -t arx-install-data-XXXXX.log)")"
+		clean_logfile() {
+			[ -z "$logfile" ] || rm "$logfile"
+		}
+		on_exit clean_logfile
+		print "Enabling GUI mode, standard output/error saved to $logfile"
+		print "Use the --cli option for an interactive command-line interface."
+		exec > "$logfile" 2>&1
+	else
+		print "Enabling GUI mode..."
+		print "Use the --cli option for an interactive command-line interface."
+	fi
 	
 else
 	
