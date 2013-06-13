@@ -456,7 +456,7 @@ bool ArxGame::AddPaks() {
 		
 		// Try to launch the data file installer on non-Windows systems
 		#if ARX_PLATFORM != ARX_PLATFORM_WIN32
-		int ret = system("nohup arx-install-data >/dev/null 2>&1 &");
+		int ret = system("nohup arx-install-data --gui >/dev/null 2>&1 &");
 		(void)ret; // we really don't care!
 		#endif
 		
