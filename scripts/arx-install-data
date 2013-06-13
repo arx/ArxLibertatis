@@ -544,11 +544,13 @@ Usage: $command [--source] source [--patch patchfile] [[--data-dir] datadir]
 	help_unshield="$(print_help_or extract_installshield_reqs "$dim_pink")"
 	help_download="$(print_help_or download_reqs "$dim_pink")"
 	help_optpatch="may use the 1.21 patch file and require ${help_innosetup} if not already patched"
-	help_probe_file_dirst="
+	help_probe_file_dirs="
    a) the current working directory  (\$PWD):              $user_pwd
    b) the user's downloads directory (\$HOME):             $HOME
    c) the user's home directory      (\$XDG_DOWNLOAD_DIR): $downloads_dir
    d) the temp directory             (\$TMPDIR):           $tempdir"
+  help_probe_file_dirs_patch="${help_probe_file_dirs}
+   e) the directory containing the source file"
   help_probed_files="$gog_names $demo_names"
 	print "
 The ${pink}dependencies${reset} required by the ${command} script depend on the source files.
@@ -596,7 +598,7 @@ The ${green}source${reset} can be one of many things:
    never uses the 1.21 patch file
 
 If no source is specified, these files will be probed:
-1. The following files in${help_probe_file_dirst}
+1. The following files in${help_probe_file_dirs}
 $(print_help_list "   1.%d ${green}" help_probed_files)
 2. If \$WINEPREFIX is set, any installation in there
 3. Any installation in the default WINEPREFIX (${green}~/.wine${reset})
@@ -605,7 +607,7 @@ $(print_help_list "   1.%d ${green}" help_probed_files)
 
 If no ${blue}patch${reset} file is specified, but is needed and
 the --no-patch option wasn't specified specified:
-1. Try to find the following files in${help_probe_file_dirst}
+1. Try to find the following files in${help_probe_file_dirs_patch}
    1.1. ${blue}${patch_name}${reset}
    1.2. $(printf "$patch_name_localized" '<LANG>')
         Where <LANG> is one of EN, ES, FR, GE, IT, RU,
@@ -617,7 +619,7 @@ Extracting the ${patch_ver} patch file requires ${help_innosetup}.
 
 For the Japanese version, if no ${blue}patch-jp${reset} file is specified,
 but is needed and the --no-patch option wasn't specified specified:
-1. Try to find ${blue}${patch_jp_name}${reset} in${help_probe_file_dirst}
+1. Try to find ${blue}${patch_jp_name}${reset} in${help_probe_file_dirs_patch}
 2. Downloaded from:
 $(print_help_list " - ${dim_blue}" patch_jp_urls)
 Downloading the patch file requires ${help_download}.
@@ -2795,6 +2797,7 @@ if [ $install = 1 ] ; then
 		'Verify existing install only') install=0 ; patch=0 ;;
 		*) [ -e "$sourcefile" ] || die "Missing source file: $sourcefile"
 	esac
+	set_append probe_file_dirs "$(dirname "$sourcefile")"
 fi
 
 # Select destination data directory
