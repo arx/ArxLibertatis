@@ -594,7 +594,7 @@ float ARX_EQUIPMENT_ComputeDamages(Entity * io_source, Entity * io_target, float
 
 		attack = player.Full_damages;
 
-		if (rnd() * 100 <= (float)(player.Full_Attribute_Dexterity - 9) * 2.f + (float)(player.Full_Skill_Close_Combat * ( 1.0f / 5 )))
+		if (rnd() * 100 <= player.Full_Critical_Hit)
 		{
 			if (SendIOScriptEvent(io_source, SM_CRITICAL) != REFUSE)
 				critical = true;
@@ -635,7 +635,7 @@ float ARX_EQUIPMENT_ComputeDamages(Entity * io_source, Entity * io_target, float
 
 		if (value >= 0)
 		{
-			damages *= (spells[value].caster_level * 0.05f);
+			damages *= (1 - spells[value].caster_level * 0.05f);
 		}
 
 		if (rnd() * 100 <= io_source->_npcdata->critical) 
@@ -667,7 +667,7 @@ float ARX_EQUIPMENT_ComputeDamages(Entity * io_source, Entity * io_target, float
 
 		if (value >= 0)
 		{
-			float modif = (spells[value].caster_level * 0.05f);
+			float modif = (1 - spells[value].caster_level * 0.05f);
 			ac *= modif;
 			absorb *= modif;
 		}
