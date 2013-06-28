@@ -111,7 +111,8 @@ static ExitStatus parseCommandLine(int argc, char ** argv) {
 	std::list<ParsedOption> allOptions;
 	ParsedOption currentOption;
 	
-	BOOST_FOREACH(std::string& token, args) {
+	// Pass 1: Split command-line arguments into options and commands
+	BOOST_FOREACH(std::string & token, args) {
 		
 		ParsedOption::OptionType newOptionType(ParsedOption::Invalid);
 		
@@ -121,11 +122,14 @@ static ExitStatus parseCommandLine(int argc, char ** argv) {
 		} else if(boost::algorithm::starts_with(token, "-")) {            // handle short options
 			token.erase(0, 1);
 			newOptionType = ParsedOption::Short;
-		} else if(!currentOption.Invalid) {
+		} else if(currentOption.m_type != ParsedOption::Invalid) {
 			currentOption.m_arguments.push_back(token);
 		} else {
 			// ERROR: invalid command line
-			break;
+			std::cerr << "Error parsing command-line: "
+			          << "commands must start with at least one dash: " << token << "\n\n";
+			ShowHelp();
+			return ExitFailure;
 		}
 		
 		if(newOptionType != ParsedOption::Invalid) {
@@ -158,12 +162,14 @@ static ExitStatus parseCommandLine(int argc, char ** argv) {
 		currentOption.reset();
 	}
 	
-	// Process all command line options received
 	try {
+		
+		// Pass 2: Process all command line options received
 		interpreter<std::string>::type_cast_t tc;
 		BOOST_FOREACH(const ParsedOption& option, allOptions) {
 			cli.invoke(option.m_name, option.m_arguments.begin(), option.m_arguments.end(), tc);
 		}
+		
 	} catch(command_line_exception& e) {
 		std::cerr << "Error parsing command-line: " << e.what() << "\n\n";
 		ShowHelp();
