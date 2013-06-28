@@ -30,40 +30,52 @@
 
 // Linked list of statically defined options (no memory allocation)
 class BaseOption : public boost::intrusive::list_base_hook<> {
+	
 public:
-	static void registerAll(interpreter<std::string>& l);
+	
+	static void registerAll(interpreter<std::string> & l);
+		
+protected:
+	
+	BaseOption(const char* longName, const char* shortName, const char* description);
+	
+private:
+	
+	static boost::intrusive::list<BaseOption> & getOptionsList();
+	
+	virtual void registerOption(interpreter<std::string> & l) = 0;
 	
 protected:
-	BaseOption(const char* longName, const char* shortName, const char* description);
-
-private:
-	static boost::intrusive::list<BaseOption>& getOptionsList();
-
-	virtual void registerOption(interpreter<std::string>& l) = 0;
-
-protected:
-	const char* m_longName;
-	const char* m_shortName;
-	const char* m_description;
+	
+	const char * m_longName;
+	const char * m_shortName;
+	const char * m_description;
+	
 };
 
 template<typename Handler>
 class Option : public BaseOption {
+	
 public:
-	Option(const char* longName, const char* shortName, const char* description, Handler const& handler) 
+	
+	Option(const char * longName, const char * shortName, const char * description,
+	       Handler const & handler, const char * argNames)
 		: BaseOption(longName, shortName, description)
-		, m_handler(handler) {
+		, m_handler(handler), m_argNames(argNames) { }
+	
+	virtual void registerOption(interpreter<std::string> & l) {
+		l.add(m_handler, interpreter<std::string>::op_name_t(m_shortName)(m_longName)
+			.description(m_description)
+			.arg_count(boost::function_types::function_arity<Handler>::value)
+			.arg_names(m_argNames)
+		);
 	}
-
-	virtual void registerOption(interpreter<std::string>& l) {
-		l.add(m_handler, interpreter<std::string>::op_name_t(m_shortName)
-		                                                    (m_longName)
-		                                                    .description(m_description)
-		                                                    .arg_count(boost::function_types::function_arity<Handler>::value));
-	}
-
+	
 private:
+	
 	Handler m_handler;
+	const char * m_argNames;
+	
 };
 
 
@@ -71,22 +83,27 @@ private:
 
 #ifdef ARX_COMPILER_HAS_CXX11_AUTO
 	template<typename Handler>
-	Option<Handler> make_option(const char* longName, const char* shortName, const char* description, Handler const& funcHandler)
-	{
-		return Option<Handler>(longName, shortName, description, funcHandler);
+	Option<Handler> make_option(const char * longName, const char * shortName,
+	                            const char * description, Handler const & funcHandler,
+	                            const char * argNames = NULL) {
+		return Option<Handler>(longName, shortName, description, funcHandler, argNames);
 	}
-
-	#define ARX_PROGRAM_OPTION(longOpt, shortOpt, description, handler) \
-		static auto UNIQUE_NAME(optionRegistrator) = make_option(longOpt, shortOpt, description, handler);
+	#define ARX_PROGRAM_OPTION(longOpt, shortOpt, description, handler, ...) \
+		static auto UNIQUE_NAME(optionRegistrator) \
+			= make_option(longOpt, shortOpt, description, handler, ##__VA_ARGS__);
 #else
-	#define ARX_PROGRAM_OPTION(longOpt, shortOpt, description, handler)                                                                                            \
-		template<typename Handler>                                                                                                                                  \
-		static BaseOption* UNIQUE_NAME(declare_option)(const char* longName, const char* shortName, const char* desc, Handler const& funcHandler) \
-		{                                                                                                                                                           \
-			static Option<Handler> s_handler(longName, shortName, desc, funcHandler);                                                                        \
-			return &s_handler;                                                                                                                                      \
-		}                                                                                                                                                           \
-		static BaseOption* UNIQUE_NAME(optionRegistrator) = UNIQUE_NAME(declare_option)(longOpt, shortOpt, description, handler)
+	#define ARX_PROGRAM_OPTION(longOpt, shortOpt, description, handler, ...) \
+		template<typename Handler> \
+		static BaseOption * UNIQUE_NAME(declare_option)(const char * longName, \
+		                                                const char * shortName, \
+		                                                const char * desc, \
+		                                                Handler const & funcHandler, \
+		                                                const char * argDesc = NULL) { \
+			static Option<Handler> s_handler(longName, shortName, desc, funcHandler, argDesc); \
+			return &s_handler; \
+		} \
+		static BaseOption * UNIQUE_NAME(optionRegistrator) \
+			= UNIQUE_NAME(declare_option)(longOpt, shortOpt, description, handler, ##__VA_ARGS__)
 #endif
 
 #endif // ARX_PLATFORM_PROGRAMOPTIONS_H

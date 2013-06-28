@@ -57,15 +57,15 @@ public:
 	using super_t::end;
 	using super_t::erase;
 	
-	explicit key_type(value_type const& v) : m_argCount(0) {
+	explicit key_type(const value_type & v) : m_argCount(0), m_argNames(NULL) {
 		(*this)(v);
 	}
 	
-	key_type & operator() (value_type const&v) {
+	key_type & operator()(const value_type & v) {
 		return super_t::push_back(v), *this;
 	}
 	
-	key_type & description(value_type const& d) {
+	key_type & description(const value_type & d) {
 		m_description = d;
 		return *this;
 	}
@@ -79,14 +79,32 @@ public:
 		return *this;
 	}
 	
-	size_t has_args() const {
+	size_t get_arg_count() const {
+		return m_argCount;
+	}
+	
+	bool has_args() const {
 		return m_argCount != 0;
+	}
+	
+	key_type & arg_names(const char * argNames) {
+		m_argNames = argNames;
+		return *this;
+	}
+	
+	const char * get_arg_names() const {
+		return m_argNames;
+	}
+	
+	bool has_arg_names() const {
+		return m_argNames != NULL;
 	}
 	
 private:
 	
-	StringType m_description;
-	size_t     m_argCount;
+	StringType   m_description;
+	size_t       m_argCount;
+	const char * m_argNames;
 	
 };
 

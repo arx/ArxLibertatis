@@ -246,12 +246,18 @@ struct print_op_t {
 		
 		(*stream_) << "  -" << *it;
 		
-		for(++it;it!=end;++it) {
+		for(++it; it != end; ++it) {
 			(*stream_) << " [ " << "--" << *it << " ]";
 		}
 		
 		if(key.has_args()) {
-			(*stream_) << " arg";
+			if(key.has_arg_names()) {
+				(*stream_) << ' ' << key.get_arg_names();
+			} else {
+				for(size_t i = 0; i < key.get_arg_count(); i++) {
+					(*stream_) << " ARG";
+				}
+			}
 		}
 		
 		align(key);
