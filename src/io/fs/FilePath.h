@@ -166,7 +166,13 @@ public:
 		pathstr.swap(other.pathstr);
 	}
 	
-	//! @return str.empty() ? !ext().empty() : ext() == str || ext.substr(1) == str();
+	/*!
+	 * Check if a path has a fixe extension.
+	 *
+	 * Comparison is is done case-insensitively.
+	 *
+	 * @return str.empty() ? !ext().empty() : ext() == str || ext.substr(1) == str();
+	 */
 	bool has_ext(const std::string & str = std::string()) const;
 	
 	//! ".." or starts with "../"

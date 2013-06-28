@@ -21,6 +21,8 @@
 
 #include <algorithm>
 
+#include <boost/algorithm/string/predicate.hpp>
+
 #include "platform/Platform.h"
 
 namespace fs {
@@ -285,9 +287,9 @@ bool path::has_ext(const std::string & str) const {
 	} else if(str.empty()) {
 		return true;
 	} else if(str[0] == ext_sep) {
-		return !pathstr.compare(extpos + 1, pathstr.length() - extpos - 1, str, 1, str.length() - 1);
+		return boost::iequals(pathstr.substr(extpos), str);
 	} else {
-		return !pathstr.compare(extpos + 1, pathstr.length() - extpos - 1, str);
+		return boost::iequals(pathstr.substr(extpos + 1), str);
 	}
 }
 
