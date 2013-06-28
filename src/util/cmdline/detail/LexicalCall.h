@@ -104,7 +104,10 @@ private:
 			detail::args_adapter<typename Fn::signature> decode_args(args);
 			
 			if(!args.empty()) {
-				throw command_line_exception(command_line_exception::invalid_arg_count);
+				throw command_line_exception(
+					command_line_exception::invalid_arg_count,
+					"too many arguments"
+				);
 			}
 			
 			return fn(decode_args);

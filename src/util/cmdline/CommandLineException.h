@@ -34,55 +34,46 @@
 #ifndef ARX_UTIL_CMDLINE_COMMANDLINEEXCEPTION_H
 #define ARX_UTIL_CMDLINE_COMMANDLINEEXCEPTION_H
 
-#include <exception>
-#include <cassert>
+#include <stdexcept>
 
-class command_line_exception : public virtual std::exception {
+#include "platform/Platform.h"
 
+class command_line_exception : public virtual std::runtime_error {
+	
 public:
+	
 	typedef enum {
 		no_exception,
 		invalid_value,
 		invalid_arg_count,
 		already_exists,
 		cmd_not_found,
+		invalid_cmd_syntax,
 	} exception_code;
 	
-	explicit command_line_exception(exception_code c) : m_code(c) {
-	}
+	command_line_exception(exception_code c, const std::string & message)
+		: std::runtime_error(message), m_code(c) { }
 	
-	virtual const char *what( ) const throw( ) {
-		const char *msg = "unknown error";
-		
-		switch(m_code) {
-		case no_exception:
-			msg = "uninitialized exception";
-			break;
-		case invalid_value:
-			msg = "the syntax is incorrect";
-			break;
-		case invalid_arg_count:
-			msg = "invalid arguments count";
-			break;
-		case already_exists:
-			msg = "command already exists";
-			break;
-		case cmd_not_found:
-			msg = "command not found";
-			break;
-		default:
-			assert(false);
-			break;
+	explicit command_line_exception(exception_code c)
+		: std::runtime_error(default_message(c)), m_code(c) { }
+	
+	static std::string default_message(exception_code c) {
+		switch(c) {
+			case no_exception:       return "uninitialized exception";
+			case invalid_value:      return "the syntax is incorrect";
+			case invalid_arg_count:  return "invalid arguments count";
+			case already_exists:     return "command already exists";
+			case cmd_not_found:      return "command not found";
+			case invalid_cmd_syntax: return "commands must start with a dash (-)";
 		}
-		return msg;
+		ARX_DEAD_CODE();
+		return "unknown error";
 	}
 	
 public:
+	
 	exception_code m_code;
 	
-protected:
-	command_line_exception() : m_code(no_exception) {
-	}
 };
 
 #endif // ARX_UTIL_CMDLINE_COMMANDLINEEXCEPTION_H
