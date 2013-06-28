@@ -162,18 +162,27 @@ static ExitStatus parseCommandLine(int argc, char ** argv) {
 		currentOption.reset();
 	}
 	
-	try {
-		
-		// Pass 2: Process all command line options received
-		interpreter<std::string>::type_cast_t tc;
-		BOOST_FOREACH(const ParsedOption& option, allOptions) {
+	// Pass 2: Process all command line options received
+	interpreter<std::string>::type_cast_t tc;
+	BOOST_FOREACH(const ParsedOption & option, allOptions) {
+		try {
 			cli.invoke(option.m_name, option.m_arguments.begin(), option.m_arguments.end(), tc);
+		} catch(command_line_exception & e) {
+			std::cerr << "Error parsing command-line option ";
+			if(option.m_type == ParsedOption::Long) {
+				std::cerr << "--";
+			} else if(option.m_type == ParsedOption::Short) {
+				std::cerr << "-";
+			}
+			std::cerr << option.m_name;
+			BOOST_FOREACH(const std::string & arg, option.m_arguments) {
+				std::cerr << ' ';
+				std::cerr << util::escapeString(arg, "\\\" '$!");
+			}
+			std::cerr << ": " << e.what() << "\n\n";
+			ShowHelp();
+			return ExitFailure;
 		}
-		
-	} catch(command_line_exception& e) {
-		std::cerr << "Error parsing command-line: " << e.what() << "\n\n";
-		ShowHelp();
-		return ExitFailure;
 	}
 	
 	return RunProgram;
