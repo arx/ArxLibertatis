@@ -311,4 +311,4 @@ void Logger::quickShutdown() {
 	}
 }
 
-ARX_PROGRAM_OPTION("debug", "g", "Log level settings", &Logger::configure);
+ARX_PROGRAM_OPTION("debug", "g", "Log level settings", &Logger::configure, "LEVELS");

@@ -39,6 +39,7 @@
 #include "util/cmdline/TypeCast.h"
 
 #include <string>
+#include <cstring>
 #include <iomanip>
 
 // default strategy for types conversion
@@ -207,7 +208,11 @@ struct opname_size {
 		}
 		
 		if(key.has_args()) {
-			cur_size += 4;
+			if(key.has_arg_names()) {
+				cur_size += std::strlen(key.get_arg_names()) + 1;
+			} else {
+				cur_size += 4 * key.get_arg_count();
+			}
 		}
 		
 		value = std::max(cur_size, value);
