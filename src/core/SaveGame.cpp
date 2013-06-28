@@ -103,15 +103,15 @@ void SaveGameList::update(bool verbose) {
 		
 		new_saves = true;
 		
-		SaveGame * save;
 		if(index == (size_t)-1) {
 			// Make another save game slot at the end
+			index = savelist.size();
 			savelist.resize(savelist.size() + 1);
-			save = &savelist.back();
 		} else {
 			found[index] = SaveGameChanged;
-			save = &savelist[index];
 		}
+		
+		SaveGame * save = &savelist[index];
 		
 		save->name = name;
 		save->level = level;
@@ -122,8 +122,19 @@ void SaveGameList::update(bool verbose) {
 		
 		fs::path thumbnail = path.parent() / SAVEGAME_THUMBNAIL;
 		if(fs::exists(thumbnail)) {
-			res::path thumbnail_res = res::path("save") / dirname.string() / SAVEGAME_THUMBNAIL.string();
-			resources->removeFile(thumbnail_res);
+			// Resource paths must be lowercase (for now), but filesystem paths can be
+			// mixed case and case sensitive, so we can't just convert the save dirname
+			// to lowercase and expect to not get collisions.
+			// Instead, choose a unique number.
+			res::path thumbnail_res;
+			size_t i = 0;
+			std::ostringstream oss;
+			do {
+				oss.clear();
+				oss << "thumbnail" << i << SAVEGAME_THUMBNAIL.ext();
+				thumbnail_res = res::path("save") / oss.str();
+				i++;
+			} while(resources->getFile(thumbnail_res));
 			resources->addFiles(thumbnail, thumbnail_res);
 			save->thumbnail = thumbnail_res.remove_ext();
 		} else {
@@ -172,6 +183,10 @@ void SaveGameList::update(bool verbose) {
 				savelist[o] = savelist[i];
 			}
 			o++;
+		} else {
+			// Clean obsolete mounts
+			resources->removeFile(savelist[i].thumbnail);
+			resources->removeDirectory(savelist[i].thumbnail.parent());
 		}
 	}
 	savelist.resize(o);

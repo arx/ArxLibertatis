@@ -68,6 +68,13 @@ public:
 	void removeFile(const res::path & name);
 	
 	/*!
+	 * Remove an empty directory.
+	 * If the given directory is not empty, no action is taken.
+	 * @return true if the directory was removed.
+	 */
+	bool removeDirectory(const res::path & name);
+	
+	/*!
 	 * Add a file or directory from the filesystem to the virtual resource hierarchy.
 	 *
 	 * If path refers to a directory, add all files sll folders and files under this

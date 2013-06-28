@@ -70,6 +70,7 @@ private:
 	
 	void addFile(const std::string & name, PakFile * file);
 	void removeFile(const std::string & name);
+	bool removeDirectory(const std::string & name);
 	
 	friend class PakReader;
 	friend class std::map<std::string, PakDirectory>;
@@ -96,6 +97,11 @@ public:
 	
 	inline files_iterator files_begin() { return files.begin(); }
 	inline files_iterator files_end() { return files.end(); }
+	
+	bool has_files() { return files_begin() != files_end(); }
+	bool has_dirs() { return dirs_begin() != dirs_end(); }
+	
+	bool empty() { return !has_dirs() && !has_files(); }
 	
 };
 

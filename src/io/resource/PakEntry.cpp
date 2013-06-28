@@ -170,3 +170,19 @@ void PakDirectory::removeFile(const string & name) {
 		files.erase(old);
 	}
 }
+
+bool PakDirectory::removeDirectory(const string & name) {
+	
+	dirs_iterator old = dirs.find(name);
+	
+	if(old == dirs.end()) {
+		return true;
+	}
+	
+	if(old->second.empty()) {
+		dirs.erase(old);
+		return true;
+	} else {
+		return false;
+	}
+}

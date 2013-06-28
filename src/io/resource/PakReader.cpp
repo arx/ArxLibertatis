@@ -631,6 +631,16 @@ void PakReader::removeFile(const res::path & file) {
 	}
 }
 
+bool PakReader::removeDirectory(const res::path & name) {
+	
+	PakDirectory * pdir = getDirectory(name.parent());
+	if(pdir) {
+		return pdir->removeDirectory(name.filename());
+	} else {
+		return true;
+	}
+}
+
 bool PakReader::addFile(PakDirectory * dir, const fs::path & path,
                         const std::string & name) {
 	
