@@ -114,16 +114,62 @@ static ExitStatus parseCommandLine(int argc, char ** argv) {
 	// Pass 1: Split command-line arguments into options and commands
 	BOOST_FOREACH(std::string & token, args) {
 		
-		ParsedOption::OptionType newOptionType(ParsedOption::Invalid);
-		
-		if(boost::algorithm::starts_with(token, "--")) {                  // handle long options
+		if(boost::algorithm::starts_with(token, "--")) {
+			
+			// Handle long options
 			token.erase(0, 2);
-			newOptionType = ParsedOption::Long;
-		} else if(boost::algorithm::starts_with(token, "-")) {            // handle short options
+			
+			// Flush previous option
+			if(currentOption.m_type != ParsedOption::Invalid) {
+				allOptions.push_back(currentOption);
+				currentOption.reset();
+			}
+			
+			// Long options can have an argument appended as --option=arg
+			std::string::size_type p = token.find('=');
+			if(p != std::string::npos) {
+				currentOption.m_arguments.push_back(token.substr(p + 1));
+			}
+			currentOption.m_type = ParsedOption::Long;
+			currentOption.m_name = token.substr(0, p);
+			
+		} else if(boost::algorithm::starts_with(token, "-")) {
+			
+			// Handle short options
 			token.erase(0, 1);
-			newOptionType = ParsedOption::Short;
+			
+			/*
+			 * Note: Many UNIX utilities allow -o<arg>, but we can't tell where <arg> starts
+			 * without parsing the otpion and checkling if it accepts arguments.
+			 * To avoid option-dependent parsing in this pass, we disallow that syntax.
+			 * Instead we allow the = seperator used in long options.
+			 */
+			std::string::size_type p = token.find('=');
+			
+			// Short options can contain multiple options in one string, parse them one by one
+			BOOST_FOREACH(char option, token.substr(0, p)) {
+				if(currentOption.m_type != ParsedOption::Invalid) {
+					allOptions.push_back(currentOption);
+					currentOption.reset();
+				}
+				currentOption.m_type = ParsedOption::Short;
+				currentOption.m_name = option;
+			}
+			
+			if(p != std::string::npos) {
+				currentOption.m_arguments.push_back(token.substr(p + 1));
+			}
+			
 		} else if(currentOption.m_type != ParsedOption::Invalid) {
+			
+			// Handle arguments
 			currentOption.m_arguments.push_back(token);
+			
+			/*
+			 * Note: We cannot handle separate arguments that start with a dash.
+			 * Users will have to use the --<option>=<arg> or -o=<arg> or -=<arg> syntax.
+			 */
+			
 		} else {
 			// ERROR: invalid command line
 			std::cerr << "Error parsing command-line: "
@@ -132,29 +178,6 @@ static ExitStatus parseCommandLine(int argc, char ** argv) {
 			return ExitFailure;
 		}
 		
-		if(newOptionType != ParsedOption::Invalid) {
-			
-			if(currentOption.m_type != ParsedOption::Invalid) {
-				allOptions.push_back(currentOption);
-				currentOption.reset();
-			}
-			
-			currentOption.m_type = newOptionType;
-			
-			std::string::size_type p = token.find('=');
-			if(p != token.npos) {
-				currentOption.m_name = token.substr(0, p);
-				std::string arg = token.substr(p+1);
-				if(arg.empty()) {
-					// ERROR: invalid command line
-				} else {
-					currentOption.m_arguments.push_back(arg);
-				}
-			} else {
-				currentOption.m_name = token.substr(0, p);
-			}
-			
-		}
 	}
 	
 	if(currentOption.m_type != ParsedOption::Invalid) {
@@ -176,8 +199,9 @@ static ExitStatus parseCommandLine(int argc, char ** argv) {
 			}
 			std::cerr << option.m_name;
 			BOOST_FOREACH(const std::string & arg, option.m_arguments) {
-				std::cerr << ' ';
+				std::cerr << " \"";
 				std::cerr << util::escapeString(arg, "\\\" '$!");
+				std::cerr << "\"";
 			}
 			std::cerr << ": " << e.what() << "\n\n";
 			ShowHelp();
