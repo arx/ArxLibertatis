@@ -80,21 +80,27 @@ struct ParsedOption {
 
 } // anonymous namespace
 
-void ShowHelp() {
+static void showCommandLineHelp(const interpreter<std::string> & options) {
+	
+	std::cout << "Usage: arx [options]\n\n";
+	
+	std::cout << "Arx Libertatis Options:\n";
+	std::cout << options << std::endl;
+	
+}
+
+static void handleHelpOption() {
 	
 	// Register all program options in the command line interpreter
 	interpreter<std::string> cli;
 	BaseOption::registerAll(cli);
 	
-	std::cout << "Usage: arx [options]\n\n";
-	
-	std::cout << "Arx Libertatis Options:\n";
-	std::cout << cli << std::endl;
+	showCommandLineHelp(cli);
 	
 	std::exit(EXIT_SUCCESS);
 }
 
-ARX_PROGRAM_OPTION("help", "h", "Show supported options", &ShowHelp);
+ARX_PROGRAM_OPTION("help", "h", "Show supported options", &handleHelpOption);
 
 static ExitStatus parseCommandLine(int argc, char ** argv) {
 	
@@ -176,7 +182,7 @@ static ExitStatus parseCommandLine(int argc, char ** argv) {
 			// ERROR: invalid command line
 			std::cerr << "Error parsing command-line: "
 			          << "commands must start with at least one dash: " << token << "\n\n";
-			ShowHelp();
+			showCommandLineHelp(cli);
 			return ExitFailure;
 		}
 		
@@ -206,7 +212,7 @@ static ExitStatus parseCommandLine(int argc, char ** argv) {
 				std::cerr << "\"";
 			}
 			std::cerr << ": " << e.what() << "\n\n";
-			ShowHelp();
+			showCommandLineHelp(cli);
 			return ExitFailure;
 		}
 	}
