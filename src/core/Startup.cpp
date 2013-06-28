@@ -86,7 +86,9 @@ void ShowHelp() {
 	interpreter<std::string> cli;
 	BaseOption::registerAll(cli);
 	
-	std::cout << "Arx Libertatis Options:" << std::endl;
+	std::cout << "Usage: arx [options]\n\n";
+	
+	std::cout << "Arx Libertatis Options:\n";
 	std::cout << cli << std::endl;
 	
 	std::exit(EXIT_SUCCESS);
