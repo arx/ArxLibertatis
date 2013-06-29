@@ -772,8 +772,6 @@ bool Menu2_Render() {
 						pWindowMenuConsole->AddMenuCenterY(e);
 					}
 					
-					pTex = TextureContainer::Load("graph/interface/icons/arx_logo_08");
-					
 					for(size_t i = savegames.size(); i <= 15; i++) {
 						
 						std::ostringstream text;
