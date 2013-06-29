@@ -550,7 +550,8 @@ static void Cedric_AnimCalcTranslation(Entity * io, Vec3f & ftr) {
 
 static void StoreEntityMovement(Entity * io, Vec3f & ftr, float scale) {
 
-	if(io) {
+	if(!io)
+		return;
 
 		Vec3f ftr2 = Vec3f::ZERO;
 
@@ -583,7 +584,6 @@ static void StoreEntityMovement(Entity * io, Vec3f & ftr, float scale) {
 
 			io->lastmove = ftr2;
 		}
-	}
 }
 
 
