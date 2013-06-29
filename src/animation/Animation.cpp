@@ -553,37 +553,37 @@ static void StoreEntityMovement(Entity * io, Vec3f & ftr, float scale) {
 	if(!io)
 		return;
 
-		Vec3f ftr2 = Vec3f::ZERO;
+	Vec3f ftr2 = Vec3f::ZERO;
 
-		if(ftr != Vec3f::ZERO) {
-			ftr *= scale;
+	if(ftr != Vec3f::ZERO) {
+		ftr *= scale;
 
-			float temp;
-			if (io == entities.player()) {
-				temp = radians(MAKEANGLE(180.f - player.angle.b));
-			} else {
-				temp = radians(MAKEANGLE(180.f - io->angle.b));
-			}
-
-			YRotatePoint(&ftr, &ftr2, (float)EEcos(temp), (float)EEsin(temp));
-
-			// stores Translations for a later use
-			io->move = ftr2;
+		float temp;
+		if (io == entities.player()) {
+			temp = radians(MAKEANGLE(180.f - player.angle.b));
+		} else {
+			temp = radians(MAKEANGLE(180.f - io->angle.b));
 		}
 
-		if(io->animlayer[0].cur_anim) {
+		YRotatePoint(&ftr, &ftr2, (float)EEcos(temp), (float)EEsin(temp));
 
-			// Use calculated value to notify the Movement engine of the translation to do
-			if(io->ioflags & IO_NPC) {
-				ftr = Vec3f::ZERO;
-				io->move -= io->lastmove;
-			} else if (io->gameFlags & GFLAG_ELEVATOR) {
-				// Must recover translations for NON-NPC IO
-				PushIO_ON_Top(io, io->move.y - io->lastmove.y);
-			}
+		// stores Translations for a later use
+		io->move = ftr2;
+	}
 
-			io->lastmove = ftr2;
+	if(io->animlayer[0].cur_anim) {
+
+		// Use calculated value to notify the Movement engine of the translation to do
+		if(io->ioflags & IO_NPC) {
+			ftr = Vec3f::ZERO;
+			io->move -= io->lastmove;
+		} else if (io->gameFlags & GFLAG_ELEVATOR) {
+			// Must recover translations for NON-NPC IO
+			PushIO_ON_Top(io, io->move.y - io->lastmove.y);
 		}
+
+		io->lastmove = ftr2;
+	}
 }
 
 
