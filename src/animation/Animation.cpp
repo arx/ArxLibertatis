@@ -548,9 +548,9 @@ static void Cedric_AnimCalcTranslation(Entity * io, Vec3f & ftr) {
 	}
 }
 
-static void StoreEntityMovement(Entity * io, Vec3f & ftr, float scale, bool update_movement) {
+static void StoreEntityMovement(Entity * io, Vec3f & ftr, float scale) {
 
-	if(io && update_movement) {
+	if(io) {
 
 		Vec3f ftr2 = Vec3f::ZERO;
 
@@ -625,7 +625,8 @@ void EERIEDrawAnimQuat(EERIE_3DOBJ *eobj, ANIM_USE *eanim, Anglef *angle, Vec3f 
 	else
 		Cedric_AnimCalcTranslation(io, ftr);
 
-	StoreEntityMovement(io, ftr, scale, update_movement);
+	if(update_movement)
+		StoreEntityMovement(io, ftr, scale);
 
 	if(io && io != entities.player() && !Cedric_IO_Visible(&io->pos))
 		return;
