@@ -1,79 +1,73 @@
 .\" Manpage for arx.
 .\" Go to https://bugs.arx-libertatis.org/ to correct errors or typos.
-.TH arx 6 "2012-08-04" "1.1"
+.TH arx 6 "2013-06-28" "1.1"
 .SH NAME
 arx \- Arx Libertatis, a cross-platform port of Arx Fatalis
 .SH SYNOPSIS
-.B arx
-.RB [ -hnl ]
-.RB [ -d data-dir ]
-.RB [ -u user-dir ]
-.RB [ -c config-dir ]
-.RB [ -g debug-spec ]
+\fBarx\fP
+[\fB-hnl\fP]
+[\fB-d\fP \fIdata-dir\fP]
+[\fB-u\fP \fIuser-dir\fP]
+[\fB-c\fP \fIconfig-dir\fP]
+[\fB-g\fP \fIdebug-spec\fP]
 .SH DESCRIPTION
-.B arx
-is the main executable of Arx Libertatis, a cross-platform port of the first-person role-playing game Arx Fatalis. You will need the data from the original Arx Fatalis to run the game. See
-.B http://arx.vg/Getting_the_game_data
+\fBarx\fP is the main executable of Arx Libertatis, a cross-platform port of the first-person role-playing game Arx Fatalis. You will need the data from the original Arx Fatalis to run the game. See \fIhttp://arx.vg/Getting_the_game_data\fP.
+.SH OPTIONS SUMMARY
+.PP
+Here is a short summary of the options available in innoextract. Please refer to the detailed  documentation below for a complete description.
+.TP
+.B Generic options:
+.nf
+ \-h \-\-help            Show supported options
+ \-g \-\-debug \fILEVELS\fP    Set debug output levels
+.fi
+.TP
+.B Search path options:
+.nf
+ \-n \-\-no-data-dir     Don't automatically detect data directories
+ \-d \-\-data-dir \fIDIR\fP    Where to find the data files (can be repeated)
+ \-u \-\-user-dir \fIDIR\fP    Where to store user-specific files
+ \-c \-\-config-dir \fIDIR\fP  Where to store config files
+ \-l \-\-list-dirs       List the searched user and data directories
+.fi
 .SH OPTIONS
 .TP
-.B \-c --config-dir dir
-By default arx will store configuration files in directories specified by the
-.B XDG Base Directory Specification.
+\fB-c\fP, \fB--config-dir\fP=\fIDIR\fP
+By default arx will store configuration files in directories specified by the \fBXDG Base Directory Specification\fP.
 This option overrides the directory where config files are loaded from and saved to.
 .TP
-.B \-d --data-dir dir
-Arx Libertatis will look for data files in directories specified by the
-.B XDG Base Directory Specification
-and in the directory containing the game executable. Besides the system-wide data directory, data files are also loaded from the user directory, which can be set by the
-.B --user-dir
-option.
+\fB-d\fP, \fB--data-dir\fP=\fIDIR\fP
+Arx Libertatis will look for data files in directories specified by the \fBXDG Base Directory Specification\fP and in the directory containing the game executable. Besides the system-wide data directory, data files are also loaded from the user directory, which can be set by the \fB--user-dir\fP option.
 
-This option adds additional directories to search for data files before the detected system-wide directories, but after the user directory. To override the detected data directories combine it with the
-.B --no-data-dir
-option.
+This option adds additional directories to search for data files before the detected system-wide directories, but after the user directory. To override the detected data directories combine it with the \fB--no-data-dir\fP option.
 
-The
-.B --data-dir
-option can be repeated to add multiple data directories, in which case they are searched in the order provided.
+The \fB--data-dir\fP option can be repeated to add multiple data directories, in which case they are searched in the order provided.
 
-See
-.B http://arx.vg/Data_directories
-and the
-.B --list-dirs
-output for more details.
+See \fIhttp://arx.vg/Data_directories\fP and the \fB--list-dirs\fP output for more details.
 .TP
-.B \-g --debug list
+\fB-g\fP, \fB--debug\fP=\fILEVELS\fP
 This option can be used to enable debug output for debug builds of Arx Libertatis. For non-debug build, this option is not very useful but recognized for convenience.
 .TP
-.B \-h --help
+\fB-h\fP, \fB--help\fP
 Show a list of the supported options.
 .TP
-.B \-l --list-dirs
-Show the default search directories for
-.B --data-dir
-,
-.B --user-dir
-and
-.B --config-dir
+\fB-l\fP, \fB--list-dirs\fP
+Show the data, user and config search directories and how they were determined. To adjust the search directories, use the \fB--no-data-dir\fP, \fB--data-dir\fP, \fB--user-dir\fP and \fB--config-dir\fP options.
 .TP
-.B \-n --no-data-dir
-Disables looking for default data directories. Default user and config directories and data directories provided using the
-.B --data-dir
-option are still searched. This option can be used for portable setups where user, config and data files are all in the current directory:
+\fB-n\fP, \fB--no-data-dir\fP
+Disables looking for default data directories. Default user and config directories and data directories provided using the \fB--data-dir\fP option are still searched. This option can be used for portable setups where user, config and data files are all in the current directory:
 
 .B arx --no-data-dir --user-dir=. --config-dir=.
 .TP
-.B \-u --user-dir dir
-By default arx will store user files (saves, etc.) in directories specified by the
-.B XDG Base Directory Specification.
+\fB-u\fP, \fB--user-dir\fP=\fIDIR\fP
+By default arx will store user files (saves, etc.) in directories specified by the \fBXDG Base Directory Specification\fP.
 This option overrides the directory where user files are loaded from and saved to.
 
-Configuration files are not stored in the user directory, but in a separate directory that can be set by the
-.B --user-dir
-option.
+Configuration files are not stored in the user directory, but in a separate directory that can be set by the \fB--user-dir\fP option.
 
-The user directory will also be used to load data, overwriting resources from the system-wide data directories amd from directories specified by the
-.B --data-dir
-option.
+The user directory will also be used to load data, overwriting resources from the system-wide data directories amd from directories specified by the \fB--data-dir\fP option.
 .SH SEE ALSO
-arxsavetool(1), arxunpak(1)
+\fBarxsavetool\fP(1), \fBarxunpak\fP(1)
+.SH BUGS
+.PP
+To view known bugs and report new ones, please visit \fIhttps://bugs.arx-libertatis.org/\fP.

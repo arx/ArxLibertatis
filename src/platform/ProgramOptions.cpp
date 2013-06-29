@@ -17,32 +17,26 @@
  * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ARX_PLATFORM_ENVIRONMENT_H
-#define ARX_PLATFORM_ENVIRONMENT_H
+#include "platform/ProgramOptions.h"
 
-#include <string>
+#include <list>
+#include <boost/foreach.hpp>
 
-#include "platform/Platform.h"
+boost::intrusive::list<BaseOption>& BaseOption::getOptionsList() {
+	// Local static to ensure initialization order is not causing us any issue.
+	static boost::intrusive::list<BaseOption> s_Options;
+	return s_Options;
+}
 
-enum ExitStatus {
-	ExitSuccess,
-	ExitFailure,
-	RunProgram
-};
-
-std::string expandEnvironmentVariables(const std::string & in);
-
-bool getSystemConfiguration(const std::string & name, std::string & result);
-
-void defineSystemDirectories(const char * argv0);
-
-//! Get the path to the current running executable if possible or an empty string otherwise.
-std::string getExecutablePath();
-
-#if ARX_PLATFORM != ARX_PLATFORM_WIN32
-static const char * const env_list_seperators = ":";
-#else
-static const char * const env_list_seperators = ";";
-#endif
-
-#endif // ARX_PLATFORM_ENVIRONMENT_H
+void BaseOption::registerAll(interpreter<std::string>& l) {
+	BOOST_FOREACH(BaseOption& opt, getOptionsList()) {
+		opt.registerOption(l);
+	}
+}
+	
+BaseOption::BaseOption(const char* longName, const char* shortName, const char* description) 
+	: m_longName(longName)
+	, m_shortName(shortName)
+	, m_description(description) {
+		getOptionsList().push_back(*this);
+}

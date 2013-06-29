@@ -1,10 +1,13 @@
 .\" Manpage for arxsavetool.
 .\" Go to https://bugs.arx-libertatis.org/ to correct errors or typos.
-.TH arxsavetool 1 "2012-03-28" "1.0"
+.TH arxsavetool 1 "2013-06-28" "1.1"
 .SH NAME
-arxsavetool \- Tool to inspect and modify Arx Libertatis save files
+arxsavetool \- Inspect and modify Arx Libertatis save files
 .SH SYNOPSIS
-.B arxsavetool <action> <savefile> [<options>...]
+.B arxsavetool
+.B <action>
+.I <savefile>
+[\fB<options>\fP...]
 .SH DESCRIPTION
 .B arxsavetool
 is a tool to inspect and modify save files of the first-person role-playing game Arx Libertatis.
@@ -22,25 +25,15 @@ Extract all files in the save file container to the current directory. This acti
 Add additional files to a save file container. All additional parameters after the save file container are interpreted as files to add.
 .TP
 .B fix
-Fix errors in the save file caused by broken versions of Arx Libertatis. You don't need this if you never ran development versions of 
-.B arx
-\&. This action takes no further options.
+Fix errors in the save file caused by broken versions of Arx Libertatis. You don't need this if you never ran development versions of \fBarx\fP. This action takes no further options.
 
-Requires 
-.B data.pak
-,
-.B data2.pak
-and the
-.B graph
-directory to be in the current directory.
+Requires \fBdata.pak\fP, \fBdata2.pak\fP and the \fBgraph\fP directory to be in the current directory.
 .TP
 .B view
 List information contained in the save file. Without any additional arguments it just lists all level files contained. You can specify an individual save file after the save file container to display it's contents.
 
-Requires
-.B loc.pak
-to be in the current directory.
+Requires \fBloc.pak\fP to be in the current directory.
 .SH SEE ALSO
-arx(6), arxunpak(1)
+\fBarx\fP(6), \fBarxunpak\fP(1)
 .SH BUGS
 No known bugs.

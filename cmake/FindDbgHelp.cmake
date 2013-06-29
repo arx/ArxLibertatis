@@ -8,7 +8,7 @@
 
 find_path(DBGHELP_INCLUDE_DIR dbghelp.h)
 find_library(DBGHELP_LIBRARY dbghelp.lib)
-	
+
 # Handle the REQUIRED argument and set DBGHELP_FOUND
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(DbgHelp DEFAULT_MSG DBGHELP_LIBRARY DBGHELP_INCLUDE_DIR)

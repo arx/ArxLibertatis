@@ -21,10 +21,12 @@
 #include <stddef.h>
 #include <string>
 #include <vector>
+#include <list>
 #include <iostream>
 #include <set>
 #include <sstream>
 #include <algorithm>
+#include <cstdlib>
 
 #include "platform/Platform.h"
 
@@ -33,14 +35,8 @@
 #include <stdlib.h>
 #endif
 
-#if ARX_COMPILER_MSVC
-	#pragma warning(push)
-	#pragma warning(disable:4512)
-#endif
-#include <boost/program_options.hpp>
-#if ARX_COMPILER_MSVC
-	#pragma warning(pop)
-#endif
+#include <boost/algorithm/string.hpp>
+#include <boost/foreach.hpp>
 
 #include "core/Config.h"
 #include "core/Core.h"
@@ -54,88 +50,172 @@
 #include "platform/Compiler.h"
 #include "platform/CrashHandler.h"
 #include "platform/Environment.h"
+#include "platform/ProgramOptions.h"
 #include "platform/Time.h"
 #include "util/String.h"
 
-
-namespace po = boost::program_options;
-
 namespace {
 
-enum ExitStatus {
-	ExitSuccess,
-	ExitFailure,
-	RunProgram
+struct ParsedOption {
+	
+	enum OptionType {
+		Invalid,
+		Long,
+		Short
+	};
+
+	OptionType                  m_type;
+	std::string                 m_name;
+	std::list<std::string>      m_arguments;
+	
+	ParsedOption() : m_type(Invalid) {
+	}
+	
+	void reset() {
+		m_type = Invalid;
+		m_name.clear();
+		m_arguments.clear();
+	}
+	
 };
 
 } // anonymous namespace
 
+static void showCommandLineHelp(const interpreter<std::string> & options) {
+	
+	std::cout << "Usage: arx [options]\n\n";
+	
+	std::cout << "Arx Libertatis Options:\n";
+	std::cout << options << std::endl;
+	
+}
+
+static void handleHelpOption() {
+	
+	// Register all program options in the command line interpreter
+	interpreter<std::string> cli;
+	BaseOption::registerAll(cli);
+	
+	showCommandLineHelp(cli);
+	
+	std::exit(EXIT_SUCCESS);
+}
+
+ARX_PROGRAM_OPTION("help", "h", "Show supported options", &handleHelpOption);
+
 static ExitStatus parseCommandLine(int argc, char ** argv) {
 	
-	std::string userDir;
-	std::string configDir;
-	std::vector<std::string> dataDirs;
+	defineSystemDirectories(argv[0]);
 	
-	po::options_description options_desc("Arx Libertatis Options");
-	options_desc.add_options()
-		("help,h", "Show supported options")
-		("no-data-dir,n", "Don't automatically detect data directories")
-		("data-dir,d", po::value< std::vector<std::string> >(&dataDirs),
-		               "Where to find the data files (can be repeated)")
-		("user-dir,u", po::value<std::string>(&userDir),
-		               "Where to store user-specific files")
-		("config-dir,c", po::value<std::string>(&configDir),
-		                 "Where to store config files")
-		("debug,g", po::value<std::string>(), "Log level settings")
-		("list-dirs,l", "List the searched user and data directories")
-	;
+	// Register all program options in the command line interpreter
+	interpreter<std::string> cli;
+	BaseOption::registerAll(cli);
 	
-	po::variables_map options;
+	std::vector<std::string> args;
+
+	if(argc) {
+		std::copy(argv + 1, argv + argc, std::inserter(args, args.end()));
+	}
 	
-	try {
+	std::list<ParsedOption> allOptions;
+	ParsedOption currentOption;
+	
+	// Pass 1: Split command-line arguments into options and commands
+	BOOST_FOREACH(std::string & token, args) {
 		
-		const char * argv0 = argv[0];
-		po::store(po::parse_command_line(argc, argv, options_desc), options);
-		
-		po::notify(options);
-		
-		if(options.count("help")) {
-			std::cout << options_desc << std::endl;
-			return ExitSuccess;
-		}
-		
-		po::variables_map::const_iterator debug = options.find("debug");
-		if(debug != options.end()) {
-			Logger::configure(debug->second.as<std::string>());
-		}
-		
-		defineSystemDirectories(argv0);
-		
-		bool findData = (options.count("no-data-dir") == 0);
-		bool listDirs = (options.count("list-dirs") != 0);
-		
-		std::vector<fs::path> addDirs;
-		addDirs.resize(dataDirs.size());
-		std::copy(dataDirs.begin(), dataDirs.end(), addDirs.begin());
-		
-		fs::paths.init(userDir, configDir, addDirs, findData, !listDirs);
-		
-		if(listDirs) {
-			fs::paths.list(std::cout, " - --user-dir (-u) command-line parameter\n",
-			               " - --config-dir (-c) command-line parameter\n",
-			               " - --data-dir (-d) command-line parameters\n"
-			               " only without --no-data-dir (-n): \n");
-			std::cout << std::endl;
-			return ExitSuccess;
-		} else if(fs::paths.user.empty() || fs::paths.config.empty()) {
-			LogCritical << "Could not select user or config directory.";
+		if(boost::algorithm::starts_with(token, "--")) {
+			
+			// Handle long options
+			token.erase(0, 2);
+			
+			// Flush previous option
+			if(currentOption.m_type != ParsedOption::Invalid) {
+				allOptions.push_back(currentOption);
+				currentOption.reset();
+			}
+			
+			// Long options can have an argument appended as --option=arg
+			std::string::size_type p = token.find('=');
+			if(p != std::string::npos) {
+				currentOption.m_arguments.push_back(token.substr(p + 1));
+			}
+			currentOption.m_type = ParsedOption::Long;
+			currentOption.m_name = token.substr(0, p);
+			
+		} else if(boost::algorithm::starts_with(token, "-")) {
+			
+			// Handle short options
+			token.erase(0, 1);
+			
+			/*
+			 * Note: Many UNIX utilities allow -o<arg>, but we can't tell where <arg> starts
+			 * without parsing the otpion and checkling if it accepts arguments.
+			 * To avoid option-dependent parsing in this pass, we disallow that syntax.
+			 * Instead we allow the = seperator used in long options.
+			 */
+			std::string::size_type p = token.find('=');
+			
+			// Short options can contain multiple options in one string, parse them one by one
+			BOOST_FOREACH(char option, token.substr(0, p)) {
+				if(currentOption.m_type != ParsedOption::Invalid) {
+					allOptions.push_back(currentOption);
+					currentOption.reset();
+				}
+				currentOption.m_type = ParsedOption::Short;
+				currentOption.m_name = option;
+			}
+			
+			if(p != std::string::npos) {
+				currentOption.m_arguments.push_back(token.substr(p + 1));
+			}
+			
+		} else if(currentOption.m_type != ParsedOption::Invalid) {
+			
+			// Handle arguments
+			currentOption.m_arguments.push_back(token);
+			
+			/*
+			 * Note: We cannot handle separate arguments that start with a dash.
+			 * Users will have to use the --<option>=<arg> or -o=<arg> or -=<arg> syntax.
+			 */
+			
+		} else {
+			// ERROR: invalid command line
+			std::cerr << "Error parsing command-line: "
+			          << "commands must start with at least one dash: " << token << "\n\n";
+			showCommandLineHelp(cli);
 			return ExitFailure;
 		}
 		
-	} catch(po::error & e) {
-		std::cerr << "Error parsing command-line: " << e.what() << "\n\n";
-		std::cout << options_desc << std::endl;
-		return ExitFailure;
+	}
+	
+	if(currentOption.m_type != ParsedOption::Invalid) {
+		allOptions.push_back(currentOption);
+		currentOption.reset();
+	}
+	
+	// Pass 2: Process all command line options received
+	interpreter<std::string>::type_cast_t tc;
+	BOOST_FOREACH(const ParsedOption & option, allOptions) {
+		try {
+			cli.invoke(option.m_name, option.m_arguments.begin(), option.m_arguments.end(), tc);
+		} catch(command_line_exception & e) {
+			std::cerr << "Error parsing command-line option ";
+			if(option.m_type == ParsedOption::Long) {
+				std::cerr << "--";
+			} else if(option.m_type == ParsedOption::Short) {
+				std::cerr << "-";
+			}
+			std::cerr << option.m_name;
+			BOOST_FOREACH(const std::string & arg, option.m_arguments) {
+				std::cerr << " \"";
+				std::cerr << util::escapeString(arg, "\\\" '$!");
+				std::cerr << "\"";
+			}
+			std::cerr << ": " << e.what() << "\n\n";
+			showCommandLineHelp(cli);
+			return ExitFailure;
+		}
 	}
 	
 	return RunProgram;
@@ -177,9 +257,14 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
 	CrashHandler::registerCrashCallback(Logger::quickShutdown);
 	Logger::add(new logger::CriticalErrorDialog);
 	
+	// Parse the command line and process options
 	ExitStatus status = parseCommandLine(argc, argv);
 	
-	// Parse the command-line and setup user, config and data directories
+	// Setup user, config and data directories
+	if(status == RunProgram) {
+		status = fs::paths.init();
+	}
+	
 	if(status == RunProgram) {
 		
 		// Configure the crash report location

@@ -23,6 +23,7 @@
 #include <set>
 #include <algorithm>
 #include <iterator>
+#include <iostream>
 
 #include <boost/tokenizer.hpp>
 #include <boost/foreach.hpp>
@@ -30,7 +31,9 @@
 #include "io/fs/Filesystem.h"
 #include "io/fs/PathConstants.h"
 #include "io/log/Logger.h"
+
 #include "platform/Environment.h"
+#include "platform/ProgramOptions.h"
 
 namespace fs {
 
@@ -229,20 +232,40 @@ std::vector<path> SystemPaths::getSearchPaths(bool filter) const {
 	return result;
 }
 
-void SystemPaths::init(const path & forceUser, const path & forceConfig,
-                       const std::vector<path> & addData, bool findData,
-                       bool create) {
-	
-	user = findUserPath("user", forceUser, "UserDir",
-	                    user_dir_prefixes, user_dir, current_path(), create);
-	
-	config = findUserPath("config", forceConfig, "ConfigDir",
-	                      config_dir_prefixes, config_dir, user, create);
-	
-	addData_ = addData;
-	findData_ = findData;
+static SystemPaths::InitParams cmdLineInitParams;
+
+ExitStatus SystemPaths::init() {
+	return init(cmdLineInitParams);
+}
+
+ExitStatus SystemPaths::init(const InitParams& initParams) {
+
+	user = findUserPath("user", initParams.forceUser, "UserDir",
+	                    user_dir_prefixes, user_dir, current_path(), !initParams.displaySearchDirs);
+
+	config = findUserPath("config", initParams.forceConfig, "ConfigDir",
+	                      config_dir_prefixes, config_dir, user, !initParams.displaySearchDirs);
+
+	addData_ = initParams.dataDirs;
+
+	findData_ = initParams.findData;
 	
 	data = getSearchPaths(true);
+
+	if(initParams.displaySearchDirs) {
+		fs::paths.list(std::cout, 
+		               " - --user-dir (-u) command-line parameter\n",
+		               " - --config-dir (-c) command-line parameter\n",
+		               " - --data-dir (-d) command-line parameters\n"
+		               " only without --no-data-dir (-n): \n");
+		std::cout << std::endl;
+		return ExitSuccess;
+	} else if(fs::paths.user.empty() || fs::paths.config.empty()) {
+		LogCritical << "Could not select user or config directory.";
+		return ExitFailure;
+	}
+
+	return RunProgram;
 }
 
 path SystemPaths::find(const path & resource) const {
@@ -360,3 +383,34 @@ void SystemPaths::list(std::ostream & os, const std::string & forceUser,
 }
 
 } // namespace fs
+
+void disableDataDir() {
+	fs::cmdLineInitParams.findData = false;
+}
+
+void addDataDir(const std::string& dataDir) {
+	fs::cmdLineInitParams.dataDirs.push_back(dataDir);
+}
+
+void setUserDir(const std::string& userDir) {
+	fs::cmdLineInitParams.forceUser = userDir;
+}
+
+void setConfigDir(const std::string& configDir) {
+	fs::cmdLineInitParams.forceConfig = configDir;
+}
+
+void listSearchDirs() {
+	fs::cmdLineInitParams.displaySearchDirs = true;
+}
+
+ARX_PROGRAM_OPTION("no-data-dir", "n",
+                   "Don't automatically detect data directories", &disableDataDir);
+ARX_PROGRAM_OPTION("data-dir",    "d",
+                   "Where to find the data files (can be repeated)", &addDataDir, "DIR");
+ARX_PROGRAM_OPTION("user-dir",    "u",
+                   "Where to store user-specific files", &setUserDir, "DIR");
+ARX_PROGRAM_OPTION("config-dir",  "c",
+                   "Where to store config files", &setConfigDir, "DIR");
+ARX_PROGRAM_OPTION("list-dirs",   "l",
+                   "List the searched user and data directories", &listSearchDirs);

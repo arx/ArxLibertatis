@@ -308,28 +308,8 @@ if(USE_SDL)
 endif()
 
 # Boost
-set(BOOST_COMPONENTS program_options)
-find_package(Boost 1.39 REQUIRED COMPONENTS ${BOOST_COMPONENTS})
-# Setting the BOOST_ROOT will result in linking failures on Visual Studio as found
-# release and debug libs get mixed up. On windows we will empty out the
-# Boost_LIBRARIES list and count on the auto-linking feature boost provides.
-# http://www.boost.org/doc/libs/1_47_0/more/getting_started/windows.html#auto-linking
-if(MSVC)
-	# Reset libraries list so VC will perform auto-linking.
-	set(Boost_LIBRARIES "")
-	# Not needed anymore as BOOST_ROOT finds these properly.
-	# Didnt remove yet eiher so nothing breaks, added empty checks instead to not add duplicated.
-	if("${Boost_INCLUDE_DIRS}" STREQUAL "")
-		set(Boost_INCLUDE_DIRS ${Boost_INCLUDE_DIRS} $ENV{BOOST_ROOT}/include)
-	endif()
-	if("${Boost_LIBRARY_DIRS}" STREQUAL "")
-		set(Boost_LIBRARY_DIRS ${Boost_LIBRARY_DIRS} $ENV{BOOST_ROOT}/lib)
-	endif()
-	# Add boost lib directory to the list of libraries paths
-	link_directories(${Boost_LIBRARY_DIRS})
-endif ()
+find_package(Boost 1.39 REQUIRED)
 include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
-list(APPEND ARX_LIBRARIES ${Boost_LIBRARIES})
 
 # Qt and DbgHelp
 set(ARX_HAVE_CRASHREPORTER 0)
@@ -737,6 +717,7 @@ set(PLATFORM_SOURCES
 	src/platform/Lock.cpp
 	src/platform/OS.cpp
 	src/platform/Platform.cpp
+	src/platform/ProgramOptions.cpp
 	src/platform/Time.cpp
 )
 if(MACOSX)
@@ -871,7 +852,8 @@ elseif(USE_NATIVE_FS AND ARX_HAVE_WINAPI)
 	list(APPEND IO_FILESYSTEM_SOURCES ${IO_FILESYSTEM_WINDOWS_SOURCES})
 	set(ARX_HAVE_WIN32_FILESYSTEM 1)
 elseif(NOT ${Boost_VERSION} LESS 104400)
-	find_package(Boost 1.44 REQUIRED COMPONENTS ${BOOST_COMPONENTS} filesystem system)
+	
+	find_package(Boost 1.44 REQUIRED COMPONENTS filesystem system)
 	set(ARX_HAVE_BOOST_FILESYSTEM_V3 1)
 	add_definitions(-DBOOST_FILESYSTEM_VERSION=3)
 	add_definitions(-DBOOST_FILESYSTEM_NO_DEPRECATED)
