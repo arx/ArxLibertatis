@@ -998,10 +998,10 @@ if(ARX_HAVE_CRASHREPORTER)
 		)
 		
 		include_directories(SYSTEM
-			${Qt5Core_INCLUDES}
-			${Qt5Gui_INCLUDES}
-			${Qt5Widgets_INCLUDES}
-			${Qt5Network_INCLUDES}
+			${Qt5Core_INCLUDE_DIRS}
+			${Qt5Gui_INCLUDE_DIRS}
+			${Qt5Widgets_INCLUDE_DIRS}
+			${Qt5Network_INCLUDE_DIRS}
 		)
 		
 	elseif(HAVE_QT4)
