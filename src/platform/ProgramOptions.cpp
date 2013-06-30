@@ -22,19 +22,20 @@
 #include <list>
 #include <boost/foreach.hpp>
 
-boost::intrusive::list<BaseOption>& BaseOption::getOptionsList() {
+BaseOption::List & BaseOption::getOptionsList() {
 	// Local static to ensure initialization order is not causing us any issue.
-	static boost::intrusive::list<BaseOption> s_Options;
-	return s_Options;
+	static List s_options;
+	return s_options;
 }
 
-void BaseOption::registerAll(interpreter<std::string>& l) {
-	BOOST_FOREACH(BaseOption& opt, getOptionsList()) {
+void BaseOption::registerAll(interpreter<std::string> & l) {
+	BOOST_FOREACH(BaseOption & opt, getOptionsList()) {
 		opt.registerOption(l);
 	}
 }
-	
-BaseOption::BaseOption(const char* longName, const char* shortName, const char* description) 
+
+BaseOption::BaseOption(const char * longName, const char * shortName,
+                       const char * description)
 	: m_longName(longName)
 	, m_shortName(shortName)
 	, m_description(description) {

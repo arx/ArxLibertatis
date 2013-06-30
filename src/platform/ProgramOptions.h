@@ -29,7 +29,9 @@
 #include "util/cmdline/Interpreter.h"
 
 // Linked list of statically defined options (no memory allocation)
-class BaseOption : public boost::intrusive::list_base_hook<> {
+class BaseOption : public boost::intrusive::list_base_hook<
+	boost::intrusive::link_mode<boost::intrusive::auto_unlink>
+> {
 	
 public:
 	
@@ -41,7 +43,12 @@ protected:
 	
 private:
 	
-	static boost::intrusive::list<BaseOption> & getOptionsList();
+	typedef boost::intrusive::list<
+		BaseOption,
+		boost::intrusive::constant_time_size<false>
+	> List;
+	
+	static List & getOptionsList();
 	
 	virtual void registerOption(interpreter<std::string> & l) = 0;
 	
