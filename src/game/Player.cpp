@@ -128,6 +128,7 @@ extern unsigned long LAST_JUMP_ENDTIME;
 static const float WORLD_GRAVITY = 0.1f;
 static const float JUMP_GRAVITY = 0.02f;
 static const float STEP_DISTANCE = 120.f;
+static const float TARGET_DT = 1000.f / 30.f;
 
 extern Vec3f PUSH_PLAYER_FORCE;
 extern bool bBookHalo;
@@ -2105,7 +2106,7 @@ void ARX_PLAYER_Manage_Visual() {
 						goto retry;
 					} else if(ause0->cur_anim == alist[ANIM_JUMP_END_PART2]
 					         && EEfabs(player.physics.velocity.x)
-					             + EEfabs(player.physics.velocity.z) > 4
+					             + EEfabs(player.physics.velocity.z) > (4.f/TARGET_DT)
 					         && ause0->ctime > 1) {
 						AcquireLastAnim(io);
 						player.jumpphase = NotJumping;
@@ -2446,22 +2447,23 @@ void ARX_PLAYER_Manage_Movement() {
 
 	if (cur_rf == 3) speedfactor += 1.5f;
 
-	static float StoredTime = 0;
 	// Compute time things
-	float DeltaTime = StoredTime;
-	
-	if(Original_framedelay > 0) {
-		DeltaTime = StoredTime + (float)Original_framedelay * speedfactor;
-	}
-	
+	const float FIXED_TIMESTEP = 25.f;
+	const float MAX_FRAME_TIME = 100.f;
+
+	static float StoredTime = 0;
+
+	float DeltaTime = std::min(Original_framedelay, MAX_FRAME_TIME);
+	DeltaTime = StoredTime + DeltaTime * speedfactor;
+
 	if(EDITMODE) {
-		DeltaTime = 25.f;
+		DeltaTime = FIXED_TIMESTEP;
 	}
 	
 	if(player.jumpphase != NotJumping) {
-		while(DeltaTime > 25.f) {
+		while(DeltaTime > FIXED_TIMESTEP) {
 			PlayerMovementIterate(DeltaTime);
-			DeltaTime -= 25.f;
+			DeltaTime -= FIXED_TIMESTEP;
 		}
 	} else {
 		PlayerMovementIterate(DeltaTime);
@@ -2593,7 +2595,7 @@ void PlayerMovementIterate(float DeltaTime) {
 		cyl.height = player.physics.cyl.height;
 		float anything2 = CheckAnythingInCylinder(&cyl, entities.player(), CFLAG_JUST_TEST | CFLAG_PLAYER); //-cyl->origin.y;
 		
-		if(anything2 > -5 && player.physics.velocity.y > 15.f && !LAST_ON_PLATFORM
+		if(anything2 > -5 && player.physics.velocity.y > (15.f/TARGET_DT) && !LAST_ON_PLATFORM
 		  && !TRUE_FIRM_GROUND && player.jumpphase == NotJumping && !player.levitate
 		  && anything > 80.f) {
 			player.jumpphase = JumpDescending;
@@ -2680,7 +2682,7 @@ void PlayerMovementIterate(float DeltaTime) {
 				}
 			}
 			
-			impulse *= scale / impulse.length() * jump_mul * DeltaTime;
+			impulse *= scale / impulse.length() * jump_mul;
 		}
 		
 		if(player.jumpphase != NotJumping) {
@@ -2713,7 +2715,7 @@ void PlayerMovementIterate(float DeltaTime) {
 		// Apply Gravity force if not LEVITATING or JUMPING
 		if(!levitate && player.jumpphase != JumpAscending && !LAST_ON_PLATFORM) {
 			
-			player.physics.forces.y += (player.falling) ? JUMP_GRAVITY : WORLD_GRAVITY;
+			player.physics.forces.y += ((player.falling) ? JUMP_GRAVITY : WORLD_GRAVITY) / TARGET_DT;
 			
 			// Check for LAVA Damage !!!
 			float epcentery;
@@ -2753,10 +2755,10 @@ void PlayerMovementIterate(float DeltaTime) {
 		// Apply attraction
 		Vec3f attraction;
 		ARX_SPECIAL_ATTRACTORS_ComputeForIO(*entities.player(), attraction);
-		player.physics.forces += attraction;
+		player.physics.forces += attraction / TARGET_DT;
 		
 		// Apply push player force
-		player.physics.forces += PUSH_PLAYER_FORCE;
+		player.physics.forces += PUSH_PLAYER_FORCE / TARGET_DT;
 		PUSH_PLAYER_FORCE = Vec3f::ZERO;
 		
 		// Apply forces to velocity
@@ -2784,7 +2786,7 @@ void PlayerMovementIterate(float DeltaTime) {
 		} else if(!player.climbing && player.pos.y >= posy) {
 			player.physics.velocity.y = 0;
 		}
-		
+
 		// Reset forces
 		player.physics.forces = Vec3f::ZERO;
 		
@@ -2799,7 +2801,7 @@ void PlayerMovementIterate(float DeltaTime) {
 			// Need to apply some physics/collision tests
 			player.physics.cyl.origin = player.basePosition();
 			player.physics.startpos = player.physics.cyl.origin;
-			player.physics.targetpos = player.physics.startpos + player.physics.velocity;
+			player.physics.targetpos = player.physics.startpos + player.physics.velocity * DeltaTime;
 			
 			// Jump impulse
 			if(player.jumpphase == JumpAscending) {
@@ -2813,7 +2815,7 @@ void PlayerMovementIterate(float DeltaTime) {
 				const float jump_up_height = 130.f;
 				long timee = (long)arxtime;
 				float offset_time = (float)timee - (float)player.jumpstarttime;
-				float position = clamp((float)offset_time * (1.f / jump_up_time), 0.f, 1.f);
+				float position = clamp(offset_time / jump_up_time, 0.f, 1.f);
 				
 				float p = (position - player.jumplastposition) * jump_up_height;
 				player.physics.targetpos.y -= p;
@@ -2942,7 +2944,7 @@ void PlayerMovementIterate(float DeltaTime) {
 	
 lasuite:
 	;
-	
+
 	// Get Player position color
 	float grnd_color = GetColorz(player.pos.x, player.pos.y + 90, player.pos.z) - 15.f;
 	if(CURRENT_PLAYER_COLOR < grnd_color) {
