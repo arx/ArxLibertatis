@@ -36,9 +36,13 @@
 
 #include <vector>
 
-/// Default option informations storage.
-/** This class is used as default type to store the name of an option, 
- *  its alternative names and description.
+namespace util { namespace cmdline {
+
+/*!
+ * Default option informations storage.
+ *
+ * This class is used as default type to store the name of an option,
+ * its alternative names and description.
  */
 template<typename StringType>
 class key_type : std::vector<StringType> {
@@ -107,5 +111,7 @@ private:
 	const char * m_argNames;
 	
 };
+
+} } // namespace util::cmdline
 
 #endif // ARX_UTIL_CMDLINE_KEYS_H

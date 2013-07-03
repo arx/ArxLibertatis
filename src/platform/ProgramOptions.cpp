@@ -28,7 +28,7 @@ BaseOption::List & BaseOption::getOptionsList() {
 	return s_options;
 }
 
-void BaseOption::registerAll(interpreter<std::string> & l) {
+void BaseOption::registerAll(util::cmdline::interpreter<std::string> & l) {
 	BOOST_FOREACH(BaseOption & opt, getOptionsList()) {
 		opt.registerOption(l);
 	}

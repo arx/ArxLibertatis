@@ -41,6 +41,8 @@
 #include <boost/preprocessor/repeat_from_to.hpp>
 #include <boost/preprocessor/iteration/iterate.hpp>
 
+namespace util { namespace cmdline {
+
 namespace detail {
 	template<typename FnSign>
 	struct lfn_invoker;
@@ -76,5 +78,7 @@ lfunction<FnSign,Function> make_lfunction(Function const& fn) {
 #undef BOOST_PP_FILENAME_1
 #undef BOOST_COMMAND_LINE_MAX_FUNCTION_ARGS
 #undef BOOST_PP_ITERATION_LIMITS
+
+} } // namespace util::cmdline
 
 #endif // ARX_UTIL_CMDLINE_DETAIL_LFUNCTION_H

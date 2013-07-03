@@ -35,7 +35,7 @@ class BaseOption : public boost::intrusive::list_base_hook<
 	
 public:
 	
-	static void registerAll(interpreter<std::string> & l);
+	static void registerAll(util::cmdline::interpreter<std::string> & l);
 		
 protected:
 	
@@ -50,7 +50,7 @@ private:
 	
 	static List & getOptionsList();
 	
-	virtual void registerOption(interpreter<std::string> & l) = 0;
+	virtual void registerOption(util::cmdline::interpreter<std::string> & l) = 0;
 	
 protected:
 	
@@ -70,8 +70,9 @@ public:
 		: BaseOption(longName, shortName, description)
 		, m_handler(handler), m_argNames(argNames) { }
 	
-	virtual void registerOption(interpreter<std::string> & l) {
-		l.add(m_handler, interpreter<std::string>::op_name_t(m_shortName)(m_longName)
+	virtual void registerOption(util::cmdline::interpreter<std::string> & l) {
+		l.add(
+			m_handler, util::cmdline::interpreter<std::string>::op_name_t(m_shortName)(m_longName)
 			.description(m_description)
 			.arg_count(boost::function_types::function_arity<Handler>::value)
 			.arg_names(m_argNames)

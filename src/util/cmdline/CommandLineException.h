@@ -38,6 +38,8 @@
 
 #include "platform/Platform.h"
 
+namespace util { namespace cmdline {
+
 class command_line_exception : public virtual std::runtime_error {
 	
 public:
@@ -75,5 +77,7 @@ public:
 	exception_code m_code;
 	
 };
+
+} } // namespace util::cmdline
 
 #endif // ARX_UTIL_CMDLINE_COMMANDLINEEXCEPTION_H

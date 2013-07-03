@@ -36,17 +36,19 @@
 
 #include <vector>
 
-/**
- *  This class is a kind of sequence container.
+namespace util { namespace cmdline {
+
+/*!
+ * This class is a kind of sequence container.
  *
- *  You can use this class just likes as std::vector.
- *  It is used to indicate option with variable amount of parameters.
+ * You can use this class just likes as std::vector.
+ * It is used to indicate option with variable amount of parameters.
  *
- *  @param T Type of the elements.
+ * @param T Type of the elements.
  *
- *  @param Alloc Type of the allocator object used to define the storage
- *  allocation model. By default, the allocator class template for type T
- *  is equal to the default allocator class for std::vector<T>
+ * @param Alloc Type of the allocator object used to define the storage
+ * allocation model. By default, the allocator class template for type T
+ * is equal to the default allocator class for std::vector<T>
  */
 template<typename T, typename Alloc = typename std::vector<T>::allocator_type>
 class ellipsis : std::vector<T, Alloc> {
@@ -54,6 +56,7 @@ class ellipsis : std::vector<T, Alloc> {
 	typedef std::vector<T> super_t;
 	
 public:
+	
 	typedef typename super_t::allocator_type allocator_type;
 	typedef typename super_t::size_type size_type;
 	typedef typename super_t::difference_type difference_type;
@@ -91,30 +94,32 @@ public:
 	using super_t::clear;
 	using super_t::get_allocator;
 	
-	
-	explicit ellipsis(allocator_type const& a = allocator_type()) : super_t(a) {
+	explicit ellipsis(const allocator_type & a = allocator_type()) : super_t(a) {
 	}
 	
-	explicit ellipsis(size_type s, value_type const& v = value_type(), const allocator_type& a = allocator_type())
+	explicit ellipsis(size_type s, const value_type & v = value_type(),
+	                  const allocator_type & a = allocator_type())
 		: super_t(s,v,a) {
 	}
 	
 	template<typename Iter>
-	ellipsis(Iter b, Iter e, const allocator_type& a = allocator_type())
+	ellipsis(Iter b, Iter e, const allocator_type & a = allocator_type())
 		: super_t(b,e,a) {
 	}
 	
-	ellipsis(const ellipsis& rh) : super_t(rh) {
-	}
+	ellipsis(const ellipsis & rh) : super_t(rh) { }
 	
-	ellipsis& operator=(const ellipsis& rh) {
+	ellipsis & operator=(const ellipsis & rh) {
 		static_cast<super_t&>(*this) = rh;
 		return *this;
 	}
 	
-	void swap(ellipsis& rh) {
+	void swap(ellipsis & rh) {
 		super_t::swap(rh);
 	}
+	
 };
+
+} } // namespace util::cmdline
 
 #endif // ARX_UTIL_CMDLINE_ELLIPSIS_H

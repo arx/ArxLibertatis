@@ -34,7 +34,9 @@
 #ifndef ARX_UTIL_CMDLINE_OPTIONAL_H
 #define ARX_UTIL_CMDLINE_OPTIONAL_H
 
-/**
+namespace util { namespace cmdline {
+
+/*!
  * This class is a kind of pointer storage.
  * It is used to indicate that option parameter isn't required.
  * @param T Type of the elements.
@@ -42,102 +44,89 @@
 template<typename T>
 struct optional {
 	
-	/**
-	 * Constructor
-	 */
-	optional() : m_ptr(0) {
-	}
+	optional() : m_ptr(0) { }
 	
-	/**
-	 * Constructor
-	 */
-	template<typename U>
-	explicit optional(U const& rh) : m_ptr(new T(rh)) {
-	}
+	template <typename U>
+	explicit optional(const U & rh) : m_ptr(new T(rh)) { }
 	
-	explicit optional(optional const& rh)
+	explicit optional(const optional & rh)
 		: m_ptr(rh.m_ptr ? new T(*rh.m_ptr) : 0) {
 	}
 	
-	/**
-	 * operator =
-	 */
-	template<typename U>
-	optional& operator = (U const& rh) {
+	template <typename U>
+	optional & operator=(const U & rh) {
 		swap(optional(rh));
 		return *this;
 	}
 	
-	/**
-	 * operator =
-	 */
-	optional& operator = (optional const& rh) {
+	optional & operator=(const optional & rh) {
 		swap(optional(rh));
 		return *this;
 	}
 	
-	/**
-	 * Destructor
-	 */
 	~optional() {
 		delete m_ptr;
 	}
 	
-	/**
+	/*!
 	 * This function exchanges the content of the optional by the content
 	 * of optional, which is another optional of the same type.
 	 *
 	 * @param rh
 	 */
-	void swap(optional& rh) { // never throws
+	void swap(optional & rh) { // never throws
 		T * tmp(m_ptr);
 		m_ptr = rh.m_ptr;
 		rh.m_ptr = tmp ;
 	}
 	
-	const T& operator*() const { // never throws
+	const T & operator *() const { // never throws
 		return *m_ptr;
 	}
 	
-	T& operator*() { // never throws
-		return const_cast<T&>(static_cast<optional const*>(this)->operator*());
+	T & operator *() { // never throws
+		return const_cast<T &>(static_cast<const optional *>(this)->operator*());
 	}
 	
-	const T* operator->() const { // never throws
+	const T * operator->() const { // never throws
 		return &**this;
 	}
 	
-	T* operator->() { // never throws
+	T * operator->() { // never throws
 		return &**this;
 	}
 	
 private:
+	
 	struct dummy { void nonnull() {}; };
 	typedef void (dummy::*safe_bool)();
 	
 public:
-	bool operator ! () const {
+	
+	bool operator!() const {
 		return m_ptr == 0;
 	}
 	
-	operator safe_bool () const {
-		return (!*this)?0:&dummy::nonnull;
+	operator safe_bool() const {
+		return (!*this) ? 0 : &dummy::nonnull;
 	}
 	
 private:
-	T* m_ptr;
+	
+	T * m_ptr;
+	
 };
 
-template<
-	typename T
->
-bool operator == (bool lh, optional<T> const& rh)
-{ return (lh && rh) || (!lh && !rh); }
+template <typename T>
+bool operator==(bool lh, optional<T> const & rh) {
+	return (lh && rh) || (!lh && !rh);
+}
 
-template<
-	typename T
->
-bool operator == ( optional<T> const& lh , bool rh)
-{ return rh == lh; }
+template <typename T>
+bool operator==(optional<T> const & lh , bool rh) {
+	return rh == lh;
+}
+
+} } // namespace util::cmdline
 
 #endif // ARX_UTIL_CMDLINE_OPTIONAL_H

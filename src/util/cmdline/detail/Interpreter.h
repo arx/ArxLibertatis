@@ -38,7 +38,7 @@
 #include <algorithm>
 #include "util/cmdline/detail/LexicalCall.h"
 
-namespace detail {
+namespace util { namespace cmdline { namespace detail {
 
 template<typename OpName, typename TypeCast>
 class interpreter {
@@ -192,6 +192,6 @@ void interpreter<StringType, TypeCast>::invoke(const string_type & key,
 	it->second.function(args_begin, args_end, type_cast);
 }
 
-} // namespace detail
+} } } // namespace util::cmdline::detail
 
 #endif // ARX_UTIL_CMDLINE_DETAIL_INTERPRETER_H

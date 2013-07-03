@@ -36,7 +36,7 @@
 namespace detail {
 
 template<typename R BOOST_PP_COMMA_IF(N) BOOST_PP_ENUM_PARAMS(N, typename ARG)>
-struct lfn_invoker<R(BOOST_PP_ENUM_PARAMS(N,ARG))> {
+struct lfn_invoker<R(BOOST_PP_ENUM_PARAMS(N, ARG))> {
 	typedef R result_type;
 	static const size_t argument_count = N;
 	
@@ -53,7 +53,7 @@ struct lfn_invoker<R(BOOST_PP_ENUM_PARAMS(N,ARG))> {
 };
 
 template<BOOST_PP_ENUM_PARAMS(N, typename ARG)>
-struct lfn_invoker<void(BOOST_PP_ENUM_PARAMS(N,ARG))> {
+struct lfn_invoker<void(BOOST_PP_ENUM_PARAMS(N, ARG))> {
 	typedef void result_type;
 	static const size_t argument_count = N;
 	

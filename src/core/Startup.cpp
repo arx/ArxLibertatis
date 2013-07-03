@@ -80,7 +80,7 @@ struct ParsedOption {
 
 } // anonymous namespace
 
-static void showCommandLineHelp(const interpreter<std::string> & options) {
+static void showCommandLineHelp(const util::cmdline::interpreter<std::string> & options) {
 	
 	std::cout << "Usage: arx [options]\n\n";
 	
@@ -92,7 +92,7 @@ static void showCommandLineHelp(const interpreter<std::string> & options) {
 static void handleHelpOption() {
 	
 	// Register all program options in the command line interpreter
-	interpreter<std::string> cli;
+	util::cmdline::interpreter<std::string> cli;
 	BaseOption::registerAll(cli);
 	
 	showCommandLineHelp(cli);
@@ -107,7 +107,7 @@ static ExitStatus parseCommandLine(int argc, char ** argv) {
 	defineSystemDirectories(argv[0]);
 	
 	// Register all program options in the command line interpreter
-	interpreter<std::string> cli;
+	util::cmdline::interpreter<std::string> cli;
 	BaseOption::registerAll(cli);
 	
 	std::vector<std::string> args;
@@ -194,18 +194,18 @@ static ExitStatus parseCommandLine(int argc, char ** argv) {
 	}
 	
 	// Pass 2: Process all command line options received
-	interpreter<std::string>::type_cast_t tc;
+	util::cmdline::interpreter<std::string>::type_cast_t tc;
 	BOOST_FOREACH(const ParsedOption & option, allOptions) {
 		try {
 			std::list<std::string>::const_iterator arg_begin = option.m_arguments.begin();
 			cli.invoke(option.m_name, arg_begin, option.m_arguments.end(), tc);
 			if(arg_begin != option.m_arguments.end()) {
-				throw command_line_exception(
-					command_line_exception::invalid_arg_count,
+				throw util::cmdline::command_line_exception(
+					util::cmdline::command_line_exception::invalid_arg_count,
 					"too many arguments"
 				);
 			}
-		} catch(command_line_exception & e) {
+		} catch(util::cmdline::command_line_exception & e) {
 			std::cerr << "Error parsing command-line option ";
 			if(option.m_type == ParsedOption::Long) {
 				std::cerr << "--";

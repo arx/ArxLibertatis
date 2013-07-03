@@ -42,11 +42,14 @@
 #include <cstring>
 #include <iomanip>
 
+namespace util { namespace cmdline {
+
 // default strategy for types conversion
 struct type_cast;
 
-/// A storage of option handlers and their descriptions.
-/**
+/*!
+ * A storage of option handlers and their descriptions.
+ *
  * This provides convenient interface for adding new option (the add) method,
  * and executing option handlers by name.
  *
@@ -64,55 +67,57 @@ public:
 	typedef typename super_t::string_type   string_type;
 	typedef typename super_t::op_name_t     op_name_t;
 	
-	/// Registers options.
-	/**
-	 *  This function registrates command options.
-	 *  The option parameters count and their types will be obtained
-	 *  automatically from the handler signature.
+	/*!
+	 * Registers options.
 	 *
-	 *  @param handler This one can either be a pointer to a function or an
-	 *       object whose class contains only one operator().
+	 * This function registrates command options.
+	 * The option parameters count and their types will be obtained
+	 * automatically from the handler signature.
 	 *
-	 *  @param option_name "Name" of this option.
+	 * @param handler This one can either be a pointer to a function or an
+	 *                object whose class contains only one operator().
 	 *
-	 *  @returns none.
+	 * @param option_name "Name" of this option.
 	 *
-	 *  @throws If an option with one of the names that are contained in op_name_t
-	 *  already exists an exception will be thrown.
+	 * @returns none.
 	 *
-	 *  @code
-	 *   interpreter<> l;
+	 * @throws If an option with one of the names that are contained in op_name_t
+	 *            already exists an exception will be thrown.
 	 *
-	 *   l.add(&some_fn, op_name_t("option_name").description("some info"));
-	 *     // where some_fn  is function.
+	 * @code
+	 *  interpreter<> l;
 	 *
-	 *   l.add(object, op_name_t("op_name_2").description("some info"));
-	 *     //object whose class contains a single operator(), except for template one.
+	 *  l.add(&some_fn, op_name_t("option_name").description("some info"));
+	 *    // where some_fn  is function.
 	 *
-	 *  @endcode
+	 *  l.add(object, op_name_t("op_name_2").description("some info"));
+	 *    //object whose class contains a single operator(), except for template one.
+	 *
+	 * @endcode
 	 */
 	template<typename Handler>
 	void add(const Handler & handler, const op_name_t & option_name) {
 		super_t::add(handler, option_name);
 	}
 	
-	/// Registers options.
-	/**
-	 *  This function registrates command options.
+	/*!
+	 * Registers options.
 	 *
-	 *  @param handler This one can either be a pointer to a function or an
-	 *       object whose class contains only one operator().
+	 * This function registrates command options.
 	 *
-	 *  @param option_name "Name" of this option.
+	 * @param handler This one can either be a pointer to a function or an
+	 *                object whose class contains only one operator().
 	 *
-	 *  @returns none.
+	 * @param option_name "Name" of this option.
 	 *
-	 *  @throws If an option with one of the names that are contained in op_name_t
-	 *  already exists an exception will be thrown.
+	 * @returns none.
+	 *
+	 * @throws If an option with one of the names that are contained in op_name_t
+	 *            already exists an exception will be thrown.
 	 *
 	 * @code
-	 * interpreter<> l;
-	 * l.add<void (A1,...,An)> (object, op_name_t("option_name").description("some info"));
+	 *  interpreter<> l;
+	 *  l.add<void (A1,...,An)> (object, op_name_t("option_name").description("some info"));
 	 * @endcode
 	 */
 	template<typename HndlSign, typename Handler>
@@ -120,8 +125,9 @@ public:
 		super_t::template add<HndlSign>(handler, option_name);
 	}
 	
-	/// Removes an option in an interpreter with name.
-	/**
+	/*!
+	 * Removes an option in an interpreter with name.
+	 *
 	 * This function removes an option by name.
 	 * @param option_name Name of the option.
 	 */
@@ -129,8 +135,9 @@ public:
 		super_t::erase(option_name);
 	}
 	
-	/// Visits all options.
-	/**
+	/*!
+	 * Visits all options.
+	 *
 	 * @param visitor An object or pointer to a function.
 	 * @note The visitor has to support call semantic : operator(const op_name_t &).
 	 */
@@ -139,17 +146,17 @@ public:
 		super_t::visit(visitor);
 	}
 	
-	/// Invokes handler
-	/** Invokes handler by option name with parameters [args_begin, args_end).
+	/*!
+	 * Invokes handler by option name with parameters [args_begin, args_end).
 	 *
-	 *  @param option_name Name of an option
+	 * @param option_name Name of an option
 	 *
-	 *  @param args_begin Iterator referring to the first argument for the option.
-	 *  @param args_end   Iterator referring to the past-the-end argument for the option.
+	 * @param args_begin Iterator referring to the first argument for the option.
+	 * @param args_end   Iterator referring to the past-the-end argument for the option.
 	 *
-	 *  @throws If option isn't found or the handler of this options takes more
-	 *  than required arguments or they can't be converted, an exception will be
-	 *  thrown.
+	 * @throws If option isn't found or the handler of this options takes more
+	 *            than required arguments or they can't be converted, an exception
+	 *            will be thrown.
 	 */
 	template<typename It>
 	void invoke(const string_type & option_name, It & args_begin, It args_end,
@@ -157,19 +164,10 @@ public:
 		super_t::invoke(option_name, args_begin, args_end, type_cast);
 	}
 	
-	/**
-	 * Constructor
-	 */
 	interpreter() : super_t() { }
 	
-	/**
-	 * Constructor
-	 */
 	explicit interpreter(const interpreter & rh) : super_t(rh) { }
 	
-	/**
-	 * operator =
-	 */
 	interpreter & operator=(const interpreter & rh) {
 		if(this != &rh) {
 			swap(interpreter(rh));
@@ -285,10 +283,11 @@ void print_op(OStream & os, const Interpreter & interpreter) {
 } // namespace detail
 
 template<typename CharType, typename StringType, typename TypeCast>
-std::basic_ostream<CharType> & operator << (std::basic_ostream<CharType> & os,
-                                            const interpreter<StringType,TypeCast> & l) {
+std::basic_ostream<CharType> & operator<<(std::basic_ostream<CharType> & os,
+                                          const interpreter<StringType,TypeCast> & l) {
 	return detail::print_op(os, l), os;
 }
 
+} } // namespace util::cmdline
 
 #endif // ARX_UTIL_CMDLINE_INTERPRETER_H

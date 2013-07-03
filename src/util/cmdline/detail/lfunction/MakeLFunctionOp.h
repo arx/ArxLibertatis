@@ -40,10 +40,10 @@ template<
 	BOOST_PP_COMMA_IF(N)
 	BOOST_PP_ENUM_PARAMS(N, typename ARG)
 >
-lfunction<R (BOOST_PP_ENUM_PARAMS(N, ARG)),Function>
+lfunction<R(BOOST_PP_ENUM_PARAMS(N, ARG)), Function>
 make_lfunction(Function function,
-               R (T::*)(BOOST_PP_ENUM_PARAMS(N,ARG)) FUNCTION_SPECIFICATION) {
-	return lfunction<R (BOOST_PP_ENUM_PARAMS(N,ARG)), Function>(function);
+               R (T::*)(BOOST_PP_ENUM_PARAMS(N, ARG)) FUNCTION_SPECIFICATION) {
+	return lfunction<R(BOOST_PP_ENUM_PARAMS(N, ARG)), Function>(function);
 }
 
 #endif // BOOST_PP_IS_ITERATING

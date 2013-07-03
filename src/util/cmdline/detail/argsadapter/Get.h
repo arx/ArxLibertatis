@@ -36,7 +36,7 @@
 template<>
 struct get_t<N> {
 	template<typename  R, typename T>
-	static R get(T & t) { return t.BOOST_PP_CAT(arg,N); }
+	static R get(T & t) { return t.BOOST_PP_CAT(arg, N); }
 };
 
 #endif // BOOST_PP_IS_ITERATING
