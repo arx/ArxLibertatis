@@ -34,13 +34,15 @@
 #ifndef ARX_UTIL_CMDLINE_INTERPRETER_H
 #define ARX_UTIL_CMDLINE_INTERPRETER_H
 
-#include "util/cmdline/detail/Interpreter.h"
-#include "util/cmdline/Keys.h"
-#include "util/cmdline/TypeCast.h"
-
 #include <string>
 #include <cstring>
 #include <iomanip>
+
+#include <boost/foreach.hpp>
+
+#include "util/cmdline/detail/Interpreter.h"
+#include "util/cmdline/Keys.h"
+#include "util/cmdline/TypeCast.h"
 
 namespace util { namespace cmdline {
 
@@ -250,10 +252,10 @@ struct print_op_t {
 			return;
 		}
 		
-		(*stream_) << "  -" << *it;
+		(*stream_) << " ";
 		
-		for(++it; it != end; ++it) {
-			(*stream_) << " " << "--" << *it;
+		for(; it != end; ++it) {
+			(*stream_) << " " << *it;
 		}
 		
 		if(key.has_args()) {

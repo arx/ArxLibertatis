@@ -72,7 +72,9 @@ public:
 	
 	virtual void registerOption(util::cmdline::interpreter<std::string> & l) {
 		l.add(
-			m_handler, util::cmdline::interpreter<std::string>::op_name_t(m_shortName)(m_longName)
+			m_handler,
+			util::cmdline::interpreter<std::string>::op_name_t(std::string("-") + m_shortName)
+			(std::string("--") + m_longName)
 			.description(m_description)
 			.arg_count(boost::function_types::function_arity<Handler>::value)
 			.arg_names(m_argNames)

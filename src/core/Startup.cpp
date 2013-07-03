@@ -125,7 +125,6 @@ static ExitStatus parseCommandLine(int argc, char ** argv) {
 		if(boost::algorithm::starts_with(token, "--")) {
 			
 			// Handle long options
-			token.erase(0, 2);
 			
 			// Flush previous option
 			if(currentOption.m_type != ParsedOption::Invalid) {
@@ -161,7 +160,8 @@ static ExitStatus parseCommandLine(int argc, char ** argv) {
 					currentOption.reset();
 				}
 				currentOption.m_type = ParsedOption::Short;
-				currentOption.m_name = option;
+				currentOption.m_name = "-";
+				currentOption.m_name += option;
 			}
 			
 			if(p != std::string::npos) {
@@ -206,13 +206,7 @@ static ExitStatus parseCommandLine(int argc, char ** argv) {
 				);
 			}
 		} catch(util::cmdline::command_line_exception & e) {
-			std::cerr << "Error parsing command-line option ";
-			if(option.m_type == ParsedOption::Long) {
-				std::cerr << "--";
-			} else if(option.m_type == ParsedOption::Short) {
-				std::cerr << "-";
-			}
-			std::cerr << option.m_name;
+			std::cerr << "Error parsing command-line option " << option.m_name;
 			BOOST_FOREACH(const std::string & arg, option.m_arguments) {
 				std::cerr << " \"";
 				std::cerr << util::escapeString(arg, "\\\" '$!");
