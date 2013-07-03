@@ -34,6 +34,6 @@
 
 namespace util { namespace cmdline {
 
-void parse(util::cmdline::interpreter<std::string> & cli, int argc, char ** argv);
+void parse(interpreter<std::string> & cli, int argc, char ** argv);
 
 } } // namespace util::cmdline

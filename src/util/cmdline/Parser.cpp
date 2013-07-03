@@ -48,7 +48,7 @@ enum OptionType {
 
 } // anonymous namespace
 
-void parse(util::cmdline::interpreter<std::string> & cli, int argc, char ** argv) {
+void parse(interpreter<std::string> & cli, int argc, char ** argv) {
 	
 	// Create a copy of the arguments that we can edit
 	std::vector<std::string> args;
@@ -58,7 +58,7 @@ void parse(util::cmdline::interpreter<std::string> & cli, int argc, char ** argv
 	}
 	
 	// Parse tokens one by one
-	util::cmdline::interpreter<std::string>::type_cast_t tc;
+	interpreter<std::string>::type_cast_t tc;
 	iterator p = args.begin();
 	const iterator end = args.end();
 	while(p != end) {
@@ -135,10 +135,7 @@ void parse(util::cmdline::interpreter<std::string> & cli, int argc, char ** argv
 					
 					case LongOption: {
 						// Argument given for long option that doesn't take arguments
-						throw util::cmdline::command_line_exception(
-							util::cmdline::command_line_exception::invalid_arg_count,
-							"too many arguments"
-						);
+						throw error(error::invalid_arg_count, "too many arguments");
 					}
 					
 					case ShortOption: {
@@ -150,16 +147,13 @@ void parse(util::cmdline::interpreter<std::string> & cli, int argc, char ** argv
 					
 					case PositionalArguments: {
 						// Unused positional arguments
-						throw util::cmdline::command_line_exception(
-							util::cmdline::command_line_exception::invalid_arg_count,
-							"too many positional arguments"
-						);
+						throw error(error::invalid_arg_count, "too many positional arguments");
 					}
 					
 				}
 			}
 			
-		} catch(util::cmdline::command_line_exception & e) {
+		} catch(error & e) {
 			
 			std::ostringstream oss;
 			
@@ -169,19 +163,19 @@ void parse(util::cmdline::interpreter<std::string> & cli, int argc, char ** argv
 					oss << " argument \"" << util::escapeString(*p, "\\\" '$!") << "\"";
 				}
 				oss << ": ";
-				if(e.m_code == util::cmdline::command_line_exception::cmd_not_found) {
+				if(e.m_code == error::cmd_not_found) {
 					oss << "positional arguments not supported";
 				} else {
 					oss << e.what();
 				}
 			} else {
 				oss << "Error parsing command-line option " << option << ": " << e.what();
-				if(p != end && e.m_code == util::cmdline::command_line_exception::invalid_arg_count) {
+				if(p != end && e.m_code == error::invalid_arg_count) {
 					oss << ": \"" << util::escapeString(*p, "\\\" '$!") << "\"";
 				}
 			}
 			
-			throw util::cmdline::command_line_exception(e.m_code, oss.str());
+			throw error(e.m_code, oss.str());
 			
 		}
 		

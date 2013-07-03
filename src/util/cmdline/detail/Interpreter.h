@@ -161,7 +161,7 @@ void interpreter<StringType, TypeCast>::do_add(const function_type & handler,
 	typename op_name_t::const_iterator it;
 	for(it = key.begin(); it != key.end(); ++it) {
 		if(alt_name.end() != alt_name.find(*it)) {
-			throw command_line_exception(command_line_exception::already_exists);
+			throw error(error::already_exists);
 		}
 	}
 	
@@ -191,7 +191,7 @@ void interpreter<StringType, TypeCast>::invoke(const string_type & key,
 	typename alt_name_t::const_iterator primary_key = alt_name.find(key);
 	
 	if(alt_name.end() == primary_key) {
-		throw command_line_exception(command_line_exception::cmd_not_found);
+		throw error(error::cmd_not_found);
 	}
 	
 	typename storage_t::const_iterator it(storage.find(primary_key->second));

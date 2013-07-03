@@ -40,7 +40,7 @@
 
 namespace util { namespace cmdline {
 
-class command_line_exception : public virtual std::runtime_error {
+class error : public virtual std::runtime_error {
 	
 public:
 	
@@ -53,10 +53,10 @@ public:
 		invalid_cmd_syntax,
 	} exception_code;
 	
-	command_line_exception(exception_code c, const std::string & message)
+	error(exception_code c, const std::string & message)
 		: std::runtime_error(message), m_code(c) { }
 	
-	explicit command_line_exception(exception_code c)
+	explicit error(exception_code c)
 		: std::runtime_error(default_message(c)), m_code(c) { }
 	
 	static std::string default_message(exception_code c) {

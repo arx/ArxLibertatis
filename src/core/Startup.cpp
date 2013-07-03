@@ -89,7 +89,7 @@ static ExitStatus parseCommandLine(int argc, char ** argv) {
 		
 		util::cmdline::parse(cli, argc, argv);
 		
-	} catch(std::runtime_error & e) {
+	} catch(util::cmdline::error & e) {
 		
 		std::cerr << e.what() << "\n\n";
 		showCommandLineHelp(cli, std::cerr);

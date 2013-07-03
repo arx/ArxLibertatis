@@ -48,10 +48,7 @@ template<typename SourceType, typename R>
 R construct(SourceType & arg , const R * = 0) {
 	
 	if(arg.empty()) {
-		throw command_line_exception(
-			command_line_exception::invalid_arg_count,
-			"not enough arguments"
-		);
+		throw error(error::invalid_arg_count, "not enough arguments");
 	}
 	
 	R ret(arg.template front<R>());
