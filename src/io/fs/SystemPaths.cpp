@@ -388,15 +388,15 @@ void disableDataDir() {
 	fs::cmdLineInitParams.findData = false;
 }
 
-void addDataDir(const std::string& dataDir) {
+void addDataDir(const std::string & dataDir) {
 	fs::cmdLineInitParams.dataDirs.push_back(dataDir);
 }
 
-void setUserDir(const std::string& userDir) {
+void setUserDir(const std::string & userDir) {
 	fs::cmdLineInitParams.forceUser = userDir;
 }
 
-void setConfigDir(const std::string& configDir) {
+void setConfigDir(const std::string & configDir) {
 	fs::cmdLineInitParams.forceConfig = configDir;
 }
 

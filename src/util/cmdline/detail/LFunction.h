@@ -55,18 +55,18 @@ struct lfunction {
 	
 	Function function;
 	
-	explicit lfunction(Function const& function) : function(function) {
+	explicit lfunction(Function const & function) : function(function) {
 	}
 	
 	template<typename Args>
 	typename lfn_invoker::result_type operator()(Args & args) {
-		return lfn_invoker()(function,args);
+		return lfn_invoker()(function, args);
 	}
 };
 
 template<typename FnSign, typename Function>
 lfunction<FnSign,Function> make_lfunction(Function const& fn) {
-	return lfunction<FnSign,Function>(fn);
+	return lfunction<FnSign, Function>(fn);
 }
 
 #define BOOST_PP_FILENAME_1                  "util/cmdline/detail/lfunction/Preprocessed.h"

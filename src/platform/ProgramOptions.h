@@ -92,7 +92,7 @@ private:
 #ifdef ARX_COMPILER_HAS_CXX11_AUTO
 	template<typename Handler>
 	Option<Handler> make_option(const char * longName, const char * shortName,
-	                            const char * description, Handler const & funcHandler,
+	                            const char * description, const Handler & funcHandler,
 	                            const char * argNames = NULL) {
 		return Option<Handler>(longName, shortName, description, funcHandler, argNames);
 	}
@@ -105,7 +105,7 @@ private:
 		static BaseOption * UNIQUE_NAME(declare_option)(const char * longName, \
 		                                                const char * shortName, \
 		                                                const char * desc, \
-		                                                Handler const & funcHandler, \
+		                                                const Handler & funcHandler, \
 		                                                const char * argDesc = NULL) { \
 			static Option<Handler> s_handler(longName, shortName, desc, funcHandler, argDesc); \
 			return &s_handler; \
