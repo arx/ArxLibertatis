@@ -35,7 +35,6 @@
 #include <stdlib.h>
 #endif
 
-#include <boost/algorithm/string.hpp>
 #include <boost/foreach.hpp>
 
 #include "core/Config.h"
@@ -53,39 +52,15 @@
 #include "platform/ProgramOptions.h"
 #include "platform/Time.h"
 #include "util/String.h"
+#include "util/cmdline/Parser.h"
 
-namespace {
-
-struct ParsedOption {
+static void showCommandLineHelp(const util::cmdline::interpreter<std::string> & options,
+                                std::ostream & os) {
 	
-	enum OptionType {
-		Invalid,
-		Long,
-		Short
-	};
+	os << "Usage: arx [options]\n\n";
 	
-	OptionType                  m_type;
-	std::string                 m_name;
-	std::list<std::string>      m_arguments;
-	
-	ParsedOption() : m_type(Invalid) { }
-	
-	void reset() {
-		m_type = Invalid;
-		m_name.clear();
-		m_arguments.clear();
-	}
-	
-};
-
-} // anonymous namespace
-
-static void showCommandLineHelp(const util::cmdline::interpreter<std::string> & options) {
-	
-	std::cout << "Usage: arx [options]\n\n";
-	
-	std::cout << "Arx Libertatis Options:\n";
-	std::cout << options << std::endl;
+	os << "Arx Libertatis Options:\n";
+	os << options << std::endl;
 	
 }
 
@@ -95,7 +70,7 @@ static void handleHelpOption() {
 	util::cmdline::interpreter<std::string> cli;
 	BaseOption::registerAll(cli);
 	
-	showCommandLineHelp(cli);
+	showCommandLineHelp(cli, std::cout);
 	
 	std::exit(EXIT_SUCCESS);
 }
@@ -110,117 +85,20 @@ static ExitStatus parseCommandLine(int argc, char ** argv) {
 	util::cmdline::interpreter<std::string> cli;
 	BaseOption::registerAll(cli);
 	
-	std::vector<std::string> args;
-
-	if(argc) {
-		std::copy(argv + 1, argv + argc, std::inserter(args, args.end()));
-	}
-	
-	std::list<ParsedOption> allOptions;
-	ParsedOption currentOption;
-	
-	// Pass 1: Split command-line arguments into options and commands
-	BOOST_FOREACH(std::string & token, args) {
+	try {
 		
-		if(boost::algorithm::starts_with(token, "--")) {
-			
-			// Handle long options
-			
-			// Flush previous option
-			if(currentOption.m_type != ParsedOption::Invalid) {
-				allOptions.push_back(currentOption);
-				currentOption.reset();
-			}
-			
-			// Long options can have an argument appended as --option=arg
-			std::string::size_type p = token.find('=');
-			if(p != std::string::npos) {
-				currentOption.m_arguments.push_back(token.substr(p + 1));
-			}
-			currentOption.m_type = ParsedOption::Long;
-			currentOption.m_name = token.substr(0, p);
-			
-		} else if(boost::algorithm::starts_with(token, "-")) {
-			
-			// Handle short options
-			token.erase(0, 1);
-			
-			/*
-			 * Note: Many UNIX utilities allow -o<arg>, but we can't tell where <arg> starts
-			 * without parsing the otpion and checkling if it accepts arguments.
-			 * To avoid option-dependent parsing in this pass, we disallow that syntax.
-			 * Instead we allow the = seperator used in long options.
-			 */
-			std::string::size_type p = token.find('=');
-			
-			// Short options can contain multiple options in one string, parse them one by one
-			BOOST_FOREACH(char option, token.substr(0, p)) {
-				if(currentOption.m_type != ParsedOption::Invalid) {
-					allOptions.push_back(currentOption);
-					currentOption.reset();
-				}
-				currentOption.m_type = ParsedOption::Short;
-				currentOption.m_name = "-";
-				currentOption.m_name += option;
-			}
-			
-			if(p != std::string::npos) {
-				currentOption.m_arguments.push_back(token.substr(p + 1));
-			}
-			
-		} else if(currentOption.m_type != ParsedOption::Invalid) {
-			
-			// Handle arguments
-			currentOption.m_arguments.push_back(token);
-			
-			/*
-			 * Note: We cannot handle separate arguments that start with a dash.
-			 * Users will have to use the --<option>=<arg> or -o=<arg> or -=<arg> syntax.
-			 */
-			
-		} else {
-			// ERROR: invalid command line
-			std::cerr << "Error parsing command-line: "
-			          << "commands must start with at least one dash: " << token << "\n\n";
-			showCommandLineHelp(cli);
-			return ExitFailure;
-		}
+		util::cmdline::parse(cli, argc, argv);
 		
-	}
-	
-	if(currentOption.m_type != ParsedOption::Invalid) {
-		allOptions.push_back(currentOption);
-		currentOption.reset();
-	}
-	
-	// Pass 2: Process all command line options received
-	util::cmdline::interpreter<std::string>::type_cast_t tc;
-	BOOST_FOREACH(const ParsedOption & option, allOptions) {
-		try {
-			std::list<std::string>::const_iterator arg_begin = option.m_arguments.begin();
-			cli.invoke(option.m_name, arg_begin, option.m_arguments.end(), tc);
-			if(arg_begin != option.m_arguments.end()) {
-				throw util::cmdline::command_line_exception(
-					util::cmdline::command_line_exception::invalid_arg_count,
-					"too many arguments"
-				);
-			}
-		} catch(util::cmdline::command_line_exception & e) {
-			std::cerr << "Error parsing command-line option " << option.m_name;
-			BOOST_FOREACH(const std::string & arg, option.m_arguments) {
-				std::cerr << " \"";
-				std::cerr << util::escapeString(arg, "\\\" '$!");
-				std::cerr << "\"";
-			}
-			std::cerr << ": " << e.what() << "\n\n";
-			showCommandLineHelp(cli);
-			return ExitFailure;
-		}
+	} catch(std::runtime_error & e) {
+		
+		std::cerr << e.what() << "\n\n";
+		showCommandLineHelp(cli, std::cerr);
+		
+		return ExitFailure;
 	}
 	
 	return RunProgram;
 }
-
 
 #if ARX_PLATFORM != ARX_PLATFORM_WIN32
 extern int main(int argc, char ** argv) {

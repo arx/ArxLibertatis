@@ -164,7 +164,7 @@ public:
 	template<typename It>
 	void invoke(const string_type & option_name, It & args_begin, It args_opend, It args_end,
 	            type_cast_t & type_cast) const {
-		super_t::invoke(option_name, args_begin, args_end, type_cast);
+		super_t::invoke(option_name, args_begin, args_opend, args_end, type_cast);
 	}
 	
 	/*!
@@ -182,7 +182,7 @@ public:
 	template<typename It>
 	void invoke(const string_type & option_name, It & args_begin, It args_end,
 	            type_cast_t & type_cast) const {
-		super_t::invoke(option_name, args_begin, args_end, args_end, type_cast);
+		invoke(option_name, args_begin, args_end, args_end, type_cast);
 	}
 	
 	interpreter() : super_t() { }
