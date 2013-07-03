@@ -92,8 +92,8 @@ public:
 	 *  @endcode
 	 */
 	template<typename Handler>
-	void add(Handler const& handler, op_name_t const& option_name) {
-		super_t::add(handler,option_name);
+	void add(const Handler & handler, const op_name_t & option_name) {
+		super_t::add(handler, option_name);
 	}
 	
 	/// Registers options.
@@ -116,8 +116,8 @@ public:
 	 * @endcode
 	 */
 	template<typename HndlSign, typename Handler>
-	void add(Handler const& handler, op_name_t const& option_name) {
-		super_t::template add<HndlSign>(handler,option_name);
+	void add(const Handler & handler, const op_name_t & option_name) {
+		super_t::template add<HndlSign>(handler, option_name);
 	}
 	
 	/// Removes an option in an interpreter with name.
@@ -125,17 +125,17 @@ public:
 	 * This function removes an option by name.
 	 * @param option_name Name of the option.
 	 */
-	void erase(string_type const& option_name) {
+	void erase(const string_type & option_name) {
 		super_t::erase(option_name);
 	}
 	
 	/// Visits all options.
 	/**
 	 * @param visitor An object or pointer to a function.
-	 * @note The visitor has to support call semantic : operator(op_name_t const&).
+	 * @note The visitor has to support call semantic : operator(const op_name_t &).
 	 */
 	template<typename Visitor>
-	void visit(Visitor& visitor) const {
+	void visit(Visitor & visitor) const {
 		super_t::visit(visitor);
 	}
 	
@@ -152,31 +152,31 @@ public:
 	 *  thrown.
 	 */
 	template<typename It>
-	void invoke(string_type const& option_name, It args_begin, It args_end, type_cast_t& type_cast) const {
+	void invoke(const string_type & option_name, It & args_begin, It args_end,
+	            type_cast_t & type_cast) const {
 		super_t::invoke(option_name, args_begin, args_end, type_cast);
 	}
 	
 	/**
 	 * Constructor
 	 */
-	interpreter() : super_t() {
-	}
+	interpreter() : super_t() { }
 	
 	/**
 	 * Constructor
 	 */
-	explicit interpreter(interpreter const& rh) : super_t(rh) {
-	}
+	explicit interpreter(const interpreter & rh) : super_t(rh) { }
 	
 	/**
 	 * operator =
 	 */
-	interpreter& operator = (interpreter const& rh) {
+	interpreter & operator=(const interpreter & rh) {
 		if(this != &rh) {
 			swap(interpreter(rh));
 		}
 		return *this;
 	}
+	
 };
 
 
@@ -185,17 +185,18 @@ namespace detail {
 
 template<typename Interpreter>
 struct opname_size {
-	Interpreter const* interpreter;
+	
+	Interpreter const * interpreter;
 	
 	size_t value;
 	
-	explicit opname_size(Interpreter const& interpreter)
+	explicit opname_size(const Interpreter & interpreter)
 		: interpreter(&interpreter)
-		, value(0) {
-	}
+		, value(0)
+	{ }
 	
 	template<typename Key>
-	void operator() (Key& key) {
+	void operator()(Key & key) {
 		typename Key::const_iterator it(key.begin()) , end(key.end());
 		
 		if(it == end) { return; }
@@ -217,23 +218,25 @@ struct opname_size {
 		
 		value = std::max(cur_size, value);
 	}
+	
 };
 
 template<typename Stream, typename Interpreter>
 struct print_op_t {
+	
 	Stream * stream_;
 	Interpreter const* interpreter;
 	
 	size_t offset;
 	
-	print_op_t(Stream & stream, Interpreter const& interpreter, size_t offset)
+	print_op_t(Stream & stream, const Interpreter & interpreter, size_t offset)
 		: stream_(&stream)
 		, interpreter(&interpreter)
-		, offset(offset) {
-	}
+		, offset(offset)
+	{ }
 	
 	template<typename Key>
-	void align(Key& key) const {
+	void align(Key & key) const {
 		opname_size<Interpreter> tmp(*interpreter);
 		tmp(key);
 		
@@ -242,7 +245,7 @@ struct print_op_t {
 	}
 	
 	template<typename Key>
-	void operator() (Key& key) const {
+	void operator()(Key & key) const {
 		typename Key::const_iterator it(key.begin()) , end(key.end());
 		
 		if(it == end) {
@@ -271,20 +274,20 @@ struct print_op_t {
 };
 
 template<typename OStream, typename Interpreter>
-void print_op(OStream& os, Interpreter const & interpreter) {
+void print_op(OStream & os, const Interpreter & interpreter) {
 	opname_size<Interpreter> calc_size(interpreter);
 	interpreter.visit(calc_size);
 	
-	print_op_t<OStream,Interpreter> op(os,interpreter,calc_size.value);
+	print_op_t<OStream, Interpreter> op(os, interpreter, calc_size.value);
 	interpreter.visit(op);
 }
 
 } // namespace detail
 
 template<typename CharType, typename StringType, typename TypeCast>
-std::basic_ostream<CharType>& operator << (std::basic_ostream<CharType>& os,
-                                           interpreter<StringType,TypeCast> const& l) {
-	return detail::print_op(os,l), os;
+std::basic_ostream<CharType> & operator << (std::basic_ostream<CharType> & os,
+                                            const interpreter<StringType,TypeCast> & l) {
+	return detail::print_op(os, l), os;
 }
 
 

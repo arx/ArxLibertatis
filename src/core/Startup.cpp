@@ -63,13 +63,12 @@ struct ParsedOption {
 		Long,
 		Short
 	};
-
+	
 	OptionType                  m_type;
 	std::string                 m_name;
 	std::list<std::string>      m_arguments;
 	
-	ParsedOption() : m_type(Invalid) {
-	}
+	ParsedOption() : m_type(Invalid) { }
 	
 	void reset() {
 		m_type = Invalid;
@@ -198,7 +197,14 @@ static ExitStatus parseCommandLine(int argc, char ** argv) {
 	interpreter<std::string>::type_cast_t tc;
 	BOOST_FOREACH(const ParsedOption & option, allOptions) {
 		try {
-			cli.invoke(option.m_name, option.m_arguments.begin(), option.m_arguments.end(), tc);
+			std::list<std::string>::const_iterator arg_begin = option.m_arguments.begin();
+			cli.invoke(option.m_name, arg_begin, option.m_arguments.end(), tc);
+			if(arg_begin != option.m_arguments.end()) {
+				throw command_line_exception(
+					command_line_exception::invalid_arg_count,
+					"too many arguments"
+				);
+			}
 		} catch(command_line_exception & e) {
 			std::cerr << "Error parsing command-line option ";
 			if(option.m_type == ParsedOption::Long) {
