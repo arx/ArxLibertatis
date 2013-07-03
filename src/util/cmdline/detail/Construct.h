@@ -64,7 +64,7 @@ ellipsis<P, Alloc> construct(SourceType & arg, const ellipsis<P, Alloc> * = 0) {
 	
 	ellipsis<P, Alloc> ret;
 	
-	while(!arg.empty()) {
+	while(!arg.opt_empty()) {
 		ret.push_back(construct(arg, static_cast<const P *>(0)));
 	}
 	
@@ -74,7 +74,7 @@ ellipsis<P, Alloc> construct(SourceType & arg, const ellipsis<P, Alloc> * = 0) {
 template<typename SourceType, typename T>
 optional<T> construct(SourceType & arg, const optional<T> * = 0) {
 	
-	if(arg.empty()) {
+	if(arg.opt_empty()) {
 		return optional<T>();
 	}
 	

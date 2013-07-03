@@ -142,7 +142,8 @@ class lexical_call_t<_Result(_ValueType, _ValueType, _TypeCast)> {
 		
 		virtual _ValueType v_front() const = 0;
 		virtual void pop() {}
-		virtual bool empty() const=0;
+		virtual bool empty() const = 0;
+		virtual bool opt_empty() const = 0;
 		
 		virtual ~Args() {}
 		
@@ -152,12 +153,16 @@ class lexical_call_t<_Result(_ValueType, _ValueType, _TypeCast)> {
 	struct VArgs : Args {
 		
 		Iterator & m_begin;
+		Iterator m_optend;
 		Iterator m_end;
+		bool m_is_optend;
 		
-		VArgs(type_cast_t & cast, Iterator & begin, Iterator end)
+		VArgs(type_cast_t & cast, Iterator & begin, Iterator optend, Iterator end)
 			: Args(cast)
 			, m_begin(begin)
+			, m_optend(optend)
 			, m_end(end)
+			, m_is_optend(begin == optend)
 		{ }
 		
 		virtual _ValueType v_front() const {
@@ -166,10 +171,15 @@ class lexical_call_t<_Result(_ValueType, _ValueType, _TypeCast)> {
 		
 		virtual void pop() {
 			++m_begin;
+			m_is_optend = m_is_optend || (m_begin == m_optend);
 		}
 		
 		virtual bool empty() const {
 			return m_begin == m_end;
+		}
+		
+		virtual bool opt_empty() const {
+			return m_is_optend;
 		}
 		
 	};
@@ -200,15 +210,25 @@ public:
 	}
 	
 	template<typename Iterator>
+	_Result operator()(Iterator & begin, Iterator optend, Iterator end, _TypeCast & cast) {
+		VArgs<Iterator> args(cast, begin, optend, end);
+		return m_impl(args); 
+	}
+	
+	template<typename Iterator>
+	_Result operator()(Iterator & begin, Iterator optend, Iterator end, _TypeCast & cast) const {
+		VArgs<Iterator> args(cast, begin, optend, end);
+		return m_impl(args); 
+	}
+	
+	template<typename Iterator>
 	_Result operator()(Iterator & begin, Iterator end, _TypeCast & cast) {
-		VArgs<Iterator> args(cast, begin, end);
-		m_impl(args); 
+		return operator()(begin, end, end, cast); 
 	}
 	
 	template<typename Iterator>
 	_Result operator()(Iterator & begin, Iterator end, _TypeCast & cast) const {
-		VArgs<Iterator> args(cast, begin, end);
-		m_impl(args); 
+		return operator()(begin, end, end, cast); 
 	}
 	
 };

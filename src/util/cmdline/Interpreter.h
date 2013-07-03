@@ -153,6 +153,25 @@ public:
 	 *
 	 * @param option_name Name of an option
 	 *
+	 * @param args_begin  Iterator referring to the first argument for the option.
+	 * @param args_optend Iterator referring to the end of arguments to be consumed by \ref optional.
+	 * @param args_end    Iterator referring to the past-the-end argument for the option.
+	 *
+	 * @throws If option isn't found or the handler of this options takes more
+	 *            than required arguments or they can't be converted, an exception
+	 *            will be thrown.
+	 */
+	template<typename It>
+	void invoke(const string_type & option_name, It & args_begin, It args_opend, It args_end,
+	            type_cast_t & type_cast) const {
+		super_t::invoke(option_name, args_begin, args_end, type_cast);
+	}
+	
+	/*!
+	 * Invokes handler by option name with parameters [args_begin, args_end).
+	 *
+	 * @param option_name Name of an option
+	 *
 	 * @param args_begin Iterator referring to the first argument for the option.
 	 * @param args_end   Iterator referring to the past-the-end argument for the option.
 	 *
@@ -163,7 +182,7 @@ public:
 	template<typename It>
 	void invoke(const string_type & option_name, It & args_begin, It args_end,
 	            type_cast_t & type_cast) const {
-		super_t::invoke(option_name, args_begin, args_end, type_cast);
+		super_t::invoke(option_name, args_begin, args_end, args_end, type_cast);
 	}
 	
 	interpreter() : super_t() { }

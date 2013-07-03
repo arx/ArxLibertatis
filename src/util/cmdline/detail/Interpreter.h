@@ -58,8 +58,14 @@ public:
 	void erase(const string_type & option_name);
 	
 	template<typename It>
-	void invoke(const string_type & option_name, It & args_begin, It args_end,
+	void invoke(const string_type & option_name, It & args_begin, It args_optend, It args_end,
 	            type_cast_t &) const;
+	
+	template<typename It>
+	void invoke(const string_type & option_name, It & args_begin, It args_end,
+	            type_cast_t & type_cast) const {
+		invoke(option_name, args_begin, args_end, args_end, type_cast);
+	}
 	
 	template<typename Visitor>
 	void visit(Visitor & visitor) const {
@@ -179,7 +185,7 @@ void interpreter<StringType, TypeCast>::do_add(const function_type & handler,
 template<typename StringType, typename TypeCast>
 template<typename It>
 void interpreter<StringType, TypeCast>::invoke(const string_type & key,
-                                              It & args_begin, It args_end,
+                                              It & args_begin, It args_optend, It args_end,
                                               type_cast_t & type_cast) const {
 	
 	typename alt_name_t::const_iterator primary_key = alt_name.find(key);
@@ -189,7 +195,7 @@ void interpreter<StringType, TypeCast>::invoke(const string_type & key,
 	}
 	
 	typename storage_t::const_iterator it(storage.find(primary_key->second));
-	it->second.function(args_begin, args_end, type_cast);
+	it->second.function(args_begin, args_optend, args_end, type_cast);
 }
 
 } } } // namespace util::cmdline::detail
