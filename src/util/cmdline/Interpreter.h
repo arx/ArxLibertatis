@@ -203,7 +203,7 @@ struct opname_size {
 		
 		cur_size += it->size();
 		for(++it; it != end; ++it) {
-			cur_size += 5 + it->size();
+			cur_size += 1 + it->size();
 		}
 		
 		if(key.has_args()) {
@@ -253,7 +253,7 @@ struct print_op_t {
 		(*stream_) << "  -" << *it;
 		
 		for(++it; it != end; ++it) {
-			(*stream_) << " [ " << "--" << *it << " ]";
+			(*stream_) << " " << "--" << *it;
 		}
 		
 		if(key.has_args()) {
@@ -267,7 +267,7 @@ struct print_op_t {
 		}
 		
 		align(key);
-		(*stream_) << " " << key.get_description() << std::endl;
+		(*stream_) << "  " << key.get_description() << std::endl;
 	}
 };
 
