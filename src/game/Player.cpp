@@ -2449,7 +2449,7 @@ void ARX_PLAYER_Manage_Movement() {
 
 	// Compute time things
 	const float FIXED_TIMESTEP = 25.f;
-	const float MAX_FRAME_TIME = 100.f;
+	const float MAX_FRAME_TIME = 200.f;
 
 	static float StoredTime = 0;
 
@@ -2462,6 +2462,14 @@ void ARX_PLAYER_Manage_Movement() {
 	
 	if(player.jumpphase != NotJumping) {
 		while(DeltaTime > FIXED_TIMESTEP) {
+			/*
+			 * TODO: should be PlayerMovementIterate(FIXED_TIMESTEP);
+			 * However, jump forward movement is only applied the the first
+			 * iteration, so we need this to not completely break the jump
+			 * at lower framerates.
+			 * Should only cause minor differences at higher framerates.
+			 * Fix this once PlayerMovementIterate has been cleaned up!
+			 */
 			PlayerMovementIterate(DeltaTime);
 			DeltaTime -= FIXED_TIMESTEP;
 		}
@@ -2661,15 +2669,15 @@ void PlayerMovementIterate(float DeltaTime) {
 			if(entities.player()->animlayer[0].cur_anim) {
 				if(player.jumpphase != NotJumping) {
 					if(player.Current_Movement & PLAYER_MOVE_WALK_BACKWARD) {
-						scale = 0.5f / 1000;
+						scale = 0.9f / 1000;
 					} else if(player.Current_Movement & PLAYER_MOVE_WALK_FORWARD) {
-						scale = 5.25f / 1000;
+						scale = 9.2f / 1000;
 					} else if(player.Current_Movement & PLAYER_MOVE_STRAFE_LEFT) {
-						scale = 1.75f / 1000;
+						scale = 3.0f / 1000;
 					} else if(player.Current_Movement & PLAYER_MOVE_STRAFE_RIGHT) {
-						scale = 1.75f / 1000;
+						scale = 3.0f / 1000;
 					} else {
-						scale = 0.125f / 1000;
+						scale = 0.2f / 1000;
 					}
 				} else if(levitate && !player.climbing) {
 					scale = 0.875f / 1000;
