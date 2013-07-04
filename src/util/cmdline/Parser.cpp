@@ -67,7 +67,7 @@ void parse(interpreter<std::string> & cli, int argc, char ** argv) {
 		std::string option = *p;
 		try {
 			
-			iterator original_p = p;
+			const iterator original_p = p;
 			
 			iterator optend = p + 1; //< end for optional arguments
 			
@@ -102,6 +102,7 @@ void parse(interpreter<std::string> & cli, int argc, char ** argv) {
 				
 				// Short options can contain multiple options and/or a final argument
 				if(option.length() > 2) {
+					// Re-insert remaining part of the token as an argument
 					*p = option.substr(2);
 					option.resize(2);
 				} else {
@@ -156,9 +157,9 @@ void parse(interpreter<std::string> & cli, int argc, char ** argv) {
 		} catch(error & e) {
 			
 			std::ostringstream oss;
+			oss << "Error parsing command-line";
 			
 			if(option == "--") {
-				oss << "Error parsing command-line";
 				if(p != end) {
 					oss << " argument \"" << util::escapeString(*p, "\\\" '$!") << "\"";
 				}
@@ -169,7 +170,7 @@ void parse(interpreter<std::string> & cli, int argc, char ** argv) {
 					oss << e.what();
 				}
 			} else {
-				oss << "Error parsing command-line option " << option << ": " << e.what();
+				oss << " option " << option << ": " << e.what();
 				if(p != end && e.m_code == error::invalid_arg_count) {
 					oss << ": \"" << util::escapeString(*p, "\\\" '$!") << "\"";
 				}
