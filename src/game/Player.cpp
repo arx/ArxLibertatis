@@ -2775,10 +2775,10 @@ void PlayerMovementIterate(float DeltaTime) {
 		// Apply climbing velocity
 		if(player.climbing) {
 			if(player.Current_Movement & PLAYER_MOVE_WALK_FORWARD) {
-				player.physics.velocity.y = -0.2f * DeltaTime;
+				player.physics.velocity.y = -0.2f;
 			}
 			if(player.Current_Movement & PLAYER_MOVE_WALK_BACKWARD) {
-				player.physics.velocity.y = 0.2f * DeltaTime;
+				player.physics.velocity.y = 0.2f;
 			}
 		}
 		
