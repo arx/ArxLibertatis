@@ -194,7 +194,7 @@ void ARX_SPEECH_ClearAll();
 long ARX_SPEECH_AddSpeech(Entity * io, const std::string & data, long mood, SpeechFlags flags = 0);
 void ARX_SPEECH_ReleaseIOSpeech(Entity * io);
 void ARX_SPEECH_ClearIOSpeech(Entity * io);
-void ARX_SPEECH_Launch_No_Unicode_Seek(const std::string & string, Entity * io_source, long mood = 0);
+void ARX_SPEECH_Launch_No_Unicode_Seek(const std::string & string, Entity * io_source);
 bool ApplySpeechPos(EERIE_CAMERA * conversationcamera, long is);
 
 #endif // ARX_GUI_SPEECH_H

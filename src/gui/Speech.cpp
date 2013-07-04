@@ -231,17 +231,17 @@ void ARX_SPEECH_Check()
 		ARX_SPEECH_Render();
 }
 
-void ARX_SPEECH_Launch_No_Unicode_Seek(const string & text, Entity * io_source, long mood)
-{
-	mood = ANIM_TALK_NEUTRAL;
+void ARX_SPEECH_Launch_No_Unicode_Seek(const string & text, Entity * io_source) {
+	
+	long mood = ANIM_TALK_NEUTRAL;
 	long speechnum = ARX_SPEECH_AddSpeech(io_source, text, mood, ARX_SPEECH_FLAG_NOTEXT);
-
 	if(speechnum >= 0) {
+		
 		aspeech[speechnum].scrpos = -1;
 		aspeech[speechnum].es = NULL;
 		aspeech[speechnum].ioscript = io_source;
 		aspeech[speechnum].flags = 0;
-
+		
 		CinematicSpeech acs;
 		acs.type = ARX_CINE_SPEECH_NONE;
 		aspeech[speechnum].cine = acs;
