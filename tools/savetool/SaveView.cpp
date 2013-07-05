@@ -614,17 +614,16 @@ void print_ident(SaveBlock & save, const string & ident) {
 	ARX_CHANGELEVEL_IO_SAVE & ais = *reinterpret_cast<ARX_CHANGELEVEL_IO_SAVE *>(dat + pos);
 	pos += sizeof(ARX_CHANGELEVEL_IO_SAVE);
 	if(pos > size) {
-		free(dat);
 		cout << " (bad save)";
+		free(dat);
 		return;
 	} else if(ais.version != ARX_GAMESAVE_VERSION) {
-		free(dat);
 		cout << " (bad version: " << ais.version << ')';
+		free(dat);
 		return;
 	}
 	
 	string locname = loadUnlocalized(boost::to_lower_copy(util::loadString(ais.locname)));
-	free(dat);
 	if(!locname.empty()) {
 		string name = getLocalised(locname);
 		if(name.empty()) {
@@ -638,6 +637,7 @@ void print_ident(SaveBlock & save, const string & ident) {
 	print_type(ais.savesystem_type);
 	cout << ')';
 	
+	free(dat);
 }
 
 template <size_t M, size_t N>
