@@ -70,7 +70,7 @@
 	#define __func__ __FUNCTION__ // MSVC doesn't know about C99 __func__
 #endif
 
-#if ARX_COMPILER_MSVC && (ARX_COMPILER >= ARX_COMPILER_VC10)
+#if ARX_COMPILER_MSVC && (_MSC_VER >= 1600 /* MSVC 10 */)
 	#define ARX_COMPILER_HAS_CXX11_AUTO
 #endif
 

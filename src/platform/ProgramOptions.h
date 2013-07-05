@@ -26,6 +26,7 @@
 #include <boost/preprocessor/cat.hpp>
 #include <boost/function_types/function_arity.hpp>
 
+#include "platform/Platform.h"
 #include "util/cmdline/Interpreter.h"
 
 // Linked list of statically defined options (no memory allocation)
@@ -66,7 +67,7 @@ class Option : public BaseOption {
 public:
 	
 	Option(const char * longName, const char * shortName, const char * description,
-	       Handler const & handler, const char * argNames)
+	       const Handler & handler, const char * argNames)
 		: BaseOption(longName, shortName, description)
 		, m_handler(handler), m_argNames(argNames) { }
 	
@@ -94,9 +95,9 @@ private:
 #ifdef ARX_COMPILER_HAS_CXX11_AUTO
 	template<typename Handler>
 	Option<Handler> make_option(const char * longName, const char * shortName,
-	                            const char * description, const Handler & funcHandler,
-	                            const char * argNames = NULL) {
-		return Option<Handler>(longName, shortName, description, funcHandler, argNames);
+	                            const char * desc, const Handler & funcHandler,
+	                            const char * argDesc = NULL) {
+		return Option<Handler>(longName, shortName, desc, funcHandler, argDesc);
 	}
 	#define ARX_PROGRAM_OPTION(longOpt, shortOpt, description, handler, ...) \
 		static auto UNIQUE_NAME(optionRegistrator) \
