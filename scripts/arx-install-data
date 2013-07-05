@@ -163,6 +163,30 @@ abspath() {
 	esac
 }
 
+# Get the canonical representation of an existing path
+# Usage: canonicalize <path>
+# Too bad we can't just use readlink -f
+if have realpath ; then
+	canonicalize() { realpath "$1" ; }
+else if have grealpath ; then
+	canonicalize() { grealpath "$1" ; }
+else if have greadlink ; then
+	canonicalize() { greadlink -f "$1" ; }
+else
+	canonicalize() {
+		_canonicalize_old_pwd="$PWD"
+		_canonicalize_file="$1"
+		while true ; do
+			cd "$(dirname "$_canonicalize_file")"
+			_canonicalize_file="$(basename "$_canonicalize_file")"
+			[ -L "$_canonicalize_file" ] || break;
+			_canonicalize_file="$(readlink "$_canonicalize_file")"
+		done
+		echo "$(pwd -P)/$_canonicalize_file"
+		cd "$_canonicalize_old_pwd"
+	}
+fi ; fi ; fi
+
 cleanup_functions='' # List of functions to be run on exit
 
 # Add a function to ron on exit.
@@ -749,7 +773,7 @@ if [ $gui = 1 ] ; then
 		# No dialog backend available
 		# Try opening a graphical terminal and launching the script in there.
 		print 'No GUI dialog backend is available - trying to launch a terminal emulator'
-		term_cmd="$(readlink -f "$(command -v "$0" 2> /dev/null)")"
+		term_cmd="$(abspath "$(command -v "$0" 2> /dev/null)")"
 		# Not all terminals accept command arguments in the same way.
 		# Instead of hacking terminal-specific code, use a magic environment
 		# variable to tell the sub-process how to behave.
@@ -791,7 +815,7 @@ $message"
 	
 	if [ $redirect_log = 1 ] ; then
 		# Redirect all further output into a log file
-		logfile="$(readlink -f "$(mktemp -t arx-install-data-XXXXX.log)")"
+		logfile="$(abspath "$(mktemp -t arx-install-data-XXXXX.log)")"
 		clean_logfile() {
 			[ -z "$logfile" ] || rm "$logfile"
 		}
@@ -1677,7 +1701,7 @@ sourcefiles='' # List of source file/directory candidates
 # Usage: found_source_file <file> [comment]
 # Return: $true if more source files should be probed, $false otherwise.
 found_source_file() {
-	set_append sourcefiles "$(readlink -f "$1")" "$2"
+	set_append sourcefiles "$(canonicalize "$1")" "$2"
 	if [ $batch = 1 ] ; then return $true ; else return $false ; fi
 }
 
@@ -2609,7 +2633,7 @@ probe_patch_file_impl() {
 
 # Callback for the japanese patch.
 patch_jp_found() {
-	patchfile_jp="$(readlink -f "$1")"
+	patchfile_jp="$(abspath "$1")"
 	printf "Using Japanese %s patch: ${blue}%s${reset}\n" \
 		"$patch_jp_ver" "$patchfile_jp"
 	return $true
@@ -2617,7 +2641,7 @@ patch_jp_found() {
 
 # Callback for the main patch.
 patch_found() {
-	patchfile="$(readlink -f "$1")"
+	patchfile="$(abspath "$1")"
 	printf "Using %s patch: ${blue}%s${reset}\n" "$patch_ver" "$patchfile"
 	return $true
 }
