@@ -2886,8 +2886,6 @@ static bool loadFastScene(const res::path & file, const char * data,
 	return true;
 }
 
-#define checkalloc if(pos >= allocsize - 100000) { free(dat); return false; }
-
 void EERIEPOLY_FillMissingVertex(EERIEPOLY * po, EERIEPOLY * ep)
 {
 	long missing = -1;
@@ -3507,7 +3505,10 @@ static bool FastSceneSave(const fs::path & partial_path) {
 						ftc->temp = 0;
 						fsh->nb_textures++;
 						
-						checkalloc
+						if(pos >= allocsize - 100000) {
+							delete[] dat;
+							return false;
+						}
 					}
 				}
 			}
@@ -3519,7 +3520,10 @@ static bool FastSceneSave(const fs::path & partial_path) {
 			FAST_SCENE_INFO * fsi = reinterpret_cast<FAST_SCENE_INFO *>(dat + pos);
 			pos += sizeof(FAST_SCENE_INFO);
 			
-			checkalloc
+			if(pos >= allocsize - 100000) {
+				delete[] dat;
+				return false;
+			}
 			
 			fsi->nbianchors = ACTIVEBKG->Backg[i+j*fsh->sizex].nbianchors;
 			fsi->nbpoly = ACTIVEBKG->Backg[i+j*fsh->sizex].nbpoly;
@@ -3531,7 +3535,10 @@ static bool FastSceneSave(const fs::path & partial_path) {
 				pos += sizeof(FAST_EERIEPOLY);
 				EERIEPOLY * ep2 = &ACTIVEBKG->Backg[i+j*fsh->sizex].polydata[k];
 				
-				checkalloc
+				if(pos >= allocsize - 100000) {
+					delete[] dat;
+					return false;
+				}
 				
 				ep->room = ep2->room;
 				ep->paddy = 0;
@@ -3555,7 +3562,10 @@ static bool FastSceneSave(const fs::path & partial_path) {
 			for(long k = 0; k < fsi->nbianchors; k++) {
 				s32 * ianch = (s32 *)(dat + pos);
 				pos += sizeof(s32);
-				checkalloc
+				if(pos >= allocsize - 100000) {
+					delete[] dat;
+					return false;
+				}
 				*ianch = ACTIVEBKG->Backg[i+j*fsh->sizex].ianchors[k];
 			}
 		}
@@ -3566,7 +3576,10 @@ static bool FastSceneSave(const fs::path & partial_path) {
 		FAST_ANCHOR_DATA * fad = reinterpret_cast<FAST_ANCHOR_DATA *>(dat + pos);
 		pos += sizeof(FAST_ANCHOR_DATA);
 		
-		checkalloc
+		if(pos >= allocsize - 100000) {
+			delete[] dat;
+			return false;
+		}
 		
 		fad->flags = ACTIVEBKG->anchors[i].flags;
 		fad->pos = ACTIVEBKG->anchors[i].pos;
@@ -3577,7 +3590,10 @@ static bool FastSceneSave(const fs::path & partial_path) {
 		for(long kk = 0; kk < fad->nb_linked; kk++) {
 			s32 * lng = reinterpret_cast<s32 *>(dat + pos);
 			pos += sizeof(s32);
-			checkalloc
+			if(pos >= allocsize - 100000) {
+				delete[] dat;
+				return false;
+			}
 			*lng = ACTIVEBKG->anchors[i].linked[kk];
 		}
 	}
