@@ -2669,13 +2669,13 @@ void PlayerMovementIterate(float DeltaTime) {
 			if(entities.player()->animlayer[0].cur_anim) {
 				if(player.jumpphase != NotJumping) {
 					if(player.Current_Movement & PLAYER_MOVE_WALK_BACKWARD) {
-						scale = 0.9f / 1000;
+						scale = 0.8f / 1000;
 					} else if(player.Current_Movement & PLAYER_MOVE_WALK_FORWARD) {
-						scale = 9.2f / 1000;
+						scale = 7.9f / 1000;
 					} else if(player.Current_Movement & PLAYER_MOVE_STRAFE_LEFT) {
-						scale = 3.0f / 1000;
+						scale = 2.6f / 1000;
 					} else if(player.Current_Movement & PLAYER_MOVE_STRAFE_RIGHT) {
-						scale = 3.0f / 1000;
+						scale = 2.6f / 1000;
 					} else {
 						scale = 0.2f / 1000;
 					}
