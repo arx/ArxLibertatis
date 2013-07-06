@@ -28,6 +28,9 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+#ifndef ARX_UTIL_CMDLINE_PARSER_H
+#define ARX_UTIL_CMDLINE_PARSER_H
+
 #include <string>
 
 #include "util/cmdline/Interpreter.h"
@@ -37,3 +40,5 @@ namespace util { namespace cmdline {
 void parse(interpreter<std::string> & cli, int argc, char ** argv);
 
 } } // namespace util::cmdline
+
+#endif // ARX_UTIL_CMDLINE_PARSER_H
