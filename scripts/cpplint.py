@@ -12,6 +12,7 @@
 #  - Allow //! comments
 #  - Allow #ifdef BOOST_PP_IS_ITERATING + #endif in place of header guards
 #
+# Copyright (c) 2011-1013 Arx Libertatis Team (see the AUTHORS file)
 # Copyright (c) 2009 Google Inc. All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
