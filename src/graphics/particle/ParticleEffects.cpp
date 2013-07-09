@@ -368,27 +368,25 @@ void ARX_POLYSPLAT_Add(Vec3f * poss, Color3f * col, float size, long flags) {
 
 				if(polyboom.capacity() > 0) {
 					POLYBOOM pb;
-					pb.type=1;
 
-					if(flags & 2)
-						pb.type=2;
+					if(flags & 2) {
+						pb.type = 2;
 
-					pb.ep=ep;
-
-					long num = Random::get(0, 5);
-					pb.tc=bloodsplat[num];
-
-					float fRandom = rnd() * 2;
-					
-					int t = checked_range_cast<int>(fRandom);
-
-					if(flags & 2)
+						float fRandom = rnd() * 2;
+						int t = checked_range_cast<int>(fRandom);
 						pb.tc = water_splat[t];
 
-					pb.tolive=(long)(float)(16000 * size * (1.0f/40));
-
-					if(flags & 2)
 						pb.tolive=1500;
+					} else {
+						pb.type = 1;
+
+						long num = Random::get(0, 5);
+						pb.tc = bloodsplat[num];
+
+						pb.tolive=(long)(float)(16000 * size * (1.0f/40));
+					}
+
+					pb.ep=ep;
 					
 					pb.timecreation=tim;
 
