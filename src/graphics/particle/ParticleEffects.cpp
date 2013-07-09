@@ -372,9 +372,8 @@ void ARX_POLYSPLAT_Add(Vec3f * poss, Color3f * col, float size, long flags) {
 					if(flags & 2) {
 						pb.type = 2;
 
-						float fRandom = rnd() * 2;
-						int t = checked_range_cast<int>(fRandom);
-						pb.tc = water_splat[t];
+						long num = Random::get(0, 2);
+						pb.tc = water_splat[num];
 
 						pb.tolive=1500;
 					} else {
