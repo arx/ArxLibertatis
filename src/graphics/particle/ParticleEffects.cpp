@@ -110,24 +110,12 @@ static TextureContainer * bloodsplatter = NULL;
 static TextureContainer * healing = NULL;
 static TextureContainer * tzupouf = NULL;
 TextureContainer * fire2=NULL;
-
-long			BoomCount=0;
  
 long			flarenum=0;
 short			OPIPOrgb=0;
 short			PIPOrgb=0;
 static short shinum = 1;
 long			NewSpell=0;
-
-long ARX_BOOMS_GetFree() {
-	for(long i=0;i<MAX_POLYBOOM;i++) 
-	{
-		if (!polyboom[i].exist) 
-			return i;
-	}
-
-	return -1;
-}
 
 long getParticleCount() {
 	return ParticleCount;
@@ -237,10 +225,10 @@ static void ARX_PARTICLES_Spawn_Blood3(const Vec3f & pos, float dmgs, Color col,
 
 void ARX_POLYSPLAT_Add(Vec3f * poss, Color3f * col, float size, long flags) {
 	
-	if(BoomCount > (MAX_POLYBOOM >> 2) - 30)
+	if(polyboom.size() > (MAX_POLYBOOM >> 2) - 30)
 		return;
 
-	if(BoomCount > 250.f && size < 10)
+	if(polyboom.size() > 250 && size < 10)
 		return;
 
 	float splatsize=90;
@@ -252,21 +240,21 @@ void ARX_POLYSPLAT_Add(Vec3f * poss, Color3f * col, float size, long flags) {
 
 	switch(config.video.levelOfDetail) {
 		case 2:
-			if(BoomCount > 160.f)
+			if(polyboom.size() > 160)
 				return;
 
 			splatsize = 90;
 			size *= 1.f;
 		break;
 		case 1:
-			if(BoomCount > 60.f)
+			if(polyboom.size() > 60)
 				return;
 
 			splatsize = 60;
 			size *= 0.5f;
 		break;
 		default:
-			if(BoomCount > 10.f)
+			if(polyboom.size() > 10)
 				return;
 
 			splatsize = 30;
@@ -324,9 +312,12 @@ void ARX_POLYSPLAT_Add(Vec3f * poss, Color3f * col, float size, long flags) {
 
 	unsigned long tim = (unsigned long)(arxtime);
 
-	for(long i = 0; i < MAX_POLYBOOM; i++) {
-		if(polyboom[i].exist)
-			polyboom[i].type |= 128;
+	std::vector<POLYBOOM>::iterator pb = polyboom.begin();
+	while(pb != polyboom.end()) {
+
+		//TODO what does this do ?
+		pb->type |= 128;
+		++ pb;
 	}
 
 	long px = poss->x * ACTIVEBKG->Xmul;
@@ -374,59 +365,58 @@ void ARX_POLYSPLAT_Add(Vec3f * poss, Color3f * col, float size, long flags) {
 				oki = true;
 
 			if(oki) {
-				long n = ARX_BOOMS_GetFree();
 
-				if(n >= 0) {
-					BoomCount++;
-					POLYBOOM *pb = &polyboom[n];
-					pb->type=1;	
+				if(polyboom.capacity() > 0) {
+					POLYBOOM pb;
+					pb.type=1;
 
 					if(flags & 2)
-						pb->type=2;	
+						pb.type=2;
 
-					pb->exist=1;
-					pb->ep=ep;
+					pb.ep=ep;
 
 					long num = Random::get(0, 5);
-					pb->tc=bloodsplat[num];
+					pb.tc=bloodsplat[num];
 
 					float fRandom = rnd() * 2;
 					
 					int t = checked_range_cast<int>(fRandom);
 
 					if(flags & 2)
-						pb->tc = water_splat[t];
+						pb.tc = water_splat[t];
 
-					pb->tolive=(long)(float)(16000 * size * (1.0f/40));
+					pb.tolive=(long)(float)(16000 * size * (1.0f/40));
 
 					if(flags & 2)
-						pb->tolive=1500;
+						pb.tolive=1500;
 					
-					pb->timecreation=tim;
+					pb.timecreation=tim;
 
-					pb->tx = static_cast<short>(i);
-					pb->tz = static_cast<short>(j);
+					pb.tx = static_cast<short>(i);
+					pb.tz = static_cast<short>(j);
 
-					pb->rgb = *col;
+					pb.rgb = *col;
 
 					for(int k = 0; k < nbvert; k++) {
 						float vdiff=EEfabs(ep->v[k].p.y-RealSplatStart.y);
-						pb->u[k]=(ep->v[k].p.x-RealSplatStart.x)*hdiv;
+						pb.u[k]=(ep->v[k].p.x-RealSplatStart.x)*hdiv;
 
-						if(pb->u[k]<0.5f)
-							pb->u[k]-=vdiff*hdiv;
+						if(pb.u[k]<0.5f)
+							pb.u[k]-=vdiff*hdiv;
 						else
-							pb->u[k]+=vdiff*hdiv;
+							pb.u[k]+=vdiff*hdiv;
 
-						pb->v[k]=(ep->v[k].p.z-RealSplatStart.z)*vdiv;
+						pb.v[k]=(ep->v[k].p.z-RealSplatStart.z)*vdiv;
 
-						if(pb->v[k]<0.5f)
-							pb->v[k]-=vdiff*vdiv;
+						if(pb.v[k]<0.5f)
+							pb.v[k]-=vdiff*vdiv;
 						else
-							pb->v[k]+=vdiff*vdiv;
+							pb.v[k]+=vdiff*vdiv;
 					}
 
-					pb->nbvert=(short)nbvert;
+					pb.nbvert=(short)nbvert;
+
+					polyboom.push_back(pb);
 				}
 			}
 		}			
@@ -823,10 +813,7 @@ void ARX_MAGICAL_FLARES_Draw(long FRAMETICKS) {
 }
 
 void ARX_BOOMS_ClearAllPolyBooms() {
-	for(long i = 0; i < MAX_POLYBOOM; i++) {
-		polyboom[i].exist = 0;
-	}
-	BoomCount = 0;
+	polyboom.clear();
 }
 
 void ARX_BOOMS_Add(Vec3f * poss,long type) {
@@ -900,27 +887,25 @@ void ARX_BOOMS_Add(Vec3f * poss,long type) {
 				continue;
 			}
 			
-			long n = ARX_BOOMS_GetFree();
-			if(n < 0) {
+			if(polyboom.capacity() == 0) {
 				continue;
 			}
 			
-			BoomCount++;
-			POLYBOOM * pb = &polyboom[n];
-			pb->exist = 1;
+			POLYBOOM pb;
 			
-			pb->type = 0;
-			pb->ep = ep;
-			pb->tc = tc2;
-			pb->tolive = 10000;
-			pb->timecreation = long(arxtime);
-			pb->tx = short(i);
-			pb->tz = short(j);
+			pb.type = 0;
+			pb.ep = ep;
+			pb.tc = tc2;
+			pb.tolive = 10000;
+			pb.timecreation = long(arxtime);
+			pb.tx = short(i);
+			pb.tz = short(j);
 			for(int k = 0; k < nbvert; k++) {
-				pb->v[k] = pb->u[k] = temp_uv1[k];
+				pb.v[k] = pb.u[k] = temp_uv1[k];
 			}
-			pb->nbvert = short(nbvert);
-			
+			pb.nbvert = short(nbvert);
+
+			polyboom.push_back(pb);
 		}
 	}
 }

@@ -48,6 +48,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define ARX_GRAPHICS_PARTICLE_PARTICLEEFFECTS_H
 
 #include <stddef.h>
+#include <vector>
 
 #include "graphics/Color.h"
 #include "graphics/Vertex.h"
@@ -79,7 +80,6 @@ struct FLARES {
 };
 
 struct POLYBOOM {
-	long exist;
 	short tx;
 	short tz;
 	EERIEPOLY * ep;
@@ -193,8 +193,7 @@ extern FLARES flare[MAX_FLARES];
 extern long flarenum;
 extern short OPIPOrgb;
 extern short PIPOrgb;
-extern long BoomCount;
-extern POLYBOOM polyboom[MAX_POLYBOOM];
+extern std::vector<POLYBOOM> polyboom;
 extern FOG_DEF fogs[MAX_FOG];
 extern TextureContainer * fire2;
 extern long NewSpell;

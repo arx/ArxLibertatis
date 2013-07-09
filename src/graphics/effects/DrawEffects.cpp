@@ -72,7 +72,7 @@ extern Vec3f SPRmaxs;
 extern EERIE_3DOBJ * eyeballobj;
 extern TextureContainer * Boom;
 
-POLYBOOM polyboom[MAX_POLYBOOM];
+std::vector<POLYBOOM> polyboom(MAX_POLYBOOM);
 
 extern Color ulBKGColor;
 
@@ -318,11 +318,8 @@ void ARXDRAW_DrawPolyBoom()
 	unsigned long tim = (unsigned long)(arxtime);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
-	for(long i = 0; i < MAX_POLYBOOM; i++) {
-		POLYBOOM *pb = &polyboom[i];
-
-		if(!pb->exist)
-			continue;
+	std::vector<POLYBOOM>::iterator pb = polyboom.begin();
+	while (pb != polyboom.end()) {
 
 		if(pb->type & 128) {
 			if(pb->timecreation - framedelay > 0) {
@@ -339,8 +336,7 @@ void ARXDRAW_DrawPolyBoom()
 		float t = (float)pb->timecreation + (float)pb->tolive - (float)tim;
 
 		if(t <= 0) {
-			pb->exist=0;
-			BoomCount--;
+			pb = polyboom.erase(pb);
 			continue;
 		}
 
@@ -491,6 +487,8 @@ void ARXDRAW_DrawPolyBoom()
 		}
 		break;
 		}
+
+		++ pb;
 	}
 
 	SetZBias(0);
