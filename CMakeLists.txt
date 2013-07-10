@@ -779,7 +779,8 @@ set(WINDOW_SDL_SOURCES src/window/SDLWindow.cpp)
 set(WINDOW_WIN32_SOURCES src/window/Win32Window.cpp)
 set(WINDOW_D3D9_SOURCES src/window/D3D9Window.cpp)
 
-file(GLOB_RECURSE ALL_INCLUDES ${SRC_DIR}/*.h)
+# TODO manually specify theese like we do for the tools
+file(GLOB_RECURSE ALL_INCLUDES RELATIVE ${CMAKE_SOURCE_DIR} ${SRC_DIR}/*.h)
 
 include_directories(${SRC_DIR} ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_SOURCE_DIR}/tools)
 
@@ -1105,8 +1106,10 @@ if(BUILD_TOOLS)
 		src/io/SaveBlock.cpp
 		src/io/IniReader.cpp
 		src/io/IniSection.cpp
+		tools/savetool/SaveFix.h
 		tools/savetool/SaveFix.cpp
 		tools/savetool/SaveTool.cpp
+		tools/savetool/SaveView.h
 		tools/savetool/SaveView.cpp
 	)
 	
@@ -1154,19 +1157,15 @@ if(DOXYGEN_EXECUTABLE)
 	)
 endif()
 
-file(GLOB_RECURSE TOOLS_INCLUDES ${CMAKE_SOURCE_DIR}/tools/*.h)
 set(STYLE_CHECKED_SOURCES
 	${ARX_SOURCES}
+	${ALL_INCLUDES}
 	${arxsavetool_SOURCES}
 	${arxunpak_SOURCES}
 	${arxcrashreporter_MANUAL_SOURCES}
 )
-set(STYLE_CHECKED_INCLUDES
-	${ALL_INCLUDES}
-	${TOOLS_INCLUDES}
-)
 
-add_style_check_target(style "${STYLE_CHECKED_SOURCES}" "${STYLE_CHECKED_INCLUDES}")
+add_style_check_target(style "${STYLE_CHECKED_SOURCES}" ARX)
 
 if(BUILD_TESTS)
 	add_subdirectory(tests ${CMAKE_SOURCE_DIR}/bin/tests)

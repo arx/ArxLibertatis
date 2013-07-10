@@ -54,9 +54,9 @@ public:
 	
 	path() { }
 	path(const path & other) : pathstr(other.pathstr) { }
-	inline path(const std::string & str) : pathstr(load(str)) { }
-	inline path(const char * str) : pathstr(load(str)) { }
-	inline path(const char * begin, const char * end)
+	/* implicit */ path(const std::string & str) : pathstr(load(str)) { }
+	/* implicit */ path(const char * str) : pathstr(load(str)) { }
+	path(const char * begin, const char * end)
 		: pathstr(load(std::string(begin, end))) { }
 	
 	path & operator=(const path & other) {

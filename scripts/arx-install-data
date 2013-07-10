@@ -130,6 +130,7 @@ fi
 downloads_dir="${downloads_dir%/}"
 tempdir="${TMPDIR:-"/tmp"}"
 tempdir="${tempdir%/}"
+[ -d "$tempdir" ] || tempdir="$PWD"
 eval "data_path=\"\$${scommand}_PATH\""
 [ -z "$data_path" ] && data_path="$arx_PATH"
 
@@ -151,6 +152,26 @@ if [ "$(id -u)" = 0 ] ; then is_root=1 ; else is_root=0 ; fi
 # Usage: print <text>
 print() {
 	printf '%s\n' "$1"
+}
+
+puts() {
+	printf '%s' "$1"
+}
+
+disabled_commands=' ' # List of commands that should not be used, even if they exist
+
+# Make `have` return false for a comand
+# Usage: disable_command <command>
+disable_command() {
+	disabled_commands="$disabled_commands$1 "
+}
+
+# Check if a command is available.
+# Usage: have <command>
+# Return: $true if the command is available, $false otherwise
+have() {
+	case "$disabled_commands" in *" $1 "*) return $false ; esac
+	command -v "$1" > /dev/null 2>&1
 }
 
 # Make a path absolute no matter if it is relative or not
@@ -237,7 +258,7 @@ Also attach the contents of
   $logfile"
 			logfile='' # so that we don't remove it on exit
 			printf "${red}%s${reset}\\n" "$_die_message" >&4 # also print to priginal stdout
-			printf '\nPreserving log file.\n' >&4
+			printf '\n%s\n' 'Preserving log file.' >&4
 		fi
 	
 		printf "${red}%s${reset}\\n" "$_die_message"
@@ -347,22 +368,6 @@ is_writable() {
 # Usage: create_dir <path> <type>
 create_dir() {
 	mkdir -p "$1" || die "Could not create $2 directory: $1"
-}
-
-disabled_commands=' ' # List of commands that should not be used, even if they exist
-
-# Check if a command is available.
-# Usage: have <command>
-# Return: $true if the command is available, $false otherwise
-have() {
-	case "$disabled_commands" in *" $1 "*) return $false ; esac
-	command -v "$1" > /dev/null 2>&1
-}
-
-# Make `have` return false for a comand
-# Usage: disable_command <command>
-disable_command() {
-	disabled_commands="$disabled_commands$1 "
 }
 
 probe_file_dirs=''
@@ -492,9 +497,9 @@ print_help_or() {
 	eval "
 		_print_help_or_i=0
 		for _print_help_or_entry in $_print_help_or_list ; do
-			[ \$_print_help_or_i = 0 ] || printf ' or '
+			[ \$_print_help_or_i = 0 ] || puts ' or '
 			printf '%s%s' \"\$_print_help_or_color\" \"\$_print_help_or_entry\"
-			[ -z \"\$_print_help_or_color\" ] || printf '%s' \"\$reset\"
+			[ -z \"\$_print_help_or_color\" ] || puts \"\$reset\"
 			_print_help_or_comment=\"\$(list_comment \$_print_help_or_var \$_print_help_or_i)\"
 			[ -z \"\$_print_help_or_comment\" ] || printf ' (%s)' \"\$_print_help_or_comment\"
 			_print_help_or_i=\$((\$_print_help_or_i + 1))
@@ -513,7 +518,10 @@ print_help_list() {
 	eval "
 		_print_help_list_i=0
 		for _print_help_list_entry in $_print_help_list_list ; do
-			printf \"\$_print_help_list_prefix\" \$((\$_print_help_list_i + 1))
+			case \"\$_print_help_list_prefix\" in
+				*%*) printf \"\$_print_help_list_prefix\" \$((\$_print_help_list_i + 1)) ;;
+				*)   puts \"\$_print_help_list_prefix\"
+			esac
 			printf \"%s\${reset}\" \"\$_print_help_list_entry\"
 			_print_help_list_comment=\"\$(list_comment \$_print_help_list_var \$_print_help_list_i)\"
 			[ -z \"\$_print_help_list_comment\" ] || printf ' (%s)' \"\$_print_help_list_comment\"
@@ -739,7 +747,8 @@ _dialog_title="Arx Fatalis ${patch_ver} data installer"
 # in its own terminal and should not try to create a GUI.
 if [ $batch = 0 ] && [ "$_arx_install_data_force_cli" = 1 ] ; then
 	trap '_arx_install_data_force_cli=0 ; quit 1' INT
-	printf "\n${yellow}Note: Install KDialog, Zenity or Xdialog for a better GUI\n\n${reset}"
+	printf "\n${yellow}%s${reset}\n\n" \
+		'Note: Install KDialog, Zenity or Xdialog for a better GUI'
 	wait_exit() {
 		[ "$_arx_install_data_force_cli" = 1 ] && print 'Press enter to exit...' && read f
 		exit $false
@@ -815,9 +824,9 @@ $message"
 	
 	if [ $redirect_log = 1 ] ; then
 		# Redirect all further output into a log file
-		logfile="$(abspath "$(mktemp -t arx-install-data-XXXXX.log)")"
+		logfile="$(abspath "$(mktemp "$tempdir/arx-install-data.log.XXXXX")")"
 		clean_logfile() {
-			[ -z "$logfile" ] || rm "$logfile"
+			[ -z "$logfile" ] || rm -f "$logfile"
 		}
 		on_exit clean_logfile
 		print "Enabling GUI mode, standard output/error saved to $logfile"
@@ -847,14 +856,14 @@ pipe_create() {
 	pipe_destroy
 	
 	# Pipe commands via a FIFO or, if that fails, via a regular file
-	pipe_file="$(mktemp -u -t "arx-install-data-XXXXX.pipe")"
+	pipe_file="$(mktemp -u "$tempdir/arx-install-data.pipe.XXXXX")"
 	if mkfifo -m 600 "$pipe_file" 2> /dev/null ; then
 		# Fast communication via a FIFO
 		cat "$pipe_file" | "$@" &
 		pipe_pid="$!"
 	else
 		# Fallback via regular file, may use polling
-		pipe_file="$(mktemp -t "arx-install-data-XXXXX.pipe")"
+		pipe_file="$(mktemp "$tempdir/arx-install-data.pipe.XXXXX")"
 		[ -z "$pipe_file" ] && return $false
 		tail -f "$pipe_file" | "$@" &
 		pipe_pid="$!"
@@ -1364,7 +1373,7 @@ dialog_select_entry() {
 	# Read a number (or empty string for the first entry)
 	while true ; do
 		
-		printf '> #'
+		puts '> #'
 		read -r _cli_select_entry_r
 		
 		[ -z "$_cli_select_entry_r" ] && _cli_select_entry_r=1
@@ -1399,7 +1408,7 @@ dialog_select_path_any=1
 dialog_select_path() {
 	_cli_select_path_var="$2"
 	print "$3:" ; shift
-	printf '> '
+	puts '> '
 	read -r _cli_select_path_r
 	[ -z "$_cli_select_path_r" ] && return $false
 	eval "$_cli_select_path_var=\"\$_cli_select_path_r\""
@@ -1410,7 +1419,7 @@ dialog_retry() {
 	printf '\n%s\n' "${red}Error:${reset} $1"
 	while true ; do
 		print "Abort / [Retry] / Ignore"
-		printf '> '
+		puts '> '
 		read -r _cli_dialog_retry_r
 		case "$_cli_dialog_retry_r" in
 			a|A|abort|Abort|ABORT)    dialog_retry_choice='abort'  ; return ;;
@@ -2027,7 +2036,7 @@ extract_zip() {
 	fi
 	
 	if have unzip ; then
-		printf 'unzip: '
+		puts 'unzip: '
 		unzip "$1"
 		return $?
 	fi
@@ -2126,7 +2135,7 @@ extract_iso() {
 		# Older versions of bsdtar don't always get the names right - fix them
 		_extrac_cdrom_f="$(find "$PWD" -depth -iname '*;1' | lines_to_list)"
 		if [ ! -z "$_extrac_cdrom_f" ] ; then
-			eval "for _extract_iso_f in $_extrac_cdrom_f ; do mv \"\$_extract_iso_f\" \"\$(print \"\$_extract_iso_f\" | sed 's:;1$::')\" ; done"
+			eval "for _extract_iso_f in $_extrac_cdrom_f ; do mv -f \"\$_extract_iso_f\" \"\$(print \"\$_extract_iso_f\" | sed 's:;1$::')\" ; done"
 		fi
 		
 	else if have 7z ; then
@@ -2177,7 +2186,7 @@ extract_ms_cab() {
 	fi
 	
 	if have cabextract ; then
-		printf 'cabextract: '
+		puts 'cabextract: '
 		cabextract "$1"
 		return $?
 	fi
@@ -2198,7 +2207,7 @@ have_extract_installshield() { have_extract installshield ; }
 extract_installshield() {
 	
 	if have unshield ; then
-		printf 'unshield: '
+		puts 'unshield: '
 		unshield x "$1"
 		return $?
 	fi
@@ -2213,7 +2222,7 @@ innosetup_language=''
 extract_innosetup() {
 	
 	if have innoextract ; then
-		printf 'innoextract: '
+		puts 'innoextract: '
 		if [ -z "$innosetup_language" ]
 			then innoextract --color=off "$1" ; return $?
 			else innoextract --color=off --language="$innosetup_language" "$1" ; return $?
@@ -2523,8 +2532,8 @@ use_file() {
 	
 	# Copy or move the file
 	if [ "${_in#"$sourcefile"}" = "$_in" ]
-		then mv "$_in" "$_out" || die "Could not move $_in to $_out!"
-		else cp "$_in" "$_out" || die "Could not copy $_in to $_out!"
+		then mv -f "$_in" "$_out" || die "Could not move $_in to $_out!"
+		else cp -f "$_in" "$_out" || die "Could not copy $_in to $_out!"
 	fi
 	installed_stuff=1
 	
@@ -2547,7 +2556,7 @@ detect_data_langauge() {
 		else _detect_data_langauge_status=10
 	fi
 	[ $gui = 0 ] || status $_detect_data_langauge_status 'Detecting data language...'
-	printf "${white}Detecting data language..."
+	puts "${white}Detecting data language..."
 	
 	_speech_checksums=''
 	
@@ -2577,7 +2586,7 @@ detect_data_langauge() {
 		esac
 	fi
 	
-	printf " ${green}${data_lang_desc}${reset}\n\n"
+	printf " ${green}%s${reset}\n\n" "${data_lang_desc}"
 	
 }
 
