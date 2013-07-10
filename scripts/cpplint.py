@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #
-# Note: this file has been adjusted to fit the Arx Libertatis:
+# Note: this file has been adjusted to fit the Arx Libertatis project:
 #  - adjusted include guard style
 #  - hacked so that build/include doesn't complain about #include "Configure.h" lines
 #  - Allow lines that are only whitespace.
@@ -9,8 +9,10 @@
 #  - Warn if a tab follows a non-tab character.
 #  - Don't require two spaces between code and comments
 #  - Warn if spaces are used for identation.
-#  - Allow //! comments
+#  - Allow //! and //!< comments
+#  - Allow struct name { typedef a type; }; one-liners
 #  - Allow #ifdef BOOST_PP_IS_ITERATING + #endif in place of header guards
+#  - C++ source files are named .cpp, not .cc
 #
 # Copyright (c) 2011-1013 Arx Libertatis Team (see the AUTHORS file)
 # Copyright (c) 2009 Google Inc. All rights reserved.
@@ -105,9 +107,12 @@ import unicodedata
 EXTENSIONS = ['c', 'cc', 'cpp', 'cxx', 'c++',
               'h', 'hpp', 'hxx', 'h++']
 
+HEADER_EXTENSIONS = ['h', 'hpp', 'hxx', 'h++']
+
 _USAGE = """
 Syntax: cpplint.py [--verbose=#] [--output=vs7] [--filter=-x,+y,...]
                    [--counting=total|toplevel|detailed]
+                   [--project=name]
         <file> [file] ...
 
   The style guidelines this tries to follow are those in
@@ -129,6 +134,9 @@ Syntax: cpplint.py [--verbose=#] [--output=vs7] [--filter=-x,+y,...]
     output=vs7
       By default, the output is formatted to ease emacs parsing.  Visual Studio
       compatible output (vs7) may also be used.  Other formats are unsupported.
+
+    project=name
+      Project name to use as include guard prefix.
 
     verbose=#
       Specify a number 0-5 to restrict errors to certain verbosity levels.
@@ -527,6 +535,7 @@ class _CppLintState(object):
   """Maintains module-wide state.."""
 
   def __init__(self):
+    self.project_name = 'src'
     self.verbose_level = 1  # global setting.
     self.error_count = 0    # global count of reported errors
     # filters to apply when emitting error messages
@@ -548,6 +557,12 @@ class _CppLintState(object):
     last_verbose_level = self.verbose_level
     self.verbose_level = level
     return last_verbose_level
+
+  def SetProjectName(self, name):
+    """Sets the module's verbosity, and returns the previous setting."""
+    last_project_name = self.project_name
+    self.project_name = name
+    return last_project_name
 
   def SetCountingStyle(self, counting_style):
     """Sets the module's counting options."""
@@ -621,6 +636,16 @@ def _VerboseLevel():
 def _SetVerboseLevel(level):
   """Sets the module's verbosity, and returns the previous setting."""
   return _cpplint_state.SetVerboseLevel(level)
+
+
+def _ProjectName():
+  """Returns the module's project name setting."""
+  return _cpplint_state.project_name
+
+
+def _SetProjectName(name):
+  """Sets the module's project name, and returns the previous setting."""
+  return _cpplint_state.SetProjectName(name)
 
 
 def _SetCountingStyle(level):
@@ -771,8 +796,8 @@ class FileInfo:
   def Split(self):
     """Splits the file into the directory, basename, and extension.
 
-    For 'chrome/browser/browser.cc', Split() would
-    return ('chrome/browser', 'browser', '.cc')
+    For 'chrome/browser/browser.cpp', Split() would
+    return ('chrome/browser', 'browser', '.cpp')
 
     Returns:
       A tuple of (directory, basename, extension).
@@ -922,7 +947,7 @@ def RemoveMultiLineCommentsFromRange(lines, begin, end):
   # Having // dummy comments makes the lines non-empty, so we will not get
   # unnecessary blank line warnings later in the code.
   for i in range(begin, end):
-    lines[i] = '// dummy'
+    lines[i] = re.search('^\t*', lines[i]).group(0) + '// dummy'
 
 
 def RemoveMultiLineComments(filename, lines, error):
@@ -1072,7 +1097,7 @@ def GetHeaderGuardCPPVariable(filename):
   filename = re.sub(r'_flymake\.h$', '.h', filename)
 
   fileinfo = FileInfo(filename)
-  return "ARX_" + re.sub(r'[-./\s]', '_', fileinfo.RepositoryName()).upper()
+  return (_ProjectName() + '_' + re.sub(r'[-./\s]', '_', fileinfo.RepositoryName())).upper()
 
 
 def CheckForHeaderGuard(filename, lines, error):
@@ -1268,6 +1293,8 @@ def CheckPosixThreading(filename, clean_lines, linenum, error):
     linenum: The number of the line to check.
     error: The function to call with any errors found.
   """
+  if '/* not thread-safe */' in clean_lines.raw_lines[linenum]:
+    return
   line = clean_lines.elided[linenum]
   for single_thread_function, multithread_safe_function in threading_list:
     ix = line.find(single_thread_function)
@@ -1837,6 +1864,7 @@ def CheckSpacing(filename, clean_lines, linenum, error):
         match = (Search(r'[=/-]{4,}\s*$', line[commentend:]) or
                  Search(r'^/$', line[commentend:]) or
                  Search(r'^! ', line[commentend:]) or
+                 Search(r'^!< ', line[commentend:]) or
                  Search(r'^/+ ', line[commentend:]))
         if not match:
           error(filename, linenum, 'whitespace/comments', 4,
@@ -1934,7 +1962,7 @@ def CheckSpacing(filename, clean_lines, linenum, error):
   # an initializer list, for instance), you should have spaces before your
   # braces. And since you should never have braces at the beginning of a line,
   # this is an easy test.
-  if Search(r'[^ ({]{', line):
+  if Search(r'[^ (\t{]{', line):
     error(filename, linenum, 'whitespace/braces', 5,
           'Missing space before {')
 
@@ -2278,7 +2306,7 @@ def CheckStyle(filename, clean_lines, linenum, file_extension, class_state,
 
   # Check if the line is a header guard.
   is_header_guard = False
-  if file_extension == 'h':
+  if file_extension in HEADER_EXTENSIONS:
     cppvar = GetHeaderGuardCPPVariable(filename)
     if (line.startswith('#ifndef %s' % cppvar) or
         line.startswith('#define %s' % cppvar) or
@@ -2301,6 +2329,10 @@ def CheckStyle(filename, clean_lines, linenum, file_extension, class_state,
             'Lines should very rarely be longer than 100 characters')
 
   if (cleansed_line.count(';') > 1 and
+      # allow one-line definitions for small structs or classes
+      not ((cleansed_line.find('struct ') != -1 or
+            cleansed_line.find('class ') != -1) and
+           cleansed_line.find('};') != -1) and
       # for loops are allowed two ;'s (and may run over two lines).
       cleansed_line.find('for') == -1 and
       (GetPreviousNonBlankLine(clean_lines, linenum)[0].find('for') == -1 or
@@ -2327,19 +2359,19 @@ _RE_PATTERN_INCLUDE_QT = re.compile(r'#include +"(ui_|moc_)[^/]+\.h"')
 _RE_PATTERN_INCLUDE = re.compile(r'^\s*#\s*include\s*([<"])([^>"]*)[>"].*$')
 # Matches the first component of a filename delimited by -s and _s. That is:
 #  _RE_FIRST_COMPONENT.match('foo').group(0) == 'foo'
-#  _RE_FIRST_COMPONENT.match('foo.cc').group(0) == 'foo'
-#  _RE_FIRST_COMPONENT.match('foo-bar_baz.cc').group(0) == 'foo'
-#  _RE_FIRST_COMPONENT.match('foo_bar-baz.cc').group(0) == 'foo'
+#  _RE_FIRST_COMPONENT.match('foo.cpp').group(0) == 'foo'
+#  _RE_FIRST_COMPONENT.match('foo-bar_baz.cpp').group(0) == 'foo'
+#  _RE_FIRST_COMPONENT.match('foo_bar-baz.cpp').group(0) == 'foo'
 _RE_FIRST_COMPONENT = re.compile(r'^[^-_.]+')
 
 
 def _DropCommonSuffixes(filename):
-  """Drops common suffixes like _test.cc or -inl.h from filename.
+  """Drops common suffixes like _test.cpp or -inl.h from filename.
 
   For example:
     >>> _DropCommonSuffixes('foo/foo-inl.h')
     'foo/foo'
-    >>> _DropCommonSuffixes('foo/bar/foo.cc')
+    >>> _DropCommonSuffixes('foo/bar/foo.cpp')
     'foo/bar/foo'
     >>> _DropCommonSuffixes('foo/foo_internal.h')
     'foo/foo'
@@ -2352,7 +2384,7 @@ def _DropCommonSuffixes(filename):
   Returns:
     The filename with the common suffix removed.
   """
-  for suffix in ('test.cc', 'regtest.cc', 'unittest.cc',
+  for suffix in ('test.cpp', 'regtest.cpp', 'unittest.cpp',
                  'inl.h', 'impl.h', 'internal.h'):
     if (filename.endswith(suffix) and len(filename) > len(suffix) and
         filename[-len(suffix) - 1] in ('-', '_')):
@@ -2369,9 +2401,9 @@ def _IsTestFilename(filename):
   Returns:
     True if 'filename' looks like a test, False otherwise.
   """
-  if (filename.endswith('_test.cc') or
-      filename.endswith('_unittest.cc') or
-      filename.endswith('_regtest.cc')):
+  if (filename.endswith('_test.cpp') or
+      filename.endswith('_unittest.cpp') or
+      filename.endswith('_regtest.cpp')):
     return True
   else:
     return False
@@ -2389,16 +2421,16 @@ def _ClassifyInclude(fileinfo, include, is_system):
     One of the _XXX_HEADER constants.
 
   For example:
-    >>> _ClassifyInclude(FileInfo('foo/foo.cc'), 'stdio.h', True)
+    >>> _ClassifyInclude(FileInfo('foo/foo.cpp'), 'stdio.h', True)
     _C_SYS_HEADER
-    >>> _ClassifyInclude(FileInfo('foo/foo.cc'), 'string', True)
+    >>> _ClassifyInclude(FileInfo('foo/foo.cpp'), 'string', True)
     _CPP_SYS_HEADER
-    >>> _ClassifyInclude(FileInfo('foo/foo.cc'), 'foo/foo.h', False)
+    >>> _ClassifyInclude(FileInfo('foo/foo.cpp'), 'foo/foo.h', False)
     _LIKELY_MY_HEADER
-    >>> _ClassifyInclude(FileInfo('foo/foo_unknown_extension.cc'),
+    >>> _ClassifyInclude(FileInfo('foo/foo_unknown_extension.cpp'),
     ...                  'bar/foo_other_ext.h', False)
     _POSSIBLE_MY_HEADER
-    >>> _ClassifyInclude(FileInfo('foo/foo.cc'), 'foo/bar.h', False)
+    >>> _ClassifyInclude(FileInfo('foo/foo.cpp'), 'foo/bar.h', False)
     _OTHER_HEADER
   """
   # This is a list of all standard c++ header files, except
@@ -2476,10 +2508,10 @@ def CheckIncludeLine(filename, clean_lines, linenum, include_state, error):
       include_state[include] = linenum
 
       # We want to ensure that headers appear in the right order:
-      # 1) for foo.cc, foo.h  (preferred location)
+      # 1) for foo.cpp, foo.h  (preferred location)
       # 2) c system files
       # 3) cpp system files
-      # 4) for foo.cc, foo.h  (deprecated location)
+      # 4) for foo.cpp, foo.h  (deprecated location)
       # 5) other google headers
       #
       # We classify each include statement as one of those 5 types
@@ -2699,7 +2731,7 @@ def CheckLanguage(filename, clean_lines, linenum, file_extension, include_state,
     error(filename, linenum, 'runtime/init', 4,
           'You seem to be initializing a member variable with itself.')
 
-  if file_extension == 'h':
+  if file_extension in HEADER_EXTENSIONS:
     # TODO(unknown): check that 1-arg constructors are explicit.
     #                How to tell it's a constructor?
     #                (handled in CheckForNonStandardConstructs for now)
@@ -2847,7 +2879,7 @@ def CheckLanguage(filename, clean_lines, linenum, file_extension, include_state,
   # Check for use of unnamed namespaces in header files.  Registration
   # macros are typically OK, so we allow use of "namespace {" on lines
   # that end with backslashes.
-  if (file_extension == 'h'
+  if (file_extension in HEADER_EXTENSIONS
       and Search(r'\bnamespace\s*{', line)
       and line[-1] != '\\'):
     error(filename, linenum, 'build/namespaces', 4,
@@ -2983,24 +3015,24 @@ def FilesBelongToSameModule(filename_cc, filename_h):
   """Check if these two filenames belong to the same module.
 
   The concept of a 'module' here is a as follows:
-  foo.h, foo-inl.h, foo.cc, foo_test.cc and foo_unittest.cc belong to the
+  foo.h, foo-inl.h, foo.cpp, foo_test.cpp and foo_unittest.cpp belong to the
   same 'module' if they are in the same directory.
   some/path/public/xyzzy and some/path/internal/xyzzy are also considered
   to belong to the same module here.
 
   If the filename_cc contains a longer path than the filename_h, for example,
-  '/absolute/path/to/base/sysinfo.cc', and this file would include
+  '/absolute/path/to/base/sysinfo.cpp', and this file would include
   'base/sysinfo.h', this function also produces the prefix needed to open the
   header. This is used by the caller of this function to more robustly open the
   header file. We don't have access to the real include paths in this context,
   so we need this guesswork here.
 
-  Known bugs: tools/base/bar.cc and base/bar.h belong to the same module
+  Known bugs: tools/base/bar.cpp and base/bar.h belong to the same module
   according to this implementation. Because of this, this function gives
   some false positives. This should be sufficiently rare in practice.
 
   Args:
-    filename_cc: is the path for the .cc file
+    filename_cc: is the path for the .cpp file
     filename_h: is the path for the header path
 
   Returns:
@@ -3009,9 +3041,9 @@ def FilesBelongToSameModule(filename_cc, filename_h):
     string: the additional prefix needed to open the header file.
   """
 
-  if not filename_cc.endswith('.cc'):
+  if not filename_cc.endswith('.cpp'):
     return (False, '')
-  filename_cc = filename_cc[:-len('.cc')]
+  filename_cc = filename_cc[:-len('.cpp')]
   if filename_cc.endswith('_unittest'):
     filename_cc = filename_cc[:-len('_unittest')]
   elif filename_cc.endswith('_test'):
@@ -3111,7 +3143,7 @@ def CheckForIncludeWhatYouUse(filename, clean_lines, include_state, error,
         required[header] = (linenum, template)
 
   # The policy is that if you #include something in foo.h you don't need to
-  # include it again in foo.cc. Here, we will look at possible includes.
+  # include it again in foo.cpp. Here, we will look at possible includes.
   # Let's copy the include_state so it is only messed up within this function.
   include_state = include_state.copy()
 
@@ -3123,12 +3155,12 @@ def CheckForIncludeWhatYouUse(filename, clean_lines, include_state, error,
 
   # For Emacs's flymake.
   # If cpplint is invoked from Emacs's flymake, a temporary file is generated
-  # by flymake and that file name might end with '_flymake.cc'. In that case,
+  # by flymake and that file name might end with '_flymake.cpp'. In that case,
   # restore original file name here so that the corresponding header file can be
   # found.
-  # e.g. If the file name is 'foo_flymake.cc', we should search for 'foo.h'
+  # e.g. If the file name is 'foo_flymake.cpp', we should search for 'foo.h'
   # instead of 'foo_flymake.h'
-  abs_filename = re.sub(r'_flymake\.cc$', '.cc', abs_filename)
+  abs_filename = re.sub(r'_flymake\.cpp$', '.cpp', abs_filename)
 
   # include_state is modified during iteration, so we iterate over a copy of
   # the keys.
@@ -3139,12 +3171,12 @@ def CheckForIncludeWhatYouUse(filename, clean_lines, include_state, error,
     if same_module and UpdateIncludeState(fullpath, include_state, io):
       header_found = True
 
-  # If we can't find the header file for a .cc, assume it's because we don't
+  # If we can't find the header file for a .cpp, assume it's because we don't
   # know where to look. In that case we'll give up as we're not sure they
   # didn't include it in the .h file.
   # TODO(unknown): Do a better job of finding .h files so we are confident that
   # not having the .h file means there isn't one.
-  if filename.endswith('.cc') and not header_found:
+  if filename.endswith('.cpp') and not header_found:
     return
 
   # All the lines have been processed, report the errors found.
@@ -3243,7 +3275,7 @@ def ProcessFileData(filename, file_extension, lines, error,
 
   CheckForCopyright(filename, lines, error)
 
-  if file_extension == 'h':
+  if file_extension in HEADER_EXTENSIONS:
     CheckForHeaderGuard(filename, lines, error)
 
   RemoveMultiLineComments(filename, lines, error)
@@ -3363,11 +3395,13 @@ def ParseArguments(args):
   """
   try:
     (opts, filenames) = getopt.getopt(args, '', ['help', 'output=', 'verbose=',
+                                                 'project=',
                                                  'counting=',
                                                  'filter='])
   except getopt.GetoptError:
     PrintUsage('Invalid arguments.')
 
+  project_name = _ProjectName()
   verbosity = _VerboseLevel()
   output_format = _OutputFormat()
   filters = ''
@@ -3380,6 +3414,8 @@ def ParseArguments(args):
       if not val in ('emacs', 'vs7'):
         PrintUsage('The only allowed output formats are emacs and vs7.')
       output_format = val
+    elif opt == '--project':
+      project_name = val
     elif opt == '--verbose':
       verbosity = int(val)
     elif opt == '--filter':
@@ -3395,6 +3431,7 @@ def ParseArguments(args):
     PrintUsage('No files were specified.')
 
   _SetOutputFormat(output_format)
+  _SetProjectName(project_name)
   _SetVerboseLevel(verbosity)
   _SetFilters(filters)
   _SetCountingStyle(counting_style)

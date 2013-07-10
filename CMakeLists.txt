@@ -1165,7 +1165,7 @@ set(STYLE_CHECKED_SOURCES
 	${arxcrashreporter_MANUAL_SOURCES}
 )
 
-add_style_check_target(style "${STYLE_CHECKED_SOURCES}" "${STYLE_CHECKED_INCLUDES}")
+add_style_check_target(style "${STYLE_CHECKED_SOURCES}" ARX)
 
 if(BUILD_TESTS)
 	add_subdirectory(tests ${CMAKE_SOURCE_DIR}/bin/tests)
