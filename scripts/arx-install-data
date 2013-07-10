@@ -130,6 +130,7 @@ fi
 downloads_dir="${downloads_dir%/}"
 tempdir="${TMPDIR:-"/tmp"}"
 tempdir="${tempdir%/}"
+[ -d "$tempdir" ] || tempdir="$PWD"
 eval "data_path=\"\$${scommand}_PATH\""
 [ -z "$data_path" ] && data_path="$arx_PATH"
 
@@ -823,7 +824,7 @@ $message"
 	
 	if [ $redirect_log = 1 ] ; then
 		# Redirect all further output into a log file
-		logfile="$(abspath "$(mktemp -t arx-install-data-XXXXX.log)")"
+		logfile="$(abspath "$(mktemp "$tempdir/arx-install-data.log.XXXXX")")"
 		clean_logfile() {
 			[ -z "$logfile" ] || rm -f "$logfile"
 		}
@@ -855,14 +856,14 @@ pipe_create() {
 	pipe_destroy
 	
 	# Pipe commands via a FIFO or, if that fails, via a regular file
-	pipe_file="$(mktemp -u -t "arx-install-data-XXXXX.pipe")"
+	pipe_file="$(mktemp -u "$tempdir/arx-install-data.pipe.XXXXX")"
 	if mkfifo -m 600 "$pipe_file" 2> /dev/null ; then
 		# Fast communication via a FIFO
 		cat "$pipe_file" | "$@" &
 		pipe_pid="$!"
 	else
 		# Fallback via regular file, may use polling
-		pipe_file="$(mktemp -t "arx-install-data-XXXXX.pipe")"
+		pipe_file="$(mktemp "$tempdir/arx-install-data.pipe.XXXXX")"
 		[ -z "$pipe_file" ] && return $false
 		tail -f "$pipe_file" | "$@" &
 		pipe_pid="$!"
