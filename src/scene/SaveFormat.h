@@ -182,7 +182,7 @@ struct SavedMapMarkerData {
 	s32 lvl;
 	char name[STRING_SIZE];
 	
-	inline SavedMapMarkerData(const MAPMARKER_DATA & b) {
+	/* implicit */ SavedMapMarkerData(const MAPMARKER_DATA & b) {
 		x = b.x;
 		y = b.y;
 		lvl = b.lvl;
@@ -941,7 +941,7 @@ struct SavedTweakerInfo {
 	char skintochange[NAME_SIZE];
 	char skinchangeto[NAME_SIZE];
 	
-	inline SavedTweakerInfo(const IO_TWEAKER_INFO & b) {
+	/* implicit */ SavedTweakerInfo(const IO_TWEAKER_INFO & b) {
 		arx_assert(b.filename.string().length() <= sizeof(filename));
 		strncpy(filename, b.filename.string().c_str(), sizeof(filename));
 		arx_assert(b.skintochange.length() <= sizeof(skintochange));
@@ -968,7 +968,7 @@ struct SavedTweakInfo {
 	char param1[PARAM_SIZE];
 	char param2[PARAM_SIZE];
 	
-	inline SavedTweakInfo(const TWEAK_INFO & b) {
+	/* implicit */ SavedTweakInfo(const TWEAK_INFO & b) {
 		type = b.type;
 		arx_assert(b.param1.string().length() <= PARAM_SIZE);
 		strncpy(param1, b.param1.string().c_str(), sizeof(param1));

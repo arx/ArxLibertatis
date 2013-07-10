@@ -174,7 +174,7 @@ public:
 		
 		const char * str;
 		
-		inline nullstr(const char * s) : str(s) { }
+		explicit nullstr(const char * s) : str(s) { }
 		
 	};
 	

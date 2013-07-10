@@ -61,15 +61,15 @@ private:
 	
 public:
 	
-	inline Autolock(Lock * _lock) : lock(_lock) {
+	explicit Autolock(Lock * _lock) : lock(_lock) {
 		lock->lock();
 	}
 	
-	inline Autolock(Lock & _lock) : lock(&_lock) {
+	explicit Autolock(Lock & _lock) : lock(&_lock) {
 		lock->lock();
 	}
 	
-	inline ~Autolock() {
+	~Autolock() {
 		lock->unlock();
 	}
 	

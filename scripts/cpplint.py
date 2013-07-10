@@ -759,7 +759,6 @@ class FileInfo:
         root_dir = os.path.dirname(root_dir)
 
       if (os.path.basename(root_dir) == "src" or
-          os.path.basename(root_dir) == "tools" or
           os.path.exists(os.path.join(root_dir, ".git")) or
           os.path.exists(os.path.join(root_dir, ".hg")) or
           os.path.exists(os.path.join(root_dir, ".svn"))):
@@ -1500,6 +1499,7 @@ def CheckForNonStandardConstructs(filename, clean_lines, linenum,
                line)
   if (args and
       args.group(1) != 'void' and
+      clean_lines.raw_lines[linenum].find('/* implicit */') < 0 and
       not Match(r'(const\s+)?%s\s*(?:<\w+>\s*)?&' % re.escape(base_classname),
                 args.group(1).strip())):
     error(filename, linenum, 'runtime/explicit', 5,

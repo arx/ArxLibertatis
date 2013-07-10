@@ -34,19 +34,19 @@ class Flags {
 	typedef void ** Zero;
 	u32 flags;
 	
-	inline Flags(u32 flag, bool dummy) : flags(flag) { ARX_UNUSED(dummy); }
+	Flags(u32 flag, bool dummy) : flags(flag) { ARX_UNUSED(dummy); }
 	
 public:
 	
 	typedef Enum_ Enum;
 	
-	inline Flags(Enum flag) : flags(flag) { }
+	/* implicit */ Flags(Enum flag) : flags(flag) { }
 	
-	inline Flags(Zero = 0) : flags(0) { }
+	/* implicit */ Flags(Zero = 0) : flags(0) { }
 	
-	inline Flags(const Flags & o) : flags(o.flags) { }
+	Flags(const Flags & o) : flags(o.flags) { }
 	
-	static inline Flags load(u32 flags) {
+	static Flags load(u32 flags) {
 		return Flags(flags, true);
 	}
 	
