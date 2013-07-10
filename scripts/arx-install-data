@@ -825,7 +825,7 @@ $message"
 		# Redirect all further output into a log file
 		logfile="$(abspath "$(mktemp -t arx-install-data-XXXXX.log)")"
 		clean_logfile() {
-			[ -z "$logfile" ] || rm "$logfile"
+			[ -z "$logfile" ] || rm -f "$logfile"
 		}
 		on_exit clean_logfile
 		print "Enabling GUI mode, standard output/error saved to $logfile"
@@ -2134,7 +2134,7 @@ extract_iso() {
 		# Older versions of bsdtar don't always get the names right - fix them
 		_extrac_cdrom_f="$(find "$PWD" -depth -iname '*;1' | lines_to_list)"
 		if [ ! -z "$_extrac_cdrom_f" ] ; then
-			eval "for _extract_iso_f in $_extrac_cdrom_f ; do mv \"\$_extract_iso_f\" \"\$(print \"\$_extract_iso_f\" | sed 's:;1$::')\" ; done"
+			eval "for _extract_iso_f in $_extrac_cdrom_f ; do mv -f \"\$_extract_iso_f\" \"\$(print \"\$_extract_iso_f\" | sed 's:;1$::')\" ; done"
 		fi
 		
 	else if have 7z ; then
@@ -2531,8 +2531,8 @@ use_file() {
 	
 	# Copy or move the file
 	if [ "${_in#"$sourcefile"}" = "$_in" ]
-		then mv "$_in" "$_out" || die "Could not move $_in to $_out!"
-		else cp "$_in" "$_out" || die "Could not copy $_in to $_out!"
+		then mv -f "$_in" "$_out" || die "Could not move $_in to $_out!"
+		else cp -f "$_in" "$_out" || die "Could not copy $_in to $_out!"
 	fi
 	installed_stuff=1
 	
