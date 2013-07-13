@@ -146,15 +146,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "window/RenderWindow.h"
 
-// Under OS X we want SDLmain to replace the entry point with its own.
-// TODO: I don't think this is wanted and we'll need to add the NSApplication setup
-// on the Arx Libertatis side instead of SDLmain's.
-#if defined(__APPLE__) && defined(__MACH__)
-	#include <SDL_main.h>
-#else
-	#undef main /* in case SDL.h was already included */
-#endif
-
 class TextManager;
 
 using std::min;

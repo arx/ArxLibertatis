@@ -37,6 +37,17 @@
 
 #include <boost/foreach.hpp>
 
+/*
+ * Under OS X we want SDLmain to replace the entry point with its own.
+ * This is needed to initialize NSApplication - otherwise we will later
+ * crash when trying to use SDL windowing functions.
+ */
+#if defined(__APPLE__) && defined(__MACH__)
+	#include <SDL_main.h>
+#else
+	#undef main /* in case SDL.h was already included */
+#endif
+
 #include "core/Config.h"
 #include "core/Core.h"
 #include "core/Version.h"
