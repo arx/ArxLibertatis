@@ -176,6 +176,7 @@ std::vector<path> SystemPaths::getSearchPaths(bool filter) const {
 	
 	// Check paths specified in environment variables
 	path exepath = getExecutablePath();
+	#if ARX_PLATFORM != ARX_PLATFORM_WIN32
 	if(!exepath.empty()) {
 		std::string var = "${" + exepath.basename() + "_PATH}";
 		std::vector<path> paths = fs::getSearchPaths(var.c_str());
@@ -183,6 +184,7 @@ std::vector<path> SystemPaths::getSearchPaths(bool filter) const {
 			addSearchPath(result, p, filter);
 		}
 	}
+	#endif
 	
 	// Check system settings (windows registry)
 	std::string temp;

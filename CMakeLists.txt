@@ -297,13 +297,6 @@ if(USE_SDL)
 		if(NOT MSVC)
 			check_link_library(SDL SDL_LIBRARY)
 		endif()
-		set(SDL_LIBRARIES ${SDL_LIBRARY})
-		if(MACOSX)
-			# For some reason SDLmain is not always included in SDL_LIBRARY
-			# But we always need it for OS X - so just include it anyway
-			# If it really isn't there, this will at least give better error messages
-			list(APPEND SDL_LIBRARIES "SDLmain")
-		endif()
 	endif(SDL_FOUND)
 endif()
 
@@ -825,7 +818,7 @@ endif()
 if(USE_SDL AND ARX_HAVE_OPENGL AND SDL_FOUND)
 	list(APPEND WINDOW_SOURCES ${WINDOW_SDL_SOURCES})
 	list(APPEND INPUT_SOURCES ${INPUT_SDL_SOURCES})
-	list(APPEND ARX_LIBRARIES ${SDL_LIBRARIES})
+	list(APPEND ARX_LIBRARIES ${SDL_LIBRARY})
 	include_directories(SYSTEM ${SDL_INCLUDE_DIR})
 	set(ARX_HAVE_SDL 1)
 endif()
