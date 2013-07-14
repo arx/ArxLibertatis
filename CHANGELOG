@@ -69,7 +69,7 @@ Technical Changes:
 * Removed dependency on Boost.Program_options - Boost is now only needed at
   build-time. We tried to keep the same command-line argument syntax but there
   might be slight changes in corner cases. (task #353)
-* Changed to always creates a user/config directory in the user's home
+* Changed to always create a user/config directory in the user's home
   directory unless explicitly changed with the --user-dir and/or --config-dir
   options or registry keys. Previously, if no data and user directories were
   found, the current working directory was used as the user directory.
