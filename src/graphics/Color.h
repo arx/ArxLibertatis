@@ -110,7 +110,7 @@ public:
 	}
 	
 	inline static Color3 grayb(u8 val) {
-		T v = T(val * T(Limits::max() / ColorLimits<float>::max()));
+		T v = T(val * T(Limits::max() / ColorLimits<u8>::max()));
 		return Color3(v, v, v);
 	}
 	
