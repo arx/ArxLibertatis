@@ -46,10 +46,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "core/Core.h"
 
+#include <algorithm>
+#include <cstdio>
 #include <cstdlib>
 #include <cstring>
-#include <cstdio>
-#include <algorithm>
+#include <deque>
+#include <iomanip>
 #include <sstream>
 #include <vector>
 
@@ -93,6 +95,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/BaseGraphicsTypes.h"
 #include "graphics/Draw.h"
+#include "graphics/DrawLine.h"
 #include "graphics/DrawDebug.h"
 #include "graphics/font/Font.h"
 #include "graphics/GraphicsModes.h"
@@ -3080,17 +3083,21 @@ void ShowInfoText() {
 	ARX_SCRIPT_Init_Event_Stats();
 }
 
+void ShowFpsGraph();
 void ShowFPS() {
+
 	// TODO: make sure when adding text that it can fit here
 	// - this is extremely naughty, should use a std::string
 	char tex[32];
-	sprintf(tex, "%.02f fps", (float)FPS);
+	sprintf(tex, "%.02f fps", FPS);
 
 	// top left
 	mainApp->outputTextGrid(0.0f, 0.0f, tex);
 
 	// bottom right
 	//mainApp->outputTextGrid(-0.5f, -1, tex);
+
+	ShowFpsGraph();
 }
 
 void ShowDebugToggles() {
@@ -3098,6 +3105,76 @@ void ShowDebugToggles() {
 		std::stringstream textStream;
 		textStream << "Toggle " << i << ": " << (g_debugToggles[i] ? "true" : "false");
 		mainApp->outputTextGrid(0.f, i, textStream.str());
+	}
+}
+
+void ShowFpsGraph() {
+
+	GRenderer->ResetTexture(0);
+	
+	static std::deque<float> lastFPSArray;
+	lastFPSArray.push_front(1000 / arxtime.get_frame_delay());
+
+	Vec2i windowSize = mainApp->getWindow()->getSize();
+	if(lastFPSArray.size() == windowSize.x)
+	{
+		lastFPSArray.pop_back();
+	}
+	
+	float avg = 0;
+	float worst = lastFPSArray[0];
+
+	std::vector<TexturedVertex> vertices;
+	vertices.resize(lastFPSArray.size());
+
+	const float SCALE_Y = 2.0f;
+
+	for(size_t i = 0; i < lastFPSArray.size(); ++i)
+	{
+		float time = lastFPSArray[i];
+
+		avg += lastFPSArray[i];
+		worst = std::min(worst, lastFPSArray[i]);
+
+		vertices[i].color = 0xFFFFFFFF;
+		vertices[i].p.x = i;
+		vertices[i].p.y = windowSize.y - (time * SCALE_Y);
+		vertices[i].p.z = 1.0f;
+		vertices[i].rhw = 1.0f;
+	}
+
+	EERIEDRAWPRIM(Renderer::LineStrip, &vertices[0], vertices.size());
+
+	{
+		avg /= lastFPSArray.size();
+		float avgPos = windowSize.y - (avg * SCALE_Y);
+	
+		std::stringstream ss;
+		ss << "Average: " << std::fixed << std::setprecision(2) << avg << " FPS";
+	
+		Vector2<int> strPos = Vector2<int>(windowSize.x - hFontDebug->getTextSize(ss.str()).x - 5,avgPos - hFontDebug->getLineHeight());
+		hFontDebug->draw(strPos, ss.str(), Color::blue);
+		EERIEDraw2DLine(0, avgPos,  windowSize.x, avgPos, 1.0f, Color::blue);
+	}
+
+	{
+		float worstPos = windowSize.y - (worst * SCALE_Y);
+
+		std::stringstream ss;
+		ss << "Worst: " << std::fixed << std::setprecision(2) << worst << " FPS";
+		
+		Vector2<int> strPos = Vector2<int>(windowSize.x - hFontDebug->getTextSize(ss.str()).x - 5, worstPos - hFontDebug->getLineHeight());
+		hFontDebug->draw(strPos, ss.str(), Color::red);
+		EERIEDraw2DLine(0, worstPos,  windowSize.x, worstPos, 1.0f, Color::red);
+	}
+
+	{
+		float currentPos = windowSize.y - (lastFPSArray[0] * SCALE_Y);
+
+		std::stringstream ss;
+		ss << "Current: " << std::fixed << std::setprecision(2) << lastFPSArray[0] << " FPS";
+		Vector2<int> strPos = Vector2<int>(5, currentPos - hFontDebug->getLineHeight());
+		hFontDebug->draw(strPos, ss.str(), Color::white);
 	}
 }
 
