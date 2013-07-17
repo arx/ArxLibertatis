@@ -187,7 +187,7 @@ struct SavedMapMarkerData {
 		y = b.m_y;
 		lvl = b.m_lvl;
 		arx_assert(STRING_SIZE > b.m_name.length());
-		strcpy(name, b.m_name.c_str());
+		strncpy(name, b.m_name.c_str(), STRING_SIZE);
 	}
 	
 };
