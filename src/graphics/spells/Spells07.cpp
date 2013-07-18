@@ -40,7 +40,6 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-// Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
 
 #include "graphics/spells/Spells07.h"
 
@@ -81,7 +80,6 @@ struct CLightning::LIGHTNING {
 	float fAngleZMax;
 };
 
-//------------------------------------------------------------------------------
 CLightning::CLightning() :
 	nbtotal(0),
 	lNbSegments(40),
@@ -116,8 +114,7 @@ void CLightning::BuildS(LIGHTNING * pLInfo)
 	Vec3f astart = pLInfo->eStart;
 	Vec3f avect = pLInfo->eVect;
 
-	if ((pLInfo->anb > 0) && (nbtotal < 2000))
-	{
+	if(pLInfo->anb > 0 && nbtotal < 2000) {
 		nbtotal++;
 		int moi = nbtotal;
 
@@ -151,12 +148,10 @@ void CLightning::BuildS(LIGHTNING * pLInfo)
 
 		float p = rnd();
 
-		if ((p <= 0.15) && (pLInfo->anbrec < 7))
-		{
+		if(p <= 0.15 && pLInfo->anbrec < 7) {
 			float m = rnd();
 
-			if (pLInfo->abFollow)
-			{
+			if(pLInfo->abFollow) {
 				pLInfo->eStart = astart;
 				pLInfo->eVect = avect;
 				pLInfo->abFollow = false;
@@ -184,9 +179,7 @@ void CLightning::BuildS(LIGHTNING * pLInfo)
 				pLInfo->fAngleZMin = fAngleZMin;
 				pLInfo->fAngleZMax = fAngleZMax;
 				BuildS(pLInfo);
-			}
-			else
-			{
+			} else {
 				pLInfo->abFollow = false;
 				pLInfo->eStart = astart;
 				pLInfo->eVect = avect;
@@ -215,12 +208,8 @@ void CLightning::BuildS(LIGHTNING * pLInfo)
 				pLInfo->fAngleZMax = fAngleZMax;
 				BuildS(pLInfo);
 			}
-		}
-		
-		else
-		{
-			if (rnd() <= 0.10)
-			{
+		} else {
+			if(rnd() <= 0.10) {
 				pLInfo->abFollow = true;
 			}
 
@@ -274,8 +263,7 @@ void CLightning::Create(Vec3f aeFrom, Vec3f aeTo, float beta) {
 
 	nbtotal = 0;
 
-	if (nbtotal == 0)
-	{
+	if(nbtotal == 0) {
 		fbeta = 0.f; 
 		falpha = 1.f; 
 
@@ -309,14 +297,11 @@ void CLightning::Create(Vec3f aeFrom, Vec3f aeTo, float beta) {
 	
 }
 
-//------------------------------------------------------------------------------
 void CLightning::ReCreate()
 {
 	nbtotal = 0;
 
-	if (nbtotal == 0)
-	{
-
+	if(nbtotal == 0) {
 		falpha = 1.f;
 
 		LIGHTNING LInfo;
@@ -346,59 +331,54 @@ void CLightning::ReCreate()
 	float fRandom	= 500 + rnd() * 1000;
 
 	iTTL = checked_range_cast<int>(fRandom);
-
-
 }
 
-//------------------------------------------------------------------------------
 void CLightning::Update(unsigned long _ulTime)
 {
 	ulCurrentTime += _ulTime;
 	iTTL -= _ulTime;
 	fTotoro += 8;
 
-	if (fMySize > 0.3f)
+	if(fMySize > 0.3f)
 		fMySize -= 0.1f;
 }
+
 void GetChestPos(long num, Vec3f * p)
 {
-	if (num == 0)
-	{
+	if(num == 0) {
 		p->x = player.pos.x;
 		p->y = player.pos.y + 70.f;
 		p->z = player.pos.z;
 		return;
 	}
 
-	if (ValidIONum(num))
-	{
+	if(ValidIONum(num)) {
 		long idx = GetGroupOriginByName(entities[num]->obj, "chest");
 
 		if(idx >= 0) {
 			*p = entities[num]->obj->vertexlist3[idx].v;
-		}
-		else
-		{
+		} else {
 			p->x = entities[num]->pos.x;
 			p->y = entities[num]->pos.y - 120.f;
 			p->z = entities[num]->pos.z;
 		}
 	}
 }
-//------------------------------------------------------------------------------
-float CLightning::Render()
+
+void CLightning::Render()
 {
 	TexturedVertex v[4];
 	TexturedVertex v2[4];
 
-	if (ulCurrentTime >= ulDuration) return 0.f;
+	if(ulCurrentTime >= ulDuration)
+		return;
 
 	falpha = 1.f - (((float)(ulCurrentTime)) * fOneOnDuration); 
 
-	if (falpha > 1.f) falpha = 1.f;
+	if(falpha > 1.f)
+		falpha = 1.f;
 
-	if (iTTL <= 0)
-	{
+	if(iTTL <= 0) {
 		fTotoro = 0;
 		fMySize = 2;
 		ReCreate();
@@ -502,12 +482,10 @@ float CLightning::Render()
 			sphere.origin = a;
 			sphere.radius = std::min(cnodetab[i].size, 50.f);
 
-			if (CheckAnythingInSphere(&sphere, spells[spellinstance].caster, CAS_NO_SAME_GROUP))
-			{
+			if(CheckAnythingInSphere(&sphere, spells[spellinstance].caster, CAS_NO_SAME_GROUP)) {
 				long si = ARX_DAMAGES_GetFree();
 
-				if (si != -1)
-				{
+				if(si != -1) {
 					damages[si].pos = sphere.origin;
 					damages[si].radius = sphere.radius;
 					damages[si].damages = fDamage * spells[spellinstance].caster_level * ( 1.0f / 3 ); 
@@ -574,16 +552,14 @@ float CLightning::Render()
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	
-	return falpha;
+	//return falpha;
 }
 
-//-----------------------------------------------------------------------------
 CConfuse::~CConfuse()
 {
 	spapi_count--;
 
-	if (spapi && (spapi_count <= 0))
-	{
+	if(spapi && spapi_count <= 0) {
 		spapi_count = 0;
 		delete spapi;
 		spapi = NULL;
@@ -642,15 +618,14 @@ void CConfuse::Update(unsigned long _ulTime) {
 	iElapsedTime = _ulTime;
 }
 
-float CConfuse::Render() {
+void CConfuse::Render() {
 	
 	int i = 0;
 	
 	eTarget = entities[spells[spellinstance].target]->pos;
 	
-	if(ulCurrentTime >= ulDuration) {
-		return 0.f;
-	}
+	if(ulCurrentTime >= ulDuration)
+		return;
 
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
@@ -672,7 +647,7 @@ float CConfuse::Render() {
 	Anglef stiteangle = Anglef(0.f, -degrees(arxtime.get_updated() * ( 1.0f / 500 )), 0.f);
 	Color3f stitecolor = Color3f::white;
 	Vec3f stitescale = Vec3f::ONE;
-	DrawEERIEObjEx(spapi, &stiteangle, &stitepos, &stitescale, &stitecolor);
+	DrawEERIEObjEx(spapi, &stiteangle, &stitepos, &stitescale, stitecolor);
 	
 	for(i = 0; i < 6; i++) {
 		
@@ -702,11 +677,10 @@ float CConfuse::Render() {
 		pd->rgb = Color3f(t1 * 0.8f, t2 * 0.8f, t3 * 0.8f);
 	}
 	
-	if (this->lLightId == -1)
+	if(this->lLightId == -1)
 		this->lLightId = GetFreeDynLight();
 
-	if (this->lLightId != -1)
-	{
+	if(this->lLightId != -1) {
 		long id = this->lLightId;
 		DynLight[id].exist = 1;
 		DynLight[id].intensity = 1.3f;
@@ -719,24 +693,19 @@ float CConfuse::Render() {
 		DynLight[id].duration = 200;
 		DynLight[id].extras = 0;
 	}
-
-	return 1;
 }
+
 //-----------------------------------------------------------------------------
-//
 //	FIRE FIELD
-//
 //-----------------------------------------------------------------------------
 CFireField::CFireField()
 {
 }
 
-//-----------------------------------------------------------------------------
 CFireField::~CFireField()
 {
 }
 
-//-----------------------------------------------------------------------------
 void CFireField::Create(float largeur, Vec3f * pos, int _ulDuration)
 {
 	this->key = 0;
@@ -864,7 +833,6 @@ void CFireField::Create(float largeur, Vec3f * pos, int _ulDuration)
 	pPSStream1.Update(0);
 }
 
-//-----------------------------------------------------------------------------
 void CFireField::Update(unsigned long _ulTime)
 {
 	ulCurrentTime += _ulTime;
@@ -873,10 +841,10 @@ void CFireField::Update(unsigned long _ulTime)
 	pPSStream1.Update(_ulTime);
 }
 
-/*--------------------------------------------------------------------------*/
-float CFireField::Render()
+void CFireField::Render()
 {
-	if (this->key > 1) return 0;
+	if(this->key > 1)
+		return;
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
@@ -892,17 +860,13 @@ float CFireField::Render()
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendZero);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
-
-	return 0;
 }
 
-//-----------------------------------------------------------------------------
 CIceField::~CIceField()
 {
 	smotte_count--;
 
-	if (smotte && (smotte_count <= 0))
-	{
+	if(smotte && smotte_count <= 0) {
 		smotte_count = 0;
 		delete smotte;
 		smotte = NULL;
@@ -910,8 +874,7 @@ CIceField::~CIceField()
 
 	stite_count--;
 
-	if (stite && (stite_count <= 0))
-	{
+	if(stite && stite_count <= 0) {
 		stite_count = 0;
 		delete stite;
 		stite = NULL;
@@ -959,8 +922,7 @@ void CIceField::Create(Vec3f aeSrc, float afBeta) {
 	
 	float	xmin, ymin, zmin;
 	
-	for (int i = 0 ; i < iNumber ; i++)
-	{
+	for(int i = 0; i < iNumber; i++) {
 		float t = rnd();
 
 		if (t < 0.5f)
@@ -983,23 +945,20 @@ void CIceField::Create(Vec3f aeSrc, float afBeta) {
 			zmin = 0.4f;
 		}
 
-		if (tSizeMax[i].x < xmin)
+		if(tSizeMax[i].x < xmin)
 			tSizeMax[i].x = xmin;
 
-		if (tSizeMax[i].y < ymin)
+		if(tSizeMax[i].y < ymin)
 			tSizeMax[i].y = ymin;
 
-		if (tSizeMax[i].z < zmin)
+		if(tSizeMax[i].z < zmin)
 			tSizeMax[i].z = zmin;
 
-		if (tType[i] == 0)
-		{
+		if(tType[i] == 0) {
 			tPos[i].x = eSrc.x + frand2() * 80;
 			tPos[i].y = eSrc.y;
 			tPos[i].z = eSrc.z + frand2() * 80;
-		}
-		else
-		{
+		} else {
 			tPos[i].x = eSrc.x + frand2() * 120;
 			tPos[i].y = eSrc.y;
 			tPos[i].z = eSrc.z + frand2() * 120;
@@ -1016,15 +975,18 @@ void CIceField::Create(Vec3f aeSrc, float afBeta) {
 	iNumber = j;
 }
 
-//---------------------------------------------------------------------
 void CIceField::Update(unsigned long _ulTime)
 {
 	ulCurrentTime += _ulTime;
 }
 
-//---------------------------------------------------------------------
-float CIceField::Render()
+extern bool VisibleSphere(float x, float y, float z, float radius);
+
+void CIceField::Render()
 {
+	if(!VisibleSphere(eSrc.x, eSrc.y - 120.f, eSrc.z, 350.f))
+		return;
+
 	int i = 0;
 
 	
@@ -1034,26 +996,26 @@ float CIceField::Render()
 
 	iMax = (int)(iNumber); 
 
-	if (iMax > iNumber) iMax = iNumber;
+	if(iMax > iNumber)
+		iMax = iNumber;
 
-	for (i = 0; i < iMax; i++)
-	{
-		if (tSize[i].x < tSizeMax[i].x)
+	for(i = 0; i < iMax; i++) {
+		if(tSize[i].x < tSizeMax[i].x)
 			tSize[i].x += 0.1f;
 
-		if (tSize[i].x > tSizeMax[i].x)
+		if(tSize[i].x > tSizeMax[i].x)
 			tSize[i].x = tSizeMax[i].x;
 
-		if (tSize[i].y < tSizeMax[i].y)
+		if(tSize[i].y < tSizeMax[i].y)
 			tSize[i].y += 0.1f;
 
-		if (tSize[i].y > tSizeMax[i].y)
+		if(tSize[i].y > tSizeMax[i].y)
 			tSize[i].y = tSizeMax[i].y;
 
-		if (tSize[i].z < tSizeMax[i].z)
+		if(tSize[i].z < tSizeMax[i].z)
 			tSize[i].z += 0.1f;
 
-		if (tSize[i].z > tSizeMax[i].z)
+		if(tSize[i].z > tSizeMax[i].z)
 			tSize[i].z = tSizeMax[i].z;
 
 		Anglef stiteangle;
@@ -1070,8 +1032,7 @@ float CIceField::Render()
 
 		float fcol = 1;
 
-		if (abs(iMax - i) < 60)
-		{
+		if(abs(iMax - i) < 60) {
 			fcol = 1;
 		}
 		else
@@ -1082,20 +1043,23 @@ float CIceField::Render()
 		stitecolor.g = tSizeMax[i].y * fcol * 0.7f; 
 		stitecolor.b = tSizeMax[i].y * fcol * 0.9f;
 
-		if (stitecolor.r > 1) stitecolor.r = 1;
+		if(stitecolor.r > 1)
+			stitecolor.r = 1;
 
-		if (stitecolor.g > 1) stitecolor.g = 1;
+		if(stitecolor.g > 1)
+			stitecolor.g = 1;
 
-		if (stitecolor.b > 1) stitecolor.b = 1;
+		if(stitecolor.b > 1)
+			stitecolor.b = 1;
 
 		stitescale.z = tSize[i].x;
 		stitescale.y = tSize[i].y;
 		stitescale.x = tSize[i].z;
 
-		if (tType[i] == 0)
-			DrawEERIEObjEx(smotte, &stiteangle, &stitepos, &stitescale, &stitecolor);
+		if(tType[i] == 0)
+			DrawEERIEObjEx(smotte, &stiteangle, &stitepos, &stitescale, stitecolor);
 		else
-			DrawEERIEObjEx(stite, &stiteangle, &stitepos, &stitescale, &stitecolor);
+			DrawEERIEObjEx(stite, &stiteangle, &stitepos, &stitescale, stitecolor);
 	}
 	
 	for(i = 0; i < iMax * 0.5f; i++) {
@@ -1131,6 +1095,6 @@ float CIceField::Render()
 			
 		}
 	}
-	
-	return 1;
+
+	GRenderer->SetCulling(Renderer::CullNone);
 }

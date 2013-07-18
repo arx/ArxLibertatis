@@ -40,7 +40,6 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-// Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
 
 #ifndef ARX_GRAPHICS_SPELLS_SPELLS02_H
 #define ARX_GRAPHICS_SPELLS_SPELLS02_H
@@ -50,51 +49,47 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 class ParticleSystem;
 
 // Done By : did
-class CHeal: public CSpellFx
-{
-	public:
-		Vec3f eSrc;
-		float	fSize;
-		ParticleSystem * pPS;
-		TextureContainer * tex_sol;
-		TextureContainer * tex_heal;
+class CHeal: public CSpellFx {
 
-	public:
-		CHeal();
-		~CHeal();
+public:
+	CHeal();
+	~CHeal();
 
-	public:
-		void	Create();
-		void	Update(unsigned long);
-		float	Render();
- 
+	void Create();
+
+	void Update(unsigned long);
+	void Render();
+
+	Vec3f eSrc;
+	float fSize;
+	ParticleSystem * pPS;
+	TextureContainer * tex_sol;
+	TextureContainer * tex_heal;
 };
 
 class CLowerArmor : public CSpellFx {
 	
 public:
-	
 	CLowerArmor();
 	~CLowerArmor();
 	
 	void Create(long);
 	void Kill();
+
 	void Update(unsigned long);
-	float Render();
-	
+	void Render();
 };
 
 class CArmor : public CSpellFx {
 	
 public:
-	
 	CArmor();
 	~CArmor();
 	
 	void Create(long);
+
 	void Update(unsigned long);
-	float Render();
-	
+	void Render();
 };
 
 #endif // ARX_GRAPHICS_SPELLS_SPELLS02_H

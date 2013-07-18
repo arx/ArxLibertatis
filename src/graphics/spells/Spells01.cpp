@@ -40,7 +40,6 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-// Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
 
 #include "graphics/spells/Spells01.h"
 
@@ -72,7 +71,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 extern ParticleManager * pParticleManager;
  
 extern long cur_mr;
-//-----------------------------------------------------------------------------
+
 void LaunchMagicMissileExplosion(Vec3f & _ePos, int t = 0, long spellinstance = -1)
 {
 	// système de partoches pour l'explosion
@@ -98,8 +97,7 @@ void LaunchMagicMissileExplosion(Vec3f & _ePos, int t = 0, long spellinstance = 
 	cp.fEndSize = 0;
 	cp.fEndSizeRandom = 2;
 
-	if ((spellinstance >= 0) && (spells[spellinstance].caster == 0) && (cur_mr == 3))
-	{
+	if(spellinstance >= 0 && spells[spellinstance].caster == 0 && cur_mr == 3) {
 		cp.fStartSize = 20;
 		cp.fSpeed = 13;
 		cp.fSpeedRandom = 10;
@@ -117,9 +115,7 @@ void LaunchMagicMissileExplosion(Vec3f & _ePos, int t = 0, long spellinstance = 
 		cp.fEndColor[2] = 120;
 		cp.fEndColor[3] = 10;//55;
 		pPS->SetTexture("graph/particles/(fx)_mr", 0, 500);
-	}
-	else
-	{
+	} else {
 		cp.fStartColorRandom[0] = 100;
 		cp.fStartColorRandom[1] = 100;
 		cp.fStartColorRandom[2] = 100;
@@ -152,21 +148,17 @@ void LaunchMagicMissileExplosion(Vec3f & _ePos, int t = 0, long spellinstance = 
 
 	long id = GetFreeDynLight();
 
-	if (id != -1)
-	{
+	if(id != -1) {
 		DynLight[id].exist = 1;
 		DynLight[id].intensity = 2.3f;
 		DynLight[id].fallstart = 250.f;
 		DynLight[id].fallend   = 420.f;
 
-		if ((spellinstance >= 0) && (spells[spellinstance].caster == 0) && (cur_mr == 3))
-		{
+		if(spellinstance >= 0 && spells[spellinstance].caster == 0 && cur_mr == 3) {
 			DynLight[id].rgb.r = 1.f;
 			DynLight[id].rgb.g = 0.3f;
 			DynLight[id].rgb.b = .8f;
-		}
-		else
-		{
+		} else {
 			DynLight[id].rgb.r = 0.f;
 			DynLight[id].rgb.g = 0.f;
 			DynLight[id].rgb.b = .8f;
@@ -176,22 +168,23 @@ void LaunchMagicMissileExplosion(Vec3f & _ePos, int t = 0, long spellinstance = 
 		DynLight[id].duration = 1500;
 	}
 
-	if (pParticleManager)
-	{
+	if(pParticleManager)
 		pParticleManager->AddSystem(pPS);
-	}
 
 	ARX_SOUND_PlaySFX(SND_SPELL_MM_HIT, &_ePos);
 }
 
-CMagicMissile::CMagicMissile() : CSpellFx(), fColor(Color3f::white), eSrc(Vec3f::ZERO) {
-	
+CMagicMissile::CMagicMissile() :
+	CSpellFx(),
+	eSrc(Vec3f::ZERO),
+	fColor(Color3f::white)
+{
 	SetDuration(2000);
 	ulCurrentTime = ulDuration + 1;
 
 	tex_mm = TextureContainer::Load("graph/obj3d/textures/(fx)_bandelette_blue");
 
-	if (!smissile)
+	if(!smissile)
 		smissile = LoadTheObj("graph/obj3d/interactive/fix_inter/fx_magic_missile/fx_magic_missile.teo");
 
 	smissile_count++;
@@ -200,39 +193,32 @@ CMagicMissile::CMagicMissile() : CSpellFx(), fColor(Color3f::white), eSrc(Vec3f:
 	bMove = true;
 }
 
-//-----------------------------------------------------------------------------
 CMagicMissile::~CMagicMissile()
 {
 	smissile_count--;
 
-	if (smissile && (smissile_count <= 0))
-	{
+	if(smissile && smissile_count <= 0) {
 		smissile_count = 0;
 		delete smissile;
 		smissile = NULL;
 	}
 
-	if (this->lLightId != -1)
-	{
+	if(this->lLightId != -1) {
 		this->lLightId = -1;
 	}
 
 	ARX_SOUND_Stop(snd_loop);
 }
 
-//-----------------------------------------------------------------------------
 void CMagicMissile::Create(const Vec3f & aeSrc, const Anglef & angles)
 {
-	Vec3f s, e;
-
 	SetDuration(ulDuration);
 	SetAngle(angles.b);
 
 	this->angles = angles;
 	eCurPos = eSrc = aeSrc;
 
-	s = eSrc;
-	e = eSrc;
+	Vec3f e = eSrc;
 
 	int i = 40;
 	e.x -= fBetaRadSin * 50 * i;
@@ -243,10 +229,8 @@ void CMagicMissile::Create(const Vec3f & aeSrc, const Anglef & angles)
 	pathways[5].p = e;
 	Split(pathways, 0, 5, 50, 0.5f);
 
-	for (i = 0; i < 6; i++)
-	{
-		if (pathways[i].p.y >= eSrc.y + 150)
-		{
+	for(i = 0; i < 6; i++) {
+		if(pathways[i].p.y >= eSrc.y + 150) {
 			pathways[i].p.y = eSrc.y + 150;
 		}
 	}
@@ -268,7 +252,6 @@ void CMagicMissile::SetColor(Color3f color) {
 	fColor = color;
 }
 
-//-----------------------------------------------------------------------------
 void CMagicMissile::SetTTL(unsigned long aulTTL)
 {
 	unsigned long t = ulCurrentTime;
@@ -277,73 +260,59 @@ void CMagicMissile::SetTTL(unsigned long aulTTL)
 	ulCurrentTime = t;
 
 	// Light
-	if (lLightId != -1)
-	{
+	if(lLightId != -1) {
 		lLightId = -1;
 	}
 }
 
-
-//-----------------------------------------------------------------------------
 void CMagicMissile::Update(unsigned long aulTime)
 {
 	ARX_SOUND_RefreshPosition(snd_loop, &eCurPos);
 
 	ulCurrentTime += aulTime;
+
+	if(ulCurrentTime >= ulDuration)
+		lightIntensityFactor = 0.f;
+	else
+		lightIntensityFactor = 1 - 0.5f * rnd();
 }
 
-//-----------------------------------------------------------------------------
-float CMagicMissile::Render()
-{
-	int i = 0;
- 
+void CMagicMissile::Render()
+{ 
 	Vec3f lastpos, newpos;
 	Vec3f v;
-	Anglef stiteangle;
-	Vec3f stitepos;
-	Vec3f stitescale;
-	Color3f stitecolor;
-	Vec3f av;
 
-	if (ulCurrentTime >= ulDuration)
-	{
-		return 0.f;
-	}
+	if(ulCurrentTime >= ulDuration)
+		return;
 
-	// Set Appropriate Renderstates -------------------------------------------
+	// Set Appropriate Renderstates
 	GRenderer->SetCulling(Renderer::CullNone);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
-	// Set Texture ------------------------------------------------------------
-	if (tex_mm)
-	{
-		if ((spells[spellinstance].caster == 0) && (cur_mr == 3))
+	// Set Texture
+	if(tex_mm) {
+		if(spells[spellinstance].caster == 0 && cur_mr == 3)
 			GRenderer->ResetTexture(0);
 		else
 			GRenderer->SetTexture(0, tex_mm);
 	}
 
-	// ------------------------------------------------------------------------
-
-	if (bMove)
-	{
+	if(bMove)
 		fTrail = (ulCurrentTime * fOneOnDuration) * (iBezierPrecision + 2) * 5;
-	}
 	
 	newpos = lastpos = pathways[0].p;
 	
-	for (i = 0; i < 5; i++)
-	{
+	for(int i = 0; i < 5; i++) {
 		int kp = i;
 		int kpprec = (i > 0) ? kp - 1 : kp ;
 		int kpsuiv = kp + 1 ;
 		int kpsuivsuiv = (i < (5 - 2)) ? kpsuiv + 1 : kpsuiv;
 
-		for (int toto = 1; toto < iBezierPrecision; toto++)
-		{
-			if (fTrail < i * iBezierPrecision + toto) break;
+		for(int toto = 1; toto < iBezierPrecision; toto++) {
+			if(fTrail < i * iBezierPrecision + toto)
+				break;
 
 			float t = toto * fOneOnBezierPrecision;
 
@@ -372,23 +341,20 @@ float CMagicMissile::Render()
 
 			newpos = v;
 
-			if (!((fTrail - (i * iBezierPrecision + toto)) > iLength))
-			{
+			if(!((fTrail - (i * iBezierPrecision + toto)) > iLength)) {
 				float c;
 
-				if (fTrail < iLength)
-				{
+				if(fTrail < iLength) {
 					c = 1.0f - ((fTrail - (i * iBezierPrecision + toto)) / fTrail);
-				}
-				else
-				{
+				} else {
 					c = 1.0f - ((fTrail - (i * iBezierPrecision + toto)) / (float)iLength);
 				}
 
 				float fsize = c;
 				float alpha = c - 0.2f;
 
-				if (alpha < 0.2f) alpha = 0.2f;
+				if(alpha < 0.2f)
+					alpha = 0.2f;
 
 				c += frand2() * 0.1f;
 
@@ -397,7 +363,7 @@ float CMagicMissile::Render()
 
 				Color color = (fColor * (c * alpha)).to<u8>();
 
-				if (fsize < 0.5f)
+				if(fsize < 0.5f)
 					fsize = fsize * 2 * 3;
 				else
 					fsize = (1.0f - fsize + 0.5f) * 2 * (3 * 0.5f);
@@ -413,48 +379,44 @@ float CMagicMissile::Render()
 		}
 	}
 	
-	av = newpos - lastpos;
+	Vec3f av = newpos - lastpos;
 	
 	float bubu = getAngle(av.x, av.z, 0, 0);
 	float bubu1 = getAngle(av.x, av.y, 0, 0);
 	
-	stitepos = lastpos;
+	Vec3f stitepos = lastpos;
 
+	Anglef stiteangle;
 	stiteangle.b = -degrees(bubu);
 	stiteangle.a = 0;
 	stiteangle.g = -(degrees(bubu1));
 
-	if (av.x < 0)
+	if(av.x < 0)
 		stiteangle.g -= 90;
 
-	if (av.x > 0)
+	if(av.x > 0)
 		stiteangle.g += 90;
 
-	if (stiteangle.g < 0)
+	if(stiteangle.g < 0)
 		stiteangle.g += 360.0f;
 
-	if ((spells[spellinstance].caster == 0) && (cur_mr == 3))
-	{
+	Color3f stitecolor;
+	if(spells[spellinstance].caster == 0 && cur_mr == 3) {
 		stitecolor.r = 1.f;
 		stitecolor.g = 0.f;
 		stitecolor.b = 0.2f;
-	}
-	else
-	{
+	} else {
 		stitecolor.r = 0.3f;
 		stitecolor.g = 0.3f;
 		stitecolor.b = 0.5f;
 	}
 
-	stitescale = Vec3f::ONE;
-	{
-		if ((smissile))
-			DrawEERIEObjEx(smissile, &stiteangle, &stitepos, &stitescale, &stitecolor);
-	}
+	Vec3f stitescale = Vec3f::ONE;
+
+	if(smissile)
+		DrawEERIEObjEx(smissile, &stiteangle, &stitepos, &stitescale, stitecolor);
 
 	eCurPos = lastpos;
-
-	return 1 - 0.5f * rnd();
 }
 
 //-----------------------------------------------------------------------------
@@ -466,11 +428,8 @@ CMultiMagicMissile::CMultiMagicMissile(long nbmissiles) : CSpellFx()
 	pTab = NULL;
 	pTab = new CMagicMissile*[uiNumber]();
 
-
-	if (pTab)
-	{
-		for (unsigned int i = 0 ; i < uiNumber ; i++)
-		{
+	if(pTab) {
+		for(unsigned int i = 0; i < uiNumber; i++) {
 			pTab[i] = NULL;
 			pTab[i] = new CMagicMissile();
 			pTab[i]->spellinstance = this->spellinstance;
@@ -478,15 +437,11 @@ CMultiMagicMissile::CMultiMagicMissile(long nbmissiles) : CSpellFx()
 	}
 }
 
-//-----------------------------------------------------------------------------
 CMultiMagicMissile::~CMultiMagicMissile()
 {
-	for (unsigned int i = 0 ; i < uiNumber ; i++)
-	{
-		if (pTab[i])
-		{
-			if (pTab[i]->lLightId != -1)
-			{
+	for(unsigned int i = 0; i < uiNumber; i++) {
+		if(pTab[i]) {
+			if(pTab[i]->lLightId != -1) {
 				// no need to kill it because it's a duration light !
 				pTab[i]->lLightId = -1;
 			}
@@ -498,16 +453,12 @@ CMultiMagicMissile::~CMultiMagicMissile()
 	delete [] pTab;
 }
 
-//-----------------------------------------------------------------------------
 void CMultiMagicMissile::Create()
 {
 	
 	long lMax = 0;
 
-	if (pTab)
-	{
-		
-
+	if(pTab) {
 		spells[spellinstance].hand_group = GetActionPointIdx(entities[spells[spellinstance].caster]->obj, "primary_attach");
 		
 		if(spells[spellinstance].hand_group != -1) {
@@ -518,8 +469,7 @@ void CMultiMagicMissile::Create()
 		
 		Vec3f aePos;
 		float afAlpha, afBeta;
-		if (spells[spellinstance].caster == 0) // player
-		{
+		if(spells[spellinstance].caster == 0) { // player
 			afBeta = player.angle.b;
 			afAlpha = player.angle.a;
 			Vec3f vector;
@@ -527,19 +477,14 @@ void CMultiMagicMissile::Create()
 			vector.y = EEsin(radians(afAlpha)) * 60.f;
 			vector.z = EEcos(radians(afBeta)) * EEcos(radians(afAlpha)) * 60.f;
 
-			if (spells[spellinstance].hand_group != -1)
-			{
+			if(spells[spellinstance].hand_group != -1) {
 				aePos = spells[spellinstance].hand_pos + vector;
-			}
-			else
-			{
+			} else {
 				aePos.x = player.pos.x - EEsin(radians(afBeta)) + vector.x; 
 				aePos.y = player.pos.y + vector.y; //;
 				aePos.z = player.pos.z + EEcos(radians(afBeta)) + vector.z; 
 			}
-		}
-		else
-		{
+		} else {
 			afAlpha = 0;
 			afBeta = entities[spells[spellinstance].caster]->angle.b;
 			Vec3f vector;
@@ -547,46 +492,37 @@ void CMultiMagicMissile::Create()
 			vector.y = EEsin(radians(afAlpha)) * 60;
 			vector.z = EEcos(radians(afBeta)) * EEcos(radians(afAlpha)) * 60;
 
-			if (spells[spellinstance].hand_group != -1)
-			{
+			if(spells[spellinstance].hand_group != -1) {
 				aePos = spells[spellinstance].hand_pos + vector;
-			}
-			else
-			{
+			} else {
 				aePos = entities[spells[spellinstance].caster]->pos + vector;
 			}
 
 			Entity * io = entities[spells[spellinstance].caster];
 
-			if (ValidIONum(io->targetinfo))
-			{
+			if(ValidIONum(io->targetinfo)) {
 				Vec3f * p1 = &spells[spellinstance].caster_pos;
 				Vec3f * p2 = &entities[io->targetinfo]->pos;
 				afAlpha = -(degrees(getAngle(p1->y, p1->z, p2->y, p2->z + dist(Vec2f(p2->x, p2->z), Vec2f(p1->x, p1->z))))); //alpha entre orgn et dest;
-			}
-			else if (ValidIONum(spells[spellinstance].target))
-			{
+			} else if (ValidIONum(spells[spellinstance].target)) {
 				Vec3f * p1 = &spells[spellinstance].caster_pos;
 				Vec3f * p2 = &entities[spells[spellinstance].target]->pos;
 				afAlpha = -(degrees(getAngle(p1->y, p1->z, p2->y, p2->z + dist(Vec2f(p2->x, p2->z), Vec2f(p1->x, p1->z))))); //alpha entre orgn et dest;
 			}
 		}
 
-		for (unsigned int i = 0 ; i < uiNumber ; i++)
-		{
-			if (pTab[i])
-			{
+		for(unsigned int i = 0; i < uiNumber; i++) {
+			if(pTab[i]) {
 				Anglef angles(afAlpha, afBeta, 0.f);
 
-				if (i > 0)
-				{
+				if(i > 0) {
 					angles.a += frand2() * 4.0f;
 					angles.b += frand2() * 6.0f;
 				}
 
 				pTab[i]->Create(aePos, angles);  
 
-				float	fTime	= ulDuration + frand2() * 1000.0f;
+				float fTime = ulDuration + frand2() * 1000.0f;
 				long lTime = checked_range_cast<long>(fTime);
 
 				lTime		= std::max(1000L, lTime);
@@ -604,22 +540,18 @@ void CMultiMagicMissile::Create()
 
 				pTab[i]->lLightId = GetFreeDynLight();
 
-				if (pTab[i]->lLightId != -1)
-				{
+				if(pTab[i]->lLightId != -1) {
 					EERIE_LIGHT * el = &DynLight[pTab[i]->lLightId];
 					el->exist		= 1;
 					el->intensity	= 0.7f + 2.3f;
 					el->fallend		= 190.f;
 					el->fallstart	= 80.f;
 
-					if ((spells[spellinstance].caster == 0) && (cur_mr == 3))
-					{
+					if(spells[spellinstance].caster == 0 && cur_mr == 3) {
 						el->rgb.r = 1;
 						el->rgb.g = 0.3f;
 						el->rgb.b = 0.8f;
-					}
-					else
-					{
+					} else {
 						el->rgb.r = 0;
 						el->rgb.g = 0;
 						el->rgb.b = 1;
@@ -628,7 +560,6 @@ void CMultiMagicMissile::Create()
 					el->pos	 = pMM->eSrc;
 					el->duration = 300;
 				}
-
 			}
 		}
 	}
@@ -636,15 +567,13 @@ void CMultiMagicMissile::Create()
 	SetDuration(lMax + 1000);
 }
 
-//-----------------------------------------------------------------------------
 void CMultiMagicMissile::CheckCollision()
 {
-	if (pTab)
-	{
-		for (unsigned int i = 0 ; i < uiNumber ; i++)
-		{
-			if (pTab[i])
-			{
+	if(!pTab)
+		return;
+
+		for(unsigned int i = 0; i < uiNumber; i++) {
+			if(pTab[i]) {
 				CMagicMissile * pMM = (CMagicMissile *) pTab[i];
 
 				if(!pMM->bExplo) {
@@ -653,9 +582,8 @@ void CMultiMagicMissile::CheckCollision()
 					sphere.origin = pMM->eCurPos;
 					sphere.radius	= 10.f;
 
-					if ((spellinstance != -1) && (CheckAnythingInSphere(&sphere, spells[spellinstance].caster, CAS_NO_SAME_GROUP)))
+					if(spellinstance != -1 && (CheckAnythingInSphere(&sphere, spells[spellinstance].caster, CAS_NO_SAME_GROUP)))
 					{
- 
 						LaunchMagicMissileExplosion(pMM->eCurPos, 0, spellinstance);
 						ARX_NPC_SpawnAudibleSound(&pMM->eCurPos, entities[spells[spellinstance].caster]);
 
@@ -663,15 +591,12 @@ void CMultiMagicMissile::CheckCollision()
 						pMM->bExplo = true;
 						pMM->bMove  = false;
 
-						if (pMM->lLightId != -1)
-						{
+						if(pMM->lLightId != -1)
 							pMM->lLightId = -1;
-						}
 
 						long ttt = ARX_DAMAGES_GetFree();
 
-						if (ttt != -1)
-						{
+						if(ttt != -1) {
 							damages[ttt].pos = pMM->eCurPos;
 							damages[ttt].radius	= 80.f;
 							damages[ttt].damages = (4 + spells[spellinstance].caster_level * ( 1.0f / 5 )) * .8f; 
@@ -689,56 +614,53 @@ void CMultiMagicMissile::CheckCollision()
 				}
 			}
 		}
-	}
 }
 
-//-----------------------------------------------------------------------------
+bool CMultiMagicMissile::CheckAllDestroyed()
+{
+	if(!pTab)
+		return true;
+
+	long nbmissiles	= 0;
+
+	for(unsigned int i = 0; i < uiNumber; i++) {
+		CMagicMissile *pMM = pTab[i];
+		if(pMM && pMM->bMove)
+			nbmissiles++;
+	}
+
+	return nbmissiles == 0;
+}
+
 void CMultiMagicMissile::Update(unsigned long _ulTime)
 {
-	if (pTab)
-	{
-		for (unsigned int i = 0 ; i < uiNumber ; i++)
-		{
-			if (pTab[i])
-			{
+	if(pTab) {
+		for(unsigned int i = 0 ; i < uiNumber ; i++) {
+			if(pTab[i]) {
 				pTab[i]->Update(_ulTime);
 			}
 		}
 	}
 }
 
-//-----------------------------------------------------------------------------
-float CMultiMagicMissile::Render()
-{
-	long nbmissiles	= 0;
- 
-
-	if (pTab)
-	{
-		for (unsigned int i = 0 ; i < uiNumber ; i++)
-		{
-			if (pTab[i])
-			{
-				float fa = pTab[i]->Render();
+void CMultiMagicMissile::Render()
+{ 
+	if(pTab) {
+		for(unsigned int i = 0; i < uiNumber; i++) {
+			if(pTab[i]) {
+				pTab[i]->Render();
 
 				CMagicMissile * pMM = (CMagicMissile *) pTab[i];
 
-				if (pMM->lLightId != -1)
-				{
+				if(pMM->lLightId != -1) {
 					EERIE_LIGHT * el	= &DynLight[pMM->lLightId];
-					el->intensity		= 0.7f + 2.3f * fa;
+					el->intensity		= 0.7f + 2.3f * pMM->lightIntensityFactor;
 					el->pos = pMM->eCurPos;
 					el->time_creation	= (unsigned long)(arxtime);
 				}
-
-				if (pMM->bMove) nbmissiles++;
 			}
 		}
 	}
-
-	if (nbmissiles == 0) return -1;
-
-	return 1;
 }
 
 //-----------------------------------------------------------------------------
@@ -748,22 +670,19 @@ CIgnit::CIgnit()
 {
 }
 
-//-----------------------------------------------------------------------------
 CIgnit::~CIgnit()
 {
 	this->Kill();
 }
 
-//-----------------------------------------------------------------------------
 void CIgnit::Kill(void)
 {
 	int nb = this->nblight;
 
-	while (nb--)
-	{
+	while(nb--) {
 		int id = this->tablight[nb].idl;
 
-		if (ValidDynLight(id))
+		if(ValidDynLight(id))
 			DynLight[id].exist = 0;
 
 		this->tablight[nb].idl = -1;
@@ -772,7 +691,6 @@ void CIgnit::Kill(void)
 	this->nblight = 0;
 }
 
-//-----------------------------------------------------------------------------
 void CIgnit::Create(Vec3f * posc, float perim, int speed)
 {
 	this->pos = *posc;
@@ -784,8 +702,7 @@ void CIgnit::Create(Vec3f * posc, float perim, int speed)
 
 	int	nb = 256;
 
-	while (nb--)
-	{
+	while(nb--) {
 		this->tablight[nb].actif = 0;
 		this->tablight[nb].idl = -1;
 	}
@@ -794,32 +711,25 @@ void CIgnit::Create(Vec3f * posc, float perim, int speed)
 	this->ChangeRGBMask(1.f, 1.f, 1.f, Color(255, 200, 0).toBGRA());
 }
 
-//-----------------------------------------------------------------------------
 void CIgnit::Action(int aiMode)
 {
-
 	short sMode = checked_range_cast<short>(aiMode);
 
-	for (int i = 0; i < nblight; i++)
-	{
+	for(int i = 0; i < nblight; i++) {
 		GLight[tablight[i].iLightNum]->status = sMode;
 
-
-		if (aiMode == 1)
-		{
+		if(aiMode == 1) {
 			ARX_SOUND_PlaySFX(SND_SPELL_IGNITE, &spells[spellinstance].caster_pos);
-		}
-		else if (aiMode == 0)
-		{
+		} else if(aiMode == 0) {
 			ARX_SOUND_PlaySFX(SND_SPELL_DOUSE, &spells[spellinstance].caster_pos);
 		}
 	}
 }
 
-//-----------------------------------------------------------------------------
 void CIgnit::AddLight(int aiLight)
 {
-	if (arxtime.is_paused())  return;
+	if(arxtime.is_paused())
+		return;
 
 	this->tablight[this->nblight].actif = 1;
 	this->tablight[this->nblight].iLightNum = aiLight;
@@ -827,8 +737,7 @@ void CIgnit::AddLight(int aiLight)
 
 	this->tablight[this->nblight].idl = GetFreeDynLight();
 
-	if (this->tablight[this->nblight].idl > 0)
-	{
+	if(this->tablight[this->nblight].idl > 0) {
 		int id = this->tablight[this->nblight].idl;
 		EERIE_LIGHT * el = &DynLight[id];
 		el->exist = 1;
@@ -842,36 +751,31 @@ void CIgnit::AddLight(int aiLight)
 	this->nblight++;
 }
 
-//-----------------------------------------------------------------------------
 void CIgnit::Update(unsigned long _ulTime) 
 {
 	float	a;
 	int		nb;
 
-	if (this->currduration >= this->duration)
-	{
+	if(this->currduration >= this->duration) {
 		this->key++;
 	}
 
-	switch (this->key)
-	{
+	switch(this->key) {
 		case 0:
 			a = (((float)this->currduration)) / ((float)this->duration);
 
-			if (a >= 1.f) a = 1.f;
+			if(a >= 1.f)
+				a = 1.f;
 
 			nb = this->nblight;
 
-			while (nb--)
-			{
-				if (this->tablight[nb].actif)
-				{
+			while(nb--) {
+				if(this->tablight[nb].actif) {
 					this->tablight[nb].posfx = this->pos + (this->tablight[nb].poslight - this->pos) * a;
 
 					int id = this->tablight[nb].idl;
 
-					if (id > 0)
-					{
+					if(id > 0) {
 						DynLight[id].intensity = 0.7f + 2.f * rnd();
 						DynLight[id].pos = this->tablight[nb].posfx;
 					}
@@ -882,7 +786,8 @@ void CIgnit::Update(unsigned long _ulTime)
 			break;
 	}
 
-	if (!arxtime.is_paused()) this->currduration += _ulTime;
+	if(!arxtime.is_paused())
+		this->currduration += _ulTime;
 }
 
 void CDoze::CreateDoze(Vec3f * posc, float perim, int speed) {
@@ -891,10 +796,10 @@ void CDoze::CreateDoze(Vec3f * posc, float perim, int speed) {
 	this->ChangeRGBMask(0.f, .7f, 1.f, 0xFF0000FF);
 }
 
-//-----------------------------------------------------------------------------
 void CDoze::AddLightDoze(int aiLight)
 {
-	if (arxtime.is_paused())  return;
+	if(arxtime.is_paused())
+		return;
 
 	this->tablight[this->nblight].actif = 1;
 	this->tablight[this->nblight].iLightNum = aiLight;
@@ -904,28 +809,21 @@ void CDoze::AddLightDoze(int aiLight)
 	this->nblight++;
 }
 
-//-----------------------------------------------------------------------------
-float CIgnit::Render() {
+void CIgnit::Render() {
 	
-	int nb;
-
-	switch (this->key)
-	{
+	switch(this->key) {
 		case 0:
 
-			if (this->currduration > this->duration) this->key++;
+			if(this->currduration > this->duration)
+				this->key++;
 
-			if (!arxtime.is_paused())
-			{
+			if(!arxtime.is_paused()) {
 				float unsuri = (1.f - this->interp);
-				nb = this->nblight;
+				int nb = this->nblight;
 
-				while (nb--)
-				{
-					if ((this->tablight[nb].actif) && (rnd() > .5f))
-					{
-						createSphericalSparks(tablight[nb].posfx, rnd() * 20.f * unsuri, tp,
-						                      rgb, mask);
+				while(nb--) {
+					if(this->tablight[nb].actif && rnd() > .5f) {
+						createSphericalSparks(tablight[nb].posfx, rnd() * 20.f * unsuri, tp, rgb, mask);
 					}
 				}
 			}
@@ -934,8 +832,6 @@ float CIgnit::Render() {
 		default:
 			break;
 	}
-
-	return 0;
 }
 
 //-----------------------------------------------------------------------------
@@ -943,12 +839,10 @@ float CIgnit::Render() {
 //-----------------------------------------------------------------------------
 void Split(Vec3f * v, int a, int b, float yo)
 {
-	if (a != b)
-	{
+	if(a != b) {
 		int i = (int)((a + b) * 0.5f);
 
-		if ((i != a) && (i != b))
-		{
+		if(i != a && i != b) {
 			v[i].x = (v[a].x + v[b].x) * 0.5f + yo * frand2(); 
 			v[i].y = (v[a].y + v[b].y) * 0.5f; 
 			v[i].z = (v[a].z + v[b].z) * 0.5f + yo * frand2();
@@ -958,7 +852,6 @@ void Split(Vec3f * v, int a, int b, float yo)
 	}
 }
 
-//-----------------------------------------------------------------------------
 void GenereArcElectrique(Vec3f * pos, Vec3f * end, Vec3f * tabdef, int nbseg)
 {
 	tabdef[0] = *pos;
@@ -968,13 +861,10 @@ void GenereArcElectrique(Vec3f * pos, Vec3f * end, Vec3f * tabdef, int nbseg)
 	Split(tabdef, 0, nbseg - 1, 20);
 }
 
-//-----------------------------------------------------------------------------
 void DrawArcElectrique(Vec3f * tabdef, int nbseg, TextureContainer * tex, float fBeta, int tsp)
 {
 	TexturedVertex v[4];
 	TexturedVertex v2[4];
-
-	long i;
 
 	//-------------------------------------------------------------------------
 	// rendu
@@ -985,7 +875,7 @@ void DrawArcElectrique(Vec3f * tabdef, int nbseg, TextureContainer * tex, float 
 	
 	v2[0].color = v2[1].color = v2[2].color = v2[3].color = Color::grayb(tsp).toBGR();
 	
-	for(i = 0; i < nbseg - 2; i++) {
+	for(long i = 0; i < nbseg - 2; i++) {
 		
 		Vec3f astart = tabdef[i];
 		Vec3f a = tabdef[i + 1];
@@ -1034,22 +924,20 @@ CPortal::~CPortal() {
 	}
 }
 
-//-----------------------------------------------------------------------------
 void CPortal::AddNewEclair(Vec3f * endpos, int nbseg, int duration, int numpt)
 {
-	if (arxtime.is_paused()) return;
+	if(arxtime.is_paused())
+		return;
 
 	int	nb = 256;
 
-	if ((this->nbeclair > 255) || (nbseg > 256)) return;
-
+	if(this->nbeclair > 255 || nbseg > 256)
+		return;
 
 	short sNbSeg = static_cast<short>(nbseg);
 
-	while (nb--)
-	{
-		if (!this->tabeclair[nb].actif)
-		{
+	while(nb--) {
+		if(!this->tabeclair[nb].actif) {
 			this->nbeclair++;
 			this->tabeclair[nb].actif = 1;
 			this->tabeclair[nb].duration = duration;
@@ -1060,50 +948,42 @@ void CPortal::AddNewEclair(Vec3f * endpos, int nbseg, int duration, int numpt)
 			GenereArcElectrique(&this->pos, endpos, this->tabeclair[nb].seg, this->tabeclair[nb].nbseg);
 			break;
 		}
-
-
-
 	}
 }
-/*--------------------------------------------------------------------------*/
+
 void CPortal::DrawAllEclair()
 {
 	int nb = 256;
 
-	while (nb--)
-	{
-		if (this->tabeclair[nb].actif)
-		{
-			float a;
+	while(nb--){
+		if(this->tabeclair[nb].actif) {
+			float a = 1.f - ((float)this->tabeclair[nb].currduration / (float)this->tabeclair[nb].duration);
 
-			a = 1.f - ((float)this->tabeclair[nb].currduration / (float)this->tabeclair[nb].duration);
-
-			if (a < 0.f) a = 0.f;
+			if(a < 0.f)
+				a = 0.f;
 
 			DrawArcElectrique(this->tabeclair[nb].seg, this->tabeclair[nb].nbseg, this->te, rnd() * 360.f, (int)(255.f * a));
 
-			if (!arxtime.is_paused()) this->tabeclair[nb].currduration += this->currframe;
+			if(!arxtime.is_paused())
+				this->tabeclair[nb].currduration += this->currframe;
 
-			if (this->tabeclair[nb].currduration >= this->tabeclair[nb].duration)
-			{
+			if(this->tabeclair[nb].currduration >= this->tabeclair[nb].duration) {
 				this->tabeclair[nb].actif = 0;
 				this->nbeclair--;
 			}
 		}
 	}
 }
-/*--------------------------------------------------------------------------*/
+
 void CPortal::Update(unsigned long _ulTime)
 {
 	float a;
 
-	switch (this->key)
-	{
+	switch(this->key) {
 		case 0:
 			a = (float)this->currduration / (float)this->duration;
 
-			if (a > 1.f)
-			{
+			if(a > 1.f) {
 				a = 1.f;
 				this->key++;
 			}
@@ -1111,28 +991,29 @@ void CPortal::Update(unsigned long _ulTime)
 			this->pos = this->sphereposdep + (this->sphereposend - this->sphereposdep) * a;
 			this->spherealpha = a * .5f;
 
-			if (!arxtime.is_paused()) this->currduration += _ulTime;
+			if(!arxtime.is_paused())
+				this->currduration += _ulTime;
 
 			break;
 		case 1:
 			this->spherealpha = 0.5f + rnd();
 
-			if (this->spherealpha > 1.f) this->spherealpha = 1.f;
+			if(this->spherealpha > 1.f)
+				this->spherealpha = 1.f;
 
 			this->spherealpha *= .25f;
 
 			//getion eclair dans boule
 			this->currframe = _ulTime;
 
-			if (!arxtime.is_paused()) this->timeneweclair -= _ulTime;
+			if(!arxtime.is_paused())
+				this->timeneweclair -= _ulTime;
 
-			if (this->timeneweclair <= 0)
-			{
+			if(this->timeneweclair <= 0) {
 				this->timeneweclair = Random::get(100, 300);
 
-				Vec3f endpos;
 				int	numpt = Random::get(0, this->spherenbpt - 1);
-				endpos = this->spherevertex[numpt] + this->pos;
+				Vec3f endpos = this->spherevertex[numpt] + this->pos;
 
 				this->AddNewEclair(&endpos, 32, Random::get(1000, 2000), numpt);
 			}
@@ -1140,14 +1021,13 @@ void CPortal::Update(unsigned long _ulTime)
 			break;
 	}
 
-	if (this->lLightId >= 0)
-	{
+	if(this->lLightId >= 0) {
 		DynLight[this->lLightId].pos = this->pos;
 		DynLight[this->lLightId].intensity = 0.7f + 2.f * rnd();
 	}
 }
-/*--------------------------------------------------------------------------*/
-float CPortal::Render()
+
+void CPortal::Render()
 {
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
@@ -1159,8 +1039,7 @@ float CPortal::Render()
 	Vec3f	* pt = this->spherevertex;
 	int col = Color(0, (int)(200.f * this->spherealpha), (int)(255.f * this->spherealpha)).toBGRA();
 
-	while (nb)
-	{
+	while(nb) {
 		d3dvs.p.x = pt->x + this->pos.x;	//pt du bas
 		d3dvs.p.y = pt->y + this->pos.y;
 		d3dvs.p.z = pt->z + this->pos.z;
@@ -1176,18 +1055,14 @@ float CPortal::Render()
 	//update les couleurs aux impacts
 	nb = 256;
 
-	while (nb--)
-	{
-		if (this->tabeclair[nb].actif)
-		{
-			float a;
+	while(nb--) {
+		if(this->tabeclair[nb].actif) {
+			float a = 1.f - ((float)this->tabeclair[nb].currduration / (float)this->tabeclair[nb].duration);
 
-			a = 1.f - ((float)this->tabeclair[nb].currduration / (float)this->tabeclair[nb].duration);
+			if(a < 0.f)
+				a = 0.f;
 
-			if (a < 0.f) a = 0.f;
-
-			if (this->tabeclair[nb].numpt >= 0)
-			{
+			if(this->tabeclair[nb].numpt >= 0) {
 				int r = (int)((0.f + (255.f - 0.f) * a) * this->spherealpha * 3.f);
 
 				if (r > 255) r = 255;
@@ -1200,12 +1075,11 @@ float CPortal::Render()
 
 				if (b > 255) b = 255;
 
-				if (!arxtime.is_paused()) this->sphered3d[this->tabeclair[nb].numpt].color = Color(r, g, b).toBGRA();
+				if(!arxtime.is_paused())
+					this->sphered3d[this->tabeclair[nb].numpt].color = Color(r, g, b).toBGRA();
 			}
-
 		}
 	}
-
 
 	//affichage de la sphere back
 	GRenderer->SetCulling(Renderer::CullCW);
@@ -1242,7 +1116,4 @@ float CPortal::Render()
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	GRenderer->SetCulling(Renderer::CullNone);
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
-
-	return 0;
 }
-/*--------------------------------------------------------------------------*/

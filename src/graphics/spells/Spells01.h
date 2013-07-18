@@ -40,7 +40,6 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-// Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
 
 #ifndef ARX_GRAPHICS_SPELLS_SPELLS01_H
 #define ARX_GRAPHICS_SPELLS_SPELLS01_H
@@ -51,60 +50,59 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 class CMagicMissile : public CSpellFx {
 	
 public:
-	
+	CMagicMissile();
+	~CMagicMissile();
+
+	// accesseurs
+	void SetTTL(unsigned long);
+	void SetColor(Color3f);
+
+	// surcharge
+	void Create(const Vec3f &, const Anglef &);
+	void Update(unsigned long);
+	void Render();
+
 	bool bExplo;
 	bool bMove;
+	Vec3f eSrc;
+	Vec3f eCurPos;
+
+	float lightIntensityFactor;
+
+private:
 	int iLength;
 	int	iBezierPrecision;
 	Color3f fColor;
 	float fTrail;
 	float fOneOnBezierPrecision;
-	Vec3f eSrc;
-	Vec3f eCurPos;
 	Anglef angles;
 	TextureContainer * tex_mm;
 	TexturedVertex pathways[6];
 	audio::SourceId snd_loop;
-	
-	CMagicMissile();
-	~CMagicMissile();
-	
-	// accesseurs
-	void SetTTL(unsigned long);
-	void SetColor(Color3f);
-	
-	// surcharge
-	void Create(const Vec3f &, const Anglef &);
-	void Update(unsigned long);
-	float Render();
-	
 };
 
 class CMultiMagicMissile : public CSpellFx {
 	
 private:
-	
 	CMagicMissile ** pTab;
 	unsigned int uiNumber;
 	
 public:
-	
 	explicit CMultiMagicMissile(long nb);
 	~CMultiMagicMissile();
 	
 	void CheckCollision();
+	bool CheckAllDestroyed();
 	
 	void Create();
 	void Update(unsigned long);
-	float Render();
-	
+	void Render();
 };
 
 // Done By : Sébastien Scieux
 class CIgnit : public CSpellFx {
 	
 private:
-	
 	Vec3f pos;
 	float perimetre;
 	short key;
@@ -125,7 +123,6 @@ private:
 	};
 	
 public:
-	
 	unsigned char nblight;
 	T_LINKLIGHTTOFX tablight[256];
 	
@@ -134,11 +131,11 @@ public:
 	
 	unsigned long GetDuration(void) {
 		return this->duration;
-	};
+	}
 	
 	void Create(Vec3f * posc, float perim, int speed);
 	void Update(unsigned long time);
-	float Render();
+	void Render();
 	void Kill();
 	void AddLight(int iLight);
 	void Action(int mode);
@@ -148,14 +145,13 @@ public:
 		this->mask = mask;
 	}
 	
-	void	ChangeTexture(TextureContainer * tc) {
+	void ChangeTexture(TextureContainer * tc) {
 		this->tp = tc;
 	}
 	
-	float	GetPerimetre(void) {
+	float GetPerimetre(void) {
 		return this->perimetre;
 	}
-	
 };
 
 // Done By : Sébastien Scieux
@@ -208,13 +204,13 @@ public:
 	
 	unsigned long GetDuration(void) {
 		return this->duration;
-	};
+	}
 	
 	void AddNewEclair(Vec3f * endpos, int nbseg, int duration, int numpt);
 	void DrawAllEclair();
+
 	void Update(unsigned long);
-	float Render();
-	
+	void Render();
 };
 
 #endif // ARX_GRAPHICS_SPELLS_SPELLS01_H

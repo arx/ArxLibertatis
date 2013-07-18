@@ -40,7 +40,6 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-// Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
 
 #ifndef ARX_GRAPHICS_SPELLS_SPELLS09_H
 #define ARX_GRAPHICS_SPELLS_SPELLS09_H
@@ -107,7 +106,7 @@ class CSummonCreature: public CSpellFx
 		void	Create(Vec3f, float afBeta = 0);
 		void	Kill();
 		void	Update(unsigned long);
-		float	Render();
+		void Render();
 };
 
 // Done By : Didier Pedreno
@@ -138,7 +137,7 @@ class CNegateMagic: public CSpellFx
 		void	Create(Vec3f, float afBeta = 0);
 		void	Kill();
 		void	Update(unsigned long);
-		float	Render();
+		void Render();
 };
 
 // Done By : Did
@@ -171,7 +170,7 @@ class CIncinerate: public CSpellFx
 		void	Create(Vec3f, float, float);
 		void	Kill();
 		void	Update(unsigned long);
-		float	Render();
+		void Render();
 };
 
 // Done By : seb
@@ -193,7 +192,7 @@ class CMassParalyse: public CSpellFx
 	public:
  
 		void	Update(unsigned long);
-		float	Render();
+		void Render();
 };
 
 #endif // ARX_GRAPHICS_SPELLS_SPELLS09_H

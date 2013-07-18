@@ -1563,8 +1563,7 @@ void ARX_SCRIPT_EventStackExecute()
 	{
 		if (eventstack[i].exist)
 		{
-			if (!ValidIOAddress(eventstack[i].io))
-				goto kill;
+			if(ValidIOAddress(eventstack[i].io)) {
 
 			if (ValidIOAddress(eventstack[i].sender))
 				EVENT_SENDER = eventstack[i].sender;
@@ -1572,8 +1571,7 @@ void ARX_SCRIPT_EventStackExecute()
 				EVENT_SENDER = NULL;
 
 			SendIOScriptEvent(eventstack[i].io, eventstack[i].msg, eventstack[i].params, eventstack[i].eventname);
-		kill:
-			;
+			}
 
 			eventstack[i].sender = NULL;
 			eventstack[i].exist = 0;

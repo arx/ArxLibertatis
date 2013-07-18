@@ -51,6 +51,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <string>
 
 #include "math/MathFwd.h"
+#include "graphics/BaseGraphicsTypes.h"
 
 class TextureContainer;
 class Entity;
@@ -71,8 +72,8 @@ extern EERIE_LIGHT * llights[32];
 
 long EERIE_ANIMMANAGER_Count(std::string & tex, long * memsize);
 void EERIE_ANIMMANAGER_ClearAll();
+
 void llightsInit();
-void Preparellights(Vec3f * pos);
 void Insertllight(EERIE_LIGHT * el, float dist);
 
 void PopAllTriangleList();
@@ -87,10 +88,8 @@ TexturedVertex * PushVertexInTableCull_TMultiplicative(TextureContainer * tex);
 void CalculateInterZMapp(EERIE_3DOBJ * _pobj3dObj, long lIdList, long * _piInd, TextureContainer * _pTex, TexturedVertex * _pVertex);
 void EERIE_ANIMMANAGER_ReloadAll();
 
-void EERIEDrawAnimQuat(EERIE_3DOBJ * eobj, ANIM_USE * eanim, Anglef * angle, Vec3f  * pos, unsigned long time, Entity * io, bool render = true, bool update_movement = true);
+void EERIEDrawAnimQuat(EERIE_3DOBJ *eobj, ANIM_USE *eanim, Anglef *angle, Vec3f *pos, unsigned long time, Entity *io, bool render = true, bool update_movement = true);
 
-void DrawEERIEInterMatrix(EERIE_3DOBJ * eobj, EERIEMATRIX * mat, Vec3f  * pos, Entity * io, EERIE_MOD_INFO * modinfo = NULL);
-
-void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f * pos, Entity * io, EERIE_MOD_INFO * modinfo = NULL);
+void DrawEERIEInter(EERIE_3DOBJ *eobj, const EERIE_QUAT *rotation, Vec3f *pos, Entity *io, EERIE_MOD_INFO *modinfo = NULL, bool thrownEntity = false);
 
 #endif // ARX_ANIMATION_ANIMATION_H

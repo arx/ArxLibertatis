@@ -122,10 +122,8 @@ short sInventoryY = -1;
  * Sends appropriate INVENTORYIN Event to player AND concerned io.
  */
 static void ARX_INVENTORY_Declare_InventoryIn(Entity * io) {
-	
-	if(!io) {
+	if(!io)
 		return;
-	}
 	
 	io->show = SHOW_FLAG_IN_INVENTORY;
 	
@@ -151,12 +149,9 @@ static void ARX_INVENTORY_Declare_InventoryIn(Entity * io) {
 	EVENT_SENDER = NULL;
 }
 
-//*************************************************************************************
-// void CleanInventory()
-//-------------------------------------------------------------------------------------
-// FUNCTION/RESULT:
-//   Cleans Player inventory
-//*************************************************************************************
+/*!
+ * \brief Cleans Player inventory
+ */
 void CleanInventory() {
 	
 	for(long iNbBag = 0; iNbBag < 3; iNbBag++) {
@@ -179,64 +174,50 @@ extern long DANAECENTERY;
 
 static Entity * GetInventoryObj(Vec2s * pos) {
 	
-	long tx, ty;
-
-
 	float fCenterX	= DANAECENTERX - INTERFACE_RATIO(320) + INTERFACE_RATIO(35);
 	float fSizY		= DANAESIZY - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY);
 
 	int iPosX = checked_range_cast<int>(fCenterX);
 	int iPosY = checked_range_cast<int>(fSizY);
 
+	if(player.Interface & INTER_INVENTORY) {
+		long tx = pos->x - iPosX; //-4
+		long ty = pos->y - iPosY; //-2
 
-	if (player.Interface & INTER_INVENTORY)
-	{
-		tx = pos->x - iPosX; //-4
-		ty = pos->y - iPosY; //-2
-
-		if ((tx >= 0) && (ty >= 0))
-		{
-
+		if(tx >= 0 && ty >= 0) {
 			tx = checked_range_cast<long>(tx / INTERFACE_RATIO(32));
 			ty = checked_range_cast<long>(ty / INTERFACE_RATIO(32));
 
+			if((tx >= 0) && ((size_t)tx < INVENTORY_X) && (ty >= 0) && ((size_t)ty < INVENTORY_Y)) {
+				Entity *result = inventory[sActiveInventory][tx][ty].io;
 
-			if ((tx >= 0) && ((size_t)tx < INVENTORY_X) && (ty >= 0) && ((size_t)ty < INVENTORY_Y))
-			{
-				if ((inventory[sActiveInventory][tx][ty].io)
-				        &&	(inventory[sActiveInventory][tx][ty].io->gameFlags & GFLAG_INTERACTIVITY))
-				{
+				if(result && (result->gameFlags & GFLAG_INTERACTIVITY)) {
 					HERO_OR_SECONDARY = 1;
-					return (inventory[sActiveInventory][tx][ty].io);
+					return result;
 				}
 			}
 
 			return NULL;
 		}
-	}
-	else if (player.Interface & INTER_INVENTORYALL)
-	{
+	} else if(player.Interface & INTER_INVENTORYALL) {
 
 		float fBag	= (player.bag - 1) * INTERFACE_RATIO(-121);
 
 		int iY = checked_range_cast<int>(fBag);
 
-
-		for (int i = 0; i < player.bag; i++)
-		{
-			tx = pos->x - iPosX;
-			ty = pos->y - iPosY - iY;
+		for(int i = 0; i < player.bag; i++) {
+			long tx = pos->x - iPosX;
+			long ty = pos->y - iPosY - iY;
 
 			tx = checked_range_cast<long>(tx / INTERFACE_RATIO(32));
 			ty = checked_range_cast<long>(ty / INTERFACE_RATIO(32));
 
-			if ((tx >= 0) && ((size_t)tx < INVENTORY_X) && (ty >= 0) && ((size_t)ty < INVENTORY_Y))
-			{
-				if ((inventory[i][tx][ty].io)
-					&&	(inventory[i][tx][ty].io->gameFlags & GFLAG_INTERACTIVITY))
-				{
+			if((tx >= 0) && ((size_t)tx < INVENTORY_X) && (ty >= 0) && ((size_t)ty < INVENTORY_Y)) {
+				Entity *result = inventory[i][tx][ty].io;
+
+				if(result && (result->gameFlags & GFLAG_INTERACTIVITY)) {
 					HERO_OR_SECONDARY = 1;
-					return (inventory[i][tx][ty].io);
+					return result;
 				}
 
 				return NULL;
@@ -249,52 +230,39 @@ static Entity * GetInventoryObj(Vec2s * pos) {
 	return NULL;
 }
 
-
-//*************************************************************************************
-// Entity * GetInventoryObj_INVENTORYUSE(EERIE_S2D * pos)
-//-------------------------------------------------------------------------------------
-// FUNCTION/RESULT:
-//
-//*************************************************************************************
 Entity * GetInventoryObj_INVENTORYUSE(Vec2s * pos)
 {
 	Entity * io = GetFromInventory(pos);
 
-	if (io != NULL)
-	{
-		if (HERO_OR_SECONDARY == 2)
-		{
-			if (SecondaryInventory != NULL)
-			{
-				Entity * temp = (Entity *)SecondaryInventory->io;
+	if(io) {
+		if(HERO_OR_SECONDARY == 2) {
+			if(SecondaryInventory) {
+				Entity *temp = SecondaryInventory->io;
 
-				if (temp->ioflags & IO_SHOP) return NULL;
+				if(temp->ioflags & IO_SHOP)
+					return NULL;
 			}
 		}
 
 		return io;
 	}
 
-	if (InInventoryPos(pos)) return NULL;
+	if(InInventoryPos(pos))
+		return NULL;
 
-	if ((io = InterClick(pos)) != NULL)
-	{
-		return io;
-	}
+	io = InterClick(pos);
 
-	return NULL;
-
+	return io;
 }
 
-//*************************************************************************************
-// void PutInFrontOfPlayer(Entity * io,long flag)
-//-------------------------------------------------------------------------------------
-// FUNCTION/RESULT:
-//   Puts an IO in front of the player
-//*************************************************************************************
+/*!
+ * \brief Puts an IO in front of the player
+ * \param io
+ */
 void PutInFrontOfPlayer(Entity * io)
 {
-	if (io == NULL) return;
+	if(!io)
+		return;
 
 	float t = radians(player.angle.b);
 	io->pos.x = player.pos.x - (float)EEsin(t) * 80.f;
@@ -309,8 +277,7 @@ void PutInFrontOfPlayer(Entity * io)
 	io->stopped = 0;
 	io->show = SHOW_FLAG_IN_SCENE;
 
-	if (io->obj && io->obj->pbox)
-	{
+	if(io->obj && io->obj->pbox) {
 		Vec3f vector = Vec3f(0.f, 100.f, 0.f);
 		Vec3f pos = io->pos;
 		io->soundtime = 0;
@@ -319,16 +286,15 @@ void PutInFrontOfPlayer(Entity * io)
 	}
 }
 
-//*************************************************************************************
-// void IO_Drop_Item(Entity * io_src,Entity * io)
-//-------------------------------------------------------------------------------------
-// FUNCTION/RESULT:
-//   forces "io_scr" IO to drop "io" item with physics
-//*************************************************************************************
+/*!
+ * \brief forces "io_scr" IO to drop "io" item with physics
+ * \param io_src
+ * \param io
+ */
 void IO_Drop_Item(Entity * io_src, Entity * io)
 {
-	// Validity Check
-	if ((!io) || (!io_src)) return;
+	if(!io || !io_src)
+		return;
 
 	float t = radians(io_src->angle.b);
 	io->velocity.x = -(float)EEsin(t) * 50.f;
@@ -2197,9 +2163,9 @@ extern bool bInventoryClosing;
 //-----------------------------------------------------------------------------
 void ARX_INVENTORY_OpenClose(Entity * _io)
 {
-	if ((_io && (SecondaryInventory == _io->inventory)) || (_io == NULL)) // CLOSING
-	{
-		if (SecondaryInventory && (SecondaryInventory->io != NULL))
+	// CLOSING
+	if((_io && SecondaryInventory == _io->inventory) || !_io) {
+		if(SecondaryInventory && SecondaryInventory->io)
 			SendIOScriptEvent(SecondaryInventory->io, SM_INVENTORY2_CLOSE);
 
 		InventoryDir = -1;
@@ -2207,28 +2173,24 @@ void ARX_INVENTORY_OpenClose(Entity * _io)
 		SecondaryInventory = NULL;
 		EERIEMouseButton &= ~4;
 
-		if (DRAGGING) DRAGGING = 0;
-	}
-	else
-	{
-		if (TSecondaryInventory
-		        && TSecondaryInventory->io) SendIOScriptEvent(TSecondaryInventory->io, SM_INVENTORY2_CLOSE);
+		if(DRAGGING)
+			DRAGGING = 0;
+	} else {
+		if(TSecondaryInventory && TSecondaryInventory->io)
+			SendIOScriptEvent(TSecondaryInventory->io, SM_INVENTORY2_CLOSE);
 
 		InventoryDir = 1;
 		TSecondaryInventory = SecondaryInventory = _io->inventory;
 
-		if (SecondaryInventory && SecondaryInventory->io != NULL)
-		{
-			if (SendIOScriptEvent(SecondaryInventory->io, SM_INVENTORY2_OPEN) == REFUSE)
-			{
+		if(SecondaryInventory && SecondaryInventory->io != NULL) {
+			if(SendIOScriptEvent(SecondaryInventory->io, SM_INVENTORY2_OPEN) == REFUSE) {
 				InventoryDir = -1;
 				TSecondaryInventory = SecondaryInventory = NULL;
 				return;
 			}
 		}
 
-		if (player.Interface & INTER_COMBATMODE)
-		{
+		if(player.Interface & INTER_COMBATMODE) {
 			ARX_INTERFACE_Combat_Mode(0);
 		}
 
@@ -2236,17 +2198,16 @@ void ARX_INVENTORY_OpenClose(Entity * _io)
 			TRUE_PLAYER_MOUSELOOK_ON = false;
 		}
 
-		if (SecondaryInventory && SecondaryInventory->io
-		        && (SecondaryInventory->io->ioflags & IO_SHOP))
+		if(SecondaryInventory && SecondaryInventory->io && (SecondaryInventory->io->ioflags & IO_SHOP))
 			ARX_INVENTORY_ReOrder();
 
 		EERIEMouseButton &= ~4;
 
-		if (DRAGGING) DRAGGING = 0;
+		if(DRAGGING)
+			DRAGGING = 0;
 	}
 
-	if (player.Interface & INTER_INVENTORYALL)
-	{
+	if(player.Interface & INTER_INVENTORYALL) {
 		ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
 		bInventoryClosing = true;
 	}

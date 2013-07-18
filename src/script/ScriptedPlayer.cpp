@@ -61,7 +61,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 using std::string;
 
 extern float InventoryDir;
-extern Entity * CURRENT_TORCH;
 
 namespace script {
 
@@ -461,8 +460,8 @@ public:
 			
 		} else if(type == "torchoff") {
 			DebugScript(" torchoff");
-			if(CURRENT_TORCH) {
-				ARX_PLAYER_ClickedOnTorch(CURRENT_TORCH);
+			if(player.torch) {
+				ARX_PLAYER_ClickedOnTorch(player.torch);
 			}
 			
 		} else {

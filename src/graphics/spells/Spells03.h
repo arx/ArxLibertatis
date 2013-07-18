@@ -40,7 +40,6 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-// Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
 
 #ifndef ARX_GRAPHICS_SPELLS_SPELLS03_H
 #define ARX_GRAPHICS_SPELLS_SPELLS03_H
@@ -52,34 +51,32 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Done By : Didier Pedreno
 class CFireBall: public CSpellFx
 {
-	public:
-		Vec3f eSrc;
-		Vec3f eCurPos;
-		Vec3f eMove;
-		bool bExplo;
-		float fLevel;
-		//private:
-		ParticleSystem pPSFire;
-		ParticleSystem pPSFire2;
-		ParticleSystem pPSSmoke;
+public:
+	CFireBall();
+	~CFireBall();
+
+	void SetTTL(unsigned long);
+
+	void Create(Vec3f, float afBeta, float afAlpha,  float);
+	void Kill();
+
+	void Update(unsigned long);
+	void Render();
+
+	Vec3f eSrc;
+	Vec3f eCurPos;
+	Vec3f eMove;
+	bool bExplo;
+	float fLevel;
+
+	ParticleSystem pPSFire;
+	ParticleSystem pPSFire2;
+	ParticleSystem pPSSmoke;
+
 private:
 	ParticleParams fire_1;
 	ParticleParams fire_2;
 	ParticleParams smoke;
-
-	public:
-		CFireBall();
-		~CFireBall();
-
-		// surcharge
-	public:
-		void	SetTTL(unsigned long);
-
-	public:
-		void	Create(Vec3f, float afBeta, float afAlpha,  float);
-		void	Kill();
-		void	Update(unsigned long);
-		float	Render();
 };
 
 class CSpeed: public CSpellFx
@@ -126,7 +123,7 @@ class CSpeed: public CSpellFx
 		void	AddRubanDef(int origin, float size, int dec, float r, float g, float b, float r2, float g2, float b2);
 		void	Create(int numinteractive, int duration);
 		void	Update(unsigned long);
-		float	Render();
+		void Render();
  
 };
 
@@ -162,7 +159,7 @@ class CIceProjectile: public CSpellFx
 		void	Create(Vec3f, float, float);
 		void	Kill();
 		void	Update(unsigned long);
-		float	Render();
+		void Render();
 };
 
 // Done By : did
@@ -182,7 +179,7 @@ class CCreateFood: public CSpellFx
 	public:
 		void	Create();
 		void	Update(unsigned long);
-		float	Render();
+		void Render();
  
 };
 

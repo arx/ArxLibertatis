@@ -113,15 +113,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "script/ScriptEvent.h"
 
 using std::min;
-using std::string;
 using std::vector;
-
-extern long FRAME_COUNT;
 
 extern Entity * CAMERACONTROLLER;
 extern TextureContainer * Movable;
-extern long EXTERNALVIEW;
-extern long NEED_TEST_TEXT;
 
 ARX_NODES nodes;
 static float TREATZONE_LIMIT = 1800.f;
@@ -130,46 +125,34 @@ long HERO_SHOW_1ST = 1;
 #ifdef BUILD_EDITOR
 long NbIOSelected = 0;
 #endif
-long INTER_DRAW = 0;
 
 static bool IsCollidingInter(Entity * io, Vec3f * pos);
-static Entity * AddCamera(const res::path & classPath,
-                          EntityInstance instance = -1);
-static Entity * AddMarker(const res::path & classPath,
-                          EntityInstance instance = -1);
+static Entity * AddCamera(const res::path & classPath, EntityInstance instance = -1);
+static Entity * AddMarker(const res::path & classPath, EntityInstance instance = -1);
 
 float STARTED_ANGLE = 0;
 void Set_DragInter(Entity * io)
 {
-	if (io != DRAGINTER)
+	if(io != DRAGINTER)
 		STARTED_ANGLE = player.angle.b;
 
 	DRAGINTER = io;
 
-	if (io)
-	{
-		if ((io->obj) && (io->obj->pbox))
-		{
-			io->obj->pbox->active = 0;
-		}
+	if(io && io->obj && io->obj->pbox) {
+		io->obj->pbox->active = 0;
 	}
 }
 
 // Checks if an IO index number is valid
-long ValidIONum(long num) {
+bool ValidIONum(long num) {
 	
-	if(num < 0 || num >= long(entities.size()) || !entities[num]) {
-		return 0;
-	}
-	
-	return 1;
+	return !(num < 0 || num >= long(entities.size()) || !entities[num]);
 }
 
 long ValidIOAddress(const Entity * io) {
 	
-	if(!io) {
+	if(!io)
 		return 0;
-	}
 	
 	for(size_t i = 0; i < entities.size(); i++) {
 		if(entities[i] == io) {
@@ -182,19 +165,19 @@ long ValidIOAddress(const Entity * io) {
 
 static float ARX_INTERACTIVE_fGetPrice(Entity * io, Entity * shop) {
 	
-	if ((!io)
-	        ||	(!(io->ioflags & IO_ITEM)))
+	if(!io || !(io->ioflags & IO_ITEM))
 		return 0;
 
 	float durability_ratio = io->durability / io->max_durability;
 	float shop_multiply = 1.f;
 
-	if (shop)
+	if(shop)
 		shop_multiply = shop->shop_multiply;
 
 	return io->_itemdata->price * shop_multiply * durability_ratio;
 
 }
+
 long ARX_INTERACTIVE_GetPrice(Entity * io, Entity * shop) {
 	return ARX_INTERACTIVE_fGetPrice(io, shop);
 }
@@ -203,19 +186,16 @@ static void ARX_INTERACTIVE_ForceIOLeaveZone(Entity * io, long flags) {
 	
 	ARX_PATH * op = io->inzone;
 
-	if (op)
-	{
+	if(op) {
 		std::string temp = op->name;
 
-		if (flags & 1) // no need when being destroyed !
+		if(flags & 1) // no need when being destroyed !
 			SendIOScriptEvent(io, SM_LEAVEZONE, temp);
 
-		if(!op->controled.empty())
-		{
+		if(!op->controled.empty()) {
 			long t = entities.getById(op->controled);
 
-			if (t >= 0)
-			{
+			if(t >= 0) {
 				std::string str = io->long_name() + ' ' + temp;
 				SendIOScriptEvent( entities[t], SM_CONTROLLEDZONE_LEAVE, str ); 
 			}
@@ -225,7 +205,8 @@ static void ARX_INTERACTIVE_ForceIOLeaveZone(Entity * io, long flags) {
 
 void ARX_INTERACTIVE_DestroyDynamicInfo(Entity * io)
 {
-	if (!io) return;
+	if(!io)
+		return;
 
 	long n = io->index();
 
@@ -233,12 +214,8 @@ void ARX_INTERACTIVE_DestroyDynamicInfo(Entity * io)
 
 	ARX_INTERACTIVE_ForceIOLeaveZone(io, 0);
 
-	for (long i = 0; i < MAX_EQUIPED; i++)
-	{
-		if ((player.equiped[i])
-		        &&	(player.equiped[i] == n)
-		        &&	ValidIONum(player.equiped[i]))
-		{
+	for(long i = 0; i < MAX_EQUIPED; i++) {
+		if(player.equiped[i] && player.equiped[i] == n && ValidIONum(player.equiped[i])) {
 			ARX_EQUIPMENT_UnEquip(entities.player(), entities[player.equiped[i]], 1);
 			player.equiped[i] = 0;
 		}
@@ -248,23 +225,17 @@ void ARX_INTERACTIVE_DestroyDynamicInfo(Entity * io)
 	
 	ARX_SCRIPT_EventStackClearForIo(io);
 	
-	if (ValidIONum(n))
-	{
-		for (size_t i = 0; i < MAX_SPELLS; i++)
-		{
-			if ((spells[i].exist) && (spells[i].caster == n))
-			{
+	if(ValidIONum(n)) {
+		for(size_t i = 0; i < MAX_SPELLS; i++) {
+			if(spells[i].exist && spells[i].caster == n) {
 				spells[i].tolive = 0;
 			}
 		}
 	}
 
-	if (io->flarecount)
-	{
-		for (long i = 0; i < MAX_FLARES; i++)
-		{
-			if ((flare[i].exist)
-			        &&	(flare[i].io == io))
+	if(io->flarecount) {
+		for(long i = 0; i < MAX_FLARES; i++) {
+			if(flare[i].exist && flare[i].io == io)
 				flare[i].io = NULL;
 		}
 	}
@@ -279,25 +250,20 @@ void ARX_INTERACTIVE_DestroyDynamicInfo(Entity * io)
 		memset(&io->_npcdata->pathfind, 0, sizeof(IO_PATHFIND));
 	}
 	
-	if (ValidDynLight(io->dynlight))
-	{
+	if(ValidDynLight(io->dynlight)) {
 		DynLight[io->dynlight].exist = 0;
 	}
 
 	io->dynlight = -1;
 
-	if (io->obj)
-	{
+	if(io->obj) {
 		EERIE_3DOBJ * eobj = io->obj;
 
-		for (long k = 0; k < eobj->nblinked; k++)
-		{
-			if ((eobj->linked[k].lgroup != -1) && eobj->linked[k].obj)
-			{
+		for(long k = 0; k < eobj->nblinked; k++) {
+			if(eobj->linked[k].lgroup != -1 && eobj->linked[k].obj) {
 				Entity * ioo = (Entity *)eobj->linked[k].io;
 
-				if ((ioo) && ValidIOAddress(ioo))
-				{
+				if(ioo && ValidIOAddress(ioo)) {
 					long ll = eobj->linked[k].lidx;
 					Vec3f pos, vector;
 					pos = io->obj->vertexlist3[ll].v;
@@ -320,7 +286,7 @@ void ARX_INTERACTIVE_DestroyDynamicInfo(Entity * io)
 
 bool ARX_INTERACTIVE_Attach(long n_source, long n_target, const std::string& ap_source, const std::string& ap_target)
 {
-	if (!ValidIONum(n_source) || !ValidIONum(n_target))
+	if(!ValidIONum(n_source) || !ValidIONum(n_target))
 		return false;
 
 	entities[n_source]->show = SHOW_FLAG_LINKED;
@@ -328,10 +294,10 @@ bool ARX_INTERACTIVE_Attach(long n_source, long n_target, const std::string& ap_
 	return EERIE_LINKEDOBJ_LinkObjectToObject(entities[n_target]->obj,
 	        entities[n_source]->obj, ap_target, ap_source, entities[n_source]);
 }
+
 void ARX_INTERACTIVE_Detach(long n_source, long n_target)
 {
-	if (!ValidIONum(n_source)
-	        ||	!ValidIONum(n_target))
+	if(!ValidIONum(n_source) || !ValidIONum(n_target))
 		return;
 
 	entities[n_source]->show = SHOW_FLAG_IN_SCENE;
@@ -340,24 +306,19 @@ void ARX_INTERACTIVE_Detach(long n_source, long n_target)
 
 void ARX_INTERACTIVE_Show_Hide_1st(Entity * io, long state)
 {
-	if ((!io)
-	        ||	(HERO_SHOW_1ST == state))
+	if(!io || HERO_SHOW_1ST == state)
 		return;
 
 	HERO_SHOW_1ST = state;
 	long grp = EERIE_OBJECT_GetSelection(io->obj, "1st");
 
-	if (grp != -1)
-	{
-		for (size_t nn = 0; nn < io->obj->facelist.size(); nn++)
-		{
+	if(grp != -1) {
+		for(size_t nn = 0; nn < io->obj->facelist.size(); nn++) {
 			EERIE_FACE * ef = &io->obj->facelist[nn];
 
-			for (long jj = 0; jj < 3; jj++)
-			{
-				if (IsInSelection(io->obj, ef->vid[jj], grp) != -1)
-				{
-					if (state)
+			for(long jj = 0; jj < 3; jj++) {
+				if(IsInSelection(io->obj, ef->vid[jj], grp) != -1) {
+					if(state)
 						ef->facetype |= POLY_HIDE;
 					else
 						ef->facetype &= ~POLY_HIDE;
@@ -371,7 +332,6 @@ void ARX_INTERACTIVE_Show_Hide_1st(Entity * io, long state)
 	ARX_INTERACTIVE_HideGore(entities.player(), 1);
 }
 
-
 void ARX_INTERACTIVE_RemoveGoreOnIO(Entity * io)
 {
 	if (!io || !io->obj || io->obj->texturecontainer.empty())
@@ -379,28 +339,22 @@ void ARX_INTERACTIVE_RemoveGoreOnIO(Entity * io)
 
 	long gorenum = -1;
 
-	for (size_t nn = 0; nn < io->obj->texturecontainer.size(); nn++)
-	{
-		if (io->obj->texturecontainer[nn] && ( io->obj->texturecontainer[nn]->m_texName.string().find("gore") != std::string::npos ) )
-		{
+	for(size_t nn = 0; nn < io->obj->texturecontainer.size(); nn++) {
+		if(io->obj->texturecontainer[nn] && io->obj->texturecontainer[nn]->m_texName.string().find("gore") != std::string::npos) {
 			gorenum = nn;
 			break;
 		}
 	}
 
-	if (gorenum > -1)
-	{
-		for (size_t nn = 0; nn < io->obj->facelist.size(); nn++)
-		{
-			if (io->obj->facelist[nn].texid == gorenum)
-			{
+	if(gorenum > -1) {
+		for(size_t nn = 0; nn < io->obj->facelist.size(); nn++) {
+			if(io->obj->facelist[nn].texid == gorenum) {
 				io->obj->facelist[nn].facetype |= POLY_HIDE;
 				io->obj->facelist[nn].texid = -1;
 			}
 		}
 	}
 }
-
 
 // flag & 1 == no unhide non-gore
 // TODO very simmilar to ARX_INTERACTIVE_RemoveGoreOnIO
@@ -409,33 +363,28 @@ void ARX_INTERACTIVE_HideGore(Entity * io, long flag)
 	if (!io || !io->obj || io->obj->texturecontainer.empty())
 		return;
 
-	if ((io == entities.player()) && (!flag & 1))
+	if(io == entities.player() && (!flag & 1)) //TODO this looks like a broken flag check
 		return;
 
 	long gorenum = -1;
 
-	for (size_t nn = 0; nn < io->obj->texturecontainer.size(); nn++)
-	{
-		if (io->obj->texturecontainer[nn] && io->obj->texturecontainer[nn]->m_texName.string().find("gore") != string::npos)
-		{
+	for(size_t nn = 0; nn < io->obj->texturecontainer.size(); nn++) {
+		if(io->obj->texturecontainer[nn] && io->obj->texturecontainer[nn]->m_texName.string().find("gore") != std::string::npos) {
 			gorenum = nn;
 			break;
 		}
 	}
 
-	if (gorenum > -1)
-	{
-		for (size_t nn = 0; nn < io->obj->facelist.size(); nn++)
-		{
+	if(gorenum > -1) {
+		for(size_t nn = 0; nn < io->obj->facelist.size(); nn++) {
 			//Hide Gore Polys...
-			if (io->obj->facelist[nn].texid == gorenum)
+			if(io->obj->facelist[nn].texid == gorenum)
 				io->obj->facelist[nn].facetype |= POLY_HIDE;
-			else if (!flag & 1)
+			else if(!flag & 1) //TODO this looks like a broken flag check
 				io->obj->facelist[nn].facetype &= ~POLY_HIDE;
 		}
 	}
 }
-
 
 bool ForceNPC_Above_Ground(Entity * io) {
 	
@@ -490,12 +439,9 @@ void TREATZONE_Release() {
 
 void TREATZONE_RemoveIO(Entity * io)
 {
-	if (treatio)
-	{
-		for (long i = 0; i < TREATZONE_CUR; i++)
-		{
-			if (treatio[i].io == io)
-			{
+	if(treatio) {
+		for(long i = 0; i < TREATZONE_CUR; i++) {
+			if(treatio[i].io == io) {
 				treatio[i].io = NULL;
 				treatio[i].ioflags = 0;
 				treatio[i].show = 0;
@@ -507,22 +453,21 @@ void TREATZONE_RemoveIO(Entity * io)
 // flag & 1 IO_JUST_COLLIDE
 void TREATZONE_AddIO(Entity * io, long flag)
 {
-	if (TREATZONE_MAX == TREATZONE_CUR)
-	{
+	if(TREATZONE_MAX == TREATZONE_CUR) {
 		TREATZONE_MAX++;
 		treatio = (TREATZONE_IO *)realloc(treatio, sizeof(TREATZONE_IO) * TREATZONE_MAX);
 	}
 
-	for (long i = 0; i < TREATZONE_CUR; i++)
-	{
-		if (treatio[i].io == io)
+	for(long i = 0; i < TREATZONE_CUR; i++) {
+		if(treatio[i].io == io)
 			return;
 	}
 
 	treatio[TREATZONE_CUR].io = io;
 	treatio[TREATZONE_CUR].ioflags = io->ioflags;
 
-	if (flag & 1) treatio[TREATZONE_CUR].ioflags |= IO_JUST_COLLIDE;
+	if(flag & 1)
+		treatio[TREATZONE_CUR].ioflags |= IO_JUST_COLLIDE;
 
 	treatio[TREATZONE_CUR].show = io->show;
 	treatio[TREATZONE_CUR].num = io->index();
@@ -531,80 +476,73 @@ void TREATZONE_AddIO(Entity * io, long flag)
 
 void CheckSetAnimOutOfTreatZone(Entity * io, long num)
 {
-	if ((io)
-	        &&	(io->animlayer[num].cur_anim)
-	        &&	!(io->gameFlags & GFLAG_ISINTREATZONE)
-	        &&	distSqr(io->pos, ACTIVECAM->pos) > square(2500.f))
+	arx_assert(io);
+
+	if( io->animlayer[num].cur_anim &&
+		!(io->gameFlags & GFLAG_ISINTREATZONE) &&
+		distSqr(io->pos, ACTIVECAM->orgTrans.pos) > square(2500.f))
 	{
 
-		io->animlayer[num].ctime =
-		    checked_range_cast<long>(io->animlayer[num].cur_anim->anims[io->animlayer[num].altidx_cur]->anim_time - 1.f);
-
+		io->animlayer[num].ctime = io->animlayer[num].cur_anim->anims[io->animlayer[num].altidx_cur]->anim_time - 1;
 	}
 }
 
-long GLOBAL_Player_Room = -1;
 void PrepareIOTreatZone(long flag)
 {
 	static long status = -1;
 	static Vec3f lastpos;
 
-	if ((flag)
-	        ||	(status == -1))
-	{
+	if(flag || status == -1) {
 		status = 0;
-		lastpos = ACTIVECAM->pos;
-	}
-	else if (status == 3) status = 0;
-
-	if (distSqr(ACTIVECAM->pos, lastpos) > square(100.f))
-	{
+		lastpos = ACTIVECAM->orgTrans.pos;
+	} else if(status == 3) {
 		status = 0;
-		lastpos = ACTIVECAM->pos;
 	}
 
-	if (status++) return;
+	if(distSqr(ACTIVECAM->orgTrans.pos, lastpos) > square(100.f)) {
+		status = 0;
+		lastpos = ACTIVECAM->orgTrans.pos;
+	}
+
+	if(status++)
+		return;
 
 	TREATZONE_Clear();
-	long Cam_Room = ARX_PORTALS_GetRoomNumForPosition(&ACTIVECAM->pos, 1);
-	GLOBAL_Player_Room = ARX_PORTALS_GetRoomNumForPosition(&player.pos, 1);
+	long Cam_Room = ARX_PORTALS_GetRoomNumForPosition(&ACTIVECAM->orgTrans.pos, 1);
+	long PlayerRoom = ARX_PORTALS_GetRoomNumForPosition(&player.pos, 1);
 	TREATZONE_AddIO(entities.player());
 
-	short sGlobalPlayerRoom = checked_range_cast<short>(GLOBAL_Player_Room);
+	short sGlobalPlayerRoom = checked_range_cast<short>(PlayerRoom);
 
-	for (long i = 0; i < MAX_EQUIPED; i++)
-	{
-		if ((player.equiped[i] != 0)
-		        &&	ValidIONum(player.equiped[i]))
-		{
-			Entity * toequip = entities[player.equiped[i]];
+	for(long i = 0; i < MAX_EQUIPED; i++) {
+		if(player.equiped[i] != 0 && ValidIONum(player.equiped[i])) {
+			Entity *toequip = entities[player.equiped[i]];
 
-			if (toequip)
-			{
+			if(toequip) {
 				toequip->room = sGlobalPlayerRoom;
 				toequip->room_flags = 0;
 			}
 		}
 	}
 
-	if (DRAGINTER) TREATZONE_AddIO(DRAGINTER);
+	if(DRAGINTER)
+		TREATZONE_AddIO(DRAGINTER);
 
 	TREATZONE_LIMIT = 3200; 
 
-	if (RoomDistance)
-	{
+	if(RoomDistance) {
 		TREATZONE_LIMIT += 600; 
 
-		if (CURRENTLEVEL == 4)
+		if(CURRENTLEVEL == 4)
 			TREATZONE_LIMIT += 1200;
 
-		if (ACTIVECAM->cdepth > 3000)
+		if(ACTIVECAM->cdepth > 3000)
 			TREATZONE_LIMIT += 500;
 
-		if (ACTIVECAM->cdepth > 4000)
+		if(ACTIVECAM->cdepth > 4000)
 			TREATZONE_LIMIT += 500;
 
-		if (ACTIVECAM->cdepth > 6000)
+		if(ACTIVECAM->cdepth > 6000)
 			TREATZONE_LIMIT += 500;
 	}
 	
@@ -618,58 +556,47 @@ void PrepareIOTreatZone(long flag)
 		             ||	(io->show == SHOW_FLAG_ON_PLAYER)
 		             ||	(io->show == SHOW_FLAG_HIDDEN)))   
 		{
-			if ((io->ioflags & IO_CAMERA) && (!EDITMODE))
+			if ((io->ioflags & IO_CAMERA) && !EDITMODE) {
 				treat = 0;
-			else if ((io->ioflags & IO_MARKER) && (!EDITMODE))
+			} else if ((io->ioflags & IO_MARKER) && !EDITMODE) {
 				treat = 0;
-			else if ((io->ioflags & IO_NPC) 
-			         && (io->_npcdata->pathfind.flags & PATHFIND_ALWAYS))
-			{
+			} else if ((io->ioflags & IO_NPC) && (io->_npcdata->pathfind.flags & PATHFIND_ALWAYS)) {
 				treat = 1;
-			}
-			else
-			{
+			} else {
 				float dists;
 
-				if (Cam_Room >= 0)
-				{
-					if (io->show == SHOW_FLAG_TELEPORTING)
-					{
+				if(Cam_Room >= 0) {
+					if(io->show == SHOW_FLAG_TELEPORTING) {
 						Vec3f pos;
 						GetItemWorldPosition(io, &pos);
-						dists = distSqr(ACTIVECAM->pos, pos);
-					}
-					else
-					{
-						if (io->room_flags & 1)
+						dists = distSqr(ACTIVECAM->orgTrans.pos, pos);
+					} else {
+						if(io->room_flags & 1)
 							UpdateIORoom(io);
 
-						dists = square(SP_GetRoomDist(&io->pos, &ACTIVECAM->pos, io->room, Cam_Room));
+						dists = square(SP_GetRoomDist(&io->pos, &ACTIVECAM->orgTrans.pos, io->room, Cam_Room));
 					}
-				}
-				else
-				{
-					if (io->show == SHOW_FLAG_TELEPORTING)
-					{
+				} else {
+					if(io->show == SHOW_FLAG_TELEPORTING) {
 						Vec3f pos;
 						GetItemWorldPosition(io, &pos);
-						dists = distSqr(ACTIVECAM->pos, pos); //&io->pos,&pos);
+						dists = distSqr(ACTIVECAM->orgTrans.pos, pos); //&io->pos,&pos);
 					}
 					else
-						dists = distSqr(io->pos, ACTIVECAM->pos);
+						dists = distSqr(io->pos, ACTIVECAM->orgTrans.pos);
 				}
 		
-				if (dists < square(TREATZONE_LIMIT)) treat = 1;
-				else treat = 0;
-				
+				if(dists < square(TREATZONE_LIMIT))
+					treat = 1;
+				else
+					treat = 0;
 			}
 
-			if (!treat)
-			{
-				if (io == CAMERACONTROLLER)
+			if(!treat) {
+				if(io == CAMERACONTROLLER)
 					treat = 1;
 
-				if (io == DRAGINTER)
+				if(io == DRAGINTER)
 					treat = 1;
 			}
 			
@@ -706,9 +633,8 @@ void PrepareIOTreatZone(long flag)
 				//going away;
 				io->gameFlags |= GFLAG_ISINTREATZONE;
 
-				if (SendIOScriptEvent(io, SM_TREATOUT) != REFUSE)
-				{
-					if (io->ioflags & IO_NPC)
+				if(SendIOScriptEvent(io, SM_TREATOUT) != REFUSE) {
+					if(io->ioflags & IO_NPC)
 						io->_npcdata->pathfind.flags &= ~PATHFIND_ALWAYS;
 
 					io->gameFlags &= ~GFLAG_ISINTREATZONE;
@@ -722,28 +648,22 @@ void PrepareIOTreatZone(long flag)
 	for(size_t i = 1; i < entities.size(); i++) {
 		Entity * io = entities[i];
 
-		if ((io != NULL)
-		        &&	!(io->gameFlags & GFLAG_ISINTREATZONE)
+		if(io && !(io->gameFlags & GFLAG_ISINTREATZONE)
 		        && ((io->show == SHOW_FLAG_IN_SCENE)
 		            ||	(io->show == SHOW_FLAG_TELEPORTING)
 		            ||	(io->show == SHOW_FLAG_ON_PLAYER)
 		            ||	(io->show == SHOW_FLAG_HIDDEN)))   // show 5 = ininventory; 15 = destroyed
 		{
-			if ((io->ioflags & IO_CAMERA)
-			        ||	(io->ioflags & IO_ITEM)
-			        ||	(io->ioflags & IO_MARKER))
+			if(io->ioflags & (IO_CAMERA | IO_ITEM | IO_MARKER))
 				continue;
 
 			long toadd = 0;
 
-			for (long ii = 1; ii < M_TREAT; ii++)
-			{
+			for(long ii = 1; ii < M_TREAT; ii++) {
 				Entity * ioo = treatio[ii].io;
 
-				if (ioo)
-				{
-					if (distSqr(io->pos, ioo->pos) < square(300.f))
-					{
+				if(ioo) {
+					if(distSqr(io->pos, ioo->pos) < square(300.f)) {
 						toadd = 1;
 						break;
 					}
@@ -757,14 +677,10 @@ void PrepareIOTreatZone(long flag)
 	}
 }
 
-//*************************************************************************************
-//*************************************************************************************
 long GetNumNodeByName(char * name)
 {
-	for (long i = 0; i < nodes.nbmax; i++)
-	{
-		if ((nodes.nodes[i].exist)
-		        &&	(!strcmp(name, nodes.nodes[i].name)))
+	for(long i = 0; i < nodes.nbmax; i++) {
+		if(nodes.nodes[i].exist && !strcmp(name, nodes.nodes[i].name))
 			return i;
 	}
 
@@ -786,14 +702,12 @@ void ClearNode(long i, long first = 0) {
 	nodes.nodes[i].exist = 0;
 	nodes.nodes[i].selected = 0;
 
-	for (size_t j = 0; j < MAX_LINKS; j++)
-	{
-		if ((nodes.nodes[i].link[j] != -1) && (!first))
-		{
+	for(size_t j = 0; j < MAX_LINKS; j++) {
+		if((nodes.nodes[i].link[j] != -1) && !first) {
 			long k = nodes.nodes[i].link[j];
 
-			for (size_t l = 0; l < MAX_LINKS; l++)
-				if (nodes.nodes[k].link[l] == i)
+			for(size_t l = 0; l < MAX_LINKS; l++)
+				if(nodes.nodes[k].link[l] == i)
 					nodes.nodes[k].link[l] = -1;
 		}
 
@@ -809,22 +723,20 @@ void ClearNodes()
 {
 	static long first = 1;
 
-	for (long i = 0; i < nodes.nbmax; i++)
-	{
+	for(long i = 0; i < nodes.nbmax; i++) {
 		ClearNode(i, first);
 	}
 
 	first = 0;
 }
-//*************************************************************************************
-//*************************************************************************************
+
 void SelectNode(long i)
 {
-	if ((i >= nodes.nbmax)
-	        ||	(i < 0))
+	if(i >= nodes.nbmax || i < 0)
 		return;
 
-	if (nodes.nodes[i].exist)  nodes.nodes[i].selected = 1;
+	if(nodes.nodes[i].exist)
+		nodes.nodes[i].selected = 1;
 }
 
 void UnselectAllNodes() {
@@ -845,13 +757,12 @@ void TranslateSelectedNodes(Vec3f * trans) {
 
 bool IsLinkedNode(long i, long j)
 {
-	if ((!nodes.nodes[i].exist)
-	        ||	(!nodes.nodes[j].exist))
+	if(!nodes.nodes[i].exist || !nodes.nodes[j].exist)
 		return false;
 
-	for (size_t k = 0; k < MAX_LINKS; k++)
-	{
-		if (nodes.nodes[i].link[k] == j) return true;
+	for(size_t k = 0; k < MAX_LINKS; k++) {
+		if(nodes.nodes[i].link[k] == j)
+			return true;
 	}
 
 	return false;
@@ -869,87 +780,67 @@ long CountNodes() {
 
 void AddLink(long i, long j)
 {
-	if ((!nodes.nodes[i].exist)
-	        ||	(!nodes.nodes[j].exist))
+	if(!nodes.nodes[i].exist || !nodes.nodes[j].exist)
 		return;
 
-	for (size_t k = 0; k < MAX_LINKS; k++)
-	{
-		if (nodes.nodes[i].link[k] == -1)
-		{
+	for(size_t k = 0; k < MAX_LINKS; k++) {
+		if(nodes.nodes[i].link[k] == -1) {
 			nodes.nodes[i].link[k] = j;
 			return;
 		}
 	}
 }
-//*************************************************************************************
-//*************************************************************************************
+
 void RemoveLink(long i, long j)
 {
-	if ((!nodes.nodes[i].exist)
-	        ||	(!nodes.nodes[j].exist))
+	if(!nodes.nodes[i].exist || !nodes.nodes[j].exist)
 		return;
 
-	for (size_t k = 0; k < MAX_LINKS; k++)
-	{
-		if (nodes.nodes[i].link[k] == j)
-		{
+	for(size_t k = 0; k < MAX_LINKS; k++) {
+		if(nodes.nodes[i].link[k] == j) {
 			nodes.nodes[i].link[k] = -1;
 			return;
 		}
 	}
 }
-//*************************************************************************************
-//*************************************************************************************
+
 void LinkNodeToNode(long i, long j)
 {
-	if ((!IsLinkedNode(i, j))
-	        ||	(!IsLinkedNode(j, i)))
+	if(!IsLinkedNode(i, j) || !IsLinkedNode(j, i))
 		return;
 
 	AddLink(i, j);
 	AddLink(j, i);
 }
-//*************************************************************************************
-//*************************************************************************************
+
 void UnLinkNodeFromNode(long i, long j)
 {
-	if ((!IsLinkedNode(i, j))
-	        ||	(!IsLinkedNode(j, i)))
+	if(!IsLinkedNode(i, j) || !IsLinkedNode(j, i))
 		return;
 
 	RemoveLink(i, j);
 	RemoveLink(j, i);
 }
-//*************************************************************************************
-//*************************************************************************************
+
 void ClearSelectedNodes()
 {
-	for (long i = 0; i < nodes.nbmax; i++)
-	{
-		if ((nodes.nodes[i].exist)
-		        &&	(nodes.nodes[i].selected))
-		{
+	for(long i = 0; i < nodes.nbmax; i++) {
+		if(nodes.nodes[i].exist && nodes.nodes[i].selected) {
 			ClearNode(i, 0);
 		}
 	}
 }
 
-//*************************************************************************************
-//*************************************************************************************
 bool ExistNodeName(char * name)
 {
-	for (long i = 0; i < nodes.nbmax; i++)
-	{
-		if ((nodes.nodes[i].exist)
-		        &&	(!strcmp(name, nodes.nodes[i].name)))
+	for(long i = 0; i < nodes.nbmax; i++) {
+		if(nodes.nodes[i].exist && !strcmp(name, nodes.nodes[i].name))
 			return true;
 	}
 
 	return false;
 }
-//*************************************************************************************
-//*************************************************************************************
+
 void MakeNodeName(long i)
 {
 	char name[64];
@@ -957,8 +848,7 @@ void MakeNodeName(long i)
 	//float f;
 	sprintf(name, "node_%08ld", i);
 
-	while (ExistNodeName(name))
-	{
+	while(ExistNodeName(name)) {
 		//f=rnd()*99999999.f;
 		//o=(long)f;
 		o = rnd() * 99999999.f;
@@ -968,11 +858,10 @@ void MakeNodeName(long i)
 	strcpy(nodes.nodes[i].name, name);
 }
 
-//*************************************************************************************
-//*************************************************************************************
 void InitNodes(long nb)
 {
-	if (nb < 1) nb = 1;
+	if(nb < 1)
+		nb = 1;
 
 	nodes.init = 1;
 	nodes.nbmax = nb;
@@ -980,13 +869,12 @@ void InitNodes(long nb)
 	memset(nodes.nodes, 0, sizeof(ARX_NODE)*nodes.nbmax);
 	ClearNodes();
 }
-//*************************************************************************************
-//*************************************************************************************
+
 long GetFreeNode()
 {
-	for (long i = 0; i < nodes.nbmax; i++)
-	{
-		if (!nodes.nodes[i].exist) return i;
+	for(long i = 0; i < nodes.nbmax; i++) {
+		if(!nodes.nodes[i].exist)
+			return i;
 	}
 
 	return -1;
@@ -997,7 +885,9 @@ void ReleaseNode() {
 	nodes.nbmax = 0;
 }
 
-// Removes an IO loaded by a script command
+/*!
+ * \brief Removes an IO loaded by a script command
+ */
 void CleanScriptLoadedIO() {
 	for(size_t i = 1; i < entities.size(); i++) {
 		Entity * io = entities[i];
@@ -1012,7 +902,9 @@ void CleanScriptLoadedIO() {
 	}
 }
 
-// Restores an IO to its initial status (Game start Status)
+/*!
+ * \brief Restores an IO to its initial status (Game start Status)
+ */
 void RestoreInitialIOStatus() {
 	ARX_INTERACTIVE_HideGore(entities.player());
 	ARX_NPC_Behaviour_ResetAll();
@@ -1077,9 +969,8 @@ void ARX_INTERACTIVE_APPLY_TWEAK_INFO(Entity * io) {
 
 void ARX_INTERACTIVE_ClearIODynData(Entity * io) {
 	
-	if(!io) {
+	if(!io)
 		return;
-	}
 	
 	if(ValidDynLight(io->dynlight)) {
 		DynLight[io->dynlight].exist = 0;
@@ -1098,7 +989,9 @@ void ARX_INTERACTIVE_ClearIODynData(Entity * io) {
 
 void ARX_INTERACTIVE_ClearIODynData_II(Entity * io)
 {
-	if (io)
+	if(!io)
+		return;
+
 	{
 		ARX_INTERACTIVE_ClearIODynData(io);
 
@@ -1179,8 +1072,11 @@ void ARX_INTERACTIVE_ClearAllDynData() {
 }
 
 static void RestoreIOInitPos(Entity * io) {
-	if(io) {
-		ARX_INTERACTIVE_Teleport(io, &io->initpos, 0);
+	if(!io)
+		return;
+
+	{
+		ARX_INTERACTIVE_Teleport(io, &io->initpos);
 		io->pos = io->lastpos = io->initpos;
 		io->move = Vec3f::ZERO;
 		io->lastmove = Vec3f::ZERO;
@@ -1202,7 +1098,9 @@ void ARX_HALO_SetToNative(Entity * io) {
 
 void RestoreInitialIOStatusOfIO(Entity * io)
 {
-	if (io)
+	if(!io)
+		return;
+
 	{
 		ARX_INTERACTIVE_ClearIODynData_II(io);
 
@@ -1227,10 +1125,8 @@ void RestoreInitialIOStatusOfIO(Entity * io)
 		//HALO_NEGATIVE;
 		io->no_collide = -1;
 
-		for (long i = 0; i < MAX_FLARES; i++)
-		{
-			if ((flare[i].exist)  && (flare[i].io == io))
-			{
+		for(long i = 0; i < MAX_FLARES; i++) {
+			if(flare[i].exist && flare[i].io == io) {
 				flare[i].io = NULL;
 			}
 		}
@@ -1239,7 +1135,6 @@ void RestoreInitialIOStatusOfIO(Entity * io)
 		io->inzone = NULL;
 		io->speed_modif = 0.f;
 		io->basespeed = 1.f;
-		io->frameloss = 0.f;
 		io->sfx_flag = 0;
 		io->max_durability = io->durability = 100;
 		io->gameFlags &= ~GFLAG_INVISIBILITY;
@@ -1269,30 +1164,30 @@ void RestoreInitialIOStatusOfIO(Entity * io)
 		io->ignit_light = -1;
 		io->ignit_sound = audio::INVALID_ID;
 
-		if ((io->obj) && (io->obj->pbox)) io->obj->pbox->active = 0;
+		if(io->obj && io->obj->pbox)
+			io->obj->pbox->active = 0;
 
 		io->room = -1;
 		io->room_flags = 1;
 		RestoreIOInitPos(io);
-		ARX_INTERACTIVE_Teleport(io, &io->initpos, 0);
+		ARX_INTERACTIVE_Teleport(io, &io->initpos);
 		io->lastanimtime = 1;
 		io->secretvalue = -1;
 
-		if (io->damagedata >= 0) damages[io->damagedata].exist = 0;
+		if(io->damagedata >= 0)
+			damages[io->damagedata].exist = 0;
 
 		io->damagedata = -1;
 		io->poisonous = 0;
 		io->poisonous_count = 0;
 
-		for (long count = 0; count < MAX_ANIM_LAYERS; count++)
-		{
+		for(long count = 0; count < MAX_ANIM_LAYERS; count++) {
 			memset(&io->animlayer[count], 0, sizeof(ANIM_USE));
 			io->animlayer[count].cur_anim = NULL;
 			io->animlayer[count].next_anim = NULL;
 		}
 
-		if ((io->obj) && (io->obj->pbox))
-		{
+		if(io->obj && io->obj->pbox) {
 			io->obj->pbox->storedtiming = 0;
 		}
 		
@@ -1306,8 +1201,7 @@ void RestoreInitialIOStatusOfIO(Entity * io)
 		io->summoner = -1;
 		io->spark_n_blood = 0;
 
-		if (io->ioflags & IO_NPC)
-		{
+		if(io->ioflags & IO_NPC) {
 			io->_npcdata->climb_count = 0;
 			io->_npcdata->vvpos = -99999.f;
 			io->_npcdata->SPLAT_DAMAGES = 0;
@@ -1350,11 +1244,9 @@ void RestoreInitialIOStatusOfIO(Entity * io)
 			io->_npcdata->npcflags = 0;
 			io->_npcdata->backstab_skill = 0;
 			io->_npcdata->fDetect = -1;
-
 		}
 
-		if (io->ioflags & IO_ITEM)
-		{
+		if(io->ioflags & IO_ITEM) {
 			io->collision = COLLIDE_WITH_PLAYER;
 			io->_itemdata->count = 1;
 			io->_itemdata->maxcount = 1;
@@ -1365,8 +1257,7 @@ void RestoreInitialIOStatusOfIO(Entity * io)
 		}
 		else io->collision = 0;
 
-		if (io->ioflags & IO_FIX)
-		{
+		if(io->ioflags & IO_FIX) {
 			memset(io->_fixdata, 0, sizeof(IO_FIXDATA));
 			io->_fixdata->trapvalue = -1;
 		}
@@ -1375,9 +1266,8 @@ void RestoreInitialIOStatusOfIO(Entity * io)
 
 void ARX_INTERACTIVE_TWEAK_Icon(Entity * io, const res::path & s1) {
 	
-	if(!io || s1.empty()) {
+	if(!io || s1.empty())
 		return;
-	}
 	
 	res::path icontochange = io->classPath().parent() / s1;
 	
@@ -1388,7 +1278,6 @@ void ARX_INTERACTIVE_TWEAK_Icon(Entity * io, const res::path & s1) {
 	}
 	
 	if(tc) {
-		
 		unsigned long w = tc->m_dwWidth >> 5;
 		unsigned long h = tc->m_dwHeight >> 5; 
 
@@ -1398,17 +1287,17 @@ void ARX_INTERACTIVE_TWEAK_Icon(Entity * io, const res::path & s1) {
 		if ((h << 5) != tc->m_dwHeight) io->sizey = (char)(h + 1);
 		else io->sizey = (char)(h);
 
-		if (io->sizex < 1) io->sizex = 1;
-		else if (io->sizex > 3) io->sizex = 3;
-
-		if (io->sizey < 1) io->sizey = 1;
-		else if (io->sizey > 3) io->sizey = 3;
+		io->sizex = clamp(io->sizex, 1, 3);
+		io->sizey = clamp(io->sizey, 1, 3);
 
 		io->inv = tc;
 	}
 }
 
-// Count IO number ignoring ScriptLoaded IOs
+/*!
+ * \brief Count IO number ignoring ScriptLoaded IOs
+ * \return
+ */
 long GetNumberInterWithOutScriptLoad() {
 	long count = 0;
 	for(size_t i = 1; i < entities.size(); i++) {
@@ -1475,23 +1364,19 @@ bool ARX_INTERACTIVE_ConvertToValidPosForIO(Entity * io, Vec3f * target) {
 	
 	phys.origin = *target;
 	long count = 0;
-	float modx, modz;
 	
 	while(count < 600) {
-		
-		modx = -EEsin(count) * (float)count * ( 1.0f / 3 );
-		modz = EEcos(count) * (float)count * ( 1.0f / 3 );
+		float modx = -EEsin(count) * (float)count * ( 1.0f / 3 );
+		float modz = EEcos(count) * (float)count * ( 1.0f / 3 );
 		phys.origin.x = target->x + modx;
 		phys.origin.z = target->z + modz;
 		float anything = CheckAnythingInCylinder(&phys, io, CFLAG_JUST_TEST);
 
-		if (EEfabs(anything) < 150.f)
-		{
+		if(EEfabs(anything) < 150.f) {
 			EERIEPOLY * ep = CheckInPoly(phys.origin.x, phys.origin.y + anything - 20.f, phys.origin.z);
 			EERIEPOLY * ep2 = CheckTopPoly(phys.origin.x, phys.origin.y + anything, phys.origin.z);
 
-			if (ep && ep2 && (EEfabs((phys.origin.y + anything) - ep->center.y) < 20.f))
-			{
+			if(ep && ep2 && EEfabs((phys.origin.y + anything) - ep->center.y) < 20.f) {
 				target->x = phys.origin.x;
 				target->y = phys.origin.y + anything;
 				target->z = phys.origin.z;
@@ -1504,16 +1389,16 @@ bool ARX_INTERACTIVE_ConvertToValidPosForIO(Entity * io, Vec3f * target) {
 
 	return false;
 }
+
 void ARX_INTERACTIVE_TeleportBehindTarget(Entity * io)
 {
-	if (!io) return;
+	if(!io)
+		return;
 
-	if (ARX_SCRIPT_GetSystemIOScript(io, "_r_a_t_") < 0)
-	{
+	if(ARX_SCRIPT_GetSystemIOScript(io, "_r_a_t_") < 0) {
 		long num = ARX_SCRIPT_Timer_GetFree();
 
-		if (num != -1)
-		{
+		if(num != -1) {
 			long t = io->index();
 			ActiveTimers++;
 			scr_timer[num].es = NULL;
@@ -1536,23 +1421,22 @@ void ARX_INTERACTIVE_TeleportBehindTarget(Entity * io)
 			ARX_PARTICLES_Add_Smoke(&pos, 3, 20);
 			MakeCoolFx(&io->pos);
 			io->gameFlags |= GFLAG_INVISIBILITY;
-			FRAME_COUNT = 0;
 		}
 	}
 }
+
 void ResetVVPos(Entity * io)
 {
-	if ((io) && (io->ioflags & IO_NPC))
+	if(io && (io->ioflags & IO_NPC))
 		io->_npcdata->vvpos = io->pos.y;
 }
+
 void ComputeVVPos(Entity * io)
 {
-	if (io->ioflags & IO_NPC)
-	{
+	if(io->ioflags & IO_NPC) {
 		float vvp = io->_npcdata->vvpos;
 
-		if ((vvp == -99999.f) || (vvp == io->pos.y))
-		{
+		if(vvp == -99999.f || vvp == io->pos.y) {
 			io->_npcdata->vvpos = io->pos.y;
 			return;
 		}
@@ -1561,51 +1445,45 @@ void ComputeVVPos(Entity * io)
 		float fdiff = EEfabs(diff);
 		float eediff = fdiff;
 
-		if (fdiff > 120.f) 
-		{
+		if(fdiff > 120.f) {
 			fdiff = 120.f;
-		}
-		else
-		{
+		} else {
 			float mul = ((fdiff * ( 1.0f / 120 )) * 0.9f + 0.6f);
 
-			if ((eediff < 15.f))
-			{
-				float val = (float)FrameDiff * ( 1.0f / 4 ) * mul;
+			if(eediff < 15.f) {
+				float val = (float)framedelay * ( 1.0f / 4 ) * mul;
 
-				if (eediff < 10.f)
+				if(eediff < 10.f) {
 					val *= ( 1.0f / 10 );
-				else
-				{
+				} else {
 					float ratio = (eediff - 10.f) * ( 1.0f / 5 );
 					val = val * ratio + val * (1.f - ratio); 
 				}
 
 				fdiff -= val;
-			}
-			else
-			{
-				fdiff -= (float)FrameDiff * ( 1.0f / 4 ) * mul;
+			} else {
+				fdiff -= (float)framedelay * ( 1.0f / 4 ) * mul;
 			}
 		}
 
-		if (fdiff > eediff)
+		if(fdiff > eediff)
 			fdiff = eediff;
 
-		if (fdiff < 0.f) fdiff = 0.f;
+		if(fdiff < 0.f)
+			fdiff = 0.f;
 
-		if (diff < 0.f) io->_npcdata->vvpos = io->pos.y + fdiff;
-		else io->_npcdata->vvpos = io->pos.y - fdiff;
+		if(diff < 0.f)
+			io->_npcdata->vvpos = io->pos.y + fdiff;
+		else
+			io->_npcdata->vvpos = io->pos.y - fdiff;
 	}
 }
 
-void ARX_INTERACTIVE_Teleport(Entity * io, Vec3f * target, long flags) {
+void ARX_INTERACTIVE_Teleport(Entity * io, Vec3f * target, bool flag) {
 	
-	if(!io) {
+	if(!io)
 		return;
-	}
 	
-	FRAME_COUNT = -1;
 	io->gameFlags &= ~GFLAG_NOCOMPUTATION;
 	io->room_flags |= 1;
 	io->room = -1;
@@ -1615,7 +1493,7 @@ void ARX_INTERACTIVE_Teleport(Entity * io, Vec3f * target, long flags) {
 	}
 	
 	// In case it is being dragged... (except for drag teleport update)
-	if((!flags & 1) && io == DRAGINTER) { // TODO probably wrong
+	if(!flag && io == DRAGINTER) {
 		Set_DragInter(NULL);
 	}
 	
@@ -1644,10 +1522,9 @@ void ARX_INTERACTIVE_Teleport(Entity * io, Vec3f * target, long flags) {
 	ResetVVPos(io);
 }
 
-Entity * AddInteractive(const res::path & classPath, EntityInstance instance,
-                        AddInteractiveFlags flags) {
+Entity * AddInteractive(const res::path & classPath, EntityInstance instance, AddInteractiveFlags flags) {
 	
-	const string & ficc = classPath.string();
+	const std::string & ficc = classPath.string();
 	
 	Entity * io = NULL;
 	if(boost::contains(ficc, "items")) {
@@ -1664,17 +1541,15 @@ Entity * AddInteractive(const res::path & classPath, EntityInstance instance,
 	
 	return io;
 }
-//***********************************************************************************
-// SetWeapon:
-// Links an object designed by path "temp" to the primary attach of interactive object
-// "io".
-//***********************************************************************************
 
+/*!
+ * \brief Links an object designed by path "temp" to the primary attach of interactive object "io"
+ * \param io
+ */
 void SetWeapon_On(Entity * io) {
 	
-	if(!io || !(io->ioflags & IO_NPC)) {
+	if(!io || !(io->ioflags & IO_NPC))
 		return;
-	}
 	
 	Entity * ioo = io->_npcdata->weapon;
 	
@@ -1686,27 +1561,25 @@ void SetWeapon_On(Entity * io) {
 
 void SetWeapon_Back(Entity * io) {
 	
-	if(!io || !(io->ioflags & IO_NPC)) {
+	if(!io || !(io->ioflags & IO_NPC))
 		return;
-	}
 	
 	Entity * ioo = io->_npcdata->weapon;
 	
 	if(ioo && ioo->obj) {
-		
 		EERIE_LINKEDOBJ_UnLinkObjectFromObject(io->obj, ioo->obj);
 
-		if (io->gameFlags & GFLAG_HIDEWEAPON) return;
+		if(io->gameFlags & GFLAG_HIDEWEAPON)
+			return;
 
 		long ni = io->obj->fastaccess.weapon_attach;
 
-		if (ni >= 0)
+		if(ni >= 0) {
 			EERIE_LINKEDOBJ_LinkObjectToObject(io->obj, ioo->obj, "weapon_attach", "primary_attach", ioo);
-		else
-		{
+		} else {
 			ni = io->obj->fastaccess.secondary_attach;
 
-			if (ni >= 0)
+			if(ni >= 0)
 				EERIE_LINKEDOBJ_LinkObjectToObject(io->obj, ioo->obj, "secondary_attach", "primary_attach", ioo);
 		}
 	}
@@ -1741,24 +1614,27 @@ static void GetIOScript(Entity * io, const res::path & script) {
 	loadScript(io->script, resources->getFile(script));
 }
 
-// Links an Interactive Object to another interactive object using an attach point
+/*!
+ * \brief Links an Interactive Object to another interactive object using an attach point
+ */
 void LinkObjToMe(Entity * io, Entity * io2, const std::string & attach) {
 	
-	if(!io || !io2) {
+	if(!io || !io2)
 		return;
-	}
 	
 	RemoveFromAllInventories(io2);
 	io2->show = SHOW_FLAG_LINKED;
 	EERIE_LINKEDOBJ_LinkObjectToObject(io->obj, io2->obj, attach, attach, io2);
 }
 
-// Creates a Temporary IO Ident
+/*!
+ * \brief Creates a Temporary IO Ident
+ * \param io
+ */
 static void MakeTemporaryIOIdent(Entity * io) {
 	
-	if(!io) {
+	if(!io)
 		return;
-	}
 	
 	// TODO keep the current game open all the time (or even in memory)
 	ARX_Changelevel_CurGame_Open();
@@ -1804,8 +1680,7 @@ static void MakeTemporaryIOIdent(Entity * io) {
 	}
 }
 
-Entity * AddFix(const res::path & classPath, EntityInstance instance,
-                AddInteractiveFlags flags) {
+Entity * AddFix(const res::path & classPath, EntityInstance instance, AddInteractiveFlags flags) {
 	
 	res::path object = classPath + ".teo";
 	res::path script = classPath + ".asl";
@@ -1875,8 +1750,7 @@ Entity * AddFix(const res::path & classPath, EntityInstance instance,
 	return io;
 }
 
-static Entity * AddCamera(const res::path & classPath,
-                          EntityInstance instance) {
+static Entity * AddCamera(const res::path & classPath, EntityInstance instance) {
 	
 	res::path object = classPath + ".teo";
 	res::path script = classPath + ".asl";
@@ -1930,8 +1804,7 @@ static Entity * AddCamera(const res::path & classPath,
 	return io;
 }
 
-static Entity * AddMarker(const res::path & classPath,
-                          EntityInstance instance) {
+static Entity * AddMarker(const res::path & classPath, EntityInstance instance) {
 	
 	res::path object = classPath + ".teo";
 	res::path script = classPath + ".asl";
@@ -2106,8 +1979,7 @@ IO_NPCDATA::~IO_NPCDATA() {
 	free(pathfind.list);
 }
 
-Entity * AddNPC(const res::path & classPath, EntityInstance instance,
-                AddInteractiveFlags flags) {
+Entity * AddNPC(const res::path & classPath, EntityInstance instance, AddInteractiveFlags flags) {
 	
 	res::path object = classPath + ".teo";
 	res::path script = classPath + ".asl";
@@ -2182,9 +2054,10 @@ Entity * AddNPC(const res::path & classPath, EntityInstance instance,
 	return io;
 }
 
-//*************************************************************************************
-// Reload Scripts (Class & Local) for an IO
-//*************************************************************************************
+/*!
+ * \brief Reload Scripts (Class & Local) for an IO
+ * \param io
+ */
 void ReloadScript(Entity * io) {
 	
 	ARX_SCRIPT_Timer_Clear_For_IO(io);
@@ -2212,7 +2085,9 @@ void ReloadScript(Entity * io) {
 	}
 }
 
-// Reloads All Scripts for all IOs
+/*!
+ * \brief Reloads All Scripts for all IOs
+ */
 void ReloadAllScripts() {
 	ARX_SCRIPT_Timer_ClearAll();
 	for(size_t i = 0; i < entities.size(); i++) {
@@ -2224,17 +2099,17 @@ void ReloadAllScripts() {
 
 #ifdef BUILD_EDIT_LOADSAVE
 
-// Creates an unique identifier for an IO
+/*!
+ * \brief Creates an unique identifier for an IO
+ * \param io
+ */
 void MakeIOIdent(Entity * io) {
-	
-	if(!io) {
+	if(!io)
 		return;
-	}
 	
 	long t = 1;
 	
-	while(io->ident == 0) {
-		
+	while(io->ident == 0) {	
 		fs::path temp = fs::paths.user / io->full_name().string();
 		
 		if(!fs::is_directory(temp)) {
@@ -2256,8 +2131,7 @@ void MakeIOIdent(Entity * io) {
 
 extern EERIE_3DOBJ	* arrowobj;
 
-Entity * AddItem(const res::path & classPath_, EntityInstance instance,
-                 AddInteractiveFlags flags) {
+Entity * AddItem(const res::path & classPath_, EntityInstance instance, AddInteractiveFlags flags) {
 	
 	EntityFlags type = IO_ITEM;
 
@@ -2302,14 +2176,10 @@ Entity * AddItem(const res::path & classPath_, EntityInstance instance,
 	io->_itemdata->food_value = 0;
 	io->_itemdata->LightValue = -1;
 
-	if (io->ioflags & IO_GOLD)
-	{
+	if(io->ioflags & IO_GOLD)
 		io->_itemdata->price = 1;
-	}
 	else
-	{
 		io->_itemdata->price = 10;
-	}
 
 	io->_itemdata->playerstacksize = 1;
 
@@ -2329,18 +2199,16 @@ Entity * AddItem(const res::path & classPath_, EntityInstance instance,
 	EERIEPOLY * ep;
 	ep = CheckInPoly(io->pos.x, io->pos.y - 60.f, io->pos.z);
 
-	if (ep)
-	{
+	if(ep) {
 		float tempo;
 
-		if (GetTruePolyY(ep, &io->pos, &tempo))
+		if(GetTruePolyY(ep, &io->pos, &tempo))
 			io->lastpos.y = io->initpos.y = io->pos.y = tempo; 
 	}
 
 	ep = CheckInPoly(io->pos.x, player.pos.y, io->pos.z);
 
-	if (ep)
-	{
+	if(ep) {
 		io->pos.y = min(ep->v[0].p.y, ep->v[1].p.y);
 		io->lastpos.y = io->initpos.y = io->pos.y = min(io->pos.y, ep->v[2].p.y);
 	}
@@ -2350,7 +2218,7 @@ Entity * AddItem(const res::path & classPath_, EntityInstance instance,
 	}
 	
 	if(!io->obj && !(flags & NO_MESH)) {
-			io->obj = loadObject(object);
+		io->obj = loadObject(object);
 	}
 	
 	TextureContainer * tc;
@@ -2361,12 +2229,12 @@ Entity * AddItem(const res::path & classPath_, EntityInstance instance,
 	} else {
 		tc = TextureContainer::LoadUI(icon, TextureContainer::Level);
 	}
+
 	if(!tc) {
 		tc = TextureContainer::LoadUI("graph/interface/misc/default[icon]");
 	}
 	
-	if (tc)
-	{
+	if(tc) {
 		unsigned long w = tc->m_dwWidth >> 5;
 		unsigned long h = tc->m_dwHeight >> 5;
 
@@ -2380,15 +2248,8 @@ Entity * AddItem(const res::path & classPath_, EntityInstance instance,
 		else
 			io->sizey = (char)(h);
 
-		if (io->sizex < 1)
-			io->sizex = 1;
-		else if (io->sizex > 3)
-			io->sizex = 3;
-
-		if (io->sizey < 1)
-			io->sizey = 1;
-		else if (io->sizey > 3)
-			io->sizey = 3;
+		io->sizex = clamp(io->sizex, 1, 3);
+		io->sizey = clamp(io->sizey, 1, 3);
 
 		io->inv = tc;
 	}
@@ -2401,9 +2262,15 @@ Entity * AddItem(const res::path & classPath_, EntityInstance instance,
 	return io;
 }
 
-//*************************************************************************************
-// Returns nearest interactive object found at position x,y
-//*************************************************************************************
+/*!
+ * \brief Returns nearest interactive object found at position x, y
+ * \param pos
+ * \param flag
+ * \param _pRef
+ * \param _pTable
+ * \param _pnNbInTable
+ * \return
+ */
 Entity * GetFirstInterAtPos(Vec2s * pos, long flag, Vec3f * _pRef, Entity ** _pTable, int * _pnNbInTable)
 {
 	float n;
@@ -2415,139 +2282,138 @@ Entity * GetFirstInterAtPos(Vec2s * pos, long flag, Vec3f * _pRef, Entity ** _pT
 	Entity * foundPixel = NULL;
 	bool bPlayerEquiped = false;
 
-	if (Project.telekinesis)
-	{
+	if(Project.telekinesis) {
 		fMaxDist = 850;
 	}
 
 	int nStart = 1;
 	int nEnd = entities.size();
 
-	if ((flag == 3) && _pTable && _pnNbInTable)
-	{
+	if(flag == 3 && _pTable && _pnNbInTable) {
 		nStart = 0;
 		nEnd = *_pnNbInTable;
 	}
 
-	for (long i = nStart; i < nEnd; i++)
-	{
+	for(long i = nStart; i < nEnd; i++) {
 		bool bPass = true;
 
 		Entity * io;
 		
-		if ((flag == 3) && _pTable && _pnNbInTable) {
+		if(flag == 3 && _pTable && _pnNbInTable) {
 			io = _pTable[i];
 		} else {
 			io = entities[i];
 		}
 
 		// Is Object Valid ??
-		if (io == NULL) continue;
+		if(!io)
+			continue;
 
-		if (((io->ioflags & IO_CAMERA) || (io->ioflags & IO_MARKER))
-		        && (EDITMODE != 1)) continue;
+		if(((io->ioflags & IO_CAMERA) || (io->ioflags & IO_MARKER)) && EDITMODE != 1)
+			continue;
 
-		if ((!(io->gameFlags & GFLAG_INTERACTIVITY)) && (!EDITMODE)) continue;
+		if(!(io->gameFlags & GFLAG_INTERACTIVITY) && !EDITMODE)
+			continue;
 
 		// Is Object in TreatZone ??
 		bPlayerEquiped = IsEquipedByPlayer(io);
-		if ((bPlayerEquiped  && (player.Interface & INTER_MAP))
-		    || (io->gameFlags & GFLAG_ISINTREATZONE))
 
-			// Is Object Displayed on screen ???
-			if ((io->show == SHOW_FLAG_IN_SCENE) || (bPlayerEquiped && flag) || (bPlayerEquiped  && (player.Interface & INTER_MAP) && (Book_Mode == BOOKMODE_STATS))) //((io->show==9) && (player.Interface & INTER_MAP)) )
-			{
-				if ((flag == 2) && _pTable && _pnNbInTable && ((*_pnNbInTable) < 256))
-				{
-					_pTable[ *_pnNbInTable ] = io;
-					(*_pnNbInTable)++;
-					continue;
+		if( !((bPlayerEquiped  && (player.Interface & INTER_MAP)) || (io->gameFlags & GFLAG_ISINTREATZONE)) )
+			continue;
+
+		// Is Object Displayed on screen ???
+		if( !((io->show == SHOW_FLAG_IN_SCENE) ||
+			  (bPlayerEquiped && flag) ||
+			  (bPlayerEquiped && (player.Interface & INTER_MAP) && (Book_Mode == BOOKMODE_STATS))) )
+			//((io->show==9) && (player.Interface & INTER_MAP)) )
+		{
+			continue;
+		}
+
+		if(flag == 2 && _pTable && _pnNbInTable && ((*_pnNbInTable) < 256)) {
+			_pTable[ *_pnNbInTable ] = io;
+			(*_pnNbInTable)++;
+			continue;
+		}
+
+		if(pos->x < io->bbox1.x ||
+		   pos->x > io->bbox2.x ||
+		   pos->y < io->bbox1.y ||
+		   pos->y > io->bbox2.y)
+		{
+			continue;
+		}
+
+
+		if(flag && _pRef) {
+			float flDistanceToRef = distSqr(ACTIVECAM->orgTrans.pos, *_pRef);
+			float flDistanceToIO = distSqr(ACTIVECAM->orgTrans.pos, io->pos);
+			bPass = bPlayerEquiped || (flDistanceToIO < flDistanceToRef);
+		}
+
+		float fp = fdist(io->pos, player.pos);
+
+		if((!flag && fp <= fMaxDist) && (!foundBB || fp < fdistBB)) {
+			fdistBB = fp;
+			foundBB = io;
+		}
+
+		if((io->ioflags & (IO_CAMERA | IO_MARKER | IO_GOLD)) || (bPlayerEquiped && !flag)) {
+			if(bPlayerEquiped)
+				fp = 0.f;
+			else
+				fp = fdist(io->pos, player.pos);
+
+			if(fp < fdistBB || !foundBB) {
+				fdistBB = fp;
+				foundBB = io;
+				foundPixel = io;
+			}
+		} else {
+			for(size_t j = 0; j < io->obj->facelist.size(); j++) {
+
+				if(io->animlayer[0].cur_anim != NULL) {
+					n = CEDRIC_PtIn2DPolyProjV2(io->obj, &io->obj->facelist[j] , pos->x, pos->y);
+				} else {
+					n = PtIn2DPolyProj(io->obj, &io->obj->facelist[j] , pos->x, pos->y);
 				}
 
-				if ((pos->x >= io->bbox1.x) && (pos->x <= io->bbox2.x)
-				        && (pos->y >= io->bbox1.y) && (pos->y <= io->bbox2.y))
-				{
-					if (flag && _pRef)
-					{
-						float flDistanceToRef = distSqr(ACTIVECAM->pos, *_pRef);
-						float flDistanceToIO = distSqr(ACTIVECAM->pos, io->pos);
-						bPass = bPlayerEquiped || (flDistanceToIO < flDistanceToRef);
+				if(n > 0.f) {
+					if(bPlayerEquiped)
+						fp = 0.f;
+					else
+						fp = fdist(io->pos, player.pos);
+
+					if((bPass && fp <= fMaxDist) && (fp < _fdist || !foundPixel)) {
+
+						_fdist = fp;
+						foundPixel = io;
+						break;
 					}
-
-					float fp = fdist(io->pos, player.pos);
-
-					if ((!flag && (fp <= fMaxDist)) && ((foundBB == NULL) || (fp < fdistBB)))
-					{
-						fdistBB = fp;
-						foundBB = io;
-					}
-
-					if ((io->ioflags & (IO_CAMERA | IO_MARKER | IO_GOLD)) || (bPlayerEquiped && !flag))
-					{
-						if (bPlayerEquiped)
-							fp = 0.f;
-						else
-							fp = fdist(io->pos, player.pos);
-
-						if ((fp < fdistBB) || (foundBB == NULL))
-						{
-							fdistBB = fp;
-							foundBB = io;
-							foundPixel = io;
-						}
-
-						goto suite;
-					}
-
-					for(size_t j = 0; j < io->obj->facelist.size(); j++) {
-						
-						if(io->animlayer[0].cur_anim != NULL) {
-							n = CEDRIC_PtIn2DPolyProjV2(io->obj, &io->obj->facelist[j] , pos->x, pos->y);
-						} else {
-							n = PtIn2DPolyProj(io->obj, &io->obj->facelist[j] , pos->x, pos->y);
-						}
-
-						if (n > 0.f) 
-						{
-							if (bPlayerEquiped)
-								fp = 0.f;
-							else
-								fp = fdist(io->pos, player.pos);
-
-							if ((bPass && (fp <= fMaxDist)) && ((fp < _fdist) || (foundPixel == NULL)))
-							{
-								{
-									_fdist = fp;
-									foundPixel = io;
-									goto suite;
-								}
-							}
-						}
-					}
-
-				suite:
-					;
 				}
 			}
+		}
 	}
 
-	if (foundPixel) return foundPixel;
+	if(foundPixel)
+		return foundPixel;
 
 	return foundBB;
 }
+
 bool IsEquipedByPlayer(const Entity * io)
 {
-	if (!io)
+	if(!io)
 		return false;
 
-	if ((io->ioflags & IO_ICONIC) && (io->show == SHOW_FLAG_ON_PLAYER))
+	if((io->ioflags & IO_ICONIC) && (io->show == SHOW_FLAG_ON_PLAYER))
 		return true;
 
 	long num = io->index();
 
-	for (long i = 0; i < MAX_EQUIPED; i++)
-	{
-		if ((player.equiped[i] != 0) && (player.equiped[i] == num)) return true;
+	for(long i = 0; i < MAX_EQUIPED; i++) {
+		if(player.equiped[i] != 0 && player.equiped[i] == num)
+			return true;
 	}
 
 	return false;
@@ -2556,8 +2422,7 @@ bool IsEquipedByPlayer(const Entity * io)
 extern long LOOKING_FOR_SPELL_TARGET;
 Entity * InterClick(Vec2s * pos) {
 	
-	if (IsFlyingOverInventory(pos))
-	{
+	if(IsFlyingOverInventory(pos)) {
 		return NULL;
 	}
 
@@ -2570,20 +2435,14 @@ Entity * InterClick(Vec2s * pos) {
 
 	Entity * io = GetFirstInterAtPos(pos);
 
-	if(io != NULL)
-	{
+	if(io) {
 		if(io->ioflags & IO_NPC) {
 			if(closerThan(player.pos, io->pos, dist_Threshold)) {
 				return io;
 			}
-		}
-		else if ((Project.telekinesis) || (EDITMODE))
-		{
+		} else if(Project.telekinesis || EDITMODE) {
 			return io;
-		}
-		else if (IsEquipedByPlayer(io)
-		         || closerThan(player.pos, io->pos, dist_Threshold))
-		{
+		} else if(IsEquipedByPlayer(io) || closerThan(player.pos, io->pos, dist_Threshold)) {
 			return io;
 		}
 	}
@@ -2606,9 +2465,8 @@ long IsCollidingAnyInter(float x, float y, float z, Vec3f * size) {
 		        && (io->show == SHOW_FLAG_IN_SCENE)
 		   )
 		{
-			if (io->ioflags & IO_NPC)
-			{
-				if (io->_npcdata->life <= 0.f)
+			if(io->ioflags & IO_NPC) {
+				if(io->_npcdata->life <= 0.f)
 					goto suitet;
 			}
 
@@ -2616,11 +2474,13 @@ long IsCollidingAnyInter(float x, float y, float z, Vec3f * size) {
 			pos.y = y;
 			pos.z = z;
 
-			if (IsCollidingInter(io, &pos)) return i;
+			if(IsCollidingInter(io, &pos))
+				return i;
 
 			pos.y += size->y;
 
-			if (IsCollidingInter(io, &pos)) return i;
+			if(IsCollidingInter(io, &pos))
+				return i;
 
 		suitet:
 			;
@@ -2635,31 +2495,25 @@ long IsCollidingAnyInter(float x, float y, float z, Vec3f * size) {
 //*************************************************************************************
 static bool IsCollidingInter(Entity * io, Vec3f * pos) {
 	
-	if ((!io)
-	        ||	(!io->obj))
+	if(!io || !io->obj)
 		return false;
 
 	if(closerThan(*pos, io->pos, 190.f)) {
 		
 		vector<EERIE_VERTEX> & vlist = io->obj->vertexlist3;
 
-		if (io->obj->nbgroups > 4)
-		{
-			for (long i = 0; i < io->obj->nbgroups; i++)
-			{
+		if(io->obj->nbgroups > 4) {
+			for(long i = 0; i < io->obj->nbgroups; i++) {
 				long idx = io->obj->grouplist[i].origin;
 
 				if(!fartherThan(*pos, vlist[idx].v, 50.f)) {
 					return true;
 				}
 			}
-		}
-		else
-		{
+		} else {
 			long nbv = io->obj->vertexlist3.size();
-			for (long i = 0; i < nbv; i++)
-			{
-				if (i != io->obj->origin)
+			for(long i = 0; i < nbv; i++) {
+				if(i != io->obj->origin)
 					if(!fartherThan(*pos, vlist[i].v, 30.f)) {
 						return true;
 					}
@@ -2670,30 +2524,26 @@ static bool IsCollidingInter(Entity * io, Vec3f * pos) {
 	return false;
 }
 
-void SetYlsideDeath(Entity * io)
-{
+void SetYlsideDeath(Entity * io) {
 	io->sfx_flag = SFX_TYPE_YLSIDE_DEATH;
 	io->sfx_time = (unsigned long)(arxtime); 	
 }
+
 bool ARX_INTERACTIVE_CheckCollision(EERIE_3DOBJ * obj, long kk, long source)
 {
 	bool col = false;
 	long avoid = -1;
 	Entity * io_source = NULL;
 
-	if (ValidIONum(source))
-	{
+	if(ValidIONum(source)) {
 		io_source = entities[source];
 		avoid = io_source->no_collide;
-
 	}
 
 	for(size_t i = 1; i < entities.size(); i++) {
 		Entity * io = entities[i];
 
-		if (
-		    (io)
-				&& long(i) != avoid
+		if(io && long(i) != avoid
 		    && (!(io->ioflags & (IO_CAMERA | IO_MARKER | IO_ITEM)))
 		    && (io->show == SHOW_FLAG_IN_SCENE)
 		    && !(io->ioflags & IO_NO_COLLISIONS)
@@ -2702,17 +2552,13 @@ bool ARX_INTERACTIVE_CheckCollision(EERIE_3DOBJ * obj, long kk, long source)
 		    && (!io->usepath)
 		)
 		{
-			if (distSqr(io->pos, obj->pbox->vert[0].pos) < square(450.f) && (In3DBBoxTolerance(&obj->pbox->vert[kk].pos, &io->bbox3D, obj->pbox->radius)))
+			if(distSqr(io->pos, obj->pbox->vert[0].pos) < square(450.f)
+					&& In3DBBoxTolerance(&obj->pbox->vert[kk].pos, &io->bbox3D, obj->pbox->radius))
 			{
-				if ((io->ioflags & IO_NPC) && (io->_npcdata->life > 0.f))
-				{
-					if (PointInCylinder(&io->physics.cyl, &obj->pbox->vert[kk].pos))
-					{
+				if((io->ioflags & IO_NPC) && io->_npcdata->life > 0.f) {
+					if(PointInCylinder(&io->physics.cyl, &obj->pbox->vert[kk].pos))
 						return true;
-					}
-				}
-				else if (io->ioflags & IO_FIX)
-				{
+				} else if(io->ioflags & IO_FIX) {
 					long step;
 					long nbv;
 					nbv = io->obj->vertexlist.size();
@@ -2727,17 +2573,13 @@ bool ARX_INTERACTIVE_CheckCollision(EERIE_3DOBJ * obj, long kk, long source)
 					EERIE_SPHERE sp;
 					sp.radius = 22.f; 
 
-					for (long ii = 1; ii < nbv; ii += step)
-					{
-						if (ii != io->obj->origin)
-						{
+					for(long ii = 1; ii < nbv; ii += step) {
+						if(ii != io->obj->origin) {
 							sp.origin = vlist[ii].v;
 
 							if(sp.contains(obj->pbox->vert[kk].pos)) {
-								if ((io_source) && (io->gameFlags & GFLAG_DOOR))
-								{
-									if (float(arxtime) > io->collide_door_time + 500)
-									{
+								if(io_source && (io->gameFlags & GFLAG_DOOR)) {
+									if(float(arxtime) > io->collide_door_time + 500) {
 										EVENT_SENDER = io_source;
 										io->collide_door_time = (unsigned long)(arxtime); 	
 										SendIOScriptEvent(io, SM_COLLIDE_DOOR);
@@ -2758,78 +2600,65 @@ bool ARX_INTERACTIVE_CheckCollision(EERIE_3DOBJ * obj, long kk, long source)
 
 	return col;
 }
+
 bool ARX_INTERACTIVE_CheckFULLCollision(EERIE_3DOBJ * obj, long source)
 {
 	bool col = false;
-	long i;
 	long avoid = -1;
 	Entity * io_source = NULL;
 	Entity * io = NULL;
 
-	if (ValidIONum(source))
-	{
+	if(ValidIONum(source)) {
 		io_source = entities[source];
 		avoid = io_source->no_collide;
-
 	}
 
-	for (i = 0; i < TREATZONE_CUR; i++)
-	{
-		if	((treatio[i].show != SHOW_FLAG_IN_SCENE)
-		        ||	((treatio[i].ioflags & IO_NO_COLLISIONS))
-		        || (!treatio[i].io)) continue;
+	for(long i = 0; i < TREATZONE_CUR; i++) {
+		if((treatio[i].show != SHOW_FLAG_IN_SCENE) || ((treatio[i].ioflags & IO_NO_COLLISIONS)) || (!treatio[i].io))
+			continue;
 
 		io = treatio[i].io;
 
-		if ((io == io_source) || (!io->obj) || (io == entities.player())) 
+		if(io == io_source || !io->obj || io == entities.player())
 			continue;
 
-		if (treatio[i].num == avoid) continue;
-
-		if ((io->ioflags  & (IO_CAMERA | IO_MARKER | IO_ITEM))
-		        ||	(io->usepath))
+		if(treatio[i].num == avoid)
 			continue;
 
-		if ((io->ioflags & IO_NPC)
-		        &&	(io_source)
-		        &&	(io_source->ioflags & IO_NO_NPC_COLLIDE))
+		if((io->ioflags & (IO_CAMERA | IO_MARKER | IO_ITEM)) || io->usepath)
 			continue;
 
-		
-		if (distSqr(io->pos, obj->pbox->vert[0].pos) < square(600.f) && (In3DBBoxTolerance(&obj->pbox->vert[0].pos, &io->bbox3D, obj->pbox->radius)))
+		if((io->ioflags & IO_NPC) && io_source && (io_source->ioflags & IO_NO_NPC_COLLIDE))
+			continue;
+
+		if(distSqr(io->pos, obj->pbox->vert[0].pos) < square(600.f)
+				&& In3DBBoxTolerance(&obj->pbox->vert[0].pos, &io->bbox3D, obj->pbox->radius))
 		{
-			if ((io->ioflags & IO_NPC) && (io->_npcdata->life > 0.f))
-			{
-				for (long kk = 0; kk < obj->pbox->nb_physvert; kk++)
-					if (PointInCylinder(&io->physics.cyl, &obj->pbox->vert[kk].pos))
-					{
+			if((io->ioflags & IO_NPC) && io->_npcdata->life > 0.f) {
+				for(long kk = 0; kk < obj->pbox->nb_physvert; kk++)
+					if(PointInCylinder(&io->physics.cyl, &obj->pbox->vert[kk].pos))
 						return true;
-					}
-			}
-			else if (io->ioflags & IO_FIX)
-			{
+			} else if(io->ioflags & IO_FIX) {
 				long step;
-				long nbv;
-				nbv = io->obj->vertexlist.size();
+				long nbv = io->obj->vertexlist.size();
 				EERIE_SPHERE sp;
 				sp.radius = 28.f;
 
-				if (nbv < 500)
-				{
+				if(nbv < 500) {
 					step = 1;
 					sp.radius = 36.f; 
 				}
-				else if (nbv < 900) step = 2; 
-				else if (nbv < 1500) step = 4; 
-				else step = 6;
+				else if(nbv < 900)
+					step = 2;
+				else if(nbv < 1500)
+					step = 4;
+				else
+					step = 6;
 
 				vector<EERIE_VERTEX> & vlist = io->obj->vertexlist3;
 
-
-				if (io->gameFlags & GFLAG_PLATFORM)
-				{
-					for (long kk = 0; kk < obj->pbox->nb_physvert; kk++)
-					{
+				if(io->gameFlags & GFLAG_PLATFORM) {
+					for(long kk = 0; kk < obj->pbox->nb_physvert; kk++) {
 						EERIE_SPHERE sphere;
 						sphere.origin = obj->pbox->vert[kk].pos;
 						sphere.radius = 30.f;
@@ -2837,23 +2666,19 @@ bool ARX_INTERACTIVE_CheckFULLCollision(EERIE_3DOBJ * obj, long source)
 						miny = io->bbox3D.min.y;
 						maxy = io->bbox3D.max.y;
 
-						if ((maxy <= sphere.origin.y + sphere.radius)
-						        ||	(miny >= sphere.origin.y))
-							if (In3DBBoxTolerance(&sphere.origin, &io->bbox3D, sphere.radius))
-							{
+						if(maxy <= sphere.origin.y + sphere.radius || miny >= sphere.origin.y)
+							if(In3DBBoxTolerance(&sphere.origin, &io->bbox3D, sphere.radius)) {
 								// TODO why ignore the z components?
 								if(closerThan(Vec2f(io->pos.x, io->pos.z), Vec2f(sphere.origin.x, sphere.origin.z), 440.f + sphere.radius)) {
 									
 									EERIEPOLY ep;
 									ep.type = 0;
 
-									for (size_t ii = 0; ii < io->obj->facelist.size(); ii++)
-									{
+									for(size_t ii = 0; ii < io->obj->facelist.size(); ii++) {
 										float cx = 0;
 										float cz = 0;
 
-										for (long idx = 0 ; idx < 3 ; idx++)
-										{
+										for(long idx = 0 ; idx < 3 ; idx++) {
 											cx			+=	ep.v[idx].p.x	=	io->obj->vertexlist3[ io->obj->facelist[ii].vid[idx] ].v.x;
 											ep.v[idx].p.y	=	io->obj->vertexlist3[ io->obj->facelist[ii].vid[idx] ].v.y;
 											cz			+=	ep.v[idx].p.z	=	io->obj->vertexlist3[ io->obj->facelist[ii].vid[idx] ].v.z;
@@ -2862,16 +2687,13 @@ bool ARX_INTERACTIVE_CheckFULLCollision(EERIE_3DOBJ * obj, long source)
 										cx *= ( 1.0f / 3 );
 										cz *= ( 1.0f / 3 );
 
-										for (kk = 0; kk < 3; kk++)
-										{
+										for(kk = 0; kk < 3; kk++) {
 											ep.v[kk].p.x = (ep.v[kk].p.x - cx) * 3.5f + cx;
 											ep.v[kk].p.z = (ep.v[kk].p.z - cz) * 3.5f + cz;
 										}
 
-										if (PointIn2DPolyXZ(&ep, sphere.origin.x, sphere.origin.z))
-										{
+										if(PointIn2DPolyXZ(&ep, sphere.origin.x, sphere.origin.z))
 											return true;
-										}
 									}
 								}
 							}
@@ -2879,10 +2701,8 @@ bool ARX_INTERACTIVE_CheckFULLCollision(EERIE_3DOBJ * obj, long source)
 				}
 
 
-				for (long ii = 1; ii < nbv; ii += step)
-				{
-					if (ii != io->obj->origin)
-					{
+				for(long ii = 1; ii < nbv; ii += step) {
+					if(ii != io->obj->origin) {
 
 						if (0)
 						{
@@ -2912,13 +2732,10 @@ bool ARX_INTERACTIVE_CheckFULLCollision(EERIE_3DOBJ * obj, long source)
 
 						sp.origin = vlist[ii].v;
 
-						for (long kk = 0; kk < obj->pbox->nb_physvert; kk++)
-							if (sp.contains(obj->pbox->vert[kk].pos))
-							{
-								if ((io_source) && (io->gameFlags & GFLAG_DOOR))
-								{
-									if (float(arxtime) > io->collide_door_time + 500)
-									{
+						for(long kk = 0; kk < obj->pbox->nb_physvert; kk++)
+							if(sp.contains(obj->pbox->vert[kk].pos)) {
+								if(io_source && (io->gameFlags & GFLAG_DOOR)) {
+									if(float(arxtime) > io->collide_door_time + 500) {
 										EVENT_SENDER = io_source;
 										io->collide_door_time = (unsigned long)(arxtime); 	
 										SendIOScriptEvent(io, SM_COLLIDE_DOOR);
@@ -2946,43 +2763,39 @@ void UpdateCameras() {
 	for(size_t i = 1; i < entities.size(); i++) {
 		Entity * io = entities[i];
 		
-		if(io) {
-			
+		if(!io)
+			continue;
+
+		{
 			// interpolate & send events
 			if(io->usepath) {
 
 				ARX_USE_PATH * aup = io->usepath;
 				float diff = float(arxtime) - aup->_curtime;
 
-				if (aup->aupflags & ARX_USEPATH_FORWARD)
-				{
+				if(aup->aupflags & ARX_USEPATH_FORWARD) {
 					if (aup->aupflags & ARX_USEPATH_FLAG_FINISHED)
-					{
-					}
+					{}
 					else aup->_curtime += diff;
 				}
 
-				if (aup->aupflags & ARX_USEPATH_BACKWARD)
-				{
+				if(aup->aupflags & ARX_USEPATH_BACKWARD) {
 					aup->_starttime += diff * 2;
 					aup->_curtime += diff;
 
-					if (aup->_starttime >= aup->_curtime)
+					if(aup->_starttime >= aup->_curtime)
 						aup->_curtime = aup->_starttime + 1;
 				}
 
-				if (aup->aupflags & ARX_USEPATH_PAUSE)
-				{
+				if(aup->aupflags & ARX_USEPATH_PAUSE) {
 					aup->_starttime += diff;
 					aup->_curtime += diff;
 				}
 
 				long last = ARX_PATHS_Interpolate(aup, &io->pos);
 
-				if (aup->lastWP != last)
-				{
-					if (last == -2)
-					{
+				if(aup->lastWP != last) {
+					if(last == -2) {
 						char str[16];
 						sprintf(str, "%ld", aup->path->nb_pathways - 1);
 						EVENT_SENDER = NULL;
@@ -2991,9 +2804,7 @@ void UpdateCameras() {
 						SendIOScriptEvent(io, SM_NULL, "", str);
 						SendIOScriptEvent(io, SM_PATHEND);
 						aup->lastWP = last;
-					}
-					else
-					{
+					} else {
 						last--;
 						long _from = aup->lastWP;
 						long _to = last;
@@ -3011,8 +2822,7 @@ void UpdateCameras() {
 						sprintf(str, "waypoint%ld", ii);
 						SendIOScriptEvent(io, SM_NULL, "", str);
 
-						if (ii == aup->path->nb_pathways)
-						{
+						if(ii == aup->path->nb_pathways) {
 							SendIOScriptEvent(io, SM_PATHEND);
 						}
 						
@@ -3020,24 +2830,19 @@ void UpdateCameras() {
 					}
 				}
 
-				if ((io->damager_damages > 0)
-				        &&	(io->show == SHOW_FLAG_IN_SCENE))
-				{
+				if(io->damager_damages > 0 && io->show == SHOW_FLAG_IN_SCENE) {
 					for(size_t ii = 0; ii < entities.size(); ii++) {
 						Entity * ioo = entities[ii];
 
-						if ((ioo)
-						        &&	(ii != i)
+						if(ioo && ii != i
 						        &&	(ioo->show == SHOW_FLAG_IN_SCENE)
 						        &&	(ioo->ioflags & IO_NPC)
 						        &&	closerThan(io->pos, ioo->pos, 600.f))
 						{
 							bool Touched = false;
 
-							for (size_t ri = 0; ri < io->obj->vertexlist.size(); ri += 3)
-							{
-								for (size_t rii = 0; rii < ioo->obj->vertexlist.size(); rii += 3)
-								{
+							for (size_t ri = 0; ri < io->obj->vertexlist.size(); ri += 3) {
+								for (size_t rii = 0; rii < ioo->obj->vertexlist.size(); rii += 3) {
 									if(closerThan(io->obj->vertexlist3[ri].v, ioo->obj->vertexlist3[rii].v, 20.f)) {
 										Touched = true;
 										ri = io->obj->vertexlist.size();
@@ -3046,7 +2851,7 @@ void UpdateCameras() {
 								}
 							}
 
-							if (Touched)
+							if(Touched)
 								ARX_DAMAGES_DealDamages(ii, io->damager_damages, i, io->damager_type, &ioo->pos);
 						}
 					}
@@ -3055,15 +2860,13 @@ void UpdateCameras() {
 			
 			if(io->ioflags & IO_CAMERA) {
 				
-				entities[i]->_camdata->cam.pos = io->pos;
+				io->_camdata->cam.orgTrans.pos = io->pos;
 
-				if (io->targetinfo != TARGET_NONE) // Follows target
-				{
-					GetTargetPos(io, (unsigned long)entities[i]->_camdata->cam.smoothing);
+				if(io->targetinfo != TARGET_NONE) { // Follows target
+					GetTargetPos(io, (unsigned long)io->_camdata->cam.smoothing);
 					io->target += io->_camdata->cam.translatetarget;
 
-					if ((io->_camdata->cam.lastinfovalid) && (io->_camdata->cam.smoothing != 0.f))
-					{
+					if(io->_camdata->cam.lastinfovalid && io->_camdata->cam.smoothing != 0.f) {
 						Vec3f smoothtarget;
  
 						float vv = (float)io->_camdata->cam.smoothing;
@@ -3079,23 +2882,11 @@ void UpdateCameras() {
 						float f2 = 1.f - f1;
 						smoothtarget = io->target * f2 + io->_camdata->cam.lasttarget * f1;
 
-						SetTargetCamera(&io->_camdata->cam, smoothtarget.x, smoothtarget.y, smoothtarget.z);
+						io->_camdata->cam.setTargetCamera(smoothtarget);
 						io->_camdata->cam.lasttarget = smoothtarget;
-						io->_camdata->cam.lastinfovalid = true;
-						io->_camdata->cam.lastpos = io->_camdata->cam.pos;
-					}
-					else
-					{
-						if ((io->target.x == io->_camdata->cam.pos.x)
-						        &&	(io->target.y == io->_camdata->cam.pos.y)
-						        &&	(io->target.z == io->_camdata->cam.pos.z))
-						{
-						}
-						else SetTargetCamera(&io->_camdata->cam, io->target.x, io->target.y, io->target.z);
-
+					} else {
+						io->_camdata->cam.setTargetCamera(io->target);
 						io->_camdata->cam.lasttarget = io->target;
-						io->_camdata->cam.lastinfovalid = true;
-						io->_camdata->cam.lastpos = io->_camdata->cam.pos;
 					}
 
 					io->_camdata->cam.angle.b -= 180.f;
@@ -3110,11 +2901,12 @@ void UpdateCameras() {
 					io->target.x = io->pos.x - (float)EEsin(tr) * 20.f;
 					io->target.y = io->pos.y; 
 					io->target.z = io->pos.z + (float)EEcos(tr) * 20.f;
-					SetTargetCamera(&io->_camdata->cam, io->target.x, io->target.y, io->target.z);
+					io->_camdata->cam.setTargetCamera(io->target);
 					io->_camdata->cam.lasttarget = io->target;
-					io->_camdata->cam.lastinfovalid = true;
-					io->_camdata->cam.lastpos = io->_camdata->cam.pos;
 				}
+
+				io->_camdata->cam.lastinfovalid = true;
+				io->_camdata->cam.lastpos = io->_camdata->cam.orgTrans.pos;
 			}
 		}
 	}
@@ -3130,315 +2922,218 @@ void ARX_INTERACTIVE_UnfreezeAll() {
 
 void UpdateIOInvisibility(Entity * io)
 {
-	if (io && (io->invisibility <= 1.f))
-	{
-		if ((io->gameFlags & GFLAG_INVISIBILITY) && (io->invisibility < 1.f))
-		{
+	if(io && io->invisibility <= 1.f) {
+		if((io->gameFlags & GFLAG_INVISIBILITY) && io->invisibility < 1.f) {
 			io->invisibility += framedelay * ( 1.0f / 1000 );
 
-			if (io->invisibility > 1.f) io->invisibility = 1.f;
-		}
-		else if ((!(io->gameFlags & GFLAG_INVISIBILITY)) && (io->invisibility != 0.f))
-		{
+			if(io->invisibility > 1.f)
+				io->invisibility = 1.f;
+		} else if(!(io->gameFlags & GFLAG_INVISIBILITY) && io->invisibility != 0.f) {
 			io->invisibility -= framedelay * ( 1.0f / 1000 );
 
-			if (io->invisibility < 0.f) io->invisibility = 0.f;
+			if(io->invisibility < 0.f)
+				io->invisibility = 0.f;
 		}
 	}
 }
-extern Entity * DESTROYED_DURING_RENDERING;
 
-//*************************************************************************************
-// Renders Interactive objects.
-// Will render objects between distance "from" (included)
-// to distance "to" (not included)
-// from camera position.
-//*************************************************************************************
-void RenderInter(float from, float to) {
+EERIEMATRIX convertToMatrixForDrawEERIEInter(const PHYSICS_BOX_DATA &box) {
+	Vec3f tmp = box.vert[14].pos - box.vert[13].pos;
+	Vec3f up  = box.vert[2].pos  - box.vert[1].pos;
+	up += box.vert[3].pos  - box.vert[4].pos;
+	up += box.vert[10].pos - box.vert[9].pos;
+	up += box.vert[11].pos - box.vert[12].pos;
+	up *= 0.25f;
 
-	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
-	float val = -0.6f;
-	GRenderer->GetTextureStage(0)->SetMipMapLODBias(val);
-	Anglef temp;
 	EERIEMATRIX mat;
-	INTER_DRAW = 0;
-	float dist;
-	long diff;
+	MatrixSetByVectors(&mat, &up, &tmp);
+	mat._14 = mat._24 = mat._34 = 0.f;
+	mat._41 = mat._42 = mat._43 = mat._44 = 0.f;
 
-	if (entities.player() && (entities.player()->ignition > 0.f))
-	{
-		ManageIgnition(entities.player());
-	}
+	return mat;
+}
 
-	for(size_t i = 1; i < entities.size(); i++) { // Player isn't rendered here...
-		
+/**
+ * @brief Render entities
+ */
+void RenderInter() {
+
+	for(size_t i = 1; i < entities.size(); i++) { // Player isn't rendered here...		
 		Entity * io = entities[i];
 
-		if ((io)
-		        &&	(io != DRAGINTER)
-		        &&	(io->gameFlags & GFLAG_ISINTREATZONE))
-		{
-			if ((i == 0) && ((player.Interface & INTER_MAP) && (!(player.Interface & INTER_COMBATMODE)))
-			        && (Book_Mode == BOOKMODE_STATS)) continue;
-			
-			if(io->show != SHOW_FLAG_IN_SCENE) {
-				continue;
-			}
-			
-			if(!EDITMODE && ((io->ioflags & IO_CAMERA) || (io->ioflags & IO_MARKER))) {
-				continue;
-			}
-			
-			if ((io->obj) &&
-			        (io->obj->pbox) &&
-			        (io->obj->pbox->active))  
-			{
-				dist = fdist(ACTIVECAM->pos, io->obj->pbox->vert[0].pos);
-			}
-			else dist = fdist(ACTIVECAM->pos, io->pos);
+		if(!io || io == DRAGINTER || !(io->gameFlags & GFLAG_ISINTREATZONE))
+			continue;
 
-			if ((io) && (io->ioflags & IO_NPC) && (io->_npcdata->pathfind.flags  & PATHFIND_ALWAYS))
-			{
-			}
-			else if ((dist < from) || (dist >= to)) continue;
+		if(io->show != SHOW_FLAG_IN_SCENE) {
+			continue;
+		}
 
-			UpdateIOInvisibility(io);
+		if(!EDITMODE && ((io->ioflags & IO_CAMERA) || (io->ioflags & IO_MARKER))) {
+			continue;
+		}
 
-			io->bbox1.x = 9999;
-			io->bbox2.x = -1;
+		UpdateIOInvisibility(io);
+
+		io->bbox1.x = 9999;
+		io->bbox2.x = -1;
 
 #ifdef BUILD_EDITOR
-			if((io->obj) && (io->obj->pbox) && DEBUGNPCMOVE)
-				EERIE_PHYSICS_BOX_Show(io->obj);
+		if((io->obj) && (io->obj->pbox) && DEBUGNPCMOVE)
+			EERIE_PHYSICS_BOX_Show(io->obj);
 #endif
 
-			if (
-			    (io->obj)
-			    &&	(io->obj->pbox)
-			    &&	(io->obj->pbox->active))
-			{
-				Vec3f tmp = io->obj->pbox->vert[14].pos - io->obj->pbox->vert[13].pos;
-				Vec3f up = io->obj->pbox->vert[2].pos - io->obj->pbox->vert[1].pos;
-				up += io->obj->pbox->vert[3].pos - io->obj->pbox->vert[4].pos;
-				up += io->obj->pbox->vert[10].pos - io->obj->pbox->vert[9].pos;
-				up += io->obj->pbox->vert[11].pos - io->obj->pbox->vert[12].pos;
-				up *= 0.25f;
-				
-				MatrixSetByVectors(&mat, &up, &tmp);
-				mat._14 = mat._24 = mat._34 = 0.f;
-				mat._41 = mat._42 = mat._43 = mat._44 = 0.f;
+		Anglef temp = io->angle;
 
+		if(io->ioflags & IO_NPC) {
+			temp.b = MAKEANGLE(180.f - temp.b);
+		} else {
+			temp.b = MAKEANGLE(270.f - temp.b);
+		}
 
+		if(io->animlayer[0].cur_anim) {
+			long diff;
+			if(io->animlayer[0].flags & EA_PAUSED)
+				diff = 0;
+			else
+				diff = static_cast<long>(framedelay);
+
+			Vec3f pos = io->pos;
+
+			if(io->ioflags & IO_NPC) {
+				ComputeVVPos(io);
+				pos.y = io->_npcdata->vvpos;
 			}
-				
-			if(io->animlayer[0].cur_anim) {
-				
-				temp.a = io->angle.a;
-				if(io->ioflags & IO_NPC) {
-					temp.b = MAKEANGLE(180.f - io->angle.b);
+
+			bool render = (EDITMODE || !ARX_SCENE_PORTAL_Basic_ClipIO(io));
+
+			EERIEDrawAnimQuat(io->obj, &io->animlayer[0], &temp, &pos, diff, io, render);
+
+		} else {
+			if(!EDITMODE && ARX_SCENE_PORTAL_Basic_ClipIO(io))
+				continue;
+
+			if((io->ioflags & IO_GOLD) && io->obj) {
+				if(io->_itemdata->price <= 3) {
+					io->obj = GoldCoinsObj[io->_itemdata->price-1];
+					io->inv = GoldCoinsTC[io->_itemdata->price-1];
+				} else if(io->_itemdata->price <= 8) {
+					io->obj = GoldCoinsObj[3];
+					io->inv = GoldCoinsTC[3];
+				} else if(io->_itemdata->price <= 20) {
+					io->obj = GoldCoinsObj[4];
+					io->inv = GoldCoinsTC[4];
+				} else if(io->_itemdata->price <= 50) {
+					io->obj = GoldCoinsObj[5];
+					io->inv = GoldCoinsTC[5];
 				} else {
-					temp.b = MAKEANGLE(270.f - io->angle.b);
-				}
-				temp.g = io->angle.g;
-
-				if (io->animlayer[0].flags & EA_PAUSED)
-					diff = 0;
-				else diff = static_cast<long>(FrameDiff);
-
-				if ((io == FlyingOverIO)
-				        &&	(!(io->ioflags & IO_NPC))
-				        &&	io->obj)
-					io->obj->drawflags |= DRAWFLAG_HIGHLIGHT;
-
-				Vec3f pos = io->pos;
-
-				if (io->ioflags & IO_NPC)
-				{
-					ComputeVVPos(io);
-					pos.y = io->_npcdata->vvpos;
-				}
-
-				bool render = (EDITMODE || !ARX_SCENE_PORTAL_Basic_ClipIO(io));
-
-				EERIEDrawAnimQuat(io->obj, &io->animlayer[0], &temp, &pos, diff, io, render);
-
-				if (DESTROYED_DURING_RENDERING)
-					continue;
-
-				if (io->obj)
-					io->obj->drawflags &= ~DRAWFLAG_HIGHLIGHT;
-			}
-			else 
-			{
-				if ((!EDITMODE) && (ARX_SCENE_PORTAL_Basic_ClipIO(io))) continue;
-				
-				temp.a = io->angle.a;
-				if(io->ioflags & IO_NPC) {
-					temp.b = MAKEANGLE(180.f - io->angle.b);
-				} else {
-					temp.b = MAKEANGLE(270.f - io->angle.b);
-				}
-				temp.g = io->angle.g;
-				
-				if ((io->ioflags & IO_GOLD) && io->obj)
-				{
-					if (io->_itemdata->price <= 3)
-					{
-						io->obj = GoldCoinsObj[io->_itemdata->price-1];
-						io->inv = GoldCoinsTC[io->_itemdata->price-1];
-					}
-					else if (io->_itemdata->price <= 8)
-					{
-						io->obj = GoldCoinsObj[3];
-						io->inv = GoldCoinsTC[3];
-					}
-					else if (io->_itemdata->price <= 20)
-					{
-						io->obj = GoldCoinsObj[4];
-						io->inv = GoldCoinsTC[4];
-					}
-					else if (io->_itemdata->price <= 50)
-					{
-						io->obj = GoldCoinsObj[5];
-						io->inv = GoldCoinsTC[5];
-					}
-					else
-					{
-						io->obj = GoldCoinsObj[6];
-						io->inv = GoldCoinsTC[6];
-					}
-				}
-
-				if ((!(io->ioflags & IO_NPC))
-				        ||	(EDITMODE))
-				{
-					if (io->obj)
-					{
-						if ((io == FlyingOverIO)
-						        &&	(!(io->ioflags & IO_NPC)))
-						{
-							io->obj->drawflags |= DRAWFLAG_HIGHLIGHT;
-						}
-
-						if ((io->obj->pbox)
-						        &&	(io->obj->pbox->active))
-						{
-							DrawEERIEInterMatrix(io->obj, &mat, &io->pos, io);
-						}
-						else
-						{
-							DrawEERIEInter(io->obj, &temp, &io->pos, io);
-						}
-
-						if (DESTROYED_DURING_RENDERING)
-							continue;
-
-						io->obj->drawflags &= ~DRAWFLAG_HIGHLIGHT;
-
-					}
+					io->obj = GoldCoinsObj[6];
+					io->inv = GoldCoinsTC[6];
 				}
 			}
 
-			if ((io->ignition > 0.f) || (io->ioflags & IO_FIERY))
-				ManageIgnition(io);
+			if(!(io->ioflags & IO_NPC) || EDITMODE) {
+				if(io->obj) {
 
-			if(NEED_TEST_TEXT || EDITMODE) {
-				Color color = Color::blue;
-				if(io->bbox1.x != io->bbox2.x && io->bbox1.x < DANAESIZX) {
-					EERIEDraw2DLine(io->bbox1.x, io->bbox1.y, io->bbox2.x, io->bbox1.y, 0.01f, color);
-					EERIEDraw2DLine(io->bbox2.x, io->bbox1.y, io->bbox2.x, io->bbox2.y, 0.01f, color);
-					EERIEDraw2DLine(io->bbox2.x, io->bbox2.y, io->bbox1.x, io->bbox2.y, 0.01f, color);
-					EERIEDraw2DLine(io->bbox1.x, io->bbox2.y, io->bbox1.x, io->bbox1.y, 0.01f, color);
+					if(io->obj->pbox && io->obj->pbox->active) {
+						EERIEMATRIX mat = convertToMatrixForDrawEERIEInter(*io->obj->pbox);
+						EERIE_QUAT rotation;
+						Quat_Init(&rotation);
+
+						QuatFromMatrix(rotation, mat);
+
+						DrawEERIEInter(io->obj, &rotation, &io->pos, io, NULL, true);
+					} else {
+						EERIE_QUAT rotation;
+						Quat_Init(&rotation);
+
+						worldAngleToQuat(&rotation, &temp);
+
+						DrawEERIEInter(io->obj, &rotation, &io->pos, io);
+					}
 				}
 			}
 		}
+
+		if(EDITMODE) {
+			Color color = Color::blue;
+			if(io->bbox1.x != io->bbox2.x && io->bbox1.x < DANAESIZX) {
+				EERIEDraw2DLine(io->bbox1.x, io->bbox1.y, io->bbox2.x, io->bbox1.y, 0.01f, color);
+				EERIEDraw2DLine(io->bbox2.x, io->bbox1.y, io->bbox2.x, io->bbox2.y, 0.01f, color);
+				EERIEDraw2DLine(io->bbox2.x, io->bbox2.y, io->bbox1.x, io->bbox2.y, 0.01f, color);
+				EERIEDraw2DLine(io->bbox1.x, io->bbox2.y, io->bbox1.x, io->bbox1.y, 0.01f, color);
+			}
+		}
 	}
-
-
-	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
-	val = -0.3f;
-	GRenderer->GetTextureStage(0)->SetMipMapLODBias(val);
 }
 
 void ARX_INTERACTIVE_DestroyIO(Entity * ioo)
 {
-	if (ioo)
-	{
-		if (ioo->show == SHOW_FLAG_DESTROYED)
-			return;
+	if(!ioo)
+		return;
 
-		ARX_INTERACTIVE_ForceIOLeaveZone(ioo, 0);
+	if(ioo->show == SHOW_FLAG_DESTROYED)
+		return;
 
-		if (DRAGINTER == ioo)
-			Set_DragInter(NULL);
+	ARX_INTERACTIVE_ForceIOLeaveZone(ioo, 0);
 
-		if (FlyingOverIO == ioo)
-			FlyingOverIO = NULL;
+	if(DRAGINTER == ioo)
+		Set_DragInter(NULL);
 
-		if (COMBINE == ioo)
-			COMBINE = NULL;
+	if(FlyingOverIO == ioo)
+		FlyingOverIO = NULL;
 
-		if ((ioo->ioflags & IO_ITEM) && (ioo->_itemdata->count > 1))
-		{
-			ioo->_itemdata->count--;
-		}
-		else
-		{
-			// Kill all spells
-			long numm = ioo->index();
+	if(COMBINE == ioo)
+		COMBINE = NULL;
 
-			if (ValidIONum(numm))
-				ARX_SPELLS_FizzleAllSpellsFromCaster(numm);
+	if((ioo->ioflags & IO_ITEM) && ioo->_itemdata->count > 1) {
+		ioo->_itemdata->count--;
+	} else {
+		// Kill all spells
+		long numm = ioo->index();
 
-			// Need To Kill timers
-			ARX_SCRIPT_Timer_Clear_By_IO(ioo);
-			ioo->show = SHOW_FLAG_DESTROYED;
-			ioo->gameFlags &= ~GFLAG_ISINTREATZONE;
+		if(ValidIONum(numm))
+			ARX_SPELLS_FizzleAllSpellsFromCaster(numm);
 
-			if (!FAST_RELEASE)
-				RemoveFromAllInventories(ioo);
+		// Need To Kill timers
+		ARX_SCRIPT_Timer_Clear_By_IO(ioo);
+		ioo->show = SHOW_FLAG_DESTROYED;
+		ioo->gameFlags &= ~GFLAG_ISINTREATZONE;
 
-			if (ioo->obj)
-			{
-				EERIE_3DOBJ * eobj = ioo->obj;
+		if(!FAST_RELEASE)
+			RemoveFromAllInventories(ioo);
 
-				while (eobj->nblinked)
-				{
-					long k = 0;
+		if(ioo->obj) {
+			EERIE_3DOBJ * eobj = ioo->obj;
 
-					if ((eobj->linked[k].lgroup != -1) && eobj->linked[k].obj)
-					{
-						Entity * iooo = (Entity *)eobj->linked[k].io;
+			while(eobj->nblinked) {
+				long k = 0;
 
-						if ((iooo) && ValidIOAddress(iooo))
-						{
-							EERIE_LINKEDOBJ_UnLinkObjectFromObject(ioo->obj, iooo->obj);
-							ARX_INTERACTIVE_DestroyIO(iooo);
-						}
+				if(eobj->linked[k].lgroup != -1 && eobj->linked[k].obj) {
+					Entity * iooo = (Entity *)eobj->linked[k].io;
+
+					if(iooo && ValidIOAddress(iooo)) {
+						EERIE_LINKEDOBJ_UnLinkObjectFromObject(ioo->obj, iooo->obj);
+						ARX_INTERACTIVE_DestroyIO(iooo);
 					}
 				}
 			}
+		}
 
-			ARX_INTERACTIVE_DestroyDynamicInfo(ioo);
+		ARX_INTERACTIVE_DestroyDynamicInfo(ioo);
 
-			if(ioo->scriptload) {
-				delete ioo;
-			}
+		if(ioo->scriptload) {
+			delete ioo;
 		}
 	}
 }
 
-//*************************************************************************************
-//
-//*************************************************************************************
 bool IsSameObject(Entity * io, Entity * ioo)
 {
-	if ((io == NULL)
-	        ||	(ioo == NULL)
-	        ||	io->classPath() != ioo->classPath()
-	        ||	(io->ioflags & IO_UNIQUE)
-	        ||	(io->durability != ioo->durability)
-	        ||	(io->max_durability != ioo->max_durability))
+	if(!io || !ioo
+			|| io->classPath() != ioo->classPath()
+			|| (io->ioflags & IO_UNIQUE)
+			|| io->durability != ioo->durability
+			|| io->max_durability != ioo->max_durability)
 		return false;
 
 	if	((io->ioflags & IO_ITEM)
@@ -3485,52 +3180,48 @@ bool HaveCommonGroup(Entity * io, Entity * ioo) {
 	return io && ioo && intersect(io->groups, ioo->groups);
 }
 
-float ARX_INTERACTIVE_GetArmorClass(Entity * io)
-{
-	if (!io) return -1;
+float ARX_INTERACTIVE_GetArmorClass(Entity * io) {
 
-	if (!(io->ioflags & IO_NPC)) return -1;
+	if(!io || !(io->ioflags & IO_NPC))
+		return -1;
 
 	float ac = io->_npcdata->armor_class;
 
-	for (long i = 0; i < io->nb_spells_on; i++)
-	{
+	for(long i = 0; i < io->nb_spells_on; i++) {
 		long n = io->spells_on[i];
 
-		if (spells[n].exist)
-		{
-			switch (spells[n].type)
-			{
-				case SPELL_ARMOR:
-					ac += spells[n].caster_level;
-					break;
-				case SPELL_LOWER_ARMOR:
-					ac -= spells[n].caster_level;
-					break;
-				default: break;
+		if(spells[n].exist) {
+			switch(spells[n].type) {
+			case SPELL_ARMOR:
+				ac += spells[n].caster_level;
+				break;
+			case SPELL_LOWER_ARMOR:
+				ac -= spells[n].caster_level;
+				break;
+			default:
+				break;
 			}
 		}
 	}
 
-	if (ac < 0) ac = 0;
+	if(ac < 0)
+		ac = 0;
 
 	return ac;
 }
 
 void ARX_INTERACTIVE_ActivatePhysics(long t)
 {
-	if (ValidIONum(t))
-	{
+	if(ValidIONum(t)) {
 		Entity * io = entities[t];
 
-		if ((io == DRAGINTER)
-		        ||	(io->show != SHOW_FLAG_IN_SCENE))
+		if(io == DRAGINTER || (io->show != SHOW_FLAG_IN_SCENE))
 			return;
 
 		float yy;
 		EERIEPOLY * ep = CheckInPoly(io->pos.x, io->pos.y, io->pos.z, &yy);
 
-		if ((ep) && (yy - io->pos.y < 10.f))
+		if(ep && (yy - io->pos.y < 10.f))
 			return;
 
 		io->obj->pbox->active = 1;
@@ -3546,10 +3237,9 @@ void ARX_INTERACTIVE_ActivatePhysics(long t)
 	}
 }
 
-//-------------------------------------------------------------------------
-string GetMaterialString(const res::path & texture) {
+std::string GetMaterialString(const res::path & texture) {
 	
-	const string & origin = texture.string();
+	const std::string & origin = texture.string();
 	
 	// need to be precomputed !!!
 	if(boost::contains(origin, "stone")) return "stone";

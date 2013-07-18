@@ -94,7 +94,7 @@ void ARX_EQUIPMENT_AttachPlayerWeaponToBack();
 void ARX_EQUIPMENT_LaunchPlayerReadyWeapon();
  
 void ARX_EQUIPMENT_LaunchPlayerUnReadyWeapon();
-long ARX_EQUIPMENT_GetPlayerWeaponType();
+WeaponType ARX_EQUIPMENT_GetPlayerWeaponType();
 float ARX_EQUIPMENT_Apply(Entity * io, EquipmentModifierType ident,
                                        float trueval);
 float ARX_EQUIPMENT_ApplyPercent(Entity * io, EquipmentModifierType ident,

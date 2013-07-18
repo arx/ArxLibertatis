@@ -189,7 +189,6 @@ inline float fnormalize(Vec3f & v) {
 // Matrix functions
 
 void MatrixSetByVectors(EERIEMATRIX * m, const Vec3f * d, const Vec3f * u);
-void MatrixReset(EERIEMATRIX * mat);
 void MatrixMultiply(EERIEMATRIX * q, const EERIEMATRIX * a, const EERIEMATRIX * b);
 void VectorMatrixMultiply(Vec3f * vDest, const Vec3f * vSrc, const EERIEMATRIX * mat);
 void GenerateMatrixUsingVector(EERIEMATRIX * matrix, const Vec3f * vect, float rollDegrees);
@@ -198,12 +197,12 @@ void GenerateMatrixUsingVector(EERIEMATRIX * matrix, const Vec3f * vect, float r
 
 inline void YXZRotatePoint(Vec3f * in, Vec3f * out, EERIE_CAMERA * cam) {
 	float tempy;
-	out->z = (in->z * cam->Ycos) - (in->x * cam->Ysin);
-	out->y = (in->x * cam->Ycos) + (in->z * cam->Ysin);
-	tempy = (in->y * cam->Xcos) - (out->z * cam->Xsin);
-	out->x = (out->y * cam->Zcos) + (tempy * cam->Zsin);
-	out->y = (tempy * cam->Zcos) - (out->y * cam->Zsin);
-	out->z = (in->y * cam->Xsin) + (out->z * cam->Xcos);
+	out->z = (in->z * cam->orgTrans.ycos) - (in->x * cam->orgTrans.ysin);
+	out->y = (in->x * cam->orgTrans.ycos) + (in->z * cam->orgTrans.ysin);
+	tempy = (in->y * cam->orgTrans.xcos) - (out->z * cam->orgTrans.xsin);
+	out->x = (out->y * cam->orgTrans.zcos) + (tempy * cam->orgTrans.zsin);
+	out->y = (tempy * cam->orgTrans.zcos) - (out->y * cam->orgTrans.zsin);
+	out->z = (in->y * cam->orgTrans.xsin) + (out->z * cam->orgTrans.xcos);
 }
 
 // QUATERNION Funcs/Defs
@@ -233,7 +232,7 @@ inline void TransformVertexMatrix(EERIEMATRIX * mat, Vec3f * vertexin, Vec3f * v
 }
 
 // Transforms a Vertex by a quaternion
-inline void TransformVertexQuat(EERIE_QUAT * quat, Vec3f * vertexin, Vec3f * vertexout) {
+inline void TransformVertexQuat(const EERIE_QUAT * quat, Vec3f * vertexin, Vec3f * vertexout) {
 	
 	float rx = vertexin->x * quat->w - vertexin->y * quat->z + vertexin->z * quat->y;
 	float ry = vertexin->y * quat->w - vertexin->z * quat->x + vertexin->x * quat->z;
@@ -251,6 +250,8 @@ void Quat_Multiply(EERIE_QUAT * dest , const EERIE_QUAT * q1, const EERIE_QUAT *
 
 void Quat_Slerp(EERIE_QUAT * result, const EERIE_QUAT * from, EERIE_QUAT * to, float t);
 void Quat_Reverse(EERIE_QUAT * quat);
+
+void worldAngleToQuat(EERIE_QUAT *dest, Anglef *src, bool isNpc = false);
 
 // VECTORS Functions
 
@@ -323,9 +324,6 @@ inline long PointInUnderCylinder(const EERIE_CYLINDER * cyl, const Vec3f * pt) {
 // ANGLES Functions
 
 void QuatFromAngles(EERIE_QUAT * q, const Anglef * angle);
-
-void specialEE_RT(TexturedVertex * in, Vec3f * out);
-void specialEE_P(Vec3f * in, TexturedVertex * out);
 
 template <class T1, class T2, class T3>
 inline T1 clamp(T1 value, T2 min, T3 max) {

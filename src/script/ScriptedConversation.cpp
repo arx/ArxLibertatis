@@ -59,8 +59,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 using std::string;
 
-extern long ARX_CONVERSATION;
-extern long FRAME_COUNT;
+extern bool ARX_CONVERSATION;
 extern Vec3f LASTCAMPOS;
 extern Anglef LASTCAMANGLE;
 
@@ -87,7 +86,7 @@ public:
 		}
 		
 		bool enabled = context.getBool();
-		ARX_CONVERSATION = enabled ? 1 : 0;
+		ARX_CONVERSATION = enabled;
 		
 		if(!nb_people || !enabled) {
 			DebugScript(' ' << nbpeople << ' ' << enabled);
@@ -337,8 +336,6 @@ public:
 			if(flg & flag('c')) {
 				
 				string command = context.getWord();
-				
-				FRAME_COUNT = 0;
 				
 				if(command == "keep") {
 					acs.type = ARX_CINE_SPEECH_KEEP;

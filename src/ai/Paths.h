@@ -154,7 +154,6 @@ DECLARE_FLAGS(PathMod, PathMods)
 DECLARE_FLAGS_OPERATORS(PathMods)
 
 extern MASTER_CAMERA_STRUCT MasterCamera;
-extern ARX_USE_PATH USE_CINEMATICS_PATH;
 extern ARX_PATH ** ARXpaths;
 #ifdef BUILD_EDITOR
 extern ARX_PATH * ARX_PATHS_FlyingOverAP;
@@ -162,7 +161,6 @@ extern ARX_PATH * ARX_PATHS_SelectedAP;
 extern long	ARX_PATHS_SelectedNum;
 extern long	ARX_PATHS_FlyingOverNum;
 #endif
-extern long USE_CINEMATICS_CAMERA;
 extern long	nbARXpaths;
 
 void ARX_PATH_UpdateAllZoneInOutInside();
@@ -189,7 +187,6 @@ DECLARE_FLAGS_OPERATORS(ThrownObjectFlags)
 struct ARX_THROWN_OBJECT {
 	ThrownObjectFlags flags;
 	Vec3f vector;
-	Vec3f upvect;
 	EERIE_QUAT quat;
 	Vec3f initial_position;
 	float velocity;
@@ -205,7 +202,6 @@ struct ARX_THROWN_OBJECT {
 const size_t MAX_THROWN_OBJECTS = 100;
 
 extern ARX_THROWN_OBJECT Thrown[MAX_THROWN_OBJECTS];
-extern long Thrown_Count;
 
 class CRuban {
 	
@@ -249,7 +245,7 @@ public:
 };
 
 long ARX_THROWN_OBJECT_GetFree();
-long ARX_THROWN_OBJECT_Throw(long source, Vec3f * position, Vec3f * vect, Vec3f * upvect, EERIE_QUAT * quat, float velocity, float damages, float poisonous);
+long ARX_THROWN_OBJECT_Throw(long source, Vec3f * position, Vec3f * vect, EERIE_QUAT * quat, float velocity, float damages, float poisonous);
 void ARX_THROWN_OBJECT_KillAll();
 void ARX_THROWN_OBJECT_Manage(unsigned long time_offset);
 void EERIE_PHYSICS_BOX_Launch_NOCOL(Entity * io, EERIE_3DOBJ * obj, Vec3f * pos, Vec3f * vect, long flags = 0, Anglef * angle = NULL);

@@ -40,7 +40,6 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-// Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
 
 #ifndef ARX_GRAPHICS_SPELLS_SPELLS04_H
 #define ARX_GRAPHICS_SPELLS_SPELLS04_H
@@ -80,7 +79,7 @@ class CBless: public CSpellFx
 	public:
 		void	Create(Vec3f, float afBeta = 0);
 		void	Update(unsigned long);
-		float	Render();
+		void Render();
 		void	Kill();
 };
 
@@ -102,7 +101,7 @@ class CDispellField: public CSpellFx
 		void	Create(Vec3f, float afBeta = 0);
 		void	Kill();
 		void	Update(unsigned long);
-		float	Render();
+		void Render();
 };
 
 class CFireProtection: public CSpellFx {
@@ -114,7 +113,7 @@ public:
 	
 	void Create(long);
 	void Update(unsigned long);
-	float Render();
+	void Render();
 	
 };
 
@@ -130,7 +129,7 @@ class CColdProtection: public CSpellFx
 		// surcharge
 		void	Create(long, int);
 		void	Update(unsigned long);
-		float	Render();
+		void Render();
  
 };
 
@@ -155,7 +154,7 @@ class CTelekinesis: public CSpellFx
 		void	Create(Vec3f, float afBeta = 0);
 		void	Kill();
 		void	Update(unsigned long);
-		float	Render();
+		void Render();
 };
 
 class CCurse: public CSpellFx
@@ -179,7 +178,7 @@ class CCurse: public CSpellFx
 		void	Create(Vec3f, float afBeta = 0);
 		void	Kill();
 		void	Update(unsigned long);
-		float	Render();
+		void Render();
 };
 
 #endif // ARX_GRAPHICS_SPELLS_SPELLS04_H

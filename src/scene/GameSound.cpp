@@ -97,7 +97,7 @@ using audio::FLAG_PITCH;
 using audio::FLAG_RELATIVE;
 using audio::FLAG_AUTOFREE;
 
-extern long EXTERNALVIEW;
+extern bool EXTERNALVIEW;
 extern Entity * CAMERACONTROLLER;
 
 
@@ -520,7 +520,7 @@ long ARX_SOUND_PlaySFX(SourceId & sample_id, const Vec3f * position, float pitch
 	channel.volume = 1.0F;
 	
 	if(position) {
-		if(ACTIVECAM && distSqr(ACTIVECAM->pos, *position) > square(ARX_SOUND_REFUSE_DISTANCE)) {
+		if(ACTIVECAM && distSqr(ACTIVECAM->orgTrans.pos, *position) > square(ARX_SOUND_REFUSE_DISTANCE)) {
 			return -1;
 		}
 	}
@@ -590,9 +590,9 @@ void ARX_SOUND_IOFrontPos(const Entity * io, Vec3f & pos) {
 		pos.y = io->pos.y - 100.0F;
 		pos.z = io->pos.z + EEcos(radians(MAKEANGLE(io->angle.b))) * 100.0F;
 	} else if(ACTIVECAM) {
-		pos.x = ACTIVECAM->pos.x - EEsin(radians(MAKEANGLE(ACTIVECAM->angle.b))) * 100.0F;
-		pos.y = ACTIVECAM->pos.y - 100.0F;
-		pos.z = ACTIVECAM->pos.z + EEcos(radians(MAKEANGLE(ACTIVECAM->angle.b))) * 100.0F;
+		pos.x = ACTIVECAM->orgTrans.pos.x - EEsin(radians(MAKEANGLE(ACTIVECAM->angle.b))) * 100.0F;
+		pos.y = ACTIVECAM->orgTrans.pos.y - 100.0F;
+		pos.z = ACTIVECAM->orgTrans.pos.z + EEcos(radians(MAKEANGLE(ACTIVECAM->angle.b))) * 100.0F;
 	} else {
 		pos = Vec3f::ZERO;
 	}
@@ -620,29 +620,21 @@ long ARX_SOUND_PlaySpeech(const res::path & name, const Entity * io)
 	channel.falloff.start = ARX_SOUND_DEFAULT_FALLSTART;
 	channel.falloff.end = ARX_SOUND_DEFAULT_FALLEND;
 
-	if (io)
-	{
-		if (((io == entities.player()) && !EXTERNALVIEW) ||
-		        (io->ioflags & IO_CAMERA && io == CAMERACONTROLLER))
+	if(io) {
+		if((io == entities.player() && !EXTERNALVIEW) || ((io->ioflags & IO_CAMERA) && io == CAMERACONTROLLER))
 			ARX_SOUND_IOFrontPos(io, channel.position);
 		else
-		{
 			channel.position = io->pos;
-		}
 
-		if(ACTIVECAM && distSqr(ACTIVECAM->pos, io->pos) > square(ARX_SOUND_REFUSE_DISTANCE)) {
+		if(ACTIVECAM && distSqr(ACTIVECAM->orgTrans.pos, io->pos) > square(ARX_SOUND_REFUSE_DISTANCE)) {
 			return ARX_SOUND_TOO_FAR; // TODO sample is never freed!
 		}
 
-		if (io->ioflags & IO_NPC && io->_npcdata->speakpitch != 1.f)
-		{
+		if(io->ioflags & IO_NPC && io->_npcdata->speakpitch != 1.f) {
 			channel.flags |= FLAG_PITCH;
 			channel.pitch = io->_npcdata->speakpitch;
 		}
-
-	}
-	else
-	{
+	} else {
 		channel.flags |= FLAG_RELATIVE;
 		channel.position = Vec3f::Z_AXIS * 100.f;
 	}
@@ -682,7 +674,7 @@ long ARX_SOUND_PlayCollision(long mat1, long mat2, float volume, float power, Ve
 
 	if (position)
 	{
-		if (ACTIVECAM && distSqr(ACTIVECAM->pos, *position) > square(ARX_SOUND_REFUSE_DISTANCE))
+		if (ACTIVECAM && distSqr(ACTIVECAM->orgTrans.pos, *position) > square(ARX_SOUND_REFUSE_DISTANCE))
 			return -1;
 	}
 	
@@ -749,7 +741,7 @@ long ARX_SOUND_PlayCollision(const string & name1, const string & name2, float v
 	
 	if(position) {
 		channel.position = *position;
-		if(ACTIVECAM && fartherThan(ACTIVECAM->pos, *position, ARX_SOUND_REFUSE_DISTANCE)) {
+		if(ACTIVECAM && fartherThan(ACTIVECAM->orgTrans.pos, *position, ARX_SOUND_REFUSE_DISTANCE)) {
 			return -1;
 		}
 	} else {
@@ -790,7 +782,7 @@ long ARX_SOUND_PlayScript(const res::path & name, const Entity * io, float pitch
 	if(io) {
 		GetItemWorldPositionSound(io, &channel.position);
 		if(loop != ARX_SOUND_PLAY_LOOPED) {
-			if (ACTIVECAM && distSqr(ACTIVECAM->pos, channel.position) > square(ARX_SOUND_REFUSE_DISTANCE)) {
+			if (ACTIVECAM && distSqr(ACTIVECAM->orgTrans.pos, channel.position) > square(ARX_SOUND_REFUSE_DISTANCE)) {
 				// TODO the sample will never be freed!
 				return ARX_SOUND_TOO_FAR;
 			}
@@ -812,7 +804,8 @@ long ARX_SOUND_PlayScript(const res::path & name, const Entity * io, float pitch
 
 long ARX_SOUND_PlayAnim(SourceId & sample_id, const Vec3f * position)
 {
-	if (!bIsActive || sample_id == INVALID_ID) return INVALID_ID;
+	if(!bIsActive || sample_id == INVALID_ID)
+		return INVALID_ID;
 
 	audio::Channel channel;
 
@@ -821,7 +814,7 @@ long ARX_SOUND_PlayAnim(SourceId & sample_id, const Vec3f * position)
 	channel.volume = 1.0F;
 
 	if(position) {
-		if(ACTIVECAM && fartherThan(ACTIVECAM->pos, *position, ARX_SOUND_REFUSE_DISTANCE)) {
+		if(ACTIVECAM && fartherThan(ACTIVECAM->orgTrans.pos, *position, ARX_SOUND_REFUSE_DISTANCE)) {
 			return -1;
 		}
 		channel.flags |= FLAG_POSITION | FLAG_REVERBERATION | FLAG_FALLOFF;
@@ -858,17 +851,13 @@ long ARX_SOUND_PlayCinematic(const res::path & name, bool isSpeech) {
 	channel.falloff.end = ARX_SOUND_DEFAULT_FALLEND;
 	
 	if (ACTIVECAM) {
-		Vec3f front, up;
-		float t;
-		t = radians(MAKEANGLE(ACTIVECAM->angle.b));
-		front.x = -EEsin(t);
-		front.y = 0.f;
-		front.z = EEcos(t);
+		float t = radians(MAKEANGLE(ACTIVECAM->angle.b));
+		Vec3f front(-EEsin(t), 0.f, EEcos(t));
 		front.normalize();
-		up.x = 0.f;
-		up.y = 1.f;
-		up.z = 0.f;
-		ARX_SOUND_SetListener(&ACTIVECAM->pos, &front, &up);
+
+		//TODO Hardcoded up vector
+		Vec3f up(0.f, 1.f, 0.f);
+		ARX_SOUND_SetListener(&ACTIVECAM->orgTrans.pos, &front, &up);
 	}
 	
 	ARX_SOUND_IOFrontPos(NULL, channel.position); 
@@ -926,13 +915,10 @@ void ARX_SOUND_RefreshSpeechPosition(SourceId & sample_id, const Entity * io) {
 	}
 	
 	Vec3f position;
-	if(io) {
-		if((io == entities.player() && !EXTERNALVIEW)
-		   || ((io->ioflags & IO_CAMERA) && io == CAMERACONTROLLER)) {
-			ARX_SOUND_IOFrontPos(io, position);
-		} else {
-			position = io->pos;
-		}
+	if((io == entities.player() && !EXTERNALVIEW) || ((io->ioflags & IO_CAMERA) && io == CAMERACONTROLLER)) {
+		ARX_SOUND_IOFrontPos(io, position);
+	} else {
+		position = io->pos;
 	}
 	
 	audio::setSamplePosition(sample_id, position);

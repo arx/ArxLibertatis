@@ -106,40 +106,20 @@ extern bool bGCroucheToggle;
 
 bool CanPurge(Vec3f * pos)
 {
-	long px, pz;
-	px = pos->x * ACTIVEBKG->Xmul;
+	long px = pos->x * ACTIVEBKG->Xmul;
+	long pz = pos->z * ACTIVEBKG->Zmul;
 
-	if (px > ACTIVEBKG->Xsize - 3)
-	{
+	if(px < 2 || px > ACTIVEBKG->Xsize - 3 || pz < 2 || pz > ACTIVEBKG->Zsize - 3)
 		return true;
-	}
 
-	if (px < 2)
-	{
-		return true;
-	}
+	for(long j = pz - 1; j <= pz + 1; j++) {
+		for(long i = px - 1; i <= px + 1; i++) {
+			EERIE_BKG_INFO *eg = &ACTIVEBKG->Backg[i + j * ACTIVEBKG->Xsize];
 
-	pz = pos->z * ACTIVEBKG->Zmul;
-
-	if (pz > ACTIVEBKG->Zsize - 3)
-	{
-		return true;
-	}
-
-	if (pz < 2)
-	{
-		return true;
-	}
-
-	EERIE_BKG_INFO * eg;
-
-	for (long j = pz - 1; j <= pz + 1; j++)
-		for (long i = px - 1; i <= px + 1; i++)
-		{
-			eg = &ACTIVEBKG->Backg[i+j*ACTIVEBKG->Xsize];
-
-			if (eg->nbpoly) return false;
+			if(eg->nbpoly)
+				return false;
 		}
+	}
 
 	return true;
 }
@@ -231,7 +211,7 @@ long DanaeSaveLevel(const fs::path & _fic) {
 	dlh.nb_inter = nb_inter;
 	dlh.nb_zones = 0;
 	
-	dlh.pos_edit = (dlh.nb_scn != 0) ? subj.pos - Mscenepos : subj.pos;
+	dlh.pos_edit = (dlh.nb_scn != 0) ? subj.orgTrans.pos - Mscenepos : subj.orgTrans.pos;
 
 	dlh.angle_edit = player.angle;
 	dlh.lighting = false; // must be false
@@ -288,24 +268,27 @@ long DanaeSaveLevel(const fs::path & _fic) {
 	}
 	
 	for(size_t i = 0; i < MAX_FOG; i++) {
-		if(fogs[i].exist) {
+		FOG_DEF *fog = &fogs[i];
+
+		if(!fog->exist)
+			continue;
+
 			DANAE_LS_FOG dlf;
 			memset(&dlf, 0, sizeof(DANAE_LS_FOG));
-			dlf.rgb = fogs[i].rgb;
-			dlf.angle = fogs[i].angle;
-			dlf.pos = fogs[i].pos - Mscenepos;
-			dlf.blend = fogs[i].blend;
-			dlf.frequency = fogs[i].frequency;
-			dlf.move = fogs[i].move;
-			dlf.rotatespeed = fogs[i].rotatespeed;
-			dlf.scale = fogs[i].scale;
-			dlf.size = fogs[i].size;
-			dlf.special = fogs[i].special;
-			dlf.speed = fogs[i].speed;
-			dlf.tolive = fogs[i].tolive;
+			dlf.rgb = fog->rgb;
+			dlf.angle = fog->angle;
+			dlf.pos = fog->pos - Mscenepos;
+			dlf.blend = fog->blend;
+			dlf.frequency = fog->frequency;
+			dlf.move = fog->move;
+			dlf.rotatespeed = fog->rotatespeed;
+			dlf.scale = fog->scale;
+			dlf.size = fog->size;
+			dlf.special = fog->special;
+			dlf.speed = fog->speed;
+			dlf.tolive = fog->tolive;
 			memcpy(dat + pos, &dlf, sizeof(DANAE_LS_FOG));
 			pos += sizeof(DANAE_LS_FOG);
-		}
 	}
 	
 	for(long i = 0; i < nodes.nbmax; i++) {
@@ -685,7 +668,7 @@ long DanaeLoadLevel(const res::path & file, bool loadEntities) {
 		}
 	}
 	
-	loddpos = subj.pos = dlh.pos_edit;
+	loddpos = subj.orgTrans.pos = dlh.pos_edit;
 	player.desiredangle = player.angle = subj.angle = dlh.angle_edit;
 	
 	if(strcmp(dlh.ident, "DANAE_FILE")) {
@@ -740,11 +723,9 @@ long DanaeLoadLevel(const res::path & file, bool loadEntities) {
 		mse->pos.x = Mscenepos.x = Mscenepos.x + BKG_SIZX - t1;
 		mse->pos.z = Mscenepos.z = Mscenepos.z + BKG_SIZZ - t2;
 		mse->pos.y = Mscenepos.y = -mse->cub.ymin - 100.f - mse->point0.y;
-		lastteleport = player.pos = subj.pos = moveto = mse->pos + mse->point0;
-		mapcam.pos.x = player.pos.x;
-		mapcam.pos.z = player.pos.z;
+		lastteleport = player.pos = subj.orgTrans.pos = moveto = mse->pos + mse->point0;
 		lastteleport.y -= 180.f;
-		player.pos.y = subj.pos.y -= 180.f;
+		player.pos.y = subj.orgTrans.pos.y -= 180.f;
 		trans = mse->pos;
 	}
 #endif // BUILD_EDIT_LOADSAVE
@@ -852,7 +833,7 @@ long DanaeLoadLevel(const res::path & file, bool loadEntities) {
 				el->pos = dlight->pos;
 				el->rgb = dlight->rgb;
 				
-				el->extras = checked_range_cast<short>(dlight->extras);
+				el->extras = ExtrasType::load(dlight->extras);
 				
 				el->ex_flicker = dlight->ex_flicker;
 				el->ex_radius = dlight->ex_radius;
@@ -1054,7 +1035,7 @@ long DanaeLoadLevel(const res::path & file, bool loadEntities) {
 			
 			el->rgb = dlight->rgb;
 			
-			el->extras = checked_range_cast<short>(dlight->extras);
+			el->extras = ExtrasType::load(dlight->extras);
 			
 			el->ex_flicker = dlight->ex_flicker;
 			el->ex_radius = dlight->ex_radius;
@@ -1127,7 +1108,6 @@ long DanaeLoadLevel(const res::path & file, bool loadEntities) {
 }
 
 void MCache_ClearAll();
-extern TextureContainer * MapMarkerTc;
 long FAST_RELEASE = 0;
 extern Entity * FlyingOverIO;
 extern unsigned long LAST_JUMP_ENDTIME;
@@ -1142,14 +1122,14 @@ extern long JUST_RELOADED;
 void DanaeClearLevel(long flag)
 {
 	JUST_RELOADED = 0;
-	ARX_MINIMAP_Reset();
+	g_miniMap.reset();
 
 	FADEDIR = 0;
 	FADEDURATION = 0;
 	LAST_JUMP_ENDTIME = 0;
 	FAST_RELEASE = 1;
 	MCache_ClearAll();
-	ARX_MINIMAP_PurgeTC();
+	g_miniMap.purgeTexContainer();
 	ARX_GAME_Reset(flag);
 	FlyingOverIO = NULL;
 
@@ -1179,7 +1159,7 @@ void DanaeClearLevel(long flag)
 	delete stone1, stone1 = NULL, stone1_count = 0;
 	
 	TextureContainer::DeleteAll(TextureContainer::Level);
-	MapMarkerTc = NULL;
+	g_miniMap.clearMarkerTexCont();
 	
 	arxtime.init();
 	
@@ -1201,49 +1181,38 @@ void DanaeClearAll()
 	DanaeClearLevel();
 }
 
-//*************************************************************************************
-//*************************************************************************************
-
 void RestoreLastLoadedLightning()
 {
 	long pos = 0;
 	long bcount = CountBkgVertex();
 
-	if (LastLoadedLightningNb <= 0) return;
+	if(LastLoadedLightningNb <= 0)
+		return;
 
-	if (LastLoadedLightning == NULL) return;
+	if(LastLoadedLightning == NULL)
+		return;
 
-	if (bcount != LastLoadedLightningNb)
-	{
+	if(bcount != LastLoadedLightningNb) {
 		free(LastLoadedLightning);
 		LastLoadedLightning = NULL;
 		LastLoadedLightningNb = 0;
 		return;
 	}
 
-	EERIE_BKG_INFO * eg;
-
 	EERIE_BACKGROUND * eb = ACTIVEBKG;
 
 	bcount = LastLoadedLightningNb;
 
-	EERIEPOLY * ep;
-	long nbvert;
+	for(long j = 0; j < eb->Zsize; j++)
+		for(long i = 0; i < eb->Xsize; i++) {
+			EERIE_BKG_INFO *eg = (EERIE_BKG_INFO *)&eb->Backg[i+j*eb->Xsize];
 
-	for (long j = 0; j < eb->Zsize; j++)
-		for (long i = 0; i < eb->Xsize; i++)
-		{
-			eg = (EERIE_BKG_INFO *)&eb->Backg[i+j*eb->Xsize];
+			for(long l = 0; l < eg->nbpoly; l++) {
+				EERIEPOLY *ep = &eg->polydata[l];
 
-			for (long l = 0; l < eg->nbpoly; l++)
-			{
-				ep = &eg->polydata[l];
+				long nbvert = (ep->type & POLY_QUAD) ? 4 : 3;
 
-				if (ep->type & POLY_QUAD) nbvert = 4;
-				else nbvert = 3;
-
-				for (long k = 0; k < nbvert; k++)
-				{
+				for(long k = 0; k < nbvert; k++) {
 					u32 dc = LastLoadedLightning[pos];
 					pos++;
 					dc = dc | 0xFF000000;
@@ -1251,7 +1220,8 @@ void RestoreLastLoadedLightning()
 					ep->tv[k].specular = ep->v[k].specular = 0xFF000000;
 					bcount--;
 
-					if (bcount <= 0) goto plusloin;
+					if(bcount <= 0)
+						goto plusloin;
 				}
 			}
 		}
@@ -1262,14 +1232,11 @@ plusloin:
 	LastLoadedLightning = NULL;
 	LastLoadedLightningNb = 0;
 
-	for (size_t i = 0; i < MAX_ACTIONS; i++)
-	{
-		if (actions[i].exist)
-		{
+	for(size_t i = 0; i < MAX_ACTIONS; i++) {
+		if(actions[i].exist) {
 			long modd = 0;
 
-			switch (actions[i].type)
-			{
+			switch(actions[i].type) {
 				case ACT_FIRE:
 					modd = 1;
 					break;
@@ -1281,7 +1248,10 @@ plusloin:
 					break;
 			}
 
-			if (modd) RecalcLightZone(actions[i].pos.x, actions[i].pos.z, (long)((float)(DynLight[actions[i].dl].fallend * ACTIVEBKG->Xmul) + 5.f));
+			if(modd) {
+				long size = DynLight[actions[i].dl].fallend * ACTIVEBKG->Xmul + 5.f;
+				RecalcLightZone(actions[i].pos.x, actions[i].pos.z, size);
+			}
 		}
 	}
 }

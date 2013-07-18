@@ -55,8 +55,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/texture/TextureStage.h"
 
 /*---------------------------------------------------------------------------------*/
-extern EERIE_CAMERA	Camera;
-/*---------------------------------------------------------------------------------*/
 #define		NBOLDPOS	10
 /*---------------------------------------------------------------------------------*/
 float		SpecialFadeDx;
@@ -116,49 +114,41 @@ int FX_FadeOUT(float a, int color, int colord)
 
 static float LastTime;
 
-bool FX_Blur(Cinematic * c, CinematicBitmap * tb)
+bool FX_Blur(Cinematic *c, CinematicBitmap *tb, EERIE_CAMERA &camera)
 {
-	int			nb;
-	Vec3f	* pos;
-	float	*	az;
-	float		alpha, dalpha;
-	int			col;
-
-	if (c->numbitmap < 0 || tb == 0)
+	if(c->numbitmap < 0 || !tb)
 		return false;
 
-	if (TotOldPos == NBOLDPOS)
-	{
+	if(TotOldPos == NBOLDPOS) {
 		TotOldPos--;
 		std::copy(OldPos + 1, OldPos + 1 + TotOldPos, OldPos);
 		memmove(OldAz, OldAz + 1, TotOldPos * 4);
 	}
 
-	if ((GetTimeKeyFramer() - LastTime) < 0.40f)
-	{
+	if((GetTimeKeyFramer() - LastTime) < 0.40f) {
 		LastTime = GetTimeKeyFramer();
 		OldPos[TotOldPos] = c->pos;
 		OldAz[TotOldPos] = c->angz;
 		TotOldPos++;
 	}
 
-	alpha = 32.f;
-	dalpha = (127.f / NBOLDPOS);
-	pos = OldPos;
-	az = OldAz;
-	nb = TotOldPos;
+	float alpha = 32.f;
+	float dalpha = (127.f / NBOLDPOS);
+	Vec3f *pos = OldPos;
+	float *az = OldAz;
+	int nb = TotOldPos;
 
-	while (nb)
-	{
-		Camera.pos = *pos;
-		SetTargetCamera(&Camera, Camera.pos.x, Camera.pos.y, 0.f);
-		Camera.angle.b = 0;
-		Camera.angle.g = *az;
-		PrepareCamera(&Camera);
+	while(nb) {
+		camera.orgTrans.pos = *pos;
+		camera.setTargetCamera(camera.orgTrans.pos.x, camera.orgTrans.pos.y, 0.f);
+		camera.angle.b = 0;
+		camera.angle.g = *az;
+		PrepareCamera(&camera);
 
-		col = (int)alpha;
+		int col = (int)alpha;
 		col = (col << 24) | 0x00FFFFFF;
 		DrawGrille(&tb->grid, col, 0, NULL, &c->posgrille, c->angzgrille);
+
 		alpha += dalpha;
 		pos++;
 		az++;

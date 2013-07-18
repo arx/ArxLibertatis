@@ -61,7 +61,7 @@ bool Win32Window::registerWindowClass() {
 	
 	// Fill all the info for our window class.
 	m_WindowClass.style   = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
-	m_WindowClass.lpfnWndProc = Win32Window::WindowProc;
+	m_WindowClass.lpfnWndProc = Win32Window::windowProc;
 	m_WindowClass.hInstance  = (HINSTANCE)GetModuleHandle(NULL);
 	m_WindowClass.hCursor  = LoadCursor(NULL, IDC_ARROW);
 	m_WindowClass.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
@@ -143,7 +143,7 @@ bool Win32Window::initialize(const std::string & title, Vec2i size, bool fullscr
 	return true;
 }
 
-LRESULT CALLBACK Win32Window::WindowProc(HWND hWnd, UINT iMsg, WPARAM wParam,
+LRESULT CALLBACK Win32Window::windowProc(HWND hWnd, UINT iMsg, WPARAM wParam,
                                          LPARAM lParam) {
 	
 	static Win32Window* currentWindow = NULL;

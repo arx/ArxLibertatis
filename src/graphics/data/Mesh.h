@@ -51,80 +51,18 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/GraphicsTypes.h"
 #include "math/Rectangle.h"
+#include "game/Camera.h"
 
 class Entity;
-
-void specialEE_RTP(TexturedVertex*,TexturedVertex*);
-void EERIE_CreateMatriceProj(float _fWidth,float _fHeight,float _fFOV,float _fZNear,float _fZFar);
-
 
 struct ANIM_HANDLE {
 	
 	ANIM_HANDLE();
 	
 	res::path path; // empty path means an unallocated slot
-	
 	EERIE_ANIM ** anims;
 	short alt_nb;
-	
 	long locks;
-	
-};
-
-struct EERIE_TRANSFORM {
-	Vec3f pos;
-	float ycos;
-	float ysin;
-	float xsin;
-	float xcos;
-	float use_focal;
-	Vec2f mod;
-};
-
-struct EERIE_CAMERA {
-	
-	EERIE_TRANSFORM transform;
-	Vec3f pos;
-	float Ycos;
-	float Ysin;
-	float Xcos;
-	float Xsin;
-	float Zcos;
-	float Zsin;
-	float focal;
-	float use_focal;
-	float Zmul;
-	Vec2f pos2;
-	
-	EERIEMATRIX matrix;
-	Anglef angle;
-	
-	Vec3f d_pos;
-	Anglef d_angle;
-	Vec3f lasttarget;
-	Vec3f lastpos;
-	Vec3f translatetarget;
-	bool lastinfovalid;
-	Vec3f norm;
-	Color3f fadecolor;
-	Rect clip;
-	float clipz0;
-	float clipz1;
-	Vec2i center;
-	
-	float smoothing;
-	long Xsnap;
-	long Zsnap;
-	float Zdiv;
-	
-	long clip3D;
-	long type;
-	Color bkgcolor; // TODO was BGR!
-	long nbdrawn;
-	float cdepth;
-	
-	Anglef size;
-	
 };
 
 struct EERIE_BKG_INFO
@@ -195,11 +133,6 @@ struct EERIE_BACKGROUND
 
 struct ANIM_USE;
 
-#define MAX_TRANSPOL 512
-
-#define CAM_SUBJVIEW 0
-#define CAM_TOPVIEW 1
-
 extern long EERIEDrawnPolys;
 extern Vec3f BBOXMIN,BBOXMAX;
 extern EERIE_BACKGROUND * ACTIVEBKG;
@@ -208,7 +141,6 @@ extern EERIE_CAMERA * ACTIVECAM;
 extern float Xratio;
 extern float Yratio;
 
-float FirstPolyPosY(float x,float z);
 void SetActiveCamera(EERIE_CAMERA* cam);
 //	Entity Struct End
 
@@ -219,12 +151,13 @@ void FaceTarget(Entity * io);
 
 void DebugSphere(float x, float y, float z, float siz, long tim, Color color);
 
+FAST_BKG_DATA * getFastBackgroundData(float x, float z);
+
 EERIEPOLY * CheckTopPoly(float x,float y,float z);
 EERIEPOLY * CheckPolyOnTop(float x,float y,float z);
 EERIEPOLY * CheckInPoly(float x,float y,float z,float * needY = NULL);
 EERIEPOLY * EECheckInPoly(const Vec3f * pos,float * needY = NULL);
 EERIEPOLY * CheckInPolyIn(float x,float y,float z);
-EERIEPOLY * CheckInPolyPrecis(float x,float y,float z,float * needY = NULL);
 
 /*!
  * Check if the given condition is under water.
@@ -253,7 +186,6 @@ int EERIELaunchRay2(Vec3f * orgn, Vec3f * dest,  Vec3f * hit, EERIEPOLY * tp, lo
 int EERIELaunchRay3(Vec3f * orgn, Vec3f * dest,  Vec3f * hit, EERIEPOLY * tp, long flag);
 float GetGroundY(Vec3f * pos);
 void EE_IRTP(TexturedVertex *in,TexturedVertex *out);
-void EE_RTT(TexturedVertex *in,TexturedVertex *out);
 
 void extEE_RTP(TexturedVertex *in,TexturedVertex *out);
 void MakeColorz(Entity * io);
@@ -273,7 +205,7 @@ bool FastSceneLoad(const res::path & path);
 //****************************************************************************
 // DRAWING FUNCTIONS START
 
-void DrawEERIEObjEx(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f * pos, Vec3f * scale, Color3f * col);
+void DrawEERIEObjEx(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f * pos, Vec3f * scale, Color3f &col);
 void DrawEERIEObjExEx(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f * pos, Vec3f * scale, int coll);
 // DRAWING FUNCTIONS END
 //****************************************************************************
@@ -310,9 +242,7 @@ long GetFreeDynLight();
 
 //****************************************************************************
 // CAMERA FUNCTIONS START
-void SetTargetCamera(EERIE_CAMERA * cam,float x,float y, float z);
 void PrepareCamera(EERIE_CAMERA *cam);
-void PrepareActiveCamera();
 // CAMERA FUNCTIONS END
 //****************************************************************************
 
@@ -335,8 +265,6 @@ void ResetAnim(ANIM_USE * eanim);
 //*************************************************************************************
 
 long EERIERTPPoly(EERIEPOLY *ep);
-
-void EE_RTP3(Vec3f * in, Vec3f * out, EERIE_CAMERA * cam);
 
 void ReleaseAnimFromIO(Entity * io,long num);
 
@@ -368,14 +296,11 @@ void DrawInWorld();
 long CountBkgVertex();
 void CreateInWorld();
 void EERIE_LIGHT_ChangeLighting();
-void SetCameraDepth(float depth);
+void SetCameraDepth(EERIE_CAMERA &cam, float depth);
 
-extern void EERIETreatPoint(TexturedVertex *in,TexturedVertex *out);
-extern void EERIETreatPoint2(TexturedVertex *in,TexturedVertex *out);
 bool RayCollidingPoly(Vec3f * orgn,Vec3f * dest,EERIEPOLY * ep,Vec3f * hit);
 
 void EERIEPOLY_Compute_PolyIn();
-void F_PrepareCamera(EERIE_CAMERA * cam);
 
 float GetTileMinY(long i,long j);
 float GetTileMaxY(long i,long j);
@@ -393,7 +318,6 @@ struct EERIE_FRUSTRUM_PLANE
 struct EERIE_FRUSTRUM
 {
 	EERIE_FRUSTRUM_PLANE plane[4];
-	long nb;
 };
 
 struct EERIE_FRUSTRUM_DATA

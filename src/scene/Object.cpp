@@ -93,9 +93,8 @@ void Clear3DScene(EERIE_3DSCENE	* eerie);
 
 long GetGroupOriginByName(const EERIE_3DOBJ * eobj, const string & text) {
 	
-	if(!eobj) {
+	if(!eobj)
 		return -1;
-	}
 	
 	for(long i = 0; i < eobj->nbgroups; i++) {
 		if(eobj->grouplist[i].name == text) {
@@ -108,9 +107,8 @@ long GetGroupOriginByName(const EERIE_3DOBJ * eobj, const string & text) {
 
 long GetActionPointIdx(const EERIE_3DOBJ * eobj, const string & text) {
 	
-	if(!eobj) {
+	if(!eobj)
 		return -1;
-	}
 	
 	for(vector<EERIE_ACTIONLIST>::const_iterator i = eobj->actionlist.begin();
 	    i != eobj->actionlist.end(); ++i) {
@@ -124,9 +122,8 @@ long GetActionPointIdx(const EERIE_3DOBJ * eobj, const string & text) {
 
 long GetActionPointGroup(const EERIE_3DOBJ * eobj, long idx) {
 	
-	if(!eobj) {
+	if(!eobj)
 		return -1;
-	}
 	
 	for(long i = eobj->nbgroups - 1; i >= 0; i--) {
 		const vector<long> & indices = eobj->grouplist[i].indexes;
@@ -142,7 +139,8 @@ long GetActionPointGroup(const EERIE_3DOBJ * eobj, long idx) {
 
 void EERIE_Object_Precompute_Fast_Access(EERIE_3DOBJ * eerie) {
 	
-	if(!eerie) return;
+	if(!eerie)
+		return;
 
 	long lVRight		=	GetActionPointIdx(eerie, "v_right");
 	long lURight		=	GetActionPointIdx(eerie, "u_right");
@@ -168,7 +166,7 @@ void EERIE_Object_Precompute_Fast_Access(EERIE_3DOBJ * eerie) {
 	eerie->fastaccess.mouth_group		=	checked_range_cast<short>(lMouthAll);
 
 
-	if (eerie->fastaccess.mouth_group == -1)
+	if(eerie->fastaccess.mouth_group == -1)
 		eerie->fastaccess.mouth_group_origin = -1;
 	else
 	{
@@ -179,7 +177,7 @@ void EERIE_Object_Precompute_Fast_Access(EERIE_3DOBJ * eerie) {
 	long lHeadGroup					=	EERIE_OBJECT_GetGroup(eerie, "head");
 	eerie->fastaccess.head_group	=	checked_range_cast<short>(lHeadGroup);
 
-	if (eerie->fastaccess.head_group == -1)
+	if(eerie->fastaccess.head_group == -1)
 		eerie->fastaccess.head_group_origin = -1;
 	else
 	{
@@ -203,9 +201,8 @@ void EERIE_Object_Precompute_Fast_Access(EERIE_3DOBJ * eerie) {
 
 void ReleaseAnim(EERIE_ANIM * ea) {
 	
-	if(!ea) {
+	if(!ea)
 		return;
-	}
 	
 	if(ea->frames) {
 		for(long i = 0; i < ea->nb_key_frames; i++) {
@@ -221,20 +218,12 @@ void ReleaseAnim(EERIE_ANIM * ea) {
 
 float GetTimeBetweenKeyFrames(EERIE_ANIM * ea, long f1, long f2)
 {
-	if (!ea) return 0;
-
-	if (f1 < 0) return 0;
-
-	if (f1 > ea->nb_key_frames - 1) return 0;
-
-	if (f2 < 0) return 0;
-
-	if (f2 > ea->nb_key_frames - 1) return 0;
+	if(!ea || f1 < 0 || f1 > ea->nb_key_frames - 1 || f2 < 0 || f2 > ea->nb_key_frames - 1)
+		return 0;
 
 	float time = 0;
 
-	for (long kk = f1 + 1; kk <= f2; kk++)
-	{
+	for(long kk = f1 + 1; kk <= f2; kk++) {
 		time += ea->frames[kk].time;
 	}
 
@@ -285,7 +274,7 @@ EERIE_ANIM * TheaToEerie(const char * adr, size_t size, const res::path & file) 
 	eerie->groups = allocStructZero<EERIE_GROUP>(th->nb_key_frames * th->nb_groups);
 	eerie->voidgroups = allocStructZero<unsigned char>(th->nb_groups);
 	
-	eerie->anim_time = 0.f;
+	eerie->anim_time = 0;
 	
 	// Go For Keyframes read
 	for(long i = 0; i < th->nb_key_frames; i++) {
@@ -486,9 +475,8 @@ EERIE_ANIM * TheaToEerie(const char * adr, size_t size, const res::path & file) 
 
 void MakeUserFlag(TextureContainer * tc) {
 	
-	if(tc == NULL) {
+	if(!tc)
 		return;
-	}
 	
 	const string & tex = tc->m_texName.string();
 	
@@ -525,15 +513,13 @@ void MakeUserFlag(TextureContainer * tc) {
 
 static void ReCreateUVs(EERIE_3DOBJ * eerie) {
 	
-	if(eerie->texturecontainer.empty()) {
+	if(eerie->texturecontainer.empty())
 		return;
-	}
 	
 	for(size_t i = 0; i < eerie->facelist.size(); i++) {
 		
-		if(eerie->facelist[i].texid == -1) {
+		if(eerie->facelist[i].texid == -1)
 			continue;
-		}
 		
 		TextureContainer * tex = eerie->texturecontainer[eerie->facelist[i].texid];
 		Vec2f scale = (tex) ? Vec2f(1.f / tex->m_dwWidth, 1.f / tex->m_dwHeight) : (Vec2f::ONE / 256);
@@ -858,7 +844,6 @@ static void loadObjectData(EERIE_3DOBJ * eerie, const char * adr, size_t * poss,
 		
 		eerie->point0 = eerie->vertexlist[pted->origin_index].v;
 		eerie->origin = pted->origin_index;
-		
 	}
 	
 	*poss = pos;
@@ -1184,7 +1169,6 @@ void EERIE_3DOBJ::clear() {
 		origin = 0;
 		ident = 0;
 		nbgroups = 0;
-		drawflags = 0;
 
 		vertexlocal = NULL;
 		vertexlist.clear();
@@ -1234,9 +1218,8 @@ void EERIE_3DOBJ::clear() {
 
 void Clear3DScene(EERIE_3DSCENE * eerie) {
 	
-	if(eerie == NULL) {
+	if(!eerie)
 		return;
-	}
 	
 	memset(eerie, 0, sizeof(EERIE_3DSCENE));
 	eerie->cub.xmin = eerie->cub.ymin = eerie->cub.zmin = std::numeric_limits<float>::max();
@@ -1293,14 +1276,13 @@ EERIE_3DOBJ * Eerie_Copy(const EERIE_3DOBJ * obj) {
 	nouvo->cub.ymin = obj->cub.ymin;
 	nouvo->cub.zmax = obj->cub.zmax;
 	nouvo->cub.zmin = obj->cub.zmin;
-	nouvo->drawflags = obj->drawflags;
 	
-	if ( !obj->file.empty() )
+	if(!obj->file.empty())
 		nouvo->file = obj->file;
 	
 	nouvo->ident = obj->ident;
 
-	if ( !obj->name.empty() )
+	if(!obj->name.empty())
 		nouvo->name = obj->name;
 
 	nouvo->origin = obj->origin;
@@ -1308,15 +1290,14 @@ EERIE_3DOBJ * Eerie_Copy(const EERIE_3DOBJ * obj) {
 	Quat_Copy(&nouvo->quat, &obj->quat);
 
 
-	if (obj->ndata)
-	{
+	if(obj->ndata)
 		nouvo->ndata = copyStruct(obj->ndata, obj->vertexlist.size());
-	}
-	else nouvo->ndata = NULL;
+	else
+		nouvo->ndata = NULL;
 
 	nouvo->facelist = obj->facelist;
 
-	if (obj->nbgroups) {
+	if(obj->nbgroups) {
 		nouvo->nbgroups = obj->nbgroups;
 		nouvo->grouplist = new EERIE_GROUPLIST[obj->nbgroups];
 		std::copy(obj->grouplist, obj->grouplist + obj->nbgroups, nouvo->grouplist);
@@ -1331,8 +1312,7 @@ EERIE_3DOBJ * Eerie_Copy(const EERIE_3DOBJ * obj) {
 	memcpy(&nouvo->fastaccess, &obj->fastaccess, sizeof(EERIE_FASTACCESS));
 	EERIE_CreateCedricData(nouvo);
 
-	if (obj->pbox)
-	{
+	if(obj->pbox) {
 		nouvo->pbox = allocStructZero<PHYSICS_BOX_DATA>();
 		nouvo->pbox->nb_physvert = obj->pbox->nb_physvert;
 		nouvo->pbox->stopcount = 0;
@@ -1349,9 +1329,8 @@ EERIE_3DOBJ * Eerie_Copy(const EERIE_3DOBJ * obj) {
 
 long EERIE_OBJECT_GetSelection(const EERIE_3DOBJ * obj, const string & selname) {
 	
-	if(!obj) {
+	if(!obj)
 		return -1;
-	}
 	
 	for(size_t i = 0; i < obj->selections.size(); i++) {
 		if(obj->selections[i].name == selname) {
@@ -1364,9 +1343,8 @@ long EERIE_OBJECT_GetSelection(const EERIE_3DOBJ * obj, const string & selname) 
 
 long EERIE_OBJECT_GetGroup(const EERIE_3DOBJ * obj, const string & groupname) {
 	
-	if(!obj) {
+	if(!obj)
 		return -1;
-	}
 	
 	for(long i = 0; i < obj->nbgroups; i++) {
 		if(obj->grouplist[i].name == groupname) {
@@ -1381,21 +1359,17 @@ void AddIdxToBone(EERIE_BONE * bone, long idx)
 {
 	bone->idxvertices = (long *)realloc(bone->idxvertices, sizeof(long) * (bone->nb_idxvertices + 1));
 
-	if (bone->idxvertices)
-	{
+	if(bone->idxvertices) {
 		bone->idxvertices[bone->nb_idxvertices] = idx;
 		bone->nb_idxvertices++;
 	}
 }
-//-----------------------------------------------------------------------------------------------------
+
 long GetFather(EERIE_3DOBJ * eobj, long origin, long startgroup)
 {
-	for (long i = startgroup; i >= 0; i--)
-	{
-		for (size_t j = 0; j < eobj->grouplist[i].indexes.size(); j++)
-		{
-			if (eobj->grouplist[i].indexes[j] == origin)
-			{
+	for(long i = startgroup; i >= 0; i--) {
+		for(size_t j = 0; j < eobj->grouplist[i].indexes.size(); j++) {
+			if(eobj->grouplist[i].indexes[j] == origin) {
 				return i;
 			}
 		}
@@ -1406,12 +1380,12 @@ long GetFather(EERIE_3DOBJ * eobj, long origin, long startgroup)
 
 void EERIE_RemoveCedricData(EERIE_3DOBJ * eobj) {
 	
-	if(!eobj || !eobj->c_data) {
+	if(!eobj || !eobj->c_data)
 		return;
-	}
 	
 	for(long i = 0; i < eobj->c_data->nb_bones; i++) {
-		free(eobj->c_data->bones[i].idxvertices), eobj->c_data->bones[i].idxvertices = NULL;
+		free(eobj->c_data->bones[i].idxvertices);
+		eobj->c_data->bones[i].idxvertices = NULL;
 	}
 	
 	delete[] eobj->c_data->bones, eobj->c_data->bones = NULL;
@@ -1424,15 +1398,16 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 	eobj->c_data = new EERIE_C_DATA();
 	memset(eobj->c_data, 0, sizeof(EERIE_C_DATA));
 
-	if (eobj->nbgroups <= 0) // If no groups were specified
-	{
+	if(eobj->nbgroups <= 0) {
+		// If no groups were specified
+
 		// Make one bone
 		eobj->c_data->nb_bones = 1;
 		eobj->c_data->bones = new EERIE_BONE[eobj->c_data->nb_bones];
 		memset(eobj->c_data->bones, 0, sizeof(EERIE_BONE)*eobj->c_data->nb_bones);
 
 		// Add all vertices to the bone
-		for (size_t i = 0; i < eobj->vertexlist.size(); i++)
+		for(size_t i = 0; i < eobj->vertexlist.size(); i++)
 			AddIdxToBone(&eobj->c_data->bones[0], i);
 
 		// Initialize the bone
@@ -1444,9 +1419,9 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 		eobj->c_data->bones[0].transinit_global = eobj->c_data->bones[0].transinit;
 		eobj->c_data->bones[0].original_group = NULL;
 		eobj->c_data->bones[0].father = -1;
-	}
-	else // Groups were specified
-	{
+	} else {
+		// Groups were specified
+
 		// Alloc the bones
 		eobj->c_data->nb_bones = eobj->nbgroups;
 		eobj->c_data->bones = new EERIE_BONE[eobj->c_data->nb_bones];
@@ -1456,14 +1431,11 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 		bool * temp = new bool[eobj->vertexlist.size()];
 		memset(temp, 0, eobj->vertexlist.size());
 
-		for (long i = eobj->nbgroups - 1; i >= 0; i--)
-		{
+		for(long i = eobj->nbgroups - 1; i >= 0; i--) {
 			EERIE_VERTEX * v_origin = &eobj->vertexlist[eobj->grouplist[i].origin];
 
-			for (size_t j = 0; j < eobj->grouplist[i].indexes.size(); j++)
-			{
-				if (!temp[eobj->grouplist[i].indexes[j]])
-				{
+			for(size_t j = 0; j < eobj->grouplist[i].indexes.size(); j++) {
+				if(!temp[eobj->grouplist[i].indexes[j]]) {
 					temp[eobj->grouplist[i].indexes[j]] = true;
 					AddIdxToBone(&eobj->c_data->bones[i], eobj->grouplist[i].indexes[j]);
 				}
@@ -1482,27 +1454,22 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 		delete[] temp;
 
 		// Try to correct lonely vertex
-		for (size_t i = 0; i < eobj->vertexlist.size(); i++)
-		{
+		for(size_t i = 0; i < eobj->vertexlist.size(); i++) {
 			long ok = 0;
 
-			for (long j = 0; j < eobj->nbgroups; j++)
-			{
-				for (size_t k = 0; k < eobj->grouplist[j].indexes.size(); k++)
-				{
-					if ((size_t)eobj->grouplist[j].indexes[k] == i)
-					{
+			for(long j = 0; j < eobj->nbgroups; j++) {
+				for(size_t k = 0; k < eobj->grouplist[j].indexes.size(); k++) {
+					if((size_t)eobj->grouplist[j].indexes[k] == i) {
 						ok = 1;
 						break;
 					}
 				}
 
-				if (ok)
+				if(ok)
 					break;
 			}
 
-			if (!ok)
-			{
+			if(!ok) {
 				AddIdxToBone(&eobj->c_data->bones[0], i);
 			}
 		}
@@ -1521,22 +1488,17 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 	{
 		EERIE_C_DATA* obj = eobj->c_data;
 
-
-		for (long i = 0; i != obj->nb_bones; i++)
-		{
+		for(long i = 0; i != obj->nb_bones; i++) {
 			EERIE_QUAT	qt1;
 
-			if (obj->bones[i].father >= 0)
-			{
+			if(obj->bones[i].father >= 0) {
 				/* Rotation*/
 				Quat_Copy(&qt1, &obj->bones[i].quatinit);
 				Quat_Multiply(&obj->bones[i].quatanim, &obj->bones[obj->bones[i].father].quatanim, &qt1);
 				/* Translation */
 				TransformVertexQuat(&obj->bones[obj->bones[i].father].quatanim, &obj->bones[i].transinit, &obj->bones[i].transanim);
 				obj->bones[i].transanim = obj->bones[obj->bones[i].father].transanim + obj->bones[i].transanim;
-			}
-			else
-			{
+			} else {
 				/* Rotation*/
 				Quat_Copy(&obj->bones[i].quatanim, &obj->bones[i].quatinit);
 				/* Translation */
@@ -1549,10 +1511,10 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 		// TODO constructor is better than memset
 		memset(eobj->vertexlocal, 0, sizeof(EERIE_3DPAD)*eobj->vertexlist.size());
 
-		for (long i = 0; i != obj->nb_bones; i++) {
+		for(long i = 0; i != obj->nb_bones; i++) {
 			Vec3f vector = obj->bones[i].transanim;
 			
-			for (int v = 0; v != obj->bones[i].nb_idxvertices; v++) {
+			for(int v = 0; v != obj->bones[i].nb_idxvertices; v++) {
 				
 				long idx = obj->bones[i].idxvertices[v];
 				const EERIE_VERTEX & inVert = eobj->vertexlist[idx];
@@ -1573,9 +1535,8 @@ static EERIE_3DOBJ * TheoToEerie(const char * adr, long size, const res::path & 
 	
 	LogWarning << "TheoToEerie " << fic;
 	
-	if(!adr) {
+	if(!adr)
 		return NULL;
-	}
 	
 	res::path txpath = texpath.empty() ? "graph/obj3d/textures" : texpath;
 	
@@ -1588,7 +1549,7 @@ static EERIE_3DOBJ * TheoToEerie(const char * adr, long size, const res::path & 
 	const THEO_HEADER * pth = reinterpret_cast<const THEO_HEADER *>(adr + pos);
 	pos += sizeof(THEO_HEADER);
 	
-	if (pth->version < 3003 || pth->version > 3011) {
+	if(pth->version < 3003 || pth->version > 3011) {
 		LogError << "TheoToEerie: invalid version in " << fic << ": found " << pth->version
 		         << " expected 3004 to 3011";
 		return NULL;
@@ -1654,8 +1615,7 @@ static EERIE_3DOBJ * TheoToEerie(const char * adr, long size, const res::path & 
 		eerie->facelist[i].temp = dist((p0 + p1) * .5f, p2) * dist(p0, p1) * .5f;
 	}
 
-	for (size_t i = 0; i < eerie->facelist.size(); i++)
-	{
+	for(size_t i = 0; i < eerie->facelist.size(); i++) {
 		CalcObjFaceNormal(
 		    &eerie->vertexlist[eerie->facelist[i].vid[0]].v,
 		    &eerie->vertexlist[eerie->facelist[i].vid[1]].v,
@@ -1664,22 +1624,17 @@ static EERIE_3DOBJ * TheoToEerie(const char * adr, long size, const res::path & 
 		);
 		float area = eerie->facelist[i].temp;
 
-		for (j = 0; j < 3; j++)
-		{
+		for(j = 0; j < 3; j++) {
 			float mod = area * area;
 			nrrr = nrml = eerie->facelist[i].norm * mod;
 			count = mod;
 
-			for (size_t i2 = 0; i2 < eerie->facelist.size(); i2++)
-			{
-				if (i != i2)
-				{
+			for(size_t i2 = 0; i2 < eerie->facelist.size(); i2++) {
+				if(i != i2) {
 					float area2 = eerie->facelist[i].temp;
 
-					for (j2 = 0; j2 < 3; j2++)
-					{
-						if (closerThan(eerie->vertexlist[eerie->facelist[i2].vid[j2]].v, eerie->vertexlist[eerie->facelist[i].vid[j]].v, .1f))
-						{
+					for(j2 = 0; j2 < 3; j2++) {
+						if(closerThan(eerie->vertexlist[eerie->facelist[i2].vid[j2]].v, eerie->vertexlist[eerie->facelist[i].vid[j]].v, .1f)) {
 							mod = (area2 * area2);
 							nrml += eerie->facelist[i2].norm * mod;
 							count += mod; 
@@ -1703,14 +1658,12 @@ static EERIE_3DOBJ * TheoToEerie(const char * adr, long size, const res::path & 
 	long neck_orgn = GetGroupOriginByName(eerie, "neck");
 	long head_idx = EERIE_OBJECT_GetGroup(eerie, "head");
 
-	if ((head_idx >= 0) && (neck_orgn >= 0))
-	{
+	if(head_idx >= 0 && neck_orgn >= 0) {
 		Vec3f center = Vec3f::ZERO;
 		Vec3f origin = eerie->vertexlist[neck_orgn].v;
 		float count = (float)eerie->grouplist[head_idx].indexes.size();
 
-		if (count > 0.f)
-		{
+		if(count > 0.f) {
 			for(size_t idx = 0 ; idx < eerie->grouplist[head_idx].indexes.size(); idx++) {
 				center += eerie->vertexlist[ eerie->grouplist[head_idx].indexes[idx] ].v;
 			}
@@ -1718,14 +1671,12 @@ static EERIE_3DOBJ * TheoToEerie(const char * adr, long size, const res::path & 
 			center = (center * (1.f / count) + origin + origin) * (1.0f / 3);
 			float max_threshold = dist(origin, center);
 			
-			for (size_t i = 0; i < eerie->grouplist[head_idx].indexes.size(); i++)
-			{
+			for(size_t i = 0; i < eerie->grouplist[head_idx].indexes.size(); i++) {
 				EERIE_VERTEX * ev = &eerie->vertexlist[eerie->grouplist[head_idx].indexes[i]];
 				float d = dist(ev->v, origin);
 				float factor = 1.f;
 
-				if (d < max_threshold)
-				{
+				if(d < max_threshold) {
 					factor = d / max_threshold;
 				}
 

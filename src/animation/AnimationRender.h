@@ -54,11 +54,19 @@ struct EERIEMATRIX;
 struct EERIE_QUAT;
 struct TexturedVertex;
 
-void Cedric_AnimateDrawEntity(EERIE_3DOBJ * eobj, ANIM_USE * animuse, Anglef * angle, Vec3f * pos, Entity * io, bool render, bool update_movement);
+void Cedric_AnimateDrawEntity(EERIE_3DOBJ * eobj, ANIM_USE * animuse, Anglef * angle, Vec3f * pos, Entity * io, Vec3f & ftr, float scale);
+void Cedric_AnimateDrawEntityRender(EERIE_3DOBJ *eobj, Vec3f *pos, Vec3f &ftr, Entity *io);
 
 void ARX_DrawPrimitive(TexturedVertex *, TexturedVertex *, TexturedVertex *, float _fAdd = 0.0f);
 
-void MakeCLight(Entity * io, Color3f * infra, Anglef * angle, Vec3f * pos, EERIE_3DOBJ * eobj, EERIEMATRIX * BIGMAT, EERIE_QUAT * BIGQUAT);
-void MakeCLight2(Entity * io, Color3f * infra, Anglef * angle, Vec3f * pos, EERIE_3DOBJ * eobj, EERIEMATRIX * BIGMAT, EERIE_QUAT * BIGQUAT, long i);
+void MakeCLight(Entity * io, Color3f * infra, const EERIE_QUAT *qInvert, Vec3f * pos, EERIE_3DOBJ * eobj, Color3f &special_color, long &special_color_flag);
+void MakeCLight2(Entity * io, Color3f * infra, const EERIE_QUAT *qInvert, Vec3f * pos, EERIE_3DOBJ * eobj, long i, Color3f &special_color, long &special_color_flag);
+
+float Cedric_GetScale(Entity *io);
+float Cedric_GetInvisibility(Entity *io);
+
+bool Cedric_IO_Visible(Vec3f *pos);
+
+bool Cedric_ApplyLightingFirstPartRefactor(Entity *io, Color3f &special_color, long &special_color_flag);
 
 #endif // ARX_ANIMATION_ANIMATIONRENDER_H

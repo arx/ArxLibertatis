@@ -48,6 +48,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define ARX_GRAPHICS_PARTICLE_PARTICLEEFFECTS_H
 
 #include <stddef.h>
+#include <vector>
 
 #include "graphics/Color.h"
 #include "graphics/Vertex.h"
@@ -79,7 +80,6 @@ struct FLARES {
 };
 
 struct POLYBOOM {
-	long exist;
 	short tx;
 	short tz;
 	EERIEPOLY * ep;
@@ -182,8 +182,6 @@ enum ARX_PARTICLES_TYPE_FLAG {
 //-----------------------------------------------------------------------------
 #define BOOM_RADIUS 420.f
 #define BOOM_RADIUS2 250.f
-#define MAX_OBJFX			30
-#define SPECIAL_RAYZ		1
 #define FLARELINESTEP		7
 #define FLARELINERND		6
 #define MAX_EXPLO			24 
@@ -195,8 +193,7 @@ extern FLARES flare[MAX_FLARES];
 extern long flarenum;
 extern short OPIPOrgb;
 extern short PIPOrgb;
-extern long BoomCount;
-extern POLYBOOM polyboom[MAX_POLYBOOM];
+extern std::vector<POLYBOOM> polyboom;
 extern FOG_DEF fogs[MAX_FOG];
 extern TextureContainer * fire2;
 extern long NewSpell;
@@ -207,11 +204,10 @@ void RestoreAllLightsInitialStatus();
 void TreatBackgroundActions();
 void TreatBackgroundDynlights();
 void MakeBookFX(const Vec3f & pos);
-void UpdateObjFx() ;
+
 void Add3DBoom(Vec3f * position);
 void AddRandomSmoke(Entity * io, long amount = 1);
-void AddFlare(Vec2s * pos, float sm, short typ, Entity * io = NULL);
-void AddFlare2(Vec2s * pos, float sm, short typ, Entity * io);
+void AddFlare(Vec2s * pos, float sm, short typ, Entity * io = NULL, bool bookDraw = false);
 void AddLFlare(float x, float y, Entity * io = NULL) ;
 void FlareLine(Vec2s * pos0, Vec2s * pos1, Entity * io = NULL);
 void LaunchDummyParticle();

@@ -72,17 +72,12 @@ extern Vec3f SPRmaxs;
 extern EERIE_3DOBJ * eyeballobj;
 extern TextureContainer * Boom;
 
-POLYBOOM polyboom[MAX_POLYBOOM];
+std::vector<POLYBOOM> polyboom(MAX_POLYBOOM);
 
 extern Color ulBKGColor;
 
 void EE_RT2(TexturedVertex*,TexturedVertex*);
 
-//***********************************************************************************************
-// hum... to be checked again for performance and result quality.
-//-----------------------------------------------------------------------------------------------
-// VERIFIED (Cyril 2001/10/15)
-//***********************************************************************************************
 void ARXDRAW_DrawInterShadows()
 {	
 	GRenderer->SetFogColor(Color::none);
@@ -90,140 +85,121 @@ void ARXDRAW_DrawInterShadows()
 
 	long first=1;
 	
-	for (long i=0;i<TREATZONE_CUR;i++) 
-	{
-		if ((treatio[i].show!=1) || (treatio[i].io==NULL)) continue;
+	for(long i=0; i<TREATZONE_CUR; i++) {
+		if(treatio[i].show != 1 || !treatio[i].io)
+			continue;
 
-		Entity * io=treatio[i].io;
+		Entity *io = treatio[i].io;
 
-		if (	(!io->obj) 
-			||	(io->ioflags & IO_JUST_COLLIDE)	)
-		{
+		if(!io->obj || (io->ioflags & IO_JUST_COLLIDE))
+			continue;
+
+
+		FAST_BKG_DATA * bkgData = getFastBackgroundData(io->pos.x, io->pos.z);
+		if(bkgData && !bkgData->treat) { //TODO is that correct ?
 			continue;
 		}
 
-			long xx,yy;
-			xx = io->pos.x * ACTIVEBKG->Xmul;
-			yy = io->pos.z * ACTIVEBKG->Zmul;
+		if(!(io->ioflags & IO_NOSHADOW) && io->show==SHOW_FLAG_IN_SCENE && !(io->ioflags & IO_GOLD)) {
+			TexturedVertex in;
 
-			if ( (xx>=1) && (yy>=1) && (xx<ACTIVEBKG->Xsize-1) && (yy<ACTIVEBKG->Zsize-1) )
-			{
-				FAST_BKG_DATA * feg=(FAST_BKG_DATA *)&ACTIVEBKG->fastdata[xx][yy];
+			TexturedVertex ltv[4];
+			ltv[0] = TexturedVertex(Vec3f(0, 0, 0.001f), 1.f, 0, 1, Vec2f(0.3f, 0.3f));
+			ltv[1] = TexturedVertex(Vec3f(0, 0, 0.001f), 1.f, 0, 1, Vec2f(0.7f, 0.3f));
+			ltv[2] = TexturedVertex(Vec3f(0, 0, 0.001f), 1.f, 0, 1, Vec2f(0.7f, 0.7f));
+			ltv[3] = TexturedVertex(Vec3f(0, 0, 0.001f), 1.f, 0, 1, Vec2f(0.3f, 0.7f));
 
-				if(!feg->treat) continue;
-			}
+			if(io->obj->nbgroups <= 1) {
+				for(size_t k=0; k < io->obj->vertexlist.size(); k += 9) {
+					EERIEPOLY *ep = EECheckInPoly(&io->obj->vertexlist3[k].v);
 
-			if (!( io->ioflags & IO_NOSHADOW ) )
-			if ( io->show==SHOW_FLAG_IN_SCENE ) 
-			if ( !(io->ioflags & IO_GOLD) ) 
-			{
-				EERIEPOLY * ep;
-				TexturedVertex in;
-				
-				TexturedVertex ltv[4];
-				ltv[0] = TexturedVertex(Vec3f(0, 0, 0.001f), 1.f, 0, 1, Vec2f(0.3f, 0.3f));
-				ltv[1] = TexturedVertex(Vec3f(0, 0, 0.001f), 1.f, 0, 1, Vec2f(0.7f, 0.3f));
-				ltv[2] = TexturedVertex(Vec3f(0, 0, 0.001f), 1.f, 0, 1, Vec2f(0.7f, 0.7f));
-				ltv[3] = TexturedVertex(Vec3f(0, 0, 0.001f), 1.f, 0, 1, Vec2f(0.3f, 0.7f));
-				
-				float s1=16.f*io->scale;
-				float s2=s1 * ( 1.0f / 2 );	
+					if(ep) {
+						in.p.y=ep->min.y-3.f;
+						float r=0.5f-((float)EEfabs(io->obj->vertexlist3[k].v.y-in.p.y))*( 1.0f / 500 );
+						r-=io->invisibility;
+						r*=io->scale;
 
-				if (io->obj->nbgroups<=1)
-				{
-					for (size_t k=0;k<io->obj->vertexlist.size();k+=9)
-					{
-						ep=EECheckInPoly(&io->obj->vertexlist3[k].v);
+						if(r<=0.f)
+							continue;
 
-						if (ep!=NULL)
-						{
-							in.p.y=ep->min.y-3.f;
-							float r=0.5f-((float)EEfabs(io->obj->vertexlist3[k].v.y-in.p.y))*( 1.0f / 500 );
-							r-=io->invisibility;
-							r*=io->scale;
+						float s1=16.f*io->scale;
+						float s2=s1*( 1.0f / 2 );
+						in.p.x=io->obj->vertexlist3[k].v.x-s2;
+						in.p.z=io->obj->vertexlist3[k].v.z-s2;
 
-							if (r<=0.f) continue;
-							
-							in.p.x=io->obj->vertexlist3[k].v.x-s2;						
-							in.p.z=io->obj->vertexlist3[k].v.z-s2;
+						r*=255.f;
+						long lv = r;
+						ltv[0].color=ltv[1].color=ltv[2].color=ltv[3].color=0xFF000000 | lv<<16 | lv<<8 | lv;
 
-							r*=255.f;
-							long lv = r;
-							ltv[0].color=ltv[1].color=ltv[2].color=ltv[3].color=0xFF000000 | lv<<16 | lv<<8 | lv;
-							
-							if (first)
-							{
-								first=0;
-								GRenderer->SetRenderState(Renderer::DepthWrite, false);
-								GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
-								GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-								GRenderer->SetTexture(0, Boom);
-							}
-
-							EE_RT2(&in,&ltv[0]);
-							in.p.x+=s1;
-							EE_RT2(&in,&ltv[1]);
-							in.p.z+=s1;
-							EE_RT2(&in,&ltv[2]);
-							in.p.x-=s1;
-							EE_RT2(&in,&ltv[3]);
-
-							if(ltv[0].p.z > 0.f && ltv[1].p.z > 0.f && ltv[2].p.z > 0.f) {
-								ARX_DrawPrimitive(&ltv[0], &ltv[1], &ltv[2], 50.0f);
-								ARX_DrawPrimitive(&ltv[0], &ltv[2], &ltv[3], 50.0f);
-							}
+						if(first) {
+							first=0;
+							GRenderer->SetRenderState(Renderer::DepthWrite, false);
+							GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
+							GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+							GRenderer->SetTexture(0, Boom);
 						}
-					}	
-				}
-				else 
-				{
-					for (long k=0;k<io->obj->nbgroups;k++)
-					{
-						long origin=io->obj->grouplist[k].origin;
-						ep=EECheckInPoly(	&io->obj->vertexlist3[origin].v );
 
-						if (ep!=NULL)
-						{
-							in.p.y=ep->min.y-3.f;
-							float r=0.8f-((float)EEfabs(io->obj->vertexlist3[origin].v.y-in.p.y))*( 1.0f / 500 );
-							r*=io->obj->grouplist[k].siz;
-							r-=io->invisibility;
+						EE_RT2(&in,&ltv[0]);
+						in.p.x+=s1;
+						EE_RT2(&in,&ltv[1]);
+						in.p.z+=s1;
+						EE_RT2(&in,&ltv[2]);
+						in.p.x-=s1;
+						EE_RT2(&in,&ltv[3]);
 
-							if (r<=0.f) continue;
-
-							float s1=io->obj->grouplist[k].siz*44.f;
-							float s2=s1*( 1.0f / 2 );
-							in.p.x=io->obj->vertexlist3[origin].v.x-s2;						
-							in.p.z=io->obj->vertexlist3[origin].v.z-s2;
-
-							r*=255.f;
-							long lv = r;
-							ltv[0].color=	ltv[1].color	=	ltv[2].color	=	ltv[3].color	=	0xFF000000 | lv<<16 | lv<<8 | lv;
-
-							if (first)
-							{
-								first=0;
-								GRenderer->SetRenderState(Renderer::DepthWrite, false);
-								GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
-								GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-								GRenderer->SetTexture(0, Boom);
-							}
-
-							EE_RT2(&in,&ltv[0]);
-							in.p.x+=s1;
-							EE_RT2(&in,&ltv[1]);
-							in.p.z+=s1;
-							EE_RT2(&in,&ltv[2]);
-							in.p.x-=s1;
-							EE_RT2(&in,&ltv[3]);
-							ARX_DrawPrimitive(&ltv[0], &ltv[1], &ltv[2]);
-							ARX_DrawPrimitive(&ltv[0], &ltv[2], &ltv[3]);
+						if(ltv[0].p.z > 0.f && ltv[1].p.z > 0.f && ltv[2].p.z > 0.f) {
+							ARX_DrawPrimitive(&ltv[0], &ltv[1], &ltv[2], 50.0f);
+							ARX_DrawPrimitive(&ltv[0], &ltv[2], &ltv[3], 50.0f);
 						}
 					}
 				}
+			} else {
+				for(long k = 0; k < io->obj->nbgroups; k++) {
+					long origin=io->obj->grouplist[k].origin;
+					EERIEPOLY *ep = EECheckInPoly(&io->obj->vertexlist3[origin].v);
+
+					if(ep) {
+						in.p.y=ep->min.y-3.f;
+						float r=0.8f-((float)EEfabs(io->obj->vertexlist3[origin].v.y-in.p.y))*( 1.0f / 500 );
+						r*=io->obj->grouplist[k].siz;
+						r-=io->invisibility;
+
+						if(r<=0.f)
+							continue;
+
+						float s1=io->obj->grouplist[k].siz*44.f;
+						float s2=s1*( 1.0f / 2 );
+						in.p.x=io->obj->vertexlist3[origin].v.x-s2;
+						in.p.z=io->obj->vertexlist3[origin].v.z-s2;
+
+						r*=255.f;
+						long lv = r;
+						ltv[0].color=ltv[1].color=ltv[2].color=ltv[3].color=0xFF000000 | lv<<16 | lv<<8 | lv;
+
+						if(first) {
+							first=0;
+							GRenderer->SetRenderState(Renderer::DepthWrite, false);
+							GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
+							GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+							GRenderer->SetTexture(0, Boom);
+						}
+
+						EE_RT2(&in,&ltv[0]);
+						in.p.x+=s1;
+						EE_RT2(&in,&ltv[1]);
+						in.p.z+=s1;
+						EE_RT2(&in,&ltv[2]);
+						in.p.x-=s1;
+						EE_RT2(&in,&ltv[3]);
+
+						ARX_DrawPrimitive(&ltv[0], &ltv[1], &ltv[2]);
+						ARX_DrawPrimitive(&ltv[0], &ltv[2], &ltv[3]);
+					}
+				}
 			}
-		
 		}
+
+	}
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
@@ -244,98 +220,79 @@ void EERIEDrawLight(EERIE_LIGHT * el)
 	TexturedVertex center;
 	GRenderer->SetCulling(Renderer::CullNone);
 	
-	if (el!=NULL)
-	if (el->treat)
-	{
-		el->mins.x=999999999.f;
-		in.p = el->pos;
+	if(!el || !el->treat)
+		return;
 
-		EERIEDrawSprite(&in, 11.f, lightsource_tc, el->rgb.to<u8>(), 2.f);
-		if(ACTIVECAM->type != CAM_TOPVIEW) {
-			
-			el->mins = SPRmins;
-			el->maxs = SPRmaxs;
 
-			if (el->selected)
-			{
-				if ((el->mins.x>=-200.f) && (el->mins.x<=1000.f))
-				if ((el->mins.y>=-200.f) && (el->mins.y<=1000.f))
-				{
-					in.p = el->pos;
-					EERIETreatPoint(&in,&center);	
+	el->mins.x=999999999.f;
+	in.p = el->pos;
 
-					if ((center.p.z>0.f) && (center.p.z<1000.f))
-					{
-						float t=(1.f-center.p.z)*ACTIVECAM->use_focal*( 1.0f / 3000 );
-						float rad=el->fallstart*t;
-						EERIEDrawCircle(center.p.x, center.p.y, rad, Color::yellow, 0.0001f);
-						rad=el->fallend*t;
-						EERIEDrawCircle(center.p.x, center.p.y, rad, Color::red, 0.0001f);
-						rad=el->intensity*200.f*t;
-						EERIEDrawCircle(center.p.x, center.p.y, rad, Color::green, 0.0001f);
-					}
-				}
-			}			
+	EERIEDrawSprite(&in, 11.f, lightsource_tc, el->rgb.to<u8>(), 2.f);
+
+
+	el->mins = SPRmins;
+	el->maxs = SPRmaxs;
+
+	if(el->selected) {
+		if((el->mins.x>=-200.f) && (el->mins.x<=1000.f))
+		if((el->mins.y>=-200.f) && (el->mins.y<=1000.f)) {
+			in.p = el->pos;
+			EE_RTP(&in, &center);
+
+			if(center.p.z > 0.f && center.p.z < 1000.f) {
+				float t=(1.f-center.p.z)*ACTIVECAM->orgTrans.use_focal*( 1.0f / 3000 );
+				float rad=el->fallstart*t;
+				EERIEDrawCircle(center.p.x, center.p.y, rad, Color::yellow, 0.0001f);
+				rad=el->fallend*t;
+				EERIEDrawCircle(center.p.x, center.p.y, rad, Color::red, 0.0001f);
+				rad=el->intensity*200.f*t;
+				EERIEDrawCircle(center.p.x, center.p.y, rad, Color::green, 0.0001f);
+			}
 		}
 	}
 }
 
 void ARXDRAW_DrawAllLights(long x0,long z0,long x1,long z1) {
 	for(size_t i = 0; i < MAX_LIGHTS; i++) {
-		if (GLight[i]!=NULL)
-		{
-			
-			long tx = GLight[i]->pos.x * ACTIVEBKG->Xmul;
-			long tz = GLight[i]->pos.z * ACTIVEBKG->Zmul;
-			GLight[i]->mins.x=9999999999.f;
+		EERIE_LIGHT *light = GLight[i];
 
-			if ((tx>=x0) && (tx<=x1) &&
-				(tz>=z0) && (tz<=z1)) 
-			{
-				GLight[i]->treat=1;
+		if(light) {
+			long tx = light->pos.x * ACTIVEBKG->Xmul;
+			long tz = light->pos.z * ACTIVEBKG->Zmul;
+			light->mins.x = 9999999999.f;
 
-				if (ACTIVECAM->type!=CAM_TOPVIEW)
-				{
-					 EERIEDrawLight(GLight[i]);
-				}
-				else EERIEDrawLight(GLight[i]); 
+			if(tx >= x0 && tx <= x1 && tz >= z0 && tz <= z1)  {
+				light->treat = 1;
+				EERIEDrawLight(light);
 			}
 		}
 	}
 }
 extern Entity * CAMERACONTROLLER;
-extern long ARX_CONVERSATION;
 
-void ARXDRAW_DrawEyeBall()
-{
-	Anglef angle;
-	Vec3f pos;
-	Vec3f scale;
-	
+void ARXDRAW_DrawEyeBall() {
 	float d;
 
-	if (eyeball.exist<0) 
-	{
-		d=(float)(-eyeball.exist)*( 1.0f / 100 );
+	if(eyeball.exist < 0) {
+		d = (float)(-eyeball.exist)*( 1.0f / 100 );
 		eyeball.exist++;		
+	} else if(eyeball.exist > 2) {
+		d = (float)(eyeball.exist)*( 1.0f / 100 );
 	}
-	else if (eyeball.exist>2) 
-	{		
-		d=(float)(eyeball.exist)*( 1.0f / 100 );
-	}
-	else return;
+	else
+		return;
 
-	angle.a = eyeball.angle.a; 
-	angle.b=MAKEANGLE(180.f-eyeball.angle.b);
-	angle.g=eyeball.angle.g;
-	pos.x=eyeball.pos.x;
-	pos.y=eyeball.pos.y+eyeball.floating;
-	pos.z=eyeball.pos.z;
-	scale = Vec3f::repeat(d);
+	Anglef angle = eyeball.angle;
+	angle.b = MAKEANGLE(180.f - angle.b);
+
+	Vec3f pos = eyeball.pos;
+	pos.y += eyeball.floating;
+
+	Vec3f scale = Vec3f::repeat(d);
 	Color3f rgb = Color3f::gray(d);
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	DrawEERIEObjEx(eyeballobj, &angle, &pos, &scale, &rgb);	
+	DrawEERIEObjEx(eyeballobj, &angle, &pos, &scale, rgb);
 }
 
 // This used to add a bias when the "forceZbias" config option was activated, but it
@@ -351,375 +308,189 @@ void IncrementPolyWithNormalOutput(EERIEPOLY *_pPoly,TexturedVertex *_pOut) {
 	}
 }
 
-extern float FrameDiff;
+extern float framedelay;
 void ARXDRAW_DrawPolyBoom()
 {
 	TexturedVertex ltv[4];
-
-	long i,k;
-	float tt;
 
 	SetZBias(8);
 	GRenderer->SetFogColor(Color::none);
 	unsigned long tim = (unsigned long)(arxtime);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
-	for ( i = 0 ; i < MAX_POLYBOOM ; i++ )
-	{
-		if ( polyboom[i].exist )
+	std::vector<POLYBOOM>::iterator pb = polyboom.begin();
+	while (pb != polyboom.end()) {
+
+		if(pb->type & 128) {
+			if(pb->timecreation - framedelay > 0) {
+				float fCalc = pb->timecreation - framedelay;
+				pb->timecreation = checked_range_cast<unsigned long>(fCalc);
+			}
+
+			if(pb->timecreation - framedelay > 0) {
+				float fCalc =  pb->timecreation - framedelay;
+				pb->timecreation = checked_range_cast<unsigned long>(fCalc);
+			}
+		}
+
+		float t = (float)pb->timecreation + (float)pb->tolive - (float)tim;
+
+		if(t <= 0) {
+			pb = polyboom.erase(pb);
+			continue;
+		}
+
+		long typp = pb->type;
+		typp &= ~128;
+
+		switch(typp) {
+		case 0:
 		{
-			if ( polyboom[i].type & 128 )
-			{	
-				if (polyboom[i].timecreation - FrameDiff > 0)
-				{
-					float fCalc	=	polyboom[i].timecreation - FrameDiff;
-					polyboom[i].timecreation = checked_range_cast<unsigned long>(fCalc);
-				}
+			float tt = t / (float)pb->tolive * 0.8f;
 
-				if (polyboom[i].timecreation - FrameDiff > 0)
-				{
-					float fCalc	= 	polyboom[i].timecreation - FrameDiff;
-					polyboom[i].timecreation = checked_range_cast<unsigned long>(fCalc);
-				}
+			IncrementPolyWithNormalOutput(pb->ep,ltv);
+			EE_RT2(&ltv[0],&ltv[0]);
+			EE_RT2(&ltv[1],&ltv[1]);
+			EE_RT2(&ltv[2],&ltv[2]);
 
+			for(long k = 0; k < pb->nbvert; k++) {
+				ltv[k].uv.x=pb->u[k];
+				ltv[k].uv.y=pb->v[k];
+				ltv[k].color = (Project.improve ? (Color3f::red * (tt*.5f)) : Color3f::gray(tt)).toBGR();
+				ltv[k].specular = Color::black.toBGR();
 			}
 
-			float t	=	(float)polyboom[i].timecreation + (float)polyboom[i].tolive - (float)tim;
-
-			if ( t <= 0 ) 
-			{
-				polyboom[i].exist=0;
-				BoomCount--;
-				continue;
+			if(Project.improve) {
+				GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+			} else {
+				GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
 			}
-			
-			{
-				long typp	=	polyboom[i].type;
-				typp		&=	~128;
 
-				switch (typp) 
-				{
-					case 0:	
-					tt	=	(float)t / (float)polyboom[i].tolive * 0.8f;
+			GRenderer->SetTexture(0, Boom);
+			ARX_DrawPrimitive(&ltv[0], &ltv[1], &ltv[2]);
 
-					IncrementPolyWithNormalOutput(polyboom[i].ep,ltv);
-					EE_RT2(&ltv[0],&ltv[0]);
-					EE_RT2(&ltv[1],&ltv[1]);
-					EE_RT2(&ltv[2],&ltv[2]);
+			if(pb->nbvert & 4) {
+				EE_RT2(&ltv[3],&ltv[3]);
+				ARX_DrawPrimitive(&ltv[1], &ltv[2], &ltv[3]);
+			}
+		}
+		break;
+		case 1:	// Blood
+		{
+			float div=1.f/(float)pb->tolive;
+			float tt=(float)t*div;
+			float tr = tt * 2 - 0.5f;
 
-					for(k=0;k<polyboom[i].nbvert;k++) {
-						ltv[k].uv.x=polyboom[i].u[k];
-						ltv[k].uv.y=polyboom[i].v[k];
-						ltv[k].color = (Project.improve ? (Color3f::red * (tt*.5f)) : Color3f::gray(tt)).toBGR();
-						ltv[k].specular = Color::black.toBGR();
-					}
+			if(tr < 1.f)
+				tr = 1.f;
 
-						if(Project.improve) {
-							GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-						} else {
-							GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
-						}
+			ColorBGRA col = (pb->rgb * tt).toBGR();
 
-						GRenderer->SetTexture(0, Boom);
-						ARX_DrawPrimitive(	&ltv[0],
-														&ltv[1],
-														&ltv[2]);
+			for(long k = 0; k < pb->nbvert; k++) {
+				ltv[k].uv.x=(pb->u[k]-0.5f)*(tr)+0.5f;
+				ltv[k].uv.y=(pb->v[k]-0.5f)*(tr)+0.5f;
+				ltv[k].color=col;
+				ltv[k].specular=0xFF000000;
+			}
 
-						if(polyboom[i].nbvert&4)
-						{
-							EE_RT2(&ltv[3],&ltv[3]);
-							ARX_DrawPrimitive(	&ltv[1],
-															&ltv[2],
-															&ltv[3]);
-						}
-					break;
-					case 1:	// Blood
-					{
-						float div=1.f/(float)polyboom[i].tolive;
-						tt=(float)t*div;
-						float tr = tt * 2 - 0.5f; 
+			IncrementPolyWithNormalOutput(pb->ep,ltv);
+			EE_RT2(&ltv[0],&ltv[0]);
+			EE_RT2(&ltv[1],&ltv[1]);
+			EE_RT2(&ltv[2],&ltv[2]);
 
-						if (tr<1.f) tr=1.f;
+			if(pb->nbvert & 4) {
+				EE_RT2(&ltv[3],&ltv[3]);
+			}
 
-						ColorBGRA col = (polyboom[i].rgb * tt).toBGR();
+			GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
+			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+			GRenderer->SetTexture(0, pb->tc);
 
-						for (k=0;k<polyboom[i].nbvert;k++) 
-						{
-							ltv[k].uv.x=(polyboom[i].u[k]-0.5f)*(tr)+0.5f;
-							ltv[k].uv.y=(polyboom[i].v[k]-0.5f)*(tr)+0.5f;
-							ltv[k].color=col;
-							ltv[k].specular=0xFF000000;
-						}	
+			ARX_DrawPrimitive(&ltv[0], &ltv[1], &ltv[2]);
 
+			if(pb->nbvert & 4) {
+				ARX_DrawPrimitive(&ltv[1], &ltv[2], &ltv[3]);
+			}
 
-							IncrementPolyWithNormalOutput(polyboom[i].ep,ltv);
-							EE_RT2(&ltv[0],&ltv[0]);
-							EE_RT2(&ltv[1],&ltv[1]);
-							EE_RT2(&ltv[2],&ltv[2]);
+			ltv[0].color = ltv[1].color = ltv[2].color = ltv[3].color = Color::gray(tt).toBGR();
 
-							if(polyboom[i].nbvert&4)
-							{
-								EE_RT2(&ltv[3],&ltv[3]);
-							}
+			GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
 
-								
-							{
-								
-								GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
-								GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-							GRenderer->SetTexture(0, polyboom[i].tc); 
+			ARX_DrawPrimitive(&ltv[0], &ltv[1], &ltv[2]);
 
- 									ARX_DrawPrimitive(		&ltv[0],
- 																		&ltv[1],
- 																		&ltv[2]);
+			if(pb->nbvert & 4) {
+				ARX_DrawPrimitive(&ltv[1], &ltv[2], &ltv[3]);
+			}
 
- 									if(polyboom[i].nbvert&4)
- 									{
-  										ARX_DrawPrimitive(	&ltv[1],
-  																		&ltv[2],
- 																		&ltv[3]);
-									}
+			GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
+		}
+		break;
+		case 2: // WATER
+		{
+			float div=1.f/(float)pb->tolive;
+			float tt=(float)t*div;
+			float tr = (tt * 2 - 0.5f);
 
+			if (tr<1.f) tr=1.f;
 
-								ltv[0].color = ltv[1].color = ltv[2].color = ltv[3].color = Color::gray(tt).toBGR();
-								
-								GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
+			float ttt=tt*0.5f;
+			ColorBGRA col = (pb->rgb * ttt).toBGR();
 
-									ARX_DrawPrimitive(	&ltv[0],
-																	&ltv[1],
-																	&ltv[2]);
+			for(long k = 0; k < pb->nbvert; k++) {
+				ltv[k].uv.x=(pb->u[k]-0.5f)*(tr)+0.5f;
+				ltv[k].uv.y=(pb->v[k]-0.5f)*(tr)+0.5f;
+				ltv[k].color=col;
+				ltv[k].specular=0xFF000000;
+			}
 
-									if(polyboom[i].nbvert&4)
-									{
-										ARX_DrawPrimitive(	&ltv[1],
-																		&ltv[2],
-																		&ltv[3]);
-									}
-								
-								GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
-							}
-						}
-					break;				
-					case 2: // WATER
-					{
-						float div=1.f/(float)polyboom[i].tolive;
-						tt=(float)t*div;
-						float tr = (tt * 2 - 0.5f);
+			if (	(ltv[0].uv.x<0.f)
+				&&	(ltv[1].uv.x<0.f)
+				&&	(ltv[2].uv.x<0.f)
+				&&	(ltv[3].uv.x<0.f) )
+				break;
 
-						if (tr<1.f) tr=1.f;
+			if (	(ltv[0].uv.y<0.f)
+				&&	(ltv[1].uv.y<0.f)
+				&&	(ltv[2].uv.y<0.f)
+				&&	(ltv[3].uv.y<0.f) )
+				break;
 
-						float ttt=tt*0.5f;
-						ColorBGRA col = (polyboom[i].rgb * ttt).toBGR();
+			if (	(ltv[0].uv.x>1.f)
+				&&	(ltv[1].uv.x>1.f)
+				&&	(ltv[2].uv.x>1.f)
+				&&	(ltv[3].uv.x>1.f) )
+				break;
 
-						for(k=0;k<polyboom[i].nbvert;k++) {
-							ltv[k].uv.x=(polyboom[i].u[k]-0.5f)*(tr)+0.5f;
-							ltv[k].uv.y=(polyboom[i].v[k]-0.5f)*(tr)+0.5f;
-							ltv[k].color=col;
-							ltv[k].specular=0xFF000000;
-						}	
+			if (	(ltv[0].uv.y>1.f)
+				&&	(ltv[1].uv.y>1.f)
+				&&	(ltv[2].uv.y>1.f)
+				&&	(ltv[3].uv.y>1.f) )
+				break;
 
-						if (	(ltv[0].uv.x<0.f)
-							&&	(ltv[1].uv.x<0.f)
-							&&	(ltv[2].uv.x<0.f)
-							&&	(ltv[3].uv.x<0.f) )
-							break;
+			IncrementPolyWithNormalOutput(pb->ep,ltv);
+			EE_RT2(&ltv[0],&ltv[0]);
+			EE_RT2(&ltv[1],&ltv[1]);
+			EE_RT2(&ltv[2],&ltv[2]);
 
-						if (	(ltv[0].uv.y<0.f)
-							&&	(ltv[1].uv.y<0.f)
-							&&	(ltv[2].uv.y<0.f)
-							&&	(ltv[3].uv.y<0.f) )
-							break;
+			GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
+			GRenderer->SetBlendFunc(Renderer::BlendInvDstColor, Renderer::BlendOne);
+			GRenderer->SetTexture(0, pb->tc);
 
-						if (	(ltv[0].uv.x>1.f)
-							&&	(ltv[1].uv.x>1.f)
-							&&	(ltv[2].uv.x>1.f)
-							&&	(ltv[3].uv.x>1.f) )
-							break;
+			ARX_DrawPrimitive(&ltv[0], &ltv[1], &ltv[2]);
 
-						if (	(ltv[0].uv.y>1.f)
-							&&	(ltv[1].uv.y>1.f)
-							&&	(ltv[2].uv.y>1.f)
-							&&	(ltv[3].uv.y>1.f) )
-							break;
+			if(pb->nbvert & 4) {
+				EE_RT2(&ltv[3],&ltv[3]);
+				ARX_DrawPrimitive(&ltv[1], &ltv[2], &ltv[3]);
+			}
 
-							IncrementPolyWithNormalOutput(polyboom[i].ep,ltv);
-							EE_RT2(&ltv[0],&ltv[0]);
-							EE_RT2(&ltv[1],&ltv[1]);
-							EE_RT2(&ltv[2],&ltv[2]);
-								
-								GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
-								GRenderer->SetBlendFunc(Renderer::BlendInvDstColor, Renderer::BlendOne);
-						GRenderer->SetTexture(0, polyboom[i].tc); 
-				
-								ARX_DrawPrimitive(	&ltv[0],
-																&ltv[1],
-																&ltv[2]);
+			GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
+		}
+		break;
+		}
 
-								if(polyboom[i].nbvert&4)
-								{
-									EE_RT2(&ltv[3],&ltv[3]);
-									ARX_DrawPrimitive(	&ltv[1],
-																	&ltv[2],
-																	&ltv[3]);
-								}
-
-						GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
-								
-							}
-					break;
-				}
-			}			
-		}	
+		++ pb;
 	}
 
 	SetZBias(0);
 	GRenderer->SetFogColor(ulBKGColor);
-}
-extern long TRANSPOLYSPOS;
-extern EERIEPOLY * TransPol[MAX_TRANSPOL];
-
-extern TextureContainer * enviro;
-
-void ARXDRAW_DrawAllTransPolysPos() {
-	
-	SetZBias(1);
-	
-	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-
-	long i, to = 0; 
-
-	EERIEPOLY * ep;
-
-	for ( i = 0 ; i < TRANSPOLYSPOS ; i++ ) 
-	{
-		ep = TransPol[i];
-
-		{
-			if ( ep->type & POLY_DOUBLESIDED ) GRenderer->SetCulling(Renderer::CullNone);
-			else GRenderer->SetCulling(Renderer::CullCW);
-		
-			if ( ViewMode & VIEWMODE_FLAT )
-				GRenderer->ResetTexture(0);
-			else	
-				GRenderer->SetTexture(0, ep->tex);
-
-			if ( ep->type & POLY_QUAD ) to = 4;
-			else to = 3;
-
-			float ttt = ep->transval;
-
-			if ( ttt >= 2.f )  //MULTIPLICATIVE
-			{
-				GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-				ttt	*= ( 1.0f / 2 );
-				ttt	+= 0.5f;
-				ep->tv[3].color = ep->tv[2].color = ep->tv[1].color = ep->tv[0].color = Color::gray(ttt).toBGR();
-			}
-			else if ( ttt >= 1.f ) //ADDITIVE
-			{	
-				ttt -= 1.f;
-				GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-				ep->tv[3].color = ep->tv[2].color = ep->tv[1].color = ep->tv[0].color = Color::gray(ttt).toBGR();
-			}
-			else if ( ttt > 0.f )  //NORMAL TRANS
-			{
-				ttt = 1.f - ttt;
-				GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendSrcColor);
-				ep->tv[3].color = ep->tv[2].color = ep->tv[1].color = ep->tv[0].color = Color::gray(ttt).toBGR(Color::Limits::max() * ttt);
-			}
-			else  //SUBTRACTIVE
-			{
-				GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
-				ttt = 1.f - ttt;
-				ep->tv[3].color = ep->tv[2].color = ep->tv[1].color = ep->tv[0].color = Color::gray(ttt).toBGR();
-			}
-
-			EERIEDRAWPRIM(Renderer::TriangleStrip, ep->tv, to);
-
-				if (ep->type & POLY_LAVA)
-				{
-					GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendOne);	
-					GRenderer->SetRenderState(Renderer::AlphaBlending, true);	
-					TexturedVertex verts[4];
-					GRenderer->SetTexture(0, enviro );
-
-				arx_assert(to > 0);
-
-					for ( long j = 0 ; j < to ; j++ )
-					{
-						verts[j].p = ep->tv[j].p;
-						verts[j].rhw	= ep->tv[j].rhw;
-						verts[j].color	= 0xFFFFFFFF;
-						verts[j].uv.x		= ep->v[j].p.x * ( 1.0f / 1000 ) + EEsin( ( ep->v[j].p.x ) * ( 1.0f / 200 ) + (float) arxtime.get_frame_time() * ( 1.0f / 2000 ) ) * ( 1.0f / 20 );
-						verts[j].uv.y		= ep->v[j].p.z * ( 1.0f / 1000 ) + EEcos( (ep->v[j].p.z) * ( 1.0f / 200 ) + (float) arxtime.get_frame_time() * ( 1.0f / 2000 ) ) * ( 1.0f / 20 );
-					}	
-
-					EERIEDRAWPRIM(Renderer::TriangleStrip, verts, to, true);
-
-					for ( i = 0 ; i < to ; i++ )
-					{
-						verts[i].uv.x = ep->v[i].p.x * ( 1.0f / 1000 ) + EEsin( ( ep->v[i].p.x ) * ( 1.0f / 100 ) + (float)arxtime.get_frame_time() * ( 1.0f / 2000 ) ) * ( 1.0f / 10 );
-						verts[i].uv.y = ep->v[i].p.z * ( 1.0f / 1000 ) + EEcos( ( ep->v[i].p.z ) * ( 1.0f / 100 ) + (float)arxtime.get_frame_time() * ( 1.0f / 2000 ) ) * ( 1.0f / 10 );
-					}	
-					EERIEDRAWPRIM(Renderer::TriangleStrip, verts, to, true);
-					
-					for ( i = 0 ; i < to ; i++ )
-					{
-							verts[i].uv.x		= ep->v[i].p.x * ( 1.0f / 600 ) + EEsin ( ( ep->v[i].p.x ) * ( 1.0f / 160 ) + (float)arxtime.get_frame_time() * ( 1.0f / 2000 ) ) * ( 1.0f / 11 );
-							verts[i].uv.y		= ep->v[i].p.z * ( 1.0f / 600 ) + EEcos ( ( ep->v[i].p.z ) * ( 1.0f / 160 ) + (float)arxtime.get_frame_time() * ( 1.0f / 2000 ) ) * ( 1.0f / 11 );
-							verts[i].color	= 0xFF666666;
-					}	
-
-					GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
-					EERIEDRAWPRIM(Renderer::TriangleStrip, verts, to, true);
-				}
-			}
-
-
-		if ( ep->type & POLY_WATER )
-		{
-				GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendOne);	
-				GRenderer->SetRenderState(Renderer::AlphaBlending, true);	
-				
-				TexturedVertex verts[4];
-
-				GRenderer->SetTexture(0, enviro );
-
-			arx_assert(to > 0);
-
-				for ( long j = 0 ; j < to ; j++ )
-				{
-					verts[j].p = ep->tv[j].p;
-					verts[j].rhw	= ep->tv[j].rhw;
-					verts[j].color	= 0xFF505050;
-					verts[j].uv.x		= ep->v[j].p.x * ( 1.0f / 1000 ) + EEsin( ( ep->v[j].p.x ) * ( 1.0f / 200 ) + (float)arxtime.get_frame_time() * ( 1.0f / 1000 ) ) * ( 1.0f / 32 );
-					verts[j].uv.y		= ep->v[j].p.z * ( 1.0f / 1000 ) + EEcos( ( ep->v[j].p.z ) * ( 1.0f / 200 ) + (float)arxtime.get_frame_time() * ( 1.0f / 1000 ) ) * ( 1.0f / 32 );
-
-					if ( ep->type & POLY_FALL ) verts[j].uv.y += (float)arxtime.get_frame_time() * ( 1.0f / 4000 );
-				}
-
-				EERIEDRAWPRIM(Renderer::TriangleStrip, verts, to, true);
-
-				for ( i = 0 ; i < to ; i++ )
-				{
-					verts[i].uv.x = ( ep->v[i].p.x + 30.f ) * ( 1.0f / 1000 ) + EEsin( ( ep->v[i].p.x + 30 ) * ( 1.0f / 200 ) + (float)arxtime.get_frame_time() * ( 1.0f / 1000 ) ) * ( 1.0f / 28 );
-					verts[i].uv.y = ( ep->v[i].p.z + 30.f ) * ( 1.0f / 1000 ) - EEcos( ( ep->v[i].p.z + 30 ) * ( 1.0f / 200 ) + (float)arxtime.get_frame_time() * ( 1.0f / 1000 ) ) * ( 1.0f / 28 );
-
-					if ( ep->type & POLY_FALL ) verts[i].uv.y += (float)arxtime.get_frame_time() * ( 1.0f / 4000 );
-				}
-
-				EERIEDRAWPRIM(Renderer::TriangleStrip, verts, to, true);
-
-				for ( i = 0 ; i < to ; i++ )
-				{
-					verts[i].uv.x = ( ep->v[i].p.x + 60.f ) * ( 1.0f / 1000 ) - EEsin( ( ep->v[i].p.x + 60 ) * ( 1.0f / 200 ) + (float)arxtime.get_frame_time() * ( 1.0f / 1000 ) ) * ( 1.0f / 40 );
-					verts[i].uv.y = ( ep->v[i].p.z + 60.f ) * ( 1.0f / 1000 ) - EEcos( ( ep->v[i].p.z + 60 ) * ( 1.0f / 200 ) + (float)arxtime.get_frame_time() * ( 1.0f / 1000 ) ) * ( 1.0f / 40 );
-
-					if ( ep->type & POLY_FALL ) verts[i].uv.y += (float)arxtime.get_frame_time() * ( 1.0f / 4000 );
-				}	
-				EERIEDRAWPRIM(Renderer::TriangleStrip, verts, to, true);
-		}
-	}
-
-	SetZBias( 0 );
 }

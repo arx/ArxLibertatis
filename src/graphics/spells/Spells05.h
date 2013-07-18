@@ -40,7 +40,6 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-// Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
 
 #ifndef ARX_GRAPHICS_SPELLS_SPELLS05_H
 #define ARX_GRAPHICS_SPELLS_SPELLS05_H
@@ -97,7 +96,7 @@ class CRuneOfGuarding: public CSpellFx
 		void	Create(Vec3f, float afBeta = 0);
 		void	Kill();
 		void	Update(unsigned long);
-		float	Render();
+		void Render();
 };
 
 // Done By : Sébastien Scieux
@@ -158,7 +157,7 @@ class CLevitate: public CSpellFx
 
 		void	Create(int def, float rout, float rhaut, float hauteur, Vec3f * pos, unsigned long);
 		void	Update(unsigned long);
-		float	Render();
+		void Render();
  
 };
 
@@ -179,7 +178,7 @@ class CCurePoison: public CSpellFx
 	public:
 		void	Create();
 		void	Update(unsigned long);
-		float	Render();
+		void Render();
  
 };
 
@@ -197,13 +196,15 @@ public:
 	TexturedVertex pathways[40];
 	ParticleSystem pPS;
 	ParticleSystem pPSStream;
+
+	float lightIntensityFactor;
 	
 	CPoisonProjectile();
 	
 	// surcharge
 	void Create(Vec3f, float afBeta = 0);
 	void Update(unsigned long);
-	float Render();
+	void Render();
 	
 };
 
@@ -224,7 +225,7 @@ class CMultiPoisonProjectile: public CSpellFx
 		void	Create(Vec3f, float);
 		void	Kill();
 		void	Update(unsigned long);
-		float	Render();
+		void Render();
 };
 
 // Done By : did
@@ -252,7 +253,7 @@ class CRepelUndead: public CSpellFx
 		void	Create(Vec3f, float afBeta = 0);
 		void	Kill();
 		void	Update(unsigned long);
-		float	Render();
+		void Render();
 };
 
 #endif // ARX_GRAPHICS_SPELLS_SPELLS05_H

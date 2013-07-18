@@ -72,7 +72,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 /*---------------------------------------------------------------------------------*/
 
-EERIE_CAMERA	Camera;
 static int LargeurRender, HauteurRender;
 
 TexturedVertex AllTLVertex[40000];
@@ -144,19 +143,15 @@ void FillKeyTemp(Vec3f * pos, float az, int frame, int numbitmap, int numfx, sho
 /* Reinit */
 void Cinematic::OneTimeSceneReInit() {
 	
-	Camera.size = Anglef(160.f, 60.f, 60.f);
-	Camera.pos = Vec3f(900.f, -160.f, 4340.f);
-	Camera.angle = Anglef(3.f, 268.f, 0.f);
-	Camera.clipz0 = 0.f;
-	Camera.clipz1 = 2.999f;
-	Camera.clip = Rect(LargeurRender, HauteurRender);
-	Camera.center = Camera.clip.center();
-	Camera.focal = 350.f;
-	Camera.Zdiv = 3000.f;
-	Camera.Zmul = 1.f / Camera.Zdiv;
-	Camera.clip3D = 60;
-	Camera.type = CAM_SUBJVIEW;
-	Camera.bkgcolor = Color::none;
+	m_camera.size = Anglef(160.f, 60.f, 60.f);
+	m_camera.orgTrans.pos = Vec3f(900.f, -160.f, 4340.f);
+	m_camera.angle = Anglef(3.f, 268.f, 0.f);
+	m_camera.clip = Rect(LargeurRender, HauteurRender);
+	m_camera.center = m_camera.clip.center();
+	m_camera.focal = 350.f;
+	m_camera.bkgcolor = Color::none;
+
+	SetCameraDepth(m_camera, 2500.f);
 	
 	numbitmap = -1;
 	numbitmapsuiv = -1;
@@ -297,55 +292,32 @@ void DrawGrille(CinematicGrid * grille, int col, int fx, CinematicLight * light,
 	LocalSin = (float)sin(radians(angzgrille));
 	LocalCos = (float)cos(radians(angzgrille));
 
-	if ((fx & 0x0000FF00) == FX_DREAM)
-	{
-		if (light)
-		{
-			float * dream = DreamTable;
+	if((fx & 0x0000FF00) == FX_DREAM) {
+		float * dream = DreamTable;
 
-			while (nb--)
-			{
-				TexturedVertex vtemp;
-				Vec3f t;
-				t.x = v->x + *dream++;
-				t.y = v->y + *dream++;
-				t.z = v->z;
-				TransformLocalVertex(&t, &vtemp);
-				EE_RTP(&vtemp, d3dv);
+		while(nb--) {
+			TexturedVertex vtemp;
+			Vec3f t;
+			t.x = v->x + *dream++;
+			t.y = v->y + *dream++;
+			t.z = v->z;
+			TransformLocalVertex(&t, &vtemp);
+			EE_RTP(&vtemp, d3dv);
+			if(light) {
 				d3dv->color = CalculLight(light, d3dv->p.x, d3dv->p.y, col);
 				d3dv->p.x = ADJUSTX(d3dv->p.x);
 				d3dv->p.y = ADJUSTY(d3dv->p.y);
-				v++;
-				d3dv++;
-			}
-		}
-		else
-		{
-			float * dream = DreamTable;
-
-			while (nb--)
-			{
-				TexturedVertex vtemp;
-				Vec3f t;
-				t.x = v->x + *dream++;
-				t.y = v->y + *dream++;
-				t.z = v->z;
-				TransformLocalVertex(&t, &vtemp);
-				EE_RTP(&vtemp, d3dv);
+			} else {
 				d3dv->p.x = ADJUSTX(d3dv->p.x);
 				d3dv->p.y = ADJUSTY(d3dv->p.y);
 				d3dv->color = col;
-				v++;
-				d3dv++;
 			}
+			v++;
+			d3dv++;
 		}
-	}
-	else
-	{
-		if (light)
-		{
-			while (nb--)
-			{
+	} else {
+		if(light) {
+			while(nb--) {
 				TexturedVertex vtemp;
 				TransformLocalVertex(v, &vtemp);
 				EE_RTP(&vtemp, d3dv);
@@ -355,11 +327,8 @@ void DrawGrille(CinematicGrid * grille, int col, int fx, CinematicLight * light,
 				v++;
 				d3dv++;
 			}
-		}
-		else
-		{
-			while (nb--)
-			{
+		} else {
+			while(nb--) {
 				TexturedVertex vtemp;
 				TransformLocalVertex(v, &vtemp);
 				EE_RTP(&vtemp, d3dv);
@@ -401,21 +370,15 @@ void Cinematic::Render(float FDIFF) {
 	LargeurRender = DANAESIZX;
 	HauteurRender = DANAESIZY;
 
-	if (projectload)
-	{
+	if(projectload) {
 		GRenderer->Clear(Renderer::ColorBuffer);
 		GRenderer->BeginScene();
 
 		GereTrack(this, FDIFF);
 
 		//sound
-		if (changekey)
-		{
-			if (idsound >= 0)
-			{
-				PlaySoundKeyFramer(idsound);
-			}
-		}
+		if(changekey && idsound >= 0)
+			PlaySoundKeyFramer(idsound);
 
 		//draw
 		GRenderer->SetBlendFunc(Renderer::BlendSrcAlpha, Renderer::BlendInvSrcAlpha);
@@ -431,8 +394,7 @@ void Cinematic::Render(float FDIFF) {
 		//fx
 		int col = 0x00FFFFFF;
 
-		switch (fx & 0x000000FF)
-		{
+		switch(fx & 0x000000FF) {
 			case FX_FADEIN:
 				col = FX_FadeIN(a, color, colord);
 				break;
@@ -440,15 +402,14 @@ void Cinematic::Render(float FDIFF) {
 				col = FX_FadeOUT(a, color, colord);
 				break;
 			case FX_BLUR:
-				FX_Blur(this, tb);
+				FX_Blur(this, tb, m_camera);
 				break;
 			default:
 				break;
 		}
 
 		//fx precalculation
-		switch (fx & 0x0000ff00)
-		{
+		switch(fx & 0x0000ff00) {
 			case FX_DREAM:
 
 				if ((this->fxsuiv & 0x0000ff00) == FX_DREAM)
@@ -461,31 +422,25 @@ void Cinematic::Render(float FDIFF) {
 				break;
 		}
 
-		Camera.pos = pos;
-		SetTargetCamera(&Camera, Camera.pos.x, Camera.pos.y, 0.f);
-		Camera.angle.b = 0;
-		Camera.angle.g = angz;
-		Camera.clip.right = LargeurRender;
-		Camera.clip.bottom = HauteurRender;
-		Camera.center = Vec2i(LargeurRender / 2, HauteurRender / 2);
-		PrepareCamera(&Camera);
-		SetActiveCamera(&Camera);
+		m_camera.orgTrans.pos = pos;
+		m_camera.setTargetCamera(m_camera.orgTrans.pos.x, m_camera.orgTrans.pos.y, 0.f);
+		m_camera.angle.b = 0;
+		m_camera.angle.g = angz;
+		m_camera.clip = Rect(LargeurRender, HauteurRender);
+		m_camera.center = m_camera.clip.center();
+		PrepareCamera(&m_camera);
+		SetActiveCamera(&m_camera);
 
 		int alpha = ((int)(a * 255.f)) << 24;
 
-		int stopline = tb->nbx;
-
-		if (stopline & 1) stopline++;
-
-		if (force ^ 1) alpha = 0xFF000000;
+		if(force ^ 1)
+			alpha = 0xFF000000;
 
 		col |= alpha;
 
 		CinematicLight lightt, *l = NULL;
 
-		if ((this->light.intensity >= 0.f) &&
-		        (this->lightd.intensity >= 0.f))
-		{
+		if(this->light.intensity >= 0.f && this->lightd.intensity >= 0.f) {
 			lightt = this->light;
 			lightt.pos.x += (float)(LargeurRender >> 1);
 			lightt.pos.y += (float)(HauteurRender >> 1);
@@ -497,24 +452,24 @@ void Cinematic::Render(float FDIFF) {
 
 			LightRND = lightt.intensity + (lightt.intensiternd * rnd());
 
-			if (LightRND > 1.f) LightRND = 1.f;
+			if(LightRND > 1.f)
+				LightRND = 1.f;
 
 			l = &lightt;
 		}
 
-		if (tb->grid.nbvertexs) DrawGrille(&tb->grid, col, fx, l, &posgrille, angzgrille);
+		if(tb->grid.nbvertexs)
+			DrawGrille(&tb->grid, col, fx, l, &posgrille, angzgrille);
 
 		//PASS #2
-		if (force & 1)
-		{
-			switch (ti)
-			{
+		if(force & 1) {
+			switch(ti) {
 				case INTERP_NO:
-					Camera.pos = possuiv;
-					SetTargetCamera(&Camera, Camera.pos.x, Camera.pos.y, 0.f);
-					Camera.angle.b = 0;
-					Camera.angle.g = angzsuiv;
-					PrepareCamera(&Camera);
+					m_camera.orgTrans.pos = possuiv;
+					m_camera.setTargetCamera(m_camera.orgTrans.pos.x, m_camera.orgTrans.pos.y, 0.f);
+					m_camera.angle.b = 0;
+					m_camera.angle.g = angzsuiv;
+					PrepareCamera(&m_camera);
 					break;
 				case INTERP_LINEAR:
 					break;
@@ -530,20 +485,20 @@ void Cinematic::Render(float FDIFF) {
 
 			l = NULL;
 
-			if ((this->light.intensity >= 0.f) &&
-			        (this->lightd.intensity >= 0.f))
-			{
+			if(this->light.intensity >= 0.f && this->lightd.intensity >= 0.f) {
 				lightt = this->lightd;
 				lightt.pos.x += (float)(LargeurRender >> 1);
 				lightt.pos.y += (float)(HauteurRender >> 1);
 				LightRND = lightt.intensity + (lightt.intensiternd * rnd());
 
-				if (LightRND > 1.f) LightRND = 1.f;
+				if(LightRND > 1.f)
+					LightRND = 1.f;
 
 				l = &lightt;
 			}
 
-			if (tb->grid.nbvertexs) DrawGrille(&tb->grid, col, fx, l, &posgrillesuiv, angzgrillesuiv);
+			if(tb->grid.nbvertexs)
+				DrawGrille(&tb->grid, col, fx, l, &posgrillesuiv, angzgrillesuiv);
 		}
 
 		//effets qui continuent avec le temps
@@ -572,8 +527,7 @@ void Cinematic::Render(float FDIFF) {
 		}
 		
 		//post fx
-		switch (fx & 0x00ff0000)
-		{
+		switch(fx & 0x00ff0000) {
 			case FX_FLASH:
 				FlashBlancEnCours = FX_FlashBlanc((float)LargeurRender, (float)HauteurRender, speed, colorflash, GetTrackFPS(), FPS);
 				break;
@@ -586,8 +540,9 @@ void Cinematic::Render(float FDIFF) {
 			default:
 				break;
 		}
+		
+		GRenderer->EndScene();
 
 		CalcFPS();
-	}
-	
+	}	
 }

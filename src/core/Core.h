@@ -74,7 +74,7 @@ extern EERIE_3DOBJ * markerobj;
 extern Vec3f lastteleport;
 extern EERIE_CAMERA bookcam;
 extern Vec2s DANAEMouse;
-extern EERIE_CAMERA subj, mapcam;
+extern EERIE_CAMERA subj;
 extern Vec3f moveto;
 extern Vec2s STARTDRAG;
 extern EERIE_3DOBJ * GoldCoinsObj[MAX_GOLD_COINS_VISUALS];
@@ -100,8 +100,8 @@ inline float minSizeRatio() { return std::min(Xratio, Yratio); }
 
 extern long	FADEDURATION;
 extern long	FADEDIR;
-extern float FrameDiff;
-extern long FirstFrame;
+extern float framedelay;
+extern bool FirstFrame;
 #ifdef BUILD_EDITOR
 extern long EDITMODE;
 extern long EDITION;
@@ -109,7 +109,6 @@ extern long DEBUGNPCMOVE;
 #else
 const long EDITMODE = 0;
 #endif
-extern long SHOW_TORCH;
 extern long CURRENTLEVEL;
 extern long TELEPORT_TO_ANGLE;
 extern long DANAESIZX;
@@ -148,7 +147,7 @@ void ReMappDanaeButton();
 void AdjustMousePosition();
 void DANAE_StartNewQuest();
 bool DANAE_ManageSplashThings();
-long DANAE_Manage_Cinematic();
+void DANAE_Manage_Cinematic();
 void DanaeRestoreFullScreen();
 void FirstFrameHandling();
 

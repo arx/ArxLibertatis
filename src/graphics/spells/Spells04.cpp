@@ -40,7 +40,6 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-// Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
 
 #include "graphics/spells/Spells04.h"
 
@@ -90,7 +89,7 @@ void CBless::Set_Angle(const Anglef & angle)
 {
 	fBeta = angle.b;
 }
-//-----------------------------------------------------------------------------
+
 void CBless::Update(unsigned long _ulTime)
 {
 	ulCurrentTime += _ulTime;
@@ -98,8 +97,7 @@ void CBless::Update(unsigned long _ulTime)
 	fRot += _ulTime * fRotPerMSec;
 }
 
-//---------------------------------------------------------------------
-float CBless::Render()
+void CBless::Render()
 {
 	int i = 0;
 
@@ -107,10 +105,8 @@ float CBless::Render()
 	float y = eSrc.y - 5;
 	float z = eSrc.z;
 
-	if (ulCurrentTime >= ulDuration)
-	{
-		return 0.f;
-	}
+	if(ulCurrentTime >= ulDuration)
+		return;
 
 	GRenderer->SetCulling(Renderer::CullNone);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
@@ -179,8 +175,6 @@ float CBless::Render()
 	GRenderer->SetCulling(Renderer::CullNone);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	
-	return 1;
 }
 
 void CDispellField::Create(Vec3f aeSrc, float afBeta) {
@@ -200,11 +194,10 @@ void CDispellField::Update(unsigned long _ulTime) {
 	ulCurrentTime += _ulTime;
 }
 
-float CDispellField::Render() {
+void CDispellField::Render() {
 	
-	if (ulCurrentTime >= ulDuration) {
-		return 0.f;
-	}
+	if(ulCurrentTime >= ulDuration)
+		return;
 	
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	GRenderer->SetTexture(0, tex_p2);
@@ -214,23 +207,19 @@ float CDispellField::Render() {
 	Vec3f stitepos = player.pos + Vec3f(0.f, 80.f, 0.f);
 	Color3f stitecolor = Color3f::white;
 	Vec3f stitescale = Vec3f::repeat(2.f);
-	DrawEERIEObjEx(ssol, &stiteangle, &stitepos, &stitescale, &stitecolor);
+	DrawEERIEObjEx(ssol, &stiteangle, &stitepos, &stitescale, stitecolor);
 	
 	stitepos.y = player.pos.y + 20;
 	stitecolor = Color3f::white;
 	stitescale = Vec3f::repeat(1.8f);
-	DrawEERIEObjEx(srune, &stiteangle, &stitepos, &stitescale, &stitecolor);
-	
-	return 1;
+	DrawEERIEObjEx(srune, &stiteangle, &stitepos, &stitescale, stitecolor);
 }
 
-//-----------------------------------------------------------------------------
 CTelekinesis::~CTelekinesis()
 {
 	ssol_count--;
 
-	if (ssol && (ssol_count <= 0))
-	{
+	if(ssol && ssol_count <= 0) {
 		ssol_count = 0;
 		delete ssol;
 		ssol = NULL;
@@ -238,8 +227,7 @@ CTelekinesis::~CTelekinesis()
 
 	slight_count--;
 
-	if (slight && (slight_count <= 0))
-	{
+	if(slight && slight_count <= 0) {
 		slight_count = 0;
 		delete slight;
 		slight = NULL;
@@ -247,8 +235,7 @@ CTelekinesis::~CTelekinesis()
 
 	srune_count--;
 
-	if (srune && (srune_count <= 0))
-	{
+	if(srune && srune_count <= 0) {
 		srune_count = 0;
 		delete srune;
 		srune = NULL;
@@ -272,11 +259,10 @@ void CTelekinesis::Update(unsigned long _ulTime) {
 	ulCurrentTime += _ulTime;
 }
 
-float CTelekinesis::Render() {
+void CTelekinesis::Render() {
 	
-	if(ulCurrentTime >= ulDuration) {
-		return 0.f;
-	}
+	if(ulCurrentTime >= ulDuration)
+		return;
 	
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
@@ -286,14 +272,12 @@ float CTelekinesis::Render() {
 	Vec3f stitepos = player.pos + Vec3f(0.f, 80.f, 0.f);
 	Color3f stitecolor = Color3f::white;
 	Vec3f stitescale = Vec3f::repeat(2.f);
-	DrawEERIEObjEx(ssol, &stiteangle, &stitepos, &stitescale, &stitecolor);
+	DrawEERIEObjEx(ssol, &stiteangle, &stitepos, &stitescale, stitecolor);
 	
 	stitepos.y = player.pos.y + 20;
 	stitecolor = Color3f::white;
 	stitescale = Vec3f::repeat(1.8f);
-	DrawEERIEObjEx(srune, &stiteangle, &stitepos, &stitescale, &stitecolor);
-	
-	return 1;
+	DrawEERIEObjEx(srune, &stiteangle, &stitepos, &stitescale, stitecolor);
 }
 
 CCurse::~CCurse() {
@@ -339,25 +323,24 @@ void CCurse::Create(Vec3f aeSrc, float afBeta) {
 	fRotPerMSec = 0.25f;
 }
 
-//---------------------------------------------------------------------
 void CCurse::Update(unsigned long _ulTime)
 {
 	ulCurrentTime += _ulTime;
 	fRot += fRotPerMSec * _ulTime;
 }
 
-float CCurse::Render() {
+void CCurse::Render() {
 	
 	GRenderer->SetCulling(Renderer::CullCW);
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	
 	if(svoodoo) {
-		Anglef stiteangle = Anglef(fRot, 0, 0);
+		Anglef stiteangle = Anglef(0, fRot, 0);
 		Vec3f stitepos = eTarget;
 		Vec3f stitescale = Vec3f::ONE;
 		Color3f stitecolor = Color3f::white;
-		DrawEERIEObjEx(svoodoo , &stiteangle, &stitepos, &stitescale, &stitecolor);
+		DrawEERIEObjEx(svoodoo , &stiteangle, &stitepos, &stitescale, stitecolor);
 	}
 	
 	for(int i = 0; i < 4; i++) {
@@ -375,11 +358,9 @@ float CCurse::Render() {
 		pd->special = ROTATING | MODULATE_ROTATION | DISSIPATING | SUBSTRACT | GRAVITY;
 		pd->fparam = 0.0000001f;
 	}
-	
-	return 1;
+
+	GRenderer->SetCulling(Renderer::CullNone);
 }
-
-
 
 //-----------------------------------------------------------------------------
 //	FIRE PROTECTION
@@ -388,15 +369,12 @@ CFireProtection::CFireProtection()
 {
 }
 
-//-----------------------------------------------------------------------------
 CFireProtection::~CFireProtection()
 {
-	Entity * io;
 	long iNpc = spells[spellinstance].target;
 
-	if (ValidIONum(iNpc))
-	{
-		io = entities[iNpc];
+	if(ValidIONum(iNpc)) {
+		Entity *io = entities[iNpc];
 		io->halo.flags = 0;
 		io->halo.color.r = 0.8f;
 		io->halo.color.g = 0.8f;
@@ -406,17 +384,14 @@ CFireProtection::~CFireProtection()
 	}
 }
 
-//-----------------------------------------------------------------------------
 void CFireProtection::Create(long _ulDuration)
 {
 	SetDuration(_ulDuration);
 
 	long iNpc = spells[spellinstance].target;
-	Entity * io;
 
-	if (ValidIONum(iNpc))
-	{
-		io = entities[iNpc];
+	if(ValidIONum(iNpc)) {
+		Entity *io = entities[iNpc];
 		io->halo.flags = HALO_ACTIVE;
 		io->halo.color.r = 0.5f;
 		io->halo.color.g = 0.3f;
@@ -426,17 +401,15 @@ void CFireProtection::Create(long _ulDuration)
 	}
 }
 
-//-----------------------------------------------------------------------------
 void CFireProtection::Update(unsigned long _ulTime)
 {
-	if (!arxtime.is_paused()) ulCurrentTime += _ulTime;
+	if(!arxtime.is_paused())
+		ulCurrentTime += _ulTime;
 
 	long iNpc = spells[spellinstance].target;
-	Entity * io;
 
-	if (ValidIONum(iNpc))
-	{
-		io = entities[iNpc];
+	if(ValidIONum(iNpc)) {
+		Entity *io = entities[iNpc];
 		io->halo.flags = HALO_ACTIVE;
 		io->halo.color.r = 0.5f;
 		io->halo.color.g = 0.3f;
@@ -446,10 +419,8 @@ void CFireProtection::Update(unsigned long _ulTime)
 	}
 }
 
-//-----------------------------------------------------------------------------
-float CFireProtection::Render() {
+void CFireProtection::Render() {
 	
-	return 0;
 }
 
 //-----------------------------------------------------------------------------
@@ -459,15 +430,12 @@ CColdProtection::CColdProtection()
 {
 }
 
-//-----------------------------------------------------------------------------
 CColdProtection::~CColdProtection()
 {
-	Entity * io;
 	long iNpc = spells[spellinstance].target;
 
-	if (ValidIONum(iNpc))
-	{
-		io = entities[iNpc];
+	if(ValidIONum(iNpc)) {
+		Entity *io = entities[iNpc];
 		io->halo.flags = 0;
 		io->halo.color.r = 0.8f;
 		io->halo.color.g = 0.8f;
@@ -477,17 +445,14 @@ CColdProtection::~CColdProtection()
 	}
 }
 
-//-----------------------------------------------------------------------------
 void CColdProtection::Create(long _ulDuration, int _iNpc)
 {
 	SetDuration(_ulDuration);
 
 	iNpc = _iNpc;
-	Entity * io;
 
-	if (ValidIONum(iNpc))
-	{
-		io = entities[iNpc];
+	if(ValidIONum(iNpc)) {
+		Entity *io = entities[iNpc];
 		io->halo.flags = HALO_ACTIVE;
 		io->halo.color.r = 0.2f;
 		io->halo.color.g = 0.2f;
@@ -497,17 +462,15 @@ void CColdProtection::Create(long _ulDuration, int _iNpc)
 	}
 }
 
-//-----------------------------------------------------------------------------
 void CColdProtection::Update(unsigned long _ulTime)
 {
-	if (!arxtime.is_paused()) ulCurrentTime += _ulTime;
+	if(!arxtime.is_paused())
+		ulCurrentTime += _ulTime;
 
 	long iNpc = spells[spellinstance].target;
-	Entity * io;
 
-	if (ValidIONum(iNpc))
-	{
-		io = entities[iNpc];
+	if(ValidIONum(iNpc)) {
+		Entity *io = entities[iNpc];
 		io->halo.flags = HALO_ACTIVE;
 		io->halo.color.r = 0.2f;
 		io->halo.color.g = 0.2f;
@@ -517,7 +480,6 @@ void CColdProtection::Update(unsigned long _ulTime)
 	}
 }
 
-float CColdProtection::Render() {
-	
-	return 0;
+void CColdProtection::Render() {
+
 }

@@ -270,7 +270,7 @@ void Input::reset()
 {
 	iMouseR = Vec2s::ZERO;
 
-	Vec2s wndSize((short)mainApp->GetWindow()->getSize().x, (short)mainApp->GetWindow()->getSize().y); 
+	Vec2s wndSize((short)mainApp->getWindow()->getSize().x, (short)mainApp->getWindow()->getSize().y); 
 	Vec2s absPos = wndSize / 2;
 	setMousePosAbs(absPos);
 	
@@ -492,7 +492,7 @@ void Input::update()
 	int absX, absY;
 	mouseInWindow = backend->getAbsoluteMouseCoords(absX, absY);
 	
-	Vec2i wndSize = mainApp->GetWindow()->getSize();
+	Vec2i wndSize = mainApp->getWindow()->getSize();
 	if(absX >= 0 && absX < wndSize.x && absY >= 0 && absY < wndSize.y) {
 		
 		// Use the absolute mouse position reported by the backend, as is

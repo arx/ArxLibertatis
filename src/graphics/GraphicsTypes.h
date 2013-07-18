@@ -74,12 +74,30 @@ struct EERIE_2D_BBOX {
 	Vec2f max;
 };
 
+enum EERIE_TYPES_EXTRAS_MODE
+{
+	EXTRAS_SEMIDYNAMIC       = 0x00000001,
+	EXTRAS_EXTINGUISHABLE    = 0x00000002,
+	EXTRAS_STARTEXTINGUISHED = 0x00000004,
+	EXTRAS_SPAWNFIRE         = 0x00000008,
+	EXTRAS_SPAWNSMOKE        = 0x00000010,
+	EXTRAS_OFF               = 0x00000020,
+	EXTRAS_COLORLEGACY       = 0x00000040,
+	EXTRAS_NOCASTED          = 0x00000080,
+	EXTRAS_FIXFLARESIZE      = 0x00000100,
+	EXTRAS_FIREPLACE         = 0x00000200,
+	EXTRAS_NO_IGNIT          = 0x00000400,
+	EXTRAS_FLARE	         = 0x00000800
+};
+DECLARE_FLAGS(EERIE_TYPES_EXTRAS_MODE, ExtrasType)
+DECLARE_FLAGS_OPERATORS(ExtrasType)
+
 struct EERIE_LIGHT {
 	char exist;
 	char type;
 	char treat;
 	char selected;
-	short extras;
+	ExtrasType extras;
 	short status; // on/off 1/0
 	Vec3f pos;
 	float fallstart;
@@ -107,28 +125,7 @@ struct EERIE_LIGHT {
 	audio::SourceId sample;
 };
 
-enum EERIE_TYPES_EXTRAS_MODE
-{
-	EXTRAS_SEMIDYNAMIC       = 0x00000001,
-	EXTRAS_EXTINGUISHABLE    = 0x00000002,
-	EXTRAS_STARTEXTINGUISHED = 0x00000004,
-	EXTRAS_SPAWNFIRE         = 0x00000008,
-	EXTRAS_SPAWNSMOKE        = 0x00000010,
-	EXTRAS_OFF               = 0x00000020,
-	EXTRAS_COLORLEGACY       = 0x00000040,
-	EXTRAS_NOCASTED          = 0x00000080,
-	EXTRAS_FIXFLARESIZE      = 0x00000100,
-	EXTRAS_FIREPLACE         = 0x00000200,
-	EXTRAS_NO_IGNIT          = 0x00000400,
-	EXTRAS_FLARE	         = 0x00000800
-};
-
 #define TYP_SPECIAL1 1
-
-
-//*************************************************************************************
-// EERIE Types
-//*************************************************************************************
 
 enum PolyTypeFlag {
 	POLY_NO_SHADOW    = (1<<0),
@@ -160,8 +157,8 @@ enum PolyTypeFlag {
 	POLY_ANGULAR_IDX3 = (1<<26),
 	POLY_LATE_MIP     = (1<<27)
 };
-DECLARE_FLAGS(PolyTypeFlag, PolyType);
-DECLARE_FLAGS_OPERATORS(PolyType);
+DECLARE_FLAGS(PolyTypeFlag, PolyType)
+DECLARE_FLAGS_OPERATORS(PolyType)
 
 struct EERIEPOLY {
 	PolyType type;
@@ -201,10 +198,6 @@ struct EERIE_FACE {
 	
 };
 
-
-//***********************************************************************
-//*		BEGIN EERIE OBJECT STRUCTURES									*
-//***********************************************************************
 struct NEIGHBOURS_DATA {
 	short nb_Nvertex;
 	short nb_Nfaces;
@@ -356,8 +349,6 @@ struct EERIE_SELECTIONS {
 	std::vector<long> selected;
 };
 
-#define DRAWFLAG_HIGHLIGHT	1
-
 struct EERIE_FASTACCESS
 {
 	short	view_attach;
@@ -427,7 +418,6 @@ struct EERIE_3DOBJ
 		origin = 0;
 		ident = 0;
 		nbgroups = 0;
-		drawflags = 0;
 
 		vertexlocal = NULL;
 
@@ -488,7 +478,6 @@ struct EERIE_3DOBJ
 	long origin;
 	long ident;
 	long nbgroups;
-	unsigned long drawflags;
 	EERIE_3DPAD * vertexlocal;
 	std::vector<EERIE_VERTEX> vertexlist;
 	std::vector<EERIE_VERTEX> vertexlist3;
@@ -562,18 +551,9 @@ struct EERIE_GROUP
 	Vec3f	zoom;
 };
 
-// Animation playing flags
-#define EA_LOOP			1	// Must be looped at end (indefinitely...)
-#define EA_REVERSE		2	// Is played reversed (from end to start)
-#define EA_PAUSED		4	// Is paused
-#define EA_ANIMEND		8	// Has just finished
-#define	EA_STATICANIM	16	// Is a static Anim (no movement offset returned).
-#define	EA_STOPEND		32	// Must Be Stopped at end.
-#define EA_FORCEPLAY	64	// User controlled... MUST be played...
-#define EA_EXCONTROL	128	// ctime externally set, no update.
 struct EERIE_ANIM
 {
-	float		anim_time;
+	long		anim_time;
 	unsigned long	flag;
 	long		nb_groups;
 	long		nb_key_frames;
@@ -650,7 +630,7 @@ struct SMY_ARXMAT
 	unsigned long uslNbIndiceCull_TSubstractive;
 };
 
-extern long USE_PORTALS;
+extern bool USE_PORTALS;
 extern EERIE_PORTAL_DATA * portals;
 
 #endif // ARX_GRAPHICS_GRAPHICSTYPES_H

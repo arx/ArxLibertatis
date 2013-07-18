@@ -61,7 +61,7 @@ using std::max;
 using std::vector;
 
 //-----------------------------------------------------------------------------
-extern float FrameDiff;
+extern float framedelay;
 long ON_PLATFORM=0;
 //-----------------------------------------------------------------------------
 size_t MAX_IN_SPHERE_Pos = 0;
@@ -89,10 +89,7 @@ inline float IsPolyInCylinder(EERIEPOLY *ep, EERIE_CYLINDER * cyl,long flag)
 
 	if (maxf<ep->min.y) return 999999.f;
 	
-	long to;
-
-	if (ep->type & POLY_QUAD) to=4;
-	else to=3;
+	long to = (ep->type & POLY_QUAD) ? 4 : 3;
 
 	float nearest = 99999999.f;
 
@@ -240,10 +237,7 @@ inline bool IsPolyInSphere(EERIEPOLY *ep, EERIE_SPHERE * sph)
 
 	if (ep->area<100.f) return false;
 
-	long to;
-
-	if (ep->type & POLY_QUAD) to=4;
-	else to=3;
+	long to = (ep->type & POLY_QUAD) ? 4 : 3;
 
 	long r=to-1;
 	Vec3f center;
@@ -511,21 +505,20 @@ float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,Entity * ioo,long flags) {
 	NPC_IN_CYLINDER = 0;
 	
 	long rad = (cyl->radius + 100) * ACTIVEBKG->Xmul;
-	long px,pz;
-	px = cyl->origin.x*ACTIVEBKG->Xmul;
 
-	if (px>ACTIVEBKG->Xsize-2-rad)  
+	long px = cyl->origin.x*ACTIVEBKG->Xmul;
+	long pz = cyl->origin.z*ACTIVEBKG->Zmul;
+
+	if(px > ACTIVEBKG->Xsize-2-rad)
 		return 0.f;
 
-	if (px< 1+rad)  
+	if(px < 1+rad)
 		return 0.f;
 	
-	pz = cyl->origin.z*ACTIVEBKG->Zmul;
-
-	if (pz>ACTIVEBKG->Zsize-2-rad)  
+	if(pz > ACTIVEBKG->Zsize-2-rad)
 		return 0.f;
 
-	if (pz< 1+rad)  
+	if(pz < 1+rad)
 		return 0.f;
 
 	float anything = 999999.f; 
@@ -585,7 +578,7 @@ float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,Entity * ioo,long flags) {
 
 	float tempo;
 	
-	ep=CheckInPolyPrecis(cyl->origin.x,cyl->origin.y+cyl->height,cyl->origin.z,&tempo);
+	ep=CheckInPoly(cyl->origin.x,cyl->origin.y+cyl->height,cyl->origin.z,&tempo);
 	
 	if (ep) 
 		{
@@ -1056,16 +1049,17 @@ EERIEPOLY * CheckBackgroundInSphere(EERIE_SPHERE * sphere) //except source...
 {
 	long rad = sphere->radius*ACTIVEBKG->Xmul;
 	rad+=2;
-	long px,pz;
-	px = sphere->origin.x * ACTIVEBKG->Xmul;
-	pz = sphere->origin.z * ACTIVEBKG->Zmul;
+
+	long px = sphere->origin.x * ACTIVEBKG->Xmul;
+	long pz = sphere->origin.z * ACTIVEBKG->Zmul;
+
+	long spx = std::max(px - rad, 0L);
+	long epx = std::min(px + rad, ACTIVEBKG->Xsize - 1L);
+	long spz = std::max(pz - rad, 0L);
+	long epz = std::min(pz + rad, ACTIVEBKG->Zsize - 1L);
 
 	EERIEPOLY * ep;
 	FAST_BKG_DATA * feg;
-	long spx=max(px-rad,0L);
-	long epx=min(px+rad,ACTIVEBKG->Xsize-1L);
-	long spz=max(pz-rad,0L);
-	long epz=min(pz+rad,ACTIVEBKG->Zsize-1L);
 
 	for (long j=spz;j<=epz;j++)
 	for (long i=spx;i<=epx;i++) 
@@ -1088,159 +1082,151 @@ EERIEPOLY * CheckBackgroundInSphere(EERIE_SPHERE * sphere) //except source...
 	return NULL;	
 }
 
-//-----------------------------------------------------------------------------
-
-bool CheckAnythingInSphere(EERIE_SPHERE * sphere,long source,CASFlags flags,long * num) //except source...
+bool CheckAnythingInSphere(EERIE_SPHERE * sphere, long source, CASFlags flags, long * num) //except source...
 {
-	if (num) *num=-1;
+	if(num)
+		*num=-1;
 
 	long rad = sphere->radius*ACTIVEBKG->Xmul;
 	rad+=2;
-	long px,pz;
-	px = sphere->origin.x*ACTIVEBKG->Xmul;
-	pz = sphere->origin.z*ACTIVEBKG->Zmul;
 
-	EERIEPOLY * ep;
-	FAST_BKG_DATA * feg;
+	long px = sphere->origin.x*ACTIVEBKG->Xmul;
+	long pz = sphere->origin.z*ACTIVEBKG->Zmul;
 
-	if (!(flags & CAS_NO_BACKGROUND_COL))
-	{
-		long spz=max(pz-rad,0L);
-		long epz=min(pz+rad,ACTIVEBKG->Zsize-1L);
-		long spx=max(px-rad,0L);
-		long epx=min(px+rad,ACTIVEBKG->Xsize-1L);
+	if(!(flags & CAS_NO_BACKGROUND_COL)) {
+		long spx = std::max(px - rad, 0L);
+		long epx = std::min(px + rad, ACTIVEBKG->Xsize - 1L);
+		long spz = std::max(pz - rad, 0L);
+		long epz = std::min(pz + rad, ACTIVEBKG->Zsize - 1L);
 
-		for (long j=spz;j<=epz;j++)
-		for (long i=spx;i<=epx;i++) 
-		{
-			feg=&ACTIVEBKG->fastdata[i][j];
+		for(long j = spz; j <= epz; j++)
+		for(long i = spx; i <= epx; i++) {
+			FAST_BKG_DATA *feg=&ACTIVEBKG->fastdata[i][j];
 
-			for (long k=0;k<feg->nbpoly;k++)
-			{
-				ep=&feg->polydata[k];	
+			for(long k = 0; k < feg->nbpoly; k++) {
+				EERIEPOLY *ep=&feg->polydata[k];
 
-				if (ep->type & (POLY_WATER | POLY_TRANS | POLY_NOCOL)) continue;
+				if(ep->type & (POLY_WATER | POLY_TRANS | POLY_NOCOL))
+					continue;
 
-				if (IsPolyInSphere(ep,sphere))
+				if(IsPolyInSphere(ep,sphere))
 					return true;
 			}
 		}	
 	}
 
-	if (flags & CAS_NO_NPC_COL) return false;
+	if(flags & CAS_NO_NPC_COL)
+		return false;
 
-	long validsource=0;
+	bool validsource = false;
 
-	if (flags & CAS_NO_SAME_GROUP) validsource=ValidIONum(source);
+	if(flags & CAS_NO_SAME_GROUP)
+		validsource = ValidIONum(source);
 
-	Entity * io;
 	float sr30=sphere->radius+20.f;
 	float sr40=sphere->radius+30.f;
 	float sr180=sphere->radius+500.f;
 
-	for (long i=0;i<TREATZONE_CUR;i++) 
-	{
+	for(long i = 0; i < TREATZONE_CUR; i++) {
 		
-		if ( (treatio[i].show!=1) ||
-			 (treatio[i].io==NULL) ||
-			 (treatio[i].num==source)
-			  ) continue;
+		if(treatio[i].show != 1 || !treatio[i].io || treatio[i].num == source)
+			continue;
 
-		io=treatio[i].io;
+		Entity * io = treatio[i].io;
 
-		if (!io->obj) continue;
+		if(!io->obj)
+			continue;
 
-		if (!(io->ioflags & IO_NPC) && (io->ioflags & IO_NO_COLLISIONS)) continue;
+		if(!(io->ioflags & IO_NPC) && (io->ioflags & IO_NO_COLLISIONS))
+			continue;
 
-		if ((flags & CAS_NO_DEAD_COL) && (io->ioflags & IO_NPC) && (IsDeadNPC(io))) continue;
+		if((flags & CAS_NO_DEAD_COL) && (io->ioflags & IO_NPC) && IsDeadNPC(io))
+			continue;
 
-		if ((io->ioflags & IO_FIX) && (flags & CAS_NO_FIX_COL)) continue;
+		if((io->ioflags & IO_FIX) && (flags & CAS_NO_FIX_COL))
+			continue;
 
-		if ((io->ioflags & IO_ITEM) && (flags & CAS_NO_ITEM_COL)) continue;
+		if((io->ioflags & IO_ITEM) && (flags & CAS_NO_ITEM_COL))
+			continue;
 
-		if ((treatio[i].num!=0) && (source!=0) 
-				&& validsource && (HaveCommonGroup(io,entities[source])))
-				continue;
+		if(treatio[i].num != 0 && source != 0 && validsource && HaveCommonGroup(io,entities[source]))
+			continue;
 
-			if (io->gameFlags & GFLAG_PLATFORM)					
-				{
-					float miny,maxy;
-					miny=io->bbox3D.min.y;
-					maxy=io->bbox3D.max.y;
+		if(io->gameFlags & GFLAG_PLATFORM) {
+			float miny,maxy;
+			miny=io->bbox3D.min.y;
+			maxy=io->bbox3D.max.y;
 
-					if (	(maxy> sphere->origin.y-sphere->radius) 
-						||	(miny< sphere->origin.y+sphere->radius) )
-					if (In3DBBoxTolerance(&sphere->origin,&io->bbox3D,sphere->radius))
-					{
-						if(closerThan(Vec2f(io->pos.x, io->pos.z), Vec2f(sphere->origin.x, sphere->origin.z), 440.f + sphere->radius)) {
-							
-							EERIEPOLY ep;
-							ep.type=0;
+			if (	(maxy> sphere->origin.y-sphere->radius)
+				||	(miny< sphere->origin.y+sphere->radius) )
+			if (In3DBBoxTolerance(&sphere->origin,&io->bbox3D,sphere->radius))
+			{
+				if(closerThan(Vec2f(io->pos.x, io->pos.z), Vec2f(sphere->origin.x, sphere->origin.z), 440.f + sphere->radius)) {
 
-							for (size_t ii=0;ii<io->obj->facelist.size();ii++)
-							{
-								float cx=0;
-								float cz=0;
+					EERIEPOLY ep;
+					ep.type=0;
 
-								for (long kk=0;kk<3;kk++)
-								{
-									cx+=ep.v[kk].p.x=io->obj->vertexlist3[io->obj->facelist[ii].vid[kk]].v.x;
-										ep.v[kk].p.y=io->obj->vertexlist3[io->obj->facelist[ii].vid[kk]].v.y;
-									cz+=ep.v[kk].p.z=io->obj->vertexlist3[io->obj->facelist[ii].vid[kk]].v.z;
-								}
+					for(size_t ii = 0; ii < io->obj->facelist.size(); ii++) {
+						float cx=0;
+						float cz=0;
 
-								cx*=( 1.0f / 3 );
-								cz*=( 1.0f / 3 );
-
-								for (int kk=0;kk<3;kk++)
-								{
-									ep.v[kk].p.x=(ep.v[kk].p.x-cx)*3.5f+cx;
-									ep.v[kk].p.z=(ep.v[kk].p.z-cz)*3.5f+cz;
-								}
-
-								if (PointIn2DPolyXZ(&ep, sphere->origin.x, sphere->origin.z)) 
-								{		
-									if (num) *num=treatio[i].num;
-
-									return true;
-								}
-							}
+						for(long kk = 0; kk < 3; kk++) {
+							cx+=ep.v[kk].p.x=io->obj->vertexlist3[io->obj->facelist[ii].vid[kk]].v.x;
+								ep.v[kk].p.y=io->obj->vertexlist3[io->obj->facelist[ii].vid[kk]].v.y;
+							cz+=ep.v[kk].p.z=io->obj->vertexlist3[io->obj->facelist[ii].vid[kk]].v.z;
 						}
-					}
-				}
 
-			if(distSqr(io->pos, sphere->origin) < square(sr180)) {
-				long amount=1;
-				vector<EERIE_VERTEX> & vlist=io->obj->vertexlist3;
+						cx*=( 1.0f / 3 );
+						cz*=( 1.0f / 3 );
 
-				if (io->obj->nbgroups>4)
-				{
-					for (long ii=0;ii<io->obj->nbgroups;ii++)
-					{								
-						if (distSqr(vlist[io->obj->grouplist[ii].origin].v, sphere->origin) < square(sr40)) {
-							if (num) *num=treatio[i].num;
+						for(int kk = 0; kk < 3; kk++) {
+							ep.v[kk].p.x=(ep.v[kk].p.x-cx)*3.5f+cx;
+							ep.v[kk].p.z=(ep.v[kk].p.z-cz)*3.5f+cz;
+						}
+
+						if(PointIn2DPolyXZ(&ep, sphere->origin.x, sphere->origin.z)) {
+							if(num)
+								*num=treatio[i].num;
 
 							return true;
 						}
 					}
-
-					amount=2;
 				}
+			}
+		}
 
-				for (size_t ii=0;ii<io->obj->facelist.size();ii+=amount)
-				{
+		if(distSqr(io->pos, sphere->origin) < square(sr180)) {
+			long amount=1;
+			vector<EERIE_VERTEX> & vlist=io->obj->vertexlist3;
 
-					if (io->obj->facelist[ii].facetype & POLY_HIDE) continue;
+			if(io->obj->nbgroups > 4) {
+				for(long ii = 0; ii < io->obj->nbgroups; ii++) {
+					if(distSqr(vlist[io->obj->grouplist[ii].origin].v, sphere->origin) < square(sr40)) {
+						if(num)
+							*num = treatio[i].num;
 
-					if(distSqr(vlist[io->obj->facelist[ii].vid[0]].v, sphere->origin) < square(sr30)
-					   || distSqr(vlist[io->obj->facelist[ii].vid[1]].v, sphere->origin) < square(sr30)) {
-						if (num) *num=treatio[i].num;
 						return true;
 					}
 				}
+
+				amount=2;
 			}
-		
+
+			for(size_t ii = 0; ii < io->obj->facelist.size(); ii += amount) {
+
+				if(io->obj->facelist[ii].facetype & POLY_HIDE)
+					continue;
+
+				if(distSqr(vlist[io->obj->facelist[ii].vid[0]].v, sphere->origin) < square(sr30)
+				   || distSqr(vlist[io->obj->facelist[ii].vid[1]].v, sphere->origin) < square(sr30)) {
+					if(num)
+						*num = treatio[i].num;
+
+					return true;
+				}
+			}
 		}
+	}
 
 	return false;	
 }
@@ -1690,101 +1676,83 @@ bool ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip,Entity * io,float MOVE_CYLINDER
 	return true;
 }
 
-//-----------------------------------------------------------------------------
-bool IO_Visible(Vec3f * orgn, Vec3f * dest,EERIEPOLY * epp,Vec3f * hit)
+//TODO copy-paste
+bool IO_Visible(Vec3f * orgn, Vec3f * dest, EERIEPOLY * epp, Vec3f * hit)
 {
-	
-
-	float x,y,z; //current ray pos
-	float dx,dy,dz; // ray incs
-	float adx,ady,adz; // absolute ray incs
 	float ix,iy,iz;
 	long px,pz;
-	EERIEPOLY * ep;
+	EERIEPOLY *ep;
 
-	FAST_BKG_DATA * feg;
-	float pas=35.f;
+	FAST_BKG_DATA *feg;
+	float pas = 35.f;
  
-
 	Vec3f found_hit = Vec3f::ZERO;
-	EERIEPOLY * found_ep=NULL;
+	EERIEPOLY *found_ep = NULL;
 	float iter,t;
 
-	x=orgn->x;
-	y=orgn->y;
-	z=orgn->z;
+	//current ray pos
+	float x = orgn->x;
+	float y = orgn->y;
+	float z = orgn->z;
+
 	float distance;
 	float nearest = distance = fdist(*orgn, *dest);
 
-	if (distance<pas) pas=distance*( 1.0f / 2 );
+	if(distance < pas)
+		pas = distance * .5f;
 
-	dx=(dest->x-orgn->x);
-	adx=EEfabs(dx);
-	dy=(dest->y-orgn->y);
-	ady=EEfabs(dy);
-	dz=(dest->z-orgn->z);
-	adz=EEfabs(dz);
+	// ray incs
+	float dx = (dest->x - orgn->x);
+	float dy = (dest->y - orgn->y);
+	float dz = (dest->z - orgn->z);
 
-	if ( (adx>=ady) && (adx>=adz)) 
-	{
-		if (adx != dx)
-		{
+	// absolute ray incs
+	float adx = EEfabs(dx);
+	float ady = EEfabs(dy);
+	float adz = EEfabs(dz);
+
+	if(adx >= ady && adx >= adz) {
+		if(adx != dx)
 			ix = -pas;
-		}
 		else
-		{
 			ix = pas;
-		}
 
-		iter=adx/pas;
-		t=1.f/(iter);
-		iy=dy*t;
-		iz=dz*t;
-	}
-	else if ( (ady>=adx) && (ady>=adz)) 
-	{
-		if (ady != dy)
-		{
+		iter = adx / pas;
+		t = 1.f / (iter);
+		iy = dy * t;
+		iz = dz * t;
+	} else if(ady >= adx && ady >= adz) {
+		if(ady != dy)
 			iy = -pas;
-		}
 		else
-		{
 			iy = pas;
-		}
 
-		iter=ady/pas;
-		t=1.f/(iter);
-		ix=dx*t;
-		iz=dz*t;
-	}
-	else 
-	{
-		if (adz != dz)
-		{
+		iter = ady / pas;
+		t = 1.f / (iter);
+		ix = dx * t;
+		iz = dz * t;
+	} else {
+		if(adz != dz)
 			iz = -pas;
-		}
 		else
-		{
 			iz = pas;
-		}
 
-		iter=adz/pas;
-		t=1.f/(iter);
-		ix=dx*t;
-		iy=dy*t;
+		iter = adz / pas;
+		t = 1.f / (iter);
+		ix = dx * t;
+		iy = dy * t;
 	}
 
 	float dd;
-	x-=ix;
-	y-=iy;
-	z-=iz;
+	x -= ix;
+	y -= iy;
+	z -= iz;
 
-	while (iter>0.f) 
-	{
-		iter-=1.f;
-		x+=ix;
-		y+=iy;
-		z+=iz;
+	while(iter > 0.f) {
+		iter -= 1.f;
+		x += ix;
+		y += iy;
+		z += iz;
 
 		EERIE_SPHERE sphere;
 		sphere.origin.x=x;
@@ -1812,28 +1780,23 @@ bool IO_Visible(Vec3f * orgn, Vec3f * dest,EERIEPOLY * epp,Vec3f * hit)
 			}
 		}
 
-		px=(long)(x* ACTIVEBKG->Xmul);
-		pz=(long)(z* ACTIVEBKG->Zmul);
+		px = (long)(x * ACTIVEBKG->Xmul);
+		pz = (long)(z * ACTIVEBKG->Zmul);
 
-		if (px>=ACTIVEBKG->Xsize)		goto fini;
-		else if (px< 0)					goto fini;
+		if(px < 0 || px >= ACTIVEBKG->Xsize || pz < 0 || pz >= ACTIVEBKG->Zsize)
+			goto fini;
 
-		if (pz>= ACTIVEBKG->Zsize)		goto fini;
-		else if (pz< 0)					goto fini;
+			feg = &ACTIVEBKG->fastdata[px][pz];
 
-			feg=&ACTIVEBKG->fastdata[px][pz];
-
-			for (long k=0;k<feg->nbpolyin;k++)
-			{
-				ep=feg->polyin[k];	
+			for (long k = 0; k < feg->nbpolyin; k++) {
+				ep = feg->polyin[k];
 
 				if (!(ep->type & (POLY_WATER | POLY_TRANS | POLY_NOCOL) ) )
-				if ((ep->min.y-pas<y) && (ep->max.y+pas>y))
-				if ((ep->min.x-pas<x) && (ep->max.x+pas>x))
-				if ((ep->min.z-pas<z) && (ep->max.z+pas>z))
+				if ((ep->min.y - pas < y) && (ep->max.y + pas > y))
+				if ((ep->min.x - pas < x) && (ep->max.x + pas > x))
+				if ((ep->min.z - pas < z) && (ep->max.z + pas > z))
 				{
-					if (RayCollidingPoly(orgn,dest,ep,hit)) 
-					{
+					if(RayCollidingPoly(orgn, dest, ep, hit)) {
 						dd = fdist(*orgn, *hit);
 						if(dd < nearest) {
 							nearest = dd;
@@ -1849,13 +1812,17 @@ bool IO_Visible(Vec3f * orgn, Vec3f * dest,EERIEPOLY * epp,Vec3f * hit)
 fini:
 	;
 	
-	if ( found_ep == NULL ) return true;
+	if(!found_ep)
+		return true;
 
-	if ( found_ep == epp ) return true;
+	if(found_ep == epp)
+		return true;
 	
 	*hit = found_hit;
+
 	return false;
 }
+
 void ANCHOR_BLOCK_Clear()
 {
 	EERIE_BACKGROUND * eb=ACTIVEBKG;

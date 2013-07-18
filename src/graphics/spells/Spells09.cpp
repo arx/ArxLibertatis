@@ -40,7 +40,6 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-// Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
 
 #include "graphics/spells/Spells09.h"
 
@@ -85,16 +84,10 @@ void CSummonCreature::SetDuration(const unsigned long alDuration)
 {
 	ulDurationIntro			=	alDuration;
 
-	if (ulDurationIntro <= 0)
-	{
+	if(ulDurationIntro <= 0)
 		ulDurationIntro	=	100;
-	}
-	else if (ulDurationIntro >= 100000)
-	{
+	else if(ulDurationIntro >= 100000)
 		ulDurationIntro	=	100000;
-	}
-
-
 
 	fOneOnDurationIntro		=	1.f / (float)(ulDurationIntro);
 
@@ -107,23 +100,28 @@ void CSummonCreature::SetDuration(const unsigned long alDuration)
 	ulCurrentTime			=	0;
 }
 
-//-----------------------------------------------------------------------------
 void CSummonCreature::SetDuration(unsigned long alDurationIntro, unsigned long alDurationRender, unsigned long alDurationOuttro)
 {
-	if (alDurationIntro <= 0) alDurationIntro = 100;
-	else if (alDurationIntro >= 100000) alDurationIntro = 100000;
+	if(alDurationIntro <= 0)
+		alDurationIntro = 100;
+	else if(alDurationIntro >= 100000)
+		alDurationIntro = 100000;
 
 	ulDurationIntro = alDurationIntro;
 	fOneOnDurationIntro = 1.f / (float)(ulDurationIntro);
 
-	if (alDurationRender <= 0) alDurationRender = 100;
-	else if (alDurationRender >= 100000) alDurationRender = 100000;
+	if(alDurationRender <= 0)
+		alDurationRender = 100;
+	else if(alDurationRender >= 100000)
+		alDurationRender = 100000;
 
 	ulDurationRender = alDurationRender;
 	fOneOnDurationRender = 1.f / (float)(ulDurationRender);
 
-	if (alDurationOuttro <= 0) alDurationOuttro = 100;
-	else if (alDurationOuttro >= 100000) alDurationOuttro = 100000;
+	if(alDurationOuttro <= 0)
+		alDurationOuttro = 100;
+	else if(alDurationOuttro >= 100000)
+		alDurationOuttro = 100000;
 
 	ulDurationOuttro = alDurationOuttro;
 	fOneOnDurationOuttro = 1.f / (float)(ulDurationOuttro);
@@ -147,7 +145,6 @@ unsigned long CSummonCreature::GetDuration() {
 	return (ulDurationIntro + ulDurationRender + ulDurationOuttro);
 }
 
-//-----------------------------------------------------------------------------
 void CSummonCreature::Create(Vec3f aeSrc, float afBeta)
 {
 	int i;
@@ -170,8 +167,7 @@ void CSummonCreature::Create(Vec3f aeSrc, float afBeta)
 	end = 40 - 1;
 	bIntro = true;
 
-	for (i = 0; i < 40; i++)
-	{
+	for(i = 0; i < 40; i++) {
 		tfRaysa[i] = 0.4f * rnd();
 		tfRaysb[i] = 0.4f * rnd(); 
 	}
@@ -193,29 +189,24 @@ void CSummonCreature::Create(Vec3f aeSrc, float afBeta)
 	// check de la conformité du split
 	// sinon recalc de l'un de l'autre ou des deux
 	// espace min
-	for (i = 0; i < 40; i++)
-	{
-		if (v1a[i].p.x > v1b[i].p.x)
-		{
+	for(i = 0; i < 40; i++) {
+		if(v1a[i].p.x > v1b[i].p.x) {
 			float fTemp = v1a[i].p.x;
 			v1a[i].p.x = v1b[i].p.x;
 			v1b[i].p.x = fTemp;
 		}
 
-		if (v1a[i].p.z > v1b[i].p.z)
-		{
+		if(v1a[i].p.z > v1b[i].p.z) {
 			float fTemp = v1a[i].p.z;
 			v1a[i].p.z = v1b[i].p.z;
 			v1b[i].p.z = fTemp;
 		}
 
-		if ((v1b[i].p.x - v1a[i].p.x) > 20)
-		{
+		if((v1b[i].p.x - v1a[i].p.x) > 20) {
 			v1b[i].p.x = v1a[i].p.x + rnd() * 20.0f;
 		}
 
-		if ((v1b[i].p.z - v1a[i].p.z) > 20)
-		{
+		if((v1b[i].p.z - v1a[i].p.z) > 20) {
 			v1b[i].p.z = v1a[i].p.z + rnd() * 20.0f;
 		}
 	}
@@ -227,15 +218,12 @@ void CSummonCreature::Create(Vec3f aeSrc, float afBeta)
 	sizeF = 0;
 }
 
-//-----------------------------------------------------------------------------
 void CSummonCreature::Split(TexturedVertex * v, int a, int b, float yo)
 {
-	if (a != b)
-	{
+	if(a != b) {
 		int i = (int)((a + b) * 0.5f);
 
-		if ((i != a) && (i != b))
-		{
+		if((i != a) && (i != b)) {
 			v[i].p.x = (v[a].p.x + v[b].p.x) * 0.5f + yo * frand2() * (sizeF * 0.005f) * fBetaRadCos;
 			v[i].p.y = v[0].p.y + (i + 1) * 5;
 			v[i].p.z = (v[a].p.z + v[b].p.z) * 0.5f + yo * frand2() * (sizeF * 0.005f) * fBetaRadSin;
@@ -245,7 +233,6 @@ void CSummonCreature::Split(TexturedVertex * v, int a, int b, float yo)
 	}
 }
 
-//-----------------------------------------------------------------------------
 void CSummonCreature::RenderFissure()
 {
 	int i;
@@ -263,16 +250,11 @@ void CSummonCreature::RenderFissure()
 	// computation des sommets
 	float fTempCos, fTempSin;
 
-	for (i = 0; i <= std::min(end, int(fSizeIntro)); i++)
-	{
-		if (i <= end * 0.5f)
-		{
+	for(i = 0; i <= std::min(end, int(fSizeIntro)); i++) {
+		if(i <= end * 0.5f)
 			ff = i / (end * 0.5f);
-		}
 		else
-		{
 			ff = 1.0f - ((i - (end + 1) * 0.5f) / (end * 0.5f));
-		}
 
 		fTempCos = ff * fBetaRadCos;
 		fTempSin = ff * fBetaRadSin;
@@ -296,36 +278,23 @@ void CSummonCreature::RenderFissure()
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	vr[0].color = vr[1].color = vr[2].color = vr[3].color = Color::black.toBGR();
 
-	if (bIntro)
-	{
-		for (i = 0; i < std::min(end, (int)fSizeIntro); i++)
-		{
+	if(bIntro) {
+		for(i = 0; i < std::min(end, (int)fSizeIntro); i++) {
 			EE_RT2(&v1a[i], &vr[0]);
 			EE_RT2(&v1b[i], &vr[1]);
 			EE_RT2(&v1a[i+1], &vr[2]);
 			EE_RT2(&v1b[i+1], &vr[3]);
-			ARX_DrawPrimitive(&vr[0],
-			                             &vr[1],
-			                             &vr[2]);
-			ARX_DrawPrimitive(&vr[1],
-			                             &vr[2],
-			                             &vr[3]);
+			ARX_DrawPrimitive(&vr[0], &vr[1], &vr[2]);
+			ARX_DrawPrimitive(&vr[1], &vr[2], &vr[3]);
 		}
-	}
-	else
-	{
-		for (i = 0; i < std::min(end, (int)fSizeIntro); i++)
-		{
+	} else {
+		for(i = 0; i < std::min(end, (int)fSizeIntro); i++) {
 			EE_RT2(&va[i], &vr[0]);
 			EE_RT2(&vb[i], &vr[1]);
 			EE_RT2(&va[i+1], &vr[2]);
 			EE_RT2(&vb[i+1], &vr[3]);
-			ARX_DrawPrimitive(&vr[0],
-			                             &vr[1],
-			                             &vr[2]);
-			ARX_DrawPrimitive(&vr[1],
-			                             &vr[2],
-			                             &vr[3]);
+			ARX_DrawPrimitive(&vr[0], &vr[1], &vr[2]);
+			ARX_DrawPrimitive(&vr[1], &vr[2], &vr[3]);
 		}
 	}
 
@@ -335,8 +304,7 @@ void CSummonCreature::RenderFissure()
 	vr[0].color = vr[1].color = Color::black.toBGR();
 	vr[2].color = vr[3].color = fColorBorder.toBGR();
 
-	for (i = 0; i < std::min(end, (int)fSizeIntro); i++)
-	{
+	for(i = 0; i < std::min(end, (int)fSizeIntro); i++) {
 		vt[2].p = va[i].p - (va[i].p - eSrc) * 0.2f;
 		vt[3].p = va[i + 1].p - (va[i + 1].p - eSrc) * 0.2f;
 		
@@ -356,7 +324,6 @@ void CSummonCreature::RenderFissure()
 		EE_RT2(&vt[3], &vr[0]);
 		ARX_DrawPrimitive(&vr[0], &vr[1], &vr[2]);
 		ARX_DrawPrimitive(&vr[1], &vr[2], &vr[3]);
-		
 	}
 
 	//-------------------------------------------------------------------------
@@ -424,7 +391,6 @@ void CSummonCreature::RenderFissure()
 	}
 }
 
-//-----------------------------------------------------------------------------
 void CSummonCreature::Update(unsigned long _ulTime)
 {
 	ulCurrentTime += _ulTime;
@@ -432,9 +398,10 @@ void CSummonCreature::Update(unsigned long _ulTime)
 
 //-----------------------------------------------------------------------------
 // rendu de la déchirure spatio temporelle
-float CSummonCreature::Render()
+void CSummonCreature::Render()
 {
-	if (ulCurrentTime >= (ulDurationIntro + ulDurationRender + ulDurationOuttro)) return 0.f;
+	if(ulCurrentTime >= (ulDurationIntro + ulDurationRender + ulDurationOuttro))
+		return;
 
 	GRenderer->ResetTexture(0);
 	GRenderer->SetCulling(Renderer::CullNone);
@@ -447,23 +414,17 @@ float CSummonCreature::Render()
 	//-------------------------------------------------------------------------
 	fTexWrap += 0.02f;
 
-	if (fTexWrap >= 1.0f)
-	{
+	if(fTexWrap >= 1.0f)
 		fTexWrap -= 1.0f;
-	}
 
 	//-------------------------------------------------------------------------
 	// render intro (opening + rays)
-	if (ulCurrentTime < ulDurationIntro)
-	{
-		if (ulCurrentTime < ulDurationIntro * 0.666f)
-		{
+	if(ulCurrentTime < ulDurationIntro) {
+		if(ulCurrentTime < ulDurationIntro * 0.666f) {
 			fSizeIntro = (end + 2) * fOneOnDurationIntro * (1.5f) * ulCurrentTime;
 			sizeF = 1;
-		}
-		else
-		{
-			if (bIntro != false)
+		} else {
+			if(bIntro != false)
 				bIntro = false;
 
 			sizeF = (iSize) * (fOneOnDurationIntro * 3) * (ulCurrentTime - ulDurationIntro * 0.666f);
@@ -489,20 +450,18 @@ float CSummonCreature::Render()
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
 
-	return (fSizeIntro / end);
+	//return (fSizeIntro / end);
 }
 
 // INCINERATE
 CIncinerate::~CIncinerate() { }
 
-//-----------------------------------------------------------------------------
 void CIncinerate::Create(Vec3f _eSrc, float _fBeta, float _fLevel)
 {
 	iMax = (int)(30 + _fLevel * 5.2f);
 	Create(_eSrc, _fBeta);
 }
 
-//-----------------------------------------------------------------------------
 void CIncinerate::Create(Vec3f _eSrc, float _fBeta)
 {
 	SetDuration(ulDuration);
@@ -534,8 +493,7 @@ void CIncinerate::Create(Vec3f _eSrc, float _fBeta)
 
 	float fd;
 
-	if (!Visible(&s, &e, NULL, &h))
-	{
+	if(!Visible(&s, &e, NULL, &h)) {
 		e.x = h.x + fBetaRadSin * 20;
 		e.y = h.y;
 		e.z = h.z - fBetaRadCos * 20;
@@ -614,7 +572,6 @@ void CIncinerate::Create(Vec3f _eSrc, float _fBeta)
 	pPSStream.Update(0);
 
 
-
 	// Hit
 	cp.iNbMax = 150; 
 	cp.fLife = 2000;
@@ -672,7 +629,6 @@ void CIncinerate::Create(Vec3f _eSrc, float _fBeta)
 
 }
 
-//---------------------------------------------------------------------
 void CIncinerate::Update(unsigned long _ulTime)
 {
 	ulCurrentTime += _ulTime;
@@ -684,13 +640,14 @@ void CIncinerate::Update(unsigned long _ulTime)
 
 	iMax = (int)((40) * fOneOnDuration * ulCurrentTime); //*2
 
-	if (iMax > 40) iMax = 40;
+	if(iMax > 40)
+		iMax = 40;
 	
 	et = tv1a[iMax].p;
 	pPSStream.SetPos(et);
 }
 
-float CIncinerate::Render() {
+void CIncinerate::Render() {
 	
 	GRenderer->SetCulling(Renderer::CullNone);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
@@ -706,17 +663,13 @@ float CIncinerate::Render() {
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	
 	pPSStream.Render();
-	
-	return 1;
 }
 
-//-----------------------------------------------------------------------------
 CNegateMagic::~CNegateMagic()
 {
 	ssol_count--;
 
-	if (ssol && (ssol_count <= 0))
-	{
+	if(ssol && ssol_count <= 0) {
 		ssol_count = 0;
 		delete ssol;
 		ssol = NULL;
@@ -761,7 +714,7 @@ void CNegateMagic::Update(unsigned long _ulTime) {
 	ulCurrentTime += _ulTime;
 }
 
-float CNegateMagic::Render() {
+void CNegateMagic::Render() {
 	
 	int i = 0;
 	
@@ -773,10 +726,8 @@ float CNegateMagic::Render() {
 	
 	Vec3f stitepos = eSrc - Vec3f(0.f, 10.f, 0.f);
 
-	if (ulCurrentTime >= ulDuration)
-	{
-		return 0.f;
-	}
+	if(ulCurrentTime >= ulDuration)
+		return;
 
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
@@ -812,13 +763,11 @@ float CNegateMagic::Render() {
 	Anglef stiteangle(0.f, -(float) ulCurrentTime * fOneOnDuration * 120, 0.f);
 	Color3f stitecolor = Color3f::gray(.4f);
 	Vec3f stitescale = Vec3f::repeat(3.f);
-	DrawEERIEObjEx(ssol, &stiteangle, &stitepos, &stitescale, &stitecolor);
+	DrawEERIEObjEx(ssol, &stiteangle, &stitepos, &stitescale, stitecolor);
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	stitecolor = Color3f(.5f, 0.f, .5f);
 	stitescale = Vec3f::repeat(3.1f);
-	DrawEERIEObjEx(ssol, &stiteangle, &stitepos, &stitescale, &stitecolor);
-
-	return 1;
+	DrawEERIEObjEx(ssol, &stiteangle, &stitepos, &stitescale, stitecolor);
 }
 
 //----------------------------------------------------------------------
@@ -829,24 +778,20 @@ void CMassParalyse::Update(unsigned long _ulTime)
 {
 	ulCurrentTime += _ulTime;
 
-	if (ulCurrentTime < ulDuration)
-	{
+	if(ulCurrentTime < ulDuration) {
 		int nb = entities.size(), nb2;
 
-		while (nb--)
-		{
-			if (entities[nb])
-			{
+		while(nb--) {
+			if(entities[nb]) {
 				if(!fartherThan(ePos, entities[nb]->pos, fRayon)) {
 					nb2 = iNbParalyse;
 
-					while (nb2--)
-					{
-						if (tabparalyse[nb2].id == nb) break;
+					while(nb2--) {
+						if(tabparalyse[nb2].id == nb)
+							break;
 					}
 
-					if (nb2 < 0)
-					{
+					if(nb2 < 0) {
 						tabparalyse[iNbParalyse].id = nb;
 						tabparalyse[iNbParalyse].paralyse = new CParalyse();
 						(tabparalyse[iNbParalyse].paralyse)->Create(4, 50, 200.f, 150.f, &entities[nb]->pos, 10000);
@@ -858,24 +803,20 @@ void CMassParalyse::Update(unsigned long _ulTime)
 
 		nb = iNbParalyse;
 
-		while (nb--)
-		{
+		while(nb--) {
 			tabparalyse[nb].paralyse->Update(_ulTime);
 		}
 	}
 }
 
-//----------------------------------------------------------------------
-float CMassParalyse::Render()
+void CMassParalyse::Render()
 {
-	if (ulCurrentTime > ulDuration) return 0;
+	if(ulCurrentTime > ulDuration)
+		return;
 
 	int	nb = iNbParalyse;
 
-	while (nb--)
-	{
+	while(nb--) {
 		(tabparalyse[nb].paralyse)->Render();
 	}
-
-	return 0;
 }

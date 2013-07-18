@@ -161,6 +161,7 @@ struct ARXCHARACTER {
 	Entity * leftIO;
 	Entity * equipsecondaryIO;
 	Entity * equipshieldIO;
+	Entity * torch;
 	
 	short equiped[MAX_EQUIPED]; 
 	
@@ -311,7 +312,6 @@ extern ANIM_HANDLE * herowait_2h;
 extern std::vector<STRUCT_QUEST> PlayerQuest;
 extern std::vector<KEYRING_SLOT> Keyring;
 
-extern float DeadCameraDistance;
 extern long BLOCK_PLAYER_CONTROLS;
 extern long USE_PLAYERCOLLISIONS;
 extern long WILLRETURNTOCOMBATMODE;

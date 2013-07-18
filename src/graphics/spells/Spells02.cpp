@@ -40,7 +40,6 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-// Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
 
 #include "graphics/spells/Spells02.h"
 
@@ -60,8 +59,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Light.h"
 #include "scene/Interactive.h"
 
-CHeal::CHeal()
-{
+CHeal::CHeal() {
 	SetDuration(1000);
 	ulCurrentTime = ulDuration + 1;
 
@@ -69,7 +67,8 @@ CHeal::CHeal()
 }
 
 CHeal::~CHeal() {
-	delete pPS, pPS = NULL;
+	delete pPS;
+	pPS = NULL;
 }
 
 void CHeal::Create() {
@@ -84,8 +83,7 @@ void CHeal::Create() {
 	
 	pPS->lLightId = GetFreeDynLight();
 
-	if (pPS->lLightId != -1)
-	{
+	if(pPS->lLightId != -1) {
 		long id = pPS->lLightId;
 		DynLight[id].exist = 1;
 		DynLight[id].intensity = 2.3f;
@@ -153,15 +151,12 @@ void CHeal::Create() {
 	fSize = 1;
 }
 
-//---------------------------------------------------------------------
 void CHeal::Update(unsigned long aulTime)
 {
 	ulCurrentTime += aulTime;
 
-	if (ulCurrentTime >= ulDuration)
-	{
+	if(ulCurrentTime >= ulDuration)
 		return;
-	}
 	
 	if(spells[spellinstance].caster == 0) {
 		eSrc = player.pos;
@@ -169,11 +164,10 @@ void CHeal::Update(unsigned long aulTime)
 		eSrc = entities[spells[spellinstance].target]->pos;
 	}
 	
-	if (pPS->lLightId == -1)
+	if(pPS->lLightId == -1)
 		pPS->lLightId = GetFreeDynLight();
 
-	if (pPS->lLightId != -1)
-	{
+	if(pPS->lLightId != -1) {
 		long id = pPS->lLightId;
 		DynLight[id].exist = 1;
 		DynLight[id].intensity = 2.3f;
@@ -193,24 +187,20 @@ void CHeal::Update(unsigned long aulTime)
 	arx_assert(ulCalc <= LONG_MAX);
 	long ff = static_cast<long>(ulCalc);
 
-	if (ff < 1500)
-	{
+	if(ff < 1500) {
 		pPS->uMaxParticles = 0;
 		pPS->ulParticleSpawn = PARTICLE_CIRCULAR;
 		pPS->p3ParticleGravity = Vec3f::ZERO;
 
 		std::list<Particle *>::iterator i;
 
-		for (i = pPS->listParticle.begin(); i != pPS->listParticle.end(); ++i)
-		{
+		for(i = pPS->listParticle.begin(); i != pPS->listParticle.end(); ++i) {
 			Particle * pP = *i;
 
-			if (pP->isAlive())
-			{
+			if(pP->isAlive()) {
 				pP->fColorEnd[3] = 0;
 
-				if (pP->ulTime + ff < pP->ulTTL)
-				{
+				if(pP->ulTime + ff < pP->ulTTL) {
 					pP->ulTime = pP->ulTTL - ff;
 				}
 			}
@@ -221,17 +211,11 @@ void CHeal::Update(unsigned long aulTime)
 	pPS->Update(aulTime);
 }
 
-//---------------------------------------------------------------------
-float CHeal::Render()
-{
-	if (ulCurrentTime >= ulDuration)
-	{
-		return 0.f;
-	}
+void CHeal::Render() {
+	if(ulCurrentTime >= ulDuration)
+		return;
 
 	pPS->Render();
-
-	return 1;
 }
 
 //-----------------------------------------------------------------------------
@@ -241,23 +225,19 @@ CArmor::CArmor()
 {
 }
 
-//-----------------------------------------------------------------------------
 CArmor::~CArmor()
 {
 }
 
-//-----------------------------------------------------------------------------
 void CArmor::Create(long _ulDuration) {
 	
 	SetDuration(_ulDuration);
 
-	if (spellinstance != -1)
-	{
+	if(spellinstance != -1) {
 
 		Entity * io = entities[spells[spellinstance].caster];
 
-		if ((io) && (!io->halo.flags & HALO_ACTIVE))
-		{
+		if(io && !(io->halo.flags & HALO_ACTIVE)) {
 			io->halo.flags |= HALO_ACTIVE;
 			io->halo.color.r = 0.5f;
 			io->halo.color.g = 0.5f;
@@ -266,22 +246,20 @@ void CArmor::Create(long _ulDuration) {
 			io->halo.dynlight = -1;
 			spells[spellinstance].longinfo = 1;
 		}
-		else spells[spellinstance].longinfo = 0;
+		else
+			spells[spellinstance].longinfo = 0;
 	}
 }
 
-//-----------------------------------------------------------------------------
 void CArmor::Update(unsigned long _ulTime)
 {
-	if (!arxtime.is_paused()) ulCurrentTime += _ulTime;
+	if(!arxtime.is_paused())
+		ulCurrentTime += _ulTime;
 }
 
-//-----------------------------------------------------------------------------
-float CArmor::Render() {
+void CArmor::Render() {
 	
-	return 0;
 }
-
 
 //-----------------------------------------------------------------------------
 // LOWER ARMOR
@@ -290,22 +268,18 @@ CLowerArmor::CLowerArmor()
 {
 }
 
-//-----------------------------------------------------------------------------
 CLowerArmor::~CLowerArmor()
 {
 }
 
-//-----------------------------------------------------------------------------
 void CLowerArmor::Create(long _ulDuration) {
 	
 	SetDuration(_ulDuration);
 
-	if (spellinstance != -1)
-	{
+	if(spellinstance != -1) {
 		Entity * io = entities[spells[spellinstance].target];
 
-		if ((io) && (!io->halo.flags & HALO_ACTIVE))
-		{
+		if(io && !(io->halo.flags & HALO_ACTIVE)) {
 			io->halo.flags |= HALO_ACTIVE;
 			io->halo.color.r = 1.f;
 			io->halo.color.g = 0.05f;
@@ -314,18 +288,17 @@ void CLowerArmor::Create(long _ulDuration) {
 			io->halo.dynlight = -1;
 			spells[spellinstance].longinfo = 1;
 		}
-		else spells[spellinstance].longinfo = 0;
+		else
+			spells[spellinstance].longinfo = 0;
 	}
 }
 
-//-----------------------------------------------------------------------------
 void CLowerArmor::Update(unsigned long _ulTime)
 {
-	if (!arxtime.is_paused()) ulCurrentTime += _ulTime;
+	if(!arxtime.is_paused())
+		ulCurrentTime += _ulTime;
 }
 
-//-----------------------------------------------------------------------------
-float CLowerArmor::Render() {
-	
-	return 0;
+void CLowerArmor::Render() {
+
 }

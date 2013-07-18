@@ -54,66 +54,49 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 EERIEPOLY * BCCheckInPoly(float x, float y, float z)
 {
-	long px, pz;
-	px = x * ACTIVEBKG->Xmul;
+	long px = x * ACTIVEBKG->Xmul;
+	long pz = z * ACTIVEBKG->Zmul;
 
-	if ((px >= ACTIVEBKG->Xsize)
-	        ||	(px < 0))
+	if(px < 0 || px >= ACTIVEBKG->Xsize || pz < 0 || pz >= ACTIVEBKG->Zsize)
 		return NULL;
 
-	pz = z * ACTIVEBKG->Zmul;
-
-	if ((pz >= ACTIVEBKG->Zsize)
-	        ||	(pz < 0))
-		return NULL;
-
-	EERIEPOLY * ep;
-	EERIE_BKG_INFO * eg;
 	EERIEPOLY * found = NULL;
 
-	eg = (EERIE_BKG_INFO *)&ACTIVEBKG->Backg[px+pz*ACTIVEBKG->Xsize];
+	EERIE_BKG_INFO *eg = &ACTIVEBKG->Backg[px + pz * ACTIVEBKG->Xsize];
 
-	for (long k = 0; k < eg->nbpolyin; k++)
-	{
-		ep = eg->polyin[k];
+	for(long k = 0; k < eg->nbpolyin; k++) {
+		EERIEPOLY *ep = eg->polyin[k];
 
-		if (!(ep->type & POLY_WATER) &&  !(ep->type & POLY_TRANS))
-		{
-			if (ep->min.y > y)
-			{
-				if (PointIn2DPolyXZ(ep, x, z))
-				{
-					if (found == NULL) found = ep;
-					else if (ep->min.y < found->min.y) found = ep;
+		if(!(ep->type & POLY_WATER) && !(ep->type & POLY_TRANS)) {
+			if(ep->min.y > y) {
+				if(PointIn2DPolyXZ(ep, x, z)) {
+					if(!found)
+						found = ep;
+					else if(ep->min.y < found->min.y)
+						found = ep;
 				}
-			}
-			else if (ep->min.y + 45.f > y)
-				if (PointIn2DPolyXZ(ep, x, z))
-				{
+			} else if(ep->min.y + 45.f > y) {
+				if(PointIn2DPolyXZ(ep, x, z))
 					return NULL;
-				}
+			}
 		}
 	}
 
-	if (found)
-	{
-		eg = (EERIE_BKG_INFO *)&ACTIVEBKG->Backg[px+pz*ACTIVEBKG->Xsize];
+	if(found) {
+		EERIE_BKG_INFO *eg = &ACTIVEBKG->Backg[px + pz * ACTIVEBKG->Xsize];
 
-		for (long k = 0; k < eg->nbpolyin; k++)
-		{
-			ep = eg->polyin[k];
+		for(long k = 0; k < eg->nbpolyin; k++) {
+			EERIEPOLY *ep = eg->polyin[k];
 
-			if (!(ep->type & POLY_WATER) &&  !(ep->type & POLY_TRANS))
-			{
-				if (ep != found)
-					if (ep->min.y < found->min.y)
-						if (ep->min.y > found->min.y - 160.f)
-						{
-							if (PointIn2DPolyXZ(ep, x, z))
-							{
+			if(!(ep->type & POLY_WATER) && !(ep->type & POLY_TRANS)) {
+				if(ep != found) {
+					if(ep->min.y < found->min.y) {
+						if(ep->min.y > found->min.y - 160.f) {
+							if(PointIn2DPolyXZ(ep, x, z))
 								return NULL;
-							}
 						}
+					}
+				}
 			}
 		}
 	}

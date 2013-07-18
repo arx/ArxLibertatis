@@ -85,27 +85,28 @@ bool Quadable(EERIEPOLY * ep, EERIEPOLY * ep2, float tolerance)
 	long common=-1;
 	long common2=-1;
 	
-	
 	long ep_notcommon=-1;
 	long ep2_notcommon=-1;
 	
-	if (ep2->type & POLY_QUAD)
-					{
-	return false;
-}
+	if(ep2->type & POLY_QUAD)
+		return false;
 	
-	if (ep->tex != ep2->tex) return false;
+	if(ep->tex != ep2->tex)
+		return false;
 
 	long typ1=ep->type&(~POLY_QUAD);
 	long typ2=ep2->type&(~POLY_QUAD);
 
-	if (typ1!=typ2) return false;
+	if(typ1!=typ2)
+		return false;
 
-	if ((ep->type & POLY_TRANS) && (ep->transval!=ep2->transval)) return false;
+	if((ep->type & POLY_TRANS) && ep->transval != ep2->transval)
+		return false;
 
 	CalcFaceNormal(ep,ep->v);
 
-	if (fabs(dot(ep->norm, ep2->norm)) < 1.f - tolerance) return false;
+	if(fabs(dot(ep->norm, ep2->norm)) < 1.f - tolerance)
+		return false;
 	
 	for (long i=0;i<3;i++)
 	{
@@ -189,52 +190,47 @@ bool Quadable(EERIEPOLY * ep, EERIEPOLY * ep2, float tolerance)
 #define TYPE_ROOM	2
 bool TryToQuadify(EERIEPOLY * ep,EERIE_3DOBJ * eobj)
 {
-	long posx,posz;
-	float cx,cz;
-	EERIE_BKG_INFO * eg;
-	cx=(ep->v[0].p.x+ep->v[1].p.x+ep->v[2].p.x);
-	cz=(ep->v[0].p.z+ep->v[1].p.z+ep->v[2].p.z);
-	posx = cx*( 1.0f / 3 )*ACTIVEBKG->Xmul;
-	posz = cz*( 1.0f / 3 )*ACTIVEBKG->Zmul;
+	float cx = (ep->v[0].p.x + ep->v[1].p.x + ep->v[2].p.x);
+	float cz = (ep->v[0].p.z + ep->v[1].p.z + ep->v[2].p.z);
+	long posx = cx * (1.0f/3) * ACTIVEBKG->Xmul;
+	long posz = cz * (1.0f/3) * ACTIVEBKG->Zmul;
 	
-	long dx,dz,fx,fz;
-	dx=std::max(0L,posx-1);
-	fx=std::min(posx+1,ACTIVEBKG->Xsize-1L);
-	dz=std::max(0L,posz-1);
-	fz=std::min(posz+1,ACTIVEBKG->Zsize-1L);
+	long dx = std::max(0L, posx - 1);
+	long fx = std::min(posx + 1, ACTIVEBKG->Xsize - 1L);
+	long dz = std::max(0L, posz - 1);
+	long fz = std::min(posz + 1, ACTIVEBKG->Zsize - 1L);
 	float tolerance=0.1f;
 
-	for (long kl = 0; kl < 2; kl++)
-	for (long zz=dz;zz<=fz;zz++)
-	for (long xx=dx;xx<=fx;xx++)
-	{
+	for(long kl = 0; kl < 2; kl++)
+	for(long zz = dz; zz <= fz; zz++)
+	for(long xx = dx; xx <= fx; xx++) {
 		long val1 = 0;
 
 		long type, val2;
-		if (!GetNameInfo(eobj->name, type, val1, val2))
+		if(!GetNameInfo(eobj->name, type, val1, val2))
 			return false;
 
-		if (type!=TYPE_ROOM)
+		if(type != TYPE_ROOM)
 			return false;
 
-		eg=(EERIE_BKG_INFO *)&ACTIVEBKG->Backg[xx+zz*ACTIVEBKG->Xsize];
+		EERIE_BKG_INFO *eg = (EERIE_BKG_INFO *)&ACTIVEBKG->Backg[xx+zz*ACTIVEBKG->Xsize];
 
-		if (eg)
-		for (long n=0;n<eg->nbpoly;n++)
-		{
-			EERIEPOLY * ep2=(EERIEPOLY *)&eg->polydata[n];
+		if(eg)
+		for(long n = 0; n < eg->nbpoly; n++) {
+			EERIEPOLY *ep2 = (EERIEPOLY *)&eg->polydata[n];
 
-			if (ep2->room!=val1) continue;
+			if(ep2->room != val1)
+				continue;
 			
-			if (ep==ep2) continue;
+			if(ep == ep2)
+				continue;
 
-			if ((kl==0) && (ep2->type & POLY_QUAD) )
-			{
-				if (Quadable(ep,ep2,tolerance)) return true;
-			}
-			else if ((kl==1) && !(ep2->type & POLY_QUAD) )
-			{
-				if (Quadable(ep,ep2,tolerance)) return true;
+			if(kl == 0 && (ep2->type & POLY_QUAD)) {
+				if(Quadable(ep, ep2, tolerance))
+					return true;
+			} else if(kl == 1 && !(ep2->type & POLY_QUAD)) {
+				if(Quadable(ep, ep2, tolerance))
+					return true;
 			}
 		}
 	}
@@ -251,220 +247,6 @@ void EERIEDRAWPRIM(Renderer::Primitive primitive, const TexturedVertex * vertice
 	}
 	
 	pDynamicVertexBuffer_TLVERTEX->draw(primitive, vertices, count);
-}
-
-void Delayed_FlushAll() {
-
-	TextureContainer* ptcTexture = GetTextureList();
-
-    while( ptcTexture )
-    {
-		if ((ptcTexture->delayed_nb) && ptcTexture->delayed)
-		{
-			long to;
-
-			if (ViewMode & VIEWMODE_FLAT)
-				GRenderer->ResetTexture(0);
-			else 
-				GRenderer->SetTexture(0, ptcTexture);
-
-			DELAYED_PRIM * del=(DELAYED_PRIM *)ptcTexture->delayed;
-
-			for (long i=0;i<ptcTexture->delayed_nb;i++)
-			{				
-				EERIEPOLY * ep=del[i].data;
-
-				if (!(ep->type & POLY_DOUBLESIDED))
-					GRenderer->SetCulling(Renderer::CullCW);
-				else 
-					GRenderer->SetCulling(Renderer::CullNone);
-				
-				if (ep->type & POLY_QUAD)
-					to=4;
-				else to=3;
-
-				EERIEDRAWPRIM(Renderer::TriangleStrip, ep->tv, to, true);
-					
-				if ( ptcTexture->userflags & POLY_METAL)
-				{
-					GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendOne);
-					GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-					GRenderer->ResetTexture(0); 
-
-					EERIEDRAWPRIM(Renderer::TriangleStrip, ep->tv, to);
-				}
-
-				if ( (ep->type & POLY_LAVA) || (ep->type & POLY_WATER) )
-				{
-					GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendOne);	
-					GRenderer->SetRenderState(Renderer::AlphaBlending, true);	
-					TexturedVertex verts[4];
-					GRenderer->SetTexture(0, enviro);
-
-					for(long i=0;i<to;i++) {
-						
-						verts[i].p = ep->tv[i].p;
-						verts[i].rhw = ep->tv[i].rhw;
-						verts[i].color = 0xFFFFFFFF;
-						
-						// Water
-						if (ep->type & POLY_LAVA)
-						{
-							verts[i].uv.x=ep->v[i].p.x*( 1.0f / 1000 )+EEsin((ep->v[i].p.x)*( 1.0f / 200 )+(float)arxtime.get_frame_time()*( 1.0f / 2000 ))*( 1.0f / 20 );
-							verts[i].uv.y=ep->v[i].p.z*( 1.0f / 1000 )+EEcos((ep->v[i].p.z)*( 1.0f / 200 )+(float)arxtime.get_frame_time()*( 1.0f / 2000 ))*( 1.0f / 20 );
-						}
-						else
-						{
-							GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-							verts[i].uv.x=ep->v[i].p.x*( 1.0f / 800 )+EEsin((ep->v[i].p.x)*( 1.0f / 600 )+(float)arxtime.get_frame_time()*( 1.0f / 1000 ))*( 1.0f / 9 );
-							verts[i].uv.y=ep->v[i].p.z*( 1.0f / 800 )+EEcos((ep->v[i].p.z)*( 1.0f / 600 )+(float)arxtime.get_frame_time()*( 1.0f / 1000 ))*( 1.0f / 9 );
-
-							if (ep->type & POLY_FALL) verts[i].uv.y-=(float)(arxtime.get_frame_time())*( 1.0f / 200 );
-						}
-					}
-
-					EERIEDRAWPRIM(Renderer::TriangleStrip, verts, to, true);
-
-					if (ep->type & POLY_WATER)
-					{
-						for (long i=0;i<to;i++)
-						{
-							verts[i].uv.x=ep->v[i].p.x*( 1.0f / 1000 )+EEsin((ep->v[i].p.y)*( 1.0f / 200 )+(float)arxtime.get_frame_time()*( 1.0f / 600 )*( 1.0f / 3 ))*( 1.0f / 10 );
-							verts[i].uv.y=ep->v[i].p.z*( 1.0f / 1000 )+EEcos((ep->v[i].p.z+ep->v[i].p.x)*( 1.0f / 200 )+(float)arxtime.get_frame_time()*( 1.0f / 600 )*( 1.0f / 3 ))*( 1.0f / 10 );
-
-							if (ep->type & POLY_FALL) 
-							{
-								verts[i].uv.y-=(float)(arxtime.get_frame_time())*( 1.0f / 200 );
-							}
-						}	
-
-						EERIEDRAWPRIM(Renderer::TriangleStrip, verts, to);
-					}
-
-					if (ep->type & POLY_LAVA)
-					{
-						for (long i=0;i<to;i++)
-						{
-							verts[i].uv.x=ep->v[i].p.x*( 1.0f / 1000 )+EEsin((ep->v[i].p.x)*( 1.0f / 100 )+(float)arxtime.get_frame_time()*( 1.0f / 2000 ))*( 1.0f / 10 );
-							verts[i].uv.y=ep->v[i].p.z*( 1.0f / 1000 )+EEcos((ep->v[i].p.z)*( 1.0f / 100 )+(float)arxtime.get_frame_time()*( 1.0f / 2000 ))*( 1.0f / 10 );
-						}	
-						EERIEDRAWPRIM(Renderer::TriangleStrip, verts, to);
-						for ( int i=0;i<to;i++)
-						{
-							verts[i].uv.x=ep->v[i].p.x*( 1.0f / 600 )+EEsin((ep->v[i].p.x)*( 1.0f / 160 )+(float)arxtime.get_frame_time()*( 1.0f / 2000 ))*( 1.0f / 11 );
-							verts[i].uv.y=ep->v[i].p.z*( 1.0f / 600 )+EEcos((ep->v[i].p.z)*( 1.0f / 160 )+(float)arxtime.get_frame_time()*( 1.0f / 2000 ))*( 1.0f / 11 );
-							verts[i].color=0xFF666666;
-						}	
-
-						GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
-						EERIEDRAWPRIM(Renderer::TriangleStrip, verts, to);
-					}
-				}
-					
-				GRenderer->SetTexture(0, ptcTexture);				
-				GRenderer->SetRenderState(Renderer::AlphaBlending, false);	
-			}				
-			
-			if (ZMAPMODE)
-			{				
-				if (ptcTexture->TextureRefinement==NULL) 
-					ptcTexture->delayed_nb=0;
-				
-				if (ptcTexture->delayed_nb)
-				{
-					GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);	
-					GRenderer->SetRenderState(Renderer::DepthWrite, false); 
-					GRenderer->SetRenderState(Renderer::AlphaBlending, true);					
-					TexturedVertex verts[4];
-					GRenderer->SetTexture(0, ptcTexture->TextureRefinement); 
-
-					for (long i=0;i<ptcTexture->delayed_nb;i++)
-					{
-						DELAYED_PRIM * del=(DELAYED_PRIM *)ptcTexture->delayed;
-						EERIEPOLY * ep=del[i].data;
-
-						if (ep->type & POLY_QUAD) 
-						{
-							if ( (ep->tv[0].p.z>0.048f) 
-								&& (ep->tv[1].p.z>0.048f)
-								&& (ep->tv[2].p.z>0.048f) 
-							        && (ep->tv[3].p.z > 0.048f)) continue; 
-
-							to=4;
-						}
-						else 
-						{
-							if ( (ep->tv[0].p.z>0.048f) 
-								&& (ep->tv[1].p.z>0.048f)
-							        && (ep->tv[2].p.z > 0.048f)) continue; 
-
-							to=3;	
-						}					
-
-						if (!(ep->type & POLY_DOUBLESIDED))
-							GRenderer->SetCulling(Renderer::CullCW);			
-						else GRenderer->SetCulling(Renderer::CullNone);
-						
-						
-						long tmp;
-
-						for(long j = 0; j < to; j++) {
-							
-							verts[j].p = ep->tv[j].p;
-							verts[j].uv = ep->tv[j].uv * 4.f;
-							verts[j].rhw = ep->tv[j].rhw;
-							
-							float val = (0.038f - verts[j].p.z); 
-							if (val<=0.f) 
-							{
-								verts[j].color=0xFF000000;
-							}
-							else 
-							{
-								if (val>0.0175) 
-								{
-									verts[j].color=0xFFB2B2B2;
-								}
-								else 
-								{
-									tmp = val*10200;
-									verts[j].color=0xFF000000 | (tmp<<16) | (tmp<<8) | tmp;
-								}			
-							}				
-						}
-
-						EERIEDRAWPRIM(Renderer::TriangleStrip, verts, to, true);
-					}
-				}
-
-				EERIEDrawnPolys+=ptcTexture->delayed_nb;
-				GRenderer->SetRenderState(Renderer::AlphaBlending, false); 
-				GRenderer->SetRenderState(Renderer::DepthWrite, true);
-			}
-
-			EERIEDrawnPolys+=ptcTexture->delayed_nb;
-			ptcTexture->delayed_nb=0;
-		}
-
-		ptcTexture = ptcTexture->m_pNext;
-    }	
-}
-
-void Delayed_EERIEDRAWPRIM( EERIEPOLY * ep)
-{
-	TextureContainer * tc=ep->tex; 
-
-	if (!tc) return;
-
-	if (tc->delayed_nb>=tc->delayed_max)
-	{
-		tc->delayed=(DELAYED_PRIM *)realloc(tc->delayed,sizeof(DELAYED_PRIM)*(tc->delayed_nb+1));
-		tc->delayed_max=tc->delayed_nb+1;
-	}
-
-	DELAYED_PRIM * del=(DELAYED_PRIM *)tc->delayed;
-	del[tc->delayed_nb].data=ep;
-	tc->delayed_nb++;
 }
 
 void EERIEDraw2DLine(float x0, float y0, float x1, float y1, float z, Color col) {
@@ -566,31 +348,26 @@ void EERIEDrawCircle(float x0, float y0, float r, Color col, float z) {
 	}
 }
 
-//*************************************************************************************
-//*************************************************************************************
-
 void EERIEDrawTrue3DLine(const Vec3f & orgn, const Vec3f & dest, Color col) {
 	
 	Vec3f vect = dest - orgn;
 	float m = ffsqrt(vect.lengthSqr());
 
-	if (m<=0) return;
+	if(m <= 0)
+		return;
 
 	vect *= 1 / m;
 	
 	Vec3f cpos = orgn;
 
-	while (m>0)
-	{
+	while(m > 0) {
 		float dep=std::min(m,30.f);
 		Vec3f tpos = cpos + (vect * dep);
 		EERIEDraw3DLine(cpos, tpos, col);
 		cpos = tpos;
-		m-=dep;
+		m -= dep;
 	}
 }
-//*************************************************************************************
-//*************************************************************************************
 
 void EERIEDraw3DLine(const Vec3f & orgn, const Vec3f & dest, Color col) {
 	
@@ -622,7 +399,8 @@ void EERIEDrawSprite(TexturedVertex * in, float siz, TextureContainer * tex, Col
 	
 	TexturedVertex out;
 	
-	EERIETreatPoint2(in,&out);
+	EE_RTP(in, &out);
+	out.rhw *= 3000.f;
 
 	if ((out.p.z>0.f) && (out.p.z<1000.f)
 		&& (out.p.x>-1000) && (out.p.x<2500.f)
@@ -631,25 +409,20 @@ void EERIEDrawSprite(TexturedVertex * in, float siz, TextureContainer * tex, Col
 		float use_focal=BASICFOCAL*Xratio;
 		float t;
 
-		if (siz < 0)
-		{
-			t=-siz;
-		}
-		else
-		{
-			t=siz*((out.rhw-1.f)*use_focal*0.001f);
+		if(siz < 0) {
+			t = -siz;
+		} else {
+			t = siz * ((out.rhw-1.f)*use_focal*0.001f);
 
-			if (t<=0.f) t=0.00000001f;
+			if(t <= 0.f)
+				t = 0.00000001f;
 		}
 		
-		if (Zpos<=1.f)
-		{
+		if(Zpos <= 1.f) {
 			out.p.z = Zpos;
-			out.rhw=1.f-out.p.z;
-		}
-		else
-		{
-			out.rhw*=(1.f/3000.f);
+			out.rhw = 1.f - out.p.z;
+		} else {
+			out.rhw *= (1.f/3000.f);
 		}
 
 		SPRmaxs.x=out.p.x+t;
@@ -677,24 +450,23 @@ void EERIEDrawRotatedSprite(TexturedVertex * in, float siz, TextureContainer * t
                             float Zpos, float rot) {
 	
 	TexturedVertex out;
-	EERIETreatPoint2(in, &out);
+
+	EE_RTP(in, &out);
+	out.rhw *= 3000.f;
 	
-	if ((out.p.z>0.f) && (out.p.z<1000.f))
-	{
-		float use_focal=BASICFOCAL*Xratio;
+	if(out.p.z > 0.f && out.p.z < 1000.f) {
+		float use_focal = BASICFOCAL * Xratio;
 	
 		float t = siz * ((out.rhw - 1.f) * use_focal * 0.001f); 
 
-		if (t<=0.f) t=0.00000001f;
+		if(t <= 0.f)
+			t = 0.00000001f;
 
-		if (Zpos<=1.f)
-		{
+		if(Zpos<=1.f) {
 			out.p.z = Zpos; 
-			out.rhw=1.f-out.p.z;
-		}
-		else
-		{
-			out.rhw*=(1.f/3000.f);
+			out.rhw = 1.f - out.p.z;
+		} else {
+			out.rhw *= (1.f/3000.f);
 		}
 
 		ColorBGRA col = color.toBGRA();
@@ -737,10 +509,7 @@ void EERIEPOLY_DrawWired(EERIEPOLY * ep, Color color) {
 	ltv[3] = TexturedVertex(Vec3f(0, 0, 0.5), 1.f, 1, 1, Vec2f::Y_AXIS);
 	ltv[4] = TexturedVertex(Vec3f(0, 0, 0.5), 1.f, 1, 1, Vec2f::Y_AXIS);
 	
-	long to;
-
-	if (ep->type & POLY_QUAD) to=4;
-	else to=3;
+	long to = (ep->type & POLY_QUAD) ? 4 : 3;
 
 	memcpy(ltv,ep->tv,sizeof(TexturedVertex)*to);							
 	ltv[0].p.z-=0.0002f;
@@ -748,23 +517,24 @@ void EERIEPOLY_DrawWired(EERIEPOLY * ep, Color color) {
 	ltv[2].p.z-=0.0002f;
 	ltv[3].p.z-=0.0002f;
 
-	if (to==4) 
-	{
+	if(to == 4) {
 		memcpy(&ltv[2],&ep->tv[3],sizeof(TexturedVertex));
 		memcpy(&ltv[3],&ep->tv[2],sizeof(TexturedVertex));
 		memcpy(&ltv[4],&ep->tv[0],sizeof(TexturedVertex));
 		ltv[4].p.z-=0.0002f;
+	} else {
+		memcpy(&ltv[to],&ltv[0],sizeof(TexturedVertex));
 	}
-	else memcpy(&ltv[to],&ltv[0],sizeof(TexturedVertex));
 
 	GRenderer->ResetTexture(0);
 
 	ColorBGRA col = color.toBGRA();
-	if (col)
-	 ltv[0].color=ltv[1].color=ltv[2].color=ltv[3].color=ltv[4].color=col;
-	else if (to==4)
-			ltv[0].color=ltv[1].color=ltv[2].color=ltv[3].color=ltv[4].color=0xFF00FF00;
-	else ltv[0].color=ltv[1].color=ltv[2].color=ltv[3].color=0xFFFFFF00;
+	if(col)
+		ltv[0].color=ltv[1].color=ltv[2].color=ltv[3].color=ltv[4].color=col;
+	else if(to == 4)
+		ltv[0].color=ltv[1].color=ltv[2].color=ltv[3].color=ltv[4].color=0xFF00FF00;
+	else
+		ltv[0].color=ltv[1].color=ltv[2].color=ltv[3].color=0xFFFFFF00;
 	
 	EERIEDRAWPRIM(Renderer::LineStrip, ltv, to + 1);
 }
@@ -778,10 +548,7 @@ void EERIEPOLY_DrawNormals(EERIEPOLY * ep) {
 	ltv[4] = TexturedVertex(Vec3f(0, 0, 0.5), 1.f, 1, 1, Vec2f::Y_AXIS);
 	
 	TexturedVertex lv;
-	long to;
-
-	if (ep->type & POLY_QUAD) to=4;
-	else to=3;
+	long to = (ep->type & POLY_QUAD) ? 4 : 3;
 
 	lv.p = ep->center;
 	EE_RTP(&lv,&ltv[0]);

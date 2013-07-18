@@ -161,7 +161,6 @@ Entity::Entity(const res::path & classPath)
 	flarecount = 0;
 	no_collide = -1;
 	invisibility = 0.f;
-	frameloss = 0.f;
 	basespeed = 1.f;
 	
 	speed_modif = 0.f;
@@ -190,6 +189,9 @@ Entity::Entity(const res::path & classPath)
 	inzone_show = 0;
 	summoner = 0;
 	spark_n_blood = 0;
+
+	special_color = Color3f::black;
+	special_color_flag = 0;
 	
 	ARX_SCRIPT_SetMainEvent(this, "main");
 	

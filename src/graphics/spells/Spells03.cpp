@@ -40,7 +40,6 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-// Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
 
 #include "graphics/spells/Spells03.h"
 
@@ -168,13 +167,10 @@ CFireBall::CFireBall() : CSpellFx() {
 	smoke.fEndColorRandom[3] = 20;
 }
 
-//-----------------------------------------------------------------------------
 CFireBall::~CFireBall()
 {
-
 }
 
-//-----------------------------------------------------------------------------
 void CFireBall::SetTTL(unsigned long aulTTL)
 {
 	unsigned long t = ulCurrentTime;
@@ -188,28 +184,21 @@ void CFireBall::SetTTL(unsigned long aulTTL)
 	arx_assert(ulCalc <= LONG_MAX);
 	long ff = static_cast<long>(ulCalc);
 
-
-	for (i = pPSSmoke.listParticle.begin(); i != pPSSmoke.listParticle.end(); ++i)
-	{
+	for(i = pPSSmoke.listParticle.begin(); i != pPSSmoke.listParticle.end(); ++i) {
 		Particle * pP = *i;
 
-		if (pP->isAlive())
-		{
-			if (pP->ulTime + ff < pP->ulTTL)
-			{
+		if(pP->isAlive()) {
+			if(pP->ulTime + ff < pP->ulTTL) {
 				pP->ulTime = pP->ulTTL - ff;
 			}
 		}
 	}
 
 	// Light
-	if (lLightId != -1)
-	{
+	if(lLightId != -1)
 		lLightId = -1;
-	}
 }
 
-//-----------------------------------------------------------------------------
 void CFireBall::Create(Vec3f aeSrc, float afBeta, float afAlpha, float _fLevel)
 {
 	SetDuration(ulDuration);
@@ -270,8 +259,8 @@ void CFireBall::Create(Vec3f aeSrc, float afBeta, float afAlpha, float _fLevel)
 	lLightId = -1; 
 	eCurPos = eSrc;
 }
+
 #define MIN_TIME_FIREBALL 2000  //750
-//-----------------------------------------------------------------------------
 void CFireBall::Update(unsigned long aulTime)
 {
 	ulCurrentTime += aulTime;
@@ -289,32 +278,24 @@ void CFireBall::Update(unsigned long aulTime)
 		pPSFire2.SetPos(eCurPos);
 		pPSFire2.fParticleSpeed = 100;
 		pPSFire2.fParticleSpeedRandom = 100;
-	}
-	else
-	{
+	} else {
 		float afAlpha = 0.f;
 	
-		if (spells[spellinstance].caster == 0)
-		{
+		if(spells[spellinstance].caster == 0) {
 			SetAngle(player.angle.b);
 			afAlpha = player.angle.a;
 			long idx = GetGroupOriginByName(entities[spells[spellinstance].caster]->obj, "chest");
 
-			if (idx)
-			{
+			if(idx) {
 				eCurPos.x = entities[spells[spellinstance].caster]->obj->vertexlist3[idx].v.x - fBetaRadSin * 60;
 				eCurPos.y = entities[spells[spellinstance].caster]->obj->vertexlist3[idx].v.y;
 				eCurPos.z = entities[spells[spellinstance].caster]->obj->vertexlist3[idx].v.z + fBetaRadCos * 60;
-			}
-			else
-			{
+			} else {
 				eCurPos.x = player.pos.x - fBetaRadSin * 60;
 				eCurPos.y = player.pos.y;
 				eCurPos.z = player.pos.z + fBetaRadCos * 60;
 			}
-		}
-		else
-		{
+		} else {
 			SetAngle(entities[spells[spellinstance].caster]->angle.b);
 
 			eCurPos.x = entities[spells[spellinstance].caster]->pos.x - fBetaRadSin * 60;
@@ -331,15 +312,13 @@ void CFireBall::Update(unsigned long aulTime)
 			
 			Entity * io = entities[spells[spellinstance].caster];
 
-			if (ValidIONum(io->targetinfo))
-			{
+			if(ValidIONum(io->targetinfo)) {
 				Vec3f * p1 = &eCurPos;
 				Vec3f p2 = entities[io->targetinfo]->pos;
 				p2.y -= 60.f;
 				afAlpha = 360.f - (degrees(getAngle(p1->y, p1->z, p2.y, p2.z + dist(Vec2f(p2.x, p2.z), Vec2f(p1->x, p1->z))))); //alpha entre orgn et dest;
 			}
 		}
-
 
 		eMove.x = - fBetaRadSin * 100 * cos(radians(MAKEANGLE(afAlpha)));
 		eMove.y = sin(radians(MAKEANGLE(afAlpha))) * 100;
@@ -366,11 +345,10 @@ void CFireBall::Update(unsigned long aulTime)
 	pPSFire2.Update(aulTime);
 }
 
-float CFireBall::Render() {
+void CFireBall::Render() {
 	
-	if(ulCurrentTime >= ulDuration) {
-		return 0.f;
-	}
+	if(ulCurrentTime >= ulDuration)
+		return;
 	
 	GRenderer->SetCulling(Renderer::CullNone);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
@@ -379,17 +357,13 @@ float CFireBall::Render() {
 	pPSFire.Render();
 	pPSFire2.Render();
 	pPSSmoke.Render();
-	
-	return 1 - 0.5f * rnd();
 }
 
-//-----------------------------------------------------------------------------
 CIceProjectile::~CIceProjectile()
 {
 	stite_count--;
 
-	if (stite && (stite_count <= 0))
-	{
+	if(stite && (stite_count <= 0)) {
 		stite_count = 0;
 		delete stite;
 		stite = NULL;
@@ -397,13 +371,13 @@ CIceProjectile::~CIceProjectile()
 
 	smotte_count--;
 
-	if (smotte && (smotte_count <= 0))
-	{
+	if(smotte && (smotte_count <= 0)) {
 		smotte_count = 0;
 		delete smotte;
 		smotte = NULL;
 	}
 }
+
 CIceProjectile::CIceProjectile()
 {
 	SetDuration(1000);
@@ -428,7 +402,6 @@ CIceProjectile::CIceProjectile()
 	fStep = 20;
 }
 
-//-----------------------------------------------------------------------------
 void CIceProjectile::Create(Vec3f aeSrc, float afBeta, float fLevel)
 {
 	iMax = (int)(30 + fLevel * 5.2f);
@@ -436,7 +409,6 @@ void CIceProjectile::Create(Vec3f aeSrc, float afBeta, float fLevel)
 	Create(aeSrc, afBeta);
 }
 
-//-----------------------------------------------------------------------------
 void CIceProjectile::Create(Vec3f aeSrc, float afBeta)
 {
 	SetDuration(ulDuration);
@@ -451,6 +423,7 @@ void CIceProjectile::Create(Vec3f aeSrc, float afBeta)
 	s.x					= aeSrc.x;
 	s.y					= aeSrc.y - 100;
 	s.z					= aeSrc.z;
+
 	float fspelldist	= static_cast<float>(iMax * 15);
 
 	fspelldist = min(fspelldist, 200.0f);
@@ -461,8 +434,7 @@ void CIceProjectile::Create(Vec3f aeSrc, float afBeta)
 
 	float fd;
 
-	if (!Visible(&s, &e, NULL, &h))
-	{
+	if(!Visible(&s, &e, NULL, &h)) {
 		e.x = h.x + fBetaRadSin * 20;
 		e.y = h.y;
 		e.z = h.z - fBetaRadCos * 20;
@@ -483,8 +455,7 @@ void CIceProjectile::Create(Vec3f aeSrc, float afBeta)
 
 	Split(tv1a, 0, end, 80, 0.5f, 0, 1, 80, 0.5f);
 
-	for (int i = 0; i < iNumber; i++)
-	{
+	for(int i = 0; i < iNumber; i++) {
 		float t = rnd();
 
 		if (t < 0.5f)
@@ -495,38 +466,32 @@ void CIceProjectile::Create(Vec3f aeSrc, float afBeta)
 		tSize[i] = Vec3f::ZERO;
 		tSizeMax[i] = randomVec() + Vec3f(0.f, 0.2f, 0.f);
 
-		if (tType[i] == 0)
-		{
+		if(tType[i] == 0) {
 			xmin = 1.2f;
 			ymin = 1;
 			zmin = 1.2f;
-		}
-		else
-		{
+		} else {
 			xmin = 0.4f;
 			ymin = 0.3f;
 			zmin = 0.4f;
 		}
 
-		if (tSizeMax[i].x < xmin)
+		if(tSizeMax[i].x < xmin)
 			tSizeMax[i].x = xmin;
 
-		if (tSizeMax[i].y < ymin)
+		if(tSizeMax[i].y < ymin)
 			tSizeMax[i].y = ymin;
 
-		if (tSizeMax[i].z < zmin)
+		if(tSizeMax[i].z < zmin)
 			tSizeMax[i].z = zmin;
 
 		int iNum = static_cast<int>(i / 2);
 
-		if (tType[i] == 0)
-		{
+		if(tType[i] == 0) {
 			tPos[i].x = tv1a[iNum].p.x + frand2() * 80;
 			tPos[i].y = tv1a[iNum].p.y;
 			tPos[i].z = tv1a[iNum].p.z + frand2() * 80;
-		}
-		else
-		{
+		} else {
 			tPos[i].x = tv1a[iNum].p.x + frand2() * 40;
 			tPos[i].y = tv1a[iNum].p.y;
 			tPos[i].z = tv1a[iNum].p.z + frand2() * 40;
@@ -549,28 +514,25 @@ void CIceProjectile::Create(Vec3f aeSrc, float afBeta)
 	fColor = 1;
 }
 
-//---------------------------------------------------------------------
 void CIceProjectile::Update(unsigned long aulTime)
 {
 	ulCurrentTime += aulTime;
 
-	if (ulDuration - ulCurrentTime < 1000)
-	{
+	if(ulDuration - ulCurrentTime < 1000) {
 		fColor = (ulDuration - ulCurrentTime) * ( 1.0f / 1000 );
 
-		for (int i = 0; i < iNumber; i++)
-		{
+		for(int i = 0; i < iNumber; i++) {
 			tSize[i].y *= fColor;
 		}
 	}
 }
 
-//---------------------------------------------------------------------
-float CIceProjectile::Render()
+void CIceProjectile::Render()
 {
 	int i = 0;
 
-	if (ulCurrentTime >= ulDuration) return 0.f;
+	if(ulCurrentTime >= ulDuration)
+		return;
 
 	GRenderer->SetCulling(Renderer::CullCW);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
@@ -579,29 +541,29 @@ float CIceProjectile::Render()
 
 	iMax = (int)((iNumber * 2) * fOneOnDuration * ulCurrentTime);
 
-	if (iMax > iNumber) iMax = iNumber;
+	if(iMax > iNumber)
+		iMax = iNumber;
 
-	for (i = 0; i < iMax; i++)
-	{
-		if (tSize[i].x < tSizeMax[i].x)
+	for(i = 0; i < iMax; i++) {
+		if(tSize[i].x < tSizeMax[i].x)
 			tSize[i].x += 0.1f;
 
-		if (tSize[i].x > tSizeMax[i].x)
+		if(tSize[i].x > tSizeMax[i].x)
 			tSize[i].x = tSizeMax[i].x;
 
-		if (tSize[i].y < tSizeMax[i].y)
+		if(tSize[i].y < tSizeMax[i].y)
 			tSize[i].y += 0.1f;
 
-		if (tSize[i].y < 0)
+		if(tSize[i].y < 0)
 			tSize[i].y = 0;
 
-		if (tSize[i].y > tSizeMax[i].y)
+		if(tSize[i].y > tSizeMax[i].y)
 			tSize[i].y = tSizeMax[i].y;
 
-		if (tSize[i].z < tSizeMax[i].z)
+		if(tSize[i].z < tSizeMax[i].z)
 			tSize[i].z += 0.1f;
 
-		if (tSize[i].z > tSizeMax[i].z)
+		if(tSize[i].z > tSizeMax[i].z)
 			tSize[i].z = tSizeMax[i].z;
 
 		Anglef stiteangle;
@@ -619,18 +581,21 @@ float CIceProjectile::Render()
 		stitecolor.g = stitecolor.r = tt * 0.7f;
 		stitecolor.b = tt * 0.9f;
 
-		if (stitecolor.r > 1) stitecolor.r = 1;
+		if(stitecolor.r > 1)
+			stitecolor.r = 1;
 
-		if (stitecolor.g > 1) stitecolor.g = 1;
+		if(stitecolor.g > 1)
+			stitecolor.g = 1;
 
-		if (stitecolor.b > 1) stitecolor.b = 1;
+		if(stitecolor.b > 1)
+			stitecolor.b = 1;
 
 		stitescale = tSize[i];
 
-		if (tType[i] == 0)
-			DrawEERIEObjEx(smotte, &stiteangle, &stitepos, &stitescale, &stitecolor);
+		if(tType[i] == 0)
+			DrawEERIEObjEx(smotte, &stiteangle, &stitepos, &stitescale, stitecolor);
 		else
-			DrawEERIEObjEx(stite, &stiteangle, &stitepos, &stitescale, &stitecolor);
+			DrawEERIEObjEx(stite, &stiteangle, &stitepos, &stitescale, stitecolor);
 	}
 	
 	for(i = 0; i < min(iNumber, iMax + 1); i++) {
@@ -670,8 +635,6 @@ float CIceProjectile::Render()
 			
 		}
 	}
-	
-	return 1;
 }
 
 //-----------------------------------------------------------------------------
@@ -688,20 +651,19 @@ void CSpeed::Create(int numinteractive, int duration)
 
 	int nb = 2048;
 
-	while (nb--)
-	{
+	while(nb--) {
 		this->truban[nb].actif = 0;
 	}
 
 	nb = (entities[this->num]->obj)->nbgroups;
 
-	if (nb > 256) nb = 256;
+	if(nb > 256)
+		nb = 256;
 
 	EERIE_GROUPLIST * grouplist = entities[this->num]->obj->grouplist;
 	nb >>= 1;
 
-	while (nb--)
-	{
+	while(nb--) {
 		float col = 0.05f + (rnd() * 0.05f);
 		float size = 4.f + (4.f * rnd());
 		int taille = Random::get(8, 16);
@@ -712,7 +674,6 @@ void CSpeed::Create(int numinteractive, int duration)
 	this->tp = TextureContainer::Load("graph/particles/fire");
 }
 
-//-----------------------------------------------------------------------------
 void CSpeed::AddRubanDef(int origin, float size, int dec, float r, float g, float b, float r2, float g2, float b2)
 {
 	if (this->nbrubandef > 255) return;
@@ -730,62 +691,53 @@ void CSpeed::AddRubanDef(int origin, float size, int dec, float r, float g, floa
 	this->nbrubandef++;
 }
 
-//-----------------------------------------------------------------------------
 int CSpeed::GetFreeRuban()
 {
 	int nb = 2048;
 
-	while (nb--)
-	{
-		if (!this->truban[nb].actif) return nb;
+	while(nb--) {
+		if(!this->truban[nb].actif)
+			return nb;
 	}
 
 	return -1;
 }
 
-//-----------------------------------------------------------------------------
 void CSpeed::AddRuban(int * f, int id, int dec)
 {
 	int	num;
 
 	num = this->GetFreeRuban();
 
-	if (num >= 0)
-	{
+	if(num >= 0) {
 		truban[num].actif = 1;
 		truban[num].pos = entities[this->num]->obj->vertexlist3[id].v;
 
-		if (*f < 0)
-		{
+		if(*f < 0) {
 			*f = num;
 			this->truban[num].next = -1;
-		}
-		else
-		{
+		} else {
 			this->truban[num].next = *f;
 			*f = num;
 		}
 
 		int nb = 0, oldnum = num;
 
-		while (num != -1)
-		{
+		while(num != -1) {
 			nb++;
 			oldnum = num;
 			num = this->truban[num].next;
 		}
 
-		if (oldnum < 0) ARX_DEAD_CODE();
+		if(oldnum < 0)
+			ARX_DEAD_CODE();
 
-		if (nb > dec)
-		{
-
+		if(nb > dec) {
 			this->truban[oldnum].actif = 0;
 			num = *f;
 			nb -= 2;
 
-			while (nb--)
-			{
+			while(nb--) {
 				num = this->truban[num].next;
 			}
 
@@ -794,29 +746,25 @@ void CSpeed::AddRuban(int * f, int id, int dec)
 	}
 }
 
-//-----------------------------------------------------------------------------
 void CSpeed::Update(unsigned long _ulTime)
 {
 	int	nb, num;
 
-	switch (this->key)
-	{
+	switch(this->key) {
 		case 0:
 			break;
 		case 1:
+			if(arxtime.is_paused())
+				break;
 
-			if (arxtime.is_paused()) break;
-
-			if (this->currduration > this->duration)
-			{
+			if(this->currduration > this->duration) {
 				this->key++;
 			}
 
 			num = 0;
 			nb = this->nbrubandef;
 
-			while (nb--)
-			{
+			while(nb--) {
 				this->AddRuban(&this->trubandef[num].first, this->trubandef[num].origin, this->trubandef[num].dec);
 				num++;
 			}
@@ -824,10 +772,10 @@ void CSpeed::Update(unsigned long _ulTime)
 			break;
 	}
 
-	if (!arxtime.is_paused()) this->currduration += _ulTime;
+	if(!arxtime.is_paused())
+		this->currduration += _ulTime;
 }
 
-//-----------------------------------------------------------------------------
 void CSpeed::DrawRuban(int num, float size, int dec, float r, float g, float b, float r2, float g2, float b2)
 {
 	int numsuiv;
@@ -843,20 +791,16 @@ void CSpeed::DrawRuban(int num, float size, int dec, float r, float g, float b, 
 	int		dg = (gg2 - g1) / dec;
 	int		db = (bb2 - b1) / dec;
 
-	for (;;)
-	{
+	for(;;) {
 		numsuiv = this->truban[num].next;
 
-		if ((num >= 0) && (numsuiv >= 0))
-		{
+		if(num >= 0 && numsuiv >= 0) {
 			Draw3DLineTex2(this->truban[num].pos, this->truban[numsuiv].pos, size, Color(r1 >> 16, g1 >> 16, b1 >> 16, 0), Color((r1 + dr) >> 16, (g1 + dg) >> 16, (b1 + db) >> 16, 0));
 			r1 += dr;
 			g1 += dg;
 			b1 += db;
 			size -= dsize;
-		}
-		else
-		{
+		} else {
 			break;
 		}
 
@@ -864,8 +808,7 @@ void CSpeed::DrawRuban(int num, float size, int dec, float r, float g, float b, 
 	}
 }
 
-//-----------------------------------------------------------------------------
-float CSpeed::Render()
+void CSpeed::Render()
 {
 	GRenderer->SetCulling(Renderer::CullNone);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
@@ -873,8 +816,7 @@ float CSpeed::Render()
 
 	GRenderer->ResetTexture(0);
 	
-	for (int i = 0; i < nbrubandef; i++)
-	{
+	for(int i = 0; i < nbrubandef; i++) {
 		this->DrawRuban(trubandef[i].first,
 		                trubandef[i].size,
 		                trubandef[i].dec,
@@ -884,8 +826,6 @@ float CSpeed::Render()
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendZero);
-
-	return 0;
 }
 
 CCreateFood::CCreateFood() {
@@ -952,7 +892,6 @@ void CCreateFood::Create() {
 	fSize = 1;
 }
 
-//---------------------------------------------------------------------
 void CCreateFood::Update(unsigned long aulTime)
 {
 	ulCurrentTime += aulTime;
@@ -974,26 +913,20 @@ if (ulCurrentTime >= ulDuration)
 	arx_assert(ulCalc <= LONG_MAX);
 	long ff =  static_cast<long>(ulCalc);
 
-
-
-		if (ff < 1500)
-		{
+		if(ff < 1500) {
 			pPS->uMaxParticles = 0;
 			pPS->ulParticleSpawn = PARTICLE_CIRCULAR;
 			pPS->p3ParticleGravity = Vec3f::ZERO;
 
 		std::list<Particle *>::iterator i;
 
-		for (i = pPS->listParticle.begin(); i != pPS->listParticle.end(); ++i)
-		{
+		for(i = pPS->listParticle.begin(); i != pPS->listParticle.end(); ++i) {
 			Particle * pP = *i;
 
-			if (pP->isAlive())
-			{
+			if(pP->isAlive()) {
 				pP->fColorEnd[3] = 0;
 
-					if (pP->ulTime + ff < pP->ulTTL)
-					{
+					if(pP->ulTime + ff < pP->ulTTL) {
 						pP->ulTime = pP->ulTTL - ff;
 					}
 				}
@@ -1005,11 +938,7 @@ if (ulCurrentTime >= ulDuration)
 	pPS->Update(aulTime);
 }
 
-//---------------------------------------------------------------------
-float CCreateFood::Render()
+void CCreateFood::Render()
 {
 	pPS->Render();
-
-	return 1;
 }
-

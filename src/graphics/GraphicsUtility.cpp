@@ -46,18 +46,24 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/GraphicsUtility.h"
 
-bool Util_SetViewMatrix(EERIEMATRIX & mat, const Vec3f & vFrom,
-                           const Vec3f & vAt, const Vec3f & vWorldUp) {
-	
-	// Get the z basis vector, which points straight ahead. This is the
-	// difference from the eyepoint to the lookat point.
-	Vec3f vView = vAt - vFrom;
+void Util_SetViewMatrix(EERIEMATRIX &mat, EERIE_TRANSFORM &transform) {
+
+	Vec3f vFrom(transform.pos.x, -transform.pos.y, transform.pos.z);
+	Vec3f vTout(0.0f, 0.0f, 1.0f);
+
+	Vec3f vView;
+	vView.y = -(vTout.z * transform.xsin);
+	vView.z = -(vTout.z * transform.xcos);
+	vView.x =  (vView.z * transform.ysin);
+	vView.z = -(vView.z * transform.ycos);
+
+	Vec3f vWorldUp(0.f, 1.f, 0.f);
 
 	// Normalize the z basis vector
 	float fLength = vView.normalize();
 
 	if (fLength < 1e-6f)
-		return false;
+		return;
 
 	// Get the dot product, and calculate the projection of the z basis
 	// vector onto the up vector. The projection is the y basis vector.
@@ -77,7 +83,7 @@ bool Util_SetViewMatrix(EERIEMATRIX & mat, const Vec3f & vFrom,
 			vUp = Vec3f::Z_AXIS - vView * vView.z;
 
 			if (1e-6f > (fLength = vUp.length()))
-				return false;
+				return;
 		}
 	}
 
@@ -90,7 +96,6 @@ bool Util_SetViewMatrix(EERIEMATRIX & mat, const Vec3f & vFrom,
 
 	// Start building the matrix. The first three rows contains the basis
 	// vectors used to rotate the view to point at the lookat point
-	Util_SetIdentityMatrix(mat);
 	mat._11 = vRight.x;
 	mat._12 = vUp.x;
 	mat._13 = vView.x;
@@ -105,6 +110,5 @@ bool Util_SetViewMatrix(EERIEMATRIX & mat, const Vec3f & vFrom,
 	mat._41 = -dot(vFrom, vRight);
 	mat._42 = -dot(vFrom, vUp);
 	mat._43 = -dot(vFrom, vView);
-
-	return true;
+	mat._44 = 1.0f;
 }

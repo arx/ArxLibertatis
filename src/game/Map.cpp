@@ -562,7 +562,7 @@ void DANAE_Manage_CreateMap() {
 	
 	GRenderer->SetCulling(Renderer::CullCCW);
 	
-	const Vec2i & size = mainApp->GetWindow()->GetSize();
+	const Vec2i & size = mainApp->getWindow()->getSize();
 	static C_ARX_Carte * ARXCarte = new C_ARX_Carte(ACTIVEBKG, 4, size.x, size.y);
 	
 	ARXCarte->BuildMap( mainApp->m_pFramework,ThisLevelMap);

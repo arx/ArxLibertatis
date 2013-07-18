@@ -657,6 +657,32 @@ void QuatFromAngles(EERIE_QUAT * q, const Anglef * angle)
 
 }
 
+void worldAngleToQuat(EERIE_QUAT *dest, Anglef *src, bool isNpc) {
+
+	if(!isNpc) {
+		// To correct invalid angle in Animated FIX/ITEMS
+		Anglef ang = *src;
+		ang.a = (360 - ang.a);
+		ang.b = (ang.b);
+		ang.g = (ang.g);
+		EERIEMATRIX mat;
+		Vec3f vect(0, 0, 1);
+		Vec3f up(0, 1, 0);
+		VRotateY(&vect, ang.b);
+		VRotateX(&vect, ang.a);
+		VRotateZ(&vect, ang.g);
+		VRotateY(&up, ang.b);
+		VRotateX(&up, ang.a);
+		VRotateZ(&up, ang.g);
+		MatrixSetByVectors(&mat, &vect, &up);
+		QuatFromMatrix(*dest, mat);
+	} else {
+		Anglef vt1 = Anglef(radians(src->a), radians(src->b), radians(src->g));
+		QuatFromAngles(dest, &vt1);
+	}
+}
+
+
 //*************************************************************************************
 // Converts a unit quaternion into a rotation matrix.
 //*************************************************************************************
@@ -841,10 +867,6 @@ void CalcObjFaceNormal(const Vec3f * v0, const Vec3f * v1, const Vec3f * v2,
 	ef->norm.normalize();
 }
 
-void MatrixReset(EERIEMATRIX * mat) {
-	memset(mat, 0, sizeof(EERIEMATRIX));
-}
-
 void MatrixSetByVectors(EERIEMATRIX * m, const Vec3f * d, const Vec3f * u)
 {
 	float t;
@@ -892,9 +914,8 @@ void GenerateMatrixUsingVector(EERIEMATRIX * matrix, const Vec3f * vect, float r
 	yAxis = -yAxis;
 
 	// Generate rotation matrix without roll included
-	EERIEMATRIX rot, roll;
-	MatrixReset(&rot);
-	MatrixReset(&roll);
+	EERIEMATRIX rot;
+	EERIEMATRIX roll;
 	rot._11 = yAxis.x;
 	rot._12 = yAxis.y;
 	rot._13 = yAxis.z;

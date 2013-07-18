@@ -49,6 +49,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/Color.h"
 #include "math/Vector3.h"
+#include "game/Camera.h"
 
 // TODO macros
 //fx
@@ -143,6 +144,9 @@ public:
 	void DeleteDeviceObjects();
 
 	void DeleteAllBitmap();
+
+private:
+	EERIE_CAMERA	m_camera;
 };
 
 void DrawGrille(CinematicGrid * grille, int col, int fx, CinematicLight * light, Vec3f * posgrillesuiv, float angzgrillesuiv);

@@ -92,7 +92,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 using std::string;
 
-extern Entity * CURRENT_TORCH;
 extern long GLOBAL_MAGIC_MODE;
 float FORCE_TIME_RESTORE = 0;
 extern Vec3f WILL_RESTORE_PLAYER_POSITION;
@@ -105,7 +104,7 @@ extern float PROGRESS_BAR_TOTAL;
 extern long NO_PLAYER_POSITION_RESET;
 extern float InventoryDir;
 extern long HERO_SHOW_1ST;
-extern long EXTERNALVIEW;
+extern bool EXTERNALVIEW;
 extern long LOAD_N_DONT_ERASE;
 extern long FORBID_SCRIPT_IO_CREATION;
 extern long NO_TIME_INIT;
@@ -398,7 +397,7 @@ bool IsPlayerEquipedWith(Entity * io) {
 	
 	long num = io->index();
 	
-	if(io == CURRENT_TORCH) {
+	if(io == player.torch) {
 		return true;
 	}
 	
@@ -630,7 +629,7 @@ static long ARX_CHANGELEVEL_Push_Player(long level) {
 	long allocsize = sizeof(ARX_CHANGELEVEL_PLAYER) + 48000;
 	allocsize += Keyring.size() * 64;
 	allocsize += 80 * PlayerQuest.size();
-	allocsize += sizeof(SavedMapMarkerData) * Mapmarkers.size();
+	allocsize += sizeof(SavedMapMarkerData) * g_miniMap.mapMarkerCount();
 
 	char * dat = new char[allocsize];
 
@@ -672,7 +671,7 @@ static long ARX_CHANGELEVEL_Push_Player(long level) {
 	FillIOIdent(asp->equipshieldIO, player.equipshieldIO);
 	FillIOIdent(asp->leftIO, player.leftIO);
 	FillIOIdent(asp->rightIO, player.rightIO);
-	FillIOIdent(asp->curtorch, CURRENT_TORCH);
+	FillIOIdent(asp->curtorch, player.torch);
 
 	std::copy(Precast, Precast + SAVED_MAX_PRECAST, asp->precast);
 
@@ -685,8 +684,8 @@ static long ARX_CHANGELEVEL_Push_Player(long level) {
 			}
 		}
 	}
-
-	std::copy(minimap, minimap + SAVED_MAX_MINIMAPS, asp->minimap);
+    
+    g_miniMap.save(asp->minimap, SAVED_MAX_MINIMAPS);
 
 	asp->falling = player.falling;
 	asp->gold = player.gold;
@@ -758,7 +757,7 @@ static long ARX_CHANGELEVEL_Push_Player(long level) {
 	asp->nb_PlayerQuest = PlayerQuest.size();
 	asp->keyring_nb = Keyring.size();
 	asp->Global_Magic_Mode = GLOBAL_MAGIC_MODE;
-	asp->Nb_Mapmarkers = Mapmarkers.size();
+	asp->Nb_Mapmarkers = g_miniMap.mapMarkerCount();
 	
 	asp->LAST_VALID_POS = LastValidPlayerPos;
 	
@@ -794,9 +793,9 @@ static long ARX_CHANGELEVEL_Push_Player(long level) {
 		pos += SAVED_KEYRING_SLOT_SIZE;
 	}
 	
-	for(size_t i = 0; i < Mapmarkers.size(); i++) {
+	for(size_t i = 0; i < g_miniMap.mapMarkerCount(); i++) {
 		SavedMapMarkerData * acmd = reinterpret_cast<SavedMapMarkerData *>(dat + pos);
-		*acmd = Mapmarkers[i];
+		*acmd = g_miniMap.mapMarkerGet(i);
 		pos += sizeof(SavedMapMarkerData);
 	}
 	
@@ -944,7 +943,7 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 	ais.stopped = io->stopped;
 	ais.basespeed = io->basespeed;
 	ais.speed_modif = io->speed_modif;
-	ais.frameloss = io->frameloss;
+	ais.frameloss = 0.f;
 	ais.rubber = io->rubber;
 	ais.max_durability = io->max_durability;
 	ais.durability = io->durability;
@@ -1586,7 +1585,7 @@ long ARX_CHANGELEVEL_Pop_Level(ARX_CHANGELEVEL_INDEX * asi, long num, bool first
 	DanaeLoadLevel(levelFile, firstTime);
 	CleanScriptLoadedIO();
 	
-	FirstFrame = 1;
+	FirstFrame = true;
 	
 	if(firstTime) {
 		
@@ -1648,8 +1647,7 @@ static long ARX_CHANGELEVEL_Pop_Player() {
 	
 	player.AimTime = asp->AimTime;
 	player.angle = asp->angle;
-	player.desiredangle.a = player.angle.a;
-	player.desiredangle.b = player.angle.b;
+	player.desiredangle = player.angle;
 	
 	player.armor_class = checked_range_cast<unsigned char>(asp->armor_class);
 	
@@ -1764,9 +1762,9 @@ static long ARX_CHANGELEVEL_Pop_Player() {
 	player.xp = asp->xp;
 	GLOBAL_MAGIC_MODE = asp->Global_Magic_Mode;
 	
-	ARX_MINIMAP_PurgeTC();
-	assert(SAVED_MAX_MINIMAPS == MAX_MINIMAPS);
-	std::copy(asp->minimap, asp->minimap + SAVED_MAX_MINIMAPS, minimap);
+	g_miniMap.purgeTexContainer();
+	assert(SAVED_MAX_MINIMAPS == MAX_MINIMAP_LEVELS);
+	g_miniMap.load(asp->minimap, SAVED_MAX_MINIMAPS);
 	
 	Entity & io = *entities.player();
 	assert(SAVED_MAX_ANIMS == MAX_ANIMS);
@@ -1815,13 +1813,11 @@ static long ARX_CHANGELEVEL_Pop_Player() {
 		LogError << "Truncated data";
 		return -1;
 	}
-	ARX_MAPMARKER_Init();
-	arx_assert(Mapmarkers.empty());
-	Mapmarkers.reserve(asp->Nb_Mapmarkers);
+	g_miniMap.mapMarkerInit(asp->Nb_Mapmarkers);
 	for(int i = 0; i < asp->Nb_Mapmarkers; i++) {
 		const SavedMapMarkerData * acmd = reinterpret_cast<const SavedMapMarkerData *>(dat + pos);
 		pos += sizeof(SavedMapMarkerData);
-		ARX_MAPMARKER_Add(acmd->x, acmd->y, acmd->lvl, script::loadUnlocalized(boost::to_lower_copy(util::loadString(acmd->name))));
+		g_miniMap.mapMarkerAdd(acmd->x, acmd->y, acmd->lvl, script::loadUnlocalized(boost::to_lower_copy(util::loadString(acmd->name))));
 	}
 	
 	ARX_PLAYER_Restore_Skin();
@@ -1836,7 +1832,7 @@ static long ARX_CHANGELEVEL_Pop_Player() {
 	player.equipshieldIO = ConvertToValidIO(asp->equipshieldIO);
 	player.leftIO = ConvertToValidIO(asp->leftIO);
 	player.rightIO = ConvertToValidIO(asp->rightIO);
-	CURRENT_TORCH = ConvertToValidIO(asp->curtorch);
+	player.torch = ConvertToValidIO(asp->curtorch);
 	PROGRESS_BAR_COUNT += 1.f;
 	LoadLevelScreen();
 	
@@ -2012,7 +2008,6 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) {
 		io->stopped = ais->stopped;
 		io->basespeed = 1;
 		io->speed_modif = 0.f; // TODO why are these not loaded from the savegame?
-		io->frameloss = 0;
 		io->rubber = ais->rubber;
 		io->max_durability = ais->max_durability;
 		io->durability = ais->durability;
@@ -2763,9 +2758,7 @@ static bool ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag) {
 	
 	if(EXTERNALVIEW) {
 		ARX_INTERACTIVE_Show_Hide_1st(entities.player(), 0);
-	}
-	
-	if(!EXTERNALVIEW) {
+	} else {
 		ARX_INTERACTIVE_Show_Hide_1st(entities.player(), 1);
 	}
 	

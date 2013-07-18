@@ -64,106 +64,55 @@ extern bool DIRECT_PATH;
 
 static EERIEPOLY * ANCHOR_CheckInPolyPrecis(float x, float y, float z) {
 	
-	long px, pz;
-	px = x * ACTIVEBKG->Xmul;
+	long px = x * ACTIVEBKG->Xmul;
+	long pz = z * ACTIVEBKG->Zmul;
 
-	if (px >= ACTIVEBKG->Xsize - 1)
-	{
+	if(px <= 0 || px >= ACTIVEBKG->Xsize - 1 || pz <= 0 || pz >= ACTIVEBKG->Zsize - 1)
 		return NULL;
-	}
 
-	if (px <= 0)
-	{
-		return NULL;
-	}
-
-	pz = z * ACTIVEBKG->Zmul;
-
-	if (pz >= ACTIVEBKG->Zsize - 1)
-	{
-		return NULL;
-	}
-
-	if (pz <= 0)
-	{
-		return NULL;
-	}
-
-	EERIEPOLY * ep;
-	FAST_BKG_DATA * feg;
 	EERIEPOLY * found = NULL;
 	float foundY = 9999999.f;
 
-	for (long j = pz - 1; j <= pz + 1; j++)
-		for (long i = px - 1; i <= px + 1; i++)
-		{
-			feg = &ACTIVEBKG->fastdata[i][j];
+	for(long j = pz - 1; j <= pz + 1; j++) {
+		for(long i = px - 1; i <= px + 1; i++) {
+			FAST_BKG_DATA *feg = &ACTIVEBKG->fastdata[i][j];
 
-			for (long k = 0; k < feg->nbpolyin; k++)
-			{
-				ep = feg->polyin[k];
+			for(long k = 0; k < feg->nbpolyin; k++) {
+				EERIEPOLY *ep = feg->polyin[k];
 
-				if (!(ep->type & (POLY_WATER | POLY_TRANS | POLY_NOCOL))
-				        &&	(PointIn2DPolyXZ(ep, x, z))
-				   )
-				{
+				if(!(ep->type & (POLY_WATER | POLY_TRANS | POLY_NOCOL)) && PointIn2DPolyXZ(ep, x, z)) {
 					Vec3f poss;
 					poss.x = x;
 					poss.y = y;
 					poss.z = z;
 					float yy;
 
-					if ((GetTruePolyY(ep, &poss, &yy))
-					        &&	(yy >= y)
-					        &&	((found == NULL) || ((found != NULL) && (yy <= foundY)))
-					   )
-					{
+					if(GetTruePolyY(ep, &poss, &yy) && yy >= y && (!found || (found && (yy <= foundY)))) {
 						found = ep;
 						foundY = yy;
 					}
 				}
 			}
 		}
+	}
 
 	return found;
 }
 
 static EERIEPOLY * ANCHOR_CheckInPoly(float x, float y, float z) {
 	
-	long px, pz;
-	px = x * ACTIVEBKG->Xmul;
+	long px = x * ACTIVEBKG->Xmul;
+	long pz = z * ACTIVEBKG->Zmul;
 
-	if (px >= ACTIVEBKG->Xsize)
-	{
+	if(px < 0 || px >= ACTIVEBKG->Xsize || pz < 0 || pz >= ACTIVEBKG->Zsize)
 		return NULL;
-	}
 
-	if (px < 0)
-	{
-		return NULL;
-	}
+	EERIEPOLY *found = NULL;
 
-	pz = z * ACTIVEBKG->Zmul;
+	FAST_BKG_DATA *feg = &ACTIVEBKG->fastdata[px][pz];
 
-	if (pz >= ACTIVEBKG->Zsize)
-	{
-		return NULL;
-	}
-
-	if (pz < 0)
-	{
-		return NULL;
-	}
-
-	EERIEPOLY * ep;
-	FAST_BKG_DATA * feg;
-	EERIEPOLY * found = NULL;
-
-	feg = &ACTIVEBKG->fastdata[px][pz];
-
-	for (long k = 0; k < feg->nbpolyin; k++)
-	{
-		ep = feg->polyin[k];
+	for(long k = 0; k < feg->nbpolyin; k++) {
+		EERIEPOLY *ep = feg->polyin[k];
 
 		if (!(ep->type & (POLY_WATER | POLY_TRANS | POLY_NOCOL))
 		        &&	(ep->max.y >= y)
@@ -171,12 +120,13 @@ static EERIEPOLY * ANCHOR_CheckInPoly(float x, float y, float z) {
 		        &&	((ep->norm.y < 0.f) || ((ep->type & POLY_QUAD) && (ep->norm2.y < 0.f)))
 		        &&	(PointIn2DPolyXZ(ep, x, z)))
 		{
-			if ((found == NULL) || ((found != NULL) && (ep->min.y < found->min.y)))
+			if(!found || (found && ep->min.y < found->min.y))
 				found = ep;
 		}
 	}
 
-	if (!found) return CheckInPolyPrecis(x, y, z);
+	if(!found)
+		return CheckInPoly(x, y, z);
 
 	return found;
 }
@@ -206,10 +156,7 @@ float ANCHOR_IsPolyInCylinder(EERIEPOLY * ep, EERIE_CYLINDER * cyl,
 
 	if (maxf < ep->min.y) return 999999.f;
 
-	long to;
-
-	if (ep->type & POLY_QUAD) to = 4;
-	else to = 3;
+	long to = (ep->type & POLY_QUAD) ? 4 : 3;
 
 	long r = to - 1;
 	float anything = 999999.f;
@@ -278,36 +225,29 @@ float ANCHOR_IsPolyInCylinder(EERIEPOLY * ep, EERIE_CYLINDER * cyl,
 	return anything;
 }
 
-
-//-----------------------------------------------------------------------------
-// Returns 0 if nothing in cyl
-// Else returns Y Offset to put cylinder in a proper place
-static float ANCHOR_CheckAnythingInCylinder(EERIE_CYLINDER * cyl,
-                                            CollisionFlags flags) {
+/*!
+ * \brief Check if anything is in a cylinder
+ * \param cyl the cylinder to check
+ * \param flags collision flags
+ * \return 0 if nothing in cyl else returns Y Offset to put cylinder in a proper place
+ */
+static float ANCHOR_CheckAnythingInCylinder(EERIE_CYLINDER *cyl, CollisionFlags flags) {
 	
 	long rad = (cyl->radius + 230) * ACTIVEBKG->Xmul;
 
-	long px, pz;
-	px = cyl->origin.x * ACTIVEBKG->Xmul;
+	long px = cyl->origin.x * ACTIVEBKG->Xmul;
+	long pz = cyl->origin.z * ACTIVEBKG->Zmul;
 
-	if (px > ACTIVEBKG->Xsize - 2 - rad)
+	if(px > ACTIVEBKG->Xsize - 2 - rad)
 		return 0.f;
-
-	if (px < 1 + rad)
+	if(px < 1 + rad)
 		return 0.f;
-
-	pz = cyl->origin.z * ACTIVEBKG->Zmul;
-
-	if (pz > ACTIVEBKG->Zsize - 2 - rad)
+	if(pz > ACTIVEBKG->Zsize - 2 - rad)
 		return 0.f;
-
-	if (pz < 1 + rad)
+	if(pz < 1 + rad)
 		return 0.f;
 
 	float anything = 999999.f; 
-
-	EERIEPOLY * ep;
-	FAST_BKG_DATA * feg;
 
 	/* TO KEEP...
 		EERIE_BKG_INFO * eg=&ACTIVEBKG->Backg[px+pz*ACTIVEBKG->Xsize];
@@ -320,36 +260,34 @@ static float ANCHOR_CheckAnythingInCylinder(EERIE_CYLINDER * cyl,
 		}
 		*/
 
-	for (long j = pz - rad; j <= pz + rad; j++)
-		for (long i = px - rad; i <= px + rad; i++)
-		{
-			feg = &ACTIVEBKG->fastdata[i][j];
+	for(long j = pz - rad; j <= pz + rad; j++) {
+		for(long i = px - rad; i <= px + rad; i++) {
+			FAST_BKG_DATA *feg = &ACTIVEBKG->fastdata[i][j];
 
-			for (long k = 0; k < feg->nbpoly; k++)
-			{
-				ep = &feg->polydata[k];
+			for(long k = 0; k < feg->nbpoly; k++) {
+				EERIEPOLY *ep = &feg->polydata[k];
 
-				if (ep->type & (POLY_WATER | POLY_TRANS | POLY_NOCOL)) continue;
+				if(ep->type & (POLY_WATER | POLY_TRANS | POLY_NOCOL))
+					continue;
 
-				if (ep->min.y < anything)
-				{
+				if(ep->min.y < anything) {
 					float minanything = std::min(anything, ANCHOR_IsPolyInCylinder(ep, cyl, flags));
 
-					if (anything != minanything)
-					{
+					if(anything != minanything)
 						anything = minanything;
-					}
 				}
 			}
 		}
+	}
 
-	ep = ANCHOR_CheckInPolyPrecis(cyl->origin.x, cyl->origin.y + cyl->height, cyl->origin.z);
+	EERIEPOLY *ep = ANCHOR_CheckInPolyPrecis(cyl->origin.x, cyl->origin.y + cyl->height, cyl->origin.z);
 
-	if (ep) anything = std::min(anything, ep->min.y);
+	if(ep)
+		anything = std::min(anything, ep->min.y);
 
 	float tempo;
 
-	if ((ep) && (GetTruePolyY(ep, &cyl->origin, &tempo)))
+	if(ep && GetTruePolyY(ep, &cyl->origin, &tempo))
 		anything = std::min(anything, tempo);
 
 	anything = anything - cyl->origin.y;
@@ -936,7 +874,6 @@ static void AnchorData_Create_Links_Original_Method(EERIE_BACKGROUND * eb) {
 	
 	EERIE_BKG_INFO * eg;
 	EERIE_BKG_INFO * eg2;
-	long ii, ia, ji, ja;
 	Vec3f p1, p2; 
 	long count = 0;
 	long per;
@@ -972,15 +909,10 @@ static void AnchorData_Create_Links_Original_Method(EERIE_BACKGROUND * eb) {
 
 			for (long k = 0; k < eg->nbianchors; k++)
 			{
-				ii = i - 2;
-				ia = i + 2;
-				ji = j - 2;
-				ja = j + 2;
-
-				ii = clamp(ii, 0, eb->Xsize - 1);
-				ia = clamp(ia, 0, eb->Xsize - 1);
-				ji = clamp(ji, 0, eb->Zsize - 1);
-				ja = clamp(ja, 0, eb->Zsize - 1);
+				long ii = clamp(i - 2, 0, eb->Xsize - 1);
+				long ia = clamp(i + 2, 0, eb->Xsize - 1);
+				long ji = clamp(j - 2, 0, eb->Zsize - 1);
+				long ja = clamp(j + 2, 0, eb->Zsize - 1);
 
 				for (long j2 = ji; j2 <= ja; j2++)
 					for (long i2 = ii; i2 <= ia; i2++)

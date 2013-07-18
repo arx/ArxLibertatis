@@ -62,29 +62,33 @@ enum ViewModeFlag {
 	VIEWMODE_NOLIGHTSOURCES = (1<<3),
 	VIEWMODE_INFOTEXT       = (1<<4)
 };
-DECLARE_FLAGS(ViewModeFlag, ViewModeFlags);
-DECLARE_FLAGS_OPERATORS(ViewModeFlags);
+DECLARE_FLAGS(ViewModeFlag, ViewModeFlags)
+DECLARE_FLAGS_OPERATORS(ViewModeFlags)
 
 enum LightModeFlag {
 	MODE_STATICLIGHT  = (1<<0),
 	MODE_DEPTHCUEING  = (1<<1),
-	MODE_DYNAMICLIGHT = (1<<2),
+	MODE_DYNAMICLIGHT = (1<<2), //TODO remove
 	MODE_NORMALS      = (1<<3),
 	MODE_RAYLAUNCH    = (1<<4),
 	MODE_SMOOTH       = (1<<5)
 };
-DECLARE_FLAGS(LightModeFlag, LightMode);
-DECLARE_FLAGS_OPERATORS(LightMode);
+DECLARE_FLAGS(LightModeFlag, LightMode)
+DECLARE_FLAGS_OPERATORS(LightMode)
 
 struct PROJECT {
 	
-	PROJECT() : improve(0), telekinesis(0), demo(0), torch(Color3f::black) { }
+	PROJECT() :
+		improve(0),
+		telekinesis(0),
+		demo(0),
+		torch(Color3f::black)
+	{}
 	
 	long improve;
 	long telekinesis;
 	long demo;
 	Color3f torch;
-	
 };
 
 extern PROJECT Project;
@@ -102,25 +106,25 @@ protected:
 	RenderWindow * m_MainWindow;
 	
 	/* Virtual functions to be overriden for the 3D scene in the Application */
-	virtual bool DeleteDeviceObjects() { return true; }
-	virtual void FrameMove() { }
-	virtual bool BeforeRun() { return true; }
+	virtual bool deleteDeviceObjects() { return true; }
+	virtual void update() { }
+	virtual bool beforeRun() { return true; }
 	
 public:
 	
-	virtual bool Initialize();
-	virtual void Shutdown();
+	virtual bool initialize();
+	virtual void shutdown();
 	
 private:
 	
-	virtual bool InitConfig();
-	virtual bool InitWindow() = 0;
-	virtual bool InitInput() = 0;
-	virtual bool InitSound() = 0;
+	virtual bool initConfig();
+	virtual bool initWindow() = 0;
+	virtual bool initInput() = 0;
+	virtual bool initSound() = 0;
 	
 public:
 	
-	RenderWindow * GetWindow() { return m_MainWindow; }
+	RenderWindow * getWindow() { return m_MainWindow; }
 	
 	// Class constructor
 	Application();
@@ -128,7 +132,7 @@ public:
 	
 
 	//! Ask the game to quit at the end of the current frame.
-	void Quit();
+	void quit();
 	
 	/* Virtual functions which may be overridden for specific implementations */
 	
@@ -138,14 +142,14 @@ public:
 	 * @param y The y coordinate for the text in pixels
 	 * @param str The string of text to be written
 	 */
-	virtual void OutputText(int, int, const std::string &) {}
-	virtual void OutputTextGrid(float, float, const std::string &, const Color &color = Color(255,255,255)) { ARX_UNUSED(color); }
+	virtual void outputText(int, int, const std::string &) {}
+	virtual void outputTextGrid(float, float, const std::string &, const Color &color = Color(255,255,255)) { ARX_UNUSED(color); }
 	
-	virtual void Run() = 0;
-	virtual void Pause(bool bPause);
-	virtual void Render() { }
-	virtual bool FinalCleanup() = 0;
-	virtual void Cleanup3DEnvironment() = 0;
+	virtual void run() = 0;
+	virtual void pause(bool bPause);
+	virtual void render() { }
+	virtual bool finalCleanup() = 0;
+	virtual void cleanup3DEnvironment() = 0;
 	
 	virtual void setFullscreen(bool fullscreen) = 0;
 
