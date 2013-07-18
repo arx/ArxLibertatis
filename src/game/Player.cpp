@@ -114,6 +114,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "physics/Projectile.h"
 
 #include "platform/Platform.h"
+#include "platform/profiler/Profiler.h"
 
 #include "scene/ChangeLevel.h"
 #include "scene/Scene.h"
@@ -1334,6 +1335,8 @@ extern bool EXTERNALVIEW;
 void ARX_PLAYER_Manage_Visual() {
 	arx_assert(entities.player());
 	
+	ARX_PROFILE_FUNC();
+	
 	unsigned long tim = (unsigned long)(arxtime);
 	
 	if(player.Current_Movement & PLAYER_ROTATE) {
@@ -1848,6 +1851,8 @@ void ForcePlayerLookAtIO(Entity * io) {
  */
 void ARX_PLAYER_Frame_Update()
 {
+	ARX_PROFILE_FUNC();
+	
 	if(spells.getSpellOnTarget(PlayerEntityHandle, SPELL_PARALYSE)) {
 		PLAYER_PARALYSED = 1;
 	} else {
@@ -1993,6 +1998,8 @@ bool Valid_Jump_Pos() {
 void PlayerMovementIterate(float DelatTime);
 
 void ARX_PLAYER_Manage_Movement() {
+	
+	ARX_PROFILE_FUNC();
 	
 	// Is our player able to move ?
 	if(cinematicBorder.isActive() || BLOCK_PLAYER_CONTROLS || !entities.player())

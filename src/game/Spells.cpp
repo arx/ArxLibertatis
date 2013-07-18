@@ -129,6 +129,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "physics/Collisions.h"
 
 #include "platform/Platform.h"
+#include "platform/profiler/Profiler.h"
 
 #include "scene/Light.h"
 #include "scene/Scene.h"
@@ -1390,6 +1391,8 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flags,
  * \brief Updates all currently working spells.
  */
 void ARX_SPELLS_Update() {
+	
+	ARX_PROFILE_FUNC();
 	
 	ucFlick++;
 	

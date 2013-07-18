@@ -74,6 +74,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "math/Random.h"
 
+#include "platform/profiler/Profiler.h"
+
 #include "physics/Collisions.h"
 
 #include "scene/GameSound.h"
@@ -1013,6 +1015,8 @@ void LaunchFireballBoom(Vec3f * poss, float level, Vec3f * direction, Color3f * 
 
 void ARX_PARTICLES_Update(EERIE_CAMERA * cam)  {
 	
+	ARX_PROFILE_FUNC();
+	
 	if(!ACTIVEBKG) {
 		return;
 	}
@@ -1311,6 +1315,8 @@ void RestoreAllLightsInitialStatus() {
 
 // Draws Flame Particles
 void TreatBackgroundActions() {
+	
+	ARX_PROFILE_FUNC();
 	
 	float fZFar = square(ACTIVECAM->cdepth * fZFogEnd * 1.3f);
 	

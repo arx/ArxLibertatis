@@ -54,6 +54,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/Player.h"
 #include "graphics/Math.h"
 #include "physics/Anchors.h"
+#include "platform/profiler/Profiler.h"
 #include "scene/Interactive.h"
 
 using std::min;
@@ -1023,6 +1024,8 @@ const EERIEPOLY * CheckBackgroundInSphere(const Sphere & sphere) {
 
 bool CheckAnythingInSphere(const Sphere & sphere, EntityHandle source, CASFlags flags, EntityHandle * num) //except source...
 {
+	ARX_PROFILE_FUNC();
+	
 	if(num)
 		*num = EntityHandle::Invalid;
 	

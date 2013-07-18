@@ -80,6 +80,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "physics/Collisions.h"
 
 #include "platform/Platform.h"
+#include "platform/profiler/Profiler.h"
 
 #include "scene/Light.h"
 #include "scene/GameSound.h"
@@ -1488,6 +1489,8 @@ void Cedric_AnimateDrawEntity(Skeleton & skeleton, ANIM_USE * animlayer, EERIE_E
 
 void EERIEDrawAnimQuatUpdate(EERIE_3DOBJ *eobj, ANIM_USE * animlayer,const Anglef & angle, const Vec3f & pos, unsigned long time, Entity *io, bool update_movement) {
 
+	ARX_PROFILE_FUNC();
+	
 	if(io) {
 		float speedfactor = io->basespeed + io->speed_modif;
 
@@ -1582,6 +1585,8 @@ void EERIEDrawAnimQuatUpdate(EERIE_3DOBJ *eobj, ANIM_USE * animlayer,const Angle
 
 void EERIEDrawAnimQuatRender(EERIE_3DOBJ *eobj, const Vec3f & pos, Entity *io, float invisibility) {
 
+	ARX_PROFILE_FUNC();
+	
 	if(io && io != entities.player() && !Cedric_IO_Visible(io->pos))
 		return;
 

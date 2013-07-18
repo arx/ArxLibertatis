@@ -47,6 +47,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/particle/ParticleSystem.h"
 
+#include "platform/profiler/Profiler.h"
+
 using std::list;
 
 ParticleManager::ParticleManager() {
@@ -71,7 +73,9 @@ void ParticleManager::AddSystem(ParticleSystem * _pPS) {
 }
 
 void ParticleManager::Update(long _lTime) {
-
+	
+	ARX_PROFILE_FUNC();
+	
 	if(listParticleSystem.empty())
 		return;
 
@@ -92,7 +96,9 @@ void ParticleManager::Update(long _lTime) {
 }
 
 void ParticleManager::Render() {
-
+	
+	ARX_PROFILE_FUNC();
+	
 	list<ParticleSystem *>::iterator i;
 
 	for(i = listParticleSystem.begin(); i != listParticleSystem.end(); ++i) {

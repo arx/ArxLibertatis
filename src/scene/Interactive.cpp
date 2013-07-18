@@ -106,6 +106,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "physics/Clothes.h"
 
 #include "platform/Thread.h"
+#include "platform/profiler/Profiler.h"
 
 #include "scene/ChangeLevel.h"
 #include "scene/GameSound.h"
@@ -2328,6 +2329,8 @@ bool ARX_INTERACTIVE_CheckFULLCollision(PHYSICS_BOX_DATA * pbox, EntityHandle so
 }
 
 void UpdateCameras() {
+	
+	ARX_PROFILE_FUNC();
 	
 	arxtime.get_updated();
 	

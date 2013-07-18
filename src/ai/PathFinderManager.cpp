@@ -56,6 +56,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/Math.h"
 #include "platform/Thread.h"
 #include "platform/Lock.h"
+#include "platform/profiler/Profiler.h"
 #include "physics/Anchors.h"
 #include "scene/Light.h"
 
@@ -253,6 +254,9 @@ void PathFinderThread::run() {
 
 		PATHFINDER_REQUEST curpr;
 		if(EERIE_PATHFINDER_Get_Next_Request(curpr) && curpr.isvalid) {
+			
+			ARX_PROFILE_FUNC();
+			
 			PATHFINDER_WORKING = 2;
 
 			if(curpr.ioid && curpr.ioid->_npcdata) {

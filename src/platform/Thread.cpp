@@ -20,6 +20,8 @@
 #include "platform/Thread.h"
 
 #include "platform/CrashHandler.h"
+#include "platform/Platform.h"
+#include "platform/profiler/Profiler.h"
 
 void Thread::setThreadName(const std::string & _threadName) {
 	threadName = _threadName;
@@ -114,7 +116,9 @@ void * Thread::entryPoint(void * param) {
 #endif
 	
 	CrashHandler::registerThreadCrashHandlers();
+	profiler::registerThread(thread.threadName);
 	thread.run();
+	profiler::unregisterThread();
 	CrashHandler::unregisterThreadCrashHandlers();
 	return NULL;
 }
@@ -210,7 +214,9 @@ DWORD WINAPI Thread::entryPoint(LPVOID param) {
 	SetCurrentThreadName(((Thread*)param)->threadName);
 	
 	CrashHandler::registerThreadCrashHandlers();
+	profiler::registerThread(((Thread*)param)->threadName);
 	((Thread*)param)->run();
+	profiler::unregisterThread();
 	CrashHandler::unregisterThreadCrashHandlers();
 	return 0;
 }

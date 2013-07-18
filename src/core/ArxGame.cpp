@@ -140,6 +140,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "platform/Platform.h"
 #include "platform/Process.h"
 #include "platform/ProgramOptions.h"
+#include "platform/profiler/Profiler.h"
 
 #include "scene/ChangeLevel.h"
 #include "scene/Interactive.h"
@@ -1247,6 +1248,8 @@ void ArxGame::run() {
 	
 	while(m_RunLoop) {
 		
+		ARX_PROFILE(Main Loop);
+		
 		m_MainWindow->tick();
 		if(!m_RunLoop) {
 			break;
@@ -1265,7 +1268,9 @@ void ArxGame::run() {
  * \brief Draws the scene.
  */
 void ArxGame::doFrame() {
-		
+	
+	ARX_PROFILE_FUNC();
+	
 	updateTime();
 
 	updateInput();
@@ -1804,8 +1809,12 @@ void ArxGame::updateInput() {
 	}
 
 	if(GInput->isKeyPressedNowPressed(Keyboard::Key_F12)) {
+		/*
 		EERIE_PORTAL_ReleaseOnlyVertexBuffer();
 		ComputePortalVertexBuffer();
+		*/
+		
+		profiler::flush();
 	}
 
 	if(GInput->isKeyPressedNowPressed(Keyboard::Key_F11)) {
@@ -1856,6 +1865,8 @@ extern int iHighLight;
 void ArxGame::updateLevel() {
 
 	arx_assert(entities.player());
+	
+	ARX_PROFILE_FUNC();
 	
 	RenderBatcher::getInstance().clear();
 
@@ -2018,7 +2029,9 @@ void ArxGame::updateLevel() {
 }
 
 void ArxGame::renderLevel() {
-
+	
+	ARX_PROFILE_FUNC();
+	
 	// Clear screen & Z buffers
 	if(desired.flags & GMOD_DCOLOR) {
 		GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer, current.depthcolor.to<u8>());

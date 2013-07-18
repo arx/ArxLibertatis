@@ -85,6 +85,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "physics/Projectile.h"
 
+#include "platform/profiler/Profiler.h"
+
 using std::vector;
 
 extern TextureContainer *enviro;
@@ -1031,6 +1033,9 @@ void RenderLava() {
 }
 
 void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num, const EERIE_FRUSTRUM_DATA & frustrums, long tim) {
+	
+	ARX_PROFILE_FUNC();
+	
 	if(!RoomDraw[room_num].count)
 		return;
 
@@ -1398,7 +1403,9 @@ void ARX_PORTALS_Frustrum_ComputeRoom(long room_num, const EERIE_FRUSTRUM & frus
 
 void ARX_SCENE_Update() {
 	arx_assert(portals);
-
+	
+	ARX_PROFILE_FUNC();
+	
 	unsigned long tim = (unsigned long)(arxtime);
 
 	WATEREFFECT+=0.0005f*framedelay;
@@ -1459,7 +1466,9 @@ extern long SPECIAL_DRAGINTER_RENDER;
 //*************************************************************************************
 ///////////////////////////////////////////////////////////
 void ARX_SCENE_Render() {
-
+	
+	ARX_PROFILE_FUNC();
+	
 	if(uw_mode)
 		GRenderer->GetTextureStage(0)->setMipMapLODBias(10.f);
 

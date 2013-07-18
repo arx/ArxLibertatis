@@ -40,6 +40,8 @@ elseif(WIN32 AND NOT MSVC)
 	set(def_BUILD_CRASHREPORTER OFF)
 endif()
 option(BUILD_CRASHREPORTER "Build the crash reporter" ${def_BUILD_CRASHREPORTER})
+option(BUILD_PROFILER "Build the profiler GUI" ON)
+option(BUILD_PROFILER_INSTRUMENT "Enable instrumentation for the profiler" OFF)
 option(BUILD_EDIT_LOADSAVE "Build save/load functions only used by the editor" ON)
 option(BUILD_IO_LIBRARY "Build shared library for reading and writing arx data" ON)
 option(INSTALL_SCRIPTS "Install the data install script" ON)
@@ -378,7 +380,7 @@ add_definitions(-DGLM_FORCE_RADIANS)
 
 # Qt and DbgHelp
 set(ARX_HAVE_CRASHREPORTER 0)
-if(BUILD_CRASHREPORTER)
+if(BUILD_CRASHREPORTER OR BUILD_PROFILER)
 	
 	# Try to find Qt 5 modules
 	if(NOT HAVE_QT AND (NOT WITH_QT OR WITH_QT EQUAL 5))
@@ -423,7 +425,7 @@ if(BUILD_CRASHREPORTER)
 	
 	# Needed by the crash reporter
 	
-	if(HAVE_QT)
+	if(HAVE_QT AND BUILD_CRASHREPORTER)
 		if(MSVC)
 			find_package(DbgHelp ${OPTIONAL_DEPENDENCY})
 			if(DBGHELP_FOUND)
@@ -860,6 +862,9 @@ set(PLATFORM_CRASHHANDLER_IMPL_SOURCES src/platform/crashhandler/CrashHandlerImp
 set(PLATFORM_CRASHHANDLER_POSIX_SOURCES src/platform/crashhandler/CrashHandlerPOSIX.cpp)
 set(PLATFORM_CRASHHANDLER_WINDOWS_SOURCES src/platform/crashhandler/CrashHandlerWindows.cpp)
 
+# Profiler sources
+set(PLATFORM_PROFILER_SOURCES src/platform/profiler/Profiler.cpp)
+
 set(SCENE_SOURCES
 	src/scene/ChangeLevel.cpp
 	src/scene/GameSound.cpp
@@ -1027,6 +1032,14 @@ if(NOT MSVC)
 	check_link_library(Boost Boost_LIBRARIES)
 endif()
 
+if(BUILD_PROFILER_INSTRUMENT)
+	find_package(Boost 1.53 COMPONENTS atomic)
+	if(NOT Boost_ATOMIC_FOUND)
+		message(WARNING "Missing boost atomic, profiler instrumentation disabled")
+		set(BUILD_PROFILER_INSTRUMENT 0)
+	endif()
+endif()
+
 set(ARX_SOURCES
 	${AI_SOURCES}
 	${ANIMATION_SOURCES}
@@ -1043,6 +1056,7 @@ set(ARX_SOURCES
 	${PLATFORM_SOURCES}
 	${PLATFORM_EXTRA_SOURCES}
 	${PLATFORM_CRASHHANDLER_SOURCES}
+	${PLATFORM_PROFILER_SOURCES}
 	${SCENE_SOURCES}
 	${SCRIPT_SOURCES}
 	${UTIL_SOURCES}
@@ -1233,6 +1247,130 @@ if(ARX_HAVE_CRASHREPORTER)
 	                      "${arxcrashreporter_SOURCES}" "${arxcrashreporter_LIBRARIES}")
 	set_binary_type(arxcrashreporter WIN32)
 	set_binary_installdir(arxcrashreporter "${CMAKE_INSTALL_LIBEXECDIR}")
+	
+endif()
+
+if(BUILD_PROFILER)
+	
+	set(arxprofiler_Qt_SOURCES
+		tools/profiler/ProfilerMain.cpp
+		tools/profiler/ui/ArxProfiler.h
+		tools/profiler/ui/ArxProfiler.cpp
+	)
+	
+	set(arxprofiler_SOURCES
+		src/platform/profiler/ProfilerDataFormat.h
+		${UTIL_SOURCES}
+		"${VERSION_FILE}"
+	)
+	
+	set(arxprofiler_UIs
+		tools/profiler/ui/ArxProfiler.ui
+	)
+	
+	set(arxprofiler_MOC_HEADERS
+		tools/profiler/ui/ArxProfiler.h
+	)
+	
+	set(arxprofiler_RESOURCES
+		tools/profiler/resources/ArxProfiler.qrc
+	)
+	
+	set(arxprofiler_MANUAL_SOURCES
+		${arxprofiler_SOURCES}
+		${arxprofiler_Qt_SOURCES}
+	)
+	
+	set(SRC_DIR tools/profiler/)
+	
+	create_source_groups(arxprofiler_SOURCES)
+	
+	set(arxprofiler_LIBRARIES
+		${BASE_LIBRARIES}
+		${CMAKE_THREAD_LIBS_INIT}
+	)
+	
+	if(HAVE_QT5)
+		
+		qt5_wrap_ui(arxprofiler_Qt_SOURCES ${arxprofiler_UIs})
+		qt5_wrap_cpp(arxprofiler_Qt_SOURCES ${arxprofiler_MOC_HEADERS})
+		qt5_add_resources(arxprofiler_Qt_SOURCES ${arxprofiler_RESOURCES})
+		
+		set_property(
+			SOURCE ${arxprofiler_Qt_SOURCES}
+			APPEND PROPERTY COMPILE_FLAGS " ${Qt5Core_EXECUTABLE_COMPILE_FLAGS}"
+		)
+		
+		set(arxprofiler_qt_LIBRARIES
+			${Qt5Core_LIBRARIES}
+			${Qt5Gui_LIBRARIES}
+			${Qt5Widgets_LIBRARIES}
+			${Qt5Network_LIBRARIES}
+			${Qt5Core_QTMAIN_LIBRARIES}
+		)
+		
+		add_definitions(
+			${Qt5Core_DEFINITIONS}
+			${Qt5Gui_DEFINITIONS}
+			${Qt5Widgets_DEFINITIONS}
+			${Qt5Network_DEFINITIONS}
+			-DQT_NO_DEBUG
+		)
+		
+		include_directories(SYSTEM
+			${Qt5Core_INCLUDE_DIRS}
+			${Qt5Gui_INCLUDE_DIRS}
+			${Qt5Widgets_INCLUDE_DIRS}
+			${Qt5Network_INCLUDE_DIRS}
+		)
+		
+	elseif(HAVE_QT4)
+		
+		qt4_wrap_ui(arxprofiler_Qt_SOURCES ${arxprofiler_UIs})
+		qt4_wrap_cpp(arxprofiler_Qt_SOURCES ${arxprofiler_MOC_HEADERS})
+		qt4_add_resources(arxprofiler_Qt_SOURCES ${arxprofiler_RESOURCES})
+		
+		set(arxprofiler_qt_LIBRARIES
+			${QT_QTCORE_LIBRARY_RELEASE}
+			${QT_QTGUI_LIBRARY_RELEASE}
+			${QT_QTNETWORK_LIBRARY_RELEASE}
+			${QT_QTMAIN_LIBRARY_RELEASE}
+		)
+		
+		add_definitions(
+			${QT_DEFINITIONS}
+			-DQT_NO_DEBUG
+		)
+		
+		include_directories(SYSTEM
+			${QT_INCLUDE_DIR}
+			${QT_QTCORE_INCLUDE_DIR}
+			${QT_QTGUI_INCLUDE_DIR}
+			${QT_QTNETWORK_INCLUDE_DIR}
+		)
+		
+	endif()
+	
+	# Always link agains release versions of the Qt libraries
+	# This is important on windows where we would otherwise end up
+	# with inconsistencies in the stdlib configuration.
+	if(MSVC AND NOT DEBUG_EXTRA)
+		foreach(lib IN LISTS arxprofiler_qt_LIBRARIES)
+			if(TARGET ${lib})
+				set_target_properties(${lib} PROPERTIES MAP_IMPORTED_CONFIG_DEBUG "Release")
+			endif()
+		endforeach()
+	endif()
+	
+	list(APPEND arxprofiler_LIBRARIES ${arxprofiler_qt_LIBRARIES})
+	
+	
+	list(APPEND arxprofiler_SOURCES ${arxprofiler_Qt_SOURCES})
+	
+	add_executable_shared(arxprofiler
+	                      "${arxprofiler_SOURCES}" "${arxprofiler_LIBRARIES}")
+	set_binary_type(arxprofiler WIN32)
+	set_binary_installdir(arxprofiler "${CMAKE_INSTALL_LIBEXECDIR}")
 	
 endif()
 
