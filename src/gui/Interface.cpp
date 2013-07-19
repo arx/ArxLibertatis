@@ -3235,7 +3235,7 @@ void ArxGame::manageKeyMouse() {
 		bool bKeySpecialMove=false;
 
 		if(!(player.Interface & INTER_MAP)
-				|| ((player.Interface & INTER_MAP) && ((!(ARX_MOUSE_OVER & ARX_MOUSE_OVER_BOOK & (Book_Mode != BOOKMODE_MINIMAP))/*ARX_INTERFACE_MouseInBook()*/) || (Book_Mode == BOOKMODE_MINIMAP) || (Book_Mode == BOOKMODE_QUESTS) || (Book_Mode != -1)))
+				|| ((player.Interface & INTER_MAP) && ((!(ARX_MOUSE_OVER & ARX_MOUSE_OVER_BOOK & (Book_Mode != BOOKMODE_MINIMAP))/*ARX_INTERFACE_MouseInBook()*/) || (Book_Mode == BOOKMODE_MINIMAP) || (Book_Mode == BOOKMODE_QUESTS)))
 				|| (player.Interface & INTER_COMBATMODE))
 		{
 			static int flPushTimeX[2]={0,0};
