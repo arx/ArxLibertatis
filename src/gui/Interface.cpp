@@ -3234,10 +3234,6 @@ void ArxGame::manageKeyMouse() {
 
 		bool bKeySpecialMove=false;
 
-		if(!(player.Interface & INTER_MAP)
-				|| ((player.Interface & INTER_MAP) && ((!(ARX_MOUSE_OVER & ARX_MOUSE_OVER_BOOK & (Book_Mode != BOOKMODE_MINIMAP))/*ARX_INTERFACE_MouseInBook()*/) || (Book_Mode == BOOKMODE_MINIMAP) || (Book_Mode == BOOKMODE_QUESTS)))
-				|| (player.Interface & INTER_COMBATMODE))
-		{
 			static int flPushTimeX[2]={0,0};
 			static int flPushTimeY[2]={0,0};
 
@@ -3288,9 +3284,9 @@ void ArxGame::manageKeyMouse() {
 					flPushTimeY[1]=0;
 			}
 
-			int iAction=0;
-
 			if(bKeySpecialMove) {
+
+				int iAction=0;
 
 				if(flPushTimeX[0] || flPushTimeX[1]) {
 					if(flPushTimeX[0] < flPushTimeX[1])
@@ -3318,31 +3314,25 @@ void ArxGame::manageKeyMouse() {
 			} else {
 				if(bRenderInCursorMode) {
 					Vec2s mousePosRel = GInput->getMousePosRel();
-					if(DANAEMouse.x == (DANAESIZX-1) && mousePosRel.x > 8) {
-						mouseDiffY=0;
-						mouseDiffX=mousePosRel.x;
-						bKeySpecialMove=true;
-					} else {
-						if(!DANAEMouse.x && mousePosRel.x < -8) {
-							mouseDiffY=0;
-							mouseDiffX=mousePosRel.x;
-							bKeySpecialMove=true;
-						}
+					if(DANAEMouse.x == DANAESIZX - 1 && mousePosRel.x > 8) {
+						mouseDiffY = 0;
+						mouseDiffX = mousePosRel.x;
+						bKeySpecialMove = true;
+					} else if(DANAEMouse.x == 0 && mousePosRel.x < -8) {
+						mouseDiffY = 0;
+						mouseDiffX = mousePosRel.x;
+						bKeySpecialMove = true;
 					}
-
-					if(DANAEMouse.y == (DANAESIZY-1) && mousePosRel.y > 8) {
-						mouseDiffY=mousePosRel.y;
-						mouseDiffX=0;
-						bKeySpecialMove=true;
-					} else {
-						if(!DANAEMouse.y && mousePosRel.y < -8) {
-							mouseDiffY=mousePosRel.y;
-							mouseDiffX=0;
-							bKeySpecialMove=true;
-						}
+					if(DANAEMouse.y == DANAESIZY - 1 && mousePosRel.y > 8) {
+						mouseDiffY = mousePosRel.y;
+						mouseDiffX = 0;
+						bKeySpecialMove = true;
+					} else if(DANAEMouse.y == 0 && mousePosRel.y < -8) {
+						mouseDiffY = mousePosRel.y;
+						mouseDiffX = 0;
+						bKeySpecialMove = true;
 					}
 				}
-				iAction |= 2;
 			}
 
 			if(GInput->actionPressed(CONTROLS_CUST_CENTERVIEW)) {
@@ -3350,38 +3340,6 @@ void ArxGame::manageKeyMouse() {
 				player.desiredangle.a=player.angle.a=0.f;
 				player.desiredangle.g=player.angle.g=0.f;
 			}
-			
-		} else {
-			
-			if(bRenderInCursorMode) {
-				Vec2s mousePosRel = GInput->getMousePosRel();
-				if(DANAEMouse.x == DANAESIZX - 1 && mousePosRel.x > 8) {
-					mouseDiffY = 0;
-					mouseDiffX = mousePosRel.x;
-					bKeySpecialMove = true;
-				} else if(DANAEMouse.x == 0 && mousePosRel.x < -8) {
-					mouseDiffY = 0;
-					mouseDiffX = mousePosRel.x;
-					bKeySpecialMove = true;
-				}
-				if(DANAEMouse.y == DANAESIZY - 1 && mousePosRel.y > 8) {
-					mouseDiffY = mousePosRel.y;
-					mouseDiffX = 0;
-					bKeySpecialMove = true;
-				} else if(DANAEMouse.y == 0 && mousePosRel.y < -8) {
-					mouseDiffY = mousePosRel.y;
-					mouseDiffX = 0;
-					bKeySpecialMove = true;
-				}
-			}
-			
-		}
-		
-		if(GInput->actionPressed(CONTROLS_CUST_CENTERVIEW))
-		{
-			eyeball.angle.a=eyeball.angle.g=0.f;
-			player.desiredangle.a=player.desiredangle.g=player.angle.a=player.angle.g=0.f;
-		}
 
 			float mouseSensitivity = (((float)GInput->getMouseSensitivity()) + 1.f) * 0.1f * ((640.f / (float)DANAESIZX));
 			if (mouseSensitivity > 200) {
