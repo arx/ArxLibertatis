@@ -3234,171 +3234,171 @@ void ArxGame::manageKeyMouse() {
 
 		bool bKeySpecialMove=false;
 
-			static int flPushTimeX[2]={0,0};
-			static int flPushTimeY[2]={0,0};
+		static int flPushTimeX[2]={0,0};
+		static int flPushTimeY[2]={0,0};
 
 
-			if(!GInput->actionPressed(CONTROLS_CUST_STRAFE)) {
-				float fTime = arxtime.get_updated();
-				int	iTime = checked_range_cast<int>(fTime);
+		if(!GInput->actionPressed(CONTROLS_CUST_STRAFE)) {
+			float fTime = arxtime.get_updated();
+			int	iTime = checked_range_cast<int>(fTime);
 
-				if(GInput->actionPressed(CONTROLS_CUST_TURNLEFT)) {
-					if(!flPushTimeX[0])
-						flPushTimeX[0] = iTime;
+			if(GInput->actionPressed(CONTROLS_CUST_TURNLEFT)) {
+				if(!flPushTimeX[0])
+					flPushTimeX[0] = iTime;
 
-					bKeySpecialMove = true;
-				}
+				bKeySpecialMove = true;
+			}
+			else
+				flPushTimeX[0]=0;
+
+			if(GInput->actionPressed(CONTROLS_CUST_TURNRIGHT)) {
+				if(!flPushTimeX[1])
+					flPushTimeX[1] = iTime;
+
+				bKeySpecialMove = true;
+			}
+			else
+				flPushTimeX[1]=0;
+		}
+
+		if(USE_PLAYERCOLLISIONS) {
+			float fTime = arxtime.get_updated();
+			int iTime = checked_range_cast<int>(fTime);
+
+			if(GInput->actionPressed(CONTROLS_CUST_LOOKUP)) {
+				if(!flPushTimeY[0])
+					flPushTimeY[0] = iTime;
+
+				bKeySpecialMove = true;
+			}
+			else
+				flPushTimeY[0]=0;
+
+			if(GInput->actionPressed(CONTROLS_CUST_LOOKDOWN)) {
+				if(!flPushTimeY[1])
+					flPushTimeY[1] = iTime;
+
+				bKeySpecialMove = true;
+			}
+			else
+				flPushTimeY[1]=0;
+		}
+
+		if(bKeySpecialMove) {
+
+			int iAction=0;
+
+			if(flPushTimeX[0] || flPushTimeX[1]) {
+				if(flPushTimeX[0] < flPushTimeX[1])
+					mouseDiffX=10;
 				else
-					flPushTimeX[0]=0;
+					mouseDiffX=-10;
 
-				if(GInput->actionPressed(CONTROLS_CUST_TURNRIGHT)) {
-					if(!flPushTimeX[1])
-						flPushTimeX[1] = iTime;
-
-					bKeySpecialMove = true;
-				}
-				else
-					flPushTimeX[1]=0;
+				iAction |= 1;
 			}
 
-			if(USE_PLAYERCOLLISIONS) {
-				float fTime = arxtime.get_updated();
-				int iTime = checked_range_cast<int>(fTime);
+			if(flPushTimeY[0] || flPushTimeY[1]) {
+				if(flPushTimeY[0]<flPushTimeY[1])
+					mouseDiffY=10;
+				else
+					mouseDiffY=-10;
 
-				if(GInput->actionPressed(CONTROLS_CUST_LOOKUP)) {
-					if(!flPushTimeY[0])
-						flPushTimeY[0] = iTime;
+				iAction |= 2;
+			}
 
+			if(!(iAction & 1))
+				mouseDiffX=0;
+
+			if(!(iAction & 2))
+				mouseDiffY=0;
+		} else {
+			if(bRenderInCursorMode) {
+				Vec2s mousePosRel = GInput->getMousePosRel();
+				if(DANAEMouse.x == DANAESIZX - 1 && mousePosRel.x > 8) {
+					mouseDiffY = 0;
+					mouseDiffX = mousePosRel.x;
+					bKeySpecialMove = true;
+				} else if(DANAEMouse.x == 0 && mousePosRel.x < -8) {
+					mouseDiffY = 0;
+					mouseDiffX = mousePosRel.x;
 					bKeySpecialMove = true;
 				}
-				else
-					flPushTimeY[0]=0;
-
-				if(GInput->actionPressed(CONTROLS_CUST_LOOKDOWN)) {
-					if(!flPushTimeY[1])
-						flPushTimeY[1] = iTime;
-
+				if(DANAEMouse.y == DANAESIZY - 1 && mousePosRel.y > 8) {
+					mouseDiffY = mousePosRel.y;
+					mouseDiffX = 0;
+					bKeySpecialMove = true;
+				} else if(DANAEMouse.y == 0 && mousePosRel.y < -8) {
+					mouseDiffY = mousePosRel.y;
+					mouseDiffX = 0;
 					bKeySpecialMove = true;
 				}
-				else
-					flPushTimeY[1]=0;
 			}
+		}
 
-			if(bKeySpecialMove) {
+		if(GInput->actionPressed(CONTROLS_CUST_CENTERVIEW)) {
+			eyeball.angle.a=eyeball.angle.g=0.f;
+			player.desiredangle.a=player.angle.a=0.f;
+			player.desiredangle.g=player.angle.g=0.f;
+		}
 
-				int iAction=0;
+		float mouseSensitivity = (((float)GInput->getMouseSensitivity()) + 1.f) * 0.1f * ((640.f / (float)DANAESIZX));
+		if (mouseSensitivity > 200) {
+			mouseSensitivity = 200;
+		}
 
-				if(flPushTimeX[0] || flPushTimeX[1]) {
-					if(flPushTimeX[0] < flPushTimeX[1])
-						mouseDiffX=10;
-					else
-						mouseDiffX=-10;
+		mouseSensitivity *= (float)DANAESIZX * ( 1.0f / 640 );
+		mouseSensitivity *= (1.0f / 5);
 
-					iAction |= 1;
-				}
+		float mouseSensitivityY = mouseSensitivity;
+		float mouseSensitivityX = mouseSensitivity;
 
-				if(flPushTimeY[0] || flPushTimeY[1]) {
-					if(flPushTimeY[0]<flPushTimeY[1])
-						mouseDiffY=10;
-					else
-						mouseDiffY=-10;
+		if(INVERTMOUSE)
+			mouseSensitivityY *= -1.f;
 
-					iAction |= 2;
-				}
-
-				if(!(iAction & 1))
-					mouseDiffX=0;
-
-				if(!(iAction & 2))
-					mouseDiffY=0;
-			} else {
-				if(bRenderInCursorMode) {
-					Vec2s mousePosRel = GInput->getMousePosRel();
-					if(DANAEMouse.x == DANAESIZX - 1 && mousePosRel.x > 8) {
-						mouseDiffY = 0;
-						mouseDiffX = mousePosRel.x;
-						bKeySpecialMove = true;
-					} else if(DANAEMouse.x == 0 && mousePosRel.x < -8) {
-						mouseDiffY = 0;
-						mouseDiffX = mousePosRel.x;
-						bKeySpecialMove = true;
-					}
-					if(DANAEMouse.y == DANAESIZY - 1 && mousePosRel.y > 8) {
-						mouseDiffY = mousePosRel.y;
-						mouseDiffX = 0;
-						bKeySpecialMove = true;
-					} else if(DANAEMouse.y == 0 && mousePosRel.y < -8) {
-						mouseDiffY = mousePosRel.y;
-						mouseDiffX = 0;
-						bKeySpecialMove = true;
-					}
-				}
-			}
-
-			if(GInput->actionPressed(CONTROLS_CUST_CENTERVIEW)) {
-				eyeball.angle.a=eyeball.angle.g=0.f;
-				player.desiredangle.a=player.angle.a=0.f;
-				player.desiredangle.g=player.angle.g=0.f;
-			}
-
-			float mouseSensitivity = (((float)GInput->getMouseSensitivity()) + 1.f) * 0.1f * ((640.f / (float)DANAESIZX));
-			if (mouseSensitivity > 200) {
-				mouseSensitivity = 200;
-			}			
-
-			mouseSensitivity *= (float)DANAESIZX * ( 1.0f / 640 );
-			mouseSensitivity *= (1.0f / 5);
-
-			float mouseSensitivityY = mouseSensitivity;
-			float mouseSensitivityX = mouseSensitivity;
-
-			if(INVERTMOUSE)
-				mouseSensitivityY *= -1.f;
-
-			float ia = (float)mouseDiffY * mouseSensitivityY;
-			float ib = (float)mouseDiffX * mouseSensitivityX;
+		float ia = (float)mouseDiffY * mouseSensitivityY;
+		float ib = (float)mouseDiffX * mouseSensitivityX;
 
 
-			if(PLAYER_MOUSELOOK_ON || bKeySpecialMove) {
+		if(PLAYER_MOUSELOOK_ON || bKeySpecialMove) {
 
 			if(eyeball.exist == 2) {
-					if(eyeball.angle.a < 70.f) {
-						if(eyeball.angle.a + ia < 70.f)
-							eyeball.angle.a += ia;
-					} else if(eyeball.angle.a > 300.f) {
-						if(eyeball.angle.a + ia > 300.f)
-							eyeball.angle.a += ia;
-					}
+				if(eyeball.angle.a < 70.f) {
+					if(eyeball.angle.a + ia < 70.f)
+						eyeball.angle.a += ia;
+				} else if(eyeball.angle.a > 300.f) {
+					if(eyeball.angle.a + ia > 300.f)
+						eyeball.angle.a += ia;
+				}
 
-					eyeball.angle.a = MAKEANGLE(eyeball.angle.a);
-					eyeball.angle.b = MAKEANGLE(eyeball.angle.b - ib);
+				eyeball.angle.a = MAKEANGLE(eyeball.angle.a);
+				eyeball.angle.b = MAKEANGLE(eyeball.angle.b - ib);
 			} else if(ARXmenu.currentmode != AMCM_NEWQUEST) {
 
-					float iangle = player.angle.a;
+				float iangle = player.angle.a;
 
-					player.desiredangle.a = player.angle.a;
-					player.desiredangle.a += ia;
-					player.desiredangle.a = MAKEANGLE(player.desiredangle.a);
+				player.desiredangle.a = player.angle.a;
+				player.desiredangle.a += ia;
+				player.desiredangle.a = MAKEANGLE(player.desiredangle.a);
 
-					if(player.desiredangle.a >= 74.9f && player.desiredangle.a <= 301.f) {
-						if(iangle < 75.f)
-							player.desiredangle.a = 74.9f; //69
-						else
-							player.desiredangle.a = 301.f;
-					}
+				if(player.desiredangle.a >= 74.9f && player.desiredangle.a <= 301.f) {
+					if(iangle < 75.f)
+						player.desiredangle.a = 74.9f; //69
+					else
+						player.desiredangle.a = 301.f;
+				}
 
-					if(entities.player() && EEfabs(ia)>2.f)
-						entities.player()->lastanimtime = 0;
+				if(entities.player() && EEfabs(ia)>2.f)
+					entities.player()->lastanimtime = 0;
 
-					if(ib != 0.f)
-						player.Current_Movement|=PLAYER_ROTATE;
+				if(ib != 0.f)
+					player.Current_Movement|=PLAYER_ROTATE;
 
-					PLAYER_ROTATION = ib;
+				PLAYER_ROTATION = ib;
 
-					player.desiredangle.b = player.angle.b;
-					player.desiredangle.b = MAKEANGLE(player.desiredangle.b - ib);
+				player.desiredangle.b = player.angle.b;
+				player.desiredangle.b = MAKEANGLE(player.desiredangle.b - ib);
 			}
-			}
+		}
 	}
 
 	if((!BLOCK_PLAYER_CONTROLS) && !(player.Interface & INTER_COMBATMODE)) {
