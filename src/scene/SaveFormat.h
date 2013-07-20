@@ -680,7 +680,7 @@ struct ARX_CHANGELEVEL_IO_SAVE {
 	s16 Tweak_nb;
 	s16 padd;
 	SavedHalo halo;
-	char secretvalue;
+	s8 secretvalue;
 	char paddd[3];
 	char shop_category[128];
 	f32 shop_multiply;

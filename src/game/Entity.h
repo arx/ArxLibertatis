@@ -368,7 +368,7 @@ public:
 	
 	EntitySfxFlags sfx_flag;
 	std::vector<TWEAK_INFO> tweaks;
-	char secretvalue;
+	s8 secretvalue;
 	
 	std::string shop_category;
 	float shop_multiply;
