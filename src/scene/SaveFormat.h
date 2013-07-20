@@ -182,7 +182,7 @@ struct SavedMapMarkerData {
 	s32 lvl;
 	char name[STRING_SIZE];
 	
-	inline SavedMapMarkerData(const MiniMap::MapMarkerData &b) {
+	/* implicit */ SavedMapMarkerData(const MiniMap::MapMarkerData &b) {
 		x = b.m_x;
 		y = b.m_y;
 		lvl = b.m_lvl;
