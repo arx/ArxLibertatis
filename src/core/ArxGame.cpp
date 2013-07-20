@@ -1331,35 +1331,35 @@ void ArxGame::renderLevel() {
 		if(entity->ignition > 0.f || (entity->ioflags & IO_FIERY))
 			ManageIgnition(entity);
 
-			Cedric_ApplyLightingFirstPartRefactor(entity, entity->special_color, entity->special_color_flag);
+		Cedric_ApplyLightingFirstPartRefactor(entity, entity->special_color, entity->special_color_flag);
 
-			//Highlight entity
-			if(entity == FlyingOverIO && !(entity->ioflags & IO_NPC)) {
-				entity->special_color_flag = 4;
-				entity->special_color = Color3f::gray(float(iHighLight));
-			}
+		//Highlight entity
+		if(entity == FlyingOverIO && !(entity->ioflags & IO_NPC)) {
+			entity->special_color_flag = 4;
+			entity->special_color = Color3f::gray(float(iHighLight));
+		}
 
-			float speedModifier = 0.f;
+		float speedModifier = 0.f;
 
-			if(entity == entities.player()) {
-				if(cur_mr == 3)
-					speedModifier += 0.5f;
+		if(entity == entities.player()) {
+			if(cur_mr == 3)
+				speedModifier += 0.5f;
 
-				if(cur_rf == 3)
-					speedModifier += 1.5f;
-			}
+			if(cur_rf == 3)
+				speedModifier += 1.5f;
+		}
 
-			long speedSpellIndex = ARX_SPELLS_GetSpellOn(entity, SPELL_SPEED);
-			if(speedSpellIndex > -1) {
-				speedModifier += spells[speedSpellIndex].caster_level * 0.1f;
-			}
+		long speedSpellIndex = ARX_SPELLS_GetSpellOn(entity, SPELL_SPEED);
+		if(speedSpellIndex > -1) {
+			speedModifier += spells[speedSpellIndex].caster_level * 0.1f;
+		}
 
-			long slowSpellIndex = ARX_SPELLS_GetSpellOn(entity, SPELL_SLOW_DOWN);
-			if(slowSpellIndex > -1) {
-				speedModifier -= spells[slowSpellIndex].caster_level * 0.05f;
-			}
+		long slowSpellIndex = ARX_SPELLS_GetSpellOn(entity, SPELL_SLOW_DOWN);
+		if(slowSpellIndex > -1) {
+			speedModifier -= spells[slowSpellIndex].caster_level * 0.05f;
+		}
 
-			entity->speed_modif = speedModifier;
+		entity->speed_modif = speedModifier;
 	}
 
 
