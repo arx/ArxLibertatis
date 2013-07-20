@@ -319,7 +319,7 @@ extern long TRAP_SECRET;
 extern float GLOBAL_LIGHT_FACTOR;
 
 //TODO Move somewhere else
-bool Cedric_ApplyLightingFirstPartRefactor(Entity *io, Color3f &special_color, long &special_color_flag) {
+void Cedric_ApplyLightingFirstPartRefactor(Entity *io, Color3f &special_color, long &special_color_flag) {
 
 	if(io) {
 		special_color = Color3f::black;
@@ -460,7 +460,6 @@ bool Cedric_ApplyLightingFirstPartRefactor(Entity *io, Color3f &special_color, l
 							} else {
 								io->sfx_flag &= ~SFX_TYPE_YLSIDE_DEATH;
 								ARX_INTERACTIVE_DestroyIO(io);
-								return false;
 							}
 						}
 					}
@@ -468,7 +467,6 @@ bool Cedric_ApplyLightingFirstPartRefactor(Entity *io, Color3f &special_color, l
 			}
 		}
 	}
-	return true;
 }
 
 /* Object dynamic lighting */

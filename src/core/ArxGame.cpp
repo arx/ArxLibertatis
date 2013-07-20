@@ -1309,7 +1309,7 @@ void ArxGame::renderCinematic() {
 }
 
 extern int iHighLight;
-extern bool Cedric_ApplyLightingFirstPartRefactor(Entity *io, Color3f &special_color, long &special_color_flag);
+extern void Cedric_ApplyLightingFirstPartRefactor(Entity *io, Color3f &special_color, long &special_color_flag);
 
 void ArxGame::renderLevel() {
 
