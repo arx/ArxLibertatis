@@ -299,7 +299,6 @@ float BOW_FOCAL=0;
 long PlayerWeaponBlocked=-1;
 float GLOBAL_LIGHT_FACTOR=0.85f;
 
-long STOP_KEYBOARD_INPUT= 0;
 long REQUEST_SPEECH_SKIP= 0;
 long CURRENTLEVEL		= -1;
 long DONT_ERASE_PLAYER	= 0;

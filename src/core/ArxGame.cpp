@@ -155,7 +155,6 @@ extern long REFUSE_GAME_RETURN;
 extern bool PLAYER_MOUSELOOK_ON;
 extern bool TRUE_PLAYER_MOUSELOOK_ON;
 extern long PLAYER_PARALYSED;
-extern long STOP_KEYBOARD_INPUT;
 extern long cur_mr;
 extern long cur_rf;
 extern long DeadTime;
@@ -197,6 +196,8 @@ extern EERIEMATRIX ProjectionMatrix;
 
 TextureContainer * ChangeLevel = NULL;
 TextureContainer * Movable = NULL;   // TextureContainer for Movable Items (Red Cross)
+
+long STOP_KEYBOARD_INPUT= 0;
 
 long BOOKBUTTON=0;
 long LASTBOOKBUTTON=0;
