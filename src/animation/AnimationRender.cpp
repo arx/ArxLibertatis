@@ -321,7 +321,9 @@ extern float GLOBAL_LIGHT_FACTOR;
 //TODO Move somewhere else
 void Cedric_ApplyLightingFirstPartRefactor(Entity *io, Color3f &special_color, long &special_color_flag) {
 
-	if(io) {
+	if(!io)
+		return;
+
 		special_color = Color3f::black;
 		special_color_flag = 0;
 
@@ -466,7 +468,6 @@ void Cedric_ApplyLightingFirstPartRefactor(Entity *io, Color3f &special_color, l
 				}
 			}
 		}
-	}
 }
 
 /* Object dynamic lighting */
