@@ -1326,7 +1326,7 @@ void ArxGame::renderLevel() {
 	for(size_t i = 0; i < entities.size(); i++) {
 		Entity *entity = entities[i];
 
-		if(entity)
+		if(!entity)
 			continue;
 
 		if(entity->ignition > 0.f || (entity->ioflags & IO_FIERY))
