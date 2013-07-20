@@ -435,7 +435,7 @@ private:
 
 // TODO move this somewhere else
 struct IO_FIXDATA {
-	char trapvalue;
+	s8 trapvalue;
 	char padd[3];
 };
 

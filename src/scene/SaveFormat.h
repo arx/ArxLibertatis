@@ -898,7 +898,7 @@ struct ARX_CHANGELEVEL_ITEM_IO_SAVE {
 };
 
 struct ARX_CHANGELEVEL_FIX_IO_SAVE {
-	char trapvalue;
+	s8 trapvalue;
 	char padd[3];
 	s32 paddd[64]; // new...
 };
