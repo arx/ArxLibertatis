@@ -103,9 +103,9 @@ extern bool bFadeInOut;
 extern bool bFade;
 extern int iFadeAction;
 extern float fFadeInOut;
-extern char SKIN_MOD;
-extern char QUICK_MOD;
 
+extern s8 SKIN_MOD;
+extern char QUICK_MOD;
 
 extern float ARXTimeMenu;
 extern float ARXOldTimeMenu;

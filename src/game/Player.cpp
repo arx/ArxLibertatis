@@ -937,7 +937,7 @@ void ARX_PLAYER_MakeFreshHero()
 
 	player.SpellToMemorize.bSpell = false;
 }
-char SKIN_MOD = 0;
+s8 SKIN_MOD = 0;
 char QUICK_MOD = 0;
 
 void ARX_SPSound() {
