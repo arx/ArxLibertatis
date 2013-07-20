@@ -1325,10 +1325,12 @@ void ArxGame::renderLevel() {
 	for(size_t i = 0; i < entities.size(); i++) {
 		Entity *entity = entities[i];
 
-		if(entity && (entity->ignition > 0.f || (entity->ioflags & IO_FIERY)))
+		if(entity)
+			continue;
+
+		if(entity->ignition > 0.f || (entity->ioflags & IO_FIERY))
 			ManageIgnition(entity);
 
-		if(entity) {
 			Cedric_ApplyLightingFirstPartRefactor(entity, entity->special_color, entity->special_color_flag);
 
 			//Highlight entity
@@ -1336,9 +1338,7 @@ void ArxGame::renderLevel() {
 				entity->special_color_flag = 4;
 				entity->special_color = Color3f::gray(float(iHighLight));
 			}
-		}
 
-		if(entity) {
 			float speedModifier = 0.f;
 
 			if(entity == entities.player()) {
@@ -1360,7 +1360,6 @@ void ArxGame::renderLevel() {
 			}
 
 			entity->speed_modif = speedModifier;
-		}
 	}
 
 
