@@ -180,9 +180,7 @@ static vector<EERIEPOLY*> vPolyLava;
 
 void PopAllTriangleListTransparency();
 
-static PORTAL_ROOM_DRAW * RoomDraw = NULL;
-static long NbRoomDraw = 0;
-
+std::vector<PORTAL_ROOM_DRAW> RoomDraw;
 std::vector<long> RoomDrawList;
 
 //*************************************************************************************
@@ -384,7 +382,7 @@ bool ARX_SCENE_PORTAL_Basic_ClipIO(Entity * io) {
 		room_num=ARX_PORTALS_GetRoomNumForPosition(&posi);
 	}
 
-	if(room_num >= 0 && RoomDraw && RoomDraw[room_num].count) {
+	if(room_num >= 0 && size_t(room_num) < RoomDraw.size() && RoomDraw[room_num].count) {
 		float yOffset = 0.f;
 		float radius = 0.f;
 		if(io->ioflags & IO_ITEM) {
@@ -463,7 +461,7 @@ bool ARX_SCENE_PORTAL_ClipIO(Entity * io, Vec3f * position) {
 			room_num = ARX_PORTALS_GetRoomNumForPosition(&posi);
 		}
 
-		if(room_num >= 0 && RoomDraw) {
+		if(room_num >= 0 && size_t(room_num) < RoomDraw.size()) {
 			if(RoomDraw[room_num].count == 0) {
 				if(io) {
 					io->bbox1.x=(short)-1;
@@ -694,19 +692,12 @@ void ARX_PORTALS_InitDrawnRooms()
 		ep++;
 	}
 
-	if(RoomDraw==NULL || NbRoomDraw < portals->nb_rooms+1) {
-		RoomDraw = (PORTAL_ROOM_DRAW *)realloc(RoomDraw, sizeof(PORTAL_ROOM_DRAW)*(portals->nb_rooms+1));
+	RoomDraw.resize(portals->nb_rooms + 1);
 
-		if (RoomDraw)
-			NbRoomDraw = portals->nb_rooms+1;
-	}
-
-	if(RoomDraw) {
-		for(long i=0; i<NbRoomDraw; i++) {
-			RoomDraw[i].count=0;		
-			RoomDraw[i].flags=0;
-			RoomDraw[i].frustrum.nb_frustrums=0;
-		}
+	for(size_t i = 0; i < RoomDraw.size(); i++) {
+		RoomDraw[i].count=0;
+		RoomDraw[i].flags=0;
+		RoomDraw[i].frustrum.nb_frustrums=0;
 	}
 
 	vPolyWater.clear();
@@ -873,8 +864,7 @@ void CreateScreenFrustrum(EERIE_FRUSTRUM * frustrum) {
 
 void RoomDrawRelease() {
 	RoomDrawList.resize(0);
-
-	free(RoomDraw), RoomDraw = NULL;
+	RoomDraw.resize(0);
 }
 
 void RoomDrawListAdd(long num) {
