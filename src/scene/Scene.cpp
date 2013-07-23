@@ -182,9 +182,8 @@ void PopAllTriangleListTransparency();
 
 static PORTAL_ROOM_DRAW * RoomDraw = NULL;
 static long NbRoomDraw = 0;
-static long * RoomDrawList = NULL;
-static long NbRoomDrawList = 0;
-long TotalRoomDrawList=0;
+
+std::vector<long> RoomDrawList;
 
 //*************************************************************************************
 //*************************************************************************************
@@ -873,19 +872,14 @@ void CreateScreenFrustrum(EERIE_FRUSTRUM * frustrum) {
 }
 
 void RoomDrawRelease() {
-	free(RoomDrawList), RoomDrawList = NULL;
+	RoomDrawList.resize(0);
+
 	free(RoomDraw), RoomDraw = NULL;
 }
 
 void RoomDrawListAdd(long num) {
 	
-	if(TotalRoomDrawList <= NbRoomDrawList) {
-		RoomDrawList = (long *)realloc(RoomDrawList, sizeof(long) * (NbRoomDrawList + 1));
-		TotalRoomDrawList=NbRoomDrawList+1;
-	}
-	
-	RoomDrawList[NbRoomDrawList]=num;	
-	NbRoomDrawList++;
+	RoomDrawList.push_back(num);
 }
 
 void RoomFrustrumAdd(long num, const EERIE_FRUSTRUM * fr)
@@ -1251,7 +1245,7 @@ void ARX_PORTALS_Frustrum_RenderRooms_TransparencyT() {
 
 	GRenderer->SetAlphaFunc(Renderer::CmpGreater, .5f);
 	
-	for(long i=0; i<NbRoomDrawList; i++) {
+	for(long i = 0; i < RoomDrawList.size(); i++) {
 
 		long room_num = RoomDrawList[i];
 
@@ -1263,8 +1257,7 @@ void ARX_PORTALS_Frustrum_RenderRooms_TransparencyT() {
 	
 	GRenderer->SetAlphaFunc(Renderer::CmpNotEqual, 0.f);
 
-	NbRoomDrawList=0;
-
+	RoomDrawList.clear();
 
 	SetZBias(8);
 
@@ -1870,7 +1863,7 @@ void ARX_SCENE_Update() {
 		CreateScreenFrustrum(&frustrum);
 		ARX_PORTALS_Frustrum_ComputeRoom(room_num, &frustrum);
 
-		for(long i=0; i<NbRoomDrawList; i++) {
+		for(long i = 0; i < RoomDrawList.size(); i++) {
 			ARX_PORTALS_Frustrum_RenderRoomTCullSoft(RoomDrawList[i], &RoomDraw[RoomDrawList[i]].frustrum, tim);
 		}
 	}
@@ -1885,7 +1878,7 @@ extern long SPECIAL_DRAGINTER_RENDER;
 void ARX_SCENE_Render() {
 
 	GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
-	for(long i=0; i<NbRoomDrawList; i++) {
+	for(long i = 0; i < RoomDrawList.size(); i++) {
 
 		long room_num = RoomDrawList[i];
 
