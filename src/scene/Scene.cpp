@@ -1770,12 +1770,11 @@ void ARX_PORTALS_Frustrum_ComputeRoom(long room_num, const EERIE_FRUSTRUM * frus
 		Vec3f pos = epp->center - ACTIVECAM->orgTrans.pos;
 		float fRes = dot(pos, epp->norm);
 
+		EERIERTPPoly2(epp);
+
 		if(!IsSphereInFrustrum(epp->v[0].rhw, &epp->center, frustrum)) {
-			EERIERTPPoly2(epp);
 			continue;
 		}
-
-		EERIERTPPoly2(epp);
 
 		bool Cull = !(fRes<0.f);
 		
