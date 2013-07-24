@@ -243,7 +243,7 @@ void ManageLava_VertexBuffer(EERIEPOLY * ep, const long to, const unsigned long 
 	}
 }
 
-long EERIERTPPoly2(EERIEPOLY *ep)
+void EERIERTPPoly2(EERIEPOLY *ep)
 {
 	EE_RTP(&ep->v[0],&ep->tv[0]);
 	EE_RTP(&ep->v[1],&ep->tv[1]);
@@ -253,15 +253,7 @@ long EERIERTPPoly2(EERIEPOLY *ep)
 		EE_RTP(&ep->v[3],&ep->tv[3]);
 	else
 		ep->tv[3].p.z=1.f;
-
-	if ((ep->tv[0].p.z<=0.f) &&
-		(ep->tv[1].p.z<=0.f) &&
-		(ep->tv[2].p.z<=0.f) &&
-		(ep->tv[3].p.z<=0.f) ) return 0;
-
-	return 1;
 }
-
 
 bool IsSphereInFrustrum(float radius, const Vec3f *point, const EERIE_FRUSTRUM *frustrum);
 bool FrustrumsClipSphere(EERIE_FRUSTRUM_DATA * frustrums,EERIE_SPHERE * sphere)
