@@ -867,11 +867,6 @@ void RoomDrawRelease() {
 	RoomDraw.resize(0);
 }
 
-void RoomDrawListAdd(long num) {
-	
-	RoomDrawList.push_back(num);
-}
-
 void RoomFrustrumAdd(long num, const EERIE_FRUSTRUM * fr)
 {
 	if (RoomDraw[num].frustrum.nb_frustrums<MAX_FRUSTRUMS-1)
@@ -1737,8 +1732,9 @@ void ARX_PORTALS_Frustrum_ComputeRoom(long room_num, const EERIE_FRUSTRUM * frus
 {
 	arx_assert(portals);
 
-	if(RoomDraw[room_num].count == 0)
-		RoomDrawListAdd(room_num);
+	if(RoomDraw[room_num].count == 0) {
+		RoomDrawList.push_back(room_num);
+	}
 
 	RoomFrustrumAdd(room_num,frustrum);
 	RoomDraw[room_num].count++;
