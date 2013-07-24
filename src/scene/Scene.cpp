@@ -1230,7 +1230,7 @@ void ARX_PORTALS_Frustrum_RenderRooms_TransparencyT() {
 
 	GRenderer->SetAlphaFunc(Renderer::CmpGreater, .5f);
 	
-	for(long i = 0; i < RoomDrawList.size(); i++) {
+	for(size_t i = 0; i < RoomDrawList.size(); i++) {
 
 		long room_num = RoomDrawList[i];
 
@@ -1849,7 +1849,7 @@ void ARX_SCENE_Update() {
 		CreateScreenFrustrum(&frustrum);
 		ARX_PORTALS_Frustrum_ComputeRoom(room_num, &frustrum);
 
-		for(long i = 0; i < RoomDrawList.size(); i++) {
+		for(size_t i = 0; i < RoomDrawList.size(); i++) {
 			ARX_PORTALS_Frustrum_RenderRoomTCullSoft(RoomDrawList[i], &RoomDraw[RoomDrawList[i]].frustrum, tim);
 		}
 	}
@@ -1864,7 +1864,7 @@ extern long SPECIAL_DRAGINTER_RENDER;
 void ARX_SCENE_Render() {
 
 	GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
-	for(long i = 0; i < RoomDrawList.size(); i++) {
+	for(size_t i = 0; i < RoomDrawList.size(); i++) {
 
 		long room_num = RoomDrawList[i];
 
