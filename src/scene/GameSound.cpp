@@ -308,6 +308,8 @@ SampleId SND_SPELL_IGNITE(INVALID_ID);
 SampleId SND_SPELL_INVISIBILITY_START(INVALID_ID);
 SampleId SND_SPELL_INVISIBILITY_END(INVALID_ID);
 SampleId SND_SPELL_LEVITATE_START(INVALID_ID);
+SampleId SND_SPELL_LEVITATE_LOOP(INVALID_ID);
+SampleId SND_SPELL_LEVITATE_END(INVALID_ID);
 SampleId SND_SPELL_LIGHTNING_START(INVALID_ID);
 SampleId SND_SPELL_LIGHTNING_LOOP(INVALID_ID);
 SampleId SND_SPELL_LIGHTNING_END(INVALID_ID);
@@ -1271,6 +1273,8 @@ static void ARX_SOUND_CreateStaticSamples() {
 	SND_SPELL_INVISIBILITY_START       = audio::createSample("magic_spell_invisibilityon.wav");
 	SND_SPELL_INVISIBILITY_END         = audio::createSample("magic_spell_invisibilityoff.wav");
 	SND_SPELL_LEVITATE_START           = audio::createSample("magic_spell_levitate_start.wav");
+	SND_SPELL_LEVITATE_LOOP            = audio::createSample("magic_spell_levitate_loop.wav");
+	SND_SPELL_LEVITATE_END             = audio::createSample("magic_spell_levitate_end.wav");
 	SND_SPELL_LIGHTNING_START          = audio::createSample("magic_spell_lightning_start.wav");
 	SND_SPELL_LIGHTNING_LOOP           = audio::createSample("magic_spell_lightning_loop.wav");
 	SND_SPELL_LIGHTNING_END            = audio::createSample("magic_spell_lightning_end.wav");
@@ -1420,6 +1424,8 @@ static void ARX_SOUND_ReleaseStaticSamples() {
 	SND_SPELL_INVISIBILITY_START = INVALID_ID;
 	SND_SPELL_INVISIBILITY_END = INVALID_ID;
 	SND_SPELL_LEVITATE_START = INVALID_ID;
+	SND_SPELL_LEVITATE_LOOP = INVALID_ID;
+	SND_SPELL_LEVITATE_END = INVALID_ID;
 	SND_SPELL_LIGHTNING_START = INVALID_ID;
 	SND_SPELL_LIGHTNING_LOOP = INVALID_ID;
 	SND_SPELL_LIGHTNING_END = INVALID_ID;

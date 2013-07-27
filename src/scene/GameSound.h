@@ -177,6 +177,8 @@ extern audio::SampleId SND_SPELL_IGNITE;
 extern audio::SampleId SND_SPELL_INVISIBILITY_START;
 extern audio::SampleId SND_SPELL_INVISIBILITY_END;
 extern audio::SampleId SND_SPELL_LEVITATE_START;
+extern audio::SampleId SND_SPELL_LEVITATE_LOOP;
+extern audio::SampleId SND_SPELL_LEVITATE_END;
 extern audio::SampleId SND_SPELL_LIGHTNING;
 extern audio::SampleId SND_SPELL_LIGHTNING_START;
 extern audio::SampleId SND_SPELL_LIGHTNING_LOOP;

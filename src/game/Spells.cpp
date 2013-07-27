@@ -3994,6 +3994,10 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			spells[i].pSpellFx = effect;
 			spells[i].tolive = effect->GetDuration();
 			
+			spells[i].snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_LEVITATE_LOOP,
+			                                       &spells[i].caster_pos, 0.7f,
+			                                       ARX_SOUND_PLAY_LOOPED);
+			
 			ARX_SPELLS_AddSpellOn(spells[i].target, i);
 			
 			break;
@@ -5482,7 +5486,9 @@ void ARX_SPELLS_Update()
 				//****************************************************************************
 				// LEVEL 5
 				case SPELL_LEVITATE: {
-					ARX_SPELLS_RemoveSpellOn(spells[i].target,i);
+					ARX_SOUND_Stop(spells[i].snd_loop);
+					ARX_SOUND_PlaySFX(SND_SPELL_LEVITATE_END, &entities[spells[i].caster]->pos);
+					ARX_SPELLS_RemoveSpellOn(spells[i].target, i);
 
 					if(spells[i].target == 0)
 						player.levitate = 0;
@@ -6033,6 +6039,7 @@ void ARX_SPELLS_Update()
 					pCSpellFX->Update(framedelay);
 					pCSpellFX->Render();
 				}
+				ARX_SOUND_RefreshPosition(spells[i].snd_loop, &entities[spells[i].caster]->pos);
 			}
 			break;
 			//****************************************************************************
