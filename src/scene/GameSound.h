@@ -208,6 +208,7 @@ extern audio::SampleId SND_SPELL_REPEL_UNDEAD_LOOP;
 extern audio::SampleId SND_SPELL_RUNE_OF_GUARDING;
 extern audio::SampleId SND_SPELL_RUNE_OF_GUARDING_END;
 extern audio::SampleId SND_SPELL_SLOW_DOWN;
+extern audio::SampleId SND_SPELL_SLOW_DOWN_END;
 extern audio::SampleId SND_SPELL_SPARK;
 extern audio::SampleId SND_SPELL_SPEED_START;
 extern audio::SampleId SND_SPELL_SPEED_LOOP;

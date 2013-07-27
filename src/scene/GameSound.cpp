@@ -339,6 +339,7 @@ SampleId SND_SPELL_REPEL_UNDEAD_LOOP(INVALID_ID);
 SampleId SND_SPELL_RUNE_OF_GUARDING(INVALID_ID);
 SampleId SND_SPELL_RUNE_OF_GUARDING_END(INVALID_ID);
 SampleId SND_SPELL_SLOW_DOWN(INVALID_ID);
+SampleId SND_SPELL_SLOW_DOWN_END(INVALID_ID);
 SampleId SND_SPELL_SPARK(INVALID_ID);
 SampleId SND_SPELL_SPEED_START(INVALID_ID);
 SampleId SND_SPELL_SPEED_LOOP(INVALID_ID);
@@ -1302,6 +1303,7 @@ static void ARX_SOUND_CreateStaticSamples() {
 	SND_SPELL_RUNE_OF_GUARDING         = audio::createSample("magic_spell_rune_of_guarding.wav");
 	SND_SPELL_RUNE_OF_GUARDING_END     = audio::createSample("magic_spell_rune_of_guarding_explode.wav");
 	SND_SPELL_SLOW_DOWN                = audio::createSample("magic_spell_slow_down.wav");
+	SND_SPELL_SLOW_DOWN_END            = audio::createSample("magic_spell_slow_down_end.wav");
 	SND_SPELL_SPARK                    = audio::createSample("sfx_spark.wav");
 	SND_SPELL_SPEED_START              = audio::createSample("magic_spell_speedstart.wav");
 	SND_SPELL_SPEED_LOOP               = audio::createSample("magic_spell_speed.wav");
@@ -1453,6 +1455,7 @@ static void ARX_SOUND_ReleaseStaticSamples() {
 	SND_SPELL_RUNE_OF_GUARDING = INVALID_ID;
 	SND_SPELL_RUNE_OF_GUARDING_END = INVALID_ID;
 	SND_SPELL_SLOW_DOWN = INVALID_ID;
+	SND_SPELL_SLOW_DOWN_END = INVALID_ID;
 	SND_SPELL_SPARK = INVALID_ID;
 	SND_SPELL_SPEED_START = INVALID_ID;
 	SND_SPELL_SPEED_LOOP = INVALID_ID;

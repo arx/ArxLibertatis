@@ -5541,7 +5541,8 @@ void ARX_SPELLS_Update()
 				}
 				break;
 				case SPELL_SLOW_DOWN:
-					ARX_SPELLS_RemoveSpellOn(spells[i].target,i);
+					ARX_SOUND_PlaySFX(SND_SPELL_SLOW_DOWN_END);
+					ARX_SPELLS_RemoveSpellOn(spells[i].target, i);
 				break;				
 				//****************************************************************************
 				// LEVEL 7
