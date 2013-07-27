@@ -265,6 +265,7 @@ SampleId SND_SPELL_ARMOR_START(INVALID_ID);
 SampleId SND_SPELL_ARMOR_END(INVALID_ID);
 SampleId SND_SPELL_ARMOR_LOOP(INVALID_ID);
 SampleId SND_SPELL_LOWER_ARMOR(INVALID_ID);
+SampleId SND_SPELL_LOWER_ARMOR_END(INVALID_ID);
 SampleId SND_SPELL_BLESS(INVALID_ID);
 SampleId SND_SPELL_COLD_PROTECTION_START(INVALID_ID);
 SampleId SND_SPELL_COLD_PROTECTION_LOOP(INVALID_ID);
@@ -1228,6 +1229,7 @@ static void ARX_SOUND_CreateStaticSamples() {
 	SND_SPELL_ARMOR_END                = audio::createSample("magic_spell_armor_end.wav");
 	SND_SPELL_ARMOR_LOOP               = audio::createSample("magic_spell_armor_loop.wav");
 	SND_SPELL_LOWER_ARMOR              = audio::createSample("magic_spell_decrease_armor.wav");
+	SND_SPELL_LOWER_ARMOR_END          = audio::createSample("magic_spell_lower_armor.wav");
 	SND_SPELL_BLESS                    = audio::createSample("magic_spell_bless.wav");
 	SND_SPELL_COLD_PROTECTION_START    = audio::createSample("magic_spell_cold_protection.wav");
 	SND_SPELL_COLD_PROTECTION_LOOP     = audio::createSample("magic_spell_cold_protection_loop.wav");
@@ -1375,6 +1377,7 @@ static void ARX_SOUND_ReleaseStaticSamples() {
 	SND_SPELL_ARMOR_END		= INVALID_ID;
 	SND_SPELL_ARMOR_LOOP	= INVALID_ID;
 	SND_SPELL_LOWER_ARMOR = INVALID_ID;
+	SND_SPELL_LOWER_ARMOR_END = INVALID_ID;
 	SND_SPELL_BLESS = INVALID_ID;
 	SND_SPELL_COLD_PROTECTION_START = INVALID_ID;
 	SND_SPELL_COLD_PROTECTION_LOOP = INVALID_ID;

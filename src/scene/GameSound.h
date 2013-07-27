@@ -182,6 +182,7 @@ extern audio::SampleId SND_SPELL_LIGHTNING_START;
 extern audio::SampleId SND_SPELL_LIGHTNING_LOOP;
 extern audio::SampleId SND_SPELL_LIGHTNING_END;
 extern audio::SampleId SND_SPELL_LOWER_ARMOR;
+extern audio::SampleId SND_SPELL_LOWER_ARMOR_END;
 extern audio::SampleId SND_SPELL_FIRE_FIELD_START;
 extern audio::SampleId SND_SPELL_FIRE_FIELD_LOOP;
 extern audio::SampleId SND_SPELL_FIRE_FIELD_END;

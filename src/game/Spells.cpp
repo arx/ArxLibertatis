@@ -5425,6 +5425,7 @@ void ARX_SPELLS_Update()
 				}
 				break;
 				case SPELL_LOWER_ARMOR: {
+					ARX_SOUND_PlaySFX(SND_SPELL_LOWER_ARMOR_END);
 					Entity *io = entities[spells[i].target];
 
 					if(spells[i].longinfo) {
