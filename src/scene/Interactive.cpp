@@ -2526,7 +2526,7 @@ static bool IsCollidingInter(Entity * io, Vec3f * pos) {
 
 void SetYlsideDeath(Entity * io) {
 	io->sfx_flag = SFX_TYPE_YLSIDE_DEATH;
-	io->sfx_time = (unsigned long)(arxtime); 	
+	io->sfx_time = (unsigned long)(arxtime);
 }
 
 bool ARX_INTERACTIVE_CheckCollision(EERIE_3DOBJ * obj, long kk, long source)
