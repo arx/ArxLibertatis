@@ -461,7 +461,7 @@ void Cedric_ApplyLightingFirstPartRefactor(Entity *io, Color3f &special_color, l
 							}
 						} else {
 							io->sfx_flag &= ~SFX_TYPE_YLSIDE_DEATH;
-							ARX_INTERACTIVE_DestroyIO(io);
+							ARX_INTERACTIVE_DestroyIOdelayed(io);
 						}
 					}
 				}

@@ -1432,6 +1432,10 @@ void ArxGame::renderLevel() {
 	ACTIVECAM->fadecolor = current.depthcolor;
 
 
+	ARX_INTERACTIVE_DestroyIOdelayedExecute();
+
+	// TODO split method here
+
 	// SUBJECTIVE VIEW UPDATE START  *********************************************************
 
 	// Clear screen & Z buffers
