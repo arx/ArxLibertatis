@@ -3007,6 +3007,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 	spells[i].pSpellFx=NULL;
 	spells[i].type = typ;
 	spells[i].lastupdate = spells[i].timcreation = (unsigned long)(arxtime);
+	spells[i].fManaCostPerSecond = 0.f;
 	
 	
 	// Check spell-specific preconditions
