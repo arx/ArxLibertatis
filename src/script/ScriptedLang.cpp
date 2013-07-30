@@ -839,7 +839,7 @@ const string getName() {
 
 void timerCommand(const string & timer, Context & context) {
 	
-	// Checks if the timer is named by caller of if it needs a default name
+	// Checks if the timer is named by caller or if it needs a default name
 	string timername = timer.empty() ? ARX_SCRIPT_Timer_GetDefaultName() : timer;
 	
 	bool mili = false, idle = false;
