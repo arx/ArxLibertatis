@@ -353,10 +353,15 @@ void SDLWindow::tick() {
 			case SDL_KEYDOWN:
 				
 				// For some reason, release notes from SDL 1.2.12 says a SDL_QUIT message
-				// should be sent when ALT-F4 is pressed on Windows,
+				// should be sent when Command+Q is pressed on Mac OS or ALT-F4 on other platforms
 				// but it doesn't look like it's working as expected...
+#if ARX_PLATFORM == ARX_PLATFORM_MACOSX
+				if(event.key.keysym.sym == SDLK_q
+					&& (event.key.keysym.mod & KMOD_META) != KMOD_NONE) {
+#else
 				if(event.key.keysym.sym == SDLK_F4
 					&& (event.key.keysym.mod & KMOD_ALT) != KMOD_NONE) {
+#endif
 					onDestroy();
 					break;
 				}
