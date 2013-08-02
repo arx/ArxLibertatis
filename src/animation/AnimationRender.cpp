@@ -1005,7 +1005,6 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity *
 		}
 	}
 
-	{
 	for(size_t i = 0; i < eobj->facelist.size(); i++) {
 		TexturedVertex *tv = NULL;
 
@@ -1303,7 +1302,6 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity *
 				tv[o].color = eobj->vertexlist3[paf[o]].vert.color;
 			}
 		}
-	}
 	}
 }
 
