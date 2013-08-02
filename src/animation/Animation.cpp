@@ -1086,22 +1086,22 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, const EERIE_QUAT * rotation, Vec3f *poss,
 
 		if((eobj->facelist[i].facetype & POLY_TRANS) || invisibility > 0.f) {
 			if(invisibility > 0.f)
-				fTransp=2.f-invisibility;
+				fTransp = 2.f - invisibility;
 			else
-				fTransp=eobj->facelist[i].transval;
+				fTransp = eobj->facelist[i].transval;
 			
 			if(fTransp >= 2.f) { //MULTIPLICATIVE
-				fTransp *= (1.0f / 2);
+				fTransp *= (1.f / 2);
 				fTransp += 0.5f;
 				vert_list = PushVertexInTableCull_TMultiplicative(pTex);
 			} else if(fTransp >= 1.f) { //ADDITIVE
 				fTransp -= 1.f;
 				vert_list = PushVertexInTableCull_TAdditive(pTex);
 			} else if(fTransp > 0.f) { //NORMAL TRANS
-				fTransp = 1.f-fTransp;
+				fTransp = 1.f - fTransp;
 				vert_list = PushVertexInTableCull_TNormalTrans(pTex);
 			} else { //SUBTRACTIVE
-				fTransp = 1.f-fTransp;
+				fTransp = 1.f - fTransp;
 				vert_list = PushVertexInTableCull_TSubstractive(pTex);
 			}
 		} else {
