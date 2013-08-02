@@ -1070,8 +1070,6 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, const EERIE_QUAT * rotation, Vec3f *poss,
 				continue;
 		}
 
-		TexturedVertex * vert_list;
-
 		if(eobj->facelist[i].texid<0)
 			continue;
 
@@ -1083,6 +1081,7 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, const EERIE_QUAT * rotation, Vec3f *poss,
 			MakeCLight2(io, &infra, rotation, &pos, eobj, i, special_color, special_color_flag);
 
 		float fTransp = 0.f;
+		TexturedVertex * tvList = NULL;
 
 		if((eobj->facelist[i].facetype & POLY_TRANS) || invisibility > 0.f) {
 			if(invisibility > 0.f)
@@ -1093,46 +1092,46 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, const EERIE_QUAT * rotation, Vec3f *poss,
 			if(fTransp >= 2.f) { //MULTIPLICATIVE
 				fTransp *= (1.f / 2);
 				fTransp += 0.5f;
-				vert_list = PushVertexInTableCull_TMultiplicative(pTex);
+				tvList = PushVertexInTableCull_TMultiplicative(pTex);
 			} else if(fTransp >= 1.f) { //ADDITIVE
 				fTransp -= 1.f;
-				vert_list = PushVertexInTableCull_TAdditive(pTex);
+				tvList = PushVertexInTableCull_TAdditive(pTex);
 			} else if(fTransp > 0.f) { //NORMAL TRANS
 				fTransp = 1.f - fTransp;
-				vert_list = PushVertexInTableCull_TNormalTrans(pTex);
+				tvList = PushVertexInTableCull_TNormalTrans(pTex);
 			} else { //SUBTRACTIVE
 				fTransp = 1.f - fTransp;
-				vert_list = PushVertexInTableCull_TSubstractive(pTex);
+				tvList = PushVertexInTableCull_TSubstractive(pTex);
 			}
 		} else {
-			vert_list = PushVertexInTableCull(pTex);
+			tvList = PushVertexInTableCull(pTex);
 		}
 
-		vert_list[0]=eobj->vertexlist[paf[0]].vert;
-		vert_list[1]=eobj->vertexlist[paf[1]].vert;
-		vert_list[2]=eobj->vertexlist[paf[2]].vert;
+		tvList[0]=eobj->vertexlist[paf[0]].vert;
+		tvList[1]=eobj->vertexlist[paf[1]].vert;
+		tvList[2]=eobj->vertexlist[paf[2]].vert;
 
-		vert_list[0].uv.x=eobj->facelist[i].u[0];
-		vert_list[0].uv.y=eobj->facelist[i].v[0];
-		vert_list[1].uv.x=eobj->facelist[i].u[1];
-		vert_list[1].uv.y=eobj->facelist[i].v[1];
-		vert_list[2].uv.x=eobj->facelist[i].u[2];
-		vert_list[2].uv.y=eobj->facelist[i].v[2];	
+		tvList[0].uv.x=eobj->facelist[i].u[0];
+		tvList[0].uv.y=eobj->facelist[i].v[0];
+		tvList[1].uv.x=eobj->facelist[i].u[1];
+		tvList[1].uv.y=eobj->facelist[i].v[1];
+		tvList[2].uv.x=eobj->facelist[i].u[2];
+		tvList[2].uv.y=eobj->facelist[i].v[2];
 
 		// Treat WATER Polys (modify UVs)
 		if(eobj->facelist[i].facetype & POLY_WATER) {
 			for(long k = 0; k < 3; k++) {
-				vert_list[k].uv.x=eobj->facelist[i].u[k];
-				vert_list[k].uv.y=eobj->facelist[i].v[k];
-				ApplyWaterFXToVertex(&eobj->vertexlist[eobj->facelist[i].vid[k]].v, &vert_list[k], 0.3f);
+				tvList[k].uv.x=eobj->facelist[i].u[k];
+				tvList[k].uv.y=eobj->facelist[i].v[k];
+				ApplyWaterFXToVertex(&eobj->vertexlist[eobj->facelist[i].vid[k]].v, &tvList[k], 0.3f);
 			}
 		}
 
 		if(eobj->facelist[i].facetype & POLY_GLOW) { // unaffected by light
-			vert_list[0].color=vert_list[1].color=vert_list[2].color=0xffffffff;
+			tvList[0].color=tvList[1].color=tvList[2].color=0xffffffff;
 		} else { // Normal Illuminations
 			for(long j = 0; j < 3; j++) {
-				vert_list[j].color=eobj->vertexlist3[paf[j]].vert.color;
+				tvList[j].color=eobj->vertexlist3[paf[j]].vert.color;
 			}
 		}
 
@@ -1140,10 +1139,10 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, const EERIE_QUAT * rotation, Vec3f *poss,
 			int to=3;
 
 			for(long k = 0; k < to; k++) {
-				long lr=(vert_list[k].color>>16) & 255;
+				long lr=(tvList[k].color>>16) & 255;
 				float ffr=(float)(lr);
 
-				float dd = vert_list[k].rhw;
+				float dd = tvList[k].rhw;
 
 				dd = clamp(dd, 0.f, 1.f);
 
@@ -1161,20 +1160,20 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, const EERIE_QUAT * rotation, Vec3f *poss,
 				u8 lfr = fr;
 				u8 lfb = fb;
 				u8 lfg = 0x1E;
-				vert_list[k].color = (0xff000000L | (lfr << 16) | (lfg << 8) | (lfb));
+				tvList[k].color = (0xff000000L | (lfr << 16) | (lfg << 8) | (lfb));
 			}
 		}
 	
 		for(long j = 0; j < 3; j++)
-			eobj->facelist[i].color[j]=Color::fromBGRA(vert_list[j].color);
+			eobj->facelist[i].color[j]=Color::fromBGRA(tvList[j].color);
 
 		// Transparent poly: storing info to draw later
 		if((eobj->facelist[i].facetype & POLY_TRANS) || invisibility > 0.f) {
-			vert_list[0].color = vert_list[1].color = vert_list[2].color = Color::gray(fTransp).toBGR();
+			tvList[0].color = tvList[1].color = tvList[2].color = Color::gray(fTransp).toBGR();
 		}
 
 		if(io && (io->ioflags & IO_ZMAP)) {
-			CalculateInterZMapp(eobj,i,paf,pTex,vert_list);
+			CalculateInterZMapp(eobj,i,paf,pTex,tvList);
 		}
 
 		// HALO HANDLING START
@@ -1190,7 +1189,7 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, const EERIE_QUAT * rotation, Vec3f *poss,
 			float tot=0;
 			float _ffr[3];
 
-			TexturedVertex * workon=vert_list;
+			TexturedVertex * workon=tvList;
 
 			for(long o = 0; o < 3; o++) {
 				Vec3f temporary3D;

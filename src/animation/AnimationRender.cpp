@@ -1006,7 +1006,6 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity *
 	}
 
 	for(size_t i = 0; i < eobj->facelist.size(); i++) {
-		TexturedVertex *tv = NULL;
 
 		long paf[3];
 
@@ -1038,6 +1037,7 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity *
 			continue;
 
 		float fTransp = 0.f;
+		TexturedVertex *tvList = NULL;
 
 		if((eobj->facelist[i].facetype & POLY_TRANS) || invisibility > 0.f) {
 			if(invisibility > 0.f)
@@ -1048,24 +1048,24 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity *
 			if(fTransp >= 2.f) { //MULTIPLICATIVE
 				fTransp *= (1.f / 2);
 				fTransp += 0.5f;
-				tv = PushVertexInTableCull_TMultiplicative(pTex);
+				tvList = PushVertexInTableCull_TMultiplicative(pTex);
 			} else if(fTransp >= 1.f) { //ADDITIVE
 				fTransp -= 1.f;
-				tv = PushVertexInTableCull_TAdditive(pTex);
+				tvList = PushVertexInTableCull_TAdditive(pTex);
 			} else if(fTransp > 0.f) { //NORMAL TRANS
 				fTransp = 1.f - fTransp;
-				tv = PushVertexInTableCull_TNormalTrans(pTex);
+				tvList = PushVertexInTableCull_TNormalTrans(pTex);
 			} else { //SUBTRACTIVE
 				fTransp = 1.f - fTransp;
-				tv = PushVertexInTableCull_TSubstractive(pTex);
+				tvList = PushVertexInTableCull_TSubstractive(pTex);
 			}
 		} else {
-			tv = PushVertexInTableCull(pTex);
+			tvList = PushVertexInTableCull(pTex);
 		}
 
 		for(long n = 0 ; n < 3 ; n++) {
 			paf[n] = eface->vid[n];
-			tv[n].p = eobj->vertexlist3[paf[n]].vert.p;
+			tvList[n].p = eobj->vertexlist3[paf[n]].vert.p;
 
 			// Nuky - this code takes 20% of the whole game performance O_O
 			//        AFAIK it allows to correctly display the blue magic effects
@@ -1082,21 +1082,21 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity *
 			//		tv[n].sz *= IN_FRONT_DIVIDER_FEET;
 			//}
 
-			tv[n].rhw	= eobj->vertexlist3[paf[n]].vert.rhw;
-			tv[n].uv.x	= eface->u[n];
-			tv[n].uv.y	= eface->v[n];
-			tv[n].color = eobj->vertexlist3[paf[n]].vert.color;
+			tvList[n].rhw	= eobj->vertexlist3[paf[n]].vert.rhw;
+			tvList[n].uv.x	= eface->u[n];
+			tvList[n].uv.y	= eface->v[n];
+			tvList[n].color = eobj->vertexlist3[paf[n]].vert.color;
 		}
 
 		if((eobj->facelist[i].facetype & POLY_TRANS) || invisibility > 0.f) {
-			tv[0].color = tv[1].color = tv[2].color = Color::gray(fTransp).toBGR();
+			tvList[0].color = tvList[1].color = tvList[2].color = Color::gray(fTransp).toBGR();
 		}
 
 #ifdef USE_SOFTWARE_CLIPPING
 		if (!(ARX_SoftClippZ(&eobj->vertexlist3[paf[0]],
 										   &eobj->vertexlist3[paf[1]],
 										   &eobj->vertexlist3[paf[2]],
-										   &tv,
+										   &tvList,
 										   eface,
 										   invisibility,
 										   pTex,
@@ -1114,7 +1114,7 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity *
 #endif
 
 		if(io && (io->ioflags & IO_ZMAP))
-			CalculateInterZMapp(eobj, i, paf, pTex, tv);
+			CalculateInterZMapp(eobj, i, paf, pTex, tvList);
 
 		////////////////////////////////////////////////////////////////////////
 		// HALO HANDLING START
@@ -1172,7 +1172,7 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity *
 
 				arx_assert(curhaloInitialized > 0);
 
-				TexturedVertex *workon	= tv;
+				TexturedVertex *workon	= tvList;
 
 				float tot = 0;
 				for(long o = 0; o < 3; o++) {
@@ -1188,7 +1188,7 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity *
 					u8 lfr = curhalo.color.r * power;
 					u8 lfg = curhalo.color.g * power;
 					u8 lfb = curhalo.color.b * power;
-					tv[o].color = ((0xFF << 24) | (lfr << 16) | (lfg << 8) | (lfb));
+					tvList[o].color = ((0xFF << 24) | (lfr << 16) | (lfg << 8) | (lfb));
 				}
 
 				if(tot > 260) {
@@ -1299,7 +1299,7 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity *
 
 			for(long o = 0; o < 3; o++) {
 				paf[o] = eface->vid[o];
-				tv[o].color = eobj->vertexlist3[paf[o]].vert.color;
+				tvList[o].color = eobj->vertexlist3[paf[o]].vert.color;
 			}
 		}
 	}
