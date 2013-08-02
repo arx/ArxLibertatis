@@ -1006,10 +1006,9 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity *
 	}
 
 	for(size_t i = 0; i < eobj->facelist.size(); i++) {
+		EERIE_FACE *eface = &eobj->facelist[i];
 
 		long paf[3];
-
-		EERIE_FACE *eface = &eobj->facelist[i];
 
 		if((eface->facetype & POLY_HIDE) && !IN_BOOK_DRAW)
 			continue;
