@@ -977,9 +977,6 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, const EERIE_QUAT * rotation, Vec3f *poss,
 	// Avoids To treat an object that isn't Visible
 	if(io && io != entities.player() && !modinfo && !Cedric_IO_Visible(&pos))
 		return;
-
-
-	TexturedVertex vert_list_static[4];
 	
 	Color3f infra;
 
@@ -989,7 +986,6 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, const EERIE_QUAT * rotation, Vec3f *poss,
 	if(!io && INVISIBILITY_OVERRIDE != 0.f)
 		invisibility = INVISIBILITY_OVERRIDE;
 	
-
 	// Test for Mipmeshing then pre-computes vertices
 	ResetBBox3D( io );
 
@@ -1007,11 +1003,12 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, const EERIE_QUAT * rotation, Vec3f *poss,
 			temp -= io->obj->pbox->vert[0].initpos * scale - io->obj->point0;
 		}
 
-		TransformVertexQuat(rotation, &temp, &vert_list_static[1].p);
+		Vec3f rotatedPosition;
+		TransformVertexQuat(rotation, &temp, &rotatedPosition);
 
-		eobj->vertexlist3[i].v = vert_list_static[1].p += pos;
+		eobj->vertexlist3[i].v = rotatedPosition += pos;
 
-		EE_RT(&vert_list_static[1].p, &eobj->vertexlist[i].vworld);
+		EE_RT(&rotatedPosition, &eobj->vertexlist[i].vworld);
 		EE_P(&eobj->vertexlist[i].vworld, &eobj->vertexlist[i].vert);
 
 		// Memorizes 2D Bounding Box using vertex min/max x,y pos
