@@ -2108,8 +2108,6 @@ void ForcePlayerLookAtIO(Entity * io) {
 }
 extern float PLAYER_ARMS_FOCAL;
 extern long CURRENT_BASE_FOCAL;
-extern long TRAP_DETECT;
-extern long TRAP_SECRET;
 
 /*!
  * \brief Updates Many player infos each frame
@@ -2170,11 +2168,11 @@ void ARX_PLAYER_Frame_Update()
 
 	ARX_PLAYER_ComputePlayerFullStats();
 
-	TRAP_DETECT = checked_range_cast<long>(player.Full_Skill_Mecanism);
-	TRAP_SECRET = checked_range_cast<long>(player.Full_Skill_Intuition);
+	player.TRAP_DETECT = player.Full_Skill_Mecanism;
+	player.TRAP_SECRET = player.Full_Skill_Intuition;
 
 	if(ARX_SPELLS_GetSpellOn(entities.player(), SPELL_DETECT_TRAP) >= 0)
-		TRAP_DETECT = 100;
+		player.TRAP_DETECT = 100.f;
 
 	ModeLight |= MODE_DEPTHCUEING;
 

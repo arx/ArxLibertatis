@@ -271,6 +271,9 @@ struct ARXCHARACTER {
 	long gold;
 	short bag;
 	ARX_INTERFACE_MEMORIZE_SPELL SpellToMemorize;
+
+	float TRAP_DETECT;
+	float TRAP_SECRET;
 	
 	static float baseRadius() { return 52.f; }
 	static float baseHeight() { return -170.f; }

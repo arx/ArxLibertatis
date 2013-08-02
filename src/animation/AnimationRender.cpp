@@ -313,9 +313,6 @@ void Cedric_TransformVerts(Entity *io, EERIE_3DOBJ *eobj, EERIE_C_DATA *obj, Vec
 	}
 }
 
-extern long TRAP_DETECT;
-extern long TRAP_SECRET;
-
 extern float GLOBAL_LIGHT_FACTOR;
 
 //TODO Move somewhere else
@@ -344,7 +341,7 @@ void Cedric_ApplyLightingFirstPartRefactor(Entity *io, Color3f &special_color, l
 	}
 
 	if((io->ioflags & IO_FIX) && io->_fixdata->trapvalue > -1) {
-		trappercent = (float)TRAP_DETECT - (float)io->_fixdata->trapvalue;
+		trappercent = player.TRAP_DETECT - (float)io->_fixdata->trapvalue;
 		if(trappercent > 0.f) {
 			trappercent = 0.6f + trappercent * ( 1.0f / 100 );
 			trappercent = clamp(trappercent, 0.6f, 1.f);
@@ -352,7 +349,7 @@ void Cedric_ApplyLightingFirstPartRefactor(Entity *io, Color3f &special_color, l
 	}
 
 	if((io->ioflags & IO_FIX) && io->secretvalue > -1) {
-		secretpercent = (float)TRAP_SECRET - (float)io->secretvalue;
+		secretpercent = player.TRAP_SECRET - (float)io->secretvalue;
 		if(secretpercent > 0.f) {
 			secretpercent = 0.6f + secretpercent * ( 1.0f / 100 );
 			secretpercent = clamp(secretpercent, 0.6f, 1.f);

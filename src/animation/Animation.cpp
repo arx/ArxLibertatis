@@ -117,8 +117,7 @@ TexturedVertex LATERDRAWHALO[HALOMAX * 4];
 EERIE_LIGHT * llights[32];
 float dists[32];
 float values[32];
-long TRAP_DETECT = -1;
-long TRAP_SECRET = -1;
+
 long HALOCUR = 0;
 
 static const long anim_power[] = { 100, 20, 15, 12, 8, 6, 5, 4, 3, 2, 2, 1, 1, 1, 1 };
