@@ -1009,16 +1009,19 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity *
 		EERIE_FACE *eface = &eobj->facelist[i];
 
 		long paf[3];
+		paf[0]=eface->vid[0];
+		paf[1]=eface->vid[1];
+		paf[2]=eface->vid[2];
 
 		if((eface->facetype & POLY_HIDE) && !IN_BOOK_DRAW)
 			continue;
 
 		//CULL3D
-		Vec3f nrm = eobj->vertexlist3[eface->vid[0]].v - ACTIVECAM->orgTrans.pos;
+		Vec3f nrm = eobj->vertexlist3[paf[0]].v - ACTIVECAM->orgTrans.pos;
 
 		if(!(eface->facetype & POLY_DOUBLESIDED)) {
-			Vec3f normV10 = eobj->vertexlist3[eface->vid[1]].v - eobj->vertexlist3[eface->vid[0]].v;
-			Vec3f normV20 = eobj->vertexlist3[eface->vid[2]].v - eobj->vertexlist3[eface->vid[0]].v;
+			Vec3f normV10 = eobj->vertexlist3[paf[1]].v - eobj->vertexlist3[paf[0]].v;
+			Vec3f normV20 = eobj->vertexlist3[paf[2]].v - eobj->vertexlist3[paf[0]].v;
 			Vec3f normFace;
 			normFace.x = (normV10.y * normV20.z) - (normV10.z * normV20.y);
 			normFace.y = (normV10.z * normV20.x) - (normV10.x * normV20.z);
@@ -1063,7 +1066,6 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity *
 		}
 
 		for(long n = 0 ; n < 3 ; n++) {
-			paf[n] = eface->vid[n];
 			tvList[n].p = eobj->vertexlist3[paf[n]].vert.p;
 
 			// Nuky - this code takes 20% of the whole game performance O_O
