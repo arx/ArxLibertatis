@@ -1058,13 +1058,13 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, const EERIE_QUAT * rotation, Vec3f *poss,
 		//CULL3D
 		Vec3f nrm = eobj->vertexlist3[paf[0]].v - ACTIVECAM->orgTrans.pos;
 
-		if(!(eobj->facelist[i].facetype&POLY_DOUBLESIDED)) {
+		if(!(eobj->facelist[i].facetype & POLY_DOUBLESIDED)) {
 			Vec3f normV10 = eobj->vertexlist3[paf[1]].v - eobj->vertexlist3[paf[0]].v;
 			Vec3f normV20 = eobj->vertexlist3[paf[2]].v - eobj->vertexlist3[paf[0]].v;
 			Vec3f normFace;
-			normFace.x=(normV10.y*normV20.z)-(normV10.z*normV20.y);
-			normFace.y=(normV10.z*normV20.x)-(normV10.x*normV20.z);
-			normFace.z=(normV10.x*normV20.y)-(normV10.y*normV20.x);
+			normFace.x = (normV10.y * normV20.z) - (normV10.z * normV20.y);
+			normFace.y = (normV10.z * normV20.x) - (normV10.x * normV20.z);
+			normFace.z = (normV10.x * normV20.y) - (normV10.y * normV20.x);
 
 			if(dot(normFace, nrm) > 0.f)
 				continue;
