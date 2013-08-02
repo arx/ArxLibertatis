@@ -1029,21 +1029,21 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity *
 				continue;
 		}
 
-		if(eobj->facelist[i].texid < 0)
+		if(eface->texid < 0)
 			continue;
 
-		TextureContainer *pTex = eobj->texturecontainer[eobj->facelist[i].texid];
+		TextureContainer *pTex = eobj->texturecontainer[eface->texid];
 		if(!pTex)
 			continue;
 
 		float fTransp = 0.f;
 		TexturedVertex *tvList = NULL;
 
-		if((eobj->facelist[i].facetype & POLY_TRANS) || invisibility > 0.f) {
+		if((eface->facetype & POLY_TRANS) || invisibility > 0.f) {
 			if(invisibility > 0.f)
 				fTransp = 2.f - invisibility;
 			else
-				fTransp = eobj->facelist[i].transval;
+				fTransp = eface->transval;
 
 			if(fTransp >= 2.f) { //MULTIPLICATIVE
 				fTransp *= (1.f / 2);
@@ -1088,7 +1088,7 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity *
 			tvList[n].color = eobj->vertexlist3[paf[n]].vert.color;
 		}
 
-		if((eobj->facelist[i].facetype & POLY_TRANS) || invisibility > 0.f) {
+		if((eface->facetype & POLY_TRANS) || invisibility > 0.f) {
 			tvList[0].color = tvList[1].color = tvList[2].color = Color::gray(fTransp).toBGR();
 		}
 
