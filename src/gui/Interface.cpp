@@ -2744,9 +2744,6 @@ void ArxGame::managePlayerControls()
 
 	//	Check For Combat Mode ON/OFF
 	if (	(EERIEMouseButton & 1)
-#ifdef BUILD_EDITOR
-		&&	(EDITION==EDITION_IO)
-#endif
 		&&	(!(player.Interface & INTER_COMBATMODE))
 		&&	(!(ARX_MOUSE_OVER & ARX_MOUSE_OVER_BOOK)) 
 		&&	(!EDITMODE)	
