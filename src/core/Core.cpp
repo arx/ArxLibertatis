@@ -312,9 +312,10 @@ long FASTmse			= 0;
 //-----------------------------------------------------------------------------
 // Flag used to Launch Moulinex
 long LOADEDD = 0; // Is a Level Loaded ?
+
+long EDITION = EDITION_NONE;
 #ifdef BUILD_EDITOR
 long EDITMODE = 0; // EditMode (1) or GameMode (0) ?
-long EDITION=EDITION_IO; // Sub-EditMode
 long DEBUGNPCMOVE = 0; // Debug NPC Movements
 #endif
 

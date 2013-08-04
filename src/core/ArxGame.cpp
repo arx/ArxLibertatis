@@ -1281,6 +1281,15 @@ void ArxGame::updateInput() {
 		GetSnapShot();
 	}
 
+	if(GInput->isKeyPressedNowPressed(Keyboard::Key_ScrollLock)) {
+
+		EDITION = static_cast<InfoPanels>(EDITION + 1);
+
+		if(EDITION == EDITION_EnumSize) {
+			EDITION = EDITION_NONE;
+		}
+	}
+
 	if(GInput->isKeyPressedNowPressed(Keyboard::Key_Spacebar)) {
 		CAMERACONTROLLER = NULL;
 	}
@@ -1545,19 +1554,19 @@ void ArxGame::renderLevel() {
 			FRAMETICKS = (unsigned long)(arxtime);
 		}
 	}
+
 #ifdef BUILD_EDITOR
-	else  // EDITMODE == true
-	{
+	if (EDITION != EDITION_NONE) {
 		RenderAllNodes();
 
 		std::stringstream ss("EDIT MODE - Selected ");
 		ss <<  NbIOSelected;
 		ARX_TEXT_Draw(hFontInBook, 100, 2, ss.str(), Color::yellow);
-
-		if (EDITION==EDITION_FOGS)
-			ARX_FOGS_RenderAll();
 	}
 #endif
+
+	if(EDITION == EDITION_FOGS)
+		ARX_FOGS_RenderAll();
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);

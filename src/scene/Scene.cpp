@@ -1906,8 +1906,7 @@ void ARX_SCENE_Render() {
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);	
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 
-#ifdef BUILD_EDITOR
-	{
+	if(EDITION == EDITION_LIGHTS) {
 		//TODO copy-paste
 		long l = ACTIVECAM->cdepth * 0.42f;
 		long clip3D = (l / (long)BKG_SIZX) + 1;
@@ -1923,10 +1922,7 @@ void ARX_SCENE_Render() {
 		long z0 = std::max(camZsnap - lcval, 0L);
 		long z1 = std::min(camZsnap + lcval, ACTIVEBKG->Zsize - 1L);
 
-	if (EDITION==EDITION_LIGHTS)
 		ARXDRAW_DrawAllLights(x0,z0,x1,z1);
 	}
-#endif
-
 }
 

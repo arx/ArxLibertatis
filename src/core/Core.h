@@ -102,9 +102,10 @@ extern long	FADEDURATION;
 extern long	FADEDIR;
 extern float framedelay;
 extern bool FirstFrame;
+
+extern long EDITION;
 #ifdef BUILD_EDITOR
 extern long EDITMODE;
-extern long EDITION;
 extern long DEBUGNPCMOVE;
 #else
 const long EDITMODE = 0;

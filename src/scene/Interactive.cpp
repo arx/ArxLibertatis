@@ -3054,7 +3054,7 @@ void RenderInter() {
 			}
 		}
 
-		if(EDITMODE) {
+		if(EDITION == EDITION_BoundingBoxes) {
 			Color color = Color::blue;
 			if(io->bbox1.x != io->bbox2.x && io->bbox1.x < DANAESIZX) {
 				EERIEDraw2DLine(io->bbox1.x, io->bbox1.y, io->bbox2.x, io->bbox1.y, 0.01f, color);
