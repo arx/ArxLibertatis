@@ -580,9 +580,14 @@ bool IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, Vec3f * verts, long k, l
 	return ret;
 }
 
-// Debug function used to show the physical box of an object
+/**
+ * @brief Debug function to show the physical box of an object
+ */
 void EERIE_PHYSICS_BOX_Show(EERIE_3DOBJ * obj) {
 	
+	if(!obj || !obj->pbox)
+		return;
+
 	for (long k = 0; k < obj->pbox->nb_physvert; k++) {
 		if(obj->pbox->active == 2) {
 			DebugSphere(obj->pbox->vert[k].pos.x, obj->pbox->vert[k].pos.y,  obj->pbox->vert[k].pos.z,

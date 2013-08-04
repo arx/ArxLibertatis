@@ -2977,10 +2977,8 @@ void RenderInter() {
 		io->bbox1.x = 9999;
 		io->bbox2.x = -1;
 
-#ifdef BUILD_EDITOR
-		if((io->obj) && (io->obj->pbox) && DEBUGNPCMOVE)
+		if(EDITION == EDITION_CollisionShape)
 			EERIE_PHYSICS_BOX_Show(io->obj);
-#endif
 
 		Anglef temp = io->angle;
 
