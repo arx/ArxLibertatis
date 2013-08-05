@@ -2977,8 +2977,10 @@ void RenderInter() {
 		io->bbox1.x = 9999;
 		io->bbox2.x = -1;
 
-		if(EDITION == EDITION_CollisionShape)
+		if(EDITION == EDITION_CollisionShape) {
 			EERIE_PHYSICS_BOX_Show(io->obj);
+			debugEntityPhysicsCylinder(io);
+		}
 
 		Anglef temp = io->angle;
 

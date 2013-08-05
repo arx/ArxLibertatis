@@ -238,4 +238,6 @@ void ARX_PHYSICS_Apply();
 
 void GetTargetPos(Entity * io, unsigned long smoothing = 0);
 
+void debugEntityPhysicsCylinder(Entity * io);
+
 #endif // ARX_GAME_NPC_H
