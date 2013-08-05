@@ -123,6 +123,8 @@ void ReleaseAnimFromIO(Entity * io, long num)
 	io->anims[num] = NULL;
 }
 
+extern TextureContainer * sphere_particle;
+
 void DebugSphere(float x, float y, float z, float siz, long tim, Color color) {
 	
 	arxtime.update();
@@ -135,7 +137,7 @@ void DebugSphere(float x, float y, float z, float siz, long tim, Color color) {
 	pd->ov = Vec3f(x, y, z);
 	pd->scale = Vec3f::ZERO;
 	pd->tolive = tim;
-	pd->tc = EERIE_DRAW_sphere_particle;
+	pd->tc = sphere_particle;
 	pd->siz = siz;
 	pd->rgb = color.to<float>();
 }

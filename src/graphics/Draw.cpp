@@ -54,8 +54,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 using std::min;
 using std::max;
 
-TextureContainer * EERIE_DRAW_sphere_particle=NULL;
-
 long ZMAPMODE=1;
 TextureContainer * Zmap;
 Vec3f SPRmins;

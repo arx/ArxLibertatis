@@ -1338,7 +1338,6 @@ void LoadSysTextures()
 
 	blood_splat=TextureContainer::LoadUI("graph/particles/new_blood2");
 
-	EERIE_DRAW_sphere_particle=sphere_particle;
 	TextureContainer::LoadUI("graph/particles/square");
 	
 	TextureContainer::LoadUI("graph/particles/fire_hit");

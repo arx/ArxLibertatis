@@ -81,7 +81,6 @@ void EERIEDrawRotatedSprite(TexturedVertex * in, float siz, TextureContainer * t
 void EERIEPOLY_DrawWired(EERIEPOLY * ep, Color col = Color::none);
 void EERIEPOLY_DrawNormals(EERIEPOLY * ep);
 
-extern TextureContainer * EERIE_DRAW_sphere_particle;
 
 void EERIEDrawBitmap2(float x, float y, float sx, float sy, float z, TextureContainer * tex, Color col);
 
