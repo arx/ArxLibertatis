@@ -161,8 +161,6 @@ extern long DeadTime;
 extern int iTimeToDrawD7;
 extern long LaunchDemo;
 
-extern short uw_mode;
-
 extern long CURRENT_BASE_FOCAL;
 extern float BOW_FOCAL;
 
@@ -1489,14 +1487,8 @@ void ArxGame::renderLevel() {
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 	GRenderer->SetRenderState(Renderer::DepthTest, true);
 
-	if(uw_mode)
-		GRenderer->GetTextureStage(0)->SetMipMapLODBias(10.f);
-
 	ARX_SCENE_Update();
 	ARX_SCENE_Render();
-
-	if(uw_mode)
-		GRenderer->GetTextureStage(0)->SetMipMapLODBias(-0.3f);
 
 	// Begin Particles
 	

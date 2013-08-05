@@ -1843,13 +1843,18 @@ void ARX_SCENE_Update() {
 	}
 }
 
+extern short uw_mode;
 extern long SPECIAL_DRAGINTER_RENDER;
+
 //*************************************************************************************
 // Main Background Rendering Proc.
 // ie: Big Mess
 //*************************************************************************************
 ///////////////////////////////////////////////////////////
 void ARX_SCENE_Render() {
+
+	if(uw_mode)
+		GRenderer->GetTextureStage(0)->SetMipMapLODBias(10.f);
 
 	GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
 	for(size_t i = 0; i < RoomDrawList.size(); i++) {
