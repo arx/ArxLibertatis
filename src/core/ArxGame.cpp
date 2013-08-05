@@ -1523,31 +1523,31 @@ void ArxGame::renderLevel() {
 	
 	// End Particles
 
-		// Checks Magic Flares Drawing
-		if(!PLAYER_PARALYSED) {
-			if(EERIEMouseButton & 1) {
-				if(ARX_FLARES_Block == 0) {
-					ARX_SPELLS_AddPoint(DANAEMouse);
-				} else {
-					CurrPoint = 0;
-					ARX_FLARES_Block = 0;
-				}
-			} else if(ARX_FLARES_Block == 0) {
-				ARX_FLARES_Block = 1;
+	// Checks Magic Flares Drawing
+	if(!PLAYER_PARALYSED) {
+		if(EERIEMouseButton & 1) {
+			if(ARX_FLARES_Block == 0) {
+				ARX_SPELLS_AddPoint(DANAEMouse);
+			} else {
+				CurrPoint = 0;
+				ARX_FLARES_Block = 0;
 			}
+		} else if(ARX_FLARES_Block == 0) {
+			ARX_FLARES_Block = 1;
 		}
-		
-		ARX_SPELLS_Precast_Check();
-		ARX_SPELLS_ManageMagic();
-		ARX_SPELLS_UpdateSymbolDraw();
+	}
 
-		ManageTorch();
+	ARX_SPELLS_Precast_Check();
+	ARX_SPELLS_ManageMagic();
+	ARX_SPELLS_UpdateSymbolDraw();
 
-		// Renders Magical Flares
-		if(!((player.Interface & INTER_MAP) && !(player.Interface & INTER_COMBATMODE)) && flarenum) {
-			ARX_MAGICAL_FLARES_Draw(FRAMETICKS);
-			FRAMETICKS = (unsigned long)(arxtime);
-		}
+	ManageTorch();
+
+	// Renders Magical Flares
+	if(!((player.Interface & INTER_MAP) && !(player.Interface & INTER_COMBATMODE)) && flarenum) {
+		ARX_MAGICAL_FLARES_Draw(FRAMETICKS);
+		FRAMETICKS = (unsigned long)(arxtime);
+	}
 
 #ifdef BUILD_EDITOR
 	if (EDITION != EDITION_NONE) {
@@ -1652,8 +1652,8 @@ void ArxGame::renderLevel() {
 	GRenderer->Clear(Renderer::DepthBuffer);
 
 	// Speech Management
-		ARX_SPEECH_Check();
-		ARX_SPEECH_Update();
+	ARX_SPEECH_Check();
+	ARX_SPEECH_Update();
 
 	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
 

@@ -2730,14 +2730,14 @@ void PlayerMovementIterate(float DeltaTime) {
 		}
 		
 	} else {
-			Vec3f vect = moveto - player.pos;
-			float divv = vect.length();
-			if(divv > 0.f) {
-				float mul = (float)framedelay * 0.001f * 200.f;
-				divv = mul / divv;
-				vect *= divv;
-				moveto = player.pos + vect;
-			}
+		Vec3f vect = moveto - player.pos;
+		float divv = vect.length();
+		if(divv > 0.f) {
+			float mul = (float)framedelay * 0.001f * 200.f;
+			divv = mul / divv;
+			vect *= divv;
+			moveto = player.pos + vect;
+		}
 		
 		player.onfirmground = 0;
 	}

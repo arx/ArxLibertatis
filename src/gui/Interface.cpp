@@ -1985,10 +1985,10 @@ void ArxGame::manageEditorControls() {
 							DRAGINTER->bbox2.x=-1;
 						}
 
-							if((io->ioflags & IO_NPC) || (io->ioflags & IO_FIX)) {
-								Set_DragInter(NULL);
-								goto suivant;
-							}
+						if((io->ioflags & IO_NPC) || (io->ioflags & IO_FIX)) {
+							Set_DragInter(NULL);
+							goto suivant;
+						}
 
 						if(io->ioflags & IO_UNDERWATER) {
 							io->ioflags&=~IO_UNDERWATER;
