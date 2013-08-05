@@ -1325,10 +1325,10 @@ void ArxGame::renderLevel() {
 
 	if(!PLAYER_PARALYSED) {
 		manageEditorControls();
-	}
 
-	if(!BLOCK_PLAYER_CONTROLS && !PLAYER_PARALYSED) {
-		managePlayerControls();
+		if(!BLOCK_PLAYER_CONTROLS) {
+			managePlayerControls();
+		}
 	}
 
 
