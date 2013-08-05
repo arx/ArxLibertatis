@@ -268,10 +268,6 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 	if(io && checkInteractiveObject(io, msg, ret)) {
 		return ret;
 	}
-
-	if(EDITMODE && msg != SM_LOAD && msg != SM_INIT && msg != SM_INITEND) {
-		return ACCEPT;
-	}
 	
 	if(!es->data) {
 		return ACCEPT;

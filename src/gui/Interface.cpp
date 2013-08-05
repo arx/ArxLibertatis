@@ -1766,16 +1766,6 @@ void ArxGame::manageEditorControls() {
 				ARX_PLAYER_AddGold(DRAGINTER);
 				Set_DragInter(NULL);
 			} else if(DRAGINTER) {
-#ifdef BUILD_EDITOR
-				if (!EDITMODE) // test for NPC & FIX
-				{
-					if ((DRAGINTER->ioflags & IO_NPC) || (DRAGINTER->ioflags & IO_FIX) )
-					{
-						Set_DragInter(NULL);
-						goto suivant2;
-					}
-				}
-#endif
 
 				if(!((DRAGINTER->ioflags & IO_ITEM) && DRAGINTER->_itemdata->count > 1))
 					if(DRAGINTER->obj && DRAGINTER->obj->pbox) {
@@ -1958,7 +1948,7 @@ void ArxGame::manageEditorControls() {
 	}
 
 	// Checks for Object Dragging
-	if(!EDITMODE)
+
 		if (( DRAGGING && !PLAYER_MOUSELOOK_ON &&
 			(!GInput->actionPressed(CONTROLS_CUST_MAGICMODE)) &&
 			(DRAGINTER==NULL)
@@ -1995,12 +1985,10 @@ void ArxGame::manageEditorControls() {
 							DRAGINTER->bbox2.x=-1;
 						}
 
-						if(!EDITMODE) {
 							if((io->ioflags & IO_NPC) || (io->ioflags & IO_FIX)) {
 								Set_DragInter(NULL);
 								goto suivant;
 							}
-						}
 
 						if(io->ioflags & IO_UNDERWATER) {
 							io->ioflags&=~IO_UNDERWATER;
@@ -2036,9 +2024,6 @@ void ARX_INTERFACE_Combat_Mode(long i)
 		return;
 
 	if(i == 0 && !(player.Interface & INTER_COMBATMODE))
-		return;
-
-	if(EDITMODE)
 		return;
 
 	if((player.Interface & INTER_COMBATMODE) && entities.player()) {
@@ -2158,7 +2143,7 @@ extern unsigned long REQUEST_JUMP;
 //-----------------------------------------------------------------------------
 void ArxGame::managePlayerControls()
 {
-	if(((EERIEMouseButton & 4) && !EDITMODE && !(player.Interface & INTER_COMBATMODE))
+	if(((EERIEMouseButton & 4) && !(player.Interface & INTER_COMBATMODE))
 		&& !player.doingmagic
 		&& !(ARX_MOUSE_OVER & ARX_MOUSE_OVER_BOOK)
 		&& eMouseState != MOUSE_IN_NOTE
@@ -2315,7 +2300,7 @@ void ArxGame::managePlayerControls()
 			}
 		}
 
-		if(EDITMODE || arxtime.is_paused())
+		if(arxtime.is_paused())
 			FD = 40.f;
 
 		bool left=GInput->actionPressed(CONTROLS_CUST_STRAFELEFT);
@@ -2721,9 +2706,6 @@ void ArxGame::managePlayerControls()
 		ARX_INTERFACE_Combat_Mode(0);
 	}
 
-	if(EDITMODE)
-		return;
-
 	// Checks INVENTORY Key Status.
 	if(GInput->actionNowPressed(CONTROLS_CUST_INVENTORY)) {
 		if(player.Interface & INTER_COMBATMODE) {
@@ -2745,8 +2727,7 @@ void ArxGame::managePlayerControls()
 	//	Check For Combat Mode ON/OFF
 	if (	(EERIEMouseButton & 1)
 		&&	(!(player.Interface & INTER_COMBATMODE))
-		&&	(!(ARX_MOUSE_OVER & ARX_MOUSE_OVER_BOOK)) 
-		&&	(!EDITMODE)	
+		&&	(!(ARX_MOUSE_OVER & ARX_MOUSE_OVER_BOOK))
 		&&	(!SpecialCursor)
 		&&  (PLAYER_MOUSELOOK_ON)
 		&&	(DRAGINTER==NULL)
@@ -5780,7 +5761,6 @@ void ArxGame::drawAllInterface() {
 	GRenderer->GetTextureStage(0)->SetMagFilter(TextureStage::FilterNearest);
 	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
 
-	if(!EDITMODE) {
 		if (player.Interface & INTER_COMBATMODE) {
 			float j;
 
@@ -6444,7 +6424,6 @@ void ArxGame::drawAllInterface() {
 				GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 			}
 		}
-	}
 
 	GRenderer->GetTextureStage(0)->SetMinFilter(TextureStage::FilterLinear);
 	GRenderer->GetTextureStage(0)->SetMagFilter(TextureStage::FilterLinear);
@@ -6467,7 +6446,7 @@ long Manage3DCursor(long flags)
 
 	float drop_miny=(float)(DANAECENTERY)-DANAECENTERY*(ag*( 1.0f / 70 ));
 
-	if(DANAEMouse.y < drop_miny && !EDITMODE)
+	if(DANAEMouse.y < drop_miny)
 		return 0;
 
 	Entity * io = DRAGINTER;

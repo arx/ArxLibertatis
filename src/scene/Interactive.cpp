@@ -556,9 +556,9 @@ void PrepareIOTreatZone(long flag)
 		             ||	(io->show == SHOW_FLAG_ON_PLAYER)
 		             ||	(io->show == SHOW_FLAG_HIDDEN)))   
 		{
-			if ((io->ioflags & IO_CAMERA) && !EDITMODE) {
+			if (io->ioflags & IO_CAMERA) {
 				treat = 0;
-			} else if ((io->ioflags & IO_MARKER) && !EDITMODE) {
+			} else if (io->ioflags & IO_MARKER) {
 				treat = 0;
 			} else if ((io->ioflags & IO_NPC) && (io->_npcdata->pathfind.flags & PATHFIND_ALWAYS)) {
 				treat = 1;
@@ -2309,10 +2309,10 @@ Entity * GetFirstInterAtPos(Vec2s * pos, long flag, Vec3f * _pRef, Entity ** _pT
 		if(!io)
 			continue;
 
-		if(((io->ioflags & IO_CAMERA) || (io->ioflags & IO_MARKER)) && EDITMODE != 1)
+		if((io->ioflags & IO_CAMERA) || (io->ioflags & IO_MARKER))
 			continue;
 
-		if(!(io->gameFlags & GFLAG_INTERACTIVITY) && !EDITMODE)
+		if(!(io->gameFlags & GFLAG_INTERACTIVITY))
 			continue;
 
 		// Is Object in TreatZone ??
@@ -2440,7 +2440,7 @@ Entity * InterClick(Vec2s * pos) {
 			if(closerThan(player.pos, io->pos, dist_Threshold)) {
 				return io;
 			}
-		} else if(Project.telekinesis || EDITMODE) {
+		} else if(Project.telekinesis) {
 			return io;
 		} else if(IsEquipedByPlayer(io) || closerThan(player.pos, io->pos, dist_Threshold)) {
 			return io;
@@ -2968,7 +2968,7 @@ void RenderInter() {
 			continue;
 		}
 
-		if(!EDITMODE && ((io->ioflags & IO_CAMERA) || (io->ioflags & IO_MARKER))) {
+		if((io->ioflags & IO_CAMERA) || (io->ioflags & IO_MARKER)) {
 			continue;
 		}
 
@@ -3004,12 +3004,12 @@ void RenderInter() {
 				pos.y = io->_npcdata->vvpos;
 			}
 
-			bool render = (EDITMODE || !ARX_SCENE_PORTAL_Basic_ClipIO(io));
+			bool render = !ARX_SCENE_PORTAL_Basic_ClipIO(io);
 
 			EERIEDrawAnimQuat(io->obj, &io->animlayer[0], &temp, &pos, diff, io, render);
 
 		} else {
-			if(!EDITMODE && ARX_SCENE_PORTAL_Basic_ClipIO(io))
+			if(ARX_SCENE_PORTAL_Basic_ClipIO(io))
 				continue;
 
 			if((io->ioflags & IO_GOLD) && io->obj) {
@@ -3031,7 +3031,7 @@ void RenderInter() {
 				}
 			}
 
-			if(!(io->ioflags & IO_NPC) || EDITMODE) {
+			if(!(io->ioflags & IO_NPC)) {
 				if(io->obj) {
 
 					if(io->obj->pbox && io->obj->pbox->active) {

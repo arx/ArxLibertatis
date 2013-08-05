@@ -105,10 +105,7 @@ extern bool FirstFrame;
 
 extern long EDITION;
 #ifdef BUILD_EDITOR
-extern long EDITMODE;
 extern long DEBUGNPCMOVE;
-#else
-const long EDITMODE = 0;
 #endif
 extern long CURRENTLEVEL;
 extern long TELEPORT_TO_ANGLE;

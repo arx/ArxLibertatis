@@ -244,7 +244,7 @@ void ARX_SCRIPT_AllowInterScriptExec() {
 	
 	static long ppos = 0;
 	
-	if(EDITMODE || arxtime.is_paused()) {
+	if(arxtime.is_paused()) {
 		return;
 	}
 	

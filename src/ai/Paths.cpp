@@ -202,10 +202,6 @@ long JUST_RELOADED = 0;
 
 void ARX_PATH_UpdateAllZoneInOutInside() {
 	
-	if(EDITMODE) {
-		return;
-	}
-	
 	static size_t count = 1;
 	
 	long f = clamp(static_cast<long>(framedelay), 10, 50);

@@ -315,7 +315,6 @@ long LOADEDD = 0; // Is a Level Loaded ?
 
 long EDITION = EDITION_NONE;
 #ifdef BUILD_EDITOR
-long EDITMODE = 0; // EditMode (1) or GameMode (0) ?
 long DEBUGNPCMOVE = 0; // Debug NPC Movements
 #endif
 
@@ -3159,7 +3158,7 @@ void ShowInfoText() {
 	TSU_TEST_NB_LIGHT = 0;
 
 #ifdef BUILD_EDITOR
-	if ((!EDITMODE) && (ValidIONum(LastSelectedIONum)))
+	if(ValidIONum(LastSelectedIONum))
 	{
 		io = entities[LastSelectedIONum];
 

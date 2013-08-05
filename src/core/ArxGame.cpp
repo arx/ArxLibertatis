@@ -1475,9 +1475,6 @@ void ArxGame::renderLevel() {
 
 	//TODO Set renderer fog parameters here
 
-	if(EDITMODE)
-		GRenderer->SetRenderState(Renderer::Fog, false);
-
 	// NOW DRAW the player (Really...)
 	if(entities.player() && entities.player()->animlayer[0].cur_anim) {
 
@@ -1526,8 +1523,6 @@ void ArxGame::renderLevel() {
 	
 	// End Particles
 
-	if (!EDITMODE) // Playing Game
-	{
 		// Checks Magic Flares Drawing
 		if(!PLAYER_PARALYSED) {
 			if(EERIEMouseButton & 1) {
@@ -1553,7 +1548,6 @@ void ArxGame::renderLevel() {
 			ARX_MAGICAL_FLARES_Draw(FRAMETICKS);
 			FRAMETICKS = (unsigned long)(arxtime);
 		}
-	}
 
 #ifdef BUILD_EDITOR
 	if (EDITION != EDITION_NONE) {
@@ -1658,10 +1652,8 @@ void ArxGame::renderLevel() {
 	GRenderer->Clear(Renderer::DepthBuffer);
 
 	// Speech Management
-	if(!EDITMODE) {
 		ARX_SPEECH_Check();
 		ARX_SPEECH_Update();
-	}
 
 	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
 
@@ -1734,17 +1726,11 @@ void ArxGame::render() {
 	PULSATE = EEsin(arxtime.get_frame_time() / 800);
 	EERIEDrawnPolys = 0;
 
-	// EditMode Specific code
-	if(EDITMODE) {
-		TOTIOPDL = 0;
-		BLOCK_PLAYER_CONTROLS = 0;
-	}
-
 	// Checks for Keyboard & Moulinex
 	{
 		ARX_MOUSE_OVER = 0;
 
-		if(!EDITMODE && ARXmenu.currentmode == AMCM_OFF) // Playing Game
+		if(ARXmenu.currentmode == AMCM_OFF) // Playing Game
 		{
 			// Checks Clicks in Book Interface
 			if (ARX_INTERFACE_MouseInBook())

@@ -354,7 +354,7 @@ bool FrustrumsClipBBox3D(EERIE_FRUSTRUM_DATA * frustrums,EERIE_3D_BBOX * bbox)
 
 bool ARX_SCENE_PORTAL_Basic_ClipIO(Entity * io) {
 	arx_assert(io);
-	if(EDITMODE || io == entities.player() || (io->ioflags & IO_FORCEDRAW)) {
+	if(io == entities.player() || (io->ioflags & IO_FORCEDRAW)) {
 		return false;
 	}
 	
@@ -423,9 +423,6 @@ bool ARX_SCENE_PORTAL_Basic_ClipIO(Entity * io) {
 //   Return a reduced clipbox which can be used for polys clipping in the case of partial visibility
 bool ARX_SCENE_PORTAL_ClipIO(Entity * io, Vec3f * position) {
 	
-	if(EDITMODE)
-		return false;
-
 	if(io==entities.player())
 		return false;
 

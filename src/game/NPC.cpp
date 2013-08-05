@@ -1068,7 +1068,7 @@ void ARX_PHYSICS_Apply() {
 			continue;
 		}
 
-		if((io->ioflags & IO_NPC) && !EDITMODE) {
+		if(io->ioflags & IO_NPC) {
 			if(io->_npcdata->climb_count != 0.f && framedelay > 0) {
 				io->_npcdata->climb_count -= MAX_ALLOWED_PER_SECOND * (float)framedelay * ( 1.0f / 1000 );
 

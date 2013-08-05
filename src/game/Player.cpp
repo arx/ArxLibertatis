@@ -2280,10 +2280,6 @@ void ARX_PLAYER_Manage_Movement() {
 
 	float DeltaTime = std::min(Original_framedelay, MAX_FRAME_TIME);
 	DeltaTime = StoredTime + DeltaTime * speedfactor;
-
-	if(EDITMODE) {
-		DeltaTime = FIXED_TIMESTEP;
-	}
 	
 	if(player.jumpphase != NotJumping) {
 		while(DeltaTime > FIXED_TIMESTEP) {
@@ -2353,7 +2349,7 @@ void PlayerMovementIterate(float DeltaTime) {
 	
 	float d = 0;
 	
-	if(!EDITMODE && USE_PLAYERCOLLISIONS) {
+	if(USE_PLAYERCOLLISIONS) {
 		CollisionFlags levitate = 0;
 		if(player.climbing) {
 			levitate = CFLAG_LEVITATE;
@@ -2734,8 +2730,6 @@ void PlayerMovementIterate(float DeltaTime) {
 		}
 		
 	} else {
-		
-		if(!EDITMODE) {
 			Vec3f vect = moveto - player.pos;
 			float divv = vect.length();
 			if(divv > 0.f) {
@@ -2744,7 +2738,6 @@ void PlayerMovementIterate(float DeltaTime) {
 				vect *= divv;
 				moveto = player.pos + vect;
 			}
-		}
 		
 		player.onfirmground = 0;
 	}
@@ -2754,7 +2747,7 @@ void PlayerMovementIterate(float DeltaTime) {
 	}
 	
 	// Emit Stepsound
-	if(USE_PLAYERCOLLISIONS && !EDITMODE) {
+	if(USE_PLAYERCOLLISIONS) {
 		if(player.Current_Movement & PLAYER_CROUCH) {
 			d *= 2.f;
 		}
