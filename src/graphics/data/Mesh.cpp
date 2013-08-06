@@ -125,7 +125,7 @@ void ReleaseAnimFromIO(Entity * io, long num)
 
 extern TextureContainer * sphere_particle;
 
-void DebugSphere(float x, float y, float z, float siz, long tim, Color color) {
+void DebugAddParticle(const Vec3f & position, float siz, long tim, Color color) {
 	
 	arxtime.update();
 	
@@ -134,7 +134,7 @@ void DebugSphere(float x, float y, float z, float siz, long tim, Color color) {
 		return;
 	}
 	
-	pd->ov = Vec3f(x, y, z);
+	pd->ov = position;
 	pd->scale = Vec3f::ZERO;
 	pd->tolive = tim;
 	pd->tc = sphere_particle;

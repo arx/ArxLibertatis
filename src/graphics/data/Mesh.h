@@ -149,7 +149,7 @@ void FinishAnim(Entity * io,ANIM_HANDLE * eanim);
 bool Visible(Vec3f * orgn, Vec3f * dest,EERIEPOLY * epp,Vec3f * hit);
 void FaceTarget(Entity * io);
 
-void DebugSphere(float x, float y, float z, float siz, long tim, Color color);
+void DebugAddParticle(const Vec3f & position, float siz, long tim, Color color);
 
 FAST_BKG_DATA * getFastBackgroundData(float x, float z);
 

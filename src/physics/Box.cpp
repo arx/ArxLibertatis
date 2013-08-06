@@ -590,20 +590,15 @@ void EERIE_PHYSICS_BOX_Show(EERIE_3DOBJ * obj) {
 
 	for (long k = 0; k < obj->pbox->nb_physvert; k++) {
 		if(obj->pbox->active == 2) {
-			DebugSphere(obj->pbox->vert[k].pos.x, obj->pbox->vert[k].pos.y,  obj->pbox->vert[k].pos.z,
-			            0.6f, 40, Color::green);
+			DebugAddParticle(obj->pbox->vert[k].pos, 0.6f, 40, Color::green);
 		} else if(k == 0 || k == 14 || k == 13) {
-			DebugSphere(obj->pbox->vert[k].pos.x, obj->pbox->vert[k].pos.y, obj->pbox->vert[k].pos.z,
-			            0.6f, 40, Color::yellow);
+			DebugAddParticle(obj->pbox->vert[k].pos, 0.6f, 40, Color::yellow);
 		} else if ((k > 0) && (k < 5)) {
-			DebugSphere(obj->pbox->vert[k].pos.x, obj->pbox->vert[k].pos.y, obj->pbox->vert[k].pos.z,
-			            0.6f, 40, Color::green);
+			DebugAddParticle(obj->pbox->vert[k].pos, 0.6f, 40, Color::green);
 		} else if ((k > 4) && (k < 9)) {
-			DebugSphere(obj->pbox->vert[k].pos.x, obj->pbox->vert[k].pos.y, obj->pbox->vert[k].pos.z,
-			            0.6f, 40, Color::blue);
+			DebugAddParticle(obj->pbox->vert[k].pos, 0.6f, 40, Color::blue);
 		} else {
-			DebugSphere(obj->pbox->vert[k].pos.x, obj->pbox->vert[k].pos.y, obj->pbox->vert[k].pos.z,
-			            0.6f, 40, Color::red);
+			DebugAddParticle(obj->pbox->vert[k].pos, 0.6f, 40, Color::red);
 		}
 	}
 }
