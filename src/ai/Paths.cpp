@@ -1275,8 +1275,8 @@ void CRuban::DrawRuban(int num, float size, int dec, float r, float g, float b,
 
 		if(num >= 0 && numsuiv >= 0) {
 			Draw3DLineTex2(truban[num].pos, truban[numsuiv].pos, size,
-			               Color(r1 >> 16, g1 >> 16, b1 >> 16, 0),
-			               Color((r1 + dr) >> 16, (g1 + dg) >> 16, (b1 + db) >> 16, 0));
+						   Color(r1 >> 16, g1 >> 16, b1 >> 16, 255),
+						   Color((r1 + dr) >> 16, (g1 + dg) >> 16, (b1 + db) >> 16, 255));
 			r1 += dr;
 			g1 += dg;
 			b1 += db;
