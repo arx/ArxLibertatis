@@ -60,7 +60,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 struct EERIE_CAMERA;
 struct EERIE_3DOBJ;
 class Entity;
-class CRuban;
+class Trail;
 
 enum PathwayType {
 	PATHWAY_STANDARD = 0,
@@ -196,14 +196,14 @@ struct ARX_THROWN_OBJECT {
 	long source;
 	unsigned long creation_time;
 	float poisonous;
-	CRuban * pRuban;
+	Trail * pRuban;
 };
 
 const size_t MAX_THROWN_OBJECTS = 100;
 
 extern ARX_THROWN_OBJECT Thrown[MAX_THROWN_OBJECTS];
 
-class CRuban {
+class Trail {
 	
 private:
 	

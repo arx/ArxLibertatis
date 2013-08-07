@@ -665,7 +665,7 @@ long ARX_THROWN_OBJECT_Throw(long source, Vec3f * position, Vec3f * vect,
 		thrownObj->obj = NULL;
 		thrownObj->velocity = velocity;
 		thrownObj->poisonous = poison;
-		thrownObj->pRuban = new CRuban();
+		thrownObj->pRuban = new Trail();
 		thrownObj->pRuban->Create(num, 2000);
 
 		thrownObj->obj = arrowobj;
@@ -1148,7 +1148,7 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 }
 
 // RUBAN
-void CRuban::Create(int _iNumThrow, int _iDuration)
+void Trail::Create(int _iNumThrow, int _iDuration)
 {
 	iNumThrow = _iNumThrow;
 
@@ -1172,7 +1172,7 @@ void CRuban::Create(int _iNumThrow, int _iDuration)
 
 }
 
-void CRuban::AddRubanDef(int origin, float size, int dec, float r, float g, float b,
+void Trail::AddRubanDef(int origin, float size, int dec, float r, float g, float b,
                          float r2, float g2, float b2) {
 	
 	if(nbrubandef > 255)
@@ -1191,7 +1191,7 @@ void CRuban::AddRubanDef(int origin, float size, int dec, float r, float g, floa
 	nbrubandef++;
 }
 
-int CRuban::GetFreeRuban()
+int Trail::GetFreeRuban()
 {
 	int nb = 2048;
 
@@ -1203,7 +1203,7 @@ int CRuban::GetFreeRuban()
 	return -1;
 }
 
-void CRuban::AddRuban(int * f, int dec) {
+void Trail::AddRuban(int * f, int dec) {
 	
 	int num = GetFreeRuban();
 
@@ -1241,7 +1241,7 @@ void CRuban::AddRuban(int * f, int dec) {
 	}
 }
 
-void CRuban::Update() {
+void Trail::Update() {
 	if(arxtime.is_paused())
 		return;
 
@@ -1254,7 +1254,7 @@ void CRuban::Update() {
 	}
 }
 
-void CRuban::DrawRuban(int num, float size, int dec, float r, float g, float b,
+void Trail::DrawRuban(int num, float size, int dec, float r, float g, float b,
                        float r2, float g2, float b2) {
 	
 	int numsuiv;
@@ -1289,7 +1289,7 @@ void CRuban::DrawRuban(int num, float size, int dec, float r, float g, float b,
 	}
 }
 
-float CRuban::Render()
+float Trail::Render()
 {
 	GRenderer->SetCulling(Renderer::CullNone);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
