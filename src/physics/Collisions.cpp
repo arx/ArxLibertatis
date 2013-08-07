@@ -942,89 +942,44 @@ bool CheckEverythingInSphere(EERIE_SPHERE * sphere,long source,long targ) //exce
 		if (!io->obj) continue;
 
 
-				if (io->gameFlags & GFLAG_PLATFORM)					
-				{
-					float miny,maxy;
-					miny=io->bbox3D.min.y;
-					maxy=io->bbox3D.max.y;
+		if (io->gameFlags & GFLAG_PLATFORM)
+		{
+			float miny,maxy;
+			miny=io->bbox3D.min.y;
+			maxy=io->bbox3D.max.y;
 
-					if (	(maxy<= sphere->origin.y+sphere->radius) 
-						||	(miny>= sphere->origin.y) )
-					if (In3DBBoxTolerance(&sphere->origin,&io->bbox3D,sphere->radius))
+			if (	(maxy<= sphere->origin.y+sphere->radius)
+				||	(miny>= sphere->origin.y) )
+			if (In3DBBoxTolerance(&sphere->origin,&io->bbox3D,sphere->radius))
+			{
+				if(closerThan(Vec2f(io->pos.x, io->pos.z), Vec2f(sphere->origin.x, sphere->origin.z), 440.f + sphere->radius)) {
+
+					EERIEPOLY ep;
+					ep.type=0;
+
+					for (size_t ii=0;ii<io->obj->facelist.size();ii++)
 					{
-						if(closerThan(Vec2f(io->pos.x, io->pos.z), Vec2f(sphere->origin.x, sphere->origin.z), 440.f + sphere->radius)) {
-							
-							EERIEPOLY ep;
-							ep.type=0;
+						float cx=0;
+						float cz=0;
 
-							for (size_t ii=0;ii<io->obj->facelist.size();ii++)
-							{
-								float cx=0;
-								float cz=0;
-
-								for (long kk=0;kk<3;kk++)
-								{
-									cx+=ep.v[kk].p.x=io->obj->vertexlist3[io->obj->facelist[ii].vid[kk]].v.x;
-										ep.v[kk].p.y=io->obj->vertexlist3[io->obj->facelist[ii].vid[kk]].v.y;
-									cz+=ep.v[kk].p.z=io->obj->vertexlist3[io->obj->facelist[ii].vid[kk]].v.z;
-								}
-
-								cx*=( 1.0f / 3 );
-								cz*=( 1.0f / 3 );
-
-								for (int kk=0;kk<3;kk++)
-								{
-									ep.v[kk].p.x=(ep.v[kk].p.x-cx)*3.5f+cx;
-									ep.v[kk].p.z=(ep.v[kk].p.z-cz)*3.5f+cz;
-								}
-
-								if (PointIn2DPolyXZ(&ep, sphere->origin.x, sphere->origin.z)) 
-								{		
-									EVERYTHING_IN_SPHERE[MAX_IN_SPHERE_Pos]=(short)ret_idx;
-									MAX_IN_SPHERE_Pos++;
-
-									if (MAX_IN_SPHERE_Pos>=MAX_IN_SPHERE) MAX_IN_SPHERE_Pos--;
-
-									vreturn = true;
-									goto suivant;
-								}
-							}
+						for (long kk=0;kk<3;kk++)
+						{
+							cx+=ep.v[kk].p.x=io->obj->vertexlist3[io->obj->facelist[ii].vid[kk]].v.x;
+								ep.v[kk].p.y=io->obj->vertexlist3[io->obj->facelist[ii].vid[kk]].v.y;
+							cz+=ep.v[kk].p.z=io->obj->vertexlist3[io->obj->facelist[ii].vid[kk]].v.z;
 						}
-					}
-				}
 
-			if(distSqr(io->pos, sphere->origin) < square(sr180)) {
-			
-				long amount=1;
-				vector<EERIE_VERTEX> & vlist = io->obj->vertexlist3;
+						cx*=( 1.0f / 3 );
+						cz*=( 1.0f / 3 );
 
-				if (io->obj->nbgroups>4)
-				{
-					for (long ii=0;ii<io->obj->nbgroups;ii++)
-					{								
-						if(distSqr(vlist[io->obj->grouplist[ii].origin].v, sphere->origin) < square(sr40)) {
-							EVERYTHING_IN_SPHERE[MAX_IN_SPHERE_Pos]=(short)ret_idx;
-							MAX_IN_SPHERE_Pos++;
-
-							if (MAX_IN_SPHERE_Pos>=MAX_IN_SPHERE) MAX_IN_SPHERE_Pos--;
-
-							vreturn = true;
-							goto suivant;
+						for (int kk=0;kk<3;kk++)
+						{
+							ep.v[kk].p.x=(ep.v[kk].p.x-cx)*3.5f+cx;
+							ep.v[kk].p.z=(ep.v[kk].p.z-cz)*3.5f+cz;
 						}
-					}
 
-					amount=2;
-				}
-
-					for (size_t ii=0;ii<io->obj->facelist.size();ii+=amount)
-					{
-						EERIE_FACE * ef=&io->obj->facelist[ii];
-
-						if (ef->facetype & POLY_HIDE) continue;
-						
-						Vec3f fcenter = (vlist[ef->vid[0]].v + vlist[ef->vid[1]].v
-						                 + vlist[ef->vid[2]].v) * (1.0f / 3);
-						if (distSqr(fcenter, sphere->origin) < square(sr30) ||	distSqr(vlist[ef->vid[0]].v, sphere->origin) < square(sr30) || distSqr(vlist[ef->vid[1]].v, sphere->origin) < square(sr30) || distSqr(vlist[ef->vid[2]].v, sphere->origin) < square(sr30)) {
+						if (PointIn2DPolyXZ(&ep, sphere->origin.x, sphere->origin.z))
+						{
 							EVERYTHING_IN_SPHERE[MAX_IN_SPHERE_Pos]=(short)ret_idx;
 							MAX_IN_SPHERE_Pos++;
 
@@ -1035,6 +990,51 @@ bool CheckEverythingInSphere(EERIE_SPHERE * sphere,long source,long targ) //exce
 						}
 					}
 				}
+			}
+		}
+
+		if(distSqr(io->pos, sphere->origin) < square(sr180)) {
+
+			long amount=1;
+			vector<EERIE_VERTEX> & vlist = io->obj->vertexlist3;
+
+			if (io->obj->nbgroups>4)
+			{
+				for (long ii=0;ii<io->obj->nbgroups;ii++)
+				{
+					if(distSqr(vlist[io->obj->grouplist[ii].origin].v, sphere->origin) < square(sr40)) {
+						EVERYTHING_IN_SPHERE[MAX_IN_SPHERE_Pos]=(short)ret_idx;
+						MAX_IN_SPHERE_Pos++;
+
+						if (MAX_IN_SPHERE_Pos>=MAX_IN_SPHERE) MAX_IN_SPHERE_Pos--;
+
+						vreturn = true;
+						goto suivant;
+					}
+				}
+
+				amount=2;
+			}
+
+			for (size_t ii=0;ii<io->obj->facelist.size();ii+=amount)
+			{
+				EERIE_FACE * ef=&io->obj->facelist[ii];
+
+				if (ef->facetype & POLY_HIDE) continue;
+
+				Vec3f fcenter = (vlist[ef->vid[0]].v + vlist[ef->vid[1]].v
+								 + vlist[ef->vid[2]].v) * (1.0f / 3);
+				if (distSqr(fcenter, sphere->origin) < square(sr30) ||	distSqr(vlist[ef->vid[0]].v, sphere->origin) < square(sr30) || distSqr(vlist[ef->vid[1]].v, sphere->origin) < square(sr30) || distSqr(vlist[ef->vid[2]].v, sphere->origin) < square(sr30)) {
+					EVERYTHING_IN_SPHERE[MAX_IN_SPHERE_Pos]=(short)ret_idx;
+					MAX_IN_SPHERE_Pos++;
+
+					if (MAX_IN_SPHERE_Pos>=MAX_IN_SPHERE) MAX_IN_SPHERE_Pos--;
+
+					vreturn = true;
+					goto suivant;
+				}
+			}
+		}
 
 	suivant:
 	  ;
