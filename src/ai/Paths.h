@@ -57,6 +57,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "math/Vector3.h"
 #include "platform/Flags.h"
 
+#include "graphics/effects/Trail.h"
+
 struct EERIE_CAMERA;
 struct EERIE_3DOBJ;
 class Entity;
@@ -203,46 +205,7 @@ const size_t MAX_THROWN_OBJECTS = 100;
 
 extern ARX_THROWN_OBJECT Thrown[MAX_THROWN_OBJECTS];
 
-class Trail {
-	
-private:
-	
-	short key;
-	int duration;
-	int currduration;
-	int iNumThrow;
-	
-	struct T_RUBAN {
-		int actif;
-		Vec3f pos;
-		int next;
-	};
-	T_RUBAN truban[2048];
-	
-	struct T_RUBAN_DEF {
-		int first;
-		int origin;
-		float size;
-		int dec;
-		float r, g, b;
-		float r2, g2, b2;
-	};
-	
-	int nbrubandef;
-	T_RUBAN_DEF trubandef[256];
-	
-	int GetFreeRuban(void);
-	void AddRuban(int * f, int dec);
-	void DrawRuban(int num, float size, int dec, float r, float g, float b, float r2, float g2, float b2);
-	
-public:
-	
-	void AddRubanDef(int origin, float size, int dec, float r, float g, float b, float r2, float g2, float b2);
-	void Create(int numinteractive, int duration);
-	void Update();
-	float Render();
-	
-};
+
 
 long ARX_THROWN_OBJECT_GetFree();
 long ARX_THROWN_OBJECT_Throw(long source, Vec3f * position, Vec3f * vect, EERIE_QUAT * quat, float velocity, float damages, float poisonous);
