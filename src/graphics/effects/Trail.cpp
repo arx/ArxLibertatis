@@ -167,7 +167,7 @@ void Trail::DrawRuban(int num, float size, int dec, float r, float g, float b,
 	}
 }
 
-float Trail::Render()
+void Trail::Render()
 {
 	GRenderer->SetCulling(Renderer::CullNone);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
@@ -184,6 +184,4 @@ float Trail::Render()
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendZero);
-
-	return 0;
 }

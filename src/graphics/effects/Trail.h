@@ -63,9 +63,9 @@ public:
 
 	void AddRubanDef(int origin, float size, int dec, float r, float g, float b, float r2, float g2, float b2);
 	void Create(int numinteractive, int duration);
-	void Update();
-	float Render();
 
+	void Update();
+	void Render();
 };
 
 #endif // ARX_GRAPHICS_EFFECTS_TRAIL_H
