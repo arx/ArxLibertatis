@@ -997,12 +997,12 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 			long nbact = thrownObj->obj->actionlist.size();
 
 			for(long j = 0; j < nbact; j++) {
-				float rad = -1;
-				rad = GetHitValue(thrownObj->obj->actionlist[j].name);
-				rad *= .5f;
+				float rad = GetHitValue(thrownObj->obj->actionlist[j].name);
 
 				if(rad == -1)
 					continue;
+
+				rad *= .5f;
 
 				Vec3f * v0 = &thrownObj->obj->vertexlist3[thrownObj->obj->actionlist[j].idx].v;
 				Vec3f dest = original_pos + thrownObj->vector * 95.f;
