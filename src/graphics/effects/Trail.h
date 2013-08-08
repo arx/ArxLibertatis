@@ -31,9 +31,6 @@ class Trail {
 
 private:
 
-	short key;
-	int duration;
-	int currduration;
 	int iNumThrow;
 
 	int m_first;
@@ -57,7 +54,7 @@ private:
 public:
 
 	void AddRubanDef(int origin, float size, int dec, float r, float g, float b, float r2, float g2, float b2);
-	void Create(int numinteractive, int duration);
+	void Create(int numinteractive);
 
 	void Update();
 	void Render();

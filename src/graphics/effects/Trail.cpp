@@ -26,13 +26,9 @@
 #include "graphics/effects/SpellEffects.h"
 
 // RUBAN
-void Trail::Create(int _iNumThrow, int _iDuration)
+void Trail::Create(int _iNumThrow)
 {
 	iNumThrow = _iNumThrow;
-
-	key = 1;
-	duration = _iDuration;
-	currduration = 0;
 
 	int nb = 2048;
 
