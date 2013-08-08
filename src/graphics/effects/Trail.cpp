@@ -34,8 +34,6 @@ void Trail::Create(int _iNumThrow, int _iDuration)
 	duration = _iDuration;
 	currduration = 0;
 
-	nbrubandef = 0;
-
 	int nb = 2048;
 
 	while (nb--)
@@ -53,20 +51,16 @@ void Trail::Create(int _iNumThrow, int _iDuration)
 void Trail::AddRubanDef(int origin, float size, int dec, float r, float g, float b,
 						 float r2, float g2, float b2) {
 
-	if(nbrubandef > 255)
-		return;
-
-	trubandef[nbrubandef].first = -1;
-	trubandef[nbrubandef].origin = origin;
-	trubandef[nbrubandef].size = size;
-	trubandef[nbrubandef].dec = dec;
-	trubandef[nbrubandef].r = r;
-	trubandef[nbrubandef].g = g;
-	trubandef[nbrubandef].b = b;
-	trubandef[nbrubandef].r2 = r2;
-	trubandef[nbrubandef].g2 = g2;
-	trubandef[nbrubandef].b2 = b2;
-	nbrubandef++;
+	m_first = -1;
+	m_origin = origin;
+	m_size = size;
+	m_dec = dec;
+	m_r = r;
+	m_g = g;
+	m_b = b;
+	m_r2 = r2;
+	m_g2 = g2;
+	m_b2 = b2;
 }
 
 int Trail::GetFreeRuban()
@@ -123,13 +117,7 @@ void Trail::Update() {
 	if(arxtime.is_paused())
 		return;
 
-	int num = 0;
-	int nb = nbrubandef;
-
-	while(nb--) {
-		AddRuban(&trubandef[num].first, trubandef[num].dec);
-		num++;
-	}
+	AddRuban(&m_first, m_dec);
 }
 
 void Trail::DrawRuban(int num, float size, int dec, float r, float g, float b,
@@ -174,13 +162,11 @@ void Trail::Render()
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	GRenderer->ResetTexture(0);
 
-	for(int i = 0; i < nbrubandef; i++) {
-		this->DrawRuban(trubandef[i].first,
-						trubandef[i].size,
-						trubandef[i].dec,
-						trubandef[i].r, trubandef[i].g, trubandef[i].b,
-						trubandef[i].r2, trubandef[i].g2, trubandef[i].b2);
-	}
+	this->DrawRuban(m_first,
+					m_size,
+					m_dec,
+					m_r, m_g, m_b,
+					m_r2, m_g2, m_b2);
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendZero);

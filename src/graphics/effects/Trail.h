@@ -36,24 +36,19 @@ private:
 	int currduration;
 	int iNumThrow;
 
+	int m_first;
+	int m_origin;
+	float m_size;
+	int m_dec;
+	float m_r, m_g, m_b;
+	float m_r2, m_g2, m_b2;
+
 	struct T_RUBAN {
 		int actif;
 		Vec3f pos;
 		int next;
 	};
 	T_RUBAN truban[2048];
-
-	struct T_RUBAN_DEF {
-		int first;
-		int origin;
-		float size;
-		int dec;
-		float r, g, b;
-		float r2, g2, b2;
-	};
-
-	int nbrubandef;
-	T_RUBAN_DEF trubandef[256];
 
 	int GetFreeRuban(void);
 	void AddRuban(int * f, int dec);
