@@ -665,8 +665,7 @@ long ARX_THROWN_OBJECT_Throw(long source, Vec3f * position, Vec3f * vect,
 		thrownObj->obj = NULL;
 		thrownObj->velocity = velocity;
 		thrownObj->poisonous = poison;
-		thrownObj->pRuban = new Trail();
-		thrownObj->pRuban->Create(num);
+		thrownObj->pRuban = new Trail(thrownObj->position);
 
 		thrownObj->obj = arrowobj;
 
@@ -959,6 +958,7 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 		}
 
 		if(thrownObj->pRuban) {
+			thrownObj->pRuban->SetNextPosition(thrownObj->position);
 			thrownObj->pRuban->Update();
 			thrownObj->pRuban->Render();
 		}

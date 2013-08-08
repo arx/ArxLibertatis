@@ -20,15 +20,14 @@
 #include "graphics/effects/Trail.h"
 
 #include "core/GameTime.h"
-#include "ai/Paths.h" // TODO remove this
 #include "math/Random.h"
 #include "graphics/Renderer.h"
 #include "graphics/effects/SpellEffects.h"
 
-// RUBAN
-void Trail::Create(int _iNumThrow)
+
+Trail::Trail(Vec3f & initialPosition)
 {
-	iNumThrow = _iNumThrow;
+	m_nextPosition = initialPosition;
 
 	int nb = 2048;
 
@@ -41,7 +40,12 @@ void Trail::Create(int _iNumThrow)
 	float size = 2.f + (2.f * rnd());
 	int taille = Random::get(8, 16);
 	AddRubanDef(0, size, taille, col, col, col, 0.f, 0.f, 0.f);
+	Update();
+}
 
+void Trail::SetNextPosition(Vec3f & nextPosition)
+{
+	m_nextPosition = nextPosition;
 }
 
 void Trail::AddRubanDef(int origin, float size, int dec, float r, float g, float b,
@@ -77,7 +81,7 @@ void Trail::AddRuban(int * f, int dec) {
 
 	if(num >= 0) {
 		truban[num].actif = 1;
-		truban[num].pos = Thrown[iNumThrow].position;
+		truban[num].pos = m_nextPosition;
 
 		if(*f < 0) {
 			*f = num;
@@ -150,6 +154,8 @@ void Trail::DrawRuban(int num, float size, int dec, float r, float g, float b,
 		num = numsuiv;
 	}
 }
+
+
 
 void Trail::Render()
 {

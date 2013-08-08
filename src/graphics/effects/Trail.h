@@ -29,9 +29,17 @@
 
 class Trail {
 
+public:
+	Trail(Vec3f & initialPosition);
+
+	void SetNextPosition(Vec3f & nextPosition);
+
+	void Update();
+	void Render();
+
 private:
 
-	int iNumThrow;
+	Vec3f m_nextPosition;
 
 	int m_first;
 	int m_origin;
@@ -51,13 +59,8 @@ private:
 	void AddRuban(int * f, int dec);
 	void DrawRuban(int num, float size, int dec, float r, float g, float b, float r2, float g2, float b2);
 
-public:
-
 	void AddRubanDef(int origin, float size, int dec, float r, float g, float b, float r2, float g2, float b2);
 	void Create(int numinteractive);
-
-	void Update();
-	void Render();
 };
 
 #endif // ARX_GRAPHICS_EFFECTS_TRAIL_H
