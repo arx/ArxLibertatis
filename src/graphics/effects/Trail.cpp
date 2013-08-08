@@ -39,28 +39,24 @@ Trail::Trail(Vec3f & initialPosition)
 	float col = 0.1f + (rnd() * 0.1f);
 	float size = 2.f + (2.f * rnd());
 	int taille = Random::get(8, 16);
-	AddRubanDef(0, size, taille, col, col, col, 0.f, 0.f, 0.f);
+
+	m_first = -1;
+	m_origin = 0;
+	m_size = size;
+	m_dec = taille;
+	m_r = col;
+	m_g = col;
+	m_b = col;
+	m_r2 = 0.f;
+	m_g2 = 0.f;
+	m_b2 = 0.f;
+
 	Update();
 }
 
 void Trail::SetNextPosition(Vec3f & nextPosition)
 {
 	m_nextPosition = nextPosition;
-}
-
-void Trail::AddRubanDef(int origin, float size, int dec, float r, float g, float b,
-						 float r2, float g2, float b2) {
-
-	m_first = -1;
-	m_origin = origin;
-	m_size = size;
-	m_dec = dec;
-	m_r = r;
-	m_g = g;
-	m_b = b;
-	m_r2 = r2;
-	m_g2 = g2;
-	m_b2 = b2;
 }
 
 int Trail::GetFreeRuban()
@@ -75,7 +71,9 @@ int Trail::GetFreeRuban()
 	return -1;
 }
 
-void Trail::AddRuban(int * f, int dec) {
+void Trail::Update() {
+	if(arxtime.is_paused())
+		return;
 
 	int num = GetFreeRuban();
 
@@ -83,12 +81,12 @@ void Trail::AddRuban(int * f, int dec) {
 		truban[num].actif = 1;
 		truban[num].pos = m_nextPosition;
 
-		if(*f < 0) {
-			*f = num;
+		if(m_first < 0) {
+			m_first = num;
 			truban[num].next = -1;
 		} else {
-			truban[num].next = *f;
-			*f = num;
+			truban[num].next = m_first;
+			m_first = num;
 		}
 
 		int nb = 0, oldnum = 0;
@@ -99,9 +97,9 @@ void Trail::AddRuban(int * f, int dec) {
 			num = truban[num].next;
 		}
 
-		if(nb > dec) {
+		if(nb > m_dec) {
 			truban[oldnum].actif = 0;
-			num = *f;
+			num = m_first;
 			nb -= 2;
 
 			while(nb--) {
@@ -113,25 +111,26 @@ void Trail::AddRuban(int * f, int dec) {
 	}
 }
 
-void Trail::Update() {
-	if(arxtime.is_paused())
-		return;
+void Trail::Render()
+{
+	GRenderer->SetCulling(Renderer::CullNone);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+	GRenderer->ResetTexture(0);
 
-	AddRuban(&m_first, m_dec);
-}
-
-void Trail::DrawRuban(int num, float size, int dec, float r, float g, float b,
-					   float r2, float g2, float b2) {
+	int num = m_first;
+	float size = m_size;
+	int dec = m_dec;
 
 	int numsuiv;
 
 	float dsize = size / (float)(dec + 1);
-	int r1 = ((int)(r * 255.f)) << 16;
-	int g1 = ((int)(g * 255.f)) << 16;
-	int b1 = ((int)(b * 255.f)) << 16;
-	int rr2 = ((int)(r2 * 255.f)) << 16;
-	int gg2 = ((int)(g2 * 255.f)) << 16;
-	int bb2 = ((int)(b2 * 255.f)) << 16;
+	int r1 = ((int)(m_r * 255.f)) << 16;
+	int g1 = ((int)(m_g * 255.f)) << 16;
+	int b1 = ((int)(m_b * 255.f)) << 16;
+	int rr2 = ((int)(m_r2 * 255.f)) << 16;
+	int gg2 = ((int)(m_g2 * 255.f)) << 16;
+	int bb2 = ((int)(m_b2 * 255.f)) << 16;
 	int dr = (rr2 - r1) / dec;
 	int dg = (gg2 - g1) / dec;
 	int db = (bb2 - b1) / dec;
@@ -153,22 +152,6 @@ void Trail::DrawRuban(int num, float size, int dec, float r, float g, float b,
 
 		num = numsuiv;
 	}
-}
-
-
-
-void Trail::Render()
-{
-	GRenderer->SetCulling(Renderer::CullNone);
-	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-	GRenderer->ResetTexture(0);
-
-	this->DrawRuban(m_first,
-					m_size,
-					m_dec,
-					m_r, m_g, m_b,
-					m_r2, m_g2, m_b2);
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendZero);

@@ -38,7 +38,6 @@ public:
 	void Render();
 
 private:
-
 	Vec3f m_nextPosition;
 
 	int m_first;
@@ -56,11 +55,6 @@ private:
 	T_RUBAN truban[2048];
 
 	int GetFreeRuban(void);
-	void AddRuban(int * f, int dec);
-	void DrawRuban(int num, float size, int dec, float r, float g, float b, float r2, float g2, float b2);
-
-	void AddRubanDef(int origin, float size, int dec, float r, float g, float b, float r2, float g2, float b2);
-	void Create(int numinteractive);
 };
 
 #endif // ARX_GRAPHICS_EFFECTS_TRAIL_H
