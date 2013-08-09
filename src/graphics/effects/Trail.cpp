@@ -25,20 +25,10 @@
 #include "graphics/effects/SpellEffects.h"
 
 
-Trail::Trail(Vec3f & initialPosition)
-	: m_nextPosition(initialPosition)
-	, m_positions(20)
+Trail::Trail(size_t segments, Color4f startColor, Color4f endColor, float startSize, float endSize)
+	: m_positions(segments)
 {
-	int segments = Random::get(8, 16);
-
-	Color4f startColor = Color4f::gray(Random::getf(0.1f, 0.2f));
-	Color4f endColor = Color4f::black;
-
-	float startSize = Random::getf(2.f, 4.f);
-	float endSize = 0.f;
-
-//	startColor = Color4f::red;
-//	endColor = Color4f::green;
+	m_segments.reserve(segments);
 
 	Color4f colorDelta = endColor - startColor;
 	float sizeDelta = endSize - startSize;
@@ -51,8 +41,6 @@ Trail::Trail(Vec3f & initialPosition)
 
 		m_segments.push_back(TrailSegment(Color(color.r*255, color.g*255, color.b*255, color.a*255), size));
 	}
-
-	Update();
 }
 
 void Trail::SetNextPosition(Vec3f & nextPosition)
@@ -85,3 +73,20 @@ void Trail::Render()
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendZero);
 }
+
+
+ArrowTrail::ArrowTrail()
+	: Trail(Random::get(8, 16),
+			Color4f::gray(Random::getf(0.1f, 0.2f)),
+			Color4f::black,
+			Random::getf(2.f, 4.f),
+			0.f)
+{}
+
+DebugTrail::DebugTrail()
+	: Trail(25,
+			Color4f::red,
+			Color4f::green,
+			1.f,
+			4.f)
+{}

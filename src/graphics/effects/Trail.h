@@ -29,7 +29,7 @@
 class Trail {
 
 public:
-	Trail(Vec3f & initialPosition);
+	Trail(size_t segments, Color4f startColor, Color4f endColor, float startSize, float endSize);
 
 	void SetNextPosition(Vec3f & nextPosition);
 
@@ -52,6 +52,16 @@ private:
 
 	Vec3f m_nextPosition;
 	boost::circular_buffer<Vec3f> m_positions;
+};
+
+class ArrowTrail : public Trail {
+public:
+	ArrowTrail();
+};
+
+class DebugTrail : public Trail {
+public:
+	DebugTrail();
 };
 
 #endif // ARX_GRAPHICS_EFFECTS_TRAIL_H
