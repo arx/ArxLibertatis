@@ -26,30 +26,31 @@
 
 
 Trail::Trail(Vec3f & initialPosition)
+	: m_nextPosition(initialPosition)
+	, m_positions(20)
 {
-	m_nextPosition = initialPosition;
+	int segments = Random::get(8, 16);
 
-	int nb = 2048;
+	Color4f startColor = Color4f::gray(Random::getf(0.1f, 0.2f));
+	Color4f endColor = Color4f::black;
 
-	while (nb--)
-	{
-		truban[nb].actif = 0;
+	float startSize = Random::getf(2.f, 4.f);
+	float endSize = 0.f;
+
+//	startColor = Color4f::red;
+//	endColor = Color4f::green;
+
+	Color4f colorDelta = endColor - startColor;
+	float sizeDelta = endSize - startSize;
+
+	for(int i = 0; i < segments; i++) {
+		float factor = (float)i / (float)segments;
+
+		Color4f color = startColor + colorDelta * factor;
+		float size = startSize + sizeDelta * factor;
+
+		m_segments.push_back(TrailSegment(Color(color.r*255, color.g*255, color.b*255, color.a*255), size));
 	}
-
-	float col = 0.1f + (rnd() * 0.1f);
-	float size = 2.f + (2.f * rnd());
-	int taille = Random::get(8, 16);
-
-	m_first = -1;
-	m_origin = 0;
-	m_size = size;
-	m_dec = taille;
-	m_r = col;
-	m_g = col;
-	m_b = col;
-	m_r2 = 0.f;
-	m_g2 = 0.f;
-	m_b2 = 0.f;
 
 	Update();
 }
@@ -59,56 +60,11 @@ void Trail::SetNextPosition(Vec3f & nextPosition)
 	m_nextPosition = nextPosition;
 }
 
-int Trail::GetFreeRuban()
-{
-	int nb = 2048;
-
-	while(nb--) {
-		if(!truban[nb].actif)
-			return nb;
-	}
-
-	return -1;
-}
-
 void Trail::Update() {
 	if(arxtime.is_paused())
 		return;
 
-	int num = GetFreeRuban();
-
-	if(num >= 0) {
-		truban[num].actif = 1;
-		truban[num].pos = m_nextPosition;
-
-		if(m_first < 0) {
-			m_first = num;
-			truban[num].next = -1;
-		} else {
-			truban[num].next = m_first;
-			m_first = num;
-		}
-
-		int nb = 0, oldnum = 0;
-
-		while(num != -1) {
-			nb++;
-			oldnum = num;
-			num = truban[num].next;
-		}
-
-		if(nb > m_dec) {
-			truban[oldnum].actif = 0;
-			num = m_first;
-			nb -= 2;
-
-			while(nb--) {
-				num = truban[num].next;
-			}
-
-			truban[num].next = -1;
-		}
-	}
+	m_positions.push_front(m_nextPosition);
 }
 
 void Trail::Render()
@@ -118,39 +74,12 @@ void Trail::Render()
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	GRenderer->ResetTexture(0);
 
-	int num = m_first;
-	float size = m_size;
-	int dec = m_dec;
-
-	int numsuiv;
-
-	float dsize = size / (float)(dec + 1);
-	int r1 = ((int)(m_r * 255.f)) << 16;
-	int g1 = ((int)(m_g * 255.f)) << 16;
-	int b1 = ((int)(m_b * 255.f)) << 16;
-	int rr2 = ((int)(m_r2 * 255.f)) << 16;
-	int gg2 = ((int)(m_g2 * 255.f)) << 16;
-	int bb2 = ((int)(m_b2 * 255.f)) << 16;
-	int dr = (rr2 - r1) / dec;
-	int dg = (gg2 - g1) / dec;
-	int db = (bb2 - b1) / dec;
-
-	for(;;) {
-		numsuiv = truban[num].next;
-
-		if(num >= 0 && numsuiv >= 0) {
-			Draw3DLineTex2(truban[num].pos, truban[numsuiv].pos, size,
-						   Color(r1 >> 16, g1 >> 16, b1 >> 16, 255),
-						   Color((r1 + dr) >> 16, (g1 + dg) >> 16, (b1 + db) >> 16, 255));
-			r1 += dr;
-			g1 += dg;
-			b1 += db;
-			size -= dsize;
-		} else {
-			break;
-		}
-
-		num = numsuiv;
+	for(size_t i = 0; i + 1 < m_positions.size() && i + 1 < m_segments.size(); i++) {
+		Draw3DLineTex2(m_positions[i],
+					   m_positions[i + 1],
+					   m_segments[i].m_size,
+					   m_segments[i].m_color,
+					   m_segments[i + 1].m_color);
 	}
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);

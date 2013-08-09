@@ -27,6 +27,9 @@
 #include "math/Vector3.h"
 #include "platform/Flags.h"
 
+#include <vector>
+#include <boost/circular_buffer.hpp>
+
 class Trail {
 
 public:
@@ -38,23 +41,21 @@ public:
 	void Render();
 
 private:
-	Vec3f m_nextPosition;
+	struct TrailSegment {
 
-	int m_first;
-	int m_origin;
-	float m_size;
-	int m_dec;
-	float m_r, m_g, m_b;
-	float m_r2, m_g2, m_b2;
+		TrailSegment(Color color, float size)
+			: m_color(color)
+			, m_size(size)
+		{}
 
-	struct T_RUBAN {
-		int actif;
-		Vec3f pos;
-		int next;
+		Color m_color;
+		float m_size;
 	};
-	T_RUBAN truban[2048];
 
-	int GetFreeRuban(void);
+	std::vector<TrailSegment> m_segments;
+
+	Vec3f m_nextPosition;
+	boost::circular_buffer<Vec3f> m_positions;
 };
 
 #endif // ARX_GRAPHICS_EFFECTS_TRAIL_H
