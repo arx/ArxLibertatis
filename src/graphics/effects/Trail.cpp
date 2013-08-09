@@ -33,7 +33,7 @@ Trail::Trail(size_t segments, Color4f startColor, Color4f endColor, float startS
 	Color4f colorDelta = endColor - startColor;
 	float sizeDelta = endSize - startSize;
 
-	for(int i = 0; i < segments; i++) {
+	for(size_t i = 0; i < segments; i++) {
 		float factor = (float)i / (float)segments;
 
 		Color4f color = startColor + colorDelta * factor;
@@ -63,11 +63,12 @@ void Trail::Render()
 	GRenderer->ResetTexture(0);
 
 	for(size_t i = 0; i + 1 < m_positions.size() && i + 1 < m_segments.size(); i++) {
-		Draw3DLineTex2(m_positions[i],
-					   m_positions[i + 1],
-					   m_segments[i].m_size,
-					   m_segments[i].m_color,
-					   m_segments[i + 1].m_color);
+		Draw3DLineTexNew(m_positions[i],
+						 m_positions[i + 1],
+						 m_segments[i].m_color,
+						 m_segments[i + 1].m_color,
+						 m_segments[i].m_size,
+						 m_segments[i + 1].m_size);
 	}
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
