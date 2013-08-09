@@ -94,132 +94,76 @@ void CSpellFx::Update(float _fParam) {
 //-----------------------------------------------------------------------------
 void Draw3DLineTex(Vec3f s, Vec3f e, Color color, float fStartSize, float fEndSize) {
 	
-	float fBeta = MAKEANGLE(player.angle.b);
-	float xxs = (float)(fStartSize * cos(radians(fBeta)));
-	float xxe = (float)(fEndSize * cos(radians(fBeta)));
-	float zzs = fStartSize;
-	float zze = fEndSize;
-	
-	TexturedVertex v[4];
-	TexturedVertex v2[4];
-	
-	v2[0].color = v2[1].color = v2[2].color = v2[3].color = color.toBGRA();
-	
-	// version 2 faces
-	v2[0].uv = Vec2f::ZERO;
-	v2[1].uv = Vec2f::X_AXIS;
-	v2[2].uv = Vec2f::ONE;
-	v2[3].uv = Vec2f::Y_AXIS;
-	
-	v[0].p.x = s.x;
-	v[0].p.y = s.y + zzs;
-	v[0].p.z = s.z;
-	
-	v[1].p.x = s.x;
-	v[1].p.y = s.y - zzs;
-	v[1].p.z = s.z;
-	
-	v[2].p.x = e.x;
-	v[2].p.y = e.y - zze;
-	v[2].p.z = e.z;
-	
-	v[3].p.x = e.x;
-	v[3].p.y = e.y + zze;
-	v[3].p.z = e.z;
-	
-	EE_RT2(&v[0], &v2[0]);
-	EE_RT2(&v[1], &v2[1]);
-	EE_RT2(&v[2], &v2[2]);
-	EE_RT2(&v[3], &v2[3]);
-	ARX_DrawPrimitive(&v2[0], &v2[1], &v2[2]);
-	ARX_DrawPrimitive(&v2[0], &v2[2], &v2[3]);
-	
-	zzs *= (float) sin(radians(fBeta));
-	zze *= (float) sin(radians(fBeta));
-	
-	v[0].p.x = s.x + xxs;
-	v[0].p.y = s.y;
-	v[0].p.z = s.z + zzs;
-	
-	v[1].p.x = s.x - xxs;
-	v[1].p.y = s.y;
-	v[1].p.z = s.z - zzs;
-	
-	v[2].p.x = e.x - xxe;
-	v[2].p.y = e.y;
-	v[2].p.z = e.z - zze;
-	
-	v[3].p.x = e.x + xxe;
-	v[3].p.y = e.y;
-	v[3].p.z = e.z + zze;
-	
-	EE_RT2(&v[0], &v2[0]);
-	EE_RT2(&v[1], &v2[1]);
-	EE_RT2(&v[2], &v2[2]);
-	EE_RT2(&v[3], &v2[3]);
-	ARX_DrawPrimitive(&v2[0], &v2[1], &v2[2]);
-	ARX_DrawPrimitive(&v2[0], &v2[2], &v2[3]);
+	Draw3DLineTexNew(s, e, color, color, fStartSize, fEndSize);
 }
 
 void Draw3DLineTex2(Vec3f s, Vec3f e, float fSize, Color color, Color color2) {
-	
+
+	Draw3DLineTexNew(s, e, color, color2, fSize, fSize);
+}
+
+void Draw3DLineTexNew(Vec3f startPos, Vec3f endPos, Color startColor, Color endColor, float startSize, float endSize) {
+
 	float fBeta = MAKEANGLE(player.angle.b);
-	float zz = fSize; 
-	float xx = (float)(fSize * cos(radians(fBeta)));
-	
+	float xxs = (float)(startSize * cos(radians(fBeta)));
+	float xxe = (float)(endSize * cos(radians(fBeta)));
+	float zzs = startSize;
+	float zze = endSize;
+
 	TexturedVertex v[4];
 	TexturedVertex v2[4];
-	
-	v2[0].color = v2[1].color = color.toBGRA();
-	v2[2].color = v2[3].color = color2.toBGRA();
-	
+
+	v2[0].color = v2[1].color = startColor.toBGRA();
+	v2[2].color = v2[3].color = endColor.toBGRA();
+
 	// version 2 faces
 	v2[0].uv = Vec2f::ZERO;
 	v2[1].uv = Vec2f::X_AXIS;
 	v2[2].uv = Vec2f::ONE;
 	v2[3].uv = Vec2f::Y_AXIS;
-	
-	v[0].p.x = s.x;
-	v[0].p.y = s.y + zz;
-	v[0].p.z = s.z;
-	
-	v[1].p.x = s.x;
-	v[1].p.y = s.y - zz;
-	v[1].p.z = s.z;
-	
-	v[2].p.x = e.x;
-	v[2].p.y = e.y - zz;
-	v[2].p.z = e.z;
-	
-	v[3].p.x = e.x;
-	v[3].p.y = e.y + zz;
-	v[3].p.z = e.z;
-	
+
+	v[0].p.x = startPos.x;
+	v[0].p.y = startPos.y + zzs;
+	v[0].p.z = startPos.z;
+
+	v[1].p.x = startPos.x;
+	v[1].p.y = startPos.y - zzs;
+	v[1].p.z = startPos.z;
+
+	v[2].p.x = endPos.x;
+	v[2].p.y = endPos.y - zze;
+	v[2].p.z = endPos.z;
+
+	v[3].p.x = endPos.x;
+	v[3].p.y = endPos.y + zze;
+	v[3].p.z = endPos.z;
+
 	EE_RT2(&v[0], &v2[0]);
 	EE_RT2(&v[1], &v2[1]);
 	EE_RT2(&v[2], &v2[2]);
 	EE_RT2(&v[3], &v2[3]);
 	ARX_DrawPrimitive(&v2[0], &v2[1], &v2[3]);
 	ARX_DrawPrimitive(&v2[1], &v2[2], &v2[3]);
-	
-	zz *= (float) sin(radians(fBeta));
-	
-	v[0].p.x = s.x + xx;
-	v[0].p.y = s.y;
-	v[0].p.z = s.z + zz;
-	
-	v[1].p.x = s.x - xx;
-	v[1].p.y = s.y;
-	v[1].p.z = s.z - zz;
-	
-	v[2].p.x = e.x - xx;
-	v[2].p.y = e.y;
-	v[2].p.z = e.z - zz;
-	
-	v[3].p.x = e.x + xx;
-	v[3].p.y = e.y;
-	v[3].p.z = e.z + zz;
-	
+
+	zzs *= (float) sin(radians(fBeta));
+	zze *= (float) sin(radians(fBeta));
+
+	v[0].p.x = startPos.x + xxs;
+	v[0].p.y = startPos.y;
+	v[0].p.z = startPos.z + zzs;
+
+	v[1].p.x = startPos.x - xxs;
+	v[1].p.y = startPos.y;
+	v[1].p.z = startPos.z - zzs;
+
+	v[2].p.x = endPos.x - xxe;
+	v[2].p.y = endPos.y;
+	v[2].p.z = endPos.z - zze;
+
+	v[3].p.x = endPos.x + xxe;
+	v[3].p.y = endPos.y;
+	v[3].p.z = endPos.z + zze;
+
 	EE_RT2(&v[0], &v2[0]);
 	EE_RT2(&v[1], &v2[1]);
 	EE_RT2(&v[2], &v2[2]);
@@ -227,6 +171,7 @@ void Draw3DLineTex2(Vec3f s, Vec3f e, float fSize, Color color, Color color2) {
 	ARX_DrawPrimitive(&v2[0], &v2[1], &v2[3]);
 	ARX_DrawPrimitive(&v2[1], &v2[2], &v2[3]);
 }
+
 
 void Split(TexturedVertex * v, int a, int b, float fX, float fMulX, float fY, float fMulY, float fZ, float fMulZ)
 {

@@ -100,6 +100,7 @@ class CSpellFx
 
 void Draw3DLineTex2(Vec3f s, Vec3f e, float fSize, Color color, Color color2);
 void Draw3DLineTex(Vec3f, Vec3f, Color, float, float);
+void Draw3DLineTexNew(Vec3f startPos, Vec3f endPos, Color startColor, Color endColor, float startSize, float endSize);
 
 void Split(TexturedVertex * v, int a, int b, float fX, float fMulX, float fY, float fMulY, float fZ, float fMulZ);
 void Split(TexturedVertex * v, int a, int b, float yo, float fMul = 0.5f);
