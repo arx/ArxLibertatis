@@ -20,15 +20,11 @@
 #ifndef ARX_GRAPHICS_EFFECTS_TRAIL_H
 #define ARX_GRAPHICS_EFFECTS_TRAIL_H
 
-#include "graphics/BaseGraphicsTypes.h"
-#include "graphics/Color.h"
-#include "io/resource/ResourcePath.h"
-#include "math/MathFwd.h"
-#include "math/Vector3.h"
-#include "platform/Flags.h"
-
 #include <vector>
 #include <boost/circular_buffer.hpp>
+
+#include "math/Vector3.h"
+#include "graphics/Color.h"
 
 class Trail {
 
