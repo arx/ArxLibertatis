@@ -58,23 +58,29 @@ using std::ostringstream;
 
 static SnapShot * pSnapShot;
 
-SnapShot::SnapShot(const fs::path & name, bool replace) {
-	
-	int num = 0;
-	
-	do {
-		
-		ostringstream oss;
-		oss << name.filename() << '_' << num << ".bmp";
-		
-		file = name.parent() / oss.str();
-		
-		num++;
-	} while(!replace && fs::exists(file));
-	
+SnapShot::SnapShot(const fs::path & name)
+	: m_basePath(name)
+{
 }
 
 SnapShot::~SnapShot() { }
+
+fs::path SnapShot::getNextFilePath() {
+	int num = 0;
+
+	fs::path file;
+
+	do {
+		ostringstream oss;
+		oss << m_basePath.filename() << '_' << num << ".bmp";
+
+		file = m_basePath.parent() / oss.str();
+
+		num++;
+	} while(fs::exists(file));
+
+	return file;
+}
 
 bool SnapShot::GetSnapShot() {
 	
@@ -84,6 +90,8 @@ bool SnapShot::GetSnapShot() {
 		return false;
 	}
 	
+	fs::path file = getNextFilePath();
+
 	return image.save(file);
 }
 
@@ -94,6 +102,8 @@ bool SnapShot::GetSnapShotDim(int width, int height) {
 	if(!GRenderer->getSnapshot(image, width, height)) {
 		return false;
 	}
+
+	fs::path file = getNextFilePath();
 	
 	return image.save(file);
 }
