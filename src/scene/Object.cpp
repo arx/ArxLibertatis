@@ -1522,7 +1522,9 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 				
 				Vec3f temp = inVert.v - vector;
 				TransformInverseVertexQuat(&obj->bones[i].quatanim, &temp, &temp);
-				outVert.x = temp.x, outVert.y = temp.y, outVert.z = temp.z;
+				outVert.x = temp.x;
+				outVert.y = temp.y;
+				outVert.z = temp.z;
 			}
 		}
 	}
