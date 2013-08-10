@@ -303,10 +303,7 @@ void Cedric_TransformVerts(Entity *io, EERIE_3DOBJ *eobj, EERIE_C_DATA *obj, Vec
 	}
 
 	if(io) {
-		io->bbox1.x = (short)BBOX2D.min.x;
-		io->bbox2.x = (short)BBOX2D.max.x;
-		io->bbox1.y = (short)BBOX2D.min.y;
-		io->bbox2.y = (short)BBOX2D.max.y;
+		io->bbox2D = BBOX2D;
 	}
 }
 

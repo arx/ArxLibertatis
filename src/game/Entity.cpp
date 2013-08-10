@@ -98,8 +98,9 @@ Entity::Entity(const res::path & classPath)
 	
 	std::memset(&bbox3D, 0, sizeof(EERIE_3D_BBOX)); // TODO use constructor
 	
-	bbox1 = Vec2s(-1, -1);
-	bbox2 = Vec2s(-1, -1);
+	bbox2D.min = Vec2f(-1.f, -1.f);
+	bbox2D.max = Vec2f(-1.f, -1.f);
+
 	tweaky = NULL;
 	sound = audio::INVALID_ID;
 	type_flags = 0;

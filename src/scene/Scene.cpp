@@ -403,10 +403,8 @@ bool ARX_SCENE_PORTAL_Basic_ClipIO(Entity * io) {
 		EERIE_FRUSTRUM_DATA * frustrums=&RoomDraw[room_num].frustrum;
 
 		if (FrustrumsClipSphere(frustrums,&sphere)) {
-			io->bbox1.x=(short)-1;
-			io->bbox2.x=(short)-1;
-			io->bbox1.y=(short)-1;
-			io->bbox2.y=(short)-1;
+			io->bbox2D.min = Vec2f(-1.f, -1.f);
+			io->bbox2D.max = Vec2f(-1.f, -1.f);
 			return true;
 		}
 	}
@@ -453,10 +451,8 @@ bool ARX_SCENE_PORTAL_ClipIO(Entity * io, Vec3f * position) {
 		if(room_num >= 0 && size_t(room_num) < RoomDraw.size()) {
 			if(RoomDraw[room_num].count == 0) {
 				if(io) {
-					io->bbox1.x=(short)-1;
-					io->bbox2.x=(short)-1;
-					io->bbox1.y=(short)-1;
-					io->bbox2.y=(short)-1;		
+					io->bbox2D.min = Vec2f(-1.f, -1.f);
+					io->bbox2D.max = Vec2f(-1.f, -1.f);
 				}
 				return true;
 			}
@@ -471,10 +467,8 @@ bool ARX_SCENE_PORTAL_ClipIO(Entity * io, Vec3f * position) {
 				if(FrustrumsClipSphere(frustrums, &sphere) ||
 				   FrustrumsClipBBox3D(frustrums, &io->bbox3D)
 				) {
-					io->bbox1.x=(short)-1;
-					io->bbox2.x=(short)-1;
-					io->bbox1.y=(short)-1;
-					io->bbox2.y=(short)-1;
+					io->bbox2D.min = Vec2f(-1.f, -1.f);
+					io->bbox2D.max = Vec2f(-1.f, -1.f);
 					return true;
 				}
 			}

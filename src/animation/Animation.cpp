@@ -1025,10 +1025,7 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, const EERIE_QUAT * rotation, Vec3f *poss,
 	}
 
 	if(io) {
-		io->bbox1.x = (short)BBOX2D.min.x;
-		io->bbox2.x = (short)BBOX2D.max.x;
-		io->bbox1.y = (short)BBOX2D.min.y;
-		io->bbox2.y = (short)BBOX2D.max.y;
+		io->bbox2D = BBOX2D;
 	}
 
 	if(!modinfo && ARX_SCENE_PORTAL_ClipIO(io, &pos))

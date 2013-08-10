@@ -340,8 +340,8 @@ void ARX_EQUIPMENT_UnEquip(Entity * target, Entity * tounequip, long flags)
 		if(player.equiped[i] && ValidIONum(player.equiped[i]) && entities[player.equiped[i]] == tounequip) {
 			EERIE_LINKEDOBJ_UnLinkObjectFromObject(target->obj, tounequip->obj);
 			ARX_EQUIPMENT_Release(player.equiped[i]);
-			target->bbox1.x = 9999;
-			target->bbox2.x = -9999;
+			target->bbox2D.min.x = 9999;
+			target->bbox2D.max.x = -9999;
 			
 			if(!flags & 1) {
 				if(!DRAGINTER) {

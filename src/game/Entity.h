@@ -274,8 +274,8 @@ public:
 	unsigned long lastanimtime;
 	
 	EERIE_3D_BBOX bbox3D;
-	Vec2s bbox1; // 2D bounding box1
-	Vec2s bbox2; // 2D bounding box2
+	EERIE_2D_BBOX bbox2D;
+
 	res::path usemesh; // Alternate Mesh/path
 	EERIE_3DOBJ * tweaky; // tweaked original obj backup
 	audio::SourceId sound;

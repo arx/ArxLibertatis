@@ -1982,7 +1982,7 @@ void ArxGame::manageEditorControls() {
 						if(DRAGINTER->show==SHOW_FLAG_ON_PLAYER) {
 							ARX_EQUIPMENT_UnEquip(entities.player(),DRAGINTER);
 							RemoveFromAllInventories(DRAGINTER);
-							DRAGINTER->bbox2.x=-1;
+							DRAGINTER->bbox2D.max.x = -1;
 						}
 
 						if((io->ioflags & IO_NPC) || (io->ioflags & IO_FIX)) {
@@ -5500,20 +5500,13 @@ void ARX_INTERFACE_ManageOpenedBook()
 			if(player.equiped[EQUIP_SLOT_ARMOR] && ValidIONum(player.equiped[EQUIP_SLOT_ARMOR])) {
 				Entity *tod = entities[player.equiped[EQUIP_SLOT_ARMOR]];
 				if(tod) {
-					tod->bbox1.x = 195;
-					tod->bbox1.y = 116;
-					tod->bbox2.x = 284;
-					tod->bbox2.y = 182;
+					tod->bbox2D.min = Vec2f(195.f, 116.f);
+					tod->bbox2D.max = Vec2f(284.f, 182.f);
 
-					float fX1 = (tod->bbox1.x+BOOKDECX) * Xratio ;
-					float fX2 = (tod->bbox2.x+BOOKDECX) * Xratio ;
-					float fY1 = (tod->bbox1.y+BOOKDECY) * Yratio ;
-					float fY2 = (tod->bbox2.y+BOOKDECY) * Yratio ;
-
-					tod->bbox1.x = checked_range_cast<short>(fX1);
-					tod->bbox2.x = checked_range_cast<short>(fX2);
-					tod->bbox1.y = checked_range_cast<short>(fY1);
-					tod->bbox2.y = checked_range_cast<short>(fY2);
+					tod->bbox2D.min.x = (tod->bbox2D.min.x + BOOKDECX) * Xratio;
+					tod->bbox2D.max.x = (tod->bbox2D.max.x + BOOKDECX) * Xratio;
+					tod->bbox2D.min.y = (tod->bbox2D.min.y + BOOKDECY) * Yratio;
+					tod->bbox2D.max.y = (tod->bbox2D.max.y + BOOKDECY) * Yratio;
 
 					tod->ioflags |= IO_ICONIC;
 				}
@@ -5522,20 +5515,13 @@ void ARX_INTERFACE_ManageOpenedBook()
 			if(player.equiped[EQUIP_SLOT_LEGGINGS] && ValidIONum(player.equiped[EQUIP_SLOT_LEGGINGS])) {
 				Entity *tod = entities[player.equiped[EQUIP_SLOT_LEGGINGS]];
 				if(tod) {
-					tod->bbox1.x = 218;
-					tod->bbox1.y = 183;
-					tod->bbox2.x = 277;
-					tod->bbox2.y = 322;
+					tod->bbox2D.min = Vec2f(218.f, 183.f);
+					tod->bbox2D.max = Vec2f(277.f, 322.f);
 
-					float fX1 = (tod->bbox1.x+BOOKDECX) * Xratio ;
-					float fX2 = (tod->bbox2.x+BOOKDECX) * Xratio ;
-					float fY1 = (tod->bbox1.y+BOOKDECY) * Yratio ;
-					float fY2 = (tod->bbox2.y+BOOKDECY) * Yratio ;
-
-					tod->bbox1.x = checked_range_cast<short>(fX1);
-					tod->bbox2.x = checked_range_cast<short>(fX2);
-					tod->bbox1.y = checked_range_cast<short>(fY1);
-					tod->bbox2.y = checked_range_cast<short>(fY2);
+					tod->bbox2D.min.x = (tod->bbox2D.min.x + BOOKDECX) * Xratio;
+					tod->bbox2D.max.x = (tod->bbox2D.max.x + BOOKDECX) * Xratio;
+					tod->bbox2D.min.y = (tod->bbox2D.min.y + BOOKDECY) * Yratio;
+					tod->bbox2D.max.y = (tod->bbox2D.max.y + BOOKDECY) * Yratio;
 
 					tod->ioflags |= IO_ICONIC;
 				}
@@ -5544,20 +5530,13 @@ void ARX_INTERFACE_ManageOpenedBook()
 			if(player.equiped[EQUIP_SLOT_HELMET] && ValidIONum(player.equiped[EQUIP_SLOT_HELMET])) {
 				Entity *tod = entities[player.equiped[EQUIP_SLOT_HELMET]];
 				if(tod) {
-					tod->bbox1.x = 218;
-					tod->bbox1.y = 75;
-					tod->bbox2.x = 260;
-					tod->bbox2.y = 115;
+					tod->bbox2D.min = Vec2f(218.f, 75.f);
+					tod->bbox2D.max = Vec2f(260.f, 115.f);
 
-					float fX1 = (tod->bbox1.x+BOOKDECX) * Xratio ;
-					float fX2 = (tod->bbox2.x+BOOKDECX) * Xratio ;
-					float fY1 = (tod->bbox1.y+BOOKDECY) * Yratio ;
-					float fY2 = (tod->bbox2.y+BOOKDECY) * Yratio ;
-
-					tod->bbox1.x = checked_range_cast<short>(fX1);
-					tod->bbox2.x = checked_range_cast<short>(fX2);
-					tod->bbox1.y = checked_range_cast<short>(fY1);
-					tod->bbox2.y = checked_range_cast<short>(fY2);
+					tod->bbox2D.min.x = (tod->bbox2D.min.x + BOOKDECX) * Xratio;
+					tod->bbox2D.max.x = (tod->bbox2D.max.x + BOOKDECX) * Xratio;
+					tod->bbox2D.min.y = (tod->bbox2D.min.y + BOOKDECY) * Yratio;
+					tod->bbox2D.max.y = (tod->bbox2D.max.y + BOOKDECY) * Yratio;
 
 					tod->ioflags |= IO_ICONIC;
 				}
@@ -5576,34 +5555,27 @@ void ARX_INTERFACE_ManageOpenedBook()
 					tc2 = todraw->inv->getHalo();
 
 				if(tc) {
-					todraw->bbox1.x=146;
-					todraw->bbox1.y=312;
+					todraw->bbox2D.min = Vec2f(146.f, 312.f);
 
 					Color color = (todraw->poisonous && todraw->poisonous_count != 0) ? Color::green : Color::white;
-					DrawBookInterfaceItem(tc, todraw->bbox1.x, todraw->bbox1.y, color, 0);
+					DrawBookInterfaceItem(tc, todraw->bbox2D.min.x, todraw->bbox2D.min.y, color, 0);
 
 					if(tc2) {
 						ARX_INTERFACE_HALO_Draw(
 							todraw, tc, tc2,
-							(todraw->bbox1.x + BOOKDECX) * Xratio,
-							(todraw->bbox1.y + BOOKDECY) * Yratio,
+							(todraw->bbox2D.min.x + BOOKDECX) * Xratio,
+							(todraw->bbox2D.min.y + BOOKDECY) * Yratio,
 							Xratio, Yratio
 						);
 					}
 
-					float fWidth  = todraw->bbox1.x + static_cast<float>( tc->m_dwWidth );
-					float fHeight = todraw->bbox1.y + static_cast<float>( tc->m_dwHeight );
-					todraw->bbox2.x = checked_range_cast<short>(fWidth);
-					todraw->bbox2.y = checked_range_cast<short>(fHeight);
+					todraw->bbox2D.max.x = todraw->bbox2D.min.x + static_cast<float>( tc->m_dwWidth );
+					todraw->bbox2D.max.y = todraw->bbox2D.min.y + static_cast<float>( tc->m_dwHeight );
 
-					float fX1 = (todraw->bbox1.x+BOOKDECX) * Xratio ;
-					float fX2 = (todraw->bbox2.x+BOOKDECX) * Xratio ;
-					float fY1 = (todraw->bbox1.y+BOOKDECY) * Yratio ;
-					float fY2 = (todraw->bbox2.y+BOOKDECY) * Yratio ;
-					todraw->bbox1.x = checked_range_cast<short>(fX1);
-					todraw->bbox2.x = checked_range_cast<short>(fX2);
-					todraw->bbox1.y = checked_range_cast<short>(fY1);
-					todraw->bbox2.y = checked_range_cast<short>(fY2);
+					todraw->bbox2D.min.x = (todraw->bbox2D.min.x + BOOKDECX) * Xratio;
+					todraw->bbox2D.max.x = (todraw->bbox2D.max.x + BOOKDECX) * Xratio;
+					todraw->bbox2D.min.y = (todraw->bbox2D.min.y + BOOKDECY) * Yratio;
+					todraw->bbox2D.max.y = (todraw->bbox2D.max.y + BOOKDECY) * Yratio;
 
 					todraw->ioflags |= IO_ICONIC;
 				}
@@ -5620,35 +5592,27 @@ void ARX_INTERFACE_ManageOpenedBook()
 					tc2 = todraw->inv->getHalo();
 
 				if(tc) {
-					todraw->bbox1.x=296;
-					todraw->bbox1.y=312;
+					todraw->bbox2D.min = Vec2f(296.f, 312.f);
 
 					Color color = (todraw->poisonous && todraw->poisonous_count != 0) ? Color::green : Color::white;
-					DrawBookInterfaceItem(tc, todraw->bbox1.x, todraw->bbox1.y, color, 0);
+					DrawBookInterfaceItem(tc, todraw->bbox2D.min.x, todraw->bbox2D.min.y, color, 0);
 
 					if(tc2) {
 						ARX_INTERFACE_HALO_Draw(
 							todraw, tc, tc2, 
-							(todraw->bbox1.x + BOOKDECX) * Xratio,
-							(todraw->bbox1.y + BOOKDECX) * Yratio,
+							(todraw->bbox2D.min.x + BOOKDECX) * Xratio,
+							(todraw->bbox2D.min.y + BOOKDECX) * Yratio,
 							Xratio, Yratio
 						);
 					}
 
-					float fWidth  = todraw->bbox1.x + static_cast<float>( tc->m_dwWidth );
-					float fHeight = todraw->bbox1.y + static_cast<float>( tc->m_dwHeight );
-					todraw->bbox2.x = checked_range_cast<short>(fWidth);
-					todraw->bbox2.y = checked_range_cast<short>(fHeight);
+					todraw->bbox2D.max.x = todraw->bbox2D.min.x + static_cast<float>( tc->m_dwWidth );
+					todraw->bbox2D.max.y = todraw->bbox2D.min.y + static_cast<float>( tc->m_dwHeight );
 
-					float fX1 = (todraw->bbox1.x+BOOKDECX) * Xratio ;
-					float fX2 = (todraw->bbox2.x+BOOKDECX) * Xratio ;
-					float fY1 = (todraw->bbox1.y+BOOKDECY) * Yratio ;
-					float fY2 = (todraw->bbox2.y+BOOKDECY) * Yratio ;
-
-					todraw->bbox1.x = checked_range_cast<short>(fX1);
-					todraw->bbox2.x = checked_range_cast<short>(fX2);
-					todraw->bbox1.y = checked_range_cast<short>(fY1);
-					todraw->bbox2.y = checked_range_cast<short>(fY2);
+					todraw->bbox2D.min.x = (todraw->bbox2D.min.x + BOOKDECX) * Xratio;
+					todraw->bbox2D.max.x = (todraw->bbox2D.max.x + BOOKDECX) * Xratio;
+					todraw->bbox2D.min.y = (todraw->bbox2D.min.y + BOOKDECY) * Yratio;
+					todraw->bbox2D.max.y = (todraw->bbox2D.max.y + BOOKDECY) * Yratio;
 
 					todraw->ioflags |= IO_ICONIC;
 				}

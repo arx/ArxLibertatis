@@ -2336,10 +2336,10 @@ Entity * GetFirstInterAtPos(Vec2s * pos, long flag, Vec3f * _pRef, Entity ** _pT
 			continue;
 		}
 
-		if(pos->x < io->bbox1.x ||
-		   pos->x > io->bbox2.x ||
-		   pos->y < io->bbox1.y ||
-		   pos->y > io->bbox2.y)
+		if(pos->x < io->bbox2D.min.x ||
+		   pos->x > io->bbox2D.max.x ||
+		   pos->y < io->bbox2D.min.y ||
+		   pos->y > io->bbox2D.max.y)
 		{
 			continue;
 		}
@@ -2974,8 +2974,8 @@ void RenderInter() {
 
 		UpdateIOInvisibility(io);
 
-		io->bbox1.x = 9999;
-		io->bbox2.x = -1;
+		io->bbox2D.min.x = 9999;
+		io->bbox2D.max.x = -1;
 
 		if(EDITION == EDITION_CollisionShape) {
 			EERIE_PHYSICS_BOX_Show(io->obj);
@@ -3056,11 +3056,12 @@ void RenderInter() {
 
 		if(EDITION == EDITION_BoundingBoxes) {
 			Color color = Color::blue;
-			if(io->bbox1.x != io->bbox2.x && io->bbox1.x < DANAESIZX) {
-				EERIEDraw2DLine(io->bbox1.x, io->bbox1.y, io->bbox2.x, io->bbox1.y, 0.01f, color);
-				EERIEDraw2DLine(io->bbox2.x, io->bbox1.y, io->bbox2.x, io->bbox2.y, 0.01f, color);
-				EERIEDraw2DLine(io->bbox2.x, io->bbox2.y, io->bbox1.x, io->bbox2.y, 0.01f, color);
-				EERIEDraw2DLine(io->bbox1.x, io->bbox2.y, io->bbox1.x, io->bbox1.y, 0.01f, color);
+			EERIE_2D_BBOX & box = io->bbox2D;
+			if(box.min.x != box.max.x && box.min.x < DANAESIZX) {
+				EERIEDraw2DLine(box.min.x, box.min.y, box.max.x, box.min.y, 0.01f, color);
+				EERIEDraw2DLine(box.max.x, box.min.y, box.max.x, box.max.y, 0.01f, color);
+				EERIEDraw2DLine(box.max.x, box.max.y, box.min.x, box.max.y, 0.01f, color);
+				EERIEDraw2DLine(box.min.x, box.max.y, box.min.x, box.min.y, 0.01f, color);
 			}
 		}
 	}
