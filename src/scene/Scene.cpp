@@ -1837,6 +1837,30 @@ void ARX_SCENE_Update() {
 	}
 }
 
+void DebugPortalsRender() {
+	GRenderer->SetRenderState(Renderer::Fog, false);
+	GRenderer->SetRenderState(Renderer::DepthTest, false);
+
+	for(size_t i = 0; i < portals->nb_total; i++) {
+		EERIE_PORTALS & po = portals->portals[i];
+
+		Color color = Color::red;
+		if(po.useportal == 1) {
+			color = Color::green;
+		}
+
+		EERIEPOLY & epp = po.poly;
+
+		EERIEDraw3DLine(epp.v[0].p, epp.v[1].p, color);
+		EERIEDraw3DLine(epp.v[1].p, epp.v[3].p, color);
+		EERIEDraw3DLine(epp.v[2].p, epp.v[3].p, color);
+		EERIEDraw3DLine(epp.v[0].p, epp.v[2].p, color);
+	}
+
+	GRenderer->SetRenderState(Renderer::DepthTest, true);
+	GRenderer->SetRenderState(Renderer::Fog, true);
+}
+
 extern short uw_mode;
 extern long SPECIAL_DRAGINTER_RENDER;
 
@@ -1919,6 +1943,10 @@ void ARX_SCENE_Render() {
 		long z1 = std::min(camZsnap + lcval, ACTIVEBKG->Zsize - 1L);
 
 		ARXDRAW_DrawAllLights(x0,z0,x1,z1);
+	}
+
+	if(EDITION == EDITION_Portals) {
+		DebugPortalsRender();
 	}
 }
 

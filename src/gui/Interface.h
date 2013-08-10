@@ -167,6 +167,7 @@ enum ARX_INTERFACE_EDITION_MODE
 	EDITION_FOGS,
 	EDITION_BoundingBoxes,
 	EDITION_CollisionShape,
+	EDITION_Portals,
 	EDITION_EnumSize
 };
 
