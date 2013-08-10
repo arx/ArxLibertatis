@@ -285,7 +285,7 @@ void Cedric_TransformVerts(Entity *io, EERIE_3DOBJ *eobj, EERIE_C_DATA *obj, Vec
 		}
 	}
 
-	if(eobj->cdata && eobj->sdata) {
+	if(eobj->sdata) {
 		for(size_t i = 0; i < eobj->vertexlist.size(); i++) {
 			eobj->vertexlist[i].vert.p = eobj->vertexlist3[i].v - *pos;
 		}
