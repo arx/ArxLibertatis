@@ -176,23 +176,23 @@ long MakeTopObjString(Entity * io,  string & dest) {
 		return -1;
 	}
 	
-	Vec3f boxmin = Vec3f::repeat(999999999.f);
-	Vec3f boxmax = Vec3f::repeat(-999999999.f);
+	EERIE_3D_BBOX box;
+	box.reset();
+
 	for(size_t i = 0; i < io->obj->vertexlist.size(); i++) {
-		boxmin = componentwise_min(boxmin, io->obj->vertexlist3[i].v);
-		boxmax = componentwise_max(boxmax, io->obj->vertexlist3[i].v);
+		box.add(io->obj->vertexlist3[i].v);
 	}
-	boxmin.y -= 5.f;
-	boxmax.y -= 5.f;
+	box.min.y -= 5.f;
+	box.max.y -= 5.f;
 	
 	dest = "";
 	
-	if(player.pos.x > boxmin.x
-			&& player.pos.x < boxmax.x
-			&& player.pos.z > boxmin.z
-			&& player.pos.z < boxmax.z)
+	if(player.pos.x > box.min.x
+			&& player.pos.x < box.max.x
+			&& player.pos.z > box.min.z
+			&& player.pos.z < box.max.z)
 	{
-		if(EEfabs(player.pos.y + 160.f - boxmin.y) < 50.f)
+		if(EEfabs(player.pos.y + 160.f - box.min.y) < 50.f)
 			dest += " player";
 	}
 
@@ -200,12 +200,12 @@ long MakeTopObjString(Entity * io,  string & dest) {
 		if(entities[i] && entities[i] != io) {
 			if(entities[i]->show == SHOW_FLAG_IN_SCENE) {
 				if((entities[i]->ioflags & IO_NPC) || (entities[i]->ioflags & IO_ITEM)) {
-					if(entities[i]->pos.x > boxmin.x
-							&& entities[i]->pos.x < boxmax.x
-							&& entities[i]->pos.z > boxmin.z
-							&& entities[i]->pos.z < boxmax.z)
+					if(entities[i]->pos.x > box.min.x
+							&& entities[i]->pos.x < box.max.x
+							&& entities[i]->pos.z > box.min.z
+							&& entities[i]->pos.z < box.max.z)
 					{
-						if(EEfabs(entities[i]->pos.y - boxmin.y) < 40.f) {
+						if(EEfabs(entities[i]->pos.y - box.min.y) < 40.f) {
 							dest += ' ' + entities[i]->long_name();
 						}
 					}

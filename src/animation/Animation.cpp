@@ -1007,7 +1007,7 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, const EERIE_QUAT * rotation, Vec3f *poss,
 
 		eobj->vertexlist3[i].v = rotatedPosition += pos;
 
-		box3D.add(&eobj->vertexlist3[i].v);
+		box3D.add(eobj->vertexlist3[i].v);
 
 		EE_RT(&rotatedPosition, &eobj->vertexlist[i].vworld);
 		EE_P(&eobj->vertexlist[i].vworld, &eobj->vertexlist[i].vert);

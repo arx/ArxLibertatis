@@ -289,7 +289,7 @@ void Cedric_TransformVerts(Entity *io, EERIE_3DOBJ *eobj, EERIE_C_DATA *obj, Vec
 	for(size_t i = 0; i < eobj->vertexlist.size(); i++) {
 		EERIE_VERTEX * outVert = &eobj->vertexlist3[i];
 
-		box3D.add(&outVert->v);
+		box3D.add(outVert->v);
 
 		EE_RT(&outVert->vert.p, &outVert->vworld);
 		EE_P(&outVert->vworld, &outVert->vert);

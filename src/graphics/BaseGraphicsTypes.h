@@ -118,9 +118,9 @@ struct EERIE_3D_BBOX {
 		max = Vec3f::repeat(-99999999.f);
 	}
 
-	void add(Vec3f * pos) {
-		min = componentwise_min(min, *pos);
-		max = componentwise_max(max, *pos);
+	void add(const Vec3f & pos) {
+		min = componentwise_min(min, pos);
+		max = componentwise_max(max, pos);
 	}
 };
 
