@@ -2704,10 +2704,10 @@ void RenderAllNodes() {
 		if (nodes.nodes[i].exist) {
 			DrawEERIEInter(nodeobj, &rotation, &nodes.nodes[i].pos, NULL);
 
-			nodes.nodes[i].bboxmin.x=(short)BBOXMIN.x;
-			nodes.nodes[i].bboxmin.y=(short)BBOXMIN.y;
-			nodes.nodes[i].bboxmax.x=(short)BBOXMAX.x;
-			nodes.nodes[i].bboxmax.y=(short)BBOXMAX.y;
+			nodes.nodes[i].bboxmin.x=(short)BBOX2D.min.x;
+			nodes.nodes[i].bboxmin.y=(short)BBOX2D.min.y;
+			nodes.nodes[i].bboxmax.x=(short)BBOX2D.max.x;
+			nodes.nodes[i].bboxmax.y=(short)BBOX2D.max.y;
 
 			if(nodeobj->vertexlist[nodeobj->origin].vert.p.z > 0.f && nodeobj->vertexlist[nodeobj->origin].vert.p.z<0.9f) {
 				float xx = nodeobj->vertexlist[nodeobj->origin].vert.p.x - 40.f;

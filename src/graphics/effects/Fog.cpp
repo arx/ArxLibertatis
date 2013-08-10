@@ -247,18 +247,18 @@ void ARX_FOGS_RenderAll() {
 			if(fogobj)
 				DrawEERIEInter(fogobj, &rotation, &fog->pos, NULL);
 
-			fog->bboxmin = BBOXMIN;
-			fog->bboxmax = BBOXMAX;
+//			fog->bboxmin = BBOXMIN;
+//			fog->bboxmax = BBOXMAX;
 
 			if(fog->special & FOG_DIRECTIONAL) {
 				EERIEDraw3DLine(fog->pos, fog->pos + fog->move * 50.f, Color::white);
 			}
 
-			if(fog->selected) {
-				EERIEDraw2DLine(fog->bboxmin.x, fog->bboxmin.y, fog->bboxmax.x, fog->bboxmin.y, 0.01f, Color::yellow);
-				EERIEDraw2DLine(fog->bboxmax.x, fog->bboxmin.y, fog->bboxmax.x, fog->bboxmax.y, 0.01f, Color::yellow);
-				EERIEDraw2DLine(fog->bboxmax.x, fog->bboxmax.y, fog->bboxmin.x, fog->bboxmax.y, 0.01f, Color::yellow);
-				EERIEDraw2DLine(fog->bboxmin.x, fog->bboxmax.y, fog->bboxmin.x, fog->bboxmin.y, 0.01f, Color::yellow);
-			}
+//			if(fog->selected) {
+//				EERIEDraw2DLine(fog->bboxmin.x, fog->bboxmin.y, fog->bboxmax.x, fog->bboxmin.y, 0.01f, Color::yellow);
+//				EERIEDraw2DLine(fog->bboxmax.x, fog->bboxmin.y, fog->bboxmax.x, fog->bboxmax.y, 0.01f, Color::yellow);
+//				EERIEDraw2DLine(fog->bboxmax.x, fog->bboxmax.y, fog->bboxmin.x, fog->bboxmax.y, 0.01f, Color::yellow);
+//				EERIEDraw2DLine(fog->bboxmin.x, fog->bboxmax.y, fog->bboxmin.x, fog->bboxmin.y, 0.01f, Color::yellow);
+//			}
 	}
 }

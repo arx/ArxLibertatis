@@ -1793,7 +1793,7 @@ void DrawEERIEObjExEx(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *pos, Vec3f *scale
 	}
 }
 
-Vec3f BBOXMIN, BBOXMAX;
+EERIE_2D_BBOX BBOX2D;
 
 /*!
  * \brief Memorizes information for animation to animation smoothing interpolation

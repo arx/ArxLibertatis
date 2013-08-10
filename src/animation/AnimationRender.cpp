@@ -102,8 +102,7 @@ extern long TSU_TEST_NB_LIGHT;
 inline	static	void	Cedric_ResetBoundingBox(Entity * io)
 {
 	// resets 2D Bounding Box
-	BBOXMIN.y = BBOXMIN.x = 32000;
-	BBOXMAX.y = BBOXMAX.x = -32000;
+	BBOX2D.reset();
 	// Resets 3D Bounding Box
 	ResetBBox3D(io);
 }
@@ -299,18 +298,15 @@ void Cedric_TransformVerts(Entity *io, EERIE_3DOBJ *eobj, EERIE_C_DATA *obj, Vec
 
 		// Updates 2D Bounding Box
 		if(outVert->vert.rhw > 0.f) {
-			BBOXMIN.x = min(BBOXMIN.x, outVert->vert.p.x);
-			BBOXMAX.x = max(BBOXMAX.x, outVert->vert.p.x);
-			BBOXMIN.y = min(BBOXMIN.y, outVert->vert.p.y);
-			BBOXMAX.y = max(BBOXMAX.y, outVert->vert.p.y);
+			BBOX2D.add(outVert->vert.p);
 		}
 	}
 
 	if(io) {
-		io->bbox1.x = (short)BBOXMIN.x;
-		io->bbox2.x = (short)BBOXMAX.x;
-		io->bbox1.y = (short)BBOXMIN.y;
-		io->bbox2.y = (short)BBOXMAX.y;
+		io->bbox1.x = (short)BBOX2D.min.x;
+		io->bbox2.x = (short)BBOX2D.max.x;
+		io->bbox1.y = (short)BBOX2D.min.y;
+		io->bbox2.y = (short)BBOX2D.max.y;
 	}
 }
 

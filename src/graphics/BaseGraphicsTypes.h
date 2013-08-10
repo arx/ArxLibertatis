@@ -101,11 +101,11 @@ struct EERIE_2D_BBOX {
 		max.y = max.x = -32000;
 	}
 
-	void add(Vec3f * pos) {
-		min.x = std::min(min.x, pos->x);
-		max.x = std::max(max.x, pos->x);
-		min.y = std::min(min.y, pos->y);
-		max.y = std::max(max.y, pos->y);
+	void add(const Vec3f & pos) {
+		min.x = std::min(min.x, pos.x);
+		max.x = std::max(max.x, pos.x);
+		min.y = std::min(min.y, pos.y);
+		max.y = std::max(max.y, pos.y);
 	}
 };
 

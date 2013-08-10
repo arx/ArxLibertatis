@@ -4051,7 +4051,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 						}
 
 						// Checks for Mouse floating over a rune...
-						if(!found2 && MouseInRect(BBOXMIN.x, BBOXMIN.y, BBOXMAX.x, BBOXMAX.y)) {
+						if(!found2 && MouseInRect(BBOX2D.min.x, BBOX2D.min.y, BBOX2D.max.x, BBOX2D.max.y)) {
 							long r=0;
 
 							for(size_t j = 0; j < necklace.runes[i]->facelist.size(); j++) {

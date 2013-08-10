@@ -969,8 +969,7 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, const EERIE_QUAT * rotation, Vec3f *poss,
 		return;
 	
 	// Resets 2D Bounding Box
-	BBOXMIN.y = BBOXMIN.x = 32000;
-	BBOXMAX.y = BBOXMAX.x = -32000;
+	BBOX2D.reset();
 	Vec3f pos = *poss;
 	
 	// Avoids To treat an object that isn't Visible
@@ -1018,10 +1017,7 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, const EERIE_QUAT * rotation, Vec3f *poss,
 				(eobj->vertexlist[i].vert.p.y >= -32000) &&
 				(eobj->vertexlist[i].vert.p.y <= 32000))
 			{
-				BBOXMIN.x=min(BBOXMIN.x,eobj->vertexlist[i].vert.p.x);
-				BBOXMAX.x=max(BBOXMAX.x,eobj->vertexlist[i].vert.p.x);
-				BBOXMIN.y=min(BBOXMIN.y,eobj->vertexlist[i].vert.p.y);
-				BBOXMAX.y=max(BBOXMAX.y,eobj->vertexlist[i].vert.p.y);
+				BBOX2D.add(eobj->vertexlist[i].vert.p);
 			}
 		}
 
@@ -1029,10 +1025,10 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, const EERIE_QUAT * rotation, Vec3f *poss,
 	}
 
 	if(io) {
-		io->bbox1.x=(short)BBOXMIN.x;
-		io->bbox2.x=(short)BBOXMAX.x;
-		io->bbox1.y=(short)BBOXMIN.y;
-		io->bbox2.y=(short)BBOXMAX.y;
+		io->bbox1.x = (short)BBOX2D.min.x;
+		io->bbox2.x = (short)BBOX2D.max.x;
+		io->bbox1.y = (short)BBOX2D.min.y;
+		io->bbox2.y = (short)BBOX2D.max.y;
 	}
 
 	if(!modinfo && ARX_SCENE_PORTAL_ClipIO(io, &pos))
