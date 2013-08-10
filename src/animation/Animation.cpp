@@ -967,9 +967,7 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, const EERIE_QUAT * rotation, Vec3f *poss,
 
 	if(!eobj)
 		return;
-	
-	// Resets 2D Bounding Box
-	BBOX2D.reset();
+
 	Vec3f pos = *poss;
 	
 	// Avoids To treat an object that isn't Visible
@@ -985,7 +983,10 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, const EERIE_QUAT * rotation, Vec3f *poss,
 		invisibility = INVISIBILITY_OVERRIDE;
 	
 	// Test for Mipmeshing then pre-computes vertices
-	ResetBBox3D( io );
+	EERIE_3D_BBOX box3D;
+	box3D.reset();
+
+	BBOX2D.reset();
 
 	for(size_t i = 0 ; i < eobj->vertexlist.size(); i++) {
 
@@ -1006,6 +1007,8 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, const EERIE_QUAT * rotation, Vec3f *poss,
 
 		eobj->vertexlist3[i].v = rotatedPosition += pos;
 
+		box3D.add(&eobj->vertexlist3[i].v);
+
 		EE_RT(&rotatedPosition, &eobj->vertexlist[i].vworld);
 		EE_P(&eobj->vertexlist[i].vworld, &eobj->vertexlist[i].vert);
 
@@ -1020,11 +1023,10 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, const EERIE_QUAT * rotation, Vec3f *poss,
 				BBOX2D.add(eobj->vertexlist[i].vert.p);
 			}
 		}
-
-		AddToBBox3D(io,&eobj->vertexlist3[i].v);
 	}
 
 	if(io) {
+		io->bbox3D = box3D;
 		io->bbox2D = BBOX2D;
 	}
 

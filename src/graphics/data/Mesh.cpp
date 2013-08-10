@@ -170,20 +170,6 @@ bool RayCollidingPoly(Vec3f * orgn, Vec3f * dest, EERIEPOLY * ep, Vec3f * hit)
 	return false;
 }
 
-void ResetBBox3D(Entity * io) {
-	if(io) {
-		io->bbox3D.min = Vec3f::repeat(99999999.f);
-		io->bbox3D.max = Vec3f::repeat(-99999999.f);
-	}
-}
-
-void AddToBBox3D(Entity * io, Vec3f * pos) {
-	if(io) {
-		io->bbox3D.min = componentwise_min(io->bbox3D.min, *pos);
-		io->bbox3D.max = componentwise_max(io->bbox3D.max, *pos);
-	}
-}
-
 long MakeTopObjString(Entity * io,  string & dest) {
 	
 	if(!io) {

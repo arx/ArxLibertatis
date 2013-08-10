@@ -98,15 +98,6 @@ extern long TSU_TEST_NB_LIGHT;
 	float SOFTNEARCLIPPZ=1.f;
 #endif
 
-/* Init bounding box */
-inline	static	void	Cedric_ResetBoundingBox(Entity * io)
-{
-	// resets 2D Bounding Box
-	BBOX2D.reset();
-	// Resets 3D Bounding Box
-	ResetBBox3D(io);
-}
-
 extern float INVISIBILITY_OVERRIDE;
 extern bool EXTERNALVIEW;
 float Cedric_GetScale(Entity * io) {
@@ -290,9 +281,16 @@ void Cedric_TransformVerts(Entity *io, EERIE_3DOBJ *eobj, EERIE_C_DATA *obj, Vec
 		}
 	}
 
+	EERIE_3D_BBOX box3D;
+	box3D.reset();
+
+	BBOX2D.reset();
+
 	for(size_t i = 0; i < eobj->vertexlist.size(); i++) {
 		EERIE_VERTEX * outVert = &eobj->vertexlist3[i];
-		AddToBBox3D(io, &outVert->v);
+
+		box3D.add(&outVert->v);
+
 		EE_RT(&outVert->vert.p, &outVert->vworld);
 		EE_P(&outVert->vworld, &outVert->vert);
 
@@ -303,6 +301,7 @@ void Cedric_TransformVerts(Entity *io, EERIE_3DOBJ *eobj, EERIE_C_DATA *obj, Vec
 	}
 
 	if(io) {
+		io->bbox3D = box3D;
 		io->bbox2D = BBOX2D;
 	}
 }
@@ -1396,9 +1395,6 @@ bool Cedric_IO_Visible(Vec3f * pos) {
  * \brief Apply animation and draw object
  */
 void Cedric_AnimateDrawEntity(EERIE_3DOBJ *eobj, ANIM_USE *animuse, Anglef *angle, Vec3f *pos, Entity *io, Vec3f & ftr, float scale) {
-	
-	// Init some data
-	Cedric_ResetBoundingBox(io);
 	
 	// Manage Extra Rotations in Local Space
 	Cedric_ManageExtraRotationsFirst(io, eobj);

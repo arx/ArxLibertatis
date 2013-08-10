@@ -248,13 +248,6 @@ void PrepareCamera(EERIE_CAMERA *cam);
 // CAMERA FUNCTIONS END
 //****************************************************************************
 
-//****************************************************************************
-// BBOX FUNCTIONS START
-void ResetBBox3D(Entity * io);
-void AddToBBox3D(Entity * io,Vec3f * pos);
-// BBOX FUNCTIONS END
-//****************************************************************************
-
 void ApplyLight(EERIEPOLY *ep);
 long MakeTopObjString(Entity * io, std::string& dest);
 void DeclareEGInfo(float x, float z);
