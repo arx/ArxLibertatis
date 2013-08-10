@@ -1448,10 +1448,7 @@ void Cedric_AnimateDrawEntityRender(EERIE_3DOBJ *eobj, Vec3f *pos, Vec3f &ftr, E
 
 	Cedric_RenderObject(eobj, obj, io, pos, ftr, invisibility);
 
-
-
 	// Now we can render Linked Objects
-
 	for (long k = 0; k < eobj->nblinked; k++) {
 		EERIE_LINKED & link = eobj->linked[k];
 
@@ -1465,32 +1462,26 @@ void Cedric_AnimateDrawEntityRender(EERIE_3DOBJ *eobj, Vec3f *pos, Vec3f &ftr, E
 		)
 			continue;
 
-		link.modinfo.rot = Anglef::ZERO;
-
-
-		Entity * ioo = (Entity *)link.io;
-		EERIE_3DOBJ * obj = (EERIE_3DOBJ *) link.obj;
-
-		// Store item invisibility flag
+		// Store item invisibility
 		float old = 0.f;
-		if(ioo) {
-			old = ioo->invisibility;
-			ioo->invisibility = invisibility;
+		if(link.io) {
+			old = link.io->invisibility;
+			link.io->invisibility = invisibility;
 		}
 
-		long ll = link.lidx2;
-		link.modinfo.link_position = obj->vertexlist[ll].v - obj->vertexlist[obj->origin].v;
+		link.modinfo.link_position = link.obj->vertexlist[link.lidx2].v - link.obj->vertexlist[link.obj->origin].v;
+		link.modinfo.rot = Anglef::ZERO;
 
 		EERIE_QUAT quat;
-		ll = link.lidx;
-		Vec3f * posi = &eobj->vertexlist3[ll].v;
 		Quat_Copy(&quat, &eobj->c_data->bones[link.lgroup].quatanim);
 
-		DrawEERIEInter(obj, &quat, posi, ioo, &link.modinfo);
+		Vec3f * posi = &eobj->vertexlist3[link.lidx].v;
 
-		// Restore item invisibility flag
-		if(ioo)
-			ioo->invisibility = old;
+		DrawEERIEInter(link.obj, &quat, posi, link.io, &link.modinfo);
+
+		// Restore item invisibility
+		if(link.io)
+			link.io->invisibility = old;
 	}
 }
 
