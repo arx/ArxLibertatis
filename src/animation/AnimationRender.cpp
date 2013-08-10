@@ -1458,6 +1458,13 @@ void Cedric_AnimateDrawEntityRender(EERIE_3DOBJ *eobj, Vec3f *pos, Vec3f &ftr, E
 		if(link.lgroup == -1 || !link.obj)
 			continue;
 
+		// specific check to avoid drawing player weapon on its back when in subjective view
+		if(io == entities.player() &&
+			link.lidx == entities.player()->obj->fastaccess.weapon_attach &&
+			!EXTERNALVIEW
+		)
+			continue;
+
 		link.modinfo.rot = Anglef::ZERO;
 
 
@@ -1470,13 +1477,6 @@ void Cedric_AnimateDrawEntityRender(EERIE_3DOBJ *eobj, Vec3f *pos, Vec3f &ftr, E
 			old = ioo->invisibility;
 			ioo->invisibility = invisibility;
 		}
-
-		// specific check to avoid drawing player weapon on its back when in subjective view
-		if(io == entities.player() &&
-			link.lidx == entities.player()->obj->fastaccess.weapon_attach &&
-			!EXTERNALVIEW
-		)
-			continue;
 
 		long ll = link.lidx2;
 		link.modinfo.link_position = obj->vertexlist[ll].v - obj->vertexlist[obj->origin].v;
