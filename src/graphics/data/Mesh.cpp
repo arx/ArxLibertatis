@@ -1754,24 +1754,26 @@ void DrawEERIEObjExEx(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *pos, Vec3f *scale
 	}
 
 	for(size_t i = 0; i < eobj->facelist.size(); i++) {
-		vert_list[0].p = eobj->vertexlist[eobj->facelist[i].vid[0]].vworld;
-		vert_list[1].p = eobj->vertexlist[eobj->facelist[i].vid[1]].vworld;
-		vert_list[2].p = eobj->vertexlist[eobj->facelist[i].vid[2]].vworld;
+		EERIE_FACE & face = eobj->facelist[i];
+
+		vert_list[0].p = eobj->vertexlist[face.vid[0]].vworld;
+		vert_list[1].p = eobj->vertexlist[face.vid[1]].vworld;
+		vert_list[2].p = eobj->vertexlist[face.vid[2]].vworld;
 		
-		vert_list[0].uv.x = eobj->facelist[i].u[0];
-		vert_list[0].uv.y = eobj->facelist[i].v[0];
-		vert_list[1].uv.x = eobj->facelist[i].u[1];
-		vert_list[1].uv.y = eobj->facelist[i].v[1];
-		vert_list[2].uv.x = eobj->facelist[i].u[2];
-		vert_list[2].uv.y = eobj->facelist[i].v[2];
+		vert_list[0].uv.x = face.u[0];
+		vert_list[0].uv.y = face.v[0];
+		vert_list[1].uv.x = face.u[1];
+		vert_list[1].uv.y = face.v[1];
+		vert_list[2].uv.x = face.u[2];
+		vert_list[2].uv.y = face.v[2];
 		vert_list[0].color = vert_list[1].color = vert_list[2].color = coll;
 
-		if(eobj->facelist[i].facetype == 0 || eobj->texturecontainer[eobj->facelist[i].texid] == NULL)
+		if(face.facetype == 0 || eobj->texturecontainer[face.texid] == NULL)
 			GRenderer->ResetTexture(0);
 		else
-			GRenderer->SetTexture(0, eobj->texturecontainer[eobj->facelist[i].texid]);
+			GRenderer->SetTexture(0, eobj->texturecontainer[face.texid]);
 
-		if(eobj->facelist[i].facetype & POLY_DOUBLESIDED)
+		if(face.facetype & POLY_DOUBLESIDED)
 			GRenderer->SetCulling(Renderer::CullNone);
 		else
 			GRenderer->SetCulling(Renderer::CullCW);
