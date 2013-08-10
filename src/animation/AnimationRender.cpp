@@ -215,8 +215,7 @@ static void Cedric_AnimateObject(Entity *io, EERIE_3DOBJ *eobj, ANIM_USE *animus
 /* Apply transformations on all bones */
 static void Cedric_ConcatenateTM(EERIE_C_DATA *obj, EERIE_QUAT *rotation, Vec3f *pos, Vec3f &ftr, float g_scale) {
 
-	if(!obj)
-		return;
+	arx_assert(obj);
 
 	for(int i = 0; i != obj->nb_bones; i++) {
 		EERIE_BONE * bone = &obj->bones[i];
@@ -254,6 +253,8 @@ void EE_P(Vec3f * in, TexturedVertex * out);
 
 /* Transform object vertices  */
 void Cedric_TransformVerts(Entity *io, EERIE_3DOBJ *eobj, EERIE_C_DATA *obj, Vec3f *pos) {
+
+	arx_assert(eobj);
 
  	/* Transform & project all vertices */
 	for(long i = 0; i != obj->nb_bones; i++) {
@@ -1420,6 +1421,9 @@ void Cedric_AnimateDrawEntity(EERIE_3DOBJ *eobj, ANIM_USE *animuse, Anglef *angl
 		Cedric_SaveBlendData(io->obj->c_data);
 	}
 
+	EERIE_C_DATA *obj = eobj->c_data;
+	if(!obj)
+		return;
 
 	EERIE_QUAT	qt2;
 
@@ -1427,13 +1431,7 @@ void Cedric_AnimateDrawEntity(EERIE_3DOBJ *eobj, ANIM_USE *animuse, Anglef *angl
 	worldAngleToQuat(&qt2, angle, isNpc);
 
 	// Build skeleton in Object Space
-	Cedric_ConcatenateTM(eobj->c_data, &qt2, pos, ftr, scale);
-
-	/* Display the object */
-	EERIE_C_DATA *obj = eobj->c_data;
-
-	if(!obj)
-		return;
+	Cedric_ConcatenateTM(obj, &qt2, pos, ftr, scale);
 
 	Cedric_TransformVerts(io, eobj, obj, pos);
 }
