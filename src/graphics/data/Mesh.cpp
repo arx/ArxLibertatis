@@ -103,7 +103,7 @@ static void EERIE_PORTAL_Release();
 float Xratio = 1.f;
 float Yratio = 1.f;
 
-static int RayIn3DPolyNoCull(Vec3f * orgn, Vec3f * dest, EERIEPOLY * epp);
+static bool RayIn3DPolyNoCull(Vec3f * orgn, Vec3f * dest, EERIEPOLY * epp);
 
 EERIEMATRIX ProjectionMatrix;
 
@@ -827,7 +827,7 @@ static void SP_PrepareCamera(EERIE_CAMERA * cam) {
 	cam->orgTrans.mod = (cam->center + cam->clip.origin).to<float>();
 }
 
-static int RayIn3DPolyNoCull(Vec3f * orgn, Vec3f * dest, EERIEPOLY * epp) {
+static bool RayIn3DPolyNoCull(Vec3f * orgn, Vec3f * dest, EERIEPOLY * epp) {
 
 	EERIEPOLY ep;
 	memcpy(&ep, epp, sizeof(EERIEPOLY));
@@ -836,9 +836,10 @@ static int RayIn3DPolyNoCull(Vec3f * orgn, Vec3f * dest, EERIEPOLY * epp) {
 	SP_PrepareCamera(&raycam);
 	EERIERTPPolyCam(&ep, &raycam);
 
-	if (PointIn2DPoly(&ep, 320.f, 320.f))	return 1;
+	if(PointIn2DPoly(&ep, 320.f, 320.f))
+		return true;
 
-	return 0;
+	return false;
 }
 
 int EERIELaunchRay3(Vec3f * orgn, Vec3f * dest,  Vec3f * hit, EERIEPOLY * epp, long flag) {
