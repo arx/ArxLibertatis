@@ -1455,7 +1455,8 @@ void Cedric_AnimateDrawEntityRender(EERIE_3DOBJ *eobj, Vec3f *pos, Vec3f &ftr, E
 	for (long k = 0; k < eobj->nblinked; k++) {
 		EERIE_LINKED & link = eobj->linked[k];
 
-		if((link.lgroup != -1) && link.obj) {
+		if(link.lgroup == -1 || !link.obj)
+			continue;
 
 			link.modinfo.rot = Anglef::ZERO;
 
@@ -1490,7 +1491,6 @@ void Cedric_AnimateDrawEntityRender(EERIE_3DOBJ *eobj, Vec3f *pos, Vec3f &ftr, E
 			// Restore item invisibility flag
 			if(ioo)
 				ioo->invisibility = old;
-		}
 	}
 }
 
