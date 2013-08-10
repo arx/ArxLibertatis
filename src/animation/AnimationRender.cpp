@@ -1453,13 +1453,15 @@ void Cedric_AnimateDrawEntityRender(EERIE_3DOBJ *eobj, Vec3f *pos, Vec3f &ftr, E
 	// Now we can render Linked Objects
 
 	for (long k = 0; k < eobj->nblinked; k++) {
-		if((eobj->linked[k].lgroup != -1) && eobj->linked[k].obj) {
+		EERIE_LINKED & link = eobj->linked[k];
 
-			eobj->linked[k].modinfo.rot = Anglef::ZERO;
+		if((link.lgroup != -1) && link.obj) {
+
+			link.modinfo.rot = Anglef::ZERO;
 
 
-			Entity * ioo = (Entity *)eobj->linked[k].io;
-			EERIE_3DOBJ * obj = (EERIE_3DOBJ *) eobj->linked[k].obj;
+			Entity * ioo = (Entity *)link.io;
+			EERIE_3DOBJ * obj = (EERIE_3DOBJ *) link.obj;
 
 			// Store item invisibility flag
 			float old = 0.f;
@@ -1470,20 +1472,20 @@ void Cedric_AnimateDrawEntityRender(EERIE_3DOBJ *eobj, Vec3f *pos, Vec3f &ftr, E
 
 			// specific check to avoid drawing player weapon on its back when in subjective view
 			if(io == entities.player() &&
-				eobj->linked[k].lidx == entities.player()->obj->fastaccess.weapon_attach &&
+				link.lidx == entities.player()->obj->fastaccess.weapon_attach &&
 				!EXTERNALVIEW
 			)
 				continue;
 
-			long ll = eobj->linked[k].lidx2;
-			eobj->linked[k].modinfo.link_position = obj->vertexlist[ll].v - obj->vertexlist[obj->origin].v;
+			long ll = link.lidx2;
+			link.modinfo.link_position = obj->vertexlist[ll].v - obj->vertexlist[obj->origin].v;
 
 			EERIE_QUAT quat;
-			ll = eobj->linked[k].lidx;
+			ll = link.lidx;
 			Vec3f * posi = &eobj->vertexlist3[ll].v;
-			Quat_Copy(&quat, &eobj->c_data->bones[eobj->linked[k].lgroup].quatanim);
+			Quat_Copy(&quat, &eobj->c_data->bones[link.lgroup].quatanim);
 
-			DrawEERIEInter(obj, &quat, posi, ioo, &eobj->linked[k].modinfo);
+			DrawEERIEInter(obj, &quat, posi, ioo, &link.modinfo);
 
 			// Restore item invisibility flag
 			if(ioo)
