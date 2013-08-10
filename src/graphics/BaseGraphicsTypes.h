@@ -44,6 +44,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_GRAPHICS_BASEGRAPHICSTYPES_H
 #define ARX_GRAPHICS_BASEGRAPHICSTYPES_H
 
+#include "math/Vector2.h"
 #include "math/Vector3.h"
 
 struct EERIE_QUAT {
@@ -91,9 +92,36 @@ struct EERIE_SPHERE {
 	
 };
 
+struct EERIE_2D_BBOX {
+	Vec2f min;
+	Vec2f max;
+
+	void reset() {
+		min.y = min.x = 32000;
+		max.y = max.x = -32000;
+	}
+
+	void add(Vec3f * pos) {
+		min.x = std::min(min.x, pos->x);
+		max.x = std::max(max.x, pos->x);
+		min.y = std::min(min.y, pos->y);
+		max.y = std::max(max.y, pos->y);
+	}
+};
+
 struct EERIE_3D_BBOX {
 	Vec3f min;
 	Vec3f max;
+
+	void reset() {
+		min = Vec3f::repeat(99999999.f);
+		max = Vec3f::repeat(-99999999.f);
+	}
+
+	void add(Vec3f * pos) {
+		min = componentwise_min(min, *pos);
+		max = componentwise_max(max, *pos);
+	}
 };
 
 enum Material {

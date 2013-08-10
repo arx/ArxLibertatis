@@ -69,11 +69,6 @@ struct EERIE_TRI {
 	Vec3f v[3];
 };
 
-struct EERIE_2D_BBOX {
-	Vec2f min;
-	Vec2f max;
-};
-
 enum EERIE_TYPES_EXTRAS_MODE
 {
 	EXTRAS_SEMIDYNAMIC       = 0x00000001,
