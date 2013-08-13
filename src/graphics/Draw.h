@@ -55,9 +55,6 @@ struct TexturedVertex;
 extern Vec3f SPRmins;
 extern Vec3f SPRmaxs;
 
-void MDL_AddMetalDrawLater(TexturedVertex * tv);
-void MDL_FlushAll();
-
 void EERIEDRAWPRIM(Renderer::Primitive primitive, const TexturedVertex * vertices, size_t count = 3, bool nocount = false);
 
 void EERIEDrawCircle(float x0, float y0, float r, Color col, float z);
@@ -73,7 +70,6 @@ void EERIEDraw3DLine(const Vec3f & orgn, const Vec3f & dest, Color col);
 void EERIEDrawBitmap2DecalY(float x, float y, float sx, float sy, float z, TextureContainer * tex,
                             Color col, float _fDeltaY);
 
-void EERIEOBJECT_Quadify(EERIE_3DOBJ * obj);
 
 void EERIEDrawSprite(TexturedVertex * in, float siz, TextureContainer * tex, Color col, float Zpos);
 void EERIEDrawRotatedSprite(TexturedVertex * in, float siz, TextureContainer * tex, Color col, float Zpos, float rot);
