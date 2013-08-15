@@ -1201,47 +1201,7 @@ void RenderLava() {
 }
 
 void ARX_PORTALS_Frustrum_RenderRoom_TransparencyTSoftCull(long room_num);
-void ARX_PORTALS_Frustrum_RenderRooms_TransparencyT() {
-	
-	arx_assert(USE_PORTALS);
 
-	GRenderer->SetFogColor(Color::none);
-
-	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	GRenderer->SetCulling(Renderer::CullNone);
-	GRenderer->SetRenderState(Renderer::DepthWrite, false);
-
-	GRenderer->SetAlphaFunc(Renderer::CmpGreater, .5f);
-	
-	for(size_t i = 0; i < RoomDrawList.size(); i++) {
-
-		long room_num = RoomDrawList[i];
-
-		if(!RoomDraw[room_num].count)
-			continue;
-
-		ARX_PORTALS_Frustrum_RenderRoom_TransparencyTSoftCull(room_num);
-	}
-	
-	GRenderer->SetAlphaFunc(Renderer::CmpNotEqual, 0.f);
-
-	RoomDrawList.clear();
-
-	SetZBias(8);
-
-	GRenderer->SetRenderState(Renderer::DepthWrite, false);
-
-	//render all fx!!
-	GRenderer->SetCulling(Renderer::CullCW);
-	
-	RenderWater();
-	RenderLava();
-	
-	SetZBias(0);
-	GRenderer->SetFogColor(ulBKGColor);
-	GRenderer->GetTextureStage(0)->SetColorOp(TextureStage::OpModulate);
-	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-}
 
 void ApplyDynLight_VertexBuffer_2(EERIEPOLY *ep,short x,short y,SMY_VERTEX *_pVertex,unsigned short _usInd0,unsigned short _usInd1,unsigned short _usInd2,unsigned short _usInd3);
 
@@ -1918,7 +1878,36 @@ void ARX_SCENE_Render() {
 
 	PopAllTriangleListTransparency();
 
-	ARX_PORTALS_Frustrum_RenderRooms_TransparencyT();
+	GRenderer->SetFogColor(Color::none);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+	GRenderer->SetCulling(Renderer::CullNone);
+	GRenderer->SetRenderState(Renderer::DepthWrite, false);
+	GRenderer->SetAlphaFunc(Renderer::CmpGreater, .5f);
+
+	for(size_t i = 0; i < RoomDrawList.size(); i++) {
+
+		long room_num = RoomDrawList[i];
+
+		if(!RoomDraw[room_num].count)
+			continue;
+
+		ARX_PORTALS_Frustrum_RenderRoom_TransparencyTSoftCull(room_num);
+	}
+
+	RoomDrawList.clear();
+
+	SetZBias(8);
+	GRenderer->SetRenderState(Renderer::DepthWrite, false);
+	GRenderer->SetCulling(Renderer::CullCW);
+	GRenderer->SetAlphaFunc(Renderer::CmpNotEqual, 0.f);
+
+	RenderWater();
+	RenderLava();
+
+	SetZBias(0);
+	GRenderer->SetFogColor(ulBKGColor);
+	GRenderer->GetTextureStage(0)->SetColorOp(TextureStage::OpModulate);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 
 	Halo_Render();
 
