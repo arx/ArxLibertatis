@@ -79,6 +79,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/data/TextureContainer.h"
 #include "graphics/particle/ParticleEffects.h"
 #include "graphics/texture/TextureStage.h"
+#include "graphics/effects/Halo.h"
 
 #include "io/resource/ResourcePath.h"
 #include "io/resource/PakReader.h"
@@ -113,12 +114,12 @@ extern long ZMAPMODE;
 
 ANIM_HANDLE animations[MAX_ANIMATIONS];
 
-TexturedVertex LATERDRAWHALO[HALOMAX * 4];
+
 EERIE_LIGHT * llights[32];
 float dists[32];
 float values[32];
 
-long HALOCUR = 0;
+
 
 static const long anim_power[] = { 100, 20, 15, 12, 8, 6, 5, 4, 3, 2, 2, 1, 1, 1, 1 };
 
@@ -1238,11 +1239,7 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, const EERIE_QUAT * rotation, Vec3f *poss,
 				}
 
 				if(_ffr[first] > 70.f && _ffr[second] > 60.f) {
-					TexturedVertex *vert = &LATERDRAWHALO[(HALOCUR << 2)];
-
-					if(HALOCUR < ((long)HALOMAX) - 1) {
-						HALOCUR++;
-					}
+					TexturedVertex *vert = Halo_AddVertex();
 
 					memcpy(&vert[0], &workon[first], sizeof(TexturedVertex));
 					memcpy(&vert[1], &workon[first], sizeof(TexturedVertex));

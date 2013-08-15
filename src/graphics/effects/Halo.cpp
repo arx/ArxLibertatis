@@ -24,7 +24,19 @@
 
 #include "animation/Animation.h"
 
-extern long HALOCUR;
+const size_t HALOMAX = 2000;
+
+long HALOCUR = 0;
+TexturedVertex LATERDRAWHALO[HALOMAX * 4];
+
+TexturedVertex * Halo_AddVertex() {
+	TexturedVertex *vert = &LATERDRAWHALO[(HALOCUR << 2)];
+
+	if(HALOCUR < ((long)HALOMAX) - 1) {
+		HALOCUR++;
+	}
+	return vert;
+}
 
 void Halo_Render() {
 	if(HALOCUR > 0) {

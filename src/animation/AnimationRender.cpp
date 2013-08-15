@@ -71,6 +71,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/data/MeshManipulation.h"
 #include "graphics/data/TextureContainer.h"
 #include "graphics/particle/ParticleEffects.h"
+#include "graphics/effects/Halo.h"
 
 #include "math/Angle.h"
 #include "math/Vector3.h"
@@ -1176,11 +1177,7 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity *
 				}
 
 				if(_ffr[first] > 150.f && _ffr[second] > 110.f) {
-					TexturedVertex *vert = &LATERDRAWHALO[(HALOCUR << 2)];
-
-					if(HALOCUR < ((long)HALOMAX) - 1) {
-						HALOCUR++;
-					}
+					TexturedVertex *vert = Halo_AddVertex();
 
 					memcpy(&vert[0], &workon[first], sizeof(TexturedVertex));
 					memcpy(&vert[1], &workon[first], sizeof(TexturedVertex));

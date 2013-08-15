@@ -20,6 +20,11 @@
 #ifndef ARX_GRAPHICS_EFFECTS_HALO_H
 #define ARX_GRAPHICS_EFFECTS_HALO_H
 
+#include <stddef.h>
+
+struct TexturedVertex;
+
+TexturedVertex * Halo_AddVertex();
 
 void Halo_Render();
 

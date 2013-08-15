@@ -62,12 +62,9 @@ struct EERIEMATRIX;
 struct EERIE_MOD_INFO;
 struct TexturedVertex;
 
-const size_t HALOMAX = 2000;
 extern long MAX_LLIGHTS;
 const size_t MAX_ANIMATIONS = 900;
 
-extern long HALOCUR;
-extern TexturedVertex LATERDRAWHALO[HALOMAX * 4];
 extern EERIE_LIGHT * llights[32];
 
 long EERIE_ANIMMANAGER_Count(std::string & tex, long * memsize);
