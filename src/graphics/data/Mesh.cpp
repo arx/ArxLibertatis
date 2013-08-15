@@ -614,9 +614,6 @@ float GetColorz(float x, float y, float z) {
 	
 	Vec3f pos(x, y, z);
 	llightsInit();
-	float ffr, ffg, ffb;
-	float dd, dc;
-	float p;
 
 	for (long i = 0; i < TOTIOPDL; i++)
 	{
@@ -630,9 +627,9 @@ float GetColorz(float x, float y, float z) {
 			Insertllight(PDL[i], fdist(PDL[i]->pos, pos) - PDL[i]->fallstart);
 	}
 
-	ffr = 0;
-	ffg = 0;
-	ffb = 0;
+	float ffr = 0;
+	float ffg = 0;
+	float ffb = 0;
 
 	for (long k = 0; k < MAX_LLIGHTS; k++)
 	{
@@ -640,15 +637,17 @@ float GetColorz(float x, float y, float z) {
 
 		if (el)
 		{
-			dd = fdist(el->pos, pos);
+			float dd = fdist(el->pos, pos);
 
 			if (dd < el->fallend)
 			{
+				float dc;
+
 				if (dd <= el->fallstart)
 					dc = el->intensity * GLOBAL_LIGHT_FACTOR;
 				else
 				{
-					p = ((el->fallend - dd) * el->falldiffmul);
+					float p = ((el->fallend - dd) * el->falldiffmul);
 
 					if (p <= 0.f)
 						dc = 0.f;
