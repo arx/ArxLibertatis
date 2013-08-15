@@ -59,12 +59,23 @@ struct TexturedVertex {
 	
 	Vec2f uv;
 	
-	TexturedVertex(const Vec3f & _p, float _rhw, ColorBGRA _color, ColorBGRA _specular, Vec2f _uv) : p(_p), rhw(_rhw), color(_color), specular(_specular), uv(_uv) { }
-	
-	TexturedVertex(const TexturedVertex & o) : p(o.p), rhw(o.rhw), color(o.color), specular(o.specular), uv(o.uv) { }
-	
-	TexturedVertex() { }
-	
+	TexturedVertex() {}
+
+	TexturedVertex(const TexturedVertex & o)
+		: p(o.p)
+		, rhw(o.rhw)
+		, color(o.color)
+		, specular(o.specular)
+		, uv(o.uv)
+	{}
+
+	TexturedVertex(const Vec3f & _p, float _rhw, ColorBGRA _color, ColorBGRA _specular, Vec2f _uv)
+		: p(_p)
+		, rhw(_rhw)
+		, color(_color)
+		, specular(_specular)
+		, uv(_uv)
+	{}
 };
 
 template <class Vertex>
