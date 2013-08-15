@@ -147,7 +147,6 @@ static void Cedric_AnimateObject(Entity *io, EERIE_3DOBJ *eobj, ANIM_USE *animus
 	std::vector<unsigned char> grps(eobj->nbgroups);
 
 	for(long count = MAX_ANIM_LAYERS - 1; count >= 0; count--) {
-		EERIE_QUAT		t, temp;
 
 		if(!io) {
 			count = -1;
@@ -185,7 +184,9 @@ static void Cedric_AnimateObject(Entity *io, EERIE_3DOBJ *eobj, ANIM_USE *animus
 				grps[j] = 1;
 
 			if(eanim->nb_key_frames != 1) {
+				EERIE_QUAT t;
 				Quat_Slerp(&t, &sGroup->quat, &eGroup->quat, animuse->pour);
+				EERIE_QUAT temp;
 				Quat_Copy(&temp, &obj->bones[j].quatinit);
 				Quat_Multiply(&obj->bones[j].quatinit, &temp, &t);
 
