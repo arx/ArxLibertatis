@@ -1383,9 +1383,7 @@ void ArxGame::renderLevel() {
 	if(entities.player() && entities.player()->animlayer[0].cur_anim) {
 		ManageNONCombatModeAnimations();
 
-		arx_assert(entities.player()->obj);
-		EERIEDrawAnimQuat(entities.player()->obj, entities.player()->animlayer, &entities.player()->angle,
-			&entities.player()->pos, Original_framedelay, entities.player(), false, false);
+		AnimatedEntityUpdate(entities.player());
 
 		if((player.Interface & INTER_COMBATMODE) && entities.player()->animlayer[1].cur_anim)
 			ManageCombatModeAnimations();
@@ -1480,9 +1478,7 @@ void ArxGame::renderLevel() {
 		if(entities.player()->invisibility > 0.9f)
 			entities.player()->invisibility = 0.9f;
 
-		arx_assert(entities.player()->obj);
-		EERIEDrawAnimQuat(entities.player()->obj, entities.player()->animlayer, &entities.player()->angle,
-			&entities.player()->pos, 0, entities.player());
+		AnimatedEntityRender(entities.player());
 	}
 
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);

@@ -428,6 +428,18 @@ void EERIEDrawAnimQuat(EERIE_3DOBJ *eobj, ANIM_USE * animlayer, Anglef *angle, V
 		Cedric_AnimateDrawEntityRender(eobj, pos, ftr, io);
 }
 
+void AnimatedEntityUpdate(Entity * entity) {
+
+	EERIEDrawAnimQuat(entity->obj, entity->animlayer, &entity->angle,
+		&entity->pos, Original_framedelay, entity, false, false);
+}
+
+void AnimatedEntityRender(Entity * entity) {
+
+	EERIEDrawAnimQuat(entity->obj, entity->animlayer, &entity->angle,
+		&entity->pos, 0, entity);
+}
+
 
 extern float GLOBAL_LIGHT_FACTOR;
 

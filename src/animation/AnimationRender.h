@@ -56,6 +56,9 @@ struct TexturedVertex;
 
 void EERIEDrawAnimQuat(EERIE_3DOBJ *eobj, ANIM_USE * animlayer, Anglef *angle, Vec3f *pos, unsigned long time, Entity *io, bool render = true, bool update_movement = true);
 
+void AnimatedEntityUpdate(Entity * entity);
+void AnimatedEntityRender(Entity * entity);
+
 void Cedric_AnimateDrawEntity(EERIE_3DOBJ * eobj, ANIM_USE * animuse, Anglef * angle, Vec3f * pos, Entity * io, Vec3f & ftr, float scale);
 void Cedric_AnimateDrawEntityRender(EERIE_3DOBJ *eobj, Vec3f *pos, Vec3f &ftr, Entity *io);
 
