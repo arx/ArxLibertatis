@@ -946,50 +946,50 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity *
 
 	arx_assert(use_io);
 
-		if(use_io == entities.player()) {
-			if(player.equiped[EQUIP_SLOT_HELMET] != 0 && ValidIONum(player.equiped[EQUIP_SLOT_HELMET])) {
-				Entity * tio = entities[player.equiped[EQUIP_SLOT_HELMET]];
+	if(use_io == entities.player()) {
+		if(player.equiped[EQUIP_SLOT_HELMET] != 0 && ValidIONum(player.equiped[EQUIP_SLOT_HELMET])) {
+			Entity * tio = entities[player.equiped[EQUIP_SLOT_HELMET]];
 
-				if (tio->halo.flags & HALO_ACTIVE)
-					hio_helmet = tio;
-			}
-
-			if(player.equiped[EQUIP_SLOT_ARMOR] != 0 && ValidIONum(player.equiped[EQUIP_SLOT_ARMOR])) {
-				Entity * tio = entities[player.equiped[EQUIP_SLOT_ARMOR]];
-
-				if (tio->halo.flags & HALO_ACTIVE)
-					hio_armor = tio;
-			}
-
-			if(player.equiped[EQUIP_SLOT_LEGGINGS] != 0 && ValidIONum(player.equiped[EQUIP_SLOT_LEGGINGS])) {
-				Entity * tio = entities[player.equiped[EQUIP_SLOT_LEGGINGS]];
-
-				if (tio->halo.flags & HALO_ACTIVE)
-					hio_leggings = tio;
-			}
+			if (tio->halo.flags & HALO_ACTIVE)
+				hio_helmet = tio;
 		}
 
-		if(hio_armor || hio_leggings || hio_helmet || (use_io->halo.flags & HALO_ACTIVE)) {
+		if(player.equiped[EQUIP_SLOT_ARMOR] != 0 && ValidIONum(player.equiped[EQUIP_SLOT_ARMOR])) {
+			Entity * tio = entities[player.equiped[EQUIP_SLOT_ARMOR]];
 
-			Vec3f ftrPos = *pos + ftr;
-			//TODO copy-pase
-			float mdist = ACTIVECAM->cdepth;
-			mdist *= ( 1.0f / 2 );
-			ddist = mdist-fdist(ftrPos, ACTIVECAM->orgTrans.pos);
-			ddist = ddist/mdist;
-			ddist = std::pow(ddist, 6);
-
-			ddist = clamp(ddist, 0.25f, 0.9f);
-
-			Cedric_PrepareHalo(eobj, obj);
-			need_halo = 1;
-
-			MAX_ZEDE = 0.f;
-			for(size_t i = 0; i < eobj->vertexlist.size(); i++) {
-				if(eobj->vertexlist3[i].vert.rhw > 0.f)
-					MAX_ZEDE = max(eobj->vertexlist3[i].vert.p.z, MAX_ZEDE);
-			}
+			if (tio->halo.flags & HALO_ACTIVE)
+				hio_armor = tio;
 		}
+
+		if(player.equiped[EQUIP_SLOT_LEGGINGS] != 0 && ValidIONum(player.equiped[EQUIP_SLOT_LEGGINGS])) {
+			Entity * tio = entities[player.equiped[EQUIP_SLOT_LEGGINGS]];
+
+			if (tio->halo.flags & HALO_ACTIVE)
+				hio_leggings = tio;
+		}
+	}
+
+	if(hio_armor || hio_leggings || hio_helmet || (use_io->halo.flags & HALO_ACTIVE)) {
+
+		Vec3f ftrPos = *pos + ftr;
+		//TODO copy-pase
+		float mdist = ACTIVECAM->cdepth;
+		mdist *= ( 1.0f / 2 );
+		ddist = mdist-fdist(ftrPos, ACTIVECAM->orgTrans.pos);
+		ddist = ddist/mdist;
+		ddist = std::pow(ddist, 6);
+
+		ddist = clamp(ddist, 0.25f, 0.9f);
+
+		Cedric_PrepareHalo(eobj, obj);
+		need_halo = 1;
+
+		MAX_ZEDE = 0.f;
+		for(size_t i = 0; i < eobj->vertexlist.size(); i++) {
+			if(eobj->vertexlist3[i].vert.rhw > 0.f)
+				MAX_ZEDE = max(eobj->vertexlist3[i].vert.p.z, MAX_ZEDE);
+		}
+	}
 
 	for(size_t i = 0; i < eobj->facelist.size(); i++) {
 		EERIE_FACE *eface = &eobj->facelist[i];
@@ -1110,145 +1110,145 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity *
 			float	_ffr[3];	
 
 			{
-				IO_HALO * curhalo = NULL;
+			IO_HALO * curhalo = NULL;
 
-				if(hio_helmet && IsInSelection(use_io->obj, paf[0], use_io->obj->fastaccess.sel_head) >= 0) {
-					curhalo = &hio_helmet->halo;
-				} else if(hio_armor && IsInSelection(use_io->obj, paf[0], use_io->obj->fastaccess.sel_chest) >= 0) {
-					curhalo = &hio_armor->halo;
-				} else if(hio_leggings && IsInSelection(use_io->obj, paf[0], use_io->obj->fastaccess.sel_leggings) >= 0) {
-					curhalo = &hio_leggings->halo;
-				} else if(use_io->halo.flags & HALO_ACTIVE) {
-					curhalo = &use_io->halo;
+			if(hio_helmet && IsInSelection(use_io->obj, paf[0], use_io->obj->fastaccess.sel_head) >= 0) {
+				curhalo = &hio_helmet->halo;
+			} else if(hio_armor && IsInSelection(use_io->obj, paf[0], use_io->obj->fastaccess.sel_chest) >= 0) {
+				curhalo = &hio_armor->halo;
+			} else if(hio_leggings && IsInSelection(use_io->obj, paf[0], use_io->obj->fastaccess.sel_leggings) >= 0) {
+				curhalo = &hio_leggings->halo;
+			} else if(use_io->halo.flags & HALO_ACTIVE) {
+				curhalo = &use_io->halo;
+			} else {
+				continue;
+			}
+
+			arx_assert(curhalo);
+
+			TexturedVertex *workon	= tvList;
+
+			float tot = 0;
+			for(long o = 0; o < 3; o++) {
+				float tttz	= EEfabs(eobj->vertexlist3[paf[o]].norm.z) * ( 1.0f / 2 );
+				float power = 255.f - (float)(255.f * tttz);
+				power *= (1.f - invisibility);
+
+				power = clamp(power, 0.f, 255.f);
+
+				tot += power;
+				_ffr[o] = power;
+
+				u8 lfr = curhalo->color.r * power;
+				u8 lfg = curhalo->color.g * power;
+				u8 lfb = curhalo->color.b * power;
+				tvList[o].color = ((0xFF << 24) | (lfr << 16) | (lfg << 8) | (lfb));
+			}
+
+			if(tot > 260) {
+				long first;
+				long second;
+				long third;
+
+				if(_ffr[0] >= _ffr[1] && _ffr[1] >= _ffr[2]) {
+					first = 0;
+					second = 1;
+					third = 2;
+				} else if(_ffr[0] >= _ffr[2] && _ffr[2] >= _ffr[1]) {
+					first = 0;
+					second = 2;
+					third = 1;
+				} else if(_ffr[1] >= _ffr[0] && _ffr[0] >= _ffr[2]) {
+					first = 1;
+					second = 0;
+					third = 2;
+				} else if(_ffr[1] >= _ffr[2] && _ffr[2] >= _ffr[0]) {
+					first = 1;
+					second = 2;
+					third = 0;
+				} else if(_ffr[2] >= _ffr[0] && _ffr[0] >= _ffr[1]) {
+					first = 2;
+					second = 0;
+					third = 1;
 				} else {
-					continue;
+					first = 2;
+					second = 1;
+					third = 0;
 				}
 
-				arx_assert(curhalo);
+				if(_ffr[first] > 150.f && _ffr[second] > 110.f) {
+					TexturedVertex *vert = &LATERDRAWHALO[(HALOCUR << 2)];
 
-				TexturedVertex *workon	= tvList;
-
-				float tot = 0;
-				for(long o = 0; o < 3; o++) {
-					float tttz	= EEfabs(eobj->vertexlist3[paf[o]].norm.z) * ( 1.0f / 2 );
-					float power = 255.f - (float)(255.f * tttz);
-					power *= (1.f - invisibility);
-
-					power = clamp(power, 0.f, 255.f);
-
-					tot += power;
-					_ffr[o] = power;
-
-					u8 lfr = curhalo->color.r * power;
-					u8 lfg = curhalo->color.g * power;
-					u8 lfb = curhalo->color.b * power;
-					tvList[o].color = ((0xFF << 24) | (lfr << 16) | (lfg << 8) | (lfb));
-				}
-
-				if(tot > 260) {
-					long first;
-					long second;
-					long third;
-
-					if(_ffr[0] >= _ffr[1] && _ffr[1] >= _ffr[2]) {
-						first = 0;
-						second = 1;
-						third = 2;
-					} else if(_ffr[0] >= _ffr[2] && _ffr[2] >= _ffr[1]) {
-						first = 0;
-						second = 2;
-						third = 1;
-					} else if(_ffr[1] >= _ffr[0] && _ffr[0] >= _ffr[2]) {
-						first = 1;
-						second = 0;
-						third = 2;
-					} else if(_ffr[1] >= _ffr[2] && _ffr[2] >= _ffr[0]) {
-						first = 1;
-						second = 2;
-						third = 0;
-					} else if(_ffr[2] >= _ffr[0] && _ffr[0] >= _ffr[1]) {
-						first = 2;
-						second = 0;
-						third = 1;
-					} else {
-						first = 2;
-						second = 1;
-						third = 0;
+					if(HALOCUR < ((long)HALOMAX) - 1) {
+						HALOCUR++;
 					}
 
-					if(_ffr[first] > 150.f && _ffr[second] > 110.f) {
-						TexturedVertex *vert = &LATERDRAWHALO[(HALOCUR << 2)];
+					memcpy(&vert[0], &workon[first], sizeof(TexturedVertex));
+					memcpy(&vert[1], &workon[first], sizeof(TexturedVertex));
+					memcpy(&vert[2], &workon[second], sizeof(TexturedVertex));
+					memcpy(&vert[3], &workon[second], sizeof(TexturedVertex));
 
-						if(HALOCUR < ((long)HALOMAX) - 1) {
-							HALOCUR++;
-						}
+					float siz = ddist * (curhalo->radius * (EEsin((arxtime.get_frame_time() + i) * .01f) * .1f + 1.f)) * .6f;
 
-						memcpy(&vert[0], &workon[first], sizeof(TexturedVertex));
-						memcpy(&vert[1], &workon[first], sizeof(TexturedVertex));
-						memcpy(&vert[2], &workon[second], sizeof(TexturedVertex));
-						memcpy(&vert[3], &workon[second], sizeof(TexturedVertex));
+					if(io == entities.player() && ddist > 0.8f && !EXTERNALVIEW)
+						siz *= 1.5f;
 
-						float siz = ddist * (curhalo->radius * (EEsin((arxtime.get_frame_time() + i) * .01f) * .1f + 1.f)) * .6f;
+					Vec3f vect1;
+					vect1.x = workon[first].p.x - workon[third].p.x;
+					vect1.y = workon[first].p.y - workon[third].p.y;
+					float len1 = 2.f / ffsqrt(vect1.x * vect1.x + vect1.y * vect1.y);
 
-						if(io == entities.player() && ddist > 0.8f && !EXTERNALVIEW)
-							siz *= 1.5f;
+					if(vect1.x < 0.f)
+						len1 *= 1.2f;
 
-						Vec3f vect1;
-						vect1.x = workon[first].p.x - workon[third].p.x;
-						vect1.y = workon[first].p.y - workon[third].p.y;
-						float len1 = 2.f / ffsqrt(vect1.x * vect1.x + vect1.y * vect1.y);
+					vect1.x *= len1;
+					vect1.y *= len1;
 
-						if(vect1.x < 0.f)
-							len1 *= 1.2f;
+					Vec3f vect2;
+					vect2.x = workon[second].p.x - workon[third].p.x;
+					vect2.y = workon[second].p.y - workon[third].p.y;
+					float len2 = 1.f / ffsqrt(vect2.x * vect2.x + vect2.y * vect2.y);
 
-						vect1.x *= len1;
-						vect1.y *= len1;
+					if(vect2.x < 0.f)
+						len2 *= 1.2f;
 
-						Vec3f vect2;
-						vect2.x = workon[second].p.x - workon[third].p.x;
-						vect2.y = workon[second].p.y - workon[third].p.y;
-						float len2 = 1.f / ffsqrt(vect2.x * vect2.x + vect2.y * vect2.y);
+					vect2.x *= len2;
+					vect2.y *= len2;
 
-						if(vect2.x < 0.f)
-							len2 *= 1.2f;
+					vert[1].p.x += (vect1.x + 0.2f - rnd() * 0.1f) * siz;
+					vert[1].p.y += (vect1.y + 0.2f - rnd() * 0.1f) * siz;
+					vert[1].color = 0xFF000000;
 
-						vect2.x *= len2;
-						vect2.y *= len2;
+					float valll;
+					valll = 0.005f + (EEfabs(workon[first].p.z) - EEfabs(workon[third].p.z))
+								   + (EEfabs(workon[second].p.z) - EEfabs(workon[third].p.z));
+					valll = 0.0001f + valll * ( 1.0f / 10 );
 
-						vert[1].p.x += (vect1.x + 0.2f - rnd() * 0.1f) * siz;
-						vert[1].p.y += (vect1.y + 0.2f - rnd() * 0.1f) * siz;
-						vert[1].color = 0xFF000000;
+					if(valll < 0.f)
+						valll = 0.f;
 
-						float valll;
-						valll = 0.005f + (EEfabs(workon[first].p.z) - EEfabs(workon[third].p.z))
-									   + (EEfabs(workon[second].p.z) - EEfabs(workon[third].p.z));
-						valll = 0.0001f + valll * ( 1.0f / 10 );
+					vert[1].p.z	+= valll;
+					vert[2].p.z	+= valll;
 
-						if(valll < 0.f)
-							valll = 0.f;
+					vert[0].p.z	+= 0.0001f;
+					vert[3].p.z	+= 0.0001f;//*( 1.0f / 2 );
+					vert[1].rhw	*= .98f;
+					vert[2].rhw	*= .98f;
+					vert[0].rhw	*= .98f;
+					vert[3].rhw	*= .98f;
 
-						vert[1].p.z	+= valll;
-						vert[2].p.z	+= valll;
+					vert[2].p.x += (vect2.x + 0.2f - rnd() * 0.1f) * siz;
+					vert[2].p.y += (vect2.y + 0.2f - rnd() * 0.1f) * siz;
 
-						vert[0].p.z	+= 0.0001f;
-						vert[3].p.z	+= 0.0001f;//*( 1.0f / 2 );
-						vert[1].rhw	*= .98f;
-						vert[2].rhw	*= .98f;
-						vert[0].rhw	*= .98f;
-						vert[3].rhw	*= .98f;
+					vert[1].p.z = (vert[1].p.z + MAX_ZEDE) * ( 1.0f / 2 );
+					vert[2].p.z = (vert[2].p.z + MAX_ZEDE) * ( 1.0f / 2 );
 
-						vert[2].p.x += (vect2.x + 0.2f - rnd() * 0.1f) * siz;
-						vert[2].p.y += (vect2.y + 0.2f - rnd() * 0.1f) * siz;
-
-						vert[1].p.z = (vert[1].p.z + MAX_ZEDE) * ( 1.0f / 2 );
-						vert[2].p.z = (vert[2].p.z + MAX_ZEDE) * ( 1.0f / 2 );
-
-						if(curhalo->flags & HALO_NEGATIVE)
-							vert[2].color = 0x00000000;
-						else
-							vert[2].color = 0xFF000000;
-					}
+					if(curhalo->flags & HALO_NEGATIVE)
+						vert[2].color = 0x00000000;
+					else
+						vert[2].color = 0xFF000000;
 				}
+			}
 			}
 
 			for(long o = 0; o < 3; o++) {
