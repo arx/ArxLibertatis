@@ -683,6 +683,8 @@ void ARX_PORTALS_InitDrawnRooms()
 		RoomDraw[i].frustrum.nb_frustrums=0;
 	}
 
+	RoomDrawList.clear();
+
 	vPolyWater.clear();
 	vPolyLava.clear();
 
@@ -1673,8 +1675,6 @@ void ARX_PORTALS_Frustrum_RenderRoom_TransparencyTSoftCull(long room_num)
 
 void ARX_PORTALS_Frustrum_ComputeRoom(long room_num, const EERIE_FRUSTRUM * frustrum)
 {
-	arx_assert(portals);
-
 	if(RoomDraw[room_num].count == 0) {
 		RoomDrawList.push_back(room_num);
 	}
@@ -1786,6 +1786,7 @@ void ARX_SCENE_Update() {
 
 	long room_num=ARX_PORTALS_GetRoomNumForPosition(&ACTIVECAM->orgTrans.pos,1);
 	if(room_num>-1) {
+
 		ARX_PORTALS_InitDrawnRooms();
 		EERIE_FRUSTRUM frustrum;
 		CreateScreenFrustrum(&frustrum);
@@ -1837,12 +1838,7 @@ void ARX_SCENE_Render() {
 	GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
 	for(size_t i = 0; i < RoomDrawList.size(); i++) {
 
-		long room_num = RoomDrawList[i];
-
-		if(!RoomDraw[room_num].count)
-			continue;
-
-		ARX_PORTALS_Frustrum_RenderRoomTCullSoftRender(room_num);
+		ARX_PORTALS_Frustrum_RenderRoomTCullSoftRender(RoomDrawList[i]);
 	}
 
 	if(!Project.improve) {
@@ -1886,15 +1882,8 @@ void ARX_SCENE_Render() {
 
 	for(size_t i = 0; i < RoomDrawList.size(); i++) {
 
-		long room_num = RoomDrawList[i];
-
-		if(!RoomDraw[room_num].count)
-			continue;
-
-		ARX_PORTALS_Frustrum_RenderRoom_TransparencyTSoftCull(room_num);
+		ARX_PORTALS_Frustrum_RenderRoom_TransparencyTSoftCull(RoomDrawList[i]);
 	}
-
-	RoomDrawList.clear();
 
 	SetZBias(8);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
