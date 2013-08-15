@@ -52,7 +52,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <boost/foreach.hpp>
 
-#include "animation/Animation.h"
+#include "animation/AnimationRender.h"
 
 #include "core/GameTime.h"
 #include "core/Core.h"

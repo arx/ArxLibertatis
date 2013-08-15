@@ -53,41 +53,16 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "math/MathFwd.h"
 #include "graphics/BaseGraphicsTypes.h"
 
-class TextureContainer;
 class Entity;
-struct EERIE_3DOBJ;
-struct EERIE_LIGHT;
 struct ANIM_USE;
-struct EERIEMATRIX;
-struct EERIE_MOD_INFO;
-struct TexturedVertex;
 
-extern long MAX_LLIGHTS;
 const size_t MAX_ANIMATIONS = 900;
-
-extern EERIE_LIGHT * llights[32];
 
 long EERIE_ANIMMANAGER_Count(std::string & tex, long * memsize);
 void EERIE_ANIMMANAGER_ClearAll();
 
 void PrepareAnim(ANIM_USE *eanim, unsigned long time, Entity *io);
 
-void llightsInit();
-void Insertllight(EERIE_LIGHT * el, float dist);
-
-void PopAllTriangleList();
-void PopAllTriangleListTransparency();
-
-TexturedVertex * PushVertexInTableCull(TextureContainer * tex);
-TexturedVertex * PushVertexInTableCull_TNormalTrans(TextureContainer * tex);
-TexturedVertex * PushVertexInTableCull_TAdditive(TextureContainer * tex);
-TexturedVertex * PushVertexInTableCull_TSubstractive(TextureContainer * tex);
-TexturedVertex * PushVertexInTableCull_TMultiplicative(TextureContainer * tex);
-
-void CalculateInterZMapp(EERIE_3DOBJ * _pobj3dObj, long lIdList, long * _piInd, TextureContainer * _pTex, TexturedVertex * _pVertex);
 void EERIE_ANIMMANAGER_ReloadAll();
-
-
-void DrawEERIEInter(EERIE_3DOBJ *eobj, const EERIE_QUAT *rotation, Vec3f *pos, Entity *io, EERIE_MOD_INFO *modinfo = NULL, bool thrownEntity = false);
 
 #endif // ARX_ANIMATION_ANIMATION_H

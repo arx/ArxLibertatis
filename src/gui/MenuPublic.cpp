@@ -49,7 +49,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <sstream>
 #include <string>
 
-#include "animation/Animation.h"
+#include "animation/AnimationRender.h"
 
 #include "core/Application.h"
 #include "core/Config.h"
