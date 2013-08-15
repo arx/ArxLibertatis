@@ -53,6 +53,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/lexical_cast.hpp>
 
+#include "animation/Animation.h"
+
 #include "game/Damage.h"
 #include "game/EntityManager.h"
 #include "game/Equipment.h"

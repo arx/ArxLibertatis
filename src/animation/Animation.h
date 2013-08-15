@@ -52,17 +52,41 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "math/MathFwd.h"
 #include "graphics/BaseGraphicsTypes.h"
+#include "graphics/GraphicsTypes.h"
 
 class Entity;
 struct ANIM_USE;
 
 const size_t MAX_ANIMATIONS = 900;
 
+struct ANIM_HANDLE {
+
+	ANIM_HANDLE();
+
+	res::path path; // empty path means an unallocated slot
+	EERIE_ANIM ** anims;
+	short alt_nb;
+	long locks;
+};
+
+short ANIM_GetAltIdx(ANIM_HANDLE * ah,long old);
+void ANIM_Set(ANIM_USE * au,ANIM_HANDLE * anim);
+
+void GetAnimTotalTranslate( ANIM_HANDLE * eanim,long alt_idx,Vec3f * pos);
+
 long EERIE_ANIMMANAGER_Count(std::string & tex, long * memsize);
 void EERIE_ANIMMANAGER_ClearAll();
+void EERIE_ANIMMANAGER_PurgeUnused();
+void EERIE_ANIMMANAGER_ReleaseHandle(ANIM_HANDLE * anim);
+ANIM_HANDLE * EERIE_ANIMMANAGER_Load(const res::path & path);
+ANIM_HANDLE * EERIE_ANIMMANAGER_Load_NoWarning(const res::path & path);
 
 void PrepareAnim(ANIM_USE *eanim, unsigned long time, Entity *io);
+void ResetAnim(ANIM_USE * eanim);
 
 void EERIE_ANIMMANAGER_ReloadAll();
+
+void AcquireLastAnim(Entity * io);
+void FinishAnim(Entity * io,ANIM_HANDLE * eanim);
 
 #endif // ARX_ANIMATION_ANIMATION_H

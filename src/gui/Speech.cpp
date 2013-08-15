@@ -52,6 +52,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <boost/lexical_cast.hpp>
 
+#include "animation/Animation.h"
+
 #include "core/Core.h"
 #include "core/Localisation.h"
 #include "core/GameTime.h"

@@ -55,16 +55,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 class Entity;
 
-struct ANIM_HANDLE {
-	
-	ANIM_HANDLE();
-	
-	res::path path; // empty path means an unallocated slot
-	EERIE_ANIM ** anims;
-	short alt_nb;
-	long locks;
-};
-
 struct EERIE_BKG_INFO
 {
 	char				treat;
@@ -146,8 +136,6 @@ extern float Yratio;
 void SetActiveCamera(EERIE_CAMERA* cam);
 //	Entity Struct End
 
-void AcquireLastAnim(Entity * io);
-void FinishAnim(Entity * io,ANIM_HANDLE * eanim);
 bool Visible(Vec3f * orgn, Vec3f * dest,EERIEPOLY * epp,Vec3f * hit);
 void FaceTarget(Entity * io);
 
@@ -196,8 +184,6 @@ void EE_RotateX(TexturedVertex *in,TexturedVertex *out,float c, float s);
 void EE_RotateY(TexturedVertex *in,TexturedVertex *out,float c, float s);
 void EE_RotateZ(TexturedVertex *in,TexturedVertex *out,float c, float s);
 void EE_RTP(TexturedVertex *in,TexturedVertex *out);
-
-void GetAnimTotalTranslate( ANIM_HANDLE * eanim,long alt_idx,Vec3f * pos);
 
 long PhysicalDrawBkgVLine(Vec3f * orgn,Vec3f * dest);
 
@@ -254,7 +240,6 @@ void DeclareEGInfo(float x, float z);
 bool TryToQuadify(EERIEPOLY * ep,EERIE_3DOBJ * eobj);
 void ApplyWaterFXToVertex(Vec3f * odtv,TexturedVertex * dtv,float power);
 int BackFaceCull2D(TexturedVertex * tv);
-void ResetAnim(ANIM_USE * eanim);
 
 //*************************************************************************************
 //*************************************************************************************
@@ -264,8 +249,6 @@ long EERIERTPPoly(EERIEPOLY *ep);
 void ReleaseAnimFromIO(Entity * io,long num);
 
 void ShadowPolys_ClearZone(EERIE_BACKGROUND * eb,long x0, long y0, long x1, long y1);
-short ANIM_GetAltIdx(ANIM_HANDLE * ah,long old);
-void ANIM_Set(ANIM_USE * au,ANIM_HANDLE * anim);
 
 bool LittleAngularDiff(Vec3f * norm,Vec3f * norm2);
 void RecalcLight(EERIE_LIGHT * el);
@@ -277,10 +260,6 @@ float PtIn2DPolyProjV2(EERIE_3DOBJ * obj,EERIE_FACE * ef, float x, float z);
 void ResetWorlds();
 float GetSWorld(float x,float y,float z);
 
-void EERIE_ANIMMANAGER_PurgeUnused();
-void EERIE_ANIMMANAGER_ReleaseHandle(ANIM_HANDLE * anim);
-ANIM_HANDLE * EERIE_ANIMMANAGER_Load(const res::path & path);
-ANIM_HANDLE * EERIE_ANIMMANAGER_Load_NoWarning(const res::path & path);
 void BkgAddShadowPoly(EERIEPOLY * ep,EERIEPOLY * father);
 
 EERIEPOLY * GetMinNextPoly(long i,long j,EERIEPOLY * ep);

@@ -52,6 +52,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <algorithm>
 #include <limits>
 
+#include "animation/Animation.h"
+
 #include "ai/PathFinderManager.h"
 #include "ai/Paths.h"
 

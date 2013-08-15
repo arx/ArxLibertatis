@@ -1783,39 +1783,6 @@ void DrawEERIEObjExEx(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *pos, Vec3f *scale
 
 EERIE_2D_BBOX BBOX2D;
 
-/*!
- * \brief Memorizes information for animation to animation smoothing interpolation
- * \param io the animated Entity
- */
-void AcquireLastAnim(Entity * io)
-{
-	if(!io->animlayer[0].cur_anim
-		&& !io->animlayer[1].cur_anim
-		&& !io->animlayer[2].cur_anim
-		&& !io->animlayer[3].cur_anim)
-		return;
-
-	// Stores Frametime and number of vertex for later interpolation
-	io->lastanimtime = checked_range_cast<unsigned long>(arxtime.get_frame_time());
-	io->nb_lastanimvertex = 1;
-}
-
-// Declares an Animation as finished.
-// Usefull to update object true position with object virtual pos.
-void FinishAnim(Entity * io, ANIM_HANDLE * eanim) {
-	
-	if(!io || !eanim) {
-		return;
-	}
-	
-	// Only layer 0 controls movement...
-	if(eanim == io->animlayer[0].cur_anim && (io->ioflags & IO_NPC)) {
-		io->move = io->lastmove = Vec3f::ZERO;
-	}
-	
-	return;
-}
-
 bool IsVertexIdxInGroup(EERIE_3DOBJ *eobj, long idx, long grs) {
 
 	if(!eobj)

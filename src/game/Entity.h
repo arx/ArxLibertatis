@@ -48,6 +48,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <string>
 #include <vector>
 
+#include "animation/Animation.h"
 #include "audio/AudioTypes.h"
 #include "game/Damage.h" // TODO needed for DamageType
 #include "game/Spells.h" // TODO needed for Spell, Rune, SpellcastFlags

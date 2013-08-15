@@ -53,6 +53,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "Configure.h"
 
+#include "animation/Animation.h"
+
 #include "core/Application.h"
 #include "core/Config.h"
 #include "core/Core.h"
