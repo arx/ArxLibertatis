@@ -59,6 +59,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <boost/algorithm/string/predicate.hpp>
 
 #include "animation/Animation.h"
+#include "animation/AnimationRender.h"
 
 #include "core/Application.h"
 #include "core/ArxGame.h"

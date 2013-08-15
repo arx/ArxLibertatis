@@ -97,7 +97,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "script/Script.h"
 
-#include "physics/Collisions.h"
 
 using std::min;
 using std::max;
@@ -345,9 +344,9 @@ void GetAnimTotalTranslate( ANIM_HANDLE * eanim, long alt_idx, Vec3f * pos) {
  * \param time Time increment to current animation in Ms
  * \param io Referrence to Interactive Object (NULL if no IO)
  */
-void PrepareAnim(EERIE_3DOBJ *eobj, ANIM_USE *eanim, unsigned long time, Entity *io) {
+void PrepareAnim(ANIM_USE *eanim, unsigned long time, Entity *io) {
 	
-	if(!eobj || !eanim)
+	if(!eanim)
 		return;
 
 	if(eanim->flags & EA_PAUSED)
@@ -505,129 +504,6 @@ suite:
 	}
 }
 
-
-static void CalcTranslation(ANIM_USE * animuse, Vec3f & ftr) {
-	if(!animuse || !animuse->cur_anim)
-		return;
-
-	EERIE_ANIM	*eanim = animuse->cur_anim->anims[animuse->altidx_cur];
-
-	if(!eanim)
-		return;
-
-	//Avoiding impossible cases
-	if(animuse->fr < 0) {
-		animuse->fr = 0;
-		animuse->pour = 0.f;
-	} else if(animuse->fr >= eanim->nb_key_frames - 1) {
-		animuse->fr = eanim->nb_key_frames - 2;
-		animuse->pour = 1.f;
-	}
-	animuse->pour = clamp(animuse->pour, 0.f, 1.f);
-
-
-	// FRAME TRANSLATE : Gives the Virtual pos of Main Object
-	if(eanim->frames[animuse->fr].f_translate && !(animuse->flags & EA_STATICANIM)) {
-		EERIE_FRAME *sFrame = &eanim->frames[animuse->fr];
-		EERIE_FRAME *eFrame = &eanim->frames[animuse->fr+1];
-
-		// Linear interpolation of object translation (MOVE)
-		ftr = sFrame->translate + (eFrame->translate - sFrame->translate) * animuse->pour;
-	}
-}
-
-static void StoreEntityMovement(Entity * io, Vec3f & ftr, float scale) {
-
-	if(!io)
-		return;
-
-	Vec3f ftr2 = Vec3f::ZERO;
-
-	if(ftr != Vec3f::ZERO) {
-		ftr *= scale;
-
-		float temp;
-		if (io == entities.player()) {
-			temp = radians(MAKEANGLE(180.f - player.angle.b));
-		} else {
-			temp = radians(MAKEANGLE(180.f - io->angle.b));
-		}
-
-		YRotatePoint(&ftr, &ftr2, (float)EEcos(temp), (float)EEsin(temp));
-
-		// stores Translations for a later use
-		io->move = ftr2;
-	}
-
-	if(io->animlayer[0].cur_anim) {
-
-		// Use calculated value to notify the Movement engine of the translation to do
-		if(io->ioflags & IO_NPC) {
-			ftr = Vec3f::ZERO;
-			io->move -= io->lastmove;
-		} else if (io->gameFlags & GFLAG_ELEVATOR) {
-			// Must recover translations for NON-NPC IO
-			PushIO_ON_Top(io, io->move.y - io->lastmove.y);
-		}
-
-		io->lastmove = ftr2;
-	}
-}
-
-
-
-extern bool EXTERNALVIEW;
-
-void EERIEDrawAnimQuat(EERIE_3DOBJ *eobj, ANIM_USE * animlayer, Anglef *angle, Vec3f *pos, unsigned long time, Entity *io, bool render, bool update_movement) {
-	
-	if(io) {
-		float speedfactor = io->basespeed + io->speed_modif;
-
-		if(speedfactor < 0)
-			speedfactor = 0;
-
-		time = time * speedfactor;
-	}
-
-	if(time > 0) {
-		for(size_t count = 0; count < MAX_ANIM_LAYERS; count++) {
-			ANIM_USE * animuse = &animlayer[count];
-			if(animuse->cur_anim)
-				PrepareAnim(eobj,animuse,time,io);
-		}
-	}
-
-	// Reset Frame Translate
-	Vec3f ftr = Vec3f::ZERO;
-
-	// Set scale and invisibility factors
-	float scale = Cedric_GetScale(io);
-
-	// Only layer 0 controls movement
-	CalcTranslation(&animlayer[0], ftr);
-
-
-	if(update_movement)
-		StoreEntityMovement(io, ftr, scale);
-
-	if(io && io != entities.player() && !Cedric_IO_Visible(&io->pos))
-		return;
-
-
-	Cedric_AnimateDrawEntity(eobj, animlayer, angle, pos, io, ftr, scale);
-
-
-	bool isFightingNpc = io &&
-						 (io->ioflags & IO_NPC) &&
-						 (io->_npcdata->behavior & BEHAVIOUR_FIGHT) &&
-						 distSqr(io->pos, player.pos) < square(240.f);
-
-	if(!isFightingNpc && ARX_SCENE_PORTAL_ClipIO(io, pos))
-		return;
-
-	if(render)
-		Cedric_AnimateDrawEntityRender(eobj, pos, ftr, io);
-}
 
 // List of TO-TREAT vertex for MIPMESHING
 
