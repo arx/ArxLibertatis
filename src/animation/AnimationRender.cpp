@@ -944,7 +944,8 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity *
 	if(!io && IN_BOOK_DRAW && eobj == entities.player()->obj)
 		use_io = entities.player();
 
-	if(use_io) {
+	arx_assert(use_io);
+
 		if(use_io == entities.player()) {
 			if(player.equiped[EQUIP_SLOT_HELMET] != 0 && ValidIONum(player.equiped[EQUIP_SLOT_HELMET])) {
 				Entity * tio = entities[player.equiped[EQUIP_SLOT_HELMET]];
@@ -989,7 +990,6 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity *
 					MAX_ZEDE = max(eobj->vertexlist3[i].vert.p.z, MAX_ZEDE);
 			}
 		}
-	}
 
 	for(size_t i = 0; i < eobj->facelist.size(); i++) {
 		EERIE_FACE *eface = &eobj->facelist[i];
@@ -1105,7 +1105,7 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity *
 
 		////////////////////////////////////////////////////////////////////////
 		// HALO HANDLING START
-		if(need_halo && use_io) {
+		if(need_halo) {
 
 			float	_ffr[3];	
 
