@@ -1107,9 +1107,6 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity *
 		// HALO HANDLING START
 		if(need_halo) {
 
-			float	_ffr[3];	
-
-			{
 			IO_HALO * curhalo = NULL;
 
 			if(hio_helmet && IsInSelection(use_io->obj, paf[0], use_io->obj->fastaccess.sel_head) >= 0) {
@@ -1129,7 +1126,9 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity *
 			TexturedVertex *workon	= tvList;
 
 			float tot = 0;
-			for(long o = 0; o < 3; o++) {
+			float _ffr[3];
+
+			for(size_t o = 0; o < 3; o++) {
 				float tttz	= EEfabs(eobj->vertexlist3[paf[o]].norm.z) * ( 1.0f / 2 );
 				float power = 255.f - (float)(255.f * tttz);
 				power *= (1.f - invisibility);
@@ -1249,10 +1248,8 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity *
 						vert[2].color = 0xFF000000;
 				}
 			}
-			}
 
-			for(long o = 0; o < 3; o++) {
-				paf[o] = eface->vid[o];
+			for(size_t o = 0; o < 3; o++) {
 				tvList[o].color = eobj->vertexlist3[paf[o]].vert.color;
 			}
 		}
