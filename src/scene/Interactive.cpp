@@ -3006,7 +3006,7 @@ void RenderInter() {
 
 			bool render = !ARX_SCENE_PORTAL_Basic_ClipIO(io);
 
-			EERIEDrawAnimQuat(io->obj, &io->animlayer[0], &temp, &pos, diff, io, render);
+			EERIEDrawAnimQuat(io->obj, io->animlayer, &temp, &pos, diff, io, render);
 
 		} else {
 			if(ARX_SCENE_PORTAL_Basic_ClipIO(io))

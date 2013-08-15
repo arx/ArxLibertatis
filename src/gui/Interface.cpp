@@ -4355,9 +4355,8 @@ void ARX_INTERFACE_ManageOpenedBook()
 		ITC.Level = getLocalised("system_charsheet_player_lvl");
 		ITC.Xp = getLocalised("system_charsheet_player_xp");
 		
-		ANIM_Set(&player.useanim, herowaitbook);
-
-		player.useanim.flags |= EA_LOOP;
+		ANIM_Set(&player.bookAnimation[0], herowaitbook);
+		player.bookAnimation[0].flags |= EA_LOOP;
 
 		ARXOldTimeMenu=ARXTimeMenu=arxtime.get_updated();
 		ARXDiffTimeMenu=0;
@@ -5449,9 +5448,9 @@ void ARX_INTERFACE_ManageOpenedBook()
 		IN_BOOK_DRAW=1;
 		std::vector<EERIE_VERTEX> vertexlist = entities.player()->obj->vertexlist3;
 
-		arx_assert(player.useanim.cur_anim);
+		arx_assert(player.bookAnimation[0].cur_anim);
 
-		EERIEDrawAnimQuat(entities.player()->obj, &player.useanim, &ePlayerAngle, &pos,
+		EERIEDrawAnimQuat(entities.player()->obj, player.bookAnimation, &ePlayerAngle, &pos,
 						  checked_range_cast<unsigned long>(Original_framedelay), NULL);
 
 		INVISIBILITY_OVERRIDE=0;
@@ -5487,11 +5486,11 @@ void ARX_INTERFACE_ManageOpenedBook()
 		Entity *io = entities.player();
 
 		if(io) {
-			player.useanim.cur_anim = herowaitbook;
+			player.bookAnimation[0].cur_anim = herowaitbook;
 
 			if(player.equiped[EQUIP_SLOT_WEAPON] && ValidIONum(player.equiped[EQUIP_SLOT_WEAPON])) {
 				if(entities[player.equiped[EQUIP_SLOT_WEAPON]]->type_flags & OBJECT_TYPE_2H) {
-					player.useanim.cur_anim = herowait_2h;
+					player.bookAnimation[0].cur_anim = herowait_2h;
 				}
 			}
 

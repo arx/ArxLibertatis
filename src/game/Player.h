@@ -134,9 +134,10 @@ struct ARXCHARACTER {
 	
 	Vec3f pos;
 	Anglef angle;
-	ANIM_USE useanim;
 	IO_PHYSICS physics;
 	
+	ANIM_USE bookAnimation[MAX_ANIM_LAYERS];
+
 	// Jump Sub-data
 	unsigned long jumpstarttime;
 	float jumplastposition;

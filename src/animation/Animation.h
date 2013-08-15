@@ -85,7 +85,7 @@ TexturedVertex * PushVertexInTableCull_TMultiplicative(TextureContainer * tex);
 void CalculateInterZMapp(EERIE_3DOBJ * _pobj3dObj, long lIdList, long * _piInd, TextureContainer * _pTex, TexturedVertex * _pVertex);
 void EERIE_ANIMMANAGER_ReloadAll();
 
-void EERIEDrawAnimQuat(EERIE_3DOBJ *eobj, ANIM_USE *eanim, Anglef *angle, Vec3f *pos, unsigned long time, Entity *io, bool render = true, bool update_movement = true);
+void EERIEDrawAnimQuat(EERIE_3DOBJ *eobj, ANIM_USE * animlayer, Anglef *angle, Vec3f *pos, unsigned long time, Entity *io, bool render = true, bool update_movement = true);
 
 void DrawEERIEInter(EERIE_3DOBJ *eobj, const EERIE_QUAT *rotation, Vec3f *pos, Entity *io, EERIE_MOD_INFO *modinfo = NULL, bool thrownEntity = false);
 

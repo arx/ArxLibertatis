@@ -100,6 +100,19 @@ DECLARE_FLAGS(AnimUseTypeFlag, AnimUseType)
 DECLARE_FLAGS_OPERATORS(AnimUseType)
 
 struct ANIM_USE {
+
+	ANIM_USE()
+		: next_anim(NULL)
+		, cur_anim(NULL)
+		, altidx_next(0)
+		, altidx_cur(0)
+		, flags(0)
+		, nextflags(0)
+		, lastframe(-1)
+		, pour(0.f)
+		, fr(0)
+	{}
+
 	ANIM_HANDLE * next_anim;
 	ANIM_HANDLE * cur_anim;
 	short altidx_next; // idx to alternate anims...

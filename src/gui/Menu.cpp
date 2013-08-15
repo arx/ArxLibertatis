@@ -466,9 +466,8 @@ bool ARX_Menu_Render() {
 			ITC.Level = getLocalised("system_charsheet_player_lvl");
 			ITC.Xp = getLocalised("system_charsheet_player_xp");
 
-			ANIM_Set(&player.useanim, herowaitbook);
-
-			player.useanim.flags |= EA_LOOP;
+			ANIM_Set(&player.bookAnimation[0], herowaitbook);
+			player.bookAnimation[0].flags |= EA_LOOP;
 
 			ARXOldTimeMenu = ARXTimeMenu = arxtime.get_updated();
 			ARXDiffTimeMenu = 0;

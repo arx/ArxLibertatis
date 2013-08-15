@@ -536,18 +536,6 @@ static void CalcTranslation(ANIM_USE * animuse, Vec3f & ftr) {
 	}
 }
 
-
-/* Evaluate main entity translation */
-static void Cedric_AnimCalcTranslation(Entity * io, Vec3f & ftr) {
-
-	// Fill frame translate values with multi-layer translate informations...
-	for(int count = MAX_ANIM_LAYERS - 1; count >= 0; count--) {
-		ANIM_USE *animuse = &io->animlayer[count];
-
-		CalcTranslation(animuse, ftr);
-	}
-}
-
 static void StoreEntityMovement(Entity * io, Vec3f & ftr, float scale) {
 
 	if(!io)
@@ -590,7 +578,7 @@ static void StoreEntityMovement(Entity * io, Vec3f & ftr, float scale) {
 
 extern bool EXTERNALVIEW;
 
-void EERIEDrawAnimQuat(EERIE_3DOBJ *eobj, ANIM_USE *eanim, Anglef *angle, Vec3f *pos, unsigned long time, Entity *io, bool render, bool update_movement) {
+void EERIEDrawAnimQuat(EERIE_3DOBJ *eobj, ANIM_USE * animlayer, Anglef *angle, Vec3f *pos, unsigned long time, Entity *io, bool render, bool update_movement) {
 	
 	if(io) {
 		float speedfactor = io->basespeed + io->speed_modif;
@@ -602,14 +590,10 @@ void EERIEDrawAnimQuat(EERIE_3DOBJ *eobj, ANIM_USE *eanim, Anglef *angle, Vec3f 
 	}
 
 	if(time > 0) {
-		PrepareAnim(eobj,eanim,time,io);
-
-		if(io) {
-			for(long count=1; count<MAX_ANIM_LAYERS; count++) {
-				ANIM_USE *animuse = &io->animlayer[count];
-				if(animuse->cur_anim)
-					PrepareAnim(eobj,animuse,time,io);
-			}
+		for(size_t count = 0; count < MAX_ANIM_LAYERS; count++) {
+			ANIM_USE * animuse = &animlayer[count];
+			if(animuse->cur_anim)
+				PrepareAnim(eobj,animuse,time,io);
 		}
 	}
 
@@ -619,11 +603,9 @@ void EERIEDrawAnimQuat(EERIE_3DOBJ *eobj, ANIM_USE *eanim, Anglef *angle, Vec3f 
 	// Set scale and invisibility factors
 	float scale = Cedric_GetScale(io);
 
+	// Only layer 0 controls movement
+	CalcTranslation(&animlayer[0], ftr);
 
-	if(!io)
-		CalcTranslation(eanim, ftr);
-	else
-		Cedric_AnimCalcTranslation(io, ftr);
 
 	if(update_movement)
 		StoreEntityMovement(io, ftr, scale);
@@ -632,7 +614,7 @@ void EERIEDrawAnimQuat(EERIE_3DOBJ *eobj, ANIM_USE *eanim, Anglef *angle, Vec3f 
 		return;
 
 
-	Cedric_AnimateDrawEntity(eobj, eanim, angle, pos, io, ftr, scale);
+	Cedric_AnimateDrawEntity(eobj, animlayer, angle, pos, io, ftr, scale);
 
 
 	bool isFightingNpc = io &&

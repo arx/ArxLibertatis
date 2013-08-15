@@ -136,11 +136,8 @@ float Cedric_GetInvisibility(Entity *io) {
 }
 
 
-
-
-
 // Animate skeleton
-static void Cedric_AnimateObject(Entity *io, EERIE_3DOBJ *eobj, ANIM_USE *animuse)
+static void Cedric_AnimateObject(EERIE_3DOBJ *eobj, ANIM_USE * animlayer)
 {
 	EERIE_C_DATA	* obj = eobj->c_data;
 
@@ -148,11 +145,7 @@ static void Cedric_AnimateObject(Entity *io, EERIE_3DOBJ *eobj, ANIM_USE *animus
 
 	for(long count = MAX_ANIM_LAYERS - 1; count >= 0; count--) {
 
-		if(!io) {
-			count = -1;
-		} else {
-			animuse = &io->animlayer[count];
-		}
+		ANIM_USE * animuse = &animlayer[count];
 		
 		if(!animuse || !animuse->cur_anim)
 			continue;
@@ -1352,13 +1345,13 @@ bool Cedric_IO_Visible(Vec3f * pos) {
 /*!
  * \brief Apply animation and draw object
  */
-void Cedric_AnimateDrawEntity(EERIE_3DOBJ *eobj, ANIM_USE *animuse, Anglef *angle, Vec3f *pos, Entity *io, Vec3f & ftr, float scale) {
+void Cedric_AnimateDrawEntity(EERIE_3DOBJ *eobj, ANIM_USE * animlayer, Anglef *angle, Vec3f *pos, Entity *io, Vec3f & ftr, float scale) {
 	
 	// Manage Extra Rotations in Local Space
 	Cedric_ManageExtraRotationsFirst(io, eobj);
 
 	// Perform animation in Local space
-	Cedric_AnimateObject(io, eobj, animuse);
+	Cedric_AnimateObject(eobj, animlayer);
 
 	// Check for Animation Blending in Local space
 	if(io) {
