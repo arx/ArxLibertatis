@@ -86,11 +86,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Scene.h"
 #include "scene/Interactive.h"
 
-using std::min;
-using std::max;
-using std::string;
-using std::ostringstream;
-using std::vector;
 
 extern Color ulBKGColor;
 static TexturedVertex tTexturedVertexTab2[4000];
@@ -304,7 +299,7 @@ void PopOneInterZMapp(TextureContainer *_pTex)
 
 		int iPos=0;
 
-		vector<SMY_ZMAPPINFO>::iterator it;
+		std::vector<SMY_ZMAPPINFO>::iterator it;
 
 		for (it = _pTex->TextureRefinement->vPolyInterZMap.begin();
 			it != _pTex->TextureRefinement->vPolyInterZMap.end();
@@ -498,9 +493,9 @@ float GetColorz(float x, float y, float z) {
 				}
 
 				dc *= 0.4f * 255.f;
-				ffr = max(ffr, el->rgb.r * dc);
-				ffg = max(ffg, el->rgb.g * dc);
-				ffb = max(ffb, el->rgb.b * dc);
+				ffr = std::max(ffr, el->rgb.r * dc);
+				ffg = std::max(ffg, el->rgb.g * dc);
+				ffb = std::max(ffb, el->rgb.b * dc);
 			}
 		}
 	}
@@ -540,7 +535,7 @@ float GetColorz(float x, float y, float z) {
 		ffb = ffb * ratio2 + _ffb * ratio;
 	}
 
-	return (min(ffr, 255.f) + min(ffg, 255.f) + min(ffb, 255.f)) * (1.f/3);
+	return (std::min(ffr, 255.f) + std::min(ffg, 255.f) + std::min(ffb, 255.f)) * (1.f/3);
 }
 
 float Cedric_GetScale(Entity * io) {
@@ -1738,11 +1733,11 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, const EERIE_QUAT * rotation, Vec3f *poss,
 				if(fr < 0.f)
 					fr = 0.f;
 				else
-					fr = max(ffr, fr * 255.f);
+					fr = std::max(ffr, fr * 255.f);
 
-				fr=min(fr,255.f);
+				fr=std::min(fr,255.f);
 				fb*=255.f;
-				fb=min(fb,255.f);
+				fb=std::min(fb,255.f);
 				u8 lfr = fr;
 				u8 lfb = fb;
 				u8 lfg = 0x1E;
@@ -1945,7 +1940,7 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity *
 		MAX_ZEDE = 0.f;
 		for(size_t i = 0; i < eobj->vertexlist.size(); i++) {
 			if(eobj->vertexlist3[i].vert.rhw > 0.f)
-				MAX_ZEDE = max(eobj->vertexlist3[i].vert.p.z, MAX_ZEDE);
+				MAX_ZEDE = std::max(eobj->vertexlist3[i].vert.p.z, MAX_ZEDE);
 		}
 	}
 
@@ -2390,7 +2385,7 @@ static void Cedric_AnimateObject(EERIE_3DOBJ *eobj, ANIM_USE * animlayer)
 		animuse->pour = clamp(animuse->pour, 0.f, 1.f);
 
 		// Now go for groups rotation/translation/scaling, And transform Linked objects by the way
-		int l = min(eobj->nbgroups - 1, eanim->nb_groups - 1);
+		int l = std::min(eobj->nbgroups - 1, eanim->nb_groups - 1);
 
 		for(int j = l; j >= 0; j--) {
 			if(grps[j])
