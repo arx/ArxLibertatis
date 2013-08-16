@@ -379,7 +379,6 @@ void PrepareAnim(ANIM_USE *eanim, unsigned long time, Entity *io) {
 				eanim->ctime = lost;
 				eanim->flags=eanim->nextflags;
 				eanim->flags&=~EA_ANIMEND;
-				goto suite;
 			}
 		}
 	} else if (eanim->ctime > eanim->cur_anim->anims[eanim->altidx_cur]->anim_time) {
