@@ -606,100 +606,6 @@ static void EERIERTPPolyCam(EERIEPOLY * ep, EERIE_CAMERA * cam) {
 	if (ep->type & POLY_QUAD) camEE_RTP(&ep->v[3], &ep->tv[3], cam);
 }
 
-extern float GLOBAL_LIGHT_FACTOR;
-//*************************************************************************************
-//*************************************************************************************
-
-float GetColorz(float x, float y, float z) {
-	
-	Vec3f pos(x, y, z);
-	llightsInit();
-
-	for (long i = 0; i < TOTIOPDL; i++)
-	{
-		if ((IO_PDL[i]->fallstart > 10.f) && (IO_PDL[i]->fallend > 100.f))
-			Insertllight(IO_PDL[i], fdist(IO_PDL[i]->pos, pos) - IO_PDL[i]->fallstart);
-	}
-
-	for (int i = 0; i < TOTPDL; i++)
-	{
-		if ((PDL[i]->fallstart > 10.f) && (PDL[i]->fallend > 100.f))
-			Insertllight(PDL[i], fdist(PDL[i]->pos, pos) - PDL[i]->fallstart);
-	}
-
-	float ffr = 0;
-	float ffg = 0;
-	float ffb = 0;
-
-	for (long k = 0; k < MAX_LLIGHTS; k++)
-	{
-		EERIE_LIGHT * el = llights[k];
-
-		if (el)
-		{
-			float dd = fdist(el->pos, pos);
-
-			if (dd < el->fallend)
-			{
-				float dc;
-
-				if (dd <= el->fallstart)
-					dc = el->intensity * GLOBAL_LIGHT_FACTOR;
-				else
-				{
-					float p = ((el->fallend - dd) * el->falldiffmul);
-
-					if (p <= 0.f)
-						dc = 0.f;
-					else
-						dc = p * el->intensity * GLOBAL_LIGHT_FACTOR;
-				}
-
-				dc *= 0.4f * 255.f; 
-				ffr = max(ffr, el->rgb.r * dc);
-				ffg = max(ffg, el->rgb.g * dc);
-				ffb = max(ffb, el->rgb.b * dc);
-			}
-		}
-	}
-
-
-	EERIEPOLY * ep;
-	float needy;
-	ep = CheckInPoly(x, y , z, &needy);
-
-	if (ep != NULL)
-	{
-		float _ffr = 0;
-		float _ffg = 0;
-		float _ffb = 0;
-
-		long to = (ep->type & POLY_QUAD) ? 4 : 3;
-		float div = (1.0f / to);
-
-		ApplyDynLight(ep);
-
-		for(long i = 0; i < to; i++) {
-			Color col = Color::fromBGR(ep->tv[i].color);
-			_ffr += float(col.r);
-			_ffg += float(col.g);
-			_ffb += float(col.b);
-		}
-
-		_ffr *= div;
-		_ffg *= div;
-		_ffb *= div;
-		float ratio, ratio2;
-		ratio = EEfabs(needy - y) * ( 1.0f / 300 );
-		ratio = (1.f - ratio); 
-		ratio2 = 1.f - ratio;
-		ffr = ffr * ratio2 + _ffr * ratio;
-		ffg = ffg * ratio2 + _ffg * ratio;
-		ffb = ffb * ratio2 + _ffb * ratio;
-	}
-	
-	return (min(ffr, 255.f) + min(ffg, 255.f) + min(ffb, 255.f)) * (1.f/3);
-}
 
 //*************************************************************************************
 //*************************************************************************************
@@ -1638,6 +1544,8 @@ void SetCameraDepth(EERIE_CAMERA &cam, float depth) {
 	cam.cdepth = depth;
 	cam.Zdiv = depth * 1.2f;
 }
+
+extern float GLOBAL_LIGHT_FACTOR;
 
 void RecalcLight(EERIE_LIGHT * el) {
 	el->rgb255 = el->rgb * 255.f;

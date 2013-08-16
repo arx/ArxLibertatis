@@ -62,25 +62,11 @@ extern EERIE_LIGHT * llights[32];
 
 void llightsInit();
 void Insertllight(EERIE_LIGHT * el, float dist);
-
-void EERIEDrawAnimQuat(EERIE_3DOBJ *eobj, ANIM_USE * animlayer, Anglef *angle, Vec3f *pos, unsigned long time, Entity *io, bool render = true, bool update_movement = true);
-
-void AnimatedEntityUpdate(Entity * entity);
-void AnimatedEntityRender(Entity * entity);
-
-void Cedric_AnimateDrawEntity(EERIE_3DOBJ * eobj, ANIM_USE * animuse, Anglef * angle, Vec3f * pos, Entity * io, Vec3f & ftr, float scale);
-void Cedric_AnimateDrawEntityRender(EERIE_3DOBJ *eobj, Vec3f *pos, Vec3f &ftr, Entity *io);
-
-void ARX_DrawPrimitive(TexturedVertex *, TexturedVertex *, TexturedVertex *, float _fAdd = 0.0f);
-
-void MakeCLight(Entity * io, Color3f * infra, const EERIE_QUAT *qInvert, Vec3f * pos, EERIE_3DOBJ * eobj, Color3f &special_color, long &special_color_flag);
-void MakeCLight2(Entity * io, Color3f * infra, const EERIE_QUAT *qInvert, Vec3f * pos, EERIE_3DOBJ * eobj, long i, Color3f &special_color, long &special_color_flag);
+float GetColorz(float x, float y, float z);
 
 float Cedric_GetScale(Entity *io);
 float Cedric_GetInvisibility(Entity *io);
-
 bool Cedric_IO_Visible(Vec3f *pos);
-
 void Cedric_ApplyLightingFirstPartRefactor(Entity *io, Color3f &special_color, long &special_color_flag);
 
 void PopAllTriangleList();
@@ -92,7 +78,14 @@ TexturedVertex * PushVertexInTableCull_TAdditive(TextureContainer * tex);
 TexturedVertex * PushVertexInTableCull_TSubstractive(TextureContainer * tex);
 TexturedVertex * PushVertexInTableCull_TMultiplicative(TextureContainer * tex);
 
+void ARX_DrawPrimitive(TexturedVertex *, TexturedVertex *, TexturedVertex *, float _fAdd = 0.0f);
+
 void CalculateInterZMapp(EERIE_3DOBJ * _pobj3dObj, long lIdList, long * _piInd, TextureContainer * _pTex, TexturedVertex * _pVertex);
+
+void EERIEDrawAnimQuat(EERIE_3DOBJ *eobj, ANIM_USE * animlayer, Anglef *angle, Vec3f *pos, unsigned long time, Entity *io, bool render = true, bool update_movement = true);
+
+void AnimatedEntityUpdate(Entity * entity);
+void AnimatedEntityRender(Entity * entity);
 
 void DrawEERIEInter(EERIE_3DOBJ *eobj, const EERIE_QUAT *rotation, Vec3f *pos, Entity *io, EERIE_MOD_INFO *modinfo = NULL, bool thrownEntity = false);
 
