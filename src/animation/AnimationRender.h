@@ -53,40 +53,22 @@ class Entity;
 struct EERIEMATRIX;
 struct EERIE_QUAT;
 struct EERIE_MOD_INFO;
-struct EERIE_LIGHT;
 struct TexturedVertex;
-class TextureContainer;
 
 extern long MAX_LLIGHTS;
-extern EERIE_LIGHT * llights[32];
 
-void llightsInit();
-void Insertllight(EERIE_LIGHT * el, float dist);
 float GetColorz(float x, float y, float z);
 
-float Cedric_GetScale(Entity *io);
-float Cedric_GetInvisibility(Entity *io);
-bool Cedric_IO_Visible(Vec3f *pos);
 void Cedric_ApplyLightingFirstPartRefactor(Entity *io, Color3f &special_color, long &special_color_flag);
 
 void PopAllTriangleList();
 void PopAllTriangleListTransparency();
 
-TexturedVertex * PushVertexInTableCull(TextureContainer * tex);
-TexturedVertex * PushVertexInTableCull_TNormalTrans(TextureContainer * tex);
-TexturedVertex * PushVertexInTableCull_TAdditive(TextureContainer * tex);
-TexturedVertex * PushVertexInTableCull_TSubstractive(TextureContainer * tex);
-TexturedVertex * PushVertexInTableCull_TMultiplicative(TextureContainer * tex);
-
 void ARX_DrawPrimitive(TexturedVertex *, TexturedVertex *, TexturedVertex *, float _fAdd = 0.0f);
-
-void CalculateInterZMapp(EERIE_3DOBJ * _pobj3dObj, long lIdList, long * _piInd, TextureContainer * _pTex, TexturedVertex * _pVertex);
+void DrawEERIEInter(EERIE_3DOBJ *eobj, const EERIE_QUAT *rotation, Vec3f *pos, Entity *io, EERIE_MOD_INFO *modinfo = NULL, bool thrownEntity = false);
 
 void EERIEDrawAnimQuat(EERIE_3DOBJ *eobj, ANIM_USE * animlayer, Anglef *angle, Vec3f *pos, unsigned long time, Entity *io, bool render = true, bool update_movement = true);
-
 void AnimatedEntityUpdate(Entity * entity);
 void AnimatedEntityRender(Entity * entity);
-
-void DrawEERIEInter(EERIE_3DOBJ *eobj, const EERIE_QUAT *rotation, Vec3f *pos, Entity *io, EERIE_MOD_INFO *modinfo = NULL, bool thrownEntity = false);
 
 #endif // ARX_ANIMATION_ANIMATIONRENDER_H
