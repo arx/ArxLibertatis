@@ -1554,41 +1554,6 @@ void RecalcLight(EERIE_LIGHT * el) {
 	el->precalc = el->intensity * GLOBAL_LIGHT_FACTOR;
 }
 
-void ClearDynLights() {
-	
-	for(size_t i = 0; i < MAX_DYNLIGHTS; i++) {
-		if(DynLight[i].exist) {
-			DynLight[i].exist = 0;
-		}
-	}
-	
-	for(size_t i = 0; i < MAX_LIGHTS; i++) {
-		if(GLight[i] && GLight[i]->tl > 0) {
-			GLight[i]->tl = 0;
-		}
-	}
-	
-	TOTPDL = 0;
-	TOTIOPDL = 0;
-}
-
-long GetFreeDynLight() {
-	
-	for(size_t i = 1; i < MAX_DYNLIGHTS; i++) {
-		if(!(DynLight[i].exist)) {
-			DynLight[i].type = 0;
-			DynLight[i].intensity = 1.3f;
-			DynLight[i].treat = 1;
-			DynLight[i].time_creation = (unsigned long)(arxtime);
-			DynLight[i].duration = 0;
-			DynLight[i].extras = 0;
-			return i;
-		}
-	}
-	
-	return -1;
-}
-
 long CountBkgVertex() {
 
 	long count = 0;

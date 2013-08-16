@@ -215,25 +215,12 @@ void EERIEAddPoly(TexturedVertex * vert, TexturedVertex * vert2, TextureContaine
 // BACKGROUND MANAGEMENT FUNCTIONS END
 //****************************************************************************
 
-
-//****************************************************************************
-// LIGHT FUNCTIONS START
-void EERIEPrecalcLights(long minx=0,long minz=0,long maxx=99999,long maxz=99999);
-void EERIERemovePrecalcLights();
-void PrecalcDynamicLighting(long x0,long x1,long z0,long z1);
-void ApplyDynLight(EERIEPOLY *ep);
-long GetFreeDynLight();
-// LIGHT FUNCTIONS END
-//****************************************************************************
-
-
 //****************************************************************************
 // CAMERA FUNCTIONS START
 void PrepareCamera(EERIE_CAMERA *cam);
 // CAMERA FUNCTIONS END
 //****************************************************************************
 
-void ApplyLight(EERIEPOLY *ep);
 long MakeTopObjString(Entity * io, std::string& dest);
 void DeclareEGInfo(float x, float z);
 bool TryToQuadify(EERIEPOLY * ep,EERIE_3DOBJ * eobj);

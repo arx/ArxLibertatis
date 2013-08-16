@@ -84,4 +84,10 @@ void RecalcLightZone(float x, float z, long siz);
  
 bool ValidDynLight(long num);
 
+void EERIEPrecalcLights(long minx=0,long minz=0,long maxx=99999,long maxz=99999);
+void EERIERemovePrecalcLights();
+void PrecalcDynamicLighting(long x0,long x1,long z0,long z1);
+void ApplyDynLight(EERIEPOLY *ep);
+long GetFreeDynLight();
+
 #endif // ARX_SCENE_LIGHT_H
