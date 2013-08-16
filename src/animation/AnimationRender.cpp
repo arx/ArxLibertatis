@@ -580,237 +580,6 @@ float Cedric_GetInvisibility(Entity *io) {
 	}
 }
 
-
-// Animate skeleton
-static void Cedric_AnimateObject(EERIE_3DOBJ *eobj, ANIM_USE * animlayer)
-{
-	EERIE_C_DATA	* obj = eobj->c_data;
-
-	std::vector<unsigned char> grps(eobj->nbgroups);
-
-	for(long count = MAX_ANIM_LAYERS - 1; count >= 0; count--) {
-
-		ANIM_USE * animuse = &animlayer[count];
-		
-		if(!animuse || !animuse->cur_anim)
-			continue;
-
-		EERIE_ANIM *eanim = animuse->cur_anim->anims[animuse->altidx_cur];
-		if(!eanim)
-			continue;
-
-		if(animuse->fr < 0) {
-			animuse->fr = 0;
-			animuse->pour = 0.f;
-		} else if(animuse->fr >= eanim->nb_key_frames - 1) {
-			animuse->fr = eanim->nb_key_frames - 2;
-			animuse->pour = 1.f;
-		}
-		animuse->pour = clamp(animuse->pour, 0.f, 1.f);
-
-		// Now go for groups rotation/translation/scaling, And transform Linked objects by the way
-		int l = min(eobj->nbgroups - 1, eanim->nb_groups - 1);
-
-		for(int j = l; j >= 0; j--) {
-			if(grps[j])
-				continue;
-
-			EERIE_GROUP * sGroup = &eanim->groups[j+(animuse->fr*eanim->nb_groups)];
-			EERIE_GROUP * eGroup = &eanim->groups[j+(animuse->fr*eanim->nb_groups)+eanim->nb_groups];
-
-			if(!eanim->voidgroups[j])
-				grps[j] = 1;
-
-			if(eanim->nb_key_frames != 1) {
-				EERIE_QUAT t;
-				Quat_Slerp(&t, &sGroup->quat, &eGroup->quat, animuse->pour);
-				EERIE_QUAT temp;
-				Quat_Copy(&temp, &obj->bones[j].quatinit);
-				Quat_Multiply(&obj->bones[j].quatinit, &temp, &t);
-
-				Vec3f vect = sGroup->translate + (eGroup->translate - sGroup->translate) * animuse->pour;
-				obj->bones[j].transinit = vect + obj->bones[j].transinit_global;
-
-				Vec3f scale = sGroup->zoom + (eGroup->zoom - sGroup->zoom) * animuse->pour;
-				if(BH_MODE && j == eobj->fastaccess.head_group) {
-					scale += Vec3f::ONE;
-				}
-				
-				obj->bones[j].scaleinit = scale;
-			}
-		}
-	}
-}
-
-/* Apply transformations on all bones */
-static void Cedric_ConcatenateTM(EERIE_C_DATA *obj, EERIE_QUAT *rotation, Vec3f *pos, Vec3f &ftr, float g_scale) {
-
-	arx_assert(obj);
-
-	for(int i = 0; i != obj->nb_bones; i++) {
-		EERIE_BONE * bone = &obj->bones[i];
-
-		if(bone->father >= 0) { // Child Bones
-			EERIE_BONE * parent = &obj->bones[bone->father];
-			// Rotation
-			Quat_Multiply(&bone->quatanim, &parent->quatanim, &bone->quatinit);
-
-			// Translation
-			bone->transanim = bone->transinit * parent->scaleanim;
-			TransformVertexQuat(&parent->quatanim, &bone->transanim, &bone->transanim);
-			bone->transanim = parent->transanim + bone->transanim;
-
-			/* Scale */
-			bone->scaleanim = (bone->scaleinit + Vec3f::ONE) * parent->scaleanim;
-		} else { // Root Bone
-			// Rotation
-			Quat_Multiply(&bone->quatanim, rotation, &bone->quatinit);
-
-			// Translation
-			Vec3f vt1 = bone->transinit + ftr;
-			TransformVertexQuat(rotation, &vt1, &bone->transanim);
-			bone->transanim *= g_scale;
-			bone->transanim = *pos + bone->transanim;
-
-			// Compute Global Object Scale AND Global Animation Scale
-			bone->scaleanim = (bone->scaleinit + Vec3f::ONE) * g_scale;
-		}
-	}
-}
-
-/* Transform object vertices  */
-void Cedric_TransformVerts(Entity *io, EERIE_3DOBJ *eobj, EERIE_C_DATA *obj, Vec3f *pos) {
-
-	arx_assert(eobj);
-
- 	/* Transform & project all vertices */
-	for(long i = 0; i != obj->nb_bones; i++) {
-		EERIEMATRIX	 matrix;
-
-		MatrixFromQuat(&matrix, &obj->bones[i].quatanim);
-		Vec3f vector = obj->bones[i].transanim;
-		
-		// Apply Scale
-		matrix._11 *= obj->bones[i].scaleanim.x;
-		matrix._12 *= obj->bones[i].scaleanim.x;
-		matrix._13 *= obj->bones[i].scaleanim.x;
-		
-		matrix._21 *= obj->bones[i].scaleanim.y;
-		matrix._22 *= obj->bones[i].scaleanim.y;
-		matrix._23 *= obj->bones[i].scaleanim.y;
-		
-		matrix._31 *= obj->bones[i].scaleanim.z;
-		matrix._32 *= obj->bones[i].scaleanim.z;
-		matrix._33 *= obj->bones[i].scaleanim.z;
-		
-		for(int v = 0; v != obj->bones[i].nb_idxvertices; v++) {
-			EERIE_3DPAD * inVert  = &eobj->vertexlocal[obj->bones[i].idxvertices[v]];
-			EERIE_VERTEX * outVert = &eobj->vertexlist3[obj->bones[i].idxvertices[v]];
-			TransformVertexMatrix(&matrix, inVert, &outVert->v);
-			outVert->v += vector;
-			outVert->vert.p = outVert->v;
-		}
-	}
-
-	if(eobj->sdata) {
-		for(size_t i = 0; i < eobj->vertexlist.size(); i++) {
-			eobj->vertexlist[i].vert.p = eobj->vertexlist3[i].v - *pos;
-		}
-	}
-
-	EERIE_3D_BBOX box3D;
-	box3D.reset();
-
-	BBOX2D.reset();
-
-	for(size_t i = 0; i < eobj->vertexlist.size(); i++) {
-		EERIE_VERTEX * outVert = &eobj->vertexlist3[i];
-
-		box3D.add(outVert->v);
-
-		EE_RT(&outVert->vert.p, &outVert->vworld);
-		EE_P(&outVert->vworld, &outVert->vert);
-
-		// Updates 2D Bounding Box
-		if(outVert->vert.rhw > 0.f) {
-			BBOX2D.add(outVert->vert.p);
-		}
-	}
-
-	if(io) {
-		io->bbox3D = box3D;
-		io->bbox2D = BBOX2D;
-	}
-}
-
-static void CalcTranslation(ANIM_USE * animuse, Vec3f & ftr) {
-	if(!animuse || !animuse->cur_anim)
-		return;
-
-	EERIE_ANIM	*eanim = animuse->cur_anim->anims[animuse->altidx_cur];
-
-	if(!eanim)
-		return;
-
-	//Avoiding impossible cases
-	if(animuse->fr < 0) {
-		animuse->fr = 0;
-		animuse->pour = 0.f;
-	} else if(animuse->fr >= eanim->nb_key_frames - 1) {
-		animuse->fr = eanim->nb_key_frames - 2;
-		animuse->pour = 1.f;
-	}
-	animuse->pour = clamp(animuse->pour, 0.f, 1.f);
-
-
-	// FRAME TRANSLATE : Gives the Virtual pos of Main Object
-	if(eanim->frames[animuse->fr].f_translate && !(animuse->flags & EA_STATICANIM)) {
-		EERIE_FRAME *sFrame = &eanim->frames[animuse->fr];
-		EERIE_FRAME *eFrame = &eanim->frames[animuse->fr+1];
-
-		// Linear interpolation of object translation (MOVE)
-		ftr = sFrame->translate + (eFrame->translate - sFrame->translate) * animuse->pour;
-	}
-}
-
-static void StoreEntityMovement(Entity * io, Vec3f & ftr, float scale) {
-
-	if(!io)
-		return;
-
-	Vec3f ftr2 = Vec3f::ZERO;
-
-	if(ftr != Vec3f::ZERO) {
-		ftr *= scale;
-
-		float temp;
-		if (io == entities.player()) {
-			temp = radians(MAKEANGLE(180.f - player.angle.b));
-		} else {
-			temp = radians(MAKEANGLE(180.f - io->angle.b));
-		}
-
-		YRotatePoint(&ftr, &ftr2, (float)EEcos(temp), (float)EEsin(temp));
-
-		// stores Translations for a later use
-		io->move = ftr2;
-	}
-
-	if(io->animlayer[0].cur_anim) {
-
-		// Use calculated value to notify the Movement engine of the translation to do
-		if(io->ioflags & IO_NPC) {
-			ftr = Vec3f::ZERO;
-			io->move -= io->lastmove;
-		} else if (io->gameFlags & GFLAG_ELEVATOR) {
-			// Must recover translations for NON-NPC IO
-			PushIO_ON_Top(io, io->move.y - io->lastmove.y);
-		}
-
-		io->lastmove = ftr2;
-	}
-}
-
 //TODO Move somewhere else
 void Cedric_ApplyLightingFirstPartRefactor(Entity *io, Color3f &special_color, long &special_color_flag) {
 
@@ -1298,8 +1067,6 @@ int ARX_SoftClippZ(EERIE_VERTEX * _pVertex1, EERIE_VERTEX * _pVertex2, EERIE_VER
 	return iPointAdd;
 }
 #endif
-
-extern long IsInGroup(EERIE_3DOBJ * obj, long vert, long tw);
 
 void ARX_DrawPrimitive(TexturedVertex * _pVertex1, TexturedVertex * _pVertex2, TexturedVertex * _pVertex3, float _fAddZ) {
 	
@@ -2530,108 +2297,6 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity *
 	}
 }
 
-void Cedric_BlendAnimation(Entity *io, EERIE_C_DATA *c_data) {
-
-	if(!io || !io->nb_lastanimvertex) {
-		return;
-	}
-
-	float timm = (arxtime.get_frame_time() - io->lastanimtime) + 0.0001f;
-
-	if(timm >= 300.f) {
-		io->nb_lastanimvertex = 0;
-		return;
-	} else {
-		timm *= ( 1.0f / 300 );
-
-		if(timm < 0.f || timm >= 1.f)
-			return;
-	}
-
-	for(long i = 0; i < c_data->nb_bones; i++) {
-		EERIE_BONE * bone = &c_data->bones[i];
-
-		EERIE_QUAT tquat;
-		Quat_Copy(&tquat, &bone->quatinit);
-		EERIE_QUAT q2;
-		Quat_Copy(&q2, &bone->quatlast);
-
-		Quat_Slerp(&bone->quatinit , &q2, &tquat, timm);
-
-		bone->transinit = bone->translast + (bone->transinit - bone->translast) * timm;
-	}
-}
-
-void Cedric_SaveBlendData(EERIE_C_DATA *c_data) {
-	if (c_data)
-	{
-		for (long i = 0; i < c_data->nb_bones; i++)
-		{
-			Quat_Copy(&c_data->bones[i].quatlast, &c_data->bones[i].quatinit);
-			c_data->bones[i].scalelast = c_data->bones[i].scaleinit;
-			c_data->bones[i].translast = c_data->bones[i].transinit;
-		}
-	}
-}
-
-void Cedric_ManageExtraRotationsFirst(Entity * io, EERIE_3DOBJ * obj)
-{
-	for(long i = 0; i != obj->c_data->nb_bones; i++) {
-		Quat_Init(&obj->c_data->bones[i].quatinit);
-		obj->c_data->bones[i].transinit = obj->c_data->bones[i].transinit_global;
-	}
-
-	if(io && (io->ioflags & IO_NPC) && io->_npcdata->ex_rotate) {
-		for(long k = 0; k < MAX_EXTRA_ROTATE; k++) {
-			long i = io->_npcdata->ex_rotate->group_number[k];
-
-			if(i >= 0) {
-				Anglef vt1;
-				EERIE_QUAT quat1;
-				vt1.a = radians(io->_npcdata->ex_rotate->group_rotate[k].g);
-				vt1.b = radians(io->_npcdata->ex_rotate->group_rotate[k].b);
-				vt1.g = radians(io->_npcdata->ex_rotate->group_rotate[k].a);
-				QuatFromAngles(&quat1, &vt1);
-				Quat_Copy(&obj->c_data->bones[i].quatinit, &quat1);
-			}
-		}
-	}
-}
-
-/*!
- * \brief Apply animation and draw object
- */
-void Cedric_AnimateDrawEntity(EERIE_3DOBJ *eobj, ANIM_USE * animlayer, Anglef *angle, Vec3f *pos, Entity *io, Vec3f & ftr, float scale) {
-
-	// Manage Extra Rotations in Local Space
-	Cedric_ManageExtraRotationsFirst(io, eobj);
-
-	// Perform animation in Local space
-	Cedric_AnimateObject(eobj, animlayer);
-
-	// Check for Animation Blending in Local space
-	if(io) {
-		// Is There any Between-Animations Interpolation to make ?
-		Cedric_BlendAnimation(io, eobj->c_data);
-
-		Cedric_SaveBlendData(io->obj->c_data);
-	}
-
-	EERIE_C_DATA *obj = eobj->c_data;
-	if(!obj)
-		return;
-
-	EERIE_QUAT	qt2;
-
-	bool isNpc = io && (io->ioflags & IO_NPC);
-	worldAngleToQuat(&qt2, angle, isNpc);
-
-	// Build skeleton in Object Space
-	Cedric_ConcatenateTM(obj, &qt2, pos, ftr, scale);
-
-	Cedric_TransformVerts(io, eobj, obj, pos);
-}
-
 void Cedric_AnimateDrawEntityRender(EERIE_3DOBJ *eobj, Vec3f *pos, Vec3f &ftr, Entity *io) {
 
 	float invisibility = Cedric_GetInvisibility(io);
@@ -2690,6 +2355,338 @@ void Cedric_AnimateDrawEntityRender(EERIE_3DOBJ *eobj, Vec3f *pos, Vec3f &ftr, E
 		if(link.io)
 			link.io->invisibility = old;
 	}
+}
+
+static void CalcTranslation(ANIM_USE * animuse, Vec3f & ftr) {
+	if(!animuse || !animuse->cur_anim)
+		return;
+
+	EERIE_ANIM	*eanim = animuse->cur_anim->anims[animuse->altidx_cur];
+
+	if(!eanim)
+		return;
+
+	//Avoiding impossible cases
+	if(animuse->fr < 0) {
+		animuse->fr = 0;
+		animuse->pour = 0.f;
+	} else if(animuse->fr >= eanim->nb_key_frames - 1) {
+		animuse->fr = eanim->nb_key_frames - 2;
+		animuse->pour = 1.f;
+	}
+	animuse->pour = clamp(animuse->pour, 0.f, 1.f);
+
+
+	// FRAME TRANSLATE : Gives the Virtual pos of Main Object
+	if(eanim->frames[animuse->fr].f_translate && !(animuse->flags & EA_STATICANIM)) {
+		EERIE_FRAME *sFrame = &eanim->frames[animuse->fr];
+		EERIE_FRAME *eFrame = &eanim->frames[animuse->fr+1];
+
+		// Linear interpolation of object translation (MOVE)
+		ftr = sFrame->translate + (eFrame->translate - sFrame->translate) * animuse->pour;
+	}
+}
+
+static void StoreEntityMovement(Entity * io, Vec3f & ftr, float scale) {
+
+	if(!io)
+		return;
+
+	Vec3f ftr2 = Vec3f::ZERO;
+
+	if(ftr != Vec3f::ZERO) {
+		ftr *= scale;
+
+		float temp;
+		if (io == entities.player()) {
+			temp = radians(MAKEANGLE(180.f - player.angle.b));
+		} else {
+			temp = radians(MAKEANGLE(180.f - io->angle.b));
+		}
+
+		YRotatePoint(&ftr, &ftr2, (float)EEcos(temp), (float)EEsin(temp));
+
+		// stores Translations for a later use
+		io->move = ftr2;
+	}
+
+	if(io->animlayer[0].cur_anim) {
+
+		// Use calculated value to notify the Movement engine of the translation to do
+		if(io->ioflags & IO_NPC) {
+			ftr = Vec3f::ZERO;
+			io->move -= io->lastmove;
+		} else if (io->gameFlags & GFLAG_ELEVATOR) {
+			// Must recover translations for NON-NPC IO
+			PushIO_ON_Top(io, io->move.y - io->lastmove.y);
+		}
+
+		io->lastmove = ftr2;
+	}
+}
+
+void Cedric_ManageExtraRotationsFirst(Entity * io, EERIE_3DOBJ * obj)
+{
+	for(long i = 0; i != obj->c_data->nb_bones; i++) {
+		Quat_Init(&obj->c_data->bones[i].quatinit);
+		obj->c_data->bones[i].transinit = obj->c_data->bones[i].transinit_global;
+	}
+
+	if(io && (io->ioflags & IO_NPC) && io->_npcdata->ex_rotate) {
+		for(long k = 0; k < MAX_EXTRA_ROTATE; k++) {
+			long i = io->_npcdata->ex_rotate->group_number[k];
+
+			if(i >= 0) {
+				Anglef vt1;
+				EERIE_QUAT quat1;
+				vt1.a = radians(io->_npcdata->ex_rotate->group_rotate[k].g);
+				vt1.b = radians(io->_npcdata->ex_rotate->group_rotate[k].b);
+				vt1.g = radians(io->_npcdata->ex_rotate->group_rotate[k].a);
+				QuatFromAngles(&quat1, &vt1);
+				Quat_Copy(&obj->c_data->bones[i].quatinit, &quat1);
+			}
+		}
+	}
+}
+
+// Animate skeleton
+static void Cedric_AnimateObject(EERIE_3DOBJ *eobj, ANIM_USE * animlayer)
+{
+	EERIE_C_DATA	* obj = eobj->c_data;
+
+	std::vector<unsigned char> grps(eobj->nbgroups);
+
+	for(long count = MAX_ANIM_LAYERS - 1; count >= 0; count--) {
+
+		ANIM_USE * animuse = &animlayer[count];
+
+		if(!animuse || !animuse->cur_anim)
+			continue;
+
+		EERIE_ANIM *eanim = animuse->cur_anim->anims[animuse->altidx_cur];
+		if(!eanim)
+			continue;
+
+		if(animuse->fr < 0) {
+			animuse->fr = 0;
+			animuse->pour = 0.f;
+		} else if(animuse->fr >= eanim->nb_key_frames - 1) {
+			animuse->fr = eanim->nb_key_frames - 2;
+			animuse->pour = 1.f;
+		}
+		animuse->pour = clamp(animuse->pour, 0.f, 1.f);
+
+		// Now go for groups rotation/translation/scaling, And transform Linked objects by the way
+		int l = min(eobj->nbgroups - 1, eanim->nb_groups - 1);
+
+		for(int j = l; j >= 0; j--) {
+			if(grps[j])
+				continue;
+
+			EERIE_GROUP * sGroup = &eanim->groups[j+(animuse->fr*eanim->nb_groups)];
+			EERIE_GROUP * eGroup = &eanim->groups[j+(animuse->fr*eanim->nb_groups)+eanim->nb_groups];
+
+			if(!eanim->voidgroups[j])
+				grps[j] = 1;
+
+			if(eanim->nb_key_frames != 1) {
+				EERIE_QUAT t;
+				Quat_Slerp(&t, &sGroup->quat, &eGroup->quat, animuse->pour);
+				EERIE_QUAT temp;
+				Quat_Copy(&temp, &obj->bones[j].quatinit);
+				Quat_Multiply(&obj->bones[j].quatinit, &temp, &t);
+
+				Vec3f vect = sGroup->translate + (eGroup->translate - sGroup->translate) * animuse->pour;
+				obj->bones[j].transinit = vect + obj->bones[j].transinit_global;
+
+				Vec3f scale = sGroup->zoom + (eGroup->zoom - sGroup->zoom) * animuse->pour;
+				if(BH_MODE && j == eobj->fastaccess.head_group) {
+					scale += Vec3f::ONE;
+				}
+
+				obj->bones[j].scaleinit = scale;
+			}
+		}
+	}
+}
+
+void Cedric_BlendAnimation(Entity *io, EERIE_C_DATA *c_data) {
+
+	if(!io || !io->nb_lastanimvertex) {
+		return;
+	}
+
+	float timm = (arxtime.get_frame_time() - io->lastanimtime) + 0.0001f;
+
+	if(timm >= 300.f) {
+		io->nb_lastanimvertex = 0;
+		return;
+	} else {
+		timm *= ( 1.0f / 300 );
+
+		if(timm < 0.f || timm >= 1.f)
+			return;
+	}
+
+	for(long i = 0; i < c_data->nb_bones; i++) {
+		EERIE_BONE * bone = &c_data->bones[i];
+
+		EERIE_QUAT tquat;
+		Quat_Copy(&tquat, &bone->quatinit);
+		EERIE_QUAT q2;
+		Quat_Copy(&q2, &bone->quatlast);
+
+		Quat_Slerp(&bone->quatinit , &q2, &tquat, timm);
+
+		bone->transinit = bone->translast + (bone->transinit - bone->translast) * timm;
+	}
+}
+
+void Cedric_SaveBlendData(EERIE_C_DATA *c_data) {
+	if (c_data)
+	{
+		for (long i = 0; i < c_data->nb_bones; i++)
+		{
+			Quat_Copy(&c_data->bones[i].quatlast, &c_data->bones[i].quatinit);
+			c_data->bones[i].scalelast = c_data->bones[i].scaleinit;
+			c_data->bones[i].translast = c_data->bones[i].transinit;
+		}
+	}
+}
+
+/* Apply transformations on all bones */
+static void Cedric_ConcatenateTM(EERIE_C_DATA *obj, EERIE_QUAT *rotation, Vec3f *pos, Vec3f &ftr, float g_scale) {
+
+	arx_assert(obj);
+
+	for(int i = 0; i != obj->nb_bones; i++) {
+		EERIE_BONE * bone = &obj->bones[i];
+
+		if(bone->father >= 0) { // Child Bones
+			EERIE_BONE * parent = &obj->bones[bone->father];
+			// Rotation
+			Quat_Multiply(&bone->quatanim, &parent->quatanim, &bone->quatinit);
+
+			// Translation
+			bone->transanim = bone->transinit * parent->scaleanim;
+			TransformVertexQuat(&parent->quatanim, &bone->transanim, &bone->transanim);
+			bone->transanim = parent->transanim + bone->transanim;
+
+			/* Scale */
+			bone->scaleanim = (bone->scaleinit + Vec3f::ONE) * parent->scaleanim;
+		} else { // Root Bone
+			// Rotation
+			Quat_Multiply(&bone->quatanim, rotation, &bone->quatinit);
+
+			// Translation
+			Vec3f vt1 = bone->transinit + ftr;
+			TransformVertexQuat(rotation, &vt1, &bone->transanim);
+			bone->transanim *= g_scale;
+			bone->transanim = *pos + bone->transanim;
+
+			// Compute Global Object Scale AND Global Animation Scale
+			bone->scaleanim = (bone->scaleinit + Vec3f::ONE) * g_scale;
+		}
+	}
+}
+
+/* Transform object vertices  */
+void Cedric_TransformVerts(Entity *io, EERIE_3DOBJ *eobj, EERIE_C_DATA *obj, Vec3f *pos) {
+
+	arx_assert(eobj);
+
+	/* Transform & project all vertices */
+	for(long i = 0; i != obj->nb_bones; i++) {
+		EERIEMATRIX	 matrix;
+
+		MatrixFromQuat(&matrix, &obj->bones[i].quatanim);
+		Vec3f vector = obj->bones[i].transanim;
+
+		// Apply Scale
+		matrix._11 *= obj->bones[i].scaleanim.x;
+		matrix._12 *= obj->bones[i].scaleanim.x;
+		matrix._13 *= obj->bones[i].scaleanim.x;
+
+		matrix._21 *= obj->bones[i].scaleanim.y;
+		matrix._22 *= obj->bones[i].scaleanim.y;
+		matrix._23 *= obj->bones[i].scaleanim.y;
+
+		matrix._31 *= obj->bones[i].scaleanim.z;
+		matrix._32 *= obj->bones[i].scaleanim.z;
+		matrix._33 *= obj->bones[i].scaleanim.z;
+
+		for(int v = 0; v != obj->bones[i].nb_idxvertices; v++) {
+			EERIE_3DPAD * inVert  = &eobj->vertexlocal[obj->bones[i].idxvertices[v]];
+			EERIE_VERTEX * outVert = &eobj->vertexlist3[obj->bones[i].idxvertices[v]];
+			TransformVertexMatrix(&matrix, inVert, &outVert->v);
+			outVert->v += vector;
+			outVert->vert.p = outVert->v;
+		}
+	}
+
+	if(eobj->sdata) {
+		for(size_t i = 0; i < eobj->vertexlist.size(); i++) {
+			eobj->vertexlist[i].vert.p = eobj->vertexlist3[i].v - *pos;
+		}
+	}
+
+	EERIE_3D_BBOX box3D;
+	box3D.reset();
+
+	BBOX2D.reset();
+
+	for(size_t i = 0; i < eobj->vertexlist.size(); i++) {
+		EERIE_VERTEX * outVert = &eobj->vertexlist3[i];
+
+		box3D.add(outVert->v);
+
+		EE_RT(&outVert->vert.p, &outVert->vworld);
+		EE_P(&outVert->vworld, &outVert->vert);
+
+		// Updates 2D Bounding Box
+		if(outVert->vert.rhw > 0.f) {
+			BBOX2D.add(outVert->vert.p);
+		}
+	}
+
+	if(io) {
+		io->bbox3D = box3D;
+		io->bbox2D = BBOX2D;
+	}
+}
+
+/*!
+ * \brief Apply animation and draw object
+ */
+void Cedric_AnimateDrawEntity(EERIE_3DOBJ *eobj, ANIM_USE * animlayer, Anglef *angle, Vec3f *pos, Entity *io, Vec3f & ftr, float scale) {
+
+	// Manage Extra Rotations in Local Space
+	Cedric_ManageExtraRotationsFirst(io, eobj);
+
+	// Perform animation in Local space
+	Cedric_AnimateObject(eobj, animlayer);
+
+	// Check for Animation Blending in Local space
+	if(io) {
+		// Is There any Between-Animations Interpolation to make ?
+		Cedric_BlendAnimation(io, eobj->c_data);
+
+		Cedric_SaveBlendData(io->obj->c_data);
+	}
+
+	EERIE_C_DATA *obj = eobj->c_data;
+	if(!obj)
+		return;
+
+	EERIE_QUAT	qt2;
+
+	bool isNpc = io && (io->ioflags & IO_NPC);
+	worldAngleToQuat(&qt2, angle, isNpc);
+
+	// Build skeleton in Object Space
+	Cedric_ConcatenateTM(obj, &qt2, pos, ftr, scale);
+
+	Cedric_TransformVerts(io, eobj, obj, pos);
 }
 
 void EERIEDrawAnimQuat(EERIE_3DOBJ *eobj, ANIM_USE * animlayer, Anglef *angle, Vec3f *pos, unsigned long time, Entity *io, bool render, bool update_movement) {
