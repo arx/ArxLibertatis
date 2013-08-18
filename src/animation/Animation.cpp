@@ -419,18 +419,18 @@ suite:
 	else
 		tim = eanim->ctime;
 
-	eanim->fr=eanim->cur_anim->anims[eanim->altidx_cur]->nb_key_frames-2;
-	eanim->pour=1.f;
+	eanim->fr = eanim->cur_anim->anims[eanim->altidx_cur]->nb_key_frames - 2;
+	eanim->pour = 1.f;
 
 	long fr;
 	for(long i = 1; i < eanim->cur_anim->anims[eanim->altidx_cur]->nb_key_frames; i++) {
-		long tcf = (long)eanim->cur_anim->anims[eanim->altidx_cur]->frames[i-1].time;
+		long tcf = (long)eanim->cur_anim->anims[eanim->altidx_cur]->frames[i - 1].time;
 		long tnf = (long)eanim->cur_anim->anims[eanim->altidx_cur]->frames[i].time;
 
 		if(tcf == tnf)
 			return;
 
-		if((tim < tnf && tim>=tcf) || (i == eanim->cur_anim->anims[eanim->altidx_cur]->nb_key_frames-1 && tim == tnf)) {
+		if((tim < tnf && tim >= tcf) || (i == eanim->cur_anim->anims[eanim->altidx_cur]->nb_key_frames - 1 && tim == tnf)) {
 			fr = i - 1;
 			tim -= tcf;
 			float pour = (float)((float)tim/((float)tnf-(float)tcf));
@@ -457,7 +457,7 @@ suite:
 				
 				if(io != entities.player()) {
 					if(eanim->lastframe < fr && eanim->lastframe != -1) {
-						for(long n = eanim->lastframe+1; n<=fr; n++) {
+						for(long n = eanim->lastframe + 1; n <= fr; n++) {
 							if(eanim->cur_anim->anims[eanim->altidx_cur]->frames[n].flag == 9)
 								ARX_NPC_NeedStepSound(io, &io->pos);
 						}
