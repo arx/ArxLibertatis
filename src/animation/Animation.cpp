@@ -81,7 +81,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/ObjectFormat.h"
 #include "scene/GameSound.h"
 
-ANIM_HANDLE animations[MAX_ANIMATIONS];
+const size_t MAX_ANIMATIONS = 900;
+std::vector<ANIM_HANDLE> animations(MAX_ANIMATIONS);
 
 static const long anim_power[] = { 100, 20, 15, 12, 8, 6, 5, 4, 3, 2, 2, 1, 1, 1, 1 };
 

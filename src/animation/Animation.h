@@ -57,9 +57,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 class Entity;
 struct ANIM_USE;
 
-const size_t MAX_ANIMATIONS = 900;
-
-
 struct EERIE_FRAME
 {
 	long		num_frame;
