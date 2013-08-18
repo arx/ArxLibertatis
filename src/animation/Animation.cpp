@@ -59,45 +59,25 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "util/String.h"
 
-#include "animation/AnimationRender.h"
-
-#include "core/Application.h"
 #include "core/GameTime.h"
-#include "core/Core.h"
 
-#include "game/Damage.h"
 #include "game/EntityManager.h"
 #include "game/NPC.h"
-#include "game/Player.h"
-#include "game/Spells.h"
 
 #include "graphics/BaseGraphicsTypes.h"
-#include "graphics/Color.h"
-#include "graphics/Draw.h"
-#include "graphics/GraphicsTypes.h"
 #include "graphics/Math.h"
-#include "graphics/Renderer.h"
-#include "graphics/data/Mesh.h"
-#include "graphics/data/TextureContainer.h"
-#include "graphics/particle/ParticleEffects.h"
-#include "graphics/effects/Halo.h"
 
 #include "io/resource/ResourcePath.h"
 #include "io/resource/PakReader.h"
 #include "io/log/Logger.h"
 
 #include "math/Angle.h"
-#include "math/Vector3.h"
 
 #include "platform/Platform.h"
 
 #include "scene/Object.h"
 #include "scene/ObjectFormat.h"
 #include "scene/GameSound.h"
-#include "scene/Scene.h"
-#include "scene/Interactive.h"
-
-#include "script/Script.h"
 
 ANIM_HANDLE animations[MAX_ANIMATIONS];
 
