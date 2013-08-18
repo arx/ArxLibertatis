@@ -49,6 +49,20 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/GraphicsTypes.h"
 
+template <class T>
+static T * allocStructZero(size_t n = 1) {
+	T * result = (T*)malloc(n * sizeof(T));
+	memset(result, 0, n * sizeof(T));
+	return result;
+}
+
+template <class T>
+static T * copyStruct(const T * src, size_t n = 1) {
+	T * result = (T*)malloc(n * sizeof(T));
+	memcpy(result, src, sizeof(T) * n);
+	return result;
+}
+
 enum ActionType {
 	ACT_FIRE = 1,
 	ACT_FIREOFF = 2,
@@ -93,10 +107,6 @@ EERIE_3DOBJ * loadObject(const res::path & file, bool pbox = true);
  * @param texpath texture path relative to file
  */
 EERIE_3DOBJ * LoadTheObj(const res::path & file, const res::path & texpath = res::path());
-
-EERIE_ANIM * TheaToEerie(const char * adr, size_t size, const res::path & fic);
-
-void ReleaseAnim(EERIE_ANIM * ea);
 
 EERIE_3DOBJ * Eerie_Copy(const EERIE_3DOBJ * obj);
 void EERIE_Object_Precompute_Fast_Access(EERIE_3DOBJ * obj);

@@ -525,38 +525,6 @@ struct EERIE_MULTI3DSCENE {
 };
 #endif
 
-struct EERIE_FRAME
-{
-	long		num_frame;
-	long		flag;
-	int			master_key_frame;
-	short		f_translate; //int
-	short		f_rotate; //int
-	float		time;
-	Vec3f	translate;
-	EERIE_QUAT	quat;
-	audio::SampleId	sample;
-};
-
-struct EERIE_GROUP
-{
-	int		key;
-	Vec3f	translate;
-	EERIE_QUAT	quat;
-	Vec3f	zoom;
-};
-
-struct EERIE_ANIM
-{
-	long		anim_time;
-	unsigned long	flag;
-	long		nb_groups;
-	long		nb_key_frames;
-	EERIE_FRAME *	frames;
-	EERIE_GROUP  *  groups;
-	unsigned char *	voidgroups;
-};
-
 //-------------------------------------------------------------------------
 //Portal Data;
 
