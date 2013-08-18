@@ -573,13 +573,13 @@ float Cedric_GetInvisibility(Entity *io) {
 }
 
 //TODO Move somewhere else
-void Cedric_ApplyLightingFirstPartRefactor(Entity *io, Color3f &special_color, long &special_color_flag) {
+void Cedric_ApplyLightingFirstPartRefactor(Entity *io) {
 
 	if(!io)
 		return;
 
-	special_color = Color3f::black;
-	special_color_flag = 0;
+	io->special_color = Color3f::black;
+	io->special_color_flag = 0;
 
 	float poisonpercent = 0.f;
 	float trappercent = 0.f;
@@ -614,23 +614,23 @@ void Cedric_ApplyLightingFirstPartRefactor(Entity *io, Color3f &special_color, l
 	}
 
 	if(poisonpercent > 0.f) {
-		special_color_flag = 1;
-		special_color = Color3f::green;
+		io->special_color_flag = 1;
+		io->special_color = Color3f::green;
 	}
 
 	if(trappercent > 0.f) {
-		special_color_flag = 1;
-		special_color = Color3f(trappercent, 1.f - trappercent, 1.f - trappercent);
+		io->special_color_flag = 1;
+		io->special_color = Color3f(trappercent, 1.f - trappercent, 1.f - trappercent);
 	}
 
 	if(secretpercent > 0.f) {
-		special_color_flag = 1;
-		special_color = Color3f(1.f - secretpercent, 1.f - secretpercent, secretpercent);
+		io->special_color_flag = 1;
+		io->special_color = Color3f(1.f - secretpercent, 1.f - secretpercent, secretpercent);
 	}
 
 	if(io->ioflags & IO_FREEZESCRIPT) {
-		special_color = Color3f::blue;
-		special_color_flag = 1;
+		io->special_color = Color3f::blue;
+		io->special_color_flag = 1;
 	}
 
 	if(io->sfx_flag & SFX_TYPE_YLSIDE_DEATH) {
@@ -641,20 +641,20 @@ void Cedric_ApplyLightingFirstPartRefactor(Entity *io, Color3f &special_color, l
 			if (io->sfx_time >= (unsigned long)(arxtime))
 				io->sfx_time = (unsigned long)(arxtime);
 		} else {
-			special_color_flag = 1;
+			io->special_color_flag = 1;
 			float elapsed = float(arxtime) - io->sfx_time;
 
 			if(elapsed > 0.f) {
 				if(elapsed < 3000.f) { // 5 seconds to red
 					float ratio = elapsed * (1.0f / 3000);
-					special_color = Color3f(1.f, 1.f - ratio, 1.f - ratio);
+					io->special_color = Color3f(1.f, 1.f - ratio, 1.f - ratio);
 					AddRandomSmoke(io, 1);
 				} else if(elapsed < 6000.f) { // 5 seconds to White
 					float ratio = (elapsed - 3000.f) * (1.0f / 3000);
-					special_color = Color3f(1.f, ratio, ratio);
+					io->special_color = Color3f(1.f, ratio, ratio);
 					AddRandomSmoke(io, 2);
 				} else { // SFX finish
-					special_color_flag = 0;
+					io->special_color_flag = 0;
 					io->sfx_time = 0;
 
 					if(io->ioflags & IO_NPC) {

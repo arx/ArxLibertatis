@@ -59,7 +59,7 @@ extern long MAX_LLIGHTS;
 
 float GetColorz(float x, float y, float z);
 
-void Cedric_ApplyLightingFirstPartRefactor(Entity *io, Color3f &special_color, long &special_color_flag);
+void Cedric_ApplyLightingFirstPartRefactor(Entity *io);
 
 void PopAllTriangleList();
 void PopAllTriangleListTransparency();

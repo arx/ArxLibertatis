@@ -1318,7 +1318,6 @@ void ArxGame::renderCinematic() {
 }
 
 extern int iHighLight;
-extern void Cedric_ApplyLightingFirstPartRefactor(Entity *io, Color3f &special_color, long &special_color_flag);
 
 void ArxGame::renderLevel() {
 
@@ -1340,7 +1339,7 @@ void ArxGame::renderLevel() {
 		if(entity->ignition > 0.f || (entity->ioflags & IO_FIERY))
 			ManageIgnition(entity);
 
-		Cedric_ApplyLightingFirstPartRefactor(entity, entity->special_color, entity->special_color_flag);
+		Cedric_ApplyLightingFirstPartRefactor(entity);
 
 		//Highlight entity
 		if(entity == FlyingOverIO && !(entity->ioflags & IO_NPC)) {
