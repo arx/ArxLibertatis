@@ -59,6 +59,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "util/String.h"
 
+#include "audio/Audio.h"
+
 #include "core/GameTime.h"
 
 #include "game/EntityManager.h"
@@ -813,4 +815,96 @@ void FinishAnim(Entity * io, ANIM_HANDLE * eanim) {
 	}
 
 	return;
+}
+
+
+
+static long nbelems = 0;
+static char ** elems = NULL;
+static long * numbers = NULL;
+
+void ARX_SOUND_FreeAnimSamples() {
+
+	if(elems) {
+		for(long i = 0; i < nbelems; i++) {
+			free(elems[i]), elems[i] = NULL;
+		}
+		free(elems), elems = NULL;
+	}
+	nbelems = 0;
+
+	free(numbers), numbers = NULL;
+}
+
+void ARX_SOUND_PushAnimSamples()
+{
+	ARX_SOUND_FreeAnimSamples();
+
+	long number = 0;
+
+	for(size_t i = 0; i < MAX_ANIMATIONS; i++) {
+
+		if (!animations[i].path.empty())
+		{
+			for (long j = 0; j < animations[i].alt_nb; j++)
+			{
+				EERIE_ANIM * anim = animations[i].anims[j];
+
+				for (long k = 0; k < anim->nb_key_frames; k++)
+				{
+					number++;
+
+					if (anim->frames[k].sample != -1)
+					{
+						res::path dest;
+						audio::getSampleName(anim->frames[k].sample, dest);
+						if(!dest.empty()) {
+							elems = (char **)realloc(elems, sizeof(char *) * (nbelems + 1));
+							elems[nbelems] = strdup(dest.string().c_str());
+							numbers = (long *)realloc(numbers, sizeof(long) * (nbelems + 1));
+							numbers[nbelems] = number;
+							nbelems++;
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+void ARX_SOUND_PopAnimSamples()
+{
+	if ((!elems) ||
+			(!ARX_SOUND_IsEnabled()))
+	{
+		return;
+	}
+
+	long curelem = 0;
+	long number = 0;
+
+	for(size_t i = 0; i < MAX_ANIMATIONS; i++) {
+
+		if (!animations[i].path.empty())
+		{
+			for (long j = 0; j < animations[i].alt_nb; j++)
+			{
+				EERIE_ANIM * anim = animations[i].anims[j];
+
+				for (long k = 0; k < anim->nb_key_frames; k++)
+				{
+					number++;
+
+					if (number == numbers[curelem])
+					{
+						arx_assert(elems[curelem] != NULL);
+						anim->frames[k].sample = audio::createSample(elems[curelem++]);
+					}
+				}
+			}
+		}
+	}
+
+
+	ARX_SOUND_FreeAnimSamples();
 }

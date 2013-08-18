@@ -122,4 +122,7 @@ void EERIE_ANIMMANAGER_ReloadAll();
 void AcquireLastAnim(Entity * io);
 void FinishAnim(Entity * io,ANIM_HANDLE * eanim);
 
+void ARX_SOUND_PushAnimSamples();
+void ARX_SOUND_PopAnimSamples();
+
 #endif // ARX_ANIMATION_ANIMATION_H

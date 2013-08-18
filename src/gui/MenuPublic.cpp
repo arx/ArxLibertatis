@@ -49,6 +49,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <sstream>
 #include <string>
 
+#include "animation/Animation.h"
 #include "animation/AnimationRender.h"
 
 #include "core/Application.h"
@@ -94,9 +95,6 @@ extern bool	bFadeInOut;
 extern int iFadeAction;
 
 extern long ZMAPMODE;
-
-void ARX_SOUND_PushAnimSamples();
-void ARX_SOUND_PopAnimSamples();
 
 //-----------------------------------------------------------------------------
 void ARXMenu_Private_Options_Video_SetResolution(bool fullscreen, int _iWidth, int _iHeight, int _iBpp) {
