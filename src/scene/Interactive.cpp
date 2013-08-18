@@ -3013,23 +3013,8 @@ void RenderInter() {
 			if(ARX_SCENE_PORTAL_Basic_ClipIO(io))
 				continue;
 
-			if((io->ioflags & IO_GOLD) && io->obj) {
-				if(io->_itemdata->price <= 3) {
-					io->obj = GoldCoinsObj[io->_itemdata->price-1];
-					io->inv = GoldCoinsTC[io->_itemdata->price-1];
-				} else if(io->_itemdata->price <= 8) {
-					io->obj = GoldCoinsObj[3];
-					io->inv = GoldCoinsTC[3];
-				} else if(io->_itemdata->price <= 20) {
-					io->obj = GoldCoinsObj[4];
-					io->inv = GoldCoinsTC[4];
-				} else if(io->_itemdata->price <= 50) {
-					io->obj = GoldCoinsObj[5];
-					io->inv = GoldCoinsTC[5];
-				} else {
-					io->obj = GoldCoinsObj[6];
-					io->inv = GoldCoinsTC[6];
-				}
+			if(io->obj) {
+				UpdateGoldObject(io);
 			}
 
 			if(!(io->ioflags & IO_NPC)) {
@@ -3285,4 +3270,24 @@ std::string GetMaterialString(const res::path & texture) {
 	else if(boost::contains(origin, "fabric")) return "carpet";
 	else if(boost::contains(origin, "moss")) return "carpet";
 	else return "unknown";
+}
+
+void UpdateGoldObject(Entity * io) {
+	if(io->ioflags & IO_GOLD) {
+		long num=0;
+
+		if (io->_itemdata->price<=3)
+			num=io->_itemdata->price-1;
+		else if (io->_itemdata->price<=8)
+			num=3;
+		else if (io->_itemdata->price<=20)
+			num=4;
+		else if (io->_itemdata->price<=50)
+			num=5;
+		else
+			num=6;
+
+		io->obj=GoldCoinsObj[num];
+		io->inv=GoldCoinsTC[num];
+	}
 }

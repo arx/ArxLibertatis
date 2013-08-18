@@ -247,4 +247,6 @@ void ARX_HALO_SetToNative(Entity * io);
 void ARX_INTERACTIVE_ActivatePhysics(long t);
 void ResetVVPos(Entity * io);
 
+void UpdateGoldObject(Entity * io);
+
 #endif // ARX_SCENE_INTERACTIVE_H

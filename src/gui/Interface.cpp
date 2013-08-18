@@ -3499,23 +3499,7 @@ void ARX_INTERFACE_DrawSecondaryInventory(bool _bSteal) {
 				}
 
 				if(tc && (TSecondaryInventory->slot[i][j].show || bItemSteal)) {
-					if(io->ioflags & IO_GOLD) {
-						long num=0;
-
-						if (io->_itemdata->price<=3)
-							num=io->_itemdata->price-1;
-						else if (io->_itemdata->price<=8)
-							num=3;
-						else if (io->_itemdata->price<=20)
-							num=4;
-						else if (io->_itemdata->price<=50)
-							num=5;
-						else
-							num=6;
-
-						io->obj=GoldCoinsObj[num];
-						io->inv=GoldCoinsTC[num];
-					}
+					UpdateGoldObject(io);
 
 					float px = INTERFACE_RATIO(InventoryX) + (float)i*INTERFACE_RATIO(32) + INTERFACE_RATIO(2);
 					float py = (float)j*INTERFACE_RATIO(32) + INTERFACE_RATIO(13);
