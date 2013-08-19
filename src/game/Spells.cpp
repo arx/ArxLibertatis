@@ -5465,7 +5465,7 @@ void ARX_SPELLS_Update()
 					if(spells[i].caster == 0)
 						Project.telekinesis = 0;
 
-					ARX_SOUND_PlaySFX(SND_SPELL_TELEKINESIS_END, &spells[i].caster_pos);					
+					ARX_SOUND_PlaySFX(SND_SPELL_TELEKINESIS_END, &entities[spells[i].caster]->pos);					
 				break;
 				case SPELL_FIRE_PROTECTION:
 					ARX_SOUND_Stop(spells[i].snd_loop);
