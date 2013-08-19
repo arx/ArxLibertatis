@@ -592,8 +592,7 @@ void Cedric_ApplyLightingFirstPartRefactor(Entity *io) {
 	if(!io)
 		return;
 
-	io->special_color = Color3f::black;
-	io->special_color_flag = 0;
+	io->special_color = Color3f::white;
 
 	float poisonpercent = 0.f;
 	float trappercent = 0.f;
@@ -628,23 +627,19 @@ void Cedric_ApplyLightingFirstPartRefactor(Entity *io) {
 	}
 
 	if(poisonpercent > 0.f) {
-		io->special_color_flag = 1;
 		io->special_color = Color3f::green;
 	}
 
 	if(trappercent > 0.f) {
-		io->special_color_flag = 1;
 		io->special_color = Color3f(trappercent, 1.f - trappercent, 1.f - trappercent);
 	}
 
 	if(secretpercent > 0.f) {
-		io->special_color_flag = 1;
 		io->special_color = Color3f(1.f - secretpercent, 1.f - secretpercent, secretpercent);
 	}
 
 	if(io->ioflags & IO_FREEZESCRIPT) {
 		io->special_color = Color3f::blue;
-		io->special_color_flag = 1;
 	}
 
 	if(io->sfx_flag & SFX_TYPE_YLSIDE_DEATH) {
@@ -655,7 +650,6 @@ void Cedric_ApplyLightingFirstPartRefactor(Entity *io) {
 			if (io->sfx_time >= (unsigned long)(arxtime))
 				io->sfx_time = (unsigned long)(arxtime);
 		} else {
-			io->special_color_flag = 1;
 			float elapsed = float(arxtime) - io->sfx_time;
 
 			if(elapsed > 0.f) {
@@ -668,7 +662,6 @@ void Cedric_ApplyLightingFirstPartRefactor(Entity *io) {
 					io->special_color = Color3f(1.f, ratio, ratio);
 					AddRandomSmoke(io, 2);
 				} else { // SFX finish
-					io->special_color_flag = 0;
 					io->sfx_time = 0;
 
 					if(io->ioflags & IO_NPC) {
@@ -739,7 +732,7 @@ void Cedric_ApplyLightingFirstPartRefactor(Entity *io) {
 }
 
 /* Object dynamic lighting */
-static void Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, const Color3f & ambient, const Color3f & infra, Color3f &special_color, long &special_color_flag) {
+static void Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, const Color3f & ambient, const Color3f & infra, Color3f &special_color, Color3f & highlightColor) {
 		
 	/* Apply light on all vertices */
 	for(int i = 0; i != obj->nb_bones; i++) {
@@ -798,15 +791,13 @@ static void Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, const C
 				tempColor.b *= infra.b;
 			}
 
-			if(special_color_flag & 1) {
-				tempColor.r *= special_color.r;
-				tempColor.g *= special_color.g;
-				tempColor.b *= special_color.b;
-			} else if(special_color_flag & 4) { // HIGHLIGHT
-				tempColor.r += special_color.r;
-				tempColor.g += special_color.g;
-				tempColor.b += special_color.b;
-			}
+			tempColor.r *= special_color.r;
+			tempColor.g *= special_color.g;
+			tempColor.b *= special_color.b;
+
+			tempColor.r += highlightColor.r;
+			tempColor.g += highlightColor.g;
+			tempColor.b += highlightColor.b;
 
 			u8 ir = clipByte255(tempColor.r);
 			u8 ig = clipByte255(tempColor.g);
@@ -915,7 +906,7 @@ bool Cedric_IO_Visible(Vec3f * pos) {
 	return true;
 }
 
-void MakeCLight(Entity * io, Color3f * infra, const EERIE_QUAT *qInvert, EERIE_3DOBJ * eobj, Color3f & ambientColor, Color3f &special_color, long &special_color_flag)
+void MakeCLight(Entity * io, Color3f * infra, const EERIE_QUAT *qInvert, EERIE_3DOBJ * eobj, Color3f & ambientColor, Color3f &special_color, Color3f & highlightColor)
 {
 		
 	for(size_t i = 0; i < eobj->vertexlist.size(); i++) {
@@ -973,15 +964,13 @@ void MakeCLight(Entity * io, Color3f * infra, const EERIE_QUAT *qInvert, EERIE_3
 			}
 		}
 
-		if(special_color_flag & 1) {
-			tempColor.r *= special_color.r;
-			tempColor.g *= special_color.g;
-			tempColor.b *= special_color.b;
-		} else if(special_color_flag & 4) { // HIGHLIGHT
-			tempColor.r += special_color.r;
-			tempColor.g += special_color.g;
-			tempColor.b += special_color.b;
-		}
+		tempColor.r *= special_color.r;
+		tempColor.g *= special_color.g;
+		tempColor.b *= special_color.b;
+
+		tempColor.r += highlightColor.r;
+		tempColor.g += highlightColor.g;
+		tempColor.b += highlightColor.b;
 
 		u8 ir = clipByte255(tempColor.r);
 		u8 ig = clipByte255(tempColor.g);
@@ -990,7 +979,7 @@ void MakeCLight(Entity * io, Color3f * infra, const EERIE_QUAT *qInvert, EERIE_3
 	}
 }
 
-void MakeCLight2(Color3f *infra, const EERIE_QUAT *qInvert, EERIE_3DOBJ *eobj, long ii, Color3f & ambientColor, Color3f &special_color, long &special_color_flag) {
+void MakeCLight2(Color3f *infra, const EERIE_QUAT *qInvert, EERIE_3DOBJ *eobj, long ii, Color3f & ambientColor, Color3f &special_color, Color3f & highlightColor) {
 	
 	long paf[3];
 	paf[0] = eobj->facelist[ii].vid[0];
@@ -1045,15 +1034,13 @@ void MakeCLight2(Color3f *infra, const EERIE_QUAT *qInvert, EERIE_3DOBJ *eobj, l
 			tempColor.b *= infra->b;
 		}
 
-		if(special_color_flag & 1) {
-			tempColor.r *= special_color.r;
-			tempColor.g *= special_color.g;
-			tempColor.b *= special_color.b;
-		} else if(special_color_flag & 4) { // HIGHLIGHT
-			tempColor.r += special_color.r;
-			tempColor.g += special_color.g;
-			tempColor.b += special_color.b;
-		}
+		tempColor.r *= special_color.r;
+		tempColor.g *= special_color.g;
+		tempColor.b *= special_color.b;
+
+		tempColor.r += highlightColor.r;
+		tempColor.g += highlightColor.g;
+		tempColor.b += highlightColor.b;
 
 		u8 ir = clipByte255(tempColor.r);
 		u8 ig = clipByte255(tempColor.g);
@@ -1268,11 +1255,11 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, const EERIE_QUAT * rotation, Vec3f *poss,
 	if(!modinfo && ARX_SCENE_PORTAL_ClipIO(io, pos))
 		return;
 
-	long special_color_flag = 0;
-	Color3f special_color = Color3f::black;
+	Color3f special_color = Color3f::white;
+	Color3f highlightColor = Color3f::black;
 	if(io) {
-		special_color_flag = io->special_color_flag;
 		special_color = io->special_color;
+		highlightColor = io->highlightColor;
 	}
 
 	Color3f infra = Color3f::black;
@@ -1297,7 +1284,7 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, const EERIE_QUAT * rotation, Vec3f *poss,
 
 	// Precalc local lights for this object then interpolate
 	if(!(io && (io->ioflags & IO_ANGULAR))) {
-		MakeCLight(io, &infra, rotation, eobj, ambientColor, special_color, special_color_flag);
+		MakeCLight(io, &infra, rotation, eobj, ambientColor, special_color, highlightColor);
 	}
 
 	for(size_t i = 0; i < eobj->facelist.size(); i++) {
@@ -1331,7 +1318,7 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, const EERIE_QUAT * rotation, Vec3f *poss,
 			continue;
 
 		if(io && (io->ioflags & IO_ANGULAR))
-			MakeCLight2(&infra, rotation, eobj, i, ambientColor, special_color, special_color_flag);
+			MakeCLight2(&infra, rotation, eobj, i, ambientColor, special_color, highlightColor);
 
 		float fTransp = 0.f;
 		TexturedVertex * tvList = NULL;
@@ -1870,11 +1857,11 @@ void Cedric_AnimateDrawEntityRender(EERIE_3DOBJ *eobj, const Vec3f & pos, Entity
 	if(!obj)
 		return;
 
-	long special_color_flag = 0;
-	Color3f special_color = Color3f::black;
+	Color3f special_color = Color3f::white;
+	Color3f highlightColor = Color3f::black;
 	if(io) {
-		special_color_flag = io->special_color_flag;
 		special_color = io->special_color;
+		highlightColor = io->highlightColor;
 	}
 
 	Color3f infra = Color3f::black;
@@ -1897,7 +1884,7 @@ void Cedric_AnimateDrawEntityRender(EERIE_3DOBJ *eobj, const Vec3f & pos, Entity
 
 	UpdateLlights(tv);
 
-	Cedric_ApplyLighting(eobj, obj, ambientColor, infra, special_color, special_color_flag);
+	Cedric_ApplyLighting(eobj, obj, ambientColor, infra, special_color, highlightColor);
 
 	Cedric_RenderObject(eobj, obj, io, pos, invisibility);
 

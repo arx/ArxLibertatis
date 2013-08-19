@@ -393,7 +393,7 @@ public:
 	long spark_n_blood;
 
 	Color3f special_color;
-	long special_color_flag;
+	Color3f highlightColor;
 	
 	/*!
 	 * Return the short name for this Object where only the name

@@ -1343,8 +1343,9 @@ void ArxGame::renderLevel() {
 
 		//Highlight entity
 		if(entity == FlyingOverIO && !(entity->ioflags & IO_NPC)) {
-			entity->special_color_flag = 4;
-			entity->special_color = Color3f::gray(float(iHighLight));
+			entity->highlightColor = Color3f::gray(float(iHighLight));
+		} else {
+			entity->highlightColor = Color3f::black;
 		}
 
 		float speedModifier = 0.f;

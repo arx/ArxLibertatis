@@ -192,8 +192,8 @@ Entity::Entity(const res::path & classPath)
 	summoner = 0;
 	spark_n_blood = 0;
 
-	special_color = Color3f::black;
-	special_color_flag = 0;
+	special_color = Color3f::white;
+	highlightColor = Color3f::black;
 	
 	ARX_SCRIPT_SetMainEvent(this, "main");
 	
