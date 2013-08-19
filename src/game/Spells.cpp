@@ -4123,9 +4123,8 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 				return false;
 			}
 			
-			ARX_SOUND_PlaySFX(SND_SPELL_RAISE_DEAD, &spells[i].caster_pos);
-			
 			spells[i].target_pos = target;
+			ARX_SOUND_PlaySFX(SND_SPELL_RAISE_DEAD, &spells[i].target_pos);
 			spells[i].exist = true;
 			// TODO this tolive value is probably never read
 			spells[i].tolive = (duration > -1) ? duration : 2000000;
@@ -5508,7 +5507,7 @@ void ARX_SPELLS_Update()
 					entities[spells[i].target]->ioflags &= ~IO_FREEZESCRIPT;
 				break;
 				case SPELL_RISE_DEAD:
-					ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &spells[i].caster_pos);
+					ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &entities[spells[i].longinfo]->pos);
 
 					if(ValidIONum(spells[i].longinfo) && spells[i].longinfo != 0) {
 						Entity *entity = entities[spells[i].longinfo];
@@ -6087,7 +6086,7 @@ void ARX_SPELLS_Update()
 					unsigned long tim=pCSpellFX->getCurrentTime();
 
 					if(tim > 3000 && spells[i].longinfo == -1) {
-						ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &spells[i].caster_pos);
+						ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &spells[i].target_pos);
 						CRiseDead *prise = (CRiseDead *)spells[i].pSpellFx;
 
 						if(prise) {
