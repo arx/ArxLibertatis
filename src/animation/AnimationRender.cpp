@@ -1188,34 +1188,14 @@ bool Cedric_IO_Visible(Vec3f * pos) {
 	return true;
 }
 
-void MakeCLight(Entity * io, Color3f * infra, const EERIE_QUAT *qInvert, Vec3f * pos, EERIE_3DOBJ * eobj, Color3f &special_color, long &special_color_flag)
+void MakeCLight(Entity * io, Color3f * infra, const EERIE_QUAT *qInvert, EERIE_3DOBJ * eobj, Color3f & ambientColor, Color3f &special_color, long &special_color_flag)
 {
-	if(Project.improve && !io) {
-		infra->r = 0.6f;
-		infra->g = 0.f;
-		infra->b = 1.f;
-	}
-
-	Vec3f tv = *pos;
-
-	if(io && (io->ioflags & IO_ITEM))
-		tv.y -= 60.f;
-	else
-		tv.y -= 90.f;
-
-	UpdateLlights(tv);
 
 	if(io && (io->ioflags & IO_ANGULAR))
 		return;
 		
 	for(size_t i = 0; i < eobj->vertexlist.size(); i++) {
-		Color3f tempColor;
-
-		// Ambient light
-		if(io && (io->ioflags & (IO_NPC | IO_ITEM)))
-			tempColor = Color3f::gray(NPC_ITEMS_AMBIENT_VALUE_255);
-		else
-			tempColor = ACTIVEBKG->ambient255;
+		Color3f tempColor = ambientColor;
 
 		Vec3f * posVert = &eobj->vertexlist3[i].v;
 
@@ -1528,8 +1508,6 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, const EERIE_QUAT * rotation, Vec3f *poss,
 	if(io && io != entities.player() && !modinfo && !Cedric_IO_Visible(&pos))
 		return;
 
-	Color3f infra;
-
 	float scale = Cedric_GetScale(io);
 	float invisibility = Cedric_GetInvisibility(io);
 
@@ -1594,8 +1572,28 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, const EERIE_QUAT * rotation, Vec3f *poss,
 		special_color = io->special_color;
 	}
 
+	Color3f infra = Color3f::black;
+	if(Project.improve && !io) {
+		infra = Color3f(0.6f, 0.f, 1.f);
+	}
+
+	// Ambient light
+	Color3f ambientColor = ACTIVEBKG->ambient255;
+	if(io && (io->ioflags & (IO_NPC | IO_ITEM)))
+		ambientColor = Color3f::gray(NPC_ITEMS_AMBIENT_VALUE_255);
+
+	Vec3f tv = pos;
+
+	if(io && (io->ioflags & IO_ITEM))
+		tv.y -= 60.f;
+	else
+		tv.y -= 90.f;
+
+	UpdateLlights(tv);
+
+
 	// Precalc local lights for this object then interpolate
-	MakeCLight(io, &infra, rotation, &pos, eobj, special_color, special_color_flag);
+	MakeCLight(io, &infra, rotation, eobj, ambientColor, special_color, special_color_flag);
 
 	for(size_t i = 0; i < eobj->facelist.size(); i++) {
 		EERIE_FACE *eface = &eobj->facelist[i];
