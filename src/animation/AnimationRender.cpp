@@ -784,12 +784,9 @@ static void Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, const C
 				}
 			}
 
-			/* Fake adjust */
-			if(Project.improve) {
-				tempColor.r *= infra.r;
-				tempColor.g *= infra.g;
-				tempColor.b *= infra.b;
-			}
+			tempColor.r *= infra.r;
+			tempColor.g *= infra.g;
+			tempColor.b *= infra.b;
 
 			tempColor.r *= special_color.r;
 			tempColor.g *= special_color.g;
@@ -951,17 +948,15 @@ void MakeCLight(Entity * io, Color3f * infra, const EERIE_QUAT *qInvert, EERIE_3
 			}
 		}
 
-		if(Project.improve) {
-			tempColor.r *= infra->r;
-			tempColor.g *= infra->g;
-			tempColor.b *= infra->b;
+		tempColor.r *= infra->r;
+		tempColor.g *= infra->g;
+		tempColor.b *= infra->b;
 
-			// Special case for drawing runes in book
-			if(!io) {
-				tempColor.r += infra->r * 512.f;
-				tempColor.g += infra->g;
-				tempColor.b += infra->b * 400.f;
-			}
+		// Special case for drawing runes in book
+		if(Project.improve && !io) {
+			tempColor.r += infra->r * 512.f;
+			tempColor.g += infra->g;
+			tempColor.b += infra->b * 400.f;
 		}
 
 		tempColor.r *= special_color.r;
@@ -1028,11 +1023,9 @@ void MakeCLight2(Color3f *infra, const EERIE_QUAT *qInvert, EERIE_3DOBJ *eobj, l
 			}
 		}
 
-		if(Project.improve) {
-			tempColor.r *= infra->r;
-			tempColor.g *= infra->g;
-			tempColor.b *= infra->b;
-		}
+		tempColor.r *= infra->r;
+		tempColor.g *= infra->g;
+		tempColor.b *= infra->b;
 
 		tempColor.r *= special_color.r;
 		tempColor.g *= special_color.g;
@@ -1262,7 +1255,7 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, const EERIE_QUAT * rotation, Vec3f *poss,
 		highlightColor = io->highlightColor;
 	}
 
-	Color3f infra = Color3f::black;
+	Color3f infra = Color3f::white;
 	if(Project.improve) {
 		infra = (io) ? io->infracolor : Color3f(0.6f, 0.f, 1.f);
 	}
@@ -1864,7 +1857,7 @@ void Cedric_AnimateDrawEntityRender(EERIE_3DOBJ *eobj, const Vec3f & pos, Entity
 		highlightColor = io->highlightColor;
 	}
 
-	Color3f infra = Color3f::black;
+	Color3f infra = Color3f::white;
 	if(Project.improve) {
 		infra = (io) ? io->infracolor : Color3f(0.6f, 0.f, 1.f);
 	}
