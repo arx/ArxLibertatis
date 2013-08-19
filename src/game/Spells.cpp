@@ -5817,6 +5817,8 @@ void ARX_SPELLS_Update()
 
 					GRenderer->SetRenderState(Renderer::AlphaBlending, false);		
 					GRenderer->SetRenderState(Renderer::DepthWrite, true);	
+					
+					ARX_SOUND_RefreshPosition(spells[i].snd_loop, &cabalpos);
 				}
 			}
 			break;				
