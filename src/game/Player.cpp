@@ -595,6 +595,7 @@ static void ARX_PLAYER_ComputePlayerStats() {
 	fCalc = player.Attribute_Constitution * 2 + ((ARX_PLAYER_Get_Skill_Defense(1) * ( 1.0f / 4 )));
 	player.resist_poison = checked_range_cast<unsigned char>(fCalc);
 
+	player.Critical_Hit = (float)(player.Full_Attribute_Dexterity - 9) * 2.f + (float)(player.Full_Skill_Close_Combat * ( 1.0f / 5 ));
 
 	player.damages = (player.Attribute_Strength - 10) * ( 1.0f / 2 );
 
