@@ -4765,8 +4765,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 		// LEVEL 9
 		case SPELL_SUMMON_CREATURE: {
 			
-			ARX_SOUND_PlaySFX(SND_SPELL_SUMMON_CREATURE);
-			
 			spells[i].exist = true;
 			spells[i].lastupdate = spells[i].timcreation = (unsigned long)(arxtime);
 			spells[i].bDuration = true;
@@ -4800,7 +4798,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			
 			spells[i].fdata = (spells[i].caster == 0 && cur_mega == 10) ? 1.f : 0.f;
 			spells[i].target_pos = target;
-			
+			ARX_SOUND_PlaySFX(SND_SPELL_SUMMON_CREATURE, &spells[i].target_pos);
 			CSummonCreature * effect = new CSummonCreature();
 			effect->spellinstance = i;
 			effect->Create(target, MAKEANGLE(player.angle.b));
@@ -5600,7 +5598,7 @@ void ARX_SPELLS_Update()
 				}
 				break;
 				case SPELL_SUMMON_CREATURE :
-					ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &spells[i].caster_pos);
+					ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &entities[spells[i].longinfo2]->pos);
 
 					if(spells[i].pSpellFx->lLightId > -1) {
 						long id = spells[i].pSpellFx->lLightId;
@@ -6409,7 +6407,7 @@ void ARX_SPELLS_Update()
 						}
 
 						spells[i].longinfo=0;
-						ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &spells[i].caster_pos);
+						ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &spells[i].target_pos);
 						CSummonCreature *pSummon;
 						pSummon= (CSummonCreature *)spells[i].pSpellFx;
 
