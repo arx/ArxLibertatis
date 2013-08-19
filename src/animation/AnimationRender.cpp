@@ -447,6 +447,25 @@ void Insertllight(EERIE_LIGHT * el,float dist)
 	}
 }
 
+void UpdateLlights(Vec3f & tv) {
+	llightsInit();
+
+	for(int i = 0; i < TOTIOPDL; i++) {
+		if(IO_PDL[i]->fallend + 500.f < 0)
+			continue;
+
+		Insertllight(IO_PDL[i], dist(IO_PDL[i]->pos, tv));
+	}
+
+	for(int i = 0; i < TOTPDL; i++) {
+		if(PDL[i]->fallend + 500.f < 0)
+			continue;
+
+		Insertllight(PDL[i], dist(PDL[i]->pos, tv));
+	}
+}
+
+
 float GetColorz(float x, float y, float z) {
 
 	Vec3f pos(x, y, z);
@@ -740,21 +759,7 @@ static void Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity 
 	else
 		tv.y -= 90.f;
 
-	llightsInit();
-
-	for(int i = 0; i < TOTIOPDL; i++) {
-		if(IO_PDL[i]->fallend + 500.f < 0)
-			continue;
-
-		Insertllight(IO_PDL[i], dist(IO_PDL[i]->pos, tv));
-	}
-
-	for(int i = 0; i < TOTPDL; i++) {
-		if(PDL[i]->fallend + 500.f < 0)
-			continue;
-
-		Insertllight(PDL[i], dist(PDL[i]->pos, tv));
-	}
+	UpdateLlights(tv);
 
 	/* Apply light on all vertices */
 	for(int i = 0; i != obj->nb_bones; i++) {
@@ -1212,7 +1217,6 @@ void MakeCLight(Entity * io, Color3f * infra, const EERIE_QUAT *qInvert, Vec3f *
 		infra->b = 1.f;
 	}
 
-	llightsInit();
 	Vec3f tv = *pos;
 
 	if(io && (io->ioflags & IO_ITEM))
@@ -1220,19 +1224,7 @@ void MakeCLight(Entity * io, Color3f * infra, const EERIE_QUAT *qInvert, Vec3f *
 	else
 		tv.y -= 90.f;
 
-	for(int i = 0; i < TOTIOPDL; i++) {
-		if(IO_PDL[i]->fallend + 500.f < 0)
-			continue;
-
-		Insertllight(IO_PDL[i], dist(IO_PDL[i]->pos, tv));
-	}
-
-	for(int i = 0; i < TOTPDL; i++) {
-		if(PDL[i]->fallend + 500.f < 0)
-			continue;
-
-		Insertllight(PDL[i], dist(PDL[i]->pos, tv));
-	}
+	UpdateLlights(tv);
 
 	if(io && (io->ioflags & IO_ANGULAR))
 		return;
