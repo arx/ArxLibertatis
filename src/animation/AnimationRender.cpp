@@ -960,14 +960,17 @@ void MakeCLight(Entity * io, Color3f * infra, const EERIE_QUAT *qInvert, EERIE_3
 			}
 		}
 
-		if(Project.improve && !io) {
+		if(Project.improve) {
 			tempColor.r *= infra->r;
 			tempColor.g *= infra->g;
 			tempColor.b *= infra->b;
 
-			tempColor.r += infra->r * 512.f;
-			tempColor.g += infra->g;
-			tempColor.b += infra->b * 400.f;
+			// Special case for drawing runes in book
+			if(!io) {
+				tempColor.r += infra->r * 512.f;
+				tempColor.g += infra->g;
+				tempColor.b += infra->b * 400.f;
+			}
 		}
 
 		if(special_color_flag & 1) {
@@ -1273,8 +1276,8 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, const EERIE_QUAT * rotation, Vec3f *poss,
 	}
 
 	Color3f infra = Color3f::black;
-	if(Project.improve && !io) {
-		infra = Color3f(0.6f, 0.f, 1.f);
+	if(Project.improve) {
+		infra = (io) ? io->infracolor : Color3f(0.6f, 0.f, 1.f);
 	}
 
 	// Ambient light
