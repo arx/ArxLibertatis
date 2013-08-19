@@ -4162,7 +4162,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			break;
 		}
 		case SPELL_PARALYSE: {
-			ARX_SOUND_PlaySFX(SND_SPELL_PARALYSE, &spells[i].caster_pos);
+			ARX_SOUND_PlaySFX(SND_SPELL_PARALYSE, &entities[spells[i].target]->pos);
 			
 			spells[i].exist = true;
 			spells[i].tolive = (duration > -1) ? duration : 5000;
