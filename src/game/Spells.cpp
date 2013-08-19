@@ -3870,7 +3870,11 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 				spells[iCancel].tolive = 0;
 			}
 			
-			ARX_SOUND_PlaySFX(SND_SPELL_COLD_PROTECTION_START);
+			if(spells[i].caster == 0) {
+				spells[i].target = 0;
+			}
+			
+			ARX_SOUND_PlaySFX(SND_SPELL_COLD_PROTECTION_START, &entities[spells[i].target]->pos);
 			
 			spells[i].exist = true;
 			spells[i].lastupdate = spells[i].timcreation = (unsigned long)(arxtime);
@@ -3878,10 +3882,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 				spells[i].tolive = duration;
 			} else {
 				spells[i].tolive = (spells[i].caster == 0) ? 2000000 : 20000;
-			}
-			
-			if(spells[i].caster == 0) {
-				spells[i].target = 0;
 			}
 			
 			spells[i].bDuration = true;
@@ -3894,7 +3894,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			spells[i].tolive = effect->GetDuration();
 			
 			spells[i].snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_COLD_PROTECTION_LOOP,
-			                                       &spells[i].caster_pos, 1.f,
+			                                       &entities[spells[i].target]->pos, 1.f,
 			                                       ARX_SOUND_PLAY_LOOPED);
 			
 			ARX_SPELLS_AddSpellOn(spells[i].target, i);
@@ -5480,7 +5480,7 @@ void ARX_SPELLS_Update()
 				break;
 				case SPELL_COLD_PROTECTION:
 					ARX_SOUND_Stop(spells[i].snd_loop);
-					ARX_SOUND_PlaySFX(SND_SPELL_COLD_PROTECTION_END);
+					ARX_SOUND_PlaySFX(SND_SPELL_COLD_PROTECTION_END, &entities[spells[i].target]->pos);
 					ARX_SPELLS_RemoveSpellOn(spells[i].target, i);
 
 					if(ValidIONum(spells[i].target))
@@ -5966,6 +5966,7 @@ void ARX_SPELLS_Update()
 			case SPELL_COLD_PROTECTION:
 				spells[i].pSpellFx->Update(framedelay);
 				spells[i].pSpellFx->Render();
+				ARX_SOUND_RefreshPosition(spells[i].snd_loop, &entities[spells[i].target]->pos);
 			break;
 			//****************************************************************************
 			// LEVEL 5 SPELLS
