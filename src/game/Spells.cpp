@@ -4895,10 +4895,10 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 				return false;
 			}
 			
-			ARX_SOUND_PlaySFX(SND_SPELL_INCINERATE);
+			ARX_SOUND_PlaySFX(SND_SPELL_INCINERATE, &entities[spells[i].target]->pos);
 			
 			spells[i].snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_INCINERATE_LOOP, 
-			                                       &spells[i].caster_pos, 1.f, 
+			                                       &entities[spells[i].target]->pos, 1.f, 
 			                                       ARX_SOUND_PLAY_LOOPED);
 			
 			spells[i].exist = true;
@@ -5618,7 +5618,7 @@ void ARX_SPELLS_Update()
 				case SPELL_INCINERATE:
 					ARX_SPELLS_RemoveSpellOn(spells[i].target, i);
 					ARX_SOUND_Stop(spells[i].snd_loop);
-					ARX_SOUND_PlaySFX(SND_SPELL_INCINERATE_END, &spells[i].caster_pos);
+					ARX_SOUND_PlaySFX(SND_SPELL_INCINERATE_END);
 				break;
 				//****************************************************************************
 				// LEVEL 10
@@ -6528,7 +6528,7 @@ void ARX_SPELLS_Update()
 			case SPELL_INCINERATE:
 			{
 				if(ValidIONum(spells[i].caster)) {
-					ARX_SOUND_RefreshPosition(spells[i].snd_loop, &entities[spells[i].caster]->pos);
+					ARX_SOUND_RefreshPosition(spells[i].snd_loop, &entities[spells[i].target]->pos);
 				}
 			}
 			break;
