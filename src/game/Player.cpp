@@ -1533,16 +1533,16 @@ void ARX_PLAYER_Manage_Visual() {
 			io->halo.flags |= HALO_ACTIVE | HALO_DYNLIGHT;
 			io->halo.radius = 20.f;
 			player.life += float(framedelay) * 0.1f;
-			player.life = std::min(player.life, player.maxlife);
+			player.life = std::min(player.life, player.Full_maxlife);
 			player.mana += float(framedelay) * 0.1f;
-			player.mana = std::min(player.mana, player.maxmana);
+			player.mana = std::min(player.mana, player.Full_maxmana);
 		}
 		
 		if(cur_mr == 3) {
 			player.life += float(framedelay) * 0.05f;
-			player.life = std::min(player.life, player.maxlife);
+			player.life = std::min(player.life, player.Full_maxlife);
 			player.mana += float(framedelay) * 0.05f;
-			player.mana = std::min(player.mana, player.maxmana);
+			player.mana = std::min(player.mana, player.Full_maxmana);
 		}
 		
 		io->pos = player.basePosition();
