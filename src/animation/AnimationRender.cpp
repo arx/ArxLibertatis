@@ -744,23 +744,8 @@ void Cedric_ApplyLightingFirstPartRefactor(Entity *io) {
 }
 
 /* Object dynamic lighting */
-static void Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity * io, const Vec3f & pos, Color3f &special_color, long &special_color_flag) {
+static void Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, const Color3f & ambient, const Color3f & infra, Color3f &special_color, long &special_color_flag) {
 		
-	Color3f infra = Color3f::black;
-	if(Project.improve) {
-		infra = (io) ? io->infracolor : Color3f(0.6f, 0.f, 1.f);
-	}
-	
-	/* Get nearest lights */
-	Vec3f tv = pos;
-	
-	if(io && io->obj->fastaccess.view_attach >= 0 && io->obj->fastaccess.head_group_origin != -1)
-		tv.y = io->obj->vertexlist3[io->obj->fastaccess.head_group_origin].v.y + 10;
-	else
-		tv.y -= 90.f;
-
-	UpdateLlights(tv);
-
 	/* Apply light on all vertices */
 	for(int i = 0; i != obj->nb_bones; i++) {
 
@@ -768,13 +753,7 @@ static void Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity 
 
 		/* Get light value for each vertex */
 		for(int v = 0; v != obj->bones[i].nb_idxvertices; v++) {
-			Color3f tempColor;
-
-			// Ambient light
-			if(io && (io->ioflags & (IO_NPC | IO_ITEM)))
-				tempColor = Color3f::gray(NPC_ITEMS_AMBIENT_VALUE_255);
-			else
-				tempColor = ACTIVEBKG->ambient255;
+			Color3f tempColor = ambient;
 
 			Vec3f posVert = eobj->vertexlist[obj->bones[i].idxvertices[v]].norm;
 
@@ -2216,7 +2195,27 @@ void Cedric_AnimateDrawEntityRender(EERIE_3DOBJ *eobj, const Vec3f & pos, Entity
 		special_color = io->special_color;
 	}
 
-	Cedric_ApplyLighting(eobj, obj, io, pos, special_color, special_color_flag);
+	Color3f infra = Color3f::black;
+	if(Project.improve) {
+		infra = (io) ? io->infracolor : Color3f(0.6f, 0.f, 1.f);
+	}
+
+	// Ambient light
+	Color3f ambientColor = ACTIVEBKG->ambient255;
+	if(io && (io->ioflags & (IO_NPC | IO_ITEM)))
+		ambientColor = Color3f::gray(NPC_ITEMS_AMBIENT_VALUE_255);
+
+	/* Get nearest lights */
+	Vec3f tv = pos;
+
+	if(io && io->obj->fastaccess.view_attach >= 0 && io->obj->fastaccess.head_group_origin != -1)
+		tv.y = io->obj->vertexlist3[io->obj->fastaccess.head_group_origin].v.y + 10;
+	else
+		tv.y -= 90.f;
+
+	UpdateLlights(tv);
+
+	Cedric_ApplyLighting(eobj, obj, ambientColor, infra, special_color, special_color_flag);
 
 	Cedric_RenderObject(eobj, obj, io, pos, invisibility);
 
