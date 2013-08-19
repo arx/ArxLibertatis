@@ -5393,7 +5393,7 @@ void ARX_SPELLS_Update()
 						ARX_SOUND_Stop(spells[i].snd_loop);
 					}
 
-					ARX_SOUND_PlaySFX(SND_SPELL_VISION_START, &spells[i].caster_pos);					
+					ARX_SOUND_PlaySFX(SND_SPELL_VISION_START, &entities[spells[i].caster]->pos);					
 				break;
 				case SPELL_MAGIC_MISSILE: {
 					if(spells[i].longinfo != -1)
