@@ -1263,7 +1263,7 @@ void MakeCLight(Entity * io, Color3f * infra, const EERIE_QUAT *qInvert, EERIE_3
 	}
 }
 
-void MakeCLight2(Entity *io, Color3f *infra, const EERIE_QUAT *qInvert, Vec3f *pos, EERIE_3DOBJ *eobj, long ii, Color3f &special_color, long &special_color_flag) {
+void MakeCLight2(Color3f *infra, const EERIE_QUAT *qInvert, EERIE_3DOBJ *eobj, long ii, Color3f & ambientColor, Color3f &special_color, long &special_color_flag) {
 	
 	long paf[3];
 	paf[0] = eobj->facelist[ii].vid[0];
@@ -1271,12 +1271,7 @@ void MakeCLight2(Entity *io, Color3f *infra, const EERIE_QUAT *qInvert, Vec3f *p
 	paf[2] = eobj->facelist[ii].vid[2];
 
 	for(long i = 0; i < 3; i++) {
-		Color3f tempColor;
-
-		if(io && (io->ioflags & (IO_NPC | IO_ITEM)))
-			tempColor = Color3f::gray(NPC_ITEMS_AMBIENT_VALUE_255);
-		else
-			tempColor = ACTIVEBKG->ambient255;
+		Color3f tempColor = ambientColor;
 
 		Vec3f * posVert = &eobj->vertexlist3[paf[i]].v;
 
@@ -1286,8 +1281,7 @@ void MakeCLight2(Entity *io, Color3f *infra, const EERIE_QUAT *qInvert, Vec3f *p
 			if(!Cur_llights)
 				break;
 
-			float oolength = 1.f / fdist(*posVert, Cur_llights->pos);
-			Vec3f vLight = (llights[l]->pos - *posVert) * oolength;
+			Vec3f vLight = (llights[l]->pos - *posVert).getNormalized();
 
 			Vec3f Cur_vLights;
 			TransformInverseVertexQuat(qInvert, &vLight, &Cur_vLights);
@@ -1608,7 +1602,7 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, const EERIE_QUAT * rotation, Vec3f *poss,
 			continue;
 
 		if(io && (io->ioflags & IO_ANGULAR))
-			MakeCLight2(io, &infra, rotation, &pos, eobj, i, special_color, special_color_flag);
+			MakeCLight2(&infra, rotation, eobj, i, ambientColor, special_color, special_color_flag);
 
 		float fTransp = 0.f;
 		TexturedVertex * tvList = NULL;
