@@ -1878,7 +1878,7 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, const EERIE_QUAT * rotation, Vec3f *poss,
 extern long IN_BOOK_DRAW;
 
 /* Render object */
-static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity * io, const Vec3f & pos, Vec3f & ftr, float invisibility) {
+static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity * io, const Vec3f & pos, float invisibility) {
 
 	float MAX_ZEDE = 0.f;
 
@@ -1924,7 +1924,7 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity *
 
 	if(hio_armor || hio_leggings || hio_helmet || (use_io->halo.flags & HALO_ACTIVE)) {
 
-		Vec3f ftrPos = pos + ftr;
+		Vec3f ftrPos = pos;
 		//TODO copy-pase
 		float mdist = ACTIVECAM->cdepth;
 		mdist *= ( 1.0f / 2 );
@@ -2205,7 +2205,7 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity *
 	}
 }
 
-void Cedric_AnimateDrawEntityRender(EERIE_3DOBJ *eobj, const Vec3f & pos, Vec3f &ftr, Entity *io) {
+void Cedric_AnimateDrawEntityRender(EERIE_3DOBJ *eobj, const Vec3f & pos, Entity *io) {
 
 	float invisibility = Cedric_GetInvisibility(io);
 
@@ -2226,7 +2226,7 @@ void Cedric_AnimateDrawEntityRender(EERIE_3DOBJ *eobj, const Vec3f & pos, Vec3f 
 
 	Cedric_ApplyLighting(eobj, obj, io, pos, special_color, special_color_flag);
 
-	Cedric_RenderObject(eobj, obj, io, pos, ftr, invisibility);
+	Cedric_RenderObject(eobj, obj, io, pos, invisibility);
 
 	// Now we can render Linked Objects
 	for (long k = 0; k < eobj->nblinked; k++) {
@@ -2645,7 +2645,7 @@ void EERIEDrawAnimQuat(EERIE_3DOBJ *eobj, ANIM_USE * animlayer,const Anglef & an
 		return;
 
 	if(render)
-		Cedric_AnimateDrawEntityRender(eobj, pos, ftr, io);
+		Cedric_AnimateDrawEntityRender(eobj, pos, io);
 }
 
 void AnimatedEntityUpdate(Entity * entity) {
