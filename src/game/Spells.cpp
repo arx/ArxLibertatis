@@ -3382,12 +3382,16 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 				spells[iCancel].tolive = 0;
 			}
 			
+			if(spells[i].caster == 0) {
+				spells[i].target = spells[i].caster;
+			}
+			
 			if(!(spells[i].flags & SPELLCAST_FLAG_NOSOUND)) {
-				ARX_SOUND_PlaySFX(SND_SPELL_ARMOR_START, &spells[i].target_pos);
+				ARX_SOUND_PlaySFX(SND_SPELL_ARMOR_START, &entities[spells[i].target]->pos);
 			}
 			
 			spells[i].snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_ARMOR_LOOP,
-			                                       &spells[i].caster_pos, 1.f,
+			                                       &entities[spells[i].target]->pos, 1.f,
 			                                       ARX_SOUND_PLAY_LOOPED);
 			
 			spells[i].exist = true;
@@ -3395,10 +3399,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 				spells[i].tolive = duration;
 			} else {
 				spells[i].tolive = (spells[i].caster == 0) ? 20000000 : 20000;
-			}
-			
-			if(spells[i].caster == 0) {
-				spells[i].target = spells[i].caster;
 			}
 			
 			spells[i].bDuration = true;
@@ -5420,7 +5420,7 @@ void ARX_SPELLS_Update()
 				break;
 				case SPELL_ARMOR: {
 					ARX_SOUND_Stop(spells[i].snd_loop);
-					ARX_SOUND_PlaySFX(SND_SPELL_ARMOR_END, &spells[i].caster_pos);					
+					ARX_SOUND_PlaySFX(SND_SPELL_ARMOR_END, &entities[spells[i].target]->pos);					
 
 					if(ValidIONum(spells[i].target))
 						ARX_HALO_SetToNative(entities[spells[i].target]);
@@ -5740,6 +5740,8 @@ void ARX_SPELLS_Update()
 					pCSpellFX->Update(framedelay);
 					pCSpellFX->Render();
 				}
+				
+				ARX_SOUND_RefreshPosition(spells[i].snd_loop, &entities[spells[i].target]->pos);
 			} 
 			break;
 			case SPELL_HARM:
