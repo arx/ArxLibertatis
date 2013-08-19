@@ -1264,24 +1264,6 @@ void MakeCLight(Entity * io, Color3f * infra, const EERIE_QUAT *qInvert, EERIE_3
 }
 
 void MakeCLight2(Entity *io, Color3f *infra, const EERIE_QUAT *qInvert, Vec3f *pos, EERIE_3DOBJ *eobj, long ii, Color3f &special_color, long &special_color_flag) {
-
-	Vec3f vTLights[32];
-
-	Vec3f tv = *pos;
-
-	if(io && (io->ioflags & IO_ITEM))
-		tv.y -= 60.f;
-	else
-		tv.y -= 90.f;
-	
-	for(long l = 0; l != MAX_LLIGHTS; l++) {
-		if(llights[l]) {
-			Vec3f vLight = (llights[l]->pos - tv) / dists[l];
-			TransformInverseVertexQuat(qInvert, &vLight, &vTLights[l]);
-		} else {
-			break;
-		}
-	}
 	
 	long paf[3];
 	paf[0] = eobj->facelist[ii].vid[0];
@@ -1307,10 +1289,10 @@ void MakeCLight2(Entity *io, Color3f *infra, const EERIE_QUAT *qInvert, Vec3f *p
 			float oolength = 1.f / fdist(*posVert, Cur_llights->pos);
 			Vec3f vLight = (llights[l]->pos - *posVert) * oolength;
 
-			TransformInverseVertexQuat(qInvert, &vLight, &vTLights[l]);
-			Vec3f * Cur_vLights = &vTLights[l];
+			Vec3f Cur_vLights;
+			TransformInverseVertexQuat(qInvert, &vLight, &Cur_vLights);
 
-			float cosangle = dot(eobj->facelist[ii].norm, *Cur_vLights);
+			float cosangle = dot(eobj->facelist[ii].norm, Cur_vLights);
 
 			cosangle *= 0.5f;
 
