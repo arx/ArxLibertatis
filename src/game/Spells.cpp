@@ -3974,7 +3974,11 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 				spells[iCancel].tolive = 0;
 			}
 			
-			ARX_SOUND_PlaySFX(SND_SPELL_LEVITATE_START);
+			if(spells[i].caster == 0) {
+				spells[i].target = 0;
+			}
+			
+			ARX_SOUND_PlaySFX(SND_SPELL_LEVITATE_START, &entities[spells[i].target]->pos);
 			spells[i].exist = true;
 			spells[i].tolive = (duration > -1) ? duration : 2000000000;
 			spells[i].bDuration = true;
@@ -3984,7 +3988,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			effect->spellinstance = i;
 			
 			Vec3f target;
-			if(spells[i].caster == 0 || spells[i].target == 0) {
+			if(spells[i].target == 0) {
 				target = player.pos + Vec3f(0.f, 150.f, 0.f);
 				spells[i].target = 0;
 				spells[i].tolive = 200000000;
@@ -3998,7 +4002,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			spells[i].tolive = effect->GetDuration();
 			
 			spells[i].snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_LEVITATE_LOOP,
-			                                       &spells[i].caster_pos, 0.7f,
+			                                       &entities[spells[i].target]->pos, 0.7f,
 			                                       ARX_SOUND_PLAY_LOOPED);
 			
 			ARX_SPELLS_AddSpellOn(spells[i].target, i);
@@ -5490,7 +5494,7 @@ void ARX_SPELLS_Update()
 				// LEVEL 5
 				case SPELL_LEVITATE: {
 					ARX_SOUND_Stop(spells[i].snd_loop);
-					ARX_SOUND_PlaySFX(SND_SPELL_LEVITATE_END, &entities[spells[i].caster]->pos);
+					ARX_SOUND_PlaySFX(SND_SPELL_LEVITATE_END, &entities[spells[i].target]->pos);
 					ARX_SPELLS_RemoveSpellOn(spells[i].target, i);
 
 					if(spells[i].target == 0)
@@ -6047,7 +6051,7 @@ void ARX_SPELLS_Update()
 					pCSpellFX->Update(framedelay);
 					pCSpellFX->Render();
 				}
-				ARX_SOUND_RefreshPosition(spells[i].snd_loop, &entities[spells[i].caster]->pos);
+				ARX_SOUND_RefreshPosition(spells[i].snd_loop, &entities[spells[i].target]->pos);
 			}
 			break;
 			//****************************************************************************
