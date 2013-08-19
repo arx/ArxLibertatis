@@ -3530,12 +3530,15 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			spells[i].bDuration = true;
 			spells[i].fManaCostPerSecond = 2.f;
 			
-			ARX_SOUND_PlaySFX(SND_SPELL_SPEED_START, &spells[i].caster_pos);
-			
 			if(spells[i].caster == 0) {
 				spells[i].target = spells[i].caster;
+			}
+			
+			ARX_SOUND_PlaySFX(SND_SPELL_SPEED_START, &entities[spells[i].target]->pos);
+			
+			if(spells[i].target == 0) {
 				spells[i].snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_SPEED_LOOP,
-				                                       &spells[i].caster_pos, 1.f,
+				                                       &entities[spells[i].target]->pos, 1.f,
 				                                       ARX_SOUND_PLAY_LOOPED);
 			}
 			
@@ -5448,7 +5451,7 @@ void ARX_SPELLS_Update()
 					if(spells[i].caster == 0)
 						ARX_SOUND_Stop(spells[i].snd_loop);
 
-					ARX_SOUND_PlaySFX(SND_SPELL_SPEED_END, &spells[i].caster_pos);
+					ARX_SOUND_PlaySFX(SND_SPELL_SPEED_END, &entities[spells[i].target]->pos);
 				break;
 				case SPELL_FIREBALL:
 					ARX_SOUND_Stop(spells[i].snd_loop);					
@@ -5889,7 +5892,7 @@ void ARX_SPELLS_Update()
 
 			if(spells[i].pSpellFx) {
 				if(spells[i].caster == 0)
-					ARX_SOUND_RefreshPosition(spells[i].snd_loop);
+					ARX_SOUND_RefreshPosition(spells[i].snd_loop, &entities[spells[i].target]->pos);
 
 				spells[i].pSpellFx->Update(framedelay);
 				spells[i].pSpellFx->Render();
