@@ -419,7 +419,7 @@ bool ARX_SCENE_PORTAL_Basic_ClipIO(Entity * io) {
 // TODO:
 //   Implement all Portal Methods
 //   Return a reduced clipbox which can be used for polys clipping in the case of partial visibility
-bool ARX_SCENE_PORTAL_ClipIO(Entity * io, Vec3f * position) {
+bool ARX_SCENE_PORTAL_ClipIO(Entity * io, const Vec3f & position) {
 	
 	if(io==entities.player())
 		return false;
@@ -429,9 +429,9 @@ bool ARX_SCENE_PORTAL_ClipIO(Entity * io, Vec3f * position) {
 
 	if(USE_PORTALS && portals) {
 		Vec3f posi;
-		posi.x=position->x;
-		posi.y=position->y-60; //20
-		posi.z=position->z;
+		posi.x=position.x;
+		posi.y=position.y-60; //20
+		posi.z=position.z;
 		long room_num;
 
 		if(io) {
@@ -444,7 +444,7 @@ bool ARX_SCENE_PORTAL_ClipIO(Entity * io, Vec3f * position) {
 		}
 
 		if(room_num == -1) {
-			posi.y = position->y - 120;
+			posi.y = position.y - 120;
 			room_num = ARX_PORTALS_GetRoomNumForPosition(&posi);
 		}
 

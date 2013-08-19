@@ -3990,7 +3990,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 						EERIE_QUAT rotation;
 						Quat_Init(&rotation);
 
-						worldAngleToQuat(&rotation, &angle);
+						worldAngleToQuat(&rotation, angle);
 
 						DrawEERIEInter(necklace.lacet, &rotation, &pos, NULL);
 
@@ -4023,7 +4023,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 						PrepareCamera(&bookcam);
 
 						// Now draw the rune
-						worldAngleToQuat(&rotation, &angle);
+						worldAngleToQuat(&rotation, angle);
 						DrawEERIEInter(necklace.runes[i], &rotation, &pos, NULL);
 
 						PopAllTriangleList();
@@ -4055,7 +4055,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 								EERIE_QUAT rotation;
 								Quat_Init(&rotation);
 
-								worldAngleToQuat(&rotation, &angle);
+								worldAngleToQuat(&rotation, angle);
 								DrawEERIEInter(necklace.runes[i], &rotation, &pos, NULL);
 
 								necklace.runes[i]->angle.b+=framedelay*2.f;
@@ -5435,7 +5435,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 
 		arx_assert(player.bookAnimation[0].cur_anim);
 
-		EERIEDrawAnimQuat(entities.player()->obj, player.bookAnimation, &ePlayerAngle, &pos,
+		EERIEDrawAnimQuat(entities.player()->obj, player.bookAnimation, ePlayerAngle, pos,
 						  checked_range_cast<unsigned long>(Original_framedelay), NULL);
 
 		INVISIBILITY_OVERRIDE=0;
@@ -6584,7 +6584,7 @@ long Manage3DCursor(long flags)
 			EERIE_QUAT rotation;
 			Quat_Init(&rotation);
 
-			worldAngleToQuat(&rotation, &temp);
+			worldAngleToQuat(&rotation, temp);
 
 			if(SPECIAL_DRAGINTER_RENDER) {
 			if(EEfabs(lastanything) > EEfabs(height)) {

@@ -725,7 +725,7 @@ void Cedric_ApplyLightingFirstPartRefactor(Entity *io) {
 }
 
 /* Object dynamic lighting */
-static void Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity * io, Vec3f * pos, Color3f &special_color, long &special_color_flag) {
+static void Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity * io, const Vec3f & pos, Color3f &special_color, long &special_color_flag) {
 		
 	Color3f infra = Color3f::black;
 	if(Project.improve) {
@@ -733,7 +733,7 @@ static void Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity 
 	}
 	
 	/* Get nearest lights */
-	Vec3f tv = *pos;
+	Vec3f tv = pos;
 	
 	if(io && io->obj->fastaccess.view_attach >= 0 && io->obj->fastaccess.head_group_origin != -1)
 		tv.y = io->obj->vertexlist3[io->obj->fastaccess.head_group_origin].v.y + 10;
@@ -1613,7 +1613,7 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, const EERIE_QUAT * rotation, Vec3f *poss,
 		io->bbox2D = BBOX2D;
 	}
 
-	if(!modinfo && ARX_SCENE_PORTAL_ClipIO(io, &pos))
+	if(!modinfo && ARX_SCENE_PORTAL_ClipIO(io, pos))
 		return;
 
 	long special_color_flag = 0;
@@ -1878,7 +1878,7 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, const EERIE_QUAT * rotation, Vec3f *poss,
 extern long IN_BOOK_DRAW;
 
 /* Render object */
-static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity * io, Vec3f * pos, Vec3f & ftr, float invisibility) {
+static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity * io, const Vec3f & pos, Vec3f & ftr, float invisibility) {
 
 	float MAX_ZEDE = 0.f;
 
@@ -1924,7 +1924,7 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity *
 
 	if(hio_armor || hio_leggings || hio_helmet || (use_io->halo.flags & HALO_ACTIVE)) {
 
-		Vec3f ftrPos = *pos + ftr;
+		Vec3f ftrPos = pos + ftr;
 		//TODO copy-pase
 		float mdist = ACTIVECAM->cdepth;
 		mdist *= ( 1.0f / 2 );
@@ -2205,7 +2205,7 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity *
 	}
 }
 
-void Cedric_AnimateDrawEntityRender(EERIE_3DOBJ *eobj, Vec3f *pos, Vec3f &ftr, Entity *io) {
+void Cedric_AnimateDrawEntityRender(EERIE_3DOBJ *eobj, const Vec3f & pos, Vec3f &ftr, Entity *io) {
 
 	float invisibility = Cedric_GetInvisibility(io);
 
@@ -2463,7 +2463,7 @@ void Cedric_SaveBlendData(EERIE_C_DATA *c_data) {
 }
 
 /* Apply transformations on all bones */
-static void Cedric_ConcatenateTM(EERIE_C_DATA *obj, EERIE_QUAT *rotation, Vec3f *pos, Vec3f &ftr, float g_scale) {
+static void Cedric_ConcatenateTM(EERIE_C_DATA *obj, const EERIE_QUAT & rotation, const Vec3f & pos, const Vec3f & ftr, float g_scale) {
 
 	arx_assert(obj);
 
@@ -2484,13 +2484,13 @@ static void Cedric_ConcatenateTM(EERIE_C_DATA *obj, EERIE_QUAT *rotation, Vec3f 
 			bone->scaleanim = (bone->scaleinit + Vec3f::ONE) * parent->scaleanim;
 		} else { // Root Bone
 			// Rotation
-			Quat_Multiply(&bone->quatanim, rotation, &bone->quatinit);
+			Quat_Multiply(&bone->quatanim, &rotation, &bone->quatinit);
 
 			// Translation
 			Vec3f vt1 = bone->transinit + ftr;
-			TransformVertexQuat(rotation, &vt1, &bone->transanim);
+			TransformVertexQuat(&rotation, &vt1, &bone->transanim);
 			bone->transanim *= g_scale;
-			bone->transanim = *pos + bone->transanim;
+			bone->transanim += pos;
 
 			// Compute Global Object Scale AND Global Animation Scale
 			bone->scaleanim = (bone->scaleinit + Vec3f::ONE) * g_scale;
@@ -2499,7 +2499,7 @@ static void Cedric_ConcatenateTM(EERIE_C_DATA *obj, EERIE_QUAT *rotation, Vec3f 
 }
 
 /* Transform object vertices  */
-void Cedric_TransformVerts(Entity *io, EERIE_3DOBJ *eobj, EERIE_C_DATA *obj, Vec3f *pos) {
+void Cedric_TransformVerts(Entity *io, EERIE_3DOBJ *eobj, EERIE_C_DATA *obj, const Vec3f & pos) {
 
 	arx_assert(eobj);
 
@@ -2534,7 +2534,7 @@ void Cedric_TransformVerts(Entity *io, EERIE_3DOBJ *eobj, EERIE_C_DATA *obj, Vec
 
 	if(eobj->sdata) {
 		for(size_t i = 0; i < eobj->vertexlist.size(); i++) {
-			eobj->vertexlist[i].vert.p = eobj->vertexlist3[i].v - *pos;
+			eobj->vertexlist[i].vert.p = eobj->vertexlist3[i].v - pos;
 		}
 	}
 
@@ -2566,7 +2566,7 @@ void Cedric_TransformVerts(Entity *io, EERIE_3DOBJ *eobj, EERIE_C_DATA *obj, Vec
 /*!
  * \brief Apply animation and draw object
  */
-void Cedric_AnimateDrawEntity(EERIE_3DOBJ *eobj, ANIM_USE * animlayer, Anglef *angle, Vec3f *pos, Entity *io, Vec3f & ftr, float scale) {
+void Cedric_AnimateDrawEntity(EERIE_3DOBJ *eobj, ANIM_USE * animlayer, const Anglef & angle, const Vec3f & pos, Entity *io, Vec3f & ftr, float scale) {
 
 	// Manage Extra Rotations in Local Space
 	Cedric_ManageExtraRotationsFirst(io, eobj);
@@ -2592,12 +2592,12 @@ void Cedric_AnimateDrawEntity(EERIE_3DOBJ *eobj, ANIM_USE * animlayer, Anglef *a
 	worldAngleToQuat(&qt2, angle, isNpc);
 
 	// Build skeleton in Object Space
-	Cedric_ConcatenateTM(obj, &qt2, pos, ftr, scale);
+	Cedric_ConcatenateTM(obj, qt2, pos, ftr, scale);
 
 	Cedric_TransformVerts(io, eobj, obj, pos);
 }
 
-void EERIEDrawAnimQuat(EERIE_3DOBJ *eobj, ANIM_USE * animlayer, Anglef *angle, Vec3f *pos, unsigned long time, Entity *io, bool render, bool update_movement) {
+void EERIEDrawAnimQuat(EERIE_3DOBJ *eobj, ANIM_USE * animlayer,const Anglef & angle, const Vec3f & pos, unsigned long time, Entity *io, bool render, bool update_movement) {
 
 	if(io) {
 		float speedfactor = io->basespeed + io->speed_modif;
@@ -2650,12 +2650,12 @@ void EERIEDrawAnimQuat(EERIE_3DOBJ *eobj, ANIM_USE * animlayer, Anglef *angle, V
 
 void AnimatedEntityUpdate(Entity * entity) {
 
-	EERIEDrawAnimQuat(entity->obj, entity->animlayer, &entity->angle,
-		&entity->pos, Original_framedelay, entity, false, false);
+	EERIEDrawAnimQuat(entity->obj, entity->animlayer, entity->angle,
+		entity->pos, Original_framedelay, entity, false, false);
 }
 
 void AnimatedEntityRender(Entity * entity) {
 
-	EERIEDrawAnimQuat(entity->obj, entity->animlayer, &entity->angle,
-		&entity->pos, 0, entity);
+	EERIEDrawAnimQuat(entity->obj, entity->animlayer, entity->angle,
+		entity->pos, 0, entity);
 }

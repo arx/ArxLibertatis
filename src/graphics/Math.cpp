@@ -657,11 +657,11 @@ void QuatFromAngles(EERIE_QUAT * q, const Anglef * angle)
 
 }
 
-void worldAngleToQuat(EERIE_QUAT *dest, Anglef *src, bool isNpc) {
+void worldAngleToQuat(EERIE_QUAT *dest, const Anglef & src, bool isNpc) {
 
 	if(!isNpc) {
 		// To correct invalid angle in Animated FIX/ITEMS
-		Anglef ang = *src;
+		Anglef ang = src;
 		ang.a = (360 - ang.a);
 		ang.b = (ang.b);
 		ang.g = (ang.g);
@@ -677,7 +677,7 @@ void worldAngleToQuat(EERIE_QUAT *dest, Anglef *src, bool isNpc) {
 		MatrixSetByVectors(&mat, &vect, &up);
 		QuatFromMatrix(*dest, mat);
 	} else {
-		Anglef vt1 = Anglef(radians(src->a), radians(src->b), radians(src->g));
+		Anglef vt1 = Anglef(radians(src.a), radians(src.b), radians(src.g));
 		QuatFromAngles(dest, &vt1);
 	}
 }

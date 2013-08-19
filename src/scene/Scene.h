@@ -55,7 +55,7 @@ long ARX_PORTALS_GetRoomNumForPosition(Vec3f * pos, long flag = 0);
 
 void ARX_SCENE_Update();
 void ARX_SCENE_Render();
-bool ARX_SCENE_PORTAL_ClipIO(Entity * io, Vec3f * position);
+bool ARX_SCENE_PORTAL_ClipIO(Entity * io, const Vec3f & position);
 void RoomDrawRelease();
 bool ARX_SCENE_PORTAL_Basic_ClipIO(Entity * io);
 

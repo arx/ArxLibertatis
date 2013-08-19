@@ -3007,7 +3007,7 @@ void RenderInter() {
 
 			bool render = !ARX_SCENE_PORTAL_Basic_ClipIO(io);
 
-			EERIEDrawAnimQuat(io->obj, io->animlayer, &temp, &pos, diff, io, render);
+			EERIEDrawAnimQuat(io->obj, io->animlayer, temp, pos, diff, io, render);
 
 		} else {
 			if(ARX_SCENE_PORTAL_Basic_ClipIO(io))
@@ -3032,7 +3032,7 @@ void RenderInter() {
 						EERIE_QUAT rotation;
 						Quat_Init(&rotation);
 
-						worldAngleToQuat(&rotation, &temp);
+						worldAngleToQuat(&rotation, temp);
 
 						DrawEERIEInter(io->obj, &rotation, &io->pos, io);
 					}
