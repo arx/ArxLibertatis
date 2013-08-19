@@ -4827,8 +4827,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 				return false;
 			}
 			
-			ARX_SOUND_PlaySFX(SND_SPELL_SUMMON_CREATURE);
-			
 			spells[i].exist = true;
 			spells[i].lastupdate = spells[i].timcreation = (unsigned long)(arxtime);
 			spells[i].bDuration = true;
@@ -4840,7 +4838,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 				target.y += player.baseHeight();
 			}
 			spells[i].target_pos = target;
-			
+			ARX_SOUND_PlaySFX(SND_SPELL_SUMMON_CREATURE, &spells[i].target_pos);
 			CSummonCreature * effect = new CSummonCreature();
 			effect->spellinstance = i;
 			effect->Create(target, MAKEANGLE(player.angle.b));
@@ -5609,7 +5607,7 @@ void ARX_SPELLS_Update()
 					// need to killio
 				break;
 				case SPELL_FAKE_SUMMON :
-					ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &spells[i].caster_pos);						
+					ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &spells[i].target_pos);						
 
 					if(spells[i].pSpellFx->lLightId > -1) {
 						long id = spells[i].pSpellFx->lLightId;
