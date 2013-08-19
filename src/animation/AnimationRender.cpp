@@ -1190,9 +1190,6 @@ bool Cedric_IO_Visible(Vec3f * pos) {
 
 void MakeCLight(Entity * io, Color3f * infra, const EERIE_QUAT *qInvert, EERIE_3DOBJ * eobj, Color3f & ambientColor, Color3f &special_color, long &special_color_flag)
 {
-
-	if(io && (io->ioflags & IO_ANGULAR))
-		return;
 		
 	for(size_t i = 0; i < eobj->vertexlist.size(); i++) {
 		Color3f tempColor = ambientColor;
@@ -1569,7 +1566,9 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, const EERIE_QUAT * rotation, Vec3f *poss,
 
 
 	// Precalc local lights for this object then interpolate
-	MakeCLight(io, &infra, rotation, eobj, ambientColor, special_color, special_color_flag);
+	if(!(io && (io->ioflags & IO_ANGULAR))) {
+		MakeCLight(io, &infra, rotation, eobj, ambientColor, special_color, special_color_flag);
+	}
 
 	for(size_t i = 0; i < eobj->facelist.size(); i++) {
 		EERIE_FACE *eface = &eobj->facelist[i];
