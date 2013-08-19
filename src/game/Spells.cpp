@@ -327,7 +327,17 @@ bool GetSpellPosition(Vec3f * pos,long i)
 		break;
 		//****************************************************************************
 		// LEVEL 5
-		case SPELL_RUNE_OF_GUARDING:
+		case SPELL_RUNE_OF_GUARDING: {
+			CSpellFx *pCSpellFX = spells[i].pSpellFx;
+
+			if (pCSpellFX)
+			{
+				CRuneOfGuarding *pCRG = (CRuneOfGuarding *) pCSpellFX;
+					
+				*pos = pCRG->eSrc;
+				return true;
+			}
+		}
 		break;
 		case SPELL_LEVITATE:
 		break;
@@ -348,7 +358,17 @@ bool GetSpellPosition(Vec3f * pos,long i)
 				return true;
 			}
 		break;
-		case SPELL_CREATE_FIELD:
+		case SPELL_CREATE_FIELD: {
+			CSpellFx *pCSpellFX = spells[i].pSpellFx;
+
+			if (pCSpellFX)
+			{
+				CCreateField *pCreateField = (CCreateField *) pCSpellFX;
+					
+				*pos = pCreateField->eSrc;
+				return true;
+			}
+		}
 		break;
 		case SPELL_DISARM_TRAP:
 		break;
@@ -367,9 +387,8 @@ bool GetSpellPosition(Vec3f * pos,long i)
 			return true;
 		}	
 		break;
-		case SPELL_FIRE_FIELD:
-			CSpellFx *pCSpellFX;
-			pCSpellFX = spells[i].pSpellFx;
+		case SPELL_FIRE_FIELD: {
+			CSpellFx *pCSpellFX = spells[i].pSpellFx;
 
 			if (pCSpellFX)
 			{
@@ -378,8 +397,19 @@ bool GetSpellPosition(Vec3f * pos,long i)
 				*pos = pFireField->pos;
 				return true;
 			}
+		}
 		break;
-		case SPELL_ICE_FIELD:
+		case SPELL_ICE_FIELD: {
+			CSpellFx *pCSpellFX = spells[i].pSpellFx;
+
+			if (pCSpellFX)
+			{
+				CIceField *pIceField = (CIceField *) pCSpellFX;
+					
+				*pos = pIceField->eSrc;
+				return true;
+			}
+		}
 		break;
 		case SPELL_LIGHTNING_STRIKE:
 		break;
