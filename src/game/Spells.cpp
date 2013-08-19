@@ -4049,10 +4049,10 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 				spells[i].target = 0;
 			}
 			
-			ARX_SOUND_PlaySFX(SND_SPELL_REPEL_UNDEAD);
+			ARX_SOUND_PlaySFX(SND_SPELL_REPEL_UNDEAD, &entities[spells[i].target]->pos);
 			if(spells[i].target == 0) {
 				spells[i].snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_REPEL_UNDEAD_LOOP,
-				                                       &spells[i].caster_pos, 1.f,
+				                                       &entities[spells[i].target]->pos, 1.f,
 				                                       ARX_SOUND_PLAY_LOOPED);
 			}
 			
@@ -6015,7 +6015,7 @@ void ARX_SPELLS_Update()
 					spells[i].pSpellFx->Render();					
 
 					if (spells[i].target == 0)
-						ARX_SOUND_RefreshPosition(spells[i].snd_loop);
+						ARX_SOUND_RefreshPosition(spells[i].snd_loop, &entities[spells[i].target]->pos);
 				}
 			}
 			break;
