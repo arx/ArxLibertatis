@@ -3921,7 +3921,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 				spells[iCancel].tolive = 0;
 			}
 			
-			ARX_SOUND_PlaySFX(SND_SPELL_CURSE, &spells[i].caster_pos);
+			ARX_SOUND_PlaySFX(SND_SPELL_CURSE, &entities[spells[i].target]->pos);
 			
 			spells[i].exist = true;
 			spells[i].tolive = (duration > -1) ? duration : 2000000;
