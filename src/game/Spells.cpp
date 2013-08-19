@@ -5630,7 +5630,7 @@ void ARX_SPELLS_Update()
 				case SPELL_MASS_INCINERATE:
 					ARX_SPELLS_RemoveMultiSpellOn(i);
 					ARX_SOUND_Stop(spells[i].snd_loop);
-					ARX_SOUND_PlaySFX(SND_SPELL_INCINERATE_END, &spells[i].caster_pos);
+					ARX_SOUND_PlaySFX(SND_SPELL_INCINERATE_END);
 				break;
 				default:
 					break;
