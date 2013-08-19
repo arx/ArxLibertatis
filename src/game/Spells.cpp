@@ -5622,7 +5622,7 @@ void ARX_SPELLS_Update()
 				// LEVEL 10
 				case SPELL_FREEZE_TIME: {
 					GLOBAL_SLOWDOWN += spells[i].siz;
-					ARX_SOUND_PlaySFX(SND_SPELL_TELEKINESIS_END, &spells[i].caster_pos);
+					ARX_SOUND_PlaySFX(SND_SPELL_TELEKINESIS_END, &entities[spells[i].caster]->pos);
 				}
 				break;
 				case SPELL_MASS_INCINERATE:
