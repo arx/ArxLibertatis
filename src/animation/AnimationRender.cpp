@@ -784,17 +784,9 @@ static void Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, const C
 				}
 			}
 
-			tempColor.r *= infra.r;
-			tempColor.g *= infra.g;
-			tempColor.b *= infra.b;
-
-			tempColor.r *= special_color.r;
-			tempColor.g *= special_color.g;
-			tempColor.b *= special_color.b;
-
-			tempColor.r += highlightColor.r;
-			tempColor.g += highlightColor.g;
-			tempColor.b += highlightColor.b;
+			tempColor *= infra;
+			tempColor *= special_color;
+			tempColor += highlightColor;
 
 			u8 ir = clipByte255(tempColor.r);
 			u8 ig = clipByte255(tempColor.g);
@@ -903,7 +895,7 @@ bool Cedric_IO_Visible(Vec3f * pos) {
 	return true;
 }
 
-void MakeCLight(Entity * io, Color3f * infra, const EERIE_QUAT *qInvert, EERIE_3DOBJ * eobj, Color3f & ambientColor, Color3f &special_color, Color3f & highlightColor)
+void MakeCLight(Entity * io, Color3f & infra, const EERIE_QUAT *qInvert, EERIE_3DOBJ * eobj, Color3f & ambientColor, Color3f &special_color, Color3f & highlightColor)
 {
 		
 	for(size_t i = 0; i < eobj->vertexlist.size(); i++) {
@@ -948,24 +940,17 @@ void MakeCLight(Entity * io, Color3f * infra, const EERIE_QUAT *qInvert, EERIE_3
 			}
 		}
 
-		tempColor.r *= infra->r;
-		tempColor.g *= infra->g;
-		tempColor.b *= infra->b;
+		tempColor *= infra;
 
 		// Special case for drawing runes in book
 		if(Project.improve && !io) {
-			tempColor.r += infra->r * 512.f;
-			tempColor.g += infra->g;
-			tempColor.b += infra->b * 400.f;
+			tempColor.r += infra.r * 512.f;
+			tempColor.g += infra.g;
+			tempColor.b += infra.b * 400.f;
 		}
 
-		tempColor.r *= special_color.r;
-		tempColor.g *= special_color.g;
-		tempColor.b *= special_color.b;
-
-		tempColor.r += highlightColor.r;
-		tempColor.g += highlightColor.g;
-		tempColor.b += highlightColor.b;
+		tempColor *= special_color;
+		tempColor += highlightColor;
 
 		u8 ir = clipByte255(tempColor.r);
 		u8 ig = clipByte255(tempColor.g);
@@ -974,7 +959,7 @@ void MakeCLight(Entity * io, Color3f * infra, const EERIE_QUAT *qInvert, EERIE_3
 	}
 }
 
-void MakeCLight2(Color3f *infra, const EERIE_QUAT *qInvert, EERIE_3DOBJ *eobj, long ii, Color3f & ambientColor, Color3f &special_color, Color3f & highlightColor) {
+void MakeCLight2(Color3f & infra, const EERIE_QUAT *qInvert, EERIE_3DOBJ *eobj, long ii, Color3f & ambientColor, Color3f &special_color, Color3f & highlightColor) {
 	
 	long paf[3];
 	paf[0] = eobj->facelist[ii].vid[0];
@@ -1023,17 +1008,9 @@ void MakeCLight2(Color3f *infra, const EERIE_QUAT *qInvert, EERIE_3DOBJ *eobj, l
 			}
 		}
 
-		tempColor.r *= infra->r;
-		tempColor.g *= infra->g;
-		tempColor.b *= infra->b;
-
-		tempColor.r *= special_color.r;
-		tempColor.g *= special_color.g;
-		tempColor.b *= special_color.b;
-
-		tempColor.r += highlightColor.r;
-		tempColor.g += highlightColor.g;
-		tempColor.b += highlightColor.b;
+		tempColor *= infra;
+		tempColor *= special_color;
+		tempColor += highlightColor;
 
 		u8 ir = clipByte255(tempColor.r);
 		u8 ig = clipByte255(tempColor.g);
@@ -1277,7 +1254,7 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, const EERIE_QUAT * rotation, Vec3f *poss,
 
 	// Precalc local lights for this object then interpolate
 	if(!(io && (io->ioflags & IO_ANGULAR))) {
-		MakeCLight(io, &infra, rotation, eobj, ambientColor, special_color, highlightColor);
+		MakeCLight(io, infra, rotation, eobj, ambientColor, special_color, highlightColor);
 	}
 
 	for(size_t i = 0; i < eobj->facelist.size(); i++) {
@@ -1311,7 +1288,7 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, const EERIE_QUAT * rotation, Vec3f *poss,
 			continue;
 
 		if(io && (io->ioflags & IO_ANGULAR))
-			MakeCLight2(&infra, rotation, eobj, i, ambientColor, special_color, highlightColor);
+			MakeCLight2(infra, rotation, eobj, i, ambientColor, special_color, highlightColor);
 
 		float fTransp = 0.f;
 		TexturedVertex * tvList = NULL;

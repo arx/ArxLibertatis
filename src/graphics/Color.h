@@ -122,6 +122,20 @@ public:
 	inline Color3 operator*(float factor) const {
 		return Color3(r * factor, g * factor, b * factor);
 	}
+
+	Color3 & operator+=(const Color3 & right) {
+		r += right.r;
+		g += right.g;
+		b += right.b;
+		return *this;
+	}
+
+	Color3 & operator*=(const Color3 & right) {
+		r *= right.r;
+		g *= right.g;
+		b *= right.b;
+		return *this;
+	}
 	
 };
 
