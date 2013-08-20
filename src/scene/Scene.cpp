@@ -1271,23 +1271,18 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num, EERIE_FRUSTRUM_DATA
 		FAST_BKG_DATA *feg = &ACTIVEBKG->fastdata[pEPDATA->px][pEPDATA->py];
 
 		if(!feg->treat) {
-			long ix = std::max(pEPDATA->px - 1, 0);
-			long ax = std::min(pEPDATA->px + 1, ACTIVEBKG->Xsize - 1);
-			long iz = std::max(pEPDATA->py - 1, 0);
-			long az = std::min(pEPDATA->py + 1, ACTIVEBKG->Zsize - 1);
+			short ix = std::max(pEPDATA->px - 1, 0);
+			short ax = std::min(pEPDATA->px + 1, ACTIVEBKG->Xsize - 1);
+			short iz = std::max(pEPDATA->py - 1, 0);
+			short az = std::min(pEPDATA->py + 1, ACTIVEBKG->Zsize - 1);
 
-			(void)checked_range_cast<short>(iz);
-			(void)checked_range_cast<short>(ix);
-			(void)checked_range_cast<short>(az);
-			(void)checked_range_cast<short>(ax);
-
-			for(long nz=iz; nz<=az; nz++)
-			for(long nx=ix; nx<=ax; nx++) {
+			for(short nz=iz; nz<=az; nz++)
+			for(short nx=ix; nx<=ax; nx++) {
 				FAST_BKG_DATA * feg2 = &ACTIVEBKG->fastdata[nx][nz];
 
 				if(!feg2->treat) {
 					feg2->treat=1;
-					ComputeTileLights(static_cast<short>(nx), static_cast<short>(nz));
+					ComputeTileLights(nx, nz);
 				}
 			}
 		}
