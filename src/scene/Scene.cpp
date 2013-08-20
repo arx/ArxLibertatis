@@ -633,7 +633,7 @@ long ARX_PORTALS_GetRoomNumForPosition(Vec3f * pos,long flag)
 		long nearest = -1;
 		float nearest_dist = 99999.f;
 
-		for(long n = 0; n < portals->nb_rooms; n++) {
+		for(long n = 0; n < portals->nb_rooms; n++) { //TODO off by one ? (portals->nb_rooms + 1)
 			for(long lll = 0; lll < portals->room[n].nb_portals; lll++) {
 				EERIE_PORTALS *po = &portals->portals[portals->room[n].portals[lll]];
 				EERIEPOLY *epp = &po->poly;
@@ -674,7 +674,7 @@ void ARX_PORTALS_InitDrawnRooms()
 		ep->useportal = 0;
 	}
 
-	RoomDraw.resize(portals->nb_rooms + 1);
+	RoomDraw.resize(portals->roomsize());
 
 	for(size_t i = 0; i < RoomDraw.size(); i++) {
 		RoomDraw[i].count=0;

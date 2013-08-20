@@ -1064,6 +1064,7 @@ void UpdateIORoom(Entity * io)
 
 bool GetRoomCenter(long room_num, Vec3f * center) {
 	
+	//TODO off by one ? (portals->nb_rooms + 1)
 	if(!portals || room_num > portals->nb_rooms || portals->room[room_num].nb_polys <= 0)
 		return false;
 	
@@ -1442,7 +1443,7 @@ void EERIE_PORTAL_Blend_Portals_And_Rooms() {
 
 		ep->norm2.x = d;
 
-		for(long nroom = 0; nroom <= portals->nb_rooms; nroom++) {
+		for(long nroom = 0; nroom < portals->roomsize(); nroom++) {
 			if(nroom == portals->portals[num].room_1 || nroom == portals->portals[num].room_2)
 			{
 				portals->room[nroom].portals = (long *)realloc(portals->room[nroom].portals, sizeof(long) * (portals->room[nroom].nb_portals + 1));
@@ -1460,7 +1461,7 @@ static void EERIE_PORTAL_Release() {
 	
 	if(portals->room) {
 		if(portals->nb_rooms > 0) {
-			for(long nn = 0; nn < portals->nb_rooms + 1; nn++) {
+			for(long nn = 0; nn < portals->roomsize(); nn++) {
 				free(portals->room[nn].epdata), portals->room[nn].epdata = NULL;
 				free(portals->room[nn].portals), portals->room[nn].portals = NULL;
 				delete portals->room[nn].pVertexBuffer, portals->room[nn].pVertexBuffer = NULL;
@@ -1977,7 +1978,7 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 		portals = new EERIE_PORTAL_DATA;
 		portals->nb_rooms = fsh->nb_rooms;
 		portals->room = (EERIE_ROOM_DATA *)malloc(sizeof(EERIE_ROOM_DATA)
-		                                          * (portals->nb_rooms + 1));
+												  * (portals->roomsize()));
 
 		portals->portals.resize(fsh->nb_portals);
 		
@@ -2012,8 +2013,8 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 		}
 		
 		
-		LogDebug("FTS: loading " << (portals->nb_rooms + 1) << " rooms ...");
-		for(long i = 0; i < portals->nb_rooms + 1; i++) {
+		LogDebug("FTS: loading " << portals->roomsize() << " rooms ...");
+		for(long i = 0; i < portals->roomsize(); i++) {
 			
 			const EERIE_SAVE_ROOM_DATA * erd;
 			erd = fts_read<EERIE_SAVE_ROOM_DATA>(data, end);
@@ -2054,7 +2055,7 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 	free(RoomDistance), RoomDistance = NULL;
 	NbRoomDistance = 0;
 	if(portals) {
-		NbRoomDistance = portals->nb_rooms + 1;
+		NbRoomDistance = portals->roomsize();
 		RoomDistance = (ROOM_DIST_DATA *)malloc(sizeof(ROOM_DIST_DATA)
 		                                        * NbRoomDistance * NbRoomDistance);
 		LogDebug("FTS: loading " << (NbRoomDistance * NbRoomDistance)
@@ -2132,7 +2133,7 @@ void ComputeRoomDistance() {
 	if(!portals)
 		return;
 	
-	NbRoomDistance = portals->nb_rooms + 1;
+	NbRoomDistance = portals->roomsize();
 	RoomDistance =
 		(ROOM_DIST_DATA *)malloc(sizeof(ROOM_DIST_DATA) * (NbRoomDistance) * (NbRoomDistance));
 
@@ -2180,7 +2181,7 @@ void ComputeRoomDistance() {
 	}
 
 	// Link Room Centers to all its Room portals...
-	for(int i = 0; i <= portals->nb_rooms; i++) {
+	for(int i = 0; i < portals->roomsize(); i++) {
 		for(size_t j = 0; j < portals->portals.size(); j++) {
 			if(portals->portals[j].room_1 == i || portals->portals[j].room_2 == i) {
 				for(long tt = 0; tt < nb_anchors; tt++) {
@@ -2195,7 +2196,7 @@ void ComputeRoomDistance() {
 	}
 
 	// Link All portals of a room to all other portals of that room
-	for(int i = 0; i <= portals->nb_rooms; i++) {
+	for(int i = 0; i < portals->roomsize(); i++) {
 		for(size_t j = 0; j < portals->portals.size(); j++) {
 			if(portals->portals[j].room_1 == i || portals->portals[j].room_2 == i) {
 				for(size_t jj = 0; jj < portals->portals.size(); jj++) {
@@ -2569,13 +2570,13 @@ static bool FastSceneSave(const fs::path & partial_path) {
 			allocsize += sizeof(EERIE_SAVE_PORTALS);
 		}
 		
-		for(long i = 0; i < portals->nb_rooms + 1; i++) {
+		for(long i = 0; i < portals->roomsize(); i++) {
 			allocsize += sizeof(EERIE_SAVE_ROOM_DATA);
 			allocsize += sizeof(s32) * portals->room[i].nb_portals;
 			allocsize += sizeof(FAST_EP_DATA) * portals->room[i].nb_polys;
 		}
 		
-		allocsize += sizeof(ROOM_DIST_DATA_SAVE) * (portals->nb_rooms + 1) * (portals->nb_rooms + 1);
+		allocsize += sizeof(ROOM_DIST_DATA_SAVE) * (portals->roomsize()) * (portals->roomsize());
 	}
 	
 	for(long i = 0; i < ACTIVEBKG->nbanchors; i++) {
@@ -2795,7 +2796,7 @@ static bool FastSceneSave(const fs::path & partial_path) {
 			copy(portal.poly.tv, portal.poly.tv + 4, epo->poly.tv);
 		}
 		
-		for(long i = 0; i < portals->nb_rooms + 1; i++) {
+		for(long i = 0; i < portals->roomsize(); i++) {
 			
 			EERIE_SAVE_ROOM_DATA * erd = reinterpret_cast<EERIE_SAVE_ROOM_DATA *>(dat + pos);
 			pos += sizeof(EERIE_SAVE_ROOM_DATA);
@@ -2913,7 +2914,7 @@ void EERIE_PORTAL_ReleaseOnlyVertexBuffer() {
 	
 	LogDebug("Destroying scene VBOs");
 	
-	for(long i = 0; i < portals->nb_rooms + 1; i++) {
+	for(long i = 0; i < portals->roomsize(); i++) {
 		portals->room[i].usNbTextures = 0;
 		delete portals->room[i].pVertexBuffer, portals->room[i].pVertexBuffer = NULL;
 		free(portals->room[i].pussIndice), portals->room[i].pussIndice = NULL;
@@ -2948,7 +2949,7 @@ void ComputePortalVertexBuffer() {
 	LogDebug("Creating scene VBOs");
 	
 	if(portals->nb_rooms > 255) {
-		LogError << "Too many rooms: " << portals->nb_rooms + 1;
+		LogError << "Too many rooms: " << portals->roomsize();
 		return;
 	}
 	
@@ -2956,7 +2957,7 @@ void ComputePortalVertexBuffer() {
 		TextureMap;
 	TextureMap infos;
 	
-	for(int i = 0; i < portals->nb_rooms + 1; i++) {
+	for(int i = 0; i < portals->roomsize(); i++) {
 		
 		EERIE_ROOM_DATA * room = &portals->room[i];
 		
@@ -2991,7 +2992,7 @@ void ComputePortalVertexBuffer() {
 			
 			if(!poly.tex->tMatRoom) {
 				poly.tex->tMatRoom = (SMY_ARXMAT *)malloc(sizeof(SMY_ARXMAT)
-				                                           * (portals->nb_rooms + 1));
+														   * (portals->roomsize()));
 			}
 			
 			SINFO_TEXTURE_VERTEX & info = infos[poly.tex];
