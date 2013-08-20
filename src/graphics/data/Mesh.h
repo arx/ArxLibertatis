@@ -144,10 +144,8 @@ void DebugAddParticle(const Vec3f & position, float siz, long tim, Color color);
 FAST_BKG_DATA * getFastBackgroundData(float x, float z);
 
 EERIEPOLY * CheckTopPoly(float x,float y,float z);
-EERIEPOLY * CheckPolyOnTop(float x,float y,float z);
 EERIEPOLY * CheckInPoly(float x,float y,float z,float * needY = NULL);
 EERIEPOLY * EECheckInPoly(const Vec3f * pos,float * needY = NULL);
-EERIEPOLY * CheckInPolyIn(float x,float y,float z);
 
 /*!
  * Check if the given condition is under water.
@@ -155,13 +153,6 @@ EERIEPOLY * CheckInPolyIn(float x,float y,float z);
  * @return the lowest water polygon pos is under, or NULL if pos is not under water.
  */
 EERIEPOLY * EEIsUnderWater(const Vec3f * pos);
-
-/*!
- * Check if the given condition is under water.
- * 
- * @return any water polygon pos is under, or NULL if pos is not under water.
- */
-EERIEPOLY * EEIsUnderWaterFast(const Vec3f * pos);
 
 bool GetTruePolyY(const EERIEPOLY * ep, const Vec3f * pos,float * ret);
 bool IsAnyPolyThere(float x, float z);
@@ -171,20 +162,10 @@ EERIEPOLY * GetMaxPoly(float x, float y, float z);
  
 int PointIn2DPolyXZ(const EERIEPOLY * ep, float x, float z);
 
-int EERIELaunchRay2(Vec3f * orgn, Vec3f * dest,  Vec3f * hit, EERIEPOLY * tp, long flag);
 int EERIELaunchRay3(Vec3f * orgn, Vec3f * dest,  Vec3f * hit, EERIEPOLY * tp, long flag);
-float GetGroundY(Vec3f * pos);
-void EE_IRTP(TexturedVertex *in,TexturedVertex *out);
 
-void extEE_RTP(TexturedVertex *in,TexturedVertex *out);
-void MakeColorz(Entity * io);
-
-void EE_RotateX(TexturedVertex *in,TexturedVertex *out,float c, float s);
 void EE_RotateY(TexturedVertex *in,TexturedVertex *out,float c, float s);
-void EE_RotateZ(TexturedVertex *in,TexturedVertex *out,float c, float s);
 void EE_RTP(TexturedVertex *in,TexturedVertex *out);
-
-long PhysicalDrawBkgVLine(Vec3f * orgn,Vec3f * dest);
 
 // FAST SAVE LOAD
 bool FastSceneLoad(const res::path & path);
@@ -201,7 +182,6 @@ void DrawEERIEObjExEx(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f * pos, Vec3f * s
 //****************************************************************************
 // BACKGROUND MANAGEMENT FUNCTIONS START
 long BKG_CountPolys(EERIE_BACKGROUND * eb);
-long BKG_CountChildPolys(EERIE_BACKGROUND * eb);
 long BKG_CountIgnoredPolys(EERIE_BACKGROUND * eb);
 
 #ifdef BUILD_EDIT_LOADSAVE
@@ -234,27 +214,16 @@ long EERIERTPPoly(EERIEPOLY *ep);
 
 void ReleaseAnimFromIO(Entity * io,long num);
 
-void ShadowPolys_ClearZone(EERIE_BACKGROUND * eb,long x0, long y0, long x1, long y1);
-
 bool LittleAngularDiff(Vec3f * norm,Vec3f * norm2);
 void RecalcLight(EERIE_LIGHT * el);
-void CreatePWorld(long x0,long x1,long z0,long z1);
-void ComputeSworld();
+
 float PtIn2DPolyProj(EERIE_3DOBJ * obj,EERIE_FACE * ef, float x, float z);
 float PtIn2DPolyProjV2(EERIE_3DOBJ * obj,EERIE_FACE * ef, float x, float z);
 
-void ResetWorlds();
-float GetSWorld(float x,float y,float z);
-
-void BkgAddShadowPoly(EERIEPOLY * ep,EERIEPOLY * father);
-
-EERIEPOLY * GetMinNextPoly(long i,long j,EERIEPOLY * ep);
-
 long GetVertexPos(Entity * io,long id,Vec3f * pos);
 void ARX_PrepareBackgroundNRMLs();
-void DrawInWorld();
 long CountBkgVertex();
-void CreateInWorld();
+
 void EERIE_LIGHT_ChangeLighting();
 void SetCameraDepth(EERIE_CAMERA &cam, float depth);
 
