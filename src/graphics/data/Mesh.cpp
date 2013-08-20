@@ -1474,7 +1474,8 @@ static void EERIE_PORTAL_Release() {
 		free(portals->room), portals->room = NULL;
 	}
 	
-	free(portals), portals = NULL;
+	delete portals;
+	portals = NULL;
 }
 
 float EERIE_TransformOldFocalToNewFocal(float _fOldFocal)
@@ -1975,7 +1976,7 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 		
 		EERIE_PORTAL_Release();
 		
-		portals = (EERIE_PORTAL_DATA *)malloc(sizeof(EERIE_PORTAL_DATA));
+		portals = new EERIE_PORTAL_DATA;
 		portals->nb_rooms = fsh->nb_rooms;
 		portals->room = (EERIE_ROOM_DATA *)malloc(sizeof(EERIE_ROOM_DATA)
 		                                          * (portals->nb_rooms + 1));
@@ -2291,7 +2292,7 @@ static void EERIE_PORTAL_Poly_Add(EERIEPOLY * ep, const std::string& name, long 
 		return;
 
 	if(portals == NULL) {
-		portals = (EERIE_PORTAL_DATA *)malloc(sizeof(EERIE_PORTAL_DATA));
+		portals = new EERIE_PORTAL_DATA;
 
 		if(!portals)
 			return;
