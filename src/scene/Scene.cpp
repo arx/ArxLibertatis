@@ -668,11 +668,10 @@ void ARX_PORTALS_InitDrawnRooms()
 {
 	arx_assert(portals);
 
-	EERIE_PORTALS *ep = &portals->portals[0];
+	for(size_t i = 0; i < portals->portals.size(); i++) {
+		EERIE_PORTALS *ep = &portals->portals[i];
 
-	for(long i=0;i<portals->nb_total;i++) {
-		ep->useportal=0;
-		ep++;
+		ep->useportal = 0;
 	}
 
 	RoomDraw.resize(portals->nb_rooms + 1);
@@ -1889,7 +1888,7 @@ void DebugPortalsRender() {
 	GRenderer->SetRenderState(Renderer::Fog, false);
 	GRenderer->SetRenderState(Renderer::DepthTest, false);
 
-	for(size_t i = 0; i < portals->nb_total; i++) {
+	for(size_t i = 0; i < portals->portals.size(); i++) {
 		EERIE_PORTALS & po = portals->portals[i];
 
 		Color color = Color::red;

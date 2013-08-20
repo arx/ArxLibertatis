@@ -1417,7 +1417,7 @@ void EERIE_PORTAL_Blend_Portals_And_Rooms() {
 	if(!portals)
 		return;
 
-	for(long num = 0; num < portals->nb_total; num++) {
+	for(size_t num = 0; num < portals->portals.size(); num++) {
 		CalcFaceNormal(&portals->portals[num].poly, portals->portals[num].poly.v);
 		EERIEPOLY * ep = &portals->portals[num].poly;
 		ep->center = ep->v[0].p;
@@ -1457,8 +1457,6 @@ static void EERIE_PORTAL_Release() {
 	
 	if(!portals)
 		return;
-	
-	free(portals->portals), portals->portals = NULL;
 	
 	if(portals->room) {
 		if(portals->nb_rooms > 0) {
@@ -1980,15 +1978,13 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 		portals->nb_rooms = fsh->nb_rooms;
 		portals->room = (EERIE_ROOM_DATA *)malloc(sizeof(EERIE_ROOM_DATA)
 		                                          * (portals->nb_rooms + 1));
-		portals->nb_total = fsh->nb_portals;
-		portals->portals = (EERIE_PORTALS *)malloc(sizeof(EERIE_PORTALS)
-		                                           * portals->nb_total);
+
+		portals->portals.resize(fsh->nb_portals);
 		
-		
-		LogDebug("FTS: loading " << portals->nb_total << " portals ...");
+		LogDebug("FTS: loading " << portals->portals.size() << " portals ...");
 		const EERIE_SAVE_PORTALS * epos;
-		epos = fts_read<EERIE_SAVE_PORTALS>(data, end, portals->nb_total);
-		for(long i = 0; i < portals->nb_total; i++) {
+		epos = fts_read<EERIE_SAVE_PORTALS>(data, end, portals->portals.size());
+		for(size_t i = 0; i < portals->portals.size(); i++) {
 			
 			const EERIE_SAVE_PORTALS * epo = &epos[i];
 			EERIE_PORTALS & portal = portals->portals[i];
@@ -2144,7 +2140,7 @@ void ComputeRoomDistance() {
 		for (long m = 0; m < NbRoomDistance; m++)
 			SetRoomDistance(m, n, -1.f, NULL, NULL);
 
-	long nb_anchors = NbRoomDistance + (portals->nb_total * 9);
+	long nb_anchors = NbRoomDistance + (portals->portals.size() * 9);
 	ANCHOR_DATA * ad = (ANCHOR_DATA *)malloc(sizeof(ANCHOR_DATA) * nb_anchors);
 
 	memset(ad, 0, sizeof(ANCHOR_DATA)*nb_anchors);
@@ -2161,7 +2157,7 @@ void ComputeRoomDistance() {
 
 	long curpos = NbRoomDistance;
 
-	for(int i = 0; i < portals->nb_total; i++) {
+	for(size_t i = 0; i < portals->portals.size(); i++) {
 		// Add 4 portal vertices
 		for(int nn = 0; nn < 4; nn++) {
 			ad[curpos].pos = portals->portals[i].poly.v[nn].p;
@@ -2185,7 +2181,7 @@ void ComputeRoomDistance() {
 
 	// Link Room Centers to all its Room portals...
 	for(int i = 0; i <= portals->nb_rooms; i++) {
-		for(long j = 0; j < portals->nb_total; j++) {
+		for(size_t j = 0; j < portals->portals.size(); j++) {
 			if(portals->portals[j].room_1 == i || portals->portals[j].room_2 == i) {
 				for(long tt = 0; tt < nb_anchors; tt++) {
 
@@ -2200,9 +2196,9 @@ void ComputeRoomDistance() {
 
 	// Link All portals of a room to all other portals of that room
 	for(int i = 0; i <= portals->nb_rooms; i++) {
-		for(long j = 0; j < portals->nb_total; j++) {
+		for(size_t j = 0; j < portals->portals.size(); j++) {
 			if(portals->portals[j].room_1 == i || portals->portals[j].room_2 == i) {
-				for(long jj = 0; jj < portals->nb_total; jj++) {
+				for(size_t jj = 0; jj < portals->portals.size(); jj++) {
 					if(jj != j && (portals->portals[jj].room_1 == i || portals->portals[jj].room_2 == i))
 					{
 						long p1 = -1;
@@ -2258,7 +2254,7 @@ void ComputeRoomDistance() {
 	}
 
 	// Don't use this for contiguous rooms !
-	for(int i = 0; i < portals->nb_total; i++) {
+	for(size_t i = 0; i < portals->portals.size(); i++) {
 		SetRoomDistance(portals->portals[i].room_1, portals->portals[i].room_2, -1, NULL, NULL);
 		SetRoomDistance(portals->portals[i].room_2, portals->portals[i].room_1, -1, NULL, NULL);
 	}
@@ -2299,16 +2295,15 @@ static void EERIE_PORTAL_Poly_Add(EERIEPOLY * ep, const std::string& name, long 
 
 		portals->nb_rooms = 0;
 		portals->room = NULL;
-		portals->nb_total = 0;
-		portals->portals = NULL;
 		USE_PORTALS = true;
 	}
 
 	if(type == TYPE_PORTAL) {
-		portals->portals = (EERIE_PORTALS *)realloc(portals->portals, sizeof(EERIE_PORTALS) * (portals->nb_total + 1));
-		portals->portals[portals->nb_total].room_1 = val1;
-		portals->portals[portals->nb_total].room_2 = val2;
-		memcpy(&portals->portals[portals->nb_total].poly, ep, sizeof(EERIEPOLY));
+		EERIE_PORTALS portal;
+
+		portal.room_1 = val1;
+		portal.room_2 = val2;
+		memcpy(&portal.poly, ep, sizeof(EERIEPOLY));
 
 		float fDistMin = std::numeric_limits<float>::max();
 		float fDistMax = std::numeric_limits<float>::min();
@@ -2328,9 +2323,9 @@ static void EERIE_PORTAL_Poly_Add(EERIEPOLY * ep, const std::string& name, long 
 		}
 
 		fDistMin = (fDistMax + fDistMin) * .5f;
-		portals->portals[portals->nb_total].poly.v[0].rhw = fDistMin;
+		portal.poly.v[0].rhw = fDistMin;
 
-		portals->nb_total++;
+		portals->portals.push_back(portal);
 	} else if(type == TYPE_ROOM) {
 		if(val1 > portals->nb_rooms) {
 			portals->room = (EERIE_ROOM_DATA *)realloc(portals->room, sizeof(EERIE_ROOM_DATA) * (val1 + 1));
@@ -2570,7 +2565,7 @@ static bool FastSceneSave(const fs::path & partial_path) {
 	
 	if(portals) {
 		
-		for(long i = 0; i < portals->nb_total + 1; i++) {
+		for(size_t i = 0; i < portals->portals.size() + 1; i++) {
 			allocsize += sizeof(EERIE_SAVE_PORTALS);
 		}
 		
@@ -2650,7 +2645,7 @@ static bool FastSceneSave(const fs::path & partial_path) {
 	fsh->nb_rooms = 0;
 	
 	if(portals) {
-		fsh->nb_portals = portals->nb_total;
+		fsh->nb_portals = portals->portals.size();
 		fsh->nb_rooms = portals->nb_rooms;
 	}
 	
@@ -2773,7 +2768,7 @@ static bool FastSceneSave(const fs::path & partial_path) {
 	
 	if(portals) {
 		
-		for(long i = 0; i < portals->nb_total; i++) {
+		for(size_t i = 0; i < portals->portals.size(); i++) {
 			
 			EERIE_SAVE_PORTALS * epo = reinterpret_cast<EERIE_SAVE_PORTALS *>(dat + pos);
 			pos += sizeof(EERIE_SAVE_PORTALS);

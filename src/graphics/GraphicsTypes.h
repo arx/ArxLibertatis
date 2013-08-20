@@ -561,8 +561,7 @@ struct EERIE_PORTAL_DATA
 {
 	long nb_rooms;
 	EERIE_ROOM_DATA * room;
-	long nb_total; // of portals
-	EERIE_PORTALS * portals;
+	std::vector<EERIE_PORTALS> portals;
 };
 
 struct SMY_ZMAPPINFO
