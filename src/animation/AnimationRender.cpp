@@ -777,9 +777,7 @@ static void Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, const C
 								cosangle *= p * Cur_llights->precalc;
 						}
 
-						tempColor.r += Cur_llights->rgb255.r * cosangle;
-						tempColor.g += Cur_llights->rgb255.g * cosangle;
-						tempColor.b += Cur_llights->rgb255.b * cosangle;
+						tempColor += Cur_llights->rgb255 * cosangle;
 					}
 				}
 			}
@@ -934,9 +932,7 @@ void MakeCLight(Entity * io, Color3f & infra, const EERIE_QUAT *qInvert, EERIE_3
 						cosangle *= p * Cur_llights->precalc;
 				}
 
-				tempColor.r += Cur_llights->rgb255.r * cosangle;
-				tempColor.g += Cur_llights->rgb255.g * cosangle;
-				tempColor.b += Cur_llights->rgb255.b * cosangle;
+				tempColor += Cur_llights->rgb255 * cosangle;
 			}
 		}
 
@@ -1002,9 +998,7 @@ void MakeCLight2(Color3f & infra, const EERIE_QUAT *qInvert, EERIE_3DOBJ *eobj, 
 						cosangle *= p * Cur_llights->precalc;
 				}
 
-				tempColor.r += Cur_llights->rgb255.r * cosangle;
-				tempColor.g += Cur_llights->rgb255.g * cosangle;
-				tempColor.b += Cur_llights->rgb255.b * cosangle;
+				tempColor += Cur_llights->rgb255 * cosangle;
 			}
 		}
 
