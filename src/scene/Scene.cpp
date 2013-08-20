@@ -1430,19 +1430,23 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num, EERIE_FRUSTRUM_DATA
 					long lr=(ep->tv[k].color>>16) & 255;
 					float ffr=(float)(lr);
 
-					float dd= ep->tv[k].rhw;
+					float dd = ep->tv[k].rhw;
 
 					dd = clamp(dd, 0.f, 1.f);
 
-					float fb=((1.f-dd)*6.f + (EEfabs(ep->nrml[k].x)+EEfabs(ep->nrml[k].y)))*0.125f;
-					float fr=((.6f-dd)*6.f + (EEfabs(ep->nrml[k].z)+EEfabs(ep->nrml[k].y)))*0.125f;
+					Vec3f & norm = ep->nrml[k];
 
-					if (fr<0.f) fr=0.f;
-					else fr=max(ffr,fr*255.f);
+					float fb=((1.f-dd)*6.f + (EEfabs(norm.x) + EEfabs(norm.y))) * 0.125f;
+					float fr=((.6f-dd)*6.f + (EEfabs(norm.z) + EEfabs(norm.y))) * 0.125f;
 
-					fr=min(fr,255.f);
+					if(fr < 0.f)
+						fr = 0.f;
+					else
+						fr = std::max(ffr, fr * 255.f);
+
+					fr=std::min(fr,255.f);
 					fb*=255.f;
-					fb=min(fb,255.f);
+					fb=std::min(fb,255.f);
 					u8 lfr = fr;
 					u8 lfb = fb;
 					u8 lfg = 0x1E;
