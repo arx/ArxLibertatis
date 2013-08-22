@@ -831,17 +831,25 @@ bool Cedric_IO_Visible(Vec3f * pos) {
 
 struct ColorMod {
 
-	void updateFromEntity(Entity * io) {
-		special_color = Color3f::white;
-		highlightColor = Color3f::black;
+	void updateFromEntity(Entity * io, bool inBook = false) {
+		factor = Color3f::white;
+		term = Color3f::black;
 		if(io) {
-			special_color = io->special_color;
-			highlightColor = io->highlightColor;
+			factor *= io->special_color;
+			term += io->highlightColor;
 		}
 
-		infra = Color3f::white;
 		if(Project.improve) {
-			infra = (io) ? io->infracolor : Color3f(0.6f, 0.f, 1.f);
+			Color3f infra = (io) ? io->infracolor : Color3f(0.6f, 0.f, 1.f);
+
+			factor *= infra;
+
+			// Special case for drawing runes in book
+			if(inBook) {
+				term.r += infra.r * 512.f;
+				term.g += infra.g;
+				term.b += infra.b * 400.f;
+			}
 		}
 
 		// Ambient light
@@ -851,9 +859,8 @@ struct ColorMod {
 	}
 
 	Color3f ambientColor;
-	Color3f infra;
-	Color3f special_color;
-	Color3f highlightColor;
+	Color3f factor;
+	Color3f term;
 };
 
 /* Object dynamic lighting */
@@ -907,9 +914,8 @@ static void Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, const C
 				}
 			}
 
-			tempColor *= colorMod.infra;
-			tempColor *= colorMod.special_color;
-			tempColor += colorMod.highlightColor;
+			tempColor *= colorMod.factor;
+			tempColor += colorMod.term;
 
 			u8 ir = clipByte255(tempColor.r);
 			u8 ig = clipByte255(tempColor.g);
@@ -963,17 +969,8 @@ void MakeCLight(Entity * io, const EERIE_QUAT *qInvert, EERIE_3DOBJ * eobj, cons
 			}
 		}
 
-		tempColor *= colorMod.infra;
-
-		// Special case for drawing runes in book
-		if(Project.improve && !io) {
-			tempColor.r += colorMod.infra.r * 512.f;
-			tempColor.g += colorMod.infra.g;
-			tempColor.b += colorMod.infra.b * 400.f;
-		}
-
-		tempColor *= colorMod.special_color;
-		tempColor += colorMod.highlightColor;
+		tempColor *= colorMod.factor;
+		tempColor += colorMod.term;
 
 		u8 ir = clipByte255(tempColor.r);
 		u8 ig = clipByte255(tempColor.g);
@@ -1029,9 +1026,8 @@ void MakeCLight2(const EERIE_QUAT *qInvert, EERIE_3DOBJ *eobj, long ii, const Co
 			}
 		}
 
-		tempColor *= colorMod.infra;
-		tempColor *= colorMod.special_color;
-		tempColor += colorMod.highlightColor;
+		tempColor *= colorMod.factor;
+		tempColor += colorMod.term;
 
 		u8 ir = clipByte255(tempColor.r);
 		u8 ig = clipByte255(tempColor.g);
@@ -1153,7 +1149,7 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, const EERIE_QUAT * rotation, Vec3f *poss,
 		return;
 
 	ColorMod colorMod;
-	colorMod.updateFromEntity(io);
+	colorMod.updateFromEntity(io, !io);
 
 	Vec3f tv = pos;
 
