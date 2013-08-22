@@ -731,70 +731,6 @@ void Cedric_ApplyLightingFirstPartRefactor(Entity *io) {
 	}
 }
 
-/* Object dynamic lighting */
-static void Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, const Color3f & ambient, const Color3f & infra, Color3f &special_color, Color3f & highlightColor) {
-		
-	/* Apply light on all vertices */
-	for(int i = 0; i != obj->nb_bones; i++) {
-
-		EERIE_QUAT *qt1 = &obj->bones[i].quatanim;
-
-		/* Get light value for each vertex */
-		for(int v = 0; v != obj->bones[i].nb_idxvertices; v++) {
-			Color3f tempColor = ambient;
-
-			Vec3f posVert = eobj->vertexlist[obj->bones[i].idxvertices[v]].norm;
-
-			// Dynamic lights
-			for(int l = 0; l != MAX_LLIGHTS; l++) {
-				EERIE_LIGHT *Cur_llights = llights[l];
-
-				if(!Cur_llights)
-					break;
-
-				Vec3f tl = Cur_llights->pos - eobj->vertexlist3[obj->bones[i].idxvertices[v]].v;
-				float distance = ffsqrt(tl.lengthSqr());
-
-				if(distance < Cur_llights->fallend) {
-					tl *= 1.f / distance;
-
-					Vec3f Cur_vTLights;
-					TransformInverseVertexQuat(qt1, &tl, &Cur_vTLights);
-
-					float cosangle = dot(posVert, Cur_vTLights);
-
-					// If light visible
-					if(cosangle > 0.f) {
-						// Evaluate its intensity depending on the distance Light<->Object
-						if(distance <= Cur_llights->fallstart) {
-							cosangle *= Cur_llights->precalc;
-						} else {
-							float p = ((Cur_llights->fallend - distance) * Cur_llights->falldiffmul);
-
-							if(p <= 0.f)
-								cosangle = 0.f;
-							else
-								cosangle *= p * Cur_llights->precalc;
-						}
-
-						tempColor += Cur_llights->rgb255 * cosangle;
-					}
-				}
-			}
-
-			tempColor *= infra;
-			tempColor *= special_color;
-			tempColor += highlightColor;
-
-			u8 ir = clipByte255(tempColor.r);
-			u8 ig = clipByte255(tempColor.g);
-			u8 ib = clipByte255(tempColor.b);
-
-			eobj->vertexlist3[obj->bones[i].idxvertices[v]].vert.color = (0xFF000000L | (ir << 16) | (ig << 8) | (ib));
-		}
-	}
-}
-
 void Cedric_PrepareHalo(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj) {
 	Vec3f cam_vector, t_vector;
 	cam_vector.x = -EEsin(radians(ACTIVECAM->angle.b)) * EEcos(radians(ACTIVECAM->angle.a));
@@ -891,6 +827,70 @@ bool Cedric_IO_Visible(Vec3f * pos) {
 	}
 
 	return true;
+}
+
+/* Object dynamic lighting */
+static void Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, const Color3f & ambient, const Color3f & infra, Color3f &special_color, Color3f & highlightColor) {
+
+	/* Apply light on all vertices */
+	for(int i = 0; i != obj->nb_bones; i++) {
+
+		EERIE_QUAT *qt1 = &obj->bones[i].quatanim;
+
+		/* Get light value for each vertex */
+		for(int v = 0; v != obj->bones[i].nb_idxvertices; v++) {
+			Color3f tempColor = ambient;
+
+			Vec3f posVert = eobj->vertexlist[obj->bones[i].idxvertices[v]].norm;
+
+			// Dynamic lights
+			for(int l = 0; l != MAX_LLIGHTS; l++) {
+				EERIE_LIGHT *Cur_llights = llights[l];
+
+				if(!Cur_llights)
+					break;
+
+				Vec3f tl = Cur_llights->pos - eobj->vertexlist3[obj->bones[i].idxvertices[v]].v;
+				float distance = ffsqrt(tl.lengthSqr());
+
+				if(distance < Cur_llights->fallend) {
+					tl *= 1.f / distance;
+
+					Vec3f Cur_vTLights;
+					TransformInverseVertexQuat(qt1, &tl, &Cur_vTLights);
+
+					float cosangle = dot(posVert, Cur_vTLights);
+
+					// If light visible
+					if(cosangle > 0.f) {
+						// Evaluate its intensity depending on the distance Light<->Object
+						if(distance <= Cur_llights->fallstart) {
+							cosangle *= Cur_llights->precalc;
+						} else {
+							float p = ((Cur_llights->fallend - distance) * Cur_llights->falldiffmul);
+
+							if(p <= 0.f)
+								cosangle = 0.f;
+							else
+								cosangle *= p * Cur_llights->precalc;
+						}
+
+						tempColor += Cur_llights->rgb255 * cosangle;
+					}
+				}
+			}
+
+			tempColor *= infra;
+			tempColor *= special_color;
+			tempColor += highlightColor;
+
+			u8 ir = clipByte255(tempColor.r);
+			u8 ig = clipByte255(tempColor.g);
+			u8 ib = clipByte255(tempColor.b);
+
+			eobj->vertexlist3[obj->bones[i].idxvertices[v]].vert.color = (0xFF000000L | (ir << 16) | (ig << 8) | (ib));
+		}
+	}
 }
 
 void MakeCLight(Entity * io, Color3f & infra, const EERIE_QUAT *qInvert, EERIE_3DOBJ * eobj, Color3f & ambientColor, Color3f &special_color, Color3f & highlightColor)
