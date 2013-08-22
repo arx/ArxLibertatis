@@ -17,6 +17,8 @@ add_executable(arxtest
         graphics/GraphicsUtilityTest.cpp
         math/vectors.cpp
         ../src/graphics/Math.cpp
+		../src/graphics/Color.h
+		graphics/ColorTest.cpp
 )
 
 target_link_libraries(arxtest cppunit)
