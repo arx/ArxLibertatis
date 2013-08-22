@@ -913,7 +913,7 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 		if(!thrownObj->obj)
 			continue;
 
-		DrawEERIEInter(thrownObj->obj, &thrownObj->quat, &thrownObj->position, NULL);
+		DrawEERIEInter(thrownObj->obj, &thrownObj->quat, thrownObj->position, NULL);
 
 		if((thrownObj->flags & ATO_FIERY) && (thrownObj->flags & ATO_MOVING)
 		   && !(thrownObj->flags & ATO_UNDERWATER)) {

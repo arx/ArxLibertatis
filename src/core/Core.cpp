@@ -2703,7 +2703,7 @@ void RenderAllNodes() {
 	
 	for(long i=0; i<nodes.nbmax; i++) {
 		if (nodes.nodes[i].exist) {
-			DrawEERIEInter(nodeobj, &rotation, &nodes.nodes[i].pos, NULL);
+			DrawEERIEInter(nodeobj, &rotation, nodes.nodes[i].pos, NULL);
 
 			nodes.nodes[i].bboxmin.x=(short)BBOX2D.min.x;
 			nodes.nodes[i].bboxmin.y=(short)BBOX2D.min.y;

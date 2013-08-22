@@ -804,15 +804,15 @@ void ARX_DrawPrimitive(TexturedVertex * _pVertex1, TexturedVertex * _pVertex2, T
 	EERIEDRAWPRIM(Renderer::TriangleList, pPointAdd);
 }
 
-bool Cedric_IO_Visible(Vec3f * pos) {
+bool Cedric_IO_Visible(const Vec3f & pos) {
 
 	if(ACTIVEBKG) {
 		//TODO maybe readd this
 		//if(distSqr(io->pos, ACTIVECAM->orgTrans.pos) > square(ACTIVECAM->cdepth) * square(0.6f))
 		//	return false;
 
-		long xx = pos->x * ACTIVEBKG->Xmul;
-		long yy = pos->z * ACTIVEBKG->Zmul;
+		long xx = pos.x * ACTIVEBKG->Xmul;
+		long yy = pos.z * ACTIVEBKG->Zmul;
 
 		if(xx >= 1 && yy >= 1 && xx < ACTIVEBKG->Xsize-1 && yy < ACTIVEBKG->Zsize-1) {
 			for(long ky = yy - 1; ky <= yy + 1; ky++)
@@ -1080,15 +1080,13 @@ void CalculateInterZMapp(EERIE_3DOBJ * _pobj3dObj, long lIdList, long * _piInd,
 	}
 }
 
-void DrawEERIEInter(EERIE_3DOBJ *eobj, const EERIE_QUAT * rotation, Vec3f *poss, Entity *io, EERIE_MOD_INFO *modinfo, bool thrownEntity) {
+void DrawEERIEInter(EERIE_3DOBJ *eobj, const EERIE_QUAT * rotation, const Vec3f & pos, Entity *io, EERIE_MOD_INFO *modinfo, bool thrownEntity) {
 
 	if(!eobj)
 		return;
 
-	Vec3f pos = *poss;
-
 	// Avoids To treat an object that isn't Visible
-	if(io && io != entities.player() && !modinfo && !Cedric_IO_Visible(&pos))
+	if(io && io != entities.player() && !modinfo && !Cedric_IO_Visible(pos))
 		return;
 
 	float scale = Cedric_GetScale(io);
@@ -1780,7 +1778,7 @@ void Cedric_AnimateDrawEntityRender(EERIE_3DOBJ *eobj, const Vec3f & pos, Entity
 		EERIE_QUAT quat;
 		Quat_Copy(&quat, &eobj->c_data->bones[link.lgroup].quatanim);
 
-		Vec3f * posi = &eobj->vertexlist3[link.lidx].v;
+		Vec3f & posi = eobj->vertexlist3[link.lidx].v;
 
 		DrawEERIEInter(link.obj, &quat, posi, link.io, &link.modinfo);
 
@@ -2154,7 +2152,7 @@ void EERIEDrawAnimQuat(EERIE_3DOBJ *eobj, ANIM_USE * animlayer,const Anglef & an
 	if(update_movement)
 		StoreEntityMovement(io, ftr, scale);
 
-	if(io && io != entities.player() && !Cedric_IO_Visible(&io->pos))
+	if(io && io != entities.player() && !Cedric_IO_Visible(io->pos))
 		return;
 
 

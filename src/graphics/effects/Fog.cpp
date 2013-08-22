@@ -245,7 +245,7 @@ void ARX_FOGS_RenderAll() {
 			continue;
 
 			if(fogobj)
-				DrawEERIEInter(fogobj, &rotation, &fog->pos, NULL);
+				DrawEERIEInter(fogobj, &rotation, fog->pos, NULL);
 
 //			fog->bboxmin = BBOXMIN;
 //			fog->bboxmax = BBOXMAX;

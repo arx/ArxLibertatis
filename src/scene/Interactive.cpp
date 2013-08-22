@@ -3027,14 +3027,14 @@ void RenderInter() {
 
 						QuatFromMatrix(rotation, mat);
 
-						DrawEERIEInter(io->obj, &rotation, &io->pos, io, NULL, true);
+						DrawEERIEInter(io->obj, &rotation, io->pos, io, NULL, true);
 					} else {
 						EERIE_QUAT rotation;
 						Quat_Init(&rotation);
 
 						worldAngleToQuat(&rotation, temp);
 
-						DrawEERIEInter(io->obj, &rotation, &io->pos, io);
+						DrawEERIEInter(io->obj, &rotation, io->pos, io);
 					}
 				}
 			}

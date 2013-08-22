@@ -3992,7 +3992,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 
 						worldAngleToQuat(&rotation, angle);
 
-						DrawEERIEInter(necklace.lacet, &rotation, &pos, NULL);
+						DrawEERIEInter(necklace.lacet, &rotation, pos, NULL);
 
 						if(necklace.runes[i]->angle.b != 0.f) {
 							if(necklace.runes[i]->angle.b > 300.f)
@@ -4024,7 +4024,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 
 						// Now draw the rune
 						worldAngleToQuat(&rotation, angle);
-						DrawEERIEInter(necklace.runes[i], &rotation, &pos, NULL);
+						DrawEERIEInter(necklace.runes[i], &rotation, pos, NULL);
 
 						PopAllTriangleList();
 
@@ -4056,7 +4056,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 								Quat_Init(&rotation);
 
 								worldAngleToQuat(&rotation, angle);
-								DrawEERIEInter(necklace.runes[i], &rotation, &pos, NULL);
+								DrawEERIEInter(necklace.runes[i], &rotation, pos, NULL);
 
 								necklace.runes[i]->angle.b+=framedelay*2.f;
 
@@ -6590,11 +6590,11 @@ long Manage3DCursor(long flags)
 			if(EEfabs(lastanything) > EEfabs(height)) {
 				float old = io->invisibility;
 				io->invisibility = 0.5f;
-				DrawEERIEInter(io->obj, &rotation, &collidpos, io);
+				DrawEERIEInter(io->obj, &rotation, collidpos, io);
 				io->invisibility = old;
 			}
 			else
-				DrawEERIEInter(io->obj, &rotation, &pos, io);
+				DrawEERIEInter(io->obj, &rotation, pos, io);
 			}
 
 			PrecalcIOLighting(NULL,0,1);
