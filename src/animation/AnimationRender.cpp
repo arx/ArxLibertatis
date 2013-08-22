@@ -829,8 +829,35 @@ bool Cedric_IO_Visible(Vec3f * pos) {
 	return true;
 }
 
+struct ColorMod {
+
+	void updateFromEntity(Entity * io) {
+		special_color = Color3f::white;
+		highlightColor = Color3f::black;
+		if(io) {
+			special_color = io->special_color;
+			highlightColor = io->highlightColor;
+		}
+
+		infra = Color3f::white;
+		if(Project.improve) {
+			infra = (io) ? io->infracolor : Color3f(0.6f, 0.f, 1.f);
+		}
+
+		// Ambient light
+		ambientColor = ACTIVEBKG->ambient255;
+		if(io && (io->ioflags & (IO_NPC | IO_ITEM)))
+			ambientColor = Color3f::gray(NPC_ITEMS_AMBIENT_VALUE_255);
+	}
+
+	Color3f ambientColor;
+	Color3f infra;
+	Color3f special_color;
+	Color3f highlightColor;
+};
+
 /* Object dynamic lighting */
-static void Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, const Color3f & ambient, const Color3f & infra, Color3f &special_color, Color3f & highlightColor) {
+static void Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, const ColorMod & colorMod) {
 
 	/* Apply light on all vertices */
 	for(int i = 0; i != obj->nb_bones; i++) {
@@ -839,7 +866,7 @@ static void Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, const C
 
 		/* Get light value for each vertex */
 		for(int v = 0; v != obj->bones[i].nb_idxvertices; v++) {
-			Color3f tempColor = ambient;
+			Color3f tempColor = colorMod.ambientColor;
 
 			Vec3f posVert = eobj->vertexlist[obj->bones[i].idxvertices[v]].norm;
 
@@ -880,9 +907,9 @@ static void Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, const C
 				}
 			}
 
-			tempColor *= infra;
-			tempColor *= special_color;
-			tempColor += highlightColor;
+			tempColor *= colorMod.infra;
+			tempColor *= colorMod.special_color;
+			tempColor += colorMod.highlightColor;
 
 			u8 ir = clipByte255(tempColor.r);
 			u8 ig = clipByte255(tempColor.g);
@@ -893,11 +920,11 @@ static void Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, const C
 	}
 }
 
-void MakeCLight(Entity * io, Color3f & infra, const EERIE_QUAT *qInvert, EERIE_3DOBJ * eobj, Color3f & ambientColor, Color3f &special_color, Color3f & highlightColor)
+void MakeCLight(Entity * io, const EERIE_QUAT *qInvert, EERIE_3DOBJ * eobj, const ColorMod & colorMod)
 {
 		
 	for(size_t i = 0; i < eobj->vertexlist.size(); i++) {
-		Color3f tempColor = ambientColor;
+		Color3f tempColor = colorMod.ambientColor;
 
 		Vec3f * posVert = &eobj->vertexlist3[i].v;
 
@@ -936,17 +963,17 @@ void MakeCLight(Entity * io, Color3f & infra, const EERIE_QUAT *qInvert, EERIE_3
 			}
 		}
 
-		tempColor *= infra;
+		tempColor *= colorMod.infra;
 
 		// Special case for drawing runes in book
 		if(Project.improve && !io) {
-			tempColor.r += infra.r * 512.f;
-			tempColor.g += infra.g;
-			tempColor.b += infra.b * 400.f;
+			tempColor.r += colorMod.infra.r * 512.f;
+			tempColor.g += colorMod.infra.g;
+			tempColor.b += colorMod.infra.b * 400.f;
 		}
 
-		tempColor *= special_color;
-		tempColor += highlightColor;
+		tempColor *= colorMod.special_color;
+		tempColor += colorMod.highlightColor;
 
 		u8 ir = clipByte255(tempColor.r);
 		u8 ig = clipByte255(tempColor.g);
@@ -955,7 +982,7 @@ void MakeCLight(Entity * io, Color3f & infra, const EERIE_QUAT *qInvert, EERIE_3
 	}
 }
 
-void MakeCLight2(Color3f & infra, const EERIE_QUAT *qInvert, EERIE_3DOBJ *eobj, long ii, Color3f & ambientColor, Color3f &special_color, Color3f & highlightColor) {
+void MakeCLight2(const EERIE_QUAT *qInvert, EERIE_3DOBJ *eobj, long ii, const ColorMod & colorMod) {
 	
 	long paf[3];
 	paf[0] = eobj->facelist[ii].vid[0];
@@ -963,7 +990,7 @@ void MakeCLight2(Color3f & infra, const EERIE_QUAT *qInvert, EERIE_3DOBJ *eobj, 
 	paf[2] = eobj->facelist[ii].vid[2];
 
 	for(long i = 0; i < 3; i++) {
-		Color3f tempColor = ambientColor;
+		Color3f tempColor = colorMod.ambientColor;
 
 		Vec3f * posVert = &eobj->vertexlist3[paf[i]].v;
 
@@ -1002,9 +1029,9 @@ void MakeCLight2(Color3f & infra, const EERIE_QUAT *qInvert, EERIE_3DOBJ *eobj, 
 			}
 		}
 
-		tempColor *= infra;
-		tempColor *= special_color;
-		tempColor += highlightColor;
+		tempColor *= colorMod.infra;
+		tempColor *= colorMod.special_color;
+		tempColor += colorMod.highlightColor;
 
 		u8 ir = clipByte255(tempColor.r);
 		u8 ig = clipByte255(tempColor.g);
@@ -1125,22 +1152,8 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, const EERIE_QUAT * rotation, Vec3f *poss,
 	if(!modinfo && ARX_SCENE_PORTAL_ClipIO(io, pos))
 		return;
 
-	Color3f special_color = Color3f::white;
-	Color3f highlightColor = Color3f::black;
-	if(io) {
-		special_color = io->special_color;
-		highlightColor = io->highlightColor;
-	}
-
-	Color3f infra = Color3f::white;
-	if(Project.improve) {
-		infra = (io) ? io->infracolor : Color3f(0.6f, 0.f, 1.f);
-	}
-
-	// Ambient light
-	Color3f ambientColor = ACTIVEBKG->ambient255;
-	if(io && (io->ioflags & (IO_NPC | IO_ITEM)))
-		ambientColor = Color3f::gray(NPC_ITEMS_AMBIENT_VALUE_255);
+	ColorMod colorMod;
+	colorMod.updateFromEntity(io);
 
 	Vec3f tv = pos;
 
@@ -1154,7 +1167,7 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, const EERIE_QUAT * rotation, Vec3f *poss,
 
 	// Precalc local lights for this object then interpolate
 	if(!(io && (io->ioflags & IO_ANGULAR))) {
-		MakeCLight(io, infra, rotation, eobj, ambientColor, special_color, highlightColor);
+		MakeCLight(io, rotation, eobj, colorMod);
 	}
 
 	for(size_t i = 0; i < eobj->facelist.size(); i++) {
@@ -1188,7 +1201,7 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, const EERIE_QUAT * rotation, Vec3f *poss,
 			continue;
 
 		if(io && (io->ioflags & IO_ANGULAR))
-			MakeCLight2(infra, rotation, eobj, i, ambientColor, special_color, highlightColor);
+			MakeCLight2(rotation, eobj, i, colorMod);
 
 		float fTransp = 0.f;
 		TexturedVertex * tvList = NULL;
@@ -1727,22 +1740,8 @@ void Cedric_AnimateDrawEntityRender(EERIE_3DOBJ *eobj, const Vec3f & pos, Entity
 	if(!obj)
 		return;
 
-	Color3f special_color = Color3f::white;
-	Color3f highlightColor = Color3f::black;
-	if(io) {
-		special_color = io->special_color;
-		highlightColor = io->highlightColor;
-	}
-
-	Color3f infra = Color3f::white;
-	if(Project.improve) {
-		infra = (io) ? io->infracolor : Color3f(0.6f, 0.f, 1.f);
-	}
-
-	// Ambient light
-	Color3f ambientColor = ACTIVEBKG->ambient255;
-	if(io && (io->ioflags & (IO_NPC | IO_ITEM)))
-		ambientColor = Color3f::gray(NPC_ITEMS_AMBIENT_VALUE_255);
+	ColorMod colorMod;
+	colorMod.updateFromEntity(io);
 
 	/* Get nearest lights */
 	Vec3f tv = pos;
@@ -1754,7 +1753,7 @@ void Cedric_AnimateDrawEntityRender(EERIE_3DOBJ *eobj, const Vec3f & pos, Entity
 
 	UpdateLlights(tv);
 
-	Cedric_ApplyLighting(eobj, obj, ambientColor, infra, special_color, highlightColor);
+	Cedric_ApplyLighting(eobj, obj, colorMod);
 
 	Cedric_RenderObject(eobj, obj, io, pos, invisibility);
 
