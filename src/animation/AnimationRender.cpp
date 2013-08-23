@@ -460,15 +460,13 @@ float GetColorz(float x, float y, float z) {
 	Vec3f pos(x, y, z);
 	llightsInit();
 
-	for (long i = 0; i < TOTIOPDL; i++)
-	{
-		if ((IO_PDL[i]->fallstart > 10.f) && (IO_PDL[i]->fallend > 100.f))
+	for(long i = 0; i < TOTIOPDL; i++) {
+		if(IO_PDL[i]->fallstart > 10.f && IO_PDL[i]->fallend > 100.f)
 			Insertllight(IO_PDL[i], fdist(IO_PDL[i]->pos, pos) - IO_PDL[i]->fallstart);
 	}
 
-	for (int i = 0; i < TOTPDL; i++)
-	{
-		if ((PDL[i]->fallstart > 10.f) && (PDL[i]->fallend > 100.f))
+	for(int i = 0; i < TOTPDL; i++) {
+		if(PDL[i]->fallstart > 10.f && PDL[i]->fallend > 100.f)
 			Insertllight(PDL[i], fdist(PDL[i]->pos, pos) - PDL[i]->fallstart);
 	}
 
@@ -476,25 +474,21 @@ float GetColorz(float x, float y, float z) {
 	float ffg = 0;
 	float ffb = 0;
 
-	for (long k = 0; k < MAX_LLIGHTS; k++)
-	{
+	for(long k = 0; k < MAX_LLIGHTS; k++) {
 		EERIE_LIGHT * el = llights[k];
 
-		if (el)
-		{
+		if(el) {
 			float dd = fdist(el->pos, pos);
 
-			if (dd < el->fallend)
-			{
+			if(dd < el->fallend) {
 				float dc;
 
-				if (dd <= el->fallstart)
+				if(dd <= el->fallstart) {
 					dc = el->intensity * GLOBAL_LIGHT_FACTOR;
-				else
-				{
+				} else {
 					float p = ((el->fallend - dd) * el->falldiffmul);
 
-					if (p <= 0.f)
+					if(p <= 0.f)
 						dc = 0.f;
 					else
 						dc = p * el->intensity * GLOBAL_LIGHT_FACTOR;
@@ -513,8 +507,7 @@ float GetColorz(float x, float y, float z) {
 	float needy;
 	ep = CheckInPoly(x, y , z, &needy);
 
-	if (ep != NULL)
-	{
+	if(ep != NULL) {
 		float _ffr = 0;
 		float _ffg = 0;
 		float _ffb = 0;
