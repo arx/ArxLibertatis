@@ -1583,7 +1583,7 @@ void DrawEERIEObjEx(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *pos, Vec3f *scale, 
 	if(!eobj)
 		return;
 
-	ColorBGRA coll = col.toBGR();
+	ColorBGRA coll = col.toBGR(255);
 	DrawEERIEObjExEx(eobj, angle, pos, scale, coll);
 }
 //*************************************************************************************
