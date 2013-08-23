@@ -3934,7 +3934,6 @@ void ManageSpellIcon(long i,float rrr,long flag)
 
 	currpos += static_cast<long>(INTERFACE_RATIO(33.f));
 }
-extern float GLOBAL_LIGHT_FACTOR;
 
 void ARX_INTERFACE_ManageOpenedBook_Finish()
 {
@@ -3954,10 +3953,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 			DynLight[0].intensity  = 1.8f;
 			DynLight[0].fallstart=4520.f;
 			DynLight[0].fallend = DynLight[0].fallstart + 600.f;
-			DynLight[0].rgb255 = DynLight[0].rgb * 255.f;
-			DynLight[0].falldiff = DynLight[0].fallend-DynLight[0].fallstart;
-			DynLight[0].falldiffmul = 1.f / DynLight[0].falldiff;
-			DynLight[0].precalc = DynLight[0].intensity * GLOBAL_LIGHT_FACTOR;
+			RecalcLight(&DynLight[0]);
 			
 			EERIE_CAMERA * oldcam=ACTIVECAM;
 			bookcam.center = Vec2i(DANAECENTERX, DANAECENTERY);
@@ -5342,10 +5338,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 		eLight1.intensity = 8.8f;
 		eLight1.fallstart = 2020;
 		eLight1.fallend = eLight1.fallstart + 60;
-		eLight1.rgb255 = eLight1.rgb * 255.f;
-		eLight1.falldiff = eLight1.fallend - eLight1.fallstart;
-		eLight1.falldiffmul = 1.f / eLight1.falldiff;
-		eLight1.precalc = eLight1.intensity * GLOBAL_LIGHT_FACTOR;
+		RecalcLight(&eLight1);
 		
 		eLight2.exist = 1;
 		eLight2.pos = Vec3f(-50.f, -50.f, -200.f);
@@ -5353,10 +5346,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 		eLight2.intensity=3.8f;
 		eLight2.fallstart = 0;
 		eLight2.fallend = eLight2.fallstart + 3460.f;
-		eLight2.rgb255 = eLight2.rgb * 255.f;
-		eLight2.falldiff = eLight2.fallend - eLight2.fallstart;
-		eLight2.falldiffmul = 1.f / eLight2.falldiff;
-		eLight2.precalc = eLight2.intensity * GLOBAL_LIGHT_FACTOR;
+		RecalcLight(&eLight2);
 		
 		EERIE_LIGHT * SavePDL[2];
 		SavePDL[0]=PDL[0];

@@ -99,10 +99,7 @@ void PrecalcIOLighting(const Vec3f * pos, float radius, long flags) {
 			if((el->pos.x >= pos->x - radius) && (el->pos.x <= pos->x + radius)
 			        && (el->pos.z >= pos->z - radius) && (el->pos.z <= pos->z + radius))
 			{
-				el->rgb255 = el->rgb * 255.f;
-				el->falldiff = el->fallend - el->fallstart;
-				el->falldiffmul = 1.f / el->falldiff;
-				el->precalc = el->intensity * GLOBAL_LIGHT_FACTOR;
+				RecalcLight(el);
 				IO_PDL[TOTIOPDL] = el;
 			
 				TOTIOPDL++;
@@ -509,10 +506,7 @@ void TreatBackgroundDynlights()
 					dynamicLight->rgb.b = light->rgb.b - light->rgb.b * light->ex_flicker.b * rnd() * ( 1.0f / 2 );
 					
 					dynamicLight->rgb = componentwise_max(dynamicLight->rgb, Color3f::black);
-					dynamicLight->rgb255 = dynamicLight->rgb * 255.f;
-					dynamicLight->falldiff = dynamicLight->fallend - dynamicLight->fallstart;
-					dynamicLight->falldiffmul = 1.f / dynamicLight->falldiff;
-					dynamicLight->precalc = dynamicLight->intensity * GLOBAL_LIGHT_FACTOR;
+					RecalcLight(dynamicLight);
 				}
 			}
 		}
@@ -541,10 +535,7 @@ void PrecalcDynamicLighting(long x0, long z0, long x1, long z1) {
 			        && bDist)
 			{
 				el->treat = 1;
-				el->rgb255 = el->rgb * 255.f;
-				el->falldiff = el->fallend - el->fallstart;
-				el->falldiffmul = 1.f / el->falldiff;
-				el->precalc = el->intensity * GLOBAL_LIGHT_FACTOR;
+				RecalcLight(el);
 				PDL[TOTPDL] = el;
 				TOTPDL++;
 
@@ -620,11 +611,7 @@ void EERIEPrecalcLights(long minx, long minz, long maxx, long maxz)
 			} else if (!GLight[i]->treat) {
 				GLight[i]->treat = 1;
 			}
-
-			GLight[i]->falldiff = GLight[i]->fallend - GLight[i]->fallstart;
-			GLight[i]->falldiffmul = 1.f / GLight[i]->falldiff;
-			GLight[i]->rgb255 = GLight[i]->rgb * 255.f;
-			GLight[i]->precalc = GLight[i]->intensity * GLOBAL_LIGHT_FACTOR;
+			RecalcLight(GLight[i]);
 		}
 	}
 	
