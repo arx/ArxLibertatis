@@ -63,25 +63,7 @@ static T * copyStruct(const T * src, size_t n = 1) {
 	return result;
 }
 
-enum ActionType {
-	ACT_FIRE = 1,
-	ACT_FIREOFF = 2,
-	ACT_FIRE2 = 3,
-	ACT_FIRE2OFF = 4
-};
-
-struct ACTIONSTRUCT {
-	EERIE_LIGHT light;
-	Vec3f pos;
-	long dl;
-	ActionType type;
-	short exist;
-};
-
-const size_t MAX_ACTIONS = 100;
-
 extern TexturedVertex	vert_list[4];
-extern ACTIONSTRUCT actions[MAX_ACTIONS];
 
 #ifdef BUILD_EDIT_LOADSAVE
 EERIE_MULTI3DSCENE * PAK_MultiSceneToEerie(const res::path & dir);
@@ -113,6 +95,5 @@ void EERIE_Object_Precompute_Fast_Access(EERIE_3DOBJ * obj);
 void EERIE_3DOBJ_RestoreTextures(EERIE_3DOBJ * eobj);
 void EERIE_OBJECT_CenterObjectCoordinates(EERIE_3DOBJ * ret);
 void EERIE_CreateCedricData(EERIE_3DOBJ * eobj);
-void RemoveAllBackgroundActions();
 
 #endif // ARX_SCENE_OBJECT_H

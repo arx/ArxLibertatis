@@ -134,14 +134,6 @@ void EERIE_LIGHT_Apply(EERIEPOLY * ep) {
 		}
 	}
 
-	for(size_t i = 0; i < MAX_ACTIONS; i++) {
-		if(actions[i].exist && (actions[i].type == ACT_FIRE2 || actions[i].type == ACT_FIRE)) {
-			if(closerThan(actions[i].light.pos, ep->center, actions[i].light.fallend + 100.f)) {
-				ARX_EERIE_LIGHT_Make(ep, epr, epg, epb, &actions[i].light);
-			}
-		}
-	}
-
 	long nbvert = (ep->type & POLY_QUAD) ? 4 : 3;
 
 	for(long i = 0; i < nbvert; i++) {

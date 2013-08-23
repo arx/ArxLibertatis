@@ -1539,10 +1539,6 @@ void FirstTimeThings() {
 	WILLADDSPEECHTIME=0;
 	WILLADDSPEECH.clear();
 	
-	if(!LOADEDD) {
-		RemoveAllBackgroundActions();
-	}
-	
 	for(size_t i = 0; i < MAX_DYNLIGHTS; i++) {
 		DynLight[i].exist = 0;
 	}

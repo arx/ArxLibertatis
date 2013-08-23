@@ -1136,7 +1136,6 @@ void DanaeClearLevel(long flag)
 	EERIE_PATHFINDER_Release();
 
 	InitBkg(ACTIVEBKG, MAX_BKGX, MAX_BKGZ, BKG_SIZX, BKG_SIZZ);
-	RemoveAllBackgroundActions();
 	ClearNodes();
 	
 #ifdef BUILD_EDIT_LOADSAVE
@@ -1231,27 +1230,4 @@ plusloin:
 	free(LastLoadedLightning);
 	LastLoadedLightning = NULL;
 	LastLoadedLightningNb = 0;
-
-	for(size_t i = 0; i < MAX_ACTIONS; i++) {
-		if(actions[i].exist) {
-			long modd = 0;
-
-			switch(actions[i].type) {
-				case ACT_FIRE:
-					modd = 1;
-					break;
-				case ACT_FIRE2:
-					modd = 1;
-					break;
-				case ACT_FIREOFF:
-				case ACT_FIRE2OFF:
-					break;
-			}
-
-			if(modd) {
-				long size = DynLight[actions[i].dl].fallend * ACTIVEBKG->Xmul + 5.f;
-				RecalcLightZone(actions[i].pos.x, actions[i].pos.z, size);
-			}
-		}
-	}
 }

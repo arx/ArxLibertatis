@@ -1508,15 +1508,6 @@ EERIE_3DOBJ * LoadTheObj(const res::path & file, const res::path & texpath) {
 	return TheoToEerie_Fast(file.parent() / texpath, file, true);
 }
 
-// TODO why is this in EERIEobject
-ACTIONSTRUCT actions[MAX_ACTIONS];
-void RemoveAllBackgroundActions()
-{
-	memset(actions, 0, sizeof(ACTIONSTRUCT)*MAX_ACTIONS);
-
-	for(size_t i = 0; i < MAX_ACTIONS; i++) actions[i].dl = -1;
-}
-
 void EERIE_OBJECT_CenterObjectCoordinates(EERIE_3DOBJ * ret)
 {
 	if (!ret) return;
