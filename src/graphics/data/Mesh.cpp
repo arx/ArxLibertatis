@@ -276,33 +276,31 @@ EERIEPOLY * CheckInPoly(float x, float y, float z, float * needY)
 	EERIEPOLY * found = NULL;
 	float foundY = 0.f;
 
-	for(short j = pzi; j <= pza; j++)
+	for(short j = pzi; j <= pza; j++) {
 		for(short i = pxi; i <= pxa; i++) {
 			FAST_BKG_DATA * feg = &ACTIVEBKG->fastdata[i][j];
 
 			for(size_t k = 0; k < feg->nbpolyin; k++) {
 				EERIEPOLY * ep = feg->polyin[k];
 
-				if (
-					(poss.x >= ep->min.x) && (poss.x <= ep->max.x)
-					&&	(poss.z >= ep->min.z) && (poss.z <= ep->max.z)
-					&& !(ep->type & (POLY_WATER | POLY_TRANS | POLY_NOCOL))
-					&& (ep->max.y >= poss.y)
-					&&	(ep != found)
-					&&	(PointIn2DPolyXZ(ep, poss.x, poss.z))
-				)
-				{
-					if ((GetTruePolyY(ep, &poss, &rz))
-							&&	(rz >= poss.y)
-							&&	((found == NULL) || ((found != NULL) && (rz <= foundY)))
-					   )
-					{
-						found = ep;
-						foundY = rz;
-					}
+				if(poss.x >= ep->min.x
+				&& poss.x <= ep->max.x
+				&& poss.z >= ep->min.z
+				&& poss.z <= ep->max.z
+				&& !(ep->type & (POLY_WATER | POLY_TRANS | POLY_NOCOL))
+				&& ep->max.y >= poss.y
+				&& ep != found
+				&& PointIn2DPolyXZ(ep, poss.x, poss.z)
+				&& GetTruePolyY(ep, &poss, &rz)
+				&& rz >= poss.y
+				&& (!found || (found && rz <= foundY))
+				) {
+					found = ep;
+					foundY = rz;
 				}
 			}
 		}
+	}
 
 	if(needY)
 		*needY = foundY;
