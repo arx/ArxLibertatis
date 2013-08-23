@@ -231,38 +231,26 @@ EERIEPOLY * CheckInPoly(float x, float y, float z, float * needY)
 	if(pz <= 0 || pz >= ACTIVEBKG->Zsize - 1 || px <= 0 || px >= ACTIVEBKG->Xsize - 1)
 		return NULL;
 
-	float rx, rz;
-	rx = poss.x - ((float)px * ACTIVEBKG->Xdiv);
-	rz = poss.z - ((float)pz * ACTIVEBKG->Zdiv);
+	float rx = poss.x - ((float)px * ACTIVEBKG->Xdiv);
+	float rz = poss.z - ((float)pz * ACTIVEBKG->Zdiv);
 
-	EERIEPOLY * ep;
-	FAST_BKG_DATA * feg;
-	EERIEPOLY * found = NULL;
 
-	float foundY = 0.f;
 	short pzi, pza, pxi, pxa;
 
 	(void)checked_range_cast<short>(pz - 1);
 	(void)checked_range_cast<short>(pz + 1);
 	short sPz = static_cast<short>(pz);
 
-	if (rz < -40.f)
-	{
+	if (rz < -40.f) {
 		pzi = sPz - 1;
 		pza = sPz - 1;
-	}
-	else if (rz < 40.f)
-	{
+	} else if (rz < 40.f) {
 		pzi = sPz - 1;
 		pza = sPz;
-	}
-	else if (rz > 60.f)
-	{
+	} else if(rz > 60.f) {
 		pzi = sPz;
 		pza = sPz + 1;
-	}
-	else
-	{
+	} else {
 		pzi = sPz;
 		pza = sPz;
 	}
@@ -271,37 +259,29 @@ EERIEPOLY * CheckInPoly(float x, float y, float z, float * needY)
 	(void)checked_range_cast<short>(px - 1);
 	short sPx = static_cast<short>(px);
 
-	if (rx < -40.f)
-	{
+	if(rx < -40.f) {
 		pxi = sPx - 1;
 		pxa = sPx - 1;
-	}
-	else if (rx < 40.f)
-	{
+	} else if(rx < 40.f) {
 		pxi = sPx - 1;
 		pxa = sPx;
-	}
-	else if (rx > 60.f)
-	{
+	} else if(rx > 60.f) {
 		pxi = sPx;
 		pxa = sPx + 1;
-	}
-	else
-	{
+	} else {
 		pxi = sPx;
 		pxa = sPx;
 	}
 
-	int i, j, k;
+	EERIEPOLY * found = NULL;
+	float foundY = 0.f;
 
-	for (j = pzi; j <= pza; j++)
-		for (i = pxi; i <= pxa; i++)
-		{
-			feg = &ACTIVEBKG->fastdata[i][j];
+	for(short j = pzi; j <= pza; j++)
+		for(short i = pxi; i <= pxa; i++) {
+			FAST_BKG_DATA * feg = &ACTIVEBKG->fastdata[i][j];
 
-			for (k = 0; k < feg->nbpolyin; k++)
-			{
-				ep = feg->polyin[k];
+			for(size_t k = 0; k < feg->nbpolyin; k++) {
+				EERIEPOLY * ep = feg->polyin[k];
 
 				if (
 					(poss.x >= ep->min.x) && (poss.x <= ep->max.x)
@@ -324,7 +304,8 @@ EERIEPOLY * CheckInPoly(float x, float y, float z, float * needY)
 			}
 		}
 
-	if (needY) *needY = foundY;
+	if(needY)
+		*needY = foundY;
 
 	return found;
 }
