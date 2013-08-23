@@ -926,8 +926,7 @@ static void Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, const C
 	}
 }
 
-void MakeCLight(Entity * io, const EERIE_QUAT *qInvert, EERIE_3DOBJ * eobj, const ColorMod & colorMod)
-{
+void MakeCLight(const EERIE_QUAT *qInvert, EERIE_3DOBJ * eobj, const ColorMod & colorMod) {
 		
 	for(size_t i = 0; i < eobj->vertexlist.size(); i++) {
 		Color3f tempColor = colorMod.ambientColor;
@@ -1161,7 +1160,7 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, const EERIE_QUAT * rotation, const Vec3f 
 
 	// Precalc local lights for this object then interpolate
 	if(!(io && (io->ioflags & IO_ANGULAR))) {
-		MakeCLight(io, rotation, eobj, colorMod);
+		MakeCLight(rotation, eobj, colorMod);
 	}
 
 	for(size_t i = 0; i < eobj->facelist.size(); i++) {
