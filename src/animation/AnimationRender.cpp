@@ -446,16 +446,10 @@ void UpdateLlights(Vec3f & tv) {
 	llightsInit();
 
 	for(int i = 0; i < TOTIOPDL; i++) {
-		if(IO_PDL[i]->fallend + 500.f < 0)
-			continue;
-
 		Insertllight(IO_PDL[i], dist(IO_PDL[i]->pos, tv));
 	}
 
 	for(int i = 0; i < TOTPDL; i++) {
-		if(PDL[i]->fallend + 500.f < 0)
-			continue;
-
 		Insertllight(PDL[i], dist(PDL[i]->pos, tv));
 	}
 }
