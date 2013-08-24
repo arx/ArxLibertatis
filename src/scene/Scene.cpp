@@ -1117,18 +1117,18 @@ void RenderLava() {
 		pVertex->p.z = ep->v[0].p.z;
 		pVertex->color = 0xFF666666;
 
-		fTu = ep->v[0].p.x*(1.f/1000) + EEsin(ep->v[0].p.x*(1.f/200)+time*(1.f/2000))*(1.f/20);
-		fTv = ep->v[0].p.z*(1.f/1000) + EEcos(ep->v[0].p.z*(1.f/200)+time*(1.f/2000))*(1.f/20);
+		fTu = ep->v[0].p.x*(1.f/1000) + sin(ep->v[0].p.x*(1.f/200)+time*(1.f/2000))*(1.f/20);
+		fTv = ep->v[0].p.z*(1.f/1000) + cos(ep->v[0].p.z*(1.f/200)+time*(1.f/2000))*(1.f/20);
 		pVertex->uv[0].x = fTu;
 		pVertex->uv[0].y = fTv;
 
-		fTu = ep->v[0].p.x*(1.f/1000) + EEsin(ep->v[0].p.x*(1.f/100)+time*(1.f/2000))*(1.f/10);
-		fTv = ep->v[0].p.z*(1.f/1000) + EEcos(ep->v[0].p.z*(1.f/100)+time*(1.f/2000))*(1.f/10);
+		fTu = ep->v[0].p.x*(1.f/1000) + sin(ep->v[0].p.x*(1.f/100)+time*(1.f/2000))*(1.f/10);
+		fTv = ep->v[0].p.z*(1.f/1000) + cos(ep->v[0].p.z*(1.f/100)+time*(1.f/2000))*(1.f/10);
 		pVertex->uv[1].x = fTu;
 		pVertex->uv[1].y = fTv;
 
-		fTu = ep->v[0].p.x*(1.f/600) + EEsin(ep->v[0].p.x*(1.f/160)+time*(1.f/2000))*(1.f/11);
-		fTv = ep->v[0].p.z*(1.f/600) + EEcos(ep->v[0].p.z*(1.f/160)+time*(1.f/2000))*(1.f/11);
+		fTu = ep->v[0].p.x*(1.f/600) + sin(ep->v[0].p.x*(1.f/160)+time*(1.f/2000))*(1.f/11);
+		fTv = ep->v[0].p.z*(1.f/600) + cos(ep->v[0].p.z*(1.f/160)+time*(1.f/2000))*(1.f/11);
 		pVertex->uv[2].x = fTu;
 		pVertex->uv[2].y = fTv;
 
@@ -1139,18 +1139,18 @@ void RenderLava() {
 		pVertex->p.z = ep->v[1].p.z;
 		pVertex->color = 0xFF666666;
 
-		fTu = ep->v[1].p.x*(1.f/1000) + EEsin(ep->v[1].p.x*(1.f/200)+time*(1.0f/2000))*(1.f/20);
-		fTv = ep->v[1].p.z*(1.f/1000) + EEcos(ep->v[1].p.z*(1.f/200)+time*(1.0f/2000))*(1.f/20);
+		fTu = ep->v[1].p.x*(1.f/1000) + sin(ep->v[1].p.x*(1.f/200)+time*(1.0f/2000))*(1.f/20);
+		fTv = ep->v[1].p.z*(1.f/1000) + cos(ep->v[1].p.z*(1.f/200)+time*(1.0f/2000))*(1.f/20);
 		pVertex->uv[0].x = fTu;
 		pVertex->uv[0].y = fTv;
 
-		fTu = ep->v[1].p.x*(1.f/1000) + EEsin(ep->v[1].p.x*(1.f/100)+time*(1.f/2000))*(1.f/10);
-		fTv = ep->v[1].p.z*(1.f/1000) + EEcos(ep->v[1].p.z*(1.f/100)+time*(1.f/2000))*(1.f/10);
+		fTu = ep->v[1].p.x*(1.f/1000) + sin(ep->v[1].p.x*(1.f/100)+time*(1.f/2000))*(1.f/10);
+		fTv = ep->v[1].p.z*(1.f/1000) + cos(ep->v[1].p.z*(1.f/100)+time*(1.f/2000))*(1.f/10);
 		pVertex->uv[1].x = fTu;
 		pVertex->uv[1].y = fTv;
 
-		fTu = ep->v[1].p.x*(1.f/600) + EEsin(ep->v[1].p.x*(1.f/160)+time*(1.f/2000))*(1.f/11);
-		fTv = ep->v[1].p.z*(1.f/600) + EEcos(ep->v[1].p.z*(1.f/160)+time*(1.f/2000))*(1.f/11);
+		fTu = ep->v[1].p.x*(1.f/600) + sin(ep->v[1].p.x*(1.f/160)+time*(1.f/2000))*(1.f/11);
+		fTv = ep->v[1].p.z*(1.f/600) + cos(ep->v[1].p.z*(1.f/160)+time*(1.f/2000))*(1.f/11);
 		pVertex->uv[2].x = fTu;
 		pVertex->uv[2].y = fTv;
 
@@ -1161,21 +1161,20 @@ void RenderLava() {
 		pVertex->p.z = ep->v[2].p.z;
 		pVertex->color = 0xFF666666;
 
-		fTu = ep->v[2].p.x*(1.f/1000) + EEsin(ep->v[2].p.x*(1.f/200)+time*(1.f/2000))*(1.f/20);
-		fTv = ep->v[2].p.z*(1.f/1000) + EEcos(ep->v[2].p.z*(1.f/200)+time*(1.f/2000))*(1.f/20);
+		fTu = ep->v[2].p.x*(1.f/1000) + sin(ep->v[2].p.x*(1.f/200)+time*(1.f/2000))*(1.f/20);
+		fTv = ep->v[2].p.z*(1.f/1000) + cos(ep->v[2].p.z*(1.f/200)+time*(1.f/2000))*(1.f/20);
 		pVertex->uv[0].x = fTu;
 		pVertex->uv[0].y = fTv;
 
-		fTu = ep->v[2].p.x*(1.f/1000) + EEsin(ep->v[2].p.x*(1.f/100)+time*(1.f/2000))*(1.f/10);
-		fTv = ep->v[2].p.z*(1.f/1000) + EEcos(ep->v[2].p.z*(1.f/100)+time*(1.f/2000))*(1.f/10);
+		fTu = ep->v[2].p.x*(1.f/1000) + sin(ep->v[2].p.x*(1.f/100)+time*(1.f/2000))*(1.f/10);
+		fTv = ep->v[2].p.z*(1.f/1000) + cos(ep->v[2].p.z*(1.f/100)+time*(1.f/2000))*(1.f/10);
 		pVertex->uv[1].x = fTu;
 		pVertex->uv[1].y = fTv;
 
-		fTu = ep->v[2].p.x*(1.f/600) + EEsin(ep->v[2].p.x*(1.f/160)+time*(1.f/2000))*(1.f/11);
-		fTv = ep->v[2].p.z*(1.f/600) + EEcos(ep->v[2].p.z*(1.f/160)+time*(1.f/2000))*(1.f/11);
+		fTu = ep->v[2].p.x*(1.f/600) + sin(ep->v[2].p.x*(1.f/160)+time*(1.f/2000))*(1.f/11);
+		fTv = ep->v[2].p.z*(1.f/600) + cos(ep->v[2].p.z*(1.f/160)+time*(1.f/2000))*(1.f/11);
 		pVertex->uv[2].x = fTu;
 		pVertex->uv[2].y = fTv;
-
 
 		pVertex++;
 		
@@ -1190,18 +1189,18 @@ void RenderLava() {
 			pVertex->p.z = ep->v[3].p.z;
 			pVertex->color = 0xFF666666;
 
-			fTu = ep->v[3].p.x*(1.f/1000) + EEsin(ep->v[3].p.x*(1.f/200)+time*(1.f/2000))*(1.f/20);
-			fTv = ep->v[3].p.z*(1.f/1000) + EEcos(ep->v[3].p.z*(1.f/200)+time*(1.f/2000))*(1.f/20);
+			fTu = ep->v[3].p.x*(1.f/1000) + sin(ep->v[3].p.x*(1.f/200)+time*(1.f/2000))*(1.f/20);
+			fTv = ep->v[3].p.z*(1.f/1000) + cos(ep->v[3].p.z*(1.f/200)+time*(1.f/2000))*(1.f/20);
 			pVertex->uv[0].x = fTu;
 			pVertex->uv[0].y = fTv;
 
-			fTu = ep->v[3].p.x*(1.f/1000) + EEsin(ep->v[3].p.x*(1.f/100)+time*(1.f/2000))*(1.f/10);
-			fTv = ep->v[3].p.z*(1.f/1000) + EEcos(ep->v[3].p.z*(1.f/100)+time*(1.f/2000))*(1.f/10);
+			fTu = ep->v[3].p.x*(1.f/1000) + sin(ep->v[3].p.x*(1.f/100)+time*(1.f/2000))*(1.f/10);
+			fTv = ep->v[3].p.z*(1.f/1000) + cos(ep->v[3].p.z*(1.f/100)+time*(1.f/2000))*(1.f/10);
 			pVertex->uv[1].x = fTu;
 			pVertex->uv[1].y = fTv;
 
-			fTu = ep->v[3].p.x*(1.f/600) + EEsin(ep->v[3].p.x*(1.f/160)+time*(1.f/2000))*(1.f/11);
-			fTv = ep->v[3].p.z*(1.f/600) + EEcos(ep->v[3].p.z*(1.f/160)+time*(1.f/2000))*(1.f/11);
+			fTu = ep->v[3].p.x*(1.f/600) + sin(ep->v[3].p.x*(1.f/160)+time*(1.f/2000))*(1.f/11);
+			fTv = ep->v[3].p.z*(1.f/600) + cos(ep->v[3].p.z*(1.f/160)+time*(1.f/2000))*(1.f/11);
 			pVertex->uv[2].x = fTu;
 			pVertex->uv[2].y = fTv;
 
