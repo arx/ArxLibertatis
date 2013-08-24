@@ -254,13 +254,11 @@ void EERIERTPPoly2(EERIEPOLY *ep)
 bool IsSphereInFrustrum(const Vec3f & point, const EERIE_FRUSTRUM & frustrum, float radius = 0.f);
 bool FrustrumsClipSphere(const EERIE_FRUSTRUM_DATA & frustrums, const EERIE_SPHERE & sphere)
 {
-	float dists=sphere.origin.x*efpPlaneNear.a + sphere.origin.y*efpPlaneNear.b + sphere.origin.z*efpPlaneNear.c + efpPlaneNear.d;
+	float dists = efpPlaneNear.getDist(sphere.origin);
 
-	if (dists+sphere.radius>0)
-	{	
-		for (long i=0;i<frustrums.nb_frustrums;i++)
-		{
-			if (IsSphereInFrustrum(sphere.origin, frustrums.frustrums[i], sphere.radius))
+	if(dists + sphere.radius > 0) {
+		for(long i = 0; i < frustrums.nb_frustrums; i++) {
+			if(IsSphereInFrustrum(sphere.origin, frustrums.frustrums[i], sphere.radius))
 				return false;
 		}
 	}
