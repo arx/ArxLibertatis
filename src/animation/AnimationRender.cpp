@@ -745,28 +745,32 @@ void Cedric_PrepareHalo(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj) {
 	}
 }
 
-TexturedVertex * GetNewVertexList(EERIE_FACE * _pFace, float _fInvisibility, TextureContainer * _pTex) {
+TexturedVertex * GetNewVertexList(TextureContainer * container, EERIE_FACE * face, float invisibility, float & fTransp) {
 
-	if(!(_pFace->facetype & POLY_TRANS) && !(_fInvisibility > 0.f)) {
-		return PushVertexInTableCull(_pTex);
-	}
+	fTransp = 0.f;
 
-	float fTransp;
+	if((face->facetype & POLY_TRANS) || invisibility > 0.f) {
+		if(invisibility > 0.f)
+			fTransp = 2.f - invisibility;
+		else
+			fTransp = face->transval;
 
-	if(_fInvisibility > 0.f) {
-		fTransp = 2.f - _fInvisibility;
+		if(fTransp >= 2.f) { //MULTIPLICATIVE
+			fTransp *= (1.f / 2);
+			fTransp += 0.5f;
+			return PushVertexInTableCull_TMultiplicative(container);
+		} else if(fTransp >= 1.f) { //ADDITIVE
+			fTransp -= 1.f;
+			return PushVertexInTableCull_TAdditive(container);
+		} else if(fTransp > 0.f) { //NORMAL TRANS
+			fTransp = 1.f - fTransp;
+			return PushVertexInTableCull_TNormalTrans(container);
+		} else { //SUBTRACTIVE
+			fTransp = 1.f - fTransp;
+			return PushVertexInTableCull_TSubstractive(container);
+		}
 	} else {
-		fTransp = _pFace->transval;
-	}
-
-	if(fTransp >= 2.f) { //MULTIPLICATIVE
-		return PushVertexInTableCull_TMultiplicative(_pTex);
-	} else if(fTransp >= 1.f) { //ADDITIVE
-		return PushVertexInTableCull_TAdditive(_pTex);
-	} else if(fTransp > 0.f) { //NORMAL TRANS
-		return PushVertexInTableCull_TNormalTrans(_pTex);
-	} else { //SUBTRACTIVE
-		return PushVertexInTableCull_TSubstractive(_pTex);
+		return PushVertexInTableCull(container);
 	}
 }
 
@@ -1184,31 +1188,7 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, const EERIE_QUAT * rotation, const Vec3f 
 			MakeCLight2(rotation, eobj, i, colorMod);
 
 		float fTransp = 0.f;
-		TexturedVertex * tvList = NULL;
-
-		if((eface->facetype & POLY_TRANS) || invisibility > 0.f) {
-			if(invisibility > 0.f)
-				fTransp = 2.f - invisibility;
-			else
-				fTransp = eface->transval;
-
-			if(fTransp >= 2.f) { //MULTIPLICATIVE
-				fTransp *= (1.f / 2);
-				fTransp += 0.5f;
-				tvList = PushVertexInTableCull_TMultiplicative(pTex);
-			} else if(fTransp >= 1.f) { //ADDITIVE
-				fTransp -= 1.f;
-				tvList = PushVertexInTableCull_TAdditive(pTex);
-			} else if(fTransp > 0.f) { //NORMAL TRANS
-				fTransp = 1.f - fTransp;
-				tvList = PushVertexInTableCull_TNormalTrans(pTex);
-			} else { //SUBTRACTIVE
-				fTransp = 1.f - fTransp;
-				tvList = PushVertexInTableCull_TSubstractive(pTex);
-			}
-		} else {
-			tvList = PushVertexInTableCull(pTex);
-		}
+		TexturedVertex *tvList = GetNewVertexList(pTex, eface, invisibility, fTransp);
 
 		tvList[0]=eobj->vertexlist[paf[0]].vert;
 		tvList[1]=eobj->vertexlist[paf[1]].vert;
@@ -1502,31 +1482,7 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity *
 			continue;
 
 		float fTransp = 0.f;
-		TexturedVertex *tvList = NULL;
-
-		if((eface->facetype & POLY_TRANS) || invisibility > 0.f) {
-			if(invisibility > 0.f)
-				fTransp = 2.f - invisibility;
-			else
-				fTransp = eface->transval;
-
-			if(fTransp >= 2.f) { //MULTIPLICATIVE
-				fTransp *= (1.f / 2);
-				fTransp += 0.5f;
-				tvList = PushVertexInTableCull_TMultiplicative(pTex);
-			} else if(fTransp >= 1.f) { //ADDITIVE
-				fTransp -= 1.f;
-				tvList = PushVertexInTableCull_TAdditive(pTex);
-			} else if(fTransp > 0.f) { //NORMAL TRANS
-				fTransp = 1.f - fTransp;
-				tvList = PushVertexInTableCull_TNormalTrans(pTex);
-			} else { //SUBTRACTIVE
-				fTransp = 1.f - fTransp;
-				tvList = PushVertexInTableCull_TSubstractive(pTex);
-			}
-		} else {
-			tvList = PushVertexInTableCull(pTex);
-		}
+		TexturedVertex *tvList = GetNewVertexList(pTex, eface, invisibility, fTransp);
 
 		for(long n = 0 ; n < 3 ; n++) {
 			tvList[n].p = eobj->vertexlist3[paf[n]].vert.p;
