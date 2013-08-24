@@ -1567,14 +1567,17 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num, const EERIE_FRUSTRU
 
 void ARX_PORTALS_Frustrum_RenderRoomTCullSoftRender(long room_num) {
 
+	EERIE_ROOM_DATA & room = portals->room[room_num];
 
 	//render opaque
 	GRenderer->SetCulling(Renderer::CullNone);
-	int iNbTex=portals->room[room_num].usNbTextures;
-	TextureContainer **ppTexCurr=portals->room[room_num].ppTextureContainer;
+	int iNbTex=room.usNbTextures;
+	TextureContainer **ppTexCurr=room.ppTextureContainer;
 
 	while(iNbTex--) {
 		TextureContainer *pTexCurr=*ppTexCurr;
+
+		SMY_ARXMAT & roomMat = pTexCurr->tMatRoom[room_num];
 
 		if(ViewMode & VIEWMODE_FLAT)
 			GRenderer->ResetTexture(0);
@@ -1586,16 +1589,16 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoftRender(long room_num) {
 		else
 			GRenderer->GetTextureStage(0)->SetColorOp(TextureStage::OpModulate);
 
-		if(pTexCurr->tMatRoom[room_num].uslNbIndiceCull)
+		if(roomMat.uslNbIndiceCull)
 		{
 			GRenderer->SetAlphaFunc(Renderer::CmpGreater, .5f);
-			portals->room[room_num].pVertexBuffer->drawIndexed(Renderer::TriangleList, pTexCurr->tMatRoom[room_num].uslNbVertex, pTexCurr->tMatRoom[room_num].uslStartVertex,
-				&portals->room[room_num].pussIndice[pTexCurr->tMatRoom[room_num].uslStartCull],
-				pTexCurr->tMatRoom[room_num].uslNbIndiceCull);
+			room.pVertexBuffer->drawIndexed(Renderer::TriangleList, roomMat.uslNbVertex, roomMat.uslStartVertex,
+				&room.pussIndice[roomMat.uslStartCull],
+				roomMat.uslNbIndiceCull);
 			GRenderer->SetAlphaFunc(Renderer::CmpNotEqual, 0.f);
 
-			EERIEDrawnPolys += pTexCurr->tMatRoom[room_num].uslNbIndiceCull;
-			pTexCurr->tMatRoom[room_num].uslNbIndiceCull = 0;
+			EERIEDrawnPolys += roomMat.uslNbIndiceCull;
+			roomMat.uslNbIndiceCull = 0;
 		}
 
 		ppTexCurr++;
@@ -1608,8 +1611,8 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoftRender(long room_num) {
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 
-	iNbTex=portals->room[room_num].usNbTextures;
-	ppTexCurr=portals->room[room_num].ppTextureContainer;
+	iNbTex=room.usNbTextures;
+	ppTexCurr=room.ppTextureContainer;
 
 	// For each tex in portals->room[room_num]
 	while(iNbTex--) {
