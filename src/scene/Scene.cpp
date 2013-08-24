@@ -1109,59 +1109,74 @@ void RenderLava() {
 			pVertex = dynamicVertices.append(iNbVertex);
 		}
 		
-		pVertex->p.x=ep->v[0].p.x;
-		pVertex->p.y=-ep->v[0].p.y;
-		pVertex->p.z=ep->v[0].p.z;
-		pVertex->color=0xFF666666;
-		float fTu=ep->v[0].p.x*( 1.0f / 1000 )+EEsin((ep->v[0].p.x)*( 1.0f / 200 )+time*( 1.0f / 2000 ))*( 1.0f / 20 );
-		float fTv=ep->v[0].p.z*( 1.0f / 1000 )+EEcos((ep->v[0].p.z)*( 1.0f / 200 )+time*( 1.0f / 2000 ))*( 1.0f / 20 );
-		pVertex->uv[0].x=fTu;
-		pVertex->uv[0].y=fTv;
-		fTu=ep->v[0].p.x*( 1.0f / 1000 )+EEsin((ep->v[0].p.x)*( 1.0f / 100 )+time*( 1.0f / 2000 ))*( 1.0f / 10 );
-		fTv=ep->v[0].p.z*( 1.0f / 1000 )+EEcos((ep->v[0].p.z)*( 1.0f / 100 )+time*( 1.0f / 2000 ))*( 1.0f / 10 );
-		pVertex->uv[1].x=fTu;
-		pVertex->uv[1].y=fTv;
-		fTu=ep->v[0].p.x*( 1.0f / 600 )+EEsin((ep->v[0].p.x)*( 1.0f / 160 )+time*( 1.0f / 2000 ))*( 1.0f / 11 );
-		fTv=ep->v[0].p.z*( 1.0f / 600 )+EEcos((ep->v[0].p.z)*( 1.0f / 160 )+time*( 1.0f / 2000 ))*( 1.0f / 11 );
-		
-		pVertex->uv[2].x=fTu;
-		pVertex->uv[2].y=fTv;
+		float fTu;
+		float fTv;
+
+		pVertex->p.x = ep->v[0].p.x;
+		pVertex->p.y = -ep->v[0].p.y;
+		pVertex->p.z = ep->v[0].p.z;
+		pVertex->color = 0xFF666666;
+
+		fTu = ep->v[0].p.x*(1.f/1000) + EEsin(ep->v[0].p.x*(1.f/200)+time*(1.f/2000))*(1.f/20);
+		fTv = ep->v[0].p.z*(1.f/1000) + EEcos(ep->v[0].p.z*(1.f/200)+time*(1.f/2000))*(1.f/20);
+		pVertex->uv[0].x = fTu;
+		pVertex->uv[0].y = fTv;
+
+		fTu = ep->v[0].p.x*(1.f/1000) + EEsin(ep->v[0].p.x*(1.f/100)+time*(1.f/2000))*(1.f/10);
+		fTv = ep->v[0].p.z*(1.f/1000) + EEcos(ep->v[0].p.z*(1.f/100)+time*(1.f/2000))*(1.f/10);
+		pVertex->uv[1].x = fTu;
+		pVertex->uv[1].y = fTv;
+
+		fTu = ep->v[0].p.x*(1.f/600) + EEsin(ep->v[0].p.x*(1.f/160)+time*(1.f/2000))*(1.f/11);
+		fTv = ep->v[0].p.z*(1.f/600) + EEcos(ep->v[0].p.z*(1.f/160)+time*(1.f/2000))*(1.f/11);
+		pVertex->uv[2].x = fTu;
+		pVertex->uv[2].y = fTv;
+
+
 		pVertex++;
-		pVertex->p.x=ep->v[1].p.x;
-		pVertex->p.y=-ep->v[1].p.y;
-		pVertex->p.z=ep->v[1].p.z;
-		pVertex->color=0xFF666666;
-		fTu=ep->v[1].p.x*( 1.0f / 1000 )+EEsin((ep->v[1].p.x)*( 1.0f / 200 )+time*( 1.0f / 2000 ))*( 1.0f / 20 );
-		fTv=ep->v[1].p.z*( 1.0f / 1000 )+EEcos((ep->v[1].p.z)*( 1.0f / 200 )+time*( 1.0f / 2000 ))*( 1.0f / 20 );
-		pVertex->uv[0].x=fTu;
-		pVertex->uv[0].y=fTv;
-		fTu=ep->v[1].p.x*( 1.0f / 1000 )+EEsin((ep->v[1].p.x)*( 1.0f / 100 )+time*( 1.0f / 2000 ))*( 1.0f / 10 );
-		fTv=ep->v[1].p.z*( 1.0f / 1000 )+EEcos((ep->v[1].p.z)*( 1.0f / 100 )+time*( 1.0f / 2000 ))*( 1.0f / 10 );
-		pVertex->uv[1].x=fTu;
-		pVertex->uv[1].y=fTv;
-		fTu=ep->v[1].p.x*( 1.0f / 600 )+EEsin((ep->v[1].p.x)*( 1.0f / 160 )+time*( 1.0f / 2000 ))*( 1.0f / 11 );
-		fTv=ep->v[1].p.z*( 1.0f / 600 )+EEcos((ep->v[1].p.z)*( 1.0f / 160 )+time*( 1.0f / 2000 ))*( 1.0f / 11 );
-		
-		pVertex->uv[2].x=fTu;
-		pVertex->uv[2].y=fTv;
+		pVertex->p.x = ep->v[1].p.x;
+		pVertex->p.y = -ep->v[1].p.y;
+		pVertex->p.z = ep->v[1].p.z;
+		pVertex->color = 0xFF666666;
+
+		fTu = ep->v[1].p.x*(1.f/1000) + EEsin(ep->v[1].p.x*(1.f/200)+time*(1.0f/2000))*(1.f/20);
+		fTv = ep->v[1].p.z*(1.f/1000) + EEcos(ep->v[1].p.z*(1.f/200)+time*(1.0f/2000))*(1.f/20);
+		pVertex->uv[0].x = fTu;
+		pVertex->uv[0].y = fTv;
+
+		fTu = ep->v[1].p.x*(1.f/1000) + EEsin(ep->v[1].p.x*(1.f/100)+time*(1.f/2000))*(1.f/10);
+		fTv = ep->v[1].p.z*(1.f/1000) + EEcos(ep->v[1].p.z*(1.f/100)+time*(1.f/2000))*(1.f/10);
+		pVertex->uv[1].x = fTu;
+		pVertex->uv[1].y = fTv;
+
+		fTu = ep->v[1].p.x*(1.f/600) + EEsin(ep->v[1].p.x*(1.f/160)+time*(1.f/2000))*(1.f/11);
+		fTv = ep->v[1].p.z*(1.f/600) + EEcos(ep->v[1].p.z*(1.f/160)+time*(1.f/2000))*(1.f/11);
+		pVertex->uv[2].x = fTu;
+		pVertex->uv[2].y = fTv;
+
+
 		pVertex++;
-		pVertex->p.x=ep->v[2].p.x;
-		pVertex->p.y=-ep->v[2].p.y;
-		pVertex->p.z=ep->v[2].p.z;
-		pVertex->color=0xFF666666;
-		fTu=ep->v[2].p.x*( 1.0f / 1000 )+EEsin((ep->v[2].p.x)*( 1.0f / 200 )+time*( 1.0f / 2000 ))*( 1.0f / 20 );
-		fTv=ep->v[2].p.z*( 1.0f / 1000 )+EEcos((ep->v[2].p.z)*( 1.0f / 200 )+time*( 1.0f / 2000 ))*( 1.0f / 20 );
-		pVertex->uv[0].x=fTu;
-		pVertex->uv[0].y=fTv;
-		fTu=ep->v[2].p.x*( 1.0f / 1000 )+EEsin((ep->v[2].p.x)*( 1.0f / 100 )+time*( 1.0f / 2000 ))*( 1.0f / 10 );
-		fTv=ep->v[2].p.z*( 1.0f / 1000 )+EEcos((ep->v[2].p.z)*( 1.0f / 100 )+time*( 1.0f / 2000 ))*( 1.0f / 10 );
-		pVertex->uv[1].x=fTu;
-		pVertex->uv[1].y=fTv;
-		fTu=ep->v[2].p.x*( 1.0f / 600 )+EEsin((ep->v[2].p.x)*( 1.0f / 160 )+time*( 1.0f / 2000 ))*( 1.0f / 11 );
-		fTv=ep->v[2].p.z*( 1.0f / 600 )+EEcos((ep->v[2].p.z)*( 1.0f / 160 )+time*( 1.0f / 2000 ))*( 1.0f / 11 );
-		
-		pVertex->uv[2].x=fTu;
-		pVertex->uv[2].y=fTv;
+		pVertex->p.x = ep->v[2].p.x;
+		pVertex->p.y = -ep->v[2].p.y;
+		pVertex->p.z = ep->v[2].p.z;
+		pVertex->color = 0xFF666666;
+
+		fTu = ep->v[2].p.x*(1.f/1000) + EEsin(ep->v[2].p.x*(1.f/200)+time*(1.f/2000))*(1.f/20);
+		fTv = ep->v[2].p.z*(1.f/1000) + EEcos(ep->v[2].p.z*(1.f/200)+time*(1.f/2000))*(1.f/20);
+		pVertex->uv[0].x = fTu;
+		pVertex->uv[0].y = fTv;
+
+		fTu = ep->v[2].p.x*(1.f/1000) + EEsin(ep->v[2].p.x*(1.f/100)+time*(1.f/2000))*(1.f/10);
+		fTv = ep->v[2].p.z*(1.f/1000) + EEcos(ep->v[2].p.z*(1.f/100)+time*(1.f/2000))*(1.f/10);
+		pVertex->uv[1].x = fTu;
+		pVertex->uv[1].y = fTv;
+
+		fTu = ep->v[2].p.x*(1.f/600) + EEsin(ep->v[2].p.x*(1.f/160)+time*(1.f/2000))*(1.f/11);
+		fTv = ep->v[2].p.z*(1.f/600) + EEcos(ep->v[2].p.z*(1.f/160)+time*(1.f/2000))*(1.f/11);
+		pVertex->uv[2].x = fTu;
+		pVertex->uv[2].y = fTv;
+
+
 		pVertex++;
 		
 		*indices++ = iNbIndice++; 
@@ -1169,25 +1184,27 @@ void RenderLava() {
 		*indices++ = iNbIndice++; 
 		dynamicVertices.nbindices += 3;
 		
-		if(iNbVertex&4)
-		{
-			pVertex->p.x=ep->v[3].p.x;
-			pVertex->p.y=-ep->v[3].p.y;
-			pVertex->p.z=ep->v[3].p.z;
-			pVertex->color=0xFF666666;
-			fTu=ep->v[3].p.x*( 1.0f / 1000 )+EEsin((ep->v[3].p.x)*( 1.0f / 200 )+time*( 1.0f / 2000 ))*( 1.0f / 20 );
-			fTv=ep->v[3].p.z*( 1.0f / 1000 )+EEcos((ep->v[3].p.z)*( 1.0f / 200 )+time*( 1.0f / 2000 ))*( 1.0f / 20 );
-			pVertex->uv[0].x=fTu;
-			pVertex->uv[0].y=fTv;
-			fTu=ep->v[3].p.x*( 1.0f / 1000 )+EEsin((ep->v[3].p.x)*( 1.0f / 100 )+time*( 1.0f / 2000 ))*( 1.0f / 10 );
-			fTv=ep->v[3].p.z*( 1.0f / 1000 )+EEcos((ep->v[3].p.z)*( 1.0f / 100 )+time*( 1.0f / 2000 ))*( 1.0f / 10 );
-			pVertex->uv[1].x=fTu;
-			pVertex->uv[1].y=fTv;
-			fTu=ep->v[3].p.x*( 1.0f / 600 )+EEsin((ep->v[3].p.x)*( 1.0f / 160 )+time*( 1.0f / 2000 ))*( 1.0f / 11 );
-			fTv=ep->v[3].p.z*( 1.0f / 600 )+EEcos((ep->v[3].p.z)*( 1.0f / 160 )+time*( 1.0f / 2000 ))*( 1.0f / 11 );
-			
-			pVertex->uv[2].x=fTu;
-			pVertex->uv[2].y=fTv;
+		if(iNbVertex == 4) {
+			pVertex->p.x = ep->v[3].p.x;
+			pVertex->p.y = -ep->v[3].p.y;
+			pVertex->p.z = ep->v[3].p.z;
+			pVertex->color = 0xFF666666;
+
+			fTu = ep->v[3].p.x*(1.f/1000) + EEsin(ep->v[3].p.x*(1.f/200)+time*(1.f/2000))*(1.f/20);
+			fTv = ep->v[3].p.z*(1.f/1000) + EEcos(ep->v[3].p.z*(1.f/200)+time*(1.f/2000))*(1.f/20);
+			pVertex->uv[0].x = fTu;
+			pVertex->uv[0].y = fTv;
+
+			fTu = ep->v[3].p.x*(1.f/1000) + EEsin(ep->v[3].p.x*(1.f/100)+time*(1.f/2000))*(1.f/10);
+			fTv = ep->v[3].p.z*(1.f/1000) + EEcos(ep->v[3].p.z*(1.f/100)+time*(1.f/2000))*(1.f/10);
+			pVertex->uv[1].x = fTu;
+			pVertex->uv[1].y = fTv;
+
+			fTu = ep->v[3].p.x*(1.f/600) + EEsin(ep->v[3].p.x*(1.f/160)+time*(1.f/2000))*(1.f/11);
+			fTv = ep->v[3].p.z*(1.f/600) + EEcos(ep->v[3].p.z*(1.f/160)+time*(1.f/2000))*(1.f/11);
+			pVertex->uv[2].x = fTu;
+			pVertex->uv[2].y = fTv;
+
 			pVertex++;
 			
 			*indices++ = iNbIndice++; 
@@ -1195,7 +1212,6 @@ void RenderLava() {
 			*indices++ = iNbIndice - 3; 
 			dynamicVertices.nbindices += 3;
 		}
-		
 	}
 	
 	dynamicVertices.unlock();
