@@ -1217,8 +1217,6 @@ void RenderLava() {
 	
 }
 
-void ARX_PORTALS_Frustrum_RenderRoom_TransparencyTSoftCull(long room_num);
-
 TILE_LIGHTS tilelights[MAX_BKGX][MAX_BKGZ];
 
 void InitTileLights()
@@ -1714,61 +1712,65 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoftRender(long room_num) {
 void ARX_PORTALS_Frustrum_RenderRoom_TransparencyTSoftCull(long room_num)
 {
 	//render transparency
-	int iNbTex=portals->room[room_num].usNbTextures;
-	TextureContainer **ppTexCurr=portals->room[room_num].ppTextureContainer;
+	EERIE_ROOM_DATA & room = portals->room[room_num];
+
+	int iNbTex = room.usNbTextures;
+	TextureContainer **ppTexCurr = room.ppTextureContainer;
 
 	while(iNbTex--) {
 
 		TextureContainer * pTexCurr = *ppTexCurr;
 		GRenderer->SetTexture(0, pTexCurr);
 
+		SMY_ARXMAT & roomMat = pTexCurr->tMatRoom[room_num];
+
 		//NORMAL TRANS
-		if(pTexCurr->tMatRoom[room_num].uslNbIndiceCull_TNormalTrans)
+		if(roomMat.uslNbIndiceCull_TNormalTrans)
 		{
 			SetZBias(2);
 			GRenderer->SetBlendFunc(Renderer::BlendSrcColor, Renderer::BlendDstColor);
 
-			portals->room[room_num].pVertexBuffer->drawIndexed(Renderer::TriangleList, pTexCurr->tMatRoom[room_num].uslNbVertex, pTexCurr->tMatRoom[room_num].uslStartVertex, &portals->room[room_num].pussIndice[pTexCurr->tMatRoom[room_num].uslStartCull_TNormalTrans], pTexCurr->tMatRoom[room_num].uslNbIndiceCull_TNormalTrans);
+			room.pVertexBuffer->drawIndexed(Renderer::TriangleList, roomMat.uslNbVertex, roomMat.uslStartVertex, &room.pussIndice[roomMat.uslStartCull_TNormalTrans], roomMat.uslNbIndiceCull_TNormalTrans);
 
-			EERIEDrawnPolys+=pTexCurr->tMatRoom[room_num].uslNbIndiceCull_TNormalTrans;
-			pTexCurr->tMatRoom[room_num].uslNbIndiceCull_TNormalTrans=0;
+			EERIEDrawnPolys+=roomMat.uslNbIndiceCull_TNormalTrans;
+			roomMat.uslNbIndiceCull_TNormalTrans=0;
 		}
 
 		//MULTIPLICATIVE
-		if(pTexCurr->tMatRoom[room_num].uslNbIndiceCull_TMultiplicative)
+		if(roomMat.uslNbIndiceCull_TMultiplicative)
 		{
 			SetZBias(2);
 			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 
-			portals->room[room_num].pVertexBuffer->drawIndexed(Renderer::TriangleList, pTexCurr->tMatRoom[room_num].uslNbVertex, pTexCurr->tMatRoom[room_num].uslStartVertex, &portals->room[room_num].pussIndice[pTexCurr->tMatRoom[room_num].uslStartCull_TMultiplicative], pTexCurr->tMatRoom[room_num].uslNbIndiceCull_TMultiplicative);
+			room.pVertexBuffer->drawIndexed(Renderer::TriangleList, roomMat.uslNbVertex, roomMat.uslStartVertex, &room.pussIndice[roomMat.uslStartCull_TMultiplicative], roomMat.uslNbIndiceCull_TMultiplicative);
 
-			EERIEDrawnPolys+=pTexCurr->tMatRoom[room_num].uslNbIndiceCull_TMultiplicative;
-			pTexCurr->tMatRoom[room_num].uslNbIndiceCull_TMultiplicative=0;
+			EERIEDrawnPolys+=roomMat.uslNbIndiceCull_TMultiplicative;
+			roomMat.uslNbIndiceCull_TMultiplicative=0;
 		}
 
 		//ADDITIVE
-		if(pTexCurr->tMatRoom[room_num].uslNbIndiceCull_TAdditive)
+		if(roomMat.uslNbIndiceCull_TAdditive)
 		{
 			SetZBias(2);
 			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 
-			portals->room[room_num].pVertexBuffer->drawIndexed(Renderer::TriangleList, pTexCurr->tMatRoom[room_num].uslNbVertex, pTexCurr->tMatRoom[room_num].uslStartVertex, &portals->room[room_num].pussIndice[pTexCurr->tMatRoom[room_num].uslStartCull_TAdditive], pTexCurr->tMatRoom[room_num].uslNbIndiceCull_TAdditive);
+			room.pVertexBuffer->drawIndexed(Renderer::TriangleList, roomMat.uslNbVertex, roomMat.uslStartVertex, &room.pussIndice[roomMat.uslStartCull_TAdditive], roomMat.uslNbIndiceCull_TAdditive);
 
-			EERIEDrawnPolys+=pTexCurr->tMatRoom[room_num].uslNbIndiceCull_TAdditive;
-			pTexCurr->tMatRoom[room_num].uslNbIndiceCull_TAdditive=0;
+			EERIEDrawnPolys+=roomMat.uslNbIndiceCull_TAdditive;
+			roomMat.uslNbIndiceCull_TAdditive=0;
 		}
 
 		//SUBSTRACTIVE
-		if(pTexCurr->tMatRoom[room_num].uslNbIndiceCull_TSubstractive)
+		if(roomMat.uslNbIndiceCull_TSubstractive)
 		{
 			SetZBias(8);
 
 			GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
 
-			portals->room[room_num].pVertexBuffer->drawIndexed(Renderer::TriangleList, pTexCurr->tMatRoom[room_num].uslNbVertex, pTexCurr->tMatRoom[room_num].uslStartVertex, &portals->room[room_num].pussIndice[pTexCurr->tMatRoom[room_num].uslStartCull_TSubstractive], pTexCurr->tMatRoom[room_num].uslNbIndiceCull_TSubstractive);
+			room.pVertexBuffer->drawIndexed(Renderer::TriangleList, roomMat.uslNbVertex, roomMat.uslStartVertex, &room.pussIndice[roomMat.uslStartCull_TSubstractive], roomMat.uslNbIndiceCull_TSubstractive);
 
-			EERIEDrawnPolys+=pTexCurr->tMatRoom[room_num].uslNbIndiceCull_TSubstractive;
-			pTexCurr->tMatRoom[room_num].uslNbIndiceCull_TSubstractive=0;
+			EERIEDrawnPolys+=roomMat.uslNbIndiceCull_TSubstractive;
+			roomMat.uslNbIndiceCull_TSubstractive=0;
 		}
 
 		ppTexCurr++;
