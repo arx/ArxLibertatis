@@ -839,12 +839,9 @@ void RoomDrawRelease() {
 
 void RoomFrustrumAdd(long num, const EERIE_FRUSTRUM & fr)
 {
-	if (RoomDraw[num].frustrum.nb_frustrums<MAX_FRUSTRUMS-1)
-	{
-		memcpy(&RoomDraw[num].frustrum.frustrums
-			[RoomDraw[num].frustrum.nb_frustrums],&fr,sizeof(EERIE_FRUSTRUM));
+	if(RoomDraw[num].frustrum.nb_frustrums < MAX_FRUSTRUMS - 1) {
+		RoomDraw[num].frustrum.frustrums[RoomDraw[num].frustrum.nb_frustrums] = fr;
 		RoomDraw[num].frustrum.nb_frustrums++;
-		
 	}	
 }
 
