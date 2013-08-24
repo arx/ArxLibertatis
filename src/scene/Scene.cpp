@@ -255,7 +255,7 @@ void EERIERTPPoly2(EERIEPOLY *ep)
 		ep->tv[3].p.z=1.f;
 }
 
-bool IsSphereInFrustrum(const Vec3f *point, const EERIE_FRUSTRUM *frustrum, float radius);
+bool IsSphereInFrustrum(const Vec3f *point, const EERIE_FRUSTRUM *frustrum, float radius = 0.f);
 bool FrustrumsClipSphere(EERIE_FRUSTRUM_DATA * frustrums,EERIE_SPHERE * sphere)
 {
 	float dists=sphere->origin.x*efpPlaneNear.a + sphere->origin.y*efpPlaneNear.b + sphere->origin.z*efpPlaneNear.c + efpPlaneNear.d;
@@ -294,47 +294,46 @@ bool VisibleSphere(float x, float y, float z, float radius) {
 
 	return true;
 }
-bool IsInFrustrum(Vec3f * point,EERIE_FRUSTRUM * frustrum);
 
 bool IsBBoxInFrustrum(EERIE_3D_BBOX * bbox, EERIE_FRUSTRUM * frustrum) {
 	
 	Vec3f point = bbox->min;
-	if(IsInFrustrum(&point, frustrum)) {
+	if(IsSphereInFrustrum(&point, frustrum)) {
 		return true;
 	}
 	
 	point = Vec3f(bbox->max.x, bbox->min.y, bbox->min.z);
-	if(IsInFrustrum(&point, frustrum)) {
+	if(IsSphereInFrustrum(&point, frustrum)) {
 		return true;
 	}
 	
 	point = Vec3f(bbox->max.x, bbox->max.y, bbox->min.z);
-	if(IsInFrustrum(&point, frustrum)) {
+	if(IsSphereInFrustrum(&point, frustrum)) {
 		return true;
 	}
 	
 	point = Vec3f(bbox->min.x, bbox->max.y, bbox->min.z);
-	if(IsInFrustrum(&point, frustrum)) {
+	if(IsSphereInFrustrum(&point, frustrum)) {
 		return true;
 	}
 	
 	point = Vec3f(bbox->min.x, bbox->min.y, bbox->max.z);
-	if(IsInFrustrum(&point, frustrum)) {
+	if(IsSphereInFrustrum(&point, frustrum)) {
 		return true;
 	}
 	
 	point = Vec3f(bbox->max.x, bbox->min.y, bbox->max.z);
-	if(IsInFrustrum(&point, frustrum)) {
+	if(IsSphereInFrustrum(&point, frustrum)) {
 		return true;
 	}
 	
 	point = bbox->max;
-	if(IsInFrustrum(&point, frustrum)) {
+	if(IsSphereInFrustrum(&point, frustrum)) {
 		return true;
 	}
 	
 	point = Vec3f(bbox->min.x, bbox->max.y, bbox->max.z);
-	if(IsInFrustrum(&point, frustrum)) {
+	if(IsSphereInFrustrum(&point, frustrum)) {
 		return true;
 	}
 	
@@ -693,19 +692,7 @@ void ARX_PORTALS_InitDrawnRooms()
 	}
 }
 
-bool IsInFrustrum(Vec3f * point, EERIE_FRUSTRUM *frustrum)
-{
-	if (	((point->x*frustrum->plane[0].a + point->y*frustrum->plane[0].b + point->z*frustrum->plane[0].c + frustrum->plane[0].d)>0)
-		&&	((point->x*frustrum->plane[1].a + point->y*frustrum->plane[1].b + point->z*frustrum->plane[1].c + frustrum->plane[1].d)>0)
-		&&	((point->x*frustrum->plane[2].a + point->y*frustrum->plane[2].b + point->z*frustrum->plane[2].c + frustrum->plane[2].d)>0)
-		&&	((point->x*frustrum->plane[3].a + point->y*frustrum->plane[3].b + point->z*frustrum->plane[3].c + frustrum->plane[3].d)>0) )
-		return true;
-
-	return false;
-}
-
-
-bool IsSphereInFrustrum(const Vec3f *point, const EERIE_FRUSTRUM *frustrum, float radius = 0.f)
+bool IsSphereInFrustrum(const Vec3f *point, const EERIE_FRUSTRUM *frustrum, float radius)
 {
 	float dists[4];
 	dists[0]=point->x*frustrum->plane[0].a + point->y*frustrum->plane[0].b + point->z*frustrum->plane[0].c + frustrum->plane[0].d;
@@ -720,7 +707,6 @@ bool IsSphereInFrustrum(const Vec3f *point, const EERIE_FRUSTRUM *frustrum, floa
 		return true;
 
 	return false;
-	
 }
 
 bool FrustrumsClipPoly(EERIE_FRUSTRUM_DATA *frustrums, EERIEPOLY *ep){
