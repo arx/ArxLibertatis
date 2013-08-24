@@ -2912,7 +2912,12 @@ struct SINFO_TEXTURE_VERTEX {
 	int subtractive;
 	
 	SINFO_TEXTURE_VERTEX()
-		: opaque(0), multiplicative(0), additive(0), blended(0), subtractive(0) { }
+		: opaque(0)
+		, multiplicative(0)
+		, additive(0)
+		, blended(0)
+		, subtractive(0)
+	{}
 };
 
 } // anonymous namespace
