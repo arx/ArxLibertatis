@@ -255,16 +255,16 @@ void EERIERTPPoly2(EERIEPOLY *ep)
 		ep->tv[3].p.z=1.f;
 }
 
-bool IsSphereInFrustrum(const Vec3f *point, const EERIE_FRUSTRUM *frustrum, float radius = 0.f);
-bool FrustrumsClipSphere(EERIE_FRUSTRUM_DATA * frustrums,EERIE_SPHERE * sphere)
+bool IsSphereInFrustrum(const Vec3f & point, const EERIE_FRUSTRUM & frustrum, float radius = 0.f);
+bool FrustrumsClipSphere(const EERIE_FRUSTRUM_DATA & frustrums, const EERIE_SPHERE & sphere)
 {
-	float dists=sphere->origin.x*efpPlaneNear.a + sphere->origin.y*efpPlaneNear.b + sphere->origin.z*efpPlaneNear.c + efpPlaneNear.d;
+	float dists=sphere.origin.x*efpPlaneNear.a + sphere.origin.y*efpPlaneNear.b + sphere.origin.z*efpPlaneNear.c + efpPlaneNear.d;
 
-	if (dists+sphere->radius>0)
+	if (dists+sphere.radius>0)
 	{	
-		for (long i=0;i<frustrums->nb_frustrums;i++)
+		for (long i=0;i<frustrums.nb_frustrums;i++)
 		{
-			if (IsSphereInFrustrum(&sphere->origin, &frustrums->frustrums[i], sphere->radius))
+			if (IsSphereInFrustrum(sphere.origin, frustrums.frustrums[i], sphere.radius))
 				return false;
 		}
 	}
@@ -286,65 +286,65 @@ bool VisibleSphere(float x, float y, float z, float radius) {
 		sphere.origin = pos;
 		sphere.radius = radius;
 							
-		EERIE_FRUSTRUM_DATA * frustrums=&RoomDraw[room_num].frustrum;
+		EERIE_FRUSTRUM_DATA & frustrums = RoomDraw[room_num].frustrum;
 
-		if (FrustrumsClipSphere(frustrums,&sphere))
+		if (FrustrumsClipSphere(frustrums, sphere))
 			return false;
 	}
 
 	return true;
 }
 
-bool IsBBoxInFrustrum(EERIE_3D_BBOX * bbox, EERIE_FRUSTRUM * frustrum) {
+bool IsBBoxInFrustrum(const EERIE_3D_BBOX & bbox, const EERIE_FRUSTRUM & frustrum) {
 	
-	Vec3f point = bbox->min;
-	if(IsSphereInFrustrum(&point, frustrum)) {
+	Vec3f point = bbox.min;
+	if(IsSphereInFrustrum(point, frustrum)) {
 		return true;
 	}
 	
-	point = Vec3f(bbox->max.x, bbox->min.y, bbox->min.z);
-	if(IsSphereInFrustrum(&point, frustrum)) {
+	point = Vec3f(bbox.max.x, bbox.min.y, bbox.min.z);
+	if(IsSphereInFrustrum(point, frustrum)) {
 		return true;
 	}
 	
-	point = Vec3f(bbox->max.x, bbox->max.y, bbox->min.z);
-	if(IsSphereInFrustrum(&point, frustrum)) {
+	point = Vec3f(bbox.max.x, bbox.max.y, bbox.min.z);
+	if(IsSphereInFrustrum(point, frustrum)) {
 		return true;
 	}
 	
-	point = Vec3f(bbox->min.x, bbox->max.y, bbox->min.z);
-	if(IsSphereInFrustrum(&point, frustrum)) {
+	point = Vec3f(bbox.min.x, bbox.max.y, bbox.min.z);
+	if(IsSphereInFrustrum(point, frustrum)) {
 		return true;
 	}
 	
-	point = Vec3f(bbox->min.x, bbox->min.y, bbox->max.z);
-	if(IsSphereInFrustrum(&point, frustrum)) {
+	point = Vec3f(bbox.min.x, bbox.min.y, bbox.max.z);
+	if(IsSphereInFrustrum(point, frustrum)) {
 		return true;
 	}
 	
-	point = Vec3f(bbox->max.x, bbox->min.y, bbox->max.z);
-	if(IsSphereInFrustrum(&point, frustrum)) {
+	point = Vec3f(bbox.max.x, bbox.min.y, bbox.max.z);
+	if(IsSphereInFrustrum(point, frustrum)) {
 		return true;
 	}
 	
-	point = bbox->max;
-	if(IsSphereInFrustrum(&point, frustrum)) {
+	point = bbox.max;
+	if(IsSphereInFrustrum(point, frustrum)) {
 		return true;
 	}
 	
-	point = Vec3f(bbox->min.x, bbox->max.y, bbox->max.z);
-	if(IsSphereInFrustrum(&point, frustrum)) {
+	point = Vec3f(bbox.min.x, bbox.max.y, bbox.max.z);
+	if(IsSphereInFrustrum(point, frustrum)) {
 		return true;
 	}
 	
 	return	false;
 }
 
-bool FrustrumsClipBBox3D(EERIE_FRUSTRUM_DATA * frustrums,EERIE_3D_BBOX * bbox)
+bool FrustrumsClipBBox3D(const EERIE_FRUSTRUM_DATA & frustrums, const EERIE_3D_BBOX & bbox)
 {
-	for (long i=0;i<frustrums->nb_frustrums;i++)
+	for(long i = 0; i < frustrums.nb_frustrums; i++)
 	{
-		if (IsBBoxInFrustrum(bbox,&frustrums->frustrums[i]))
+		if(IsBBoxInFrustrum(bbox, frustrums.frustrums[i]))
 			return false;
 	}
 
@@ -399,9 +399,9 @@ bool ARX_SCENE_PORTAL_Basic_ClipIO(Entity * io) {
 			sphere.radius=radius;
 		}
 
-		EERIE_FRUSTRUM_DATA * frustrums=&RoomDraw[room_num].frustrum;
+		EERIE_FRUSTRUM_DATA & frustrums = RoomDraw[room_num].frustrum;
 
-		if (FrustrumsClipSphere(frustrums,&sphere)) {
+		if (FrustrumsClipSphere(frustrums, sphere)) {
 			io->bbox2D.min = Vec2f(-1.f, -1.f);
 			io->bbox2D.max = Vec2f(-1.f, -1.f);
 			return true;
@@ -461,10 +461,10 @@ bool ARX_SCENE_PORTAL_ClipIO(Entity * io, const Vec3f & position) {
 				sphere.origin = (io->bbox3D.min + io->bbox3D.max) * .5f;
 				sphere.radius = dist(sphere.origin, io->bbox3D.min) + 10.f;
 
-				EERIE_FRUSTRUM_DATA *frustrums = &RoomDraw[room_num].frustrum;
+				EERIE_FRUSTRUM_DATA & frustrums = RoomDraw[room_num].frustrum;
 
-				if(FrustrumsClipSphere(frustrums, &sphere) ||
-				   FrustrumsClipBBox3D(frustrums, &io->bbox3D)
+				if(FrustrumsClipSphere(frustrums, sphere) ||
+				   FrustrumsClipBBox3D(frustrums, io->bbox3D)
 				) {
 					io->bbox2D.min = Vec2f(-1.f, -1.f);
 					io->bbox2D.max = Vec2f(-1.f, -1.f);
@@ -692,13 +692,13 @@ void ARX_PORTALS_InitDrawnRooms()
 	}
 }
 
-bool IsSphereInFrustrum(const Vec3f *point, const EERIE_FRUSTRUM *frustrum, float radius)
+bool IsSphereInFrustrum(const Vec3f & point, const EERIE_FRUSTRUM & frustrum, float radius)
 {
 	float dists[4];
-	dists[0]=point->x*frustrum->plane[0].a + point->y*frustrum->plane[0].b + point->z*frustrum->plane[0].c + frustrum->plane[0].d;
-	dists[1]=point->x*frustrum->plane[1].a + point->y*frustrum->plane[1].b + point->z*frustrum->plane[1].c + frustrum->plane[1].d;
-	dists[2]=point->x*frustrum->plane[2].a + point->y*frustrum->plane[2].b + point->z*frustrum->plane[2].c + frustrum->plane[2].d;
-	dists[3]=point->x*frustrum->plane[3].a + point->y*frustrum->plane[3].b + point->z*frustrum->plane[3].c + frustrum->plane[3].d;
+	dists[0]=point.x*frustrum.plane[0].a + point.y*frustrum.plane[0].b + point.z*frustrum.plane[0].c + frustrum.plane[0].d;
+	dists[1]=point.x*frustrum.plane[1].a + point.y*frustrum.plane[1].b + point.z*frustrum.plane[1].c + frustrum.plane[1].d;
+	dists[2]=point.x*frustrum.plane[2].a + point.y*frustrum.plane[2].b + point.z*frustrum.plane[2].c + frustrum.plane[2].d;
+	dists[3]=point.x*frustrum.plane[3].a + point.y*frustrum.plane[3].b + point.z*frustrum.plane[3].c + frustrum.plane[3].d;
 
 	if (	(dists[0]+radius>0)
 		&&	(dists[1]+radius>0)
@@ -709,9 +709,9 @@ bool IsSphereInFrustrum(const Vec3f *point, const EERIE_FRUSTRUM *frustrum, floa
 	return false;
 }
 
-bool FrustrumsClipPoly(EERIE_FRUSTRUM_DATA *frustrums, EERIEPOLY *ep){
-	for(long i=0; i<frustrums->nb_frustrums; i++) {
-		if(IsSphereInFrustrum(&ep->center, &frustrums->frustrums[i], ep->v[0].rhw))
+bool FrustrumsClipPoly(const EERIE_FRUSTRUM_DATA & frustrums, const EERIEPOLY & ep){
+	for(long i=0; i<frustrums.nb_frustrums; i++) {
+		if(IsSphereInFrustrum(ep.center, frustrums.frustrums[i], ep.v[0].rhw))
 			return false;
 	}
 
@@ -837,12 +837,12 @@ void RoomDrawRelease() {
 	RoomDraw.resize(0);
 }
 
-void RoomFrustrumAdd(long num, const EERIE_FRUSTRUM * fr)
+void RoomFrustrumAdd(long num, const EERIE_FRUSTRUM & fr)
 {
 	if (RoomDraw[num].frustrum.nb_frustrums<MAX_FRUSTRUMS-1)
 	{
 		memcpy(&RoomDraw[num].frustrum.frustrums
-			[RoomDraw[num].frustrum.nb_frustrums],fr,sizeof(EERIE_FRUSTRUM));		
+			[RoomDraw[num].frustrum.nb_frustrums],&fr,sizeof(EERIE_FRUSTRUM));
 		RoomDraw[num].frustrum.nb_frustrums++;
 		
 	}	
@@ -1323,7 +1323,7 @@ void ApplyDynLight_VertexBuffer_2(EERIEPOLY * ep, short _x, short _y, SMY_VERTEX
 	}
 }
 
-void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num, EERIE_FRUSTRUM_DATA *frustrums, long tim) {
+void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num, const EERIE_FRUSTRUM_DATA & frustrums, long tim) {
 	if(!RoomDraw[room_num].count)
 		return;
 
@@ -1370,7 +1370,7 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num, EERIE_FRUSTRUM_DATA
 			continue;
 		}
 
-		if(FrustrumsClipPoly(frustrums,ep)) {
+		if(FrustrumsClipPoly(frustrums, *ep)) {
 			continue;
 		}
 
@@ -1745,13 +1745,13 @@ void ARX_PORTALS_Frustrum_RenderRoom_TransparencyTSoftCull(long room_num)
 	}
 }
 
-void ARX_PORTALS_Frustrum_ComputeRoom(long room_num, const EERIE_FRUSTRUM * frustrum)
+void ARX_PORTALS_Frustrum_ComputeRoom(long room_num, const EERIE_FRUSTRUM & frustrum)
 {
 	if(RoomDraw[room_num].count == 0) {
 		RoomDrawList.push_back(room_num);
 	}
 
-	RoomFrustrumAdd(room_num,frustrum);
+	RoomFrustrumAdd(room_num, frustrum);
 	RoomDraw[room_num].count++;
 
 	float fClippZFar = ACTIVECAM->cdepth * (fZFogEnd*1.1f);
@@ -1787,7 +1787,7 @@ void ARX_PORTALS_Frustrum_ComputeRoom(long room_num, const EERIE_FRUSTRUM * frus
 
 		EERIERTPPoly2(epp);
 
-		if(!IsSphereInFrustrum(&epp->center, frustrum, epp->v[0].rhw)) {
+		if(!IsSphereInFrustrum(epp->center, frustrum, epp->v[0].rhw)) {
 			continue;
 		}
 
@@ -1809,7 +1809,7 @@ void ARX_PORTALS_Frustrum_ComputeRoom(long room_num, const EERIE_FRUSTRUM * frus
 
 		if(computeRoom) {
 			po->useportal=1;
-			ARX_PORTALS_Frustrum_ComputeRoom(roomToCompute, &fd);
+			ARX_PORTALS_Frustrum_ComputeRoom(roomToCompute, fd);
 		}
 	}
 }
@@ -1862,10 +1862,10 @@ void ARX_SCENE_Update() {
 		ARX_PORTALS_InitDrawnRooms();
 		EERIE_FRUSTRUM frustrum;
 		CreateScreenFrustrum(&frustrum);
-		ARX_PORTALS_Frustrum_ComputeRoom(room_num, &frustrum);
+		ARX_PORTALS_Frustrum_ComputeRoom(room_num, frustrum);
 
 		for(size_t i = 0; i < RoomDrawList.size(); i++) {
-			ARX_PORTALS_Frustrum_RenderRoomTCullSoft(RoomDrawList[i], &RoomDraw[RoomDrawList[i]].frustrum, tim);
+			ARX_PORTALS_Frustrum_RenderRoomTCullSoft(RoomDrawList[i], RoomDraw[RoomDrawList[i]].frustrum, tim);
 		}
 	}
 }
