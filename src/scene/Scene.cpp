@@ -185,17 +185,17 @@ std::vector<long> RoomDrawList;
 
 //*************************************************************************************
 //*************************************************************************************
-void ApplyWaterFXToVertex(Vec3f * odtv,TexturedVertex * dtv,float power)
+void ApplyWaterFXToVertex(Vec3f * odtv, TexturedVertex * dtv, float power)
 {
-	power=power*0.05f;
-	dtv->uv.x+=EEsin((WATEREFFECT+odtv->x))*power;
-	dtv->uv.y+=EEcos((WATEREFFECT+odtv->z))*power;
+	power = power * 0.05f;
+	dtv->uv.x += EEsin(WATEREFFECT + odtv->x) * power;
+	dtv->uv.y += EEcos(WATEREFFECT + odtv->z) * power;
 }
 
 static void ApplyLavaGlowToVertex(Vec3f * odtv,TexturedVertex * dtv, float power) {
 	float f;
 	long lr, lg, lb;
-	power = 1.f - (EEsin((WATEREFFECT+odtv->x+odtv->z)) * 0.05f) * power;
+	power = 1.f - EEsin(WATEREFFECT + odtv->x + odtv->z) * 0.05f * power;
 	f = ((dtv->color >> 16) & 255) * power;
 	lr = clipByte(f);
 
@@ -210,15 +210,13 @@ static void ApplyLavaGlowToVertex(Vec3f * odtv,TexturedVertex * dtv, float power
 
 void ManageWater_VertexBuffer(EERIEPOLY * ep, const long to, const unsigned long tim, SMY_VERTEX * _pVertex) {
 	
-	for (long k=0;k<to;k++) 
-	{
+	for(long k = 0; k < to; k++) {
 		ep->tv[k].uv = ep->v[k].uv;
 		
-		ApplyWaterFXToVertex(&ep->v[k].p,&ep->tv[k],0.35f);
+		ApplyWaterFXToVertex(&ep->v[k].p, &ep->tv[k], 0.35f);
 			
-		if(ep->type&POLY_FALL)
-		{
-			ep->tv[k].uv.y-=(float)(tim)*( 1.0f / 1000 );
+		if(ep->type & POLY_FALL) {
+			ep->tv[k].uv.y -= (float)(tim) * (1.f/1000);
 		}
 		
 		_pVertex[ep->uslInd[k]].uv = ep->tv[k].uv;
@@ -227,16 +225,14 @@ void ManageWater_VertexBuffer(EERIEPOLY * ep, const long to, const unsigned long
 
 void ManageLava_VertexBuffer(EERIEPOLY * ep, const long to, const unsigned long tim, SMY_VERTEX * _pVertex) {
 	
-	for (long k=0;k<to;k++) 
-	{
+	for(long k = 0; k < to; k++) {
 		ep->tv[k].uv = ep->v[k].uv;
 		
 		ApplyWaterFXToVertex(&ep->v[k].p, &ep->tv[k], 0.35f); //0.25f
 		ApplyLavaGlowToVertex(&ep->v[k].p, &ep->tv[k], 0.6f);
 			
-		if(ep->type&POLY_FALL)
-		{
-			ep->tv[k].uv.y-=(float)(tim)*( 1.0f / 12000 );
+		if(ep->type & POLY_FALL) {
+			ep->tv[k].uv.y -= (float)(tim) * (1.f/12000);
 		}
 		
 		_pVertex[ep->uslInd[k]].uv = ep->tv[k].uv;
