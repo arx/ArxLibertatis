@@ -899,84 +899,100 @@ static void RenderWater() {
 			pVertex = dynamicVertices.append(iNbVertex);
 		}
 		
+		float fTu;
+		float fTv;
+
 		pVertex->p.x = ep->v[0].p.x;
 		pVertex->p.y = -ep->v[0].p.y;
 		pVertex->p.z = ep->v[0].p.z;
 		pVertex->color = 0xFF505050;
-		float fTu = ep->v[0].p.x*(1.f/1000) + sin(ep->v[0].p.x*(1.f/200) + time*(1.f/1000)) * (1.f/32);
-		float fTv = ep->v[0].p.z*(1.f/1000) + cos(ep->v[0].p.z*(1.f/200) + time*(1.f/1000)) * (1.f/32);
+
+		fTu = ep->v[0].p.x*(1.f/1000) + sin(ep->v[0].p.x*(1.f/200)+time*(1.f/1000))*(1.f/32);
+		fTv = ep->v[0].p.z*(1.f/1000) + cos(ep->v[0].p.z*(1.f/200)+time*(1.f/1000))*(1.f/32);
 		if(ep->type & POLY_FALL) {
 			fTv += time * (1.f/4000);
 		}
 		pVertex->uv[0].x = fTu;
 		pVertex->uv[0].y = fTv;
-		fTu = (ep->v[0].p.x + 30.f)*(1.f/1000) + sin((ep->v[0].p.x + 30)*(1.f/200) + time*(1.f/1000))*(1.f/28);
-		fTv = (ep->v[0].p.z + 30.f)*(1.f/1000) - cos((ep->v[0].p.z + 30)*(1.f/200) + time*(1.f/1000))*(1.f/28);
+
+		fTu = (ep->v[0].p.x+30.f)*(1.f/1000) + sin((ep->v[0].p.x+30)*(1.f/200)+time*(1.f/1000))*(1.f/28);
+		fTv = (ep->v[0].p.z+30.f)*(1.f/1000) - cos((ep->v[0].p.z+30)*(1.f/200)+time*(1.f/1000))*(1.f/28);
 		if (ep->type & POLY_FALL) {
 			fTv += time * (1.f/4000);
 		}
-		pVertex->uv[1].x=fTu;
-		pVertex->uv[1].y=fTv;
-		fTu=(ep->v[0].p.x+60.f)*( 1.0f / 1000 )-EEsin((ep->v[0].p.x+60)*( 1.0f / 200 )+time*( 1.0f / 1000 ))*( 1.0f / 40 );
-		fTv=(ep->v[0].p.z+60.f)*( 1.0f / 1000 )-EEcos((ep->v[0].p.z+60)*( 1.0f / 200 )+time*( 1.0f / 1000 ))*( 1.0f / 40 );
+		pVertex->uv[1].x = fTu;
+		pVertex->uv[1].y = fTv;
+
+		fTu = (ep->v[0].p.x+60.f)*(1.f/1000) - sin((ep->v[0].p.x+60)*(1.f/200)+time*(1.f/1000))*(1.f/40);
+		fTv = (ep->v[0].p.z+60.f)*(1.f/1000) - cos((ep->v[0].p.z+60)*(1.f/200)+time*(1.f/1000))*(1.f/40);
+		if(ep->type & POLY_FALL) {
+			fTv += time * (1.f/4000);
+		}
+		pVertex->uv[2].x = fTu;
+		pVertex->uv[2].y = fTv;
 		
-		if (ep->type & POLY_FALL) fTv+=time*( 1.0f / 4000 );
-		
-		pVertex->uv[2].x=fTu;
-		pVertex->uv[2].y=fTv;
-		
+
 		pVertex++;
-		pVertex->p.x=ep->v[1].p.x;
-		pVertex->p.y=-ep->v[1].p.y;
-		pVertex->p.z=ep->v[1].p.z;
-		pVertex->color=0xFF505050;
-		fTu=ep->v[1].p.x*( 1.0f / 1000 )+EEsin((ep->v[1].p.x)*( 1.0f / 200 )+time*( 1.0f / 1000 ))*( 1.0f / 32 );
-		fTv=ep->v[1].p.z*( 1.0f / 1000 )+EEcos((ep->v[1].p.z)*( 1.0f / 200 )+time*( 1.0f / 1000 ))*( 1.0f / 32 );
-		
-		if(ep->type&POLY_FALL) fTv+=time*( 1.0f / 4000 );
-		
-		pVertex->uv[0].x=fTu;
-		pVertex->uv[0].y=fTv;
-		fTu=(ep->v[1].p.x+30.f)*( 1.0f / 1000 )+EEsin((ep->v[1].p.x+30)*( 1.0f / 200 )+time*( 1.0f / 1000 ))*( 1.0f / 28 );
-		fTv=(ep->v[1].p.z+30.f)*( 1.0f / 1000 )-EEcos((ep->v[1].p.z+30)*( 1.0f / 200 )+time*( 1.0f / 1000 ))*( 1.0f / 28 );
-		
-		if (ep->type & POLY_FALL) fTv+=time*( 1.0f / 4000 );
-		
-		pVertex->uv[1].x=fTu;
-		pVertex->uv[1].y=fTv;
-		fTu=(ep->v[1].p.x+60.f)*( 1.0f / 1000 )-EEsin((ep->v[1].p.x+60)*( 1.0f / 200 )+time*( 1.0f / 1000 ))*( 1.0f / 40 );
-		fTv=(ep->v[1].p.z+60.f)*( 1.0f / 1000 )-EEcos((ep->v[1].p.z+60)*( 1.0f / 200 )+time*( 1.0f / 1000 ))*( 1.0f / 40 );
-		
-		if (ep->type & POLY_FALL) fTv+=time*( 1.0f / 4000 );
-		
-		pVertex->uv[2].x=fTu;
-		pVertex->uv[2].y=fTv;
+		pVertex->p.x = ep->v[1].p.x;
+		pVertex->p.y = -ep->v[1].p.y;
+		pVertex->p.z = ep->v[1].p.z;
+		pVertex->color = 0xFF505050;
+
+		fTu = ep->v[1].p.x*(1.f/1000) + sin(ep->v[1].p.x*(1.f/200)+time*(1.f/1000))*(1.f/32);
+		fTv = ep->v[1].p.z*(1.f/1000) + cos(ep->v[1].p.z*(1.f/200)+time*(1.f/1000))*(1.f/32);
+		if(ep->type & POLY_FALL) {
+			fTv += time * (1.f/4000);
+		}
+		pVertex->uv[0].x = fTu;
+		pVertex->uv[0].y = fTv;
+
+		fTu = (ep->v[1].p.x+30.f)*(1.f/1000) + sin((ep->v[1].p.x+30)*(1.f/200)+time*(1.f/1000))*(1.f/28);
+		fTv = (ep->v[1].p.z+30.f)*(1.f/1000) - cos((ep->v[1].p.z+30)*(1.f/200)+time*(1.f/1000))*(1.f/28);
+		if(ep->type & POLY_FALL) {
+			fTv += time * (1.f/4000);
+		}
+		pVertex->uv[1].x = fTu;
+		pVertex->uv[1].y = fTv;
+
+		fTu = (ep->v[1].p.x+60.f)*(1.f/1000) - sin((ep->v[1].p.x+60)*(1.f/200)+time*(1.f/1000))*(1.f/40);
+		fTv = (ep->v[1].p.z+60.f)*(1.f/1000) - cos((ep->v[1].p.z+60)*(1.f/200)+time*(1.f/1000))*(1.f/40);
+		if(ep->type & POLY_FALL) {
+			fTv += time * (1.f/4000);
+		}
+		pVertex->uv[2].x = fTu;
+		pVertex->uv[2].y = fTv;
+
+
 		pVertex++;
-		pVertex->p.x=ep->v[2].p.x;
-		pVertex->p.y=-ep->v[2].p.y;
-		pVertex->p.z=ep->v[2].p.z;
-		pVertex->color=0xFF505050;
-		fTu=ep->v[2].p.x*( 1.0f / 1000 )+EEsin((ep->v[2].p.x)*( 1.0f / 200 )+time*( 1.0f / 1000 ))*( 1.0f / 32 );
-		fTv=ep->v[2].p.z*( 1.0f / 1000 )+EEcos((ep->v[2].p.z)*( 1.0f / 200 )+time*( 1.0f / 1000 ))*( 1.0f / 32 );
-		
-		if(ep->type&POLY_FALL) fTv+=time*( 1.0f / 4000 );
-		
-		pVertex->uv[0].x=fTu;
-		pVertex->uv[0].y=fTv;
-		fTu=(ep->v[2].p.x+30.f)*( 1.0f / 1000 )+EEsin((ep->v[2].p.x+30)*( 1.0f / 200 )+time*( 1.0f / 1000 ))*( 1.0f / 28 );
-		fTv=(ep->v[2].p.z+30.f)*( 1.0f / 1000 )-EEcos((ep->v[2].p.z+30)*( 1.0f / 200 )+time*( 1.0f / 1000 ))*( 1.0f / 28 );
-		
-		if (ep->type & POLY_FALL) fTv+=time*( 1.0f / 4000 );
-		
-		pVertex->uv[1].x=fTu;
-		pVertex->uv[1].y=fTv;
-		fTu=(ep->v[2].p.x+60.f)*( 1.0f / 1000 )-EEsin((ep->v[2].p.x+60)*( 1.0f / 200 )+time*( 1.0f / 1000 ))*( 1.0f / 40 );
-		fTv=(ep->v[2].p.z+60.f)*( 1.0f / 1000 )-EEcos((ep->v[2].p.z+60)*( 1.0f / 200 )+time*( 1.0f / 1000 ))*( 1.0f / 40 );
-		
-		if (ep->type & POLY_FALL) fTv+=time*( 1.0f / 4000 );
-		
-		pVertex->uv[2].x=fTu;
-		pVertex->uv[2].y=fTv;
+		pVertex->p.x = ep->v[2].p.x;
+		pVertex->p.y = -ep->v[2].p.y;
+		pVertex->p.z = ep->v[2].p.z;
+		pVertex->color = 0xFF505050;
+
+		fTu = ep->v[2].p.x*(1.f/1000) + sin(ep->v[2].p.x*(1.f/200)+time*(1.f/1000))*(1.f/32);
+		fTv = ep->v[2].p.z*(1.f/1000) + cos(ep->v[2].p.z*(1.f/200)+time*(1.f/1000))*(1.f/32);
+		if(ep->type & POLY_FALL) {
+			fTv += time * (1.f/4000);
+		}
+		pVertex->uv[0].x = fTu;
+		pVertex->uv[0].y = fTv;
+
+		fTu = (ep->v[2].p.x+30.f)*(1.f/1000) + sin((ep->v[2].p.x+30)*(1.f/200)+time*(1.f/1000))*(1.f/28);
+		fTv = (ep->v[2].p.z+30.f)*(1.f/1000) - cos((ep->v[2].p.z+30)*(1.f/200)+time*(1.f/1000))*(1.f/28);
+		if(ep->type & POLY_FALL) {
+			fTv += time * (1.f/4000);
+		}
+		pVertex->uv[1].x = fTu;
+		pVertex->uv[1].y = fTv;
+
+		fTu = (ep->v[2].p.x+60.f)*(1.f/1000) - sin((ep->v[2].p.x+60)*(1.f/200)+time*(1.f/1000))*(1.f/40);
+		fTv = (ep->v[2].p.z+60.f)*(1.f/1000) - cos((ep->v[2].p.z+60)*(1.f/200)+time*(1.f/1000))*(1.f/40);
+		if(ep->type & POLY_FALL) {
+			fTv += time * (1.f/4000);
+		}
+		pVertex->uv[2].x = fTu;
+		pVertex->uv[2].y = fTv;
+
 		pVertex++;
 		
 		*indices++ = iNbIndice++; 
@@ -984,33 +1000,36 @@ static void RenderWater() {
 		*indices++ = iNbIndice++; 
 		dynamicVertices.nbindices += 3;
 		
-		if(iNbVertex == 4)
-		{
-			pVertex->p.x=ep->v[3].p.x;
-			pVertex->p.y=-ep->v[3].p.y;
-			pVertex->p.z=ep->v[3].p.z;
-			pVertex->color=0xFF505050;
-			fTu=ep->v[3].p.x*( 1.0f / 1000 )+EEsin((ep->v[3].p.x)*( 1.0f / 200 )+time*( 1.0f / 1000 ))*( 1.0f / 32 );
-			fTv=ep->v[3].p.z*( 1.0f / 1000 )+EEcos((ep->v[3].p.z)*( 1.0f / 200 )+time*( 1.0f / 1000 ))*( 1.0f / 32 );
-			
-			if(ep->type&POLY_FALL) fTv+=time*( 1.0f / 4000 );
-			
-			pVertex->uv[0].x=fTu;
-			pVertex->uv[0].y=fTv;
-			fTu=(ep->v[3].p.x+30.f)*( 1.0f / 1000 )+EEsin((ep->v[3].p.x+30)*( 1.0f / 200 )+time*( 1.0f / 1000 ))*( 1.0f / 28 );
-			fTv=(ep->v[3].p.z+30.f)*( 1.0f / 1000 )-EEcos((ep->v[3].p.z+30)*( 1.0f / 200 )+time*( 1.0f / 1000 ))*( 1.0f / 28 );
-			
-			if (ep->type & POLY_FALL) fTv+=time*( 1.0f / 4000 );
-			
-			pVertex->uv[1].x=fTu;
-			pVertex->uv[1].y=fTv;
-			fTu=(ep->v[3].p.x+60.f)*( 1.0f / 1000 )-EEsin((ep->v[3].p.x+60)*( 1.0f / 200 )+time*( 1.0f / 1000 ))*( 1.0f / 40 );
-			fTv=(ep->v[3].p.z+60.f)*( 1.0f / 1000 )-EEcos((ep->v[3].p.z+60)*( 1.0f / 200 )+time*( 1.0f / 1000 ))*( 1.0f / 40 );
-			
-			if (ep->type & POLY_FALL) fTv+=time*( 1.0f / 4000 );
-			
-			pVertex->uv[2].x=fTu;
-			pVertex->uv[2].y=fTv;
+		if(iNbVertex == 4) {
+			pVertex->p.x = ep->v[3].p.x;
+			pVertex->p.y = -ep->v[3].p.y;
+			pVertex->p.z = ep->v[3].p.z;
+			pVertex->color = 0xFF505050;
+
+			fTu = ep->v[3].p.x*(1.f/1000) + sin(ep->v[3].p.x*(1.f/200)+time*(1.f/1000))*(1.f/32);
+			fTv = ep->v[3].p.z*(1.f/1000) + cos(ep->v[3].p.z*(1.f/200)+time*(1.f/1000))*(1.f/32);
+			if(ep->type & POLY_FALL) {
+				fTv += time * (1.f/4000);
+			}
+			pVertex->uv[0].x = fTu;
+			pVertex->uv[0].y = fTv;
+
+			fTu = (ep->v[3].p.x+30.f)*(1.f/1000) + sin((ep->v[3].p.x+30)*(1.f/200)+time*(1.f/1000))*(1.f/28);
+			fTv = (ep->v[3].p.z+30.f)*(1.f/1000) - cos((ep->v[3].p.z+30)*(1.f/200)+time*(1.f/1000))*(1.f/28);
+			if(ep->type & POLY_FALL) {
+				fTv += time * (1.f/4000);
+			}
+			pVertex->uv[1].x = fTu;
+			pVertex->uv[1].y = fTv;
+
+			fTu = (ep->v[3].p.x+60.f)*(1.f/1000) - sin((ep->v[3].p.x+60)*(1.f/200)+time*(1.0f/1000))*(1.f/40);
+			fTv = (ep->v[3].p.z+60.f)*(1.f/1000) - cos((ep->v[3].p.z+60)*(1.f/200)+time*(1.0f/1000))*(1.f/40);
+			if(ep->type & POLY_FALL) {
+				fTv += time * (1.f/4000);
+			}
+			pVertex->uv[2].x = fTu;
+			pVertex->uv[2].y = fTv;
+
 			pVertex++;
 			
 			*indices++ = iNbIndice++; 
@@ -1018,7 +1037,6 @@ static void RenderWater() {
 			*indices++ = iNbIndice - 3; 
 			dynamicVertices.nbindices += 3;
 		}
-		
 	}
 	
 	dynamicVertices.unlock();
