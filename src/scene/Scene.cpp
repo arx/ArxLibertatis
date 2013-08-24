@@ -255,7 +255,7 @@ void EERIERTPPoly2(EERIEPOLY *ep)
 		ep->tv[3].p.z=1.f;
 }
 
-bool IsSphereInFrustrum(float radius, const Vec3f *point, const EERIE_FRUSTRUM *frustrum);
+bool IsSphereInFrustrum(const Vec3f *point, const EERIE_FRUSTRUM *frustrum, float radius);
 bool FrustrumsClipSphere(EERIE_FRUSTRUM_DATA * frustrums,EERIE_SPHERE * sphere)
 {
 	float dists=sphere->origin.x*efpPlaneNear.a + sphere->origin.y*efpPlaneNear.b + sphere->origin.z*efpPlaneNear.c + efpPlaneNear.d;
@@ -264,7 +264,7 @@ bool FrustrumsClipSphere(EERIE_FRUSTRUM_DATA * frustrums,EERIE_SPHERE * sphere)
 	{	
 		for (long i=0;i<frustrums->nb_frustrums;i++)
 		{
-			if (IsSphereInFrustrum(sphere->radius, &sphere->origin, &frustrums->frustrums[i]))
+			if (IsSphereInFrustrum(&sphere->origin, &frustrums->frustrums[i], sphere->radius))
 				return false;
 		}
 	}
@@ -705,7 +705,7 @@ bool IsInFrustrum(Vec3f * point, EERIE_FRUSTRUM *frustrum)
 }
 
 
-bool IsSphereInFrustrum(float radius, const Vec3f *point, const EERIE_FRUSTRUM *frustrum)
+bool IsSphereInFrustrum(const Vec3f *point, const EERIE_FRUSTRUM *frustrum, float radius = 0.f)
 {
 	float dists[4];
 	dists[0]=point->x*frustrum->plane[0].a + point->y*frustrum->plane[0].b + point->z*frustrum->plane[0].c + frustrum->plane[0].d;
@@ -725,7 +725,7 @@ bool IsSphereInFrustrum(float radius, const Vec3f *point, const EERIE_FRUSTRUM *
 
 bool FrustrumsClipPoly(EERIE_FRUSTRUM_DATA *frustrums, EERIEPOLY *ep){
 	for(long i=0; i<frustrums->nb_frustrums; i++) {
-		if(IsSphereInFrustrum(ep->v[0].rhw, &ep->center, &frustrums->frustrums[i]))
+		if(IsSphereInFrustrum(&ep->center, &frustrums->frustrums[i], ep->v[0].rhw))
 			return false;
 	}
 
@@ -1801,7 +1801,7 @@ void ARX_PORTALS_Frustrum_ComputeRoom(long room_num, const EERIE_FRUSTRUM * frus
 
 		EERIERTPPoly2(epp);
 
-		if(!IsSphereInFrustrum(epp->v[0].rhw, &epp->center, frustrum)) {
+		if(!IsSphereInFrustrum(&epp->center, frustrum, epp->v[0].rhw)) {
 			continue;
 		}
 
