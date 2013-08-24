@@ -691,10 +691,10 @@ void ARX_PORTALS_InitDrawnRooms()
 bool IsSphereInFrustrum(const Vec3f & point, const EERIE_FRUSTRUM & frustrum, float radius)
 {
 	float dists[4];
-	dists[0]=point.x*frustrum.plane[0].a + point.y*frustrum.plane[0].b + point.z*frustrum.plane[0].c + frustrum.plane[0].d;
-	dists[1]=point.x*frustrum.plane[1].a + point.y*frustrum.plane[1].b + point.z*frustrum.plane[1].c + frustrum.plane[1].d;
-	dists[2]=point.x*frustrum.plane[2].a + point.y*frustrum.plane[2].b + point.z*frustrum.plane[2].c + frustrum.plane[2].d;
-	dists[3]=point.x*frustrum.plane[3].a + point.y*frustrum.plane[3].b + point.z*frustrum.plane[3].c + frustrum.plane[3].d;
+	dists[0]=frustrum.plane[0].getDist(point);
+	dists[1]=frustrum.plane[1].getDist(point);
+	dists[2]=frustrum.plane[2].getDist(point);
+	dists[3]=frustrum.plane[3].getDist(point);
 
 	if (	(dists[0]+radius>0)
 		&&	(dists[1]+radius>0)
@@ -1405,9 +1405,9 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num, const EERIE_FRUSTRU
 		}
 
 		//Clipp ZNear + Distance pour les ZMapps!!!
-		float fDist=(ep->center.x*efpPlaneNear.a + ep->center.y*efpPlaneNear.b + ep->center.z*efpPlaneNear.c + efpPlaneNear.d);
+		float fDist = efpPlaneNear.getDist(ep->center);
 
-		if(ep->v[0].rhw<-fDist) {
+		if(ep->v[0].rhw < -fDist) {
 			continue;
 		}
 
@@ -1798,9 +1798,9 @@ void ARX_PORTALS_Frustrum_ComputeRoom(long room_num, const EERIE_FRUSTRUM & frus
 		unsigned char ucVisibilityNear=0;
 		unsigned char ucVisibilityFar=0;
 
-		float fDist0;
 		for(size_t i=0; i<ARRAY_SIZE(epp->v); i++) {
-			fDist0 = (efpPlaneNear.a*epp->v[i].p.x)+(efpPlaneNear.b*epp->v[i].p.y)+(efpPlaneNear.c*epp->v[i].p.z)+efpPlaneNear.d;
+			float fDist0 = efpPlaneNear.getDist(epp->v[i].p);
+
 			if(fDist0 < 0.f)
 				ucVisibilityNear++;
 			if(fDist0 > fClippZFar)

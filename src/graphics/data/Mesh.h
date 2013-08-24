@@ -242,6 +242,10 @@ struct EERIE_FRUSTRUM_PLANE
 	float	b;
 	float	c;
 	float	d; // dist to origin
+
+	inline float getDist(const Vec3f & point) const {
+		return point.x * a + point.y * b + point.z * c + d;
+	}
 };
 
 struct EERIE_FRUSTRUM
