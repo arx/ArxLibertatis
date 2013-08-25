@@ -692,34 +692,35 @@ void ApplyTileLights(EERIEPOLY * ep, short x, short y)
 		Vec3f & normal = ep->nrml[j];
 
 		for(size_t i = 0; i < tls->el.size(); i++) {
-			EERIE_LIGHT * el = tls->el[i];
+			EERIE_LIGHT * light = tls->el[i];
 
-			float d = fdist(el->pos, position);
+			Vec3f vLight = (light->pos - position).getNormalized();
 
-			if (d < el->fallend) {
+			float cosangle = dot(normal, vLight);
 
-				Vec3f vLight = (el->pos - position).getNormalized();
+			if(cosangle > 0.f) {
+				float distance = fdist(light->pos, position);
 
-				float nvalue = dot(normal, vLight) * 0.5f;
+				if(distance <= light->fallstart) {
+					cosangle *= light->precalc;
+				} else {
+					float p = ((light->fallend - distance) * light->falldiffmul);
 
-				if(nvalue > 0.f) {
-					if(d <= el->fallstart) {
-						d = el->precalc * nvalue;
-					} else {
-						d -= el->fallstart;
-						d = (el->falldiff - d) * el->falldiffmul * el->precalc * nvalue;
-					}
-					tempColor += el->rgb255 * lightInfraFactor * d;
+					if(p <= 0.f)
+						cosangle = 0.f;
+					else
+						cosangle *= p * light->precalc;
 				}
+				cosangle *= 0.5f;
+
+				tempColor += light->rgb255 * lightInfraFactor * cosangle;
 			}
-			else if (d > el->fallend + 100.f)
-				break;
 		}
 
-		u8 lepr = clipByte255(tempColor.r);
-		u8 lepg = clipByte255(tempColor.g);
-		u8 lepb = clipByte255(tempColor.b);
-		ep->tv[j].color = (0xFF000000L | (lepr << 16) | (lepg << 8) | (lepb));
+		u8 ir = clipByte255(tempColor.r);
+		u8 ig = clipByte255(tempColor.g);
+		u8 ib = clipByte255(tempColor.b);
+		ep->tv[j].color = (0xFF000000L | (ir << 16) | (ig << 8) | (ib));
 	}
 }
 
