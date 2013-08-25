@@ -271,6 +271,9 @@ void ARXDRAW_DrawAllLights(long x0,long z0,long x1,long z1) {
 extern Entity * CAMERACONTROLLER;
 
 void ARXDRAW_DrawEyeBall() {
+	if(eyeball.exist == 0 || !eyeballobj)
+		return;
+
 	float d;
 
 	if(eyeball.exist < 0) {

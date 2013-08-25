@@ -83,9 +83,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 using std::vector;
 
-//-----------------------------------------------------------------------------
-extern EERIE_3DOBJ * eyeballobj;
-//-----------------------------------------------------------------------------
 extern TextureContainer *enviro;
 extern long ZMAPMODE;
 extern Color ulBKGColor;
@@ -1831,8 +1828,7 @@ void ARX_SCENE_Render() {
 
 	PopAllTriangleList();
 		
-	if(eyeball.exist != 0 && eyeballobj)
-		ARXDRAW_DrawEyeBall();
+	ARXDRAW_DrawEyeBall();
 
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 
