@@ -327,7 +327,17 @@ bool GetSpellPosition(Vec3f * pos,long i)
 		break;
 		//****************************************************************************
 		// LEVEL 5
-		case SPELL_RUNE_OF_GUARDING:
+		case SPELL_RUNE_OF_GUARDING: {
+			CSpellFx *pCSpellFX = spells[i].pSpellFx;
+
+			if (pCSpellFX)
+			{
+				CRuneOfGuarding *pCRG = (CRuneOfGuarding *) pCSpellFX;
+					
+				*pos = pCRG->eSrc;
+				return true;
+			}
+		}
 		break;
 		case SPELL_LEVITATE:
 		break;
@@ -348,7 +358,17 @@ bool GetSpellPosition(Vec3f * pos,long i)
 				return true;
 			}
 		break;
-		case SPELL_CREATE_FIELD:
+		case SPELL_CREATE_FIELD: {
+			CSpellFx *pCSpellFX = spells[i].pSpellFx;
+
+			if (pCSpellFX)
+			{
+				CCreateField *pCreateField = (CCreateField *) pCSpellFX;
+					
+				*pos = pCreateField->eSrc;
+				return true;
+			}
+		}
 		break;
 		case SPELL_DISARM_TRAP:
 		break;
@@ -367,9 +387,8 @@ bool GetSpellPosition(Vec3f * pos,long i)
 			return true;
 		}	
 		break;
-		case SPELL_FIRE_FIELD:
-			CSpellFx *pCSpellFX;
-			pCSpellFX = spells[i].pSpellFx;
+		case SPELL_FIRE_FIELD: {
+			CSpellFx *pCSpellFX = spells[i].pSpellFx;
 
 			if (pCSpellFX)
 			{
@@ -378,8 +397,19 @@ bool GetSpellPosition(Vec3f * pos,long i)
 				*pos = pFireField->pos;
 				return true;
 			}
+		}
 		break;
-		case SPELL_ICE_FIELD:
+		case SPELL_ICE_FIELD: {
+			CSpellFx *pCSpellFX = spells[i].pSpellFx;
+
+			if (pCSpellFX)
+			{
+				CIceField *pIceField = (CIceField *) pCSpellFX;
+					
+				*pos = pIceField->eSrc;
+				return true;
+			}
+		}
 		break;
 		case SPELL_LIGHTNING_STRIKE:
 		break;
@@ -3382,12 +3412,16 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 				spells[iCancel].tolive = 0;
 			}
 			
+			if(spells[i].caster == 0) {
+				spells[i].target = spells[i].caster;
+			}
+			
 			if(!(spells[i].flags & SPELLCAST_FLAG_NOSOUND)) {
-				ARX_SOUND_PlaySFX(SND_SPELL_ARMOR_START, &spells[i].target_pos);
+				ARX_SOUND_PlaySFX(SND_SPELL_ARMOR_START, &entities[spells[i].target]->pos);
 			}
 			
 			spells[i].snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_ARMOR_LOOP,
-			                                       &spells[i].caster_pos, 1.f,
+			                                       &entities[spells[i].target]->pos, 1.f,
 			                                       ARX_SOUND_PLAY_LOOPED);
 			
 			spells[i].exist = true;
@@ -3395,10 +3429,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 				spells[i].tolive = duration;
 			} else {
 				spells[i].tolive = (spells[i].caster == 0) ? 20000000 : 20000;
-			}
-			
-			if(spells[i].caster == 0) {
-				spells[i].target = spells[i].caster;
 			}
 			
 			spells[i].bDuration = true;
@@ -3445,7 +3475,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			}
 			
 			if(!(spells[i].flags & SPELLCAST_FLAG_NOSOUND)) {
-				ARX_SOUND_PlaySFX(SND_SPELL_LOWER_ARMOR, &spells[i].caster_pos);
+				ARX_SOUND_PlaySFX(SND_SPELL_LOWER_ARMOR, &entities[spells[i].target]->pos);
 			}
 			
 			spells[i].exist = true;
@@ -3530,12 +3560,15 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			spells[i].bDuration = true;
 			spells[i].fManaCostPerSecond = 2.f;
 			
-			ARX_SOUND_PlaySFX(SND_SPELL_SPEED_START, &spells[i].caster_pos);
-			
 			if(spells[i].caster == 0) {
 				spells[i].target = spells[i].caster;
+			}
+			
+			ARX_SOUND_PlaySFX(SND_SPELL_SPEED_START, &entities[spells[i].target]->pos);
+			
+			if(spells[i].target == 0) {
 				spells[i].snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_SPEED_LOOP,
-				                                       &spells[i].caster_pos, 1.f,
+				                                       &entities[spells[i].target]->pos, 1.f,
 				                                       ARX_SOUND_PLAY_LOOPED);
 			}
 			
@@ -3789,8 +3822,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 		}
 		case SPELL_FIRE_PROTECTION: {
 			
-			ARX_SOUND_PlaySFX(SND_SPELL_FIRE_PROTECTION);
-			
 			long idx = ARX_SPELLS_GetSpellOn(entities[spells[i].target], typ);
 			if(idx >= 0) {
 				spells[idx].tolive = 0;
@@ -3826,6 +3857,8 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 				spells[i].target = 0;
 			}
 			
+			ARX_SOUND_PlaySFX(SND_SPELL_FIRE_PROTECTION, &entities[spells[i].target]->pos);
+			
 			spells[i].bDuration = true;
 			spells[i].fManaCostPerSecond = 1.f;
 			
@@ -3838,7 +3871,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			ARX_SPELLS_AddSpellOn(spells[i].target, i);
 			
 			spells[i].snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_FIRE_PROTECTION_LOOP, 
-			                                       &spells[i].caster_pos, 1.f, 
+			                                       &entities[spells[i].target]->pos, 1.f, 
 			                                       ARX_SOUND_PLAY_LOOPED);
 			
 			break;
@@ -3867,7 +3900,11 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 				spells[iCancel].tolive = 0;
 			}
 			
-			ARX_SOUND_PlaySFX(SND_SPELL_COLD_PROTECTION_START);
+			if(spells[i].caster == 0) {
+				spells[i].target = 0;
+			}
+			
+			ARX_SOUND_PlaySFX(SND_SPELL_COLD_PROTECTION_START, &entities[spells[i].target]->pos);
 			
 			spells[i].exist = true;
 			spells[i].lastupdate = spells[i].timcreation = (unsigned long)(arxtime);
@@ -3875,10 +3912,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 				spells[i].tolive = duration;
 			} else {
 				spells[i].tolive = (spells[i].caster == 0) ? 2000000 : 20000;
-			}
-			
-			if(spells[i].caster == 0) {
-				spells[i].target = 0;
 			}
 			
 			spells[i].bDuration = true;
@@ -3891,7 +3924,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			spells[i].tolive = effect->GetDuration();
 			
 			spells[i].snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_COLD_PROTECTION_LOOP,
-			                                       &spells[i].caster_pos, 1.f,
+			                                       &entities[spells[i].target]->pos, 1.f,
 			                                       ARX_SOUND_PLAY_LOOPED);
 			
 			ARX_SPELLS_AddSpellOn(spells[i].target, i);
@@ -3918,7 +3951,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 				spells[iCancel].tolive = 0;
 			}
 			
-			ARX_SOUND_PlaySFX(SND_SPELL_CURSE, &spells[i].caster_pos);
+			ARX_SOUND_PlaySFX(SND_SPELL_CURSE, &entities[spells[i].target]->pos);
 			
 			spells[i].exist = true;
 			spells[i].tolive = (duration > -1) ? duration : 2000000;
@@ -3971,7 +4004,11 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 				spells[iCancel].tolive = 0;
 			}
 			
-			ARX_SOUND_PlaySFX(SND_SPELL_LEVITATE_START);
+			if(spells[i].caster == 0) {
+				spells[i].target = 0;
+			}
+			
+			ARX_SOUND_PlaySFX(SND_SPELL_LEVITATE_START, &entities[spells[i].target]->pos);
 			spells[i].exist = true;
 			spells[i].tolive = (duration > -1) ? duration : 2000000000;
 			spells[i].bDuration = true;
@@ -3981,7 +4018,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			effect->spellinstance = i;
 			
 			Vec3f target;
-			if(spells[i].caster == 0 || spells[i].target == 0) {
+			if(spells[i].target == 0) {
 				target = player.pos + Vec3f(0.f, 150.f, 0.f);
 				spells[i].target = 0;
 				spells[i].tolive = 200000000;
@@ -3993,6 +4030,10 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			effect->Create(16, 50.f, 100.f, 80.f, &target, spells[i].tolive);
 			spells[i].pSpellFx = effect;
 			spells[i].tolive = effect->GetDuration();
+			
+			spells[i].snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_LEVITATE_LOOP,
+			                                       &entities[spells[i].target]->pos, 0.7f,
+			                                       ARX_SOUND_PLAY_LOOPED);
 			
 			ARX_SPELLS_AddSpellOn(spells[i].target, i);
 			
@@ -4038,10 +4079,10 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 				spells[i].target = 0;
 			}
 			
-			ARX_SOUND_PlaySFX(SND_SPELL_REPEL_UNDEAD);
+			ARX_SOUND_PlaySFX(SND_SPELL_REPEL_UNDEAD, &entities[spells[i].target]->pos);
 			if(spells[i].target == 0) {
 				spells[i].snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_REPEL_UNDEAD_LOOP,
-				                                       &spells[i].caster_pos, 1.f,
+				                                       &entities[spells[i].target]->pos, 1.f,
 				                                       ARX_SOUND_PLAY_LOOPED);
 			}
 			
@@ -4112,9 +4153,8 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 				return false;
 			}
 			
-			ARX_SOUND_PlaySFX(SND_SPELL_RAISE_DEAD, &spells[i].caster_pos);
-			
 			spells[i].target_pos = target;
+			ARX_SOUND_PlaySFX(SND_SPELL_RAISE_DEAD, &spells[i].target_pos);
 			spells[i].exist = true;
 			// TODO this tolive value is probably never read
 			spells[i].tolive = (duration > -1) ? duration : 2000000;
@@ -4151,7 +4191,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			break;
 		}
 		case SPELL_PARALYSE: {
-			ARX_SOUND_PlaySFX(SND_SPELL_PARALYSE, &spells[i].caster_pos);
+			ARX_SOUND_PlaySFX(SND_SPELL_PARALYSE, &entities[spells[i].target]->pos);
 			
 			spells[i].exist = true;
 			spells[i].tolive = (duration > -1) ? duration : 5000;
@@ -4304,7 +4344,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 				}
 			}
 			
-			ARX_SOUND_PlaySFX(SND_SPELL_SLOW_DOWN, &spells[i].caster_pos);
+			ARX_SOUND_PlaySFX(SND_SPELL_SLOW_DOWN, &entities[spells[i].target]->pos);
 			
 			spells[i].exist = true;
 			spells[i].tolive = (spells[i].caster == 0) ? 10000000 : 10000;
@@ -4529,7 +4569,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			break;
 		}
 		case SPELL_CONFUSE: {
-			ARX_SOUND_PlaySFX(SND_SPELL_CONFUSE);
+			ARX_SOUND_PlaySFX(SND_SPELL_CONFUSE, &entities[spells[i].target]->pos);
 			
 			spells[i].exist = true;
 			spells[i].lastupdate = spells[i].timcreation = (unsigned long)(arxtime);
@@ -4755,8 +4795,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 		// LEVEL 9
 		case SPELL_SUMMON_CREATURE: {
 			
-			ARX_SOUND_PlaySFX(SND_SPELL_SUMMON_CREATURE);
-			
 			spells[i].exist = true;
 			spells[i].lastupdate = spells[i].timcreation = (unsigned long)(arxtime);
 			spells[i].bDuration = true;
@@ -4790,7 +4828,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			
 			spells[i].fdata = (spells[i].caster == 0 && cur_mega == 10) ? 1.f : 0.f;
 			spells[i].target_pos = target;
-			
+			ARX_SOUND_PlaySFX(SND_SPELL_SUMMON_CREATURE, &spells[i].target_pos);
 			CSummonCreature * effect = new CSummonCreature();
 			effect->spellinstance = i;
 			effect->Create(target, MAKEANGLE(player.angle.b));
@@ -4819,8 +4857,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 				return false;
 			}
 			
-			ARX_SOUND_PlaySFX(SND_SPELL_SUMMON_CREATURE);
-			
 			spells[i].exist = true;
 			spells[i].lastupdate = spells[i].timcreation = (unsigned long)(arxtime);
 			spells[i].bDuration = true;
@@ -4832,7 +4868,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 				target.y += player.baseHeight();
 			}
 			spells[i].target_pos = target;
-			
+			ARX_SOUND_PlaySFX(SND_SPELL_SUMMON_CREATURE, &spells[i].target_pos);
 			CSummonCreature * effect = new CSummonCreature();
 			effect->spellinstance = i;
 			effect->Create(target, MAKEANGLE(player.angle.b));
@@ -4889,10 +4925,10 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 				return false;
 			}
 			
-			ARX_SOUND_PlaySFX(SND_SPELL_INCINERATE);
+			ARX_SOUND_PlaySFX(SND_SPELL_INCINERATE, &entities[spells[i].target]->pos);
 			
 			spells[i].snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_INCINERATE_LOOP, 
-			                                       &spells[i].caster_pos, 1.f, 
+			                                       &entities[spells[i].target]->pos, 1.f, 
 			                                       ARX_SOUND_PLAY_LOOPED);
 			
 			spells[i].exist = true;
@@ -5168,7 +5204,7 @@ void ARX_SPELLS_Kill(long i) {
 			spells[i].longinfo = -1;
 			
 			ARX_SOUND_Stop(spells[i].snd_loop);
-			ARX_SOUND_PlaySFX(SND_SPELL_LIGHTNING_END);
+			ARX_SOUND_PlaySFX(SND_SPELL_LIGHTNING_END, &entities[spells[i].caster]->pos);
 			
 			break;
 		}
@@ -5389,7 +5425,7 @@ void ARX_SPELLS_Update()
 						ARX_SOUND_Stop(spells[i].snd_loop);
 					}
 
-					ARX_SOUND_PlaySFX(SND_SPELL_VISION_START, &spells[i].caster_pos);					
+					ARX_SOUND_PlaySFX(SND_SPELL_VISION_START, &entities[spells[i].caster]->pos);					
 				break;
 				case SPELL_MAGIC_MISSILE: {
 					if(spells[i].longinfo != -1)
@@ -5416,18 +5452,16 @@ void ARX_SPELLS_Update()
 				break;
 				case SPELL_ARMOR: {
 					ARX_SOUND_Stop(spells[i].snd_loop);
-					ARX_SOUND_PlaySFX(SND_SPELL_ARMOR_END, &spells[i].caster_pos);					
-					Entity *io = entities[spells[i].target];
+					ARX_SOUND_PlaySFX(SND_SPELL_ARMOR_END, &entities[spells[i].target]->pos);					
 
-					if(spells[i].longinfo) {
-						io->halo.flags &= ~HALO_ACTIVE;
-						ARX_HALO_SetToNative(io);
-					}
+					if(ValidIONum(spells[i].target))
+						ARX_HALO_SetToNative(entities[spells[i].target]);
 
 					ARX_SPELLS_RemoveSpellOn(spells[i].target, i);
 				}
 				break;
 				case SPELL_LOWER_ARMOR: {
+					ARX_SOUND_PlaySFX(SND_SPELL_LOWER_ARMOR_END);
 					Entity *io = entities[spells[i].target];
 
 					if(spells[i].longinfo) {
@@ -5446,7 +5480,7 @@ void ARX_SPELLS_Update()
 					if(spells[i].caster == 0)
 						ARX_SOUND_Stop(spells[i].snd_loop);
 
-					ARX_SOUND_PlaySFX(SND_SPELL_SPEED_END, &spells[i].caster_pos);
+					ARX_SOUND_PlaySFX(SND_SPELL_SPEED_END, &entities[spells[i].target]->pos);
 				break;
 				case SPELL_FIREBALL:
 					ARX_SOUND_Stop(spells[i].snd_loop);					
@@ -5463,11 +5497,11 @@ void ARX_SPELLS_Update()
 					if(spells[i].caster == 0)
 						Project.telekinesis = 0;
 
-					ARX_SOUND_PlaySFX(SND_SPELL_TELEKINESIS_END, &spells[i].caster_pos);					
+					ARX_SOUND_PlaySFX(SND_SPELL_TELEKINESIS_END, &entities[spells[i].caster]->pos);					
 				break;
 				case SPELL_FIRE_PROTECTION:
 					ARX_SOUND_Stop(spells[i].snd_loop);
-					ARX_SOUND_PlaySFX(SND_SPELL_FIRE_PROTECTION_END);
+					ARX_SOUND_PlaySFX(SND_SPELL_FIRE_PROTECTION_END, &entities[spells[i].target]->pos);
 					ARX_SPELLS_RemoveSpellOn(spells[i].target, i);
 
 					if(ValidIONum(spells[i].target))
@@ -5475,7 +5509,7 @@ void ARX_SPELLS_Update()
 				break;
 				case SPELL_COLD_PROTECTION:
 					ARX_SOUND_Stop(spells[i].snd_loop);
-					ARX_SOUND_PlaySFX(SND_SPELL_COLD_PROTECTION_END);
+					ARX_SOUND_PlaySFX(SND_SPELL_COLD_PROTECTION_END, &entities[spells[i].target]->pos);
 					ARX_SPELLS_RemoveSpellOn(spells[i].target, i);
 
 					if(ValidIONum(spells[i].target))
@@ -5484,7 +5518,9 @@ void ARX_SPELLS_Update()
 				//****************************************************************************
 				// LEVEL 5
 				case SPELL_LEVITATE: {
-					ARX_SPELLS_RemoveSpellOn(spells[i].target,i);
+					ARX_SOUND_Stop(spells[i].snd_loop);
+					ARX_SOUND_PlaySFX(SND_SPELL_LEVITATE_END, &entities[spells[i].target]->pos);
+					ARX_SPELLS_RemoveSpellOn(spells[i].target, i);
 
 					if(spells[i].target == 0)
 						player.levitate = 0;
@@ -5497,7 +5533,7 @@ void ARX_SPELLS_Update()
 					entities[spells[i].target]->ioflags &= ~IO_FREEZESCRIPT;
 				break;
 				case SPELL_RISE_DEAD:
-					ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &spells[i].caster_pos);
+					ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &entities[spells[i].longinfo]->pos);
 
 					if(ValidIONum(spells[i].longinfo) && spells[i].longinfo != 0) {
 						Entity *entity = entities[spells[i].longinfo];
@@ -5537,7 +5573,8 @@ void ARX_SPELLS_Update()
 				}
 				break;
 				case SPELL_SLOW_DOWN:
-					ARX_SPELLS_RemoveSpellOn(spells[i].target,i);
+					ARX_SOUND_PlaySFX(SND_SPELL_SLOW_DOWN_END);
+					ARX_SPELLS_RemoveSpellOn(spells[i].target, i);
 				break;				
 				//****************************************************************************
 				// LEVEL 7
@@ -5550,7 +5587,7 @@ void ARX_SPELLS_Update()
 						damages[spells[i].longinfo].exist = false;
 				break;
 				case SPELL_LIGHTNING_STRIKE:					
-					ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &spells[i].caster_pos);					
+					ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &entities[spells[i].caster]->pos);					
 				break;
 				case SPELL_FLYING_EYE:					
 					ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE, &entities[spells[i].caster]->pos);
@@ -5589,7 +5626,7 @@ void ARX_SPELLS_Update()
 				}
 				break;
 				case SPELL_SUMMON_CREATURE :
-					ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &spells[i].caster_pos);
+					ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &entities[spells[i].longinfo2]->pos);
 
 					if(spells[i].pSpellFx->lLightId > -1) {
 						long id = spells[i].pSpellFx->lLightId;
@@ -5600,7 +5637,7 @@ void ARX_SPELLS_Update()
 					// need to killio
 				break;
 				case SPELL_FAKE_SUMMON :
-					ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &spells[i].caster_pos);						
+					ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &spells[i].target_pos);						
 
 					if(spells[i].pSpellFx->lLightId > -1) {
 						long id = spells[i].pSpellFx->lLightId;
@@ -5611,19 +5648,19 @@ void ARX_SPELLS_Update()
 				case SPELL_INCINERATE:
 					ARX_SPELLS_RemoveSpellOn(spells[i].target, i);
 					ARX_SOUND_Stop(spells[i].snd_loop);
-					ARX_SOUND_PlaySFX(SND_SPELL_INCINERATE_END, &spells[i].caster_pos);
+					ARX_SOUND_PlaySFX(SND_SPELL_INCINERATE_END);
 				break;
 				//****************************************************************************
 				// LEVEL 10
 				case SPELL_FREEZE_TIME: {
 					GLOBAL_SLOWDOWN += spells[i].siz;
-					ARX_SOUND_PlaySFX(SND_SPELL_TELEKINESIS_END, &spells[i].caster_pos);
+					ARX_SOUND_PlaySFX(SND_SPELL_TELEKINESIS_END, &entities[spells[i].caster]->pos);
 				}
 				break;
 				case SPELL_MASS_INCINERATE:
 					ARX_SPELLS_RemoveMultiSpellOn(i);
 					ARX_SOUND_Stop(spells[i].snd_loop);
-					ARX_SOUND_PlaySFX(SND_SPELL_INCINERATE_END, &spells[i].caster_pos);
+					ARX_SOUND_PlaySFX(SND_SPELL_INCINERATE_END);
 				break;
 				default:
 					break;
@@ -5735,6 +5772,8 @@ void ARX_SPELLS_Update()
 					pCSpellFX->Update(framedelay);
 					pCSpellFX->Render();
 				}
+				
+				ARX_SOUND_RefreshPosition(spells[i].snd_loop, &entities[spells[i].target]->pos);
 			} 
 			break;
 			case SPELL_HARM:
@@ -5804,6 +5843,8 @@ void ARX_SPELLS_Update()
 
 					GRenderer->SetRenderState(Renderer::AlphaBlending, false);		
 					GRenderer->SetRenderState(Renderer::DepthWrite, true);	
+					
+					ARX_SOUND_RefreshPosition(spells[i].snd_loop, &cabalpos);
 				}
 			}
 			break;				
@@ -5882,7 +5923,7 @@ void ARX_SPELLS_Update()
 
 			if(spells[i].pSpellFx) {
 				if(spells[i].caster == 0)
-					ARX_SOUND_RefreshPosition(spells[i].snd_loop);
+					ARX_SOUND_RefreshPosition(spells[i].snd_loop, &entities[spells[i].target]->pos);
 
 				spells[i].pSpellFx->Update(framedelay);
 				spells[i].pSpellFx->Render();
@@ -5951,10 +5992,12 @@ void ARX_SPELLS_Update()
 			case SPELL_FIRE_PROTECTION:
 				spells[i].pSpellFx->Update(framedelay);
 				spells[i].pSpellFx->Render();
+				ARX_SOUND_RefreshPosition(spells[i].snd_loop, &entities[spells[i].target]->pos);
 			break;
 			case SPELL_COLD_PROTECTION:
 				spells[i].pSpellFx->Update(framedelay);
 				spells[i].pSpellFx->Render();
+				ARX_SOUND_RefreshPosition(spells[i].snd_loop, &entities[spells[i].target]->pos);
 			break;
 			//****************************************************************************
 			// LEVEL 5 SPELLS
@@ -5999,7 +6042,7 @@ void ARX_SPELLS_Update()
 					spells[i].pSpellFx->Render();					
 
 					if (spells[i].target == 0)
-						ARX_SOUND_RefreshPosition(spells[i].snd_loop);
+						ARX_SOUND_RefreshPosition(spells[i].snd_loop, &entities[spells[i].target]->pos);
 				}
 			}
 			break;
@@ -6035,6 +6078,7 @@ void ARX_SPELLS_Update()
 					pCSpellFX->Update(framedelay);
 					pCSpellFX->Render();
 				}
+				ARX_SOUND_RefreshPosition(spells[i].snd_loop, &entities[spells[i].target]->pos);
 			}
 			break;
 			//****************************************************************************
@@ -6070,7 +6114,7 @@ void ARX_SPELLS_Update()
 					unsigned long tim=pCSpellFX->getCurrentTime();
 
 					if(tim > 3000 && spells[i].longinfo == -1) {
-						ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &spells[i].caster_pos);
+						ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &spells[i].target_pos);
 						CRiseDead *prise = (CRiseDead *)spells[i].pSpellFx;
 
 						if(prise) {
@@ -6299,6 +6343,8 @@ void ARX_SPELLS_Update()
 						pCSpellFX->Update(framedelay);
 						pCSpellFX->Render();
 					}
+					
+					ARX_SOUND_RefreshPosition(spells[i].snd_loop, &entities[spells[i].caster]->pos);
 				}
 			break;
 			//****************************************************************************
@@ -6389,7 +6435,7 @@ void ARX_SPELLS_Update()
 						}
 
 						spells[i].longinfo=0;
-						ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &spells[i].caster_pos);
+						ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &spells[i].target_pos);
 						CSummonCreature *pSummon;
 						pSummon= (CSummonCreature *)spells[i].pSpellFx;
 
@@ -6512,7 +6558,7 @@ void ARX_SPELLS_Update()
 			case SPELL_INCINERATE:
 			{
 				if(ValidIONum(spells[i].caster)) {
-					ARX_SOUND_RefreshPosition(spells[i].snd_loop, &entities[spells[i].caster]->pos);
+					ARX_SOUND_RefreshPosition(spells[i].snd_loop, &entities[spells[i].target]->pos);
 				}
 			}
 			break;
