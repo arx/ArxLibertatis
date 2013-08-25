@@ -2768,7 +2768,7 @@ lasuite:
 	;
 
 	// Get Player position color
-	float grnd_color = GetColorz(player.pos.x, player.pos.y + 90, player.pos.z) - 15.f;
+	float grnd_color = GetColorz(Vec3f(player.pos.x, player.pos.y + 90, player.pos.z)) - 15.f;
 	if(CURRENT_PLAYER_COLOR < grnd_color) {
 		CURRENT_PLAYER_COLOR += framedelay * (1.0f / 8);
 		CURRENT_PLAYER_COLOR = std::min(CURRENT_PLAYER_COLOR, grnd_color);

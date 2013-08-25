@@ -615,9 +615,8 @@ void ApplyDynLight(EERIEPOLY * ep)
 	}
 }
 
-float GetColorz(float x, float y, float z) {
+float GetColorz(const Vec3f &pos) {
 
-	Vec3f pos(x, y, z);
 	llightsInit();
 
 	for(long i = 0; i < TOTIOPDL; i++) {
@@ -665,7 +664,7 @@ float GetColorz(float x, float y, float z) {
 
 	EERIEPOLY * ep;
 	float needy;
-	ep = CheckInPoly(x, y , z, &needy);
+	ep = EECheckInPoly(&pos, &needy);
 
 	if(ep != NULL) {
 		float _ffr = 0;
@@ -688,7 +687,7 @@ float GetColorz(float x, float y, float z) {
 		_ffg *= div;
 		_ffb *= div;
 		float ratio, ratio2;
-		ratio = EEfabs(needy - y) * ( 1.0f / 300 );
+		ratio = EEfabs(needy - pos.y) * ( 1.0f / 300 );
 		ratio = (1.f - ratio);
 		ratio2 = 1.f - ratio;
 		ffr = ffr * ratio2 + _ffr * ratio;
