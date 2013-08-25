@@ -864,9 +864,10 @@ static void Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, const C
 
 		/* Get light value for each vertex */
 		for(int v = 0; v != obj->bones[i].nb_idxvertices; v++) {
+			size_t vertexIndex = obj->bones[i].idxvertices[v];
 			Color3f tempColor = colorMod.ambientColor;
 
-			Vec3f posVert = eobj->vertexlist[obj->bones[i].idxvertices[v]].norm;
+			Vec3f posVert = eobj->vertexlist[vertexIndex].norm;
 
 			// Dynamic lights
 			for(int l = 0; l != MAX_LLIGHTS; l++) {
@@ -875,7 +876,7 @@ static void Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, const C
 				if(!Cur_llights)
 					break;
 
-				Vec3f tl = Cur_llights->pos - eobj->vertexlist3[obj->bones[i].idxvertices[v]].v;
+				Vec3f tl = Cur_llights->pos - eobj->vertexlist3[vertexIndex].v;
 				float distance = ffsqrt(tl.lengthSqr());
 
 				if(distance < Cur_llights->fallend) {
@@ -912,7 +913,7 @@ static void Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, const C
 			u8 ig = clipByte255(tempColor.g);
 			u8 ib = clipByte255(tempColor.b);
 
-			eobj->vertexlist3[obj->bones[i].idxvertices[v]].vert.color = (0xFF000000L | (ir << 16) | (ig << 8) | (ib));
+			eobj->vertexlist3[vertexIndex].vert.color = (0xFF000000L | (ir << 16) | (ig << 8) | (ib));
 		}
 	}
 }
