@@ -221,7 +221,6 @@ long GetVertexPos(Entity * io,long id,Vec3f * pos);
 void ARX_PrepareBackgroundNRMLs();
 long CountBkgVertex();
 
-void EERIE_LIGHT_ChangeLighting();
 void SetCameraDepth(EERIE_CAMERA &cam, float depth);
 
 bool RayCollidingPoly(Vec3f * orgn,Vec3f * dest,EERIEPOLY * ep,Vec3f * hit);

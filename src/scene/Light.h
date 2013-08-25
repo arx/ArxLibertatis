@@ -129,7 +129,6 @@ void RecalcLight(EERIE_LIGHT * el);
 
 void PrecalcIOLighting(const Vec3f * pos, float radius);
 
-void EERIE_LIGHT_Apply(EERIEPOLY * ep);
 void EERIE_LIGHT_GlobalInit();
 long EERIE_LIGHT_GetFree();
 long EERIE_LIGHT_Count();
@@ -137,12 +136,11 @@ void EERIE_LIGHT_GlobalAdd(const EERIE_LIGHT * el);
 void EERIE_LIGHT_MoveAll(const Vec3f * trans);
 long EERIE_LIGHT_Create();
 
-void RecalcLightZone(float x, float z, long siz);
+
  
 bool ValidDynLight(long num);
 
-void EERIEPrecalcLights(long minx=0,long minz=0,long maxx=99999,long maxz=99999);
-void EERIERemovePrecalcLights();
+
 void PrecalcDynamicLighting(long x0,long x1,long z0,long z1);
 void ApplyDynLight(EERIEPOLY *ep);
 long GetFreeDynLight();
@@ -167,5 +165,9 @@ void ResetTileLights();
 void ComputeTileLights(short x,short z);
 void ClearTileLights();
 void ApplyDynLight_VertexBuffer_2(EERIEPOLY * ep, short _x, short _y, SMY_VERTEX * _pVertex, unsigned short _usInd0, unsigned short _usInd1, unsigned short _usInd2, unsigned short _usInd3);
+
+
+void RecalcLightZone(float x, float z, long siz);
+void EERIERemovePrecalcLights();
 
 #endif // ARX_SCENE_LIGHT_H

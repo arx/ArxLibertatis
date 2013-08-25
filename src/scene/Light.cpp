@@ -77,8 +77,6 @@ void RecalcLight(EERIE_LIGHT * el) {
 	el->precalc = el->intensity * GLOBAL_LIGHT_FACTOR;
 }
 
-static void ARX_EERIE_LIGHT_Make(EERIEPOLY * ep, float * epr, float * epg, float * epb, EERIE_LIGHT * light);
-
 bool ValidDynLight(long num)
 {
 	return num >= 0 && ((size_t)num < MAX_DYNLIGHTS) && DynLight[num].exist;
@@ -104,39 +102,6 @@ void PrecalcIOLighting(const Vec3f * pos, float radius) {
 					TOTIOPDL--;
 			}
 		}
-	}
-}
-
-void EERIE_LIGHT_Apply(EERIEPOLY * ep) {
-	
-	if(ep->type & POLY_IGNORE)
-		return;
-
-	float epr[4];
-	float epg[4];
-	float epb[4];
-
-	epr[3] = epr[2] = epr[1] = epr[0] = 0; 
-	epg[3] = epg[2] = epg[1] = epg[0] = 0; 
-	epb[3] = epb[2] = epb[1] = epb[0] = 0; 
-
-	for(size_t i = 0; i < MAX_LIGHTS; i++) {
-		EERIE_LIGHT * el = GLight[i];
-
-		if(el && el->treat && el->exist && el->status && !(el->extras & EXTRAS_SEMIDYNAMIC)) {
-			if(closerThan(el->pos, ep->center, el->fallend + 100.f)) {
-				ARX_EERIE_LIGHT_Make(ep, epr, epg, epb, el);
-			}
-		}
-	}
-
-	long nbvert = (ep->type & POLY_QUAD) ? 4 : 3;
-
-	for(long i = 0; i < nbvert; i++) {
-		epr[i] = clamp(epr[i], ACTIVEBKG->ambient.r, 1.f);
-		epg[i] = clamp(epg[i], ACTIVEBKG->ambient.g, 1.f);
-		epb[i] = clamp(epb[i], ACTIVEBKG->ambient.b, 1.f);
-		ep->v[i].color = Color3f(epr[i], epg[i], epb[i]).toBGR();
 	}
 }
 
@@ -226,128 +191,6 @@ void EERIE_LIGHT_MoveAll(const Vec3f * trans) {
 	}
 }
 
-//*************************************************************************************
-//*************************************************************************************
-float my_CheckInPoly(float x, float y, float z, EERIEPOLY * mon_ep, EERIE_LIGHT * light)
-{
-	long px = x * ACTIVEBKG->Xmul;
-	long pz = z * ACTIVEBKG->Zmul;
-
-	if(px < 2 || px > ACTIVEBKG->Xsize - 3 || pz < 2 || pz > ACTIVEBKG->Zsize - 3)
-		return 0;
-
-	float nb_shadowvertexinpoly = 0.0f;
-	float nb_totalvertexinpoly = 0.0f;
-
-	EERIEPOLY * ep;
-	EERIE_BKG_INFO * eg;
-
-	Vec3f dest;
-	Vec3f hit;
-	
-	Vec3f orgn = light->pos;
-	
-	for (long j = pz - 2; j <= pz + 2; j++)
-		for (long i = px - 2; i <= px + 2; i++)
-		{
-			eg = &ACTIVEBKG->Backg[i+j*ACTIVEBKG->Xsize];
-
-			for (long k = 0; k < eg->nbpoly; k++)
-			{
-				ep = &eg->polydata[k];
-
-				if (!(ep->type & POLY_WATER) &&  !(ep->type & POLY_TRANS))
-				{
-
-					long nbvert = (ep->type & POLY_QUAD) ? 4 : 3;
-
-					long a, b;
-
-					for (a = 0; a < nbvert; a++)
-					{
-						float fDiff = 5.f;
-
-						if ((fabs(ep->v[a].p.x - x) <= fDiff) &&
-								(fabs(ep->v[a].p.y - y) <= fDiff) &&
-								(fabs(ep->v[a].p.z - z) <= fDiff))
-						{
-
-							if(dot(*mon_ep->nrml, *ep->nrml) > 0.0f) {
-								nb_totalvertexinpoly += nbvert;
-								for(b = 0; b < nbvert; b++) {
-									dest = ep->v[b].p;
-									if(Visible(&orgn, &dest, ep, &hit)) {
-										nb_shadowvertexinpoly ++;
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-
-	return nb_shadowvertexinpoly / nb_totalvertexinpoly;
-}
-
-static void ARX_EERIE_LIGHT_Make(EERIEPOLY * ep, float * epr, float * epg, float * epb, EERIE_LIGHT * light)
-{
-	float	distance[4];	// distance from light to each vertex
-
-	if (ep->type & POLY_IGNORE)
-		return;
-
-	// number or vertices per face (3 or 4)
-	int nbvert = (ep->type & POLY_QUAD) ? 4 : 3;
-
-	// compute light - vertex distance
-	for(int i = 0; i < nbvert; i++) {
-		distance[i] = dist(light->pos, ep->v[i].p);
-	}
-
-	for(int i = 0; i < nbvert; i++) {
-		// value of light intensity for a given vertex
-		float fRes = 1.0f;
-
-		if(distance[i] < light->fallend) {
-			//MODE_NORMALS
-			if(ModeLight & MODE_NORMALS) {
-				Vec3f vLight = (light->pos - ep->v[i].p).getNormalized(); // vector (light to vertex)
-
-				fRes = dot(vLight, ep->nrml[i]);
-
-				if(fRes < 0.0f)
-					fRes = 0.0f;
-			}
-
-			//MODE_RAYLAUNCH
-			if((ModeLight & MODE_RAYLAUNCH) && !(light->extras & EXTRAS_NOCASTED)) {
-				Vec3f orgn = light->pos, dest = ep->v[i].p, hit;
-
-				if(ModeLight & MODE_SMOOTH)
-					fRes *= my_CheckInPoly(ep->v[i].p.x, ep->v[i].p.y, ep->v[i].p.z, ep, light);
-				else
-					fRes *= Visible(&orgn, &dest, ep, &hit);
-			}
-
-			float fTemp1 = light->intensity * fRes * GLOBAL_LIGHT_FACTOR;
-
-			if(distance[i] > light->fallstart) {
-				float intensity = (light->falldiff - (distance[i] - light->fallstart)) * light->falldiffmul;
-				fTemp1 *= intensity;
-			}
-
-			float fr = light->rgb.r * fTemp1;
-			float fg = light->rgb.g * fTemp1;
-			float fb = light->rgb.b * fTemp1;
-
-			epr[i] += fr; 
-			epg[i] += fg; 
-			epb[i] += fb; 
-		}
-	}
-}
-
 void ComputeLight2DPos(EERIE_LIGHT * _pL) {
 	
 	TexturedVertex in, out;
@@ -381,8 +224,6 @@ void ComputeLight2DPos(EERIE_LIGHT * _pL) {
 	}
 }
 
-//*************************************************************************************
-//*************************************************************************************
 void TreatBackgroundDynlights()
 {
 	for(size_t i = 0; i < MAX_LIGHTS; i++) {
@@ -518,98 +359,6 @@ void PrecalcDynamicLighting(long x0, long z0, long x1, long z1) {
 		}
 	}
 }
-
-void EERIE_LIGHT_ChangeLighting()
-{
-	for(long j = 0; j < ACTIVEBKG->Zsize; j++) {
-		for(long i = 0; i < ACTIVEBKG->Xsize; i++) {
-			EERIE_BKG_INFO *eg = &ACTIVEBKG->Backg[i + j * ACTIVEBKG->Xsize];
-
-			for(long k = 0; k < eg->nbpoly; k++) {
-				EERIEPOLY *ep = &eg->polydata[k];
-				ep->tv[0].color = ep->v[0].color;
-				ep->tv[1].color = ep->v[1].color;
-				ep->tv[2].color = ep->v[2].color;
-
-				if(ep->type & POLY_QUAD)
-					ep->tv[3].color = ep->v[3].color;
-			}
-		}
-	}
-}
-
-//*************************************************************************************
-//*************************************************************************************
-
-void EERIEPrecalcLights(long minx, long minz, long maxx, long maxz)
-{ 
-	minx = clamp(minx, 0, ACTIVEBKG->Xsize - 1);
-	maxx = clamp(maxx, 0, ACTIVEBKG->Xsize - 1);
-	minz = clamp(minz, 0, ACTIVEBKG->Zsize - 1);
-	maxz = clamp(maxz, 0, ACTIVEBKG->Zsize - 1);
-
-	for(size_t i = 0; i < MAX_LIGHTS; i++) {
-		if(GLight[i]) {
-			if((GLight[i]->extras & EXTRAS_SEMIDYNAMIC)) {
-				GLight[i]->treat = 0;
-			} else if (!GLight[i]->treat) {
-				GLight[i]->treat = 1;
-			}
-			RecalcLight(GLight[i]);
-		}
-	}
-	
-	for(long j = minz; j <= maxz; j++) {
-		for(long i = minx; i <= maxx; i++) {
-			EERIE_BKG_INFO *eg = &ACTIVEBKG->Backg[i+j*ACTIVEBKG->Xsize];
-
-			for(long k = 0; k < eg->nbpoly; k++) {
-				EERIEPOLY * ep = &eg->polydata[k];
-					
-				if(ep) {
-					ep->type &= ~POLY_IGNORE;
-					EERIE_LIGHT_Apply(ep);
-				}
-			}
-		}
-	}
-}
-
-void RecalcLightZone(float x, float z, long siz) {
-	
-	long px = x * ACTIVEBKG->Xmul;
-	long pz = z * ACTIVEBKG->Zmul;
-	
-	long x0 = std::max(px - siz, 0L);
-	long x1 = std::min(px + siz, ACTIVEBKG->Xsize - 1L);
-	long z0 = std::max(pz - siz, 0L);
-	long z1 = std::min(pz + siz, ACTIVEBKG->Zsize - 1L);
-	
-	LightMode oldml = ModeLight;
-	ModeLight &= ~MODE_RAYLAUNCH;
-	EERIEPrecalcLights(x0, z0, x1, z1);
-	ModeLight = oldml;
-}
-
-void EERIERemovePrecalcLights() {
-
-	for(size_t i = 0; i < MAX_LIGHTS; i++) {
-		if(GLight[i] != NULL)
-			GLight[i]->treat = 1;
-	}
-	
-	for(int j = 0; j < ACTIVEBKG->Zsize; j++) {
-		for(int i = 0; i < ACTIVEBKG->Xsize; i++) {
-			EERIE_BKG_INFO *eg = &ACTIVEBKG->Backg[i+j*ACTIVEBKG->Xsize];
-			
-			for(long k = 0; k < eg->nbpoly; k++) {
-				EERIEPOLY *ep = &eg->polydata[k];
-				ep->v[3].color = ep->v[2].color = ep->v[1].color = ep->v[0].color = Color::white.toBGR();
-			}
-		}
-	}
-}
-
 
 void ClearDynLights() {
 
@@ -1094,3 +843,233 @@ void ApplyDynLight_VertexBuffer_2(EERIEPOLY * ep, short _x, short _y, SMY_VERTEX
 		ep->tv[3].color = _pVertex[_usInd3].color = (0xFF000000L | (lepr << 16) | (lepg << 8) | (lepb));
 	}
 }
+
+
+/**
+ * @addtogroup Light Baking
+ * @{
+ */
+
+float my_CheckInPoly(float x, float y, float z, EERIEPOLY * mon_ep, EERIE_LIGHT * light)
+{
+	long px = x * ACTIVEBKG->Xmul;
+	long pz = z * ACTIVEBKG->Zmul;
+
+	if(px < 2 || px > ACTIVEBKG->Xsize - 3 || pz < 2 || pz > ACTIVEBKG->Zsize - 3)
+		return 0;
+
+	float nb_shadowvertexinpoly = 0.0f;
+	float nb_totalvertexinpoly = 0.0f;
+
+	EERIEPOLY * ep;
+	EERIE_BKG_INFO * eg;
+
+	Vec3f dest;
+	Vec3f hit;
+
+	Vec3f orgn = light->pos;
+
+	for (long j = pz - 2; j <= pz + 2; j++)
+		for (long i = px - 2; i <= px + 2; i++)
+		{
+			eg = &ACTIVEBKG->Backg[i+j*ACTIVEBKG->Xsize];
+
+			for (long k = 0; k < eg->nbpoly; k++)
+			{
+				ep = &eg->polydata[k];
+
+				if (!(ep->type & POLY_WATER) &&  !(ep->type & POLY_TRANS))
+				{
+
+					long nbvert = (ep->type & POLY_QUAD) ? 4 : 3;
+
+					long a, b;
+
+					for (a = 0; a < nbvert; a++)
+					{
+						float fDiff = 5.f;
+
+						if ((fabs(ep->v[a].p.x - x) <= fDiff) &&
+								(fabs(ep->v[a].p.y - y) <= fDiff) &&
+								(fabs(ep->v[a].p.z - z) <= fDiff))
+						{
+
+							if(dot(*mon_ep->nrml, *ep->nrml) > 0.0f) {
+								nb_totalvertexinpoly += nbvert;
+								for(b = 0; b < nbvert; b++) {
+									dest = ep->v[b].p;
+									if(Visible(&orgn, &dest, ep, &hit)) {
+										nb_shadowvertexinpoly ++;
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+
+	return nb_shadowvertexinpoly / nb_totalvertexinpoly;
+}
+
+static void ARX_EERIE_LIGHT_Make(EERIEPOLY * ep, float * epr, float * epg, float * epb, EERIE_LIGHT * light)
+{
+	float	distance[4];	// distance from light to each vertex
+
+	if (ep->type & POLY_IGNORE)
+		return;
+
+	// number or vertices per face (3 or 4)
+	int nbvert = (ep->type & POLY_QUAD) ? 4 : 3;
+
+	// compute light - vertex distance
+	for(int i = 0; i < nbvert; i++) {
+		distance[i] = dist(light->pos, ep->v[i].p);
+	}
+
+	for(int i = 0; i < nbvert; i++) {
+		// value of light intensity for a given vertex
+		float fRes = 1.0f;
+
+		if(distance[i] < light->fallend) {
+			//MODE_NORMALS
+			if(ModeLight & MODE_NORMALS) {
+				Vec3f vLight = (light->pos - ep->v[i].p).getNormalized(); // vector (light to vertex)
+
+				fRes = dot(vLight, ep->nrml[i]);
+
+				if(fRes < 0.0f)
+					fRes = 0.0f;
+			}
+
+			//MODE_RAYLAUNCH
+			if((ModeLight & MODE_RAYLAUNCH) && !(light->extras & EXTRAS_NOCASTED)) {
+				Vec3f orgn = light->pos, dest = ep->v[i].p, hit;
+
+				if(ModeLight & MODE_SMOOTH)
+					fRes *= my_CheckInPoly(ep->v[i].p.x, ep->v[i].p.y, ep->v[i].p.z, ep, light);
+				else
+					fRes *= Visible(&orgn, &dest, ep, &hit);
+			}
+
+			float fTemp1 = light->intensity * fRes * GLOBAL_LIGHT_FACTOR;
+
+			if(distance[i] > light->fallstart) {
+				float intensity = (light->falldiff - (distance[i] - light->fallstart)) * light->falldiffmul;
+				fTemp1 *= intensity;
+			}
+
+			float fr = light->rgb.r * fTemp1;
+			float fg = light->rgb.g * fTemp1;
+			float fb = light->rgb.b * fTemp1;
+
+			epr[i] += fr;
+			epg[i] += fg;
+			epb[i] += fb;
+		}
+	}
+}
+
+void EERIE_LIGHT_Apply(EERIEPOLY * ep) {
+
+	if(ep->type & POLY_IGNORE)
+		return;
+
+	float epr[4];
+	float epg[4];
+	float epb[4];
+
+	epr[3] = epr[2] = epr[1] = epr[0] = 0;
+	epg[3] = epg[2] = epg[1] = epg[0] = 0;
+	epb[3] = epb[2] = epb[1] = epb[0] = 0;
+
+	for(size_t i = 0; i < MAX_LIGHTS; i++) {
+		EERIE_LIGHT * el = GLight[i];
+
+		if(el && el->treat && el->exist && el->status && !(el->extras & EXTRAS_SEMIDYNAMIC)) {
+			if(closerThan(el->pos, ep->center, el->fallend + 100.f)) {
+				ARX_EERIE_LIGHT_Make(ep, epr, epg, epb, el);
+			}
+		}
+	}
+
+	long nbvert = (ep->type & POLY_QUAD) ? 4 : 3;
+
+	for(long i = 0; i < nbvert; i++) {
+		epr[i] = clamp(epr[i], ACTIVEBKG->ambient.r, 1.f);
+		epg[i] = clamp(epg[i], ACTIVEBKG->ambient.g, 1.f);
+		epb[i] = clamp(epb[i], ACTIVEBKG->ambient.b, 1.f);
+		ep->v[i].color = Color3f(epr[i], epg[i], epb[i]).toBGR();
+	}
+}
+
+void EERIEPrecalcLights(long minx, long minz, long maxx, long maxz)
+{
+	minx = clamp(minx, 0, ACTIVEBKG->Xsize - 1);
+	maxx = clamp(maxx, 0, ACTIVEBKG->Xsize - 1);
+	minz = clamp(minz, 0, ACTIVEBKG->Zsize - 1);
+	maxz = clamp(maxz, 0, ACTIVEBKG->Zsize - 1);
+
+	for(size_t i = 0; i < MAX_LIGHTS; i++) {
+		if(GLight[i]) {
+			if((GLight[i]->extras & EXTRAS_SEMIDYNAMIC)) {
+				GLight[i]->treat = 0;
+			} else if (!GLight[i]->treat) {
+				GLight[i]->treat = 1;
+			}
+			RecalcLight(GLight[i]);
+		}
+	}
+
+	for(long j = minz; j <= maxz; j++) {
+		for(long i = minx; i <= maxx; i++) {
+			EERIE_BKG_INFO *eg = &ACTIVEBKG->Backg[i+j*ACTIVEBKG->Xsize];
+
+			for(long k = 0; k < eg->nbpoly; k++) {
+				EERIEPOLY * ep = &eg->polydata[k];
+
+				if(ep) {
+					ep->type &= ~POLY_IGNORE;
+					EERIE_LIGHT_Apply(ep);
+				}
+			}
+		}
+	}
+}
+
+void RecalcLightZone(float x, float z, long siz) {
+
+	long px = x * ACTIVEBKG->Xmul;
+	long pz = z * ACTIVEBKG->Zmul;
+
+	long x0 = std::max(px - siz, 0L);
+	long x1 = std::min(px + siz, ACTIVEBKG->Xsize - 1L);
+	long z0 = std::max(pz - siz, 0L);
+	long z1 = std::min(pz + siz, ACTIVEBKG->Zsize - 1L);
+
+	LightMode oldml = ModeLight;
+	ModeLight &= ~MODE_RAYLAUNCH;
+	EERIEPrecalcLights(x0, z0, x1, z1);
+	ModeLight = oldml;
+}
+
+void EERIERemovePrecalcLights() {
+
+	for(size_t i = 0; i < MAX_LIGHTS; i++) {
+		if(GLight[i] != NULL)
+			GLight[i]->treat = 1;
+	}
+
+	for(int j = 0; j < ACTIVEBKG->Zsize; j++) {
+		for(int i = 0; i < ACTIVEBKG->Xsize; i++) {
+			EERIE_BKG_INFO *eg = &ACTIVEBKG->Backg[i+j*ACTIVEBKG->Xsize];
+
+			for(long k = 0; k < eg->nbpoly; k++) {
+				EERIEPOLY *ep = &eg->polydata[k];
+				ep->v[3].color = ep->v[2].color = ep->v[1].color = ep->v[0].color = Color::white.toBGR();
+			}
+		}
+	}
+}
+
+/** @}*/
