@@ -1277,17 +1277,8 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num, const EERIE_FRUSTRU
 		Vec3f nrm = ep->v[2].p - ACTIVECAM->orgTrans.pos;
 		int to = (ep->type & POLY_QUAD) ? 4 : 3;
 
-		if(to == 4) {
-			if(	(!(ep->type&POLY_DOUBLESIDED))&&
-				(dot( ep->norm , nrm )>0.f)&&
-				(dot( ep->norm2 , nrm )>0.f) )
-			{
-				continue;
-			}
-		} else {
-			if(	(!(ep->type&POLY_DOUBLESIDED))&&
-				(dot( ep->norm , nrm )>0.f) )
-			{
+		if(!(ep->type & POLY_DOUBLESIDED) && dot(ep->norm , nrm) > 0.f) {
+			if(to == 3 || dot(ep->norm2 , nrm) > 0.f) {
 				continue;
 			}
 		}
@@ -1322,8 +1313,6 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num, const EERIE_FRUSTRU
 			}
 		}
 
-		SMY_VERTEX *pMyVertexCurr;
-
 		*pIndicesCurr++ = ep->uslInd[0];
 		*pIndicesCurr++ = ep->uslInd[1];
 		*pIndicesCurr++ = ep->uslInd[2];
@@ -1336,7 +1325,7 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num, const EERIE_FRUSTRU
 			*pNumIndices += 3;
 		}
 
-		pMyVertexCurr = &pMyVertex[roomMat.uslStartVertex];
+		SMY_VERTEX * pMyVertexCurr = &pMyVertex[roomMat.uslStartVertex];
 
 		if(!Project.improve) { // Normal View...
 			if(ep->type & POLY_GLOW) {
