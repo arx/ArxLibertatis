@@ -595,6 +595,7 @@ set(GRAPHICS_SOURCES
 	src/graphics/data/FTL.cpp
 	src/graphics/data/Mesh.cpp
 	src/graphics/data/MeshManipulation.cpp
+	src/graphics/data/BackgroundEdit.cpp
 	src/graphics/data/Progressive.cpp
 	src/graphics/data/TextureContainer.cpp
 	src/graphics/effects/CinematicEffects.cpp
