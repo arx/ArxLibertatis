@@ -580,7 +580,7 @@ static void ARX_PLAYER_ComputePlayerStats() {
 	
 	player.maxlife = (float)player.Attribute_Constitution * (float)(player.level + 2);
 	player.maxmana = (float)player.Attribute_Mind * (float)(player.level + 1);
-	float t = ARX_PLAYER_Get_Skill_Defense(0);
+	float t = ARX_PLAYER_Get_Skill_Defense(1);
 
 
 	float fCalc = t * ( 1.0f / 10 ) - 1 ;
@@ -589,14 +589,15 @@ static void ARX_PLAYER_ComputePlayerStats() {
 
 	if (player.armor_class < 1) player.armor_class = 1;
 
-	player.resist_magic = (unsigned char)(float)(player.Attribute_Mind * 2.f
-	                      * (1.f + (ARX_PLAYER_Get_Skill_Casting(0)) * ( 1.0f / 200 )));
+	player.resist_magic = (unsigned char)(float)(player.Full_Attribute_Mind * 2.f
+	                      * (1.f + (ARX_PLAYER_Get_Skill_Casting(1)) * ( 1.0f / 200 )));
 
-	fCalc = player.Attribute_Constitution * 2 + ((ARX_PLAYER_Get_Skill_Defense(1) * ( 1.0f / 4 )));
+	fCalc = player.Full_Attribute_Constitution * 2 + ((ARX_PLAYER_Get_Skill_Defense(1) * ( 1.0f / 4 )));
 	player.resist_poison = checked_range_cast<unsigned char>(fCalc);
 
+	player.Critical_Hit = (float)(player.Full_Attribute_Dexterity - 9) * 2.f + (float)(player.Full_Skill_Close_Combat * ( 1.0f / 5 ));
 
-	player.damages = (player.Attribute_Strength - 10) * ( 1.0f / 2 );
+	player.damages = (player.Full_Attribute_Strength - 10) * ( 1.0f / 2 );
 
 	if (player.damages < 1.f) player.damages = 1.f;
 
