@@ -52,6 +52,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "math/MathFwd.h"
 #include "graphics/Color.h"
+#include "platform/Flags.h"
+#include "audio/AudioTypes.h"
 
 struct EERIE_LIGHT;
 struct EERIEPOLY;
@@ -70,6 +72,58 @@ extern EERIE_LIGHT DynLight[MAX_DYNLIGHTS];
 extern EERIE_LIGHT * IO_PDL[MAX_DYNLIGHTS];
 extern long TOTPDL;
 extern long TOTIOPDL;
+
+
+enum EERIE_TYPES_EXTRAS_MODE
+{
+	EXTRAS_SEMIDYNAMIC       = 0x00000001,
+	EXTRAS_EXTINGUISHABLE    = 0x00000002,
+	EXTRAS_STARTEXTINGUISHED = 0x00000004,
+	EXTRAS_SPAWNFIRE         = 0x00000008,
+	EXTRAS_SPAWNSMOKE        = 0x00000010,
+	EXTRAS_OFF               = 0x00000020,
+	EXTRAS_COLORLEGACY       = 0x00000040,
+	EXTRAS_NOCASTED          = 0x00000080,
+	EXTRAS_FIXFLARESIZE      = 0x00000100,
+	EXTRAS_FIREPLACE         = 0x00000200,
+	EXTRAS_NO_IGNIT          = 0x00000400,
+	EXTRAS_FLARE	         = 0x00000800
+};
+DECLARE_FLAGS(EERIE_TYPES_EXTRAS_MODE, ExtrasType)
+DECLARE_FLAGS_OPERATORS(ExtrasType)
+
+struct EERIE_LIGHT {
+	char exist;
+	char type;
+	char treat;
+	char selected;
+	ExtrasType extras;
+	short status; // on/off 1/0
+	Vec3f pos;
+	float fallstart;
+	float fallend;
+	float falldiff;
+	float falldiffmul;
+	float precalc;
+	Color3f rgb255;
+	float intensity;
+	Color3f rgb;
+	float i;
+	Vec3f mins;
+	Vec3f maxs;
+	float temp;
+	long ltemp;
+	Color3f ex_flicker;
+	float ex_radius;
+	float ex_frequency;
+	float ex_size;
+	float ex_speed;
+	float ex_flaresize;
+	long tl;
+	unsigned long time_creation;
+	long duration; // will start to fade before the end of duration...
+	audio::SourceId sample;
+};
 
 void RecalcLight(EERIE_LIGHT * el);
 
@@ -111,6 +165,7 @@ struct ColorMod {
 
 float GetColorz(float x, float y, float z);
 ColorBGRA ApplyLight(const EERIE_QUAT * quat, const Vec3f & position, const Vec3f & normal, const ColorMod & colorMod, float materialDiffuse = 1.f);
+
 
 void InitTileLights();
 void ResetTileLights();

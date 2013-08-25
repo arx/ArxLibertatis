@@ -1014,6 +1014,13 @@ void ColorMod::updateFromEntity(Entity *io, bool inBook) {
 	   ambientColor = Color3f::gray(NPC_ITEMS_AMBIENT_VALUE_255);
 }
 
+struct TILE_LIGHTS
+{
+	short			num;
+	short			max;
+	EERIE_LIGHT **	el;
+};
+
 TILE_LIGHTS tilelights[MAX_BKGX][MAX_BKGZ];
 
 void InitTileLights()

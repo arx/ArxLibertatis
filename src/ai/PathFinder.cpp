@@ -53,6 +53,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "math/Vector3.h"
 #include "platform/Platform.h"
 #include "physics/Anchors.h"
+#include "scene/Light.h"
 
 static const float MIN_RADIUS = 110.0f;
 

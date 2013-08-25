@@ -213,7 +213,6 @@ int BackFaceCull2D(TexturedVertex * tv);
 long EERIERTPPoly(EERIEPOLY *ep);
 
 bool LittleAngularDiff(Vec3f * norm,Vec3f * norm2);
-void RecalcLight(EERIE_LIGHT * el);
 
 float PtIn2DPolyProj(EERIE_3DOBJ * obj,EERIE_FACE * ef, float x, float z);
 float PtIn2DPolyProjV2(EERIE_3DOBJ * obj,EERIE_FACE * ef, float x, float z);
@@ -284,11 +283,5 @@ void EERIE_PORTAL_ReleaseOnlyVertexBuffer();
 void ComputePortalVertexBuffer();
 bool GetNameInfo( const std::string& name1,long& type,long& val1,long& val2);
 
-struct TILE_LIGHTS
-{
-	short			num;
-	short			max;
-	EERIE_LIGHT **	el;
-};
 
 #endif // ARX_GRAPHICS_DATA_MESH_H
