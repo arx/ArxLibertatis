@@ -779,12 +779,13 @@ void ApplyTileLights(EERIEPOLY * ep, short x, short y)
 		epb[i] = (float)(long)(c & 255);
 	}
 
-	for(long i = 0; i < tls->el.size(); i++) {
-		EERIE_LIGHT * el = tls->el[i];
+	for(long j = 0; j < nbvert; j++) {
+		Vec3f & position = ep->v[j].p;
+		Vec3f & normal = ep->nrml[j];
 
-		for(long j = 0; j < nbvert; j++) {
-			Vec3f & position = ep->v[j].p;
-			Vec3f & normal = ep->nrml[j];
+		for(long i = 0; i < tls->el.size(); i++) {
+			EERIE_LIGHT * el = tls->el[i];
+
 			float d = fdist(el->pos, position);
 
 			if (d < el->fallend) {
