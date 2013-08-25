@@ -156,7 +156,6 @@ void ResetTileLights();
 void ComputeTileLights(short x,short z);
 void ClearTileLights();
 
-void ApplyDynLight(EERIEPOLY *ep);
 float GetColorz(const Vec3f &pos);
 ColorBGRA ApplyLight(const EERIE_QUAT * quat, const Vec3f & position, const Vec3f & normal, const ColorMod & colorMod, float materialDiffuse = 1.f);
 void ApplyTileLights(EERIEPOLY * ep, short x, short y);

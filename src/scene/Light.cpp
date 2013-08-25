@@ -527,70 +527,6 @@ void ClearTileLights() {
 	}
 }
 
-
-void ApplyDynLight(EERIEPOLY * ep)
-{
-
-	Color3f lightInfraFactor = Color3f::white;
-	if(Project.improve) {
-		lightInfraFactor.r = 4.f;
-	}
-
-	size_t nbvert = (ep->type & POLY_QUAD) ? 4 : 3;
-
-	for(size_t j = 0; j < nbvert; j++) {
-
-		if(TOTPDL == 0) {
-			ep->tv[j].color = ep->v[j].color;
-			continue;
-		}
-
-		Color3f tempColor;
-		long c = ep->v[j].color;
-		tempColor.r = (float)((c >> 16) & 255);
-		tempColor.g = (float)((c >> 8) & 255);
-		tempColor.b = (float)(c & 255);
-
-		Vec3f & position = ep->v[j].p;
-		Vec3f & normal = ep->nrml[j];
-
-		for(size_t i = 0; i < TOTPDL; i++) {
-			EERIE_LIGHT * el = PDL[i];
-
-			if(distSqr(el->pos, ep->center) <= square(el->fallend + 35.f)) {
-				Color3f rgb = el->rgb255 * lightInfraFactor;
-
-				float d = fdist(el->pos, position);
-
-				if(d <= el->fallend) {
-					Vec3f vLight = (el->pos - position).getNormalized();
-					float nvalue = dot(vLight, normal) * 0.5f;
-
-					nvalue = clamp(nvalue, 0.f, 1.f);
-
-					if(nvalue > 0.f) {
-						if(d <= el->fallstart) {
-							d = el->precalc * nvalue;
-						} else {
-							d -= el->fallstart;
-							d = (el->falldiff - d) * el->falldiffmul * el->precalc * nvalue;
-						}
-
-						tempColor += rgb * d;
-					}
-				}
-				else if(d > el->fallend + 100.f)
-					break;
-			}
-		}
-
-		u8 lepr = clipByte255(tempColor.r);
-		u8 lepg = clipByte255(tempColor.g);
-		u8 lepb = clipByte255(tempColor.b);
-		ep->tv[j].color = (0xFF000000L | (lepr << 16) | (lepg << 8) | (lepb));
-	}
-}
-
 float GetColorz(const Vec3f &pos) {
 
 	llightsInit();
@@ -650,7 +586,8 @@ float GetColorz(const Vec3f &pos) {
 		long to = (ep->type & POLY_QUAD) ? 4 : 3;
 		float div = (1.0f / to);
 
-		ApplyDynLight(ep);
+		EP_DATA & epdata = portals->room[ep->room].epdata[0];
+		ApplyTileLights(ep, epdata.px, epdata.py);
 
 		for(long i = 0; i < to; i++) {
 			Color col = Color::fromBGR(ep->tv[i].color);
@@ -727,6 +664,11 @@ ColorBGRA ApplyLight(const EERIE_QUAT * quat, const Vec3f & position, const Vec3
 void ApplyTileLights(EERIEPOLY * ep, short x, short y)
 {
 
+	Color3f lightInfraFactor = Color3f::white;
+	if(Project.improve) {
+		lightInfraFactor.r = 4.f;
+	}
+
 	TILE_LIGHTS * tls = &tilelights[x][y];
 	size_t nbvert = (ep->type & POLY_QUAD) ? 4 : 3;
 
@@ -764,7 +706,7 @@ void ApplyTileLights(EERIEPOLY * ep, short x, short y)
 						d -= el->fallstart;
 						d = (el->falldiff - d) * el->falldiffmul * el->precalc * nvalue;
 					}
-					tempColor += el->rgb255 * d;
+					tempColor += el->rgb255 * lightInfraFactor * d;
 				}
 			}
 			else if (d > el->fallend + 100.f)

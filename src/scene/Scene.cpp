@@ -1344,14 +1344,8 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num, const EERIE_FRUSTRU
 					pMyVertexCurr[ep->uslInd[3]].color = 0xFFFFFFFF;
 				}
 			} else {
-				if(ep->type & POLY_LAVA) {
-					if(!(ep->type & POLY_TRANS)) {
-						ApplyDynLight(ep);
-					}
-
-					ManageLava_VertexBuffer(ep, to, tim, pMyVertexCurr);
-
-					vPolyLava.push_back(ep);
+				if(!(ep->type & POLY_TRANS)) {
+					ApplyTileLights(ep, pEPDATA->px, pEPDATA->py);
 
 					pMyVertexCurr[ep->uslInd[0]].color = ep->tv[0].color;
 					pMyVertexCurr[ep->uslInd[1]].color = ep->tv[1].color;
@@ -1360,23 +1354,14 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num, const EERIE_FRUSTRU
 					if(to&4) {
 						pMyVertexCurr[ep->uslInd[3]].color = ep->tv[3].color;
 					}
-				} else {
-					if(!(ep->type & POLY_TRANS)) {
-						ApplyTileLights(ep, pEPDATA->px, pEPDATA->py);
+				}
 
-						pMyVertexCurr[ep->uslInd[0]].color = ep->tv[0].color;
-						pMyVertexCurr[ep->uslInd[1]].color = ep->tv[1].color;
-						pMyVertexCurr[ep->uslInd[2]].color = ep->tv[2].color;
-
-						if(to&4) {
-							pMyVertexCurr[ep->uslInd[3]].color = ep->tv[3].color;
-						}
-					}
-
-					if(ep->type & POLY_WATER) {
-						ManageWater_VertexBuffer(ep, to, tim, pMyVertexCurr);
-						vPolyWater.push_back(ep);
-					}
+				if(ep->type & POLY_LAVA) {
+					ManageLava_VertexBuffer(ep, to, tim, pMyVertexCurr);
+					vPolyLava.push_back(ep);
+				} else if(ep->type & POLY_WATER) {
+					ManageWater_VertexBuffer(ep, to, tim, pMyVertexCurr);
+					vPolyWater.push_back(ep);
 				}
 			}
 
@@ -1389,7 +1374,7 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num, const EERIE_FRUSTRU
 					continue;
 				}
 
-				ApplyDynLight(ep);
+				ApplyTileLights(ep, pEPDATA->px, pEPDATA->py);
 
 				for(int k = 0; k < to; k++) {
 					long lr=(ep->tv[k].color>>16) & 255;
