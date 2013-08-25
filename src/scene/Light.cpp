@@ -1016,9 +1016,7 @@ void ColorMod::updateFromEntity(Entity *io, bool inBook) {
 
 struct TILE_LIGHTS
 {
-	short			num;
-	short			max;
-	EERIE_LIGHT **	el;
+	std::vector<EERIE_LIGHT *> el;
 };
 
 TILE_LIGHTS tilelights[MAX_BKGX][MAX_BKGZ];
@@ -1028,48 +1026,37 @@ void InitTileLights()
 	for (long j=0;j<MAX_BKGZ;j++)
 	for (long i=0;i<MAX_BKGZ;i++)
 	{
-		tilelights[i][j].el=NULL;
-		tilelights[i][j].max=0;
-		tilelights[i][j].num=0;
+		tilelights[i][j].el.resize(0);
 	}
 }
 
 void ResetTileLights() {
 	for(long j=0; j<ACTIVEBKG->Zsize; j++) {
 		for(long i=0; i<ACTIVEBKG->Xsize; i++) {
-			if (tilelights[i][j].num)
-				tilelights[i][j].num=0;
+			tilelights[i][j].el.clear();
 		}
 	}
 }
 
 void ComputeTileLights(short x,short z)
 {
-	tilelights[x][z].num=0;
+	tilelights[x][z].el.clear();
 	float xx=((float)x+0.5f)*ACTIVEBKG->Xdiv;
 	float zz=((float)z+0.5f)*ACTIVEBKG->Zdiv;
 
-	for (long i=0;i<TOTPDL;i++)
-	{
+	for(long i=0; i < TOTPDL; i++) {
 		if(closerThan(Vec2f(xx, zz), Vec2f(PDL[i]->pos.x, PDL[i]->pos.z), PDL[i]->fallend + 60.f)) {
 
-			if (tilelights[x][z].num>=tilelights[x][z].max)
-			{
-				tilelights[x][z].max++;
-				tilelights[x][z].el=(EERIE_LIGHT **)realloc(tilelights[x][z].el,sizeof(EERIE_LIGHT *)*(tilelights[x][z].max));
-			}
-
-			tilelights[x][z].el[tilelights[x][z].num]=PDL[i];
-			tilelights[x][z].num++;
+			tilelights[x][z].el.push_back(PDL[i]);
 		}
 	}
 }
 
 void ClearTileLights() {
-	for(long j = 0; j < MAX_BKGZ; j++) for(long i = 0; i < MAX_BKGZ; i++) {
-		tilelights[i][j].max = 0;
-		tilelights[i][j].num = 0;
-		free(tilelights[i][j].el), tilelights[i][j].el = NULL;
+	for(long j = 0; j < MAX_BKGZ; j++) {
+		for(long i = 0; i < MAX_BKGZ; i++) {
+			tilelights[i][j].el.resize(0);
+		}
 	}
 }
 
@@ -1081,7 +1068,7 @@ void ApplyDynLight_VertexBuffer_2(EERIEPOLY * ep, short _x, short _y, SMY_VERTEX
 	TILE_LIGHTS * tls = &tilelights[_x][_y];
 	long nbvert = (ep->type & POLY_QUAD) ? 4 : 3;
 
-	if(tls->num == 0) {
+	if(tls->el.size() == 0) {
 		_pVertex[_usInd0].color = ep->v[0].color;
 		ep->tv[0].color         = ep->v[0].color;
 		_pVertex[_usInd1].color = ep->v[1].color;
@@ -1108,7 +1095,7 @@ void ApplyDynLight_VertexBuffer_2(EERIEPOLY * ep, short _x, short _y, SMY_VERTEX
 		epb[i] = (float)(long)(c & 255);
 	}
 
-	for(long i = 0; i < tls->num; i++) {
+	for(long i = 0; i < tls->el.size(); i++) {
 		EERIE_LIGHT * el = tls->el[i];
 
 		for(long j = 0; j < nbvert; j++) {
