@@ -860,7 +860,7 @@ static void Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, const C
 	/* Apply light on all vertices */
 	for(int i = 0; i != obj->nb_bones; i++) {
 
-		EERIE_QUAT *qt1 = &obj->bones[i].quatanim;
+		EERIE_QUAT *quat = &obj->bones[i].quatanim;
 
 		/* Get light value for each vertex */
 		for(int v = 0; v != obj->bones[i].nb_idxvertices; v++) {
@@ -872,17 +872,17 @@ static void Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, const C
 
 			// Dynamic lights
 			for(int l = 0; l != MAX_LLIGHTS; l++) {
-				EERIE_LIGHT *light = llights[l];
+				EERIE_LIGHT * light = llights[l];
 
 				if(!light)
 					break;
 
 				Vec3f vLight = (light->pos - position).getNormalized();
 
-				Vec3f Cur_vTLights;
-				TransformInverseVertexQuat(qt1, &vLight, &Cur_vTLights);
+				Vec3f Cur_vLights;
+				TransformInverseVertexQuat(quat, &vLight, &Cur_vLights);
 
-				float cosangle = dot(normal, Cur_vTLights);
+				float cosangle = dot(normal, Cur_vLights);
 
 				// If light visible
 				if(cosangle > 0.f) {
@@ -916,7 +916,7 @@ static void Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, const C
 	}
 }
 
-void MakeCLight(const EERIE_QUAT *qInvert, EERIE_3DOBJ * eobj, const ColorMod & colorMod) {
+void MakeCLight(const EERIE_QUAT *quat, EERIE_3DOBJ * eobj, const ColorMod & colorMod) {
 		
 	for(size_t i = 0; i < eobj->vertexlist.size(); i++) {
 		Color3f tempColor = colorMod.ambientColor;
@@ -934,9 +934,8 @@ void MakeCLight(const EERIE_QUAT *qInvert, EERIE_3DOBJ * eobj, const ColorMod & 
 			Vec3f vLight = (light->pos - position).getNormalized();
 
 			Vec3f Cur_vLights;
-			TransformInverseVertexQuat(qInvert, &vLight, &Cur_vLights);
+			TransformInverseVertexQuat(quat, &vLight, &Cur_vLights);
 
-			// Get cos angle between light and vertex norm
 			float cosangle = dot(normal, Cur_vLights);
 
 			// If light visible
@@ -969,7 +968,7 @@ void MakeCLight(const EERIE_QUAT *qInvert, EERIE_3DOBJ * eobj, const ColorMod & 
 	}
 }
 
-void MakeCLight2(const EERIE_QUAT *qInvert, EERIE_3DOBJ *eobj, long ii, const ColorMod & colorMod) {
+void MakeCLight2(const EERIE_QUAT *quat, EERIE_3DOBJ *eobj, long ii, const ColorMod & colorMod) {
 	
 	for(long i = 0; i < 3; i++) {
 		size_t vertexIndex = eobj->facelist[ii].vid[i];
@@ -988,7 +987,7 @@ void MakeCLight2(const EERIE_QUAT *qInvert, EERIE_3DOBJ *eobj, long ii, const Co
 			Vec3f vLight = (light->pos - position).getNormalized();
 
 			Vec3f Cur_vLights;
-			TransformInverseVertexQuat(qInvert, &vLight, &Cur_vLights);
+			TransformInverseVertexQuat(quat, &vLight, &Cur_vLights);
 
 			float cosangle = dot(normal, Cur_vLights);
 
