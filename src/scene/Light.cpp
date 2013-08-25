@@ -56,9 +56,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/GameSound.h"
 #include "scene/Interactive.h"
 
-extern long TSU_TEST_NB;
-extern long TSU_TEST_NB_LIGHT;
-
 static const float GLOBAL_LIGHT_FACTOR=0.85f;
 
 EERIE_LIGHT * GLight[MAX_LIGHTS];
@@ -554,11 +551,6 @@ void ApplyDynLight(EERIEPOLY * ep)
 		for(int i = 0; i < TOTPDL; i++) {
 			EERIE_LIGHT * el = PDL[i];
 
-			if(el->fallend + 35.f < 0) {
-				TSU_TEST_NB_LIGHT ++;
-				continue;
-			}
-
 			if(distSqr(el->pos, ep->center) <= square(el->fallend + 35.f)) {
 				Color3f rgb;
 				if(Project.improve) {
@@ -566,11 +558,6 @@ void ApplyDynLight(EERIEPOLY * ep)
 					rgb.g = rgb.b = 0.2f;
 				} else {
 					rgb = el->rgb255;
-				}
-
-				if(el->fallend < 0) {
-					TSU_TEST_NB ++;
-					continue;
 				}
 
 				float d = fdist(el->pos, position);

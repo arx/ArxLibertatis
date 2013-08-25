@@ -3081,9 +3081,6 @@ void ShowTestText()
 
 extern float CURRENT_PLAYER_COLOR;
 
-long TSU_TEST_NB = 0;
-long TSU_TEST_NB_LIGHT = 0;
-
 void ShowInfoText() {
 	
 	unsigned long uGAT = (unsigned long)(arxtime) / 1000;
@@ -3149,10 +3146,7 @@ void ShowInfoText() {
 	sprintf(tex,"Velocity %3.0f %3.0f %3.0f Slope %3.3f",player.physics.velocity.x,player.physics.velocity.y,player.physics.velocity.z,slope);
 	mainApp->outputText( 70, 128, tex );
 
-	sprintf(tex, "nblights %ld - nb %ld", TSU_TEST_NB_LIGHT, TSU_TEST_NB);
 	mainApp->outputText( 100, 208, tex );
-	TSU_TEST_NB = 0;
-	TSU_TEST_NB_LIGHT = 0;
 
 #ifdef BUILD_EDITOR
 	if(ValidIONum(LastSelectedIONum))
