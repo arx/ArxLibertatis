@@ -140,6 +140,7 @@ enum InfoPanels {
 	InfoPanelFps,
 	InfoPanelDebug,
 	InfoPanelTest,
+	InfoPanelDebugToggles,
 
 	InfoPanelEnumSize
 };
@@ -1276,6 +1277,14 @@ void ArxGame::updateInput() {
 			showInfo = InfoPanelNone;
 	}
 
+	if(showInfo == InfoPanelDebugToggles) {
+		for(size_t i = 0; i < ARRAY_SIZE(g_debugToggles); i++) {
+			if(GInput->isKeyPressedNowPressed(Keyboard::Key_NumPad0 + i)) {
+				g_debugToggles[i] = !g_debugToggles[i];
+			}
+		}
+	}
+
 	if(GInput->isKeyPressedNowPressed(Keyboard::Key_F10)) {
 		GetSnapShot();
 	}
@@ -1792,6 +1801,10 @@ void ArxGame::render() {
 		}
 		case InfoPanelTest: {
 			ShowTestText();
+			break;
+		}
+		case InfoPanelDebugToggles: {
+			ShowDebugToggles();
 			break;
 		}
 		default: break;

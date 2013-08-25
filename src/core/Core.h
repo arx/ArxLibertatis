@@ -134,6 +134,8 @@ struct QUAKE_FX_STRUCT {
 };
 extern QUAKE_FX_STRUCT QuakeFx;
 
+extern bool g_debugToggles[10];
+
 void SetEditMode(long ed, const bool stop_sound = true);
 void AddQuakeFX(float intensity, float duration, float period, long flags);
 
@@ -152,6 +154,7 @@ void FirstFrameHandling();
 void ShowTestText();
 void ShowInfoText();
 void ShowFPS();
+void ShowDebugToggles();
 
 void DrawImproveVisionInterface();
 void DrawMagicSightInterface();

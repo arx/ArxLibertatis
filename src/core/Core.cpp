@@ -351,6 +351,8 @@ extern EERIE_CAMERA * ACTIVECAM;
 
 EERIE_CAMERA  * Kam;
 
+bool g_debugToggles[10];
+
 //-----------------------------------------------------------------------------
 
 void LoadSysTextures();
@@ -3234,6 +3236,14 @@ void ShowFPS() {
 
 	// bottom right
 	//mainApp->outputTextGrid(-0.5f, -1, tex);
+}
+
+void ShowDebugToggles() {
+	for(size_t i = 0; i < ARRAY_SIZE(g_debugToggles); i++) {
+		std::stringstream textStream;
+		textStream << "Toggle " << i << ": " << (g_debugToggles[i] ? "true" : "false");
+		mainApp->outputTextGrid(0.f, i, textStream.str());
+	}
 }
 
 void ARX_SetAntiAliasing() {
