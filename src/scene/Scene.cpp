@@ -1718,8 +1718,8 @@ void ARX_SCENE_Update() {
 	long z1 = std::min(camZsnap + lcval, ACTIVEBKG->Zsize - 1L);
 
 	ACTIVEBKG->Backg[camXsnap + camZsnap * ACTIVEBKG->Xsize].treat = 1;
-
-		PrecalcDynamicLighting(x0, z0, x1, z1);
+	TreatBackgroundDynlights();
+	PrecalcDynamicLighting(x0, z0, x1, z1);
 
 	// Go for a growing-square-spirallike-render around the camera position
 	// (To maximize Z-Buffer efficiency)

@@ -296,7 +296,6 @@ void TreatBackgroundDynlights()
 
 void PrecalcDynamicLighting(long x0, long z0, long x1, long z1) {
 
-	TreatBackgroundDynlights();
 	TOTPDL = 0;
 	
 	float fx0 = ACTIVEBKG->Xdiv * (float)x0;
