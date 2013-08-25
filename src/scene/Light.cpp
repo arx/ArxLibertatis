@@ -535,25 +535,21 @@ void ApplyDynLight(EERIEPOLY * ep)
 {
 	int nbvert = (ep->type & POLY_QUAD) ? 4 : 3;
 
-	if(TOTPDL == 0) {
-		for(int i = 0; i < nbvert; i++)
-			ep->tv[i].color = ep->v[i].color;
+	for(int j = 0; j < nbvert; j++) {
 
-		return;
-	}
+		if(TOTPDL == 0) {
+			ep->tv[j].color = ep->v[j].color;
+			continue;
+		}
 
-	Color3f rgb;
+		Color3f tempColor;
+		long c = ep->v[j].color;
+		tempColor.r = (float)((c >> 16) & 255);
+		tempColor.g = (float)((c >> 8) & 255);
+		tempColor.b = (float)(c & 255);
 
-	float epr[4];
-	float epg[4];
-	float epb[4];
-
-	for(int i = 0; i < nbvert; i++) {
-		long c = ep->v[i].color;
-		epr[i] = (float)((c >> 16) & 255);
-		epg[i] = (float)((c >> 8) & 255);
-		epb[i] = (float)(c & 255);
-	}
+		Vec3f & position = ep->v[j].p;
+		Vec3f & normal = ep->nrml[j];
 
 	for(int i = 0; i < TOTPDL; i++) {
 		EERIE_LIGHT * el = PDL[i];
@@ -564,6 +560,7 @@ void ApplyDynLight(EERIEPOLY * ep)
 		}
 
 		if(distSqr(el->pos, ep->center) <= square(el->fallend + 35.f)) {
+			Color3f rgb;
 			if(Project.improve) {
 				rgb.r = el->rgb255.r * 4.f;
 				rgb.g = rgb.b = 0.2f;
@@ -571,20 +568,18 @@ void ApplyDynLight(EERIEPOLY * ep)
 				rgb = el->rgb255;
 			}
 
-			for(int j = 0; j < nbvert; j++) {
-				Vec3f v(ep->v[j].p.x, ep->v[j].p.y, ep->v[j].p.z);
 				if(el->fallend < 0) {
 					TSU_TEST_NB ++;
 					continue;
 				}
 
-				float d = fdist(el->pos, ep->v[j].p);
+				float d = fdist(el->pos, position);
 
 				if(d <= el->fallend) {
 					float divd = 1.f / d;
 
-					Vec3f v1 = (el->pos - ep->v[j].p) * divd;
-					float nvalue = dot(v1, ep->nrml[j]) * (1.0f / 2);
+					Vec3f v1 = (el->pos - position) * divd;
+					float nvalue = dot(v1, normal) * (1.0f / 2);
 
 					nvalue = clamp(nvalue, 0.f, 1.f);
 
@@ -596,21 +591,17 @@ void ApplyDynLight(EERIEPOLY * ep)
 							d = (el->falldiff - d) * el->falldiffmul * nvalue * el->precalc;
 						}
 
-						epr[j] += rgb.r * d;
-						epg[j] += rgb.g * d;
-						epb[j] += rgb.b * d;
+						tempColor += rgb * d;
 					}
 				}
 				else if(d > el->fallend + 100.f)
 					break;
-			}
 		}
 	}
 
-	for(int j = 0; j < nbvert; j++) {
-		u8 lepr = clipByte255(epr[j]);
-		u8 lepg = clipByte255(epg[j]);
-		u8 lepb = clipByte255(epb[j]);
+		u8 lepr = clipByte255(tempColor.r);
+		u8 lepg = clipByte255(tempColor.g);
+		u8 lepb = clipByte255(tempColor.b);
 		ep->tv[j].color = (0xFF000000L | (lepr << 16) | (lepg << 8) | (lepb));
 	}
 }
