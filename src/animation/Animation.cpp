@@ -909,3 +909,19 @@ void ARX_SOUND_PopAnimSamples()
 
 	ARX_SOUND_FreeAnimSamples();
 }
+
+void ReleaseAnimFromIO(Entity * io, long num)
+{
+	for(long count = 0; count < MAX_ANIM_LAYERS; count++) {
+		if(io->animlayer[count].cur_anim == io->anims[num]) {
+			memset(&io->animlayer[count], 0, sizeof(ANIM_USE));
+			io->animlayer[count].cur_anim = NULL;
+		}
+
+		if(io->animlayer[count].next_anim == io->anims[num])
+			io->animlayer[count].next_anim = NULL;
+	}
+
+	EERIE_ANIMMANAGER_ReleaseHandle(io->anims[num]);
+	io->anims[num] = NULL;
+}

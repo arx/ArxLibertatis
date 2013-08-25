@@ -212,8 +212,6 @@ int BackFaceCull2D(TexturedVertex * tv);
 
 long EERIERTPPoly(EERIEPOLY *ep);
 
-void ReleaseAnimFromIO(Entity * io,long num);
-
 bool LittleAngularDiff(Vec3f * norm,Vec3f * norm2);
 void RecalcLight(EERIE_LIGHT * el);
 
