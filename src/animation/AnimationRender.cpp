@@ -872,15 +872,15 @@ static void Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, const C
 
 			// Dynamic lights
 			for(int l = 0; l != MAX_LLIGHTS; l++) {
-				EERIE_LIGHT *Cur_llights = llights[l];
+				EERIE_LIGHT *light = llights[l];
 
-				if(!Cur_llights)
+				if(!light)
 					break;
 
-				Vec3f tl = Cur_llights->pos - position;
+				Vec3f tl = light->pos - position;
 				float distance = ffsqrt(tl.lengthSqr());
 
-				if(distance < Cur_llights->fallend) {
+				if(distance < light->fallend) {
 					tl *= 1.f / distance;
 
 					Vec3f Cur_vTLights;
@@ -891,18 +891,18 @@ static void Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, const C
 					// If light visible
 					if(cosangle > 0.f) {
 						// Evaluate its intensity depending on the distance Light<->Object
-						if(distance <= Cur_llights->fallstart) {
-							cosangle *= Cur_llights->precalc;
+						if(distance <= light->fallstart) {
+							cosangle *= light->precalc;
 						} else {
-							float p = ((Cur_llights->fallend - distance) * Cur_llights->falldiffmul);
+							float p = ((light->fallend - distance) * light->falldiffmul);
 
 							if(p <= 0.f)
 								cosangle = 0.f;
 							else
-								cosangle *= p * Cur_llights->precalc;
+								cosangle *= p * light->precalc;
 						}
 
-						tempColor += Cur_llights->rgb255 * cosangle;
+						tempColor += light->rgb255 * cosangle;
 					}
 				}
 			}
@@ -929,9 +929,9 @@ void MakeCLight(const EERIE_QUAT *qInvert, EERIE_3DOBJ * eobj, const ColorMod & 
 
 		// Dynamic lights
 		for(int l = 0; l != MAX_LLIGHTS; l++) {
-			EERIE_LIGHT * Cur_llights = llights[l];
+			EERIE_LIGHT * light = llights[l];
 
-			if(!Cur_llights)
+			if(!light)
 				break;
 
 			Vec3f vLight = (llights[l]->pos - position).getNormalized();
@@ -944,21 +944,21 @@ void MakeCLight(const EERIE_QUAT *qInvert, EERIE_3DOBJ * eobj, const ColorMod & 
 
 			// If light visible
 			if(cosangle > 0.f) {
-				float distance = fdist(position, Cur_llights->pos);
+				float distance = fdist(position, light->pos);
 
 				// Evaluate its intensity depending on the distance Light<->Object
-				if(distance <= Cur_llights->fallstart) {
-					cosangle *= Cur_llights->precalc;
+				if(distance <= light->fallstart) {
+					cosangle *= light->precalc;
 				} else {
-					float p = ((Cur_llights->fallend - distance) * Cur_llights->falldiffmul);
+					float p = ((light->fallend - distance) * light->falldiffmul);
 
 					if(p <= 0.f)
 						cosangle = 0.f;
 					else
-						cosangle *= p * Cur_llights->precalc;
+						cosangle *= p * light->precalc;
 				}
 
-				tempColor += Cur_llights->rgb255 * cosangle;
+				tempColor += light->rgb255 * cosangle;
 			}
 		}
 
@@ -983,9 +983,9 @@ void MakeCLight2(const EERIE_QUAT *qInvert, EERIE_3DOBJ *eobj, long ii, const Co
 		Vec3f & normal = eobj->facelist[ii].norm;
 
 		for(int l = 0; l != MAX_LLIGHTS; l++) {
-			EERIE_LIGHT * Cur_llights = llights[l];
+			EERIE_LIGHT * light = llights[l];
 
-			if(!Cur_llights)
+			if(!light)
 				break;
 
 			Vec3f vLight = (llights[l]->pos - position).getNormalized();
@@ -999,21 +999,21 @@ void MakeCLight2(const EERIE_QUAT *qInvert, EERIE_3DOBJ *eobj, long ii, const Co
 
 			// If light visible
 			if(cosangle > 0.f) {
-				float distance = fdist(position, Cur_llights->pos);
+				float distance = fdist(position, light->pos);
 
 				// Evaluate its intensity depending on the distance Light<->Object
-				if(distance <= Cur_llights->fallstart) {
-					cosangle *= Cur_llights->precalc;
+				if(distance <= light->fallstart) {
+					cosangle *= light->precalc;
 				} else {
-					float p = ((Cur_llights->fallend - distance) * Cur_llights->falldiffmul);
+					float p = ((light->fallend - distance) * light->falldiffmul);
 
 					if(p <= 0.f)
 						cosangle = 0.f;
 					else
-						cosangle *= p * Cur_llights->precalc;
+						cosangle *= p * light->precalc;
 				}
 
-				tempColor += Cur_llights->rgb255 * cosangle;
+				tempColor += light->rgb255 * cosangle;
 			}
 		}
 
