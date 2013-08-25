@@ -84,20 +84,8 @@ bool ValidDynLight(long num)
 	return num >= 0 && ((size_t)num < MAX_DYNLIGHTS) && DynLight[num].exist;
 }
 
-void PrecalcIOLighting(const Vec3f * pos, float radius, long flags) {
-	
-	static Vec3f lastpos;
-	if(flags & 1) {
-		lastpos = Vec3f::repeat(99999.f) + lastpos;
-		return;
-	}
-	
-	// Lastpos optim
-	if(closerThan(*pos, lastpos, 100.f))
-		return;
-	
-	lastpos = *pos;
-	
+void PrecalcIOLighting(const Vec3f * pos, float radius) {
+
 	TOTIOPDL = 0;
 	
 	for(size_t i = 0; i < MAX_LIGHTS; i++) {
@@ -515,7 +503,7 @@ void TreatBackgroundDynlights()
 
 
 void PrecalcDynamicLighting(long x0, long z0, long x1, long z1) {
-	
+
 	TreatBackgroundDynlights();
 	TOTPDL = 0;
 	

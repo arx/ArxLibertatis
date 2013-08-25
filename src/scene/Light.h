@@ -127,7 +127,7 @@ struct EERIE_LIGHT {
 
 void RecalcLight(EERIE_LIGHT * el);
 
-void PrecalcIOLighting(const Vec3f * pos, float radius, long flags = 0);
+void PrecalcIOLighting(const Vec3f * pos, float radius);
 
 void EERIE_LIGHT_Apply(EERIEPOLY * ep);
 void EERIE_LIGHT_TranslateSelected(const Vec3f * trans);

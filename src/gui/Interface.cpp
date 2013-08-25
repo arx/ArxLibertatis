@@ -6586,8 +6586,6 @@ long Manage3DCursor(long flags)
 			else
 				DrawEERIEInter(io->obj, &rotation, pos, io);
 			}
-
-			PrecalcIOLighting(NULL,0,1);
 		} else {
 			if(EEfabs(lastanything) > std::min(EEfabs(height), 12.0f)) {
 				Entity * io=DRAGINTER;

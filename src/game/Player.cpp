@@ -3033,8 +3033,6 @@ void ARX_GAME_Reset(long type) {
 
 	GLOBAL_SLOWDOWN = 1.f;
 
-	PrecalcIOLighting(NULL, 0, 1);
-
 	sp_arm = 0;
 	cur_arm = 0;
 	cur_sm = 0;
