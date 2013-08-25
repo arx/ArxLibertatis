@@ -530,9 +530,9 @@ void ClearTileLights() {
 
 void ApplyDynLight(EERIEPOLY * ep)
 {
-	int nbvert = (ep->type & POLY_QUAD) ? 4 : 3;
+	size_t nbvert = (ep->type & POLY_QUAD) ? 4 : 3;
 
-	for(int j = 0; j < nbvert; j++) {
+	for(size_t j = 0; j < nbvert; j++) {
 
 		if(TOTPDL == 0) {
 			ep->tv[j].color = ep->v[j].color;
@@ -548,7 +548,7 @@ void ApplyDynLight(EERIEPOLY * ep)
 		Vec3f & position = ep->v[j].p;
 		Vec3f & normal = ep->nrml[j];
 
-		for(int i = 0; i < TOTPDL; i++) {
+		for(size_t i = 0; i < TOTPDL; i++) {
 			EERIE_LIGHT * el = PDL[i];
 
 			if(distSqr(el->pos, ep->center) <= square(el->fallend + 35.f)) {
@@ -563,19 +563,17 @@ void ApplyDynLight(EERIEPOLY * ep)
 				float d = fdist(el->pos, position);
 
 				if(d <= el->fallend) {
-					float divd = 1.f / d;
-
-					Vec3f v1 = (el->pos - position) * divd;
-					float nvalue = dot(v1, normal) * (1.0f / 2);
+					Vec3f vLight = (el->pos - position).getNormalized();
+					float nvalue = dot(vLight, normal) * 0.5f;
 
 					nvalue = clamp(nvalue, 0.f, 1.f);
 
 					if(nvalue > 0.f) {
 						if(d <= el->fallstart) {
-							d = nvalue * el->precalc;
+							d = el->precalc * nvalue;
 						} else {
 							d -= el->fallstart;
-							d = (el->falldiff - d) * el->falldiffmul * nvalue * el->precalc;
+							d = (el->falldiff - d) * el->falldiffmul * el->precalc * nvalue;
 						}
 
 						tempColor += rgb * d;
@@ -730,9 +728,9 @@ void ApplyTileLights(EERIEPOLY * ep, short x, short y)
 {
 
 	TILE_LIGHTS * tls = &tilelights[x][y];
-	long nbvert = (ep->type & POLY_QUAD) ? 4 : 3;
+	size_t nbvert = (ep->type & POLY_QUAD) ? 4 : 3;
 
-	for(long j = 0; j < nbvert; j++) {
+	for(size_t j = 0; j < nbvert; j++) {
 
 		if(tls->el.size() == 0) {
 			ep->tv[j].color = ep->v[j].color;
@@ -741,23 +739,23 @@ void ApplyTileLights(EERIEPOLY * ep, short x, short y)
 
 		Color3f tempColor;
 		long c = ep->v[j].color;
-		tempColor.r = (float)(long)((c >> 16) & 255);
-		tempColor.g = (float)(long)((c >> 8) & 255);
-		tempColor.b = (float)(long)(c & 255);
+		tempColor.r = (float)((c >> 16) & 255);
+		tempColor.g = (float)((c >> 8) & 255);
+		tempColor.b = (float)(c & 255);
 
 		Vec3f & position = ep->v[j].p;
 		Vec3f & normal = ep->nrml[j];
 
-		for(long i = 0; i < tls->el.size(); i++) {
+		for(size_t i = 0; i < tls->el.size(); i++) {
 			EERIE_LIGHT * el = tls->el[i];
 
 			float d = fdist(el->pos, position);
 
 			if (d < el->fallend) {
 
-				Vec3f vLight = (el->pos - position);
+				Vec3f vLight = (el->pos - position).getNormalized();
 
-				float nvalue = dot(normal, vLight) * 0.5f / d;
+				float nvalue = dot(normal, vLight) * 0.5f;
 
 				if(nvalue > 0.f) {
 					if(d <= el->fallstart) {
@@ -773,11 +771,9 @@ void ApplyTileLights(EERIEPOLY * ep, short x, short y)
 				break;
 		}
 
-		u8 lepr, lepg, lepb;
-
-		lepr = clipByte255(tempColor.r);
-		lepg = clipByte255(tempColor.g);
-		lepb = clipByte255(tempColor.b);
+		u8 lepr = clipByte255(tempColor.r);
+		u8 lepg = clipByte255(tempColor.g);
+		u8 lepb = clipByte255(tempColor.b);
 		ep->tv[j].color = (0xFF000000L | (lepr << 16) | (lepg << 8) | (lepb));
 	}
 }
