@@ -1292,26 +1292,28 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num, const EERIE_FRUSTRU
 			}
 		}
 
+		SMY_ARXMAT & roomMat = ep->tex->tMatRoom[room_num];
+
 		unsigned short *pIndicesCurr;
 		unsigned long *pNumIndices;
 
 		if(ep->type & POLY_TRANS) {
 			if(ep->transval>=2.f) { //MULTIPLICATIVE
-				pIndicesCurr=pIndices+ep->tex->tMatRoom[room_num].uslStartCull_TMultiplicative+ep->tex->tMatRoom[room_num].uslNbIndiceCull_TMultiplicative;
-				pNumIndices=&ep->tex->tMatRoom[room_num].uslNbIndiceCull_TMultiplicative;
+				pIndicesCurr=pIndices+roomMat.uslStartCull_TMultiplicative+roomMat.uslNbIndiceCull_TMultiplicative;
+				pNumIndices=&roomMat.uslNbIndiceCull_TMultiplicative;
 			}else if(ep->transval>=1.f) { //ADDITIVE
-				pIndicesCurr=pIndices+ep->tex->tMatRoom[room_num].uslStartCull_TAdditive+ep->tex->tMatRoom[room_num].uslNbIndiceCull_TAdditive;
-				pNumIndices=&ep->tex->tMatRoom[room_num].uslNbIndiceCull_TAdditive;
+				pIndicesCurr=pIndices+roomMat.uslStartCull_TAdditive+roomMat.uslNbIndiceCull_TAdditive;
+				pNumIndices=&roomMat.uslNbIndiceCull_TAdditive;
 			} else if(ep->transval>0.f) { //NORMAL TRANS
-				pIndicesCurr=pIndices+ep->tex->tMatRoom[room_num].uslStartCull_TNormalTrans+ep->tex->tMatRoom[room_num].uslNbIndiceCull_TNormalTrans;
-				pNumIndices=&ep->tex->tMatRoom[room_num].uslNbIndiceCull_TNormalTrans;
+				pIndicesCurr=pIndices+roomMat.uslStartCull_TNormalTrans+roomMat.uslNbIndiceCull_TNormalTrans;
+				pNumIndices=&roomMat.uslNbIndiceCull_TNormalTrans;
 			} else { //SUBTRACTIVE
-				pIndicesCurr=pIndices+ep->tex->tMatRoom[room_num].uslStartCull_TSubstractive+ep->tex->tMatRoom[room_num].uslNbIndiceCull_TSubstractive;
-				pNumIndices=&ep->tex->tMatRoom[room_num].uslNbIndiceCull_TSubstractive;
+				pIndicesCurr=pIndices+roomMat.uslStartCull_TSubstractive+roomMat.uslNbIndiceCull_TSubstractive;
+				pNumIndices=&roomMat.uslNbIndiceCull_TSubstractive;
 			}
 		} else {
-			pIndicesCurr=pIndices+ep->tex->tMatRoom[room_num].uslStartCull+ep->tex->tMatRoom[room_num].uslNbIndiceCull;
-			pNumIndices=&ep->tex->tMatRoom[room_num].uslNbIndiceCull;
+			pIndicesCurr=pIndices+roomMat.uslStartCull+roomMat.uslNbIndiceCull;
+			pNumIndices=&roomMat.uslNbIndiceCull;
 
 			if(ZMAPMODE) {
 				if((fDist<200)&&(ep->tex->TextureRefinement)) {
@@ -1334,7 +1336,7 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num, const EERIE_FRUSTRU
 			*pNumIndices += 3;
 		}
 
-		pMyVertexCurr = &pMyVertex[ep->tex->tMatRoom[room_num].uslStartVertex];
+		pMyVertexCurr = &pMyVertex[roomMat.uslStartVertex];
 
 		if(!Project.improve) { // Normal View...
 			if(ep->type & POLY_GLOW) {
