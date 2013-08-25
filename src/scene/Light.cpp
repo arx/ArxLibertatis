@@ -551,22 +551,22 @@ void ApplyDynLight(EERIEPOLY * ep)
 		Vec3f & position = ep->v[j].p;
 		Vec3f & normal = ep->nrml[j];
 
-	for(int i = 0; i < TOTPDL; i++) {
-		EERIE_LIGHT * el = PDL[i];
+		for(int i = 0; i < TOTPDL; i++) {
+			EERIE_LIGHT * el = PDL[i];
 
-		if(el->fallend + 35.f < 0) {
-			TSU_TEST_NB_LIGHT ++;
-			continue;
-		}
-
-		if(distSqr(el->pos, ep->center) <= square(el->fallend + 35.f)) {
-			Color3f rgb;
-			if(Project.improve) {
-				rgb.r = el->rgb255.r * 4.f;
-				rgb.g = rgb.b = 0.2f;
-			} else {
-				rgb = el->rgb255;
+			if(el->fallend + 35.f < 0) {
+				TSU_TEST_NB_LIGHT ++;
+				continue;
 			}
+
+			if(distSqr(el->pos, ep->center) <= square(el->fallend + 35.f)) {
+				Color3f rgb;
+				if(Project.improve) {
+					rgb.r = el->rgb255.r * 4.f;
+					rgb.g = rgb.b = 0.2f;
+				} else {
+					rgb = el->rgb255;
+				}
 
 				if(el->fallend < 0) {
 					TSU_TEST_NB ++;
@@ -596,8 +596,8 @@ void ApplyDynLight(EERIEPOLY * ep)
 				}
 				else if(d > el->fallend + 100.f)
 					break;
+			}
 		}
-	}
 
 		u8 lepr = clipByte255(tempColor.r);
 		u8 lepg = clipByte255(tempColor.g);
