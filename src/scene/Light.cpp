@@ -292,6 +292,37 @@ void TreatBackgroundDynlights()
 			}
 		}
 	}
+
+	for(size_t i = 0; i < MAX_DYNLIGHTS; i++) {
+		EERIE_LIGHT * el = &DynLight[i];
+
+		if(el->exist && el->duration) {
+			float tim = (float)float(arxtime) - (float)el->time_creation;
+			float duration = (float)el->duration;
+
+			if(tim >= duration) {
+				float sub = framedelay * 0.001f;
+
+				el->rgb.r -= sub;
+				el->rgb.g -= sub;
+				el->rgb.b -= sub;
+
+				if(el->rgb.r < 0)
+					el->rgb.r = 0.f;
+
+				if(el->rgb.g < 0)
+					el->rgb.g = 0.f;
+
+				if(el->rgb.b < 0)
+					el->rgb.b = 0.f;
+
+				if(el->rgb.r + el->rgb.g + el->rgb.b == 0) {
+					el->exist = 0;
+					el->duration = 0;
+				}
+			}
+		}
+	}
 }
 
 void PrecalcDynamicLighting(long x0, long z0, long x1, long z1) {
@@ -323,33 +354,6 @@ void PrecalcDynamicLighting(long x0, long z0, long x1, long z1) {
 			}
 			else if(el->treat)
 				el->treat = 0;
-
-			if(el->duration) {
-				float tim = (float)float(arxtime) - (float)el->time_creation;
-				float duration = (float)el->duration;
-
-				if(tim >= duration) {
-					float sub = framedelay * 0.001f;
-
-					el->rgb.r -= sub;
-					el->rgb.g -= sub;
-					el->rgb.b -= sub;
-
-					if(el->rgb.r < 0)
-						el->rgb.r = 0.f;
-
-					if(el->rgb.g < 0)
-						el->rgb.g = 0.f;
-
-					if(el->rgb.b < 0)
-						el->rgb.b = 0.f;
-
-					if(el->rgb.r + el->rgb.g + el->rgb.b == 0) {
-						el->exist = 0;
-						el->duration = 0;
-					}
-				}
-			}
 		}
 	}
 }
