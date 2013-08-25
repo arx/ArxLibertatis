@@ -931,7 +931,7 @@ void MakeCLight(const EERIE_QUAT *qInvert, EERIE_3DOBJ * eobj, const ColorMod & 
 			if(!light)
 				break;
 
-			Vec3f vLight = (llights[l]->pos - position).getNormalized();
+			Vec3f vLight = (light->pos - position).getNormalized();
 
 			Vec3f Cur_vLights;
 			TransformInverseVertexQuat(qInvert, &vLight, &Cur_vLights);
@@ -985,7 +985,7 @@ void MakeCLight2(const EERIE_QUAT *qInvert, EERIE_3DOBJ *eobj, long ii, const Co
 			if(!light)
 				break;
 
-			Vec3f vLight = (llights[l]->pos - position).getNormalized();
+			Vec3f vLight = (light->pos - position).getNormalized();
 
 			Vec3f Cur_vLights;
 			TransformInverseVertexQuat(qInvert, &vLight, &Cur_vLights);
