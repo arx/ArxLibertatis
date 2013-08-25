@@ -750,36 +750,23 @@ ColorBGRA ApplyLight(const EERIE_QUAT * quat, const Vec3f & position, const Vec3
 
 void ApplyTileLights(EERIEPOLY * ep, short x, short y)
 {
-	// Nuky - 25/01/11 - harmless refactor to understand what is slow.
-	//        MASSIVE speed up thanks to "harmless refactor", wtf ?
 
 	TILE_LIGHTS * tls = &tilelights[x][y];
 	long nbvert = (ep->type & POLY_QUAD) ? 4 : 3;
 
-	if(tls->el.size() == 0) {
-		ep->tv[0].color         = ep->v[0].color;
-		ep->tv[1].color         = ep->v[1].color;
-		ep->tv[2].color         = ep->v[2].color;
+	for(long j = 0; j < nbvert; j++) {
 
-		if(nbvert & 4) {
-			ep->tv[3].color         = ep->v[3].color;
+		if(tls->el.size() == 0) {
+			ep->tv[j].color = ep->v[j].color;
+			continue;
 		}
 
-		return;
-	}
+		Color3f tempColor;
+		long c = ep->v[j].color;
+		tempColor.r = (float)(long)((c >> 16) & 255);
+		tempColor.g = (float)(long)((c >> 8) & 255);
+		tempColor.b = (float)(long)(c & 255);
 
-	float epr[4];
-	float epg[4];
-	float epb[4];
-
-	for(long i = 0; i < nbvert; i++) {
-		long c = ep->v[i].color;
-		epr[i] = (float)(long)((c >> 16) & 255);
-		epg[i] = (float)(long)((c >> 8) & 255);
-		epb[i] = (float)(long)(c & 255);
-	}
-
-	for(long j = 0; j < nbvert; j++) {
 		Vec3f & position = ep->v[j].p;
 		Vec3f & normal = ep->nrml[j];
 
@@ -801,38 +788,19 @@ void ApplyTileLights(EERIEPOLY * ep, short x, short y)
 						d -= el->fallstart;
 						d = (el->falldiff - d) * el->falldiffmul * el->precalc * nvalue;
 					}
-					epr[j] += el->rgb255.r * d;
-					epg[j] += el->rgb255.g * d;
-					epb[j] += el->rgb255.b * d;
+					tempColor += el->rgb255 * d;
 				}
 			}
 			else if (d > el->fallend + 100.f)
 				break;
 		}
-	}
 
-	u8 lepr, lepg, lepb;
+		u8 lepr, lepg, lepb;
 
-	lepr = clipByte255(epr[0]);
-	lepg = clipByte255(epg[0]);
-	lepb = clipByte255(epb[0]);
-	ep->tv[0].color = (0xFF000000L | (lepr << 16) | (lepg << 8) | (lepb));
-
-	lepr = clipByte255(epr[1]);
-	lepg = clipByte255(epg[1]);
-	lepb = clipByte255(epb[1]);
-	ep->tv[1].color = (0xFF000000L | (lepr << 16) | (lepg << 8) | (lepb));
-
-	lepr = clipByte255(epr[2]);
-	lepg = clipByte255(epg[2]);
-	lepb = clipByte255(epb[2]);
-	ep->tv[2].color = (0xFF000000L | (lepr << 16) | (lepg << 8) | (lepb));
-
-	if(nbvert & 4) {
-		lepr = clipByte255(epr[3]);
-		lepg = clipByte255(epg[3]);
-		lepb = clipByte255(epb[3]);
-		ep->tv[3].color = (0xFF000000L | (lepr << 16) | (lepg << 8) | (lepb));
+		lepr = clipByte255(tempColor.r);
+		lepg = clipByte255(tempColor.g);
+		lepb = clipByte255(tempColor.b);
+		ep->tv[j].color = (0xFF000000L | (lepr << 16) | (lepg << 8) | (lepb));
 	}
 }
 
