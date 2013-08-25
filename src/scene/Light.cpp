@@ -530,6 +530,12 @@ void ClearTileLights() {
 
 void ApplyDynLight(EERIEPOLY * ep)
 {
+
+	Color3f lightInfraFactor = Color3f::white;
+	if(Project.improve) {
+		lightInfraFactor.r = 4.f;
+	}
+
 	size_t nbvert = (ep->type & POLY_QUAD) ? 4 : 3;
 
 	for(size_t j = 0; j < nbvert; j++) {
@@ -552,13 +558,7 @@ void ApplyDynLight(EERIEPOLY * ep)
 			EERIE_LIGHT * el = PDL[i];
 
 			if(distSqr(el->pos, ep->center) <= square(el->fallend + 35.f)) {
-				Color3f rgb;
-				if(Project.improve) {
-					rgb.r = el->rgb255.r * 4.f;
-					rgb.g = rgb.b = 0.2f;
-				} else {
-					rgb = el->rgb255;
-				}
+				Color3f rgb = el->rgb255 * lightInfraFactor;
 
 				float d = fdist(el->pos, position);
 
