@@ -972,15 +972,12 @@ void MakeCLight(const EERIE_QUAT *qInvert, EERIE_3DOBJ * eobj, const ColorMod & 
 
 void MakeCLight2(const EERIE_QUAT *qInvert, EERIE_3DOBJ *eobj, long ii, const ColorMod & colorMod) {
 	
-	long paf[3];
-	paf[0] = eobj->facelist[ii].vid[0];
-	paf[1] = eobj->facelist[ii].vid[1];
-	paf[2] = eobj->facelist[ii].vid[2];
-
 	for(long i = 0; i < 3; i++) {
+		size_t vertexIndex = eobj->facelist[ii].vid[i];
+
 		Color3f tempColor = colorMod.ambientColor;
 
-		Vec3f * posVert = &eobj->vertexlist3[paf[i]].v;
+		Vec3f * posVert = &eobj->vertexlist3[vertexIndex].v;
 
 		for(int l = 0; l != MAX_LLIGHTS; l++) {
 			EERIE_LIGHT * Cur_llights = llights[l];
@@ -1023,7 +1020,7 @@ void MakeCLight2(const EERIE_QUAT *qInvert, EERIE_3DOBJ *eobj, long ii, const Co
 		u8 ir = clipByte255(tempColor.r);
 		u8 ig = clipByte255(tempColor.g);
 		u8 ib = clipByte255(tempColor.b);
-		eobj->vertexlist3[paf[i]].vert.color = (0xFF000000L | (ir << 16) | (ig << 8) | (ib));
+		eobj->vertexlist3[vertexIndex].vert.color = (0xFF000000L | (ir << 16) | (ig << 8) | (ib));
 	}
 }
 
