@@ -159,7 +159,7 @@ void ClearTileLights();
 void ApplyDynLight(EERIEPOLY *ep);
 float GetColorz(const Vec3f &pos);
 ColorBGRA ApplyLight(const EERIE_QUAT * quat, const Vec3f & position, const Vec3f & normal, const ColorMod & colorMod, float materialDiffuse = 1.f);
-void ApplyTileLights(EERIEPOLY * ep, short x, short y, SMY_VERTEX * pVertex, unsigned short usInd0, unsigned short usInd1, unsigned short usInd2, unsigned short usInd3);
+void ApplyTileLights(EERIEPOLY * ep, short x, short y);
 
 
 void RecalcLightZone(float x, float z, long siz);

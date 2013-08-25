@@ -1362,7 +1362,15 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num, const EERIE_FRUSTRU
 					}
 				} else {
 					if(!(ep->type & POLY_TRANS)) {
-						ApplyTileLights(ep, pEPDATA->px, pEPDATA->py, pMyVertexCurr, ep->uslInd[0], ep->uslInd[1], ep->uslInd[2], ep->uslInd[3]);
+						ApplyTileLights(ep, pEPDATA->px, pEPDATA->py);
+
+						pMyVertexCurr[ep->uslInd[0]].color = ep->tv[0].color;
+						pMyVertexCurr[ep->uslInd[1]].color = ep->tv[1].color;
+						pMyVertexCurr[ep->uslInd[2]].color = ep->tv[2].color;
+
+						if(to&4) {
+							pMyVertexCurr[ep->uslInd[3]].color = ep->tv[3].color;
+						}
 					}
 
 					if(ep->type & POLY_WATER) {
