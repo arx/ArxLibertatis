@@ -1535,8 +1535,6 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity *
 
 			arx_assert(curhalo);
 
-			TexturedVertex *workon	= tvList;
-
 			float tot = 0;
 			float _ffr[3];
 
@@ -1590,10 +1588,10 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity *
 				if(_ffr[first] > 150.f && _ffr[second] > 110.f) {
 					TexturedVertex *vert = Halo_AddVertex();
 
-					memcpy(&vert[0], &workon[first], sizeof(TexturedVertex));
-					memcpy(&vert[1], &workon[first], sizeof(TexturedVertex));
-					memcpy(&vert[2], &workon[second], sizeof(TexturedVertex));
-					memcpy(&vert[3], &workon[second], sizeof(TexturedVertex));
+					memcpy(&vert[0], &tvList[first], sizeof(TexturedVertex));
+					memcpy(&vert[1], &tvList[first], sizeof(TexturedVertex));
+					memcpy(&vert[2], &tvList[second], sizeof(TexturedVertex));
+					memcpy(&vert[3], &tvList[second], sizeof(TexturedVertex));
 
 					float siz = ddist * (curhalo->radius * (EEsin((arxtime.get_frame_time() + i) * .01f) * .1f + 1.f)) * .6f;
 
@@ -1601,8 +1599,8 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity *
 						siz *= 1.5f;
 
 					Vec3f vect1;
-					vect1.x = workon[first].p.x - workon[third].p.x;
-					vect1.y = workon[first].p.y - workon[third].p.y;
+					vect1.x = tvList[first].p.x - tvList[third].p.x;
+					vect1.y = tvList[first].p.y - tvList[third].p.y;
 					float len1 = 2.f / ffsqrt(vect1.x * vect1.x + vect1.y * vect1.y);
 
 					if(vect1.x < 0.f)
@@ -1612,8 +1610,8 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity *
 					vect1.y *= len1;
 
 					Vec3f vect2;
-					vect2.x = workon[second].p.x - workon[third].p.x;
-					vect2.y = workon[second].p.y - workon[third].p.y;
+					vect2.x = tvList[second].p.x - tvList[third].p.x;
+					vect2.y = tvList[second].p.y - tvList[third].p.y;
 					float len2 = 1.f / ffsqrt(vect2.x * vect2.x + vect2.y * vect2.y);
 
 					if(vect2.x < 0.f)
@@ -1627,8 +1625,8 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity *
 					vert[1].color = 0xFF000000;
 
 					float valll;
-					valll = 0.005f + (EEfabs(workon[first].p.z) - EEfabs(workon[third].p.z))
-								   + (EEfabs(workon[second].p.z) - EEfabs(workon[third].p.z));
+					valll = 0.005f + (EEfabs(tvList[first].p.z) - EEfabs(tvList[third].p.z))
+								   + (EEfabs(tvList[second].p.z) - EEfabs(tvList[third].p.z));
 					valll = 0.0001f + valll * ( 1.0f / 10 );
 
 					if(valll < 0.f)
