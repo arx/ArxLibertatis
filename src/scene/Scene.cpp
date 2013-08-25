@@ -1216,20 +1216,22 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num, const EERIE_FRUSTRU
 	if(!RoomDraw[room_num].count)
 		return;
 
-	if(!portals->room[room_num].pVertexBuffer) {
+	EERIE_ROOM_DATA & room = portals->room[room_num];
+
+	if(!room.pVertexBuffer) {
 		// No need to spam this for every frame as there will already be an
 		// earlier warning
 		LogDebug("no vertex data for room " << room_num);
 		return;
 	}
 
-	SMY_VERTEX * pMyVertex = portals->room[room_num].pVertexBuffer->lock(NoOverwrite);
+	SMY_VERTEX * pMyVertex = room.pVertexBuffer->lock(NoOverwrite);
 
-	unsigned short *pIndices=portals->room[room_num].pussIndice;
+	unsigned short *pIndices=room.pussIndice;
 
-	EP_DATA *pEPDATA = &portals->room[room_num].epdata[0];
+	EP_DATA *pEPDATA = &room.epdata[0];
 
-	for(long lll=0; lll<portals->room[room_num].nb_polys; lll++, pEPDATA++) {
+	for(long lll=0; lll<room.nb_polys; lll++, pEPDATA++) {
 		FAST_BKG_DATA *feg = &ACTIVEBKG->fastdata[pEPDATA->px][pEPDATA->py];
 
 		if(!feg->treat) {
@@ -1415,7 +1417,7 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num, const EERIE_FRUSTRU
 		}
 	}
 
-	portals->room[room_num].pVertexBuffer->unlock();
+	room.pVertexBuffer->unlock();
 }
 
 
