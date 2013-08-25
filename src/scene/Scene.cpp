@@ -1362,7 +1362,7 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num, const EERIE_FRUSTRU
 					}
 				} else {
 					if(!(ep->type & POLY_TRANS)) {
-						ApplyDynLight_VertexBuffer_2(ep, pEPDATA->px, pEPDATA->py, pMyVertexCurr, ep->uslInd[0], ep->uslInd[1], ep->uslInd[2], ep->uslInd[3]);
+						ApplyTileLights(ep, pEPDATA->px, pEPDATA->py, pMyVertexCurr, ep->uslInd[0], ep->uslInd[1], ep->uslInd[2], ep->uslInd[3]);
 					}
 
 					if(ep->type & POLY_WATER) {

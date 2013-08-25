@@ -164,7 +164,7 @@ void InitTileLights();
 void ResetTileLights();
 void ComputeTileLights(short x,short z);
 void ClearTileLights();
-void ApplyDynLight_VertexBuffer_2(EERIEPOLY * ep, short _x, short _y, SMY_VERTEX * _pVertex, unsigned short _usInd0, unsigned short _usInd1, unsigned short _usInd2, unsigned short _usInd3);
+void ApplyTileLights(EERIEPOLY * ep, short x, short y, SMY_VERTEX * pVertex, unsigned short usInd0, unsigned short usInd1, unsigned short usInd2, unsigned short usInd3);
 
 
 void RecalcLightZone(float x, float z, long siz);
