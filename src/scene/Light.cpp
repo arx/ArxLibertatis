@@ -140,50 +140,6 @@ void EERIE_LIGHT_Apply(EERIEPOLY * ep) {
 	}
 }
 
-void EERIE_LIGHT_TranslateSelected(const Vec3f * trans) {
-	for(size_t i = 0; i < MAX_LIGHTS; i++) {
-		if(GLight[i] && GLight[i]->selected) {
-			if(GLight[i]->tl > 0) {
-				DynLight[GLight[i]->tl].exist = 0;
-			}
-			GLight[i]->tl = -1;
-			GLight[i]->pos += *trans;
-		}
-	}
-}
-
-void EERIE_LIGHT_UnselectAll() {
-	for(size_t i = 0; i < MAX_LIGHTS; i++) {
-		if(GLight[i] && GLight[i]->exist && GLight[i]->treat) {
-			GLight[i]->selected = 0;
-		}
-	}
-}
-
-void EERIE_LIGHT_ClearByIndex(long num) {
-	if(num >= 0 && ((size_t)num < MAX_LIGHTS) && GLight[num]) {
-		if(GLight[num]->tl != -1)
-			DynLight[GLight[num]->tl].exist = 0;
-
-		free(GLight[num]);
-		GLight[num] = NULL;
-	}
-}
-
-void EERIE_LIGHT_ClearAll() {
-	for(size_t i = 0; i < MAX_LIGHTS; i++) {
-		EERIE_LIGHT_ClearByIndex(i);
-	}
-}
-
-void EERIE_LIGHT_ClearSelected() {
-	for(size_t i = 0; i < MAX_LIGHTS; i++) {
-		if(GLight[i] && GLight[i]->selected) {
-			EERIE_LIGHT_ClearByIndex(i);
-		}
-	}
-}
-
 void EERIE_LIGHT_GlobalInit() {
 	
 	static long init = 0;

@@ -130,11 +130,6 @@ void RecalcLight(EERIE_LIGHT * el);
 void PrecalcIOLighting(const Vec3f * pos, float radius);
 
 void EERIE_LIGHT_Apply(EERIEPOLY * ep);
-void EERIE_LIGHT_TranslateSelected(const Vec3f * trans);
-void EERIE_LIGHT_UnselectAll();
-void EERIE_LIGHT_ClearAll();
-void EERIE_LIGHT_ClearSelected();
-void EERIE_LIGHT_ClearByIndex(long num);
 void EERIE_LIGHT_GlobalInit();
 long EERIE_LIGHT_GetFree();
 long EERIE_LIGHT_Count();
