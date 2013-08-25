@@ -854,6 +854,58 @@ struct ColorMod {
 	Color3f term;
 };
 
+
+static ColorBGRA ApplyLight(const EERIE_QUAT * quat, const Vec3f & position, const Vec3f & normal, const ColorMod & colorMod, float materialDiffuse = 1.f) {
+
+	Color3f tempColor = colorMod.ambientColor;
+
+	// Dynamic lights
+	for(int l = 0; l != MAX_LLIGHTS; l++) {
+		EERIE_LIGHT * light = llights[l];
+
+		if(!light)
+			break;
+
+		Vec3f vLight = (light->pos - position).getNormalized();
+
+		Vec3f Cur_vLights;
+		TransformInverseVertexQuat(quat, &vLight, &Cur_vLights);
+
+		float cosangle = dot(normal, Cur_vLights);
+
+		// If light visible
+		if(cosangle > 0.f) {
+			float distance = fdist(position, light->pos);
+
+			// Evaluate its intensity depending on the distance Light<->Object
+			if(distance <= light->fallstart) {
+				cosangle *= light->precalc;
+			} else {
+				float p = ((light->fallend - distance) * light->falldiffmul);
+
+				if(p <= 0.f)
+					cosangle = 0.f;
+				else
+					cosangle *= p * light->precalc;
+			}
+
+			cosangle *= materialDiffuse;
+
+			tempColor += light->rgb255 * cosangle;
+		}
+	}
+
+	tempColor *= colorMod.factor;
+	tempColor += colorMod.term;
+
+	u8 ir = clipByte255(tempColor.r);
+	u8 ig = clipByte255(tempColor.g);
+	u8 ib = clipByte255(tempColor.b);
+
+	return (0xFF000000L | (ir << 16) | (ig << 8) | (ib));
+}
+
+
 /* Object dynamic lighting */
 static void Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, const ColorMod & colorMod) {
 
@@ -865,53 +917,11 @@ static void Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, const C
 		/* Get light value for each vertex */
 		for(int v = 0; v != obj->bones[i].nb_idxvertices; v++) {
 			size_t vertexIndex = obj->bones[i].idxvertices[v];
-			Color3f tempColor = colorMod.ambientColor;
 
 			Vec3f & position = eobj->vertexlist3[vertexIndex].v;
 			Vec3f & normal = eobj->vertexlist[vertexIndex].norm;
 
-			// Dynamic lights
-			for(int l = 0; l != MAX_LLIGHTS; l++) {
-				EERIE_LIGHT * light = llights[l];
-
-				if(!light)
-					break;
-
-				Vec3f vLight = (light->pos - position).getNormalized();
-
-				Vec3f Cur_vLights;
-				TransformInverseVertexQuat(quat, &vLight, &Cur_vLights);
-
-				float cosangle = dot(normal, Cur_vLights);
-
-				// If light visible
-				if(cosangle > 0.f) {
-					float distance = fdist(position, light->pos);
-
-					// Evaluate its intensity depending on the distance Light<->Object
-					if(distance <= light->fallstart) {
-						cosangle *= light->precalc;
-					} else {
-						float p = ((light->fallend - distance) * light->falldiffmul);
-
-						if(p <= 0.f)
-							cosangle = 0.f;
-						else
-							cosangle *= p * light->precalc;
-					}
-
-					tempColor += light->rgb255 * cosangle;
-				}
-			}
-
-			tempColor *= colorMod.factor;
-			tempColor += colorMod.term;
-
-			u8 ir = clipByte255(tempColor.r);
-			u8 ig = clipByte255(tempColor.g);
-			u8 ib = clipByte255(tempColor.b);
-
-			eobj->vertexlist3[vertexIndex].vert.color = (0xFF000000L | (ir << 16) | (ig << 8) | (ib));
+			eobj->vertexlist3[vertexIndex].vert.color = ApplyLight(quat, position, normal, colorMod);
 		}
 	}
 }
@@ -919,52 +929,11 @@ static void Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, const C
 void MakeCLight(const EERIE_QUAT *quat, EERIE_3DOBJ * eobj, const ColorMod & colorMod) {
 		
 	for(size_t i = 0; i < eobj->vertexlist.size(); i++) {
-		Color3f tempColor = colorMod.ambientColor;
 
 		Vec3f & position = eobj->vertexlist3[i].v;
 		Vec3f & normal = eobj->vertexlist[i].norm;
 
-		// Dynamic lights
-		for(int l = 0; l != MAX_LLIGHTS; l++) {
-			EERIE_LIGHT * light = llights[l];
-
-			if(!light)
-				break;
-
-			Vec3f vLight = (light->pos - position).getNormalized();
-
-			Vec3f Cur_vLights;
-			TransformInverseVertexQuat(quat, &vLight, &Cur_vLights);
-
-			float cosangle = dot(normal, Cur_vLights);
-
-			// If light visible
-			if(cosangle > 0.f) {
-				float distance = fdist(position, light->pos);
-
-				// Evaluate its intensity depending on the distance Light<->Object
-				if(distance <= light->fallstart) {
-					cosangle *= light->precalc;
-				} else {
-					float p = ((light->fallend - distance) * light->falldiffmul);
-
-					if(p <= 0.f)
-						cosangle = 0.f;
-					else
-						cosangle *= p * light->precalc;
-				}
-
-				tempColor += light->rgb255 * cosangle;
-			}
-		}
-
-		tempColor *= colorMod.factor;
-		tempColor += colorMod.term;
-
-		u8 ir = clipByte255(tempColor.r);
-		u8 ig = clipByte255(tempColor.g);
-		u8 ib = clipByte255(tempColor.b);
-		eobj->vertexlist3[i].vert.color = (0xFF000000L | (ir << 16) | (ig << 8) | (ib));
+		eobj->vertexlist3[i].vert.color = ApplyLight(quat, position, normal, colorMod);
 	}
 }
 
@@ -973,53 +942,10 @@ void MakeCLight2(const EERIE_QUAT *quat, EERIE_3DOBJ *eobj, long ii, const Color
 	for(long i = 0; i < 3; i++) {
 		size_t vertexIndex = eobj->facelist[ii].vid[i];
 
-		Color3f tempColor = colorMod.ambientColor;
-
 		Vec3f & position = eobj->vertexlist3[vertexIndex].v;
 		Vec3f & normal = eobj->facelist[ii].norm;
 
-		for(int l = 0; l != MAX_LLIGHTS; l++) {
-			EERIE_LIGHT * light = llights[l];
-
-			if(!light)
-				break;
-
-			Vec3f vLight = (light->pos - position).getNormalized();
-
-			Vec3f Cur_vLights;
-			TransformInverseVertexQuat(quat, &vLight, &Cur_vLights);
-
-			float cosangle = dot(normal, Cur_vLights);
-
-			cosangle *= 0.5f;
-
-			// If light visible
-			if(cosangle > 0.f) {
-				float distance = fdist(position, light->pos);
-
-				// Evaluate its intensity depending on the distance Light<->Object
-				if(distance <= light->fallstart) {
-					cosangle *= light->precalc;
-				} else {
-					float p = ((light->fallend - distance) * light->falldiffmul);
-
-					if(p <= 0.f)
-						cosangle = 0.f;
-					else
-						cosangle *= p * light->precalc;
-				}
-
-				tempColor += light->rgb255 * cosangle;
-			}
-		}
-
-		tempColor *= colorMod.factor;
-		tempColor += colorMod.term;
-
-		u8 ir = clipByte255(tempColor.r);
-		u8 ig = clipByte255(tempColor.g);
-		u8 ib = clipByte255(tempColor.b);
-		eobj->vertexlist3[vertexIndex].vert.color = (0xFF000000L | (ir << 16) | (ig << 8) | (ib));
+		eobj->vertexlist3[vertexIndex].vert.color = ApplyLight(quat, position, normal, colorMod, 0.5f);
 	}
 }
 
