@@ -879,29 +879,29 @@ static void Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, const C
 
 				Vec3f vLight = (light->pos - position).getNormalized();
 
-					Vec3f Cur_vTLights;
-					TransformInverseVertexQuat(qt1, &vLight, &Cur_vTLights);
+				Vec3f Cur_vTLights;
+				TransformInverseVertexQuat(qt1, &vLight, &Cur_vTLights);
 
-					float cosangle = dot(normal, Cur_vTLights);
+				float cosangle = dot(normal, Cur_vTLights);
 
-					// If light visible
-					if(cosangle > 0.f) {
-						float distance = fdist(position, light->pos);
+				// If light visible
+				if(cosangle > 0.f) {
+					float distance = fdist(position, light->pos);
 
-						// Evaluate its intensity depending on the distance Light<->Object
-						if(distance <= light->fallstart) {
-							cosangle *= light->precalc;
-						} else {
-							float p = ((light->fallend - distance) * light->falldiffmul);
+					// Evaluate its intensity depending on the distance Light<->Object
+					if(distance <= light->fallstart) {
+						cosangle *= light->precalc;
+					} else {
+						float p = ((light->fallend - distance) * light->falldiffmul);
 
-							if(p <= 0.f)
-								cosangle = 0.f;
-							else
-								cosangle *= p * light->precalc;
-						}
-
-						tempColor += light->rgb255 * cosangle;
+						if(p <= 0.f)
+							cosangle = 0.f;
+						else
+							cosangle *= p * light->precalc;
 					}
+
+					tempColor += light->rgb255 * cosangle;
+				}
 			}
 
 			tempColor *= colorMod.factor;
