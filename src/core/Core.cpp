@@ -298,7 +298,6 @@ long CINE_PRELOAD=0;
 long PLAY_LOADED_CINEMATIC=0;
 float BOW_FOCAL=0;
 long PlayerWeaponBlocked=-1;
-float GLOBAL_LIGHT_FACTOR=0.85f;
 
 long REQUEST_SPEECH_SKIP= 0;
 long CURRENTLEVEL		= -1;

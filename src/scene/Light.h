@@ -51,12 +51,17 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <stddef.h>
 
 #include "math/MathFwd.h"
+#include "graphics/Color.h"
 
 struct EERIE_LIGHT;
 struct EERIEPOLY;
+struct EERIE_QUAT;
+class Entity;
 
 const size_t MAX_LIGHTS = 1200;
 const size_t MAX_DYNLIGHTS = 500;
+
+extern long MAX_LLIGHTS;
 
 extern EERIE_LIGHT * PDL[MAX_DYNLIGHTS];
 extern EERIE_LIGHT * GLight[MAX_LIGHTS];
@@ -64,6 +69,8 @@ extern EERIE_LIGHT DynLight[MAX_DYNLIGHTS];
 extern EERIE_LIGHT * IO_PDL[MAX_DYNLIGHTS];
 extern long TOTPDL;
 extern long TOTIOPDL;
+
+void RecalcLight(EERIE_LIGHT * el);
 
 void PrecalcIOLighting(const Vec3f * pos, float radius, long flags = 0);
 
@@ -89,5 +96,20 @@ void EERIERemovePrecalcLights();
 void PrecalcDynamicLighting(long x0,long x1,long z0,long z1);
 void ApplyDynLight(EERIEPOLY *ep);
 long GetFreeDynLight();
+
+void UpdateLlights(Vec3f & tv);
+
+struct ColorMod {
+
+	void updateFromEntity(Entity * io, bool inBook = false);
+
+	Color3f ambientColor;
+	Color3f factor;
+	Color3f term;
+};
+
+float GetColorz(float x, float y, float z);
+ColorBGRA ApplyLight(const EERIE_QUAT * quat, const Vec3f & position, const Vec3f & normal, const ColorMod & colorMod, float materialDiffuse = 1.f);
+
 
 #endif // ARX_SCENE_LIGHT_H

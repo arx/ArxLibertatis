@@ -59,7 +59,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 extern long TSU_TEST_NB;
 extern long TSU_TEST_NB_LIGHT;
 
-extern float GLOBAL_LIGHT_FACTOR;
+static const float GLOBAL_LIGHT_FACTOR=0.85f;
+
 EERIE_LIGHT * GLight[MAX_LIGHTS];
 EERIE_LIGHT DynLight[MAX_DYNLIGHTS];
 
@@ -68,6 +69,13 @@ long TOTPDL = 0;
 
 EERIE_LIGHT * IO_PDL[MAX_DYNLIGHTS];
 long TOTIOPDL = 0;
+
+void RecalcLight(EERIE_LIGHT * el) {
+	el->rgb255 = el->rgb * 255.f;
+	el->falldiff = el->fallend - el->fallstart;
+	el->falldiffmul = 1.f / el->falldiff;
+	el->precalc = el->intensity * GLOBAL_LIGHT_FACTOR;
+}
 
 static void ARX_EERIE_LIGHT_Make(EERIEPOLY * ep, float * epr, float * epg, float * epb, EERIE_LIGHT * light);
 
@@ -777,4 +785,231 @@ void ApplyDynLight(EERIEPOLY * ep)
 		u8 lepb = clipByte255(epb[j]);
 		ep->tv[j].color = (0xFF000000L | (lepr << 16) | (lepg << 8) | (lepb));
 	}
+}
+
+long MAX_LLIGHTS = 18;
+EERIE_LIGHT * llights[32];
+float dists[32];
+float values[32];
+
+void llightsInit() {
+	for(long i = 0; i < MAX_LLIGHTS; i++) {
+		llights[i] = NULL;
+		dists[i] = 999999999.f;
+		values[i] = 999999999.f;
+	}
+}
+
+// Inserts Light in the List of Nearest Lights
+void Insertllight(EERIE_LIGHT * el,float dist)
+{
+	if(!el)
+		return;
+
+	float threshold = el->fallend + 560.f;
+	if(dist > threshold)
+		return;
+
+	float val = dist - el->fallend;
+
+	if(val < 0)
+		val=0;
+
+	for(long i=0; i < MAX_LLIGHTS; i++) {
+		if(!llights[i]) {
+			llights[i]=el;
+			dists[i]=dist;
+			values[i]=val;
+			return;
+		} else if (val <= values[i]) { // Inserts light at the right place
+			for(long j = MAX_LLIGHTS - 2; j >= i; j--) {
+				if(llights[j]) {
+					llights[j+1]=llights[j];
+					dists[j+1]=dists[j];
+					values[j+1]=values[j];
+				}
+			}
+
+			llights[i]=el;
+			dists[i]=dist;
+			values[i]=val;
+			return;
+		}
+	}
+}
+
+void UpdateLlights(Vec3f & tv) {
+	llightsInit();
+
+	for(int i = 0; i < TOTIOPDL; i++) {
+		Insertllight(IO_PDL[i], dist(IO_PDL[i]->pos, tv));
+	}
+
+	for(int i = 0; i < TOTPDL; i++) {
+		Insertllight(PDL[i], dist(PDL[i]->pos, tv));
+	}
+}
+
+
+float GetColorz(float x, float y, float z) {
+
+	Vec3f pos(x, y, z);
+	llightsInit();
+
+	for(long i = 0; i < TOTIOPDL; i++) {
+		if(IO_PDL[i]->fallstart > 10.f && IO_PDL[i]->fallend > 100.f)
+			Insertllight(IO_PDL[i], fdist(IO_PDL[i]->pos, pos) - IO_PDL[i]->fallstart);
+	}
+
+	for(int i = 0; i < TOTPDL; i++) {
+		if(PDL[i]->fallstart > 10.f && PDL[i]->fallend > 100.f)
+			Insertllight(PDL[i], fdist(PDL[i]->pos, pos) - PDL[i]->fallstart);
+	}
+
+	float ffr = 0;
+	float ffg = 0;
+	float ffb = 0;
+
+	for(long k = 0; k < MAX_LLIGHTS; k++) {
+		EERIE_LIGHT * el = llights[k];
+
+		if(el) {
+			float dd = fdist(el->pos, pos);
+
+			if(dd < el->fallend) {
+				float dc;
+
+				if(dd <= el->fallstart) {
+					dc = el->intensity * GLOBAL_LIGHT_FACTOR;
+				} else {
+					float p = ((el->fallend - dd) * el->falldiffmul);
+
+					if(p <= 0.f)
+						dc = 0.f;
+					else
+						dc = p * el->intensity * GLOBAL_LIGHT_FACTOR;
+				}
+
+				dc *= 0.4f * 255.f;
+				ffr = std::max(ffr, el->rgb.r * dc);
+				ffg = std::max(ffg, el->rgb.g * dc);
+				ffb = std::max(ffb, el->rgb.b * dc);
+			}
+		}
+	}
+
+
+	EERIEPOLY * ep;
+	float needy;
+	ep = CheckInPoly(x, y , z, &needy);
+
+	if(ep != NULL) {
+		float _ffr = 0;
+		float _ffg = 0;
+		float _ffb = 0;
+
+		long to = (ep->type & POLY_QUAD) ? 4 : 3;
+		float div = (1.0f / to);
+
+		ApplyDynLight(ep);
+
+		for(long i = 0; i < to; i++) {
+			Color col = Color::fromBGR(ep->tv[i].color);
+			_ffr += float(col.r);
+			_ffg += float(col.g);
+			_ffb += float(col.b);
+		}
+
+		_ffr *= div;
+		_ffg *= div;
+		_ffb *= div;
+		float ratio, ratio2;
+		ratio = EEfabs(needy - y) * ( 1.0f / 300 );
+		ratio = (1.f - ratio);
+		ratio2 = 1.f - ratio;
+		ffr = ffr * ratio2 + _ffr * ratio;
+		ffg = ffg * ratio2 + _ffg * ratio;
+		ffb = ffb * ratio2 + _ffb * ratio;
+	}
+
+	return (std::min(ffr, 255.f) + std::min(ffg, 255.f) + std::min(ffb, 255.f)) * (1.f/3);
+}
+
+
+ColorBGRA ApplyLight(const EERIE_QUAT * quat, const Vec3f & position, const Vec3f & normal, const ColorMod & colorMod, float materialDiffuse) {
+
+	Color3f tempColor = colorMod.ambientColor;
+
+	// Dynamic lights
+	for(int l = 0; l != MAX_LLIGHTS; l++) {
+		EERIE_LIGHT * light = llights[l];
+
+		if(!light)
+			break;
+
+		Vec3f vLight = (light->pos - position).getNormalized();
+
+		Vec3f Cur_vLights;
+		TransformInverseVertexQuat(quat, &vLight, &Cur_vLights);
+
+		float cosangle = dot(normal, Cur_vLights);
+
+		// If light visible
+		if(cosangle > 0.f) {
+			float distance = fdist(position, light->pos);
+
+			// Evaluate its intensity depending on the distance Light<->Object
+			if(distance <= light->fallstart) {
+				cosangle *= light->precalc;
+			} else {
+				float p = ((light->fallend - distance) * light->falldiffmul);
+
+				if(p <= 0.f)
+					cosangle = 0.f;
+				else
+					cosangle *= p * light->precalc;
+			}
+
+			cosangle *= materialDiffuse;
+
+			tempColor += light->rgb255 * cosangle;
+		}
+	}
+
+	tempColor *= colorMod.factor;
+	tempColor += colorMod.term;
+
+	u8 ir = clipByte255(tempColor.r);
+	u8 ig = clipByte255(tempColor.g);
+	u8 ib = clipByte255(tempColor.b);
+
+	return (0xFF000000L | (ir << 16) | (ig << 8) | (ib));
+}
+
+
+void ColorMod::updateFromEntity(Entity *io, bool inBook) {
+	factor = Color3f::white;
+	term = Color3f::black;
+	if(io) {
+	   factor *= io->special_color;
+	   term += io->highlightColor;
+	}
+
+	if(Project.improve) {
+	   Color3f infra = (io) ? io->infracolor : Color3f(0.6f, 0.f, 1.f);
+
+	   factor *= infra;
+
+	   // Special case for drawing runes in book
+	   if(inBook) {
+		   term.r += infra.r * 512.f;
+		   term.g += infra.g;
+		   term.b += infra.b * 400.f;
+	   }
+	}
+
+	// Ambient light
+	ambientColor = ACTIVEBKG->ambient255;
+	if(io && (io->ioflags & (IO_NPC | IO_ITEM)))
+	   ambientColor = Color3f::gray(NPC_ITEMS_AMBIENT_VALUE_255);
 }

@@ -1524,15 +1524,6 @@ void SetCameraDepth(EERIE_CAMERA &cam, float depth) {
 	cam.Zdiv = depth * 1.2f;
 }
 
-extern float GLOBAL_LIGHT_FACTOR;
-
-void RecalcLight(EERIE_LIGHT * el) {
-	el->rgb255 = el->rgb * 255.f;
-	el->falldiff = el->fallend - el->fallstart;
-	el->falldiffmul = 1.f / el->falldiff;
-	el->precalc = el->intensity * GLOBAL_LIGHT_FACTOR;
-}
-
 long CountBkgVertex() {
 
 	long count = 0;

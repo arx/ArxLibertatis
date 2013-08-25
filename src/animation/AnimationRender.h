@@ -55,10 +55,6 @@ struct EERIE_QUAT;
 struct EERIE_MOD_INFO;
 struct TexturedVertex;
 
-extern long MAX_LLIGHTS;
-
-float GetColorz(float x, float y, float z);
-
 void Cedric_ApplyLightingFirstPartRefactor(Entity *io);
 
 void PopAllTriangleList();
