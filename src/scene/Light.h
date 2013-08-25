@@ -56,6 +56,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 struct EERIE_LIGHT;
 struct EERIEPOLY;
 struct EERIE_QUAT;
+struct SMY_VERTEX;
 class Entity;
 
 const size_t MAX_LIGHTS = 1200;
@@ -111,5 +112,10 @@ struct ColorMod {
 float GetColorz(float x, float y, float z);
 ColorBGRA ApplyLight(const EERIE_QUAT * quat, const Vec3f & position, const Vec3f & normal, const ColorMod & colorMod, float materialDiffuse = 1.f);
 
+void InitTileLights();
+void ResetTileLights();
+void ComputeTileLights(short x,short z);
+void ClearTileLights();
+void ApplyDynLight_VertexBuffer_2(EERIEPOLY * ep, short _x, short _y, SMY_VERTEX * _pVertex, unsigned short _usInd0, unsigned short _usInd1, unsigned short _usInd2, unsigned short _usInd3);
 
 #endif // ARX_SCENE_LIGHT_H
