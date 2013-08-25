@@ -2997,7 +2997,6 @@ void ARX_PLAYER_Invulnerability(long flag)
 }
 extern Entity * FlyingOverIO;
 extern long cur_sm;
-extern void ClearDynLights();
 
 void ARX_GAME_Reset(long type) {
 	

@@ -125,28 +125,6 @@ struct EERIE_LIGHT {
 	audio::SourceId sample;
 };
 
-void RecalcLight(EERIE_LIGHT * el);
-
-void PrecalcIOLighting(const Vec3f * pos, float radius);
-
-void EERIE_LIGHT_GlobalInit();
-long EERIE_LIGHT_GetFree();
-long EERIE_LIGHT_Count();
-void EERIE_LIGHT_GlobalAdd(const EERIE_LIGHT * el);
-void EERIE_LIGHT_MoveAll(const Vec3f * trans);
-long EERIE_LIGHT_Create();
-
-
- 
-bool ValidDynLight(long num);
-
-
-void PrecalcDynamicLighting(long x0,long x1,long z0,long z1);
-void ApplyDynLight(EERIEPOLY *ep);
-long GetFreeDynLight();
-
-void UpdateLlights(Vec3f & tv);
-
 struct ColorMod {
 
 	void updateFromEntity(Entity * io, bool inBook = false);
@@ -156,14 +134,31 @@ struct ColorMod {
 	Color3f term;
 };
 
-float GetColorz(float x, float y, float z);
-ColorBGRA ApplyLight(const EERIE_QUAT * quat, const Vec3f & position, const Vec3f & normal, const ColorMod & colorMod, float materialDiffuse = 1.f);
+void RecalcLight(EERIE_LIGHT * el);
 
+void EERIE_LIGHT_GlobalInit();
+long EERIE_LIGHT_GetFree();
+long EERIE_LIGHT_Count();
+void EERIE_LIGHT_GlobalAdd(const EERIE_LIGHT * el);
+void EERIE_LIGHT_MoveAll(const Vec3f * trans);
+long EERIE_LIGHT_Create();
+void PrecalcIOLighting(const Vec3f * pos, float radius);
+
+bool ValidDynLight(long num);
+long GetFreeDynLight();
+void ClearDynLights();
+void PrecalcDynamicLighting(long x0,long x1,long z0,long z1);
+
+void UpdateLlights(Vec3f & tv);
 
 void InitTileLights();
 void ResetTileLights();
 void ComputeTileLights(short x,short z);
 void ClearTileLights();
+
+void ApplyDynLight(EERIEPOLY *ep);
+float GetColorz(float x, float y, float z);
+ColorBGRA ApplyLight(const EERIE_QUAT * quat, const Vec3f & position, const Vec3f & normal, const ColorMod & colorMod, float materialDiffuse = 1.f);
 void ApplyTileLights(EERIEPOLY * ep, short x, short y, SMY_VERTEX * pVertex, unsigned short usInd0, unsigned short usInd1, unsigned short usInd2, unsigned short usInd3);
 
 

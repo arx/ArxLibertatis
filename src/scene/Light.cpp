@@ -70,39 +70,38 @@ long TOTPDL = 0;
 EERIE_LIGHT * IO_PDL[MAX_DYNLIGHTS];
 long TOTIOPDL = 0;
 
+void ColorMod::updateFromEntity(Entity *io, bool inBook) {
+	factor = Color3f::white;
+	term = Color3f::black;
+	if(io) {
+	   factor *= io->special_color;
+	   term += io->highlightColor;
+	}
+
+	if(Project.improve) {
+	   Color3f infra = (io) ? io->infracolor : Color3f(0.6f, 0.f, 1.f);
+
+	   factor *= infra;
+
+	   // Special case for drawing runes in book
+	   if(inBook) {
+		   term.r += infra.r * 512.f;
+		   term.g += infra.g;
+		   term.b += infra.b * 400.f;
+	   }
+	}
+
+	// Ambient light
+	ambientColor = ACTIVEBKG->ambient255;
+	if(io && (io->ioflags & (IO_NPC | IO_ITEM)))
+	   ambientColor = Color3f::gray(NPC_ITEMS_AMBIENT_VALUE_255);
+}
+
 void RecalcLight(EERIE_LIGHT * el) {
 	el->rgb255 = el->rgb * 255.f;
 	el->falldiff = el->fallend - el->fallstart;
 	el->falldiffmul = 1.f / el->falldiff;
 	el->precalc = el->intensity * GLOBAL_LIGHT_FACTOR;
-}
-
-bool ValidDynLight(long num)
-{
-	return num >= 0 && ((size_t)num < MAX_DYNLIGHTS) && DynLight[num].exist;
-}
-
-void PrecalcIOLighting(const Vec3f * pos, float radius) {
-
-	TOTIOPDL = 0;
-	
-	for(size_t i = 0; i < MAX_LIGHTS; i++) {
-		EERIE_LIGHT * el = GLight[i];
-
-		if(el && el->exist && el->status && !(el->extras & EXTRAS_SEMIDYNAMIC)) {
-			if((el->pos.x >= pos->x - radius) && (el->pos.x <= pos->x + radius)
-			        && (el->pos.z >= pos->z - radius) && (el->pos.z <= pos->z + radius))
-			{
-				RecalcLight(el);
-				IO_PDL[TOTIOPDL] = el;
-			
-				TOTIOPDL++;
-
-				if((size_t)TOTIOPDL >= MAX_DYNLIGHTS)
-					TOTIOPDL--;
-			}
-		}
-	}
 }
 
 void EERIE_LIGHT_GlobalInit() {
@@ -298,7 +297,6 @@ void TreatBackgroundDynlights()
 	}
 }
 
-
 void PrecalcDynamicLighting(long x0, long z0, long x1, long z1) {
 
 	TreatBackgroundDynlights();
@@ -360,6 +358,51 @@ void PrecalcDynamicLighting(long x0, long z0, long x1, long z1) {
 	}
 }
 
+void PrecalcIOLighting(const Vec3f * pos, float radius) {
+
+	TOTIOPDL = 0;
+
+	for(size_t i = 0; i < MAX_LIGHTS; i++) {
+		EERIE_LIGHT * el = GLight[i];
+
+		if(el && el->exist && el->status && !(el->extras & EXTRAS_SEMIDYNAMIC)) {
+			if((el->pos.x >= pos->x - radius) && (el->pos.x <= pos->x + radius)
+					&& (el->pos.z >= pos->z - radius) && (el->pos.z <= pos->z + radius))
+			{
+				RecalcLight(el);
+				IO_PDL[TOTIOPDL] = el;
+
+				TOTIOPDL++;
+
+				if((size_t)TOTIOPDL >= MAX_DYNLIGHTS)
+					TOTIOPDL--;
+			}
+		}
+	}
+}
+
+bool ValidDynLight(long num)
+{
+	return num >= 0 && ((size_t)num < MAX_DYNLIGHTS) && DynLight[num].exist;
+}
+
+long GetFreeDynLight() {
+
+	for(size_t i = 1; i < MAX_DYNLIGHTS; i++) {
+		if(!(DynLight[i].exist)) {
+			DynLight[i].type = 0;
+			DynLight[i].intensity = 1.3f;
+			DynLight[i].treat = 1;
+			DynLight[i].time_creation = (unsigned long)(arxtime);
+			DynLight[i].duration = 0;
+			DynLight[i].extras = 0;
+			return i;
+		}
+	}
+
+	return -1;
+}
+
 void ClearDynLights() {
 
 	for(size_t i = 0; i < MAX_DYNLIGHTS; i++) {
@@ -378,21 +421,113 @@ void ClearDynLights() {
 	TOTIOPDL = 0;
 }
 
-long GetFreeDynLight() {
+long MAX_LLIGHTS = 18;
+EERIE_LIGHT * llights[32];
+float dists[32];
+float values[32];
 
-	for(size_t i = 1; i < MAX_DYNLIGHTS; i++) {
-		if(!(DynLight[i].exist)) {
-			DynLight[i].type = 0;
-			DynLight[i].intensity = 1.3f;
-			DynLight[i].treat = 1;
-			DynLight[i].time_creation = (unsigned long)(arxtime);
-			DynLight[i].duration = 0;
-			DynLight[i].extras = 0;
-			return i;
+void llightsInit() {
+	for(long i = 0; i < MAX_LLIGHTS; i++) {
+		llights[i] = NULL;
+		dists[i] = 999999999.f;
+		values[i] = 999999999.f;
+	}
+}
+
+// Inserts Light in the List of Nearest Lights
+void Insertllight(EERIE_LIGHT * el,float dist)
+{
+	if(!el)
+		return;
+
+	float threshold = el->fallend + 560.f;
+	if(dist > threshold)
+		return;
+
+	float val = dist - el->fallend;
+
+	if(val < 0)
+		val=0;
+
+	for(long i=0; i < MAX_LLIGHTS; i++) {
+		if(!llights[i]) {
+			llights[i]=el;
+			dists[i]=dist;
+			values[i]=val;
+			return;
+		} else if (val <= values[i]) { // Inserts light at the right place
+			for(long j = MAX_LLIGHTS - 2; j >= i; j--) {
+				if(llights[j]) {
+					llights[j+1]=llights[j];
+					dists[j+1]=dists[j];
+					values[j+1]=values[j];
+				}
+			}
+
+			llights[i]=el;
+			dists[i]=dist;
+			values[i]=val;
+			return;
 		}
 	}
+}
 
-	return -1;
+void UpdateLlights(Vec3f & tv) {
+	llightsInit();
+
+	for(int i = 0; i < TOTIOPDL; i++) {
+		Insertllight(IO_PDL[i], dist(IO_PDL[i]->pos, tv));
+	}
+
+	for(int i = 0; i < TOTPDL; i++) {
+		Insertllight(PDL[i], dist(PDL[i]->pos, tv));
+	}
+}
+
+struct TILE_LIGHTS
+{
+	std::vector<EERIE_LIGHT *> el;
+};
+
+TILE_LIGHTS tilelights[MAX_BKGX][MAX_BKGZ];
+
+void InitTileLights()
+{
+	for (long j=0;j<MAX_BKGZ;j++)
+	for (long i=0;i<MAX_BKGZ;i++)
+	{
+		tilelights[i][j].el.resize(0);
+	}
+}
+
+void ResetTileLights() {
+	for(long j=0; j<ACTIVEBKG->Zsize; j++) {
+		for(long i=0; i<ACTIVEBKG->Xsize; i++) {
+			tilelights[i][j].el.clear();
+		}
+	}
+}
+
+void ComputeTileLights(short x,short z)
+{
+	tilelights[x][z].el.clear();
+	float xx=((float)x+0.5f)*ACTIVEBKG->Xdiv;
+	float zz=((float)z+0.5f)*ACTIVEBKG->Zdiv;
+
+	for(long i=0; i < TOTPDL; i++) {
+		if(closerThan(Vec2f(xx, zz), Vec2f(PDL[i]->pos.x, PDL[i]->pos.z), PDL[i]->fallend + 60.f)) {
+
+			tilelights[x][z].el.push_back(PDL[i]);
+		}
+	}
+}
+
+void ClearTileLights() {
+	for(long j = 0; j < MAX_BKGZ; j++) {
+		for(long i = 0; i < MAX_BKGZ; i++) {
+			tilelights[i][j].el.resize(0);
+		}
+	}
 }
 
 
@@ -480,70 +615,6 @@ void ApplyDynLight(EERIEPOLY * ep)
 	}
 }
 
-long MAX_LLIGHTS = 18;
-EERIE_LIGHT * llights[32];
-float dists[32];
-float values[32];
-
-void llightsInit() {
-	for(long i = 0; i < MAX_LLIGHTS; i++) {
-		llights[i] = NULL;
-		dists[i] = 999999999.f;
-		values[i] = 999999999.f;
-	}
-}
-
-// Inserts Light in the List of Nearest Lights
-void Insertllight(EERIE_LIGHT * el,float dist)
-{
-	if(!el)
-		return;
-
-	float threshold = el->fallend + 560.f;
-	if(dist > threshold)
-		return;
-
-	float val = dist - el->fallend;
-
-	if(val < 0)
-		val=0;
-
-	for(long i=0; i < MAX_LLIGHTS; i++) {
-		if(!llights[i]) {
-			llights[i]=el;
-			dists[i]=dist;
-			values[i]=val;
-			return;
-		} else if (val <= values[i]) { // Inserts light at the right place
-			for(long j = MAX_LLIGHTS - 2; j >= i; j--) {
-				if(llights[j]) {
-					llights[j+1]=llights[j];
-					dists[j+1]=dists[j];
-					values[j+1]=values[j];
-				}
-			}
-
-			llights[i]=el;
-			dists[i]=dist;
-			values[i]=val;
-			return;
-		}
-	}
-}
-
-void UpdateLlights(Vec3f & tv) {
-	llightsInit();
-
-	for(int i = 0; i < TOTIOPDL; i++) {
-		Insertllight(IO_PDL[i], dist(IO_PDL[i]->pos, tv));
-	}
-
-	for(int i = 0; i < TOTPDL; i++) {
-		Insertllight(PDL[i], dist(PDL[i]->pos, tv));
-	}
-}
-
-
 float GetColorz(float x, float y, float z) {
 
 	Vec3f pos(x, y, z);
@@ -628,7 +699,6 @@ float GetColorz(float x, float y, float z) {
 	return (std::min(ffr, 255.f) + std::min(ffg, 255.f) + std::min(ffb, 255.f)) * (1.f/3);
 }
 
-
 ColorBGRA ApplyLight(const EERIE_QUAT * quat, const Vec3f & position, const Vec3f & normal, const ColorMod & colorMod, float materialDiffuse) {
 
 	Color3f tempColor = colorMod.ambientColor;
@@ -677,80 +747,6 @@ ColorBGRA ApplyLight(const EERIE_QUAT * quat, const Vec3f & position, const Vec3
 	u8 ib = clipByte255(tempColor.b);
 
 	return (0xFF000000L | (ir << 16) | (ig << 8) | (ib));
-}
-
-
-void ColorMod::updateFromEntity(Entity *io, bool inBook) {
-	factor = Color3f::white;
-	term = Color3f::black;
-	if(io) {
-	   factor *= io->special_color;
-	   term += io->highlightColor;
-	}
-
-	if(Project.improve) {
-	   Color3f infra = (io) ? io->infracolor : Color3f(0.6f, 0.f, 1.f);
-
-	   factor *= infra;
-
-	   // Special case for drawing runes in book
-	   if(inBook) {
-		   term.r += infra.r * 512.f;
-		   term.g += infra.g;
-		   term.b += infra.b * 400.f;
-	   }
-	}
-
-	// Ambient light
-	ambientColor = ACTIVEBKG->ambient255;
-	if(io && (io->ioflags & (IO_NPC | IO_ITEM)))
-	   ambientColor = Color3f::gray(NPC_ITEMS_AMBIENT_VALUE_255);
-}
-
-struct TILE_LIGHTS
-{
-	std::vector<EERIE_LIGHT *> el;
-};
-
-TILE_LIGHTS tilelights[MAX_BKGX][MAX_BKGZ];
-
-void InitTileLights()
-{
-	for (long j=0;j<MAX_BKGZ;j++)
-	for (long i=0;i<MAX_BKGZ;i++)
-	{
-		tilelights[i][j].el.resize(0);
-	}
-}
-
-void ResetTileLights() {
-	for(long j=0; j<ACTIVEBKG->Zsize; j++) {
-		for(long i=0; i<ACTIVEBKG->Xsize; i++) {
-			tilelights[i][j].el.clear();
-		}
-	}
-}
-
-void ComputeTileLights(short x,short z)
-{
-	tilelights[x][z].el.clear();
-	float xx=((float)x+0.5f)*ACTIVEBKG->Xdiv;
-	float zz=((float)z+0.5f)*ACTIVEBKG->Zdiv;
-
-	for(long i=0; i < TOTPDL; i++) {
-		if(closerThan(Vec2f(xx, zz), Vec2f(PDL[i]->pos.x, PDL[i]->pos.z), PDL[i]->fallend + 60.f)) {
-
-			tilelights[x][z].el.push_back(PDL[i]);
-		}
-	}
-}
-
-void ClearTileLights() {
-	for(long j = 0; j < MAX_BKGZ; j++) {
-		for(long i = 0; i < MAX_BKGZ; i++) {
-			tilelights[i][j].el.resize(0);
-		}
-	}
 }
 
 void ApplyTileLights(EERIEPOLY * ep, short x, short y, SMY_VERTEX * pVertex, unsigned short usInd0, unsigned short usInd1, unsigned short usInd2, unsigned short usInd3)
