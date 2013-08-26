@@ -1706,7 +1706,7 @@ void ARX_MAGICAL_FLARES_KillAll()
 	flarenum=0;
 }
 
-void AddFlare(Vec2s * pos, float sm, short typ, Entity * io, bool bookDraw) {
+void AddFlare(const Vec2s & pos, float sm, short typ, Entity * io, bool bookDraw) {
 	
 	long i;
 	for(i = 0; i < MAX_FLARES; i++) {
@@ -1735,8 +1735,8 @@ void AddFlare(Vec2s * pos, float sm, short typ, Entity * io, bool bookDraw) {
 		fl->flags = 0;
 	}
 	
-	fl->x = float(pos->x) - rnd() * 4.f;
-	fl->y = float(pos->y) - rnd() * 4.f - 50.f;
+	fl->x = float(pos.x) - rnd() * 4.f;
+	fl->y = float(pos.y) - rnd() * 4.f - 50.f;
 	fl->tv.rhw = fl->v.rhw = 1.f;
 	fl->tv.specular = fl->v.specular = 1;
 	
@@ -1757,8 +1757,8 @@ void AddFlare(Vec2s * pos, float sm, short typ, Entity * io, bool bookDraw) {
 			fl->v.p.y = io->pos.y + EEsin(radians(MAKEANGLE(io->angle.a + vy))) * 100.f - 150.f;
 			fl->v.p.z = io->pos.z + EEcos(radians(MAKEANGLE(io->angle.b + vx))) * 100.f;
 		} else {
-			fl->v.p.x = float(pos->x - (DANAESIZX / 2)) * 150.f / float(DANAESIZX);
-			fl->v.p.y = float(pos->y - (DANAESIZY / 2)) * 150.f / float(DANAESIZX);
+			fl->v.p.x = float(pos.x - (DANAESIZX / 2)) * 150.f / float(DANAESIZX);
+			fl->v.p.y = float(pos.y - (DANAESIZY / 2)) * 150.f / float(DANAESIZX);
 			fl->v.p.z = 75.f;
 			ka = *oldcam;
 			SetActiveCamera(&ka);
@@ -1853,26 +1853,22 @@ void AddFlare(Vec2s * pos, float sm, short typ, Entity * io, bool bookDraw) {
 	}
 }
 
-//-----------------------------------------------------------------------------
-void AddLFlare(float x, float y,Entity * io) 
+//! Helper for FlareLine
+void AddLFlare(const Vec2s & pos, Entity * io)
 {
-	Vec2s pos;
-	pos.x=(short)x;
-	pos.y=(short)y;
-	AddFlare(&pos,0.45f,1,io);	
+	AddFlare(pos, 0.45f, 1, io);
 }
 
-//-----------------------------------------------------------------------------
-void FlareLine(Vec2s * pos0, Vec2s * pos1, Entity * io) 
+void FlareLine(const Vec2s & pos0, const Vec2s & pos1, Entity * io)
 {
 	float m;
 	long i;
 	long z;
 
-	float x0 = pos0->x;
-	float x1 = pos1->x;
-	float y0 = pos0->y;
-	float y1 = pos1->y;
+	float x0 = pos0.x;
+	float x1 = pos1.x;
+	float y0 = pos0.y;
+	float y1 = pos1.y;
 
 	float dx = (x1 - x0);
 	float adx = EEfabs(dx);
@@ -1897,7 +1893,7 @@ void FlareLine(Vec2s * pos0, Vec2s * pos1, Entity * io)
 				z += FLARELINESTEP;
 				i += z;
 				y0 += m * z;
-				AddLFlare((float)i,y0,io);				
+				AddLFlare(Vec2s(i, y0), io);
 			}
 		} else {
 			m = dy / dx;
@@ -1908,7 +1904,7 @@ void FlareLine(Vec2s * pos0, Vec2s * pos1, Entity * io)
 				z += FLARELINESTEP;
 				i += z;
 				y0 += m * z;
-				AddLFlare((float)i,y0,io);				
+				AddLFlare(Vec2s(i, y0), io);
 			}
 		}				
 	} else {
@@ -1929,7 +1925,7 @@ void FlareLine(Vec2s * pos0, Vec2s * pos1, Entity * io)
 				z += FLARELINESTEP;
 				i += z;
 				x0 += m * z;
-				AddLFlare(x0,(float)i,io);				
+				AddLFlare(Vec2s(x0, i), io);
 			}			
 		} else {
 			m = dx / dy;
@@ -1940,7 +1936,7 @@ void FlareLine(Vec2s * pos0, Vec2s * pos1, Entity * io)
 				z += FLARELINESTEP;
 				i += z;
 				x0 += m * z;
-				AddLFlare(x0,(float)i,io);				
+				AddLFlare(Vec2s(x0, i), io);
 			} 
 		}	
 	}

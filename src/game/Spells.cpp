@@ -1220,8 +1220,8 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 						if(newtime <= ti) {
 							float ratio = float(newtime) * div_ti;
 							pos1 += (vect.to<float>() * ratio).to<short>();
-							AddFlare(&pos1,0.1f,1,entities[i]);
-							FlareLine(&old_pos,&pos1,entities[i]);
+							AddFlare(pos1, 0.1f, 1, entities[i]);
+							FlareLine(old_pos, pos1, entities[i]);
 							break;
 						}
 
@@ -1272,7 +1272,7 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 							pos.x=(short)(pos1.x*Xratio);	
 							pos.y=(short)(pos1.y*Yratio);
 
-							AddFlare(&pos, 0.1f, 1, entities[i], true);
+							AddFlare(pos, 0.1f, 1, entities[i], true);
 
 							break;
 						}
@@ -2282,12 +2282,12 @@ void ARX_SPELLS_ManageMagic() {
 				Vec2s pos2 = Lm;
 				
 				if(!ARX_FLARES_broken)
-					FlareLine(&pos2,&pos);
+					FlareLine(pos2, pos);
 
 				if(rnd()>0.6)
-					AddFlare(&pos,1.f,-1);
+					AddFlare(pos, 1.f, -1);
 				else
-					AddFlare(&pos,1.f,3);
+					AddFlare(pos, 1.f, 3);
 				
 				OPIPOrgb = PIPOrgb;
 				

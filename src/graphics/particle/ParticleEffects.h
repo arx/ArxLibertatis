@@ -207,9 +207,9 @@ void MakeBookFX(const Vec3f & pos);
 
 void Add3DBoom(Vec3f * position);
 void AddRandomSmoke(Entity * io, long amount = 1);
-void AddFlare(Vec2s * pos, float sm, short typ, Entity * io = NULL, bool bookDraw = false);
-void AddLFlare(float x, float y, Entity * io = NULL) ;
-void FlareLine(Vec2s * pos0, Vec2s * pos1, Entity * io = NULL);
+void AddFlare(const Vec2s & pos, float sm, short typ, Entity * io = NULL, bool bookDraw = false);
+
+void FlareLine(const Vec2s &pos0, const Vec2s &pos1, Entity * io = NULL);
 void LaunchDummyParticle();
 void ManageTorch();
 
