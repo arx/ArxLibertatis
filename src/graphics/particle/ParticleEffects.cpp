@@ -101,7 +101,7 @@ static long ParticleCount = 0;
 static PARTICLE_DEF particle[MAX_PARTICLES];
 
 FLARETC			flaretc;
-FLARES			flare[MAX_FLARES];
+FLARES			magicFlares[MAX_FLARES];
 static TextureContainer * bloodsplat[6];
 TextureContainer * water_splat[3];
 static TextureContainer * water_drop[3];
@@ -677,7 +677,7 @@ void ManageTorch() {
 			
 			long count = 0;
 			for(long i = 0; i < MAX_FLARES; i++) {
-				if(flare[i].exist && flare[i].flags == 0) {
+				if(magicFlares[i].exist && magicFlares[i].flags == 0) {
 					count++;
 				}
 			}
@@ -731,73 +731,73 @@ void ARX_MAGICAL_FLARES_Draw(long FRAMETICKS) {
 		
 		for(long i = 0; i < MAX_FLARES; i++) {
 			
-			if(!flare[i].exist || flare[i].type != j) {
+			if(!magicFlares[i].exist || magicFlares[i].type != j) {
 				continue;
 			}
 			
-			flare[i].tolive -= float(TICKS * 2);
-			if(flare[i].flags & 1) {
-				flare[i].tolive -= float(TICKS * 4);
+			magicFlares[i].tolive -= float(TICKS * 2);
+			if(magicFlares[i].flags & 1) {
+				magicFlares[i].tolive -= float(TICKS * 4);
 			} else if (key) {
-				flare[i].tolive -= float(TICKS * 6);
+				magicFlares[i].tolive -= float(TICKS * 6);
 			}
 			
-			float z = (flare[i].tolive * 0.00025f);
+			float z = (magicFlares[i].tolive * 0.00025f);
 			float s;
-			if(flare[i].type == 1) {
-				s = flare[i].size * 2 * z;
-			} else if(flare[i].type == 4) {
-				s = flare[i].size * 2.f * z + 10.f;
+			if(magicFlares[i].type == 1) {
+				s = magicFlares[i].size * 2 * z;
+			} else if(magicFlares[i].type == 4) {
+				s = magicFlares[i].size * 2.f * z + 10.f;
 			} else {
-				s = flare[i].size;
+				s = magicFlares[i].size;
 			}
 			
-			if(flare[i].tolive <= 0.f || flare[i].y < -64.f || s < 3.f) {
+			if(magicFlares[i].tolive <= 0.f || magicFlares[i].y < -64.f || s < 3.f) {
 				
-				if(flare[i].io && ValidIOAddress(flare[i].io)) {
-					flare[i].io->flarecount--;
+				if(magicFlares[i].io && ValidIOAddress(magicFlares[i].io)) {
+					magicFlares[i].io->flarecount--;
 				}
 				
-				if(ValidDynLight(flare[i].dynlight)) {
-					DynLight[flare[i].dynlight].exist = 0;
+				if(ValidDynLight(magicFlares[i].dynlight)) {
+					DynLight[magicFlares[i].dynlight].exist = 0;
 				}
 				
-				flare[i].dynlight = -1;
-				flare[i].exist = 0;
+				magicFlares[i].dynlight = -1;
+				magicFlares[i].exist = 0;
 				flarenum--;
 				
 				continue;
 			}
 			
-			if(flare[i].type == 1 && z < 0.6f)  {
+			if(magicFlares[i].type == 1 && z < 0.6f)  {
 				z = 0.6f;
 			}
 			
-			Color3f c = flare[i].rgb * z;
-			flare[i].tv.color = c.toBGR();
-			flare[i].v.p = flare[i].tv.p;
+			Color3f c = magicFlares[i].rgb * z;
+			magicFlares[i].tv.color = c.toBGR();
+			magicFlares[i].v.p = magicFlares[i].tv.p;
 			
 			DynLight[0].rgb = componentwise_max(DynLight[0].rgb, c);
 			
-			if(ValidDynLight(flare[i].dynlight)) {
-				EERIE_LIGHT * el = &DynLight[flare[i].dynlight];
-				el->pos = flare[i].v.p;
+			if(ValidDynLight(magicFlares[i].dynlight)) {
+				EERIE_LIGHT * el = &DynLight[magicFlares[i].dynlight];
+				el->pos = magicFlares[i].v.p;
 				el->rgb = c;
 			}
 			
-			if(!flare[i].io) {
+			if(!magicFlares[i].io) {
 				GRenderer->SetRenderState(Renderer::DepthTest, false);
 			} else {
 				GRenderer->SetRenderState(Renderer::DepthTest, true);
 			}
 			
-			if(flare[i].bDrawBitmap) {
+			if(magicFlares[i].bDrawBitmap) {
 				s *= 2.f;
-				EERIEDrawBitmap(flare[i].v.p.x, flare[i].v.p.y, s, s, flare[i].v.p.z,
-				                surf, Color::fromBGRA(flare[i].tv.color));
+				EERIEDrawBitmap(magicFlares[i].v.p.x, magicFlares[i].v.p.y, s, s, magicFlares[i].v.p.z,
+								surf, Color::fromBGRA(magicFlares[i].tv.color));
 			} else {
-				EERIEDrawSprite(&flare[i].v, s * 0.025f + 1.f, surf,
-				                Color::fromBGRA(flare[i].tv.color), 2.f);
+				EERIEDrawSprite(&magicFlares[i].v, s * 0.025f + 1.f, surf,
+								Color::fromBGRA(magicFlares[i].tv.color), 2.f);
 			}
 			
 		}
@@ -1677,7 +1677,7 @@ void TreatBackgroundActions() {
 void ARX_MAGICAL_FLARES_FirstInit() {
 	flarenum = 0;
 	for(long i = 0; i < MAX_FLARES; i++) {
-		flare[i].exist = 0; 
+		magicFlares[i].exist = 0;
 	}
 }
 
@@ -1685,21 +1685,21 @@ void ARX_MAGICAL_FLARES_KillAll()
 {
 	for (long i=0;i<MAX_FLARES;i++)
 	{
-		if (flare[i].exist)
+		if (magicFlares[i].exist)
 		{
-			if (flare[i].io)
+			if (magicFlares[i].io)
 			{
-				flare[i].io->flarecount--;
+				magicFlares[i].io->flarecount--;
 			}
 
-			flare[i].exist=0;
-			flare[i].tolive=0;
+			magicFlares[i].exist=0;
+			magicFlares[i].tolive=0;
 			flarenum--;
 
-			if (ValidDynLight(flare[i].dynlight!=-1))
-				DynLight[flare[i].dynlight].exist=0;
+			if (ValidDynLight(magicFlares[i].dynlight!=-1))
+				DynLight[magicFlares[i].dynlight].exist=0;
 
-			flare[i].dynlight=-1;
+			magicFlares[i].dynlight=-1;
 		}
 	}
 
@@ -1710,7 +1710,7 @@ void AddFlare(const Vec2s & pos, float sm, short typ, Entity * io, bool bookDraw
 	
 	long i;
 	for(i = 0; i < MAX_FLARES; i++) {
-		if(!flare[i].exist) {
+		if(!magicFlares[i].exist) {
 			break;
 		}
 	}
@@ -1718,7 +1718,7 @@ void AddFlare(const Vec2s & pos, float sm, short typ, Entity * io, bool bookDraw
 		return;
 	}
 	
-	FLARES * fl = &flare[i];
+	FLARES * fl = &magicFlares[i];
 	fl->exist = 1;
 	flarenum++;
 

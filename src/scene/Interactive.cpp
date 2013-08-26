@@ -236,8 +236,8 @@ void ARX_INTERACTIVE_DestroyDynamicInfo(Entity * io)
 
 	if(io->flarecount) {
 		for(long i = 0; i < MAX_FLARES; i++) {
-			if(flare[i].exist && flare[i].io == io)
-				flare[i].io = NULL;
+			if(magicFlares[i].exist && magicFlares[i].io == io)
+				magicFlares[i].io = NULL;
 		}
 	}
 	
@@ -1127,8 +1127,8 @@ void RestoreInitialIOStatusOfIO(Entity * io)
 		io->no_collide = -1;
 
 		for(long i = 0; i < MAX_FLARES; i++) {
-			if(flare[i].exist && flare[i].io == io) {
-				flare[i].io = NULL;
+			if(magicFlares[i].exist && magicFlares[i].io == io) {
+				magicFlares[i].io = NULL;
 			}
 		}
 

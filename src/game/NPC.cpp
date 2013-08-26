@@ -210,8 +210,8 @@ void ARX_NPC_Kill_Spell_Launch(Entity * io)
 
 		if (io->flarecount) {
 			for(long i = 0; i < MAX_FLARES; i++) {
-				if(flare[i].exist && flare[i].io == io)
-					flare[i].io = NULL;
+				if(magicFlares[i].exist && magicFlares[i].io == io)
+					magicFlares[i].io = NULL;
 			}
 		}
 

@@ -189,7 +189,7 @@ enum ARX_PARTICLES_TYPE_FLAG {
 //-----------------------------------------------------------------------------
 extern TextureContainer * explo[MAX_EXPLO];
 extern TextureContainer * blood_splat;
-extern FLARES flare[MAX_FLARES];
+extern FLARES magicFlares[MAX_FLARES];
 extern long flarenum;
 extern short OPIPOrgb;
 extern short PIPOrgb;
