@@ -49,6 +49,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 struct EERIEPOLY;
 struct EERIE_3DOBJ;
+struct EERIE_SPHERE;
 struct EERIE_CYLINDER;
 struct TexturedVertex;
 
@@ -63,6 +64,7 @@ void EERIEDrawBitmap(float x, float y, float sx, float sy, float z, TextureConta
 void EERIEDraw2DRect(float x0, float y0, float x1, float y1, float z, Color col);
 void EERIEDrawFill2DRectDegrad(float x0, float y0, float x1, float y1, float z, Color cold, Color cole);
 
+void DrawLineSphere(const EERIE_SPHERE & sphere, Color color);
 void EERIEDraw3DCylinder(const EERIE_CYLINDER & cyl, Color col);
 void EERIEDraw3DCylinderBase(const EERIE_CYLINDER & cyl, Color col);
 void EERIEDrawTrue3DLine(const Vec3f & orgn, const Vec3f & dest, Color col);
