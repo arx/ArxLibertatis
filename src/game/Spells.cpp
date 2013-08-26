@@ -6584,12 +6584,6 @@ void ARX_SPELLS_Update()
 						float mov1=EEsin((float)arxtime.get_last_frame_time()*( 1.0f / 800 ))*scaley;
 						float mov=EEsin((float)arxtime.get_frame_time()*( 1.0f / 800 ))*scaley;
 
-						if(mov1 < scaley - 10.f && mov > scaley - 10.f)
-							ARX_SOUND_PlaySFX(SND_SPELL_MAGICAL_SHIELD, &spells[i].caster_pos, 0.4F);
-
-						if(mov1 > -scaley + 10.f && mov < -scaley + 10.f)
-							ARX_SOUND_PlaySFX(SND_SPELL_MAGICAL_SHIELD, &spells[i].caster_pos, 0.4F);
-
 						Vec3f cabalpos;
 						if(spells[i].caster == 0) {
 							cabalpos.x = player.pos.x;
