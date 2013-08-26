@@ -731,73 +731,75 @@ void ARX_MAGICAL_FLARES_Draw(long FRAMETICKS) {
 		
 		for(long i = 0; i < MAX_FLARES; i++) {
 			
-			if(!magicFlares[i].exist || magicFlares[i].type != j) {
+			FLARES & flare = magicFlares[i];
+
+			if(!flare.exist || flare.type != j) {
 				continue;
 			}
 			
-			magicFlares[i].tolive -= float(TICKS * 2);
-			if(magicFlares[i].flags & 1) {
-				magicFlares[i].tolive -= float(TICKS * 4);
+			flare.tolive -= float(TICKS * 2);
+			if(flare.flags & 1) {
+				flare.tolive -= float(TICKS * 4);
 			} else if (key) {
-				magicFlares[i].tolive -= float(TICKS * 6);
+				flare.tolive -= float(TICKS * 6);
 			}
 			
-			float z = (magicFlares[i].tolive * 0.00025f);
+			float z = (flare.tolive * 0.00025f);
 			float s;
-			if(magicFlares[i].type == 1) {
-				s = magicFlares[i].size * 2 * z;
-			} else if(magicFlares[i].type == 4) {
-				s = magicFlares[i].size * 2.f * z + 10.f;
+			if(flare.type == 1) {
+				s = flare.size * 2 * z;
+			} else if(flare.type == 4) {
+				s = flare.size * 2.f * z + 10.f;
 			} else {
-				s = magicFlares[i].size;
+				s = flare.size;
 			}
 			
-			if(magicFlares[i].tolive <= 0.f || magicFlares[i].y < -64.f || s < 3.f) {
+			if(flare.tolive <= 0.f || flare.y < -64.f || s < 3.f) {
 				
-				if(magicFlares[i].io && ValidIOAddress(magicFlares[i].io)) {
-					magicFlares[i].io->flarecount--;
+				if(flare.io && ValidIOAddress(flare.io)) {
+					flare.io->flarecount--;
 				}
 				
-				if(ValidDynLight(magicFlares[i].dynlight)) {
-					DynLight[magicFlares[i].dynlight].exist = 0;
+				if(ValidDynLight(flare.dynlight)) {
+					DynLight[flare.dynlight].exist = 0;
 				}
 				
-				magicFlares[i].dynlight = -1;
-				magicFlares[i].exist = 0;
+				flare.dynlight = -1;
+				flare.exist = 0;
 				flarenum--;
 				
 				continue;
 			}
 			
-			if(magicFlares[i].type == 1 && z < 0.6f)  {
+			if(flare.type == 1 && z < 0.6f)  {
 				z = 0.6f;
 			}
 			
-			Color3f c = magicFlares[i].rgb * z;
-			magicFlares[i].tv.color = c.toBGR();
-			magicFlares[i].v.p = magicFlares[i].tv.p;
+			Color3f c = flare.rgb * z;
+			flare.tv.color = c.toBGR();
+			flare.v.p = flare.tv.p;
 			
 			DynLight[0].rgb = componentwise_max(DynLight[0].rgb, c);
 			
-			if(ValidDynLight(magicFlares[i].dynlight)) {
-				EERIE_LIGHT * el = &DynLight[magicFlares[i].dynlight];
-				el->pos = magicFlares[i].v.p;
+			if(ValidDynLight(flare.dynlight)) {
+				EERIE_LIGHT * el = &DynLight[flare.dynlight];
+				el->pos = flare.v.p;
 				el->rgb = c;
 			}
 			
-			if(!magicFlares[i].io) {
+			if(!flare.io) {
 				GRenderer->SetRenderState(Renderer::DepthTest, false);
 			} else {
 				GRenderer->SetRenderState(Renderer::DepthTest, true);
 			}
 			
-			if(magicFlares[i].bDrawBitmap) {
+			if(flare.bDrawBitmap) {
 				s *= 2.f;
-				EERIEDrawBitmap(magicFlares[i].v.p.x, magicFlares[i].v.p.y, s, s, magicFlares[i].v.p.z,
-								surf, Color::fromBGRA(magicFlares[i].tv.color));
+				EERIEDrawBitmap(flare.v.p.x, flare.v.p.y, s, s, flare.v.p.z,
+								surf, Color::fromBGRA(flare.tv.color));
 			} else {
-				EERIEDrawSprite(&magicFlares[i].v, s * 0.025f + 1.f, surf,
-								Color::fromBGRA(magicFlares[i].tv.color), 2.f);
+				EERIEDrawSprite(&flare.v, s * 0.025f + 1.f, surf,
+								Color::fromBGRA(flare.tv.color), 2.f);
 			}
 			
 		}
@@ -1685,21 +1687,23 @@ void ARX_MAGICAL_FLARES_KillAll()
 {
 	for (long i=0;i<MAX_FLARES;i++)
 	{
-		if (magicFlares[i].exist)
+		FLARES & flare = magicFlares[i];
+
+		if (flare.exist)
 		{
-			if (magicFlares[i].io)
+			if (flare.io)
 			{
-				magicFlares[i].io->flarecount--;
+				flare.io->flarecount--;
 			}
 
-			magicFlares[i].exist=0;
-			magicFlares[i].tolive=0;
+			flare.exist=0;
+			flare.tolive=0;
 			flarenum--;
 
-			if (ValidDynLight(magicFlares[i].dynlight!=-1))
-				DynLight[magicFlares[i].dynlight].exist=0;
+			if (ValidDynLight(flare.dynlight!=-1))
+				DynLight[flare.dynlight].exist=0;
 
-			magicFlares[i].dynlight=-1;
+			flare.dynlight=-1;
 		}
 	}
 
