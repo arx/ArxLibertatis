@@ -584,35 +584,49 @@ void ARX_SPELLS_RemoveAllSpellsOn(Entity *io) {
 	io->nb_spells_on = 0;
 }
 
-void ARX_SPELLS_RequestSymbolDraw(Entity *io, const string & name, float duration) {
-	
-	const char * sequence;
-	int iPosX = 0;
-	int iPosY = 0;
+struct RuneInfo {
 
-	if(name == "aam")              iPosX = 0, iPosY = 2, sequence = "6666";
-	else if(name == "cetrius")     iPosX = 0, iPosY = 1, sequence = "33388886666";
-	else if(name == "comunicatum") iPosX = 0, iPosY = 0, sequence = "6666622244442226666";
-	else if(name == "cosum")       iPosX = 0, iPosY = 2, sequence = "66666222244448888";
-	else if(name == "folgora")     iPosX = 0, iPosY = 3, sequence = "99993333";
-	else if(name == "fridd")       iPosX = 0, iPosY = 4, sequence = "888886662222";
-	else if(name == "kaom")        iPosX = 3, iPosY = 0, sequence = "44122366";
-	else if(name == "mega")        iPosX = 2, iPosY = 4, sequence = "88888";
-	else if(name == "morte")       iPosX = 0, iPosY = 2, sequence = "66666222";
-	else if(name == "movis")       iPosX = 0, iPosY = 0, sequence = "666611116666";
-	else if(name == "nhi")         iPosX = 4, iPosY = 2, sequence = "4444";
-	else if(name == "rhaa")        iPosX = 2, iPosY = 0, sequence = "22222";
-	else if(name == "spacium")     iPosX = 4, iPosY = 0, sequence = "44444222266688";
-	else if(name == "stregum")     iPosX = 0, iPosY = 4, sequence = "8888833338888";
-	else if(name == "taar")        iPosX = 0, iPosY = 1, sequence = "666222666";
-	else if(name == "tempus")      iPosX = 0, iPosY = 4, sequence = "88886662226668866";
-	else if(name == "tera")        iPosX = 0, iPosY = 3, sequence = "99922266";
-	else if(name == "vista")       iPosX = 1, iPosY = 0, sequence = "333111";
-	else if(name == "vitae")       iPosX = 0, iPosY = 2, sequence = "66666888";
-	else if(name == "yok")         iPosX = 0, iPosY = 0, sequence = "222226666888";
-	else if(name == "akbaa")       iPosX = 0, iPosY = 0, sequence = "22666772222";
-	else return;
+	RuneInfo(Rune rune, std::string name, Vec2s startOffset, std::string sequence)
+		: rune(rune)
+		, name(name)
+		, startOffset(startOffset)
+		, sequence(sequence)
+	{}
 
+	Rune        rune;
+	std::string name;
+	Vec2s       startOffset;
+	std::string sequence;
+};
+
+std::vector<RuneInfo> runeInfos;
+
+void RuneInfosFill() {
+	runeInfos.push_back(RuneInfo(RUNE_AAM,         "aam",         Vec2s(0, 2), "6666"));
+	runeInfos.push_back(RuneInfo(RUNE_CETRIUS,     "cetrius",     Vec2s(0, 1), "33388886666"));
+	runeInfos.push_back(RuneInfo(RUNE_COMUNICATUM, "comunicatum", Vec2s(0, 0), "6666622244442226666"));
+	runeInfos.push_back(RuneInfo(RUNE_COSUM,       "cosum",       Vec2s(0, 2), "66666222244448888"));
+	runeInfos.push_back(RuneInfo(RUNE_FOLGORA,     "folgora",     Vec2s(0, 3), "99993333"));
+	runeInfos.push_back(RuneInfo(RUNE_FRIDD,       "fridd",       Vec2s(0, 4), "888886662222"));
+	runeInfos.push_back(RuneInfo(RUNE_KAOM,        "kaom",        Vec2s(3, 0), "44122366"));
+	runeInfos.push_back(RuneInfo(RUNE_MEGA,        "mega",        Vec2s(2, 4), "88888"));
+	runeInfos.push_back(RuneInfo(RUNE_MORTE,       "morte",       Vec2s(0, 2), "66666222"));
+	runeInfos.push_back(RuneInfo(RUNE_MOVIS,       "movis",       Vec2s(0, 0), "666611116666"));
+	runeInfos.push_back(RuneInfo(RUNE_NHI,         "nhi",         Vec2s(4, 2), "4444"));
+	runeInfos.push_back(RuneInfo(RUNE_RHAA,        "rhaa",        Vec2s(2, 0), "22222"));
+	runeInfos.push_back(RuneInfo(RUNE_SPACIUM,     "spacium",     Vec2s(4, 0), "44444222266688"));
+	runeInfos.push_back(RuneInfo(RUNE_STREGUM,     "stregum",     Vec2s(0, 4), "8888833338888"));
+	runeInfos.push_back(RuneInfo(RUNE_TAAR,        "taar",        Vec2s(0, 1), "666222666"));
+	runeInfos.push_back(RuneInfo(RUNE_TEMPUS,      "tempus",      Vec2s(0, 4), "88886662226668866"));
+	runeInfos.push_back(RuneInfo(RUNE_TERA,        "tera",        Vec2s(0, 3), "99922266"));
+	runeInfos.push_back(RuneInfo(RUNE_VISTA,       "vista",       Vec2s(1, 0), "333111"));
+	runeInfos.push_back(RuneInfo(RUNE_VITAE,       "vitae",       Vec2s(0, 2), "66666888"));
+	runeInfos.push_back(RuneInfo(RUNE_YOK,         "yok",         Vec2s(0, 0), "222226666888"));
+	runeInfos.push_back(RuneInfo(RUNE_AKBAA,       "akbaa",       Vec2s(0, 0), "22666772222"));
+}
+
+
+void ARX_SPELLS_RequestSymbolDrawCommon(Entity *io, float duration, RuneInfo & info) {
 	SYMBOL_DRAW * ptr;
 	ptr = (SYMBOL_DRAW *)realloc(io->symboldraw, sizeof(SYMBOL_DRAW));
 
@@ -624,116 +638,37 @@ void ARX_SPELLS_RequestSymbolDraw(Entity *io, const string & name, float duratio
 	SYMBOL_DRAW *sd = io->symboldraw;
 
 	sd->duration = (short)std::max(1l, long(duration));
-	strcpy(sd->sequence, sequence);
+	strcpy(sd->sequence, info.sequence.c_str());
 
 	sd->starttime = (unsigned long)(arxtime);
 	sd->lasttim = 0;
-	sd->lastpos.x = io->pos.x - EEsin(radians(MAKEANGLE(io->angle.b - 45.0F + iPosX*2))) * 60.0F;
-	sd->lastpos.y = io->pos.y - 120.0F - iPosY*5;
-	sd->lastpos.z = io->pos.z + EEcos(radians(MAKEANGLE(io->angle.b - 45.0F + iPosX*2))) * 60.0F;
-	
-	sd->cPosStartX = checked_range_cast<char>(iPosX);
-	sd->cPosStartY = checked_range_cast<char>(iPosY);
-	
+	sd->lastpos.x = io->pos.x - EEsin(radians(MAKEANGLE(io->angle.b - 45.0F + info.startOffset.x*2))) * 60.0F;
+	sd->lastpos.y = io->pos.y - 120.0F - info.startOffset.y*5;
+	sd->lastpos.z = io->pos.z + EEcos(radians(MAKEANGLE(io->angle.b - 45.0F + info.startOffset.x*2))) * 60.0F;
+
+	sd->cPosStartX = checked_range_cast<char>(info.startOffset.x);
+	sd->cPosStartY = checked_range_cast<char>(info.startOffset.y);
+
 	io->gameFlags &= ~GFLAG_INVISIBILITY;
+}
+	
+
+void ARX_SPELLS_RequestSymbolDraw(Entity *io, const string & name, float duration) {
+
+	BOOST_FOREACH(RuneInfo & info, runeInfos) {
+		if(info.name == name) {
+			ARX_SPELLS_RequestSymbolDrawCommon(io, duration, info);
+		}
+	}
 }
 
 static void ARX_SPELLS_RequestSymbolDraw2(Entity *io, Rune symb, float duration)
 {
-	const char * sequence;
-	int iPosX = 0;
-	int iPosY = 0;
-
-	switch (symb)
-	{
-		case RUNE_AAM:
-			iPosX = 0, iPosY = 2, sequence = "6666";
-			break;
-		case RUNE_CETRIUS:
-			iPosX = 0, iPosY = 1, sequence = "33388886666";
-			break;
-		case RUNE_COMUNICATUM:
-			iPosX = 0, iPosY = 0, sequence = "6666622244442226666";
-			break;
-		case RUNE_COSUM:
-			iPosX = 0, iPosY = 2, sequence = "66666222244448888";
-			break;
-		case RUNE_FOLGORA:
-			iPosX = 0, iPosY = 3, sequence = "99993333";
-			break;
-		case RUNE_FRIDD:
-			iPosX = 0, iPosY = 4, sequence = "888886662222";
-			break;
-		case RUNE_KAOM:
-			iPosX = 3, iPosY = 0, sequence = "44122366";
-			break;
-		case RUNE_MEGA:
-			iPosX = 2, iPosY = 4, sequence = "88888";
-			break;
-		case RUNE_MORTE:
-			iPosX = 0, iPosY = 2, sequence = "66666222";
-			break;
-		case RUNE_MOVIS:
-			iPosX = 0, iPosY = 0, sequence = "666611116666";
-			break;
-		case RUNE_NHI:
-			iPosX = 4, iPosY = 2, sequence = "4444";
-			break;
-		case RUNE_RHAA:
-			iPosX = 2, iPosY = 0, sequence = "22222";
-			break;
-		case RUNE_SPACIUM:
-			iPosX = 4, iPosY = 0, sequence = "44444222266688";
-			break;
-		case RUNE_STREGUM:
-			iPosX = 0, iPosY = 4, sequence = "8888833338888";
-			break;
-		case RUNE_TAAR:
-			iPosX = 0, iPosY = 1, sequence = "666222666";
-			break;
-		case RUNE_TEMPUS:
-			iPosX = 0, iPosY = 4, sequence = "88886662226668866";
-			break;
-		case RUNE_TERA:
-			iPosX = 0, iPosY = 3, sequence = "99922266";
-			break;
-		case RUNE_VISTA:
-			iPosX = 1, iPosY = 0, sequence = "333111";
-			break;
-		case RUNE_VITAE:
-			iPosX = 0, iPosY = 2, sequence = "66666888";
-			break;
-		case RUNE_YOK:
-			iPosX = 0, iPosY = 0, sequence = "222226666888";
-			break;
-		case RUNE_AKBAA:
-			iPosX = 0, iPosY = 0, sequence = "22666772222";
-		default:
-			return;
+	BOOST_FOREACH(RuneInfo & info, runeInfos) {
+		if(info.rune == symb) {
+			ARX_SPELLS_RequestSymbolDrawCommon(io, duration, info);
+		}
 	}
-
-	SYMBOL_DRAW * ptr;
-	ptr = (SYMBOL_DRAW *)realloc(io->symboldraw, sizeof(SYMBOL_DRAW));
-
-	if(!ptr)
-		return;
-
-	io->symboldraw = ptr;
-
-	SYMBOL_DRAW *sd = io->symboldraw;
-	sd->duration = (short)std::max(1l, long(duration));
-	strcpy(sd->sequence, sequence);
-	sd->starttime = (unsigned long)(arxtime);
-	sd->lasttim = 0;
-	
-	sd->lastpos.x = io->pos.x - EEsin(radians(MAKEANGLE(io->angle.b - 45.0F + iPosX*2))) * 60.0F;
-	sd->lastpos.y = io->pos.y - 120.0F - iPosY*5;
-	sd->lastpos.z = io->pos.z + EEcos(radians(MAKEANGLE(io->angle.b - 45.0F + iPosX*2))) * 60.0F;
-	
-	sd->cPosStartX = checked_range_cast<char>(iPosX);
-	sd->cPosStartY = checked_range_cast<char>(iPosY);
-
-	io->gameFlags &= ~GFLAG_INVISIBILITY;
 }
 
 void ARX_SPELLS_RequestSymbolDraw3(const char *_pcName,char *_pcRes)
@@ -2529,6 +2464,7 @@ void ARX_SPELLS_Init() {
 		addSpell(allSpells[i].symbols, allSpells[i].spell, allSpells[i].name);
 	}
 	
+	RuneInfosFill();
 }
 
 // Clears All Spells.
