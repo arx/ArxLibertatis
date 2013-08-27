@@ -35,6 +35,6 @@ void ARX_MAGICAL_FLARES_FirstInit();
 void ARX_MAGICAL_FLARES_KillAll();
 void AddFlare(const Vec2s & pos, float sm, short typ, Entity * io = NULL, bool bookDraw = false);
 void FlareLine(const Vec2s &pos0, const Vec2s &pos1, Entity * io = NULL);
-void ARX_MAGICAL_FLARES_Draw(long FRAMETICKS);
+void ARX_MAGICAL_FLARES_Draw();
 
 #endif // ARX_GRAPHICS_PARTICLE_MAGICFLARE_H

@@ -383,7 +383,9 @@ void FlareLine(const Vec2s & pos0, const Vec2s & pos1, Entity * io)
 	}
 }
 
-void ARX_MAGICAL_FLARES_Draw(long FRAMETICKS) {
+static unsigned long FRAMETICKS=0;
+
+void ARX_MAGICAL_FLARES_Draw() {
 
 	shinum++;
 	if(shinum >= 10) {
@@ -391,6 +393,7 @@ void ARX_MAGICAL_FLARES_Draw(long FRAMETICKS) {
 	}
 
 	long TICKS = long(arxtime) - FRAMETICKS;
+	FRAMETICKS = (unsigned long)(arxtime);
 	if(TICKS < 0) {
 		return;
 	}

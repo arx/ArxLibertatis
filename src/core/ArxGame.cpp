@@ -208,7 +208,6 @@ long ARX_CONVERSATION_MODE=-1;
 long ARX_CONVERSATION_LASTIS=-1;
 static bool LAST_CONVERSATION = 0;
 long SHOW_INGAME_MINIMAP= 1;
-static unsigned long FRAMETICKS=0;
 
 float PLAYER_ARMS_FOCAL = 350.f;
 
@@ -1541,8 +1540,7 @@ void ArxGame::renderLevel() {
 
 	// Renders Magical Flares
 	if(!((player.Interface & INTER_MAP) && !(player.Interface & INTER_COMBATMODE)) && flarenum) {
-		ARX_MAGICAL_FLARES_Draw(FRAMETICKS);
-		FRAMETICKS = (unsigned long)(arxtime);
+		ARX_MAGICAL_FLARES_Draw();
 	}
 
 #ifdef BUILD_EDITOR
@@ -1627,8 +1625,7 @@ void ArxGame::renderLevel() {
 		drawAllInterfaceFinish();
 
 		if((player.Interface & INTER_MAP) && !(player.Interface & INTER_COMBATMODE) && flarenum) {
-			ARX_MAGICAL_FLARES_Draw(FRAMETICKS);
-			FRAMETICKS = (unsigned long)(arxtime);
+			ARX_MAGICAL_FLARES_Draw();
 		}
 		
 		GRenderer->SetRenderState(Renderer::DepthTest, true);
