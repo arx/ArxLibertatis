@@ -1084,7 +1084,9 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 	
 	for(size_t i = 0; i < entities.size(); i++) {
 		Entity * io = entities[i];
-		if(io) {
+		if(!io)
+			continue;
+
 			if(io->spellcast_data.castingspell != SPELL_NONE) {
 				if(!io->symboldraw) {
 					long tst=0;
@@ -1284,7 +1286,6 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 					}
 				}
 			}
-		}
 	}
 }
 
