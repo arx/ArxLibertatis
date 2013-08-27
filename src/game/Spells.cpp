@@ -591,7 +591,7 @@ void ARX_SPELLS_RequestSymbolDraw(Entity *io, const string & name, float duratio
 	int iPosY = 0;
 
 	if(name == "aam")              iPosX = 0, iPosY = 2, sequence = "6666";
-	else if(name == "cetrius")     iPosX = 1, iPosY = 1, sequence = "33388886666";
+	else if(name == "cetrius")     iPosX = 0, iPosY = 1, sequence = "33388886666";
 	else if(name == "comunicatum") iPosX = 0, iPosY = 0, sequence = "6666622244442226666";
 	else if(name == "cosum")       iPosX = 0, iPosY = 2, sequence = "66666222244448888";
 	else if(name == "folgora")     iPosX = 0, iPosY = 3, sequence = "99993333";
@@ -613,10 +613,13 @@ void ARX_SPELLS_RequestSymbolDraw(Entity *io, const string & name, float duratio
 	else if(name == "akbaa")       iPosX = 0, iPosY = 0, sequence = "22666772222";
 	else return;
 
-	io->symboldraw = (SYMBOL_DRAW *)realloc(io->symboldraw, sizeof(SYMBOL_DRAW));
+	SYMBOL_DRAW * ptr;
+	ptr = (SYMBOL_DRAW *)realloc(io->symboldraw, sizeof(SYMBOL_DRAW));
 
-	if(!io->symboldraw)
+	if(!ptr)
 		return;
+
+	io->symboldraw = ptr;
 
 	SYMBOL_DRAW *sd = io->symboldraw;
 
@@ -703,6 +706,8 @@ static void ARX_SPELLS_RequestSymbolDraw2(Entity *io, Rune symb, float duration)
 		case RUNE_YOK:
 			iPosX = 0, iPosY = 0, sequence = "222226666888";
 			break;
+		case RUNE_AKBAA:
+			iPosX = 0, iPosY = 0, sequence = "22666772222";
 		default:
 			return;
 	}
@@ -716,7 +721,7 @@ static void ARX_SPELLS_RequestSymbolDraw2(Entity *io, Rune symb, float duration)
 	io->symboldraw = ptr;
 
 	SYMBOL_DRAW *sd = io->symboldraw;
-	sd->duration = duration < 1.0F ? 1 : (short)(long)duration;
+	sd->duration = (short)std::max(1l, long(duration));
 	strcpy(sd->sequence, sequence);
 	sd->starttime = (unsigned long)(arxtime);
 	sd->lasttim = 0;
