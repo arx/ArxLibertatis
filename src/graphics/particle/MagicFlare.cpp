@@ -38,6 +38,8 @@
 #include "graphics/Renderer.h"
 #include "graphics/data/TextureContainer.h"
 
+long			flarenum=0;
+
 struct FLARES {
 	unsigned char exist;
 	char type;
@@ -294,6 +296,9 @@ void AddLFlare(const Vec2s & pos, Entity * io)
 {
 	AddFlare(pos, 0.45f, 1, io);
 }
+
+#define FLARELINESTEP		7
+#define FLARELINERND		6
 
 void FlareLine(const Vec2s & pos0, const Vec2s & pos1, Entity * io)
 {

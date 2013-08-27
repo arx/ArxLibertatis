@@ -158,15 +158,12 @@ enum ARX_PARTICLES_TYPE_FLAG {
 //-----------------------------------------------------------------------------
 #define BOOM_RADIUS 420.f
 #define BOOM_RADIUS2 250.f
-#define FLARELINESTEP		7
-#define FLARELINERND		6
 #define MAX_EXPLO			24 
 
 //-----------------------------------------------------------------------------
 extern TextureContainer * explo[MAX_EXPLO];
 extern TextureContainer * blood_splat;
 
-extern long flarenum;
 extern short OPIPOrgb;
 extern short PIPOrgb;
 extern std::vector<POLYBOOM> polyboom;
@@ -183,7 +180,6 @@ void MakeBookFX(const Vec3f & pos);
 void Add3DBoom(Vec3f * position);
 void AddRandomSmoke(Entity * io, long amount = 1);
 
-void FlareLine(const Vec2s &pos0, const Vec2s &pos1, Entity * io = NULL);
 void LaunchDummyParticle();
 void ManageTorch();
 

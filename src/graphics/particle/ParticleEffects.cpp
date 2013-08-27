@@ -109,8 +109,7 @@ static TextureContainer * bloodsplatter = NULL;
 static TextureContainer * healing = NULL;
 static TextureContainer * tzupouf = NULL;
 TextureContainer * fire2=NULL;
- 
-long			flarenum=0;
+
 short			OPIPOrgb=0;
 short			PIPOrgb=0;
 
