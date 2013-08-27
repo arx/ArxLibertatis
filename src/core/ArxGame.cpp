@@ -1539,7 +1539,7 @@ void ArxGame::renderLevel() {
 	ManageTorch();
 
 	// Renders Magical Flares
-	if(!((player.Interface & INTER_MAP) && !(player.Interface & INTER_COMBATMODE)) && flarenum) {
+	if(!((player.Interface & INTER_MAP) && !(player.Interface & INTER_COMBATMODE))) {
 		ARX_MAGICAL_FLARES_Draw();
 	}
 
@@ -1624,7 +1624,7 @@ void ArxGame::renderLevel() {
 		drawAllInterface();
 		drawAllInterfaceFinish();
 
-		if((player.Interface & INTER_MAP) && !(player.Interface & INTER_COMBATMODE) && flarenum) {
+		if((player.Interface & INTER_MAP) && !(player.Interface & INTER_COMBATMODE)) {
 			ARX_MAGICAL_FLARES_Draw();
 		}
 		

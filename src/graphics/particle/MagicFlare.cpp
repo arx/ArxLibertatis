@@ -387,6 +387,9 @@ static unsigned long FRAMETICKS=0;
 
 void ARX_MAGICAL_FLARES_Draw() {
 
+	if(!flarenum)
+		return;
+
 	shinum++;
 	if(shinum >= 10) {
 		shinum = 1;
