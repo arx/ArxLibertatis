@@ -1087,205 +1087,205 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 		if(!io)
 			continue;
 
-			if(io->spellcast_data.castingspell != SPELL_NONE) {
-				if(!io->symboldraw) {
-					long tst=0;
+		if(io->spellcast_data.castingspell != SPELL_NONE) {
+			if(!io->symboldraw) {
+				long tst=0;
 
-					if(!(io->spellcast_data.spell_flags & SPELLCAST_FLAG_NOANIM) &&  (io->ioflags & IO_NPC)) {
-						ANIM_USE * ause1=&io->animlayer[1];
+				if(!(io->spellcast_data.spell_flags & SPELLCAST_FLAG_NOANIM) &&  (io->ioflags & IO_NPC)) {
+					ANIM_USE * ause1=&io->animlayer[1];
 
-						if(ause1->cur_anim==io->anims[ANIM_CAST_START]  && (ause1->flags & EA_ANIMEND)) {
-							FinishAnim(io,ause1->cur_anim);
-							ANIM_Set(ause1,io->anims[ANIM_CAST_CYCLE]);
-							tst=1;
-						}
-						else if (ause1->cur_anim==io->anims[ANIM_CAST_CYCLE]) tst=1;
-						else if (ause1->cur_anim!=io->anims[ANIM_CAST_START])
-							io->spellcast_data.castingspell = SPELL_NONE;
+					if(ause1->cur_anim==io->anims[ANIM_CAST_START]  && (ause1->flags & EA_ANIMEND)) {
+						FinishAnim(io,ause1->cur_anim);
+						ANIM_Set(ause1,io->anims[ANIM_CAST_CYCLE]);
+						tst=1;
 					}
-					else
-						tst = 1;
-
-					if(io->spellcast_data.symb[0] != RUNE_NONE && tst) {
-						Rune symb = io->spellcast_data.symb[0];
-
-						for(long j = 0; j < 3; j++)
-							io->spellcast_data.symb[j]=io->spellcast_data.symb[j+1];
-
-						io->spellcast_data.symb[3] = RUNE_NONE;
-						ARX_SPELLS_RequestSymbolDraw2(io, symb, (1000-(io->spellcast_data.spell_level*60))*std::max(io->speed_modif+io->basespeed,0.01f));
-						io->gameFlags &=~GFLAG_INVISIBILITY;
-					} else if(tst) { // cast spell !!!
-						io->gameFlags &=~GFLAG_INVISIBILITY;
-						ARX_SPELLS_Launch(io->spellcast_data.castingspell,i,io->spellcast_data.spell_flags,io->spellcast_data.spell_level,io->spellcast_data.target,io->spellcast_data.duration);
-
-						if(!(io->spellcast_data.spell_flags & SPELLCAST_FLAG_NOANIM) && (io->ioflags & IO_NPC)) {
-							ANIM_USE *ause1 = &io->animlayer[1];
-							AcquireLastAnim(io);
-							FinishAnim(io, ause1->cur_anim);
-							ANIM_Set(ause1, io->anims[ANIM_CAST]);
-						}
+					else if (ause1->cur_anim==io->anims[ANIM_CAST_CYCLE]) tst=1;
+					else if (ause1->cur_anim!=io->anims[ANIM_CAST_START])
 						io->spellcast_data.castingspell = SPELL_NONE;
+				}
+				else
+					tst = 1;
+
+				if(io->spellcast_data.symb[0] != RUNE_NONE && tst) {
+					Rune symb = io->spellcast_data.symb[0];
+
+					for(long j = 0; j < 3; j++)
+						io->spellcast_data.symb[j]=io->spellcast_data.symb[j+1];
+
+					io->spellcast_data.symb[3] = RUNE_NONE;
+					ARX_SPELLS_RequestSymbolDraw2(io, symb, (1000-(io->spellcast_data.spell_level*60))*std::max(io->speed_modif+io->basespeed,0.01f));
+					io->gameFlags &=~GFLAG_INVISIBILITY;
+				} else if(tst) { // cast spell !!!
+					io->gameFlags &=~GFLAG_INVISIBILITY;
+					ARX_SPELLS_Launch(io->spellcast_data.castingspell,i,io->spellcast_data.spell_flags,io->spellcast_data.spell_level,io->spellcast_data.target,io->spellcast_data.duration);
+
+					if(!(io->spellcast_data.spell_flags & SPELLCAST_FLAG_NOANIM) && (io->ioflags & IO_NPC)) {
+						ANIM_USE *ause1 = &io->animlayer[1];
+						AcquireLastAnim(io);
+						FinishAnim(io, ause1->cur_anim);
+						ANIM_Set(ause1, io->anims[ANIM_CAST]);
 					}
+					io->spellcast_data.castingspell = SPELL_NONE;
 				}
 			}
+		}
 
-			float rr=rnd();
+		float rr=rnd();
 
-			if(io->flarecount) {
-				if(io->dynlight == -1)
-					io->dynlight = (short)GetFreeDynLight();
+		if(io->flarecount) {
+			if(io->dynlight == -1)
+				io->dynlight = (short)GetFreeDynLight();
 
-				if(io->dynlight!=-1) {
-					DynLight[io->dynlight].pos.x=io->pos.x-EEsin(radians(MAKEANGLE(io->angle.b-45.f)))*60.f;
-					DynLight[io->dynlight].pos.y=io->pos.y-120.f;
-					DynLight[io->dynlight].pos.z=io->pos.z+EEcos(radians(MAKEANGLE(io->angle.b-45.f)))*60.f;
-					DynLight[io->dynlight].fallstart=140.f+(float)io->flarecount*0.333333f+rr*5.f;
-					DynLight[io->dynlight].fallend=220.f+(float)io->flarecount*0.5f+rr*5.f;
-					DynLight[io->dynlight].intensity=1.6f;
-					DynLight[io->dynlight].exist=1;	
-					DynLight[io->dynlight].rgb.r=0.01f*io->flarecount*2;	
-					DynLight[io->dynlight].rgb.g=0.009f*io->flarecount*2;
-					DynLight[io->dynlight].rgb.b=0.008f*io->flarecount*2;
+			if(io->dynlight!=-1) {
+				DynLight[io->dynlight].pos.x=io->pos.x-EEsin(radians(MAKEANGLE(io->angle.b-45.f)))*60.f;
+				DynLight[io->dynlight].pos.y=io->pos.y-120.f;
+				DynLight[io->dynlight].pos.z=io->pos.z+EEcos(radians(MAKEANGLE(io->angle.b-45.f)))*60.f;
+				DynLight[io->dynlight].fallstart=140.f+(float)io->flarecount*0.333333f+rr*5.f;
+				DynLight[io->dynlight].fallend=220.f+(float)io->flarecount*0.5f+rr*5.f;
+				DynLight[io->dynlight].intensity=1.6f;
+				DynLight[io->dynlight].exist=1;
+				DynLight[io->dynlight].rgb.r=0.01f*io->flarecount*2;
+				DynLight[io->dynlight].rgb.g=0.009f*io->flarecount*2;
+				DynLight[io->dynlight].rgb.b=0.008f*io->flarecount*2;
+			}
+		} else if(io->dynlight>-1) {
+			DynLight[io->dynlight].exist=0;
+			io->dynlight=-1;
+		}
+
+		if(io->symboldraw) {
+			SYMBOL_DRAW * sd = entities[i]->symboldraw;
+			long tim=curtime-sd->starttime;
+
+			if(tim>sd->duration) {
+				if(io->dynlight != -1) {
+					DynLight[io->dynlight].time_creation = (unsigned long)(arxtime);
+					DynLight[io->dynlight].duration = 600;
+					io->dynlight=-1;
 				}
-			} else if(io->dynlight>-1) {
-				DynLight[io->dynlight].exist=0;
-				io->dynlight=-1;
+
+				free(io->symboldraw);
+				io->symboldraw=NULL;
+				continue;
 			}
 
-			if(io->symboldraw) {
-				SYMBOL_DRAW * sd = entities[i]->symboldraw;
-				long tim=curtime-sd->starttime;
- 
-				if(tim>sd->duration) {
-					if(io->dynlight != -1) {
-						DynLight[io->dynlight].time_creation = (unsigned long)(arxtime);
-						DynLight[io->dynlight].duration = 600; 
-						io->dynlight=-1;
-					}			
+			long nbcomponents=strlen(sd->sequence);
 
-					free(io->symboldraw);
-					io->symboldraw=NULL;
-					continue;
+			if(nbcomponents <= 0) {
+				free(io->symboldraw);
+				io->symboldraw=NULL;
+				continue;
+			}
+
+			float ti=((float)sd->duration/(float)nbcomponents);
+
+			if(ti <= 0)
+				ti = 1;
+
+			Vec2s pos1, vect, old_pos;
+			long newtime=tim;
+			long oldtime=sd->lasttim;
+
+			if(oldtime>sd->duration)
+				oldtime=sd->duration;
+
+			if(newtime>sd->duration)
+				newtime=sd->duration;
+
+			sd->lasttim=(short)tim;
+
+			pos1.x = (short)subj.center.x - OFFSET_X * 2 + sd->cPosStartX * OFFSET_X;
+			pos1.y = (short)subj.center.y - OFFSET_Y * 2 + sd->cPosStartY * OFFSET_Y;
+
+			float div_ti=1.f/ti;
+
+			if(io != entities.player()) {
+				old_pos = pos1;
+
+				for(long j=0; j<nbcomponents; j++) {
+					GetSymbVector(sd->sequence[j],&vect);
+					vect += vect / 2;
+
+					if(oldtime <= ti) {
+						float ratio = float(oldtime)*div_ti;
+						old_pos += (vect.to<float>() * ratio).to<short>();
+						break;
+					}
+
+					old_pos += vect;
+					oldtime-=(long)ti;
 				}
 
-				long nbcomponents=strlen(sd->sequence);
+				for(int j=0; j<nbcomponents; j++) {
+					GetSymbVector(sd->sequence[j],&vect);
+					vect += vect / 2;
 
-				if(nbcomponents <= 0) {
-					free(io->symboldraw);
-					io->symboldraw=NULL;
-					continue;
+					if(newtime <= ti) {
+						float ratio = float(newtime) * div_ti;
+						pos1 += (vect.to<float>() * ratio).to<short>();
+						AddFlare(pos1, 0.1f, 1, entities[i]);
+						FlareLine(old_pos, pos1, entities[i]);
+						break;
+					}
+
+					pos1 += vect;
+					newtime-=(long)ti;
 				}
+			} else {
+				int iMinX,iMinY,iMaxX,iMaxY;
+				int iSizeX,iSizeY;
+				ReCenterSequence(sd->sequence,iMinX,iMinY,iMaxX,iMaxY);
+				iSizeX=iMaxX-iMinX;
+				iSizeY=iMaxY-iMinY;
+				pos1.x = 97;
+				pos1.y = 64;
 
-				float ti=((float)sd->duration/(float)nbcomponents);
+				long lPosX	= (((513>>1)-lMaxSymbolDrawSizeX)>>1);
+				long lPosY	= (313-(((313*3/4)-lMaxSymbolDrawSizeY)>>1));
 
-				if(ti <= 0)
-					ti = 1;
+				pos1.x = checked_range_cast<short>(pos1.x + lPosX);
+				pos1.y = checked_range_cast<short>(pos1.y + lPosY);
 
-				Vec2s pos1, vect, old_pos;
-				long newtime=tim;
-				long oldtime=sd->lasttim;
+				lPosX =  ((lMaxSymbolDrawSizeX-iSizeX)>>1);
+				lPosY =  ((lMaxSymbolDrawSizeY-iSizeY)>>1);
 
-				if(oldtime>sd->duration)
-					oldtime=sd->duration;
+				pos1.x = checked_range_cast<short>(pos1.x + lPosX);
+				pos1.y = checked_range_cast<short>(pos1.y + lPosY);
 
-				if(newtime>sd->duration)
-					newtime=sd->duration;
+				int iX = pos1.x-iMinX;
+				int iY = pos1.y-iMinY;
 
-				sd->lasttim=(short)tim;
+				pos1.x = checked_range_cast<short>(iX);
+				pos1.y = checked_range_cast<short>(iY);
 
-				pos1.x = (short)subj.center.x - OFFSET_X * 2 + sd->cPosStartX * OFFSET_X;
-				pos1.y = (short)subj.center.y - OFFSET_Y * 2 + sd->cPosStartY * OFFSET_Y;
+				for(long j=0; j<nbcomponents; j++) {
 
-				float div_ti=1.f/ti;
+					GetSymbVector(sd->sequence[j],&vect);
 
-				if(io != entities.player()) {
-					old_pos = pos1;
+					if(newtime < ti) {
+						float ratio = (float)(newtime) * div_ti;
 
-					for(long j=0; j<nbcomponents; j++) {
-						GetSymbVector(sd->sequence[j],&vect);
-						vect += vect / 2;
+						float fX = pos1.x + (ratio*vect.x)*0.5f;
+						float fY = pos1.y + (ratio*vect.y)*0.5f;
 
-						if(oldtime <= ti) {
-							float ratio = float(oldtime)*div_ti;
-							old_pos += (vect.to<float>() * ratio).to<short>();
-							break;
-						}
+						pos1.x = checked_range_cast<short>(fX);
+						pos1.y = checked_range_cast<short>(fY);
 
-						old_pos += vect;
-						oldtime-=(long)ti;
+						Vec2s pos;
+						pos.x=(short)(pos1.x*Xratio);
+						pos.y=(short)(pos1.y*Yratio);
+
+						AddFlare(pos, 0.1f, 1, entities[i], true);
+
+						break;
 					}
 
-					for(int j=0; j<nbcomponents; j++) {
-						GetSymbVector(sd->sequence[j],&vect);
-						vect += vect / 2;
+					pos1 += vect;
 
-						if(newtime <= ti) {
-							float ratio = float(newtime) * div_ti;
-							pos1 += (vect.to<float>() * ratio).to<short>();
-							AddFlare(pos1, 0.1f, 1, entities[i]);
-							FlareLine(old_pos, pos1, entities[i]);
-							break;
-						}
-
-						pos1 += vect;
-						newtime-=(long)ti;
-					}
-				} else {
-					int iMinX,iMinY,iMaxX,iMaxY;
-					int iSizeX,iSizeY;
-					ReCenterSequence(sd->sequence,iMinX,iMinY,iMaxX,iMaxY);
-					iSizeX=iMaxX-iMinX;
-					iSizeY=iMaxY-iMinY;
-					pos1.x = 97;
-					pos1.y = 64;
-
-					long lPosX	= (((513>>1)-lMaxSymbolDrawSizeX)>>1);
-					long lPosY	= (313-(((313*3/4)-lMaxSymbolDrawSizeY)>>1));
-
-					pos1.x = checked_range_cast<short>(pos1.x + lPosX);
-					pos1.y = checked_range_cast<short>(pos1.y + lPosY);
-
-					lPosX =  ((lMaxSymbolDrawSizeX-iSizeX)>>1);
-					lPosY =  ((lMaxSymbolDrawSizeY-iSizeY)>>1);
-
-					pos1.x = checked_range_cast<short>(pos1.x + lPosX);
-					pos1.y = checked_range_cast<short>(pos1.y + lPosY);
-
-					int iX = pos1.x-iMinX;
-					int iY = pos1.y-iMinY;
-
-					pos1.x = checked_range_cast<short>(iX);
-					pos1.y = checked_range_cast<short>(iY);
-
-					for(long j=0; j<nbcomponents; j++) {
-
-						GetSymbVector(sd->sequence[j],&vect);
-
-						if(newtime < ti) {
-							float ratio = (float)(newtime) * div_ti;
-							
-							float fX = pos1.x + (ratio*vect.x)*0.5f;
-							float fY = pos1.y + (ratio*vect.y)*0.5f; 
-
-							pos1.x = checked_range_cast<short>(fX);
-							pos1.y = checked_range_cast<short>(fY);
-
-							Vec2s pos;
-							pos.x=(short)(pos1.x*Xratio);	
-							pos.y=(short)(pos1.y*Yratio);
-
-							AddFlare(pos, 0.1f, 1, entities[i], true);
-
-							break;
-						}
-
-						pos1 += vect;
-
-						newtime-=(long)ti;
-					}
+					newtime-=(long)ti;
 				}
 			}
+		}
 	}
 }
 
