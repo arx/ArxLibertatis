@@ -84,6 +84,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/data/TextureContainer.h"
 #include "graphics/data/MeshManipulation.h"
 #include "graphics/particle/ParticleEffects.h"
+#include "graphics/particle/MagicFlare.h"
 #include "graphics/texture/TextureStage.h"
 
 #include "io/fs/FilePath.h"
@@ -235,10 +236,7 @@ void ARX_INTERACTIVE_DestroyDynamicInfo(Entity * io)
 	}
 
 	if(io->flarecount) {
-		for(long i = 0; i < MAX_FLARES; i++) {
-			if(magicFlares[i].exist && magicFlares[i].io == io)
-				magicFlares[i].io = NULL;
-		}
+		MagicFlareReleaseEntity(io);
 	}
 	
 	if(io->ioflags & IO_NPC) {
@@ -1126,11 +1124,7 @@ void RestoreInitialIOStatusOfIO(Entity * io)
 		//HALO_NEGATIVE;
 		io->no_collide = -1;
 
-		for(long i = 0; i < MAX_FLARES; i++) {
-			if(magicFlares[i].exist && magicFlares[i].io == io) {
-				magicFlares[i].io = NULL;
-			}
-		}
+		MagicFlareReleaseEntity(io);
 
 		io->flarecount = 0;
 		io->inzone = NULL;

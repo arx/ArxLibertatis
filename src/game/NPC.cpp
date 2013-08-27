@@ -87,6 +87,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/data/TextureContainer.h"
 #include "graphics/data/MeshManipulation.h"
 #include "graphics/particle/ParticleEffects.h"
+#include "graphics/particle/MagicFlare.h"
 
 #include "io/resource/ResourcePath.h"
 
@@ -209,10 +210,7 @@ void ARX_NPC_Kill_Spell_Launch(Entity * io)
 		return;
 
 		if (io->flarecount) {
-			for(long i = 0; i < MAX_FLARES; i++) {
-				if(magicFlares[i].exist && magicFlares[i].io == io)
-					magicFlares[i].io = NULL;
-			}
+			MagicFlareReleaseEntity(io);
 		}
 
 		io->spellcast_data.castingspell = SPELL_NONE;

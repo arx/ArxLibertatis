@@ -104,6 +104,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/image/Image.h"
 #include "graphics/particle/ParticleEffects.h"
 #include "graphics/particle/ParticleManager.h"
+#include "graphics/particle/MagicFlare.h"
 #include "graphics/texture/TextureStage.h"
 
 #include "gui/Interface.h"
@@ -348,7 +349,6 @@ bool USE_PORTALS = false;
 Vec3f ePos;
 extern EERIE_CAMERA * ACTIVECAM;
 
-EERIE_CAMERA  * Kam;
 
 bool g_debugToggles[10];
 
@@ -717,12 +717,7 @@ extern long ARX_NPC_ApplyCuts(Entity * io);
 
 void LoadSysTextures()
 {
-	char temp[256];
-
-	for(long i = 1; i < 10; i++) {
-		sprintf(temp,"graph/particles/shine%ld", i);
-		flaretc.shine[i]=TextureContainer::LoadUI(temp);
-	}
+	MagicFlareLoadTextures();
 
 	for(size_t i = 0; i < SPELL_COUNT; i++) {
 		// TODO use constructor for initialization
@@ -1309,9 +1304,6 @@ void LoadSysTextures()
 	npc_fight=			TextureContainer::LoadUI("graph/interface/icons/follower_attack");
 	npc_follow=			TextureContainer::LoadUI("graph/interface/icons/follower_follow");
 	npc_stop=			TextureContainer::LoadUI("graph/interface/icons/follower_stop");
-	flaretc.lumignon=	TextureContainer::LoadUI("graph/particles/lumignon");
-	flaretc.lumignon2=	TextureContainer::LoadUI("graph/particles/lumignon2");
-	flaretc.plasm=		TextureContainer::LoadUI("graph/particles/plasm");
 	tflare=				TextureContainer::LoadUI("graph/particles/flare");
 	ombrignon=			TextureContainer::LoadUI("graph/particles/ombrignon");
 	TextureContainer::LoadUI("graph/particles/teleportae");
@@ -1702,7 +1694,7 @@ void FirstFrameHandling() {
 		ARX_SOUND_PlaySFX(SND_TORCH_LOOP, NULL, 1.0F, ARX_SOUND_PLAY_LOOPED);
 	}
 	
-	Kam = &subj;
+	MagicFlareSetCamera(&subj);
 	
 	lastteleport = player.basePosition();
 	subj.orgTrans.pos = moveto = player.pos;

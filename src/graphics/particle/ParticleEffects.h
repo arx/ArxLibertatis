@@ -62,22 +62,7 @@ struct EERIE_SPHERE;
 class TextureContainer;
 class Entity;
 
-struct FLARES {
-	unsigned char exist;
-	char type;
-	short flags;
-	TexturedVertex v;
-	TexturedVertex tv;
-	float x;
-	float y;
-	float tolive;
-	Color3f rgb;
-	float size;
-	long dynlight;
-	long move;
-	Entity * io;
-	bool bDrawBitmap;
-};
+
 
 struct POLYBOOM {
 	short tx;
@@ -139,20 +124,11 @@ struct FOG_DEF
 	unsigned long lastupdate;
 };
 
-//-----------------------------------------------------------------------------
-struct FLARETC
-{
-	TextureContainer * lumignon;
-	TextureContainer * lumignon2;
-	TextureContainer * plasm;
-	TextureContainer * shine[11];
-};
-
 #define MAX_FOG 100
 #define FOG_DIRECTIONAL 1
 #define MAX_POLYBOOM 4000
 #define PARTICLE_2D	256
-#define MAX_FLARES 300
+
 #define MAX_FLARELIFE 4000
 #define FLARE_MUL 2.f
 
@@ -189,7 +165,7 @@ enum ARX_PARTICLES_TYPE_FLAG {
 //-----------------------------------------------------------------------------
 extern TextureContainer * explo[MAX_EXPLO];
 extern TextureContainer * blood_splat;
-extern FLARES magicFlares[MAX_FLARES];
+
 extern long flarenum;
 extern short OPIPOrgb;
 extern short PIPOrgb;
@@ -197,7 +173,6 @@ extern std::vector<POLYBOOM> polyboom;
 extern FOG_DEF fogs[MAX_FOG];
 extern TextureContainer * fire2;
 extern long NewSpell;
-extern FLARETC flaretc;
 
 void MagFX(const Vec3f & pos);
 void RestoreAllLightsInitialStatus();
@@ -207,7 +182,6 @@ void MakeBookFX(const Vec3f & pos);
 
 void Add3DBoom(Vec3f * position);
 void AddRandomSmoke(Entity * io, long amount = 1);
-void AddFlare(const Vec2s & pos, float sm, short typ, Entity * io = NULL, bool bookDraw = false);
 
 void FlareLine(const Vec2s &pos0, const Vec2s &pos1, Entity * io = NULL);
 void LaunchDummyParticle();
@@ -236,9 +210,7 @@ void ARX_PARTICLES_SpawnWaterSplash(const Vec3f * pos);
 void ARX_BOOMS_ClearAllPolyBooms();
 void ARX_BOOMS_Add(Vec3f * pos, long type = 0);
 
-void ARX_MAGICAL_FLARES_FirstInit();
-void ARX_MAGICAL_FLARES_KillAll();
-void ARX_MAGICAL_FLARES_Draw(long FRAMETICKS);
+
 
 void LaunchFireballBoom(Vec3f * poss, float level, Vec3f * direction = NULL, Color3f * rgb = NULL);
 void SpawnFireballTail(Vec3f *, Vec3f *, float, long);
