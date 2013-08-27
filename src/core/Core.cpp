@@ -1615,7 +1615,6 @@ void FirstFrameHandling() {
 	FirstFrame = true;
 
 	ARX_PARTICLES_FirstInit();
-	ARX_SPELLS_Init_Rects();
 	ARX_FOGS_TimeReset();
 	
 	PROGRESS_BAR_COUNT += 2.f;

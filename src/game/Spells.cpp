@@ -658,6 +658,7 @@ void ARX_SPELLS_RequestSymbolDraw(Entity *io, const string & name, float duratio
 	BOOST_FOREACH(RuneInfo & info, runeInfos) {
 		if(info.name == name) {
 			ARX_SPELLS_RequestSymbolDrawCommon(io, duration, info);
+			break;
 		}
 	}
 }
@@ -667,33 +668,9 @@ static void ARX_SPELLS_RequestSymbolDraw2(Entity *io, Rune symb, float duration)
 	BOOST_FOREACH(RuneInfo & info, runeInfos) {
 		if(info.rune == symb) {
 			ARX_SPELLS_RequestSymbolDrawCommon(io, duration, info);
+			break;
 		}
 	}
-}
-
-void ARX_SPELLS_RequestSymbolDraw3(const char *_pcName,char *_pcRes)
-{
-	if		(!strcmp(_pcName, "aam"))		strcpy(_pcRes, "6666");
-	else if (!strcmp(_pcName, "cetrius"))	strcpy(_pcRes, "33388886666");
-	else if (!strcmp(_pcName, "comunicatum")) 	strcpy(_pcRes, "6666622244442226666");
-	else if (!strcmp(_pcName, "cosum"))     strcpy(_pcRes, "66666222244448888");
-	else if (!strcmp(_pcName, "folgora"))   strcpy(_pcRes, "99993333");
-	else if (!strcmp(_pcName, "fridd"))		strcpy(_pcRes, "888886662222");
-	else if (!strcmp(_pcName, "kaom"))		strcpy(_pcRes, "44122366");
-	else if (!strcmp(_pcName, "mega"))		strcpy(_pcRes, "88888");
-	else if (!strcmp(_pcName, "morte"))		strcpy(_pcRes, "66666222");
-	else if (!strcmp(_pcName, "movis"))		strcpy(_pcRes, "666611116666");
-	else if (!strcmp(_pcName, "nhi"))		strcpy(_pcRes, "4444");
-	else if (!strcmp(_pcName, "rhaa"))		strcpy(_pcRes, "22222");
-	else if (!strcmp(_pcName, "spacium"))	strcpy(_pcRes, "44444222266688");
-	else if (!strcmp(_pcName, "stregum"))	strcpy(_pcRes, "8888833338888");
-	else if (!strcmp(_pcName, "taar"))		strcpy(_pcRes, "666222666");
-	else if (!strcmp(_pcName, "tempus"))	strcpy(_pcRes, "88886662226668866");
-	else if (!strcmp(_pcName, "tera"))		strcpy(_pcRes, "99922266");
-	else if (!strcmp(_pcName, "vista"))		strcpy(_pcRes, "333111");
-	else if (!strcmp(_pcName, "vitae"))		strcpy(_pcRes, "66666888");
-	else if (!strcmp(_pcName, "yok"))		strcpy(_pcRes, "222226666888");
-	else if (!strcmp(_pcName, "akbaa"))		strcpy(_pcRes, "22666772222");
 }
 
 static const Vec2s symbolVecScale(8*2, 6*2);
@@ -979,7 +956,7 @@ void SPELLEND_Notify(long num)
 	}
 }
 
-void ReCenterSequence(char *_pcSequence, int & _iMinX, int & _iMinY,
+void ReCenterSequence(const char *_pcSequence, int & _iMinX, int & _iMinY,
                       int & _iMaxX, int & _iMaxY) {
 	
 	int iSizeX=0,iSizeY=0;
@@ -2409,46 +2386,23 @@ long TemporaryGetSpellTarget(const Vec3f * from) {
 	return found;
 }
 
-static void ARX_SPEELS_GetMaxRect(const char *_pcName)
-{
-	char tcTxt[32];
-	int iMinX,iMinY,iMaxX,iMaxY;
-	long iSizeX,iSizeY;
-
-	ARX_SPELLS_RequestSymbolDraw3(_pcName,tcTxt);
-	ReCenterSequence(tcTxt,iMinX,iMinY,iMaxX,iMaxY);
-	iSizeX=iMaxX-iMinX;
-	iSizeY=iMaxY-iMinY;
-	lMaxSymbolDrawSizeX=std::max(iSizeX,lMaxSymbolDrawSizeX);
-	lMaxSymbolDrawSizeY=std::max(iSizeY,lMaxSymbolDrawSizeY);
-}
 //-----------------------------------------------------------------------------
 // Initializes Spell engine (Called once at DANAE startup)
 void ARX_SPELLS_Init_Rects() {
 	lMaxSymbolDrawSizeX = std::numeric_limits<long>::min();
 	lMaxSymbolDrawSizeY = std::numeric_limits<long>::min();
 
-	ARX_SPEELS_GetMaxRect("aam");
-	ARX_SPEELS_GetMaxRect("cetrius");
-	ARX_SPEELS_GetMaxRect("comunicatum");
-	ARX_SPEELS_GetMaxRect("cosum");
-	ARX_SPEELS_GetMaxRect("folgora");
-	ARX_SPEELS_GetMaxRect("fridd");
-	ARX_SPEELS_GetMaxRect("kaom");
-	ARX_SPEELS_GetMaxRect("mega");
-	ARX_SPEELS_GetMaxRect("morte");
-	ARX_SPEELS_GetMaxRect("movis");
-	ARX_SPEELS_GetMaxRect("nhi");
-	ARX_SPEELS_GetMaxRect("rhaa");
-	ARX_SPEELS_GetMaxRect("spacium");
-	ARX_SPEELS_GetMaxRect("stregum");
-	ARX_SPEELS_GetMaxRect("taar");
-	ARX_SPEELS_GetMaxRect("tempus");
-	ARX_SPEELS_GetMaxRect("tera");
-	ARX_SPEELS_GetMaxRect("vista");
-	ARX_SPEELS_GetMaxRect("vitae");
-	ARX_SPEELS_GetMaxRect("yok");
-	ARX_SPEELS_GetMaxRect("akbaa");
+	BOOST_FOREACH(RuneInfo & info, runeInfos) {
+
+		int iMinX,iMinY,iMaxX,iMaxY;
+		long iSizeX,iSizeY;
+
+		ReCenterSequence(info.sequence.c_str(), iMinX, iMinY, iMaxX, iMaxY);
+		iSizeX=iMaxX-iMinX;
+		iSizeY=iMaxY-iMinY;
+		lMaxSymbolDrawSizeX=std::max(iSizeX, lMaxSymbolDrawSizeX);
+		lMaxSymbolDrawSizeY=std::max(iSizeY, lMaxSymbolDrawSizeY);
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -2465,6 +2419,7 @@ void ARX_SPELLS_Init() {
 	}
 	
 	RuneInfosFill();
+	ARX_SPELLS_Init_Rects();
 }
 
 // Clears All Spells.
