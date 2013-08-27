@@ -1089,28 +1089,30 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 
 		if(io->spellcast_data.castingspell != SPELL_NONE) {
 			if(!io->symboldraw) {
-				long tst=0;
+				long tst = 0;
 
-				if(!(io->spellcast_data.spell_flags & SPELLCAST_FLAG_NOANIM) &&  (io->ioflags & IO_NPC)) {
+				if(!(io->spellcast_data.spell_flags & SPELLCAST_FLAG_NOANIM) && (io->ioflags & IO_NPC)) {
 					ANIM_USE * ause1=&io->animlayer[1];
 
 					if(ause1->cur_anim==io->anims[ANIM_CAST_START]  && (ause1->flags & EA_ANIMEND)) {
 						FinishAnim(io,ause1->cur_anim);
 						ANIM_Set(ause1,io->anims[ANIM_CAST_CYCLE]);
-						tst=1;
-					}
-					else if (ause1->cur_anim==io->anims[ANIM_CAST_CYCLE]) tst=1;
-					else if (ause1->cur_anim!=io->anims[ANIM_CAST_START])
+						tst = 1;
+					} else if(ause1->cur_anim==io->anims[ANIM_CAST_CYCLE]) {
+						tst = 1;
+					} else if(ause1->cur_anim!=io->anims[ANIM_CAST_START]) {
 						io->spellcast_data.castingspell = SPELL_NONE;
-				}
-				else
+					}
+				} else {
 					tst = 1;
+				}
 
 				if(io->spellcast_data.symb[0] != RUNE_NONE && tst) {
 					Rune symb = io->spellcast_data.symb[0];
 
-					for(long j = 0; j < 3; j++)
-						io->spellcast_data.symb[j]=io->spellcast_data.symb[j+1];
+					for(long j = 0; j < 3; j++) {
+						io->spellcast_data.symb[j] = io->spellcast_data.symb[j+1];
+					}
 
 					io->spellcast_data.symb[3] = RUNE_NONE;
 					ARX_SPELLS_RequestSymbolDraw2(io, symb, (1000-(io->spellcast_data.spell_level*60))*std::max(io->speed_modif+io->basespeed,0.01f));
@@ -1130,13 +1132,12 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 			}
 		}
 
-		float rr=rnd();
-
 		if(io->flarecount) {
 			if(io->dynlight == -1)
 				io->dynlight = (short)GetFreeDynLight();
 
-			if(io->dynlight!=-1) {
+			if(io->dynlight != -1) {
+				float rr = rnd();
 				DynLight[io->dynlight].pos.x=io->pos.x-EEsin(radians(MAKEANGLE(io->angle.b-45.f)))*60.f;
 				DynLight[io->dynlight].pos.y=io->pos.y-120.f;
 				DynLight[io->dynlight].pos.z=io->pos.z+EEcos(radians(MAKEANGLE(io->angle.b-45.f)))*60.f;
@@ -1148,24 +1149,24 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 				DynLight[io->dynlight].rgb.g=0.009f*io->flarecount*2;
 				DynLight[io->dynlight].rgb.b=0.008f*io->flarecount*2;
 			}
-		} else if(io->dynlight>-1) {
-			DynLight[io->dynlight].exist=0;
-			io->dynlight=-1;
+		} else if(io->dynlight > -1) {
+			DynLight[io->dynlight].exist = 0;
+			io->dynlight = -1;
 		}
 
 		if(io->symboldraw) {
 			SYMBOL_DRAW * sd = entities[i]->symboldraw;
-			long tim=curtime-sd->starttime;
+			long tim = curtime - sd->starttime;
 
-			if(tim>sd->duration) {
+			if(tim > sd->duration) {
 				if(io->dynlight != -1) {
 					DynLight[io->dynlight].time_creation = (unsigned long)(arxtime);
 					DynLight[io->dynlight].duration = 600;
-					io->dynlight=-1;
+					io->dynlight = -1;
 				}
 
 				free(io->symboldraw);
-				io->symboldraw=NULL;
+				io->symboldraw = NULL;
 				continue;
 			}
 
@@ -1173,11 +1174,11 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 
 			if(nbcomponents <= 0) {
 				free(io->symboldraw);
-				io->symboldraw=NULL;
+				io->symboldraw = NULL;
 				continue;
 			}
 
-			float ti=((float)sd->duration/(float)nbcomponents);
+			float ti = ((float)sd->duration/(float)nbcomponents);
 
 			if(ti <= 0)
 				ti = 1;
@@ -1202,8 +1203,8 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 			if(io != entities.player()) {
 				old_pos = pos1;
 
-				for(long j=0; j<nbcomponents; j++) {
-					GetSymbVector(sd->sequence[j],&vect);
+				for(long j = 0; j < nbcomponents; j++) {
+					GetSymbVector(sd->sequence[j], &vect);
 					vect += vect / 2;
 
 					if(oldtime <= ti) {
@@ -1213,10 +1214,10 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 					}
 
 					old_pos += vect;
-					oldtime-=(long)ti;
+					oldtime -= (long)ti;
 				}
 
-				for(int j=0; j<nbcomponents; j++) {
+				for(int j = 0; j < nbcomponents; j++) {
 					GetSymbVector(sd->sequence[j],&vect);
 					vect += vect / 2;
 
@@ -1229,7 +1230,7 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 					}
 
 					pos1 += vect;
-					newtime-=(long)ti;
+					newtime -= (long)ti;
 				}
 			} else {
 				int iMinX,iMinY,iMaxX,iMaxY;
@@ -1258,9 +1259,9 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 				pos1.x = checked_range_cast<short>(iX);
 				pos1.y = checked_range_cast<short>(iY);
 
-				for(long j=0; j<nbcomponents; j++) {
+				for(long j = 0; j < nbcomponents; j++) {
 
-					GetSymbVector(sd->sequence[j],&vect);
+					GetSymbVector(sd->sequence[j], &vect);
 
 					if(newtime < ti) {
 						float ratio = (float)(newtime) * div_ti;
@@ -1282,7 +1283,7 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 
 					pos1 += vect;
 
-					newtime-=(long)ti;
+					newtime -= (long)ti;
 				}
 			}
 		}
