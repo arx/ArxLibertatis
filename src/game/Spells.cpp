@@ -756,39 +756,20 @@ void ARX_SPELLS_RequestSymbolDraw3(const char *_pcName,char *_pcRes)
 	else if (!strcmp(_pcName, "akbaa"))		strcpy(_pcRes, "22666772222");
 }
 
-#define OFFSET_X 8*2//0
-#define OFFSET_Y 6*2//0
+static const Vec2s symbolVecScale(8*2, 6*2);
 
-void GetSymbVector(char c,Vec2s * vec)
-{
+Vec2s GetSymbVector(char c) {
+
 	switch(c) {
-		case '1' :
-			vec->x = -OFFSET_X, vec->y =  OFFSET_Y;
-			break;
-		case '2' :
-			vec->x =         0, vec->y =  OFFSET_Y;
-			break;
-		case '3' :
-			vec->x =  OFFSET_X, vec->y =  OFFSET_Y;
-			break;
-		case '4' :
-			vec->x = -OFFSET_X, vec->y =         0;
-			break;
-		case '6' :
-			vec->x =  OFFSET_X, vec->y =         0;
-			break;
-		case '7' :
-			vec->x = -OFFSET_X, vec->y = -OFFSET_Y;
-			break;
-		case '8' :
-			vec->x =         0, vec->y = -OFFSET_Y;
-			break;
-		case '9' :
-			vec->x =  OFFSET_X, vec->y = -OFFSET_Y;
-			break;
-		default  :
-			vec->x =         0, vec->y =         0;
-			break;
+		case '1': return Vec2s(-1,  1);
+		case '2': return Vec2s( 0,  1);
+		case '3': return Vec2s( 1,  1);
+		case '4': return Vec2s(-1,  0);
+		case '6': return Vec2s( 1,  0);
+		case '7': return Vec2s(-1, -1);
+		case '8': return Vec2s( 0, -1);
+		case '9': return Vec2s( 1, -1);
+		default : return Vec2s( 0,  0);
 	}
 }
 
@@ -1067,8 +1048,8 @@ void ReCenterSequence(char *_pcSequence, int & _iMinX, int & _iMinY,
 	int iLenght=strlen(_pcSequence);
 
 	for(int iI = 0; iI < iLenght; iI++) {
-		Vec2s es2dVector;
-		GetSymbVector(_pcSequence[iI],&es2dVector);
+		Vec2s es2dVector = GetSymbVector(_pcSequence[iI]);
+		es2dVector *= symbolVecScale;
 		iSizeX+=es2dVector.x;
 		iSizeY+=es2dVector.y;
 		_iMinX=std::min(_iMinX,iSizeX);
@@ -1183,7 +1164,7 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 			if(ti <= 0)
 				ti = 1;
 
-			Vec2s pos1, vect, old_pos;
+			Vec2s pos1, old_pos;
 			long newtime=tim;
 			long oldtime=sd->lasttim;
 
@@ -1195,8 +1176,8 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 
 			sd->lasttim=(short)tim;
 
-			pos1.x = (short)subj.center.x - OFFSET_X * 2 + sd->cPosStartX * OFFSET_X;
-			pos1.y = (short)subj.center.y - OFFSET_Y * 2 + sd->cPosStartY * OFFSET_Y;
+			pos1.x = (short)subj.center.x - symbolVecScale.x * 2 + sd->cPosStartX * symbolVecScale.x;
+			pos1.y = (short)subj.center.y - symbolVecScale.y * 2 + sd->cPosStartY * symbolVecScale.y;
 
 			float div_ti=1.f/ti;
 
@@ -1204,7 +1185,8 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 				old_pos = pos1;
 
 				for(long j = 0; j < nbcomponents; j++) {
-					GetSymbVector(sd->sequence[j], &vect);
+					Vec2s vect = GetSymbVector(sd->sequence[j]);
+					vect *= symbolVecScale;
 					vect += vect / 2;
 
 					if(oldtime <= ti) {
@@ -1218,7 +1200,8 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 				}
 
 				for(int j = 0; j < nbcomponents; j++) {
-					GetSymbVector(sd->sequence[j],&vect);
+					Vec2s vect = GetSymbVector(sd->sequence[j]);
+					vect *= symbolVecScale;
 					vect += vect / 2;
 
 					if(newtime <= ti) {
@@ -1261,7 +1244,8 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 
 				for(long j = 0; j < nbcomponents; j++) {
 
-					GetSymbVector(sd->sequence[j], &vect);
+					Vec2s vect = GetSymbVector(sd->sequence[j]);
+					vect *= symbolVecScale;
 
 					if(newtime < ti) {
 						float ratio = (float)(newtime) * div_ti;
