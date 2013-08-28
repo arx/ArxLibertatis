@@ -3007,9 +3007,13 @@ case "$data_lang" in
 	# human_female_villager model.
 	# There are also minor differences in the scripts, but those are
 	# overwritten by data2.pak from the 1.21 patch.
+	# A third data.pak variant can be found on the original French Arx Fatalis CD:
+	# It is almost identical to the preceding censored version, but has different level
+	# files for level 1 (.llf only) and 3 (.llf and .fts).
 	data_checksum_original='a91a0b39a046233debbb10b4850e13eb'
 	data_checksum_censored='a88d239dc7919ab113ff45483cb4ad46'
-	f 0 'data.pak' "$data_checksum_original $data_checksum_censored"
+	data_checksum_frenchcd='7ae3632eef92700cd6c5e143aa0fe67b'
+	f 0 'data.pak' "$data_checksum_original $data_checksum_censored $data_checksum_frenchcd"
 	
 esac
 
