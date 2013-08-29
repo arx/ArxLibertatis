@@ -604,41 +604,33 @@ ARX_THROWN_OBJECT Thrown[MAX_THROWN_OBJECTS];
 void ARX_THROWN_OBJECT_Kill(long num) {
 	if(num >= 0 && size_t(num) < MAX_THROWN_OBJECTS) {
 		Thrown[num].flags = 0;
-		delete Thrown[num].pRuban, Thrown[num].pRuban = NULL;
+		delete Thrown[num].pRuban;
+		Thrown[num].pRuban = NULL;
 	}
 }
 
-void ARX_THROWN_OBJECT_KillAll()
-{
-	for (size_t i = 0; i < MAX_THROWN_OBJECTS; i++)
-	{
+void ARX_THROWN_OBJECT_KillAll() {
+	for(size_t i = 0; i < MAX_THROWN_OBJECTS; i++) {
 		ARX_THROWN_OBJECT_Kill(i);
 	}
 }
 
-long ARX_THROWN_OBJECT_GetFree()
-{
+long ARX_THROWN_OBJECT_GetFree() {
 	unsigned long latest_time = (unsigned long)(arxtime);
 	long latest_obj = -1;
 
-	for (size_t i = 0; i < MAX_THROWN_OBJECTS; i++)
-	{
-		if (Thrown[i].flags & ATO_EXIST)
-		{
-			if (Thrown[i].creation_time < latest_time)
-			{
+	for(size_t i = 0; i < MAX_THROWN_OBJECTS; i++) {
+		if(Thrown[i].flags & ATO_EXIST) {
+			if(Thrown[i].creation_time < latest_time) {
 				latest_obj = i;
 				latest_time = Thrown[i].creation_time;
 			}
-		}
-		else
-		{
+		} else {
 			return i;
 		}
 	}
 
-	if (latest_obj >= 0)
-	{
+	if(latest_obj >= 0) {
 		ARX_THROWN_OBJECT_Kill(latest_obj);
 		return latest_obj;
 	}
@@ -672,19 +664,18 @@ long ARX_THROWN_OBJECT_Throw(long source, Vec3f * position, Vec3f * vect,
 
 		thrownObj->obj = arrowobj;
 
-		if (thrownObj->obj)
-		{
+		if(thrownObj->obj) {
 			thrownObj->creation_time = (unsigned long)(arxtime);
 			thrownObj->flags |= ATO_EXIST | ATO_MOVING;
 		}
 
-		if ((source == 0)
-		        && (player.equiped[EQUIP_SLOT_WEAPON] != 0)
-		        && (ValidIONum(player.equiped[EQUIP_SLOT_WEAPON])))
-		{
+		if(source == 0
+		   && player.equiped[EQUIP_SLOT_WEAPON] != 0
+		   && ValidIONum(player.equiped[EQUIP_SLOT_WEAPON])
+		) {
 			Entity * tio = entities[player.equiped[EQUIP_SLOT_WEAPON]];
 
-			if (tio->ioflags & IO_FIERY)
+			if(tio->ioflags & IO_FIERY)
 				thrownObj->flags |= ATO_FIERY;
 		}
 
@@ -704,60 +695,51 @@ float ARX_THROWN_ComputeDamages(long thrownum, long source, long target)
 	float distance = fdist(Thrown[thrownum].position, Thrown[thrownum].initial_position);
 	float distance_modifier = 1.f;
 
-	if (distance < distance_limit * 2.f)
-	{
+	if(distance < distance_limit * 2.f) {
 		distance_modifier = distance / distance_limit;
 
-		if (distance_modifier < 0.5f)
+		if(distance_modifier < 0.5f)
 			distance_modifier = 0.5f;
+	} else {
+		distance_modifier = 2.f;
 	}
-	else distance_modifier = 2.f;
 
 	float attack, dmgs, backstab, critical, ac;
 
 	backstab = 1.f;
 	critical = false;
 
-	if (source == 0)
-	{
+	if(source == 0) {
 		attack = Thrown[thrownum].damages;
 
 		if(rnd() * 100 <= float(player.Full_Attribute_Dexterity - 9) * 2.f
 		                   + float(player.Full_Skill_Projectile * 0.2f)) {
-			if (SendIOScriptEvent(io_source, SM_CRITICAL, "bow") != REFUSE)
+			if(SendIOScriptEvent(io_source, SM_CRITICAL, "bow") != REFUSE)
 				critical = true;
 		}
 
 		dmgs = attack;
 
-		if (io_target->_npcdata->npcflags & NPCFLAG_BACKSTAB)
-		{
-			if (rnd() * 100.f <= player.Full_Skill_Stealth)
-			{
-				if (SendIOScriptEvent(io_source, SM_BACKSTAB, "bow") != REFUSE)
+		if(io_target->_npcdata->npcflags & NPCFLAG_BACKSTAB) {
+			if(rnd() * 100.f <= player.Full_Skill_Stealth) {
+				if(SendIOScriptEvent(io_source, SM_BACKSTAB, "bow") != REFUSE)
 					backstab = 1.5f;
 			}
 		}
-	}
-	else
-	{
+	} else {
 		// TODO treat NPC !!!
 
 		ARX_DEAD_CODE();
 		attack = 0;
 		dmgs = 0;
-
 	}
 
 	float absorb;
 
-	if (target == 0)
-	{
+	if(target == 0) {
 		ac = player.Full_armor_class;
 		absorb = player.Full_Skill_Defense * .5f;
-	}
-	else
-	{
+	} else {
 		ac = ARX_INTERACTIVE_GetArmorClass(io_target);
 		absorb = io_target->_npcdata->absorb;
 	}
@@ -785,7 +767,8 @@ float ARX_THROWN_ComputeDamages(long thrownum, long source, long target)
 	float power;
 	power = dmgs * ( 1.0f / 20 );
 
-	if (power > 1.f) power = 1.f;
+	if(power > 1.f)
+		power = 1.f;
 
 	power = power * 0.15f + 0.85f;
 
@@ -798,9 +781,8 @@ float ARX_THROWN_ComputeDamages(long thrownum, long source, long target)
 	float dice = rnd() * 100.f;
 
 	if(dice <= chance) {
-		if (dmgs > 0.f)
-		{
-			if (critical)
+		if(dmgs > 0.f) {
+			if(critical)
 				dmgs *= 1.5f;
 
 			dmgs *= distance_modifier;
@@ -1394,27 +1376,23 @@ static bool IsFULLObjectVertexInValidPosition(EERIE_3DOBJ * obj) {
 
 	float rad = obj->pbox->radius;
 
-	for (pz = iz; pz <= az; pz++)
-		for (px = ix; px <= ax; px++)
-		{
+	for(pz = iz; pz <= az; pz++)
+		for(px = ix; px <= ax; px++) {
 			eg = &ACTIVEBKG->Backg[px+pz*ACTIVEBKG->Xsize];
 
-			for (long k = 0; k < eg->nbpoly; k++)
-			{
+			for(long k = 0; k < eg->nbpoly; k++) {
 			
 				ep = &eg->polydata[k];
 
-				if ( (ep->area > 190.f)
-				    && (!(ep->type & (POLY_WATER)))
-				    && (!(ep->type & (POLY_TRANS)))
-				    && (!(ep->type & (POLY_NOCOL)))
-				)
-				{
-					if (fartherThan(ep->center, obj->pbox->vert[0].pos, rad + 75.f))
+				if(ep->area > 190.f
+				   && !(ep->type & POLY_WATER)
+				   && !(ep->type & POLY_TRANS)
+				   && !(ep->type & POLY_NOCOL)
+				) {
+					if(fartherThan(ep->center, obj->pbox->vert[0].pos, rad + 75.f))
 						continue;
 
-					for (long kk = 0; kk < obj->pbox->nb_physvert; kk++)
-					{
+					for(long kk = 0; kk < obj->pbox->nb_physvert; kk++) {
 						float radd = 4.f;
 
 						if(!fartherThan(obj->pbox->vert[kk].pos, ep->center, radd)
@@ -1423,8 +1401,8 @@ static bool IsFULLObjectVertexInValidPosition(EERIE_3DOBJ * obj) {
 						   || !fartherThan(obj->pbox->vert[kk].pos, ep->v[2].p, radd)
 						   || !fartherThan(obj->pbox->vert[kk].pos, (ep->v[0].p + ep->v[1].p) * .5f, radd)
 						   || !fartherThan(obj->pbox->vert[kk].pos, (ep->v[2].p + ep->v[1].p) * .5f, radd)
-						   || !fartherThan(obj->pbox->vert[kk].pos, (ep->v[0].p + ep->v[2].p) * .5f, radd)) {
-							
+						   || !fartherThan(obj->pbox->vert[kk].pos, (ep->v[0].p + ep->v[2].p) * .5f, radd)
+						) {
 							LAST_COLLISION_POLY = ep;
 
 							if (ep->type & POLY_METAL) CUR_COLLISION_MATERIAL = MATERIAL_METAL;
@@ -1439,10 +1417,8 @@ static bool IsFULLObjectVertexInValidPosition(EERIE_3DOBJ * obj) {
 						}
 
 						// Last addon
-						for (long kl = 1; kl < obj->pbox->nb_physvert; kl++)
-						{
-							if (kl != kk)
-							{
+						for(long kl = 1; kl < obj->pbox->nb_physvert; kl++) {
+							if(kl != kk) {
 								Vec3f pos = (obj->pbox->vert[kk].pos + obj->pbox->vert[kl].pos) * .5f;
 
 								if(!fartherThan(pos, ep->center, radd)
@@ -1451,8 +1427,8 @@ static bool IsFULLObjectVertexInValidPosition(EERIE_3DOBJ * obj) {
 								   || !fartherThan(pos, ep->v[2].p, radd)
 								   || !fartherThan(pos, (ep->v[0].p + ep->v[1].p) * .5f, radd)
 								   || !fartherThan(pos, (ep->v[2].p + ep->v[1].p) * .5f, radd)
-								   || !fartherThan(pos, (ep->v[0].p + ep->v[2].p) * .5f, radd)) {
-									
+								   || !fartherThan(pos, (ep->v[0].p + ep->v[2].p) * .5f, radd)
+								) {
 									LAST_COLLISION_POLY = ep;
 
 									if (ep->type & POLY_METAL) CUR_COLLISION_MATERIAL = MATERIAL_METAL;
@@ -1470,8 +1446,7 @@ static bool IsFULLObjectVertexInValidPosition(EERIE_3DOBJ * obj) {
 					}
 
 				
-					if (IsObjectVertexCollidingPoly(obj, ep, -1, NULL))
-					{
+					if(IsObjectVertexCollidingPoly(obj, ep, -1, NULL)) {
 						
 						LAST_COLLISION_POLY = ep;
 
@@ -1527,12 +1502,11 @@ static bool ARX_EERIE_PHYSICS_BOX_Compute(EERIE_3DOBJ * obj, float framediff, lo
 		}
 	}
 
-	if ((!IsFULLObjectVertexInValidPosition(obj))
-	    || ARX_INTERACTIVE_CheckFULLCollision(obj, source)
-	    || colidd
-	    || (IsObjectInField(obj))
-	)
-	{
+	if(!IsFULLObjectVertexInValidPosition(obj)
+	   || ARX_INTERACTIVE_CheckFULLCollision(obj, source)
+	   || colidd
+	   || IsObjectInField(obj)
+	) {
 		colidd = 1;
 		float power = (EEfabs(obj->pbox->vert[0].velocity.x)
 		               + EEfabs(obj->pbox->vert[0].velocity.y)
@@ -1647,19 +1621,16 @@ void ARX_PrepareBackgroundNRMLs()
 	Vec3f cur_nrml;
 	float count;
 
-	for (j = 0; j < ACTIVEBKG->Zsize; j++)
-		for (i = 0; i < ACTIVEBKG->Xsize; i++)
-		{
+	for(j = 0; j < ACTIVEBKG->Zsize; j++)
+		for(i = 0; i < ACTIVEBKG->Xsize; i++) {
 			eg = &ACTIVEBKG->Backg[i+j*ACTIVEBKG->Xsize];
 
-			for (long l = 0; l < eg->nbpoly; l++)
-			{
+			for(long l = 0; l < eg->nbpoly; l++) {
 				ep = &eg->polydata[l];
 
 				long nbvert = (ep->type & POLY_QUAD) ? 4 : 3;
 
-				for (k = 0; k < nbvert; k++)
-				{
+				for(k = 0; k < nbvert; k++) {
 					float ttt = 1.f;
 
 					if(k == 3) {
@@ -1681,44 +1652,35 @@ void ARX_PrepareBackgroundNRMLs()
 					long mij = std::max(j - 4, 0L);
 					long maj = std::min(j + 4, ACTIVEBKG->Zsize - 1L);
 
-					for (j2 = mij; j2 < maj; j2++)
-						for (i2 = mii; i2 < mai; i2++)
-						{
+					for(j2 = mij; j2 < maj; j2++)
+						for(i2 = mii; i2 < mai; i2++) {
 							eg2 = &ACTIVEBKG->Backg[i2+j2*ACTIVEBKG->Xsize];
 
-							for (long kr = 0; kr < eg2->nbpoly; kr++)
-							{
+							for(long kr = 0; kr < eg2->nbpoly; kr++) {
 								ep2 = &eg2->polydata[kr];
 
 								long nbvert2 = (ep2->type & POLY_QUAD) ? 4 : 3;
 
-								if (ep != ep2)
-
-									for (k2 = 0; k2 < nbvert2; k2++)
-									{
-										if ((EEfabs(ep2->v[k2].p.x - ep->v[k].p.x) < 2.f)
-										        && (EEfabs(ep2->v[k2].p.y - ep->v[k].p.y) < 2.f)
-										        && (EEfabs(ep2->v[k2].p.z - ep->v[k].p.z) < 2.f))
-										{
+								if(ep != ep2)
+									for(k2 = 0; k2 < nbvert2; k2++) {
+										if(EEfabs(ep2->v[k2].p.x - ep->v[k].p.x) < 2.f
+										   && EEfabs(ep2->v[k2].p.y - ep->v[k].p.y) < 2.f
+										   && EEfabs(ep2->v[k2].p.z - ep->v[k].p.z) < 2.f
+										) {
 											if(k2 == 3) {
-												
 												if(LittleAngularDiff(&cur_nrml, &ep2->norm2)) {
 													nrml += ep2->norm2;
 													count += 1.f;
 													nrml += cur_nrml;
 													count += 1.f;
 												}
-												
 											} else if(k2 > 0 && nbvert2 > 3) {
-												
 												Vec3f tnrml = (ep2->norm + ep2->norm2) * .5f;
 												if(LittleAngularDiff(&cur_nrml, &tnrml)) {
 													nrml += tnrml * 2.f;
 													count += 2.f;
 												}
-												
 											} else {
-												
 												if(LittleAngularDiff(&cur_nrml, &ep2->norm)) {
 													nrml += ep2->norm;
 													count += 1.f;
@@ -1736,13 +1698,11 @@ void ARX_PrepareBackgroundNRMLs()
 			}
 		}
 
-	for (j = 0; j < ACTIVEBKG->Zsize; j++)
-		for (i = 0; i < ACTIVEBKG->Xsize; i++)
-		{
+	for(j = 0; j < ACTIVEBKG->Zsize; j++)
+		for(i = 0; i < ACTIVEBKG->Xsize; i++) {
 			eg = &ACTIVEBKG->Backg[i+j*ACTIVEBKG->Xsize];
 
-			for (long l = 0; l < eg->nbpoly; l++)
-			{
+			for(long l = 0; l < eg->nbpoly; l++) {
 				ep = &eg->polydata[l];
 
 				long nbvert = (ep->type & POLY_QUAD) ? 4 : 3;
