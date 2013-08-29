@@ -123,27 +123,24 @@ void ARX_PATH_ComputeBB(ARX_PATH * ap) {
 
 void ARX_PATH_ComputeAllBoundingBoxes()
 {
-	for (long i = 0; i < nbARXpaths; i++)
-	{
-		if (ARXpaths[i])
-		{
+	for(long i = 0; i < nbARXpaths; i++) {
+		if(ARXpaths[i]) {
 			ARX_PATH_ComputeBB(ARXpaths[i]);
 		}
 	}
 }
+
 long ARX_PATH_IsPosInZone(ARX_PATH * ap, float x, float y, float z)
 {
-	if (x < ap->bbmin.x) return 0;
-
-	if (x > ap->bbmax.x) return 0;
-
-	if (z < ap->bbmin.z) return 0;
-
-	if (z > ap->bbmax.z) return 0;
-
-	if (y < ap->bbmin.y) return 0;
-
-	if (y > ap->bbmax.y) return 0;
+	if(x < ap->bbmin.x
+	   || x > ap->bbmax.x
+	   || z < ap->bbmin.z
+	   || z > ap->bbmax.z
+	   || y < ap->bbmin.y
+	   || y > ap->bbmax.y
+	) {
+		return 0;
+	}
 
 	int i, j, c = 0;
 
@@ -152,31 +149,28 @@ long ARX_PATH_IsPosInZone(ARX_PATH * ap, float x, float y, float z)
 
 	ARX_PATHWAY * app = ap->pathways;
 
-	for (i = 0, j = ap->nb_pathways - 1; i < ap->nb_pathways; j = i++)
-	{
+	for(i = 0, j = ap->nb_pathways - 1; i < ap->nb_pathways; j = i++) {
 		Vec3f * pi = &app[i].rpos;
 		Vec3f * pj = &app[j].rpos;
 
-		if ((((pi->z <= z) && (z < pj->z)) ||
-		        ((pj->z <= z) && (z < pi->z))) &&
-		        (x < (pj->x - pi->x) *(z - pi->z) / (pj->z - pi->z) + pi->x))
+		if(((pi->z <= z && z < pj->z) || (pj->z <= z && z < pi->z))
+		   && (x < (pj->x - pi->x) *(z - pi->z) / (pj->z - pi->z) + pi->x)
+		) {
 			c = !c;
+		}
 	}
 
 	return c;
 }
-ARX_PATH * ARX_PATH_CheckInZone(Entity * io)
-{
-	if (ARXpaths)
-	{
+
+ARX_PATH * ARX_PATH_CheckInZone(Entity * io) {
+	if(ARXpaths) {
 		Vec3f curpos;
 		GetItemWorldPosition(io, &curpos);
 
-		for (long i = 0; i < nbARXpaths; i++)
-		{
-			if ((ARXpaths[i]) && (ARXpaths[i]->height != 0))
-			{
-				if (ARX_PATH_IsPosInZone(ARXpaths[i], curpos.x, curpos.y, curpos.z))
+		for(long i = 0; i < nbARXpaths; i++) {
+			if(ARXpaths[i] && ARXpaths[i]->height != 0) {
+				if(ARX_PATH_IsPosInZone(ARXpaths[i], curpos.x, curpos.y, curpos.z))
 					return ARXpaths[i];
 			}
 		}
@@ -184,17 +178,17 @@ ARX_PATH * ARX_PATH_CheckInZone(Entity * io)
 
 	return NULL;
 }
+
 ARX_PATH * ARX_PATH_CheckPlayerInZone()
 {
-	if (ARXpaths)
-		for (long i = 0; i < nbARXpaths; i++)
-		{
-			if ((ARXpaths[i]) && (ARXpaths[i]->height != 0))
-			{
-				if (ARX_PATH_IsPosInZone(ARXpaths[i], player.pos.x, player.pos.y + 160.f, player.pos.z))
+	if(ARXpaths) {
+		for(long i = 0; i < nbARXpaths; i++) {
+			if(ARXpaths[i] && ARXpaths[i]->height != 0) {
+				if(ARX_PATH_IsPosInZone(ARXpaths[i], player.pos.x, player.pos.y + 160.f, player.pos.z))
 					return ARXpaths[i];
 			}
 		}
+	}
 
 	return NULL;
 }
@@ -210,27 +204,25 @@ void ARX_PATH_UpdateAllZoneInOutInside() {
 		count = 1;
 	}
 
-	if (entities.size() > 1)
-		for (long tt = 0; tt < f; tt++)
-		{
+	if(entities.size() > 1)
+		for(long tt = 0; tt < f; tt++) {
 			long i = count;
 			Entity * io = entities[i];
 
-			if ((count < entities.size()) && (io)
-			        && (io->ioflags & (IO_NPC | IO_ITEM))
-			        && (io->show != SHOW_FLAG_MEGAHIDE)
-			        && (io->show != SHOW_FLAG_DESTROYED)
-
-			   )
-			{
+			if(count < entities.size()
+			   && io
+			   && io->ioflags & (IO_NPC | IO_ITEM)
+			   && io->show != SHOW_FLAG_MEGAHIDE
+			   && io->show != SHOW_FLAG_DESTROYED
+			) {
 				ARX_PATH * p = ARX_PATH_CheckInZone(io);
 				ARX_PATH * op = io->inzone;
 
-				if ((op == NULL) && (p == NULL)) goto next; // Not in a zone
+				if(op == NULL && p == NULL)
+					goto next; // Not in a zone
 
 				if(op == p) { // Stayed inside Zone OP
-					if (io->show != io->inzone_show)
-					{
+					if(io->show != io->inzone_show) {
 						io->inzone_show = io->show;
 						goto entering;
 					}
@@ -239,12 +231,10 @@ void ARX_PATH_UpdateAllZoneInOutInside() {
 				{
 					SendIOScriptEvent(io, SM_LEAVEZONE, op->name);
 
-					if (!op->controled.empty())
-					{
+					if(!op->controled.empty()) {
 						long t = entities.getById(op->controled);
 
-						if (t >= 0)
-						{
+						if(t >= 0) {
 							string str = io->long_name() + ' ' + op->name;
 							SendIOScriptEvent(entities[t], SM_CONTROLLEDZONE_LEAVE, str);
 						}
@@ -260,28 +250,22 @@ void ARX_PATH_UpdateAllZoneInOutInside() {
 					} else {
 						SendIOScriptEvent(io, SM_ENTERZONE, p->name);
 
-						if (!p->controled.empty())
-						{
+						if(!p->controled.empty()) {
 							long t = entities.getById(p->controled);
 
-							if (t >= 0)
-							{
+							if(t >= 0) {
 								string params = io->long_name() + ' ' + p->name;
 								SendIOScriptEvent(entities[t], SM_CONTROLLEDZONE_ENTER, params);
 							}
 						}
 					}
-				}
-				else
-				{
+				} else {
 					SendIOScriptEvent(io, SM_LEAVEZONE, op->name);
 
-					if (!op->controled.empty())
-					{
+					if(!op->controled.empty()) {
 						long t = entities.getById(op->controled);
 
-						if (t >= 0)
-						{
+						if(t >= 0) {
 							string str = io->long_name() + ' ' + op->name;
 							SendIOScriptEvent(entities[t], SM_CONTROLLEDZONE_LEAVE, str);
 						}
@@ -290,12 +274,10 @@ void ARX_PATH_UpdateAllZoneInOutInside() {
 					io->inzone_show = io->show;
 					SendIOScriptEvent(io, SM_ENTERZONE, p->name);
 
-					if (!p->controled.empty())
-					{
+					if(!p->controled.empty()) {
 						long t = entities.getById(p->controled);
 
-						if (t >= 0)
-						{
+						if(t >= 0) {
 							string str = io->long_name() + ' ' + p->name;
 							SendIOScriptEvent(entities[t], SM_CONTROLLEDZONE_ENTER, str);
 						}
@@ -308,32 +290,31 @@ void ARX_PATH_UpdateAllZoneInOutInside() {
 		next:
 			count++;
 
-			if (count >= entities.size()) count = 1;
+			if(count >= entities.size())
+				count = 1;
 		}
 
 	// player check*************************************************
-	if (entities.player())
-	{
+	if(entities.player()) {
 		ARX_PATH * p = ARX_PATH_CheckPlayerInZone();
 		ARX_PATH * op = (ARX_PATH *)player.inzone;
 
-		if ((op == NULL) && (p == NULL)) goto suite; // Not in a zone
+		if((op == NULL) && (p == NULL))
+			goto suite; // Not in a zone
 
-		if (op == p) // Stayed inside Zone OP
+		if(op == p) // Stayed inside Zone OP
 		{
 		
 		}
-		else if ((op != NULL) && (p == NULL)) // Leaving Zone OP
+		else if(op != NULL && p == NULL) // Leaving Zone OP
 		{
 			SendIOScriptEvent(entities.player(), SM_LEAVEZONE, op->name);
 			CHANGE_LEVEL_ICON = -1;
 
-			if (!op->controled.empty())
-			{
+			if(!op->controled.empty()) {
 				long t = entities.getById(op->controled);
 
-				if (t >= 0)
-				{
+				if(t >= 0) {
 					SendIOScriptEvent(entities[t], SM_CONTROLLEDZONE_LEAVE, "player " + op->name);
 				}
 			}
@@ -342,11 +323,10 @@ void ARX_PATH_UpdateAllZoneInOutInside() {
 		{
 			SendIOScriptEvent(entities.player(), SM_ENTERZONE, p->name);
 
-			if (p->flags & PATH_AMBIANCE && !p->ambiance.empty())
+			if(p->flags & PATH_AMBIANCE && !p->ambiance.empty())
 				ARX_SOUND_PlayZoneAmbiance(p->ambiance, ARX_SOUND_PLAY_LOOPED, p->amb_max_vol * ( 1.0f / 100 ));
 
-			if (p->flags & PATH_FARCLIP)
-			{
+			if(p->flags & PATH_FARCLIP) {
 				desired.flags |= GMOD_ZCLIP;
 				desired.zclip = p->farclip;
 			}
@@ -355,41 +335,31 @@ void ARX_PATH_UpdateAllZoneInOutInside() {
 			{
 			}
 
-			if (p->flags & PATH_RGB)
-			{
+			if(p->flags & PATH_RGB) {
 				desired.flags |= GMOD_DCOLOR;
 				desired.depthcolor = p->rgb;
 			}
 
-			if (!p->controled.empty())
-			{
+			if(!p->controled.empty()) {
 				long t = entities.getById(p->controled);
 
-				if (t >= 0)
-				{
+				if(t >= 0) {
 					SendIOScriptEvent(entities[t], SM_CONTROLLEDZONE_ENTER, "player " + p->name);
 				}
 			}
-		}
-		else
-		{
-
-			if (!op->controled.empty())
-			{
+		} else {
+			if(!op->controled.empty()) {
 				long t = entities.getById(op->controled);
 
-				if (t >= 0)
-				{
+				if(t >= 0) {
 					SendIOScriptEvent(entities[t], SM_CONTROLLEDZONE_LEAVE, "player " + p->name);
 				}
 			}
 
-			if (!op->controled.empty())
-			{
+			if(!op->controled.empty()) {
 				long t = entities.getById(p->controled);
 
-				if (t >= 0)
-				{
+				if(t >= 0) {
 					SendIOScriptEvent(entities[t], SM_CONTROLLEDZONE_ENTER, "player " + p->name);
 				}
 			}
@@ -404,8 +374,10 @@ suite:
 }
 
 ARX_PATH::ARX_PATH(const std::string & _name, const Vec3f & _pos)
-	: name(_name), initpos(_pos), pos(_pos) {
-	
+	: name(_name)
+	, initpos(_pos)
+	, pos(_pos)
+{
 	flags = 0;
 	nb_pathways = 0;
 	pathways = NULL;
@@ -417,7 +389,6 @@ ARX_PATH::ARX_PATH(const std::string & _name, const Vec3f & _pos)
 	amb_max_vol = 0.f;
 	bbmin = Vec3f::ZERO;
 	bbmax = Vec3f::ZERO;
-	
 }
 
 void ARX_PATH_ClearAllUsePath() {
