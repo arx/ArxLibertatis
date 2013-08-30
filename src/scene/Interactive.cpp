@@ -2601,7 +2601,6 @@ bool ARX_INTERACTIVE_CheckFULLCollision(EERIE_3DOBJ * obj, long source)
 	bool col = false;
 	long avoid = -1;
 	Entity * io_source = NULL;
-	Entity * io = NULL;
 
 	if(ValidIONum(source)) {
 		io_source = entities[source];
@@ -2609,26 +2608,26 @@ bool ARX_INTERACTIVE_CheckFULLCollision(EERIE_3DOBJ * obj, long source)
 	}
 
 	for(long i = 0; i < TREATZONE_CUR; i++) {
-		if((treatio[i].show != SHOW_FLAG_IN_SCENE) || ((treatio[i].ioflags & IO_NO_COLLISIONS)) || (!treatio[i].io))
+
+		if(treatio[i].show != SHOW_FLAG_IN_SCENE || (treatio[i].ioflags & IO_NO_COLLISIONS))
 			continue;
 
-		io = treatio[i].io;
+		Entity * io = treatio[i].io;
 
-		if(io == io_source || !io->obj || io == entities.player())
+		if(!io
+		   || io == io_source
+		   || !io->obj
+		   || io == entities.player()
+		   || treatio[i].num == avoid
+		   || (io->ioflags & (IO_CAMERA | IO_MARKER | IO_ITEM))
+		   || io->usepath
+		   || ((io->ioflags & IO_NPC) && io_source && (io_source->ioflags & IO_NO_NPC_COLLIDE))
+		   || distSqr(io->pos, obj->pbox->vert[0].pos) >= square(600.f)
+		   || !In3DBBoxTolerance(&obj->pbox->vert[0].pos, &io->bbox3D, obj->pbox->radius)
+		) {
 			continue;
+		}
 
-		if(treatio[i].num == avoid)
-			continue;
-
-		if((io->ioflags & (IO_CAMERA | IO_MARKER | IO_ITEM)) || io->usepath)
-			continue;
-
-		if((io->ioflags & IO_NPC) && io_source && (io_source->ioflags & IO_NO_NPC_COLLIDE))
-			continue;
-
-		if(distSqr(io->pos, obj->pbox->vert[0].pos) < square(600.f)
-				&& In3DBBoxTolerance(&obj->pbox->vert[0].pos, &io->bbox3D, obj->pbox->radius))
-		{
 			if((io->ioflags & IO_NPC) && io->_npcdata->life > 0.f) {
 				for(long kk = 0; kk < obj->pbox->nb_physvert; kk++)
 					if(PointInCylinder(&io->physics.cyl, &obj->pbox->vert[kk].pos))
@@ -2661,7 +2660,7 @@ bool ARX_INTERACTIVE_CheckFULLCollision(EERIE_3DOBJ * obj, long source)
 						miny = io->bbox3D.min.y;
 						maxy = io->bbox3D.max.y;
 
-						if(maxy <= sphere.origin.y + sphere.radius || miny >= sphere.origin.y)
+						if(maxy <= sphere.origin.y + sphere.radius || miny >= sphere.origin.y) {
 							if(In3DBBoxTolerance(&sphere.origin, &io->bbox3D, sphere.radius)) {
 								// TODO why ignore the z components?
 								if(closerThan(Vec2f(io->pos.x, io->pos.z), Vec2f(sphere.origin.x, sphere.origin.z), 440.f + sphere.radius)) {
@@ -2692,6 +2691,7 @@ bool ARX_INTERACTIVE_CheckFULLCollision(EERIE_3DOBJ * obj, long source)
 									}
 								}
 							}
+						}
 					}
 				}
 
@@ -2727,7 +2727,7 @@ bool ARX_INTERACTIVE_CheckFULLCollision(EERIE_3DOBJ * obj, long source)
 
 						sp.origin = vlist[ii].v;
 
-						for(long kk = 0; kk < obj->pbox->nb_physvert; kk++)
+						for(long kk = 0; kk < obj->pbox->nb_physvert; kk++) {
 							if(sp.contains(obj->pbox->vert[kk].pos)) {
 								if(io_source && (io->gameFlags & GFLAG_DOOR)) {
 									if(float(arxtime) > io->collide_door_time + 500) {
@@ -2741,11 +2741,10 @@ bool ARX_INTERACTIVE_CheckFULLCollision(EERIE_3DOBJ * obj, long source)
 								}
 								return true;
 							}
+						}
 					}
 				}
 			}
-		}
-		
 	}
 
 	return col;
