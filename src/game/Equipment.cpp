@@ -1135,49 +1135,39 @@ void ARX_EQUIPMENT_Remove_All_Special(Entity * io)
 }
 
 //! \brief Sets an equipment property
-float ARX_EQUIPMENT_Apply(Entity *io, EquipmentModifierType ident) {
+float ARX_EQUIPMENT_Apply(EquipmentModifierType ident) {
 	
-	if(!io || io != entities.player())
-		return 0;
-
 	float toadd = 0;
-
+	
 	for(long i = 0; i < MAX_EQUIPED; i++) {
 		if(player.equiped[i] && ValidIONum(player.equiped[i])) {
 			Entity * toequip = entities[player.equiped[i]];
-
 			if(toequip && (toequip->ioflags & IO_ITEM) && toequip->_itemdata->equipitem) {
 				IO_EQUIPITEM_ELEMENT * elem = &toequip->_itemdata->equipitem->elements[ident];
-
 				if(!(elem->flags & IO_ELEMENT_FLAG_PERCENT))
 					toadd += elem->value;
 			}
 		}
 	}
-
+	
 	return toadd;
 }
 
-float ARX_EQUIPMENT_ApplyPercent(Entity *io, EquipmentModifierType ident, float trueval) {
+float ARX_EQUIPMENT_ApplyPercent(EquipmentModifierType ident, float trueval) {
 	
-	if(!io || io != entities.player())
-		return 0;
-
 	float toadd = 0;
-
+	
 	for(long i = 0; i < MAX_EQUIPED; i++) {
 		if(player.equiped[i] && ValidIONum(player.equiped[i])) {
 			Entity * toequip = entities[player.equiped[i]];
-
 			if(toequip && (toequip->ioflags & IO_ITEM) && toequip->_itemdata->equipitem) {
 				IO_EQUIPITEM_ELEMENT * elem = &toequip->_itemdata->equipitem->elements[ident];
-
 				if(elem->flags & IO_ELEMENT_FLAG_PERCENT)// percentile value...
 					toadd += elem->value;
 			}
 		}
 	}
-
+	
 	return toadd * trueval * (1.0f/100);
 }
 

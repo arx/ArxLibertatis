@@ -639,51 +639,50 @@ void ARX_PLAYER_ComputePlayerFullStats()
 
 	player.Full_Weapon_Type = ARX_EQUIPMENT_GetPlayerWeaponType();
 
-	Entity * io = entities.player();
 	// Check for Equipment Modificators to Attributes
 	player.Mod_Attribute_Strength = ARX_EQUIPMENT_Apply(
-	                                    io, IO_EQUIPITEM_ELEMENT_STRENGTH);
+	                                    IO_EQUIPITEM_ELEMENT_STRENGTH);
 	player.Mod_Attribute_Dexterity = ARX_EQUIPMENT_Apply(
-	                                     io, IO_EQUIPITEM_ELEMENT_DEXTERITY);
+	                                     IO_EQUIPITEM_ELEMENT_DEXTERITY);
 	player.Mod_Attribute_Constitution = ARX_EQUIPMENT_Apply(
-	                                        io, IO_EQUIPITEM_ELEMENT_CONSTITUTION);
+	                                        IO_EQUIPITEM_ELEMENT_CONSTITUTION);
 	player.Mod_Attribute_Mind = ARX_EQUIPMENT_Apply(
-	                                io, IO_EQUIPITEM_ELEMENT_MIND);
+	                                IO_EQUIPITEM_ELEMENT_MIND);
 	player.Mod_armor_class = ARX_EQUIPMENT_Apply(
-	                             io, IO_EQUIPITEM_ELEMENT_Armor_Class);
+	                             IO_EQUIPITEM_ELEMENT_Armor_Class);
 
 	// Check for Equipment Modificators to Skills
 	player.Mod_Skill_Stealth = ARX_EQUIPMENT_Apply(
-	                               io, IO_EQUIPITEM_ELEMENT_Stealth);
+	                               IO_EQUIPITEM_ELEMENT_Stealth);
 	player.Mod_Skill_Mecanism = ARX_EQUIPMENT_Apply(
-	                                io, IO_EQUIPITEM_ELEMENT_Mecanism);
+	                                IO_EQUIPITEM_ELEMENT_Mecanism);
 	player.Mod_Skill_Intuition = ARX_EQUIPMENT_Apply(
-	                                 io, IO_EQUIPITEM_ELEMENT_Intuition);
+	                                 IO_EQUIPITEM_ELEMENT_Intuition);
 	player.Mod_Skill_Etheral_Link = ARX_EQUIPMENT_Apply(
-	                                    io, IO_EQUIPITEM_ELEMENT_Etheral_Link);
+	                                    IO_EQUIPITEM_ELEMENT_Etheral_Link);
 	player.Mod_Skill_Object_Knowledge = ARX_EQUIPMENT_Apply(
-	                                        io, IO_EQUIPITEM_ELEMENT_Object_Knowledge);
+	                                        IO_EQUIPITEM_ELEMENT_Object_Knowledge);
 	player.Mod_Skill_Casting = ARX_EQUIPMENT_Apply(
-	                               io, IO_EQUIPITEM_ELEMENT_Casting);
+	                               IO_EQUIPITEM_ELEMENT_Casting);
 	player.Mod_Skill_Projectile = ARX_EQUIPMENT_Apply(
-	                                  io, IO_EQUIPITEM_ELEMENT_Projectile);
+	                                  IO_EQUIPITEM_ELEMENT_Projectile);
 	player.Mod_Skill_Close_Combat = ARX_EQUIPMENT_Apply(
-	                                    io, IO_EQUIPITEM_ELEMENT_Close_Combat);
+	                                    IO_EQUIPITEM_ELEMENT_Close_Combat);
 	player.Mod_Skill_Defense = ARX_EQUIPMENT_Apply(
-	                               io, IO_EQUIPITEM_ELEMENT_Defense);
+	                               IO_EQUIPITEM_ELEMENT_Defense);
 
 	player.Mod_resist_magic = ARX_EQUIPMENT_Apply(
-	                              io, IO_EQUIPITEM_ELEMENT_Resist_Magic);
+	                              IO_EQUIPITEM_ELEMENT_Resist_Magic);
 	player.Mod_resist_poison = ARX_EQUIPMENT_Apply(
-	                               io, IO_EQUIPITEM_ELEMENT_Resist_Poison);
+	                               IO_EQUIPITEM_ELEMENT_Resist_Poison);
 	player.Mod_Critical_Hit = ARX_EQUIPMENT_Apply(
-	                              io, IO_EQUIPITEM_ELEMENT_Critical_Hit);
+	                              IO_EQUIPITEM_ELEMENT_Critical_Hit);
 	player.Mod_damages = ARX_EQUIPMENT_Apply(
-	                         io, IO_EQUIPITEM_ELEMENT_Damages);
+	                         IO_EQUIPITEM_ELEMENT_Damages);
 
 
 	//CHECK OVERFLOW
-	float fFullAimTime	= ARX_EQUIPMENT_Apply(io, IO_EQUIPITEM_ELEMENT_AimTime);
+	float fFullAimTime	= ARX_EQUIPMENT_Apply(IO_EQUIPITEM_ELEMENT_AimTime);
 	float fCalcHandicap	= (player.Full_Attribute_Dexterity - 10.f) * 20.f;
 
 	//CAST
@@ -717,46 +716,46 @@ void ARX_PLAYER_ComputePlayerFullStats()
 
 	/// PERCENTILE.....
 	player.Mod_Attribute_Strength += ARX_EQUIPMENT_ApplyPercent(
-	                                     io, IO_EQUIPITEM_ELEMENT_STRENGTH, player.Attribute_Strength + player.Mod_Attribute_Strength);
+	                                     IO_EQUIPITEM_ELEMENT_STRENGTH, player.Attribute_Strength + player.Mod_Attribute_Strength);
 	player.Mod_Attribute_Dexterity += ARX_EQUIPMENT_ApplyPercent(
-	                                      io, IO_EQUIPITEM_ELEMENT_DEXTERITY, player.Attribute_Dexterity + player.Mod_Attribute_Dexterity);
+	                                      IO_EQUIPITEM_ELEMENT_DEXTERITY, player.Attribute_Dexterity + player.Mod_Attribute_Dexterity);
 	player.Mod_Attribute_Constitution += ARX_EQUIPMENT_ApplyPercent(
-	        io, IO_EQUIPITEM_ELEMENT_CONSTITUTION, player.Attribute_Constitution + player.Mod_Attribute_Constitution);
+	        IO_EQUIPITEM_ELEMENT_CONSTITUTION, player.Attribute_Constitution + player.Mod_Attribute_Constitution);
 	player.Mod_Attribute_Mind += ARX_EQUIPMENT_ApplyPercent(
-	                                 io, IO_EQUIPITEM_ELEMENT_MIND, player.Attribute_Mind + player.Mod_Attribute_Mind);
+	                                 IO_EQUIPITEM_ELEMENT_MIND, player.Attribute_Mind + player.Mod_Attribute_Mind);
 
 	// Check for Equipment Modificators to Skills
 	player.Mod_Skill_Stealth += ARX_EQUIPMENT_ApplyPercent(
-	                                io, IO_EQUIPITEM_ELEMENT_Stealth, ARX_PLAYER_Get_Skill_Stealth(1));
+	                                IO_EQUIPITEM_ELEMENT_Stealth, ARX_PLAYER_Get_Skill_Stealth(1));
 	player.Mod_Skill_Mecanism += ARX_EQUIPMENT_ApplyPercent(
-	                                 io, IO_EQUIPITEM_ELEMENT_Mecanism, ARX_PLAYER_Get_Skill_Mecanism(1));
+	                                 IO_EQUIPITEM_ELEMENT_Mecanism, ARX_PLAYER_Get_Skill_Mecanism(1));
 	player.Mod_Skill_Intuition += ARX_EQUIPMENT_ApplyPercent(
-	                                  io, IO_EQUIPITEM_ELEMENT_Intuition, ARX_PLAYER_Get_Skill_Intuition(1));
+	                                  IO_EQUIPITEM_ELEMENT_Intuition, ARX_PLAYER_Get_Skill_Intuition(1));
 	player.Mod_Skill_Etheral_Link += ARX_EQUIPMENT_ApplyPercent(
-	                                     io, IO_EQUIPITEM_ELEMENT_Etheral_Link, ARX_PLAYER_Get_Skill_Etheral_Link(1));
+	                                     IO_EQUIPITEM_ELEMENT_Etheral_Link, ARX_PLAYER_Get_Skill_Etheral_Link(1));
 	player.Mod_Skill_Object_Knowledge += ARX_EQUIPMENT_ApplyPercent(
-	        io, IO_EQUIPITEM_ELEMENT_Object_Knowledge, ARX_PLAYER_Get_Skill_Object_Knowledge(1));
+	        IO_EQUIPITEM_ELEMENT_Object_Knowledge, ARX_PLAYER_Get_Skill_Object_Knowledge(1));
 	player.Mod_Skill_Casting += ARX_EQUIPMENT_ApplyPercent(
-	                                io, IO_EQUIPITEM_ELEMENT_Casting, ARX_PLAYER_Get_Skill_Casting(1));
+	                                IO_EQUIPITEM_ELEMENT_Casting, ARX_PLAYER_Get_Skill_Casting(1));
 	player.Mod_Skill_Projectile += ARX_EQUIPMENT_ApplyPercent(
-	                                   io, IO_EQUIPITEM_ELEMENT_Projectile, ARX_PLAYER_Get_Skill_Projectile(1));
+	                                   IO_EQUIPITEM_ELEMENT_Projectile, ARX_PLAYER_Get_Skill_Projectile(1));
 	player.Mod_Skill_Close_Combat += ARX_EQUIPMENT_ApplyPercent(
-	                                     io, IO_EQUIPITEM_ELEMENT_Close_Combat, ARX_PLAYER_Get_Skill_Close_Combat(1));
+	                                     IO_EQUIPITEM_ELEMENT_Close_Combat, ARX_PLAYER_Get_Skill_Close_Combat(1));
 	player.Mod_Skill_Defense += ARX_EQUIPMENT_ApplyPercent(
-	                                io, IO_EQUIPITEM_ELEMENT_Defense, ARX_PLAYER_Get_Skill_Defense(1));
+	                                IO_EQUIPITEM_ELEMENT_Defense, ARX_PLAYER_Get_Skill_Defense(1));
 
 	player.Mod_armor_class += ARX_EQUIPMENT_ApplyPercent(
-	                              io, IO_EQUIPITEM_ELEMENT_Armor_Class, player.Full_armor_class + player.Mod_armor_class);
+	                              IO_EQUIPITEM_ELEMENT_Armor_Class, player.Full_armor_class + player.Mod_armor_class);
 	player.Mod_resist_magic += ARX_EQUIPMENT_ApplyPercent(
-	                               io, IO_EQUIPITEM_ELEMENT_Resist_Magic, player.Full_resist_magic + player.Mod_resist_magic);
+	                               IO_EQUIPITEM_ELEMENT_Resist_Magic, player.Full_resist_magic + player.Mod_resist_magic);
 	player.Mod_resist_poison += ARX_EQUIPMENT_ApplyPercent(
-	                                io, IO_EQUIPITEM_ELEMENT_Resist_Poison, player.Full_resist_poison + player.Mod_resist_poison);
+	                                IO_EQUIPITEM_ELEMENT_Resist_Poison, player.Full_resist_poison + player.Mod_resist_poison);
 	player.Mod_Critical_Hit += ARX_EQUIPMENT_ApplyPercent(
-	                               io, IO_EQUIPITEM_ELEMENT_Critical_Hit, player.Full_Critical_Hit + player.Mod_Critical_Hit);
+	                               IO_EQUIPITEM_ELEMENT_Critical_Hit, player.Full_Critical_Hit + player.Mod_Critical_Hit);
 	player.Mod_damages += ARX_EQUIPMENT_ApplyPercent(
-	                          io, IO_EQUIPITEM_ELEMENT_Damages, player.Full_damages + player.Mod_damages);
+	                          IO_EQUIPITEM_ELEMENT_Damages, player.Full_damages + player.Mod_damages);
 	//player.Full_AimTime=ARX_EQUIPMENT_ApplyPercent(
-	//	io,IO_EQUIPITEM_ELEMENT_AimTime,0);
+	//	IO_EQUIPITEM_ELEMENT_AimTime,0);
 
 
 
