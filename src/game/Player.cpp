@@ -602,6 +602,9 @@ static void ARX_PLAYER_ComputePlayerStats() {
 	if (player.damages < 1.f) player.damages = 1.f;
 
 	player.AimTime = 1500;
+	
+	player.Critical_Hit = (float)(player.Attribute_Dexterity - 9) * 2.f
+	                      + (ARX_PLAYER_Get_Skill_Close_Combat(0) * ( 1.0f / 5 ));
 }
 extern long cur_mr;
 extern long SPECIAL_PNUX;
@@ -708,6 +711,9 @@ void ARX_PLAYER_ComputePlayerFullStats()
 	player.Full_damages = (player.Full_Attribute_Strength - 10) * ( 1.0f / 2 );
 	if (player.Full_damages < 1.f) player.Full_damages = 1.f;
 
+	player.Full_Critical_Hit = (float)(player.Full_Attribute_Dexterity - 9) * 2.f
+	                           + (float)(player.Full_Skill_Close_Combat * ( 1.0f / 5 ));
+
 
 	/// PERCENTILE.....
 	player.Mod_Attribute_Strength += ARX_EQUIPMENT_ApplyPercent(
@@ -746,7 +752,7 @@ void ARX_PLAYER_ComputePlayerFullStats()
 	player.Mod_resist_poison += ARX_EQUIPMENT_ApplyPercent(
 	                                io, IO_EQUIPITEM_ELEMENT_Resist_Poison, player.Full_resist_poison + player.Mod_resist_poison);
 	player.Mod_Critical_Hit += ARX_EQUIPMENT_ApplyPercent(
-	                               io, IO_EQUIPITEM_ELEMENT_Critical_Hit, player.Critical_Hit + player.Mod_Critical_Hit);
+	                               io, IO_EQUIPITEM_ELEMENT_Critical_Hit, player.Full_Critical_Hit + player.Mod_Critical_Hit);
 	player.Mod_damages += ARX_EQUIPMENT_ApplyPercent(
 	                          io, IO_EQUIPITEM_ELEMENT_Damages, player.Full_damages + player.Mod_damages);
 	//player.Full_AimTime=ARX_EQUIPMENT_ApplyPercent(
@@ -904,7 +910,7 @@ void ARX_PLAYER_ComputePlayerFullStats()
 
 	if (player.Full_resist_poison < 0) player.Full_resist_poison = 0;
 
-	player.Full_Critical_Hit = player.Critical_Hit + player.Mod_Critical_Hit;
+	player.Full_Critical_Hit += player.Mod_Critical_Hit;
 
 	if (player.Full_Critical_Hit < 0) player.Full_Critical_Hit = 0;
 
