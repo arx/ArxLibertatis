@@ -568,21 +568,135 @@ void ARX_PLAYER_ComputePlayerFullStats() {
 	
 	// TODO make these calculations moddable
 	
+	/////////////////////////////////////////////////////////////////////////////////////
+	// External modifiers
+	
+	// Calculate for modifiers from spells
+	if(entities.player()) {
+		for(long i = 0; i < entities.player()->nb_spells_on; i++) {
+			long n = entities.player()->spells_on[i];
+			if(!spells[n].exist) {
+				continue;
+			}
+			switch (spells[n].type) {
+				case SPELL_ARMOR:
+					player.Mod_armor_class += spells[n].caster_level;
+					break;
+				case SPELL_LOWER_ARMOR:
+					player.Mod_armor_class -= spells[n].caster_level;
+					break;
+				case SPELL_CURSE:
+					player.Mod_Attribute_Strength -= spells[n].caster_level;
+					player.Mod_Attribute_Constitution -= spells[n].caster_level;
+					player.Mod_Attribute_Dexterity -= spells[n].caster_level;
+					player.Mod_Attribute_Mind -= spells[n].caster_level;
+					break;
+				case SPELL_BLESS:
+					player.Mod_Attribute_Strength += spells[n].caster_level;
+					player.Mod_Attribute_Dexterity += spells[n].caster_level;
+					player.Mod_Attribute_Constitution += spells[n].caster_level;
+					player.Mod_Attribute_Mind += spells[n].caster_level;
+					break;
+				default: break;
+			}
+		}
+	}
+	
+	// Calculate for modifiers from cheats
+	if(cur_mr == 3) {
+		player.Mod_Attribute_Strength += 1;
+		player.Mod_Attribute_Mind += 10;
+		player.Mod_Attribute_Constitution += 1;
+		player.Mod_Attribute_Dexterity += 10;
+		player.Mod_Skill_Stealth += 5;
+		player.Mod_Skill_Mecanism += 5;
+		player.Mod_Skill_Intuition += 100;
+		player.Mod_Skill_Etheral_Link += 100;
+		player.Mod_Skill_Object_Knowledge += 100;
+		player.Mod_Skill_Casting += 5;
+		player.Mod_Skill_Projectile += 5;
+		player.Mod_Skill_Close_Combat += 5;
+		player.Mod_Skill_Defense += 100;
+		player.Mod_resist_magic += 100;
+		player.Mod_resist_poison += 100;
+		player.Mod_Critical_Hit += 5;
+		player.Mod_damages += 2;
+		player.Mod_armor_class += 100;
+		player.Full_AimTime = 100;
+	}
+	if(sp_max) {
+		player.Mod_Attribute_Strength += 5;
+		player.Mod_Attribute_Mind += 5;
+		player.Mod_Attribute_Constitution += 5;
+		player.Mod_Attribute_Dexterity += 5;
+		player.Mod_Skill_Stealth += 50;
+		player.Mod_Skill_Mecanism += 50;
+		player.Mod_Skill_Intuition += 50;
+		player.Mod_Skill_Etheral_Link += 50;
+		player.Mod_Skill_Object_Knowledge += 50;
+		player.Mod_Skill_Casting += 50;
+		player.Mod_Skill_Projectile += 50;
+		player.Mod_Skill_Close_Combat += 50;
+		player.Mod_Skill_Defense += 50;
+		player.Mod_resist_magic += 10;
+		player.Mod_resist_poison += 10;
+		player.Mod_Critical_Hit += 50;
+		player.Mod_damages += 10;
+		player.Mod_armor_class += 20;
+		player.Full_AimTime = 100;
+	}
+	if(SPECIAL_PNUX) {
+		player.Mod_Attribute_Strength += Random::get(0, 5);
+		player.Mod_Attribute_Mind += Random::get(0, 5);
+		player.Mod_Attribute_Constitution += Random::get(0, 5);
+		player.Mod_Attribute_Dexterity += Random::get(0, 5);
+		player.Mod_Skill_Stealth += Random::get(0, 20);
+		player.Mod_Skill_Mecanism += Random::get(0, 20);
+		player.Mod_Skill_Intuition += Random::get(0, 20);
+		player.Mod_Skill_Etheral_Link += Random::get(0, 20);
+		player.Mod_Skill_Object_Knowledge += Random::get(0, 20);
+		player.Mod_Skill_Casting += Random::get(0, 20);
+		player.Mod_Skill_Projectile += Random::get(0, 20);
+		player.Mod_Skill_Close_Combat += Random::get(0, 20);
+		player.Mod_Skill_Defense += Random::get(0, 30);
+		player.Mod_resist_magic += Random::get(0, 20);
+		player.Mod_resist_poison += Random::get(0, 20);
+		player.Mod_Critical_Hit += Random::get(0, 20);
+		player.Mod_damages += Random::get(0, 20);
+		player.Mod_armor_class += Random::get(0, 20);
+	}
+	if(cur_rf == 3) {
+		player.Mod_Attribute_Mind += 10;
+		player.Mod_Skill_Casting += 100;
+		player.Mod_Skill_Etheral_Link += 100;
+		player.Mod_Skill_Object_Knowledge += 100;
+		player.Mod_resist_magic += 20;
+		player.Mod_resist_poison += 20;
+		player.Mod_damages += 1;
+		player.Mod_armor_class += 5;
+	}
+	
+	
+	/////////////////////////////////////////////////////////////////////////////////////
+	// Attributes
 	
 	// Calculate equipment modifiers for attributes
-	player.Mod_Attribute_Strength = getEquipmentModifier(
+	player.Mod_Attribute_Strength += getEquipmentModifier(
 		IO_EQUIPITEM_ELEMENT_STRENGTH, player.Attribute_Strength
 	);
-	player.Mod_Attribute_Dexterity = getEquipmentModifier(
+	player.Mod_Attribute_Dexterity += getEquipmentModifier(
 		IO_EQUIPITEM_ELEMENT_DEXTERITY, player.Attribute_Dexterity
 	);
-	player.Mod_Attribute_Constitution = getEquipmentModifier(
+	player.Mod_Attribute_Constitution += getEquipmentModifier(
 		IO_EQUIPITEM_ELEMENT_CONSTITUTION, player.Attribute_Constitution
 	);
-	player.Mod_Attribute_Mind = getEquipmentModifier(
+	player.Mod_Attribute_Mind += getEquipmentModifier(
 		IO_EQUIPITEM_ELEMENT_MIND, player.Attribute_Mind
 	);
 	
+	
+	/////////////////////////////////////////////////////////////////////////////////////
+	// Skills
 	
 	// Calculate base skills
 	float base_stealth          = player.Skill_Stealth
@@ -640,6 +754,9 @@ void ARX_PLAYER_ComputePlayerFullStats() {
 	);
 	
 	
+	/////////////////////////////////////////////////////////////////////////////////////
+	// Other stats
+	
 	// Calculate equipment modifiers for skills
 	// TODO these use the full attribute and skill values from last frame!
 	player.Mod_armor_class += getEquipmentModifier(
@@ -661,120 +778,6 @@ void ARX_PLAYER_ComputePlayerFullStats() {
 	
 	//player.Full_AimTime=getEquipmentModifier(
 	//	IO_EQUIPITEM_ELEMENT_AimTime,0);
-
-
-
-	// Check for Spell Modificators
-	if (entities.player())
-		for (long i = 0; i < entities.player()->nb_spells_on; i++)
-		{
-			long n = entities.player()->spells_on[i];
-
-			if (spells[n].exist)
-			{
-				switch (spells[n].type)
-				{
-					case SPELL_ARMOR:
-						player.Mod_armor_class += spells[n].caster_level;
-						break;
-					case SPELL_LOWER_ARMOR:
-						player.Mod_armor_class -= spells[n].caster_level;
-						break;
-					case SPELL_CURSE:
-						player.Mod_Attribute_Strength -= spells[n].caster_level;
-						player.Mod_Attribute_Constitution -= spells[n].caster_level;
-						player.Mod_Attribute_Dexterity -= spells[n].caster_level;
-						player.Mod_Attribute_Mind -= spells[n].caster_level;
-						break;
-					case SPELL_BLESS:
-						player.Mod_Attribute_Strength += spells[n].caster_level;
-						player.Mod_Attribute_Dexterity += spells[n].caster_level;
-						player.Mod_Attribute_Constitution += spells[n].caster_level;
-						player.Mod_Attribute_Mind += spells[n].caster_level;
-						break;
-					default: break;
-				}
-			}
-		}
-
-	if (cur_mr == 3)
-	{
-		player.Mod_Attribute_Strength += 1;
-		player.Mod_Attribute_Mind += 10;
-		player.Mod_Attribute_Constitution += 1;
-		player.Mod_Attribute_Dexterity += 10;
-		player.Mod_Skill_Stealth += 5;
-		player.Mod_Skill_Mecanism += 5;
-		player.Mod_Skill_Intuition += 100;
-		player.Mod_Skill_Etheral_Link += 100;
-		player.Mod_Skill_Object_Knowledge += 100;
-		player.Mod_Skill_Casting += 5;
-		player.Mod_Skill_Projectile += 5;
-		player.Mod_Skill_Close_Combat += 5;
-		player.Mod_Skill_Defense += 100;
-		player.Mod_resist_magic += 100;
-		player.Mod_resist_poison += 100;
-		player.Mod_Critical_Hit += 5;
-		player.Mod_damages += 2;
-		player.Mod_armor_class += 100;
-		player.Full_AimTime = 100;
-	}
-
-	if (sp_max)
-	{
-		player.Mod_Attribute_Strength += 5;
-		player.Mod_Attribute_Mind += 5;
-		player.Mod_Attribute_Constitution += 5;
-		player.Mod_Attribute_Dexterity += 5;
-		player.Mod_Skill_Stealth += 50;
-		player.Mod_Skill_Mecanism += 50;
-		player.Mod_Skill_Intuition += 50;
-		player.Mod_Skill_Etheral_Link += 50;
-		player.Mod_Skill_Object_Knowledge += 50;
-		player.Mod_Skill_Casting += 50;
-		player.Mod_Skill_Projectile += 50;
-		player.Mod_Skill_Close_Combat += 50;
-		player.Mod_Skill_Defense += 50;
-		player.Mod_resist_magic += 10;
-		player.Mod_resist_poison += 10;
-		player.Mod_Critical_Hit += 50;
-		player.Mod_damages += 10;
-		player.Mod_armor_class += 20;
-		player.Full_AimTime = 100;
-	}
-	
-	if(SPECIAL_PNUX) {
-		player.Mod_Attribute_Strength += Random::get(0, 5);
-		player.Mod_Attribute_Mind += Random::get(0, 5);
-		player.Mod_Attribute_Constitution += Random::get(0, 5);
-		player.Mod_Attribute_Dexterity += Random::get(0, 5);
-		player.Mod_Skill_Stealth += Random::get(0, 20);
-		player.Mod_Skill_Mecanism += Random::get(0, 20);
-		player.Mod_Skill_Intuition += Random::get(0, 20);
-		player.Mod_Skill_Etheral_Link += Random::get(0, 20);
-		player.Mod_Skill_Object_Knowledge += Random::get(0, 20);
-		player.Mod_Skill_Casting += Random::get(0, 20);
-		player.Mod_Skill_Projectile += Random::get(0, 20);
-		player.Mod_Skill_Close_Combat += Random::get(0, 20);
-		player.Mod_Skill_Defense += Random::get(0, 30);
-		player.Mod_resist_magic += Random::get(0, 20);
-		player.Mod_resist_poison += Random::get(0, 20);
-		player.Mod_Critical_Hit += Random::get(0, 20);
-		player.Mod_damages += Random::get(0, 20);
-		player.Mod_armor_class += Random::get(0, 20);
-	}
-	
-	if (cur_rf == 3)
-	{
-		player.Mod_Attribute_Mind += 10;
-		player.Mod_Skill_Casting += 100;
-		player.Mod_Skill_Etheral_Link += 100;
-		player.Mod_Skill_Object_Knowledge += 100;
-		player.Mod_resist_magic += 20;
-		player.Mod_resist_poison += 20;
-		player.Mod_damages += 1;
-		player.Mod_armor_class += 5;
-	}
 
 	player.Full_Attribute_Strength = player.Attribute_Strength + player.Mod_Attribute_Strength;
 
