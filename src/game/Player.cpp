@@ -634,20 +634,12 @@ void ARX_PLAYER_ComputePlayerFullStats()
 	player.Mod_resist_poison = 0;
 	player.Mod_Critical_Hit = 0;
 	player.Mod_damages = 0;
-
+	
+	// TODO why do this now and not after skills/stats have been calculated?
 	ARX_EQUIPMENT_IdentifyAll();
 
 	player.Full_Weapon_Type = ARX_EQUIPMENT_GetPlayerWeaponType();
 
-	// Check for Equipment Modificators to Attributes
-	player.Mod_Attribute_Strength = getEquipmentBaseModifier(
-	                                    IO_EQUIPITEM_ELEMENT_STRENGTH);
-	player.Mod_Attribute_Dexterity = getEquipmentBaseModifier(
-	                                     IO_EQUIPITEM_ELEMENT_DEXTERITY);
-	player.Mod_Attribute_Constitution = getEquipmentBaseModifier(
-	                                        IO_EQUIPITEM_ELEMENT_CONSTITUTION);
-	player.Mod_Attribute_Mind = getEquipmentBaseModifier(
-	                                IO_EQUIPITEM_ELEMENT_MIND);
 	player.Mod_armor_class = getEquipmentBaseModifier(
 	                             IO_EQUIPITEM_ELEMENT_Armor_Class);
 
@@ -713,18 +705,22 @@ void ARX_PLAYER_ComputePlayerFullStats()
 	player.Full_Critical_Hit = (float)(player.Full_Attribute_Dexterity - 9) * 2.f
 	                           + (float)(player.Full_Skill_Close_Combat * ( 1.0f / 5 ));
 
-
-	/// PERCENTILE.....
-	player.Mod_Attribute_Strength += ARX_EQUIPMENT_ApplyPercent(
-	                                     IO_EQUIPITEM_ELEMENT_STRENGTH, player.Attribute_Strength + player.Mod_Attribute_Strength);
-	player.Mod_Attribute_Dexterity += ARX_EQUIPMENT_ApplyPercent(
-	                                      IO_EQUIPITEM_ELEMENT_DEXTERITY, player.Attribute_Dexterity + player.Mod_Attribute_Dexterity);
-	player.Mod_Attribute_Constitution += ARX_EQUIPMENT_ApplyPercent(
-	        IO_EQUIPITEM_ELEMENT_CONSTITUTION, player.Attribute_Constitution + player.Mod_Attribute_Constitution);
-	player.Mod_Attribute_Mind += ARX_EQUIPMENT_ApplyPercent(
-	                                 IO_EQUIPITEM_ELEMENT_MIND, player.Attribute_Mind + player.Mod_Attribute_Mind);
-
-	// Check for Equipment Modificators to Skills
+	
+	// Calculate equipment modifiers for attributes
+	player.Mod_Attribute_Strength = getEquipmentModifier(
+		IO_EQUIPITEM_ELEMENT_STRENGTH, player.Attribute_Strength
+	);
+	player.Mod_Attribute_Dexterity = getEquipmentModifier(
+		IO_EQUIPITEM_ELEMENT_DEXTERITY, player.Attribute_Dexterity
+	);
+	player.Mod_Attribute_Constitution = getEquipmentModifier(
+		IO_EQUIPITEM_ELEMENT_CONSTITUTION, player.Attribute_Constitution
+	);
+	player.Mod_Attribute_Mind = getEquipmentModifier(
+		IO_EQUIPITEM_ELEMENT_MIND, player.Attribute_Mind
+	);
+	
+	// Calculate equipment modifiers for skills
 	player.Mod_Skill_Stealth += ARX_EQUIPMENT_ApplyPercent(
 	                                IO_EQUIPITEM_ELEMENT_Stealth, ARX_PLAYER_Get_Skill_Stealth(1));
 	player.Mod_Skill_Mecanism += ARX_EQUIPMENT_ApplyPercent(
