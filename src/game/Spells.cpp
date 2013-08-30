@@ -6570,7 +6570,7 @@ void ARX_SPELLS_Update()
 							ARX_SPELLS_Fizzle(i);
 						}
 					}
-				break;				
+				break;
 				case SPELL_MANA_DRAIN: {
 					if(cabal) {
 						float refpos;
@@ -6588,12 +6588,12 @@ void ARX_SPELLS_Update()
 							cabalpos.x = player.pos.x;
 							cabalpos.y = player.pos.y + 60.f - mov;
 							cabalpos.z = player.pos.z;
-							refpos=player.pos.y+60.f;							
+							refpos=player.pos.y+60.f;
 						} else {
 							cabalpos.x = entities[spells[i].caster]->pos.x;
 							cabalpos.y = entities[spells[i].caster]->pos.y - scaley - mov;
 							cabalpos.z = entities[spells[i].caster]->pos.z;
-							refpos=entities[spells[i].caster]->pos.y-scaley;							
+							refpos=entities[spells[i].caster]->pos.y-scaley;
 						}
 
 						float Es=EEsin((float)arxtime.get_frame_time()*( 1.0f / 800 ) + radians(scaley));
