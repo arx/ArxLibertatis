@@ -522,7 +522,7 @@ float ARX_EQUIPMENT_ComputeDamages(Entity * io_source, Entity * io_target, float
 
 		attack = player.Full_damages;
 
-		if(rnd() * 100 <= (float)(player.Full_Attribute_Dexterity - 9) * 2.f + (float)(player.Full_Skill_Close_Combat * ( 1.0f / 5 )))
+		if(rnd() * 100 <= player.Full_Critical_Hit)
 		{
 			if(SendIOScriptEvent(io_source, SM_CRITICAL) != REFUSE)
 				critical = true;
