@@ -461,119 +461,6 @@ static const float skill_attribute_factors[max_skills][max_attributes] = {
 };
 */
 
-//*************************************************************************************
-// FUNCTION/RESULT:
-//   Returns player Stealth Skill level (Plain (type==0) or Modified (type==1))
-//*************************************************************************************
-static float ARX_PLAYER_Get_Skill_Stealth(long type) {
-	if(type == 0) {
-		return player.Skill_Stealth + player.Attribute_Dexterity * 2.f;
-	} else {
-		return player.Skill_Stealth + player.Mod_Skill_Stealth
-		       + player.Full_Attribute_Dexterity * 2.f;
-	}
-}
-//*************************************************************************************
-// FUNCTION/RESULT:
-//   Returns player Mecanism Skill level (Plain (type==0) or Modified (type==1))
-//*************************************************************************************
-static float ARX_PLAYER_Get_Skill_Mecanism(long type) {
-	if(type == 0) {
-		return player.Skill_Mecanism + player.Attribute_Dexterity + player.Attribute_Mind;
-	} else {
-		return player.Skill_Mecanism + player.Mod_Skill_Mecanism
-		       + player.Full_Attribute_Dexterity + player.Full_Attribute_Mind;
-	}
-}
-//*************************************************************************************
-// FUNCTION/RESULT:
-//   Returns player Intuition Skill level (Plain (type==0) or Modified (type==1))
-//*************************************************************************************
-static float ARX_PLAYER_Get_Skill_Intuition(long type) {
-	if(type == 0) {
-		return player.Skill_Intuition + player.Attribute_Mind * 2.f;
-	} else {
-		return player.Skill_Intuition + player.Mod_Skill_Intuition
-		       + player.Full_Attribute_Mind * 2.f;
-	}
-}
-//*************************************************************************************
-// FUNCTION/RESULT:
-//   Returns player Etheral Link Skill level (Plain (type==0) or Modified (type==1))
-//*************************************************************************************
-static float ARX_PLAYER_Get_Skill_Etheral_Link(long type) {
-	if(type == 0) {
-		return player.Skill_Etheral_Link + player.Attribute_Mind * 2.f;
-	} else {
-		return player.Skill_Etheral_Link + player.Mod_Skill_Etheral_Link
-		       + player.Full_Attribute_Mind * 2.f;
-	}
-}
-//*************************************************************************************
-// FUNCTION/RESULT:
-//   Returns player Object Knowledge Skill level (Plain (type==0) or Modified (type==1))
-//*************************************************************************************
-static float ARX_PLAYER_Get_Skill_Object_Knowledge(long type) {
-	if(type == 0) {
-		return player.Skill_Object_Knowledge + player.Attribute_Mind * 1.5f
-		       + player.Attribute_Dexterity * 0.5f + player.Attribute_Strength * 0.5f;
-	} else {
-		return player.Skill_Object_Knowledge + player.Mod_Skill_Object_Knowledge
-		       + player.Full_Attribute_Mind * 1.5f + player.Full_Attribute_Dexterity * 0.5f
-		       + player.Full_Attribute_Strength * 0.5f;
-	}
-}
-//*************************************************************************************
-// FUNCTION/RESULT:
-//   Returns player Casting Skill level (Plain (type==0) or Modified (type==1))
-//*************************************************************************************
-static float ARX_PLAYER_Get_Skill_Casting(long type) {
-	if(type == 0) {
-		return player.Skill_Casting + player.Attribute_Mind * 2.f;
-	} else {
-		return player.Skill_Casting + player.Mod_Skill_Casting
-		       + player.Full_Attribute_Mind * 2.f;
-	}
-}
-//*************************************************************************************
-// FUNCTION/RESULT:
-//   Returns player Projectile Skill level (Plain (type==0) or Modified (type==1))
-//*************************************************************************************
-static float ARX_PLAYER_Get_Skill_Projectile(long type) {
-	if(type == 0) {
-		return player.Skill_Projectile
-		       + player.Attribute_Dexterity * 2.f + player.Attribute_Strength;
-	} else {
-		return player.Skill_Projectile + player.Mod_Skill_Projectile
-		       + player.Full_Attribute_Dexterity * 2.f + player.Full_Attribute_Strength;
-	}
-}
-//*************************************************************************************
-// FUNCTION/RESULT:
-//   Returns player Close Combat Skill level (Plain (type==0) or Modified (type==1))
-//*************************************************************************************
-static float ARX_PLAYER_Get_Skill_Close_Combat(long type) {
-	if(type == 0) {
-		return player.Skill_Close_Combat
-		       + player.Attribute_Dexterity + player.Attribute_Strength * 2.f;
-	} else {
-		return player.Skill_Close_Combat + player.Mod_Skill_Close_Combat
-		       + player.Full_Attribute_Dexterity + player.Full_Attribute_Strength * 2.f;
-	}
-}
-//*************************************************************************************
-// FUNCTION/RESULT:
-//   Returns player Defense Skill level (Plain (type==0) or Modified (type==1))
-//*************************************************************************************
-static float ARX_PLAYER_Get_Skill_Defense(long type) {
-	if(type == 0) {
-		return player.Skill_Defense + player.Attribute_Constitution * 3;
-	} else {
-		return player.Skill_Defense + player.Mod_Skill_Defense
-		       + player.Full_Attribute_Constitution * 3;
-	}
-}
-
 /*!
  * \brief Compute secondary attributes for player
  */
@@ -581,19 +468,19 @@ static void ARX_PLAYER_ComputePlayerStats() {
 	
 	player.maxlife = (float)player.Attribute_Constitution * (float)(player.level + 2);
 	player.maxmana = (float)player.Attribute_Mind * (float)(player.level + 1);
-	float t = ARX_PLAYER_Get_Skill_Defense(0);
-
-
-	float fCalc = t * ( 1.0f / 10 ) - 1 ;
+	
+	float base_defense = player.Skill_Defense + player.Attribute_Constitution * 3;
+	float fCalc = base_defense * ( 1.0f / 10 ) - 1 ;
 	player.armor_class = checked_range_cast<unsigned char>(fCalc);
 
 
 	if (player.armor_class < 1) player.armor_class = 1;
 
+	float base_casting = player.Skill_Casting + player.Attribute_Mind * 2.f;
 	player.resist_magic = (unsigned char)(float)(player.Attribute_Mind * 2.f
-	                      * (1.f + (ARX_PLAYER_Get_Skill_Casting(0)) * ( 1.0f / 200 )));
+	                      * (1.f + base_casting * ( 1.0f / 200 )));
 
-	fCalc = player.Attribute_Constitution * 2 + ((ARX_PLAYER_Get_Skill_Defense(0) * ( 1.0f / 4 )));
+	fCalc = player.Attribute_Constitution * 2 + (base_defense * ( 1.0f / 4 ));
 	player.resist_poison = checked_range_cast<unsigned char>(fCalc);
 
 
@@ -603,8 +490,10 @@ static void ARX_PLAYER_ComputePlayerStats() {
 
 	player.AimTime = 1500;
 	
+	float base_close_combat = player.Skill_Close_Combat
+	                          + player.Attribute_Dexterity + player.Attribute_Strength * 2.f;
 	player.Critical_Hit = (float)(player.Attribute_Dexterity - 9) * 2.f
-	                      + (ARX_PLAYER_Get_Skill_Close_Combat(0) * ( 1.0f / 5 ));
+	                      + base_close_combat * ( 1.0f / 5 );
 }
 extern long cur_mr;
 extern long SPECIAL_PNUX;
@@ -616,6 +505,8 @@ extern long SPECIAL_PNUX;
 void ARX_PLAYER_ComputePlayerFullStats() {
 	
 	ARX_PLAYER_ComputePlayerStats();
+	
+	// Reset modifier values
 	player.Mod_Attribute_Strength = 0;
 	player.Mod_Attribute_Dexterity = 0;
 	player.Mod_Attribute_Constitution = 0;
@@ -693,34 +584,59 @@ void ARX_PLAYER_ComputePlayerFullStats() {
 	);
 	
 	
+	// Calculate base skills
+	float base_stealth          = player.Skill_Stealth
+	                              + player.Full_Attribute_Dexterity * 2.f;
+	float base_mecanism         = player.Skill_Mecanism
+	                              + player.Full_Attribute_Dexterity
+	                              + player.Full_Attribute_Mind;
+	float base_intuition        = player.Skill_Intuition
+	                              + player.Full_Attribute_Mind * 2.f;
+	float base_ethereal_link    = player.Skill_Etheral_Link
+	                              + player.Full_Attribute_Mind * 2.f;
+	float base_object_knowledge = player.Skill_Object_Knowledge
+	                              + player.Full_Attribute_Mind * 1.5f
+	                              + player.Full_Attribute_Dexterity * 0.5f
+	                              + player.Full_Attribute_Strength * 0.5f;
+	float base_casting          = player.Skill_Casting
+	                              + player.Full_Attribute_Mind * 2.f;
+	float base_projectile       = player.Skill_Projectile
+	                              + player.Full_Attribute_Dexterity * 2.f
+	                              + player.Full_Attribute_Strength;
+	float base_close_combat     = player.Skill_Close_Combat
+	                              + player.Full_Attribute_Dexterity
+	                              + player.Full_Attribute_Strength * 2.f;
+	float base_defense          = player.Skill_Defense
+	                              + player.Full_Attribute_Constitution * 3;
+	
 	// Calculate equipment modifiers for skills
 	// TODO these use the full attribute_* values from last frame!
 	player.Mod_Skill_Stealth += getEquipmentModifier(
-		IO_EQUIPITEM_ELEMENT_Stealth, ARX_PLAYER_Get_Skill_Stealth(1)
+		IO_EQUIPITEM_ELEMENT_Stealth, base_stealth
 	);
 	player.Mod_Skill_Mecanism += getEquipmentModifier(
-		IO_EQUIPITEM_ELEMENT_Mecanism, ARX_PLAYER_Get_Skill_Mecanism(1)
+		IO_EQUIPITEM_ELEMENT_Mecanism, base_mecanism
 	);
 	player.Mod_Skill_Intuition += getEquipmentModifier(
-		IO_EQUIPITEM_ELEMENT_Intuition, ARX_PLAYER_Get_Skill_Intuition(1)
+		IO_EQUIPITEM_ELEMENT_Intuition, base_intuition
 	);
 	player.Mod_Skill_Etheral_Link += getEquipmentModifier(
-		IO_EQUIPITEM_ELEMENT_Etheral_Link, ARX_PLAYER_Get_Skill_Etheral_Link(1)
+		IO_EQUIPITEM_ELEMENT_Etheral_Link, base_ethereal_link
 	);
 	player.Mod_Skill_Object_Knowledge += getEquipmentModifier(
-		IO_EQUIPITEM_ELEMENT_Object_Knowledge, ARX_PLAYER_Get_Skill_Object_Knowledge(1)
+		IO_EQUIPITEM_ELEMENT_Object_Knowledge, base_object_knowledge
 	);
 	player.Mod_Skill_Casting += getEquipmentModifier(
-		IO_EQUIPITEM_ELEMENT_Casting, ARX_PLAYER_Get_Skill_Casting(1)
+		IO_EQUIPITEM_ELEMENT_Casting, base_casting
 	);
 	player.Mod_Skill_Projectile += getEquipmentModifier(
-		IO_EQUIPITEM_ELEMENT_Projectile, ARX_PLAYER_Get_Skill_Projectile(1)
+		IO_EQUIPITEM_ELEMENT_Projectile, base_projectile
 	);
 	player.Mod_Skill_Close_Combat += getEquipmentModifier(
-		IO_EQUIPITEM_ELEMENT_Close_Combat, ARX_PLAYER_Get_Skill_Close_Combat(1)
+		IO_EQUIPITEM_ELEMENT_Close_Combat, base_close_combat
 	);
 	player.Mod_Skill_Defense += getEquipmentModifier(
-		IO_EQUIPITEM_ELEMENT_Defense, ARX_PLAYER_Get_Skill_Defense(1)
+		IO_EQUIPITEM_ELEMENT_Defense, base_defense
 	);
 	
 	
@@ -876,15 +792,15 @@ void ARX_PLAYER_ComputePlayerFullStats() {
 
 	if (player.Full_Attribute_Dexterity < 0) player.Full_Attribute_Dexterity = 0;
 
-	player.Full_Skill_Stealth = ARX_PLAYER_Get_Skill_Stealth(1);
-	player.Full_Skill_Mecanism = ARX_PLAYER_Get_Skill_Mecanism(1);
-	player.Full_Skill_Intuition = ARX_PLAYER_Get_Skill_Intuition(1);
-	player.Full_Skill_Etheral_Link = ARX_PLAYER_Get_Skill_Etheral_Link(1);
-	player.Full_Skill_Object_Knowledge = ARX_PLAYER_Get_Skill_Object_Knowledge(1);
-	player.Full_Skill_Casting = ARX_PLAYER_Get_Skill_Casting(1);
-	player.Full_Skill_Projectile = ARX_PLAYER_Get_Skill_Projectile(1);
-	player.Full_Skill_Close_Combat = ARX_PLAYER_Get_Skill_Close_Combat(1);
-	player.Full_Skill_Defense = ARX_PLAYER_Get_Skill_Defense(1);
+	player.Full_Skill_Stealth = base_stealth + player.Mod_Skill_Stealth;
+	player.Full_Skill_Mecanism = base_mecanism + player.Mod_Skill_Mecanism;
+	player.Full_Skill_Intuition = base_intuition + player.Mod_Skill_Intuition;
+	player.Full_Skill_Etheral_Link = base_ethereal_link + player.Mod_Skill_Etheral_Link;
+	player.Full_Skill_Object_Knowledge = base_object_knowledge + player.Mod_Skill_Object_Knowledge;
+	player.Full_Skill_Casting = base_casting + player.Mod_Skill_Casting;
+	player.Full_Skill_Projectile = base_projectile + player.Mod_Skill_Projectile;
+	player.Full_Skill_Close_Combat = base_close_combat + player.Mod_Skill_Close_Combat;
+	player.Full_Skill_Defense = base_defense + player.Mod_Skill_Defense;
 
 	player.Full_armor_class += player.Mod_armor_class;
 
