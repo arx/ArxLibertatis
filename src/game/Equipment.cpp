@@ -1162,6 +1162,12 @@ float ARX_EQUIPMENT_ApplyPercent(EquipmentModifierType modifier, float baseval) 
 	return getEquipmentBaseModifier(modifier, true) * baseval;
 }
 
+float getEquipmentModifier(EquipmentModifierType modifier, float baseval) {
+	float modabs = getEquipmentBaseModifier(modifier, false);
+	float modrel = getEquipmentBaseModifier(modifier, true);
+	return modabs + modrel * (baseval + modabs);
+}
+
 void ARX_EQUIPMENT_SetEquip(Entity * io, bool special,
                             const std::string & param2, float val,
                             EquipmentModifierFlags flags) {
