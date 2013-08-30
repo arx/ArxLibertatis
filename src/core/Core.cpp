@@ -1435,7 +1435,7 @@ static void PlayerLaunchArrow_Test(float aimratio, float poisonous, Vec3f * pos,
 	MatrixSetByVectors(&tmat,&v1,&v2);
 	QuatFromMatrix(quat,tmat);
 
-	float wd = (float)ARX_EQUIPMENT_Apply(entities.player(), IO_EQUIPITEM_ELEMENT_Damages, 1);
+	float wd = (float)ARX_EQUIPMENT_Apply(entities.player(), IO_EQUIPITEM_ELEMENT_Damages);
 
 	float weapon_damages=wd;
 

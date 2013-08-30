@@ -1135,7 +1135,7 @@ void ARX_EQUIPMENT_Remove_All_Special(Entity * io)
 }
 
 //! \brief Sets an equipment property
-float ARX_EQUIPMENT_Apply(Entity *io, EquipmentModifierType ident, float trueval) {
+float ARX_EQUIPMENT_Apply(Entity *io, EquipmentModifierType ident) {
 	
 	if(!io || io != entities.player())
 		return 0;

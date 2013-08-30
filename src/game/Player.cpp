@@ -642,48 +642,48 @@ void ARX_PLAYER_ComputePlayerFullStats()
 	Entity * io = entities.player();
 	// Check for Equipment Modificators to Attributes
 	player.Mod_Attribute_Strength = ARX_EQUIPMENT_Apply(
-	                                    io, IO_EQUIPITEM_ELEMENT_STRENGTH, player.Attribute_Strength);
+	                                    io, IO_EQUIPITEM_ELEMENT_STRENGTH);
 	player.Mod_Attribute_Dexterity = ARX_EQUIPMENT_Apply(
-	                                     io, IO_EQUIPITEM_ELEMENT_DEXTERITY, player.Attribute_Dexterity);
+	                                     io, IO_EQUIPITEM_ELEMENT_DEXTERITY);
 	player.Mod_Attribute_Constitution = ARX_EQUIPMENT_Apply(
-	                                        io, IO_EQUIPITEM_ELEMENT_CONSTITUTION, player.Attribute_Constitution);
+	                                        io, IO_EQUIPITEM_ELEMENT_CONSTITUTION);
 	player.Mod_Attribute_Mind = ARX_EQUIPMENT_Apply(
-	                                io, IO_EQUIPITEM_ELEMENT_MIND, player.Attribute_Mind);
+	                                io, IO_EQUIPITEM_ELEMENT_MIND);
 	player.Mod_armor_class = ARX_EQUIPMENT_Apply(
-	                             io, IO_EQUIPITEM_ELEMENT_Armor_Class, player.armor_class);
+	                             io, IO_EQUIPITEM_ELEMENT_Armor_Class);
 
 	// Check for Equipment Modificators to Skills
 	player.Mod_Skill_Stealth = ARX_EQUIPMENT_Apply(
-	                               io, IO_EQUIPITEM_ELEMENT_Stealth, ARX_PLAYER_Get_Skill_Stealth(0));
+	                               io, IO_EQUIPITEM_ELEMENT_Stealth);
 	player.Mod_Skill_Mecanism = ARX_EQUIPMENT_Apply(
-	                                io, IO_EQUIPITEM_ELEMENT_Mecanism, ARX_PLAYER_Get_Skill_Mecanism(0));
+	                                io, IO_EQUIPITEM_ELEMENT_Mecanism);
 	player.Mod_Skill_Intuition = ARX_EQUIPMENT_Apply(
-	                                 io, IO_EQUIPITEM_ELEMENT_Intuition, ARX_PLAYER_Get_Skill_Intuition(0));
+	                                 io, IO_EQUIPITEM_ELEMENT_Intuition);
 	player.Mod_Skill_Etheral_Link = ARX_EQUIPMENT_Apply(
-	                                    io, IO_EQUIPITEM_ELEMENT_Etheral_Link, ARX_PLAYER_Get_Skill_Etheral_Link(0));
+	                                    io, IO_EQUIPITEM_ELEMENT_Etheral_Link);
 	player.Mod_Skill_Object_Knowledge = ARX_EQUIPMENT_Apply(
-	                                        io, IO_EQUIPITEM_ELEMENT_Object_Knowledge, ARX_PLAYER_Get_Skill_Object_Knowledge(0));
+	                                        io, IO_EQUIPITEM_ELEMENT_Object_Knowledge);
 	player.Mod_Skill_Casting = ARX_EQUIPMENT_Apply(
-	                               io, IO_EQUIPITEM_ELEMENT_Casting, ARX_PLAYER_Get_Skill_Casting(0));
+	                               io, IO_EQUIPITEM_ELEMENT_Casting);
 	player.Mod_Skill_Projectile = ARX_EQUIPMENT_Apply(
-	                                  io, IO_EQUIPITEM_ELEMENT_Projectile, ARX_PLAYER_Get_Skill_Projectile(0));
+	                                  io, IO_EQUIPITEM_ELEMENT_Projectile);
 	player.Mod_Skill_Close_Combat = ARX_EQUIPMENT_Apply(
-	                                    io, IO_EQUIPITEM_ELEMENT_Close_Combat, ARX_PLAYER_Get_Skill_Close_Combat(0));
+	                                    io, IO_EQUIPITEM_ELEMENT_Close_Combat);
 	player.Mod_Skill_Defense = ARX_EQUIPMENT_Apply(
-	                               io, IO_EQUIPITEM_ELEMENT_Defense, ARX_PLAYER_Get_Skill_Defense(0));
+	                               io, IO_EQUIPITEM_ELEMENT_Defense);
 
 	player.Mod_resist_magic = ARX_EQUIPMENT_Apply(
-	                              io, IO_EQUIPITEM_ELEMENT_Resist_Magic, player.resist_magic);
+	                              io, IO_EQUIPITEM_ELEMENT_Resist_Magic);
 	player.Mod_resist_poison = ARX_EQUIPMENT_Apply(
-	                               io, IO_EQUIPITEM_ELEMENT_Resist_Poison, player.resist_poison);
+	                               io, IO_EQUIPITEM_ELEMENT_Resist_Poison);
 	player.Mod_Critical_Hit = ARX_EQUIPMENT_Apply(
-	                              io, IO_EQUIPITEM_ELEMENT_Critical_Hit, player.Critical_Hit);
+	                              io, IO_EQUIPITEM_ELEMENT_Critical_Hit);
 	player.Mod_damages = ARX_EQUIPMENT_Apply(
-	                         io, IO_EQUIPITEM_ELEMENT_Damages, 0);
+	                         io, IO_EQUIPITEM_ELEMENT_Damages);
 
 
 	//CHECK OVERFLOW
-	float fFullAimTime	= ARX_EQUIPMENT_Apply(io, IO_EQUIPITEM_ELEMENT_AimTime, 0);
+	float fFullAimTime	= ARX_EQUIPMENT_Apply(io, IO_EQUIPITEM_ELEMENT_AimTime);
 	float fCalcHandicap	= (player.Full_Attribute_Dexterity - 10.f) * 20.f;
 
 	//CAST

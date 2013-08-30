@@ -95,10 +95,8 @@ void ARX_EQUIPMENT_LaunchPlayerReadyWeapon();
  
 void ARX_EQUIPMENT_LaunchPlayerUnReadyWeapon();
 WeaponType ARX_EQUIPMENT_GetPlayerWeaponType();
-float ARX_EQUIPMENT_Apply(Entity * io, EquipmentModifierType ident,
-                                       float trueval);
-float ARX_EQUIPMENT_ApplyPercent(Entity * io, EquipmentModifierType ident,
-                                 float trueval);
+float ARX_EQUIPMENT_Apply(Entity * io, EquipmentModifierType ident);
+float ARX_EQUIPMENT_ApplyPercent(Entity * io, EquipmentModifierType ident, float trueval);
 bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float percentaim, long flags, long targ = -1);
 void ARX_EQUIPMENT_RecreatePlayerMesh();
 float ARX_EQUIPMENT_ComputeDamages(Entity * io_source, Entity * io_target, float ratioaim, Vec3f * pos = NULL);
