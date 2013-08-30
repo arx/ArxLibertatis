@@ -682,6 +682,12 @@ void ARX_PLAYER_ComputePlayerFullStats() {
 		IO_EQUIPITEM_ELEMENT_MIND, base_mind
 	);
 	
+	// Calculate full alltributes
+	player.Full_Attribute_Strength = std::max(0.f, base_strength + player.Mod_Attribute_Strength);
+	player.Full_Attribute_Mind = std::max(0.f, base_mind + player.Mod_Attribute_Mind);
+	player.Full_Attribute_Constitution = std::max(0.f, base_constitution + player.Mod_Attribute_Constitution);
+	player.Full_Attribute_Dexterity = std::max(0.f, base_dexterity + player.Mod_Attribute_Dexterity);
+	
 	
 	/////////////////////////////////////////////////////////////////////////////////////
 	// Skills
@@ -780,23 +786,8 @@ void ARX_PLAYER_ComputePlayerFullStats() {
 	
 	//player.Full_AimTime=getEquipmentModifier(
 	//	IO_EQUIPITEM_ELEMENT_AimTime,0);
-
-	player.Full_Attribute_Strength = base_strength + player.Mod_Attribute_Strength;
-
-	if (player.Full_Attribute_Strength < 0) player.Full_Attribute_Strength = 0;
-
-	player.Full_Attribute_Mind = base_mind + player.Mod_Attribute_Mind;
-
-	if (player.Full_Attribute_Mind < 0) player.Full_Attribute_Mind = 0;
-
-	player.Full_Attribute_Constitution = base_constitution + player.Mod_Attribute_Constitution;
-
-	if (player.Full_Attribute_Constitution < 0) player.Full_Attribute_Constitution = 0;
-
-	player.Full_Attribute_Dexterity = base_dexterity + player.Mod_Attribute_Dexterity;
-
-	if (player.Full_Attribute_Dexterity < 0) player.Full_Attribute_Dexterity = 0;
-
+	
+	
 	player.Full_Skill_Stealth = base_stealth + player.Mod_Skill_Stealth;
 	player.Full_Skill_Mecanism = base_mecanism + player.Mod_Skill_Mecanism;
 	player.Full_Skill_Intuition = base_intuition + player.Mod_Skill_Intuition;
