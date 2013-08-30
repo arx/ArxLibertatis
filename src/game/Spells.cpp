@@ -6581,7 +6581,6 @@ void ARX_SPELLS_Update()
 						else
 							scaley=EEfabs(entities[spells[i].caster]->physics.cyl.height*( 1.0f / 2 ))+30.f;
 
-						float mov1=EEsin((float)arxtime.get_last_frame_time()*( 1.0f / 800 ))*scaley;
 						float mov=EEsin((float)arxtime.get_frame_time()*( 1.0f / 800 ))*scaley;
 
 						Vec3f cabalpos;
