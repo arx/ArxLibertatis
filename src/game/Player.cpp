@@ -593,7 +593,7 @@ static void ARX_PLAYER_ComputePlayerStats() {
 	player.resist_magic = (unsigned char)(float)(player.Attribute_Mind * 2.f
 	                      * (1.f + (ARX_PLAYER_Get_Skill_Casting(0)) * ( 1.0f / 200 )));
 
-	fCalc = player.Attribute_Constitution * 2 + ((ARX_PLAYER_Get_Skill_Defense(1) * ( 1.0f / 4 )));
+	fCalc = player.Attribute_Constitution * 2 + ((ARX_PLAYER_Get_Skill_Defense(0) * ( 1.0f / 4 )));
 	player.resist_poison = checked_range_cast<unsigned char>(fCalc);
 
 
@@ -694,6 +694,20 @@ void ARX_PLAYER_ComputePlayerFullStats()
 	if (player.Full_AimTime <= 1500) player.Full_AimTime = 1500;
 
 
+	// Full Stats
+	float fCalc = player.Full_Skill_Defense * ( 1.0f / 10 ) - 1;
+	player.Full_armor_class = checked_range_cast<unsigned char>(fCalc);
+	if (player.Full_armor_class < 1) player.Full_armor_class = 1;
+
+	player.Full_resist_magic = (unsigned char)(float)(player.Full_Attribute_Mind * 2.f
+	                           * (1.f + player.Full_Skill_Casting * ( 1.0f / 200 )));
+
+	fCalc = player.Full_Attribute_Constitution * 2 + (player.Full_Skill_Defense * ( 1.0f / 4 ));
+	player.Full_resist_poison = checked_range_cast<unsigned char>(fCalc);
+
+	player.Full_damages = (player.Full_Attribute_Strength - 10) * ( 1.0f / 2 );
+	if (player.Full_damages < 1.f) player.Full_damages = 1.f;
+
 
 	/// PERCENTILE.....
 	player.Mod_Attribute_Strength += ARX_EQUIPMENT_ApplyPercent(
@@ -704,8 +718,6 @@ void ARX_PLAYER_ComputePlayerFullStats()
 	        io, IO_EQUIPITEM_ELEMENT_CONSTITUTION, player.Attribute_Constitution + player.Mod_Attribute_Constitution);
 	player.Mod_Attribute_Mind += ARX_EQUIPMENT_ApplyPercent(
 	                                 io, IO_EQUIPITEM_ELEMENT_MIND, player.Attribute_Mind + player.Mod_Attribute_Mind);
-	player.Mod_armor_class += ARX_EQUIPMENT_ApplyPercent(
-	                              io, IO_EQUIPITEM_ELEMENT_Armor_Class, player.armor_class + player.Mod_armor_class);
 
 	// Check for Equipment Modificators to Skills
 	player.Mod_Skill_Stealth += ARX_EQUIPMENT_ApplyPercent(
@@ -727,14 +739,16 @@ void ARX_PLAYER_ComputePlayerFullStats()
 	player.Mod_Skill_Defense += ARX_EQUIPMENT_ApplyPercent(
 	                                io, IO_EQUIPITEM_ELEMENT_Defense, ARX_PLAYER_Get_Skill_Defense(1));
 
+	player.Mod_armor_class += ARX_EQUIPMENT_ApplyPercent(
+	                              io, IO_EQUIPITEM_ELEMENT_Armor_Class, player.Full_armor_class + player.Mod_armor_class);
 	player.Mod_resist_magic += ARX_EQUIPMENT_ApplyPercent(
-	                               io, IO_EQUIPITEM_ELEMENT_Resist_Magic, player.resist_magic + player.Mod_resist_magic);
+	                               io, IO_EQUIPITEM_ELEMENT_Resist_Magic, player.Full_resist_magic + player.Mod_resist_magic);
 	player.Mod_resist_poison += ARX_EQUIPMENT_ApplyPercent(
-	                                io, IO_EQUIPITEM_ELEMENT_Resist_Poison, player.resist_poison + player.Mod_resist_poison);
+	                                io, IO_EQUIPITEM_ELEMENT_Resist_Poison, player.Full_resist_poison + player.Mod_resist_poison);
 	player.Mod_Critical_Hit += ARX_EQUIPMENT_ApplyPercent(
 	                               io, IO_EQUIPITEM_ELEMENT_Critical_Hit, player.Critical_Hit + player.Mod_Critical_Hit);
 	player.Mod_damages += ARX_EQUIPMENT_ApplyPercent(
-	                          io, IO_EQUIPITEM_ELEMENT_Damages, player.damages);
+	                          io, IO_EQUIPITEM_ELEMENT_Damages, player.Full_damages + player.Mod_damages);
 	//player.Full_AimTime=ARX_EQUIPMENT_ApplyPercent(
 	//	io,IO_EQUIPITEM_ELEMENT_AimTime,0);
 
@@ -852,10 +866,6 @@ void ARX_PLAYER_ComputePlayerFullStats()
 		player.Mod_armor_class += 5;
 	}
 
-	player.Full_armor_class = player.armor_class + player.Mod_armor_class;
-
-	if (player.Full_armor_class < 0) player.Full_armor_class = 0;
-
 	player.Full_Attribute_Strength = player.Attribute_Strength + player.Mod_Attribute_Strength;
 
 	if (player.Full_Attribute_Strength < 0) player.Full_Attribute_Strength = 0;
@@ -882,11 +892,15 @@ void ARX_PLAYER_ComputePlayerFullStats()
 	player.Full_Skill_Close_Combat = ARX_PLAYER_Get_Skill_Close_Combat(1);
 	player.Full_Skill_Defense = ARX_PLAYER_Get_Skill_Defense(1);
 
-	player.Full_resist_magic = player.resist_magic + player.Mod_resist_magic;
+	player.Full_armor_class += player.Mod_armor_class;
+
+	if (player.Full_armor_class < 0) player.Full_armor_class = 0;
+
+	player.Full_resist_magic += player.Mod_resist_magic;
 
 	if (player.Full_resist_magic < 0) player.Full_resist_magic = 0;
 
-	player.Full_resist_poison = player.resist_poison + player.Mod_resist_poison;
+	player.Full_resist_poison += player.Mod_resist_poison;
 
 	if (player.Full_resist_poison < 0) player.Full_resist_poison = 0;
 
@@ -894,8 +908,7 @@ void ARX_PLAYER_ComputePlayerFullStats()
 
 	if (player.Full_Critical_Hit < 0) player.Full_Critical_Hit = 0;
 
-	player.Full_damages = player.damages + player.Mod_damages
-	                      + player.Full_Skill_Close_Combat * ( 1.0f / 10 );
+	player.Full_damages += player.Mod_damages + player.Full_Skill_Close_Combat * ( 1.0f / 10 );
 
 	if (player.Full_damages < 1) player.Full_damages = 1;
 
