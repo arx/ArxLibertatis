@@ -51,7 +51,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 struct EERIE_3DOBJ;
 
-void ARX_FOGS_Set_Object(EERIE_3DOBJ * _fogobj);
 void ARX_FOGS_Render();
 long ARX_FOGS_Count();
 long ARX_FOGS_GetFree();

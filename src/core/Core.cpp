@@ -92,6 +92,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/BaseGraphicsTypes.h"
 #include "graphics/Draw.h"
+#include "graphics/DrawDebug.h"
 #include "graphics/font/Font.h"
 #include "graphics/GraphicsModes.h"
 #include "graphics/GraphicsTypes.h"
@@ -165,7 +166,6 @@ static void shutdownGame();
 extern TextManager	*pTextManage;
 extern float FORCE_TIME_RESTORE;
 extern CMenuState		*pMenu;
-extern EERIE_3DOBJ * fogobj;
 extern float	InventoryX;
 extern float	PROGRESS_BAR_COUNT;
 extern float	PROGRESS_BAR_TOTAL;
@@ -226,7 +226,6 @@ TextureContainer *	sphere_particle=NULL;
 TextureContainer *	inventory_font=NULL;
 TextureContainer *	enviro=NULL;
 TextureContainer *	specular=NULL;
-TextureContainer *	lightsource_tc=NULL;
 TextureContainer *	stealth_gauge_tc=NULL;
 TextureContainer *	arx_logo_tc=NULL;
 TextureContainer *	TC_fire2=NULL;
@@ -254,7 +253,6 @@ EERIE_3DOBJ * GoldCoinsObj[MAX_GOLD_COINS_VISUALS];// 3D Objects For Gold Coins
 EERIE_3DOBJ	* arrowobj=NULL;			// 3D Object for arrows
 EERIE_3DOBJ * cameraobj=NULL;			// Camera 3D Object		// NEEDTO: Remove for Final
 EERIE_3DOBJ * markerobj=NULL;			// Marker 3D Object		// NEEDTO: Remove for Final
-EERIE_3DOBJ * nodeobj=NULL;				// Node 3D Object		// NEEDTO: Remove for Final
 EERIE_3DOBJ * eyeballobj=NULL;			// EyeBall 3D Object	// NEEDTO: Load dynamically
 EERIE_3DOBJ * cabal=NULL;				// Cabalistic 3D Object // NEEDTO: Load dynamically
 static EERIE_BACKGROUND DefaultBkg;
@@ -1313,7 +1311,6 @@ void LoadSysTextures()
 	TextureContainer::LoadUI("graph/particles/missile");
 	Z_map = TextureContainer::LoadUI("graph/interface/misc/z-map");
 	Boom=				TextureContainer::LoadUI("graph/particles/boom");
-	lightsource_tc=		TextureContainer::LoadUI("graph/particles/light");
 	stealth_gauge_tc=	TextureContainer::LoadUI("graph/interface/icons/stealth_gauge");
 	arx_logo_tc=		TextureContainer::LoadUI("graph/interface/icons/arx_logo_32");
 	iconequip[0]=		TextureContainer::LoadUI("graph/interface/icons/equipment_sword");
@@ -1514,12 +1511,12 @@ void ReleaseDanaeBeforeRun() {
 	
 	delete eyeballobj, eyeballobj = NULL;
 	delete cabal, cabal = NULL;
-	delete nodeobj, nodeobj = NULL;
-	delete fogobj, fogobj = NULL;
 	delete cameraobj, cameraobj = NULL;
 	delete markerobj, markerobj = NULL;
 	delete arrowobj, arrowobj = NULL;
 	
+	DrawDebugRelease();
+
 	BOOST_FOREACH(EERIE_3DOBJ * & obj, GoldCoinsObj) {
 		delete obj, obj = NULL;
 	}
@@ -3206,12 +3203,12 @@ void ReleaseSystemObjects() {
 	
 	delete eyeballobj, eyeballobj = NULL;
 	delete cabal, cabal = NULL;
-	delete nodeobj, nodeobj = NULL;
-	delete fogobj, fogobj = NULL;
 	delete cameraobj, cameraobj = NULL;
 	delete markerobj, markerobj = NULL;
 	delete arrowobj, arrowobj = NULL;
 	
+	DrawDebugRelease();
+
 	BOOST_FOREACH(EERIE_3DOBJ * & obj, GoldCoinsObj) {
 		delete obj, obj = NULL;
 	}

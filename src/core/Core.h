@@ -78,7 +78,6 @@ extern EERIE_CAMERA subj;
 extern Vec3f moveto;
 extern Vec2s STARTDRAG;
 extern EERIE_3DOBJ * GoldCoinsObj[MAX_GOLD_COINS_VISUALS];
-extern EERIE_3DOBJ * nodeobj;
 extern Vec3f Mscenepos;
 #ifdef BUILD_EDIT_LOADSAVE
 extern EERIE_MULTI3DSCENE * mse;

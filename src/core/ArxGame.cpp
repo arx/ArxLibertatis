@@ -776,12 +776,10 @@ bool ArxGame::beforeRun() {
 		}
 	}
 	
-	EERIE_3DOBJ * _fogobj = LoadTheObj("editor/obj3d/fog_generator.teo", "node_teo maps");
-	ARX_FOGS_Set_Object(_fogobj);
+	DrawDebugInit();
 	
 	eyeballobj = LoadTheObj("editor/obj3d/eyeball.teo", "eyeball_teo maps");
 	cabal = LoadTheObj("editor/obj3d/cabal.teo", "cabal_teo maps");
-	nodeobj = LoadTheObj("editor/obj3d/node.teo", "node_teo maps");
 	
 	cameraobj = loadObject("graph/obj3d/interactive/system/camera/camera.teo");
 	markerobj = loadObject("graph/obj3d/interactive/system/marker/marker.teo");

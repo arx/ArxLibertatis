@@ -30,6 +30,9 @@
 #include "gui/Interface.h"
 #include "gui/Text.h"
 
+#include "scene/Object.h"
+#include "graphics/data/TextureContainer.h"
+
 #include "game/Entity.h"
 #include "game/EntityManager.h"
 
@@ -39,7 +42,23 @@
 #include "scene/Light.h"
 #include "physics/Collisions.h"
 
-extern EERIE_3DOBJ * fogobj;
+TextureContainer * lightsource_tc = NULL;
+EERIE_3DOBJ * fogobj = NULL;
+EERIE_3DOBJ * nodeobj = NULL;				// Node 3D Object
+
+void DrawDebugInit() {
+	lightsource_tc = TextureContainer::LoadUI("graph/particles/light");
+	fogobj = LoadTheObj("editor/obj3d/fog_generator.teo", "node_teo maps");
+	nodeobj = LoadTheObj("editor/obj3d/node.teo", "node_teo maps");
+}
+
+void DrawDebugRelease() {
+	delete fogobj;
+	fogobj = NULL;
+
+	delete nodeobj;
+	nodeobj = NULL;
+}
 
 extern void EE_RT(Vec3f * in, Vec3f * out);
 extern void EE_P(Vec3f * in, TexturedVertex * out);
@@ -98,7 +117,6 @@ void DrawLineSphere(const EERIE_SPHERE & sphere, Color color) {
 }
 
 extern bool MouseInRect(const float x0, const float y0, const float x1, const float y1);
-extern TextureContainer * lightsource_tc;
 
 void EERIEDrawLight(EERIE_LIGHT * el) {
 

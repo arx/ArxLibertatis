@@ -58,17 +58,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "math/Random.h"
 
-EERIE_3DOBJ * fogobj = NULL;
-
 FOG_DEF fogs[MAX_FOG];
-
-//*************************************************************************************
-// Used to Set 3D Object Visual for Fogs
-//*************************************************************************************
-void ARX_FOGS_Set_Object(EERIE_3DOBJ * _fogobj)
-{
-	fogobj = _fogobj;
-}
 
 void ARX_FOGS_FirstInit()
 {
