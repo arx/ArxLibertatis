@@ -680,18 +680,24 @@ void ARX_PLAYER_ComputePlayerFullStats() {
 	/////////////////////////////////////////////////////////////////////////////////////
 	// Attributes
 	
+	// Calculate base attributes
+	float base_strength     = player.Attribute_Strength;
+	float base_dexterity    = player.Attribute_Dexterity;
+	float base_constitution = player.Attribute_Constitution;
+	float base_mind         = player.Attribute_Mind;
+	
 	// Calculate equipment modifiers for attributes
 	player.Mod_Attribute_Strength += getEquipmentModifier(
-		IO_EQUIPITEM_ELEMENT_STRENGTH, player.Attribute_Strength
+		IO_EQUIPITEM_ELEMENT_STRENGTH, base_strength
 	);
 	player.Mod_Attribute_Dexterity += getEquipmentModifier(
-		IO_EQUIPITEM_ELEMENT_DEXTERITY, player.Attribute_Dexterity
+		IO_EQUIPITEM_ELEMENT_DEXTERITY, base_dexterity
 	);
 	player.Mod_Attribute_Constitution += getEquipmentModifier(
-		IO_EQUIPITEM_ELEMENT_CONSTITUTION, player.Attribute_Constitution
+		IO_EQUIPITEM_ELEMENT_CONSTITUTION, base_constitution
 	);
 	player.Mod_Attribute_Mind += getEquipmentModifier(
-		IO_EQUIPITEM_ELEMENT_MIND, player.Attribute_Mind
+		IO_EQUIPITEM_ELEMENT_MIND, base_mind
 	);
 	
 	
@@ -779,19 +785,19 @@ void ARX_PLAYER_ComputePlayerFullStats() {
 	//player.Full_AimTime=getEquipmentModifier(
 	//	IO_EQUIPITEM_ELEMENT_AimTime,0);
 
-	player.Full_Attribute_Strength = player.Attribute_Strength + player.Mod_Attribute_Strength;
+	player.Full_Attribute_Strength = base_strength + player.Mod_Attribute_Strength;
 
 	if (player.Full_Attribute_Strength < 0) player.Full_Attribute_Strength = 0;
 
-	player.Full_Attribute_Mind = player.Attribute_Mind + player.Mod_Attribute_Mind;
+	player.Full_Attribute_Mind = base_mind + player.Mod_Attribute_Mind;
 
 	if (player.Full_Attribute_Mind < 0) player.Full_Attribute_Mind = 0;
 
-	player.Full_Attribute_Constitution = player.Attribute_Constitution + player.Mod_Attribute_Constitution;
+	player.Full_Attribute_Constitution = base_constitution + player.Mod_Attribute_Constitution;
 
 	if (player.Full_Attribute_Constitution < 0) player.Full_Attribute_Constitution = 0;
 
-	player.Full_Attribute_Dexterity = player.Attribute_Dexterity + player.Mod_Attribute_Dexterity;
+	player.Full_Attribute_Dexterity = base_dexterity + player.Mod_Attribute_Dexterity;
 
 	if (player.Full_Attribute_Dexterity < 0) player.Full_Attribute_Dexterity = 0;
 
