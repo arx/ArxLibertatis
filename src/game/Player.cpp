@@ -640,20 +640,10 @@ void ARX_PLAYER_ComputePlayerFullStats() {
 
 	player.Full_Weapon_Type = ARX_EQUIPMENT_GetPlayerWeaponType();
 
-	player.Mod_armor_class = getEquipmentBaseModifier(
-	                             IO_EQUIPITEM_ELEMENT_Armor_Class);
-
-	player.Mod_resist_magic = getEquipmentBaseModifier(
-	                              IO_EQUIPITEM_ELEMENT_Resist_Magic);
-	player.Mod_resist_poison = getEquipmentBaseModifier(
-	                               IO_EQUIPITEM_ELEMENT_Resist_Poison);
-	player.Mod_Critical_Hit = getEquipmentBaseModifier(
-	                              IO_EQUIPITEM_ELEMENT_Critical_Hit);
-	player.Mod_damages = getEquipmentBaseModifier(
-	                         IO_EQUIPITEM_ELEMENT_Damages);
 
 
 	//CHECK OVERFLOW
+	// TODO why not use relative modfiers?
 	float fFullAimTime	= getEquipmentBaseModifier(IO_EQUIPITEM_ELEMENT_AimTime);
 	float fCalcHandicap	= (player.Full_Attribute_Dexterity - 10.f) * 20.f;
 
@@ -704,7 +694,7 @@ void ARX_PLAYER_ComputePlayerFullStats() {
 	
 	
 	// Calculate equipment modifiers for skills
-	// TODO these use the player.Full_Attribute_* values from the last frame!
+	// TODO these use the full attribute_* values from last frame!
 	player.Mod_Skill_Stealth += getEquipmentModifier(
 		IO_EQUIPITEM_ELEMENT_Stealth, ARX_PLAYER_Get_Skill_Stealth(1)
 	);
@@ -733,16 +723,26 @@ void ARX_PLAYER_ComputePlayerFullStats() {
 		IO_EQUIPITEM_ELEMENT_Defense, ARX_PLAYER_Get_Skill_Defense(1)
 	);
 	
-	player.Mod_armor_class += ARX_EQUIPMENT_ApplyPercent(
-	                              IO_EQUIPITEM_ELEMENT_Armor_Class, player.Full_armor_class + player.Mod_armor_class);
-	player.Mod_resist_magic += ARX_EQUIPMENT_ApplyPercent(
-	                               IO_EQUIPITEM_ELEMENT_Resist_Magic, player.Full_resist_magic + player.Mod_resist_magic);
-	player.Mod_resist_poison += ARX_EQUIPMENT_ApplyPercent(
-	                                IO_EQUIPITEM_ELEMENT_Resist_Poison, player.Full_resist_poison + player.Mod_resist_poison);
-	player.Mod_Critical_Hit += ARX_EQUIPMENT_ApplyPercent(
-	                               IO_EQUIPITEM_ELEMENT_Critical_Hit, player.Full_Critical_Hit + player.Mod_Critical_Hit);
-	player.Mod_damages += ARX_EQUIPMENT_ApplyPercent(
-	                          IO_EQUIPITEM_ELEMENT_Damages, player.Full_damages + player.Mod_damages);
+	
+	// Calculate equipment modifiers for skills
+	// TODO these use the full attribute and skill values from last frame!
+	player.Mod_armor_class += getEquipmentModifier(
+		IO_EQUIPITEM_ELEMENT_Armor_Class, player.Full_armor_class
+	);
+	player.Mod_resist_magic += getEquipmentModifier(
+		IO_EQUIPITEM_ELEMENT_Resist_Magic, player.Full_resist_magic
+	);
+	player.Mod_resist_poison += getEquipmentModifier(
+		IO_EQUIPITEM_ELEMENT_Resist_Poison, player.Full_resist_poison
+	);
+	player.Mod_Critical_Hit += getEquipmentModifier(
+		IO_EQUIPITEM_ELEMENT_Critical_Hit, player.Full_Critical_Hit
+	);
+	player.Mod_damages += getEquipmentModifier(
+		IO_EQUIPITEM_ELEMENT_Damages, player.Full_damages
+	);
+	
+	
 	//player.Full_AimTime=ARX_EQUIPMENT_ApplyPercent(
 	//	IO_EQUIPITEM_ELEMENT_AimTime,0);
 

@@ -47,10 +47,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/Entity.h"
 
 enum EquipmentModifierType {
+	// Attributes
 	IO_EQUIPITEM_ELEMENT_STRENGTH         = 0,
 	IO_EQUIPITEM_ELEMENT_DEXTERITY        = 1,
 	IO_EQUIPITEM_ELEMENT_CONSTITUTION     = 2,
 	IO_EQUIPITEM_ELEMENT_MIND             = 3,
+	// Skills
 	IO_EQUIPITEM_ELEMENT_Stealth          = 4,
 	IO_EQUIPITEM_ELEMENT_Mecanism         = 5,
 	IO_EQUIPITEM_ELEMENT_Intuition        = 6,
@@ -60,6 +62,7 @@ enum EquipmentModifierType {
 	IO_EQUIPITEM_ELEMENT_Projectile       = 10,
 	IO_EQUIPITEM_ELEMENT_Close_Combat     = 11,
 	IO_EQUIPITEM_ELEMENT_Defense          = 12,
+	// Other stats
 	IO_EQUIPITEM_ELEMENT_Armor_Class      = 13,
 	IO_EQUIPITEM_ELEMENT_Resist_Magic     = 14,
 	IO_EQUIPITEM_ELEMENT_Resist_Poison    = 15,
