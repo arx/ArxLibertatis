@@ -119,56 +119,43 @@ void DrawLineSphere(const EERIE_SPHERE & sphere, Color color) {
 
 extern bool MouseInRect(const float x0, const float y0, const float x1, const float y1);
 
-void EERIEDrawLight(EERIE_LIGHT * el) {
+void DrawDebugLights() {
 
-	TexturedVertex in;
-	TexturedVertex center;
 	//GRenderer->SetCulling(Renderer::CullNone);
 	//GRenderer->SetRenderState(Renderer::DepthTest, true);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
-
-	if(!el || !el->treat)
-		return;
-
-	in.p = el->pos;
-	EE_RTP(&in, &center);
-
-	if(MouseInRect(center.p.x - 20, center.p.y - 20, center.p.x + 20, center.p.y + 20)) {
-		GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-		EERIE_SPHERE fallstart;
-		fallstart.origin = el->pos;
-		fallstart.radius = el->fallstart;
-		DrawLineSphere(fallstart, Color(Color3<u8>::green, 200));
-
-		EERIE_SPHERE fallend;
-		fallend.origin = el->pos;
-		fallend.radius = el->fallend;
-		DrawLineSphere(fallend, Color(Color3<u8>::red, 200));
-	}
-
-	GRenderer->SetBlendFunc(Renderer::BlendSrcAlpha, Renderer::BlendSrcAlpha);
-	EERIEDrawSprite(&in, 11.f, lightsource_tc, el->rgb.to<u8>(), 2.f);
-}
-
-void ARXDRAW_DrawAllLights(long x0,long z0,long x1,long z1) {
 	for(size_t i = 0; i < MAX_LIGHTS; i++) {
 		EERIE_LIGHT *light = GLight[i];
 
-		if(light) {
-			long tx = light->pos.x * ACTIVEBKG->Xmul;
-			long tz = light->pos.z * ACTIVEBKG->Zmul;
-			light->mins.x = 9999999999.f;
+		if(!light)
+			continue;
 
-			if(tx >= x0 && tx <= x1 && tz >= z0 && tz <= z1)  {
-				light->treat = 1;
-				EERIEDrawLight(light);
-			}
+		TexturedVertex in;
+		TexturedVertex center;
+
+		in.p = light->pos;
+		EE_RTP(&in, &center);
+
+		if(MouseInRect(center.p.x - 20, center.p.y - 20, center.p.x + 20, center.p.y + 20)) {
+			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+			EERIE_SPHERE fallstart;
+			fallstart.origin = light->pos;
+			fallstart.radius = light->fallstart;
+			DrawLineSphere(fallstart, Color(Color3<u8>::green, 200));
+
+			EERIE_SPHERE fallend;
+			fallend.origin = light->pos;
+			fallend.radius = light->fallend;
+			DrawLineSphere(fallend, Color(Color3<u8>::red, 200));
 		}
+
+		GRenderer->SetBlendFunc(Renderer::BlendSrcAlpha, Renderer::BlendSrcAlpha);
+		EERIEDrawSprite(&in, 11.f, lightsource_tc, light->rgb.to<u8>(), 2.f);
 	}
 }
 
-void DebugPortalsRender() {
+void DrawDebugPortals() {
 	GRenderer->SetRenderState(Renderer::Fog, false);
 	GRenderer->SetRenderState(Renderer::DepthTest, false);
 
@@ -192,7 +179,7 @@ void DebugPortalsRender() {
 	GRenderer->SetRenderState(Renderer::Fog, true);
 }
 
-void DebugPathsRender() {
+void DrawDebugPaths() {
 	GRenderer->SetRenderState(Renderer::Fog, false);
 	GRenderer->SetRenderState(Renderer::DepthTest, false);
 
@@ -236,7 +223,7 @@ void DebugPathsRender() {
 /**
  * @brief Debug function to show the physical box of an object
  */
-void EERIE_PHYSICS_BOX_Show(EERIE_3DOBJ * obj) {
+void DrawDebugCollisionShape(EERIE_3DOBJ * obj) {
 
 	if(!obj || !obj->pbox)
 		return;
@@ -256,7 +243,7 @@ void EERIE_PHYSICS_BOX_Show(EERIE_3DOBJ * obj) {
 	}
 }
 
-void ARX_FOGS_RenderAll() {
+void DrawDebugFogs() {
 
 	EERIE_QUAT rotation;
 	Quat_Init(&rotation);
@@ -322,6 +309,17 @@ void debugEntityPhysicsCylinder(Entity * io) {
 	EERIEDraw3DCylinder(cyll, Color::red);
 }
 
+void DrawDebugScreenBoundingBox(Entity * io) {
+	Color color = Color::blue;
+	EERIE_2D_BBOX & box = io->bbox2D;
+	if(box.min.x != box.max.x && box.min.x < DANAESIZX) {
+		EERIEDraw2DLine(box.min.x, box.min.y, box.max.x, box.min.y, 0.01f, color);
+		EERIEDraw2DLine(box.max.x, box.min.y, box.max.x, box.max.y, 0.01f, color);
+		EERIEDraw2DLine(box.max.x, box.max.y, box.min.x, box.max.y, 0.01f, color);
+		EERIEDraw2DLine(box.min.x, box.max.y, box.min.x, box.min.y, 0.01f, color);
+	}
+}
+
 void RenderAllNodes() {
 
 	Anglef angle(0.f, 0.f, 0.f);
@@ -365,68 +363,53 @@ void DrawDebugRender() {
 	if(EDITION == EDITION_NONE)
 		return;
 
-	if(EDITION == EDITION_LIGHTS) {
-		//TODO copy-paste
-		long l = ACTIVECAM->cdepth * 0.42f;
-		long clip3D = (l / (long)BKG_SIZX) + 1;
-		long lcval = clip3D + 4;
+	//RenderAllNodes();
 
-		long camXsnap = ACTIVECAM->orgTrans.pos.x * ACTIVEBKG->Xmul;
-		long camZsnap = ACTIVECAM->orgTrans.pos.z * ACTIVEBKG->Zmul;
-		camXsnap = clamp(camXsnap, 0, ACTIVEBKG->Xsize - 1L);
-		camZsnap = clamp(camZsnap, 0, ACTIVEBKG->Zsize - 1L);
+	std::stringstream ss;
+	ss << "Debug Display: ";
 
-		long x0 = std::max(camXsnap - lcval, 0L);
-		long x1 = std::min(camXsnap + lcval, ACTIVEBKG->Xsize - 1L);
-		long z0 = std::max(camZsnap - lcval, 0L);
-		long z1 = std::min(camZsnap + lcval, ACTIVEBKG->Zsize - 1L);
-
-		ARXDRAW_DrawAllLights(x0,z0,x1,z1);
+	switch(EDITION) {
+	case EDITION_LIGHTS: {
+		ss << "Lights";
+		DrawDebugLights();
+		break;
 	}
-
-	if(EDITION == EDITION_Portals) {
-		DebugPortalsRender();
+	case EDITION_FOGS: {
+		DrawDebugFogs();
+		ss << "Fogs";
+		break;
 	}
-
-	if(EDITION == EDITION_Paths) {
-		DebugPathsRender();
+	case EDITION_BoundingBoxes: {
+		ss << "Bounding Boxes";
+		break;
+	}
+	case EDITION_CollisionShape: {
+		ss << "Collision Shapes";
+		break;
+	}
+	case EDITION_Portals: {
+		ss << "Portals";
+		DrawDebugPortals();
+		break;
+	}
+	case EDITION_Paths: {
+		ss << "Paths";
+		DrawDebugPaths();
+		break;
+	}
 	}
 
 	for(size_t i = 1; i < entities.size(); i++) {
 		Entity * io = entities[i];
 
 		if(EDITION == EDITION_CollisionShape) {
-			EERIE_PHYSICS_BOX_Show(io->obj);
+			DrawDebugCollisionShape(io->obj);
 			debugEntityPhysicsCylinder(io);
 		}
 
 		if(EDITION == EDITION_BoundingBoxes) {
-			Color color = Color::blue;
-			EERIE_2D_BBOX & box = io->bbox2D;
-			if(box.min.x != box.max.x && box.min.x < DANAESIZX) {
-				EERIEDraw2DLine(box.min.x, box.min.y, box.max.x, box.min.y, 0.01f, color);
-				EERIEDraw2DLine(box.max.x, box.min.y, box.max.x, box.max.y, 0.01f, color);
-				EERIEDraw2DLine(box.max.x, box.max.y, box.min.x, box.max.y, 0.01f, color);
-				EERIEDraw2DLine(box.min.x, box.max.y, box.min.x, box.min.y, 0.01f, color);
-			}
+			DrawDebugScreenBoundingBox(io);
 		}
-	}
-
-	//RenderAllNodes();
-
-	if(EDITION == EDITION_FOGS)
-		ARX_FOGS_RenderAll();
-
-	std::stringstream ss;
-	ss << "Debug Display: ";
-
-	switch(EDITION) {
-	case EDITION_LIGHTS: ss << "Lights"; break;
-	case EDITION_FOGS: ss << "Fogs"; break;
-	case EDITION_BoundingBoxes: ss << "Bounding Boxes"; break;
-	case EDITION_CollisionShape: ss << "Collision Shapes"; break;
-	case EDITION_Portals: ss << "Portals"; break;
-	case EDITION_Paths: ss << "Paths"; break;
 	}
 
 	//ss <<  NbIOSelected;
