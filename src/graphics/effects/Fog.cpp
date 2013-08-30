@@ -230,35 +230,3 @@ void ARX_FOGS_Render() {
 		fog->lastupdate = (unsigned long)(arxtime);
 	}
 }
-
-void ARX_FOGS_RenderAll() {
-	
-	EERIE_QUAT rotation;
-	Quat_Init(&rotation);
-
-	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-
-	for(long i = 0; i < MAX_FOG; i++) {
-		FOG_DEF *fog = &fogs[i];
-
-		if(!fog->exist)
-			continue;
-
-			if(fogobj)
-				DrawEERIEInter(fogobj, &rotation, fog->pos, NULL);
-
-//			fog->bboxmin = BBOXMIN;
-//			fog->bboxmax = BBOXMAX;
-
-			if(fog->special & FOG_DIRECTIONAL) {
-				EERIEDraw3DLine(fog->pos, fog->pos + fog->move * 50.f, Color::white);
-			}
-
-//			if(fog->selected) {
-//				EERIEDraw2DLine(fog->bboxmin.x, fog->bboxmin.y, fog->bboxmax.x, fog->bboxmin.y, 0.01f, Color::yellow);
-//				EERIEDraw2DLine(fog->bboxmax.x, fog->bboxmin.y, fog->bboxmax.x, fog->bboxmax.y, 0.01f, Color::yellow);
-//				EERIEDraw2DLine(fog->bboxmax.x, fog->bboxmax.y, fog->bboxmin.x, fog->bboxmax.y, 0.01f, Color::yellow);
-//				EERIEDraw2DLine(fog->bboxmin.x, fog->bboxmax.y, fog->bboxmin.x, fog->bboxmin.y, 0.01f, Color::yellow);
-//			}
-	}
-}

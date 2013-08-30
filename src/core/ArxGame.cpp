@@ -1546,19 +1546,6 @@ void ArxGame::renderLevel() {
 		ARX_MAGICAL_FLARES_Draw();
 	}
 
-#ifdef BUILD_EDITOR
-	if (EDITION != EDITION_NONE) {
-		RenderAllNodes();
-
-		std::stringstream ss("EDIT MODE - Selected ");
-		ss <<  NbIOSelected;
-		ARX_TEXT_Draw(hFontInBook, 100, 2, ss.str(), Color::yellow);
-	}
-#endif
-
-	if(EDITION == EDITION_FOGS)
-		ARX_FOGS_RenderAll();
-
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 

@@ -2972,11 +2972,6 @@ void RenderInter() {
 		io->bbox2D.min.x = 9999;
 		io->bbox2D.max.x = -1;
 
-		if(EDITION == EDITION_CollisionShape) {
-			EERIE_PHYSICS_BOX_Show(io->obj);
-			debugEntityPhysicsCylinder(io);
-		}
-
 		Anglef temp = io->angle;
 
 		if(io->ioflags & IO_NPC) {
@@ -3031,17 +3026,6 @@ void RenderInter() {
 						DrawEERIEInter(io->obj, &rotation, io->pos, io);
 					}
 				}
-			}
-		}
-
-		if(EDITION == EDITION_BoundingBoxes) {
-			Color color = Color::blue;
-			EERIE_2D_BBOX & box = io->bbox2D;
-			if(box.min.x != box.max.x && box.min.x < DANAESIZX) {
-				EERIEDraw2DLine(box.min.x, box.min.y, box.max.x, box.min.y, 0.01f, color);
-				EERIEDraw2DLine(box.max.x, box.min.y, box.max.x, box.max.y, 0.01f, color);
-				EERIEDraw2DLine(box.max.x, box.max.y, box.min.x, box.max.y, 0.01f, color);
-				EERIEDraw2DLine(box.min.x, box.max.y, box.min.x, box.min.y, 0.01f, color);
 			}
 		}
 	}

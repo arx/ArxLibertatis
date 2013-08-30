@@ -157,7 +157,6 @@ void ShowDebugToggles();
 
 void DrawImproveVisionInterface();
 void DrawMagicSightInterface();
-void RenderAllNodes();
 
 void CheckMr();
 

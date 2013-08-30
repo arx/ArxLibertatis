@@ -2680,46 +2680,6 @@ void DrawMagicSightInterface()
 	}
 }
 
-//*************************************************************************************
-
-void RenderAllNodes() {
-	
-	EERIE_QUAT rotation;
-	Quat_Init(&rotation);
-	
-	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-	
-	for(long i=0; i<nodes.nbmax; i++) {
-		if (nodes.nodes[i].exist) {
-			DrawEERIEInter(nodeobj, &rotation, nodes.nodes[i].pos, NULL);
-
-			nodes.nodes[i].bboxmin.x=(short)BBOX2D.min.x;
-			nodes.nodes[i].bboxmin.y=(short)BBOX2D.min.y;
-			nodes.nodes[i].bboxmax.x=(short)BBOX2D.max.x;
-			nodes.nodes[i].bboxmax.y=(short)BBOX2D.max.y;
-
-			if(nodeobj->vertexlist[nodeobj->origin].vert.p.z > 0.f && nodeobj->vertexlist[nodeobj->origin].vert.p.z<0.9f) {
-				float xx = nodeobj->vertexlist[nodeobj->origin].vert.p.x - 40.f;
-				float yy = nodeobj->vertexlist[nodeobj->origin].vert.p.y - 40.f;
-				ARX_TEXT_Draw(hFontInBook, xx, yy, nodes.nodes[i].UName, Color::yellow); //font
-			}
-
-			if(nodes.nodes[i].selected) {
-				EERIEDraw2DLine(nodes.nodes[i].bboxmin.x, nodes.nodes[i].bboxmin.y, nodes.nodes[i].bboxmax.x, nodes.nodes[i].bboxmin.y, 0.01f, Color::yellow);
-				EERIEDraw2DLine(nodes.nodes[i].bboxmax.x, nodes.nodes[i].bboxmin.y, nodes.nodes[i].bboxmax.x, nodes.nodes[i].bboxmax.y, 0.01f, Color::yellow);
-				EERIEDraw2DLine(nodes.nodes[i].bboxmax.x, nodes.nodes[i].bboxmax.y, nodes.nodes[i].bboxmin.x, nodes.nodes[i].bboxmax.y, 0.01f, Color::yellow);
-				EERIEDraw2DLine(nodes.nodes[i].bboxmin.x, nodes.nodes[i].bboxmax.y, nodes.nodes[i].bboxmin.x, nodes.nodes[i].bboxmin.y, 0.01f, Color::yellow);
-			}
-
-			for(size_t j = 0; j < MAX_LINKS; j++) {
-				if(nodes.nodes[i].link[j]!=-1) {
-					EERIEDrawTrue3DLine(nodes.nodes[i].pos, nodes.nodes[nodes.nodes[i].link[j]].pos, Color::green);
-				}
-			}
-		}
-	}
-}
-
 void AddQuakeFX(float intensity,float duration,float period,long flags)
 {
 	if (QuakeFx.intensity>0.f)

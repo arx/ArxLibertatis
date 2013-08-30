@@ -580,29 +580,6 @@ bool IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, Vec3f * verts, long k, l
 	return ret;
 }
 
-/**
- * @brief Debug function to show the physical box of an object
- */
-void EERIE_PHYSICS_BOX_Show(EERIE_3DOBJ * obj) {
-	
-	if(!obj || !obj->pbox)
-		return;
-
-	for (long k = 0; k < obj->pbox->nb_physvert; k++) {
-		if(obj->pbox->active == 2) {
-			DebugAddParticle(obj->pbox->vert[k].pos, 0.6f, 40, Color::green);
-		} else if(k == 0 || k == 14 || k == 13) {
-			DebugAddParticle(obj->pbox->vert[k].pos, 0.6f, 40, Color::yellow);
-		} else if ((k > 0) && (k < 5)) {
-			DebugAddParticle(obj->pbox->vert[k].pos, 0.6f, 40, Color::green);
-		} else if ((k > 4) && (k < 9)) {
-			DebugAddParticle(obj->pbox->vert[k].pos, 0.6f, 40, Color::blue);
-		} else {
-			DebugAddParticle(obj->pbox->vert[k].pos, 0.6f, 40, Color::red);
-		}
-	}
-}
-
 // Releases physic box data from an object
 void EERIE_PHYSICS_BOX_Release(EERIE_3DOBJ * obj) {
 	

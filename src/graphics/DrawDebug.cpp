@@ -19,14 +19,27 @@
 
 #include "graphics/DrawDebug.h"
 
+#include <sstream>
+
 #include "core/Core.h"
+#include "animation/AnimationRender.h"
 #include "graphics/Math.h"
 #include "graphics/Draw.h"
+#include "graphics/particle/ParticleEffects.h"
+
 #include "gui/Interface.h"
+#include "gui/Text.h"
+
+#include "game/Entity.h"
+#include "game/EntityManager.h"
 
 #include "ai/Paths.h"
+#include "graphics/effects/Fog.h"
+#include "scene/Interactive.h"
 #include "scene/Light.h"
+#include "physics/Collisions.h"
 
+extern EERIE_3DOBJ * fogobj;
 
 extern void EE_RT(Vec3f * in, Vec3f * out);
 extern void EE_P(Vec3f * in, TexturedVertex * out);
@@ -200,6 +213,131 @@ void DebugPathsRender() {
 	}
 }
 
+
+/**
+ * @brief Debug function to show the physical box of an object
+ */
+void EERIE_PHYSICS_BOX_Show(EERIE_3DOBJ * obj) {
+
+	if(!obj || !obj->pbox)
+		return;
+
+	for (long k = 0; k < obj->pbox->nb_physvert; k++) {
+		if(obj->pbox->active == 2) {
+			DebugAddParticle(obj->pbox->vert[k].pos, 0.6f, 40, Color::green);
+		} else if(k == 0 || k == 14 || k == 13) {
+			DebugAddParticle(obj->pbox->vert[k].pos, 0.6f, 40, Color::yellow);
+		} else if ((k > 0) && (k < 5)) {
+			DebugAddParticle(obj->pbox->vert[k].pos, 0.6f, 40, Color::green);
+		} else if ((k > 4) && (k < 9)) {
+			DebugAddParticle(obj->pbox->vert[k].pos, 0.6f, 40, Color::blue);
+		} else {
+			DebugAddParticle(obj->pbox->vert[k].pos, 0.6f, 40, Color::red);
+		}
+	}
+}
+
+void ARX_FOGS_RenderAll() {
+
+	EERIE_QUAT rotation;
+	Quat_Init(&rotation);
+
+	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+
+	for(long i = 0; i < MAX_FOG; i++) {
+		FOG_DEF *fog = &fogs[i];
+
+		if(!fog->exist)
+			continue;
+
+			if(fogobj)
+				DrawEERIEInter(fogobj, &rotation, fog->pos, NULL);
+
+//			fog->bboxmin = BBOXMIN;
+//			fog->bboxmax = BBOXMAX;
+
+			if(fog->special & FOG_DIRECTIONAL) {
+				EERIEDraw3DLine(fog->pos, fog->pos + fog->move * 50.f, Color::white);
+			}
+
+//			if(fog->selected) {
+//				EERIEDraw2DLine(fog->bboxmin.x, fog->bboxmin.y, fog->bboxmax.x, fog->bboxmin.y, 0.01f, Color::yellow);
+//				EERIEDraw2DLine(fog->bboxmax.x, fog->bboxmin.y, fog->bboxmax.x, fog->bboxmax.y, 0.01f, Color::yellow);
+//				EERIEDraw2DLine(fog->bboxmax.x, fog->bboxmax.y, fog->bboxmin.x, fog->bboxmax.y, 0.01f, Color::yellow);
+//				EERIEDraw2DLine(fog->bboxmin.x, fog->bboxmax.y, fog->bboxmin.x, fog->bboxmin.y, 0.01f, Color::yellow);
+//			}
+	}
+}
+
+extern float GetIOHeight(Entity * io);
+extern float GetIORadius(Entity * io);
+
+void debugEntityPhysicsCylinder(Entity * io) {
+
+	if(!(io->ioflags & IO_NPC) )
+		return;
+
+	CollisionFlags levitate = 0;
+
+	if(ARX_SPELLS_GetSpellOn(io, SPELL_LEVITATE) >= 0) {
+		levitate = CFLAG_LEVITATE;
+	}
+
+	EERIE_CYLINDER cyll;
+	cyll.height = GetIOHeight(io);
+	cyll.radius = GetIORadius(io);
+	cyll.origin = io->physics.startpos;
+	EERIEDraw3DCylinder(cyll, Color::green);
+
+	if (!(AttemptValidCylinderPos(&cyll, io, levitate | CFLAG_NPC)))
+	{
+		cyll.height = -40.f;
+		EERIEDraw3DCylinder(cyll, Color::blue);
+		cyll.height = GetIOHeight(io);
+	}
+
+	cyll.origin = io->physics.targetpos;
+	EERIEDraw3DCylinder(cyll, Color::red);
+}
+
+void RenderAllNodes() {
+
+	EERIE_QUAT rotation;
+	Quat_Init(&rotation);
+
+	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+
+	for(long i=0; i<nodes.nbmax; i++) {
+		if (nodes.nodes[i].exist) {
+			DrawEERIEInter(nodeobj, &rotation, nodes.nodes[i].pos, NULL);
+
+			nodes.nodes[i].bboxmin.x=(short)BBOX2D.min.x;
+			nodes.nodes[i].bboxmin.y=(short)BBOX2D.min.y;
+			nodes.nodes[i].bboxmax.x=(short)BBOX2D.max.x;
+			nodes.nodes[i].bboxmax.y=(short)BBOX2D.max.y;
+
+			if(nodeobj->vertexlist[nodeobj->origin].vert.p.z > 0.f && nodeobj->vertexlist[nodeobj->origin].vert.p.z<0.9f) {
+				float xx = nodeobj->vertexlist[nodeobj->origin].vert.p.x - 40.f;
+				float yy = nodeobj->vertexlist[nodeobj->origin].vert.p.y - 40.f;
+				ARX_TEXT_Draw(hFontInBook, xx, yy, nodes.nodes[i].UName, Color::yellow); //font
+			}
+
+			if(nodes.nodes[i].selected) {
+				EERIEDraw2DLine(nodes.nodes[i].bboxmin.x, nodes.nodes[i].bboxmin.y, nodes.nodes[i].bboxmax.x, nodes.nodes[i].bboxmin.y, 0.01f, Color::yellow);
+				EERIEDraw2DLine(nodes.nodes[i].bboxmax.x, nodes.nodes[i].bboxmin.y, nodes.nodes[i].bboxmax.x, nodes.nodes[i].bboxmax.y, 0.01f, Color::yellow);
+				EERIEDraw2DLine(nodes.nodes[i].bboxmax.x, nodes.nodes[i].bboxmax.y, nodes.nodes[i].bboxmin.x, nodes.nodes[i].bboxmax.y, 0.01f, Color::yellow);
+				EERIEDraw2DLine(nodes.nodes[i].bboxmin.x, nodes.nodes[i].bboxmax.y, nodes.nodes[i].bboxmin.x, nodes.nodes[i].bboxmin.y, 0.01f, Color::yellow);
+			}
+
+			for(size_t j = 0; j < MAX_LINKS; j++) {
+				if(nodes.nodes[i].link[j]!=-1) {
+					EERIEDrawTrue3DLine(nodes.nodes[i].pos, nodes.nodes[nodes.nodes[i].link[j]].pos, Color::green);
+				}
+			}
+		}
+	}
+}
+
 void DrawDebugRender() {
 
 	if(EDITION == EDITION_NONE)
@@ -231,4 +369,44 @@ void DrawDebugRender() {
 	if(EDITION == EDITION_Paths) {
 		DebugPathsRender();
 	}
+
+	for(size_t i = 1; i < entities.size(); i++) {
+		Entity * io = entities[i];
+
+		if(EDITION == EDITION_CollisionShape) {
+			EERIE_PHYSICS_BOX_Show(io->obj);
+			debugEntityPhysicsCylinder(io);
+		}
+
+		if(EDITION == EDITION_BoundingBoxes) {
+			Color color = Color::blue;
+			EERIE_2D_BBOX & box = io->bbox2D;
+			if(box.min.x != box.max.x && box.min.x < DANAESIZX) {
+				EERIEDraw2DLine(box.min.x, box.min.y, box.max.x, box.min.y, 0.01f, color);
+				EERIEDraw2DLine(box.max.x, box.min.y, box.max.x, box.max.y, 0.01f, color);
+				EERIEDraw2DLine(box.max.x, box.max.y, box.min.x, box.max.y, 0.01f, color);
+				EERIEDraw2DLine(box.min.x, box.max.y, box.min.x, box.min.y, 0.01f, color);
+			}
+		}
+	}
+
+	//RenderAllNodes();
+
+	if(EDITION == EDITION_FOGS)
+		ARX_FOGS_RenderAll();
+
+	std::stringstream ss;
+	ss << "Debug Display: ";
+
+	switch(EDITION) {
+	case EDITION_LIGHTS: ss << "Lights"; break;
+	case EDITION_FOGS: ss << "Fogs"; break;
+	case EDITION_BoundingBoxes: ss << "Bounding Boxes"; break;
+	case EDITION_CollisionShape: ss << "Collision Shapes"; break;
+	case EDITION_Portals: ss << "Portals"; break;
+	case EDITION_Paths: ss << "Paths"; break;
+	}
+
+	//ss <<  NbIOSelected;
+	ARX_TEXT_Draw(hFontInBook, 100, 2, ss.str(), Color::yellow);
 }

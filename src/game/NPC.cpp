@@ -2578,35 +2578,6 @@ void ComputeTolerance(Entity * io, long targ, float * dst) {
 	*dst = TOLERANCE;
 }
 
-void debugEntityPhysicsCylinder(Entity * io) {
-
-	if(!(io->ioflags & IO_NPC) )
-		return;
-
-	CollisionFlags levitate = 0;
-
-	if(ARX_SPELLS_GetSpellOn(io, SPELL_LEVITATE) >= 0) {
-		levitate = CFLAG_LEVITATE;
-	}
-
-	EERIE_CYLINDER cyll;
-	cyll.height = GetIOHeight(io);
-	cyll.radius = GetIORadius(io);
-	cyll.origin = io->physics.startpos;
-	EERIEDraw3DCylinder(cyll, Color::green);
-
-	if (!(AttemptValidCylinderPos(&cyll, io, levitate | CFLAG_NPC)))
-	{
-		cyll.height = -40.f;
-		EERIEDraw3DCylinder(cyll, Color::blue);
-		cyll.height = GetIOHeight(io);
-	}
-
-	cyll.origin = io->physics.targetpos;
-	EERIEDraw3DCylinder(cyll, Color::red);
-}
-
-
 //now APOS is computed in Anim but used here and mustn't be used elsewhere...
 //***********************************************************************************************
 //***********************************************************************************************
