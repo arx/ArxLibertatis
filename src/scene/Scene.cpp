@@ -1771,6 +1771,46 @@ void DebugPortalsRender() {
 	GRenderer->SetRenderState(Renderer::Fog, true);
 }
 
+void DebugPathsRender() {
+	GRenderer->SetRenderState(Renderer::Fog, false);
+	GRenderer->SetRenderState(Renderer::DepthTest, false);
+
+	for(long i = 0; i < nbARXpaths; i++) {
+		ARX_PATH * path = ARXpaths[i];
+
+		if(!path)
+			continue;
+
+		std::vector<Vec3f> points;
+
+		for(long i = 0; i < path->nb_pathways; i++) {
+			ARX_PATHWAY node = path->pathways[i];
+
+			points.push_back(path->pos + node.rpos);
+		}
+
+		if(points.size() > 0) {
+			points.push_back(points[0]);
+		}
+
+		for(int i=0; i+1<points.size(); i++) {
+			EERIEDraw3DLine(points[i], points[i+1], Color::red);
+		}
+
+		if(path->height > 0) {
+			Vec3f offset(0.f, -path->height, 0.f);
+
+			for(int i=0; i+1<points.size(); i++) {
+				EERIEDraw3DLine(points[i] + offset, points[i+1] + offset, Color::red);
+			}
+
+			for(int i=0; i<points.size(); i++) {
+				EERIEDraw3DLine(points[i], points[i] + offset, Color::red);
+			}
+		}
+	}
+}
+
 extern short uw_mode;
 extern long SPECIAL_DRAGINTER_RENDER;
 
@@ -1873,6 +1913,10 @@ void ARX_SCENE_Render() {
 
 	if(EDITION == EDITION_Portals) {
 		DebugPortalsRender();
+	}
+
+	if(EDITION == EDITION_Paths) {
+		DebugPathsRender();
 	}
 }
 
