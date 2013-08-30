@@ -189,12 +189,22 @@ void DrawDebugPaths() {
 		if(!path)
 			continue;
 
+		bool isBezier = false;
 		std::vector<Vec3f> points;
 
 		for(long i = 0; i < path->nb_pathways; i++) {
 			ARX_PATHWAY node = path->pathways[i];
 
+			if(node.flag != PATHWAY_STANDARD) {
+				isBezier = true;
+			}
+
 			points.push_back(path->pos + node.rpos);
+		}
+
+		if(isBezier) {
+			// TODO Bezier path handling
+			continue;
 		}
 
 		if(points.size() > 0) {
