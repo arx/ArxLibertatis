@@ -718,7 +718,6 @@ void ARX_PLAYER_ComputePlayerFullStats() {
 	                              + player.Full_Attribute_Constitution * 3;
 	
 	// Calculate equipment modifiers for skills
-	// TODO these use the full attribute_* values from last frame!
 	player.Mod_Skill_Stealth += getEquipmentModifier(
 		IO_EQUIPITEM_ELEMENT_Stealth, base_stealth
 	);
@@ -747,6 +746,17 @@ void ARX_PLAYER_ComputePlayerFullStats() {
 		IO_EQUIPITEM_ELEMENT_Defense, base_defense
 	);
 	
+	// Calculate full skills
+	player.Full_Skill_Stealth = base_stealth + player.Mod_Skill_Stealth;
+	player.Full_Skill_Mecanism = base_mecanism + player.Mod_Skill_Mecanism;
+	player.Full_Skill_Intuition = base_intuition + player.Mod_Skill_Intuition;
+	player.Full_Skill_Etheral_Link = base_ethereal_link + player.Mod_Skill_Etheral_Link;
+	player.Full_Skill_Object_Knowledge = base_object_knowledge + player.Mod_Skill_Object_Knowledge;
+	player.Full_Skill_Casting = base_casting + player.Mod_Skill_Casting;
+	player.Full_Skill_Projectile = base_projectile + player.Mod_Skill_Projectile;
+	player.Full_Skill_Close_Combat = base_close_combat + player.Mod_Skill_Close_Combat;
+	player.Full_Skill_Defense = base_defense + player.Mod_Skill_Defense;
+	
 	
 	/////////////////////////////////////////////////////////////////////////////////////
 	// Other stats
@@ -766,7 +776,6 @@ void ARX_PLAYER_ComputePlayerFullStats() {
 	                           + -5.f;
 	
 	// Calculate equipment modifiers for stats
-	// TODO these use the full attribute and skill values from last frame!
 	player.Mod_armor_class += getEquipmentModifier(
 		IO_EQUIPITEM_ELEMENT_Armor_Class, base_armor_class
 	);
@@ -783,26 +792,15 @@ void ARX_PLAYER_ComputePlayerFullStats() {
 		IO_EQUIPITEM_ELEMENT_Damages, base_damages
 	);
 	
-	
-	//player.Full_AimTime=getEquipmentModifier(
-	//	IO_EQUIPITEM_ELEMENT_AimTime,0);
-	
-	
-	player.Full_Skill_Stealth = base_stealth + player.Mod_Skill_Stealth;
-	player.Full_Skill_Mecanism = base_mecanism + player.Mod_Skill_Mecanism;
-	player.Full_Skill_Intuition = base_intuition + player.Mod_Skill_Intuition;
-	player.Full_Skill_Etheral_Link = base_ethereal_link + player.Mod_Skill_Etheral_Link;
-	player.Full_Skill_Object_Knowledge = base_object_knowledge + player.Mod_Skill_Object_Knowledge;
-	player.Full_Skill_Casting = base_casting + player.Mod_Skill_Casting;
-	player.Full_Skill_Projectile = base_projectile + player.Mod_Skill_Projectile;
-	player.Full_Skill_Close_Combat = base_close_combat + player.Mod_Skill_Close_Combat;
-	player.Full_Skill_Defense = base_defense + player.Mod_Skill_Defense;
-	
+	// Calculate full stats
 	player.Full_armor_class = (int)std::max(1.f, base_armor_class + player.Mod_armor_class);
 	player.Full_resist_magic = (int)std::max(0.f, base_resist_magic + player.Mod_resist_magic);
 	player.Full_resist_poison = (int)std::max(0.f, base_resist_poison + player.Mod_resist_poison);
 	player.Full_Critical_Hit = std::max(0.f, base_critical_hit + player.Mod_Critical_Hit);
 	player.Full_damages = std::max(1.f, base_damages + player.Mod_damages);
+	
+	
+	/////////////////////////////////////////////////////////////////////////////////////
 	
 	player.Full_life = player.life;
 	player.Full_maxlife = (float)player.Full_Attribute_Constitution * (float)(player.level + 2);
