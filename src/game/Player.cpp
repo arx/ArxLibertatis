@@ -659,7 +659,7 @@ void ARX_PLAYER_ComputePlayerFullStats() {
 	);
 	
 	
-	//player.Full_AimTime=ARX_EQUIPMENT_ApplyPercent(
+	//player.Full_AimTime=getEquipmentModifier(
 	//	IO_EQUIPITEM_ELEMENT_AimTime,0);
 
 

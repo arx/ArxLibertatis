@@ -108,7 +108,6 @@ WeaponType ARX_EQUIPMENT_GetPlayerWeaponType();
  *         the base (for relative modifiers).
  */
 float getEquipmentBaseModifier(EquipmentModifierType modifier, bool relative = false);
-float ARX_EQUIPMENT_ApplyPercent(EquipmentModifierType modifier, float baseval);
 
 /*!
  * Get the total modifier (of a specific type) for all items equipped by the player.

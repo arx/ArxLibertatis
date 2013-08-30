@@ -1158,10 +1158,6 @@ float getEquipmentBaseModifier(EquipmentModifierType modifier, bool relative) {
 	return sum;
 }
 
-float ARX_EQUIPMENT_ApplyPercent(EquipmentModifierType modifier, float baseval) {
-	return getEquipmentBaseModifier(modifier, true) * baseval;
-}
-
 float getEquipmentModifier(EquipmentModifierType modifier, float baseval) {
 	float modabs = getEquipmentBaseModifier(modifier, false);
 	float modrel = getEquipmentBaseModifier(modifier, true);
