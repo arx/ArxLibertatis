@@ -268,8 +268,11 @@ void ARX_FOGS_RenderAll() {
 		if(!fog->exist)
 			continue;
 
-			if(fogobj)
-				DrawEERIEInter(fogobj, &rotation, fog->pos, NULL);
+			if(fogobj) {
+				Anglef angle(0.f, 0.f, 0.f);
+				Vec3f scale(1.f, 1.f, 1.f);
+				DrawEERIEObjEx(fogobj, &angle, &fog->pos, &scale, Color3f::white);
+			}
 
 //			fog->bboxmin = BBOXMIN;
 //			fog->bboxmax = BBOXMAX;
@@ -320,14 +323,14 @@ void debugEntityPhysicsCylinder(Entity * io) {
 
 void RenderAllNodes() {
 
-	EERIE_QUAT rotation;
-	Quat_Init(&rotation);
+	Anglef angle(0.f, 0.f, 0.f);
+	Vec3f scale(1.f, 1.f, 1.f);
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 
 	for(long i=0; i<nodes.nbmax; i++) {
 		if (nodes.nodes[i].exist) {
-			DrawEERIEInter(nodeobj, &rotation, nodes.nodes[i].pos, NULL);
+			DrawEERIEObjEx(nodeobj, &angle, &nodes.nodes[i].pos, &scale, Color3f::white);
 
 			nodes.nodes[i].bboxmin.x=(short)BBOX2D.min.x;
 			nodes.nodes[i].bboxmin.y=(short)BBOX2D.min.y;

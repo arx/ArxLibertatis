@@ -1533,7 +1533,7 @@ long CountBkgVertex() {
 }
 
 
-void DrawEERIEObjEx(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *pos, Vec3f *scale, Color3f &col) {
+void DrawEERIEObjEx(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *pos, Vec3f *scale, const Color3f & col) {
 	if(!eobj)
 		return;
 
