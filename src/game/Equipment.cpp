@@ -1138,7 +1138,7 @@ void ARX_EQUIPMENT_Remove_All_Special(Entity * io)
 float ARX_EQUIPMENT_Apply(Entity *io, EquipmentModifierType ident, float trueval) {
 	
 	if(!io || io != entities.player())
-		return trueval;
+		return 0;
 
 	float toadd = 0;
 
@@ -1161,7 +1161,7 @@ float ARX_EQUIPMENT_Apply(Entity *io, EquipmentModifierType ident, float trueval
 float ARX_EQUIPMENT_ApplyPercent(Entity *io, EquipmentModifierType ident, float trueval) {
 	
 	if(!io || io != entities.player())
-		return trueval;
+		return 0;
 
 	float toadd = 0;
 
