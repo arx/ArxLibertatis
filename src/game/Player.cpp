@@ -547,24 +547,6 @@ void ARX_PLAYER_ComputePlayerFullStats() {
 
 
 	if (player.Full_AimTime <= 1500) player.Full_AimTime = 1500;
-
-
-	// Full Stats
-	float fCalc = player.Full_Skill_Defense * ( 1.0f / 10 ) - 1;
-	player.Full_armor_class = checked_range_cast<unsigned char>(fCalc);
-	if (player.Full_armor_class < 1) player.Full_armor_class = 1;
-
-	player.Full_resist_magic = (unsigned char)(float)(player.Full_Attribute_Mind * 2.f
-	                           * (1.f + player.Full_Skill_Casting * ( 1.0f / 200 )));
-
-	fCalc = player.Full_Attribute_Constitution * 2 + (player.Full_Skill_Defense * ( 1.0f / 4 ));
-	player.Full_resist_poison = checked_range_cast<unsigned char>(fCalc);
-
-	player.Full_damages = (player.Full_Attribute_Strength - 10) * ( 1.0f / 2 );
-	if (player.Full_damages < 1.f) player.Full_damages = 1.f;
-
-	player.Full_Critical_Hit = (float)(player.Full_Attribute_Dexterity - 9) * 2.f
-	                           + (float)(player.Full_Skill_Close_Combat * ( 1.0f / 5 ));
 	
 	// TODO make these calculations moddable
 	
@@ -763,22 +745,36 @@ void ARX_PLAYER_ComputePlayerFullStats() {
 	/////////////////////////////////////////////////////////////////////////////////////
 	// Other stats
 	
-	// Calculate equipment modifiers for skills
+	// Calculate base stats
+	float base_armor_class   = player.Full_Skill_Defense * 0.1f
+	                           + -1.0f;
+	float base_resist_magic  = player.Full_Attribute_Mind * 2.f
+	                           * (1.f + player.Full_Skill_Casting * 0.005f); // TODO why *?
+	float base_resist_poison = player.Full_Attribute_Constitution * 2.f
+	                           + player.Full_Skill_Defense * 0.25f;
+	float base_critical_hit  = player.Full_Attribute_Dexterity * 2.f
+	                           + player.Full_Skill_Close_Combat * 0.2f
+	                           + -18.f;
+	float base_damages       = player.Full_Attribute_Strength * 0.5f
+	                           + player.Full_Skill_Close_Combat * 0.1f
+	                           + -5.f;
+	
+	// Calculate equipment modifiers for stats
 	// TODO these use the full attribute and skill values from last frame!
 	player.Mod_armor_class += getEquipmentModifier(
-		IO_EQUIPITEM_ELEMENT_Armor_Class, player.Full_armor_class
+		IO_EQUIPITEM_ELEMENT_Armor_Class, base_armor_class
 	);
 	player.Mod_resist_magic += getEquipmentModifier(
-		IO_EQUIPITEM_ELEMENT_Resist_Magic, player.Full_resist_magic
+		IO_EQUIPITEM_ELEMENT_Resist_Magic, base_resist_magic
 	);
 	player.Mod_resist_poison += getEquipmentModifier(
-		IO_EQUIPITEM_ELEMENT_Resist_Poison, player.Full_resist_poison
+		IO_EQUIPITEM_ELEMENT_Resist_Poison, base_resist_poison
 	);
 	player.Mod_Critical_Hit += getEquipmentModifier(
-		IO_EQUIPITEM_ELEMENT_Critical_Hit, player.Full_Critical_Hit
+		IO_EQUIPITEM_ELEMENT_Critical_Hit, base_critical_hit
 	);
 	player.Mod_damages += getEquipmentModifier(
-		IO_EQUIPITEM_ELEMENT_Damages, player.Full_damages
+		IO_EQUIPITEM_ELEMENT_Damages, base_damages
 	);
 	
 	
@@ -810,27 +806,13 @@ void ARX_PLAYER_ComputePlayerFullStats() {
 	player.Full_Skill_Projectile = base_projectile + player.Mod_Skill_Projectile;
 	player.Full_Skill_Close_Combat = base_close_combat + player.Mod_Skill_Close_Combat;
 	player.Full_Skill_Defense = base_defense + player.Mod_Skill_Defense;
-
-	player.Full_armor_class += player.Mod_armor_class;
-
-	if (player.Full_armor_class < 0) player.Full_armor_class = 0;
-
-	player.Full_resist_magic += player.Mod_resist_magic;
-
-	if (player.Full_resist_magic < 0) player.Full_resist_magic = 0;
-
-	player.Full_resist_poison += player.Mod_resist_poison;
-
-	if (player.Full_resist_poison < 0) player.Full_resist_poison = 0;
-
-	player.Full_Critical_Hit += player.Mod_Critical_Hit;
-
-	if (player.Full_Critical_Hit < 0) player.Full_Critical_Hit = 0;
-
-	player.Full_damages += player.Mod_damages + player.Full_Skill_Close_Combat * ( 1.0f / 10 );
-
-	if (player.Full_damages < 1) player.Full_damages = 1;
-
+	
+	player.Full_armor_class = (int)std::max(1.f, base_armor_class + player.Mod_armor_class);
+	player.Full_resist_magic = (int)std::max(0.f, base_resist_magic + player.Mod_resist_magic);
+	player.Full_resist_poison = (int)std::max(0.f, base_resist_poison + player.Mod_resist_poison);
+	player.Full_Critical_Hit = std::max(0.f, base_critical_hit + player.Mod_Critical_Hit);
+	player.Full_damages = std::max(1.f, base_damages + player.Mod_damages);
+	
 	player.Full_life = player.life;
 	player.Full_maxlife = (float)player.Full_Attribute_Constitution * (float)(player.level + 2);
 	player.life = std::min(player.life, player.Full_maxlife);
