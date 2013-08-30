@@ -70,16 +70,17 @@ void DrawLineSphere(const EERIE_SPHERE & sphere, Color color) {
 
 	static const size_t sections = 64;
 
-	int rings = sphere.radius / 10;
-	rings = std::max(rings, 7);
+	size_t rings = sphere.radius / 10;
+	if(rings < 7)
+		rings = 7;
 
 	std::vector<TexturedVertex> vertices;
 
 	bool skip = false;
 
-	for(float i = 1; i < rings - 1; i++) {
+	for(size_t i = 1; i < rings - 1; i++) {
 		float a = i * (PI / (rings - 1));
-		for(int j = 0; j <= sections; j++) {
+		for(size_t j = 0; j <= sections; j++) {
 			float b = j * ((2 * PI) / sections);
 
 			Vec3f pos;
