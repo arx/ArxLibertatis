@@ -207,61 +207,6 @@ void ARXDRAW_DrawInterShadows()
 	GRenderer->SetFogColor(ulBKGColor);
 }
 
-//***********************************************************************************************
-// Draws a light source for EDITOR purpose...
-//-----------------------------------------------------------------------------------------------
-// VERIFIED (Cyril 2001/10/15)
-//***********************************************************************************************
-extern bool MouseInRect(const float x0, const float y0, const float x1, const float y1);
-
-void EERIEDrawLight(EERIE_LIGHT * el) {
- 
-	TexturedVertex in;
-	TexturedVertex center;
-	//GRenderer->SetCulling(Renderer::CullNone);
-	//GRenderer->SetRenderState(Renderer::DepthTest, true);
-	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-
-	
-	if(!el || !el->treat)
-		return;
-
-	in.p = el->pos;
-	EE_RTP(&in, &center);
-
-	if(MouseInRect(center.p.x - 20, center.p.y - 20, center.p.x + 20, center.p.y + 20)) {
-		GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-		EERIE_SPHERE fallstart;
-		fallstart.origin = el->pos;
-		fallstart.radius = el->fallstart;
-		DrawLineSphere(fallstart, Color(Color3<u8>::green, 200));
-
-		EERIE_SPHERE fallend;
-		fallend.origin = el->pos;
-		fallend.radius = el->fallend;
-		DrawLineSphere(fallend, Color(Color3<u8>::red, 200));
-	}
-
-	GRenderer->SetBlendFunc(Renderer::BlendSrcAlpha, Renderer::BlendSrcAlpha);
-	EERIEDrawSprite(&in, 11.f, lightsource_tc, el->rgb.to<u8>(), 2.f);
-}
-
-void ARXDRAW_DrawAllLights(long x0,long z0,long x1,long z1) {
-	for(size_t i = 0; i < MAX_LIGHTS; i++) {
-		EERIE_LIGHT *light = GLight[i];
-
-		if(light) {
-			long tx = light->pos.x * ACTIVEBKG->Xmul;
-			long tz = light->pos.z * ACTIVEBKG->Zmul;
-			light->mins.x = 9999999999.f;
-
-			if(tx >= x0 && tx <= x1 && tz >= z0 && tz <= z1)  {
-				light->treat = 1;
-				EERIEDrawLight(light);
-			}
-		}
-	}
-}
 extern Entity * CAMERACONTROLLER;
 
 void ARXDRAW_DrawEyeBall() {

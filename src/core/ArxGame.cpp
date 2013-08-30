@@ -77,6 +77,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/BaseGraphicsTypes.h"
 #include "graphics/Color.h"
 #include "graphics/Draw.h"
+#include "graphics/DrawDebug.h"
 #include "graphics/GraphicsModes.h"
 #include "graphics/GraphicsTypes.h"
 #include "graphics/Math.h"
@@ -1495,6 +1496,8 @@ void ArxGame::renderLevel() {
 
 	ARX_SCENE_Update();
 	ARX_SCENE_Render();
+
+	DrawDebugRender();
 
 	// Begin Particles
 	

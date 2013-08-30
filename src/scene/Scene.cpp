@@ -1747,70 +1747,6 @@ void ARX_SCENE_Update() {
 	}
 }
 
-void DebugPortalsRender() {
-	GRenderer->SetRenderState(Renderer::Fog, false);
-	GRenderer->SetRenderState(Renderer::DepthTest, false);
-
-	for(size_t i = 0; i < portals->portals.size(); i++) {
-		EERIE_PORTALS & po = portals->portals[i];
-
-		Color color = Color::red;
-		if(po.useportal == 1) {
-			color = Color::green;
-		}
-
-		EERIEPOLY & epp = po.poly;
-
-		EERIEDraw3DLine(epp.v[0].p, epp.v[1].p, color);
-		EERIEDraw3DLine(epp.v[1].p, epp.v[3].p, color);
-		EERIEDraw3DLine(epp.v[2].p, epp.v[3].p, color);
-		EERIEDraw3DLine(epp.v[0].p, epp.v[2].p, color);
-	}
-
-	GRenderer->SetRenderState(Renderer::DepthTest, true);
-	GRenderer->SetRenderState(Renderer::Fog, true);
-}
-
-void DebugPathsRender() {
-	GRenderer->SetRenderState(Renderer::Fog, false);
-	GRenderer->SetRenderState(Renderer::DepthTest, false);
-
-	for(long i = 0; i < nbARXpaths; i++) {
-		ARX_PATH * path = ARXpaths[i];
-
-		if(!path)
-			continue;
-
-		std::vector<Vec3f> points;
-
-		for(long i = 0; i < path->nb_pathways; i++) {
-			ARX_PATHWAY node = path->pathways[i];
-
-			points.push_back(path->pos + node.rpos);
-		}
-
-		if(points.size() > 0) {
-			points.push_back(points[0]);
-		}
-
-		for(int i=0; i+1<points.size(); i++) {
-			EERIEDraw3DLine(points[i], points[i+1], Color::red);
-		}
-
-		if(path->height > 0) {
-			Vec3f offset(0.f, -path->height, 0.f);
-
-			for(int i=0; i+1<points.size(); i++) {
-				EERIEDraw3DLine(points[i] + offset, points[i+1] + offset, Color::red);
-			}
-
-			for(int i=0; i<points.size(); i++) {
-				EERIEDraw3DLine(points[i], points[i] + offset, Color::red);
-			}
-		}
-	}
-}
-
 extern short uw_mode;
 extern long SPECIAL_DRAGINTER_RENDER;
 
@@ -1891,32 +1827,5 @@ void ARX_SCENE_Render() {
 	GRenderer->SetCulling(Renderer::CullCCW);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);	
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
-
-	if(EDITION == EDITION_LIGHTS) {
-		//TODO copy-paste
-		long l = ACTIVECAM->cdepth * 0.42f;
-		long clip3D = (l / (long)BKG_SIZX) + 1;
-		long lcval = clip3D + 4;
-
-		long camXsnap = ACTIVECAM->orgTrans.pos.x * ACTIVEBKG->Xmul;
-		long camZsnap = ACTIVECAM->orgTrans.pos.z * ACTIVEBKG->Zmul;
-		camXsnap = clamp(camXsnap, 0, ACTIVEBKG->Xsize - 1L);
-		camZsnap = clamp(camZsnap, 0, ACTIVEBKG->Zsize - 1L);
-
-		long x0 = std::max(camXsnap - lcval, 0L);
-		long x1 = std::min(camXsnap + lcval, ACTIVEBKG->Xsize - 1L);
-		long z0 = std::max(camZsnap - lcval, 0L);
-		long z1 = std::min(camZsnap + lcval, ACTIVEBKG->Zsize - 1L);
-
-		ARXDRAW_DrawAllLights(x0,z0,x1,z1);
-	}
-
-	if(EDITION == EDITION_Portals) {
-		DebugPortalsRender();
-	}
-
-	if(EDITION == EDITION_Paths) {
-		DebugPathsRender();
-	}
 }
 

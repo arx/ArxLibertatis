@@ -118,62 +118,6 @@ void EERIEDrawFill2DRectDegrad(float x0, float y0, float x1, float y1, float z, 
 	EERIEDRAWPRIM(Renderer::TriangleStrip, v, 4);
 }
 
-extern void EE_RT(Vec3f * in, Vec3f * out);
-extern void EE_P(Vec3f * in, TexturedVertex * out);
-
-void DrawLineSphere(const EERIE_SPHERE & sphere, Color color) {
-
-	if(sphere.radius <= 0)
-		return;
-
-	static const size_t sections = 64;
-
-	int rings = sphere.radius / 10;
-	rings = std::max(rings, 7);
-
-	std::vector<TexturedVertex> vertices;
-
-	bool skip = false;
-
-	for(float i = 1; i < rings - 1; i++) {
-		float a = i * (PI / (rings - 1));
-		for(int j = 0; j <= sections; j++) {
-			float b = j * ((2 * PI) / sections);
-
-			Vec3f pos;
-			pos.x = cos(b) * sin(a);
-			pos.y = sin(b) * sin(a);
-			pos.z = cos(a);
-
-			pos *= sphere.radius;
-			pos += sphere.origin;
-
-			Vec3f temp;
-			TexturedVertex out;
-			EE_RT(&pos, &temp);
-			EE_P(&temp, &out);
-
-			if(skip) {
-				skip = false;
-				out.color = 0x00000000;
-				vertices.push_back(out);
-			}
-
-			out.color = color.toBGRA();
-			vertices.push_back(out);
-
-			if(j == sections) {
-				skip = true;
-				out.color = 0x00000000;
-				vertices.push_back(out);
-			}
-		}
-	}
-
-	GRenderer->ResetTexture(0);
-	EERIEDRAWPRIM(Renderer::LineStrip, &vertices[0], vertices.size());
-}
-
 void EERIEDraw3DCylinder(const EERIE_CYLINDER & cyl, Color col) {
 	
 	#define STEPCYL 16

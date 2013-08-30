@@ -587,6 +587,7 @@ set(GAME_SOURCES
 
 set(GRAPHICS_SOURCES
 	src/graphics/Draw.cpp
+	src/graphics/DrawDebug.cpp
 	src/graphics/GraphicsModes.cpp
 	src/graphics/GraphicsUtility.cpp
 	src/graphics/Math.cpp
