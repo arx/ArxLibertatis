@@ -1435,7 +1435,8 @@ static void PlayerLaunchArrow_Test(float aimratio, float poisonous, Vec3f * pos,
 	MatrixSetByVectors(&tmat,&v1,&v2);
 	QuatFromMatrix(quat,tmat);
 
-	float wd = (float)ARX_EQUIPMENT_Apply(IO_EQUIPITEM_ELEMENT_Damages);
+	float wd = getEquipmentBaseModifier(IO_EQUIPITEM_ELEMENT_Damages);
+	// TODO Why ignore relative modifiers? Why not just use player.Full_damages?
 
 	float weapon_damages=wd;
 

@@ -1134,7 +1134,7 @@ void ARX_EQUIPMENT_Remove_All_Special(Entity * io)
 	io->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_SPECIAL_4].special = IO_SPECIAL_ELEM_NONE;
 }
 
-float ARX_EQUIPMENT_Apply(EquipmentModifierType modifier, bool relative) {
+float getEquipmentBaseModifier(EquipmentModifierType modifier, bool relative) {
 	
 	float sum = 0;
 	
@@ -1159,7 +1159,7 @@ float ARX_EQUIPMENT_Apply(EquipmentModifierType modifier, bool relative) {
 }
 
 float ARX_EQUIPMENT_ApplyPercent(EquipmentModifierType modifier, float baseval) {
-	return ARX_EQUIPMENT_Apply(modifier, true) * baseval;
+	return getEquipmentBaseModifier(modifier, true) * baseval;
 }
 
 void ARX_EQUIPMENT_SetEquip(Entity * io, bool special,

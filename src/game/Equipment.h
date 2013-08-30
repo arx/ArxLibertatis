@@ -97,7 +97,7 @@ void ARX_EQUIPMENT_LaunchPlayerUnReadyWeapon();
 WeaponType ARX_EQUIPMENT_GetPlayerWeaponType();
 
 /*!
- * Get the total modifier (of a specific type) for all items equipped by the player.
+ * Get a base modifier (of a specific type) for all items equipped by the player.
  *
  * @param modifier The modifier type to calculate the value for.
  * @param relative \c true to sum up relative modifiers,
@@ -107,8 +107,9 @@ WeaponType ARX_EQUIPMENT_GetPlayerWeaponType();
  *         or a relative modifier value to be moltiplied by the base and then added to
  *         the base (for relative modifiers).
  */
-float ARX_EQUIPMENT_Apply(EquipmentModifierType modifier, bool relative = false);
-float ARX_EQUIPMENT_ApplyPercent(EquipmentModifierType modifier, float trueval);
+float getEquipmentBaseModifier(EquipmentModifierType modifier, bool relative = false);
+float ARX_EQUIPMENT_ApplyPercent(EquipmentModifierType modifier, float baseval);
+
 bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float percentaim, long flags, long targ = -1);
 void ARX_EQUIPMENT_RecreatePlayerMesh();
 float ARX_EQUIPMENT_ComputeDamages(Entity * io_source, Entity * io_target, float ratioaim, Vec3f * pos = NULL);
