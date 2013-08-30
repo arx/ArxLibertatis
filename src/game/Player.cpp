@@ -613,8 +613,8 @@ extern long SPECIAL_PNUX;
  * \brief Compute FULL versions of player stats including Equiped Items and spells,
  *        and any other effect altering them.
  */
-void ARX_PLAYER_ComputePlayerFullStats()
-{
+void ARX_PLAYER_ComputePlayerFullStats() {
+	
 	ARX_PLAYER_ComputePlayerStats();
 	player.Mod_Attribute_Strength = 0;
 	player.Mod_Attribute_Dexterity = 0;
@@ -642,26 +642,6 @@ void ARX_PLAYER_ComputePlayerFullStats()
 
 	player.Mod_armor_class = getEquipmentBaseModifier(
 	                             IO_EQUIPITEM_ELEMENT_Armor_Class);
-
-	// Check for Equipment Modificators to Skills
-	player.Mod_Skill_Stealth = getEquipmentBaseModifier(
-	                               IO_EQUIPITEM_ELEMENT_Stealth);
-	player.Mod_Skill_Mecanism = getEquipmentBaseModifier(
-	                                IO_EQUIPITEM_ELEMENT_Mecanism);
-	player.Mod_Skill_Intuition = getEquipmentBaseModifier(
-	                                 IO_EQUIPITEM_ELEMENT_Intuition);
-	player.Mod_Skill_Etheral_Link = getEquipmentBaseModifier(
-	                                    IO_EQUIPITEM_ELEMENT_Etheral_Link);
-	player.Mod_Skill_Object_Knowledge = getEquipmentBaseModifier(
-	                                        IO_EQUIPITEM_ELEMENT_Object_Knowledge);
-	player.Mod_Skill_Casting = getEquipmentBaseModifier(
-	                               IO_EQUIPITEM_ELEMENT_Casting);
-	player.Mod_Skill_Projectile = getEquipmentBaseModifier(
-	                                  IO_EQUIPITEM_ELEMENT_Projectile);
-	player.Mod_Skill_Close_Combat = getEquipmentBaseModifier(
-	                                    IO_EQUIPITEM_ELEMENT_Close_Combat);
-	player.Mod_Skill_Defense = getEquipmentBaseModifier(
-	                               IO_EQUIPITEM_ELEMENT_Defense);
 
 	player.Mod_resist_magic = getEquipmentBaseModifier(
 	                              IO_EQUIPITEM_ELEMENT_Resist_Magic);
@@ -704,7 +684,9 @@ void ARX_PLAYER_ComputePlayerFullStats()
 
 	player.Full_Critical_Hit = (float)(player.Full_Attribute_Dexterity - 9) * 2.f
 	                           + (float)(player.Full_Skill_Close_Combat * ( 1.0f / 5 ));
-
+	
+	// TODO make these calculations moddable
+	
 	
 	// Calculate equipment modifiers for attributes
 	player.Mod_Attribute_Strength = getEquipmentModifier(
@@ -720,26 +702,37 @@ void ARX_PLAYER_ComputePlayerFullStats()
 		IO_EQUIPITEM_ELEMENT_MIND, player.Attribute_Mind
 	);
 	
+	
 	// Calculate equipment modifiers for skills
-	player.Mod_Skill_Stealth += ARX_EQUIPMENT_ApplyPercent(
-	                                IO_EQUIPITEM_ELEMENT_Stealth, ARX_PLAYER_Get_Skill_Stealth(1));
-	player.Mod_Skill_Mecanism += ARX_EQUIPMENT_ApplyPercent(
-	                                 IO_EQUIPITEM_ELEMENT_Mecanism, ARX_PLAYER_Get_Skill_Mecanism(1));
-	player.Mod_Skill_Intuition += ARX_EQUIPMENT_ApplyPercent(
-	                                  IO_EQUIPITEM_ELEMENT_Intuition, ARX_PLAYER_Get_Skill_Intuition(1));
-	player.Mod_Skill_Etheral_Link += ARX_EQUIPMENT_ApplyPercent(
-	                                     IO_EQUIPITEM_ELEMENT_Etheral_Link, ARX_PLAYER_Get_Skill_Etheral_Link(1));
-	player.Mod_Skill_Object_Knowledge += ARX_EQUIPMENT_ApplyPercent(
-	        IO_EQUIPITEM_ELEMENT_Object_Knowledge, ARX_PLAYER_Get_Skill_Object_Knowledge(1));
-	player.Mod_Skill_Casting += ARX_EQUIPMENT_ApplyPercent(
-	                                IO_EQUIPITEM_ELEMENT_Casting, ARX_PLAYER_Get_Skill_Casting(1));
-	player.Mod_Skill_Projectile += ARX_EQUIPMENT_ApplyPercent(
-	                                   IO_EQUIPITEM_ELEMENT_Projectile, ARX_PLAYER_Get_Skill_Projectile(1));
-	player.Mod_Skill_Close_Combat += ARX_EQUIPMENT_ApplyPercent(
-	                                     IO_EQUIPITEM_ELEMENT_Close_Combat, ARX_PLAYER_Get_Skill_Close_Combat(1));
-	player.Mod_Skill_Defense += ARX_EQUIPMENT_ApplyPercent(
-	                                IO_EQUIPITEM_ELEMENT_Defense, ARX_PLAYER_Get_Skill_Defense(1));
-
+	// TODO these use the player.Full_Attribute_* values from the last frame!
+	player.Mod_Skill_Stealth += getEquipmentModifier(
+		IO_EQUIPITEM_ELEMENT_Stealth, ARX_PLAYER_Get_Skill_Stealth(1)
+	);
+	player.Mod_Skill_Mecanism += getEquipmentModifier(
+		IO_EQUIPITEM_ELEMENT_Mecanism, ARX_PLAYER_Get_Skill_Mecanism(1)
+	);
+	player.Mod_Skill_Intuition += getEquipmentModifier(
+		IO_EQUIPITEM_ELEMENT_Intuition, ARX_PLAYER_Get_Skill_Intuition(1)
+	);
+	player.Mod_Skill_Etheral_Link += getEquipmentModifier(
+		IO_EQUIPITEM_ELEMENT_Etheral_Link, ARX_PLAYER_Get_Skill_Etheral_Link(1)
+	);
+	player.Mod_Skill_Object_Knowledge += getEquipmentModifier(
+		IO_EQUIPITEM_ELEMENT_Object_Knowledge, ARX_PLAYER_Get_Skill_Object_Knowledge(1)
+	);
+	player.Mod_Skill_Casting += getEquipmentModifier(
+		IO_EQUIPITEM_ELEMENT_Casting, ARX_PLAYER_Get_Skill_Casting(1)
+	);
+	player.Mod_Skill_Projectile += getEquipmentModifier(
+		IO_EQUIPITEM_ELEMENT_Projectile, ARX_PLAYER_Get_Skill_Projectile(1)
+	);
+	player.Mod_Skill_Close_Combat += getEquipmentModifier(
+		IO_EQUIPITEM_ELEMENT_Close_Combat, ARX_PLAYER_Get_Skill_Close_Combat(1)
+	);
+	player.Mod_Skill_Defense += getEquipmentModifier(
+		IO_EQUIPITEM_ELEMENT_Defense, ARX_PLAYER_Get_Skill_Defense(1)
+	);
+	
 	player.Mod_armor_class += ARX_EQUIPMENT_ApplyPercent(
 	                              IO_EQUIPITEM_ELEMENT_Armor_Class, player.Full_armor_class + player.Mod_armor_class);
 	player.Mod_resist_magic += ARX_EQUIPMENT_ApplyPercent(
