@@ -1289,12 +1289,7 @@ void ArxGame::updateInput() {
 	}
 
 	if(GInput->isKeyPressedNowPressed(Keyboard::Key_ScrollLock)) {
-
-		EDITION = static_cast<InfoPanels>(EDITION + 1);
-
-		if(EDITION == EDITION_EnumSize) {
-			EDITION = EDITION_NONE;
-		}
+		DrawDebugToggleDisplayTypes();
 	}
 
 	if(GInput->isKeyPressedNowPressed(Keyboard::Key_Spacebar)) {

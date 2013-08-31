@@ -23,6 +23,8 @@
 void DrawDebugInit();
 void DrawDebugRelease();
 
+void DrawDebugToggleDisplayTypes();
+
 void DrawDebugRender();
 
 #endif // ARX_GRAPHICS_DRAWDEBUG_H

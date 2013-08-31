@@ -101,7 +101,6 @@ extern long	FADEDIR;
 extern float framedelay;
 extern bool FirstFrame;
 
-extern long EDITION;
 #ifdef BUILD_EDITOR
 extern long DEBUGNPCMOVE;
 #endif

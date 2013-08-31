@@ -60,6 +60,29 @@ void DrawDebugRelease() {
 	nodeobj = NULL;
 }
 
+enum ARX_INTERFACE_EDITION_MODE
+{
+	EDITION_NONE,
+	EDITION_LIGHTS,
+	EDITION_FOGS,
+	EDITION_BoundingBoxes,
+	EDITION_CollisionShape,
+	EDITION_Portals,
+	EDITION_Paths,
+	EDITION_EnumSize
+};
+
+static ARX_INTERFACE_EDITION_MODE EDITION = EDITION_NONE;
+
+void DrawDebugToggleDisplayTypes() {
+
+	EDITION = static_cast<ARX_INTERFACE_EDITION_MODE>(EDITION + 1);
+
+	if(EDITION == EDITION_EnumSize) {
+		EDITION = EDITION_NONE;
+	}
+}
+
 extern void EE_RT(Vec3f * in, Vec3f * out);
 extern void EE_P(Vec3f * in, TexturedVertex * out);
 
@@ -407,6 +430,8 @@ void DrawDebugRender() {
 		DrawDebugPaths();
 		break;
 	}
+	default:
+		return;
 	}
 
 	for(size_t i = 1; i < entities.size(); i++) {

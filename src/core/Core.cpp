@@ -312,7 +312,6 @@ long FASTmse			= 0;
 // Flag used to Launch Moulinex
 long LOADEDD = 0; // Is a Level Loaded ?
 
-long EDITION = EDITION_NONE;
 #ifdef BUILD_EDITOR
 long DEBUGNPCMOVE = 0; // Debug NPC Movements
 #endif
