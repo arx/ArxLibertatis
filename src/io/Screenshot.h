@@ -49,16 +49,19 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 class SnapShot {
 	
 public:
-	SnapShot(const fs::path & name);
+	
+	explicit SnapShot(const fs::path & name);
 	~SnapShot();
-
+	
 	fs::path getNextFilePath();
 	
 	bool GetSnapShot();
 	bool GetSnapShotDim(int width, int height);
 	
 private:
+	
 	fs::path m_basePath;
+	
 };
 
 void InitSnapShot(const fs::path & name);
