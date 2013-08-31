@@ -1560,12 +1560,17 @@ void ARX_NPC_SpawnMember(Entity * ioo, long num) {
 	EERIE_PHYSICS_BOX_Launch(io->obj, &pos, &vector, 3, &io->angle);
 }
 
-#define	FLAG_CUT_HEAD  (1<<0)
-#define	FLAG_CUT_TORSO (1<<1)
-#define	FLAG_CUT_LARM  (1<<2)
-#define	FLAG_CUT_RARM  (1<<3)
-#define	FLAG_CUT_LLEG  (1<<4)
-#define	FLAG_CUT_RLEG  (1<<5)
+enum DismembermentFlag {
+	FLAG_CUT_HEAD  = (1<<0),
+	FLAG_CUT_TORSO = (1<<1),
+	FLAG_CUT_LARM  = (1<<2),
+	FLAG_CUT_RARM  = (1<<3),
+	FLAG_CUT_LLEG  = (1<<4),
+	FLAG_CUT_RLEG  = (1<<5)
+};
+
+DECLARE_FLAGS(DismembermentFlag, DismembermentFlags)
+DECLARE_FLAGS_OPERATORS(DismembermentFlags)
 
 static short GetCutFlag(const string & str) {
 	
