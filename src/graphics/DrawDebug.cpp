@@ -214,18 +214,18 @@ void DebugPathsRender() {
 			points.push_back(points[0]);
 		}
 
-		for(int i=0; i+1<points.size(); i++) {
+		for(size_t i = 0; i + 1 < points.size(); i++) {
 			EERIEDraw3DLine(points[i], points[i+1], Color::red);
 		}
 
 		if(path->height > 0) {
 			Vec3f offset(0.f, -path->height, 0.f);
 
-			for(int i=0; i+1<points.size(); i++) {
+			for(size_t i = 0; i + 1 < points.size(); i++) {
 				EERIEDraw3DLine(points[i] + offset, points[i+1] + offset, Color::red);
 			}
 
-			for(int i=0; i<points.size(); i++) {
+			for(size_t i = 0; i < points.size(); i++) {
 				EERIEDraw3DLine(points[i], points[i] + offset, Color::red);
 			}
 		}
