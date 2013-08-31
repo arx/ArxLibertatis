@@ -477,25 +477,25 @@ void ARX_DAMAGES_ForceDeath(Entity * io_dead, Entity * io_killer) {
 	Entity * old_sender = EVENT_SENDER;
 	EVENT_SENDER = io_killer;
 
-	if (io_dead == DRAGINTER)
+	if(io_dead == DRAGINTER)
 		Set_DragInter(NULL);
 
-	if (io_dead == FlyingOverIO)
+	if(io_dead == FlyingOverIO)
 		FlyingOverIO = NULL;
 
-	if ((MasterCamera.exist & 1) && (MasterCamera.io == io_dead))
+	if((MasterCamera.exist & 1) && (MasterCamera.io == io_dead))
 		MasterCamera.exist = 0;
 
-	if ((MasterCamera.exist & 2) && (MasterCamera.want_io == io_dead))
+	if((MasterCamera.exist & 2) && (MasterCamera.want_io == io_dead))
 		MasterCamera.exist = 0;
 
 	//Kill all speeches
-	if (ValidDynLight(io_dead->dynlight))
+	if(ValidDynLight(io_dead->dynlight))
 		DynLight[io_dead->dynlight].exist = 0;
 
 	io_dead->dynlight = -1;
 
-	if (ValidDynLight(io_dead->halo.dynlight))
+	if(ValidDynLight(io_dead->halo.dynlight))
 		DynLight[io_dead->halo.dynlight].exist = 0;
 
 	io_dead->halo.dynlight = -1;
@@ -524,15 +524,14 @@ void ARX_DAMAGES_ForceDeath(Entity * io_dead, Entity * io_killer) {
 
 	std::string killer;
 
-	if (io_dead->ioflags & IO_NPC)
+	if(io_dead->ioflags & IO_NPC)
 		io_dead->_npcdata->weaponinhand = 0;
 
 	ARX_INTERACTIVE_DestroyDynamicInfo(io_dead);
 
-	if (io_killer == entities.player())
+	if(io_killer == entities.player()) {
 		killer = "player";
-	else
-	{
+	} else {
 		if(io_killer)
 			killer = io_killer->long_name();
 	}
@@ -540,23 +539,20 @@ void ARX_DAMAGES_ForceDeath(Entity * io_dead, Entity * io_killer) {
 	for(size_t i = 1; i < entities.size(); i++) {
 		Entity * ioo = entities[i];
 
-		if (ioo == io_dead)
+		if(ioo == io_dead)
 			continue;
 
-		if ((ioo) && (ioo->ioflags & IO_NPC))
-		{
-			if (ValidIONum(ioo->targetinfo))
-				if (entities[ioo->targetinfo] == io_dead)
-				{
+		if(ioo && (ioo->ioflags & IO_NPC)) {
+			if(ValidIONum(ioo->targetinfo))
+				if(entities[ioo->targetinfo] == io_dead) {
 					EVENT_SENDER = io_dead; 
 					Stack_SendIOScriptEvent(entities[i], SM_NULL, killer, "target_death");
 					ioo->targetinfo = TARGET_NONE;
 					ioo->_npcdata->reachedtarget = 0;
 				}
 
-			if (ValidIONum(ioo->_npcdata->pathfind.truetarget))
-				if (entities[ioo->_npcdata->pathfind.truetarget] == io_dead)
-				{
+			if(ValidIONum(ioo->_npcdata->pathfind.truetarget))
+				if(entities[ioo->_npcdata->pathfind.truetarget] == io_dead) {
 					EVENT_SENDER = io_dead; 
 					Stack_SendIOScriptEvent(entities[i], SM_NULL, killer, "target_death");
 					ioo->_npcdata->pathfind.truetarget = TARGET_NONE;
@@ -570,8 +566,7 @@ void ARX_DAMAGES_ForceDeath(Entity * io_dead, Entity * io_killer) {
 	io_dead->animlayer[2].cur_anim = NULL;
 	io_dead->animlayer[3].cur_anim = NULL;
 
-	if (io_dead->ioflags & IO_NPC)
-	{
+	if(io_dead->ioflags & IO_NPC) {
 		io_dead->_npcdata->life = 0;
 
 		if(io_dead->_npcdata->weapon) {
@@ -591,9 +586,7 @@ void ARX_DAMAGES_ForceDeath(Entity * io_dead, Entity * io_killer) {
 
 void ARX_DAMAGES_PushIO(Entity * io_target, long source, float power)
 {
-	if ((power > 0.f)
-	        &&	(ValidIONum(source)))
-	{
+	if(power > 0.f && ValidIONum(source)) {
 		power *= ( 1.0f / 20 );
 		Entity * io = entities[source];
 		Vec3f vect = io_target->pos - io->pos;
