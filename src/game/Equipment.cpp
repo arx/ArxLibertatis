@@ -1161,7 +1161,7 @@ float getEquipmentBaseModifier(EquipmentModifierType modifier, bool relative) {
 float getEquipmentModifier(EquipmentModifierType modifier, float baseval) {
 	float modabs = getEquipmentBaseModifier(modifier, false);
 	float modrel = getEquipmentBaseModifier(modifier, true);
-	return modabs + modrel * (baseval + modabs);
+	return modabs + modrel * std::max(0.f, baseval + modabs);
 }
 
 void ARX_EQUIPMENT_SetEquip(Entity * io, bool special,
