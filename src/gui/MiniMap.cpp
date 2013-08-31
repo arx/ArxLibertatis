@@ -231,7 +231,7 @@ void MiniMap::reveal() {
 	}
 }
 
-void MiniMap::firstInit(ARXCHARACTER *pl, PakReader *pakRes, EntityManager *entityMng, Font *font) {
+void MiniMap::firstInit(ARXCHARACTER *pl, PakReader *pakRes, EntityManager *entityMng) {
 	
 	m_pTexDetect = NULL;
 	m_mapMarkerTexCont = NULL;
@@ -246,7 +246,6 @@ void MiniMap::firstInit(ARXCHARACTER *pl, PakReader *pakRes, EntityManager *enti
 	m_currentLevel = 0;
 	m_entities = entityMng;
 	m_activeBkg = NULL;
-	m_font = font;
 	
 	resetLevels();
 	
@@ -450,9 +449,9 @@ void MiniMap::showBookEntireMap(int showLevel) {
 				Rect::Num bottom = checked_range_cast<Rect::Num>((bRect.bottom) * Yratio);
 				Rect rRect = Rect(left, top, right, bottom);
 				
-				long lLengthDraw = ARX_UNICODE_ForceFormattingInRect(m_font, m_mapMarkers[i].m_text, rRect);
+				long lLengthDraw = ARX_UNICODE_ForceFormattingInRect(hFontInGameNote, m_mapMarkers[i].m_text, rRect);
 				
-				DrawBookTextInRect(m_font, float(bRect.left), float(bRect.top), float(bRect.right), m_mapMarkers[i].m_text.substr(0, lLengthDraw), Color::none);
+				DrawBookTextInRect(hFontInGameNote, float(bRect.left), float(bRect.top), float(bRect.right), m_mapMarkers[i].m_text.substr(0, lLengthDraw), Color::none);
 			}
 		}
 		
