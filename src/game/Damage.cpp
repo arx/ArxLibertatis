@@ -669,10 +669,7 @@ float ARX_DAMAGES_DealDamages(long target, float dmg, long source, DamageType fl
 				} else {
 					damagesdone = 0;
 				}
-
-				goto dodamage2;
-			}
-
+			} else {
 			if(flags & DAMAGE_TYPE_FIRE) {
 				if(rnd() * 100.f <= io_target->_npcdata->resist_fire)
 					dmg = 0;
@@ -685,9 +682,7 @@ float ARX_DAMAGES_DealDamages(long target, float dmg, long source, DamageType fl
 			} else {
 				damagesdone = ARX_DAMAGES_DamageNPC(io_target, dmg, source, 1, pos);
 			}
-
-		dodamage2:
-			;
+			}
 
 			if(flags & DAMAGE_TYPE_DRAIN_LIFE)
 				ARX_DAMAGES_HealInter(io_source, damagesdone);
