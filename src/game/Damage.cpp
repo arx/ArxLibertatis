@@ -628,19 +628,14 @@ float ARX_DAMAGES_DealDamages(long target, float dmg, long source, DamageType fl
 			} else {
 				damagesdone = 0;
 			}
-
-			goto dodamage;
-		}
-
+		} else {
 		if(flags & DAMAGE_TYPE_DRAIN_MANA) {
 			damagesdone = ARX_DAMAGES_DrainMana(io_target, dmg);
 		} else {
 			ARX_DAMAGES_DamagePlayerEquipment(dmg);
 			damagesdone = ARX_DAMAGES_DamagePlayer(dmg, flags, source);
 		}
-
-	dodamage:
-		;
+		}
 
 		if(flags & DAMAGE_TYPE_FIRE)
 			ARX_DAMAGES_IgnitIO(io_target, damagesdone);
