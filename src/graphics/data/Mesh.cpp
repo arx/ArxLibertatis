@@ -264,7 +264,7 @@ EERIEPOLY * CheckInPoly(float x, float y, float z, float * needY)
 		for(short i = pxi; i <= pxa; i++) {
 			FAST_BKG_DATA * feg = &ACTIVEBKG->fastdata[i][j];
 
-			for(size_t k = 0; k < feg->nbpolyin; k++) {
+			for(short k = 0; k < feg->nbpolyin; k++) {
 				EERIEPOLY * ep = feg->polyin[k];
 
 				if(poss.x >= ep->min.x
