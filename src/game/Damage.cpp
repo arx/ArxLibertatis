@@ -629,12 +629,12 @@ float ARX_DAMAGES_DealDamages(long target, float dmg, long source, DamageType fl
 				damagesdone = 0;
 			}
 		} else {
-		if(flags & DAMAGE_TYPE_DRAIN_MANA) {
-			damagesdone = ARX_DAMAGES_DrainMana(io_target, dmg);
-		} else {
-			ARX_DAMAGES_DamagePlayerEquipment(dmg);
-			damagesdone = ARX_DAMAGES_DamagePlayer(dmg, flags, source);
-		}
+			if(flags & DAMAGE_TYPE_DRAIN_MANA) {
+				damagesdone = ARX_DAMAGES_DrainMana(io_target, dmg);
+			} else {
+				ARX_DAMAGES_DamagePlayerEquipment(dmg);
+				damagesdone = ARX_DAMAGES_DamagePlayer(dmg, flags, source);
+			}
 		}
 
 		if(flags & DAMAGE_TYPE_FIRE)
