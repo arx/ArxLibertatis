@@ -684,9 +684,9 @@ void ARX_PLAYER_ComputePlayerFullStats() {
 	
 	// Calculate full alltributes
 	player.Full_Attribute_Strength = std::max(0.f, base_strength + player.Mod_Attribute_Strength);
-	player.Full_Attribute_Mind = std::max(0.f, base_mind + player.Mod_Attribute_Mind);
-	player.Full_Attribute_Constitution = std::max(0.f, base_constitution + player.Mod_Attribute_Constitution);
 	player.Full_Attribute_Dexterity = std::max(0.f, base_dexterity + player.Mod_Attribute_Dexterity);
+	player.Full_Attribute_Constitution = std::max(0.f, base_constitution + player.Mod_Attribute_Constitution);
+	player.Full_Attribute_Mind = std::max(0.f, base_mind + player.Mod_Attribute_Mind);
 	
 	
 	/////////////////////////////////////////////////////////////////////////////////////
