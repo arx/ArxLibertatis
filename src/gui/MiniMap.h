@@ -104,7 +104,7 @@ public:
 	size_t mapMarkerCount();
 	MapMarkerData mapMarkerGet(size_t id);
 	
-	void firstInit(ARXCHARACTER *pl, PakReader *pakRes, EntityManager *entityMng, Font *font); // This should be a constructor
+	void firstInit(ARXCHARACTER *pl, PakReader *pakRes, EntityManager *entityMng); // This should be a constructor
 	void reset();
 	void purgeTexContainer();
 	
@@ -153,7 +153,6 @@ private:
 	int m_currentLevel;
 	EntityManager *m_entities;
 	EERIE_BACKGROUND *m_activeBkg;
-	Font *m_font;
 	
 	float m_miniOffsetX[MAX_MINIMAP_LEVELS];
 	float m_miniOffsetY[MAX_MINIMAP_LEVELS];

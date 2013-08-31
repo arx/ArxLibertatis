@@ -676,7 +676,7 @@ static bool initializeGame() {
 	ARXMenu_Options_Control_SetInvertMouse(config.input.invertMouse);
 	ARXMenu_Options_Control_SetMouseSensitivity(config.input.mouseSensitivity);
 	
-	g_miniMap.firstInit(&player, resources, &entities, hFontInGameNote);
+	g_miniMap.firstInit(&player, resources, &entities);
 	
 	Project.torch = Color3f(1.f, 0.8f, 0.66666f);
 	LogDebug("InitializeDanae");
