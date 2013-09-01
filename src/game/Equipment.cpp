@@ -1134,7 +1134,7 @@ void ARX_EQUIPMENT_Remove_All_Special(Entity * io)
 	io->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_SPECIAL_4].special = IO_SPECIAL_ELEM_NONE;
 }
 
-float getEquipmentBaseModifier(EquipmentModifierType modifier, bool relative) {
+float getEquipmentBaseModifier(EquipmentModifierType modifier, bool getRelative) {
 	
 	float sum = 0;
 	
@@ -1143,14 +1143,15 @@ float getEquipmentBaseModifier(EquipmentModifierType modifier, bool relative) {
 			Entity * toequip = entities[player.equiped[i]];
 			if(toequip && (toequip->ioflags & IO_ITEM) && toequip->_itemdata->equipitem) {
 				IO_EQUIPITEM_ELEMENT * elem = &toequip->_itemdata->equipitem->elements[modifier];
-				if(bool(elem->flags & IO_ELEMENT_FLAG_PERCENT) == relative) {
+				bool isRelative = elem->flags.has(IO_ELEMENT_FLAG_PERCENT);
+				if(isRelative == getRelative) {
 					sum += elem->value;
 				}
 			}
 		}
 	}
 	
-	if(relative) {
+	if(getRelative) {
 		// Convert from percent to ratio
 		sum *= 0.01f;
 	}
