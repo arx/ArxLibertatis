@@ -679,7 +679,7 @@ static unsigned int uiOneHandedStealth = 0;
 
 bool Input::actionPressed(int actionId) const {
 	switch(actionId) {
-		case CONTROLS_CUST_MOUSELOOK:
+		case CONTROLS_CUST_USE:
 		case CONTROLS_CUST_ACTION:
 			break;
 		default:

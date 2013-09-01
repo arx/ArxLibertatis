@@ -2987,10 +2987,10 @@ void ReMappDanaeButton() {
 		EERIEMouseButton &= ~4;
 	}
 	
-	if(GInput->actionNowPressed(CONTROLS_CUST_MOUSELOOK)) {
+	if(GInput->actionNowPressed(CONTROLS_CUST_USE)) {
 		EERIEMouseButton |= 2;
 	}
-	if(GInput->actionNowReleased(CONTROLS_CUST_MOUSELOOK)) {
+	if(GInput->actionNowReleased(CONTROLS_CUST_USE)) {
 		EERIEMouseButton &= ~2;
 	}
 	

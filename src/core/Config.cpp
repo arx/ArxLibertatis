@@ -94,7 +94,7 @@ ActionKey actions[NUM_ACTION_KEY] = {
 	ActionKey(Keyboard::Key_Q), // LEANLEFT
 	ActionKey(Keyboard::Key_E), // LEANRIGHT
 	ActionKey(Keyboard::Key_X), // CROUCH
-	ActionKey(Keyboard::Key_F, Keyboard::Key_Enter), // MOUSELOOK
+	ActionKey(Keyboard::Key_F, Keyboard::Key_Enter), // USE
 	ActionKey(Mouse::Button_0), // ACTION
 	ActionKey(Keyboard::Key_I), // INVENTORY
 	ActionKey(Keyboard::Key_Backspace), // BOOK
@@ -193,7 +193,7 @@ const string actions[NUM_ACTION_KEY] = {
 	"lean_left",
 	"lean_right",
 	"crouch",
-	"mouselook",
+	"mouselook", // TODO rename to "use"?
 	"action_combine",
 	"inventory",
 	"book",
