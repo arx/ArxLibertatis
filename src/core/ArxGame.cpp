@@ -1322,7 +1322,7 @@ void ArxGame::renderCinematic() {
 
 extern int iHighLight;
 
-void ArxGame::renderLevel() {
+void ArxGame::updateLevel() {
 
 	if(!PLAYER_PARALYSED) {
 		manageEditorControls();
@@ -1441,11 +1441,11 @@ void ArxGame::renderLevel() {
 	ACTIVECAM->fadecolor = current.depthcolor;
 
 
+
 	ARX_INTERACTIVE_DestroyIOdelayedExecute();
+}
 
-	// TODO split method here
-
-	// SUBJECTIVE VIEW UPDATE START  *********************************************************
+void ArxGame::renderLevel() {
 
 	// Clear screen & Z buffers
 	if(desired.flags & GMOD_DCOLOR) {
@@ -1765,6 +1765,7 @@ void ArxGame::render() {
 	} else if(isInCinematic()) {
 		renderCinematic();
 	} else {
+		updateLevel();
 		renderLevel();
 	}
 	

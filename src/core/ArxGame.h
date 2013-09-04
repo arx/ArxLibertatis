@@ -116,6 +116,8 @@ private:
 
 	void renderMenu();
 	void renderCinematic();
+
+	void updateLevel();
 	void renderLevel();
 
 	
