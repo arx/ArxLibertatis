@@ -175,12 +175,9 @@ void ParticleSystem::SetParams(const ParticleParams & _pp) {
 	
 	fParticleFlash = _pp.fFlash * ( 1.0f / 100 );
 	
-	if (_pp.fRotation >= 2)
-	{
+	if(_pp.fRotation >= 2) {
 		fParticleRotation = 1.0f / (101 - _pp.fRotation);
-	}
-	else
-	{
+	} else {
 		fParticleRotation = 0.0f;
 	}
 
@@ -190,8 +187,7 @@ void ParticleSystem::SetParams(const ParticleParams & _pp) {
 	fParticleStartSize = _pp.fStartSize;
 	fParticleStartSizeRandom = _pp.fStartSizeRandom;
 
-	for (int i = 0; i < 4; i++)
-	{
+	for(int i = 0; i < 4; i++) {
 		fParticleStartColor[i] = _pp.fStartColor[i] / 255.0f;
 		fParticleStartColorRandom[i] = _pp.fStartColorRandom[i] / 255.0f;
 	}
@@ -201,8 +197,7 @@ void ParticleSystem::SetParams(const ParticleParams & _pp) {
 	fParticleEndSize = _pp.fEndSize;
 	fParticleEndSizeRandom = _pp.fEndSizeRandom;
 
-	for (int i = 0; i < 4; i++)
-	{
+	for(int i = 0; i < 4; i++) {
 		fParticleEndColor[i] = _pp.fEndColor[i] / 255.0f;
 		fParticleEndColorRandom[i] = _pp.fEndColorRandom[i] / 255.0f;
 	}
@@ -218,8 +213,7 @@ void ParticleSystem::SetParams(const ParticleParams & _pp) {
 	float b = (fParticleStartColor[2]  + fParticleEndColor[2] ) * 0.5f;
 	SetColor(r, g, b);
 
-	switch (_pp.iBlendMode)
-	{
+	switch(_pp.iBlendMode) {
 		case 0:
 			iSrcBlend = Renderer::BlendOne;
 			iDstBlend = Renderer::BlendOne;
@@ -244,30 +238,23 @@ void ParticleSystem::SetParams(const ParticleParams & _pp) {
 			iSrcBlend = Renderer::BlendOne;
 			iDstBlend = Renderer::BlendOne;
 			break;
-
 	}
 
-	if (_pp.bTexInfo)
-	{
+	if(_pp.bTexInfo) {
 		SetTexture(_pp.lpszTexName, _pp.iTexNb, _pp.iTexTime, _pp.bTexLoop);
 	}
 }
 
-//-----------------------------------------------------------------------------
-void ParticleSystem::SetTexture(const char * _pszTex, int _iNbTex, int _iTime, bool _bLoop)
-{
-	if (_iNbTex == 0)
-	{
+void ParticleSystem::SetTexture(const char * _pszTex, int _iNbTex, int _iTime, bool _bLoop) {
+
+	if(_iNbTex == 0) {
 		tex_tab[0] = TextureContainer::Load(_pszTex);
 		iNbTex = 0;
-	}
-	else
-	{
+	} else {
 		_iNbTex = min(_iNbTex, 20);
 		char cBuf[256];
 
-		for (int i = 0; i < _iNbTex; i++)
-		{
+		for(int i = 0; i < _iNbTex; i++) {
 			memset(cBuf, 0, 256);
 			sprintf(cBuf, "%s_%04d", _pszTex, i + 1);
 			tex_tab[i] = TextureContainer::Load(cBuf);
@@ -319,9 +306,8 @@ void VectorRotateZ(Vec3f & _eIn, Vec3f & _eOut, float _fAngle) {
 	_eOut.z =  _eIn.z;
 }
 
-//-----------------------------------------------------------------------------
-void ParticleSystem::SetParticleParams(Particle * pP)
-{
+void ParticleSystem::SetParticleParams(Particle * pP) {
+
 	SpawnParticle(pP);
 
 	float fTTL = fParticleLife + rnd() * fParticleLifeRandom;
@@ -346,15 +332,12 @@ void ParticleSystem::SetParticleParams(Particle * pP)
 	pP->p3Velocity = vvz * fSpeed;
 	pP->fSizeStart = fParticleStartSize + rnd() * fParticleStartSizeRandom;
 
-	if (bParticleStartColorRandomLock)
-	{
+	if(bParticleStartColorRandomLock) {
 		float t = rnd() * fParticleStartColorRandom[0];
 		pP->fColorStart[0] = fParticleStartColor[0] + t;
 		pP->fColorStart[1] = fParticleStartColor[1] + t;
 		pP->fColorStart[2] = fParticleStartColor[2] + t;
-	}
-	else
-	{
+	} else {
 		pP->fColorStart[0] = fParticleStartColor[0] + rnd() * fParticleStartColorRandom[0];
 		pP->fColorStart[1] = fParticleStartColor[1] + rnd() * fParticleStartColorRandom[1];
 		pP->fColorStart[2] = fParticleStartColor[2] + rnd() * fParticleStartColorRandom[2];
@@ -364,15 +347,12 @@ void ParticleSystem::SetParticleParams(Particle * pP)
 
 	pP->fSizeEnd = fParticleEndSize + rnd() * fParticleEndSizeRandom;
 
-	if (bParticleEndColorRandomLock)
-	{
+	if(bParticleEndColorRandomLock) {
 		float t = rnd() * fParticleEndColorRandom[0];
 		pP->fColorEnd[0] = fParticleEndColor[0] + t;
 		pP->fColorEnd[1] = fParticleEndColor[1] + t;
 		pP->fColorEnd[2] = fParticleEndColor[2] + t;
-	}
-	else
-	{
+	} else {
 		pP->fColorEnd[0] = fParticleEndColor[0] + rnd() * fParticleEndColorRandom[0];
 		pP->fColorEnd[1] = fParticleEndColor[1] + rnd() * fParticleEndColorRandom[1];
 		pP->fColorEnd[2] = fParticleEndColor[2] + rnd() * fParticleEndColorRandom[2];
@@ -380,48 +360,39 @@ void ParticleSystem::SetParticleParams(Particle * pP)
 
 	pP->fColorEnd[3] = fParticleEndColor[3] + rnd() * fParticleEndColorRandom[3];
 
-	if (bParticleRotationRandomDirection)
-	{
-
-
+	if(bParticleRotationRandomDirection) {
 		float fRandom	= frand2();
 
 		pP->iRot = checked_range_cast<int>(fRandom);
 
-		if (pP->iRot < 0)
+		if(pP->iRot < 0)
 			pP->iRot = -1;
 
-		if (pP->iRot >= 0)
+		if(pP->iRot >= 0)
 			pP->iRot = 1;
-	}
-	else
-	{
+	} else {
 		pP->iRot = 1;
 	}
 
-	if (bParticleRotationRandomStart)
-	{
+	if(bParticleRotationRandomStart) {
 		pP->fRotStart = rnd() * 360.0f;
-	}
-	else
-	{
+	} else {
 		pP->fRotStart = 0;
 	}
 }
 
-//-----------------------------------------------------------------------------
-bool ParticleSystem::IsAlive()
-{
-	if ((iParticleNbAlive == 0) && (iParticleNbMax == 0))
+bool ParticleSystem::IsAlive() {
+
+	if((iParticleNbAlive == 0) && (iParticleNbMax == 0))
 		return false;
 
 	return true;
 }
 
-//-----------------------------------------------------------------------------
-void ParticleSystem::Update(long _lTime)
-{
-	if (arxtime.is_paused()) return;
+void ParticleSystem::Update(long _lTime) {
+
+	if(arxtime.is_paused())
+		return;
 
 	ulTime += _lTime;
 	int nbtotal = 0;
@@ -434,27 +405,20 @@ void ParticleSystem::Update(long _lTime)
 
 	i = listParticle.begin();
 
-	while (i != listParticle.end())
-	{
+	while(i != listParticle.end()) {
 		pP = *i;
 		++i;
 		nbtotal++;
 
-		if (pP->isAlive())
-		{
+		if(pP->isAlive()) {
 			pP->Update(_lTime);
 			pP->p3Velocity += p3ParticleGravity * fTimeSec;
 			iParticleNbAlive ++;
-		}
-		else
-		{
-			if (iParticleNbAlive >= iParticleNbMax)
-			{
+		} else {
+			if(iParticleNbAlive >= iParticleNbMax) {
 				delete pP;
 				listParticle.remove(pP);
-			}
-			else
-			{
+			} else {
 				pP->Regen();
 				SetParticleParams(pP);
 				pP->Validate();
@@ -466,16 +430,14 @@ void ParticleSystem::Update(long _lTime)
 	}
 
 	// création de particules en fct de la fréquence
-	if (iParticleNbAlive < iParticleNbMax)
-	{
+	if(iParticleNbAlive < iParticleNbMax) {
 		long t = iParticleNbMax - iParticleNbAlive;
 
-		if (fParticleFreq != -1) {
+		if(fParticleFreq != -1) {
 			t = max(min(checked_range_cast<long>(fTimeSec * fParticleFreq), t), 1l);
 		}
 
-		for (iNb = 0; iNb < t; iNb++)
-		{
+		for(iNb = 0; iNb < t; iNb++) {
 			Particle * pP  = new Particle();
 			SetParticleParams(pP);
 			pP->Validate();
@@ -487,7 +449,6 @@ void ParticleSystem::Update(long _lTime)
 	}
 }
 
-//-----------------------------------------------------------------------------
 void ParticleSystem::Render() {
 	
 	GRenderer->SetCulling(Renderer::CullNone);
@@ -499,47 +460,34 @@ void ParticleSystem::Render() {
 
 	list<Particle *>::iterator i;
 
-	for (i = listParticle.begin(); i != listParticle.end(); ++i)
-	{
+	for(i = listParticle.begin(); i != listParticle.end(); ++i) {
 		Particle * p = *i;
 
-		if (p->isAlive())
-		{
-			if (fParticleFlash > 0)
-			{
-				if (rnd() < fParticleFlash)
+		if(p->isAlive()) {
+			if(fParticleFlash > 0) {
+				if(rnd() < fParticleFlash)
 					continue;
 			}
 
-			if (iNbTex > 0)
-			{
+			if(iNbTex > 0) {
 				inumtex = p->iTexNum;
 
-				if (iTexTime == 0)
-				{
-
+				if(iTexTime == 0) {
 					float fNbTex	= (p->ulTime * p->fOneOnTTL) * (iNbTex);
 
 					inumtex = checked_range_cast<int>(fNbTex);
 					if(inumtex >= iNbTex) {
 						inumtex = iNbTex - 1;
 					}
-				}
-				else
-				{
-					if (p->iTexTime > iTexTime)
-					{
+				} else {
+					if(p->iTexTime > iTexTime) {
 						p->iTexTime -= iTexTime;
 						p->iTexNum++;
 
-						if (p->iTexNum > iNbTex - 1)
-						{
-							if (bTexLoop)
-							{
+						if(p->iTexNum > iNbTex - 1) {
+							if(bTexLoop) {
 								p->iTexNum = 0;
-							}
-							else
-							{
+							} else {
 								p->iTexNum = iNbTex - 1;
 							}
 						}
@@ -555,20 +503,17 @@ void ParticleSystem::Render() {
 				p3pos.p += p3Pos;
 			}
 			
-			if (fParticleRotation != 0)
-			{
+			if(fParticleRotation != 0) {
 				float fRot;
-				if (p->iRot == 1)
+				if(p->iRot == 1)
 					fRot = (fParticleRotation) * p->ulTime + p->fRotStart;
 				else
 					fRot = (-fParticleRotation) * p->ulTime + p->fRotStart;
 
-				if (tex_tab[inumtex])
+				if(tex_tab[inumtex])
 					EERIEDrawRotatedSprite(&p3pos, p->fSize, tex_tab[inumtex], p->ulColor, 2, fRot);
-			}
-			else
-			{
-				if (tex_tab[inumtex])
+			} else {
+				if(tex_tab[inumtex])
 					EERIEDrawSprite(&p3pos, p->fSize, tex_tab[inumtex], p->ulColor, 2);
 			}
 		}
