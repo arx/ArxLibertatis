@@ -1446,6 +1446,11 @@ void ArxGame::updateLevel() {
 		pParticleManager->Update(static_cast<long>(framedelay));
 	}
 
+	ARX_FOGS_Render();
+
+	TreatBackgroundActions();
+
+
 	ARX_INTERACTIVE_DestroyIOdelayedExecute();
 }
 
@@ -1505,9 +1510,6 @@ void ArxGame::renderLevel() {
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
-	ARX_FOGS_Render();
-
-	TreatBackgroundActions();
 	ARX_PARTICLES_Render(&subj);
 
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
