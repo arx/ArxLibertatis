@@ -70,40 +70,33 @@ void ParticleManager::AddSystem(ParticleSystem * _pPS) {
 	listParticleSystem.insert(listParticleSystem.end(), _pPS);
 }
 
-//-----------------------------------------------------------------------------
-void ParticleManager::Update(long _lTime)
-{
-	if (listParticleSystem.empty()) return;
+void ParticleManager::Update(long _lTime) {
+
+	if(listParticleSystem.empty())
+		return;
 
 	list<ParticleSystem *>::iterator i;
 	i = listParticleSystem.begin();
 
-	while (i != listParticleSystem.end())
-	{
+	while(i != listParticleSystem.end()) {
 		ParticleSystem * p = *i;
 		++i;
 
-		if (!p->IsAlive())
-		{
+		if(!p->IsAlive()) {
 			delete p;
 			listParticleSystem.remove(p);
-		}
-		else
-		{
+		} else {
 			p->Update(_lTime);
 		}
 	}
 }
 
-//-----------------------------------------------------------------------------
+void ParticleManager::Render() {
 
-void ParticleManager::Render()
-{
 	int ilekel = 0;
 	list<ParticleSystem *>::iterator i;
 
-	for (i = listParticleSystem.begin(); i != listParticleSystem.end(); ++i)
-	{
+	for(i = listParticleSystem.begin(); i != listParticleSystem.end(); ++i) {
 		ParticleSystem * p = *i;
 		p->Render();
 		ilekel++;
