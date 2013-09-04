@@ -1440,7 +1440,11 @@ void ArxGame::updateLevel() {
 
 	ACTIVECAM->fadecolor = current.depthcolor;
 
+	ARX_SCENE_Update();
 
+	if(pParticleManager) {
+		pParticleManager->Update(static_cast<long>(framedelay));
+	}
 
 	ARX_INTERACTIVE_DestroyIOdelayedExecute();
 }
@@ -1487,7 +1491,6 @@ void ArxGame::renderLevel() {
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 	GRenderer->SetRenderState(Renderer::DepthTest, true);
 
-	ARX_SCENE_Update();
 	ARX_SCENE_Render();
 
 	DrawDebugRender();
@@ -1495,7 +1498,6 @@ void ArxGame::renderLevel() {
 	// Begin Particles
 	
 	if(pParticleManager) {
-		pParticleManager->Update(static_cast<long>(framedelay));
 		pParticleManager->Render();
 	}
 	
