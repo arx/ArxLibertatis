@@ -2149,8 +2149,8 @@ void ARX_SPELLS_ManageMagic() {
 			ARX_INTERFACE_Combat_Mode(0);
 			bGToggleCombatModeWithKey=false;
 
-			ResetAnim(&entities.player()->animlayer[1]);
-			entities.player()->animlayer[1].flags&=~EA_LOOP;
+			ResetAnim(&io->animlayer[1]);
+			io->animlayer[1].flags&=~EA_LOOP;
 		}
 
 		if(TRUE_PLAYER_MOUSELOOK_ON) {
@@ -2161,9 +2161,9 @@ void ARX_SPELLS_ManageMagic() {
 		if(player.doingmagic != 2) {
 			player.doingmagic=2;
 
-			if(entities.player()->anims[ANIM_CAST_START]) {
-				AcquireLastAnim(entities.player());
-				ANIM_Set(&entities.player()->animlayer[1],entities.player()->anims[ANIM_CAST_START]);
+			if(io->anims[ANIM_CAST_START]) {
+				AcquireLastAnim(io);
+				ANIM_Set(&io->animlayer[1], io->anims[ANIM_CAST_START]);
 				MAGICMODE = 1;
 			}
 		}
@@ -2220,9 +2220,9 @@ void ARX_SPELLS_ManageMagic() {
 		if(player.doingmagic != 0) { //==2)
 			player.doingmagic = 0;//1
 
-			if(entities.player()->anims[ANIM_CAST_END]) {
-				AcquireLastAnim(entities.player());
-				ANIM_Set(&entities.player()->animlayer[1],entities.player()->anims[ANIM_CAST_END]);
+			if(io->anims[ANIM_CAST_END]) {
+				AcquireLastAnim(io);
+				ANIM_Set(&io->animlayer[1], io->anims[ANIM_CAST_END]);
 			}
 			
 			ARX_FLARES_broken=3;
@@ -2258,9 +2258,9 @@ void ARX_SPELLS_ManageMagic() {
 
 		if(CurrSpellSymbol != 0) {
 			if(!ARX_SPELLS_AnalyseSPELL()) {
-				if(entities.player()->anims[ANIM_CAST]) {
-					AcquireLastAnim(entities.player());
-					ANIM_Set(&entities.player()->animlayer[1],entities.player()->anims[ANIM_CAST]);
+				if(io->anims[ANIM_CAST]) {
+					AcquireLastAnim(io);
+					ANIM_Set(&io->animlayer[1], io->anims[ANIM_CAST]);
 				}
 			}
 		}
