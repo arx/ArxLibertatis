@@ -148,10 +148,6 @@ TextureContainer::TextureContainer(const res::path & strName, TCFlags flags) : m
 		g_ptcTextureList = this;
 	}
 
-	delayed = NULL;
-	delayed_nb = 0;
-	delayed_max = 0;
-
 	systemflags = 0;
 
 	max[TextureContainer::Opaque] = 0;
@@ -184,9 +180,7 @@ TextureContainer::~TextureContainer() {
 	
 	delete m_pTexture;
 	delete TextureHalo;
-	
-	free(delayed), delayed = NULL;
-	
+		
 	// Remove the texture container from the global list
 	if(g_ptcTextureList == this) {
 		g_ptcTextureList = m_pNext;

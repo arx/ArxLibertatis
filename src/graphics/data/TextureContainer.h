@@ -75,10 +75,6 @@ class Texture2D;
 
 extern long GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE;
 
-struct DELAYED_PRIM {
-	EERIEPOLY * data;
-};
-
 /*!
  * Linked list structure to hold info per texture.
  * TODO This class is currently an hybrid between a texture class and a render batch...
@@ -170,9 +166,6 @@ public:
 	TCFlags systemflags;
 	
 	// BEGIN TODO: Move to a RenderBatch class... This RenderBatch class should contain a pointer to the TextureContainer used by the batch
-	DELAYED_PRIM * delayed; // delayed_drawing
-	long	delayed_nb;
-	long	delayed_max;
 	
 	std::vector<EERIEPOLY *> vPolyZMap;
 	std::vector<SMY_ZMAPPINFO> vPolyInterZMap;
