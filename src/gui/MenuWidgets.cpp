@@ -3785,14 +3785,12 @@ CMenuButton::CMenuButton(int _iID, Font* _pFont,MENUSTATE _eMenuState,int _iPosX
 	vText.clear();
 	iPos=0;
 
-	if( !_pText.empty() )
-	{
+	if(!_pText.empty()) {
 		AddText(_pText);
 	}
 
 	pTex=_pTex;
 	pTexOver=_pTexOver;
-
 
 	if(pTex) {
 		float rZoneR = rZone.left + RATIO_X(pTex->m_dwWidth);
@@ -3813,12 +3811,8 @@ CMenuButton::CMenuButton(int _iID, Font* _pFont,MENUSTATE _eMenuState,int _iPosX
 	pRef=this;
 }
 
-//-----------------------------------------------------------------------------
-
 CMenuButton::~CMenuButton() {
 }
-
-//-----------------------------------------------------------------------------
 
 void CMenuButton::SetPos(float _iX,float _iY)
 {
@@ -3842,11 +3836,9 @@ void CMenuButton::SetPos(float _iX,float _iY)
 	rZone.bottom = static_cast<int>(_iY) + max(iHeight, iHeight2);
 }
 
-//-----------------------------------------------------------------------------
-
-void CMenuButton::AddText( const std::string& _pText)
+void CMenuButton::AddText(const std::string & _pText)
 {
-	if ( _pText.empty() )
+	if(_pText.empty())
 		return;
 
 	vText += _pText;
@@ -3856,8 +3848,11 @@ void CMenuButton::AddText( const std::string& _pText)
 	
 	Vec2i textSize = pFont->getTextSize(_pText);
 
-	if(textSize.x>iSizeXButton) iSizeXButton=textSize.x;
-	if(textSize.y>iSizeYButton) iSizeYButton=textSize.y;
+	if(textSize.x>iSizeXButton)
+		iSizeXButton=textSize.x;
+
+	if(textSize.y>iSizeYButton)
+		iSizeYButton=textSize.y;
 
 	rZone.right=rZone.left+iSizeXButton;
 	rZone.bottom=rZone.top+iSizeYButton;
@@ -3883,17 +3878,14 @@ bool CMenuButton::OnMouseClick(int _iMouseButton) {
 	return false;
 }
 
-//-----------------------------------------------------------------------------
-
 void CMenuButton::Update(int _iDTime) {
 	(void)_iDTime;
 }
 
-//-----------------------------------------------------------------------------
+void CMenuButton::Render() {
 
-void CMenuButton::Render()
-{
-	if(bNoMenu) return;
+	if(bNoMenu)
+		return;
 
 	//affichage de la texture
 	if(pTex) {
@@ -3902,8 +3894,7 @@ void CMenuButton::Render()
 	}
 
 	//affichage de la font
-	if(vText.size())
-	{
+	if(vText.size()) {
 		char pText = vText[iPos];
 
 		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
@@ -3920,17 +3911,15 @@ void CMenuButton::Render()
 	}
 }
 
-//-----------------------------------------------------------------------------
+void CMenuButton::RenderMouseOver() {
 
-void CMenuButton::RenderMouseOver()
-{
-	if(bNoMenu) return;
+	if(bNoMenu)
+		return;
 
 	pMenuCursor->SetMouseOver();
 
 	//affichage de la texture
-	if(pTexOver)
-	{
+	if(pTexOver) {
 		TexturedVertex v[4];
 		v[0].color = v[1].color = v[2].color = v[3].color = Color::white.toBGR();
 		v[0].p.z=v[1].p.z=v[2].p.z=v[3].p.z=0.f;
@@ -3956,8 +3945,7 @@ void CMenuButton::RenderMouseOver()
 		EERIEDRAWPRIM(Renderer::TriangleStrip, v, 4);
 	}
 
-	if( vText.size() )
-	{
+	if(vText.size()) {
 		char pText=vText[iPos];
 
 		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
@@ -3973,8 +3961,6 @@ void CMenuButton::RenderMouseOver()
 		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	}
 }
-
-//-----------------------------------------------------------------------------
 
 CMenuSliderText::CMenuSliderText(int _iID, int _iPosX, int _iPosY)
 	: CMenuElement(NOP)
@@ -4015,8 +4001,7 @@ void CMenuSliderText::SetWidth(int _iWidth) {
 	//on recentre tout
 	vector<CMenuElementText*>::iterator it;
 
-	for(it=vText.begin();it<vText.end();++it)
-	{
+	for(it = vText.begin(); it < vText.end(); ++it) {
 		CMenuElementText *pMenuElementText=*it;
 		Vec2i textSize = pMenuElementText->GetTextSize();
 
@@ -4025,10 +4010,7 @@ void CMenuSliderText::SetWidth(int _iWidth) {
 	}
 }
 
-//-----------------------------------------------------------------------------
-
-void CMenuSliderText::AddText(CMenuElementText *_pText)
-{
+void CMenuSliderText::AddText(CMenuElementText *_pText) {
 	
 	_pText->setEnabled(enabled);
 	
@@ -4047,8 +4029,7 @@ void CMenuSliderText::AddText(CMenuElementText *_pText)
 	//on recentre tout
 	vector<CMenuElementText*>::iterator it;
 
-	for(it=vText.begin();it<vText.end();++it)
-	{
+	for(it = vText.begin(); it < vText.end(); ++it) {
 		CMenuElementText *pMenuElementText=*it;
 		
 		textSize = pMenuElementText->GetTextSize();
@@ -4058,49 +4039,39 @@ void CMenuSliderText::AddText(CMenuElementText *_pText)
 	}
 }
 
-//-----------------------------------------------------------------------------
+void CMenuSliderText::Move(int _iX, int _iY) {
 
-void CMenuSliderText::Move(int _iX, int _iY)
-{
 	CMenuZone::Move(_iX, _iY);
 
 	pLeftButton->Move(_iX, _iY);
 	pRightButton->Move(_iX, _iY);
 
-	for (std::vector<CMenuElementText*>::const_iterator i = vText.begin(), i_end = vText.end(); i != i_end; ++i)
+	for(std::vector<CMenuElementText*>::const_iterator i = vText.begin(), i_end = vText.end(); i != i_end; ++i)
 		(*i)->Move(_iX, _iY);
 }
 
-//-----------------------------------------------------------------------------
+void CMenuSliderText::EmptyFunction() {
 
-void CMenuSliderText::EmptyFunction()
-{
 	//Touche pour la selection
-	if(GInput->isKeyPressedNowPressed(Keyboard::Key_LeftArrow))
-	{
+	if(GInput->isKeyPressedNowPressed(Keyboard::Key_LeftArrow)) {
 		iPos--;
 
-		if (iPos <= 0) iPos = 0;
-	}
-	else
-	{
-		if( GInput->isKeyPressedNowPressed( Keyboard::Key_RightArrow ) )
-		{
+		if(iPos <= 0)
+			iPos = 0;
+	} else {
+		if(GInput->isKeyPressedNowPressed(Keyboard::Key_RightArrow)) {
 			iPos++;
 
 			arx_assert(iPos >= 0);
 
-			if ((size_t)iPos >= vText.size() - 1 ) iPos = vText.size() - 1;
-
-
+			if((size_t)iPos >= vText.size() - 1)
+				iPos = vText.size() - 1;
 		}
 	}
 }
 
-//-----------------------------------------------------------------------------
+bool CMenuSliderText::OnMouseClick(int) {
 
-bool CMenuSliderText::OnMouseClick(int)
-{
 	if(!enabled) {
 		return false;
 	}
@@ -4113,27 +4084,26 @@ bool CMenuSliderText::OnMouseClick(int)
 	int iX = GInput->getMousePosAbs().x;
 	int iY = GInput->getMousePosAbs().y;
 
-	if ((iX >= rZone.left) &&
-		(iY >= rZone.top) &&
-		(iX <= rZone.right) &&
-		(iY <= rZone.bottom))
-	{
-		if ((iX >= pLeftButton->rZone.left) &&
-			(iY >= pLeftButton->rZone.top) &&
-			(iX <= pLeftButton->rZone.right) &&
-			(iY <= pLeftButton->rZone.bottom))
-		{
+	if(iX >= rZone.left
+	   && iY >= rZone.top
+	   && iX <= rZone.right
+	   && iY <= rZone.bottom
+	) {
+		if(iX >= pLeftButton->rZone.left
+		   && iY >= pLeftButton->rZone.top
+		   && iX <= pLeftButton->rZone.right
+		   && iY <= pLeftButton->rZone.bottom
+		) {
 			iPos--;
 
 			if(iPos < 0) {
 				iPos = vText.size() - 1;
 			}
-		}
-		else if ((iX >= pRightButton->rZone.left) &&
-				(iY >= pRightButton->rZone.top) &&
-				(iX <= pRightButton->rZone.right) &&
-				(iY <= pRightButton->rZone.bottom))
-		{
+		} else if(iX >= pRightButton->rZone.left
+				  && iY >= pRightButton->rZone.top
+				  && iX <= pRightButton->rZone.right
+				  && iY <= pRightButton->rZone.bottom
+		) {
 			iPos++;
 
 			arx_assert(iPos >= 0);
@@ -4145,16 +4115,12 @@ bool CMenuSliderText::OnMouseClick(int)
 	}
 
 	switch(iID) {
-		
 		case BUTTON_MENUOPTIONSVIDEO_RESOLUTION: {
 			std::string pcText = (vText.at(iPos))->lpszText;
 			
 			if(pcText == AUTO_RESOLUTION_STRING) {
-				
 				newWidth = newHeight = 0;
-				
 			} else {
-				
 				std::stringstream ss( pcText );
 				int iX = config.video.resolution.x;
 				int iY = config.video.resolution.y;
@@ -4162,12 +4128,9 @@ bool CMenuSliderText::OnMouseClick(int)
 				ss >> iX >> tmp >> iY;
 				newWidth = iX;
 				newHeight = iY;
-				
 			}
-			
 			break;
 		}
-		
 		case BUTTON_MENUOPTIONSVIDEO_RENDERER: {
 			switch((vText.at(iPos))->eMenuState) {
 				case OPTIONS_VIDEO_RENDERER_OPENGL:    config.window.framework = "SDL"; break;
@@ -4177,7 +4140,6 @@ bool CMenuSliderText::OnMouseClick(int)
 			}
 			break;
 		}
-		
 		case BUTTON_MENUOPTIONSAUDIO_BACKEND: {
 			switch((vText.at(iPos))->eMenuState) {
 				case OPTIONS_AUDIO_BACKEND_OPENAL:    config.audio.backend = "OpenAL"; break;
@@ -4196,7 +4158,6 @@ bool CMenuSliderText::OnMouseClick(int)
 			}
 			break;
 		}
-		
 		// MENUOPTIONS_VIDEO
 		case BUTTON_MENUOPTIONSVIDEO_BPP: {
 			std::stringstream ss;
@@ -4204,12 +4165,10 @@ bool CMenuSliderText::OnMouseClick(int)
 			ss >> newBpp;
 			break;
 		}
-		
 		case BUTTON_MENUOPTIONSVIDEO_OTHERSDETAILS: {
 			ARXMenu_Options_Video_SetDetailsQuality(iPos);
 			break;
 		}
-		
 	}
 	
 	return false;
