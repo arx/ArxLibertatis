@@ -3125,8 +3125,6 @@ void CWindowMenuConsole::UpdateText() {
 	EERIEDRAWPRIM(Renderer::TriangleStrip, v, 4);
 }
 
-//-----------------------------------------------------------------------------
-
 CMenuElement * CWindowMenuConsole::GetTouch(bool keyTouched, int keyId, InputKeyId* pInputKeyId, bool _bValidateTest)
 {
 	int iMouseButton = keyTouched ? 0 : GInput->getMouseButtonClicked();
@@ -3135,39 +3133,32 @@ CMenuElement * CWindowMenuConsole::GetTouch(bool keyTouched, int keyId, InputKey
 		*pInputKeyId = keyId;
 
 	if(keyTouched || (iMouseButton & (Mouse::ButtonBase | Mouse::WheelBase))) {
-		if(!keyTouched && !bMouseAttack)
-		{
+		if(!keyTouched && !bMouseAttack) {
 			bMouseAttack=!bMouseAttack;
 			return NULL;
 		}
 
 		CMenuElementText *pZoneText=(CMenuElementText*)pZoneClick;
 
-		if(_bValidateTest)
-		{
-			if( (pZoneClick->iID==BUTTON_MENUOPTIONS_CONTROLS_CUST_ACTIONCOMBINE1)||
-				(pZoneClick->iID==BUTTON_MENUOPTIONS_CONTROLS_CUST_ACTIONCOMBINE2))
+		if(_bValidateTest) {
+			if(pZoneClick->iID == BUTTON_MENUOPTIONS_CONTROLS_CUST_ACTIONCOMBINE1 ||
+			   pZoneClick->iID == BUTTON_MENUOPTIONS_CONTROLS_CUST_ACTIONCOMBINE2)
 			{
 				bool bOk=true;
 
-				if(  (iMouseButton & Mouse::ButtonBase)&&
-					!(iMouseButton & Mouse::WheelBase) )
-				{
+				if((iMouseButton & Mouse::ButtonBase) && !(iMouseButton & Mouse::WheelBase)) {
 					bOk=false;
-				}
-				else
-				{
-					for(int buttonId = Mouse::ButtonBase; buttonId < Mouse::ButtonMax; buttonId++)
-					{
-						if(keyId == buttonId)
-						{
+				} else {
+					for(int buttonId = Mouse::ButtonBase; buttonId < Mouse::ButtonMax; buttonId++) {
+						if(keyId == buttonId) {
 							bOk=false;
 							break;
 						}
 					}
 				}
 
-				if(bOk) return NULL;
+				if(bOk)
+					return NULL;
 			}
 		}
 
@@ -3177,8 +3168,7 @@ CMenuElement * CWindowMenuConsole::GetTouch(bool keyTouched, int keyId, InputKey
 		else
 			pText = GInput->getKeyName(keyId, true);
 
-		if ( !pText.empty() )
-		{
+		if(!pText.empty()) {
 			pZoneText->lColorHighlight=pZoneText->lOldColor;
 
 			pZoneText->eState=GETTOUCH;
@@ -3186,12 +3176,10 @@ CMenuElement * CWindowMenuConsole::GetTouch(bool keyTouched, int keyId, InputKey
 			
 			int iDx=pZoneClick->rZone.right-pZoneClick->rZone.left;
 
-			if(pZoneClick->ePlace)
-			{
+			if(pZoneClick->ePlace) {
 				pZoneClick->rZone.left=(iWidth-iDx)>>1;
 
-				if(pZoneClick->rZone.left<0)
-				{
+				if(pZoneClick->rZone.left < 0) {
 					pZoneClick->rZone.left=0;
 				}
 			}
@@ -3201,8 +3189,7 @@ CMenuElement * CWindowMenuConsole::GetTouch(bool keyTouched, int keyId, InputKey
 			pZoneClick=NULL;
 			bEdit=false;
 
-			if(iMouseButton & (Mouse::ButtonBase | Mouse::WheelBase))
-			{
+			if(iMouseButton & (Mouse::ButtonBase | Mouse::WheelBase)) {
 				if(pInputKeyId)
 					*pInputKeyId = iMouseButton;
 			}
@@ -3211,23 +3198,19 @@ CMenuElement * CWindowMenuConsole::GetTouch(bool keyTouched, int keyId, InputKey
 
 			return (CMenuElement*)pZoneText;
 		}
-
 	}
 
 	return NULL;
 }
 
-//-----------------------------------------------------------------------------
+MENUSTATE CWindowMenuConsole::Update(int _iPosX, int _iPosY, int _iOffsetY) {
 
-MENUSTATE CWindowMenuConsole::Update(int _iPosX,int _iPosY,int _iOffsetY)
-{
 	bFrameOdd=!bFrameOdd;
 
 	iSavePosY=_iPosY;
 
 	//move les zones
-	if(_iOffsetY)
-	{
+	if(_iOffsetY) {
 		_iPosY-=(MenuAllZone.GetZoneNum(_iOffsetY)->rZone.top)-(MenuAllZone.GetZoneNum(0)->rZone.top);
 	}
 
@@ -3235,17 +3218,12 @@ MENUSTATE CWindowMenuConsole::Update(int _iPosX,int _iPosY,int _iOffsetY)
 
 	int iI = MenuAllZone.GetNbZone();
 
-	for(int iJ=0;iJ<iI;++iJ)
-	{
+	for(int iJ = 0; iJ < iI; ++iJ) {
 		CMenuZone *pZone = MenuAllZone.GetZoneNum(iJ);
 
-		if(    (pZone->rZone.top<iSavePosY)||
-			((pZone->rZone.bottom+iInterligne)>(iSavePosY+iHeight)))
-		{
+		if(pZone->rZone.top < iSavePosY || pZone->rZone.bottom + iInterligne > iSavePosY + iHeight) {
 			pZone->bActif=false;
-		}
-		else
-		{
+		} else {
 			pZone->bActif=true;
 		}
 
@@ -3258,22 +3236,19 @@ MENUSTATE CWindowMenuConsole::Update(int _iPosX,int _iPosY,int _iOffsetY)
 	iPosY=_iPosY;
 
 	// Check if mouse over
-	if (bMouseListen)
-	{
-		if (!bEdit)
-		{
+	if(bMouseListen) {
+		if(!bEdit) {
 			pZoneClick=NULL;
 			CMenuZone * iR = MenuAllZone.CheckZone(GInput->getMousePosAbs());
 
 			if(iR) {
 				pZoneClick=(CMenuElement*)iR;
 
-				if( GInput->getMouseButtonDoubleClick(Mouse::Button_0,300) )
-				{
+				if(GInput->getMouseButtonDoubleClick(Mouse::Button_0, 300)) {
 					MENUSTATE e = pZoneClick->eMenuState;
 					bEdit = pZoneClick->OnMouseDoubleClick(0);
 
-					if (pZoneClick->iID == BUTTON_MENUEDITQUEST_LOAD)
+					if(pZoneClick->iID == BUTTON_MENUEDITQUEST_LOAD)
 						return MAIN;
 
 					if(bEdit)
@@ -3282,29 +3257,22 @@ MENUSTATE CWindowMenuConsole::Update(int _iPosX,int _iPosY,int _iOffsetY)
 					return e;
 				}
 
-				if( GInput->getMouseButton(Mouse::Button_0) )
-				{
+				if(GInput->getMouseButton(Mouse::Button_0)) {
 					MENUSTATE e = pZoneClick->eMenuState;
 					bEdit = pZoneClick->OnMouseClick(0);
 					return e;
-				}
-				else
-				{
+				} else {
 					pZoneClick->EmptyFunction();
 				}
 			}
-		}
-		else
-		{
-			if(!pZoneClick)
-			{
+		} else {
+			if(!pZoneClick) {
 				CMenuZone * iR = MenuAllZone.CheckZone(GInput->getMousePosAbs());
 
 				if(iR) {
 					pZoneClick=(CMenuElement*)iR;
 
-					if( GInput->getMouseButtonDoubleClick(Mouse::Button_0,300) )
-					{
+					if(GInput->getMouseButtonDoubleClick(Mouse::Button_0, 300)) {
 						bEdit = pZoneClick->OnMouseDoubleClick(0);
 
 						if(bEdit)
@@ -3316,17 +3284,14 @@ MENUSTATE CWindowMenuConsole::Update(int _iPosX,int _iPosY,int _iOffsetY)
 	}
 
 	//check les shortcuts
-	if(!bEdit)
-	{
+	if(!bEdit) {
 		iI=MenuAllZone.GetNbZone();
 
-		for(int iJ=0;iJ<iI;++iJ)
-		{
+		for(int iJ = 0; iJ < iI; ++iJ) {
 			CMenuElement *pMenuElement=(CMenuElement*)MenuAllZone.GetZoneNum(iJ);
 			CMenuElement *CMenuElementShortCut = pMenuElement->OnShortCut();
 
-			if(CMenuElementShortCut)
-			{
+			if(CMenuElementShortCut) {
 				pZoneClick=CMenuElementShortCut;
 				MENUSTATE e = pZoneClick->eMenuState;
 				bEdit = pZoneClick->OnMouseClick(0);
@@ -3334,12 +3299,10 @@ MENUSTATE CWindowMenuConsole::Update(int _iPosX,int _iPosY,int _iOffsetY)
 				return e;
 			}
 		}
-		}
+	}
 
 	return NOP;
 }
-
-//-----------------------------------------------------------------------------
 
 static bool UpdateGameKey(bool bEdit, CMenuElement *pmeElement, InputKeyId inputKeyId)
 {
