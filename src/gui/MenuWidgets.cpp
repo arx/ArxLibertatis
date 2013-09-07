@@ -102,13 +102,9 @@ static bool newFullscreen;
 
 #define NODEBUGZONE
 
-//-----------------------------------------------------------------------------
-
 #define RATIO_X(a)    (((float)a)*Xratio)
 #define RATIO_Y(a)    (((float)a)*Yratio)
 
-
-//-----------------------------------------------------------------------------
 // Imported global variables and functions
 extern ARX_MENU_DATA ARXmenu;
 extern TextureContainer * scursor[];
@@ -126,8 +122,6 @@ float INTERFACE_RATIO(float a);
 bool bNoMenu=false;
 
 void ARXMenu_Private_Options_Video_SetResolution(bool fullscreen, int _iWidth, int _iHeight, int _bpp);
-
-//-----------------------------------------------------------------------------
 
 static MenuCursor * pMenuCursor = NULL;
 
@@ -178,22 +172,21 @@ void ARX_DrawAfterQuickLoad() {
 	
 	float fColor;
 
-	if(iTimeToDrawD7>0)
-	{
+	if(iTimeToDrawD7 > 0) {
 		fColor=1.f;
-	}
-	else
-	{
+	} else {
 		int iFade=-iTimeToDrawD7;
 
-		if(iFade>1000) return;
+		if(iFade>1000)
+			return;
 
 		fColor=1.f-(((float)iFade)/1000.f);
 	}
 
 	TextureContainer *pTex = TextureContainer::Load("graph/interface/icons/menu_main_save");
 
-	if(!pTex) return;
+	if(!pTex)
+		return;
 
 	GRenderer->BeginScene();
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
@@ -249,13 +242,12 @@ bool ARX_SlotLoad(int slotIndex) {
 	return ARX_LoadGame(savegames[slotIndex]);
 }
 
-//-----------------------------------------------------------------------------
-
-bool MENU_NoActiveWindow()
-{
-	if( (!pWindowMenu)||
-		((pWindowMenu)&&
-		(pWindowMenu->eCurrentMenuState==MAIN)) ) return true;
+bool MENU_NoActiveWindow() {
+	if(!pWindowMenu
+	   || (pWindowMenu && pWindowMenu->eCurrentMenuState == MAIN)
+	) {
+		return true;
+	}
 
 	return false;
 }
@@ -268,21 +260,17 @@ void FontRenderText(Font* _pFont, Vec3f pos, const std::string& _pText, Color _c
 	}
 }
 
-void Check_Apply()
-{
-	if(pMenuElementApply)
-	{
-		if((config.video.resolution.x != newWidth) ||
-		   (config.video.resolution.y != newHeight) ||
-		   (config.video.fullscreen != newFullscreen) ||
-		   (config.video.bpp!=newBpp)) {
+void Check_Apply() {
+	if(pMenuElementApply) {
+		if(config.video.resolution.x != newWidth
+		   || config.video.resolution.y != newHeight
+		   || config.video.fullscreen != newFullscreen
+		   || config.video.bpp != newBpp
+		) {
 			pMenuElementApply->SetCheckOn();
 			((CMenuElementText*)pMenuElementApply)->lColor=((CMenuElementText*)pMenuElementApply)->lOldColor;
-		}
-		else
-		{
-			if(((CMenuElementText*)pMenuElementApply)->lColor!=Color(127,127,127))
-			{
+		} else {
+			if(((CMenuElementText*)pMenuElementApply)->lColor != Color(127,127,127)) {
 				pMenuElementApply->SetCheckOff();
 				((CMenuElementText*)pMenuElementApply)->lOldColor=((CMenuElementText*)pMenuElementApply)->lColor;
 				((CMenuElementText*)pMenuElementApply)->lColor=Color(127,127,127);
@@ -291,10 +279,8 @@ void Check_Apply()
 	}
 }
 
-//-----------------------------------------------------------------------------
+static void FadeInOut(float _fVal) {
 
-static void FadeInOut(float _fVal)
-{
 	TexturedVertex d3dvertex[4];
 
 	u32 iColor = Color::gray(_fVal).toBGR();
@@ -323,9 +309,9 @@ static void FadeInOut(float _fVal)
 	d3dvertex[3].color=iColor;
 
 	GRenderer->ResetTexture(0);
-	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-
 	GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
+
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	GRenderer->SetRenderState(Renderer::DepthTest, false);
 	GRenderer->SetCulling(Renderer::CullNone);
@@ -334,44 +320,35 @@ static void FadeInOut(float _fVal)
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
-
 	GRenderer->SetRenderState(Renderer::DepthTest, true);
 	GRenderer->SetCulling(Renderer::CullCCW);
 }
 
-//-----------------------------------------------------------------------------
+bool ProcessFadeInOut(bool _bFadeIn, float _fspeed) {
 
-bool ProcessFadeInOut(bool _bFadeIn,float _fspeed)
-{
 	FadeInOut(fFadeInOut);
 
-	if(!bFade) return true;
+	if(!bFade)
+		return true;
 
-	if(_bFadeIn)
-	{
-		fFadeInOut+=_fspeed*ARXDiffTimeMenu*( 1.0f / 100 );
+	if(_bFadeIn) {
+		fFadeInOut += _fspeed * ARXDiffTimeMenu * (1.f/100);
 
-		if(fFadeInOut>1.f)
-		{
-			fFadeInOut=1.f;
-			bFade=false;
+		if(fFadeInOut > 1.f) {
+			fFadeInOut = 1.f;
+			bFade = false;
 		}
-	}
-	else
-	{
-		fFadeInOut-=_fspeed*ARXDiffTimeMenu*( 1.0f / 100 );
+	} else {
+		fFadeInOut -= _fspeed * ARXDiffTimeMenu * (1.f/100);
 
-		if(fFadeInOut<0.f)
-		{
-			fFadeInOut=0.f;
-			bFade=false;
+		if(fFadeInOut < 0.f) {
+			fFadeInOut = 0.f;
+			bFade = false;
 		}
 	}
 
 	return false;
 }
-
-//-----------------------------------------------------------------------------
 
 void MACRO_MENU_PRINCIPALE(int iPosMenuPrincipaleX,
 						   int & iPosMenuPrincipaleY,
