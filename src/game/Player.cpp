@@ -1748,13 +1748,10 @@ void ARX_PLAYER_Manage_Visual() {
 			}
 
 			goto makechanges;
-		}
-		else if (ARX_SPELLS_GetSpellOn(io, SPELL_LEVITATE) >= 0)
-		{
+		} else if(ARX_SPELLS_GetSpellOn(io, SPELL_LEVITATE) >= 0) {
 			ChangeMoveAnim = alist[ANIM_LEVITATE];
 			ChangeMA_Loop = true;
 			goto makechanges;
-			
 		} else if(player.jumpphase != NotJumping) {
 			
 			switch(player.jumpphase) {
@@ -1768,7 +1765,6 @@ void ARX_PLAYER_Manage_Visual() {
 					player.jumplastposition = -1.f;
 					break;
 				}
-				
 				case JumpAscending: { // Moving up
 					ChangeMoveAnim = alist[ANIM_JUMP_UP];
 					if(player.jumplastposition >= 1.f) {
@@ -1778,7 +1774,6 @@ void ARX_PLAYER_Manage_Visual() {
 					}
 					break;
 				}
-				
 				case JumpDescending: { // Post-synch
 					LAST_JUMP_ENDTIME = (unsigned long)(arxtime);
 					if((ause0->cur_anim == alist[ANIM_JUMP_END] && (ause0->flags & EA_ANIMEND))
@@ -1790,7 +1785,6 @@ void ARX_PLAYER_Manage_Visual() {
 					}
 					break;
 				}
-				
 				case JumpEnd: { // Post-synch
 					LAST_JUMP_ENDTIME = (unsigned long)(arxtime);
 					if(ause0->cur_anim == alist[ANIM_JUMP_END_PART2] && (ause0->flags & EA_ANIMEND)) {
@@ -1817,11 +1811,13 @@ void ARX_PLAYER_Manage_Visual() {
 				ause0->cur_anim = ChangeMoveAnim;
 				ause0->flags = EA_STATICANIM;
 
-				if ((ChangeMoveAnim == alist[ANIM_U_TURN_LEFT])
-				        ||	(ChangeMoveAnim == alist[ANIM_U_TURN_RIGHT])
-				        ||	(ChangeMoveAnim == alist[ANIM_U_TURN_RIGHT_FIGHT])
-				        ||	(ChangeMoveAnim == alist[ANIM_U_TURN_LEFT_FIGHT]))
+				if(ChangeMoveAnim == alist[ANIM_U_TURN_LEFT]
+				   || ChangeMoveAnim == alist[ANIM_U_TURN_RIGHT]
+				   || ChangeMoveAnim == alist[ANIM_U_TURN_RIGHT_FIGHT]
+				   || ChangeMoveAnim == alist[ANIM_U_TURN_LEFT_FIGHT]
+				) {
 					ause0->flags |= EA_EXCONTROL;
+				}
 			}
 
 			if(ChangeMoveAnim2 && ChangeMoveAnim2 != ause3->cur_anim) {
@@ -1847,10 +1843,12 @@ void ARX_PLAYER_Manage_Visual() {
 					ause0->flags |= EA_STOPEND;
 
 				if(ChangeMoveAnim == alist[ANIM_U_TURN_LEFT]
-						||	ChangeMoveAnim == alist[ANIM_U_TURN_RIGHT]
-						||	ChangeMoveAnim == alist[ANIM_U_TURN_RIGHT_FIGHT]
-						||	ChangeMoveAnim == alist[ANIM_U_TURN_LEFT_FIGHT])
+				   || ChangeMoveAnim == alist[ANIM_U_TURN_RIGHT]
+				   || ChangeMoveAnim == alist[ANIM_U_TURN_RIGHT_FIGHT]
+				   || ChangeMoveAnim == alist[ANIM_U_TURN_LEFT_FIGHT]
+				) {
 					ause0->flags |= EA_EXCONTROL;
+				}
 			}
 
 			if(ChangeMoveAnim2 && ChangeMoveAnim2 != ause3->cur_anim) {
