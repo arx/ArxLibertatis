@@ -158,24 +158,24 @@ TexturedVertex * PushVertexInTableCull_TAdditive(TextureContainer *pTex)
 //-----------------------------------------------------------------------------
 TexturedVertex * PushVertexInTableCull_TSubstractive(TextureContainer *pTex)
 {
-	if((pTex->ulNbVertexListCull_TSubstractive+3)>pTex->ulMaxVertexListCull_TSubstractive)
+	if((pTex->count[TextureContainer::Subtractive]+3)>pTex->max[TextureContainer::Subtractive])
 	{
-		pTex->ulMaxVertexListCull_TSubstractive+=20*3;
-		pTex->pVertexListCull_TSubstractive = (TexturedVertex *)realloc(
-											   pTex->pVertexListCull_TSubstractive,
-											   pTex->ulMaxVertexListCull_TSubstractive
+		pTex->max[TextureContainer::Subtractive]+=20*3;
+		pTex->list[TextureContainer::Subtractive] = (TexturedVertex *)realloc(
+											   pTex->list[TextureContainer::Subtractive],
+											   pTex->max[TextureContainer::Subtractive]
 											   * sizeof(TexturedVertex));
 
-		if (!pTex->pVertexListCull_TSubstractive)
+		if (!pTex->list[TextureContainer::Subtractive])
 		{
-			pTex->ulMaxVertexListCull_TSubstractive=0;
-			pTex->ulNbVertexListCull_TSubstractive=0;
+			pTex->max[TextureContainer::Subtractive]=0;
+			pTex->count[TextureContainer::Subtractive]=0;
 			return NULL;
 		}
 	}
 
-	pTex->ulNbVertexListCull_TSubstractive+=3;
-	return &pTex->pVertexListCull_TSubstractive[pTex->ulNbVertexListCull_TSubstractive-3];
+	pTex->count[TextureContainer::Subtractive]+=3;
+	return &pTex->list[TextureContainer::Subtractive][pTex->count[TextureContainer::Subtractive]-3];
 }
 
 //-----------------------------------------------------------------------------
@@ -231,7 +231,7 @@ static void PopOneTriangleListTransparency(TextureContainer *_pTex) {
 
 	if(!_pTex->count[TextureContainer::Blended]
 	   && !_pTex->count[TextureContainer::Additive]
-	   && !_pTex->ulNbVertexListCull_TSubstractive
+	   && !_pTex->count[TextureContainer::Subtractive]
 	   && !_pTex->ulNbVertexListCull_TMultiplicative) {
 		return;
 	}
@@ -257,12 +257,12 @@ static void PopOneTriangleListTransparency(TextureContainer *_pTex) {
 		}
 	}
 
-	if(_pTex->ulNbVertexListCull_TSubstractive) {
+	if(_pTex->count[TextureContainer::Subtractive]) {
 		GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
-		if(_pTex->ulNbVertexListCull_TSubstractive) {
-			EERIEDRAWPRIM(Renderer::TriangleList, _pTex->pVertexListCull_TSubstractive,
-						  _pTex->ulNbVertexListCull_TSubstractive);
-			_pTex->ulNbVertexListCull_TSubstractive=0;
+		if(_pTex->count[TextureContainer::Subtractive]) {
+			EERIEDRAWPRIM(Renderer::TriangleList, _pTex->list[TextureContainer::Subtractive],
+						  _pTex->count[TextureContainer::Subtractive]);
+			_pTex->count[TextureContainer::Subtractive]=0;
 		}
 	}
 
