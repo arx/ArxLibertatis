@@ -3304,15 +3304,11 @@ MENUSTATE CWindowMenuConsole::Update(int _iPosX, int _iPosY, int _iOffsetY) {
 	return NOP;
 }
 
-static bool UpdateGameKey(bool bEdit, CMenuElement *pmeElement, InputKeyId inputKeyId)
-{
+static bool UpdateGameKey(bool bEdit, CMenuElement *pmeElement, InputKeyId inputKeyId) {
 	bool bChange=false;
 
-	if(    (!bEdit)&&
-		(pmeElement) )
-	{
-		switch(pmeElement->iID)
-		{
+	if(!bEdit && pmeElement) {
+		switch(pmeElement->iID) {
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_JUMP1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_JUMP2:
 			bChange=config.setActionKey(CONTROLS_CUST_JUMP,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_JUMP1,inputKeyId);
@@ -3483,11 +3479,10 @@ static bool UpdateGameKey(bool bEdit, CMenuElement *pmeElement, InputKeyId input
 	return bChange;
 }
 
-//-----------------------------------------------------------------------------
+int CWindowMenuConsole::Render() {
 
-int CWindowMenuConsole::Render()
-{
-	if(bNoMenu) return 0;
+	if(bNoMenu)
+		return 0;
 
 	int iSlider=0;
 
@@ -3516,35 +3511,28 @@ int CWindowMenuConsole::Render()
 
 	int iARXDiffTimeMenu  = checked_range_cast<int>(ARXDiffTimeMenu);
 
-	for(int i=0;i<t;++i)
-	{
+	for(int i = 0; i < t; ++i) {
 		CMenuElement *pMe=(CMenuElement*)MenuAllZone.GetZoneNum(i);
 
-		if(pMe->bActif)
-		{
+		if(pMe->bActif) {
 			pMe->Update(iARXDiffTimeMenu);
 			pMe->Render();
-		}
-		else
-		{
+		} else {
 			iSlider++;
 		}
 	}
 
 	//HIGHLIGHT
-	if(pZoneClick && pZoneClick->bActif)
-	{
+	if(pZoneClick && pZoneClick->bActif) {
 		bool bReInit=false;
 
 		pZoneClick->RenderMouseOver();
 
-		switch(pZoneClick->eState)
-		{
+		switch(pZoneClick->eState) {
 		case EDIT_TIME:
 			UpdateText();
 			break;
-		case GETTOUCH_TIME:
-			{
+		case GETTOUCH_TIME: {
 				if(bFrameOdd)
 					((CMenuElementText*)pZoneClick)->lColorHighlight = Color(255, 0, 0);
 				else
@@ -3558,45 +3546,37 @@ int CWindowMenuConsole::Render()
 					GInput->isKeyPressed(Keyboard::Key_LeftCtrl)||
 					GInput->isKeyPressed(Keyboard::Key_RightCtrl)||
 					GInput->isKeyPressed(Keyboard::Key_LeftAlt)||
-					GInput->isKeyPressed(Keyboard::Key_RightAlt) )
-				{
+					GInput->isKeyPressed(Keyboard::Key_RightAlt)
+				) {
 					if(!((keyId & INPUT_COMBINATION_MASK )>>16))
 						keyTouched = false;
-				}
-				else
-				{
-					if(GInput->isKeyPressedNowUnPressed(Keyboard::Key_LeftShift))
-					{
+				} else {
+					if(GInput->isKeyPressedNowUnPressed(Keyboard::Key_LeftShift)) {
 						keyTouched = true;
 						keyId = Keyboard::Key_LeftShift;
 					}
 
-					if(GInput->isKeyPressedNowUnPressed(Keyboard::Key_RightShift))
-					{
+					if(GInput->isKeyPressedNowUnPressed(Keyboard::Key_RightShift)) {
 						keyTouched = true;
 						keyId = Keyboard::Key_RightShift;
 					}
 
-					if(GInput->isKeyPressedNowUnPressed(Keyboard::Key_LeftCtrl))
-					{
+					if(GInput->isKeyPressedNowUnPressed(Keyboard::Key_LeftCtrl)) {
 						keyTouched = true;
 						keyId = Keyboard::Key_LeftCtrl;
 					}
 
-					if(GInput->isKeyPressedNowUnPressed(Keyboard::Key_RightCtrl))
-					{
+					if(GInput->isKeyPressedNowUnPressed(Keyboard::Key_RightCtrl)) {
 						keyTouched = true;
 						keyId = Keyboard::Key_RightCtrl;
 					}
 
-					if(GInput->isKeyPressedNowUnPressed(Keyboard::Key_LeftAlt))
-					{
+					if(GInput->isKeyPressedNowUnPressed(Keyboard::Key_LeftAlt)) {
 						keyTouched = true;
 						keyId = Keyboard::Key_LeftAlt;
 					}
 
-					if(GInput->isKeyPressedNowUnPressed(Keyboard::Key_RightAlt))
-					{
+					if(GInput->isKeyPressedNowUnPressed(Keyboard::Key_RightAlt)) {
 						keyTouched = true;
 						keyId = Keyboard::Key_RightAlt;
 					}
@@ -3605,10 +3585,8 @@ int CWindowMenuConsole::Render()
 				InputKeyId inputKeyId;
 				CMenuElement *pmeElement = GetTouch(keyTouched, keyId, &inputKeyId, true);
 
-				if(pmeElement)
-				{
-					if(UpdateGameKey(bEdit,pmeElement, inputKeyId))
-					{
+				if(pmeElement) {
+					if(UpdateGameKey(bEdit,pmeElement, inputKeyId)) {
 						bReInit=true;
 					}
 				}
@@ -3616,12 +3594,10 @@ int CWindowMenuConsole::Render()
 			break;
 		default:
 			{
-				if(GInput->getMouseButtonNowPressed(Mouse::Button_0))
-				{
+				if(GInput->getMouseButtonNowPressed(Mouse::Button_0)) {
 					CMenuZone *pmzMenuZone = MenuAllZone.GetZoneWithID(BUTTON_MENUOPTIONS_CONTROLS_CUST_DEFAULT);
 
-					if(pmzMenuZone==pZoneClick)
-					{
+					if(pmzMenuZone==pZoneClick) {
 						config.setDefaultActionKeys();
 						bReInit=true;
 					}
@@ -3630,8 +3606,7 @@ int CWindowMenuConsole::Render()
 			break;
 		}
 
-		if(bReInit)
-		{
+		if(bReInit) {
 			ReInitActionKey();
 			bMouseAttack=false;
 		}
@@ -3648,24 +3623,20 @@ void CWindowMenuConsole::ReInitActionKey()
 	int iID=BUTTON_MENUOPTIONS_CONTROLS_CUST_JUMP1;
 	int iI=NUM_ACTION_KEY;
 	
-	while(iI--)
-	{
+	while(iI--) {
 		int iTab=(iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_JUMP1)>>1;
 
 		CMenuZone *pmzMenuZone = MenuAllZone.GetZoneWithID(iID);
 
-		if (pmzMenuZone)
-		{
-			if(pmzMenuZone)
-			{
+		if(pmzMenuZone) {
+			if(pmzMenuZone) {
 				pZoneClick = (CMenuElement*)pmzMenuZone;
 				GetTouch(true, config.actions[iTab].key[0]);
 			}
 
 			pmzMenuZone = MenuAllZone.GetZoneWithID(iID+1);
 
-			if( pmzMenuZone )
-			{
+			if(pmzMenuZone) {
 				pZoneClick = (CMenuElement*)pmzMenuZone;
 				GetTouch(true, config.actions[iTab].key[1]);
 			}
@@ -3675,25 +3646,18 @@ void CWindowMenuConsole::ReInitActionKey()
 	}
 }
 
-//-----------------------------------------------------------------------------
-
 CMenuPanel::CMenuPanel()
-: CMenuElement(NOP)
+	: CMenuElement(NOP)
 {
 	vElement.clear();
-
 	pRef = this;
 }
 
-//-----------------------------------------------------------------------------
-
 CMenuPanel::~CMenuPanel()
 {
-	for (std::vector<CMenuElement*>::iterator it = vElement.begin(), it_end = vElement.end(); it != it_end; ++it)
+	for(std::vector<CMenuElement*>::iterator it = vElement.begin(), it_end = vElement.end(); it != it_end; ++it)
 		delete (*it);
 }
-
-//-----------------------------------------------------------------------------
 
 void CMenuPanel::Move(int _iX, int _iY)
 {
@@ -3702,20 +3666,18 @@ void CMenuPanel::Move(int _iX, int _iY)
 	rZone.right += _iX;
 	rZone.bottom += _iY;
 
-	for (std::vector<CMenuElement*>::iterator it = vElement.begin(), it_end = vElement.end(); it != it_end; ++it)
+	for(std::vector<CMenuElement*>::iterator it = vElement.begin(), it_end = vElement.end(); it != it_end; ++it)
 		(*it)->Move(_iX, _iY);
 }
 
-//-----------------------------------------------------------------------------
 // patch on ajoute à droite en ligne
 void CMenuPanel::AddElement(CMenuElement* _pElem)
 {
 	vElement.push_back(_pElem);
 
-	if (vElement.size() == 1)
+	if(vElement.size() == 1) {
 		rZone = _pElem->rZone;
-	else
-	{
+	} else {
 		rZone.left = std::min(rZone.left, _pElem->rZone.left);
 		rZone.top = std::min(rZone.top, _pElem->rZone.top);
 	}
@@ -3727,16 +3689,14 @@ void CMenuPanel::AddElement(CMenuElement* _pElem)
 	_pElem->Move(0, ((GetHeight() - _pElem->rZone.bottom) / 2));
 }
 
-//-----------------------------------------------------------------------------
 // patch on ajoute à droite en ligne
 void CMenuPanel::AddElementNoCenterIn(CMenuElement* _pElem)
 {
 	vElement.push_back(_pElem);
 
-	if (vElement.size() == 1)
-		rZone=_pElem->rZone;
-	else
-	{
+	if(vElement.size() == 1) {
+		rZone = _pElem->rZone;
+	} else {
 		rZone.left = std::min(rZone.left, _pElem->rZone.left);
 		rZone.top = std::min(rZone.top, _pElem->rZone.top);
 	}
@@ -3744,85 +3704,71 @@ void CMenuPanel::AddElementNoCenterIn(CMenuElement* _pElem)
 	// + taille elem
 	rZone.right = std::max(rZone.right, _pElem->rZone.right);
 	rZone.bottom = std::max(rZone.bottom, _pElem->rZone.bottom);
-
 }
-
-//-----------------------------------------------------------------------------
 
 CMenuElement* CMenuPanel::OnShortCut()
 {
-	for (std::vector<CMenuElement*>::iterator it = vElement.begin(), it_end = vElement.end(); it != it_end; ++it)
-		if ((*it)->OnShortCut())
+	for(std::vector<CMenuElement*>::iterator it = vElement.begin(), it_end = vElement.end(); it != it_end; ++it)
+		if((*it)->OnShortCut())
 			return *it;
 
 	return NULL;
 }
-
-//-----------------------------------------------------------------------------
 
 void CMenuPanel::Update(int _iTime)
 {
 	rZone.right = rZone.left;
 	rZone.bottom = rZone.top;
 
-	;
-
-	for (std::vector<CMenuElement*>::iterator it = vElement.begin(), it_end = vElement.end(); it != it_end; ++it)
-	{
+	for(std::vector<CMenuElement*>::iterator it = vElement.begin(), it_end = vElement.end(); it != it_end; ++it) {
 		(*it)->Update(_iTime);
 		rZone.right = std::max(rZone.right, (*it)->rZone.right);
 		rZone.bottom = std::max(rZone.bottom, (*it)->rZone.bottom);
 	}
 }
 
-//-----------------------------------------------------------------------------
+void CMenuPanel::Render() {
 
-void CMenuPanel::Render()
-{
-	if(bNoMenu) return;
+	if(bNoMenu)
+		return;
 
-	for (std::vector<CMenuElement*>::iterator it = vElement.begin(), it_end = vElement.end(); it != it_end; ++it)
+	for(std::vector<CMenuElement*>::iterator it = vElement.begin(), it_end = vElement.end(); it != it_end; ++it)
 		(*it)->Render();
 }
 
-//-----------------------------------------------------------------------------
-
 CMenuZone * CMenuPanel::GetZoneWithID(int _iID)
 {
-	for (std::vector<CMenuElement*>::iterator it = vElement.begin(), it_end = vElement.end(); it != it_end; ++it)
-		if (CMenuZone* pZone = (*it)->GetZoneWithID(_iID))
+	for(std::vector<CMenuElement*>::iterator it = vElement.begin(), it_end = vElement.end(); it != it_end; ++it)
+		if(CMenuZone* pZone = (*it)->GetZoneWithID(_iID))
 			return pZone;
 
 	return NULL;
 }
 
-//-----------------------------------------------------------------------------
+CMenuZone * CMenuPanel::IsMouseOver(const Vec2s& mousePos) const {
 
-CMenuZone * CMenuPanel::IsMouseOver(const Vec2s& mousePos) const
-{
-	if ((mousePos.x >= rZone.left) &&
-		(mousePos.y >= rZone.top) &&
-		(mousePos.x <= rZone.right) &&
-		(mousePos.y <= rZone.bottom))
-	{
+	if(mousePos.x >= rZone.left
+	   && mousePos.y >= rZone.top
+	   && mousePos.x <= rZone.right
+	   && mousePos.y <= rZone.bottom
+	) {
 		vector<CMenuElement *>::const_iterator i;
 		
-		for(i=vElement.begin();i!=vElement.end();++i)
-		{
-			if ((*i)->bCheck &&
-				(*i)->bActif && 
-				(mousePos.x >= (*i)->rZone.left) &&
-				(mousePos.y >= (*i)->rZone.top) &&
-				(mousePos.x <= (*i)->rZone.right) &&
-				(mousePos.y <= (*i)->rZone.bottom))
+		for(i = vElement.begin(); i != vElement.end(); ++i) {
+			if((*i)->bCheck
+			   && (*i)->bActif
+			   && mousePos.x >= (*i)->rZone.left
+			   && mousePos.y >= (*i)->rZone.top
+			   && mousePos.x <= (*i)->rZone.right
+			   && mousePos.y <= (*i)->rZone.bottom
+			) {
 				return (*i)->pRef;
+			}
 		}
 	}
 
 	return NULL;
 }
-
-//-----------------------------------------------------------------------------
 
 CMenuButton::CMenuButton(int _iID, Font* _pFont,MENUSTATE _eMenuState,int _iPosX,int _iPosY, const std::string& _pText,float _fSize,TextureContainer *_pTex,TextureContainer *_pTexOver,int _iColor)
 	: CMenuElement(_eMenuState)
