@@ -3093,14 +3093,14 @@ void ComputePortalVertexBuffer() {
 			m.uslStartVertex = startIndex;
 			m.uslNbVertex = index;
 			
-			m.uslStartCull                 =  startIndexCull;
+			m.offset[SMY_ARXMAT::Opaque]   =  startIndexCull;
 			m.uslStartCull_TNormalTrans    = (startIndexCull += info.opaque);
 			m.uslStartCull_TMultiplicative = (startIndexCull += info.blended);
 			m.uslStartCull_TAdditive       = (startIndexCull += info.multiplicative);
 			m.uslStartCull_TSubstractive   = (startIndexCull += info.additive);
 			                                 (startIndexCull += info.subtractive);
 			
-			m.uslNbIndiceCull = 0;
+			m.count[SMY_ARXMAT::Opaque] = 0;
 			m.uslNbIndiceCull_TNormalTrans = 0;
 			m.uslNbIndiceCull_TMultiplicative = 0;
 			m.uslNbIndiceCull_TAdditive = 0;

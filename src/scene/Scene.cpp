@@ -1303,8 +1303,8 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num, const EERIE_FRUSTRU
 				pNumIndices=&roomMat.uslNbIndiceCull_TSubstractive;
 			}
 		} else {
-			pIndicesCurr=pIndices+roomMat.uslStartCull+roomMat.uslNbIndiceCull;
-			pNumIndices=&roomMat.uslNbIndiceCull;
+			pIndicesCurr=pIndices+roomMat.offset[SMY_ARXMAT::Opaque]+roomMat.count[SMY_ARXMAT::Opaque];
+			pNumIndices=&roomMat.count[SMY_ARXMAT::Opaque];
 
 			if(ZMAPMODE) {
 				if((fDist<200)&&(ep->tex->TextureRefinement)) {
@@ -1436,16 +1436,16 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoftRender(long room_num) {
 		else
 			GRenderer->GetTextureStage(0)->SetColorOp(TextureStage::OpModulate);
 
-		if(roomMat.uslNbIndiceCull)
+		if(roomMat.count[SMY_ARXMAT::Opaque])
 		{
 			GRenderer->SetAlphaFunc(Renderer::CmpGreater, .5f);
 			room.pVertexBuffer->drawIndexed(Renderer::TriangleList, roomMat.uslNbVertex, roomMat.uslStartVertex,
-				&room.pussIndice[roomMat.uslStartCull],
-				roomMat.uslNbIndiceCull);
+				&room.pussIndice[roomMat.offset[SMY_ARXMAT::Opaque]],
+				roomMat.count[SMY_ARXMAT::Opaque]);
 			GRenderer->SetAlphaFunc(Renderer::CmpNotEqual, 0.f);
 
-			EERIEDrawnPolys += roomMat.uslNbIndiceCull;
-			roomMat.uslNbIndiceCull = 0;
+			EERIEDrawnPolys += roomMat.count[SMY_ARXMAT::Opaque];
+			roomMat.count[SMY_ARXMAT::Opaque] = 0;
 		}
 
 		ppTexCurr++;
