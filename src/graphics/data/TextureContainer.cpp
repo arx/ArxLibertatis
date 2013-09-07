@@ -110,12 +110,17 @@ void ResetVertexLists(TextureContainer * tex) {
 	
 	free(tex->list[TextureContainer::Opaque]);
 	tex->list[TextureContainer::Opaque] = NULL;
+	free(tex->pVertexListCull_TNormalTrans);
+	tex->pVertexListCull_TNormalTrans = NULL;
+	free(tex->pVertexListCull_TAdditive);
+	tex->pVertexListCull_TAdditive = NULL;
+	free(tex->pVertexListCull_TSubstractive);
+	tex->pVertexListCull_TSubstractive = NULL;
+	free(tex->pVertexListCull_TMultiplicative);
+	tex->pVertexListCull_TMultiplicative = NULL;
 
-	free(tex->pVertexListCull_TNormalTrans), tex->pVertexListCull_TNormalTrans = NULL;
-	free(tex->pVertexListCull_TAdditive), tex->pVertexListCull_TAdditive = NULL;
-	free(tex->pVertexListCull_TSubstractive), tex->pVertexListCull_TSubstractive = NULL;
-	free(tex->pVertexListCull_TMultiplicative), tex->pVertexListCull_TMultiplicative = NULL;
-	free(tex->tMatRoom), tex->tMatRoom = NULL;
+	free(tex->tMatRoom);
+	tex->tMatRoom = NULL;
 }
 
 //-----------------------------------------------------------------------------
