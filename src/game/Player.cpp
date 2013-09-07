@@ -954,78 +954,52 @@ void ARX_PLAYER_QuickGeneration() {
 	ARX_PLAYER_MakeFreshHero();
 	player.skin = old_skin;
 
-	while (player.Attribute_Redistribute)
-	{
+	while(player.Attribute_Redistribute) {
 		float rn = rnd();
 
-		if ((rn < 0.25f) && (player.Attribute_Strength < 18))
-		{
+		if(rn < 0.25f && player.Attribute_Strength < 18) {
 			player.Attribute_Strength++;
 			player.Attribute_Redistribute--;
-		}
-		else if ((rn < 0.5f) && (player.Attribute_Mind < 18))
-		{
+		} else if(rn < 0.5f && player.Attribute_Mind < 18) {
 			player.Attribute_Mind++;
 			player.Attribute_Redistribute--;
-		}
-		else if ((rn < 0.75f) && (player.Attribute_Dexterity < 18))
-		{
+		} else if(rn < 0.75f && player.Attribute_Dexterity < 18) {
 			player.Attribute_Dexterity++;
 			player.Attribute_Redistribute--;
-		}
-		else if (player.Attribute_Constitution < 18)
-		{
+		} else if(player.Attribute_Constitution < 18) {
 			player.Attribute_Constitution++;
 			player.Attribute_Redistribute--;
 		}
 	}
 
-	while (player.Skill_Redistribute)
-	{
+	while(player.Skill_Redistribute) {
 		float rn = rnd();
 
-		if ((rn < 0.1f) && (player.Skill_Stealth < 18))
-		{
+		if(rn < 0.1f && player.Skill_Stealth < 18) {
 			player.Skill_Stealth++;
 			player.Skill_Redistribute--;
-		}
-		else if ((rn < 0.2f) && (player.Skill_Mecanism < 18))
-		{
+		} else if(rn < 0.2f && player.Skill_Mecanism < 18) {
 			player.Skill_Mecanism++;
 			player.Skill_Redistribute--;
-		}
-		else if ((rn < 0.3f) && (player.Skill_Intuition < 18))
-		{
+		} else if(rn < 0.3f && player.Skill_Intuition < 18) {
 			player.Skill_Intuition++;
 			player.Skill_Redistribute--;
-		}
-		else if ((rn < 0.4f) && (player.Skill_Etheral_Link < 18))
-		{
+		} else if(rn < 0.4f && player.Skill_Etheral_Link < 18) {
 			player.Skill_Etheral_Link++;
 			player.Skill_Redistribute--;
-		}
-		else if ((rn < 0.5f) && (player.Skill_Object_Knowledge < 18))
-		{
+		} else if(rn < 0.5f && player.Skill_Object_Knowledge < 18) {
 			player.Skill_Object_Knowledge++;
 			player.Skill_Redistribute--;
-		}
-		else if ((rn < 0.6f) && (player.Skill_Casting < 18))
-		{
+		} else if(rn < 0.6f && player.Skill_Casting < 18) {
 			player.Skill_Casting++;
 			player.Skill_Redistribute--;
-		}
-		else if ((rn < 0.7f) && (player.Skill_Projectile < 18))
-		{
+		} else if(rn < 0.7f && player.Skill_Projectile < 18) {
 			player.Skill_Projectile++;
 			player.Skill_Redistribute--;
-		}
-		else if ((rn < 0.8f) && (player.Skill_Close_Combat < 18))
-		{
+		} else if(rn < 0.8f && player.Skill_Close_Combat < 18) {
 			player.Skill_Close_Combat++;
 			player.Skill_Redistribute--;
-		}
-		else if ((rn < 0.9f) && (player.Skill_Defense < 18))
-		{
+		} else if(rn < 0.9f && player.Skill_Defense < 18) {
 			player.Skill_Defense++;
 			player.Skill_Redistribute--;
 		}
