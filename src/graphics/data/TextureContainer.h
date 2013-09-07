@@ -190,10 +190,7 @@ public:
 	unsigned long max[5];
 	unsigned long count[5];
 	TexturedVertex * list[5];
-	
-	unsigned long ulMaxVertexListCull_TMultiplicative;
-	unsigned long ulNbVertexListCull_TMultiplicative;
-	TexturedVertex * pVertexListCull_TMultiplicative;
+
 	// END TODO
 	
 	bool hasColorKey();

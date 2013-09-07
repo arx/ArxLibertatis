@@ -181,24 +181,24 @@ TexturedVertex * PushVertexInTableCull_TSubstractive(TextureContainer *pTex)
 //-----------------------------------------------------------------------------
 TexturedVertex * PushVertexInTableCull_TMultiplicative(TextureContainer *pTex)
 {
-	if((pTex->ulNbVertexListCull_TMultiplicative+3)>pTex->ulMaxVertexListCull_TMultiplicative)
+	if((pTex->count[TextureContainer::Multiplicative]+3)>pTex->max[TextureContainer::Multiplicative])
 	{
-		pTex->ulMaxVertexListCull_TMultiplicative+=20*3;
-		pTex->pVertexListCull_TMultiplicative = (TexturedVertex *)realloc(
-												 pTex->pVertexListCull_TMultiplicative,
-												 pTex->ulMaxVertexListCull_TMultiplicative
+		pTex->max[TextureContainer::Multiplicative]+=20*3;
+		pTex->list[TextureContainer::Multiplicative] = (TexturedVertex *)realloc(
+												 pTex->list[TextureContainer::Multiplicative],
+												 pTex->max[TextureContainer::Multiplicative]
 												 * sizeof(TexturedVertex));
 
-		if (!pTex->pVertexListCull_TMultiplicative)
+		if (!pTex->list[TextureContainer::Multiplicative])
 		{
-			pTex->ulMaxVertexListCull_TMultiplicative=0;
-			pTex->ulNbVertexListCull_TMultiplicative=0;
+			pTex->max[TextureContainer::Multiplicative]=0;
+			pTex->count[TextureContainer::Multiplicative]=0;
 			return NULL;
 		}
 	}
 
-	pTex->ulNbVertexListCull_TMultiplicative+=3;
-	return &pTex->pVertexListCull_TMultiplicative[pTex->ulNbVertexListCull_TMultiplicative-3];
+	pTex->count[TextureContainer::Multiplicative]+=3;
+	return &pTex->list[TextureContainer::Multiplicative][pTex->count[TextureContainer::Multiplicative]-3];
 }
 
 static void PopOneTriangleList(TextureContainer *_pTex) {
@@ -232,7 +232,7 @@ static void PopOneTriangleListTransparency(TextureContainer *_pTex) {
 	if(!_pTex->count[TextureContainer::Blended]
 	   && !_pTex->count[TextureContainer::Additive]
 	   && !_pTex->count[TextureContainer::Subtractive]
-	   && !_pTex->ulNbVertexListCull_TMultiplicative) {
+	   && !_pTex->count[TextureContainer::Multiplicative]) {
 		return;
 	}
 
@@ -266,12 +266,12 @@ static void PopOneTriangleListTransparency(TextureContainer *_pTex) {
 		}
 	}
 
-	if(_pTex->ulNbVertexListCull_TMultiplicative) {
+	if(_pTex->count[TextureContainer::Multiplicative]) {
 		GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-		if(_pTex->ulNbVertexListCull_TMultiplicative) {
-			EERIEDRAWPRIM(Renderer::TriangleList, _pTex->pVertexListCull_TMultiplicative,
-						  _pTex->ulNbVertexListCull_TMultiplicative);
-			_pTex->ulNbVertexListCull_TMultiplicative = 0;
+		if(_pTex->count[TextureContainer::Multiplicative]) {
+			EERIEDRAWPRIM(Renderer::TriangleList, _pTex->list[TextureContainer::Multiplicative],
+						  _pTex->count[TextureContainer::Multiplicative]);
+			_pTex->count[TextureContainer::Multiplicative] = 0;
 		}
 	}
 }

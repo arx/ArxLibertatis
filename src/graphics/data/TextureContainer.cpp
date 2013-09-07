@@ -97,13 +97,13 @@ void ResetVertexLists(TextureContainer * tex) {
 	tex->count[TextureContainer::Blended] = 0;
 	tex->count[TextureContainer::Additive] = 0;
 	tex->count[TextureContainer::Subtractive] = 0;
-	tex->ulNbVertexListCull_TMultiplicative = 0;
+	tex->count[TextureContainer::Multiplicative] = 0;
 	
 	tex->max[TextureContainer::Opaque] = 0;
 	tex->max[TextureContainer::Blended] = 0;
 	tex->max[TextureContainer::Additive] = 0;
 	tex->max[TextureContainer::Subtractive] = 0;
-	tex->ulMaxVertexListCull_TMultiplicative = 0;
+	tex->max[TextureContainer::Multiplicative] = 0;
 	
 	tex->vPolyInterZMap.clear();
 	tex->vPolyZMap.clear();
@@ -116,8 +116,8 @@ void ResetVertexLists(TextureContainer * tex) {
 	tex->list[TextureContainer::Additive] = NULL;
 	free(tex->list[TextureContainer::Subtractive]);
 	tex->list[TextureContainer::Subtractive] = NULL;
-	free(tex->pVertexListCull_TMultiplicative);
-	tex->pVertexListCull_TMultiplicative = NULL;
+	free(tex->list[TextureContainer::Multiplicative]);
+	tex->list[TextureContainer::Multiplicative] = NULL;
 
 	free(tex->tMatRoom);
 	tex->tMatRoom = NULL;
@@ -170,9 +170,9 @@ TextureContainer::TextureContainer(const res::path & strName, TCFlags flags) : m
 	count[TextureContainer::Subtractive] = 0;
 	list[TextureContainer::Subtractive] = NULL;
 
-	ulMaxVertexListCull_TMultiplicative = 0; 
-	ulNbVertexListCull_TMultiplicative = 0;
-	pVertexListCull_TMultiplicative = NULL; 
+	max[TextureContainer::Multiplicative] = 0;
+	count[TextureContainer::Multiplicative] = 0;
+	list[TextureContainer::Multiplicative] = NULL;
 
 	tMatRoom = NULL;
 
