@@ -72,7 +72,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/effects/Halo.h"
 #include "graphics/particle/ParticleEffects.h"
 #include "graphics/texture/TextureStage.h"
-#include "graphics/GraphicsUtility.h"
 
 #include "input/Input.h"
 
@@ -763,11 +762,7 @@ void CreateFrustrum(EERIE_FRUSTRUM *frustrum, EERIEPOLY *ep, bool cull) {
 
 
 void CreateScreenFrustrum(EERIE_FRUSTRUM * frustrum) {
-	
-	EERIEMATRIX tempViewMatrix;
-	Util_SetViewMatrix(tempViewMatrix, ACTIVECAM->orgTrans);
-	GRenderer->SetViewMatrix(tempViewMatrix);
-	
+		
 	EERIEMATRIX matProj;
 	GRenderer->GetProjectionMatrix(matProj);
 	

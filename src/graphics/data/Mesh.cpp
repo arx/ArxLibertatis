@@ -69,6 +69,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/Draw.h"
 #include "graphics/Math.h"
 #include "graphics/VertexBuffer.h"
+#include "graphics/GraphicsUtility.h"
 #include "graphics/data/TextureContainer.h"
 #include "graphics/data/FastSceneFormat.h"
 #include "graphics/particle/ParticleEffects.h"
@@ -1460,7 +1461,12 @@ float EERIE_TransformOldFocalToNewFocal(float _fOldFocal)
 		return 33.5f;
 }
 
-void EERIE_CreateMatriceProj(float _fWidth, float _fHeight, float _fFOV, float _fZNear, float _fZFar) {
+void EERIE_CreateMatriceProj(float _fWidth, float _fHeight, EERIE_CAMERA * cam) {
+
+	float _fFOV = EERIE_TransformOldFocalToNewFocal(cam->focal);
+	float _fZNear = 1.f;
+	float _fZFar = cam->cdepth;
+
 
 	float fAspect = _fHeight / _fWidth;
 	float fFOV = radians(_fFOV);
@@ -1478,10 +1484,9 @@ void EERIE_CreateMatriceProj(float _fWidth, float _fHeight, float _fFOV, float _
 	ProjectionMatrix._34 = 1.f;
 	GRenderer->SetProjectionMatrix(ProjectionMatrix);
 
-	// Set view matrix to identity
-	EERIEMATRIX mat;
-	mat.setToIdentity();
-	GRenderer->SetViewMatrix(mat);
+	EERIEMATRIX tempViewMatrix;
+	Util_SetViewMatrix(tempViewMatrix, ACTIVECAM->orgTrans);
+	GRenderer->SetViewMatrix(tempViewMatrix);
 
 	ProjectionMatrix._11 *= _fWidth * .5f;
 	ProjectionMatrix._22 *= _fHeight * .5f;
@@ -1497,9 +1502,7 @@ void PrepareCamera(EERIE_CAMERA * cam)
 
 	EERIE_CreateMatriceProj(static_cast<float>(DANAESIZX),
 							static_cast<float>(DANAESIZY),
-							EERIE_TransformOldFocalToNewFocal(cam->focal),
-							1.f,
-							cam->cdepth);
+							cam);
 
 }
 
