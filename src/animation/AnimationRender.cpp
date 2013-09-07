@@ -112,24 +112,24 @@ TexturedVertex * PushVertexInTableCull(TextureContainer *pTex)
 //-----------------------------------------------------------------------------
 TexturedVertex * PushVertexInTableCull_TNormalTrans(TextureContainer *pTex)
 {
-	if((pTex->ulNbVertexListCull_TNormalTrans+3)>pTex->ulMaxVertexListCull_TNormalTrans)
+	if((pTex->count[TextureContainer::Blended]+3)>pTex->max[TextureContainer::Blended])
 	{
-		pTex->ulMaxVertexListCull_TNormalTrans+=20*3;
-		pTex->pVertexListCull_TNormalTrans = (TexturedVertex *)realloc(
-											  pTex->pVertexListCull_TNormalTrans,
-											  pTex->ulMaxVertexListCull_TNormalTrans
+		pTex->max[TextureContainer::Blended]+=20*3;
+		pTex->list[TextureContainer::Blended] = (TexturedVertex *)realloc(
+											  pTex->list[TextureContainer::Blended],
+											  pTex->max[TextureContainer::Blended]
 											  * sizeof(TexturedVertex));
 
-		if (!pTex->pVertexListCull_TNormalTrans)
+		if (!pTex->list[TextureContainer::Blended])
 		{
-			pTex->ulMaxVertexListCull_TNormalTrans=0;
-			pTex->ulNbVertexListCull_TNormalTrans=0;
+			pTex->max[TextureContainer::Blended]=0;
+			pTex->count[TextureContainer::Blended]=0;
 			return NULL;
 		}
 	}
 
-	pTex->ulNbVertexListCull_TNormalTrans+=3;
-	return &pTex->pVertexListCull_TNormalTrans[pTex->ulNbVertexListCull_TNormalTrans-3];
+	pTex->count[TextureContainer::Blended]+=3;
+	return &pTex->list[TextureContainer::Blended][pTex->count[TextureContainer::Blended]-3];
 }
 
 //-----------------------------------------------------------------------------
@@ -229,7 +229,7 @@ static void PopOneTriangleList(TextureContainer *_pTex) {
 
 static void PopOneTriangleListTransparency(TextureContainer *_pTex) {
 
-	if(!_pTex->ulNbVertexListCull_TNormalTrans
+	if(!_pTex->count[TextureContainer::Blended]
 	   && !_pTex->ulNbVertexListCull_TAdditive
 	   && !_pTex->ulNbVertexListCull_TSubstractive
 	   && !_pTex->ulNbVertexListCull_TMultiplicative) {
@@ -239,12 +239,12 @@ static void PopOneTriangleListTransparency(TextureContainer *_pTex) {
 	GRenderer->SetCulling(Renderer::CullNone);
 	GRenderer->SetTexture(0, _pTex);
 
-	if(_pTex->ulNbVertexListCull_TNormalTrans) {
+	if(_pTex->count[TextureContainer::Blended]) {
 		GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendSrcColor);
-		if(_pTex->ulNbVertexListCull_TNormalTrans) {
-			EERIEDRAWPRIM(Renderer::TriangleList, _pTex->pVertexListCull_TNormalTrans,
-						  _pTex->ulNbVertexListCull_TNormalTrans);
-			_pTex->ulNbVertexListCull_TNormalTrans=0;
+		if(_pTex->count[TextureContainer::Blended]) {
+			EERIEDRAWPRIM(Renderer::TriangleList, _pTex->list[TextureContainer::Blended],
+						  _pTex->count[TextureContainer::Blended]);
+			_pTex->count[TextureContainer::Blended]=0;
 		}
 	}
 
