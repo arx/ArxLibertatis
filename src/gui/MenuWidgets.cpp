@@ -2875,12 +2875,12 @@ MENUSTATE CWindowMenu::Render() {
 	return eMS;
 }
 
-CWindowMenuConsole::CWindowMenuConsole(int _iPosX,int _iPosY,int _iWidth,int _iHeight,MENUSTATE _eMenuState) :
-	bMouseListen (true),
-	iInterligne (10),
-	bEdit (false),
-	lData(0),
-	pData(NULL)
+CWindowMenuConsole::CWindowMenuConsole(int _iPosX, int _iPosY, int _iWidth, int _iHeight, MENUSTATE _eMenuState)
+	: bMouseListen(true)
+	, iInterligne(10)
+	, bEdit(false)
+	, lData(0)
+	, pData(NULL)
 {
 	iOX=(int)RATIO_X(_iPosX);
 	iOY=(int)RATIO_Y(_iPosY);
@@ -2897,8 +2897,6 @@ CWindowMenuConsole::CWindowMenuConsole(int _iPosX,int _iPosY,int _iWidth,int _iH
 	iPosMenu=-1;
 }
 
-//-----------------------------------------------------------------------------
-
 void CWindowMenuConsole::AddMenu(CMenuElement *_pMenuElement)
 {
 	_pMenuElement->ePlace=NOCENTER;
@@ -2907,49 +2905,39 @@ void CWindowMenuConsole::AddMenu(CMenuElement *_pMenuElement)
 	MenuAllZone.AddZone((CMenuZone*)_pMenuElement);
 }
 
-//-----------------------------------------------------------------------------
+void CWindowMenuConsole::AddMenuCenterY(CMenuElement * _pMenuElement) {
 
-void CWindowMenuConsole::AddMenuCenterY( CMenuElement * _pMenuElement )
-{
 	_pMenuElement->ePlace    =    CENTERY;
-	int iDy                    =    _pMenuElement->rZone.bottom-_pMenuElement->rZone.top;
 
-	int iI                    =    MenuAllZone.GetNbZone();
+	int iDy = _pMenuElement->rZone.bottom-_pMenuElement->rZone.top;
+	int iI  = MenuAllZone.GetNbZone();
 
-	for( int iJ = 0 ; iJ < iI ; iJ++ )
-	{
-		iDy +=    iInterligne;
-		CMenuZone    *pZone    =    MenuAllZone.GetZoneNum(iJ);
-		iDy    +=    pZone->rZone.bottom - pZone->rZone.top;
+	for(int iJ = 0; iJ < iI; iJ++ ) {
+		CMenuZone * pZone = MenuAllZone.GetZoneNum(iJ);
+
+		iDy += iInterligne;
+		iDy += pZone->rZone.bottom - pZone->rZone.top;
 	}
 
 	int iDepY;
 
-	if( iDy < iHeight )
-	{
-		iDepY = iOY + ( ( iHeight - iDy ) >> 1 );
-	}
-	else
-	{
+	if(iDy < iHeight) {
+		iDepY = iOY + ((iHeight - iDy) >> 1);
+	} else {
 		iDepY = iOY;
 	}
 
 	int dy = 0;
 	iI = MenuAllZone.GetNbZone();
 
-	if( iI )
-	{
+	if(iI) {
 		dy    =    iDepY - MenuAllZone.GetZoneNum(0)->rZone.top;
-	}
-
-	//We can't go inside the for-loop
-	else
-	{
+	}else {
+		//We can't go inside the for-loop
 		arx_assert( !( 0 < iI ) );
 	}
 
-	for( int iJ = 0 ; iJ < iI ; iJ++ )
-	{
+	for(int iJ = 0; iJ < iI; iJ++) {
 		CMenuZone *pZone    =    MenuAllZone.GetZoneNum(iJ);
 		iDy                    =    pZone->rZone.bottom - pZone->rZone.top;
 		iDepY                +=    iDy + iInterligne;
@@ -2961,57 +2949,46 @@ void CWindowMenuConsole::AddMenuCenterY( CMenuElement * _pMenuElement )
 	MenuAllZone.AddZone( (CMenuZone*) _pMenuElement );
 }
 
-//-----------------------------------------------------------------------------
+void CWindowMenuConsole::AddMenuCenter(CMenuElement * _pMenuElement) {
 
-void CWindowMenuConsole::AddMenuCenter( CMenuElement * _pMenuElement )
-{
 	_pMenuElement->ePlace    =    CENTER;
 
-	int    iDx    =    _pMenuElement->rZone.right - _pMenuElement->rZone.left;
-	int    dx    =    ( ( iWidth - iDx ) >> 1 ) - _pMenuElement->rZone.left;
+	int iDx = _pMenuElement->rZone.right - _pMenuElement->rZone.left;
+	int dx  = ((iWidth - iDx) >> 1) - _pMenuElement->rZone.left;
 
-	if( dx < 0 )
-	{
+	if(dx < 0) {
 		dx = 0;
 	}
 
-	int    iDy    =    _pMenuElement->rZone.bottom - _pMenuElement->rZone.top;
-	int    iI    =    MenuAllZone.GetNbZone();
+	int iDy = _pMenuElement->rZone.bottom - _pMenuElement->rZone.top;
+	int iI  = MenuAllZone.GetNbZone();
 
-	for( int iJ = 0 ; iJ < iI ; iJ++ )
-	{
-		iDy    +=    iInterligne;
-		CMenuZone *pZone    =    MenuAllZone.GetZoneNum(iJ);
-		iDy    +=    pZone->rZone.bottom - pZone->rZone.top;
+	for(int iJ = 0; iJ < iI; iJ++) {
+		CMenuZone *pZone = MenuAllZone.GetZoneNum(iJ);
+
+		iDy += iInterligne;
+		iDy += pZone->rZone.bottom - pZone->rZone.top;
 	}
 
 	int iDepY;
 
-	if( iDy < iHeight )
-	{
-		iDepY    =    iOY + ( ( iHeight - iDy ) >> 1 );
-	}
-	else
-	{
-		iDepY    =    iOY;
+	if(iDy < iHeight ) {
+		iDepY = iOY + ( ( iHeight - iDy ) >> 1 );
+	} else {
+		iDepY = iOY;
 	}
 
 	int dy = 0;
 	iI = MenuAllZone.GetNbZone();
 
-	if( iI )
-	{
-		dy    =    iDepY - MenuAllZone.GetZoneNum(0)->rZone.top;
-	}
-
-	//We can't go inside the for-loop
-	else
-	{
+	if(iI) {
+		dy = iDepY - MenuAllZone.GetZoneNum(0)->rZone.top;
+	} else {
+		//We can't go inside the for-loop
 		arx_assert( !( 0 < iI ) );
 	}
 
-	for( int iJ = 0 ; iJ < iI ; iJ++ )
-	{
+	for(int iJ = 0; iJ < iI; iJ++) {
 		CMenuZone *pZone = MenuAllZone.GetZoneNum( iJ );
 		iDepY += pZone->rZone.bottom - pZone->rZone.top + iInterligne;
 		pZone->Move( 0, dy );
@@ -3021,8 +2998,6 @@ void CWindowMenuConsole::AddMenuCenter( CMenuElement * _pMenuElement )
 
 	MenuAllZone.AddZone( (CMenuZone*) _pMenuElement );
 }
-
-//-----------------------------------------------------------------------------
 
 void CWindowMenuConsole::AlignElementCenter(CMenuElement *_pMenuElement) {
 	
@@ -3035,21 +3010,18 @@ void CWindowMenuConsole::AlignElementCenter(CMenuElement *_pMenuElement) {
 	_pMenuElement->Move(std::max(dx, 0), 0);
 }
 
-//-----------------------------------------------------------------------------
+void CWindowMenuConsole::UpdateText() {
 
-void CWindowMenuConsole::UpdateText()
-{
-	if(GInput->isAnyKeyPressed())
-	{
-		if( (GInput->isKeyPressed(Keyboard::Key_Enter)) ||
-			(GInput->isKeyPressed(Keyboard::Key_NumPadEnter)) ||
-			(GInput->isKeyPressed(Keyboard::Key_Escape)) )
-		{
+	if(GInput->isAnyKeyPressed()) {
+
+		if(GInput->isKeyPressed(Keyboard::Key_Enter)
+		   || GInput->isKeyPressed(Keyboard::Key_NumPadEnter)
+		   || GInput->isKeyPressed(Keyboard::Key_Escape)
+		) {
 			ARX_SOUND_PlayMenu(SND_MENU_CLICK);
 			((CMenuElementText*)pZoneClick)->eState=EDIT;
 
-			if( ((CMenuElementText*)pZoneClick)->lpszText.empty() )
-			{
+			if(((CMenuElementText*)pZoneClick)->lpszText.empty()) {
 				std::string szMenuText;
 				szMenuText = getLocalised("system_menu_editquest_newsavegame");
 
@@ -3057,12 +3029,10 @@ void CWindowMenuConsole::UpdateText()
 
 				int iDx=pZoneClick->rZone.right-pZoneClick->rZone.left;
 
-				if(pZoneClick->ePlace)
-				{
+				if(pZoneClick->ePlace) {
 					pZoneClick->rZone.left=iPosX+((iWidth-iDx)>>1);
 
-					if(pZoneClick->rZone.left<0)
-					{
+					if(pZoneClick->rZone.left < 0) {
 						pZoneClick->rZone.left=0;
 					}
 				}
@@ -3080,44 +3050,36 @@ void CWindowMenuConsole::UpdateText()
 		
 		CMenuElementText *pZoneText=(CMenuElementText*)pZoneClick;
 
-		if(GInput->isKeyPressedNowPressed(Keyboard::Key_Backspace))
-		{
+		if(GInput->isKeyPressedNowPressed(Keyboard::Key_Backspace)) {
 			tText = pZoneText->lpszText;
 
-			if( !tText.empty() )
-			{
+			if(!tText.empty()) {
 				tText.resize(tText.size() - 1);
 				bKey=true;
 			}
-		}
-		else
-		{
+		} else {
 			int iKey = GInput->getKeyPressed();
 			iKey&=0xFFFF;
 
-			if(GInput->isKeyPressedNowPressed(iKey))
-			{
+			if(GInput->isKeyPressedNowPressed(iKey)) {
 				tText = pZoneText->lpszText;
 
 				char tCat;
 				
 				bKey = GInput->getKeyAsText(iKey, tCat);
 
-				if(bKey)
-				{
+				if(bKey) {
 					int iChar = tCat & 0x000000FF; // To prevent ascii chars between [128, 255] from causing an assertion in the functions below...
-					if ((isalnum(iChar) || isspace(iChar) || ispunct(iChar)) && (tCat != '\t') && (tCat != '*'))
+					if((isalnum(iChar) || isspace(iChar) || ispunct(iChar)) && (tCat != '\t') && (tCat != '*'))
 						tText += tCat;
 				}
 			}
 		}
 
-		if(bKey)
-		{
+		if(bKey) {
 			pZoneText->SetText(tText);
 
-			if(    (pZoneText->rZone.right-pZoneText->rZone.left)>(iWidth-RATIO_X(64)) )
-			{
+			if(pZoneText->rZone.right - pZoneText->rZone.left > iWidth - RATIO_X(64)) {
 				if(!tText.empty()) {
 					tText.resize(tText.size() - 1);
 					pZoneText->SetText(tText);
@@ -3126,12 +3088,10 @@ void CWindowMenuConsole::UpdateText()
 
 			int iDx=pZoneClick->rZone.right-pZoneClick->rZone.left;
 
-			if(pZoneClick->ePlace)
-			{
+			if(pZoneClick->ePlace) {
 				pZoneClick->rZone.left=iPosX+((iWidth-iDx)>>1);
 
-				if(pZoneClick->rZone.left<0)
-				{
+				if(pZoneClick->rZone.left < 0) {
 					pZoneClick->rZone.left=0;
 				}
 			}
@@ -3140,8 +3100,7 @@ void CWindowMenuConsole::UpdateText()
 		}
 	}
 
-	if (pZoneClick->rZone.top == pZoneClick->rZone.bottom)
-	{
+	if(pZoneClick->rZone.top == pZoneClick->rZone.bottom) {
 		Vec2i textSize = ((CMenuElementText*)pZoneClick)->pFont->getTextSize("|");
 		pZoneClick->rZone.bottom += textSize.y;
 	}
@@ -3162,6 +3121,7 @@ void CWindowMenuConsole::UpdateText()
 	v[2].p.y = (float)pZoneClick->rZone.bottom;
 	v[3].p.x = v[1].p.x;
 	v[3].p.y = v[2].p.y;
+
 	EERIEDRAWPRIM(Renderer::TriangleStrip, v, 4);
 }
 
