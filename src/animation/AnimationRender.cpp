@@ -135,24 +135,24 @@ TexturedVertex * PushVertexInTableCull_TNormalTrans(TextureContainer *pTex)
 //-----------------------------------------------------------------------------
 TexturedVertex * PushVertexInTableCull_TAdditive(TextureContainer *pTex)
 {
-	if((pTex->ulNbVertexListCull_TAdditive+3)>pTex->ulMaxVertexListCull_TAdditive)
+	if((pTex->count[TextureContainer::Additive]+3)>pTex->max[TextureContainer::Additive])
 	{
-		pTex->ulMaxVertexListCull_TAdditive+=20*3;
-		pTex->pVertexListCull_TAdditive = (TexturedVertex * )realloc(
-										   pTex->pVertexListCull_TAdditive,
-										   pTex->ulMaxVertexListCull_TAdditive
+		pTex->max[TextureContainer::Additive]+=20*3;
+		pTex->list[TextureContainer::Additive] = (TexturedVertex * )realloc(
+										   pTex->list[TextureContainer::Additive],
+										   pTex->max[TextureContainer::Additive]
 										   * sizeof(TexturedVertex));
 
-		if (!pTex->pVertexListCull_TAdditive)
+		if (!pTex->list[TextureContainer::Additive])
 		{
-			pTex->ulMaxVertexListCull_TAdditive=0;
-			pTex->ulNbVertexListCull_TAdditive=0;
+			pTex->max[TextureContainer::Additive]=0;
+			pTex->count[TextureContainer::Additive]=0;
 			return NULL;
 		}
 	}
 
-	pTex->ulNbVertexListCull_TAdditive+=3;
-	return &pTex->pVertexListCull_TAdditive[pTex->ulNbVertexListCull_TAdditive-3];
+	pTex->count[TextureContainer::Additive]+=3;
+	return &pTex->list[TextureContainer::Additive][pTex->count[TextureContainer::Additive]-3];
 }
 
 //-----------------------------------------------------------------------------
@@ -230,7 +230,7 @@ static void PopOneTriangleList(TextureContainer *_pTex) {
 static void PopOneTriangleListTransparency(TextureContainer *_pTex) {
 
 	if(!_pTex->count[TextureContainer::Blended]
-	   && !_pTex->ulNbVertexListCull_TAdditive
+	   && !_pTex->count[TextureContainer::Additive]
 	   && !_pTex->ulNbVertexListCull_TSubstractive
 	   && !_pTex->ulNbVertexListCull_TMultiplicative) {
 		return;
@@ -248,12 +248,12 @@ static void PopOneTriangleListTransparency(TextureContainer *_pTex) {
 		}
 	}
 
-	if(_pTex->ulNbVertexListCull_TAdditive) {
+	if(_pTex->count[TextureContainer::Additive]) {
 		GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-		if(_pTex->ulNbVertexListCull_TAdditive) {
-			EERIEDRAWPRIM(Renderer::TriangleList, _pTex->pVertexListCull_TAdditive,
-						  _pTex->ulNbVertexListCull_TAdditive);
-			_pTex->ulNbVertexListCull_TAdditive=0;
+		if(_pTex->count[TextureContainer::Additive]) {
+			EERIEDRAWPRIM(Renderer::TriangleList, _pTex->list[TextureContainer::Additive],
+						  _pTex->count[TextureContainer::Additive]);
+			_pTex->count[TextureContainer::Additive]=0;
 		}
 	}
 

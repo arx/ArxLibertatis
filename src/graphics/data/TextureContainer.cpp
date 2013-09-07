@@ -95,13 +95,13 @@ void ResetVertexLists(TextureContainer * tex) {
 	
 	tex->count[TextureContainer::Opaque] = 0;
 	tex->count[TextureContainer::Blended] = 0;
-	tex->ulNbVertexListCull_TAdditive = 0;
+	tex->count[TextureContainer::Additive] = 0;
 	tex->ulNbVertexListCull_TSubstractive = 0;
 	tex->ulNbVertexListCull_TMultiplicative = 0;
 	
 	tex->max[TextureContainer::Opaque] = 0;
 	tex->max[TextureContainer::Blended] = 0;
-	tex->ulMaxVertexListCull_TAdditive = 0;
+	tex->max[TextureContainer::Additive] = 0;
 	tex->ulMaxVertexListCull_TSubstractive = 0;
 	tex->ulMaxVertexListCull_TMultiplicative = 0;
 	
@@ -112,8 +112,8 @@ void ResetVertexLists(TextureContainer * tex) {
 	tex->list[TextureContainer::Opaque] = NULL;
 	free(tex->list[TextureContainer::Blended]);
 	tex->list[TextureContainer::Blended] = NULL;
-	free(tex->pVertexListCull_TAdditive);
-	tex->pVertexListCull_TAdditive = NULL;
+	free(tex->list[TextureContainer::Additive]);
+	tex->list[TextureContainer::Additive] = NULL;
 	free(tex->pVertexListCull_TSubstractive);
 	tex->pVertexListCull_TSubstractive = NULL;
 	free(tex->pVertexListCull_TMultiplicative);
@@ -162,9 +162,9 @@ TextureContainer::TextureContainer(const res::path & strName, TCFlags flags) : m
 	count[TextureContainer::Blended] = 0;
 	list[TextureContainer::Blended] = NULL;
 
-	ulMaxVertexListCull_TAdditive = 0; 
-	ulNbVertexListCull_TAdditive = 0;
-	pVertexListCull_TAdditive = NULL; 
+	max[TextureContainer::Additive] = 0;
+	count[TextureContainer::Additive] = 0;
+	list[TextureContainer::Additive] = NULL;
 
 	ulMaxVertexListCull_TSubstractive = 0; 
 	ulNbVertexListCull_TSubstractive = 0;

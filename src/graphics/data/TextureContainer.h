@@ -190,11 +190,7 @@ public:
 	unsigned long max[5];
 	unsigned long count[5];
 	TexturedVertex * list[5];
-	
-	unsigned long ulMaxVertexListCull_TAdditive;
-	unsigned long ulNbVertexListCull_TAdditive;
-	TexturedVertex * pVertexListCull_TAdditive;
-	
+		
 	unsigned long ulMaxVertexListCull_TSubstractive;
 	unsigned long ulNbVertexListCull_TSubstractive;
 	TexturedVertex * pVertexListCull_TSubstractive;
