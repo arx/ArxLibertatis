@@ -2480,18 +2480,14 @@ void PlayerMovementIterate(float DeltaTime) {
 			bool test;
 			float PLAYER_CYLINDER_STEP = 40.f;
 			if(player.climbing) {
-				
 				test = ARX_COLLISION_Move_Cylinder(&player.physics, entities.player(),
 				                                   PLAYER_CYLINDER_STEP,
-				                                   CFLAG_EASY_SLIDING | CFLAG_CLIMBING
-				                                   | CFLAG_PLAYER);
+												   CFLAG_EASY_SLIDING | CFLAG_CLIMBING | CFLAG_PLAYER);
 				
 				if(!COLLIDED_CLIMB_POLY) {
 					player.climbing = 0;
 				}
-				
 			} else {
-				
 				test = ARX_COLLISION_Move_Cylinder(&player.physics, entities.player(),
 				                                   PLAYER_CYLINDER_STEP,
 				                                   levitate | CFLAG_EASY_SLIDING | CFLAG_PLAYER);
@@ -2534,10 +2530,11 @@ void PlayerMovementIterate(float DeltaTime) {
 			}
 			
 			if(player.climbing) {
-				
-				if(player.Current_Movement && player.Current_Movement != PLAYER_ROTATE
+				if(player.Current_Movement
+				   && player.Current_Movement != PLAYER_ROTATE
 				   && !(player.Current_Movement & PLAYER_MOVE_WALK_FORWARD)
-				   && !(player.Current_Movement & PLAYER_MOVE_WALK_BACKWARD)) {
+				   && !(player.Current_Movement & PLAYER_MOVE_WALK_BACKWARD)
+				) {
 					player.climbing = 0;
 				}
 				
@@ -2560,7 +2557,6 @@ void PlayerMovementIterate(float DeltaTime) {
 			moveto = player.physics.cyl.origin + player.baseOffset();
 			d = dist(player.pos, moveto);
 		}
-		
 	} else {
 		Vec3f vect = moveto - player.pos;
 		float divv = vect.length();
@@ -2607,7 +2603,7 @@ lasuite:
 		CURRENT_PLAYER_COLOR = std::max(CURRENT_PLAYER_COLOR, grnd_color);
 	}
 	
-	if (InventoryDir != 0) {
+	if(InventoryDir != 0) {
 		if((player.Interface & INTER_COMBATMODE) || player.doingmagic >= 2 || InventoryDir == -1) {
 			if(InventoryX > -160)
 				InventoryX -= INTERFACE_RATIO(framedelay * ( 1.0f / 3 ));
@@ -2639,8 +2635,7 @@ lasuite:
 /*!
  * \brief Manage Player Death Visual
  */
-void ARX_PLAYER_Manage_Death()
-{
+void ARX_PLAYER_Manage_Death() {
 	if(DeadTime <= 2000)
 		return;
 
@@ -2661,8 +2656,7 @@ void ARX_PLAYER_Manage_Death()
  * \brief Specific for color checks
  * \return
  */
-float GetPlayerStealth()
-{
+float GetPlayerStealth() {
 	return 15 + player.Full_Skill_Stealth * ( 1.0f / 10 );
 }
 
@@ -2768,27 +2762,27 @@ void ARX_PLAYER_Start_New_Quest() {
 	entities.player()->halo.flags = 0;
 }
 
-void ARX_PLAYER_AddBag()
-{
+void ARX_PLAYER_AddBag() {
 	++player.bag;
 
-	if (player.bag > 3)
+	if(player.bag > 3)
 		player.bag = 3;
 }
 
-bool ARX_PLAYER_CanStealItem(Entity * _io)
-{
-	if (_io->_itemdata->stealvalue > 0)
-		if ((player.Full_Skill_Stealth >= _io->_itemdata->stealvalue)
-		        &&	(_io->_itemdata->stealvalue < 100.f))
-		{
-			return true;
-		}
+bool ARX_PLAYER_CanStealItem(Entity * _io) {
+
+	if(_io->_itemdata->stealvalue > 0
+	   && player.Full_Skill_Stealth >= _io->_itemdata->stealvalue
+	   && _io->_itemdata->stealvalue < 100.f
+	) {
+		return true;
+	}
 
 	return false;
 }
-void ARX_PLAYER_Rune_Add_All()
-{
+
+void ARX_PLAYER_Rune_Add_All() {
+
 	ARX_Player_Rune_Add(FLAG_AAM);
 	ARX_Player_Rune_Add(FLAG_CETRIUS);
 	ARX_Player_Rune_Add(FLAG_COMUNICATUM);
@@ -2817,13 +2811,14 @@ extern long cur_mx, cur_pom;
 extern long sp_arm, cur_arm;
 extern float sp_max_start;
 
-void ARX_PLAYER_Invulnerability(long flag)
-{
-	if (flag)
+void ARX_PLAYER_Invulnerability(long flag) {
+
+	if(flag)
 		player.playerflags |= PLAYERFLAGS_INVULNERABILITY;
 	else
 		player.playerflags &= ~PLAYERFLAGS_INVULNERABILITY;
 }
+
 extern Entity * FlyingOverIO;
 extern long cur_sm;
 
@@ -2897,8 +2892,7 @@ void ARX_GAME_Reset(long type) {
 	EERIE_PATHFINDER_Clear();
 
 	// Sound
-	if (!(type & 1))
-	{
+	if(!(type & 1)) {
 		ARX_SOUND_MixerStop(ARX_SOUND_MixerGame);
 		ARX_SOUND_MixerPause(ARX_SOUND_MixerGame);
 		ARX_SOUND_MixerResume(ARX_SOUND_MixerGame);
@@ -2953,13 +2947,12 @@ void ARX_GAME_Reset(long type) {
 	ARX_PATH_ClearAllUsePath();
 
 	// Player Torch
-	if (type & 1)
-	{
+	if(type & 1) {
 		if(player.torch)
 			ARX_PLAYER_ClickedOnTorch(player.torch);
-	}
-	else
+	} else {
 		player.torch = NULL;
+	}
 
 	// Player Quests
 	ARX_PLAYER_Quest_Init();
@@ -2968,14 +2961,12 @@ void ARX_GAME_Reset(long type) {
 	ARX_KEYRING_Init();
 
 	// Player Init
-	if (!DONT_ERASE_PLAYER)
-	{
+	if(!DONT_ERASE_PLAYER) {
 		g_miniMap.mapMarkerInit();
 		GLOBAL_MAGIC_MODE = 1;
 
 		// Linked Objects
-		if (!(type & 2))
-		{
+		if(!(type & 2)) {
 			UnlinkAllLinkedObjects();
 			ARX_EQUIPMENT_UnEquipAllPlayer();
 		}
@@ -3005,7 +2996,9 @@ void ARX_GAME_Reset(long type) {
 	QuakeFx.intensity = 0.f;
 	Project.improve = 0;
 
-	if (eyeball.exist) eyeball.exist = -100;
+	if(eyeball.exist) {
+		eyeball.exist = -100;
+	}
 
 	if(entities.size() > 0 && entities.player()) {
 		entities.player()->ouch_time = 0;
@@ -3053,34 +3046,30 @@ void ARX_PLAYER_Reset_Fall()
 	player.falling = 0;
 }
 
-
-
 float sp_max_y[64];
 Color sp_max_col[64];
-char	sp_max_ch[64];
+char sp_max_ch[64];
 long sp_max_nb;
-void Manage_sp_max()
-{
+
+void Manage_sp_max() {
+
 	float v = float(arxtime) - sp_max_start;
 
-	if ((sp_max_start != 0) && (v < 20000))
-	{
+	if(sp_max_start != 0 && v < 20000) {
 		float modi = (20000 - v) * ( 1.0f / 2000 ) * ( 1.0f / 10 );
 		float sizX = 16;
 		float px = (float)DANAECENTERX - (float)sp_max_nb * ( 1.0f / 2 ) * sizX;
 		float py = (float)DANAECENTERY;
 
-		for (long i = 0; i < sp_max_nb; i++)
-		{
+		for(long i = 0; i < sp_max_nb; i++) {
 			float dx = px + sizX * (float)i;
 			float dy = py + sp_max_y[i];
 			sp_max_y[i] = EEsin(dx + (float)float(arxtime) * ( 1.0f / 100 )) * 30.f * modi;
-			std::string tex( 1, sp_max_ch[i] );
+			std::string tex(1, sp_max_ch[i]);
 
-			UNICODE_ARXDrawTextCenter( hFontInBook, dx - 1, dy - 1, tex, Color::none );
-			UNICODE_ARXDrawTextCenter( hFontInBook, dx + 1, dy + 1, tex, Color::none );
-			UNICODE_ARXDrawTextCenter( hFontInBook, dx, dy, tex, sp_max_col[i] );
-
+			UNICODE_ARXDrawTextCenter(hFontInBook, dx - 1, dy - 1, tex, Color::none);
+			UNICODE_ARXDrawTextCenter(hFontInBook, dx + 1, dy + 1, tex, Color::none);
+			UNICODE_ARXDrawTextCenter(hFontInBook, dx, dy, tex, sp_max_col[i]);
 		}
 	}
 }
