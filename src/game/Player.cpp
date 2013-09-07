@@ -1604,111 +1604,86 @@ void ARX_PLAYER_Manage_Visual() {
 		}
 
 		// Finally update anim
-		if ((ause1->cur_anim == NULL)
-		        &&	((ause0->cur_anim == alist[ANIM_WAIT])
-		             ||	(ause0->cur_anim == alist[ANIM_WAIT_SHORT]))
-		        &&	(!(player.Current_Movement & PLAYER_CROUCH)))
-		{
+		if(ause1->cur_anim == NULL
+		   && (ause0->cur_anim == alist[ANIM_WAIT] || ause0->cur_anim == alist[ANIM_WAIT_SHORT])
+		   && !(player.Current_Movement & PLAYER_CROUCH)
+		) {
 			if ((player.Current_Movement & PLAYER_LEAN_LEFT)
 			        &&	(player.Current_Movement & PLAYER_LEAN_RIGHT))
 			{
-			}
-			else
-			{
-				if (player.Current_Movement & PLAYER_LEAN_LEFT)
-				{
+			} else {
+				if(player.Current_Movement & PLAYER_LEAN_LEFT) {
 					ChangeMoveAnim2 = alist[ANIM_LEAN_LEFT];
 					//ChangeMA_Loop=0;
 				}
 
-				if (player.Current_Movement & PLAYER_LEAN_RIGHT)
-				{
+				if(player.Current_Movement & PLAYER_LEAN_RIGHT) {
 					ChangeMoveAnim2 = alist[ANIM_LEAN_RIGHT];
 				}
 			}
 		}
 
-		if ((ChangeMoveAnim2 == NULL)
-		        &&	(ause3->cur_anim)
-		        &&	((ause3->cur_anim == alist[ANIM_LEAN_RIGHT])
-		             ||	(ause3->cur_anim == alist[ANIM_LEAN_LEFT]))
-		   )
-		{
+		if(ChangeMoveAnim2 == NULL
+		   && ause3->cur_anim
+		   && (ause3->cur_anim == alist[ANIM_LEAN_RIGHT] || ause3->cur_anim == alist[ANIM_LEAN_LEFT])
+		) {
 			AcquireLastAnim(io);
 			ause3->cur_anim = NULL;
 		}
 
-		if ((player.Current_Movement & PLAYER_CROUCH) && !(player.Last_Movement & PLAYER_CROUCH)
+		if((player.Current_Movement & PLAYER_CROUCH) && !(player.Last_Movement & PLAYER_CROUCH)
 		        && !player.levitate)
 		{
 			ChangeMoveAnim = alist[ANIM_CROUCH_START];
 			ChangeMA_Loop = false;
 		}
-		else if (!(player.Current_Movement & PLAYER_CROUCH) && (player.Last_Movement & PLAYER_CROUCH))
+		else if(!(player.Current_Movement & PLAYER_CROUCH) && (player.Last_Movement & PLAYER_CROUCH))
 		{
 			ChangeMoveAnim = alist[ANIM_CROUCH_END];
 			ChangeMA_Loop = false;
-		}
-		else if (player.Current_Movement & PLAYER_CROUCH)
-		{
-			if (ause0->cur_anim == alist[ANIM_CROUCH_START])
-			{
-				if (!(ause0->flags & EA_ANIMEND))
-				{
+		} else if(player.Current_Movement & PLAYER_CROUCH) {
+			if(ause0->cur_anim == alist[ANIM_CROUCH_START]) {
+				if(!(ause0->flags & EA_ANIMEND)) {
 					ChangeMoveAnim = alist[ANIM_CROUCH_START];
 					ChangeMA_Loop = false;
-				}
-				else
-				{
+				} else {
 					ChangeMoveAnim = alist[ANIM_CROUCH_WAIT];
 					ChangeMA_Loop = true;
 					player.physics.cyl.height = player.crouchHeight();
 				}
-			}
-			else
-			{
-				if ((ChangeMoveAnim == alist[ANIM_STRAFE_LEFT])
-				        ||	(ChangeMoveAnim == alist[ANIM_STRAFE_RUN_LEFT])
-				        ||	(ChangeMoveAnim == alist[ANIM_FIGHT_STRAFE_LEFT])
-				   )
-				{
+			} else {
+				if(ChangeMoveAnim == alist[ANIM_STRAFE_LEFT]
+				   || ChangeMoveAnim == alist[ANIM_STRAFE_RUN_LEFT]
+				   || ChangeMoveAnim == alist[ANIM_FIGHT_STRAFE_LEFT]
+				) {
 					ChangeMoveAnim = alist[ANIM_CROUCH_STRAFE_LEFT];
 					ChangeMA_Loop = true;
-				}
-				else if ((ChangeMoveAnim == alist[ANIM_STRAFE_RIGHT])
-				         ||	(ChangeMoveAnim == alist[ANIM_STRAFE_RUN_RIGHT])
-				         ||	(ChangeMoveAnim == alist[ANIM_FIGHT_STRAFE_RIGHT])
-				        )
-				{
+				} else if(ChangeMoveAnim == alist[ANIM_STRAFE_RIGHT]
+						 || ChangeMoveAnim == alist[ANIM_STRAFE_RUN_RIGHT]
+						 || ChangeMoveAnim == alist[ANIM_FIGHT_STRAFE_RIGHT]
+				) {
 					ChangeMoveAnim = alist[ANIM_CROUCH_STRAFE_RIGHT];
 					ChangeMA_Loop = true;
-				}
-				else if ((ChangeMoveAnim == alist[ANIM_WALK])
-				         ||	(ChangeMoveAnim == alist[ANIM_RUN])
-				         ||	(ChangeMoveAnim == alist[ANIM_FIGHT_WALK_FORWARD])
-				        )
-				{
+				} else if(ChangeMoveAnim == alist[ANIM_WALK]
+						 || ChangeMoveAnim == alist[ANIM_RUN]
+						 || ChangeMoveAnim == alist[ANIM_FIGHT_WALK_FORWARD]
+				) {
 					ChangeMoveAnim = alist[ANIM_CROUCH_WALK];
 					ChangeMA_Loop = true;
-				}
-				else if ((ChangeMoveAnim == alist[ANIM_WALK_BACKWARD])
-				         || (ChangeMoveAnim == alist[ANIM_FIGHT_WALK_BACKWARD])
-				        )
-				{
+				} else if(ChangeMoveAnim == alist[ANIM_WALK_BACKWARD]
+						 || ChangeMoveAnim == alist[ANIM_FIGHT_WALK_BACKWARD]
+				) {
 					ChangeMoveAnim = alist[ANIM_CROUCH_WALK_BACKWARD];
 					ChangeMA_Loop = true;
-				}
-				else
-				{
+				} else {
 					ChangeMoveAnim = alist[ANIM_CROUCH_WAIT];
 					ChangeMA_Loop = true;
 				}
 			}
 		}
 
-		if (ause0->cur_anim == alist[ANIM_CROUCH_END])
-		{
-			if (!(ause0->flags & EA_ANIMEND))
+		if(ause0->cur_anim == alist[ANIM_CROUCH_END]) {
+			if(!(ause0->flags & EA_ANIMEND))
 				goto nochanges;
 		}
 
