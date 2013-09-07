@@ -1341,14 +1341,12 @@ void ARX_PLAYER_StartFall()
 /*!
  * \brief Called When player has just died
  */
-void ARX_PLAYER_BecomesDead()
-{
+void ARX_PLAYER_BecomesDead() {
 	STARTED_A_GAME = 0;
 	// a mettre au final
 	BLOCK_PLAYER_CONTROLS = 1;
 
-	if (entities.player())
-	{
+	if(entities.player()) {
 		player.Interface &= ~INTER_COMBATMODE;
 		player.Interface = 0;
 		DeadTime = 0;
@@ -1489,44 +1487,48 @@ void ARX_PLAYER_Manage_Visual() {
 			} else {
 				ChangeMoveAnim = alist[ANIM_WAIT_SHORT];
 			}
+
 			ChangeMA_Loop = true;
 		}
 		
-		if(ROTATE_START && player.angle.a > 60.f && player.angle.a < 180.f
-		   && LASTPLAYERA > 60.f && LASTPLAYERA < 180.f) {
-			if (PLAYER_ROTATION < 0)
-			{
-				if (player.Interface & INTER_COMBATMODE)
+		if(ROTATE_START
+		   && player.angle.a > 60.f
+		   && player.angle.a < 180.f
+		   && LASTPLAYERA > 60.f
+		   && LASTPLAYERA < 180.f
+		) {
+			if(PLAYER_ROTATION < 0) {
+				if(player.Interface & INTER_COMBATMODE)
 					ChangeMoveAnim = alist[ANIM_U_TURN_LEFT_FIGHT];
-				else	ChangeMoveAnim = alist[ANIM_U_TURN_LEFT];
-			}
-			else
-			{
-				if (player.Interface & INTER_COMBATMODE)
+				else
+					ChangeMoveAnim = alist[ANIM_U_TURN_LEFT];
+			} else {
+				if(player.Interface & INTER_COMBATMODE)
 					ChangeMoveAnim = alist[ANIM_U_TURN_RIGHT_FIGHT];
-				else	ChangeMoveAnim = alist[ANIM_U_TURN_RIGHT];
+				else
+					ChangeMoveAnim = alist[ANIM_U_TURN_RIGHT];
 			}
 
 			ChangeMA_Loop = true;
 
-			if ((ause0->cur_anim == alist[ANIM_U_TURN_LEFT])
-			        ||	(ause0->cur_anim == alist[ANIM_U_TURN_LEFT_FIGHT]))
+			if(ause0->cur_anim == alist[ANIM_U_TURN_LEFT]
+			   || ause0->cur_anim == alist[ANIM_U_TURN_LEFT_FIGHT])
 			{
 				long vv = PLAYER_ROTATION * 5;
 
 				ause0->ctime -= vv;
 
-				if (ause0->ctime < 0)
+				if(ause0->ctime < 0)
 					ause0->ctime = 0;
 			}
-			else if ((ause0->cur_anim == alist[ANIM_U_TURN_RIGHT])
-			         ||	(ause0->cur_anim == alist[ANIM_U_TURN_RIGHT_FIGHT]))
+			else if(ause0->cur_anim == alist[ANIM_U_TURN_RIGHT]
+					 ||	ause0->cur_anim == alist[ANIM_U_TURN_RIGHT_FIGHT])
 			{
 				long vv = PLAYER_ROTATION * 5;
 
 				ause0->ctime += vv;
 
-				if (ause0->ctime < 0)
+				if(ause0->ctime < 0)
 					ause0->ctime = 0;
 			}
 		}
@@ -1536,70 +1538,60 @@ void ARX_PLAYER_Manage_Visual() {
 		{
 			long tmove = player.Current_Movement;
 
-			if (((tmove & PLAYER_MOVE_STRAFE_LEFT)
-			        && (tmove & PLAYER_MOVE_STRAFE_RIGHT)))
-			{
+			if((tmove & PLAYER_MOVE_STRAFE_LEFT) && (tmove & PLAYER_MOVE_STRAFE_RIGHT)) {
 				tmove &= ~PLAYER_MOVE_STRAFE_LEFT;
 				tmove &= ~PLAYER_MOVE_STRAFE_RIGHT;
 			}
 
-			if (MOVE_PRECEDENCE == PLAYER_MOVE_STRAFE_LEFT)
+			if(MOVE_PRECEDENCE == PLAYER_MOVE_STRAFE_LEFT)
 				tmove &= ~PLAYER_MOVE_STRAFE_RIGHT;
 
-			if (MOVE_PRECEDENCE == PLAYER_MOVE_STRAFE_RIGHT)
+			if(MOVE_PRECEDENCE == PLAYER_MOVE_STRAFE_RIGHT)
 				tmove &= ~PLAYER_MOVE_STRAFE_LEFT;
 
-			if (MOVE_PRECEDENCE == PLAYER_MOVE_WALK_FORWARD)
+			if(MOVE_PRECEDENCE == PLAYER_MOVE_WALK_FORWARD)
 				tmove &= ~PLAYER_MOVE_WALK_BACKWARD;
 
-			if (player.Current_Movement & PLAYER_MOVE_WALK_FORWARD)
+			if(player.Current_Movement & PLAYER_MOVE_WALK_FORWARD)
 				tmove = PLAYER_MOVE_WALK_FORWARD;
 
-			{
-				if (tmove & PLAYER_MOVE_STRAFE_LEFT)
-				{
-					if (player.Interface & INTER_COMBATMODE)
+				if(tmove & PLAYER_MOVE_STRAFE_LEFT) {
+					if(player.Interface & INTER_COMBATMODE)
 						ChangeMoveAnim = alist[ANIM_FIGHT_STRAFE_LEFT];
-					else if (player.Current_Movement & PLAYER_MOVE_STEALTH)
+					else if(player.Current_Movement & PLAYER_MOVE_STEALTH)
 						ChangeMoveAnim = alist[ANIM_STRAFE_LEFT];
 					else
 						ChangeMoveAnim = alist[ANIM_STRAFE_RUN_LEFT];
 				}
 
-				if (tmove & PLAYER_MOVE_STRAFE_RIGHT)
-				{
-					if (player.Interface & INTER_COMBATMODE)
+				if(tmove & PLAYER_MOVE_STRAFE_RIGHT) {
+					if(player.Interface & INTER_COMBATMODE)
 						ChangeMoveAnim = alist[ANIM_FIGHT_STRAFE_RIGHT];
-					else if (player.Current_Movement & PLAYER_MOVE_STEALTH)
+					else if(player.Current_Movement & PLAYER_MOVE_STEALTH)
 						ChangeMoveAnim = alist[ANIM_STRAFE_RIGHT];
 					else
 						ChangeMoveAnim = alist[ANIM_STRAFE_RUN_RIGHT];
 				}
-			}
 
-			if (tmove & PLAYER_MOVE_WALK_BACKWARD)
-			{
-				if (player.Interface & INTER_COMBATMODE)
+			if(tmove & PLAYER_MOVE_WALK_BACKWARD) {
+				if(player.Interface & INTER_COMBATMODE)
 					ChangeMoveAnim = alist[ANIM_FIGHT_WALK_BACKWARD];
-				else if (player.Current_Movement & PLAYER_MOVE_STEALTH)
+				else if(player.Current_Movement & PLAYER_MOVE_STEALTH)
 					ChangeMoveAnim = alist[ANIM_WALK_BACKWARD];
-				else if (player.Current_Movement & PLAYER_CROUCH)
+				else if(player.Current_Movement & PLAYER_CROUCH)
 					ChangeMoveAnim = alist[ANIM_WALK_BACKWARD];
 				else
 					ChangeMoveAnim = alist[ANIM_RUN_BACKWARD];
 			}
 
-			if (tmove & PLAYER_MOVE_WALK_FORWARD)
-			{
-
-				if (player.Interface & INTER_COMBATMODE)
+			if(tmove & PLAYER_MOVE_WALK_FORWARD) {
+				if(player.Interface & INTER_COMBATMODE)
 					ChangeMoveAnim = alist[ANIM_FIGHT_WALK_FORWARD];
-				else if (player.Current_Movement & PLAYER_MOVE_STEALTH)
+				else if(player.Current_Movement & PLAYER_MOVE_STEALTH)
 					ChangeMoveAnim = alist[ANIM_WALK];
 				else
 					ChangeMoveAnim = alist[ANIM_RUN];
 			}
-
 		}
 
 		if(!ChangeMoveAnim) {
