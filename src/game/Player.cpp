@@ -1077,7 +1077,7 @@ void ARX_PLAYER_Modify_XP(long val) {
 	
 	player.xp += val;
 	
-	for (long i = player.level + 1; i < 11; i++) {
+	for(long i = player.level + 1; i < 11; i++) {
 		if(player.xp >= GetXPforLevel(i)) {
 			ARX_PLAYER_LEVEL_UP();
 		}
@@ -1088,15 +1088,14 @@ void ARX_PLAYER_Modify_XP(long val) {
  * \brief Function to poison player by "val" poison level
  * \param val
  */
-void ARX_PLAYER_Poison(float val)
-{
+void ARX_PLAYER_Poison(float val) {
 	// Make a poison saving throw to see if player is affected
-	if (rnd() * 100.f > player.resist_poison)
-	{
+	if(rnd() * 100.f > player.resist_poison) {
 		player.poison += val;
 		ARX_SOUND_PlayInterface(SND_PLAYER_POISONED);
 	}
 }
+
 long PLAYER_PARALYSED = 0;
 
 /*!
@@ -1245,19 +1244,19 @@ void ARX_PLAYER_Restore_Skin() {
 	
 	// TODO maybe it would be better to replace the textures in the player object instead of replacing the texture data for all objects that use these textures
 
-	if (PLAYER_SKIN_TC && !tx.empty())
+	if(PLAYER_SKIN_TC && !tx.empty())
 		PLAYER_SKIN_TC->LoadFile(tx);
 
 	tmpTC = TextureContainer::Find("graph/obj3d/textures/npc_human_chainmail_hero_head");
-	if (tmpTC && !tx2.empty())
+	if(tmpTC && !tx2.empty())
 		tmpTC->LoadFile(tx2);
 
 	tmpTC = TextureContainer::Find("graph/obj3d/textures/npc_human_chainmail_mithril_hero_head");
-	if (tmpTC && !tx3.empty())
+	if(tmpTC && !tx3.empty())
 		tmpTC->LoadFile(tx3);
 
 	tmpTC = TextureContainer::Find("graph/obj3d/textures/npc_human_leather_hero_head");
-	if (tmpTC && !tx4.empty())
+	if(tmpTC && !tx4.empty())
 		tmpTC->LoadFile(tx4);
 }
 
