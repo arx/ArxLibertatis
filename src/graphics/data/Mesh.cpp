@@ -3096,14 +3096,14 @@ void ComputePortalVertexBuffer() {
 			m.offset[SMY_ARXMAT::Opaque]         =  startIndexCull;
 			m.offset[SMY_ARXMAT::Blended]        = (startIndexCull += info.opaque);
 			m.offset[SMY_ARXMAT::Multiplicative] = (startIndexCull += info.blended);
-			m.uslStartCull_TAdditive       = (startIndexCull += info.multiplicative);
+			m.offset[SMY_ARXMAT::Additive]       = (startIndexCull += info.multiplicative);
 			m.uslStartCull_TSubstractive   = (startIndexCull += info.additive);
 			                                 (startIndexCull += info.subtractive);
 			
 			m.count[SMY_ARXMAT::Opaque] = 0;
 			m.count[SMY_ARXMAT::Blended] = 0;
 			m.count[SMY_ARXMAT::Multiplicative] = 0;
-			m.uslNbIndiceCull_TAdditive = 0;
+			m.count[SMY_ARXMAT::Additive] = 0;
 			m.uslNbIndiceCull_TSubstractive = 0;
 			
 			if(info.opaque > 65535 || info.multiplicative > 65535
