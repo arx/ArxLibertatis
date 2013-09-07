@@ -351,25 +351,19 @@ void ARX_Player_Rune_Add(RuneFlag _ulRune)
 	int iNbSpells = 0;
 	int iNbSpellsAfter = 0;
 
-	for (size_t i = 0; i < SPELL_COUNT; i++)
-	{
-		if (spellicons[i].bSecret == false)
-		{
+	for(size_t i = 0; i < SPELL_COUNT; i++) {
+		if(spellicons[i].bSecret == false) {
 			long j = 0;
 			bool bOk = true;
 
-			while ((j < 4) && (spellicons[i].symbols[j] != 255))
-			{
-				if (!(player.rune_flags & (RuneFlag)(1 << spellicons[i].symbols[j])))
-				{
+			while(j < 4 && spellicons[i].symbols[j] != 255) {
+				if(!(player.rune_flags & (RuneFlag)(1 << spellicons[i].symbols[j]))) {
 					bOk = false;
 				}
-
 				j++;
 			}
 
-			if (bOk)
-			{
+			if(bOk) {
 				iNbSpells ++;
 			}
 		}
@@ -377,33 +371,26 @@ void ARX_Player_Rune_Add(RuneFlag _ulRune)
 
 	player.rune_flags |= _ulRune;
 
-	for (size_t i = 0; i < SPELL_COUNT; i++)
-	{
-		if (spellicons[i].bSecret == false)
-		{
+	for(size_t i = 0; i < SPELL_COUNT; i++) {
+		if(spellicons[i].bSecret == false) {
 			long j = 0;
 			bool bOk = true;
 
-			while ((j < 4) && (spellicons[i].symbols[j] != 255))
-			{
-				if (!(player.rune_flags & (RuneFlag)(1 << spellicons[i].symbols[j])))
-				{
+			while(j < 4 && (spellicons[i].symbols[j] != 255)) {
+				if(!(player.rune_flags & (RuneFlag)(1 << spellicons[i].symbols[j]))) {
 					bOk = false;
 				}
-
 				j++;
 			}
 
-			if (bOk)
-			{
+			if(bOk) {
 				iNbSpellsAfter ++;
 			}
 		}
 	}
 	
 	if(iNbSpellsAfter > iNbSpells) {
-		MakeBookFX(Vec3f(DANAESIZX - INTERFACE_RATIO(35), DANAESIZY - INTERFACE_RATIO(148),
-		                 0.00001f));
+		MakeBookFX(Vec3f(DANAESIZX - INTERFACE_RATIO(35), DANAESIZY - INTERFACE_RATIO(148), 0.00001f));
 		bBookHalo = true;
 		ulBookHaloTime = 0;
 	}
