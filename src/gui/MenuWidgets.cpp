@@ -2675,8 +2675,7 @@ void CMenuCheckButton::Render() {
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 
-	if (!vTex.empty())
-	{
+	if(!vTex.empty()) {
 		TextureContainer *pTex = vTex[iState];
 
 		TexturedVertex v[4];
@@ -2686,7 +2685,6 @@ void CMenuCheckButton::Render() {
 		v[0].rhw=v[1].rhw=v[2].rhw=v[3].rhw=0.999999f;
 		
 		float iY = 0;
-
 		{
 			iY = static_cast<float>(rZone.bottom - rZone.top);
 			iY -= iTaille;
@@ -2697,18 +2695,17 @@ void CMenuCheckButton::Render() {
 		EERIEDrawBitmap2(static_cast<float>(rZone.right - iTaille), iY, RATIO_X(iTaille), RATIO_Y(iTaille), 0.f, pTex, color);
 	}
 
-	if (pText)
+	if(pText)
 		pText->Render();
 
 	//DEBUG
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 }
 
-//-----------------------------------------------------------------------------
+void CMenuCheckButton::RenderMouseOver() {
 
-void CMenuCheckButton::RenderMouseOver()
-{
-	if(bNoMenu) return;
+	if(bNoMenu)
+		return;
 
 	pMenuCursor->SetMouseOver();
 
@@ -2734,7 +2731,6 @@ void CMenuCheckButton::RenderMouseOver()
 
 	EERIEDrawBitmap2(static_cast<float>(rZone.right - iTaille), iY, RATIO_X(iTaille), RATIO_Y(iTaille), 0.f, pTex, Color::white); 
 
-
 	//tick
 	if (pText)
 		pText->RenderMouseOver();
@@ -2742,8 +2738,6 @@ void CMenuCheckButton::RenderMouseOver()
 	//DEBUG
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 }
-
-//-----------------------------------------------------------------------------
 
 // Nuky - merges common code of Render() and RenderMouseOver()
 /// Compute members fTexX, fTexY, fTexSX and fTexSY according to rZone and iTaille
@@ -2767,10 +2761,8 @@ void CMenuCheckButton::ComputeTexturesPosition()
 	}*/
 }
 
-//-----------------------------------------------------------------------------
-
-CWindowMenu::CWindowMenu(int _iPosX,int _iPosY,int _iTailleX,int _iTailleY,int _iNbButton) :
-	bMouseListen (true)
+CWindowMenu::CWindowMenu(int _iPosX, int _iPosY, int _iTailleX, int _iTailleY, int _iNbButton)
+	: bMouseListen(true)
 {
 	iPosX=(int)RATIO_X(_iPosX);
 	iPosY=(int)RATIO_Y(_iPosY);
@@ -2803,18 +2795,14 @@ CWindowMenu::CWindowMenu(int _iPosX,int _iPosY,int _iTailleX,int _iTailleY,int _
 	bChangeConsole=false;
 }
 
-//-----------------------------------------------------------------------------
+CWindowMenu::~CWindowMenu() {
 
-CWindowMenu::~CWindowMenu()
-{
-	for (std::vector<CWindowMenuConsole*>::iterator it = vWindowConsoleElement.begin(), it_end = vWindowConsoleElement.end(); it < it_end; ++it)
+	for(std::vector<CWindowMenuConsole*>::iterator it = vWindowConsoleElement.begin(), it_end = vWindowConsoleElement.end(); it < it_end; ++it)
 		delete *it;
 }
 
-//-----------------------------------------------------------------------------
+void CWindowMenu::AddConsole(CWindowMenuConsole *_pMenuConsoleElement) {
 
-void CWindowMenu::AddConsole(CWindowMenuConsole *_pMenuConsoleElement)
-{
 	vWindowConsoleElement.push_back(_pMenuConsoleElement);
 	_pMenuConsoleElement->iOldPosX = 0;
 	_pMenuConsoleElement->iOldPosY = 0;
@@ -2822,31 +2810,24 @@ void CWindowMenu::AddConsole(CWindowMenuConsole *_pMenuConsoleElement)
 	_pMenuConsoleElement->iPosY = iPosY;
 }
 
-//-----------------------------------------------------------------------------
-
-void CWindowMenu::Update(float _fDTime)
-{
-
+void CWindowMenu::Update(float _fDTime) {
 
 	float fCalc	= fPosXCalc + (fDist * sin(radians(fAngle)));
 
 	iPosX = checked_range_cast<int>(fCalc);
-
 	fAngle += _fDTime * 0.08f;
 
-	if (fAngle>90.f) fAngle=90.f;
+	if(fAngle > 90.f)
+		fAngle = 90.f;
 }
 
-//-----------------------------------------------------------------------------
+MENUSTATE CWindowMenu::Render() {
 
-MENUSTATE CWindowMenu::Render()
-{
-	if(bNoMenu) return NOP;
+	if(bNoMenu)
+		return NOP;
 
-	if(bChangeConsole)
-	{
+	if(bChangeConsole) {
 		//TO DO: faire ce que l'on veut
-
 		bChangeConsole=false;
 	}
 
@@ -2862,27 +2843,22 @@ MENUSTATE CWindowMenu::Render()
 
 	MENUSTATE eMS=NOP;
 
-	if (bMouseListen)
-	{
+	if(bMouseListen) {
 		vector<CWindowMenuConsole*>::iterator i;
 
-		for (i = vWindowConsoleElement.begin(); i != vWindowConsoleElement.end(); ++i)
-		{
-			if(eCurrentMenuState==(*i)->eMenuState)
-			{
+		for(i = vWindowConsoleElement.begin(); i != vWindowConsoleElement.end(); ++i) {
+			if(eCurrentMenuState==(*i)->eMenuState) {
 				eMS=(*i)->Update(iPosX, iPosY, 0);
 				
-				if (eMS != NOP)
+				if(eMS != NOP)
 					break;
 			}
 		}
 	}
 
-	for (std::vector<CWindowMenuConsole*>::iterator i = vWindowConsoleElement.begin(); i != vWindowConsoleElement.end(); ++i)
-	{
-		if(eCurrentMenuState==(*i)->eMenuState)
-		{
-			if ((*i)->Render())
+	for(std::vector<CWindowMenuConsole*>::iterator i = vWindowConsoleElement.begin(); i != vWindowConsoleElement.end(); ++i) {
+		if(eCurrentMenuState == (*i)->eMenuState) {
+			if((*i)->Render())
 				GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 
 			break;
@@ -2891,8 +2867,7 @@ MENUSTATE CWindowMenu::Render()
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 
-	if (eMS != NOP)
-	{
+	if(eMS != NOP) {
 		eCurrentMenuState=eMS;
 		bChangeConsole=true;
 	}
