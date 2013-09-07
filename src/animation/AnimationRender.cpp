@@ -98,15 +98,15 @@ TextureContainer TexSpecialColor("specialcolor_list", TextureContainer::NoInsert
 //-----------------------------------------------------------------------------
 TexturedVertex * PushVertexInTableCull(TextureContainer *pTex)
 {
-	if((pTex->ulNbVertexListCull+3)>pTex->ulMaxVertexListCull)
+	if((pTex->count[TextureContainer::Opaque]+3)>pTex->max[TextureContainer::Opaque])
 	{
-		pTex->ulMaxVertexListCull+=10*3;
-		pTex->pVertexListCull = (TexturedVertex *)realloc(pTex->pVertexListCull,
-								 pTex->ulMaxVertexListCull * sizeof(TexturedVertex));
+		pTex->max[TextureContainer::Opaque]+=10*3;
+		pTex->list[TextureContainer::Opaque] = (TexturedVertex *)realloc(pTex->list[TextureContainer::Opaque],
+								 pTex->max[TextureContainer::Opaque] * sizeof(TexturedVertex));
 	}
 
-	pTex->ulNbVertexListCull+=3;
-	return &pTex->pVertexListCull[pTex->ulNbVertexListCull-3];
+	pTex->count[TextureContainer::Opaque]+=3;
+	return &pTex->list[TextureContainer::Opaque][pTex->count[TextureContainer::Opaque]-3];
 }
 
 //-----------------------------------------------------------------------------
@@ -203,7 +203,7 @@ TexturedVertex * PushVertexInTableCull_TMultiplicative(TextureContainer *pTex)
 
 static void PopOneTriangleList(TextureContainer *_pTex) {
 
-	if(!_pTex->ulNbVertexListCull) {
+	if(!_pTex->count[TextureContainer::Opaque]) {
 		return;
 	}
 
@@ -216,9 +216,9 @@ static void PopOneTriangleList(TextureContainer *_pTex) {
 	}
 
 
-	EERIEDRAWPRIM(Renderer::TriangleList, _pTex->pVertexListCull, _pTex->ulNbVertexListCull);
+	EERIEDRAWPRIM(Renderer::TriangleList, _pTex->list[TextureContainer::Opaque], _pTex->count[TextureContainer::Opaque]);
 
-	_pTex->ulNbVertexListCull = 0;
+	_pTex->count[TextureContainer::Opaque] = 0;
 
 	if(_pTex->userflags & POLY_LATE_MIP) {
 		float biasResetVal = 0;

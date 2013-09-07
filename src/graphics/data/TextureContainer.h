@@ -179,9 +179,17 @@ public:
 	
 	SMY_ARXMAT * tMatRoom;
 	
-	unsigned long ulMaxVertexListCull;
-	unsigned long ulNbVertexListCull;
-	TexturedVertex * pVertexListCull;
+	enum TransparencyType {
+		Opaque = 0,
+		Blended,
+		Multiplicative,
+		Additive,
+		Subtractive
+	};
+
+	unsigned long max[5];
+	unsigned long count[5];
+	TexturedVertex * list[5];
 	
 	unsigned long ulMaxVertexListCull_TNormalTrans;
 	unsigned long ulNbVertexListCull_TNormalTrans;
