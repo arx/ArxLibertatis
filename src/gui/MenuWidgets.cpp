@@ -361,17 +361,13 @@ void MACRO_MENU_PRINCIPALE(int iPosMenuPrincipaleX,
 {
 	std::string szMenuText = getLocalised( MACRO_locate );
 	CMenuElementText *me = new CMenuElementText(MACRO_button, hFontMainMenu, szMenuText, RATIO_X(iPosMenuPrincipaleX), RATIO_Y(iPosMenuPrincipaleY), lColor, 1.8f, MACRO_menu);
-	if(MACRO_check)
-	{
+	if(MACRO_check) {
 		pMenuElementResume=me;
 		bool bBOOL;
 		ARXMenu_GetResumeGame(bBOOL);
-		if (bBOOL)
-		{
+		if(bBOOL) {
 			me->SetCheckOn();
-		}
-		else
-		{
+		} else {
 			me->SetCheckOff();
 			me->lColor=Color(127,127,127);
 		}
@@ -379,7 +375,6 @@ void MACRO_MENU_PRINCIPALE(int iPosMenuPrincipaleX,
 	pMenu->AddMenuElement(me);
 	iPosMenuPrincipaleY+=iDecMenuPrincipaleY;
 }
-
 
 bool Menu2_Render() {
 	
@@ -522,14 +517,14 @@ bool Menu2_Render() {
 			delete pWindowMenu, pWindowMenu = NULL;
 			
 			//suivant la resolution
-			int iWindowMenuWidth=(321);
-			int iWindowMenuHeight=(430);
-			int iWindowMenuPosX=(20);
-			int iWindowMenuPosY=(480-iWindowMenuHeight)>>1;
-			int    iWindowConsoleOffsetX=(0);
-			int    iWindowConsoleOffsetY=(14-10);
-			int    iWindowConsoleWidth=(iWindowMenuWidth-iWindowConsoleOffsetX);
-			int    iWindowConsoleHeight=(iWindowMenuHeight-iWindowConsoleOffsetY+20);
+			int iWindowMenuWidth = (321);
+			int iWindowMenuHeight = (430);
+			int iWindowMenuPosX = (20);
+			int iWindowMenuPosY = (480-iWindowMenuHeight)>>1;
+			int iWindowConsoleOffsetX = (0);
+			int iWindowConsoleOffsetY = (14-10);
+			int iWindowConsoleWidth = (iWindowMenuWidth-iWindowConsoleOffsetX);
+			int iWindowConsoleHeight = (iWindowMenuHeight-iWindowConsoleOffsetY+20);
 			///////////////////////
 
 			float fPosX1 = RATIO_X(20);
@@ -537,13 +532,13 @@ bool Menu2_Render() {
 
 			int iPosX2 = checked_range_cast<int>(fPosX2);
 
-			float fPosBack      = RATIO_X(10);
-			float fPosBackY      = RATIO_Y(190);
-			float fPosNext      = RATIO_X(140);
+			float fPosBack  = RATIO_X(10);
+			float fPosBackY = RATIO_Y(190);
+			float fPosNext  = RATIO_X(140);
 
-			float fPosApply   = RATIO_X(240);
+			float fPosApply = RATIO_X(240);
 
-			float fPosBDAY      = RATIO_Y(380);
+			float fPosBDAY  = RATIO_Y(380);
 
 			pWindowMenu = new CWindowMenu(iWindowMenuPosX,iWindowMenuPosY,iWindowMenuWidth,iWindowMenuHeight,1);
 
@@ -558,23 +553,23 @@ bool Menu2_Render() {
 
 					CMenuElement *me = NULL;
 					CWindowMenuConsole *pWindowMenuConsole=new CWindowMenuConsole(iWindowConsoleOffsetX,iWindowConsoleOffsetY,iWindowConsoleWidth,iWindowConsoleHeight,NEW_QUEST);
-					szMenuText = getLocalised( "system_menus_main_editquest_confirm" );
+					szMenuText = getLocalised("system_menus_main_editquest_confirm");
 					me=new CMenuElementText(-1, hFontMenu, szMenuText,0,0,lColor,1.f, NOP);
 					me->bCheck = false;
 					pWindowMenuConsole->AddMenuCenter(me);
 
-					szMenuText = getLocalised( "system_menus_main_newquest_confirm" );
+					szMenuText = getLocalised("system_menus_main_newquest_confirm");
 					me=new CMenuElementText(-1, hFontMenu, szMenuText,0,0,lColor,1.f, NOP);
 					me->bCheck = false;
 					pWindowMenuConsole->AddMenuCenter(me);
 
 					CMenuPanel *pPanel = new CMenuPanel();
-					szMenuText = getLocalised( "system_yes" );
+					szMenuText = getLocalised("system_yes");
 					szMenuText += "   "; // TODO This space can probably go
 					me = new CMenuElementText(BUTTON_MENUNEWQUEST_CONFIRM, hFontMenu, szMenuText, 0, 0,lColor,1.f, NEW_QUEST_ENTER_GAME);
 					me->SetPos(RATIO_X(iWindowConsoleWidth - (me->GetWidth() + 10)),0);
 					pPanel->AddElementNoCenterIn(me);
-					szMenuText = getLocalised( "system_no" );
+					szMenuText = getLocalised("system_no");
 					me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosBack, 0,lColor,1.f, MAIN);
 					me->SetShortCut(Keyboard::Key_Escape);
 					pPanel->AddElementNoCenterIn(me);
@@ -584,7 +579,6 @@ bool Menu2_Render() {
 					pWindowMenuConsole->AddMenu(pPanel);
 					pWindowMenu->AddConsole(pWindowMenuConsole);
 					pWindowMenu->eCurrentMenuState=NEW_QUEST;
-
 
 				break;
 			}
@@ -638,7 +632,6 @@ bool Menu2_Render() {
 					// TODO align the date part to the right!
 					
 					{
-						
 						size_t quicksaveNum = 0;
 						
 						// Show quicksaves.
@@ -1251,12 +1244,9 @@ bool Menu2_Render() {
 					bBOOL = false;
 					ARXMenu_Options_Control_GetInvertMouse(bBOOL);
 
-					if (bBOOL)
-					{
+					if(bBOOL) {
 						((CMenuCheckButton*)me)->iState=1;
-					}
-					else
-					{
+					} else {
 						((CMenuCheckButton*)me)->iState=0;
 					}
 
@@ -1649,21 +1639,18 @@ bool Menu2_Render() {
 		}
 	}
 
-	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	GRenderer->GetTextureStage(0)->SetMinFilter(TextureStage::FilterLinear);
 	GRenderer->GetTextureStage(0)->SetMagFilter(TextureStage::FilterLinear);
 	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
 
+	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
-
 	GRenderer->SetRenderState(Renderer::DepthTest, true);
 	GRenderer->SetCulling(Renderer::CullCCW);
 
 	GRenderer->EndScene();
 	return true;
 }
-
-//-----------------------------------------------------------------------------
 
 CMenuElement::CMenuElement(MENUSTATE _ms) : CMenuZone(), enabled(true)
 {
