@@ -1290,8 +1290,8 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num, const EERIE_FRUSTRU
 
 		if(ep->type & POLY_TRANS) {
 			if(ep->transval>=2.f) { //MULTIPLICATIVE
-				pIndicesCurr=pIndices+roomMat.uslStartCull_TMultiplicative+roomMat.uslNbIndiceCull_TMultiplicative;
-				pNumIndices=&roomMat.uslNbIndiceCull_TMultiplicative;
+				pIndicesCurr=pIndices+roomMat.offset[SMY_ARXMAT::Multiplicative]+roomMat.count[SMY_ARXMAT::Multiplicative];
+				pNumIndices=&roomMat.count[SMY_ARXMAT::Multiplicative];
 			}else if(ep->transval>=1.f) { //ADDITIVE
 				pIndicesCurr=pIndices+roomMat.uslStartCull_TAdditive+roomMat.uslNbIndiceCull_TAdditive;
 				pNumIndices=&roomMat.uslNbIndiceCull_TAdditive;
@@ -1587,15 +1587,15 @@ void ARX_PORTALS_Frustrum_RenderRoom_TransparencyTSoftCull(long room_num)
 		}
 
 		//MULTIPLICATIVE
-		if(roomMat.uslNbIndiceCull_TMultiplicative)
+		if(roomMat.count[SMY_ARXMAT::Multiplicative])
 		{
 			SetZBias(2);
 			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 
-			room.pVertexBuffer->drawIndexed(Renderer::TriangleList, roomMat.uslNbVertex, roomMat.uslStartVertex, &room.pussIndice[roomMat.uslStartCull_TMultiplicative], roomMat.uslNbIndiceCull_TMultiplicative);
+			room.pVertexBuffer->drawIndexed(Renderer::TriangleList, roomMat.uslNbVertex, roomMat.uslStartVertex, &room.pussIndice[roomMat.offset[SMY_ARXMAT::Multiplicative]], roomMat.count[SMY_ARXMAT::Multiplicative]);
 
-			EERIEDrawnPolys+=roomMat.uslNbIndiceCull_TMultiplicative;
-			roomMat.uslNbIndiceCull_TMultiplicative=0;
+			EERIEDrawnPolys+=roomMat.count[SMY_ARXMAT::Multiplicative];
+			roomMat.count[SMY_ARXMAT::Multiplicative]=0;
 		}
 
 		//ADDITIVE
