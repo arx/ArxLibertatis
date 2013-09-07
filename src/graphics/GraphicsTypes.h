@@ -541,9 +541,6 @@ struct SMY_ARXMAT
 
 	unsigned long offset[5];
 	unsigned long count[5];
-
-	unsigned long uslStartCull_TSubstractive;
-	unsigned long uslNbIndiceCull_TSubstractive;
 };
 
 extern bool USE_PORTALS;

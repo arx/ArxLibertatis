@@ -1299,8 +1299,8 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num, const EERIE_FRUSTRU
 				pIndicesCurr=pIndices+roomMat.offset[SMY_ARXMAT::Blended]+roomMat.count[SMY_ARXMAT::Blended];
 				pNumIndices=&roomMat.count[SMY_ARXMAT::Blended];
 			} else { //SUBTRACTIVE
-				pIndicesCurr=pIndices+roomMat.uslStartCull_TSubstractive+roomMat.uslNbIndiceCull_TSubstractive;
-				pNumIndices=&roomMat.uslNbIndiceCull_TSubstractive;
+				pIndicesCurr=pIndices+roomMat.offset[SMY_ARXMAT::Subtractive]+roomMat.count[SMY_ARXMAT::Subtractive];
+				pNumIndices=&roomMat.count[SMY_ARXMAT::Subtractive];
 			}
 		} else {
 			pIndicesCurr=pIndices+roomMat.offset[SMY_ARXMAT::Opaque]+roomMat.count[SMY_ARXMAT::Opaque];
@@ -1611,16 +1611,16 @@ void ARX_PORTALS_Frustrum_RenderRoom_TransparencyTSoftCull(long room_num)
 		}
 
 		//SUBSTRACTIVE
-		if(roomMat.uslNbIndiceCull_TSubstractive)
+		if(roomMat.count[SMY_ARXMAT::Subtractive])
 		{
 			SetZBias(8);
 
 			GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
 
-			room.pVertexBuffer->drawIndexed(Renderer::TriangleList, roomMat.uslNbVertex, roomMat.uslStartVertex, &room.pussIndice[roomMat.uslStartCull_TSubstractive], roomMat.uslNbIndiceCull_TSubstractive);
+			room.pVertexBuffer->drawIndexed(Renderer::TriangleList, roomMat.uslNbVertex, roomMat.uslStartVertex, &room.pussIndice[roomMat.offset[SMY_ARXMAT::Subtractive]], roomMat.count[SMY_ARXMAT::Subtractive]);
 
-			EERIEDrawnPolys+=roomMat.uslNbIndiceCull_TSubstractive;
-			roomMat.uslNbIndiceCull_TSubstractive=0;
+			EERIEDrawnPolys+=roomMat.count[SMY_ARXMAT::Subtractive];
+			roomMat.count[SMY_ARXMAT::Subtractive]=0;
 		}
 
 		ppTexCurr++;
