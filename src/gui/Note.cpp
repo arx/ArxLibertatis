@@ -269,7 +269,7 @@ void Note::render() {
 	
 	// Draw the left page
 	{
-		ARX_TEXT_DrawRect(
+		ARX_UNICODE_DrawTextInRect(
 			font,
 			_area.left + _textArea.left,
 			_area.top + _textArea.top,
@@ -281,7 +281,7 @@ void Note::render() {
 	
 	// Draw the right page
 	if(_page + 1 < pages.size()) {
-		ARX_TEXT_DrawRect(
+		ARX_UNICODE_DrawTextInRect(
 			font,
 			_area.left + _textArea.right + _pageSpacing,
 			_area.top + _textArea.top,

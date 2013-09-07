@@ -219,18 +219,8 @@ void ARX_TEXT_Draw(Font* ef,
 	ARX_UNICODE_DrawTextInRect(ef, x, y, std::numeric_limits<float>::infinity(), car, col);
 }
 
-long ARX_TEXT_DrawRect(Font* ef,
-                       float x, float y,
-                       float maxx,
-                       const string & car,
-                       Color col,
-                       const Rect * pClipRect) {
-
-	return ARX_UNICODE_DrawTextInRect(ef, x, y, maxx, car, col, pClipRect);
-}
-
 float DrawBookTextInRect(Font* font, float x, float y, float maxx, const std::string& text, Color col) {
-	return (float)ARX_TEXT_DrawRect(font, (BOOKDECX + x) * Xratio, (BOOKDECY + y) * Yratio, (BOOKDECX + maxx) * Xratio, text, col);
+	return (float)ARX_UNICODE_DrawTextInRect(font, (BOOKDECX + x) * Xratio, (BOOKDECY + y) * Yratio, (BOOKDECX + maxx) * Xratio, text, col);
 }
 
 void DrawBookTextCenter(Font* font, float x, float y, const std::string& text, Color col)

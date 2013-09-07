@@ -194,7 +194,7 @@ void ARX_SPEECH_Render() {
 		EERIEDrawBitmap(120 * Xratio - 16 * Xratio, static_cast<float>(igrec),
 		                16 * Xratio, 16 * Xratio, .00001f, arx_logo_tc, Color::white);
 		
-		igrec += ARX_TEXT_DrawRect(hFontInBook, 120.f * Xratio, (float)igrec, 500 * Xratio,
+		igrec += ARX_UNICODE_DrawTextInRect(hFontInBook, 120.f * Xratio, (float)igrec, 500 * Xratio,
 		                           ' ' + speech[i].text, Color::white, NULL);
 		
 		if(igrec > iEnd && !isLastSpeech(i)) {
@@ -541,7 +541,7 @@ void ARX_SPEECH_Update() {
 		Rect::Num y = checked_range_cast<Rect::Num>(fZoneClippY);
 		Rect::Num h = checked_range_cast<Rect::Num>(fAdd);
 		Rect clippingRect(0, y+1, DANAESIZX, h);
-		float iTaille = (float)ARX_TEXT_DrawRect(
+		float iTaille = (float)ARX_UNICODE_DrawTextInRect(
 							hFontInBook,
 							10.f,
 							fDepY + fZoneClippHeight,
