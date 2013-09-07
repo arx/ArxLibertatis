@@ -95,110 +95,26 @@ static TexturedVertex tTexturedVertexTab2[4000];
 // TODO: Convert to a RenderBatch & make TextureContainer constructor private
 TextureContainer TexSpecialColor("specialcolor_list", TextureContainer::NoInsert);
 
-//-----------------------------------------------------------------------------
-TexturedVertex * PushVertexInTableCull(TextureContainer *pTex)
+TexturedVertex * PushVertexInTable(TextureContainer *pTex, TextureContainer::TransparencyType type)
 {
-	if((pTex->count[TextureContainer::Opaque]+3)>pTex->max[TextureContainer::Opaque])
+	if((pTex->count[type]+3)>pTex->max[type])
 	{
-		pTex->max[TextureContainer::Opaque]+=10*3;
-		pTex->list[TextureContainer::Opaque] = (TexturedVertex *)realloc(pTex->list[TextureContainer::Opaque],
-								 pTex->max[TextureContainer::Opaque] * sizeof(TexturedVertex));
-	}
-
-	pTex->count[TextureContainer::Opaque]+=3;
-	return &pTex->list[TextureContainer::Opaque][pTex->count[TextureContainer::Opaque]-3];
-}
-
-//-----------------------------------------------------------------------------
-TexturedVertex * PushVertexInTableCull_TNormalTrans(TextureContainer *pTex)
-{
-	if((pTex->count[TextureContainer::Blended]+3)>pTex->max[TextureContainer::Blended])
-	{
-		pTex->max[TextureContainer::Blended]+=20*3;
-		pTex->list[TextureContainer::Blended] = (TexturedVertex *)realloc(
-											  pTex->list[TextureContainer::Blended],
-											  pTex->max[TextureContainer::Blended]
+		pTex->max[type]+=20*3;
+		pTex->list[type] = (TexturedVertex *)realloc(
+											  pTex->list[type],
+											  pTex->max[type]
 											  * sizeof(TexturedVertex));
 
-		if (!pTex->list[TextureContainer::Blended])
+		if (!pTex->list[type])
 		{
-			pTex->max[TextureContainer::Blended]=0;
-			pTex->count[TextureContainer::Blended]=0;
+			pTex->max[type]=0;
+			pTex->count[type]=0;
 			return NULL;
 		}
 	}
 
-	pTex->count[TextureContainer::Blended]+=3;
-	return &pTex->list[TextureContainer::Blended][pTex->count[TextureContainer::Blended]-3];
-}
-
-//-----------------------------------------------------------------------------
-TexturedVertex * PushVertexInTableCull_TAdditive(TextureContainer *pTex)
-{
-	if((pTex->count[TextureContainer::Additive]+3)>pTex->max[TextureContainer::Additive])
-	{
-		pTex->max[TextureContainer::Additive]+=20*3;
-		pTex->list[TextureContainer::Additive] = (TexturedVertex * )realloc(
-										   pTex->list[TextureContainer::Additive],
-										   pTex->max[TextureContainer::Additive]
-										   * sizeof(TexturedVertex));
-
-		if (!pTex->list[TextureContainer::Additive])
-		{
-			pTex->max[TextureContainer::Additive]=0;
-			pTex->count[TextureContainer::Additive]=0;
-			return NULL;
-		}
-	}
-
-	pTex->count[TextureContainer::Additive]+=3;
-	return &pTex->list[TextureContainer::Additive][pTex->count[TextureContainer::Additive]-3];
-}
-
-//-----------------------------------------------------------------------------
-TexturedVertex * PushVertexInTableCull_TSubstractive(TextureContainer *pTex)
-{
-	if((pTex->count[TextureContainer::Subtractive]+3)>pTex->max[TextureContainer::Subtractive])
-	{
-		pTex->max[TextureContainer::Subtractive]+=20*3;
-		pTex->list[TextureContainer::Subtractive] = (TexturedVertex *)realloc(
-											   pTex->list[TextureContainer::Subtractive],
-											   pTex->max[TextureContainer::Subtractive]
-											   * sizeof(TexturedVertex));
-
-		if (!pTex->list[TextureContainer::Subtractive])
-		{
-			pTex->max[TextureContainer::Subtractive]=0;
-			pTex->count[TextureContainer::Subtractive]=0;
-			return NULL;
-		}
-	}
-
-	pTex->count[TextureContainer::Subtractive]+=3;
-	return &pTex->list[TextureContainer::Subtractive][pTex->count[TextureContainer::Subtractive]-3];
-}
-
-//-----------------------------------------------------------------------------
-TexturedVertex * PushVertexInTableCull_TMultiplicative(TextureContainer *pTex)
-{
-	if((pTex->count[TextureContainer::Multiplicative]+3)>pTex->max[TextureContainer::Multiplicative])
-	{
-		pTex->max[TextureContainer::Multiplicative]+=20*3;
-		pTex->list[TextureContainer::Multiplicative] = (TexturedVertex *)realloc(
-												 pTex->list[TextureContainer::Multiplicative],
-												 pTex->max[TextureContainer::Multiplicative]
-												 * sizeof(TexturedVertex));
-
-		if (!pTex->list[TextureContainer::Multiplicative])
-		{
-			pTex->max[TextureContainer::Multiplicative]=0;
-			pTex->count[TextureContainer::Multiplicative]=0;
-			return NULL;
-		}
-	}
-
-	pTex->count[TextureContainer::Multiplicative]+=3;
-	return &pTex->list[TextureContainer::Multiplicative][pTex->count[TextureContainer::Multiplicative]-3];
+	pTex->count[type]+=3;
+	return &pTex->list[type][pTex->count[type]-3];
 }
 
 static void PopOneTriangleList(TextureContainer *_pTex) {
@@ -592,19 +508,19 @@ TexturedVertex * GetNewVertexList(TextureContainer * container, EERIE_FACE * fac
 		if(fTransp >= 2.f) { //MULTIPLICATIVE
 			fTransp *= (1.f / 2);
 			fTransp += 0.5f;
-			return PushVertexInTableCull_TMultiplicative(container);
+			return PushVertexInTable(container, TextureContainer::Multiplicative);
 		} else if(fTransp >= 1.f) { //ADDITIVE
 			fTransp -= 1.f;
-			return PushVertexInTableCull_TAdditive(container);
+			return PushVertexInTable(container, TextureContainer::Additive);
 		} else if(fTransp > 0.f) { //NORMAL TRANS
 			fTransp = 1.f - fTransp;
-			return PushVertexInTableCull_TNormalTrans(container);
+			return PushVertexInTable(container, TextureContainer::Blended);
 		} else { //SUBTRACTIVE
 			fTransp = 1.f - fTransp;
-			return PushVertexInTableCull_TSubstractive(container);
+			return PushVertexInTable(container, TextureContainer::Subtractive);
 		}
 	} else {
-		return PushVertexInTableCull(container);
+		return PushVertexInTable(container, TextureContainer::Opaque);
 	}
 }
 
