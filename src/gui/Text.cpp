@@ -179,7 +179,6 @@ long ARX_UNICODE_ForceFormattingInRect(Font * font, const string & text,
 	return numChars;
 }
 
-//-----------------------------------------------------------------------------
 long ARX_UNICODE_DrawTextInRect(Font* font,
                                 float x, float y,
                                 float maxx,
@@ -226,6 +225,7 @@ long ARX_TEXT_DrawRect(Font* ef,
                        const string & car,
                        Color col,
                        const Rect * pClipRect) {
+
 	return ARX_UNICODE_DrawTextInRect(ef, x, y, maxx, car, col, pClipRect);
 }
 
@@ -233,16 +233,13 @@ float DrawBookTextInRect(Font* font, float x, float y, float maxx, const std::st
 	return (float)ARX_TEXT_DrawRect(font, (BOOKDECX + x) * Xratio, (BOOKDECY + y) * Yratio, (BOOKDECX + maxx) * Xratio, text, col);
 }
 
-//-----------------------------------------------------------------------------
-void DrawBookTextCenter( Font* font, float x, float y, const std::string& text, Color col )
+void DrawBookTextCenter(Font* font, float x, float y, const std::string& text, Color col)
 {
 	UNICODE_ARXDrawTextCenter(font, (BOOKDECX + x)*Xratio, (BOOKDECY + y)*Yratio, text, col);
 }
 
-//-----------------------------------------------------------------------------
+long UNICODE_ARXDrawTextCenter(Font* font, float x, float y, const std::string& str, Color col) {
 
-long UNICODE_ARXDrawTextCenter( Font* font, float x, float y, const std::string& str, Color col )
-{
 	Vec2i size = font->getTextSize(str);
 	int drawX = ((int)x) - (size.x / 2);
 	int drawY = (int)y;
@@ -252,9 +249,7 @@ long UNICODE_ARXDrawTextCenter( Font* font, float x, float y, const std::string&
 	return size.x;
 }
 
-
-
-long UNICODE_ARXDrawTextCenteredScroll( Font* font, float x, float y, float x2, const std::string& str, Color col, int iTimeScroll, float fSpeed, int iNbLigne, int iTimeOut) {
+long UNICODE_ARXDrawTextCenteredScroll(Font* font, float x, float y, float x2, const std::string& str, Color col, int iTimeScroll, float fSpeed, int iNbLigne, int iTimeOut) {
 	
 	Rect::Num _x = checked_range_cast<Rect::Num>(x - x2);
 	Rect::Num _y = checked_range_cast<Rect::Num>(y);
@@ -262,8 +257,7 @@ long UNICODE_ARXDrawTextCenteredScroll( Font* font, float x, float y, float x2, 
 	
 	Rect rRect(_x, _y, w, Rect::Limits::max());
 	
-	if (pTextManage)
-	{
+	if(pTextManage) {
 		pTextManage->AddText(font,
 							 str,
 							 rRect,
@@ -361,13 +355,13 @@ bool ARX_Text_Init() {
 	
 	FontCache::initialize();
 	
-	Font * nFontMainMenu = createFont(file, "system_font_mainmenu_size", 58, scale);
-	Font * nFontMenu = createFont(file, "system_font_menu_size", 32, scale);
-	Font * nFontControls = createFont(file, "system_font_menucontrols_size", 22, scale);
-	Font * nFontCredits = createFont(file, "system_font_menucredits_size", 36, scale);
-	Font * nFontInGame = createFont(file, "system_font_book_size", 18, small_scale);
+	Font * nFontMainMenu   = createFont(file, "system_font_mainmenu_size", 58, scale);
+	Font * nFontMenu       = createFont(file, "system_font_menu_size", 32, scale);
+	Font * nFontControls   = createFont(file, "system_font_menucontrols_size", 22, scale);
+	Font * nFontCredits    = createFont(file, "system_font_menucredits_size", 36, scale);
+	Font * nFontInGame     = createFont(file, "system_font_book_size", 18, small_scale);
 	Font * nFontInGameNote = createFont(file, "system_font_note_size", 18, small_scale);
-	Font * nFontInBook = createFont(file, "system_font_book_size", 18, small_scale);
+	Font * nFontInBook     = createFont(file, "system_font_book_size", 18, small_scale);
 	
 	// Only release old fonts after creating new ones to allow same fonts to be cached.
 	FontCache::releaseFont(hFontMainMenu);
@@ -386,22 +380,30 @@ bool ARX_Text_Init() {
 	hFontInGameNote = nFontInGameNote;
 	hFontInBook = nFontInBook;
 	
-	if(!hFontMainMenu || !hFontMenu || !hFontControls || !hFontCredits || !hFontInGame
-	   || !hFontInGameNote || !hFontInBook) {
+	if(!hFontMainMenu
+	   || !hFontMenu
+	   || !hFontControls
+	   || !hFontCredits
+	   || !hFontInGame
+	   || !hFontInGameNote
+	   || !hFontInBook
+	) {
 		LogCritical << "Could not load font " << file << " for scale " << scale
 		            << " / small scale " << small_scale;
 		return false;
 	}
 	
-	LogInfo << "Loaded font " << file << " with sizes " << hFontMainMenu->getSize() << ", "
-	        << hFontMenu->getSize() << ", " << hFontControls->getSize()
-	        << ", " << hFontCredits->getSize() << ", " << hFontInGame->getSize() << ", "
-	        << hFontInGameNote->getSize() << ", " << hFontInBook->getSize();
+	LogInfo << "Loaded font " << file << " with sizes " << hFontMainMenu->getSize()
+			<< ", " << hFontMenu->getSize()
+			<< ", " << hFontControls->getSize()
+			<< ", " << hFontCredits->getSize()
+			<< ", " << hFontInGame->getSize()
+			<< ", " << hFontInGameNote->getSize()
+			<< ", " << hFontInBook->getSize();
 	
 	return true;
 }
 
-//-----------------------------------------------------------------------------
 void ARX_Text_Close() {
 	
 	created_font_scale = 0.f;
