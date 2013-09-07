@@ -1652,7 +1652,10 @@ bool Menu2_Render() {
 	return true;
 }
 
-CMenuElement::CMenuElement(MENUSTATE _ms) : CMenuZone(), enabled(true)
+
+CMenuElement::CMenuElement(MENUSTATE _ms)
+	: CMenuZone()
+	, enabled(true)
 {
 	ePlace=NOCENTER;
 	eState=TNOP;
@@ -1660,37 +1663,29 @@ CMenuElement::CMenuElement(MENUSTATE _ms) : CMenuZone(), enabled(true)
 	iShortCut=-1;
 }
 
-//-----------------------------------------------------------------------------
+CMenuElement::~CMenuElement() {
 
-CMenuElement::~CMenuElement()
-{
-	if( this == pMenuElementApply )
-	{
+	if(this == pMenuElementApply) {
 		pMenuElementApply = NULL;
 	}
 
-	if( this == pMenuElementResume )
-	{
+	if(this == pMenuElementResume) {
 		pMenuElementResume = NULL;
 	}
 
-	if( this == pLoadConfirm )
-	{
+	if(this == pLoadConfirm) {
 		pLoadConfirm = NULL;
 	}
 
-	if( this == pDeleteConfirm )
-	{
+	if(this == pDeleteConfirm) {
 		pDeleteConfirm = NULL;
 	}
 
-	if( this == pDeleteButton )
-	{
+	if(this == pDeleteButton) {
 		pDeleteButton = NULL;
 	}
 
-	if( this == pMenuSliderResol )
-	{
+	if(this == pMenuSliderResol) {
 		pMenuSliderResol = NULL;
 	}
 	
@@ -1698,27 +1693,22 @@ CMenuElement::~CMenuElement()
 		fullscreenCheckbox = NULL;
 	}
 
-	if( this == pMenuSliderBpp )
-	{
+	if(this == pMenuSliderBpp) {
 		pMenuSliderBpp = NULL;
 	}
 }
 
-//-----------------------------------------------------------------------------
+CMenuElement* CMenuElement::OnShortCut() {
 
-CMenuElement* CMenuElement::OnShortCut()
-{
-	if(iShortCut==-1) return NULL;
+	if(iShortCut == -1)
+		return NULL;
 
-	if( GInput->isKeyPressedNowUnPressed(iShortCut) )
-	{
+	if(GInput->isKeyPressedNowUnPressed(iShortCut)) {
 		return this;
 	}
 
 	return NULL;
 }
-
-//-----------------------------------------------------------------------------
 
 CMenuElementText::CMenuElementText(int _iID, Font* _pFont, const std::string& _pText,float _fPosX,float _fPosY,Color _lColor,float _fSize,MENUSTATE _eMs) : CMenuElement(_eMs)
 {
@@ -1726,8 +1716,7 @@ CMenuElementText::CMenuElementText(int _iID, Font* _pFont, const std::string& _p
 
 	pFont = _pFont;
 
-	if( !_pText.compare( "---") )
-	{
+	if(!_pText.compare("---")) {
 		bTestYDouble=true;
 	}
 
@@ -1750,15 +1739,11 @@ CMenuElementText::CMenuElementText(int _iID, Font* _pFont, const std::string& _p
 	iPosCursor = _pText.length() + 1;
 }
 
-//-----------------------------------------------------------------------------
-
 CMenuElementText::~CMenuElementText()
 {
 }
 
-//-----------------------------------------------------------------------------
-
-void CMenuElementText::SetText( const std::string& _pText )
+void CMenuElementText::SetText(const std::string & _pText)
 {
 	lpszText = _pText;
 
@@ -1768,36 +1753,26 @@ void CMenuElementText::SetText( const std::string& _pText )
 	rZone.bottom = textSize.y + rZone.top;
 }
 
-//-----------------------------------------------------------------------------
-
 void CMenuElementText::Update(int _iDTime) {
 	(void)_iDTime;
 }
 
-//-----------------------------------------------------------------------------
+bool CMenuElementText::OnMouseDoubleClick(int _iMouseButton) {
 
-bool CMenuElementText::OnMouseDoubleClick(int _iMouseButton)
-{
-	switch(iID)
-	{
+	switch(iID) {
 	case BUTTON_MENUEDITQUEST_LOAD:
 		OnMouseClick(_iMouseButton);
 
-		if (pWindowMenu)
-		{
-			for (size_t i = 0 ; i < pWindowMenu->vWindowConsoleElement.size() ; i++)
-			{
+		if(pWindowMenu) {
+			for(size_t i = 0; i < pWindowMenu->vWindowConsoleElement.size(); i++) {
 				CWindowMenuConsole *p = pWindowMenu->vWindowConsoleElement[i];
 
-				if ( p->eMenuState == EDIT_QUEST_LOAD )
-				{
-					for (size_t j = 0 ; j < p->MenuAllZone.vMenuZone.size() ; j++)
-					{
-						CMenuElement *pMenuElement = (CMenuElement*) ( (CMenuElement*)p->MenuAllZone.vMenuZone[j] )->GetZoneWithID( BUTTON_MENUEDITQUEST_LOAD_CONFIRM );
+				if(p->eMenuState == EDIT_QUEST_LOAD) {
+					for(size_t j = 0; j < p->MenuAllZone.vMenuZone.size(); j++) {
+						CMenuElement *pMenuElement = (CMenuElement*) ( (CMenuElement*)p->MenuAllZone.vMenuZone[j] )->GetZoneWithID(BUTTON_MENUEDITQUEST_LOAD_CONFIRM);
 
-						if( pMenuElement )
-						{
-							pMenuElement->OnMouseClick( _iMouseButton );
+						if(pMenuElement) {
+							pMenuElement->OnMouseClick(_iMouseButton);
 						}
 					}
 				}
@@ -1810,7 +1785,6 @@ bool CMenuElementText::OnMouseDoubleClick(int _iMouseButton)
 	return false;
 }
 
-//-----------------------------------------------------------------------------
 // true: block les zones de checks
 bool CMenuElementText::OnMouseClick(int _iMouseButton) {
 	
@@ -1820,8 +1794,7 @@ bool CMenuElementText::OnMouseClick(int _iMouseButton) {
 	
 	(void)_iMouseButton;
 	
-	switch(eState)
-	{
+	switch(eState) {
 	case EDIT:
 		eState=EDIT_TIME;
 		return true;
@@ -1832,61 +1805,48 @@ bool CMenuElementText::OnMouseClick(int _iMouseButton) {
 	default: break;
 	}
 
-	if (iID != BUTTON_MENUMAIN_RESUMEGAME)
-	{
+	if(iID != BUTTON_MENUMAIN_RESUMEGAME) {
 		ARX_SOUND_PlayMenu(SND_MENU_CLICK);
 	}
 
-	switch (iID)
-	{
-	case -1:
-		{
+	switch(iID) {
+	case -1: {
 			return false;
 		}
 		break;
 	// MENUMAIN
-	case BUTTON_MENUMAIN_RESUMEGAME:
-		{
+	case BUTTON_MENUMAIN_RESUMEGAME: {
 			pTextManage->Clear();
 			ARXMenu_ResumeGame();
 			ARX_SOUND_PlayMenu(SND_MENU_CLICK);
 		}
 		break;
-	case BUTTON_MENUMAIN_NEWQUEST:
-		{
+	case BUTTON_MENUMAIN_NEWQUEST: {
 			bool bBOOL = false;
 			ARXMenu_GetResumeGame(bBOOL);
 
-			if (!bBOOL)
-			{
+			if(!bBOOL) {
 				ARXMenu_NewQuest();
 			}
 		}
 		break;
-	case BUTTON_MENUMAIN_LOADQUEST:
-		{
+	case BUTTON_MENUMAIN_LOADQUEST: {
 		}break;
-	case BUTTON_MENUMAIN_SAVEQUEST:
-		{
+	case BUTTON_MENUMAIN_SAVEQUEST: {
 		}break;
-	case BUTTON_MENUMAIN_MULTIPLAYER:
-		{
+	case BUTTON_MENUMAIN_MULTIPLAYER: {
 		}break;
-	case BUTTON_MENUMAIN_OPTIONS:
-		{
+	case BUTTON_MENUMAIN_OPTIONS: {
 		}break;
-	case BUTTON_MENUMAIN_CREDITS:
-		{
+	case BUTTON_MENUMAIN_CREDITS: {
 			ARXMenu_Credits();
 		}
 		break;
-	case BUTTON_MENUMAIN_QUIT:
-		{
+	case BUTTON_MENUMAIN_QUIT: {
 			ARXMenu_Quit();
 		}
 		break;
-	case BUTTON_MENUNEWQUEST_CONFIRM:
-		{
+	case BUTTON_MENUNEWQUEST_CONFIRM: {
 			ARXMenu_NewQuest();
 		}
 		break;
@@ -1898,70 +1858,54 @@ bool CMenuElementText::OnMouseClick(int _iMouseButton) {
 			newBpp = config.video.bpp;
 			break;
 		}
-	case BUTTON_MENUEDITQUEST_LOAD_INIT:
-		{
-			if ( pWindowMenu )
-				for (size_t i = 0 ; i < pWindowMenu->vWindowConsoleElement.size() ; i++)
-				{
+	case BUTTON_MENUEDITQUEST_LOAD_INIT: {
+			if(pWindowMenu)
+				for(size_t i = 0; i < pWindowMenu->vWindowConsoleElement.size(); i++) {
 					CWindowMenuConsole * p = pWindowMenu->vWindowConsoleElement[i];
 
-					if(p->eMenuState == EDIT_QUEST_LOAD) {
-						
+					if(p->eMenuState == EDIT_QUEST_LOAD) {						
 						p->lData = lData;
 
-						for (size_t j = 0 ; j < p->MenuAllZone.vMenuZone.size() ; j++)
-						{
+						for(size_t j = 0; j < p->MenuAllZone.vMenuZone.size(); j++) {
 							CMenuZone *cz = p->MenuAllZone.vMenuZone[j];
 
-							if ( cz->iID == BUTTON_MENUEDITQUEST_LOAD )
-							{
-								( (CMenuElementText *)cz )->bSelected = false;
+							if(cz->iID == BUTTON_MENUEDITQUEST_LOAD) {
+								((CMenuElementText *)cz)->bSelected = false;
 							}
 						}
 					}
 				}
 		}
 		break;
-	case BUTTON_MENUEDITQUEST_LOAD:
-		{
-			if (pWindowMenu)
-			{
+	case BUTTON_MENUEDITQUEST_LOAD: {
+			if(pWindowMenu) {
 			pLoadConfirm->SetCheckOn();
 			pLoadConfirm->lColor = pLoadConfirm->lOldColor;
 			pDeleteConfirm->SetCheckOn();
 			pDeleteConfirm->lColor = pDeleteConfirm->lOldColor;
 
-				for (size_t i = 0 ; i < pWindowMenu->vWindowConsoleElement.size() ; i++)
-			{
+			for(size_t i = 0; i < pWindowMenu->vWindowConsoleElement.size(); i++) {
 				CWindowMenuConsole *p = pWindowMenu->vWindowConsoleElement[i];
 				
 				if(p->eMenuState == EDIT_QUEST_LOAD) {
-					
 					p->lData = lData;
 					
-						for (size_t j = 0 ; j < p->MenuAllZone.vMenuZone.size(); j++)
-					{
+					for(size_t j = 0; j < p->MenuAllZone.vMenuZone.size(); j++) {
 						CMenuZone *cz = p->MenuAllZone.vMenuZone[j];
 
-						if ( cz->iID == BUTTON_MENUEDITQUEST_LOAD )
-						{
-							( (CMenuElementText *)cz )->bSelected = false;
+						if(cz->iID == BUTTON_MENUEDITQUEST_LOAD) {
+							((CMenuElementText *)cz)->bSelected = false;
 						}
 					}
-
 					bSelected = true;
-
 					}
 				}
 			}
 			}
 		break;
-	case BUTTON_MENUEDITQUEST_LOAD_CONFIRM:
-		{
-			if (pWindowMenu)
-			{
-				for (size_t i = 0 ; i < pWindowMenu->vWindowConsoleElement.size() ; i++)
-			{
+	case BUTTON_MENUEDITQUEST_LOAD_CONFIRM: {
+			if(pWindowMenu) {
+				for(size_t i = 0; i < pWindowMenu->vWindowConsoleElement.size(); i++) {
 				CWindowMenuConsole *p = pWindowMenu->vWindowConsoleElement[i];
 
 				if(p->eMenuState == EDIT_QUEST_LOAD) {
@@ -1994,15 +1938,12 @@ bool CMenuElementText::OnMouseClick(int _iMouseButton) {
 		pDeleteConfirm->lColor = Color::grayb(127);
 		break;
 	// MENUSAVEQUEST
-	case BUTTON_MENUEDITQUEST_SAVE:
-		{
-			if (pWindowMenu)
-				for (size_t i = 0 ; i < pWindowMenu->vWindowConsoleElement.size() ; i++)
-			{
+	case BUTTON_MENUEDITQUEST_SAVE: {
+			if(pWindowMenu)
+				for(size_t i = 0; i < pWindowMenu->vWindowConsoleElement.size(); i++) {
 				CWindowMenuConsole *p = pWindowMenu->vWindowConsoleElement[i];
 
 				if(p->eMenuState == EDIT_QUEST_SAVE_CONFIRM) {
-					
 					p->lData = lData;
 					CMenuElementText * me = (CMenuElementText *) p->MenuAllZone.vMenuZone[1];
 					
@@ -2060,10 +2001,12 @@ bool CMenuElementText::OnMouseClick(int _iMouseButton) {
 		}
 		
 		case BUTTON_MENUOPTIONSVIDEO_APPLY: {
-			if(newWidth != config.video.resolution.x || newHeight!=config.video.resolution.y
-			   || newFullscreen != config.video.fullscreen || newBpp != config.video.bpp) {
-				ARXMenu_Private_Options_Video_SetResolution(newFullscreen, newWidth, newHeight,
-				                                            newBpp);
+			if(newWidth != config.video.resolution.x
+			   || newHeight!=config.video.resolution.y
+			   || newFullscreen != config.video.fullscreen
+			   || newBpp != config.video.bpp
+			) {
+				ARXMenu_Private_Options_Video_SetResolution(newFullscreen, newWidth, newHeight, newBpp);
 				pMenuSliderResol->iOldPos = -1;
 				pMenuSliderBpp->iOldPos = -1;
 				fullscreenCheckbox->iOldState = -1;
@@ -2071,7 +2014,6 @@ bool CMenuElementText::OnMouseClick(int _iMouseButton) {
 			pMenu->bReInitAll=true;
 		}
 		break;
-		
 	// MENUOPTIONS_CONTROLS
 	case BUTTON_MENUOPTIONS_CONTROLS_CUST_JUMP1:
 		{
@@ -2174,18 +2116,14 @@ bool CMenuElementText::OnMouseClick(int _iMouseButton) {
 	}
 
 	if(eMenuState == EDIT_QUEST_SAVE_CONFIRM) {
-		
-		for (size_t i = 0 ; i < pWindowMenu->vWindowConsoleElement.size() ; i++)
-		{
+		for(size_t i = 0; i < pWindowMenu->vWindowConsoleElement.size(); i++) {
 			CWindowMenuConsole *p = pWindowMenu->vWindowConsoleElement[i];
 
-			if ( p->eMenuState == eMenuState )
-			{
+			if(p->eMenuState == eMenuState) {
 				p->lData = lData;
 				CMenuElementText * me = (CMenuElementText *) p->MenuAllZone.vMenuZone[1];
 
 				if(me) {
-					
 					me->lData = lData;
 					
 					if(lData != -1) {
@@ -2207,25 +2145,23 @@ bool CMenuElementText::OnMouseClick(int _iMouseButton) {
 	return false;
 }
 
-//-----------------------------------------------------------------------------
 // true: block les zones de checks
-CMenuElement* CMenuElementText::OnShortCut()
-{
-	if(iShortCut==-1) return NULL;
+CMenuElement* CMenuElementText::OnShortCut() {
 
-	if( GInput->isKeyPressedNowUnPressed(iShortCut) )
-	{
+	if(iShortCut==-1)
+		return NULL;
+
+	if(GInput->isKeyPressedNowUnPressed(iShortCut)) {
 		return this;
 	}
 
 	return NULL;
 }
 
-//-----------------------------------------------------------------------------
+void CMenuElementText::Render() {
 
-void CMenuElementText::Render()
-{
-	if(bNoMenu) return;
+	if(bNoMenu)
+		return;
 
 	Vec3f ePos;
 	ePos.x = (float) rZone.left;
@@ -2242,11 +2178,10 @@ void CMenuElementText::Render()
 
 }
 
-//-----------------------------------------------------------------------------
+void CMenuElementText::RenderMouseOver() {
 
-void CMenuElementText::RenderMouseOver()
-{
-	if(bNoMenu) return;
+	if(bNoMenu)
+		return;
 
 	pMenuCursor->SetMouseOver();
 
@@ -2263,7 +2198,6 @@ void CMenuElementText::RenderMouseOver()
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 
 	switch(iID) {
-		
 		case BUTTON_MENUEDITQUEST_LOAD:
 		case BUTTON_MENUEDITQUEST_SAVEINFO: {
 			
@@ -2292,17 +2226,12 @@ void CMenuElementText::RenderMouseOver()
 	}
 }
 
-//-----------------------------------------------------------------------------
-
-Vec2i CMenuElementText::GetTextSize() const
-{
+Vec2i CMenuElementText::GetTextSize() const {
 	return pFont->getTextSize(lpszText);
 }
 
-//-----------------------------------------------------------------------------
+CMenuState::CMenuState(MENUSTATE _ms) {
 
-CMenuState::CMenuState(MENUSTATE _ms)
-{
 	bReInitAll=false;
 	eMenuState = _ms;
 	eOldMenuState = NOP;
@@ -2348,32 +2277,26 @@ MENUSTATE CMenuState::Update(int _iDTime) {
 	return NOP;
 }
 
-//-----------------------------------------------------------------------------
+void CMenuState::Render() {
 
-void CMenuState::Render()
-{
-	if(bNoMenu) return;
+	if(bNoMenu)
+		return;
 
-	if (pTexBackGround)
+	if(pTexBackGround)
 		EERIEDrawBitmap2(0, 0, static_cast<float>(DANAESIZX), static_cast<float>(DANAESIZY), 0.999f, pTexBackGround, Color::white);
-
-	//------------------------------------------------------------------------
 
 	int t=pMenuAllZone->GetNbZone();
 
 	int iARXDiffTimeMenu = checked_range_cast<int>(ARXDiffTimeMenu);
 
-
-	for(int i=0;i<t;++i)
-	{
+	for(int i = 0; i < t; ++i) {
 		CMenuElement *pMe=(CMenuElement*)pMenuAllZone->GetZoneNum(i);
 		pMe->Update(iARXDiffTimeMenu);
 		pMe->Render();
 	}
 
 	//HIGHLIGHT
-	if(pZoneClick)
-	{
+	if(pZoneClick) {
 		pZoneClick->RenderMouseOver();
 	}
 
@@ -2382,10 +2305,7 @@ void CMenuState::Render()
 	pMenuAllZone->DrawZone();
 }
 
-//-----------------------------------------------------------------------------
-
-CMenuZone::CMenuZone()
-{
+CMenuZone::CMenuZone() {
 	bActif = true;
 	bCheck=true;
 	bTestYDouble=false;
@@ -2400,10 +2320,8 @@ CMenuZone::CMenuZone()
 	rZone.right = 0;
 }
 
-//-----------------------------------------------------------------------------
+CMenuZone::CMenuZone(int _iX1, int _iY1, int _iX2, int _iY2, CMenuZone * _pRef) {
 
-CMenuZone::CMenuZone(int _iX1,int _iY1,int _iX2,int _iY2, CMenuZone * _pRef)
-{
 	bActif=true;
 	rZone.left=_iX1;
 	rZone.top=_iY1;
@@ -2416,61 +2334,50 @@ CMenuZone::CMenuZone(int _iX1,int _iY1,int _iX2,int _iY2, CMenuZone * _pRef)
 	pData=NULL;
 }
 
-//-----------------------------------------------------------------------------
-
-CMenuZone::~CMenuZone()
-{
+CMenuZone::~CMenuZone() {
 
 }
 
-//-----------------------------------------------------------------------------
-
-void CMenuZone::Move(int _iX,int _iY)
-	{
-	rZone.left        += _iX;
-	rZone.top        += _iY;
-	rZone.right        += _iX;
-	rZone.bottom    += _iY;
+void CMenuZone::Move(int _iX, int _iY) {
+	rZone.left   += _iX;
+	rZone.top    += _iY;
+	rZone.right  += _iX;
+	rZone.bottom += _iY;
 }
 
-//-----------------------------------------------------------------------------
+void CMenuZone::SetPos(float _fX, float _fY) {
 
-void CMenuZone::SetPos(float _fX,float _fY)
-{
-	int iWidth        = rZone.right - rZone.left;
-	int iHeight        = rZone.bottom - rZone.top;
+	int iWidth  = rZone.right - rZone.left;
+	int iHeight = rZone.bottom - rZone.top;
 
 	int iX = checked_range_cast<int>(_fX);
 	int iY = checked_range_cast<int>(_fY);
 
-	rZone.left        = iX;
-	rZone.top        = iY;
-	rZone.right        = iX + abs(iWidth);
-	rZone.bottom    = iY + abs(iHeight);
+	rZone.left   = iX;
+	rZone.top    = iY;
+	rZone.right  = iX + abs(iWidth);
+	rZone.bottom = iY + abs(iHeight);
 }
 
-//-----------------------------------------------------------------------------
+CMenuZone * CMenuZone::IsMouseOver(const Vec2s& mousePos) const {
 
-CMenuZone * CMenuZone::IsMouseOver(const Vec2s& mousePos) const
-{
 	int iYDouble=0;
 
-	if(bTestYDouble)
-	{
+	if(bTestYDouble) {
 		iYDouble=(rZone.bottom-rZone.top)>>1;
 	}
 
-	if(    bActif && 
-		(mousePos.x >= rZone.left) &&
-		(mousePos.y >= (rZone.top-iYDouble)) &&
-		(mousePos.x <= rZone.right) &&
-		(mousePos.y <= (rZone.bottom+iYDouble)) )
+	if(bActif
+	   && mousePos.x >= rZone.left
+	   && mousePos.y >= rZone.top - iYDouble
+	   && mousePos.x <= rZone.right
+	   && mousePos.y <= rZone.bottom + iYDouble
+	) {
 		return pRef;
+	}
 
 	return NULL;
 }
-
-//-----------------------------------------------------------------------------
 
 CMenuAllZone::CMenuAllZone()
 {
