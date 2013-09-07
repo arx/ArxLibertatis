@@ -97,24 +97,19 @@ TextureContainer TexSpecialColor("specialcolor_list", TextureContainer::NoInsert
 
 TexturedVertex * PushVertexInTable(TextureContainer *pTex, TextureContainer::TransparencyType type)
 {
-	if((pTex->count[type]+3)>pTex->max[type])
-	{
-		pTex->max[type]+=20*3;
-		pTex->list[type] = (TexturedVertex *)realloc(
-											  pTex->list[type],
-											  pTex->max[type]
-											  * sizeof(TexturedVertex));
+	if(pTex->count[type] + 3 > pTex->max[type]) {
+		pTex->max[type] += 20 * 3;
+		pTex->list[type] = (TexturedVertex *)realloc(pTex->list[type], pTex->max[type] * sizeof(TexturedVertex));
 
-		if (!pTex->list[type])
-		{
-			pTex->max[type]=0;
-			pTex->count[type]=0;
+		if(!pTex->list[type]) {
+			pTex->max[type] = 0;
+			pTex->count[type] = 0;
 			return NULL;
 		}
 	}
 
-	pTex->count[type]+=3;
-	return &pTex->list[type][pTex->count[type]-3];
+	pTex->count[type] += 3;
+	return &pTex->list[type][pTex->count[type] - 3];
 }
 
 static void PopOneTriangleList(TextureContainer *_pTex) {
