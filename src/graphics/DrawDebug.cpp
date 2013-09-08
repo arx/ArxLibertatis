@@ -261,18 +261,21 @@ void DrawDebugCollisionShape(EERIE_3DOBJ * obj) {
 	if(!obj || !obj->pbox)
 		return;
 
-	for (long k = 0; k < obj->pbox->nb_physvert; k++) {
-		if(obj->pbox->active == 2) {
-			DebugAddParticle(obj->pbox->vert[k].pos, 0.6f, 40, Color::green);
-		} else if(k == 0 || k == 14 || k == 13) {
-			DebugAddParticle(obj->pbox->vert[k].pos, 0.6f, 40, Color::yellow);
-		} else if ((k > 0) && (k < 5)) {
-			DebugAddParticle(obj->pbox->vert[k].pos, 0.6f, 40, Color::green);
-		} else if ((k > 4) && (k < 9)) {
-			DebugAddParticle(obj->pbox->vert[k].pos, 0.6f, 40, Color::blue);
-		} else {
-			DebugAddParticle(obj->pbox->vert[k].pos, 0.6f, 40, Color::red);
-		}
+	EERIE_SPHERE sphere;
+	sphere.origin = obj->pbox->vert[0].pos;
+	sphere.radius = obj->pbox->radius;
+	DrawLineSphere(sphere, Color::white);
+
+	GRenderer->SetRenderState(Renderer::DepthTest, false);
+
+	Color shapeColor = Color::yellow;
+
+	if(obj->pbox->active == 2) {
+		shapeColor = Color::green;
+	}
+
+	for(long k = 0; k + 1 < obj->pbox->nb_physvert; k++) {
+		EERIEDraw3DLine(obj->pbox->vert[k].pos, obj->pbox->vert[k+1].pos, shapeColor);
 	}
 }
 
