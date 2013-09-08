@@ -440,6 +440,9 @@ void DrawDebugRender() {
 	for(size_t i = 1; i < entities.size(); i++) {
 		Entity * io = entities[i];
 
+		if(!io)
+			continue;
+
 		if(EDITION == EDITION_CollisionShape) {
 			DrawDebugCollisionShape(io->obj);
 			debugEntityPhysicsCylinder(io);

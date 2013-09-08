@@ -1796,7 +1796,7 @@ void ArxGame::manageEditorControls() {
 							io->soundtime=0;
 							io->soundcount=0;
 
-							EERIE_PHYSICS_BOX_Launch(io->obj, io->pos, viewvector);
+							EERIE_PHYSICS_BOX_Launch(io->obj, io->pos, io->angle, viewvector);
 							ARX_SOUND_PlaySFX(SND_WHOOSH, &io->pos);
 
 							io->show=SHOW_FLAG_IN_SCENE;
@@ -6603,7 +6603,7 @@ long Manage3DCursor(long flags)
 				Anglef angle = temp;
 				io->soundtime=0;
 				io->soundcount=0;
-				EERIE_PHYSICS_BOX_Launch(io->obj, io->pos, viewvector, 1, &angle);
+				EERIE_PHYSICS_BOX_Launch(io->obj, io->pos, angle, viewvector);
 				ARX_SOUND_PlaySFX(SND_WHOOSH, &pos);
 				io->show=SHOW_FLAG_IN_SCENE;
 				Set_DragInter(NULL);

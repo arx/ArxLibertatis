@@ -1556,7 +1556,7 @@ void ARX_NPC_SpawnMember(Entity * ioo, long num) {
 	io->lastanimtime = (unsigned long)(arxtime);
 	io->soundtime = 0;
 	io->soundcount = 0;
-	EERIE_PHYSICS_BOX_Launch(io->obj, io->pos, vector, 3, &io->angle);
+	EERIE_PHYSICS_BOX_Launch(io->obj, io->pos, io->angle, vector);
 }
 
 enum DismembermentFlag {

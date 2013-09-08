@@ -56,7 +56,7 @@ using std::max;
 long CUR_COLLISION_MATERIAL = 0;
 
 // Used to launch an object into the physical world...
-void EERIE_PHYSICS_BOX_Launch(EERIE_3DOBJ * obj, const Vec3f & pos, const Vec3f & vect, long flag, Anglef * angle)
+void EERIE_PHYSICS_BOX_Launch(EERIE_3DOBJ * obj, const Vec3f & pos, const Anglef & angle, const Vec3f & vect)
 {
 	if ((!obj) || !(obj->pbox)) return;
 	
@@ -84,15 +84,16 @@ void EERIE_PHYSICS_BOX_Launch(EERIE_3DOBJ * obj, const Vec3f & pos, const Vec3f 
 	
 	for(int i = 0; i < obj->pbox->nb_physvert; i++) {
 		PHYSVERT * pv = &obj->pbox->vert[i];
-		pv->pos = pv->initpos + pos;
+		pv->pos = pv->initpos;
+		VRotateY(&pv->pos, angle.b);
+		VRotateX(&pv->pos, angle.a);
+		VRotateZ(&pv->pos, angle.g);
+		pv->pos += pos;
+
 		pv->inertia = Vec3f::ZERO;
 		pv->force = Vec3f::ZERO;
 		pv->velocity = vect * (250.f * ratio);
-		pv->mass = 0.4f + ratio * 0.1f; 
-		if(flag) {
-			Vector_RotateY(&pv->pos, &pv->initpos, angle->b);
-			pv->pos += pos;
-		}
+		pv->mass = 0.4f + ratio * 0.1f;
 	}
 	
 	obj->pbox->active = 1;

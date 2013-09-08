@@ -281,7 +281,7 @@ void PutInFrontOfPlayer(Entity * io)
 		Vec3f vector = Vec3f(0.f, 100.f, 0.f);
 		io->soundtime = 0;
 		io->soundcount = 0;
-		EERIE_PHYSICS_BOX_Launch(io->obj, io->pos, vector);
+		EERIE_PHYSICS_BOX_Launch(io->obj, io->pos, io->angle, vector);
 	}
 }
 
@@ -310,7 +310,7 @@ void IO_Drop_Item(Entity * io_src, Entity * io)
 		io->soundtime = 0;
 		io->soundcount = 0;
 		io->gameFlags |= GFLAG_NO_PHYS_IO_COL;
-		EERIE_PHYSICS_BOX_Launch(io->obj, io->pos, vector);
+		EERIE_PHYSICS_BOX_Launch(io->obj, io->pos, io->angle, vector);
 	}
 }
 
