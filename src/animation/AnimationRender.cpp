@@ -652,13 +652,13 @@ void CalculateInterZMapp(EERIE_3DOBJ * _pobj3dObj, long lIdList, long * _piInd,
 	}
 }
 
-void DrawEERIEInter(EERIE_3DOBJ *eobj, const EERIE_QUAT * rotation, const Vec3f & pos, Entity *io, EERIE_MOD_INFO *modinfo, bool thrownEntity) {
+void DrawEERIEInter(EERIE_3DOBJ *eobj, const EERIE_QUAT * rotation, const Vec3f & pos, Entity *io, const Vec3f * linkPosition) {
 
 	if(!eobj)
 		return;
 
 	// Avoids To treat an object that isn't Visible
-	if(io && io != entities.player() && !modinfo && !Cedric_IO_Visible(pos))
+	if(!linkPosition && io && io != entities.player() && !Cedric_IO_Visible(pos))
 		return;
 
 	float scale = Cedric_GetScale(io);
@@ -673,18 +673,12 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, const EERIE_QUAT * rotation, const Vec3f 
 
 	BBOX2D.reset();
 
-	arx_assert(io->obj->point0 == Vec3f::ZERO);
-
 	for(size_t i = 0 ; i < eobj->vertexlist.size(); i++) {
 
 		Vec3f temp = eobj->vertexlist[i].v;
 
-		if(modinfo) {
-			temp -= modinfo->link_position;
-		}
-
-		if(thrownEntity) {
-			temp -= io->obj->pbox->vert[0].initpos;
+		if(linkPosition) {
+			temp -= *linkPosition;
 		}
 
 		temp *= scale;
@@ -717,7 +711,7 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, const EERIE_QUAT * rotation, const Vec3f 
 		io->bbox2D = BBOX2D;
 	}
 
-	if(!modinfo && ARX_SCENE_PORTAL_ClipIO(io, pos))
+	if(!linkPosition && ARX_SCENE_PORTAL_ClipIO(io, pos))
 		return;
 
 	ColorMod colorMod;
@@ -1313,7 +1307,7 @@ void Cedric_AnimateDrawEntityRender(EERIE_3DOBJ *eobj, const Vec3f & pos, Entity
 
 		Vec3f & posi = eobj->vertexlist3[link.lidx].v;
 
-		DrawEERIEInter(link.obj, &quat, posi, link.io, &link.modinfo);
+		DrawEERIEInter(link.obj, &quat, posi, link.io, &link.modinfo.link_position);
 
 		// Restore item invisibility
 		if(link.io)
