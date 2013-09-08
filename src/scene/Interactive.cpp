@@ -2673,9 +2673,10 @@ bool ARX_INTERACTIVE_CheckFULLCollision(EERIE_3DOBJ * obj, long source)
 									float cz = 0;
 
 									for(long idx = 0 ; idx < 3 ; idx++) {
-										cx			+=	ep.v[idx].p.x	=	io->obj->vertexlist3[ io->obj->facelist[ii].vid[idx] ].v.x;
-										ep.v[idx].p.y	=	io->obj->vertexlist3[ io->obj->facelist[ii].vid[idx] ].v.y;
-										cz			+=	ep.v[idx].p.z	=	io->obj->vertexlist3[ io->obj->facelist[ii].vid[idx] ].v.z;
+										ep.v[idx].p = io->obj->vertexlist3[io->obj->facelist[ii].vid[idx]].v;
+
+										cx += ep.v[idx].p.x;
+										cz += ep.v[idx].p.z;
 									}
 
 									cx *= ( 1.0f / 3 );
