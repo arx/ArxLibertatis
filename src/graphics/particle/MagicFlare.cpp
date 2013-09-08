@@ -209,6 +209,7 @@ void AddFlare(const Vec2s & pos, float sm, short typ, Entity * io, bool bookDraw
 		}
 		fl->tv.p = fl->v.p;
 		SetActiveCamera(oldcam);
+		PrepareCamera(oldcam);
 	} else {
 		fl->tv.p = Vec3f(fl->x, fl->y, 0.001f);
 	}
