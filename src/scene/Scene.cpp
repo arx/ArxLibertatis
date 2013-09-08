@@ -745,17 +745,17 @@ void CreatePlane(EERIE_FRUSTRUM * frustrum,long numplane,Vec3f * orgn,Vec3f * pt
 	
 }
 
-void CreateFrustrum(EERIE_FRUSTRUM *frustrum, EERIEPOLY *ep, bool cull) {
+void CreateFrustrum(EERIE_FRUSTRUM *frustrum, Vec3f * pos, EERIEPOLY *ep, bool cull) {
 	if(cull) {
-		CreatePlane(frustrum, 0, &ACTIVECAM->orgTrans.pos, &ep->v[0].p, &ep->v[1].p);
-		CreatePlane(frustrum, 1, &ACTIVECAM->orgTrans.pos, &ep->v[3].p, &ep->v[2].p);
-		CreatePlane(frustrum, 2, &ACTIVECAM->orgTrans.pos, &ep->v[1].p, &ep->v[3].p);
-		CreatePlane(frustrum, 3, &ACTIVECAM->orgTrans.pos, &ep->v[2].p, &ep->v[0].p);
+		CreatePlane(frustrum, 0, pos, &ep->v[0].p, &ep->v[1].p);
+		CreatePlane(frustrum, 1, pos, &ep->v[3].p, &ep->v[2].p);
+		CreatePlane(frustrum, 2, pos, &ep->v[1].p, &ep->v[3].p);
+		CreatePlane(frustrum, 3, pos, &ep->v[2].p, &ep->v[0].p);
 	} else {
-		CreatePlane(frustrum, 0, &ACTIVECAM->orgTrans.pos, &ep->v[1].p, &ep->v[0].p);
-		CreatePlane(frustrum, 1, &ACTIVECAM->orgTrans.pos, &ep->v[2].p, &ep->v[3].p);
-		CreatePlane(frustrum, 2, &ACTIVECAM->orgTrans.pos, &ep->v[3].p, &ep->v[1].p);
-		CreatePlane(frustrum, 3, &ACTIVECAM->orgTrans.pos, &ep->v[0].p, &ep->v[2].p);
+		CreatePlane(frustrum, 0, pos, &ep->v[1].p, &ep->v[0].p);
+		CreatePlane(frustrum, 1, pos, &ep->v[2].p, &ep->v[3].p);
+		CreatePlane(frustrum, 2, pos, &ep->v[3].p, &ep->v[1].p);
+		CreatePlane(frustrum, 3, pos, &ep->v[0].p, &ep->v[2].p);
 	}
 }
 
@@ -1671,7 +1671,7 @@ void ARX_PORTALS_Frustrum_ComputeRoom(long room_num, const EERIE_FRUSTRUM & frus
 		bool Cull = !(fRes<0.f);
 		
 		EERIE_FRUSTRUM fd;
-		CreateFrustrum(&fd, epp, Cull);
+		CreateFrustrum(&fd, &ACTIVECAM->orgTrans.pos, epp, Cull);
 
 		long roomToCompute = 0;
 		bool computeRoom = false;
