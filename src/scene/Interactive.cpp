@@ -272,7 +272,8 @@ void ARX_INTERACTIVE_DestroyDynamicInfo(Entity * io)
 					vector.z = (float)EEcos(radians(ioo->angle.b)) * ( 1.0f / 2 );
 					ioo->soundtime = 0;
 					ioo->soundcount = 0;
-					EERIE_PHYSICS_BOX_Launch_NOCOL(ioo, ioo->obj, &pos, &vector, 2, &ioo->angle);
+					ioo->gameFlags |= GFLAG_NO_PHYS_IO_COL;
+					EERIE_PHYSICS_BOX_Launch(ioo->obj, &pos, &vector, 2, &ioo->angle);
 					ioo->show = SHOW_FLAG_IN_SCENE;
 					ioo->no_collide = sN;
 					EERIE_LINKEDOBJ_UnLinkObjectFromObject(io->obj, ioo->obj);

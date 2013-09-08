@@ -311,7 +311,8 @@ void IO_Drop_Item(Entity * io_src, Entity * io)
 		Vec3f pos = io->pos;
 		io->soundtime = 0;
 		io->soundcount = 0;
-		EERIE_PHYSICS_BOX_Launch_NOCOL(io, io->obj, &pos, &vector);
+		io->gameFlags |= GFLAG_NO_PHYS_IO_COL;
+		EERIE_PHYSICS_BOX_Launch(io->obj, &pos, &vector);
 	}
 }
 
