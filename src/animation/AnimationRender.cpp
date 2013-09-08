@@ -673,6 +673,8 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, const EERIE_QUAT * rotation, const Vec3f 
 
 	BBOX2D.reset();
 
+	arx_assert(io->obj->point0 == Vec3f::ZERO);
+
 	for(size_t i = 0 ; i < eobj->vertexlist.size(); i++) {
 
 		Vec3f temp = eobj->vertexlist[i].v;
@@ -681,11 +683,11 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, const EERIE_QUAT * rotation, const Vec3f 
 			temp -= modinfo->link_position;
 		}
 
-		temp *= scale;
-
 		if(thrownEntity) {
-			temp -= io->obj->pbox->vert[0].initpos * scale - io->obj->point0;
+			temp -= io->obj->pbox->vert[0].initpos;
 		}
+
+		temp *= scale;
 
 		Vec3f rotatedPosition;
 		TransformVertexQuat(rotation, &temp, &rotatedPosition);
