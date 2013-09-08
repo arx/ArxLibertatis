@@ -958,6 +958,34 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, const EERIE_QUAT * rotation, const Vec3f 
 	}
 }
 
+
+struct HaloRenderInfo {
+
+	HaloRenderInfo(IO_HALO * halo, long selection)
+		: halo(halo)
+		, selection(selection)
+	{}
+
+	HaloRenderInfo(IO_HALO * halo)
+		: halo(halo)
+		, selection(-1)
+	{}
+
+	IO_HALO * halo;
+	short selection;
+};
+
+void pushSlotHalo(std::vector<HaloRenderInfo> & halos, EquipmentSlot slot, short selection) {
+
+	if(player.equiped[slot] != 0 && ValidIONum(player.equiped[slot])) {
+		Entity * tio = entities[player.equiped[slot]];
+
+		if(tio->halo.flags & HALO_ACTIVE) {
+			halos.push_back(HaloRenderInfo(&tio->halo, selection));
+		}
+	}
+}
+
 //-----------------------------------------------------------------------------
 extern long IN_BOOK_DRAW;
 
@@ -972,10 +1000,6 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity *
 	float ddist = 0.f;
 	long need_halo = 0;
 
-	Entity *hio_helmet	= NULL;
-	Entity *hio_armor = NULL;
-	Entity *hio_leggings = NULL;
-
 	Entity *use_io = io;
 
 	if(!io && IN_BOOK_DRAW && eobj == entities.player()->obj)
@@ -983,30 +1007,19 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity *
 
 	arx_assert(use_io);
 
+	std::vector<HaloRenderInfo> halos;
+
 	if(use_io == entities.player()) {
-		if(player.equiped[EQUIP_SLOT_HELMET] != 0 && ValidIONum(player.equiped[EQUIP_SLOT_HELMET])) {
-			Entity * tio = entities[player.equiped[EQUIP_SLOT_HELMET]];
-
-			if (tio->halo.flags & HALO_ACTIVE)
-				hio_helmet = tio;
-		}
-
-		if(player.equiped[EQUIP_SLOT_ARMOR] != 0 && ValidIONum(player.equiped[EQUIP_SLOT_ARMOR])) {
-			Entity * tio = entities[player.equiped[EQUIP_SLOT_ARMOR]];
-
-			if (tio->halo.flags & HALO_ACTIVE)
-				hio_armor = tio;
-		}
-
-		if(player.equiped[EQUIP_SLOT_LEGGINGS] != 0 && ValidIONum(player.equiped[EQUIP_SLOT_LEGGINGS])) {
-			Entity * tio = entities[player.equiped[EQUIP_SLOT_LEGGINGS]];
-
-			if (tio->halo.flags & HALO_ACTIVE)
-				hio_leggings = tio;
-		}
+		pushSlotHalo(halos, EQUIP_SLOT_HELMET,   eobj->fastaccess.sel_head);
+		pushSlotHalo(halos, EQUIP_SLOT_ARMOR,    eobj->fastaccess.sel_chest);
+		pushSlotHalo(halos, EQUIP_SLOT_LEGGINGS, eobj->fastaccess.sel_leggings);
 	}
 
-	if(hio_armor || hio_leggings || hio_helmet || (use_io->halo.flags & HALO_ACTIVE)) {
+	if(use_io->halo.flags & HALO_ACTIVE) {
+		halos.push_back(HaloRenderInfo(&use_io->halo));
+	}
+
+	if(halos.size() > 0) {
 
 		Vec3f ftrPos = pos;
 		//TODO copy-pase
@@ -1101,19 +1114,15 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity *
 
 			IO_HALO * curhalo = NULL;
 
-			if(hio_helmet && IsInSelection(use_io->obj, paf[0], use_io->obj->fastaccess.sel_head) >= 0) {
-				curhalo = &hio_helmet->halo;
-			} else if(hio_armor && IsInSelection(use_io->obj, paf[0], use_io->obj->fastaccess.sel_chest) >= 0) {
-				curhalo = &hio_armor->halo;
-			} else if(hio_leggings && IsInSelection(use_io->obj, paf[0], use_io->obj->fastaccess.sel_leggings) >= 0) {
-				curhalo = &hio_leggings->halo;
-			} else if(use_io->halo.flags & HALO_ACTIVE) {
-				curhalo = &use_io->halo;
-			} else {
-				continue;
+			for(size_t h = 0; h < halos.size(); h++) {
+				if(halos[h].selection == -1 || IsInSelection(eobj, paf[0], halos[h].selection) >= 0) {
+					curhalo = halos[h].halo;
+					break;
+				}
 			}
 
-			arx_assert(curhalo);
+			if(!curhalo)
+				continue;
 
 			float tot = 0;
 			float _ffr[3];
