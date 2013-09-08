@@ -131,15 +131,11 @@ void EERIE_MESH_TWEAK_Skin(EERIE_3DOBJ * obj, const res::path & s1, const res::p
 
 long IsInSelection(const EERIE_3DOBJ * obj, long vert, long tw) {
 	
-	if (obj == NULL) return -1;
+	if(!obj || tw < 0 || vert < 0)
+		return -1;
 
-	if (tw < 0) return -1;
-
-	if (vert < 0) return -1;
-
-	for (size_t i = 0; i < obj->selections[tw].selected.size(); i++)
-	{
-		if (obj->selections[tw].selected[i] == vert)
+	for(size_t i = 0; i < obj->selections[tw].selected.size(); i++) {
+		if(obj->selections[tw].selected[i] == vert)
 			return i;
 	}
 
