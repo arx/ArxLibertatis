@@ -1782,19 +1782,23 @@ void ArxGame::manageEditorControls() {
 							ARX_PLAYER_Remove_Invisibility();
 							io->obj->pbox->active=1;
 							io->obj->pbox->stopcount=0;
-							Vec3f pos = io->pos = player.pos + Vec3f(0.f, 80.f, 0.f);
+							io->pos = player.pos + Vec3f(0.f, 80.f, 0.f);
 							io->velocity = Vec3f::ZERO;
 							io->stopped = 1;
+
 							float y_ratio=(float)((float)DANAEMouse.y-(float)DANAECENTERY)/(float)DANAESIZY*2;
 							float x_ratio=-(float)((float)DANAEMouse.x-(float)DANAECENTERX)/(float)DANAECENTERX;
 							Vec3f viewvector;
-							viewvector.x=-(float)EEsin(radians(player.angle.b+(x_ratio*30.f)))*EEcos(radians(player.angle.a));
-								viewvector.y = EEsin(radians(player.angle.a)) + y_ratio; 
-							viewvector.z= (float)EEcos(radians(player.angle.b+(x_ratio*30.f)))*EEcos(radians(player.angle.a));
+							viewvector.x = -std::sin(radians(player.angle.b+(x_ratio*30.f))) * std::cos(radians(player.angle.a));
+							viewvector.y =  std::sin(radians(player.angle.a)) + y_ratio;
+							viewvector.z =  std::cos(radians(player.angle.b+(x_ratio*30.f))) * std::cos(radians(player.angle.a));
+
 							io->soundtime=0;
 							io->soundcount=0;
-							EERIE_PHYSICS_BOX_Launch(io->obj,&pos,&viewvector);
-							ARX_SOUND_PlaySFX(SND_WHOOSH, &pos);
+
+							EERIE_PHYSICS_BOX_Launch(io->obj, &io->pos, &viewvector);
+							ARX_SOUND_PlaySFX(SND_WHOOSH, &io->pos);
+
 							io->show=SHOW_FLAG_IN_SCENE;
 							Set_DragInter(NULL);
 						}
