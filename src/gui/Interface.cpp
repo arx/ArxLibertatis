@@ -5409,12 +5409,6 @@ void ARX_INTERFACE_ManageOpenedBook()
 		long ti=Project.improve;
 		Project.improve=0;
 
-		if (entities.player()->invisibility>0.f)
-		{
-			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-			GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-		}
-
 		INVISIBILITY_OVERRIDE=entities.player()->invisibility;
 
 		if (INVISIBILITY_OVERRIDE>0.5f)
