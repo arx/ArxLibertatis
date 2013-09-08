@@ -587,8 +587,11 @@ void EERIE_PHYSICS_BOX_Release(EERIE_3DOBJ * obj) {
 		return;
 	}
 	
-	free(obj->pbox->vert), obj->pbox->vert = NULL;
-	free(obj->pbox), obj->pbox = NULL;
+	free(obj->pbox->vert);
+	obj->pbox->vert = NULL;
+
+	free(obj->pbox);
+	obj->pbox = NULL;
 }
 
 // Creation of the physics box... quite cabalistic and extensive func...
@@ -601,13 +604,13 @@ void EERIE_PHYSICS_BOX_Create(EERIE_3DOBJ * obj)
 
 	if (obj->vertexlist.empty()) return;
 
-	obj->pbox =	(PHYSICS_BOX_DATA *)
-	            malloc(sizeof(PHYSICS_BOX_DATA));
+	obj->pbox =	(PHYSICS_BOX_DATA *) malloc(sizeof(PHYSICS_BOX_DATA));
 	memset(obj->pbox, 0, sizeof(PHYSICS_BOX_DATA));
+
 	obj->pbox->nb_physvert = 15;
 	obj->pbox->stopcount = 0;
-	obj->pbox->vert =	(PHYSVERT *)
-	                    malloc(sizeof(PHYSVERT) * obj->pbox->nb_physvert);
+
+	obj->pbox->vert = (PHYSVERT *) malloc(sizeof(PHYSVERT) * obj->pbox->nb_physvert);
 	memset(obj->pbox->vert, 0, sizeof(PHYSVERT)*obj->pbox->nb_physvert);
 	
 	Vec3f cubmin = Vec3f::repeat(std::numeric_limits<float>::max());
