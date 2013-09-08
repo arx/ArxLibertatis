@@ -914,10 +914,9 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 
 	ais.pos = io->pos;
 
-	if ((io->obj)
-			&&	(io->obj->pbox)
-			&&	(io->obj->pbox->active))
+	if(io->obj && io->obj->pbox && io->obj->pbox->active) {
 		ais.pos.y -= io->obj->pbox->vert[0].initpos.y;
+	}
 
 	ais.lastpos = io->lastpos;
 	ais.initpos = io->initpos;
