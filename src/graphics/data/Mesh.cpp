@@ -1485,7 +1485,7 @@ void EERIE_CreateMatriceProj(float _fWidth, float _fHeight, EERIE_CAMERA * cam) 
 	GRenderer->SetProjectionMatrix(ProjectionMatrix);
 
 	EERIEMATRIX tempViewMatrix;
-	Util_SetViewMatrix(tempViewMatrix, ACTIVECAM->orgTrans);
+	Util_SetViewMatrix(tempViewMatrix, cam->orgTrans);
 	GRenderer->SetViewMatrix(tempViewMatrix);
 
 	ProjectionMatrix._11 *= _fWidth * .5f;
