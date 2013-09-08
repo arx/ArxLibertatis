@@ -1126,6 +1126,7 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity *
 
 			float tot = 0;
 			float _ffr[3];
+			ColorBGRA colors[3];
 
 			for(size_t o = 0; o < 3; o++) {
 				float tttz	= EEfabs(eobj->vertexlist3[paf[o]].norm.z) * ( 1.0f / 2 );
@@ -1140,7 +1141,7 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity *
 				u8 lfr = curhalo->color.r * power;
 				u8 lfg = curhalo->color.g * power;
 				u8 lfb = curhalo->color.b * power;
-				tvList[o].color = ((0xFF << 24) | (lfr << 16) | (lfg << 8) | (lfb));
+				colors[o] = ((0xFF << 24) | (lfr << 16) | (lfg << 8) | (lfb));
 			}
 
 			if(tot > 260) {
@@ -1181,6 +1182,11 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity *
 					memcpy(&vert[1], &tvList[first], sizeof(TexturedVertex));
 					memcpy(&vert[2], &tvList[second], sizeof(TexturedVertex));
 					memcpy(&vert[3], &tvList[second], sizeof(TexturedVertex));
+
+					vert[0].color = colors[first];
+					vert[1].color = colors[first];
+					vert[2].color = colors[second];
+					vert[3].color = colors[second];
 
 					float siz = ddist * (curhalo->radius * (EEsin((arxtime.get_frame_time() + i) * .01f) * .1f + 1.f)) * .6f;
 
@@ -1242,10 +1248,6 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity *
 					else
 						vert[2].color = 0xFF000000;
 				}
-			}
-
-			for(size_t o = 0; o < 3; o++) {
-				tvList[o].color = eobj->vertexlist3[paf[o]].vert.color;
 			}
 		}
 	}
