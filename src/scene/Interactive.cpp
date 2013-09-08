@@ -273,7 +273,7 @@ void ARX_INTERACTIVE_DestroyDynamicInfo(Entity * io)
 					ioo->soundtime = 0;
 					ioo->soundcount = 0;
 					ioo->gameFlags |= GFLAG_NO_PHYS_IO_COL;
-					EERIE_PHYSICS_BOX_Launch(ioo->obj, &pos, &vector, 2, &ioo->angle);
+					EERIE_PHYSICS_BOX_Launch(ioo->obj, pos, vector, 2, &ioo->angle);
 					ioo->show = SHOW_FLAG_IN_SCENE;
 					ioo->no_collide = sN;
 					EERIE_LINKEDOBJ_UnLinkObjectFromObject(io->obj, ioo->obj);
@@ -3181,14 +3181,13 @@ void ARX_INTERACTIVE_ActivatePhysics(long t)
 
 		io->obj->pbox->active = 1;
 		io->obj->pbox->stopcount = 0;
-		Vec3f pos = io->pos;
 		io->velocity = Vec3f::ZERO;
 		io->stopped = 1;
 		Vec3f fallvector = Vec3f(0.0f, 0.000001f, 0.f);
 		io->show = SHOW_FLAG_IN_SCENE;
 		io->soundtime = 0;
 		io->soundcount = 0;
-		EERIE_PHYSICS_BOX_Launch(io->obj, &pos, &fallvector);
+		EERIE_PHYSICS_BOX_Launch(io->obj, io->pos, fallvector);
 	}
 }
 

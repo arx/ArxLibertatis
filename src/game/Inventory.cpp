@@ -279,10 +279,9 @@ void PutInFrontOfPlayer(Entity * io)
 
 	if(io->obj && io->obj->pbox) {
 		Vec3f vector = Vec3f(0.f, 100.f, 0.f);
-		Vec3f pos = io->pos;
 		io->soundtime = 0;
 		io->soundcount = 0;
-		EERIE_PHYSICS_BOX_Launch(io->obj, &pos, &vector);
+		EERIE_PHYSICS_BOX_Launch(io->obj, io->pos, vector);
 	}
 }
 
@@ -308,11 +307,10 @@ void IO_Drop_Item(Entity * io_src, Entity * io)
 	
 	if(io->obj && io->obj->pbox) {
 		Vec3f vector(0.f, 100.f, 0.f);
-		Vec3f pos = io->pos;
 		io->soundtime = 0;
 		io->soundcount = 0;
 		io->gameFlags |= GFLAG_NO_PHYS_IO_COL;
-		EERIE_PHYSICS_BOX_Launch(io->obj, &pos, &vector);
+		EERIE_PHYSICS_BOX_Launch(io->obj, io->pos, vector);
 	}
 }
 

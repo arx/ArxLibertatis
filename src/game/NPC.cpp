@@ -1548,7 +1548,6 @@ void ARX_NPC_SpawnMember(Entity * ioo, long num) {
 	vector.y = EEsin(radians(io->angle.a)) * 2.f;
 	vector.z = (float)EEcos(radians(io->angle.b));
 	fnormalize(vector);
-	Vec3f pos = io->pos;
 	io->rubber = 0.6f;
 	
 	io->no_collide = checked_range_cast<short>(long(ioo->index()));
@@ -1557,7 +1556,7 @@ void ARX_NPC_SpawnMember(Entity * ioo, long num) {
 	io->lastanimtime = (unsigned long)(arxtime);
 	io->soundtime = 0;
 	io->soundcount = 0;
-	EERIE_PHYSICS_BOX_Launch(io->obj, &pos, &vector, 3, &io->angle);
+	EERIE_PHYSICS_BOX_Launch(io->obj, io->pos, vector, 3, &io->angle);
 }
 
 enum DismembermentFlag {
