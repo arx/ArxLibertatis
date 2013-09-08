@@ -2628,96 +2628,96 @@ bool ARX_INTERACTIVE_CheckFULLCollision(EERIE_3DOBJ * obj, long source)
 			continue;
 		}
 
-			if((io->ioflags & IO_NPC) && io->_npcdata->life > 0.f) {
-				for(long kk = 0; kk < obj->pbox->nb_physvert; kk++)
-					if(PointInCylinder(&io->physics.cyl, &obj->pbox->vert[kk].pos))
-						return true;
-			} else if(io->ioflags & IO_FIX) {
-				long step;
-				long nbv = io->obj->vertexlist.size();
-				EERIE_SPHERE sp;
-				sp.radius = 28.f;
+		if((io->ioflags & IO_NPC) && io->_npcdata->life > 0.f) {
+			for(long kk = 0; kk < obj->pbox->nb_physvert; kk++)
+				if(PointInCylinder(&io->physics.cyl, &obj->pbox->vert[kk].pos))
+					return true;
+		} else if(io->ioflags & IO_FIX) {
+			long step;
+			long nbv = io->obj->vertexlist.size();
+			EERIE_SPHERE sp;
+			sp.radius = 28.f;
 
-				if(nbv < 500) {
-					step = 1;
-					sp.radius = 36.f; 
-				}
-				else if(nbv < 900)
-					step = 2;
-				else if(nbv < 1500)
-					step = 4;
-				else
-					step = 6;
+			if(nbv < 500) {
+				step = 1;
+				sp.radius = 36.f;
+			}
+			else if(nbv < 900)
+				step = 2;
+			else if(nbv < 1500)
+				step = 4;
+			else
+				step = 6;
 
-				vector<EERIE_VERTEX> & vlist = io->obj->vertexlist3;
+			vector<EERIE_VERTEX> & vlist = io->obj->vertexlist3;
 
-				if(io->gameFlags & GFLAG_PLATFORM) {
-					for(long kk = 0; kk < obj->pbox->nb_physvert; kk++) {
-						EERIE_SPHERE sphere;
-						sphere.origin = obj->pbox->vert[kk].pos;
-						sphere.radius = 30.f;
-						float miny, maxy;
-						miny = io->bbox3D.min.y;
-						maxy = io->bbox3D.max.y;
+			if(io->gameFlags & GFLAG_PLATFORM) {
+				for(long kk = 0; kk < obj->pbox->nb_physvert; kk++) {
+					EERIE_SPHERE sphere;
+					sphere.origin = obj->pbox->vert[kk].pos;
+					sphere.radius = 30.f;
+					float miny, maxy;
+					miny = io->bbox3D.min.y;
+					maxy = io->bbox3D.max.y;
 
-						if(maxy <= sphere.origin.y + sphere.radius || miny >= sphere.origin.y) {
-							if(In3DBBoxTolerance(&sphere.origin, &io->bbox3D, sphere.radius)) {
-								// TODO why ignore the z components?
-								if(closerThan(Vec2f(io->pos.x, io->pos.z), Vec2f(sphere.origin.x, sphere.origin.z), 440.f + sphere.radius)) {
-									
-									EERIEPOLY ep;
-									ep.type = 0;
+					if(maxy <= sphere.origin.y + sphere.radius || miny >= sphere.origin.y) {
+						if(In3DBBoxTolerance(&sphere.origin, &io->bbox3D, sphere.radius)) {
+							// TODO why ignore the z components?
+							if(closerThan(Vec2f(io->pos.x, io->pos.z), Vec2f(sphere.origin.x, sphere.origin.z), 440.f + sphere.radius)) {
 
-									for(size_t ii = 0; ii < io->obj->facelist.size(); ii++) {
-										float cx = 0;
-										float cz = 0;
+								EERIEPOLY ep;
+								ep.type = 0;
 
-										for(long idx = 0 ; idx < 3 ; idx++) {
-											cx			+=	ep.v[idx].p.x	=	io->obj->vertexlist3[ io->obj->facelist[ii].vid[idx] ].v.x;
-											ep.v[idx].p.y	=	io->obj->vertexlist3[ io->obj->facelist[ii].vid[idx] ].v.y;
-											cz			+=	ep.v[idx].p.z	=	io->obj->vertexlist3[ io->obj->facelist[ii].vid[idx] ].v.z;
-										}
+								for(size_t ii = 0; ii < io->obj->facelist.size(); ii++) {
+									float cx = 0;
+									float cz = 0;
 
-										cx *= ( 1.0f / 3 );
-										cz *= ( 1.0f / 3 );
-
-										for(kk = 0; kk < 3; kk++) {
-											ep.v[kk].p.x = (ep.v[kk].p.x - cx) * 3.5f + cx;
-											ep.v[kk].p.z = (ep.v[kk].p.z - cz) * 3.5f + cz;
-										}
-
-										if(PointIn2DPolyXZ(&ep, sphere.origin.x, sphere.origin.z))
-											return true;
+									for(long idx = 0 ; idx < 3 ; idx++) {
+										cx			+=	ep.v[idx].p.x	=	io->obj->vertexlist3[ io->obj->facelist[ii].vid[idx] ].v.x;
+										ep.v[idx].p.y	=	io->obj->vertexlist3[ io->obj->facelist[ii].vid[idx] ].v.y;
+										cz			+=	ep.v[idx].p.z	=	io->obj->vertexlist3[ io->obj->facelist[ii].vid[idx] ].v.z;
 									}
-								}
-							}
-						}
-					}
-				}
 
+									cx *= ( 1.0f / 3 );
+									cz *= ( 1.0f / 3 );
 
-				for(long ii = 1; ii < nbv; ii += step) {
-					if(ii != io->obj->origin) {
-						sp.origin = vlist[ii].v;
-
-						for(long kk = 0; kk < obj->pbox->nb_physvert; kk++) {
-							if(sp.contains(obj->pbox->vert[kk].pos)) {
-								if(io_source && (io->gameFlags & GFLAG_DOOR)) {
-									if(float(arxtime) > io->collide_door_time + 500) {
-										EVENT_SENDER = io_source;
-										io->collide_door_time = (unsigned long)(arxtime); 	
-										SendIOScriptEvent(io, SM_COLLIDE_DOOR);
-										EVENT_SENDER = io;
-										io->collide_door_time = (unsigned long)(arxtime); 	
-										SendIOScriptEvent(io_source, SM_COLLIDE_DOOR);
+									for(kk = 0; kk < 3; kk++) {
+										ep.v[kk].p.x = (ep.v[kk].p.x - cx) * 3.5f + cx;
+										ep.v[kk].p.z = (ep.v[kk].p.z - cz) * 3.5f + cz;
 									}
+
+									if(PointIn2DPolyXZ(&ep, sphere.origin.x, sphere.origin.z))
+										return true;
 								}
-								return true;
 							}
 						}
 					}
 				}
 			}
+
+
+			for(long ii = 1; ii < nbv; ii += step) {
+				if(ii != io->obj->origin) {
+					sp.origin = vlist[ii].v;
+
+					for(long kk = 0; kk < obj->pbox->nb_physvert; kk++) {
+						if(sp.contains(obj->pbox->vert[kk].pos)) {
+							if(io_source && (io->gameFlags & GFLAG_DOOR)) {
+								if(float(arxtime) > io->collide_door_time + 500) {
+									EVENT_SENDER = io_source;
+									io->collide_door_time = (unsigned long)(arxtime);
+									SendIOScriptEvent(io, SM_COLLIDE_DOOR);
+									EVENT_SENDER = io;
+									io->collide_door_time = (unsigned long)(arxtime);
+									SendIOScriptEvent(io_source, SM_COLLIDE_DOOR);
+								}
+							}
+							return true;
+						}
+					}
+				}
+			}
+		}
 	}
 
 	return col;
