@@ -4174,19 +4174,16 @@ bool CMenuSliderText::OnMouseClick(int) {
 	return false;
 }
 
-//-----------------------------------------------------------------------------
+void CMenuSliderText::Update(int _iTime) {
 
-void CMenuSliderText::Update(int _iTime)
-{
 	pLeftButton->Update(_iTime);
 	pRightButton->Update(_iTime);
 }
 
-//-----------------------------------------------------------------------------
-
 void CMenuSliderText::Render() {
 	
-	if(bNoMenu) return;
+	if(bNoMenu)
+		return;
 	
 	if(enabled) {
 		pLeftButton->Render();
@@ -4209,11 +4206,10 @@ void CMenuSliderText::setEnabled(bool enable) {
 	}
 }
 
-//-----------------------------------------------------------------------------
+void CMenuSliderText::RenderMouseOver() {
 
-void CMenuSliderText::RenderMouseOver()
-{
-	if(bNoMenu) return;
+	if(bNoMenu)
+		return;
 
 	pMenuCursor->SetMouseOver();
 
@@ -4227,27 +4223,25 @@ void CMenuSliderText::RenderMouseOver()
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 
-	if ((iX >= rZone.left) &&
-		(iY >= rZone.top) &&
-		(iX <= rZone.right) &&
-		(iY <= rZone.bottom))
-	{
-		if ((iX >= pLeftButton->rZone.left) &&
-			(iY >= pLeftButton->rZone.top) &&
-			(iX <= pLeftButton->rZone.right) &&
-			(iY <= pLeftButton->rZone.bottom))
-		{
+	if(iX >= rZone.left
+	   && iY >= rZone.top
+	   && iX <= rZone.right
+	   && iY <= rZone.bottom
+	) {
+		if(iX >= pLeftButton->rZone.left
+		   && iY >= pLeftButton->rZone.top
+		   && iX <= pLeftButton->rZone.right
+		   && iY <= pLeftButton->rZone.bottom
+		) {
 			pLeftButton->Render();
 
+		} else if(iX >= pRightButton->rZone.left
+				  && iY >= pRightButton->rZone.top
+				  && iX <= pRightButton->rZone.right
+				  && iY <= pRightButton->rZone.bottom
+		) {
+			pRightButton->Render();
 		}
-		else if ((iX >= pRightButton->rZone.left) &&
-				(iY >= pRightButton->rZone.top) &&
-				(iX <= pRightButton->rZone.right) &&
-				(iY <= pRightButton->rZone.bottom))
-			{
-				pRightButton->Render();
-
-			}
 	}
 }
 
@@ -4295,63 +4289,59 @@ void CMenuSlider::Move(int _iX, int _iY) {
 	pRightButton->Move(_iX, _iY);
 }
 
-void CMenuSlider::EmptyFunction()
-{
+void CMenuSlider::EmptyFunction() {
+
 	//Touche pour la selection
-	if(GInput->isKeyPressedNowPressed(Keyboard::Key_LeftArrow))
-	{
+	if(GInput->isKeyPressedNowPressed(Keyboard::Key_LeftArrow)) {
 		iPos--;
 
-		if (iPos <= 0) iPos = 0;
-	}
-	else
-	{
-		if(GInput->isKeyPressedNowPressed(Keyboard::Key_RightArrow))
-		{
+		if(iPos <= 0)
+			iPos = 0;
+	} else {
+		if(GInput->isKeyPressedNowPressed(Keyboard::Key_RightArrow)) {
 			iPos++;
 
-			if (iPos >= 10) iPos = 10;
+			if(iPos >= 10)
+				iPos = 10;
 		}
 	}
-
 }
 
-//-----------------------------------------------------------------------------
+bool CMenuSlider::OnMouseClick(int) {
 
-bool CMenuSlider::OnMouseClick(int)
-{
 	ARX_SOUND_PlayMenu(SND_MENU_CLICK);
 
 	int iX = GInput->getMousePosAbs().x;
 	int iY = GInput->getMousePosAbs().y;
 
-	if ((iX >= rZone.left) &&
-		(iY >= rZone.top) &&
-		(iX <= rZone.right) &&
-		(iY <= rZone.bottom))
-	{
-		if ((iX >= pLeftButton->rZone.left) &&
-			(iY >= pLeftButton->rZone.top) &&
-			(iX <= pLeftButton->rZone.right) &&
-			(iY <= pLeftButton->rZone.bottom))
-		{
+	if(iX >= rZone.left
+	   && iY >= rZone.top
+	   && iX <= rZone.right
+	   && iY <= rZone.bottom
+	) {
+		if(iX >= pLeftButton->rZone.left
+		   && iY >= pLeftButton->rZone.top
+		   && iX <= pLeftButton->rZone.right
+		   && iY <= pLeftButton->rZone.bottom
+		) {
 			iPos--;
 
-			if (iPos <= 0) iPos = 0;
+			if(iPos <= 0)
+				iPos = 0;
 		}
-		else if ((iX >= pRightButton->rZone.left) &&
-				(iY >= pRightButton->rZone.top) &&
-				(iX <= pRightButton->rZone.right) &&
-				(iY <= pRightButton->rZone.bottom))
-			{
-				iPos++;
+		else if(iX >= pRightButton->rZone.left
+				&& iY >= pRightButton->rZone.top
+				&& iX <= pRightButton->rZone.right
+				&& iY <= pRightButton->rZone.bottom
+		) {
+			iPos++;
 
-				if (iPos >= 10) iPos = 10;
-			}
+			if(iPos >= 10)
+				iPos = 10;
+		}
 	}
 
-	switch (iID)
-	{
+	switch (iID) {
 	// MENUOPTIONS_VIDEO
 	case BUTTON_MENUOPTIONSVIDEO_FOG:
 		ARXMenu_Options_Video_SetFogDistance(iPos);
@@ -4383,8 +4373,6 @@ bool CMenuSlider::OnMouseClick(int)
 	return false;
 }
 
-//-----------------------------------------------------------------------------
-
 void CMenuSlider::Update(int _iTime) {
 	
 	pLeftButton->Update(_iTime);
@@ -4400,13 +4388,13 @@ void CMenuSlider::Update(int _iTime) {
 	rZone.bottom = rZone.top + std::max(pLeftButton->GetHeight(), pRightButton->GetHeight());
 }
 
-void CMenuSlider::Render()
-{
-	if(bNoMenu) return;
+void CMenuSlider::Render() {
+
+	if(bNoMenu)
+		return;
 
 	pLeftButton->Render();
 	pRightButton->Render();
-
 
 	float iX = static_cast<float>( rZone.left + pLeftButton->GetWidth() );
 	float iY = static_cast<float>( rZone.top );
@@ -4423,8 +4411,7 @@ void CMenuSlider::Render()
 
 	TextureContainer *pTex = pTex1;
 
-	for (int i=0; i<10; i++)
-	{
+	for(int i = 0; i < 10; i++) {
 		iTexW = 0;
 
 		if(i < iPos) {
@@ -4438,8 +4425,7 @@ void CMenuSlider::Render()
 		}
 		
 		if(pTex) {
-			EERIEDrawBitmap2(iX, iY, RATIO_X(pTex->m_dwWidth), RATIO_Y(pTex->m_dwHeight),
-			                 0, pTex, Color::white);
+			EERIEDrawBitmap2(iX, iY, RATIO_X(pTex->m_dwWidth), RATIO_Y(pTex->m_dwHeight), 0, pTex, Color::white);
 		}
 		
 		iX += iTexW;
@@ -4448,9 +4434,10 @@ void CMenuSlider::Render()
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 }
 
-void CMenuSlider::RenderMouseOver()
-{
-	if(bNoMenu) return;
+void CMenuSlider::RenderMouseOver() {
+
+	if(bNoMenu)
+		return;
 
 	pMenuCursor->SetMouseOver();
 
@@ -4460,24 +4447,23 @@ void CMenuSlider::RenderMouseOver()
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 
-	if ((iX >= rZone.left) &&
-		(iY >= rZone.top) &&
-		(iX <= rZone.right) &&
-		(iY <= rZone.bottom))
-	{
-		if ((iX >= pLeftButton->rZone.left) &&
-			(iY >= pLeftButton->rZone.top) &&
-			(iX <= pLeftButton->rZone.right) &&
-			(iY <= pLeftButton->rZone.bottom))
-		{
+	if(iX >= rZone.left
+	   && iY >= rZone.top
+	   && iX <= rZone.right
+	   && iY <= rZone.bottom
+	) {
+		if(iX >= pLeftButton->rZone.left
+		   && iY >= pLeftButton->rZone.top
+		   && iX <= pLeftButton->rZone.right
+		   && iY <= pLeftButton->rZone.bottom
+		) {
 			pLeftButton->Render();
 
-		}
-		else if ((iX >= pRightButton->rZone.left) &&
-				(iY >= pRightButton->rZone.top) &&
-				(iX <= pRightButton->rZone.right) &&
-				(iY <= pRightButton->rZone.bottom))
-		{
+		} else if(iX >= pRightButton->rZone.left
+				  && iY >= pRightButton->rZone.top
+				  && iX <= pRightButton->rZone.right
+				  && iY <= pRightButton->rZone.bottom
+		) {
 			pRightButton->Render();
 		}
 	}
@@ -4485,10 +4471,8 @@ void CMenuSlider::RenderMouseOver()
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 }
 
-//-----------------------------------------------------------------------------
+MenuCursor::MenuCursor() {
 
-MenuCursor::MenuCursor()
-{
 	pTex[0]=TextureContainer::Find("graph/interface/cursors/cursor00");
 	pTex[1]=TextureContainer::Find("graph/interface/cursors/cursor01");
 	pTex[2]=TextureContainer::Find("graph/interface/cursors/cursor02");
@@ -4507,13 +4491,10 @@ MenuCursor::MenuCursor()
 	
 	bMouseOver=false;
 
-	if(pTex[0])
-	{
+	if(pTex[0]) {
 		fTailleX=(float)pTex[0]->m_dwWidth;
 		fTailleY=(float)pTex[0]->m_dwHeight;
-	}
-	else
-	{
+	} else {
 		fTailleX=fTailleY=0.f;
 	}
 
@@ -4523,35 +4504,22 @@ MenuCursor::MenuCursor()
 	bDrawCursor=true;
 }
 
-//-----------------------------------------------------------------------------
-
 MenuCursor::~MenuCursor()
 {
 }
 
-//-----------------------------------------------------------------------------
-
-void MenuCursor::SetCursorOff()
-{
+void MenuCursor::SetCursorOff() {
 	eNumTex=CURSOR_OFF;
 }
 
-//-----------------------------------------------------------------------------
-
-void MenuCursor::SetCursorOn()
-{
+void MenuCursor::SetCursorOn() {
 	eNumTex=CURSOR_ON;
 }
 
-//-----------------------------------------------------------------------------
-
-void MenuCursor::SetMouseOver()
-{
+void MenuCursor::SetMouseOver() {
 	bMouseOver=true;
 	SetCursorOn();
 }
-
-//-----------------------------------------------------------------------------
 
 void MenuCursor::DrawOneCursor(const Vec2s& mousePos) {
 	
@@ -4562,16 +4530,16 @@ void MenuCursor::DrawOneCursor(const Vec2s& mousePos) {
 	GRenderer->GetTextureStage(0)->SetMinFilter(TextureStage::FilterNearest);
 	GRenderer->GetTextureStage(0)->SetMagFilter(TextureStage::FilterNearest);
 	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
+
 	EERIEDrawBitmap2(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y),
 	                 INTERFACE_RATIO_DWORD(scursor[iNumCursor]->m_dwWidth),
 	                 INTERFACE_RATIO_DWORD(scursor[iNumCursor]->m_dwHeight),
 	                 0.00000001f, scursor[iNumCursor], Color::white);
+
 	GRenderer->GetTextureStage(0)->SetMinFilter(TextureStage::FilterLinear);
 	GRenderer->GetTextureStage(0)->SetMagFilter(TextureStage::FilterLinear);
 	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
 }
-
-//-----------------------------------------------------------------------------
 
 void MenuCursor::Update() {
 	
@@ -4599,8 +4567,6 @@ void MenuCursor::Update() {
 	
 }
 
-//-----------------------------------------------------------------------------
-
 static bool ComputePer(const Vec2s & _psPoint1, const Vec2s & _psPoint2, TexturedVertex * _psd3dv1, TexturedVertex * _psd3dv2, float _fSize) {
 	
 	Vec2f sTemp((float)(_psPoint2.x - _psPoint1.x), (float)(_psPoint2.y - _psPoint1.y));
@@ -4623,8 +4589,6 @@ static bool ComputePer(const Vec2s & _psPoint1, const Vec2s & _psPoint2, Texture
 
 	return true;
 }
-
-//-----------------------------------------------------------------------------
 
 static void DrawLine2D(const Vec2s * points, int _iNbPt, float _fSize, float _fRed, float _fGreen, float _fBlue) {
 	
@@ -4682,8 +4646,6 @@ static void DrawLine2D(const Vec2s * points, int _iNbPt, float _fSize, float _fR
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 }
 
-//-----------------------------------------------------------------------------
-
 void MenuCursor::DrawCursor()
 {
 	if(!bDrawCursor)
@@ -4705,32 +4667,24 @@ void MenuCursor::DrawCursor()
 
 	lFrameDiff += checked_range_cast<long>(ARXDiffTimeMenu);
 
-	if(lFrameDiff>70)
-	{
-		if(bMouseOver)
-		{
-			if(iNumCursor<4)
-			{
+	if(lFrameDiff > 70) {
+		if(bMouseOver) {
+			if(iNumCursor < 4) {
 				iNumCursor++;
-			}
-			else
-			{
-				if(iNumCursor>4)
-				{
+			} else {
+				if(iNumCursor > 4) {
 					iNumCursor--;
 				}
 			}
 
 			SetCursorOff();
 			bMouseOver=false;
-		}
-		else
-		{
-			if (iNumCursor > 0)
-			{
+		} else {
+			if(iNumCursor > 0) {
 				iNumCursor++;
 
-				if(iNumCursor>7) iNumCursor=0;
+				if(iNumCursor > 7)
+					iNumCursor=0;
 			}
 		}
 
