@@ -64,13 +64,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "scene/CinematicSound.h"
 
-#define WIDTHS 512
-#define HEIGHTS 384
-
-#define ADJUSTX(a) (((((a)-(WIDTHS>>1))*((float)LargeurRender/(float)WIDTHS))+(WIDTHS>>1)))*(640.f/(float)LargeurRender) //*((float)LARGEURS/(float)LargeurRender)
-#define ADJUSTY(a) (((((a)-(HEIGHTS>>1))*((float)HauteurRender/(float)HEIGHTS))+(HEIGHTS>>1)))*(480.f/(float)HauteurRender)  //*((float)HAUTEURS/(float)HauteurRender)
-
-/*---------------------------------------------------------------------------------*/
+static const int WIDTHS = 512;
+static const int HEIGHTS = 384;
 
 static int LargeurRender, HauteurRender;
 
@@ -88,6 +83,14 @@ extern float	FlashAlpha;
 extern float SpecialFadeDx;
 extern long DANAESIZX;
 extern long DANAESIZY;
+
+float ADJUSTX(float a) {
+	return (((((a)-(WIDTHS>>1))*((float)LargeurRender/(float)WIDTHS))+(WIDTHS>>1)))*(640.f/(float)LargeurRender); //*((float)LARGEURS/(float)LargeurRender)
+}
+
+float ADJUSTY(float a) {
+	return (((((a)-(HEIGHTS>>1))*((float)HauteurRender/(float)HEIGHTS))+(HEIGHTS>>1)))*(480.f/(float)HauteurRender);  //*((float)HAUTEURS/(float)HauteurRender)
+}
 
 Cinematic::Cinematic(int _w, int _h) {
 	
