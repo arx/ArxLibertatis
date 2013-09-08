@@ -1450,6 +1450,25 @@ void ArxGame::updateLevel() {
 
 	TreatBackgroundActions();
 
+	// Checks Magic Flares Drawing
+	if(!PLAYER_PARALYSED) {
+		if(EERIEMouseButton & 1) {
+			if(ARX_FLARES_Block == 0) {
+				ARX_SPELLS_AddPoint(DANAEMouse);
+			} else {
+				CurrPoint = 0;
+				ARX_FLARES_Block = 0;
+			}
+		} else if(ARX_FLARES_Block == 0) {
+			ARX_FLARES_Block = 1;
+		}
+	}
+
+	ARX_SPELLS_Precast_Check();
+	ARX_SPELLS_ManageMagic();
+	ARX_SPELLS_UpdateSymbolDraw();
+
+	ManageTorch();
 
 	ARX_INTERACTIVE_DestroyIOdelayedExecute();
 }
@@ -1517,26 +1536,6 @@ void ArxGame::renderLevel() {
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	
 	// End Particles
-
-	// Checks Magic Flares Drawing
-	if(!PLAYER_PARALYSED) {
-		if(EERIEMouseButton & 1) {
-			if(ARX_FLARES_Block == 0) {
-				ARX_SPELLS_AddPoint(DANAEMouse);
-			} else {
-				CurrPoint = 0;
-				ARX_FLARES_Block = 0;
-			}
-		} else if(ARX_FLARES_Block == 0) {
-			ARX_FLARES_Block = 1;
-		}
-	}
-
-	ARX_SPELLS_Precast_Check();
-	ARX_SPELLS_ManageMagic();
-	ARX_SPELLS_UpdateSymbolDraw();
-
-	ManageTorch();
 
 	// Renders Magical Flares
 	if(!((player.Interface & INTER_MAP) && !(player.Interface & INTER_COMBATMODE))) {
