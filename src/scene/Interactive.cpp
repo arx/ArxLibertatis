@@ -2698,33 +2698,6 @@ bool ARX_INTERACTIVE_CheckFULLCollision(EERIE_3DOBJ * obj, long source)
 
 				for(long ii = 1; ii < nbv; ii += step) {
 					if(ii != io->obj->origin) {
-
-						if (0)
-						{
-							for (long jii = 1; jii < nbv; jii += step)
-							{
-								sp.origin = (vlist[ii].v + vlist[jii].v) * ( 1.0f / 2 );
-
-								for (long kk = 0; kk < obj->pbox->nb_physvert; kk++)
-									if(sp.contains(obj->pbox->vert[kk].pos)) {
-										if ((io_source) && (io->gameFlags & GFLAG_DOOR))
-										{
-											if (float(arxtime) > io->collide_door_time + 500)
-											{
-												EVENT_SENDER = io_source;
-												io->collide_door_time = (unsigned long)(arxtime); 
-												SendIOScriptEvent(io, SM_COLLIDE_DOOR);
-												EVENT_SENDER = io;
-												io->collide_door_time = (unsigned long)(arxtime); 	
-												SendIOScriptEvent(io_source, SM_COLLIDE_DOOR);
-											}
-										}
-
-										return true;
-									}
-							}
-						}
-
 						sp.origin = vlist[ii].v;
 
 						for(long kk = 0; kk < obj->pbox->nb_physvert; kk++) {
