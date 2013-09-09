@@ -2643,10 +2643,10 @@ void DrawImproveVisionInterface()
 float MagicSightFader=0.f;
 void DrawMagicSightInterface()
 {
-	if (eyeball.exist==1) return;
+	if(eyeball.exist == 1 || !Flying_Eye)
+		return;
 
-	if (Flying_Eye)
-	{
+
 		GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
 		float col=(0.75f+PULSATE*( 1.0f / 20 ));
 
@@ -2674,7 +2674,6 @@ void DrawMagicSightInterface()
 		}
 
 		GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-	}
 }
 
 void AddQuakeFX(float intensity,float duration,float period,long flags)
