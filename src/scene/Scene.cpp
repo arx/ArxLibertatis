@@ -1740,6 +1740,8 @@ void ARX_SCENE_Update() {
 			ARX_PORTALS_Frustrum_RenderRoomTCullSoft(RoomDrawList[i], RoomDraw[RoomDrawList[i]].frustrum, tim);
 		}
 	}
+
+	ARX_THROWN_OBJECT_Manage(checked_range_cast<unsigned long>(framedelay));
 }
 
 extern short uw_mode;
@@ -1764,8 +1766,7 @@ void ARX_SCENE_Render() {
 	if(!Project.improve) {
 		ARXDRAW_DrawInterShadows();
 	}
-		
-	ARX_THROWN_OBJECT_Manage(checked_range_cast<unsigned long>(framedelay));
+
 	ARX_THROWN_OBJECT_Render();
 		
 	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
