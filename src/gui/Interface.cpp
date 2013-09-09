@@ -6642,14 +6642,6 @@ long Manage3DCursor(long flags)
 //-----------------------------------------------------------------------------
 void ARX_INTERFACE_RenderCursorInternal(long flag)
 {
-	if (!SPECIAL_DRAGINTER_RENDER)
-	{
-		ManageIgnition_2(DRAGINTER);
-		GRenderer->GetTextureStage(0)->SetMinFilter(TextureStage::FilterNearest);
-		GRenderer->GetTextureStage(0)->SetMagFilter(TextureStage::FilterNearest);
-		GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
-	}
-
 	TextureContainer * surf;
 
 	if(!SPECIAL_DRAGINTER_RENDER) {
@@ -7005,6 +6997,14 @@ void ARX_INTERFACE_RenderCursorInternal(long flag)
 
 void ARX_INTERFACE_RenderCursor(long flag)
 {
+	if (!SPECIAL_DRAGINTER_RENDER)
+	{
+		ManageIgnition_2(DRAGINTER);
+		GRenderer->GetTextureStage(0)->SetMinFilter(TextureStage::FilterNearest);
+		GRenderer->GetTextureStage(0)->SetMagFilter(TextureStage::FilterNearest);
+		GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
+	}
+
 	ARX_INTERFACE_RenderCursorInternal(flag);
 
 	// Ensure filtering settings are restored in all cases
