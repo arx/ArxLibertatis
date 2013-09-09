@@ -399,7 +399,7 @@ bool Triangles_Intersect(const EERIE_TRI * v, const EERIE_TRI * u)
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
-
+/*
 #define X 0
 #define Y 1
 #define Z 2
@@ -411,7 +411,7 @@ bool Triangles_Intersect(const EERIE_TRI * v, const EERIE_TRI * u)
 	if(x2<min) min=x2;\
 	else if(x2>max) max=x2;
 
-/*======================== X-tests ========================*/
+//======================== X-tests ========================
 #define AXISTEST_X01(a, b, fa, fb)			   \
 	p0 = a*v0[Y] - b*v0[Z];			       	   \
 	p2 = a*v2[Y] - b*v2[Z];			       	   \
@@ -426,7 +426,7 @@ bool Triangles_Intersect(const EERIE_TRI * v, const EERIE_TRI * u)
 	rad = fa * boxhalfsize[Y] + fb * boxhalfsize[Z];   \
 	if(min>rad || max<-rad) return 0;
 
-/*======================== Y-tests ========================*/
+//======================== Y-tests ========================
 #define AXISTEST_Y02(a, b, fa, fb)			   \
 	p0 = -a*v0[X] + b*v0[Z];		      	   \
 	p2 = -a*v2[X] + b*v2[Z];	       	       	   \
@@ -441,7 +441,7 @@ bool Triangles_Intersect(const EERIE_TRI * v, const EERIE_TRI * u)
 	rad = fa * boxhalfsize[X] + fb * boxhalfsize[Z];   \
 	if(min>rad || max<-rad) return 0;
 
-/*======================== Z-tests ========================*/
+//======================== Z-tests ========================
 
 #define AXISTEST_Z12(a, b, fa, fb)			   \
 	p1 = a*v1[X] - b*v1[Y];			           \
@@ -456,6 +456,12 @@ bool Triangles_Intersect(const EERIE_TRI * v, const EERIE_TRI * u)
 	if(p0<p1) {min=p0; max=p1;} else {min=p1; max=p0;} \
 	rad = fa * boxhalfsize[X] + fb * boxhalfsize[Y];   \
 	if(min>rad || max<-rad) return 0;
+
+
+#undef X
+#undef Y
+#undef Z
+*/
 
 //*******************************************************************************************
 //*******************************************************************************************
@@ -968,7 +974,3 @@ void VectorMatrixMultiply(Vec3f * vDest, const Vec3f * vSrc, const EERIEMATRIX *
 	float z = vSrc->x * mat->_13 + vSrc->y * mat->_23 + vSrc->z * mat->_33 + mat->_43;
 	*vDest = Vec3f(x, y, z);
 }
-
-#undef X
-#undef Y
-#undef Z
