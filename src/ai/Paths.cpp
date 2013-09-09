@@ -1011,14 +1011,16 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 						sphere.origin = *v0 + thrownObj->vector * precision * 4.5f;
 						sphere.radius = rad + 3.f;
 
-						if(CheckEverythingInSphere(&sphere, thrownObj->source, -1)) {
-							for(size_t jj = 0; jj < MAX_IN_SPHERE_Pos; jj++) {
+						std::vector<long> sphereContent;
 
-								if(ValidIONum(EVERYTHING_IN_SPHERE[jj])
-										&& EVERYTHING_IN_SPHERE[jj] != thrownObj->source)
+						if(CheckEverythingInSphere(&sphere, thrownObj->source, -1, sphereContent)) {
+							for(size_t jj = 0; jj < sphereContent.size(); jj++) {
+
+								if(ValidIONum(sphereContent[jj])
+										&& sphereContent[jj] != thrownObj->source)
 								{
 
-									Entity * target = entities[EVERYTHING_IN_SPHERE[jj]];
+									Entity * target = entities[sphereContent[jj]];
 
 									if(target->ioflags & IO_NPC) {
 										Vec3f pos;
@@ -1045,7 +1047,7 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 										}
 
 										if(thrownObj->source == 0) {
-											float damages = ARX_THROWN_ComputeDamages(i, thrownObj->source, EVERYTHING_IN_SPHERE[jj]);
+											float damages = ARX_THROWN_ComputeDamages(i, thrownObj->source, sphereContent[jj]);
 
 											if(damages > 0.f) {
 												arx_assert(hitpoint >= 0);

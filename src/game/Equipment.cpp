@@ -710,19 +710,21 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 		if(source != 0)
 			sphere.radius += 15.f;
 
-		if(CheckEverythingInSphere(&sphere, source, targ)) {
-			for(size_t jj = 0; jj < MAX_IN_SPHERE_Pos; jj++) {
-				if(ValidIONum(EVERYTHING_IN_SPHERE[jj])
-						&& !(entities[EVERYTHING_IN_SPHERE[jj]]->ioflags & IO_BODY_CHUNK))
+		std::vector<long> sphereContent;
+
+		if(CheckEverythingInSphere(&sphere, source, targ, sphereContent)) {
+			for(size_t jj = 0; jj < sphereContent.size(); jj++) {
+				if(ValidIONum(sphereContent[jj])
+						&& !(entities[sphereContent[jj]]->ioflags & IO_BODY_CHUNK))
 				{
 					long HIT_SPARK = 0;
-					EXCEPTIONS_LIST[EXCEPTIONS_LIST_Pos] = EVERYTHING_IN_SPHERE[jj];
+					EXCEPTIONS_LIST[EXCEPTIONS_LIST_Pos] = sphereContent[jj];
 					EXCEPTIONS_LIST_Pos++;
 
 					if(EXCEPTIONS_LIST_Pos >= MAX_IN_SPHERE)
 						EXCEPTIONS_LIST_Pos--;
 
-					Entity * target = entities[EVERYTHING_IN_SPHERE[jj]];
+					Entity * target = entities[sphereContent[jj]];
 			
 					Vec3f pos;
 					Color color = Color::white;
@@ -776,7 +778,7 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 							if(paralyse > 0.f) {
 								float ptime = min(dmgs * 1000.f, paralyse);
 								ARX_SPELLS_Launch(SPELL_PARALYSE, weapon, SPELLCAST_FLAG_NOMANA | SPELLCAST_FLAG_NOCHECKCANCAST
-								                  , 5, EVERYTHING_IN_SPHERE[jj], (long)(ptime));
+												  , 5, sphereContent[jj], (long)(ptime));
 							}
 						}
 

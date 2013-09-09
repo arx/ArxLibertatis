@@ -48,6 +48,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define ARX_PHYSICS_COLLISIONS_H
 
 #include <stddef.h>
+#include <vector>
 
 #include "game/Entity.h"
 #include "graphics/data/Mesh.h"
@@ -77,8 +78,6 @@ DECLARE_FLAGS_OPERATORS(CollisionFlags)
 
 const size_t MAX_IN_SPHERE = 20;
 
-extern size_t MAX_IN_SPHERE_Pos;
-extern short EVERYTHING_IN_SPHERE[MAX_IN_SPHERE + 1];
 extern size_t EXCEPTIONS_LIST_Pos;
 extern short EXCEPTIONS_LIST[MAX_IN_SPHERE + 1];
 extern bool DIRECT_PATH;
@@ -101,7 +100,7 @@ DECLARE_FLAGS_OPERATORS(CASFlags)
 bool CheckAnythingInSphere(EERIE_SPHERE * sphere, long source, CASFlags flags = 0, long * num = NULL);
 
 //except source...
-bool CheckEverythingInSphere(EERIE_SPHERE * sphere, long source, long targ = -1);
+bool CheckEverythingInSphere(EERIE_SPHERE * sphere, long source, long targ, std::vector<long> & sphereContent);
 
 //except source...
 EERIEPOLY * CheckBackgroundInSphere(EERIE_SPHERE * sphere);

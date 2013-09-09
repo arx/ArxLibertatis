@@ -64,8 +64,6 @@ using std::vector;
 extern float framedelay;
 long ON_PLATFORM=0;
 //-----------------------------------------------------------------------------
-size_t MAX_IN_SPHERE_Pos = 0;
-short EVERYTHING_IN_SPHERE[MAX_IN_SPHERE + 1];
 size_t EXCEPTIONS_LIST_Pos = 0;
 short EXCEPTIONS_LIST[MAX_IN_SPHERE + 1];
 
@@ -896,10 +894,9 @@ static bool InExceptionList(long val) {
 }
 
 //-----------------------------------------------------------------------------
-bool CheckEverythingInSphere(EERIE_SPHERE * sphere,long source,long targ) //except source...
+bool CheckEverythingInSphere(EERIE_SPHERE * sphere,long source,long targ, std::vector<long> & sphereContent) //except source...
 {
 	bool vreturn = false;
-	MAX_IN_SPHERE_Pos=0;
 	
 	Entity * io;
 	long ret_idx=-1;
@@ -970,11 +967,7 @@ bool CheckEverythingInSphere(EERIE_SPHERE * sphere,long source,long targ) //exce
 						}
 
 						if(PointIn2DPolyXZ(&ep, sphere->origin.x, sphere->origin.z)) {
-							EVERYTHING_IN_SPHERE[MAX_IN_SPHERE_Pos] = (short)ret_idx;
-							MAX_IN_SPHERE_Pos++;
-
-							if(MAX_IN_SPHERE_Pos >= MAX_IN_SPHERE)
-								MAX_IN_SPHERE_Pos--;
+							sphereContent.push_back(ret_idx);
 
 							vreturn = true;
 							goto suivant;
@@ -992,11 +985,8 @@ bool CheckEverythingInSphere(EERIE_SPHERE * sphere,long source,long targ) //exce
 			if(io->obj->nbgroups > 4) {
 				for(long ii = 0; ii < io->obj->nbgroups; ii++) {
 					if(distSqr(vlist[io->obj->grouplist[ii].origin].v, sphere->origin) < square(sr40)) {
-						EVERYTHING_IN_SPHERE[MAX_IN_SPHERE_Pos] = (short)ret_idx;
-						MAX_IN_SPHERE_Pos++;
 
-						if(MAX_IN_SPHERE_Pos >= MAX_IN_SPHERE)
-							MAX_IN_SPHERE_Pos--;
+						sphereContent.push_back(ret_idx);
 
 						vreturn = true;
 						goto suivant;
@@ -1020,11 +1010,7 @@ bool CheckEverythingInSphere(EERIE_SPHERE * sphere,long source,long targ) //exce
 				   distSqr(vlist[ef->vid[1]].v, sphere->origin) < square(sr30) ||
 				   distSqr(vlist[ef->vid[2]].v, sphere->origin) < square(sr30)) {
 
-					EVERYTHING_IN_SPHERE[MAX_IN_SPHERE_Pos] = (short)ret_idx;
-					MAX_IN_SPHERE_Pos++;
-
-					if(MAX_IN_SPHERE_Pos >= MAX_IN_SPHERE)
-						MAX_IN_SPHERE_Pos--;
+					sphereContent.push_back(ret_idx);
 
 					vreturn = true;
 					goto suivant;
