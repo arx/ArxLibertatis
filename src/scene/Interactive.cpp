@@ -2991,14 +2991,17 @@ void RenderInter() {
 						QuatFromMatrix(rotation, mat);
 
 						arx_assert(io->obj->point0 == Vec3f::ZERO);
-						DrawEERIEInter(io->obj, rotation, io->pos, io, &io->obj->pbox->vert[0].initpos);
+
+						TransformInfo t(io->pos, rotation, io->scale, io->obj->pbox->vert[0].initpos);
+						DrawEERIEInter(io->obj, t, io);
 					} else {
 						EERIE_QUAT rotation;
 						Quat_Init(&rotation);
 
 						worldAngleToQuat(&rotation, temp);
 
-						DrawEERIEInter(io->obj, rotation, io->pos, io);
+						TransformInfo t(io->pos, rotation, io->scale);
+						DrawEERIEInter(io->obj, t, io);
 					}
 				}
 			}

@@ -44,7 +44,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_ANIMATION_ANIMATIONRENDER_H
 #define ARX_ANIMATION_ANIMATIONRENDER_H
 
+#include "graphics/BaseGraphicsTypes.h"
 #include "graphics/Color.h"
+#include "graphics/Math.h"
 #include "math/MathFwd.h"
 
 struct EERIE_3DOBJ;
@@ -61,7 +63,31 @@ void PopAllTriangleList();
 void PopAllTriangleListTransparency();
 
 void ARX_DrawPrimitive(TexturedVertex *, TexturedVertex *, TexturedVertex *, float _fAdd = 0.0f);
-void DrawEERIEInter(EERIE_3DOBJ *eobj, const EERIE_QUAT & rotation, const Vec3f & pos, Entity *io, const Vec3f * linkPosition = NULL);
+
+struct TransformInfo {
+
+	Vec3f pos;
+	EERIE_QUAT rotation;
+	float scale;
+	Vec3f offset;
+
+	TransformInfo()
+		: pos(Vec3f::ZERO)
+		, scale(1.f)
+		, offset(Vec3f::ZERO)
+	{
+		Quat_Init(&rotation);
+	}
+
+	TransformInfo(Vec3f pos, EERIE_QUAT rotation, float scale = 1.f, Vec3f offset = Vec3f::ZERO)
+		: pos(pos)
+		, rotation(rotation)
+		, scale(scale)
+		, offset(offset)
+	{}
+};
+
+void DrawEERIEInter(EERIE_3DOBJ *eobj, const TransformInfo & t, Entity *io, bool forceDraw = false);
 
 void EERIEDrawAnimQuat(EERIE_3DOBJ *eobj, ANIM_USE * animlayer, const Anglef & angle, const Vec3f & pos, unsigned long time, Entity *io, bool render = true, bool update_movement = true);
 void AnimatedEntityUpdate(Entity * entity);
