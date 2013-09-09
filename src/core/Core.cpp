@@ -2647,33 +2647,33 @@ void DrawMagicSightInterface()
 		return;
 
 
-		GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
-		float col=(0.75f+PULSATE*( 1.0f / 20 ));
+	GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
+	float col=(0.75f+PULSATE*( 1.0f / 20 ));
 
-		if (col>1.f) col=1.f;
+	if (col>1.f) col=1.f;
 
-		if (eyeball.exist<0)
-		{
-			col=(float)(-eyeball.exist)*( 1.0f / 100 );
-		}
-		else if (eyeball.exist>2)
-		{
-			col = 1.f - eyeball.size.x;
-		}
+	if (eyeball.exist<0)
+	{
+		col=(float)(-eyeball.exist)*( 1.0f / 100 );
+	}
+	else if (eyeball.exist>2)
+	{
+		col = 1.f - eyeball.size.x;
+	}
 
-		EERIEDrawBitmap(0.f, 0.f, (float)DANAESIZX, (float)DANAESIZY, 0.0001f, Flying_Eye, Color::gray(col));
+	EERIEDrawBitmap(0.f, 0.f, (float)DANAESIZX, (float)DANAESIZY, 0.0001f, Flying_Eye, Color::gray(col));
 
-		if (MagicSightFader>0.f)
-		{
-			col=MagicSightFader;
-			EERIEDrawBitmap(0.f, 0.f, (float)DANAESIZX, (float)DANAESIZY, 0.0001f, NULL, Color::gray(col));
-			MagicSightFader-=Original_framedelay*( 1.0f / 400 );
+	if (MagicSightFader>0.f)
+	{
+		col=MagicSightFader;
+		EERIEDrawBitmap(0.f, 0.f, (float)DANAESIZX, (float)DANAESIZY, 0.0001f, NULL, Color::gray(col));
+		MagicSightFader-=Original_framedelay*( 1.0f / 400 );
 
-			if (MagicSightFader<0.f)
-				MagicSightFader=0.f;
-		}
+		if (MagicSightFader<0.f)
+			MagicSightFader=0.f;
+	}
 
-		GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 }
 
 void AddQuakeFX(float intensity,float duration,float period,long flags)
