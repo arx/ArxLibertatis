@@ -843,11 +843,29 @@ void CheckExp(long i) {
 
 extern void createFireParticles(Vec3f &pos, const int particlesToCreate, const int particleDelayFactor);
 
-void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
-{
+void ARX_THROWN_OBJECT_Render() {
+
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 	GRenderer->SetRenderState(Renderer::DepthTest, true);
 
+	for(size_t i = 0; i < MAX_THROWN_OBJECTS; i++) {
+		ARX_THROWN_OBJECT *thrownObj = &Thrown[i];
+		if(!(thrownObj->flags & ATO_EXIST))
+			continue;
+
+		TransformInfo t(thrownObj->position, thrownObj->quat);
+		// Object has to be retransformed because arrows share the same object
+		DrawEERIEInter_ModelTransform(thrownObj->obj, t, NULL);
+		DrawEERIEInter_Render(thrownObj->obj, t, NULL);
+
+		if(thrownObj->pRuban) {
+			thrownObj->pRuban->Render();
+		}
+	}
+}
+
+void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
+{
 	for(size_t i = 0; i < MAX_THROWN_OBJECTS; i++) {
 		ARX_THROWN_OBJECT *thrownObj = &Thrown[i];
 		if(!(thrownObj->flags & ATO_EXIST))
@@ -867,7 +885,7 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 			continue;
 
 		TransformInfo t(thrownObj->position, thrownObj->quat);
-		DrawEERIEInter(thrownObj->obj, t, NULL);
+		DrawEERIEInter_ModelTransform(thrownObj->obj, t, NULL);
 
 		if((thrownObj->flags & ATO_FIERY) && (thrownObj->flags & ATO_MOVING)
 		   && !(thrownObj->flags & ATO_UNDERWATER)) {
@@ -917,7 +935,6 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 		if(thrownObj->pRuban) {
 			thrownObj->pRuban->SetNextPosition(thrownObj->position);
 			thrownObj->pRuban->Update();
-			thrownObj->pRuban->Render();
 		}
 
 		Vec3f original_pos;

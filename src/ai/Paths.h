@@ -211,6 +211,7 @@ long ARX_THROWN_OBJECT_GetFree();
 long ARX_THROWN_OBJECT_Throw(long source, Vec3f * position, Vec3f * vect, EERIE_QUAT * quat, float velocity, float damages, float poisonous);
 void ARX_THROWN_OBJECT_KillAll();
 void ARX_THROWN_OBJECT_Manage(unsigned long time_offset);
+void ARX_THROWN_OBJECT_Render();
 
 long ARX_PHYSICS_BOX_ApplyModel(EERIE_3DOBJ * obj, float framediff, float rubber, long source);
 

@@ -87,6 +87,8 @@ struct TransformInfo {
 	{}
 };
 
+void DrawEERIEInter_ModelTransform(EERIE_3DOBJ *eobj, const TransformInfo &t, Entity *io);
+void DrawEERIEInter_Render(EERIE_3DOBJ *eobj, const TransformInfo &t, Entity *io);
 void DrawEERIEInter(EERIE_3DOBJ *eobj, const TransformInfo & t, Entity *io, bool forceDraw = false);
 
 void EERIEDrawAnimQuat(EERIE_3DOBJ *eobj, ANIM_USE * animlayer, const Anglef & angle, const Vec3f & pos, unsigned long time, Entity *io, bool render = true, bool update_movement = true);
