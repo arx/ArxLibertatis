@@ -61,7 +61,7 @@ void PopAllTriangleList();
 void PopAllTriangleListTransparency();
 
 void ARX_DrawPrimitive(TexturedVertex *, TexturedVertex *, TexturedVertex *, float _fAdd = 0.0f);
-void DrawEERIEInter(EERIE_3DOBJ *eobj, const EERIE_QUAT *rotation, const Vec3f & pos, Entity *io, const Vec3f * linkPosition = NULL);
+void DrawEERIEInter(EERIE_3DOBJ *eobj, const EERIE_QUAT & rotation, const Vec3f & pos, Entity *io, const Vec3f * linkPosition = NULL);
 
 void EERIEDrawAnimQuat(EERIE_3DOBJ *eobj, ANIM_USE * animlayer, const Anglef & angle, const Vec3f & pos, unsigned long time, Entity *io, bool render = true, bool update_movement = true);
 void AnimatedEntityUpdate(Entity * entity);

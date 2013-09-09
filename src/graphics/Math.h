@@ -232,16 +232,16 @@ inline void TransformVertexMatrix(EERIEMATRIX * mat, Vec3f * vertexin, Vec3f * v
 }
 
 // Transforms a Vertex by a quaternion
-inline void TransformVertexQuat(const EERIE_QUAT * quat, Vec3f * vertexin, Vec3f * vertexout) {
+inline void TransformVertexQuat(const EERIE_QUAT & quat, const Vec3f & vertexin, Vec3f & vertexout) {
 	
-	float rx = vertexin->x * quat->w - vertexin->y * quat->z + vertexin->z * quat->y;
-	float ry = vertexin->y * quat->w - vertexin->z * quat->x + vertexin->x * quat->z;
-	float rz = vertexin->z * quat->w - vertexin->x * quat->y + vertexin->y * quat->x;
-	float rw = vertexin->x * quat->x + vertexin->y * quat->y + vertexin->z * quat->z;
+	float rx = vertexin.x * quat.w - vertexin.y * quat.z + vertexin.z * quat.y;
+	float ry = vertexin.y * quat.w - vertexin.z * quat.x + vertexin.x * quat.z;
+	float rz = vertexin.z * quat.w - vertexin.x * quat.y + vertexin.y * quat.x;
+	float rw = vertexin.x * quat.x + vertexin.y * quat.y + vertexin.z * quat.z;
 	
-	vertexout->x = quat->w * rx + quat->x * rw + quat->y * rz - quat->z * ry;
-	vertexout->y = quat->w * ry + quat->y * rw + quat->z * rx - quat->x * rz;
-	vertexout->z = quat->w * rz + quat->z * rw + quat->x * ry - quat->y * rx;
+	vertexout.x = quat.w * rx + quat.x * rw + quat.y * rz - quat.z * ry;
+	vertexout.y = quat.w * ry + quat.y * rw + quat.z * rx - quat.x * rz;
+	vertexout.z = quat.w * rz + quat.z * rw + quat.x * ry - quat.y * rx;
 }
 
 void TransformInverseVertexQuat(const EERIE_QUAT * quat, const Vec3f * vertexin, Vec3f * vertexout);

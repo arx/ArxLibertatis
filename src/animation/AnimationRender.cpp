@@ -652,7 +652,7 @@ void CalculateInterZMapp(EERIE_3DOBJ * _pobj3dObj, long lIdList, long * _piInd,
 	}
 }
 
-void DrawEERIEInter(EERIE_3DOBJ *eobj, const EERIE_QUAT * rotation, const Vec3f & pos, Entity *io, const Vec3f * linkPosition) {
+void DrawEERIEInter(EERIE_3DOBJ *eobj, const EERIE_QUAT & rotation, const Vec3f & pos, Entity *io, const Vec3f * linkPosition) {
 
 	if(!eobj)
 		return;
@@ -684,7 +684,7 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, const EERIE_QUAT * rotation, const Vec3f 
 		temp *= scale;
 
 		Vec3f rotatedPosition;
-		TransformVertexQuat(rotation, &temp, &rotatedPosition);
+		TransformVertexQuat(rotation, temp, rotatedPosition);
 
 		eobj->vertexlist3[i].v = rotatedPosition += pos;
 
@@ -729,7 +729,7 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, const EERIE_QUAT * rotation, const Vec3f 
 
 	// Precalc local lights for this object then interpolate
 	if(!(io && (io->ioflags & IO_ANGULAR))) {
-		MakeCLight(rotation, eobj, colorMod);
+		MakeCLight(&rotation, eobj, colorMod);
 	}
 
 	for(size_t i = 0; i < eobj->facelist.size(); i++) {
@@ -763,7 +763,7 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, const EERIE_QUAT * rotation, const Vec3f 
 			continue;
 
 		if(io && (io->ioflags & IO_ANGULAR))
-			MakeCLight2(rotation, eobj, i, colorMod);
+			MakeCLight2(&rotation, eobj, i, colorMod);
 
 		float fTransp = 0.f;
 		TexturedVertex *tvList = GetNewVertexList(pTex, eface, invisibility, fTransp);
@@ -854,7 +854,7 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, const EERIE_QUAT * rotation, const Vec3f 
 
 			for(long o = 0; o < 3; o++) {
 				Vec3f temporary3D;
-				TransformVertexQuat(rotation, &eobj->vertexlist[paf[o]].norm, &temporary3D);
+				TransformVertexQuat(rotation, eobj->vertexlist[paf[o]].norm, temporary3D);
 
 				float power = 255.f-(float)EEfabs(255.f*(temporary3D.z)*( 1.0f / 2 ));
 
@@ -1302,12 +1302,10 @@ void Cedric_AnimateDrawEntityRender(EERIE_3DOBJ *eobj, const Vec3f & pos, Entity
 		link.modinfo.link_position = link.obj->vertexlist[link.lidx2].v - link.obj->vertexlist[link.obj->origin].v;
 		link.modinfo.rot = Anglef::ZERO;
 
-		EERIE_QUAT quat;
-		Quat_Copy(&quat, &eobj->c_data->bones[link.lgroup].quatanim);
-
+		EERIE_QUAT & quat = eobj->c_data->bones[link.lgroup].quatanim;
 		Vec3f & posi = eobj->vertexlist3[link.lidx].v;
 
-		DrawEERIEInter(link.obj, &quat, posi, link.io, &link.modinfo.link_position);
+		DrawEERIEInter(link.obj, quat, posi, link.io, &link.modinfo.link_position);
 
 		// Restore item invisibility
 		if(link.io)
@@ -1527,7 +1525,7 @@ static void Cedric_ConcatenateTM(EERIE_C_DATA *obj, const EERIE_QUAT & rotation,
 
 			// Translation
 			bone->transanim = bone->transinit * parent->scaleanim;
-			TransformVertexQuat(&parent->quatanim, &bone->transanim, &bone->transanim);
+			TransformVertexQuat(parent->quatanim, bone->transanim, bone->transanim);
 			bone->transanim = parent->transanim + bone->transanim;
 
 			/* Scale */
@@ -1538,7 +1536,7 @@ static void Cedric_ConcatenateTM(EERIE_C_DATA *obj, const EERIE_QUAT & rotation,
 
 			// Translation
 			Vec3f vt1 = bone->transinit + ftr;
-			TransformVertexQuat(&rotation, &vt1, &bone->transanim);
+			TransformVertexQuat(rotation, vt1, bone->transanim);
 			bone->transanim *= g_scale;
 			bone->transanim += pos;
 
