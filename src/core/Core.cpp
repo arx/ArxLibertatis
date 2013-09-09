@@ -82,6 +82,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/NPC.h"
 #include "game/Player.h"
 #include "game/Spells.h"
+#include "game/spell/FlyingEye.h"
 
 #include "gui/MenuPublic.h"
 #include "gui/Menu.h"
@@ -210,7 +211,6 @@ Vec3f PUSH_PLAYER_FORCE;
 Cinematic			*ControlCinematique=NULL;	// 2D Cinematic Controller
 ParticleManager	*pParticleManager = NULL;
 static TextureContainer * ombrignon = NULL;
-static TextureContainer *  Flying_Eye = NULL;
 TextureContainer *	scursor[8];			// Animated Hand Cursor TC
 TextureContainer *	pTCCrossHair;			// Animated Hand Cursor TC
 TextureContainer *	iconequip[5];
@@ -253,7 +253,6 @@ EERIE_3DOBJ * GoldCoinsObj[MAX_GOLD_COINS_VISUALS];// 3D Objects For Gold Coins
 EERIE_3DOBJ	* arrowobj=NULL;			// 3D Object for arrows
 EERIE_3DOBJ * cameraobj=NULL;			// Camera 3D Object		// NEEDTO: Remove for Final
 EERIE_3DOBJ * markerobj=NULL;			// Marker 3D Object		// NEEDTO: Remove for Final
-EERIE_3DOBJ * eyeballobj=NULL;			// EyeBall 3D Object	// NEEDTO: Load dynamically
 EERIE_3DOBJ * cabal=NULL;				// Cabalistic 3D Object // NEEDTO: Load dynamically
 static EERIE_BACKGROUND DefaultBkg;
 
@@ -1293,7 +1292,6 @@ void LoadSysTextures()
 	current->symbols[2]=RUNE_MEGA;
 	current->symbols[3]=RUNE_YOK;
 
-	Flying_Eye=			TextureContainer::LoadUI("graph/particles/flying_eye_fx");
 	specular=			TextureContainer::LoadUI("graph/particles/specular");
 	enviro=				TextureContainer::LoadUI("graph/particles/enviro");
 	sphere_particle=	TextureContainer::LoadUI("graph/particles/sphere");
@@ -1509,7 +1507,8 @@ void ReleaseDanaeBeforeRun() {
 		necklace.pTexTab[i] = NULL;
 	}
 	
-	delete eyeballobj, eyeballobj = NULL;
+	FlyingEye_Release();
+
 	delete cabal, cabal = NULL;
 	delete cameraobj, cameraobj = NULL;
 	delete markerobj, markerobj = NULL;
@@ -2640,42 +2639,6 @@ void DrawImproveVisionInterface()
 	}
 }
 
-float MagicSightFader=0.f;
-void DrawMagicSightInterface()
-{
-	if(eyeball.exist == 1 || !Flying_Eye)
-		return;
-
-
-	GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
-
-	float col = 0.75f + PULSATE * (1.f/20);
-
-	if(col > 1.f)
-		col = 1.f;
-
-	if(eyeball.exist < 0) {
-		col = (float)(-eyeball.exist) * (1.f/100);
-	} else if(eyeball.exist > 2) {
-		col = 1.f - eyeball.size.x;
-	}
-
-	EERIEDrawBitmap(0.f, 0.f, (float)DANAESIZX, (float)DANAESIZY, 0.0001f, Flying_Eye, Color::gray(col));
-
-	if(MagicSightFader > 0.f) {
-		col = MagicSightFader;
-
-		EERIEDrawBitmap(0.f, 0.f, (float)DANAESIZX, (float)DANAESIZY, 0.0001f, NULL, Color::gray(col));
-
-		MagicSightFader -= Original_framedelay * (1.f/400);
-
-		if(MagicSightFader < 0.f)
-			MagicSightFader = 0.f;
-	}
-
-	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-}
-
 void AddQuakeFX(float intensity,float duration,float period,long flags)
 {
 	if (QuakeFx.intensity>0.f)
@@ -3200,7 +3163,8 @@ void ReleaseSystemObjects() {
 		arx_assert(entities.size() > 0 && entities.player() == NULL);
 	}
 	
-	delete eyeballobj, eyeballobj = NULL;
+	FlyingEye_Release();
+
 	delete cabal, cabal = NULL;
 	delete cameraobj, cameraobj = NULL;
 	delete markerobj, markerobj = NULL;

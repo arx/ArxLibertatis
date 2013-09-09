@@ -69,7 +69,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 extern long DANAESIZX;
 extern Vec3f SPRmins;
 extern Vec3f SPRmaxs;
-extern EERIE_3DOBJ * eyeballobj;
+
 extern TextureContainer * Boom;
 
 std::vector<POLYBOOM> polyboom(MAX_POLYBOOM);
@@ -209,33 +209,6 @@ void ARXDRAW_DrawInterShadows()
 
 extern Entity * CAMERACONTROLLER;
 
-void ARXDRAW_DrawEyeBall() {
-	if(eyeball.exist == 0 || !eyeballobj)
-		return;
-
-	float d;
-
-	if(eyeball.exist < 0) {
-		d = (float)(-eyeball.exist)*( 1.0f / 100 );
-		eyeball.exist++;		
-	} else if(eyeball.exist > 2) {
-		d = (float)(eyeball.exist)*( 1.0f / 100 );
-	}
-	else
-		return;
-
-	Anglef angle = eyeball.angle;
-	angle.b = MAKEANGLE(180.f - angle.b);
-
-	Vec3f pos = eyeball.pos;
-	pos.y += eyeball.floating;
-
-	Vec3f scale = Vec3f::repeat(d);
-	Color3f rgb = Color3f::gray(d);
-	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	DrawEERIEObjEx(eyeballobj, &angle, &pos, &scale, rgb);
-}
 
 // This used to add a bias when the "forceZbias" config option was activated, but it
 // was off by default and we removed it.

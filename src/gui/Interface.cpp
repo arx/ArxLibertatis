@@ -76,6 +76,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/Levels.h"
 #include "game/NPC.h"
 #include "game/Player.h"
+#include "game/spell/FlyingEye.h"
 
 #include "graphics/BaseGraphicsTypes.h"
 #include "graphics/Color.h"

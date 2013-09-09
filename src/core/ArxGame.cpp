@@ -73,6 +73,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/NPC.h"
 #include "game/Player.h"
 #include "game/Spells.h"
+#include "game/spell/FlyingEye.h"
 
 #include "graphics/BaseGraphicsTypes.h"
 #include "graphics/Color.h"
@@ -180,7 +181,6 @@ extern void DANAE_KillCinematic();
 extern void LaunchWaitingCine();
 
 extern Cinematic* ControlCinematique;
-extern EERIE_3DOBJ* eyeballobj;
 extern EERIE_3DOBJ * arrowobj;
 extern TextureContainer * Movable;
 extern TextureContainer * tflare;
@@ -777,8 +777,9 @@ bool ArxGame::beforeRun() {
 	}
 	
 	DrawDebugInit();
+
+	FlyingEye_Init();
 	
-	eyeballobj = LoadTheObj("editor/obj3d/eyeball.teo", "eyeball_teo maps");
 	cabal = LoadTheObj("editor/obj3d/cabal.teo", "cabal_teo maps");
 	
 	cameraobj = loadObject("graph/obj3d/interactive/system/camera/camera.teo");

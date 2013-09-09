@@ -20,6 +20,24 @@
 #ifndef ARX_GAME_SPELL_FLYINGEYE_H
 #define ARX_GAME_SPELL_FLYINGEYE_H
 
+#include "graphics/BaseGraphicsTypes.h"
+#include "math/Angle.h"
 
+struct EYEBALL_DEF {
+	long exist;
+	Vec3f pos;
+	Anglef angle;
+	Vec3f size;
+	float floating;
+};
+
+extern EYEBALL_DEF eyeball;
+
+void FlyingEye_Init();
+void FlyingEye_Release();
+
+void DrawMagicSightInterface();
+
+void ARXDRAW_DrawEyeBall();
 
 #endif // ARX_GAME_SPELL_FLYINGEYE_H

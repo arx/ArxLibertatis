@@ -199,16 +199,6 @@ Spell GetSpellId(const std::string & spell);
 void TryToCastSpell(Entity * io, Spell spellid, long level, long target, SpellcastFlags flags, long duration);
 void ARX_SPELLS_Precast_Check();
 
-struct EYEBALL_DEF {
-	long exist;
-	Vec3f pos;
-	Anglef angle;
-	Vec3f size;
-	float floating;
-};
-
-extern EYEBALL_DEF eyeball;
-
 const size_t MAX_SPELL_SYMBOLS = 6;
 extern Rune SpellSymbol[MAX_SPELL_SYMBOLS];
 extern size_t CurrSpellSymbol;

@@ -154,7 +154,6 @@ void ShowFPS();
 void ShowDebugToggles();
 
 void DrawImproveVisionInterface();
-void DrawMagicSightInterface();
 
 void CheckMr();
 

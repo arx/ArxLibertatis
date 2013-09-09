@@ -53,6 +53,5 @@ struct EERIE_FACE;
 bool ARX_DrawHalo(TextureContainer * _pTex, float _fPosX, float _fPosY, float _fWidth, float _fHeight, float _fR, float _fG, float _fB, float _fDecalX, float _fDecalY);
 void ARXDRAW_DrawInterShadows();
 void ARXDRAW_DrawPolyBoom();
-void ARXDRAW_DrawEyeBall();
 
 #endif // ARX_GRAPHICS_EFFECTS_DRAWEFFECTS_H

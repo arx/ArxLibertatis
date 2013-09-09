@@ -72,6 +72,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/NPC.h"
 #include "game/Player.h"
 #include "game/Inventory.h"
+#include "game/spell/FlyingEye.h"
 
 #include "gui/Speech.h"
 #include "gui/Menu.h"
@@ -5226,8 +5227,6 @@ void ARX_SPELLS_Kill(long i) {
 	
 	delete spells[i].pSpellFx, spells[i].pSpellFx = NULL;
 }
-
-EYEBALL_DEF eyeball;
 
 float ARX_SPELLS_ApplyFireProtection(Entity * io,float damages)
 {
