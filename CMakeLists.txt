@@ -583,6 +583,7 @@ set(GAME_SOURCES
 	src/game/NPC.cpp
 	src/game/Player.cpp
 	src/game/Spells.cpp
+	src/game/spell/FlyingEye.cpp
 )
 
 set(GRAPHICS_SOURCES
