@@ -652,21 +652,8 @@ void CalculateInterZMapp(EERIE_3DOBJ * _pobj3dObj, long lIdList, long * _piInd,
 	}
 }
 
-void DrawEERIEInter(EERIE_3DOBJ *eobj, const TransformInfo &t, Entity *io, bool forceDraw) {
+void DrawEERIEInter_ModelTransform(EERIE_3DOBJ *eobj, const TransformInfo &t, Entity *io) {
 
-	if(!eobj)
-		return;
-
-	// Avoids To treat an object that isn't Visible
-	if(!forceDraw && io && io != entities.player() && !Cedric_IO_Visible(t.pos))
-		return;
-
-	float invisibility = Cedric_GetInvisibility(io);
-
-	if(!io && INVISIBILITY_OVERRIDE != 0.f)
-		invisibility = INVISIBILITY_OVERRIDE;
-
-	// Test for Mipmeshing then pre-computes vertices
 	EERIE_3D_BBOX box3D;
 	box3D.reset();
 
@@ -707,9 +694,14 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, const TransformInfo &t, Entity *io, bool 
 		io->bbox3D = box3D;
 		io->bbox2D = BBOX2D;
 	}
+}
 
-	if(!forceDraw && ARX_SCENE_PORTAL_ClipIO(io, t.pos))
-		return;
+void DrawEERIEInter_Render(EERIE_3DOBJ *eobj, const TransformInfo &t, Entity *io) {
+
+	float invisibility = Cedric_GetInvisibility(io);
+
+	if(!io && INVISIBILITY_OVERRIDE != 0.f)
+		invisibility = INVISIBILITY_OVERRIDE;
 
 	ColorMod colorMod;
 	colorMod.updateFromEntity(io, !io);
@@ -949,6 +941,23 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, const TransformInfo &t, Entity *io, bool 
 			}
 		}
 	}
+}
+
+void DrawEERIEInter(EERIE_3DOBJ *eobj, const TransformInfo &t, Entity *io, bool forceDraw) {
+
+	if(!eobj)
+		return;
+
+	// Avoids To treat an object that isn't Visible
+	if(!forceDraw && io && io != entities.player() && !Cedric_IO_Visible(t.pos))
+		return;
+
+	DrawEERIEInter_ModelTransform(eobj, t, io);
+
+	if(!forceDraw && ARX_SCENE_PORTAL_ClipIO(io, t.pos))
+		return;
+
+	DrawEERIEInter_Render(eobj, t, io);
 }
 
 
