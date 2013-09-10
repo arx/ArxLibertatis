@@ -81,8 +81,8 @@ static int OldColorFlashBlanc;
 
 extern float	FlashAlpha;
 extern float SpecialFadeDx;
-extern long DANAESIZX;
-extern long DANAESIZY;
+
+extern Rect g_size;
 
 float ADJUSTX(float a) {
 	return (((((a)-(WIDTHS>>1))*((float)LargeurRender/(float)WIDTHS))+(WIDTHS>>1)))*(640.f/(float)LargeurRender); //*((float)LARGEURS/(float)LargeurRender)
@@ -370,8 +370,8 @@ void Cinematic::Render(float FDIFF) {
 	
 	CinematicBitmap * tb;
 
-	LargeurRender = DANAESIZX;
-	HauteurRender = DANAESIZY;
+	LargeurRender = g_size.width();
+	HauteurRender = g_size.height();
 
 	if(projectload) {
 		GRenderer->Clear(Renderer::ColorBuffer);

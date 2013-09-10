@@ -391,7 +391,7 @@ void ARX_Player_Rune_Add(RuneFlag _ulRune)
 	}
 	
 	if(iNbSpellsAfter > iNbSpells) {
-		MakeBookFX(Vec3f(DANAESIZX - INTERFACE_RATIO(35), DANAESIZY - INTERFACE_RATIO(148), 0.00001f));
+		MakeBookFX(Vec3f(g_size.width() - INTERFACE_RATIO(35), g_size.height() - INTERFACE_RATIO(148), 0.00001f));
 		bBookHalo = true;
 		ulBookHaloTime = 0;
 	}
@@ -2650,7 +2650,7 @@ void ARX_PLAYER_Manage_Death() {
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
-	EERIEDrawBitmap(0.f, 0.f, static_cast<float>(DANAESIZX), static_cast<float>(DANAESIZY), 0.000091f, NULL, Color::gray(ratio));
+	EERIEDrawBitmap(0.f, 0.f, static_cast<float>(g_size.width()), static_cast<float>(g_size.height()), 0.000091f, NULL, Color::gray(ratio));
 }
 
 /*!

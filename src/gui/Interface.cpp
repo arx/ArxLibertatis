@@ -1238,8 +1238,8 @@ void ArxGame::manageEditorControls() {
 	eMouseState = MOUSE_IN_WORLD;
 
 	if(TRUE_PLAYER_MOUSELOOK_ON && config.input.autoReadyWeapon == false && config.input.mouseLookToggle) {
-		float fX = DANAESIZX * 0.5f;
-		float fY = DANAESIZY * 0.5f;
+		float fX = g_size.width() * 0.5f;
+		float fY = g_size.height() * 0.5f;
 		DANAEMouse.x = checked_range_cast<short>(fX);
 		DANAEMouse.y = checked_range_cast<short>(fY);
 	}
@@ -1365,7 +1365,7 @@ void ArxGame::manageEditorControls() {
 				if(px < INTERFACE_RATIO(10))
 					px = INTERFACE_RATIO(10);
 
-				py = DANAESIZY - INTERFACE_RATIO(158+32);
+				py = g_size.height() - INTERFACE_RATIO(158+32);
 
 				if(player.torch) {
 					if(MouseInRect(px, py, px + INTERFACE_RATIO(32), py + INTERFACE_RATIO(64))) {
@@ -1439,8 +1439,8 @@ void ArxGame::manageEditorControls() {
 
 				// redist
 				if((player.Skill_Redistribute) || (player.Attribute_Redistribute)) {
-					px = DANAESIZX - INTERFACE_RATIO(35) + lSLID_VALUE + GL_DECAL_ICONS;
-					py = DANAESIZY - INTERFACE_RATIO(218);
+					px = g_size.width() - INTERFACE_RATIO(35) + lSLID_VALUE + GL_DECAL_ICONS;
+					py = g_size.height() - INTERFACE_RATIO(218);
 
 					if(MouseInRect(px, py, px + INTERFACE_RATIO(32), py + INTERFACE_RATIO(32))) {
 						eMouseState = MOUSE_IN_REDIST_ICON;
@@ -1457,8 +1457,8 @@ void ArxGame::manageEditorControls() {
 
 				// gold
 				if(player.gold > 0) {
-					px = DANAESIZX - INTERFACE_RATIO(35) + lSLID_VALUE + GL_DECAL_ICONS;
-					py = DANAESIZY - INTERFACE_RATIO(183);
+					px = g_size.width() - INTERFACE_RATIO(35) + lSLID_VALUE + GL_DECAL_ICONS;
+					py = g_size.height() - INTERFACE_RATIO(183);
 
 					if(MouseInRect(px, py, px + INTERFACE_RATIO(32), py + INTERFACE_RATIO(32))) {
 						eMouseState = MOUSE_IN_GOLD_ICON;
@@ -1478,8 +1478,8 @@ void ArxGame::manageEditorControls() {
 				}
 
 				// book
-				px = DANAESIZX - INTERFACE_RATIO(35) + lSLID_VALUE + GL_DECAL_ICONS;
-				py = DANAESIZY - INTERFACE_RATIO(148);
+				px = g_size.width() - INTERFACE_RATIO(35) + lSLID_VALUE + GL_DECAL_ICONS;
+				py = g_size.height() - INTERFACE_RATIO(148);
 
 				if(MouseInRect(px, py, px + INTERFACE_RATIO(32), py + INTERFACE_RATIO(32))) {
 					eMouseState = MOUSE_IN_BOOK_ICON;
@@ -1493,8 +1493,8 @@ void ArxGame::manageEditorControls() {
 				}
 
 				// inventaire
-				px = DANAESIZX - INTERFACE_RATIO(35) + lSLID_VALUE + GL_DECAL_ICONS;
-				py = DANAESIZY - INTERFACE_RATIO(113);
+				px = g_size.width() - INTERFACE_RATIO(35) + lSLID_VALUE + GL_DECAL_ICONS;
+				py = g_size.height() - INTERFACE_RATIO(113);
 				static float flDelay=0;
 
 				if(MouseInRect(px, py, px + INTERFACE_RATIO(32), py + INTERFACE_RATIO(32)) || flDelay) {
@@ -1567,7 +1567,7 @@ void ArxGame::manageEditorControls() {
 			// steal
 			if(player.Interface & INTER_STEAL) {
 				px = static_cast<float>(-lSLID_VALUE);
-				py = DANAESIZY - INTERFACE_RATIO(78 + 32);
+				py = g_size.height() - INTERFACE_RATIO(78 + 32);
 
 				if(MouseInRect(px, py, px + INTERFACE_RATIO(32), py + INTERFACE_RATIO(32))) {
 					eMouseState=MOUSE_IN_STEAL_ICON;
@@ -1787,7 +1787,7 @@ void ArxGame::manageEditorControls() {
 							io->velocity = Vec3f::ZERO;
 							io->stopped = 1;
 
-							float y_ratio=(float)((float)DANAEMouse.y-(float)DANAECENTERY)/(float)DANAESIZY*2;
+							float y_ratio=(float)((float)DANAEMouse.y-(float)DANAECENTERY)/(float)g_size.height()*2;
 							float x_ratio=-(float)((float)DANAEMouse.x-(float)DANAECENTERX)/(float)DANAECENTERX;
 							Vec3f viewvector;
 							viewvector.x = -std::sin(radians(player.angle.b+(x_ratio*30.f))) * std::cos(radians(player.angle.a));
@@ -1885,7 +1885,7 @@ void ArxGame::manageEditorControls() {
 			if(player.bag) {
 
 				float fCenterX	= DANAECENTERX + INTERFACE_RATIO(-320 + 35) + INTERFACE_RATIO_DWORD(ITC.Get("hero_inventory")->m_dwWidth) - INTERFACE_RATIO(32 + 3) ;
-				float fSizY		= DANAESIZY - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY) + INTERFACE_RATIO(- 3 + 25) ;
+				float fSizY		= g_size.height() - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY) + INTERFACE_RATIO(- 3 + 25) ;
 
 				float posx = ARX_CAST_TO_INT_THEN_FLOAT( fCenterX );
 				float posy = ARX_CAST_TO_INT_THEN_FLOAT( fSizY );
@@ -2969,8 +2969,8 @@ void ArxGame::manageKeyMouse() {
 				if (config.input.mouseLookToggle && config.input.autoReadyWeapon == false)
 				{
 
-					float fX =  DANAESIZX * 0.5f;
-					float fY =	DANAESIZY * 0.5f;
+					float fX =  g_size.width() * 0.5f;
+					float fY =	g_size.height() * 0.5f;
 					DANAEMouse.x = checked_range_cast<short>(fX);
 					DANAEMouse.y = checked_range_cast<short>(fY);
 					
@@ -3298,7 +3298,7 @@ void ArxGame::manageKeyMouse() {
 		} else {
 			if(bRenderInCursorMode) {
 				Vec2s mousePosRel = GInput->getMousePosRel();
-				if(DANAEMouse.x == DANAESIZX - 1 && mousePosRel.x > 8) {
+				if(DANAEMouse.x == g_size.width() - 1 && mousePosRel.x > 8) {
 					mouseDiffY = 0;
 					mouseDiffX = mousePosRel.x;
 					bKeySpecialMove = true;
@@ -3307,7 +3307,7 @@ void ArxGame::manageKeyMouse() {
 					mouseDiffX = mousePosRel.x;
 					bKeySpecialMove = true;
 				}
-				if(DANAEMouse.y == DANAESIZY - 1 && mousePosRel.y > 8) {
+				if(DANAEMouse.y == g_size.height() - 1 && mousePosRel.y > 8) {
 					mouseDiffY = mousePosRel.y;
 					mouseDiffX = 0;
 					bKeySpecialMove = true;
@@ -3325,12 +3325,12 @@ void ArxGame::manageKeyMouse() {
 			player.desiredangle.g=player.angle.g=0.f;
 		}
 
-		float mouseSensitivity = (((float)GInput->getMouseSensitivity()) + 1.f) * 0.1f * ((640.f / (float)DANAESIZX));
+		float mouseSensitivity = (((float)GInput->getMouseSensitivity()) + 1.f) * 0.1f * ((640.f / (float)g_size.width()));
 		if (mouseSensitivity > 200) {
 			mouseSensitivity = 200;
 		}
 
-		mouseSensitivity *= (float)DANAESIZX * ( 1.0f / 640 );
+		mouseSensitivity *= (float)g_size.width() * ( 1.0f / 640 );
 		mouseSensitivity *= (1.0f / 5);
 
 		float mouseSensitivityY = mouseSensitivity;
@@ -3550,7 +3550,7 @@ void ARX_INTERFACE_DrawInventory(short _sNum, int _iX=0, int _iY=0)
 	fDecPulse += framedelay * 0.5f;
 
 	float fCenterX	= DANAECENTERX - INTERFACE_RATIO(320) + INTERFACE_RATIO(35) + _iX ;
-	float fSizY		= DANAESIZY - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY) + _iY;
+	float fSizY		= g_size.height() - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY) + _iY;
 
 	float fPosX = ARX_CAST_TO_INT_THEN_FLOAT( fCenterX );
 	float fPosY = ARX_CAST_TO_INT_THEN_FLOAT( fSizY );
@@ -3625,7 +3625,7 @@ void ARX_INTERFACE_Draw_Stealth_Gauge() {
 			if(px < INTERFACE_RATIO(10))
 				px = INTERFACE_RATIO(10);
 
-			float py = DANAESIZY - INTERFACE_RATIO(126 + 32);
+			float py = g_size.height() - INTERFACE_RATIO(126 + 32);
 			float t = v - CURRENT_PLAYER_COLOR;
 
 			if(t >= 15)
@@ -3701,7 +3701,7 @@ void ARX_INTERFACE_DrawDamagedEquipment()
 		if(px < INTERFACE_RATIO( 10 + 32 ))
 			px = INTERFACE_RATIO( 10 + 32 );
 
-		float py = DANAESIZY - INTERFACE_RATIO(158);
+		float py = g_size.height() - INTERFACE_RATIO(158);
 
 		for(long i = 0; i < 5; i++) {
 			if((needdraw & (1<<i)) && iconequip[i]) {
@@ -3899,7 +3899,7 @@ static void StdDraw(float posx, float posy, Color color, TextureContainer * tcc,
 //---------------------------------------------------------------------------
 void ManageSpellIcon(long i,float rrr,long flag)
 {
-	float POSX = DANAESIZX-INTERFACE_RATIO(35);
+	float POSX = g_size.width()-INTERFACE_RATIO(35);
 	Color color;
 	float posx = POSX+lSLID_VALUE;
 	float posy = (float)currpos;
@@ -3914,7 +3914,7 @@ void ManageSpellIcon(long i,float rrr,long flag)
 			px = INTERFACE_RATIO(10);
 		}
 		posx = px + INTERFACE_RATIO(33 + 33 + 33) + PRECAST_NUM * INTERFACE_RATIO(33);
-		posy = DANAESIZY - INTERFACE_RATIO(126+32); // niveau du stealth
+		posy = g_size.height() - INTERFACE_RATIO(126+32); // niveau du stealth
 		typ = (Spell)i; // TODO ugh
 	} else {
 		color = Color::gray(rrr);
@@ -4965,7 +4965,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 			}
 
 			UNICODE_ARXDrawTextCenteredScroll(hFontInGame,
-				(DANAESIZX*0.5f),
+				(g_size.width()*0.5f),
 				4,
 				(DANAECENTERX)*0.82f,
 				toDisplay,
@@ -5456,7 +5456,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 
 		Project.improve=ti;
 
-		GRenderer->SetViewport(Rect(DANAESIZX, DANAESIZY));
+		GRenderer->SetViewport(Rect(g_size.width(), g_size.height()));
 
 		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 		GRenderer->SetCulling(Renderer::CullNone);
@@ -5665,7 +5665,7 @@ void ARX_INTERFACE_DrawCurrentTorch() {
 	}
 	
 	float px = INTERFACE_RATIO(std::max(InventoryX + 110.f, 10.f));
-	float py = DANAESIZY - INTERFACE_RATIO(158.f + 32.f);
+	float py = g_size.height() - INTERFACE_RATIO(158.f + 32.f);
 	
 	EERIEDrawBitmap(px, py,
 					INTERFACE_RATIO_DWORD(player.torch->inv->m_dwWidth),
@@ -5730,16 +5730,16 @@ void ArxGame::drawAllInterface() {
 			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 
 			GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-			ARX_INTERFACE_DrawItem(ITC.Get("aim_maxi"), DANAECENTERX + INTERFACE_RATIO(-320+262.f), DANAESIZY + INTERFACE_RATIO(-72.f), 0.0001f, Color::gray(j));
+			ARX_INTERFACE_DrawItem(ITC.Get("aim_maxi"), DANAECENTERX + INTERFACE_RATIO(-320+262.f), g_size.height() + INTERFACE_RATIO(-72.f), 0.0001f, Color::gray(j));
 			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-			ARX_INTERFACE_DrawItem(ITC.Get("aim_empty"), DANAECENTERX + INTERFACE_RATIO(-320+262.f), DANAESIZY + INTERFACE_RATIO(-72.f), 0.0001f, Color::white);
+			ARX_INTERFACE_DrawItem(ITC.Get("aim_empty"), DANAECENTERX + INTERFACE_RATIO(-320+262.f), g_size.height() + INTERFACE_RATIO(-72.f), 0.0001f, Color::white);
 
 			if(bHitFlash && player.Full_Skill_Etheral_Link >= 40){
 				float j = 1.0f - fHitFlash;
 				GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 				GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 				Color col = (j < 0.5f) ? Color3f(j*2.0f, 1, 0).to<u8>() : Color3f(1, fHitFlash, 0).to<u8>();
-				ARX_INTERFACE_DrawItem(ITC.Get("aim_hit"), DANAECENTERX + INTERFACE_RATIO(-320+262.f-25), DANAESIZY + INTERFACE_RATIO(-72.f-30), 0.0001f, col);
+				ARX_INTERFACE_DrawItem(ITC.Get("aim_hit"), DANAECENTERX + INTERFACE_RATIO(-320+262.f-25), g_size.height() + INTERFACE_RATIO(-72.f-30), 0.0001f, col);
 				GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 			}
 		}
@@ -5845,7 +5845,7 @@ void ArxGame::drawAllInterface() {
 
 					arx_assert(ITC.Get("hero_inventory") != NULL);
 					float fCenterX	= DANAECENTERX + INTERFACE_RATIO(-320 + 35) + INTERFACE_RATIO_DWORD(ITC.Get("hero_inventory")->m_dwWidth) - INTERFACE_RATIO(32 + 3) ;
-					float fSizY		= DANAESIZY - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY) + INTERFACE_RATIO(- 3 + 25) ;
+					float fSizY		= g_size.height() - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY) + INTERFACE_RATIO(- 3 + 25) ;
 
 					float posx = ARX_CAST_TO_INT_THEN_FLOAT( fCenterX );
 					float posy = ARX_CAST_TO_INT_THEN_FLOAT( fSizY );
@@ -5879,12 +5879,12 @@ void ArxGame::drawAllInterface() {
 
 						posy += checked_range_cast<int>(fRatio);
 
-						ARX_INTERFACE_DrawItem(ITC.Get("hero_inventory_down"),	posx, DANAESIZY - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY) + INTERFACE_RATIO(-3 + 64));
+						ARX_INTERFACE_DrawItem(ITC.Get("hero_inventory_down"),	posx, g_size.height() - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY) + INTERFACE_RATIO(-3 + 64));
 
 						if(MouseInRect(posx, posy, posx + INTERFACE_RATIO(32), posy + INTERFACE_RATIO(32))) {
 							GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 							GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-							ARX_INTERFACE_DrawItem(ITC.Get("hero_inventory_down"),	posx, DANAESIZY - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY) + INTERFACE_RATIO(-3 + 64));
+							ARX_INTERFACE_DrawItem(ITC.Get("hero_inventory_down"),	posx, g_size.height() - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY) + INTERFACE_RATIO(-3 + 64));
 							GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 							SpecialCursor=CURSOR_INTERACTION_ON;
 
@@ -5932,7 +5932,7 @@ void ArxGame::drawAllInterface() {
 
 				const float fBag = (player.bag-1) * INTERFACE_RATIO(-121);
 				float fCenterX = DANAECENTERX + INTERFACE_RATIO(-320+35);
-				float fSizY = DANAESIZY - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY) + INTERFACE_RATIO(-3.f + 25 - 32);
+				float fSizY = g_size.height() - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY) + INTERFACE_RATIO(-3.f + 25 - 32);
 				const float fOffsetY = INTERFACE_RATIO(121);
 
 				int iOffsetY = checked_range_cast<int>(fBag + fOffsetY);
@@ -6005,8 +6005,8 @@ void ArxGame::drawAllInterface() {
 		if(!(player.Interface & INTER_COMBATMODE)) {
 			if(player.Interface & INTER_MINIBACK) {
 				// Draw/Manage Book Icon
-				float px=DANAESIZX - INTERFACE_RATIO(35) + lSLID_VALUE+GL_DECAL_ICONS;
-				float py=DANAESIZY - INTERFACE_RATIO(148);
+				float px=g_size.width() - INTERFACE_RATIO(35) + lSLID_VALUE+GL_DECAL_ICONS;
+				float py=g_size.height() - INTERFACE_RATIO(148);
 				ARX_INTERFACE_DrawItem(ITC.Get("book"), px, py);
 
 				if (eMouseState == MOUSE_IN_BOOK_ICON)
@@ -6018,8 +6018,8 @@ void ArxGame::drawAllInterface() {
 				}
 
 				// Draw/Manage BackPack Icon
-				px=DANAESIZX - INTERFACE_RATIO(35) + lSLID_VALUE+GL_DECAL_ICONS;
-				py=DANAESIZY - INTERFACE_RATIO(113);
+				px=g_size.width() - INTERFACE_RATIO(35) + lSLID_VALUE+GL_DECAL_ICONS;
+				py=g_size.height() - INTERFACE_RATIO(113);
 				ARX_INTERFACE_DrawItem(ITC.Get("backpack"),px,py);
 
 				if (eMouseState == MOUSE_IN_INVENTORY_ICON)
@@ -6034,7 +6034,7 @@ void ArxGame::drawAllInterface() {
 				if (player.Interface & INTER_STEAL)
 				{
 					px = static_cast<float>(-lSLID_VALUE);
-					py = DANAESIZY - INTERFACE_RATIO(78.f + 32);
+					py = g_size.height() - INTERFACE_RATIO(78.f + 32);
 					ARX_INTERFACE_DrawItem(ITC.Get("steal"), px, py);
 
 					if (eMouseState == MOUSE_IN_STEAL_ICON)
@@ -6082,8 +6082,8 @@ void ArxGame::drawAllInterface() {
 				// Draw/Manage Advancement Icon
 				if(player.Skill_Redistribute || player.Attribute_Redistribute)
 				{
-					px=DANAESIZX - INTERFACE_RATIO(35) + lSLID_VALUE+GL_DECAL_ICONS;
-					py=DANAESIZY - INTERFACE_RATIO(218);
+					px=g_size.width() - INTERFACE_RATIO(35) + lSLID_VALUE+GL_DECAL_ICONS;
+					py=g_size.height() - INTERFACE_RATIO(218);
 					ARX_INTERFACE_DrawItem(ITC.Get("icon_lvl_up"),px,py);		
 
 					if (eMouseState == MOUSE_IN_REDIST_ICON)
@@ -6097,8 +6097,8 @@ void ArxGame::drawAllInterface() {
 
 				// Draw/Manage Gold Purse Icon
 				if(player.gold > 0) {
-					px = DANAESIZX - INTERFACE_RATIO(35) + lSLID_VALUE+2+GL_DECAL_ICONS;
-					py = DANAESIZY - INTERFACE_RATIO(183);
+					px = g_size.width() - INTERFACE_RATIO(35) + lSLID_VALUE+2+GL_DECAL_ICONS;
+					py = g_size.height() - INTERFACE_RATIO(183);
 					ARX_INTERFACE_DrawItem(ITC.Get("gold"), px, py);
 
 					if (eMouseState == MOUSE_IN_GOLD_ICON)
@@ -6135,8 +6135,8 @@ void ArxGame::drawAllInterface() {
 					if(ulBookHaloTime >= 3000) // ms
 						bBookHalo = false;
 
-					float POSX = DANAESIZX-INTERFACE_RATIO(35)+lSLID_VALUE+GL_DECAL_ICONS;
-					float POSY = DANAESIZY-INTERFACE_RATIO(148);
+					float POSX = g_size.width()-INTERFACE_RATIO(35)+lSLID_VALUE+GL_DECAL_ICONS;
+					float POSY = g_size.height()-INTERFACE_RATIO(148);
 					TextureContainer *tc = ITC.Get("book");
 					TextureContainer *halo = tc->getHalo();
 
@@ -6151,7 +6151,7 @@ void ArxGame::drawAllInterface() {
 
 		if(CHANGE_LEVEL_ICON > -1 && ChangeLevel) {
 			//Setting px and py as float to avoid warning on function ARX_INTERFACE_DrawItem and MouseInRect
-			float px = DANAESIZX - INTERFACE_RATIO_DWORD(ChangeLevel->m_dwWidth);
+			float px = g_size.width() - INTERFACE_RATIO_DWORD(ChangeLevel->m_dwWidth);
 			float py = 0;
 
 			float vv = 0.9f - EEsin(arxtime.get_frame_time()*( 1.0f / 50 ))*0.5f+rnd()*( 1.0f / 10 );
@@ -6194,7 +6194,7 @@ void ArxGame::drawAllInterface() {
 
 			count = std::max(count, count2);
 			Vec3f pos;
-			pos.x = DANAESIZX - (count * INTERFACE_RATIO(32));
+			pos.x = g_size.width() - (count * INTERFACE_RATIO(32));
 
 			if(CHANGE_LEVEL_ICON > -1)
 				pos.x -= INTERFACE_RATIO(32);
@@ -6252,8 +6252,8 @@ void ArxGame::drawAllInterface() {
 			v[2] = TexturedVertex(Vec3f(0, 0, .001f), 1.f, Color::white.toBGR(), 1, Vec2f(1.f, 1.f));
 			v[3] = TexturedVertex(Vec3f(0, 0, .001f), 1.f, Color::white.toBGR(), 1, Vec2f::Y_AXIS);
 
-			float px = DANAESIZX - INTERFACE_RATIO(33) + INTERFACE_RATIO(1) + lSLID_VALUE;
-			float py = DANAESIZY - INTERFACE_RATIO(81);
+			float px = g_size.width() - INTERFACE_RATIO(33) + INTERFACE_RATIO(1) + lSLID_VALUE;
+			float py = g_size.height() - INTERFACE_RATIO(81);
 			ARX_INTERFACE_DrawItem(ITC.Get("empty_gauge_blue"), px, py, 0.f); //399
 
 			float fnl=(float)player.life/(float)player.Full_maxlife;
@@ -6270,13 +6270,13 @@ void ArxGame::drawAllInterface() {
 				ulcolor = Color(u8(255 - g), u8(g) , 0);
 			}
 
-			EERIEDrawBitmap2DecalY(fSLID_VALUE_neg, DANAESIZY - INTERFACE_RATIO(78),
+			EERIEDrawBitmap2DecalY(fSLID_VALUE_neg, g_size.height() - INTERFACE_RATIO(78),
 				INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_red")->m_dwWidth),
 				INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_red")->m_dwHeight),
 				0.f, ITC.Get("filled_gauge_red"), ulcolor, (1.f - fnl));
 
 			if(!(player.Interface & INTER_COMBATMODE)) {
-				if(MouseInRect(fSLID_VALUE_neg, DANAESIZY - INTERFACE_RATIO(78), fSLID_VALUE_neg + INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_red")->m_dwWidth), DANAESIZY - INTERFACE_RATIO(78) + INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_red")->m_dwHeight)))
+				if(MouseInRect(fSLID_VALUE_neg, g_size.height() - INTERFACE_RATIO(78), fSLID_VALUE_neg + INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_red")->m_dwWidth), g_size.height() - INTERFACE_RATIO(78) + INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_red")->m_dwHeight)))
 				{
 					if((EERIEMouseButton & 1) && !(LastMouseClick & 1)) {
 							std::stringstream ss;
@@ -6290,7 +6290,7 @@ void ArxGame::drawAllInterface() {
 			//END RED GAUGE
 
 			px = 0.f-lSLID_VALUE;
-			py = DANAESIZY - INTERFACE_RATIO(78);
+			py = g_size.height() - INTERFACE_RATIO(78);
 			ARX_INTERFACE_DrawItem(ITC.Get("empty_gauge_red"), px, py, 0.001f);
 
 			//---------------------------------------------------------------------
@@ -6299,12 +6299,12 @@ void ArxGame::drawAllInterface() {
 			float LARGG=INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_blue")->m_dwWidth);
 			float HAUTT=INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_blue")->m_dwHeight);
 
-			EERIEDrawBitmap2DecalY(DANAESIZX - INTERFACE_RATIO(33) + INTERFACE_RATIO(1) + lSLID_VALUE,
-				DANAESIZY - INTERFACE_RATIO(81), LARGG, HAUTT, 0.f,
+			EERIEDrawBitmap2DecalY(g_size.width() - INTERFACE_RATIO(33) + INTERFACE_RATIO(1) + lSLID_VALUE,
+				g_size.height() - INTERFACE_RATIO(81), LARGG, HAUTT, 0.f,
 				ITC.Get("filled_gauge_blue"), Color::white, (1.f - fnm));
 
 			if(!(player.Interface & INTER_COMBATMODE)) {
-				if(MouseInRect(DANAESIZX - INTERFACE_RATIO(33) + lSLID_VALUE,DANAESIZY - INTERFACE_RATIO(81),DANAESIZX - INTERFACE_RATIO(33) + lSLID_VALUE+LARGG,DANAESIZY - INTERFACE_RATIO(81)+HAUTT))
+				if(MouseInRect(g_size.width() - INTERFACE_RATIO(33) + lSLID_VALUE,g_size.height() - INTERFACE_RATIO(81),g_size.width() - INTERFACE_RATIO(33) + lSLID_VALUE+LARGG,g_size.height() - INTERFACE_RATIO(81)+HAUTT))
 				{
 					if((EERIEMouseButton & 1) && !(LastMouseClick & 1)) {
 							std::stringstream ss;
@@ -6351,7 +6351,7 @@ void ArxGame::drawAllInterface() {
 						arrow_left_tc, lcolor);
 
 					// Right
-					EERIEDrawBitmapUVs(DANAESIZX - fSizeX - fMove, DANAECENTERY - (fSizeY * .5f), fSizeX, fSizeY,
+					EERIEDrawBitmapUVs(g_size.width() - fSizeX - fMove, DANAECENTERY - (fSizeY * .5f), fSizeX, fSizeY,
 						.01f, arrow_left_tc, lcolor, 1.f, 0.f, 0.f, 0.f, 1.f, 1.f, 0.f, 1.f);
 
 					// Up
@@ -6359,7 +6359,7 @@ void ArxGame::drawAllInterface() {
 						arrow_left_tc, lcolor, 0.f, 1.f, 0.f, 0.f, 1.f, 1.f, 1.f, 0.f);
 
 					// Down
-					EERIEDrawBitmapUVs(DANAECENTERX - (fSizeY * .5f), (DANAESIZY - fSizeX) - fMove, fSizeY, fSizeX,
+					EERIEDrawBitmapUVs(DANAECENTERX - (fSizeY * .5f), (g_size.height() - fSizeX) - fMove, fSizeY, fSizeX,
 						.01f, arrow_left_tc, lcolor, 1.f, 1.f, 1.f, 0.f, 0.f, 1.f, 0.f, 0.f);
 				}
 
@@ -6413,7 +6413,7 @@ long Manage3DCursor(long flags)
 	float angle=radians(MAKEANGLE(player.angle.b));
 	float angle2=radians(MAKEANGLE(player.angle.b-90.f));
 				
-	float zrange=(DANAESIZY-DANAEMouse.y)/(DANAESIZY-drop_miny); //between 0 (bottom) and 1 (top)
+	float zrange=(g_size.height()-DANAEMouse.y)/(g_size.height()-drop_miny); //between 0 (bottom) and 1 (top)
 	float va=player.angle.a;
 
 	if(va > 180)

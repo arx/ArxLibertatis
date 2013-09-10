@@ -195,8 +195,8 @@ void AddFlare(const Vec2s & pos, float sm, short typ, Entity * io, bool bookDraw
 			fl->v.p.y = io->pos.y + EEsin(radians(MAKEANGLE(io->angle.a + vy))) * 100.f - 150.f;
 			fl->v.p.z = io->pos.z + EEcos(radians(MAKEANGLE(io->angle.b + vx))) * 100.f;
 		} else {
-			fl->v.p.x = float(pos.x - (DANAESIZX / 2)) * 150.f / float(DANAESIZX);
-			fl->v.p.y = float(pos.y - (DANAESIZY / 2)) * 150.f / float(DANAESIZX);
+			fl->v.p.x = float(pos.x - (g_size.width() / 2)) * 150.f / float(g_size.width());
+			fl->v.p.y = float(pos.y - (g_size.height() / 2)) * 150.f / float(g_size.width());
 			fl->v.p.z = 75.f;
 			ka = *oldcam;
 			SetActiveCamera(&ka);

@@ -145,7 +145,7 @@ void ARX_DAMAGE_Show_Hit_Blood()
 		else
 			color = Color3f(1.f, Blood_Pos - 1.f, Blood_Pos - 1.f).to<u8>();
 
-		EERIEDrawBitmap(0.f, 0.f, (float)DANAESIZX, (float)DANAESIZY, 0.00009f, NULL, color);
+		EERIEDrawBitmap(0.f, 0.f, (float)g_size.width(), (float)g_size.height(), 0.00009f, NULL, color);
 		GRenderer->SetRenderState(Renderer::DepthWrite, true);
 		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	} else if(Blood_Pos > 0.f) {
@@ -158,7 +158,7 @@ void ARX_DAMAGE_Show_Hit_Blood()
 		else
 			color = Color3f(1.f, 1.f - Blood_Pos, 1.f - Blood_Pos).to<u8>();
 
-		EERIEDrawBitmap(0.f, 0.f, (float)DANAESIZX, (float)DANAESIZY, 0.00009f, NULL, color);
+		EERIEDrawBitmap(0.f, 0.f, (float)g_size.width(), (float)g_size.height(), 0.00009f, NULL, color);
 		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 		GRenderer->SetRenderState(Renderer::DepthWrite, true);
 	}

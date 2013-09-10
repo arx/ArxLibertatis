@@ -167,15 +167,15 @@ void CleanInventory() {
 }
 
 extern Vec2s DANAEMouse;
-extern long DANAESIZX;
-extern long DANAESIZY;
+
+extern Rect g_size;
 extern long DANAECENTERX;
 extern long DANAECENTERY;
 
 static Entity * GetInventoryObj(Vec2s * pos) {
 	
 	float fCenterX	= DANAECENTERX - INTERFACE_RATIO(320) + INTERFACE_RATIO(35);
-	float fSizY		= DANAESIZY - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY);
+	float fSizY		= g_size.height() - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY);
 
 	int iPosX = checked_range_cast<int>(fCenterX);
 	int iPosY = checked_range_cast<int>(fSizY);
@@ -1219,7 +1219,7 @@ bool PutInInventory()
 	sy = DRAGINTER->sizey;
 
 	// Check for backpack Icon
-	if (MouseInRect((float)DANAESIZX - 35, (float)DANAESIZY - 113, (float)DANAESIZX - 35 + 32, (float)DANAESIZY - 113 + 32))
+	if (MouseInRect((float)g_size.width() - 35, (float)g_size.height() - 113, (float)g_size.width() - 35 + 32, (float)g_size.height() - 113 + 32))
 	{
 		if (CanBePutInInventory(DRAGINTER))
 		{
@@ -1381,7 +1381,7 @@ bool PutInInventory()
 
 
 	float fCenterX	= DANAECENTERX - INTERFACE_RATIO(320) + INTERFACE_RATIO(35);
-	float fSizY		= DANAESIZY - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY);
+	float fSizY		= g_size.height() - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY);
 
 	short iPosX = checked_range_cast<short>(fCenterX);
 	short iPosY = checked_range_cast<short>(fSizY);
@@ -1543,7 +1543,7 @@ bool InPlayerInventoryPos(Vec2s * pos)
 
 
 	float fCenterX	= DANAECENTERX - INTERFACE_RATIO(320) + INTERFACE_RATIO(35);
-	float fSizY		= DANAESIZY - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY);
+	float fSizY		= g_size.height() - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY);
 
 	short iPosX = checked_range_cast<short>(fCenterX);
 	short iPosY = checked_range_cast<short>(fSizY);
@@ -1577,7 +1577,7 @@ bool InPlayerInventoryPos(Vec2s * pos)
 		            (pos->x >= iPosX) &&
 		            (pos->x <= iPosX + INVENTORY_X * INTERFACE_RATIO(32)) &&
 		            (pos->y >= iPosY + iY) &&
-		            (pos->y <= DANAESIZY)))
+					(pos->y <= g_size.height())))
 			return true;
 
 		for (int i = 0; i < player.bag; i++)
@@ -1982,7 +1982,7 @@ bool TakeFromInventory(Vec2s * pos)
 
 
 	float fCenterX	= DANAECENTERX - INTERFACE_RATIO(320) + INTERFACE_RATIO(35);
-	float fSizY		= DANAESIZY - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY);
+	float fSizY		= g_size.height() - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY);
 
 	int iPosX = checked_range_cast<int>(fCenterX);
 	int iPosY = checked_range_cast<int>(fSizY);

@@ -1488,12 +1488,12 @@ void ArxGame::renderLevel() {
 	if(CINEMA_DECAL != 0.f) {
 		Rect rectz[2];
 		rectz[0].left = rectz[1].left = 0;
-		rectz[0].right = rectz[1].right = DANAESIZX;
+		rectz[0].right = rectz[1].right = g_size.width();
 		rectz[0].top = 0;
 		long lMulResult = checked_range_cast<long>(CINEMA_DECAL * Yratio);
 		rectz[0].bottom = lMulResult;
-		rectz[1].top = DANAESIZY - lMulResult;
-		rectz[1].bottom = DANAESIZY;
+		rectz[1].top = g_size.height() - lMulResult;
+		rectz[1].bottom = g_size.height();
 		GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer, Color::none, 0.0f, 2, rectz);
 	}
 
@@ -1569,7 +1569,7 @@ void ArxGame::renderLevel() {
 		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 		GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 
-		EERIEDrawBitmap(0.f, 0.f, (float)DANAESIZX, (float)DANAESIZY, 0.0001f, NULL, Color(71, 71, 255));
+		EERIEDrawBitmap(0.f, 0.f, (float)g_size.width(), (float)g_size.height(), 0.0001f, NULL, Color(71, 71, 255));
 
 		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 		GRenderer->SetRenderState(Renderer::DepthWrite, true);
@@ -1853,8 +1853,8 @@ void ArxGame::update2DFX()
 			if(ltvv.rhw > 0.f &&
 				ltvv.p.x > 0.f &&
 				ltvv.p.y > (CINEMA_DECAL*Yratio) &&
-				ltvv.p.x < DANAESIZX &&
-				ltvv.p.y < (DANAESIZY-(CINEMA_DECAL*Yratio))
+				ltvv.p.x < g_size.width() &&
+				ltvv.p.y < (g_size.height()-(CINEMA_DECAL*Yratio))
 				)
 			{
 				Vec3f vector = lv.p - ACTIVECAM->orgTrans.pos;

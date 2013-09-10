@@ -104,11 +104,12 @@ static void ExtractAllCreditsTextInformations();
 static void InitCredits() {
 	
 	if(CreditsData.iFontAverageHeight != -1
-		&& CreditsData.sizex == DANAESIZX && CreditsData.sizey == DANAESIZY) {
+		&& CreditsData.sizex == g_size.width() && CreditsData.sizey == g_size.height()) {
 		return;
 	}
 	
-	CreditsData.sizex = DANAESIZX, CreditsData.sizey = DANAESIZY;
+	CreditsData.sizex = g_size.width();
+	CreditsData.sizey = g_size.height();
 	
 	CreditsData.aCreditsInformations.clear();
 	
@@ -142,7 +143,7 @@ static void addCreditsLine(string & phrase, float & drawpos) {
 	//int linesize = hFontCredits->GetTextSize(phrase).x;
 	
 	static const int MARGIN_WIDTH = 20;
-	Rect linerect(DANAESIZX - MARGIN_WIDTH - MARGIN_WIDTH, hFontCredits->getLineHeight());
+	Rect linerect(g_size.width() - MARGIN_WIDTH - MARGIN_WIDTH, hFontCredits->getLineHeight());
 	
 	while(!phrase.empty()) {
 		
@@ -155,7 +156,7 @@ static void addCreditsLine(string & phrase, float & drawpos) {
 		
 		// Center the text on the screen
 		int linesize = hFontCredits->getTextSize(infomations.sText).x;
-		infomations.sPos.x = (DANAESIZX - linesize) / 2;
+		infomations.sPos.x = (g_size.width() - linesize) / 2;
 		
 		LogDebug("credit line: '" << infomations.sText << "' (" << linesize << "," << infomations.sText.length() << ")");
 		
@@ -208,7 +209,7 @@ static void ExtractAllCreditsTextInformations() {
 	string phrase;
 
 	//Use to calculate the positions
-	float drawpos = static_cast<float>(DANAESIZY);
+	float drawpos = static_cast<float>(g_size.height());
 
 	while(std::getline(iss, phrase)) {
 		
@@ -243,7 +244,7 @@ void Credits::render() {
 		
 		//Draw Background
 		if(ARXmenu.mda->pTexCredits) {
-			EERIEDrawBitmap2(0, 0, static_cast<float>(DANAESIZX), static_cast<float>(DANAESIZY + 1), .999f, ARXmenu.mda->pTexCredits, Color::white);
+			EERIEDrawBitmap2(0, 0, static_cast<float>(g_size.width()), static_cast<float>(g_size.height() + 1), .999f, ARXmenu.mda->pTexCredits, Color::white);
 		}
 		
 		// Use time passed between frame to create scroll effect
@@ -259,7 +260,7 @@ void Credits::render() {
 			float yy = it->sPos.y + ARXmenu.mda->creditspos;
 
 			//Display the text only if he is on the viewport
-			if ((yy >= -CreditsData.iFontAverageHeight) && (yy <= DANAESIZY)) 
+			if ((yy >= -CreditsData.iFontAverageHeight) && (yy <= g_size.height())) 
 			{
 				hFontCredits->draw(it->sPos.x, static_cast<int>(yy), it->sText, it->fColors);
 			}
@@ -269,7 +270,7 @@ void Credits::render() {
 				++CreditsData.iFirstLine;
 			}
 			
-			if ( yy >= DANAESIZY )
+			if ( yy >= g_size.height() )
 				break ; //it's useless to continue because next phrase will not be inside the viewport
 		}
 	} else {

@@ -285,10 +285,12 @@ static long LASTfpscount = 0;
 
 long LOAD_N_DONT_ERASE=0;
 long NO_TIME_INIT=0;
-long DANAESIZX=640;
-long DANAESIZY=480;
+
+Rect g_size(640, 480);
+
 long DANAECENTERX;
 long DANAECENTERY;
+
 long CurrFightPos=0;
 long NO_PLAYER_POSITION_RESET=0;
 long CURRENT_BASE_FOCAL=310;
@@ -377,16 +379,15 @@ void DANAE_KillCinematic() {
 static bool AdjustUI() {
 	
 	// Sets Danae Screen size depending on windowed/full-screen state
-	DANAESIZX = mainApp->getWindow()->getSize().x;
-	DANAESIZY = mainApp->getWindow()->getSize().y;
+	g_size = Rect(mainApp->getWindow()->getSize().x, mainApp->getWindow()->getSize().y);
 	
 	// Now computes screen center
-	DANAECENTERX = DANAESIZX>>1;
-	DANAECENTERY = DANAESIZY>>1;
+	DANAECENTERX = g_size.width()>>1;
+	DANAECENTERY = g_size.height()>>1;
 	
 	// Computes X & Y screen ratios compared to a standard 640x480 screen
-	Xratio = DANAESIZX * ( 1.0f / 640 );
-	Yratio = DANAESIZY * ( 1.0f / 480 );
+	Xratio = g_size.width() * ( 1.0f / 640 );
+	Yratio = g_size.height() * ( 1.0f / 480 );
 	
 	if(!ARX_Text_Init()) {
 		return false;
@@ -2602,11 +2603,11 @@ void ManageFade()
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	
-	EERIEDrawBitmap(0.f,0.f, (float)DANAESIZX, (float)DANAESIZY, 0.0001f, NULL, Color::gray(Visibility));
+	EERIEDrawBitmap(0.f,0.f, (float)g_size.width(), (float)g_size.height(), 0.0001f, NULL, Color::gray(Visibility));
 
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	float col=Visibility;
-	EERIEDrawBitmap(0.f,0.f,(float)DANAESIZX,(float)DANAESIZY,0.0001f,
+	EERIEDrawBitmap(0.f,0.f,(float)g_size.width(),(float)g_size.height(),0.0001f,
 	                NULL, Color(col * FADECOLOR.r, col * FADECOLOR.g, col * FADECOLOR.b));
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
@@ -2621,7 +2622,7 @@ void CheckMr()
 	{
 		if (GRenderer && Mr_tc)
 		{
-			EERIEDrawBitmap(DANAESIZX-(128.f*Xratio), 0.f, (float)128*Xratio, (float)128*Yratio,0.0001f,
+			EERIEDrawBitmap(g_size.width()-(128.f*Xratio), 0.f, (float)128*Xratio, (float)128*Yratio,0.0001f,
 			                Mr_tc, Color::gray(0.5f + PULSATE * (1.0f/10)));
 		}
 		else
@@ -2635,7 +2636,7 @@ void DrawImproveVisionInterface()
 	if(ombrignon)
 	{
 		float mod = 0.6f + PULSATE * 0.35f;
-		EERIEDrawBitmap(0.f,0.f,(float)DANAESIZX,(float)DANAESIZY,0.0001f, ombrignon, Color3f((0.5f+PULSATE*( 1.0f / 10 ))*mod,0.f,0.f).to<u8>());
+		EERIEDrawBitmap(0.f,0.f,(float)g_size.width(),(float)g_size.height(),0.0001f, ombrignon, Color3f((0.5f+PULSATE*( 1.0f / 10 ))*mod,0.f,0.f).to<u8>());
 	}
 }
 
@@ -2963,8 +2964,8 @@ void AdjustMousePosition()
 	if (EERIEMouseGrab && GInput->hasMouseMoved())
 	{
 		Vec2s pos;
-		pos.x = (short)(DANAESIZX >> 1);
-		pos.y = (short)(DANAESIZY >> 1);
+		pos.x = (short)(g_size.width() >> 1);
+		pos.y = (short)(g_size.height() >> 1);
 
 		if (!((ARXmenu.currentmode == AMCM_NEWQUEST)
 				||	(player.Interface & INTER_MAP && (Book_Mode != BOOKMODE_MINIMAP)))) {

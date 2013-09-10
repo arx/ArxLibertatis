@@ -33,8 +33,8 @@ float MagicSightFader=0.f;
 static TextureContainer * Flying_Eye = NULL;
 static EERIE_3DOBJ * eyeballobj = NULL;			// EyeBall 3D Object	// NEEDTO: Load dynamically
 
-extern long DANAESIZX;
-extern long DANAESIZY;
+extern Rect g_size;
+
 extern float Original_framedelay;
 extern float PULSATE;
 
@@ -67,12 +67,12 @@ void DrawMagicSightInterface()
 		col = 1.f - eyeball.size.x;
 	}
 
-	EERIEDrawBitmap(0.f, 0.f, (float)DANAESIZX, (float)DANAESIZY, 0.0001f, Flying_Eye, Color::gray(col));
+	EERIEDrawBitmap(0.f, 0.f, (float)g_size.width(), (float)g_size.height(), 0.0001f, Flying_Eye, Color::gray(col));
 
 	if(MagicSightFader > 0.f) {
 		col = MagicSightFader;
 
-		EERIEDrawBitmap(0.f, 0.f, (float)DANAESIZX, (float)DANAESIZY, 0.0001f, NULL, Color::gray(col));
+		EERIEDrawBitmap(0.f, 0.f, (float)g_size.width(), (float)g_size.height(), 0.0001f, NULL, Color::gray(col));
 
 		MagicSightFader -= Original_framedelay * (1.f/400);
 

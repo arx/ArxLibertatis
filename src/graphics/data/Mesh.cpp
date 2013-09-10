@@ -1500,8 +1500,8 @@ void PrepareCamera(EERIE_CAMERA * cam)
 {
 	SP_PrepareCamera(cam);
 
-	EERIE_CreateMatriceProj(static_cast<float>(DANAESIZX),
-							static_cast<float>(DANAESIZY),
+	EERIE_CreateMatriceProj(static_cast<float>(g_size.width()),
+							static_cast<float>(g_size.height()),
 							cam);
 
 }

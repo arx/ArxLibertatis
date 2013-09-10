@@ -66,7 +66,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Interactive.h"
 
 // Some external defs needing to be cleaned...
-extern long DANAESIZX;
+extern Rect g_size;
+
 extern Vec3f SPRmins;
 extern Vec3f SPRmaxs;
 

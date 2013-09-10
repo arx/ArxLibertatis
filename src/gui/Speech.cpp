@@ -533,19 +533,19 @@ void ARX_SPEECH_Update() {
 		float fZoneClippHeight	=	static_cast<float>(sSize.y * 3);
 		float fStartYY			=	100 * Yratio;
 		float fStartY			=	static_cast<float>(((int)fStartYY - (int)fZoneClippHeight) >> 1);
-		float fDepY				=	((float)DANAESIZY) - fStartYY + fStartY - speech->fDeltaY + sSize.y;
+		float fDepY				=	((float)g_size.height()) - fStartYY + fStartY - speech->fDeltaY + sSize.y;
 		float fZoneClippY		=	fDepY + speech->fDeltaY;
 
 		float fAdd = fZoneClippY + fZoneClippHeight ;
 
 		Rect::Num y = checked_range_cast<Rect::Num>(fZoneClippY);
 		Rect::Num h = checked_range_cast<Rect::Num>(fAdd);
-		Rect clippingRect(0, y+1, DANAESIZX, h);
+		Rect clippingRect(0, y+1, g_size.width(), h);
 		float iTaille = (float)ARX_UNICODE_DrawTextInRect(
 							hFontInBook,
 							10.f,
 							fDepY + fZoneClippHeight,
-							-10.f + (float)DANAESIZX,
+							-10.f + (float)g_size.width(),
 							speech->text,
 							Color::white,
 							&clippingRect);
@@ -554,10 +554,10 @@ void ARX_SPEECH_Update() {
 		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 		GRenderer->SetRenderState(Renderer::DepthTest, false);
 
-		EERIEDrawFill2DRectDegrad(0.f, fZoneClippY - 1.f,  static_cast<float>(DANAESIZX),
+		EERIEDrawFill2DRectDegrad(0.f, fZoneClippY - 1.f,  static_cast<float>(g_size.width()),
 								  fZoneClippY + (sSize.y * 3 / 4), 0.f, Color::white, Color::black);
 		EERIEDrawFill2DRectDegrad(0.f, fZoneClippY + fZoneClippHeight - (sSize.y * 3 / 4),
-								  static_cast<float>(DANAESIZX), fZoneClippY + fZoneClippHeight,
+								  static_cast<float>(g_size.width()), fZoneClippY + fZoneClippHeight,
 								  0.f, Color::black, Color::white);
 
 		GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendZero);

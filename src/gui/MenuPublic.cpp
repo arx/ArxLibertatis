@@ -84,8 +84,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "window/RenderWindow.h"
 
 extern bool bQuickGenFirstClick;
-extern long DANAESIZX;
-extern long DANAESIZY;
+
+extern Rect g_size;
 
 extern long LOADQUEST_SLOT;
 

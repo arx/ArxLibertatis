@@ -108,8 +108,8 @@ static bool newFullscreen;
 // Imported global variables and functions
 extern ARX_MENU_DATA ARXmenu;
 extern TextureContainer * scursor[];
-extern long DANAESIZX;
-extern long DANAESIZY;
+
+extern Rect g_size;
 
 extern long REFUSE_GAME_RETURN;
 
@@ -290,20 +290,20 @@ static void FadeInOut(float _fVal) {
 	d3dvertex[0].rhw=0.999999f;
 	d3dvertex[0].color=iColor;
 
-	d3dvertex[1].p.x=static_cast<float>(DANAESIZX);
+	d3dvertex[1].p.x=static_cast<float>(g_size.width());
 	d3dvertex[1].p.y=0;
 	d3dvertex[1].p.z=0.f;
 	d3dvertex[1].rhw=0.999999f;
 	d3dvertex[1].color=iColor;
 
 	d3dvertex[2].p.x=0;
-	d3dvertex[2].p.y=static_cast<float>(DANAESIZY);
+	d3dvertex[2].p.y=static_cast<float>(g_size.height());
 	d3dvertex[2].p.z=0.f;
 	d3dvertex[2].rhw=0.999999f;
 	d3dvertex[2].color=iColor;
 
-	d3dvertex[3].p.x=static_cast<float>(DANAESIZX);
-	d3dvertex[3].p.y=static_cast<float>(DANAESIZY);
+	d3dvertex[3].p.x=static_cast<float>(g_size.width());
+	d3dvertex[3].p.y=static_cast<float>(g_size.height());
 	d3dvertex[3].p.z=0.f;
 	d3dvertex[3].rhw=0.999999f;
 	d3dvertex[3].color=iColor;
@@ -1593,7 +1593,7 @@ bool Menu2_Render() {
 		int iOffsetX = 0;
 		int iOffsetY=0;
 
-		if((DANAEMouse.y + INTERFACE_RATIO_DWORD(pTextureLoad->m_dwHeight)) > DANAESIZY) {
+		if((DANAEMouse.y + INTERFACE_RATIO_DWORD(pTextureLoad->m_dwHeight)) > g_size.height()) {
 			
 			float fOffestY = iOffsetY - INTERFACE_RATIO_DWORD(pTextureLoad->m_dwHeight) ;
 			iOffsetY = checked_range_cast<int>(fOffestY);
@@ -2283,7 +2283,7 @@ void CMenuState::Render() {
 		return;
 
 	if(pTexBackGround)
-		EERIEDrawBitmap2(0, 0, static_cast<float>(DANAESIZX), static_cast<float>(DANAESIZY), 0.999f, pTexBackGround, Color::white);
+		EERIEDrawBitmap2(0, 0, static_cast<float>(g_size.width()), static_cast<float>(g_size.height()), 0.999f, pTexBackGround, Color::white);
 
 	int t=pMenuAllZone->GetNbZone();
 

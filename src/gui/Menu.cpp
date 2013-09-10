@@ -484,7 +484,7 @@ bool ARX_Menu_Render() {
 			GRenderer->SetRenderState(Renderer::DepthWrite, false);
 			GRenderer->SetRenderState(Renderer::DepthTest, false);
 
-			EERIEDrawBitmap2(0, 0, static_cast<float>(DANAESIZX), static_cast<float>(DANAESIZY), 0.9f, ARXmenu.mda->BookBackground, Color::white);
+			EERIEDrawBitmap2(0, 0, static_cast<float>(g_size.width()), static_cast<float>(g_size.height()), 0.9f, ARXmenu.mda->BookBackground, Color::white);
 		}
 
 		BOOKZOOM = 1;
@@ -517,7 +517,7 @@ bool ARX_Menu_Render() {
 					pTextManage->Clear();
 					OLD_FLYING_OVER = FLYING_OVER;
 					UNICODE_ARXDrawTextCenteredScroll(hFontInGame,
-						(DANAESIZX * 0.5f),
+						(g_size.width() * 0.5f),
 						12,
 						(DANAECENTERX) * 0.82f,
 						ARXmenu.mda->flyover[FLYING_OVER],
@@ -531,7 +531,7 @@ bool ARX_Menu_Render() {
 			}
 			
 			float fPosX = 0;
-			float fPosY = 313 * Yratio + (DANAESIZY - 313 * Yratio) * 0.70f;
+			float fPosY = 313 * Yratio + (g_size.height() - 313 * Yratio) * 0.70f;
 
 			float fSizeX = 100 * Xratio;
 			float fSizeY = 100 * Yratio;
@@ -540,7 +540,7 @@ bool ARX_Menu_Render() {
 
 			//---------------------------------------------------------------------
 			// Button QUICK GENERATION
-			fPosX = (DANAESIZX - (513 * Xratio)) * 0.5f;
+			fPosX = (g_size.width() - (513 * Xratio)) * 0.5f;
 
 			if(MouseInRect(fPosX, fPosY, fPosX + fSizeX + 50, fPosY + fSizeY)) {
 				SpecialCursor = CURSOR_INTERACTION_ON;
@@ -572,7 +572,7 @@ bool ARX_Menu_Render() {
 
 			//---------------------------------------------------------------------
 			// Button SKIN
-			fPosX = DANAESIZX * 0.5f;
+			fPosX = g_size.width() * 0.5f;
 
 			if(MouseInRect(fPosX, fPosY, fPosX + fSizeX, fPosY + fSizeY)) {
 				SpecialCursor = CURSOR_INTERACTION_ON;
@@ -599,7 +599,7 @@ bool ARX_Menu_Render() {
 
 			//---------------------------------------------------------------------
 			// Button DONE
-			fPosX = DANAESIZX - (DANAESIZX - 513 * Xratio) * 0.5f - 40 * Xratio;
+			fPosX = g_size.width() - (g_size.width() - 513 * Xratio) * 0.5f - 40 * Xratio;
 
 			if(MouseInRect(fPosX, fPosY, fPosX + fSizeX, fPosY + fSizeY)) {
 				if(DONE)
@@ -649,8 +649,8 @@ bool ARX_Menu_Render() {
 		}
 	}
 
-	DynLight[0].pos.x = 0.f + GInput->getMousePosAbs().x - (DANAESIZX >> 1);
-	DynLight[0].pos.y = 0.f + GInput->getMousePosAbs().y - (DANAESIZY >> 1);
+	DynLight[0].pos.x = 0.f + GInput->getMousePosAbs().x - (g_size.width() >> 1);
+	DynLight[0].pos.y = 0.f + GInput->getMousePosAbs().y - (g_size.height() >> 1);
 
 	if(pTextManage) {
 		pTextManage->Update(framedelay);

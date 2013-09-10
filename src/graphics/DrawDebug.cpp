@@ -348,7 +348,7 @@ void debugEntityPhysicsCylinder(Entity * io) {
 void DrawDebugScreenBoundingBox(Entity * io) {
 	Color color = Color::blue;
 	EERIE_2D_BBOX & box = io->bbox2D;
-	if(box.min.x != box.max.x && box.min.x < DANAESIZX) {
+	if(box.min.x != box.max.x && box.min.x < g_size.width()) {
 		EERIEDraw2DLine(box.min.x, box.min.y, box.max.x, box.min.y, 0.01f, color);
 		EERIEDraw2DLine(box.max.x, box.min.y, box.max.x, box.max.y, 0.01f, color);
 		EERIEDraw2DLine(box.max.x, box.max.y, box.min.x, box.max.y, 0.01f, color);

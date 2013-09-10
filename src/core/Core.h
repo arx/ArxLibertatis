@@ -106,10 +106,11 @@ extern long DEBUGNPCMOVE;
 #endif
 extern long CURRENTLEVEL;
 extern long TELEPORT_TO_ANGLE;
-extern long DANAESIZX;
-extern long DANAESIZY;
+
+extern Rect g_size;
 extern long DANAECENTERX;
 extern long DANAECENTERY;
+
 extern unsigned long FADESTART;
 extern unsigned long AimTime;
 
