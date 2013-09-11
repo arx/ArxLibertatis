@@ -3946,8 +3946,9 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 
 	if((player.Interface & INTER_MAP) && !(player.Interface & INTER_COMBATMODE)) {
 		if(Book_Mode == BOOKMODE_SPELLS) {
-			Anglef angle;
-			Vec3f pos;
+
+			Vec3f pos = Vec3f(0.f, 0.f, 2100.f);
+			Anglef angle = Anglef::ZERO;
 
 			EERIE_LIGHT tl;
 			memcpy(&tl,&DynLight[0],sizeof(EERIE_LIGHT));
@@ -3960,13 +3961,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 			DynLight[0].fallend = DynLight[0].fallstart + 600.f;
 			RecalcLight(&DynLight[0]);
 			
-			EERIE_CAMERA * oldcam=ACTIVECAM;
-			bookcam.center = Vec2i(g_size.center().x, g_size.center().y);
-			SetActiveCamera(&bookcam);
-			PrepareCamera(&bookcam);
-			
-			pos = Vec3f(0.f, 0.f, 2100.f);
-			angle = Anglef::ZERO;
+			EERIE_CAMERA * oldcam = ACTIVECAM;
 			
 			PDL[0]=&DynLight[0];
 			TOTPDL=1;
@@ -4008,22 +4003,10 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 						if(necklace.runes[i]->angle.b < 0.f)
 							necklace.runes[i]->angle.b = 0.f;
 
-						DynLight[0].exist=0;
-						
-						bookcam.center.x = (382 + xpos * 45 + BOOKDECX + 3) * Xratio;
-						bookcam.center.y = (100 + ypos * 64 + BOOKDECY + 2) * Yratio;
-						SetActiveCamera(&bookcam);
-						PrepareCamera(&bookcam);
-
 						GRenderer->SetRenderState(Renderer::DepthWrite, true);
 						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 						DynLight[0].exist=1;	
 						
-						bookcam.center.x = (382 + xpos * 45 + BOOKDECX) * Xratio;
-						bookcam.center.y = (100 + ypos * 64 + BOOKDECY) * Yratio;
-						SetActiveCamera(&bookcam);
-						PrepareCamera(&bookcam);
-
 						// Now draw the rune
 						worldAngleToQuat(&rotation, angle);
 
