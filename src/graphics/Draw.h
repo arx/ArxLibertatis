@@ -60,7 +60,10 @@ void EERIEDRAWPRIM(Renderer::Primitive primitive, const TexturedVertex * vertice
 
 void EERIEDrawCircle(float x0, float y0, float r, Color col, float z);
 void EERIEDraw2DLine(float x0, float y0, float x1, float y1, float z, Color col);
+
+void EERIEDrawBitmap(Rect rect, float z, TextureContainer * tex, Color color);
 void EERIEDrawBitmap(float x, float y, float sx, float sy, float z, TextureContainer * tex, Color color);
+
 void EERIEDraw2DRect(float x0, float y0, float x1, float y1, float z, Color col);
 void EERIEDrawFill2DRectDegrad(float x0, float y0, float x1, float y1, float z, Color cold, Color cole);
 

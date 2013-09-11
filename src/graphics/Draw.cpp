@@ -399,6 +399,10 @@ void EERIEPOLY_DrawNormals(EERIEPOLY * ep) {
 
 //-----------------------------------------------------------------------------
 
+void EERIEDrawBitmap(Rect rect, float z, TextureContainer * tex, Color color) {
+	EERIEDrawBitmap(rect.left, rect.top, rect.width(), rect.height(), z, tex, color);
+}
+
 void EERIEDrawBitmap(float x, float y, float sx, float sy, float z, TextureContainer * tex, Color color) {
 	
 	// Match pixel and texel origins.

@@ -2596,12 +2596,12 @@ void ManageFade()
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	
-	EERIEDrawBitmap(0.f,0.f, (float)g_size.width(), (float)g_size.height(), 0.0001f, NULL, Color::gray(Visibility));
+	EERIEDrawBitmap(g_size, 0.0001f, NULL, Color::gray(Visibility));
 
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	float col=Visibility;
-	EERIEDrawBitmap(0.f,0.f,(float)g_size.width(),(float)g_size.height(),0.0001f,
-	                NULL, Color(col * FADECOLOR.r, col * FADECOLOR.g, col * FADECOLOR.b));
+	EERIEDrawBitmap(g_size, 0.0001f, NULL, Color(col * FADECOLOR.r, col * FADECOLOR.g, col * FADECOLOR.b));
+
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 }
@@ -2629,7 +2629,7 @@ void DrawImproveVisionInterface()
 	if(ombrignon)
 	{
 		float mod = 0.6f + PULSATE * 0.35f;
-		EERIEDrawBitmap(0.f,0.f,(float)g_size.width(),(float)g_size.height(),0.0001f, ombrignon, Color3f((0.5f+PULSATE*( 1.0f / 10 ))*mod,0.f,0.f).to<u8>());
+		EERIEDrawBitmap(g_size, 0.0001f, ombrignon, Color3f((0.5f+PULSATE*( 1.0f / 10 ))*mod,0.f,0.f).to<u8>());
 	}
 }
 

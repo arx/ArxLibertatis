@@ -2650,7 +2650,7 @@ void ARX_PLAYER_Manage_Death() {
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
-	EERIEDrawBitmap(0.f, 0.f, static_cast<float>(g_size.width()), static_cast<float>(g_size.height()), 0.000091f, NULL, Color::gray(ratio));
+	EERIEDrawBitmap(g_size, 0.000091f, NULL, Color::gray(ratio));
 }
 
 /*!

@@ -67,12 +67,12 @@ void DrawMagicSightInterface()
 		col = 1.f - eyeball.size.x;
 	}
 
-	EERIEDrawBitmap(0.f, 0.f, (float)g_size.width(), (float)g_size.height(), 0.0001f, Flying_Eye, Color::gray(col));
+	EERIEDrawBitmap(g_size, 0.0001f, Flying_Eye, Color::gray(col));
 
 	if(MagicSightFader > 0.f) {
 		col = MagicSightFader;
 
-		EERIEDrawBitmap(0.f, 0.f, (float)g_size.width(), (float)g_size.height(), 0.0001f, NULL, Color::gray(col));
+		EERIEDrawBitmap(g_size, 0.0001f, NULL, Color::gray(col));
 
 		MagicSightFader -= Original_framedelay * (1.f/400);
 
