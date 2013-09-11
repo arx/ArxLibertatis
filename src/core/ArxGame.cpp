@@ -1225,7 +1225,7 @@ void ArxGame::updateActiveCamera() {
 	PrepareCamera(ACTIVECAM);
 	// Recenter Viewport depending on Resolution
 
-	ACTIVECAM->center = Vec2i(DANAECENTERX, DANAECENTERY);
+	ACTIVECAM->center = Vec2i(g_size.center().x, g_size.center().y);
 	ACTIVECAM->orgTrans.mod = ACTIVECAM->center.to<float>();
 }
 
@@ -1695,7 +1695,7 @@ void ArxGame::render() {
 	// Update Various Player Infos for this frame.
 	ARX_PLAYER_Frame_Update();
 		
-	subj.center = Vec2i(DANAECENTERX, DANAECENTERY);
+	subj.center = Vec2i(g_size.center().x, g_size.center().y);
 	subj.orgTrans.mod = subj.center.to<float>();
 
 	// Finally computes current focal

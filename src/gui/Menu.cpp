@@ -519,7 +519,7 @@ bool ARX_Menu_Render() {
 					UNICODE_ARXDrawTextCenteredScroll(hFontInGame,
 						(g_size.width() * 0.5f),
 						12,
-						(DANAECENTERX) * 0.82f,
+						(g_size.center().x) * 0.82f,
 						ARXmenu.mda->flyover[FLYING_OVER],
 						Color(232 + t, 204 + t, 143 + t),
 						1000,

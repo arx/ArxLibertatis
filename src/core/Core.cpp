@@ -288,9 +288,6 @@ long NO_TIME_INIT=0;
 
 Rect g_size(640, 480);
 
-long DANAECENTERX;
-long DANAECENTERY;
-
 long CurrFightPos=0;
 long NO_PLAYER_POSITION_RESET=0;
 long CURRENT_BASE_FOCAL=310;
@@ -380,11 +377,7 @@ static bool AdjustUI() {
 	
 	// Sets Danae Screen size depending on windowed/full-screen state
 	g_size = Rect(mainApp->getWindow()->getSize().x, mainApp->getWindow()->getSize().y);
-	
-	// Now computes screen center
-	DANAECENTERX = g_size.width()>>1;
-	DANAECENTERY = g_size.height()>>1;
-	
+		
 	// Computes X & Y screen ratios compared to a standard 640x480 screen
 	Xratio = g_size.width() * ( 1.0f / 640 );
 	Yratio = g_size.height() * ( 1.0f / 480 );

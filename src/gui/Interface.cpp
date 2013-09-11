@@ -1787,8 +1787,8 @@ void ArxGame::manageEditorControls() {
 							io->velocity = Vec3f::ZERO;
 							io->stopped = 1;
 
-							float y_ratio=(float)((float)DANAEMouse.y-(float)DANAECENTERY)/(float)g_size.height()*2;
-							float x_ratio=-(float)((float)DANAEMouse.x-(float)DANAECENTERX)/(float)DANAECENTERX;
+							float y_ratio=(float)((float)DANAEMouse.y-(float)g_size.center().y)/(float)g_size.height()*2;
+							float x_ratio=-(float)((float)DANAEMouse.x-(float)g_size.center().x)/(float)g_size.center().x;
 							Vec3f viewvector;
 							viewvector.x = -std::sin(radians(player.angle.b+(x_ratio*30.f))) * std::cos(radians(player.angle.a));
 							viewvector.y =  std::sin(radians(player.angle.a)) + y_ratio;
@@ -1884,7 +1884,7 @@ void ArxGame::manageEditorControls() {
 		if((player.Interface & INTER_INVENTORY)) {
 			if(player.bag) {
 
-				float fCenterX	= DANAECENTERX + INTERFACE_RATIO(-320 + 35) + INTERFACE_RATIO_DWORD(ITC.Get("hero_inventory")->m_dwWidth) - INTERFACE_RATIO(32 + 3) ;
+				float fCenterX	= g_size.center().x + INTERFACE_RATIO(-320 + 35) + INTERFACE_RATIO_DWORD(ITC.Get("hero_inventory")->m_dwWidth) - INTERFACE_RATIO(32 + 3) ;
 				float fSizY		= g_size.height() - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY) + INTERFACE_RATIO(- 3 + 25) ;
 
 				float posx = ARX_CAST_TO_INT_THEN_FLOAT( fCenterX );
@@ -3549,7 +3549,7 @@ void ARX_INTERFACE_DrawInventory(short _sNum, int _iX=0, int _iY=0)
 {
 	fDecPulse += framedelay * 0.5f;
 
-	float fCenterX	= DANAECENTERX - INTERFACE_RATIO(320) + INTERFACE_RATIO(35) + _iX ;
+	float fCenterX	= g_size.center().x - INTERFACE_RATIO(320) + INTERFACE_RATIO(35) + _iX ;
 	float fSizY		= g_size.height() - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY) + _iY;
 
 	float fPosX = ARX_CAST_TO_INT_THEN_FLOAT( fCenterX );
@@ -3961,7 +3961,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 			RecalcLight(&DynLight[0]);
 			
 			EERIE_CAMERA * oldcam=ACTIVECAM;
-			bookcam.center = Vec2i(DANAECENTERX, DANAECENTERY);
+			bookcam.center = Vec2i(g_size.center().x, g_size.center().y);
 			SetActiveCamera(&bookcam);
 			PrepareCamera(&bookcam);
 			
@@ -4214,9 +4214,9 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 							OLD_FLYING_OVER = FLYING_OVER;
 							pTextManage->Clear();
 							UNICODE_ARXDrawTextCenteredScroll(hFontInGame,
-								static_cast<float>(DANAECENTERX),
+								static_cast<float>(g_size.center().x),
 								12,
-								(DANAECENTERX)*0.82f,
+								(g_size.center().x)*0.82f,
 								spellicons[i].description,
 								Color(232,204,143),
 								1000,
@@ -4967,7 +4967,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 			UNICODE_ARXDrawTextCenteredScroll(hFontInGame,
 				(g_size.width()*0.5f),
 				4,
-				(DANAECENTERX)*0.82f,
+				(g_size.center().x)*0.82f,
 				toDisplay,
 				Color(232+t,204+t,143+t),
 				1000,
@@ -5730,16 +5730,16 @@ void ArxGame::drawAllInterface() {
 			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 
 			GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-			ARX_INTERFACE_DrawItem(ITC.Get("aim_maxi"), DANAECENTERX + INTERFACE_RATIO(-320+262.f), g_size.height() + INTERFACE_RATIO(-72.f), 0.0001f, Color::gray(j));
+			ARX_INTERFACE_DrawItem(ITC.Get("aim_maxi"), g_size.center().x + INTERFACE_RATIO(-320+262.f), g_size.height() + INTERFACE_RATIO(-72.f), 0.0001f, Color::gray(j));
 			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-			ARX_INTERFACE_DrawItem(ITC.Get("aim_empty"), DANAECENTERX + INTERFACE_RATIO(-320+262.f), g_size.height() + INTERFACE_RATIO(-72.f), 0.0001f, Color::white);
+			ARX_INTERFACE_DrawItem(ITC.Get("aim_empty"), g_size.center().x + INTERFACE_RATIO(-320+262.f), g_size.height() + INTERFACE_RATIO(-72.f), 0.0001f, Color::white);
 
 			if(bHitFlash && player.Full_Skill_Etheral_Link >= 40){
 				float j = 1.0f - fHitFlash;
 				GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 				GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 				Color col = (j < 0.5f) ? Color3f(j*2.0f, 1, 0).to<u8>() : Color3f(1, fHitFlash, 0).to<u8>();
-				ARX_INTERFACE_DrawItem(ITC.Get("aim_hit"), DANAECENTERX + INTERFACE_RATIO(-320+262.f-25), g_size.height() + INTERFACE_RATIO(-72.f-30), 0.0001f, col);
+				ARX_INTERFACE_DrawItem(ITC.Get("aim_hit"), g_size.center().x + INTERFACE_RATIO(-320+262.f-25), g_size.height() + INTERFACE_RATIO(-72.f-30), 0.0001f, col);
 				GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 			}
 		}
@@ -5844,7 +5844,7 @@ void ArxGame::drawAllInterface() {
 					ARX_INTERFACE_DrawInventory(sActiveInventory);
 
 					arx_assert(ITC.Get("hero_inventory") != NULL);
-					float fCenterX	= DANAECENTERX + INTERFACE_RATIO(-320 + 35) + INTERFACE_RATIO_DWORD(ITC.Get("hero_inventory")->m_dwWidth) - INTERFACE_RATIO(32 + 3) ;
+					float fCenterX	= g_size.center().x + INTERFACE_RATIO(-320 + 35) + INTERFACE_RATIO_DWORD(ITC.Get("hero_inventory")->m_dwWidth) - INTERFACE_RATIO(32 + 3) ;
 					float fSizY		= g_size.height() - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY) + INTERFACE_RATIO(- 3 + 25) ;
 
 					float posx = ARX_CAST_TO_INT_THEN_FLOAT( fCenterX );
@@ -5931,7 +5931,7 @@ void ArxGame::drawAllInterface() {
 				}
 
 				const float fBag = (player.bag-1) * INTERFACE_RATIO(-121);
-				float fCenterX = DANAECENTERX + INTERFACE_RATIO(-320+35);
+				float fCenterX = g_size.center().x + INTERFACE_RATIO(-320+35);
 				float fSizY = g_size.height() - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY) + INTERFACE_RATIO(-3.f + 25 - 32);
 				const float fOffsetY = INTERFACE_RATIO(121);
 
@@ -6347,19 +6347,19 @@ void ArxGame::drawAllInterface() {
 					float fMove=fabs(sin(radians(fArrowMove)))*fSizeX*.5f;
 
 					// Left
-					EERIEDrawBitmap(0 + fMove, DANAECENTERY - (fSizeY * .5f), fSizeX, fSizeY, 0.01f,
+					EERIEDrawBitmap(0 + fMove, g_size.center().y - (fSizeY * .5f), fSizeX, fSizeY, 0.01f,
 						arrow_left_tc, lcolor);
 
 					// Right
-					EERIEDrawBitmapUVs(g_size.width() - fSizeX - fMove, DANAECENTERY - (fSizeY * .5f), fSizeX, fSizeY,
+					EERIEDrawBitmapUVs(g_size.width() - fSizeX - fMove, g_size.center().y - (fSizeY * .5f), fSizeX, fSizeY,
 						.01f, arrow_left_tc, lcolor, 1.f, 0.f, 0.f, 0.f, 1.f, 1.f, 0.f, 1.f);
 
 					// Up
-					EERIEDrawBitmapUVs(DANAECENTERX - (fSizeY * .5f), 0.f + fMove, fSizeY, fSizeX, .01f,
+					EERIEDrawBitmapUVs(g_size.center().x - (fSizeY * .5f), 0.f + fMove, fSizeY, fSizeX, .01f,
 						arrow_left_tc, lcolor, 0.f, 1.f, 0.f, 0.f, 1.f, 1.f, 1.f, 0.f);
 
 					// Down
-					EERIEDrawBitmapUVs(DANAECENTERX - (fSizeY * .5f), (g_size.height() - fSizeX) - fMove, fSizeY, fSizeX,
+					EERIEDrawBitmapUVs(g_size.center().x - (fSizeY * .5f), (g_size.height() - fSizeX) - fMove, fSizeY, fSizeX,
 						.01f, arrow_left_tc, lcolor, 1.f, 1.f, 1.f, 0.f, 0.f, 1.f, 0.f, 0.f);
 				}
 
@@ -6386,7 +6386,7 @@ long Manage3DCursor(long flags)
 	if(ag > 180)
 		ag = ag - 360;
 
-	float drop_miny=(float)(DANAECENTERY)-DANAECENTERY*(ag*( 1.0f / 70 ));
+	float drop_miny=(float)(g_size.center().y)-g_size.center().y*(ag*( 1.0f / 70 ));
 
 	if(DANAEMouse.y < drop_miny)
 		return 0;
@@ -6440,8 +6440,8 @@ long Manage3DCursor(long flags)
 	}
 
 	Vec3f pos;
-	pos.x=player.pos.x+EEsin(angle2)*(DANAECENTERX-mx)*0.7f*va - EEsin(angle)*(va*zrange*400.f+vd);
-	pos.z=player.pos.z-EEcos(angle2)*(DANAECENTERX-mx)*0.7f*va + EEcos(angle)*(va*zrange*400.f+vd);
+	pos.x=player.pos.x+EEsin(angle2)*(g_size.center().x-mx)*0.7f*va - EEsin(angle)*(va*zrange*400.f+vd);
+	pos.z=player.pos.z-EEcos(angle2)*(g_size.center().x-mx)*0.7f*va + EEcos(angle)*(va*zrange*400.f+vd);
 	pos.y=player.pos.y;
 
 	Vec3f objcenter = Vec3f::ZERO;
@@ -6471,8 +6471,8 @@ long Manage3DCursor(long flags)
 	mvectx.z = +(float)EEcos(radians(player.angle.b - 90.f));
 	mvectx.normalize();
 
-	float xmod=(float)(DANAEMouse.x-DANAECENTERX)/(float)DANAECENTERX*160.f;
-	float ymod=(float)(DANAEMouse.y-DANAECENTERY)/(float)DANAECENTERY*220.f;
+	float xmod=(float)(DANAEMouse.x-g_size.center().x)/(float)g_size.center().x*160.f;
+	float ymod=(float)(DANAEMouse.y-g_size.center().y)/(float)g_size.center().y*220.f;
 	mvectx *= xmod;
 	Vec3f mvecty(0, ymod, 0);
 
@@ -6729,7 +6729,7 @@ void ARX_INTERFACE_RenderCursorInternal(long flag)
 			if(ag > 180)
 				ag = ag - 360;
 
-			float drop_miny=(float)(DANAECENTERY)-DANAECENTERY*(ag*( 1.0f / 70 ));
+			float drop_miny=(float)(g_size.center().y)-g_size.center().y*(ag*( 1.0f / 70 ));
 
 			if(DANAEMouse.y > drop_miny && DRAGINTER && !InInventoryPos(&DANAEMouse) && !(ARX_MOUSE_OVER & ARX_MOUSE_OVER_BOOK)) {
 				if(Manage3DCursor(1) == 0)
@@ -6982,8 +6982,8 @@ void ARX_INTERFACE_RenderCursorInternal(long flag)
 						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 						
-						float POSX = DANAECENTERX - surf->m_dwWidth * .5f;
-						float POSY = DANAECENTERY - surf->m_dwHeight * .5f;
+						float POSX = g_size.center().x - surf->m_dwWidth * .5f;
+						float POSY = g_size.center().y - surf->m_dwHeight * .5f;
 						
 						EERIEDrawBitmap(POSX, POSY, float(surf->m_dwWidth),
 						                float(surf->m_dwHeight), 0.f, surf, Color::gray(.5f));

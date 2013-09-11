@@ -169,12 +169,10 @@ void CleanInventory() {
 extern Vec2s DANAEMouse;
 
 extern Rect g_size;
-extern long DANAECENTERX;
-extern long DANAECENTERY;
 
 static Entity * GetInventoryObj(Vec2s * pos) {
 	
-	float fCenterX	= DANAECENTERX - INTERFACE_RATIO(320) + INTERFACE_RATIO(35);
+	float fCenterX	= g_size.center().x - INTERFACE_RATIO(320) + INTERFACE_RATIO(35);
 	float fSizY		= g_size.height() - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY);
 
 	int iPosX = checked_range_cast<int>(fCenterX);
@@ -1380,7 +1378,7 @@ bool PutInInventory()
 	int iBag = 0;
 
 
-	float fCenterX	= DANAECENTERX - INTERFACE_RATIO(320) + INTERFACE_RATIO(35);
+	float fCenterX	= g_size.center().x - INTERFACE_RATIO(320) + INTERFACE_RATIO(35);
 	float fSizY		= g_size.height() - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY);
 
 	short iPosX = checked_range_cast<short>(fCenterX);
@@ -1542,7 +1540,7 @@ bool InPlayerInventoryPos(Vec2s * pos)
 	if (PLAYER_INTERFACE_HIDE_COUNT) return false;
 
 
-	float fCenterX	= DANAECENTERX - INTERFACE_RATIO(320) + INTERFACE_RATIO(35);
+	float fCenterX	= g_size.center().x - INTERFACE_RATIO(320) + INTERFACE_RATIO(35);
 	float fSizY		= g_size.height() - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY);
 
 	short iPosX = checked_range_cast<short>(fCenterX);
@@ -1981,7 +1979,7 @@ bool TakeFromInventory(Vec2s * pos)
 	}
 
 
-	float fCenterX	= DANAECENTERX - INTERFACE_RATIO(320) + INTERFACE_RATIO(35);
+	float fCenterX	= g_size.center().x - INTERFACE_RATIO(320) + INTERFACE_RATIO(35);
 	float fSizY		= g_size.height() - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY);
 
 	int iPosX = checked_range_cast<int>(fCenterX);

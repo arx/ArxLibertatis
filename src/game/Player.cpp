@@ -3059,8 +3059,8 @@ void Manage_sp_max() {
 	if(sp_max_start != 0 && v < 20000) {
 		float modi = (20000 - v) * ( 1.0f / 2000 ) * ( 1.0f / 10 );
 		float sizX = 16;
-		float px = (float)DANAECENTERX - (float)sp_max_nb * ( 1.0f / 2 ) * sizX;
-		float py = (float)DANAECENTERY;
+		float px = (float)g_size.center().x - (float)sp_max_nb * ( 1.0f / 2 ) * sizX;
+		float py = (float)g_size.center().y;
 
 		for(long i = 0; i < sp_max_nb; i++) {
 			float dx = px + sizX * (float)i;

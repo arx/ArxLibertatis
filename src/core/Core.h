@@ -108,8 +108,6 @@ extern long CURRENTLEVEL;
 extern long TELEPORT_TO_ANGLE;
 
 extern Rect g_size;
-extern long DANAECENTERX;
-extern long DANAECENTERY;
 
 extern unsigned long FADESTART;
 extern unsigned long AimTime;

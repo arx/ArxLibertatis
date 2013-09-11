@@ -105,8 +105,8 @@ void ARX_INTERFACE_KillARKANE() {
 }
 
 static void DrawCenteredImage(TextureContainer * tc) {
-	EERIEDrawBitmap2(DANAECENTERX - (tc->m_dwWidth * 0.5f),
-	                 DANAECENTERY - (tc->m_dwHeight * 0.5f),
+	EERIEDrawBitmap2(g_size.center().x - (tc->m_dwWidth * 0.5f),
+					 g_size.center().y - (tc->m_dwHeight * 0.5f),
 	                 static_cast<float>((int)(tc->m_dwWidth)),
 	                 static_cast<float>((int)(tc->m_dwHeight)),
 	                 0.001f, tc, Color::white);
@@ -218,15 +218,15 @@ void LoadLevelScreen(long num) {
 			
 			Vec2f size = (num == 10) ? Vec2f(640, 480) : Vec2f(320, 390);
 			size *= scale;
-			EERIEDrawBitmap2(DANAECENTERX - size.x * 0.5f, DANAECENTERY - size.y * 0.5f,
+			EERIEDrawBitmap2(g_size.center().x - size.x * 0.5f, g_size.center().y - size.y * 0.5f,
 												size.x, size.y, 0.001f, tc, Color::white);
 			
 			GRenderer->SetRenderState(Renderer::ColorKey, true);
 		}
 		
 		if(pbar) {
-			float px = DANAECENTERX - 100 * scale;
-			float py = DANAECENTERY + ((num == 10) ? 221 : 35) * scale;
+			float px = g_size.center().x - 100 * scale;
+			float py = g_size.center().y + ((num == 10) ? 221 : 35) * scale;
 			float px2 = ratio * 200 * scale;
 			float py2 = 8 * scale;
 			EERIEDrawBitmap_uv(px, py, px2, py2, 0.f, pbar, Color::gray(1.0f), 0.f, 0.f, ratio, 1.f);
