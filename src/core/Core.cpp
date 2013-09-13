@@ -474,6 +474,7 @@ void InitializeDanae() {
 	player.size.x = subj.size.b = player.baseRadius();
 	player.size.z = subj.size.g = player.baseRadius();
 	player.desiredangle = player.angle = subj.angle = Anglef(3.f, 268.f, 0.f);
+
 	subj.orgTrans.pos = Vec3f(900.f, player.baseHeight(), 4340.f);
 	subj.clip = Rect(0, 0, 640, 480);
 	subj.center = subj.clip.center();
@@ -486,7 +487,8 @@ void InitializeDanae() {
 	memcpy(&raycam, &subj, sizeof(EERIE_CAMERA));
 	memcpy(&conversationcamera, &subj, sizeof(EERIE_CAMERA));
 	
-	raycam.center = Vec2i(320, 320);
+	raycam.clip = Rect(0, 0, 640, 640);
+	raycam.center = raycam.clip.center();
 	
 	bookcam.angle = Anglef::ZERO;
 	bookcam.orgTrans.pos = Vec3f::ZERO;
