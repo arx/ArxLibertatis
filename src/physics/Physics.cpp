@@ -48,6 +48,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <stddef.h>
 
+#include <BulletCollision/CollisionShapes/btBvhTriangleMeshShape.h>
+
+#include "game/Equipment.h"
+
 #include "graphics/GraphicsTypes.h"
 #include "graphics/data/Mesh.h"
 #include "math/Vector.h"

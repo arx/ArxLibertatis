@@ -54,6 +54,8 @@
 
 #include "physics/Anchors.h"
 #include "physics/Collisions.h"
+#include "physics/bullet/BulletPhysicsBackend.h"
+
 #include "platform/profiler/Profiler.h"
 
 #include "scene/Interactive.h"
@@ -93,6 +95,7 @@ enum DebugViewType {
 	DebugView_Portals,
 	DebugView_Materials,
 	DebugView_Damages,
+	DebugView_Physics,
 	DebugViewCount
 };
 
@@ -967,11 +970,17 @@ void drawDebugRender() {
 			ARX_DAMAGES_DrawDebug();
 			break;
 		}
+		case DebugView_Physics: {
+			ss << "Physics";
+			g_bulletPhysics->DrawBackgroundMesh();
+			break;
+		}
 		case DebugView_None:
 		case DebugViewCount: {
 			arx_assert(false);
 			return;
 		}
+		default: return;
 	}
 	
 	s32 width = hFontDebug->getTextSize(ss.str()).width();

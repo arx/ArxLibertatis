@@ -83,6 +83,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/Blast.h"
 #include "io/log/Logger.h"
 
+#include "physics/Physics.h"
 #include "physics/Anchors.h"
 #include "platform/profiler/Profiler.h"
 

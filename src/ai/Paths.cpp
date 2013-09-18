@@ -68,6 +68,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "platform/Platform.h"
 #include "platform/profiler/Profiler.h"
 
+#include "physics/bullet/BulletPhysicsBackend.h"
+#include "physics/Box.h"
+#include "physics/Collisions.h"
+
 #include "scene/GameSound.h"
 
 #include "script/Script.h"

@@ -87,6 +87,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Interactive.h"
 
 #include "physics/Projectile.h"
+#include "physics/bullet/BulletPhysicsBackend.h"
 
 #include "platform/profiler/Profiler.h"
 
@@ -1479,9 +1480,10 @@ void ARX_SCENE_Update() {
 	} else {
 		RoomDrawRelease();
 	}
-
-	ARX_THROWN_OBJECT_Manage(g_framedelay);
-
+	
+	//ARX_THROWN_OBJECT_Manage(g_framedelay);
+	g_bulletPhysics->Step(g_framedelay);
+	
 	UpdateInter();
 }
 

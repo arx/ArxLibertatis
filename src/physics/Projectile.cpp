@@ -36,6 +36,9 @@
 
 #include "animation/AnimationRender.h"
 
+#include "physics/Collisions.h"
+#include "physics/bullet/BulletPhysicsBackend.h"
+
 #include "graphics/Renderer.h"
 #include "graphics/data/TextureContainer.h"
 #include "graphics/particle/ParticleEffects.h"
@@ -149,6 +152,8 @@ void ARX_THROWN_OBJECT_Throw(EntityHandle source, const Vec3f & position, const 
 				projectile.flags |= ATO_FIERY;
 		}
 	}
+	
+	g_bulletPhysics->ThrowArrow(projectile);
 }
 
 static float ARX_THROWN_ComputeDamages(const Projectile & projectile, EntityHandle source,

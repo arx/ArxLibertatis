@@ -45,6 +45,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999 ARKANE Studios SA. All rights reserved
 
 #include "physics/Box.h"
+#include "physics/bullet/BulletPhysicsBackend.h"
 
 #include "graphics/Math.h"
 
@@ -75,6 +76,13 @@ void EERIE_PHYSICS_BOX_Launch(EERIE_3DOBJ * obj, const Vec3f & pos, const Anglef
 	obj->pbox->active = 1;
 	obj->pbox->stopcount = 0;
 	obj->pbox->storedtiming = 0;
+	
+	{
+		Vec3f velocity = vect * (250.f * ratio);
+		float mass = 0.4f + ratio * 0.1f;
+		
+		g_bulletPhysics->LaunchObject(obj, pos, angle, velocity, mass);
+	}
 }
 
 // Checks is a triangle of a physical object is colliding a triangle
@@ -393,4 +401,6 @@ void EERIE_PHYSICS_BOX_Create(EERIE_3DOBJ * obj)
 	pbox->surface = surface;
 	
 	obj->pbox = pbox;
+	
+	g_bulletPhysics->CreateObject(obj);
 }
