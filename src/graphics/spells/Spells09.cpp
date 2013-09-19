@@ -52,7 +52,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/Spells.h"
 
 #include "graphics/Math.h"
-#include "graphics/Draw.h"
+#include "graphics/DrawLine.h"
 #include "graphics/data/TextureContainer.h"
 #include "graphics/effects/SpellEffects.h"
 #include "graphics/spells/Spells06.h"

@@ -58,30 +58,15 @@ extern Vec3f SPRmaxs;
 
 void EERIEDRAWPRIM(Renderer::Primitive primitive, const TexturedVertex * vertices, size_t count = 3, bool nocount = false);
 
-void EERIEDrawCircle(float x0, float y0, float r, Color col, float z);
-void EERIEDraw2DLine(float x0, float y0, float x1, float y1, float z, Color col);
-
 void EERIEDrawBitmap(Rect rect, float z, TextureContainer * tex, Color color);
 void EERIEDrawBitmap(float x, float y, float sx, float sy, float z, TextureContainer * tex, Color color);
 
-void EERIEDraw2DRect(float x0, float y0, float x1, float y1, float z, Color col);
-void EERIEDrawFill2DRectDegrad(float x0, float y0, float x1, float y1, float z, Color cold, Color cole);
 
-void DrawLineSphere(const EERIE_SPHERE & sphere, Color color);
-void EERIEDraw3DCylinder(const EERIE_CYLINDER & cyl, Color col);
-void EERIEDraw3DCylinderBase(const EERIE_CYLINDER & cyl, Color col);
-void EERIEDrawTrue3DLine(const Vec3f & orgn, const Vec3f & dest, Color col);
-void EERIEDraw3DLine(const Vec3f & orgn, const Vec3f & dest, Color col);
 void EERIEDrawBitmap2DecalY(float x, float y, float sx, float sy, float z, TextureContainer * tex,
                             Color col, float _fDeltaY);
 
-
 void EERIEDrawSprite(TexturedVertex * in, float siz, TextureContainer * tex, Color col, float Zpos);
 void EERIEDrawRotatedSprite(TexturedVertex * in, float siz, TextureContainer * tex, Color col, float Zpos, float rot);
-
-void EERIEPOLY_DrawWired(EERIEPOLY * ep, Color col = Color::none);
-void EERIEPOLY_DrawNormals(EERIEPOLY * ep);
-
 
 void EERIEDrawBitmap2(float x, float y, float sx, float sy, float z, TextureContainer * tex, Color col);
 

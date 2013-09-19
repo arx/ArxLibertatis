@@ -23,8 +23,10 @@
 
 #include "core/Core.h"
 #include "animation/AnimationRender.h"
+
 #include "graphics/Math.h"
 #include "graphics/Draw.h"
+#include "graphics/DrawLine.h"
 #include "graphics/particle/ParticleEffects.h"
 
 #include "gui/Interface.h"
@@ -81,63 +83,6 @@ void DrawDebugToggleDisplayTypes() {
 	if(EDITION == EDITION_EnumSize) {
 		EDITION = EDITION_NONE;
 	}
-}
-
-extern void EE_RT(Vec3f * in, Vec3f * out);
-extern void EE_P(Vec3f * in, TexturedVertex * out);
-
-void DrawLineSphere(const EERIE_SPHERE & sphere, Color color) {
-
-	if(sphere.radius <= 0)
-		return;
-
-	static const size_t sections = 64;
-
-	size_t rings = sphere.radius / 10;
-	if(rings < 7)
-		rings = 7;
-
-	std::vector<TexturedVertex> vertices;
-
-	bool skip = false;
-
-	for(size_t i = 1; i < rings - 1; i++) {
-		float a = i * (PI / (rings - 1));
-		for(size_t j = 0; j <= sections; j++) {
-			float b = j * ((2 * PI) / sections);
-
-			Vec3f pos;
-			pos.x = cos(b) * sin(a);
-			pos.y = sin(b) * sin(a);
-			pos.z = cos(a);
-
-			pos *= sphere.radius;
-			pos += sphere.origin;
-
-			Vec3f temp;
-			TexturedVertex out;
-			EE_RT(&pos, &temp);
-			EE_P(&temp, &out);
-
-			if(skip) {
-				skip = false;
-				out.color = 0x00000000;
-				vertices.push_back(out);
-			}
-
-			out.color = color.toBGRA();
-			vertices.push_back(out);
-
-			if(j == sections) {
-				skip = true;
-				out.color = 0x00000000;
-				vertices.push_back(out);
-			}
-		}
-	}
-
-	GRenderer->ResetTexture(0);
-	EERIEDRAWPRIM(Renderer::LineStrip, &vertices[0], vertices.size());
 }
 
 extern bool MouseInRect(const float x0, const float y0, const float x1, const float y1);
