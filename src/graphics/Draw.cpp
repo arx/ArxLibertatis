@@ -72,24 +72,7 @@ void EERIEDRAWPRIM(Renderer::Primitive primitive, const TexturedVertex * vertice
 	pDynamicVertexBuffer_TLVERTEX->draw(primitive, vertices, count);
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#define BASICFOCAL 350.f
-//*************************************************************************************
-//*************************************************************************************
+static const float BASICFOCAL = 350.f;
 
 void EERIEDrawSprite(TexturedVertex * in, float siz, TextureContainer * tex, Color color, float Zpos) {
 	
@@ -139,11 +122,7 @@ void EERIEDrawSprite(TexturedVertex * in, float siz, TextureContainer * tex, Col
 	else SPRmaxs.x=-1;
 }
 
-//*************************************************************************************
-//*************************************************************************************
-
-void EERIEDrawRotatedSprite(TexturedVertex * in, float siz, TextureContainer * tex, Color color,
-                            float Zpos, float rot) {
+void EERIEDrawRotatedSprite(TexturedVertex * in, float siz, TextureContainer * tex, Color color, float Zpos, float rot) {
 	
 	TexturedVertex out;
 
@@ -192,16 +171,6 @@ void EERIEDrawRotatedSprite(TexturedVertex * in, float siz, TextureContainer * t
 	}
 	else SPRmaxs.x=-1;
 }
-
-//*************************************************************************************
-//*************************************************************************************
-
-
-
-
-
-
-//-----------------------------------------------------------------------------
 
 void EERIEDrawBitmap(Rect rect, float z, TextureContainer * tex, Color color) {
 	EERIEDrawBitmap(rect.left, rect.top, rect.width(), rect.height(), z, tex, color);
