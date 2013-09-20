@@ -1214,12 +1214,15 @@ void GetInfosCombine()
 {
 	Entity * io = NULL;
 
-	if(player.bag)
-	for(int iNbBag = 0; iNbBag < player.bag; iNbBag++)
-	for(size_t j = 0; j < INVENTORY_Y; j++)
-	for(size_t i = 0; i < INVENTORY_X; i++) {
-		io = inventory[iNbBag][i][j].io;
-		GetInfosCombineWithIO(io);
+	if(player.bag) {
+		for(int iNbBag = 0; iNbBag < player.bag; iNbBag++) {
+			for(size_t j = 0; j < INVENTORY_Y; j++) {
+				for(size_t i = 0; i < INVENTORY_X; i++) {
+					io = inventory[iNbBag][i][j].io;
+					GetInfosCombineWithIO(io);
+				}
+			}
+		}
 	}
 
 	if(SecondaryInventory) {
