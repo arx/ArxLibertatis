@@ -98,6 +98,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "gui/MiniMap.h"
 #include "gui/TextManager.h"
 #include "gui/Text.h"
+#include "gui/NoteGuiData.h"
 
 #include "input/Input.h"
 #include "input/Keyboard.h"
@@ -207,6 +208,10 @@ INTERFACE_TC		ITC;
 
 static gui::Note openNote;
 static gui::Note questBook;
+
+/*NoteGUIData*/
+static gui::NoteGuiData noticeGuiData;
+/*.*/
 
 bool				bBookHalo = false;
 bool				bGoldHalo = false;
@@ -924,42 +929,33 @@ void GetInfosCombineWithIO(Entity * _pWithIO)
 {
 	if(!COMBINE)
 		return;
-
 	std::string tcIndent = COMBINE->long_name();
+	char tTxtCombineDest[256];
+	if(_pWithIO && _pWithIO != COMBINE && _pWithIO->script.data) {
 
-		char tTxtCombineDest[256];
+		char* pCopyScript=new char[_pWithIO->script.size + 1];
+		pCopyScript[_pWithIO->script.size] = '\0';
+		memcpy(pCopyScript,_pWithIO->script.data,_pWithIO->script.size);
+		char* pCopyOverScript=NULL;
 
-		if(_pWithIO && _pWithIO != COMBINE && _pWithIO->script.data) {
-			char* pCopyScript=new char[_pWithIO->script.size + 1];
-			pCopyScript[_pWithIO->script.size] = '\0';
-			memcpy(pCopyScript,_pWithIO->script.data,_pWithIO->script.size);
+		if(_pWithIO->over_script.data) {
+			pCopyOverScript=new char[_pWithIO->over_script.size + 1];
+			pCopyOverScript[_pWithIO->over_script.size] = '\0';
+			memcpy(pCopyOverScript,_pWithIO->over_script.data,_pWithIO->over_script.size);
+		}
 
-			char* pCopyOverScript=NULL;
-
-			if(_pWithIO->over_script.data) {
-				pCopyOverScript=new char[_pWithIO->over_script.size + 1];
-				pCopyOverScript[_pWithIO->over_script.size] = '\0';
-				memcpy(pCopyOverScript,_pWithIO->over_script.data,_pWithIO->over_script.size);
-			}
-
-			char *pcFound=NULL;
-
-			if(pCopyOverScript) {
-				pcFound=strstr((char*)pCopyOverScript,"on combine");
-
-				if(pcFound) {
-					unsigned int uiNbOpen=0;
-
-					char *pcToken=strtok(pcFound,"\r\n");
-
-					if(strstr(pcToken,"{")) {
-						uiNbOpen++;
-					}
-
-					while(pcToken) {
-						pcToken=strtok(NULL,"\r\n");
-	
-						bool bCanCombine=false;
+		char *pcFound=NULL;
+		if(pCopyOverScript) {
+			pcFound=strstr((char*)pCopyOverScript,"on combine");
+			if(pcFound) {
+				unsigned int uiNbOpen=0;
+				char *pcToken=strtok(pcFound,"\r\n");
+				if(strstr(pcToken,"{")) {
+					uiNbOpen++;
+				}
+				while(pcToken) {
+					pcToken=strtok(NULL,"\r\n");	
+					bool bCanCombine=false;
 						char* pStartString;
 						char* pEndString;
 

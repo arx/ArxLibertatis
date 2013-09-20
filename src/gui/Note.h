@@ -26,6 +26,7 @@
 
 #include <math/Vector2.h>
 #include <math/Rectangle.h>
+#include "NoteGuiData.h"
 
 class TextureContainer;
 
@@ -83,6 +84,8 @@ private:
 	TextureContainer * background;
 	TextureContainer * prevPage;
 	TextureContainer * nextPage;
+
+	void loadFromGuiData(const NoteGuiData& guiData);
 	
 };
 
