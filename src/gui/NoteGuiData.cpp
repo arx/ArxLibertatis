@@ -19,35 +19,39 @@
 #include "NoteGuiData.h"
 
 namespace gui {
-	NoteGuiData::NoteGuiData(const char* backgroundPath, const char* prevPagePath, const char* nextPagePath) : background(0),
-																											   prevPage(0),
-																											   nextPage(0) {
-		if(backgroundPath != 0) {
-			this->background = TextureContainer::LoadUI(backgroundPath);
-		}
-		if(prevPagePath != 0) {
-			this->prevPage = TextureContainer::LoadUI(prevPagePath);
-		}
-		if(nextPagePath != 0) {
-			this->nextPage = TextureContainer::LoadUI(nextPagePath);
-		}
-	}
 
-	TextureContainer* NoteGuiData::getBackground() const {
-		return this->background;
+NoteGuiData::NoteGuiData(const char* backgroundPath, const char* prevPagePath, const char* nextPagePath) 
+	: m_background(0)
+    , m_prevPage(0)
+	, m_nextPage(0) 
+{
+	if(backgroundPath != 0) {
+		this->m_background = TextureContainer::LoadUI(backgroundPath);
 	}
-
-	TextureContainer* NoteGuiData::getPrevPage() const {
-		return this->prevPage;
+	if(prevPagePath != 0) {
+		this->m_prevPage = TextureContainer::LoadUI(prevPagePath);
 	}
-
-	TextureContainer* NoteGuiData::getNextPage() const {
-		return this->nextPage;
-	}
-
-	NoteGuiData::~NoteGuiData() {
-		this->background = 0;
-		this->prevPage = 0;
-		this->nextPage = 0;
+	if(nextPagePath != 0) {
+		this->m_nextPage = TextureContainer::LoadUI(nextPagePath);
 	}
 }
+
+TextureContainer* NoteGuiData::getBackground() const {
+	return this->m_background;
+}
+
+TextureContainer* NoteGuiData::getPrevPage() const {
+	return this->m_prevPage;
+}
+
+TextureContainer* NoteGuiData::getNextPage() const {
+	return this->m_nextPage;
+}
+
+NoteGuiData::~NoteGuiData() {
+	this->m_background = 0;
+	this->m_prevPage = 0;
+	this->m_nextPage = 0;
+}
+
+} //namespace gui 
