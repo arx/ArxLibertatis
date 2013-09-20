@@ -98,7 +98,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "gui/MiniMap.h"
 #include "gui/TextManager.h"
 #include "gui/Text.h"
-#include "gui/NoteGuiData.h"
 
 #include "input/Input.h"
 #include "input/Keyboard.h"
@@ -925,33 +924,42 @@ void GetInfosCombineWithIO(Entity * _pWithIO)
 {
 	if(!COMBINE)
 		return;
+
 	std::string tcIndent = COMBINE->long_name();
-	char tTxtCombineDest[256];
-	if(_pWithIO && _pWithIO != COMBINE && _pWithIO->script.data) {
 
-		char* pCopyScript=new char[_pWithIO->script.size + 1];
-		pCopyScript[_pWithIO->script.size] = '\0';
-		memcpy(pCopyScript,_pWithIO->script.data,_pWithIO->script.size);
-		char* pCopyOverScript=NULL;
+		char tTxtCombineDest[256];
 
-		if(_pWithIO->over_script.data) {
-			pCopyOverScript=new char[_pWithIO->over_script.size + 1];
-			pCopyOverScript[_pWithIO->over_script.size] = '\0';
-			memcpy(pCopyOverScript,_pWithIO->over_script.data,_pWithIO->over_script.size);
-		}
+		if(_pWithIO && _pWithIO != COMBINE && _pWithIO->script.data) {
+			char* pCopyScript=new char[_pWithIO->script.size + 1];
+			pCopyScript[_pWithIO->script.size] = '\0';
+			memcpy(pCopyScript,_pWithIO->script.data,_pWithIO->script.size);
 
-		char *pcFound=NULL;
-		if(pCopyOverScript) {
-			pcFound=strstr((char*)pCopyOverScript,"on combine");
-			if(pcFound) {
-				unsigned int uiNbOpen=0;
-				char *pcToken=strtok(pcFound,"\r\n");
-				if(strstr(pcToken,"{")) {
-					uiNbOpen++;
-				}
-				while(pcToken) {
-					pcToken=strtok(NULL,"\r\n");	
-					bool bCanCombine=false;
+			char* pCopyOverScript=NULL;
+
+			if(_pWithIO->over_script.data) {
+				pCopyOverScript=new char[_pWithIO->over_script.size + 1];
+				pCopyOverScript[_pWithIO->over_script.size] = '\0';
+				memcpy(pCopyOverScript,_pWithIO->over_script.data,_pWithIO->over_script.size);
+			}
+
+			char *pcFound=NULL;
+
+			if(pCopyOverScript) {
+				pcFound=strstr((char*)pCopyOverScript,"on combine");
+
+				if(pcFound) {
+					unsigned int uiNbOpen=0;
+
+					char *pcToken=strtok(pcFound,"\r\n");
+
+					if(strstr(pcToken,"{")) {
+						uiNbOpen++;
+					}
+
+					while(pcToken) {
+						pcToken=strtok(NULL,"\r\n");
+	
+						bool bCanCombine=false;
 						char* pStartString;
 						char* pEndString;
 
@@ -1206,15 +1214,12 @@ void GetInfosCombine()
 {
 	Entity * io = NULL;
 
-	if(player.bag) {
-		for(int iNbBag = 0; iNbBag < player.bag; iNbBag++) {
-			for(size_t j = 0; j < INVENTORY_Y; j++) {
-				for(size_t i = 0; i < INVENTORY_X; i++) {
-					io = inventory[iNbBag][i][j].io;
-					GetInfosCombineWithIO(io);
-				}
-			}
-		}
+	if(player.bag)
+	for(int iNbBag = 0; iNbBag < player.bag; iNbBag++)
+	for(size_t j = 0; j < INVENTORY_Y; j++)
+	for(size_t i = 0; i < INVENTORY_X; i++) {
+		io = inventory[iNbBag][i][j].io;
+		GetInfosCombineWithIO(io);
 	}
 
 	if(SecondaryInventory) {

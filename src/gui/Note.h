@@ -26,14 +26,13 @@
 
 #include <math/Vector2.h>
 #include <math/Rectangle.h>
-#include "NoteGuiData.h"
 
 class TextureContainer;
 
 namespace gui {
 
 struct Note {
-
+	
 	enum Type {
 		Undefined,
 		Notice,
@@ -43,8 +42,7 @@ struct Note {
 		QuestBook
 	};
 	
-	Note() : _type(Undefined), allocatedForRatio(Vec2f::ZERO), _page(0), noticeGuiData(0),
-			smallNoteGuiData(0), bigNoteGuiData(0), bookNoteGuiData(0), questBookNoteGuiData(0) { }
+	Note() : _type(Undefined), allocatedForRatio(Vec2f::ZERO), _page(0) { }
 	
 	void setData(Type type, const std::string & text);
 	void clear();
@@ -63,15 +61,7 @@ struct Note {
 	Rectf nextPageButton() const { return _page + 2 < pages.size() ? _nextPageButton : Rectf::ZERO; }
 	
 private:
-	NoteGuiData* noticeGuiData;
-	NoteGuiData* smallNoteGuiData;
-	NoteGuiData* bigNoteGuiData;
-	NoteGuiData* bookNoteGuiData;
-	NoteGuiData* questBookNoteGuiData;
-
-	void loadGuiData();
-	void loadFromGuiData(const NoteGuiData* guiData);
-
+	
 	//! Allocate note textures and split text into pages.
 	bool allocate();
 	void deallocate();
