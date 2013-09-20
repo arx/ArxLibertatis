@@ -21,39 +21,31 @@
 namespace gui {
 	NoteGuiData::NoteGuiData(const char* backgroundPath, const char* prevPagePath, const char* nextPagePath) : background(0),
 																											   prevPage(0),
-																											   nextPage(0)
-	{
-		if (backgroundPath != 0)
-		{
+																											   nextPage(0) {
+		if(backgroundPath != 0) {
 			this->background = TextureContainer::LoadUI(backgroundPath);
 		}
-		if (prevPagePath != 0)
-		{
+		if(prevPagePath != 0) {
 			this->prevPage = TextureContainer::LoadUI(prevPagePath);
 		}
-		if (nextPagePath != 0)
-		{
+		if(nextPagePath != 0) {
 			this->nextPage = TextureContainer::LoadUI(nextPagePath);
 		}
 	}
 
-	TextureContainer* NoteGuiData::getBackground() const
-	{
+	TextureContainer* NoteGuiData::getBackground() const {
 		return this->background;
 	}
 
-	TextureContainer* NoteGuiData::getPrevPage() const
-	{
+	TextureContainer* NoteGuiData::getPrevPage() const {
 		return this->prevPage;
 	}
 
-	TextureContainer* NoteGuiData::getNextPage() const
-	{
+	TextureContainer* NoteGuiData::getNextPage() const {
 		return this->nextPage;
 	}
 
-	NoteGuiData::~NoteGuiData()
-	{
+	NoteGuiData::~NoteGuiData() {
 		this->background = 0;
 		this->prevPage = 0;
 		this->nextPage = 0;
