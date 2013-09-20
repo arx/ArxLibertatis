@@ -51,4 +51,11 @@ namespace gui {
 	{
 		return this->nextPage;
 	}
+
+	NoteGuiData::~NoteGuiData()
+	{
+		this->background = 0;
+		this->prevPage = 0;
+		this->nextPage = 0;
+	}
 }

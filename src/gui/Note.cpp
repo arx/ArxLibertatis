@@ -110,7 +110,7 @@ bool Note::allocate() {
 	loadGuiData();
 
 	switch(_type) {		
-		// TODO this information should not be hardcoded		
+		// TODO move pos data do NoteGuiData.
 		case Notice: {	
 			loadFromGuiData(noticeGuiData);
 			if(background) {
