@@ -34,10 +34,26 @@
 
 namespace gui {
 
+void Note::loadGuiData()
+{
+	if (noticeGuiData == 0) //Not sure if checking for each gui data is necessary, especially in the data-driven future.
+	{
+		noticeGuiData = new NoteGuiData("graph/interface/book/notice", 0, 0);
+		smallNoteGuiData = new NoteGuiData("graph/interface/book/bignote", 0, 0);
+		bigNoteGuiData = new NoteGuiData("graph/interface/book/very_bignote", 0, 0);
+		bookNoteGuiData = new NoteGuiData("graph/interface/book/ingame_books", 
+										"graph/interface/book/left_corner", 
+										"graph/interface/book/right_corner");
+		questBookNoteGuiData = new NoteGuiData("graph/interface/book/questbook",
+			                            "graph/interface/book/left_corner_original", 
+										"graph/interface/book/right_corner_original");
+	}
+}
+
 void Note::setData(Type type, const std::string & text) {
 	
 	deallocate();
-	
+
 	_type = type;
 	_text = text;
 	
@@ -64,11 +80,11 @@ void Note::deallocate() {
 	pages.clear();
 }
 
-void Note::loadFromGuiData(const NoteGuiData& guiData)
+void Note::loadFromGuiData(const NoteGuiData* guiData)
 {
-	this->background = guiData.getBackground();
-	this->prevPage = guiData.getPrevPage();
-	this->nextPage = guiData.getNextPage();
+	this->background = guiData->getBackground();
+	this->prevPage = guiData->getPrevPage();
+	this->nextPage = guiData->getNextPage();
 }
 
 bool Note::allocate() {	
@@ -91,10 +107,12 @@ bool Note::allocate() {
 		scale = sizeRatio();
 	}	
 
+	loadGuiData();
+
 	switch(_type) {		
 		// TODO this information should not be hardcoded		
-		case Notice: {
-			background = TextureContainer::LoadUI("graph/interface/book/notice");
+		case Notice: {	
+			loadFromGuiData(noticeGuiData);
 			if(background) {
 				newPos = Vec2f(320 * Xratio - background->m_dwWidth * 0.5f * scale.x, 47.f * scale.y);
 				newTextStart = Vec2f(50.f, 50.f);
@@ -104,7 +122,7 @@ bool Note::allocate() {
 		}
 		
 		case SmallNote: {
-			background = TextureContainer::LoadUI("graph/interface/book/bignote");
+			loadFromGuiData(smallNoteGuiData);
 			if(background) {
 				newPos = Vec2f(320 * Xratio - background->m_dwWidth * 0.5f * scale.x, 47.f * scale.y);
 				newTextStart = Vec2f(30.f, 30.f);
@@ -114,7 +132,7 @@ bool Note::allocate() {
 		}
 		
 		case BigNote: {
-			background = TextureContainer::LoadUI("graph/interface/book/very_bignote");
+			loadFromGuiData(bigNoteGuiData);
 			if(background) {
 				newPos = Vec2f(320 * Xratio - background->m_dwWidth * 0.5f * scale.x, 47.f * scale.y);
 				newTextStart = Vec2f(40.f, 40.f);
@@ -125,9 +143,7 @@ bool Note::allocate() {
 		}
 		
 		case Book: {
-			background = TextureContainer::LoadUI("graph/interface/book/ingame_books");
-			prevPage = TextureContainer::LoadUI("graph/interface/book/left_corner");
-			nextPage = TextureContainer::LoadUI("graph/interface/book/right_corner");
+			loadFromGuiData(bookNoteGuiData);
 			if(background) {
 				newPos = Vec2f(320 * Xratio - background->m_dwWidth * 0.5f * scale.x, 47.f * scale.y);
 				newTextStart = Vec2f(40.f, 20.f);
@@ -140,9 +156,7 @@ bool Note::allocate() {
 		}
 		
 		case QuestBook: {
-			background = TextureContainer::LoadUI("graph/interface/book/questbook");
-			prevPage = TextureContainer::LoadUI("graph/interface/book/left_corner_original");
-			nextPage = TextureContainer::LoadUI("graph/interface/book/right_corner_original");
+			loadFromGuiData(questBookNoteGuiData);
 			if(background) {
 				newPos = Vec2f(97, 64) * scale;
 				newTextStart = Vec2f(40.f, 40.f);

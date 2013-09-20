@@ -31,8 +31,8 @@ namespace gui {
 	*/
 	class NoteGuiData {
 	public:
-		NoteGuiData();
-		NoteGuiData(const res::path & backgroundPath, const res::path & prevPagePath, const res::path & nextPagePath);
+		NoteGuiData(const char* backgroundPath, const char* prevPagePath, const char* nextPagePath);
+		~NoteGuiData();
 		TextureContainer* getBackground() const;
 		TextureContainer* getPrevPage() const;
 		TextureContainer* getNextPage() const;

@@ -209,10 +209,6 @@ INTERFACE_TC		ITC;
 static gui::Note openNote;
 static gui::Note questBook;
 
-/*NoteGUIData*/
-static gui::NoteGuiData noticeGuiData;
-/*.*/
-
 bool				bBookHalo = false;
 bool				bGoldHalo = false;
 bool				bHitFlash = false;
