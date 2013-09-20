@@ -64,36 +64,35 @@ void Note::deallocate() {
 	pages.clear();
 }
 
-bool Note::allocate() {
-	
+void Note::loadFromGuiData(const NoteGuiData& guiData)
+{
+	this->background = guiData.getBackground();
+	this->prevPage = guiData.getPrevPage();
+	this->nextPage = guiData.getNextPage();
+}
+
+bool Note::allocate() {	
 	if(allocatedForRatio == sizeRatio()) {
 		return background ? true : false;
-	}
-	
-	deallocate();
-	
-	// Allocate textures and calculate sizes
-	
+	}	
+	deallocate();	
+
+	// Allocate textures and calculate sizes	
 	Vec2f newPos;
 	Vec2f newTextStart;
-	Vec2f newTextEnd;
-	
+	Vec2f newTextEnd;	
 	Vec2f prevButtonOffset;
-	Vec2f nextButtonOffset;
-	
-	size_t maxPages = 1;
-	
-	Vec2f scale = Vec2f(minSizeRatio(), minSizeRatio());
-	
+	Vec2f nextButtonOffset;	
+
+	size_t maxPages = 1;	
+	Vec2f scale = Vec2f(minSizeRatio(), minSizeRatio());	
 	if(_type == QuestBook) {
 		// TODO change this once the aspect ratio in character screen, spell book, etc. is fixed.
 		scale = sizeRatio();
-	}
-	
-	switch(_type) {
-		
-		// TODO this information should not be hardcoded
-		
+	}	
+
+	switch(_type) {		
+		// TODO this information should not be hardcoded		
 		case Notice: {
 			background = TextureContainer::LoadUI("graph/interface/book/notice");
 			if(background) {
