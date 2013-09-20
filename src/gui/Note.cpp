@@ -35,9 +35,8 @@
 namespace gui {
 
 void Note::loadGuiData()
-{
-	if (noticeGuiData == 0) //Not sure if checking for each gui data is necessary, especially in the data-driven future.
-	{
+{	
+	if(noticeGuiData == 0) { //Not sure if checking for each gui data is necessary, especially in the data-driven future.
 		noticeGuiData = new NoteGuiData("graph/interface/book/notice", 0, 0);
 		smallNoteGuiData = new NoteGuiData("graph/interface/book/bignote", 0, 0);
 		bigNoteGuiData = new NoteGuiData("graph/interface/book/very_bignote", 0, 0);
