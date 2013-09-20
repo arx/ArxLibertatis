@@ -19,18 +19,32 @@
 #include "NoteGuiData.h"
 
 namespace gui {
-	NoteGuiData::NoteGuiData()
+	NoteGuiData::NoteGuiData(const char* backgroundPath, const char* prevPagePath, const char* nextPagePath)
 	{
-		this->background = 0;
-		this->prevPage = 0;
-		this->nextPage = 0;
-	}
-
-	NoteGuiData::NoteGuiData(const res::path & backgroundPath, const res::path & prevPagePath, const res::path & nextPagePath)
-	{
-		this->background = TextureContainer::LoadUI(backgroundPath);
-		this->prevPage = TextureContainer::LoadUI(prevPagePath);
-		this->nextPage = TextureContainer::LoadUI(nextPagePath);
+		if (backgroundPath != 0)
+		{
+			this->background = TextureContainer::LoadUI(backgroundPath);
+		}
+		else
+		{
+			this->background = 0;
+		}
+		if (prevPagePath != 0)
+		{
+			this->prevPage = TextureContainer::LoadUI(prevPagePath);
+		}
+		else
+		{
+			this->prevPage = 0;
+		}
+		if (nextPagePath != 0)
+		{
+			this->nextPage = TextureContainer::LoadUI(nextPagePath);
+		}
+		else
+		{
+			this->nextPage = 0;
+		}
 	}
 
 	TextureContainer* NoteGuiData::getBackground() const
