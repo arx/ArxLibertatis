@@ -173,7 +173,7 @@ void EERIEDrawRotatedSprite(TexturedVertex * in, float siz, TextureContainer * t
 	else SPRmaxs.x=-1;
 }
 
-// Match pixel and texel origins.
+//! Match pixel and texel origins.
 void MatchPixTex(float& x, float& y) {
 	x -= .5f, y -= .5f;
 }
@@ -252,24 +252,28 @@ void EERIEDrawBitmap2(float x, float y, float sx, float sy, float z, TextureCont
 void EERIEDrawBitmap2DecalY(float x, float y, float sx, float sy, float z, TextureContainer * tex,
                             Color color, float _fDeltaY) {
 	
-	MatchPixTex(x, y);
-	
+	MatchPixTex(x, y);	
 	Vec2f uv = (tex) ? tex->uv : Vec2f::ZERO;
-	float sv = uv.y * _fDeltaY;
-	
+	float sv = uv.y * _fDeltaY;	
 	ColorBGRA col = color.toBGRA();
 	TexturedVertex v[4];
 	float fDy = _fDeltaY * sy;	
-	if(sx < 0) {
-		v[0] = TexturedVertex(Vec3f(x,      y + fDy, z), 1.f, col, 0xFF000000, Vec2f(uv.x, sv));
-		v[1] = TexturedVertex(Vec3f(x - sx, y + fDy, z), 1.f, col, 0xFF000000, Vec2f(0.f,  sv));
-		v[2] = TexturedVertex(Vec3f(x - sx, y + sy,  z), 1.f, col, 0xFF000000, Vec2f(0.f,  uv.y));
-		v[3] = TexturedVertex(Vec3f(x,      y + sy,  z), 1.f, col, 0xFF000000, Vec2f(uv.x, uv.y));
-	} else {
-		v[0] = TexturedVertex(Vec3f(x,      y + fDy, z), 1.f, col, 0xFF000000, Vec2f(0.f,  sv));
-		v[1] = TexturedVertex(Vec3f(x + sx, y + fDy, z), 1.f, col, 0xFF000000, Vec2f(uv.x, sv));
-		v[2] = TexturedVertex(Vec3f(x + sx, y + sy,  z), 1.f, col, 0xFF000000, Vec2f(uv.x, uv.y));
-		v[3] = TexturedVertex(Vec3f(x,      y + sy,  z), 1.f, col, 0xFF000000, Vec2f(0.f,  uv.y));
+
+	Vec2f uv1(0.f, sv);
+	Vec2f uv2(uv.x, sv);
+	Vec2f uv3(uv.x, uv.y);
+	Vec2f uv4(0.f, uv.y);
+
+	if (sx < 0) {
+		sx *= -1;
+		uv1.x = uv.x;
+		uv2.x = 0.f;
+		uv3.x = 0.f;
+		uv4.x = uv.x;
 	}	
+	v[0] = TexturedVertex(Vec3f(x,      y + fDy, z), 1.f, col, 0xFF000000, uv1);
+	v[1] = TexturedVertex(Vec3f(x + sx, y + fDy, z), 1.f, col, 0xFF000000, uv2);
+	v[2] = TexturedVertex(Vec3f(x + sx, y + sy,  z), 1.f, col, 0xFF000000, uv3);
+	v[3] = TexturedVertex(Vec3f(x,      y + sy,  z), 1.f, col, 0xFF000000, uv4);
 	SetTexDrawPrim(tex, v, Renderer::TriangleFan);
 }
