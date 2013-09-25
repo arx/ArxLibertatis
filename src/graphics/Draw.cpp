@@ -176,22 +176,35 @@ void EERIEDrawBitmap(Rect rect, float z, TextureContainer * tex, Color color) {
 	EERIEDrawBitmap(rect.left, rect.top, rect.width(), rect.height(), z, tex, color);
 }
 
-void EERIEDrawBitmap(float x, float y, float sx, float sy, float z, TextureContainer * tex, Color color) {
-	
-	// Match pixel and texel origins.
-	x -= .5f, y -= .5f;
-	
-	Vec2f uv = (tex) ? tex->uv : Vec2f::ZERO;
-	
+void DrawBitmap(float x, float y, float sx, float sy, float z, TextureContainer * tex, Color color, bool isRhw) {
+	x -= .5f, y -= .5f;	
+	Vec2f uv = (tex) ? tex->uv : Vec2f::ZERO;	
 	ColorBGRA col = color.toBGRA();
+	float val = 1.f;
+	if(isRhw) {
+		val -= z; 
+	}
+
 	TexturedVertex v[4];
-	v[0] = TexturedVertex(Vec3f(x,      y,      z), 1.f, col, 0xff000000, Vec2f(0.f,  0.f));
-	v[1] = TexturedVertex(Vec3f(x + sx, y,      z), 1.f, col, 0xff000000, Vec2f(uv.x, 0.f));
-	v[2] = TexturedVertex(Vec3f(x,      y + sy, z), 1.f, col, 0xff000000, Vec2f(0.f,  uv.y));
-	v[3] = TexturedVertex(Vec3f(x + sx, y + sy, z), 1.f, col, 0xff000000, Vec2f(uv.x, uv.y));
-	
+	v[0] = TexturedVertex(Vec3f(x,      y,      z), val, col, 0xFF000000, Vec2f(0.f,  0.f));
+	v[1] = TexturedVertex(Vec3f(x + sx, y,      z), val, col, 0xFF000000, Vec2f(uv.x, 0.f));
+	v[2] = TexturedVertex(Vec3f(x,      y + sy, z), val, col, 0xFF000000, Vec2f(0.f,  uv.y));
+	v[3] = TexturedVertex(Vec3f(x + sx, y + sy, z), val, col, 0xFF000000, Vec2f(uv.x, uv.y));
+
 	GRenderer->SetTexture(0, tex);
+	if(isRhw) {
+		if(tex && tex->hasColorKey()) {
+			GRenderer->SetAlphaFunc(Renderer::CmpGreater, .5f);
+			EERIEDRAWPRIM(Renderer::TriangleStrip, v, 4);
+			GRenderer->SetAlphaFunc(Renderer::CmpNotEqual, 0.f);
+			return;
+		}
+	}
 	EERIEDRAWPRIM(Renderer::TriangleStrip, v, 4);
+}
+
+void EERIEDrawBitmap(float x, float y, float sx, float sy, float z, TextureContainer * tex, Color color) {
+	DrawBitmap(x, y, sx, sy, z, tex, color, false);
 }
 
 void EERIEDrawBitmap_uv(float x, float y, float sx, float sy, float z, TextureContainer * tex,
@@ -233,31 +246,7 @@ void EERIEDrawBitmapUVs(float x, float y, float sx, float sy, float z, TextureCo
 }
 
 void EERIEDrawBitmap2(float x, float y, float sx, float sy, float z, TextureContainer * tex, Color color) {
-	
-	// Match pixel and texel origins.
-	x -= .5f, y -= .5f;
-	
-	Vec2f uv = (tex) ? tex->uv : Vec2f::ZERO;
-	
-	ColorBGRA col = color.toBGRA();
-	TexturedVertex v[4];
-	float rhw = 1.f - z;
-	v[0] = TexturedVertex(Vec3f(x,      y,      z), rhw, col, 0xFF000000, Vec2f(0.f,  0.f));
-	v[1] = TexturedVertex(Vec3f(x + sx, y,      z), rhw, col, 0xFF000000, Vec2f(uv.x, 0.f));
-	v[2] = TexturedVertex(Vec3f(x,      y + sy, z), rhw, col, 0xFF000000, Vec2f(0.f,  uv.y));
-	v[3] = TexturedVertex(Vec3f(x + sx, y + sy, z), rhw, col, 0xFF000000, Vec2f(uv.x, uv.y));
-	
-	GRenderer->SetTexture(0, tex);
-	
-	if(tex && tex->hasColorKey()) {
-		GRenderer->SetAlphaFunc(Renderer::CmpGreater, .5f);
-	}
-	
-	EERIEDRAWPRIM(Renderer::TriangleStrip, v, 4);
-	
-	if(tex && tex->hasColorKey()) {
-		GRenderer->SetAlphaFunc(Renderer::CmpNotEqual, 0.f);
-	}
+	DrawBitmap(x, y, sx, sy, z, tex, color, true);
 }
 
 void EERIEDrawBitmap2DecalY(float x, float y, float sx, float sy, float z, TextureContainer * tex,
