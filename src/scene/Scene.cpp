@@ -917,61 +917,33 @@ static void RenderWater() {
 		pVertex->p.z = ep->v[0].p.z;
 		pVertex->color = 0xFF505050;
 
-		CalculateWaterfTufTv(fTu, fTv, ep, time, 0, 0);
+		const int STEP_COUNT = 3;
 
-		if(ep->type & POLY_FALL) {
-			fTv += time * (1.f/4000);
-		}
-		pVertex->uv[0].x = fTu;
-		pVertex->uv[0].y = fTv;
+		for(int i = 0; i < STEP_COUNT; ++i) {
+			CalculateWaterfTufTv(fTu, fTv, ep, time, 0, i);
 
-		CalculateWaterfTufTv(fTu, fTv, ep, time, 0, 1);
-
-		if (ep->type & POLY_FALL) {
-			fTv += time * (1.f/4000);
-		}
-		pVertex->uv[1].x = fTu;
-		pVertex->uv[1].y = fTv;
-
-		CalculateWaterfTufTv(fTu, fTv, ep, time, 0, 2);
-
-		if(ep->type & POLY_FALL) {
-			fTv += time * (1.f/4000);
-		}
-		pVertex->uv[2].x = fTu;
-		pVertex->uv[2].y = fTv;
+			if(ep->type & POLY_FALL) {
+				fTv += time * (1.f/4000);
+			}
+			pVertex->uv[i].x = fTu;
+			pVertex->uv[i].y = fTv;
+		}		
 		
-
 		pVertex++;
 		pVertex->p.x = ep->v[1].p.x;
 		pVertex->p.y = -ep->v[1].p.y;
 		pVertex->p.z = ep->v[1].p.z;
 		pVertex->color = 0xFF505050;
 
-		CalculateWaterfTufTv(fTu, fTv, ep, time, 1, 0);
+		for(int i = 0; i < STEP_COUNT; ++i) {
+			CalculateWaterfTufTv(fTu, fTv, ep, time, 1, i);
 
-		if(ep->type & POLY_FALL) {
-			fTv += time * (1.f/4000);
-		}
-		pVertex->uv[0].x = fTu;
-		pVertex->uv[0].y = fTv;
-
-		CalculateWaterfTufTv(fTu, fTv, ep, time, 1, 1);
-
-		if(ep->type & POLY_FALL) {
-			fTv += time * (1.f/4000);
-		}
-		pVertex->uv[1].x = fTu;
-		pVertex->uv[1].y = fTv;
-
-		CalculateWaterfTufTv(fTu, fTv, ep, time, 1, 2);
-
-		if(ep->type & POLY_FALL) {
-			fTv += time * (1.f/4000);
-		}
-		pVertex->uv[2].x = fTu;
-		pVertex->uv[2].y = fTv;
-
+			if(ep->type & POLY_FALL) {
+				fTv += time * (1.f/4000);
+			}
+			pVertex->uv[i].x = fTu;
+			pVertex->uv[i].y = fTv;
+		}		
 
 		pVertex++;
 		pVertex->p.x = ep->v[2].p.x;
@@ -979,29 +951,15 @@ static void RenderWater() {
 		pVertex->p.z = ep->v[2].p.z;
 		pVertex->color = 0xFF505050;
 
-		CalculateWaterfTufTv(fTu, fTv, ep, time, 2, 0);
+		for(int i = 0; i < STEP_COUNT; ++i) {
+			CalculateWaterfTufTv(fTu, fTv, ep, time, 2, i);
 
-		if(ep->type & POLY_FALL) {
-			fTv += time * (1.f/4000);
-		}
-		pVertex->uv[0].x = fTu;
-		pVertex->uv[0].y = fTv;
-
-		CalculateWaterfTufTv(fTu, fTv, ep, time, 2, 1);
-
-		if(ep->type & POLY_FALL) {
-			fTv += time * (1.f/4000);
-		}
-		pVertex->uv[1].x = fTu;
-		pVertex->uv[1].y = fTv;
-
-		CalculateWaterfTufTv(fTu, fTv, ep, time, 2, 2);
-
-		if(ep->type & POLY_FALL) {
-			fTv += time * (1.f/4000);
-		}
-		pVertex->uv[2].x = fTu;
-		pVertex->uv[2].y = fTv;
+			if(ep->type & POLY_FALL) {
+				fTv += time * (1.f/4000);
+			}
+			pVertex->uv[i].x = fTu;
+			pVertex->uv[i].y = fTv;
+		}		
 
 		pVertex++;
 		
@@ -1016,29 +974,15 @@ static void RenderWater() {
 			pVertex->p.z = ep->v[3].p.z;
 			pVertex->color = 0xFF505050;
 
-			CalculateWaterfTufTv(fTu, fTv, ep, time, 3, 0);
+			for(int i = 0; i < STEP_COUNT; ++i) {
+				CalculateWaterfTufTv(fTu, fTv, ep, time, 3, i);
 
-			if(ep->type & POLY_FALL) {
-				fTv += time * (1.f/4000);
+				if(ep->type & POLY_FALL) {
+					fTv += time * (1.f/4000);
+				}
+				pVertex->uv[i].x = fTu;
+				pVertex->uv[i].y = fTv;
 			}
-			pVertex->uv[0].x = fTu;
-			pVertex->uv[0].y = fTv;
-
-			CalculateWaterfTufTv(fTu, fTv, ep, time, 3, 1);
-
-			if(ep->type & POLY_FALL) {
-				fTv += time * (1.f/4000);
-			}
-			pVertex->uv[1].x = fTu;
-			pVertex->uv[1].y = fTv;
-
-			CalculateWaterfTufTv(fTu, fTv, ep, time, 3, 2);
-
-			if(ep->type & POLY_FALL) {
-				fTv += time * (1.f/4000);
-			}
-			pVertex->uv[2].x = fTu;
-			pVertex->uv[2].y = fTv;
 
 			pVertex++;
 			
