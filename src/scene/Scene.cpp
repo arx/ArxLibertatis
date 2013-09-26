@@ -852,23 +852,39 @@ static void RenderWaterBatch() {
 	
 }
 
-float Formula(bool calcSin, const TexturedVertex& v, float time, float var3, float var1 = 0, float var2 = 0, float sign = 1) {
+float Formula(bool calcSin, const TexturedVertex& v, float time, float divVar1, float divVar2, 
+	          float divVar3, float divVar4, float var1 = 0, float var2 = 0, float sign = 1) {
 	if (calcSin) {
-		return (v.p.x + var1)*(1.f/1000) + sign * (sin((v.p.x + var2)*(1.f/200) + time * (1.f/1000))) * (1.f/var3);
+		return (v.p.x + var1)*(1.f/divVar1) + sign * (sin((v.p.x + var2)*(1.f/divVar2) + time * (1.f/divVar3))) * (1.f/divVar4);
 	}
-	return (v.p.z + var1)*(1.f/1000) + sign * (cos((v.p.z + var2)*(1.f/200) + time * (1.f/1000))) * (1.f/var3);
+	return (v.p.z + var1)*(1.f/divVar1) + sign * (cos((v.p.z + var2)*(1.f/divVar2) + time * (1.f/divVar3))) * (1.f/divVar4);
 }
 
 void CalculateWaterfTufTv(float& fTu, float& fTv, EERIEPOLY* ep, float time, int vertIndex, int step) {
-	switch (step) {
-	case(0):fTu = Formula(true, ep->v[vertIndex], time, 32); 
-		    fTv = Formula(false, ep->v[vertIndex], time, 32); 
+	switch(step) {
+	case(0):fTu = Formula(true, ep->v[vertIndex], time, 1000, 200, 1000, 32); 
+		    fTv = Formula(false, ep->v[vertIndex], time, 1000, 200, 1000, 32); 
 			break;
-	case(1):fTu = Formula(true, ep->v[vertIndex], time, 28, 30.f, 30); 
-		    fTv = Formula(false, ep->v[vertIndex], time, 28, 30.f, 30, -1.0); 
+	case(1):fTu = Formula(true, ep->v[vertIndex], time, 1000, 200, 1000, 28, 30.f, 30); 
+		    fTv = Formula(false, ep->v[vertIndex], time, 1000, 200, 1000, 28, 30.f, 30, -1.0); 
 			break;
-	case(2):fTu = Formula(true, ep->v[vertIndex], time, 40, 60.f, 60, -1.0);
-		    fTv = Formula(false, ep->v[vertIndex], time, 40, 60.f, 60, -1.0); 
+	case(2):fTu = Formula(true, ep->v[vertIndex], time, 1000, 200, 1000, 40, 60.f, 60, -1.0);
+		    fTv = Formula(false, ep->v[vertIndex], time, 1000, 200, 1000, 40, 60.f, 60, -1.0); 
+			break;
+	default:break;
+	}
+}
+
+void CalculateLavafTufTv(float& fTu, float& fTv, EERIEPOLY* ep, float time, int vertIndex, int step) {
+	switch(step) {
+	case(0):fTu = Formula(true, ep->v[vertIndex], time, 1000, 200, 2000, 20); 
+		    fTv = Formula(false, ep->v[vertIndex], time, 1000, 200, 2000, 20); 
+			break;
+	case(1):fTu = Formula(true, ep->v[vertIndex], time, 1000, 100, 2000, 10); 
+		    fTv = Formula(false, ep->v[vertIndex], time, 1000, 100, 2000, 10); 
+			break;
+	case(2):fTu = Formula(true, ep->v[vertIndex], time, 600, 160, 2000, 11); 
+		    fTv = Formula(false, ep->v[vertIndex], time, 600, 160, 2000, 11);
 			break;
 	default:break;
 	}
@@ -981,7 +997,8 @@ void RenderLavaBatch() {
 }
 
 void RenderLava() {
-	
+	const int STEP_COUNT = 3;
+
 	if(vPolyLava.empty()) {
 		return;
 	}
@@ -1018,100 +1035,25 @@ void RenderLava() {
 		float fTu;
 		float fTv;
 
-		pVertex->p.x = ep->v[0].p.x;
-		pVertex->p.y = -ep->v[0].p.y;
-		pVertex->p.z = ep->v[0].p.z;
-		pVertex->color = 0xFF666666;
-
-		fTu = ep->v[0].p.x*(1.f/1000) + sin(ep->v[0].p.x*(1.f/200)+time*(1.f/2000))*(1.f/20);
-		fTv = ep->v[0].p.z*(1.f/1000) + cos(ep->v[0].p.z*(1.f/200)+time*(1.f/2000))*(1.f/20);
-		pVertex->uv[0].x = fTu;
-		pVertex->uv[0].y = fTv;
-
-		fTu = ep->v[0].p.x*(1.f/1000) + sin(ep->v[0].p.x*(1.f/100)+time*(1.f/2000))*(1.f/10);
-		fTv = ep->v[0].p.z*(1.f/1000) + cos(ep->v[0].p.z*(1.f/100)+time*(1.f/2000))*(1.f/10);
-		pVertex->uv[1].x = fTu;
-		pVertex->uv[1].y = fTv;
-
-		fTu = ep->v[0].p.x*(1.f/600) + sin(ep->v[0].p.x*(1.f/160)+time*(1.f/2000))*(1.f/11);
-		fTv = ep->v[0].p.z*(1.f/600) + cos(ep->v[0].p.z*(1.f/160)+time*(1.f/2000))*(1.f/11);
-		pVertex->uv[2].x = fTu;
-		pVertex->uv[2].y = fTv;
-
-
-		pVertex++;
-		pVertex->p.x = ep->v[1].p.x;
-		pVertex->p.y = -ep->v[1].p.y;
-		pVertex->p.z = ep->v[1].p.z;
-		pVertex->color = 0xFF666666;
-
-		fTu = ep->v[1].p.x*(1.f/1000) + sin(ep->v[1].p.x*(1.f/200)+time*(1.0f/2000))*(1.f/20);
-		fTv = ep->v[1].p.z*(1.f/1000) + cos(ep->v[1].p.z*(1.f/200)+time*(1.0f/2000))*(1.f/20);
-		pVertex->uv[0].x = fTu;
-		pVertex->uv[0].y = fTv;
-
-		fTu = ep->v[1].p.x*(1.f/1000) + sin(ep->v[1].p.x*(1.f/100)+time*(1.f/2000))*(1.f/10);
-		fTv = ep->v[1].p.z*(1.f/1000) + cos(ep->v[1].p.z*(1.f/100)+time*(1.f/2000))*(1.f/10);
-		pVertex->uv[1].x = fTu;
-		pVertex->uv[1].y = fTv;
-
-		fTu = ep->v[1].p.x*(1.f/600) + sin(ep->v[1].p.x*(1.f/160)+time*(1.f/2000))*(1.f/11);
-		fTv = ep->v[1].p.z*(1.f/600) + cos(ep->v[1].p.z*(1.f/160)+time*(1.f/2000))*(1.f/11);
-		pVertex->uv[2].x = fTu;
-		pVertex->uv[2].y = fTv;
-
-
-		pVertex++;
-		pVertex->p.x = ep->v[2].p.x;
-		pVertex->p.y = -ep->v[2].p.y;
-		pVertex->p.z = ep->v[2].p.z;
-		pVertex->color = 0xFF666666;
-
-		fTu = ep->v[2].p.x*(1.f/1000) + sin(ep->v[2].p.x*(1.f/200)+time*(1.f/2000))*(1.f/20);
-		fTv = ep->v[2].p.z*(1.f/1000) + cos(ep->v[2].p.z*(1.f/200)+time*(1.f/2000))*(1.f/20);
-		pVertex->uv[0].x = fTu;
-		pVertex->uv[0].y = fTv;
-
-		fTu = ep->v[2].p.x*(1.f/1000) + sin(ep->v[2].p.x*(1.f/100)+time*(1.f/2000))*(1.f/10);
-		fTv = ep->v[2].p.z*(1.f/1000) + cos(ep->v[2].p.z*(1.f/100)+time*(1.f/2000))*(1.f/10);
-		pVertex->uv[1].x = fTu;
-		pVertex->uv[1].y = fTv;
-
-		fTu = ep->v[2].p.x*(1.f/600) + sin(ep->v[2].p.x*(1.f/160)+time*(1.f/2000))*(1.f/11);
-		fTv = ep->v[2].p.z*(1.f/600) + cos(ep->v[2].p.z*(1.f/160)+time*(1.f/2000))*(1.f/11);
-		pVertex->uv[2].x = fTu;
-		pVertex->uv[2].y = fTv;
-
-		pVertex++;
-		
-		*indices++ = iNbIndice++; 
-		*indices++ = iNbIndice++; 
-		*indices++ = iNbIndice++; 
-		dynamicVertices.nbindices += 3;
-		
-		if(iNbVertex == 4) {
-			pVertex->p.x = ep->v[3].p.x;
-			pVertex->p.y = -ep->v[3].p.y;
-			pVertex->p.z = ep->v[3].p.z;
+		for(int j = 0; j < iNbVertex; ++j) {
+			pVertex->p.x = ep->v[j].p.x;
+			pVertex->p.y = -ep->v[j].p.y;
+			pVertex->p.z = ep->v[j].p.z;
 			pVertex->color = 0xFF666666;
-
-			fTu = ep->v[3].p.x*(1.f/1000) + sin(ep->v[3].p.x*(1.f/200)+time*(1.f/2000))*(1.f/20);
-			fTv = ep->v[3].p.z*(1.f/1000) + cos(ep->v[3].p.z*(1.f/200)+time*(1.f/2000))*(1.f/20);
-			pVertex->uv[0].x = fTu;
-			pVertex->uv[0].y = fTv;
-
-			fTu = ep->v[3].p.x*(1.f/1000) + sin(ep->v[3].p.x*(1.f/100)+time*(1.f/2000))*(1.f/10);
-			fTv = ep->v[3].p.z*(1.f/1000) + cos(ep->v[3].p.z*(1.f/100)+time*(1.f/2000))*(1.f/10);
-			pVertex->uv[1].x = fTu;
-			pVertex->uv[1].y = fTv;
-
-			fTu = ep->v[3].p.x*(1.f/600) + sin(ep->v[3].p.x*(1.f/160)+time*(1.f/2000))*(1.f/11);
-			fTv = ep->v[3].p.z*(1.f/600) + cos(ep->v[3].p.z*(1.f/160)+time*(1.f/2000))*(1.f/11);
-			pVertex->uv[2].x = fTu;
-			pVertex->uv[2].y = fTv;
-
+			for(int i = 0; i < STEP_COUNT; ++i) {
+				CalculateLavafTufTv(fTu, fTv, ep, time, j, i);
+				pVertex->uv[i].x = fTu;
+				pVertex->uv[i].y = fTv;
+			}
 			pVertex++;
-			
+			if(j == 2){	
+				*indices++ = iNbIndice++; 
+				*indices++ = iNbIndice++; 
+				*indices++ = iNbIndice++; 
+				dynamicVertices.nbindices += 3;
+			}
+		}								
+		if(iNbVertex == 4) {			
 			*indices++ = iNbIndice++; 
 			*indices++ = iNbIndice - 2; 
 			*indices++ = iNbIndice - 3; 
@@ -1123,8 +1065,7 @@ void RenderLava() {
 	RenderLavaBatch();
 	dynamicVertices.done();
 	
-	vPolyLava.clear();
-	
+	vPolyLava.clear();	
 }
 
 void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num, const EERIE_FRUSTRUM_DATA & frustrums, long tim) {
