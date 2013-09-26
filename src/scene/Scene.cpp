@@ -875,7 +875,8 @@ void CalculateWaterfTufTv(float& fTu, float& fTv, EERIEPOLY* ep, float time, int
 }
 
 static void RenderWater() {
-	
+	const int STEP_COUNT = 3; //For fTv and fTu calculations
+
 	if(vPolyWater.empty()) {
 		return;
 	}
@@ -912,86 +913,37 @@ static void RenderWater() {
 		float fTu;
 		float fTv;
 
-		pVertex->p.x = ep->v[0].p.x;
-		pVertex->p.y = -ep->v[0].p.y;
-		pVertex->p.z = ep->v[0].p.z;
-		pVertex->color = 0xFF505050;
-
-		const int STEP_COUNT = 3;
-
-		for(int i = 0; i < STEP_COUNT; ++i) {
-			CalculateWaterfTufTv(fTu, fTv, ep, time, 0, i);
-
-			if(ep->type & POLY_FALL) {
-				fTv += time * (1.f/4000);
-			}
-			pVertex->uv[i].x = fTu;
-			pVertex->uv[i].y = fTv;
-		}		
-		
-		pVertex++;
-		pVertex->p.x = ep->v[1].p.x;
-		pVertex->p.y = -ep->v[1].p.y;
-		pVertex->p.z = ep->v[1].p.z;
-		pVertex->color = 0xFF505050;
-
-		for(int i = 0; i < STEP_COUNT; ++i) {
-			CalculateWaterfTufTv(fTu, fTv, ep, time, 1, i);
-
-			if(ep->type & POLY_FALL) {
-				fTv += time * (1.f/4000);
-			}
-			pVertex->uv[i].x = fTu;
-			pVertex->uv[i].y = fTv;
-		}		
-
-		pVertex++;
-		pVertex->p.x = ep->v[2].p.x;
-		pVertex->p.y = -ep->v[2].p.y;
-		pVertex->p.z = ep->v[2].p.z;
-		pVertex->color = 0xFF505050;
-
-		for(int i = 0; i < STEP_COUNT; ++i) {
-			CalculateWaterfTufTv(fTu, fTv, ep, time, 2, i);
-
-			if(ep->type & POLY_FALL) {
-				fTv += time * (1.f/4000);
-			}
-			pVertex->uv[i].x = fTu;
-			pVertex->uv[i].y = fTv;
-		}		
-
-		pVertex++;
-		
-		*indices++ = iNbIndice++; 
-		*indices++ = iNbIndice++; 
-		*indices++ = iNbIndice++; 
-		dynamicVertices.nbindices += 3;
-		
-		if(iNbVertex == 4) {
-			pVertex->p.x = ep->v[3].p.x;
-			pVertex->p.y = -ep->v[3].p.y;
-			pVertex->p.z = ep->v[3].p.z;
+		for(int j = 0; j < iNbVertex; ++j) {
+			pVertex->p.x = ep->v[j].p.x;
+			pVertex->p.y = -ep->v[j].p.y;
+			pVertex->p.z = ep->v[j].p.z;
 			pVertex->color = 0xFF505050;
 
 			for(int i = 0; i < STEP_COUNT; ++i) {
-				CalculateWaterfTufTv(fTu, fTv, ep, time, 3, i);
+				CalculateWaterfTufTv(fTu, fTv, ep, time, j, i);
 
 				if(ep->type & POLY_FALL) {
 					fTv += time * (1.f/4000);
 				}
 				pVertex->uv[i].x = fTu;
 				pVertex->uv[i].y = fTv;
-			}
-
+			}	
 			pVertex++;
-			
+
+			if(j == 2){						
+				*indices++ = iNbIndice++; 
+				*indices++ = iNbIndice++; 
+				*indices++ = iNbIndice++; 
+				dynamicVertices.nbindices += 3;
+			}
+		}
+		if(iNbVertex == 4) {
 			*indices++ = iNbIndice++; 
 			*indices++ = iNbIndice - 2; 
 			*indices++ = iNbIndice - 3; 
-			dynamicVertices.nbindices += 3;
+			dynamicVertices.nbindices += 3;	
 		}
-	}
+	}	
 	
 	dynamicVertices.unlock();
 	RenderWaterBatch();
