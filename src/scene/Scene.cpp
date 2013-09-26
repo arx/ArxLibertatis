@@ -960,8 +960,10 @@ static void RenderWater() {
 		pVertex->uv[1].x = fTu;
 		pVertex->uv[1].y = fTv;
 
-		fTu = (ep->v[1].p.x+60.f)*(1.f/1000) - sin((ep->v[1].p.x+60)*(1.f/200)+time*(1.f/1000))*(1.f/40);
-		fTv = (ep->v[1].p.z+60.f)*(1.f/1000) - cos((ep->v[1].p.z+60)*(1.f/200)+time*(1.f/1000))*(1.f/40);
+		fTu = Formula(true, ep->v[1], time, 40, 60.f, 60, -1.0);
+		fTv = Formula(false, ep->v[1], time, 40, 60.f, 60, -1.0);
+		//fTu = (ep->v[1].p.x+60.f)*(1.f/1000) - sin((ep->v[1].p.x+60)*(1.f/200)+time*(1.f/1000))*(1.f/40);
+		//fTv = (ep->v[1].p.z+60.f)*(1.f/1000) - cos((ep->v[1].p.z+60)*(1.f/200)+time*(1.f/1000))*(1.f/40);
 		if(ep->type & POLY_FALL) {
 			fTv += time * (1.f/4000);
 		}
@@ -975,24 +977,31 @@ static void RenderWater() {
 		pVertex->p.z = ep->v[2].p.z;
 		pVertex->color = 0xFF505050;
 
-		fTu = ep->v[2].p.x*(1.f/1000) + sin(ep->v[2].p.x*(1.f/200)+time*(1.f/1000))*(1.f/32);
-		fTv = ep->v[2].p.z*(1.f/1000) + cos(ep->v[2].p.z*(1.f/200)+time*(1.f/1000))*(1.f/32);
+		fTu = Formula(true, ep->v[2], time, 32);
+		fTv = Formula(false, ep->v[2], time, 32);
+		//fTu = ep->v[2].p.x*(1.f/1000) + sin(ep->v[2].p.x*(1.f/200)+time*(1.f/1000))*(1.f/32);
+		//fTv = ep->v[2].p.z*(1.f/1000) + cos(ep->v[2].p.z*(1.f/200)+time*(1.f/1000))*(1.f/32);
 		if(ep->type & POLY_FALL) {
 			fTv += time * (1.f/4000);
 		}
 		pVertex->uv[0].x = fTu;
 		pVertex->uv[0].y = fTv;
 
-		fTu = (ep->v[2].p.x+30.f)*(1.f/1000) + sin((ep->v[2].p.x+30)*(1.f/200)+time*(1.f/1000))*(1.f/28);
-		fTv = (ep->v[2].p.z+30.f)*(1.f/1000) - cos((ep->v[2].p.z+30)*(1.f/200)+time*(1.f/1000))*(1.f/28);
+		fTu = Formula(true, ep->v[2], time, 28, 30.f, 30);
+		fTv = Formula(false, ep->v[2], time, 28, 30.f, 30, -1.0);
+
+		//fTu = (ep->v[2].p.x+30.f)*(1.f/1000) + sin((ep->v[2].p.x+30)*(1.f/200)+time*(1.f/1000))*(1.f/28);
+		//fTv = (ep->v[2].p.z+30.f)*(1.f/1000) - cos((ep->v[2].p.z+30)*(1.f/200)+time*(1.f/1000))*(1.f/28);
 		if(ep->type & POLY_FALL) {
 			fTv += time * (1.f/4000);
 		}
 		pVertex->uv[1].x = fTu;
 		pVertex->uv[1].y = fTv;
 
-		fTu = (ep->v[2].p.x+60.f)*(1.f/1000) - sin((ep->v[2].p.x+60)*(1.f/200)+time*(1.f/1000))*(1.f/40);
-		fTv = (ep->v[2].p.z+60.f)*(1.f/1000) - cos((ep->v[2].p.z+60)*(1.f/200)+time*(1.f/1000))*(1.f/40);
+		fTu = Formula(true, ep->v[2], time, 40, 60.f, 60, -1.0);
+		fTv = Formula(false, ep->v[2], time, 40, 60.f, 60, -1.0);
+		//fTu = (ep->v[2].p.x+60.f)*(1.f/1000) - sin((ep->v[2].p.x+60)*(1.f/200)+time*(1.f/1000))*(1.f/40);
+		//fTv = (ep->v[2].p.z+60.f)*(1.f/1000) - cos((ep->v[2].p.z+60)*(1.f/200)+time*(1.f/1000))*(1.f/40);
 		if(ep->type & POLY_FALL) {
 			fTv += time * (1.f/4000);
 		}
@@ -1012,24 +1021,31 @@ static void RenderWater() {
 			pVertex->p.z = ep->v[3].p.z;
 			pVertex->color = 0xFF505050;
 
-			fTu = ep->v[3].p.x*(1.f/1000) + sin(ep->v[3].p.x*(1.f/200)+time*(1.f/1000))*(1.f/32);
-			fTv = ep->v[3].p.z*(1.f/1000) + cos(ep->v[3].p.z*(1.f/200)+time*(1.f/1000))*(1.f/32);
+			fTu = Formula(true, ep->v[3], time, 32);
+			fTv = Formula(false, ep->v[3], time, 32);
+			//fTu = ep->v[3].p.x*(1.f/1000) + sin(ep->v[3].p.x*(1.f/200)+time*(1.f/1000))*(1.f/32);
+			//fTv = ep->v[3].p.z*(1.f/1000) + cos(ep->v[3].p.z*(1.f/200)+time*(1.f/1000))*(1.f/32);
 			if(ep->type & POLY_FALL) {
 				fTv += time * (1.f/4000);
 			}
 			pVertex->uv[0].x = fTu;
 			pVertex->uv[0].y = fTv;
 
-			fTu = (ep->v[3].p.x+30.f)*(1.f/1000) + sin((ep->v[3].p.x+30)*(1.f/200)+time*(1.f/1000))*(1.f/28);
-			fTv = (ep->v[3].p.z+30.f)*(1.f/1000) - cos((ep->v[3].p.z+30)*(1.f/200)+time*(1.f/1000))*(1.f/28);
+			fTu = Formula(true, ep->v[3], time, 28, 30.f, 30);
+			fTv = Formula(false, ep->v[3], time, 28, 30.f, 30, -1.0);
+			//fTu = (ep->v[3].p.x+30.f)*(1.f/1000) + sin((ep->v[3].p.x+30)*(1.f/200)+time*(1.f/1000))*(1.f/28);
+			//fTv = (ep->v[3].p.z+30.f)*(1.f/1000) - cos((ep->v[3].p.z+30)*(1.f/200)+time*(1.f/1000))*(1.f/28);
 			if(ep->type & POLY_FALL) {
 				fTv += time * (1.f/4000);
 			}
 			pVertex->uv[1].x = fTu;
 			pVertex->uv[1].y = fTv;
 
-			fTu = (ep->v[3].p.x+60.f)*(1.f/1000) - sin((ep->v[3].p.x+60)*(1.f/200)+time*(1.0f/1000))*(1.f/40);
-			fTv = (ep->v[3].p.z+60.f)*(1.f/1000) - cos((ep->v[3].p.z+60)*(1.f/200)+time*(1.0f/1000))*(1.f/40);
+			fTu = Formula(true, ep->v[3], time, 40, 60.f, 60, -1.0);
+			fTu = Formula(false, ep->v[3], time, 40, 60.f, 60, -1.0);
+
+			//fTu = (ep->v[3].p.x+60.f)*(1.f/1000) - sin((ep->v[3].p.x+60)*(1.f/200)+time*(1.0f/1000))*(1.f/40);
+			//fTv = (ep->v[3].p.z+60.f)*(1.f/1000) - cos((ep->v[3].p.z+60)*(1.f/200)+time*(1.0f/1000))*(1.f/40);
 			if(ep->type & POLY_FALL) {
 				fTv += time * (1.f/4000);
 			}
