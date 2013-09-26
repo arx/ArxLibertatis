@@ -853,23 +853,23 @@ static void RenderWaterBatch() {
 }
 
 float Formula(bool calcSin, const TexturedVertex& v, float time, float divVar1, float divVar2, 
-	          float divVar3, float divVar4, float var1 = 0, float var2 = 0, float sign = 1) {
+	          float divVar3, float divVar4, float addVar1 = 0, float addVar2 = 0, float sign = 1) {
 	if (calcSin) {
-		return (v.p.x + var1)*(1.f/divVar1) + sign * (sin((v.p.x + var2)*(1.f/divVar2) + time * (1.f/divVar3))) * (1.f/divVar4);
+		return (v.p.x + addVar1)*(1.f/divVar1) + sign * (sin((v.p.x + addVar2)*(1.f/divVar2) + time * (1.f/divVar3))) * (1.f/divVar4);
 	}
-	return (v.p.z + var1)*(1.f/divVar1) + sign * (cos((v.p.z + var2)*(1.f/divVar2) + time * (1.f/divVar3))) * (1.f/divVar4);
+	return (v.p.z + addVar1)*(1.f/divVar1) + sign * (cos((v.p.z + addVar2)*(1.f/divVar2) + time * (1.f/divVar3))) * (1.f/divVar4);
 }
 
 void CalculateWaterfTufTv(float& fTu, float& fTv, EERIEPOLY* ep, float time, int vertIndex, int step) {
 	switch(step) {
 	case(0):fTu = Formula(true, ep->v[vertIndex], time, 1000, 200, 1000, 32); 
-		    fTv = Formula(false, ep->v[vertIndex], time, 1000, 200, 1000, 32); 
+			fTv = Formula(false, ep->v[vertIndex], time, 1000, 200, 1000, 32); 
 			break;
 	case(1):fTu = Formula(true, ep->v[vertIndex], time, 1000, 200, 1000, 28, 30.f, 30); 
-		    fTv = Formula(false, ep->v[vertIndex], time, 1000, 200, 1000, 28, 30.f, 30, -1.0); 
+			fTv = Formula(false, ep->v[vertIndex], time, 1000, 200, 1000, 28, 30.f, 30, -1.0); 
 			break;
 	case(2):fTu = Formula(true, ep->v[vertIndex], time, 1000, 200, 1000, 40, 60.f, 60, -1.0);
-		    fTv = Formula(false, ep->v[vertIndex], time, 1000, 200, 1000, 40, 60.f, 60, -1.0); 
+			fTv = Formula(false, ep->v[vertIndex], time, 1000, 200, 1000, 40, 60.f, 60, -1.0);
 			break;
 	default:break;
 	}
@@ -878,20 +878,21 @@ void CalculateWaterfTufTv(float& fTu, float& fTv, EERIEPOLY* ep, float time, int
 void CalculateLavafTufTv(float& fTu, float& fTv, EERIEPOLY* ep, float time, int vertIndex, int step) {
 	switch(step) {
 	case(0):fTu = Formula(true, ep->v[vertIndex], time, 1000, 200, 2000, 20); 
-		    fTv = Formula(false, ep->v[vertIndex], time, 1000, 200, 2000, 20); 
+			fTv = Formula(false, ep->v[vertIndex], time, 1000, 200, 2000, 20); 
 			break;
 	case(1):fTu = Formula(true, ep->v[vertIndex], time, 1000, 100, 2000, 10); 
-		    fTv = Formula(false, ep->v[vertIndex], time, 1000, 100, 2000, 10); 
+			fTv = Formula(false, ep->v[vertIndex], time, 1000, 100, 2000, 10);
 			break;
 	case(2):fTu = Formula(true, ep->v[vertIndex], time, 600, 160, 2000, 11); 
-		    fTv = Formula(false, ep->v[vertIndex], time, 600, 160, 2000, 11);
+			fTv = Formula(false, ep->v[vertIndex], time, 600, 160, 2000, 11);
 			break;
 	default:break;
 	}
 }
 
+const int FTVU_STEP_COUNT = 3; //For fTv and fTu calculations
+
 static void RenderWater() {
-	const int STEP_COUNT = 3; //For fTv and fTu calculations
 
 	if(vPolyWater.empty()) {
 		return;
@@ -935,7 +936,7 @@ static void RenderWater() {
 			pVertex->p.z = ep->v[j].p.z;
 			pVertex->color = 0xFF505050;
 
-			for(int i = 0; i < STEP_COUNT; ++i) {
+			for(int i = 0; i < FTVU_STEP_COUNT; ++i) {
 				CalculateWaterfTufTv(fTu, fTv, ep, time, j, i);
 
 				if(ep->type & POLY_FALL) {
@@ -997,7 +998,6 @@ void RenderLavaBatch() {
 }
 
 void RenderLava() {
-	const int STEP_COUNT = 3;
 
 	if(vPolyLava.empty()) {
 		return;
@@ -1040,7 +1040,7 @@ void RenderLava() {
 			pVertex->p.y = -ep->v[j].p.y;
 			pVertex->p.z = ep->v[j].p.z;
 			pVertex->color = 0xFF666666;
-			for(int i = 0; i < STEP_COUNT; ++i) {
+			for(int i = 0; i < FTVU_STEP_COUNT; ++i) {
 				CalculateLavafTufTv(fTu, fTv, ep, time, j, i);
 				pVertex->uv[i].x = fTu;
 				pVertex->uv[i].y = fTv;
@@ -1065,7 +1065,7 @@ void RenderLava() {
 	RenderLavaBatch();
 	dynamicVertices.done();
 	
-	vPolyLava.clear();	
+	vPolyLava.clear();
 }
 
 void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num, const EERIE_FRUSTRUM_DATA & frustrums, long tim) {
