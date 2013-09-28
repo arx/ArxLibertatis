@@ -1229,68 +1229,67 @@ bool CheckIOInSphere(EERIE_SPHERE * sphere, long target, bool ignoreNoCollisionF
 	   && (io->gameFlags & GFLAG_ISINTREATZONE)
 	   && (io->obj)
 	) {
-			if(distSqr(io->pos, sphere->origin) < square(sr180)) {
-				vector<EERIE_VERTEX> & vlist = io->obj->vertexlist3;
+		if(distSqr(io->pos, sphere->origin) < square(sr180)) {
+			vector<EERIE_VERTEX> & vlist = io->obj->vertexlist3;
 
-				if(io->obj->nbgroups>10) {
-					long count=0;
-					long ii=io->obj->nbgroups-1;
+			if(io->obj->nbgroups>10) {
+				long count=0;
+				long ii=io->obj->nbgroups-1;
 
-					while(ii) {
-						if(distSqr(vlist[io->obj->grouplist[ii].origin].v, sphere->origin) < square(sr40)) {
-							count++;
+				while(ii) {
+					if(distSqr(vlist[io->obj->grouplist[ii].origin].v, sphere->origin) < square(sr40)) {
+						count++;
 
-							if(count>3)
-								return true;
-						}
-
-						ii--;
+						if(count>3)
+							return true;
 					}
+
+					ii--;
+				}
+			}
+
+			long count=0;
+			long step;
+
+			if (io->obj->vertexlist.size()<150) step=1;
+			else if (io->obj->vertexlist.size()<300) step=2;
+			else if (io->obj->vertexlist.size()<600) step=4;
+			else if (io->obj->vertexlist.size()<1200) step=6;
+			else step=7;
+
+			for(size_t ii = 0; ii < vlist.size(); ii += step) {
+				if(closerThan(vlist[ii].v, sphere->origin, sr30)) {
+					count++;
+
+					if(count > 6)
+						return true;
 				}
 
-					long count=0;
-					long step;
+				if(io->obj->vertexlist.size() < 120) {
+					for(size_t kk = 0; kk < vlist.size(); kk+=1) {
+						if(kk != ii) {
+							for(float nn = 0.2f; nn < 1.f; nn += 0.2f) {
+								Vec3f posi = vlist[ii].v * nn + vlist[kk].v * (1.f - nn);
+								if(distSqr(sphere->origin, posi) <= square(sr30 + 20)) {
+									count++;
 
-					if (io->obj->vertexlist.size()<150) step=1;
-					else if (io->obj->vertexlist.size()<300) step=2;
-					else if (io->obj->vertexlist.size()<600) step=4;
-					else if (io->obj->vertexlist.size()<1200) step=6;
-					else step=7;
+									if(count > 3) {
+										if(io->ioflags & IO_FIX)
+											return true;
 
-					for(size_t ii = 0; ii < vlist.size(); ii += step) {
-						if(closerThan(vlist[ii].v, sphere->origin, sr30)) {
-							count++;
-
-							if(count > 6)
-								return true;
-						}
-
-						if(io->obj->vertexlist.size() < 120) {
-							for(size_t kk = 0; kk < vlist.size(); kk+=1) {
-								if(kk != ii) {
-									for(float nn = 0.2f; nn < 1.f; nn += 0.2f) {
-									Vec3f posi = vlist[ii].v * nn + vlist[kk].v * (1.f - nn);
-									if(distSqr(sphere->origin, posi) <= square(sr30 + 20)) {
-										count++;
-
-										if(count > 3) {
-											if(io->ioflags & IO_FIX)
-												return true;
-
-											if(count > 6)
-												return true;
-										}
-									}
+										if(count > 6)
+											return true;
 									}
 								}
 							}
 						}
 					}
-
-					if(count > 3 && (io->ioflags & IO_FIX))
-						return true;
-			
 				}
+			}
+
+			if(count > 3 && (io->ioflags & IO_FIX))
+				return true;
+		}
 	}
 	
 	return false;	
