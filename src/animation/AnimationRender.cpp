@@ -1472,6 +1472,7 @@ void Cedric_BlendAnimation(EERIE_C_DATA & rig, AnimationBlendStatus * animBlend)
 		Quat_Slerp(&bone->init.quat, &bone->last.quat, &tquat, timm);
 
 		bone->init.trans = bone->last.trans + (bone->init.trans - bone->last.trans) * timm;
+		bone->init.scale = bone->last.scale + (bone->init.scale - bone->last.scale) * timm;
 	}
 }
 
