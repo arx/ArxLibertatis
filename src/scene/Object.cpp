@@ -1160,14 +1160,15 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 		memset(temp, 0, eobj->vertexlist.size());
 
 		for(long i = eobj->nbgroups - 1; i >= 0; i--) {
+			EERIE_GROUPLIST & group = eobj->grouplist[i];
 			EERIE_BONE & bone = eobj->c_data->bones[i];
 
-			EERIE_VERTEX * v_origin = &eobj->vertexlist[eobj->grouplist[i].origin];
+			EERIE_VERTEX * v_origin = &eobj->vertexlist[group.origin];
 
-			for(size_t j = 0; j < eobj->grouplist[i].indexes.size(); j++) {
-				if(!temp[eobj->grouplist[i].indexes[j]]) {
-					temp[eobj->grouplist[i].indexes[j]] = true;
-					AddIdxToBone(&bone, eobj->grouplist[i].indexes[j]);
+			for(size_t j = 0; j < group.indexes.size(); j++) {
+				if(!temp[group.indexes[j]]) {
+					temp[group.indexes[j]] = true;
+					AddIdxToBone(&bone, group.indexes[j]);
 				}
 			}
 
@@ -1177,8 +1178,8 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 			bone.scaleanim = Vec3f::ZERO;
 			bone.transinit = Vec3f(v_origin->v.x, v_origin->v.y, v_origin->v.z);
 			bone.transinit_global = bone.transinit;
-			bone.original_group = &eobj->grouplist[i];
-			bone.father = GetFather(eobj, eobj->grouplist[i].origin, i - 1);
+			bone.original_group = &group;
+			bone.father = GetFather(eobj, group.origin, i - 1);
 		}
 
 		delete[] temp;
