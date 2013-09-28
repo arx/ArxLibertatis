@@ -1626,7 +1626,7 @@ void Cedric_ViewProjectTransform(Entity *io, EERIE_3DOBJ *eobj) {
 /*!
  * \brief Apply animation and draw object
  */
-void Cedric_AnimateDrawEntity(EERIE_3DOBJ *eobj, ANIM_USE * animlayer, const Anglef & angle, const Vec3f & pos, Entity *io, Vec3f & ftr, float scale) {
+void Cedric_AnimateDrawEntity(EERIE_3DOBJ *eobj, ANIM_USE * animlayer, const EERIE_QUAT & rotation, const Vec3f & pos, Entity *io, Vec3f & ftr, float scale) {
 
 	arx_assert(eobj->c_data);
 
@@ -1653,11 +1653,6 @@ void Cedric_AnimateDrawEntity(EERIE_3DOBJ *eobj, ANIM_USE * animlayer, const Ang
 
 		Cedric_SaveBlendData(rig);
 	}
-
-	EERIE_QUAT rotation;
-
-	bool isNpc = io && (io->ioflags & IO_NPC);
-	worldAngleToQuat(&rotation, angle, isNpc);
 
 	// Build skeleton in Object Space
 	Cedric_ConcatenateTM(rig, rotation, pos, ftr, scale);
@@ -1701,8 +1696,12 @@ void EERIEDrawAnimQuat(EERIE_3DOBJ *eobj, ANIM_USE * animlayer,const Anglef & an
 	if(io && io != entities.player() && !Cedric_IO_Visible(io->pos))
 		return;
 
+	EERIE_QUAT rotation;
 
-	Cedric_AnimateDrawEntity(eobj, animlayer, angle, pos, io, ftr, scale);
+	bool isNpc = io && (io->ioflags & IO_NPC);
+	worldAngleToQuat(&rotation, angle, isNpc);
+
+	Cedric_AnimateDrawEntity(eobj, animlayer, rotation, pos, io, ftr, scale);
 
 
 	bool isFightingNpc = io &&
