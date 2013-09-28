@@ -592,17 +592,17 @@ void TransformInverseVertexQuat(const EERIE_QUAT * quat, const Vec3f * vertexin,
 }
 
 
-EERIE_QUAT Quat_Slerp(const EERIE_QUAT * from, EERIE_QUAT * to, float ratio)
+EERIE_QUAT Quat_Slerp(const EERIE_QUAT & from, EERIE_QUAT to, float ratio)
 {
-	float fCosTheta = from->x * to->x + from->y * to->y + from->z * to->z + from->w * to->w;
+	float fCosTheta = from.x * to.x + from.y * to.y + from.z * to.z + from.w * to.w;
 
 	if (fCosTheta < 0.0f)
 	{
 		fCosTheta = -fCosTheta;
-		to->x = -to->x;
-		to->y = -to->y;
-		to->z = -to->z;
-		to->w = -to->w;
+		to.x = -to.x;
+		to.y = -to.y;
+		to.z = -to.z;
+		to.w = -to.w;
 	}
 
 	float fBeta = 1.f - ratio;
@@ -616,10 +616,10 @@ EERIE_QUAT Quat_Slerp(const EERIE_QUAT * from, EERIE_QUAT * to, float ratio)
 	}
 
 	return EERIE_QUAT(
-		fBeta * from->x + ratio * to->x,
-		fBeta * from->y + ratio * to->y,
-		fBeta * from->z + ratio * to->z,
-		fBeta * from->w + ratio * to->w);
+		fBeta * from.x + ratio * to.x,
+		fBeta * from.y + ratio * to.y,
+		fBeta * from.z + ratio * to.z,
+		fBeta * from.w + ratio * to.w);
 }
 
 
