@@ -1430,15 +1430,15 @@ static void Cedric_AnimateObject(EERIE_C_DATA * obj, ANIM_USE * animlayer)
 			if(eanim->nb_key_frames != 1) {
 				EERIE_BONE & bone = obj->bones[j];
 
-				EERIE_QUAT t = Quat_Slerp(sGroup->quat, eGroup->quat, animuse->pour);
+				BoneTransform temp;
 
-				bone.init.quat = Quat_Multiply(bone.init.quat, t);
+				temp.quat = Quat_Slerp(sGroup->quat, eGroup->quat, animuse->pour);
+				temp.trans = sGroup->translate + (eGroup->translate - sGroup->translate) * animuse->pour;
+				temp.scale = sGroup->zoom + (eGroup->zoom - sGroup->zoom) * animuse->pour;
 
-				Vec3f vect = sGroup->translate + (eGroup->translate - sGroup->translate) * animuse->pour;
-				bone.init.trans = vect + bone.transinit_global;
-
-				Vec3f scale = sGroup->zoom + (eGroup->zoom - sGroup->zoom) * animuse->pour;
-				bone.init.scale = scale;
+				bone.init.quat = Quat_Multiply(bone.init.quat, temp.quat);
+				bone.init.trans = temp.trans + bone.transinit_global;
+				bone.init.scale = temp.scale;
 			}
 		}
 	}
