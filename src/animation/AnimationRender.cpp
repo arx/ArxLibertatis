@@ -1556,7 +1556,7 @@ static void Cedric_ConcatenateTM(EERIE_C_DATA *obj, const EERIE_QUAT & rotation,
 }
 
 /* Transform object vertices  */
-void Cedric_TransformVerts(Entity *io, EERIE_3DOBJ *eobj, EERIE_C_DATA *obj, const Vec3f & pos) {
+void Cedric_TransformVerts(EERIE_3DOBJ *eobj, EERIE_C_DATA *obj, const Vec3f & pos) {
 
 	arx_assert(eobj);
 
@@ -1601,6 +1601,9 @@ void Cedric_TransformVerts(Entity *io, EERIE_3DOBJ *eobj, EERIE_C_DATA *obj, con
 			eobj->vertexlist[i].vert.p = eobj->vertexlist3[i].v - pos;
 		}
 	}
+}
+
+void Cedric_ViewProjectTransform(Entity *io, EERIE_3DOBJ *eobj) {
 
 	EERIE_3D_BBOX box3D;
 	box3D.reset();
@@ -1658,7 +1661,8 @@ void Cedric_AnimateDrawEntity(EERIE_3DOBJ *eobj, ANIM_USE * animlayer, const Ang
 	// Build skeleton in Object Space
 	Cedric_ConcatenateTM(obj, qt2, pos, ftr, scale);
 
-	Cedric_TransformVerts(io, eobj, obj, pos);
+	Cedric_TransformVerts(eobj, obj, pos);
+	Cedric_ViewProjectTransform(io, eobj);
 }
 
 void EERIEDrawAnimQuat(EERIE_3DOBJ *eobj, ANIM_USE * animlayer,const Anglef & angle, const Vec3f & pos, unsigned long time, Entity *io, bool render, bool update_movement) {
