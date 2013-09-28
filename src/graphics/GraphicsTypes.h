@@ -326,21 +326,24 @@ struct EERIE_FASTACCESS
 };
 
 /////////////////////////////////////////////////////////////////////////////////
+
+struct BoneTransform {
+	EERIE_QUAT quat;
+	Vec3f      trans;
+	Vec3f      scale;
+};
+
 struct EERIE_BONE
 {
 	long				nb_idxvertices;
 	long 		*		idxvertices;
 	EERIE_GROUPLIST *	original_group;
 	long				father;
-	EERIE_QUAT			quatanim;
-	Vec3f			transanim;
-	Vec3f			scaleanim;
-	EERIE_QUAT			quatlast;
-	Vec3f			translast;
-	Vec3f			scalelast;
-	EERIE_QUAT			quatinit;
-	Vec3f			transinit;
-	Vec3f			scaleinit;
+
+	BoneTransform anim;
+	BoneTransform last;
+	BoneTransform init;
+
 	Vec3f			transinit_global;
 };
 

@@ -1139,12 +1139,12 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 			AddIdxToBone(&bone, i);
 
 		// Initialize the bone
-		Quat_Init(&bone.quatinit);
-		Quat_Init(&bone.quatanim);
-		bone.scaleinit = Vec3f::ZERO;
-		bone.scaleanim = Vec3f::ZERO;
-		bone.transinit = Vec3f::ZERO;
-		bone.transinit_global = bone.transinit;
+		Quat_Init(&bone.init.quat);
+		Quat_Init(&bone.anim.quat);
+		bone.init.scale = Vec3f::ZERO;
+		bone.anim.scale = Vec3f::ZERO;
+		bone.init.trans = Vec3f::ZERO;
+		bone.transinit_global = bone.init.trans;
 		bone.original_group = NULL;
 		bone.father = -1;
 	} else {
@@ -1172,12 +1172,12 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 				}
 			}
 
-			Quat_Init(&bone.quatinit);
-			Quat_Init(&bone.quatanim);
-			bone.scaleinit = Vec3f::ZERO;
-			bone.scaleanim = Vec3f::ZERO;
-			bone.transinit = Vec3f(v_origin->v.x, v_origin->v.y, v_origin->v.z);
-			bone.transinit_global = bone.transinit;
+			Quat_Init(&bone.init.quat);
+			Quat_Init(&bone.anim.quat);
+			bone.init.scale = Vec3f::ZERO;
+			bone.anim.scale = Vec3f::ZERO;
+			bone.init.trans = Vec3f(v_origin->v.x, v_origin->v.y, v_origin->v.z);
+			bone.transinit_global = bone.init.trans;
 			bone.original_group = &group;
 			bone.father = GetFather(eobj, group.origin, i - 1);
 		}
@@ -1210,9 +1210,9 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 
 			if(bone.father >= 0) {
 				long father = bone.father;
-				bone.transinit -= eobj->c_data->bones[father].transinit;
+				bone.init.trans -= eobj->c_data->bones[father].init.trans;
 			}
-			bone.transinit_global = bone.transinit;
+			bone.transinit_global = bone.init.trans;
 		}
 
 	}
@@ -1228,18 +1228,18 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 
 			if(bone.father >= 0) {
 				/* Rotation*/
-				qt1 = bone.quatinit;
-				Quat_Multiply(&bone.quatanim, &obj->bones[bone.father].quatanim, &qt1);
+				qt1 = bone.init.quat;
+				Quat_Multiply(&bone.anim.quat, &obj->bones[bone.father].anim.quat, &qt1);
 				/* Translation */
-				TransformVertexQuat(obj->bones[bone.father].quatanim, bone.transinit, bone.transanim);
-				bone.transanim = obj->bones[bone.father].transanim + bone.transanim;
+				TransformVertexQuat(obj->bones[bone.father].anim.quat, bone.init.trans, bone.anim.trans);
+				bone.anim.trans = obj->bones[bone.father].anim.trans + bone.anim.trans;
 			} else {
 				/* Rotation*/
-				bone.quatanim = bone.quatinit;
+				bone.anim.quat = bone.init.quat;
 				/* Translation */
-				bone.transanim = bone.transinit;
+				bone.anim.trans = bone.init.trans;
 			}
-			bone.scaleanim = Vec3f::ONE;
+			bone.anim.scale = Vec3f::ONE;
 		}
 
 		eobj->vertexlocal = new EERIE_3DPAD[eobj->vertexlist.size()];
@@ -1247,7 +1247,7 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 		memset(eobj->vertexlocal, 0, sizeof(EERIE_3DPAD)*eobj->vertexlist.size());
 
 		for(long i = 0; i != obj->nb_bones; i++) {
-			Vec3f vector = obj->bones[i].transanim;
+			Vec3f vector = obj->bones[i].anim.trans;
 			
 			for(int v = 0; v != obj->bones[i].nb_idxvertices; v++) {
 				
@@ -1256,7 +1256,7 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 				EERIE_3DPAD & outVert = eobj->vertexlocal[idx];
 				
 				Vec3f temp = inVert.v - vector;
-				TransformInverseVertexQuat(&obj->bones[i].quatanim, &temp, &temp);
+				TransformInverseVertexQuat(&obj->bones[i].anim.quat, &temp, &temp);
 				outVert.x = temp.x;
 				outVert.y = temp.y;
 				outVert.z = temp.z;

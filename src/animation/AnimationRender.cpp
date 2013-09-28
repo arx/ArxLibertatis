@@ -471,7 +471,7 @@ void Cedric_PrepareHalo(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj) {
 
 	// Apply light on all vertices
 	for(long i = 0; i != obj->nb_bones; i++) {
-		EERIE_QUAT qt1 = obj->bones[i].quatanim;
+		EERIE_QUAT qt1 = obj->bones[i].anim.quat;
 		TransformInverseVertexQuat(&qt1, &cam_vector, &t_vector);
 
 		// Get light value for each vertex
@@ -568,7 +568,7 @@ static void Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, const C
 	/* Apply light on all vertices */
 	for(int i = 0; i != obj->nb_bones; i++) {
 
-		EERIE_QUAT *quat = &obj->bones[i].quatanim;
+		EERIE_QUAT *quat = &obj->bones[i].anim.quat;
 
 		/* Get light value for each vertex */
 		for(int v = 0; v != obj->bones[i].nb_idxvertices; v++) {
@@ -1305,7 +1305,7 @@ void Cedric_AnimateDrawEntityRender(EERIE_3DOBJ *eobj, const Vec3f & pos, Entity
 		link.modinfo.link_position = link.obj->vertexlist[link.lidx2].v - link.obj->vertexlist[link.obj->origin].v;
 		link.modinfo.rot = Anglef::ZERO;
 
-		EERIE_QUAT & quat = eobj->c_data->bones[link.lgroup].quatanim;
+		EERIE_QUAT & quat = eobj->c_data->bones[link.lgroup].anim.quat;
 		Vec3f & posi = eobj->vertexlist3[link.lidx].v;
 
 		float scale = link.io ? link.io->scale : 1.f;
@@ -1433,14 +1433,14 @@ static void Cedric_AnimateObject(EERIE_C_DATA * obj, ANIM_USE * animlayer)
 				EERIE_QUAT t;
 				Quat_Slerp(&t, &sGroup->quat, &eGroup->quat, animuse->pour);
 
-				EERIE_QUAT temp = bone.quatinit;
-				Quat_Multiply(&bone.quatinit, &temp, &t);
+				EERIE_QUAT temp = bone.init.quat;
+				Quat_Multiply(&bone.init.quat, &temp, &t);
 
 				Vec3f vect = sGroup->translate + (eGroup->translate - sGroup->translate) * animuse->pour;
-				bone.transinit = vect + bone.transinit_global;
+				bone.init.trans = vect + bone.transinit_global;
 
 				Vec3f scale = sGroup->zoom + (eGroup->zoom - sGroup->zoom) * animuse->pour;
-				bone.scaleinit = scale;
+				bone.init.scale = scale;
 			}
 		}
 	}
@@ -1467,11 +1467,11 @@ void Cedric_BlendAnimation(EERIE_C_DATA & rig, AnimationBlendStatus * animBlend)
 	for(long i = 0; i < rig.nb_bones; i++) {
 		EERIE_BONE * bone = &rig.bones[i];
 
-		EERIE_QUAT tquat = bone->quatinit;
+		EERIE_QUAT tquat = bone->init.quat;
 
-		Quat_Slerp(&bone->quatinit, &bone->quatlast, &tquat, timm);
+		Quat_Slerp(&bone->init.quat, &bone->last.quat, &tquat, timm);
 
-		bone->transinit = bone->translast + (bone->transinit - bone->translast) * timm;
+		bone->init.trans = bone->last.trans + (bone->init.trans - bone->last.trans) * timm;
 	}
 }
 
@@ -1479,9 +1479,9 @@ void Cedric_SaveBlendData(EERIE_C_DATA & rig) {
 
 		for (long i = 0; i < rig.nb_bones; i++)
 		{
-			rig.bones[i].quatlast = rig.bones[i].quatinit;
-			rig.bones[i].scalelast = rig.bones[i].scaleinit;
-			rig.bones[i].translast = rig.bones[i].transinit;
+			rig.bones[i].last.quat = rig.bones[i].init.quat;
+			rig.bones[i].last.scale = rig.bones[i].init.scale;
+			rig.bones[i].last.trans = rig.bones[i].init.trans;
 		}
 }
 
@@ -1496,27 +1496,27 @@ static void Cedric_ConcatenateTM(EERIE_C_DATA & rig, const EERIE_QUAT & rotation
 		if(bone->father >= 0) { // Child Bones
 			EERIE_BONE * parent = &rig.bones[bone->father];
 			// Rotation
-			Quat_Multiply(&bone->quatanim, &parent->quatanim, &bone->quatinit);
+			Quat_Multiply(&bone->anim.quat, &parent->anim.quat, &bone->init.quat);
 
 			// Translation
-			bone->transanim = bone->transinit * parent->scaleanim;
-			TransformVertexQuat(parent->quatanim, bone->transanim, bone->transanim);
-			bone->transanim = parent->transanim + bone->transanim;
+			bone->anim.trans = bone->init.trans * parent->anim.scale;
+			TransformVertexQuat(parent->anim.quat, bone->anim.trans, bone->anim.trans);
+			bone->anim.trans = parent->anim.trans + bone->anim.trans;
 
 			// Scale
-			bone->scaleanim = (bone->scaleinit + Vec3f::ONE) * parent->scaleanim;
+			bone->anim.scale = (bone->init.scale + Vec3f::ONE) * parent->anim.scale;
 		} else { // Root Bone
 			// Rotation
-			Quat_Multiply(&bone->quatanim, &rotation, &bone->quatinit);
+			Quat_Multiply(&bone->anim.quat, &rotation, &bone->init.quat);
 
 			// Translation
-			Vec3f vt1 = bone->transinit + ftr;
-			TransformVertexQuat(rotation, vt1, bone->transanim);
-			bone->transanim *= g_scale;
-			bone->transanim += pos;
+			Vec3f vt1 = bone->init.trans + ftr;
+			TransformVertexQuat(rotation, vt1, bone->anim.trans);
+			bone->anim.trans *= g_scale;
+			bone->anim.trans += pos;
 
 			// Compute Global Object Scale AND Global Animation Scale
-			bone->scaleanim = (bone->scaleinit + Vec3f::ONE) * g_scale;
+			bone->anim.scale = (bone->init.scale + Vec3f::ONE) * g_scale;
 		}
 	}
 }
@@ -1534,22 +1534,22 @@ void Cedric_TransformVerts(EERIE_3DOBJ *eobj, const Vec3f & pos) {
 
 		EERIEMATRIX	 matrix;
 
-		MatrixFromQuat(&matrix, &bone.quatanim);
+		MatrixFromQuat(&matrix, &bone.anim.quat);
 
 		// Apply Scale
-		matrix._11 *= bone.scaleanim.x;
-		matrix._12 *= bone.scaleanim.x;
-		matrix._13 *= bone.scaleanim.x;
+		matrix._11 *= bone.anim.scale.x;
+		matrix._12 *= bone.anim.scale.x;
+		matrix._13 *= bone.anim.scale.x;
 
-		matrix._21 *= bone.scaleanim.y;
-		matrix._22 *= bone.scaleanim.y;
-		matrix._23 *= bone.scaleanim.y;
+		matrix._21 *= bone.anim.scale.y;
+		matrix._22 *= bone.anim.scale.y;
+		matrix._23 *= bone.anim.scale.y;
 
-		matrix._31 *= bone.scaleanim.z;
-		matrix._32 *= bone.scaleanim.z;
-		matrix._33 *= bone.scaleanim.z;
+		matrix._31 *= bone.anim.scale.z;
+		matrix._32 *= bone.anim.scale.z;
+		matrix._33 *= bone.anim.scale.z;
 
-		Vec3f vector = bone.transanim;
+		Vec3f vector = bone.anim.trans;
 
 		for(int v = 0; v != bone.nb_idxvertices; v++) {
 			long index = bone.idxvertices[v];
@@ -1607,8 +1607,8 @@ void Cedric_AnimateDrawEntity(EERIE_C_DATA & rig, ANIM_USE * animlayer, const EE
 	for(long i = 0; i != rig.nb_bones; i++) {
 		EERIE_BONE & bone = rig.bones[i];
 
-		Quat_Init(&bone.quatinit);
-		bone.transinit = bone.transinit_global;
+		Quat_Init(&bone.init.quat);
+		bone.init.trans = bone.transinit_global;
 	}
 
 	// Apply Extra Rotations in Local Space
@@ -1622,7 +1622,7 @@ void Cedric_AnimateDrawEntity(EERIE_C_DATA & rig, ANIM_USE * animlayer, const EE
 				vt1.b = radians(extraRotation->group_rotate[k].b);
 				vt1.g = radians(extraRotation->group_rotate[k].a);
 
-				QuatFromAngles(&rig.bones[i].quatinit, &vt1);
+				QuatFromAngles(&rig.bones[i].init.quat, &vt1);
 			}
 		}
 	}
@@ -1633,7 +1633,7 @@ void Cedric_AnimateDrawEntity(EERIE_C_DATA & rig, ANIM_USE * animlayer, const EE
 	if(extraScale.groupIndex != -1) {
 		EERIE_BONE & bone = rig.bones[extraScale.groupIndex];
 
-		bone.scaleinit += extraScale.scale;
+		bone.init.scale += extraScale.scale;
 	}
 
 	// Check for Animation Blending in Local space
