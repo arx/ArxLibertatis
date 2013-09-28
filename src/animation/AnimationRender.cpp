@@ -1528,9 +1528,9 @@ static void Cedric_ConcatenateTM(EERIE_C_DATA & rig, const EERIE_QUAT & rotation
 }
 
 /* Transform object vertices  */
-void Cedric_TransformVerts(EERIE_3DOBJ *eobj, EERIE_C_DATA & rig, const Vec3f & pos) {
+void Cedric_TransformVerts(EERIE_3DOBJ *eobj, const Vec3f & pos) {
 
-	arx_assert(eobj);
+	EERIE_C_DATA & rig = *eobj->c_data;
 
 	/* Transform & project all vertices */
 	for(long i = 0; i != rig.nb_bones; i++) {
@@ -1605,7 +1605,7 @@ void Cedric_ViewProjectTransform(Entity *io, EERIE_3DOBJ *eobj) {
 /*!
  * \brief Apply animation and draw object
  */
-void Cedric_AnimateDrawEntity(EERIE_3DOBJ *eobj, ANIM_USE * animlayer, const EERIE_QUAT & rotation, const Vec3f & pos, Entity *io, Vec3f & ftr, float scale, EERIE_EXTRA_ROTATE * extraRotation, AnimationBlendStatus * animBlend) {
+void Cedric_AnimateDrawEntity(EERIE_3DOBJ *eobj, ANIM_USE * animlayer, const EERIE_QUAT & rotation, const Vec3f & pos, Vec3f & ftr, float scale, EERIE_EXTRA_ROTATE * extraRotation, AnimationBlendStatus * animBlend) {
 
 	arx_assert(eobj->c_data);
 
@@ -1648,9 +1648,6 @@ void Cedric_AnimateDrawEntity(EERIE_3DOBJ *eobj, ANIM_USE * animlayer, const EER
 
 	// Build skeleton in Object Space
 	Cedric_ConcatenateTM(rig, rotation, pos, ftr, scale);
-
-	Cedric_TransformVerts(eobj, rig, pos);
-	Cedric_ViewProjectTransform(io, eobj);
 }
 
 void EERIEDrawAnimQuat(EERIE_3DOBJ *eobj, ANIM_USE * animlayer,const Anglef & angle, const Vec3f & pos, unsigned long time, Entity *io, bool render, bool update_movement) {
@@ -1705,8 +1702,10 @@ void EERIEDrawAnimQuat(EERIE_3DOBJ *eobj, ANIM_USE * animlayer,const Anglef & an
 		animBlend = &io->animBlend;
 	}
 
-	Cedric_AnimateDrawEntity(eobj, animlayer, rotation, pos, io, ftr, scale, extraRotation, animBlend);
+	Cedric_AnimateDrawEntity(eobj, animlayer, rotation, pos, ftr, scale, extraRotation, animBlend);
 
+	Cedric_TransformVerts(eobj, pos);
+	Cedric_ViewProjectTransform(io, eobj);
 
 	bool isFightingNpc = io &&
 						 (io->ioflags & IO_NPC) &&
