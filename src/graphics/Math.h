@@ -238,7 +238,7 @@ inline void TransformVertexQuat(const EERIE_QUAT & quat, const Vec3f & vertexin,
 
 void TransformInverseVertexQuat(const EERIE_QUAT * quat, const Vec3f * vertexin, Vec3f * vertexout);
 void Quat_Divide(EERIE_QUAT * dest, const EERIE_QUAT * q1, const EERIE_QUAT * q2);
-void Quat_Multiply(EERIE_QUAT * dest , const EERIE_QUAT * q1, const EERIE_QUAT * q2);
+EERIE_QUAT Quat_Multiply(const EERIE_QUAT & q1, const EERIE_QUAT & q2);
 
 EERIE_QUAT Quat_Slerp(const EERIE_QUAT & from, EERIE_QUAT to, float t);
 void Quat_Reverse(EERIE_QUAT * quat);

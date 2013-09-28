@@ -518,7 +518,7 @@ bool SphereInCylinder(const EERIE_CYLINDER * cyl1, const EERIE_SPHERE * s)
 //*************************************************************************************
 // Multiply Quaternion 'q1' by Quaternion 'q2', returns result in Quaternion 'dest'
 //*************************************************************************************
-void Quat_Multiply(EERIE_QUAT * dest, const EERIE_QUAT * q1, const EERIE_QUAT * q2)
+EERIE_QUAT Quat_Multiply(const EERIE_QUAT & q1, const EERIE_QUAT & q2)
 {
 	/*
 	Fast multiplication
@@ -548,10 +548,11 @@ void Quat_Multiply(EERIE_QUAT * dest, const EERIE_QUAT * q1, const EERIE_QUAT * 
 	additions/subtractions. Generally, this is still an improvement.
 	  */
 
-	dest->x = q1->w * q2->x + q1->x * q2->w + q1->y * q2->z - q1->z * q2->y;
-	dest->y = q1->w * q2->y + q1->y * q2->w + q1->z * q2->x - q1->x * q2->z;
-	dest->z = q1->w * q2->z + q1->z * q2->w + q1->x * q2->y - q1->y * q2->x;
-	dest->w = q1->w * q2->w - q1->x * q2->x - q1->y * q2->y - q1->z * q2->z;
+	return EERIE_QUAT(
+		q1.w * q2.x + q1.x * q2.w + q1.y * q2.z - q1.z * q2.y,
+		q1.w * q2.y + q1.y * q2.w + q1.z * q2.x - q1.x * q2.z,
+		q1.w * q2.z + q1.z * q2.w + q1.x * q2.y - q1.y * q2.x,
+		q1.w * q2.w - q1.x * q2.x - q1.y * q2.y - q1.z * q2.z);
 }
 
 //*************************************************************************************
