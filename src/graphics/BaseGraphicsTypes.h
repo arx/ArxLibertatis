@@ -52,6 +52,13 @@ struct EERIE_QUAT {
 	float y;
 	float z;
 	float w;
+
+	EERIE_QUAT()
+		: x(0.f)
+		, y(0.f)
+		, z(0.f)
+		, w(1.f)
+	{}
 };
 
 struct EERIEMATRIX {
