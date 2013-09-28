@@ -1160,23 +1160,25 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 		memset(temp, 0, eobj->vertexlist.size());
 
 		for(long i = eobj->nbgroups - 1; i >= 0; i--) {
+			EERIE_BONE & bone = eobj->c_data->bones[i];
+
 			EERIE_VERTEX * v_origin = &eobj->vertexlist[eobj->grouplist[i].origin];
 
 			for(size_t j = 0; j < eobj->grouplist[i].indexes.size(); j++) {
 				if(!temp[eobj->grouplist[i].indexes[j]]) {
 					temp[eobj->grouplist[i].indexes[j]] = true;
-					AddIdxToBone(&eobj->c_data->bones[i], eobj->grouplist[i].indexes[j]);
+					AddIdxToBone(&bone, eobj->grouplist[i].indexes[j]);
 				}
 			}
 
-			Quat_Init(&eobj->c_data->bones[i].quatinit);
-			Quat_Init(&eobj->c_data->bones[i].quatanim);
-			eobj->c_data->bones[i].scaleinit = Vec3f::ZERO;
-			eobj->c_data->bones[i].scaleanim = Vec3f::ZERO;
-			eobj->c_data->bones[i].transinit = Vec3f(v_origin->v.x, v_origin->v.y, v_origin->v.z);
-			eobj->c_data->bones[i].transinit_global = eobj->c_data->bones[i].transinit;
-			eobj->c_data->bones[i].original_group = &eobj->grouplist[i];
-			eobj->c_data->bones[i].father = GetFather(eobj, eobj->grouplist[i].origin, i - 1);
+			Quat_Init(&bone.quatinit);
+			Quat_Init(&bone.quatanim);
+			bone.scaleinit = Vec3f::ZERO;
+			bone.scaleanim = Vec3f::ZERO;
+			bone.transinit = Vec3f(v_origin->v.x, v_origin->v.y, v_origin->v.z);
+			bone.transinit_global = bone.transinit;
+			bone.original_group = &eobj->grouplist[i];
+			bone.father = GetFather(eobj, eobj->grouplist[i].origin, i - 1);
 		}
 
 		delete[] temp;
