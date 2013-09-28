@@ -1649,13 +1649,13 @@ void Cedric_AnimateDrawEntity(EERIE_3DOBJ *eobj, ANIM_USE * animlayer, const Ang
 		Cedric_SaveBlendData(rig);
 	}
 
-	EERIE_QUAT	qt2;
+	EERIE_QUAT rotation;
 
 	bool isNpc = io && (io->ioflags & IO_NPC);
-	worldAngleToQuat(&qt2, angle, isNpc);
+	worldAngleToQuat(&rotation, angle, isNpc);
 
 	// Build skeleton in Object Space
-	Cedric_ConcatenateTM(rig, qt2, pos, ftr, scale);
+	Cedric_ConcatenateTM(rig, rotation, pos, ftr, scale);
 
 	Cedric_TransformVerts(eobj, rig, pos);
 	Cedric_ViewProjectTransform(io, eobj);
