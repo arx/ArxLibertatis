@@ -1626,12 +1626,11 @@ void Cedric_AnimateDrawEntity(EERIE_3DOBJ *eobj, ANIM_USE * animlayer, const EER
 
 			if(i >= 0) {
 				Anglef vt1;
-				EERIE_QUAT quat1;
 				vt1.a = radians(extraRotation->group_rotate[k].g);
 				vt1.b = radians(extraRotation->group_rotate[k].b);
 				vt1.g = radians(extraRotation->group_rotate[k].a);
-				QuatFromAngles(&quat1, &vt1);
-				Quat_Copy(&rig.bones[i].quatinit, &quat1);
+
+				QuatFromAngles(&rig.bones[i].quatinit, &vt1);
 			}
 		}
 	}
