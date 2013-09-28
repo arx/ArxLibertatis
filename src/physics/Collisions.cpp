@@ -1823,41 +1823,40 @@ void ANCHOR_BLOCK_By_IO(Entity * io,long status)
 {
 	EERIE_BACKGROUND * eb=ACTIVEBKG;
 
-	for (long k=0;k<eb->nbanchors;k++)
-	{
-		ANCHOR_DATA * ad=&eb->anchors[k];	
+	for(long k = 0; k < eb->nbanchors; k++) {
+		ANCHOR_DATA * ad = &eb->anchors[k];
 
-		if (distSqr(ad->pos, io->pos) > square(600.f)) continue;
+		if(distSqr(ad->pos, io->pos) > square(600.f))
+			continue;
 
 		if(closerThan(Vec2f(io->pos.x, io->pos.z), Vec2f(ad->pos.x, ad->pos.z), 440.f)) {
 			
 			EERIEPOLY ep;
 			ep.type=0;
 
-			for (size_t ii=0;ii<io->obj->facelist.size();ii++)
-			{
+			for(size_t ii = 0; ii < io->obj->facelist.size(); ii++) {
 				float cx=0;
 				float cz=0;
 
-				for (long kk=0;kk<3;kk++)
-				{
-					cx+=ep.v[kk].p.x=io->obj->vertexlist[io->obj->facelist[ii].vid[kk]].v.x+io->pos.x;
-						ep.v[kk].p.y=io->obj->vertexlist[io->obj->facelist[ii].vid[kk]].v.y+io->pos.y;
-					cz+=ep.v[kk].p.z=io->obj->vertexlist[io->obj->facelist[ii].vid[kk]].v.z+io->pos.z;
+				for(long kk = 0; kk < 3; kk++) {
+					ep.v[kk].p.x = io->obj->vertexlist[io->obj->facelist[ii].vid[kk]].v.x + io->pos.x;
+					ep.v[kk].p.y = io->obj->vertexlist[io->obj->facelist[ii].vid[kk]].v.y + io->pos.y;
+					ep.v[kk].p.z = io->obj->vertexlist[io->obj->facelist[ii].vid[kk]].v.z + io->pos.z;
+
+					cx += ep.v[kk].p.x;
+					cz += ep.v[kk].p.z;
 				}
 
-				cx*=( 1.0f / 3 );
-				cz*=( 1.0f / 3 );
+				cx *= (1.f/3);
+				cz *= (1.f/3);
 
-				for (int kk=0;kk<3;kk++)
-				{
-					ep.v[kk].p.x=(ep.v[kk].p.x-cx)*3.5f+cx;
-					ep.v[kk].p.z=(ep.v[kk].p.z-cz)*3.5f+cz;
+				for(int kk = 0; kk < 3; kk++) {
+					ep.v[kk].p.x = (ep.v[kk].p.x - cx)*3.5f + cx;
+					ep.v[kk].p.z = (ep.v[kk].p.z - cz)*3.5f + cz;
 				}
 
-				if (PointIn2DPolyXZ(&ep, ad->pos.x, ad->pos.z)) 
-				{
-					if (status)
+				if(PointIn2DPolyXZ(&ep, ad->pos.x, ad->pos.z)) {
+					if(status)
 						ad->flags|=ANCHOR_FLAG_BLOCKED;
 					else
 						ad->flags&=~ANCHOR_FLAG_BLOCKED;
