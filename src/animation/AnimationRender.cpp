@@ -1390,7 +1390,9 @@ static void StoreEntityMovement(Entity * io, Vec3f & ftr, float scale) {
 	}
 }
 
-// Animate skeleton
+/*!
+ * Animate skeleton
+ */
 static void Cedric_AnimateObject(EERIE_3DOBJ *eobj, ANIM_USE * animlayer)
 {
 	EERIE_C_DATA	* obj = eobj->c_data;
@@ -1493,7 +1495,9 @@ void Cedric_SaveBlendData(EERIE_C_DATA & rig) {
 		}
 }
 
-/* Apply transformations on all bones */
+/*!
+ * Apply transformations on all bones
+ */
 static void Cedric_ConcatenateTM(EERIE_C_DATA & rig, const EERIE_QUAT & rotation, const Vec3f & pos, const Vec3f & ftr, float g_scale) {
 
 	for(int i = 0; i != rig.nb_bones; i++) {
@@ -1509,7 +1513,7 @@ static void Cedric_ConcatenateTM(EERIE_C_DATA & rig, const EERIE_QUAT & rotation
 			TransformVertexQuat(parent->quatanim, bone->transanim, bone->transanim);
 			bone->transanim = parent->transanim + bone->transanim;
 
-			/* Scale */
+			// Scale
 			bone->scaleanim = (bone->scaleinit + Vec3f::ONE) * parent->scaleanim;
 		} else { // Root Bone
 			// Rotation
@@ -1527,12 +1531,14 @@ static void Cedric_ConcatenateTM(EERIE_C_DATA & rig, const EERIE_QUAT & rotation
 	}
 }
 
-/* Transform object vertices  */
+/*!
+ * Transform object vertices
+ */
 void Cedric_TransformVerts(EERIE_3DOBJ *eobj, const Vec3f & pos) {
 
 	EERIE_C_DATA & rig = *eobj->c_data;
 
-	/* Transform & project all vertices */
+	// Transform & project all vertices
 	for(long i = 0; i != rig.nb_bones; i++) {
 		EERIE_BONE & bone = rig.bones[i];
 
