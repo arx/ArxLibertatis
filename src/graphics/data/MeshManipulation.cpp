@@ -776,8 +776,8 @@ void EERIE_MESH_TWEAK_Do(Entity * io, TweakType tw, const res::path & path) {
 
 	if (io)
 	{
-		io->lastanimtime = 0;
-		io->nb_lastanimvertex = 0;
+		io->animBlend.lastanimtime = 0;
+		io->animBlend.nb_lastanimvertex = 0;
 	}
 
 	delete tobj;

@@ -1009,7 +1009,7 @@ void ARX_INTERACTIVE_ClearIODynData_II(Entity * io)
 		io->weaponmaterial.clear();
 		io->strikespeech.clear();
 		
-		io->nb_lastanimvertex = 0;
+		io->animBlend.nb_lastanimvertex = 0;
 		
 		for (long j = 0; j < MAX_ANIMS; j++)
 		{
@@ -1167,7 +1167,7 @@ void RestoreInitialIOStatusOfIO(Entity * io)
 		io->room_flags = 1;
 		RestoreIOInitPos(io);
 		ARX_INTERACTIVE_Teleport(io, &io->initpos);
-		io->lastanimtime = 1;
+		io->animBlend.lastanimtime = 1;
 		io->secretvalue = -1;
 
 		if(io->damagedata >= 0)

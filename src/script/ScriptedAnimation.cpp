@@ -91,7 +91,7 @@ public:
 		io->angle.b += t2;
 		io->angle.g += t3;
 		
-		io->lastanimtime = 0;
+		io->animBlend.lastanimtime = 0;
 		
 		return Success;
 	}

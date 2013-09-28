@@ -519,7 +519,7 @@ void ARX_DAMAGES_ForceDeath(Entity * io_dead, Entity * io_killer) {
 
 	if(fartherThan(io_dead->pos, ACTIVECAM->orgTrans.pos, 3200.f)) {
 		io_dead->animlayer[0].ctime = 9999999;
-		io_dead->lastanimtime = 0;
+		io_dead->animBlend.lastanimtime = 0;
 	}
 
 	std::string killer;

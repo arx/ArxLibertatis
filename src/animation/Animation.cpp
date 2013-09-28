@@ -614,10 +614,10 @@ void PrepareAnim(ANIM_USE *eanim, unsigned long time, Entity *io) {
 				if(io) {
 					FinishAnim(io,eanim->cur_anim);
 
-					if(io->lastanimtime != 0)
+					if(io->animBlend.lastanimtime != 0)
 						AcquireLastAnim(io);
 					else
-						io->lastanimtime = 1;
+						io->animBlend.lastanimtime = 1;
 				}
 
 				eanim->cur_anim=eanim->next_anim;
@@ -636,10 +636,10 @@ void PrepareAnim(ANIM_USE *eanim, unsigned long time, Entity *io) {
 			if(eanim->next_anim) {
 				FinishAnim(io,eanim->cur_anim);
 
-				if (io->lastanimtime!=0)
+				if (io->animBlend.lastanimtime!=0)
 					AcquireLastAnim(io);
 				else
-					io->lastanimtime=1;
+					io->animBlend.lastanimtime=1;
 
 				eanim->cur_anim=eanim->next_anim;
 				eanim->altidx_cur=ANIM_GetAltIdx(eanim->next_anim,eanim->altidx_cur);
@@ -798,8 +798,8 @@ void AcquireLastAnim(Entity * io)
 		return;
 
 	// Stores Frametime and number of vertex for later interpolation
-	io->lastanimtime = checked_range_cast<unsigned long>(arxtime.get_frame_time());
-	io->nb_lastanimvertex = 1;
+	io->animBlend.lastanimtime = checked_range_cast<unsigned long>(arxtime.get_frame_time());
+	io->animBlend.nb_lastanimvertex = 1;
 }
 
 // Declares an Animation as finished.

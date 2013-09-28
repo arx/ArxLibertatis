@@ -979,7 +979,7 @@ void ARX_PHYSICS_Apply() {
 		if((io->ioflags & IO_ITEM)
 				&& (io->show != SHOW_FLAG_DESTROYED)
 				&& (io->gameFlags & GFLAG_GOREEXPLODE)
-				&& float(arxtime) - io->lastanimtime > 300
+				&& float(arxtime) - io->animBlend.lastanimtime > 300
 				&& io->obj
 				&& !io->obj->vertexlist.empty()
 		   )
@@ -1553,7 +1553,7 @@ void ARX_NPC_SpawnMember(Entity * ioo, long num) {
 	io->no_collide = checked_range_cast<short>(long(ioo->index()));
 	
 	io->gameFlags |= GFLAG_GOREEXPLODE;
-	io->lastanimtime = (unsigned long)(arxtime);
+	io->animBlend.lastanimtime = (unsigned long)(arxtime);
 	io->soundtime = 0;
 	io->soundcount = 0;
 	EERIE_PHYSICS_BOX_Launch(io->obj, io->pos, io->angle, vector);

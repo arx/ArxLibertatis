@@ -259,6 +259,11 @@ enum EntityVisilibity {
 	SHOW_FLAG_DESTROYED    = 255
 };
 
+struct AnimationBlendStatus {
+	long nb_lastanimvertex;
+	unsigned long lastanimtime;
+};
+
 class Entity {
 	
 public:
@@ -284,8 +289,7 @@ public:
 	ANIM_HANDLE * anims[MAX_ANIMS]; // Object Animations
 	ANIM_USE animlayer[MAX_ANIM_LAYERS];
 
-	long nb_lastanimvertex;
-	unsigned long lastanimtime;
+	AnimationBlendStatus animBlend;
 	
 	EERIE_3D_BBOX bbox3D;
 	EERIE_2D_BBOX bbox2D;

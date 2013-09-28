@@ -3372,7 +3372,7 @@ void ArxGame::manageKeyMouse() {
 				}
 
 				if(entities.player() && EEfabs(ia)>2.f)
-					entities.player()->lastanimtime = 0;
+					entities.player()->animBlend.lastanimtime = 0;
 
 				if(ib != 0.f)
 					player.Current_Movement|=PLAYER_ROTATE;

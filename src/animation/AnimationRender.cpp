@@ -1453,14 +1453,14 @@ static void Cedric_AnimateObject(EERIE_3DOBJ *eobj, ANIM_USE * animlayer)
 
 void Cedric_BlendAnimation(Entity *io, EERIE_C_DATA & rig) {
 
-	if(!io || !io->nb_lastanimvertex) {
+	if(!io || !io->animBlend.nb_lastanimvertex) {
 		return;
 	}
 
-	float timm = (arxtime.get_frame_time() - io->lastanimtime) + 0.0001f;
+	float timm = (arxtime.get_frame_time() - io->animBlend.lastanimtime) + 0.0001f;
 
 	if(timm >= 300.f) {
-		io->nb_lastanimvertex = 0;
+		io->animBlend.nb_lastanimvertex = 0;
 		return;
 	} else {
 		timm *= ( 1.0f / 300 );

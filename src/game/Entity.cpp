@@ -94,8 +94,8 @@ Entity::Entity(const res::path & classPath)
 	std::fill_n(anims, MAX_ANIMS, (ANIM_HANDLE *)NULL);
 	std::memset(animlayer, 0, sizeof(ANIM_USE) * MAX_ANIM_LAYERS); // TODO use constructor
 
-	nb_lastanimvertex = 0;
-	lastanimtime = 0;
+	animBlend.nb_lastanimvertex = 0;
+	animBlend.lastanimtime = 0;
 	
 	std::memset(&bbox3D, 0, sizeof(EERIE_3D_BBOX)); // TODO use constructor
 	
