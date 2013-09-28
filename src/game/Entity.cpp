@@ -93,7 +93,7 @@ Entity::Entity(const res::path & classPath)
 	obj = NULL;
 	std::fill_n(anims, MAX_ANIMS, (ANIM_HANDLE *)NULL);
 	std::memset(animlayer, 0, sizeof(ANIM_USE) * MAX_ANIM_LAYERS); // TODO use constructor
-	lastanimvertex = NULL;
+
 	nb_lastanimvertex = 0;
 	lastanimtime = 0;
 	
@@ -267,7 +267,6 @@ Entity::~Entity() {
 		DynLight[halo.dynlight].exist = 0, halo.dynlight = -1;
 	}
 	
-	free(lastanimvertex);
 	free(usepath);
 	free(symboldraw), symboldraw = NULL;
 	

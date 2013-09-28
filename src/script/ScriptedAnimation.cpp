@@ -91,10 +91,6 @@ public:
 		io->angle.b += t2;
 		io->angle.g += t3;
 		
-		if((size_t)io->nb_lastanimvertex != io->obj->vertexlist.size()) {
-			free(io->lastanimvertex);
-			io->lastanimvertex = NULL;
-		}
 		io->lastanimtime = 0;
 		
 		return Success;

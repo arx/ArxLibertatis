@@ -1009,7 +1009,7 @@ void ARX_INTERACTIVE_ClearIODynData_II(Entity * io)
 		io->weaponmaterial.clear();
 		io->strikespeech.clear();
 		
-		free(io->lastanimvertex), io->lastanimvertex = NULL, io->nb_lastanimvertex = 0;
+		io->nb_lastanimvertex = 0;
 		
 		for (long j = 0; j < MAX_ANIMS; j++)
 		{

@@ -283,7 +283,7 @@ public:
 	EERIE_3DOBJ * obj; // IO Mesh data
 	ANIM_HANDLE * anims[MAX_ANIMS]; // Object Animations
 	ANIM_USE animlayer[MAX_ANIM_LAYERS];
-	Vec3f * lastanimvertex; // Last Animation Positions of Vertex
+
 	long nb_lastanimvertex;
 	unsigned long lastanimtime;
 	
