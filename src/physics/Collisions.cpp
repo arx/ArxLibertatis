@@ -1216,32 +1216,32 @@ bool CheckAnythingInSphere(EERIE_SPHERE * sphere, long source, CASFlags flags, l
 
 bool CheckIOInSphere(EERIE_SPHERE * sphere, long target, bool ignoreNoCollisionFlag) {
 	
-	if (!ValidIONum(target)) return false;
+	if(!ValidIONum(target))
+		return false;
 
 	Entity * io=entities[target];
 	float sr30 = sphere->radius + 22.f;
 	float sr40 = sphere->radius + 27.f; 
-	float sr180=sphere->radius+500.f;
+	float sr180 = sphere->radius + 500.f;
 
-	if ((ignoreNoCollisionFlag || !(io->ioflags & IO_NO_COLLISIONS))
-			&& (io->show==SHOW_FLAG_IN_SCENE) 
-	    && (io->gameFlags & GFLAG_ISINTREATZONE)
-			&& (io->obj)
-			)
-		{
+	if((ignoreNoCollisionFlag || !(io->ioflags & IO_NO_COLLISIONS))
+	   && (io->show == SHOW_FLAG_IN_SCENE)
+	   && (io->gameFlags & GFLAG_ISINTREATZONE)
+	   && (io->obj)
+	) {
 			if(distSqr(io->pos, sphere->origin) < square(sr180)) {
 				vector<EERIE_VERTEX> & vlist = io->obj->vertexlist3;
 
-				if (io->obj->nbgroups>10)
-				{
+				if(io->obj->nbgroups>10) {
 					long count=0;
 					long ii=io->obj->nbgroups-1;
 
-					while (ii)
-					{		
+					while(ii) {
 						if(distSqr(vlist[io->obj->grouplist[ii].origin].v, sphere->origin) < square(sr40)) {
 							count++;
-							if (count>3) return true;
+
+							if(count>3)
+								return true;
 						}
 
 						ii--;
@@ -1257,32 +1257,27 @@ bool CheckIOInSphere(EERIE_SPHERE * sphere, long target, bool ignoreNoCollisionF
 					else if (io->obj->vertexlist.size()<1200) step=6;
 					else step=7;
 
-					for (size_t ii=0;ii<vlist.size();ii+=step)
-					{
+					for(size_t ii = 0; ii < vlist.size(); ii += step) {
 						if(closerThan(vlist[ii].v, sphere->origin, sr30)) {
 							count++;
 
-							if (count>6) return true;
+							if(count > 6)
+								return true;
 						}
 
-						if (io->obj->vertexlist.size()<120)
-						{
-							for (size_t kk=0;kk<vlist.size();kk+=1)
-							{
-								if (kk!=ii)
-								{
-									for (float nn=0.2f;nn<1.f;nn+=0.2f)
-									{
+						if(io->obj->vertexlist.size() < 120) {
+							for(size_t kk = 0; kk < vlist.size(); kk+=1) {
+								if(kk != ii) {
+									for(float nn = 0.2f; nn < 1.f; nn += 0.2f) {
 									Vec3f posi = vlist[ii].v * nn + vlist[kk].v * (1.f - nn);
 									if(distSqr(sphere->origin, posi) <= square(sr30 + 20)) {
 										count++;
 
-										if (count>3)
-									{
-										if (io->ioflags & IO_FIX)
+										if(count > 3) {
+											if(io->ioflags & IO_FIX)
 												return true;
 
-											if (count>6) 
+											if(count > 6)
 												return true;
 										}
 									}
@@ -1292,11 +1287,11 @@ bool CheckIOInSphere(EERIE_SPHERE * sphere, long target, bool ignoreNoCollisionF
 						}
 					}
 
-					if ((count>3) && (io->ioflags & IO_FIX))	
+					if(count > 3 && (io->ioflags & IO_FIX))
 						return true;
 			
 				}
-			}
+	}
 	
 	return false;	
 }
