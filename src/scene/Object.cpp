@@ -1132,19 +1132,21 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 		eobj->c_data->bones = new EERIE_BONE[eobj->c_data->nb_bones];
 		memset(eobj->c_data->bones, 0, sizeof(EERIE_BONE)*eobj->c_data->nb_bones);
 
+		EERIE_BONE & bone = eobj->c_data->bones[0];
+
 		// Add all vertices to the bone
 		for(size_t i = 0; i < eobj->vertexlist.size(); i++)
-			AddIdxToBone(&eobj->c_data->bones[0], i);
+			AddIdxToBone(&bone, i);
 
 		// Initialize the bone
-		Quat_Init(&eobj->c_data->bones[0].quatinit);
-		Quat_Init(&eobj->c_data->bones[0].quatanim);
-		eobj->c_data->bones[0].scaleinit = Vec3f::ZERO;
-		eobj->c_data->bones[0].scaleanim = Vec3f::ZERO;
-		eobj->c_data->bones[0].transinit = Vec3f::ZERO;
-		eobj->c_data->bones[0].transinit_global = eobj->c_data->bones[0].transinit;
-		eobj->c_data->bones[0].original_group = NULL;
-		eobj->c_data->bones[0].father = -1;
+		Quat_Init(&bone.quatinit);
+		Quat_Init(&bone.quatanim);
+		bone.scaleinit = Vec3f::ZERO;
+		bone.scaleanim = Vec3f::ZERO;
+		bone.transinit = Vec3f::ZERO;
+		bone.transinit_global = bone.transinit;
+		bone.original_group = NULL;
+		bone.father = -1;
 	} else {
 		// Groups were specified
 
