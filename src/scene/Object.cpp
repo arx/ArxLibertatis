@@ -1206,11 +1206,13 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 		}
 		
 		for(long i = eobj->nbgroups - 1; i >= 0; i--) {
-			if(eobj->c_data->bones[i].father >= 0) {
-				long father = eobj->c_data->bones[i].father;
-				eobj->c_data->bones[i].transinit -= eobj->c_data->bones[father].transinit;
+			EERIE_BONE & bone = eobj->c_data->bones[i];
+
+			if(bone.father >= 0) {
+				long father = bone.father;
+				bone.transinit -= eobj->c_data->bones[father].transinit;
 			}
-			eobj->c_data->bones[i].transinit_global = eobj->c_data->bones[i].transinit;
+			bone.transinit_global = bone.transinit;
 		}
 
 	}
