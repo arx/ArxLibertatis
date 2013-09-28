@@ -1393,15 +1393,17 @@ static void StoreEntityMovement(Entity * io, Vec3f & ftr, float scale) {
 void Cedric_ManageExtraRotationsFirst(EERIE_C_DATA & rig, Entity * io)
 {
 	if(io && (io->ioflags & IO_NPC) && io->_npcdata->ex_rotate) {
+		EERIE_EXTRA_ROTATE * extraRotation = io->_npcdata->ex_rotate;
+
 		for(long k = 0; k < MAX_EXTRA_ROTATE; k++) {
-			long i = io->_npcdata->ex_rotate->group_number[k];
+			long i = extraRotation->group_number[k];
 
 			if(i >= 0) {
 				Anglef vt1;
 				EERIE_QUAT quat1;
-				vt1.a = radians(io->_npcdata->ex_rotate->group_rotate[k].g);
-				vt1.b = radians(io->_npcdata->ex_rotate->group_rotate[k].b);
-				vt1.g = radians(io->_npcdata->ex_rotate->group_rotate[k].a);
+				vt1.a = radians(extraRotation->group_rotate[k].g);
+				vt1.b = radians(extraRotation->group_rotate[k].b);
+				vt1.g = radians(extraRotation->group_rotate[k].a);
 				QuatFromAngles(&quat1, &vt1);
 				Quat_Copy(&rig.bones[i].quatinit, &quat1);
 			}
