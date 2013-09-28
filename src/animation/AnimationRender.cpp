@@ -1477,11 +1477,8 @@ void Cedric_BlendAnimation(EERIE_C_DATA & rig, AnimationBlendStatus * animBlend)
 
 void Cedric_SaveBlendData(EERIE_C_DATA & rig) {
 
-		for (long i = 0; i < rig.nb_bones; i++)
-		{
-			rig.bones[i].last.quat = rig.bones[i].init.quat;
-			rig.bones[i].last.scale = rig.bones[i].init.scale;
-			rig.bones[i].last.trans = rig.bones[i].init.trans;
+		for(long i = 0; i < rig.nb_bones; i++) {
+			rig.bones[i].last = rig.bones[i].init;
 		}
 }
 
