@@ -1393,11 +1393,9 @@ static void StoreEntityMovement(Entity * io, Vec3f & ftr, float scale) {
 /*!
  * Animate skeleton
  */
-static void Cedric_AnimateObject(EERIE_3DOBJ *eobj, ANIM_USE * animlayer)
+static void Cedric_AnimateObject(EERIE_C_DATA * obj, ANIM_USE * animlayer)
 {
-	EERIE_C_DATA	* obj = eobj->c_data;
-
-	std::vector<unsigned char> grps(eobj->nbgroups);
+	std::vector<unsigned char> grps(obj->nb_bones);
 
 	for(long count = MAX_ANIM_LAYERS - 1; count >= 0; count--) {
 
@@ -1420,7 +1418,7 @@ static void Cedric_AnimateObject(EERIE_3DOBJ *eobj, ANIM_USE * animlayer)
 		animuse->pour = clamp(animuse->pour, 0.f, 1.f);
 
 		// Now go for groups rotation/translation/scaling, And transform Linked objects by the way
-		int l = std::min(eobj->nbgroups - 1, eanim->nb_groups - 1);
+		int l = std::min(obj->nb_bones - 1, eanim->nb_groups - 1);
 
 		for(int j = l; j >= 0; j--) {
 			if(grps[j])
@@ -1638,7 +1636,7 @@ void Cedric_AnimateDrawEntity(EERIE_3DOBJ *eobj, ANIM_USE * animlayer, const EER
 	}
 
 	// Perform animation in Local space
-	Cedric_AnimateObject(eobj, animlayer);
+	Cedric_AnimateObject(&rig, animlayer);
 
 	if(BH_MODE && eobj->fastaccess.head_group != -1) {
 		EERIE_BONE & bone = rig.bones[eobj->fastaccess.head_group];
