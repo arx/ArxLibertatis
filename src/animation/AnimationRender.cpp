@@ -1565,7 +1565,6 @@ void Cedric_TransformVerts(Entity *io, EERIE_3DOBJ *eobj, EERIE_C_DATA *obj, con
 		EERIEMATRIX	 matrix;
 
 		MatrixFromQuat(&matrix, &obj->bones[i].quatanim);
-		Vec3f vector = obj->bones[i].transanim;
 
 		// Apply Scale
 		matrix._11 *= obj->bones[i].scaleanim.x;
@@ -1580,11 +1579,17 @@ void Cedric_TransformVerts(Entity *io, EERIE_3DOBJ *eobj, EERIE_C_DATA *obj, con
 		matrix._32 *= obj->bones[i].scaleanim.z;
 		matrix._33 *= obj->bones[i].scaleanim.z;
 
+		Vec3f vector = obj->bones[i].transanim;
+
 		for(int v = 0; v != obj->bones[i].nb_idxvertices; v++) {
-			EERIE_3DPAD * inVert  = &eobj->vertexlocal[obj->bones[i].idxvertices[v]];
-			EERIE_VERTEX * outVert = &eobj->vertexlist3[obj->bones[i].idxvertices[v]];
+			long index = obj->bones[i].idxvertices[v];
+
+			EERIE_3DPAD * inVert  = &eobj->vertexlocal[index];
+			EERIE_VERTEX * outVert = &eobj->vertexlist3[index];
+
 			TransformVertexMatrix(&matrix, inVert, &outVert->v);
 			outVert->v += vector;
+
 			outVert->vert.p = outVert->v;
 		}
 	}
