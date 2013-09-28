@@ -1708,11 +1708,11 @@ void EERIEDrawAnimQuat(EERIE_3DOBJ *eobj, ANIM_USE * animlayer,const Anglef & an
 void AnimatedEntityUpdate(Entity * entity) {
 
 	EERIEDrawAnimQuat(entity->obj, entity->animlayer, entity->angle,
-		entity->pos, Original_framedelay, entity, false, false);
+		entity->pos, Original_framedelay, entity, false, true);
 }
 
 void AnimatedEntityRender(Entity * entity) {
 
 	EERIEDrawAnimQuat(entity->obj, entity->animlayer, entity->angle,
-		entity->pos, 0, entity);
+		entity->pos, 0, entity, true, false);
 }
