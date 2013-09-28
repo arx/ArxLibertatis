@@ -1431,21 +1431,23 @@ static void Cedric_AnimateObject(EERIE_3DOBJ *eobj, ANIM_USE * animlayer)
 				grps[j] = 1;
 
 			if(eanim->nb_key_frames != 1) {
+				EERIE_BONE & bone = obj->bones[j];
+
 				EERIE_QUAT t;
 				Quat_Slerp(&t, &sGroup->quat, &eGroup->quat, animuse->pour);
 				EERIE_QUAT temp;
-				Quat_Copy(&temp, &obj->bones[j].quatinit);
-				Quat_Multiply(&obj->bones[j].quatinit, &temp, &t);
+				Quat_Copy(&temp, &bone.quatinit);
+				Quat_Multiply(&bone.quatinit, &temp, &t);
 
 				Vec3f vect = sGroup->translate + (eGroup->translate - sGroup->translate) * animuse->pour;
-				obj->bones[j].transinit = vect + obj->bones[j].transinit_global;
+				bone.transinit = vect + bone.transinit_global;
 
 				Vec3f scale = sGroup->zoom + (eGroup->zoom - sGroup->zoom) * animuse->pour;
 				if(BH_MODE && j == eobj->fastaccess.head_group) {
 					scale += Vec3f::ONE;
 				}
 
-				obj->bones[j].scaleinit = scale;
+				bone.scaleinit = scale;
 			}
 		}
 	}
