@@ -1632,8 +1632,10 @@ void Cedric_AnimateDrawEntity(EERIE_3DOBJ *eobj, ANIM_USE * animlayer, const Ang
 
 	// Initialize the rig
 	for(long i = 0; i != rig.nb_bones; i++) {
-		Quat_Init(&rig.bones[i].quatinit);
-		rig.bones[i].transinit = rig.bones[i].transinit_global;
+		EERIE_BONE & bone = rig.bones[i];
+
+		Quat_Init(&bone.quatinit);
+		bone.transinit = bone.transinit_global;
 	}
 
 	// Manage Extra Rotations in Local Space
