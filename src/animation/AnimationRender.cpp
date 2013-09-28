@@ -1430,8 +1430,7 @@ static void Cedric_AnimateObject(EERIE_C_DATA * obj, ANIM_USE * animlayer)
 			if(eanim->nb_key_frames != 1) {
 				EERIE_BONE & bone = obj->bones[j];
 
-				EERIE_QUAT t;
-				Quat_Slerp(&t, &sGroup->quat, &eGroup->quat, animuse->pour);
+				EERIE_QUAT t = Quat_Slerp(&sGroup->quat, &eGroup->quat, animuse->pour);
 
 				EERIE_QUAT temp = bone.init.quat;
 				Quat_Multiply(&bone.init.quat, &temp, &t);
@@ -1469,7 +1468,7 @@ void Cedric_BlendAnimation(EERIE_C_DATA & rig, AnimationBlendStatus * animBlend)
 
 		EERIE_QUAT tquat = bone->init.quat;
 
-		Quat_Slerp(&bone->init.quat, &bone->last.quat, &tquat, timm);
+		bone->init.quat = Quat_Slerp(&bone->last.quat, &tquat, timm);
 
 		bone->init.trans = bone->last.trans + (bone->init.trans - bone->last.trans) * timm;
 		bone->init.scale = bone->last.scale + (bone->init.scale - bone->last.scale) * timm;

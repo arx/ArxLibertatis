@@ -592,7 +592,7 @@ void TransformInverseVertexQuat(const EERIE_QUAT * quat, const Vec3f * vertexin,
 }
 
 
-void Quat_Slerp(EERIE_QUAT * result, const EERIE_QUAT * from, EERIE_QUAT * to, float ratio)
+EERIE_QUAT Quat_Slerp(const EERIE_QUAT * from, EERIE_QUAT * to, float ratio)
 {
 	float fCosTheta = from->x * to->x + from->y * to->y + from->z * to->z + from->w * to->w;
 
@@ -615,10 +615,11 @@ void Quat_Slerp(EERIE_QUAT * result, const EERIE_QUAT * from, EERIE_QUAT * to, f
 		ratio = EEsin(fTheta * ratio) * t ;
 	}
 
-	result->x = fBeta * from->x + ratio * to->x;
-	result->y = fBeta * from->y + ratio * to->y;
-	result->z = fBeta * from->z + ratio * to->z;
-	result->w = fBeta * from->w + ratio * to->w;
+	return EERIE_QUAT(
+		fBeta * from->x + ratio * to->x,
+		fBeta * from->y + ratio * to->y,
+		fBeta * from->z + ratio * to->z,
+		fBeta * from->w + ratio * to->w);
 }
 
 
