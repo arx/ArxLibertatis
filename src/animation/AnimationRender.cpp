@@ -1451,16 +1451,16 @@ static void Cedric_AnimateObject(EERIE_3DOBJ *eobj, ANIM_USE * animlayer)
 	}
 }
 
-void Cedric_BlendAnimation(Entity *io, EERIE_C_DATA & rig) {
+void Cedric_BlendAnimation(EERIE_C_DATA & rig, AnimationBlendStatus * animBlend) {
 
-	if(!io || !io->animBlend.nb_lastanimvertex) {
+	if(!animBlend->nb_lastanimvertex) {
 		return;
 	}
 
-	float timm = (arxtime.get_frame_time() - io->animBlend.lastanimtime) + 0.0001f;
+	float timm = (arxtime.get_frame_time() - animBlend->lastanimtime) + 0.0001f;
 
 	if(timm >= 300.f) {
-		io->animBlend.nb_lastanimvertex = 0;
+		animBlend->nb_lastanimvertex = 0;
 		return;
 	} else {
 		timm *= ( 1.0f / 300 );
@@ -1603,7 +1603,7 @@ void Cedric_ViewProjectTransform(Entity *io, EERIE_3DOBJ *eobj) {
 /*!
  * \brief Apply animation and draw object
  */
-void Cedric_AnimateDrawEntity(EERIE_3DOBJ *eobj, ANIM_USE * animlayer, const EERIE_QUAT & rotation, const Vec3f & pos, Entity *io, Vec3f & ftr, float scale, EERIE_EXTRA_ROTATE * extraRotation) {
+void Cedric_AnimateDrawEntity(EERIE_3DOBJ *eobj, ANIM_USE * animlayer, const EERIE_QUAT & rotation, const Vec3f & pos, Entity *io, Vec3f & ftr, float scale, EERIE_EXTRA_ROTATE * extraRotation, AnimationBlendStatus * animBlend) {
 
 	arx_assert(eobj->c_data);
 
@@ -1637,9 +1637,9 @@ void Cedric_AnimateDrawEntity(EERIE_3DOBJ *eobj, ANIM_USE * animlayer, const EER
 	Cedric_AnimateObject(eobj, animlayer);
 
 	// Check for Animation Blending in Local space
-	if(io) {
+	if(animBlend) {
 		// Is There any Between-Animations Interpolation to make ?
-		Cedric_BlendAnimation(io, rig);
+		Cedric_BlendAnimation(rig, animBlend);
 
 		Cedric_SaveBlendData(rig);
 	}
@@ -1693,12 +1693,17 @@ void EERIEDrawAnimQuat(EERIE_3DOBJ *eobj, ANIM_USE * animlayer,const Anglef & an
 
 
 	EERIE_EXTRA_ROTATE * extraRotation = NULL;
+	AnimationBlendStatus * animBlend = NULL;
 
 	if(io && (io->ioflags & IO_NPC) && io->_npcdata->ex_rotate) {
 		extraRotation = io->_npcdata->ex_rotate;
 	}
 
-	Cedric_AnimateDrawEntity(eobj, animlayer, rotation, pos, io, ftr, scale, extraRotation);
+	if(io) {
+		animBlend = &io->animBlend;
+	}
+
+	Cedric_AnimateDrawEntity(eobj, animlayer, rotation, pos, io, ftr, scale, extraRotation, animBlend);
 
 
 	bool isFightingNpc = io &&
