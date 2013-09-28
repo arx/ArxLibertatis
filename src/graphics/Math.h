@@ -207,14 +207,6 @@ inline void YXZRotatePoint(Vec3f * in, Vec3f * out, EERIE_CAMERA * cam) {
 
 // QUATERNION Funcs/Defs
 
-//! Copy a quaternion into another
-inline void Quat_Copy(EERIE_QUAT * dest, const EERIE_QUAT * src) {
-	dest->x = src->x;
-	dest->y = src->y;
-	dest->z = src->z;
-	dest->w = src->w;
-}
-
 //! Quaternion Initialization
 //!  quat -> quaternion to init
 inline void Quat_Init(EERIE_QUAT * quat, float x = 0, float y = 0, float z = 0, float w = 1) {

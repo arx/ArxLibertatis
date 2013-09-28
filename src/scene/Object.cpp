@@ -1013,7 +1013,7 @@ EERIE_3DOBJ * Eerie_Copy(const EERIE_3DOBJ * obj) {
 
 	nouvo->origin = obj->origin;
 	nouvo->point0 = obj->point0;
-	Quat_Copy(&nouvo->quat, &obj->quat);
+	nouvo->quat = obj->quat;
 
 
 	if(obj->ndata)
@@ -1228,14 +1228,14 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 
 			if(bone.father >= 0) {
 				/* Rotation*/
-				Quat_Copy(&qt1, &bone.quatinit);
+				qt1 = bone.quatinit;
 				Quat_Multiply(&bone.quatanim, &obj->bones[bone.father].quatanim, &qt1);
 				/* Translation */
 				TransformVertexQuat(obj->bones[bone.father].quatanim, bone.transinit, bone.transanim);
 				bone.transanim = obj->bones[bone.father].transanim + bone.transanim;
 			} else {
 				/* Rotation*/
-				Quat_Copy(&bone.quatanim, &bone.quatinit);
+				bone.quatanim = bone.quatinit;
 				/* Translation */
 				bone.transanim = bone.transinit;
 			}

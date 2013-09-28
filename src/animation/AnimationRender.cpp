@@ -471,8 +471,7 @@ void Cedric_PrepareHalo(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj) {
 
 	// Apply light on all vertices
 	for(long i = 0; i != obj->nb_bones; i++) {
-		EERIE_QUAT qt1;
-		Quat_Copy(&qt1, &obj->bones[i].quatanim);
+		EERIE_QUAT qt1 = obj->bones[i].quatanim;
 		TransformInverseVertexQuat(&qt1, &cam_vector, &t_vector);
 
 		// Get light value for each vertex
@@ -1433,8 +1432,8 @@ static void Cedric_AnimateObject(EERIE_C_DATA * obj, ANIM_USE * animlayer)
 
 				EERIE_QUAT t;
 				Quat_Slerp(&t, &sGroup->quat, &eGroup->quat, animuse->pour);
-				EERIE_QUAT temp;
-				Quat_Copy(&temp, &bone.quatinit);
+
+				EERIE_QUAT temp = bone.quatinit;
 				Quat_Multiply(&bone.quatinit, &temp, &t);
 
 				Vec3f vect = sGroup->translate + (eGroup->translate - sGroup->translate) * animuse->pour;
@@ -1468,8 +1467,7 @@ void Cedric_BlendAnimation(EERIE_C_DATA & rig, AnimationBlendStatus * animBlend)
 	for(long i = 0; i < rig.nb_bones; i++) {
 		EERIE_BONE * bone = &rig.bones[i];
 
-		EERIE_QUAT tquat;
-		Quat_Copy(&tquat, &bone->quatinit);
+		EERIE_QUAT tquat = bone->quatinit;
 
 		Quat_Slerp(&bone->quatinit, &bone->quatlast, &tquat, timm);
 
@@ -1481,7 +1479,7 @@ void Cedric_SaveBlendData(EERIE_C_DATA & rig) {
 
 		for (long i = 0; i < rig.nb_bones; i++)
 		{
-			Quat_Copy(&rig.bones[i].quatlast, &rig.bones[i].quatinit);
+			rig.bones[i].quatlast = rig.bones[i].quatinit;
 			rig.bones[i].scalelast = rig.bones[i].scaleinit;
 			rig.bones[i].translast = rig.bones[i].transinit;
 		}

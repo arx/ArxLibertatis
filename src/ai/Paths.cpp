@@ -623,7 +623,7 @@ long ARX_THROWN_OBJECT_Throw(long source, Vec3f * position, Vec3f * vect,
 		thrownObj->position = *position;
 		thrownObj->initial_position = *position;
 		thrownObj->vector = *vect;
-		Quat_Copy(&thrownObj->quat, quat);
+		thrownObj->quat = *quat;
 		thrownObj->source = source;
 		thrownObj->obj = NULL;
 		thrownObj->velocity = velocity;
