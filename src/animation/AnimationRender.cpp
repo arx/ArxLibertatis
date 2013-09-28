@@ -1475,7 +1475,7 @@ static void Cedric_AnimateObject(EERIE_3DOBJ *eobj, ANIM_USE * animlayer)
 	}
 }
 
-void Cedric_BlendAnimation(Entity *io, EERIE_C_DATA *c_data) {
+void Cedric_BlendAnimation(Entity *io, EERIE_C_DATA & rig) {
 
 	if(!io || !io->nb_lastanimvertex) {
 		return;
@@ -1493,8 +1493,8 @@ void Cedric_BlendAnimation(Entity *io, EERIE_C_DATA *c_data) {
 			return;
 	}
 
-	for(long i = 0; i < c_data->nb_bones; i++) {
-		EERIE_BONE * bone = &c_data->bones[i];
+	for(long i = 0; i < rig.nb_bones; i++) {
+		EERIE_BONE * bone = &rig.bones[i];
 
 		EERIE_QUAT tquat;
 		Quat_Copy(&tquat, &bone->quatinit);
@@ -1507,28 +1507,24 @@ void Cedric_BlendAnimation(Entity *io, EERIE_C_DATA *c_data) {
 	}
 }
 
-void Cedric_SaveBlendData(EERIE_C_DATA *c_data) {
-	if (c_data)
-	{
-		for (long i = 0; i < c_data->nb_bones; i++)
+void Cedric_SaveBlendData(EERIE_C_DATA & rig) {
+
+		for (long i = 0; i < rig.nb_bones; i++)
 		{
-			Quat_Copy(&c_data->bones[i].quatlast, &c_data->bones[i].quatinit);
-			c_data->bones[i].scalelast = c_data->bones[i].scaleinit;
-			c_data->bones[i].translast = c_data->bones[i].transinit;
+			Quat_Copy(&rig.bones[i].quatlast, &rig.bones[i].quatinit);
+			rig.bones[i].scalelast = rig.bones[i].scaleinit;
+			rig.bones[i].translast = rig.bones[i].transinit;
 		}
-	}
 }
 
 /* Apply transformations on all bones */
-static void Cedric_ConcatenateTM(EERIE_C_DATA *obj, const EERIE_QUAT & rotation, const Vec3f & pos, const Vec3f & ftr, float g_scale) {
+static void Cedric_ConcatenateTM(EERIE_C_DATA & rig, const EERIE_QUAT & rotation, const Vec3f & pos, const Vec3f & ftr, float g_scale) {
 
-	arx_assert(obj);
-
-	for(int i = 0; i != obj->nb_bones; i++) {
-		EERIE_BONE * bone = &obj->bones[i];
+	for(int i = 0; i != rig.nb_bones; i++) {
+		EERIE_BONE * bone = &rig.bones[i];
 
 		if(bone->father >= 0) { // Child Bones
-			EERIE_BONE * parent = &obj->bones[bone->father];
+			EERIE_BONE * parent = &rig.bones[bone->father];
 			// Rotation
 			Quat_Multiply(&bone->quatanim, &parent->quatanim, &bone->quatinit);
 
@@ -1556,13 +1552,13 @@ static void Cedric_ConcatenateTM(EERIE_C_DATA *obj, const EERIE_QUAT & rotation,
 }
 
 /* Transform object vertices  */
-void Cedric_TransformVerts(EERIE_3DOBJ *eobj, EERIE_C_DATA *obj, const Vec3f & pos) {
+void Cedric_TransformVerts(EERIE_3DOBJ *eobj, EERIE_C_DATA & rig, const Vec3f & pos) {
 
 	arx_assert(eobj);
 
 	/* Transform & project all vertices */
-	for(long i = 0; i != obj->nb_bones; i++) {
-		EERIE_BONE & bone = obj->bones[i];
+	for(long i = 0; i != rig.nb_bones; i++) {
+		EERIE_BONE & bone = rig.bones[i];
 
 		EERIEMATRIX	 matrix;
 
@@ -1648,14 +1644,10 @@ void Cedric_AnimateDrawEntity(EERIE_3DOBJ *eobj, ANIM_USE * animlayer, const Ang
 	// Check for Animation Blending in Local space
 	if(io) {
 		// Is There any Between-Animations Interpolation to make ?
-		Cedric_BlendAnimation(io, eobj->c_data);
+		Cedric_BlendAnimation(io, rig);
 
-		Cedric_SaveBlendData(io->obj->c_data);
+		Cedric_SaveBlendData(rig);
 	}
-
-	EERIE_C_DATA *obj = eobj->c_data;
-	if(!obj)
-		return;
 
 	EERIE_QUAT	qt2;
 
@@ -1663,9 +1655,9 @@ void Cedric_AnimateDrawEntity(EERIE_3DOBJ *eobj, ANIM_USE * animlayer, const Ang
 	worldAngleToQuat(&qt2, angle, isNpc);
 
 	// Build skeleton in Object Space
-	Cedric_ConcatenateTM(obj, qt2, pos, ftr, scale);
+	Cedric_ConcatenateTM(rig, qt2, pos, ftr, scale);
 
-	Cedric_TransformVerts(eobj, obj, pos);
+	Cedric_TransformVerts(eobj, rig, pos);
 	Cedric_ViewProjectTransform(io, eobj);
 }
 
