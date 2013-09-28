@@ -465,9 +465,9 @@ void Cedric_ApplyLightingFirstPartRefactor(Entity *io) {
 
 void Cedric_PrepareHalo(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj) {
 	Vec3f cam_vector, t_vector;
-	cam_vector.x = -EEsin(radians(ACTIVECAM->angle.b)) * EEcos(radians(ACTIVECAM->angle.a));
-	cam_vector.y = EEsin(radians(ACTIVECAM->angle.a));
-	cam_vector.z = EEcos(radians(ACTIVECAM->angle.b)) * EEcos(radians(ACTIVECAM->angle.a));
+	cam_vector.x = -std::sin(radians(ACTIVECAM->angle.b)) * std::cos(radians(ACTIVECAM->angle.a));
+	cam_vector.y =  std::sin(radians(ACTIVECAM->angle.a));
+	cam_vector.z =  std::cos(radians(ACTIVECAM->angle.b)) * std::cos(radians(ACTIVECAM->angle.a));
 
 	// Apply light on all vertices
 	for(long i = 0; i != obj->nb_bones; i++) {
@@ -1367,7 +1367,7 @@ static void StoreEntityMovement(Entity * io, Vec3f & ftr, float scale) {
 			temp = radians(MAKEANGLE(180.f - io->angle.b));
 		}
 
-		YRotatePoint(&ftr, &ftr2, (float)EEcos(temp), (float)EEsin(temp));
+		YRotatePoint(&ftr, &ftr2, std::cos(temp), std::sin(temp));
 
 		// stores Translations for a later use
 		io->move = ftr2;
