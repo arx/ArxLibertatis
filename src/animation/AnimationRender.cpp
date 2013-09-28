@@ -1474,10 +1474,8 @@ void Cedric_BlendAnimation(Entity *io, EERIE_C_DATA & rig) {
 
 		EERIE_QUAT tquat;
 		Quat_Copy(&tquat, &bone->quatinit);
-		EERIE_QUAT q2;
-		Quat_Copy(&q2, &bone->quatlast);
 
-		Quat_Slerp(&bone->quatinit , &q2, &tquat, timm);
+		Quat_Slerp(&bone->quatinit, &bone->quatlast, &tquat, timm);
 
 		bone->transinit = bone->translast + (bone->transinit - bone->translast) * timm;
 	}
