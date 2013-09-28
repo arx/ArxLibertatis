@@ -1392,11 +1392,6 @@ static void StoreEntityMovement(Entity * io, Vec3f & ftr, float scale) {
 
 void Cedric_ManageExtraRotationsFirst(EERIE_C_DATA & rig, Entity * io)
 {
-	for(long i = 0; i != rig.nb_bones; i++) {
-		Quat_Init(&rig.bones[i].quatinit);
-		rig.bones[i].transinit = rig.bones[i].transinit_global;
-	}
-
 	if(io && (io->ioflags & IO_NPC) && io->_npcdata->ex_rotate) {
 		for(long k = 0; k < MAX_EXTRA_ROTATE; k++) {
 			long i = io->_npcdata->ex_rotate->group_number[k];
@@ -1634,6 +1629,12 @@ void Cedric_AnimateDrawEntity(EERIE_3DOBJ *eobj, ANIM_USE * animlayer, const Ang
 	arx_assert(eobj->c_data);
 
 	EERIE_C_DATA & rig = *eobj->c_data;
+
+	// Initialize the rig
+	for(long i = 0; i != rig.nb_bones; i++) {
+		Quat_Init(&rig.bones[i].quatinit);
+		rig.bones[i].transinit = rig.bones[i].transinit_global;
+	}
 
 	// Manage Extra Rotations in Local Space
 	Cedric_ManageExtraRotationsFirst(rig, io);
