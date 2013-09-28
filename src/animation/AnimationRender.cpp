@@ -1390,11 +1390,11 @@ static void StoreEntityMovement(Entity * io, Vec3f & ftr, float scale) {
 	}
 }
 
-void Cedric_ManageExtraRotationsFirst(Entity * io, EERIE_3DOBJ * obj)
+void Cedric_ManageExtraRotationsFirst(EERIE_C_DATA & rig, Entity * io)
 {
-	for(long i = 0; i != obj->c_data->nb_bones; i++) {
-		Quat_Init(&obj->c_data->bones[i].quatinit);
-		obj->c_data->bones[i].transinit = obj->c_data->bones[i].transinit_global;
+	for(long i = 0; i != rig.nb_bones; i++) {
+		Quat_Init(&rig.bones[i].quatinit);
+		rig.bones[i].transinit = rig.bones[i].transinit_global;
 	}
 
 	if(io && (io->ioflags & IO_NPC) && io->_npcdata->ex_rotate) {
@@ -1408,7 +1408,7 @@ void Cedric_ManageExtraRotationsFirst(Entity * io, EERIE_3DOBJ * obj)
 				vt1.b = radians(io->_npcdata->ex_rotate->group_rotate[k].b);
 				vt1.g = radians(io->_npcdata->ex_rotate->group_rotate[k].a);
 				QuatFromAngles(&quat1, &vt1);
-				Quat_Copy(&obj->c_data->bones[i].quatinit, &quat1);
+				Quat_Copy(&rig.bones[i].quatinit, &quat1);
 			}
 		}
 	}
@@ -1635,8 +1635,12 @@ void Cedric_ViewProjectTransform(Entity *io, EERIE_3DOBJ *eobj) {
  */
 void Cedric_AnimateDrawEntity(EERIE_3DOBJ *eobj, ANIM_USE * animlayer, const Anglef & angle, const Vec3f & pos, Entity *io, Vec3f & ftr, float scale) {
 
+	arx_assert(eobj->c_data);
+
+	EERIE_C_DATA & rig = *eobj->c_data;
+
 	// Manage Extra Rotations in Local Space
-	Cedric_ManageExtraRotationsFirst(io, eobj);
+	Cedric_ManageExtraRotationsFirst(rig, io);
 
 	// Perform animation in Local space
 	Cedric_AnimateObject(eobj, animlayer);
