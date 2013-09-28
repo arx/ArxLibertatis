@@ -1475,13 +1475,6 @@ void Cedric_BlendAnimation(EERIE_C_DATA & rig, AnimationBlendStatus * animBlend)
 	}
 }
 
-void Cedric_SaveBlendData(EERIE_C_DATA & rig) {
-
-		for(long i = 0; i < rig.nb_bones; i++) {
-			rig.bones[i].last = rig.bones[i].init;
-		}
-}
-
 /*!
  * Apply transformations on all bones
  */
@@ -1638,7 +1631,9 @@ void Cedric_AnimateDrawEntity(EERIE_C_DATA & rig, ANIM_USE * animlayer, const EE
 		// Is There any Between-Animations Interpolation to make ?
 		Cedric_BlendAnimation(rig, animBlend);
 
-		Cedric_SaveBlendData(rig);
+		for(long i = 0; i < rig.nb_bones; i++) {
+			rig.bones[i].last = rig.bones[i].init;
+		}
 	}
 
 	// Build skeleton in Object Space
