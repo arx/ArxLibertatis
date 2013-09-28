@@ -1605,11 +1605,7 @@ void Cedric_ViewProjectTransform(Entity *io, EERIE_3DOBJ *eobj) {
 /*!
  * \brief Apply animation and draw object
  */
-void Cedric_AnimateDrawEntity(EERIE_3DOBJ *eobj, ANIM_USE * animlayer, const EERIE_QUAT & rotation, const Vec3f & pos, Vec3f & ftr, float scale, EERIE_EXTRA_ROTATE * extraRotation, AnimationBlendStatus * animBlend) {
-
-	arx_assert(eobj->c_data);
-
-	EERIE_C_DATA & rig = *eobj->c_data;
+void Cedric_AnimateDrawEntity(EERIE_C_DATA & rig, ANIM_USE * animlayer, const EERIE_QUAT & rotation, const Vec3f & pos, Vec3f & ftr, float scale, EERIE_EXTRA_ROTATE * extraRotation, AnimationBlendStatus * animBlend, EERIE_EXTRA_SCALE & extraScale) {
 
 	// Initialize the rig
 	for(long i = 0; i != rig.nb_bones; i++) {
@@ -1638,10 +1634,10 @@ void Cedric_AnimateDrawEntity(EERIE_3DOBJ *eobj, ANIM_USE * animlayer, const EER
 	// Perform animation in Local space
 	Cedric_AnimateObject(&rig, animlayer);
 
-	if(BH_MODE && eobj->fastaccess.head_group != -1) {
-		EERIE_BONE & bone = rig.bones[eobj->fastaccess.head_group];
+	if(extraScale.groupIndex != -1) {
+		EERIE_BONE & bone = rig.bones[extraScale.groupIndex];
 
-		bone.scaleinit += Vec3f::ONE;
+		bone.scaleinit += extraScale.scale;
 	}
 
 	// Check for Animation Blending in Local space
@@ -1708,7 +1704,17 @@ void EERIEDrawAnimQuat(EERIE_3DOBJ *eobj, ANIM_USE * animlayer,const Anglef & an
 		animBlend = &io->animBlend;
 	}
 
-	Cedric_AnimateDrawEntity(eobj, animlayer, rotation, pos, ftr, scale, extraRotation, animBlend);
+	EERIE_EXTRA_SCALE extraScale;
+
+	if(BH_MODE && eobj->fastaccess.head_group != -1) {
+		extraScale.groupIndex = eobj->fastaccess.head_group;
+		extraScale.scale = Vec3f::ONE;
+	}
+
+	arx_assert(eobj->c_data);
+	EERIE_C_DATA & skeleton = *eobj->c_data;
+
+	Cedric_AnimateDrawEntity(skeleton, animlayer, rotation, pos, ftr, scale, extraRotation, animBlend, extraScale);
 
 	Cedric_TransformVerts(eobj, pos);
 	Cedric_ViewProjectTransform(io, eobj);

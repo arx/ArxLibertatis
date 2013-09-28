@@ -122,6 +122,16 @@ struct EERIE_EXTRA_ROTATE {
 	Anglef group_rotate[MAX_EXTRA_ROTATE];
 };
 
+struct EERIE_EXTRA_SCALE {
+	int groupIndex;
+	Vec3f scale;
+
+	EERIE_EXTRA_SCALE()
+		: groupIndex(-1)
+		, scale(Vec3f::ZERO)
+	{}
+};
+
 enum NPCFlag {
 	NPCFLAG_BACKSTAB = (1<<0)
 };
