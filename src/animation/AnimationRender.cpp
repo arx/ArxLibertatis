@@ -1562,27 +1562,29 @@ void Cedric_TransformVerts(Entity *io, EERIE_3DOBJ *eobj, EERIE_C_DATA *obj, con
 
 	/* Transform & project all vertices */
 	for(long i = 0; i != obj->nb_bones; i++) {
+		EERIE_BONE & bone = obj->bones[i];
+
 		EERIEMATRIX	 matrix;
 
-		MatrixFromQuat(&matrix, &obj->bones[i].quatanim);
+		MatrixFromQuat(&matrix, &bone.quatanim);
 
 		// Apply Scale
-		matrix._11 *= obj->bones[i].scaleanim.x;
-		matrix._12 *= obj->bones[i].scaleanim.x;
-		matrix._13 *= obj->bones[i].scaleanim.x;
+		matrix._11 *= bone.scaleanim.x;
+		matrix._12 *= bone.scaleanim.x;
+		matrix._13 *= bone.scaleanim.x;
 
-		matrix._21 *= obj->bones[i].scaleanim.y;
-		matrix._22 *= obj->bones[i].scaleanim.y;
-		matrix._23 *= obj->bones[i].scaleanim.y;
+		matrix._21 *= bone.scaleanim.y;
+		matrix._22 *= bone.scaleanim.y;
+		matrix._23 *= bone.scaleanim.y;
 
-		matrix._31 *= obj->bones[i].scaleanim.z;
-		matrix._32 *= obj->bones[i].scaleanim.z;
-		matrix._33 *= obj->bones[i].scaleanim.z;
+		matrix._31 *= bone.scaleanim.z;
+		matrix._32 *= bone.scaleanim.z;
+		matrix._33 *= bone.scaleanim.z;
 
-		Vec3f vector = obj->bones[i].transanim;
+		Vec3f vector = bone.transanim;
 
-		for(int v = 0; v != obj->bones[i].nb_idxvertices; v++) {
-			long index = obj->bones[i].idxvertices[v];
+		for(int v = 0; v != bone.nb_idxvertices; v++) {
+			long index = bone.idxvertices[v];
 
 			EERIE_3DPAD * inVert  = &eobj->vertexlocal[index];
 			EERIE_VERTEX * outVert = &eobj->vertexlist3[index];
