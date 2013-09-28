@@ -1445,10 +1445,6 @@ static void Cedric_AnimateObject(EERIE_3DOBJ *eobj, ANIM_USE * animlayer)
 				bone.transinit = vect + bone.transinit_global;
 
 				Vec3f scale = sGroup->zoom + (eGroup->zoom - sGroup->zoom) * animuse->pour;
-				if(BH_MODE && j == eobj->fastaccess.head_group) {
-					scale += Vec3f::ONE;
-				}
-
 				bone.scaleinit = scale;
 			}
 		}
@@ -1643,6 +1639,12 @@ void Cedric_AnimateDrawEntity(EERIE_3DOBJ *eobj, ANIM_USE * animlayer, const EER
 
 	// Perform animation in Local space
 	Cedric_AnimateObject(eobj, animlayer);
+
+	if(BH_MODE && eobj->fastaccess.head_group != -1) {
+		EERIE_BONE & bone = rig.bones[eobj->fastaccess.head_group];
+
+		bone.scaleinit += Vec3f::ONE;
+	}
 
 	// Check for Animation Blending in Local space
 	if(animBlend) {
