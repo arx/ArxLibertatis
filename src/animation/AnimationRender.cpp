@@ -1390,27 +1390,6 @@ static void StoreEntityMovement(Entity * io, Vec3f & ftr, float scale) {
 	}
 }
 
-void Cedric_ManageExtraRotationsFirst(EERIE_C_DATA & rig, Entity * io)
-{
-	if(io && (io->ioflags & IO_NPC) && io->_npcdata->ex_rotate) {
-		EERIE_EXTRA_ROTATE * extraRotation = io->_npcdata->ex_rotate;
-
-		for(long k = 0; k < MAX_EXTRA_ROTATE; k++) {
-			long i = extraRotation->group_number[k];
-
-			if(i >= 0) {
-				Anglef vt1;
-				EERIE_QUAT quat1;
-				vt1.a = radians(extraRotation->group_rotate[k].g);
-				vt1.b = radians(extraRotation->group_rotate[k].b);
-				vt1.g = radians(extraRotation->group_rotate[k].a);
-				QuatFromAngles(&quat1, &vt1);
-				Quat_Copy(&rig.bones[i].quatinit, &quat1);
-			}
-		}
-	}
-}
-
 // Animate skeleton
 static void Cedric_AnimateObject(EERIE_3DOBJ *eobj, ANIM_USE * animlayer)
 {
@@ -1626,7 +1605,7 @@ void Cedric_ViewProjectTransform(Entity *io, EERIE_3DOBJ *eobj) {
 /*!
  * \brief Apply animation and draw object
  */
-void Cedric_AnimateDrawEntity(EERIE_3DOBJ *eobj, ANIM_USE * animlayer, const EERIE_QUAT & rotation, const Vec3f & pos, Entity *io, Vec3f & ftr, float scale) {
+void Cedric_AnimateDrawEntity(EERIE_3DOBJ *eobj, ANIM_USE * animlayer, const EERIE_QUAT & rotation, const Vec3f & pos, Entity *io, Vec3f & ftr, float scale, EERIE_EXTRA_ROTATE * extraRotation) {
 
 	arx_assert(eobj->c_data);
 
@@ -1640,8 +1619,22 @@ void Cedric_AnimateDrawEntity(EERIE_3DOBJ *eobj, ANIM_USE * animlayer, const EER
 		bone.transinit = bone.transinit_global;
 	}
 
-	// Manage Extra Rotations in Local Space
-	Cedric_ManageExtraRotationsFirst(rig, io);
+	// Apply Extra Rotations in Local Space
+	if(extraRotation) {
+		for(long k = 0; k < MAX_EXTRA_ROTATE; k++) {
+			long i = extraRotation->group_number[k];
+
+			if(i >= 0) {
+				Anglef vt1;
+				EERIE_QUAT quat1;
+				vt1.a = radians(extraRotation->group_rotate[k].g);
+				vt1.b = radians(extraRotation->group_rotate[k].b);
+				vt1.g = radians(extraRotation->group_rotate[k].a);
+				QuatFromAngles(&quat1, &vt1);
+				Quat_Copy(&rig.bones[i].quatinit, &quat1);
+			}
+		}
+	}
 
 	// Perform animation in Local space
 	Cedric_AnimateObject(eobj, animlayer);
@@ -1701,7 +1694,14 @@ void EERIEDrawAnimQuat(EERIE_3DOBJ *eobj, ANIM_USE * animlayer,const Anglef & an
 	bool isNpc = io && (io->ioflags & IO_NPC);
 	worldAngleToQuat(&rotation, angle, isNpc);
 
-	Cedric_AnimateDrawEntity(eobj, animlayer, rotation, pos, io, ftr, scale);
+
+	EERIE_EXTRA_ROTATE * extraRotation = NULL;
+
+	if(io && (io->ioflags & IO_NPC) && io->_npcdata->ex_rotate) {
+		extraRotation = io->_npcdata->ex_rotate;
+	}
+
+	Cedric_AnimateDrawEntity(eobj, animlayer, rotation, pos, io, ftr, scale, extraRotation);
 
 
 	bool isFightingNpc = io &&
