@@ -469,20 +469,18 @@ void Cedric_PrepareHalo(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj) {
 	cam_vector.y = EEsin(radians(ACTIVECAM->angle.a));
 	cam_vector.z = EEcos(radians(ACTIVECAM->angle.b)) * EEcos(radians(ACTIVECAM->angle.a));
 
-	/* Apply light on all vertices */
-	for (long i = 0; i != obj->nb_bones; i++)
-	{
-		EERIE_QUAT	qt1;
+	// Apply light on all vertices
+	for(long i = 0; i != obj->nb_bones; i++) {
+		EERIE_QUAT qt1;
 		Quat_Copy(&qt1, &obj->bones[i].quatanim);
 		TransformInverseVertexQuat(&qt1, &cam_vector, &t_vector);
 
-		/* Get light value for each vertex */
-		for (long v = 0; v != obj->bones[i].nb_idxvertices; v++)
-		{
-			EERIE_3DPAD *	inVert;
+		// Get light value for each vertex
+		for(long v = 0; v != obj->bones[i].nb_idxvertices; v++) {
 			//inVert  = &eobj->normallocal[obj->bones[i].idxvertices[v]];
-			inVert  = (EERIE_3DPAD *)&eobj->vertexlist[obj->bones[i].idxvertices[v]].norm;
-			/* Get cos angle between light and vertex norm */
+			EERIE_3DPAD * inVert = (EERIE_3DPAD *)&eobj->vertexlist[obj->bones[i].idxvertices[v]].norm;
+
+			// Get cos angle between light and vertex norm
 			eobj->vertexlist3[obj->bones[i].idxvertices[v]].norm.z =
 			    (inVert->x * t_vector.x + inVert->y * t_vector.y + inVert->z * t_vector.z);
 
