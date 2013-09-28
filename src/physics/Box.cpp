@@ -77,8 +77,7 @@ void EERIE_PHYSICS_BOX_Launch(EERIE_3DOBJ * obj, const Vec3f & pos, const Anglef
 
 	float ratio = surface * ( 1.0f / 10000 );
 
-	if (ratio > 0.8f) ratio = 0.8f;
-	else if (ratio < 0.f) ratio = 0.f;
+	ratio = clamp(ratio, 0.f, 0.8f);
 
 	ratio = 1.f - (ratio * ( 1.0f / 4 ));
 	
