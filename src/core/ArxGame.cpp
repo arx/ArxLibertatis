@@ -907,11 +907,12 @@ void ArxGame::updateConversationCamera() {
 				}
 			}
 
-		long is=main_conversation.current;
+		long is = main_conversation.current;
 
-		if (ARX_CONVERSATION_LASTIS!=is) ARX_CONVERSATION_MODE=-1;
+		if(ARX_CONVERSATION_LASTIS != is)
+			ARX_CONVERSATION_MODE = -1;
 
-		ARX_CONVERSATION_LASTIS=is;
+		ARX_CONVERSATION_LASTIS = is;
 
 		if(ARX_CONVERSATION_MODE == -1) {
 			ARX_CONVERSATION_MODE = 0;
@@ -973,17 +974,17 @@ void ArxGame::updateConversationCamera() {
 		subj.angle.g = 0.f;
 		EXTERNALVIEW = true;
 	} else {
-		ARX_CONVERSATION_MODE=-1;
-		ARX_CONVERSATION_LASTIS=-1;
+		ARX_CONVERSATION_MODE = -1;
+		ARX_CONVERSATION_LASTIS = -1;
 
 		if(LAST_CONVERSATION) {
 			AcquireLastAnim(entities.player());
-			ANIM_Set(&entities.player()->animlayer[1],entities.player()->anims[ANIM_WAIT]);
-			entities.player()->animlayer[1].flags|=EA_LOOP;
+			ANIM_Set(&entities.player()->animlayer[1], entities.player()->anims[ANIM_WAIT]);
+			entities.player()->animlayer[1].flags |= EA_LOOP;
 		}
 	}
 
-	LAST_CONVERSATION=ARX_CONVERSATION;
+	LAST_CONVERSATION = ARX_CONVERSATION;
 }
 
 void ArxGame::speechControlledCinematic() {
