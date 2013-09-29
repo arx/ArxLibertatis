@@ -5940,11 +5940,15 @@ void ArxGame::drawAllInterface() {
 			}
 		}
 
-		if(FlyingOverIO && !(player.Interface & INTER_COMBATMODE) && !GInput->actionPressed(CONTROLS_CUST_MAGICMODE) &&
-				(!PLAYER_MOUSELOOK_ON || !config.input.autoReadyWeapon))
-		{
-			if((FlyingOverIO->ioflags & IO_ITEM) && !DRAGINTER)
-				if(SecondaryInventory) {
+		if(FlyingOverIO
+		   && !(player.Interface & INTER_COMBATMODE)
+		   && !GInput->actionPressed(CONTROLS_CUST_MAGICMODE)
+		   && (!PLAYER_MOUSELOOK_ON || !config.input.autoReadyWeapon)
+		) {
+			if((FlyingOverIO->ioflags & IO_ITEM)
+			   && !DRAGINTER
+			   && SecondaryInventory
+			) {
 					Entity *temp = SecondaryInventory->io;
 
 					if(temp->ioflags & IO_SHOP) {
@@ -5992,8 +5996,7 @@ void ArxGame::drawAllInterface() {
 				float py=g_size.height() - INTERFACE_RATIO(148);
 				ARX_INTERFACE_DrawItem(ITC.Get("book"), px, py);
 
-				if (eMouseState == MOUSE_IN_BOOK_ICON)
-				{
+				if(eMouseState == MOUSE_IN_BOOK_ICON) {
 					GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 					GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 					ARX_INTERFACE_DrawItem(ITC.Get("book"), px, py);
@@ -6005,8 +6008,7 @@ void ArxGame::drawAllInterface() {
 				py=g_size.height() - INTERFACE_RATIO(113);
 				ARX_INTERFACE_DrawItem(ITC.Get("backpack"),px,py);
 
-				if (eMouseState == MOUSE_IN_INVENTORY_ICON)
-				{
+				if(eMouseState == MOUSE_IN_INVENTORY_ICON) {
 					GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 					GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 					ARX_INTERFACE_DrawItem(ITC.Get("backpack"),px,py);
@@ -6014,14 +6016,12 @@ void ArxGame::drawAllInterface() {
 				}
 
 				// Draw/Manage Steal Icon
-				if (player.Interface & INTER_STEAL)
-				{
+				if(player.Interface & INTER_STEAL) {
 					px = static_cast<float>(-lSLID_VALUE);
 					py = g_size.height() - INTERFACE_RATIO(78.f + 32);
 					ARX_INTERFACE_DrawItem(ITC.Get("steal"), px, py);
 
-					if (eMouseState == MOUSE_IN_STEAL_ICON)
-					{
+					if(eMouseState == MOUSE_IN_STEAL_ICON) {
 						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 						ARX_INTERFACE_DrawItem(ITC.Get("steal"), px, py);
@@ -6030,18 +6030,15 @@ void ArxGame::drawAllInterface() {
 				}
 
 				// Draw / Manage Pick All - Close Secondary inventory icon
-				if(!PLAYER_INTERFACE_HIDE_COUNT && TSecondaryInventory)
-				{
+				if(!PLAYER_INTERFACE_HIDE_COUNT && TSecondaryInventory) {
 					px = INTERFACE_RATIO(InventoryX) + INTERFACE_RATIO(16);
 					py = INTERFACE_RATIO_DWORD(BasicInventorySkin->m_dwHeight) - INTERFACE_RATIO(16);
 					Entity *temp = TSecondaryInventory->io;
 
-					if (temp && !(temp->ioflags & IO_SHOP) && !(temp == ioSteal))
-					{
+					if(temp && !(temp->ioflags & IO_SHOP) && !(temp == ioSteal)) {
 						ARX_INTERFACE_DrawItem(ITC.Get("inventory_pickall"), px, py);
 
-						if (eMouseState == MOUSE_IN_INVENTORY_PICKALL_ICON)
-						{
+						if(eMouseState == MOUSE_IN_INVENTORY_PICKALL_ICON) {
 							GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 							GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 							ARX_INTERFACE_DrawItem(ITC.Get("inventory_pickall"), px, py);
@@ -6053,8 +6050,7 @@ void ArxGame::drawAllInterface() {
 
 					ARX_INTERFACE_DrawItem(ITC.Get("inventory_close"), px, py);
 
-					if (eMouseState == MOUSE_IN_INVENTORY_CLOSE_ICON)
-					{
+					if(eMouseState == MOUSE_IN_INVENTORY_CLOSE_ICON) {
 						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 						ARX_INTERFACE_DrawItem(ITC.Get("inventory_close"), px, py);
@@ -6063,14 +6059,12 @@ void ArxGame::drawAllInterface() {
 				}
 
 				// Draw/Manage Advancement Icon
-				if(player.Skill_Redistribute || player.Attribute_Redistribute)
-				{
+				if(player.Skill_Redistribute || player.Attribute_Redistribute) {
 					px=g_size.width() - INTERFACE_RATIO(35) + lSLID_VALUE+GL_DECAL_ICONS;
 					py=g_size.height() - INTERFACE_RATIO(218);
 					ARX_INTERFACE_DrawItem(ITC.Get("icon_lvl_up"),px,py);		
 
-					if (eMouseState == MOUSE_IN_REDIST_ICON)
-					{
+					if(eMouseState == MOUSE_IN_REDIST_ICON) {
 						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 						ARX_INTERFACE_DrawItem(ITC.Get("icon_lvl_up"),px,py);		
@@ -6084,8 +6078,7 @@ void ArxGame::drawAllInterface() {
 					py = g_size.height() - INTERFACE_RATIO(183);
 					ARX_INTERFACE_DrawItem(ITC.Get("gold"), px, py);
 
-					if (eMouseState == MOUSE_IN_GOLD_ICON)
-					{
+					if(eMouseState == MOUSE_IN_GOLD_ICON) {
 						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 						SpecialCursor=CURSOR_INTERACTION_ON;
