@@ -378,39 +378,33 @@ float ARX_CAST_TO_INT_THEN_FLOAT( float _f )
 	return ( ( _f >= 0 ) ? floor( _f ) : ceil( _f ) );
 }
 
-
-//-----------------------------------------------------------------------------
-bool MouseInBookRect(const float x, const float y, const float cx, const float cy)
-{
-	return ((DANAEMouse.x>=(x+BOOKDECX)*Xratio)
-		&& (DANAEMouse.x<=(cx+BOOKDECX)*Xratio)
-		&& (DANAEMouse.y>=(y+BOOKDECY)*Yratio)
-	        && (DANAEMouse.y <= (cy + BOOKDECY) * Yratio));
+bool MouseInBookRect(const float x, const float y, const float cx, const float cy) {
+	return DANAEMouse.x >= (x + BOOKDECX) * Xratio
+		&& DANAEMouse.x <= (cx + BOOKDECX) * Xratio
+		&& DANAEMouse.y >= (y + BOOKDECY) * Yratio
+		&& DANAEMouse.y <= (cy + BOOKDECY) * Yratio;
 }
 
-//-----------------------------------------------------------------------------
-bool MouseInCam(EERIE_CAMERA * cam)
-{
-	return ((DANAEMouse.x>cam->clip.left) && (DANAEMouse.x<cam->clip.right) &&
-		(DANAEMouse.x>cam->clip.top) && (DANAEMouse.y<cam->clip.bottom));
+bool MouseInCam(EERIE_CAMERA * cam) {
+	return DANAEMouse.x > cam->clip.left
+		&& DANAEMouse.x < cam->clip.right
+		&& DANAEMouse.x > cam->clip.top
+		&& DANAEMouse.y < cam->clip.bottom;
 }
 
-//-----------------------------------------------------------------------------
-bool MouseInRect(const float x0, const float y0, const float x1=32, const float y1=32)
-{
-	return (	(DANAEMouse.x>=x0)
-		&&	(DANAEMouse.x<=x1)
-		&&	(DANAEMouse.y>=y0)
-		&&	(DANAEMouse.y<=y1) );
+bool MouseInRect(const float x0, const float y0, const float x1=32, const float y1=32) {
+	return DANAEMouse.x >= x0
+		&& DANAEMouse.x <= x1
+		&& DANAEMouse.y >= y0
+		&& DANAEMouse.y <= y1;
 }
 
-//-----------------------------------------------------------------------------
-bool ARX_INTERFACE_MouseInBook()
-{		
-	if ((player.Interface & INTER_MAP ) &&  (!(player.Interface & INTER_COMBATMODE))) 
-		return (MouseInBookRect(99,65,599,372));
-
-	else return false;
+bool ARX_INTERFACE_MouseInBook() {
+	if((player.Interface & INTER_MAP) && !(player.Interface & INTER_COMBATMODE)) {
+		return MouseInBookRect(99, 65, 599, 372);
+	} else {
+		return false;
+	}
 }
 
 static void ARX_INTERFACE_DrawItem(TextureContainer * tc, float x, float y, float z = 0.001f, Color col = Color::white) {
