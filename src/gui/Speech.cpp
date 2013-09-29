@@ -542,7 +542,7 @@ void ARX_SPEECH_Update() {
 		Rect::Num y = checked_range_cast<Rect::Num>(fZoneClippY);
 		Rect::Num h = checked_range_cast<Rect::Num>(fAdd);
 		Rect clippingRect(0, y+1, g_size.width(), h);
-		float iTaille = (float)ARX_UNICODE_DrawTextInRect(
+		float height = (float)ARX_UNICODE_DrawTextInRect(
 							hFontInBook,
 							10.f,
 							fDepY + fZoneClippHeight,
@@ -565,9 +565,9 @@ void ARX_SPEECH_Update() {
 		GRenderer->SetRenderState(Renderer::DepthTest, true);
 		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 
-		iTaille += (int)fZoneClippHeight;
+		height += (int)fZoneClippHeight;
 
-		if(((int)speech->fDeltaY) <= iTaille) {
+		if(((int)speech->fDeltaY) <= height) {
 			//vitesse du scroll
 			float fDTime;
 
@@ -577,7 +577,7 @@ void ARX_SPEECH_Update() {
 					duration = 4000.0f;
 				}
 
-				fDTime = ((float)iTaille * (float)framedelay) / duration; //speech->duration;
+				fDTime = ((float)height * (float)framedelay) / duration; //speech->duration;
 				float fTimeOneLine = ((float)sSize.y) * fDTime;
 
 				if(((float)speech->iTimeScroll) >= fTimeOneLine) {
@@ -589,7 +589,7 @@ void ARX_SPEECH_Update() {
 				}
 				speech->iTimeScroll	+= checked_range_cast<int>(framedelay);
 			} else {
-				fDTime = ((float)iTaille * (float)framedelay) / 4000.0f;
+				fDTime = ((float)height * (float)framedelay) / 4000.0f;
 			}
 
 			speech->fDeltaY			+= fDTime;
