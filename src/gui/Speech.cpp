@@ -565,9 +565,9 @@ void ARX_SPEECH_Update() {
 		GRenderer->SetRenderState(Renderer::DepthTest, true);
 		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 
-		height += (int)fZoneClippHeight;
+		height += fZoneClippHeight;
 
-		if(((int)speech->fDeltaY) <= height) {
+		if(speech->fDeltaY <= height) {
 			//vitesse du scroll
 			float fDTime;
 
@@ -577,19 +577,19 @@ void ARX_SPEECH_Update() {
 					duration = 4000.0f;
 				}
 
-				fDTime = ((float)height * (float)framedelay) / duration; //speech->duration;
+				fDTime = (height * framedelay) / duration; //speech->duration;
 				float fTimeOneLine = ((float)sSize.y) * fDTime;
 
 				if(((float)speech->iTimeScroll) >= fTimeOneLine) {
 					float fResteLine = (float)sSize.y - speech->fPixelScroll;
-					float fTimePlus = ((float)fResteLine * (float)framedelay) / duration;
+					float fTimePlus = (fResteLine * framedelay) / duration;
 					fDTime -= fTimePlus;
 					speech->fPixelScroll = 0.f;
 					speech->iTimeScroll = 0;
 				}
 				speech->iTimeScroll	+= checked_range_cast<int>(framedelay);
 			} else {
-				fDTime = ((float)height * (float)framedelay) / 4000.0f;
+				fDTime = (height * framedelay) / 4000.0f;
 			}
 
 			speech->fDeltaY			+= fDTime;
