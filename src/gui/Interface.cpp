@@ -5674,6 +5674,12 @@ void ARX_INTERFACE_DrawCurrentTorch() {
 extern float GLOBAL_SLOWDOWN;
 extern long SPLASH_THINGS_STAGE;
 
+void ArxGame::updateAllInterface() {
+}
+
+void ArxGame::drawAllInterfac() { //TODO Rename this
+}
+
 void ArxGame::drawAllInterface() {
 	
 	GRenderer->GetTextureStage(0)->SetMinFilter(TextureStage::FilterLinear);

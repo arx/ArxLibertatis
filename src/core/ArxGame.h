@@ -70,6 +70,8 @@ protected:
 	void manageKeyMouse();
 	void manageEditorControls();
 	void managePlayerControls();
+	void updateAllInterface();
+	void drawAllInterfac(); //TODO rename this
 	void drawAllInterface();
 	void drawAllInterfaceFinish();
 
