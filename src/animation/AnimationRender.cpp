@@ -1637,7 +1637,7 @@ void Cedric_AnimateDrawEntity(EERIE_C_DATA & rig, ANIM_USE * animlayer, const EE
 	Cedric_ConcatenateTM(rig, rotation, pos, ftr, scale);
 }
 
-void EERIEDrawAnimQuat(EERIE_3DOBJ *eobj, ANIM_USE * animlayer,const Anglef & angle, const Vec3f & pos, unsigned long time, Entity *io, bool render, bool update_movement) {
+void EERIEDrawAnimQuatUpdate(EERIE_3DOBJ *eobj, ANIM_USE * animlayer,const Anglef & angle, const Vec3f & pos, unsigned long time, Entity *io, bool update_movement) {
 
 	if(io) {
 		float speedfactor = io->basespeed + io->speed_modif;
@@ -1703,6 +1703,12 @@ void EERIEDrawAnimQuat(EERIE_3DOBJ *eobj, ANIM_USE * animlayer,const Anglef & an
 
 	Cedric_TransformVerts(eobj, pos);
 	Cedric_ViewProjectTransform(io, eobj);
+}
+
+void EERIEDrawAnimQuatRender(EERIE_3DOBJ *eobj, const Vec3f & pos, Entity *io, bool render) {
+
+	if(io && io != entities.player() && !Cedric_IO_Visible(io->pos))
+		return;
 
 	bool isFightingNpc = io &&
 						 (io->ioflags & IO_NPC) &&
@@ -1714,6 +1720,12 @@ void EERIEDrawAnimQuat(EERIE_3DOBJ *eobj, ANIM_USE * animlayer,const Anglef & an
 
 	if(render)
 		Cedric_AnimateDrawEntityRender(eobj, pos, io);
+}
+
+void EERIEDrawAnimQuat(EERIE_3DOBJ *eobj, ANIM_USE * animlayer,const Anglef & angle, const Vec3f & pos, unsigned long time, Entity *io, bool render, bool update_movement) {
+
+	EERIEDrawAnimQuatUpdate(eobj, animlayer,angle, pos, time, io, update_movement);
+	EERIEDrawAnimQuatRender(eobj, pos, io, render);
 }
 
 void AnimatedEntityUpdate(Entity * entity) {
