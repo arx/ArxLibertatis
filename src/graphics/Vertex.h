@@ -97,7 +97,6 @@ struct EERIE_VERTEX {
 	TexturedVertex vert;
 	Vec3f v;
 	Vec3f norm;
-	Vec3f vworld;
 };
 
 #endif // ARX_GRAPHICS_VERTEX_H

@@ -671,8 +671,9 @@ void DrawEERIEInter_ModelTransform(EERIE_3DOBJ *eobj, const TransformInfo &t, En
 
 		box3D.add(eobj->vertexlist3[i].v);
 
-		EE_RT(&rotatedPosition, &eobj->vertexlist[i].vworld);
-		EE_P(&eobj->vertexlist[i].vworld, &eobj->vertexlist[i].vert);
+		Vec3f tempWorld;
+		EE_RT(&rotatedPosition, &tempWorld);
+		EE_P(&tempWorld, &eobj->vertexlist[i].vert);
 
 		// Memorizes 2D Bounding Box using vertex min/max x,y pos
 		if(eobj->vertexlist[i].vert.rhw > 0.f) {
@@ -1570,8 +1571,9 @@ void Cedric_ViewProjectTransform(Entity *io, EERIE_3DOBJ *eobj) {
 
 		box3D.add(outVert->v);
 
-		EE_RT(&outVert->vert.p, &outVert->vworld);
-		EE_P(&outVert->vworld, &outVert->vert);
+		Vec3f tempWorld;
+		EE_RT(&outVert->vert.p, &tempWorld);
+		EE_P(&tempWorld, &outVert->vert);
 
 		// Updates 2D Bounding Box
 		if(outVert->vert.rhw > 0.f) {
