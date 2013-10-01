@@ -1250,12 +1250,18 @@ bool CheckIOInSphere(EERIE_SPHERE * sphere, long target, bool ignoreNoCollisionF
 
 			long count=0;
 			long step;
+			long nbv = io->obj->vertexlist.size();
 
-			if (io->obj->vertexlist.size()<150) step=1;
-			else if (io->obj->vertexlist.size()<300) step=2;
-			else if (io->obj->vertexlist.size()<600) step=4;
-			else if (io->obj->vertexlist.size()<1200) step=6;
-			else step=7;
+			if(nbv < 150)
+				step = 1;
+			else if(nbv < 300)
+				step = 2;
+			else if(nbv < 600)
+				step = 4;
+			else if(nbv < 1200)
+				step = 6;
+			else
+				step = 7;
 
 			for(size_t ii = 0; ii < vlist.size(); ii += step) {
 				if(closerThan(vlist[ii].v, sphere->origin, sr30)) {
