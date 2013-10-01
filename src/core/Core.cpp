@@ -2324,53 +2324,49 @@ void ManageCombatModeAnimationsEND()
 	ANIM_USE * useanim3=&io->animlayer[3];
 	ANIM_HANDLE ** alist=io->anims;
 
-	if (	(useanim->cur_anim)
-		&&(		(useanim->cur_anim==alist[ANIM_BARE_READY])
-			||	(useanim->cur_anim==alist[ANIM_DAGGER_READY_PART_2])
-			||	(useanim->cur_anim==alist[ANIM_DAGGER_READY_PART_1])
-			||	(useanim->cur_anim==alist[ANIM_1H_READY_PART_2])
-			||	(useanim->cur_anim==alist[ANIM_1H_READY_PART_1])
-			||	(useanim->cur_anim==alist[ANIM_2H_READY_PART_2])
-			||	(useanim->cur_anim==alist[ANIM_2H_READY_PART_1])
-			||	(useanim->cur_anim==alist[ANIM_MISSILE_READY_PART_1])
-			||	(useanim->cur_anim==alist[ANIM_MISSILE_READY_PART_2])	)
-			)
+	if(useanim->cur_anim
+		&&(		(useanim->cur_anim == alist[ANIM_BARE_READY])
+			||	(useanim->cur_anim == alist[ANIM_DAGGER_READY_PART_2])
+			||	(useanim->cur_anim == alist[ANIM_DAGGER_READY_PART_1])
+			||	(useanim->cur_anim == alist[ANIM_1H_READY_PART_2])
+			||	(useanim->cur_anim == alist[ANIM_1H_READY_PART_1])
+			||	(useanim->cur_anim == alist[ANIM_2H_READY_PART_2])
+			||	(useanim->cur_anim == alist[ANIM_2H_READY_PART_1])
+			||	(useanim->cur_anim == alist[ANIM_MISSILE_READY_PART_1])
+			||	(useanim->cur_anim == alist[ANIM_MISSILE_READY_PART_2])	)
+	) {
 		AimTime = (unsigned long)(arxtime);
+	}
 
-	if (useanim->flags & EA_ANIMEND)
-	{
+	if(useanim->flags & EA_ANIMEND) {
 		WeaponType weapontype = ARX_EQUIPMENT_GetPlayerWeaponType();
 
-		if (useanim->cur_anim &&
-			(	(useanim->cur_anim==io->anims[ANIM_BARE_UNREADY])
-			||	(useanim->cur_anim==io->anims[ANIM_DAGGER_UNREADY_PART_2])
-			||	(useanim->cur_anim==io->anims[ANIM_1H_UNREADY_PART_2])
-			||	(useanim->cur_anim==io->anims[ANIM_2H_UNREADY_PART_2])
-			||	(useanim->cur_anim==io->anims[ANIM_MISSILE_UNREADY_PART_2])	)	)
-		{
-			io->_npcdata->ex_rotate->flags|=EXTRA_ROTATE_REALISTIC;
+		if(useanim->cur_anim &&
+			(	(useanim->cur_anim == io->anims[ANIM_BARE_UNREADY])
+			||	(useanim->cur_anim == io->anims[ANIM_DAGGER_UNREADY_PART_2])
+			||	(useanim->cur_anim == io->anims[ANIM_1H_UNREADY_PART_2])
+			||	(useanim->cur_anim == io->anims[ANIM_2H_UNREADY_PART_2])
+			||	(useanim->cur_anim == io->anims[ANIM_MISSILE_UNREADY_PART_2])	)
+		) {
+			io->_npcdata->ex_rotate->flags |= EXTRA_ROTATE_REALISTIC;
 			AcquireLastAnim(io);
-			useanim->cur_anim=NULL;
+			useanim->cur_anim = NULL;
 		}
 
-		switch (weapontype)
-		{
+		switch(weapontype) {
 			case WEAPON_BARE:
-
 				// Is Weapon Ready ? In this case go to Fight Wait anim
-				if (useanim->cur_anim==alist[ANIM_BARE_READY])
-				{
+				if(useanim->cur_anim == alist[ANIM_BARE_READY]) {
 
 					AcquireLastAnim(io);
 
-					if (player.Interface & INTER_NO_STRIKE)
-					{
-						player.Interface&=~INTER_NO_STRIKE;
-						ANIM_Set(useanim,alist[ANIM_BARE_WAIT]);
-						useanim->flags|=EA_LOOP;
+					if(player.Interface & INTER_NO_STRIKE) {
+						player.Interface &= ~INTER_NO_STRIKE;
+						ANIM_Set(useanim, alist[ANIM_BARE_WAIT]);
+						useanim->flags |= EA_LOOP;
+					} else {
+						ANIM_Set(useanim, alist[ANIM_BARE_STRIKE_LEFT_START+CurrFightPos*3]);
 					}
-					else
-						ANIM_Set(useanim,alist[ANIM_BARE_STRIKE_LEFT_START+CurrFightPos*3]);
 
 					AimTime = (unsigned long)(arxtime);
 					io->isHit = false;
@@ -2379,157 +2375,122 @@ void ManageCombatModeAnimationsEND()
 			break;
 			case WEAPON_DAGGER: // DAGGER ANIMS end
 
-				if (alist[ANIM_DAGGER_READY_PART_1])
-				{
-					if (useanim->cur_anim==alist[ANIM_DAGGER_READY_PART_1])
-					{
+				if(alist[ANIM_DAGGER_READY_PART_1]) {
+					if(useanim->cur_anim == alist[ANIM_DAGGER_READY_PART_1]) {
 						AcquireLastAnim(io);
 						ARX_EQUIPMENT_AttachPlayerWeaponToHand();
-						ANIM_Set(useanim,alist[ANIM_DAGGER_READY_PART_2]);
-					}
-					else if (useanim->cur_anim==alist[ANIM_DAGGER_READY_PART_2])
-					{
+						ANIM_Set(useanim, alist[ANIM_DAGGER_READY_PART_2]);
+					} else if(useanim->cur_anim == alist[ANIM_DAGGER_READY_PART_2]) {
 						AcquireLastAnim(io);
 
-						if (player.Interface & INTER_NO_STRIKE)
-						{
-							player.Interface&=~INTER_NO_STRIKE;
-							ANIM_Set(useanim,alist[ANIM_DAGGER_WAIT]);
-							useanim->flags|=EA_LOOP;
+						if(player.Interface & INTER_NO_STRIKE) {
+							player.Interface &= ~INTER_NO_STRIKE;
+							ANIM_Set(useanim, alist[ANIM_DAGGER_WAIT]);
+							useanim->flags |= EA_LOOP;
+						} else {
+							ANIM_Set(useanim, alist[ANIM_DAGGER_STRIKE_LEFT_START+CurrFightPos*3]);
 						}
-						else
-							ANIM_Set(useanim,alist[ANIM_DAGGER_STRIKE_LEFT_START+CurrFightPos*3]);
 
 						AimTime = (unsigned long)(arxtime);
 						io->isHit = false;
-					}
-					else if (useanim->cur_anim==alist[ANIM_DAGGER_UNREADY_PART_1])
-					{
+					} else if(useanim->cur_anim == alist[ANIM_DAGGER_UNREADY_PART_1]) {
 						AcquireLastAnim(io);
 						ARX_EQUIPMENT_AttachPlayerWeaponToBack();
-						ANIM_Set(useanim,alist[ANIM_DAGGER_UNREADY_PART_2]);
+						ANIM_Set(useanim, alist[ANIM_DAGGER_UNREADY_PART_2]);
 					}
 				}
 
 			break;
 			case WEAPON_1H:	// 1H ANIMS end
 
-				if (alist[ANIM_1H_READY_PART_1])
-				{
-					if (useanim->cur_anim==alist[ANIM_1H_READY_PART_1])
-					{
+				if(alist[ANIM_1H_READY_PART_1]) {
+					if(useanim->cur_anim == alist[ANIM_1H_READY_PART_1]) {
 						AcquireLastAnim(io);
 						ARX_EQUIPMENT_AttachPlayerWeaponToHand();
-						ANIM_Set(useanim,alist[ANIM_1H_READY_PART_2]);
-					}
-					else if (useanim->cur_anim==alist[ANIM_1H_READY_PART_2])
-					{
+						ANIM_Set(useanim, alist[ANIM_1H_READY_PART_2]);
+					} else if(useanim->cur_anim == alist[ANIM_1H_READY_PART_2]) {
 						AcquireLastAnim(io);
 
-						if (player.Interface & INTER_NO_STRIKE)
-						{
-							player.Interface&=~INTER_NO_STRIKE;
-							ANIM_Set(useanim,alist[ANIM_1H_WAIT]);
-							useanim->flags|=EA_LOOP;
+						if(player.Interface & INTER_NO_STRIKE) {
+							player.Interface &= ~INTER_NO_STRIKE;
+							ANIM_Set(useanim, alist[ANIM_1H_WAIT]);
+							useanim->flags |= EA_LOOP;
+						} else {
+							ANIM_Set(useanim, alist[ANIM_1H_STRIKE_LEFT_START+CurrFightPos*3]);
 						}
-						else
-							ANIM_Set(useanim,alist[ANIM_1H_STRIKE_LEFT_START+CurrFightPos*3]);
 
 						AimTime = (unsigned long)(arxtime);
 						io->isHit = false;
-					}
-					else if (useanim->cur_anim==alist[ANIM_1H_UNREADY_PART_1])
-					{
+					} else if (useanim->cur_anim == alist[ANIM_1H_UNREADY_PART_1]) {
 						AcquireLastAnim(io);
 						ARX_EQUIPMENT_AttachPlayerWeaponToBack();
-						ANIM_Set(useanim,alist[ANIM_1H_UNREADY_PART_2]);
+						ANIM_Set(useanim, alist[ANIM_1H_UNREADY_PART_2]);
 					}
 				}
 
 			break;
 			case WEAPON_2H:	// 2H ANIMS end
 
-				if (alist[ANIM_2H_READY_PART_1])
-				{
-					if (useanim->cur_anim==alist[ANIM_2H_READY_PART_1])
-					{
+				if(alist[ANIM_2H_READY_PART_1]) {
+					if(useanim->cur_anim == alist[ANIM_2H_READY_PART_1]) {
 						AcquireLastAnim(io);
 						ARX_EQUIPMENT_AttachPlayerWeaponToHand();
-						ANIM_Set(useanim,alist[ANIM_2H_READY_PART_2]);
-					}
-					else if (useanim->cur_anim==alist[ANIM_2H_READY_PART_2])
-					{
+						ANIM_Set(useanim, alist[ANIM_2H_READY_PART_2]);
+					} else if(useanim->cur_anim == alist[ANIM_2H_READY_PART_2]) {
 						AcquireLastAnim(io);
 
-						if (player.Interface & INTER_NO_STRIKE)
-						{
-							player.Interface&=~INTER_NO_STRIKE;
-							ANIM_Set(useanim,alist[ANIM_2H_WAIT]);
-							useanim->flags|=EA_LOOP;
+						if(player.Interface & INTER_NO_STRIKE) {
+							player.Interface &= ~INTER_NO_STRIKE;
+							ANIM_Set(useanim, alist[ANIM_2H_WAIT]);
+							useanim->flags |= EA_LOOP;
+						} else {
+							ANIM_Set(useanim, alist[ANIM_2H_STRIKE_LEFT_START+CurrFightPos*3]);
 						}
-						else
-							ANIM_Set(useanim,alist[ANIM_2H_STRIKE_LEFT_START+CurrFightPos*3]);
 
 						AimTime = (unsigned long)(arxtime);
 						io->isHit = false;
-					}
-					else if (useanim->cur_anim==alist[ANIM_2H_UNREADY_PART_1])
-					{
+					} else if(useanim->cur_anim == alist[ANIM_2H_UNREADY_PART_1]) {
 						AcquireLastAnim(io);
 						ARX_EQUIPMENT_AttachPlayerWeaponToBack();
-						ANIM_Set(useanim,alist[ANIM_2H_UNREADY_PART_2]);
+						ANIM_Set(useanim, alist[ANIM_2H_UNREADY_PART_2]);
 					}
 				}
 
 			break;
 			case WEAPON_BOW:// MISSILE Weapon ANIMS end
 
-				if (alist[ANIM_MISSILE_READY_PART_1])
-				{
-					if (useanim->cur_anim==alist[ANIM_MISSILE_READY_PART_1])
-					{
+				if(alist[ANIM_MISSILE_READY_PART_1]) {
+					if(useanim->cur_anim == alist[ANIM_MISSILE_READY_PART_1]) {
 						AcquireLastAnim(io);
 						ARX_EQUIPMENT_AttachPlayerWeaponToHand();
-						ANIM_Set(useanim,alist[ANIM_MISSILE_READY_PART_2]);
-					}
-					else if (useanim->cur_anim==alist[ANIM_MISSILE_READY_PART_2])
-					{
-						if (Player_Arrow_Count()>0)
-						{
+						ANIM_Set(useanim, alist[ANIM_MISSILE_READY_PART_2]);
+					} else if(useanim->cur_anim == alist[ANIM_MISSILE_READY_PART_2]) {
+						if(Player_Arrow_Count() > 0) {
 							AcquireLastAnim(io);
 
-							if (player.Interface & INTER_NO_STRIKE)
-							{
-								player.Interface&=~INTER_NO_STRIKE;
-								ANIM_Set(useanim,alist[ANIM_MISSILE_WAIT]);
-								useanim->flags|=EA_LOOP;
+							if(player.Interface & INTER_NO_STRIKE) {
+								player.Interface &= ~INTER_NO_STRIKE;
+								ANIM_Set(useanim, alist[ANIM_MISSILE_WAIT]);
+								useanim->flags |= EA_LOOP;
+							} else {
+								ANIM_Set(useanim, alist[ANIM_MISSILE_STRIKE_PART_1]);
 							}
-							else
-								ANIM_Set(useanim,alist[ANIM_MISSILE_STRIKE_PART_1]);
 
 							io->isHit = false;
-						}
-						else
-						{
+						} else {
 							AcquireLastAnim(io);
-							ANIM_Set(useanim,alist[ANIM_MISSILE_WAIT]);
+							ANIM_Set(useanim, alist[ANIM_MISSILE_WAIT]);
 						}
 
 						EERIE_LINKEDOBJ_UnLinkObjectFromObject(io->obj, arrowobj);
-					}
-					else if (useanim->cur_anim==alist[ANIM_MISSILE_STRIKE_PART_1])
-					{
-						ANIM_Set(useanim,alist[ANIM_MISSILE_STRIKE_PART_2]);
-					}
-					else if (useanim->cur_anim==alist[ANIM_MISSILE_STRIKE_PART_2])
-					{
-						ANIM_Set(useanim,alist[ANIM_MISSILE_STRIKE_CYCLE]);
-					}
-					else if (useanim->cur_anim==alist[ANIM_MISSILE_UNREADY_PART_1])
-					{
+					} else if(useanim->cur_anim == alist[ANIM_MISSILE_STRIKE_PART_1]) {
+						ANIM_Set(useanim, alist[ANIM_MISSILE_STRIKE_PART_2]);
+					} else if(useanim->cur_anim == alist[ANIM_MISSILE_STRIKE_PART_2]) {
+						ANIM_Set(useanim, alist[ANIM_MISSILE_STRIKE_CYCLE]);
+					} else if(useanim->cur_anim == alist[ANIM_MISSILE_UNREADY_PART_1]) {
 						AcquireLastAnim(io);
 						ARX_EQUIPMENT_AttachPlayerWeaponToBack();
-						ANIM_Set(useanim,alist[ANIM_MISSILE_UNREADY_PART_2]);
+						ANIM_Set(useanim, alist[ANIM_MISSILE_UNREADY_PART_2]);
 					}
 				}
 
@@ -2537,37 +2498,31 @@ void ManageCombatModeAnimationsEND()
 		}
 
 		// Spell casting anims
-		if ((alist[ANIM_CAST]) && (useanim->cur_anim==alist[ANIM_CAST]))
-		{
+		if(alist[ANIM_CAST] && useanim->cur_anim == alist[ANIM_CAST]) {
 			AcquireLastAnim(io);
 
-			if (alist[ANIM_CAST_END])
-				ANIM_Set(useanim,alist[ANIM_CAST_END]);
-		}
-		else if ((alist[ANIM_CAST_END]) && (useanim->cur_anim==alist[ANIM_CAST_END]))
-		{
+			if(alist[ANIM_CAST_END])
+				ANIM_Set(useanim, alist[ANIM_CAST_END]);
+		} else if(alist[ANIM_CAST_END] && useanim->cur_anim == alist[ANIM_CAST_END]) {
 			AcquireLastAnim(io);
-			useanim->cur_anim=NULL;
-			player.doingmagic=0;
+			useanim->cur_anim = NULL;
+			player.doingmagic = 0;
 
-			if (WILLRETURNTOCOMBATMODE)
-			{
-				player.Interface|=INTER_COMBATMODE;
-				player.Interface|=INTER_NO_STRIKE;
+			if(WILLRETURNTOCOMBATMODE) {
+				player.Interface |= INTER_COMBATMODE;
+				player.Interface |= INTER_NO_STRIKE;
 
 				ARX_EQUIPMENT_LaunchPlayerReadyWeapon();
-				WILLRETURNTOCOMBATMODE=0;
+				WILLRETURNTOCOMBATMODE = 0;
 			}
 		}
 	}
 
 	// Is the shield off ?
-	if (useanim3->flags & EA_ANIMEND)
-	{
-		if ((io->anims[ANIM_SHIELD_END]) && (useanim3->cur_anim==io->anims[ANIM_SHIELD_END]))
-		{
+	if(useanim3->flags & EA_ANIMEND) {
+		if(io->anims[ANIM_SHIELD_END] && useanim3->cur_anim == io->anims[ANIM_SHIELD_END]) {
 			AcquireLastAnim(io);
-			useanim3->cur_anim=NULL;
+			useanim3->cur_anim = NULL;
 		}
 	}
 }
