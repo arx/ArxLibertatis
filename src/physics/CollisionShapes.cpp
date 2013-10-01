@@ -142,16 +142,14 @@ void AddCollisionSphere(EERIE_3DOBJ * obj, long idx, float radius) {
 	obj->sdata->spheres.push_back(newSphere);
 }
 
-long GetFirstChildGroup(EERIE_3DOBJ * obj, long group)
-{
-	if (obj->nbgroups < group + 2) return -1;
+long GetFirstChildGroup(EERIE_3DOBJ * obj, long group) {
 
-	for (long k = group + 1; k < obj->nbgroups; k++)
-	{
-		for (size_t i = 0; i < obj->grouplist[group].indexes.size(); i++)
-		{
-			if (obj->grouplist[group].indexes[i] == obj->grouplist[k].origin)
-			{
+	if(obj->nbgroups < group + 2)
+		return -1;
+
+	for(long k = group + 1; k < obj->nbgroups; k++) {
+		for(size_t i = 0; i < obj->grouplist[group].indexes.size(); i++) {
+			if(obj->grouplist[group].indexes[i] == obj->grouplist[k].origin) {
 				return k;
 			}
 		}
@@ -160,15 +158,11 @@ long GetFirstChildGroup(EERIE_3DOBJ * obj, long group)
 	return -1;
 }
  
-bool IsExclusiveGroupMember(EERIE_3DOBJ * obj, long idx, long group)
-{
+bool IsExclusiveGroupMember(EERIE_3DOBJ * obj, long idx, long group) {
 
-	for (long i = group + 1; i < obj->nbgroups; i++)
-	{
-		for (size_t j = 0; j < obj->grouplist[i].indexes.size(); j++)
-		{
-			if (idx == obj->grouplist[i].indexes[j])
-			{
+	for(long i = group + 1; i < obj->nbgroups; i++) {
+		for(size_t j = 0; j < obj->grouplist[i].indexes.size(); j++) {
+			if(idx == obj->grouplist[i].indexes[j]) {
 				return false;
 			}
 		}
@@ -177,8 +171,8 @@ bool IsExclusiveGroupMember(EERIE_3DOBJ * obj, long idx, long group)
 	return true;
 }
 
-float GetSphereRadiusForGroup(EERIE_3DOBJ * obj, Vec3f * center, Vec3f * dirvect, long group, float maxi)
-{
+float GetSphereRadiusForGroup(EERIE_3DOBJ * obj, Vec3f * center, Vec3f * dirvect, long group, float maxi) {
+
 	float curradius = 0.f;
 	float maxf = 0.f;
 	float div = 0.f;
@@ -191,24 +185,28 @@ float GetSphereRadiusForGroup(EERIE_3DOBJ * obj, Vec3f * center, Vec3f * dirvect
 		}
 	}
 
-	for (size_t i = 0; i < obj->grouplist[group].indexes.size(); i++)
-	{
-		if (!IsExclusiveGroupMember(obj, obj->grouplist[group].indexes[i], group)) continue;
+	for(size_t i = 0; i < obj->grouplist[group].indexes.size(); i++) {
+		if(!IsExclusiveGroupMember(obj, obj->grouplist[group].indexes[i], group))
+			continue;
 
-		if ((sel > -1) && (IsInSelection(obj, obj->grouplist[group].indexes[i], sel) >= 0)) continue;
+		if(sel > -1 && IsInSelection(obj, obj->grouplist[group].indexes[i], sel) >= 0)
+			continue;
 
 		Vec3f target = obj->vertexlist[obj->grouplist[group].indexes[i]].v;
 		float distance = fdist(*center, target);
 
-		if (distance < 2.f) continue;
+		if(distance < 2.f)
+			continue;
 
-		if (distance < maxf) continue;
+		if(distance < maxf)
+			continue;
 
 		Vec3f targvect = (target - *center) * 1.f / distance;
 		float val = dot(*dirvect, targvect);
 
 		if(fabs(val) < 1.2f) {
-			if (distance > maxi) distance = maxi;
+			if(distance > maxi)
+				distance = maxi;
 
 			curradius += distance;
 			div += 1.f;
@@ -216,12 +214,11 @@ float GetSphereRadiusForGroup(EERIE_3DOBJ * obj, Vec3f * center, Vec3f * dirvect
 		}
 	}
 
-	if (div > 0.f)
-	{
+	if(div > 0.f) {
 		curradius /= div;
 	}
 
-	return (curradius);
+	return curradius;
 }
 
 long AddVertexToVertexList(EERIE_3DOBJ * obj, Vec3f * center, long group)
