@@ -2556,13 +2556,16 @@ bool ARX_INTERACTIVE_CheckCollision(EERIE_3DOBJ * obj, long kk, long source)
 						return true;
 				} else if(io->ioflags & IO_FIX) {
 					long step;
-					long nbv;
-					nbv = io->obj->vertexlist.size();
+					long nbv = io->obj->vertexlist.size();
 
-					if (nbv < 300) step = 1;
-					else if (nbv < 600) step = 2;
-					else if (nbv < 1200) step = 4;
-					else step = 6;
+					if(nbv < 300)
+						step = 1;
+					else if(nbv < 600)
+						step = 2;
+					else if(nbv < 1200)
+						step = 4;
+					else
+						step = 6;
 
 					vector<EERIE_VERTEX> & vlist = io->obj->vertexlist3;
 
