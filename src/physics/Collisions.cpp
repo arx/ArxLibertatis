@@ -524,51 +524,46 @@ float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,Entity * ioo,long flags) {
 	EERIEPOLY * ep;
 	FAST_BKG_DATA * feg;
 	
-	for (long j=pz-rad;j<=pz+rad;j++)
-	for (long i=px-rad;i<=px+rad;i++) 
-	{
+	for(long j = pz - rad; j <= pz + rad; j++)
+	for(long i = px - rad; i <= px + rad; i++) {
 		float nearx,nearz;
-		float nearest=99999999.f;
+		float nearest = 99999999.f;
 
-		for (long num=0;num<4;num++)
-		{
+		for(long num = 0; num < 4; num++) {
 
-				nearx = static_cast<float>(i * 100);  
-				nearz = static_cast<float>(j * 100);  
+			nearx = static_cast<float>(i * 100);
+			nearz = static_cast<float>(j * 100);
 
-			if ((num==1) || (num==2))
-					nearx += 100;
+			if(num == 1 || num == 2)
+				nearx += 100;
 
-			if ((num==2) || (num==3))
-					nearz += 100; 
+			if(num == 2 || num == 3)
+				nearz += 100;
 
 			float dd = fdist(Vec2f(nearx, nearz), Vec2f(cyl->origin.x, cyl->origin.z));
 
-			if (dd<nearest)
-			{
-				nearest=dd;
+			if(dd < nearest) {
+				nearest = dd;
 			}
 		}
 
-		if (nearest>max(82.f,cyl->radius)) continue;
+		if(nearest > max(82.f, cyl->radius))
+			continue;
 
 
-		feg=&ACTIVEBKG->fastdata[i][j];
-		for (long k=0;k<feg->nbpoly;k++)
-		{
-			ep=&feg->polydata[k];	
+		feg = &ACTIVEBKG->fastdata[i][j];
+		for(long k = 0; k < feg->nbpoly; k++) {
+			ep = &feg->polydata[k];
 
-			if (ep->type & (POLY_WATER | POLY_TRANS | POLY_NOCOL) ) continue;
+			if(ep->type & (POLY_WATER | POLY_TRANS | POLY_NOCOL))
+				continue;
 
-			if (ep->min.y<anything)
-			{
+			if(ep->min.y < anything) {
+				anything= min(anything, IsPolyInCylinder(ep, cyl, flags));
 
-				anything= min(anything,IsPolyInCylinder(ep,cyl,flags));
-
-				if (POLYIN) 
-				{
-					if (ep->type & POLY_CLIMB)
-						COLLIDED_CLIMB_POLY=1;
+				if(POLYIN) {
+					if(ep->type & POLY_CLIMB)
+						COLLIDED_CLIMB_POLY = 1;
 				}
 			}
 		}
@@ -576,46 +571,43 @@ float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,Entity * ioo,long flags) {
 
 	float tempo;
 	
-	ep=CheckInPoly(cyl->origin.x,cyl->origin.y+cyl->height,cyl->origin.z,&tempo);
+	ep = CheckInPoly(cyl->origin.x, cyl->origin.y + cyl->height, cyl->origin.z, &tempo);
 	
-	if (ep) 
-		{
-			anything=min(anything,tempo);
+	if(ep) {
+		anything = min(anything, tempo);
 	}
 
-	if (!(flags & CFLAG_NO_INTERCOL))
-	{
+	if(!(flags & CFLAG_NO_INTERCOL)) {
 		Entity * io;
-		long FULL_TEST=0;
-		long AMOUNT=TREATZONE_CUR;
+		long FULL_TEST = 0;
+		long AMOUNT = TREATZONE_CUR;
 
-		if (	ioo
-			&&	(ioo->ioflags & IO_NPC) 
-			&&	(ioo->_npcdata->pathfind.flags & PATHFIND_ALWAYS))
+		if(ioo
+			&& (ioo->ioflags & IO_NPC)
+			&& (ioo->_npcdata->pathfind.flags & PATHFIND_ALWAYS))
 		{
-			FULL_TEST=1;
-			AMOUNT=entities.size();
+			FULL_TEST = 1;
+			AMOUNT = entities.size();
 		}
 
-		for (long i=0;i<AMOUNT;i++) 
-		{
+		for(long i = 0; i < AMOUNT; i++) {
 			if(FULL_TEST) {
-				io=entities[i];
+				io = entities[i];
 			} else {
-				io=treatio[i].io;
+				io = treatio[i].io;
 			}
 
-			if (	!io
-				||	(io==ioo)
-				||	(!io->obj)
+			if(!io
+				|| io == ioo
+				|| !io->obj
 				||	(	(io->show!=SHOW_FLAG_IN_SCENE)
 					||	((io->ioflags & IO_NO_COLLISIONS)  && !(flags & CFLAG_COLLIDE_NOCOL))
 					) 
 				||	distSqr(io->pos, cyl->origin) > square(1000.f)) continue;
 	
 			{
-				EERIE_CYLINDER * io_cyl=&io->physics.cyl;
-				GetIOCyl(io,io_cyl);
+				EERIE_CYLINDER * io_cyl = &io->physics.cyl;
+				GetIOCyl(io, io_cyl);
 				float dealt = 0;
 
 				if (	(io->gameFlags & GFLAG_PLATFORM)
@@ -623,53 +615,49 @@ float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,Entity * ioo,long flags) {
 					)
 				{
 					if(closerThan(Vec2f(io->pos.x, io->pos.z), Vec2f(cyl->origin.x, cyl->origin.z), 440.f + cyl->radius))
-					if (In3DBBoxTolerance(&cyl->origin,&io->bbox3D, cyl->radius+80))
+					if(In3DBBoxTolerance(&cyl->origin, &io->bbox3D, cyl->radius+80))
 					{
-						if (io->ioflags & IO_FIELD)
-						{
-							if (In3DBBoxTolerance(&cyl->origin,&io->bbox3D, cyl->radius+10))
-								anything=-99999.f;
-						}
-							else 
-						{
-						for (size_t ii=0;ii<io->obj->vertexlist3.size();ii++)
-						{
-							long res=PointInUnderCylinder(cyl,&io->obj->vertexlist3[ii].v);
+						if(io->ioflags & IO_FIELD) {
+							if(In3DBBoxTolerance(&cyl->origin, &io->bbox3D, cyl->radius + 10))
+								anything = -99999.f;
+						} else {
+						for(size_t ii = 0; ii < io->obj->vertexlist3.size(); ii++) {
+							long res = PointInUnderCylinder(cyl, &io->obj->vertexlist3[ii].v);
 
-							if (res>0)
-							{
-								if (res==2) ON_PLATFORM=1;
+							if(res > 0) {
+								if(res == 2)
+									ON_PLATFORM = 1;
 
-										anything = min(anything, io->obj->vertexlist3[ii].v.y - 10.f); 
+								anything = min(anything, io->obj->vertexlist3[ii].v.y - 10.f);
 							}			
 						}
 
-						for (size_t ii=0;ii<io->obj->facelist.size();ii++)
-						{
+						for(size_t ii = 0; ii < io->obj->facelist.size(); ii++) {
 							Vec3f c = Vec3f::ZERO;
-							float height=io->obj->vertexlist3[io->obj->facelist[ii].vid[0]].v.y;
+							float height = io->obj->vertexlist3[io->obj->facelist[ii].vid[0]].v.y;
 
-							for (long kk=0;kk<3;kk++)
-							{
-								c.x+=io->obj->vertexlist3[io->obj->facelist[ii].vid[kk]].v.x;
-								c.y+=io->obj->vertexlist3[io->obj->facelist[ii].vid[kk]].v.y;
-								height=min(height,io->obj->vertexlist3[io->obj->facelist[ii].vid[kk]].v.y);
-								c.z+=io->obj->vertexlist3[io->obj->facelist[ii].vid[kk]].v.z;
+							for(long kk = 0; kk < 3; kk++) {
+								c.x += io->obj->vertexlist3[io->obj->facelist[ii].vid[kk]].v.x;
+								c.y += io->obj->vertexlist3[io->obj->facelist[ii].vid[kk]].v.y;
+								height = min(height, io->obj->vertexlist3[io->obj->facelist[ii].vid[kk]].v.y);
+								c.z += io->obj->vertexlist3[io->obj->facelist[ii].vid[kk]].v.z;
 							}
 
-							c.x*=( 1.0f / 3 );
-							c.z*=( 1.0f / 3 );
-									c.y = io->bbox3D.min.y; 
-							long res=PointInUnderCylinder(cyl,&c);
+							c.x *= ( 1.0f / 3 );
+							c.z *= ( 1.0f / 3 );
+							c.y = io->bbox3D.min.y;
 
-							if (res>0)
-							{
-								if (res==2) ON_PLATFORM=1;
-										anything = min(anything, height); 
-									}
-									}
-								}
+							long res = PointInUnderCylinder(cyl, &c);
+
+							if(res > 0) {
+								if(res == 2)
+									ON_PLATFORM = 1;
+
+								anything = min(anything, height);
 							}
+						}
+						}
+					}
 				}
 				else if (	(io->ioflags & IO_NPC)
 						&&	(!(flags & CFLAG_NO_NPC_COLLIDE)) // MUST be checked here only (not before...)
@@ -682,42 +670,42 @@ float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,Entity * ioo,long flags) {
  						NPC_IN_CYLINDER = 1;
 						anything = min(anything, io_cyl->origin.y + io_cyl->height); 
 
-						if (!(flags & CFLAG_JUST_TEST) && ioo)
-						{							
-							if (float(arxtime) > io->collide_door_time + 500)
-							{
-								EVENT_SENDER=ioo;									
+						if(!(flags & CFLAG_JUST_TEST) && ioo) {
+							if(float(arxtime) > io->collide_door_time + 500) {
+								EVENT_SENDER = ioo;
 								io->collide_door_time = (unsigned long)(arxtime); 	
 
-								if (CollidedFromBack(io,ioo))
-									SendIOScriptEvent(io,SM_COLLIDE_NPC,"back");
+								if(CollidedFromBack(io, ioo))
+									SendIOScriptEvent(io, SM_COLLIDE_NPC, "back");
 								else
-									SendIOScriptEvent(io,SM_COLLIDE_NPC);
+									SendIOScriptEvent(io, SM_COLLIDE_NPC);
 
-								EVENT_SENDER=io;
+								EVENT_SENDER = io;
 								io->collide_door_time = (unsigned long)(arxtime); 
 
-								if (CollidedFromBack(ioo,io))
-									SendIOScriptEvent(ioo,SM_COLLIDE_NPC,"back");
+								if(CollidedFromBack(ioo, io))
+									SendIOScriptEvent(ioo, SM_COLLIDE_NPC, "back");
 								else
-									SendIOScriptEvent(ioo,SM_COLLIDE_NPC);
+									SendIOScriptEvent(ioo, SM_COLLIDE_NPC);
 							}
 
-							if ((!dealt) && ((ioo->damager_damages>0) || (io->damager_damages>0)))
-							{
+							if(!dealt && (ioo->damager_damages > 0 || io->damager_damages > 0)) {
 
-								if (ioo->damager_damages>0)
-									ARX_DAMAGES_DealDamages(i,ioo->damager_damages,ioo->index(),ioo->damager_type,&io->pos);
+								if(ioo->damager_damages > 0)
+									ARX_DAMAGES_DealDamages(i, ioo->damager_damages, ioo->index(), ioo->damager_type, &io->pos);
 
-								if (io->damager_damages>0)
-									ARX_DAMAGES_DealDamages(ioo->index(),io->damager_damages,io->index(),io->damager_type,&ioo->pos);
+								if(io->damager_damages > 0)
+									ARX_DAMAGES_DealDamages(ioo->index(), io->damager_damages, io->index(), io->damager_type, &ioo->pos);
 							}
 							
 							if(io->targetinfo == i) {
 								if(io->_npcdata->pathfind.listnb > 0) {
 									io->_npcdata->pathfind.listpos = 0;
 									io->_npcdata->pathfind.listnb = -1;
-									free(io->_npcdata->pathfind.list), io->_npcdata->pathfind.list = NULL;
+
+									free(io->_npcdata->pathfind.list);
+									io->_npcdata->pathfind.list = NULL;
+
 									SendIOScriptEvent(io, SM_NULL, "", "pathfinder_end");
 								}
 								if(!io->_npcdata->reachedtarget) {
@@ -728,141 +716,123 @@ float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,Entity * ioo,long flags) {
 							}
 						}
 					}
-				}
-				else if (io->ioflags & IO_FIX)
-				{
+				} else if(io->ioflags & IO_FIX) {
 					EERIE_SPHERE sp;
 
 					float miny = io->bbox3D.min.y;
 					float maxy = io->bbox3D.max.y;
 
-					if (maxy<= cyl->origin.y+cyl->height) goto suivant;
+					if(maxy <= cyl->origin.y + cyl->height)
+						goto suivant;
 
-					if (miny>= cyl->origin.y) goto suivant;	
+					if(miny >= cyl->origin.y)
+						goto suivant;
 
-					if (In3DBBoxTolerance(&cyl->origin,&io->bbox3D,cyl->radius+30.f))
-					{
+					if(In3DBBoxTolerance(&cyl->origin, &io->bbox3D, cyl->radius + 30.f)) {
 						vector<EERIE_VERTEX> & vlist = io->obj->vertexlist3;
 						size_t nbv = io->obj->vertexlist.size();
 
-						if (io->obj->nbgroups>10)
-						{
-							for (long ii=0;ii<io->obj->nbgroups;ii++)
-							{
+						if(io->obj->nbgroups > 10) {
+							for(long ii = 0; ii < io->obj->nbgroups; ii++) {
 								long idx = io->obj->grouplist[ii].origin;
 								sp.origin = vlist[idx].v;
 
-								if (ioo==entities.player())
-								{
+								if(ioo == entities.player()) {
 									sp.radius = 22.f; 
+								} else if(ioo->ioflags & IO_NPC) {
+									sp.radius = 26.f;
+								} else {
+									sp.radius = 22.f;
 								}
-								else if (ioo->ioflags & IO_NPC)
-									sp.radius = 26.f; 
-								else
-									sp.radius = 22.f; 
 
-								if (SphereInCylinder(cyl,&sp))
-								{
-									if (!(flags & CFLAG_JUST_TEST) && ioo)
-									{
-										if (io->gameFlags&GFLAG_DOOR)
-										{
-											
-											if (float(arxtime) > io->collide_door_time+500)
-											{
-												EVENT_SENDER=ioo;									
+								if(SphereInCylinder(cyl, &sp)) {
+									if(!(flags & CFLAG_JUST_TEST) && ioo) {
+										if(io->gameFlags & GFLAG_DOOR) {
+											if(float(arxtime) > io->collide_door_time + 500) {
+												EVENT_SENDER = ioo;
 												io->collide_door_time = (unsigned long)(arxtime); 	
-												SendIOScriptEvent(io,SM_COLLIDE_DOOR);
-												EVENT_SENDER=io;
+												SendIOScriptEvent(io, SM_COLLIDE_DOOR);
+
+												EVENT_SENDER = io;
 												io->collide_door_time = (unsigned long)(arxtime); 	
-												SendIOScriptEvent(ioo,SM_COLLIDE_DOOR);
+												SendIOScriptEvent(ioo, SM_COLLIDE_DOOR);
 											}
 										}
 
-										if (io->ioflags & IO_FIELD)
-										{
-											EVENT_SENDER=NULL;									
+										if(io->ioflags & IO_FIELD) {
+											EVENT_SENDER = NULL;
 											io->collide_door_time = (unsigned long)(arxtime); 	
-											SendIOScriptEvent(ioo,SM_COLLIDE_FIELD);
+											SendIOScriptEvent(ioo, SM_COLLIDE_FIELD);
 										}
 
-										if ((!dealt) && ((ioo->damager_damages>0) || (io->damager_damages>0)))
-										{
-											dealt=1;
+										if(!dealt && (ioo->damager_damages > 0 || io->damager_damages > 0)) {
+											dealt = 1;
 
-											if (ioo->damager_damages>0)
+											if(ioo->damager_damages > 0)
 												ARX_DAMAGES_DealDamages(i, ioo->damager_damages, ioo->index(), ioo->damager_type, &io->pos);
 
-											if (io->damager_damages>0)
+											if(io->damager_damages > 0)
 												ARX_DAMAGES_DealDamages(ioo->index(), io->damager_damages, io->index(), io->damager_type, &ioo->pos);
 										}
 									}
 
-									anything=min(anything,min(sp.origin.y-sp.radius , io->bbox3D.min.y));
+									anything = min(anything, min(sp.origin.y - sp.radius, io->bbox3D.min.y));
 								}
 							}
-						}
-						else
-						{
+						} else {
 							long step;
 							
-							if (ioo==entities.player())
+							if(ioo == entities.player())
 								sp.radius = 23.f; 
-							else if (ioo && !(ioo->ioflags & IO_NPC))
+							else if(ioo && !(ioo->ioflags & IO_NPC))
 								sp.radius = 32.f;
 							else
 								sp.radius = 25.f;
 
-							if (nbv<300)
-							{
-								step=1;
-							}
-							else if (nbv<600) step=2;
-							else if (nbv<1200) step=4;
-							else step=6;
+							if(nbv < 300)
+								step = 1;
+							else if(nbv < 600)
+								step = 2;
+							else if(nbv < 1200)
+								step = 4;
+							else
+								step = 6;
 
-							for (size_t ii=1;ii<nbv;ii+=step)
-							{
-								if (ii != (size_t)io->obj->origin)
-								{
+							for(size_t ii = 1; ii < nbv; ii += step) {
+								if(ii != (size_t)io->obj->origin) {
 									sp.origin = vlist[ii].v;
 									
-									if (SphereInCylinder(cyl,&sp))
-									{
-										if (!(flags & CFLAG_JUST_TEST) && ioo)
-										{
-											if (io->gameFlags&GFLAG_DOOR)
-											{
-												if (float(arxtime) > io->collide_door_time+500)
-												{
-													EVENT_SENDER=ioo;									
+									if(SphereInCylinder(cyl, &sp)) {
+										if(!(flags & CFLAG_JUST_TEST) && ioo) {
+											if(io->gameFlags & GFLAG_DOOR) {
+												if(float(arxtime) > io->collide_door_time + 500) {
+													EVENT_SENDER = ioo;
 													io->collide_door_time = (unsigned long)(arxtime); 	
-													SendIOScriptEvent(io,SM_COLLIDE_DOOR);
-													EVENT_SENDER=io;
+													SendIOScriptEvent(io, SM_COLLIDE_DOOR);
+
+													EVENT_SENDER = io;
 													io->collide_door_time = (unsigned long)(arxtime); 	
-													SendIOScriptEvent(ioo,SM_COLLIDE_DOOR);
+													SendIOScriptEvent(ioo, SM_COLLIDE_DOOR);
 												}
 											}
 
-										if (io->ioflags & IO_FIELD)
-										{
-											EVENT_SENDER=NULL;									
-												io->collide_door_time = (unsigned long)(arxtime); 	
-											SendIOScriptEvent(ioo,SM_COLLIDE_FIELD);
+										if(io->ioflags & IO_FIELD) {
+											EVENT_SENDER = NULL;
+											io->collide_door_time = (unsigned long)(arxtime);
+											SendIOScriptEvent(ioo, SM_COLLIDE_FIELD);
 										}
 					
-											if ((!dealt) && ioo && ((ioo->damager_damages > 0) || (io->damager_damages > 0)))
-							{
-								dealt=1;
+										if(!dealt && ioo && (ioo->damager_damages > 0 || io->damager_damages > 0)) {
+											dealt = 1;
 											
-											if (ioo->damager_damages>0)
+											if(ioo->damager_damages > 0)
 												ARX_DAMAGES_DealDamages(i, ioo->damager_damages, ioo->index(), ioo->damager_type, &io->pos);
 									
-												if (io->damager_damages>0)
-													ARX_DAMAGES_DealDamages(ioo->index(), io->damager_damages, io->index(), io->damager_type, &ioo->pos);
-											}
+											if(io->damager_damages > 0)
+												ARX_DAMAGES_DealDamages(ioo->index(), io->damager_damages, io->index(), io->damager_type, &ioo->pos);
 										}
-										anything=min(anything,min(sp.origin.y-sp.radius,io->bbox3D.min.y));
+										}
+										anything = min(anything, min(sp.origin.y - sp.radius, io->bbox3D.min.y));
 									}
 								}
 							}
@@ -875,9 +845,10 @@ float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,Entity * ioo,long flags) {
 		}
 	}
 	
-	if (anything == 999999.f) return 0.f; 
+	if(anything == 999999.f)
+		return 0.f;
 
-	anything=anything-cyl->origin.y;
+	anything = anything - cyl->origin.y;
 
 	return anything;	
 }
