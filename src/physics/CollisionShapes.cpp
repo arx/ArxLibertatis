@@ -221,23 +221,23 @@ float GetSphereRadiusForGroup(EERIE_3DOBJ * obj, Vec3f * center, Vec3f * dirvect
 	return curradius;
 }
 
-long AddVertexToVertexList(EERIE_3DOBJ * obj, Vec3f * center, long group)
-{
-	if (obj->vertexlist.empty()) return -1;
+long AddVertexToVertexList(EERIE_3DOBJ * obj, Vec3f * center, long group) {
 
-	for (size_t i = 0; i < obj->vertexlist.size(); i++)
-	{
-		if ((center->x == obj->vertexlist[i].v.x)
-				&&	(center->y == obj->vertexlist[i].v.y)
-				&&	(center->z == obj->vertexlist[i].v.z))
-		{
-			if (IsVertexIdxInGroup(obj, i, group) == false)
-			{
-				if ((obj->vertexlist[i].norm.x == 50.f)
-						&&	(obj->vertexlist[i].norm.y == 50.f)
-						&&	(obj->vertexlist[i].norm.z == 50.f)
-				   )
+	if(obj->vertexlist.empty())
+		return -1;
+
+	for(size_t i = 0; i < obj->vertexlist.size(); i++) {
+		if(center->x == obj->vertexlist[i].v.x
+		   && center->y == obj->vertexlist[i].v.y
+		   && center->z == obj->vertexlist[i].v.z
+		) {
+			if(IsVertexIdxInGroup(obj, i, group) == false) {
+				if(obj->vertexlist[i].norm.x == 50.f
+				   && obj->vertexlist[i].norm.y == 50.f
+				   && obj->vertexlist[i].norm.z == 50.f
+				) {
 					AddVertexIdxToGroup(obj, group, i);
+				}
 			}
 
 			return i;
@@ -251,8 +251,7 @@ long AddVertexToVertexList(EERIE_3DOBJ * obj, Vec3f * center, long group)
 
 	memset(&obj->vertexlist[nvertex], 0, sizeof(EERIE_VERTEX));
 
-	if (obj->pdata)
-	{
+	if(obj->pdata) {
 		obj->pdata = (PROGRESSIVE_DATA *)
 					 realloc(obj->pdata, sizeof(PROGRESSIVE_DATA) * (nvertex + 1));
 
@@ -270,20 +269,19 @@ long AddVertexToVertexList(EERIE_3DOBJ * obj, Vec3f * center, long group)
 
 	return nvertex;
 }
-void EERIE_COLLISION_SPHERES_Create(EERIE_3DOBJ * obj)
-{
-	if (obj == NULL) return;
+
+void EERIE_COLLISION_SPHERES_Create(EERIE_3DOBJ * obj) {
+
+	if(obj == NULL)
+		return;
 
 	EERIE_COLLISION_SPHERES_Release(obj);
 	obj->sdata = new COLLISION_SPHERES_DATA();
 
-	for (long k = 1; k < obj->nbgroups; k++)
-	{
-		long workon;
-		workon = GetFirstChildGroup(obj, k);
+	for(long k = 1; k < obj->nbgroups; k++) {
+		long workon = GetFirstChildGroup(obj, k);
 
 		if(workon != -1) {
-			
 			// Group origin pos
 			Vec3f center = obj->vertexlist[obj->grouplist[k].origin].v;
 			
@@ -300,32 +298,31 @@ void EERIE_COLLISION_SPHERES_Create(EERIE_3DOBJ * obj)
 			// Vector Normalization
 			dirvect *= divdist;
 	
-			while (dista >= 0.f) // Iterate along the whole distance
-			{
+			while(dista >= 0.f) { // Iterate along the whole distance
 				// Compute required radius for this group and that pos
 				float val = GetSphereRadiusForGroup(obj, &center, &dest, k, tot * 1.4f);
 
-				if (val > 0.2f)
-				{
+				if(val > 0.2f) {
 					long idx = AddVertexToVertexList(obj, &center, k);
 
-					if (idx > -1)
+					if(idx > -1)
 						AddCollisionSphere(obj, idx, val);
 
 					val *= ( 1.0f / 2 );
+				} else {
+					val = 0.15f;
 				}
-				else val = 0.15f;
 			
 				float inc = val;
 				dista -= inc;
 			
 				center += dirvect * inc;
 			}
+		} else {
+			AddCollisionSphere(obj, obj->grouplist[k].origin, obj->grouplist[k].siz * 18.f);
 		}
-		else AddCollisionSphere(obj, obj->grouplist[k].origin, obj->grouplist[k].siz * 18.f);
-	
-
 	}
 
-	if (obj->sdata->spheres.empty() == 0) EERIE_COLLISION_SPHERES_Release(obj);
+	if(obj->sdata->spheres.empty() == 0)
+		EERIE_COLLISION_SPHERES_Release(obj);
 }
