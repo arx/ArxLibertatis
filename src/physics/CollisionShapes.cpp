@@ -58,14 +58,15 @@ using std::memset;
 
 void EERIE_COLLISION_Cylinder_Create(Entity * io)
 {
-	if (io == NULL) return;
+	if(!io)
+		return;
 
 	EERIE_3DOBJ * obj = io->obj;
 
-	if (!obj) return;
+	if(!obj)
+		return;
 
-	if (obj->vertexlist.empty())
-	{
+	if(obj->vertexlist.empty()) {
 		io->physics.cyl.height = 0.f;
 		return;
 	}
@@ -75,14 +76,13 @@ void EERIE_COLLISION_Cylinder_Create(Entity * io)
 	float d = 0.f;
 	float height = 0.f;
 	for(size_t i = 0; i < obj->vertexlist.size(); i++) {
-		if((i != (size_t)obj->origin) && (EEfabs(io->physics.cyl.origin.y - obj->vertexlist[i].v.y) < 20.f)) {
+		if(i != (size_t)obj->origin && EEfabs(io->physics.cyl.origin.y - obj->vertexlist[i].v.y) < 20.f) {
 			d = max(d, dist(io->physics.cyl.origin, obj->vertexlist[i].v));
 		}
 		height = max(height, io->physics.cyl.origin.y - obj->vertexlist[i].v.y);
 	}
 
-	if ((d == 0.f) || (height == 0.f))
-	{
+	if(d == 0.f || height == 0.f) {
 		io->physics.cyl.height = 0.f;
 		return;
 	}
@@ -91,17 +91,19 @@ void EERIE_COLLISION_Cylinder_Create(Entity * io)
 	io->original_height = -height;
 	io->physics.cyl.origin = io->pos;
 	
-	if (io->original_height > -40)
-	{
+	if(io->original_height > -40) {
 		float v = (-io->original_height) * ( 1.0f / 40 );
 		io->original_radius *= (0.5f + v * 0.5f);
 	}
 
-	if (io->original_height > -40) io->original_height = -40;
+	if(io->original_height > -40)
+		io->original_height = -40;
 
-	if (io->original_height < -165) io->original_height = -165;
+	if(io->original_height < -165)
+		io->original_height = -165;
 
-	if (io->original_radius > 40.f) io->original_radius = 40.f;
+	if(io->original_radius > 40.f)
+		io->original_radius = 40.f;
 
 	io->physics.cyl.radius = io->original_radius * io->scale;
 	io->physics.cyl.height = io->original_height * io->scale;
