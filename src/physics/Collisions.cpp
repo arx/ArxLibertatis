@@ -1446,7 +1446,7 @@ bool AttemptValidCylinderPos(EERIE_CYLINDER * cyl, Entity * io, CollisionFlags f
 //flags & 32 Just Test !!!
 //flags & 64 NPC mode
 //----------------------------------------------------------------------------------------------
-bool ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip,Entity * io,float MOVE_CYLINDER_STEP, CollisionFlags flags)
+bool ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, Entity * io, float MOVE_CYLINDER_STEP, CollisionFlags flags)
 {
 //	HERMESPerf script(HPERF_PHYSICS);
 //	+5 on 15
@@ -1454,25 +1454,23 @@ bool ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip,Entity * io,float MOVE_CYLINDER
 //	memcpy(&ip->cyl.origin,&ip->targetpos,sizeof(EERIE_3D));
 //	return true;
 
-	ON_PLATFORM=0;
-	MOVING_CYLINDER=1;
-	COLLIDED_CLIMB_POLY=0;
-	DIRECT_PATH=true;
+	ON_PLATFORM = 0;
+	MOVING_CYLINDER = 1;
+	COLLIDED_CLIMB_POLY = 0;
+	DIRECT_PATH = true;
 	IO_PHYSICS test;
 
-	if (ip==NULL) 
-	{
-		MOVING_CYLINDER=0;
+	if(ip == NULL) {
+		MOVING_CYLINDER = 0;
 		return false;
 	}
 
 	float distance = dist(ip->startpos, ip->targetpos);
 
-	if (distance < 0.1f) 
-	{
-		MOVING_CYLINDER=0;
+	if(distance < 0.1f) {
+		MOVING_CYLINDER = 0;
 
-		if (distance==0.f)
+		if(distance == 0.f)
 			return true;
 
 		return false;
@@ -1481,143 +1479,126 @@ bool ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip,Entity * io,float MOVE_CYLINDER
 	Vec3f mvector = (ip->targetpos - ip->startpos) / distance;
 	long count=100;
 
-	while ((distance>0.f) && (count--))
-	{
+	while(distance > 0.f && count--) {
 		// First We compute current increment 
-		float curmovedist=min(distance,MOVE_CYLINDER_STEP);
-		distance-=curmovedist;
+		float curmovedist = min(distance, MOVE_CYLINDER_STEP);
+		distance -= curmovedist;
 
 		// Store our cylinder desc into a test struct
-		memcpy(&test,ip,sizeof(IO_PHYSICS));
+		memcpy(&test, ip, sizeof(IO_PHYSICS));
 
 		// uses test struct to simulate movement.
-		vector2D.x=mvector.x*curmovedist;
-		vector2D.y=0.f;
-		vector2D.z=mvector.z*curmovedist;
+		vector2D.x = mvector.x * curmovedist;
+		vector2D.y = 0.f;
+		vector2D.z = mvector.z * curmovedist;
 
 		test.cyl.origin.x += vector2D.x; 
-		test.cyl.origin.y+=mvector.y*curmovedist;
+		test.cyl.origin.y += mvector.y * curmovedist;
 		test.cyl.origin.z += vector2D.z; 
 		
-		if ((flags & CFLAG_CHECK_VALID_POS)
-			&& (CylinderAboveInvalidZone(&test.cyl)))
+		if((flags & CFLAG_CHECK_VALID_POS) && CylinderAboveInvalidZone(&test.cyl))
 				return false;
 
-		if (AttemptValidCylinderPos(&test.cyl,io,flags))
-		{
+		if(AttemptValidCylinderPos(&test.cyl,io,flags)) {
 			// Found without complication
-			 memcpy(ip,&test,sizeof(IO_PHYSICS)); 
-		}
-		else 
-		{
+			memcpy(ip, &test, sizeof(IO_PHYSICS));
+		} else {
 			//return false;
-			if ((mvector.x==0.f) && (mvector.z==0.f))
+			if(mvector.x == 0.f && mvector.z == 0.f)
 				return true;
 			
-			if (flags & CFLAG_CLIMBING)
-			{
+			if(flags & CFLAG_CLIMBING) {
 				memcpy(&test.cyl, &ip->cyl, sizeof(EERIE_CYLINDER)); 
-				test.cyl.origin.y+=mvector.y*curmovedist;
+				test.cyl.origin.y += mvector.y * curmovedist;
 
-				if (AttemptValidCylinderPos(&test.cyl,io,flags))
-				{
+				if(AttemptValidCylinderPos(&test.cyl, io, flags)) {
 					memcpy(ip,&test,sizeof(IO_PHYSICS)); 
 					goto oki;
 				}
 			}
 
-			DIRECT_PATH=false;
+			DIRECT_PATH = false;
 			// Must Attempt To Slide along collisions
 			Vec3f vecatt;
 			Vec3f rpos;
 			Vec3f lpos;
-			long RFOUND=0;
-			long LFOUND=0;
-			long maxRANGLE=90;
+			long RFOUND = 0;
+			long LFOUND = 0;
+			long maxRANGLE = 90;
 			float ANGLESTEPP;
 
-			if (flags & CFLAG_EASY_SLIDING)  // player sliding in fact...
-			{
-				ANGLESTEPP=10.f;	
-				maxRANGLE=70;
+			if(flags & CFLAG_EASY_SLIDING) { // player sliding in fact...
+				ANGLESTEPP = 10.f;
+				maxRANGLE = 70;
+			} else {
+				ANGLESTEPP = 30.f;
 			}
-			else ANGLESTEPP=30.f;
 
 			float rangle = ANGLESTEPP;
 			float langle = 360.f - ANGLESTEPP;
 
 
-			while (rangle<=maxRANGLE) //tries on the Right and Left sides
-			{
+			while(rangle <= maxRANGLE) { //tries on the Right and Left sides
 				memcpy(&test.cyl, &ip->cyl, sizeof(EERIE_CYLINDER)); 
-				float t=radians(MAKEANGLE(rangle));
-				YRotatePoint(&mvector,&vecatt,EEcos(t),EEsin(t));
+				float t = radians(MAKEANGLE(rangle));
+				YRotatePoint(&mvector, &vecatt, EEcos(t), EEsin(t));
 				test.cyl.origin += vecatt * curmovedist;
-				float cc=io->_npcdata->climb_count;
+				float cc = io->_npcdata->climb_count;
 
-				if (AttemptValidCylinderPos(&test.cyl, io, flags)) 
-				{
+				if(AttemptValidCylinderPos(&test.cyl, io, flags)) {
 					rpos = test.cyl.origin;
-					RFOUND=1;
+					RFOUND = 1;
+				} else {
+					io->_npcdata->climb_count = cc;
 				}
-				else io->_npcdata->climb_count=cc;
 
-				rangle+=ANGLESTEPP;
+				rangle += ANGLESTEPP;
 
 				memcpy(&test.cyl, &ip->cyl, sizeof(EERIE_CYLINDER)); 
-				t=radians(MAKEANGLE(langle));
-				YRotatePoint(&mvector,&vecatt,EEcos(t),EEsin(t));
+				t = radians(MAKEANGLE(langle));
+				YRotatePoint(&mvector, &vecatt, EEcos(t), EEsin(t));
 				test.cyl.origin += vecatt * curmovedist;
-				cc=io->_npcdata->climb_count;
+				cc = io->_npcdata->climb_count;
 
-				if (AttemptValidCylinderPos(&test.cyl, io, flags))
-				{
+				if(AttemptValidCylinderPos(&test.cyl, io, flags)) {
 					lpos = test.cyl.origin;
-					LFOUND=1;
+					LFOUND = 1;
+				} else {
+					io->_npcdata->climb_count = cc;
 				}
-				else io->_npcdata->climb_count=cc;
 
-				langle-=ANGLESTEPP;
+				langle -= ANGLESTEPP;
 
-				if ((RFOUND) || (LFOUND)) break;
+				if(RFOUND || LFOUND)
+					break;
 			}
 			
-			if ((LFOUND) && (RFOUND))
-			{
-				langle=360.f-langle;
+			if(LFOUND && RFOUND) {
+				langle = 360.f - langle;
 
-				if (langle<rangle) 
-				{
+				if(langle < rangle) {
 					ip->cyl.origin = lpos;
 					distance -= curmovedist;
-				}
-				else
-				{
+				} else {
 					ip->cyl.origin = rpos;
 					distance -= curmovedist;
 				}
-			}
-			else if (LFOUND)
-			{
+			} else if(LFOUND) {
 				ip->cyl.origin = lpos;
 				distance -= curmovedist; 
-			}
-			else if (RFOUND)
-			{
+			} else if(RFOUND) {
 				ip->cyl.origin = rpos;
 				distance -= curmovedist; 
-			}
-			else  //stopped
-			{ 
+			} else {
+				//stopped
 				ip->velocity = Vec3f::ZERO;
-				MOVING_CYLINDER=0;
+				MOVING_CYLINDER = 0;
 				return false;
 			}
 		}
 
-		if (flags & CFLAG_NO_HEIGHT_MOD)
-		{
-			if (EEfabs(ip->startpos.y - ip->cyl.origin.y)>30.f)
+		if(flags & CFLAG_NO_HEIGHT_MOD) {
+			if(EEfabs(ip->startpos.y - ip->cyl.origin.y) > 30.f)
 				return false;
 		}
 
@@ -1625,7 +1606,7 @@ bool ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip,Entity * io,float MOVE_CYLINDER
 		;
 	}
 
-	MOVING_CYLINDER=0;
+	MOVING_CYLINDER = 0;
 	return true;
 }
 
