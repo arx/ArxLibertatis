@@ -1413,7 +1413,8 @@ void ARX_NPC_SpawnMember(Entity * ioo, long num) {
 						nouvo->vertexlist[count].v = from->vertexlist3[from->facelist[k].vid[j]].v;
 						nouvo->vertexlist[count].v -= ioo->pos;
 						nouvo->vertexlist[count].vert.p = nouvo->vertexlist[count].v;
-						memcpy(&nouvo->vertexlist3[count], &nouvo->vertexlist[count], sizeof(EERIE_VERTEX));
+
+						nouvo->vertexlist3[count] = nouvo->vertexlist[count];
 					} else {
 						equival[from->facelist[k].vid[j]] = -1;
 					}
@@ -1530,7 +1531,7 @@ void ARX_NPC_SpawnMember(Entity * ioo, long num) {
 	io->angle = ioo->angle;
 	
 	io->gameFlags = ioo->gameFlags;
-	memcpy(&io->halo, &ioo->halo, sizeof(IO_HALO));
+	io->halo = ioo->halo;
 	ioo->halo.dynlight = -1;
 	io->ioflags |= IO_MOVABLE;
 	
