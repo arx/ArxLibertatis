@@ -55,9 +55,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 using std::memset;
 
-//*************************************************************************************
-// Adds a neighboring vertex to a vertex
-//*************************************************************************************
+/*!
+ * \brief Adds a neighboring vertex to a vertex
+ */
 void AddNeighBoringVertex(EERIE_3DOBJ * obj, long i, long b) {
 	
 	if(i == b)
@@ -80,9 +80,9 @@ void AddNeighBoringVertex(EERIE_3DOBJ * obj, long i, long b) {
 	obj->ndata[i].nb_Nvertex++;
 }
 
-//*************************************************************************************
-// Adds a neighboring face to a vertex
-//*************************************************************************************
+/*!
+ * \brief Adds a neighboring face to a vertex
+ */
 void AddNeighBoringFace(EERIE_3DOBJ * obj, long i, long b) {
 
 	if(obj->ndata[i].Nfaces == NULL) {
@@ -102,19 +102,18 @@ void AddNeighBoringFace(EERIE_3DOBJ * obj, long i, long b) {
 	obj->ndata[i].nb_Nfaces++;
 }
 
-//*************************************************************************************
-// Computes collapse cost for an edge
-// Conditions for collapsability:
-//		.Distance (The shorter the better)
-//		.Surface of the Collapsed sides (The lesser the better)
-//		.Angle Between Faces on each side of Collapsed Edge (The lesser angular diff, The better)
-//		.UV/Texture (Requires same texture map, and contiguous UVs (Quite Arbitrary)
-//*************************************************************************************
- 
-//*************************************************************************************
-// search all neighboring edges for "least-folding-cost" edge
-//*************************************************************************************
- 
+/*!
+ * \brief Computes collapse cost for an edge
+ *
+ * search all neighboring edges for "least-folding-cost" edge
+ *
+ * Computes collapse cost for an edge
+ * Conditions for collapsability:
+ *		.Distance (The shorter the better)
+ *		.Surface of the Collapsed sides (The lesser the better)
+ *		.Angle Between Faces on each side of Collapsed Edge (The lesser angular diff, The better)
+ *		.UV/Texture (Requires same texture map, and contiguous UVs (Quite Arbitrary)
+ */
 void CreateNeighbours(EERIE_3DOBJ * obj) {
 
 	if(obj->ndata == NULL) {
