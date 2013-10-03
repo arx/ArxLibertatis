@@ -1454,7 +1454,7 @@ void Cedric_BlendAnimation(EERIE_C_DATA & rig, AnimationBlendStatus * animBlend)
 /*!
  * Apply transformations on all bones
  */
-static void Cedric_ConcatenateTM(EERIE_C_DATA & rig, const EERIE_QUAT & rotation, const Vec3f & pos, const Vec3f & ftr, float g_scale) {
+static void Cedric_ConcatenateTM(EERIE_C_DATA & rig, const TransformInfo & t) {
 
 	for(int i = 0; i != rig.nb_bones; i++) {
 		EERIE_BONE * bone = &rig.bones[i];
@@ -1473,16 +1473,16 @@ static void Cedric_ConcatenateTM(EERIE_C_DATA & rig, const EERIE_QUAT & rotation
 			bone->anim.scale = (bone->init.scale + Vec3f::ONE) * parent->anim.scale;
 		} else { // Root Bone
 			// Rotation
-			bone->anim.quat = Quat_Multiply(rotation, bone->init.quat);
+			bone->anim.quat = Quat_Multiply(t.rotation, bone->init.quat);
 
 			// Translation
-			Vec3f vt1 = bone->init.trans + ftr;
-			bone->anim.trans = TransformVertexQuat(rotation, vt1);
-			bone->anim.trans *= g_scale;
-			bone->anim.trans += pos;
+			Vec3f vt1 = bone->init.trans + t.offset;
+			bone->anim.trans = TransformVertexQuat(t.rotation, vt1);
+			bone->anim.trans *= t.scale;
+			bone->anim.trans += t.pos;
 
 			// Compute Global Object Scale AND Global Animation Scale
-			bone->anim.scale = (bone->init.scale + Vec3f::ONE) * g_scale;
+			bone->anim.scale = (bone->init.scale + Vec3f::ONE) * t.scale;
 		}
 	}
 }
@@ -1568,7 +1568,7 @@ void Cedric_ViewProjectTransform(Entity *io, EERIE_3DOBJ *eobj) {
 /*!
  * \brief Apply animation and draw object
  */
-void Cedric_AnimateDrawEntity(EERIE_C_DATA & rig, ANIM_USE * animlayer, const EERIE_QUAT & rotation, const Vec3f & pos, Vec3f & ftr, float scale, EERIE_EXTRA_ROTATE * extraRotation, AnimationBlendStatus * animBlend, EERIE_EXTRA_SCALE & extraScale) {
+void Cedric_AnimateDrawEntity(EERIE_C_DATA & rig, ANIM_USE * animlayer, EERIE_EXTRA_ROTATE * extraRotation, AnimationBlendStatus * animBlend, EERIE_EXTRA_SCALE & extraScale) {
 
 	// Initialize the rig
 	for(long i = 0; i != rig.nb_bones; i++) {
@@ -1612,9 +1612,6 @@ void Cedric_AnimateDrawEntity(EERIE_C_DATA & rig, ANIM_USE * animlayer, const EE
 			rig.bones[i].last = rig.bones[i].init;
 		}
 	}
-
-	// Build skeleton in Object Space
-	Cedric_ConcatenateTM(rig, rotation, pos, ftr, scale);
 }
 
 void EERIEDrawAnimQuatUpdate(EERIE_3DOBJ *eobj, ANIM_USE * animlayer,const Anglef & angle, const Vec3f & pos, unsigned long time, Entity *io, bool update_movement) {
@@ -1679,7 +1676,11 @@ void EERIEDrawAnimQuatUpdate(EERIE_3DOBJ *eobj, ANIM_USE * animlayer,const Angle
 	arx_assert(eobj->c_data);
 	EERIE_C_DATA & skeleton = *eobj->c_data;
 
-	Cedric_AnimateDrawEntity(skeleton, animlayer, rotation, pos, ftr, scale, extraRotation, animBlend, extraScale);
+	Cedric_AnimateDrawEntity(skeleton, animlayer, extraRotation, animBlend, extraScale);
+
+	// Build skeleton in Object Space
+	TransformInfo t(pos, rotation, scale, ftr);
+	Cedric_ConcatenateTM(skeleton, t);
 
 	Cedric_TransformVerts(eobj, pos);
 	Cedric_ViewProjectTransform(io, eobj);
