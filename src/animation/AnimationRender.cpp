@@ -694,12 +694,7 @@ void DrawEERIEInter_ModelTransform(EERIE_3DOBJ *eobj, const TransformInfo &t, En
 	}
 }
 
-void DrawEERIEInter_Render(EERIE_3DOBJ *eobj, const TransformInfo &t, Entity *io) {
-
-	float invisibility = Cedric_GetInvisibility(io);
-
-	if(!io && INVISIBILITY_OVERRIDE != 0.f)
-		invisibility = INVISIBILITY_OVERRIDE;
+void DrawEERIEInter_Render(EERIE_3DOBJ *eobj, const TransformInfo &t, Entity *io, float invisibility) {
 
 	ColorMod colorMod;
 	colorMod.updateFromEntity(io, !io);
@@ -955,7 +950,12 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, const TransformInfo &t, Entity *io, bool 
 	if(!forceDraw && ARX_SCENE_PORTAL_ClipIO(io, t.pos))
 		return;
 
-	DrawEERIEInter_Render(eobj, t, io);
+	float invisibility = Cedric_GetInvisibility(io);
+
+	if(!io && INVISIBILITY_OVERRIDE != 0.f)
+		invisibility = INVISIBILITY_OVERRIDE;
+
+	DrawEERIEInter_Render(eobj, t, io, invisibility);
 }
 
 
