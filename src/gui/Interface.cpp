@@ -6552,16 +6552,17 @@ long Manage3DCursor(long flags)
 
 			if(SPECIAL_DRAGINTER_RENDER) {
 			if(EEfabs(lastanything) > EEfabs(height)) {
-				float old = io->invisibility;
-				io->invisibility = 0.5f;
-
 				TransformInfo t(collidpos, rotation, io->scale);
-				DrawEERIEInter(io->obj, t, io);
 
-				io->invisibility = old;
+				static const float invisibility = 0.5f;
+
+				DrawEERIEInter(io->obj, t, io, false, invisibility);
 			} else {
 				TransformInfo t(pos, rotation, io->scale);
-				DrawEERIEInter(io->obj, t, io);
+
+				float invisibility = Cedric_GetInvisibility(io);
+
+				DrawEERIEInter(io->obj, t, io, false, invisibility);
 			}
 			}
 		} else {

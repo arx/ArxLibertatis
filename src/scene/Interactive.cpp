@@ -2996,7 +2996,10 @@ void RenderInter() {
 						arx_assert(io->obj->point0 == Vec3f::ZERO);
 
 						TransformInfo t(io->pos, rotation, io->scale, io->obj->pbox->vert[0].initpos);
-						DrawEERIEInter(io->obj, t, io);
+
+						float invisibility = Cedric_GetInvisibility(io);
+
+						DrawEERIEInter(io->obj, t, io, false, invisibility);
 					} else {
 						EERIE_QUAT rotation;
 						Quat_Init(&rotation);
@@ -3004,7 +3007,10 @@ void RenderInter() {
 						worldAngleToQuat(&rotation, temp);
 
 						TransformInfo t(io->pos, rotation, io->scale);
-						DrawEERIEInter(io->obj, t, io);
+
+						float invisibility = Cedric_GetInvisibility(io);
+
+						DrawEERIEInter(io->obj, t, io, false, invisibility);
 					}
 				}
 			}

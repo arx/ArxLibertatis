@@ -936,7 +936,7 @@ void DrawEERIEInter_Render(EERIE_3DOBJ *eobj, const TransformInfo &t, Entity *io
 	}
 }
 
-void DrawEERIEInter(EERIE_3DOBJ *eobj, const TransformInfo &t, Entity *io, bool forceDraw) {
+void DrawEERIEInter(EERIE_3DOBJ *eobj, const TransformInfo &t, Entity *io, bool forceDraw, float invisibility) {
 
 	if(!eobj)
 		return;
@@ -949,11 +949,6 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, const TransformInfo &t, Entity *io, bool 
 
 	if(!forceDraw && ARX_SCENE_PORTAL_ClipIO(io, t.pos))
 		return;
-
-	float invisibility = Cedric_GetInvisibility(io);
-
-	if(!io && INVISIBILITY_OVERRIDE != 0.f)
-		invisibility = INVISIBILITY_OVERRIDE;
 
 	DrawEERIEInter_Render(eobj, t, io, invisibility);
 }
@@ -1296,13 +1291,6 @@ void Cedric_AnimateDrawEntityRender(EERIE_3DOBJ *eobj, const Vec3f & pos, Entity
 		)
 			continue;
 
-		// Store item invisibility
-		float old = 0.f;
-		if(link.io) {
-			old = link.io->invisibility;
-			link.io->invisibility = invisibility;
-		}
-
 		link.modinfo.link_position = link.obj->vertexlist[link.lidx2].v - link.obj->vertexlist[link.obj->origin].v;
 		link.modinfo.rot = Anglef::ZERO;
 
@@ -1312,11 +1300,8 @@ void Cedric_AnimateDrawEntityRender(EERIE_3DOBJ *eobj, const Vec3f & pos, Entity
 		float scale = link.io ? link.io->scale : 1.f;
 
 		TransformInfo t(posi, quat, scale, link.modinfo.link_position);
-		DrawEERIEInter(link.obj, t, link.io, true);
 
-		// Restore item invisibility
-		if(link.io)
-			link.io->invisibility = old;
+		DrawEERIEInter(link.obj, t, link.io, true, invisibility);
 	}
 }
 
