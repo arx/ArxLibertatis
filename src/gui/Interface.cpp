@@ -129,7 +129,7 @@ extern void InitTileLights();
 
 long Manage3DCursor(long flags); // flags & 1 == simulation
 long IN_BOOK_DRAW=0;
-extern float INVISIBILITY_OVERRIDE;
+
 //-----------------------------------------------------------------------------
 struct ARX_INTERFACE_HALO_STRUCT
 {
@@ -5396,10 +5396,11 @@ void ARX_INTERFACE_ManageOpenedBook()
 		long ti=Project.improve;
 		Project.improve=0;
 
-		INVISIBILITY_OVERRIDE=entities.player()->invisibility;
 
-		if (INVISIBILITY_OVERRIDE>0.5f)
-			INVISIBILITY_OVERRIDE=0.5f;
+		float invisibility = entities.player()->invisibility;
+
+		if(invisibility > 0.5f)
+			invisibility = 0.5f;
 
 		IN_BOOK_DRAW=1;
 		std::vector<EERIE_VERTEX> vertexlist = entities.player()->obj->vertexlist3;
@@ -5407,9 +5408,8 @@ void ARX_INTERFACE_ManageOpenedBook()
 		arx_assert(player.bookAnimation[0].cur_anim);
 
 		EERIEDrawAnimQuat(entities.player()->obj, player.bookAnimation, ePlayerAngle, pos,
-						  checked_range_cast<unsigned long>(Original_framedelay), NULL);
+						  checked_range_cast<unsigned long>(Original_framedelay), NULL, true, true, invisibility);
 
-		INVISIBILITY_OVERRIDE=0;
 		IN_BOOK_DRAW=0;
 
 		if(ARXmenu.currentmode == AMCM_NEWQUEST) {

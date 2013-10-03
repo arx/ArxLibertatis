@@ -2973,7 +2973,9 @@ void RenderInter() {
 
 			bool render = !ARX_SCENE_PORTAL_Basic_ClipIO(io);
 
-			EERIEDrawAnimQuat(io->obj, io->animlayer, temp, pos, diff, io, render);
+			float invisibility = Cedric_GetInvisibility(io);
+
+			EERIEDrawAnimQuat(io->obj, io->animlayer, temp, pos, diff, io, render, true, invisibility);
 
 		} else {
 			if(ARX_SCENE_PORTAL_Basic_ClipIO(io))

@@ -277,8 +277,6 @@ extern TextureContainer TexSpecialColor;
 
 extern long ZMAPMODE;
 
-float INVISIBILITY_OVERRIDE=0.f;
-extern float INVISIBILITY_OVERRIDE;
 extern bool EXTERNALVIEW;
 
 void EE_RT(Vec3f * in, Vec3f * out);
@@ -1248,12 +1246,7 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity *
 	}
 }
 
-void Cedric_AnimateDrawEntityRender(EERIE_3DOBJ *eobj, const Vec3f & pos, Entity *io) {
-
-	float invisibility = Cedric_GetInvisibility(io);
-
-	if(!io && INVISIBILITY_OVERRIDE != 0.f)
-		invisibility = INVISIBILITY_OVERRIDE;
+void Cedric_AnimateDrawEntityRender(EERIE_3DOBJ *eobj, const Vec3f & pos, Entity *io, float invisibility) {
 
 	EERIE_C_DATA *obj = eobj->c_data;
 
@@ -1692,7 +1685,7 @@ void EERIEDrawAnimQuatUpdate(EERIE_3DOBJ *eobj, ANIM_USE * animlayer,const Angle
 	Cedric_ViewProjectTransform(io, eobj);
 }
 
-void EERIEDrawAnimQuatRender(EERIE_3DOBJ *eobj, const Vec3f & pos, Entity *io, bool render) {
+void EERIEDrawAnimQuatRender(EERIE_3DOBJ *eobj, const Vec3f & pos, Entity *io, bool render, float invisibility) {
 
 	if(io && io != entities.player() && !Cedric_IO_Visible(io->pos))
 		return;
@@ -1706,23 +1699,23 @@ void EERIEDrawAnimQuatRender(EERIE_3DOBJ *eobj, const Vec3f & pos, Entity *io, b
 		return;
 
 	if(render)
-		Cedric_AnimateDrawEntityRender(eobj, pos, io);
+		Cedric_AnimateDrawEntityRender(eobj, pos, io, invisibility);
 }
 
-void EERIEDrawAnimQuat(EERIE_3DOBJ *eobj, ANIM_USE * animlayer,const Anglef & angle, const Vec3f & pos, unsigned long time, Entity *io, bool render, bool update_movement) {
+void EERIEDrawAnimQuat(EERIE_3DOBJ *eobj, ANIM_USE * animlayer,const Anglef & angle, const Vec3f & pos, unsigned long time, Entity *io, bool render, bool update_movement, float invisibility) {
 
 	EERIEDrawAnimQuatUpdate(eobj, animlayer,angle, pos, time, io, update_movement);
-	EERIEDrawAnimQuatRender(eobj, pos, io, render);
+	EERIEDrawAnimQuatRender(eobj, pos, io, render, invisibility);
 }
 
 void AnimatedEntityUpdate(Entity * entity) {
 
 	EERIEDrawAnimQuat(entity->obj, entity->animlayer, entity->angle,
-		entity->pos, Original_framedelay, entity, false, true);
+		entity->pos, Original_framedelay, entity, false, true, 0.f);
 }
 
-void AnimatedEntityRender(Entity * entity) {
+void AnimatedEntityRender(Entity * entity, float invisibility) {
 
 	EERIEDrawAnimQuat(entity->obj, entity->animlayer, entity->angle,
-		entity->pos, 0, entity, true, false);
+		entity->pos, 0, entity, true, false, invisibility);
 }
