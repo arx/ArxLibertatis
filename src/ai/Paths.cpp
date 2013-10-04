@@ -856,6 +856,7 @@ void ARX_THROWN_OBJECT_Render() {
 		TransformInfo t(thrownObj->position, thrownObj->quat);
 		// Object has to be retransformed because arrows share the same object
 		DrawEERIEInter_ModelTransform(thrownObj->obj, t, NULL);
+		DrawEERIEInter_ViewProjectTransform(thrownObj->obj, NULL);
 		DrawEERIEInter_Render(thrownObj->obj, t, NULL);
 
 		if(thrownObj->pRuban) {

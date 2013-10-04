@@ -90,6 +90,8 @@ struct TransformInfo {
 };
 
 void DrawEERIEInter_ModelTransform(EERIE_3DOBJ *eobj, const TransformInfo &t, Entity *io);
+void DrawEERIEInter_ViewProjectTransform(EERIE_3DOBJ *eobj, Entity *io);
+
 void DrawEERIEInter_Render(EERIE_3DOBJ *eobj, const TransformInfo &t, Entity *io, float invisibility = 0.f);
 void DrawEERIEInter(EERIE_3DOBJ *eobj, const TransformInfo & t, Entity *io, bool forceDraw = false, float invisibility = 0.f);
 

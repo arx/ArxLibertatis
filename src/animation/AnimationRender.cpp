@@ -652,8 +652,6 @@ void DrawEERIEInter_ModelTransform(EERIE_3DOBJ *eobj, const TransformInfo &t, En
 	EERIE_3D_BBOX box3D;
 	box3D.reset();
 
-	BBOX2D.reset();
-
 	for(size_t i = 0 ; i < eobj->vertexlist.size(); i++) {
 
 		Vec3f temp = eobj->vertexlist[i].v;
@@ -668,9 +666,21 @@ void DrawEERIEInter_ModelTransform(EERIE_3DOBJ *eobj, const TransformInfo &t, En
 		eobj->vertexlist3[i].v = rotatedPosition += t.pos;
 
 		box3D.add(eobj->vertexlist3[i].v);
+	}
+
+	if(io) {
+		io->bbox3D = box3D;
+	}
+}
+
+void DrawEERIEInter_ViewProjectTransform(EERIE_3DOBJ *eobj, Entity *io) {
+
+	BBOX2D.reset();
+
+	for(size_t i = 0 ; i < eobj->vertexlist.size(); i++) {
 
 		Vec3f tempWorld;
-		EE_RT(&rotatedPosition, &tempWorld);
+		EE_RT(&eobj->vertexlist3[i].v, &tempWorld);
 		EE_P(&tempWorld, &eobj->vertexlist[i].vert);
 
 		// Memorizes 2D Bounding Box using vertex min/max x,y pos
@@ -687,7 +697,6 @@ void DrawEERIEInter_ModelTransform(EERIE_3DOBJ *eobj, const TransformInfo &t, En
 	}
 
 	if(io) {
-		io->bbox3D = box3D;
 		io->bbox2D = BBOX2D;
 	}
 }
@@ -944,6 +953,7 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, const TransformInfo &t, Entity *io, bool 
 		return;
 
 	DrawEERIEInter_ModelTransform(eobj, t, io);
+	DrawEERIEInter_ViewProjectTransform(eobj, io);
 
 	if(!forceDraw && ARX_SCENE_PORTAL_ClipIO(io, t.pos))
 		return;
