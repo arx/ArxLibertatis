@@ -1299,14 +1299,12 @@ void Cedric_AnimateDrawEntityRender(EERIE_3DOBJ *eobj, const Vec3f & pos, Entity
 		)
 			continue;
 
-		EERIE_QUAT & quat = eobj->c_data->bones[link.lgroup].anim.quat;
-		Vec3f & posi = eobj->vertexlist3[link.lidx].v;
 
-		float scale = link.io ? link.io->scale : 1.f;
-
-		Vec3f linkPosition = link.obj->vertexlist[link.lidx2].v - link.obj->vertexlist[link.obj->origin].v;
-
-		TransformInfo t(posi, quat, scale, linkPosition);
+		TransformInfo t(
+			eobj->vertexlist3[link.lidx].v,
+			eobj->c_data->bones[link.lgroup].anim.quat,
+			link.io ? link.io->scale : 1.f,
+			link.obj->vertexlist[link.lidx2].v - link.obj->vertexlist[link.obj->origin].v);
 
 		DrawEERIEInter(link.obj, t, link.io, true, invisibility);
 	}
