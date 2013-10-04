@@ -228,21 +228,20 @@ inline float IsPolyInCylinder(EERIEPOLY *ep, EERIE_CYLINDER * cyl,long flag)
 	return anything;
 }
 
-//-----------------------------------------------------------------------------
-inline bool IsPolyInSphere(EERIEPOLY *ep, EERIE_SPHERE * sph)
-{
-	if ((!ep) || (!sph)) return false;
+inline bool IsPolyInSphere(EERIEPOLY *ep, EERIE_SPHERE * sph) {
 
-	if (ep->area<100.f) return false;
+	if(!ep || !sph)
+		return false;
+
+	if(ep->area < 100.f)
+		return false;
 
 	long to = (ep->type & POLY_QUAD) ? 4 : 3;
 
-	long r=to-1;
+	long r = to - 1;
 	Vec3f center;
 
-	for (long n=0;n<to;n++)
-	{
-		
+	for(long n = 0; n < to; n++) {
 		if(ep->area > 2000.f) {
 			center = (ep->v[n].p + ep->v[r].p) * 0.5f;
 			if(sph->contains(center)) {	
@@ -270,37 +269,33 @@ inline bool IsPolyInSphere(EERIEPOLY *ep, EERIE_SPHERE * sph)
 
 		r++;
 
-		if (r>=to) r=0;	
+		if(r >= to)
+			r = 0;
 	}
 
 	return false;
 }
 
-//-----------------------------------------------------------------------------
-bool IsCollidingIO(Entity * io,Entity * ioo)
-{
-	if (   (ioo!=NULL)
-		&& (io!=ioo)
-		&& !(ioo->ioflags & IO_NO_COLLISIONS)
-		&& (ioo->show==SHOW_FLAG_IN_SCENE) 
-		&& (ioo->obj)
-		)
-	{
-		if (ioo->ioflags & IO_NPC)
-		{
-			float old=ioo->physics.cyl.radius;
-			ioo->physics.cyl.radius+=25.f;
+bool IsCollidingIO(Entity * io,Entity * ioo) {
 
-			for (size_t j=0;j<io->obj->vertexlist3.size();j++)
-			{
-				if (PointInCylinder(&ioo->physics.cyl,&io->obj->vertexlist3[j].v)) 
-				{
-					ioo->physics.cyl.radius=old;
+	if(ioo != NULL
+	   && io != ioo
+	   && !(ioo->ioflags & IO_NO_COLLISIONS)
+	   && ioo->show == SHOW_FLAG_IN_SCENE
+	   && ioo->obj
+	) {
+		if(ioo->ioflags & IO_NPC) {
+			float old = ioo->physics.cyl.radius;
+			ioo->physics.cyl.radius += 25.f;
+
+			for(size_t j = 0; j < io->obj->vertexlist3.size(); j++) {
+				if(PointInCylinder(&ioo->physics.cyl, &io->obj->vertexlist3[j].v)) {
+					ioo->physics.cyl.radius = old;
 					return true;
 				}
 			}
 
-			ioo->physics.cyl.radius=old;
+			ioo->physics.cyl.radius = old;
 		}
 	}
 	
