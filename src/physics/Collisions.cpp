@@ -989,11 +989,10 @@ bool CheckEverythingInSphere(EERIE_SPHERE * sphere, long source, long targ, std:
 	return vreturn;	
 }
 
-//-----------------------------------------------------------------------------
 EERIEPOLY * CheckBackgroundInSphere(EERIE_SPHERE * sphere) //except source...
 {
 	long rad = sphere->radius*ACTIVEBKG->Xmul;
-	rad+=2;
+	rad += 2;
 
 	long px = sphere->origin.x * ACTIVEBKG->Xmul;
 	long pz = sphere->origin.z * ACTIVEBKG->Zmul;
@@ -1003,22 +1002,17 @@ EERIEPOLY * CheckBackgroundInSphere(EERIE_SPHERE * sphere) //except source...
 	long spz = std::max(pz - rad, 0L);
 	long epz = std::min(pz + rad, ACTIVEBKG->Zsize - 1L);
 
-	EERIEPOLY * ep;
-	FAST_BKG_DATA * feg;
+	for(long j = spz; j <= epz; j++)
+	for(long i = spx; i <= epx; i++) {
+		FAST_BKG_DATA * feg = &ACTIVEBKG->fastdata[i][j];
 
-	for (long j=spz;j<=epz;j++)
-	for (long i=spx;i<=epx;i++) 
-	{
-		feg=&ACTIVEBKG->fastdata[i][j];
+		for(long k = 0; k < feg->nbpoly; k++) {
+			EERIEPOLY * ep = &feg->polydata[k];
 
-		for (long k=0;k<feg->nbpoly;k++)
-		{
-			ep=&feg->polydata[k];	
+			if(ep->type & (POLY_WATER | POLY_TRANS | POLY_NOCOL))
+				continue;
 
-			if (ep->type & (POLY_WATER | POLY_TRANS | POLY_NOCOL)) continue;
-
-			if (IsPolyInSphere(ep,sphere)) 
-			{
+			if(IsPolyInSphere(ep, sphere)) {
 				return ep;					
 			}			
 		}
@@ -1030,13 +1024,13 @@ EERIEPOLY * CheckBackgroundInSphere(EERIE_SPHERE * sphere) //except source...
 bool CheckAnythingInSphere(EERIE_SPHERE * sphere, long source, CASFlags flags, long * num) //except source...
 {
 	if(num)
-		*num=-1;
+		*num = -1;
 
-	long rad = sphere->radius*ACTIVEBKG->Xmul;
-	rad+=2;
+	long rad = sphere->radius * ACTIVEBKG->Xmul;
+	rad += 2;
 
-	long px = sphere->origin.x*ACTIVEBKG->Xmul;
-	long pz = sphere->origin.z*ACTIVEBKG->Zmul;
+	long px = sphere->origin.x * ACTIVEBKG->Xmul;
+	long pz = sphere->origin.z * ACTIVEBKG->Zmul;
 
 	if(!(flags & CAS_NO_BACKGROUND_COL)) {
 		long spx = std::max(px - rad, 0L);
@@ -1046,10 +1040,10 @@ bool CheckAnythingInSphere(EERIE_SPHERE * sphere, long source, CASFlags flags, l
 
 		for(long j = spz; j <= epz; j++)
 		for(long i = spx; i <= epx; i++) {
-			FAST_BKG_DATA *feg=&ACTIVEBKG->fastdata[i][j];
+			FAST_BKG_DATA *feg = &ACTIVEBKG->fastdata[i][j];
 
 			for(long k = 0; k < feg->nbpoly; k++) {
-				EERIEPOLY *ep=&feg->polydata[k];
+				EERIEPOLY *ep = &feg->polydata[k];
 
 				if(ep->type & (POLY_WATER | POLY_TRANS | POLY_NOCOL))
 					continue;
@@ -1068,9 +1062,9 @@ bool CheckAnythingInSphere(EERIE_SPHERE * sphere, long source, CASFlags flags, l
 	if(flags & CAS_NO_SAME_GROUP)
 		validsource = ValidIONum(source);
 
-	float sr30=sphere->radius+20.f;
-	float sr40=sphere->radius+30.f;
-	float sr180=sphere->radius+500.f;
+	float sr30 = sphere->radius + 20.f;
+	float sr40 = sphere->radius + 30.f;
+	float sr180 = sphere->radius + 500.f;
 
 	for(long i = 0; i < TREATZONE_CUR; i++) {
 		
@@ -1098,35 +1092,34 @@ bool CheckAnythingInSphere(EERIE_SPHERE * sphere, long source, CASFlags flags, l
 			continue;
 
 		if(io->gameFlags & GFLAG_PLATFORM) {
-			float miny,maxy;
-			miny=io->bbox3D.min.y;
-			maxy=io->bbox3D.max.y;
+			float miny = io->bbox3D.min.y;
+			float maxy = io->bbox3D.max.y;
 
-			if (	(maxy> sphere->origin.y-sphere->radius)
-				||	(miny< sphere->origin.y+sphere->radius) )
-			if (In3DBBoxTolerance(&sphere->origin,&io->bbox3D,sphere->radius))
+			if(maxy > sphere->origin.y - sphere->radius || miny < sphere->origin.y + sphere->radius)
+			if(In3DBBoxTolerance(&sphere->origin, &io->bbox3D, sphere->radius))
 			{
 				if(closerThan(Vec2f(io->pos.x, io->pos.z), Vec2f(sphere->origin.x, sphere->origin.z), 440.f + sphere->radius)) {
 
 					EERIEPOLY ep;
-					ep.type=0;
+					ep.type = 0;
 
 					for(size_t ii = 0; ii < io->obj->facelist.size(); ii++) {
-						float cx=0;
-						float cz=0;
+						float cx = 0;
+						float cz = 0;
 
 						for(long kk = 0; kk < 3; kk++) {
-							cx+=ep.v[kk].p.x=io->obj->vertexlist3[io->obj->facelist[ii].vid[kk]].v.x;
-								ep.v[kk].p.y=io->obj->vertexlist3[io->obj->facelist[ii].vid[kk]].v.y;
-							cz+=ep.v[kk].p.z=io->obj->vertexlist3[io->obj->facelist[ii].vid[kk]].v.z;
+							ep.v[kk].p = io->obj->vertexlist3[io->obj->facelist[ii].vid[kk]].v;
+
+							cx += ep.v[kk].p.x;
+							cz += ep.v[kk].p.z;
 						}
 
-						cx*=( 1.0f / 3 );
-						cz*=( 1.0f / 3 );
+						cx *= (1.f/3);
+						cz *= (1.f/3);
 
 						for(int kk = 0; kk < 3; kk++) {
-							ep.v[kk].p.x=(ep.v[kk].p.x-cx)*3.5f+cx;
-							ep.v[kk].p.z=(ep.v[kk].p.z-cz)*3.5f+cz;
+							ep.v[kk].p.x = (ep.v[kk].p.x - cx) * 3.5f + cx;
+							ep.v[kk].p.z = (ep.v[kk].p.z - cz) * 3.5f + cz;
 						}
 
 						if(PointIn2DPolyXZ(&ep, sphere->origin.x, sphere->origin.z)) {
@@ -1141,8 +1134,8 @@ bool CheckAnythingInSphere(EERIE_SPHERE * sphere, long source, CASFlags flags, l
 		}
 
 		if(distSqr(io->pos, sphere->origin) < square(sr180)) {
-			long amount=1;
-			vector<EERIE_VERTEX> & vlist=io->obj->vertexlist3;
+			long amount = 1;
+			std::vector<EERIE_VERTEX> & vlist = io->obj->vertexlist3;
 
 			if(io->obj->nbgroups > 4) {
 				for(long ii = 0; ii < io->obj->nbgroups; ii++) {
@@ -1154,7 +1147,7 @@ bool CheckAnythingInSphere(EERIE_SPHERE * sphere, long source, CASFlags flags, l
 					}
 				}
 
-				amount=2;
+				amount = 2;
 			}
 
 			for(size_t ii = 0; ii < io->obj->facelist.size(); ii += amount) {
