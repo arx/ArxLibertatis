@@ -310,58 +310,51 @@ void PushIO_ON_Top(Entity * ioo, float ydec) {
 	for(size_t i = 0; i < entities.size(); i++) {
 		Entity * io = entities[i];
 
-		if (   (io)
-			&& (io!=ioo)
-			&& !(io->ioflags & IO_NO_COLLISIONS)
-			&& (io->show==SHOW_FLAG_IN_SCENE) 
-			&& (io->obj)
-			&& (!(io->ioflags & (IO_FIX | IO_CAMERA | IO_MARKER)))
-			)
-		{
+		if(io
+		   && io != ioo
+		   && !(io->ioflags & IO_NO_COLLISIONS)
+		   && io->show == SHOW_FLAG_IN_SCENE
+		   && io->obj
+		   && !(io->ioflags & (IO_FIX | IO_CAMERA | IO_MARKER))
+		) {
 			if(closerThan(Vec2f(io->pos.x, io->pos.z), Vec2f(ioo->pos.x, ioo->pos.z), 450.f)) {
 				EERIEPOLY ep;
-				ep.type=0;
-				float miny=9999999.f;
-				float maxy=-9999999.f;
+				ep.type = 0;
+				float miny = 9999999.f;
+				float maxy = -9999999.f;
 
-				for (size_t ii=0;ii<ioo->obj->vertexlist3.size();ii++)
-				{
-					miny=min(miny,ioo->obj->vertexlist3[ii].v.y);
-					maxy=max(maxy,ioo->obj->vertexlist3[ii].v.y);
+				for(size_t ii = 0; ii < ioo->obj->vertexlist3.size(); ii++) {
+					miny = min(miny, ioo->obj->vertexlist3[ii].v.y);
+					maxy = max(maxy, ioo->obj->vertexlist3[ii].v.y);
 				}
 
 				float posy = (io == entities.player()) ? player.basePosition().y : io->pos.y;
 				float modd = (ydec > 0) ? -20.f : 0;
 
-				if ((posy<=maxy) && (posy>=miny+modd))
-				{
-					for (size_t ii=0;ii<ioo->obj->facelist.size();ii++)
-					{
-						float cx=0;
-						float cz=0;
+				if(posy <= maxy && posy >= miny + modd) {
+					for(size_t ii = 0; ii < ioo->obj->facelist.size(); ii++) {
+						float cx = 0;
+						float cz = 0;
 
-						for (long kk=0;kk<3;kk++)
-						{
-							cx+=ep.v[kk].p.x=ioo->obj->vertexlist3[ioo->obj->facelist[ii].vid[kk]].v.x;
-							ep.v[kk].p.y=ioo->obj->vertexlist3[ioo->obj->facelist[ii].vid[kk]].v.y;
-							cz+=ep.v[kk].p.z=ioo->obj->vertexlist3[ioo->obj->facelist[ii].vid[kk]].v.z;
+						for(long kk = 0; kk < 3; kk++) {
+							ep.v[kk].p = ioo->obj->vertexlist3[ioo->obj->facelist[ii].vid[kk]].v;
+
+							cx += ep.v[kk].p.x;
+							cz += ep.v[kk].p.z;
 						}
 
-						cx*=( 1.0f / 3 );
-						cz*=( 1.0f / 3 );
+						cx *= (1.f/3);
+						cz *= (1.f/3);
 							
 						float tval=1.1f;
 
-						for (int kk=0;kk<3;kk++)
-						{
+						for(int kk = 0; kk < 3; kk++) {
 								ep.v[kk].p.x = (ep.v[kk].p.x - cx) * tval + cx; 
 								ep.v[kk].p.z = (ep.v[kk].p.z - cz) * tval + cz; 
 						}
 						
 						if(PointIn2DPolyXZ(&ep, io->pos.x, io->pos.z)) {
-							
 							if(io == entities.player()) {
-								
 								if(ydec <= 0) {
 									player.pos.y += ydec;
 									moveto.y += ydec;
@@ -379,9 +372,7 @@ void PushIO_ON_Top(Entity * ioo, float ydec) {
 										moveto.y += ydec;
 									}
 								}
-								
 							} else {
-								
 								if(ydec <= 0) {
 									io->pos.y += ydec;
 								} else {
@@ -392,7 +383,6 @@ void PushIO_ON_Top(Entity * ioo, float ydec) {
 										io->pos.y += ydec;
 									}
 								}
-								
 							}
 							break;
 						}
