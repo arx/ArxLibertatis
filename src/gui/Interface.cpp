@@ -4007,6 +4007,9 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 						TransformInfo t2(pos, rotation);
 						DrawEERIEInter(necklace.runes[i], t2, NULL);
 
+						EERIE_2D_BBOX runeBox;
+						UpdateBbox2d(necklace.runes[i], runeBox);
+
 						PopAllTriangleList();
 
 						xpos++;
@@ -4017,7 +4020,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 						}
 
 						// Checks for Mouse floating over a rune...
-						if(!found2 && MouseInRect(BBOX2D.min.x, BBOX2D.min.y, BBOX2D.max.x, BBOX2D.max.y)) {
+						if(!found2 && MouseInRect(runeBox.min.x, runeBox.min.y, runeBox.max.x, runeBox.max.y)) {
 							long r=0;
 
 							for(size_t j = 0; j < necklace.runes[i]->facelist.size(); j++) {

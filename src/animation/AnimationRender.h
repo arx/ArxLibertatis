@@ -89,8 +89,10 @@ struct TransformInfo {
 	{}
 };
 
+void UpdateBbox2d(EERIE_3DOBJ *eobj, EERIE_2D_BBOX & box2D);
+
 void DrawEERIEInter_ModelTransform(EERIE_3DOBJ *eobj, const TransformInfo &t);
-void DrawEERIEInter_ViewProjectTransform(EERIE_3DOBJ *eobj, Entity *io);
+void DrawEERIEInter_ViewProjectTransform(EERIE_3DOBJ *eobj);
 
 void DrawEERIEInter_Render(EERIE_3DOBJ *eobj, const TransformInfo &t, Entity *io, float invisibility = 0.f);
 void DrawEERIEInter(EERIE_3DOBJ *eobj, const TransformInfo & t, Entity *io, bool forceDraw = false, float invisibility = 0.f);

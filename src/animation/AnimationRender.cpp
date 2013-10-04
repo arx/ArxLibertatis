@@ -656,6 +656,25 @@ void UpdateBbox3d(EERIE_3DOBJ *eobj, EERIE_3D_BBOX & box3D) {
 	}
 }
 
+void UpdateBbox2d(EERIE_3DOBJ *eobj, EERIE_2D_BBOX & box2D) {
+
+	box2D.reset();
+
+	for(size_t i = 0 ; i < eobj->vertexlist.size(); i++) {
+		// Memorizes 2D Bounding Box using vertex min/max x,y pos
+		if(eobj->vertexlist[i].vert.rhw > 0.f) {
+
+			if ((eobj->vertexlist[i].vert.p.x >= -32000) &&
+				(eobj->vertexlist[i].vert.p.x <= 32000) &&
+				(eobj->vertexlist[i].vert.p.y >= -32000) &&
+				(eobj->vertexlist[i].vert.p.y <= 32000))
+			{
+				box2D.add(eobj->vertexlist[i].vert.p);
+			}
+		}
+	}
+}
+
 void DrawEERIEInter_ModelTransform(EERIE_3DOBJ *eobj, const TransformInfo &t) {
 
 	for(size_t i = 0 ; i < eobj->vertexlist.size(); i++) {
@@ -671,31 +690,12 @@ void DrawEERIEInter_ModelTransform(EERIE_3DOBJ *eobj, const TransformInfo &t) {
 	}
 }
 
-void DrawEERIEInter_ViewProjectTransform(EERIE_3DOBJ *eobj, Entity *io) {
-
-	BBOX2D.reset();
-
+void DrawEERIEInter_ViewProjectTransform(EERIE_3DOBJ *eobj) {
 	for(size_t i = 0 ; i < eobj->vertexlist.size(); i++) {
 
 		Vec3f tempWorld;
 		EE_RT(&eobj->vertexlist3[i].v, &tempWorld);
 		EE_P(&tempWorld, &eobj->vertexlist[i].vert);
-
-		// Memorizes 2D Bounding Box using vertex min/max x,y pos
-		if(eobj->vertexlist[i].vert.rhw > 0.f) {
-
-			if ((eobj->vertexlist[i].vert.p.x >= -32000) &&
-				(eobj->vertexlist[i].vert.p.x <= 32000) &&
-				(eobj->vertexlist[i].vert.p.y >= -32000) &&
-				(eobj->vertexlist[i].vert.p.y <= 32000))
-			{
-				BBOX2D.add(eobj->vertexlist[i].vert.p);
-			}
-		}
-	}
-
-	if(io) {
-		io->bbox2D = BBOX2D;
 	}
 }
 
@@ -954,7 +954,11 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, const TransformInfo &t, Entity *io, bool 
 	if(io) {
 		UpdateBbox3d(eobj, io->bbox3D);
 	}
-	DrawEERIEInter_ViewProjectTransform(eobj, io);
+
+	DrawEERIEInter_ViewProjectTransform(eobj);
+	if(io) {
+		UpdateBbox2d(eobj, io->bbox2D);
+	}
 
 	if(!forceDraw && ARX_SCENE_PORTAL_ClipIO(io, t.pos))
 		return;
@@ -1553,7 +1557,8 @@ void Cedric_ViewProjectTransform(Entity *io, EERIE_3DOBJ *eobj) {
 	EERIE_3D_BBOX box3D;
 	box3D.reset();
 
-	BBOX2D.reset();
+	EERIE_2D_BBOX box2D;
+	box2D.reset();
 
 	for(size_t i = 0; i < eobj->vertexlist.size(); i++) {
 		EERIE_VERTEX * outVert = &eobj->vertexlist3[i];
@@ -1566,13 +1571,13 @@ void Cedric_ViewProjectTransform(Entity *io, EERIE_3DOBJ *eobj) {
 
 		// Updates 2D Bounding Box
 		if(outVert->vert.rhw > 0.f) {
-			BBOX2D.add(outVert->vert.p);
+			box2D.add(outVert->vert.p);
 		}
 	}
 
 	if(io) {
 		io->bbox3D = box3D;
-		io->bbox2D = BBOX2D;
+		io->bbox2D = box2D;
 	}
 }
 

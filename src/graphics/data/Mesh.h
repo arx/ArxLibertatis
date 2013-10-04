@@ -125,8 +125,6 @@ struct ANIM_USE;
 
 extern long EERIEDrawnPolys;
 
-extern EERIE_2D_BBOX BBOX2D;
-
 extern EERIE_BACKGROUND * ACTIVEBKG;
 extern EERIE_CAMERA * ACTIVECAM;
 
