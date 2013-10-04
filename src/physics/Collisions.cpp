@@ -1666,14 +1666,11 @@ bool IO_Visible(Vec3f * orgn, Vec3f * dest, EERIEPOLY * epp, Vec3f * hit)
 		for(size_t num = 0; num < entities.size(); num++) {
 			Entity * io = entities[num];
 
-			if ((io) && (io->gameFlags & GFLAG_VIEW_BLOCKER))
-			{
-				if ( CheckIOInSphere(&sphere,num) )
-				{
+			if(io && (io->gameFlags & GFLAG_VIEW_BLOCKER)) {
+				if(CheckIOInSphere(&sphere, num)) {
 					dd = fdist(*orgn, sphere.origin);
 
-					if (dd<nearest)
-					{
+					if(dd < nearest) {
 						hit->x=x;
 						hit->y=y;
 						hit->z=z;
@@ -1691,13 +1688,13 @@ bool IO_Visible(Vec3f * orgn, Vec3f * dest, EERIEPOLY * epp, Vec3f * hit)
 
 			feg = &ACTIVEBKG->fastdata[px][pz];
 
-			for (long k = 0; k < feg->nbpolyin; k++) {
+			for(long k = 0; k < feg->nbpolyin; k++) {
 				ep = feg->polyin[k];
 
-				if (!(ep->type & (POLY_WATER | POLY_TRANS | POLY_NOCOL) ) )
-				if ((ep->min.y - pas < y) && (ep->max.y + pas > y))
-				if ((ep->min.x - pas < x) && (ep->max.x + pas > x))
-				if ((ep->min.z - pas < z) && (ep->max.z + pas > z))
+				if(!(ep->type & (POLY_WATER | POLY_TRANS | POLY_NOCOL)))
+				if((ep->min.y - pas < y) && (ep->max.y + pas > y))
+				if((ep->min.x - pas < x) && (ep->max.x + pas > x))
+				if((ep->min.z - pas < z) && (ep->max.z + pas > z))
 				{
 					if(RayCollidingPoly(orgn, dest, ep, hit)) {
 						dd = fdist(*orgn, *hit);
@@ -1726,23 +1723,22 @@ fini:
 	return false;
 }
 
-void ANCHOR_BLOCK_Clear()
-{
-	EERIE_BACKGROUND * eb=ACTIVEBKG;
+void ANCHOR_BLOCK_Clear() {
 
-	if (eb)
-	{
-		for (long k=0;k<eb->nbanchors;k++)
-		{
-			ANCHOR_DATA * ad=&eb->anchors[k];	
-			ad->flags&=~ANCHOR_FLAG_BLOCKED;
-		}
+	EERIE_BACKGROUND * eb = ACTIVEBKG;
+
+	if(!eb)
+		return;
+
+	for(long k = 0; k < eb->nbanchors; k++) {
+		ANCHOR_DATA * ad = &eb->anchors[k];
+		ad->flags &= ~ANCHOR_FLAG_BLOCKED;
 	}
 }
 
-void ANCHOR_BLOCK_By_IO(Entity * io,long status)
-{
-	EERIE_BACKGROUND * eb=ACTIVEBKG;
+void ANCHOR_BLOCK_By_IO(Entity * io, long status) {
+
+	EERIE_BACKGROUND * eb = ACTIVEBKG;
 
 	for(long k = 0; k < eb->nbanchors; k++) {
 		ANCHOR_DATA * ad = &eb->anchors[k];
@@ -1753,16 +1749,14 @@ void ANCHOR_BLOCK_By_IO(Entity * io,long status)
 		if(closerThan(Vec2f(io->pos.x, io->pos.z), Vec2f(ad->pos.x, ad->pos.z), 440.f)) {
 			
 			EERIEPOLY ep;
-			ep.type=0;
+			ep.type = 0;
 
 			for(size_t ii = 0; ii < io->obj->facelist.size(); ii++) {
-				float cx=0;
-				float cz=0;
+				float cx = 0;
+				float cz = 0;
 
 				for(long kk = 0; kk < 3; kk++) {
-					ep.v[kk].p.x = io->obj->vertexlist[io->obj->facelist[ii].vid[kk]].v.x + io->pos.x;
-					ep.v[kk].p.y = io->obj->vertexlist[io->obj->facelist[ii].vid[kk]].v.y + io->pos.y;
-					ep.v[kk].p.z = io->obj->vertexlist[io->obj->facelist[ii].vid[kk]].v.z + io->pos.z;
+					ep.v[kk].p = io->obj->vertexlist[io->obj->facelist[ii].vid[kk]].v + io->pos;
 
 					cx += ep.v[kk].p.x;
 					cz += ep.v[kk].p.z;
@@ -1772,15 +1766,15 @@ void ANCHOR_BLOCK_By_IO(Entity * io,long status)
 				cz *= (1.f/3);
 
 				for(int kk = 0; kk < 3; kk++) {
-					ep.v[kk].p.x = (ep.v[kk].p.x - cx)*3.5f + cx;
-					ep.v[kk].p.z = (ep.v[kk].p.z - cz)*3.5f + cz;
+					ep.v[kk].p.x = (ep.v[kk].p.x - cx) * 3.5f + cx;
+					ep.v[kk].p.z = (ep.v[kk].p.z - cz) * 3.5f + cz;
 				}
 
 				if(PointIn2DPolyXZ(&ep, ad->pos.x, ad->pos.z)) {
 					if(status)
-						ad->flags|=ANCHOR_FLAG_BLOCKED;
+						ad->flags |= ANCHOR_FLAG_BLOCKED;
 					else
-						ad->flags&=~ANCHOR_FLAG_BLOCKED;
+						ad->flags &= ~ANCHOR_FLAG_BLOCKED;
 				}
 			}
 		}
