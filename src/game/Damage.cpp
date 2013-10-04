@@ -1216,42 +1216,39 @@ bool ARX_DAMAGES_TryToDoDamage(Vec3f * pos, float dmg, float radius, long source
 	for(size_t i = 0; i < entities.size(); i++) {
 		Entity * io = entities[i];
 
-		if (io != NULL)
+		if(io != NULL
+		   && (entities[i]->gameFlags & GFLAG_ISINTREATZONE)
+		   && io->show == SHOW_FLAG_IN_SCENE
+		   && source != long(i)
+		) {
+			float threshold;
+			float rad = radius + 5.f;
 
-			if (entities[i]->gameFlags & GFLAG_ISINTREATZONE)
-				if (io->show == SHOW_FLAG_IN_SCENE)
-					if (source != long(i))
-					{
-						float threshold;
-						float rad = radius + 5.f;
+			if(io->ioflags & IO_FIX) {
+				threshold = square(510);
+				rad += 10.f;
+			} else if(io->ioflags & IO_NPC) {
+				threshold = square(250);
+			} else {
+				threshold = square(350);
+			}
 
-						if (io->ioflags & IO_FIX)
-						{
-							threshold = square(510);
-							rad += 10.f;
-						}
-						else if (io->ioflags & IO_NPC)
-							threshold = square(250);
-						else threshold = square(350);
+			if(distSqr(*pos, io->pos) < threshold
+			   && SphereInIO(io, pos, rad)
+			) {
+				if(io->ioflags & IO_NPC) {
+					if(ValidIONum(source))
+						ARX_EQUIPMENT_ComputeDamages(entities[source], io, 1.f);
 
-						if (distSqr(*pos, io->pos) < threshold)
-							if (SphereInIO(io, pos, rad))
-							{
-								if (io->ioflags & IO_NPC)
-								{
-									if (ValidIONum(source))
-										ARX_EQUIPMENT_ComputeDamages(entities[source], io, 1.f);
+					ret = true;
+				}
 
-									ret = true;
-								}
-
-								if (io->ioflags & IO_FIX)
-								{
-									ARX_DAMAGES_DamageFIX(io, dmg, source, 0);
-									ret = true;
-								}
-							}
-					}
+				if(io->ioflags & IO_FIX) {
+					ARX_DAMAGES_DamageFIX(io, dmg, source, 0);
+					ret = true;
+				}
+			}
+		}
 	}
 
 	return ret;

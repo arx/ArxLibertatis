@@ -1336,10 +1336,6 @@ static EERIE_3DOBJ * TheoToEerie(const char * adr, long size, const res::path & 
 	eerie->pos = Vec3f::ZERO;
 
 	// NORMALS CALCULATIONS
-	Vec3f nrml;
-	Vec3f nrrr;
-	float count;
-	long j, j2;
 
 	//Compute Faces Areas
 	for(size_t i = 0; i < eerie->facelist.size(); i++) {
@@ -1358,16 +1354,16 @@ static EERIE_3DOBJ * TheoToEerie(const char * adr, long size, const res::path & 
 		);
 		float area = eerie->facelist[i].temp;
 
-		for(j = 0; j < 3; j++) {
+		for(long j = 0; j < 3; j++) {
 			float mod = area * area;
-			nrrr = nrml = eerie->facelist[i].norm * mod;
-			count = mod;
+			Vec3f nrml = eerie->facelist[i].norm * mod;
+			float count = mod;
 
 			for(size_t i2 = 0; i2 < eerie->facelist.size(); i2++) {
 				if(i != i2) {
 					float area2 = eerie->facelist[i].temp;
 
-					for(j2 = 0; j2 < 3; j2++) {
+					for(long j2 = 0; j2 < 3; j2++) {
 						if(closerThan(eerie->vertexlist[eerie->facelist[i2].vid[j2]].v, eerie->vertexlist[eerie->facelist[i].vid[j]].v, .1f)) {
 							mod = (area2 * area2);
 							nrml += eerie->facelist[i2].norm * mod;
@@ -1383,7 +1379,7 @@ static EERIE_3DOBJ * TheoToEerie(const char * adr, long size, const res::path & 
 	}
 
 	for(size_t i = 0; i < eerie->facelist.size(); i++) {
-		for(j = 0; j < 3; j++) {
+		for(long j = 0; j < 3; j++) {
 			eerie->vertexlist[eerie->facelist[i].vid[j]].norm = eerie->vertexlist[eerie->facelist[i].vid[j]].vert.p;
 		}
 	}

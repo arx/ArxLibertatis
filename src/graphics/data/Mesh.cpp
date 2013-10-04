@@ -1578,16 +1578,17 @@ void DrawEERIEObjExEx(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *pos, Vec3f *scale
 
 		eobj->vertexlist3[i].v = (rv.p += *pos);
 
-		EE_RT(&rv.p, &eobj->vertexlist[i].vworld);
-		EE_P(&eobj->vertexlist[i].vworld, &eobj->vertexlist[i].vert);
+		Vec3f tempWorld;
+		EE_RT(&rv.p, &tempWorld);
+		EE_P(&tempWorld, &eobj->vertexlist[i].vert);
 	}
 
 	for(size_t i = 0; i < eobj->facelist.size(); i++) {
 		EERIE_FACE & face = eobj->facelist[i];
 
-		vert_list[0].p = eobj->vertexlist[face.vid[0]].vworld;
-		vert_list[1].p = eobj->vertexlist[face.vid[1]].vworld;
-		vert_list[2].p = eobj->vertexlist[face.vid[2]].vworld;
+		vert_list[0] = eobj->vertexlist[face.vid[0]].vert;
+		vert_list[1] = eobj->vertexlist[face.vid[1]].vert;
+		vert_list[2] = eobj->vertexlist[face.vid[2]].vert;
 		
 		vert_list[0].uv.x = face.u[0];
 		vert_list[0].uv.y = face.v[0];
@@ -1607,7 +1608,7 @@ void DrawEERIEObjExEx(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *pos, Vec3f *scale
 		else
 			GRenderer->SetCulling(Renderer::CullCW);
 
-		ARX_DrawPrimitive(&vert_list[0], &vert_list[1], &vert_list[2]);
+		EERIEDRAWPRIM(Renderer::TriangleList, vert_list);
 	}
 }
 

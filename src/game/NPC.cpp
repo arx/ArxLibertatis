@@ -1347,8 +1347,8 @@ void ARX_NPC_SpawnMember(Entity * ioo, long num) {
 	long gore = -1;
 
 	for(size_t k = 0; k < from->texturecontainer.size(); k++) {
-		if (from->texturecontainer[k]
-		        && (boost::contains(from->texturecontainer[k]->m_texName.string(), "gore")))
+		if(from->texturecontainer[k]
+		   && boost::contains(from->texturecontainer[k]->m_texName.string(), "gore"))
 		{
 			gore = k;
 			break;
@@ -1357,18 +1357,20 @@ void ARX_NPC_SpawnMember(Entity * ioo, long num) {
 
 	for(size_t k = 0; k < from->facelist.size(); k++) {
 		if(from->facelist[k].texid == gore) {
-			if	((IsNearSelection(from, from->facelist[k].vid[0], num) >= 0)
-			        ||	(IsNearSelection(from, from->facelist[k].vid[1], num) >= 0)
-			        ||	(IsNearSelection(from, from->facelist[k].vid[2], num) >= 0))
+			if(IsNearSelection(from, from->facelist[k].vid[0], num) >= 0
+			   || IsNearSelection(from, from->facelist[k].vid[1], num) >= 0
+			   || IsNearSelection(from, from->facelist[k].vid[2], num) >= 0
+			) {
 				nvertex += 3;
+			}
 		}
 	}
 
 	nouvo->vertexlist.resize(nvertex);
 	nouvo->vertexlist3.resize(nvertex);
 
-	long	inpos	= 0;
-	long *	equival = (long *)malloc(sizeof(long) * from->vertexlist.size());
+	long inpos = 0;
+	long * equival = (long *)malloc(sizeof(long) * from->vertexlist.size());
 	if(!equival) {
 		delete nouvo;
 		return;
@@ -1398,26 +1400,24 @@ void ARX_NPC_SpawnMember(Entity * ioo, long num) {
 	size_t count = from->selections[num].selected.size();
 
 	for(size_t k = 0; k < from->facelist.size(); k++) {
-		if (from->facelist[k].texid == gore)
-		{
-			if ((IsNearSelection(from, from->facelist[k].vid[0], num) >= 0)
-			        ||	(IsNearSelection(from, from->facelist[k].vid[1], num) >= 0)
-			        ||	(IsNearSelection(from, from->facelist[k].vid[2], num) >= 0))
-			{
-				for (long j = 0; j < 3; j++)
-				{
+		if(from->facelist[k].texid == gore) {
+			if(IsNearSelection(from, from->facelist[k].vid[0], num) >= 0
+			   || IsNearSelection(from, from->facelist[k].vid[1], num) >= 0
+			   || IsNearSelection(from, from->facelist[k].vid[2], num) >= 0
+			) {
+				for(long j = 0; j < 3; j++) {
 					equival[from->facelist[k].vid[j]] = count;
 
-					if (count < nouvo->vertexlist.size())
-					{
+					if(count < nouvo->vertexlist.size()) {
 						nouvo->vertexlist[count] = from->vertexlist[from->facelist[k].vid[j]];
 						nouvo->vertexlist[count].v = from->vertexlist3[from->facelist[k].vid[j]].v;
 						nouvo->vertexlist[count].v -= ioo->pos;
 						nouvo->vertexlist[count].vert.p = nouvo->vertexlist[count].v;
-						memcpy(&nouvo->vertexlist3[count], &nouvo->vertexlist[count], sizeof(EERIE_VERTEX));
-					}
-					else
+
+						nouvo->vertexlist3[count] = nouvo->vertexlist[count];
+					} else {
 						equival[from->facelist[k].vid[j]] = -1;
+					}
 
 					count++;
 				}
@@ -1452,22 +1452,23 @@ void ARX_NPC_SpawnMember(Entity * ioo, long num) {
 	nouvo->ndata = NULL;
 	
 	size_t nfaces = 0;
-	for (size_t k = 0; k < from->facelist.size(); k++)
-	{
-		if ((equival[from->facelist[k].vid[0]] != -1)
-		        &&	(equival[from->facelist[k].vid[1]] != -1)
-		        &&	(equival[from->facelist[k].vid[2]] != -1))
+	for(size_t k = 0; k < from->facelist.size(); k++) {
+		if(equival[from->facelist[k].vid[0]] != -1
+		   && equival[from->facelist[k].vid[1]] != -1
+		   && equival[from->facelist[k].vid[2]] != -1
+		) {
 			nfaces++;
+		}
 	}
 
 	if(nfaces) {
 		nouvo->facelist.reserve(nfaces);
 
 		for(size_t k = 0; k < from->facelist.size(); k++) {
-			if ((equival[from->facelist[k].vid[0]] != -1)
-			        &&	(equival[from->facelist[k].vid[1]] != -1)
-			        &&	(equival[from->facelist[k].vid[2]] != -1))
-			{
+			if(equival[from->facelist[k].vid[0]] != -1
+			   && equival[from->facelist[k].vid[1]] != -1
+			   && equival[from->facelist[k].vid[2]] != -1
+			) {
 				EERIE_FACE newface = from->facelist[k];
 				newface.vid[0] = (unsigned short)equival[from->facelist[k].vid[0]];
 				newface.vid[1] = (unsigned short)equival[from->facelist[k].vid[1]];
@@ -1479,9 +1480,9 @@ void ARX_NPC_SpawnMember(Entity * ioo, long num) {
 		long gore = -1;
 
 		for(size_t k = 0; k < from->texturecontainer.size(); k++) {
-			if (from->texturecontainer[k]
-			        && (boost::contains(from->texturecontainer[k]->m_texName.string(), "gore")))
-			{
+			if(from->texturecontainer[k]
+			   && boost::contains(from->texturecontainer[k]->m_texName.string(), "gore")
+			) {
 				gore = k;
 				break;
 			}
@@ -1490,10 +1491,10 @@ void ARX_NPC_SpawnMember(Entity * ioo, long num) {
 		for(size_t k = 0; k < nouvo->facelist.size(); k++) {
 			nouvo->facelist[k].facetype &= ~POLY_HIDE;
 
-			if(nouvo->facelist[k].texid == gore)
+			if(nouvo->facelist[k].texid == gore) {
 				nouvo->facelist[k].facetype |= POLY_DOUBLESIDED;
+			}
 		}
-		
 	}
 	
 	free(equival);
@@ -1530,7 +1531,7 @@ void ARX_NPC_SpawnMember(Entity * ioo, long num) {
 	io->angle = ioo->angle;
 	
 	io->gameFlags = ioo->gameFlags;
-	memcpy(&io->halo, &ioo->halo, sizeof(IO_HALO));
+	io->halo = ioo->halo;
 	ioo->halo.dynlight = -1;
 	io->ioflags |= IO_MOVABLE;
 	
@@ -1556,6 +1557,7 @@ void ARX_NPC_SpawnMember(Entity * ioo, long num) {
 	io->animBlend.lastanimtime = (unsigned long)(arxtime);
 	io->soundtime = 0;
 	io->soundcount = 0;
+
 	EERIE_PHYSICS_BOX_Launch(io->obj, io->pos, io->angle, vector);
 }
 

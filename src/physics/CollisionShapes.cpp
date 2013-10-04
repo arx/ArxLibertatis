@@ -58,14 +58,15 @@ using std::memset;
 
 void EERIE_COLLISION_Cylinder_Create(Entity * io)
 {
-	if (io == NULL) return;
+	if(!io)
+		return;
 
 	EERIE_3DOBJ * obj = io->obj;
 
-	if (!obj) return;
+	if(!obj)
+		return;
 
-	if (obj->vertexlist.empty())
-	{
+	if(obj->vertexlist.empty()) {
 		io->physics.cyl.height = 0.f;
 		return;
 	}
@@ -75,14 +76,13 @@ void EERIE_COLLISION_Cylinder_Create(Entity * io)
 	float d = 0.f;
 	float height = 0.f;
 	for(size_t i = 0; i < obj->vertexlist.size(); i++) {
-		if((i != (size_t)obj->origin) && (EEfabs(io->physics.cyl.origin.y - obj->vertexlist[i].v.y) < 20.f)) {
+		if(i != (size_t)obj->origin && EEfabs(io->physics.cyl.origin.y - obj->vertexlist[i].v.y) < 20.f) {
 			d = max(d, dist(io->physics.cyl.origin, obj->vertexlist[i].v));
 		}
 		height = max(height, io->physics.cyl.origin.y - obj->vertexlist[i].v.y);
 	}
 
-	if ((d == 0.f) || (height == 0.f))
-	{
+	if(d == 0.f || height == 0.f) {
 		io->physics.cyl.height = 0.f;
 		return;
 	}
@@ -91,17 +91,19 @@ void EERIE_COLLISION_Cylinder_Create(Entity * io)
 	io->original_height = -height;
 	io->physics.cyl.origin = io->pos;
 	
-	if (io->original_height > -40)
-	{
+	if(io->original_height > -40) {
 		float v = (-io->original_height) * ( 1.0f / 40 );
 		io->original_radius *= (0.5f + v * 0.5f);
 	}
 
-	if (io->original_height > -40) io->original_height = -40;
+	if(io->original_height > -40)
+		io->original_height = -40;
 
-	if (io->original_height < -165) io->original_height = -165;
+	if(io->original_height < -165)
+		io->original_height = -165;
 
-	if (io->original_radius > 40.f) io->original_radius = 40.f;
+	if(io->original_radius > 40.f)
+		io->original_radius = 40.f;
 
 	io->physics.cyl.radius = io->original_radius * io->scale;
 	io->physics.cyl.height = io->original_height * io->scale;
@@ -140,16 +142,14 @@ void AddCollisionSphere(EERIE_3DOBJ * obj, long idx, float radius) {
 	obj->sdata->spheres.push_back(newSphere);
 }
 
-long GetFirstChildGroup(EERIE_3DOBJ * obj, long group)
-{
-	if (obj->nbgroups < group + 2) return -1;
+long GetFirstChildGroup(EERIE_3DOBJ * obj, long group) {
 
-	for (long k = group + 1; k < obj->nbgroups; k++)
-	{
-		for (size_t i = 0; i < obj->grouplist[group].indexes.size(); i++)
-		{
-			if (obj->grouplist[group].indexes[i] == obj->grouplist[k].origin)
-			{
+	if(obj->nbgroups < group + 2)
+		return -1;
+
+	for(long k = group + 1; k < obj->nbgroups; k++) {
+		for(size_t i = 0; i < obj->grouplist[group].indexes.size(); i++) {
+			if(obj->grouplist[group].indexes[i] == obj->grouplist[k].origin) {
 				return k;
 			}
 		}
@@ -158,15 +158,11 @@ long GetFirstChildGroup(EERIE_3DOBJ * obj, long group)
 	return -1;
 }
  
-bool IsExclusiveGroupMember(EERIE_3DOBJ * obj, long idx, long group)
-{
+bool IsExclusiveGroupMember(EERIE_3DOBJ * obj, long idx, long group) {
 
-	for (long i = group + 1; i < obj->nbgroups; i++)
-	{
-		for (size_t j = 0; j < obj->grouplist[i].indexes.size(); j++)
-		{
-			if (idx == obj->grouplist[i].indexes[j])
-			{
+	for(long i = group + 1; i < obj->nbgroups; i++) {
+		for(size_t j = 0; j < obj->grouplist[i].indexes.size(); j++) {
+			if(idx == obj->grouplist[i].indexes[j]) {
 				return false;
 			}
 		}
@@ -175,8 +171,8 @@ bool IsExclusiveGroupMember(EERIE_3DOBJ * obj, long idx, long group)
 	return true;
 }
 
-float GetSphereRadiusForGroup(EERIE_3DOBJ * obj, Vec3f * center, Vec3f * dirvect, long group, float maxi)
-{
+float GetSphereRadiusForGroup(EERIE_3DOBJ * obj, Vec3f * center, Vec3f * dirvect, long group, float maxi) {
+
 	float curradius = 0.f;
 	float maxf = 0.f;
 	float div = 0.f;
@@ -189,24 +185,28 @@ float GetSphereRadiusForGroup(EERIE_3DOBJ * obj, Vec3f * center, Vec3f * dirvect
 		}
 	}
 
-	for (size_t i = 0; i < obj->grouplist[group].indexes.size(); i++)
-	{
-		if (!IsExclusiveGroupMember(obj, obj->grouplist[group].indexes[i], group)) continue;
+	for(size_t i = 0; i < obj->grouplist[group].indexes.size(); i++) {
+		if(!IsExclusiveGroupMember(obj, obj->grouplist[group].indexes[i], group))
+			continue;
 
-		if ((sel > -1) && (IsInSelection(obj, obj->grouplist[group].indexes[i], sel) >= 0)) continue;
+		if(sel > -1 && IsInSelection(obj, obj->grouplist[group].indexes[i], sel) >= 0)
+			continue;
 
 		Vec3f target = obj->vertexlist[obj->grouplist[group].indexes[i]].v;
 		float distance = fdist(*center, target);
 
-		if (distance < 2.f) continue;
+		if(distance < 2.f)
+			continue;
 
-		if (distance < maxf) continue;
+		if(distance < maxf)
+			continue;
 
 		Vec3f targvect = (target - *center) * 1.f / distance;
 		float val = dot(*dirvect, targvect);
 
 		if(fabs(val) < 1.2f) {
-			if (distance > maxi) distance = maxi;
+			if(distance > maxi)
+				distance = maxi;
 
 			curradius += distance;
 			div += 1.f;
@@ -214,31 +214,30 @@ float GetSphereRadiusForGroup(EERIE_3DOBJ * obj, Vec3f * center, Vec3f * dirvect
 		}
 	}
 
-	if (div > 0.f)
-	{
+	if(div > 0.f) {
 		curradius /= div;
 	}
 
-	return (curradius);
+	return curradius;
 }
 
-long AddVertexToVertexList(EERIE_3DOBJ * obj, Vec3f * center, long group)
-{
-	if (obj->vertexlist.empty()) return -1;
+long AddVertexToVertexList(EERIE_3DOBJ * obj, Vec3f * center, long group) {
 
-	for (size_t i = 0; i < obj->vertexlist.size(); i++)
-	{
-		if ((center->x == obj->vertexlist[i].v.x)
-				&&	(center->y == obj->vertexlist[i].v.y)
-				&&	(center->z == obj->vertexlist[i].v.z))
-		{
-			if (IsVertexIdxInGroup(obj, i, group) == false)
-			{
-				if ((obj->vertexlist[i].norm.x == 50.f)
-						&&	(obj->vertexlist[i].norm.y == 50.f)
-						&&	(obj->vertexlist[i].norm.z == 50.f)
-				   )
+	if(obj->vertexlist.empty())
+		return -1;
+
+	for(size_t i = 0; i < obj->vertexlist.size(); i++) {
+		if(center->x == obj->vertexlist[i].v.x
+		   && center->y == obj->vertexlist[i].v.y
+		   && center->z == obj->vertexlist[i].v.z
+		) {
+			if(IsVertexIdxInGroup(obj, i, group) == false) {
+				if(obj->vertexlist[i].norm.x == 50.f
+				   && obj->vertexlist[i].norm.y == 50.f
+				   && obj->vertexlist[i].norm.z == 50.f
+				) {
 					AddVertexIdxToGroup(obj, group, i);
+				}
 			}
 
 			return i;
@@ -252,8 +251,7 @@ long AddVertexToVertexList(EERIE_3DOBJ * obj, Vec3f * center, long group)
 
 	memset(&obj->vertexlist[nvertex], 0, sizeof(EERIE_VERTEX));
 
-	if (obj->pdata)
-	{
+	if(obj->pdata) {
 		obj->pdata = (PROGRESSIVE_DATA *)
 					 realloc(obj->pdata, sizeof(PROGRESSIVE_DATA) * (nvertex + 1));
 
@@ -271,20 +269,19 @@ long AddVertexToVertexList(EERIE_3DOBJ * obj, Vec3f * center, long group)
 
 	return nvertex;
 }
-void EERIE_COLLISION_SPHERES_Create(EERIE_3DOBJ * obj)
-{
-	if (obj == NULL) return;
+
+void EERIE_COLLISION_SPHERES_Create(EERIE_3DOBJ * obj) {
+
+	if(obj == NULL)
+		return;
 
 	EERIE_COLLISION_SPHERES_Release(obj);
 	obj->sdata = new COLLISION_SPHERES_DATA();
 
-	for (long k = 1; k < obj->nbgroups; k++)
-	{
-		long workon;
-		workon = GetFirstChildGroup(obj, k);
+	for(long k = 1; k < obj->nbgroups; k++) {
+		long workon = GetFirstChildGroup(obj, k);
 
 		if(workon != -1) {
-			
 			// Group origin pos
 			Vec3f center = obj->vertexlist[obj->grouplist[k].origin].v;
 			
@@ -301,32 +298,31 @@ void EERIE_COLLISION_SPHERES_Create(EERIE_3DOBJ * obj)
 			// Vector Normalization
 			dirvect *= divdist;
 	
-			while (dista >= 0.f) // Iterate along the whole distance
-			{
+			while(dista >= 0.f) { // Iterate along the whole distance
 				// Compute required radius for this group and that pos
 				float val = GetSphereRadiusForGroup(obj, &center, &dest, k, tot * 1.4f);
 
-				if (val > 0.2f)
-				{
+				if(val > 0.2f) {
 					long idx = AddVertexToVertexList(obj, &center, k);
 
-					if (idx > -1)
+					if(idx > -1)
 						AddCollisionSphere(obj, idx, val);
 
 					val *= ( 1.0f / 2 );
+				} else {
+					val = 0.15f;
 				}
-				else val = 0.15f;
 			
 				float inc = val;
 				dista -= inc;
 			
 				center += dirvect * inc;
 			}
+		} else {
+			AddCollisionSphere(obj, obj->grouplist[k].origin, obj->grouplist[k].siz * 18.f);
 		}
-		else AddCollisionSphere(obj, obj->grouplist[k].origin, obj->grouplist[k].siz * 18.f);
-	
-
 	}
 
-	if (obj->sdata->spheres.empty() == 0) EERIE_COLLISION_SPHERES_Release(obj);
+	if(obj->sdata->spheres.empty() == 0)
+		EERIE_COLLISION_SPHERES_Release(obj);
 }

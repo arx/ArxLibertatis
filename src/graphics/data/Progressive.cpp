@@ -55,16 +55,15 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 using std::memset;
 
-//*************************************************************************************
-// Adds a neighboring vertex to a vertex
-//*************************************************************************************
+/*!
+ * \brief Adds a neighboring vertex to a vertex
+ */
 void AddNeighBoringVertex(EERIE_3DOBJ * obj, long i, long b) {
 	
-	if (i == b) return;
+	if(i == b)
+		return;
 
-	
-	if (obj->ndata[i].Nvertex == NULL)
-	{
+	if(obj->ndata[i].Nvertex == NULL) {
 		obj->ndata[i].Nvertex = (short *)malloc(sizeof(short)); 
 		obj->ndata[i].Nvertex[0] = (short)b;
 		obj->ndata[i].nb_Nvertex = 1;
@@ -72,21 +71,21 @@ void AddNeighBoringVertex(EERIE_3DOBJ * obj, long i, long b) {
 	}
 
 	//check for existence
-	for (long k = 0; k < obj->ndata[i].nb_Nvertex; k++)
-		if (obj->ndata[i].Nvertex[k] == b) return;
+	for(long k = 0; k < obj->ndata[i].nb_Nvertex; k++)
+		if(obj->ndata[i].Nvertex[k] == b)
+			return;
 
 	obj->ndata[i].Nvertex = (short *)realloc(obj->ndata[i].Nvertex, sizeof(short) * (obj->ndata[i].nb_Nvertex + 1));
 	obj->ndata[i].Nvertex[obj->ndata[i].nb_Nvertex] = (short)b;
 	obj->ndata[i].nb_Nvertex++;
-
 }
-//*************************************************************************************
-// Adds a neighboring face to a vertex
-//*************************************************************************************
+
+/*!
+ * \brief Adds a neighboring face to a vertex
+ */
 void AddNeighBoringFace(EERIE_3DOBJ * obj, long i, long b) {
 
-	if (obj->ndata[i].Nfaces == NULL)
-	{
+	if(obj->ndata[i].Nfaces == NULL) {
 		obj->ndata[i].Nfaces = (short *)malloc(sizeof(short));
 		obj->ndata[i].Nfaces[0] = (short)b;
 		obj->ndata[i].nb_Nfaces = 1;
@@ -94,48 +93,46 @@ void AddNeighBoringFace(EERIE_3DOBJ * obj, long i, long b) {
 	}
 
 	//check for existence
-	for (long k = 0; k < obj->ndata[i].nb_Nfaces; k++)
-		if (obj->ndata[i].Nfaces[k] == b) return;
+	for(long k = 0; k < obj->ndata[i].nb_Nfaces; k++)
+		if(obj->ndata[i].Nfaces[k] == b)
+			return;
 
 	obj->ndata[i].Nfaces = (short *)realloc(obj->ndata[i].Nfaces, sizeof(short) * (obj->ndata[i].nb_Nfaces + 1));
 	obj->ndata[i].Nfaces[obj->ndata[i].nb_Nfaces] = (short)b;
 	obj->ndata[i].nb_Nfaces++;
 }
 
-//*************************************************************************************
-// Computes collapse cost for an edge
-// Conditions for collapsability:
-//		.Distance (The shorter the better)
-//		.Surface of the Collapsed sides (The lesser the better)
-//		.Angle Between Faces on each side of Collapsed Edge (The lesser angular diff, The better)
-//		.UV/Texture (Requires same texture map, and contiguous UVs (Quite Arbitrary)
-//*************************************************************************************
- 
-//*************************************************************************************
-// search all neighboring edges for "least-folding-cost" edge
-//*************************************************************************************
- 
-void CreateNeighbours(EERIE_3DOBJ * obj)
-{
-	if (obj->ndata == NULL)
-	{
-		obj->ndata = (NEIGHBOURS_DATA *)malloc(sizeof(NEIGHBOURS_DATA) * obj->vertexlist.size());
-	}
-	else memset(obj->ndata, 0, sizeof(NEIGHBOURS_DATA)*obj->vertexlist.size());
+/*!
+ * \brief Computes collapse cost for an edge
+ *
+ * search all neighboring edges for "least-folding-cost" edge
+ *
+ * Computes collapse cost for an edge
+ * Conditions for collapsability:
+ *		.Distance (The shorter the better)
+ *		.Surface of the Collapsed sides (The lesser the better)
+ *		.Angle Between Faces on each side of Collapsed Edge (The lesser angular diff, The better)
+ *		.UV/Texture (Requires same texture map, and contiguous UVs (Quite Arbitrary)
+ */
+void CreateNeighbours(EERIE_3DOBJ * obj) {
 
-	for (size_t i = 0; i < obj->vertexlist.size(); i++)
-	{
+	if(obj->ndata == NULL) {
+		obj->ndata = (NEIGHBOURS_DATA *)malloc(sizeof(NEIGHBOURS_DATA) * obj->vertexlist.size());
+	} else {
+		memset(obj->ndata, 0, sizeof(NEIGHBOURS_DATA)*obj->vertexlist.size());
+	}
+
+	for(size_t i = 0; i < obj->vertexlist.size(); i++) {
 		obj->ndata[i].Nvertex = NULL;
 		obj->ndata[i].Nfaces = NULL;
 		obj->ndata[i].nb_Nfaces = 0;
 		obj->ndata[i].nb_Nvertex = 0;
 
-		for (size_t j = 0; j < obj->facelist.size(); j++)
-		{
-			if ((obj->facelist[j].vid[0] == i) ||
-			        (obj->facelist[j].vid[1] == i) ||
-			        (obj->facelist[j].vid[2] == i))
-			{
+		for(size_t j = 0; j < obj->facelist.size(); j++) {
+			if(obj->facelist[j].vid[0] == i
+			   || obj->facelist[j].vid[1] == i
+			   || obj->facelist[j].vid[2] == i
+			) {
 				AddNeighBoringVertex(obj, i, obj->facelist[j].vid[0]);
 				AddNeighBoringVertex(obj, i, obj->facelist[j].vid[1]);
 				AddNeighBoringVertex(obj, i, obj->facelist[j].vid[2]);
@@ -143,8 +140,8 @@ void CreateNeighbours(EERIE_3DOBJ * obj)
 			}
 		}
 	}
-
 }
+
 void KillNeighbours(EERIE_3DOBJ * obj) {
 	
 	if(!obj->ndata) {
@@ -152,13 +149,18 @@ void KillNeighbours(EERIE_3DOBJ * obj) {
 	}
 	
 	for(size_t i = 0; i < obj->vertexlist.size(); i++) {
-		free(obj->ndata[i].Nfaces), obj->ndata[i].Nfaces = NULL;
-		free(obj->ndata[i].Nvertex), obj->ndata[i].Nvertex = NULL;
+		free(obj->ndata[i].Nfaces);
+		obj->ndata[i].Nfaces = NULL;
+
+		free(obj->ndata[i].Nvertex);
+		obj->ndata[i].Nvertex = NULL;
 	}
 	
-	free(obj->ndata), obj->ndata = NULL;
+	free(obj->ndata);
+	obj->ndata = NULL;
 }
 
 void KillProgressiveData(EERIE_3DOBJ * obj) {
-	free(obj->pdata), obj->pdata = NULL;
+	free(obj->pdata);
+	obj->pdata = NULL;
 }

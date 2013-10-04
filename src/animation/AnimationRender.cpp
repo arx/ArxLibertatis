@@ -671,8 +671,9 @@ void DrawEERIEInter_ModelTransform(EERIE_3DOBJ *eobj, const TransformInfo &t, En
 
 		box3D.add(eobj->vertexlist3[i].v);
 
-		EE_RT(&rotatedPosition, &eobj->vertexlist[i].vworld);
-		EE_P(&eobj->vertexlist[i].vworld, &eobj->vertexlist[i].vert);
+		Vec3f tempWorld;
+		EE_RT(&rotatedPosition, &tempWorld);
+		EE_P(&tempWorld, &eobj->vertexlist[i].vert);
 
 		// Memorizes 2D Bounding Box using vertex min/max x,y pos
 		if(eobj->vertexlist[i].vert.rhw > 0.f) {
@@ -1570,8 +1571,9 @@ void Cedric_ViewProjectTransform(Entity *io, EERIE_3DOBJ *eobj) {
 
 		box3D.add(outVert->v);
 
-		EE_RT(&outVert->vert.p, &outVert->vworld);
-		EE_P(&outVert->vworld, &outVert->vert);
+		Vec3f tempWorld;
+		EE_RT(&outVert->vert.p, &tempWorld);
+		EE_P(&tempWorld, &outVert->vert);
 
 		// Updates 2D Bounding Box
 		if(outVert->vert.rhw > 0.f) {
@@ -1637,7 +1639,7 @@ void Cedric_AnimateDrawEntity(EERIE_C_DATA & rig, ANIM_USE * animlayer, const EE
 	Cedric_ConcatenateTM(rig, rotation, pos, ftr, scale);
 }
 
-void EERIEDrawAnimQuat(EERIE_3DOBJ *eobj, ANIM_USE * animlayer,const Anglef & angle, const Vec3f & pos, unsigned long time, Entity *io, bool render, bool update_movement) {
+void EERIEDrawAnimQuatUpdate(EERIE_3DOBJ *eobj, ANIM_USE * animlayer,const Anglef & angle, const Vec3f & pos, unsigned long time, Entity *io, bool update_movement) {
 
 	if(io) {
 		float speedfactor = io->basespeed + io->speed_modif;
@@ -1703,6 +1705,12 @@ void EERIEDrawAnimQuat(EERIE_3DOBJ *eobj, ANIM_USE * animlayer,const Anglef & an
 
 	Cedric_TransformVerts(eobj, pos);
 	Cedric_ViewProjectTransform(io, eobj);
+}
+
+void EERIEDrawAnimQuatRender(EERIE_3DOBJ *eobj, const Vec3f & pos, Entity *io, bool render) {
+
+	if(io && io != entities.player() && !Cedric_IO_Visible(io->pos))
+		return;
 
 	bool isFightingNpc = io &&
 						 (io->ioflags & IO_NPC) &&
@@ -1714,6 +1722,12 @@ void EERIEDrawAnimQuat(EERIE_3DOBJ *eobj, ANIM_USE * animlayer,const Anglef & an
 
 	if(render)
 		Cedric_AnimateDrawEntityRender(eobj, pos, io);
+}
+
+void EERIEDrawAnimQuat(EERIE_3DOBJ *eobj, ANIM_USE * animlayer,const Anglef & angle, const Vec3f & pos, unsigned long time, Entity *io, bool render, bool update_movement) {
+
+	EERIEDrawAnimQuatUpdate(eobj, animlayer,angle, pos, time, io, update_movement);
+	EERIEDrawAnimQuatRender(eobj, pos, io, render);
 }
 
 void AnimatedEntityUpdate(Entity * entity) {
