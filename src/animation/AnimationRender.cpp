@@ -1558,7 +1558,7 @@ void Cedric_ViewProjectTransform(Entity *io, EERIE_3DOBJ *eobj) {
 		EERIE_VERTEX * outVert = &eobj->vertexlist3[i];
 
 		Vec3f tempWorld;
-		EE_RT(&outVert->vert.p, &tempWorld);
+		EE_RT(&outVert->v, &tempWorld);
 		EE_P(&tempWorld, &outVert->vert);
 
 		// Updates 2D Bounding Box
