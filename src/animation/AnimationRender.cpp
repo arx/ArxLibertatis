@@ -647,10 +647,16 @@ void CalculateInterZMapp(EERIE_3DOBJ * _pobj3dObj, long lIdList, long * _piInd,
 	}
 }
 
-void DrawEERIEInter_ModelTransform(EERIE_3DOBJ *eobj, const TransformInfo &t, Entity *io) {
+void UpdateBbox3d(EERIE_3DOBJ *eobj, EERIE_3D_BBOX & box3D) {
 
-	EERIE_3D_BBOX box3D;
 	box3D.reset();
+
+	for(size_t i = 0 ; i < eobj->vertexlist.size(); i++) {
+		box3D.add(eobj->vertexlist3[i].v);
+	}
+}
+
+void DrawEERIEInter_ModelTransform(EERIE_3DOBJ *eobj, const TransformInfo &t) {
 
 	for(size_t i = 0 ; i < eobj->vertexlist.size(); i++) {
 
@@ -661,13 +667,7 @@ void DrawEERIEInter_ModelTransform(EERIE_3DOBJ *eobj, const TransformInfo &t, En
 		temp = TransformVertexQuat(t.rotation, temp);
 		temp += t.pos;
 
-		box3D.add(temp);
-
 		eobj->vertexlist3[i].v = temp;
-	}
-
-	if(io) {
-		io->bbox3D = box3D;
 	}
 }
 
@@ -950,7 +950,10 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, const TransformInfo &t, Entity *io, bool 
 	if(!forceDraw && io && io != entities.player() && !Cedric_IO_Visible(t.pos))
 		return;
 
-	DrawEERIEInter_ModelTransform(eobj, t, io);
+	DrawEERIEInter_ModelTransform(eobj, t);
+	if(io) {
+		UpdateBbox3d(eobj, io->bbox3D);
+	}
 	DrawEERIEInter_ViewProjectTransform(eobj, io);
 
 	if(!forceDraw && ARX_SCENE_PORTAL_ClipIO(io, t.pos))
