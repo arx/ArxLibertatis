@@ -1551,16 +1551,11 @@ void Cedric_TransformVerts(EERIE_3DOBJ *eobj, const Vec3f & pos) {
 
 void Cedric_ViewProjectTransform(Entity *io, EERIE_3DOBJ *eobj) {
 
-	EERIE_3D_BBOX box3D;
-	box3D.reset();
-
 	EERIE_2D_BBOX box2D;
 	box2D.reset();
 
 	for(size_t i = 0; i < eobj->vertexlist.size(); i++) {
 		EERIE_VERTEX * outVert = &eobj->vertexlist3[i];
-
-		box3D.add(outVert->v);
 
 		Vec3f tempWorld;
 		EE_RT(&outVert->vert.p, &tempWorld);
@@ -1573,7 +1568,6 @@ void Cedric_ViewProjectTransform(Entity *io, EERIE_3DOBJ *eobj) {
 	}
 
 	if(io) {
-		io->bbox3D = box3D;
 		io->bbox2D = box2D;
 	}
 }
@@ -1696,6 +1690,10 @@ void EERIEDrawAnimQuatUpdate(EERIE_3DOBJ *eobj, ANIM_USE * animlayer,const Angle
 	Cedric_ConcatenateTM(skeleton, t);
 
 	Cedric_TransformVerts(eobj, pos);
+	if(io) {
+		UpdateBbox3d(eobj, io->bbox3D);
+	}
+
 	Cedric_ViewProjectTransform(io, eobj);
 }
 
