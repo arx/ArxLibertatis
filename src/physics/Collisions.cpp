@@ -448,34 +448,37 @@ bool CollidedFromBack(Entity * io,Entity * ioo)
 	EERIEPOLY ep;
 	ep.type=0;
 
-	if (	(io )
-		&&	(ioo)
-		&&	(io->ioflags & IO_NPC)
-		&&	(ioo->ioflags & IO_NPC)	)
-	{
+	if(io
+	   && ioo
+	   && (io->ioflags & IO_NPC)
+	   && (ioo->ioflags & IO_NPC)
+	) {
 
-	
 	ep.v[0].p.x=io->pos.x;
 	ep.v[0].p.z=io->pos.z;
-	float ft=radians(135.f+90.f);
-		ep.v[1].p.x = EEsin(ft) * 180.f; 
-		ep.v[1].p.z = -EEcos(ft) * 180.f; 
-	ft=radians(225.f+90.f);
-		ep.v[2].p.x = EEsin(ft) * 180.f; 
-		ep.v[2].p.z = -EEcos(ft) * 180.f; 
+
+	float ft = radians(135.f + 90.f);
+	ep.v[1].p.x = EEsin(ft) * 180.f;
+	ep.v[1].p.z = -EEcos(ft) * 180.f;
+
+	ft = radians(225.f + 90.f);
+	ep.v[2].p.x = EEsin(ft) * 180.f;
+	ep.v[2].p.z = -EEcos(ft) * 180.f;
+
 	ft=radians(270.f-io->angle.b);
 	float ec=EEcos(ft);
 	float es=EEsin(ft);
-	EE_RotateY( &ep.v[1]  , &ep.tv[1]   , ec , es );
-	EE_RotateY( &ep.v[2]  , &ep.tv[2]   , ec , es );
+	EE_RotateY(&ep.v[1], &ep.tv[1], ec, es);
+	EE_RotateY(&ep.v[2], &ep.tv[2], ec, es);
 	ep.v[1].p.x=ep.tv[1].p.x+ep.v[0].p.x;
 	ep.v[1].p.z=ep.tv[1].p.z+ep.v[0].p.z;
 	ep.v[2].p.x=ep.tv[2].p.x+ep.v[0].p.x;
 	ep.v[2].p.z=ep.tv[2].p.z+ep.v[0].p.z;
 
 	// To keep if we need some visual debug
-	if (PointIn2DPolyXZ(&ep,ioo->pos.x,ioo->pos.z))
+	if(PointIn2DPolyXZ(&ep, ioo->pos.x, ioo->pos.z))
 		return true;
+
 	}
 
 	return false;
@@ -507,7 +510,6 @@ float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,Entity * ioo,long flags) {
 	float anything = 999999.f; 
 	
 	EERIEPOLY * ep;
-	FAST_BKG_DATA * feg;
 	
 	for(long j = pz - rad; j <= pz + rad; j++)
 	for(long i = px - rad; i <= px + rad; i++) {
@@ -536,7 +538,7 @@ float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,Entity * ioo,long flags) {
 			continue;
 
 
-		feg = &ACTIVEBKG->fastdata[i][j];
+		FAST_BKG_DATA * feg = &ACTIVEBKG->fastdata[i][j];
 		for(long k = 0; k < feg->nbpoly; k++) {
 			ep = &feg->polydata[k];
 
@@ -624,8 +626,9 @@ float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,Entity * ioo,long flags) {
 							for(long kk = 0; kk < 3; kk++) {
 								c.x += io->obj->vertexlist3[io->obj->facelist[ii].vid[kk]].v.x;
 								c.y += io->obj->vertexlist3[io->obj->facelist[ii].vid[kk]].v.y;
-								height = min(height, io->obj->vertexlist3[io->obj->facelist[ii].vid[kk]].v.y);
 								c.z += io->obj->vertexlist3[io->obj->facelist[ii].vid[kk]].v.z;
+
+								height = min(height, io->obj->vertexlist3[io->obj->facelist[ii].vid[kk]].v.y);
 							}
 
 							c.x *= ( 1.0f / 3 );
