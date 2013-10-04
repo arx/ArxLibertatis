@@ -76,124 +76,124 @@ bool DIRECT_PATH=true;
 
 //-----------------------------------------------------------------------------
 // Added immediate return (return anything;)
-inline float IsPolyInCylinder(EERIEPOLY *ep, EERIE_CYLINDER * cyl,long flag)
-{
-	long flags=flag;
-	POLYIN=0;
+inline float IsPolyInCylinder(EERIEPOLY * ep, EERIE_CYLINDER * cyl, long flag) {
+
+	long flags = flag;
+	POLYIN = 0;
 	float minf = cyl->origin.y + cyl->height;
 	float maxf = cyl->origin.y;
 
-	if (minf>ep->max.y) return 999999.f;
-
-	if (maxf<ep->min.y) return 999999.f;
+	if(minf > ep->max.y || maxf < ep->min.y)
+		return 999999.f;
 	
 	long to = (ep->type & POLY_QUAD) ? 4 : 3;
 
 	float nearest = 99999999.f;
 
-	for (long num=0;num<to;num++)
-	{
+	for(long num = 0; num < to; num++) {
 		float dd = fdist(Vec2f(ep->v[num].p.x, ep->v[num].p.z), Vec2f(cyl->origin.x, cyl->origin.z));
 
-		if (dd<nearest)
-		{
-			nearest=dd;
+		if(dd < nearest) {
+			nearest = dd;
 		}		
 	}
 
-	if (nearest > max(82.f,cyl->radius)) return 999999.f;
+	if(nearest > max(82.f, cyl->radius))
+		return 999999.f;
 
-	if (	(cyl->radius<30.f)
-		||	(cyl->height>-80.f)
-		||	(ep->area>5000.f)	)
-		flags|=CFLAG_EXTRA_PRECISION;
+	if(cyl->radius < 30.f
+	   || cyl->height > -80.f
+	   || ep->area > 5000.f
+	) {
+		flags |= CFLAG_EXTRA_PRECISION;
+	}
 
-	if (!(flags & CFLAG_EXTRA_PRECISION))
-	{
-		if (ep->area<100.f) return 999999.f;
+	if(!(flags & CFLAG_EXTRA_PRECISION)) {
+		if(ep->area < 100.f)
+			return 999999.f;
 	}
 	
-	float anything=999999.f;
+	float anything = 999999.f;
 
-	if (PointInCylinder(cyl, &ep->center)) 
-	{	
+	if(PointInCylinder(cyl, &ep->center)) {
 		POLYIN = 1;
 		
-		if (ep->norm.y<0.5f)
-			anything=min(anything,ep->min.y);
+		if(ep->norm.y < 0.5f)
+			anything = min(anything, ep->min.y);
 		else
-			anything=min(anything,ep->center.y);
+			anything = min(anything, ep->center.y);
 
-		if (!(flags & CFLAG_EXTRA_PRECISION)) return anything;
+		if(!(flags & CFLAG_EXTRA_PRECISION))
+			return anything;
 	}
 
 	
-	long r=to-1;
+	long r = to - 1;
 	
 	Vec3f center;
 	long n;
 	
-	for (n=0;n<to;n++)
-	{
-		if (flags & CFLAG_EXTRA_PRECISION)
-		{
-			for (long o=0;o<5;o++)
-			{
-				float p=(float)o*( 1.0f / 5 );
-				center = ep->v[n].p * p + ep->center * (1.f-p);
+	for(n = 0; n < to; n++) {
+		if(flags & CFLAG_EXTRA_PRECISION) {
+			for(long o = 0; o < 5; o++) {
+				float p = (float)o * (1.f/5);
+				center = ep->v[n].p * p + ep->center * (1.f - p);
 				if(PointInCylinder(cyl, &center)) {
-					anything=min(anything,center.y);
-					POLYIN=1;
-					if (!(flags & CFLAG_EXTRA_PRECISION)) return anything;
+					anything = min(anything, center.y);
+					POLYIN = 1;
+
+					if(!(flags & CFLAG_EXTRA_PRECISION))
+						return anything;
 				}
 			}
 		}
 
-		if ((ep->area>2000.f) 
-		        || (flags & CFLAG_EXTRA_PRECISION)  )
-		{
+		if(ep->area > 2000.f || (flags & CFLAG_EXTRA_PRECISION)) {
 			center = (ep->v[n].p + ep->v[r].p) * 0.5f;
 			if(PointInCylinder(cyl, &center)) {
-				anything=min(anything,center.y);
-				POLYIN=1;
-				if (!(flags & CFLAG_EXTRA_PRECISION)) return anything;
+				anything = min(anything, center.y);
+				POLYIN = 1;
+
+				if(!(flags & CFLAG_EXTRA_PRECISION))
+					return anything;
 			}
 
-			if ((ep->area>4000.f) || (flags & CFLAG_EXTRA_PRECISION)) {
+			if(ep->area > 4000.f || (flags & CFLAG_EXTRA_PRECISION)) {
 				center = (ep->v[n].p + ep->center) * 0.5f;
-				if (PointInCylinder(cyl, &center)) 
-				{	
-					anything=min(anything,center.y);
-					POLYIN=1;
+				if(PointInCylinder(cyl, &center)) {
+					anything = min(anything, center.y);
+					POLYIN = 1;
 
-					if (!(flags & CFLAG_EXTRA_PRECISION)) return anything;
+					if(!(flags & CFLAG_EXTRA_PRECISION))
+						return anything;
 				}
 			}
 
-			if ((ep->area>6000.f) || (flags & CFLAG_EXTRA_PRECISION)) {
+			if(ep->area > 6000.f || (flags & CFLAG_EXTRA_PRECISION)) {
 				center = (center + ep->v[n].p) * 0.5f;
-				if(PointInCylinder(cyl, &center))
-				{
-					anything=min(anything,center.y);
-					POLYIN=1;
+				if(PointInCylinder(cyl, &center)) {
+					anything = min(anything, center.y);
+					POLYIN = 1;
 
-					if (!(flags & CFLAG_EXTRA_PRECISION)) return anything;
+					if(!(flags & CFLAG_EXTRA_PRECISION))
+						return anything;
 				}
 			}
 		}
 
 		if(PointInCylinder(cyl, &ep->v[n].p)) {
 			
-			anything=min(anything,ep->v[n].p.y);
+			anything = min(anything, ep->v[n].p.y);
 			POLYIN = 1;
 
-			if (!(flags & CFLAG_EXTRA_PRECISION)) return anything;
+			if(!(flags & CFLAG_EXTRA_PRECISION))
+				return anything;
 		}
 
 		r++;
 
-		if (r>=to) r=0;
-	
+		if(r >= to)
+			r=0;
 	}
 
 
@@ -222,8 +222,8 @@ inline float IsPolyInCylinder(EERIEPOLY *ep, EERIE_CYLINDER * cyl,long flag)
 		}
 	} 
 //}*/
-	if ((anything!=999999.f) && (ep->norm.y<0.1f) && (ep->norm.y>-0.1f))
-		anything=min(anything,ep->min.y);
+	if(anything != 999999.f && ep->norm.y < 0.1f && ep->norm.y > -0.1f)
+		anything = min(anything, ep->min.y);
 
 	return anything;
 }
