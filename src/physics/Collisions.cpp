@@ -398,17 +398,17 @@ bool IsAnyNPCInPlatform(Entity * pfrm) {
 	for(size_t i = 0; i < entities.size(); i++) {
 		Entity * io = entities[i];
 
-		if (	(io) 
-			&&	(io!=pfrm)
-			&&	(io->ioflags & IO_NPC) 
-			&&	!(io->ioflags & IO_NO_COLLISIONS)			
-			&&	(io->show==SHOW_FLAG_IN_SCENE)	
-			)
-		{
+		if(io
+		   && io != pfrm
+		   && (io->ioflags & IO_NPC)
+		   && !(io->ioflags & IO_NO_COLLISIONS)
+		   && io->show == SHOW_FLAG_IN_SCENE
+		) {
 			EERIE_CYLINDER cyl;
-			GetIOCyl(io,&cyl);
+			GetIOCyl(io, &cyl);
 
-			if (CylinderPlatformCollide(&cyl,pfrm)!=0.f) return true;
+			if(CylinderPlatformCollide(&cyl, pfrm) != 0.f)
+				return true;
 		}
 	}
 
