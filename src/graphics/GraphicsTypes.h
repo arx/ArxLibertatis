@@ -273,20 +273,11 @@ struct CUB3D
 	float	zmax;
 };
 
-struct EERIE_MOD_INFO {
-	long link_origin;
-	Vec3f link_position;
-	Vec3f scale;
-	Anglef rot;
-	unsigned long	flags; // TODO unused?
-};
-
 struct EERIE_LINKED {
 	long lgroup; //linked to group n° if lgroup=-1 NOLINK
 	long lidx;
 	long lidx2;
 	EERIE_3DOBJ * obj;
-	EERIE_MOD_INFO modinfo;
 	Entity * io;
 };
 

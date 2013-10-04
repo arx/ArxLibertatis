@@ -54,7 +54,6 @@ struct ANIM_USE;
 class Entity;
 struct EERIEMATRIX;
 struct EERIE_QUAT;
-struct EERIE_MOD_INFO;
 struct TexturedVertex;
 
 float Cedric_GetInvisibility(Entity *io);

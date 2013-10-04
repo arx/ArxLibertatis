@@ -1299,15 +1299,14 @@ void Cedric_AnimateDrawEntityRender(EERIE_3DOBJ *eobj, const Vec3f & pos, Entity
 		)
 			continue;
 
-		link.modinfo.link_position = link.obj->vertexlist[link.lidx2].v - link.obj->vertexlist[link.obj->origin].v;
-		link.modinfo.rot = Anglef::ZERO;
-
 		EERIE_QUAT & quat = eobj->c_data->bones[link.lgroup].anim.quat;
 		Vec3f & posi = eobj->vertexlist3[link.lidx].v;
 
 		float scale = link.io ? link.io->scale : 1.f;
 
-		TransformInfo t(posi, quat, scale, link.modinfo.link_position);
+		Vec3f linkPosition = link.obj->vertexlist[link.lidx2].v - link.obj->vertexlist[link.obj->origin].v;
+
+		TransformInfo t(posi, quat, scale, linkPosition);
 
 		DrawEERIEInter(link.obj, t, link.io, true, invisibility);
 	}
