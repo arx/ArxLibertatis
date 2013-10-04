@@ -657,15 +657,13 @@ void DrawEERIEInter_ModelTransform(EERIE_3DOBJ *eobj, const TransformInfo &t, En
 		Vec3f temp = eobj->vertexlist[i].v;
 
 		temp -= t.offset;
-
 		temp *= t.scale;
+		temp = TransformVertexQuat(t.rotation, temp);
+		temp += t.pos;
 
-		Vec3f rotatedPosition;
-		rotatedPosition = TransformVertexQuat(t.rotation, temp);
+		box3D.add(temp);
 
-		eobj->vertexlist3[i].v = rotatedPosition += t.pos;
-
-		box3D.add(eobj->vertexlist3[i].v);
+		eobj->vertexlist3[i].v = temp;
 	}
 
 	if(io) {
