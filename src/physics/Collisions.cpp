@@ -1267,55 +1267,48 @@ bool AttemptValidCylinderPos(EERIE_CYLINDER * cyl, Entity * io, CollisionFlags f
 	
 	float anything = CheckAnythingInCylinder(cyl, io, flags); 
 
-	if ((flags & CFLAG_LEVITATE) && (anything==0.f)) return true;
+	if((flags & CFLAG_LEVITATE) && anything == 0.f)
+		return true;
 
-	if (anything>=0.f) // Falling Cylinder but valid pos !
-	{
-		if (flags & CFLAG_RETURN_HEIGHT)
-			cyl->origin.y+=anything;
+	// Falling Cylinder but valid pos !
+	if(anything >= 0.f) {
+		if(flags & CFLAG_RETURN_HEIGHT)
+			cyl->origin.y += anything;
 
 		return true;
 	}
 	
 	EERIE_CYLINDER tmp;
 
-	if (!(flags & CFLAG_ANCHOR_GENERATION))
-	{
+	if(!(flags & CFLAG_ANCHOR_GENERATION)) {
 		
-		memcpy(&tmp,cyl,sizeof(EERIE_CYLINDER));
+		memcpy(&tmp, cyl, sizeof(EERIE_CYLINDER));
 
-		while (anything<0.f) 
-		{
-			tmp.origin.y+=anything;
-			anything=CheckAnythingInCylinder(&tmp,io,flags);					
+		while(anything < 0.f) {
+			tmp.origin.y += anything;
+			anything = CheckAnythingInCylinder(&tmp, io, flags);
 		}
 
-		anything=tmp.origin.y-cyl->origin.y;
+		anything = tmp.origin.y - cyl->origin.y;
 	}
 
-	if (MOVING_CYLINDER)
-	{
-		if (flags & CFLAG_NPC)
-		{		
+	if(MOVING_CYLINDER) {
+		if(flags & CFLAG_NPC) {
 			float tolerate;
 			
 			if((flags & CFLAG_PLAYER) && player.jumpphase != NotJumping) {
-				tolerate=0;
-			}
-			else if ((io) && (io->ioflags & IO_NPC) && (io->_npcdata->pathfind.listnb > 0) && (io->_npcdata->pathfind.listpos < io->_npcdata->pathfind.listnb))
-			{
-				tolerate=-65-io->_npcdata->moveproblem;
-			}
-			else 
-			{
-				if ((io) &&
-				        (io->_npcdata))
-				{
+				tolerate = 0;
+			} else if(io
+					&& (io->ioflags & IO_NPC)
+					&& io->_npcdata->pathfind.listnb > 0
+					&& io->_npcdata->pathfind.listpos < io->_npcdata->pathfind.listnb
+			) {
+				tolerate = -65 - io->_npcdata->moveproblem;
+			} else {
+				if(io && io->_npcdata) {
 					tolerate = -55 - io->_npcdata->moveproblem; 
-				}
-				else
-				{
-					tolerate=0.f;
+				} else {
+					tolerate = 0.f;
 				}
 			}
 			
@@ -1328,88 +1321,79 @@ bool AttemptValidCylinderPos(EERIE_CYLINDER * cyl, Entity * io, CollisionFlags f
 			}
 		}
 		
-		if (io && (flags & CFLAG_PLAYER) && (anything<0.f) && (flags & CFLAG_JUST_TEST))
-		{
+		if(io && (flags & CFLAG_PLAYER) && anything < 0.f && (flags & CFLAG_JUST_TEST)) {
 			EERIE_CYLINDER tmpp;
-			memcpy(&tmpp,cyl,sizeof(EERIE_CYLINDER));
-			tmpp.radius*=0.7f;
-			float tmp=CheckAnythingInCylinder(&tmpp,io,flags | CFLAG_JUST_TEST);
+			memcpy(&tmpp, cyl, sizeof(EERIE_CYLINDER));
+			tmpp.radius *= 0.7f;
 
-			if ((tmp > 50.f))
-			{		
-				tmpp.radius=cyl->radius*1.4f;
-					tmpp.origin.y-=30.f;
-					float tmp=CheckAnythingInCylinder(&tmpp,io,flags | CFLAG_JUST_TEST);
+			float tmp = CheckAnythingInCylinder(&tmpp, io, flags | CFLAG_JUST_TEST);
 
-					if (tmp<0)
-				return false;
+			if(tmp > 50.f) {
+				tmpp.radius = cyl->radius * 1.4f;
+				tmpp.origin.y -= 30.f;
+				float tmp = CheckAnythingInCylinder(&tmpp, io, flags | CFLAG_JUST_TEST);
+
+				if(tmp < 0)
+					return false;
 			}
 		}
 
-		if (io && (!(flags & CFLAG_JUST_TEST)))
-		{
-			if ((flags & CFLAG_PLAYER) && (anything<0.f))
-			{
+		if(io && !(flags & CFLAG_JUST_TEST)) {
+			if((flags & CFLAG_PLAYER) && anything < 0.f) {
 				
 				if(player.jumpphase != NotJumping) {
 					io->_npcdata->climb_count = MAX_ALLOWED_PER_SECOND;
 					return false;
 				}
 
-				float dist = max(vector2D.length(),1.f);
+				float dist = max(vector2D.length(), 1.f);
 				float pente = EEfabs(anything) / dist * ( 1.0f / 2 ); 
-				io->_npcdata->climb_count+=pente;
+				io->_npcdata->climb_count += pente;
 
-				if (io->_npcdata->climb_count>MAX_ALLOWED_PER_SECOND)
-				{
-					io->_npcdata->climb_count=MAX_ALLOWED_PER_SECOND;
+				if(io->_npcdata->climb_count > MAX_ALLOWED_PER_SECOND) {
+					io->_npcdata->climb_count = MAX_ALLOWED_PER_SECOND;
 				}
 
-				if (anything < -55) 
-				{
-					io->_npcdata->climb_count=MAX_ALLOWED_PER_SECOND;
+				if(anything < -55) {
+					io->_npcdata->climb_count = MAX_ALLOWED_PER_SECOND;
 					return false;
 				}
 
 				EERIE_CYLINDER tmpp;
-				memcpy(&tmpp,cyl,sizeof(EERIE_CYLINDER));
+				memcpy(&tmpp, cyl, sizeof(EERIE_CYLINDER));
 				tmpp.radius *= 0.65f; 
-				float tmp=CheckAnythingInCylinder(&tmpp,io,flags | CFLAG_JUST_TEST);
+				float tmp = CheckAnythingInCylinder(&tmpp, io, flags | CFLAG_JUST_TEST);
 
-				if (tmp > 50.f)
-				{				
-					tmpp.radius=cyl->radius*1.45f;
-					tmpp.origin.y-=30.f;
-					float tmp=CheckAnythingInCylinder(&tmpp,io,flags | CFLAG_JUST_TEST);
+				if(tmp > 50.f) {
+					tmpp.radius = cyl->radius * 1.45f;
+					tmpp.origin.y -= 30.f;
+					float tmp = CheckAnythingInCylinder(&tmpp, io, flags | CFLAG_JUST_TEST);
 
-					if (tmp<0)
+					if(tmp < 0)
 						return false;
 				}	
 			}			
 		}
+	} else if(anything < -45) {
+		return false;
 	}
-	else if (anything<-45) return false;
 
-	if ((flags & CFLAG_SPECIAL) && (anything<-40)) 
-	{
-		if (flags & CFLAG_RETURN_HEIGHT)
-			cyl->origin.y+=anything;
+	if((flags & CFLAG_SPECIAL) && anything < -40) {
+		if(flags & CFLAG_RETURN_HEIGHT)
+			cyl->origin.y += anything;
 
 		return false;
 	}
 
-	memcpy(&tmp,cyl,sizeof(EERIE_CYLINDER));
-	tmp.origin.y+=anything;
+	memcpy(&tmp, cyl, sizeof(EERIE_CYLINDER));
+	tmp.origin.y += anything;
 	anything = CheckAnythingInCylinder(&tmp, io, flags);
 
-	if (anything<0.f) 
-	{
-		if (flags & CFLAG_RETURN_HEIGHT)
-		{
-			while (anything<0.f) 
-			{
-				tmp.origin.y+=anything;
-				anything=CheckAnythingInCylinder(&tmp,io,flags);
+	if(anything < 0.f) {
+		if(flags & CFLAG_RETURN_HEIGHT) {
+			while(anything < 0.f) {
+				tmp.origin.y += anything;
+				anything = CheckAnythingInCylinder(&tmp, io, flags);
 			}
 
 			cyl->origin.y = tmp.origin.y; 
@@ -1418,7 +1402,7 @@ bool AttemptValidCylinderPos(EERIE_CYLINDER * cyl, Entity * io, CollisionFlags f
 		return false;
 	}
 
-	cyl->origin.y=tmp.origin.y;
+	cyl->origin.y = tmp.origin.y;
 	return true;
 }
 
