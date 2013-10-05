@@ -3009,62 +3009,54 @@ void ShowInfoText() {
 	mainApp->outputText( 100, 208, tex );
 
 #ifdef BUILD_EDITOR
-	if(ValidIONum(LastSelectedIONum))
-	{
+	if(ValidIONum(LastSelectedIONum)) {
 		io = entities[LastSelectedIONum];
 
-	  if (io)
-	  {
-		  if (io==entities.player())
-		  {
-			  	sprintf(tex,"%4.0f %4.0f %4.0f - %4.0f %4.0f %4.0f -- %3.0f %d/%ld targ %ld beh %ld",io->pos.x,
-					io->pos.y,io->pos.z,io->move.x,
-					io->move.y,io->move.z,io->_npcdata->moveproblem,io->_npcdata->pathfind.listpos,io->_npcdata->pathfind.listnb,
-					io->_npcdata->pathfind.truetarget, (long)io->_npcdata->behavior);
-				mainApp->outputText(170, 420, tex);
-			sprintf(tex,"Life %4.0f/%4.0f Mana %4.0f/%4.0f Poisoned %3.1f Hunger %4.1f",player.life,player.maxlife,
-					player.mana,player.maxmana,player.poison,player.hunger);
-				mainApp->outputText( 170, 320, tex );
-
-		  }
-		  else
-		  {
-			  if (io->ioflags & IO_NPC)
-			  {
-				  
+		if(io) {
+			if(io == entities.player()) {
 				sprintf(tex,"%4.0f %4.0f %4.0f - %4.0f %4.0f %4.0f -- %3.0f %d/%ld targ %ld beh %ld",io->pos.x,
+				io->pos.y,io->pos.z,io->move.x,
+				io->move.y,io->move.z,io->_npcdata->moveproblem,io->_npcdata->pathfind.listpos,io->_npcdata->pathfind.listnb,
+				io->_npcdata->pathfind.truetarget, (long)io->_npcdata->behavior);
+				mainApp->outputText(170, 420, tex);
+
+				sprintf(tex,"Life %4.0f/%4.0f Mana %4.0f/%4.0f Poisoned %3.1f Hunger %4.1f",player.life,player.maxlife,
+				player.mana,player.maxmana,player.poison,player.hunger);
+				mainApp->outputText( 170, 320, tex );
+			} else {
+				if(io->ioflags & IO_NPC) {
+					sprintf(tex,"%4.0f %4.0f %4.0f - %4.0f %4.0f %4.0f -- %3.0f %d/%ld targ %ld beh %ld",io->pos.x,
 					io->pos.y,io->pos.z,io->move.x,
 					io->move.y,io->move.z,io->_npcdata->moveproblem,io->_npcdata->pathfind.listpos,io->_npcdata->pathfind.listnb,
 					io->_npcdata->pathfind.truetarget, (long)io->_npcdata->behavior);
-				mainApp->outputText(170, 420, tex);
-				sprintf(tex,"Life %4.0f/%4.0f Mana %4.0f/%4.0f Poisoned %3.1f",io->_npcdata->life,io->_npcdata->maxlife,
+					mainApp->outputText(170, 420, tex);
+
+					sprintf(tex,"Life %4.0f/%4.0f Mana %4.0f/%4.0f Poisoned %3.1f",io->_npcdata->life,io->_npcdata->maxlife,
 					io->_npcdata->mana,io->_npcdata->maxmana,io->_npcdata->poisonned);
-				mainApp->outputText( 170, 320, tex );
-				sprintf(tex,"AC %3.0f Absorb %3.0f",ARX_INTERACTIVE_GetArmorClass(io),io->_npcdata->absorb);
-				mainApp->outputText( 170, 335, tex );
+					mainApp->outputText(170, 320, tex);
 
-				if (io->_npcdata->pathfind.flags  & PATHFIND_ALWAYS)
-					mainApp->outputText( 170, 360, "PF_ALWAYS" );
-				else
-				{
-					sprintf(tex, "PF_%ld", (long)io->_npcdata->pathfind.flags);
-					mainApp->outputText(170, 360, tex);
+					sprintf(tex,"AC %3.0f Absorb %3.0f",ARX_INTERACTIVE_GetArmorClass(io),io->_npcdata->absorb);
+					mainApp->outputText(170, 335, tex);
+
+					if(io->_npcdata->pathfind.flags & PATHFIND_ALWAYS) {
+						mainApp->outputText(170, 360, "PF_ALWAYS");
+					} else {
+						sprintf(tex, "PF_%ld", (long)io->_npcdata->pathfind.flags);
+						mainApp->outputText(170, 360, tex);
+					}
 				}
-			  }
 
-			  if (io->ioflags & IO_FIX)
-			  {
-				sprintf(tex,"Durability %4.0f/%4.0f Poisonous %3d count %d",io->durability,io->max_durability,io->poisonous,io->poisonous_count);
-				mainApp->outputText( 170, 320, tex );
-			  }
+				if(io->ioflags & IO_FIX) {
+					sprintf(tex,"Durability %4.0f/%4.0f Poisonous %3d count %d",io->durability,io->max_durability,io->poisonous,io->poisonous_count);
+					mainApp->outputText(170, 320, tex);
+				}
 
-			  if (io->ioflags & IO_ITEM)
-			  {
-				sprintf(tex,"Durability %4.0f/%4.0f Poisonous %3d count %d",io->durability,io->max_durability,io->poisonous,io->poisonous_count);
-				mainApp->outputText( 170, 320, tex );
-			  }
-		  }
-	  }
+				if(io->ioflags & IO_ITEM) {
+					sprintf(tex,"Durability %4.0f/%4.0f Poisonous %3d count %d",io->durability,io->max_durability,io->poisonous,io->poisonous_count);
+					mainApp->outputText(170, 320, tex);
+				}
+			}
+		}
 	}
 #endif // BUILD_EDITOR
 
