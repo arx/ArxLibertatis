@@ -5669,93 +5669,64 @@ void ARX_INTERFACE_DrawCurrentTorch() {
 extern float GLOBAL_SLOWDOWN;
 
 void drawCombatInterface() {
-	if (player.Interface & INTER_COMBATMODE) {
-		float j;
-
-		if(AimTime == 0) {
-			j = 0.2f;
+	float j;
+	if(AimTime == 0) {
+		j = 0.2f;
+	} else {
+		if(BOW_FOCAL) {
+			j=(float)(BOW_FOCAL)/710.f;
 		} else {
-			if(BOW_FOCAL) {
-				j=(float)(BOW_FOCAL)/710.f;
-			} else {
-				float at=float(arxtime)-(float)AimTime;
-				if(at > 0.f)
-					bIsAiming = true;
-				else
-					bIsAiming = false;
+			float at=float(arxtime)-(float)AimTime;
+			if(at > 0.f)
+				bIsAiming = true;
+			else
+				bIsAiming = false;
 
-				at=at*(1.f+(1.f-GLOBAL_SLOWDOWN));
-				float aim = static_cast<float>(player.Full_AimTime);
-				j=at/aim;
-			}
-			j = clamp(j, 0.2f, 1.f);
+			at=at*(1.f+(1.f-GLOBAL_SLOWDOWN));
+			float aim = static_cast<float>(player.Full_AimTime);
+			j=at/aim;
 		}
+		j = clamp(j, 0.2f, 1.f);
+	}
 
+	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+	ARX_INTERFACE_DrawItem(ITC.Get("aim_maxi"), g_size.center().x + INTERFACE_RATIO(-320+262.f), g_size.height() + INTERFACE_RATIO(-72.f), 0.0001f, Color::gray(j));
+	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+	ARX_INTERFACE_DrawItem(ITC.Get("aim_empty"), g_size.center().x + INTERFACE_RATIO(-320+262.f), g_size.height() + INTERFACE_RATIO(-72.f), 0.0001f, Color::white);
+
+	if(bHitFlash && player.Full_Skill_Etheral_Link >= 40) {
+		float j = 1.0f - fHitFlash;
 		GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-
 		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-		ARX_INTERFACE_DrawItem(ITC.Get("aim_maxi"), g_size.center().x + INTERFACE_RATIO(-320+262.f), g_size.height() + INTERFACE_RATIO(-72.f), 0.0001f, Color::gray(j));
+		Color col = (j < 0.5f) ? Color3f(j*2.0f, 1, 0).to<u8>() : Color3f(1, fHitFlash, 0).to<u8>();
+		ARX_INTERFACE_DrawItem(ITC.Get("aim_hit"), g_size.center().x + INTERFACE_RATIO(-320+262.f-25), g_size.height() + INTERFACE_RATIO(-72.f-30), 0.0001f, col);
 		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-		ARX_INTERFACE_DrawItem(ITC.Get("aim_empty"), g_size.center().x + INTERFACE_RATIO(-320+262.f), g_size.height() + INTERFACE_RATIO(-72.f), 0.0001f, Color::white);
-
-		if(bHitFlash && player.Full_Skill_Etheral_Link >= 40) {
-			float j = 1.0f - fHitFlash;
-			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-			GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-			Color col = (j < 0.5f) ? Color3f(j*2.0f, 1, 0).to<u8>() : Color3f(1, fHitFlash, 0).to<u8>();
-			ARX_INTERFACE_DrawItem(ITC.Get("aim_hit"), g_size.center().x + INTERFACE_RATIO(-320+262.f-25), g_size.height() + INTERFACE_RATIO(-72.f-30), 0.0001f, col);
-			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+	}
+	
+	if(bHitFlash) {
+		float fCalc = ulHitFlash + Original_framedelay;
+		ulHitFlash = checked_range_cast<unsigned long>(fCalc);
+		if(ulHitFlash >= 500) {
+			bHitFlash = false;
+			ulHitFlash = 0;
 		}
 	}
 }
 
-void ArxGame::drawAllInterface() {
-	
-	GRenderer->GetTextureStage(0)->setMinFilter(TextureStage::FilterLinear);
-	GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterNearest);
-	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapClamp);
-	
-	drawCombatInterface();
+void drawSecondaryInvOrStealInv() {
+	Entity * io = NULL;
+	if(SecondaryInventory) {
+		io = SecondaryInventory->io;
+	} else if(player.Interface & INTER_STEAL) {
+		io = ioSteal;
+	}
 
-		if(bHitFlash) {
-			float fCalc = ulHitFlash + Original_framedelay;
-
-			ulHitFlash = checked_range_cast<unsigned long>(fCalc);
-
-			if(ulHitFlash >= 500) {
-				bHitFlash = false;
-				ulHitFlash = 0;
-			}
-		}
-
-		//---------------------------------------------------------------------
-		Entity * io = NULL;
-
-		if(SecondaryInventory) {
-			io = SecondaryInventory->io;
-		} else if(player.Interface & INTER_STEAL) {
-			io = ioSteal;
-		}
-
-		if(io) {
-			float dist = fdist(io->pos, player.pos + (Vec3f::Y_AXIS * 80.f));
-
-			if(Project.telekinesis) {
-				if(dist > 900.f) {
-					if(InventoryDir != -1) {
-						ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
-
-						InventoryDir=-1;
-						SendIOScriptEvent(io,SM_INVENTORY2_CLOSE);
-						TSecondaryInventory=SecondaryInventory;
-						SecondaryInventory=NULL;
-					} else {
-						if(player.Interface & INTER_STEAL) {
-							player.Interface &= ~INTER_STEAL;
-						}
-					}
-				}
-			} else if(dist > 350.f) {
+	if(io) {
+		float dist = fdist(io->pos, player.pos + (Vec3f::Y_AXIS * 80.f));
+		if(Project.telekinesis) {
+			if(dist > 900.f) {
 				if(InventoryDir != -1) {
 					ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
 
@@ -5769,23 +5740,38 @@ void ArxGame::drawAllInterface() {
 					}
 				}
 			}
-		} else if(InventoryDir != -1) {
-			InventoryDir = -1;
+		} else if(dist > 350.f) {
+			if(InventoryDir != -1) {
+				ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
+
+				InventoryDir=-1;
+				SendIOScriptEvent(io,SM_INVENTORY2_CLOSE);
+				TSecondaryInventory=SecondaryInventory;
+				SecondaryInventory=NULL;
+			} else {
+				if(player.Interface & INTER_STEAL) {
+					player.Interface &= ~INTER_STEAL;
+				}
+			}
 		}
+	} else if(InventoryDir != -1) {
+		InventoryDir = -1;
+	}
+	if(!PLAYER_INTERFACE_HIDE_COUNT && TSecondaryInventory) {
+		ARX_INTERFACE_DrawSecondaryInventory((bool)((player.Interface & INTER_STEAL) != 0));
+	}
+}
 
-		if(!PLAYER_INTERFACE_HIDE_COUNT && TSecondaryInventory) {
-			ARX_INTERFACE_DrawSecondaryInventory((bool)((player.Interface & INTER_STEAL) != 0));
-		}
+void drawInventory() {
+	if(player.Interface & INTER_INVENTORY) {
+		if((player.Interface & INTER_COMBATMODE) || player.doingmagic >= 2) {
+			long t = Original_framedelay * (1.f/5) + 2;
+			InventoryY += static_cast<long>(INTERFACE_RATIO_LONG(t));
 
-		if(!PLAYER_INTERFACE_HIDE_COUNT) {
-			if(player.Interface & INTER_INVENTORY) {
-				if((player.Interface & INTER_COMBATMODE) || player.doingmagic >= 2) {
-					long t = Original_framedelay * (1.f/5) + 2;
-					InventoryY += static_cast<long>(INTERFACE_RATIO_LONG(t));
-
-					if(InventoryY > INTERFACE_RATIO(110.f))
-						InventoryY = static_cast<long>(INTERFACE_RATIO(110.f));
-				} else {
+			if(InventoryY > INTERFACE_RATIO(110.f)) {
+				InventoryY = static_cast<long>(INTERFACE_RATIO(110.f));
+			}
+		} else {
 					if(bInventoryClosing) {
 						long t = Original_framedelay * (1.f/5) + 2;
 						InventoryY += static_cast<long>(INTERFACE_RATIO_LONG(t));
@@ -5928,7 +5914,21 @@ void ArxGame::drawAllInterface() {
 					iOffsetY += checked_range_cast<int>(fOffsetY);
 				}
 			}
-		}
+}
+
+void ArxGame::drawAllInterface() {
+	
+	GRenderer->GetTextureStage(0)->setMinFilter(TextureStage::FilterLinear);
+	GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterNearest);
+	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapClamp);
+	if(player.Interface & INTER_COMBATMODE) {
+		drawCombatInterface();
+	}	
+	drawSecondaryInvOrStealInv();	
+
+	if(!PLAYER_INTERFACE_HIDE_COUNT) {
+			drawInventory();
+	}
 
 		if(FlyingOverIO
 		   && !(player.Interface & INTER_COMBATMODE)
