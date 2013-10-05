@@ -5674,10 +5674,45 @@ void ARX_INTERFACE_DrawCurrentTorch() {
 extern float GLOBAL_SLOWDOWN;
 extern long SPLASH_THINGS_STAGE;
 
-void ArxGame::updateAllInterface() {
-}
+void drawCombatInterface() {
+	if (player.Interface & INTER_COMBATMODE) {
+		float j;
 
-void ArxGame::drawAllInterfac() { //TODO Rename this
+		if(AimTime == 0) {
+			j = 0.2f;
+		} else {
+			if(BOW_FOCAL) {
+				j=(float)(BOW_FOCAL)/710.f;
+			} else {
+				float at=float(arxtime)-(float)AimTime;
+				if(at > 0.f)
+					bIsAiming = true;
+				else
+					bIsAiming = false;
+
+				at=at*(1.f+(1.f-GLOBAL_SLOWDOWN));
+				float aim = static_cast<float>(player.Full_AimTime);
+				j=at/aim;
+			}
+			j = clamp(j, 0.2f, 1.f);
+		}
+
+		GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+
+		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+		ARX_INTERFACE_DrawItem(ITC.Get("aim_maxi"), g_size.center().x + INTERFACE_RATIO(-320+262.f), g_size.height() + INTERFACE_RATIO(-72.f), 0.0001f, Color::gray(j));
+		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+		ARX_INTERFACE_DrawItem(ITC.Get("aim_empty"), g_size.center().x + INTERFACE_RATIO(-320+262.f), g_size.height() + INTERFACE_RATIO(-72.f), 0.0001f, Color::white);
+
+		if(bHitFlash && player.Full_Skill_Etheral_Link >= 40) {
+			float j = 1.0f - fHitFlash;
+			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+			GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+			Color col = (j < 0.5f) ? Color3f(j*2.0f, 1, 0).to<u8>() : Color3f(1, fHitFlash, 0).to<u8>();
+			ARX_INTERFACE_DrawItem(ITC.Get("aim_hit"), g_size.center().x + INTERFACE_RATIO(-320+262.f-25), g_size.height() + INTERFACE_RATIO(-72.f-30), 0.0001f, col);
+			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+		}
+	}
 }
 
 void ArxGame::drawAllInterface() {
@@ -5685,47 +5720,8 @@ void ArxGame::drawAllInterface() {
 	GRenderer->GetTextureStage(0)->SetMinFilter(TextureStage::FilterLinear);
 	GRenderer->GetTextureStage(0)->SetMagFilter(TextureStage::FilterNearest);
 	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
-
-		if (player.Interface & INTER_COMBATMODE) {
-			float j;
-
-			if(AimTime == 0) {
-				j = 0.2f;
-			} else {
-				if(BOW_FOCAL) {
-					j=(float)(BOW_FOCAL)/710.f;
-				} else {
-					float at=float(arxtime)-(float)AimTime;
-
-					if(at > 0.f)
-						bIsAiming = true;
-					else
-						bIsAiming = false;
-
-					at=at*(1.f+(1.f-GLOBAL_SLOWDOWN));
-					float aim = static_cast<float>(player.Full_AimTime);
-					j=at/aim;
-				}
-
-				j = clamp(j, 0.2f, 1.f);
-			}
-
-			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-
-			GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-			ARX_INTERFACE_DrawItem(ITC.Get("aim_maxi"), g_size.center().x + INTERFACE_RATIO(-320+262.f), g_size.height() + INTERFACE_RATIO(-72.f), 0.0001f, Color::gray(j));
-			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-			ARX_INTERFACE_DrawItem(ITC.Get("aim_empty"), g_size.center().x + INTERFACE_RATIO(-320+262.f), g_size.height() + INTERFACE_RATIO(-72.f), 0.0001f, Color::white);
-
-			if(bHitFlash && player.Full_Skill_Etheral_Link >= 40){
-				float j = 1.0f - fHitFlash;
-				GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-				GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-				Color col = (j < 0.5f) ? Color3f(j*2.0f, 1, 0).to<u8>() : Color3f(1, fHitFlash, 0).to<u8>();
-				ARX_INTERFACE_DrawItem(ITC.Get("aim_hit"), g_size.center().x + INTERFACE_RATIO(-320+262.f-25), g_size.height() + INTERFACE_RATIO(-72.f-30), 0.0001f, col);
-				GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-			}
-		}
+	
+	drawCombatInterface();
 
 		if(bHitFlash) {
 			float fCalc = ulHitFlash + Original_framedelay;
