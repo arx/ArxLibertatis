@@ -130,6 +130,10 @@ extern void InitTileLights();
 long Manage3DCursor(long flags); // flags & 1 == simulation
 long IN_BOOK_DRAW=0;
 
+#ifdef BUILD_EDITOR
+extern long LastSelectedIONum;
+#endif
+
 //-----------------------------------------------------------------------------
 struct ARX_INTERFACE_HALO_STRUCT
 {
@@ -2009,6 +2013,23 @@ void ArxGame::manageEditorControls() {
 				ARX_PLAYER_Remove_Invisibility();
 		}
 	
+
+#ifdef BUILD_EDITOR
+		// Debug Selection
+		if((LastMouseClick & 1) && !(EERIEMouseButton & 1)) {
+			Entity * io = GetFirstInterAtPos(&DANAEMouse);
+
+			if(io) {
+				LastSelectedIONum = io->index();
+			} else {
+				if(LastSelectedIONum == -1)
+					LastSelectedIONum = 0;
+				else
+					LastSelectedIONum = -1;
+			}
+		}
+#endif
+
 	}
 }
 
