@@ -1702,7 +1702,7 @@ void ArxGame::render() {
 	subj.orgTrans.mod = subj.center.to<float>();
 
 	// Finally computes current focal
-	BASE_FOCAL=(float)CURRENT_BASE_FOCAL+(BOW_FOCAL*( 1.0f / 4 ));
+	BASE_FOCAL = (float)CURRENT_BASE_FOCAL + (BOW_FOCAL * (1.f/4));
 
 	// SPECIFIC code for Snapshot MODE... to insure constant capture framerate
 
@@ -1713,38 +1713,38 @@ void ArxGame::render() {
 	{
 		ARX_MOUSE_OVER = 0;
 
-		if(ARXmenu.currentmode == AMCM_OFF) // Playing Game
-		{
+		if(ARXmenu.currentmode == AMCM_OFF) { // Playing Game
 			// Checks Clicks in Book Interface
-			if (ARX_INTERFACE_MouseInBook())
-			{
-				ARX_MOUSE_OVER|=ARX_MOUSE_OVER_BOOK;
-				LASTBOOKBUTTON=BOOKBUTTON;
-				BOOKBUTTON=EERIEMouseButton;
+			if(ARX_INTERFACE_MouseInBook()) {
+				ARX_MOUSE_OVER |= ARX_MOUSE_OVER_BOOK;
+				LASTBOOKBUTTON = BOOKBUTTON;
+				BOOKBUTTON = EERIEMouseButton;
 
-				if ( ((EERIEMouseButton & 1) && !(LastMouseClick & 1) )
-					|| ((EERIEMouseButton & 2) && !(LastMouseClick & 2) ) )
-				{
+				if(((EERIEMouseButton & 1) && !(LastMouseClick & 1))
+				   || ((EERIEMouseButton & 2) && !(LastMouseClick & 2))
+				) {
 					bookclick = DANAEMouse;
 				}
+			} else if(InSecondaryInventoryPos(&DANAEMouse)) {
+				ARX_MOUSE_OVER |= ARX_MOUSE_OVER_INVENTORY_2;
+			} else if(InPlayerInventoryPos(&DANAEMouse)) {
+				ARX_MOUSE_OVER |= ARX_MOUSE_OVER_INVENTORY;
 			}
-			else if (InSecondaryInventoryPos(&DANAEMouse))
-				ARX_MOUSE_OVER|=ARX_MOUSE_OVER_INVENTORY_2;
-			else if (InPlayerInventoryPos(&DANAEMouse))
-				ARX_MOUSE_OVER|=ARX_MOUSE_OVER_INVENTORY;
 		}
 
 		if((player.Interface & INTER_COMBATMODE) || PLAYER_MOUSELOOK_ON) {
 			FlyingOverIO = NULL; // Avoid to check with those modes
 		} else {
-			if(!DRAGINTER)
-			{
-				if (!BLOCK_PLAYER_CONTROLS && !TRUE_PLAYER_MOUSELOOK_ON && !(ARX_MOUSE_OVER & ARX_MOUSE_OVER_BOOK)
-					&& (eMouseState != MOUSE_IN_NOTE)
-				   )
+			if(!DRAGINTER) {
+				if(!BLOCK_PLAYER_CONTROLS
+				   && !TRUE_PLAYER_MOUSELOOK_ON
+				   && !(ARX_MOUSE_OVER & ARX_MOUSE_OVER_BOOK)
+				   && eMouseState != MOUSE_IN_NOTE
+				) {
 					FlyingOverIO = FlyingOverObject(&DANAEMouse);
-				else
+				} else {
 					FlyingOverIO = NULL;
+				}
 			}
 		}
 
@@ -1760,7 +1760,7 @@ void ArxGame::render() {
 		}
 	}
 
-	if(CheckInPoly(player.pos.x,player.pos.y,player.pos.z)) {
+	if(CheckInPoly(player.pos.x, player.pos.y, player.pos.z)) {
 		LastValidPlayerPos = player.pos;
 	}
 
@@ -1801,14 +1801,12 @@ void ArxGame::render() {
 		GRenderer->EndScene();
 	}
 	
-	if (LaunchDemo)
-	{
-		LaunchDemo=0;
+	if(LaunchDemo) {
+		LaunchDemo = 0;
 		LaunchDummyParticle();
 	}
 	
-	if (ARXmenu.currentmode == AMCM_OFF)
-	{
+	if(ARXmenu.currentmode == AMCM_OFF) {
 		ARX_SCRIPT_AllowInterScriptExec();
 		ARX_SCRIPT_EventStackExecute();
 		// Updates Damages Spheres
@@ -1819,7 +1817,7 @@ void ArxGame::render() {
 	}
 
 	arxtime.update_last_frame_time();
-	LastMouseClick=EERIEMouseButton;
+	LastMouseClick = EERIEMouseButton;
 }
 
 void EE_RT(Vec3f * in, Vec3f * out);
