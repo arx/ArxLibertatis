@@ -1018,7 +1018,7 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 				ais.linked_data[count].lgroup = io->obj->linked[count].lgroup;
 				ais.linked_data[count].lidx = io->obj->linked[count].lidx;
 				ais.linked_data[count].lidx2 = io->obj->linked[count].lidx2;
-				ais.linked_data[count].modinfo = io->obj->linked[count].modinfo;
+				ais.linked_data[count].modinfo = SavedModInfo();
 				FillIOIdent(ais.linked_data[count].linked_id, GetObjIOSource(io->obj->linked[count].obj));
 				count++;
 			}
@@ -2334,7 +2334,6 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) {
 					io->obj->linked[n].lgroup = ais->linked_data[n].lgroup;
 					io->obj->linked[n].lidx = ais->linked_data[n].lidx;
 					io->obj->linked[n].lidx2 = ais->linked_data[n].lidx2;
-					io->obj->linked[n].modinfo = ais->linked_data[n].modinfo;
 					memcpy(Gaids[Gaids_Number]->linked_id[n], ais->linked_data[n].linked_id, SIZE_ID);
 					io->obj->linked[n].io = NULL;
 					io->obj->linked[n].obj = NULL;

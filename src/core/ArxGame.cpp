@@ -1508,10 +1508,12 @@ void ArxGame::renderLevel() {
 	// NOW DRAW the player (Really...)
 	if(entities.player() && entities.player()->animlayer[0].cur_anim) {
 
-		if(entities.player()->invisibility > 0.9f)
-			entities.player()->invisibility = 0.9f;
+		float invisibility = entities.player()->invisibility;
 
-		AnimatedEntityRender(entities.player());
+		if(invisibility > 0.9f)
+			invisibility = 0.9f;
+
+		AnimatedEntityRender(entities.player(), invisibility);
 	}
 
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);

@@ -129,7 +129,11 @@ extern void InitTileLights();
 
 long Manage3DCursor(long flags); // flags & 1 == simulation
 long IN_BOOK_DRAW=0;
-extern float INVISIBILITY_OVERRIDE;
+
+#ifdef BUILD_EDITOR
+extern long LastSelectedIONum;
+#endif
+
 //-----------------------------------------------------------------------------
 struct ARX_INTERFACE_HALO_STRUCT
 {
@@ -2009,6 +2013,23 @@ void ArxGame::manageEditorControls() {
 				ARX_PLAYER_Remove_Invisibility();
 		}
 	
+
+#ifdef BUILD_EDITOR
+		// Debug Selection
+		if((LastMouseClick & 1) && !(EERIEMouseButton & 1)) {
+			Entity * io = GetFirstInterAtPos(&DANAEMouse);
+
+			if(io) {
+				LastSelectedIONum = io->index();
+			} else {
+				if(LastSelectedIONum == -1)
+					LastSelectedIONum = 0;
+				else
+					LastSelectedIONum = -1;
+			}
+		}
+#endif
+
 	}
 }
 
@@ -4007,6 +4028,9 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 						TransformInfo t2(pos, rotation);
 						DrawEERIEInter(necklace.runes[i], t2, NULL);
 
+						EERIE_2D_BBOX runeBox;
+						UpdateBbox2d(necklace.runes[i], runeBox);
+
 						PopAllTriangleList();
 
 						xpos++;
@@ -4017,7 +4041,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 						}
 
 						// Checks for Mouse floating over a rune...
-						if(!found2 && MouseInRect(BBOX2D.min.x, BBOX2D.min.y, BBOX2D.max.x, BBOX2D.max.y)) {
+						if(!found2 && MouseInRect(runeBox.min.x, runeBox.min.y, runeBox.max.x, runeBox.max.y)) {
 							long r=0;
 
 							for(size_t j = 0; j < necklace.runes[i]->facelist.size(); j++) {
@@ -5396,10 +5420,11 @@ void ARX_INTERFACE_ManageOpenedBook()
 		long ti=Project.improve;
 		Project.improve=0;
 
-		INVISIBILITY_OVERRIDE=entities.player()->invisibility;
 
-		if (INVISIBILITY_OVERRIDE>0.5f)
-			INVISIBILITY_OVERRIDE=0.5f;
+		float invisibility = entities.player()->invisibility;
+
+		if(invisibility > 0.5f)
+			invisibility = 0.5f;
 
 		IN_BOOK_DRAW=1;
 		std::vector<EERIE_VERTEX> vertexlist = entities.player()->obj->vertexlist3;
@@ -5407,9 +5432,8 @@ void ARX_INTERFACE_ManageOpenedBook()
 		arx_assert(player.bookAnimation[0].cur_anim);
 
 		EERIEDrawAnimQuat(entities.player()->obj, player.bookAnimation, ePlayerAngle, pos,
-						  checked_range_cast<unsigned long>(Original_framedelay), NULL);
+						  checked_range_cast<unsigned long>(Original_framedelay), NULL, true, true, invisibility);
 
-		INVISIBILITY_OVERRIDE=0;
 		IN_BOOK_DRAW=0;
 
 		if(ARXmenu.currentmode == AMCM_NEWQUEST) {
@@ -6554,16 +6578,17 @@ long Manage3DCursor(long flags)
 
 			if(SPECIAL_DRAGINTER_RENDER) {
 			if(EEfabs(lastanything) > EEfabs(height)) {
-				float old = io->invisibility;
-				io->invisibility = 0.5f;
-
 				TransformInfo t(collidpos, rotation, io->scale);
-				DrawEERIEInter(io->obj, t, io);
 
-				io->invisibility = old;
+				static const float invisibility = 0.5f;
+
+				DrawEERIEInter(io->obj, t, io, false, invisibility);
 			} else {
 				TransformInfo t(pos, rotation, io->scale);
-				DrawEERIEInter(io->obj, t, io);
+
+				float invisibility = Cedric_GetInvisibility(io);
+
+				DrawEERIEInter(io->obj, t, io, false, invisibility);
 			}
 			}
 		} else {

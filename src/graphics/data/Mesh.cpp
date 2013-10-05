@@ -1612,8 +1612,6 @@ void DrawEERIEObjExEx(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *pos, Vec3f *scale
 	}
 }
 
-EERIE_2D_BBOX BBOX2D;
-
 bool IsVertexIdxInGroup(EERIE_3DOBJ *eobj, long idx, long grs) {
 
 	if(!eobj)

@@ -855,7 +855,8 @@ void ARX_THROWN_OBJECT_Render() {
 
 		TransformInfo t(thrownObj->position, thrownObj->quat);
 		// Object has to be retransformed because arrows share the same object
-		DrawEERIEInter_ModelTransform(thrownObj->obj, t, NULL);
+		DrawEERIEInter_ModelTransform(thrownObj->obj, t);
+		DrawEERIEInter_ViewProjectTransform(thrownObj->obj);
 		DrawEERIEInter_Render(thrownObj->obj, t, NULL);
 
 		if(thrownObj->pRuban) {
@@ -885,7 +886,7 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 			continue;
 
 		TransformInfo t(thrownObj->position, thrownObj->quat);
-		DrawEERIEInter_ModelTransform(thrownObj->obj, t, NULL);
+		DrawEERIEInter_ModelTransform(thrownObj->obj, t);
 
 		if((thrownObj->flags & ATO_FIERY) && (thrownObj->flags & ATO_MOVING)
 		   && !(thrownObj->flags & ATO_UNDERWATER)) {

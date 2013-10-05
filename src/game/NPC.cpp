@@ -2639,13 +2639,13 @@ static void ManageNPCMovement(Entity * io)
 	ANIM_HANDLE ** alist = io->anims;
 
 	// Using USER animation ?
-	if ((ause0->cur_anim)
-	        &&	(ause0->flags & EA_FORCEPLAY)
-	        &&	(ause0->cur_anim != alist[ANIM_DIE])
-	        &&	(ause0->cur_anim != alist[ANIM_HIT1])
-	        &&	(ause0->cur_anim != alist[ANIM_HIT_SHORT])
-	        &&	!(ause0->flags & EA_ANIMEND))
-	{
+	if(ause0->cur_anim
+	   && (ause0->flags & EA_FORCEPLAY)
+	   && ause0->cur_anim != alist[ANIM_DIE]
+	   && ause0->cur_anim != alist[ANIM_HIT1]
+	   && ause0->cur_anim != alist[ANIM_HIT_SHORT]
+	   && !(ause0->flags & EA_ANIMEND)
+	) {
 		io->room_flags |= 1;
 		io->lastpos = (io->pos += io->move);
 
@@ -2656,21 +2656,18 @@ static void ManageNPCMovement(Entity * io)
 		io->_npcdata->pathfind.listnb = 0;
 
 	// waiting for pathfinder ? or pathfinder failure ? ---> Wait Anim
-	if ((io->_npcdata->pathfind.pathwait)		// waiting for pathfinder
-	        ||	(io->_npcdata->pathfind.listnb == -2))	// pathfinder failure
+	if(io->_npcdata->pathfind.pathwait		// waiting for pathfinder
+	   || io->_npcdata->pathfind.listnb == -2)	// pathfinder failure
 	{
 		if(io->_npcdata->pathfind.listnb == -2) {
 			if(!io->_npcdata->pathfind.pathwait) {
-				if(io->_npcdata->pathfind.flags & PATHFIND_NO_UPDATE)
-				{
+				if(io->_npcdata->pathfind.flags & PATHFIND_NO_UPDATE) {
 					io->_npcdata->reachedtarget = 1;
 					io->_npcdata->reachedtime = (unsigned long)(arxtime);//treat warning C4244 conversion from 'float' to 'unsigned long'
 
 					if(io->targetinfo != long(io->index()))
 						SendIOScriptEvent(io, SM_REACHEDTARGET);
-				}
-				else if((ause0->cur_anim == alist[ANIM_WAIT]) && (ause0->flags & EA_ANIMEND))
-				{
+				} else if(ause0->cur_anim == alist[ANIM_WAIT] && (ause0->flags & EA_ANIMEND)) {
 					io->_npcdata->pathfind.listnb = -1;
 					io->_npcdata->pathfind.pathwait = 0;
 					ARX_NPC_LaunchPathfind(io, io->targetinfo);
@@ -2679,20 +2676,17 @@ static void ManageNPCMovement(Entity * io)
 			}
 		}
 
-		if(!(io->_npcdata->behavior & BEHAVIOUR_FIGHT))
-		{
-			if ((ause0->cur_anim == alist[ANIM_WALK])
-			        ||	(ause0->cur_anim == alist[ANIM_RUN])
-			        || (ause0->cur_anim == alist[ANIM_WALK_SNEAK]))
-			{
+		if(!(io->_npcdata->behavior & BEHAVIOUR_FIGHT)) {
+			if(ause0->cur_anim == alist[ANIM_WALK]
+			   || ause0->cur_anim == alist[ANIM_RUN]
+			   || ause0->cur_anim == alist[ANIM_WALK_SNEAK]
+			) {
 				AcquireLastAnim(io);
 				FinishAnim(io, ause0->cur_anim);
 				ANIM_Set(ause0, alist[ANIM_WAIT]);
 				ause0->altidx_cur = 0;
 				return;
-			}
-			else if (ause0->cur_anim == alist[ANIM_WAIT])
-			{
+			} else if(ause0->cur_anim == alist[ANIM_WAIT]) {
 				if(ause0->flags & EA_ANIMEND) {
 					FinishAnim(io, ause0->cur_anim);
 					ANIM_Set(ause0, alist[ANIM_WAIT]);
@@ -2710,9 +2704,7 @@ static void ManageNPCMovement(Entity * io)
 	if(io->_npcdata->behavior & BEHAVIOUR_NONE) {
 		ARX_NPC_Manage_Anims(io, 0);
 
-		if ((ause0->cur_anim == NULL)
-		        ||	((ause0->cur_anim) && (ause0->flags & EA_ANIMEND)))
-		{
+		if(!ause0->cur_anim || (ause0->cur_anim && (ause0->flags & EA_ANIMEND))) {
 			AcquireLastAnim(io);
 			FinishAnim(io, ause0->cur_anim);
 			ANIM_Set(ause0, alist[ANIM_WAIT]);
@@ -2727,24 +2719,24 @@ static void ManageNPCMovement(Entity * io)
 
 	ARX_NPC_Manage_Anims_End(io);
 
-	if ((io->_npcdata->behavior & BEHAVIOUR_LOOK_AROUND)
-	        && (io->_npcdata->pathfind.listnb <= 0)
-	        &&  !(io->_npcdata->pathfind.pathwait))
-	{
+	if((io->_npcdata->behavior & BEHAVIOUR_LOOK_AROUND)
+	   && io->_npcdata->pathfind.listnb <= 0
+	   && !io->_npcdata->pathfind.pathwait
+	) {
 		ARX_NPC_LaunchPathfind(io, io->targetinfo);
 	}
 
-	if ((io->_npcdata->behavior & (BEHAVIOUR_FRIENDLY | BEHAVIOUR_NONE))
-	        && ((ause0->cur_anim == alist[ANIM_WALK])
-	            || (ause0->cur_anim == alist[ANIM_WALK_SNEAK])
-	            ||	(ause0->cur_anim == alist[ANIM_FIGHT_WALK_FORWARD])
-	            ||	(ause0->cur_anim == alist[ANIM_RUN])
-				||	(ause0->cur_anim == alist[ANIM_RUN]) //TODO copy-paste error or missing check ?
-	            ||	(ause0->cur_anim == alist[ANIM_FIGHT_STRAFE_LEFT])
-	            ||	(ause0->cur_anim == alist[ANIM_FIGHT_STRAFE_RIGHT])
-	            ||	(ause0->cur_anim == alist[ANIM_FIGHT_WALK_BACKWARD])
-	           ))
-	{
+	if((io->_npcdata->behavior & (BEHAVIOUR_FRIENDLY | BEHAVIOUR_NONE))
+			&& (ause0->cur_anim == alist[ANIM_WALK]
+				|| ause0->cur_anim == alist[ANIM_WALK_SNEAK]
+				|| ause0->cur_anim == alist[ANIM_FIGHT_WALK_FORWARD]
+				|| ause0->cur_anim == alist[ANIM_RUN]
+				|| ause0->cur_anim == alist[ANIM_RUN] //TODO copy-paste error or missing check ?
+				|| ause0->cur_anim == alist[ANIM_FIGHT_STRAFE_LEFT]
+				|| ause0->cur_anim == alist[ANIM_FIGHT_STRAFE_RIGHT]
+				|| ause0->cur_anim == alist[ANIM_FIGHT_WALK_BACKWARD]
+			   )
+	) {
 		AcquireLastAnim(io);
 		FinishAnim(io, ause0->cur_anim);
 		ANIM_Set(ause0, alist[ANIM_WAIT]);
@@ -2753,19 +2745,17 @@ static void ManageNPCMovement(Entity * io)
 
 
 	// look around if finished fleeing or being looking around !
-	if ((io->_npcdata->behavior & BEHAVIOUR_LOOK_AROUND)
-	        &&	distSqr(io->pos, io->target) > square(150.f))
-	{
+	if((io->_npcdata->behavior & BEHAVIOUR_LOOK_AROUND) && distSqr(io->pos, io->target) > square(150.f)) {
 		if(!io->_npcdata->ex_rotate) {
 			ARX_NPC_CreateExRotateData(io);
 		} else { // already created
-			if	(((ause0->cur_anim == alist[ANIM_WAIT])
-			        ||	(ause0->cur_anim == alist[ANIM_WALK])
-			        || (ause0->cur_anim == alist[ANIM_WALK_SNEAK])
-			        ||	(ause0->cur_anim == alist[ANIM_FIGHT_WALK_FORWARD])
-			        ||	(ause0->cur_anim == alist[ANIM_RUN]))
-			        ||	(ause0->cur_anim != NULL))
-			{
+			if((ause0->cur_anim == alist[ANIM_WAIT]
+					|| ause0->cur_anim == alist[ANIM_WALK]
+					|| ause0->cur_anim == alist[ANIM_WALK_SNEAK]
+					|| ause0->cur_anim == alist[ANIM_FIGHT_WALK_FORWARD]
+					|| ause0->cur_anim == alist[ANIM_RUN])
+					|| ause0->cur_anim != NULL //TODO check this
+			) {
 				io->_npcdata->look_around_inc = 0.f;
 
 				for(long n = 0; n < 4; n++) {
@@ -2792,9 +2782,7 @@ static void ManageNPCMovement(Entity * io)
 			}
 		}
 	} else {
-		if ((!(io->_npcdata->behavior & BEHAVIOUR_STARE_AT))
-		        &&	(io->_npcdata->ex_rotate != NULL))
-		{
+		if(!(io->_npcdata->behavior & BEHAVIOUR_STARE_AT) && io->_npcdata->ex_rotate) {
 			io->_npcdata->look_around_inc = 0.f;
 
 			for(long n = 0; n < 4; n++) {
@@ -2808,8 +2796,7 @@ static void ManageNPCMovement(Entity * io)
 
 	ause0->flags &= ~EA_STATICANIM;
 
-	if(ause0->cur_anim && ((ause0->cur_anim == alist[ANIM_HIT1]) || (ause0->cur_anim == alist[ANIM_HIT_SHORT])))
-	{
+	if(ause0->cur_anim && (ause0->cur_anim == alist[ANIM_HIT1] || ause0->cur_anim == alist[ANIM_HIT_SHORT])) {
 		if(ause0->flags & EA_ANIMEND) {
 			AcquireLastAnim(io);
 			FinishAnim(io, ause0->cur_anim);
@@ -2821,9 +2808,9 @@ static void ManageNPCMovement(Entity * io)
 
 			if(io->_npcdata->behavior & BEHAVIOUR_FRIENDLY)
 				ause0->altidx_cur = 0;
-		}
-		else
+		} else {
 			return;
+		}
 	}
 
 	float _dist = std::numeric_limits<float>::max();
@@ -2831,11 +2818,11 @@ static void ManageNPCMovement(Entity * io)
 	Vec3f ForcedMove;
 	
 	// GetTargetPos MUST be called before FaceTarget2
-	if ((io->_npcdata->pathfind.listnb > 0)
-	        &&	(io->_npcdata->behavior & BEHAVIOUR_WANDER_AROUND)
-	        &&	(io->_npcdata->pathfind.listpos < io->_npcdata->pathfind.listnb - 2)
-	        &&	(io->_npcdata->pathfind.list[io->_npcdata->pathfind.listpos] == io->_npcdata->pathfind.list[io->_npcdata->pathfind.listpos+1]))
-	{
+	if(io->_npcdata->pathfind.listnb > 0
+	   && (io->_npcdata->behavior & BEHAVIOUR_WANDER_AROUND)
+	   && (io->_npcdata->pathfind.listpos < io->_npcdata->pathfind.listnb - 2)
+	   && (io->_npcdata->pathfind.list[io->_npcdata->pathfind.listpos] == io->_npcdata->pathfind.list[io->_npcdata->pathfind.listpos+1])
+	) {
 		if(ause0->cur_anim != io->anims[ANIM_DEFAULT]) {
 			AcquireLastAnim(io);
 			FinishAnim(io, ause0->cur_anim);
@@ -2863,22 +2850,18 @@ static void ManageNPCMovement(Entity * io)
 		dis = 9999999;
 
 	// Force to flee/wander again
-	if(!io->_npcdata->pathfind.pathwait && io->_npcdata->pathfind.listnb <= 0)
-	{
+	if(!io->_npcdata->pathfind.pathwait && io->_npcdata->pathfind.listnb <= 0) {
 		if(io->_npcdata->behavior & BEHAVIOUR_WANDER_AROUND) {
 			ARX_NPC_LaunchPathfind(io, io->targetinfo); 
-		}
-		else if ((dis > STRIKE_DISTANCE)
+		} else if(dis > STRIKE_DISTANCE
 		         &&	(io->_npcdata->behavior & BEHAVIOUR_MOVE_TO)
-		         &&	(!(io->_npcdata->behavior & (BEHAVIOUR_FIGHT | BEHAVIOUR_MAGIC | BEHAVIOUR_SNEAK))))
-		{
+				 &&	!(io->_npcdata->behavior & (BEHAVIOUR_FIGHT | BEHAVIOUR_MAGIC | BEHAVIOUR_SNEAK))
+		) {
 			ARX_NPC_LaunchPathfind(io, io->targetinfo);
 		}
 	}
 
-	if ((io->_npcdata->pathfind.listnb <= 0)
-	        &&	(io->_npcdata->behavior & BEHAVIOUR_FLEE))
-	{
+	if(io->_npcdata->pathfind.listnb <= 0 && (io->_npcdata->behavior & BEHAVIOUR_FLEE)) {
 		if(ause0->cur_anim != alist[ANIM_DEFAULT]) {
 			AcquireLastAnim(io);
 			FinishAnim(io, ause0->cur_anim);
@@ -2887,35 +2870,27 @@ static void ManageNPCMovement(Entity * io)
 			if(io->_npcdata->behavior & BEHAVIOUR_FRIENDLY)
 				ause0->altidx_cur = 0;
 		}
-	}
-	else 	// Force object to walk if using pathfinder !!!
-	{
-		if (io->_npcdata->behavior & (BEHAVIOUR_FRIENDLY | BEHAVIOUR_NONE))
-		{
-		}
-		else if (!io->_npcdata->reachedtarget)
-		{
-			if (
-			    ((io->targetinfo != -2) 
+	} else { // Force object to walk if using pathfinder !!!
+
+		if(io->_npcdata->behavior & (BEHAVIOUR_FRIENDLY | BEHAVIOUR_NONE)) {
+		} else if(!io->_npcdata->reachedtarget) {
+			if((io->targetinfo != -2
 			     || (io->_npcdata->behavior & BEHAVIOUR_WANDER_AROUND)
 			     || (io->_npcdata->behavior & BEHAVIOUR_FLEE)
 			     || (io->_npcdata->behavior & BEHAVIOUR_GO_HOME))
-			    && (io->_npcdata->pathfind.listnb > 0)
-			    && (ause0->cur_anim != alist[ANIM_WALK])
-			    && (ause0->cur_anim != alist[ANIM_FIGHT_WALK_FORWARD])
-			    && (ause0->cur_anim != alist[ANIM_RUN])
-			    && (ause0->cur_anim != alist[ANIM_WALK_SNEAK])
-			    && (!(ause0->flags & EA_FORCEPLAY))
-			)
-			{
+				&& io->_npcdata->pathfind.listnb > 0
+				&& ause0->cur_anim != alist[ANIM_WALK]
+				&& ause0->cur_anim != alist[ANIM_FIGHT_WALK_FORWARD]
+				&& ause0->cur_anim != alist[ANIM_RUN]
+				&& ause0->cur_anim != alist[ANIM_WALK_SNEAK]
+				&& !(ause0->flags & EA_FORCEPLAY)
+			) {
 				AcquireLastAnim(io);
 				FinishAnim(io, ause0->cur_anim);
 
-				if ((dis <= RUN_WALK_RADIUS) && (io->_npcdata->behavior & BEHAVIOUR_FIGHT))
-				{
+				if(dis <= RUN_WALK_RADIUS && (io->_npcdata->behavior & BEHAVIOUR_FIGHT)) {
 					ANIM_Set(ause0, alist[ANIM_FIGHT_WALK_FORWARD]);
-				}
-				else
+				} else {
 					switch(io->_npcdata->movemode) {
 						case SNEAKMODE:
 							ANIM_Set(ause0, alist[ANIM_WALK_SNEAK]);
@@ -2941,19 +2916,18 @@ static void ManageNPCMovement(Entity * io)
 
 							break;
 					}
+				}
 
 				ause0->flags |= EA_LOOP;
 				io->_npcdata->walk_start_time = 0;
-			
 			}
-		}
-		else // our object has reached its target...
-		{
+		} else { // our object has reached its target...
 			// Put it in Fighting stance if using Fight Behavior
-			if ((io->_npcdata->behavior & (BEHAVIOUR_FIGHT | BEHAVIOUR_MAGIC | BEHAVIOUR_DISTANT))
+			if((io->_npcdata->behavior & (BEHAVIOUR_FIGHT | BEHAVIOUR_MAGIC | BEHAVIOUR_DISTANT))
 			        && io->anims[ANIM_FIGHT_WAIT])
 			{
-				if ((ause0->cur_anim != alist[ANIM_FIGHT_WAIT])
+				// TODO what is supposed to happen here ?
+				if((ause0->cur_anim != alist[ANIM_FIGHT_WAIT])
 				        &&	(ause0->cur_anim != alist[ANIM_FIGHT_STRAFE_LEFT])
 				        &&	(ause0->cur_anim != alist[ANIM_FIGHT_STRAFE_RIGHT])
 				        &&	(ause0->cur_anim != alist[ANIM_FIGHT_WALK_BACKWARD])
@@ -2965,95 +2939,95 @@ static void ManageNPCMovement(Entity * io)
 				ANIM_Set(ause0, alist[ANIM_FIGHT_WAIT]);
 				ause0->flags |= EA_LOOP;
 				
-			}
-			// Stop it and put it in Wait anim after finishing his walk anim...
-			else
-			{
-				if	(ause0->cur_anim == alist[ANIM_FIGHT_WALK_FORWARD])
-				{
+			} else { // Stop it and put it in Wait anim after finishing his walk anim...
+				if(ause0->cur_anim == alist[ANIM_FIGHT_WALK_FORWARD]) {
 					ause0->flags &= ~EA_LOOP;
 					AcquireLastAnim(io);
 					FinishAnim(io, ause0->cur_anim);
 					ANIM_Set(ause0, alist[ANIM_DEFAULT]);
 
-					if (io->_npcdata->behavior & BEHAVIOUR_FRIENDLY) ause0->altidx_cur = 0;
+					if(io->_npcdata->behavior & BEHAVIOUR_FRIENDLY)
+						ause0->altidx_cur = 0;
 
 					ause0->flags |= EA_LOOP;
-				}
-				else if ((ause0->cur_anim == alist[ANIM_WALK])
-				         || (ause0->cur_anim == alist[ANIM_RUN])
-				         || (ause0->cur_anim == alist[ANIM_WALK_SNEAK]))
-				{
+				} else if(ause0->cur_anim == alist[ANIM_WALK]
+						 || ause0->cur_anim == alist[ANIM_RUN]
+						 || ause0->cur_anim == alist[ANIM_WALK_SNEAK]
+				) {
 					ause0->flags &= ~EA_LOOP;
 
-					if (io->_npcdata->reachedtime + 500 < float(arxtime))
-					{
+					if(io->_npcdata->reachedtime + 500 < float(arxtime)) {
 						AcquireLastAnim(io);
 						FinishAnim(io, ause0->cur_anim);
 						ANIM_Set(ause0, alist[ANIM_DEFAULT]);
 
-						if (io->_npcdata->behavior & BEHAVIOUR_FRIENDLY) ause0->altidx_cur = 0;
+						if(io->_npcdata->behavior & BEHAVIOUR_FRIENDLY)
+							ause0->altidx_cur = 0;
 
 						ause0->flags |= EA_LOOP;
 					}
 				}
 
-				if (!(ause0->flags & EA_FORCEPLAY)
-				        &&	(ause0->cur_anim != alist[ANIM_DEFAULT])
-				        &&	(ause0->cur_anim != alist[ANIM_FIGHT_WAIT])
-				        && (ause0->flags & EA_ANIMEND)
-				        &&	!(ause0->flags & EA_LOOP))
-				{
+				if(!(ause0->flags & EA_FORCEPLAY)
+						&& ause0->cur_anim != alist[ANIM_DEFAULT]
+						&& ause0->cur_anim != alist[ANIM_FIGHT_WAIT]
+						&& (ause0->flags & EA_ANIMEND)
+						&& !(ause0->flags & EA_LOOP)
+				) {
 					AcquireLastAnim(io);
 					FinishAnim(io, ause0->cur_anim);
 					ANIM_Set(ause0, alist[ANIM_DEFAULT]);
 
-					if (io->_npcdata->behavior & BEHAVIOUR_FRIENDLY) ause0->altidx_cur = 0;
+					if(io->_npcdata->behavior & BEHAVIOUR_FRIENDLY)
+						ause0->altidx_cur = 0;
 				}
 			}
 		}
 	}
 
 	// Force Run when far from target and using RUNMODE
-	if ((dis > RUN_WALK_RADIUS) && (io->_npcdata->movemode == RUNMODE)
-	        && (ause0->cur_anim == alist[ANIM_FIGHT_WALK_FORWARD])
-	        && alist[ANIM_RUN])
-	{
+	if(dis > RUN_WALK_RADIUS
+	   && io->_npcdata->movemode == RUNMODE
+	   && ause0->cur_anim == alist[ANIM_FIGHT_WALK_FORWARD]
+	   && alist[ANIM_RUN]
+	) {
 		AcquireLastAnim(io);
 		FinishAnim(io, ause0->cur_anim);
 		ANIM_Set(ause0, alist[ANIM_RUN]);
 	}
 
 	// Reset WAIT Animation if reached end !
-	if ((ause0->cur_anim == alist[ANIM_DEFAULT])
-	        && (ause0->cur_anim != NULL)
-	        && (ause0->flags & EA_ANIMEND))
-	{
+	if(ause0->cur_anim == alist[ANIM_DEFAULT]
+	   && ause0->cur_anim != NULL
+	   && (ause0->flags & EA_ANIMEND)
+	) {
 		AcquireLastAnim(io);
 		FinishAnim(io, ause0->cur_anim);
 		ANIM_Set(ause0, alist[ANIM_DEFAULT]);
 
-		if (io->_npcdata->behavior & BEHAVIOUR_FRIENDLY) ause0->altidx_cur = 0;
+		if(io->_npcdata->behavior & BEHAVIOUR_FRIENDLY)
+			ause0->altidx_cur = 0;
 	}
 
 	long CHANGE = 0;
 
 	// Can only change direction during some specific animations
-	if (((ause0->cur_anim == alist[ANIM_DEFAULT]) && (ause0->altidx_cur == 0))
-	        || (ause0->cur_anim == alist[ANIM_FIGHT_WAIT])
-	        || (ause0->cur_anim == alist[ANIM_FIGHT_WALK_FORWARD])
-	        || (ause0->cur_anim == alist[ANIM_WALK])
-	        || (ause0->cur_anim == alist[ANIM_WALK_SNEAK])
-	        || (ause0->cur_anim == alist[ANIM_RUN])
-	        || (ause0->cur_anim == alist[ANIM_FIGHT_STRAFE_LEFT])
-	        || (ause0->cur_anim == alist[ANIM_FIGHT_STRAFE_RIGHT])
-	        || (ause0->cur_anim == alist[ANIM_FIGHT_WALK_BACKWARD])
-	        || (ause0->cur_anim == NULL)
-	   )	CHANGE = 1;
+	if((ause0->cur_anim == alist[ANIM_DEFAULT] && ause0->altidx_cur == 0)
+	   || ause0->cur_anim == alist[ANIM_FIGHT_WAIT]
+	   || ause0->cur_anim == alist[ANIM_FIGHT_WALK_FORWARD]
+	   || ause0->cur_anim == alist[ANIM_WALK]
+	   || ause0->cur_anim == alist[ANIM_WALK_SNEAK]
+	   || ause0->cur_anim == alist[ANIM_RUN]
+	   || ause0->cur_anim == alist[ANIM_FIGHT_STRAFE_LEFT]
+	   || ause0->cur_anim == alist[ANIM_FIGHT_STRAFE_RIGHT]
+	   || ause0->cur_anim == alist[ANIM_FIGHT_WALK_BACKWARD]
+	   || ause0->cur_anim == NULL
+	) {
+		CHANGE = 1;
+	}
 
 	// Tries to face/stare at target
-	if(!arxtime.is_paused() && CHANGE && !(ause0->flags & EA_FORCEPLAY))
-	{
+	if(!arxtime.is_paused() && CHANGE && !(ause0->flags & EA_FORCEPLAY)) {
 		if(io->_npcdata->behavior & BEHAVIOUR_STARE_AT)
 			StareAtTarget(io);
 		else
@@ -3061,14 +3035,12 @@ static void ManageNPCMovement(Entity * io)
 	}
 
 	// Choose tolerance value depending on target...
-	if ((io->_npcdata->pathfind.listnb > 0)
-	        && (io->_npcdata->pathfind.listpos < io->_npcdata->pathfind.listnb))
-	{
+	if(io->_npcdata->pathfind.listnb > 0
+	   && io->_npcdata->pathfind.listpos < io->_npcdata->pathfind.listnb
+	) {
 		ComputeTolerance(io, io->_npcdata->pathfind.list[io->_npcdata->pathfind.listpos], &TOLERANCE);
 		ComputeTolerance(io, io->_npcdata->pathfind.truetarget, &TOLERANCE2);
-	}
-	else
-	{
+	} else {
 		ComputeTolerance(io, io->targetinfo, &TOLERANCE);
 		TOLERANCE2 = TOLERANCE;
 	}
@@ -3120,8 +3092,8 @@ static void ManageNPCMovement(Entity * io)
 	
 	// Now we try the physical move for real
 	if(io->physics.startpos == io->physics.targetpos
-	        || ARX_COLLISION_Move_Cylinder(&phys, io, 40, levitate | CFLAG_NPC))
-	{
+	   || ARX_COLLISION_Move_Cylinder(&phys, io, 40, levitate | CFLAG_NPC)
+	) {
 		// Successfull move now validate it
 		if(!DIRECT_PATH)
 			io->_npcdata->moveproblem += 1;
@@ -3129,9 +3101,8 @@ static void ManageNPCMovement(Entity * io)
 			io->_npcdata->moveproblem = 0;
 
 		io->_npcdata->collid_state = 0;
-	}
-	else // Object was unable to move to target... Stop it
-	{
+	} else {
+		// Object was unable to move to target... Stop it
 		io->_npcdata->moveproblem += 3;
 	}
 
@@ -3167,21 +3138,19 @@ static void ManageNPCMovement(Entity * io)
 	}
 
 	// Checks if pathfind final target is still locked on true target
-	if ((!io->_npcdata->pathfind.pathwait)
-	        && !(io->_npcdata->pathfind.flags & PATHFIND_ONCE)
-	        && !(io->_npcdata->pathfind.flags & PATHFIND_NO_UPDATE)
-	        &&	(io->_npcdata->pathfind.listnb > 0)
-	        &&	(io->_npcdata->pathfind.listpos < io->_npcdata->pathfind.listnb)
-	        &&	(io->_npcdata->behavior & BEHAVIOUR_MOVE_TO)
-	        && !(io->_npcdata->behavior & BEHAVIOUR_FLEE)
-	   )
-	{
+	if(!io->_npcdata->pathfind.pathwait
+	   && !(io->_npcdata->pathfind.flags & PATHFIND_ONCE)
+	   && !(io->_npcdata->pathfind.flags & PATHFIND_NO_UPDATE)
+	   && io->_npcdata->pathfind.listnb > 0
+	   && io->_npcdata->pathfind.listpos < io->_npcdata->pathfind.listnb
+	   && (io->_npcdata->behavior & BEHAVIOUR_MOVE_TO)
+	   && !(io->_npcdata->behavior & BEHAVIOUR_FLEE)
+	) {
 		if(ValidIONum(io->_npcdata->pathfind.truetarget)) {
 			Vec3f * p = &entities[io->_npcdata->pathfind.truetarget]->pos;
 			long t = AnchorData_GetNearest(p, &io->physics.cyl); 
 
-			if(t != -1 && (t != io->_npcdata->pathfind.list[io->_npcdata->pathfind.listnb-1]))
-			{
+			if(t != -1 && t != io->_npcdata->pathfind.list[io->_npcdata->pathfind.listnb - 1]) {
 				float d = dist(ACTIVEBKG->anchors[t].pos, ACTIVEBKG->anchors[io->_npcdata->pathfind.list[io->_npcdata->pathfind.listnb-1]].pos);
 
 				if(d > 200.f)
@@ -3207,16 +3176,17 @@ static void ManageNPCMovement(Entity * io)
 			}
 
 			// if not blocked & not Flee-Pathfinding
-			if ( !((io->_npcdata->pathfind.listnb <= 0) && (io->_npcdata->behavior & BEHAVIOUR_FLEE))
-			    || (io->_npcdata->behavior & BEHAVIOUR_WANDER_AROUND)
-			    || (io->_npcdata->behavior & BEHAVIOUR_GO_HOME))
-			{
+			if(!(io->_npcdata->pathfind.listnb <= 0 && (io->_npcdata->behavior & BEHAVIOUR_FLEE))
+				|| (io->_npcdata->behavior & BEHAVIOUR_WANDER_AROUND)
+				|| (io->_npcdata->behavior & BEHAVIOUR_GO_HOME)
+			) {
 				ANIM_HANDLE * desiredanim = NULL;
 
 				//long desiredloop=1;
-				if ((dis <= RUN_WALK_RADIUS) && (io->_npcdata->behavior & BEHAVIOUR_FIGHT)
-				        && (ause0->cur_anim != alist[ANIM_RUN]))
-				{
+				if(dis <= RUN_WALK_RADIUS
+				   && (io->_npcdata->behavior & BEHAVIOUR_FIGHT)
+				   && ause0->cur_anim != alist[ANIM_RUN]
+				) {
 					float fCalc = io->_npcdata->walk_start_time + framedelay ;
 
 					io->_npcdata->walk_start_time = checked_range_cast<short>(fCalc);
@@ -3225,9 +3195,8 @@ static void ManageNPCMovement(Entity * io)
 						desiredanim = alist[ANIM_FIGHT_WALK_FORWARD];
 						io->_npcdata->walk_start_time = 0;
 					}
-				}
-				else
-					switch (io->_npcdata->movemode) {
+				} else {
+					switch(io->_npcdata->movemode) {
 						case SNEAKMODE:
 							desiredanim = alist[ANIM_WALK_SNEAK];
 							break;
@@ -3245,18 +3214,18 @@ static void ManageNPCMovement(Entity * io)
 							desiredanim = alist[ANIM_DEFAULT];
 							break;
 					}
+				}
 
 				if(io->targetinfo == -2)
 					desiredanim = alist[ANIM_DEFAULT];
 
-				if ((desiredanim)
-				        && (desiredanim != ause0->cur_anim)
-				        && (!(ause0->flags & EA_FORCEPLAY))
+				if(desiredanim
+						&& desiredanim != ause0->cur_anim
+						&& !(ause0->flags & EA_FORCEPLAY)
 				        &&
-				        ((ause0->cur_anim == alist[ANIM_DEFAULT])
-				         || (ause0->cur_anim == alist[ANIM_FIGHT_WAIT]))
-				   )
-				{
+						(ause0->cur_anim == alist[ANIM_DEFAULT]
+						 || ause0->cur_anim == alist[ANIM_FIGHT_WAIT])
+				) {
 					AcquireLastAnim(io);
 					FinishAnim(io, ause0->cur_anim);
 					ANIM_Set(ause0, desiredanim);
@@ -3282,7 +3251,8 @@ static void ManageNPCMovement(Entity * io)
 					FinishAnim(io, ause0->cur_anim);
 					ANIM_Set(ause0, alist[ANIM_DEFAULT]);
 
-					if (io->_npcdata->behavior & BEHAVIOUR_FRIENDLY) ause0->altidx_cur = 0;
+					if(io->_npcdata->behavior & BEHAVIOUR_FRIENDLY)
+						ause0->altidx_cur = 0;
 
 					ause0->flags |= EA_LOOP;
 				}
@@ -3296,7 +3266,7 @@ static void ManageNPCMovement(Entity * io)
 				io->_npcdata->pathfind.listpos = checked_range_cast<unsigned short>(io->_npcdata->pathfind.listpos + lMax);
 
 
-				if ((io->_npcdata->pathfind.listpos >= io->_npcdata->pathfind.listnb)) // || (dis<=120.f))
+				if(io->_npcdata->pathfind.listpos >= io->_npcdata->pathfind.listnb) // || (dis<=120.f))
 				{
 					io->_npcdata->pathfind.listpos = 0;
 					io->_npcdata->pathfind.listnb = -1;
@@ -3310,9 +3280,9 @@ static void ManageNPCMovement(Entity * io)
 					if((io->_npcdata->behavior & BEHAVIOUR_FLEE) && !io->_npcdata->pathfind.pathwait)
 						SendIOScriptEvent(io, SM_NULL, "", "flee_end");
 
-					if ((io->_npcdata->pathfind.flags & PATHFIND_NO_UPDATE) &&
-					        (io->_npcdata->pathfind.pathwait == 0))
-					{
+					if((io->_npcdata->pathfind.flags & PATHFIND_NO_UPDATE)
+					   && io->_npcdata->pathfind.pathwait == 0
+					) {
 						if(!io->_npcdata->reachedtarget) {
 							long num = io->index();
 							io->_npcdata->reachedtarget = 1;
@@ -3332,10 +3302,8 @@ static void ManageNPCMovement(Entity * io)
 						}
 					}
 				}
-			}
-			else if (!io->_npcdata->reachedtarget) 
-			{
-				if (ValidIONum(io->targetinfo))
+			} else if(!io->_npcdata->reachedtarget) {
+				if(ValidIONum(io->targetinfo))
 					EVENT_SENDER = entities[io->targetinfo];
 				else
 					EVENT_SENDER = NULL;
@@ -3343,10 +3311,10 @@ static void ManageNPCMovement(Entity * io)
 				io->_npcdata->reachedtarget = 1;
 				io->_npcdata->reachedtime = (unsigned long)(arxtime);//treat warning C4244 conversion from 'float' to 'unsigned long'
 
-				if (io->animlayer[1].flags & EA_ANIMEND)
+				if(io->animlayer[1].flags & EA_ANIMEND)
 					io->animlayer[1].cur_anim = NULL;
 
-				if (io->targetinfo != long(io->index()))
+				if(io->targetinfo != long(io->index()))
 					SendIOScriptEvent(io, SM_REACHEDTARGET);
 			}
 		}

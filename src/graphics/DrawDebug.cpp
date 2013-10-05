@@ -312,10 +312,12 @@ void RenderAllNodes() {
 		if (nodes.nodes[i].exist) {
 			DrawEERIEObjEx(nodeobj, &angle, &nodes.nodes[i].pos, &scale, Color3f::white);
 
+			/* FIXME DrawEERIEObjEx does not calculate BBOX2D
 			nodes.nodes[i].bboxmin.x=(short)BBOX2D.min.x;
 			nodes.nodes[i].bboxmin.y=(short)BBOX2D.min.y;
 			nodes.nodes[i].bboxmax.x=(short)BBOX2D.max.x;
 			nodes.nodes[i].bboxmax.y=(short)BBOX2D.max.y;
+			*/
 
 			if(nodeobj->vertexlist[nodeobj->origin].vert.p.z > 0.f && nodeobj->vertexlist[nodeobj->origin].vert.p.z<0.9f) {
 				float xx = nodeobj->vertexlist[nodeobj->origin].vert.p.x - 40.f;

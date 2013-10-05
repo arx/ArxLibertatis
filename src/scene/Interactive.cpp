@@ -2973,7 +2973,9 @@ void RenderInter() {
 
 			bool render = !ARX_SCENE_PORTAL_Basic_ClipIO(io);
 
-			EERIEDrawAnimQuat(io->obj, io->animlayer, temp, pos, diff, io, render);
+			float invisibility = Cedric_GetInvisibility(io);
+
+			EERIEDrawAnimQuat(io->obj, io->animlayer, temp, pos, diff, io, render, true, invisibility);
 
 		} else {
 			if(ARX_SCENE_PORTAL_Basic_ClipIO(io))
@@ -2996,7 +2998,10 @@ void RenderInter() {
 						arx_assert(io->obj->point0 == Vec3f::ZERO);
 
 						TransformInfo t(io->pos, rotation, io->scale, io->obj->pbox->vert[0].initpos);
-						DrawEERIEInter(io->obj, t, io);
+
+						float invisibility = Cedric_GetInvisibility(io);
+
+						DrawEERIEInter(io->obj, t, io, false, invisibility);
 					} else {
 						EERIE_QUAT rotation;
 						Quat_Init(&rotation);
@@ -3004,7 +3009,10 @@ void RenderInter() {
 						worldAngleToQuat(&rotation, temp);
 
 						TransformInfo t(io->pos, rotation, io->scale);
-						DrawEERIEInter(io->obj, t, io);
+
+						float invisibility = Cedric_GetInvisibility(io);
+
+						DrawEERIEInter(io->obj, t, io, false, invisibility);
 					}
 				}
 			}

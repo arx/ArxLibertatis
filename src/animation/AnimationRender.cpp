@@ -277,8 +277,6 @@ extern TextureContainer TexSpecialColor;
 
 extern long ZMAPMODE;
 
-float INVISIBILITY_OVERRIDE=0.f;
-extern float INVISIBILITY_OVERRIDE;
 extern bool EXTERNALVIEW;
 
 void EE_RT(Vec3f * in, Vec3f * out);
@@ -649,32 +647,20 @@ void CalculateInterZMapp(EERIE_3DOBJ * _pobj3dObj, long lIdList, long * _piInd,
 	}
 }
 
-void DrawEERIEInter_ModelTransform(EERIE_3DOBJ *eobj, const TransformInfo &t, Entity *io) {
+void UpdateBbox3d(EERIE_3DOBJ *eobj, EERIE_3D_BBOX & box3D) {
 
-	EERIE_3D_BBOX box3D;
 	box3D.reset();
 
-	BBOX2D.reset();
+	for(size_t i = 0 ; i < eobj->vertexlist.size(); i++) {
+		box3D.add(eobj->vertexlist3[i].v);
+	}
+}
+
+void UpdateBbox2d(EERIE_3DOBJ *eobj, EERIE_2D_BBOX & box2D) {
+
+	box2D.reset();
 
 	for(size_t i = 0 ; i < eobj->vertexlist.size(); i++) {
-
-		Vec3f temp = eobj->vertexlist[i].v;
-
-		temp -= t.offset;
-
-		temp *= t.scale;
-
-		Vec3f rotatedPosition;
-		TransformVertexQuat(t.rotation, temp, rotatedPosition);
-
-		eobj->vertexlist3[i].v = rotatedPosition += t.pos;
-
-		box3D.add(eobj->vertexlist3[i].v);
-
-		Vec3f tempWorld;
-		EE_RT(&rotatedPosition, &tempWorld);
-		EE_P(&tempWorld, &eobj->vertexlist[i].vert);
-
 		// Memorizes 2D Bounding Box using vertex min/max x,y pos
 		if(eobj->vertexlist[i].vert.rhw > 0.f) {
 
@@ -683,23 +669,37 @@ void DrawEERIEInter_ModelTransform(EERIE_3DOBJ *eobj, const TransformInfo &t, En
 				(eobj->vertexlist[i].vert.p.y >= -32000) &&
 				(eobj->vertexlist[i].vert.p.y <= 32000))
 			{
-				BBOX2D.add(eobj->vertexlist[i].vert.p);
+				box2D.add(eobj->vertexlist[i].vert.p);
 			}
 		}
 	}
+}
 
-	if(io) {
-		io->bbox3D = box3D;
-		io->bbox2D = BBOX2D;
+void DrawEERIEInter_ModelTransform(EERIE_3DOBJ *eobj, const TransformInfo &t) {
+
+	for(size_t i = 0 ; i < eobj->vertexlist.size(); i++) {
+
+		Vec3f temp = eobj->vertexlist[i].v;
+
+		temp -= t.offset;
+		temp *= t.scale;
+		temp = TransformVertexQuat(t.rotation, temp);
+		temp += t.pos;
+
+		eobj->vertexlist3[i].v = temp;
 	}
 }
 
-void DrawEERIEInter_Render(EERIE_3DOBJ *eobj, const TransformInfo &t, Entity *io) {
+void DrawEERIEInter_ViewProjectTransform(EERIE_3DOBJ *eobj) {
+	for(size_t i = 0 ; i < eobj->vertexlist.size(); i++) {
 
-	float invisibility = Cedric_GetInvisibility(io);
+		Vec3f tempWorld;
+		EE_RT(&eobj->vertexlist3[i].v, &tempWorld);
+		EE_P(&tempWorld, &eobj->vertexlist[i].vert);
+	}
+}
 
-	if(!io && INVISIBILITY_OVERRIDE != 0.f)
-		invisibility = INVISIBILITY_OVERRIDE;
+void DrawEERIEInter_Render(EERIE_3DOBJ *eobj, const TransformInfo &t, Entity *io, float invisibility) {
 
 	ColorMod colorMod;
 	colorMod.updateFromEntity(io, !io);
@@ -841,7 +841,7 @@ void DrawEERIEInter_Render(EERIE_3DOBJ *eobj, const TransformInfo &t, Entity *io
 
 			for(long o = 0; o < 3; o++) {
 				Vec3f temporary3D;
-				TransformVertexQuat(t.rotation, eobj->vertexlist[paf[o]].norm, temporary3D);
+				temporary3D = TransformVertexQuat(t.rotation, eobj->vertexlist[paf[o]].norm);
 
 				float power = 255.f-(float)EEfabs(255.f*(temporary3D.z)*( 1.0f / 2 ));
 
@@ -941,7 +941,7 @@ void DrawEERIEInter_Render(EERIE_3DOBJ *eobj, const TransformInfo &t, Entity *io
 	}
 }
 
-void DrawEERIEInter(EERIE_3DOBJ *eobj, const TransformInfo &t, Entity *io, bool forceDraw) {
+void DrawEERIEInter(EERIE_3DOBJ *eobj, const TransformInfo &t, Entity *io, bool forceDraw, float invisibility) {
 
 	if(!eobj)
 		return;
@@ -950,12 +950,20 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, const TransformInfo &t, Entity *io, bool 
 	if(!forceDraw && io && io != entities.player() && !Cedric_IO_Visible(t.pos))
 		return;
 
-	DrawEERIEInter_ModelTransform(eobj, t, io);
+	DrawEERIEInter_ModelTransform(eobj, t);
+	if(io) {
+		UpdateBbox3d(eobj, io->bbox3D);
+	}
+
+	DrawEERIEInter_ViewProjectTransform(eobj);
+	if(io) {
+		UpdateBbox2d(eobj, io->bbox2D);
+	}
 
 	if(!forceDraw && ARX_SCENE_PORTAL_ClipIO(io, t.pos))
 		return;
 
-	DrawEERIEInter_Render(eobj, t, io);
+	DrawEERIEInter_Render(eobj, t, io, invisibility);
 }
 
 
@@ -1253,12 +1261,7 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity *
 	}
 }
 
-void Cedric_AnimateDrawEntityRender(EERIE_3DOBJ *eobj, const Vec3f & pos, Entity *io) {
-
-	float invisibility = Cedric_GetInvisibility(io);
-
-	if(!io && INVISIBILITY_OVERRIDE != 0.f)
-		invisibility = INVISIBILITY_OVERRIDE;
+void Cedric_AnimateDrawEntityRender(EERIE_3DOBJ *eobj, const Vec3f & pos, Entity *io, float invisibility) {
 
 	EERIE_C_DATA *obj = eobj->c_data;
 
@@ -1296,27 +1299,14 @@ void Cedric_AnimateDrawEntityRender(EERIE_3DOBJ *eobj, const Vec3f & pos, Entity
 		)
 			continue;
 
-		// Store item invisibility
-		float old = 0.f;
-		if(link.io) {
-			old = link.io->invisibility;
-			link.io->invisibility = invisibility;
-		}
 
-		link.modinfo.link_position = link.obj->vertexlist[link.lidx2].v - link.obj->vertexlist[link.obj->origin].v;
-		link.modinfo.rot = Anglef::ZERO;
+		TransformInfo t(
+			eobj->vertexlist3[link.lidx].v,
+			eobj->c_data->bones[link.lgroup].anim.quat,
+			link.io ? link.io->scale : 1.f,
+			link.obj->vertexlist[link.lidx2].v - link.obj->vertexlist[link.obj->origin].v);
 
-		EERIE_QUAT & quat = eobj->c_data->bones[link.lgroup].anim.quat;
-		Vec3f & posi = eobj->vertexlist3[link.lidx].v;
-
-		float scale = link.io ? link.io->scale : 1.f;
-
-		TransformInfo t(posi, quat, scale, link.modinfo.link_position);
-		DrawEERIEInter(link.obj, t, link.io, true);
-
-		// Restore item invisibility
-		if(link.io)
-			link.io->invisibility = old;
+		DrawEERIEInter(link.obj, t, link.io, true, invisibility);
 	}
 }
 
@@ -1476,7 +1466,7 @@ void Cedric_BlendAnimation(EERIE_C_DATA & rig, AnimationBlendStatus * animBlend)
 /*!
  * Apply transformations on all bones
  */
-static void Cedric_ConcatenateTM(EERIE_C_DATA & rig, const EERIE_QUAT & rotation, const Vec3f & pos, const Vec3f & ftr, float g_scale) {
+static void Cedric_ConcatenateTM(EERIE_C_DATA & rig, const TransformInfo & t) {
 
 	for(int i = 0; i != rig.nb_bones; i++) {
 		EERIE_BONE * bone = &rig.bones[i];
@@ -1488,23 +1478,23 @@ static void Cedric_ConcatenateTM(EERIE_C_DATA & rig, const EERIE_QUAT & rotation
 
 			// Translation
 			bone->anim.trans = bone->init.trans * parent->anim.scale;
-			TransformVertexQuat(parent->anim.quat, bone->anim.trans, bone->anim.trans);
+			bone->anim.trans = TransformVertexQuat(parent->anim.quat, bone->anim.trans);
 			bone->anim.trans = parent->anim.trans + bone->anim.trans;
 
 			// Scale
 			bone->anim.scale = (bone->init.scale + Vec3f::ONE) * parent->anim.scale;
 		} else { // Root Bone
 			// Rotation
-			bone->anim.quat = Quat_Multiply(rotation, bone->init.quat);
+			bone->anim.quat = Quat_Multiply(t.rotation, bone->init.quat);
 
 			// Translation
-			Vec3f vt1 = bone->init.trans + ftr;
-			TransformVertexQuat(rotation, vt1, bone->anim.trans);
-			bone->anim.trans *= g_scale;
-			bone->anim.trans += pos;
+			Vec3f vt1 = bone->init.trans + t.offset;
+			bone->anim.trans = TransformVertexQuat(t.rotation, vt1);
+			bone->anim.trans *= t.scale;
+			bone->anim.trans += t.pos;
 
 			// Compute Global Object Scale AND Global Animation Scale
-			bone->anim.scale = (bone->init.scale + Vec3f::ONE) * g_scale;
+			bone->anim.scale = (bone->init.scale + Vec3f::ONE) * t.scale;
 		}
 	}
 }
@@ -1561,36 +1551,31 @@ void Cedric_TransformVerts(EERIE_3DOBJ *eobj, const Vec3f & pos) {
 
 void Cedric_ViewProjectTransform(Entity *io, EERIE_3DOBJ *eobj) {
 
-	EERIE_3D_BBOX box3D;
-	box3D.reset();
-
-	BBOX2D.reset();
+	EERIE_2D_BBOX box2D;
+	box2D.reset();
 
 	for(size_t i = 0; i < eobj->vertexlist.size(); i++) {
 		EERIE_VERTEX * outVert = &eobj->vertexlist3[i];
 
-		box3D.add(outVert->v);
-
 		Vec3f tempWorld;
-		EE_RT(&outVert->vert.p, &tempWorld);
+		EE_RT(&outVert->v, &tempWorld);
 		EE_P(&tempWorld, &outVert->vert);
 
 		// Updates 2D Bounding Box
 		if(outVert->vert.rhw > 0.f) {
-			BBOX2D.add(outVert->vert.p);
+			box2D.add(outVert->vert.p);
 		}
 	}
 
 	if(io) {
-		io->bbox3D = box3D;
-		io->bbox2D = BBOX2D;
+		io->bbox2D = box2D;
 	}
 }
 
 /*!
  * \brief Apply animation and draw object
  */
-void Cedric_AnimateDrawEntity(EERIE_C_DATA & rig, ANIM_USE * animlayer, const EERIE_QUAT & rotation, const Vec3f & pos, Vec3f & ftr, float scale, EERIE_EXTRA_ROTATE * extraRotation, AnimationBlendStatus * animBlend, EERIE_EXTRA_SCALE & extraScale) {
+void Cedric_AnimateDrawEntity(EERIE_C_DATA & rig, ANIM_USE * animlayer, EERIE_EXTRA_ROTATE * extraRotation, AnimationBlendStatus * animBlend, EERIE_EXTRA_SCALE & extraScale) {
 
 	// Initialize the rig
 	for(long i = 0; i != rig.nb_bones; i++) {
@@ -1634,9 +1619,6 @@ void Cedric_AnimateDrawEntity(EERIE_C_DATA & rig, ANIM_USE * animlayer, const EE
 			rig.bones[i].last = rig.bones[i].init;
 		}
 	}
-
-	// Build skeleton in Object Space
-	Cedric_ConcatenateTM(rig, rotation, pos, ftr, scale);
 }
 
 void EERIEDrawAnimQuatUpdate(EERIE_3DOBJ *eobj, ANIM_USE * animlayer,const Anglef & angle, const Vec3f & pos, unsigned long time, Entity *io, bool update_movement) {
@@ -1701,13 +1683,21 @@ void EERIEDrawAnimQuatUpdate(EERIE_3DOBJ *eobj, ANIM_USE * animlayer,const Angle
 	arx_assert(eobj->c_data);
 	EERIE_C_DATA & skeleton = *eobj->c_data;
 
-	Cedric_AnimateDrawEntity(skeleton, animlayer, rotation, pos, ftr, scale, extraRotation, animBlend, extraScale);
+	Cedric_AnimateDrawEntity(skeleton, animlayer, extraRotation, animBlend, extraScale);
+
+	// Build skeleton in Object Space
+	TransformInfo t(pos, rotation, scale, ftr);
+	Cedric_ConcatenateTM(skeleton, t);
 
 	Cedric_TransformVerts(eobj, pos);
+	if(io) {
+		UpdateBbox3d(eobj, io->bbox3D);
+	}
+
 	Cedric_ViewProjectTransform(io, eobj);
 }
 
-void EERIEDrawAnimQuatRender(EERIE_3DOBJ *eobj, const Vec3f & pos, Entity *io, bool render) {
+void EERIEDrawAnimQuatRender(EERIE_3DOBJ *eobj, const Vec3f & pos, Entity *io, bool render, float invisibility) {
 
 	if(io && io != entities.player() && !Cedric_IO_Visible(io->pos))
 		return;
@@ -1721,23 +1711,23 @@ void EERIEDrawAnimQuatRender(EERIE_3DOBJ *eobj, const Vec3f & pos, Entity *io, b
 		return;
 
 	if(render)
-		Cedric_AnimateDrawEntityRender(eobj, pos, io);
+		Cedric_AnimateDrawEntityRender(eobj, pos, io, invisibility);
 }
 
-void EERIEDrawAnimQuat(EERIE_3DOBJ *eobj, ANIM_USE * animlayer,const Anglef & angle, const Vec3f & pos, unsigned long time, Entity *io, bool render, bool update_movement) {
+void EERIEDrawAnimQuat(EERIE_3DOBJ *eobj, ANIM_USE * animlayer,const Anglef & angle, const Vec3f & pos, unsigned long time, Entity *io, bool render, bool update_movement, float invisibility) {
 
 	EERIEDrawAnimQuatUpdate(eobj, animlayer,angle, pos, time, io, update_movement);
-	EERIEDrawAnimQuatRender(eobj, pos, io, render);
+	EERIEDrawAnimQuatRender(eobj, pos, io, render, invisibility);
 }
 
 void AnimatedEntityUpdate(Entity * entity) {
 
 	EERIEDrawAnimQuat(entity->obj, entity->animlayer, entity->angle,
-		entity->pos, Original_framedelay, entity, false, true);
+		entity->pos, Original_framedelay, entity, false, true, 0.f);
 }
 
-void AnimatedEntityRender(Entity * entity) {
+void AnimatedEntityRender(Entity * entity, float invisibility) {
 
 	EERIEDrawAnimQuat(entity->obj, entity->animlayer, entity->angle,
-		entity->pos, 0, entity, true, false);
+		entity->pos, 0, entity, true, false, invisibility);
 }

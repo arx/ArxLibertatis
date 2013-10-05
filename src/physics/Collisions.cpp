@@ -76,124 +76,124 @@ bool DIRECT_PATH=true;
 
 //-----------------------------------------------------------------------------
 // Added immediate return (return anything;)
-inline float IsPolyInCylinder(EERIEPOLY *ep, EERIE_CYLINDER * cyl,long flag)
-{
-	long flags=flag;
-	POLYIN=0;
+inline float IsPolyInCylinder(EERIEPOLY * ep, EERIE_CYLINDER * cyl, long flag) {
+
+	long flags = flag;
+	POLYIN = 0;
 	float minf = cyl->origin.y + cyl->height;
 	float maxf = cyl->origin.y;
 
-	if (minf>ep->max.y) return 999999.f;
-
-	if (maxf<ep->min.y) return 999999.f;
+	if(minf > ep->max.y || maxf < ep->min.y)
+		return 999999.f;
 	
 	long to = (ep->type & POLY_QUAD) ? 4 : 3;
 
 	float nearest = 99999999.f;
 
-	for (long num=0;num<to;num++)
-	{
+	for(long num = 0; num < to; num++) {
 		float dd = fdist(Vec2f(ep->v[num].p.x, ep->v[num].p.z), Vec2f(cyl->origin.x, cyl->origin.z));
 
-		if (dd<nearest)
-		{
-			nearest=dd;
+		if(dd < nearest) {
+			nearest = dd;
 		}		
 	}
 
-	if (nearest > max(82.f,cyl->radius)) return 999999.f;
+	if(nearest > max(82.f, cyl->radius))
+		return 999999.f;
 
-	if (	(cyl->radius<30.f)
-		||	(cyl->height>-80.f)
-		||	(ep->area>5000.f)	)
-		flags|=CFLAG_EXTRA_PRECISION;
+	if(cyl->radius < 30.f
+	   || cyl->height > -80.f
+	   || ep->area > 5000.f
+	) {
+		flags |= CFLAG_EXTRA_PRECISION;
+	}
 
-	if (!(flags & CFLAG_EXTRA_PRECISION))
-	{
-		if (ep->area<100.f) return 999999.f;
+	if(!(flags & CFLAG_EXTRA_PRECISION)) {
+		if(ep->area < 100.f)
+			return 999999.f;
 	}
 	
-	float anything=999999.f;
+	float anything = 999999.f;
 
-	if (PointInCylinder(cyl, &ep->center)) 
-	{	
+	if(PointInCylinder(cyl, &ep->center)) {
 		POLYIN = 1;
 		
-		if (ep->norm.y<0.5f)
-			anything=min(anything,ep->min.y);
+		if(ep->norm.y < 0.5f)
+			anything = min(anything, ep->min.y);
 		else
-			anything=min(anything,ep->center.y);
+			anything = min(anything, ep->center.y);
 
-		if (!(flags & CFLAG_EXTRA_PRECISION)) return anything;
+		if(!(flags & CFLAG_EXTRA_PRECISION))
+			return anything;
 	}
 
 	
-	long r=to-1;
+	long r = to - 1;
 	
 	Vec3f center;
 	long n;
 	
-	for (n=0;n<to;n++)
-	{
-		if (flags & CFLAG_EXTRA_PRECISION)
-		{
-			for (long o=0;o<5;o++)
-			{
-				float p=(float)o*( 1.0f / 5 );
-				center = ep->v[n].p * p + ep->center * (1.f-p);
+	for(n = 0; n < to; n++) {
+		if(flags & CFLAG_EXTRA_PRECISION) {
+			for(long o = 0; o < 5; o++) {
+				float p = (float)o * (1.f/5);
+				center = ep->v[n].p * p + ep->center * (1.f - p);
 				if(PointInCylinder(cyl, &center)) {
-					anything=min(anything,center.y);
-					POLYIN=1;
-					if (!(flags & CFLAG_EXTRA_PRECISION)) return anything;
+					anything = min(anything, center.y);
+					POLYIN = 1;
+
+					if(!(flags & CFLAG_EXTRA_PRECISION))
+						return anything;
 				}
 			}
 		}
 
-		if ((ep->area>2000.f) 
-		        || (flags & CFLAG_EXTRA_PRECISION)  )
-		{
+		if(ep->area > 2000.f || (flags & CFLAG_EXTRA_PRECISION)) {
 			center = (ep->v[n].p + ep->v[r].p) * 0.5f;
 			if(PointInCylinder(cyl, &center)) {
-				anything=min(anything,center.y);
-				POLYIN=1;
-				if (!(flags & CFLAG_EXTRA_PRECISION)) return anything;
+				anything = min(anything, center.y);
+				POLYIN = 1;
+
+				if(!(flags & CFLAG_EXTRA_PRECISION))
+					return anything;
 			}
 
-			if ((ep->area>4000.f) || (flags & CFLAG_EXTRA_PRECISION)) {
+			if(ep->area > 4000.f || (flags & CFLAG_EXTRA_PRECISION)) {
 				center = (ep->v[n].p + ep->center) * 0.5f;
-				if (PointInCylinder(cyl, &center)) 
-				{	
-					anything=min(anything,center.y);
-					POLYIN=1;
+				if(PointInCylinder(cyl, &center)) {
+					anything = min(anything, center.y);
+					POLYIN = 1;
 
-					if (!(flags & CFLAG_EXTRA_PRECISION)) return anything;
+					if(!(flags & CFLAG_EXTRA_PRECISION))
+						return anything;
 				}
 			}
 
-			if ((ep->area>6000.f) || (flags & CFLAG_EXTRA_PRECISION)) {
+			if(ep->area > 6000.f || (flags & CFLAG_EXTRA_PRECISION)) {
 				center = (center + ep->v[n].p) * 0.5f;
-				if(PointInCylinder(cyl, &center))
-				{
-					anything=min(anything,center.y);
-					POLYIN=1;
+				if(PointInCylinder(cyl, &center)) {
+					anything = min(anything, center.y);
+					POLYIN = 1;
 
-					if (!(flags & CFLAG_EXTRA_PRECISION)) return anything;
+					if(!(flags & CFLAG_EXTRA_PRECISION))
+						return anything;
 				}
 			}
 		}
 
 		if(PointInCylinder(cyl, &ep->v[n].p)) {
 			
-			anything=min(anything,ep->v[n].p.y);
+			anything = min(anything, ep->v[n].p.y);
 			POLYIN = 1;
 
-			if (!(flags & CFLAG_EXTRA_PRECISION)) return anything;
+			if(!(flags & CFLAG_EXTRA_PRECISION))
+				return anything;
 		}
 
 		r++;
 
-		if (r>=to) r=0;
-	
+		if(r >= to)
+			r=0;
 	}
 
 
@@ -222,27 +222,26 @@ inline float IsPolyInCylinder(EERIEPOLY *ep, EERIE_CYLINDER * cyl,long flag)
 		}
 	} 
 //}*/
-	if ((anything!=999999.f) && (ep->norm.y<0.1f) && (ep->norm.y>-0.1f))
-		anything=min(anything,ep->min.y);
+	if(anything != 999999.f && ep->norm.y < 0.1f && ep->norm.y > -0.1f)
+		anything = min(anything, ep->min.y);
 
 	return anything;
 }
 
-//-----------------------------------------------------------------------------
-inline bool IsPolyInSphere(EERIEPOLY *ep, EERIE_SPHERE * sph)
-{
-	if ((!ep) || (!sph)) return false;
+inline bool IsPolyInSphere(EERIEPOLY *ep, EERIE_SPHERE * sph) {
 
-	if (ep->area<100.f) return false;
+	if(!ep || !sph)
+		return false;
+
+	if(ep->area < 100.f)
+		return false;
 
 	long to = (ep->type & POLY_QUAD) ? 4 : 3;
 
-	long r=to-1;
+	long r = to - 1;
 	Vec3f center;
 
-	for (long n=0;n<to;n++)
-	{
-		
+	for(long n = 0; n < to; n++) {
 		if(ep->area > 2000.f) {
 			center = (ep->v[n].p + ep->v[r].p) * 0.5f;
 			if(sph->contains(center)) {	
@@ -270,37 +269,33 @@ inline bool IsPolyInSphere(EERIEPOLY *ep, EERIE_SPHERE * sph)
 
 		r++;
 
-		if (r>=to) r=0;	
+		if(r >= to)
+			r = 0;
 	}
 
 	return false;
 }
 
-//-----------------------------------------------------------------------------
-bool IsCollidingIO(Entity * io,Entity * ioo)
-{
-	if (   (ioo!=NULL)
-		&& (io!=ioo)
-		&& !(ioo->ioflags & IO_NO_COLLISIONS)
-		&& (ioo->show==SHOW_FLAG_IN_SCENE) 
-		&& (ioo->obj)
-		)
-	{
-		if (ioo->ioflags & IO_NPC)
-		{
-			float old=ioo->physics.cyl.radius;
-			ioo->physics.cyl.radius+=25.f;
+bool IsCollidingIO(Entity * io,Entity * ioo) {
 
-			for (size_t j=0;j<io->obj->vertexlist3.size();j++)
-			{
-				if (PointInCylinder(&ioo->physics.cyl,&io->obj->vertexlist3[j].v)) 
-				{
-					ioo->physics.cyl.radius=old;
+	if(ioo != NULL
+	   && io != ioo
+	   && !(ioo->ioflags & IO_NO_COLLISIONS)
+	   && ioo->show == SHOW_FLAG_IN_SCENE
+	   && ioo->obj
+	) {
+		if(ioo->ioflags & IO_NPC) {
+			float old = ioo->physics.cyl.radius;
+			ioo->physics.cyl.radius += 25.f;
+
+			for(size_t j = 0; j < io->obj->vertexlist3.size(); j++) {
+				if(PointInCylinder(&ioo->physics.cyl, &io->obj->vertexlist3[j].v)) {
+					ioo->physics.cyl.radius = old;
 					return true;
 				}
 			}
 
-			ioo->physics.cyl.radius=old;
+			ioo->physics.cyl.radius = old;
 		}
 	}
 	
@@ -315,58 +310,51 @@ void PushIO_ON_Top(Entity * ioo, float ydec) {
 	for(size_t i = 0; i < entities.size(); i++) {
 		Entity * io = entities[i];
 
-		if (   (io)
-			&& (io!=ioo)
-			&& !(io->ioflags & IO_NO_COLLISIONS)
-			&& (io->show==SHOW_FLAG_IN_SCENE) 
-			&& (io->obj)
-			&& (!(io->ioflags & (IO_FIX | IO_CAMERA | IO_MARKER)))
-			)
-		{
+		if(io
+		   && io != ioo
+		   && !(io->ioflags & IO_NO_COLLISIONS)
+		   && io->show == SHOW_FLAG_IN_SCENE
+		   && io->obj
+		   && !(io->ioflags & (IO_FIX | IO_CAMERA | IO_MARKER))
+		) {
 			if(closerThan(Vec2f(io->pos.x, io->pos.z), Vec2f(ioo->pos.x, ioo->pos.z), 450.f)) {
 				EERIEPOLY ep;
-				ep.type=0;
-				float miny=9999999.f;
-				float maxy=-9999999.f;
+				ep.type = 0;
+				float miny = 9999999.f;
+				float maxy = -9999999.f;
 
-				for (size_t ii=0;ii<ioo->obj->vertexlist3.size();ii++)
-				{
-					miny=min(miny,ioo->obj->vertexlist3[ii].v.y);
-					maxy=max(maxy,ioo->obj->vertexlist3[ii].v.y);
+				for(size_t ii = 0; ii < ioo->obj->vertexlist3.size(); ii++) {
+					miny = min(miny, ioo->obj->vertexlist3[ii].v.y);
+					maxy = max(maxy, ioo->obj->vertexlist3[ii].v.y);
 				}
 
 				float posy = (io == entities.player()) ? player.basePosition().y : io->pos.y;
 				float modd = (ydec > 0) ? -20.f : 0;
 
-				if ((posy<=maxy) && (posy>=miny+modd))
-				{
-					for (size_t ii=0;ii<ioo->obj->facelist.size();ii++)
-					{
-						float cx=0;
-						float cz=0;
+				if(posy <= maxy && posy >= miny + modd) {
+					for(size_t ii = 0; ii < ioo->obj->facelist.size(); ii++) {
+						float cx = 0;
+						float cz = 0;
 
-						for (long kk=0;kk<3;kk++)
-						{
-							cx+=ep.v[kk].p.x=ioo->obj->vertexlist3[ioo->obj->facelist[ii].vid[kk]].v.x;
-							ep.v[kk].p.y=ioo->obj->vertexlist3[ioo->obj->facelist[ii].vid[kk]].v.y;
-							cz+=ep.v[kk].p.z=ioo->obj->vertexlist3[ioo->obj->facelist[ii].vid[kk]].v.z;
+						for(long kk = 0; kk < 3; kk++) {
+							ep.v[kk].p = ioo->obj->vertexlist3[ioo->obj->facelist[ii].vid[kk]].v;
+
+							cx += ep.v[kk].p.x;
+							cz += ep.v[kk].p.z;
 						}
 
-						cx*=( 1.0f / 3 );
-						cz*=( 1.0f / 3 );
+						cx *= (1.f/3);
+						cz *= (1.f/3);
 							
 						float tval=1.1f;
 
-						for (int kk=0;kk<3;kk++)
-						{
+						for(int kk = 0; kk < 3; kk++) {
 								ep.v[kk].p.x = (ep.v[kk].p.x - cx) * tval + cx; 
 								ep.v[kk].p.z = (ep.v[kk].p.z - cz) * tval + cz; 
 						}
 						
 						if(PointIn2DPolyXZ(&ep, io->pos.x, io->pos.z)) {
-							
 							if(io == entities.player()) {
-								
 								if(ydec <= 0) {
 									player.pos.y += ydec;
 									moveto.y += ydec;
@@ -384,9 +372,7 @@ void PushIO_ON_Top(Entity * ioo, float ydec) {
 										moveto.y += ydec;
 									}
 								}
-								
 							} else {
-								
 								if(ydec <= 0) {
 									io->pos.y += ydec;
 								} else {
@@ -397,7 +383,6 @@ void PushIO_ON_Top(Entity * ioo, float ydec) {
 										io->pos.y += ydec;
 									}
 								}
-								
 							}
 							break;
 						}
@@ -413,17 +398,17 @@ bool IsAnyNPCInPlatform(Entity * pfrm) {
 	for(size_t i = 0; i < entities.size(); i++) {
 		Entity * io = entities[i];
 
-		if (	(io) 
-			&&	(io!=pfrm)
-			&&	(io->ioflags & IO_NPC) 
-			&&	!(io->ioflags & IO_NO_COLLISIONS)			
-			&&	(io->show==SHOW_FLAG_IN_SCENE)	
-			)
-		{
+		if(io
+		   && io != pfrm
+		   && (io->ioflags & IO_NPC)
+		   && !(io->ioflags & IO_NO_COLLISIONS)
+		   && io->show == SHOW_FLAG_IN_SCENE
+		) {
 			EERIE_CYLINDER cyl;
-			GetIOCyl(io,&cyl);
+			GetIOCyl(io, &cyl);
 
-			if (CylinderPlatformCollide(&cyl,pfrm)!=0.f) return true;
+			if(CylinderPlatformCollide(&cyl, pfrm) != 0.f)
+				return true;
 		}
 	}
 
@@ -463,34 +448,37 @@ bool CollidedFromBack(Entity * io,Entity * ioo)
 	EERIEPOLY ep;
 	ep.type=0;
 
-	if (	(io )
-		&&	(ioo)
-		&&	(io->ioflags & IO_NPC)
-		&&	(ioo->ioflags & IO_NPC)	)
-	{
+	if(io
+	   && ioo
+	   && (io->ioflags & IO_NPC)
+	   && (ioo->ioflags & IO_NPC)
+	) {
 
-	
 	ep.v[0].p.x=io->pos.x;
 	ep.v[0].p.z=io->pos.z;
-	float ft=radians(135.f+90.f);
-		ep.v[1].p.x = EEsin(ft) * 180.f; 
-		ep.v[1].p.z = -EEcos(ft) * 180.f; 
-	ft=radians(225.f+90.f);
-		ep.v[2].p.x = EEsin(ft) * 180.f; 
-		ep.v[2].p.z = -EEcos(ft) * 180.f; 
+
+	float ft = radians(135.f + 90.f);
+	ep.v[1].p.x = EEsin(ft) * 180.f;
+	ep.v[1].p.z = -EEcos(ft) * 180.f;
+
+	ft = radians(225.f + 90.f);
+	ep.v[2].p.x = EEsin(ft) * 180.f;
+	ep.v[2].p.z = -EEcos(ft) * 180.f;
+
 	ft=radians(270.f-io->angle.b);
 	float ec=EEcos(ft);
 	float es=EEsin(ft);
-	EE_RotateY( &ep.v[1]  , &ep.tv[1]   , ec , es );
-	EE_RotateY( &ep.v[2]  , &ep.tv[2]   , ec , es );
+	EE_RotateY(&ep.v[1], &ep.tv[1], ec, es);
+	EE_RotateY(&ep.v[2], &ep.tv[2], ec, es);
 	ep.v[1].p.x=ep.tv[1].p.x+ep.v[0].p.x;
 	ep.v[1].p.z=ep.tv[1].p.z+ep.v[0].p.z;
 	ep.v[2].p.x=ep.tv[2].p.x+ep.v[0].p.x;
 	ep.v[2].p.z=ep.tv[2].p.z+ep.v[0].p.z;
 
 	// To keep if we need some visual debug
-	if (PointIn2DPolyXZ(&ep,ioo->pos.x,ioo->pos.z))
+	if(PointIn2DPolyXZ(&ep, ioo->pos.x, ioo->pos.z))
 		return true;
+
 	}
 
 	return false;
@@ -522,7 +510,6 @@ float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,Entity * ioo,long flags) {
 	float anything = 999999.f; 
 	
 	EERIEPOLY * ep;
-	FAST_BKG_DATA * feg;
 	
 	for(long j = pz - rad; j <= pz + rad; j++)
 	for(long i = px - rad; i <= px + rad; i++) {
@@ -551,7 +538,7 @@ float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,Entity * ioo,long flags) {
 			continue;
 
 
-		feg = &ACTIVEBKG->fastdata[i][j];
+		FAST_BKG_DATA * feg = &ACTIVEBKG->fastdata[i][j];
 		for(long k = 0; k < feg->nbpoly; k++) {
 			ep = &feg->polydata[k];
 
@@ -639,8 +626,9 @@ float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,Entity * ioo,long flags) {
 							for(long kk = 0; kk < 3; kk++) {
 								c.x += io->obj->vertexlist3[io->obj->facelist[ii].vid[kk]].v.x;
 								c.y += io->obj->vertexlist3[io->obj->facelist[ii].vid[kk]].v.y;
-								height = min(height, io->obj->vertexlist3[io->obj->facelist[ii].vid[kk]].v.y);
 								c.z += io->obj->vertexlist3[io->obj->facelist[ii].vid[kk]].v.z;
+
+								height = min(height, io->obj->vertexlist3[io->obj->facelist[ii].vid[kk]].v.y);
 							}
 
 							c.x *= ( 1.0f / 3 );
@@ -864,41 +852,44 @@ static bool InExceptionList(long val) {
 	return false;
 }
 
-//-----------------------------------------------------------------------------
-bool CheckEverythingInSphere(EERIE_SPHERE * sphere,long source,long targ, std::vector<long> & sphereContent) //except source...
+bool CheckEverythingInSphere(EERIE_SPHERE * sphere, long source, long targ, std::vector<long> & sphereContent) //except source...
 {
 	bool vreturn = false;
 	
 	Entity * io;
-	long ret_idx=-1;
+	long ret_idx = -1;
 	
-	float sr30=sphere->radius+20.f;
-	float sr40=sphere->radius+30.f;
-	float sr180=sphere->radius+500.f;
+	float sr30 = sphere->radius + 20.f;
+	float sr40 = sphere->radius + 30.f;
+	float sr180 = sphere->radius + 500.f;
 
 	for(long i = 0; i < TREATZONE_CUR; i++) {
 		if(targ > -1) {
 			i = TREATZONE_CUR;
 			io = entities[targ];
 
-			if (   (!io)
-				|| (InExceptionList(targ))
-				|| (targ==source)
-				|| (io->show!=SHOW_FLAG_IN_SCENE) 
-				|| !(io->gameFlags & GFLAG_ISINTREATZONE)
-				|| !(io->obj)
-			)
-			return false;
+			if(!io
+			   || InExceptionList(targ)
+			   || targ == source
+			   || io->show != SHOW_FLAG_IN_SCENE
+			   || !(io->gameFlags & GFLAG_ISINTREATZONE)
+			   || !(io->obj)
+			) {
+				return false;
+			}
 
-			ret_idx=targ;
+			ret_idx = targ;
 		} else {
-			if ( (treatio[i].show!=1) ||
-			 (treatio[i].io==NULL) ||
-			 (treatio[i].num==source) ||
-			 (InExceptionList(treatio[i].num)) ) continue;
+			if(treatio[i].show != 1
+			   || treatio[i].io == NULL
+			   || treatio[i].num == source
+			   || InExceptionList(treatio[i].num)
+			) {
+				continue;
+			}
 
-			io=treatio[i].io;
-			ret_idx=treatio[i].num;
+			io = treatio[i].io;
+			ret_idx = treatio[i].num;
 		}
 
 		if(!(io->ioflags & IO_NPC) && (io->ioflags & IO_NO_COLLISIONS))
@@ -917,24 +908,25 @@ bool CheckEverythingInSphere(EERIE_SPHERE * sphere,long source,long targ, std::v
 				if(closerThan(Vec2f(io->pos.x, io->pos.z), Vec2f(sphere->origin.x, sphere->origin.z), 440.f + sphere->radius)) {
 
 					EERIEPOLY ep;
-					ep.type=0;
+					ep.type = 0;
 
 					for(size_t ii = 0; ii < io->obj->facelist.size(); ii++) {
-						float cx=0;
-						float cz=0;
+						float cx = 0;
+						float cz = 0;
 
 						for(long kk = 0; kk < 3; kk++) {
-							cx+=ep.v[kk].p.x=io->obj->vertexlist3[io->obj->facelist[ii].vid[kk]].v.x;
-								ep.v[kk].p.y=io->obj->vertexlist3[io->obj->facelist[ii].vid[kk]].v.y;
-							cz+=ep.v[kk].p.z=io->obj->vertexlist3[io->obj->facelist[ii].vid[kk]].v.z;
+							ep.v[kk].p = io->obj->vertexlist3[io->obj->facelist[ii].vid[kk]].v;
+
+							cx += ep.v[kk].p.x;
+							cz += ep.v[kk].p.z;
 						}
 
-						cx*=( 1.0f / 3 );
-						cz*=( 1.0f / 3 );
+						cx *= (1.f/3);
+						cz *= (1.f/3);
 
 						for(int kk = 0; kk < 3; kk++) {
-							ep.v[kk].p.x=(ep.v[kk].p.x-cx)*3.5f+cx;
-							ep.v[kk].p.z=(ep.v[kk].p.z-cz)*3.5f+cz;
+							ep.v[kk].p.x = (ep.v[kk].p.x - cx) * 3.5f + cx;
+							ep.v[kk].p.z = (ep.v[kk].p.z - cz) * 3.5f + cz;
 						}
 
 						if(PointIn2DPolyXZ(&ep, sphere->origin.x, sphere->origin.z)) {
@@ -950,8 +942,8 @@ bool CheckEverythingInSphere(EERIE_SPHERE * sphere,long source,long targ, std::v
 
 		if(distSqr(io->pos, sphere->origin) < square(sr180)) {
 
-			long amount=1;
-			vector<EERIE_VERTEX> & vlist = io->obj->vertexlist3;
+			long amount = 1;
+			std::vector<EERIE_VERTEX> & vlist = io->obj->vertexlist3;
 
 			if(io->obj->nbgroups > 4) {
 				for(long ii = 0; ii < io->obj->nbgroups; ii++) {
@@ -997,11 +989,10 @@ bool CheckEverythingInSphere(EERIE_SPHERE * sphere,long source,long targ, std::v
 	return vreturn;	
 }
 
-//-----------------------------------------------------------------------------
 EERIEPOLY * CheckBackgroundInSphere(EERIE_SPHERE * sphere) //except source...
 {
 	long rad = sphere->radius*ACTIVEBKG->Xmul;
-	rad+=2;
+	rad += 2;
 
 	long px = sphere->origin.x * ACTIVEBKG->Xmul;
 	long pz = sphere->origin.z * ACTIVEBKG->Zmul;
@@ -1011,22 +1002,17 @@ EERIEPOLY * CheckBackgroundInSphere(EERIE_SPHERE * sphere) //except source...
 	long spz = std::max(pz - rad, 0L);
 	long epz = std::min(pz + rad, ACTIVEBKG->Zsize - 1L);
 
-	EERIEPOLY * ep;
-	FAST_BKG_DATA * feg;
+	for(long j = spz; j <= epz; j++)
+	for(long i = spx; i <= epx; i++) {
+		FAST_BKG_DATA * feg = &ACTIVEBKG->fastdata[i][j];
 
-	for (long j=spz;j<=epz;j++)
-	for (long i=spx;i<=epx;i++) 
-	{
-		feg=&ACTIVEBKG->fastdata[i][j];
+		for(long k = 0; k < feg->nbpoly; k++) {
+			EERIEPOLY * ep = &feg->polydata[k];
 
-		for (long k=0;k<feg->nbpoly;k++)
-		{
-			ep=&feg->polydata[k];	
+			if(ep->type & (POLY_WATER | POLY_TRANS | POLY_NOCOL))
+				continue;
 
-			if (ep->type & (POLY_WATER | POLY_TRANS | POLY_NOCOL)) continue;
-
-			if (IsPolyInSphere(ep,sphere)) 
-			{
+			if(IsPolyInSphere(ep, sphere)) {
 				return ep;					
 			}			
 		}
@@ -1038,13 +1024,13 @@ EERIEPOLY * CheckBackgroundInSphere(EERIE_SPHERE * sphere) //except source...
 bool CheckAnythingInSphere(EERIE_SPHERE * sphere, long source, CASFlags flags, long * num) //except source...
 {
 	if(num)
-		*num=-1;
+		*num = -1;
 
-	long rad = sphere->radius*ACTIVEBKG->Xmul;
-	rad+=2;
+	long rad = sphere->radius * ACTIVEBKG->Xmul;
+	rad += 2;
 
-	long px = sphere->origin.x*ACTIVEBKG->Xmul;
-	long pz = sphere->origin.z*ACTIVEBKG->Zmul;
+	long px = sphere->origin.x * ACTIVEBKG->Xmul;
+	long pz = sphere->origin.z * ACTIVEBKG->Zmul;
 
 	if(!(flags & CAS_NO_BACKGROUND_COL)) {
 		long spx = std::max(px - rad, 0L);
@@ -1054,10 +1040,10 @@ bool CheckAnythingInSphere(EERIE_SPHERE * sphere, long source, CASFlags flags, l
 
 		for(long j = spz; j <= epz; j++)
 		for(long i = spx; i <= epx; i++) {
-			FAST_BKG_DATA *feg=&ACTIVEBKG->fastdata[i][j];
+			FAST_BKG_DATA *feg = &ACTIVEBKG->fastdata[i][j];
 
 			for(long k = 0; k < feg->nbpoly; k++) {
-				EERIEPOLY *ep=&feg->polydata[k];
+				EERIEPOLY *ep = &feg->polydata[k];
 
 				if(ep->type & (POLY_WATER | POLY_TRANS | POLY_NOCOL))
 					continue;
@@ -1076,9 +1062,9 @@ bool CheckAnythingInSphere(EERIE_SPHERE * sphere, long source, CASFlags flags, l
 	if(flags & CAS_NO_SAME_GROUP)
 		validsource = ValidIONum(source);
 
-	float sr30=sphere->radius+20.f;
-	float sr40=sphere->radius+30.f;
-	float sr180=sphere->radius+500.f;
+	float sr30 = sphere->radius + 20.f;
+	float sr40 = sphere->radius + 30.f;
+	float sr180 = sphere->radius + 500.f;
 
 	for(long i = 0; i < TREATZONE_CUR; i++) {
 		
@@ -1106,35 +1092,34 @@ bool CheckAnythingInSphere(EERIE_SPHERE * sphere, long source, CASFlags flags, l
 			continue;
 
 		if(io->gameFlags & GFLAG_PLATFORM) {
-			float miny,maxy;
-			miny=io->bbox3D.min.y;
-			maxy=io->bbox3D.max.y;
+			float miny = io->bbox3D.min.y;
+			float maxy = io->bbox3D.max.y;
 
-			if (	(maxy> sphere->origin.y-sphere->radius)
-				||	(miny< sphere->origin.y+sphere->radius) )
-			if (In3DBBoxTolerance(&sphere->origin,&io->bbox3D,sphere->radius))
+			if(maxy > sphere->origin.y - sphere->radius || miny < sphere->origin.y + sphere->radius)
+			if(In3DBBoxTolerance(&sphere->origin, &io->bbox3D, sphere->radius))
 			{
 				if(closerThan(Vec2f(io->pos.x, io->pos.z), Vec2f(sphere->origin.x, sphere->origin.z), 440.f + sphere->radius)) {
 
 					EERIEPOLY ep;
-					ep.type=0;
+					ep.type = 0;
 
 					for(size_t ii = 0; ii < io->obj->facelist.size(); ii++) {
-						float cx=0;
-						float cz=0;
+						float cx = 0;
+						float cz = 0;
 
 						for(long kk = 0; kk < 3; kk++) {
-							cx+=ep.v[kk].p.x=io->obj->vertexlist3[io->obj->facelist[ii].vid[kk]].v.x;
-								ep.v[kk].p.y=io->obj->vertexlist3[io->obj->facelist[ii].vid[kk]].v.y;
-							cz+=ep.v[kk].p.z=io->obj->vertexlist3[io->obj->facelist[ii].vid[kk]].v.z;
+							ep.v[kk].p = io->obj->vertexlist3[io->obj->facelist[ii].vid[kk]].v;
+
+							cx += ep.v[kk].p.x;
+							cz += ep.v[kk].p.z;
 						}
 
-						cx*=( 1.0f / 3 );
-						cz*=( 1.0f / 3 );
+						cx *= (1.f/3);
+						cz *= (1.f/3);
 
 						for(int kk = 0; kk < 3; kk++) {
-							ep.v[kk].p.x=(ep.v[kk].p.x-cx)*3.5f+cx;
-							ep.v[kk].p.z=(ep.v[kk].p.z-cz)*3.5f+cz;
+							ep.v[kk].p.x = (ep.v[kk].p.x - cx) * 3.5f + cx;
+							ep.v[kk].p.z = (ep.v[kk].p.z - cz) * 3.5f + cz;
 						}
 
 						if(PointIn2DPolyXZ(&ep, sphere->origin.x, sphere->origin.z)) {
@@ -1149,8 +1134,8 @@ bool CheckAnythingInSphere(EERIE_SPHERE * sphere, long source, CASFlags flags, l
 		}
 
 		if(distSqr(io->pos, sphere->origin) < square(sr180)) {
-			long amount=1;
-			vector<EERIE_VERTEX> & vlist=io->obj->vertexlist3;
+			long amount = 1;
+			std::vector<EERIE_VERTEX> & vlist = io->obj->vertexlist3;
 
 			if(io->obj->nbgroups > 4) {
 				for(long ii = 0; ii < io->obj->nbgroups; ii++) {
@@ -1162,7 +1147,7 @@ bool CheckAnythingInSphere(EERIE_SPHERE * sphere, long source, CASFlags flags, l
 					}
 				}
 
-				amount=2;
+				amount = 2;
 			}
 
 			for(size_t ii = 0; ii < io->obj->facelist.size(); ii += amount) {
@@ -1282,55 +1267,48 @@ bool AttemptValidCylinderPos(EERIE_CYLINDER * cyl, Entity * io, CollisionFlags f
 	
 	float anything = CheckAnythingInCylinder(cyl, io, flags); 
 
-	if ((flags & CFLAG_LEVITATE) && (anything==0.f)) return true;
+	if((flags & CFLAG_LEVITATE) && anything == 0.f)
+		return true;
 
-	if (anything>=0.f) // Falling Cylinder but valid pos !
-	{
-		if (flags & CFLAG_RETURN_HEIGHT)
-			cyl->origin.y+=anything;
+	// Falling Cylinder but valid pos !
+	if(anything >= 0.f) {
+		if(flags & CFLAG_RETURN_HEIGHT)
+			cyl->origin.y += anything;
 
 		return true;
 	}
 	
 	EERIE_CYLINDER tmp;
 
-	if (!(flags & CFLAG_ANCHOR_GENERATION))
-	{
+	if(!(flags & CFLAG_ANCHOR_GENERATION)) {
 		
-		memcpy(&tmp,cyl,sizeof(EERIE_CYLINDER));
+		memcpy(&tmp, cyl, sizeof(EERIE_CYLINDER));
 
-		while (anything<0.f) 
-		{
-			tmp.origin.y+=anything;
-			anything=CheckAnythingInCylinder(&tmp,io,flags);					
+		while(anything < 0.f) {
+			tmp.origin.y += anything;
+			anything = CheckAnythingInCylinder(&tmp, io, flags);
 		}
 
-		anything=tmp.origin.y-cyl->origin.y;
+		anything = tmp.origin.y - cyl->origin.y;
 	}
 
-	if (MOVING_CYLINDER)
-	{
-		if (flags & CFLAG_NPC)
-		{		
+	if(MOVING_CYLINDER) {
+		if(flags & CFLAG_NPC) {
 			float tolerate;
 			
 			if((flags & CFLAG_PLAYER) && player.jumpphase != NotJumping) {
-				tolerate=0;
-			}
-			else if ((io) && (io->ioflags & IO_NPC) && (io->_npcdata->pathfind.listnb > 0) && (io->_npcdata->pathfind.listpos < io->_npcdata->pathfind.listnb))
-			{
-				tolerate=-65-io->_npcdata->moveproblem;
-			}
-			else 
-			{
-				if ((io) &&
-				        (io->_npcdata))
-				{
+				tolerate = 0;
+			} else if(io
+					&& (io->ioflags & IO_NPC)
+					&& io->_npcdata->pathfind.listnb > 0
+					&& io->_npcdata->pathfind.listpos < io->_npcdata->pathfind.listnb
+			) {
+				tolerate = -65 - io->_npcdata->moveproblem;
+			} else {
+				if(io && io->_npcdata) {
 					tolerate = -55 - io->_npcdata->moveproblem; 
-				}
-				else
-				{
-					tolerate=0.f;
+				} else {
+					tolerate = 0.f;
 				}
 			}
 			
@@ -1343,88 +1321,79 @@ bool AttemptValidCylinderPos(EERIE_CYLINDER * cyl, Entity * io, CollisionFlags f
 			}
 		}
 		
-		if (io && (flags & CFLAG_PLAYER) && (anything<0.f) && (flags & CFLAG_JUST_TEST))
-		{
+		if(io && (flags & CFLAG_PLAYER) && anything < 0.f && (flags & CFLAG_JUST_TEST)) {
 			EERIE_CYLINDER tmpp;
-			memcpy(&tmpp,cyl,sizeof(EERIE_CYLINDER));
-			tmpp.radius*=0.7f;
-			float tmp=CheckAnythingInCylinder(&tmpp,io,flags | CFLAG_JUST_TEST);
+			memcpy(&tmpp, cyl, sizeof(EERIE_CYLINDER));
+			tmpp.radius *= 0.7f;
 
-			if ((tmp > 50.f))
-			{		
-				tmpp.radius=cyl->radius*1.4f;
-					tmpp.origin.y-=30.f;
-					float tmp=CheckAnythingInCylinder(&tmpp,io,flags | CFLAG_JUST_TEST);
+			float tmp = CheckAnythingInCylinder(&tmpp, io, flags | CFLAG_JUST_TEST);
 
-					if (tmp<0)
-				return false;
+			if(tmp > 50.f) {
+				tmpp.radius = cyl->radius * 1.4f;
+				tmpp.origin.y -= 30.f;
+				float tmp = CheckAnythingInCylinder(&tmpp, io, flags | CFLAG_JUST_TEST);
+
+				if(tmp < 0)
+					return false;
 			}
 		}
 
-		if (io && (!(flags & CFLAG_JUST_TEST)))
-		{
-			if ((flags & CFLAG_PLAYER) && (anything<0.f))
-			{
+		if(io && !(flags & CFLAG_JUST_TEST)) {
+			if((flags & CFLAG_PLAYER) && anything < 0.f) {
 				
 				if(player.jumpphase != NotJumping) {
 					io->_npcdata->climb_count = MAX_ALLOWED_PER_SECOND;
 					return false;
 				}
 
-				float dist = max(vector2D.length(),1.f);
+				float dist = max(vector2D.length(), 1.f);
 				float pente = EEfabs(anything) / dist * ( 1.0f / 2 ); 
-				io->_npcdata->climb_count+=pente;
+				io->_npcdata->climb_count += pente;
 
-				if (io->_npcdata->climb_count>MAX_ALLOWED_PER_SECOND)
-				{
-					io->_npcdata->climb_count=MAX_ALLOWED_PER_SECOND;
+				if(io->_npcdata->climb_count > MAX_ALLOWED_PER_SECOND) {
+					io->_npcdata->climb_count = MAX_ALLOWED_PER_SECOND;
 				}
 
-				if (anything < -55) 
-				{
-					io->_npcdata->climb_count=MAX_ALLOWED_PER_SECOND;
+				if(anything < -55) {
+					io->_npcdata->climb_count = MAX_ALLOWED_PER_SECOND;
 					return false;
 				}
 
 				EERIE_CYLINDER tmpp;
-				memcpy(&tmpp,cyl,sizeof(EERIE_CYLINDER));
+				memcpy(&tmpp, cyl, sizeof(EERIE_CYLINDER));
 				tmpp.radius *= 0.65f; 
-				float tmp=CheckAnythingInCylinder(&tmpp,io,flags | CFLAG_JUST_TEST);
+				float tmp = CheckAnythingInCylinder(&tmpp, io, flags | CFLAG_JUST_TEST);
 
-				if (tmp > 50.f)
-				{				
-					tmpp.radius=cyl->radius*1.45f;
-					tmpp.origin.y-=30.f;
-					float tmp=CheckAnythingInCylinder(&tmpp,io,flags | CFLAG_JUST_TEST);
+				if(tmp > 50.f) {
+					tmpp.radius = cyl->radius * 1.45f;
+					tmpp.origin.y -= 30.f;
+					float tmp = CheckAnythingInCylinder(&tmpp, io, flags | CFLAG_JUST_TEST);
 
-					if (tmp<0)
+					if(tmp < 0)
 						return false;
 				}	
 			}			
 		}
+	} else if(anything < -45) {
+		return false;
 	}
-	else if (anything<-45) return false;
 
-	if ((flags & CFLAG_SPECIAL) && (anything<-40)) 
-	{
-		if (flags & CFLAG_RETURN_HEIGHT)
-			cyl->origin.y+=anything;
+	if((flags & CFLAG_SPECIAL) && anything < -40) {
+		if(flags & CFLAG_RETURN_HEIGHT)
+			cyl->origin.y += anything;
 
 		return false;
 	}
 
-	memcpy(&tmp,cyl,sizeof(EERIE_CYLINDER));
-	tmp.origin.y+=anything;
+	memcpy(&tmp, cyl, sizeof(EERIE_CYLINDER));
+	tmp.origin.y += anything;
 	anything = CheckAnythingInCylinder(&tmp, io, flags);
 
-	if (anything<0.f) 
-	{
-		if (flags & CFLAG_RETURN_HEIGHT)
-		{
-			while (anything<0.f) 
-			{
-				tmp.origin.y+=anything;
-				anything=CheckAnythingInCylinder(&tmp,io,flags);
+	if(anything < 0.f) {
+		if(flags & CFLAG_RETURN_HEIGHT) {
+			while(anything < 0.f) {
+				tmp.origin.y += anything;
+				anything = CheckAnythingInCylinder(&tmp, io, flags);
 			}
 
 			cyl->origin.y = tmp.origin.y; 
@@ -1433,7 +1402,7 @@ bool AttemptValidCylinderPos(EERIE_CYLINDER * cyl, Entity * io, CollisionFlags f
 		return false;
 	}
 
-	cyl->origin.y=tmp.origin.y;
+	cyl->origin.y = tmp.origin.y;
 	return true;
 }
 
@@ -1697,14 +1666,11 @@ bool IO_Visible(Vec3f * orgn, Vec3f * dest, EERIEPOLY * epp, Vec3f * hit)
 		for(size_t num = 0; num < entities.size(); num++) {
 			Entity * io = entities[num];
 
-			if ((io) && (io->gameFlags & GFLAG_VIEW_BLOCKER))
-			{
-				if ( CheckIOInSphere(&sphere,num) )
-				{
+			if(io && (io->gameFlags & GFLAG_VIEW_BLOCKER)) {
+				if(CheckIOInSphere(&sphere, num)) {
 					dd = fdist(*orgn, sphere.origin);
 
-					if (dd<nearest)
-					{
+					if(dd < nearest) {
 						hit->x=x;
 						hit->y=y;
 						hit->z=z;
@@ -1722,13 +1688,13 @@ bool IO_Visible(Vec3f * orgn, Vec3f * dest, EERIEPOLY * epp, Vec3f * hit)
 
 			feg = &ACTIVEBKG->fastdata[px][pz];
 
-			for (long k = 0; k < feg->nbpolyin; k++) {
+			for(long k = 0; k < feg->nbpolyin; k++) {
 				ep = feg->polyin[k];
 
-				if (!(ep->type & (POLY_WATER | POLY_TRANS | POLY_NOCOL) ) )
-				if ((ep->min.y - pas < y) && (ep->max.y + pas > y))
-				if ((ep->min.x - pas < x) && (ep->max.x + pas > x))
-				if ((ep->min.z - pas < z) && (ep->max.z + pas > z))
+				if(!(ep->type & (POLY_WATER | POLY_TRANS | POLY_NOCOL)))
+				if((ep->min.y - pas < y) && (ep->max.y + pas > y))
+				if((ep->min.x - pas < x) && (ep->max.x + pas > x))
+				if((ep->min.z - pas < z) && (ep->max.z + pas > z))
 				{
 					if(RayCollidingPoly(orgn, dest, ep, hit)) {
 						dd = fdist(*orgn, *hit);
@@ -1757,23 +1723,22 @@ fini:
 	return false;
 }
 
-void ANCHOR_BLOCK_Clear()
-{
-	EERIE_BACKGROUND * eb=ACTIVEBKG;
+void ANCHOR_BLOCK_Clear() {
 
-	if (eb)
-	{
-		for (long k=0;k<eb->nbanchors;k++)
-		{
-			ANCHOR_DATA * ad=&eb->anchors[k];	
-			ad->flags&=~ANCHOR_FLAG_BLOCKED;
-		}
+	EERIE_BACKGROUND * eb = ACTIVEBKG;
+
+	if(!eb)
+		return;
+
+	for(long k = 0; k < eb->nbanchors; k++) {
+		ANCHOR_DATA * ad = &eb->anchors[k];
+		ad->flags &= ~ANCHOR_FLAG_BLOCKED;
 	}
 }
 
-void ANCHOR_BLOCK_By_IO(Entity * io,long status)
-{
-	EERIE_BACKGROUND * eb=ACTIVEBKG;
+void ANCHOR_BLOCK_By_IO(Entity * io, long status) {
+
+	EERIE_BACKGROUND * eb = ACTIVEBKG;
 
 	for(long k = 0; k < eb->nbanchors; k++) {
 		ANCHOR_DATA * ad = &eb->anchors[k];
@@ -1784,16 +1749,14 @@ void ANCHOR_BLOCK_By_IO(Entity * io,long status)
 		if(closerThan(Vec2f(io->pos.x, io->pos.z), Vec2f(ad->pos.x, ad->pos.z), 440.f)) {
 			
 			EERIEPOLY ep;
-			ep.type=0;
+			ep.type = 0;
 
 			for(size_t ii = 0; ii < io->obj->facelist.size(); ii++) {
-				float cx=0;
-				float cz=0;
+				float cx = 0;
+				float cz = 0;
 
 				for(long kk = 0; kk < 3; kk++) {
-					ep.v[kk].p.x = io->obj->vertexlist[io->obj->facelist[ii].vid[kk]].v.x + io->pos.x;
-					ep.v[kk].p.y = io->obj->vertexlist[io->obj->facelist[ii].vid[kk]].v.y + io->pos.y;
-					ep.v[kk].p.z = io->obj->vertexlist[io->obj->facelist[ii].vid[kk]].v.z + io->pos.z;
+					ep.v[kk].p = io->obj->vertexlist[io->obj->facelist[ii].vid[kk]].v + io->pos;
 
 					cx += ep.v[kk].p.x;
 					cz += ep.v[kk].p.z;
@@ -1803,15 +1766,15 @@ void ANCHOR_BLOCK_By_IO(Entity * io,long status)
 				cz *= (1.f/3);
 
 				for(int kk = 0; kk < 3; kk++) {
-					ep.v[kk].p.x = (ep.v[kk].p.x - cx)*3.5f + cx;
-					ep.v[kk].p.z = (ep.v[kk].p.z - cz)*3.5f + cz;
+					ep.v[kk].p.x = (ep.v[kk].p.x - cx) * 3.5f + cx;
+					ep.v[kk].p.z = (ep.v[kk].p.z - cz) * 3.5f + cz;
 				}
 
 				if(PointIn2DPolyXZ(&ep, ad->pos.x, ad->pos.z)) {
 					if(status)
-						ad->flags|=ANCHOR_FLAG_BLOCKED;
+						ad->flags |= ANCHOR_FLAG_BLOCKED;
 					else
-						ad->flags&=~ANCHOR_FLAG_BLOCKED;
+						ad->flags &= ~ANCHOR_FLAG_BLOCKED;
 				}
 			}
 		}

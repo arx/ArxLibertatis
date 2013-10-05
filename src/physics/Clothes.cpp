@@ -63,8 +63,8 @@ using std::vector;
 
 void MOLLESS_Clear(EERIE_3DOBJ * obj, long flag) {
 	
-	if ((obj) && (obj->cdata)) {
-		for (long i = 0; i < obj->cdata->nb_cvert; i++) {
+	if(obj && obj->cdata) {
+		for(long i = 0; i < obj->cdata->nb_cvert; i++) {
 			CLOTHESVERTEX * cv = &obj->cdata->cvert[i];
 			cv->velocity = Vec3f::ZERO;
 			cv->force = Vec3f::ZERO;
@@ -80,7 +80,7 @@ void MOLLESS_Clear(EERIE_3DOBJ * obj, long flag) {
 
 void AddSpring(EERIE_3DOBJ * obj, short vert1, short vert2, float constant, float damping, long type) {
 	
-	if (vert1 == -1 || vert2 == -1 || vert1 == vert2) {
+	if(vert1 == -1 || vert2 == -1 || vert1 == vert2) {
 		return;
 	}
 	
@@ -101,11 +101,11 @@ void AddSpring(EERIE_3DOBJ * obj, short vert1, short vert2, float constant, floa
 	obj->cdata->springs.push_back(newSpring);
 }
 
-short GetIDXVert(EERIE_3DOBJ * obj, short num)
-{
-	for (short i = 0; i < obj->cdata->nb_cvert; i++)
-	{
-		if (obj->cdata->cvert[i].idx == num) return i;
+short GetIDXVert(EERIE_3DOBJ * obj, short num) {
+
+	for(short i = 0; i < obj->cdata->nb_cvert; i++) {
+		if(obj->cdata->cvert[i].idx == num)
+			return i;
 	}
 
 	return -1;
@@ -114,8 +114,8 @@ short GetIDXVert(EERIE_3DOBJ * obj, short num)
 //*************************************************************************************
 // Creates Clothes Data Structure for an object.
 //*************************************************************************************
-void EERIEOBJECT_AddClothesData(EERIE_3DOBJ * obj)
-{
+void EERIEOBJECT_AddClothesData(EERIE_3DOBJ * obj) {
+
 	long sel = -1;
 	long selmounocol = -1;
 
@@ -133,10 +133,10 @@ void EERIEOBJECT_AddClothesData(EERIE_3DOBJ * obj)
 		}
 	}
 
-	if (sel == -1) return;
+	if(sel == -1)
+		return;
 
-	if (obj->selections[sel].selected.size() > 0)
-	{
+	if(obj->selections[sel].selected.size() > 0) {
 		obj->cdata = new CLOTHES_DATA();
 
 		obj->cdata->nb_cvert = (short)obj->selections[sel].selected.size();
@@ -149,39 +149,29 @@ void EERIEOBJECT_AddClothesData(EERIE_3DOBJ * obj)
 
 
 	// There is a Mollesse (TM) (C) Selection
-	if (obj->selections[sel].selected.size() > 0)
-	{
-		for (int i = 0; i < obj->cdata->nb_cvert; i++)
-		{
+	if(obj->selections[sel].selected.size() > 0) {
+		for(int i = 0; i < obj->cdata->nb_cvert; i++) {
 			obj->cdata->cvert[i].idx = (short)obj->selections[sel].selected[i];
 			obj->cdata->cvert[i].pos = obj->vertexlist[obj->cdata->cvert[i].idx].v;
 			obj->cdata->cvert[i].t_pos = obj->vertexlist[obj->cdata->cvert[i].idx].v;
 			obj->cdata->cvert[i].mass = 0.5f; 
 
-			if ((selmounocol != -1) && (IsInSelection(obj, obj->selections[sel].selected[i], selmounocol) >= 0))
-			{
-
+			if(selmounocol != -1 && IsInSelection(obj, obj->selections[sel].selected[i], selmounocol) >= 0) {
 				obj->cdata->cvert[i].flags = CLOTHES_FLAG_NORMAL | CLOTHES_FLAG_NOCOL;
-			}
-			else
+			} else {
 				obj->cdata->cvert[i].flags = CLOTHES_FLAG_NORMAL;
+			}
 
 			obj->cdata->cvert[i].coll = -1;
 		}
 
-		for (int i = 0; i < obj->cdata->nb_cvert; i++)
-		{
-
-			for (long j = 0; j < obj->ndata[obj->cdata->cvert[i].idx].nb_Nvertex; j++)
-			{
+		for(int i = 0; i < obj->cdata->nb_cvert; i++) {
+			for(long j = 0; j < obj->ndata[obj->cdata->cvert[i].idx].nb_Nvertex; j++) {
 				short vert = obj->ndata[obj->cdata->cvert[i].idx].Nvertex[j];
 
-				if (IsInSelection(obj, vert, sel) >= 0)
-				{
+				if(IsInSelection(obj, vert, sel) >= 0) {
 					AddSpring(obj, (short)i, (short)GetIDXVert(obj, vert), 11.f, 0.3f, 0); 
-				}
-				else
-				{
+				} else {
 					obj->cdata->cvert[i].flags |= CLOTHES_FLAG_FIX;
 					obj->cdata->cvert[i].coll = -2;
 					obj->cdata->cvert[i].mass = 0.f;
@@ -190,32 +180,29 @@ void EERIEOBJECT_AddClothesData(EERIE_3DOBJ * obj)
 		}
 
 		// Adds more springs (shear)
-		for (int i = 0; i < obj->cdata->nb_cvert; i++)
-		{
-			for (long j = 0; j < obj->ndata[obj->cdata->cvert[i].idx].nb_Nvertex; j++)
-			{
+		for(int i = 0; i < obj->cdata->nb_cvert; i++) {
+			for(long j = 0; j < obj->ndata[obj->cdata->cvert[i].idx].nb_Nvertex; j++) {
 				short vert = obj->ndata[obj->cdata->cvert[i].idx].Nvertex[j];
 
-				if (vert == obj->cdata->cvert[i].idx) continue; // Cannot add a spring between 1 node :p
+				if(vert == obj->cdata->cvert[i].idx)
+					continue; // Cannot add a spring between 1 node :p
 
-				if (IsInSelection(obj, vert, sel) >= 0)
-				{
+				if(IsInSelection(obj, vert, sel) >= 0) {
 					float distance = distSqr(obj->vertexlist[obj->cdata->cvert[i].idx].v,
 					                         obj->vertexlist[vert].v) * square(1.2f);
 
 					// We springed it in the previous part of code
-					for (long k = 0; k < obj->ndata[vert].nb_Nvertex; k++)
-					{
+					for(long k = 0; k < obj->ndata[vert].nb_Nvertex; k++) {
 						short ver = obj->ndata[vert].Nvertex[k];
 
-						if (IsInSelection(obj, ver, sel) >= 0) // This time we have one !
-						{
-							if (ver == obj->cdata->cvert[i].idx) continue;
+						if(IsInSelection(obj, ver, sel) >= 0) { // This time we have one !
+							if(ver == obj->cdata->cvert[i].idx)
+								continue;
+
 							float distance2 = distSqr(obj->vertexlist[obj->cdata->cvert[i].idx].v,
 							                          obj->vertexlist[ver].v);
 
-							if (distance2 < distance)
-							{
+							if(distance2 < distance) {
 								AddSpring(obj, (short)i, (short)GetIDXVert(obj, ver), 4.2f, 0.7f, 1); 
 							}
 						}
@@ -225,44 +212,39 @@ void EERIEOBJECT_AddClothesData(EERIE_3DOBJ * obj)
 		}
 
 		// Adds more springs (bend)
-		for (int i = 0; i < obj->cdata->nb_cvert; i++)
-		{
-			for (long j = 0; j < obj->ndata[obj->cdata->cvert[i].idx].nb_Nvertex; j++)
-			{
+		for(int i = 0; i < obj->cdata->nb_cvert; i++) {
+			for(long j = 0; j < obj->ndata[obj->cdata->cvert[i].idx].nb_Nvertex; j++) {
 				short vert = obj->ndata[obj->cdata->cvert[i].idx].Nvertex[j];
 
-				if (vert == obj->cdata->cvert[i].idx) continue; // Cannot add a spring between 1 node :p
+				if(vert == obj->cdata->cvert[i].idx)
+					continue; // Cannot add a spring between 1 node :p
 
-				if (IsInSelection(obj, vert, sel) >= 0)
-				{
+				if(IsInSelection(obj, vert, sel) >= 0) {
 					// We springed it in the previous part of code
-					for (long k = 0; k < obj->ndata[vert].nb_Nvertex; k++)
-					{
+					for(long k = 0; k < obj->ndata[vert].nb_Nvertex; k++) {
 						short ver = obj->ndata[vert].Nvertex[k];
 
-						if (IsInSelection(obj, ver, sel) >= 0) // This time we have one !
-						{
+						if(IsInSelection(obj, ver, sel) >= 0) { // This time we have one !
 							float distance = distSqr(obj->vertexlist[obj->cdata->cvert[i].idx].v,
 							                         obj->vertexlist[ver].v) * square(1.2f);
 
-							for (long k2 = 0; k2 < obj->ndata[ver].nb_Nvertex; k2++)
-							{
+							for(long k2 = 0; k2 < obj->ndata[ver].nb_Nvertex; k2++) {
 								short ve = obj->ndata[ver].Nvertex[k];
 
-								if (ve == vert) continue;
+								if(ve == vert)
+									continue;
 
-								if (IsInSelection(obj, ve, sel) >= 0) // This time we have one !
-								{
-									if (obj->cdata->cvert[(short)GetIDXVert(obj, ve)].flags & CLOTHES_FLAG_FIX) continue;
+								if(IsInSelection(obj, ve, sel) >= 0) { // This time we have one !
+
+									if(obj->cdata->cvert[(short)GetIDXVert(obj, ve)].flags & CLOTHES_FLAG_FIX)
+										continue;
 
 									float distance2 = distSqr(obj->vertexlist[obj->cdata->cvert[i].idx].v,
 									                          obj->vertexlist[ve].v);
 
-									if ((distance2 > distance) && (distance2 < distance * square(2.f))) 
-									{
+									if(distance2 > distance && distance2 < distance * square(2.f)) {
 										AddSpring(obj, (short)i, (short)GetIDXVert(obj, ve), 2.2f, 0.9f, 2);
 									}
-
 								}
 							}
 						}
@@ -270,7 +252,6 @@ void EERIEOBJECT_AddClothesData(EERIE_3DOBJ * obj)
 				}
 			}
 		}
-		
 	}
 }
 

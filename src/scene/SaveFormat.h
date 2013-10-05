@@ -458,6 +458,7 @@ struct ARX_CHANGELEVEL_VARIABLE_SAVE {
 	char name[SIZE_ID];
 };
 
+// TODO Remove
 struct SavedModInfo {
 	
 	s32 link_origin;
@@ -465,26 +466,6 @@ struct SavedModInfo {
 	SavedVec3 scale;
 	SavedAnglef rot;
 	u32 flags;
-	
-	inline operator EERIE_MOD_INFO() const {
-		EERIE_MOD_INFO a;
-		a.link_origin = link_origin;
-		a.link_position = link_position;
-		a.scale = scale;
-		a.rot = rot;
-		a.flags = flags;
-		return a;
-	}
-	
-	inline SavedModInfo & operator=(const EERIE_MOD_INFO & b) {
-		link_origin = b.link_origin;
-		link_position = b.link_position;
-		scale = b.scale;
-		rot = b.rot;
-		flags = b.flags;
-		return *this;
-	}
-	
 };
 
 struct IO_LINKED_DATA {
