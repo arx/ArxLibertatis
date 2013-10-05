@@ -2968,21 +2968,18 @@ void ARX_INTERFACE_PlayerInterfaceModify(long showhide,long smooth)
 
 void ArxGame::manageKeyMouse() {
 	
-	if (ARXmenu.currentmode == AMCM_OFF)
-	{
+	if(ARXmenu.currentmode == AMCM_OFF) {
 		Entity * pIO = NULL;
 
-		if (!BLOCK_PLAYER_CONTROLS)
-		{
-			if (TRUE_PLAYER_MOUSELOOK_ON && !(player.Interface & INTER_COMBATMODE)
-				&& (eMouseState != MOUSE_IN_NOTE)
-				)
-			{
+		if(!BLOCK_PLAYER_CONTROLS) {
+			if(TRUE_PLAYER_MOUSELOOK_ON
+			   && !(player.Interface & INTER_COMBATMODE)
+			   && eMouseState != MOUSE_IN_NOTE
+			) {
 				Vec2s poss = MemoMouse;
 
 				// mode systemshock
-				if (config.input.mouseLookToggle && config.input.autoReadyWeapon == false)
-				{
+				if(config.input.mouseLookToggle && config.input.autoReadyWeapon == false) {
 
 					float fX =  g_size.width() * 0.5f;
 					float fY =	g_size.height() * 0.5f;
@@ -2994,181 +2991,156 @@ void ArxGame::manageKeyMouse() {
 						FlyingOverIO = pIO;
 						MemoMouse = DANAEMouse;
 					}
-				}
-				else
+				} else {
 					pIO = FlyingOverObject(&poss);
-			}
-			else
+				}
+			} else {
 				pIO = FlyingOverObject(&DANAEMouse);
-		}
-
-		if (pIO && (ARX_MOUSE_OVER & ARX_MOUSE_OVER_BOOK))
-		{
-			for (long i=0;i<MAX_EQUIPED;i++)
-			{
-				if ((player.equiped[i]!=0)
-					&&	ValidIONum(player.equiped[i])
-					&&	(entities[player.equiped[i]] == pIO))
-					FlyingOverIO = pIO;
 			}
 		}
 
-		if ((pIO)
-			&& (pIO->gameFlags & GFLAG_INTERACTIVITY)
-			&& !(ARX_MOUSE_OVER & ARX_MOUSE_OVER_BOOK)
-			&& (eMouseState != MOUSE_IN_NOTE)
-			)
-		{
-			if (!(EERIEMouseButton & 2) && (LastMouseClick & 2)
-				&&  (STARTED_ACTION_ON_IO == pIO))
-			{
-				if (pIO->ioflags & IO_ITEM)
-				{
+		if(pIO && (ARX_MOUSE_OVER & ARX_MOUSE_OVER_BOOK)) {
+			for(long i = 0; i < MAX_EQUIPED; i++) {
+				if(player.equiped[i] != 0
+				   && ValidIONum(player.equiped[i])
+				   && entities[player.equiped[i]] == pIO
+				) {
 					FlyingOverIO = pIO;
-					COMBINE=NULL;
+				}
+			}
+		}
 
-					if (DRAGINTER == NULL)
-					{
+		if(pIO
+		   && (pIO->gameFlags & GFLAG_INTERACTIVITY)
+		   && !(ARX_MOUSE_OVER & ARX_MOUSE_OVER_BOOK)
+		   && eMouseState != MOUSE_IN_NOTE
+		) {
+			if(!(EERIEMouseButton & 2)
+			   && (LastMouseClick & 2)
+			   && STARTED_ACTION_ON_IO == pIO
+			) {
+				if(pIO->ioflags & IO_ITEM) {
+					FlyingOverIO = pIO;
+					COMBINE = NULL;
+
+					if(DRAGINTER == NULL) {
 						bool bOk = true;
 
-						if (SecondaryInventory!=NULL)
-						{
-							Entity * temp=(Entity *)SecondaryInventory->io;
+						if(SecondaryInventory != NULL) {
+							Entity * temp = (Entity *)SecondaryInventory->io;
 
-							if (IsInSecondaryInventory(FlyingOverIO))
-								if (temp->ioflags & IO_SHOP)
+							if(IsInSecondaryInventory(FlyingOverIO))
+								if(temp->ioflags & IO_SHOP)
 									bOk = false;
 						}
 
-							Entity * io=entities.player();
-							ANIM_USE * useanim=&io->animlayer[1];
+							Entity * io = entities.player();
+							ANIM_USE * useanim = &io->animlayer[1];
 							WeaponType type = ARX_EQUIPMENT_GetPlayerWeaponType();
 
-							switch (type)
-							{
+							switch(type) {
 							case WEAPON_DAGGER:
-
-								if(useanim->cur_anim==io->anims[ANIM_DAGGER_UNREADY_PART_1]) bOk=false;
+								if(useanim->cur_anim == io->anims[ANIM_DAGGER_UNREADY_PART_1])
+									bOk = false;
 
 								break;
 							case WEAPON_1H:
-
-								if(useanim->cur_anim==io->anims[ANIM_1H_UNREADY_PART_1]) bOk=false;
+								if(useanim->cur_anim == io->anims[ANIM_1H_UNREADY_PART_1])
+									bOk = false;
 
 								break;
 							case WEAPON_2H:
-
-								if(useanim->cur_anim==io->anims[ANIM_2H_UNREADY_PART_1]) bOk=false;
+								if(useanim->cur_anim == io->anims[ANIM_2H_UNREADY_PART_1])
+									bOk = false;
 
 								break;
 							case WEAPON_BOW:
-
-								if(useanim->cur_anim==io->anims[ANIM_MISSILE_UNREADY_PART_1]) bOk=false;
+								if(useanim->cur_anim == io->anims[ANIM_MISSILE_UNREADY_PART_1])
+									bOk = false;
 
 								break;
 							default:
 								break;
 							}
 
-						if (bOk)
-						{
-							if (!((FlyingOverIO->_itemdata->playerstacksize <= 1) && (FlyingOverIO->_itemdata->count > 1)))
-							{
-								SendIOScriptEvent(FlyingOverIO,SM_INVENTORYUSE);
+						if(bOk) {
+							if(!(FlyingOverIO->_itemdata->playerstacksize <= 1 && FlyingOverIO->_itemdata->count > 1)) {
+								SendIOScriptEvent(FlyingOverIO, SM_INVENTORYUSE);
 
-								if (!((config.input.autoReadyWeapon == false) && (config.input.mouseLookToggle)))
-								{
+								if (!(config.input.autoReadyWeapon == false && config.input.mouseLookToggle)) {
 									TRUE_PLAYER_MOUSELOOK_ON = false;
 								}
 							}
 						}
 					}
 
-					if ((config.input.autoReadyWeapon == false) && (config.input.mouseLookToggle))
-					{
+					if(config.input.autoReadyWeapon == false && config.input.mouseLookToggle) {
 						EERIEMouseButton &= ~2;
 					}
 				}
-				}
-			else //!TRUE_PLAYER_MOUSELOOK_ON
-			{
-				if ((EERIEMouseButton & 2) && !(LastMouseClick & 2))
-				{
-					STARTED_ACTION_ON_IO=FlyingOverIO;
+			} else { //!TRUE_PLAYER_MOUSELOOK_ON
+				if((EERIEMouseButton & 2) && !(LastMouseClick & 2)) {
+					STARTED_ACTION_ON_IO = FlyingOverIO;
 				}
 			}
 		}
 
-		if ((eMouseState == MOUSE_IN_WORLD) ||
+		if((eMouseState == MOUSE_IN_WORLD) ||
 			((eMouseState == MOUSE_IN_BOOK) && (!((ARX_MOUSE_OVER & ARX_MOUSE_OVER_BOOK) && (Book_Mode != BOOKMODE_MINIMAP))))
-			)
-		{
-			if (config.input.mouseLookToggle)
-			{
-				if (eMouseState != MOUSE_IN_NOTE)
-				{
-					if ((EERIEMouseButton & 2) && !(LastMouseClick & 2)&&(config.input.linkMouseLookToUse))
-					{
-						if (!(FlyingOverIO && (FlyingOverIO->ioflags & IO_ITEM)) || DRAGINTER)
-						{
-							if (!TRUE_PLAYER_MOUSELOOK_ON)
-							{
-								if (!InInventoryPos(&DANAEMouse))
-								{
-									if (!((player.Interface & INTER_MAP) && Book_Mode != BOOKMODE_MINIMAP))
-									{
+		) {
+			if(config.input.mouseLookToggle) {
+				if(eMouseState != MOUSE_IN_NOTE) {
+					if((EERIEMouseButton & 2) && !(LastMouseClick & 2) && config.input.linkMouseLookToUse) {
+						if(!(FlyingOverIO && (FlyingOverIO->ioflags & IO_ITEM)) || DRAGINTER) {
+							if(!TRUE_PLAYER_MOUSELOOK_ON) {
+								if(!InInventoryPos(&DANAEMouse)) {
+									if(!((player.Interface & INTER_MAP) && Book_Mode != BOOKMODE_MINIMAP)) {
 										TRUE_PLAYER_MOUSELOOK_ON = true;
 										EERIEMouseButton &= ~2;
 										SLID_START = float(arxtime);
 									}
 								}
-							}
-							else
-							{
-								if (!((config.input.autoReadyWeapon == false) && (config.input.mouseLookToggle) && FlyingOverIO && (FlyingOverIO->ioflags & IO_ITEM)))
-								{
+							} else {
+								if(!(config.input.autoReadyWeapon == false
+									 && config.input.mouseLookToggle
+									 && FlyingOverIO
+									 && (FlyingOverIO->ioflags & IO_ITEM))
+								) {
 									TRUE_PLAYER_MOUSELOOK_ON = false;
-									if (player.Interface & INTER_COMBATMODE && !(player.Interface & INTER_NOTE))
+									if(player.Interface & INTER_COMBATMODE && !(player.Interface & INTER_NOTE))
 										ARX_INTERFACE_Combat_Mode(0);
 								}
 							}
 						}
 					}
 				}
-			}
-			else
-			{
-				if (eMouseState != MOUSE_IN_NOTE)
-				{
-					if(	(EERIEMouseButton & 2) &&
-						(!(ARX_MOUSE_OVER & ARX_MOUSE_OVER_BOOK & (Book_Mode != BOOKMODE_MINIMAP))) &&
-						(!TRUE_PLAYER_MOUSELOOK_ON || SPECIAL_DRAW_WEAPON)&&
-					        (config.input.linkMouseLookToUse))
-					{
-						if (SPECIAL_DRAW_WEAPON)
-							SPECIAL_DRAW_WEAPON=0;
-						else if (!InInventoryPos(&DANAEMouse))
-						{
-							if (SPECIAL_DRAW_WEAPON)
-							{
+			} else {
+				if(eMouseState != MOUSE_IN_NOTE) {
+					if((EERIEMouseButton & 2)
+					   && !(ARX_MOUSE_OVER & ARX_MOUSE_OVER_BOOK & (Book_Mode != BOOKMODE_MINIMAP))
+					   && (!TRUE_PLAYER_MOUSELOOK_ON || SPECIAL_DRAW_WEAPON)
+					   && config.input.linkMouseLookToUse
+					) {
+						if(SPECIAL_DRAW_WEAPON) {
+							SPECIAL_DRAW_WEAPON = 0;
+						} else if(!InInventoryPos(&DANAEMouse)) {
+							if(SPECIAL_DRAW_WEAPON) {
 								TRUE_PLAYER_MOUSELOOK_ON = false;
-								SPECIAL_DRAW_WEAPON=0;
-							}
-							else
-							{
+								SPECIAL_DRAW_WEAPON = 0;
+							} else {
 								TRUE_PLAYER_MOUSELOOK_ON = true;
 								SLID_START = float(arxtime);
 							}
 						}
-					}
-					else if ((!(EERIEMouseButton & 2)) && config.input.linkMouseLookToUse && (LastMouseClick & 2))
-					{
-						if (!SPECIAL_DRAW_WEAPON)
-						{
-							if (!GInput->actionPressed(CONTROLS_CUST_FREELOOK))
+					} else if(!(EERIEMouseButton & 2)
+							  && config.input.linkMouseLookToUse
+							  && (LastMouseClick & 2)
+					) {
+						if(!SPECIAL_DRAW_WEAPON) {
+							if(!GInput->actionPressed(CONTROLS_CUST_FREELOOK))
 								TRUE_PLAYER_MOUSELOOK_ON = false;
 
-							if ((player.Interface & INTER_COMBATMODE) && !GInput->actionPressed(CONTROLS_CUST_FREELOOK))
+							if((player.Interface & INTER_COMBATMODE) && !GInput->actionPressed(CONTROLS_CUST_FREELOOK))
 								ARX_INTERFACE_Combat_Mode(0);
 						}
 
@@ -3176,22 +3148,20 @@ void ArxGame::manageKeyMouse() {
 					}
 				}
 
-				if (TRUE_PLAYER_MOUSELOOK_ON && (!(EERIEMouseButton & 2)) && !SPECIAL_DRAW_WEAPON)
-				{
-					if (!GInput->actionPressed(CONTROLS_CUST_FREELOOK))
+				if(TRUE_PLAYER_MOUSELOOK_ON && !(EERIEMouseButton & 2) && !SPECIAL_DRAW_WEAPON) {
+					if(!GInput->actionPressed(CONTROLS_CUST_FREELOOK))
 						TRUE_PLAYER_MOUSELOOK_ON = false;
 				}
 			}
 		}
 
-		PLAYER_MOUSELOOK_ON=TRUE_PLAYER_MOUSELOOK_ON;
+		PLAYER_MOUSELOOK_ON = TRUE_PLAYER_MOUSELOOK_ON;
 
-		if ((player.doingmagic==2)&& (config.input.mouseLookToggle))
+		if(player.doingmagic == 2 && config.input.mouseLookToggle)
 			PLAYER_MOUSELOOK_ON = false;
 	}
 
-	if(ARXmenu.currentmode!=AMCM_OFF)
-	{
+	if(ARXmenu.currentmode != AMCM_OFF) {
 		PLAYER_MOUSELOOK_ON = false;
 	}
 
