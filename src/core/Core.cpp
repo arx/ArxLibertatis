@@ -2961,52 +2961,70 @@ void ShowInfoText() {
 		LASTfps2 = fpss2;
 	}
 	
-	sprintf(tex, "%ld Prims %4.02f fps ( %3.02f - %3.02f ) [%3.0fms]", EERIEDrawnPolys, FPS, fps2min, fps2, framedelay);
+	sprintf(tex, "%ld Prims %4.02f fps ( %3.02f - %3.02f ) [%3.0fms]",
+			EERIEDrawnPolys, FPS, fps2min, fps2, framedelay);
 	mainApp->outputText(70, 32, tex);
 
-	float poss=-666.66f;
-	EERIEPOLY * ep=CheckInPoly(player.pos.x,player.pos.y,player.pos.z);
-	float tempo=0.f;
+	float poss = -666.66f;
+	EERIEPOLY * ep = CheckInPoly(player.pos.x, player.pos.y, player.pos.z);
+	float tempo = 0.f;
 
 	if(ep && GetTruePolyY(ep, &player.pos, &tempo))
 		poss = tempo;
 
-	sprintf(tex,"Position  x:%7.0f y:%7.0f [%7.0f] z:%6.0f a%3.0f b%3.0f FOK %3.0f",player.pos.x,player.pos.y+player.size.y,poss,player.pos.z,player.angle.a,player.angle.b,ACTIVECAM->focal);
-	mainApp->outputText( 70, 48, tex );
-	sprintf(tex,"AnchorPos x:%6.0f y:%6.0f z:%6.0f TIME %lds Part %ld - %d",player.pos.x-Mscenepos.x,player.pos.y+player.size.y-Mscenepos.y,player.pos.z-Mscenepos.z
-		,GAT, getParticleCount(),player.doingmagic);
-	mainApp->outputText( 70, 64, tex );
+	sprintf(tex, "Position  x:%7.0f y:%7.0f [%7.0f] z:%6.0f a%3.0f b%3.0f FOK %3.0f",
+			player.pos.x, player.pos.y + player.size.y, poss, player.pos.z,
+			player.angle.a, player.angle.b,
+			ACTIVECAM->focal);
+	mainApp->outputText(70, 48, tex);
 
-	if (player.onfirmground==0) mainApp->outputText( 200, 280, "OFFGRND" );
+	sprintf(tex, "AnchorPos x:%6.0f y:%6.0f z:%6.0f TIME %lds Part %ld - %d",
+			player.pos.x - Mscenepos.x,
+			player.pos.y + player.size.y - Mscenepos.y,
+			player.pos.z - Mscenepos.z,
+			GAT, getParticleCount(), player.doingmagic);
+	mainApp->outputText(70, 64, tex);
 
-	sprintf(tex,"Jump %f cinema %f %d %d - Pathfind %ld(%s)",player.jumplastposition,CINEMA_DECAL,DANAEMouse.x,DANAEMouse.y,EERIE_PATHFINDER_Get_Queued_Number(), PATHFINDER_WORKING ? "Working" : "Idled");
-	mainApp->outputText( 70, 80, tex );
+	if(player.onfirmground == 0)
+		mainApp->outputText(200, 280, "OFFGRND");
+
+	sprintf(tex, "Jump %f cinema %f %d %d - Pathfind %ld(%s)",
+			player.jumplastposition, CINEMA_DECAL,
+			DANAEMouse.x, DANAEMouse.y,
+			EERIE_PATHFINDER_Get_Queued_Number(),
+			PATHFINDER_WORKING ? "Working" : "Idled");
+	mainApp->outputText(70, 80, tex);
+
 	Entity * io=ARX_SCRIPT_Get_IO_Max_Events();
 
-	if(!io)
-		sprintf(tex,"Events %ld (IOmax N/A) Timers %ld",ScriptEvent::totalCount,ARX_SCRIPT_CountTimers());
-	else
-		sprintf(tex,"Events %ld (IOmax %s %d) Timers %ld",ScriptEvent::totalCount, io->long_name().c_str(), io->stat_count,ARX_SCRIPT_CountTimers());
+	if(!io) {
+		sprintf(tex, "Events %ld (IOmax N/A) Timers %ld",
+				ScriptEvent::totalCount, ARX_SCRIPT_CountTimers());
+	} else {
+		sprintf(tex, "Events %ld (IOmax %s %d) Timers %ld",
+				ScriptEvent::totalCount, io->long_name().c_str(),
+				io->stat_count, ARX_SCRIPT_CountTimers());
+	}
+	mainApp->outputText(70, 94, tex);
 
-	mainApp->outputText( 70, 94, tex );
-
-	io=ARX_SCRIPT_Get_IO_Max_Events_Sent();
+	io = ARX_SCRIPT_Get_IO_Max_Events_Sent();
 
 	if(io) {
-		sprintf(tex,"Max SENDER %s %d)", io->long_name().c_str(), io->stat_sent);
+		sprintf(tex, "Max SENDER %s %d)", io->long_name().c_str(), io->stat_sent);
 		mainApp->outputText(70, 114, tex);
 	}
 
-	float slope=0.f;
-	ep = CheckInPoly(player.pos.x, player.pos.y-10.f, player.pos.z);
+	float slope = 0.f;
+	ep = CheckInPoly(player.pos.x, player.pos.y - 10.f, player.pos.z);
 
 	if(ep)
 		slope = ep->norm.y;
 
-	sprintf(tex,"Velocity %3.0f %3.0f %3.0f Slope %3.3f",player.physics.velocity.x,player.physics.velocity.y,player.physics.velocity.z,slope);
-	mainApp->outputText( 70, 128, tex );
+	sprintf(tex, "Velocity %3.0f %3.0f %3.0f Slope %3.3f",
+			player.physics.velocity.x, player.physics.velocity.y, player.physics.velocity.z, slope);
+	mainApp->outputText(70, 128, tex);
 
-	mainApp->outputText( 100, 208, tex );
+	mainApp->outputText(100, 208, tex);
 
 #ifdef BUILD_EDITOR
 	if(ValidIONum(LastSelectedIONum)) {
@@ -3014,28 +3032,32 @@ void ShowInfoText() {
 
 		if(io) {
 			if(io == entities.player()) {
-				sprintf(tex,"%4.0f %4.0f %4.0f - %4.0f %4.0f %4.0f -- %3.0f %d/%ld targ %ld beh %ld",io->pos.x,
-				io->pos.y,io->pos.z,io->move.x,
-				io->move.y,io->move.z,io->_npcdata->moveproblem,io->_npcdata->pathfind.listpos,io->_npcdata->pathfind.listnb,
-				io->_npcdata->pathfind.truetarget, (long)io->_npcdata->behavior);
+				sprintf(tex, "%4.0f %4.0f %4.0f - %4.0f %4.0f %4.0f -- %3.0f %d/%ld targ %ld beh %ld",
+						io->pos.x, io->pos.y, io->pos.z,
+						io->move.x, io->move.y, io->move.z,
+						io->_npcdata->moveproblem, io->_npcdata->pathfind.listpos, io->_npcdata->pathfind.listnb,
+						io->_npcdata->pathfind.truetarget, (long)io->_npcdata->behavior);
 				mainApp->outputText(170, 420, tex);
 
-				sprintf(tex,"Life %4.0f/%4.0f Mana %4.0f/%4.0f Poisoned %3.1f Hunger %4.1f",player.life,player.maxlife,
-				player.mana,player.maxmana,player.poison,player.hunger);
-				mainApp->outputText( 170, 320, tex );
+				sprintf(tex, "Life %4.0f/%4.0f Mana %4.0f/%4.0f Poisoned %3.1f Hunger %4.1f",
+						player.life, player.maxlife, player.mana, player.maxmana, player.poison, player.hunger);
+				mainApp->outputText(170, 320, tex);
 			} else {
 				if(io->ioflags & IO_NPC) {
-					sprintf(tex,"%4.0f %4.0f %4.0f - %4.0f %4.0f %4.0f -- %3.0f %d/%ld targ %ld beh %ld",io->pos.x,
-					io->pos.y,io->pos.z,io->move.x,
-					io->move.y,io->move.z,io->_npcdata->moveproblem,io->_npcdata->pathfind.listpos,io->_npcdata->pathfind.listnb,
-					io->_npcdata->pathfind.truetarget, (long)io->_npcdata->behavior);
+					sprintf(tex, "%4.0f %4.0f %4.0f - %4.0f %4.0f %4.0f -- %3.0f %d/%ld targ %ld beh %ld",
+							io->pos.x, io->pos.y, io->pos.z,
+							io->move.x, io->move.y, io->move.z,
+							io->_npcdata->moveproblem, io->_npcdata->pathfind.listpos, io->_npcdata->pathfind.listnb,
+							io->_npcdata->pathfind.truetarget, (long)io->_npcdata->behavior);
 					mainApp->outputText(170, 420, tex);
 
-					sprintf(tex,"Life %4.0f/%4.0f Mana %4.0f/%4.0f Poisoned %3.1f",io->_npcdata->life,io->_npcdata->maxlife,
-					io->_npcdata->mana,io->_npcdata->maxmana,io->_npcdata->poisonned);
+					sprintf(tex, "Life %4.0f/%4.0f Mana %4.0f/%4.0f Poisoned %3.1f",
+							io->_npcdata->life, io->_npcdata->maxlife, io->_npcdata->mana,
+							io->_npcdata->maxmana, io->_npcdata->poisonned);
 					mainApp->outputText(170, 320, tex);
 
-					sprintf(tex,"AC %3.0f Absorb %3.0f",ARX_INTERACTIVE_GetArmorClass(io),io->_npcdata->absorb);
+					sprintf(tex, "AC %3.0f Absorb %3.0f",
+							ARX_INTERACTIVE_GetArmorClass(io), io->_npcdata->absorb);
 					mainApp->outputText(170, 335, tex);
 
 					if(io->_npcdata->pathfind.flags & PATHFIND_ALWAYS) {
@@ -3047,12 +3069,14 @@ void ShowInfoText() {
 				}
 
 				if(io->ioflags & IO_FIX) {
-					sprintf(tex,"Durability %4.0f/%4.0f Poisonous %3d count %d",io->durability,io->max_durability,io->poisonous,io->poisonous_count);
+					sprintf(tex, "Durability %4.0f/%4.0f Poisonous %3d count %d",
+							io->durability, io->max_durability, io->poisonous, io->poisonous_count);
 					mainApp->outputText(170, 320, tex);
 				}
 
 				if(io->ioflags & IO_ITEM) {
-					sprintf(tex,"Durability %4.0f/%4.0f Poisonous %3d count %d",io->durability,io->max_durability,io->poisonous,io->poisonous_count);
+					sprintf(tex, "Durability %4.0f/%4.0f Poisonous %3d count %d",
+							io->durability, io->max_durability, io->poisonous, io->poisonous_count);
 					mainApp->outputText(170, 320, tex);
 				}
 			}
@@ -3060,12 +3084,13 @@ void ShowInfoText() {
 	}
 #endif // BUILD_EDITOR
 
-	long zap=IsAnyPolyThere(player.pos.x,player.pos.z);
-	sprintf(tex,"POLY %ld",zap);		
-	mainApp->outputText( 270, 220, tex );
+	long zap = IsAnyPolyThere(player.pos.x,player.pos.z);
+	sprintf(tex, "POLY %ld", zap);
+	mainApp->outputText(270, 220, tex);
 
-	sprintf(tex,"COLOR %3.0f Stealth %3.0f",CURRENT_PLAYER_COLOR,GetPlayerStealth());
-	mainApp->outputText( 270, 200, tex );
+	sprintf(tex, "COLOR %3.0f Stealth %3.0f",
+			CURRENT_PLAYER_COLOR, GetPlayerStealth());
+	mainApp->outputText(270, 200, tex);
 
 	ARX_SCRIPT_Init_Event_Stats();
 }
