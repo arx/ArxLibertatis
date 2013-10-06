@@ -2971,12 +2971,12 @@ void RenderInter() {
 				pos.y = io->_npcdata->vvpos;
 			}
 
-			bool render = !ARX_SCENE_PORTAL_Basic_ClipIO(io);
+			EERIEDrawAnimQuatUpdate(io->obj, io->animlayer, temp, pos, diff, io, true);
 
+			bool render = !ARX_SCENE_PORTAL_Basic_ClipIO(io);
 			float invisibility = Cedric_GetInvisibility(io);
 
-			EERIEDrawAnimQuat(io->obj, io->animlayer, temp, pos, diff, io, render, true, invisibility);
-
+			EERIEDrawAnimQuatRender(io->obj, pos, io, render, invisibility);
 		} else {
 			if(ARX_SCENE_PORTAL_Basic_ClipIO(io))
 				continue;
