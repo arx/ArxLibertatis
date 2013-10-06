@@ -1274,11 +1274,12 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoftRender(long room_num) {
 
 	//render opaque
 	GRenderer->SetCulling(Renderer::CullNone);
-	int iNbTex=room.usNbTextures;
-	TextureContainer **ppTexCurr=room.ppTextureContainer;
+
+	int iNbTex = room.usNbTextures;
+	TextureContainer **ppTexCurr = room.ppTextureContainer;
 
 	while(iNbTex--) {
-		TextureContainer *pTexCurr=*ppTexCurr;
+		TextureContainer *pTexCurr = *ppTexCurr;
 
 		SMY_ARXMAT & roomMat = pTexCurr->tMatRoom[room_num];
 
@@ -1292,12 +1293,16 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoftRender(long room_num) {
 		else
 			GRenderer->GetTextureStage(0)->SetColorOp(TextureStage::OpModulate);
 
-		if(roomMat.count[SMY_ARXMAT::Opaque])
-		{
+		if(roomMat.count[SMY_ARXMAT::Opaque]) {
 			GRenderer->SetAlphaFunc(Renderer::CmpGreater, .5f);
-			room.pVertexBuffer->drawIndexed(Renderer::TriangleList, roomMat.uslNbVertex, roomMat.uslStartVertex,
+
+			room.pVertexBuffer->drawIndexed(
+				Renderer::TriangleList,
+				roomMat.uslNbVertex,
+				roomMat.uslStartVertex,
 				&room.pussIndice[roomMat.offset[SMY_ARXMAT::Opaque]],
 				roomMat.count[SMY_ARXMAT::Opaque]);
+
 			GRenderer->SetAlphaFunc(Renderer::CmpNotEqual, 0.f);
 
 			EERIEDrawnPolys += roomMat.count[SMY_ARXMAT::Opaque];
