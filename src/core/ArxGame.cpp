@@ -1413,7 +1413,7 @@ void ArxGame::updateLevel() {
 
 	updateActiveCamera();
 
-	ARX_GLOBALMODS_Apply(); //TODO this method changes the renderer fog state
+	ARX_GLOBALMODS_Apply();
 
 	// Set Listener Position
 	{
@@ -1503,7 +1503,16 @@ void ArxGame::renderLevel() {
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 
-	//TODO Set renderer fog parameters here
+	float fogEnd = fZFogEnd;
+	float fogStart = fZFogStart;
+
+	if(GRenderer->isFogInEyeCoordinates()) {
+		fogEnd *= ACTIVECAM->cdepth;
+		fogStart *= ACTIVECAM->cdepth;
+	}
+
+	GRenderer->SetFogParams(Renderer::FogLinear, fogStart, fogEnd);
+	GRenderer->SetFogColor(ulBKGColor);
 
 	// NOW DRAW the player (Really...)
 	if(entities.player() && entities.player()->animlayer[0].cur_anim) {

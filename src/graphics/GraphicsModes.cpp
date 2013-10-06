@@ -132,15 +132,4 @@ void ARX_GLOBALMODS_Apply() {
 	SetCameraDepth(*ACTIVECAM, min(current.zclip, fZclipp));
 
 	ulBKGColor = current.depthcolor.to<u8>();
-	GRenderer->SetFogColor(ulBKGColor);
-	
-	float fogEnd = fZFogEnd;
-	float fogStart = fZFogStart;
-	
-	if(GRenderer->isFogInEyeCoordinates()) {
-		fogEnd *= ACTIVECAM->cdepth;
-		fogStart *= ACTIVECAM->cdepth;
-	}
-	
-	GRenderer->SetFogParams(Renderer::FogLinear, fogStart, fogEnd);
 }
