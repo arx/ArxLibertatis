@@ -654,6 +654,31 @@ long ARX_PORTALS_GetRoomNumForPosition(Vec3f * pos,long flag)
 	
 	return num;
 }
+
+void ARX_PORTALS_Frustrum_ClearIndexCount(long room_num) {
+
+	EERIE_ROOM_DATA & room = portals->room[room_num];
+
+	int iNbTex = room.usNbTextures;
+	TextureContainer **ppTexCurr = room.ppTextureContainer;
+
+	while(iNbTex--) {
+
+		TextureContainer * pTexCurr = *ppTexCurr;
+		GRenderer->SetTexture(0, pTexCurr);
+
+		SMY_ARXMAT & roomMat = pTexCurr->tMatRoom[room_num];
+
+		roomMat.count[SMY_ARXMAT::Opaque] = 0;
+		roomMat.count[SMY_ARXMAT::Blended] = 0;
+		roomMat.count[SMY_ARXMAT::Multiplicative] = 0;
+		roomMat.count[SMY_ARXMAT::Additive] = 0;
+		roomMat.count[SMY_ARXMAT::Subtractive] = 0;
+
+		ppTexCurr++;
+	}
+}
+
 			
 void ARX_PORTALS_InitDrawnRooms()
 {
@@ -663,6 +688,10 @@ void ARX_PORTALS_InitDrawnRooms()
 		EERIE_PORTALS *ep = &portals->portals[i];
 
 		ep->useportal = 0;
+	}
+
+	for(size_t i = 0; i < portals->roomsize(); i++) {
+		ARX_PORTALS_Frustrum_ClearIndexCount(i);
 	}
 
 	RoomDraw.resize(portals->roomsize());
@@ -1303,7 +1332,6 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoftRender(long room_num) {
 			GRenderer->SetAlphaFunc(Renderer::CmpNotEqual, 0.f);
 
 			EERIEDrawnPolys += roomMat.count[SMY_ARXMAT::Opaque];
-			roomMat.count[SMY_ARXMAT::Opaque] = 0;
 		}
 
 		ppTexCurr++;
@@ -1441,7 +1469,6 @@ void ARX_PORTALS_Frustrum_RenderRoom_TransparencyTSoftCull(long room_num)
 			room.pVertexBuffer->drawIndexed(Renderer::TriangleList, roomMat.uslNbVertex, roomMat.uslStartVertex, &room.pussIndice[roomMat.offset[SMY_ARXMAT::Blended]], roomMat.count[SMY_ARXMAT::Blended]);
 
 			EERIEDrawnPolys+=roomMat.count[SMY_ARXMAT::Blended];
-			roomMat.count[SMY_ARXMAT::Blended]=0;
 		}
 
 		//MULTIPLICATIVE
@@ -1453,7 +1480,6 @@ void ARX_PORTALS_Frustrum_RenderRoom_TransparencyTSoftCull(long room_num)
 			room.pVertexBuffer->drawIndexed(Renderer::TriangleList, roomMat.uslNbVertex, roomMat.uslStartVertex, &room.pussIndice[roomMat.offset[SMY_ARXMAT::Multiplicative]], roomMat.count[SMY_ARXMAT::Multiplicative]);
 
 			EERIEDrawnPolys+=roomMat.count[SMY_ARXMAT::Multiplicative];
-			roomMat.count[SMY_ARXMAT::Multiplicative]=0;
 		}
 
 		//ADDITIVE
@@ -1465,7 +1491,6 @@ void ARX_PORTALS_Frustrum_RenderRoom_TransparencyTSoftCull(long room_num)
 			room.pVertexBuffer->drawIndexed(Renderer::TriangleList, roomMat.uslNbVertex, roomMat.uslStartVertex, &room.pussIndice[roomMat.offset[SMY_ARXMAT::Additive]], roomMat.count[SMY_ARXMAT::Additive]);
 
 			EERIEDrawnPolys+=roomMat.count[SMY_ARXMAT::Additive];
-			roomMat.count[SMY_ARXMAT::Additive]=0;
 		}
 
 		//SUBSTRACTIVE
@@ -1478,7 +1503,6 @@ void ARX_PORTALS_Frustrum_RenderRoom_TransparencyTSoftCull(long room_num)
 			room.pVertexBuffer->drawIndexed(Renderer::TriangleList, roomMat.uslNbVertex, roomMat.uslStartVertex, &room.pussIndice[roomMat.offset[SMY_ARXMAT::Subtractive]], roomMat.count[SMY_ARXMAT::Subtractive]);
 
 			EERIEDrawnPolys+=roomMat.count[SMY_ARXMAT::Subtractive];
-			roomMat.count[SMY_ARXMAT::Subtractive]=0;
 		}
 
 		ppTexCurr++;
