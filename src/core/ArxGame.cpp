@@ -1388,7 +1388,7 @@ void ArxGame::updateLevel() {
 	if(entities.player() && entities.player()->animlayer[0].cur_anim) {
 		ManageNONCombatModeAnimations();
 
-		AnimatedEntityUpdate(entities.player());
+		AnimatedEntityUpdate(entities.player(), Original_framedelay);
 
 		if((player.Interface & INTER_COMBATMODE) && entities.player()->animlayer[1].cur_anim)
 			ManageCombatModeAnimations();

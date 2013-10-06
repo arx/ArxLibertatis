@@ -97,7 +97,7 @@ void DrawEERIEInter_Render(EERIE_3DOBJ *eobj, const TransformInfo &t, Entity *io
 void DrawEERIEInter(EERIE_3DOBJ *eobj, const TransformInfo & t, Entity *io, bool forceDraw = false, float invisibility = 0.f);
 
 void EERIEDrawAnimQuat(EERIE_3DOBJ *eobj, ANIM_USE * animlayer, const Anglef & angle, const Vec3f & pos, unsigned long time, Entity *io, bool render = true, bool update_movement = true, float invisibility = 0.f);
-void AnimatedEntityUpdate(Entity * entity);
+void AnimatedEntityUpdate(Entity * entity, float time);
 void AnimatedEntityRender(Entity * entity, float invisibility);
 
 #endif // ARX_ANIMATION_ANIMATIONRENDER_H

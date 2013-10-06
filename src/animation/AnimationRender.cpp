@@ -1720,9 +1720,9 @@ void EERIEDrawAnimQuat(EERIE_3DOBJ *eobj, ANIM_USE * animlayer,const Anglef & an
 	EERIEDrawAnimQuatRender(eobj, pos, io, render, invisibility);
 }
 
-void AnimatedEntityUpdate(Entity * entity) {
+void AnimatedEntityUpdate(Entity * entity, float time) {
 	EERIEDrawAnimQuatUpdate(entity->obj, entity->animlayer, entity->angle,
-							entity->pos, Original_framedelay, entity, true);
+							entity->pos, time, entity, true);
 }
 
 void AnimatedEntityRender(Entity * entity, float invisibility) {
