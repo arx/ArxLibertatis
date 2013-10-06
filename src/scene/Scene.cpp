@@ -1603,6 +1603,8 @@ void ARX_SCENE_Update() {
 	}
 
 	ARX_THROWN_OBJECT_Manage(checked_range_cast<unsigned long>(framedelay));
+
+	UpdateInter();
 }
 
 extern short uw_mode;
@@ -1633,7 +1635,6 @@ void ARX_SCENE_Render() {
 	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
 	GRenderer->GetTextureStage(0)->SetMipMapLODBias(-0.6f);
 
-	UpdateInter();
 	RenderInter();
 
 	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
