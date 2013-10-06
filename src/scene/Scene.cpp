@@ -1141,26 +1141,20 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num, const EERIE_FRUSTRU
 
 		SMY_ARXMAT & roomMat = ep->tex->tMatRoom[room_num];
 
-		unsigned short *pIndicesCurr;
-		unsigned long *pNumIndices;
+		SMY_ARXMAT::TransparencyType transparencyType;
 
 		if(ep->type & POLY_TRANS) {
 			if(ep->transval>=2.f) { //MULTIPLICATIVE
-				pIndicesCurr=pIndices+roomMat.offset[SMY_ARXMAT::Multiplicative]+roomMat.count[SMY_ARXMAT::Multiplicative];
-				pNumIndices=&roomMat.count[SMY_ARXMAT::Multiplicative];
+				transparencyType = SMY_ARXMAT::Multiplicative;
 			}else if(ep->transval>=1.f) { //ADDITIVE
-				pIndicesCurr=pIndices+roomMat.offset[SMY_ARXMAT::Additive]+roomMat.count[SMY_ARXMAT::Additive];
-				pNumIndices=&roomMat.count[SMY_ARXMAT::Additive];
+				transparencyType = SMY_ARXMAT::Additive;
 			} else if(ep->transval>0.f) { //NORMAL TRANS
-				pIndicesCurr=pIndices+roomMat.offset[SMY_ARXMAT::Blended]+roomMat.count[SMY_ARXMAT::Blended];
-				pNumIndices=&roomMat.count[SMY_ARXMAT::Blended];
+				transparencyType = SMY_ARXMAT::Blended;
 			} else { //SUBTRACTIVE
-				pIndicesCurr=pIndices+roomMat.offset[SMY_ARXMAT::Subtractive]+roomMat.count[SMY_ARXMAT::Subtractive];
-				pNumIndices=&roomMat.count[SMY_ARXMAT::Subtractive];
+				transparencyType = SMY_ARXMAT::Subtractive;
 			}
 		} else {
-			pIndicesCurr=pIndices+roomMat.offset[SMY_ARXMAT::Opaque]+roomMat.count[SMY_ARXMAT::Opaque];
-			pNumIndices=&roomMat.count[SMY_ARXMAT::Opaque];
+			transparencyType = SMY_ARXMAT::Opaque;
 
 			if(ZMAPMODE) {
 				if((fDist<200)&&(ep->tex->TextureRefinement)) {
@@ -1168,6 +1162,9 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num, const EERIE_FRUSTRU
 				}
 			}
 		}
+
+		unsigned short * pIndicesCurr = pIndices + roomMat.offset[transparencyType] + roomMat.count[transparencyType];
+		unsigned long * pNumIndices = &roomMat.count[transparencyType];
 
 		*pIndicesCurr++ = ep->uslInd[0];
 		*pIndicesCurr++ = ep->uslInd[1];
