@@ -1139,29 +1139,29 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num, const EERIE_FRUSTRU
 			}
 		}
 
-		SMY_ARXMAT & roomMat = ep->tex->tMatRoom[room_num];
-
 		SMY_ARXMAT::TransparencyType transparencyType;
 
 		if(ep->type & POLY_TRANS) {
-			if(ep->transval>=2.f) { //MULTIPLICATIVE
+			if(ep->transval >= 2.f) {
 				transparencyType = SMY_ARXMAT::Multiplicative;
-			}else if(ep->transval>=1.f) { //ADDITIVE
+			} else if(ep->transval >= 1.f) {
 				transparencyType = SMY_ARXMAT::Additive;
-			} else if(ep->transval>0.f) { //NORMAL TRANS
+			} else if(ep->transval > 0.f) {
 				transparencyType = SMY_ARXMAT::Blended;
-			} else { //SUBTRACTIVE
+			} else {
 				transparencyType = SMY_ARXMAT::Subtractive;
 			}
 		} else {
 			transparencyType = SMY_ARXMAT::Opaque;
 
 			if(ZMAPMODE) {
-				if((fDist<200)&&(ep->tex->TextureRefinement)) {
+				if(fDist < 200 && ep->tex->TextureRefinement) {
 					ep->tex->TextureRefinement->vPolyZMap.push_back(ep);
 				}
 			}
 		}
+
+		SMY_ARXMAT & roomMat = ep->tex->tMatRoom[room_num];
 
 		unsigned short * pIndicesCurr = pIndices + roomMat.offset[transparencyType] + roomMat.count[transparencyType];
 		unsigned long * pNumIndices = &roomMat.count[transparencyType];
