@@ -209,6 +209,7 @@ void UpdateCameras();
 
 Entity * InterClick(Vec2s * pos);
  
+void UpdateInter();
 void RenderInter();
 void SetWeapon_On(Entity * io);
  
