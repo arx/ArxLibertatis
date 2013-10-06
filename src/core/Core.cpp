@@ -2565,63 +2565,57 @@ void ManageFade()
 extern long cur_mr;
 static TextureContainer * Mr_tc = NULL;
 
-void CheckMr()
-{
-	if (cur_mr==3)
-	{
-		if (GRenderer && Mr_tc)
-		{
+void CheckMr() {
+
+	if(cur_mr == 3) {
+		if(GRenderer && Mr_tc) {
 			EERIEDrawBitmap(g_size.width()-(128.f*Xratio), 0.f, (float)128*Xratio, (float)128*Yratio,0.0001f,
 			                Mr_tc, Color::gray(0.5f + PULSATE * (1.0f/10)));
-		}
-		else
-		{
-			Mr_tc=TextureContainer::LoadUI("graph/particles/(fx)_mr");
+		} else {
+			Mr_tc = TextureContainer::LoadUI("graph/particles/(fx)_mr");
 		}
 	}
 }
-void DrawImproveVisionInterface()
-{
-	if(ombrignon)
-	{
+
+void DrawImproveVisionInterface() {
+
+	if(ombrignon) {
 		float mod = 0.6f + PULSATE * 0.35f;
 		EERIEDrawBitmap(g_size, 0.0001f, ombrignon, Color3f((0.5f+PULSATE*( 1.0f / 10 ))*mod,0.f,0.f).to<u8>());
 	}
 }
 
-void AddQuakeFX(float intensity,float duration,float period,long flags)
-{
-	if (QuakeFx.intensity>0.f)
-	{
-		QuakeFx.intensity+=intensity;
+void AddQuakeFX(float intensity,float duration,float period,long flags) {
 
-		QuakeFx.duration+=(unsigned long)duration;
-		QuakeFx.frequency+=period;
-		QuakeFx.frequency*=.5f;
-		QuakeFx.flags|=flags;
+	if(QuakeFx.intensity > 0.f) {
+		QuakeFx.intensity += intensity;
 
-		if (flags & 1)
+		QuakeFx.duration += (unsigned long)duration;
+		QuakeFx.frequency += period;
+		QuakeFx.frequency *= .5f;
+		QuakeFx.flags |= flags;
+
+		if(flags & 1)
 			ARX_SOUND_PlaySFX(SND_QUAKE, NULL, 1.0F - 0.5F * QuakeFx.intensity);
-	}
-	else
-	{
-		QuakeFx.intensity=intensity;
+	} else {
+		QuakeFx.intensity = intensity;
 
 		QuakeFx.start = checked_range_cast<unsigned long>(arxtime.get_frame_time());
 
-		QuakeFx.duration=(unsigned long)duration;
-		QuakeFx.frequency=period;
-		QuakeFx.flags=flags;
+		QuakeFx.duration = (unsigned long)duration;
+		QuakeFx.frequency = period;
+		QuakeFx.flags = flags;
 
-		if (flags & 1)
+		if(flags & 1)
 			ARX_SOUND_PlaySFX(SND_QUAKE, NULL, 1.0F - 0.5F * QuakeFx.intensity);
 	}
 
-	if (!(flags & 1))
-	{
-		if (QuakeFx.duration>1500) QuakeFx.duration=1500;
+	if(!(flags & 1)) {
+		if(QuakeFx.duration > 1500)
+			QuakeFx.duration = 1500;
 
-		if (QuakeFx.intensity>220) QuakeFx.intensity=220;
+		if(QuakeFx.intensity > 220)
+			QuakeFx.intensity = 220;
 	}
 }
 
