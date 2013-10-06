@@ -1445,6 +1445,14 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoftRender(long room_num) {
 
 //-----------------------------------------------------------------------------
 
+static const SMY_ARXMAT::TransparencyType transRenderOrder[] = {
+	SMY_ARXMAT::Blended,
+	SMY_ARXMAT::Multiplicative,
+	SMY_ARXMAT::Additive,
+	SMY_ARXMAT::Subtractive
+};
+
+
 void ARX_PORTALS_Frustrum_RenderRoom_TransparencyTSoftCull(long room_num)
 {
 	//render transparency
@@ -1460,49 +1468,48 @@ void ARX_PORTALS_Frustrum_RenderRoom_TransparencyTSoftCull(long room_num)
 
 		SMY_ARXMAT & roomMat = pTexCurr->tMatRoom[room_num];
 
-		//NORMAL TRANS
-		if(roomMat.count[SMY_ARXMAT::Blended])
-		{
-			SetZBias(2);
-			GRenderer->SetBlendFunc(Renderer::BlendSrcColor, Renderer::BlendDstColor);
+		for(size_t i = 0; i < ARRAY_SIZE(transRenderOrder); i++) {
+			SMY_ARXMAT::TransparencyType transType = transRenderOrder[i];
 
-			room.pVertexBuffer->drawIndexed(Renderer::TriangleList, roomMat.uslNbVertex, roomMat.uslStartVertex, &room.pussIndice[roomMat.offset[SMY_ARXMAT::Blended]], roomMat.count[SMY_ARXMAT::Blended]);
+			if(!roomMat.count[transType])
+				continue;
 
-			EERIEDrawnPolys+=roomMat.count[SMY_ARXMAT::Blended];
-		}
+			switch(transType) {
+			case SMY_ARXMAT::Opaque: {
+				// This should currently not happen
+				arx_assert(false);
+				continue;
+			}
+			case SMY_ARXMAT::Blended: {
+				SetZBias(2);
+				GRenderer->SetBlendFunc(Renderer::BlendSrcColor, Renderer::BlendDstColor);
+				break;
+			}
+			case SMY_ARXMAT::Multiplicative: {
+				SetZBias(2);
+				GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+				break;
+			}
+			case SMY_ARXMAT::Additive: {
+				SetZBias(2);
+				GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+				break;
+			}
+			case SMY_ARXMAT::Subtractive: {
+				SetZBias(8);
+				GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
+				break;
+			}
+			}
 
-		//MULTIPLICATIVE
-		if(roomMat.count[SMY_ARXMAT::Multiplicative])
-		{
-			SetZBias(2);
-			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+			room.pVertexBuffer->drawIndexed(
+				Renderer::TriangleList,
+				roomMat.uslNbVertex,
+				roomMat.uslStartVertex,
+				&room.pussIndice[roomMat.offset[transType]],
+				roomMat.count[transType]);
 
-			room.pVertexBuffer->drawIndexed(Renderer::TriangleList, roomMat.uslNbVertex, roomMat.uslStartVertex, &room.pussIndice[roomMat.offset[SMY_ARXMAT::Multiplicative]], roomMat.count[SMY_ARXMAT::Multiplicative]);
-
-			EERIEDrawnPolys+=roomMat.count[SMY_ARXMAT::Multiplicative];
-		}
-
-		//ADDITIVE
-		if(roomMat.count[SMY_ARXMAT::Additive])
-		{
-			SetZBias(2);
-			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-
-			room.pVertexBuffer->drawIndexed(Renderer::TriangleList, roomMat.uslNbVertex, roomMat.uslStartVertex, &room.pussIndice[roomMat.offset[SMY_ARXMAT::Additive]], roomMat.count[SMY_ARXMAT::Additive]);
-
-			EERIEDrawnPolys+=roomMat.count[SMY_ARXMAT::Additive];
-		}
-
-		//SUBSTRACTIVE
-		if(roomMat.count[SMY_ARXMAT::Subtractive])
-		{
-			SetZBias(8);
-
-			GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
-
-			room.pVertexBuffer->drawIndexed(Renderer::TriangleList, roomMat.uslNbVertex, roomMat.uslStartVertex, &room.pussIndice[roomMat.offset[SMY_ARXMAT::Subtractive]], roomMat.count[SMY_ARXMAT::Subtractive]);
-
-			EERIEDrawnPolys+=roomMat.count[SMY_ARXMAT::Subtractive];
+			EERIEDrawnPolys += roomMat.count[transType];
 		}
 
 		ppTexCurr++;
