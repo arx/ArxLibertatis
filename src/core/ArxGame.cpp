@@ -1774,6 +1774,11 @@ void ArxGame::render() {
 	} else {
 		updateLevel();
 		renderLevel();
+
+#ifdef ARX_DEBUG
+		if(g_debugToggles[9])
+			renderLevel();
+#endif
 	}
 	
 	if(showInfo != InfoPanelNone) {
