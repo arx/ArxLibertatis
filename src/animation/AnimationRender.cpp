@@ -1721,13 +1721,12 @@ void EERIEDrawAnimQuat(EERIE_3DOBJ *eobj, ANIM_USE * animlayer,const Anglef & an
 }
 
 void AnimatedEntityUpdate(Entity * entity) {
-
-	EERIEDrawAnimQuat(entity->obj, entity->animlayer, entity->angle,
-		entity->pos, Original_framedelay, entity, false, true, 0.f);
+	EERIEDrawAnimQuatUpdate(entity->obj, entity->animlayer, entity->angle,
+							entity->pos, Original_framedelay, entity, true);
 }
 
 void AnimatedEntityRender(Entity * entity, float invisibility) {
 
-	EERIEDrawAnimQuat(entity->obj, entity->animlayer, entity->angle,
-		entity->pos, 0, entity, true, false, invisibility);
+	Cedric_ViewProjectTransform(entity, entity->obj);
+	EERIEDrawAnimQuatRender(entity->obj, entity->pos, entity, true, invisibility);
 }
