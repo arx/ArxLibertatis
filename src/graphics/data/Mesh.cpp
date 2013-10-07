@@ -1032,22 +1032,24 @@ bool GetRoomCenter(long room_num, Vec3f * center) {
 	if(!portals || room_num > portals->nb_rooms || portals->room[room_num].nb_polys <= 0)
 		return false;
 	
+	EERIE_ROOM_DATA & room = portals->room[room_num];
+
 	EERIE_3D_BBOX bbox;
 	bbox.min = Vec3f::repeat(99999999.f);
 	bbox.max = Vec3f::repeat(-99999999.f);
-	
-	for(long  lll = 0; lll < portals->room[room_num].nb_polys; lll++) {
+
+	for(long lll = 0; lll < room.nb_polys; lll++) {
 		FAST_BKG_DATA * feg;
-		feg = &ACTIVEBKG->fastdata[portals->room[room_num].epdata[lll].px][portals->room[room_num].epdata[lll].py];
-		EERIEPOLY * ep = &feg->polydata[portals->room[room_num].epdata[lll].idx];
+		feg = &ACTIVEBKG->fastdata[room.epdata[lll].px][room.epdata[lll].py];
+		EERIEPOLY * ep = &feg->polydata[room.epdata[lll].idx];
 		bbox.min = componentwise_min(bbox.min, ep->center);
 		bbox.max = componentwise_max(bbox.max, ep->center);
 	}
 	
 	*center = (bbox.max + bbox.min) * .5f;
 	
-	portals->room[room_num].center = *center;
-	portals->room[room_num].radius = fdist(*center, bbox.max);
+	room.center = *center;
+	room.radius = fdist(*center, bbox.max);
 	return true;
 }
 
