@@ -33,6 +33,10 @@ Reddit: [http://www.reddit.com/r/ArxFatalis/](http://www.reddit.com/r/ArxFatalis
 
 Systems without Win32 or POSIX filesystem support will also need **Boost 1.44** or newer including the `filesystem` and `system` libraries.
 
+The following compile-time dependencies may be required to generate the icon files:
+* [`convert` from **ImageMagick**](http://imagemagick.org/)
+* [`png2icns` or `icnsutil` from **libicns**](http://icns.sourceforge.net/), or Apple's `iconutil` (Mac .icns icons only)
+
 ### Renderer
 
 There are rendering backends for both OpenGL and Direct3D. You need either:

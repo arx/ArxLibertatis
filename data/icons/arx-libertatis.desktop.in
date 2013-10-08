@@ -1,5 +1,5 @@
 [Desktop Entry]
-Name=Arx Libertatis
+Name=${VERSION_0_NAME}
 GenericName=First-Person Role-Playing Game
 GenericName[de]=3D-Rollenspiel
 GenericName[fr]=Jeu de rôle à la première personne

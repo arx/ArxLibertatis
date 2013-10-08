@@ -34,7 +34,7 @@
 
 if(WIN32)
 	set(DEFAULT_ICON_TYPE "ico")
-elseif(MACOSX)
+elseif(MACOSX OR CREATE_MAC_APP_BUNDLE)
 	set(DEFAULT_ICON_TYPE "icns")
 else()
 	set(DEFAULT_ICON_TYPE "fdo")

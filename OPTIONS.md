@@ -67,6 +67,8 @@ The following options can be used to customize where `make install` puts the var
 * `CMAKE_INSTALL_LIBEXECDIR` (default: `libexec`): Where to install non-user executables
 * `SCRIPTDIR` (default: `${BINDIR}`): Where to install the data install script
 
+* `CREATE_MAC_APP_BUNDLE` (default: `OFF`, Mac OS X default: `ON`): Install to a Mac .app bundle directory structure. This changes the defaults of some of the above variables.
+
 * `INSTALL_SCRIPTS` (default: `ON`): Install the data install script. There is no data install script on Windows, so there this option does nothing.
 
 * `ICON_TYPE`: Icon format to install. Valid values are `ico` (default on Windows), `icns` (default on Mac OS X), `fdo` (freedesktop.org icon tree: `<d>x<d>/apps/<icon>.png`, default everywhere else), `first` (use the first matching size in `ICON_SIZES`, ie. largest icon only), and `none` (don't install any icons)
