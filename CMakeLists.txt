@@ -46,6 +46,10 @@ option(USE_DINPUT8 "Build the DirectInput 8 input backend" ON)
 option(USE_NATIVE_FS "Use the native filesystem backend directly instead of boost" ON)
 option(USE_QT5 "Use Qt 5 if available" ON)
 option(USE_QT4 "Use Qt 4 if available" ON)
+option(USE_IMAGEMAGICK "Use ImageMagick's convert to rasterize/scale/convert icons" ON)
+option(USE_PNG2ICNS "Use libicns' png2icns to create Mac .icns icons" ON)
+option(USE_ICNSUTIL "Use libicns' icnsutil to create Mac .icns icons" ON)
+option(USE_ICONUTIL "Use Apple's iconutil to create Mac .icns icons" ON)
 
 # Build types
 option(UNITY_BUILD "Unity build" OFF)
@@ -106,7 +110,7 @@ if(CMAKE_VERSION VERSION_LESS 2.8.5)
 else()
 	include(GNUInstallDirs)
 endif()
-set(ICONDIR "${CMAKE_INSTALL_DATAROOTDIR}/pixmaps" CACHE
+set(ICONDIR "${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor" CACHE
     STRING "Install location for icons (relative to prefix).")
 set(APPDIR "${CMAKE_INSTALL_DATAROOTDIR}/applications" CACHE
     STRING "Install location for .desktop files (relative to prefix).")
@@ -182,6 +186,7 @@ include(BuildSystem)
 include(BuildType)
 include(CompileCheck)
 include(CreateSourceGroups)
+include(Icon)
 include(PrintConfiguration)
 include(StyleCheck)
 include(VersionString)
@@ -1177,7 +1182,10 @@ if(INSTALL_SCRIPTS AND NOT WIN32)
 	install(PROGRAMS scripts/arx-install-data DESTINATION "${SCRIPTDIR}")
 endif()
 
-# Install icon and desktop entry
+# Install icon file
+add_icon(arx-libertatis "data/icons/arx-libertatis" 128)
+
+# Install desktop entry
 if(NOT WIN32 AND NOT MACOSX)
 	
 	find_program(DESKTOP_FILE_VALIDATE desktop-file-validate)
@@ -1191,7 +1199,6 @@ if(NOT WIN32 AND NOT MACOSX)
 		)
 	endif()
 	
-	install(FILES data/icons/arx-libertatis.png DESTINATION "${ICONDIR}" OPTIONAL)
 	install(FILES data/icons/arx-libertatis.desktop DESTINATION "${APPDIR}" OPTIONAL)
 	
 endif()
