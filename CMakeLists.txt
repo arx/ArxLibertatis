@@ -84,66 +84,6 @@ else()
 	set(OPTIONAL_DEPENDENCY)
 endif()
 
-# Install destinations
-set(default_CREATE_MAC_APP_BUNDLE OFF)
-if(MACOSX)
-	set(default_CREATE_MAC_APP_BUNDLE ON)
-endif()
-if(CREATE_MAC_APP_BUNDLE)
-	set(CMAKE_INSTALL_DATAROOTDIR "Contents/Resources" CACHE
-			STRING "read-only architecture-independent data root (share) (relative to prefix)")
-	set(CMAKE_INSTALL_BINDIR "Contents/MacOS" CACHE
-			STRING "user executables (bin) (relative to prefix)")
-	set(CMAKE_INSTALL_LIBEXECDIR "${CMAKE_INSTALL_BINDIR}" CACHE
-			STRING "program executables (libexec) (relative to prefix)")
-elseif(${CMAKE_VERSION} VERSION_LESS 2.8.5)
-	set(CMAKE_INSTALL_DATAROOTDIR "share" CACHE
-			STRING "read-only architecture-independent data root (share) (relative to prefix)")
-	set(CMAKE_INSTALL_BINDIR "bin" CACHE
-			STRING "user executables (bin) (relative to prefix)")
-	set(CMAKE_INSTALL_LIBEXECDIR "libexec" CACHE
-			STRING "program executables (libexec) (relative to prefix)")
-else()
-	include(GNUInstallDirs)
-endif()
-if(CREATE_MAC_APP_BUNDLE OR ${CMAKE_VERSION} VERSION_LESS 2.8.5)
-	set(CMAKE_INSTALL_MANDIR "${CMAKE_INSTALL_DATAROOTDIR}/man" CACHE
-			STRING "man documentation (DATAROOTDIR/man) (relative to prefix)")
-	foreach(dir BINDIR LIBEXECDIR DATAROOTDIR MANDIR)
-		if(NOT IS_ABSOLUTE ${CMAKE_INSTALL_${dir}})
-			set(CMAKE_INSTALL_FULL_${dir} "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_${dir}}")
-		else()
-			set(CMAKE_INSTALL_FULL_${dir} "${CMAKE_INSTALL_${dir}}")
-		endif()
-	endforeach()
-	mark_as_advanced(
-		CMAKE_INSTALL_DATAROOTDIR
-		CMAKE_INSTALL_BINDIR
-		CMAKE_INSTALL_LIBEXECDIR
-		CMAKE_INSTALL_MANDIR
-	)
-endif()
-if(CREATE_MAC_APP_BUNDLE)
-	set(ICONDIR "${CMAKE_INSTALL_DATAROOTDIR}" CACHE
-	    STRING "Install location for icons (relative to prefix)")
-	set(APPDIR "Contents" CACHE
-	    STRING "Install location for .desktop files (relative to prefix)")
-else()
-	set(ICONDIR "${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor" CACHE
-	    STRING "Install location for icons (relative to prefix)")
-	set(APPDIR "${CMAKE_INSTALL_DATAROOTDIR}/applications" CACHE
-	    STRING "Install location for .desktop files (relative to prefix)")
-endif()
-set(GAMESBINDIR "${CMAKE_INSTALL_BINDIR}" CACHE
-    STRING "Install location for game executables (relative to prefix)")
-set(SCRIPTDIR "${CMAKE_INSTALL_BINDIR}" CACHE
-    STRING "Where to install the data install script (relative to prefix)")
-mark_as_advanced(
-	ICONDIR
-	APPDIR
-	GAMESBINDIR
-	SCRIPTDIR
-)
 
 # Default runtime user and data directories
 if(WIN32)
@@ -202,6 +142,8 @@ include(CheckSymbolExists)
 include(CheckTypeSize)
 
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake") # For custom cmake modules
+include(InstallDirs)
+
 include(BuildSystem)
 include(BuildType)
 include(CompileCheck)
