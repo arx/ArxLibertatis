@@ -5802,32 +5802,33 @@ void drawInventory() {
 				InventoryY = static_cast<long>(INTERFACE_RATIO(110.f));
 			}
 		} else {
-					if(bInventoryClosing) {
-						long t = Original_framedelay * (1.f/5) + 2;
-						InventoryY += static_cast<long>(INTERFACE_RATIO_LONG(t));
+			if(bInventoryClosing) {
+				long t = Original_framedelay * (1.f/5) + 2;
+				InventoryY += static_cast<long>(INTERFACE_RATIO_LONG(t));
 
-						if(InventoryY > INTERFACE_RATIO(110)) {
-							InventoryY = static_cast<long>(INTERFACE_RATIO(110.f));
-							bInventoryClosing = false;
+				if(InventoryY > INTERFACE_RATIO(110)) {
+					InventoryY = static_cast<long>(INTERFACE_RATIO(110.f));
+					bInventoryClosing = false;
 
-							player.Interface &=~ INTER_INVENTORY;
+					player.Interface &=~ INTER_INVENTORY;
 
-							if(bInventorySwitch) {
-								bInventorySwitch = false;
-								ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
-								player.Interface |= INTER_INVENTORYALL;
-								ARX_INTERFACE_NoteClose();
-								InventoryY = static_cast<long>(INTERFACE_RATIO(121.f) * player.bag);
-								lOldInterface=INTER_INVENTORYALL;
-							}
-						}
-					} else if(InventoryY > 0) {
-						InventoryY -= static_cast<long>(INTERFACE_RATIO((Original_framedelay * (1.f/5)) + 2.f));
-
-						if(InventoryY < 0)
-							InventoryY = 0;
+					if(bInventorySwitch) {
+						bInventorySwitch = false;
+						ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
+						player.Interface |= INTER_INVENTORYALL;
+						ARX_INTERFACE_NoteClose();
+						InventoryY = static_cast<long>(INTERFACE_RATIO(121.f) * player.bag);
+						lOldInterface=INTER_INVENTORYALL;
 					}
 				}
+			} else if(InventoryY > 0) {
+				InventoryY -= static_cast<long>(INTERFACE_RATIO((Original_framedelay * (1.f/5)) + 2.f));
+
+				if(InventoryY < 0) {
+					InventoryY = 0;
+				}
+			}
+		}
 
 				if(player.bag) {
 					ARX_INTERFACE_DrawInventory(sActiveInventory);
