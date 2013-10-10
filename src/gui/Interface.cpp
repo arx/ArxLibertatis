@@ -5668,7 +5668,7 @@ void ARX_INTERFACE_DrawCurrentTorch() {
 
 extern float GLOBAL_SLOWDOWN;
 
-float getJ() {
+float grayVal() {
 	float j;
 	if(AimTime == 0) {
 		return 0.2f;
@@ -5690,17 +5690,28 @@ float getJ() {
 	}
 }
 
-void updateCombatInterface() {
+void preCombatInterface() {
 	
 }
 
+void postCombatInterface() {
+	if(bHitFlash) {
+		float fCalc = ulHitFlash + Original_framedelay;
+		ulHitFlash = checked_range_cast<unsigned long>(fCalc);
+		if(ulHitFlash >= 500) {
+			bHitFlash = false;
+			ulHitFlash = 0;
+		}
+	}
+}
+
 void drawCombatInterface() {
-	updateCombatInterface();	
+	preCombatInterface();	
 
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	ARX_INTERFACE_DrawItem(ITC.Get("aim_maxi"), g_size.center().x + INTERFACE_RATIO(-320+262.f), g_size.height() + INTERFACE_RATIO(-72.f), 0.0001f, Color::gray(getJ()));
+	ARX_INTERFACE_DrawItem(ITC.Get("aim_maxi"), g_size.center().x + INTERFACE_RATIO(-320+262.f), g_size.height() + INTERFACE_RATIO(-72.f), 0.0001f, Color::gray(grayVal()));
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	ARX_INTERFACE_DrawItem(ITC.Get("aim_empty"), g_size.center().x + INTERFACE_RATIO(-320+262.f), g_size.height() + INTERFACE_RATIO(-72.f), 0.0001f, Color::white);
 
@@ -5713,14 +5724,7 @@ void drawCombatInterface() {
 		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	}
 	
-	if(bHitFlash) {
-		float fCalc = ulHitFlash + Original_framedelay;
-		ulHitFlash = checked_range_cast<unsigned long>(fCalc);
-		if(ulHitFlash >= 500) {
-			bHitFlash = false;
-			ulHitFlash = 0;
-		}
-	}
+	postCombatInterface();
 }
 
 void drawSecondaryInvOrStealInv() {
