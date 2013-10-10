@@ -5720,10 +5720,6 @@ float grayVal() {
 	}
 }
 
-void preCombatInterface() {
-	
-}
-
 void postCombatInterface() {
 	if(bHitFlash) {
 		float fCalc = ulHitFlash + Original_framedelay;
@@ -5736,7 +5732,6 @@ void postCombatInterface() {
 }
 
 void drawCombatInterface() {
-	preCombatInterface();	
 
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 
@@ -5964,11 +5959,11 @@ void ArxGame::drawAllInterface() {
 	GRenderer->GetTextureStage(0)->SetMinFilter(TextureStage::FilterLinear);
 	GRenderer->GetTextureStage(0)->SetMagFilter(TextureStage::FilterNearest);
 	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
+
 	if(player.Interface & INTER_COMBATMODE) {
 		drawCombatInterface();
 	}	
 	drawSecondaryInvOrStealInv();	
-
 	if(!PLAYER_INTERFACE_HIDE_COUNT) {
 			drawInventory();
 	}
