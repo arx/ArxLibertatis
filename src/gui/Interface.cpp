@@ -5722,14 +5722,17 @@ void drawCombatInterface() {
 	postCombatInterface();
 }
 
-void drawSecondaryInvOrStealInv() {
-	Entity * io = NULL;
+Entity* getSecondaryOrStealInvEntity() {
 	if(SecondaryInventory) {
-		io = SecondaryInventory->io;
+		return SecondaryInventory->io;
 	} else if(player.Interface & INTER_STEAL) {
-		io = ioSteal;
+		return ioSteal;
 	}
+	return NULL;
+}
 
+void drawSecondaryInvOrStealInv() {
+	Entity * io = getSecondaryOrStealInvEntity();
 	if(io) {
 		float dist = fdist(io->pos, player.pos + (Vec3f::Y_AXIS * 80.f));
 		if(Project.telekinesis) {
