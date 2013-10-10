@@ -5668,7 +5668,11 @@ void ARX_INTERFACE_DrawCurrentTorch() {
 
 extern float GLOBAL_SLOWDOWN;
 
-float grayVal() {
+/** EXTRACTION BEGINS HERE **/
+float HitStrengthVal = 0.0;
+
+//For the hit strength diamond shown at the bottom of the UI.
+float getHitStrengthColorVal() {
 	float j;
 	if(AimTime == 0) {
 		return 0.2f;
@@ -5701,15 +5705,19 @@ void postCombatInterface() {
 	}
 }
 
+void updateCombatInterface() {
+	HitStrengthVal = getHitStrengthColorVal();
+}
+
 void drawCombatInterface() {
+	updateCombatInterface();
 
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	ARX_INTERFACE_DrawItem(ITC.Get("aim_maxi"), g_size.center().x + INTERFACE_RATIO(-320+262.f), g_size.height() + INTERFACE_RATIO(-72.f), 0.0001f, Color::gray(grayVal()));
+	ARX_INTERFACE_DrawItem(ITC.Get("aim_maxi"), g_size.center().x + INTERFACE_RATIO(-320+262.f), g_size.height() + INTERFACE_RATIO(-72.f), 0.0001f, Color::gray(HitStrengthVal));
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	ARX_INTERFACE_DrawItem(ITC.Get("aim_empty"), g_size.center().x + INTERFACE_RATIO(-320+262.f), g_size.height() + INTERFACE_RATIO(-72.f), 0.0001f, Color::white);
-
 	if(bHitFlash && player.Full_Skill_Etheral_Link >= 40) {
 		float j = 1.0f - fHitFlash;
 		GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
