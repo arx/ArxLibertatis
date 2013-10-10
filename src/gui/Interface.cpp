@@ -5668,7 +5668,7 @@ void ARX_INTERFACE_DrawCurrentTorch() {
 
 extern float GLOBAL_SLOWDOWN;
 
-void drawCombatInterface() {
+void updateCombatInterface() {
 	float j;
 	if(AimTime == 0) {
 		j = 0.2f;
@@ -5688,6 +5688,10 @@ void drawCombatInterface() {
 		}
 		j = clamp(j, 0.2f, 1.f);
 	}
+}
+
+void drawCombatInterface() {
+	updateCombatInterface();	
 
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 
