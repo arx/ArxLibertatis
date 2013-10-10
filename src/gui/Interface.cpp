@@ -5668,10 +5668,10 @@ void ARX_INTERFACE_DrawCurrentTorch() {
 
 extern float GLOBAL_SLOWDOWN;
 
-void updateCombatInterface() {
+float getJ() {
 	float j;
 	if(AimTime == 0) {
-		j = 0.2f;
+		return 0.2f;
 	} else {
 		if(BOW_FOCAL) {
 			j=(float)(BOW_FOCAL)/710.f;
@@ -5686,8 +5686,12 @@ void updateCombatInterface() {
 			float aim = static_cast<float>(player.Full_AimTime);
 			j=at/aim;
 		}
-		j = clamp(j, 0.2f, 1.f);
+		return clamp(j, 0.2f, 1.f);
 	}
+}
+
+void updateCombatInterface() {
+	
 }
 
 void drawCombatInterface() {
@@ -5696,7 +5700,7 @@ void drawCombatInterface() {
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	ARX_INTERFACE_DrawItem(ITC.Get("aim_maxi"), g_size.center().x + INTERFACE_RATIO(-320+262.f), g_size.height() + INTERFACE_RATIO(-72.f), 0.0001f, Color::gray(j));
+	ARX_INTERFACE_DrawItem(ITC.Get("aim_maxi"), g_size.center().x + INTERFACE_RATIO(-320+262.f), g_size.height() + INTERFACE_RATIO(-72.f), 0.0001f, Color::gray(getJ()));
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	ARX_INTERFACE_DrawItem(ITC.Get("aim_empty"), g_size.center().x + INTERFACE_RATIO(-320+262.f), g_size.height() + INTERFACE_RATIO(-72.f), 0.0001f, Color::white);
 
