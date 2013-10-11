@@ -890,10 +890,10 @@ void DrawEERIEInter_Render(EERIE_3DOBJ *eobj, const TransformInfo &t, Entity *io
 				if(_ffr[first] > 70.f && _ffr[second] > 60.f) {
 					TexturedVertex *vert = Halo_AddVertex();
 
-					memcpy(&vert[0], &tvList[first], sizeof(TexturedVertex));
-					memcpy(&vert[1], &tvList[first], sizeof(TexturedVertex));
-					memcpy(&vert[2], &tvList[second], sizeof(TexturedVertex));
-					memcpy(&vert[3], &tvList[second], sizeof(TexturedVertex));
+					vert[0] = tvList[first];
+					vert[1] = tvList[first];
+					vert[2] = tvList[second];
+					vert[3] = tvList[second];
 
 					float siz = ddist * (io->halo.radius * 1.5f * (EEsin((arxtime.get_frame_time() + i) * .01f) * .1f + .7f)) * .6f;
 
@@ -1186,10 +1186,10 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity *
 				if(_ffr[first] > 150.f && _ffr[second] > 110.f) {
 					TexturedVertex *vert = Halo_AddVertex();
 
-					memcpy(&vert[0], &tvList[first], sizeof(TexturedVertex));
-					memcpy(&vert[1], &tvList[first], sizeof(TexturedVertex));
-					memcpy(&vert[2], &tvList[second], sizeof(TexturedVertex));
-					memcpy(&vert[3], &tvList[second], sizeof(TexturedVertex));
+					vert[0] = tvList[first];
+					vert[1] = tvList[first];
+					vert[2] = tvList[second];
+					vert[3] = tvList[second];
 
 					vert[0].color = colors[first];
 					vert[1].color = colors[first];
