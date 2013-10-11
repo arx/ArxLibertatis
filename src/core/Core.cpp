@@ -483,9 +483,10 @@ void InitializeDanae() {
 	
 	SetActiveCamera(&subj);
 	SetCameraDepth(subj, 2100.f);
-	memcpy(&bookcam, &subj, sizeof(EERIE_CAMERA));
-	memcpy(&raycam, &subj, sizeof(EERIE_CAMERA));
-	memcpy(&conversationcamera, &subj, sizeof(EERIE_CAMERA));
+
+	bookcam = subj;
+	raycam = subj;
+	conversationcamera = subj;
 	
 	raycam.clip = Rect(0, 0, 640, 640);
 	raycam.center = raycam.clip.center();
