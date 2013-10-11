@@ -1467,7 +1467,6 @@ void ArxGame::updateLevel() {
 	}
 
 	ARX_INTERACTIVE_DestroyIOdelayedExecute();
-	UpdateInterface();
 }
 
 void ArxGame::renderLevel() {
@@ -1768,6 +1767,7 @@ void ArxGame::render() {
 		renderCinematic();
 	} else {
 		updateLevel();
+		UpdateInterface();
 		renderLevel();
 
 #ifdef ARX_DEBUG
