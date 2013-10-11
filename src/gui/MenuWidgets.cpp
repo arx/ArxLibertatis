@@ -4117,7 +4117,6 @@ bool CMenuSliderText::OnMouseClick(int) {
 		case BUTTON_MENUOPTIONSVIDEO_RENDERER: {
 			switch((vText.at(iPos))->eMenuState) {
 				case OPTIONS_VIDEO_RENDERER_OPENGL:    config.window.framework = "SDL"; break;
-				case OPTIONS_VIDEO_RENDERER_D3D9:      config.window.framework = "D3D9"; break;
 				case OPTIONS_VIDEO_RENDERER_AUTOMATIC: config.window.framework = "auto"; break;
 				default: break;
 			}
@@ -4126,7 +4125,6 @@ bool CMenuSliderText::OnMouseClick(int) {
 		case BUTTON_MENUOPTIONSAUDIO_BACKEND: {
 			switch((vText.at(iPos))->eMenuState) {
 				case OPTIONS_AUDIO_BACKEND_OPENAL:    config.audio.backend = "OpenAL"; break;
-				case OPTIONS_AUDIO_BACKEND_DSOUND:    config.audio.backend = "DirectSound"; break;
 				case OPTIONS_AUDIO_BACKEND_AUTOMATIC: config.audio.backend = "auto"; break;
 				default: break;
 			}
@@ -4135,7 +4133,6 @@ bool CMenuSliderText::OnMouseClick(int) {
 		case BUTTON_MENUOPTIONS_CONTROLS_BACKEND: {
 			switch((vText.at(iPos))->eMenuState) {
 				case OPTIONS_INPUT_BACKEND_SDL:       config.input.backend = "SDL"; break;
-				case OPTIONS_INPUT_BACKEND_DINPUT:    config.input.backend = "DirectInput8"; break;
 				case OPTIONS_INPUT_BACKEND_AUTOMATIC: config.input.backend = "auto"; break;
 				default: break;
 			}
