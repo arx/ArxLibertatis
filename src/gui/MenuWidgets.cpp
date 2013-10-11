@@ -1124,12 +1124,6 @@ bool Menu2_Render() {
 							slider->iPos = slider->vText.size() - 1;
 						}
 #endif
-#ifdef ARX_HAVE_DSOUND
-						slider->AddText(new CMenuElementText(-1, hFontMenu, "Direct Sound", 0, 0, lColor, 1.f, OPTIONS_AUDIO_BACKEND_DSOUND));
-						if(config.audio.backend == "DirectSound") {
-							slider->iPos = slider->vText.size() - 1;
-						}
-#endif
 						
 						float fRatio    = (RATIO_X(iWindowConsoleWidth-9) - slider->GetWidth()); 
 						slider->Move(checked_range_cast<int>(fRatio), 0); 
