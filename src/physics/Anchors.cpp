@@ -542,25 +542,21 @@ void AnchorData_ClearAll(EERIE_BACKGROUND * eb) {
 	EERIE_PATHFINDER_Clear();
 	EERIE_BKG_INFO * eg;
 
-	for (long j = 0; j < eb->Zsize; j++)
-		for (long i = 0; i < eb->Xsize; i++)
-		{
+	for(long j = 0; j < eb->Zsize; j++) {
+		for(long i = 0; i < eb->Xsize; i++) {
 			eg = &eb->Backg[i+j*eb->Xsize];
 
-			if ((eg->nbianchors) && (eg->ianchors))
+			if(eg->nbianchors && eg->ianchors)
 				free(eg->ianchors);
 
 			eg->nbianchors = 0;
 			eg->ianchors = NULL;
 		}
+	}
 
-	if ((eb->anchors) && (eb->nbanchors))
-	{
-		for (int j = 0; j < eb->nbanchors; j++)
-		{
-			if ((eb->anchors[j].nblinked) &&
-			        (eb->anchors[j].linked))
-			{
+	if(eb->anchors && eb->nbanchors) {
+		for(int j = 0; j < eb->nbanchors; j++) {
+			if(eb->anchors[j].nblinked && eb->anchors[j].linked) {
 				free(eb->anchors[j].linked);
 				eb->anchors[j].linked = NULL;
 			}
@@ -572,6 +568,7 @@ void AnchorData_ClearAll(EERIE_BACKGROUND * eb) {
 	eb->anchors = NULL;
 	eb->nbanchors = 0;
 }
+
 #define INC_HEIGHT 20
 #define INC_RADIUS 10
 
@@ -580,10 +577,10 @@ bool CylinderAboveInvalidZone(EERIE_CYLINDER * cyl) {
 	float count = 0;
 	float failcount = 0;
 
-	for (float rad = 0; rad < cyl->radius; rad += 10.f)
-		for (float ang = 0; ang < 360; ang += 45)
-		{
-			if (rad == 0) ang = 360;
+	for(float rad = 0; rad < cyl->radius; rad += 10.f) {
+		for(float ang = 0; ang < 360; ang += 45) {
+			if(rad == 0)
+				ang = 360;
 
 			Vec3f pos;
 			pos.x = cyl->origin.x - EEsin(radians(ang)) * rad;
@@ -591,21 +588,25 @@ bool CylinderAboveInvalidZone(EERIE_CYLINDER * cyl) {
 			pos.z = cyl->origin.z + EEcos(radians(ang)) * rad;
 			EERIEPOLY * ep = ANCHOR_CheckInPoly(pos.x, pos.y, pos.z);
 
-			if (!ep) continue;
+			if(!ep)
+				continue;
 
-			if (ep->type & POLY_NOPATH) return true;
+			if(ep->type & POLY_NOPATH)
+				return true;
 
 			count += 1.f;
 			float vy;
 			GetTruePolyY(ep, &pos, &vy);
 
-			if (EEfabs(vy - cyl->origin.y) > 160.f)
+			if(EEfabs(vy - cyl->origin.y) > 160.f)
 				failcount++;
 		}
+	}
 
 	float failratio = failcount / count;
 
-	if (failratio > 0.75f) return true;
+	if(failratio > 0.75f)
+		return true;
 
 	return false;
 }
