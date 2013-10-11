@@ -5432,6 +5432,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 		GRenderer->SetCulling(Renderer::CullNone);
 		SetActiveCamera(oldcam);
+		PrepareCamera(oldcam);
 
 		Entity *io = entities.player();
 
