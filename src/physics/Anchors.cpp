@@ -312,13 +312,11 @@ static bool ANCHOR_AttemptValidCylinderPos(EERIE_CYLINDER * cyl, Entity * io,
 
 	EERIE_CYLINDER tmp;
 
-	if (!(flags & CFLAG_ANCHOR_GENERATION))
-	{
+	if(!(flags & CFLAG_ANCHOR_GENERATION)) {
 
 		memcpy(&tmp, cyl, sizeof(EERIE_CYLINDER));
 
-		while (anything < 0.f)
-		{
+		while(anything < 0.f) {
 			tmp.origin.y += anything;
 			anything = ANCHOR_CheckAnythingInCylinder(&tmp, flags);
 		}
@@ -326,26 +324,26 @@ static bool ANCHOR_AttemptValidCylinderPos(EERIE_CYLINDER * cyl, Entity * io,
 		anything = tmp.origin.y - cyl->origin.y;
 	}
 
-	if (MOVING_CYLINDER)
-	{
-		if (flags & CFLAG_NPC)
-		{
+	if(MOVING_CYLINDER) {
+		if(flags & CFLAG_NPC) {
 			float tolerate;
 
-			if ((io) && (io->ioflags & IO_NPC) && (io->_npcdata->pathfind.listnb > 0) && (io->_npcdata->pathfind.listpos < io->_npcdata->pathfind.listnb))
-			{
+			if(io
+			   && (io->ioflags & IO_NPC)
+			   && (io->_npcdata->pathfind.listnb > 0)
+			   && (io->_npcdata->pathfind.listpos < io->_npcdata->pathfind.listnb)
+			) {
 				tolerate = -80;
-			}
-			else
+			} else {
 				tolerate = -45;
+			}
 
-			if (anything < tolerate) return false;
+			if(anything < tolerate)
+				return false;
 		}
 
-		if (io && (!(flags & CFLAG_JUST_TEST)))
-		{
-			if ((flags & CFLAG_PLAYER) && (anything < 0.f))
-			{
+		if(io && !(flags & CFLAG_JUST_TEST)) {
+			if((flags & CFLAG_PLAYER) && anything < 0.f) {
 				if(player.jumpphase != NotJumping) {
 					io->_npcdata->climb_count = MAX_ALLOWED_PER_SECOND;
 					return false;
@@ -356,25 +354,23 @@ static bool ANCHOR_AttemptValidCylinderPos(EERIE_CYLINDER * cyl, Entity * io,
 				pente = EEfabs(anything) / dist * ( 1.0f / 2 ); 
 				io->_npcdata->climb_count += pente;
 
-				if (io->_npcdata->climb_count > MAX_ALLOWED_PER_SECOND)
-				{
+				if(io->_npcdata->climb_count > MAX_ALLOWED_PER_SECOND) {
 					io->_npcdata->climb_count = MAX_ALLOWED_PER_SECOND;
 					return false;
 				}
 
-				if (anything < -55) 
-				{
+				if(anything < -55) {
 					io->_npcdata->climb_count = MAX_ALLOWED_PER_SECOND;
 					return false;
 				}
 			}
 		}
+	} else if(anything < -45) {
+		return false;
 	}
-	else if (anything < -45) return false;
 
-	if ((flags & CFLAG_SPECIAL) && (anything < -40))
-	{
-		if (flags & CFLAG_RETURN_HEIGHT)
+	if((flags & CFLAG_SPECIAL) && anything < -40) {
+		if(flags & CFLAG_RETURN_HEIGHT)
 			cyl->origin.y += anything;
 
 		return false;
@@ -384,12 +380,9 @@ static bool ANCHOR_AttemptValidCylinderPos(EERIE_CYLINDER * cyl, Entity * io,
 	tmp.origin.y += anything;
 	anything = ANCHOR_CheckAnythingInCylinder(&tmp, flags); 
 
-	if (anything < 0.f)
-	{
-		if (flags & CFLAG_RETURN_HEIGHT)
-		{
-			while (anything < 0.f)
-			{
+	if(anything < 0.f) {
+		if(flags & CFLAG_RETURN_HEIGHT) {
+			while(anything < 0.f) {
 				tmp.origin.y += anything;
 				anything = ANCHOR_CheckAnythingInCylinder(&tmp, flags);
 			}
