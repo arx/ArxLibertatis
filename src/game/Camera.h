@@ -71,7 +71,6 @@ struct EERIE_CAMERA {
 	Vec2i center;
 
 	float smoothing;
-	float Zdiv;
 
 	Color bkgcolor; // TODO was BGR!
 	float cdepth;

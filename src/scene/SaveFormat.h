@@ -1056,7 +1056,7 @@ struct SavedCamera {
 	f32 AddY;
 	s32 Xsnap; //TODO Remove
 	s32 Zsnap; //TODO Remove
-	f32 Zdiv;
+	f32 Zdiv; //TODO Remove
 	
 	s32 clip3D;
 	s32 type; //TODO Remove
@@ -1085,7 +1085,6 @@ struct SavedCamera {
 		a.center = Vec2i(centerx, centery);
 		
 		a.smoothing = smoothing;
-		a.Zdiv = Zdiv;
 		
 		a.bkgcolor = Color::fromBGRA(bkgcolor);
 		a.cdepth = cdepth;
@@ -1129,7 +1128,7 @@ struct SavedCamera {
 		AddX = 0.f, AddY = 0.f;
 		Xsnap = 0;
 		Zsnap = 0;
-		Zdiv = b.Zdiv;
+		Zdiv = 0.f;
 		
 		clip3D = 0;
 		type = CAM_SUBJVIEW;
