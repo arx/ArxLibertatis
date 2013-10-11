@@ -880,12 +880,6 @@ bool Menu2_Render() {
 							slider->iPos = slider->vText.size() - 1;
 						}
 #endif
-#ifdef ARX_HAVE_D3D9
-						slider->AddText(new CMenuElementText(-1, hFontMenu, "D3D 9", 0, 0, lColor, 1.f, OPTIONS_VIDEO_RENDERER_D3D9));
-						if(config.window.framework == "D3D9") {
-							slider->iPos = slider->vText.size() - 1;
-						}
-#endif
 						
 						float fRatio    = (RATIO_X(iWindowConsoleWidth-9) - slider->GetWidth()); 
 						slider->Move(checked_range_cast<int>(fRatio), 0); 
