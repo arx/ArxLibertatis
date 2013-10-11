@@ -29,24 +29,17 @@ Reddit: [http://www.reddit.com/r/ArxFatalis/](http://www.reddit.com/r/ArxFatalis
 * **[zlib](http://zlib.net/)**
 * **[Boost](http://www.boost.org/) 1.39**+ (headers only)
 * **[Freetype](http://www.freetype.org/)**
-* **OpenAL 1.1**+ ([OpenAL Soft](http://kcat.strangesoft.net/openal.html) strongly recommended!) *and/or* **DirectSound 9**
+* **OpenAL 1.1**+ ([OpenAL Soft](http://kcat.strangesoft.net/openal.html) strongly recommended!)
 
 Systems without Win32 or POSIX filesystem support will also need **Boost 1.44** or newer including the `filesystem` and `system` libraries.
 
 ### Renderer
 
-There are rendering backends for both OpenGL and Direct3D. You need either:
+There is currently a single rendering backend for OpenGL:
 
 * **[SDL](http://www.libsdl.org/) 1.2.10**+
 * **OpenGL 1.5**+ (OpenGL 2.1 or newer is recommended)
 * **[GLEW](http://glew.sourceforge.net/) 1.5.2**+
-
-*and/or*
-
-* **DirectInput 8** (included in the DirectX 9 SDK)
-* **Direct3D 9**
-
-Both OpenGL and Direct3D backends can be built at the same time.
 
 ### Crash Reporter
 
@@ -91,12 +84,6 @@ Getting all the dependencies set up for Windows is more tricky. Pre-build depend
 * `USE_NATIVE_FS` (default=ON): Use the native filesystem backend (POSIX / Win32) if available and not boost::filesystem.
 
 1. Enabled automatically if `CMAKE_BUILD_TYPE` is set to `Debug`.
-
-Windows-only options (always `OFF` for non-windows platforms):
-
-* `USE_DSOUND` (default=ON): Build the DirectSound audio backend
-* `USE_D3D9` (default=ON): Build the Direct3D 9 renderer backend
-* `USE_DINPUT8` (default=ON): Build the DirectInput 8 input backend
 
 Install options:
 
