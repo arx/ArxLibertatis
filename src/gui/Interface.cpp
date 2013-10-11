@@ -5694,7 +5694,7 @@ float getHitStrengthColorVal() {
 	}
 }
 
-void postCombatInterface() {
+void PostCombatInterface() {
 	if(bHitFlash) {
 		float fCalc = ulHitFlash + Original_framedelay;
 		ulHitFlash = checked_range_cast<unsigned long>(fCalc);
@@ -5729,7 +5729,7 @@ void drawCombatInterface() {
 		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	}
 	
-	postCombatInterface();
+	PostCombatInterface();
 }
 
 Entity* getSecondaryOrStealInvEntity() {
