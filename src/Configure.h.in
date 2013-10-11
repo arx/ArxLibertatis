@@ -13,15 +13,12 @@
 // Audio backend
 #cmakedefine ARX_HAVE_OPENAL
 #cmakedefine ARX_HAVE_OPENAL_EFX
-#cmakedefine ARX_HAVE_DSOUND
 
 // Renderer backend
 #cmakedefine ARX_HAVE_OPENGL
-#cmakedefine ARX_HAVE_D3D9
 
 // Input backend
 #cmakedefine ARX_HAVE_SDL
-#cmakedefine ARX_HAVE_DINPUT8
 
 // Crash handler
 #cmakedefine ARX_HAVE_CRASHHANDLER_POSIX

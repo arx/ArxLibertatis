@@ -38,11 +38,8 @@ option(INSTALL_SCRIPTS "Install the data install script" ON)
 
 # Optional dependencies
 option(USE_OPENAL "Build the OpenAL audio backend" ON)
-option(USE_DSOUND "Build the DirectSound audio backend" ON)
 option(USE_OPENGL "Build the OpenGL renderer backend" ON)
-option(USE_D3D9 "Build the Direct3D 9 renderer backend" ON)
 option(USE_SDL "Build the SDL windowing backend" ON)
-option(USE_DINPUT8 "Build the DirectInput 8 input backend" ON)
 option(USE_NATIVE_FS "Use the native filesystem backend directly instead of boost" ON)
 option(USE_QT5 "Use Qt 5 if available" ON)
 option(USE_QT4 "Use Qt 4 if available" ON)
@@ -228,16 +225,6 @@ if(WIN32)
 	set(ARX_HAVE_WINAPI 1)
 else()
 	set(ARX_HAVE_WINAPI 0)
-endif()
-
-# Direct X
-if(NOT ARX_HAVE_WINAPI)
-	# DirectX builds on the Win32 api
-	set(USE_D3D9 OFF)
-	set(USE_DSOUND OFF)
-	set(USE_DINPUT8 OFF)
-elseif(USE_D3D9 OR USE_DINPUT8)
-	find_package(DirectX REQUIRED)
 endif()
 
 # pthread / Win32 threads
@@ -551,11 +538,6 @@ set(AUDIO_OPENAL_SOURCES
 	src/audio/openal/OpenALUtils.cpp
 )
 
-set(AUDIO_DSOUND_SOURCES
-	src/audio/dsound/DSoundBackend.cpp
-	src/audio/dsound/DSoundSource.cpp
-)
-
 set(CORE_SOURCES
 	src/core/Application.cpp
 	src/core/ArxGame.cpp
@@ -631,11 +613,6 @@ set(GRAPHICS_SOURCES
 	src/graphics/texture/TextureStage.cpp
 )
 
-set(GRAPHICS_D3D9_SOURCES
-	src/graphics/d3d9/D3D9Renderer.cpp
-	src/graphics/d3d9/D3D9Texture2D.cpp
-	src/graphics/d3d9/D3D9TextureStage.cpp
-)
 set(GRAPHICS_OPENGL_SOURCES
 	src/graphics/opengl/GLTexture2D.cpp
 	src/graphics/opengl/GLTextureStage.cpp
@@ -656,7 +633,6 @@ set(GUI_SOURCES
 )
 
 set(INPUT_SOURCES src/input/Input.cpp)
-set(INPUT_DINPUT8_SOURCES src/input/DInput8Backend.cpp)
 set(INPUT_SDL_SOURCES src/input/SDLInputBackend.cpp)
 
 set(IO_SOURCES
@@ -776,8 +752,6 @@ set(WINDOW_SOURCES
 	src/window/Window.cpp
 )
 set(WINDOW_SDL_SOURCES src/window/SDLWindow.cpp)
-set(WINDOW_WIN32_SOURCES src/window/Win32Window.cpp)
-set(WINDOW_D3D9_SOURCES src/window/D3D9Window.cpp)
 
 # TODO manually specify theese like we do for the tools
 file(GLOB_RECURSE ALL_INCLUDES RELATIVE ${CMAKE_SOURCE_DIR} ${SRC_DIR}/*.h)
@@ -798,21 +772,8 @@ if(USE_OPENAL AND OPENAL_FOUND)
 		set(ARX_HAVE_OPENAL_EFX 1)
 	endif()
 endif()
-if(USE_DSOUND)
-	# TODO does this need DIRECTX_FOUND?if so, the find_package(DirectX) should
-	# also be run if USE_DSOUND is set but USE_D3D9 isn't
-	list(APPEND AUDIO_SOURCES ${AUDIO_DSOUND_SOURCES})
-	set(ARX_HAVE_DSOUND 1)
-endif()
 
 # Graphics
-if(USE_D3D9 AND DIRECTX_FOUND)
-	list(APPEND GRAPHICS_SOURCES ${GRAPHICS_D3D9_SOURCES})
-	list(APPEND WINDOW_SOURCES ${WINDOW_WIN32_SOURCES} ${WINDOW_D3D9_SOURCES})
-	list(APPEND ARX_LIBRARIES ${DIRECTX_D3D9_LIBRARY} ${DIRECTX_D3DX9_LIBRARY} ${DIRECTX_D3DCOMPILER_LIBRARY} ${DIRECTX_DXERR9_LIBRARY})
-	include_directories(SYSTEM ${DIRECTX_INCLUDE_DIR})
-	set(ARX_HAVE_D3D9 1)
-endif()
 if(USE_OPENGL AND OPENGL_FOUND AND GLEW_FOUND)
 	list(APPEND GRAPHICS_SOURCES ${GRAPHICS_OPENGL_SOURCES})
 	list(APPEND ARX_LIBRARIES ${GLEW_LIBRARIES} ${OPENGL_gl_LIBRARY})
@@ -828,11 +789,6 @@ if(USE_SDL AND ARX_HAVE_OPENGL AND SDL_FOUND)
 	list(APPEND ARX_LIBRARIES ${SDL_LIBRARY})
 	include_directories(SYSTEM ${SDL_INCLUDE_DIR})
 	set(ARX_HAVE_SDL 1)
-endif()
-if(USE_DINPUT8 AND DIRECTX_FOUND)
-	list(APPEND INPUT_SOURCES ${INPUT_DINPUT8_SOURCES})
-	list(APPEND ARX_LIBRARIES ${DIRECTX_DINPUT8_LIBRARY} ${DIRECTX_DXGUID_LIBRARY} ${DIRECTX_DXERR9_LIBRARY})
-	set(ARX_HAVE_DINPUT8 1)
 endif()
 
 # Logging
@@ -1225,19 +1181,15 @@ print_configuration("Filesystem backend" FIRST
 )
 print_configuration("Renderer"
 	ARX_HAVE_OPENGL "OpenGL"
-	ARX_HAVE_D3D9   "Direct3D 9"
 )
 print_configuration("Audio backend"
 	ARX_HAVE_OPENAL "OpenAL"
-	ARX_HAVE_DSOUND "Direct Sound"
 )
 print_configuration("Input backend"
 	ARX_HAVE_SDL     "SDL"
-	ARX_HAVE_DINPUT8 "DirectInput 8"
 )
 print_configuration("Windowing"
 	ARX_HAVE_SDL     "SDL"
-	ARX_HAVE_D3D9    "Win32"
 )
 print_configuration("Crash handler"
 	ARX_HAVE_CRASHHANDLER_POSIX   "POSIX"
@@ -1260,17 +1212,17 @@ message("")
 if(NOT (ARX_HAVE_PTHREADS OR ARX_HAVE_WINAPI))
 	message(SEND_ERROR "No supported thread libraries found.")
 endif()
-if(NOT (ARX_HAVE_OPENGL OR ARX_HAVE_D3D9))
-	message(SEND_ERROR "No renderer available - need either OpenGL and GLEW or Direct3D 9")
+if(NOT (ARX_HAVE_OPENGL))
+	message(SEND_ERROR "No renderer available - need OpenGL and GLEW")
 endif()
-if(NOT (ARX_HAVE_OPENAL OR ARX_HAVE_DSOUND))
-	message(WARNING "No audio backend enabled - need either OpenAL or Direct Sound")
+if(NOT (ARX_HAVE_OPENAL))
+	message(WARNING "No audio backend enabled - need OpenAL")
 endif()
-if(NOT (ARX_HAVE_SDL OR ARX_HAVE_DINPUT8))
-	message(SEND_ERROR "No input backend available - need either SDL or DirectInput 8")
+if(NOT (ARX_HAVE_SDL))
+	message(SEND_ERROR "No input backend available - need SDL")
 endif()
-if(NOT (ARX_HAVE_SDL OR ARX_HAVE_WINAPI))
-	message(SEND_ERROR "No windowing backend available - need either SDL or Windows")
+if(NOT (ARX_HAVE_SDL))
+	message(SEND_ERROR "No windowing backend available - need SDL")
 endif()
 if(NOT (ARX_HAVE_NANOSLEEP OR ARX_HAVE_WINAPI))
 	message(SEND_ERROR "Need either nanosleep or WIN32.")
