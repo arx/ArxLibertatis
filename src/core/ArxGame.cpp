@@ -1473,6 +1473,7 @@ void ArxGame::updateLevel() {
 	ManageTorch();
 
 	ARX_INTERACTIVE_DestroyIOdelayedExecute();
+	UpdateInterface();
 }
 
 void ArxGame::renderLevel() {
@@ -1683,8 +1684,7 @@ void ArxGame::renderLevel() {
 	GRenderer->EndScene();
 }
 
-void ArxGame::update() {
-	
+void ArxGame::update() {	
 	if(!WILL_LAUNCH_CINE.empty()) {
 		// A cinematic is waiting to be played...
 		LaunchWaitingCine();
