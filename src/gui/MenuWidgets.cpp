@@ -1213,13 +1213,7 @@ bool Menu2_Render() {
 							slider->iPos = slider->vText.size() - 1;
 						}
 #endif
-#ifdef ARX_HAVE_DINPUT8
-						slider->AddText(new CMenuElementText(-1, hFontMenu, "DInput 8", 0, 0, lColor, 1.f, OPTIONS_INPUT_BACKEND_DINPUT));
-						if(config.input.backend == "DirectInput8") {
-							slider->iPos = slider->vText.size() - 1;
-						}
-#endif
-						
+					
 						float fRatio    = (RATIO_X(iWindowConsoleWidth-9) - slider->GetWidth()); 
 						slider->Move(checked_range_cast<int>(fRatio), 0); 
 						pc->AddElement(slider);
