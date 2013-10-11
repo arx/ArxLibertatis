@@ -35,7 +35,6 @@ struct EERIE_TRANSFORM {
 	float xcos;
 	float zcos;
 	float zsin;
-	float use_focal;
 	Vec2f mod;
 
 	void updateFromAngle(const Anglef &angle) {

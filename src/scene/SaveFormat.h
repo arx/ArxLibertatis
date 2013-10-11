@@ -992,7 +992,7 @@ struct SavedTransform {
 	f32 ysin;
 	f32 xsin;
 	f32 xcos;
-	f32 use_focal;
+	f32 use_focal; //TODO Remove
 	f32 xmod;
 	f32 ymod;
 	f32 zmod;
@@ -1001,7 +1001,6 @@ struct SavedTransform {
 		EERIE_TRANSFORM a;
 		a.pos = pos;
 		a.ycos = ycos, a.ysin = ysin, a.xsin = xsin, a.xcos = xcos;
-		a.use_focal = use_focal;
 		a.mod.x = xmod, a.mod.y = ymod;
 		return a;
 	}
@@ -1009,7 +1008,7 @@ struct SavedTransform {
 	inline SavedTransform & operator=(const EERIE_TRANSFORM & b) {
 		pos = b.pos;
 		ycos = b.ycos, ysin = b.ysin, xsin = b.xsin, xcos = b.xcos;
-		use_focal = b.use_focal;
+		use_focal = 0.f;
 		xmod = b.mod.x, ymod = b.mod.y, zmod = 0.f;
 		return *this;
 	}
@@ -1027,7 +1026,7 @@ struct SavedCamera {
 	f32 Zcos;
 	f32 Zsin;
 	f32 focal;
-	f32 use_focal;
+	f32 use_focal; //TODO Remove
 	f32 Zmul; //TODO Remove
 	f32 posleft; //TODO Remove
 	f32 postop; //TODO Remove
@@ -1103,7 +1102,9 @@ struct SavedCamera {
 		Ycos = b.orgTrans.ycos, Ysin = b.orgTrans.ysin;
 		Xcos = b.orgTrans.xcos, Xsin = b.orgTrans.xsin;
 		Zcos = b.orgTrans.zcos, Zsin = b.orgTrans.zsin;
-		use_focal = b.orgTrans.use_focal;
+
+		use_focal = 0.f;
+
 		posleft = b.orgTrans.mod.x;
 		postop  = b.orgTrans.mod.y;
 

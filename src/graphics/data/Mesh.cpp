@@ -553,7 +553,7 @@ static void camEE_RTP(TexturedVertex * in, TexturedVertex * out, EERIE_CAMERA * 
 		out->rhw = 1.f / out->p.z;
 	}
 
-	tout.rhw = cam->orgTrans.use_focal * out->rhw;
+	tout.rhw = (cam->focal * Xratio) * out->rhw;
 	out->p.z = out->p.z * (1.f / (cam->cdepth * 1.2f));
 	out->p.x = cam->orgTrans.mod.x + (tout.p.x * tout.rhw);
 	out->p.y = cam->orgTrans.mod.y + (tout.p.y * tout.rhw) ;
@@ -691,7 +691,6 @@ int BackFaceCull2D(TexturedVertex * tv) {
 extern EERIE_CAMERA raycam;
 
 static void SP_PrepareCamera(EERIE_CAMERA * cam) {
-	cam->orgTrans.use_focal = cam->focal * Xratio;
 	cam->orgTrans.updateFromAngle(cam->angle);
 	cam->orgTrans.mod = (cam->center + cam->clip.origin).to<float>();
 }
