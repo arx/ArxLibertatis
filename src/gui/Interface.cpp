@@ -5705,13 +5705,15 @@ void postCombatInterface() {
 	}
 }
 
-void updateCombatInterface() {
+void UpdateCombatInterface() {
 	HitStrengthVal = getHitStrengthColorVal();
 }
 
-void drawCombatInterface() {
-	updateCombatInterface();
+void UpdateInterface() {
+	UpdateCombatInterface();
+}
 
+void drawCombatInterface() {
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);

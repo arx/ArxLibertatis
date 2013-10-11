@@ -249,6 +249,8 @@ void Set_DragInter(Entity * io);
 void CreateInterfaceTextureContainers();
 void KillInterfaceTextureContainers();
 
+void UpdateInterface();
+
 namespace gui {
 void updateQuestBook();
 } // namespace gui
