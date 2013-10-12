@@ -5867,10 +5867,12 @@ void DrawInventory() {
 			ARX_INTERFACE_DrawInventory(sActiveInventory);
 
 			arx_assert(ITC.Get("hero_inventory") != NULL);
+
 			if(!InvCoordsCalculated) {
 				CalculateInventoryCoordinates();
 				InvCoordsCalculated = true;
 			}
+
 			if(sActiveInventory > 0) {
 				ARX_INTERFACE_DrawItem(ITC.Get("hero_inventory_up"),	InvCoords.posx, InvCoords.posy);
 
@@ -5924,6 +5926,7 @@ void DrawInventory() {
 		}
 	} else if((player.Interface & INTER_INVENTORYALL) || bInventoryClosing) {				
 
+		//TODO see about these coords, might be calculated once only
 		const float fBag = (player.bag-1) * INTERFACE_RATIO(-121);
 		float fCenterX = g_size.center().x + INTERFACE_RATIO(-320+35);
 		float fSizY = g_size.height() - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY) + INTERFACE_RATIO(-3.f + 25 - 32);
@@ -5951,6 +5954,44 @@ void DrawInventory() {
 	}
 }
 
+void DrawItemPrice() {
+	Entity *temp = SecondaryInventory->io;
+	if(temp->ioflags & IO_SHOP) {
+		float px = DANAEMouse.x;
+		float py = static_cast<float>(DANAEMouse.y - 10);
+
+		if(InSecondaryInventoryPos(&DANAEMouse)) {
+			long amount=ARX_INTERACTIVE_GetPrice(FlyingOverIO,temp);
+			// achat
+			float famount = amount - amount * player.Full_Skill_Intuition * 0.005f;
+			// check should always be OK because amount is supposed positive
+			amount = checked_range_cast<long>(famount);
+
+			if(amount <= player.gold) {
+				ARX_INTERFACE_DrawNumber(px, py, amount, 6, Color::green);
+			} else {
+				ARX_INTERFACE_DrawNumber(px, py, amount, 6, Color::red);
+			}
+		} else if(InPlayerInventoryPos(&DANAEMouse)) {
+			long amount = static_cast<long>( ARX_INTERACTIVE_GetPrice( FlyingOverIO, temp ) / 3.0f );
+			// achat
+			float famount = amount + amount * player.Full_Skill_Intuition * 0.005f;
+			// check should always be OK because amount is supposed positive
+			amount = checked_range_cast<long>( famount );
+
+			if(amount) {
+				if(temp->shop_category.empty() ||
+				   FlyingOverIO->groups.find(temp->shop_category) != FlyingOverIO->groups.end()) {
+
+					ARX_INTERFACE_DrawNumber(px, py, amount, 6, Color::green);
+				} else {
+					ARX_INTERFACE_DrawNumber(px, py, amount, 6, Color::red);
+				}
+			}
+		}
+	}
+}
+
 void UpdateInterface() {
 	UpdateCombatInterface();
 	UpdateSecondaryInvOrStealInv();
@@ -5971,54 +6012,18 @@ void ArxGame::drawAllInterface() {
 			DrawInventory();
 	}
 
-		if(FlyingOverIO
-		   && !(player.Interface & INTER_COMBATMODE)
-		   && !GInput->actionPressed(CONTROLS_CUST_MAGICMODE)
-		   && (!PLAYER_MOUSELOOK_ON || !config.input.autoReadyWeapon)
-		) {
-			if((FlyingOverIO->ioflags & IO_ITEM)
-			   && !DRAGINTER
-			   && SecondaryInventory
-			) {
-					Entity *temp = SecondaryInventory->io;
-
-					if(temp->ioflags & IO_SHOP) {
-						float px = DANAEMouse.x;
-						float py = static_cast<float>(DANAEMouse.y - 10);
-
-						if(InSecondaryInventoryPos(&DANAEMouse)) {
-							long amount=ARX_INTERACTIVE_GetPrice(FlyingOverIO,temp);
-							// achat
-							float famount = amount - amount * player.Full_Skill_Intuition * 0.005f;
-							// check should always be OK because amount is supposed positive
-							amount = checked_range_cast<long>(famount);
-
-							if(amount <= player.gold)
-								ARX_INTERFACE_DrawNumber(px, py, amount, 6, Color::green);
-							else
-								ARX_INTERFACE_DrawNumber(px, py, amount, 6, Color::red);
-						} else if(InPlayerInventoryPos(&DANAEMouse)) {
-							long amount = static_cast<long>( ARX_INTERACTIVE_GetPrice( FlyingOverIO, temp ) / 3.0f );
-							// achat
-							float famount = amount + amount * player.Full_Skill_Intuition * 0.005f;
-							// check should always be OK because amount is supposed positive
-							amount = checked_range_cast<long>( famount );
-
-							if(amount) {
-								if(temp->shop_category.empty() ||
-										FlyingOverIO->groups.find(temp->shop_category) != FlyingOverIO->groups.end())
-									ARX_INTERFACE_DrawNumber(px, py, amount, 6, Color::green);
-								else
-									ARX_INTERFACE_DrawNumber(px, py, amount, 6, Color::red);
-							}
-						}
-					}
-				}
-
-				SpecialCursor=CURSOR_INTERACTION_ON;
+	if(FlyingOverIO
+		&& !(player.Interface & INTER_COMBATMODE)
+		&& !GInput->actionPressed(CONTROLS_CUST_MAGICMODE)
+		&& (!PLAYER_MOUSELOOK_ON || !config.input.autoReadyWeapon)
+	) {
+		if((FlyingOverIO->ioflags & IO_ITEM) && !DRAGINTER && SecondaryInventory) {
+			DrawItemPrice();
 		}
+		SpecialCursor=CURSOR_INTERACTION_ON;
+	}
 
-		ARX_INTERFACE_DrawDamagedEquipment();
+	ARX_INTERFACE_DrawDamagedEquipment();
 
 		if(!(player.Interface & INTER_COMBATMODE)) {
 			if(player.Interface & INTER_MINIBACK) {
