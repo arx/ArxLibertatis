@@ -5992,6 +5992,34 @@ void DrawItemPrice() {
 	}
 }
 
+//Book Icon
+struct {
+	float x;
+	float y;
+} BookIconCoords;
+
+bool BookIconCoordsCalculated = false;
+
+void CalculateBookIconCoords() {
+	BookIconCoords.x = g_size.width() - INTERFACE_RATIO(35) + lSLID_VALUE+GL_DECAL_ICONS;
+	BookIconCoords.y = g_size.height() - INTERFACE_RATIO(148);
+}
+
+void DrawBookIcon() {
+	if(!BookIconCoordsCalculated) {
+		CalculateBookIconCoords();
+	}
+	ARX_INTERFACE_DrawItem(ITC.Get("book"), BookIconCoords.x, BookIconCoords.y);
+
+	if(eMouseState == MOUSE_IN_BOOK_ICON) {
+		GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+		ARX_INTERFACE_DrawItem(ITC.Get("book"), BookIconCoords.x, BookIconCoords.y);
+		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+	}
+}
+//- Book Icon
+
 void UpdateInterface() {
 	UpdateCombatInterface();
 	UpdateSecondaryInvOrStealInv();
@@ -6025,141 +6053,133 @@ void ArxGame::drawAllInterface() {
 
 	ARX_INTERFACE_DrawDamagedEquipment();
 
-		if(!(player.Interface & INTER_COMBATMODE)) {
-			if(player.Interface & INTER_MINIBACK) {
-				// Draw/Manage Book Icon
-				float px=g_size.width() - INTERFACE_RATIO(35) + lSLID_VALUE+GL_DECAL_ICONS;
-				float py=g_size.height() - INTERFACE_RATIO(148);
-				ARX_INTERFACE_DrawItem(ITC.Get("book"), px, py);
+	if(!(player.Interface & INTER_COMBATMODE)) {
+		if(player.Interface & INTER_MINIBACK) {
+			float px, py;
+			DrawBookIcon();
 
-				if(eMouseState == MOUSE_IN_BOOK_ICON) {
-					GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-					GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-					ARX_INTERFACE_DrawItem(ITC.Get("book"), px, py);
-					GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-				}
+			// Draw/Manage BackPack Icon
+			px=g_size.width() - INTERFACE_RATIO(35) + lSLID_VALUE+GL_DECAL_ICONS;
+			py=g_size.height() - INTERFACE_RATIO(113);
+			ARX_INTERFACE_DrawItem(ITC.Get("backpack"),px,py);
 
-				// Draw/Manage BackPack Icon
-				px=g_size.width() - INTERFACE_RATIO(35) + lSLID_VALUE+GL_DECAL_ICONS;
-				py=g_size.height() - INTERFACE_RATIO(113);
+			if(eMouseState == MOUSE_IN_INVENTORY_ICON) {
+				GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+				GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 				ARX_INTERFACE_DrawItem(ITC.Get("backpack"),px,py);
+				GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+			}
 
-				if(eMouseState == MOUSE_IN_INVENTORY_ICON) {
+			// Draw/Manage Steal Icon
+			if(player.Interface & INTER_STEAL) {
+				px = static_cast<float>(-lSLID_VALUE);
+				py = g_size.height() - INTERFACE_RATIO(78.f + 32);
+				ARX_INTERFACE_DrawItem(ITC.Get("steal"), px, py);
+
+				if(eMouseState == MOUSE_IN_STEAL_ICON) {
 					GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 					GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-					ARX_INTERFACE_DrawItem(ITC.Get("backpack"),px,py);
-					GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-				}
-
-				// Draw/Manage Steal Icon
-				if(player.Interface & INTER_STEAL) {
-					px = static_cast<float>(-lSLID_VALUE);
-					py = g_size.height() - INTERFACE_RATIO(78.f + 32);
 					ARX_INTERFACE_DrawItem(ITC.Get("steal"), px, py);
-
-					if(eMouseState == MOUSE_IN_STEAL_ICON) {
-						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-						ARX_INTERFACE_DrawItem(ITC.Get("steal"), px, py);
-						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-					}
-				}
-
-				// Draw / Manage Pick All - Close Secondary inventory icon
-				if(!PLAYER_INTERFACE_HIDE_COUNT && TSecondaryInventory) {
-					px = INTERFACE_RATIO(InventoryX) + INTERFACE_RATIO(16);
-					py = INTERFACE_RATIO_DWORD(BasicInventorySkin->m_dwHeight) - INTERFACE_RATIO(16);
-					Entity *temp = TSecondaryInventory->io;
-
-					if(temp && !(temp->ioflags & IO_SHOP) && !(temp == ioSteal)) {
-						ARX_INTERFACE_DrawItem(ITC.Get("inventory_pickall"), px, py);
-
-						if(eMouseState == MOUSE_IN_INVENTORY_PICKALL_ICON) {
-							GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-							GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-							ARX_INTERFACE_DrawItem(ITC.Get("inventory_pickall"), px, py);
-							GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-						}
-					}
-
-					px = INTERFACE_RATIO(InventoryX) + INTERFACE_RATIO_DWORD(BasicInventorySkin->m_dwWidth) - INTERFACE_RATIO(32);
-
-					ARX_INTERFACE_DrawItem(ITC.Get("inventory_close"), px, py);
-
-					if(eMouseState == MOUSE_IN_INVENTORY_CLOSE_ICON) {
-						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-						ARX_INTERFACE_DrawItem(ITC.Get("inventory_close"), px, py);
-						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-					}
-				}
-
-				// Draw/Manage Advancement Icon
-				if(player.Skill_Redistribute || player.Attribute_Redistribute) {
-					px=g_size.width() - INTERFACE_RATIO(35) + lSLID_VALUE+GL_DECAL_ICONS;
-					py=g_size.height() - INTERFACE_RATIO(218);
-					ARX_INTERFACE_DrawItem(ITC.Get("icon_lvl_up"),px,py);		
-
-					if(eMouseState == MOUSE_IN_REDIST_ICON) {
-						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-						ARX_INTERFACE_DrawItem(ITC.Get("icon_lvl_up"),px,py);		
-						GRenderer->SetRenderState(Renderer::AlphaBlending, false);	
-					}			  
-				}
-
-				// Draw/Manage Gold Purse Icon
-				if(player.gold > 0) {
-					px = g_size.width() - INTERFACE_RATIO(35) + lSLID_VALUE+2+GL_DECAL_ICONS;
-					py = g_size.height() - INTERFACE_RATIO(183);
-					ARX_INTERFACE_DrawItem(ITC.Get("gold"), px, py);
-
-					if(eMouseState == MOUSE_IN_GOLD_ICON) {
-						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-						SpecialCursor=CURSOR_INTERACTION_ON;
-						ARX_INTERFACE_DrawItem(ITC.Get("gold"), px, py);
-						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-						ARX_INTERFACE_DrawNumber(px - INTERFACE_RATIO(30), py + INTERFACE_RATIO(10 - 25), player.gold, 6, Color::white);
-					}
-				}
-
-				if(bGoldHalo) {
-					float fCalc = ulGoldHaloTime + Original_framedelay;
-					ulGoldHaloTime = checked_range_cast<unsigned long>(fCalc);
-
-
-					if(ulGoldHaloTime >= 1000) // ms
-						bGoldHalo = false;
-
-					TextureContainer *tc = ITC.Get("gold");
-					TextureContainer *halo = tc->getHalo();
-
-					if(halo)
-						ARX_INTERFACE_HALO_Render(0.9f, 0.9f, 0.1f, HALO_ACTIVE, halo, px, py, INTERFACE_RATIO(1), INTERFACE_RATIO(1));
-				}
-
-				if(bBookHalo) {
-					float fCalc = ulBookHaloTime + Original_framedelay;
-					ulBookHaloTime = checked_range_cast<unsigned long>(fCalc);
-
-
-					if(ulBookHaloTime >= 3000) // ms
-						bBookHalo = false;
-
-					float POSX = g_size.width()-INTERFACE_RATIO(35)+lSLID_VALUE+GL_DECAL_ICONS;
-					float POSY = g_size.height()-INTERFACE_RATIO(148);
-					TextureContainer *tc = ITC.Get("book");
-					TextureContainer *halo = tc->getHalo();
-
-					if(halo)
-						ARX_INTERFACE_HALO_Render(0.2f, 0.4f, 0.8f, HALO_ACTIVE, halo, POSX, POSY, INTERFACE_RATIO(1), INTERFACE_RATIO(1));
+					GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 				}
 			}
 
-			if(player.torch)
-				ARX_INTERFACE_DrawCurrentTorch();
+			// Draw / Manage Pick All - Close Secondary inventory icon
+			if(!PLAYER_INTERFACE_HIDE_COUNT && TSecondaryInventory) {
+				px = INTERFACE_RATIO(InventoryX) + INTERFACE_RATIO(16);
+				py = INTERFACE_RATIO_DWORD(BasicInventorySkin->m_dwHeight) - INTERFACE_RATIO(16);
+				Entity *temp = TSecondaryInventory->io;
+
+				if(temp && !(temp->ioflags & IO_SHOP) && !(temp == ioSteal)) {
+					ARX_INTERFACE_DrawItem(ITC.Get("inventory_pickall"), px, py);
+
+					if(eMouseState == MOUSE_IN_INVENTORY_PICKALL_ICON) {
+						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+						ARX_INTERFACE_DrawItem(ITC.Get("inventory_pickall"), px, py);
+						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+					}
+				}
+
+				px = INTERFACE_RATIO(InventoryX) + INTERFACE_RATIO_DWORD(BasicInventorySkin->m_dwWidth) - INTERFACE_RATIO(32);
+
+				ARX_INTERFACE_DrawItem(ITC.Get("inventory_close"), px, py);
+
+				if(eMouseState == MOUSE_IN_INVENTORY_CLOSE_ICON) {
+					GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+					GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+					ARX_INTERFACE_DrawItem(ITC.Get("inventory_close"), px, py);
+					GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+				}
+			}
+
+			// Draw/Manage Advancement Icon
+			if(player.Skill_Redistribute || player.Attribute_Redistribute) {
+				px=g_size.width() - INTERFACE_RATIO(35) + lSLID_VALUE+GL_DECAL_ICONS;
+				py=g_size.height() - INTERFACE_RATIO(218);
+				ARX_INTERFACE_DrawItem(ITC.Get("icon_lvl_up"),px,py);		
+
+				if(eMouseState == MOUSE_IN_REDIST_ICON) {
+					GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+					GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+					ARX_INTERFACE_DrawItem(ITC.Get("icon_lvl_up"),px,py);		
+					GRenderer->SetRenderState(Renderer::AlphaBlending, false);	
+				}			  
+			}
+
+			// Draw/Manage Gold Purse Icon
+			if(player.gold > 0) {
+				px = g_size.width() - INTERFACE_RATIO(35) + lSLID_VALUE+2+GL_DECAL_ICONS;
+				py = g_size.height() - INTERFACE_RATIO(183);
+				ARX_INTERFACE_DrawItem(ITC.Get("gold"), px, py);
+
+				if(eMouseState == MOUSE_IN_GOLD_ICON) {
+					GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+					GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+					SpecialCursor=CURSOR_INTERACTION_ON;
+					ARX_INTERFACE_DrawItem(ITC.Get("gold"), px, py);
+					GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+					ARX_INTERFACE_DrawNumber(px - INTERFACE_RATIO(30), py + INTERFACE_RATIO(10 - 25), player.gold, 6, Color::white);
+				}
+			}
+
+			if(bGoldHalo) {
+				float fCalc = ulGoldHaloTime + Original_framedelay;
+				ulGoldHaloTime = checked_range_cast<unsigned long>(fCalc);
+
+
+				if(ulGoldHaloTime >= 1000) // ms
+					bGoldHalo = false;
+
+				TextureContainer *tc = ITC.Get("gold");
+				TextureContainer *halo = tc->getHalo();
+
+				if(halo)
+					ARX_INTERFACE_HALO_Render(0.9f, 0.9f, 0.1f, HALO_ACTIVE, halo, px, py, INTERFACE_RATIO(1), INTERFACE_RATIO(1));
+			}
+
+			if(bBookHalo) {
+				float fCalc = ulBookHaloTime + Original_framedelay;
+				ulBookHaloTime = checked_range_cast<unsigned long>(fCalc);
+
+
+				if(ulBookHaloTime >= 3000) // ms
+					bBookHalo = false;
+
+				float POSX = g_size.width()-INTERFACE_RATIO(35)+lSLID_VALUE+GL_DECAL_ICONS;
+				float POSY = g_size.height()-INTERFACE_RATIO(148);
+				TextureContainer *tc = ITC.Get("book");
+				TextureContainer *halo = tc->getHalo();
+
+				if(halo)
+					ARX_INTERFACE_HALO_Render(0.2f, 0.4f, 0.8f, HALO_ACTIVE, halo, POSX, POSY, INTERFACE_RATIO(1), INTERFACE_RATIO(1));
+			}
 		}
+
+		if(player.torch) {
+			ARX_INTERFACE_DrawCurrentTorch();
+		}
+	}
 
 		if(CHANGE_LEVEL_ICON > -1 && ChangeLevel) {
 			//Setting px and py as float to avoid warning on function ARX_INTERFACE_DrawItem and MouseInRect
