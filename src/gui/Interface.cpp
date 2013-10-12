@@ -6022,33 +6022,37 @@ void DrawItemPrice() {
 	}
 }
 
-//Book Icon
-struct {
-	float x;
-	float y;
-} BookIconCoords;
+Vec2f BookIconCoords;
+Vec2f BackpackIconCoords;
 
-bool BookIconCoordsCalculated = false;
+bool IconCoordinatesCalculated = false;
+
+//Used for drawing icons like the book or backpack icon.
+void DrawIcon(const Vec2f& coords, const char* itcName, E_ARX_STATE_MOUSE hoverMouseState) {
+	ARX_INTERFACE_DrawItem(ITC.Get(itcName), coords.x, coords.y);
+	if (eMouseState == hoverMouseState) {
+		GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+		ARX_INTERFACE_DrawItem(ITC.Get(itcName), coords.x, coords.y);
+		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+	}
+}
 
 void CalculateBookIconCoords() {
 	BookIconCoords.x = g_size.width() - INTERFACE_RATIO(35) + lSLID_VALUE+GL_DECAL_ICONS;
 	BookIconCoords.y = g_size.height() - INTERFACE_RATIO(148);
 }
 
-void DrawBookIcon() {
-	if(!BookIconCoordsCalculated) {
-		CalculateBookIconCoords();
-	}
-	ARX_INTERFACE_DrawItem(ITC.Get("book"), BookIconCoords.x, BookIconCoords.y);
-
-	if(eMouseState == MOUSE_IN_BOOK_ICON) {
-		GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-		ARX_INTERFACE_DrawItem(ITC.Get("book"), BookIconCoords.x, BookIconCoords.y);
-		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-	}
+void CalculateBackpackIconCoords() {
+	BackpackIconCoords.x = g_size.width() - INTERFACE_RATIO(35) + lSLID_VALUE+GL_DECAL_ICONS;
+	BackpackIconCoords.y = g_size.height() - INTERFACE_RATIO(113);
 }
-//- Book Icon
+
+void CalculateIconCoordinates() {
+	CalculateBookIconCoords();
+	CalculateBackpackIconCoords();
+	IconCoordinatesCalculated = true;
+}
 
 void UpdateInterface() {
 	UpdateCombatInterface();
@@ -6085,20 +6089,12 @@ void ArxGame::drawAllInterface() {
 
 	if(!(player.Interface & INTER_COMBATMODE)) {
 		if(player.Interface & INTER_MINIBACK) {
-			float px, py;
-			DrawBookIcon();
-
-			// Draw/Manage BackPack Icon
-			px=g_size.width() - INTERFACE_RATIO(35) + lSLID_VALUE+GL_DECAL_ICONS;
-			py=g_size.height() - INTERFACE_RATIO(113);
-			ARX_INTERFACE_DrawItem(ITC.Get("backpack"),px,py);
-
-			if(eMouseState == MOUSE_IN_INVENTORY_ICON) {
-				GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-				GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-				ARX_INTERFACE_DrawItem(ITC.Get("backpack"),px,py);
-				GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+			if (!IconCoordinatesCalculated) {
+				CalculateIconCoordinates();
 			}
+			float px, py;
+			DrawIcon(BookIconCoords, "book", MOUSE_IN_BOOK_ICON);
+			DrawIcon(BackpackIconCoords, "backpack", MOUSE_IN_INVENTORY_ICON);			
 
 			// Draw/Manage Steal Icon
 			if(player.Interface & INTER_STEAL) {
