@@ -6028,6 +6028,7 @@ Vec2f StealIconCoords;
 Vec2f PickAllIconCoords;
 Vec2f CloseSInvIconCoords;
 Vec2f LevelUpIconCoords;
+Vec2f PurseIconCoords;
 
 bool IconCoordinatesCalculated = false;
 
@@ -6061,11 +6062,17 @@ void CalculateLevelUpIconCoords() {
 	LevelUpIconCoords.y = g_size.height() - INTERFACE_RATIO(218);
 }
 
+void CalculatePurseIconCoords() {
+	PurseIconCoords.x = g_size.width() - INTERFACE_RATIO(35) + lSLID_VALUE+2+GL_DECAL_ICONS;
+	PurseIconCoords.y = g_size.height() - INTERFACE_RATIO(183);
+}
+
 void CalculateIconCoordinates() {
 	CalculateBookIconCoords();
 	CalculateBackpackIconCoords();
 	CalculateStealIconCoords();	
 	CalculateLevelUpIconCoords();
+	CalculatePurseIconCoords();
 	IconCoordinatesCalculated = true;
 }
 
@@ -6138,20 +6145,13 @@ void ArxGame::drawAllInterface() {
 			if(player.Skill_Redistribute || player.Attribute_Redistribute) {
 				DrawIcon(LevelUpIconCoords, "icon_lvl_up", MOUSE_IN_REDIST_ICON);
 			}
-
 			// Draw/Manage Gold Purse Icon
-			if(player.gold > 0) {
-				px = g_size.width() - INTERFACE_RATIO(35) + lSLID_VALUE+2+GL_DECAL_ICONS;
-				py = g_size.height() - INTERFACE_RATIO(183);
-				ARX_INTERFACE_DrawItem(ITC.Get("gold"), px, py);
-
+			if(player.gold > 0) {	
+				DrawIcon(PurseIconCoords, "gold", MOUSE_IN_GOLD_ICON);			
 				if(eMouseState == MOUSE_IN_GOLD_ICON) {
-					GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-					GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 					SpecialCursor=CURSOR_INTERACTION_ON;
-					ARX_INTERFACE_DrawItem(ITC.Get("gold"), px, py);
-					GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-					ARX_INTERFACE_DrawNumber(px - INTERFACE_RATIO(30), py + INTERFACE_RATIO(10 - 25), player.gold, 6, Color::white);
+					ARX_INTERFACE_DrawNumber(PurseIconCoords.x - INTERFACE_RATIO(30),
+						PurseIconCoords.y + INTERFACE_RATIO(10 - 25), player.gold, 6, Color::white);
 				}
 			}
 
@@ -6167,7 +6167,8 @@ void ArxGame::drawAllInterface() {
 				TextureContainer *halo = tc->getHalo();
 
 				if(halo)
-					ARX_INTERFACE_HALO_Render(0.9f, 0.9f, 0.1f, HALO_ACTIVE, halo, px, py, INTERFACE_RATIO(1), INTERFACE_RATIO(1));
+					ARX_INTERFACE_HALO_Render(0.9f, 0.9f, 0.1f, HALO_ACTIVE, halo, PurseIconCoords.x, PurseIconCoords.y, 
+					INTERFACE_RATIO(1), INTERFACE_RATIO(1));
 			}
 
 			if(bBookHalo) {
