@@ -5755,7 +5755,7 @@ void drawCombatInterface() {
 		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	}
 	
-	PostCombatInterface();
+	PostCombatInterface(); //TODO this
 }
 
 Entity* getSecondaryOrStealInvEntity() {
@@ -5811,7 +5811,7 @@ void DrawSecondaryInvOrStealInv() {
 	}
 }
 
-void drawInventory() {
+void UpdateInventory() {
 	if(player.Interface & INTER_INVENTORY) {
 		if((player.Interface & INTER_COMBATMODE) || player.doingmagic >= 2) {
 			long t = Original_framedelay * (1.f/5) + 2;
@@ -5848,18 +5848,24 @@ void drawInventory() {
 				}
 			}
 		}
+		if(player.bag) {
+		}
+	}
+}
 
-				if(player.bag) {
-					ARX_INTERFACE_DrawInventory(sActiveInventory);
+void DrawInventory() {
+	if(player.Interface & INTER_INVENTORY) {		
+		if(player.bag) {
+			ARX_INTERFACE_DrawInventory(sActiveInventory);
 
-					arx_assert(ITC.Get("hero_inventory") != NULL);
-					float fCenterX	= g_size.center().x + INTERFACE_RATIO(-320 + 35) + INTERFACE_RATIO_DWORD(ITC.Get("hero_inventory")->m_dwWidth) - INTERFACE_RATIO(32 + 3) ;
-					float fSizY		= g_size.height() - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY) + INTERFACE_RATIO(- 3 + 25) ;
+			arx_assert(ITC.Get("hero_inventory") != NULL);
+			float fCenterX	= g_size.center().x + INTERFACE_RATIO(-320 + 35) + INTERFACE_RATIO_DWORD(ITC.Get("hero_inventory")->m_dwWidth) - INTERFACE_RATIO(32 + 3) ;
+			float fSizY		= g_size.height() - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY) + INTERFACE_RATIO(- 3 + 25) ;
 
-					float posx = ARX_CAST_TO_INT_THEN_FLOAT( fCenterX );
-					float posy = ARX_CAST_TO_INT_THEN_FLOAT( fSizY );
+			float posx = ARX_CAST_TO_INT_THEN_FLOAT( fCenterX );
+			float posy = ARX_CAST_TO_INT_THEN_FLOAT( fSizY );
 
-					if(sActiveInventory > 0) {
+			if(sActiveInventory > 0) {
 						ARX_INTERFACE_DrawItem(ITC.Get("hero_inventory_up"),	posx, posy);
 
 						if(MouseInRect(posx, posy, posx + INTERFACE_RATIO(32), posy + INTERFACE_RATIO(32))) {
@@ -5969,6 +5975,7 @@ void drawInventory() {
 void UpdateInterface() {
 	UpdateCombatInterface();
 	UpdateSecondaryInvOrStealInv();
+	UpdateInventory();
 }
 
 void ArxGame::drawAllInterface() {
@@ -5982,7 +5989,7 @@ void ArxGame::drawAllInterface() {
 	}	
 	DrawSecondaryInvOrStealInv();	
 	if(!PLAYER_INTERFACE_HIDE_COUNT) {
-			drawInventory();
+			DrawInventory();
 	}
 
 		if(FlyingOverIO
