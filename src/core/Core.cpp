@@ -2687,13 +2687,10 @@ bool DANAE_ManageSplashThings() {
 			SPLASH_THINGS_STAGE = 14;
 		}
 		
-		if (SPLASH_THINGS_STAGE==11)
-		{
-			
-			if (SPLASH_START==0) //firsttime
-			{
-				if(!ARX_INTERFACE_InitFISHTANK())
-				{
+		if(SPLASH_THINGS_STAGE == 11) {
+			//firsttime
+			if(SPLASH_START == 0) {
+				if(!ARX_INTERFACE_InitFISHTANK()) {
 					SPLASH_THINGS_STAGE++;
 					return true;
 				}
@@ -2704,11 +2701,10 @@ bool DANAE_ManageSplashThings() {
 			ARX_INTERFACE_ShowFISHTANK();
 
 			unsigned long tim = arxtime.get_updated_ul();
-			float pos=(float)tim-(float)SPLASH_START;
+			float pos = (float)tim - (float)SPLASH_START;
 
-			if (pos>SPLASH_DURATION)
-			{
-				SPLASH_START=0;
+			if(pos > SPLASH_DURATION) {
+				SPLASH_START = 0;
 				SPLASH_THINGS_STAGE++;
 			}
 
@@ -2717,12 +2713,10 @@ bool DANAE_ManageSplashThings() {
 			
 		}
 
-		if (SPLASH_THINGS_STAGE==12)
-		{
-			if (SPLASH_START==0) //firsttime
-			{
-				if(!ARX_INTERFACE_InitARKANE())
-				{
+		if(SPLASH_THINGS_STAGE == 12) {
+			//firsttime
+			if(SPLASH_START == 0) {
+				if(!ARX_INTERFACE_InitARKANE()) {
 					SPLASH_THINGS_STAGE++;
 					return true;
 				}
@@ -2735,9 +2729,8 @@ bool DANAE_ManageSplashThings() {
 			unsigned long tim = arxtime.get_updated_ul();
 			float pos=(float)tim-(float)SPLASH_START;
 
-			if (pos>SPLASH_DURATION)
-			{
-				SPLASH_START=0;
+			if(pos>SPLASH_DURATION) {
+				SPLASH_START = 0;
 				SPLASH_THINGS_STAGE++;
 			}
 
@@ -2745,8 +2738,7 @@ bool DANAE_ManageSplashThings() {
 			return true;
 		}
 
-		if (SPLASH_THINGS_STAGE==13)
-		{
+		if(SPLASH_THINGS_STAGE == 13) {
 			ARX_INTERFACE_KillFISHTANK();
 			ARX_INTERFACE_KillARKANE();
 			char loadfrom[256];
@@ -2763,13 +2755,11 @@ bool DANAE_ManageSplashThings() {
 
 			GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
 			return true;
-			
 		}
 
-		if (SPLASH_THINGS_STAGE > 13)
-		{
-			FirstFrame=true;
-			SPLASH_THINGS_STAGE=0;
+		if(SPLASH_THINGS_STAGE > 13) {
+			FirstFrame = true;
+			SPLASH_THINGS_STAGE = 0;
 
 			GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
 			return true;
