@@ -5995,6 +5995,9 @@ void DrawItemPrice() {
 Vec2f BookIconCoords;
 Vec2f BackpackIconCoords;
 Vec2f StealIconCoords;
+Vec2f PickAllIconCoords;
+Vec2f CloseSInvIconCoords;
+Vec2f LevelUpIconCoords;
 
 bool IconCoordinatesCalculated = false;
 
@@ -6013,10 +6016,26 @@ void CalculateStealIconCoords() {
 	StealIconCoords.y = g_size.height() - INTERFACE_RATIO(78.f + 32);
 }
 
+void CalculatePickAllIconCoods() {
+	PickAllIconCoords.x = INTERFACE_RATIO(InventoryX) + INTERFACE_RATIO(16);
+	PickAllIconCoords.y = INTERFACE_RATIO_DWORD(BasicInventorySkin->m_dwHeight) - INTERFACE_RATIO(16);
+}
+
+void CalculateCloseSInvIconCoords() {
+	CloseSInvIconCoords.x = INTERFACE_RATIO(InventoryX) + INTERFACE_RATIO_DWORD(BasicInventorySkin->m_dwWidth) - INTERFACE_RATIO(32);
+	CloseSInvIconCoords.y = INTERFACE_RATIO_DWORD(BasicInventorySkin->m_dwHeight) - INTERFACE_RATIO(16);
+}
+
+void CalculateLevelUpIconCoords() {
+	LevelUpIconCoords.x = g_size.width() - INTERFACE_RATIO(35) + lSLID_VALUE+GL_DECAL_ICONS;
+	LevelUpIconCoords.y = g_size.height() - INTERFACE_RATIO(218);
+}
+
 void CalculateIconCoordinates() {
 	CalculateBookIconCoords();
 	CalculateBackpackIconCoords();
-	CalculateStealIconCoords();
+	CalculateStealIconCoords();	
+	CalculateLevelUpIconCoords();
 	IconCoordinatesCalculated = true;
 }
 
@@ -6075,48 +6094,19 @@ void ArxGame::drawAllInterface() {
 			if(player.Interface & INTER_STEAL) {
 				DrawIcon(StealIconCoords, "steal", MOUSE_IN_STEAL_ICON);
 			}
-
-			// Draw / Manage Pick All - Close Secondary inventory icon
-			if(!PLAYER_INTERFACE_HIDE_COUNT && TSecondaryInventory) {
-				px = INTERFACE_RATIO(InventoryX) + INTERFACE_RATIO(16);
-				py = INTERFACE_RATIO_DWORD(BasicInventorySkin->m_dwHeight) - INTERFACE_RATIO(16);
+			// Pick All/Close Secondary Inventory
+			if(!PLAYER_INTERFACE_HIDE_COUNT && TSecondaryInventory) {	
+				CalculatePickAllIconCoods(); //These have to be calculated on each frame (to make them move).
+				CalculateCloseSInvIconCoords();
 				Entity *temp = TSecondaryInventory->io;
-
 				if(temp && !(temp->ioflags & IO_SHOP) && !(temp == ioSteal)) {
-					ARX_INTERFACE_DrawItem(ITC.Get("inventory_pickall"), px, py);
-
-					if(eMouseState == MOUSE_IN_INVENTORY_PICKALL_ICON) {
-						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-						ARX_INTERFACE_DrawItem(ITC.Get("inventory_pickall"), px, py);
-						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-					}
+					DrawIcon(PickAllIconCoords, "inventory_pickall", MOUSE_IN_INVENTORY_PICKALL_ICON);					
 				}
-
-				px = INTERFACE_RATIO(InventoryX) + INTERFACE_RATIO_DWORD(BasicInventorySkin->m_dwWidth) - INTERFACE_RATIO(32);
-
-				ARX_INTERFACE_DrawItem(ITC.Get("inventory_close"), px, py);
-
-				if(eMouseState == MOUSE_IN_INVENTORY_CLOSE_ICON) {
-					GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-					GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-					ARX_INTERFACE_DrawItem(ITC.Get("inventory_close"), px, py);
-					GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-				}
+				DrawIcon(CloseSInvIconCoords, "inventory_close", MOUSE_IN_INVENTORY_CLOSE_ICON);				
 			}
 
-			// Draw/Manage Advancement Icon
 			if(player.Skill_Redistribute || player.Attribute_Redistribute) {
-				px=g_size.width() - INTERFACE_RATIO(35) + lSLID_VALUE+GL_DECAL_ICONS;
-				py=g_size.height() - INTERFACE_RATIO(218);
-				ARX_INTERFACE_DrawItem(ITC.Get("icon_lvl_up"),px,py);		
-
-				if(eMouseState == MOUSE_IN_REDIST_ICON) {
-					GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-					GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-					ARX_INTERFACE_DrawItem(ITC.Get("icon_lvl_up"),px,py);		
-					GRenderer->SetRenderState(Renderer::AlphaBlending, false);	
-				}			  
+				DrawIcon(LevelUpIconCoords, "icon_lvl_up", MOUSE_IN_REDIST_ICON);
 			}
 
 			// Draw/Manage Gold Purse Icon
