@@ -1314,12 +1314,12 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoftRender(long room_num) {
 		else
 			GRenderer->SetTexture(0, pTexCurr);
 
-		if(pTexCurr->userflags & POLY_METAL)
-			GRenderer->GetTextureStage(0)->SetColorOp(TextureStage::OpModulate2X);
-		else
-			GRenderer->GetTextureStage(0)->SetColorOp(TextureStage::OpModulate);
-
 		if(roomMat.count[SMY_ARXMAT::Opaque]) {
+			if (pTexCurr->userflags & POLY_METAL)
+				GRenderer->GetTextureStage(0)->SetColorOp(TextureStage::OpModulate2X);
+			else
+				GRenderer->GetTextureStage(0)->SetColorOp(TextureStage::OpModulate);
+
 			GRenderer->SetAlphaFunc(Renderer::CmpGreater, .5f);
 
 			room.pVertexBuffer->drawIndexed(
