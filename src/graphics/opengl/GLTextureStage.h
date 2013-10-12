@@ -23,6 +23,8 @@
 #include "graphics/opengl/OpenGLUtil.h"
 #include "graphics/texture/TextureStage.h"
 
+#include <map>
+
 class OpenGLRenderer;
 class GLTexture2D;
 
@@ -72,10 +74,13 @@ private:
 	
 	void setArg(OpType alpha, Arg idx, TextureArg arg);
 	
-	void setOp(OpType alpha, GLenum op, GLint scale);
+	void setOp(OpType alpha, GLint op, GLfloat scale);
 	void setOp(OpType alpha, TextureOp op);
 	void setOp(OpType alpha, TextureOp op, TextureArg arg0, TextureArg arg1);
-	
+
+	void setTexEnv(GLenum target, GLenum pname, GLint param);
+	void setTexEnv(GLenum target, GLenum pname, GLfloat param);
+
 	GLTexture2D * tex;
 	GLTexture2D * current;
 	
@@ -83,6 +88,12 @@ private:
 	FilterMode minFilter;
 	FilterMode magFilter;
 	FilterMode mipFilter;
+
+	typedef std::map<GLenum, GLint> IntegerStateCache;
+	IntegerStateCache m_stateCacheIntegers;
+
+	typedef std::map<GLenum, GLfloat> FloatStateCache;
+	FloatStateCache m_stateCacheFloats;
 	
 	friend class GLTexture2D;
 };
