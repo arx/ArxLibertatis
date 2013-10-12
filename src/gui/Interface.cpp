@@ -5848,7 +5848,28 @@ void UpdateInventory() {
 				}
 			}
 		}
-		if(player.bag) {
+	} else if((player.Interface & INTER_INVENTORYALL) || bInventoryClosing) {
+		float fSpeed = (1.f/3);
+		if((player.Interface & INTER_COMBATMODE) || player.doingmagic >= 2) {
+			if(InventoryY < INTERFACE_RATIO(121) * player.bag) {
+				InventoryY += static_cast<long>(INTERFACE_RATIO((Original_framedelay * fSpeed) + 2.f));
+			}
+		} else {
+			if(bInventoryClosing) {
+				InventoryY += static_cast<long>(INTERFACE_RATIO((Original_framedelay * fSpeed) + 2.f));
+				if(InventoryY > INTERFACE_RATIO(121) * player.bag) {
+					bInventoryClosing = false;
+					if(player.Interface & INTER_INVENTORYALL) {
+						player.Interface &= ~INTER_INVENTORYALL;
+					}
+					lOldInterface=0;
+				}
+			} else if(InventoryY > 0) {
+				InventoryY -= static_cast<long>(INTERFACE_RATIO((Original_framedelay * fSpeed) + 2.f));
+				if(InventoryY < 0) {
+					InventoryY = 0;
+				}
+			}
 		}
 	}
 }
@@ -5866,110 +5887,83 @@ void DrawInventory() {
 			float posy = ARX_CAST_TO_INT_THEN_FLOAT( fSizY );
 
 			if(sActiveInventory > 0) {
-						ARX_INTERFACE_DrawItem(ITC.Get("hero_inventory_up"),	posx, posy);
+				ARX_INTERFACE_DrawItem(ITC.Get("hero_inventory_up"),	posx, posy);
 
-						if(MouseInRect(posx, posy, posx + INTERFACE_RATIO(32), posy + INTERFACE_RATIO(32))) {
-							GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-							GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-							SpecialCursor=CURSOR_INTERACTION_ON;
-							ARX_INTERFACE_DrawItem(ITC.Get("hero_inventory_up"), posx, posy);
-							GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-							SpecialCursor=CURSOR_INTERACTION_ON;
+				if(MouseInRect(posx, posy, posx + INTERFACE_RATIO(32), posy + INTERFACE_RATIO(32))) {
+					GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+					GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+					SpecialCursor=CURSOR_INTERACTION_ON;
+					ARX_INTERFACE_DrawItem(ITC.Get("hero_inventory_up"), posx, posy);
+					GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+					SpecialCursor=CURSOR_INTERACTION_ON;
 
-							if (((EERIEMouseButton & 1)  && !(LastMouseClick & 1))
-								|| ((!(EERIEMouseButton & 1)) && (LastMouseClick & 1) && DRAGINTER))
-							{
-								if(sActiveInventory > 0) {
-									ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
-									sActiveInventory --;
-								}
-
-								EERIEMouseButton &= ~1;
-							}
+					if (((EERIEMouseButton & 1)  && !(LastMouseClick & 1))
+						|| ((!(EERIEMouseButton & 1)) && (LastMouseClick & 1) && DRAGINTER))
+					{
+						if(sActiveInventory > 0) {
+							ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
+							sActiveInventory --;
 						}
+
+						EERIEMouseButton &= ~1;
 					}
-
-					if(sActiveInventory < player.bag-1) {
-						float fRatio = INTERFACE_RATIO(32 + 5);
-
-						posy += checked_range_cast<int>(fRatio);
-
-						ARX_INTERFACE_DrawItem(ITC.Get("hero_inventory_down"),	posx, g_size.height() - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY) + INTERFACE_RATIO(-3 + 64));
-
-						if(MouseInRect(posx, posy, posx + INTERFACE_RATIO(32), posy + INTERFACE_RATIO(32))) {
-							GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-							GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-							ARX_INTERFACE_DrawItem(ITC.Get("hero_inventory_down"),	posx, g_size.height() - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY) + INTERFACE_RATIO(-3 + 64));
-							GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-							SpecialCursor=CURSOR_INTERACTION_ON;
-
-							if (((EERIEMouseButton & 1)  && !(LastMouseClick & 1))
-								|| ((!(EERIEMouseButton & 1)) && (LastMouseClick & 1) && DRAGINTER))
-							{
-								if(sActiveInventory < player.bag-1) {
-									ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
-									sActiveInventory ++;
-								}
-
-								EERIEMouseButton &= ~1;
-							}
-						}
-					}
-				}
-			} else if((player.Interface & INTER_INVENTORYALL) || bInventoryClosing) {
-				float fSpeed = (1.f/3);
-
-				if((player.Interface & INTER_COMBATMODE) || player.doingmagic >= 2) {
-					if(InventoryY < INTERFACE_RATIO(121) * player.bag) {
-
-						InventoryY += static_cast<long>(INTERFACE_RATIO((Original_framedelay * fSpeed) + 2.f));
-					}
-				} else {
-					if(bInventoryClosing) {
-						InventoryY += static_cast<long>(INTERFACE_RATIO((Original_framedelay * fSpeed) + 2.f));
-
-						if(InventoryY > INTERFACE_RATIO(121) * player.bag) {
-							bInventoryClosing = false;
-
-							if(player.Interface & INTER_INVENTORYALL) {
-								player.Interface &= ~INTER_INVENTORYALL;
-							}
-
-							lOldInterface=0;
-						}
-					} else if(InventoryY > 0) {
-						InventoryY -= static_cast<long>(INTERFACE_RATIO((Original_framedelay * fSpeed) + 2.f));
-
-						if(InventoryY < 0)
-							InventoryY = 0;
-					}
-				}
-
-				const float fBag = (player.bag-1) * INTERFACE_RATIO(-121);
-				float fCenterX = g_size.center().x + INTERFACE_RATIO(-320+35);
-				float fSizY = g_size.height() - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY) + INTERFACE_RATIO(-3.f + 25 - 32);
-				const float fOffsetY = INTERFACE_RATIO(121);
-
-				int iOffsetY = checked_range_cast<int>(fBag + fOffsetY);
-				int posx = checked_range_cast<int>(fCenterX);
-				int posy = checked_range_cast<int>(fSizY);
-
-				for(int i = 0; i < player.bag; i++) {
-					ARX_INTERFACE_DrawItem(ITC.Get("hero_inventory_link"), posx + INTERFACE_RATIO(45), static_cast<float>(posy + iOffsetY)) ;
-
-					ARX_INTERFACE_DrawItem(ITC.Get("hero_inventory_link"), posx + INTERFACE_RATIO_DWORD(ITC.Get("hero_inventory")->m_dwWidth)*0.5f + INTERFACE_RATIO(-16), posy+iOffsetY + INTERFACE_RATIO(-5));
-					ARX_INTERFACE_DrawItem(ITC.Get("hero_inventory_link"), posx + INTERFACE_RATIO_DWORD(ITC.Get("hero_inventory")->m_dwWidth) + INTERFACE_RATIO(-45-32), posy+iOffsetY + INTERFACE_RATIO(-15));
-
-					iOffsetY += checked_range_cast<int>(fOffsetY);
-				}
-
-				iOffsetY = checked_range_cast<int>(fBag);
-
-				for(short i = 0; i < player.bag; i++) {
-					ARX_INTERFACE_DrawInventory(i, 0, iOffsetY);
-					iOffsetY += checked_range_cast<int>(fOffsetY);
 				}
 			}
+
+			if(sActiveInventory < player.bag-1) {
+				float fRatio = INTERFACE_RATIO(32 + 5);
+
+				posy += checked_range_cast<int>(fRatio);
+
+				ARX_INTERFACE_DrawItem(ITC.Get("hero_inventory_down"),	posx, g_size.height() - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY) + INTERFACE_RATIO(-3 + 64));
+
+				if(MouseInRect(posx, posy, posx + INTERFACE_RATIO(32), posy + INTERFACE_RATIO(32))) {
+					GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+					GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+					ARX_INTERFACE_DrawItem(ITC.Get("hero_inventory_down"),	posx, g_size.height() - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY) + INTERFACE_RATIO(-3 + 64));
+					GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+					SpecialCursor=CURSOR_INTERACTION_ON;
+
+					if (((EERIEMouseButton & 1)  && !(LastMouseClick & 1))
+						|| ((!(EERIEMouseButton & 1)) && (LastMouseClick & 1) && DRAGINTER))
+					{
+						if(sActiveInventory < player.bag-1) {
+							ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
+							sActiveInventory ++;
+						}
+
+						EERIEMouseButton &= ~1;
+					}
+				}
+			}
+		}
+	} else if((player.Interface & INTER_INVENTORYALL) || bInventoryClosing) {				
+
+		const float fBag = (player.bag-1) * INTERFACE_RATIO(-121);
+		float fCenterX = g_size.center().x + INTERFACE_RATIO(-320+35);
+		float fSizY = g_size.height() - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY) + INTERFACE_RATIO(-3.f + 25 - 32);
+		const float fOffsetY = INTERFACE_RATIO(121);
+
+		int iOffsetY = checked_range_cast<int>(fBag + fOffsetY);
+		int posx = checked_range_cast<int>(fCenterX);
+		int posy = checked_range_cast<int>(fSizY);
+
+		for(int i = 0; i < player.bag; i++) {
+			ARX_INTERFACE_DrawItem(ITC.Get("hero_inventory_link"), posx + INTERFACE_RATIO(45), static_cast<float>(posy + iOffsetY)) ;
+
+			ARX_INTERFACE_DrawItem(ITC.Get("hero_inventory_link"), posx + INTERFACE_RATIO_DWORD(ITC.Get("hero_inventory")->m_dwWidth)*0.5f + INTERFACE_RATIO(-16), posy+iOffsetY + INTERFACE_RATIO(-5));
+			ARX_INTERFACE_DrawItem(ITC.Get("hero_inventory_link"), posx + INTERFACE_RATIO_DWORD(ITC.Get("hero_inventory")->m_dwWidth) + INTERFACE_RATIO(-45-32), posy+iOffsetY + INTERFACE_RATIO(-15));
+
+			iOffsetY += checked_range_cast<int>(fOffsetY);
+		}
+
+		iOffsetY = checked_range_cast<int>(fBag);
+
+		for(short i = 0; i < player.bag; i++) {
+			ARX_INTERFACE_DrawInventory(i, 0, iOffsetY);
+			iOffsetY += checked_range_cast<int>(fOffsetY);
+		}
+	}
 }
 
 void UpdateInterface() {
