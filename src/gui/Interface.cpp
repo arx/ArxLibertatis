@@ -6024,19 +6024,9 @@ void DrawItemPrice() {
 
 Vec2f BookIconCoords;
 Vec2f BackpackIconCoords;
+Vec2f StealIconCoords;
 
 bool IconCoordinatesCalculated = false;
-
-//Used for drawing icons like the book or backpack icon.
-void DrawIcon(const Vec2f& coords, const char* itcName, E_ARX_STATE_MOUSE hoverMouseState) {
-	ARX_INTERFACE_DrawItem(ITC.Get(itcName), coords.x, coords.y);
-	if (eMouseState == hoverMouseState) {
-		GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-		ARX_INTERFACE_DrawItem(ITC.Get(itcName), coords.x, coords.y);
-		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-	}
-}
 
 void CalculateBookIconCoords() {
 	BookIconCoords.x = g_size.width() - INTERFACE_RATIO(35) + lSLID_VALUE+GL_DECAL_ICONS;
@@ -6048,9 +6038,15 @@ void CalculateBackpackIconCoords() {
 	BackpackIconCoords.y = g_size.height() - INTERFACE_RATIO(113);
 }
 
+void CalculateStealIconCoords() {
+	StealIconCoords.x = static_cast<float>(-lSLID_VALUE);
+	StealIconCoords.y = g_size.height() - INTERFACE_RATIO(78.f + 32);
+}
+
 void CalculateIconCoordinates() {
 	CalculateBookIconCoords();
 	CalculateBackpackIconCoords();
+	CalculateStealIconCoords();
 	IconCoordinatesCalculated = true;
 }
 
@@ -6058,6 +6054,17 @@ void UpdateInterface() {
 	UpdateCombatInterface();
 	UpdateSecondaryInvOrStealInv();
 	UpdateInventory();
+}
+
+//Used for drawing icons like the book or backpack icon.
+void DrawIcon(const Vec2f& coords, const char* itcName, E_ARX_STATE_MOUSE hoverMouseState) {
+	ARX_INTERFACE_DrawItem(ITC.Get(itcName), coords.x, coords.y);
+	if (eMouseState == hoverMouseState) {
+		GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+		ARX_INTERFACE_DrawItem(ITC.Get(itcName), coords.x, coords.y);
+		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+	}
 }
 
 void ArxGame::drawAllInterface() {
@@ -6094,20 +6101,9 @@ void ArxGame::drawAllInterface() {
 			}
 			float px, py;
 			DrawIcon(BookIconCoords, "book", MOUSE_IN_BOOK_ICON);
-			DrawIcon(BackpackIconCoords, "backpack", MOUSE_IN_INVENTORY_ICON);			
-
-			// Draw/Manage Steal Icon
+			DrawIcon(BackpackIconCoords, "backpack", MOUSE_IN_INVENTORY_ICON);							
 			if(player.Interface & INTER_STEAL) {
-				px = static_cast<float>(-lSLID_VALUE);
-				py = g_size.height() - INTERFACE_RATIO(78.f + 32);
-				ARX_INTERFACE_DrawItem(ITC.Get("steal"), px, py);
-
-				if(eMouseState == MOUSE_IN_STEAL_ICON) {
-					GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-					GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-					ARX_INTERFACE_DrawItem(ITC.Get("steal"), px, py);
-					GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-				}
+				DrawIcon(StealIconCoords, "steal", MOUSE_IN_STEAL_ICON);
 			}
 
 			// Draw / Manage Pick All - Close Secondary inventory icon
