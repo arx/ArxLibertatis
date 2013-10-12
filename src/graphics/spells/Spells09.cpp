@@ -332,7 +332,7 @@ void CSummonCreature::RenderFissure()
 	// smooth sur les cotés ou pas ..
 	// texture sympa avec glow au milieu ou uv wrap
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapMirror);
+	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapMirror);
 	GRenderer->SetTexture(0, tex_light);
 
 	target.p.x = eSrc.x + -fBetaRadSin * (1.5f * sizeF); 
@@ -407,7 +407,7 @@ void CSummonCreature::Render()
 	GRenderer->SetCulling(Renderer::CullNone);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 
-	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
+	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapClamp);
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
@@ -448,7 +448,7 @@ void CSummonCreature::Render()
 
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
+	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
 
 	//return (fSizeIntro / end);
 }

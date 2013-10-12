@@ -2670,7 +2670,7 @@ bool DANAE_ManageSplashThings() {
 	
 	const int SPLASH_DURATION = 3600;
 
-	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
+	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapClamp);
 	
 	if(SPLASH_THINGS_STAGE > 10) {
 		
@@ -2708,7 +2708,7 @@ bool DANAE_ManageSplashThings() {
 				SPLASH_THINGS_STAGE++;
 			}
 
-			GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
+			GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
 			return true;
 			
 		}
@@ -2734,7 +2734,7 @@ bool DANAE_ManageSplashThings() {
 				SPLASH_THINGS_STAGE++;
 			}
 
-			GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
+			GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
 			return true;
 		}
 
@@ -2753,7 +2753,7 @@ bool DANAE_ManageSplashThings() {
 			FirstFrame=true;
 			SPLASH_THINGS_STAGE=0;
 
-			GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
+			GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
 			return true;
 		}
 
@@ -2761,12 +2761,12 @@ bool DANAE_ManageSplashThings() {
 			FirstFrame = true;
 			SPLASH_THINGS_STAGE = 0;
 
-			GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
+			GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
 			return true;
 		}
 	}
 
-	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
+	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
 	return false;
 }
 

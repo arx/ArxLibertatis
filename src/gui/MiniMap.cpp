@@ -321,7 +321,7 @@ void MiniMap::showPlayerMiniMap(int showLevel) {
 		// Draw the background
 		drawBackground(showLevel, Rect(390, 135, 590, 295), startX, startY, miniMapZoom, 20.f, decalX, decalY, true, 0.5f);
 		
-		GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
+		GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
 		
 		// Draw the player (red arrow)
 		if(showLevel == ARX_LEVELS_GetRealNum(m_currentLevel)) {
@@ -359,7 +359,7 @@ void MiniMap::showBookMiniMap(int showLevel) {
 		
 		drawBackground(showLevel, Rect(360, 85, 555, 355), startX, startY, zoom, 20.f);
 		
-		GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
+		GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
 		
 		if(showLevel == ARX_LEVELS_GetRealNum(m_currentLevel)) {
 			drawPlayer(6.f, playerPos.x, playerPos.y);
@@ -396,7 +396,7 @@ void MiniMap::showBookEntireMap(int showLevel) {
 	
 	drawBackground(showLevel, Rect(0, 0, 345, 290), startX, startY, zoom);
 	
-	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
+	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
 	
 	if(showLevel == ARX_LEVELS_GetRealNum(m_currentLevel)) {
 		drawPlayer(3.f, playerPos.x, playerPos.y);
@@ -565,7 +565,7 @@ void MiniMap::drawBackground(int showLevel, Rect boundaries, float startX, float
 	} else {
 		GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
 	}
-	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
+	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapClamp);
 
 	for(int j = -2; j < MINIMAP_MAX_Z + 2; j++) {
 		for(int i = -2; i < MINIMAP_MAX_X + 2; i++) {

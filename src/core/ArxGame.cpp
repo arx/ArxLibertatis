@@ -1297,7 +1297,7 @@ void ArxGame::renderMenu() {
 	ARX_Menu_Render();
 
 	GRenderer->SetRenderState(Renderer::Fog, true);
-	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat); // << NEEDED?
+	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat); // << NEEDED?
 }
 
 bool ArxGame::isInCinematic() const {
@@ -1603,7 +1603,7 @@ void ArxGame::renderLevel() {
 	// Draw game interface if needed
 	if(ARXmenu.currentmode == AMCM_OFF && !CINEMASCOPE) {
 	
-		GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
+		GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapClamp);
 		GRenderer->SetRenderState(Renderer::DepthTest, false);
 		
 		ARX_INTERFACE_NoteManage();
@@ -1617,7 +1617,7 @@ void ArxGame::renderLevel() {
 		GRenderer->SetRenderState(Renderer::DepthTest, true);
 	}
 
-	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
+	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	PopAllTriangleList();
@@ -1634,7 +1634,7 @@ void ArxGame::renderLevel() {
 	ARX_SPEECH_Check();
 	ARX_SPEECH_Update();
 
-	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
+	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
 
 	if(pTextManage && !pTextManage->Empty()) {
 		pTextManage->Update(framedelay);
@@ -1957,9 +1957,9 @@ bool ArxGame::initDeviceObjects() {
 	GRenderer->SetRenderState(Renderer::Lighting, false);
 
 	// Setup Texture Border RenderState
-	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
+	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
 
-	GRenderer->GetTextureStage(1)->DisableColor();
+	GRenderer->GetTextureStage(1)->disableColor();
 	
 	// Fog
 	float fogEnd = 0.48f;

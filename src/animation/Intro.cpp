@@ -118,7 +118,7 @@ void ARX_INTERFACE_ShowLogo(TextureContainer * logo) {
 		return;
 	}
 	
-	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp); 
+	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapClamp); 
 	GRenderer->SetRenderState(Renderer::ColorKey, false);
 	
 	GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer);
@@ -130,7 +130,7 @@ void ARX_INTERFACE_ShowLogo(TextureContainer * logo) {
 	
 	GRenderer->EndScene();
 	
-	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
+	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
 	GRenderer->SetRenderState(Renderer::ColorKey, true);
 }
 
@@ -175,8 +175,8 @@ void LoadLevelScreen(long num) {
 	if (Time::getElapsedMs(last_progress_bar_update) > 16 &&
 		 OLD_PROGRESS_BAR_COUNT != PROGRESS_BAR_COUNT)
 	{
-		GRenderer->GetTextureStage(0)->SetMinFilter(TextureStage::FilterLinear);
-		GRenderer->GetTextureStage(0)->SetMagFilter(TextureStage::FilterLinear);
+		GRenderer->GetTextureStage(0)->setMinFilter(TextureStage::FilterLinear);
+		GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterLinear);
 
 		float ratio = (PROGRESS_BAR_TOTAL > 0.f ? PROGRESS_BAR_COUNT / PROGRESS_BAR_TOTAL : 0); 
 

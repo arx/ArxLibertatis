@@ -270,12 +270,12 @@ Vec2i Font::process(int x, int y, text_iterator start, text_iterator end, Color 
 		                             viewport.bottom, viewport.top, -1.f, 1.f);
 		
 		// Fixed pipeline texture stage operation
-		GRenderer->GetTextureStage(0)->SetColorOp(TextureStage::ArgDiffuse);
-		GRenderer->GetTextureStage(0)->SetAlphaOp(TextureStage::ArgTexture);
+		GRenderer->GetTextureStage(0)->setColorOp(TextureStage::ArgDiffuse);
+		GRenderer->GetTextureStage(0)->setAlphaOp(TextureStage::ArgTexture);
 		
-		GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
-		GRenderer->GetTextureStage(0)->SetMinFilter(TextureStage::FilterNearest);
-		GRenderer->GetTextureStage(0)->SetMagFilter(TextureStage::FilterNearest);
+		GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapClamp);
+		GRenderer->GetTextureStage(0)->setMinFilter(TextureStage::FilterNearest);
+		GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterNearest);
 		
 	}
 	
@@ -346,12 +346,12 @@ Vec2i Font::process(int x, int y, text_iterator start, text_iterator end, Color 
 		
 		GRenderer->ResetTexture(0);
 		TextureStage * stage = GRenderer->GetTextureStage(0);
-		stage->SetColorOp(TextureStage::OpModulate,
+		stage->setColorOp(TextureStage::OpModulate,
 		                  TextureStage::ArgTexture, TextureStage::ArgCurrent);
-		stage->SetAlphaOp(TextureStage::ArgTexture);
-		stage->SetWrapMode(TextureStage::WrapRepeat);
-		stage->SetMinFilter(TextureStage::FilterLinear);
-		stage->SetMagFilter(TextureStage::FilterLinear);
+		stage->setAlphaOp(TextureStage::ArgTexture);
+		stage->setWrapMode(TextureStage::WrapRepeat);
+		stage->setMinFilter(TextureStage::FilterLinear);
+		stage->setMagFilter(TextureStage::FilterLinear);
 		
 		GRenderer->End2DProjection();
 		GRenderer->SetRenderState(Renderer::AlphaBlending, false);

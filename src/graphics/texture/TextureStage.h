@@ -63,24 +63,24 @@ public:
 	explicit TextureStage(unsigned int stage);
 	virtual ~TextureStage() { }
 	
-	virtual void SetTexture(Texture * pTexture) = 0;
-	virtual void ResetTexture() = 0;
+	virtual void setTexture(Texture * pTexture) = 0;
+	virtual void resetTexture() = 0;
 	
-	virtual void SetColorOp(TextureOp textureOp, TextureArg texArg1, TextureArg texArg2) = 0;
-	virtual void SetColorOp(TextureOp textureOp) = 0;
-	inline void SetColorOp(TextureArg texArg);
-	inline void DisableColor();
+	virtual void setColorOp(TextureOp textureOp, TextureArg texArg1, TextureArg texArg2) = 0;
+	virtual void setColorOp(TextureOp textureOp) = 0;
+	inline void setColorOp(TextureArg texArg);
+	inline void disableColor();
 	
-	virtual void SetAlphaOp(TextureOp textureOp, TextureArg texArg1, TextureArg texArg2) = 0;
-	virtual void SetAlphaOp(TextureOp textureOp) = 0;
-	inline void SetAlphaOp(TextureArg texArg);
-	inline void DisableAlpha();
+	virtual void setAlphaOp(TextureOp textureOp, TextureArg texArg1, TextureArg texArg2) = 0;
+	virtual void setAlphaOp(TextureOp textureOp) = 0;
+	inline void setAlphaOp(TextureArg texArg);
+	inline void disableAlpha();
 	
-	virtual void SetWrapMode(WrapMode wrapMode) = 0;
+	virtual void setWrapMode(WrapMode wrapMode) = 0;
 	
-	virtual void SetMinFilter(FilterMode filterMode) = 0;
-	virtual void SetMagFilter(FilterMode filterMode) = 0;
-	virtual void SetMipFilter(FilterMode filterMode) = 0;
+	virtual void setMinFilter(FilterMode filterMode) = 0;
+	virtual void setMagFilter(FilterMode filterMode) = 0;
+	virtual void setMipFilter(FilterMode filterMode) = 0;
 	
 	//! Level of detail bias for mipmaps. Can be used to make textures appear more chunky or more blurred.
 	/* Each unit bias (+/-1.0) biases the selection by exactly one MIP map level. 
@@ -88,7 +88,7 @@ public:
 	 * A positive bias causes the use of smaller MIP map levels, resulting in a blurrier image. 
 	 * Applying a negative bias also results in the referencing of a smaller amount of texture data, which can boost performance on some systems.
 	 */
-	virtual void SetMipMapLODBias(float bias) = 0;
+	virtual void setMipMapLODBias(float bias) = 0;
 	
 protected:
 	
@@ -97,20 +97,20 @@ protected:
 };
 
 
-inline void TextureStage::SetColorOp(TextureArg texArg) {
-	SetColorOp(OpSelectArg1, texArg, ArgCurrent);
+inline void TextureStage::setColorOp(TextureArg texArg) {
+	setColorOp(OpSelectArg1, texArg, ArgCurrent);
 }
 
-inline void TextureStage::DisableColor() {
-	SetColorOp(OpDisable, ArgCurrent, ArgCurrent);
+inline void TextureStage::disableColor() {
+	setColorOp(OpDisable, ArgCurrent, ArgCurrent);
 }
 
-inline void TextureStage::SetAlphaOp(TextureArg texArg) {
-	SetAlphaOp(OpSelectArg1, texArg, ArgCurrent);
+inline void TextureStage::setAlphaOp(TextureArg texArg) {
+	setAlphaOp(OpSelectArg1, texArg, ArgCurrent);
 }
 
-inline void TextureStage::DisableAlpha() {
-	SetAlphaOp(OpDisable, ArgCurrent, ArgCurrent);
+inline void TextureStage::disableAlpha() {
+	setAlphaOp(OpDisable, ArgCurrent, ArgCurrent);
 }
 
 #endif // ARX_GRAPHICS_TEXTURE_TEXTURESTAGE_H

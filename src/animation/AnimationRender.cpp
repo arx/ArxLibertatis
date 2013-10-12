@@ -123,7 +123,7 @@ static void PopOneTriangleList(TextureContainer *_pTex) {
 
 	if(_pTex->userflags & POLY_LATE_MIP) {
 		const float GLOBAL_NPC_MIPMAP_BIAS = -2.2f;
-		GRenderer->GetTextureStage(0)->SetMipMapLODBias(GLOBAL_NPC_MIPMAP_BIAS);
+		GRenderer->GetTextureStage(0)->setMipMapLODBias(GLOBAL_NPC_MIPMAP_BIAS);
 	}
 
 
@@ -133,7 +133,7 @@ static void PopOneTriangleList(TextureContainer *_pTex) {
 
 	if(_pTex->userflags & POLY_LATE_MIP) {
 		float biasResetVal = 0;
-		GRenderer->GetTextureStage(0)->SetMipMapLODBias(biasResetVal);
+		GRenderer->GetTextureStage(0)->setMipMapLODBias(biasResetVal);
 	}
 
 }

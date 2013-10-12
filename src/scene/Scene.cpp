@@ -868,16 +868,16 @@ static void RenderWaterBatch() {
 		return;
 	}
 	
-	GRenderer->GetTextureStage(1)->SetColorOp(TextureStage::OpModulate4X, TextureStage::ArgTexture, TextureStage::ArgCurrent);
-	GRenderer->GetTextureStage(1)->DisableAlpha();
+	GRenderer->GetTextureStage(1)->setColorOp(TextureStage::OpModulate4X, TextureStage::ArgTexture, TextureStage::ArgCurrent);
+	GRenderer->GetTextureStage(1)->disableAlpha();
 	
-	GRenderer->GetTextureStage(2)->SetColorOp(TextureStage::OpModulate, TextureStage::ArgTexture, TextureStage::ArgCurrent);
-	GRenderer->GetTextureStage(2)->DisableAlpha();
+	GRenderer->GetTextureStage(2)->setColorOp(TextureStage::OpModulate, TextureStage::ArgTexture, TextureStage::ArgCurrent);
+	GRenderer->GetTextureStage(2)->disableAlpha();
 	
 	dynamicVertices.draw(Renderer::TriangleList);
 	
-	GRenderer->GetTextureStage(1)->DisableColor();
-	GRenderer->GetTextureStage(2)->DisableColor();
+	GRenderer->GetTextureStage(1)->disableColor();
+	GRenderer->GetTextureStage(2)->disableColor();
 	
 }
 
@@ -1002,27 +1002,27 @@ static void RenderWater() {
 void RenderLavaBatch() {
 	
 	GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendOne);
-	GRenderer->GetTextureStage(0)->SetColorOp(TextureStage::OpModulate2X, TextureStage::ArgTexture, TextureStage::ArgDiffuse);
+	GRenderer->GetTextureStage(0)->setColorOp(TextureStage::OpModulate2X, TextureStage::ArgTexture, TextureStage::ArgDiffuse);
 	
 	if(!dynamicVertices.nbindices) {
 		return;
 	}
 	
-	GRenderer->GetTextureStage(1)->SetColorOp(TextureStage::OpModulate4X, TextureStage::ArgTexture, TextureStage::ArgCurrent);
-	GRenderer->GetTextureStage(1)->DisableAlpha();
+	GRenderer->GetTextureStage(1)->setColorOp(TextureStage::OpModulate4X, TextureStage::ArgTexture, TextureStage::ArgCurrent);
+	GRenderer->GetTextureStage(1)->disableAlpha();
 	
-	GRenderer->GetTextureStage(2)->SetColorOp(TextureStage::OpModulate, TextureStage::ArgTexture, TextureStage::ArgCurrent);
-	GRenderer->GetTextureStage(2)->DisableAlpha();
+	GRenderer->GetTextureStage(2)->setColorOp(TextureStage::OpModulate, TextureStage::ArgTexture, TextureStage::ArgCurrent);
+	GRenderer->GetTextureStage(2)->disableAlpha();
 	
 	dynamicVertices.draw(Renderer::TriangleList);
 	
 	GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
-	GRenderer->GetTextureStage(0)->SetColorOp(TextureStage::OpModulate);
+	GRenderer->GetTextureStage(0)->setColorOp(TextureStage::OpModulate);
 	
 	dynamicVertices.draw(Renderer::TriangleList);
 	
-	GRenderer->GetTextureStage(1)->DisableColor();
-	GRenderer->GetTextureStage(2)->DisableColor();
+	GRenderer->GetTextureStage(1)->disableColor();
+	GRenderer->GetTextureStage(2)->disableColor();
 	
 }
 
@@ -1316,9 +1316,9 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoftRender(long room_num) {
 
 		if(roomMat.count[SMY_ARXMAT::Opaque]) {
 			if (pTexCurr->userflags & POLY_METAL)
-				GRenderer->GetTextureStage(0)->SetColorOp(TextureStage::OpModulate2X);
+				GRenderer->GetTextureStage(0)->setColorOp(TextureStage::OpModulate2X);
 			else
-				GRenderer->GetTextureStage(0)->SetColorOp(TextureStage::OpModulate);
+				GRenderer->GetTextureStage(0)->setColorOp(TextureStage::OpModulate);
 
 			GRenderer->SetAlphaFunc(Renderer::CmpGreater, .5f);
 
@@ -1339,7 +1339,7 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoftRender(long room_num) {
 
 	//////////////////////////////
 	// ZMapp
-	GRenderer->GetTextureStage(0)->SetColorOp(TextureStage::OpModulate);
+	GRenderer->GetTextureStage(0)->setColorOp(TextureStage::OpModulate);
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
@@ -1651,7 +1651,7 @@ extern long SPECIAL_DRAGINTER_RENDER;
 void ARX_SCENE_Render() {
 
 	if(uw_mode)
-		GRenderer->GetTextureStage(0)->SetMipMapLODBias(10.f);
+		GRenderer->GetTextureStage(0)->setMipMapLODBias(10.f);
 
 	GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
 	for(size_t i = 0; i < RoomDrawList.size(); i++) {
@@ -1665,13 +1665,13 @@ void ARX_SCENE_Render() {
 
 	ARX_THROWN_OBJECT_Render();
 		
-	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
-	GRenderer->GetTextureStage(0)->SetMipMapLODBias(-0.6f);
+	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapClamp);
+	GRenderer->GetTextureStage(0)->setMipMapLODBias(-0.6f);
 
 	RenderInter();
 
-	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
-	GRenderer->GetTextureStage(0)->SetMipMapLODBias(-0.3f);
+	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
+	GRenderer->GetTextureStage(0)->setMipMapLODBias(-0.3f);
 		
 	// To render Dragged objs
 	if(DRAGINTER) {
@@ -1712,7 +1712,7 @@ void ARX_SCENE_Render() {
 
 	SetZBias(0);
 	GRenderer->SetFogColor(ulBKGColor);
-	GRenderer->GetTextureStage(0)->SetColorOp(TextureStage::OpModulate);
+	GRenderer->GetTextureStage(0)->setColorOp(TextureStage::OpModulate);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 
 	Halo_Render();

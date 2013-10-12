@@ -35,21 +35,21 @@ public:
 	GLTextureStage(OpenGLRenderer * renderer, unsigned textureStage);
 	~GLTextureStage();
 	
-	void SetTexture(Texture * pTexture);
-	void ResetTexture();
+	void setTexture(Texture * pTexture);
+	void resetTexture();
 	
-	void SetColorOp(TextureOp textureOp, TextureArg arg0, TextureArg arg1);
-	void SetColorOp(TextureOp textureOp);
-	void SetAlphaOp(TextureOp textureOp, TextureArg arg0, TextureArg arg1);
-	void SetAlphaOp(TextureOp textureOp);
+	void setColorOp(TextureOp textureOp, TextureArg arg0, TextureArg arg1);
+	void setColorOp(TextureOp textureOp);
+	void setAlphaOp(TextureOp textureOp, TextureArg arg0, TextureArg arg1);
+	void setAlphaOp(TextureOp textureOp);
 	
-	void SetWrapMode(WrapMode wrapMode);
+	void setWrapMode(WrapMode wrapMode);
 	
-	void SetMinFilter(FilterMode filterMode);
-	void SetMagFilter(FilterMode filterMode);
-	void SetMipFilter(FilterMode filterMode);
+	void setMinFilter(FilterMode filterMode);
+	void setMagFilter(FilterMode filterMode);
+	void setMipFilter(FilterMode filterMode);
 	
-	void SetMipMapLODBias(float bias);
+	void setMipMapLODBias(float bias);
 	
 	void apply();
 	

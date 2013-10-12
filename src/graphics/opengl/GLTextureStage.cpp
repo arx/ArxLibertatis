@@ -47,17 +47,17 @@ GLTextureStage::GLTextureStage(OpenGLRenderer * _renderer, unsigned stage) : Tex
 }
 
 GLTextureStage::~GLTextureStage() {
-	ResetTexture();
+	resetTexture();
 }
 
-void GLTextureStage::SetTexture(Texture * texture) {
+void GLTextureStage::setTexture(Texture * texture) {
 	
 	arx_assert(texture != NULL);
 	
 	tex = reinterpret_cast<GLTexture2D *>(texture);
 }
 
-void GLTextureStage::ResetTexture() {
+void GLTextureStage::resetTexture() {
 	tex = NULL;
 }
 
@@ -238,39 +238,39 @@ void GLTextureStage::setTexEnv(GLenum target, GLenum pname, GLfloat param) {
 	}
 }
 
-void GLTextureStage::SetColorOp(TextureOp op, TextureArg arg0, TextureArg arg1) {
+void GLTextureStage::setColorOp(TextureOp op, TextureArg arg0, TextureArg arg1) {
 	setOp(Color, op, arg0, arg1);
 }
 
-void GLTextureStage::SetColorOp(TextureOp op) {
+void GLTextureStage::setColorOp(TextureOp op) {
 	setOp(Color, op);
 }
 
-void GLTextureStage::SetAlphaOp(TextureOp op, TextureArg arg0, TextureArg arg1) {
+void GLTextureStage::setAlphaOp(TextureOp op, TextureArg arg0, TextureArg arg1) {
 	setOp(Alpha, op, arg0, arg1);
 }
 
-void GLTextureStage::SetAlphaOp(TextureOp op) {
+void GLTextureStage::setAlphaOp(TextureOp op) {
 	setOp(Alpha, op);
 }
 
-void GLTextureStage::SetWrapMode(WrapMode _wrapMode) {
+void GLTextureStage::setWrapMode(WrapMode _wrapMode) {
 	wrapMode = _wrapMode;
 }
 
-void GLTextureStage::SetMinFilter(FilterMode filterMode) {
+void GLTextureStage::setMinFilter(FilterMode filterMode) {
 	minFilter = filterMode;
 }
 
-void GLTextureStage::SetMagFilter(FilterMode filterMode) {
+void GLTextureStage::setMagFilter(FilterMode filterMode) {
 	magFilter = filterMode;
 }
 
-void GLTextureStage::SetMipFilter(FilterMode filterMode) {
+void GLTextureStage::setMipFilter(FilterMode filterMode) {
 	mipFilter = filterMode;
 }
 
-void GLTextureStage::SetMipMapLODBias(float bias) {
+void GLTextureStage::setMipMapLODBias(float bias) {
 	
 	if(mStage != 0) {
 		glActiveTexture(GL_TEXTURE0 + mStage);

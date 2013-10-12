@@ -4201,7 +4201,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 								if(spellicons[i].symbols[j] != RUNE_NONE)
 									++count;
 
-							GRenderer->GetTextureStage(0)->SetMagFilter(TextureStage::FilterLinear);
+							GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterLinear);
 							for(int j = 0; j < 6; ++j) {
 								if(spellicons[i].symbols[j] != RUNE_NONE) {
 									pos.x = 240 - (count * 32) * 0.5f + j * 32;
@@ -4209,7 +4209,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 									DrawBookInterfaceItem(necklace.pTexTab[spellicons[i].symbols[j]], pos.x, pos.y);
 								}
 							}
-							GRenderer->GetTextureStage(0)->SetMagFilter(TextureStage::FilterNearest);
+							GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterNearest);
 						}
 
 						if(spellicons[i].tc) {
@@ -4233,9 +4233,9 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 								color = Color::fromBGRA(0xFFa8d0df);
 							}
 							
-							GRenderer->GetTextureStage(0)->SetMagFilter(TextureStage::FilterLinear);
+							GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterLinear);
 							DrawBookInterfaceItem(spellicons[i].tc, fPosX, fPosY, color);
-							GRenderer->GetTextureStage(0)->SetMagFilter(TextureStage::FilterNearest);
+							GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterNearest);
 
 							GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 						}
@@ -4327,8 +4327,8 @@ void ARX_INTERFACE_ManageOpenedBook()
 	BOOKDECX = 0;
 	BOOKDECY = 0;
 	
-	GRenderer->GetTextureStage(0)->SetMinFilter(TextureStage::FilterLinear);
-	GRenderer->GetTextureStage(0)->SetMagFilter(TextureStage::FilterLinear);
+	GRenderer->GetTextureStage(0)->setMinFilter(TextureStage::FilterLinear);
+	GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterLinear);
 	
 	if(ARXmenu.currentmode != AMCM_NEWQUEST) {
 		switch(Book_Mode) {
@@ -4735,8 +4735,8 @@ void ARX_INTERFACE_ManageOpenedBook()
 		bookclick.x=-1;
 	}
 	
-	GRenderer->GetTextureStage(0)->SetMinFilter(TextureStage::FilterNearest);
-	GRenderer->GetTextureStage(0)->SetMagFilter(TextureStage::FilterNearest);
+	GRenderer->GetTextureStage(0)->setMinFilter(TextureStage::FilterNearest);
+	GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterNearest);
 
 	if (Book_Mode == BOOKMODE_STATS)
 	{
@@ -5408,13 +5408,13 @@ void ARX_INTERFACE_ManageOpenedBook()
 
 		if(ARXmenu.currentmode == AMCM_NEWQUEST) {
 			GRenderer->SetRenderState(Renderer::DepthTest, true);
-			GRenderer->GetTextureStage(0)->SetMipFilter(TextureStage::FilterNone);
+			GRenderer->GetTextureStage(0)->setMipFilter(TextureStage::FilterNone);
 			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 			PopAllTriangleList();
 			GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 			PopAllTriangleListTransparency();
 			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-			GRenderer->GetTextureStage(0)->SetMipFilter(TextureStage::FilterLinear);
+			GRenderer->GetTextureStage(0)->setMipFilter(TextureStage::FilterLinear);
 			GRenderer->SetRenderState(Renderer::DepthTest, false);
 		}
 
@@ -5671,9 +5671,9 @@ extern long SPLASH_THINGS_STAGE;
 
 void ArxGame::drawAllInterface() {
 	
-	GRenderer->GetTextureStage(0)->SetMinFilter(TextureStage::FilterLinear);
-	GRenderer->GetTextureStage(0)->SetMagFilter(TextureStage::FilterNearest);
-	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
+	GRenderer->GetTextureStage(0)->setMinFilter(TextureStage::FilterLinear);
+	GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterNearest);
+	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapClamp);
 
 		if (player.Interface & INTER_COMBATMODE) {
 			float j;
@@ -6332,9 +6332,9 @@ void ArxGame::drawAllInterface() {
 			}
 		}
 
-	GRenderer->GetTextureStage(0)->SetMinFilter(TextureStage::FilterLinear);
-	GRenderer->GetTextureStage(0)->SetMagFilter(TextureStage::FilterLinear);
-	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
+	GRenderer->GetTextureStage(0)->setMinFilter(TextureStage::FilterLinear);
+	GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterLinear);
+	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
 }
 
 extern float STARTED_ANGLE;
@@ -6967,9 +6967,9 @@ void ARX_INTERFACE_RenderCursor(long flag)
 	if (!SPECIAL_DRAGINTER_RENDER)
 	{
 		ManageIgnition_2(DRAGINTER);
-		GRenderer->GetTextureStage(0)->SetMinFilter(TextureStage::FilterNearest);
-		GRenderer->GetTextureStage(0)->SetMagFilter(TextureStage::FilterNearest);
-		GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
+		GRenderer->GetTextureStage(0)->setMinFilter(TextureStage::FilterNearest);
+		GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterNearest);
+		GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapClamp);
 	}
 
 	ARX_INTERFACE_RenderCursorInternal(flag);
@@ -6977,8 +6977,8 @@ void ARX_INTERFACE_RenderCursor(long flag)
 	// Ensure filtering settings are restored in all cases
 	if (!SPECIAL_DRAGINTER_RENDER)
 	{
-		GRenderer->GetTextureStage(0)->SetMinFilter(TextureStage::FilterLinear);
-		GRenderer->GetTextureStage(0)->SetMagFilter(TextureStage::FilterLinear);
-		GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
+		GRenderer->GetTextureStage(0)->setMinFilter(TextureStage::FilterLinear);
+		GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterLinear);
+		GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
 	}
 }

@@ -171,8 +171,8 @@ bool FX_FlashBlanc(float w, float h, float speed, int color, float fps, float cu
 	
 	if (FlashAlpha == 0.f) FlashAlpha = 1.f;
 	
-	GRenderer->GetTextureStage(0)->SetColorOp(TextureStage::ArgDiffuse);
-	GRenderer->GetTextureStage(0)->SetAlphaOp(TextureStage::ArgDiffuse);
+	GRenderer->GetTextureStage(0)->setColorOp(TextureStage::ArgDiffuse);
+	GRenderer->GetTextureStage(0)->setAlphaOp(TextureStage::ArgDiffuse);
 	GRenderer->SetBlendFunc(Renderer::BlendSrcAlpha, Renderer::BlendOne);
 	
 	col = (int)(255.f * FlashAlpha);
@@ -212,11 +212,11 @@ bool SpecialFade(TextureContainer * mask, float ws, float h, float speed, float 
 
 	//tracer du mask
 	
-	GRenderer->GetTextureStage(0)->SetColorOp(TextureStage::OpModulate, TextureStage::ArgTexture, TextureStage::ArgDiffuse);
-	GRenderer->GetTextureStage(0)->DisableAlpha();
+	GRenderer->GetTextureStage(0)->setColorOp(TextureStage::OpModulate, TextureStage::ArgTexture, TextureStage::ArgDiffuse);
+	GRenderer->GetTextureStage(0)->disableAlpha();
 	GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendZero);
 
-	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
+	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
 
 	GRenderer->SetTexture(0, mask);
 
@@ -239,8 +239,8 @@ bool SpecialFade(TextureContainer * mask, float ws, float h, float speed, float 
 
 	EERIEDRAWPRIM(Renderer::TriangleStrip, v, 4);
 
-	GRenderer->GetTextureStage(0)->SetColorOp(TextureStage::ArgDiffuse);
-	GRenderer->GetTextureStage(0)->DisableAlpha();
+	GRenderer->GetTextureStage(0)->setColorOp(TextureStage::ArgDiffuse);
+	GRenderer->GetTextureStage(0)->disableAlpha();
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendZero);
 
 	GRenderer->ResetTexture(0);
@@ -278,7 +278,7 @@ bool SpecialFade(TextureContainer * mask, float ws, float h, float speed, float 
 		SpecialFadeDx = -1.f;
 	}
 
-	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
+	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapClamp);
 
 	return true;
 }
@@ -295,12 +295,12 @@ bool SpecialFadeR(TextureContainer * mask, float ws, float h, float speed, float
 	dv = (float)0.99999f * (h - 1) / mask->m_dwHeight;
 
 	//tracer du mask
-	GRenderer->GetTextureStage(0)->SetColorOp(TextureStage::OpModulate, TextureStage::ArgTexture, TextureStage::ArgDiffuse);
-	GRenderer->GetTextureStage(0)->DisableAlpha();
+	GRenderer->GetTextureStage(0)->setColorOp(TextureStage::OpModulate, TextureStage::ArgTexture, TextureStage::ArgDiffuse);
+	GRenderer->GetTextureStage(0)->disableAlpha();
 	
 	GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendZero);
 
-	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
+	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
 
 	GRenderer->SetTexture(0, mask);
 
@@ -335,8 +335,8 @@ bool SpecialFadeR(TextureContainer * mask, float ws, float h, float speed, float
 
 	EERIEDRAWPRIM(Renderer::TriangleStrip, v, 4);
 
-	GRenderer->GetTextureStage(0)->SetColorOp(TextureStage::ArgDiffuse);
-	GRenderer->GetTextureStage(0)->DisableAlpha();
+	GRenderer->GetTextureStage(0)->setColorOp(TextureStage::ArgDiffuse);
+	GRenderer->GetTextureStage(0)->disableAlpha();
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendZero);
 
 	GRenderer->ResetTexture(0);
@@ -374,7 +374,7 @@ bool SpecialFadeR(TextureContainer * mask, float ws, float h, float speed, float
 		SpecialFadeDx = -1.f;
 	}
 
-	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
+	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapClamp);
 
 	return true;
 }
