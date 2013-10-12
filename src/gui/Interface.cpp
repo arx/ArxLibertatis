@@ -5709,10 +5709,6 @@ void UpdateCombatInterface() {
 	HitStrengthVal = getHitStrengthColorVal();
 }
 
-void UpdateInterface() {
-	UpdateCombatInterface();
-}
-
 void drawCombatInterface() {
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 
@@ -5741,7 +5737,7 @@ Entity* getSecondaryOrStealInvEntity() {
 	return NULL;
 }
 
-void drawSecondaryInvOrStealInv() {
+void UpdateSecondaryInvOrStealInv() {
 	Entity * io = getSecondaryOrStealInvEntity();
 	if(io) {
 		float dist = fdist(io->pos, player.pos + (Vec3f::Y_AXIS * 80.f));
@@ -5777,6 +5773,9 @@ void drawSecondaryInvOrStealInv() {
 	} else if(InventoryDir != -1) {
 		InventoryDir = -1;
 	}
+}
+
+void DrawSecondaryInvOrStealInv() {	
 	if(!PLAYER_INTERFACE_HIDE_COUNT && TSecondaryInventory) {
 		ARX_INTERFACE_DrawSecondaryInventory((bool)((player.Interface & INTER_STEAL) != 0));
 	}
@@ -5937,6 +5936,11 @@ void drawInventory() {
 			}
 }
 
+void UpdateInterface() {
+	UpdateCombatInterface();
+	UpdateSecondaryInvOrStealInv();
+}
+
 void ArxGame::drawAllInterface() {
 	
 	GRenderer->GetTextureStage(0)->setMinFilter(TextureStage::FilterLinear);
@@ -5946,7 +5950,7 @@ void ArxGame::drawAllInterface() {
 	if(player.Interface & INTER_COMBATMODE) {
 		drawCombatInterface();
 	}	
-	drawSecondaryInvOrStealInv();	
+	DrawSecondaryInvOrStealInv();	
 	if(!PLAYER_INTERFACE_HIDE_COUNT) {
 			drawInventory();
 	}
