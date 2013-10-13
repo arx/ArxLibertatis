@@ -6225,6 +6225,121 @@ void DrawMemorizedSpells() {
 	}
 }
 
+void DrawHealthManaGauges() {
+	TexturedVertex v[4];
+	v[0] = TexturedVertex(Vec3f(0, 0, .001f), 1.f, Color::white.toBGR(), 1, Vec2f::ZERO);
+	v[1] = TexturedVertex(Vec3f(0, 0, .001f), 1.f, Color::white.toBGR(), 1, Vec2f::X_AXIS);
+	v[2] = TexturedVertex(Vec3f(0, 0, .001f), 1.f, Color::white.toBGR(), 1, Vec2f(1.f, 1.f));
+	v[3] = TexturedVertex(Vec3f(0, 0, .001f), 1.f, Color::white.toBGR(), 1, Vec2f::Y_AXIS);
+
+	float px = g_size.width() - INTERFACE_RATIO(33) + INTERFACE_RATIO(1) + lSLID_VALUE;
+	float py = g_size.height() - INTERFACE_RATIO(81);
+	ARX_INTERFACE_DrawItem(ITC.Get("empty_gauge_blue"), px, py, 0.f); //399
+
+	float fnl=(float)player.life/(float)player.Full_maxlife;
+	float fnm=(float)player.mana/(float)player.Full_maxmana;
+
+	//---------------------------------------------------------------------
+	//RED GAUGE
+	Color ulcolor = Color::red;
+	float fSLID_VALUE_neg = static_cast<float>(-lSLID_VALUE);
+
+	if(player.poison > 0.f) {
+		float val = std::min(player.poison, 0.2f) * 255.f * 5.f;
+		long g = val;
+		ulcolor = Color(u8(255 - g), u8(g) , 0);
+	}
+
+	EERIEDrawBitmap2DecalY(fSLID_VALUE_neg, g_size.height() - INTERFACE_RATIO(78),
+		INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_red")->m_dwWidth),
+		INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_red")->m_dwHeight),
+		0.f, ITC.Get("filled_gauge_red"), ulcolor, (1.f - fnl));
+
+	if(!(player.Interface & INTER_COMBATMODE)) {
+		if(MouseInRect(fSLID_VALUE_neg, g_size.height() - INTERFACE_RATIO(78), fSLID_VALUE_neg + INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_red")->m_dwWidth), g_size.height() - INTERFACE_RATIO(78) + INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_red")->m_dwHeight)))
+		{
+			if((EERIEMouseButton & 1) && !(LastMouseClick & 1)) {
+					std::stringstream ss;
+					ss << checked_range_cast<int>(player.life);
+					ARX_SPEECH_Add(ss.str());
+			}
+		}
+	}
+
+	//---------------------------------------------------------------------
+	//END RED GAUGE
+
+	px = 0.f-lSLID_VALUE;
+	py = g_size.height() - INTERFACE_RATIO(78);
+	ARX_INTERFACE_DrawItem(ITC.Get("empty_gauge_red"), px, py, 0.001f);
+
+	//---------------------------------------------------------------------
+	//BLUE GAUGE
+
+	float LARGG=INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_blue")->m_dwWidth);
+	float HAUTT=INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_blue")->m_dwHeight);
+
+	EERIEDrawBitmap2DecalY(g_size.width() - INTERFACE_RATIO(33) + INTERFACE_RATIO(1) + lSLID_VALUE,
+		g_size.height() - INTERFACE_RATIO(81), LARGG, HAUTT, 0.f,
+		ITC.Get("filled_gauge_blue"), Color::white, (1.f - fnm));
+
+	if(!(player.Interface & INTER_COMBATMODE)) {
+		if(MouseInRect(g_size.width() - INTERFACE_RATIO(33) + lSLID_VALUE,g_size.height() - INTERFACE_RATIO(81),g_size.width() - INTERFACE_RATIO(33) + lSLID_VALUE+LARGG,g_size.height() - INTERFACE_RATIO(81)+HAUTT))
+		{
+			if((EERIEMouseButton & 1) && !(LastMouseClick & 1)) {
+					std::stringstream ss;
+					ss << checked_range_cast<int>(player.mana);
+					ARX_SPEECH_Add(ss.str());
+			}
+		}
+	}
+
+	//---------------------------------------------------------------------
+	//END BLUE GAUGE
+}
+
+void DrawMecanismCursor() {
+	Color lcolorMecanism = Color::white;
+	if(lTimeToDrawMecanismCursor > 300) {
+		lcolorMecanism = Color::black;
+		if(lTimeToDrawMecanismCursor > 400) {
+			lTimeToDrawMecanismCursor=0;
+			lNbToDrawMecanismCursor++;
+		}
+	}
+	lTimeToDrawMecanismCursor += static_cast<long>(framedelay);
+	EERIEDrawBitmap(0, 0, INTERFACE_RATIO_DWORD(mecanism_tc->m_dwWidth), INTERFACE_RATIO_DWORD(mecanism_tc->m_dwHeight), 0.01f, mecanism_tc, lcolorMecanism);
+}
+
+void DrawScreenBorderArrows() {
+	float fSizeX=INTERFACE_RATIO_DWORD(arrow_left_tc->m_dwWidth);
+	float fSizeY=INTERFACE_RATIO_DWORD(arrow_left_tc->m_dwHeight);
+	Color lcolor = Color::gray(.5f);
+	static float fArrowMove=0.f;
+	fArrowMove+=.5f*framedelay;
+
+	if(fArrowMove > 180.f)
+		fArrowMove=0.f;
+
+	float fMove=fabs(sin(radians(fArrowMove)))*fSizeX*.5f;
+
+	// Left
+	EERIEDrawBitmap(0 + fMove, g_size.center().y - (fSizeY * .5f), fSizeX, fSizeY, 0.01f,
+		arrow_left_tc, lcolor);
+
+	// Right
+	EERIEDrawBitmapUVs(g_size.width() - fSizeX - fMove, g_size.center().y - (fSizeY * .5f), fSizeX, fSizeY,
+		.01f, arrow_left_tc, lcolor, 1.f, 0.f, 0.f, 0.f, 1.f, 1.f, 0.f, 1.f);
+
+	// Up
+	EERIEDrawBitmapUVs(g_size.center().x - (fSizeY * .5f), 0.f + fMove, fSizeY, fSizeX, .01f,
+		arrow_left_tc, lcolor, 0.f, 1.f, 0.f, 0.f, 1.f, 1.f, 1.f, 0.f);
+
+	// Down
+	EERIEDrawBitmapUVs(g_size.center().x - (fSizeY * .5f), (g_size.height() - fSizeX) - fMove, fSizeY, fSizeX,
+		.01f, arrow_left_tc, lcolor, 1.f, 1.f, 1.f, 0.f, 0.f, 1.f, 0.f, 0.f);
+}
+
 void UpdateInterface() {
 	UpdateCombatInterface();
 	UpdateSecondaryInvOrStealInv();
@@ -6232,7 +6347,6 @@ void UpdateInterface() {
 }
 
 void ArxGame::drawAllInterface() {
-	
 	GRenderer->GetTextureStage(0)->SetMinFilter(TextureStage::FilterLinear);
 	GRenderer->GetTextureStage(0)->SetMagFilter(TextureStage::FilterNearest);
 	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
@@ -6244,7 +6358,6 @@ void ArxGame::drawAllInterface() {
 	if(!PLAYER_INTERFACE_HIDE_COUNT) {
 			DrawInventory();
 	}
-
 	if(FlyingOverIO 
 		&& !(player.Interface & INTER_COMBATMODE)
 		&& !GInput->actionPressed(CONTROLS_CUST_MAGICMODE)
@@ -6255,151 +6368,37 @@ void ArxGame::drawAllInterface() {
 		}
 		SpecialCursor=CURSOR_INTERACTION_ON;
 	}
-
 	ARX_INTERFACE_DrawDamagedEquipment();
-
 	if(!(player.Interface & INTER_COMBATMODE)) {
 		DrawIcons();
 	}
 	if(CHANGE_LEVEL_ICON > -1 && ChangeLevel) {
 		DrawChangeLevelIcon();
 	}
-	// Draw stealth gauge
 	if(SPLASH_THINGS_STAGE < 11) {
 		ARX_INTERFACE_Draw_Stealth_Gauge();
 	}
-	// book
 	if((player.Interface & INTER_MAP) && !(player.Interface & INTER_COMBATMODE)) {
 		ARX_INTERFACE_ManageOpenedBook();
 		ARX_INTERFACE_ManageOpenedBook_Finish();
 	}
-
 	if(CurrSpellSymbol || player.SpellToMemorize.bSpell) {
 		DrawMemorizedSpells();
 	}
-
-		if(player.Interface & INTER_LIFE_MANA) {
-			TexturedVertex v[4];
-			v[0] = TexturedVertex(Vec3f(0, 0, .001f), 1.f, Color::white.toBGR(), 1, Vec2f::ZERO);
-			v[1] = TexturedVertex(Vec3f(0, 0, .001f), 1.f, Color::white.toBGR(), 1, Vec2f::X_AXIS);
-			v[2] = TexturedVertex(Vec3f(0, 0, .001f), 1.f, Color::white.toBGR(), 1, Vec2f(1.f, 1.f));
-			v[3] = TexturedVertex(Vec3f(0, 0, .001f), 1.f, Color::white.toBGR(), 1, Vec2f::Y_AXIS);
-
-			float px = g_size.width() - INTERFACE_RATIO(33) + INTERFACE_RATIO(1) + lSLID_VALUE;
-			float py = g_size.height() - INTERFACE_RATIO(81);
-			ARX_INTERFACE_DrawItem(ITC.Get("empty_gauge_blue"), px, py, 0.f); //399
-
-			float fnl=(float)player.life/(float)player.Full_maxlife;
-			float fnm=(float)player.mana/(float)player.Full_maxmana;
-
-			//---------------------------------------------------------------------
-			//RED GAUGE
-			Color ulcolor = Color::red;
-			float fSLID_VALUE_neg = static_cast<float>(-lSLID_VALUE);
-
-			if(player.poison > 0.f) {
-				float val = std::min(player.poison, 0.2f) * 255.f * 5.f;
-				long g = val;
-				ulcolor = Color(u8(255 - g), u8(g) , 0);
+	if(player.Interface & INTER_LIFE_MANA) {
+		DrawHealthManaGauges();
+		if(bRenderInCursorMode) {
+			GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+			if(mecanism_tc && MAGICMODE < 0 && lNbToDrawMecanismCursor < 3) {
+				DrawMecanismCursor();
 			}
-
-			EERIEDrawBitmap2DecalY(fSLID_VALUE_neg, g_size.height() - INTERFACE_RATIO(78),
-				INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_red")->m_dwWidth),
-				INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_red")->m_dwHeight),
-				0.f, ITC.Get("filled_gauge_red"), ulcolor, (1.f - fnl));
-
-			if(!(player.Interface & INTER_COMBATMODE)) {
-				if(MouseInRect(fSLID_VALUE_neg, g_size.height() - INTERFACE_RATIO(78), fSLID_VALUE_neg + INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_red")->m_dwWidth), g_size.height() - INTERFACE_RATIO(78) + INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_red")->m_dwHeight)))
-				{
-					if((EERIEMouseButton & 1) && !(LastMouseClick & 1)) {
-							std::stringstream ss;
-							ss << checked_range_cast<int>(player.life);
-							ARX_SPEECH_Add(ss.str());
-					}
-				}
+			if(arrow_left_tc) {
+				DrawScreenBorderArrows();
 			}
-
-			//---------------------------------------------------------------------
-			//END RED GAUGE
-
-			px = 0.f-lSLID_VALUE;
-			py = g_size.height() - INTERFACE_RATIO(78);
-			ARX_INTERFACE_DrawItem(ITC.Get("empty_gauge_red"), px, py, 0.001f);
-
-			//---------------------------------------------------------------------
-			//BLUE GAUGE
-
-			float LARGG=INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_blue")->m_dwWidth);
-			float HAUTT=INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_blue")->m_dwHeight);
-
-			EERIEDrawBitmap2DecalY(g_size.width() - INTERFACE_RATIO(33) + INTERFACE_RATIO(1) + lSLID_VALUE,
-				g_size.height() - INTERFACE_RATIO(81), LARGG, HAUTT, 0.f,
-				ITC.Get("filled_gauge_blue"), Color::white, (1.f - fnm));
-
-			if(!(player.Interface & INTER_COMBATMODE)) {
-				if(MouseInRect(g_size.width() - INTERFACE_RATIO(33) + lSLID_VALUE,g_size.height() - INTERFACE_RATIO(81),g_size.width() - INTERFACE_RATIO(33) + lSLID_VALUE+LARGG,g_size.height() - INTERFACE_RATIO(81)+HAUTT))
-				{
-					if((EERIEMouseButton & 1) && !(LastMouseClick & 1)) {
-							std::stringstream ss;
-							ss << checked_range_cast<int>(player.mana);
-							ARX_SPEECH_Add(ss.str());
-					}
-				}
-			}
-
-			//---------------------------------------------------------------------
-			//END BLUE GAUGE
-			if(bRenderInCursorMode) {
-				GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-				GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-
-				if(mecanism_tc && MAGICMODE < 0 && lNbToDrawMecanismCursor < 3) {
-					Color lcolorMecanism = Color::white;
-					if(lTimeToDrawMecanismCursor > 300) {
-						lcolorMecanism = Color::black;
-						if(lTimeToDrawMecanismCursor > 400) {
-							lTimeToDrawMecanismCursor=0;
-							lNbToDrawMecanismCursor++;
-						}
-					}
-
-					lTimeToDrawMecanismCursor += static_cast<long>(framedelay);
-					EERIEDrawBitmap(0, 0, INTERFACE_RATIO_DWORD(mecanism_tc->m_dwWidth), INTERFACE_RATIO_DWORD(mecanism_tc->m_dwHeight), 0.01f, mecanism_tc, lcolorMecanism);
-				}
-
-				if(arrow_left_tc) {
-					float fSizeX=INTERFACE_RATIO_DWORD(arrow_left_tc->m_dwWidth);
-					float fSizeY=INTERFACE_RATIO_DWORD(arrow_left_tc->m_dwHeight);
-					Color lcolor = Color::gray(.5f);
-					static float fArrowMove=0.f;
-					fArrowMove+=.5f*framedelay;
-
-					if(fArrowMove > 180.f)
-						fArrowMove=0.f;
-
-					float fMove=fabs(sin(radians(fArrowMove)))*fSizeX*.5f;
-
-					// Left
-					EERIEDrawBitmap(0 + fMove, g_size.center().y - (fSizeY * .5f), fSizeX, fSizeY, 0.01f,
-						arrow_left_tc, lcolor);
-
-					// Right
-					EERIEDrawBitmapUVs(g_size.width() - fSizeX - fMove, g_size.center().y - (fSizeY * .5f), fSizeX, fSizeY,
-						.01f, arrow_left_tc, lcolor, 1.f, 0.f, 0.f, 0.f, 1.f, 1.f, 0.f, 1.f);
-
-					// Up
-					EERIEDrawBitmapUVs(g_size.center().x - (fSizeY * .5f), 0.f + fMove, fSizeY, fSizeX, .01f,
-						arrow_left_tc, lcolor, 0.f, 1.f, 0.f, 0.f, 1.f, 1.f, 1.f, 0.f);
-
-					// Down
-					EERIEDrawBitmapUVs(g_size.center().x - (fSizeY * .5f), (g_size.height() - fSizeX) - fMove, fSizeY, fSizeX,
-						.01f, arrow_left_tc, lcolor, 1.f, 1.f, 1.f, 0.f, 0.f, 1.f, 0.f, 0.f);
-				}
-
-				GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-			}
+			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 		}
-
+	}
 	GRenderer->GetTextureStage(0)->SetMinFilter(TextureStage::FilterLinear);
 	GRenderer->GetTextureStage(0)->SetMagFilter(TextureStage::FilterLinear);
 	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
