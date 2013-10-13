@@ -6127,6 +6127,74 @@ void DrawIcons() {
 	}
 }
 
+void DrawChangeLevelIcon() {
+	//Setting px and py as float to avoid warning on function ARX_INTERFACE_DrawItem and MouseInRect
+	float px = g_size.width() - INTERFACE_RATIO_DWORD(ChangeLevel->m_dwWidth);
+	float py = 0;
+	float vv = 0.9f - EEsin(arxtime.get_frame_time()*( 1.0f / 50 ))*0.5f+rnd()*( 1.0f / 10 );
+	vv = clamp(vv, 0.f, 1.f);
+	ARX_INTERFACE_DrawItem(ChangeLevel, px, py, 0.0001f, Color::gray(vv));
+	if(MouseInRect(px, py, px + INTERFACE_RATIO_DWORD(ChangeLevel->m_dwWidth), py + INTERFACE_RATIO_DWORD(ChangeLevel->m_dwHeight)))
+	{
+		SpecialCursor=CURSOR_INTERACTION_ON;
+		if(!(EERIEMouseButton & 1) && (LastMouseClick & 1)) {
+			CHANGE_LEVEL_ICON = 200;
+		}
+	}
+}
+
+void DrawMemorizedSpells() {
+	int count = 0;
+	int count2 = 0;
+	for(long j = 0; j < 6; j++) {
+		if(player.SpellToMemorize.iSpellSymbols[j] != RUNE_NONE) {
+			count++;
+		}
+		if(SpellSymbol[j] != RUNE_NONE) {
+			count2 ++;
+		}
+	}
+	count = std::max(count, count2);
+	Vec3f pos;
+	pos.x = g_size.width() - (count * INTERFACE_RATIO(32));
+	if(CHANGE_LEVEL_ICON > -1) {
+		pos.x -= INTERFACE_RATIO(32);
+	}
+	pos.y = 0;
+	for(int i = 0; i < 6; i++) {
+		bool bHalo = false;
+		if(SpellSymbol[i] != RUNE_NONE) {
+			if(SpellSymbol[i] == player.SpellToMemorize.iSpellSymbols[i]) {
+				bHalo = true;
+			} else {
+				player.SpellToMemorize.iSpellSymbols[i] = SpellSymbol[i];
+
+				for(int j = i+1; j < 6; j++) {
+					player.SpellToMemorize.iSpellSymbols[j] = RUNE_NONE;
+				}
+			}
+		}
+		if(player.SpellToMemorize.iSpellSymbols[i] != RUNE_NONE) {
+			EERIEDrawBitmap2(pos.x, pos.y, INTERFACE_RATIO(32), INTERFACE_RATIO(32), 0,
+				necklace.pTexTab[player.SpellToMemorize.iSpellSymbols[i]], Color::white);
+			if(bHalo) {				
+				TextureContainer *tc = necklace.pTexTab[player.SpellToMemorize.iSpellSymbols[i]];
+				DrawHalo(0.2f, 0.4f, 0.8f, tc->getHalo(), Vec2f(pos.x, pos.y));
+			}
+			if(!(player.rune_flags & (RuneFlag)(1<<player.SpellToMemorize.iSpellSymbols[i]))) {
+				GRenderer->SetBlendFunc(Renderer::BlendInvDstColor, Renderer::BlendOne);
+				GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+				EERIEDrawBitmap2(pos.x, pos.y, INTERFACE_RATIO(32), INTERFACE_RATIO(32), 0, Movable, Color::gray(.8f));
+				GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+			}
+			pos.x += INTERFACE_RATIO(32);
+		}
+	}
+	if(float(arxtime) - player.SpellToMemorize.lTimeCreation > 30000) {
+		player.SpellToMemorize.bSpell = false;
+	}
+}
+
 void UpdateInterface() {
 	UpdateCombatInterface();
 	UpdateSecondaryInvOrStealInv();
@@ -6163,26 +6231,9 @@ void ArxGame::drawAllInterface() {
 	if(!(player.Interface & INTER_COMBATMODE)) {
 		DrawIcons();
 	}
-
 	if(CHANGE_LEVEL_ICON > -1 && ChangeLevel) {
-		//Setting px and py as float to avoid warning on function ARX_INTERFACE_DrawItem and MouseInRect
-		float px = g_size.width() - INTERFACE_RATIO_DWORD(ChangeLevel->m_dwWidth);
-		float py = 0;
-
-		float vv = 0.9f - EEsin(arxtime.get_frame_time()*( 1.0f / 50 ))*0.5f+rnd()*( 1.0f / 10 );
-
-		vv = clamp(vv, 0.f, 1.f);
-
-		ARX_INTERFACE_DrawItem(ChangeLevel, px, py, 0.0001f, Color::gray(vv));
-		if(MouseInRect(px, py, px + INTERFACE_RATIO_DWORD(ChangeLevel->m_dwWidth), py + INTERFACE_RATIO_DWORD(ChangeLevel->m_dwHeight)))
-		{
-			SpecialCursor=CURSOR_INTERACTION_ON;
-			if(!(EERIEMouseButton & 1) && (LastMouseClick & 1)) {
-				CHANGE_LEVEL_ICON = 200;
-			}
-		}
+		DrawChangeLevelIcon();
 	}
-
 	// Draw stealth gauge
 	ARX_INTERFACE_Draw_Stealth_Gauge();
 
@@ -6192,71 +6243,9 @@ void ArxGame::drawAllInterface() {
 		ARX_INTERFACE_ManageOpenedBook_Finish();
 	}
 
-
-		if(CurrSpellSymbol || player.SpellToMemorize.bSpell) {
-			int count = 0;
-			int count2 = 0;
-
-			for(long j = 0; j < 6; j++) {
-				if(player.SpellToMemorize.iSpellSymbols[j] != RUNE_NONE)
-					count++;
-
-				if(SpellSymbol[j] != RUNE_NONE)
-					count2 ++;
-			}
-
-			count = std::max(count, count2);
-			Vec3f pos;
-			pos.x = g_size.width() - (count * INTERFACE_RATIO(32));
-
-			if(CHANGE_LEVEL_ICON > -1)
-				pos.x -= INTERFACE_RATIO(32);
-
-			pos.y = 0;
-
-			for(int i = 0; i < 6; i++) {
-				bool bHalo = false;
-
-				if(SpellSymbol[i] != RUNE_NONE) {
-					if(SpellSymbol[i] == player.SpellToMemorize.iSpellSymbols[i]) {
-						bHalo = true;
-					} else {
-						player.SpellToMemorize.iSpellSymbols[i] = SpellSymbol[i];
-
-						for(int j = i+1; j < 6; j++) {
-							player.SpellToMemorize.iSpellSymbols[j] = RUNE_NONE;
-						}
-					}
-				}
-
-				if(player.SpellToMemorize.iSpellSymbols[i] != RUNE_NONE) {
-					EERIEDrawBitmap2(pos.x, pos.y, INTERFACE_RATIO(32), INTERFACE_RATIO(32), 0,
-						necklace.pTexTab[player.SpellToMemorize.iSpellSymbols[i]], Color::white);
-
-					if(bHalo) {
-						TextureContainer *tc = necklace.pTexTab[player.SpellToMemorize.iSpellSymbols[i]];
-						TextureContainer *halo = tc->getHalo();
-
-						if(halo)
-							ARX_INTERFACE_HALO_Render(0.2f, 0.4f, 0.8f, HALO_ACTIVE, halo, pos.x, pos.y, INTERFACE_RATIO(1), INTERFACE_RATIO(1));
-					}
-
-					if(!(player.rune_flags & (RuneFlag)(1<<player.SpellToMemorize.iSpellSymbols[i]))) {
-						GRenderer->SetBlendFunc(Renderer::BlendInvDstColor, Renderer::BlendOne);
-						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-
-						EERIEDrawBitmap2(pos.x, pos.y, INTERFACE_RATIO(32), INTERFACE_RATIO(32), 0, Movable, Color::gray(.8f));
-						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-					}
-
-					pos.x += INTERFACE_RATIO(32);
-				}
-			}
-
-			if(float(arxtime) - player.SpellToMemorize.lTimeCreation > 30000) {
-				player.SpellToMemorize.bSpell = false;
-			}
-		}
+	if(CurrSpellSymbol || player.SpellToMemorize.bSpell) {
+		DrawMemorizedSpells();
+	}
 
 		if(player.Interface & INTER_LIFE_MANA) {
 			TexturedVertex v[4];
