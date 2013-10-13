@@ -6295,17 +6295,26 @@ void DrawHealthManaGauges() {
 	}
 }
 
-void DrawMecanismCursor() {
-	Color lcolorMecanism = Color::white;
+struct {
+	Color color;
+} MecanismIcon;
+
+//The cogwheel icon that shows up when switching from mouseview to interaction mode.
+void UpdateMecanismIcon() {
+	MecanismIcon.color = Color::white;
 	if(lTimeToDrawMecanismCursor > 300) {
-		lcolorMecanism = Color::black;
+		MecanismIcon.color = Color::black;
 		if(lTimeToDrawMecanismCursor > 400) {
 			lTimeToDrawMecanismCursor=0;
 			lNbToDrawMecanismCursor++;
 		}
 	}
 	lTimeToDrawMecanismCursor += static_cast<long>(framedelay);
-	EERIEDrawBitmap(0, 0, INTERFACE_RATIO_DWORD(mecanism_tc->m_dwWidth), INTERFACE_RATIO_DWORD(mecanism_tc->m_dwHeight), 0.01f, mecanism_tc, lcolorMecanism);
+}
+
+void DrawMecanismIcon() {	
+	EERIEDrawBitmap(0, 0, INTERFACE_RATIO_DWORD(mecanism_tc->m_dwWidth), 
+		INTERFACE_RATIO_DWORD(mecanism_tc->m_dwHeight), 0.01f, mecanism_tc, MecanismIcon.color);
 }
 
 struct {
@@ -6313,38 +6322,39 @@ struct {
 	float fSizeY;
 	float fArrowMove;
 	float fMove;
-} ScreenArrowsD; //todo rename
+} ScreenArrows;
 
 void UpdateScreenBorderArrows() {
-	ScreenArrowsD.fSizeX = INTERFACE_RATIO_DWORD(arrow_left_tc->m_dwWidth);
-	ScreenArrowsD.fSizeY = INTERFACE_RATIO_DWORD(arrow_left_tc->m_dwHeight);
-	ScreenArrowsD.fArrowMove += .5f * framedelay;
-	if(ScreenArrowsD.fArrowMove > 180.f) {
-		ScreenArrowsD.fArrowMove=0.f;
+	ScreenArrows.fSizeX = INTERFACE_RATIO_DWORD(arrow_left_tc->m_dwWidth);
+	ScreenArrows.fSizeY = INTERFACE_RATIO_DWORD(arrow_left_tc->m_dwHeight);
+	ScreenArrows.fArrowMove += .5f * framedelay;
+	if(ScreenArrows.fArrowMove > 180.f) {
+		ScreenArrows.fArrowMove=0.f;
 	}
-	ScreenArrowsD.fMove=fabs(sin(radians(ScreenArrowsD.fArrowMove)))*ScreenArrowsD.fSizeX*.5f;
+	ScreenArrows.fMove=fabs(sin(radians(ScreenArrows.fArrowMove)))*ScreenArrows.fSizeX*.5f;
 }
 
 void DrawScreenBorderArrows() {	
 	Color lcolor = Color::gray(.5f);	
 	// Left
-	EERIEDrawBitmap(0 + ScreenArrowsD.fMove, g_size.center().y - (ScreenArrowsD.fSizeY * .5f), 
-		ScreenArrowsD.fSizeX, ScreenArrowsD.fSizeY, 0.01f, arrow_left_tc, lcolor);
+	EERIEDrawBitmap(0 + ScreenArrows.fMove, g_size.center().y - (ScreenArrows.fSizeY * .5f), 
+		ScreenArrows.fSizeX, ScreenArrows.fSizeY, 0.01f, arrow_left_tc, lcolor);
 	// Right
-	EERIEDrawBitmapUVs(g_size.width() - ScreenArrowsD.fSizeX - ScreenArrowsD.fMove, g_size.center().y - (ScreenArrowsD.fSizeY * .5f), 
-		ScreenArrowsD.fSizeX, ScreenArrowsD.fSizeY, .01f, arrow_left_tc, lcolor, 1.f, 0.f, 0.f, 0.f, 1.f, 1.f, 0.f, 1.f);
+	EERIEDrawBitmapUVs(g_size.width() - ScreenArrows.fSizeX - ScreenArrows.fMove, g_size.center().y - (ScreenArrows.fSizeY * .5f), 
+		ScreenArrows.fSizeX, ScreenArrows.fSizeY, .01f, arrow_left_tc, lcolor, 1.f, 0.f, 0.f, 0.f, 1.f, 1.f, 0.f, 1.f);
 	// Up
-	EERIEDrawBitmapUVs(g_size.center().x - (ScreenArrowsD.fSizeY * .5f), 0.f + ScreenArrowsD.fMove, 
-		ScreenArrowsD.fSizeY, ScreenArrowsD.fSizeX, .01f, arrow_left_tc, lcolor, 0.f, 1.f, 0.f, 0.f, 1.f, 1.f, 1.f, 0.f);
+	EERIEDrawBitmapUVs(g_size.center().x - (ScreenArrows.fSizeY * .5f), 0.f + ScreenArrows.fMove, 
+		ScreenArrows.fSizeY, ScreenArrows.fSizeX, .01f, arrow_left_tc, lcolor, 0.f, 1.f, 0.f, 0.f, 1.f, 1.f, 1.f, 0.f);
 	// Down
-	EERIEDrawBitmapUVs(g_size.center().x - (ScreenArrowsD.fSizeY * .5f), (g_size.height() - ScreenArrowsD.fSizeX) - ScreenArrowsD.fMove, 
-		ScreenArrowsD.fSizeY, ScreenArrowsD.fSizeX, .01f, arrow_left_tc, lcolor, 1.f, 1.f, 1.f, 0.f, 0.f, 1.f, 0.f, 0.f);
+	EERIEDrawBitmapUVs(g_size.center().x - (ScreenArrows.fSizeY * .5f), (g_size.height() - ScreenArrows.fSizeX) - ScreenArrows.fMove, 
+		ScreenArrows.fSizeY, ScreenArrows.fSizeX, .01f, arrow_left_tc, lcolor, 1.f, 1.f, 1.f, 0.f, 0.f, 1.f, 0.f, 0.f);
 }
 
 void UpdateInterface() {
 	UpdateCombatInterface();
 	UpdateSecondaryInvOrStealInv();
 	UpdateInventory();	
+	UpdateMecanismIcon();
 	UpdateScreenBorderArrows();
 }
 
@@ -6393,7 +6403,7 @@ void ArxGame::drawAllInterface() {
 			GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 			if(mecanism_tc && MAGICMODE < 0 && lNbToDrawMecanismCursor < 3) {
-				DrawMecanismCursor();
+				DrawMecanismIcon();
 			}
 			if(arrow_left_tc) {
 				DrawScreenBorderArrows();
