@@ -6046,12 +6046,6 @@ void CalculateIconCoordinates() {
 	IconCoordinatesCalculated = true;
 }
 
-void UpdateInterface() {
-	UpdateCombatInterface();
-	UpdateSecondaryInvOrStealInv();
-	UpdateInventory();
-}
-
 //Used for drawing icons like the book or backpack icon.
 void DrawIcon(const Vec2f& coords, const char* itcName, E_ARX_STATE_MOUSE hoverMouseState) {
 	ARX_INTERFACE_DrawItem(ITC.Get(itcName), coords.x, coords.y);
@@ -6061,6 +6055,90 @@ void DrawIcon(const Vec2f& coords, const char* itcName, E_ARX_STATE_MOUSE hoverM
 		ARX_INTERFACE_DrawItem(ITC.Get(itcName), coords.x, coords.y);
 		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	}
+}
+
+
+void DrawIcons() {
+	if(player.Interface & INTER_MINIBACK) {
+		if (!IconCoordinatesCalculated) {
+			CalculateIconCoordinates();
+		}
+		float px, py;
+		DrawIcon(BookIconCoords, "book", MOUSE_IN_BOOK_ICON);
+		DrawIcon(BackpackIconCoords, "backpack", MOUSE_IN_INVENTORY_ICON);							
+		if(player.Interface & INTER_STEAL) {
+			DrawIcon(StealIconCoords, "steal", MOUSE_IN_STEAL_ICON);
+		}
+		// Pick All/Close Secondary Inventory
+		if(!PLAYER_INTERFACE_HIDE_COUNT && TSecondaryInventory) {	
+			CalculatePickAllIconCoods(); //These have to be calculated on each frame (to make them move).
+			CalculateCloseSInvIconCoords();
+			Entity *temp = TSecondaryInventory->io;
+			if(temp && !(temp->ioflags & IO_SHOP) && !(temp == ioSteal)) {
+				DrawIcon(PickAllIconCoords, "inventory_pickall", MOUSE_IN_INVENTORY_PICKALL_ICON);					
+			}
+			DrawIcon(CloseSInvIconCoords, "inventory_close", MOUSE_IN_INVENTORY_CLOSE_ICON);				
+		}
+
+		if(player.Skill_Redistribute || player.Attribute_Redistribute) {
+			DrawIcon(LevelUpIconCoords, "icon_lvl_up", MOUSE_IN_REDIST_ICON);
+		}
+		// Draw/Manage Gold Purse Icon
+		if(player.gold > 0) {	
+			DrawIcon(PurseIconCoords, "gold", MOUSE_IN_GOLD_ICON);			
+			if(eMouseState == MOUSE_IN_GOLD_ICON) {
+				SpecialCursor=CURSOR_INTERACTION_ON;
+				ARX_INTERFACE_DrawNumber(PurseIconCoords.x - INTERFACE_RATIO(30),
+					PurseIconCoords.y + INTERFACE_RATIO(10 - 25), player.gold, 6, Color::white);
+			}
+		}
+
+		if(bGoldHalo) {
+			float fCalc = ulGoldHaloTime + Original_framedelay;
+			ulGoldHaloTime = checked_range_cast<unsigned long>(fCalc);
+
+
+			if(ulGoldHaloTime >= 1000) { // ms
+				bGoldHalo = false;
+			}
+
+			TextureContainer *tc = ITC.Get("gold");
+			TextureContainer *halo = tc->getHalo();
+
+			if(halo) {
+				ARX_INTERFACE_HALO_Render(0.9f, 0.9f, 0.1f, HALO_ACTIVE, halo, PurseIconCoords.x, PurseIconCoords.y, 
+											INTERFACE_RATIO(1), INTERFACE_RATIO(1));
+			}
+		}
+
+		if(bBookHalo) {
+			float fCalc = ulBookHaloTime + Original_framedelay;
+			ulBookHaloTime = checked_range_cast<unsigned long>(fCalc);
+
+
+			if(ulBookHaloTime >= 3000) { // ms
+				bBookHalo = false;
+			}
+
+			float POSX = g_size.width()-INTERFACE_RATIO(35)+lSLID_VALUE+GL_DECAL_ICONS;
+			float POSY = g_size.height()-INTERFACE_RATIO(148);
+			TextureContainer *tc = ITC.Get("book");
+			TextureContainer *halo = tc->getHalo();
+
+			if(halo) {
+				ARX_INTERFACE_HALO_Render(0.2f, 0.4f, 0.8f, HALO_ACTIVE, halo, POSX, POSY, INTERFACE_RATIO(1), INTERFACE_RATIO(1));
+			}
+		}
+	}
+	if(player.torch) {
+		ARX_INTERFACE_DrawCurrentTorch();
+	}
+}
+
+void UpdateInterface() {
+	UpdateCombatInterface();
+	UpdateSecondaryInvOrStealInv();
+	UpdateInventory();
 }
 
 void ArxGame::drawAllInterface() {
@@ -6091,98 +6169,28 @@ void ArxGame::drawAllInterface() {
 	ARX_INTERFACE_DrawDamagedEquipment();
 
 	if(!(player.Interface & INTER_COMBATMODE)) {
-		if(player.Interface & INTER_MINIBACK) {
-			if (!IconCoordinatesCalculated) {
-				CalculateIconCoordinates();
-			}
-			float px, py;
-			DrawIcon(BookIconCoords, "book", MOUSE_IN_BOOK_ICON);
-			DrawIcon(BackpackIconCoords, "backpack", MOUSE_IN_INVENTORY_ICON);							
-			if(player.Interface & INTER_STEAL) {
-				DrawIcon(StealIconCoords, "steal", MOUSE_IN_STEAL_ICON);
-			}
-			// Pick All/Close Secondary Inventory
-			if(!PLAYER_INTERFACE_HIDE_COUNT && TSecondaryInventory) {	
-				CalculatePickAllIconCoods(); //These have to be calculated on each frame (to make them move).
-				CalculateCloseSInvIconCoords();
-				Entity *temp = TSecondaryInventory->io;
-				if(temp && !(temp->ioflags & IO_SHOP) && !(temp == ioSteal)) {
-					DrawIcon(PickAllIconCoords, "inventory_pickall", MOUSE_IN_INVENTORY_PICKALL_ICON);					
-				}
-				DrawIcon(CloseSInvIconCoords, "inventory_close", MOUSE_IN_INVENTORY_CLOSE_ICON);				
-			}
-
-			if(player.Skill_Redistribute || player.Attribute_Redistribute) {
-				DrawIcon(LevelUpIconCoords, "icon_lvl_up", MOUSE_IN_REDIST_ICON);
-			}
-			// Draw/Manage Gold Purse Icon
-			if(player.gold > 0) {	
-				DrawIcon(PurseIconCoords, "gold", MOUSE_IN_GOLD_ICON);			
-				if(eMouseState == MOUSE_IN_GOLD_ICON) {
-					SpecialCursor=CURSOR_INTERACTION_ON;
-					ARX_INTERFACE_DrawNumber(PurseIconCoords.x - INTERFACE_RATIO(30),
-						PurseIconCoords.y + INTERFACE_RATIO(10 - 25), player.gold, 6, Color::white);
-				}
-			}
-
-			if(bGoldHalo) {
-				float fCalc = ulGoldHaloTime + Original_framedelay;
-				ulGoldHaloTime = checked_range_cast<unsigned long>(fCalc);
-
-
-				if(ulGoldHaloTime >= 1000) // ms
-					bGoldHalo = false;
-
-				TextureContainer *tc = ITC.Get("gold");
-				TextureContainer *halo = tc->getHalo();
-
-				if(halo)
-					ARX_INTERFACE_HALO_Render(0.9f, 0.9f, 0.1f, HALO_ACTIVE, halo, PurseIconCoords.x, PurseIconCoords.y, 
-					INTERFACE_RATIO(1), INTERFACE_RATIO(1));
-			}
-
-			if(bBookHalo) {
-				float fCalc = ulBookHaloTime + Original_framedelay;
-				ulBookHaloTime = checked_range_cast<unsigned long>(fCalc);
-
-
-				if(ulBookHaloTime >= 3000) // ms
-					bBookHalo = false;
-
-				float POSX = g_size.width()-INTERFACE_RATIO(35)+lSLID_VALUE+GL_DECAL_ICONS;
-				float POSY = g_size.height()-INTERFACE_RATIO(148);
-				TextureContainer *tc = ITC.Get("book");
-				TextureContainer *halo = tc->getHalo();
-
-				if(halo)
-					ARX_INTERFACE_HALO_Render(0.2f, 0.4f, 0.8f, HALO_ACTIVE, halo, POSX, POSY, INTERFACE_RATIO(1), INTERFACE_RATIO(1));
-			}
-		}
-
-		if(player.torch) {
-			ARX_INTERFACE_DrawCurrentTorch();
-		}
+		DrawIcons();
 	}
 
-		if(CHANGE_LEVEL_ICON > -1 && ChangeLevel) {
-			//Setting px and py as float to avoid warning on function ARX_INTERFACE_DrawItem and MouseInRect
-			float px = g_size.width() - INTERFACE_RATIO_DWORD(ChangeLevel->m_dwWidth);
-			float py = 0;
+	if(CHANGE_LEVEL_ICON > -1 && ChangeLevel) {
+		//Setting px and py as float to avoid warning on function ARX_INTERFACE_DrawItem and MouseInRect
+		float px = g_size.width() - INTERFACE_RATIO_DWORD(ChangeLevel->m_dwWidth);
+		float py = 0;
 
-			float vv = 0.9f - EEsin(arxtime.get_frame_time()*( 1.0f / 50 ))*0.5f+rnd()*( 1.0f / 10 );
+		float vv = 0.9f - EEsin(arxtime.get_frame_time()*( 1.0f / 50 ))*0.5f+rnd()*( 1.0f / 10 );
 
-			vv = clamp(vv, 0.f, 1.f);
+		vv = clamp(vv, 0.f, 1.f);
 
-			ARX_INTERFACE_DrawItem(ChangeLevel, px, py, 0.0001f, Color::gray(vv));
+		ARX_INTERFACE_DrawItem(ChangeLevel, px, py, 0.0001f, Color::gray(vv));
 
-			if(MouseInRect(px, py, px + INTERFACE_RATIO_DWORD(ChangeLevel->m_dwWidth), py + INTERFACE_RATIO_DWORD(ChangeLevel->m_dwHeight)))
-			{
-				SpecialCursor=CURSOR_INTERACTION_ON;
+		if(MouseInRect(px, py, px + INTERFACE_RATIO_DWORD(ChangeLevel->m_dwWidth), py + INTERFACE_RATIO_DWORD(ChangeLevel->m_dwHeight)))
+		{
+			SpecialCursor=CURSOR_INTERACTION_ON;
 
-				if(!(EERIEMouseButton & 1) && (LastMouseClick & 1))
-					CHANGE_LEVEL_ICON = 200;
-			}
+			if(!(EERIEMouseButton & 1) && (LastMouseClick & 1))
+				CHANGE_LEVEL_ICON = 200;
 		}
+	}
 
 		// Draw stealth gauge
 		ARX_INTERFACE_Draw_Stealth_Gauge();
