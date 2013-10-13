@@ -6047,7 +6047,7 @@ void CalculateStealIconCoords() {
 	StealIconCoords.y = g_size.height() - INTERFACE_RATIO(78.f + 32);
 }
 
-void CalculatePickAllIconCoods() {
+void CalculatePickAllIconCoords() {
 	PickAllIconCoords.x = INTERFACE_RATIO(InventoryX) + INTERFACE_RATIO(16);
 	PickAllIconCoords.y = INTERFACE_RATIO_DWORD(BasicInventorySkin->m_dwHeight) - INTERFACE_RATIO(16);
 }
@@ -6110,7 +6110,7 @@ void DrawIcons() {
 		}
 		// Pick All/Close Secondary Inventory
 		if(!PLAYER_INTERFACE_HIDE_COUNT && TSecondaryInventory) {	
-			CalculatePickAllIconCoods(); //These have to be calculated on each frame (to make them move).
+			CalculatePickAllIconCoords(); //These have to be calculated on each frame (to make them move).
 			CalculateCloseSInvIconCoords();
 			Entity *temp = TSecondaryInventory->io;
 			if(temp && !(temp->ioflags & IO_SHOP) && !(temp == ioSteal)) {
@@ -6293,9 +6293,6 @@ void DrawHealthManaGauges() {
 			}
 		}
 	}
-
-	//---------------------------------------------------------------------
-	//END BLUE GAUGE
 }
 
 void DrawMecanismCursor() {
@@ -6311,39 +6308,44 @@ void DrawMecanismCursor() {
 	EERIEDrawBitmap(0, 0, INTERFACE_RATIO_DWORD(mecanism_tc->m_dwWidth), INTERFACE_RATIO_DWORD(mecanism_tc->m_dwHeight), 0.01f, mecanism_tc, lcolorMecanism);
 }
 
-void DrawScreenBorderArrows() {
-	float fSizeX=INTERFACE_RATIO_DWORD(arrow_left_tc->m_dwWidth);
-	float fSizeY=INTERFACE_RATIO_DWORD(arrow_left_tc->m_dwHeight);
-	Color lcolor = Color::gray(.5f);
-	static float fArrowMove=0.f;
-	fArrowMove+=.5f*framedelay;
+struct {
+	float fSizeX;
+	float fSizeY;
+	float fArrowMove;
+	float fMove;
+} ScreenArrowsD; //todo rename
 
-	if(fArrowMove > 180.f)
-		fArrowMove=0.f;
+void UpdateScreenBorderArrows() {
+	ScreenArrowsD.fSizeX = INTERFACE_RATIO_DWORD(arrow_left_tc->m_dwWidth);
+	ScreenArrowsD.fSizeY = INTERFACE_RATIO_DWORD(arrow_left_tc->m_dwHeight);
+	ScreenArrowsD.fArrowMove += .5f * framedelay;
+	if(ScreenArrowsD.fArrowMove > 180.f) {
+		ScreenArrowsD.fArrowMove=0.f;
+	}
+	ScreenArrowsD.fMove=fabs(sin(radians(ScreenArrowsD.fArrowMove)))*ScreenArrowsD.fSizeX*.5f;
+}
 
-	float fMove=fabs(sin(radians(fArrowMove)))*fSizeX*.5f;
-
+void DrawScreenBorderArrows() {	
+	Color lcolor = Color::gray(.5f);	
 	// Left
-	EERIEDrawBitmap(0 + fMove, g_size.center().y - (fSizeY * .5f), fSizeX, fSizeY, 0.01f,
-		arrow_left_tc, lcolor);
-
+	EERIEDrawBitmap(0 + ScreenArrowsD.fMove, g_size.center().y - (ScreenArrowsD.fSizeY * .5f), 
+		ScreenArrowsD.fSizeX, ScreenArrowsD.fSizeY, 0.01f, arrow_left_tc, lcolor);
 	// Right
-	EERIEDrawBitmapUVs(g_size.width() - fSizeX - fMove, g_size.center().y - (fSizeY * .5f), fSizeX, fSizeY,
-		.01f, arrow_left_tc, lcolor, 1.f, 0.f, 0.f, 0.f, 1.f, 1.f, 0.f, 1.f);
-
+	EERIEDrawBitmapUVs(g_size.width() - ScreenArrowsD.fSizeX - ScreenArrowsD.fMove, g_size.center().y - (ScreenArrowsD.fSizeY * .5f), 
+		ScreenArrowsD.fSizeX, ScreenArrowsD.fSizeY, .01f, arrow_left_tc, lcolor, 1.f, 0.f, 0.f, 0.f, 1.f, 1.f, 0.f, 1.f);
 	// Up
-	EERIEDrawBitmapUVs(g_size.center().x - (fSizeY * .5f), 0.f + fMove, fSizeY, fSizeX, .01f,
-		arrow_left_tc, lcolor, 0.f, 1.f, 0.f, 0.f, 1.f, 1.f, 1.f, 0.f);
-
+	EERIEDrawBitmapUVs(g_size.center().x - (ScreenArrowsD.fSizeY * .5f), 0.f + ScreenArrowsD.fMove, 
+		ScreenArrowsD.fSizeY, ScreenArrowsD.fSizeX, .01f, arrow_left_tc, lcolor, 0.f, 1.f, 0.f, 0.f, 1.f, 1.f, 1.f, 0.f);
 	// Down
-	EERIEDrawBitmapUVs(g_size.center().x - (fSizeY * .5f), (g_size.height() - fSizeX) - fMove, fSizeY, fSizeX,
-		.01f, arrow_left_tc, lcolor, 1.f, 1.f, 1.f, 0.f, 0.f, 1.f, 0.f, 0.f);
+	EERIEDrawBitmapUVs(g_size.center().x - (ScreenArrowsD.fSizeY * .5f), (g_size.height() - ScreenArrowsD.fSizeX) - ScreenArrowsD.fMove, 
+		ScreenArrowsD.fSizeY, ScreenArrowsD.fSizeX, .01f, arrow_left_tc, lcolor, 1.f, 1.f, 1.f, 0.f, 0.f, 1.f, 0.f, 0.f);
 }
 
 void UpdateInterface() {
 	UpdateCombatInterface();
 	UpdateSecondaryInvOrStealInv();
-	UpdateInventory();
+	UpdateInventory();	
+	UpdateScreenBorderArrows();
 }
 
 void ArxGame::drawAllInterface() {
