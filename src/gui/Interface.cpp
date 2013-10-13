@@ -6057,6 +6057,9 @@ void DrawIcon(const Vec2f& coords, const char* itcName, E_ARX_STATE_MOUSE hoverM
 	}
 }
 
+TextureContainer* GetHaloForITC(const char* itcName) {
+	return ITC.Get(itcName)->getHalo();
+}
 
 void DrawIcons() {
 	if(player.Interface & INTER_MINIBACK) {
@@ -6092,39 +6095,29 @@ void DrawIcons() {
 					PurseIconCoords.y + INTERFACE_RATIO(10 - 25), player.gold, 6, Color::white);
 			}
 		}
-
+		//A halo is drawn on the character's stats icon (book) when leveling up, for example.
+		//TODO try to refactor
 		if(bGoldHalo) {
 			float fCalc = ulGoldHaloTime + Original_framedelay;
 			ulGoldHaloTime = checked_range_cast<unsigned long>(fCalc);
-
-
 			if(ulGoldHaloTime >= 1000) { // ms
 				bGoldHalo = false;
 			}
-
-			TextureContainer *tc = ITC.Get("gold");
-			TextureContainer *halo = tc->getHalo();
-
+			TextureContainer *halo = GetHaloForITC("gold");
 			if(halo) {
 				ARX_INTERFACE_HALO_Render(0.9f, 0.9f, 0.1f, HALO_ACTIVE, halo, PurseIconCoords.x, PurseIconCoords.y, 
 											INTERFACE_RATIO(1), INTERFACE_RATIO(1));
 			}
 		}
-
 		if(bBookHalo) {
 			float fCalc = ulBookHaloTime + Original_framedelay;
 			ulBookHaloTime = checked_range_cast<unsigned long>(fCalc);
-
-
 			if(ulBookHaloTime >= 3000) { // ms
 				bBookHalo = false;
 			}
-
 			float POSX = g_size.width()-INTERFACE_RATIO(35)+lSLID_VALUE+GL_DECAL_ICONS;
 			float POSY = g_size.height()-INTERFACE_RATIO(148);
-			TextureContainer *tc = ITC.Get("book");
-			TextureContainer *halo = tc->getHalo();
-
+			TextureContainer *halo = GetHaloForITC("book");
 			if(halo) {
 				ARX_INTERFACE_HALO_Render(0.2f, 0.4f, 0.8f, HALO_ACTIVE, halo, POSX, POSY, INTERFACE_RATIO(1), INTERFACE_RATIO(1));
 			}
@@ -6155,11 +6148,11 @@ void ArxGame::drawAllInterface() {
 			DrawInventory();
 	}
 
-	if(FlyingOverIO
+	if(FlyingOverIO 
 		&& !(player.Interface & INTER_COMBATMODE)
 		&& !GInput->actionPressed(CONTROLS_CUST_MAGICMODE)
 		&& (!PLAYER_MOUSELOOK_ON || !config.input.autoReadyWeapon)
-	) {
+	  ) {
 		if((FlyingOverIO->ioflags & IO_ITEM) && !DRAGINTER && SecondaryInventory) {
 			DrawItemPrice();
 		}
@@ -6182,24 +6175,23 @@ void ArxGame::drawAllInterface() {
 		vv = clamp(vv, 0.f, 1.f);
 
 		ARX_INTERFACE_DrawItem(ChangeLevel, px, py, 0.0001f, Color::gray(vv));
-
 		if(MouseInRect(px, py, px + INTERFACE_RATIO_DWORD(ChangeLevel->m_dwWidth), py + INTERFACE_RATIO_DWORD(ChangeLevel->m_dwHeight)))
 		{
 			SpecialCursor=CURSOR_INTERACTION_ON;
-
-			if(!(EERIEMouseButton & 1) && (LastMouseClick & 1))
+			if(!(EERIEMouseButton & 1) && (LastMouseClick & 1)) {
 				CHANGE_LEVEL_ICON = 200;
+			}
 		}
 	}
 
-		// Draw stealth gauge
-		ARX_INTERFACE_Draw_Stealth_Gauge();
+	// Draw stealth gauge
+	ARX_INTERFACE_Draw_Stealth_Gauge();
 
-		// book
-		if((player.Interface & INTER_MAP) && !(player.Interface & INTER_COMBATMODE)) {
-			ARX_INTERFACE_ManageOpenedBook();
-			ARX_INTERFACE_ManageOpenedBook_Finish();
-		}
+	// book
+	if((player.Interface & INTER_MAP) && !(player.Interface & INTER_COMBATMODE)) {
+		ARX_INTERFACE_ManageOpenedBook();
+		ARX_INTERFACE_ManageOpenedBook_Finish();
+	}
 
 
 		if(CurrSpellSymbol || player.SpellToMemorize.bSpell) {
