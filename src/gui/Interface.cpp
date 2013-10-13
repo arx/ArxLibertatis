@@ -6229,9 +6229,9 @@ void DrawHealthManaGauges() {
 		if(MouseInRect(fSLID_VALUE_neg, g_size.height() - INTERFACE_RATIO(78), fSLID_VALUE_neg + INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_red")->m_dwWidth), g_size.height() - INTERFACE_RATIO(78) + INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_red")->m_dwHeight)))
 		{
 			if((EERIEMouseButton & 1) && !(LastMouseClick & 1)) {
-					std::stringstream ss;
-					ss << checked_range_cast<int>(player.life);
-					ARX_SPEECH_Add(ss.str());
+				std::stringstream ss;
+				ss << checked_range_cast<int>(player.life);
+				ARX_SPEECH_Add(ss.str());
 			}
 		}
 	}
@@ -6257,23 +6257,21 @@ void DrawHealthManaGauges() {
 		if(MouseInRect(g_size.width() - INTERFACE_RATIO(33) + lSLID_VALUE,g_size.height() - INTERFACE_RATIO(81),g_size.width() - INTERFACE_RATIO(33) + lSLID_VALUE+LARGG,g_size.height() - INTERFACE_RATIO(81)+HAUTT))
 		{
 			if((EERIEMouseButton & 1) && !(LastMouseClick & 1)) {
-					std::stringstream ss;
-					ss << checked_range_cast<int>(player.mana);
-					ARX_SPEECH_Add(ss.str());
+				std::stringstream ss;
+				ss << checked_range_cast<int>(player.mana);
+				ARX_SPEECH_Add(ss.str());
 			}
 		}
 	}
 }
 
-struct {
-	Color color;
-} MecanismIcon;
+Color MecanismIconColor;
 
 //The cogwheel icon that shows up when switching from mouseview to interaction mode.
 void UpdateMecanismIcon() {
-	MecanismIcon.color = Color::white;
+	MecanismIconColor = Color::white;
 	if(lTimeToDrawMecanismCursor > 300) {
-		MecanismIcon.color = Color::black;
+		MecanismIconColor = Color::black;
 		if(lTimeToDrawMecanismCursor > 400) {
 			lTimeToDrawMecanismCursor=0;
 			lNbToDrawMecanismCursor++;
@@ -6284,7 +6282,7 @@ void UpdateMecanismIcon() {
 
 void DrawMecanismIcon() {	
 	EERIEDrawBitmap(0, 0, INTERFACE_RATIO_DWORD(mecanism_tc->m_dwWidth), 
-		INTERFACE_RATIO_DWORD(mecanism_tc->m_dwHeight), 0.01f, mecanism_tc, MecanismIcon.color);
+		INTERFACE_RATIO_DWORD(mecanism_tc->m_dwHeight), 0.01f, mecanism_tc, MecanismIconColor);
 }
 
 struct {
