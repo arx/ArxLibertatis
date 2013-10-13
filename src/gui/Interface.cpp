@@ -6061,6 +6061,12 @@ TextureContainer* GetHaloForITC(const char* itcName) {
 	return ITC.Get(itcName)->getHalo();
 }
 
+void DrawHalo(float r, float g, float b, TextureContainer* halo, const Vec2f& coords) {
+	if(halo) {
+		ARX_INTERFACE_HALO_Render(r, g, b, HALO_ACTIVE, halo, coords.x, coords.y, INTERFACE_RATIO(1), INTERFACE_RATIO(1));
+	}
+}
+
 void DrawIcons() {
 	if(player.Interface & INTER_MINIBACK) {
 		if (!IconCoordinatesCalculated) {
@@ -6103,11 +6109,7 @@ void DrawIcons() {
 			if(ulGoldHaloTime >= 1000) { // ms
 				bGoldHalo = false;
 			}
-			TextureContainer *halo = GetHaloForITC("gold");
-			if(halo) {
-				ARX_INTERFACE_HALO_Render(0.9f, 0.9f, 0.1f, HALO_ACTIVE, halo, PurseIconCoords.x, PurseIconCoords.y, 
-											INTERFACE_RATIO(1), INTERFACE_RATIO(1));
-			}
+			DrawHalo(0.9f, 0.9f, 0.1f, GetHaloForITC("gold"), PurseIconCoords);			
 		}
 		if(bBookHalo) {
 			float fCalc = ulBookHaloTime + Original_framedelay;
@@ -6117,10 +6119,7 @@ void DrawIcons() {
 			}
 			float POSX = g_size.width()-INTERFACE_RATIO(35)+lSLID_VALUE+GL_DECAL_ICONS;
 			float POSY = g_size.height()-INTERFACE_RATIO(148);
-			TextureContainer *halo = GetHaloForITC("book");
-			if(halo) {
-				ARX_INTERFACE_HALO_Render(0.2f, 0.4f, 0.8f, HALO_ACTIVE, halo, POSX, POSY, INTERFACE_RATIO(1), INTERFACE_RATIO(1));
-			}
+			DrawHalo(0.2f, 0.4f, 0.8f, GetHaloForITC("book"), Vec2f(POSX, POSY));					
 		}
 	}
 	if(player.torch) {
