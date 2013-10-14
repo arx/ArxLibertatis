@@ -448,7 +448,7 @@ void Cinematic::Render(float FDIFF) {
 			lightt.pos.x += (float)(LargeurRender >> 1);
 			lightt.pos.y += (float)(HauteurRender >> 1);
 
-			#define SPEEDINTENSITYRND (10.f)
+			static const float SPEEDINTENSITYRND = 10.f;
 			float flIntensityRNDToReach = lightt.intensiternd * rnd();
 			m_flIntensityRND += (flIntensityRNDToReach - m_flIntensityRND) * FDIFF * SPEEDINTENSITYRND;
 			m_flIntensityRND = m_flIntensityRND < 0.f ? 0.f : m_flIntensityRND > 1.f ? 1.f : m_flIntensityRND;

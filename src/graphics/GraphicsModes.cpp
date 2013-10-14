@@ -60,8 +60,8 @@ GLOBAL_MODS desired;
 GLOBAL_MODS stacked;
 
 // change the clipping Z max & min
-#define DEFAULT_ZCLIP		6400.f 
-#define DEFAULT_MINZCLIP	1200.f 
+static const float DEFAULT_ZCLIP = 6400.f;
+static const float DEFAULT_MINZCLIP = 1200.f;
 
 Color ulBKGColor = Color::none;
 
