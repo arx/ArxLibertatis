@@ -299,31 +299,6 @@ void addGlyphVertices(std::vector<TexturedVertex>& vertices, const Font::Glyph& 
 template <bool DoDraw>
 Vec2i Font::process(int x, int y, text_iterator start, text_iterator end, Color color) {
 	
-	if(DoDraw) {
-		
-		GRenderer->SetRenderState(Renderer::Lighting, false);
-		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-		GRenderer->SetBlendFunc(Renderer::BlendSrcAlpha, Renderer::BlendInvSrcAlpha);
-		
-		GRenderer->SetRenderState(Renderer::DepthTest, false);
-		GRenderer->SetRenderState(Renderer::DepthWrite, false);
-		GRenderer->SetCulling(Renderer::CullNone);
-		
-		// 2D projection setup... Put origin (0,0) in the top left corner like GDI...
-		Rect viewport = GRenderer->GetViewport();
-		GRenderer->Begin2DProjection(viewport.left, viewport.right,
-		                             viewport.bottom, viewport.top, -1.f, 1.f);
-		
-		// Fixed pipeline texture stage operation
-		GRenderer->GetTextureStage(0)->setColorOp(TextureStage::ArgDiffuse);
-		GRenderer->GetTextureStage(0)->setAlphaOp(TextureStage::ArgTexture);
-		
-		GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapClamp);
-		GRenderer->GetTextureStage(0)->setMinFilter(TextureStage::FilterNearest);
-		GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterNearest);
-		
-	}
-	
 	Vec2f pen(x, y);
 		
 	int startX = 0;
@@ -385,6 +360,27 @@ Vec2i Font::process(int x, int y, text_iterator start, text_iterator end, Color 
 	}
 	
 	if(DoDraw && !mapTextureVertices.empty()) {
+
+		GRenderer->SetRenderState(Renderer::Lighting, false);
+		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+		GRenderer->SetBlendFunc(Renderer::BlendSrcAlpha, Renderer::BlendInvSrcAlpha);
+
+		GRenderer->SetRenderState(Renderer::DepthTest, false);
+		GRenderer->SetRenderState(Renderer::DepthWrite, false);
+		GRenderer->SetCulling(Renderer::CullNone);
+
+		// 2D projection setup... Put origin (0,0) in the top left corner like GDI...
+		Rect viewport = GRenderer->GetViewport();
+		GRenderer->Begin2DProjection(viewport.left, viewport.right,
+									 viewport.bottom, viewport.top, -1.f, 1.f);
+
+		// Fixed pipeline texture stage operation
+		GRenderer->GetTextureStage(0)->setColorOp(TextureStage::ArgDiffuse);
+		GRenderer->GetTextureStage(0)->setAlphaOp(TextureStage::ArgTexture);
+
+		GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapClamp);
+		GRenderer->GetTextureStage(0)->setMinFilter(TextureStage::FilterNearest);
+		GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterNearest);
 
 		for(MapTextureVertices::const_iterator it = mapTextureVertices.begin(); it != mapTextureVertices.end(); ++it) {
 			GRenderer->SetTexture(0, &textures->getTexture(it->first));
