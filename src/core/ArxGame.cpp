@@ -1459,6 +1459,16 @@ void ArxGame::updateLevel() {
 
 	ManageTorch();
 
+	if(!Project.improve) {
+		if(subj.focal < BASE_FOCAL) {
+			static const float INC_FOCAL = 75.0f;
+			subj.focal += INC_FOCAL;
+		}
+
+		if(subj.focal > BASE_FOCAL)
+			subj.focal = BASE_FOCAL;
+	}
+
 	ARX_INTERACTIVE_DestroyIOdelayedExecute();
 }
 
@@ -1550,14 +1560,6 @@ void ArxGame::renderLevel() {
 
 	if(Project.improve) {
 		DrawImproveVisionInterface();
-	} else {
-		if(subj.focal < BASE_FOCAL) {
-			static const float INC_FOCAL = 75.0f;
-			subj.focal += INC_FOCAL;
-		}
-
-		if(subj.focal > BASE_FOCAL)
-			subj.focal = BASE_FOCAL;
 	}
 
 	if(eyeball.exist != 0)
