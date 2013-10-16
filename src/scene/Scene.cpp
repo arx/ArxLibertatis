@@ -1300,6 +1300,7 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoftRender(long room_num) {
 
 	//render opaque
 	GRenderer->SetCulling(Renderer::CullNone);
+	GRenderer->SetAlphaFunc(Renderer::CmpGreater, .5f);
 
 	int iNbTex = room.usNbTextures;
 	TextureContainer **ppTexCurr = room.ppTextureContainer;
@@ -1320,7 +1321,7 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoftRender(long room_num) {
 			else
 				GRenderer->GetTextureStage(0)->setColorOp(TextureStage::OpModulate);
 
-			GRenderer->SetAlphaFunc(Renderer::CmpGreater, .5f);
+			
 
 			room.pVertexBuffer->drawIndexed(
 				Renderer::TriangleList,
@@ -1328,8 +1329,6 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoftRender(long room_num) {
 				roomMat.uslStartVertex,
 				&room.pussIndice[roomMat.offset[SMY_ARXMAT::Opaque]],
 				roomMat.count[SMY_ARXMAT::Opaque]);
-
-			GRenderer->SetAlphaFunc(Renderer::CmpNotEqual, 0.f);
 
 			EERIEDrawnPolys += roomMat.count[SMY_ARXMAT::Opaque];
 		}
@@ -1341,6 +1340,7 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoftRender(long room_num) {
 	// ZMapp
 	GRenderer->GetTextureStage(0)->setColorOp(TextureStage::OpModulate);
 
+	GRenderer->SetAlphaFunc(Renderer::CmpNotEqual, 0.f);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 
