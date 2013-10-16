@@ -616,6 +616,7 @@ set(GRAPHICS_SOURCES
 set(GRAPHICS_OPENGL_SOURCES
 	src/graphics/opengl/GLTexture2D.cpp
 	src/graphics/opengl/GLTextureStage.cpp
+	src/graphics/opengl/GLVertexBuffer.cpp
 	src/graphics/opengl/OpenGLRenderer.cpp
 )
 

@@ -171,7 +171,7 @@ void OpenGLRenderer::reinit() {
 	Clear(ColorBuffer | DepthBuffer);
 	
 	currentTransform = GL_UnsetTransform;
-	glArrayClientState = GL_NoArray;
+	switchVertexArray(GL_NoArray, 0, 0);
 	
 	CHECK_GL;
 	
