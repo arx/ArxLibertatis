@@ -26,10 +26,12 @@
 #include <ft2build.h>
 #include FT_FREETYPE_H
 
+#include "graphics/Draw.h"
 #include "graphics/Renderer.h"
 #include "graphics/texture/Texture.h"
 #include "graphics/texture/PackedTexture.h"
 #include "graphics/texture/TextureStage.h"
+#include "graphics/Vertex.h"
 
 #include "io/fs/FilePath.h"
 #include "io/resource/ResourcePath.h"
@@ -251,6 +253,49 @@ Font::glyph_iterator Font::getNextGlyph(text_iterator & it, text_iterator end) {
 	return glyphs.find(chr); // the newly inserted glyph
 }
 
+void addGlyphVertices(std::vector<TexturedVertex>& vertices, const Font::Glyph& glyph, const Vec2f& pos, Color color) {
+
+	float w = glyph.size.x;
+	float h = -glyph.size.y;
+	float uStart = glyph.uv_start.x;
+	float vStart = glyph.uv_end.y;
+	float uEnd = glyph.uv_end.x;
+	float vEnd = glyph.uv_start.y;
+
+	Vec2f p;
+	p.x = floor(pos.x + glyph.draw_offset.x) - .5f;
+	p.y = floor(pos.y - glyph.draw_offset.y) - .5f;
+
+	TexturedVertex quad[4];
+	quad[0].p = Vec3f(p.x, p.y, 0);
+	quad[0].uv = Vec2f(uStart, vStart);
+	quad[0].color = color.toBGRA();
+	quad[0].rhw = 1.0f;
+
+	quad[1].p = Vec3f(p.x + w, p.y, 0);
+	quad[1].uv = Vec2f(uEnd, vStart);
+	quad[1].color = color.toBGRA();
+	quad[1].rhw = 1.0f;
+
+	quad[2].p = Vec3f(p.x + w, p.y + h, 0);
+	quad[2].uv = Vec2f(uEnd, vEnd);
+	quad[2].color = color.toBGRA();
+	quad[2].rhw = 1.0f;
+
+	quad[3].p = Vec3f(p.x, p.y + h, 0);
+	quad[3].uv = Vec2f(uStart, vEnd);
+	quad[3].color = color.toBGRA();
+	quad[3].rhw = 1.0f;
+
+	vertices.push_back(quad[0]);
+	vertices.push_back(quad[1]);
+	vertices.push_back(quad[2]);
+
+	vertices.push_back(quad[0]);
+	vertices.push_back(quad[2]);
+	vertices.push_back(quad[3]);
+}
+
 template <bool DoDraw>
 Vec2i Font::process(int x, int y, text_iterator start, text_iterator end, Color color) {
 	
@@ -279,19 +324,21 @@ Vec2i Font::process(int x, int y, text_iterator start, text_iterator end, Color 
 		
 	}
 	
-	float penX = x;
-	float penY = y;
-	
+	Vec2f pen(x, y);
+		
 	int startX = 0;
 	int endX = 0;
 	
 	if(DoDraw) {
 		// Subtract one line height (since we flipped the Y origin to be like GDI)
-		penY += face->size->metrics.ascender >> 6;
+		pen.y += face->size->metrics.ascender >> 6;
 	}
 	
 	FT_UInt prevGlyphIndex = 0;
 	FT_Pos prevRsbDelta = 0;
+
+	typedef std::map< unsigned int, std::vector<TexturedVertex> > MapTextureVertices;
+	MapTextureVertices mapTextureVertices;
 	
 	for(text_iterator it = start; it != end; ) {
 		
@@ -307,43 +354,43 @@ Vec2i Font::process(int x, int y, text_iterator start, text_iterator end, Color 
 			if(prevGlyphIndex != 0) {
 				FT_Vector delta;
 				FT_Get_Kerning(face, prevGlyphIndex, glyph.index, FT_KERNING_DEFAULT, &delta);
-				penX += delta.x >> 6;
+				pen.x += delta.x >> 6;
 			}
 			prevGlyphIndex = glyph.index;
 		}
 		
 		// Auto hinting adjustments
 		if(prevRsbDelta - glyph.lsb_delta >= 32) {
-			penX--;
+			pen.x--;
 		} else if( prevRsbDelta - glyph.lsb_delta < -32) {
-			penX++;
+			pen.x++;
 		}
 		prevRsbDelta = glyph.rsb_delta;
 		
 		// Draw
 		if(DoDraw && glyph.size.x != 0 && glyph.size.y != 0) {
-			GRenderer->SetTexture(0, &textures->getTexture(glyph.texture));
-			GRenderer->DrawTexturedRect(
-				((int)penX) + glyph.draw_offset.x, ((int)penY) - glyph.draw_offset.y,
-				glyph.size.x, -glyph.size.y, glyph.uv_start.x, glyph.uv_end.y, glyph.uv_end.x,
-				glyph.uv_start.y, color
-			);
+			addGlyphVertices(mapTextureVertices[glyph.texture], glyph, pen, color);
 		} else {
-			ARX_UNUSED(penY), ARX_UNUSED(color);
+			ARX_UNUSED(pen), ARX_UNUSED(color);
 		}
 		
 		// If this is the first drawn char, note the start position
 		if(startX == endX) {
 			startX = glyph.draw_offset.x;
 		}
-		endX = penX + glyph.draw_offset.x + glyph.size.x;
+		endX = pen.x + glyph.draw_offset.x + glyph.size.x;
 		
 		// Advance
-		penX += glyph.advance.x;
+		pen.x += glyph.advance.x;
 	}
 	
-	if(DoDraw) {
-		
+	if(DoDraw && !mapTextureVertices.empty()) {
+
+		for(MapTextureVertices::const_iterator it = mapTextureVertices.begin(); it != mapTextureVertices.end(); ++it) {
+			GRenderer->SetTexture(0, &textures->getTexture(it->first));
+			EERIEDRAWPRIM(Renderer::TriangleList, it->second.data(), it->second.size());
+		}
+					
 		GRenderer->ResetTexture(0);
 		TextureStage * stage = GRenderer->GetTextureStage(0);
 		stage->setColorOp(TextureStage::OpModulate,
