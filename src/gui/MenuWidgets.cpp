@@ -4289,8 +4289,9 @@ void CMenuSlider::EmptyFunction() {
 	}
 }
 
-bool CMenuSlider::OnMouseClick(int) {
+bool CMenuSlider::OnMouseClick(int _iMouseButton) {
 
+	ARX_UNUSED(_iMouseButton);
 	ARX_SOUND_PlayMenu(SND_MENU_CLICK);
 
 	int iX = GInput->getMousePosAbs().x;
