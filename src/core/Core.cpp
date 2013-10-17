@@ -2918,13 +2918,13 @@ void ShowTestText()
 	mainApp->outputText(0, 16, arx_version);
 
 	sprintf(tex,"Level : %s", LastLoadedScene.string().c_str());
-	mainApp->outputText( 0, 32, tex );
+	hFontDebug->draw(0, 32, tex, Color::white);
 
 	sprintf(tex,"Position : %5.0f %5.0f %5.0f",player.pos.x,player.pos.y,player.pos.z);
-	mainApp->outputText( 0, 48, tex );
+	hFontDebug->draw(0, 48, tex, Color::white);
 
 	sprintf( tex,"Last Failed Sequence : %s",LAST_FAILED_SEQUENCE.c_str() );
-	mainApp->outputText( 0, 64, tex );
+	hFontDebug->draw(0, 64, tex, Color::white);
 }
 
 extern float CURRENT_PLAYER_COLOR;
@@ -2951,7 +2951,7 @@ void ShowInfoText() {
 	
 	sprintf(tex, "%ld Prims %4.02f fps ( %3.02f - %3.02f ) [%3.0fms]",
 			EERIEDrawnPolys, FPS, fps2min, fps2, framedelay);
-	mainApp->outputText(70, 32, tex);
+	hFontDebug->draw(70, 32, tex, Color::white);
 
 	float poss = -666.66f;
 	EERIEPOLY * ep = CheckInPoly(player.pos.x, player.pos.y, player.pos.z);
@@ -2964,24 +2964,24 @@ void ShowInfoText() {
 			player.pos.x, player.pos.y + player.size.y, poss, player.pos.z,
 			player.angle.a, player.angle.b,
 			ACTIVECAM->focal);
-	mainApp->outputText(70, 48, tex);
+	hFontDebug->draw(70, 48, tex, Color::white);
 
 	sprintf(tex, "AnchorPos x:%6.0f y:%6.0f z:%6.0f TIME %lds Part %ld - %d",
 			player.pos.x - Mscenepos.x,
 			player.pos.y + player.size.y - Mscenepos.y,
 			player.pos.z - Mscenepos.z,
 			GAT, getParticleCount(), player.doingmagic);
-	mainApp->outputText(70, 64, tex);
+	hFontDebug->draw(70, 64, tex, Color::white);
 
 	if(player.onfirmground == 0)
-		mainApp->outputText(200, 280, "OFFGRND");
+		hFontDebug->draw(200, 280, "OFFGRND", Color::white);
 
 	sprintf(tex, "Jump %f cinema %f %d %d - Pathfind %ld(%s)",
 			player.jumplastposition, CINEMA_DECAL,
 			DANAEMouse.x, DANAEMouse.y,
 			EERIE_PATHFINDER_Get_Queued_Number(),
 			PATHFINDER_WORKING ? "Working" : "Idled");
-	mainApp->outputText(70, 80, tex);
+	hFontDebug->draw(70, 80, tex, Color::white);
 
 	Entity * io=ARX_SCRIPT_Get_IO_Max_Events();
 
@@ -2993,13 +2993,13 @@ void ShowInfoText() {
 				ScriptEvent::totalCount, io->long_name().c_str(),
 				io->stat_count, ARX_SCRIPT_CountTimers());
 	}
-	mainApp->outputText(70, 94, tex);
+	hFontDebug->draw(70, 94, tex, Color::white);
 
 	io = ARX_SCRIPT_Get_IO_Max_Events_Sent();
 
 	if(io) {
 		sprintf(tex, "Max SENDER %s %d)", io->long_name().c_str(), io->stat_sent);
-		mainApp->outputText(70, 114, tex);
+		hFontDebug->draw(70, 114, tex, Color::white);
 	}
 
 	float slope = 0.f;
@@ -3010,9 +3010,7 @@ void ShowInfoText() {
 
 	sprintf(tex, "Velocity %3.0f %3.0f %3.0f Slope %3.3f",
 			player.physics.velocity.x, player.physics.velocity.y, player.physics.velocity.z, slope);
-	mainApp->outputText(70, 128, tex);
-
-	mainApp->outputText(100, 208, tex);
+	hFontDebug->draw(70, 128, tex, Color::white);
 
 #ifdef BUILD_EDITOR
 	if(ValidIONum(LastSelectedIONum)) {
@@ -3025,11 +3023,11 @@ void ShowInfoText() {
 						io->move.x, io->move.y, io->move.z,
 						io->_npcdata->moveproblem, io->_npcdata->pathfind.listpos, io->_npcdata->pathfind.listnb,
 						io->_npcdata->pathfind.truetarget, (long)io->_npcdata->behavior);
-				mainApp->outputText(170, 420, tex);
+				hFontDebug->draw(170, 420, tex, Color::white);
 
 				sprintf(tex, "Life %4.0f/%4.0f Mana %4.0f/%4.0f Poisoned %3.1f Hunger %4.1f",
 						player.life, player.maxlife, player.mana, player.maxmana, player.poison, player.hunger);
-				mainApp->outputText(170, 320, tex);
+				hFontDebug->draw(170, 320, tex, Color::white);
 			} else {
 				if(io->ioflags & IO_NPC) {
 					sprintf(tex, "%4.0f %4.0f %4.0f - %4.0f %4.0f %4.0f -- %3.0f %d/%ld targ %ld beh %ld",
@@ -3037,35 +3035,35 @@ void ShowInfoText() {
 							io->move.x, io->move.y, io->move.z,
 							io->_npcdata->moveproblem, io->_npcdata->pathfind.listpos, io->_npcdata->pathfind.listnb,
 							io->_npcdata->pathfind.truetarget, (long)io->_npcdata->behavior);
-					mainApp->outputText(170, 420, tex);
+					hFontDebug->draw(170, 420, tex, Color::white);
 
 					sprintf(tex, "Life %4.0f/%4.0f Mana %4.0f/%4.0f Poisoned %3.1f",
 							io->_npcdata->life, io->_npcdata->maxlife, io->_npcdata->mana,
 							io->_npcdata->maxmana, io->_npcdata->poisonned);
-					mainApp->outputText(170, 320, tex);
+					hFontDebug->draw(170, 320, tex, Color::white);
 
 					sprintf(tex, "AC %3.0f Absorb %3.0f",
 							ARX_INTERACTIVE_GetArmorClass(io), io->_npcdata->absorb);
-					mainApp->outputText(170, 335, tex);
+					hFontDebug->draw(170, 335, tex, Color::white);
 
 					if(io->_npcdata->pathfind.flags & PATHFIND_ALWAYS) {
-						mainApp->outputText(170, 360, "PF_ALWAYS");
+						hFontDebug->draw(170, 360, "PF_ALWAYS", Color::white);
 					} else {
 						sprintf(tex, "PF_%ld", (long)io->_npcdata->pathfind.flags);
-						mainApp->outputText(170, 360, tex);
+						hFontDebug->draw(170, 360, tex, Color::white);
 					}
 				}
 
 				if(io->ioflags & IO_FIX) {
 					sprintf(tex, "Durability %4.0f/%4.0f Poisonous %3d count %d",
 							io->durability, io->max_durability, io->poisonous, io->poisonous_count);
-					mainApp->outputText(170, 320, tex);
+					hFontDebug->draw(170, 320, tex, Color::white);
 				}
 
 				if(io->ioflags & IO_ITEM) {
 					sprintf(tex, "Durability %4.0f/%4.0f Poisonous %3d count %d",
 							io->durability, io->max_durability, io->poisonous, io->poisonous_count);
-					mainApp->outputText(170, 320, tex);
+					hFontDebug->draw(170, 320, tex, Color::white);
 				}
 			}
 		}
@@ -3074,11 +3072,11 @@ void ShowInfoText() {
 
 	long zap = IsAnyPolyThere(player.pos.x,player.pos.z);
 	sprintf(tex, "POLY %ld", zap);
-	mainApp->outputText(270, 220, tex);
+	hFontDebug->draw(270, 220, tex, Color::white);
 
 	sprintf(tex, "COLOR %3.0f Stealth %3.0f",
 			CURRENT_PLAYER_COLOR, GetPlayerStealth());
-	mainApp->outputText(270, 200, tex);
+	hFontDebug->draw(270, 200, tex, Color::white);
 
 	ARX_SCRIPT_Init_Event_Stats();
 }
@@ -3104,7 +3102,7 @@ void ShowDebugToggles() {
 	for(size_t i = 0; i < ARRAY_SIZE(g_debugToggles); i++) {
 		std::stringstream textStream;
 		textStream << "Toggle " << i << ": " << (g_debugToggles[i] ? "true" : "false");
-		mainApp->outputTextGrid(0.f, i, textStream.str());
+		hFontDebug->draw(0.f, i * hFontDebug->getLineHeight(), textStream.str(), Color::white);
 	}
 }
 
