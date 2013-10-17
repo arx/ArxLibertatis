@@ -1,4 +1,10 @@
 
+= Arx Libertatis 1.1.2  (2013-10-17) =
+
+* Fixed a crash when hovering over map markers after the window was resized (bug #547)
+
+################################################################################
+
 = Arx Libertatis 1.1.1  (2013-07-17) =
 
 * Fixed map marker labels not being saved
