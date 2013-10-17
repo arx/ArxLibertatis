@@ -690,7 +690,7 @@ void ARX_PORTALS_InitDrawnRooms()
 		ep->useportal = 0;
 	}
 
-	for(size_t i = 0; i < portals->roomsize(); i++) {
+	for(long i = 0; i < portals->roomsize(); i++) {
 		ARX_PORTALS_Frustrum_ClearIndexCount(i);
 	}
 
