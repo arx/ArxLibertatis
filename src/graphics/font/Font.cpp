@@ -383,8 +383,11 @@ Vec2i Font::process(int x, int y, text_iterator start, text_iterator end, Color 
 		GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterNearest);
 
 		for(MapTextureVertices::const_iterator it = mapTextureVertices.begin(); it != mapTextureVertices.end(); ++it) {
-			GRenderer->SetTexture(0, &textures->getTexture(it->first));
-			EERIEDRAWPRIM(Renderer::TriangleList, it->second.data(), it->second.size());
+			
+			if(!it->second.empty()) {
+				GRenderer->SetTexture(0, &textures->getTexture(it->first));
+				EERIEDRAWPRIM(Renderer::TriangleList, &it->second[0], it->second.size());
+			}
 		}
 					
 		GRenderer->ResetTexture(0);
