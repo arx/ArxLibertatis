@@ -4053,7 +4053,9 @@ void CMenuSliderText::EmptyFunction() {
 	}
 }
 
-bool CMenuSliderText::OnMouseClick(int) {
+bool CMenuSliderText::OnMouseClick(int _iMouseButton) {
+
+	ARX_UNUSED(_iMouseButton);
 
 	if(!enabled) {
 		return false;
