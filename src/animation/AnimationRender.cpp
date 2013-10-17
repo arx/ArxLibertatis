@@ -974,7 +974,7 @@ struct HaloRenderInfo {
 		, selection(selection)
 	{}
 
-	HaloRenderInfo(IO_HALO * halo)
+	explicit HaloRenderInfo(IO_HALO * halo)
 		: halo(halo)
 		, selection(-1)
 	{}
