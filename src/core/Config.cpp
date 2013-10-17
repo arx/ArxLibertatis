@@ -70,7 +70,6 @@ const int
 	quicksaveSlots = 3;
 
 const bool
-	first_run = true,
 	fullscreen = true,
 	showCrosshair = true,
 	antialiasing = true,
