@@ -2623,7 +2623,7 @@ void AddQuakeFX(float intensity,float duration,float period,long flags) {
 	}
 }
 
-void ManageQuakeFX() {
+void ManageQuakeFX(EERIE_CAMERA * cam) {
 	if(QuakeFx.intensity>0.f) {
 		float tim=(float)arxtime.get_frame_time()-(float)QuakeFx.start;
 
@@ -2640,10 +2640,10 @@ void ManageQuakeFX() {
 
 		float truepower = periodicity * QuakeFx.intensity * itmod * 0.01f;
 		float halfpower = truepower * .5f;
-		ACTIVECAM->orgTrans.pos += randomVec(-halfpower, halfpower);
-		ACTIVECAM->angle.a += rnd() * truepower - halfpower;
-		ACTIVECAM->angle.g += rnd() * truepower - halfpower;
-		ACTIVECAM->angle.b += rnd() * truepower - halfpower;
+		cam->orgTrans.pos += randomVec(-halfpower, halfpower);
+		cam->angle.a += rnd() * truepower - halfpower;
+		cam->angle.g += rnd() * truepower - halfpower;
+		cam->angle.b += rnd() * truepower - halfpower;
 	}
 }
 

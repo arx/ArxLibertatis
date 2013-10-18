@@ -157,7 +157,7 @@ void DrawImproveVisionInterface();
 void CheckMr();
 
 void ManageFade();
-void ManageQuakeFX();
+void ManageQuakeFX(EERIE_CAMERA *cam);
 
 void ManageCombatModeAnimations();
 void ManageCombatModeAnimationsEND();
