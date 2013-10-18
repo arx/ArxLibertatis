@@ -2,8 +2,8 @@ language: cpp
 compiler:
   - gcc
 before_install:
- - sudo apt-get update
- - sudo apt-get install build-essential cmake zlib1g-dev libfreetype6-dev libopenal1 libopenal-dev mesa-common-dev libgl1-mesa-dev libboost-dev libsdl1.2-dev libglew-dev qt-sdk
+ - travis_retry sudo apt-get update
+ - travis_retry sudo apt-get install build-essential cmake zlib1g-dev libfreetype6-dev libopenal1 libopenal-dev mesa-common-dev libgl1-mesa-dev libboost-dev libsdl1.2-dev libglew-dev qt-sdk
 script: mkdir build && cd build && cmake .. && make -j1
 branches:
   only:
