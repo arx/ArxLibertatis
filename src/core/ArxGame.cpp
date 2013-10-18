@@ -1193,13 +1193,14 @@ void ArxGame::updateActiveCamera() {
 			MasterCamera.exist &= ~2;
 			MasterCamera.exist |= 1;
 			MasterCamera.io=MasterCamera.want_io;
-			MasterCamera.cam=MasterCamera.want_cam;
 		}
 
-		if(MasterCamera.cam->focal < 100.f)
-			MasterCamera.cam->focal = 350.f;
+		EERIE_CAMERA * cam = &MasterCamera.io->_camdata->cam;
 
-		SetActiveCamera(MasterCamera.cam);
+		if(cam->focal < 100.f)
+			cam->focal = 350.f;
+
+		SetActiveCamera(cam);
 		EXTERNALVIEW = true;
 	} else {
 		// Set active camera for this viewport
