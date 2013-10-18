@@ -107,7 +107,6 @@ public:
 		
 		MasterCamera.exist |= 2;
 		MasterCamera.want_io = t;
-		MasterCamera.want_aup = t->usepath;
 		MasterCamera.want_cam = &t->_camdata->cam;
 		
 		return Success;

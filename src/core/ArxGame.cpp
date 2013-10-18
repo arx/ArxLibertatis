@@ -1193,7 +1193,6 @@ void ArxGame::updateActiveCamera() {
 			MasterCamera.exist &= ~2;
 			MasterCamera.exist |= 1;
 			MasterCamera.io=MasterCamera.want_io;
-			MasterCamera.aup=MasterCamera.want_aup;
 			MasterCamera.cam=MasterCamera.want_cam;
 		}
 

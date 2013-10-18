@@ -138,10 +138,8 @@ struct ARX_USE_PATH {
 struct MASTER_CAMERA_STRUCT {
 	long exist; // 2== want to change to want_vars...
 	Entity * io;
-	ARX_USE_PATH * aup;
 	EERIE_CAMERA * cam;
 	Entity * want_io;
-	ARX_USE_PATH * want_aup;
 	EERIE_CAMERA * want_cam;
 };
 
