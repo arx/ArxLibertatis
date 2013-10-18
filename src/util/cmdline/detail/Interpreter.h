@@ -80,7 +80,9 @@ private:
 	
 	template<typename Iter, typename Visitor>
 	void do_visit(Iter begin, Iter end, Visitor & visitor) const {
-		for(;begin!=end;visitor((begin++)->second.key));
+		for(; begin != end; ++begin) {
+			visitor(begin->second.key);
+		}
 	}
 	
 	void do_add(const function_type & handler, const op_name_t & key);
