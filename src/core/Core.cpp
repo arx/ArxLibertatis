@@ -3114,7 +3114,7 @@ void ShowFpsGraph() {
 	lastFPSArray.push_front(1000 / arxtime.get_frame_delay());
 
 	Vec2i windowSize = mainApp->getWindow()->getSize();
-	if(lastFPSArray.size() == windowSize.x)
+	if(lastFPSArray.size() == size_t(windowSize.x))
 	{
 		lastFPSArray.pop_back();
 	}
