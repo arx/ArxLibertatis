@@ -194,7 +194,7 @@ extern TextManager *pTextManageFlyingOver;
 
 bool IsPlayerStriking();
 
-extern long SHOW_INGAME_MINIMAP;
+extern bool SHOW_INGAME_MINIMAP;
 
 //-----------------------------------------------------------------------------
 TextureContainer *	BasicInventorySkin=NULL;
