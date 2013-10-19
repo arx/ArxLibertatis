@@ -57,5 +57,6 @@ void ApplyCurMr();
 void ApplyCurSOS();
 void EERIE_OBJECT_SetBHMode();
 
+void CheckMr();
 
 #endif // ARX_GAME_SPELL_CHEAT_H

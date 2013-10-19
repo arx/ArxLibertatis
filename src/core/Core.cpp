@@ -2565,20 +2565,6 @@ void ManageFade()
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 }
 
-static TextureContainer * Mr_tc = NULL;
-
-void CheckMr() {
-
-	if(cur_mr == 3) {
-		if(GRenderer && Mr_tc) {
-			EERIEDrawBitmap(g_size.width()-(128.f*Xratio), 0.f, (float)128*Xratio, (float)128*Yratio,0.0001f,
-			                Mr_tc, Color::gray(0.5f + PULSATE * (1.0f/10)));
-		} else {
-			Mr_tc = TextureContainer::LoadUI("graph/particles/(fx)_mr");
-		}
-	}
-}
-
 void DrawImproveVisionInterface() {
 
 	if(ombrignon) {

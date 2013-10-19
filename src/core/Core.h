@@ -154,8 +154,6 @@ void ShowDebugToggles();
 
 void DrawImproveVisionInterface();
 
-void CheckMr();
-
 void ManageFade();
 void ManageQuakeFX(EERIE_CAMERA *cam);
 

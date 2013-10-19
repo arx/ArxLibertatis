@@ -36,6 +36,7 @@
 
 #include "graphics/Math.h"
 #include "graphics/Color.h"
+#include "graphics/Draw.h"
 #include "graphics/data/TextureContainer.h"
 #include "graphics/particle/ParticleEffects.h"
 
@@ -365,6 +366,21 @@ void ApplySPMax() {
 			player.heads[2]
 				= TextureContainer::Load("graph/obj3d/textures/npc_human_base_hero3_head");
 			ARX_EQUIPMENT_RecreatePlayerMesh();
+		}
+	}
+}
+
+extern float PULSATE;
+static TextureContainer * Mr_tc = NULL;
+
+void CheckMr() {
+
+	if(cur_mr == 3) {
+		if(GRenderer && Mr_tc) {
+			EERIEDrawBitmap(g_size.width()-(128.f*Xratio), 0.f, (float)128*Xratio, (float)128*Yratio,0.0001f,
+							Mr_tc, Color::gray(0.5f + PULSATE * (1.0f/10)));
+		} else {
+			Mr_tc = TextureContainer::LoadUI("graph/particles/(fx)_mr");
 		}
 	}
 }
