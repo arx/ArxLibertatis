@@ -5667,7 +5667,6 @@ void ARX_INTERFACE_DrawCurrentTorch() {
 }
 
 extern float GLOBAL_SLOWDOWN;
-extern long SPLASH_THINGS_STAGE;
 
 void ArxGame::drawAllInterface() {
 	
@@ -6135,8 +6134,7 @@ void ArxGame::drawAllInterface() {
 		}
 
 		// Draw stealth gauge
-		if(SPLASH_THINGS_STAGE < 11)
-			ARX_INTERFACE_Draw_Stealth_Gauge();
+		ARX_INTERFACE_Draw_Stealth_Gauge();
 
 		// book
 		if((player.Interface & INTER_MAP) && !(player.Interface & INTER_COMBATMODE)) {

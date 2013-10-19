@@ -599,7 +599,7 @@ void ArxGame::doFrame() {
 	}
 
 	// Manages Splash Screens if needed
-	if(DANAE_ManageSplashThings())
+	if(HandleGameFlowTransitions())
 		return;
 
 	// Clicked on New Quest ? (TODO:need certainly to be moved somewhere else...)

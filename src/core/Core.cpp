@@ -304,7 +304,6 @@ long REQUEST_SPEECH_SKIP= 0;
 long CURRENTLEVEL		= -1;
 long DONT_ERASE_PLAYER	= 0;
 static float LastFrameTicks = 0;
-long SPLASH_THINGS_STAGE= 0;
 long STARTED_A_GAME		= 0;
 long FASTmse			= 0;
 
@@ -328,7 +327,6 @@ long LaunchDemo=0;
 bool FirstFrame=true;
 unsigned long WILLADDSPEECHTIME=0;
 unsigned long AimTime;
-static unsigned long SPLASH_START = 0;
 //-----------------------------------------------------------------------------
 Color3f FADECOLOR;
 
@@ -358,6 +356,31 @@ void ShowFPS();
 void ManageNONCombatModeAnimations();
 
 //-----------------------------------------------------------------------------
+
+class GameFlow {
+
+public:
+	enum Transition {
+		NoTransition,
+		FirstLogo,
+		SecondLogo,
+		LoadingScreen,
+		InGame
+	};
+
+	static void setTransition(Transition newTransition) {
+		s_currentTransition = newTransition;
+	}
+
+	static Transition getTransition() {
+		return s_currentTransition;
+	}
+
+private:
+	static Transition s_currentTransition;
+};
+
+GameFlow::Transition GameFlow::s_currentTransition = GameFlow::NoTransition;
 
 
 // Sends ON GAME_READY msg to all IOs
@@ -508,7 +531,9 @@ void InitializeDanae() {
 	if(LaunchDemo) {
 		LogInfo << "Launching splash screens.";
 		LaunchDemo = 0;
-		SPLASH_THINGS_STAGE = 11;
+		if(GameFlow::getTransition() != GameFlow::LoadingScreen) {
+			GameFlow::setTransition(GameFlow::FirstLogo);
+		}
 	} else if(!levelPath.empty())	{
 		LogInfo << "Launching Level " << levelPath;
 		if (FastSceneLoad(levelPath)) {
@@ -2653,107 +2678,103 @@ void DANAE_StartNewQuest()
 	player.Interface = INTER_LIFE_MANA | INTER_MINIBACK | INTER_MINIBOOK;
 }
 
-bool DANAE_ManageSplashThings() {
+s32 LEVEL_TO_LOAD = 10;
+
+void loadLevel(s32 lvl) {
 	
-	const int SPLASH_DURATION = 3600;
+	if(GameFlow::getTransition() != GameFlow::LoadingScreen) {
+		LEVEL_TO_LOAD = lvl;
+		GameFlow::setTransition(GameFlow::LoadingScreen);
+	}
+}
 
-	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapClamp);
+bool HandleGameFlowTransitions() {
 	
-	if(SPLASH_THINGS_STAGE > 10) {
-		
-		if(GInput->isAnyKeyPressed()) {
-			REFUSE_GAME_RETURN = 1;
-			FirstFrame=true;
-			SPLASH_THINGS_STAGE = 0;
-			ARXmenu.currentmode = AMCM_MAIN;
-			ARX_MENU_Launch();
-		}
-		
-		if(GInput->isKeyPressed(Keyboard::Key_Escape)) {
-			REFUSE_GAME_RETURN=1;
-			SPLASH_THINGS_STAGE = 14;
-		}
-		
-		if(SPLASH_THINGS_STAGE == 11) {
-			//firsttime
-			if(SPLASH_START == 0) {
-				if(!ARX_INTERFACE_InitFISHTANK()) {
-					SPLASH_THINGS_STAGE++;
-					return true;
-				}
+	const int TRANSITION_DURATION = 3600;
+	static unsigned long TRANSITION_START = 0;
 
-				SPLASH_START = arxtime.get_updated_ul();
-			}
-
-			ARX_INTERFACE_ShowFISHTANK();
-
-			unsigned long tim = arxtime.get_updated_ul();
-			float pos = (float)tim - (float)SPLASH_START;
-
-			if(pos > SPLASH_DURATION) {
-				SPLASH_START = 0;
-				SPLASH_THINGS_STAGE++;
-			}
-
-			GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
-			return true;
-			
-		}
-
-		if(SPLASH_THINGS_STAGE == 12) {
-			//firsttime
-			if(SPLASH_START == 0) {
-				if(!ARX_INTERFACE_InitARKANE()) {
-					SPLASH_THINGS_STAGE++;
-					return true;
-				}
-
-				SPLASH_START = arxtime.get_updated_ul();
-				ARX_SOUND_PlayInterface(SND_PLAYER_HEART_BEAT);
-			}
-
-			ARX_INTERFACE_ShowARKANE();
-			unsigned long tim = arxtime.get_updated_ul();
-			float pos=(float)tim-(float)SPLASH_START;
-
-			if(pos>SPLASH_DURATION) {
-				SPLASH_START = 0;
-				SPLASH_THINGS_STAGE++;
-			}
-
-			GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
-			return true;
-		}
-
-		if(SPLASH_THINGS_STAGE == 13) {
-			ARX_INTERFACE_KillFISHTANK();
-			ARX_INTERFACE_KillARKANE();
-			char loadfrom[256];
-
-			REFUSE_GAME_RETURN=1;
-			sprintf(loadfrom,"graph/levels/level10/level10.dlf");
-			OLD_PROGRESS_BAR_COUNT=PROGRESS_BAR_COUNT=0;
-			PROGRESS_BAR_TOTAL = 108;
-			LoadLevelScreen(10);	
-
-			DanaeLoadLevel(loadfrom);
-			FirstFrame=true;
-			SPLASH_THINGS_STAGE=0;
-
-			GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
-			return true;
-		}
-
-		if(SPLASH_THINGS_STAGE > 13) {
-			FirstFrame = true;
-			SPLASH_THINGS_STAGE = 0;
-
-			GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
-			return true;
-		}
+	if(GameFlow::getTransition() == GameFlow::NoTransition) {
+		return false;
 	}
 
-	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
+	if(GInput->isAnyKeyPressed()) {
+		REFUSE_GAME_RETURN = 1;
+		FirstFrame=true;
+		ARXmenu.currentmode = AMCM_MAIN;
+		ARX_MENU_Launch();
+		GameFlow::setTransition(GameFlow::InGame);
+	}
+		
+	if(GameFlow::getTransition() == GameFlow::FirstLogo) {
+		//firsttime
+		if(TRANSITION_START == 0) {
+			if(!ARX_INTERFACE_InitFISHTANK()) {
+				GameFlow::setTransition(GameFlow::SecondLogo);
+				return true;
+			}
+
+			TRANSITION_START = arxtime.get_updated_ul();
+		}
+
+		ARX_INTERFACE_ShowFISHTANK();
+
+		unsigned long tim = arxtime.get_updated_ul();
+		float pos = (float)tim - (float)TRANSITION_START;
+
+		if(pos > TRANSITION_DURATION) {
+			TRANSITION_START = 0;
+			GameFlow::setTransition(GameFlow::SecondLogo);
+		}
+
+		return true;			
+	}
+
+	if(GameFlow::getTransition() == GameFlow::SecondLogo) {
+		//firsttime
+		if(TRANSITION_START == 0) {
+			if(!ARX_INTERFACE_InitARKANE()) {
+				GameFlow::setTransition(GameFlow::LoadingScreen);
+				return true;
+			}
+
+			TRANSITION_START = arxtime.get_updated_ul();
+			ARX_SOUND_PlayInterface(SND_PLAYER_HEART_BEAT);
+		}
+
+		ARX_INTERFACE_ShowARKANE();
+		unsigned long tim = arxtime.get_updated_ul();
+		float pos = (float)tim - (float)TRANSITION_START;
+
+		if(pos > TRANSITION_DURATION) {
+			TRANSITION_START = 0;
+			GameFlow::setTransition(GameFlow::LoadingScreen);
+		}
+
+		return true;
+	}
+
+	if(GameFlow::getTransition() == GameFlow::LoadingScreen) {
+		ARX_INTERFACE_KillFISHTANK();
+		ARX_INTERFACE_KillARKANE();
+		char loadfrom[256];
+
+		REFUSE_GAME_RETURN=1;
+		sprintf(loadfrom, "graph/levels/level%d/level%d.dlf", LEVEL_TO_LOAD, LEVEL_TO_LOAD);
+		OLD_PROGRESS_BAR_COUNT=PROGRESS_BAR_COUNT=0;
+		PROGRESS_BAR_TOTAL = 108;
+		LoadLevelScreen(LEVEL_TO_LOAD);
+
+		DanaeLoadLevel(loadfrom);
+		GameFlow::setTransition(GameFlow::InGame);
+		return true;
+	}
+
+	if(GameFlow::getTransition() == GameFlow::InGame) {
+		GameFlow::setTransition(GameFlow::NoTransition);
+		FirstFrame = true;
+		return true;
+	}
+
 	return false;
 }
 
