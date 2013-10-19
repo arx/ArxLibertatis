@@ -1596,12 +1596,12 @@ long ARX_CHANGELEVEL_Pop_Level(ARX_CHANGELEVEL_INDEX * asi, long num, bool first
 			}
 		}
 		
-		BLOCK_PLAYER_CONTROLS = 0;
+		BLOCK_PLAYER_CONTROLS = false;
 		ARX_INTERFACE_Reset();
 		EERIE_ANIMMANAGER_PurgeUnused();
 		
 	} else {
-		BLOCK_PLAYER_CONTROLS = 0;
+		BLOCK_PLAYER_CONTROLS = false;
 		ARX_INTERFACE_Reset();
 		EERIE_ANIMMANAGER_PurgeUnused();
 	}
@@ -2904,7 +2904,7 @@ long ARX_CHANGELEVEL_Load(const fs::path & savefile) {
 	}
 	
 	STARTED_A_GAME = 1;
-	BLOCK_PLAYER_CONTROLS = 0;
+	BLOCK_PLAYER_CONTROLS = false;
 	player.Interface &= ~INTER_COMBATMODE;
 	
 	if (entities.player()) entities.player()->animlayer[1].cur_anim = NULL;

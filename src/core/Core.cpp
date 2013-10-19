@@ -2663,7 +2663,7 @@ void DANAE_StartNewQuest()
 	FirstFrame=true;
 	START_NEW_QUEST=0;
 	STARTED_A_GAME=1;
-	BLOCK_PLAYER_CONTROLS = 0;
+	BLOCK_PLAYER_CONTROLS = false;
 	FADEDURATION=0;
 	FADEDIR=0;
 	player.Interface = INTER_LIFE_MANA | INTER_MINIBACK | INTER_MINIBOOK;
@@ -2852,7 +2852,7 @@ void DANAE_Manage_Cinematic() {
 		}
 		
 		if(bWasBlocked) {
-			BLOCK_PLAYER_CONTROLS =1;
+			BLOCK_PLAYER_CONTROLS = true;
 		}
 		
 		ARX_SPEECH_Reset();

@@ -156,7 +156,7 @@ float CURRENT_PLAYER_COLOR = 0;
 float PLAYER_ROTATION = 0;
 
 long USE_PLAYERCOLLISIONS = 1;
-long BLOCK_PLAYER_CONTROLS = 0;
+bool BLOCK_PLAYER_CONTROLS = false;
 long WILLRETURNTOCOMBATMODE = 0;
 long DeadTime = 0;
 static unsigned long LastHungerSample = 0;
@@ -1345,7 +1345,7 @@ void ARX_PLAYER_StartFall()
 void ARX_PLAYER_BecomesDead() {
 	STARTED_A_GAME = 0;
 	// a mettre au final
-	BLOCK_PLAYER_CONTROLS = 1;
+	BLOCK_PLAYER_CONTROLS = true;
 
 	if(entities.player()) {
 		player.Interface &= ~INTER_COMBATMODE;
@@ -2986,7 +2986,7 @@ void ARX_GAME_Reset(long type) {
 
 	// Misc Player Vars.
 	ROTATE_START = 0;
-	BLOCK_PLAYER_CONTROLS = 0;
+	BLOCK_PLAYER_CONTROLS = false;
 	HERO_SHOW_1ST = -1;
 	PUSH_PLAYER_FORCE = Vec3f::ZERO;
 	player.jumplastposition = 0;

@@ -1149,7 +1149,7 @@ void ArxGame::handlePlayerDeath() {
 		subj.angle.b=MAKEANGLE(conversationcamera.angle.b-180.f);
 		subj.angle.g = 0;
 		EXTERNALVIEW = true;
-		BLOCK_PLAYER_CONTROLS=1;
+		BLOCK_PLAYER_CONTROLS = true;
 	}
 }
 

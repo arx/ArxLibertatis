@@ -316,7 +316,7 @@ extern ANIM_HANDLE * herowait_2h;
 extern std::vector<STRUCT_QUEST> PlayerQuest;
 extern std::vector<KEYRING_SLOT> Keyring;
 
-extern long BLOCK_PLAYER_CONTROLS;
+extern bool BLOCK_PLAYER_CONTROLS;
 extern long USE_PLAYERCOLLISIONS;
 extern long WILLRETURNTOCOMBATMODE;
 
