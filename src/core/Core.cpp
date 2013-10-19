@@ -2679,19 +2679,21 @@ void DANAE_StartNewQuest()
 	player.Interface = INTER_LIFE_MANA | INTER_MINIBACK | INTER_MINIBOOK;
 }
 
-s32 LEVEL_TO_LOAD = 10;
+LevelNumber LEVEL_TO_LOAD = LEVEL10;
 
-void loadLevel(s32 lvl) {
+void loadLevel(u32 lvl) {
 	
-	if(GameFlow::getTransition() != GameFlow::LoadingScreen) {
-		LEVEL_TO_LOAD = lvl;
-		GameFlow::setTransition(GameFlow::LoadingScreen);
+	if(lvl < NOLEVEL) {
+		if(GameFlow::getTransition() != GameFlow::LoadingScreen) {
+			LEVEL_TO_LOAD = static_cast<LevelNumber>(lvl);
+			GameFlow::setTransition(GameFlow::LoadingScreen);
+		}
 	}
 }
 ARX_PROGRAM_OPTION("level", "", "Load a specific level", &loadLevel, "LEVELID");
 
 void skipLogo() {
-	loadLevel(10);
+	loadLevel(LEVEL10);
 }
 ARX_PROGRAM_OPTION("skiplogo", "", "Skip logos at startup", &skipLogo);
 
