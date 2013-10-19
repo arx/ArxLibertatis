@@ -176,7 +176,7 @@ extern bool BLOCK_PLAYER_CONTROLS;
 extern long DeadTime;
 extern long ALLOW_CHEATS;
 extern long LOOKING_FOR_SPELL_TARGET;
-extern long WILLRETURNTOFREELOOK;
+extern bool WILLRETURNTOFREELOOK;
 extern float BOW_FOCAL;
 extern Vec2s DANAEMouse;
 extern short sActiveInventory;
@@ -673,14 +673,14 @@ void InventoryOpenClose(unsigned long t) // 0 switch 1 forceopen 2 forceclose
 		if(WILLRETURNTOFREELOOK) {
 			TRUE_PLAYER_MOUSELOOK_ON = true;
 			SLID_START=float(arxtime);
-			WILLRETURNTOFREELOOK = 0;
+			WILLRETURNTOFREELOOK = false;
 		}
 	} else {
 		player.Interface |= INTER_INVENTORY;
 		InventoryY = static_cast<long>(INTERFACE_RATIO(100.f));
 
 		if(TRUE_PLAYER_MOUSELOOK_ON)
-			WILLRETURNTOFREELOOK = 1;
+			WILLRETURNTOFREELOOK = true;
 	}
 
 	if(((player.Interface & INTER_INVENTORYALL) || TRUE_PLAYER_MOUSELOOK_ON) && (player.Interface & INTER_NOTE))
@@ -1548,7 +1548,7 @@ void ArxGame::manageEditorControls() {
 								ARX_INTERFACE_NoteClose();
 
 								if(TRUE_PLAYER_MOUSELOOK_ON) {
-									WILLRETURNTOFREELOOK = 1;
+									WILLRETURNTOFREELOOK = true;
 								}
 							}
 						}

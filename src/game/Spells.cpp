@@ -131,7 +131,7 @@ static const float IMPROVED_FOCAL = 320.0f;
 void MakeSpCol();
 extern bool TRUE_PLAYER_MOUSELOOK_ON;
 long passwall=0;
-long WILLRETURNTOFREELOOK = 0;
+bool WILLRETURNTOFREELOOK = false;
 long GLOBAL_MAGIC_MODE=1;
 bool bPrecastSpell = false;
 extern std::string LAST_FAILED_SEQUENCE;
@@ -2155,7 +2155,7 @@ void ARX_SPELLS_ManageMagic() {
 		}
 
 		if(TRUE_PLAYER_MOUSELOOK_ON) {
-			WILLRETURNTOFREELOOK = 1;
+			WILLRETURNTOFREELOOK = true;
 			TRUE_PLAYER_MOUSELOOK_ON = false;
 		}
 
@@ -2282,7 +2282,7 @@ void ARX_SPELLS_ManageMagic() {
 
 		if(WILLRETURNTOFREELOOK) {
 			TRUE_PLAYER_MOUSELOOK_ON = true;
-			WILLRETURNTOFREELOOK = 0;
+			WILLRETURNTOFREELOOK = false;
 		}
 
 		ARX_SPELLS_ResetRecognition();
