@@ -67,6 +67,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/Player.h"
 #include "game/Levels.h"
 #include "game/Inventory.h"
+#include "game/spell/Cheat.h"
 
 #include "gui/MiniMap.h"
 #include "gui/Interface.h"
@@ -613,14 +614,6 @@ void FillIOIdent(char (&tofill)[N], const Entity * io) {
 		strncpy(tofill, ident.c_str(),  N);
 	}
 }
-
-extern long sp_max;
-extern long cur_rf;
-extern long cur_mx;
-extern long cur_mr;
-extern long cur_pom;
-extern long sp_wep;
-extern long sp_arm;
 
 static long ARX_CHANGELEVEL_Push_Player(long level) {
 	

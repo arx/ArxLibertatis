@@ -74,6 +74,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/Player.h"
 #include "game/Spells.h"
 #include "game/spell/FlyingEye.h"
+#include "game/spell/Cheat.h"
 
 #include "graphics/BaseGraphicsTypes.h"
 #include "graphics/Color.h"
@@ -157,8 +158,6 @@ extern long REFUSE_GAME_RETURN;
 extern bool PLAYER_MOUSELOOK_ON;
 extern bool TRUE_PLAYER_MOUSELOOK_ON;
 extern long PLAYER_PARALYSED;
-extern long cur_mr;
-extern long cur_rf;
 extern long DeadTime;
 extern int iTimeToDrawD7;
 extern long LaunchDemo;
@@ -167,7 +166,6 @@ extern long CURRENT_BASE_FOCAL;
 extern float BOW_FOCAL;
 
 extern float GLOBAL_SLOWDOWN;
-extern float sp_max_start;
 extern float LAST_FADEVALUE;
 
 extern float PROGRESS_BAR_TOTAL;

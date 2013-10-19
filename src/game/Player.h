@@ -364,7 +364,6 @@ void ARX_PLAYER_Restore_Skin();
 float GetPlayerStealth();
 
 void ARX_GAME_Reset(long type = 0);
-void Manage_sp_max();
 long GetXPforLevel(long level);
 bool ARX_PLAYER_IsInFightMode();
 void ARX_PLAYER_Invulnerability(long flag);

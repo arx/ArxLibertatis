@@ -73,6 +73,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/Player.h"
 #include "game/Inventory.h"
 #include "game/spell/FlyingEye.h"
+#include "game/spell/Cheat.h"
 
 #include "gui/Speech.h"
 #include "gui/Menu.h"
@@ -128,7 +129,6 @@ using std::string;
 static const float DEC_FOCAL = 50.0f;
 static const float IMPROVED_FOCAL = 320.0f;
 
-void MakeSpCol();
 extern bool TRUE_PLAYER_MOUSELOOK_ON;
 long passwall=0;
 bool WILLRETURNTOFREELOOK = false;
@@ -146,54 +146,15 @@ enum ARX_SPELLS_RuneDirection
 	ALEFT,
 	AUPLEFT
 };
-long sp_arm=0;
-long cur_arm=0;
-long cur_sos=0;
-static void ApplyPasswall();
-static void ApplySPArm();
-static void ApplySPuw();
-static void ApplySPRf();
-static void ApplySPMax();
-static void ApplySPWep();
-static void ApplySPBow();
-static void ApplyCurPNux();
-static void ApplyCurMr();
-static void ApplyCurSOS(); 
 
-extern long sp_max;
-short uw_mode=0;
-static short uw_mode_pos=0;
 extern long MAGICMODE;
 extern float GLOBAL_SLOWDOWN;
-extern void ARX_SPSound();
-extern float sp_max_y[64];
-extern Color sp_max_col[64];
-extern char	sp_max_ch[64];
-extern long sp_max_nb;
-long cur_mega=0;
-float sp_max_start = 0;
-long sp_wep=0;
 
 extern bool bRenderInCursorMode;
 
 bool bOldLookToggle;
 extern float SLID_START;
 
-long BH_MODE = 0;
-void EERIE_OBJECT_SetBHMode()
-{
-	if (BH_MODE)
-		BH_MODE=0;
-	else
-	{
-		BH_MODE=1;
-		MakeCoolFx(&player.pos);
-		MakeSpCol();
-		strcpy(sp_max_ch,"!!!_Super-Deformed_!!!");
-		sp_max_nb=strlen(sp_max_ch);
-		sp_max_start=arxtime.get_updated();
-			}
-}
 
 struct SYMBOL_DRAW {
 	unsigned long	starttime;
@@ -215,13 +176,7 @@ static float ARX_SPELLS_GetManaCost(Spell _lNumSpell,long _lNumSpellTab);
 SPELL spells[MAX_SPELLS];
 short ARX_FLARES_broken(1);
 long CurrPoint(0);
-long cur_mx=0;
-long cur_pnux=0;
-long cur_pom=0;
-long cur_rf=0;
-long cur_mr=0;
-long cur_sm=0;
-long cur_bh=0;
+
 
 static float LASTTELEPORT(0.0F);
 long snip=0;
@@ -6828,244 +6783,3 @@ void TryToCastSpell(Entity * io, Spell spellid, long level, long target, Spellca
 	io->spellcast_data.spell_flags &=~SPELLCAST_FLAG_NODRAW; // temporary, removes colored flares
 }
 
-static void ApplySPWep() {
-	
-	if(!sp_wep) {
-		
-		ARX_SPSound();
-		
-		res::path cls = "graph/obj3d/interactive/items/weapons/sword_mx/sword_mx";
-		Entity * ioo = AddItem(cls);
-		if(ioo) {
-			
-			sp_wep = 1;
-			MakeCoolFx(&player.pos);
-			MakeCoolFx(&player.pos);
-			ioo->scriptload = 1;
-			SendInitScriptEvent(ioo);
-			
-			giveToPlayer(ioo);
-			
-			MakeSpCol();
-			strcpy(sp_max_ch,"!!!_Grosbillite_!!!");
-			sp_max_nb=strlen(sp_max_ch);
-			sp_max_start=arxtime.get_updated();
-		}
-	}
-}
-
-void MakeSpCol() {
-	
-	ARX_SPSound();
-	
-	for(long i = 0; i < 64; i++) {
-		sp_max_y[i] = 0;
-	}
-	
-	sp_max_col[0] = Color::fromRGBA(0x00FF0000);
-	sp_max_col[1] = Color::fromRGBA(0x0000FF00);
-	sp_max_col[2] = Color::fromRGBA(0x000000FF);
-	
-	sp_max_col[3] = Color::fromRGBA(0x00FFFF00);
-	sp_max_col[4] = Color::fromRGBA(0x00FF00FF);
-	sp_max_col[5] = Color::fromRGBA(0x0000FFFF);
-	
-	for(size_t i = 6; i < 24; i++) {
-		sp_max_col[i] = sp_max_col[i - 6];
-	}
-	
-	for(size_t i = 24; i < 27; i++) {
-		sp_max_col[i] = sp_max_col[i - 3];
-	}
-	
-	for(size_t i = 27; i < 33; i++) {
-		sp_max_col[i] = sp_max_col[i - 9];
-	}
-	
-}
-
-static void ApplyCurSOS() {
-	MakeSpCol();
-	g_miniMap.reveal();
-	strcpy(sp_max_ch,"!!!_Temple of Elemental Lavis_!!!");
-	sp_max_nb=strlen(sp_max_ch);
-	sp_max_start=arxtime.get_updated();
-}
-
-static void ApplySPBow() {
-	
-	ARX_SPSound();
-	
-	const char * cls = "graph/obj3d/interactive/items/weapons/bow_mx/bow_mx";
-	Entity * ioo = AddItem(cls);
-	if(ioo) {
-		
-		MakeCoolFx(&player.pos);
-		MakeCoolFx(&player.pos);
-		
-		ioo->scriptload = 1;
-		SendInitScriptEvent(ioo);
-		
-		giveToPlayer(ioo);
-		
-		MakeSpCol();
-		strcpy(sp_max_ch,"!!!_Bow to Samy & Anne_!!!");
-		sp_max_nb=strlen(sp_max_ch);
-		sp_max_start=arxtime.get_updated();
-	}
-}
-
-static void ApplySPArm() {
-	ARX_SPSound();
-	
-	res::path cls;
-	switch (sp_arm) {
-		case 0:
-			cls = "graph/obj3d/interactive/items/armor/helmet_plate_cm/helmet_plate_cm";
-		break;
-		case 1:
-			cls = "graph/obj3d/interactive/items/armor/legging_plate_cm/legging_plate_cm";
-		break;
-		case 2:
-			cls = "graph/obj3d/interactive/items/armor/chest_plate_cm/chest_plate_cm";
-		break;
-		default:
-			return;
-		break;
-	}
-	
-	Entity * ioo = AddItem(cls);
-	if(ioo) {
-		
-		sp_wep = 1;
-		MakeCoolFx(&player.pos);
-		MakeCoolFx(&player.pos);
-		ioo->scriptload = 1;
-		SendInitScriptEvent(ioo);
-		
-		giveToPlayer(ioo);
-		
-		MakeSpCol();
-		strcpy(sp_max_ch,"!! Toi aussi cherches les Cheats !!");
-
-		switch (sp_arm)
-		{
-		case 0:
-			strcpy(sp_max_ch,"------ZoliChapo------");
-		break;
-		case 1:
-			strcpy(sp_max_ch,"-----TiteBottine-----");
-		break;
-		case 2:
-			strcpy(sp_max_ch,"-----Roooo-La-La-----");
-		break;
-		default:
-			return;
-		break;
-		}
-
-		sp_max_nb=strlen(sp_max_ch);
-		sp_max_start=arxtime.get_updated();
-	}
-
-	sp_arm++;
-}
-
-long SPECIAL_PNUX;
-static void ApplyCurPNux() {
-	
-	MakeSpCol();
-	strcpy(sp_max_ch,"! PhilNux & Gluonne !");
-	sp_max_nb=strlen(sp_max_ch);
-	
-	SPECIAL_PNUX = (SPECIAL_PNUX + 1) % 3;
-	
-	// TODO-RENDERING: Create a post-processing effect for that cheat... see original source...
-	
-	cur_pnux=0;
-	sp_max_start=arxtime.get_updated();
-}
-
-static void ApplyPasswall() {
-	MakeSpCol();
-	strcpy(sp_max_ch,"!!! PassWall !!!");
-	sp_max_nb=strlen(sp_max_ch);
-	sp_max_start=arxtime.get_updated();
-
-	if(USE_PLAYERCOLLISIONS)
-		USE_PLAYERCOLLISIONS = false;
-	else
-		USE_PLAYERCOLLISIONS = true;
-}
-
-static void ApplySPRf() {
-	if(cur_rf == 3) {
-		MakeSpCol();
-		strcpy(sp_max_ch,"!!! RaFMode !!!");
-		sp_max_nb=strlen(sp_max_ch);
-		sp_max_start=arxtime.get_updated();
-	}
-}
-
-static void ApplyCurMr() {
-	if(cur_mr == 3) {
-		MakeSpCol();
-		strcpy(sp_max_ch,"!!! Marianna !!!");
-		sp_max_nb=strlen(sp_max_ch);
-		sp_max_start=arxtime.get_updated();
-	}
-}
-
-static void ApplySPuw() {
-	uw_mode_pos=0;
-	uw_mode=~uw_mode;
-	ARX_SOUND_PlayCinematic("menestrel_uw2", true);
-	MakeCoolFx(&player.pos);
-	if(uw_mode) {
-		MakeSpCol();
-		strcpy(sp_max_ch,"~-__-~~-__.U.W.__-~~-__-~");
-		sp_max_nb=strlen(sp_max_ch);
-		sp_max_start=arxtime.get_updated();
-	}
-}
-
-static void ApplySPMax() {
-	
-	MakeCoolFx(&player.pos);
-	sp_max=~sp_max;
-
-	if (sp_max)
-	{
-		MakeSpCol();
-		strcpy(sp_max_ch,"!!!_FaNt0mAc1e_!!!");
-		sp_max_nb=strlen(sp_max_ch);
-		sp_max_start=arxtime.get_updated();
-
-			player.skin=4;
-
-			ARX_EQUIPMENT_RecreatePlayerMesh();
-		
-		ARX_PLAYER_Rune_Add_All();
-		std::string text = "!!!!!!! FanTomAciE !!!!!!!";
-		ARX_SPEECH_Add(text);
-		player.Attribute_Redistribute+=10;
-		player.Skill_Redistribute+=50;
-		player.level=std::max((int)player.level,10);
-		player.xp=GetXPforLevel(10);
-	}
-	else
-	{
-		TextureContainer * tcm;
-		tcm = TextureContainer::Load("graph/obj3d/textures/npc_human_cm_hero_head");
-		if(tcm) {
-			delete tcm;
-			player.heads[0]
-				= TextureContainer::Load("graph/obj3d/textures/npc_human_base_hero_head");
-			player.heads[1]
-				= TextureContainer::Load("graph/obj3d/textures/npc_human_base_hero2_head");
-			player.heads[2]
-				= TextureContainer::Load("graph/obj3d/textures/npc_human_base_hero3_head");
-			ARX_EQUIPMENT_RecreatePlayerMesh();
-		}
-	}	
-}

@@ -85,6 +85,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/Player.h"
 #include "game/Spells.h"
 #include "game/spell/FlyingEye.h"
+#include "game/spell/Cheat.h"
 
 #include "gui/MenuPublic.h"
 #include "gui/Menu.h"
@@ -1442,8 +1443,6 @@ static void PlayerLaunchArrow_Test(float aimratio, float poisonous, Vec3f * pos,
 	ARX_THROWN_OBJECT_Throw(/*source*/0, &position, &vect, &quat, velocity, damages, poisonous);
 }
 
-extern long sp_max;
-
 extern unsigned long LAST_JUMP_ENDTIME;
 
 //*************************************************************************************
@@ -2566,7 +2565,6 @@ void ManageFade()
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 }
 
-extern long cur_mr;
 static TextureContainer * Mr_tc = NULL;
 
 void CheckMr() {
