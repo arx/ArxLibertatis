@@ -207,7 +207,7 @@ long SHOW_INGAME_MINIMAP= 1;
 
 float PLAYER_ARMS_FOCAL = 350.f;
 
-unsigned char ARX_FLARES_Block=1;
+bool ARX_FLARES_Block = true;
 
 Vec3f LASTCAMPOS;
 Anglef LASTCAMANGLE;
@@ -1440,14 +1440,14 @@ void ArxGame::updateLevel() {
 	// Checks Magic Flares Drawing
 	if(!PLAYER_PARALYSED) {
 		if(EERIEMouseButton & 1) {
-			if(ARX_FLARES_Block == 0) {
+			if(!ARX_FLARES_Block) {
 				ARX_SPELLS_AddPoint(DANAEMouse);
 			} else {
 				CurrPoint = 0;
-				ARX_FLARES_Block = 0;
+				ARX_FLARES_Block = false;
 			}
-		} else if(ARX_FLARES_Block == 0) {
-			ARX_FLARES_Block = 1;
+		} else if(!ARX_FLARES_Block) {
+			ARX_FLARES_Block = true;
 		}
 	}
 
