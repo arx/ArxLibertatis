@@ -157,7 +157,7 @@ float PLAYER_ROTATION = 0;
 
 bool USE_PLAYERCOLLISIONS = true;
 bool BLOCK_PLAYER_CONTROLS = false;
-long WILLRETURNTOCOMBATMODE = 0;
+bool WILLRETURNTOCOMBATMODE = false;
 long DeadTime = 0;
 static unsigned long LastHungerSample = 0;
 static unsigned long ROTATE_START = 0;

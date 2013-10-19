@@ -318,7 +318,7 @@ extern std::vector<KEYRING_SLOT> Keyring;
 
 extern bool BLOCK_PLAYER_CONTROLS;
 extern bool USE_PLAYERCOLLISIONS;
-extern long WILLRETURNTOCOMBATMODE;
+extern bool WILLRETURNTOCOMBATMODE;
 
 void ARX_PLAYER_MakeSpHero();
 void ARX_PLAYER_LoadHeroAnimsAndMesh();

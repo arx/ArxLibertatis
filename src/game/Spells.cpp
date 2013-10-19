@@ -2145,7 +2145,7 @@ void ARX_SPELLS_ManageMagic() {
 		(GInput->actionPressed(CONTROLS_CUST_MAGICMODE))) && !PLAYER_PARALYSED)
 	{
 		if(player.Interface & INTER_COMBATMODE) {
-			WILLRETURNTOCOMBATMODE=1;
+			WILLRETURNTOCOMBATMODE = true;
 
 			ARX_INTERFACE_Combat_Mode(0);
 			bGToggleCombatModeWithKey=false;
@@ -2274,7 +2274,7 @@ void ARX_SPELLS_ManageMagic() {
 
 			ARX_EQUIPMENT_LaunchPlayerReadyWeapon();
 			player.doingmagic=0;
-			WILLRETURNTOCOMBATMODE=0;
+			WILLRETURNTOCOMBATMODE = false;
 
 			TRUE_PLAYER_MOUSELOOK_ON = true;
 			bRenderInCursorMode=false;
@@ -2583,7 +2583,7 @@ void ARX_SPELLS_Precast_Check() {
 			ANIM_USE *ause1 = &entities.player()->animlayer[1];
 			
 			if(player.Interface & INTER_COMBATMODE) {
-				WILLRETURNTOCOMBATMODE=1;
+				WILLRETURNTOCOMBATMODE = true;
 				ARX_INTERFACE_Combat_Mode(0);
 				bGToggleCombatModeWithKey=false;
 				ResetAnim(&entities.player()->animlayer[1]);

@@ -2516,7 +2516,7 @@ void ManageCombatModeAnimationsEND()
 				player.Interface |= INTER_NO_STRIKE;
 
 				ARX_EQUIPMENT_LaunchPlayerReadyWeapon();
-				WILLRETURNTOCOMBATMODE = 0;
+				WILLRETURNTOCOMBATMODE = false;
 			}
 		}
 	}
