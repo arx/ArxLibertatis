@@ -181,7 +181,6 @@ extern long		COLLIDED_CLIMB_POLY;
 extern long LastSelectedIONum;
 extern float ARXTimeMenu;
 extern float ARXOldTimeMenu;
-extern long		REFUSE_GAME_RETURN;
 extern bool		PLAYER_MOUSELOOK_ON;
 extern bool bFadeInOut;
 extern 	bool bFade;			//active le fade
@@ -2705,10 +2704,8 @@ bool HandleGameFlowTransitions() {
 	}
 
 	if(GInput->isAnyKeyPressed()) {
-		REFUSE_GAME_RETURN = 1;
-		FirstFrame=true;
 		ARXmenu.currentmode = AMCM_MAIN;
-		ARX_MENU_Launch();
+		ARX_MENU_Launch(false);
 		GameFlow::setTransition(GameFlow::InGame);
 	}
 		
@@ -2765,7 +2762,6 @@ bool HandleGameFlowTransitions() {
 		ARX_INTERFACE_KillARKANE();
 		char loadfrom[256];
 
-		REFUSE_GAME_RETURN=1;
 		sprintf(loadfrom, "graph/levels/level%d/level%d.dlf", LEVEL_TO_LOAD, LEVEL_TO_LOAD);
 		OLD_PROGRESS_BAR_COUNT=PROGRESS_BAR_COUNT=0;
 		PROGRESS_BAR_TOTAL = 108;

@@ -90,7 +90,7 @@ extern ARX_MENU_DATA ARXmenu;
 
 void ARX_Menu_Manage();
 bool ARX_Menu_Render();
-void ARX_MENU_Launch();
+void ARX_MENU_Launch(bool allowResume);
 void ARX_MENU_Clicked_QUIT_GAME();
 void ARX_Menu_Resources_Create();
 void ARX_Menu_Resources_Release(bool _bNoSound = true);

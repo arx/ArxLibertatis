@@ -248,5 +248,5 @@ void LoadLevelScreen() {
 void ARX_INTERFACE_EndIntro()
 {
 	ARX_SOUND_MixerStop(ARX_SOUND_MixerGame);
-	ARX_MENU_Launch();
+	ARX_MENU_Launch(false);
 }

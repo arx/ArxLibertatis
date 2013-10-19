@@ -287,8 +287,10 @@ void ARX_MENU_Clicked_QUIT_GAME() {
 	mainApp->quit();
 }
 
-void ARX_MENU_Launch() {
+void ARX_MENU_Launch(bool allowResume) {
 	
+	REFUSE_GAME_RETURN = !allowResume;
+
 	arxtime.pause();
 
 	//Synchronize menu mixers with game mixers and switch between them
@@ -326,7 +328,7 @@ void ARX_Menu_Manage() {
 
 					arxtime.pause();
 					ARXTimeMenu=ARXOldTimeMenu=arxtime.get_updated();
-					ARX_MENU_Launch();
+					ARX_MENU_Launch(true);
 					bFadeInOut=false;	//fade out
 					bFade=true;			//active le fade
 					TRUE_PLAYER_MOUSELOOK_ON = false;

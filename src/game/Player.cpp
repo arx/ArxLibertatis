@@ -2640,7 +2640,7 @@ void ARX_PLAYER_Manage_Death() {
 	float ratio = (float)(DeadTime - 2000) * ( 1.0f / 5000 );
 
 	if(ratio >= 1.f) {
-		ARX_MENU_Launch();
+		ARX_MENU_Launch(false);
 		DeadTime = 0;
 	}
 
