@@ -138,6 +138,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "platform/CrashHandler.h"
 #include "platform/Flags.h"
 #include "platform/Platform.h"
+#include "platform/ProgramOptions.h"
 
 #include "scene/LinkedObject.h"
 #include "scene/CinematicSound.h"
@@ -2687,6 +2688,12 @@ void loadLevel(s32 lvl) {
 		GameFlow::setTransition(GameFlow::LoadingScreen);
 	}
 }
+ARX_PROGRAM_OPTION("level", "", "Load a specific level", &loadLevel);
+
+void skipLogo() {
+	loadLevel(10);
+}
+ARX_PROGRAM_OPTION("skiplogo", "", "Skip logos at startup", &skipLogo);
 
 bool HandleGameFlowTransitions() {
 	
