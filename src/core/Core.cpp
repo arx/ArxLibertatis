@@ -2688,7 +2688,7 @@ void loadLevel(s32 lvl) {
 		GameFlow::setTransition(GameFlow::LoadingScreen);
 	}
 }
-ARX_PROGRAM_OPTION("level", "", "Load a specific level", &loadLevel);
+ARX_PROGRAM_OPTION("level", "", "Load a specific level", &loadLevel, "LEVELID");
 
 void skipLogo() {
 	loadLevel(10);
