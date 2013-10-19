@@ -155,7 +155,7 @@ float currentdistance = 0.f;
 float CURRENT_PLAYER_COLOR = 0;
 float PLAYER_ROTATION = 0;
 
-long USE_PLAYERCOLLISIONS = 1;
+bool USE_PLAYERCOLLISIONS = true;
 bool BLOCK_PLAYER_CONTROLS = false;
 long WILLRETURNTOCOMBATMODE = 0;
 long DeadTime = 0;

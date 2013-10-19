@@ -522,7 +522,7 @@ void InitializeDanae() {
 		}
 		EERIEPOLY_Compute_PolyIn();
 		LastLoadedScene = levelPath;
-		USE_PLAYERCOLLISIONS=0;
+		USE_PLAYERCOLLISIONS = false;
 	}
 }
 

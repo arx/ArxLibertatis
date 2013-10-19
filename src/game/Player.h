@@ -317,7 +317,7 @@ extern std::vector<STRUCT_QUEST> PlayerQuest;
 extern std::vector<KEYRING_SLOT> Keyring;
 
 extern bool BLOCK_PLAYER_CONTROLS;
-extern long USE_PLAYERCOLLISIONS;
+extern bool USE_PLAYERCOLLISIONS;
 extern long WILLRETURNTOCOMBATMODE;
 
 void ARX_PLAYER_MakeSpHero();

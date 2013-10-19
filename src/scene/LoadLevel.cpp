@@ -975,7 +975,7 @@ long DanaeLoadLevel(const res::path & file, bool loadEntities) {
 	if(!dat) {
 		LOADEDD = 1;
 		FASTmse = 0;
-		USE_PLAYERCOLLISIONS = 1;
+		USE_PLAYERCOLLISIONS = true;
 		LogInfo << "Done loading level";
 		return 1;
 	}
@@ -1079,7 +1079,7 @@ long DanaeLoadLevel(const res::path & file, bool loadEntities) {
 	
 	LOADEDD = 1;
 	FASTmse = 0;
-	USE_PLAYERCOLLISIONS = 1;
+	USE_PLAYERCOLLISIONS = true;
 	
 	LogInfo << "Done loading level";
 	

@@ -6992,10 +6992,10 @@ static void ApplyPasswall() {
 	sp_max_nb=strlen(sp_max_ch);
 	sp_max_start=arxtime.get_updated();
 
-	if (USE_PLAYERCOLLISIONS)
-		USE_PLAYERCOLLISIONS=0;
+	if(USE_PLAYERCOLLISIONS)
+		USE_PLAYERCOLLISIONS = false;
 	else
-		USE_PLAYERCOLLISIONS=1;
+		USE_PLAYERCOLLISIONS = true;
 }
 
 static void ApplySPRf() {
