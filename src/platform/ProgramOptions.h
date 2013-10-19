@@ -72,13 +72,14 @@ public:
 		, m_handler(handler), m_argNames(argNames) { }
 	
 	virtual void registerOption(util::cmdline::interpreter<std::string> & l) {
-		l.add(
-			m_handler,
-			util::cmdline::interpreter<std::string>::op_name_t(std::string("-") + m_shortName)
-			(std::string("--") + m_longName)
-			.description(m_description)
-			.arg_count(boost::function_types::function_arity<Handler>::value)
-			.arg_names(m_argNames)
+		std::string shortName = (m_shortName == NULL || *m_shortName == 0) ? "" : std::string("-") + m_shortName;
+		std::string longName = (m_longName == NULL || *m_longName == 0) ? "" : std::string("--") + m_longName;
+		
+		l.add(m_handler,
+			  util::cmdline::interpreter<std::string>::op_name_t(shortName)(longName)
+			  .description(m_description)
+			  .arg_count(boost::function_types::function_arity<Handler>::value)
+			  .arg_names(m_argNames)
 		);
 	}
 	
