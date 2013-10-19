@@ -364,9 +364,7 @@ void MACRO_MENU_PRINCIPALE(int iPosMenuPrincipaleX,
 	CMenuElementText *me = new CMenuElementText(MACRO_button, hFontMainMenu, szMenuText, RATIO_X(iPosMenuPrincipaleX), RATIO_Y(iPosMenuPrincipaleY), lColor, 1.8f, MACRO_menu);
 	if(MACRO_check) {
 		pMenuElementResume=me;
-		bool bBOOL;
-		ARXMenu_GetResumeGame(bBOOL);
-		if(bBOOL) {
+		if(ARXMenu_CanResumeGame()) {
 			me->SetCheckOn();
 		} else {
 			me->SetCheckOff();
@@ -477,10 +475,8 @@ bool Menu2_Render() {
 	bool bScroll=true;
 	{
 		if(pMenuElementResume) {
-			bool bTemp;
-			ARXMenu_GetResumeGame(bTemp);
 
-			if(bTemp) {
+			if(ARXMenu_CanResumeGame()) {
 				pMenuElementResume->SetCheckOn();
 				((CMenuElementText*)pMenuElementResume)->lColor=lColor;
 			} else {
@@ -546,10 +542,8 @@ bool Menu2_Render() {
 			switch(eMenuState) {
 			case NEW_QUEST: {
 					std::string szMenuText;
-					bool bBOOL = false;
-					ARXMenu_GetResumeGame(bBOOL);
 
-					if(!bBOOL)
+					if(!ARXMenu_CanResumeGame())
 						break;
 
 					CMenuElement *me = NULL;
@@ -598,10 +592,8 @@ bool Menu2_Render() {
 
 					szMenuText = getLocalised( "system_menus_main_editquest_save");
 					me = new CMenuElementText(-1, hFontMenu, szMenuText, 0, 0, lColor, 1.f, EDIT_QUEST_SAVE);
-					bool bBOOL;
-					ARXMenu_GetResumeGame(bBOOL);
-
-					if(!bBOOL) {
+					
+					if(!ARXMenu_CanResumeGame()) {
 						me->SetCheckOff();
 						((CMenuElementText*)me)->lColor=Color(127,127,127);
 					}
@@ -1805,10 +1797,8 @@ bool CMenuElementText::OnMouseClick(int _iMouseButton) {
 		}
 		break;
 	case BUTTON_MENUMAIN_NEWQUEST: {
-			bool bBOOL = false;
-			ARXMenu_GetResumeGame(bBOOL);
-
-			if(!bBOOL) {
+			
+			if(!ARXMenu_CanResumeGame()) {
 				ARXMenu_NewQuest();
 			}
 		}
