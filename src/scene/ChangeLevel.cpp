@@ -2849,8 +2849,6 @@ static bool ARX_CHANGELEVEL_Get_Player_LevelData(ARX_CHANGELEVEL_PLAYER_LEVEL_DA
 	return true;
 }
 
-extern long STARTED_A_GAME;
-
 long ARX_CHANGELEVEL_Load(const fs::path & savefile) {
 	
 	LogDebug("begin ARX_CHANGELEVEL_Load " << savefile);
@@ -2896,7 +2894,6 @@ long ARX_CHANGELEVEL_Load(const fs::path & savefile) {
 		return -1;
 	}
 	
-	STARTED_A_GAME = 1;
 	BLOCK_PLAYER_CONTROLS = false;
 	player.Interface &= ~INTER_COMBATMODE;
 	

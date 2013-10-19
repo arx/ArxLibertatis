@@ -142,7 +142,6 @@ extern float InventoryX;
 extern float InventoryDir;
 extern long COLLIDED_CLIMB_POLY;
 extern long HERO_SHOW_1ST;
-extern long STARTED_A_GAME;
 extern bool TRUE_PLAYER_MOUSELOOK_ON;
 extern unsigned long ulBookHaloTime;
 extern unsigned long ulGoldHaloTime;
@@ -1341,7 +1340,6 @@ void ARX_PLAYER_StartFall()
  * \brief Called When player has just died
  */
 void ARX_PLAYER_BecomesDead() {
-	STARTED_A_GAME = 0;
 	// a mettre au final
 	BLOCK_PLAYER_CONTROLS = true;
 

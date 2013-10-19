@@ -305,7 +305,6 @@ long REQUEST_SPEECH_SKIP= 0;
 long CURRENTLEVEL		= -1;
 long DONT_ERASE_PLAYER	= 0;
 static float LastFrameTicks = 0;
-long STARTED_A_GAME		= 0;
 long FASTmse			= 0;
 
 //-----------------------------------------------------------------------------
@@ -2672,7 +2671,6 @@ void DANAE_StartNewQuest()
 	DanaeLoadLevel(loadfrom);
 	FirstFrame=true;
 	START_NEW_QUEST=0;
-	STARTED_A_GAME=1;
 	BLOCK_PLAYER_CONTROLS = false;
 	FADEDURATION=0;
 	FADEDIR=0;
