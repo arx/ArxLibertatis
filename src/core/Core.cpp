@@ -530,7 +530,7 @@ void InitializeDanae() {
 	if(LaunchDemo) {
 		LogInfo << "Launching splash screens.";
 		LaunchDemo = 0;
-		if(GameFlow::getTransition() != GameFlow::LoadingScreen) {
+		if(GameFlow::getTransition() == GameFlow::NoTransition) {
 			GameFlow::setTransition(GameFlow::FirstLogo);
 		}
 	} else if(!levelPath.empty())	{
@@ -2687,7 +2687,15 @@ void loadLevel(u32 lvl) {
 		}
 	}
 }
-ARX_PROGRAM_OPTION("level", "", "Load a specific level", &loadLevel, "LEVELID");
+ARX_PROGRAM_OPTION("loadlevel", "", "Load a specific level", &loadLevel, "LEVELID");
+
+extern long LOADQUEST_SLOT;
+void loadSlot(u32 saveSlot) {
+
+	LOADQUEST_SLOT = saveSlot;
+	GameFlow::setTransition(GameFlow::InGame);
+}
+ARX_PROGRAM_OPTION("loadslot", "", "Load a specific savegame slot", &loadSlot, "SAVESLOT");
 
 void skipLogo() {
 	loadLevel(LEVEL10);
