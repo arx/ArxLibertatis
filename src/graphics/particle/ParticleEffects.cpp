@@ -435,7 +435,8 @@ void ARX_PARTICLES_Spawn_Blood2(const Vec3f & pos, float dmgs, Color col, Entity
 		float power = (io->_npcdata->SPLAT_DAMAGES * (1.f/60)) + .9f;
 		
 		Vec3f vect = pos - io->_npcdata->last_splat_pos;
-		float dist = vect.normalize();
+		float dist = vect.length();
+		vect = normalize(vect);
 		long nb = long(dist / 4.f * power);
 		if(nb == 0) {
 			nb = 1;
@@ -1132,7 +1133,7 @@ void ARX_PARTICLES_Render(EERIE_CAMERA * cam)  {
 				part->ov = *part->source;
 				Entity * target = entities[part->sourceionum];
 				Vec3f vector = (part->ov - target->pos) * Vec3f(1.f, 0.5f, 1.f);
-				vector.normalize();
+				vector = normalize(vector);
 				part->move = vector * Vec3f(18.f, 5.f, 18.f) + randomVec(-0.5f, 0.5f);
 				
 			}

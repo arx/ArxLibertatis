@@ -60,8 +60,7 @@ void Util_SetViewMatrix(EERIEMATRIX &mat, EERIE_TRANSFORM &transform) {
 	Vec3f vWorldUp(0.f, 1.f, 0.f);
 
 	// Normalize the z basis vector
-	float fLength = vView.normalize();
-
+	float fLength = vView.length();
 	if (fLength < 1e-6f)
 		return;
 

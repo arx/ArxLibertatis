@@ -233,20 +233,6 @@ public:
 	}
 	
 	/*!
-	 * Normalize the vector(divide by its length).
-	 * @brief Normalize the vector.
-	 * @return Reference to the vector.
-	 */
-	const Vector2 & normalize() {
-		
-		T length = length();
-		arx_assert(length != 0);
-		
-		x /= length, y /= length;
-		return *this;
-	}
-
-	/*!
 	 * Returns true if the vector is normalized, false otherwise.
 	 */
 	bool normalized() const {

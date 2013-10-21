@@ -131,7 +131,7 @@ void CLightning::BuildS(LIGHTNING * pLInfo)
 		av.x = (float) cos(acos(avect.x) - radians(fAngleX));
 		av.y = (float) sin(asin(avect.y) - radians(fAngleY));
 		av.z = (float) tan(atan(avect.z) - radians(fAngleZ));
-		av.normalize();
+		av = normalize(av);
 		avect = av;
 
 		float ts = rnd();

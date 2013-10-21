@@ -1413,9 +1413,9 @@ static EERIE_3DOBJ * TheoToEerie(const char * adr, long size, const res::path & 
 				float ifactor = 1.f - factor;
 				Vec3f fakenorm;
 				fakenorm = ev->v - center;
-				fakenorm.normalize();
+				fakenorm = normalize(fakenorm);
 				ev->norm = ev->norm * ifactor + fakenorm * factor;
-				ev->norm.normalize();
+				ev->norm = normalize(ev->norm);
 			}
 		}
 	}

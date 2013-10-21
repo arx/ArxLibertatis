@@ -256,26 +256,6 @@ public:
 	}
 	
 	/*!
-	 * Normalize the vector(divide by its length).
-	 * @brief Normalize the vector.
-	 * @return The old magnitude.
-	 */
-	T normalize() {
-		
-		T magnitude = length();
-		T scalar;
-		if(magnitude > 0) {
-			scalar = 1 / magnitude;
-		} else {
-			scalar = 0;
-		}
-		
-		x *= scalar; y *= scalar; z *= scalar;
-		
-		return magnitude;
-	}
-	
-	/*!
 	 * Returns true if the vector is normalized, false otherwise.
 	 */
 	bool normalized() const {

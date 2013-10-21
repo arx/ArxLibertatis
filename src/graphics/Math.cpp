@@ -870,7 +870,7 @@ void CalcObjFaceNormal(const Vec3f * v0, const Vec3f * v1, const Vec3f * v2,
 	Bz = v2->z - v0->z;
 	
 	ef->norm = Vec3f(Ay * Bz - Az * By, Az * Bx - Ax * Bz, Ax * By - Ay * Bx);
-	ef->norm.normalize();
+	ef->norm = normalize(ef->norm);
 }
 
 void MatrixSetByVectors(EERIEMATRIX * m, const Vec3f * d, const Vec3f * u)
@@ -883,7 +883,7 @@ void MatrixSetByVectors(EERIEMATRIX * m, const Vec3f * d, const Vec3f * u)
 	U.x -= D.x * t;
 	U.y -= D.y * t;
 	U.z -= D.y * t; // TODO is this really supposed to be D.y?
-	U.normalize();
+	U = normalize(U);
 	R = cross(U, D);
 	m->_11 = R.x;
 	m->_12 = R.y;

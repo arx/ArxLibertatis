@@ -6432,7 +6432,7 @@ long Manage3DCursor(long flags)
 	mvectx.x = -(float)EEsin(radians(player.angle.b - 90.f));
 	mvectx.y = 0;
 	mvectx.z = +(float)EEcos(radians(player.angle.b - 90.f));
-	mvectx.normalize();
+	mvectx = normalize(mvectx);
 
 	float xmod=(float)(DANAEMouse.x-g_size.center().x)/(float)g_size.center().x*160.f;
 	float ymod=(float)(DANAEMouse.y-g_size.center().y)/(float)g_size.center().y*220.f;

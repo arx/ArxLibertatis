@@ -732,7 +732,7 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 					float curdist = 999999.f;
 					
 					Vec3f vector = (sphere.origin - target->pos) * Vec3f(1.f, 0.5f, 1.f);
-					vector.normalize();
+					vector = normalize(vector);
 
 					for(size_t ii = 0; ii < target->obj->facelist.size(); ii++) {
 						if(target->obj->facelist[ii].facetype & POLY_HIDE)
