@@ -337,6 +337,28 @@ inline bool fartherThan(const Vector2<T> & a, const Vector2<T> & b, T d) {
 	return (distSqr(a, b) > (d * d));
 }
 
+#ifdef USE_GLM_VECTORS
+template<class T>
+inline T dist(const glm::detail::tvec2<T> & a, const glm::detail::tvec2<T> & b) {
+	return a.distanceFrom(b);
+}
+
+template<class T>
+inline T distSqr(const glm::detail::tvec2<T> & a, const glm::detail::tvec2<T> & b) {
+	return a.distanceFromSqr(b);
+}
+
+template<class T>
+inline bool closerThan(const glm::detail::tvec2<T> & a, const glm::detail::tvec2<T> & b, T d) {
+	return (distSqr(a, b) < (d * d));
+}
+
+template<class T>
+inline bool fartherThan(const glm::detail::tvec2<T> & a, const glm::detail::tvec2<T> & b, T d) {
+	return (distSqr(a, b) > (d * d));
+}
+#endif
+
 // Constants
 template<class T> const Vector2<T> Vector2<T>::X_AXIS(T(1), T(0));
 template<class T> const Vector2<T> Vector2<T>::Y_AXIS(T(0), T(1));
