@@ -292,7 +292,7 @@ find_package(Boost 1.39 REQUIRED)
 include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
 
 # glm
-find_package(glm REQUIRED)
+find_package(GLM REQUIRED)
 include_directories(SYSTEM ${GLM_INCLUDE_DIRS})
 
 # Qt and DbgHelp
