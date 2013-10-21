@@ -201,7 +201,6 @@ long MakeTopObjString(Entity * io, std::string& dest);
 void DeclareEGInfo(float x, float z);
 bool TryToQuadify(EERIEPOLY * ep,EERIE_3DOBJ * eobj);
 void ApplyWaterFXToVertex(Vec3f * odtv,TexturedVertex * dtv,float power);
-int BackFaceCull2D(TexturedVertex * tv);
 
 //*************************************************************************************
 //*************************************************************************************

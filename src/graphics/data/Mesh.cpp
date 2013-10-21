@@ -678,12 +678,6 @@ int PointIn2DPolyXZ(const EERIEPOLY * ep, float x, float z) {
 	return c + d;
 }
 
-int BackFaceCull2D(TexturedVertex * tv) {
-	if ((tv[0].p.x - tv[1].p.x)*(tv[2].p.y - tv[1].p.y) - (tv[0].p.y - tv[1].p.y)*(tv[2].p.x - tv[1].p.x) > 0.f)
-		return 0;
-	else return 1;
-}
-
 extern EERIE_CAMERA raycam;
 
 static void SP_PrepareCamera(EERIE_CAMERA * cam) {
