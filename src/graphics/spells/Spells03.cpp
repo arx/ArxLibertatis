@@ -324,7 +324,7 @@ void CFireBall::Update(unsigned long aulTime)
 		eMove.y = sin(radians(MAKEANGLE(afAlpha))) * 100;
 		eMove.z = + fBetaRadCos * 100 * cos(radians(MAKEANGLE(afAlpha)));
 
-		Vec3f vMove = eMove.getNormalized();
+		Vec3f vMove = normalize(eMove);
 
 		// smoke en retard
 		pPSSmoke.p3ParticleDirection = -vMove;

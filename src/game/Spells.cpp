@@ -4557,8 +4557,9 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 					float rr = radians(float(i_angle));
 					Vec3f pos(target.x - EEsin(rr) * 360.f, target.y,
 					          target.z + EEcos(rr) * 360.f);
-					Vec3f dir = Vec3f(pos.x - target.x, 0.f,
-					                  pos.z - target.z).getNormalized() * 60.f;
+					Vec3f dir = normalize(Vec3f(pos.x - target.x, 
+                                                0.f,
+                                                pos.z - target.z)) * 60.f;
 					Color3f rgb(0.1f + rnd() * (1.f/3), 0.1f + rnd() * (1.f/3),
 					            0.8f + rnd() * (1.f/5));
 					Vec3f posi = target + Vec3f(0.f, j * 2, 0.f);

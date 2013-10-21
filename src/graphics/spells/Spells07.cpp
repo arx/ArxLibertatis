@@ -120,7 +120,7 @@ void CLightning::BuildS(LIGHTNING * pLInfo)
 		int moi = nbtotal;
 
 		if(pLInfo->abFollow) {
-			avect = (eDest - pLInfo->eStart).getNormalized();
+			avect = normalize(eDest - pLInfo->eStart);
 		}
 
 		float fAngleX = frand2() * (pLInfo->fAngleXMax - pLInfo->fAngleXMin) + pLInfo->fAngleXMin;

@@ -276,23 +276,6 @@ public:
 	}
 	
 	/*!
-	 * Create a normalized copy of this vector(Divide by its length).
-	 * @brief Create a normalized copy of this vector.
-	 * @return A normalized copy of the vector.
-	 */
-	Vector3 getNormalized() const {
-		
-		T scalar = length();
-		if(scalar > 0) {
-			scalar = 1.0f / scalar;
-		} else {
-			scalar = 0;
-		}
-		
-		return (*this) * scalar;
-	}
-	
-	/*!
 	 * Returns true if the vector is normalized, false otherwise.
 	 */
 	bool normalized() const {
@@ -415,6 +398,19 @@ T dot(const Vector3<T> & a, const Vector3<T> & b) {
 	return (a.x*b.x + a.y*b.y + a.z*b.z);
 }
 
+template<class T>
+Vector3<T> normalize(const Vector3<T> & v0) {
+	T magnitude = v0.length();
+	T scalar;
+	if(magnitude > 0) {
+		scalar = 1 / magnitude;
+	} else {
+		scalar = 0;
+	}
+
+	return v0 * scalar;
+}
+
 template <typename T>
 Vector3<T> componentwise_min(Vector3<T> v0, Vector3<T> v1) {
 	return Vector3<T>(std::min(v0.x, v1.x), std::min(v0.y, v1.y), std::min(v0.z, v1.z));
@@ -455,6 +451,11 @@ T dot(const glm::detail::tvec3<T> & a, const glm::detail::tvec3<T> & b) {
 	return (a.x*b.x + a.y*b.y + a.z*b.z);
 }
 
+template<class T>
+glm::detail::tvec3<T> normalize(const glm::detail::tvec3<T> & v0) {
+	return glm::normalize(v0);
+}
+
 template <typename T>
 glm::detail::tvec3<T> componentwise_min(glm::detail::tvec3<T> v0, glm::detail::tvec3<T> v1) {
 	return glm::detail::tvec3<T>(std::min(v0.x, v1.x), std::min(v0.y, v1.y), std::min(v0.z, v1.z));
@@ -463,6 +464,7 @@ template <typename T>
 glm::detail::tvec3<T> componentwise_max(glm::detail::tvec3<T> v0, glm::detail::tvec3<T> v1) {
 	return glm::detail::tvec3<T>(std::max(v0.x, v1.x), std::max(v0.y, v1.y), std::max(v0.z, v1.z));
 }
+
 #endif
 
 #endif // ARX_MATH_VECTOR3_H

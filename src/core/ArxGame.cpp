@@ -1027,7 +1027,7 @@ void ArxGame::speechControlledCinematic() {
 					const Vec3f & from = acs->pos1;
 					const Vec3f & to = acs->pos2;
 
-					Vec3f vect = (to - from).getNormalized();
+					Vec3f vect = normalize(to - from);
 
 					Vec3f vect2;
 					if(acs->type==ARX_CINE_SPEECH_SIDE_LEFT) {
@@ -1080,7 +1080,7 @@ void ArxGame::speechControlledCinematic() {
 					Vec3f vect2;
 					Vector_RotateY(&vect2,&vect,90);
 					vect2.normalize();
-					Vec3f vect3 = vect.getNormalized();
+					Vec3f vect3 = normalize(vect);
 
 					vect = vect * distance + vect3 * 80.f;
 					vect2 *= 45.f;

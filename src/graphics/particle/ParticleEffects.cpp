@@ -1542,7 +1542,7 @@ void TreatBackgroundActions() {
 					float t = rnd() * (PI * 2.f) - PI;
 					Vec3f s = Vec3f(EEsin(t), EEsin(t), EEcos(t)) * randomVec();
 					pd->ov = gl->pos + s * gl->ex_radius;
-					Vec3f vect = (pd->ov - gl->pos).getNormalized();
+					Vec3f vect = normalize(pd->ov - gl->pos);
 					float d = (gl->extras & EXTRAS_FIREPLACE) ? 6.f : 4.f;
 					pd->move = Vec3f(vect.x * d, -10.f - 8.f * rnd(), vect.z * d) * gl->ex_speed;
 					pd->siz = 4.f * gl->ex_size * 0.3f;

@@ -6448,7 +6448,7 @@ long Manage3DCursor(long flags)
 	dest.z=player.pos.z+(float)EEcos(radians(player.angle.b))*(float)EEcos(radians(player.angle.a))*10000.f + mvectx.z;
 	pos = orgn;
 
-	Vec3f movev = (dest - orgn).getNormalized();
+	Vec3f movev = normalize(dest - orgn);
 
 	float lastanything = 0.f;
 	float height = -( maxy - miny );

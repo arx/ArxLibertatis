@@ -877,7 +877,7 @@ void MatrixSetByVectors(EERIEMATRIX * m, const Vec3f * d, const Vec3f * u)
 {
 	float t;
 	Vec3f D, U, R;
-	D = d->getNormalized();
+	D = normalize(*d);
 	U = *u;
 	t = U.x * D.x + U.y * D.y + U.z * D.z;
 	U.x -= D.x * t;
@@ -900,7 +900,7 @@ void GenerateMatrixUsingVector(EERIEMATRIX * matrix, const Vec3f * vect, float r
 {
 	// Get our direction vector (the Z vector component of the matrix)
 	// and make sure it's normalized into a unit vector
-	Vec3f zAxis = vect->getNormalized();
+	Vec3f zAxis = normalize(*vect);
 
 	// Build the Y vector of the matrix (handle the degenerate case
 	// in the way that 3DS does) -- This is not the true vector, only
@@ -913,10 +913,10 @@ void GenerateMatrixUsingVector(EERIEMATRIX * matrix, const Vec3f * vect, float r
 		yAxis = Vec3f(0.f, 1.f, 0.f);
 
 	// Build the X axis vector based on the two existing vectors
-	Vec3f xAxis = cross(yAxis, zAxis).getNormalized();
+	Vec3f xAxis = normalize(cross(yAxis, zAxis));
 
 	// Correct the Y reference vector
-	yAxis = cross(xAxis, zAxis).getNormalized();
+	yAxis = normalize(cross(xAxis, zAxis));
 	yAxis = -yAxis;
 
 	// Generate rotation matrix without roll included

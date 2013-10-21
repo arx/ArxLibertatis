@@ -245,17 +245,7 @@ public:
 		x /= length, y /= length;
 		return *this;
 	}
-	
-	/*!
-	 * Create a normalized copy of this vector(Divide by its length).
-	 * @brief Create a normalized copy of this vector.
-	 * @return A normalized copy of the vector.
-	 */
-	Vector2 getNormalized() const {
-		arx_assert(length() != 0);
-		return ((*this) / length());
-	}
-	
+
 	/*!
 	 * Returns true if the vector is normalized, false otherwise.
 	 */
@@ -342,6 +332,14 @@ inline bool fartherThan(const Vector2<T> & a, const Vector2<T> & b, T d) {
 	return (distSqr(a, b) > (d * d));
 }
 
+template<class T>
+Vector2<T> normalize(const Vector2<T> & v0) {
+	T length = v0.length();
+	arx_assert(length != 0);
+
+	return v0 / length;
+}
+
 #ifdef USE_GLM_VECTORS
 template<class T>
 inline T dist(const glm::detail::tvec2<T> & a, const glm::detail::tvec2<T> & b) {
@@ -361,6 +359,11 @@ inline bool closerThan(const glm::detail::tvec2<T> & a, const glm::detail::tvec2
 template<class T>
 inline bool fartherThan(const glm::detail::tvec2<T> & a, const glm::detail::tvec2<T> & b, T d) {
 	return (distSqr(a, b) > (d * d));
+}
+
+template<class T>
+glm::detail::tvec2<T> normalize(const glm::detail::tvec2<T> & v0) {
+	return glm::normalize(v0);
 }
 #endif
 
