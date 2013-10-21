@@ -187,7 +187,7 @@ void EERIEDraw3DCylinderBase(const EERIE_CYLINDER & cyl, Color col) {
 void EERIEDrawTrue3DLine(const Vec3f & orgn, const Vec3f & dest, Color col) {
 
 	Vec3f vect = dest - orgn;
-	float m = ffsqrt(vect.lengthSqr());
+	float m = ffsqrt(lengthSqr(vect));
 
 	if(m <= 0)
 		return;

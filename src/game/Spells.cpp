@@ -1974,7 +1974,7 @@ static void ARX_SPELLS_Analyse() {
 		
 		Vec2s d = plist[i-1] - plist[i];
 		
-		if(d.lengthSqr() > 100) {
+		if(lengthSqr(d) > 100) {
 			
 			float a = (float)abs(d.x);
 			float b = (float)abs(d.y);

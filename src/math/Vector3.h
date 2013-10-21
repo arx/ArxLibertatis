@@ -256,13 +256,6 @@ public:
 	}
 	
 	/*!
-	 * Returns true if the vector is normalized, false otherwise.
-	 */
-	bool normalized() const {
-		return lengthSqr() == 1;
-	}
-	
-	/*!
 	 * Build a vector using 2 angles in the x and y planes.
 	 * @param pAngleX Rotation around the X axis, in randians.
 	 * @param pAngleY Rotation around the Y axis, in radians.
@@ -281,15 +274,7 @@ public:
 	 * @return The length of this vector.
 	 */
 	T length() const {
-		return std::sqrt(lengthSqr());
-	}
-	
-	/*!
-	 * Get the squared length of this vector.
-	 * @return The squared length of this vector.
-	 */
-	T lengthSqr() const {
-		return x*x + y*y + z*z;
+		return std::sqrt(lengthSqr(*this));
 	}
 	
 	/*!
@@ -302,7 +287,7 @@ public:
 	}
 	
 	T distanceFromSqr(const Vector3 & other) const {
-		return Vector3(other - *this).lengthSqr();
+		return lengthSqr(Vector3(other - *this));
 	}
 	
 	/*!
@@ -391,6 +376,11 @@ Vector3<T> normalize(const Vector3<T> & v0) {
 	return v0 * scalar;
 }
 
+template<class T>
+T lengthSqr(const Vector3<T> & v0) {
+	return v0.x*v0.x + v0.y*v0.y + v0.z*v0.z;
+}
+
 template <typename T>
 Vector3<T> componentwise_min(Vector3<T> v0, Vector3<T> v1) {
 	return Vector3<T>(std::min(v0.x, v1.x), std::min(v0.y, v1.y), std::min(v0.z, v1.z));
@@ -434,6 +424,11 @@ T dot(const glm::detail::tvec3<T> & a, const glm::detail::tvec3<T> & b) {
 template<class T>
 glm::detail::tvec3<T> normalize(const glm::detail::tvec3<T> & v0) {
 	return glm::normalize(v0);
+}
+
+template<class T>
+inline T lengthSqr(const glm::detail::tvec3<T> & v0) {
+	return glm::length2(v0);
 }
 
 template <typename T>

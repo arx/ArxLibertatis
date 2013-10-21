@@ -181,7 +181,7 @@ inline void XRotatePoint(Vec3f * in, Vec3f * out, float c, float s) {
 
 //! Normalizes a Vector approximately. Returns its approcimate length before normalization.
 inline float fnormalize(Vec3f & v) {
-	float len = ffsqrt(v.lengthSqr());
+	float len = ffsqrt(lengthSqr(v));
 	v *= 1 / len;
 	return len;
 }

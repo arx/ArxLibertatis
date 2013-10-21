@@ -233,26 +233,11 @@ public:
 	}
 	
 	/*!
-	 * Returns true if the vector is normalized, false otherwise.
-	 */
-	bool normalized() const {
-		return lengthSqr() == 1;
-	}
-	
-	/*!
 	 * Get the length of this vector.
 	 * @return The length of this vector.
 	 */
 	T length() const {
 		return std::sqrt(x*x + y*y);
-	}
-	
-	/*!
-	 * Get the squared length of this vector.
-	 * @return The squared length of this vector.
-	 */
-	T lengthSqr() const {
-		return x*x + y*y;
 	}
 	
 	/*!
@@ -265,7 +250,7 @@ public:
 	}
 	
 	T distanceFromSqr(const Vector2 & other) const {
-		return Vector2(other - *this).lengthSqr();
+		return lengthSqr(Vector2(other - *this));
 	}
 	
 	/*!
@@ -319,11 +304,16 @@ inline bool fartherThan(const Vector2<T> & a, const Vector2<T> & b, T d) {
 }
 
 template<class T>
-Vector2<T> normalize(const Vector2<T> & v0) {
+inline Vector2<T> normalize(const Vector2<T> & v0) {
 	T length = v0.length();
 	arx_assert(length != 0);
 
 	return v0 / length;
+}
+
+template<class T>
+inline T lengthSqr(const Vector2<T> & v0) {
+	return v0.x*v0.x + v0.y*v0.y;
 }
 
 #ifdef USE_GLM_VECTORS
@@ -348,8 +338,13 @@ inline bool fartherThan(const glm::detail::tvec2<T> & a, const glm::detail::tvec
 }
 
 template<class T>
-glm::detail::tvec2<T> normalize(const glm::detail::tvec2<T> & v0) {
+inline glm::detail::tvec2<T> normalize(const glm::detail::tvec2<T> & v0) {
 	return glm::normalize(v0);
+}
+
+template<class T>
+inline T lengthSqr(const glm::detail::tvec2<T> & v0) {
+	return glm::length2(v0);
 }
 #endif
 

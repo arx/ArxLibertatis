@@ -853,7 +853,7 @@ void ArxGame::updateFirstPersonCamera() {
 				vect.x = subj.orgTrans.pos.x - player.pos.x;
 				vect.y = 0;
 				vect.z = subj.orgTrans.pos.z - player.pos.z;
-				float len = ffsqrt(vect.lengthSqr());
+				float len = ffsqrt(lengthSqr(vect));
 
 				if(len > 46.f) {
 					float div = 46.f / len;
