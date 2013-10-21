@@ -492,17 +492,13 @@ void SetActiveCamera(EERIE_CAMERA * cam)
 void EE_RT(Vec3f * in, Vec3f * out) {
 	
 	EERIE_TRANSFORM * et = (EERIE_TRANSFORM *)&ACTIVECAM->orgTrans;
-	*out = *in - et->pos;
 	
-	float temp = (out->z * et->ycos) - (out->x * et->ysin);
-	out->x = (out->x * et->ycos) + (out->z * et->ysin);
-	out->z = (out->y * et->xsin) + (temp * et->xcos);
-	out->y = (out->y * et->xcos) - (temp * et->xsin);
-	
-	// Might Prove Usefull one day...
-	temp = (out->y * et->zcos) - (out->x * et->zsin);
-	out->x = (out->x * et->zcos) + (out->y * et->zsin);
-	out->y = temp;
+	glm::vec4 vIn(in->x, in->y, in->z, 1.0f);
+	glm::vec4 vOut = et->worldToView * vIn;
+
+	out->x = vOut.x;
+	out->y = vOut.y;
+	out->z = vOut.z;
 }
 
 void EE_RT2(TexturedVertex * in, TexturedVertex * out) {

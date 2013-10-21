@@ -37,18 +37,9 @@ struct EERIE_TRANSFORM {
 	float zsin;
 	Vec2f mod;
 
-	void updateFromAngle(const Anglef &angle) {
-		float tmp;
-		tmp = radians(angle.a);
-		xcos = std::cos(tmp);
-		xsin = std::sin(tmp);
-		tmp = radians(angle.b);
-		ycos = std::cos(tmp);
-		ysin = std::sin(tmp);
-		tmp = radians(angle.g);
-		zcos = std::cos(tmp);
-		zsin = std::sin(tmp);
-	}
+	glm::mat4x4 worldToView;
+
+	void updateFromAngle(const Anglef &angle);
 };
 
 struct EERIE_CAMERA {

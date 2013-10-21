@@ -18,3 +18,22 @@
  */
 
 #include "game/Camera.h"
+
+void EERIE_TRANSFORM::updateFromAngle(const Anglef &angle) {
+	float yaw, pitch, roll;
+	yaw = radians(angle.yaw);
+	xcos = std::cos(yaw);
+	xsin = std::sin(yaw);
+	pitch = radians(angle.pitch);
+	ycos = std::cos(pitch);
+	ysin = std::sin(pitch);
+	roll = radians(angle.roll);
+	zcos = std::cos(roll);
+	zsin = std::sin(roll);
+
+	glm::mat4 translation = glm::translate(glm::vec3(-pos.x, -pos.y, -pos.z));
+	glm::mat4 rotateX = glm::eulerAngleX(yaw);
+	glm::mat4 rotateY = glm::eulerAngleY(pitch);
+	glm::mat4 rotateZ = glm::eulerAngleZ(roll);
+	worldToView = rotateX * rotateY * rotateZ * translation;
+}
