@@ -128,8 +128,8 @@ struct EERIE_3D_BBOX {
 	Vec3f max;
 
 	void reset() {
-		min = Vec3f::repeat(99999999.f);
-		max = Vec3f::repeat(-99999999.f);
+		min = Vec3f(99999999.f);
+		max = Vec3f(-99999999.f);
 	}
 
 	void add(const Vec3f & pos) {

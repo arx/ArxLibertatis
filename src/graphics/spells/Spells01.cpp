@@ -81,7 +81,7 @@ void LaunchMagicMissileExplosion(Vec3f & _ePos, int t = 0, long spellinstance = 
 	cp.iNbMax = 100 + t * 50;
 	cp.fLife = 1500;
 	cp.fLifeRandom = 0;
-	cp.p3Pos = Vec3f::repeat(10.f);
+	cp.p3Pos = Vec3f(10.f);
 	cp.p3Direction = Vec3f(0.f, -10.f, 0.f);
 	cp.fAngle = radians(360);
 	cp.fSpeed = 130;

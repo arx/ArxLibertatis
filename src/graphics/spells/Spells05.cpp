@@ -387,7 +387,7 @@ void CRuneOfGuarding::Render()
 	stitecolor.r = 0.6f;
 	stitecolor.g = 0.f;
 	stitecolor.b = 0.f;
-	stitescale = Vec3f::repeat(2.f);
+	stitescale = Vec3f(2.f);
 	
 	if(ssol) {
 		DrawEERIEObjEx(ssol, &stiteangle, &stitepos, &stitescale, stitecolor);
@@ -396,7 +396,7 @@ void CRuneOfGuarding::Render()
 	stitecolor.r = 0.6f;
 	stitecolor.g = 0.3f;
 	stitecolor.b = 0.45f;
-	stitescale = Vec3f::repeat(1.8f);
+	stitescale = Vec3f(1.8f);
 	
 	if(srune) {
 		DrawEERIEObjEx(srune, &stiteangle, &stitepos, &stitescale, stitecolor);
@@ -411,7 +411,7 @@ void CRuneOfGuarding::Render()
 		
 		pd->ov = Vec3f(x + frand2() * 40.f, y, z + frand2() * 40.f);
 		pd->move = Vec3f(0.8f * frand2(), -4.f * rnd(), 0.8f * frand2());
-		pd->scale = Vec3f::repeat(-0.1f);
+		pd->scale = Vec3f(-0.1f);
 		pd->tolive = Random::get(2600, 3200);
 		pd->tc = tex_p2;
 		pd->siz = 0.3f;
@@ -427,7 +427,7 @@ void LaunchPoisonExplosion(Vec3f * aePos) {
 	cp.iNbMax = 80; 
 	cp.fLife = 1500;
 	cp.fLifeRandom = 500;
-	cp.p3Pos = Vec3f::repeat(5);
+	cp.p3Pos = Vec3f(5);
 	cp.p3Direction.x = 0;
 	cp.p3Direction.y = 4;
 	cp.p3Direction.z = 0;
@@ -1038,7 +1038,7 @@ void CRepelUndead::Render() {
 		float dz =  EEcos(frand2() * 360.f) * vv;
 		pd->ov = eSrc + Vec3f(dx, 0.f, dz);
 		pd->move = Vec3f(0.8f * frand2(), -4.f * rnd(), 0.8f * frand2());
-		pd->scale = Vec3f::repeat(-0.1f);
+		pd->scale = Vec3f(-0.1f);
 		pd->tolive = Random::get(2600, 3200);
 		pd->tc = tex_p2;
 		pd->siz = 0.3f;
@@ -1195,7 +1195,7 @@ void CLevitate::AddStone(Vec3f * pos) {
 			tstone[nb].yvel = rnd() * -5.f;
 			tstone[nb].ang = Anglef(rnd() * 360.f, rnd() * 360.f, rnd() * 360.f);
 			tstone[nb].angvel = Anglef(5.f * rnd(), 6.f * rnd(), 3.f * rnd());
-			tstone[nb].scale = Vec3f::repeat(0.2f + rnd() * 0.3f);
+			tstone[nb].scale = Vec3f(0.2f + rnd() * 0.3f);
 			tstone[nb].time = Random::get(2000, 2500);
 			tstone[nb].currtime = 0;
 			break;

@@ -102,8 +102,8 @@ long nbARXpaths = 0;
 
 void ARX_PATH_ComputeBB(ARX_PATH * ap) {
 	
-	ap->bbmin = Vec3f::repeat(9999999999.f);
-	ap->bbmax = Vec3f::repeat(-9999999999.f);
+	ap->bbmin = Vec3f(9999999999.f);
+	ap->bbmax = Vec3f(-9999999999.f);
 	
 	for(long i = 0; i < ap->nb_pathways; i++) {
 		ap->bbmin.x = std::min(ap->bbmin.x, ap->pos.x + ap->pathways[i].rpos.x);

@@ -275,7 +275,7 @@ void AddFlare(const Vec2s & pos, float sm, short typ, Entity * io, bool bookDraw
 
 		pd->ov = fl->v.p + randomVec(-5.f, 5.f);
 		pd->move = Vec3f(0.f, 5.f, 0.f);
-		pd->scale = Vec3f::repeat(-2.f);
+		pd->scale = Vec3f(-2.f);
 		pd->tolive = 1300 + kk * 100 + Random::get(0, 800);
 		pd->tc = fire2;
 		if(kk == 1) {

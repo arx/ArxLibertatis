@@ -55,6 +55,11 @@ public:
 	 * Constructor.
 	 */
 	Vector3() {}
+
+	/*!
+	* Constructor that sets all components to the given scalar.
+	*/
+	explicit Vector3(T pVal) : x(pVal), y(pVal), z(pVal) {}
 	
 	/*!
 	 * Constructor accepting initial values.
@@ -63,10 +68,6 @@ public:
 	 * @param fZ A T representing the z-axis.
 	 */
 	Vector3(T pX, T pY, T pZ) : x(pX), y(pY), z(pZ) { }
-	
-	static Vector3 repeat(T value) {
-		return Vector3(value, value, value);
-	}
 	
 	/*!
 	 * Copy constructor.

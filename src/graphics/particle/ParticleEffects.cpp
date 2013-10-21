@@ -184,7 +184,7 @@ static void ARX_PARTICLES_Spawn_Rogue_Blood(const Vec3f & pos, float dmgs, Color
 	
 	pd->ov = pos;
 	pd->siz = 3.1f * (dmgs * (1.f / 60) + .9f);
-	pd->scale = Vec3f::repeat(-pd->siz * 0.25f);
+	pd->scale = Vec3f(-pd->siz * 0.25f);
 	pd->special = PARTICLE_SUB2 | SUBSTRACT | GRAVITY | ROTATING | MODULATE_ROTATION
 	              | SPLAT_GROUND;
 	pd->tolive = 1600;
@@ -206,7 +206,7 @@ static void ARX_PARTICLES_Spawn_Blood3(const Vec3f & pos, float dmgs, Color col,
 		pd->ov = pos + Vec3f(-sin(float(arxtime) * 0.001f), sin(float(arxtime) * 0.001f),
 		               cos(float(arxtime) * 0.001f)) * 30.f;
 		pd->siz = 3.5f * power + sin(float(arxtime) * (1.f/1000));
-		pd->scale = Vec3f::repeat(-pd->siz * 0.5f);
+		pd->scale = Vec3f(-pd->siz * 0.5f);
 		pd->special = PARTICLE_SUB2 | SUBSTRACT | GRAVITY | ROTATING | MODULATE_ROTATION
 		              | flags;
 		pd->tolive = 1100;
@@ -508,7 +508,7 @@ void ARX_PARTICLES_Spawn_Blood(Vec3f * pos, float dmgs, long source) {
 		}
 		
 		pd->siz = 0.f;
-		pd->scale = Vec3f::repeat(float(spawn_nb));
+		pd->scale = Vec3f(float(spawn_nb));
 		pd->special = GRAVITY | ROTATING | MODULATE_ROTATION | DELAY_FOLLOW_SOURCE;
 		pd->source = &entities[source]->obj->vertexlist3[nearest].v;
 		pd->sourceionum = source;
@@ -597,7 +597,7 @@ void AddRandomSmoke(Entity * io, long amount) {
 		if(pd->siz < 4.f) {
 			pd->siz = 4.f;
 		}
-		pd->scale = Vec3f::repeat(10.f);
+		pd->scale = Vec3f(10.f);
 		pd->special = ROTATING | MODULATE_ROTATION | FADE_IN_AND_OUT;
 		pd->tolive = Random::get(900, 1300);
 		pd->move = Vec3f(0.25f - 0.5f * rnd(), -1.f * rnd() + 0.3f, 0.25f - 0.5f * rnd());
@@ -989,7 +989,7 @@ void ARX_PARTICLES_Spawn_Splat(const Vec3f & pos, float dmgs, Color col) {
 		pd->tolive = (unsigned long)(1000 + dmgs*3);
 		pd->tc = blood_splat;
 		pd->siz = 0.3f + 0.01f * power;
-		pd->scale = Vec3f::repeat(0.2f + 0.3f * power);
+		pd->scale = Vec3f(0.2f + 0.3f * power);
 		pd->zdec = true;
 		pd->rgb = col.to<float>();
 	}
@@ -1044,9 +1044,9 @@ void SpawnFireballTail(Vec3f * poss, Vec3f * vecto, float level, long flags) {
 		if(flags & 1) {
 			pd->tolive = Random::get(400, 500);
 			pd->siz *= 0.7f;
-			pd->scale = Vec3f::repeat(level * 1.4f);
+			pd->scale = Vec3f(level * 1.4f);
 		} else {
-			pd->scale = Vec3f::repeat(level * 2.f);
+			pd->scale = Vec3f(level * 2.f);
 			pd->tolive=Random::get(800, 900);
 		}
 		
@@ -1081,7 +1081,7 @@ void LaunchFireballBoom(Vec3f * poss, float level, Vec3f * direction, Color3f * 
 	pd->tolive = Random::get(1600, 2200);
 	pd->tc = explo[0];
 	pd->siz = level * 3.f + 2.f * rnd();
-	pd->scale = Vec3f::repeat(level * 3.f);
+	pd->scale = Vec3f(level * 3.f);
 	pd->zdec = true;
 	pd->cval1 = 0;
 	pd->cval2 = MAX_EXPLO - 1;
@@ -1527,7 +1527,7 @@ void TreatBackgroundActions() {
 					pd->tc = (gl->extras & EXTRAS_SPAWNFIRE) ? fire2 : smokeparticle;
 					pd->special |= ROTATING | MODULATE_ROTATION;
 					pd->fparam = 0.1f - rnd() * 0.2f * gl->ex_speed;
-					pd->scale = Vec3f::repeat(-8.f);
+					pd->scale = Vec3f(-8.f);
 					pd->rgb = (gl->extras & EXTRAS_COLORLEGACY) ? gl->rgb : Color3f::white;
 				}
 			}
@@ -1550,7 +1550,7 @@ void TreatBackgroundActions() {
 					pd->tc = fire2;
 					pd->special |= ROTATING | MODULATE_ROTATION | GRAVITY;
 					pd->fparam = 0.1f - rnd() * 0.2f * gl->ex_speed;
-					pd->scale = Vec3f::repeat(-3.f);
+					pd->scale = Vec3f(-3.f);
 					pd->rgb = (gl->extras & EXTRAS_COLORLEGACY) ? gl->rgb : Color3f::white;
 				}
 			}

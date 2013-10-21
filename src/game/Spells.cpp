@@ -4242,7 +4242,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 				pd->move = randomVec(-2.f, 2.f);
 				pd->siz = 28.f;
 				pd->tolive = Random::get(2000, 6000);
-				pd->scale = Vec3f::repeat(12.f);
+				pd->scale = Vec3f(12.f);
 				pd->tc = tc4;
 				pd->special = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION
 				              | DISSIPATING;
@@ -5099,7 +5099,7 @@ void ARX_SPELLS_Kill(long i) {
 				pd->move = randomVec(-2.f, 2.f);
 				pd->siz = 28.f;
 				pd->tolive = Random::get(2000, 6000);
-				pd->scale = Vec3f::repeat(12.f);
+				pd->scale = Vec3f(12.f);
 				pd->timcreation = spells[i].lastupdate;
 				pd->tc = tc4;
 				pd->special = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
@@ -5658,7 +5658,7 @@ void ARX_SPELLS_Update()
 					cabalangle.b=spells[i].fdata+(float)framedelay*0.1f;
 					spells[i].fdata=cabalangle.b;
 
-					Vec3f cabalscale = Vec3f::repeat(Es);
+					Vec3f cabalscale = Vec3f(Es);
 					Color3f cabalcolor = Color3f(0.8f, 0.4f, 0.f);
 					DrawEERIEObjEx(cabal,&cabalangle,&cabalpos,&cabalscale, cabalcolor);
 
@@ -6118,7 +6118,7 @@ void ARX_SPELLS_Update()
 							pd->tc = fire2;
 							pd->special = ROTATING | MODULATE_ROTATION | FIRE_TO_SMOKE;
 							pd->fparam = 0.1f - rnd() * 0.2f;
-							pd->scale = Vec3f::repeat(-8.f);
+							pd->scale = Vec3f(-8.f);
 							
 							PARTICLE_DEF * pd2 = createParticle();
 							if(!pd2) {
@@ -6567,7 +6567,7 @@ void ARX_SPELLS_Update()
 						cabalangle.b=spells[i].fdata+(float)framedelay*0.1f;
 						spells[i].fdata=cabalangle.b;
 												
-						Vec3f cabalscale = Vec3f::repeat(Es);
+						Vec3f cabalscale = Vec3f(Es);
 						Color3f cabalcolor = Color3f(0.4f, 0.4f, 0.8f);
 						DrawEERIEObjEx(cabal,&cabalangle,&cabalpos,&cabalscale, cabalcolor);
 
@@ -6588,7 +6588,7 @@ void ARX_SPELLS_Update()
 
 						cabalangle.b=-cabalangle.b;
 						cabalpos.y=refpos-mov;
-						cabalscale = Vec3f::repeat(Es);
+						cabalscale = Vec3f(Es);
 						cabalcolor = Color3f(0.f, 0.f, 0.15f);
 						DrawEERIEObjEx(cabal,&cabalangle,&cabalpos,&cabalscale, cabalcolor);
 
@@ -6659,7 +6659,7 @@ void ARX_SPELLS_Update()
 						cabalangle.b=spells[i].fdata+(float)framedelay*0.1f;
 						spells[i].fdata=cabalangle.b;
 
-						Vec3f cabalscale = Vec3f::repeat(Es);
+						Vec3f cabalscale = Vec3f(Es);
 						Color3f cabalcolor = Color3f(0.8f, 0.f, 0.f);
 						DrawEERIEObjEx(cabal,&cabalangle,&cabalpos,&cabalscale, cabalcolor);
 
@@ -6680,7 +6680,7 @@ void ARX_SPELLS_Update()
 
 						cabalangle.b=-cabalangle.b;
 						cabalpos.y=refpos-mov;
-						cabalscale = Vec3f::repeat(Es);
+						cabalscale = Vec3f(Es);
 						cabalcolor = Color3f(0.15f, 0.f, 0.f);
 						DrawEERIEObjEx(cabal,&cabalangle,&cabalpos,&cabalscale, cabalcolor);
 
@@ -6714,7 +6714,7 @@ void ARX_SPELLS_Update()
 						
 						if(spells[i].lastupdate-spells[i].timcreation <= 3000) {
 							eyeball.exist = spells[i].lastupdate - spells[i].timcreation * (1.0f / 30);
-							eyeball.size = Vec3f::repeat(1.f - float(eyeball.exist) * 0.01f);
+							eyeball.size = Vec3f(1.f - float(eyeball.exist) * 0.01f);
 							eyeball.angle.b += framediff3 * 0.6f;
 						} else {
 							eyeball.exist = 2;

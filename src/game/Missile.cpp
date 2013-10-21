@@ -203,7 +203,7 @@ void ARX_MISSILES_Update()
 				Vec3f orgn = missiles[i].lastpos;
 				Vec3f dest = pos;
 				
-				Vec3f tro = Vec3f::repeat(70.f);
+				Vec3f tro = Vec3f(70.f);
 				
 				EERIEPOLY *ep = GetMinPoly(dest.x, dest.y, dest.z);
 				EERIEPOLY *epp = GetMaxPoly(dest.x, dest.y, dest.z);

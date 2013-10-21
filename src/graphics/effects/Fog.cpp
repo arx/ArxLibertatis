@@ -206,10 +206,10 @@ void ARX_FOGS_Render() {
 				pd->move = fog->move * (fog->speed * 0.1f);
 			} else {
 				pd->ov = fog->pos + randomVec(-100.f, 100.f);
-				pd->move = Vec3f::repeat(fog->speed) - randomVec(0.f, 2.f);
+				pd->move = Vec3f(fog->speed) - randomVec(0.f, 2.f);
 				pd->move *= Vec3f(fog->speed * 0.2f,  1.f / 15, fog->speed * 0.2f);
 			}
-			pd->scale = Vec3f::repeat(fog->scale);
+			pd->scale = Vec3f(fog->scale);
 			pd->tolive = fog->tolive + Random::get(0, fog->tolive);
 			pd->tc = TC_smoke;
 			pd->siz = (fog->size + rnd() * fog->size * 2.f) * (1.0f / 3);

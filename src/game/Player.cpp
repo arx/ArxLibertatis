@@ -1733,7 +1733,7 @@ void ARX_PLAYER_Manage_Visual() {
 						pd->move = Vec3f(0.1f - 0.2f * rnd(), -2.2f * rnd(), 0.1f - 0.2f * rnd());
 						pd->siz = 5.f;
 						pd->tolive = Random::get(1500, 3500);
-						pd->scale = Vec3f::repeat(0.2f);
+						pd->scale = Vec3f(0.2f);
 						pd->tc = TC_smoke;
 						pd->special = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
 						pd->sourceionum = 0;

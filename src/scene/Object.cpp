@@ -654,7 +654,7 @@ static EERIE_3DSCENE * ScnToEerie(const char * adr, size_t size, const res::path
 	seerie->nbobj = nbo;
 	seerie->objs = allocStructZero<EERIE_3DOBJ *>(nbo);
 	
-	seerie->point0 = Vec3f::repeat(-999999999999.f);
+	seerie->point0 = Vec3f(-999999999999.f);
 	
 	long id = 0;
 	

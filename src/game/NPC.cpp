@@ -3829,7 +3829,7 @@ void createFireParticles(Vec3f &pos, const int particlesToCreate, const int part
 		pd->special = FIRE_TO_SMOKE | ROTATING | MODULATE_ROTATION;
 		pd->tc = fire2;
 		pd->fparam = 0.1f - rnd() * 0.2f;
-		pd->scale = Vec3f::repeat(-8.f);
+		pd->scale = Vec3f(-8.f);
 		pd->rgb = Color3f(0.71f, 0.43f, 0.29f);
 		pd->delay = nn * particleDelayFactor;
 	}

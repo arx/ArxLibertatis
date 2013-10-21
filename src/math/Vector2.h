@@ -37,6 +37,11 @@ public:
 	 * Constructor.
 	 */
 	Vector2() {}
+
+	/*!
+	* Constructor that sets all components to the given scalar.
+	*/
+	explicit Vector2(T pVal) : x(pVal), y(pVal) {}
 	
 	/*!
 	 * Constructor accepting initial values.

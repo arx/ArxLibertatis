@@ -105,7 +105,7 @@ void ARXDRAW_DrawEyeBall() {
 	Vec3f pos = eyeball.pos;
 	pos.y += eyeball.floating;
 
-	Vec3f scale = Vec3f::repeat(d);
+	Vec3f scale = Vec3f(d);
 	Color3f rgb = Color3f::gray(d);
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);

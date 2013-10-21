@@ -935,7 +935,7 @@ void ARX_DAMAGES_AddVisual(DAMAGE_INFO * di, Vec3f * pos, float dmg, Entity * io
 			pd->ov = *pos + randomVec(-50.f, 50.f);
 		}
 		pd->siz = clamp(dmg, 5.f, 15.f);
-		pd->scale = Vec3f::repeat(-10.f);
+		pd->scale = Vec3f(-10.f);
 		pd->special = ROTATING | MODULATE_ROTATION | FIRE_TO_SMOKE;
 		pd->tolive = Random::get(500, 900);
 		pd->move = Vec3f(1.f - 2.f * rnd(), 2.f - 16.f * rnd(), 1.f - 2.f * rnd());

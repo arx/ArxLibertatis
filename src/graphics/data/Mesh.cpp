@@ -1024,8 +1024,8 @@ bool GetRoomCenter(long room_num, Vec3f * center) {
 	EERIE_ROOM_DATA & room = portals->room[room_num];
 
 	EERIE_3D_BBOX bbox;
-	bbox.min = Vec3f::repeat(99999999.f);
-	bbox.max = Vec3f::repeat(-99999999.f);
+	bbox.min = Vec3f(99999999.f);
+	bbox.max = Vec3f(-99999999.f);
 
 	for(long lll = 0; lll < room.nb_polys; lll++) {
 		FAST_BKG_DATA * feg;
