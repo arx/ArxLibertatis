@@ -423,4 +423,45 @@ Vector3<T> componentwise_max(Vector3<T> v0, Vector3<T> v1) {
 	return Vector3<T>(std::max(v0.x, v1.x), std::max(v0.y, v1.y), std::max(v0.z, v1.z));
 }
 
+#ifdef USE_GLM_VECTORS
+template<class T>
+inline T dist(const glm::detail::tvec3<T> & a, const glm::detail::tvec3<T> & b) {
+	return a.distanceFrom(b);
+}
+
+template<class T>
+inline T distSqr(const glm::detail::tvec3<T> & a, const glm::detail::tvec3<T> & b) {
+	return a.distanceFromSqr(b);
+}
+
+template<class T>
+inline bool closerThan(const glm::detail::tvec3<T> & a, const glm::detail::tvec3<T> & b, T d) {
+	return (distSqr(a, b) < (d * d));
+}
+
+template<class T>
+inline bool fartherThan(const glm::detail::tvec3<T> & a, const glm::detail::tvec3<T> & b, T d) {
+	return (distSqr(a, b) > (d * d));
+}
+
+template<class T>
+glm::detail::tvec3<T> cross(const glm::detail::tvec3<T> & a, const glm::detail::tvec3<T> & b) {
+	return glm::detail::tvec3<T>(a.y*b.z - a.z*b.y, a.z*b.x - a.x*b.z, a.x*b.y - a.y*b.x);
+}
+
+template<class T>
+T dot(const glm::detail::tvec3<T> & a, const glm::detail::tvec3<T> & b) {
+	return (a.x*b.x + a.y*b.y + a.z*b.z);
+}
+
+template <typename T>
+glm::detail::tvec3<T> componentwise_min(glm::detail::tvec3<T> v0, glm::detail::tvec3<T> v1) {
+	return glm::detail::tvec3<T>(std::min(v0.x, v1.x), std::min(v0.y, v1.y), std::min(v0.z, v1.z));
+}
+template <typename T>
+glm::detail::tvec3<T> componentwise_max(glm::detail::tvec3<T> v0, glm::detail::tvec3<T> v1) {
+	return glm::detail::tvec3<T>(std::max(v0.x, v1.x), std::max(v0.y, v1.y), std::max(v0.z, v1.z));
+}
+#endif
+
 #endif // ARX_MATH_VECTOR3_H
