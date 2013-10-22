@@ -6155,10 +6155,10 @@ void DrawChangeLevelIcon() {
 	}
 }
 
-void UpdateMemorizedSpells() {
-}
+int MemorizedSpellCount;
+Vec2f MemorizedSpellPos;
 
-void DrawMemorizedSpells() {
+void UpdateMemorizedSpells() {
 	int count = 0;
 	int count2 = 0;
 	for(long j = 0; j < 6; j++) {
@@ -6166,16 +6166,18 @@ void DrawMemorizedSpells() {
 			count++;
 		}
 		if(SpellSymbol[j] != RUNE_NONE) {
-			count2 ++;
+			count2++;
 		}
 	}
-	count = std::max(count, count2);
-	Vec3f pos;
-	pos.x = g_size.width() - (count * INTERFACE_RATIO(32));
+	MemorizedSpellCount = std::max(count, count2);
+	MemorizedSpellPos.x = g_size.width() - (MemorizedSpellCount * INTERFACE_RATIO(32));
 	if(CHANGE_LEVEL_ICON > -1) {
-		pos.x -= INTERFACE_RATIO(32);
+		MemorizedSpellPos.x -= INTERFACE_RATIO(32);
 	}
-	pos.y = 0;
+	MemorizedSpellPos.y = 0;
+}
+
+void DrawMemorizedSpells() {
 	for(int i = 0; i < 6; i++) {
 		bool bHalo = false;
 		if(SpellSymbol[i] != RUNE_NONE) {
@@ -6190,19 +6192,19 @@ void DrawMemorizedSpells() {
 			}
 		}
 		if(player.SpellToMemorize.iSpellSymbols[i] != RUNE_NONE) {
-			EERIEDrawBitmap2(pos.x, pos.y, INTERFACE_RATIO(32), INTERFACE_RATIO(32), 0,
+			EERIEDrawBitmap2(MemorizedSpellPos.x, MemorizedSpellPos.y, INTERFACE_RATIO(32), INTERFACE_RATIO(32), 0,
 				necklace.pTexTab[player.SpellToMemorize.iSpellSymbols[i]], Color::white);
 			if(bHalo) {				
 				TextureContainer *tc = necklace.pTexTab[player.SpellToMemorize.iSpellSymbols[i]];
-				DrawHalo(0.2f, 0.4f, 0.8f, tc->getHalo(), Vec2f(pos.x, pos.y));
+				DrawHalo(0.2f, 0.4f, 0.8f, tc->getHalo(), Vec2f(MemorizedSpellPos.x, MemorizedSpellPos.y));
 			}
 			if(!(player.rune_flags & (RuneFlag)(1<<player.SpellToMemorize.iSpellSymbols[i]))) {
 				GRenderer->SetBlendFunc(Renderer::BlendInvDstColor, Renderer::BlendOne);
 				GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-				EERIEDrawBitmap2(pos.x, pos.y, INTERFACE_RATIO(32), INTERFACE_RATIO(32), 0, Movable, Color::gray(.8f));
+				EERIEDrawBitmap2(MemorizedSpellPos.x, MemorizedSpellPos.y, INTERFACE_RATIO(32), INTERFACE_RATIO(32), 0, Movable, Color::gray(.8f));
 				GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 			}
-			pos.x += INTERFACE_RATIO(32);
+			MemorizedSpellPos.x += INTERFACE_RATIO(32);
 		}
 	}
 	if(float(arxtime) - player.SpellToMemorize.lTimeCreation > 30000) {
@@ -6302,9 +6304,9 @@ void UpdateMecanismIcon() {
 	lTimeToDrawMecanismCursor += static_cast<long>(framedelay);
 }
 
-void DrawMecanismIcon() {	
-	EERIEDrawBitmap(0, 0, INTERFACE_RATIO_DWORD(mecanism_tc->m_dwWidth), 
-		INTERFACE_RATIO_DWORD(mecanism_tc->m_dwHeight), 0.01f, mecanism_tc, MecanismIconColor);
+void DrawMecanismIcon() {
+    EERIEDrawBitmap(0, 0, INTERFACE_RATIO_DWORD(mecanism_tc->m_dwWidth), INTERFACE_RATIO_DWORD(mecanism_tc->m_dwHeight),
+                    0.01f, mecanism_tc, MecanismIconColor);
 }
 
 struct {
