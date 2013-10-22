@@ -1694,7 +1694,7 @@ void ArxGame::render() {
 	ARX_PLAYER_Frame_Update();
 		
 	subj.center = Vec2i(g_size.center().x, g_size.center().y);
-	subj.orgTrans.mod = subj.center.to<float>();
+	subj.orgTrans.mod = Vec2f(subj.center);
 
 	// Finally computes current focal
 	BASE_FOCAL = (float)CURRENT_BASE_FOCAL + (BOW_FOCAL * (1.f/4));

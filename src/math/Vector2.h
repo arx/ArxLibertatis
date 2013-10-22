@@ -270,12 +270,7 @@ public:
 			T y; //!< Y component of the vector.
 		};
 	};
-	
-	template <typename O>
-	Vector2<O> to() const {
-		return Vector2<O>(O(x), O(y));
-	}
-	
+
 };
 
 template<class T>

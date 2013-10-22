@@ -1064,7 +1064,7 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 
 					if(oldtime <= ti) {
 						float ratio = float(oldtime)*div_ti;
-						old_pos += (vect.to<float>() * ratio).to<short>();
+						old_pos += Vec2s(Vec2f(vect) * ratio);
 						break;
 					}
 
@@ -1079,7 +1079,7 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 
 					if(newtime <= ti) {
 						float ratio = float(newtime) * div_ti;
-						pos1 += (vect.to<float>() * ratio).to<short>();
+						pos1 += Vec2s(Vec2f(vect) * ratio);
 						AddFlare(pos1, 0.1f, 1, entities[i]);
 						FlareLine(old_pos, pos1, entities[i]);
 						break;
