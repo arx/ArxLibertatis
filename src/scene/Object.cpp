@@ -248,7 +248,7 @@ static void ReCreateUVs(EERIE_3DOBJ * eerie) {
 			continue;
 		
 		TextureContainer * tex = eerie->texturecontainer[eerie->facelist[i].texid];
-		Vec2f scale = (tex) ? Vec2f(1.f / tex->m_dwWidth, 1.f / tex->m_dwHeight) : (Vec2f_ONE / 256);
+		Vec2f scale = (tex) ? Vec2f(1.f / tex->m_dwWidth, 1.f / tex->m_dwHeight) : (Vec2f_ONE / Vec2f(256));
 		
 		eerie->facelist[i].u[0] = (float)eerie->facelist[i].ou[0] * scale.x; 
 		eerie->facelist[i].u[1] = (float)eerie->facelist[i].ou[1] * scale.x; 

@@ -1060,7 +1060,7 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 				for(long j = 0; j < nbcomponents; j++) {
 					Vec2s vect = GetSymbVector(sd->sequence[j]);
 					vect *= symbolVecScale;
-					vect += vect / 2;
+					vect += vect / Vec2s(2);
 
 					if(oldtime <= ti) {
 						float ratio = float(oldtime)*div_ti;
@@ -1075,7 +1075,7 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 				for(int j = 0; j < nbcomponents; j++) {
 					Vec2s vect = GetSymbVector(sd->sequence[j]);
 					vect *= symbolVecScale;
-					vect += vect / 2;
+					vect += vect / Vec2s(2);
 
 					if(newtime <= ti) {
 						float ratio = float(newtime) * div_ti;

@@ -931,7 +931,7 @@ bool Menu2_Render() {
 							unsigned t = a % b;
 							a = b, b = t;
 						}
-						Vec2i aspect = mode.resolution / a;
+						Vec2i aspect = mode.resolution / Vec2i(a);
 						
 						std::stringstream ss;
 						ss << mode.resolution.x << 'x' << mode.resolution.y;

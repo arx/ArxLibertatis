@@ -194,7 +194,7 @@ void ARX_MISSILES_Update()
 			case MISSILE_FIREBALL: {
 				Vec3f pos;
 
-				pos = missiles[i].startpos + missiles[i].velocity * framediff3;
+				pos = missiles[i].startpos + missiles[i].velocity * Vec3f(framediff3);
 
 				if(missiles[i].longinfo != -1) {
 					DynLight[missiles[i].longinfo].pos = pos;
