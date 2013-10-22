@@ -47,6 +47,15 @@ public:
 			return *this;
 		}
 		
+        operator glm::detail::tvec2<T>() {
+            return glm::detail::tvec2<T>(x, y);
+        }
+
+        DummyVec2 & operator=(const glm::detail::tvec2<T> & vec) {
+            x = vec.x, y = vec.y;
+            return *this;
+        }
+
 	};
 	
 	typedef T Num;
@@ -77,6 +86,10 @@ public:
 	Rectangle_(const Vector2<T> & _origin, T width = T(0), T height = T(0)) : left(_origin.x), top(_origin.y), right(_origin.x + width), bottom(_origin.y + height) { }
 	
 	Rectangle_(const Vector2<T> & _origin, const Vector2<T> & _end) : left(_origin.x), top(_origin.y), right(_end.x), bottom(_end.y) { }
+
+    Rectangle_(const glm::detail::tvec2<T> & _origin, T width = T(0), T height = T(0)) : left(_origin.x), top(_origin.y), right(_origin.x + width), bottom(_origin.y + height) { }
+
+    Rectangle_(const glm::detail::tvec2<T> & _origin, const glm::detail::tvec2<T> & _end) : left(_origin.x), top(_origin.y), right(_end.x), bottom(_end.y) { }
 	
 	Rectangle_(T width, T height) : left(T(0)), top(T(0)), right(width), bottom(height) { }
 	
@@ -105,15 +118,28 @@ public:
 		origin += offset, end += offset;
 		return *this;
 	}
+
+    Rectangle_ operator+(const glm::detail::tvec2<T> & offset) const {
+        return Rectangle_(origin + offset, end + offset);
+    }
+
+    Rectangle_ & operator+=(const glm::detail::tvec2<T> & offset) {
+        origin += offset, end += offset;
+        return *this;
+    }
 	
 	void move(T dx, T dy) {
 		left += dx, top += dy, right += dx, bottom += dy;
 	}
-	
+    
+    bool contains(const glm::detail::tvec2<T> & point) const {
+        return (point.x >= left && point.x < right && point.y >= top && point.y < bottom);
+    }
+
 	bool contains(const Vector2<T> & point) const {
 		return (point.x >= left && point.x < right && point.y >= top && point.y < bottom);
 	}
-	
+
 	bool contains(T x, T y) const {
 		return (x >= left && x < right && y >= top && y < bottom);
 	}
@@ -157,9 +183,15 @@ public:
 		return (left <= right && top <= bottom);
 	}
 	
+#ifdef USE_GLM_VECTORS
+    glm::detail::tvec2<T> center() const {
+        return glm::detail::tvec2<T>(left + (right - left) / 2, top + (bottom - top) / 2);
+    }
+#else
 	Vector2<T> center() const {
 		return Vector2<T>(left + (right - left) / 2, top + (bottom - top) / 2);
 	}
+#endif    
 	
 	static const Rectangle_ ZERO;
 	
