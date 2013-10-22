@@ -6157,20 +6157,32 @@ void DrawIcons() {
 	}
 }
 
+struct {
+	float x;
+	float y;
+	float vv;
+} ChangeLevelIcon;
+
+void UpdateChangeLevelIcon() {
+	ChangeLevelIcon.x = g_size.width() - INTERFACE_RATIO_DWORD(ChangeLevel->m_dwWidth);
+	ChangeLevelIcon.y = 0;
+	ChangeLevelIcon.vv = 0.9f - EEsin(arxtime.get_frame_time()*( 1.0f / 50 ))*0.5f+rnd()*( 1.0f / 10 );
+	ChangeLevelIcon.vv = clamp(ChangeLevelIcon.vv, 0.f, 1.f);
+}
+
 void DrawChangeLevelIcon() {
-	//Setting px and py as float to avoid warning on function ARX_INTERFACE_DrawItem and MouseInRect
-	float px = g_size.width() - INTERFACE_RATIO_DWORD(ChangeLevel->m_dwWidth);
-	float py = 0;
-	float vv = 0.9f - EEsin(arxtime.get_frame_time()*( 1.0f / 50 ))*0.5f+rnd()*( 1.0f / 10 );
-	vv = clamp(vv, 0.f, 1.f);
-	ARX_INTERFACE_DrawItem(ChangeLevel, px, py, 0.0001f, Color::gray(vv));
-	if(MouseInRect(px, py, px + INTERFACE_RATIO_DWORD(ChangeLevel->m_dwWidth), py + INTERFACE_RATIO_DWORD(ChangeLevel->m_dwHeight)))
+	ARX_INTERFACE_DrawItem(ChangeLevel, ChangeLevelIcon.x, ChangeLevelIcon.y, 0.0001f, Color::gray(ChangeLevelIcon.vv));
+	if(MouseInRect(ChangeLevelIcon.x, ChangeLevelIcon.y, ChangeLevelIcon.x + INTERFACE_RATIO_DWORD(ChangeLevel->m_dwWidth), 
+		ChangeLevelIcon.y + INTERFACE_RATIO_DWORD(ChangeLevel->m_dwHeight)))
 	{
 		SpecialCursor=CURSOR_INTERACTION_ON;
 		if(!(EERIEMouseButton & 1) && (LastMouseClick & 1)) {
 			CHANGE_LEVEL_ICON = 200;
 		}
 	}
+}
+
+void UpdateMemorizedSpells() {
 }
 
 void DrawMemorizedSpells() {
@@ -6225,6 +6237,7 @@ void DrawMemorizedSpells() {
 	}
 }
 
+//Health/mana gauges
 Vec2f HealthGaugePos;
 Vec2f ManaGaugePos;
 float HealthGaugeAmount;
@@ -6361,6 +6374,8 @@ void UpdateInterface() {
 	UpdateMecanismIcon();
 	UpdateScreenBorderArrows();
 	UpdateHealthManaGauges();
+	UpdateMemorizedSpells();
+	UpdateChangeLevelIcon();
 }
 
 void ArxGame::drawAllInterface() {
