@@ -6414,9 +6414,9 @@ void UpdateInterface() {
 }
 
 void ArxGame::drawAllInterface() {
-	GRenderer->GetTextureStage(0)->SetMinFilter(TextureStage::FilterLinear);
-	GRenderer->GetTextureStage(0)->SetMagFilter(TextureStage::FilterNearest);
-	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
+	GRenderer->GetTextureStage(0)->setMinFilter(TextureStage::FilterLinear);
+	GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterNearest);
+	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapClamp);
 
 	if(player.Interface & INTER_COMBATMODE) {
 		drawCombatInterface();
@@ -6442,9 +6442,7 @@ void ArxGame::drawAllInterface() {
 	if(CHANGE_LEVEL_ICON > -1 && ChangeLevel) {
 		DrawChangeLevelIcon();
 	}
-	if(SPLASH_THINGS_STAGE < 11) {
-		ARX_INTERFACE_Draw_Stealth_Gauge();
-	}
+	ARX_INTERFACE_Draw_Stealth_Gauge();
 	if((player.Interface & INTER_MAP) && !(player.Interface & INTER_COMBATMODE)) {
 		ARX_INTERFACE_ManageOpenedBook();
 		ARX_INTERFACE_ManageOpenedBook_Finish();
