@@ -66,8 +66,8 @@ void MOLLESS_Clear(EERIE_3DOBJ * obj, long flag) {
 	if(obj && obj->cdata) {
 		for(long i = 0; i < obj->cdata->nb_cvert; i++) {
 			CLOTHESVERTEX * cv = &obj->cdata->cvert[i];
-			cv->velocity = Vec3f::ZERO;
-			cv->force = Vec3f::ZERO;
+			cv->velocity = Vec3f_ZERO;
+			cv->force = Vec3f_ZERO;
 			if(!(flag & 1)) {
 				cv->coll = -1;
 				cv->t_pos = cv->pos = obj->vertexlist[cv->idx].v;

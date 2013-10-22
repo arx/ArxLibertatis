@@ -52,7 +52,7 @@ public:
 	
 protected:
 	
-	Texture() : mFormat(Image::Format_Unknown), flags(0), size(Vec2i::ZERO), storedSize(Vec2i::ZERO), mDepth(0) { }
+	Texture() : mFormat(Image::Format_Unknown), flags(0), size(Vec2i_ZERO), storedSize(Vec2i_ZERO), mDepth(0) { }
 	
 	virtual bool Create() = 0;
 	

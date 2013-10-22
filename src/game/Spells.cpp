@@ -3957,7 +3957,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			} else {
 				ang = entities[spells[i].caster]->angle.b;
 			}
-			effect->Create(Vec3f::ZERO, MAKEANGLE(ang));
+			effect->Create(Vec3f_ZERO, MAKEANGLE(ang));
 			spells[i].pSpellFx = effect;
 			spells[i].tolive = effect->GetDuration();
 			
@@ -4393,7 +4393,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			CLightning * effect = new CLightning();
 			effect->spellinstance = i;
 			Vec3f target(0.f, 0.f, -500.f);
-			effect->Create(Vec3f::ZERO, target, MAKEANGLE(player.angle.b));
+			effect->Create(Vec3f_ZERO, target, MAKEANGLE(player.angle.b));
 			effect->SetDuration(long(500 * spells[i].caster_level));
 			effect->lSrc = 0;
 			spells[i].pSpellFx = effect;
@@ -5720,7 +5720,7 @@ void ARX_SPELLS_Update()
 							SpawnFireballTail(&pCF->eCurPos,&pCF->eMove,(float)spells[i].caster_level,0);
 						} else {
 							if(rnd()<0.9f) {
-								Vec3f move = Vec3f::ZERO;
+								Vec3f move = Vec3f_ZERO;
 								float dd=(float)pCF->ulCurrentTime / (float)MIN_TIME_FIREBALL*10;
 
 								if(dd > spells[i].caster_level)
@@ -5808,7 +5808,7 @@ void ARX_SPELLS_Update()
 
 			if(spells[i].pSpellFx) {
 				CCurse * curse=(CCurse *)spells[i].pSpellFx;
-				Vec3f target = Vec3f::ZERO;
+				Vec3f target = Vec3f_ZERO;
 					
 				if(spells[i].target >= 0 && entities[spells[i].target]) {
 					target = entities[spells[i].target]->pos;

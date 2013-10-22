@@ -224,12 +224,12 @@ struct PHYSVERT
 	float		mass;
 
 	PHYSVERT()
-		: initpos(Vec3f::ZERO)
-		, temp(Vec3f::ZERO)
-		, pos(Vec3f::ZERO)
-		, velocity(Vec3f::ZERO)
-		, force(Vec3f::ZERO)
-		, inertia(Vec3f::ZERO)
+		: initpos(Vec3f_ZERO)
+		, temp(Vec3f_ZERO)
+		, pos(Vec3f_ZERO)
+		, velocity(Vec3f_ZERO)
+		, force(Vec3f_ZERO)
+		, inertia(Vec3f_ZERO)
 		, mass(0.f)
 	{}
 };
@@ -352,7 +352,7 @@ struct EERIE_3DOBJ
 {
 	EERIE_3DOBJ()
 	{
-		point0 = pos = Vec3f::ZERO;
+		point0 = pos = Vec3f_ZERO;
 		angle = Anglef::ZERO;
 
 		origin = 0;

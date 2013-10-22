@@ -71,7 +71,7 @@ extern ParticleManager * pParticleManager;
 CCreateField::CCreateField() {
 	
 	fwrap = 0.f;
-	eSrc = Vec3f::ZERO;
+	eSrc = Vec3f_ZERO;
 	fColor1[0] = 0.4f;
 	fColor1[1] = 0.0f;
 	fColor1[2] = 0.4f;
@@ -307,8 +307,8 @@ void CCreateField::Render()
 
 CSlowDown::CSlowDown() {
 	
-	eSrc = Vec3f::ZERO;
-	eTarget = Vec3f::ZERO;
+	eSrc = Vec3f_ZERO;
+	eTarget = Vec3f_ZERO;
 	
 	SetDuration(1000);
 	ulCurrentTime = ulDuration + 1;
@@ -409,7 +409,7 @@ CRiseDead::~CRiseDead()
 
 CRiseDead::CRiseDead() {
 	
-	eSrc = Vec3f::ZERO;
+	eSrc = Vec3f_ZERO;
 	
 	SetDuration(1000);
 	ulCurrentTime = ulDurationIntro + ulDurationRender + ulDurationOuttro + 1;
@@ -1658,8 +1658,8 @@ void CParalyse::Render()
 
 CDisarmTrap::CDisarmTrap() {
 	
-	eSrc = Vec3f::ZERO;
-	eTarget = Vec3f::ZERO;
+	eSrc = Vec3f_ZERO;
+	eTarget = Vec3f_ZERO;
 	
 	SetDuration(1000);
 	ulCurrentTime = ulDuration + 1;

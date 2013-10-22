@@ -477,7 +477,7 @@ public:
 		DebugScript(' ' << options << ' ' << target);
 		
 		if(io->ioflags & IO_CAMERA) {
-			io->_camdata->cam.translatetarget = Vec3f::ZERO;
+			io->_camdata->cam.translatetarget = Vec3f_ZERO;
 		}
 		
 		long i = -1;

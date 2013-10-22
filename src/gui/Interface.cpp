@@ -422,10 +422,10 @@ static void ARX_INTERFACE_DrawNumber(const float x, const float y, const long nu
 	ColorBGRA col = color.toBGRA();
 	
 	TexturedVertex v[4];
-	v[0] = TexturedVertex(Vec3f::ZERO, 1.f, 1, 1, Vec2f::ZERO);
-	v[1] = TexturedVertex(Vec3f::ZERO, 1.f, 1, 1, Vec2f::X_AXIS);
-	v[2] = TexturedVertex(Vec3f::ZERO, 1.f, 1, 1, Vec2f(1.f, 1.f));
-	v[3] = TexturedVertex(Vec3f::ZERO, 1.f, 1, 1, Vec2f::Y_AXIS);
+	v[0] = TexturedVertex(Vec3f_ZERO, 1.f, 1, 1, Vec2f_ZERO);
+	v[1] = TexturedVertex(Vec3f_ZERO, 1.f, 1, 1, Vec2f_X_AXIS);
+	v[2] = TexturedVertex(Vec3f_ZERO, 1.f, 1, 1, Vec2f(1.f, 1.f));
+	v[3] = TexturedVertex(Vec3f_ZERO, 1.f, 1, 1, Vec2f_Y_AXIS);
 	
 	v[0].p.z = v[1].p.z = v[2].p.z = v[3].p.z = 0.0000001f;
 
@@ -1330,13 +1330,13 @@ void ArxGame::manageEditorControls() {
 	/////////////////////////////////////////////////////
 
 	if(EERIEMouseButton & 1) {
-		static Vec2s dragThreshold = Vec2s::ZERO;
+		static Vec2s dragThreshold = Vec2s_ZERO;
 		
 		if(!(LastMouseClick & 1)) {
 			
 			STARTDRAG = DANAEMouse;
 			DRAGGING = 0;
-			dragThreshold = Vec2s::ZERO;
+			dragThreshold = Vec2s_ZERO;
 		} else {
 			dragThreshold += GInput->getMousePosRel();
 			if((abs(DANAEMouse.x - STARTDRAG.x) > 2 && abs(DANAEMouse.y - STARTDRAG.y) > 2)
@@ -1782,7 +1782,7 @@ void ArxGame::manageEditorControls() {
 							io->obj->pbox->active=1;
 							io->obj->pbox->stopcount=0;
 							io->pos = player.pos + Vec3f(0.f, 80.f, 0.f);
-							io->velocity = Vec3f::ZERO;
+							io->velocity = Vec3f_ZERO;
 							io->stopped = 1;
 
 							float y_ratio=(float)((float)DANAEMouse.y-(float)g_size.center().y)/(float)g_size.height()*2;
@@ -2236,7 +2236,7 @@ void ArxGame::managePlayerControls()
 
 	float MoveDiv;
 	
-	Vec3f tm = Vec3f::ZERO;
+	Vec3f tm = Vec3f_ZERO;
 	
 	// Checks STEALTH Key Status.
 	if(GInput->actionPressed(CONTROLS_CUST_STEALTHMODE)) {
@@ -5736,7 +5736,7 @@ void ArxGame::drawAllInterface() {
 		}
 
 		if(io) {
-			float dist = fdist(io->pos, player.pos + (Vec3f::Y_AXIS * 80.f));
+			float dist = fdist(io->pos, player.pos + (Vec3f_Y_AXIS * 80.f));
 
 			if(Project.telekinesis) {
 				if(dist > 900.f) {
@@ -6210,10 +6210,10 @@ void ArxGame::drawAllInterface() {
 
 		if(player.Interface & INTER_LIFE_MANA) {
 			TexturedVertex v[4];
-			v[0] = TexturedVertex(Vec3f(0, 0, .001f), 1.f, Color::white.toBGR(), 1, Vec2f::ZERO);
-			v[1] = TexturedVertex(Vec3f(0, 0, .001f), 1.f, Color::white.toBGR(), 1, Vec2f::X_AXIS);
+			v[0] = TexturedVertex(Vec3f(0, 0, .001f), 1.f, Color::white.toBGR(), 1, Vec2f_ZERO);
+			v[1] = TexturedVertex(Vec3f(0, 0, .001f), 1.f, Color::white.toBGR(), 1, Vec2f_X_AXIS);
 			v[2] = TexturedVertex(Vec3f(0, 0, .001f), 1.f, Color::white.toBGR(), 1, Vec2f(1.f, 1.f));
-			v[3] = TexturedVertex(Vec3f(0, 0, .001f), 1.f, Color::white.toBGR(), 1, Vec2f::Y_AXIS);
+			v[3] = TexturedVertex(Vec3f(0, 0, .001f), 1.f, Color::white.toBGR(), 1, Vec2f_Y_AXIS);
 
 			float px = g_size.width() - INTERFACE_RATIO(33) + INTERFACE_RATIO(1) + lSLID_VALUE;
 			float py = g_size.height() - INTERFACE_RATIO(81);
@@ -6407,7 +6407,7 @@ long Manage3DCursor(long flags)
 	pos.z=player.pos.z-EEcos(angle2)*(g_size.center().x-mx)*0.7f*va + EEcos(angle)*(va*zrange*400.f+vd);
 	pos.y=player.pos.y;
 
-	Vec3f objcenter = Vec3f::ZERO;
+	Vec3f objcenter = Vec3f_ZERO;
 	float maxdist= 0.f;
 	float miny=  99999999.f;
 	float maxy= -99999999.f;
@@ -6479,7 +6479,7 @@ long Manage3DCursor(long flags)
 	maxdist = clamp(maxdist, 15.f, 150.f);
 
 	bool bCollidposNoInit = true;
-	Vec3f           collidpos   = Vec3f::ZERO;
+	Vec3f           collidpos   = Vec3f_ZERO;
 	EERIE_CYLINDER	cyl2;
 	float			inc			=	10.f;
 	long			iterating	=	40;
@@ -6565,7 +6565,7 @@ long Manage3DCursor(long flags)
 				io->obj->pbox->active=1;
 				io->obj->pbox->stopcount=0;
 				io->pos = collidpos;
-				io->velocity = Vec3f::ZERO;
+				io->velocity = Vec3f_ZERO;
 
 				io->stopped = 1;
 
@@ -6772,7 +6772,7 @@ void ARX_INTERFACE_RenderCursorInternal(long flag)
 						size = Vec2i(surf->m_dwWidth, surf->m_dwHeight);
 					} else {
 						ARX_DEAD_CODE();
-						size = Vec2i::ZERO;
+						size = Vec2i_ZERO;
 					}
 					
 					POSX = 320.f - size.x / 2.f;

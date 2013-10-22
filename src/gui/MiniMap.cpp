@@ -435,10 +435,10 @@ void MiniMap::showBookEntireMap(int showLevel) {
 		verts[2].p.y = (pos_y + size) * Yratio;
 		verts[3].p.x = (pos_x - size) * Xratio;
 		verts[3].p.y = (pos_y + size) * Yratio;
-		verts[0].uv = Vec2f::ZERO;
-		verts[1].uv = Vec2f::X_AXIS;
-		verts[2].uv = Vec2f::ONE;
-		verts[3].uv = Vec2f::Y_AXIS;
+		verts[0].uv = Vec2f_ZERO;
+		verts[1].uv = Vec2f_X_AXIS;
+		verts[2].uv = Vec2f_ONE;
+		verts[3].uv = Vec2f_Y_AXIS;
 		
 		if(MouseInRect(verts[0].p.x, verts[0].p.y, verts[2].p.x, verts[2].p.y)) {
 			if(!m_mapMarkers[i].m_text.empty()) {

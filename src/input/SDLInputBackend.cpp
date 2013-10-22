@@ -225,10 +225,10 @@ bool SDLInputBackend::init() {
 	
 	
 	wheel = 0;
-	cursorAbs = Vec2i::ZERO;
-	lastCursorAbs = Vec2i::ZERO;
+	cursorAbs = Vec2i_ZERO;
+	lastCursorAbs = Vec2i_ZERO;
 	cursorInWindow = false;
-	cursorRel = Vec2i::ZERO;
+	cursorRel = Vec2i_ZERO;
 	std::fill_n(keyStates, ARRAY_SIZE(keyStates), false);
 	std::fill_n(buttonStates, ARRAY_SIZE(buttonStates), false);
 	std::fill_n(clickCount, ARRAY_SIZE(clickCount), 0);

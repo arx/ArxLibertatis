@@ -399,7 +399,7 @@ void CLightning::Render()
 	// Player source
 	if(spells[spellinstance].type == SPELL_MASS_LIGHTNING_STRIKE) {
 		arx_assert(lSrc == -1);	//ARX: jycorbel (2010-07-19) - We really need ePos when lSrc!=-1 ; in that case lSrc should be equal to -1 !
-		ePos = Vec3f::ZERO;
+		ePos = Vec3f_ZERO;
 	} else {
 		
 		Entity * caster = entities[spells[spellinstance].caster];
@@ -504,8 +504,8 @@ void CLightning::Render()
 		v2[0].color = v2[3].color = 0xFFFFFFFF;
 		v2[1].color = v2[2].color = 0xFF00005A;
 		v2[0].uv = Vec2f(0.5f, 0.f);
-		v2[1].uv = Vec2f::ZERO;
-		v2[2].uv = Vec2f::Y_AXIS;
+		v2[1].uv = Vec2f_ZERO;
+		v2[2].uv = Vec2f_Y_AXIS;
 		v2[3].uv = Vec2f(0.5f, 1.f);
 		v[0].p = astart;
 		v[1].p = astart + Vec3f(0.f, zz, 0.f);
@@ -519,8 +519,8 @@ void CLightning::Render()
 		ARX_DrawPrimitive(&v2[0], &v2[2], &v2[3]);
 		
 		v2[0].uv = Vec2f(0.5f, 0.f);
-		v2[1].uv = Vec2f::X_AXIS;
-		v2[2].uv = Vec2f::ONE;
+		v2[1].uv = Vec2f_X_AXIS;
+		v2[2].uv = Vec2f_ONE;
 		v2[3].uv = Vec2f(0.5f, 1.f);
 		v[1].p = astart - Vec3f(0.f, zz, 0.f);
 		v[2].p = a - Vec3f(0.f, zz, 0.f);
@@ -531,8 +531,8 @@ void CLightning::Render()
 		
 		zz *= (float) sin(radians(fbeta));
 		
-		v2[1].uv = Vec2f::X_AXIS;
-		v2[2].uv = Vec2f::ONE;
+		v2[1].uv = Vec2f_X_AXIS;
+		v2[2].uv = Vec2f_ONE;
 		v[1].p = astart + Vec3f(xx, 0.f, zz);
 		v[2].p = a + Vec3f(xx, 0.f, zz);
 		EE_RT2(&v[1], &v2[1]);
@@ -540,8 +540,8 @@ void CLightning::Render()
 		ARX_DrawPrimitive(&v2[0], &v2[1], &v2[2]);
 		ARX_DrawPrimitive(&v2[0], &v2[2], &v2[3]);
 		
-		v2[1].uv = Vec2f::ZERO;
-		v2[2].uv = Vec2f::Y_AXIS;
+		v2[1].uv = Vec2f_ZERO;
+		v2[2].uv = Vec2f_Y_AXIS;
 		v[1].p = astart - Vec3f(xx, 0.f, zz);
 		v[2].p = a - Vec3f(xx, 0.f, zz);
 		EE_RT2(&v[1], &v2[1]);
@@ -569,8 +569,8 @@ CConfuse::~CConfuse()
 
 CConfuse::CConfuse() {
 	
-	eSrc = Vec3f::ZERO;
-	eTarget = Vec3f::ZERO;
+	eSrc = Vec3f_ZERO;
+	eTarget = Vec3f_ZERO;
 	
 	SetDuration(5000);
 	ulCurrentTime = ulDuration + 1;
@@ -647,7 +647,7 @@ void CConfuse::Render() {
 	Vec3f stitepos = eCurPos;
 	Anglef stiteangle = Anglef(0.f, -degrees(arxtime.get_updated() * ( 1.0f / 500 )), 0.f);
 	Color3f stitecolor = Color3f::white;
-	Vec3f stitescale = Vec3f::ONE;
+	Vec3f stitescale = Vec3f_ONE;
 	DrawEERIEObjEx(spapi, &stiteangle, &stitepos, &stitescale, stitecolor);
 	
 	for(i = 0; i < 6; i++) {
@@ -731,7 +731,7 @@ void CFireField::Create(float largeur, Vec3f * pos, int _ulDuration)
 	cp.fAngle = 0;
 	cp.fSpeed = 0;
 	cp.fSpeedRandom = 0;
-	cp.p3Gravity = Vec3f::ZERO;
+	cp.p3Gravity = Vec3f_ZERO;
 	cp.fFlash = 0;
 	cp.fRotation = 0;
 	cp.bRotationRandomDirection = false;
@@ -787,7 +787,7 @@ void CFireField::Create(float largeur, Vec3f * pos, int _ulDuration)
 	cp.fAngle = radians(10);
 	cp.fSpeed = 0;
 	cp.fSpeedRandom = 0;
-	cp.p3Gravity = Vec3f::ZERO;
+	cp.p3Gravity = Vec3f_ZERO;
 	cp.fFlash = 0;
 	cp.fRotation = 0;
 	cp.bRotationRandomDirection = false;
@@ -884,8 +884,8 @@ CIceField::~CIceField()
 
 CIceField::CIceField() {
 	
-	eSrc = Vec3f::ZERO;
-	eTarget = Vec3f::ZERO;
+	eSrc = Vec3f_ZERO;
+	eTarget = Vec3f_ZERO;
 	
 	SetDuration(1000);
 	ulCurrentTime = ulDuration + 1;
@@ -931,7 +931,7 @@ void CIceField::Create(Vec3f aeSrc, float afBeta) {
 		else
 			tType[i] = 1;
 		
-		tSize[i] = Vec3f::ZERO;
+		tSize[i] = Vec3f_ZERO;
 		tSizeMax[i].x = rnd();
 		tSizeMax[i].y = rnd() + 0.2f;
 		tSizeMax[i].z = rnd();

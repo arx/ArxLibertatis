@@ -410,8 +410,8 @@ EERIE_ANIM * TheaToEerie(const char * adr, size_t size, const res::path & file) 
 			   || (eerie->groups[pos].quat.y != 0.f)
 			   || (eerie->groups[pos].quat.z != 0.f)
 			   || (eerie->groups[pos].quat.w != 1.f)
-			   || eerie->groups[pos].translate != Vec3f::ZERO
-			   || eerie->groups[pos].zoom != Vec3f::ZERO) {
+			   || eerie->groups[pos].translate != Vec3f_ZERO
+			   || eerie->groups[pos].zoom != Vec3f_ZERO) {
 				voidd = false;
 				break;
 			}
@@ -553,7 +553,7 @@ void GetAnimTotalTranslate( ANIM_HANDLE * eanim, long alt_idx, Vec3f * pos) {
 	
 	if(!eanim || !eanim->anims[alt_idx] || !eanim->anims[alt_idx]->frames
 	   || eanim->anims[alt_idx]->nb_key_frames <= 0) {
-		*pos = Vec3f::ZERO;
+		*pos = Vec3f_ZERO;
 	} else {
 		long idx = eanim->anims[alt_idx]->nb_key_frames - 1;
 		*pos = eanim->anims[alt_idx]->frames[idx].translate;
@@ -812,7 +812,7 @@ void FinishAnim(Entity * io, ANIM_HANDLE * eanim) {
 
 	// Only layer 0 controls movement...
 	if(eanim == io->animlayer[0].cur_anim && (io->ioflags & IO_NPC)) {
-		io->move = io->lastmove = Vec3f::ZERO;
+		io->move = io->lastmove = Vec3f_ZERO;
 	}
 
 	return;

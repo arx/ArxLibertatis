@@ -620,7 +620,7 @@ float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,Entity * ioo,long flags) {
 						}
 
 						for(size_t ii = 0; ii < io->obj->facelist.size(); ii++) {
-							Vec3f c = Vec3f::ZERO;
+							Vec3f c = Vec3f_ZERO;
 							float height = io->obj->vertexlist3[io->obj->facelist[ii].vid[0]].v.y;
 
 							for(long kk = 0; kk < 3; kk++) {
@@ -1560,7 +1560,7 @@ bool ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, Entity * io, float MOVE_CYLIND
 				distance -= curmovedist; 
 			} else {
 				//stopped
-				ip->velocity = Vec3f::ZERO;
+				ip->velocity = Vec3f_ZERO;
 				MOVING_CYLINDER = 0;
 				return false;
 			}
@@ -1589,7 +1589,7 @@ bool IO_Visible(Vec3f * orgn, Vec3f * dest, EERIEPOLY * epp, Vec3f * hit)
 	FAST_BKG_DATA *feg;
 	float pas = 35.f;
  
-	Vec3f found_hit = Vec3f::ZERO;
+	Vec3f found_hit = Vec3f_ZERO;
 	EERIEPOLY *found_ep = NULL;
 	float iter,t;
 

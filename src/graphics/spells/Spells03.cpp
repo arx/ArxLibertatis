@@ -65,7 +65,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 CFireBall::CFireBall() : CSpellFx() {
 	
-	eSrc = Vec3f::ZERO;
+	eSrc = Vec3f_ZERO;
 	
 	SetDuration(2000);
 	ulCurrentTime = ulDuration + 1;
@@ -78,11 +78,11 @@ CFireBall::CFireBall() : CSpellFx() {
 	fire_1.iNbMax = 200;
 	fire_1.fLife = 550;
 	fire_1.fLifeRandom = 500;
-	fire_1.p3Pos = Vec3f::ZERO;
+	fire_1.p3Pos = Vec3f_ZERO;
 	fire_1.fAngle = radians(3);
 	fire_1.fSpeed = 0;
 	fire_1.fSpeedRandom = 0;
-	fire_1.p3Gravity = Vec3f::ZERO;
+	fire_1.p3Gravity = Vec3f_ZERO;
 	fire_1.fFlash = 0;
 	fire_1.fRotation = 50;
 	fire_1.fStartColor[0] = 22;
@@ -108,11 +108,11 @@ CFireBall::CFireBall() : CSpellFx() {
 	fire_2.iNbMax = 20;
 	fire_2.fLife = 550;
 	fire_2.fLifeRandom = 500;
-	fire_2.p3Pos = Vec3f::ZERO; 
+	fire_2.p3Pos = Vec3f_ZERO; 
 	fire_2.fAngle = radians(3);
 	fire_2.fSpeed = 0;
 	fire_2.fSpeedRandom = 0;
-	fire_2.p3Gravity = Vec3f::ZERO;
+	fire_2.p3Gravity = Vec3f_ZERO;
 	fire_2.fFlash = 0;
 	fire_2.fRotation = 50;
 	fire_2.fStartColor[0] = 22;
@@ -463,7 +463,7 @@ void CIceProjectile::Create(Vec3f aeSrc, float afBeta)
 		else
 			tType[i] = 1;
 
-		tSize[i] = Vec3f::ZERO;
+		tSize[i] = Vec3f_ZERO;
 		tSizeMax[i] = randomVec() + Vec3f(0.f, 0.2f, 0.f);
 
 		if(tType[i] == 0) {
@@ -916,7 +916,7 @@ if (ulCurrentTime >= ulDuration)
 		if(ff < 1500) {
 			pPS->uMaxParticles = 0;
 			pPS->ulParticleSpawn = PARTICLE_CIRCULAR;
-			pPS->p3ParticleGravity = Vec3f::ZERO;
+			pPS->p3ParticleGravity = Vec3f_ZERO;
 
 		std::list<Particle *>::iterator i;
 

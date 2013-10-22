@@ -108,7 +108,7 @@ void ARXMenu_Private_Options_Video_SetResolution(bool fullscreen, int _iWidth, i
 	config.video.bpp = _iBpp;
 	
 	if(!fullscreen) {
-		if(config.video.resolution == Vec2i::ZERO) {
+		if(config.video.resolution == Vec2i_ZERO) {
 			LogInfo << "Configuring automatic fullscreen resolution selection";
 		} else {
 			LogInfo << "Configuring fullscreen resolution to " << _iWidth << 'x' << _iHeight << '@' << _iBpp;

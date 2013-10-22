@@ -154,7 +154,7 @@ public:
 	
 	/*!
 	 * End of the image in texture coordinates (image size divided by stored size).
-	 * This is usually Vec2f::ONE but may differ if only power of two textures are supported.
+	 * This is usually Vec2f_ONE but may differ if only power of two textures are supported.
 	 */
 	Vec2f uv;
 	

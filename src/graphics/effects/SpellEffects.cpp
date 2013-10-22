@@ -117,10 +117,10 @@ void Draw3DLineTexNew(Vec3f startPos, Vec3f endPos, Color startColor, Color endC
 	v2[2].color = v2[3].color = endColor.toBGRA();
 
 	// version 2 faces
-	v2[0].uv = Vec2f::ZERO;
-	v2[1].uv = Vec2f::X_AXIS;
-	v2[2].uv = Vec2f::ONE;
-	v2[3].uv = Vec2f::Y_AXIS;
+	v2[0].uv = Vec2f_ZERO;
+	v2[1].uv = Vec2f_X_AXIS;
+	v2[2].uv = Vec2f_ONE;
+	v2[3].uv = Vec2f_Y_AXIS;
 
 	v[0].p.x = startPos.x;
 	v[0].p.y = startPos.y + zzs;

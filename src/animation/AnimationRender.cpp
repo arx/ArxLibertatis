@@ -1345,9 +1345,9 @@ static void StoreEntityMovement(Entity * io, Vec3f & ftr, float scale) {
 	if(!io)
 		return;
 
-	Vec3f ftr2 = Vec3f::ZERO;
+	Vec3f ftr2 = Vec3f_ZERO;
 
-	if(ftr != Vec3f::ZERO) {
+	if(ftr != Vec3f_ZERO) {
 		ftr *= scale;
 
 		float temp;
@@ -1367,7 +1367,7 @@ static void StoreEntityMovement(Entity * io, Vec3f & ftr, float scale) {
 
 		// Use calculated value to notify the Movement engine of the translation to do
 		if(io->ioflags & IO_NPC) {
-			ftr = Vec3f::ZERO;
+			ftr = Vec3f_ZERO;
 			io->move -= io->lastmove;
 		} else if (io->gameFlags & GFLAG_ELEVATOR) {
 			// Must recover translations for NON-NPC IO
@@ -1482,7 +1482,7 @@ static void Cedric_ConcatenateTM(EERIE_C_DATA & rig, const TransformInfo & t) {
 			bone->anim.trans = parent->anim.trans + bone->anim.trans;
 
 			// Scale
-			bone->anim.scale = (bone->init.scale + Vec3f::ONE) * parent->anim.scale;
+			bone->anim.scale = (bone->init.scale + Vec3f_ONE) * parent->anim.scale;
 		} else { // Root Bone
 			// Rotation
 			bone->anim.quat = Quat_Multiply(t.rotation, bone->init.quat);
@@ -1494,7 +1494,7 @@ static void Cedric_ConcatenateTM(EERIE_C_DATA & rig, const TransformInfo & t) {
 			bone->anim.trans += t.pos;
 
 			// Compute Global Object Scale AND Global Animation Scale
-			bone->anim.scale = (bone->init.scale + Vec3f::ONE) * t.scale;
+			bone->anim.scale = (bone->init.scale + Vec3f_ONE) * t.scale;
 		}
 	}
 }
@@ -1641,7 +1641,7 @@ void EERIEDrawAnimQuatUpdate(EERIE_3DOBJ *eobj, ANIM_USE * animlayer,const Angle
 	}
 
 	// Reset Frame Translate
-	Vec3f ftr = Vec3f::ZERO;
+	Vec3f ftr = Vec3f_ZERO;
 
 	// Set scale and invisibility factors
 	float scale = Cedric_GetScale(io);
@@ -1677,7 +1677,7 @@ void EERIEDrawAnimQuatUpdate(EERIE_3DOBJ *eobj, ANIM_USE * animlayer,const Angle
 
 	if(BH_MODE && eobj->fastaccess.head_group != -1) {
 		extraScale.groupIndex = eobj->fastaccess.head_group;
-		extraScale.scale = Vec3f::ONE;
+		extraScale.scale = Vec3f_ONE;
 	}
 
 	arx_assert(eobj->c_data);

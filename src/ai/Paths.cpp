@@ -387,8 +387,8 @@ ARX_PATH::ARX_PATH(const std::string & _name, const Vec3f & _pos)
 	farclip = 0.f;
 	reverb = 0.f;
 	amb_max_vol = 0.f;
-	bbmin = Vec3f::ZERO;
-	bbmax = Vec3f::ZERO;
+	bbmin = Vec3f_ZERO;
+	bbmax = Vec3f_ZERO;
 }
 
 void ARX_PATH_ClearAllUsePath() {
@@ -466,7 +466,7 @@ long ARX_PATHS_Interpolate(ARX_USE_PATH * aup, Vec3f * pos) {
 	}
 	
 	// set pos to startpos
-	*pos = Vec3f::ZERO;
+	*pos = Vec3f_ZERO;
 	
 	if(tim == 0) {
 		return 0;
@@ -478,7 +478,7 @@ long ARX_PATHS_Interpolate(ARX_USE_PATH * aup, Vec3f * pos) {
 
 	if(ap->pathways) {
 		ap->pathways[0]._time = 0;
-		ap->pathways[0].rpos = Vec3f::ZERO;
+		ap->pathways[0].rpos = Vec3f_ZERO;
 	} else {
 		return -1;
 	}
@@ -1468,7 +1468,7 @@ static bool ARX_EERIE_PHYSICS_BOX_Compute(EERIE_3DOBJ * obj, float framediff, lo
 	for(long kk = 0; kk < obj->pbox->nb_physvert; kk++) {
 		PHYSVERT *pv = &obj->pbox->vert[kk];
 		oldpos[kk] = pv->pos;
-		pv->inertia = Vec3f::ZERO;
+		pv->inertia = Vec3f_ZERO;
 
 		pv->velocity.x = clamp(pv->velocity.x, -VELOCITY_THRESHOLD, VELOCITY_THRESHOLD);
 		pv->velocity.y = clamp(pv->velocity.y, -VELOCITY_THRESHOLD, VELOCITY_THRESHOLD);

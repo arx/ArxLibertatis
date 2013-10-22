@@ -518,7 +518,7 @@ void InitializeDanae() {
 	raycam.center = raycam.clip.center();
 	
 	bookcam.angle = Anglef::ZERO;
-	bookcam.orgTrans.pos = Vec3f::ZERO;
+	bookcam.orgTrans.pos = Vec3f_ZERO;
 	bookcam.focal = BASE_FOCAL;
 	
 	ACTIVEBKG->ambient = Color3f(0.09f, 0.09f, 0.09f);
@@ -585,7 +585,7 @@ static bool initializeGame() {
 	
 	LogDebug("Project Init");
 	
-	PUSH_PLAYER_FORCE = Vec3f::ZERO;
+	PUSH_PLAYER_FORCE = Vec3f_ZERO;
 	ARX_SPECIAL_ATTRACTORS_Reset();
 	LogDebug("Attractors Init");
 	ARX_SPELLS_Precast_Reset();
@@ -1572,8 +1572,8 @@ void FirstFrameProc() {
 
 	NO_GMOD_RESET = 0;
 	
-	STARTDRAG = Vec2s::ZERO;
-	DANAEMouse = Vec2s::ZERO;
+	STARTDRAG = Vec2s_ZERO;
+	DANAEMouse = Vec2s_ZERO;
 	bookclick = Vec2s(-1, -1);
 	
 	if(!LOAD_N_DONT_ERASE)

@@ -621,7 +621,7 @@ bool OpenALSource::updateCulling() {
 	
 	Vec3f listener_pos;
 	if(channel.flags & FLAG_RELATIVE) {
-		listener_pos = Vec3f::ZERO;
+		listener_pos = Vec3f_ZERO;
 	} else {
 		alGetListener3f(AL_POSITION, &listener_pos.x, &listener_pos.y, &listener_pos.z);
 		AL_CHECK_ERROR_N("getting listener position", return tooFar;)

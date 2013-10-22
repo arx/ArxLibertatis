@@ -109,7 +109,7 @@ class ForceAnimCommand : public Command {
 		}
 		
 		FinishAnim(&io, io.animlayer[0].cur_anim);
-		io.lastmove = Vec3f::ZERO;
+		io.lastmove = Vec3f_ZERO;
 		ANIM_Set(&io.animlayer[0], ea);
 		io.animlayer[0].flags |= EA_FORCEPLAY;
 		io.animlayer[0].nextflags = 0;
@@ -216,7 +216,7 @@ public:
 			execute = test_flag(flg, 'e');
 			if(flg & flag('p')) {
 				iot = entities.player();
-				iot->move = iot->lastmove = Vec3f::ZERO;
+				iot->move = iot->lastmove = Vec3f_ZERO;
 			}
 		}
 		

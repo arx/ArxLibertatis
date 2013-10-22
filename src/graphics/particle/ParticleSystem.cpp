@@ -92,7 +92,7 @@ ParticleSystem::ParticleSystem() {
 	ulParticleSpawn = 0;
 	
 	// default settings for EDITOR MODE only
-	Vec3f eVect = p3ParticleDirection = -Vec3f::Y_AXIS;
+	Vec3f eVect = p3ParticleDirection = -Vec3f_Y_AXIS;
 	eVect.y = -eVect.y;
 	GenerateMatrixUsingVector(&eMat, &eVect, 0);
 	
@@ -108,13 +108,13 @@ ParticleSystem::ParticleSystem() {
 	fParticleEndColor[3] = 0.1f;
 	fParticleSpeed = 10;
 	fParticleLife = 1000;
-	p3ParticlePos = Vec3f::ZERO;
+	p3ParticlePos = Vec3f_ZERO;
 	bParticleFollow = true;
 	fParticleFlash = 0;
 	fParticleRotation = 0;
 	bParticleRotationRandomDirection = false;
 	bParticleRotationRandomStart = false;
-	p3ParticleGravity = Vec3f::ZERO;
+	p3ParticleGravity = Vec3f_ZERO;
 	fParticleLifeRandom = 1000;
 	fParticleAngle = 0;
 	fParticleSpeedRandom = 10;
@@ -268,7 +268,7 @@ void ParticleSystem::SetTexture(const char * _pszTex, int _iNbTex, int _iTime, b
 
 void ParticleSystem::SpawnParticle(Particle * pP) {
 	
-	pP->p3Pos = Vec3f::ZERO;
+	pP->p3Pos = Vec3f_ZERO;
 	
 	if((ulParticleSpawn & PARTICLE_CIRCULAR) == PARTICLE_CIRCULAR
 	   && (ulParticleSpawn & PARTICLE_BORDER) == PARTICLE_BORDER) {
@@ -321,7 +321,7 @@ void ParticleSystem::SetParticleParams(Particle * pP) {
 	
 	// ici modifs ----------------------------------
 	
-	vv1 = -Vec3f::Y_AXIS;
+	vv1 = -Vec3f_Y_AXIS;
 	
 	VectorRotateZ(vv1, vvz, fAngleX); 
 	VectorRotateY(vvz, vv1, radians(rnd() * 360.0f));

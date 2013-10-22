@@ -128,7 +128,7 @@ struct EERIE_EXTRA_SCALE {
 
 	EERIE_EXTRA_SCALE()
 		: groupIndex(-1)
-		, scale(Vec3f::ZERO)
+		, scale(Vec3f_ZERO)
 	{}
 };
 

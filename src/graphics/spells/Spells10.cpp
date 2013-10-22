@@ -110,8 +110,8 @@ void CMassLightning::Render()
 
 CControlTarget::CControlTarget() {
 	
-	eSrc = Vec3f::ZERO;
-	eTarget = Vec3f::ZERO;
+	eSrc = Vec3f_ZERO;
+	eTarget = Vec3f_ZERO;
 	
 	SetDuration(8000);
 	ulCurrentTime = ulDuration + 1;
@@ -202,7 +202,7 @@ void CControlTarget::Render()
 	Vec3f v;
 	
 	int arx_check_init = -1;
-	Vec3f newpos = Vec3f::ZERO;
+	Vec3f newpos = Vec3f_ZERO;
 	Vec3f lastpos = pathways[0].p;
 	
 	for(i = 0; i < 9; i++) {

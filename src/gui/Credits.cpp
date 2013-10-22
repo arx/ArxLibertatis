@@ -72,7 +72,7 @@ void ARX_MENU_LaunchAmb(const string & _lpszAmb);
 struct CreditsTextInformations {
 	
 	CreditsTextInformations() {
-		sPos = Vec2i::ZERO;
+		sPos = Vec2i_ZERO;
 		fColors = Color::none;
 	}
 	

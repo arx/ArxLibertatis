@@ -149,7 +149,7 @@ bool SDLWindow::initialize(const std::string & title, Vec2i size, bool fullscree
 
 	SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL, config.video.vsync ? 1 : 0);
 	
-	size_ = Vec2i::ZERO;
+	size_ = Vec2i_ZERO;
 	depth_ = 0;
 	
 	for(int msaa = config.video.antialiasing ? 8 : 1; msaa >= 0; msaa--) {
@@ -194,7 +194,7 @@ bool SDLWindow::initialize(const std::string & title, Vec2i size, bool fullscree
 
 bool SDLWindow::setMode(DisplayMode mode, bool fullscreen) {
 	
-	if(fullscreen && mode.resolution == Vec2i::ZERO) {
+	if(fullscreen && mode.resolution == Vec2i_ZERO) {
 		mode = desktopMode;
 	} else if(mode.depth == 0) {
 		mode.depth = desktopMode.depth;

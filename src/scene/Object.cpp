@@ -248,7 +248,7 @@ static void ReCreateUVs(EERIE_3DOBJ * eerie) {
 			continue;
 		
 		TextureContainer * tex = eerie->texturecontainer[eerie->facelist[i].texid];
-		Vec2f scale = (tex) ? Vec2f(1.f / tex->m_dwWidth, 1.f / tex->m_dwHeight) : (Vec2f::ONE / 256);
+		Vec2f scale = (tex) ? Vec2f(1.f / tex->m_dwWidth, 1.f / tex->m_dwHeight) : (Vec2f_ONE / 256);
 		
 		eerie->facelist[i].u[0] = (float)eerie->facelist[i].ou[0] * scale.x; 
 		eerie->facelist[i].u[1] = (float)eerie->facelist[i].ou[1] * scale.x; 
@@ -536,7 +536,7 @@ static void loadObjectData(EERIE_3DOBJ * eerie, const char * adr, size_t * poss,
 	}
 	
 	eerie->angle = Anglef::ZERO;
-	eerie->pos = Vec3f::ZERO;
+	eerie->pos = Vec3f_ZERO;
 	
 	// Now Interpret Extra Data chunk
 	pos = to->extras_seek + 4;
@@ -889,7 +889,7 @@ EERIE_MULTI3DSCENE * PAK_MultiSceneToEerie(const res::path & dirr) {
 // Warning Clear3DObj/Clear3DScene don't release Any pointer Just Clears Structures
 void EERIE_3DOBJ::clear() {
 	
-		point0 = pos = Vec3f::ZERO;
+		point0 = pos = Vec3f_ZERO;
 		angle = Anglef::ZERO;
 
 		origin = 0;
@@ -1141,9 +1141,9 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 		// Initialize the bone
 		Quat_Init(&bone.init.quat);
 		Quat_Init(&bone.anim.quat);
-		bone.init.scale = Vec3f::ZERO;
-		bone.anim.scale = Vec3f::ZERO;
-		bone.init.trans = Vec3f::ZERO;
+		bone.init.scale = Vec3f_ZERO;
+		bone.anim.scale = Vec3f_ZERO;
+		bone.init.trans = Vec3f_ZERO;
 		bone.transinit_global = bone.init.trans;
 		bone.original_group = NULL;
 		bone.father = -1;
@@ -1174,8 +1174,8 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 
 			Quat_Init(&bone.init.quat);
 			Quat_Init(&bone.anim.quat);
-			bone.init.scale = Vec3f::ZERO;
-			bone.anim.scale = Vec3f::ZERO;
+			bone.init.scale = Vec3f_ZERO;
+			bone.anim.scale = Vec3f_ZERO;
 			bone.init.trans = Vec3f(v_origin->v.x, v_origin->v.y, v_origin->v.z);
 			bone.transinit_global = bone.init.trans;
 			bone.original_group = &group;
@@ -1236,7 +1236,7 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 				/* Translation */
 				bone.anim.trans = bone.init.trans;
 			}
-			bone.anim.scale = Vec3f::ONE;
+			bone.anim.scale = Vec3f_ONE;
 		}
 
 		eobj->vertexlocal = new EERIE_3DPAD[eobj->vertexlist.size()];
@@ -1333,7 +1333,7 @@ static EERIE_3DOBJ * TheoToEerie(const char * adr, long size, const res::path & 
 	pos = pth->object_seek;
 	loadObjectData(eerie, adr, &pos, pth->version);
 	eerie->angle = Anglef::ZERO;
-	eerie->pos = Vec3f::ZERO;
+	eerie->pos = Vec3f_ZERO;
 
 	// NORMALS CALCULATIONS
 
@@ -1389,7 +1389,7 @@ static EERIE_3DOBJ * TheoToEerie(const char * adr, long size, const res::path & 
 	long head_idx = EERIE_OBJECT_GetGroup(eerie, "head");
 
 	if(head_idx >= 0 && neck_orgn >= 0) {
-		Vec3f center = Vec3f::ZERO;
+		Vec3f center = Vec3f_ZERO;
 		Vec3f origin = eerie->vertexlist[neck_orgn].v;
 		float count = (float)eerie->grouplist[head_idx].indexes.size();
 

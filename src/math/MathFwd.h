@@ -28,7 +28,7 @@
 #include <glm/gtx/euler_angles.hpp>
 
 // Temp macro to compare results of GLM vs old arx maths
-//#define USE_GLM_VECTORS
+#define USE_GLM_VECTORS
 #define GLM_VALIDATE(v1, v2) static bool BOOST_PP_CAT(bValidate,__LINE__) = true; if(BOOST_PP_CAT(bValidate,__LINE__)) arx_assert(v1 == v2)
 
 template <class T>

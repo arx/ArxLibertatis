@@ -544,7 +544,7 @@ long ARX_SOUND_PlaySFX(SourceId & sample_id, const Vec3f * position, float pitch
 		channel.position = *position;
 	} else {
 		channel.flags |= FLAG_RELATIVE;
-		channel.position = Vec3f::Z_AXIS;
+		channel.position = Vec3f_Z_AXIS;
 	}
 	
 	audio::samplePlay(sample_id, channel, loop);
@@ -598,7 +598,7 @@ void ARX_SOUND_IOFrontPos(const Entity * io, Vec3f & pos) {
 		pos.y = ACTIVECAM->orgTrans.pos.y - 100.0F;
 		pos.z = ACTIVECAM->orgTrans.pos.z + EEcos(radians(MAKEANGLE(ACTIVECAM->angle.b))) * 100.0F;
 	} else {
-		pos = Vec3f::ZERO;
+		pos = Vec3f_ZERO;
 	}
 }
 
@@ -640,7 +640,7 @@ long ARX_SOUND_PlaySpeech(const res::path & name, const Entity * io)
 		}
 	} else {
 		channel.flags |= FLAG_RELATIVE;
-		channel.position = Vec3f::Z_AXIS * 100.f;
+		channel.position = Vec3f_Z_AXIS * 100.f;
 	}
 
 	audio::samplePlay(sample_id, channel);
@@ -793,7 +793,7 @@ long ARX_SOUND_PlayScript(const res::path & name, const Entity * io, float pitch
 		}
 	} else {
 		channel.flags |= FLAG_RELATIVE;
-		channel.position = Vec3f::Z_AXIS * 100.f;
+		channel.position = Vec3f_Z_AXIS * 100.f;
 	}
 	
 	if(pitch != 1.0F) {

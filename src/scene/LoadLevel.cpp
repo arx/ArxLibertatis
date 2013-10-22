@@ -568,7 +568,7 @@ Entity * LoadInter_Ex(const res::path & classPath, EntityInstance instance,
 	ARX_INTERACTIVE_HideGore(io);
 	
 	io->lastpos = io->initpos = io->pos = pos + trans;
-	io->move = Vec3f::ZERO;
+	io->move = Vec3f_ZERO;
 	io->initangle = io->angle = angle;
 	
 	res::path tmp = io->full_name(); // Get the directory name to check for
@@ -712,7 +712,7 @@ long DanaeLoadLevel(const res::path & file, bool loadEntities) {
 	else
 	{
 		lastteleport = player.baseOffset();
-		Mscenepos = trans = Vec3f::ZERO;
+		Mscenepos = trans = Vec3f_ZERO;
 	}
 	
 	MSP = trans;

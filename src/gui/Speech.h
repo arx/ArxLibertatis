@@ -93,8 +93,8 @@ struct CinematicSpeech {
 		f0 = 0;
 		f1 = 0;
 		ionum = 0;
-		pos1 = Vec3f::ZERO;
-		pos2 = Vec3f::ZERO;
+		pos1 = Vec3f_ZERO;
+		pos2 = Vec3f_ZERO;
 	}
 	
 };

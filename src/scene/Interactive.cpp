@@ -716,7 +716,7 @@ void ClearNode(long i, long first = 0) {
 	}
 
 	strcpy(nodes.nodes[i].name, "");
-	nodes.nodes[i].pos = Vec3f::ZERO;
+	nodes.nodes[i].pos = Vec3f_ZERO;
 }
 
 void ClearNodes()
@@ -1078,8 +1078,8 @@ static void RestoreIOInitPos(Entity * io) {
 	{
 		ARX_INTERACTIVE_Teleport(io, &io->initpos);
 		io->pos = io->lastpos = io->initpos;
-		io->move = Vec3f::ZERO;
-		io->lastmove = Vec3f::ZERO;
+		io->move = Vec3f_ZERO;
+		io->lastmove = Vec3f_ZERO;
 		io->angle = io->initangle;
 	}
 }
@@ -1117,7 +1117,7 @@ void RestoreInitialIOStatusOfIO(Entity * io)
 		ARX_HALO_SetToNative(io);
 		io->halo.dynlight = -1;
 
-		io->forcedmove = Vec3f::ZERO;
+		io->forcedmove = Vec3f_ZERO;
 		io->ioflags &= ~IO_NO_COLLISIONS;
 		io->ioflags &= ~IO_INVERTED;
 		io->lastspeechflag = 2;
@@ -1147,7 +1147,7 @@ void RestoreInitialIOStatusOfIO(Entity * io)
 		io->invisibility = 0.f;
 		io->rubber = BASE_RUBBER;
 		io->scale = 1.f;
-		io->move = Vec3f::ZERO;
+		io->move = Vec3f_ZERO;
 		io->type_flags = 0;
 		io->sound = -1;
 		io->soundtime = 0;
@@ -1959,7 +1959,7 @@ IO_NPCDATA::IO_NPCDATA() {
 	
 	SPLAT_DAMAGES = 0;
 	SPLAT_TOT_NB = 0;
-	last_splat_pos = Vec3f::ZERO;
+	last_splat_pos = Vec3f_ZERO;
 	vvpos = 0.f;
 	
 	climb_count = 0.f;
@@ -1994,7 +1994,7 @@ Entity * AddNPC(const res::path & classPath, EntityInstance instance, AddInterac
 		io->ident = instance;
 	}
 	
-	io->forcedmove = Vec3f::ZERO;
+	io->forcedmove = Vec3f_ZERO;
 	
 	io->_npcdata = new IO_NPCDATA;
 	io->ioflags = IO_NPC;
@@ -3035,7 +3035,7 @@ void RenderInter() {
 
 						QuatFromMatrix(rotation, mat);
 
-						arx_assert(io->obj->point0 == Vec3f::ZERO);
+						arx_assert(io->obj->point0 == Vec3f_ZERO);
 
 						TransformInfo t(io->pos, rotation, io->scale, io->obj->pbox->vert[0].initpos);
 
@@ -3236,7 +3236,7 @@ void ARX_INTERACTIVE_ActivatePhysics(long t)
 
 		io->obj->pbox->active = 1;
 		io->obj->pbox->stopcount = 0;
-		io->velocity = Vec3f::ZERO;
+		io->velocity = Vec3f_ZERO;
 		io->stopped = 1;
 		Vec3f fallvector = Vec3f(0.0f, 0.000001f, 0.f);
 		io->show = SHOW_FLAG_IN_SCENE;

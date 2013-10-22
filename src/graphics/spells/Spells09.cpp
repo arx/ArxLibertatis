@@ -69,7 +69,7 @@ CSummonCreature::CSummonCreature()
 	  fColorBorder(Color3f::white),
 	  fColorRays2(Color3f::black) {
 	
-	eSrc = Vec3f::ZERO;
+	eSrc = Vec3f_ZERO;
 	
 	SetDuration(1000);
 	ulCurrentTime = ulDurationIntro + ulDurationRender + ulDurationOuttro + 1;
@@ -528,7 +528,7 @@ void CIncinerate::Create(Vec3f _eSrc, float _fBeta)
 	cp.fAngle = radians(1);
 	cp.fSpeed = 0;
 	cp.fSpeedRandom = 20;
-	cp.p3Gravity = Vec3f::ZERO;
+	cp.p3Gravity = Vec3f_ZERO;
 	cp.fFlash = 0;
 	cp.fRotation = 0;
 	cp.bRotationRandomDirection = false;
@@ -585,7 +585,7 @@ void CIncinerate::Create(Vec3f _eSrc, float _fBeta)
 	cp.fAngle = 0;
 	cp.fSpeed = 0;
 	cp.fSpeedRandom = 0;
-	cp.p3Gravity = Vec3f::ZERO;
+	cp.p3Gravity = Vec3f_ZERO;
 	cp.fFlash = 0;
 	cp.fRotation = 0;
 	cp.bRotationRandomDirection = false;
@@ -678,8 +678,8 @@ CNegateMagic::~CNegateMagic()
 
 CNegateMagic::CNegateMagic() {
 	
-	eSrc = Vec3f::ZERO;
-	eTarget = Vec3f::ZERO;
+	eSrc = Vec3f_ZERO;
+	eTarget = Vec3f_ZERO;
 	
 	SetDuration(1000);
 	ulCurrentTime = ulDuration + 1;

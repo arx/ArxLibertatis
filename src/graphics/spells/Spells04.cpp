@@ -62,8 +62,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 CBless::CBless() {
 	
-	eSrc = Vec3f::ZERO;
-	eTarget = Vec3f::ZERO;
+	eSrc = Vec3f_ZERO;
+	eTarget = Vec3f_ZERO;
 	
 	SetDuration(4000);
 	ulCurrentTime = ulDuration + 1;
@@ -141,10 +141,10 @@ void CBless::Render()
 	
 	GRenderer->SetTexture(0, tex_sol);
 	
-	v3[0].uv = Vec2f::ZERO;
-	v3[1].uv = Vec2f::X_AXIS;
-	v3[2].uv = Vec2f::Y_AXIS;
-	v3[3].uv = Vec2f::ONE;
+	v3[0].uv = Vec2f_ZERO;
+	v3[1].uv = Vec2f_X_AXIS;
+	v3[2].uv = Vec2f_Y_AXIS;
+	v3[3].uv = Vec2f_ONE;
 	
 	EE_RT2(&v[0], &v3[0]);
 	EE_RT2(&v[1], &v3[1]);
@@ -291,8 +291,8 @@ CCurse::~CCurse() {
 
 CCurse::CCurse() {
 	
-	eSrc = Vec3f::ZERO;
-	eTarget = Vec3f::ZERO;
+	eSrc = Vec3f_ZERO;
+	eTarget = Vec3f_ZERO;
 	
 	SetDuration(3000);
 	ulCurrentTime = ulDuration + 1;
@@ -338,7 +338,7 @@ void CCurse::Render() {
 	if(svoodoo) {
 		Anglef stiteangle = Anglef(0, fRot, 0);
 		Vec3f stitepos = eTarget;
-		Vec3f stitescale = Vec3f::ONE;
+		Vec3f stitescale = Vec3f_ONE;
 		Color3f stitecolor = Color3f::white;
 		DrawEERIEObjEx(svoodoo , &stiteangle, &stitepos, &stitescale, stitecolor);
 	}

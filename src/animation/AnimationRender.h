@@ -73,14 +73,14 @@ struct TransformInfo {
 	Vec3f offset;
 
 	TransformInfo()
-		: pos(Vec3f::ZERO)
+		: pos(Vec3f_ZERO)
 		, scale(1.f)
-		, offset(Vec3f::ZERO)
+		, offset(Vec3f_ZERO)
 	{
 		Quat_Init(&rotation);
 	}
 
-	TransformInfo(Vec3f pos, EERIE_QUAT rotation, float scale = 1.f, Vec3f offset = Vec3f::ZERO)
+	TransformInfo(Vec3f pos, EERIE_QUAT rotation, float scale = 1.f, Vec3f offset = Vec3f_ZERO)
 		: pos(pos)
 		, rotation(rotation)
 		, scale(scale)

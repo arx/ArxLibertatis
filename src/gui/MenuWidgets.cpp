@@ -952,7 +952,7 @@ bool Menu2_Render() {
 					
 					pMenuSliderResol->AddText(new CMenuElementText(-1, hFontMenu, AUTO_RESOLUTION_STRING, 0, 0, lColor, 1.f, MENUSTATE(OPTIONS_VIDEO_RESOLUTION_0 + modes.size())));
 					
-					if(config.video.resolution == Vec2i::ZERO) {
+					if(config.video.resolution == Vec2i_ZERO) {
 						pMenuSliderResol->iPos = pMenuSliderResol->vText.size() - 1;
 					}
 
@@ -4527,7 +4527,7 @@ void MenuCursor::Update() {
 	if(pTex[eNumTex]) {
 		iDiff = Vec2s(pTex[eNumTex]->m_dwWidth / 2, pTex[eNumTex]->m_dwHeight / 2);
 	} else {
-		iDiff = Vec2s::ZERO;
+		iDiff = Vec2s_ZERO;
 	}
 	
 	iOldCoord[iNbOldCoord] = GInput->getMousePosAbs() + iDiff;

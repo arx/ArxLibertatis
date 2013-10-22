@@ -276,11 +276,6 @@ public:
 		return Vector2<O>(O(x), O(y));
 	}
 	
-	static const Vector2 X_AXIS; //!< The X axis.
-	static const Vector2 Y_AXIS; //!< The Y axis.
-	static const Vector2 ZERO; //!< A null vector.
-	static const Vector2 ONE; //!< A (1, 1) vector.
-	
 };
 
 template<class T>
@@ -348,10 +343,24 @@ inline T lengthSqr(const glm::detail::tvec2<T> & v0) {
 }
 #endif
 
-// Constants
-template<class T> const Vector2<T> Vector2<T>::X_AXIS(T(1), T(0));
-template<class T> const Vector2<T> Vector2<T>::Y_AXIS(T(0), T(1));
-template<class T> const Vector2<T> Vector2<T>::ZERO(T(0), T(0));
-template<class T> const Vector2<T> Vector2<T>::ONE(T(1), T(1));
+const Vec2i Vec2i_ZERO(0,0);
+const Vec2i Vec2i_ONE(1,1);
+const Vec2i Vec2i_X_AXIS(1,0);
+const Vec2i Vec2i_Y_AXIS(0,1);
+
+const Vec2s Vec2s_ZERO(0,0);
+const Vec2s Vec2s_ONE(1,1);
+const Vec2s Vec2s_X_AXIS(1,0);
+const Vec2s Vec2s_Y_AXIS(0,1);
+
+const Vec2f Vec2f_ZERO(0,0);
+const Vec2f Vec2f_ONE(1,1);
+const Vec2f Vec2f_X_AXIS(1,0);
+const Vec2f Vec2f_Y_AXIS(0,1);
+
+const Vec2d Vec2d_ZERO(0,0);
+const Vec2d Vec2d_ONE(1,1);
+const Vec2d Vec2d_X_AXIS(1,0);
+const Vec2d Vec2d_Y_AXIS(0,1);
 
 #endif // ARX_MATH_VECTOR2_H

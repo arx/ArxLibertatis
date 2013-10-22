@@ -176,7 +176,7 @@ void LaunchMagicMissileExplosion(Vec3f & _ePos, int t = 0, long spellinstance = 
 
 CMagicMissile::CMagicMissile() :
 	CSpellFx(),
-	eSrc(Vec3f::ZERO),
+	eSrc(Vec3f_ZERO),
 	fColor(Color3f::white)
 {
 	SetDuration(2000);
@@ -411,7 +411,7 @@ void CMagicMissile::Render()
 		stitecolor.b = 0.5f;
 	}
 
-	Vec3f stitescale = Vec3f::ONE;
+	Vec3f stitescale = Vec3f_ONE;
 
 	if(smissile)
 		DrawEERIEObjEx(smissile, &stiteangle, &stitepos, &stitescale, stitecolor);
@@ -881,10 +881,10 @@ void DrawArcElectrique(Vec3f * tabdef, int nbseg, TextureContainer * tex, float 
 		Vec3f a = tabdef[i + 1];
 		
 		// version 2 faces
-		v2[0].uv = Vec2f::ZERO;
-		v2[1].uv = Vec2f::X_AXIS;
-		v2[2].uv = Vec2f::ONE;
-		v2[3].uv = Vec2f::Y_AXIS;
+		v2[0].uv = Vec2f_ZERO;
+		v2[1].uv = Vec2f_X_AXIS;
+		v2[2].uv = Vec2f_ONE;
+		v2[3].uv = Vec2f_Y_AXIS;
 		
 		Vec3f d(0.f, 5.f, 0.f);
 		v[0].p = astart + d;

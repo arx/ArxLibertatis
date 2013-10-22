@@ -77,11 +77,11 @@ Entity::Entity(const res::path & classPath)
 	m_index = entities.add(this);
 	
 	ioflags = 0;
-	lastpos = Vec3f::ZERO;
-	pos = Vec3f::ZERO;
-	move = Vec3f::ZERO;
-	lastmove = Vec3f::ZERO;
-	forcedmove = Vec3f::ZERO;
+	lastpos = Vec3f_ZERO;
+	pos = Vec3f_ZERO;
+	move = Vec3f_ZERO;
+	lastmove = Vec3f_ZERO;
+	forcedmove = Vec3f_ZERO;
 	
 	angle = Anglef::ZERO;
 	std::memset(&physics, 0, sizeof(IO_PHYSICS)); // TODO use constructor
@@ -106,7 +106,7 @@ Entity::Entity(const res::path & classPath)
 	sound = audio::INVALID_ID;
 	type_flags = 0;
 	scriptload = 0;
-	target = Vec3f::ZERO;
+	target = Vec3f_ZERO;
 	targetinfo = TARGET_NONE;
 	
 	_itemdata = NULL, _fixdata = NULL, _npcdata = NULL, _camdata = NULL;
@@ -120,11 +120,11 @@ Entity::Entity(const res::path & classPath)
 	ident = 0;
 	weight = 1.f;
 	gameFlags = GFLAG_NEEDINIT | GFLAG_INTERACTIVITY;
-	velocity = Vec3f::ZERO;
+	velocity = Vec3f_ZERO;
 	fall = 0.f;
 	
 	stopped = 1;
-	initpos = Vec3f::ZERO;
+	initpos = Vec3f_ZERO;
 	initangle = Anglef::ZERO;
 	scale = 1.f;
 	

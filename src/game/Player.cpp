@@ -1448,7 +1448,7 @@ void ARX_PLAYER_Manage_Visual() {
 			if(ause0->flags & EA_ANIMEND) {
 				ause0->flags &= ~EA_FORCEPLAY;
 				ause0->flags |= EA_STATICANIM;
-				io->move = io->lastmove = Vec3f::ZERO;
+				io->move = io->lastmove = Vec3f_ZERO;
 			} else {
 				ause0->flags &= ~EA_STATICANIM;
 				player.pos = moveto = player.pos + io->move;
@@ -2309,7 +2309,7 @@ void PlayerMovementIterate(float DeltaTime) {
 		}
 		
 		Vec3f impulse = moveto - player.pos;
-		if(impulse != Vec3f::ZERO) {
+		if(impulse != Vec3f_ZERO) {
 			
 			float scale = 1.25f / 1000;
 			if(entities.player()->animlayer[0].cur_anim) {
@@ -2410,7 +2410,7 @@ void PlayerMovementIterate(float DeltaTime) {
 		
 		// Apply push player force
 		player.physics.forces += PUSH_PLAYER_FORCE / TARGET_DT;
-		PUSH_PLAYER_FORCE = Vec3f::ZERO;
+		PUSH_PLAYER_FORCE = Vec3f_ZERO;
 		
 		// Apply forces to velocity
 		player.physics.velocity += player.physics.forces * DeltaTime;
@@ -2439,7 +2439,7 @@ void PlayerMovementIterate(float DeltaTime) {
 		}
 
 		// Reset forces
-		player.physics.forces = Vec3f::ZERO;
+		player.physics.forces = Vec3f_ZERO;
 		
 		// Check if player is already on firm ground AND not moving
 		if(EEfabs(player.physics.velocity.x) < 0.001f
@@ -2970,7 +2970,7 @@ void ARX_GAME_Reset(long type) {
 	ROTATE_START = 0;
 	BLOCK_PLAYER_CONTROLS = false;
 	HERO_SHOW_1ST = -1;
-	PUSH_PLAYER_FORCE = Vec3f::ZERO;
+	PUSH_PLAYER_FORCE = Vec3f_ZERO;
 	player.jumplastposition = 0;
 	player.jumpstarttime = 0;
 	player.jumpphase = NotJumping;

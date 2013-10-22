@@ -1031,7 +1031,7 @@ void ARX_PHYSICS_Apply() {
 					io->soundtime = 0;
 					io->soundcount = 0;
 					for(long k = 0; k < io->obj->pbox->nb_physvert; k++) {
-						io->obj->pbox->vert[k].velocity = Vec3f::ZERO;
+						io->obj->pbox->vert[k].velocity = Vec3f_ZERO;
 					}
 					io->obj->pbox->active = 2;
 					io->obj->pbox->stopcount = 0;
@@ -1443,7 +1443,7 @@ void ARX_NPC_SpawnMember(Entity * ioo, long num) {
 		nouvo->vertexlist[k].vert.color = 0xFFFFFFFF;
 	}
 	
-	nouvo->point0 = Vec3f::ZERO;
+	nouvo->point0 = Vec3f_ZERO;
 	
 	nouvo->pbox = NULL;
 	nouvo->pdata = NULL;
@@ -1541,7 +1541,7 @@ void ARX_NPC_SpawnMember(Entity * ioo, long num) {
 	io->obj->pbox->active = 1;
 	io->obj->pbox->stopcount = 0;
 	
-	io->velocity = Vec3f::ZERO;
+	io->velocity = Vec3f_ZERO;
 	io->stopped = 1;
 	
 	Vec3f vector;
@@ -3052,8 +3052,8 @@ static void ManageNPCMovement(Entity * io)
 	// to targetpos (potentially invalid pos)
 	io->physics.startpos = io->physics.cyl.origin = io->pos;
 	
-	if(io->forcedmove == Vec3f::ZERO) {
-		ForcedMove = Vec3f::ZERO;
+	if(io->forcedmove == Vec3f_ZERO) {
+		ForcedMove = Vec3f_ZERO;
 	} else {
 		float dd = min(1.f, (float)framedelay * ( 1.0f / 6 ) / io->forcedmove.length());
 		ForcedMove = io->forcedmove * dd;

@@ -232,11 +232,11 @@ void EERIEDraw3DLine(const Vec3f & orgn, const Vec3f & dest, Color col) {
 void EERIEPOLY_DrawWired(EERIEPOLY * ep, Color color) {
 
 	TexturedVertex ltv[5];
-	ltv[0] = TexturedVertex(Vec3f(0, 0, 0.5), 1.f, 1, 1, Vec2f::ZERO);
-	ltv[1] = TexturedVertex(Vec3f(0, 0, 0.5), 1.f, 1, 1, Vec2f::X_AXIS);
+	ltv[0] = TexturedVertex(Vec3f(0, 0, 0.5), 1.f, 1, 1, Vec2f_ZERO);
+	ltv[1] = TexturedVertex(Vec3f(0, 0, 0.5), 1.f, 1, 1, Vec2f_X_AXIS);
 	ltv[2] = TexturedVertex(Vec3f(0, 0, 0.5), 1.f, 1, 1, Vec2f(1.f, 1.f));
-	ltv[3] = TexturedVertex(Vec3f(0, 0, 0.5), 1.f, 1, 1, Vec2f::Y_AXIS);
-	ltv[4] = TexturedVertex(Vec3f(0, 0, 0.5), 1.f, 1, 1, Vec2f::Y_AXIS);
+	ltv[3] = TexturedVertex(Vec3f(0, 0, 0.5), 1.f, 1, 1, Vec2f_Y_AXIS);
+	ltv[4] = TexturedVertex(Vec3f(0, 0, 0.5), 1.f, 1, 1, Vec2f_Y_AXIS);
 
 	long to = (ep->type & POLY_QUAD) ? 4 : 3;
 
@@ -270,11 +270,11 @@ void EERIEPOLY_DrawWired(EERIEPOLY * ep, Color color) {
 
 void EERIEPOLY_DrawNormals(EERIEPOLY * ep) {
 	TexturedVertex ltv[5];
-	ltv[0] = TexturedVertex(Vec3f(0, 0, 0.5), 1.f, 1, 1, Vec2f::ZERO);
-	ltv[1] = TexturedVertex(Vec3f(0, 0, 0.5), 1.f, 1, 1, Vec2f::X_AXIS);
+	ltv[0] = TexturedVertex(Vec3f(0, 0, 0.5), 1.f, 1, 1, Vec2f_ZERO);
+	ltv[1] = TexturedVertex(Vec3f(0, 0, 0.5), 1.f, 1, 1, Vec2f_X_AXIS);
 	ltv[2] = TexturedVertex(Vec3f(0, 0, 0.5), 1.f, 1, 1, Vec2f(1.f, 1.f));
-	ltv[3] = TexturedVertex(Vec3f(0, 0, 0.5), 1.f, 1, 1, Vec2f::Y_AXIS);
-	ltv[4] = TexturedVertex(Vec3f(0, 0, 0.5), 1.f, 1, 1, Vec2f::Y_AXIS);
+	ltv[3] = TexturedVertex(Vec3f(0, 0, 0.5), 1.f, 1, 1, Vec2f_Y_AXIS);
+	ltv[4] = TexturedVertex(Vec3f(0, 0, 0.5), 1.f, 1, 1, Vec2f_Y_AXIS);
 
 	TexturedVertex lv;
 	long to = (ep->type & POLY_QUAD) ? 4 : 3;

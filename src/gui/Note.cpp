@@ -55,7 +55,7 @@ void Note::deallocate() {
 	// Don't bother actually deleting the textures, we'll just need them again!
 	background = NULL, prevPage = NULL, nextPage = NULL;
 	
-	allocatedForRatio = Vec2f::ZERO;
+	allocatedForRatio = Vec2f_ZERO;
 	
 	_area = Rectf::ZERO;
 	_prevPageButton = Rectf::ZERO;

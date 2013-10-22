@@ -110,7 +110,7 @@ bool ARX_SPECIAL_ATTRACTORS_Add(long ionum, float power, float radius) {
 
 void ARX_SPECIAL_ATTRACTORS_ComputeForIO(const Entity & ioo, Vec3f & force) {
 	
-	force = Vec3f::ZERO;
+	force = Vec3f_ZERO;
 	
 	for(size_t i = 0; i < MAX_ATTRACTORS; i++) {
 		

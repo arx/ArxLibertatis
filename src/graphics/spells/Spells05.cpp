@@ -206,7 +206,7 @@ void CCurePoison::Update(unsigned long aulTime)
 	if(ff < 1500) {
 		pPS->uMaxParticles = 0;
 		pPS->ulParticleSpawn = PARTICLE_CIRCULAR;
-		pPS->p3ParticleGravity = Vec3f::ZERO;
+		pPS->p3ParticleGravity = Vec3f_ZERO;
 
 		std::list<Particle *>::iterator i;
 
@@ -257,8 +257,8 @@ void CCurePoison::Render()
 
 CRuneOfGuarding::CRuneOfGuarding() {
 	
-	eSrc = Vec3f::ZERO;
-	eTarget = Vec3f::ZERO;
+	eSrc = Vec3f_ZERO;
+	eTarget = Vec3f_ZERO;
 	
 	SetDuration(1000);
 	ulCurrentTime = ulDuration + 1;
@@ -497,7 +497,7 @@ void LaunchPoisonExplosion(Vec3f * aePos) {
 }
 
 
-CPoisonProjectile::CPoisonProjectile() : eSrc(Vec3f::ZERO) {
+CPoisonProjectile::CPoisonProjectile() : eSrc(Vec3f_ZERO) {
 	SetDuration(2000);
 	ulCurrentTime = ulDuration + 1;
 }
@@ -557,12 +557,12 @@ void CPoisonProjectile::Create(Vec3f _eSrc, float _fBeta)
 	cp.iNbMax = 5;
 	cp.fLife = 2000;
 	cp.fLifeRandom = 1000;
-	cp.p3Pos = Vec3f::ZERO;
+	cp.p3Pos = Vec3f_ZERO;
 	cp.p3Direction = -eMove;
 	cp.fAngle = 0;
 	cp.fSpeed = 10;
 	cp.fSpeedRandom = 10;
-	cp.p3Gravity = Vec3f::ZERO;
+	cp.p3Gravity = Vec3f_ZERO;
 	cp.fFlash = 21;
 	cp.fRotation = 80;
 	cp.bRotationRandomDirection = true;
@@ -912,8 +912,8 @@ void CMultiPoisonProjectile::Render()
 
 CRepelUndead::CRepelUndead() {
 	
-	eSrc = Vec3f::ZERO;
-	eTarget = Vec3f::ZERO;
+	eSrc = Vec3f_ZERO;
+	eTarget = Vec3f_ZERO;
 	
 	ulCurrentTime = ulDuration + 1;
 	

@@ -42,7 +42,7 @@ struct Note {
 		QuestBook
 	};
 	
-	Note() : _type(Undefined), allocatedForRatio(Vec2f::ZERO), _page(0) { }
+	Note() : _type(Undefined), allocatedForRatio(Vec2f_ZERO), _page(0) { }
 	
 	void setData(Type type, const std::string & text);
 	void clear();

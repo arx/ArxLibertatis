@@ -120,7 +120,7 @@ void DebugAddParticle(const Vec3f & position, float siz, long tim, Color color) 
 	}
 	
 	pd->ov = position;
-	pd->scale = Vec3f::ZERO;
+	pd->scale = Vec3f_ZERO;
 	pd->tolive = tim;
 	pd->tc = sphere_particle;
 	pd->siz = siz;
@@ -837,7 +837,7 @@ bool Visible(Vec3f * orgn, Vec3f * dest, EERIEPOLY * epp, Vec3f * hit)
 	EERIE_BKG_INFO *eg;
 	float pas = 35.f;
 
-	Vec3f found_hit = Vec3f::ZERO;
+	Vec3f found_hit = Vec3f_ZERO;
 	EERIEPOLY *found_ep = NULL;
 	float iter,t;
 	
@@ -1838,7 +1838,7 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 				long to = (ep->type & POLY_QUAD) ? 4 : 3;
 				float div = 1.f / to;
 				
-				ep2->center = Vec3f::ZERO;
+				ep2->center = Vec3f_ZERO;
 				for(long h = 0; h < to; h++) {
 					ep2->center += ep2->v[h].p;
 					if(h != 0) {

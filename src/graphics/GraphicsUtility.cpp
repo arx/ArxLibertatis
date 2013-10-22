@@ -74,12 +74,12 @@ void Util_SetViewMatrix(EERIEMATRIX &mat, EERIE_TRANSFORM &transform) {
 	// bogus up vector, let's try a default up vector
 	if (1e-6f > (fLength = vUp.length()))
 	{
-		vUp = Vec3f::Y_AXIS - vView * vView.y;
+		vUp = Vec3f_Y_AXIS - vView * vView.y;
 
 		// If we still have near-zero length, resort to a different axis.
 		if (1e-6f > (fLength = vUp.length()))
 		{
-			vUp = Vec3f::Z_AXIS - vView * vView.z;
+			vUp = Vec3f_Z_AXIS - vView * vView.z;
 
 			if (1e-6f > (fLength = vUp.length()))
 				return;
