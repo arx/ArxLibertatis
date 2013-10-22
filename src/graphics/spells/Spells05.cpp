@@ -1472,7 +1472,7 @@ void CLevitate::Render()
 	//tracé du cone back
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapMirror);
+	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapMirror);
 
 	GRenderer->SetTexture(0, tsouffle);
 

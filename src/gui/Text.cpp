@@ -73,6 +73,7 @@ Font * hFontControls = NULL;
 Font * hFontCredits = NULL;
 Font * hFontInGame = NULL;
 Font * hFontInGameNote = NULL;
+Font * hFontDebug = NULL;
 
 void ARX_UNICODE_FormattingInRect(Font * font, const std::string & text,
                                   const Rect & rect, Color col, long * textHeight = 0,
@@ -352,6 +353,7 @@ bool ARX_Text_Init() {
 	Font * nFontInGame     = createFont(file, "system_font_book_size", 18, small_scale);
 	Font * nFontInGameNote = createFont(file, "system_font_note_size", 18, small_scale);
 	Font * nFontInBook     = createFont(file, "system_font_book_size", 18, small_scale);
+	Font * nFontDebug      = FontCache::getFont("misc/dejavusansmono.ttf", 14);
 	
 	// Only release old fonts after creating new ones to allow same fonts to be cached.
 	FontCache::releaseFont(hFontMainMenu);
@@ -361,6 +363,7 @@ bool ARX_Text_Init() {
 	FontCache::releaseFont(hFontInGame);
 	FontCache::releaseFont(hFontInGameNote);
 	FontCache::releaseFont(hFontInBook);
+	FontCache::releaseFont(hFontDebug);
 	
 	hFontMainMenu = nFontMainMenu;
 	hFontMenu = nFontMenu;
@@ -369,6 +372,7 @@ bool ARX_Text_Init() {
 	hFontInGame = nFontInGame;
 	hFontInGameNote = nFontInGameNote;
 	hFontInBook = nFontInBook;
+	hFontDebug = nFontDebug;
 	
 	if(!hFontMainMenu
 	   || !hFontMenu
@@ -377,6 +381,7 @@ bool ARX_Text_Init() {
 	   || !hFontInGame
 	   || !hFontInGameNote
 	   || !hFontInBook
+	   || !hFontDebug
 	) {
 		LogCritical << "Could not load font " << file << " for scale " << scale
 		            << " / small scale " << small_scale;
@@ -389,7 +394,8 @@ bool ARX_Text_Init() {
 			<< ", " << hFontCredits->getSize()
 			<< ", " << hFontInGame->getSize()
 			<< ", " << hFontInGameNote->getSize()
-			<< ", " << hFontInBook->getSize();
+			<< ", " << hFontInBook->getSize()
+			<< ", " << hFontDebug->getSize();
 	
 	return true;
 }
@@ -424,6 +430,9 @@ void ARX_Text_Close() {
 	
 	FontCache::releaseFont(hFontInGameNote);
 	hFontInGameNote = NULL;
+
+	FontCache::releaseFont(hFontDebug);
+	hFontDebug = NULL;
 	
 	FontCache::shutdown();
 }

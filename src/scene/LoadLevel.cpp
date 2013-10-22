@@ -104,26 +104,6 @@ extern QUAKE_FX_STRUCT QuakeFx;
 extern bool bGToggleCombatModeWithKey;
 extern bool bGCroucheToggle;
 
-bool CanPurge(Vec3f * pos)
-{
-	long px = pos->x * ACTIVEBKG->Xmul;
-	long pz = pos->z * ACTIVEBKG->Zmul;
-
-	if(px < 2 || px > ACTIVEBKG->Xsize - 3 || pz < 2 || pz > ACTIVEBKG->Zsize - 3)
-		return true;
-
-	for(long j = pz - 1; j <= pz + 1; j++) {
-		for(long i = px - 1; i <= px + 1; i++) {
-			EERIE_BKG_INFO *eg = &ACTIVEBKG->Backg[i + j * ACTIVEBKG->Xsize];
-
-			if(eg->nbpoly)
-				return false;
-		}
-	}
-
-	return true;
-}
-
 #ifdef BUILD_EDIT_LOADSAVE
 
 void LogDirCreation(const fs::path & dir) {
@@ -995,7 +975,7 @@ long DanaeLoadLevel(const res::path & file, bool loadEntities) {
 	if(!dat) {
 		LOADEDD = 1;
 		FASTmse = 0;
-		USE_PLAYERCOLLISIONS = 1;
+		USE_PLAYERCOLLISIONS = true;
 		LogInfo << "Done loading level";
 		return 1;
 	}
@@ -1099,7 +1079,7 @@ long DanaeLoadLevel(const res::path & file, bool loadEntities) {
 	
 	LOADEDD = 1;
 	FASTmse = 0;
-	USE_PLAYERCOLLISIONS = 1;
+	USE_PLAYERCOLLISIONS = true;
 	
 	LogInfo << "Done loading level";
 	

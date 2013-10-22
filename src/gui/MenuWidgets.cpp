@@ -364,9 +364,7 @@ void MACRO_MENU_PRINCIPALE(int iPosMenuPrincipaleX,
 	CMenuElementText *me = new CMenuElementText(MACRO_button, hFontMainMenu, szMenuText, RATIO_X(iPosMenuPrincipaleX), RATIO_Y(iPosMenuPrincipaleY), lColor, 1.8f, MACRO_menu);
 	if(MACRO_check) {
 		pMenuElementResume=me;
-		bool bBOOL;
-		ARXMenu_GetResumeGame(bBOOL);
-		if(bBOOL) {
+		if(ARXMenu_CanResumeGame()) {
 			me->SetCheckOn();
 		} else {
 			me->SetCheckOff();
@@ -393,8 +391,8 @@ bool Menu2_Render() {
 		ARXDiffTimeMenu = 0;
 	}
 	
-	GRenderer->GetTextureStage(0)->SetMinFilter(TextureStage::FilterLinear);
-	GRenderer->GetTextureStage(0)->SetMagFilter(TextureStage::FilterLinear);
+	GRenderer->GetTextureStage(0)->setMinFilter(TextureStage::FilterLinear);
+	GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterLinear);
 	
 	if(AMCM_NEWQUEST == ARXmenu.currentmode || AMCM_CREDITS == ARXmenu.currentmode) {
 		
@@ -415,7 +413,7 @@ bool Menu2_Render() {
 		pTextManage->Clear();
 	}
 
-	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
+	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapClamp);
 
 	GRenderer->SetRenderState(Renderer::Fog, false);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
@@ -477,10 +475,8 @@ bool Menu2_Render() {
 	bool bScroll=true;
 	{
 		if(pMenuElementResume) {
-			bool bTemp;
-			ARXMenu_GetResumeGame(bTemp);
 
-			if(bTemp) {
+			if(ARXMenu_CanResumeGame()) {
 				pMenuElementResume->SetCheckOn();
 				((CMenuElementText*)pMenuElementResume)->lColor=lColor;
 			} else {
@@ -506,7 +502,7 @@ bool Menu2_Render() {
 			delete pMenu, pMenu = NULL;
 			
 			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-			GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
+			GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
 			GRenderer->SetRenderState(Renderer::DepthWrite, true);
 			GRenderer->SetRenderState(Renderer::DepthTest, true);
 			GRenderer->EndScene();
@@ -546,10 +542,8 @@ bool Menu2_Render() {
 			switch(eMenuState) {
 			case NEW_QUEST: {
 					std::string szMenuText;
-					bool bBOOL = false;
-					ARXMenu_GetResumeGame(bBOOL);
 
-					if(!bBOOL)
+					if(!ARXMenu_CanResumeGame())
 						break;
 
 					CMenuElement *me = NULL;
@@ -598,10 +592,8 @@ bool Menu2_Render() {
 
 					szMenuText = getLocalised( "system_menus_main_editquest_save");
 					me = new CMenuElementText(-1, hFontMenu, szMenuText, 0, 0, lColor, 1.f, EDIT_QUEST_SAVE);
-					bool bBOOL;
-					ARXMenu_GetResumeGame(bBOOL);
-
-					if(!bBOOL) {
+					
+					if(!ARXMenu_CanResumeGame()) {
 						me->SetCheckOff();
 						((CMenuElementText*)me)->lColor=Color(127,127,127);
 					}
@@ -880,12 +872,6 @@ bool Menu2_Render() {
 							slider->iPos = slider->vText.size() - 1;
 						}
 #endif
-#ifdef ARX_HAVE_D3D9
-						slider->AddText(new CMenuElementText(-1, hFontMenu, "D3D 9", 0, 0, lColor, 1.f, OPTIONS_VIDEO_RENDERER_D3D9));
-						if(config.window.framework == "D3D9") {
-							slider->iPos = slider->vText.size() - 1;
-						}
-#endif
 						
 						float fRatio    = (RATIO_X(iWindowConsoleWidth-9) - slider->GetWidth()); 
 						slider->Move(checked_range_cast<int>(fRatio), 0); 
@@ -1124,12 +1110,6 @@ bool Menu2_Render() {
 							slider->iPos = slider->vText.size() - 1;
 						}
 #endif
-#ifdef ARX_HAVE_DSOUND
-						slider->AddText(new CMenuElementText(-1, hFontMenu, "Direct Sound", 0, 0, lColor, 1.f, OPTIONS_AUDIO_BACKEND_DSOUND));
-						if(config.audio.backend == "DirectSound") {
-							slider->iPos = slider->vText.size() - 1;
-						}
-#endif
 						
 						float fRatio    = (RATIO_X(iWindowConsoleWidth-9) - slider->GetWidth()); 
 						slider->Move(checked_range_cast<int>(fRatio), 0); 
@@ -1219,13 +1199,7 @@ bool Menu2_Render() {
 							slider->iPos = slider->vText.size() - 1;
 						}
 #endif
-#ifdef ARX_HAVE_DINPUT8
-						slider->AddText(new CMenuElementText(-1, hFontMenu, "DInput 8", 0, 0, lColor, 1.f, OPTIONS_INPUT_BACKEND_DINPUT));
-						if(config.input.backend == "DirectInput8") {
-							slider->iPos = slider->vText.size() - 1;
-						}
-#endif
-						
+					
 						float fRatio    = (RATIO_X(iWindowConsoleWidth-9) - slider->GetWidth()); 
 						slider->Move(checked_range_cast<int>(fRatio), 0); 
 						pc->AddElement(slider);
@@ -1580,7 +1554,7 @@ bool Menu2_Render() {
 		pTextManage->Render();
 	}
 
-	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
+	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapClamp);
 
 	GRenderer->SetRenderState(Renderer::Fog, false);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
@@ -1640,9 +1614,9 @@ bool Menu2_Render() {
 		}
 	}
 
-	GRenderer->GetTextureStage(0)->SetMinFilter(TextureStage::FilterLinear);
-	GRenderer->GetTextureStage(0)->SetMagFilter(TextureStage::FilterLinear);
-	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
+	GRenderer->GetTextureStage(0)->setMinFilter(TextureStage::FilterLinear);
+	GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterLinear);
+	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
@@ -1823,10 +1797,8 @@ bool CMenuElementText::OnMouseClick(int _iMouseButton) {
 		}
 		break;
 	case BUTTON_MENUMAIN_NEWQUEST: {
-			bool bBOOL = false;
-			ARXMenu_GetResumeGame(bBOOL);
-
-			if(!bBOOL) {
+			
+			if(!ARXMenu_CanResumeGame()) {
 				ARXMenu_NewQuest();
 			}
 		}
@@ -4071,7 +4043,9 @@ void CMenuSliderText::EmptyFunction() {
 	}
 }
 
-bool CMenuSliderText::OnMouseClick(int) {
+bool CMenuSliderText::OnMouseClick(int _iMouseButton) {
+
+	ARX_UNUSED(_iMouseButton);
 
 	if(!enabled) {
 		return false;
@@ -4135,7 +4109,6 @@ bool CMenuSliderText::OnMouseClick(int) {
 		case BUTTON_MENUOPTIONSVIDEO_RENDERER: {
 			switch((vText.at(iPos))->eMenuState) {
 				case OPTIONS_VIDEO_RENDERER_OPENGL:    config.window.framework = "SDL"; break;
-				case OPTIONS_VIDEO_RENDERER_D3D9:      config.window.framework = "D3D9"; break;
 				case OPTIONS_VIDEO_RENDERER_AUTOMATIC: config.window.framework = "auto"; break;
 				default: break;
 			}
@@ -4144,7 +4117,6 @@ bool CMenuSliderText::OnMouseClick(int) {
 		case BUTTON_MENUOPTIONSAUDIO_BACKEND: {
 			switch((vText.at(iPos))->eMenuState) {
 				case OPTIONS_AUDIO_BACKEND_OPENAL:    config.audio.backend = "OpenAL"; break;
-				case OPTIONS_AUDIO_BACKEND_DSOUND:    config.audio.backend = "DirectSound"; break;
 				case OPTIONS_AUDIO_BACKEND_AUTOMATIC: config.audio.backend = "auto"; break;
 				default: break;
 			}
@@ -4153,7 +4125,6 @@ bool CMenuSliderText::OnMouseClick(int) {
 		case BUTTON_MENUOPTIONS_CONTROLS_BACKEND: {
 			switch((vText.at(iPos))->eMenuState) {
 				case OPTIONS_INPUT_BACKEND_SDL:       config.input.backend = "SDL"; break;
-				case OPTIONS_INPUT_BACKEND_DINPUT:    config.input.backend = "DirectInput8"; break;
 				case OPTIONS_INPUT_BACKEND_AUTOMATIC: config.input.backend = "auto"; break;
 				default: break;
 			}
@@ -4308,8 +4279,9 @@ void CMenuSlider::EmptyFunction() {
 	}
 }
 
-bool CMenuSlider::OnMouseClick(int) {
+bool CMenuSlider::OnMouseClick(int _iMouseButton) {
 
+	ARX_UNUSED(_iMouseButton);
 	ARX_SOUND_PlayMenu(SND_MENU_CLICK);
 
 	int iX = GInput->getMousePosAbs().x;
@@ -4528,18 +4500,18 @@ void MenuCursor::DrawOneCursor(const Vec2s& mousePos) {
 		return;
 	}
 	
-	GRenderer->GetTextureStage(0)->SetMinFilter(TextureStage::FilterNearest);
-	GRenderer->GetTextureStage(0)->SetMagFilter(TextureStage::FilterNearest);
-	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
+	GRenderer->GetTextureStage(0)->setMinFilter(TextureStage::FilterNearest);
+	GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterNearest);
+	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapClamp);
 
 	EERIEDrawBitmap2(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y),
 	                 INTERFACE_RATIO_DWORD(scursor[iNumCursor]->m_dwWidth),
 	                 INTERFACE_RATIO_DWORD(scursor[iNumCursor]->m_dwHeight),
 	                 0.00000001f, scursor[iNumCursor], Color::white);
 
-	GRenderer->GetTextureStage(0)->SetMinFilter(TextureStage::FilterLinear);
-	GRenderer->GetTextureStage(0)->SetMagFilter(TextureStage::FilterLinear);
-	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
+	GRenderer->GetTextureStage(0)->setMinFilter(TextureStage::FilterLinear);
+	GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterLinear);
+	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
 }
 
 void MenuCursor::Update() {

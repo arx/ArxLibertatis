@@ -316,9 +316,9 @@ extern ANIM_HANDLE * herowait_2h;
 extern std::vector<STRUCT_QUEST> PlayerQuest;
 extern std::vector<KEYRING_SLOT> Keyring;
 
-extern long BLOCK_PLAYER_CONTROLS;
-extern long USE_PLAYERCOLLISIONS;
-extern long WILLRETURNTOCOMBATMODE;
+extern bool BLOCK_PLAYER_CONTROLS;
+extern bool USE_PLAYERCOLLISIONS;
+extern bool WILLRETURNTOCOMBATMODE;
 
 void ARX_PLAYER_MakeSpHero();
 void ARX_PLAYER_LoadHeroAnimsAndMesh();
@@ -364,7 +364,6 @@ void ARX_PLAYER_Restore_Skin();
 float GetPlayerStealth();
 
 void ARX_GAME_Reset(long type = 0);
-void Manage_sp_max();
 long GetXPforLevel(long level);
 bool ARX_PLAYER_IsInFightMode();
 void ARX_PLAYER_Invulnerability(long flag);

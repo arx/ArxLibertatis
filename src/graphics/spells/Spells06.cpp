@@ -189,7 +189,7 @@ void CCreateField::Render()
 
 	GRenderer->SetCulling(Renderer::CullNone);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
-	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
+	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapClamp);
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
@@ -275,7 +275,7 @@ void CCreateField::Render()
 		fwrap += 360;
 	}
 
-	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
+	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
 	GRenderer->SetTexture(0, tex_jelly);
 
 	RenderSubDivFace(b, b, 0, 1, 2, 3);
@@ -796,7 +796,7 @@ void CRiseDead::RenderFissure()
 	// smooth sur les cotés ou pas ..
 	// texture sympa avec glow au milieu ou uv wrap
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapMirror);
+	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapMirror);
 	GRenderer->SetTexture(0, tex_light);
 
 	target.p.x = eSrc.x ;
@@ -945,7 +945,7 @@ void CRiseDead::Render()
 	GRenderer->SetCulling(Renderer::CullNone);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 
-	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
+	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapClamp);
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
@@ -996,7 +996,7 @@ void CRiseDead::Render()
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->SetBlendFunc(Renderer::BlendSrcAlpha, Renderer::BlendInvSrcAlpha);
 	this->DrawStone();
-	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
+	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 	GRenderer->SetCulling(Renderer::CullNone);

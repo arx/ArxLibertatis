@@ -2925,12 +2925,9 @@ EERIEMATRIX convertToMatrixForDrawEERIEInter(const PHYSICS_BOX_DATA &box) {
 	return mat;
 }
 
-/**
- * @brief Render entities
- */
-void RenderInter() {
+void UpdateInter() {
 
-	for(size_t i = 1; i < entities.size(); i++) { // Player isn't rendered here...		
+	for(size_t i = 1; i < entities.size(); i++) {
 		Entity * io = entities[i];
 
 		if(!io || io == DRAGINTER || !(io->gameFlags & GFLAG_ISINTREATZONE))
@@ -2946,9 +2943,6 @@ void RenderInter() {
 
 		UpdateIOInvisibility(io);
 
-		io->bbox2D.min.x = 9999;
-		io->bbox2D.max.x = -1;
-
 		Anglef temp = io->angle;
 
 		if(io->ioflags & IO_NPC) {
@@ -2958,6 +2952,10 @@ void RenderInter() {
 		}
 
 		if(io->animlayer[0].cur_anim) {
+
+			io->bbox2D.min.x = 9999;
+			io->bbox2D.max.x = -1;
+
 			long diff;
 			if(io->animlayer[0].flags & EA_PAUSED)
 				diff = 0;
@@ -2971,13 +2969,55 @@ void RenderInter() {
 				pos.y = io->_npcdata->vvpos;
 			}
 
-			bool render = !ARX_SCENE_PORTAL_Basic_ClipIO(io);
+			EERIEDrawAnimQuatUpdate(io->obj, io->animlayer, temp, pos, diff, io, true);
+		}
+	}
+}
 
+
+/**
+ * @brief Render entities
+ */
+void RenderInter() {
+
+	for(size_t i = 1; i < entities.size(); i++) { // Player isn't rendered here...
+		Entity * io = entities[i];
+
+		if(!io || io == DRAGINTER || !(io->gameFlags & GFLAG_ISINTREATZONE))
+			continue;
+
+		if(io->show != SHOW_FLAG_IN_SCENE) {
+			continue;
+		}
+
+		if((io->ioflags & IO_CAMERA) || (io->ioflags & IO_MARKER)) {
+			continue;
+		}
+
+		Anglef temp = io->angle;
+
+		if(io->ioflags & IO_NPC) {
+			temp.b = MAKEANGLE(180.f - temp.b);
+		} else {
+			temp.b = MAKEANGLE(270.f - temp.b);
+		}
+
+		if(io->animlayer[0].cur_anim) {
+
+			Vec3f pos = io->pos;
+
+			if(io->ioflags & IO_NPC) {
+				pos.y = io->_npcdata->vvpos;
+			}
+
+			bool render = !ARX_SCENE_PORTAL_Basic_ClipIO(io);
 			float invisibility = Cedric_GetInvisibility(io);
 
-			EERIEDrawAnimQuat(io->obj, io->animlayer, temp, pos, diff, io, render, true, invisibility);
-
+			EERIEDrawAnimQuatRender(io->obj, pos, io, render, invisibility);
 		} else {
+			io->bbox2D.min.x = 9999;
+			io->bbox2D.max.x = -1;
+
 			if(ARX_SCENE_PORTAL_Basic_ClipIO(io))
 				continue;
 

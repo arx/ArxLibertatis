@@ -142,7 +142,7 @@ void ARX_SetAntiAliasing();
 void ReMappDanaeButton();
 void AdjustMousePosition();
 void DANAE_StartNewQuest();
-bool DANAE_ManageSplashThings();
+bool HandleGameFlowTransitions();
 void DANAE_Manage_Cinematic();
 void DanaeRestoreFullScreen();
 void FirstFrameHandling();
@@ -154,10 +154,8 @@ void ShowDebugToggles();
 
 void DrawImproveVisionInterface();
 
-void CheckMr();
-
 void ManageFade();
-void ManageQuakeFX();
+void ManageQuakeFX(EERIE_CAMERA *cam);
 
 void ManageCombatModeAnimations();
 void ManageCombatModeAnimationsEND();

@@ -654,6 +654,31 @@ long ARX_PORTALS_GetRoomNumForPosition(Vec3f * pos,long flag)
 	
 	return num;
 }
+
+void ARX_PORTALS_Frustrum_ClearIndexCount(long room_num) {
+
+	EERIE_ROOM_DATA & room = portals->room[room_num];
+
+	int iNbTex = room.usNbTextures;
+	TextureContainer **ppTexCurr = room.ppTextureContainer;
+
+	while(iNbTex--) {
+
+		TextureContainer * pTexCurr = *ppTexCurr;
+		GRenderer->SetTexture(0, pTexCurr);
+
+		SMY_ARXMAT & roomMat = pTexCurr->tMatRoom[room_num];
+
+		roomMat.count[SMY_ARXMAT::Opaque] = 0;
+		roomMat.count[SMY_ARXMAT::Blended] = 0;
+		roomMat.count[SMY_ARXMAT::Multiplicative] = 0;
+		roomMat.count[SMY_ARXMAT::Additive] = 0;
+		roomMat.count[SMY_ARXMAT::Subtractive] = 0;
+
+		ppTexCurr++;
+	}
+}
+
 			
 void ARX_PORTALS_InitDrawnRooms()
 {
@@ -663,6 +688,10 @@ void ARX_PORTALS_InitDrawnRooms()
 		EERIE_PORTALS *ep = &portals->portals[i];
 
 		ep->useportal = 0;
+	}
+
+	for(long i = 0; i < portals->roomsize(); i++) {
+		ARX_PORTALS_Frustrum_ClearIndexCount(i);
 	}
 
 	RoomDraw.resize(portals->roomsize());
@@ -839,16 +868,16 @@ static void RenderWaterBatch() {
 		return;
 	}
 	
-	GRenderer->GetTextureStage(1)->SetColorOp(TextureStage::OpModulate4X, TextureStage::ArgTexture, TextureStage::ArgCurrent);
-	GRenderer->GetTextureStage(1)->DisableAlpha();
+	GRenderer->GetTextureStage(1)->setColorOp(TextureStage::OpModulate4X, TextureStage::ArgTexture, TextureStage::ArgCurrent);
+	GRenderer->GetTextureStage(1)->disableAlpha();
 	
-	GRenderer->GetTextureStage(2)->SetColorOp(TextureStage::OpModulate, TextureStage::ArgTexture, TextureStage::ArgCurrent);
-	GRenderer->GetTextureStage(2)->DisableAlpha();
+	GRenderer->GetTextureStage(2)->setColorOp(TextureStage::OpModulate, TextureStage::ArgTexture, TextureStage::ArgCurrent);
+	GRenderer->GetTextureStage(2)->disableAlpha();
 	
 	dynamicVertices.draw(Renderer::TriangleList);
 	
-	GRenderer->GetTextureStage(1)->DisableColor();
-	GRenderer->GetTextureStage(2)->DisableColor();
+	GRenderer->GetTextureStage(1)->disableColor();
+	GRenderer->GetTextureStage(2)->disableColor();
 	
 }
 
@@ -973,27 +1002,27 @@ static void RenderWater() {
 void RenderLavaBatch() {
 	
 	GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendOne);
-	GRenderer->GetTextureStage(0)->SetColorOp(TextureStage::OpModulate2X, TextureStage::ArgTexture, TextureStage::ArgDiffuse);
+	GRenderer->GetTextureStage(0)->setColorOp(TextureStage::OpModulate2X, TextureStage::ArgTexture, TextureStage::ArgDiffuse);
 	
 	if(!dynamicVertices.nbindices) {
 		return;
 	}
 	
-	GRenderer->GetTextureStage(1)->SetColorOp(TextureStage::OpModulate4X, TextureStage::ArgTexture, TextureStage::ArgCurrent);
-	GRenderer->GetTextureStage(1)->DisableAlpha();
+	GRenderer->GetTextureStage(1)->setColorOp(TextureStage::OpModulate4X, TextureStage::ArgTexture, TextureStage::ArgCurrent);
+	GRenderer->GetTextureStage(1)->disableAlpha();
 	
-	GRenderer->GetTextureStage(2)->SetColorOp(TextureStage::OpModulate, TextureStage::ArgTexture, TextureStage::ArgCurrent);
-	GRenderer->GetTextureStage(2)->DisableAlpha();
+	GRenderer->GetTextureStage(2)->setColorOp(TextureStage::OpModulate, TextureStage::ArgTexture, TextureStage::ArgCurrent);
+	GRenderer->GetTextureStage(2)->disableAlpha();
 	
 	dynamicVertices.draw(Renderer::TriangleList);
 	
 	GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
-	GRenderer->GetTextureStage(0)->SetColorOp(TextureStage::OpModulate);
+	GRenderer->GetTextureStage(0)->setColorOp(TextureStage::OpModulate);
 	
 	dynamicVertices.draw(Renderer::TriangleList);
 	
-	GRenderer->GetTextureStage(1)->DisableColor();
-	GRenderer->GetTextureStage(2)->DisableColor();
+	GRenderer->GetTextureStage(1)->disableColor();
+	GRenderer->GetTextureStage(2)->disableColor();
 	
 }
 
@@ -1139,35 +1168,32 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num, const EERIE_FRUSTRU
 			}
 		}
 
-		SMY_ARXMAT & roomMat = ep->tex->tMatRoom[room_num];
-
-		unsigned short *pIndicesCurr;
-		unsigned long *pNumIndices;
+		SMY_ARXMAT::TransparencyType transparencyType;
 
 		if(ep->type & POLY_TRANS) {
-			if(ep->transval>=2.f) { //MULTIPLICATIVE
-				pIndicesCurr=pIndices+roomMat.offset[SMY_ARXMAT::Multiplicative]+roomMat.count[SMY_ARXMAT::Multiplicative];
-				pNumIndices=&roomMat.count[SMY_ARXMAT::Multiplicative];
-			}else if(ep->transval>=1.f) { //ADDITIVE
-				pIndicesCurr=pIndices+roomMat.offset[SMY_ARXMAT::Additive]+roomMat.count[SMY_ARXMAT::Additive];
-				pNumIndices=&roomMat.count[SMY_ARXMAT::Additive];
-			} else if(ep->transval>0.f) { //NORMAL TRANS
-				pIndicesCurr=pIndices+roomMat.offset[SMY_ARXMAT::Blended]+roomMat.count[SMY_ARXMAT::Blended];
-				pNumIndices=&roomMat.count[SMY_ARXMAT::Blended];
-			} else { //SUBTRACTIVE
-				pIndicesCurr=pIndices+roomMat.offset[SMY_ARXMAT::Subtractive]+roomMat.count[SMY_ARXMAT::Subtractive];
-				pNumIndices=&roomMat.count[SMY_ARXMAT::Subtractive];
+			if(ep->transval >= 2.f) {
+				transparencyType = SMY_ARXMAT::Multiplicative;
+			} else if(ep->transval >= 1.f) {
+				transparencyType = SMY_ARXMAT::Additive;
+			} else if(ep->transval > 0.f) {
+				transparencyType = SMY_ARXMAT::Blended;
+			} else {
+				transparencyType = SMY_ARXMAT::Subtractive;
 			}
 		} else {
-			pIndicesCurr=pIndices+roomMat.offset[SMY_ARXMAT::Opaque]+roomMat.count[SMY_ARXMAT::Opaque];
-			pNumIndices=&roomMat.count[SMY_ARXMAT::Opaque];
+			transparencyType = SMY_ARXMAT::Opaque;
 
 			if(ZMAPMODE) {
-				if((fDist<200)&&(ep->tex->TextureRefinement)) {
+				if(fDist < 200 && ep->tex->TextureRefinement) {
 					ep->tex->TextureRefinement->vPolyZMap.push_back(ep);
 				}
 			}
 		}
+
+		SMY_ARXMAT & roomMat = ep->tex->tMatRoom[room_num];
+
+		unsigned short * pIndicesCurr = pIndices + roomMat.offset[transparencyType] + roomMat.count[transparencyType];
+		unsigned long * pNumIndices = &roomMat.count[transparencyType];
 
 		*pIndicesCurr++ = ep->uslInd[0];
 		*pIndicesCurr++ = ep->uslInd[1];
@@ -1274,11 +1300,13 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoftRender(long room_num) {
 
 	//render opaque
 	GRenderer->SetCulling(Renderer::CullNone);
-	int iNbTex=room.usNbTextures;
-	TextureContainer **ppTexCurr=room.ppTextureContainer;
+	GRenderer->SetAlphaFunc(Renderer::CmpGreater, .5f);
+
+	int iNbTex = room.usNbTextures;
+	TextureContainer **ppTexCurr = room.ppTextureContainer;
 
 	while(iNbTex--) {
-		TextureContainer *pTexCurr=*ppTexCurr;
+		TextureContainer *pTexCurr = *ppTexCurr;
 
 		SMY_ARXMAT & roomMat = pTexCurr->tMatRoom[room_num];
 
@@ -1287,21 +1315,22 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoftRender(long room_num) {
 		else
 			GRenderer->SetTexture(0, pTexCurr);
 
-		if(pTexCurr->userflags & POLY_METAL)
-			GRenderer->GetTextureStage(0)->SetColorOp(TextureStage::OpModulate2X);
-		else
-			GRenderer->GetTextureStage(0)->SetColorOp(TextureStage::OpModulate);
+		if(roomMat.count[SMY_ARXMAT::Opaque]) {
+			if (pTexCurr->userflags & POLY_METAL)
+				GRenderer->GetTextureStage(0)->setColorOp(TextureStage::OpModulate2X);
+			else
+				GRenderer->GetTextureStage(0)->setColorOp(TextureStage::OpModulate);
 
-		if(roomMat.count[SMY_ARXMAT::Opaque])
-		{
-			GRenderer->SetAlphaFunc(Renderer::CmpGreater, .5f);
-			room.pVertexBuffer->drawIndexed(Renderer::TriangleList, roomMat.uslNbVertex, roomMat.uslStartVertex,
+			
+
+			room.pVertexBuffer->drawIndexed(
+				Renderer::TriangleList,
+				roomMat.uslNbVertex,
+				roomMat.uslStartVertex,
 				&room.pussIndice[roomMat.offset[SMY_ARXMAT::Opaque]],
 				roomMat.count[SMY_ARXMAT::Opaque]);
-			GRenderer->SetAlphaFunc(Renderer::CmpNotEqual, 0.f);
 
 			EERIEDrawnPolys += roomMat.count[SMY_ARXMAT::Opaque];
-			roomMat.count[SMY_ARXMAT::Opaque] = 0;
 		}
 
 		ppTexCurr++;
@@ -1309,8 +1338,9 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoftRender(long room_num) {
 
 	//////////////////////////////
 	// ZMapp
-	GRenderer->GetTextureStage(0)->SetColorOp(TextureStage::OpModulate);
+	GRenderer->GetTextureStage(0)->setColorOp(TextureStage::OpModulate);
 
+	GRenderer->SetAlphaFunc(Renderer::CmpNotEqual, 0.f);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 
@@ -1415,6 +1445,14 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoftRender(long room_num) {
 
 //-----------------------------------------------------------------------------
 
+static const SMY_ARXMAT::TransparencyType transRenderOrder[] = {
+	SMY_ARXMAT::Blended,
+	SMY_ARXMAT::Multiplicative,
+	SMY_ARXMAT::Additive,
+	SMY_ARXMAT::Subtractive
+};
+
+
 void ARX_PORTALS_Frustrum_RenderRoom_TransparencyTSoftCull(long room_num)
 {
 	//render transparency
@@ -1430,53 +1468,48 @@ void ARX_PORTALS_Frustrum_RenderRoom_TransparencyTSoftCull(long room_num)
 
 		SMY_ARXMAT & roomMat = pTexCurr->tMatRoom[room_num];
 
-		//NORMAL TRANS
-		if(roomMat.count[SMY_ARXMAT::Blended])
-		{
-			SetZBias(2);
-			GRenderer->SetBlendFunc(Renderer::BlendSrcColor, Renderer::BlendDstColor);
+		for(size_t i = 0; i < ARRAY_SIZE(transRenderOrder); i++) {
+			SMY_ARXMAT::TransparencyType transType = transRenderOrder[i];
 
-			room.pVertexBuffer->drawIndexed(Renderer::TriangleList, roomMat.uslNbVertex, roomMat.uslStartVertex, &room.pussIndice[roomMat.offset[SMY_ARXMAT::Blended]], roomMat.count[SMY_ARXMAT::Blended]);
+			if(!roomMat.count[transType])
+				continue;
 
-			EERIEDrawnPolys+=roomMat.count[SMY_ARXMAT::Blended];
-			roomMat.count[SMY_ARXMAT::Blended]=0;
-		}
+			switch(transType) {
+			case SMY_ARXMAT::Opaque: {
+				// This should currently not happen
+				arx_assert(false);
+				continue;
+			}
+			case SMY_ARXMAT::Blended: {
+				SetZBias(2);
+				GRenderer->SetBlendFunc(Renderer::BlendSrcColor, Renderer::BlendDstColor);
+				break;
+			}
+			case SMY_ARXMAT::Multiplicative: {
+				SetZBias(2);
+				GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+				break;
+			}
+			case SMY_ARXMAT::Additive: {
+				SetZBias(2);
+				GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+				break;
+			}
+			case SMY_ARXMAT::Subtractive: {
+				SetZBias(8);
+				GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
+				break;
+			}
+			}
 
-		//MULTIPLICATIVE
-		if(roomMat.count[SMY_ARXMAT::Multiplicative])
-		{
-			SetZBias(2);
-			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+			room.pVertexBuffer->drawIndexed(
+				Renderer::TriangleList,
+				roomMat.uslNbVertex,
+				roomMat.uslStartVertex,
+				&room.pussIndice[roomMat.offset[transType]],
+				roomMat.count[transType]);
 
-			room.pVertexBuffer->drawIndexed(Renderer::TriangleList, roomMat.uslNbVertex, roomMat.uslStartVertex, &room.pussIndice[roomMat.offset[SMY_ARXMAT::Multiplicative]], roomMat.count[SMY_ARXMAT::Multiplicative]);
-
-			EERIEDrawnPolys+=roomMat.count[SMY_ARXMAT::Multiplicative];
-			roomMat.count[SMY_ARXMAT::Multiplicative]=0;
-		}
-
-		//ADDITIVE
-		if(roomMat.count[SMY_ARXMAT::Additive])
-		{
-			SetZBias(2);
-			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-
-			room.pVertexBuffer->drawIndexed(Renderer::TriangleList, roomMat.uslNbVertex, roomMat.uslStartVertex, &room.pussIndice[roomMat.offset[SMY_ARXMAT::Additive]], roomMat.count[SMY_ARXMAT::Additive]);
-
-			EERIEDrawnPolys+=roomMat.count[SMY_ARXMAT::Additive];
-			roomMat.count[SMY_ARXMAT::Additive]=0;
-		}
-
-		//SUBSTRACTIVE
-		if(roomMat.count[SMY_ARXMAT::Subtractive])
-		{
-			SetZBias(8);
-
-			GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
-
-			room.pVertexBuffer->drawIndexed(Renderer::TriangleList, roomMat.uslNbVertex, roomMat.uslStartVertex, &room.pussIndice[roomMat.offset[SMY_ARXMAT::Subtractive]], roomMat.count[SMY_ARXMAT::Subtractive]);
-
-			EERIEDrawnPolys+=roomMat.count[SMY_ARXMAT::Subtractive];
-			roomMat.count[SMY_ARXMAT::Subtractive]=0;
+			EERIEDrawnPolys += roomMat.count[transType];
 		}
 
 		ppTexCurr++;
@@ -1603,6 +1636,8 @@ void ARX_SCENE_Update() {
 	}
 
 	ARX_THROWN_OBJECT_Manage(checked_range_cast<unsigned long>(framedelay));
+
+	UpdateInter();
 }
 
 extern short uw_mode;
@@ -1616,7 +1651,7 @@ extern long SPECIAL_DRAGINTER_RENDER;
 void ARX_SCENE_Render() {
 
 	if(uw_mode)
-		GRenderer->GetTextureStage(0)->SetMipMapLODBias(10.f);
+		GRenderer->GetTextureStage(0)->setMipMapLODBias(10.f);
 
 	GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
 	for(size_t i = 0; i < RoomDrawList.size(); i++) {
@@ -1630,13 +1665,13 @@ void ARX_SCENE_Render() {
 
 	ARX_THROWN_OBJECT_Render();
 		
-	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
-	GRenderer->GetTextureStage(0)->SetMipMapLODBias(-0.6f);
+	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapClamp);
+	GRenderer->GetTextureStage(0)->setMipMapLODBias(-0.6f);
 
 	RenderInter();
 
-	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
-	GRenderer->GetTextureStage(0)->SetMipMapLODBias(-0.3f);
+	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
+	GRenderer->GetTextureStage(0)->setMipMapLODBias(-0.3f);
 		
 	// To render Dragged objs
 	if(DRAGINTER) {
@@ -1677,7 +1712,7 @@ void ARX_SCENE_Render() {
 
 	SetZBias(0);
 	GRenderer->SetFogColor(ulBKGColor);
-	GRenderer->GetTextureStage(0)->SetColorOp(TextureStage::OpModulate);
+	GRenderer->GetTextureStage(0)->setColorOp(TextureStage::OpModulate);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 
 	Halo_Render();

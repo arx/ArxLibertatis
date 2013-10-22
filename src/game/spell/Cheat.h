@@ -17,23 +17,46 @@
  * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ARX_AUDIO_DSOUND_DSOUNDFWD_H
-#define ARX_AUDIO_DSOUND_DSOUNDFWD_H
+#ifndef ARX_GAME_SPELL_CHEAT_H
+#define ARX_GAME_SPELL_CHEAT_H
 
-// dsound.h forward-declarations
+extern long cur_mx;
+extern long cur_pnux;
+extern long cur_pom;
+extern long cur_rf;
+extern long cur_mr;
+extern long cur_sm;
+extern long cur_bh;
 
-struct IKsPropertySet;
-typedef struct IKsPropertySet * LPKSPROPERTYSET;
+extern long sp_arm;
+extern long cur_arm;
+extern long cur_sos;
 
-struct IDirectSoundBuffer;
-typedef struct IDirectSoundBuffer * LPDIRECTSOUNDBUFFER;
-struct IDirectSound3DBuffer;
-typedef struct IDirectSound3DBuffer * LPDIRECTSOUND3DBUFFER;
+extern long cur_mega;
+extern float sp_max_start;
+extern long sp_wep;
+extern short uw_mode;
 
-struct IDirectSound;
-typedef struct IDirectSound * LPDIRECTSOUND;
+extern short uw_mode_pos;
 
-struct IDirectSound3DListener;
-typedef struct IDirectSound3DListener * LPDIRECTSOUND3DLISTENER;
+extern long sp_max;
 
-#endif // ARX_AUDIO_DSOUND_DSOUNDFWD_H
+void Manage_sp_max();
+
+void CheatReset();
+
+void ApplyPasswall();
+void ApplySPArm();
+void ApplySPuw();
+void ApplySPRf();
+void ApplySPMax();
+void ApplySPWep();
+void ApplySPBow();
+void ApplyCurPNux();
+void ApplyCurMr();
+void ApplyCurSOS();
+void EERIE_OBJECT_SetBHMode();
+
+void CheckMr();
+
+#endif // ARX_GAME_SPELL_CHEAT_H

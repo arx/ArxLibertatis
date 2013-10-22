@@ -26,10 +26,12 @@
 #include <ft2build.h>
 #include FT_FREETYPE_H
 
+#include "graphics/Draw.h"
 #include "graphics/Renderer.h"
 #include "graphics/texture/Texture.h"
 #include "graphics/texture/PackedTexture.h"
 #include "graphics/texture/TextureStage.h"
+#include "graphics/Vertex.h"
 
 #include "io/fs/FilePath.h"
 #include "io/resource/ResourcePath.h"
@@ -251,47 +253,67 @@ Font::glyph_iterator Font::getNextGlyph(text_iterator & it, text_iterator end) {
 	return glyphs.find(chr); // the newly inserted glyph
 }
 
+void addGlyphVertices(std::vector<TexturedVertex>& vertices, const Font::Glyph& glyph, const Vec2f& pos, Color color) {
+
+	float w = glyph.size.x;
+	float h = -glyph.size.y;
+	float uStart = glyph.uv_start.x;
+	float vStart = glyph.uv_end.y;
+	float uEnd = glyph.uv_end.x;
+	float vEnd = glyph.uv_start.y;
+
+	Vec2f p;
+	p.x = floor(pos.x + glyph.draw_offset.x) - .5f;
+	p.y = floor(pos.y - glyph.draw_offset.y) - .5f;
+
+	TexturedVertex quad[4];
+	quad[0].p = Vec3f(p.x, p.y, 0);
+	quad[0].uv = Vec2f(uStart, vStart);
+	quad[0].color = color.toBGRA();
+	quad[0].rhw = 1.0f;
+
+	quad[1].p = Vec3f(p.x + w, p.y, 0);
+	quad[1].uv = Vec2f(uEnd, vStart);
+	quad[1].color = color.toBGRA();
+	quad[1].rhw = 1.0f;
+
+	quad[2].p = Vec3f(p.x + w, p.y + h, 0);
+	quad[2].uv = Vec2f(uEnd, vEnd);
+	quad[2].color = color.toBGRA();
+	quad[2].rhw = 1.0f;
+
+	quad[3].p = Vec3f(p.x, p.y + h, 0);
+	quad[3].uv = Vec2f(uStart, vEnd);
+	quad[3].color = color.toBGRA();
+	quad[3].rhw = 1.0f;
+
+	vertices.push_back(quad[0]);
+	vertices.push_back(quad[1]);
+	vertices.push_back(quad[2]);
+
+	vertices.push_back(quad[0]);
+	vertices.push_back(quad[2]);
+	vertices.push_back(quad[3]);
+}
+
 template <bool DoDraw>
 Vec2i Font::process(int x, int y, text_iterator start, text_iterator end, Color color) {
 	
-	if(DoDraw) {
+	Vec2f pen(x, y);
 		
-		GRenderer->SetRenderState(Renderer::Lighting, false);
-		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-		GRenderer->SetBlendFunc(Renderer::BlendSrcAlpha, Renderer::BlendInvSrcAlpha);
-		
-		GRenderer->SetRenderState(Renderer::DepthTest, false);
-		GRenderer->SetRenderState(Renderer::DepthWrite, false);
-		GRenderer->SetCulling(Renderer::CullNone);
-		
-		// 2D projection setup... Put origin (0,0) in the top left corner like GDI...
-		Rect viewport = GRenderer->GetViewport();
-		GRenderer->Begin2DProjection(viewport.left, viewport.right,
-		                             viewport.bottom, viewport.top, -1.f, 1.f);
-		
-		// Fixed pipeline texture stage operation
-		GRenderer->GetTextureStage(0)->SetColorOp(TextureStage::ArgDiffuse);
-		GRenderer->GetTextureStage(0)->SetAlphaOp(TextureStage::ArgTexture);
-		
-		GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
-		GRenderer->GetTextureStage(0)->SetMinFilter(TextureStage::FilterNearest);
-		GRenderer->GetTextureStage(0)->SetMagFilter(TextureStage::FilterNearest);
-		
-	}
-	
-	float penX = x;
-	float penY = y;
-	
 	int startX = 0;
 	int endX = 0;
 	
 	if(DoDraw) {
 		// Subtract one line height (since we flipped the Y origin to be like GDI)
-		penY += face->size->metrics.ascender >> 6;
+		pen.y += face->size->metrics.ascender >> 6;
 	}
 	
 	FT_UInt prevGlyphIndex = 0;
 	FT_Pos prevRsbDelta = 0;
+
+	typedef std::map< unsigned int, std::vector<TexturedVertex> > MapTextureVertices;
+	MapTextureVertices mapTextureVertices;
 	
 	for(text_iterator it = start; it != end; ) {
 		
@@ -307,51 +329,75 @@ Vec2i Font::process(int x, int y, text_iterator start, text_iterator end, Color 
 			if(prevGlyphIndex != 0) {
 				FT_Vector delta;
 				FT_Get_Kerning(face, prevGlyphIndex, glyph.index, FT_KERNING_DEFAULT, &delta);
-				penX += delta.x >> 6;
+				pen.x += delta.x >> 6;
 			}
 			prevGlyphIndex = glyph.index;
 		}
 		
 		// Auto hinting adjustments
 		if(prevRsbDelta - glyph.lsb_delta >= 32) {
-			penX--;
+			pen.x--;
 		} else if( prevRsbDelta - glyph.lsb_delta < -32) {
-			penX++;
+			pen.x++;
 		}
 		prevRsbDelta = glyph.rsb_delta;
 		
 		// Draw
 		if(DoDraw && glyph.size.x != 0 && glyph.size.y != 0) {
-			GRenderer->SetTexture(0, &textures->getTexture(glyph.texture));
-			GRenderer->DrawTexturedRect(
-				((int)penX) + glyph.draw_offset.x, ((int)penY) - glyph.draw_offset.y,
-				glyph.size.x, -glyph.size.y, glyph.uv_start.x, glyph.uv_end.y, glyph.uv_end.x,
-				glyph.uv_start.y, color
-			);
+			addGlyphVertices(mapTextureVertices[glyph.texture], glyph, pen, color);
 		} else {
-			ARX_UNUSED(penY), ARX_UNUSED(color);
+			ARX_UNUSED(pen), ARX_UNUSED(color);
 		}
 		
 		// If this is the first drawn char, note the start position
 		if(startX == endX) {
 			startX = glyph.draw_offset.x;
 		}
-		endX = penX + glyph.draw_offset.x + glyph.size.x;
+		endX = pen.x + glyph.draw_offset.x + glyph.size.x;
 		
 		// Advance
-		penX += glyph.advance.x;
+		pen.x += glyph.advance.x;
 	}
 	
-	if(DoDraw) {
-		
+	if(DoDraw && !mapTextureVertices.empty()) {
+
+		GRenderer->SetRenderState(Renderer::Lighting, false);
+		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+		GRenderer->SetBlendFunc(Renderer::BlendSrcAlpha, Renderer::BlendInvSrcAlpha);
+
+		GRenderer->SetRenderState(Renderer::DepthTest, false);
+		GRenderer->SetRenderState(Renderer::DepthWrite, false);
+		GRenderer->SetCulling(Renderer::CullNone);
+
+		// 2D projection setup... Put origin (0,0) in the top left corner like GDI...
+		Rect viewport = GRenderer->GetViewport();
+		GRenderer->Begin2DProjection(viewport.left, viewport.right,
+									 viewport.bottom, viewport.top, -1.f, 1.f);
+
+		// Fixed pipeline texture stage operation
+		GRenderer->GetTextureStage(0)->setColorOp(TextureStage::ArgDiffuse);
+		GRenderer->GetTextureStage(0)->setAlphaOp(TextureStage::ArgTexture);
+
+		GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapClamp);
+		GRenderer->GetTextureStage(0)->setMinFilter(TextureStage::FilterNearest);
+		GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterNearest);
+
+		for(MapTextureVertices::const_iterator it = mapTextureVertices.begin(); it != mapTextureVertices.end(); ++it) {
+			
+			if(!it->second.empty()) {
+				GRenderer->SetTexture(0, &textures->getTexture(it->first));
+				EERIEDRAWPRIM(Renderer::TriangleList, &it->second[0], it->second.size());
+			}
+		}
+					
 		GRenderer->ResetTexture(0);
 		TextureStage * stage = GRenderer->GetTextureStage(0);
-		stage->SetColorOp(TextureStage::OpModulate,
+		stage->setColorOp(TextureStage::OpModulate,
 		                  TextureStage::ArgTexture, TextureStage::ArgCurrent);
-		stage->SetAlphaOp(TextureStage::ArgTexture);
-		stage->SetWrapMode(TextureStage::WrapRepeat);
-		stage->SetMinFilter(TextureStage::FilterLinear);
-		stage->SetMagFilter(TextureStage::FilterLinear);
+		stage->setAlphaOp(TextureStage::ArgTexture);
+		stage->setWrapMode(TextureStage::WrapRepeat);
+		stage->setMinFilter(TextureStage::FilterLinear);
+		stage->setMagFilter(TextureStage::FilterLinear);
 		
 		GRenderer->End2DProjection();
 		GRenderer->SetRenderState(Renderer::AlphaBlending, false);

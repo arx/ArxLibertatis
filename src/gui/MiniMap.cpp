@@ -246,7 +246,9 @@ void MiniMap::firstInit(ARXCHARACTER *pl, PakReader *pakRes, EntityManager *enti
 	m_currentLevel = 0;
 	m_entities = entityMng;
 	m_activeBkg = NULL;
-	
+
+    m_mapVertices.reserve(MINIMAP_MAX_X * MINIMAP_MAX_Z);
+
 	resetLevels();
 	
 	for(int i = 0; i < MAX_MINIMAP_LEVELS; i++) {
@@ -319,7 +321,7 @@ void MiniMap::showPlayerMiniMap(int showLevel) {
 		// Draw the background
 		drawBackground(showLevel, Rect(390, 135, 590, 295), startX, startY, miniMapZoom, 20.f, decalX, decalY, true, 0.5f);
 		
-		GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
+		GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
 		
 		// Draw the player (red arrow)
 		if(showLevel == ARX_LEVELS_GetRealNum(m_currentLevel)) {
@@ -357,7 +359,7 @@ void MiniMap::showBookMiniMap(int showLevel) {
 		
 		drawBackground(showLevel, Rect(360, 85, 555, 355), startX, startY, zoom, 20.f);
 		
-		GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
+		GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
 		
 		if(showLevel == ARX_LEVELS_GetRealNum(m_currentLevel)) {
 			drawPlayer(6.f, playerPos.x, playerPos.y);
@@ -394,7 +396,7 @@ void MiniMap::showBookEntireMap(int showLevel) {
 	
 	drawBackground(showLevel, Rect(0, 0, 345, 290), startX, startY, zoom);
 	
-	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
+	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
 	
 	if(showLevel == ARX_LEVELS_GetRealNum(m_currentLevel)) {
 		drawPlayer(3.f, playerPos.x, playerPos.y);
@@ -531,17 +533,12 @@ Vec2f MiniMap::computePlayerPos(float zoom, int showLevel) {
 
 void MiniMap::drawBackground(int showLevel, Rect boundaries, float startX, float startY, float zoom, float fadeBorder, float decalX, float decalY, bool invColor, float alpha) {
 	
+    m_mapVertices.resize(0);
+
 	float caseX = zoom / ((float)MINIMAP_MAX_X);
 	float caseY = zoom / ((float)MINIMAP_MAX_Z);
 	
-	TexturedVertex verts[4];
 	GRenderer->SetTexture(0, m_levels[showLevel].m_texContainer);
-	
-	for(int k = 0; k < 4; k++) {
-		verts[k].color = 0xFFFFFFFF;
-		verts[k].rhw = 1;
-		verts[k].p.z = 0.00001f;
-	}
 	
 	float div = (1.0f / 25);
 	TextureContainer * tc = m_levels[showLevel].m_texContainer;
@@ -568,8 +565,8 @@ void MiniMap::drawBackground(int showLevel, Rect boundaries, float startX, float
 	} else {
 		GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
 	}
-	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
-	
+	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapClamp);
+
 	for(int j = -2; j < MINIMAP_MAX_Z + 2; j++) {
 		for(int i = -2; i < MINIMAP_MAX_X + 2; i++) {
 			
@@ -588,6 +585,8 @@ void MiniMap::drawBackground(int showLevel, Rect boundaries, float startX, float
 			   || (posy > boundaries.bottom * Yratio)) {
 				continue; // out of bounds
 			}
+
+			TexturedVertex verts[4];
 			
 			verts[3].p.x = verts[0].p.x = (posx);
 			verts[1].p.y = verts[0].p.y = (posy);
@@ -603,7 +602,10 @@ void MiniMap::drawBackground(int showLevel, Rect boundaries, float startX, float
 			float oo = 0.f;
 			
 			for(int vert = 0; vert < 4; vert++) {
-				
+				verts[vert].color = 0xFFFFFFFF;
+				verts[vert].rhw = 1;
+				verts[vert].p.z = 0.00001f;
+
 				// Array offset according to "vert"
 				int iOffset = 0;
 				int jOffset = 0;
@@ -670,9 +672,19 @@ void MiniMap::drawBackground(int showLevel, Rect boundaries, float startX, float
 				verts[3].p.x += decalX * Xratio;
 				verts[3].p.y += decalY * Yratio;
 				
-				EERIEDRAWPRIM(Renderer::TriangleFan, verts, 4);
+				m_mapVertices.push_back(verts[0]);
+				m_mapVertices.push_back(verts[1]);
+				m_mapVertices.push_back(verts[2]);
+
+				m_mapVertices.push_back(verts[0]);
+				m_mapVertices.push_back(verts[2]);
+				m_mapVertices.push_back(verts[3]);
 			}
 		}
+	}
+
+	if(!m_mapVertices.empty()) {
+		EERIEDRAWPRIM(Renderer::TriangleList, &m_mapVertices[0], m_mapVertices.size());
 	}
 	
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);

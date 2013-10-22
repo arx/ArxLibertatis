@@ -53,9 +53,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "audio/AudioBackend.h"
 #include "audio/AudioSource.h"
 #include "audio/AudioEnvironment.h"
-#ifdef ARX_HAVE_DSOUND
-	#include "audio/dsound/DSoundBackend.h"
-#endif
 #ifdef ARX_HAVE_OPENAL
 	#include "audio/openal/OpenALBackend.h"
 #endif
@@ -104,26 +101,12 @@ aalError init(const string & backendName, bool enableEAX) {
 		}
 		#endif
 		
-		#ifdef ARX_HAVE_DSOUND
-		if(!backend && first == (autoBackend || backendName == "DirectSound")) {
-			matched = true;
-			LogDebug("initializing DirectSound backend");
-			DSoundBackend * _backend = new DSoundBackend();
-			error = _backend->init(enableEAX);
-			if(!error) {
-				backend = _backend;
-			} else {
-				delete _backend;
-			}
-		}
-		#endif
-		
 		if(first && !matched) {
 			LogError << "Unknown backend: " << backendName;
 		}
 	}
 	
-	#if !defined(ARX_HAVE_OPENAL) && !defined(ARX_HAVE_DSOUND)
+	#if !defined(ARX_HAVE_OPENAL)
 	ARX_UNUSED(autoBackend), ARX_UNUSED(enableEAX);
 	#endif
 	

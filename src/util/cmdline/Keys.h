@@ -66,7 +66,9 @@ public:
 	}
 	
 	key_type & operator()(const value_type & v) {
-		return super_t::push_back(v), *this;
+		if(!v.empty())
+			super_t::push_back(v);
+		return *this;
 	}
 	
 	key_type & description(const value_type & d) {

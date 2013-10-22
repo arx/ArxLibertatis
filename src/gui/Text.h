@@ -62,6 +62,7 @@ extern Font * hFontCredits;
 extern Font * hFontInBook;
 extern Font * hFontInGame;
 extern Font * hFontInGameNote;
+extern Font * hFontDebug;
 
 void ARX_TEXT_Draw(Font * ef, float x, float y, const std::string & car, Color colo);
 float DrawBookTextInRect(Font * font, float x, float y, float maxx, const std::string & text, Color col);

@@ -121,8 +121,6 @@ struct EERIE_BACKGROUND
 	char		name[256];
 };
 
-struct ANIM_USE;
-
 extern long EERIEDrawnPolys;
 
 extern EERIE_BACKGROUND * ACTIVEBKG;

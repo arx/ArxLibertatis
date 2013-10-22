@@ -60,8 +60,8 @@ GLOBAL_MODS desired;
 GLOBAL_MODS stacked;
 
 // change the clipping Z max & min
-#define DEFAULT_ZCLIP		6400.f 
-#define DEFAULT_MINZCLIP	1200.f 
+static const float DEFAULT_ZCLIP = 6400.f;
+static const float DEFAULT_MINZCLIP = 1200.f;
 
 Color ulBKGColor = Color::none;
 
@@ -132,15 +132,4 @@ void ARX_GLOBALMODS_Apply() {
 	SetCameraDepth(*ACTIVECAM, min(current.zclip, fZclipp));
 
 	ulBKGColor = current.depthcolor.to<u8>();
-	GRenderer->SetFogColor(ulBKGColor);
-	
-	float fogEnd = fZFogEnd;
-	float fogStart = fZFogStart;
-	
-	if(GRenderer->isFogInEyeCoordinates()) {
-		fogEnd *= ACTIVECAM->cdepth;
-		fogStart *= ACTIVECAM->cdepth;
-	}
-	
-	GRenderer->SetFogParams(Renderer::FogLinear, fogStart, fogEnd);
 }

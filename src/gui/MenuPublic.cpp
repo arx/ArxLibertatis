@@ -251,8 +251,8 @@ void ARXMenu_Options_Control_SetMouseSensitivity(int sensitivity) {
 //-----------------------------------------------------------------------------
 //RESUME GAME
 //-----------------------------------------------------------------------------
-void ARXMenu_GetResumeGame(bool & allowResume) {
-	allowResume = !REFUSE_GAME_RETURN;
+bool ARXMenu_CanResumeGame() {
+	return !REFUSE_GAME_RETURN;
 }
 
 //-----------------------------------------------------------------------------

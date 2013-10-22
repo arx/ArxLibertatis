@@ -67,6 +67,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/Player.h"
 #include "game/Levels.h"
 #include "game/Inventory.h"
+#include "game/spell/Cheat.h"
 
 #include "gui/MiniMap.h"
 #include "gui/Interface.h"
@@ -613,14 +614,6 @@ void FillIOIdent(char (&tofill)[N], const Entity * io) {
 		strncpy(tofill, ident.c_str(),  N);
 	}
 }
-
-extern long sp_max;
-extern long cur_rf;
-extern long cur_mx;
-extern long cur_mr;
-extern long cur_pom;
-extern long sp_wep;
-extern long sp_arm;
 
 static long ARX_CHANGELEVEL_Push_Player(long level) {
 	
@@ -1596,12 +1589,12 @@ long ARX_CHANGELEVEL_Pop_Level(ARX_CHANGELEVEL_INDEX * asi, long num, bool first
 			}
 		}
 		
-		BLOCK_PLAYER_CONTROLS = 0;
+		BLOCK_PLAYER_CONTROLS = false;
 		ARX_INTERFACE_Reset();
 		EERIE_ANIMMANAGER_PurgeUnused();
 		
 	} else {
-		BLOCK_PLAYER_CONTROLS = 0;
+		BLOCK_PLAYER_CONTROLS = false;
 		ARX_INTERFACE_Reset();
 		EERIE_ANIMMANAGER_PurgeUnused();
 	}
@@ -2856,8 +2849,6 @@ static bool ARX_CHANGELEVEL_Get_Player_LevelData(ARX_CHANGELEVEL_PLAYER_LEVEL_DA
 	return true;
 }
 
-extern long STARTED_A_GAME;
-
 long ARX_CHANGELEVEL_Load(const fs::path & savefile) {
 	
 	LogDebug("begin ARX_CHANGELEVEL_Load " << savefile);
@@ -2903,8 +2894,7 @@ long ARX_CHANGELEVEL_Load(const fs::path & savefile) {
 		return -1;
 	}
 	
-	STARTED_A_GAME = 1;
-	BLOCK_PLAYER_CONTROLS = 0;
+	BLOCK_PLAYER_CONTROLS = false;
 	player.Interface &= ~INTER_COMBATMODE;
 	
 	if (entities.player()) entities.player()->animlayer[1].cur_anim = NULL;

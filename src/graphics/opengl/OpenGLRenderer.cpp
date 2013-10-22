@@ -171,7 +171,7 @@ void OpenGLRenderer::reinit() {
 	Clear(ColorBuffer | DepthBuffer);
 	
 	currentTransform = GL_UnsetTransform;
-	glArrayClientState = GL_NoArray;
+	switchVertexArray(GL_NoArray, 0, 0);
 	
 	CHECK_GL;
 	
@@ -565,35 +565,6 @@ static const GLenum arxToGlFillMode[] = {
 
 void OpenGLRenderer::SetFillMode(FillMode mode) {
 	glPolygonMode(GL_FRONT_AND_BACK, arxToGlFillMode[mode]);
-	CHECK_GL;
-}
-
-void OpenGLRenderer::DrawTexturedRect(float x, float y, float w, float h, float uStart, float vStart, float uEnd, float vEnd, Color color) {
-	
-	applyTextureStages();
-	disableTransform();
-	
-	x -= .5f;
-	y -= .5f;
-	
-	glColor3ub(color.r, color.g, color.b);
-	
-	glBegin(GL_QUADS);
-		
-		glMultiTexCoord2f(GL_TEXTURE0, uStart, vStart);
-		glVertex3f(x, y, 0);
-		
-		glMultiTexCoord2f(GL_TEXTURE0, uEnd, vStart);
-		glVertex3f(x + w, y, 0);
-		
-		glMultiTexCoord2f(GL_TEXTURE0, uEnd, vEnd);
-		glVertex3f(x + w, y + h, 0);
-		
-		glMultiTexCoord2f(GL_TEXTURE0, uStart, vEnd);
-		glVertex3f(x, y + h, 0);
-		
-	glEnd();
-	
 	CHECK_GL;
 }
 

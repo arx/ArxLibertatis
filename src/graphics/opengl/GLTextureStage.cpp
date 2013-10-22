@@ -38,7 +38,7 @@ GLTextureStage::GLTextureStage(OpenGLRenderer * _renderer, unsigned stage) : Tex
 		ops[Color] = OpModulate;
 		ops[Alpha] = OpSelectArg1;
 		glActiveTexture(GL_TEXTURE0);
-		glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
+		setTexEnv(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
 		glEnable(GL_TEXTURE_2D);
 	} else {
 		ops[Color] = OpDisable;
@@ -47,17 +47,17 @@ GLTextureStage::GLTextureStage(OpenGLRenderer * _renderer, unsigned stage) : Tex
 }
 
 GLTextureStage::~GLTextureStage() {
-	ResetTexture();
+	resetTexture();
 }
 
-void GLTextureStage::SetTexture(Texture * texture) {
+void GLTextureStage::setTexture(Texture * texture) {
 	
 	arx_assert(texture != NULL);
 	
 	tex = reinterpret_cast<GLTexture2D *>(texture);
 }
 
-void GLTextureStage::ResetTexture() {
+void GLTextureStage::resetTexture() {
 	tex = NULL;
 }
 
@@ -101,15 +101,15 @@ static const GLTexEnvParam glTexEnv[] = {
 
 void GLTextureStage::setArg(OpType alpha, Arg idx, TextureArg arg) {
 	
-	glTexEnvi(GL_TEXTURE_ENV, glTexEnv[alpha].sources[idx], glTexSource[arg & ArgMask]);
+	setTexEnv(GL_TEXTURE_ENV, glTexEnv[alpha].sources[idx], glTexSource[arg & ArgMask]);
 	GLint op = (arg & ArgComplement) ? glTexEnv[alpha].complement : glTexEnv[alpha].normal;
-	glTexEnvi(GL_TEXTURE_ENV, glTexEnv[alpha].operands[idx], op);
+	setTexEnv(GL_TEXTURE_ENV, glTexEnv[alpha].operands[idx], op);
 }
 
-void GLTextureStage::setOp(OpType alpha, GLenum op, GLint scale) {
-	
-	glTexEnvi(GL_TEXTURE_ENV, glTexEnv[alpha].combine, op);
-	glTexEnvi(GL_TEXTURE_ENV, glTexEnv[alpha].scale, scale);
+void GLTextureStage::setOp(OpType alpha, GLint op, GLfloat scale) {
+
+	setTexEnv(GL_TEXTURE_ENV, glTexEnv[alpha].combine, op);
+	setTexEnv(GL_TEXTURE_ENV, glTexEnv[alpha].scale, scale);
 }
 
 void GLTextureStage::setOp(OpType alpha, TextureOp op) {
@@ -117,7 +117,7 @@ void GLTextureStage::setOp(OpType alpha, TextureOp op) {
 	if(mStage != 0) {
 		glActiveTexture(GL_TEXTURE0 + mStage);
 	}
-	
+		
 	bool wasEnabled = isEnabled();
 	
 	ops[alpha] = op;
@@ -126,7 +126,7 @@ void GLTextureStage::setOp(OpType alpha, TextureOp op) {
 	if(wasEnabled != enabled) {
 		if(enabled) {
 			glEnable(GL_TEXTURE_2D);
-			glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
+			setTexEnv(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
 			renderer->maxTextureStage = std::max<size_t>(mStage, renderer->maxTextureStage);
 		} else {
 			glDisable(GL_TEXTURE_2D);
@@ -200,11 +200,10 @@ void GLTextureStage::setOp(OpType alpha, TextureOp op) {
 		}
 		
 	}
-	
+
 	if(mStage != 0) {
 		glActiveTexture(GL_TEXTURE0);
 	}
-	
 }
 
 void GLTextureStage::setOp(OpType alpha, TextureOp op, TextureArg arg0, TextureArg arg1) {
@@ -221,50 +220,68 @@ void GLTextureStage::setOp(OpType alpha, TextureOp op, TextureArg arg0, TextureA
 	setOp(alpha, op);
 }
 
-void GLTextureStage::SetColorOp(TextureOp op, TextureArg arg0, TextureArg arg1) {
+void GLTextureStage::setTexEnv(GLenum target, GLenum pname, GLint param) {
+
+	IntegerStateCache::iterator it = m_stateCacheIntegers.find(pname);
+	if(it == m_stateCacheIntegers.end() || it->second != param) {
+		glTexEnvi(target, pname, param);
+		m_stateCacheIntegers[pname] = param;
+	}
+}
+
+void GLTextureStage::setTexEnv(GLenum target, GLenum pname, GLfloat param) {
+
+	FloatStateCache::iterator it = m_stateCacheFloats.find(pname);
+	if(it == m_stateCacheFloats.end() || it->second != param) {
+		glTexEnvf(target, pname, param);
+		m_stateCacheFloats[pname] = param;
+	}
+}
+
+void GLTextureStage::setColorOp(TextureOp op, TextureArg arg0, TextureArg arg1) {
 	setOp(Color, op, arg0, arg1);
 }
 
-void GLTextureStage::SetColorOp(TextureOp op) {
+void GLTextureStage::setColorOp(TextureOp op) {
 	setOp(Color, op);
 }
 
-void GLTextureStage::SetAlphaOp(TextureOp op, TextureArg arg0, TextureArg arg1) {
+void GLTextureStage::setAlphaOp(TextureOp op, TextureArg arg0, TextureArg arg1) {
 	setOp(Alpha, op, arg0, arg1);
 }
 
-void GLTextureStage::SetAlphaOp(TextureOp op) {
+void GLTextureStage::setAlphaOp(TextureOp op) {
 	setOp(Alpha, op);
 }
 
-void GLTextureStage::SetWrapMode(WrapMode _wrapMode) {
+void GLTextureStage::setWrapMode(WrapMode _wrapMode) {
 	wrapMode = _wrapMode;
 }
 
-void GLTextureStage::SetMinFilter(FilterMode filterMode) {
+void GLTextureStage::setMinFilter(FilterMode filterMode) {
 	minFilter = filterMode;
 }
 
-void GLTextureStage::SetMagFilter(FilterMode filterMode) {
+void GLTextureStage::setMagFilter(FilterMode filterMode) {
 	magFilter = filterMode;
 }
 
-void GLTextureStage::SetMipFilter(FilterMode filterMode) {
+void GLTextureStage::setMipFilter(FilterMode filterMode) {
 	mipFilter = filterMode;
 }
 
-void GLTextureStage::SetMipMapLODBias(float bias) {
+void GLTextureStage::setMipMapLODBias(float bias) {
 	
 	if(mStage != 0) {
 		glActiveTexture(GL_TEXTURE0 + mStage);
 	}
 	
-	glTexEnvf(GL_TEXTURE_FILTER_CONTROL, GL_TEXTURE_LOD_BIAS, bias);
+	setTexEnv(GL_TEXTURE_FILTER_CONTROL, GL_TEXTURE_LOD_BIAS, bias);
 	
 	if(mStage != 0) {
 		glActiveTexture(GL_TEXTURE0);
 	}
-	
+
 	CHECK_GL;
 }
 
@@ -307,10 +324,10 @@ void GLTextureStage::apply() {
 			tex->apply(this);
 		}
 	}
-	
+
 	if(mStage != 0) {
 		glActiveTexture(GL_TEXTURE0);
 	}
-	
+
 	CHECK_GL;
 }

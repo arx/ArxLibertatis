@@ -46,10 +46,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "core/Core.h"
 
+#include <algorithm>
+#include <cstdio>
 #include <cstdlib>
 #include <cstring>
-#include <cstdio>
-#include <algorithm>
+#include <deque>
+#include <iomanip>
 #include <sstream>
 #include <vector>
 
@@ -83,6 +85,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/Player.h"
 #include "game/Spells.h"
 #include "game/spell/FlyingEye.h"
+#include "game/spell/Cheat.h"
 
 #include "gui/MenuPublic.h"
 #include "gui/Menu.h"
@@ -93,6 +96,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/BaseGraphicsTypes.h"
 #include "graphics/Draw.h"
+#include "graphics/DrawLine.h"
 #include "graphics/DrawDebug.h"
 #include "graphics/font/Font.h"
 #include "graphics/GraphicsModes.h"
@@ -134,6 +138,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "platform/CrashHandler.h"
 #include "platform/Flags.h"
 #include "platform/Platform.h"
+#include "platform/ProgramOptions.h"
 
 #include "scene/LinkedObject.h"
 #include "scene/CinematicSound.h"
@@ -176,7 +181,6 @@ extern long		COLLIDED_CLIMB_POLY;
 extern long LastSelectedIONum;
 extern float ARXTimeMenu;
 extern float ARXOldTimeMenu;
-extern long		REFUSE_GAME_RETURN;
 extern bool		PLAYER_MOUSELOOK_ON;
 extern bool bFadeInOut;
 extern 	bool bFade;			//active le fade
@@ -300,8 +304,6 @@ long REQUEST_SPEECH_SKIP= 0;
 long CURRENTLEVEL		= -1;
 long DONT_ERASE_PLAYER	= 0;
 static float LastFrameTicks = 0;
-long SPLASH_THINGS_STAGE= 0;
-long STARTED_A_GAME		= 0;
 long FASTmse			= 0;
 
 //-----------------------------------------------------------------------------
@@ -324,7 +326,6 @@ long LaunchDemo=0;
 bool FirstFrame=true;
 unsigned long WILLADDSPEECHTIME=0;
 unsigned long AimTime;
-static unsigned long SPLASH_START = 0;
 //-----------------------------------------------------------------------------
 Color3f FADECOLOR;
 
@@ -354,6 +355,31 @@ void ShowFPS();
 void ManageNONCombatModeAnimations();
 
 //-----------------------------------------------------------------------------
+
+class GameFlow {
+
+public:
+	enum Transition {
+		NoTransition,
+		FirstLogo,
+		SecondLogo,
+		LoadingScreen,
+		InGame
+	};
+
+	static void setTransition(Transition newTransition) {
+		s_currentTransition = newTransition;
+	}
+
+	static Transition getTransition() {
+		return s_currentTransition;
+	}
+
+private:
+	static Transition s_currentTransition;
+};
+
+GameFlow::Transition GameFlow::s_currentTransition = GameFlow::NoTransition;
 
 
 // Sends ON GAME_READY msg to all IOs
@@ -483,9 +509,10 @@ void InitializeDanae() {
 	
 	SetActiveCamera(&subj);
 	SetCameraDepth(subj, 2100.f);
-	memcpy(&bookcam, &subj, sizeof(EERIE_CAMERA));
-	memcpy(&raycam, &subj, sizeof(EERIE_CAMERA));
-	memcpy(&conversationcamera, &subj, sizeof(EERIE_CAMERA));
+
+	bookcam = subj;
+	raycam = subj;
+	conversationcamera = subj;
 	
 	raycam.clip = Rect(0, 0, 640, 640);
 	raycam.center = raycam.clip.center();
@@ -503,7 +530,9 @@ void InitializeDanae() {
 	if(LaunchDemo) {
 		LogInfo << "Launching splash screens.";
 		LaunchDemo = 0;
-		SPLASH_THINGS_STAGE = 11;
+		if(GameFlow::getTransition() == GameFlow::NoTransition) {
+			GameFlow::setTransition(GameFlow::FirstLogo);
+		}
 	} else if(!levelPath.empty())	{
 		LogInfo << "Launching Level " << levelPath;
 		if (FastSceneLoad(levelPath)) {
@@ -518,7 +547,7 @@ void InitializeDanae() {
 		}
 		EERIEPOLY_Compute_PolyIn();
 		LastLoadedScene = levelPath;
-		USE_PLAYERCOLLISIONS=0;
+		USE_PLAYERCOLLISIONS = false;
 	}
 }
 
@@ -1437,8 +1466,6 @@ static void PlayerLaunchArrow_Test(float aimratio, float poisonous, Vec3f * pos,
 
 	ARX_THROWN_OBJECT_Throw(/*source*/0, &position, &vect, &quat, velocity, damages, poisonous);
 }
-
-extern long sp_max;
 
 extern unsigned long LAST_JUMP_ENDTIME;
 
@@ -2512,7 +2539,7 @@ void ManageCombatModeAnimationsEND()
 				player.Interface |= INTER_NO_STRIKE;
 
 				ARX_EQUIPMENT_LaunchPlayerReadyWeapon();
-				WILLRETURNTOCOMBATMODE = 0;
+				WILLRETURNTOCOMBATMODE = false;
 			}
 		}
 	}
@@ -2562,70 +2589,49 @@ void ManageFade()
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 }
 
-extern long cur_mr;
-static TextureContainer * Mr_tc = NULL;
+void DrawImproveVisionInterface() {
 
-void CheckMr()
-{
-	if (cur_mr==3)
-	{
-		if (GRenderer && Mr_tc)
-		{
-			EERIEDrawBitmap(g_size.width()-(128.f*Xratio), 0.f, (float)128*Xratio, (float)128*Yratio,0.0001f,
-			                Mr_tc, Color::gray(0.5f + PULSATE * (1.0f/10)));
-		}
-		else
-		{
-			Mr_tc=TextureContainer::LoadUI("graph/particles/(fx)_mr");
-		}
-	}
-}
-void DrawImproveVisionInterface()
-{
-	if(ombrignon)
-	{
+	if(ombrignon) {
 		float mod = 0.6f + PULSATE * 0.35f;
 		EERIEDrawBitmap(g_size, 0.0001f, ombrignon, Color3f((0.5f+PULSATE*( 1.0f / 10 ))*mod,0.f,0.f).to<u8>());
 	}
 }
 
-void AddQuakeFX(float intensity,float duration,float period,long flags)
-{
-	if (QuakeFx.intensity>0.f)
-	{
-		QuakeFx.intensity+=intensity;
+void AddQuakeFX(float intensity,float duration,float period,long flags) {
 
-		QuakeFx.duration+=(unsigned long)duration;
-		QuakeFx.frequency+=period;
-		QuakeFx.frequency*=.5f;
-		QuakeFx.flags|=flags;
+	if(QuakeFx.intensity > 0.f) {
+		QuakeFx.intensity += intensity;
 
-		if (flags & 1)
+		QuakeFx.duration += (unsigned long)duration;
+		QuakeFx.frequency += period;
+		QuakeFx.frequency *= .5f;
+		QuakeFx.flags |= flags;
+
+		if(flags & 1)
 			ARX_SOUND_PlaySFX(SND_QUAKE, NULL, 1.0F - 0.5F * QuakeFx.intensity);
-	}
-	else
-	{
-		QuakeFx.intensity=intensity;
+	} else {
+		QuakeFx.intensity = intensity;
 
 		QuakeFx.start = checked_range_cast<unsigned long>(arxtime.get_frame_time());
 
-		QuakeFx.duration=(unsigned long)duration;
-		QuakeFx.frequency=period;
-		QuakeFx.flags=flags;
+		QuakeFx.duration = (unsigned long)duration;
+		QuakeFx.frequency = period;
+		QuakeFx.flags = flags;
 
-		if (flags & 1)
+		if(flags & 1)
 			ARX_SOUND_PlaySFX(SND_QUAKE, NULL, 1.0F - 0.5F * QuakeFx.intensity);
 	}
 
-	if (!(flags & 1))
-	{
-		if (QuakeFx.duration>1500) QuakeFx.duration=1500;
+	if(!(flags & 1)) {
+		if(QuakeFx.duration > 1500)
+			QuakeFx.duration = 1500;
 
-		if (QuakeFx.intensity>220) QuakeFx.intensity=220;
+		if(QuakeFx.intensity > 220)
+			QuakeFx.intensity = 220;
 	}
 }
 
-void ManageQuakeFX() {
+void ManageQuakeFX(EERIE_CAMERA * cam) {
 	if(QuakeFx.intensity>0.f) {
 		float tim=(float)arxtime.get_frame_time()-(float)QuakeFx.start;
 
@@ -2642,10 +2648,10 @@ void ManageQuakeFX() {
 
 		float truepower = periodicity * QuakeFx.intensity * itmod * 0.01f;
 		float halfpower = truepower * .5f;
-		ACTIVECAM->orgTrans.pos += randomVec(-halfpower, halfpower);
-		ACTIVECAM->angle.a += rnd() * truepower - halfpower;
-		ACTIVECAM->angle.g += rnd() * truepower - halfpower;
-		ACTIVECAM->angle.b += rnd() * truepower - halfpower;
+		cam->orgTrans.pos += randomVec(-halfpower, halfpower);
+		cam->angle.a += rnd() * truepower - halfpower;
+		cam->angle.g += rnd() * truepower - halfpower;
+		cam->angle.b += rnd() * truepower - halfpower;
 	}
 }
 
@@ -2664,124 +2670,122 @@ void DANAE_StartNewQuest()
 	DanaeLoadLevel(loadfrom);
 	FirstFrame=true;
 	START_NEW_QUEST=0;
-	STARTED_A_GAME=1;
-	BLOCK_PLAYER_CONTROLS = 0;
+	BLOCK_PLAYER_CONTROLS = false;
 	FADEDURATION=0;
 	FADEDIR=0;
 	player.Interface = INTER_LIFE_MANA | INTER_MINIBACK | INTER_MINIBOOK;
 }
 
-bool DANAE_ManageSplashThings() {
+LevelNumber LEVEL_TO_LOAD = LEVEL10;
+
+void loadLevel(u32 lvl) {
 	
-	const int SPLASH_DURATION = 3600;
-
-	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
-	
-	if(SPLASH_THINGS_STAGE > 10) {
-		
-		if(GInput->isAnyKeyPressed()) {
-			REFUSE_GAME_RETURN = 1;
-			FirstFrame=true;
-			SPLASH_THINGS_STAGE = 0;
-			ARXmenu.currentmode = AMCM_MAIN;
-			ARX_MENU_Launch();
-		}
-		
-		if(GInput->isKeyPressed(Keyboard::Key_Escape)) {
-			REFUSE_GAME_RETURN=1;
-			SPLASH_THINGS_STAGE = 14;
-		}
-		
-		if (SPLASH_THINGS_STAGE==11)
-		{
-			
-			if (SPLASH_START==0) //firsttime
-			{
-				if(!ARX_INTERFACE_InitFISHTANK())
-				{
-					SPLASH_THINGS_STAGE++;
-					return true;
-				}
-
-				SPLASH_START = arxtime.get_updated_ul();
-			}
-
-			ARX_INTERFACE_ShowFISHTANK();
-
-			unsigned long tim = arxtime.get_updated_ul();
-			float pos=(float)tim-(float)SPLASH_START;
-
-			if (pos>SPLASH_DURATION)
-			{
-				SPLASH_START=0;
-				SPLASH_THINGS_STAGE++;
-			}
-
-			GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
-			return true;
-			
-		}
-
-		if (SPLASH_THINGS_STAGE==12)
-		{
-			if (SPLASH_START==0) //firsttime
-			{
-				if(!ARX_INTERFACE_InitARKANE())
-				{
-					SPLASH_THINGS_STAGE++;
-					return true;
-				}
-
-				SPLASH_START = arxtime.get_updated_ul();
-				ARX_SOUND_PlayInterface(SND_PLAYER_HEART_BEAT);
-			}
-
-			ARX_INTERFACE_ShowARKANE();
-			unsigned long tim = arxtime.get_updated_ul();
-			float pos=(float)tim-(float)SPLASH_START;
-
-			if (pos>SPLASH_DURATION)
-			{
-				SPLASH_START=0;
-				SPLASH_THINGS_STAGE++;
-			}
-
-			GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
-			return true;
-		}
-
-		if (SPLASH_THINGS_STAGE==13)
-		{
-			ARX_INTERFACE_KillFISHTANK();
-			ARX_INTERFACE_KillARKANE();
-			char loadfrom[256];
-
-			REFUSE_GAME_RETURN=1;
-			sprintf(loadfrom,"graph/levels/level10/level10.dlf");
-			OLD_PROGRESS_BAR_COUNT=PROGRESS_BAR_COUNT=0;
-			PROGRESS_BAR_TOTAL = 108;
-			LoadLevelScreen(10);	
-
-			DanaeLoadLevel(loadfrom);
-			FirstFrame=true;
-			SPLASH_THINGS_STAGE=0;
-
-			GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
-			return true;
-			
-		}
-
-		if (SPLASH_THINGS_STAGE > 13)
-		{
-			FirstFrame=true;
-			SPLASH_THINGS_STAGE=0;
-
-			GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
-			return true;
+	if(lvl < NOLEVEL) {
+		if(GameFlow::getTransition() != GameFlow::LoadingScreen) {
+			LEVEL_TO_LOAD = static_cast<LevelNumber>(lvl);
+			GameFlow::setTransition(GameFlow::LoadingScreen);
 		}
 	}
+}
+ARX_PROGRAM_OPTION("loadlevel", "", "Load a specific level", &loadLevel, "LEVELID");
 
-	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
+extern long LOADQUEST_SLOT;
+void loadSlot(u32 saveSlot) {
+
+	LOADQUEST_SLOT = saveSlot;
+	GameFlow::setTransition(GameFlow::InGame);
+}
+ARX_PROGRAM_OPTION("loadslot", "", "Load a specific savegame slot", &loadSlot, "SAVESLOT");
+
+void skipLogo() {
+	loadLevel(LEVEL10);
+}
+ARX_PROGRAM_OPTION("skiplogo", "", "Skip logos at startup", &skipLogo);
+
+bool HandleGameFlowTransitions() {
+	
+	const int TRANSITION_DURATION = 3600;
+	static unsigned long TRANSITION_START = 0;
+
+	if(GameFlow::getTransition() == GameFlow::NoTransition) {
+		return false;
+	}
+
+	if(GInput->isAnyKeyPressed()) {
+		ARXmenu.currentmode = AMCM_MAIN;
+		ARX_MENU_Launch(false);
+		GameFlow::setTransition(GameFlow::InGame);
+	}
+		
+	if(GameFlow::getTransition() == GameFlow::FirstLogo) {
+		//firsttime
+		if(TRANSITION_START == 0) {
+			if(!ARX_INTERFACE_InitFISHTANK()) {
+				GameFlow::setTransition(GameFlow::SecondLogo);
+				return true;
+			}
+
+			TRANSITION_START = arxtime.get_updated_ul();
+		}
+
+		ARX_INTERFACE_ShowFISHTANK();
+
+		unsigned long tim = arxtime.get_updated_ul();
+		float pos = (float)tim - (float)TRANSITION_START;
+
+		if(pos > TRANSITION_DURATION) {
+			TRANSITION_START = 0;
+			GameFlow::setTransition(GameFlow::SecondLogo);
+		}
+
+		return true;			
+	}
+
+	if(GameFlow::getTransition() == GameFlow::SecondLogo) {
+		//firsttime
+		if(TRANSITION_START == 0) {
+			if(!ARX_INTERFACE_InitARKANE()) {
+				GameFlow::setTransition(GameFlow::LoadingScreen);
+				return true;
+			}
+
+			TRANSITION_START = arxtime.get_updated_ul();
+			ARX_SOUND_PlayInterface(SND_PLAYER_HEART_BEAT);
+		}
+
+		ARX_INTERFACE_ShowARKANE();
+		unsigned long tim = arxtime.get_updated_ul();
+		float pos = (float)tim - (float)TRANSITION_START;
+
+		if(pos > TRANSITION_DURATION) {
+			TRANSITION_START = 0;
+			GameFlow::setTransition(GameFlow::LoadingScreen);
+		}
+
+		return true;
+	}
+
+	if(GameFlow::getTransition() == GameFlow::LoadingScreen) {
+		ARX_INTERFACE_KillFISHTANK();
+		ARX_INTERFACE_KillARKANE();
+		char loadfrom[256];
+
+		sprintf(loadfrom, "graph/levels/level%d/level%d.dlf", LEVEL_TO_LOAD, LEVEL_TO_LOAD);
+		OLD_PROGRESS_BAR_COUNT=PROGRESS_BAR_COUNT=0;
+		PROGRESS_BAR_TOTAL = 108;
+		LoadLevelScreen(LEVEL_TO_LOAD);
+
+		DanaeLoadLevel(loadfrom);
+		GameFlow::setTransition(GameFlow::InGame);
+		return true;
+	}
+
+	if(GameFlow::getTransition() == GameFlow::InGame) {
+		GameFlow::setTransition(GameFlow::NoTransition);
+		FirstFrame = true;
+		return true;
+	}
+
 	return false;
 }
 
@@ -2864,7 +2868,7 @@ void DANAE_Manage_Cinematic() {
 		}
 		
 		if(bWasBlocked) {
-			BLOCK_PLAYER_CONTROLS =1;
+			BLOCK_PLAYER_CONTROLS = true;
 		}
 		
 		ARX_SPEECH_Reset();
@@ -2930,13 +2934,13 @@ void ShowTestText()
 	mainApp->outputText(0, 16, arx_version);
 
 	sprintf(tex,"Level : %s", LastLoadedScene.string().c_str());
-	mainApp->outputText( 0, 32, tex );
+	hFontDebug->draw(0, 32, tex, Color::white);
 
 	sprintf(tex,"Position : %5.0f %5.0f %5.0f",player.pos.x,player.pos.y,player.pos.z);
-	mainApp->outputText( 0, 48, tex );
+	hFontDebug->draw(0, 48, tex, Color::white);
 
 	sprintf( tex,"Last Failed Sequence : %s",LAST_FAILED_SEQUENCE.c_str() );
-	mainApp->outputText( 0, 64, tex );
+	hFontDebug->draw(0, 64, tex, Color::white);
 }
 
 extern float CURRENT_PLAYER_COLOR;
@@ -2963,7 +2967,7 @@ void ShowInfoText() {
 	
 	sprintf(tex, "%ld Prims %4.02f fps ( %3.02f - %3.02f ) [%3.0fms]",
 			EERIEDrawnPolys, FPS, fps2min, fps2, framedelay);
-	mainApp->outputText(70, 32, tex);
+	hFontDebug->draw(70, 32, tex, Color::white);
 
 	float poss = -666.66f;
 	EERIEPOLY * ep = CheckInPoly(player.pos.x, player.pos.y, player.pos.z);
@@ -2976,24 +2980,24 @@ void ShowInfoText() {
 			player.pos.x, player.pos.y + player.size.y, poss, player.pos.z,
 			player.angle.a, player.angle.b,
 			ACTIVECAM->focal);
-	mainApp->outputText(70, 48, tex);
+	hFontDebug->draw(70, 48, tex, Color::white);
 
 	sprintf(tex, "AnchorPos x:%6.0f y:%6.0f z:%6.0f TIME %lds Part %ld - %d",
 			player.pos.x - Mscenepos.x,
 			player.pos.y + player.size.y - Mscenepos.y,
 			player.pos.z - Mscenepos.z,
 			GAT, getParticleCount(), player.doingmagic);
-	mainApp->outputText(70, 64, tex);
+	hFontDebug->draw(70, 64, tex, Color::white);
 
 	if(player.onfirmground == 0)
-		mainApp->outputText(200, 280, "OFFGRND");
+		hFontDebug->draw(200, 280, "OFFGRND", Color::white);
 
 	sprintf(tex, "Jump %f cinema %f %d %d - Pathfind %ld(%s)",
 			player.jumplastposition, CINEMA_DECAL,
 			DANAEMouse.x, DANAEMouse.y,
 			EERIE_PATHFINDER_Get_Queued_Number(),
 			PATHFINDER_WORKING ? "Working" : "Idled");
-	mainApp->outputText(70, 80, tex);
+	hFontDebug->draw(70, 80, tex, Color::white);
 
 	Entity * io=ARX_SCRIPT_Get_IO_Max_Events();
 
@@ -3005,13 +3009,13 @@ void ShowInfoText() {
 				ScriptEvent::totalCount, io->long_name().c_str(),
 				io->stat_count, ARX_SCRIPT_CountTimers());
 	}
-	mainApp->outputText(70, 94, tex);
+	hFontDebug->draw(70, 94, tex, Color::white);
 
 	io = ARX_SCRIPT_Get_IO_Max_Events_Sent();
 
 	if(io) {
 		sprintf(tex, "Max SENDER %s %d)", io->long_name().c_str(), io->stat_sent);
-		mainApp->outputText(70, 114, tex);
+		hFontDebug->draw(70, 114, tex, Color::white);
 	}
 
 	float slope = 0.f;
@@ -3022,9 +3026,7 @@ void ShowInfoText() {
 
 	sprintf(tex, "Velocity %3.0f %3.0f %3.0f Slope %3.3f",
 			player.physics.velocity.x, player.physics.velocity.y, player.physics.velocity.z, slope);
-	mainApp->outputText(70, 128, tex);
-
-	mainApp->outputText(100, 208, tex);
+	hFontDebug->draw(70, 128, tex, Color::white);
 
 #ifdef BUILD_EDITOR
 	if(ValidIONum(LastSelectedIONum)) {
@@ -3037,11 +3039,11 @@ void ShowInfoText() {
 						io->move.x, io->move.y, io->move.z,
 						io->_npcdata->moveproblem, io->_npcdata->pathfind.listpos, io->_npcdata->pathfind.listnb,
 						io->_npcdata->pathfind.truetarget, (long)io->_npcdata->behavior);
-				mainApp->outputText(170, 420, tex);
+				hFontDebug->draw(170, 420, tex, Color::white);
 
 				sprintf(tex, "Life %4.0f/%4.0f Mana %4.0f/%4.0f Poisoned %3.1f Hunger %4.1f",
 						player.life, player.maxlife, player.mana, player.maxmana, player.poison, player.hunger);
-				mainApp->outputText(170, 320, tex);
+				hFontDebug->draw(170, 320, tex, Color::white);
 			} else {
 				if(io->ioflags & IO_NPC) {
 					sprintf(tex, "%4.0f %4.0f %4.0f - %4.0f %4.0f %4.0f -- %3.0f %d/%ld targ %ld beh %ld",
@@ -3049,35 +3051,35 @@ void ShowInfoText() {
 							io->move.x, io->move.y, io->move.z,
 							io->_npcdata->moveproblem, io->_npcdata->pathfind.listpos, io->_npcdata->pathfind.listnb,
 							io->_npcdata->pathfind.truetarget, (long)io->_npcdata->behavior);
-					mainApp->outputText(170, 420, tex);
+					hFontDebug->draw(170, 420, tex, Color::white);
 
 					sprintf(tex, "Life %4.0f/%4.0f Mana %4.0f/%4.0f Poisoned %3.1f",
 							io->_npcdata->life, io->_npcdata->maxlife, io->_npcdata->mana,
 							io->_npcdata->maxmana, io->_npcdata->poisonned);
-					mainApp->outputText(170, 320, tex);
+					hFontDebug->draw(170, 320, tex, Color::white);
 
 					sprintf(tex, "AC %3.0f Absorb %3.0f",
 							ARX_INTERACTIVE_GetArmorClass(io), io->_npcdata->absorb);
-					mainApp->outputText(170, 335, tex);
+					hFontDebug->draw(170, 335, tex, Color::white);
 
 					if(io->_npcdata->pathfind.flags & PATHFIND_ALWAYS) {
-						mainApp->outputText(170, 360, "PF_ALWAYS");
+						hFontDebug->draw(170, 360, "PF_ALWAYS", Color::white);
 					} else {
 						sprintf(tex, "PF_%ld", (long)io->_npcdata->pathfind.flags);
-						mainApp->outputText(170, 360, tex);
+						hFontDebug->draw(170, 360, tex, Color::white);
 					}
 				}
 
 				if(io->ioflags & IO_FIX) {
 					sprintf(tex, "Durability %4.0f/%4.0f Poisonous %3d count %d",
 							io->durability, io->max_durability, io->poisonous, io->poisonous_count);
-					mainApp->outputText(170, 320, tex);
+					hFontDebug->draw(170, 320, tex, Color::white);
 				}
 
 				if(io->ioflags & IO_ITEM) {
 					sprintf(tex, "Durability %4.0f/%4.0f Poisonous %3d count %d",
 							io->durability, io->max_durability, io->poisonous, io->poisonous_count);
-					mainApp->outputText(170, 320, tex);
+					hFontDebug->draw(170, 320, tex, Color::white);
 				}
 			}
 		}
@@ -3086,33 +3088,107 @@ void ShowInfoText() {
 
 	long zap = IsAnyPolyThere(player.pos.x,player.pos.z);
 	sprintf(tex, "POLY %ld", zap);
-	mainApp->outputText(270, 220, tex);
+	hFontDebug->draw(270, 220, tex, Color::white);
 
 	sprintf(tex, "COLOR %3.0f Stealth %3.0f",
 			CURRENT_PLAYER_COLOR, GetPlayerStealth());
-	mainApp->outputText(270, 200, tex);
+	hFontDebug->draw(270, 200, tex, Color::white);
 
 	ARX_SCRIPT_Init_Event_Stats();
 }
 
+void ShowFpsGraph();
 void ShowFPS() {
+
 	// TODO: make sure when adding text that it can fit here
 	// - this is extremely naughty, should use a std::string
 	char tex[32];
-	sprintf(tex, "%.02f fps", (float)FPS);
+	sprintf(tex, "%.02f fps", FPS);
 
 	// top left
 	mainApp->outputTextGrid(0.0f, 0.0f, tex);
 
 	// bottom right
 	//mainApp->outputTextGrid(-0.5f, -1, tex);
+
+	ShowFpsGraph();
 }
 
 void ShowDebugToggles() {
 	for(size_t i = 0; i < ARRAY_SIZE(g_debugToggles); i++) {
 		std::stringstream textStream;
 		textStream << "Toggle " << i << ": " << (g_debugToggles[i] ? "true" : "false");
-		mainApp->outputTextGrid(0.f, i, textStream.str());
+		hFontDebug->draw(0.f, i * hFontDebug->getLineHeight(), textStream.str(), Color::white);
+	}
+}
+
+void ShowFpsGraph() {
+
+	GRenderer->ResetTexture(0);
+	
+	static std::deque<float> lastFPSArray;
+	lastFPSArray.push_front(1000 / arxtime.get_frame_delay());
+
+	Vec2i windowSize = mainApp->getWindow()->getSize();
+	if(lastFPSArray.size() == size_t(windowSize.x))
+	{
+		lastFPSArray.pop_back();
+	}
+	
+	float avg = 0;
+	float worst = lastFPSArray[0];
+
+	std::vector<TexturedVertex> vertices;
+	vertices.resize(lastFPSArray.size());
+
+	const float SCALE_Y = 2.0f;
+
+	for(size_t i = 0; i < lastFPSArray.size(); ++i)
+	{
+		float time = lastFPSArray[i];
+
+		avg += lastFPSArray[i];
+		worst = std::min(worst, lastFPSArray[i]);
+
+		vertices[i].color = 0xFFFFFFFF;
+		vertices[i].p.x = i;
+		vertices[i].p.y = windowSize.y - (time * SCALE_Y);
+		vertices[i].p.z = 1.0f;
+		vertices[i].rhw = 1.0f;
+	}
+
+	EERIEDRAWPRIM(Renderer::LineStrip, &vertices[0], vertices.size());
+
+	{
+		avg /= lastFPSArray.size();
+		float avgPos = windowSize.y - (avg * SCALE_Y);
+	
+		std::stringstream ss;
+		ss << "Average: " << std::fixed << std::setprecision(2) << avg << " FPS";
+	
+		Vector2<int> strPos = Vector2<int>(windowSize.x - hFontDebug->getTextSize(ss.str()).x - 5,avgPos - hFontDebug->getLineHeight());
+		hFontDebug->draw(strPos, ss.str(), Color::blue);
+		EERIEDraw2DLine(0, avgPos,  windowSize.x, avgPos, 1.0f, Color::blue);
+	}
+
+	{
+		float worstPos = windowSize.y - (worst * SCALE_Y);
+
+		std::stringstream ss;
+		ss << "Worst: " << std::fixed << std::setprecision(2) << worst << " FPS";
+		
+		Vector2<int> strPos = Vector2<int>(windowSize.x - hFontDebug->getTextSize(ss.str()).x - 5, worstPos - hFontDebug->getLineHeight());
+		hFontDebug->draw(strPos, ss.str(), Color::red);
+		EERIEDraw2DLine(0, worstPos,  windowSize.x, worstPos, 1.0f, Color::red);
+	}
+
+	{
+		float currentPos = windowSize.y - (lastFPSArray[0] * SCALE_Y);
+
+		std::stringstream ss;
+		ss << "Current: " << std::fixed << std::setprecision(2) << lastFPSArray[0] << " FPS";
+		Vector2<int> strPos = Vector2<int>(5, currentPos - hFontDebug->getLineHeight());
+		hFontDebug->draw(strPos, ss.str(), Color::white);
 	}
 }
 

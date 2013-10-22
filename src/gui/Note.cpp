@@ -236,7 +236,7 @@ void Note::render() {
 	
 	float z = 0.000001f;
 	
-	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
+	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapClamp);
 	
 	if(background) {
 		EERIEDrawBitmap2(_area.left, _area.top, _area.width(), _area.height(), z, background,

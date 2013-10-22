@@ -553,8 +553,8 @@ static void camEE_RTP(TexturedVertex * in, TexturedVertex * out, EERIE_CAMERA * 
 		out->rhw = 1.f / out->p.z;
 	}
 
-	tout.rhw = cam->orgTrans.use_focal * out->rhw;
-	out->p.z = out->p.z * (1.f / cam->Zdiv);
+	tout.rhw = (cam->focal * Xratio) * out->rhw;
+	out->p.z = out->p.z * (1.f / (cam->cdepth * 1.2f));
 	out->p.x = cam->orgTrans.mod.x + (tout.p.x * tout.rhw);
 	out->p.y = cam->orgTrans.mod.y + (tout.p.y * tout.rhw) ;
 }
@@ -691,7 +691,6 @@ int BackFaceCull2D(TexturedVertex * tv) {
 extern EERIE_CAMERA raycam;
 
 static void SP_PrepareCamera(EERIE_CAMERA * cam) {
-	cam->orgTrans.use_focal = cam->focal * Xratio;
 	cam->orgTrans.updateFromAngle(cam->angle);
 	cam->orgTrans.mod = (cam->center + cam->clip.origin).to<float>();
 }
@@ -1032,22 +1031,24 @@ bool GetRoomCenter(long room_num, Vec3f * center) {
 	if(!portals || room_num > portals->nb_rooms || portals->room[room_num].nb_polys <= 0)
 		return false;
 	
+	EERIE_ROOM_DATA & room = portals->room[room_num];
+
 	EERIE_3D_BBOX bbox;
 	bbox.min = Vec3f::repeat(99999999.f);
 	bbox.max = Vec3f::repeat(-99999999.f);
-	
-	for(long  lll = 0; lll < portals->room[room_num].nb_polys; lll++) {
+
+	for(long lll = 0; lll < room.nb_polys; lll++) {
 		FAST_BKG_DATA * feg;
-		feg = &ACTIVEBKG->fastdata[portals->room[room_num].epdata[lll].px][portals->room[room_num].epdata[lll].py];
-		EERIEPOLY * ep = &feg->polydata[portals->room[room_num].epdata[lll].idx];
+		feg = &ACTIVEBKG->fastdata[room.epdata[lll].px][room.epdata[lll].py];
+		EERIEPOLY * ep = &feg->polydata[room.epdata[lll].idx];
 		bbox.min = componentwise_min(bbox.min, ep->center);
 		bbox.max = componentwise_max(bbox.max, ep->center);
 	}
 	
 	*center = (bbox.max + bbox.min) * .5f;
 	
-	portals->room[room_num].center = *center;
-	portals->room[room_num].radius = fdist(*center, bbox.max);
+	room.center = *center;
+	room.radius = fdist(*center, bbox.max);
 	return true;
 }
 
@@ -1508,7 +1509,6 @@ void PrepareCamera(EERIE_CAMERA * cam)
 
 void SetCameraDepth(EERIE_CAMERA &cam, float depth) {
 	cam.cdepth = depth;
-	cam.Zdiv = depth * 1.2f;
 }
 
 long CountBkgVertex() {

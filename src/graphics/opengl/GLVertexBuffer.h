@@ -37,40 +37,11 @@ enum GLArrayClientState {
 	GL_SMY_VERTEX3
 };
 
-static GLArrayClientState glArrayClientState = GL_NoArray;
-static const void * glArrayClientStateRef = NULL;
-static int glArrayClientStateTexCount = 0;
-
-static void setVertexArrayTexCoord(int index, const void * coord, size_t stride) {
-	
-	glClientActiveTexture(GL_TEXTURE0 + index);
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	glTexCoordPointer(2, GL_FLOAT, stride, coord);
-	
-}
-
-static bool switchVertexArray(GLArrayClientState type, const void * ref, int texcount) {
-	
-	if(glArrayClientState == type && glArrayClientStateRef == ref) {
-		return false;
-	}
-	
-	if(glArrayClientState != type) {
-		for(int i = texcount; i < glArrayClientStateTexCount; i++) {
-			glClientActiveTexture(GL_TEXTURE0 + i);
-			glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-		}
-		glArrayClientStateTexCount = texcount;
-	}
-	
-	glArrayClientState = type;
-	glArrayClientStateRef = ref;
-	
-	return true;
-}
+void setVertexArrayTexCoord(int index, const void * coord, size_t stride);
+bool switchVertexArray(GLArrayClientState type, const void * ref, int texcount);
 
 template <>
-void setVertexArray(const TexturedVertex * vertices, const void * ref) {
+inline void setVertexArray(const TexturedVertex * vertices, const void * ref) {
 	
 	if(!switchVertexArray(GL_TexturedVertex, ref, 1)) {
 		return;
@@ -89,7 +60,7 @@ void setVertexArray(const TexturedVertex * vertices, const void * ref) {
 }
 
 template <>
-void setVertexArray(const SMY_VERTEX * vertices, const void * ref) {
+inline void setVertexArray(const SMY_VERTEX * vertices, const void * ref) {
 	
 	if(!switchVertexArray(GL_SMY_VERTEX, ref, 1)) {
 		return;
@@ -107,7 +78,7 @@ void setVertexArray(const SMY_VERTEX * vertices, const void * ref) {
 }
 
 template <>
-void setVertexArray(const SMY_VERTEX3 * vertices, const void * ref) {
+inline void setVertexArray(const SMY_VERTEX3 * vertices, const void * ref) {
 	
 	if(!switchVertexArray(GL_SMY_VERTEX3, ref, 3)) {
 		return;
@@ -134,8 +105,8 @@ static const GLenum arxToGlBufferUsage[] = {
 
 extern const GLenum arxToGlPrimitiveType[];
 
-std::vector<GLushort> glShortIndexBuffer;
-std::vector<GLuint> glIntIndexBuffer;
+extern std::vector<GLushort> glShortIndexBuffer;
+extern std::vector<GLuint> glIntIndexBuffer;
 
 template <class Vertex>
 class GLVertexBuffer : public VertexBuffer<Vertex> {
@@ -323,6 +294,7 @@ public:
 	}
 	
 	~GLVertexBuffer() {
+		
 		glDeleteBuffers(1, &buffer);
 		CHECK_GL;
 	};

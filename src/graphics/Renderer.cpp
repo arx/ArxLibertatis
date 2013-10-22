@@ -32,19 +32,19 @@ TextureStage * Renderer::GetTextureStage(unsigned int textureStage) {
 }
 
 void Renderer::ResetTexture(unsigned int textureStage) {
-	GetTextureStage(textureStage)->ResetTexture();
+	GetTextureStage(textureStage)->resetTexture();
 }
 
 void Renderer::SetTexture(unsigned int textureStage, Texture * pTexture) {
-	GetTextureStage(textureStage)->SetTexture(pTexture);
+	GetTextureStage(textureStage)->setTexture(pTexture);
 }
 
 void Renderer::SetTexture(unsigned int textureStage, TextureContainer * pTextureContainer) {
 	
 	if(pTextureContainer && pTextureContainer->m_pTexture) {
-		GetTextureStage(textureStage)->SetTexture(pTextureContainer->m_pTexture);
+		GetTextureStage(textureStage)->setTexture(pTextureContainer->m_pTexture);
 	} else {
-		GetTextureStage(textureStage)->ResetTexture();
+		GetTextureStage(textureStage)->resetTexture();
 	}
 }
 

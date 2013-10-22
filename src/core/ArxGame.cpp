@@ -74,6 +74,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/Player.h"
 #include "game/Spells.h"
 #include "game/spell/FlyingEye.h"
+#include "game/spell/Cheat.h"
 
 #include "graphics/BaseGraphicsTypes.h"
 #include "graphics/Color.h"
@@ -131,9 +132,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "Configure.h"
 #include "core/URLConstants.h"
 
-#ifdef ARX_HAVE_D3D9
-#include "window/D3D9Window.h"
-#endif
 #ifdef ARX_HAVE_SDL
 #include "window/SDLWindow.h"
 #endif
@@ -156,12 +154,9 @@ extern long PLAY_LOADED_CINEMATIC;
 extern long START_NEW_QUEST;
 long LOADQUEST_SLOT = -1; // OH NO, ANOTHER GLOBAL! - TEMP PATCH TO CLEAN CODE FLOW
 extern long CHANGE_LEVEL_ICON;
-extern long REFUSE_GAME_RETURN;
 extern bool PLAYER_MOUSELOOK_ON;
 extern bool TRUE_PLAYER_MOUSELOOK_ON;
 extern long PLAYER_PARALYSED;
-extern long cur_mr;
-extern long cur_rf;
 extern long DeadTime;
 extern int iTimeToDrawD7;
 extern long LaunchDemo;
@@ -170,7 +165,6 @@ extern long CURRENT_BASE_FOCAL;
 extern float BOW_FOCAL;
 
 extern float GLOBAL_SLOWDOWN;
-extern float sp_max_start;
 extern float LAST_FADEVALUE;
 
 extern float PROGRESS_BAR_TOTAL;
@@ -208,11 +202,11 @@ bool ARX_CONVERSATION = false;
 long ARX_CONVERSATION_MODE=-1;
 long ARX_CONVERSATION_LASTIS=-1;
 static bool LAST_CONVERSATION = 0;
-long SHOW_INGAME_MINIMAP= 1;
+bool SHOW_INGAME_MINIMAP = true;
 
 float PLAYER_ARMS_FOCAL = 350.f;
 
-unsigned char ARX_FLARES_Block=1;
+bool ARX_FLARES_Block = true;
 
 Vec3f LASTCAMPOS;
 Anglef LASTCAMANGLE;
@@ -357,16 +351,6 @@ bool ArxGame::initWindow() {
 		if(!m_MainWindow && first == (autoFramework || config.window.framework == "SDL")) {
 			matched = true;
 			RenderWindow * window = new SDLWindow;
-			if(!initWindow(window)) {
-				delete window;
-			}
-		}
-		#endif
-		
-		#ifdef ARX_HAVE_D3D9
-		if(!m_MainWindow && first == (autoFramework || config.window.framework == "D3D9")) {
-			matched = true;
-			RenderWindow * window = new D3D9Window;
 			if(!initWindow(window)) {
 				delete window;
 			}
@@ -614,7 +598,7 @@ void ArxGame::doFrame() {
 	}
 
 	// Manages Splash Screens if needed
-	if(DANAE_ManageSplashThings())
+	if(HandleGameFlowTransitions())
 		return;
 
 	// Clicked on New Quest ? (TODO:need certainly to be moved somewhere else...)
@@ -1162,7 +1146,7 @@ void ArxGame::handlePlayerDeath() {
 		subj.angle.b=MAKEANGLE(conversationcamera.angle.b-180.f);
 		subj.angle.g = 0;
 		EXTERNALVIEW = true;
-		BLOCK_PLAYER_CONTROLS=1;
+		BLOCK_PLAYER_CONTROLS = true;
 	}
 }
 
@@ -1206,21 +1190,21 @@ void ArxGame::updateActiveCamera() {
 			MasterCamera.exist &= ~2;
 			MasterCamera.exist |= 1;
 			MasterCamera.io=MasterCamera.want_io;
-			MasterCamera.aup=MasterCamera.want_aup;
-			MasterCamera.cam=MasterCamera.want_cam;
 		}
 
-		if(MasterCamera.cam->focal < 100.f)
-			MasterCamera.cam->focal = 350.f;
+		EERIE_CAMERA * cam = &MasterCamera.io->_camdata->cam;
 
-		SetActiveCamera(MasterCamera.cam);
+		if(cam->focal < 100.f)
+			cam->focal = 350.f;
+
+		SetActiveCamera(cam);
 		EXTERNALVIEW = true;
 	} else {
 		// Set active camera for this viewport
 		SetActiveCamera(&subj);
 	}
 
-	ManageQuakeFX();
+	ManageQuakeFX(ACTIVECAM);
 
 	// Prepare ActiveCamera
 	PrepareCamera(ACTIVECAM);
@@ -1310,7 +1294,7 @@ void ArxGame::renderMenu() {
 	ARX_Menu_Render();
 
 	GRenderer->SetRenderState(Renderer::Fog, true);
-	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat); // << NEEDED?
+	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat); // << NEEDED?
 }
 
 bool ArxGame::isInCinematic() const {
@@ -1388,7 +1372,7 @@ void ArxGame::updateLevel() {
 	if(entities.player() && entities.player()->animlayer[0].cur_anim) {
 		ManageNONCombatModeAnimations();
 
-		AnimatedEntityUpdate(entities.player());
+		AnimatedEntityUpdate(entities.player(), Original_framedelay);
 
 		if((player.Interface & INTER_COMBATMODE) && entities.player()->animlayer[1].cur_anim)
 			ManageCombatModeAnimations();
@@ -1413,7 +1397,7 @@ void ArxGame::updateLevel() {
 
 	updateActiveCamera();
 
-	ARX_GLOBALMODS_Apply(); //TODO this method changes the renderer fog state
+	ARX_GLOBALMODS_Apply();
 
 	// Set Listener Position
 	{
@@ -1455,14 +1439,14 @@ void ArxGame::updateLevel() {
 	// Checks Magic Flares Drawing
 	if(!PLAYER_PARALYSED) {
 		if(EERIEMouseButton & 1) {
-			if(ARX_FLARES_Block == 0) {
+			if(!ARX_FLARES_Block) {
 				ARX_SPELLS_AddPoint(DANAEMouse);
 			} else {
 				CurrPoint = 0;
-				ARX_FLARES_Block = 0;
+				ARX_FLARES_Block = false;
 			}
-		} else if(ARX_FLARES_Block == 0) {
-			ARX_FLARES_Block = 1;
+		} else if(!ARX_FLARES_Block) {
+			ARX_FLARES_Block = true;
 		}
 	}
 
@@ -1471,6 +1455,16 @@ void ArxGame::updateLevel() {
 	ARX_SPELLS_UpdateSymbolDraw();
 
 	ManageTorch();
+
+	if(!Project.improve) {
+		if(subj.focal < BASE_FOCAL) {
+			static const float INC_FOCAL = 75.0f;
+			subj.focal += INC_FOCAL;
+		}
+
+		if(subj.focal > BASE_FOCAL)
+			subj.focal = BASE_FOCAL;
+	}
 
 	ARX_INTERACTIVE_DestroyIOdelayedExecute();
 }
@@ -1503,7 +1497,16 @@ void ArxGame::renderLevel() {
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 
-	//TODO Set renderer fog parameters here
+	float fogEnd = fZFogEnd;
+	float fogStart = fZFogStart;
+
+	if(GRenderer->isFogInEyeCoordinates()) {
+		fogEnd *= ACTIVECAM->cdepth;
+		fogStart *= ACTIVECAM->cdepth;
+	}
+
+	GRenderer->SetFogParams(Renderer::FogLinear, fogStart, fogEnd);
+	GRenderer->SetFogColor(ulBKGColor);
 
 	// NOW DRAW the player (Really...)
 	if(entities.player() && entities.player()->animlayer[0].cur_anim) {
@@ -1554,14 +1557,6 @@ void ArxGame::renderLevel() {
 
 	if(Project.improve) {
 		DrawImproveVisionInterface();
-	} else {
-		if(subj.focal < BASE_FOCAL) {
-			static const float INC_FOCAL = 75.0f;
-			subj.focal += INC_FOCAL;
-		}
-
-		if(subj.focal > BASE_FOCAL)
-			subj.focal = BASE_FOCAL;
 	}
 
 	if(eyeball.exist != 0)
@@ -1607,7 +1602,7 @@ void ArxGame::renderLevel() {
 	// Draw game interface if needed
 	if(ARXmenu.currentmode == AMCM_OFF && !CINEMASCOPE) {
 	
-		GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
+		GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapClamp);
 		GRenderer->SetRenderState(Renderer::DepthTest, false);
 		
 		ARX_INTERFACE_NoteManage();
@@ -1621,7 +1616,7 @@ void ArxGame::renderLevel() {
 		GRenderer->SetRenderState(Renderer::DepthTest, true);
 	}
 
-	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
+	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	PopAllTriangleList();
@@ -1638,7 +1633,7 @@ void ArxGame::renderLevel() {
 	ARX_SPEECH_Check();
 	ARX_SPEECH_Update();
 
-	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
+	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
 
 	if(pTextManage && !pTextManage->Empty()) {
 		pTextManage->Update(framedelay);
@@ -1701,7 +1696,7 @@ void ArxGame::render() {
 	subj.orgTrans.mod = subj.center.to<float>();
 
 	// Finally computes current focal
-	BASE_FOCAL=(float)CURRENT_BASE_FOCAL+(BOW_FOCAL*( 1.0f / 4 ));
+	BASE_FOCAL = (float)CURRENT_BASE_FOCAL + (BOW_FOCAL * (1.f/4));
 
 	// SPECIFIC code for Snapshot MODE... to insure constant capture framerate
 
@@ -1712,38 +1707,38 @@ void ArxGame::render() {
 	{
 		ARX_MOUSE_OVER = 0;
 
-		if(ARXmenu.currentmode == AMCM_OFF) // Playing Game
-		{
+		if(ARXmenu.currentmode == AMCM_OFF) { // Playing Game
 			// Checks Clicks in Book Interface
-			if (ARX_INTERFACE_MouseInBook())
-			{
-				ARX_MOUSE_OVER|=ARX_MOUSE_OVER_BOOK;
-				LASTBOOKBUTTON=BOOKBUTTON;
-				BOOKBUTTON=EERIEMouseButton;
+			if(ARX_INTERFACE_MouseInBook()) {
+				ARX_MOUSE_OVER |= ARX_MOUSE_OVER_BOOK;
+				LASTBOOKBUTTON = BOOKBUTTON;
+				BOOKBUTTON = EERIEMouseButton;
 
-				if ( ((EERIEMouseButton & 1) && !(LastMouseClick & 1) )
-					|| ((EERIEMouseButton & 2) && !(LastMouseClick & 2) ) )
-				{
+				if(((EERIEMouseButton & 1) && !(LastMouseClick & 1))
+				   || ((EERIEMouseButton & 2) && !(LastMouseClick & 2))
+				) {
 					bookclick = DANAEMouse;
 				}
+			} else if(InSecondaryInventoryPos(&DANAEMouse)) {
+				ARX_MOUSE_OVER |= ARX_MOUSE_OVER_INVENTORY_2;
+			} else if(InPlayerInventoryPos(&DANAEMouse)) {
+				ARX_MOUSE_OVER |= ARX_MOUSE_OVER_INVENTORY;
 			}
-			else if (InSecondaryInventoryPos(&DANAEMouse))
-				ARX_MOUSE_OVER|=ARX_MOUSE_OVER_INVENTORY_2;
-			else if (InPlayerInventoryPos(&DANAEMouse))
-				ARX_MOUSE_OVER|=ARX_MOUSE_OVER_INVENTORY;
 		}
 
 		if((player.Interface & INTER_COMBATMODE) || PLAYER_MOUSELOOK_ON) {
 			FlyingOverIO = NULL; // Avoid to check with those modes
 		} else {
-			if(!DRAGINTER)
-			{
-				if (!BLOCK_PLAYER_CONTROLS && !TRUE_PLAYER_MOUSELOOK_ON && !(ARX_MOUSE_OVER & ARX_MOUSE_OVER_BOOK)
-					&& (eMouseState != MOUSE_IN_NOTE)
-				   )
+			if(!DRAGINTER) {
+				if(!BLOCK_PLAYER_CONTROLS
+				   && !TRUE_PLAYER_MOUSELOOK_ON
+				   && !(ARX_MOUSE_OVER & ARX_MOUSE_OVER_BOOK)
+				   && eMouseState != MOUSE_IN_NOTE
+				) {
 					FlyingOverIO = FlyingOverObject(&DANAEMouse);
-				else
+				} else {
 					FlyingOverIO = NULL;
+				}
 			}
 		}
 
@@ -1759,7 +1754,7 @@ void ArxGame::render() {
 		}
 	}
 
-	if(CheckInPoly(player.pos.x,player.pos.y,player.pos.z)) {
+	if(CheckInPoly(player.pos.x, player.pos.y, player.pos.z)) {
 		LastValidPlayerPos = player.pos;
 	}
 
@@ -1774,6 +1769,11 @@ void ArxGame::render() {
 		updateLevel();
 		UpdateInterface();
 		renderLevel();
+
+#ifdef ARX_DEBUG
+		if(g_debugToggles[9])
+			renderLevel();
+#endif
 	}
 	
 	if(showInfo != InfoPanelNone) {
@@ -1801,14 +1801,12 @@ void ArxGame::render() {
 		GRenderer->EndScene();
 	}
 	
-	if (LaunchDemo)
-	{
-		LaunchDemo=0;
+	if(LaunchDemo) {
+		LaunchDemo = 0;
 		LaunchDummyParticle();
 	}
 	
-	if (ARXmenu.currentmode == AMCM_OFF)
-	{
+	if(ARXmenu.currentmode == AMCM_OFF) {
 		ARX_SCRIPT_AllowInterScriptExec();
 		ARX_SCRIPT_EventStackExecute();
 		// Updates Damages Spheres
@@ -1819,7 +1817,7 @@ void ArxGame::render() {
 	}
 
 	arxtime.update_last_frame_time();
-	LastMouseClick=EERIEMouseButton;
+	LastMouseClick = EERIEMouseButton;
 }
 
 void EE_RT(Vec3f * in, Vec3f * out);
@@ -1958,9 +1956,9 @@ bool ArxGame::initDeviceObjects() {
 	GRenderer->SetRenderState(Renderer::Lighting, false);
 
 	// Setup Texture Border RenderState
-	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
+	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
 
-	GRenderer->GetTextureStage(1)->DisableColor();
+	GRenderer->GetTextureStage(1)->disableColor();
 	
 	// Fog
 	float fogEnd = 0.48f;

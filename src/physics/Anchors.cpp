@@ -312,13 +312,11 @@ static bool ANCHOR_AttemptValidCylinderPos(EERIE_CYLINDER * cyl, Entity * io,
 
 	EERIE_CYLINDER tmp;
 
-	if (!(flags & CFLAG_ANCHOR_GENERATION))
-	{
+	if(!(flags & CFLAG_ANCHOR_GENERATION)) {
 
 		memcpy(&tmp, cyl, sizeof(EERIE_CYLINDER));
 
-		while (anything < 0.f)
-		{
+		while(anything < 0.f) {
 			tmp.origin.y += anything;
 			anything = ANCHOR_CheckAnythingInCylinder(&tmp, flags);
 		}
@@ -326,26 +324,26 @@ static bool ANCHOR_AttemptValidCylinderPos(EERIE_CYLINDER * cyl, Entity * io,
 		anything = tmp.origin.y - cyl->origin.y;
 	}
 
-	if (MOVING_CYLINDER)
-	{
-		if (flags & CFLAG_NPC)
-		{
+	if(MOVING_CYLINDER) {
+		if(flags & CFLAG_NPC) {
 			float tolerate;
 
-			if ((io) && (io->ioflags & IO_NPC) && (io->_npcdata->pathfind.listnb > 0) && (io->_npcdata->pathfind.listpos < io->_npcdata->pathfind.listnb))
-			{
+			if(io
+			   && (io->ioflags & IO_NPC)
+			   && (io->_npcdata->pathfind.listnb > 0)
+			   && (io->_npcdata->pathfind.listpos < io->_npcdata->pathfind.listnb)
+			) {
 				tolerate = -80;
-			}
-			else
+			} else {
 				tolerate = -45;
+			}
 
-			if (anything < tolerate) return false;
+			if(anything < tolerate)
+				return false;
 		}
 
-		if (io && (!(flags & CFLAG_JUST_TEST)))
-		{
-			if ((flags & CFLAG_PLAYER) && (anything < 0.f))
-			{
+		if(io && !(flags & CFLAG_JUST_TEST)) {
+			if((flags & CFLAG_PLAYER) && anything < 0.f) {
 				if(player.jumpphase != NotJumping) {
 					io->_npcdata->climb_count = MAX_ALLOWED_PER_SECOND;
 					return false;
@@ -356,25 +354,23 @@ static bool ANCHOR_AttemptValidCylinderPos(EERIE_CYLINDER * cyl, Entity * io,
 				pente = EEfabs(anything) / dist * ( 1.0f / 2 ); 
 				io->_npcdata->climb_count += pente;
 
-				if (io->_npcdata->climb_count > MAX_ALLOWED_PER_SECOND)
-				{
+				if(io->_npcdata->climb_count > MAX_ALLOWED_PER_SECOND) {
 					io->_npcdata->climb_count = MAX_ALLOWED_PER_SECOND;
 					return false;
 				}
 
-				if (anything < -55) 
-				{
+				if(anything < -55) {
 					io->_npcdata->climb_count = MAX_ALLOWED_PER_SECOND;
 					return false;
 				}
 			}
 		}
+	} else if(anything < -45) {
+		return false;
 	}
-	else if (anything < -45) return false;
 
-	if ((flags & CFLAG_SPECIAL) && (anything < -40))
-	{
-		if (flags & CFLAG_RETURN_HEIGHT)
+	if((flags & CFLAG_SPECIAL) && anything < -40) {
+		if(flags & CFLAG_RETURN_HEIGHT)
 			cyl->origin.y += anything;
 
 		return false;
@@ -384,12 +380,9 @@ static bool ANCHOR_AttemptValidCylinderPos(EERIE_CYLINDER * cyl, Entity * io,
 	tmp.origin.y += anything;
 	anything = ANCHOR_CheckAnythingInCylinder(&tmp, flags); 
 
-	if (anything < 0.f)
-	{
-		if (flags & CFLAG_RETURN_HEIGHT)
-		{
-			while (anything < 0.f)
-			{
+	if(anything < 0.f) {
+		if(flags & CFLAG_RETURN_HEIGHT) {
+			while(anything < 0.f) {
 				tmp.origin.y += anything;
 				anything = ANCHOR_CheckAnythingInCylinder(&tmp, flags);
 			}
@@ -413,24 +406,21 @@ static bool ANCHOR_ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, Entity * io,
 	DIRECT_PATH = true;
 	IO_PHYSICS test;
 
-	if (ip == NULL)
-	{
+	if(ip == NULL) {
 		MOVING_CYLINDER = 0;
 		return false;
 	}
 
 	float distance = dist(ip->startpos, ip->targetpos);
 
-	if (distance <= 0.f)
-	{
+	if(distance <= 0.f) {
 		MOVING_CYLINDER = 0;
 		return true; 
 	}
 
 	Vec3f mvector = (ip->targetpos - ip->startpos) / distance;
 
-	while (distance > 0.f)
-	{
+	while(distance > 0.f) {
 		// First We compute current increment
 		float curmovedist = std::min(distance, MOVE_CYLINDER_STEP);
 
@@ -450,20 +440,15 @@ static bool ANCHOR_ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, Entity * io,
 		        && (CylinderAboveInvalidZone(&test.cyl)))
 			return false;
 
-		if (ANCHOR_AttemptValidCylinderPos(&test.cyl, io, flags))
-		{
+		if(ANCHOR_AttemptValidCylinderPos(&test.cyl, io, flags)) {
 			memcpy(ip, &test, sizeof(IO_PHYSICS));
 
-		}
-		else
-		{
-			if (flags & CFLAG_CLIMBING)
-			{
+		} else {
+			if(flags & CFLAG_CLIMBING) {
 				memcpy(&test.cyl, &ip->cyl, sizeof(EERIE_CYLINDER));
 				test.cyl.origin.y += mvector.y * curmovedist;
 
-				if (ANCHOR_AttemptValidCylinderPos(&test.cyl, io, flags))
-				{
+				if(ANCHOR_AttemptValidCylinderPos(&test.cyl, io, flags)) {
 					memcpy(ip, &test, sizeof(IO_PHYSICS));
 					goto oki;
 				}
@@ -479,25 +464,25 @@ static bool ANCHOR_ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, Entity * io,
 			long				maxRANGLE	=	90;
 			float				ANGLESTEPP;
 
-			if (flags & CFLAG_EASY_SLIDING)    // player sliding in fact...
-			{
-				ANGLESTEPP	=	10.f;
-				maxRANGLE	=	70;
+			// player sliding in fact...
+			if(flags & CFLAG_EASY_SLIDING) {
+				ANGLESTEPP = 10.f;
+				maxRANGLE = 70;
+			} else {
+				ANGLESTEPP = 30.f;
 			}
-			else ANGLESTEPP	=	30.f;
 
 			float rangle = ANGLESTEPP;
 			float langle = 360.f - ANGLESTEPP;
 
-
-			while (rangle <= maxRANGLE)   //tries on the Right and Left sides
-			{
+			//tries on the Right and Left sides
+			while(rangle <= maxRANGLE) {
 				memcpy(&test.cyl, &ip->cyl, sizeof(EERIE_CYLINDER)); 
 				float t = radians(MAKEANGLE(rangle));
 				YRotatePoint(&mvector, &vecatt, EEcos(t), EEsin(t));
 				test.cyl.origin += vecatt * curmovedist;
-				if (ANCHOR_AttemptValidCylinderPos(&test.cyl, io, flags))
-				{
+
+				if(ANCHOR_AttemptValidCylinderPos(&test.cyl, io, flags)) {
 					rpos = test.cyl.origin;
 					RFOUND = 1;
 				}
@@ -508,44 +493,35 @@ static bool ANCHOR_ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, Entity * io,
 				t = radians(MAKEANGLE(langle));
 				YRotatePoint(&mvector, &vecatt, EEcos(t), EEsin(t));
 				test.cyl.origin += vecatt * curmovedist;
-				if (ANCHOR_AttemptValidCylinderPos(&test.cyl, io, flags))
-				{
+
+				if(ANCHOR_AttemptValidCylinderPos(&test.cyl, io, flags)) {
 					lpos = test.cyl.origin;
 					LFOUND = 1;
 				}
 
 				langle -= ANGLESTEPP;
 
-				if ((RFOUND) || (LFOUND)) break;
+				if(RFOUND || LFOUND)
+					break;
 			}
 
-			if ((LFOUND) && (RFOUND))
-			{
+			if(LFOUND && RFOUND) {
 				langle = 360.f - langle;
 
-				if (langle < rangle)
-				{
+				if(langle < rangle) {
 					ip->cyl.origin = lpos;
 					distance -= curmovedist;
-				}
-				else
-				{
+				} else {
 					ip->cyl.origin = rpos;
 					distance -= curmovedist;
 				}
-			}
-			else if (LFOUND)
-			{
+			} else if(LFOUND) {
 				ip->cyl.origin = lpos;
 				distance -= curmovedist;
-			}
-			else if (RFOUND)
-			{
+			} else if(RFOUND) {
 				ip->cyl.origin = rpos;
 				distance -= curmovedist;
-			}
-			else  //stopped
-			{
+			} else { //stopped
 				ip->velocity = Vec3f::ZERO;
 				MOVING_CYLINDER = 0;
 				return false;
@@ -566,25 +542,21 @@ void AnchorData_ClearAll(EERIE_BACKGROUND * eb) {
 	EERIE_PATHFINDER_Clear();
 	EERIE_BKG_INFO * eg;
 
-	for (long j = 0; j < eb->Zsize; j++)
-		for (long i = 0; i < eb->Xsize; i++)
-		{
+	for(long j = 0; j < eb->Zsize; j++) {
+		for(long i = 0; i < eb->Xsize; i++) {
 			eg = &eb->Backg[i+j*eb->Xsize];
 
-			if ((eg->nbianchors) && (eg->ianchors))
+			if(eg->nbianchors && eg->ianchors)
 				free(eg->ianchors);
 
 			eg->nbianchors = 0;
 			eg->ianchors = NULL;
 		}
+	}
 
-	if ((eb->anchors) && (eb->nbanchors))
-	{
-		for (int j = 0; j < eb->nbanchors; j++)
-		{
-			if ((eb->anchors[j].nblinked) &&
-			        (eb->anchors[j].linked))
-			{
+	if(eb->anchors && eb->nbanchors) {
+		for(int j = 0; j < eb->nbanchors; j++) {
+			if(eb->anchors[j].nblinked && eb->anchors[j].linked) {
 				free(eb->anchors[j].linked);
 				eb->anchors[j].linked = NULL;
 			}
@@ -596,6 +568,7 @@ void AnchorData_ClearAll(EERIE_BACKGROUND * eb) {
 	eb->anchors = NULL;
 	eb->nbanchors = 0;
 }
+
 #define INC_HEIGHT 20
 #define INC_RADIUS 10
 
@@ -604,10 +577,10 @@ bool CylinderAboveInvalidZone(EERIE_CYLINDER * cyl) {
 	float count = 0;
 	float failcount = 0;
 
-	for (float rad = 0; rad < cyl->radius; rad += 10.f)
-		for (float ang = 0; ang < 360; ang += 45)
-		{
-			if (rad == 0) ang = 360;
+	for(float rad = 0; rad < cyl->radius; rad += 10.f) {
+		for(float ang = 0; ang < 360; ang += 45) {
+			if(rad == 0)
+				ang = 360;
 
 			Vec3f pos;
 			pos.x = cyl->origin.x - EEsin(radians(ang)) * rad;
@@ -615,21 +588,25 @@ bool CylinderAboveInvalidZone(EERIE_CYLINDER * cyl) {
 			pos.z = cyl->origin.z + EEcos(radians(ang)) * rad;
 			EERIEPOLY * ep = ANCHOR_CheckInPoly(pos.x, pos.y, pos.z);
 
-			if (!ep) continue;
+			if(!ep)
+				continue;
 
-			if (ep->type & POLY_NOPATH) return true;
+			if(ep->type & POLY_NOPATH)
+				return true;
 
 			count += 1.f;
 			float vy;
 			GetTruePolyY(ep, &pos, &vy);
 
-			if (EEfabs(vy - cyl->origin.y) > 160.f)
+			if(EEfabs(vy - cyl->origin.y) > 160.f)
 				failcount++;
 		}
+	}
 
 	float failratio = failcount / count;
 
-	if (failratio > 0.75f) return true;
+	if(failratio > 0.75f)
+		return true;
 
 	return false;
 }

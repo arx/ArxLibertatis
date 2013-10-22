@@ -56,6 +56,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/EntityManager.h"
 #include "game/Player.h"
 #include "graphics/data/Mesh.h"
+#include "graphics/VertexBuffer.h"
 
 class TextureContainer;
 struct SavedMiniMap;
@@ -196,6 +197,7 @@ private:
 	void drawPlayer(float playerSize, float playerX, float playerY, bool alphaBlending = false);
 	void drawDetectedEntities(int showLevel, float startX, float startY, float zoom);
 	
+    std::vector<TexturedVertex> m_mapVertices;
 };
 
 extern MiniMap g_miniMap;

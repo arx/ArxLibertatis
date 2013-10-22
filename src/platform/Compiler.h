@@ -37,7 +37,7 @@
 	#define ARX_COMPILER_NAME           "GCC"
 	#define ARX_COMPILER_VERNAME        ARX_COMPILER_NAME " " __VERSION__
 #elif defined(_MSC_VER)
-	#if _MSC_VER < 1500 || _MSC_VER >= 1800
+	#if _MSC_VER < 1500 || _MSC_VER >= 1900
 		#define ARX_COMPILER_NAME         "MSVC"
 	#elif _MSC_VER < 1600
 		#define ARX_COMPILER_NAME         "VC9"
@@ -45,6 +45,8 @@
 		#define ARX_COMPILER_NAME         "VC10"
 	#elif _MSC_VER < 1800
 		#define ARX_COMPILER_NAME         "VC11"
+	#elif _MSC_VER < 1900
+		#define ARX_COMPILER_NAME         "VC12"
 	#endif
 	#define ARX_COMPILER_VERNAME        ARX_COMPILER_NAME " " ARX_STR(_MSC_VER)
 #else

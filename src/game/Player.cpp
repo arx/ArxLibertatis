@@ -71,6 +71,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/Missile.h"
 #include "game/NPC.h"
 #include "game/spell/FlyingEye.h"
+#include "game/spell/Cheat.h"
 
 #include "gui/Menu.h"
 #include "gui/Text.h"
@@ -141,11 +142,9 @@ extern float InventoryX;
 extern float InventoryDir;
 extern long COLLIDED_CLIMB_POLY;
 extern long HERO_SHOW_1ST;
-extern long STARTED_A_GAME;
 extern bool TRUE_PLAYER_MOUSELOOK_ON;
 extern unsigned long ulBookHaloTime;
 extern unsigned long ulGoldHaloTime;
-extern long cur_rf;
 
 static const float ARX_PLAYER_SKILL_STEALTH_MAX = 100.f;
 
@@ -155,13 +154,12 @@ float currentdistance = 0.f;
 float CURRENT_PLAYER_COLOR = 0;
 float PLAYER_ROTATION = 0;
 
-long USE_PLAYERCOLLISIONS = 1;
-long BLOCK_PLAYER_CONTROLS = 0;
-long WILLRETURNTOCOMBATMODE = 0;
+bool USE_PLAYERCOLLISIONS = true;
+bool BLOCK_PLAYER_CONTROLS = false;
+bool WILLRETURNTOCOMBATMODE = false;
 long DeadTime = 0;
 static unsigned long LastHungerSample = 0;
 static unsigned long ROTATE_START = 0;
-long sp_max = 0;
 
 // Player Anims FLAGS/Vars
 ANIM_HANDLE * herowaitbook = NULL;
@@ -175,7 +173,6 @@ static unsigned long FALLING_TIME = 0;
 
 vector<STRUCT_QUEST> PlayerQuest;
 
-void Manage_sp_max();
 bool ARX_PLAYER_IsInFightMode() {
 	if (player.Interface & INTER_COMBATMODE) return true;
 
@@ -483,7 +480,7 @@ static void ARX_PLAYER_ComputePlayerStats() {
 	player.Critical_Hit = (float)(player.Attribute_Dexterity - 9) * 2.f
 	                      + base_close_combat * ( 1.0f / 5 );
 }
-extern long cur_mr;
+
 extern long SPECIAL_PNUX;
 
 /*!
@@ -1343,9 +1340,8 @@ void ARX_PLAYER_StartFall()
  * \brief Called When player has just died
  */
 void ARX_PLAYER_BecomesDead() {
-	STARTED_A_GAME = 0;
 	// a mettre au final
-	BLOCK_PLAYER_CONTROLS = 1;
+	BLOCK_PLAYER_CONTROLS = true;
 
 	if(entities.player()) {
 		player.Interface &= ~INTER_COMBATMODE;
@@ -2644,7 +2640,7 @@ void ARX_PLAYER_Manage_Death() {
 	float ratio = (float)(DeadTime - 2000) * ( 1.0f / 5000 );
 
 	if(ratio >= 1.f) {
-		ARX_MENU_Launch();
+		ARX_MENU_Launch(false);
 		DeadTime = 0;
 	}
 
@@ -2807,10 +2803,6 @@ void ARX_PLAYER_Rune_Add_All() {
 }
 
 extern unsigned long LAST_PRECAST_TIME;
-extern long sp_wep;
-extern long cur_mx, cur_pom;
-extern long sp_arm, cur_arm;
-extern float sp_max_start;
 
 void ARX_PLAYER_Invulnerability(long flag) {
 
@@ -2821,7 +2813,6 @@ void ARX_PLAYER_Invulnerability(long flag) {
 }
 
 extern Entity * FlyingOverIO;
-extern long cur_sm;
 
 void ARX_GAME_Reset(long type) {
 	
@@ -2850,23 +2841,14 @@ void ARX_GAME_Reset(long type) {
 	Project.telekinesis = 0;
 	player.onfirmground = 0;
 	TRUE_FIRM_GROUND = 0;
-	sp_max_start = 0;
+
 	lastposy = -99999999999.f;
 
 	ioSteal = NULL;
 
 	GLOBAL_SLOWDOWN = 1.f;
 
-	sp_arm = 0;
-	cur_arm = 0;
-	cur_sm = 0;
-	sp_wep = 0;
-	sp_max = 0;
-	cur_mx = 0;
-	cur_pom = 0;
-	cur_rf = 0;
-	cur_mr = 0;
-
+	CheatReset();
 
 	if(entities.player()) {
 		entities.player()->spellcast_data.castingspell = SPELL_NONE;
@@ -2986,7 +2968,7 @@ void ARX_GAME_Reset(long type) {
 
 	// Misc Player Vars.
 	ROTATE_START = 0;
-	BLOCK_PLAYER_CONTROLS = 0;
+	BLOCK_PLAYER_CONTROLS = false;
 	HERO_SHOW_1ST = -1;
 	PUSH_PLAYER_FORCE = Vec3f::ZERO;
 	player.jumplastposition = 0;
@@ -3047,30 +3029,3 @@ void ARX_PLAYER_Reset_Fall()
 	player.falling = 0;
 }
 
-float sp_max_y[64];
-Color sp_max_col[64];
-char sp_max_ch[64];
-long sp_max_nb;
-
-void Manage_sp_max() {
-
-	float v = float(arxtime) - sp_max_start;
-
-	if(sp_max_start != 0 && v < 20000) {
-		float modi = (20000 - v) * ( 1.0f / 2000 ) * ( 1.0f / 10 );
-		float sizX = 16;
-		float px = (float)g_size.center().x - (float)sp_max_nb * ( 1.0f / 2 ) * sizX;
-		float py = (float)g_size.center().y;
-
-		for(long i = 0; i < sp_max_nb; i++) {
-			float dx = px + sizX * (float)i;
-			float dy = py + sp_max_y[i];
-			sp_max_y[i] = EEsin(dx + (float)float(arxtime) * ( 1.0f / 100 )) * 30.f * modi;
-			std::string tex(1, sp_max_ch[i]);
-
-			UNICODE_ARXDrawTextCenter(hFontInBook, dx - 1, dy - 1, tex, Color::none);
-			UNICODE_ARXDrawTextCenter(hFontInBook, dx + 1, dy + 1, tex, Color::none);
-			UNICODE_ARXDrawTextCenter(hFontInBook, dx, dy, tex, sp_max_col[i]);
-		}
-	}
-}

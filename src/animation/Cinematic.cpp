@@ -220,9 +220,9 @@ void Cinematic::InitDeviceObjects() {
 	GRenderer->SetRenderState(Renderer::DepthTest, false);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	GRenderer->SetCulling(Renderer::CullNone);
-	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
+	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapClamp);
 	
-	GRenderer->GetTextureStage(0)->SetMipMapLODBias(0);
+	GRenderer->GetTextureStage(0)->setMipMapLODBias(0);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->SetRenderState(Renderer::Fog, false);
 	
@@ -233,16 +233,16 @@ void Cinematic::DeleteDeviceObjects() {
 	GRenderer->SetRenderState(Renderer::DepthTest, true);
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 	GRenderer->SetCulling(Renderer::CullCCW);
-	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
+	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
 	
-	GRenderer->GetTextureStage(0)->SetMipMapLODBias(0);
+	GRenderer->GetTextureStage(0)->setMipMapLODBias(0);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	GRenderer->SetRenderState(Renderer::Fog, true);
 	
-	GRenderer->GetTextureStage(0)->SetColorOp(TextureStage::OpModulate,
+	GRenderer->GetTextureStage(0)->setColorOp(TextureStage::OpModulate,
 	                                          TextureStage::ArgTexture,
 	                                          TextureStage::ArgDiffuse);
-	GRenderer->GetTextureStage(0)->SetAlphaOp(TextureStage::OpModulate,
+	GRenderer->GetTextureStage(0)->setAlphaOp(TextureStage::OpModulate,
 	                                          TextureStage::ArgTexture,
 	                                          TextureStage::ArgDiffuse);
 	
@@ -386,10 +386,10 @@ void Cinematic::Render(float FDIFF) {
 		//draw
 		GRenderer->SetBlendFunc(Renderer::BlendSrcAlpha, Renderer::BlendInvSrcAlpha);
 
-		GRenderer->GetTextureStage(0)->SetColorOp(TextureStage::OpModulate, TextureStage::ArgTexture, TextureStage::ArgDiffuse);
-		GRenderer->GetTextureStage(0)->SetAlphaOp(TextureStage::OpModulate, TextureStage::ArgTexture, TextureStage::ArgDiffuse);
+		GRenderer->GetTextureStage(0)->setColorOp(TextureStage::OpModulate, TextureStage::ArgTexture, TextureStage::ArgDiffuse);
+		GRenderer->GetTextureStage(0)->setAlphaOp(TextureStage::OpModulate, TextureStage::ArgTexture, TextureStage::ArgDiffuse);
 
-		GRenderer->GetTextureStage(1)->DisableAlpha();
+		GRenderer->GetTextureStage(1)->disableAlpha();
 		
 		//image key
 		tb = m_bitmaps[numbitmap];
@@ -448,7 +448,7 @@ void Cinematic::Render(float FDIFF) {
 			lightt.pos.x += (float)(LargeurRender >> 1);
 			lightt.pos.y += (float)(HauteurRender >> 1);
 
-			#define SPEEDINTENSITYRND (10.f)
+			static const float SPEEDINTENSITYRND = 10.f;
 			float flIntensityRNDToReach = lightt.intensiternd * rnd();
 			m_flIntensityRND += (flIntensityRNDToReach - m_flIntensityRND) * FDIFF * SPEEDINTENSITYRND;
 			m_flIntensityRND = m_flIntensityRND < 0.f ? 0.f : m_flIntensityRND > 1.f ? 1.f : m_flIntensityRND;

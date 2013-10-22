@@ -47,6 +47,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/IO.h"
 
 #include <cstring>
+#include <algorithm>
 
 #include "io/fs/FilePath.h"
 #include "io/fs/Filesystem.h"

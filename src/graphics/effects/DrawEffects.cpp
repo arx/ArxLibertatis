@@ -318,7 +318,7 @@ void ARXDRAW_DrawPolyBoom()
 				EE_RT2(&ltv[3],&ltv[3]);
 			}
 
-			GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
+			GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapClamp);
 			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 			GRenderer->SetTexture(0, pb->tc);
 
@@ -338,7 +338,7 @@ void ARXDRAW_DrawPolyBoom()
 				ARX_DrawPrimitive(&ltv[1], &ltv[2], &ltv[3]);
 			}
 
-			GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
+			GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
 		}
 		break;
 		case 2: // WATER
@@ -388,7 +388,7 @@ void ARXDRAW_DrawPolyBoom()
 			EE_RT2(&ltv[1],&ltv[1]);
 			EE_RT2(&ltv[2],&ltv[2]);
 
-			GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
+			GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapClamp);
 			GRenderer->SetBlendFunc(Renderer::BlendInvDstColor, Renderer::BlendOne);
 			GRenderer->SetTexture(0, pb->tc);
 
@@ -399,7 +399,7 @@ void ARXDRAW_DrawPolyBoom()
 				ARX_DrawPrimitive(&ltv[1], &ltv[2], &ltv[3]);
 			}
 
-			GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
+			GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
 		}
 		break;
 		}

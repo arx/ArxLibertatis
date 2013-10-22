@@ -54,9 +54,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/GameTime.h"
 #include "graphics/Math.h"
 #include "input/InputBackend.h"
-#ifdef ARX_HAVE_DINPUT8
-#include "input/DInput8Backend.h"
-#endif
 #ifdef ARX_HAVE_SDL
 #include "input/SDLInputBackend.h"
 #endif
@@ -221,16 +218,6 @@ bool Input::init() {
 		if(!backend && first == (autoBackend || config.input.backend == "SDL")) {
 			matched = true;
 			backend = new SDLInputBackend;
-			if(!backend->init()) {
-				delete backend, backend = NULL;
-			}
-		}
-		#endif
-		
-		#ifdef ARX_HAVE_DINPUT8
-		if(!backend && first == (autoBackend || config.input.backend == "DirectInput8")) {
-			matched = true;
-			backend = new DInput8Backend;
 			if(!backend->init()) {
 				delete backend, backend = NULL;
 			}

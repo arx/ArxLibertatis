@@ -123,7 +123,7 @@ static void PopOneTriangleList(TextureContainer *_pTex) {
 
 	if(_pTex->userflags & POLY_LATE_MIP) {
 		const float GLOBAL_NPC_MIPMAP_BIAS = -2.2f;
-		GRenderer->GetTextureStage(0)->SetMipMapLODBias(GLOBAL_NPC_MIPMAP_BIAS);
+		GRenderer->GetTextureStage(0)->setMipMapLODBias(GLOBAL_NPC_MIPMAP_BIAS);
 	}
 
 
@@ -133,7 +133,7 @@ static void PopOneTriangleList(TextureContainer *_pTex) {
 
 	if(_pTex->userflags & POLY_LATE_MIP) {
 		float biasResetVal = 0;
-		GRenderer->GetTextureStage(0)->SetMipMapLODBias(biasResetVal);
+		GRenderer->GetTextureStage(0)->setMipMapLODBias(biasResetVal);
 	}
 
 }
@@ -890,10 +890,10 @@ void DrawEERIEInter_Render(EERIE_3DOBJ *eobj, const TransformInfo &t, Entity *io
 				if(_ffr[first] > 70.f && _ffr[second] > 60.f) {
 					TexturedVertex *vert = Halo_AddVertex();
 
-					memcpy(&vert[0], &tvList[first], sizeof(TexturedVertex));
-					memcpy(&vert[1], &tvList[first], sizeof(TexturedVertex));
-					memcpy(&vert[2], &tvList[second], sizeof(TexturedVertex));
-					memcpy(&vert[3], &tvList[second], sizeof(TexturedVertex));
+					vert[0] = tvList[first];
+					vert[1] = tvList[first];
+					vert[2] = tvList[second];
+					vert[3] = tvList[second];
 
 					float siz = ddist * (io->halo.radius * 1.5f * (EEsin((arxtime.get_frame_time() + i) * .01f) * .1f + .7f)) * .6f;
 
@@ -974,7 +974,7 @@ struct HaloRenderInfo {
 		, selection(selection)
 	{}
 
-	HaloRenderInfo(IO_HALO * halo)
+	explicit HaloRenderInfo(IO_HALO * halo)
 		: halo(halo)
 		, selection(-1)
 	{}
@@ -1186,10 +1186,10 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity *
 				if(_ffr[first] > 150.f && _ffr[second] > 110.f) {
 					TexturedVertex *vert = Halo_AddVertex();
 
-					memcpy(&vert[0], &tvList[first], sizeof(TexturedVertex));
-					memcpy(&vert[1], &tvList[first], sizeof(TexturedVertex));
-					memcpy(&vert[2], &tvList[second], sizeof(TexturedVertex));
-					memcpy(&vert[3], &tvList[second], sizeof(TexturedVertex));
+					vert[0] = tvList[first];
+					vert[1] = tvList[first];
+					vert[2] = tvList[second];
+					vert[3] = tvList[second];
 
 					vert[0].color = colors[first];
 					vert[1].color = colors[first];
@@ -1720,14 +1720,13 @@ void EERIEDrawAnimQuat(EERIE_3DOBJ *eobj, ANIM_USE * animlayer,const Anglef & an
 	EERIEDrawAnimQuatRender(eobj, pos, io, render, invisibility);
 }
 
-void AnimatedEntityUpdate(Entity * entity) {
-
-	EERIEDrawAnimQuat(entity->obj, entity->animlayer, entity->angle,
-		entity->pos, Original_framedelay, entity, false, true, 0.f);
+void AnimatedEntityUpdate(Entity * entity, float time) {
+	EERIEDrawAnimQuatUpdate(entity->obj, entity->animlayer, entity->angle,
+							entity->pos, time, entity, true);
 }
 
 void AnimatedEntityRender(Entity * entity, float invisibility) {
 
-	EERIEDrawAnimQuat(entity->obj, entity->animlayer, entity->angle,
-		entity->pos, 0, entity, true, false, invisibility);
+	Cedric_ViewProjectTransform(entity, entity->obj);
+	EERIEDrawAnimQuatRender(entity->obj, entity->pos, entity, true, invisibility);
 }
