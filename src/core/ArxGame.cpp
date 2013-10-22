@@ -1211,7 +1211,7 @@ void ArxGame::updateActiveCamera() {
 	// Recenter Viewport depending on Resolution
 
 	ACTIVECAM->center = Vec2i(g_size.center().x, g_size.center().y);
-	ACTIVECAM->orgTrans.mod = ACTIVECAM->center.to<float>();
+	ACTIVECAM->orgTrans.mod = Vec2f(ACTIVECAM->center);
 }
 
 void ArxGame::updateTime() {
