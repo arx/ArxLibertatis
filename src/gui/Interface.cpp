@@ -6067,12 +6067,15 @@ void DrawHalo(float r, float g, float b, TextureContainer* halo, const Vec2f& co
 	}
 }
 
+void UpdateIcons() {
+	if(!IconCoordinatesCalculated) {
+		CalculateIconCoordinates();
+	}
+}
+
 void DrawIcons() {
 	if(player.Interface & INTER_MINIBACK) {
-		if (!IconCoordinatesCalculated) {
-			CalculateIconCoordinates();
-		}
-		float px, py;
+
 		DrawIcon(BookIconCoords, "book", MOUSE_IN_BOOK_ICON);
 		DrawIcon(BackpackIconCoords, "backpack", MOUSE_IN_INVENTORY_ICON);							
 		if(player.Interface & INTER_STEAL) {
@@ -6102,7 +6105,6 @@ void DrawIcons() {
 			}
 		}
 		//A halo is drawn on the character's stats icon (book) when leveling up, for example.
-		//TODO try to refactor
 		if(bGoldHalo) {
 			float fCalc = ulGoldHaloTime + Original_framedelay;
 			ulGoldHaloTime = checked_range_cast<unsigned long>(fCalc);
@@ -6347,6 +6349,7 @@ void UpdateInterface() {
 	UpdateHealthManaGauges();
 	UpdateMemorizedSpells();
 	UpdateChangeLevelIcon();
+	UpdateIcons();
 }
 
 void ArxGame::drawAllInterface() {
