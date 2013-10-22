@@ -450,7 +450,7 @@ void ARX_PARTICLES_Spawn_Blood2(const Vec3f & pos, float dmgs, Color col, Entity
 		}
 		
 		for(long k = 0; k < nb; k++) {
-			Vec3f posi = io->_npcdata->last_splat_pos + vect * k * 4.f * power;
+			Vec3f posi = io->_npcdata->last_splat_pos + vect * Vec3f(k * 4.f * power);
 			io->_npcdata->SPLAT_TOT_NB++;
 			if(io->_npcdata->SPLAT_TOT_NB > MAX_GROUND_SPLATS) {
 				ARX_PARTICLES_Spawn_Blood3(posi, io->_npcdata->SPLAT_DAMAGES, col, SPLAT_GROUND);
@@ -1056,7 +1056,7 @@ void SpawnFireballTail(Vec3f * poss, Vec3f * vecto, float level, long flags) {
 		
 		if(nn == 1) {
 			pd->delay = Random::get(150, 250);
-			pd->ov = *poss + *vecto * pd->delay;
+			pd->ov = *poss + *vecto * Vec3f(pd->delay);
 		} else {
 			pd->ov = *poss;
 		}
