@@ -6030,8 +6030,6 @@ Vec2f CloseSInvIconCoords;
 Vec2f LevelUpIconCoords;
 Vec2f PurseIconCoords;
 
-bool IconCoordinatesCalculated = false;
-
 void CalculateBookIconCoords() {
 	BookIconCoords.x = g_size.width() - INTERFACE_RATIO(35) + lSLID_VALUE+GL_DECAL_ICONS;
 	BookIconCoords.y = g_size.height() - INTERFACE_RATIO(148);
@@ -6067,15 +6065,6 @@ void CalculatePurseIconCoords() {
 	PurseIconCoords.y = g_size.height() - INTERFACE_RATIO(183);
 }
 
-void CalculateIconCoordinates() {
-	CalculateBookIconCoords();
-	CalculateBackpackIconCoords();
-	CalculateStealIconCoords();	
-	CalculateLevelUpIconCoords();
-	CalculatePurseIconCoords();
-	IconCoordinatesCalculated = true;
-}
-
 //Used for drawing icons like the book or backpack icon.
 void DrawIcon(const Vec2f& coords, const char* itcName, E_ARX_STATE_MOUSE hoverMouseState) {
 	ARX_INTERFACE_DrawItem(ITC.Get(itcName), coords.x, coords.y);
@@ -6097,17 +6086,14 @@ void DrawHalo(float r, float g, float b, TextureContainer* halo, const Vec2f& co
 	}
 }
 
-void UpdateIcons() {
-	if (!IconCoordinatesCalculated) {
-		CalculateIconCoordinates();
-	}
-}
-
 void DrawIcons() {
-	if(player.Interface & INTER_MINIBACK) {				
+	if(player.Interface & INTER_MINIBACK) {		
+		CalculateBookIconCoords();
 		DrawIcon(BookIconCoords, "book", MOUSE_IN_BOOK_ICON);
+		CalculateBackpackIconCoords();
 		DrawIcon(BackpackIconCoords, "backpack", MOUSE_IN_INVENTORY_ICON);							
 		if(player.Interface & INTER_STEAL) {
+			CalculateStealIconCoords();
 			DrawIcon(StealIconCoords, "steal", MOUSE_IN_STEAL_ICON);
 		}
 		// Pick All/Close Secondary Inventory
@@ -6122,10 +6108,12 @@ void DrawIcons() {
 		}
 
 		if(player.Skill_Redistribute || player.Attribute_Redistribute) {
+			CalculateLevelUpIconCoords();
 			DrawIcon(LevelUpIconCoords, "icon_lvl_up", MOUSE_IN_REDIST_ICON);
 		}
 		// Draw/Manage Gold Purse Icon
 		if(player.gold > 0) {	
+			CalculatePurseIconCoords();
 			DrawIcon(PurseIconCoords, "gold", MOUSE_IN_GOLD_ICON);			
 			if(eMouseState == MOUSE_IN_GOLD_ICON) {
 				SpecialCursor=CURSOR_INTERACTION_ON;
@@ -6379,7 +6367,6 @@ void UpdateInterface() {
 	UpdateHealthManaGauges();
 	UpdateMemorizedSpells();
 	UpdateChangeLevelIcon();
-	UpdateIcons();
 }
 
 void ArxGame::drawAllInterface() {
