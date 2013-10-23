@@ -1678,8 +1678,7 @@ void ArxGame::renderLevel() {
 	GRenderer->EndScene();
 }
 
-void ArxGame::update() {
-	
+void ArxGame::update() {	
 	if(!WILL_LAUNCH_CINE.empty()) {
 		// A cinematic is waiting to be played...
 		LaunchWaitingCine();
@@ -1768,6 +1767,7 @@ void ArxGame::render() {
 		renderCinematic();
 	} else {
 		updateLevel();
+		UpdateInterface();
 		renderLevel();
 
 #ifdef ARX_DEBUG
