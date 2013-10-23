@@ -1820,7 +1820,7 @@ void ArxGame::render() {
 	LastMouseClick = EERIEMouseButton;
 }
 
-void EE_RT(Vec3f * in, Vec3f * out);
+void EE_RT(const Vec3f & in, Vec3f & out);
 
 void ArxGame::update2DFX()
 {
@@ -1916,7 +1916,7 @@ void ArxGame::goFor2DFX()
 			if (el->temp > 0.f) {
 				lv.p = el->pos;
 				lv.rhw = 1.f;
-				EE_RT(&lv.p, &ltvv.p);
+				EE_RT(lv.p, ltvv.p);
 				float v=el->temp;
 
 				if(FADEDIR) {

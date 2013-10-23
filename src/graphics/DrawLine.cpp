@@ -27,7 +27,7 @@
 #include "graphics/Vertex.h"
 
 
-extern void EE_RT(Vec3f * in, Vec3f * out);
+extern void EE_RT(const Vec3f & in, Vec3f & out);
 extern void EE_P(Vec3f * in, TexturedVertex * out);
 extern void EE_RTP(TexturedVertex * in, TexturedVertex * out);
 
@@ -123,7 +123,7 @@ void DrawLineSphere(const EERIE_SPHERE & sphere, Color color) {
 
 			Vec3f temp;
 			TexturedVertex out;
-			EE_RT(&pos, &temp);
+			EE_RT(pos, temp);
 			EE_P(&temp, &out);
 
 			if(skip) {

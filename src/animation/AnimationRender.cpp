@@ -279,7 +279,7 @@ extern long ZMAPMODE;
 
 extern bool EXTERNALVIEW;
 
-void EE_RT(Vec3f * in, Vec3f * out);
+void EE_RT(const Vec3f & in, Vec3f & out);
 void EE_P(Vec3f * in, TexturedVertex * out);
 
 float Cedric_GetScale(Entity * io) {
@@ -694,7 +694,7 @@ void DrawEERIEInter_ViewProjectTransform(EERIE_3DOBJ *eobj) {
 	for(size_t i = 0 ; i < eobj->vertexlist.size(); i++) {
 
 		Vec3f tempWorld;
-		EE_RT(&eobj->vertexlist3[i].v, &tempWorld);
+		EE_RT(eobj->vertexlist3[i].v, tempWorld);
 		EE_P(&tempWorld, &eobj->vertexlist[i].vert);
 	}
 }
@@ -1558,7 +1558,7 @@ void Cedric_ViewProjectTransform(Entity *io, EERIE_3DOBJ *eobj) {
 		EERIE_VERTEX * outVert = &eobj->vertexlist3[i];
 
 		Vec3f tempWorld;
-		EE_RT(&outVert->v, &tempWorld);
+		EE_RT(outVert->v, tempWorld);
 		EE_P(&tempWorld, &outVert->vert);
 
 		// Updates 2D Bounding Box

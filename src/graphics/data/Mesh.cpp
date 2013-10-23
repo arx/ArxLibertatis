@@ -489,12 +489,12 @@ void SetActiveCamera(EERIE_CAMERA * cam)
 	if (ACTIVECAM != cam) ACTIVECAM = cam;
 }
 
-void EE_RT(Vec3f * in, Vec3f * out) {
-	*out = Vec3f(ACTIVECAM->orgTrans.worldToView * Vec4f(*in, 1.0f));
+void EE_RT(const Vec3f & in, Vec3f & out) {
+	out = Vec3f(ACTIVECAM->orgTrans.worldToView * Vec4f(in, 1.0f));
 }
 
 void EE_RT2(TexturedVertex * in, TexturedVertex * out) {
-	EE_RT(&in->p, &out->p);
+	EE_RT(in->p, out->p);
 }
 
 // TODO get rid of sw transform
@@ -516,7 +516,7 @@ void EE_P(Vec3f * in, TexturedVertex * out) {
 }
 
 void EE_RTP(TexturedVertex * in, TexturedVertex * out) {
-	EE_RT(&in->p, &out->p);
+	EE_RT(in->p, out->p);
 	EE_P(&out->p, out);
 }
 
@@ -1561,7 +1561,7 @@ void DrawEERIEObjExEx(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *pos, Vec3f *scale
 		eobj->vertexlist3[i].v = (rv.p += *pos);
 
 		Vec3f tempWorld;
-		EE_RT(&rv.p, &tempWorld);
+		EE_RT(rv.p, tempWorld);
 		EE_P(&tempWorld, &eobj->vertexlist[i].vert);
 	}
 
