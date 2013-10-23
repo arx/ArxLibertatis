@@ -385,6 +385,11 @@ Vector3<T> normalize(const Vector3<T> & v0) {
 }
 
 template<class T>
+inline T length(const Vector3<T> & v0) {
+	return std::sqrt(lengthSqr(v0));
+}
+
+template<class T>
 T lengthSqr(const Vector3<T> & v0) {
 	return v0.x*v0.x + v0.y*v0.y + v0.z*v0.z;
 }
