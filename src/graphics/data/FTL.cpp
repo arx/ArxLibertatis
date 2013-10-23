@@ -538,12 +538,12 @@ EERIE_3DOBJ * ARX_FTL_Load(const res::path & file) {
 			obj->facelist[ii].texid = eff->texid;
 			obj->facelist[ii].transval = eff->transval;
 			obj->facelist[ii].temp = eff->temp;
-			obj->facelist[ii].norm = eff->norm;
+			obj->facelist[ii].norm = eff->norm.toVec3();
 			
 			// Copy in all the texture and normals data
 			BOOST_STATIC_ASSERT(IOPOLYVERT_FTL == IOPOLYVERT);
 			for(size_t kk = 0; kk < IOPOLYVERT_FTL; kk++) {
-				obj->facelist[ii].nrmls[kk] = eff->nrmls[kk];
+				obj->facelist[ii].nrmls[kk] = eff->nrmls[kk].toVec3();
 				obj->facelist[ii].vid[kk] = eff->vid[kk];
 				obj->facelist[ii].u[kk] = eff->u[kk];
 				obj->facelist[ii].v[kk] = eff->v[kk];

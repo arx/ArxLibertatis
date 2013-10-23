@@ -682,7 +682,7 @@ extern EERIE_CAMERA raycam;
 
 static void SP_PrepareCamera(EERIE_CAMERA * cam) {
 	cam->orgTrans.updateFromAngle(cam->angle);
-	cam->orgTrans.mod = Vec2f(cam->center + Vec2i(cam->clip.origin));
+	cam->orgTrans.mod = Vec2f(cam->center + cam->clip.origin.toVec2());
 }
 
 static bool RayIn3DPolyNoCull(Vec3f * orgn, Vec3f * dest, EERIEPOLY * epp) {
@@ -1748,8 +1748,8 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 		LogError << "FTS: size mismatch in FAST_SCENE_HEADER";
 		return false;
 	}
-	player.pos = fsh->playerpos;
-	Mscenepos = fsh->Mscenepos;
+	player.pos = fsh->playerpos.toVec3();
+	Mscenepos = fsh->Mscenepos.toVec3();
 	
 	
 	// Load textures
@@ -1804,10 +1804,12 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 				
 				ep2->room = ep->room;
 				ep2->area = ep->area;
-				ep2->norm = ep->norm;
-				ep2->norm2 = ep->norm2;
-				copy(ep->nrml, ep->nrml + 4, ep2->nrml);
-				
+				ep2->norm = ep->norm.toVec3();
+				ep2->norm2 = ep->norm2.toVec3();
+
+				for(int i = 0; i < 4; i++)
+					ep2->nrml[i] = ep->nrml[i].toVec3();
+
 				if(ep->tex != 0) {
 					TextureContainerMap::const_iterator cit = textures.find(ep->tex);
 					ep2->tex = (cit != textures.end()) ? cit->second : NULL;
@@ -1898,7 +1900,7 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 		
 		ANCHOR_DATA & anchor = ACTIVEBKG->anchors[i];
 		anchor.flags = AnchorFlags::load(fad->flags); // TODO save/load flags
-		anchor.pos = fad->pos;
+		anchor.pos = fad->pos.toVec3();
 		anchor.nblinked = fad->nb_linked;
 		anchor.height = fad->height;
 		anchor.radius = fad->radius;
@@ -1947,13 +1949,15 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 			portal.poly.transval = epo->poly.transval;
 			portal.poly.room = epo->poly.room;
 			portal.poly.misc = epo->poly.misc;
-			portal.poly.center = epo->poly.center;
-			portal.poly.max = epo->poly.max;
-			portal.poly.min = epo->poly.min;
-			portal.poly.norm = epo->poly.norm;
-			portal.poly.norm2 = epo->poly.norm2;
+			portal.poly.center = epo->poly.center.toVec3();
+			portal.poly.max = epo->poly.max.toVec3();
+			portal.poly.min = epo->poly.min.toVec3();
+			portal.poly.norm = epo->poly.norm.toVec3();
+			portal.poly.norm2 = epo->poly.norm2.toVec3();
 			
-			std::copy(epo->poly.nrml, epo->poly.nrml + 4, portal.poly.nrml);
+			for(int i = 0; i < 4; i++)
+				portal.poly.nrml[i] = epo->poly.nrml[i].toVec3();
+
 			std::copy(epo->poly.v, epo->poly.v + 4, portal.poly.v);
 			std::copy(epo->poly.tv, epo->poly.tv + 4, portal.poly.tv);
 		}
@@ -2010,8 +2014,8 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 			for(long m = 0; m < NbRoomDistance; m++) {
 				const ROOM_DIST_DATA_SAVE * rdds;
 				rdds = fts_read<ROOM_DIST_DATA_SAVE>(data, end);
-				Vec3f start = rdds->startpos;
-				Vec3f end = rdds->endpos;
+				Vec3f start = rdds->startpos.toVec3();
+				Vec3f end = rdds->endpos.toVec3();
 				SetRoomDistance(m, n, rdds->distance, &start, &end);
 			}
 		}

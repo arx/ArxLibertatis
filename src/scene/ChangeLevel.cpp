@@ -792,7 +792,7 @@ static long ARX_CHANGELEVEL_Push_Player(long level) {
 		pos += sizeof(SavedMapMarkerData);
 	}
 	
-	LastValidPlayerPos = asp->LAST_VALID_POS;
+	LastValidPlayerPos = asp->LAST_VALID_POS.toVec3();
 	
 	pSaveBlock->save("player", dat, pos);
 	
@@ -1686,7 +1686,7 @@ static long ARX_CHANGELEVEL_Pop_Player() {
 	player.physics = asp->physics;
 	player.poison = asp->poison;
 	player.hunger = asp->hunger;
-	player.pos = asp->pos;
+	player.pos = asp->pos.toVec3();
 	
 	if(asp->sp_flags & SP_ARM1) {
 		sp_arm = 1;
@@ -1721,7 +1721,7 @@ static long ARX_CHANGELEVEL_Pop_Player() {
 		entities.player()->pos = player.basePosition();
 	}
 	
-	WILL_RESTORE_PLAYER_POSITION = asp->pos;
+	WILL_RESTORE_PLAYER_POSITION = asp->pos.toVec3();
 	WILL_RESTORE_PLAYER_POSITION_FLAG = 1;
 	
 	player.resist_magic = checked_range_cast<unsigned char>(asp->resist_magic);
@@ -1731,7 +1731,7 @@ static long ARX_CHANGELEVEL_Pop_Player() {
 	player.Skill_Redistribute = checked_range_cast<unsigned char>(asp->Skill_Redistribute);
 	
 	player.rune_flags = RuneFlags::load(asp->rune_flags); // TODO save/load flags
-	player.size = asp->size;
+	player.size = asp->size.toVec3();
 	player.Skill_Stealth = asp->Skill_Stealth;
 	player.Skill_Mecanism = asp->Skill_Mecanism;
 	player.Skill_Intuition = asp->Skill_Intuition;
@@ -1952,7 +1952,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) {
 	// TODO when we bump the save version, remove the ext in the save file
 	// if no class names contain dots, we might get away without changing the ver
 	res::path classPath = res::path::load(path).remove_ext();
-	Entity * io = LoadInter_Ex(classPath, num, ais->pos, ais->angle, MSP);
+	Entity * io = LoadInter_Ex(classPath, num, ais->pos.toVec3(), ais->angle, MSP);
 	
 	if(!io) {
 		LogError << "CHANGELEVEL Error: Unable to load " << ident;
@@ -1969,11 +1969,11 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) {
 		io->ioflags = EntityFlags::load(ais->ioflags); // TODO save/load flags
 		
 		io->ioflags &= ~IO_FREEZESCRIPT;
-		io->pos = ais->pos;
-		io->lastpos = ais->lastpos;
-		io->move = ais->move;
-		io->lastmove = ais->lastmove;
-		io->initpos = ais->initpos;
+		io->pos = ais->pos.toVec3();
+		io->lastpos = ais->lastpos.toVec3();
+		io->move = ais->move.toVec3();
+		io->lastmove = ais->lastmove.toVec3();
+		io->initpos = ais->initpos.toVec3();
 		io->initangle = ais->initangle;
 		io->angle = ais->angle;
 		io->scale = ais->scale;
@@ -1989,7 +1989,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) {
 		io->mainevent = boost::to_lower_copy(util::loadString(ais->mainevent));
 		
 		// Physics data
-		io->velocity = ais->velocity;
+		io->velocity = ais->velocity.toVec3();
 		io->stopped = ais->stopped;
 		io->basespeed = 1;
 		io->speed_modif = 0.f; // TODO why are these not loaded from the savegame?
@@ -2014,7 +2014,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) {
 			ARX_USE_PATH * aup = io->usepath = (ARX_USE_PATH *)malloc(sizeof(ARX_USE_PATH));
 			aup->aupflags = UsePathFlags::load(ais->usepath_aupflags); // TODO save/load flags
 			aup->_curtime = static_cast<float>(ais->usepath_curtime);
-			aup->initpos = ais->usepath_initpos;
+			aup->initpos = ais->usepath_initpos.toVec3();
 			aup->lastWP = ais->usepath_lastWP;
 			aup->_starttime = static_cast<float>(ais->usepath_starttime);
 			aup->path = ARX_PATH_GetAddressByName(boost::to_lower_copy(util::loadString(ais->usepath_name)));

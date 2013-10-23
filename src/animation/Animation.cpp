@@ -288,7 +288,7 @@ EERIE_ANIM * TheaToEerie(const char * adr, size_t size, const res::path & file) 
 			LogDebug(" -> move x " << tkm->x << " y " << tkm->y << " z " << tkm->z
 					 << " THEA_KEYMOVE:" << sizeof(THEA_KEYMOVE));
 
-			eerie->frames[i].translate = *tkm;
+			eerie->frames[i].translate = tkm->toVec3();
 		}
 
 		// Is There a Global Rotation ?
@@ -318,8 +318,8 @@ EERIE_ANIM * TheaToEerie(const char * adr, size_t size, const res::path & file) 
 			EERIE_GROUP * eg = &eerie->groups[j + i * th->nb_groups];
 			eg->key = tga->key_group;
 			eg->quat = tga->Quaternion;
-			eg->translate = tga->translate;
-			eg->zoom = tga->zoom;
+			eg->translate = tga->translate.toVec3();
+			eg->zoom = tga->zoom.toVec3();
 		}
 
 		// Now Read Sound Data included in this frame

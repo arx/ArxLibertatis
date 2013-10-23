@@ -200,7 +200,7 @@ struct SavedCylinder {
 	
 	inline operator EERIE_CYLINDER() const {
 		EERIE_CYLINDER a;
-		a.origin = origin, a.radius = radius, a.height = height;
+		a.origin = origin.toVec3(), a.radius = radius, a.height = height;
 		return a;
 	}
 	
@@ -222,10 +222,10 @@ struct SavedIOPhysics {
 	inline operator IO_PHYSICS() const {
 		IO_PHYSICS a;
 		a.cyl = cyl;
-		a.startpos = startpos;
-		a.targetpos = targetpos;
-		a.velocity = velocity;
-		a.forces = forces;
+		a.startpos = startpos.toVec3();
+		a.targetpos = targetpos.toVec3();
+		a.velocity = velocity.toVec3();
+		a.forces = forces.toVec3();
 		return a;
 	}
 	
@@ -573,7 +573,7 @@ struct SavedHalo {
 		a.radius = radius;
 		a.flags = HaloFlags::load(flags); // TODO save/load flags
 		a.dynlight = dynlight;
-		a.offset = offset;
+		a.offset = offset.toVec3();
 		return a;
 	}
 	
@@ -999,7 +999,7 @@ struct SavedTransform {
 	
 	inline operator EERIE_TRANSFORM() const {
 		EERIE_TRANSFORM a;
-		a.pos = pos;
+		a.pos = pos.toVec3();
 		a.ycos = ycos, a.ysin = ysin, a.xsin = xsin, a.xcos = xcos;
 		a.mod.x = xmod, a.mod.y = ymod;
 		return a;
@@ -1076,9 +1076,9 @@ struct SavedCamera {
 		
 		a.angle = angle;
 		
-		a.d_pos = d_pos, a.d_angle = d_angle;
-		a.lasttarget = lasttarget, a.lastpos = lastpos;
-		a.translatetarget = translatetarget;
+		a.d_pos = d_pos.toVec3(), a.d_angle = d_angle;
+		a.lasttarget = lasttarget.toVec3(), a.lastpos = lastpos.toVec3();
+		a.translatetarget = translatetarget.toVec3();
 		a.lastinfovalid = lastinfovalid != 0;
 		a.fadecolor = fadecolor, a.clip = clip;
 		a.center = Vec2i(centerx, centery);

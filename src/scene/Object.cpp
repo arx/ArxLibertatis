@@ -303,7 +303,7 @@ static void loadObjectData(EERIE_3DOBJ * eerie, const char * adr, size_t * poss,
 	for(long i = 0; i < tn->nb_vertex; i++) {
 		const THEO_VERTEX * ptv = reinterpret_cast<const THEO_VERTEX *>(adr + pos);
 		pos += sizeof(THEO_VERTEX);
-		eerie->vertexlist[i].v = ptv->pos;
+		eerie->vertexlist[i].v = ptv->pos.toVec3();
 		eerie->cub.xmin = min(eerie->cub.xmin, ptv->pos.x);
 		eerie->cub.xmax = max(eerie->cub.xmax, ptv->pos.x);
 		eerie->cub.ymin = min(eerie->cub.ymin, ptv->pos.y);
@@ -546,7 +546,7 @@ static void loadObjectData(EERIE_3DOBJ * eerie, const char * adr, size_t * poss,
 		const THEO_EXTRA_DATA_3005 * pted3005 = reinterpret_cast<const THEO_EXTRA_DATA_3005 *>(adr + pos);
 		pos += sizeof(THEO_EXTRA_DATA_3005);
 		
-		eerie->pos = pted3005->pos;
+		eerie->pos = pted3005->pos.toVec3();
 		
 		eerie->angle.a = (float)(pted3005->angle.alpha & 0xfff) * THEO_ROTCONVERT;
 		eerie->angle.b = (float)(pted3005->angle.beta & 0xfff) * THEO_ROTCONVERT;
@@ -562,7 +562,7 @@ static void loadObjectData(EERIE_3DOBJ * eerie, const char * adr, size_t * poss,
 		const THEO_EXTRA_DATA * pted = reinterpret_cast<const THEO_EXTRA_DATA *>(adr + pos);
 		pos += sizeof(THEO_EXTRA_DATA);
 		
-		eerie->pos = pted->pos;
+		eerie->pos = pted->pos.toVec3();
 		
 		eerie->angle.a = (float)(pted->angle.alpha & 0xfff) * THEO_ROTCONVERT;
 		eerie->angle.b = (float)(pted->angle.beta & 0xfff) * THEO_ROTCONVERT;
@@ -755,7 +755,7 @@ static EERIE_3DSCENE * ScnToEerie(const char * adr, size_t size, const res::path
 		light.rgb.r = (float)tsl3024->red * ( 1.0f / 255 );
 		light.rgb.g = (float)tsl3024->green * ( 1.0f / 255 );
 		light.rgb.b = (float)tsl3024->blue * ( 1.0f / 255 );
-		light.pos = tsl3024->pos;
+		light.pos = tsl3024->pos.toVec3();
 		light.fallstart = (float)tsl3024->hotspot;
 		light.fallend = (float)tsl3024->falloff;
 		

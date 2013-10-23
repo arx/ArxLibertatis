@@ -275,14 +275,14 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 			k.frame = k175.frame;
 			k.fx = k175.fx;
 			k.numbitmap = k175.numbitmap;
-			k.pos = k175.pos;
+			k.pos = k175.pos.toVec3();
 			k.speed = k175.speed;
 			k.typeinterp = k175.typeinterp;
 			k.force = k175.force;
 			idsound = k175.idsound;
 			k.idsound = -1;
 			k.light = k175.light;
-			k.posgrille = k175.posgrille;
+			k.posgrille = k175.posgrille.toVec3();
 			k.angzgrille = k175.angzgrille;
 			k.speedtrack = k175.speedtrack;
 			
@@ -301,12 +301,12 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 			k.frame = k176.frame;
 			k.fx = k176.fx;
 			k.numbitmap = k176.numbitmap;
-			k.pos = k176.pos;
+			k.pos = k176.pos.toVec3();
 			k.speed = k176.speed;
 			k.typeinterp = k176.typeinterp;
 			k.force = k176.force;
 			k.light = k176.light;
-			k.posgrille = k176.posgrille;
+			k.posgrille = k176.posgrille.toVec3();
 			k.angzgrille = k176.angzgrille;
 			k.speedtrack = k176.speedtrack;
 			idsound = k176.idsound[0]; // 0 was the language code for 'French'

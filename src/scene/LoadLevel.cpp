@@ -648,7 +648,7 @@ long DanaeLoadLevel(const res::path & file, bool loadEntities) {
 		}
 	}
 	
-	loddpos = subj.orgTrans.pos = dlh.pos_edit;
+	loddpos = subj.orgTrans.pos = dlh.pos_edit.toVec3();
 	player.desiredangle = player.angle = subj.angle = dlh.angle_edit;
 	
 	if(strcmp(dlh.ident, "DANAE_FILE")) {
@@ -743,7 +743,7 @@ long DanaeLoadLevel(const res::path & file, bool loadEntities) {
 			}
 			
 			res::path classPath = res::path::load(pathstr).remove_ext();
-			LoadInter_Ex(classPath, dli->ident, dli->pos, dli->angle, trans);
+			LoadInter_Ex(classPath, dli->ident, dli->pos.toVec3(), dli->angle, trans);
 		}
 	}
 	
@@ -810,7 +810,7 @@ long DanaeLoadLevel(const res::path & file, bool loadEntities) {
 				el->falldiff = el->fallend - el->fallstart;
 				el->falldiffmul = 1.f / el->falldiff;
 				el->intensity = dlight->intensity;
-				el->pos = dlight->pos;
+				el->pos = dlight->pos.toVec3();
 				el->rgb = dlight->rgb;
 				
 				el->extras = ExtrasType::load(dlight->extras);
@@ -853,7 +853,7 @@ long DanaeLoadLevel(const res::path & file, bool loadEntities) {
 			fd->exist = 1;
 			fd->rgb = dlf->rgb;
 			fd->angle = dlf->angle;
-			fd->pos = Vec3f(dlf->pos) + trans;
+			fd->pos = dlf->pos.toVec3() + trans;
 			fd->blend = dlf->blend;
 			fd->frequency = dlf->frequency;
 			fd->rotatespeed = dlf->rotatespeed;
@@ -888,7 +888,7 @@ long DanaeLoadLevel(const res::path & file, bool loadEntities) {
 		pos += sizeof(DANAE_LS_NODE);
 		
 		strcpy(nodes.nodes[i].name, boost::to_lower_copy(util::loadString(dln->name)).c_str());
-		nodes.nodes[i].pos = (Vec3f)dln->pos + trans;
+		nodes.nodes[i].pos = dln->pos.toVec3() + trans;
 		
 		for(long j = 0; j < dlh.nb_nodeslinks; j++) {
 			if(dat[pos] != '\0') {
@@ -913,11 +913,11 @@ long DanaeLoadLevel(const res::path & file, bool loadEntities) {
 		const DANAE_LS_PATH * dlp = reinterpret_cast<const DANAE_LS_PATH *>(dat + pos);
 		pos += sizeof(DANAE_LS_PATH);
 		
-		Vec3f ppos = Vec3f(dlp->initpos) + trans;
+		Vec3f ppos = dlp->initpos.toVec3() + trans;
 		ARX_PATH * ap = ARXpaths[i] = new ARX_PATH(boost::to_lower_copy(util::loadString(dlp->name)), ppos);
 		
 		ap->flags = PathFlags::load(dlp->flags); // TODO save/load flags
-		ap->pos = Vec3f(dlp->pos) + trans;
+		ap->pos = dlp->pos.toVec3() + trans;
 		ap->nb_pathways = dlp->nb_pathways;
 		ap->height = dlp->height;
 		ap->ambiance = res::path::load(util::loadString(dlp->ambiance));
@@ -940,7 +940,7 @@ long DanaeLoadLevel(const res::path & file, bool loadEntities) {
 			pos += sizeof(DANAE_LS_PATHWAYS);
 			
 			app[j].flag = (PathwayType)dlpw->flag; // save/load enum
-			app[j].rpos = dlpw->rpos;
+			app[j].rpos = dlpw->rpos.toVec3();
 			app[j]._time = static_cast<float>(dlpw->time);
 		}
 	}
@@ -1007,11 +1007,10 @@ long DanaeLoadLevel(const res::path & file, bool loadEntities) {
 			el->falldiffmul = 1.f / el->falldiff;
 			el->intensity = dlight->intensity;
 			
+			el->pos = dlight->pos.toVec3();
 			if(FASTmse) {
-				el->pos = Vec3f(dlight->pos) + trans;
-			} else {
-				el->pos = dlight->pos;
-			}
+				el->pos += trans;
+			} 
 			
 			el->rgb = dlight->rgb;
 			

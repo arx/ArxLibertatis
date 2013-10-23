@@ -255,7 +255,7 @@ struct EERIE_OLD_VERTEX {
 	
 	inline operator EERIE_VERTEX() const {
 		EERIE_VERTEX a;
-		a.vert = vert, a.v = v, a.norm = norm;
+		a.vert = vert, a.v = v.toVec3(), a.norm = norm.toVec3();
 		return a;
 	}
 	
@@ -287,14 +287,14 @@ struct CLOTHESVERTEX_FTL {
 		a.idx = idx;
 		a.flags = flags;
 		a.coll = coll;
-		a.pos = pos;
-		a.velocity = velocity;
-		a.force = force;
+		a.pos = pos.toVec3();
+		a.velocity = velocity.toVec3();
+		a.force = force.toVec3();
 		a.mass = mass;
-		a.t_pos = t_pos;
-		a.t_velocity = t_velocity;
-		a.t_force = t_force;
-		a.lastpos = lastpos;
+		a.t_pos = t_pos.toVec3();
+		a.t_velocity = t_velocity.toVec3();
+		a.t_force = t_force.toVec3();
+		a.lastpos = lastpos.toVec3();
 		return a;
 	}
 	

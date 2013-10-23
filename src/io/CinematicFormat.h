@@ -70,7 +70,7 @@ struct CinematicLight_1_71 {
 	
 	inline operator CinematicLight() {
 		CinematicLight l;
-		l.pos = pos;
+		l.pos = pos.toVec3();
 		l.fallin = fallin;
 		l.fallout = fallout;
 		l.color = color;

@@ -51,7 +51,7 @@ struct SavedVec3 {
 	f32 y;
 	f32 z;
 	
-	inline operator Vec3f() const {
+	inline Vec3f toVec3() const {
 		Vec3f a;
 		a.x = x, a.y = y, a.z = z;
 		return a;

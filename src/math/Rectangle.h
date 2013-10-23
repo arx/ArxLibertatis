@@ -47,9 +47,15 @@ public:
 			return *this;
 		}
 		
-        operator typename vec2_traits<T>::type () {
+#ifdef USE_GLM_VECTORS
+        typename vec2_traits<T>::type toVec2() const {
 			return typename vec2_traits<T>::type(x, y);
         }
+#else
+		Vector2<T> toVec2() const {
+			return Vector2<T>(x, y);
+		}
+#endif
 
 		DummyVec2 & operator=(const typename vec2_traits<T>::type & vec) {
             x = vec.x, y = vec.y;

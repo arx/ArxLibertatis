@@ -111,7 +111,7 @@ bool PackedTexture::insertImage(const Image & image, unsigned int & textureIndex
 	// Copy texture there
 	if(node) {
 		// Copy values back into info structure
-		offset = node->rect.origin;
+		offset = node->rect.origin.toVec2();
 		textureIndex = nodeTree;
 	}
 	
