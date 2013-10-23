@@ -1972,7 +1972,7 @@ static void ARX_SPELLS_Analyse() {
 
 	for(long i = 1; i < CurrPoint ; i++) {
 		
-		Vec2s d = plist[i-1] - plist[i];
+		Vec2f d = Vec2f(plist[i-1] - plist[i]);
 		
 		if(lengthSqr(d) > 100) {
 			
