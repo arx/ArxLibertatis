@@ -24,10 +24,12 @@
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/euler_angles.hpp>
 #include <glm/gtx/compatibility.hpp>
 #include <glm/gtx/norm.hpp>
+#include <glm/gtx/transform.hpp>
+
 
 // Temp macro to compare results of GLM vs old arx maths
 //#define USE_GLM_VECTORS
