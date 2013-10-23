@@ -57,7 +57,7 @@ public:
 	
 	/*!
 	 * Set this angle to the content of another angle.
-	 * @brief Assignement operator.
+	 * @brief Assignment operator.
 	 * @param other An euler angle to be copied.
 	 * @return Reference to this object.
 	 */
@@ -106,10 +106,10 @@ public:
 	}
 	
 	/*!
-	 * Substract an angle to this angle.
-	 * @brief Substraction operator.
-	 * @param other an angle, to be substracted to this angle.
-	 * @return A new angle, the result of the substraction of the two angles.
+	 * Subtract an angle to this angle.
+	 * @brief Subtraction operator.
+	 * @param other an angle, to be subtracted to this angle.
+	 * @return A new angle, the result of the subtraction of the two angles.
 	 */
 	Angle operator-(const Angle & other) const {
 		return Angle(a - other.a, b - other.b, g - other.g);

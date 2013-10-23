@@ -490,15 +490,7 @@ void SetActiveCamera(EERIE_CAMERA * cam)
 }
 
 void EE_RT(Vec3f * in, Vec3f * out) {
-	
-	EERIE_TRANSFORM * et = (EERIE_TRANSFORM *)&ACTIVECAM->orgTrans;
-	
-	glm::vec4 vIn(in->x, in->y, in->z, 1.0f);
-	glm::vec4 vOut = et->worldToView * vIn;
-
-	out->x = vOut.x;
-	out->y = vOut.y;
-	out->z = vOut.z;
+	*out = Vec3f(ACTIVECAM->orgTrans.worldToView * Vec4f(*in, 1.0f));
 }
 
 void EE_RT2(TexturedVertex * in, TexturedVertex * out) {

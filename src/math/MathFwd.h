@@ -78,6 +78,10 @@ typedef vec_traits<s32, 3>::type Vec3i;
 typedef vec_traits<f32, 3>::type Vec3f;
 typedef vec_traits<f64, 3>::type Vec3d;
 
+typedef vec_traits<s32, 4>::type Vec4i;
+typedef vec_traits<f32, 4>::type Vec4f;
+typedef vec_traits<f64, 4>::type Vec4d;
+
 
 template<class V>
 typename V::value_type dist(const V & a, const V & b) {

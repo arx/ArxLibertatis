@@ -31,7 +31,7 @@ void EERIE_TRANSFORM::updateFromAngle(const Anglef &angle) {
 	zcos = std::cos(roll);
 	zsin = std::sin(roll);
 
-	glm::mat4 translation = glm::translate(glm::vec3(-pos.x, -pos.y, -pos.z));
+	glm::mat4 translation = glm::translate(-pos);
 	glm::mat4 rotateX = glm::eulerAngleX(yaw);
 	glm::mat4 rotateY = glm::eulerAngleY(pitch);
 	glm::mat4 rotateZ = glm::eulerAngleZ(-roll);
