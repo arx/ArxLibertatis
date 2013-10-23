@@ -4546,7 +4546,7 @@ static bool ComputePer(const Vec2s & _psPoint1, const Vec2s & _psPoint2, Texture
 	float fTemp = sTemp.x;
 	sTemp.x = -sTemp.y;
 	sTemp.y = fTemp;
-	float fMag = sTemp.length();
+	float fMag = length(sTemp);
 	if(fMag < std::numeric_limits<float>::epsilon()) {
 		return false;
 	}

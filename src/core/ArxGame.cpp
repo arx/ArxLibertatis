@@ -1859,7 +1859,7 @@ void ArxGame::update2DFX()
 				)
 			{
 				Vec3f vector = lv.p - ACTIVECAM->orgTrans.pos;
-				lv.p -= vector * (50.f / vector.length());
+				lv.p -= vector * (50.f / length(vector));
 				TexturedVertex ltvv2;
 				EE_RTP(&lv, &ltvv2);
 

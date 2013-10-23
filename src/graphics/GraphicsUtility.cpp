@@ -60,7 +60,7 @@ void Util_SetViewMatrix(EERIEMATRIX &mat, EERIE_TRANSFORM &transform) {
 	Vec3f vWorldUp(0.f, 1.f, 0.f);
 
 	// Normalize the z basis vector
-	float fLength = vView.length();
+	float fLength = length(vView);
 	if (fLength < 1e-6f)
 		return;
 
@@ -72,16 +72,16 @@ void Util_SetViewMatrix(EERIEMATRIX &mat, EERIE_TRANSFORM &transform) {
 
 	// If this vector has near-zero length because the input specified a
 	// bogus up vector, let's try a default up vector
-	if (1e-6f > (fLength = vUp.length()))
+	if(1e-6f > (fLength = length(vUp)))
 	{
 		vUp = Vec3f_Y_AXIS - vView * vView.y;
 
 		// If we still have near-zero length, resort to a different axis.
-		if (1e-6f > (fLength = vUp.length()))
+		if(1e-6f > (fLength = length(vUp)))
 		{
 			vUp = Vec3f_Z_AXIS - vView * vView.z;
 
-			if (1e-6f > (fLength = vUp.length()))
+			if(1e-6f > (fLength = length(vUp)))
 				return;
 		}
 	}
