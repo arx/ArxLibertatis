@@ -38,24 +38,9 @@ public:
 		T x;
 		T y;
 		
-		operator Vector2<T>() {
-			return Vector2<T>(x, y);
-		}
-		
-		DummyVec2 & operator=(const Vector2<T> & vec) {
-			x = vec.x, y = vec.y;
-			return *this;
-		}
-		
-#ifdef USE_GLM_VECTORS
         typename vec2_traits<T>::type toVec2() const {
 			return typename vec2_traits<T>::type(x, y);
         }
-#else
-		Vector2<T> toVec2() const {
-			return Vector2<T>(x, y);
-		}
-#endif
 
 		DummyVec2 & operator=(const typename vec2_traits<T>::type & vec) {
             x = vec.x, y = vec.y;
@@ -89,10 +74,6 @@ public:
 	
 	Rectangle_(T _left, T _top, T _right, T _bottom) : left(_left), top(_top), right(_right), bottom(_bottom) { }
 	
-	Rectangle_(const Vector2<T> & _origin, T width = T(0), T height = T(0)) : left(_origin.x), top(_origin.y), right(_origin.x + width), bottom(_origin.y + height) { }
-	
-	Rectangle_(const Vector2<T> & _origin, const Vector2<T> & _end) : left(_origin.x), top(_origin.y), right(_end.x), bottom(_end.y) { }
-
     Rectangle_(const typename vec2_traits<T>::type & _origin, T width = T(0), T height = T(0)) : left(_origin.x), top(_origin.y), right(_origin.x + width), bottom(_origin.y + height) { }
 
 	Rectangle_(const typename vec2_traits<T>::type & _origin, const typename vec2_traits<T>::type & _end) : left(_origin.x), top(_origin.y), right(_end.x), bottom(_end.y) {}
@@ -116,16 +97,7 @@ public:
 		return bottom - top;
 	}
 	
-	Rectangle_ operator+(const Vector2<T> & offset) const {
-		return Rectangle_(origin + offset, end + offset);
-	}
-	
-	Rectangle_ & operator+=(const Vector2<T> & offset) {
-		origin += offset, end += offset;
-		return *this;
-	}
-
-	Rectangle_ operator+(const typename vec2_traits<T>::type & offset) const {
+    Rectangle_ operator+(const typename vec2_traits<T>::type & offset) const {
         return Rectangle_(origin + offset, end + offset);
     }
 
@@ -141,10 +113,6 @@ public:
 	bool contains(const typename vec2_traits<T>::type & point) const {
         return (point.x >= left && point.x < right && point.y >= top && point.y < bottom);
     }
-
-	bool contains(const Vector2<T> & point) const {
-		return (point.x >= left && point.x < right && point.y >= top && point.y < bottom);
-	}
 
 	bool contains(T x, T y) const {
 		return (x >= left && x < right && y >= top && y < bottom);
@@ -189,15 +157,9 @@ public:
 		return (left <= right && top <= bottom);
 	}
 	
-#ifdef USE_GLM_VECTORS
 	typename vec2_traits<T>::type center() const {
 		return typename vec2_traits<T>::type(left + (right - left) / 2, top + (bottom - top) / 2);
     }
-#else
-	Vector2<T> center() const {
-		return Vector2<T>(left + (right - left) / 2, top + (bottom - top) / 2);
-	}
-#endif    
 	
 	static const Rectangle_ ZERO;
 	

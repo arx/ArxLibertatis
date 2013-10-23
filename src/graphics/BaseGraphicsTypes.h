@@ -116,10 +116,8 @@ struct EERIE_2D_BBOX {
 	}
 
 	void add(const Vec3f & pos) {
-		min.x = std::min(min.x, pos.x);
-		max.x = std::max(max.x, pos.x);
-		min.y = std::min(min.y, pos.y);
-		max.y = std::max(max.y, pos.y);
+		min = componentwise_min(min, Vec2f(pos));
+		max = componentwise_max(max, Vec2f(pos));
 	}
 };
 

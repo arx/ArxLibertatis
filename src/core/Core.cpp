@@ -3166,7 +3166,7 @@ void ShowFpsGraph() {
 		std::stringstream ss;
 		ss << "Average: " << std::fixed << std::setprecision(2) << avg << " FPS";
 	
-		Vector2<int> strPos = Vector2<int>(windowSize.x - hFontDebug->getTextSize(ss.str()).x - 5,avgPos - hFontDebug->getLineHeight());
+		Vec2i strPos = Vec2i(windowSize.x - hFontDebug->getTextSize(ss.str()).x - 5,avgPos - hFontDebug->getLineHeight());
 		hFontDebug->draw(strPos, ss.str(), Color::blue);
 		EERIEDraw2DLine(0, avgPos,  windowSize.x, avgPos, 1.0f, Color::blue);
 	}
@@ -3177,7 +3177,7 @@ void ShowFpsGraph() {
 		std::stringstream ss;
 		ss << "Worst: " << std::fixed << std::setprecision(2) << worst << " FPS";
 		
-		Vector2<int> strPos = Vector2<int>(windowSize.x - hFontDebug->getTextSize(ss.str()).x - 5, worstPos - hFontDebug->getLineHeight());
+		Vec2i strPos = Vec2i(windowSize.x - hFontDebug->getTextSize(ss.str()).x - 5, worstPos - hFontDebug->getLineHeight());
 		hFontDebug->draw(strPos, ss.str(), Color::red);
 		EERIEDraw2DLine(0, worstPos,  windowSize.x, worstPos, 1.0f, Color::red);
 	}
@@ -3187,7 +3187,7 @@ void ShowFpsGraph() {
 
 		std::stringstream ss;
 		ss << "Current: " << std::fixed << std::setprecision(2) << lastFPSArray[0] << " FPS";
-		Vector2<int> strPos = Vector2<int>(5, currentPos - hFontDebug->getLineHeight());
+		Vec2i strPos = Vec2i(5, currentPos - hFontDebug->getLineHeight());
 		hFontDebug->draw(strPos, ss.str(), Color::white);
 	}
 }

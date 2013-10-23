@@ -102,7 +102,7 @@ public:
 	const res::path & getName() const { return info.name; }
 	unsigned int getSize() const { return info.size; }
 	
-	void draw(const Vector2<int> & p, const std::string & str, const Color & color) {
+	void draw(const Vec2i & p, const std::string & str, const Color & color) {
 		draw(p.x, p.y, str, color);
 	}
 	

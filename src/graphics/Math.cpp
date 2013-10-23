@@ -257,7 +257,6 @@ int tri_tri_intersect(const EERIE_TRI * VV, const EERIE_TRI * UU)
 	const float * U1;
 	const float * U2;
 
-#ifdef USE_GLM_VECTORS
 	V0 = glm::value_ptr(VV->v[0]);
 	V1 = glm::value_ptr(VV->v[1]);
 	V2 = glm::value_ptr(VV->v[2]);
@@ -265,15 +264,6 @@ int tri_tri_intersect(const EERIE_TRI * VV, const EERIE_TRI * UU)
 	U0 = glm::value_ptr(UU->v[0]);
 	U1 = glm::value_ptr(UU->v[1]);
 	U2 = glm::value_ptr(UU->v[2]);
-#else
-	V0 = VV->v[0].elem;
-	V1 = VV->v[1].elem;
-	V2 = VV->v[2].elem;
-
-	U0 = UU->v[0].elem;
-	U1 = UU->v[1].elem;
-	U2 = UU->v[2].elem;
-#endif
 
 	/* compute plane equation of triangle(V0,V1,V2) */
 	SUB(E1, V1, V0);

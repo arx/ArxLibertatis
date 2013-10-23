@@ -685,16 +685,16 @@ void ArxGame::outputTextGrid(float column, float row, const std::string &text, c
 
 	// TODO: could use quadrants for width or something similar
 	// TODO: could center text in column/row
-	const Vector2<int> size(window.x / 4, selected_font->getLineHeight());
+	const Vec2i size(window.x / 4, selected_font->getLineHeight());
 
-	const Vector2<int> spacing(2, 2);
-	const Vector2<float> p(column + (column < 0), row + (row < 0));
+	const Vec2i spacing(2, 2);
+	const Vec2i p(column + (column < 0), row + (row < 0));
 
 	// offset text into the screen a bit
-	const Vector2<int> offset((column < 0 ? window.x - tsize - size.x : tsize), (row < 0 ? window.y - tsize - size.y : tsize));
+	const Vec2i offset((column < 0 ? window.x - tsize - size.x : tsize), (row < 0 ? window.y - tsize - size.y : tsize));
 
 	// print the text directly using our selected font
-	selected_font->draw(offset + Vector2<int>(p.x * (size + spacing).x, p.y * (size + spacing).y), text, color);
+	selected_font->draw(offset + Vec2i(p.x * (size + spacing).x, p.y * (size + spacing).y), text, color);
 
 }
 

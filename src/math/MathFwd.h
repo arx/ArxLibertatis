@@ -30,11 +30,6 @@
 #include <glm/gtx/norm.hpp>
 #include <glm/gtx/transform.hpp>
 
-
-// Temp macro to compare results of GLM vs old arx maths
-#define USE_GLM_VECTORS
-#define GLM_VALIDATE(v1, v2) static bool BOOST_PP_CAT(bValidate,__LINE__) = true; if(BOOST_PP_CAT(bValidate,__LINE__)) arx_assert(v1 == v2)
-
 template <class T>
 class Angle;
 typedef Angle<s32> Anglei;
@@ -45,9 +40,6 @@ template<class T>
 class Rectangle_;
 typedef Rectangle_<s32> Rect;
 typedef Rectangle_<float> Rectf;
-
-template <class T>
-class Vector2;
 
 
 #if GLM_VERSION >= 95
@@ -66,6 +58,7 @@ class Vector2;
 	};
 #endif
 
+
 template <class T> struct vec2_traits : public vec_traits_base<T, glm::detail::tvec2, 2>{};
 template <class T> struct vec3_traits : public vec_traits_base<T, glm::detail::tvec3, 3>{};
 template <class T> struct vec4_traits : public vec_traits_base<T, glm::detail::tvec4, 4>{};
@@ -75,98 +68,75 @@ template <class T> struct vec_traits<T, 2> : public vec2_traits<T>{};
 template <class T> struct vec_traits<T, 3> : public vec3_traits<T>{};
 template <class T> struct vec_traits<T, 4> : public vec4_traits<T>{};
 
-#ifdef USE_GLM_VECTORS
-	typedef vec_traits<s32, 2>::type Vec2i;
-	typedef vec_traits<s16, 2>::type Vec2s;
-	typedef vec_traits<f32, 2>::type Vec2f;
-	typedef vec_traits<f64, 2>::type Vec2d;
-#else
-	typedef Vector2<s32> Vec2i;
-	typedef Vector2<short> Vec2s;
-	typedef Vector2<float> Vec2f;
-	typedef Vector2<double> Vec2d;
-#endif
 
-template <class T>
-class Vector3;
+typedef vec_traits<s32, 2>::type Vec2i;
+typedef vec_traits<s16, 2>::type Vec2s;
+typedef vec_traits<f32, 2>::type Vec2f;
+typedef vec_traits<f64, 2>::type Vec2d;
 
-#ifdef USE_GLM_VECTORS
-	typedef vec_traits<s32, 3>::type Vec3i;
-	typedef vec_traits<f32, 3>::type Vec3f;
-	typedef vec_traits<f64, 3>::type Vec3d;
-#else
-	typedef Vector3<s32> Vec3i;
-	typedef Vector3<float> Vec3f;
-	typedef Vector3<double> Vec3d;
-#endif
+typedef vec_traits<s32, 3>::type Vec3i;
+typedef vec_traits<f32, 3>::type Vec3f;
+typedef vec_traits<f64, 3>::type Vec3d;
 
-#ifdef USE_GLM_VECTORS
-	template<class V>
-	typename V::value_type dist(const V & a, const V & b) {
-		return glm::distance(a, b);
-	}
 
-	template<class V>
-	typename V::value_type distSqr(const V & a, const V & b) {
-		return glm::distance2(a, b);
-	}
+template<class V>
+typename V::value_type dist(const V & a, const V & b) {
+	return glm::distance(a, b);
+}
 
-	template<class V>
-	bool closerThan(const V & a, const V & b, typename V::value_type d) {
-		return distSqr(a, b) < (d * d);
-	}
+template<class V>
+typename V::value_type distSqr(const V & a, const V & b) {
+	return glm::distance2(a, b);
+}
 
-	template<class V>
-	bool fartherThan(const V & a, const V & b, typename V::value_type d) {
-		return distSqr(a, b) > (d * d);
-	}
+template<class V>
+bool closerThan(const V & a, const V & b, typename V::value_type d) {
+	return distSqr(a, b) < (d * d);
+}
 
-	template<class V>
-	V normalize(const V & v0) {
-		return glm::normalize(v0);
-	}
+template<class V>
+bool fartherThan(const V & a, const V & b, typename V::value_type d) {
+	return distSqr(a, b) > (d * d);
+}
 
-	template<class V>
-	typename V::value_type length(const V & v0) {
-		return glm::length(v0);
-	}
+template<class V>
+V normalize(const V & v0) {
+	return glm::normalize(v0);
+}
 
-	template<class V>
-	typename V::value_type lengthSqr(const V & v0) {
-		return glm::length2(v0);
-	}
+template<class V>
+typename V::value_type length(const V & v0) {
+	return glm::length(v0);
+}
 
-	template<class V>
-	V cross(const V & a, const V & b) {
-		return glm::cross(a, b);
-	}
+template<class V>
+typename V::value_type lengthSqr(const V & v0) {
+	return glm::length2(v0);
+}
 
-	template<class V>
-	typename V::value_type dot(const V & a, const V & b) {
-		return glm::dot(a, b);
-	}
+template<class V>
+V cross(const V & a, const V & b) {
+	return glm::cross(a, b);
+}
 
-	template <class V>
-	V componentwise_min(const V & v0, const V & v1) {
-		return glm::min(v0, v1);
-	}
-	template <class V>
-	V componentwise_max(const V & v0, const V & v1) {
-		return glm::max(v0, v1);
-	}
-#endif
+template<class V>
+typename V::value_type dot(const V & a, const V & b) {
+	return glm::dot(a, b);
+}
 
-#ifndef USE_GLM_VECTORS
-	template <class T>
-	inline bool isallfinite(Vector3<T> vec) {
-		return (boost::math::isfinite)(vec.x) && (boost::math::isfinite)(vec.y)  && (boost::math::isfinite)(vec.z);
-	}
-#else
-	template <class V>
-	inline bool isallfinite(const V& vec) {
-		return glm::all(glm::isfinite(vec));
-	}
-#endif
+template <class V>
+V componentwise_min(const V & v0, const V & v1) {
+	return glm::min(v0, v1);
+}
+template <class V>
+V componentwise_max(const V & v0, const V & v1) {
+	return glm::max(v0, v1);
+}
+
+template <class V>
+bool isallfinite(const V& vec) {
+	return glm::all(glm::isfinite(vec));
+}
 
 // Math constants
 #define PI 3.14159265358979323846f
