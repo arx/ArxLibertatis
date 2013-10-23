@@ -146,8 +146,8 @@ public:
 	 * @param scale value to divide this vector by.
 	 * @return A new vector, the result of the division.
 	 */
-	Vector2 operator/(T scale) const {
-		return Vector2(x / scale, y / scale);
+	Vector2 operator/(const Vector2 & other) const {
+		return Vector2(x / other.x, y / other.y);
 	}
 	
 	/*!
@@ -188,8 +188,8 @@ public:
 	 * @param scale Value to be used for the division.
 	 * @return A const reference to this vector.
 	 */
-	const Vector2 & operator/=(T scale) {
-		x /= scale, y /= scale;
+	const Vector2 & operator/=(const Vector2 & other) {
+		x /= other.x, y /= other.y;
 		return *this;
 	}
 	
