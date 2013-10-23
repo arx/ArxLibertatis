@@ -47,4 +47,9 @@ inline bool isallfinite(Vector3<T> vec) {
 	return (boost::math::isfinite)(vec.x) && (boost::math::isfinite)(vec.y)  && (boost::math::isfinite)(vec.z);
 }
 
+template <class T>
+inline bool isallfinite(glm::detail::tvec3<T> vec) {
+    return (boost::math::isfinite)(vec.x) && (boost::math::isfinite)(vec.y)  && (boost::math::isfinite)(vec.z);
+}
+
 #endif // ARX_AUDIO_OPENAL_OPENALUTILS_H
