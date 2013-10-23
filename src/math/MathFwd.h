@@ -47,7 +47,7 @@ typedef Rectangle_<float> Rectf;
 	struct vec_traits_base {
 		enum { num_components = N };
 		typedef T component_type;
-		typedef V<T, glm::precision::mediump> type;
+		typedef V<T, glm::mediump> type;
 	};
 #else
 	template <class T, template <class> class V, int N>
