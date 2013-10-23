@@ -47,11 +47,11 @@ public:
 			return *this;
 		}
 		
-        operator glm::detail::tvec2<T>() {
-            return glm::detail::tvec2<T>(x, y);
+        operator typename vec2_traits<T>::type () {
+			return typename vec2_traits<T>::type(x, y);
         }
 
-        DummyVec2 & operator=(const glm::detail::tvec2<T> & vec) {
+		DummyVec2 & operator=(const typename vec2_traits<T>::type & vec) {
             x = vec.x, y = vec.y;
             return *this;
         }
@@ -87,9 +87,9 @@ public:
 	
 	Rectangle_(const Vector2<T> & _origin, const Vector2<T> & _end) : left(_origin.x), top(_origin.y), right(_end.x), bottom(_end.y) { }
 
-    Rectangle_(const glm::detail::tvec2<T> & _origin, T width = T(0), T height = T(0)) : left(_origin.x), top(_origin.y), right(_origin.x + width), bottom(_origin.y + height) { }
+    Rectangle_(const typename vec2_traits<T>::type & _origin, T width = T(0), T height = T(0)) : left(_origin.x), top(_origin.y), right(_origin.x + width), bottom(_origin.y + height) { }
 
-    Rectangle_(const glm::detail::tvec2<T> & _origin, const glm::detail::tvec2<T> & _end) : left(_origin.x), top(_origin.y), right(_end.x), bottom(_end.y) { }
+	Rectangle_(const typename vec2_traits<T>::type & _origin, const typename vec2_traits<T>::type & _end) : left(_origin.x), top(_origin.y), right(_end.x), bottom(_end.y) {}
 	
 	Rectangle_(T width, T height) : left(T(0)), top(T(0)), right(width), bottom(height) { }
 	
@@ -119,11 +119,11 @@ public:
 		return *this;
 	}
 
-    Rectangle_ operator+(const glm::detail::tvec2<T> & offset) const {
+	Rectangle_ operator+(const typename vec2_traits<T>::type & offset) const {
         return Rectangle_(origin + offset, end + offset);
     }
 
-    Rectangle_ & operator+=(const glm::detail::tvec2<T> & offset) {
+	Rectangle_ & operator+=(const typename vec2_traits<T>::type & offset) {
         origin += offset, end += offset;
         return *this;
     }
@@ -132,7 +132,7 @@ public:
 		left += dx, top += dy, right += dx, bottom += dy;
 	}
     
-    bool contains(const glm::detail::tvec2<T> & point) const {
+	bool contains(const typename vec2_traits<T>::type & point) const {
         return (point.x >= left && point.x < right && point.y >= top && point.y < bottom);
     }
 
@@ -184,8 +184,8 @@ public:
 	}
 	
 #ifdef USE_GLM_VECTORS
-    glm::detail::tvec2<T> center() const {
-        return glm::detail::tvec2<T>(left + (right - left) / 2, top + (bottom - top) / 2);
+	typename vec2_traits<T>::type center() const {
+		return typename vec2_traits<T>::type(left + (right - left) / 2, top + (bottom - top) / 2);
     }
 #else
 	Vector2<T> center() const {

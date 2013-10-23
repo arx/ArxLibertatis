@@ -273,6 +273,8 @@ public:
 
 };
 
+#ifndef USE_GLM_VECTORS
+
 template<class T>
 inline T dist(const Vector2<T> & a, const Vector2<T> & b) {
 	return a.distanceFrom(b);
@@ -306,36 +308,6 @@ inline T lengthSqr(const Vector2<T> & v0) {
 	return v0.x*v0.x + v0.y*v0.y;
 }
 
-#ifdef USE_GLM_VECTORS
-template<class T>
-inline T dist(const glm::detail::tvec2<T> & a, const glm::detail::tvec2<T> & b) {
-	return a.distanceFrom(b);
-}
-
-template<class T>
-inline T distSqr(const glm::detail::tvec2<T> & a, const glm::detail::tvec2<T> & b) {
-	return a.distanceFromSqr(b);
-}
-
-template<class T>
-inline bool closerThan(const glm::detail::tvec2<T> & a, const glm::detail::tvec2<T> & b, T d) {
-	return (distSqr(a, b) < (d * d));
-}
-
-template<class T>
-inline bool fartherThan(const glm::detail::tvec2<T> & a, const glm::detail::tvec2<T> & b, T d) {
-	return (distSqr(a, b) > (d * d));
-}
-
-template<class T>
-inline glm::detail::tvec2<T> normalize(const glm::detail::tvec2<T> & v0) {
-	return glm::normalize(v0);
-}
-
-template<class T>
-inline T lengthSqr(const glm::detail::tvec2<T> & v0) {
-	return glm::length2(v0);
-}
 #endif
 
 const Vec2i Vec2i_ZERO(0,0);
