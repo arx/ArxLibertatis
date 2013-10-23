@@ -32,7 +32,7 @@
 
 
 // Temp macro to compare results of GLM vs old arx maths
-//#define USE_GLM_VECTORS
+#define USE_GLM_VECTORS
 #define GLM_VALIDATE(v1, v2) static bool BOOST_PP_CAT(bValidate,__LINE__) = true; if(BOOST_PP_CAT(bValidate,__LINE__)) arx_assert(v1 == v2)
 
 template <class T>
@@ -70,7 +70,7 @@ template <class T> struct vec2_traits : public vec_traits_base<T, glm::detail::t
 template <class T> struct vec3_traits : public vec_traits_base<T, glm::detail::tvec3, 3>{};
 template <class T> struct vec4_traits : public vec_traits_base<T, glm::detail::tvec4, 4>{};
 
-template <class T, u32 N> struct vec_traits {};
+template <class T, int N> struct vec_traits {};
 template <class T> struct vec_traits<T, 2> : public vec2_traits<T>{};
 template <class T> struct vec_traits<T, 3> : public vec3_traits<T>{};
 template <class T> struct vec_traits<T, 4> : public vec4_traits<T>{};
