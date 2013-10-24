@@ -66,12 +66,12 @@ private:
 	typedef std::map<res::path, FontFile> FontFiles;
 	FontFiles m_files;
 	
-	FT_Library m_library = NULL;
+	FT_Library m_library;
 	
 	friend class FontCache;
 };
 
-FontCache::Impl::Impl() {
+FontCache::Impl::Impl() : m_library(NULL) {
 	
 	FT_Init_FreeType(&m_library);
 
@@ -88,7 +88,6 @@ FontCache::Impl::Impl() {
 FontCache::Impl::~Impl() {
 	arx_assert_msg(files.size() == 0, "Someone is probably leaking fonts!");
 	FT_Done_FreeType(m_library);
-	m_library = NULL;
 }
 
 Font * FontCache::Impl::getFont(const res::path & fontFile, unsigned int fontSize) {
