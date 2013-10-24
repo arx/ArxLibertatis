@@ -583,11 +583,11 @@ void print_spellcast_flags(s32 flags) {
 }
 
 void print_physics(const SavedIOPhysics & physics) {
-	if((Vec3f)physics.cyl.origin != Vec3f_ZERO || physics.cyl.radius || physics.cyl.height) cout << "  Cylinder: origin=" << physics.cyl.origin << " radius=" << physics.cyl.radius << " height=" << physics.cyl.height << endl;
-	if((Vec3f)physics.startpos != Vec3f_ZERO) cout << "  Start position: " << physics.startpos << endl;
-	if((Vec3f)physics.targetpos != Vec3f_ZERO) cout << "  Target position: " << physics.targetpos << endl;
-	if((Vec3f)physics.velocity != Vec3f_ZERO) cout << "  Velocity: " << physics.velocity << endl;
-	if((Vec3f)physics.forces != Vec3f_ZERO) cout << "  Forces: " << physics.forces << endl;
+	if(physics.cyl.origin.toVec3() != Vec3f_ZERO || physics.cyl.radius || physics.cyl.height) cout << "  Cylinder: origin=" << physics.cyl.origin << " radius=" << physics.cyl.radius << " height=" << physics.cyl.height << endl;
+	if(physics.startpos.toVec3() != Vec3f_ZERO) cout << "  Start position: " << physics.startpos << endl;
+	if(physics.targetpos.toVec3() != Vec3f_ZERO) cout << "  Target position: " << physics.targetpos << endl;
+	if(physics.velocity.toVec3() != Vec3f_ZERO) cout << "  Velocity: " << physics.velocity << endl;
+	if(physics.forces.toVec3() != Vec3f_ZERO) cout << "  Forces: " << physics.forces << endl;
 }
 
 void print_ident(SaveBlock & save, const string & ident) {
