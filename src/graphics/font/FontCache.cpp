@@ -46,12 +46,12 @@ private:
 	
 	struct FontFile {
 		
-		size_t size;
-		char * data;
+		size_t m_size;
+		char * m_data;
 		
-		FontFile() : size(0), data(NULL) { }
+		FontFile() : m_size(0), m_data(NULL) { }
 		
-		FontMap sizes;
+		FontMap m_sizes;
 		
 	};
 	
@@ -62,7 +62,7 @@ private:
 	void releaseFont(Font * font);
 	
 	typedef std::map<res::path, FontFile> FontFiles;
-	FontFiles files;
+	FontFiles m_files;
 	
 	FT_Library m_library = NULL;
 	
@@ -91,14 +91,14 @@ FontCache::Impl::~Impl() {
 
 Font * FontCache::Impl::getFont(const res::path & fontFile, unsigned int fontSize) {
 	
-	FontFile & file = files[fontFile];
+	FontFile & file = m_files[fontFile];
 	
 	Font * pFont = 0;
-	FontMap::iterator it = file.sizes.find(fontSize);
-	if(it == file.sizes.end()) {
+	FontMap::iterator it = file.m_sizes.find(fontSize);
+	if(it == file.m_sizes.end()) {
 		pFont = create(fontFile, file, fontSize);
 		if(pFont) {
-			file.sizes[fontSize] = pFont;
+			file.m_sizes[fontSize] = pFont;
 		}
 	} else {
 		pFont = (*it).second;
@@ -106,8 +106,8 @@ Font * FontCache::Impl::getFont(const res::path & fontFile, unsigned int fontSiz
 	
 	if(pFont) {
 		pFont->referenceCount++;
-	} else if(!file.sizes.empty()) {
-		files.erase(fontFile);
+	} else if(!file.m_sizes.empty()) {
+		m_files.erase(fontFile);
 	}
 	
 	return pFont;
@@ -115,10 +115,10 @@ Font * FontCache::Impl::getFont(const res::path & fontFile, unsigned int fontSiz
 
 Font * FontCache::Impl::create(const res::path & font, FontFile & file, unsigned int size) {
 	
-	if(!file.data) {
+	if(!file.m_data) {
 		LogDebug("loading file " << font);
-		file.data = resources->readAlloc(font, file.size);
-		if(!file.data) {
+		file.m_data = resources->readAlloc(font, file.m_size);
+		if(!file.m_data) {
 			return NULL;
 		}
 	}
@@ -126,8 +126,8 @@ Font * FontCache::Impl::create(const res::path & font, FontFile & file, unsigned
 	LogDebug("creating font " << font << " @ " << size);
 	
 	FT_Face face;
-	const FT_Byte * data = reinterpret_cast<const FT_Byte *>(file.data);
-	FT_Error error = FT_New_Memory_Face(m_library, data, file.size, 0, &face);
+	const FT_Byte * data = reinterpret_cast<const FT_Byte *>(file.m_data);
+	FT_Error error = FT_New_Memory_Face(m_library, data, file.m_size, 0, &face);
 	if(error == FT_Err_Unknown_File_Format) {
 		// the font file's format is unsupported
 		LogError << "Font creation error: FT_Err_Unknown_File_Format";
@@ -158,14 +158,14 @@ void FontCache::Impl::releaseFont(Font * font) {
 	
 	if(font->referenceCount == 0) {
 		
-		FontFile & file = instance->files[font->getName()];
+		FontFile & file = instance->m_files[font->getName()];
 		
-		file.sizes.erase(font->getSize());
+		file.m_sizes.erase(font->getSize());
 		LogDebug("destroying font " << font->getName() << " @ " << font->getSize());
 		
-		if(file.sizes.empty()) {
-			free(file.data);
-			instance->files.erase(font->getName());
+		if(file.m_sizes.empty()) {
+			free(file.m_data);
+			instance->m_files.erase(font->getName());
 			LogDebug("unloading file " << font->getName());
 		}
 		
