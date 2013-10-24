@@ -1136,16 +1136,16 @@ int view_io(SaveBlock & save, const char * dat, size_t size) {
 	if(ais.ioflags & (1<<31)) cout << " (unknown)";
 	cout << endl;
 	
-	if((Vec3f)ais.pos != Vec3f_ZERO || (Vec3f)ais.initpos != Vec3f_ZERO) {
+	if(ais.pos.toVec3() != Vec3f_ZERO || ais.initpos.toVec3() != Vec3f_ZERO) {
 		cout << "Position: " << ais.pos;
-		if((Vec3f)ais.pos != (Vec3f)ais.initpos) {
+		if(ais.pos.toVec3() != ais.initpos.toVec3()) {
 			cout << " initial: " << ais.initpos;
 		}
 		cout << endl;
 	}
-	if((Vec3f)ais.lastpos != (Vec3f)ais.pos) cout << "Last position: "  << ais.lastpos << endl;
-	if((Vec3f)ais.move != Vec3f_ZERO) cout << "Movement: " << ais.move << endl;
-	if((Vec3f)ais.lastmove != (Vec3f)ais.move) cout << "Last movement: " << ais.lastmove << endl;
+	if(ais.lastpos.toVec3() != ais.pos.toVec3()) cout << "Last position: " << ais.lastpos << endl;
+	if(ais.move.toVec3() != Vec3f_ZERO) cout << "Movement: " << ais.move << endl;
+	if(ais.lastmove.toVec3() != ais.move.toVec3()) cout << "Last movement: " << ais.lastmove << endl;
 	if((Anglef)ais.angle != Anglef::ZERO || (Anglef)ais.initangle != Anglef::ZERO) {
 		cout << "Angle: " << ais.angle;
 		if((Anglef)ais.angle != (Anglef)ais.initangle) {
@@ -1337,7 +1337,7 @@ int view_io(SaveBlock & save, const char * dat, size_t size) {
 	print_anim_layers(ais.animlayer);
 	
 	cout << endl << "Physics:" << endl;
-	if((Vec3f)ais.velocity != Vec3f_ZERO) cout << "  Velocity: " << ais.velocity << endl;
+	if(ais.velocity.toVec3() != Vec3f_ZERO) cout << "  Velocity: " << ais.velocity << endl;
 	if(ais.stopped) cout << "  Stopped: " << ais.stopped << endl;
 	print_physics(ais.physics);
 	if(ais.original_radius) cout << "  Original radius: " << ais.original_radius << endl;
