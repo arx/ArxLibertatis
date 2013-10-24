@@ -64,17 +64,17 @@ private:
 	typedef std::map<res::path, FontFile> FontFiles;
 	FontFiles files;
 	
+	FT_Library m_library = NULL;
+	
 	friend class FontCache;
 };
 
-static FT_Library g_FTLibrary = NULL;
-
 FontCache::Impl::Impl() {
 	
-	FT_Init_FreeType(&g_FTLibrary);
+	FT_Init_FreeType(&m_library);
 
 	FT_Int ftMajor, ftMinor, ftPatch;
-	FT_Library_Version(g_FTLibrary, &ftMajor, &ftMinor, &ftPatch);
+	FT_Library_Version(m_library, &ftMajor, &ftMinor, &ftPatch);
 	
 	std::ostringstream version;
 	version << ftMajor << '.' << ftMinor << '.' << ftPatch;
@@ -85,8 +85,8 @@ FontCache::Impl::Impl() {
 
 FontCache::Impl::~Impl() {
 	arx_assert_msg(files.size() == 0, "Someone is probably leaking fonts!");
-	FT_Done_FreeType(g_FTLibrary);
-	g_FTLibrary = NULL;
+	FT_Done_FreeType(m_library);
+	m_library = NULL;
 }
 
 Font * FontCache::Impl::getFont(const res::path & fontFile, unsigned int fontSize) {
@@ -127,7 +127,7 @@ Font * FontCache::Impl::create(const res::path & font, FontFile & file, unsigned
 	
 	FT_Face face;
 	const FT_Byte * data = reinterpret_cast<const FT_Byte *>(file.data);
-	FT_Error error = FT_New_Memory_Face(g_FTLibrary, data, file.size, 0, &face);
+	FT_Error error = FT_New_Memory_Face(m_library, data, file.size, 0, &face);
 	if(error == FT_Err_Unknown_File_Format) {
 		// the font file's format is unsupported
 		LogError << "Font creation error: FT_Err_Unknown_File_Format";
