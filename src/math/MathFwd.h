@@ -22,6 +22,8 @@
 
 #include "platform/Platform.h"
 
+#include <boost/static_assert.hpp>
+
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -43,11 +45,13 @@ typedef Rectangle_<float> Rectf;
 
 
 #if GLM_VERSION >= 95
-	template <class T, template <class, glm::precision P> class V, int N>
+	template <class T, template <class, glm::precision> class V, int N>
 	struct vec_traits_base {
 		enum { num_components = N };
 		typedef T component_type;
-		typedef V<T, glm::mediump> type;
+		typedef V<T, glm::highp> type;
+
+		BOOST_STATIC_ASSERT(sizeof(type) == sizeof(component_type) * N);
 	};
 #else
 	template <class T, template <class> class V, int N>
@@ -55,6 +59,8 @@ typedef Rectangle_<float> Rectf;
 		enum { num_components = N };
 		typedef T component_type;
 		typedef V<T> type;
+
+		BOOST_STATIC_ASSERT(sizeof(type) == sizeof(component_type) * N);
 	};
 #endif
 
