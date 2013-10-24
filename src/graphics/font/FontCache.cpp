@@ -61,6 +61,8 @@ private:
 	
 	void releaseFont(Font * font);
 	
+	void clean(const res::path & fontFile);
+	
 	typedef std::map<res::path, FontFile> FontFiles;
 	FontFiles m_files;
 	
@@ -106,8 +108,8 @@ Font * FontCache::Impl::getFont(const res::path & fontFile, unsigned int fontSiz
 	
 	if(pFont) {
 		pFont->referenceCount++;
-	} else if(!file.m_sizes.empty()) {
-		m_files.erase(fontFile);
+	} else {
+		clean(fontFile);
 	}
 	
 	return pFont;
@@ -125,6 +127,7 @@ Font * FontCache::Impl::create(const res::path & font, FontFile & file, unsigned
 	
 	LogDebug("creating font " << font << " @ " << size);
 	
+	// TODO The font face should be shared between multiple Font instances of the same file
 	FT_Face face;
 	const FT_Byte * data = reinterpret_cast<const FT_Byte *>(file.m_data);
 	FT_Error error = FT_New_Memory_Face(m_library, data, file.m_size, 0, &face);
@@ -158,18 +161,25 @@ void FontCache::Impl::releaseFont(Font * font) {
 	
 	if(font->referenceCount == 0) {
 		
-		FontFile & file = instance->m_files[font->getName()];
+		FontFile & file = m_files[font->getName()];
 		
-		file.m_sizes.erase(font->getSize());
 		LogDebug("destroying font " << font->getName() << " @ " << font->getSize());
+		file.m_sizes.erase(font->getSize());
 		
-		if(file.m_sizes.empty()) {
-			free(file.m_data);
-			instance->m_files.erase(font->getName());
-			LogDebug("unloading file " << font->getName());
-		}
+		clean(font->getName());
 		
 		delete font;
+	}
+}
+
+void FontCache::Impl::clean(const res::path & fontFile) {
+	
+	FontFiles::iterator it = m_files.find(fontFile);
+	
+	if(it != m_files.end() && it->second.m_sizes.empty()) {
+		LogDebug("unloading file " << fontFile);
+		free(it->second.m_data);
+		m_files.erase(it);
 	}
 }
 
