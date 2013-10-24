@@ -55,6 +55,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/Renderer.h"
 #include "graphics/Math.h"
+#include "graphics/font/Font.h"
 #include "graphics/font/FontCache.h"
 
 #include "io/resource/PakReader.h"

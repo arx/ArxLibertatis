@@ -20,28 +20,13 @@
 #ifndef ARX_GRAPHICS_FONT_FONTCACHE_H
 #define ARX_GRAPHICS_FONT_FONTCACHE_H
 
-#include <stddef.h>
-#include <string>
-#include <map>
-#include <utility>
+namespace res { class path; }
 
-#include "graphics/font/Font.h"
-#include "io/resource/ResourcePath.h"
+class Font;
 
 class FontCache {
 	
-	typedef std::map<unsigned, Font *> FontMap;
-	
-	struct FontFile {
-		
-		size_t size;
-		char * data;
-		
-		FontFile() : size(0), data(NULL) { }
-		
-		FontMap sizes;
-		
-	};
+	class Impl;
 	
 public:
 	
@@ -57,13 +42,7 @@ private:
 	FontCache();
 	~FontCache();
 	
-	Font * create(const res::path & fontFile, FontFile & file, unsigned int fontSize);
-	
-	
-	typedef std::map<res::path, FontFile> FontFiles;
-	FontFiles files;
-	
-	static FontCache * instance;
+	static Impl * instance;
 };
 
 #endif // ARX_GRAPHICS_FONT_FONTCACHE_H
