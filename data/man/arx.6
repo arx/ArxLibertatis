@@ -1,6 +1,6 @@
 .\" Manpage for arx.
 .\" Go to https://bugs.arx-libertatis.org/ to correct errors or typos.
-.TH arx 6 "2013-06-28" "1.1"
+.TH arx 6 "2013-10-24" "1.1"
 .SH NAME
 arx \- Arx Libertatis, a cross-platform port of Arx Fatalis
 .SH SYNOPSIS
@@ -18,17 +18,23 @@ Here is a short summary of the options available in innoextract. Please refer to
 .TP
 .B Generic options:
 .nf
- \-h \-\-help            Show supported options
- \-g \-\-debug \fILEVELS\fP    Set debug output levels
+ \-h \-\-help               Show supported options
+ \-g \-\-debug \fILEVELS\fP       Set debug output levels
 .fi
 .TP
 .B Search path options:
 .nf
- \-n \-\-no-data-dir     Don't automatically detect data directories
- \-d \-\-data-dir \fIDIR\fP    Where to find the data files (can be repeated)
- \-u \-\-user-dir \fIDIR\fP    Where to store user-specific files
- \-c \-\-config-dir \fIDIR\fP  Where to store config files
- \-l \-\-list-dirs       List the searched user and data directories
+ \-n \-\-no-data-dir        Don't automatically detect data directories
+ \-d \-\-data-dir \fIDIR\fP       Where to find the data files (can be repeated)
+ \-u \-\-user-dir \fIDIR\fP       Where to store user-specific files
+ \-c \-\-config-dir \fIDIR\fP     Where to store config files
+ \-l \-\-list-dirs          List the searched user and data directories
+.fi
+.TP
+.B Startup options:
+    --loadlevel LEVELID  Load a specific level
+    --loadslot SAVESLOT  Load a specific savegame slot
+    --skiplogo           Skip logos at startup
 .fi
 .SH OPTIONS
 .TP
@@ -54,10 +60,19 @@ Show a list of the supported options.
 \fB-l\fP, \fB--list-dirs\fP
 Show the data, user and config search directories and how they were determined. To adjust the search directories, use the \fB--no-data-dir\fP, \fB--data-dir\fP, \fB--user-dir\fP and \fB--config-dir\fP options.
 .TP
+\fB--loadlevel\fP=\fILEVELID\fP
+Load a level immediately after startup, without displaying logos or the main menu. \fILEVELID\fP is the number of the level to be loaded.
+.TP
+\fB--loadslot\fP=\fISAVESLOT\fP
+Load a save file immediately after startup, without displaying logos or the main menu. \fISAVESLOT\fP is the index of the save slot to be loaded.
+.TP
 \fB-n\fP, \fB--no-data-dir\fP
 Disables looking for default data directories. Default user and config directories and data directories provided using the \fB--data-dir\fP option are still searched. This option can be used for portable setups where user, config and data files are all in the current directory:
 
 .B arx --no-data-dir --user-dir=. --config-dir=.
+.TP
+\fB--skiplogo\fP
+Don't display Logo images at startup. Currently this will not skip the intro cutscene.
 .TP
 \fB-u\fP, \fB--user-dir\fP=\fIDIR\fP
 By default arx will store user files (saves, etc.) in directories specified by the \fBXDG Base Directory Specification\fP.
