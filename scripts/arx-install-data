@@ -2600,7 +2600,7 @@ patch_check_file_name() {
 	_user_patch_name="$(basename "$1")"
 	_patch_check_file_names="$2"
 	if ! list_contains _patch_check_file_names "$_user_patch_name" ; then
-		print "${yellow}Warning: unexpected patch file name: %s" "$_user_patch_name" >&2
+		printf "${yellow}Warning: unexpected patch file name: %s\n" "$_user_patch_name" >&2
 		printf "Expected %s${reset}\n" "$(print_help_or _patch_check_file_names)" >&2
 	fi
 }
@@ -2620,7 +2620,7 @@ probe_patch_file_impl() {
 	if [ ! -z "$_patch_file" ] ; then
 		
 		# Check the filename of user-supplied patchse
-		patch_check_file_name "$_file" "$_patch_names"
+		patch_check_file_name "$_patch_file" "$_patch_names"
 		
 		"$_patch_found" "$_patch_file"
 		return $true

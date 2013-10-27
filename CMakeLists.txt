@@ -1166,6 +1166,10 @@ if(BUILD_TOOLS)
 	install(FILES data/man/arxunpak.1 DESTINATION "${CMAKE_INSTALL_MANDIR}/man1"
 	        OPTIONAL)
 endif()
+if(INSTALL_SCRIPTS AND NOT WIN32)
+	install(FILES data/man/arx-install-data.1 DESTINATION "${CMAKE_INSTALL_MANDIR}/man1"
+	        OPTIONAL)
+endif()
 
 
 # Print a configuration summary

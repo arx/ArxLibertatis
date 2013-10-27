@@ -19,36 +19,64 @@
 
 #include "graphics/font/FontCache.h"
 
+#include <stddef.h>
 #include <sstream>
+#include <string>
+#include <map>
+#include <utility>
 
 #include <ft2build.h>
 #include FT_FREETYPE_H
 
+#include "graphics/font/Font.h"
 #include "io/fs/FilePath.h"
 #include "io/log/Logger.h"
 #include "io/resource/PakReader.h"
+#include "io/resource/ResourcePath.h"
 #include "platform/CrashHandler.h"
 
-static FT_Library g_FTLibrary = NULL;
-FontCache * FontCache::instance = NULL;
-
-void FontCache::initialize() {
-	if(!instance) {
-		instance = new FontCache();
-	}
-}
-
-void FontCache::shutdown() {
-	delete instance;
-	instance = NULL;
-}
-
-FontCache::FontCache() {
+class FontCache::Impl {
 	
-	FT_Init_FreeType(&g_FTLibrary);
+private:
+	
+	Impl();
+	~Impl();
+	
+	typedef std::map<unsigned, Font *> FontMap;
+	
+	struct FontFile {
+		
+		size_t m_size;
+		char * m_data;
+		
+		FontFile() : m_size(0), m_data(NULL) { }
+		
+		FontMap m_sizes;
+		
+	};
+	
+	Font * create(const res::path & fontFile, FontFile & file, unsigned int fontSize);
+	
+	Font * getFont(const res::path & fontFile, unsigned int fontSize);
+	
+	void releaseFont(Font * font);
+	
+	void clean(const res::path & fontFile);
+	
+	typedef std::map<res::path, FontFile> FontFiles;
+	FontFiles m_files;
+	
+	FT_Library m_library;
+	
+	friend class FontCache;
+};
+
+FontCache::Impl::Impl() : m_library(NULL) {
+	
+	FT_Init_FreeType(&m_library);
 
 	FT_Int ftMajor, ftMinor, ftPatch;
-	FT_Library_Version(g_FTLibrary, &ftMajor, &ftMinor, &ftPatch);
+	FT_Library_Version(m_library, &ftMajor, &ftMinor, &ftPatch);
 	
 	std::ostringstream version;
 	version << ftMajor << '.' << ftMinor << '.' << ftPatch;
@@ -57,22 +85,21 @@ FontCache::FontCache() {
 	LogInfo << "Using FreeType " << version.str();
 }
 
-FontCache::~FontCache() {
-	arx_assert_msg(files.size() == 0, "Someone is probably leaking fonts!");
-	FT_Done_FreeType(g_FTLibrary);
-	g_FTLibrary = NULL;
+FontCache::Impl::~Impl() {
+	arx_assert_msg(m_files.size() == 0, "Someone is probably leaking fonts!");
+	FT_Done_FreeType(m_library);
 }
 
-Font * FontCache::getFont(const res::path & fontFile, unsigned int fontSize) {
+Font * FontCache::Impl::getFont(const res::path & fontFile, unsigned int fontSize) {
 	
-	FontFile & file = instance->files[fontFile];
+	FontFile & file = m_files[fontFile];
 	
 	Font * pFont = 0;
-	FontMap::iterator it = file.sizes.find(fontSize);
-	if(it == file.sizes.end()) {
-		pFont = instance->create(fontFile, file, fontSize);
+	FontMap::iterator it = file.m_sizes.find(fontSize);
+	if(it == file.m_sizes.end()) {
+		pFont = create(fontFile, file, fontSize);
 		if(pFont) {
-			file.sizes[fontSize] = pFont;
+			file.m_sizes[fontSize] = pFont;
 		}
 	} else {
 		pFont = (*it).second;
@@ -80,28 +107,29 @@ Font * FontCache::getFont(const res::path & fontFile, unsigned int fontSize) {
 	
 	if(pFont) {
 		pFont->referenceCount++;
-	} else if(!file.sizes.empty()) {
-		instance->files.erase(fontFile);
+	} else {
+		clean(fontFile);
 	}
 	
 	return pFont;
 }
 
-Font * FontCache::create(const res::path & font, FontFile & file, unsigned int size) {
+Font * FontCache::Impl::create(const res::path & font, FontFile & file, unsigned int size) {
 	
-	if(!file.data) {
+	if(!file.m_data) {
 		LogDebug("loading file " << font);
-		file.data = resources->readAlloc(font, file.size);
-		if(!file.data) {
+		file.m_data = resources->readAlloc(font, file.m_size);
+		if(!file.m_data) {
 			return NULL;
 		}
 	}
 	
 	LogDebug("creating font " << font << " @ " << size);
 	
+	// TODO The font face should be shared between multiple Font instances of the same file
 	FT_Face face;
-	const FT_Byte * data = reinterpret_cast<const FT_Byte *>(file.data);
-	FT_Error error = FT_New_Memory_Face(g_FTLibrary, data, file.size, 0, &face);
+	const FT_Byte * data = reinterpret_cast<const FT_Byte *>(file.m_data);
+	FT_Error error = FT_New_Memory_Face(m_library, data, file.m_size, 0, &face);
 	if(error == FT_Err_Unknown_File_Format) {
 		// the font file's format is unsupported
 		LogError << "Font creation error: FT_Err_Unknown_File_Format";
@@ -122,7 +150,7 @@ Font * FontCache::create(const res::path & font, FontFile & file, unsigned int s
 	return new Font(font, size, face);
 }
 
-void FontCache::releaseFont(Font * font) {
+void FontCache::Impl::releaseFont(Font * font) {
 	
 	if(!font) {
 		return;
@@ -132,17 +160,45 @@ void FontCache::releaseFont(Font * font) {
 	
 	if(font->referenceCount == 0) {
 		
-		FontFile & file = instance->files[font->getName()];
+		FontFile & file = m_files[font->getName()];
 		
-		file.sizes.erase(font->getSize());
 		LogDebug("destroying font " << font->getName() << " @ " << font->getSize());
+		file.m_sizes.erase(font->getSize());
 		
-		if(file.sizes.empty()) {
-			free(file.data);
-			instance->files.erase(font->getName());
-			LogDebug("unloading file " << font->getName());
-		}
+		clean(font->getName());
 		
 		delete font;
 	}
+}
+
+void FontCache::Impl::clean(const res::path & fontFile) {
+	
+	FontFiles::iterator it = m_files.find(fontFile);
+	
+	if(it != m_files.end() && it->second.m_sizes.empty()) {
+		LogDebug("unloading file " << fontFile);
+		free(it->second.m_data);
+		m_files.erase(it);
+	}
+}
+
+FontCache::Impl * FontCache::instance = NULL;
+
+void FontCache::initialize() {
+	if(!instance) {
+		instance = new FontCache::Impl();
+	}
+}
+
+void FontCache::shutdown() {
+	delete instance;
+	instance = NULL;
+}
+
+Font * FontCache::getFont(const res::path & fontFile, unsigned int fontSize) {
+	return instance->getFont(fontFile, fontSize);
+}
+
+void FontCache::releaseFont(Font * font) {
+	instance->releaseFont(font);
 }

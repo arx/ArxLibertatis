@@ -1,0 +1,19 @@
+.\" Manpage for arxunpak.
+.\" Go to https://bugs.arx-libertatis.org/ to correct errors or typos.
+.TH arx-install-data 1 "2013-10-24" "1.1"
+.SH NAME
+arx-install-data \- Install script for Arx Fatalis game data
+.SH SYNOPSIS
+\fBarx-install-data\fP [\fB--cli\fP|\fB--gui\fP] [\fIsourcefile\fP]
+
+\fBarx-install-data\fP \fB--help\fP
+.SH DESCRIPTION
+\fBarx-install-data\fP is a tool to extract and install Arx Fatalis data files from various sources, including GOG.com Setup files, Demo downloads, CDROMs and existing installs such as on Steam. This game data is required to run \fBarx\fP(6).
+
+By default it will provide an interactive interface (either command-line or graphical depending on the context) that will request all the required arguments and will automatically download patch files as needed. Alternatively, a source file or directory to install from can be provided as the first non-option argument.
+
+The script provides many more options such as a batch mode and fine control over the programs used to extract archives. See the \fB--help\fP output for all available options and required dependencies.
+.SH SEE ALSO
+\fBarx\fP(6)
+.SH BUGS
+No known bugs.

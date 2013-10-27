@@ -5668,92 +5668,81 @@ void ARX_INTERFACE_DrawCurrentTorch() {
 
 extern float GLOBAL_SLOWDOWN;
 
-void ArxGame::drawAllInterface() {
+/** EXTRACTION BEGINS HERE **/
+float HitStrengthVal = 0.0;
+
+//For the hit strength diamond shown at the bottom of the UI.
+float getHitStrengthColorVal() {
+	float j;
+	if(AimTime == 0) {
+		return 0.2f;
+	} else {
+		if(BOW_FOCAL) {
+			j=(float)(BOW_FOCAL)/710.f;
+		} else {
+			float at=float(arxtime)-(float)AimTime;
+			if(at > 0.f)
+				bIsAiming = true;
+			else
+				bIsAiming = false;
+
+			at=at*(1.f+(1.f-GLOBAL_SLOWDOWN));
+			float aim = static_cast<float>(player.Full_AimTime);
+			j=at/aim;
+		}
+		return clamp(j, 0.2f, 1.f);
+	}
+}
+
+void PostCombatInterface() {
+	if(bHitFlash) {
+		float fCalc = ulHitFlash + Original_framedelay;
+		ulHitFlash = checked_range_cast<unsigned long>(fCalc);
+		if(ulHitFlash >= 500) {
+			bHitFlash = false;
+			ulHitFlash = 0;
+		}
+	}
+}
+
+void UpdateCombatInterface() {
+	HitStrengthVal = getHitStrengthColorVal();
+}
+
+void drawCombatInterface() {
+	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+	ARX_INTERFACE_DrawItem(ITC.Get("aim_maxi"), g_size.center().x + INTERFACE_RATIO(-320+262.f), g_size.height() + INTERFACE_RATIO(-72.f), 0.0001f, Color::gray(HitStrengthVal));
+	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+	ARX_INTERFACE_DrawItem(ITC.Get("aim_empty"), g_size.center().x + INTERFACE_RATIO(-320+262.f), g_size.height() + INTERFACE_RATIO(-72.f), 0.0001f, Color::white);
+	if(bHitFlash && player.Full_Skill_Etheral_Link >= 40) {
+		float j = 1.0f - fHitFlash;
+		GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+		Color col = (j < 0.5f) ? Color3f(j*2.0f, 1, 0).to<u8>() : Color3f(1, fHitFlash, 0).to<u8>();
+		ARX_INTERFACE_DrawItem(ITC.Get("aim_hit"), g_size.center().x + INTERFACE_RATIO(-320+262.f-25), g_size.height() + INTERFACE_RATIO(-72.f-30), 0.0001f, col);
+		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+	}
 	
-	GRenderer->GetTextureStage(0)->setMinFilter(TextureStage::FilterLinear);
-	GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterNearest);
-	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapClamp);
+	PostCombatInterface(); //TODO this
+}
 
-		if (player.Interface & INTER_COMBATMODE) {
-			float j;
+Entity* getSecondaryOrStealInvEntity() {
+	if(SecondaryInventory) {
+		return SecondaryInventory->io;
+	} else if(player.Interface & INTER_STEAL) {
+		return ioSteal;
+	}
+	return NULL;
+}
 
-			if(AimTime == 0) {
-				j = 0.2f;
-			} else {
-				if(BOW_FOCAL) {
-					j=(float)(BOW_FOCAL)/710.f;
-				} else {
-					float at=float(arxtime)-(float)AimTime;
-
-					if(at > 0.f)
-						bIsAiming = true;
-					else
-						bIsAiming = false;
-
-					at=at*(1.f+(1.f-GLOBAL_SLOWDOWN));
-					float aim = static_cast<float>(player.Full_AimTime);
-					j=at/aim;
-				}
-
-				j = clamp(j, 0.2f, 1.f);
-			}
-
-			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-
-			GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-			ARX_INTERFACE_DrawItem(ITC.Get("aim_maxi"), g_size.center().x + INTERFACE_RATIO(-320+262.f), g_size.height() + INTERFACE_RATIO(-72.f), 0.0001f, Color::gray(j));
-			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-			ARX_INTERFACE_DrawItem(ITC.Get("aim_empty"), g_size.center().x + INTERFACE_RATIO(-320+262.f), g_size.height() + INTERFACE_RATIO(-72.f), 0.0001f, Color::white);
-
-			if(bHitFlash && player.Full_Skill_Etheral_Link >= 40){
-				float j = 1.0f - fHitFlash;
-				GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-				GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-				Color col = (j < 0.5f) ? Color3f(j*2.0f, 1, 0).to<u8>() : Color3f(1, fHitFlash, 0).to<u8>();
-				ARX_INTERFACE_DrawItem(ITC.Get("aim_hit"), g_size.center().x + INTERFACE_RATIO(-320+262.f-25), g_size.height() + INTERFACE_RATIO(-72.f-30), 0.0001f, col);
-				GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-			}
-		}
-
-		if(bHitFlash) {
-			float fCalc = ulHitFlash + Original_framedelay;
-
-			ulHitFlash = checked_range_cast<unsigned long>(fCalc);
-
-			if(ulHitFlash >= 500) {
-				bHitFlash = false;
-				ulHitFlash = 0;
-			}
-		}
-
-		//---------------------------------------------------------------------
-		Entity * io = NULL;
-
-		if(SecondaryInventory) {
-			io = SecondaryInventory->io;
-		} else if(player.Interface & INTER_STEAL) {
-			io = ioSteal;
-		}
-
-		if(io) {
-			float dist = fdist(io->pos, player.pos + (Vec3f_Y_AXIS * 80.f));
-
-			if(Project.telekinesis) {
-				if(dist > 900.f) {
-					if(InventoryDir != -1) {
-						ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
-
-						InventoryDir=-1;
-						SendIOScriptEvent(io,SM_INVENTORY2_CLOSE);
-						TSecondaryInventory=SecondaryInventory;
-						SecondaryInventory=NULL;
-					} else {
-						if(player.Interface & INTER_STEAL) {
-							player.Interface &= ~INTER_STEAL;
-						}
-					}
-				}
-			} else if(dist > 350.f) {
+void UpdateSecondaryInvOrStealInv() {
+	Entity * io = getSecondaryOrStealInvEntity();
+	if(io) {
+		float dist = fdist(io->pos, player.pos + (Vec3f_Y_AXIS * 80.f));
+		if(Project.telekinesis) {
+			if(dist > 900.f) {
 				if(InventoryDir != -1) {
 					ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
 
@@ -5767,569 +5756,645 @@ void ArxGame::drawAllInterface() {
 					}
 				}
 			}
-		} else if(InventoryDir != -1) {
-			InventoryDir = -1;
-		}
+		} else if(dist > 350.f) {
+			if(InventoryDir != -1) {
+				ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
 
-		if(!PLAYER_INTERFACE_HIDE_COUNT && TSecondaryInventory) {
-			ARX_INTERFACE_DrawSecondaryInventory((bool)((player.Interface & INTER_STEAL) != 0));
-		}
-
-		if(!PLAYER_INTERFACE_HIDE_COUNT) {
-			if(player.Interface & INTER_INVENTORY) {
-				if((player.Interface & INTER_COMBATMODE) || player.doingmagic >= 2) {
-					long t = Original_framedelay * (1.f/5) + 2;
-					InventoryY += static_cast<long>(INTERFACE_RATIO_LONG(t));
-
-					if(InventoryY > INTERFACE_RATIO(110.f))
-						InventoryY = static_cast<long>(INTERFACE_RATIO(110.f));
-				} else {
-					if(bInventoryClosing) {
-						long t = Original_framedelay * (1.f/5) + 2;
-						InventoryY += static_cast<long>(INTERFACE_RATIO_LONG(t));
-
-						if(InventoryY > INTERFACE_RATIO(110)) {
-							InventoryY = static_cast<long>(INTERFACE_RATIO(110.f));
-							bInventoryClosing = false;
-
-							player.Interface &=~ INTER_INVENTORY;
-
-							if(bInventorySwitch) {
-								bInventorySwitch = false;
-								ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
-								player.Interface |= INTER_INVENTORYALL;
-								ARX_INTERFACE_NoteClose();
-								InventoryY = static_cast<long>(INTERFACE_RATIO(121.f) * player.bag);
-								lOldInterface=INTER_INVENTORYALL;
-							}
-						}
-					} else if(InventoryY > 0) {
-						InventoryY -= static_cast<long>(INTERFACE_RATIO((Original_framedelay * (1.f/5)) + 2.f));
-
-						if(InventoryY < 0)
-							InventoryY = 0;
-					}
-				}
-
-				if(player.bag) {
-					ARX_INTERFACE_DrawInventory(sActiveInventory);
-
-					arx_assert(ITC.Get("hero_inventory") != NULL);
-					float fCenterX	= g_size.center().x + INTERFACE_RATIO(-320 + 35) + INTERFACE_RATIO_DWORD(ITC.Get("hero_inventory")->m_dwWidth) - INTERFACE_RATIO(32 + 3) ;
-					float fSizY		= g_size.height() - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY) + INTERFACE_RATIO(- 3 + 25) ;
-
-					float posx = ARX_CAST_TO_INT_THEN_FLOAT( fCenterX );
-					float posy = ARX_CAST_TO_INT_THEN_FLOAT( fSizY );
-
-					if(sActiveInventory > 0) {
-						ARX_INTERFACE_DrawItem(ITC.Get("hero_inventory_up"),	posx, posy);
-
-						if(MouseInRect(posx, posy, posx + INTERFACE_RATIO(32), posy + INTERFACE_RATIO(32))) {
-							GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-							GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-							SpecialCursor=CURSOR_INTERACTION_ON;
-							ARX_INTERFACE_DrawItem(ITC.Get("hero_inventory_up"), posx, posy);
-							GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-							SpecialCursor=CURSOR_INTERACTION_ON;
-
-							if (((EERIEMouseButton & 1)  && !(LastMouseClick & 1))
-								|| ((!(EERIEMouseButton & 1)) && (LastMouseClick & 1) && DRAGINTER))
-							{
-								if(sActiveInventory > 0) {
-									ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
-									sActiveInventory --;
-								}
-
-								EERIEMouseButton &= ~1;
-							}
-						}
-					}
-
-					if(sActiveInventory < player.bag-1) {
-						float fRatio = INTERFACE_RATIO(32 + 5);
-
-						posy += checked_range_cast<int>(fRatio);
-
-						ARX_INTERFACE_DrawItem(ITC.Get("hero_inventory_down"),	posx, g_size.height() - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY) + INTERFACE_RATIO(-3 + 64));
-
-						if(MouseInRect(posx, posy, posx + INTERFACE_RATIO(32), posy + INTERFACE_RATIO(32))) {
-							GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-							GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-							ARX_INTERFACE_DrawItem(ITC.Get("hero_inventory_down"),	posx, g_size.height() - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY) + INTERFACE_RATIO(-3 + 64));
-							GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-							SpecialCursor=CURSOR_INTERACTION_ON;
-
-							if (((EERIEMouseButton & 1)  && !(LastMouseClick & 1))
-								|| ((!(EERIEMouseButton & 1)) && (LastMouseClick & 1) && DRAGINTER))
-							{
-								if(sActiveInventory < player.bag-1) {
-									ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
-									sActiveInventory ++;
-								}
-
-								EERIEMouseButton &= ~1;
-							}
-						}
-					}
-				}
-			} else if((player.Interface & INTER_INVENTORYALL) || bInventoryClosing) {
-				float fSpeed = (1.f/3);
-
-				if((player.Interface & INTER_COMBATMODE) || player.doingmagic >= 2) {
-					if(InventoryY < INTERFACE_RATIO(121) * player.bag) {
-
-						InventoryY += static_cast<long>(INTERFACE_RATIO((Original_framedelay * fSpeed) + 2.f));
-					}
-				} else {
-					if(bInventoryClosing) {
-						InventoryY += static_cast<long>(INTERFACE_RATIO((Original_framedelay * fSpeed) + 2.f));
-
-						if(InventoryY > INTERFACE_RATIO(121) * player.bag) {
-							bInventoryClosing = false;
-
-							if(player.Interface & INTER_INVENTORYALL) {
-								player.Interface &= ~INTER_INVENTORYALL;
-							}
-
-							lOldInterface=0;
-						}
-					} else if(InventoryY > 0) {
-						InventoryY -= static_cast<long>(INTERFACE_RATIO((Original_framedelay * fSpeed) + 2.f));
-
-						if(InventoryY < 0)
-							InventoryY = 0;
-					}
-				}
-
-				const float fBag = (player.bag-1) * INTERFACE_RATIO(-121);
-				float fCenterX = g_size.center().x + INTERFACE_RATIO(-320+35);
-				float fSizY = g_size.height() - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY) + INTERFACE_RATIO(-3.f + 25 - 32);
-				const float fOffsetY = INTERFACE_RATIO(121);
-
-				int iOffsetY = checked_range_cast<int>(fBag + fOffsetY);
-				int posx = checked_range_cast<int>(fCenterX);
-				int posy = checked_range_cast<int>(fSizY);
-
-				for(int i = 0; i < player.bag; i++) {
-					ARX_INTERFACE_DrawItem(ITC.Get("hero_inventory_link"), posx + INTERFACE_RATIO(45), static_cast<float>(posy + iOffsetY)) ;
-
-					ARX_INTERFACE_DrawItem(ITC.Get("hero_inventory_link"), posx + INTERFACE_RATIO_DWORD(ITC.Get("hero_inventory")->m_dwWidth)*0.5f + INTERFACE_RATIO(-16), posy+iOffsetY + INTERFACE_RATIO(-5));
-					ARX_INTERFACE_DrawItem(ITC.Get("hero_inventory_link"), posx + INTERFACE_RATIO_DWORD(ITC.Get("hero_inventory")->m_dwWidth) + INTERFACE_RATIO(-45-32), posy+iOffsetY + INTERFACE_RATIO(-15));
-
-					iOffsetY += checked_range_cast<int>(fOffsetY);
-				}
-
-				iOffsetY = checked_range_cast<int>(fBag);
-
-				for(short i = 0; i < player.bag; i++) {
-					ARX_INTERFACE_DrawInventory(i, 0, iOffsetY);
-					iOffsetY += checked_range_cast<int>(fOffsetY);
-				}
-			}
-		}
-
-		if(FlyingOverIO
-		   && !(player.Interface & INTER_COMBATMODE)
-		   && !GInput->actionPressed(CONTROLS_CUST_MAGICMODE)
-		   && (!PLAYER_MOUSELOOK_ON || !config.input.autoReadyWeapon)
-		) {
-			if((FlyingOverIO->ioflags & IO_ITEM)
-			   && !DRAGINTER
-			   && SecondaryInventory
-			) {
-					Entity *temp = SecondaryInventory->io;
-
-					if(temp->ioflags & IO_SHOP) {
-						float px = DANAEMouse.x;
-						float py = static_cast<float>(DANAEMouse.y - 10);
-
-						if(InSecondaryInventoryPos(&DANAEMouse)) {
-							long amount=ARX_INTERACTIVE_GetPrice(FlyingOverIO,temp);
-							// achat
-							float famount = amount - amount * player.Full_Skill_Intuition * 0.005f;
-							// check should always be OK because amount is supposed positive
-							amount = checked_range_cast<long>(famount);
-
-							if(amount <= player.gold)
-								ARX_INTERFACE_DrawNumber(px, py, amount, 6, Color::green);
-							else
-								ARX_INTERFACE_DrawNumber(px, py, amount, 6, Color::red);
-						} else if(InPlayerInventoryPos(&DANAEMouse)) {
-							long amount = static_cast<long>( ARX_INTERACTIVE_GetPrice( FlyingOverIO, temp ) / 3.0f );
-							// achat
-							float famount = amount + amount * player.Full_Skill_Intuition * 0.005f;
-							// check should always be OK because amount is supposed positive
-							amount = checked_range_cast<long>( famount );
-
-							if(amount) {
-								if(temp->shop_category.empty() ||
-										FlyingOverIO->groups.find(temp->shop_category) != FlyingOverIO->groups.end())
-									ARX_INTERFACE_DrawNumber(px, py, amount, 6, Color::green);
-								else
-									ARX_INTERFACE_DrawNumber(px, py, amount, 6, Color::red);
-							}
-						}
-					}
-				}
-
-				SpecialCursor=CURSOR_INTERACTION_ON;
-		}
-
-		ARX_INTERFACE_DrawDamagedEquipment();
-
-		if(!(player.Interface & INTER_COMBATMODE)) {
-			if(player.Interface & INTER_MINIBACK) {
-				// Draw/Manage Book Icon
-				float px=g_size.width() - INTERFACE_RATIO(35) + lSLID_VALUE+GL_DECAL_ICONS;
-				float py=g_size.height() - INTERFACE_RATIO(148);
-				ARX_INTERFACE_DrawItem(ITC.Get("book"), px, py);
-
-				if(eMouseState == MOUSE_IN_BOOK_ICON) {
-					GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-					GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-					ARX_INTERFACE_DrawItem(ITC.Get("book"), px, py);
-					GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-				}
-
-				// Draw/Manage BackPack Icon
-				px=g_size.width() - INTERFACE_RATIO(35) + lSLID_VALUE+GL_DECAL_ICONS;
-				py=g_size.height() - INTERFACE_RATIO(113);
-				ARX_INTERFACE_DrawItem(ITC.Get("backpack"),px,py);
-
-				if(eMouseState == MOUSE_IN_INVENTORY_ICON) {
-					GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-					GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-					ARX_INTERFACE_DrawItem(ITC.Get("backpack"),px,py);
-					GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-				}
-
-				// Draw/Manage Steal Icon
+				InventoryDir=-1;
+				SendIOScriptEvent(io,SM_INVENTORY2_CLOSE);
+				TSecondaryInventory=SecondaryInventory;
+				SecondaryInventory=NULL;
+			} else {
 				if(player.Interface & INTER_STEAL) {
-					px = static_cast<float>(-lSLID_VALUE);
-					py = g_size.height() - INTERFACE_RATIO(78.f + 32);
-					ARX_INTERFACE_DrawItem(ITC.Get("steal"), px, py);
+					player.Interface &= ~INTER_STEAL;
+				}
+			}
+		}
+	} else if(InventoryDir != -1) {
+		InventoryDir = -1;
+	}
+}
 
-					if(eMouseState == MOUSE_IN_STEAL_ICON) {
-						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-						ARX_INTERFACE_DrawItem(ITC.Get("steal"), px, py);
-						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+void DrawSecondaryInvOrStealInv() {	
+	if(!PLAYER_INTERFACE_HIDE_COUNT && TSecondaryInventory) {
+		ARX_INTERFACE_DrawSecondaryInventory((bool)((player.Interface & INTER_STEAL) != 0));
+	}
+}
+
+void UpdateInventory() {
+	if(player.Interface & INTER_INVENTORY) {
+		if((player.Interface & INTER_COMBATMODE) || player.doingmagic >= 2) {
+			long t = Original_framedelay * (1.f/5) + 2;
+			InventoryY += static_cast<long>(INTERFACE_RATIO_LONG(t));
+
+			if(InventoryY > INTERFACE_RATIO(110.f)) {
+				InventoryY = static_cast<long>(INTERFACE_RATIO(110.f));
+			}
+		} else {
+			if(bInventoryClosing) {
+				long t = Original_framedelay * (1.f/5) + 2;
+				InventoryY += static_cast<long>(INTERFACE_RATIO_LONG(t));
+
+				if(InventoryY > INTERFACE_RATIO(110)) {
+					InventoryY = static_cast<long>(INTERFACE_RATIO(110.f));
+					bInventoryClosing = false;
+
+					player.Interface &=~ INTER_INVENTORY;
+
+					if(bInventorySwitch) {
+						bInventorySwitch = false;
+						ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
+						player.Interface |= INTER_INVENTORYALL;
+						ARX_INTERFACE_NoteClose();
+						InventoryY = static_cast<long>(INTERFACE_RATIO(121.f) * player.bag);
+						lOldInterface=INTER_INVENTORYALL;
 					}
 				}
+			} else if(InventoryY > 0) {
+				InventoryY -= static_cast<long>(INTERFACE_RATIO((Original_framedelay * (1.f/5)) + 2.f));
 
-				// Draw / Manage Pick All - Close Secondary inventory icon
-				if(!PLAYER_INTERFACE_HIDE_COUNT && TSecondaryInventory) {
-					px = INTERFACE_RATIO(InventoryX) + INTERFACE_RATIO(16);
-					py = INTERFACE_RATIO_DWORD(BasicInventorySkin->m_dwHeight) - INTERFACE_RATIO(16);
-					Entity *temp = TSecondaryInventory->io;
+				if(InventoryY < 0) {
+					InventoryY = 0;
+				}
+			}
+		}
+	} else if((player.Interface & INTER_INVENTORYALL) || bInventoryClosing) {
+		float fSpeed = (1.f/3);
+		if((player.Interface & INTER_COMBATMODE) || player.doingmagic >= 2) {
+			if(InventoryY < INTERFACE_RATIO(121) * player.bag) {
+				InventoryY += static_cast<long>(INTERFACE_RATIO((Original_framedelay * fSpeed) + 2.f));
+			}
+		} else {
+			if(bInventoryClosing) {
+				InventoryY += static_cast<long>(INTERFACE_RATIO((Original_framedelay * fSpeed) + 2.f));
+				if(InventoryY > INTERFACE_RATIO(121) * player.bag) {
+					bInventoryClosing = false;
+					if(player.Interface & INTER_INVENTORYALL) {
+						player.Interface &= ~INTER_INVENTORYALL;
+					}
+					lOldInterface=0;
+				}
+			} else if(InventoryY > 0) {
+				InventoryY -= static_cast<long>(INTERFACE_RATIO((Original_framedelay * fSpeed) + 2.f));
+				if(InventoryY < 0) {
+					InventoryY = 0;
+				}
+			}
+		}
+	}
+}
 
-					if(temp && !(temp->ioflags & IO_SHOP) && !(temp == ioSteal)) {
-						ARX_INTERFACE_DrawItem(ITC.Get("inventory_pickall"), px, py);
+//TODO This is for the inventory coordinates. Remember to recalculate on res change.
+bool InvCoordsCalculated = false;
 
-						if(eMouseState == MOUSE_IN_INVENTORY_PICKALL_ICON) {
-							GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-							GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-							ARX_INTERFACE_DrawItem(ITC.Get("inventory_pickall"), px, py);
-							GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+struct {
+	float fCenterX;
+	float fSizY;
+	float posx;
+	float posy;
+} InvCoords;
+
+void CalculateInventoryCoordinates() {
+	InvCoords.fCenterX = g_size.center().x + INTERFACE_RATIO(-320 + 35) + INTERFACE_RATIO_DWORD(ITC.Get("hero_inventory")->m_dwWidth) - INTERFACE_RATIO(32 + 3) ;
+	InvCoords.fSizY = g_size.height() - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY) + INTERFACE_RATIO(- 3 + 25) ;
+	InvCoords.posx = ARX_CAST_TO_INT_THEN_FLOAT( InvCoords.fCenterX );
+	InvCoords.posy = ARX_CAST_TO_INT_THEN_FLOAT( InvCoords.fSizY );
+}
+
+void DrawInventory() {
+	if(player.Interface & INTER_INVENTORY) {		
+		if(player.bag) {
+			ARX_INTERFACE_DrawInventory(sActiveInventory);
+
+			arx_assert(ITC.Get("hero_inventory") != NULL);
+
+			if(!InvCoordsCalculated) {
+				CalculateInventoryCoordinates();
+				InvCoordsCalculated = true;
+			}
+
+			if(sActiveInventory > 0) {
+				ARX_INTERFACE_DrawItem(ITC.Get("hero_inventory_up"),	InvCoords.posx, InvCoords.posy);
+
+				if(MouseInRect(InvCoords.posx, InvCoords.posy, InvCoords.posx + INTERFACE_RATIO(32), InvCoords.posy + INTERFACE_RATIO(32))) {
+					GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+					GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+					SpecialCursor=CURSOR_INTERACTION_ON;
+					ARX_INTERFACE_DrawItem(ITC.Get("hero_inventory_up"), InvCoords.posx, InvCoords.posy);
+					GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+					SpecialCursor=CURSOR_INTERACTION_ON;
+
+					if (((EERIEMouseButton & 1)  && !(LastMouseClick & 1))
+						|| ((!(EERIEMouseButton & 1)) && (LastMouseClick & 1) && DRAGINTER))
+					{
+						if(sActiveInventory > 0) {
+							ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
+							sActiveInventory --;
 						}
+
+						EERIEMouseButton &= ~1;
 					}
-
-					px = INTERFACE_RATIO(InventoryX) + INTERFACE_RATIO_DWORD(BasicInventorySkin->m_dwWidth) - INTERFACE_RATIO(32);
-
-					ARX_INTERFACE_DrawItem(ITC.Get("inventory_close"), px, py);
-
-					if(eMouseState == MOUSE_IN_INVENTORY_CLOSE_ICON) {
-						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-						ARX_INTERFACE_DrawItem(ITC.Get("inventory_close"), px, py);
-						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-					}
-				}
-
-				// Draw/Manage Advancement Icon
-				if(player.Skill_Redistribute || player.Attribute_Redistribute) {
-					px=g_size.width() - INTERFACE_RATIO(35) + lSLID_VALUE+GL_DECAL_ICONS;
-					py=g_size.height() - INTERFACE_RATIO(218);
-					ARX_INTERFACE_DrawItem(ITC.Get("icon_lvl_up"),px,py);		
-
-					if(eMouseState == MOUSE_IN_REDIST_ICON) {
-						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-						ARX_INTERFACE_DrawItem(ITC.Get("icon_lvl_up"),px,py);		
-						GRenderer->SetRenderState(Renderer::AlphaBlending, false);	
-					}			  
-				}
-
-				// Draw/Manage Gold Purse Icon
-				if(player.gold > 0) {
-					px = g_size.width() - INTERFACE_RATIO(35) + lSLID_VALUE+2+GL_DECAL_ICONS;
-					py = g_size.height() - INTERFACE_RATIO(183);
-					ARX_INTERFACE_DrawItem(ITC.Get("gold"), px, py);
-
-					if(eMouseState == MOUSE_IN_GOLD_ICON) {
-						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-						SpecialCursor=CURSOR_INTERACTION_ON;
-						ARX_INTERFACE_DrawItem(ITC.Get("gold"), px, py);
-						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-						ARX_INTERFACE_DrawNumber(px - INTERFACE_RATIO(30), py + INTERFACE_RATIO(10 - 25), player.gold, 6, Color::white);
-					}
-				}
-
-				if(bGoldHalo) {
-					float fCalc = ulGoldHaloTime + Original_framedelay;
-					ulGoldHaloTime = checked_range_cast<unsigned long>(fCalc);
-
-
-					if(ulGoldHaloTime >= 1000) // ms
-						bGoldHalo = false;
-
-					TextureContainer *tc = ITC.Get("gold");
-					TextureContainer *halo = tc->getHalo();
-
-					if(halo)
-						ARX_INTERFACE_HALO_Render(0.9f, 0.9f, 0.1f, HALO_ACTIVE, halo, px, py, INTERFACE_RATIO(1), INTERFACE_RATIO(1));
-				}
-
-				if(bBookHalo) {
-					float fCalc = ulBookHaloTime + Original_framedelay;
-					ulBookHaloTime = checked_range_cast<unsigned long>(fCalc);
-
-
-					if(ulBookHaloTime >= 3000) // ms
-						bBookHalo = false;
-
-					float POSX = g_size.width()-INTERFACE_RATIO(35)+lSLID_VALUE+GL_DECAL_ICONS;
-					float POSY = g_size.height()-INTERFACE_RATIO(148);
-					TextureContainer *tc = ITC.Get("book");
-					TextureContainer *halo = tc->getHalo();
-
-					if(halo)
-						ARX_INTERFACE_HALO_Render(0.2f, 0.4f, 0.8f, HALO_ACTIVE, halo, POSX, POSY, INTERFACE_RATIO(1), INTERFACE_RATIO(1));
 				}
 			}
 
-			if(player.torch)
-				ARX_INTERFACE_DrawCurrentTorch();
+			if(sActiveInventory < player.bag-1) {
+				float fRatio = INTERFACE_RATIO(32 + 5);
+
+				InvCoords.posy += checked_range_cast<int>(fRatio);
+
+				ARX_INTERFACE_DrawItem(ITC.Get("hero_inventory_down"),	InvCoords.posx, g_size.height() - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY) + INTERFACE_RATIO(-3 + 64));
+
+				if(MouseInRect(InvCoords.posx, InvCoords.posy, InvCoords.posx + INTERFACE_RATIO(32), InvCoords.posy + INTERFACE_RATIO(32))) {
+					GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+					GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+					ARX_INTERFACE_DrawItem(ITC.Get("hero_inventory_down"),	InvCoords.posx, g_size.height() - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY) + INTERFACE_RATIO(-3 + 64));
+					GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+					SpecialCursor=CURSOR_INTERACTION_ON;
+
+					if (((EERIEMouseButton & 1)  && !(LastMouseClick & 1))
+						|| ((!(EERIEMouseButton & 1)) && (LastMouseClick & 1) && DRAGINTER))
+					{
+						if(sActiveInventory < player.bag-1) {
+							ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
+							sActiveInventory ++;
+						}
+
+						EERIEMouseButton &= ~1;
+					}
+				}
+			}
+		}
+	} else if((player.Interface & INTER_INVENTORYALL) || bInventoryClosing) {				
+
+		//TODO see about these coords, might be calculated once only
+		const float fBag = (player.bag-1) * INTERFACE_RATIO(-121);
+		float fCenterX = g_size.center().x + INTERFACE_RATIO(-320+35);
+		float fSizY = g_size.height() - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY) + INTERFACE_RATIO(-3.f + 25 - 32);
+		const float fOffsetY = INTERFACE_RATIO(121);
+
+		int iOffsetY = checked_range_cast<int>(fBag + fOffsetY);
+		int posx = checked_range_cast<int>(fCenterX);
+		int posy = checked_range_cast<int>(fSizY);
+
+		for(int i = 0; i < player.bag; i++) {
+			ARX_INTERFACE_DrawItem(ITC.Get("hero_inventory_link"), posx + INTERFACE_RATIO(45), static_cast<float>(posy + iOffsetY)) ;
+
+			ARX_INTERFACE_DrawItem(ITC.Get("hero_inventory_link"), posx + INTERFACE_RATIO_DWORD(ITC.Get("hero_inventory")->m_dwWidth)*0.5f + INTERFACE_RATIO(-16), posy+iOffsetY + INTERFACE_RATIO(-5));
+			ARX_INTERFACE_DrawItem(ITC.Get("hero_inventory_link"), posx + INTERFACE_RATIO_DWORD(ITC.Get("hero_inventory")->m_dwWidth) + INTERFACE_RATIO(-45-32), posy+iOffsetY + INTERFACE_RATIO(-15));
+
+			iOffsetY += checked_range_cast<int>(fOffsetY);
 		}
 
-		if(CHANGE_LEVEL_ICON > -1 && ChangeLevel) {
-			//Setting px and py as float to avoid warning on function ARX_INTERFACE_DrawItem and MouseInRect
-			float px = g_size.width() - INTERFACE_RATIO_DWORD(ChangeLevel->m_dwWidth);
-			float py = 0;
+		iOffsetY = checked_range_cast<int>(fBag);
 
-			float vv = 0.9f - EEsin(arxtime.get_frame_time()*( 1.0f / 50 ))*0.5f+rnd()*( 1.0f / 10 );
+		for(short i = 0; i < player.bag; i++) {
+			ARX_INTERFACE_DrawInventory(i, 0, iOffsetY);
+			iOffsetY += checked_range_cast<int>(fOffsetY);
+		}
+	}
+}
 
-			vv = clamp(vv, 0.f, 1.f);
+void DrawItemPrice() {
+	Entity *temp = SecondaryInventory->io;
+	if(temp->ioflags & IO_SHOP) {
+		float px = DANAEMouse.x;
+		float py = static_cast<float>(DANAEMouse.y - 10);
 
-			ARX_INTERFACE_DrawItem(ChangeLevel, px, py, 0.0001f, Color::gray(vv));
+		if(InSecondaryInventoryPos(&DANAEMouse)) {
+			long amount=ARX_INTERACTIVE_GetPrice(FlyingOverIO,temp);
+			// achat
+			float famount = amount - amount * player.Full_Skill_Intuition * 0.005f;
+			// check should always be OK because amount is supposed positive
+			amount = checked_range_cast<long>(famount);
 
-			if(MouseInRect(px, py, px + INTERFACE_RATIO_DWORD(ChangeLevel->m_dwWidth), py + INTERFACE_RATIO_DWORD(ChangeLevel->m_dwHeight)))
-			{
+			if(amount <= player.gold) {
+				ARX_INTERFACE_DrawNumber(px, py, amount, 6, Color::green);
+			} else {
+				ARX_INTERFACE_DrawNumber(px, py, amount, 6, Color::red);
+			}
+		} else if(InPlayerInventoryPos(&DANAEMouse)) {
+			long amount = static_cast<long>( ARX_INTERACTIVE_GetPrice( FlyingOverIO, temp ) / 3.0f );
+			// achat
+			float famount = amount + amount * player.Full_Skill_Intuition * 0.005f;
+			// check should always be OK because amount is supposed positive
+			amount = checked_range_cast<long>( famount );
+
+			if(amount) {
+				if(temp->shop_category.empty() ||
+				   FlyingOverIO->groups.find(temp->shop_category) != FlyingOverIO->groups.end()) {
+
+					ARX_INTERFACE_DrawNumber(px, py, amount, 6, Color::green);
+				} else {
+					ARX_INTERFACE_DrawNumber(px, py, amount, 6, Color::red);
+				}
+			}
+		}
+	}
+}
+
+Vec2f BookIconCoords;
+Vec2f BackpackIconCoords;
+Vec2f StealIconCoords;
+Vec2f PickAllIconCoords;
+Vec2f CloseSInvIconCoords;
+Vec2f LevelUpIconCoords;
+Vec2f PurseIconCoords;
+
+void CalculateBookIconCoords() {
+	BookIconCoords.x = g_size.width() - INTERFACE_RATIO(35) + lSLID_VALUE+GL_DECAL_ICONS;
+	BookIconCoords.y = g_size.height() - INTERFACE_RATIO(148);
+}
+
+void CalculateBackpackIconCoords() {
+	BackpackIconCoords.x = g_size.width() - INTERFACE_RATIO(35) + lSLID_VALUE+GL_DECAL_ICONS;
+	BackpackIconCoords.y = g_size.height() - INTERFACE_RATIO(113);
+}
+
+void CalculateStealIconCoords() {
+	StealIconCoords.x = static_cast<float>(-lSLID_VALUE);
+	StealIconCoords.y = g_size.height() - INTERFACE_RATIO(78.f + 32);
+}
+
+void CalculatePickAllIconCoords() {
+	PickAllIconCoords.x = INTERFACE_RATIO(InventoryX) + INTERFACE_RATIO(16);
+	PickAllIconCoords.y = INTERFACE_RATIO_DWORD(BasicInventorySkin->m_dwHeight) - INTERFACE_RATIO(16);
+}
+
+void CalculateCloseSInvIconCoords() {
+	CloseSInvIconCoords.x = INTERFACE_RATIO(InventoryX) + INTERFACE_RATIO_DWORD(BasicInventorySkin->m_dwWidth) - INTERFACE_RATIO(32);
+	CloseSInvIconCoords.y = INTERFACE_RATIO_DWORD(BasicInventorySkin->m_dwHeight) - INTERFACE_RATIO(16);
+}
+
+void CalculateLevelUpIconCoords() {
+	LevelUpIconCoords.x = g_size.width() - INTERFACE_RATIO(35) + lSLID_VALUE+GL_DECAL_ICONS;
+	LevelUpIconCoords.y = g_size.height() - INTERFACE_RATIO(218);
+}
+
+void CalculatePurseIconCoords() {
+	PurseIconCoords.x = g_size.width() - INTERFACE_RATIO(35) + lSLID_VALUE+2+GL_DECAL_ICONS;
+	PurseIconCoords.y = g_size.height() - INTERFACE_RATIO(183);
+}
+
+
+//Used for drawing icons like the book or backpack icon.
+void DrawIcon(const Vec2f& coords, const char* itcName, E_ARX_STATE_MOUSE hoverMouseState) {
+	ARX_INTERFACE_DrawItem(ITC.Get(itcName), coords.x, coords.y);
+	if (eMouseState == hoverMouseState) {
+		GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+		ARX_INTERFACE_DrawItem(ITC.Get(itcName), coords.x, coords.y);
+		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+	}
+}
+
+TextureContainer* GetHaloForITC(const char* itcName) {
+	return ITC.Get(itcName)->getHalo();
+}
+
+void DrawHalo(float r, float g, float b, TextureContainer* halo, const Vec2f& coords) {
+	if(halo) {
+		ARX_INTERFACE_HALO_Render(r, g, b, HALO_ACTIVE, halo, coords.x, coords.y, INTERFACE_RATIO(1), INTERFACE_RATIO(1));
+	}
+}
+
+void DrawIcons() {
+	if(player.Interface & INTER_MINIBACK) {
+		CalculateBookIconCoords();
+		DrawIcon(BookIconCoords, "book", MOUSE_IN_BOOK_ICON);
+		CalculateBackpackIconCoords();
+		DrawIcon(BackpackIconCoords, "backpack", MOUSE_IN_INVENTORY_ICON);							
+		if(player.Interface & INTER_STEAL) {
+			CalculateStealIconCoords();
+			DrawIcon(StealIconCoords, "steal", MOUSE_IN_STEAL_ICON);
+		}
+		// Pick All/Close Secondary Inventory
+		if(!PLAYER_INTERFACE_HIDE_COUNT && TSecondaryInventory) {	
+			CalculatePickAllIconCoords(); //These have to be calculated on each frame (to make them move).
+			CalculateCloseSInvIconCoords();
+			Entity *temp = TSecondaryInventory->io;
+			if(temp && !(temp->ioflags & IO_SHOP) && !(temp == ioSteal)) {
+				DrawIcon(PickAllIconCoords, "inventory_pickall", MOUSE_IN_INVENTORY_PICKALL_ICON);					
+			}
+			DrawIcon(CloseSInvIconCoords, "inventory_close", MOUSE_IN_INVENTORY_CLOSE_ICON);				
+		}
+
+		if(player.Skill_Redistribute || player.Attribute_Redistribute) {
+			CalculateLevelUpIconCoords();
+			DrawIcon(LevelUpIconCoords, "icon_lvl_up", MOUSE_IN_REDIST_ICON);
+		}
+		// Draw/Manage Gold Purse Icon
+		if(player.gold > 0) {
+			CalculatePurseIconCoords();
+			DrawIcon(PurseIconCoords, "gold", MOUSE_IN_GOLD_ICON);			
+			if(eMouseState == MOUSE_IN_GOLD_ICON) {
 				SpecialCursor=CURSOR_INTERACTION_ON;
-
-				if(!(EERIEMouseButton & 1) && (LastMouseClick & 1))
-					CHANGE_LEVEL_ICON = 200;
+				ARX_INTERFACE_DrawNumber(PurseIconCoords.x - INTERFACE_RATIO(30),
+					PurseIconCoords.y + INTERFACE_RATIO(10 - 25), player.gold, 6, Color::white);
 			}
 		}
-
-		// Draw stealth gauge
-		ARX_INTERFACE_Draw_Stealth_Gauge();
-
-		// book
-		if((player.Interface & INTER_MAP) && !(player.Interface & INTER_COMBATMODE)) {
-			ARX_INTERFACE_ManageOpenedBook();
-			ARX_INTERFACE_ManageOpenedBook_Finish();
+		//A halo is drawn on the character's stats icon (book) when leveling up, for example.
+		if(bGoldHalo) {
+			float fCalc = ulGoldHaloTime + Original_framedelay;
+			ulGoldHaloTime = checked_range_cast<unsigned long>(fCalc);
+			if(ulGoldHaloTime >= 1000) { // ms
+				bGoldHalo = false;
+			}
+			DrawHalo(0.9f, 0.9f, 0.1f, GetHaloForITC("gold"), PurseIconCoords);			
 		}
-
-
-		if(CurrSpellSymbol || player.SpellToMemorize.bSpell) {
-			int count = 0;
-			int count2 = 0;
-
-			for(long j = 0; j < 6; j++) {
-				if(player.SpellToMemorize.iSpellSymbols[j] != RUNE_NONE)
-					count++;
-
-				if(SpellSymbol[j] != RUNE_NONE)
-					count2 ++;
+		if(bBookHalo) {
+			float fCalc = ulBookHaloTime + Original_framedelay;
+			ulBookHaloTime = checked_range_cast<unsigned long>(fCalc);
+			if(ulBookHaloTime >= 3000) { // ms
+				bBookHalo = false;
 			}
+			float POSX = g_size.width()-INTERFACE_RATIO(35)+lSLID_VALUE+GL_DECAL_ICONS;
+			float POSY = g_size.height()-INTERFACE_RATIO(148);
+			DrawHalo(0.2f, 0.4f, 0.8f, GetHaloForITC("book"), Vec2f(POSX, POSY));					
+		}
+	}
+	if(player.torch) {
+		ARX_INTERFACE_DrawCurrentTorch();
+	}
+}
 
-			count = std::max(count, count2);
-			Vec3f pos;
-			pos.x = g_size.width() - (count * INTERFACE_RATIO(32));
+struct {
+	float x;
+	float y;
+	float vv;
+} ChangeLevelIcon;
 
-			if(CHANGE_LEVEL_ICON > -1)
-				pos.x -= INTERFACE_RATIO(32);
+void UpdateChangeLevelIcon() {
+	ChangeLevelIcon.x = g_size.width() - INTERFACE_RATIO_DWORD(ChangeLevel->m_dwWidth);
+	ChangeLevelIcon.y = 0;
+	ChangeLevelIcon.vv = 0.9f - EEsin(arxtime.get_frame_time()*( 1.0f / 50 ))*0.5f+rnd()*( 1.0f / 10 );
+	ChangeLevelIcon.vv = clamp(ChangeLevelIcon.vv, 0.f, 1.f);
+}
 
-			pos.y = 0;
+void DrawChangeLevelIcon() {
 
-			for(int i = 0; i < 6; i++) {
-				bool bHalo = false;
+    ARX_INTERFACE_DrawItem(ChangeLevel, ChangeLevelIcon.x, ChangeLevelIcon.y, 0.0001f, Color::gray(ChangeLevelIcon.vv));
+    if(MouseInRect(ChangeLevelIcon.x, ChangeLevelIcon.y, ChangeLevelIcon.x + INTERFACE_RATIO_DWORD(ChangeLevel->m_dwWidth),
+        ChangeLevelIcon.y + INTERFACE_RATIO_DWORD(ChangeLevel->m_dwHeight)))
+	{
+		SpecialCursor=CURSOR_INTERACTION_ON;
+		if(!(EERIEMouseButton & 1) && (LastMouseClick & 1)) {
+			CHANGE_LEVEL_ICON = 200;
+		}
+	}
+}
 
-				if(SpellSymbol[i] != RUNE_NONE) {
-					if(SpellSymbol[i] == player.SpellToMemorize.iSpellSymbols[i]) {
-						bHalo = true;
-					} else {
-						player.SpellToMemorize.iSpellSymbols[i] = SpellSymbol[i];
+int MemorizedSpellCount;
+Vec2f MemorizedSpellPos;
 
-						for(int j = i+1; j < 6; j++) {
-							player.SpellToMemorize.iSpellSymbols[j] = RUNE_NONE;
-						}
-					}
+void UpdateMemorizedSpells() {
+	int count = 0;
+	int count2 = 0;
+	for(long j = 0; j < 6; j++) {
+		if(player.SpellToMemorize.iSpellSymbols[j] != RUNE_NONE) {
+			count++;
+		}
+		if(SpellSymbol[j] != RUNE_NONE) {
+			count2++;
+		}
+	}
+	MemorizedSpellCount = std::max(count, count2);
+	MemorizedSpellPos.x = g_size.width() - (MemorizedSpellCount * INTERFACE_RATIO(32));
+	if(CHANGE_LEVEL_ICON > -1) {
+		MemorizedSpellPos.x -= INTERFACE_RATIO(32);
+	}
+	MemorizedSpellPos.y = 0;
+}
+
+void DrawMemorizedSpells() {
+	for(int i = 0; i < 6; i++) {
+		bool bHalo = false;
+		if(SpellSymbol[i] != RUNE_NONE) {
+			if(SpellSymbol[i] == player.SpellToMemorize.iSpellSymbols[i]) {
+				bHalo = true;
+			} else {
+				player.SpellToMemorize.iSpellSymbols[i] = SpellSymbol[i];
+
+				for(int j = i+1; j < 6; j++) {
+					player.SpellToMemorize.iSpellSymbols[j] = RUNE_NONE;
 				}
-
-				if(player.SpellToMemorize.iSpellSymbols[i] != RUNE_NONE) {
-					EERIEDrawBitmap2(pos.x, pos.y, INTERFACE_RATIO(32), INTERFACE_RATIO(32), 0,
-						necklace.pTexTab[player.SpellToMemorize.iSpellSymbols[i]], Color::white);
-
-					if(bHalo) {
-						TextureContainer *tc = necklace.pTexTab[player.SpellToMemorize.iSpellSymbols[i]];
-						TextureContainer *halo = tc->getHalo();
-
-						if(halo)
-							ARX_INTERFACE_HALO_Render(0.2f, 0.4f, 0.8f, HALO_ACTIVE, halo, pos.x, pos.y, INTERFACE_RATIO(1), INTERFACE_RATIO(1));
-					}
-
-					if(!(player.rune_flags & (RuneFlag)(1<<player.SpellToMemorize.iSpellSymbols[i]))) {
-						GRenderer->SetBlendFunc(Renderer::BlendInvDstColor, Renderer::BlendOne);
-						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-
-						EERIEDrawBitmap2(pos.x, pos.y, INTERFACE_RATIO(32), INTERFACE_RATIO(32), 0, Movable, Color::gray(.8f));
-						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-					}
-
-					pos.x += INTERFACE_RATIO(32);
-				}
-			}
-
-			if(float(arxtime) - player.SpellToMemorize.lTimeCreation > 30000) {
-				player.SpellToMemorize.bSpell = false;
 			}
 		}
-
-		if(player.Interface & INTER_LIFE_MANA) {
-			TexturedVertex v[4];
-			v[0] = TexturedVertex(Vec3f(0, 0, .001f), 1.f, Color::white.toBGR(), 1, Vec2f_ZERO);
-			v[1] = TexturedVertex(Vec3f(0, 0, .001f), 1.f, Color::white.toBGR(), 1, Vec2f_X_AXIS);
-			v[2] = TexturedVertex(Vec3f(0, 0, .001f), 1.f, Color::white.toBGR(), 1, Vec2f(1.f, 1.f));
-			v[3] = TexturedVertex(Vec3f(0, 0, .001f), 1.f, Color::white.toBGR(), 1, Vec2f_Y_AXIS);
-
-			float px = g_size.width() - INTERFACE_RATIO(33) + INTERFACE_RATIO(1) + lSLID_VALUE;
-			float py = g_size.height() - INTERFACE_RATIO(81);
-			ARX_INTERFACE_DrawItem(ITC.Get("empty_gauge_blue"), px, py, 0.f); //399
-
-			float fnl=(float)player.life/(float)player.Full_maxlife;
-			float fnm=(float)player.mana/(float)player.Full_maxmana;
-
-			//---------------------------------------------------------------------
-			//RED GAUGE
-			Color ulcolor = Color::red;
-			float fSLID_VALUE_neg = static_cast<float>(-lSLID_VALUE);
-
-			if(player.poison > 0.f) {
-				float val = std::min(player.poison, 0.2f) * 255.f * 5.f;
-				long g = val;
-				ulcolor = Color(u8(255 - g), u8(g) , 0);
+		if(player.SpellToMemorize.iSpellSymbols[i] != RUNE_NONE) {
+			EERIEDrawBitmap2(MemorizedSpellPos.x, MemorizedSpellPos.y, INTERFACE_RATIO(32), INTERFACE_RATIO(32), 0,
+				necklace.pTexTab[player.SpellToMemorize.iSpellSymbols[i]], Color::white);
+			if(bHalo) {				
+				TextureContainer *tc = necklace.pTexTab[player.SpellToMemorize.iSpellSymbols[i]];
+				DrawHalo(0.2f, 0.4f, 0.8f, tc->getHalo(), Vec2f(MemorizedSpellPos.x, MemorizedSpellPos.y));
 			}
-
-			EERIEDrawBitmap2DecalY(fSLID_VALUE_neg, g_size.height() - INTERFACE_RATIO(78),
-				INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_red")->m_dwWidth),
-				INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_red")->m_dwHeight),
-				0.f, ITC.Get("filled_gauge_red"), ulcolor, (1.f - fnl));
-
-			if(!(player.Interface & INTER_COMBATMODE)) {
-				if(MouseInRect(fSLID_VALUE_neg, g_size.height() - INTERFACE_RATIO(78), fSLID_VALUE_neg + INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_red")->m_dwWidth), g_size.height() - INTERFACE_RATIO(78) + INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_red")->m_dwHeight)))
-				{
-					if((EERIEMouseButton & 1) && !(LastMouseClick & 1)) {
-							std::stringstream ss;
-							ss << checked_range_cast<int>(player.life);
-							ARX_SPEECH_Add(ss.str());
-					}
-				}
-			}
-
-			//---------------------------------------------------------------------
-			//END RED GAUGE
-
-			px = 0.f-lSLID_VALUE;
-			py = g_size.height() - INTERFACE_RATIO(78);
-			ARX_INTERFACE_DrawItem(ITC.Get("empty_gauge_red"), px, py, 0.001f);
-
-			//---------------------------------------------------------------------
-			//BLUE GAUGE
-
-			float LARGG=INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_blue")->m_dwWidth);
-			float HAUTT=INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_blue")->m_dwHeight);
-
-			EERIEDrawBitmap2DecalY(g_size.width() - INTERFACE_RATIO(33) + INTERFACE_RATIO(1) + lSLID_VALUE,
-				g_size.height() - INTERFACE_RATIO(81), LARGG, HAUTT, 0.f,
-				ITC.Get("filled_gauge_blue"), Color::white, (1.f - fnm));
-
-			if(!(player.Interface & INTER_COMBATMODE)) {
-				if(MouseInRect(g_size.width() - INTERFACE_RATIO(33) + lSLID_VALUE,g_size.height() - INTERFACE_RATIO(81),g_size.width() - INTERFACE_RATIO(33) + lSLID_VALUE+LARGG,g_size.height() - INTERFACE_RATIO(81)+HAUTT))
-				{
-					if((EERIEMouseButton & 1) && !(LastMouseClick & 1)) {
-							std::stringstream ss;
-							ss << checked_range_cast<int>(player.mana);
-							ARX_SPEECH_Add(ss.str());
-					}
-				}
-			}
-
-			//---------------------------------------------------------------------
-			//END BLUE GAUGE
-			if(bRenderInCursorMode) {
+			if(!(player.rune_flags & (RuneFlag)(1<<player.SpellToMemorize.iSpellSymbols[i]))) {
+				GRenderer->SetBlendFunc(Renderer::BlendInvDstColor, Renderer::BlendOne);
 				GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-				GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-
-				if(mecanism_tc && MAGICMODE < 0 && lNbToDrawMecanismCursor < 3) {
-					Color lcolorMecanism = Color::white;
-					if(lTimeToDrawMecanismCursor > 300) {
-						lcolorMecanism = Color::black;
-						if(lTimeToDrawMecanismCursor > 400) {
-							lTimeToDrawMecanismCursor=0;
-							lNbToDrawMecanismCursor++;
-						}
-					}
-
-					lTimeToDrawMecanismCursor += static_cast<long>(framedelay);
-					EERIEDrawBitmap(0, 0, INTERFACE_RATIO_DWORD(mecanism_tc->m_dwWidth), INTERFACE_RATIO_DWORD(mecanism_tc->m_dwHeight), 0.01f, mecanism_tc, lcolorMecanism);
-				}
-
-				if(arrow_left_tc) {
-					float fSizeX=INTERFACE_RATIO_DWORD(arrow_left_tc->m_dwWidth);
-					float fSizeY=INTERFACE_RATIO_DWORD(arrow_left_tc->m_dwHeight);
-					Color lcolor = Color::gray(.5f);
-					static float fArrowMove=0.f;
-					fArrowMove+=.5f*framedelay;
-
-					if(fArrowMove > 180.f)
-						fArrowMove=0.f;
-
-					float fMove=fabs(sin(radians(fArrowMove)))*fSizeX*.5f;
-
-					// Left
-					EERIEDrawBitmap(0 + fMove, g_size.center().y - (fSizeY * .5f), fSizeX, fSizeY, 0.01f,
-						arrow_left_tc, lcolor);
-
-					// Right
-					EERIEDrawBitmapUVs(g_size.width() - fSizeX - fMove, g_size.center().y - (fSizeY * .5f), fSizeX, fSizeY,
-						.01f, arrow_left_tc, lcolor, 1.f, 0.f, 0.f, 0.f, 1.f, 1.f, 0.f, 1.f);
-
-					// Up
-					EERIEDrawBitmapUVs(g_size.center().x - (fSizeY * .5f), 0.f + fMove, fSizeY, fSizeX, .01f,
-						arrow_left_tc, lcolor, 0.f, 1.f, 0.f, 0.f, 1.f, 1.f, 1.f, 0.f);
-
-					// Down
-					EERIEDrawBitmapUVs(g_size.center().x - (fSizeY * .5f), (g_size.height() - fSizeX) - fMove, fSizeY, fSizeX,
-						.01f, arrow_left_tc, lcolor, 1.f, 1.f, 1.f, 0.f, 0.f, 1.f, 0.f, 0.f);
-				}
-
+				EERIEDrawBitmap2(MemorizedSpellPos.x, MemorizedSpellPos.y, INTERFACE_RATIO(32), INTERFACE_RATIO(32), 0, Movable, Color::gray(.8f));
 				GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 			}
+			MemorizedSpellPos.x += INTERFACE_RATIO(32);
 		}
+	}
+	if(float(arxtime) - player.SpellToMemorize.lTimeCreation > 30000) {
+		player.SpellToMemorize.bSpell = false;
+	}
+}
 
+//Health/mana gauges
+Vec2f HealthGaugePos;
+Vec2f ManaGaugePos;
+float HealthGaugeAmount;
+float ManaGaugeAmount;
+
+void UpdateHealthManaGauges() {
+	HealthGaugePos = Vec2f(g_size.width() - INTERFACE_RATIO(33) + INTERFACE_RATIO(1) + lSLID_VALUE,
+							g_size.height() - INTERFACE_RATIO(81));
+	ManaGaugePos = Vec2f(0.f-lSLID_VALUE, g_size.height() - INTERFACE_RATIO(78));
+	HealthGaugeAmount = (float)player.life/(float)player.Full_maxlife;
+	ManaGaugeAmount = (float)player.mana/(float)player.Full_maxmana;
+}
+
+void DrawHealthManaGauges() {
+	TexturedVertex v[4];
+	v[0] = TexturedVertex(Vec3f(0, 0, .001f), 1.f, Color::white.toBGR(), 1, Vec2f_ZERO);
+	v[1] = TexturedVertex(Vec3f(0, 0, .001f), 1.f, Color::white.toBGR(), 1, Vec2f_X_AXIS);
+	v[2] = TexturedVertex(Vec3f(0, 0, .001f), 1.f, Color::white.toBGR(), 1, Vec2f(1.f, 1.f));
+	v[3] = TexturedVertex(Vec3f(0, 0, .001f), 1.f, Color::white.toBGR(), 1, Vec2f_Y_AXIS);
+
+	ARX_INTERFACE_DrawItem(ITC.Get("empty_gauge_blue"), HealthGaugePos.x, HealthGaugePos.y, 0.f); //399
+
+	//---------------------------------------------------------------------
+	//RED GAUGE
+	Color ulcolor = Color::red;
+	float fSLID_VALUE_neg = static_cast<float>(-lSLID_VALUE);
+
+	if(player.poison > 0.f) {
+		float val = std::min(player.poison, 0.2f) * 255.f * 5.f;
+		long g = val;
+		ulcolor = Color(u8(255 - g), u8(g) , 0);
+	}
+
+	EERIEDrawBitmap2DecalY(fSLID_VALUE_neg, g_size.height() - INTERFACE_RATIO(78),
+		INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_red")->m_dwWidth),
+		INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_red")->m_dwHeight),
+		0.f, ITC.Get("filled_gauge_red"), ulcolor, (1.f - HealthGaugeAmount));
+
+	if(!(player.Interface & INTER_COMBATMODE)) {
+		if(MouseInRect(fSLID_VALUE_neg, g_size.height() - INTERFACE_RATIO(78), fSLID_VALUE_neg + INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_red")->m_dwWidth), g_size.height() - INTERFACE_RATIO(78) + INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_red")->m_dwHeight)))
+		{
+			if((EERIEMouseButton & 1) && !(LastMouseClick & 1)) {
+				std::stringstream ss;
+				ss << checked_range_cast<int>(player.life);
+				ARX_SPEECH_Add(ss.str());
+			}
+		}
+	}
+
+	//---------------------------------------------------------------------
+	//END RED GAUGE
+
+	ARX_INTERFACE_DrawItem(ITC.Get("empty_gauge_red"), ManaGaugePos.x, ManaGaugePos.y, 0.001f);
+
+	//---------------------------------------------------------------------
+	//BLUE GAUGE
+
+	float LARGG=INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_blue")->m_dwWidth);
+	float HAUTT=INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_blue")->m_dwHeight);
+
+	EERIEDrawBitmap2DecalY(g_size.width() - INTERFACE_RATIO(33) + INTERFACE_RATIO(1) + lSLID_VALUE,
+		g_size.height() - INTERFACE_RATIO(81), LARGG, HAUTT, 0.f,
+		ITC.Get("filled_gauge_blue"), Color::white, (1.f - ManaGaugeAmount));
+
+	if(!(player.Interface & INTER_COMBATMODE)) {
+		if(MouseInRect(g_size.width() - INTERFACE_RATIO(33) + lSLID_VALUE,g_size.height() - INTERFACE_RATIO(81),g_size.width() - INTERFACE_RATIO(33) + lSLID_VALUE+LARGG,g_size.height() - INTERFACE_RATIO(81)+HAUTT))
+		{
+			if((EERIEMouseButton & 1) && !(LastMouseClick & 1)) {
+				std::stringstream ss;
+				ss << checked_range_cast<int>(player.mana);
+				ARX_SPEECH_Add(ss.str());
+			}
+		}
+	}
+}
+
+Color MecanismIconColor;
+
+//The cogwheel icon that shows up when switching from mouseview to interaction mode.
+void UpdateMecanismIcon() {
+	MecanismIconColor = Color::white;
+	if(lTimeToDrawMecanismCursor > 300) {
+		MecanismIconColor = Color::black;
+		if(lTimeToDrawMecanismCursor > 400) {
+			lTimeToDrawMecanismCursor=0;
+			lNbToDrawMecanismCursor++;
+		}
+	}
+	lTimeToDrawMecanismCursor += static_cast<long>(framedelay);
+}
+
+void DrawMecanismIcon() {
+    EERIEDrawBitmap(0, 0, INTERFACE_RATIO_DWORD(mecanism_tc->m_dwWidth), INTERFACE_RATIO_DWORD(mecanism_tc->m_dwHeight),
+                    0.01f, mecanism_tc, MecanismIconColor);
+}
+
+struct {
+	float fSizeX;
+	float fSizeY;
+	float fArrowMove;
+	float fMove;
+} ScreenArrows;
+
+void UpdateScreenBorderArrows() {
+	ScreenArrows.fSizeX = INTERFACE_RATIO_DWORD(arrow_left_tc->m_dwWidth);
+	ScreenArrows.fSizeY = INTERFACE_RATIO_DWORD(arrow_left_tc->m_dwHeight);
+	ScreenArrows.fArrowMove += .5f * framedelay;
+	if(ScreenArrows.fArrowMove > 180.f) {
+		ScreenArrows.fArrowMove=0.f;
+	}
+	ScreenArrows.fMove=fabs(sin(radians(ScreenArrows.fArrowMove)))*ScreenArrows.fSizeX*.5f;
+}
+
+void DrawScreenBorderArrows() {	
+	Color lcolor = Color::gray(.5f);	
+	// Left
+	EERIEDrawBitmap(0 + ScreenArrows.fMove, g_size.center().y - (ScreenArrows.fSizeY * .5f), 
+		ScreenArrows.fSizeX, ScreenArrows.fSizeY, 0.01f, arrow_left_tc, lcolor);
+	// Right
+	EERIEDrawBitmapUVs(g_size.width() - ScreenArrows.fSizeX - ScreenArrows.fMove, g_size.center().y - (ScreenArrows.fSizeY * .5f), 
+		ScreenArrows.fSizeX, ScreenArrows.fSizeY, .01f, arrow_left_tc, lcolor, 1.f, 0.f, 0.f, 0.f, 1.f, 1.f, 0.f, 1.f);
+	// Up
+	EERIEDrawBitmapUVs(g_size.center().x - (ScreenArrows.fSizeY * .5f), 0.f + ScreenArrows.fMove, 
+		ScreenArrows.fSizeY, ScreenArrows.fSizeX, .01f, arrow_left_tc, lcolor, 0.f, 1.f, 0.f, 0.f, 1.f, 1.f, 1.f, 0.f);
+	// Down
+	EERIEDrawBitmapUVs(g_size.center().x - (ScreenArrows.fSizeY * .5f), (g_size.height() - ScreenArrows.fSizeX) - ScreenArrows.fMove, 
+		ScreenArrows.fSizeY, ScreenArrows.fSizeX, .01f, arrow_left_tc, lcolor, 1.f, 1.f, 1.f, 0.f, 0.f, 1.f, 0.f, 0.f);
+}
+
+void UpdateInterface() {
+	UpdateCombatInterface();
+	UpdateSecondaryInvOrStealInv();
+	UpdateInventory();	
+	UpdateMecanismIcon();
+	UpdateScreenBorderArrows();
+	UpdateHealthManaGauges();
+	UpdateMemorizedSpells();
+	UpdateChangeLevelIcon();
+}
+
+void ArxGame::drawAllInterface() {
+	
+	GRenderer->GetTextureStage(0)->setMinFilter(TextureStage::FilterLinear);
+	GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterNearest);
+	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapClamp);
+
+	if(player.Interface & INTER_COMBATMODE) {
+		drawCombatInterface();
+	}	
+	DrawSecondaryInvOrStealInv();	
+	if(!PLAYER_INTERFACE_HIDE_COUNT) {
+			DrawInventory();
+	}
+	if(FlyingOverIO 
+		&& !(player.Interface & INTER_COMBATMODE)
+		&& !GInput->actionPressed(CONTROLS_CUST_MAGICMODE)
+		&& (!PLAYER_MOUSELOOK_ON || !config.input.autoReadyWeapon)
+	  ) {
+		if((FlyingOverIO->ioflags & IO_ITEM) && !DRAGINTER && SecondaryInventory) {
+			DrawItemPrice();
+		}
+		SpecialCursor=CURSOR_INTERACTION_ON;
+	}
+	ARX_INTERFACE_DrawDamagedEquipment();
+	if(!(player.Interface & INTER_COMBATMODE)) {
+		DrawIcons();
+	}
+	if(CHANGE_LEVEL_ICON > -1 && ChangeLevel) {
+		DrawChangeLevelIcon();
+	}
+	// Draw stealth gauge
+	ARX_INTERFACE_Draw_Stealth_Gauge();
+
+	if((player.Interface & INTER_MAP) && !(player.Interface & INTER_COMBATMODE)) {
+		ARX_INTERFACE_ManageOpenedBook();
+		ARX_INTERFACE_ManageOpenedBook_Finish();
+	}
+	if(CurrSpellSymbol || player.SpellToMemorize.bSpell) {
+		DrawMemorizedSpells();
+	}
+	if(player.Interface & INTER_LIFE_MANA) {
+		DrawHealthManaGauges();
+		if(bRenderInCursorMode) {
+			GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+			if(mecanism_tc && MAGICMODE < 0 && lNbToDrawMecanismCursor < 3) {
+				DrawMecanismIcon();
+			}
+			if(arrow_left_tc) {
+				DrawScreenBorderArrows();
+			}
+			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+		}
+	}
 	GRenderer->GetTextureStage(0)->setMinFilter(TextureStage::FilterLinear);
 	GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterLinear);
 	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
