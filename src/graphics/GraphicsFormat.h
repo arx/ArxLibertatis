@@ -71,13 +71,11 @@ struct SavedAnglef {
 	f32 g;
 	
 	inline operator Anglef() const {
-		Anglef r;
-		r.a = a, r.b = b, r.g  =g;
-		return r;
+		return Anglef(a, b, g);
 	}
 	
 	inline SavedAnglef & operator=(const Anglef & o) {
-		a = o.a, b = o.b, g = o.g;
+		a = o.getYaw(), b = o.getPitch(), g = o.getRoll();
 		return *this;
 	}
 	

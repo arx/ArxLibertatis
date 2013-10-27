@@ -262,16 +262,14 @@ void PutInFrontOfPlayer(Entity * io)
 	if(!io)
 		return;
 
-	float t = radians(player.angle.b);
+	float t = radians(player.angle.getPitch());
 	io->pos.x = player.pos.x - (float)EEsin(t) * 80.f;
 	io->pos.y = player.pos.y + 20.f; 
 	io->pos.z = player.pos.z + (float)EEcos(t) * 80.f;
 	io->velocity.y = 0.3f;
 	io->velocity.x = 0; 
 	io->velocity.z = 0; 
-	io->angle.a = 0.f;
-	io->angle.b = 0; 
-	io->angle.g = 0.f;
+	io->angle = Anglef::ZERO;
 	io->stopped = 0;
 	io->show = SHOW_FLAG_IN_SCENE;
 
@@ -293,13 +291,11 @@ void IO_Drop_Item(Entity * io_src, Entity * io)
 	if(!io || !io_src)
 		return;
 
-	float t = radians(io_src->angle.b);
+	float t = radians(io_src->angle.getPitch());
 	io->velocity.x = -(float)EEsin(t) * 50.f;
 	io->velocity.y = 0.3f;
 	io->velocity.z = (float)EEcos(t) * 50.f;
-	io->angle.a = 0.f;
-	io->angle.b = 0; 
-	io->angle.g = 0.f;
+	io->angle = Anglef::ZERO;
 	io->stopped = 0;
 	io->show = SHOW_FLAG_IN_SCENE;
 	

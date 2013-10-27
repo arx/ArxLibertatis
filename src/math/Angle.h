@@ -27,7 +27,7 @@
 
 inline float MAKEANGLE(float a) {
 	float angle = std::fmod(a, 360.f);
-	return (angle >= 0) ? angle : angle + 360.f;
+	return (angle >= 0 ) ? angle : angle + 360.f;
 }
 
 /*!
@@ -43,18 +43,49 @@ public:
 	 * Constructor.
 	 */
 	Angle() {}
-	
+
 	/*!
 	 * Constructor accepting initial values.
 	 */
-	Angle(T _a, T _b, T _g) : a(_a), b(_b), g(_g) { }
+	Angle(T yaw, T pitch, T roll) : m_yaw(yaw), m_pitch(pitch), m_roll(roll) {}
 	
 	/*!
 	 * Copy constructor.
 	 * @param other An angle to be copied.
 	 */
-	Angle(const Angle & other) : a(other.a), b(other.b), g(other.g) { }
+	Angle(const Angle & other) : m_yaw(other.m_yaw), m_pitch(other.m_pitch), m_roll(other.m_roll) {}
+
+	explicit Angle(glm::quat quat) {
+		typename vec3_traits<T>::type v = glm::eulerAngles(quat);
+		m_yaw = degrees(v.x);
+		m_pitch = degrees(v.y);
+		m_roll = degrees(v.z);
+	}
+
+	T getYaw() const {
+		return m_yaw;
+	}
+
+	T getPitch() const {
+		return m_pitch;
+	}
+
+	T getRoll() const {
+		return m_roll;
+	}
 	
+	void setYaw(T yaw) {
+		m_yaw = yaw;
+	}
+
+	void setPitch(T pitch) {
+		m_pitch = pitch;
+	}
+
+	void setRoll(T roll) {
+		m_roll = roll;
+	}
+
 	/*!
 	 * Set this angle to the content of another angle.
 	 * @brief Assignment operator.
@@ -62,7 +93,7 @@ public:
 	 * @return Reference to this object.
 	 */
 	Angle & operator=(const Angle & other) {
-		a = other.a, b = other.b, g = other.g;
+		m_yaw = other.m_yaw, m_pitch = other.m_pitch, m_roll = other.m_roll;
 		return *this;
 	}
 	
@@ -73,7 +104,7 @@ public:
 	 * @return A boolean, \b true if the two angles are equal(all members are equals), or \b false otherwise.
 	 */
 	bool operator==(const Angle & other) const {
-		return (a == other.a && b == other.b && g == other.g);
+		return m_yaw == other.m_yaw && m_pitch == other.m_pitch && m_roll == other.m_roll;
 	}
 	
 	/*!
@@ -92,7 +123,7 @@ public:
 	 * @return A new angle, same as this one but with the signs of all the elements inverted.
 	 */
 	Angle operator-() const {
-		return Angle(-a, -b, -g);
+		return Angle(-m_yaw, -m_pitch, -m_roll);
 	}
 	
 	/*!
@@ -102,7 +133,7 @@ public:
 	 * @return A new angle, the result of the addition of the two angles.
 	 */
 	Angle operator+(const Angle & other) const {
-		return Angle(a + other.a, b + other.b, g + other.g);
+		return Angle(m_yaw + other.m_yaw, m_pitch + otherm_.b, m_roll + other.m_roll);
 	}
 	
 	/*!
@@ -112,58 +143,50 @@ public:
 	 * @return A new angle, the result of the subtraction of the two angles.
 	 */
 	Angle operator-(const Angle & other) const {
-		return Angle(a - other.a, b - other.b, g - other.g);
+		return Angle(m_yaw - other.m_yaw, m_pitch - other.m_pitch, m_roll - other.m_roll);
 	}
 	
+
 	Angle operator*(T scale) const {
-		return Angle(a * scale, b * scale, g * scale);
+		return Angle(m_yaw * scale, m_pitch * scale, m_roll * scale);
 	}
 	
 	const Angle & operator+=(const Angle & other) {
-		a += other.a, b += other.b, g += other.g;
+		m_yaw += other.m_yaw, m_pitch += other.m_pitch, m_roll += other.m_roll;
 		return *this;
 	}
 	
 	const Angle & operator-=(const Angle & other) {
-		a -= other.a, b -= other.b, g -= other.g;
+		m_yaw -= other.m_yaw, m_pitch -= other.m_pitch, m_roll -= other.m_roll;
 		return *this;
 	}
 	
 	const Angle & operator/=(T scale) {
-		a /= scale, b /= scale, g /= scale;
+		m_yaw /= scale, m_pitch /= scale, m_roll /= scale;
 		return *this;
 	}
 	
 	const Angle & operator *=(T scale) {
-		a *= scale, b *= scale, g *= scale;
+		m_yaw *= scale, m_pitch *= scale, m_roll *= scale;
 		return *this;
 	}
 	
 	bool equalEps(const Angle & other, T pEps = std::numeric_limits<T>::epsilon()) const {
-		return a > (other.a - pEps) && a < (other.a + pEps) && b > (other.b - pEps) && b < (other.b + pEps) && g > (other.g - pEps) && g < (other.g + pEps);
+		return m_yaw > (other.m_yaw - pEps) && m_yaw < (other.m_yaw + pEps) && m_pitch >(other.m_pitch - pEps) && m_pitch < (other.m_pitch + pEps) && g >(other.m_roll - pEps) && m_roll < (other.m_roll + pEps);
 	}
 	
 	void normalize() {
-		a = MAKEANGLE(a);
-		b = MAKEANGLE(b);
-		g = MAKEANGLE(g);
+		m_yaw = MAKEANGLE(m_yaw);
+		m_pitch = MAKEANGLE(m_pitch);
+		m_roll = MAKEANGLE(m_roll);
 	}
 
-	union {
-		T a;
-		T yaw;
-	};
-	union {
-		T b;
-		T pitch;
-	};
-	union {
-		T g;
-		T roll;
-	};
-	
 	static const Angle ZERO; //!< A zero angle.
-	
+
+private:
+	T m_yaw;
+	T m_pitch;
+	T m_roll;
 };
 
 template<class T> const Angle<T> Angle<T>::ZERO(T(0), T(0), T(0));
@@ -173,7 +196,7 @@ float AngleDifference(float d, float e);
 float InterpolateAngle(float a1, float a2, float p);
 
 inline Anglef interpolate(const Anglef & a1, const Anglef & a2, float p) {
-	return Anglef(InterpolateAngle(a1.a, a2.a, p), InterpolateAngle(a1.b, a2.b, p), InterpolateAngle(a1.g, a2.g, p));
+	return Anglef(InterpolateAngle(a1.getYaw(), a2.getYaw(), p), InterpolateAngle(a1.getPitch(), a2.getPitch(), p), InterpolateAngle(a1.getRoll(), a2.getRoll(), p));
 }
 
 //! Get the angle of the 2D vector (0,0)--(x,y), in radians.

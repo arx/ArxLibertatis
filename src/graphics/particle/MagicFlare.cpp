@@ -191,9 +191,9 @@ void AddFlare(const Vec2s & pos, float sm, short typ, Entity * io, bool bookDraw
 		float vx = -(fl->x - subj.center.x) * 0.2173913f;
 		float vy = (fl->y - subj.center.y) * 0.1515151515151515f;
 		if(io) {
-			fl->v.p.x = io->pos.x - EEsin(radians(MAKEANGLE(io->angle.b + vx))) * 100.f;
-			fl->v.p.y = io->pos.y + EEsin(radians(MAKEANGLE(io->angle.a + vy))) * 100.f - 150.f;
-			fl->v.p.z = io->pos.z + EEcos(radians(MAKEANGLE(io->angle.b + vx))) * 100.f;
+			fl->v.p.x = io->pos.x - EEsin(radians(MAKEANGLE(io->angle.getPitch() + vx))) * 100.f;
+			fl->v.p.y = io->pos.y + EEsin(radians(MAKEANGLE(io->angle.getYaw() + vy))) * 100.f - 150.f;
+			fl->v.p.z = io->pos.z + EEcos(radians(MAKEANGLE(io->angle.getPitch() + vx))) * 100.f;
 		} else {
 			fl->v.p.x = float(pos.x - (g_size.width() / 2)) * 150.f / float(g_size.width());
 			fl->v.p.y = float(pos.y - (g_size.height() / 2)) * 150.f / float(g_size.width());

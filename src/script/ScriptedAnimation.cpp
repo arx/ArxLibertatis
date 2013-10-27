@@ -87,9 +87,9 @@ public:
 		
 		DebugScript(' ' << t1 << ' ' << t2 << ' ' << t3);
 		
-		io->angle.a += t1;
-		io->angle.b += t2;
-		io->angle.g += t3;
+		io->angle.setYaw(io->angle.getYaw() + t1);
+		io->angle.setPitch(io->angle.getPitch() + t2);
+		io->angle.setRoll(io->angle.getRoll() + t3);
 		
 		io->animBlend.lastanimtime = 0;
 		
@@ -158,7 +158,7 @@ public:
 		
 		DebugScript(' ' << angle);
 		
-		context.getEntity()->angle.b = angle;
+		context.getEntity()->angle.setPitch(angle);
 		
 		return Success;
 	}

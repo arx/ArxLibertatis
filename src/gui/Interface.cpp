@@ -1788,9 +1788,9 @@ void ArxGame::manageEditorControls() {
 							float y_ratio=(float)((float)DANAEMouse.y-(float)g_size.center().y)/(float)g_size.height()*2;
 							float x_ratio=-(float)((float)DANAEMouse.x-(float)g_size.center().x)/(float)g_size.center().x;
 							Vec3f viewvector;
-							viewvector.x = -std::sin(radians(player.angle.b+(x_ratio*30.f))) * std::cos(radians(player.angle.a));
-							viewvector.y =  std::sin(radians(player.angle.a)) + y_ratio;
-							viewvector.z =  std::cos(radians(player.angle.b+(x_ratio*30.f))) * std::cos(radians(player.angle.a));
+							viewvector.x = -std::sin(radians(player.angle.getPitch()+(x_ratio*30.f))) * std::cos(radians(player.angle.getYaw()));
+							viewvector.y =  std::sin(radians(player.angle.getYaw())) + y_ratio;
+							viewvector.z =  std::cos(radians(player.angle.getPitch()+(x_ratio*30.f))) * std::cos(radians(player.angle.getYaw()));
 
 							io->soundtime=0;
 							io->soundcount=0;
@@ -2256,7 +2256,7 @@ void ArxGame::managePlayerControls()
 
 			// Checks WALK_FORWARD Key Status.
 			if(GInput->actionPressed(CONTROLS_CUST_WALKFORWARD)) {
-				float tr=radians(eyeball.angle.b);
+				float tr=radians(eyeball.angle.getPitch());
 				eyeball.pos.x+=-(float)EEsin(tr)*20.f*(float)FD*0.033f;
 				eyeball.pos.z+=+(float)EEcos(tr)*20.f*(float)FD*0.033f;
 				NOMOREMOVES=1;
@@ -2264,7 +2264,7 @@ void ArxGame::managePlayerControls()
 
 			// Checks WALK_BACKWARD Key Status.
 			if(GInput->actionPressed(CONTROLS_CUST_WALKBACKWARD)) {
-				float tr=radians(eyeball.angle.b);
+				float tr=radians(eyeball.angle.getPitch());
 				eyeball.pos.x+=(float)EEsin(tr)*20.f*(float)FD*0.033f;
 				eyeball.pos.z+=-(float)EEcos(tr)*20.f*(float)FD*0.033f;
 				NOMOREMOVES=1;
@@ -2275,7 +2275,7 @@ void ArxGame::managePlayerControls()
 				(GInput->actionPressed(CONTROLS_CUST_STRAFE)&&GInput->actionPressed(CONTROLS_CUST_TURNLEFT)))
 				&& !NOMOREMOVES)
 			{
-				float tr=radians(MAKEANGLE(eyeball.angle.b+90.f));
+				float tr=radians(MAKEANGLE(eyeball.angle.getPitch()+90.f));
 				eyeball.pos.x+=-(float)EEsin(tr)*10.f*(float)FD*0.033f;
 				eyeball.pos.z+=+(float)EEcos(tr)*10.f*(float)FD*0.033f;
 				NOMOREMOVES=1;			
@@ -2286,7 +2286,7 @@ void ArxGame::managePlayerControls()
 				(GInput->actionPressed(CONTROLS_CUST_STRAFE)&&GInput->actionPressed(CONTROLS_CUST_TURNRIGHT)))
 				&& !NOMOREMOVES)
 			{
-				float tr=radians(MAKEANGLE(eyeball.angle.b-90.f));
+				float tr=radians(MAKEANGLE(eyeball.angle.getPitch()-90.f));
 				eyeball.pos.x+=-(float)EEsin(tr)*10.f*(float)FD*0.033f;
 				//eyeball.pos.y+=FD*0.33f;
 				eyeball.pos.z+=(float)EEcos(tr)*10.f*(float)FD*0.033f;
@@ -2349,13 +2349,13 @@ void ArxGame::managePlayerControls()
 				multi = 0.8f;
 			}
 
-			float t = radians(player.angle.b);
+			float t = radians(player.angle.getPitch());
 			multi=5.f*(float)FD*MoveDiv*multi;
 			tm.x+=(float)EEsin(t)*multi;
 			tm.z-=(float)EEcos(t)*multi;
 
 			if(!USE_PLAYERCOLLISIONS) {
-				t=radians(player.angle.a);
+				t=radians(player.angle.getYaw());
 				tm.y-=(float)EEsin(t)*multi;
 			}
 
@@ -2376,13 +2376,13 @@ void ArxGame::managePlayerControls()
 				multi=0.8f;
 			}
 
-			float t = radians(player.angle.b);
+			float t = radians(player.angle.getPitch());
 			multi=10.f*(float)FD*MoveDiv*multi;
 			tm.x-=(float)EEsin(t)*multi;
 			tm.z+=(float)EEcos(t)*multi;
 
 			if(!USE_PLAYERCOLLISIONS) {
-				t=radians(player.angle.a);
+				t=radians(player.angle.getYaw());
 				tm.y+=(float)EEsin(t)*multi;
 			}
 
@@ -2397,7 +2397,7 @@ void ArxGame::managePlayerControls()
 		// Checks STRAFE_LEFT Key Status.
 		if(left && !NOMOREMOVES) {
 			CurrFightPos=0;
-			float t = radians(MAKEANGLE(player.angle.b+90.f));
+			float t = radians(MAKEANGLE(player.angle.getPitch()+90.f));
 			float multi=6.f*(float)FD*MoveDiv;
 			tm.x-=(float)EEsin(t)*multi;
 			tm.z+=(float)EEcos(t)*multi;
@@ -2413,7 +2413,7 @@ void ArxGame::managePlayerControls()
 		// Checks STRAFE_RIGHT Key Status.
 		if(right && !NOMOREMOVES) {
 			CurrFightPos=1;
-			float t = radians(MAKEANGLE(player.angle.b-90.f));
+			float t = radians(MAKEANGLE(player.angle.getPitch()-90.f));
 			float multi=6.f*(float)FD*MoveDiv;
 			tm.x-=(float)EEsin(t)*multi;
 			tm.z+=(float)EEcos(t)*multi;
@@ -3305,9 +3305,12 @@ void ArxGame::manageKeyMouse() {
 		}
 
 		if(GInput->actionPressed(CONTROLS_CUST_CENTERVIEW)) {
-			eyeball.angle.a=eyeball.angle.g=0.f;
-			player.desiredangle.a=player.angle.a=0.f;
-			player.desiredangle.g=player.angle.g=0.f;
+			eyeball.angle.setYaw(0);
+			eyeball.angle.setRoll(0);
+			player.desiredangle.setYaw(0);
+			player.angle.setYaw(0);
+			player.desiredangle.setRoll(0);
+			player.angle.setRoll(0);
 		}
 
 		float mouseSensitivity = (((float)GInput->getMouseSensitivity()) + 1.f) * 0.1f * ((640.f / (float)g_size.width()));
@@ -3331,29 +3334,29 @@ void ArxGame::manageKeyMouse() {
 		if(PLAYER_MOUSELOOK_ON || bKeySpecialMove) {
 
 			if(eyeball.exist == 2) {
-				if(eyeball.angle.a < 70.f) {
-					if(eyeball.angle.a + ia < 70.f)
-						eyeball.angle.a += ia;
-				} else if(eyeball.angle.a > 300.f) {
-					if(eyeball.angle.a + ia > 300.f)
-						eyeball.angle.a += ia;
+				if(eyeball.angle.getYaw() < 70.f) {
+					if(eyeball.angle.getYaw() + ia < 70.f)
+						eyeball.angle.setYaw(eyeball.angle.getYaw() + ia);
+				} else if(eyeball.angle.getYaw() > 300.f) {
+					if(eyeball.angle.getYaw() + ia > 300.f)
+						eyeball.angle.setYaw(eyeball.angle.getYaw() + ia);
 				}
 
-				eyeball.angle.a = MAKEANGLE(eyeball.angle.a);
-				eyeball.angle.b = MAKEANGLE(eyeball.angle.b - ib);
+				eyeball.angle.setYaw(MAKEANGLE(eyeball.angle.getYaw()));
+				eyeball.angle.setPitch(MAKEANGLE(eyeball.angle.getPitch() - ib));
 			} else if(ARXmenu.currentmode != AMCM_NEWQUEST) {
 
-				float iangle = player.angle.a;
+				float iangle = player.angle.getYaw();
 
-				player.desiredangle.a = player.angle.a;
-				player.desiredangle.a += ia;
-				player.desiredangle.a = MAKEANGLE(player.desiredangle.a);
+				player.desiredangle.setYaw(player.angle.getYaw());
+				player.desiredangle.setYaw(player.desiredangle.getYaw() + ia);
+				player.desiredangle.setYaw(MAKEANGLE(player.desiredangle.getYaw()));
 
-				if(player.desiredangle.a >= 74.9f && player.desiredangle.a <= 301.f) {
+				if(player.desiredangle.getYaw() >= 74.9f && player.desiredangle.getYaw() <= 301.f) {
 					if(iangle < 75.f)
-						player.desiredangle.a = 74.9f; //69
+						player.desiredangle.setYaw(74.9f); //69
 					else
-						player.desiredangle.a = 301.f;
+						player.desiredangle.setYaw(301.f);
 				}
 
 				if(entities.player() && EEfabs(ia)>2.f)
@@ -3364,8 +3367,8 @@ void ArxGame::manageKeyMouse() {
 
 				PLAYER_ROTATION = ib;
 
-				player.desiredangle.b = player.angle.b;
-				player.desiredangle.b = MAKEANGLE(player.desiredangle.b - ib);
+				player.desiredangle.setPitch(player.angle.getPitch());
+				player.desiredangle.setPitch(MAKEANGLE(player.desiredangle.getPitch() - ib));
 			}
 		}
 	}
@@ -3965,7 +3968,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 					PrepareCamera(&bookcam);
 
 					// First draw the lace
-					angle.b=0.f;
+					angle.setPitch(0.f);
 
 					if(player.rune_flags & (RuneFlag)(1<<i)) {
 						EERIE_QUAT rotation;
@@ -3976,17 +3979,17 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 						TransformInfo t1(pos, rotation);
 						DrawEERIEInter(necklace.lacet, t1, NULL);
 
-						if(necklace.runes[i]->angle.b != 0.f) {
-							if(necklace.runes[i]->angle.b > 300.f)
-								necklace.runes[i]->angle.b = 300.f;
+						if(necklace.runes[i]->angle.getPitch() != 0.f) {
+							if(necklace.runes[i]->angle.getPitch() > 300.f)
+								necklace.runes[i]->angle.setPitch(300.f);
 
-							angle.b = EEsin(arxtime.get_updated() * (1.0f / 200)) * necklace.runes[i]->angle.b * (1.0f / 40);
+							angle.setPitch(EEsin(arxtime.get_updated() * (1.0f / 200)) * necklace.runes[i]->angle.getPitch() * (1.0f / 40));
 						}
 
-						necklace.runes[i]->angle.b -= framedelay * 0.2f;
+						necklace.runes[i]->angle.setPitch(necklace.runes[i]->angle.getPitch() - framedelay * 0.2f);
 
-						if(necklace.runes[i]->angle.b < 0.f)
-							necklace.runes[i]->angle.b = 0.f;
+						if(necklace.runes[i]->angle.getPitch() < 0.f)
+							necklace.runes[i]->angle.setPitch(0.f);
 
 						GRenderer->SetRenderState(Renderer::DepthWrite, true);
 						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
@@ -4035,7 +4038,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 								TransformInfo t(pos, rotation);
 								DrawEERIEInter(necklace.runes[i], t, NULL);
 
-								necklace.runes[i]->angle.b+=framedelay*2.f;
+								necklace.runes[i]->angle.setPitch(necklace.runes[i]->angle.getPitch() + framedelay*2.f);
 
 								PopAllTriangleList();
 								
@@ -5343,10 +5346,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 		SetActiveCamera(&bookcam);
 		PrepareCamera(&bookcam);
 
-		Anglef ePlayerAngle;
-
-		ePlayerAngle.a=0.f;
-		ePlayerAngle.g=0.f;
+		Anglef ePlayerAngle = Anglef::ZERO;
 
 		if(BOOKZOOM) {
 			Rect vp;
@@ -5359,16 +5359,16 @@ void ARX_INTERFACE_ManageOpenedBook()
 			switch (player.skin)
 			{
 				case 0:
-					ePlayerAngle.b = -25.f;
+					ePlayerAngle.setPitch(-25.f);
 					break;
 				case 1:
-					ePlayerAngle.b = -10.f;
+					ePlayerAngle.setPitch(-10.f);
 					break;
 				case 2:
-					ePlayerAngle.b = 20.f;
+					ePlayerAngle.setPitch(20.f);
 					break;
 				case 3:
-					ePlayerAngle.b = 35.f;
+					ePlayerAngle.setPitch(35.f);
 					break;
 			}
 
@@ -5379,7 +5379,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 		} else {
 			GRenderer->SetViewport(rec);
 
-			ePlayerAngle.b=-20.f;
+			ePlayerAngle.setPitch(-20.f);
 			pos.x=20.f;
 			pos.y=96.f;
 			pos.z=260.f;
@@ -6409,7 +6409,7 @@ long Manage3DCursor(long flags)
 	if(BLOCK_PLAYER_CONTROLS)
 		return 0;
 
-	float ag = player.angle.a;
+	float ag = player.angle.getYaw();
 
 	if(ag > 180)
 		ag = ag - 360;
@@ -6423,26 +6423,23 @@ long Manage3DCursor(long flags)
 	if(!io)
 		return 0;
 
-	Anglef temp;
+	Anglef temp = Anglef::ZERO;
 
 	if (io->ioflags & IO_INVERTED)
 	{
-		temp.a=180.f;
-		temp.b = -MAKEANGLE(270.f - io->angle.b - (player.angle.b - STARTED_ANGLE));
+		temp.setYaw(180.f);
+		temp.setPitch(-MAKEANGLE(270.f - io->angle.getPitch() - (player.angle.getPitch() - STARTED_ANGLE)));
 	}
 	else
 	{
-		temp.a = 0;
-		temp.b = MAKEANGLE(270.f - io->angle.b - (player.angle.b - STARTED_ANGLE));
+		temp.setPitch(MAKEANGLE(270.f - io->angle.getPitch() - (player.angle.getPitch() - STARTED_ANGLE)));
 	}
 
-	temp.g = 0;
-
-	float angle=radians(MAKEANGLE(player.angle.b));
-	float angle2=radians(MAKEANGLE(player.angle.b-90.f));
+	float angle=radians(MAKEANGLE(player.angle.getPitch()));
+	float angle2=radians(MAKEANGLE(player.angle.getPitch()-90.f));
 				
 	float zrange=(g_size.height()-DANAEMouse.y)/(g_size.height()-drop_miny); //between 0 (bottom) and 1 (top)
-	float va=player.angle.a;
+	float va=player.angle.getYaw();
 
 	if(va > 180)
 		va = 0;
@@ -6494,9 +6491,9 @@ long Manage3DCursor(long flags)
 	cyl.radius=40.f;
 
 	Vec3f orgn,dest,mvectx;
-	mvectx.x = -(float)EEsin(radians(player.angle.b - 90.f));
+	mvectx.x = -(float)EEsin(radians(player.angle.getPitch() - 90.f));
 	mvectx.y = 0;
-	mvectx.z = +(float)EEcos(radians(player.angle.b - 90.f));
+	mvectx.z = +(float)EEcos(radians(player.angle.getPitch() - 90.f));
 	mvectx = normalize(mvectx);
 
 	float xmod=(float)(DANAEMouse.x-g_size.center().x)/(float)g_size.center().x*160.f;
@@ -6504,13 +6501,13 @@ long Manage3DCursor(long flags)
 	mvectx *= xmod;
 	Vec3f mvecty(0, ymod, 0);
 
-	orgn.x=player.pos.x-(float)EEsin(radians(player.angle.b))*(float)EEcos(radians(player.angle.a))*50.f + mvectx.x;
-	orgn.y=player.pos.y+(float)EEsin(radians(player.angle.a))*50.f + mvectx.y + mvecty.y;
-	orgn.z=player.pos.z+(float)EEcos(radians(player.angle.b))*(float)EEcos(radians(player.angle.a))*50.f + mvectx.z;
+	orgn.x=player.pos.x-(float)EEsin(radians(player.angle.getPitch()))*(float)EEcos(radians(player.angle.getYaw()))*50.f + mvectx.x;
+	orgn.y=player.pos.y+(float)EEsin(radians(player.angle.getYaw()))*50.f + mvectx.y + mvecty.y;
+	orgn.z=player.pos.z+(float)EEcos(radians(player.angle.getPitch()))*(float)EEcos(radians(player.angle.getYaw()))*50.f + mvectx.z;
 
-	dest.x=player.pos.x-(float)EEsin(radians(player.angle.b))*(float)EEcos(radians(player.angle.a))*10000.f + mvectx.x;
-	dest.y=player.pos.y+(float)EEsin(radians(player.angle.a))*10000.f + mvectx.y + mvecty.y * 5.f;
-	dest.z=player.pos.z+(float)EEcos(radians(player.angle.b))*(float)EEcos(radians(player.angle.a))*10000.f + mvectx.z;
+	dest.x=player.pos.x-(float)EEsin(radians(player.angle.getPitch()))*(float)EEcos(radians(player.angle.getYaw()))*10000.f + mvectx.x;
+	dest.y=player.pos.y+(float)EEsin(radians(player.angle.getYaw()))*10000.f + mvectx.y + mvecty.y * 5.f;
+	dest.z=player.pos.z+(float)EEcos(radians(player.angle.getPitch()))*(float)EEcos(radians(player.angle.getYaw()))*10000.f + mvectx.z;
 	pos = orgn;
 
 	Vec3f movev = normalize(dest - orgn);
@@ -6539,7 +6536,7 @@ long Manage3DCursor(long flags)
 		}
 	}
 
-	VRotateY(&objcenter,temp.b);
+	VRotateY(&objcenter,temp.getPitch());
 
 	maxdist = clamp(maxdist, 15.f, 150.f);
 
@@ -6651,9 +6648,9 @@ long Manage3DCursor(long flags)
 				ARX_SOUND_PlayInterface(SND_INVSTD);
 				ARX_INTERACTIVE_Teleport(io, &pos, true);
 
-				io->angle.a=temp.a;
-				io->angle.b=270.f-temp.b;
-				io->angle.g=temp.g;
+				io->angle.setYaw(temp.getYaw());
+				io->angle.setPitch(270.f-temp.getPitch());
+				io->angle.setRoll(temp.getRoll());
 				io->stopped=0;
 				io->show=SHOW_FLAG_IN_SCENE;
 				io->obj->pbox->active=0;
@@ -6753,7 +6750,7 @@ void ARX_INTERFACE_RenderCursorInternal(long flag)
 		{
 
 			CANNOT_PUT_IT_HERE=0;
-			float ag=player.angle.a;
+			float ag=player.angle.getYaw();
 
 			if(ag > 180)
 				ag = ag - 360;

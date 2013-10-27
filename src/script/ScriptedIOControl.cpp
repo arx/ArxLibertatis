@@ -278,8 +278,8 @@ public:
 				
 				if(t->ioflags & IO_NPC) {
 					float dist = t->physics.cyl.radius + ioo->physics.cyl.radius + 10;
-					ioo->pos.x += -EEsin(radians(t->angle.b)) * dist;
-					ioo->pos.z += EEcos(radians(t->angle.b)) * dist;
+					ioo->pos.x += -EEsin(radians(t->angle.getPitch())) * dist;
+					ioo->pos.z += EEcos(radians(t->angle.getPitch())) * dist;
 				}
 				
 				TREATZONE_AddIO(ioo);
@@ -458,7 +458,7 @@ class IfVisibleCommand : public Command {
 			return false;
 		}
 		
-		float ab = MAKEANGLE(io->angle.b);
+		float ab = MAKEANGLE(io->angle.getPitch());
 		float aa = getAngle(io->pos.x, io->pos.z, ioo->pos.x, ioo->pos.z);
 		aa = MAKEANGLE(degrees(aa));
 		
@@ -557,7 +557,8 @@ public:
 				float fangle = context.getFloat();
 				angle = static_cast<long>(fangle);
 				if(!(flg & flag('l'))) {
-					player.desiredangle.b = player.angle.b = fangle;
+					player.desiredangle.setPitch(fangle);
+					player.angle.setPitch(fangle);
 				}
 			}
 			
@@ -574,7 +575,7 @@ public:
 				strcpy(TELEPORT_TO_POSITION, target.c_str());
 				
 				if(angle == -1) {
-					TELEPORT_TO_ANGLE	=	static_cast<long>(player.angle.b);
+					TELEPORT_TO_ANGLE	=	static_cast<long>(player.angle.getPitch());
 				} else {
 					TELEPORT_TO_ANGLE = angle;
 				}
@@ -595,7 +596,7 @@ public:
 			target = context.getWord();
 		}
 		
-		DebugScript(' ' << options << ' ' << player.angle.b << ' ' << target);
+		DebugScript(' ' << options << ' ' << player.angle.getPitch() << ' ' << target);
 		
 		if(target == "behind") {
 			ARX_INTERACTIVE_TeleportBehindTarget(context.getEntity());

@@ -367,13 +367,13 @@ void CRuneOfGuarding::Render()
 	Color3f stitecolor;
 	
 	float stiteangleb = (float) ulCurrentTime * fOneOnDuration * 120;
-	stiteangle.a = 0;
-	stiteangle.g = 0;
+	stiteangle.setYaw(0);
+	stiteangle.setRoll(0);
 	Vec3f stitepos = Vec3f(x, y, z);
 
 	float gtc = arxtime.get_updated();
 	float v = EEsin(gtc * ( 1.0f / 1000 )) * ( 1.0f / 10 );
-	stiteangle.b = MAKEANGLE(gtc * ( 1.0f / 1000 )); 
+	stiteangle.setPitch(MAKEANGLE(gtc * ( 1.0f / 1000 )));
 	stitecolor.r = 0.4f - v;
 	stitecolor.g = 0.4f - v;
 	stitecolor.b = 0.6f - v;
@@ -383,7 +383,7 @@ void CRuneOfGuarding::Render()
 		DrawEERIEObjEx(slight, &stiteangle, &stitepos, &stitescale, stitecolor);
 	}
 	
-	stiteangle.b = stiteangleb;
+	stiteangle.setPitch(stiteangleb);
 	stitecolor.r = 0.6f;
 	stitecolor.g = 0.f;
 	stitecolor.b = 0.f;
@@ -808,7 +808,7 @@ void CMultiPoisonProjectile::Create(Vec3f _eSrc, float _afBeta = 0) {
 	
 	if(spells[spellinstance].caster == 0) { // player
 
-		afBeta = player.angle.b;
+		afBeta = player.angle.getPitch();
 
 		if(spells[spellinstance].hand_group != -1) {
 			_eSrc.x = spells[spellinstance].hand_pos.x - EEsin(radians(afBeta)) * 90;
@@ -820,7 +820,7 @@ void CMultiPoisonProjectile::Create(Vec3f _eSrc, float _afBeta = 0) {
 			_eSrc.z = player.pos.z + EEcos(radians(afBeta)) * 90;
 		}
 	} else {
-		afBeta = entities[spells[spellinstance].caster]->angle.b;
+		afBeta = entities[spells[spellinstance].caster]->angle.getPitch();
 
 		if(spells[spellinstance].hand_group != -1) {
 			_eSrc.x = spells[spellinstance].hand_pos.x - EEsin(radians(afBeta)) * 90;
@@ -984,9 +984,9 @@ void CRepelUndead::Update(unsigned long _ulTime) {
 	eSrc = entities[spells[spellinstance].target]->pos;
 	
 	if(spells[spellinstance].target == 0) {
-		fBeta = player.angle.b;
+		fBeta = player.angle.getPitch();
 	} else {
-		fBeta = entities[spells[spellinstance].target]->angle.b;
+		fBeta = entities[spells[spellinstance].target]->angle.getPitch();
 	}
 }
 
@@ -1004,9 +1004,9 @@ void CRepelUndead::Render() {
 	Vec3f  eObjScale;
 	Color3f rgbObjColor;
 
-	eObjAngle.b = fBeta;
-	eObjAngle.a = 0;
-	eObjAngle.g = 0;
+	eObjAngle.setPitch(fBeta);
+	eObjAngle.setYaw(0);
+	eObjAngle.setRoll(0);
 	eObjPos.x = eSrc.x;
 	eObjPos.y = eSrc.y - 5.f;
 	eObjPos.z = eSrc.z;

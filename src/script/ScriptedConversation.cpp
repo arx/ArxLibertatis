@@ -340,16 +340,16 @@ public:
 				if(command == "keep") {
 					acs.type = ARX_CINE_SPEECH_KEEP;
 					acs.pos1 = LASTCAMPOS;
-					acs.pos2.x = LASTCAMANGLE.a;
-					acs.pos2.y = LASTCAMANGLE.b;
-					acs.pos2.z = LASTCAMANGLE.g;
+					acs.pos2.x = LASTCAMANGLE.getYaw();
+					acs.pos2.y = LASTCAMANGLE.getPitch();
+					acs.pos2.z = LASTCAMANGLE.getRoll();
 					
 				} else if(command == "zoom") {
 					acs.type = ARX_CINE_SPEECH_ZOOM;
-					acs.startangle.a = context.getFloat();
-					acs.startangle.b = context.getFloat();
-					acs.endangle.a = context.getFloat();
-					acs.endangle.b = context.getFloat();
+					acs.startangle.setYaw(context.getFloat());
+					acs.startangle.setPitch(context.getFloat());
+					acs.endangle.setYaw(context.getFloat());
+					acs.endangle.setPitch(context.getFloat());
 					acs.startpos = context.getFloat();
 					acs.endpos = context.getFloat();
 					acs.ionum = (io == NULL) ? -1 : io->index();

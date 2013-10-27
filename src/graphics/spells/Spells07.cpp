@@ -411,11 +411,11 @@ void CLightning::Render()
 		}
 		
 		if(spells[spellinstance].caster == 0) {
-			falpha = -player.angle.a;
-			fBeta = player.angle.b;
+			falpha = -player.angle.getYaw();
+			fBeta = player.angle.getPitch();
 		} else {
 			// IO source
-			fBeta = caster->angle.b;
+			fBeta = caster->angle.getPitch();
 			if(ValidIONum(caster->targetinfo)
 			   && caster->targetinfo != spells[spellinstance].caster) {
 				Vec3f * p1 = &spells[spellinstance].caster_pos;
@@ -1019,14 +1019,12 @@ void CIceField::Render()
 		if(tSize[i].z > tSizeMax[i].z)
 			tSize[i].z = tSizeMax[i].z;
 
-		Anglef stiteangle;
+		Anglef stiteangle = Anglef::ZERO;
 		Vec3f stitepos;
 		Vec3f stitescale;
 		Color3f stitecolor;
 
-		stiteangle.b = (float) cos(radians(tPos[i].x)) * 360; 
-		stiteangle.a = 0;
-		stiteangle.g = 0;
+		stiteangle.setPitch((float)cos(radians(tPos[i].x)) * 360);
 		stitepos.x = tPos[i].x;
 		stitepos.y = eSrc.y;
 		stitepos.z = tPos[i].z;

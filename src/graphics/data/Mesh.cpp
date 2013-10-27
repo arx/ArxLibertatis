@@ -1539,15 +1539,15 @@ void DrawEERIEObjExEx(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *pos, Vec3f *scale
 
 	float temp;
 
-	temp = radians(angle->a);
+	temp = radians(angle->getYaw());
 	float Xcos = (float)EEcos(temp);
 	float Xsin = (float)EEsin(temp);
 
-	temp = radians(angle->b);
+	temp = radians(angle->getPitch());
 	float Ycos = (float)EEcos(temp);
 	float Ysin = (float)EEsin(temp);
 
-	temp = radians(angle->g);
+	temp = radians(angle->getRoll());
 	float Zcos = (float)EEcos(temp);
 	float Zsin = (float)EEsin(temp);
 
@@ -2411,13 +2411,13 @@ static void SceneAddObjToBackground(EERIE_3DOBJ * eobj) {
 
 	TexturedVertex vlist[3];
 	float tempAngle;
-	tempAngle = radians(eobj->angle.a);
+	tempAngle = radians(eobj->angle.getYaw());
 	Xcos = (float)EEcos(tempAngle);
 	Xsin = (float)EEsin(tempAngle);
-	tempAngle = radians(eobj->angle.b);
+	tempAngle = radians(eobj->angle.getPitch());
 	Ycos = (float)EEcos(tempAngle);
 	Ysin = (float)EEsin(tempAngle);
-	tempAngle = radians(eobj->angle.g);
+	tempAngle = radians(eobj->angle.getRoll());
 	Zcos = (float)EEcos(tempAngle);
 	Zsin = (float)EEsin(tempAngle);
 

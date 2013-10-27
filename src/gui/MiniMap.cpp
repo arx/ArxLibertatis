@@ -707,7 +707,7 @@ void MiniMap::drawPlayer(float playerSize, float playerX, float playerY, bool al
 	float rx3 = playerSize * (1.0f / 2);
 	float ry3 = playerSize;
 	
-	float angle = radians(m_player->angle.b);
+	float angle = radians(m_player->angle.getPitch());
 	float ca = EEcos(angle);
 	float sa = EEsin(angle);
 	

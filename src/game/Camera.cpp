@@ -21,13 +21,13 @@
 
 void EERIE_TRANSFORM::updateFromAngle(const Anglef &angle) {
 	float yaw, pitch, roll;
-	yaw = radians(angle.yaw);
+	yaw = radians(angle.getYaw());
 	xcos = std::cos(yaw);
 	xsin = std::sin(yaw);
-	pitch = radians(angle.pitch);
+	pitch = radians(angle.getPitch());
 	ycos = std::cos(pitch);
 	ysin = std::sin(pitch);
-	roll = radians(angle.roll);
+	roll = radians(angle.getRoll());
 	zcos = std::cos(roll);
 	zsin = std::sin(roll);
 

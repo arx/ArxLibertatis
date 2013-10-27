@@ -135,7 +135,7 @@ static void CheckHit(Entity * io, float ratioaim) {
 
 	Vec3f ppos, pos, to;
 	Vec3f from(0.f, 0.f, -90.f);
-	Vector_RotateY(&to, &from, MAKEANGLE(180.f - io->angle.b));
+	Vector_RotateY(&to, &from, MAKEANGLE(180.f - io->angle.getPitch()));
 	ppos.x = io->pos.x;
 	pos.x = ppos.x + to.x;
 	ppos.y = io->pos.y - (80.f);
@@ -673,7 +673,7 @@ wander:
 		        ||	(io->_npcdata->behavior & BEHAVIOUR_FLEE))
 			from = AnchorData_GetNearest(&pos1, &io->physics.cyl);
 		else
-			from = AnchorData_GetNearest_2(io->angle.b, &pos1, &io->physics.cyl);
+			from = AnchorData_GetNearest_2(io->angle.getPitch(), &pos1, &io->physics.cyl);
 	}
 	else from = MUST_SELECT_Start_Anchor;
 
@@ -1135,7 +1135,7 @@ void FaceTarget2(Entity * io)
 	}
 
 	float tangle = MAKEANGLE(180.f + degrees(getAngle(io->target.x, io->target.z, tv.x, tv.z)));
-	float cangle = io->angle.b;
+	float cangle = io->angle.getPitch();
 
 	float tt = (cangle - tangle);
 
@@ -1162,7 +1162,7 @@ void FaceTarget2(Entity * io)
 	}
 	
 	// Needed angle to turn toward target
-	io->angle.b = MAKEANGLE(io->angle.b - rot); // -tt
+	io->angle.setPitch(MAKEANGLE(io->angle.getPitch() - rot)); // -tt
 }
 
 void StareAtTarget(Entity * io)
@@ -1195,7 +1195,7 @@ void StareAtTarget(Entity * io)
 		return;
 
 	float rot = 0.27f * framedelay;
-	float alpha = MAKEANGLE(io->angle.b);
+	float alpha = MAKEANGLE(io->angle.getPitch());
 	float beta = -io->head_rot; 
 	float pouet = MAKEANGLE(180.f + degrees(getAngle(io->target.x, io->target.z, tv.x, tv.z)));
 	float A = MAKEANGLE((MAKEANGLE(alpha + beta) - pouet));
@@ -1239,21 +1239,21 @@ void StareAtTarget(Entity * io)
 	if(io->head_rot < -120.f)
 		io->head_rot = -120.f;
 
-	io->_npcdata->ex_rotate->group_rotate[0].b = io->head_rot * 1.5f;
+	io->_npcdata->ex_rotate->group_rotate[0].setPitch(io->head_rot * 1.5f);
 
-	if(io->_npcdata->ex_rotate->group_rotate[0].b > HEAD_ANGLE_THRESHOLD)
-		io->_npcdata->ex_rotate->group_rotate[0].b = HEAD_ANGLE_THRESHOLD;
+	if(io->_npcdata->ex_rotate->group_rotate[0].getPitch() > HEAD_ANGLE_THRESHOLD)
+		io->_npcdata->ex_rotate->group_rotate[0].setPitch(HEAD_ANGLE_THRESHOLD);
 
-	if(io->_npcdata->ex_rotate->group_rotate[0].b < -HEAD_ANGLE_THRESHOLD)
-		io->_npcdata->ex_rotate->group_rotate[0].b = -HEAD_ANGLE_THRESHOLD;
+	if(io->_npcdata->ex_rotate->group_rotate[0].getPitch() < -HEAD_ANGLE_THRESHOLD)
+		io->_npcdata->ex_rotate->group_rotate[0].setPitch(-HEAD_ANGLE_THRESHOLD);
 
-	io->_npcdata->ex_rotate->group_rotate[1].b = io->head_rot * ( 1.0f / 2 );
+	io->_npcdata->ex_rotate->group_rotate[1].setPitch(io->head_rot * ( 1.0f / 2 ));
 
-	if(io->_npcdata->ex_rotate->group_rotate[1].b > HEAD_ANGLE_THRESHOLD)
-		io->_npcdata->ex_rotate->group_rotate[1].b = HEAD_ANGLE_THRESHOLD;
+	if(io->_npcdata->ex_rotate->group_rotate[1].getPitch() > HEAD_ANGLE_THRESHOLD)
+		io->_npcdata->ex_rotate->group_rotate[1].setPitch(HEAD_ANGLE_THRESHOLD);
 
-	if(io->_npcdata->ex_rotate->group_rotate[1].b < -HEAD_ANGLE_THRESHOLD)
-		io->_npcdata->ex_rotate->group_rotate[1].b = -HEAD_ANGLE_THRESHOLD;
+	if(io->_npcdata->ex_rotate->group_rotate[1].getPitch() < -HEAD_ANGLE_THRESHOLD)
+		io->_npcdata->ex_rotate->group_rotate[1].setPitch(-HEAD_ANGLE_THRESHOLD);
 
 	//MAKEANGLE(io->angle.b-rot); // -tt
 	return;
@@ -1535,9 +1535,9 @@ void ARX_NPC_SpawnMember(Entity * ioo, long num) {
 	ioo->halo.dynlight = -1;
 	io->ioflags |= IO_MOVABLE;
 	
-	io->angle.a = rnd() * 40.f + 340.f;
-	io->angle.b = rnd() * 360.f;
-	io->angle.g = 0;
+	io->angle.setYaw(rnd() * 40.f + 340.f);
+	io->angle.setPitch(rnd() * 360.f);
+	io->angle.setRoll(0);
 	io->obj->pbox->active = 1;
 	io->obj->pbox->stopcount = 0;
 	
@@ -1545,9 +1545,9 @@ void ARX_NPC_SpawnMember(Entity * ioo, long num) {
 	io->stopped = 1;
 	
 	Vec3f vector;
-	vector.x = -(float)EEsin(radians(io->angle.b));
-	vector.y = EEsin(radians(io->angle.a)) * 2.f;
-	vector.z = (float)EEcos(radians(io->angle.b));
+	vector.x = -(float)EEsin(radians(io->angle.getPitch()));
+	vector.y = EEsin(radians(io->angle.getYaw())) * 2.f;
+	vector.z = (float)EEcos(radians(io->angle.getPitch()));
 	fnormalize(vector);
 	io->rubber = 0.6f;
 	
@@ -2070,7 +2070,7 @@ bool TryIOAnimMove(Entity * io, long animnum)
 
 	Vec3f trans, trans2;
 	GetAnimTotalTranslate(io->anims[animnum], 0, &trans);
-	float temp = radians(MAKEANGLE(180.f - io->angle.b));
+	float temp = radians(MAKEANGLE(180.f - io->angle.getPitch()));
 	YRotatePoint(&trans, &trans2, (float)EEcos(temp), (float)EEsin(temp));
 	IO_PHYSICS phys;
 	memcpy(&phys, &io->physics, sizeof(IO_PHYSICS));
@@ -2611,12 +2611,12 @@ static void ManageNPCMovement(Entity * io)
 			aup->_curtime -= 500;
 			ARX_PATHS_Interpolate(aup, &tv);
 			aup->_curtime += 500;
-			io->angle.b = MAKEANGLE(degrees(getAngle(tv.x, tv.z, io->pos.x, io->pos.z)));
+			io->angle.setPitch(MAKEANGLE(degrees(getAngle(tv.x, tv.z, io->pos.x, io->pos.z))));
 		} else {
 			aup->_curtime += 500;
 			ARX_PATHS_Interpolate(aup, &tv);
 			aup->_curtime -= 500;
-			io->angle.b = MAKEANGLE(180.f + degrees(getAngle(tv.x, tv.z, io->pos.x, io->pos.z)));
+			io->angle.setPitch(MAKEANGLE(180.f + degrees(getAngle(tv.x, tv.z, io->pos.x, io->pos.z))));
 		}
 		return;
 	}
@@ -2759,10 +2759,10 @@ static void ManageNPCMovement(Entity * io)
 				io->_npcdata->look_around_inc = 0.f;
 
 				for(long n = 0; n < 4; n++) {
-					io->_npcdata->ex_rotate->group_rotate[n].b -= io->_npcdata->ex_rotate->group_rotate[n].b * ( 1.0f / 3 );
+					io->_npcdata->ex_rotate->group_rotate[n].setPitch(io->_npcdata->ex_rotate->group_rotate[n].getPitch() - io->_npcdata->ex_rotate->group_rotate[n].getPitch() * (1.0f / 3));
 
-					if(fabs(io->_npcdata->ex_rotate->group_rotate[n].b) < 0.01f)
-						io->_npcdata->ex_rotate->group_rotate[n].b = 0.f;
+					if(fabs(io->_npcdata->ex_rotate->group_rotate[n].getPitch()) < 0.01f)
+						io->_npcdata->ex_rotate->group_rotate[n].setPitch(0.f);
 				}
 			} else {
 				if(io->_npcdata->look_around_inc == 0.f) {
@@ -2771,13 +2771,13 @@ static void ManageNPCMovement(Entity * io)
 
 				for(long n = 0; n < 4; n++) {
 					float t = 1.5f - (float)n * ( 1.0f / 5 );
-					io->_npcdata->ex_rotate->group_rotate[n].b += io->_npcdata->look_around_inc * framedelay * t;
+					io->_npcdata->ex_rotate->group_rotate[n].setPitch(io->_npcdata->ex_rotate->group_rotate[n].getPitch() + io->_npcdata->look_around_inc * framedelay * t);
 				}
 
-				if(io->_npcdata->ex_rotate->group_rotate[0].b > 30)
+				if(io->_npcdata->ex_rotate->group_rotate[0].getPitch() > 30)
 					io->_npcdata->look_around_inc = -io->_npcdata->look_around_inc;
 
-				if(io->_npcdata->ex_rotate->group_rotate[0].b < -30)
+				if(io->_npcdata->ex_rotate->group_rotate[0].getPitch() < -30)
 					io->_npcdata->look_around_inc = -io->_npcdata->look_around_inc;
 			}
 		}
@@ -2786,10 +2786,10 @@ static void ManageNPCMovement(Entity * io)
 			io->_npcdata->look_around_inc = 0.f;
 
 			for(long n = 0; n < 4; n++) {
-				io->_npcdata->ex_rotate->group_rotate[n].b -= io->_npcdata->ex_rotate->group_rotate[n].b * ( 1.0f / 3 );
+				io->_npcdata->ex_rotate->group_rotate[n].setPitch(io->_npcdata->ex_rotate->group_rotate[n].getPitch() - io->_npcdata->ex_rotate->group_rotate[n].getPitch() * (1.0f / 3));
 
-				if(fabs(io->_npcdata->ex_rotate->group_rotate[n].b) < 0.01f)
-					io->_npcdata->ex_rotate->group_rotate[n].b = 0.f;
+				if(fabs(io->_npcdata->ex_rotate->group_rotate[n].getPitch()) < 0.01f)
+					io->_npcdata->ex_rotate->group_rotate[n].setPitch(0.f);
 			}
 		}
 	}
@@ -3415,7 +3415,7 @@ Entity * ARX_NPC_GetFirstNPCInSight(Entity * ioo)
 
 		Vec3f orgn, dest;
 
-		float ab = MAKEANGLE(ioo->angle.b);
+		float ab = MAKEANGLE(ioo->angle.getPitch());
 
 		long grp = ioo->obj->fastaccess.head_group_origin;
 
@@ -3548,7 +3548,7 @@ void CheckNPCEx(Entity * io) {
 			// Check for Field of vision angle
 			float aa = getAngle(orgn.x, orgn.z, dest.x, dest.z);
 			aa = MAKEANGLE(degrees(aa));
-			float ab = MAKEANGLE(io->angle.b);
+			float ab = MAKEANGLE(io->angle.getPitch());
 			if(EEfabs(AngularDifference(aa, ab)) < 110.f) {
 				
 				// Check for Darkness/Stealth

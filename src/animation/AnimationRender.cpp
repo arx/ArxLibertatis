@@ -463,9 +463,9 @@ void Cedric_ApplyLightingFirstPartRefactor(Entity *io) {
 
 void Cedric_PrepareHalo(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj) {
 	Vec3f cam_vector, t_vector;
-	cam_vector.x = -std::sin(radians(ACTIVECAM->angle.b)) * std::cos(radians(ACTIVECAM->angle.a));
-	cam_vector.y =  std::sin(radians(ACTIVECAM->angle.a));
-	cam_vector.z =  std::cos(radians(ACTIVECAM->angle.b)) * std::cos(radians(ACTIVECAM->angle.a));
+	cam_vector.x = -std::sin(radians(ACTIVECAM->angle.getPitch())) * std::cos(radians(ACTIVECAM->angle.getYaw()));
+	cam_vector.y =  std::sin(radians(ACTIVECAM->angle.getYaw()));
+	cam_vector.z =  std::cos(radians(ACTIVECAM->angle.getPitch())) * std::cos(radians(ACTIVECAM->angle.getYaw()));
 
 	// Apply light on all vertices
 	for(long i = 0; i != obj->nb_bones; i++) {
@@ -1352,9 +1352,9 @@ static void StoreEntityMovement(Entity * io, Vec3f & ftr, float scale) {
 
 		float temp;
 		if (io == entities.player()) {
-			temp = radians(MAKEANGLE(180.f - player.angle.b));
+			temp = radians(MAKEANGLE(180.f - player.angle.getPitch()));
 		} else {
-			temp = radians(MAKEANGLE(180.f - io->angle.b));
+			temp = radians(MAKEANGLE(180.f - io->angle.getPitch()));
 		}
 
 		YRotatePoint(&ftr, &ftr2, std::cos(temp), std::sin(temp));
@@ -1592,9 +1592,9 @@ void Cedric_AnimateDrawEntity(EERIE_C_DATA & rig, ANIM_USE * animlayer, EERIE_EX
 
 			if(i >= 0) {
 				Anglef vt1;
-				vt1.a = radians(extraRotation->group_rotate[k].g);
-				vt1.b = radians(extraRotation->group_rotate[k].b);
-				vt1.g = radians(extraRotation->group_rotate[k].a);
+				vt1.setYaw(radians(extraRotation->group_rotate[k].getRoll()));
+				vt1.setPitch(radians(extraRotation->group_rotate[k].getPitch()));
+				vt1.setRoll(radians(extraRotation->group_rotate[k].getYaw()));
 
 				QuatFromAngles(&rig.bones[i].init.quat, &vt1);
 			}

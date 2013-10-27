@@ -645,14 +645,14 @@ void QuatFromAngles(EERIE_QUAT * q, const Anglef * angle)
 
 {
 	float A, B;
-	A = angle->yaw * ( 1.0f / 2 );
-	B = angle->pitch * ( 1.0f / 2 );
+	A = angle->getYaw() * ( 1.0f / 2 );
+	B = angle->getPitch() * ( 1.0f / 2 );
 
 	float fSinYaw   = sinf(A);
 	float fCosYaw   = cosf(A);
 	float fSinPitch = sinf(B);
 	float fCosPitch = cosf(B);
-	A = angle->roll * ( 1.0f / 2 );
+	A = angle->getRoll() * ( 1.0f / 2 );
 	float fSinRoll  = sinf(A);
 	float fCosRoll  = cosf(A);
 	A = fCosRoll * fCosPitch;
@@ -669,22 +669,21 @@ void worldAngleToQuat(EERIE_QUAT *dest, const Anglef & src, bool isNpc) {
 	if(!isNpc) {
 		// To correct invalid angle in Animated FIX/ITEMS
 		Anglef ang = src;
-		ang.a = (360 - ang.a);
-		ang.b = (ang.b);
-		ang.g = (ang.g);
+		ang.setYaw(360 - ang.getYaw());
+		
 		EERIEMATRIX mat;
 		Vec3f vect(0, 0, 1);
 		Vec3f up(0, 1, 0);
-		VRotateY(&vect, ang.b);
-		VRotateX(&vect, ang.a);
-		VRotateZ(&vect, ang.g);
-		VRotateY(&up, ang.b);
-		VRotateX(&up, ang.a);
-		VRotateZ(&up, ang.g);
+		VRotateY(&vect, ang.getPitch());
+		VRotateX(&vect, ang.getYaw());
+		VRotateZ(&vect, ang.getRoll());
+		VRotateY(&up, ang.getPitch());
+		VRotateX(&up, ang.getYaw());
+		VRotateZ(&up, ang.getRoll());
 		MatrixSetByVectors(&mat, &vect, &up);
 		QuatFromMatrix(*dest, mat);
 	} else {
-		Anglef vt1 = Anglef(radians(src.a), radians(src.b), radians(src.g));
+		Anglef vt1 = Anglef(radians(src.getYaw()), radians(src.getPitch()), radians(src.getRoll()));
 		QuatFromAngles(dest, &vt1);
 	}
 }

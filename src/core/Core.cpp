@@ -496,9 +496,12 @@ void InitializeDanae() {
 	InitBkg(ACTIVEBKG,MAX_BKGX,MAX_BKGZ,BKG_SIZX,BKG_SIZZ);
 	InitNodes(1);
 	
-	player.size.y = subj.size.a = -player.baseHeight();
-	player.size.x = subj.size.b = player.baseRadius();
-	player.size.z = subj.size.g = player.baseRadius();
+	player.size.y = -player.baseHeight();
+	player.size.x = player.baseRadius();
+	player.size.z = player.baseRadius();
+	subj.size.setYaw(player.size.y);
+	subj.size.setPitch(player.size.x);
+	subj.size.setRoll(player.size.z);
 	player.desiredangle = player.angle = subj.angle = Anglef(3.f, 268.f, 0.f);
 
 	subj.orgTrans.pos = Vec3f(900.f, player.baseHeight(), 4340.f);
@@ -1433,8 +1436,8 @@ static void PlayerLaunchArrow_Test(float aimratio, float poisonous, Vec3f * pos,
 	EERIE_QUAT quat;
 	
 	Vec3f position = *pos;
-	float anglea = radians(angle->a);
-	float angleb = radians(angle->b);
+	float anglea = radians(angle->getYaw());
+	float angleb = radians(angle->getPitch());
 	vect.x=-EEsin(angleb)*EEcos(anglea);
 	vect.y= EEsin(anglea);
 	vect.z= EEcos(angleb)*EEcos(anglea);
@@ -1446,8 +1449,8 @@ static void PlayerLaunchArrow_Test(float aimratio, float poisonous, Vec3f * pos,
 
 	Vec3f v1,v2;
 	Vec3f vv(0,0,1);
-	float aa=angle->a;
-	float ab=90-angle->b;
+	float aa=angle->getYaw();
+	float ab=90-angle->getPitch();
 	Vector_RotateZ(&v1,&vv,aa);
 	VRotateY(&v1,ab);
 	vv = Vec3f(0,-1,0);
@@ -1759,7 +1762,8 @@ void FirstFrameHandling() {
 	PROGRESS_BAR_COUNT+=1.f;
 	LoadLevelScreen();
 
-	player.desiredangle.a=player.angle.a=0.f;
+	player.desiredangle.setYaw(0.f);
+	player.angle.setYaw(0.f);
 	ARX_PLAYER_RectifyPosition();
 
 	if(entities.player())
@@ -2304,18 +2308,18 @@ void ManageCombatModeAnimations()
 					pos.x = player.pos.x;
 					pos.y = player.pos.y + 40.f;
 					pos.z = player.pos.z;
-					angle.a = player.angle.a;
-					angle.b = player.angle.b + 8;
-					angle.g = player.angle.g;
+					angle.setYaw(player.angle.getYaw());
+					angle.setPitch(player.angle.getPitch() + 8);
+					angle.setRoll(player.angle.getRoll());
 					PlayerLaunchArrow_Test(aimratio, poisonous, &pos, &angle);
-					angle.a = player.angle.a;
-					angle.b = player.angle.b - 8;
+					angle.setYaw(player.angle.getYaw());
+					angle.setPitch(player.angle.getPitch() - 8);
 					PlayerLaunchArrow_Test(aimratio, poisonous, &pos, &angle);
-					angle.a = player.angle.a;
-					angle.b = player.angle.b + 4.f;
+					angle.setYaw(player.angle.getYaw());
+					angle.setPitch(player.angle.getPitch() + 4.f);
 					PlayerLaunchArrow_Test(aimratio, poisonous, &pos, &angle);
-					angle.a = player.angle.a;
-					angle.b = player.angle.b - 4.f;
+					angle.setYaw(player.angle.getYaw());
+					angle.setPitch(player.angle.getPitch() - 4.f);
 					PlayerLaunchArrow_Test(aimratio, poisonous, &pos, &angle);
 				}
 
@@ -2649,9 +2653,9 @@ void ManageQuakeFX(EERIE_CAMERA * cam) {
 		float truepower = periodicity * QuakeFx.intensity * itmod * 0.01f;
 		float halfpower = truepower * .5f;
 		cam->orgTrans.pos += randomVec(-halfpower, halfpower);
-		cam->angle.a += rnd() * truepower - halfpower;
-		cam->angle.g += rnd() * truepower - halfpower;
-		cam->angle.b += rnd() * truepower - halfpower;
+		cam->angle.setYaw(cam->angle.getYaw() + rnd() * truepower - halfpower);
+		cam->angle.setPitch(cam->angle.getPitch() + rnd() * truepower - halfpower);
+		cam->angle.setRoll(cam->angle.getRoll() + rnd() * truepower - halfpower);
 	}
 }
 
@@ -2978,7 +2982,7 @@ void ShowInfoText() {
 
 	sprintf(tex, "Position  x:%7.0f y:%7.0f [%7.0f] z:%6.0f a%3.0f b%3.0f FOK %3.0f",
 			player.pos.x, player.pos.y + player.size.y, poss, player.pos.z,
-			player.angle.a, player.angle.b,
+			player.angle.getYaw(), player.angle.getPitch(),
 			ACTIVECAM->focal);
 	hFontDebug->draw(70, 48, tex, Color::white);
 

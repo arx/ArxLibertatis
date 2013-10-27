@@ -136,7 +136,7 @@ float STARTED_ANGLE = 0;
 void Set_DragInter(Entity * io)
 {
 	if(io != DRAGINTER)
-		STARTED_ANGLE = player.angle.b;
+		STARTED_ANGLE = player.angle.getPitch();
 
 	DRAGINTER = io;
 
@@ -267,9 +267,9 @@ void ARX_INTERACTIVE_DestroyDynamicInfo(Entity * io)
 					Vec3f pos, vector;
 					pos = io->obj->vertexlist3[ll].v;
 					ioo->angle = Anglef(rnd() * 40.f + 340.f, rnd() * 360.f, 0.f);
-					vector.x = -(float)EEsin(radians(ioo->angle.b)) * ( 1.0f / 2 );
-					vector.y = EEsin(radians(ioo->angle.a));
-					vector.z = (float)EEcos(radians(ioo->angle.b)) * ( 1.0f / 2 );
+					vector.x = -(float)EEsin(radians(ioo->angle.getPitch())) * ( 1.0f / 2 );
+					vector.y = EEsin(radians(ioo->angle.getYaw()));
+					vector.z = (float)EEcos(radians(ioo->angle.getPitch())) * ( 1.0f / 2 );
 					ioo->soundtime = 0;
 					ioo->soundcount = 0;
 					ioo->gameFlags |= GFLAG_NO_PHYS_IO_COL;
@@ -1708,8 +1708,8 @@ Entity * AddFix(const res::path & classPath, EntityInstance instance, AddInterac
 	
 	io->spellcast_data.castingspell = SPELL_NONE;
 	io->pos = player.pos;
-	io->pos.x -= EEsin(radians(player.angle.b)) * 140.f;
-	io->pos.z += EEcos(radians(player.angle.b)) * 140.f;
+	io->pos.x -= EEsin(radians(player.angle.getPitch())) * 140.f;
+	io->pos.z += EEcos(radians(player.angle.getPitch())) * 140.f;
 	io->lastpos = io->initpos = io->pos;
 	io->lastpos.x = io->initpos.x = EEfabs(io->initpos.x / 20) * 20.f;
 	io->lastpos.z = io->initpos.z = EEfabs(io->initpos.z / 20) * 20.f;
@@ -1768,8 +1768,8 @@ static Entity * AddCamera(const res::path & classPath, EntityInstance instance) 
 	GetIOScript(io, script);
 	
 	io->pos = player.pos;
-	io->pos.x -= EEsin(radians(player.angle.b)) * 140.f;
-	io->pos.z += EEcos(radians(player.angle.b)) * 140.f;
+	io->pos.x -= EEsin(radians(player.angle.getPitch())) * 140.f;
+	io->pos.z += EEcos(radians(player.angle.getPitch())) * 140.f;
 	io->lastpos = io->initpos = io->pos;
 	io->lastpos.x = io->initpos.x = EEfabs(io->initpos.x / 20) * 20.f;
 	io->lastpos.z = io->initpos.z = EEfabs(io->initpos.z / 20) * 20.f;
@@ -1822,8 +1822,8 @@ static Entity * AddMarker(const res::path & classPath, EntityInstance instance) 
 	GetIOScript(io, script);
 	
 	io->pos = player.pos;
-	io->pos.x -= EEsin(radians(player.angle.b)) * 140.f;
-	io->pos.z += EEcos(radians(player.angle.b)) * 140.f;
+	io->pos.x -= EEsin(radians(player.angle.getPitch())) * 140.f;
+	io->pos.z += EEcos(radians(player.angle.getPitch())) * 140.f;
 	io->lastpos = io->initpos = io->pos;
 	io->lastpos.x = io->initpos.x = EEfabs(io->initpos.x / 20) * 20.f;
 	io->lastpos.z = io->initpos.z = EEfabs(io->initpos.z / 20) * 20.f;
@@ -2012,8 +2012,8 @@ Entity * AddNPC(const res::path & classPath, EntityInstance instance, AddInterac
 	}
 	
 	io->pos = player.pos;
-	io->pos.x -= EEsin(radians(player.angle.b)) * 140.f;
-	io->pos.z += EEcos(radians(player.angle.b)) * 140.f;
+	io->pos.x -= EEsin(radians(player.angle.getPitch())) * 140.f;
+	io->pos.z += EEcos(radians(player.angle.getPitch())) * 140.f;
 	io->lastpos = io->initpos = io->pos;
 	io->lastpos.x = io->initpos.x = EEfabs(io->initpos.x / 20) * 20.f;
 	io->lastpos.z = io->initpos.z = EEfabs(io->initpos.z / 20) * 20.f;
@@ -2186,9 +2186,9 @@ Entity * AddItem(const res::path & classPath_, EntityInstance instance, AddInter
 	}
 	
 	io->spellcast_data.castingspell = SPELL_NONE;
-	io->lastpos.x = io->initpos.x = io->pos.x = player.pos.x - (float)EEsin(radians(player.angle.b)) * 140.f;
+	io->lastpos.x = io->initpos.x = io->pos.x = player.pos.x - (float)EEsin(radians(player.angle.getPitch())) * 140.f;
 	io->lastpos.y = io->initpos.y = io->pos.y = player.pos.y;
-	io->lastpos.z = io->initpos.z = io->pos.z = player.pos.z + (float)EEcos(radians(player.angle.b)) * 140.f;
+	io->lastpos.z = io->initpos.z = io->pos.z = player.pos.z + (float)EEcos(radians(player.angle.getPitch())) * 140.f;
 	io->lastpos.x = io->initpos.x = (float)((long)(io->initpos.x / 20)) * 20.f;
 	io->lastpos.z = io->initpos.z = (float)((long)(io->initpos.z / 20)) * 20.f;
 
@@ -2861,15 +2861,15 @@ void UpdateCameras() {
 						io->_camdata->cam.lasttarget = io->target;
 					}
 
-					io->_camdata->cam.angle.b -= 180.f;
-					io->_camdata->cam.angle.a = -io->_camdata->cam.angle.a;
-					io->angle.a = 0.f; 
-					io->angle.b = io->_camdata->cam.angle.b + 90.f;
-					io->angle.g = 0.f; 
+					io->_camdata->cam.angle.setPitch(io->_camdata->cam.angle.getPitch() - 180.f);
+					io->_camdata->cam.angle.setYaw(-io->_camdata->cam.angle.getYaw());
+					io->angle.setYaw(0.f);
+					io->angle.setPitch(io->_camdata->cam.angle.getPitch() + 90.f);
+					io->angle.setRoll(0.f);
 				}	
 				else // no target...
 				{
-					float tr = radians(MAKEANGLE(io->angle.b + 90));
+					float tr = radians(MAKEANGLE(io->angle.getPitch() + 90));
 					io->target.x = io->pos.x - (float)EEsin(tr) * 20.f;
 					io->target.y = io->pos.y; 
 					io->target.z = io->pos.z + (float)EEcos(tr) * 20.f;
@@ -2946,9 +2946,9 @@ void UpdateInter() {
 		Anglef temp = io->angle;
 
 		if(io->ioflags & IO_NPC) {
-			temp.b = MAKEANGLE(180.f - temp.b);
+			temp.setPitch(MAKEANGLE(180.f - temp.getPitch()));
 		} else {
-			temp.b = MAKEANGLE(270.f - temp.b);
+			temp.setPitch(MAKEANGLE(270.f - temp.getPitch()));
 		}
 
 		if(io->animlayer[0].cur_anim) {
@@ -2997,9 +2997,9 @@ void RenderInter() {
 		Anglef temp = io->angle;
 
 		if(io->ioflags & IO_NPC) {
-			temp.b = MAKEANGLE(180.f - temp.b);
+			temp.setPitch(MAKEANGLE(180.f - temp.getPitch()));
 		} else {
-			temp.b = MAKEANGLE(270.f - temp.b);
+			temp.setPitch(MAKEANGLE(270.f - temp.getPitch()));
 		}
 
 		if(io->animlayer[0].cur_anim) {

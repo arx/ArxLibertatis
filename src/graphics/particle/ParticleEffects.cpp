@@ -126,7 +126,7 @@ void LaunchDummyParticle() {
 		return;
 	}
 	
-	float f = radians(player.angle.b);
+	float f = radians(player.angle.getPitch());
 	pd->ov = player.pos + Vec3f(EEsin(f) * 100.f, 0.f, -EEcos(f) * 100.f);
 	pd->tolive = 600;
 	pd->tc = smokeparticle;

@@ -242,9 +242,9 @@ void ARX_KEYRING_Combine(Entity * io) {
  */
 void ARX_PLAYER_FrontPos(Vec3f * pos)
 {
-	pos->x = player.pos.x - EEsin(radians(MAKEANGLE(player.angle.b))) * 100.f;
+	pos->x = player.pos.x - EEsin(radians(MAKEANGLE(player.angle.getPitch()))) * 100.f;
 	pos->y = player.pos.y + 100.f; //-100.f;
-	pos->z = player.pos.z + EEcos(radians(MAKEANGLE(player.angle.b))) * 100.f;
+	pos->z = player.pos.z + EEcos(radians(MAKEANGLE(player.angle.getPitch()))) * 100.f;
 }
 
 /*!
@@ -1429,7 +1429,7 @@ void ARX_PLAYER_Manage_Visual() {
 		}
 		
 		if(player.life > 0) {
-			io->angle = Anglef(0.f, 180.f - player.angle.b, 0.f);
+			io->angle = Anglef(0.f, 180.f - player.angle.getPitch(), 0.f);
 		}
 		
 		io->gameFlags |= GFLAG_ISINTREATZONE;
@@ -1489,8 +1489,8 @@ void ARX_PLAYER_Manage_Visual() {
 		}
 		
 		if(ROTATE_START
-		   && player.angle.a > 60.f
-		   && player.angle.a < 180.f
+		   && player.angle.getYaw() > 60.f
+		   && player.angle.getYaw() < 180.f
 		   && LASTPLAYERA > 60.f
 		   && LASTPLAYERA < 180.f
 		) {
@@ -1530,7 +1530,7 @@ void ARX_PLAYER_Manage_Visual() {
 			}
 		}
 
-		LASTPLAYERA = player.angle.a;
+		LASTPLAYERA = player.angle.getYaw();
 
 		{
 			long tmove = player.Current_Movement;
@@ -1930,9 +1930,9 @@ void ForcePlayerLookAtIO(Entity * io) {
 	}
 
 	tcam.setTargetCamera(target);
-	player.angle.a = MAKEANGLE(-tcam.angle.a);
-	player.angle.b = MAKEANGLE(tcam.angle.b - 180.f);
-	player.angle.g = 0;
+	player.angle.setYaw(MAKEANGLE(-tcam.angle.getYaw()));
+	player.angle.setPitch(MAKEANGLE(tcam.angle.getPitch() - 180.f));
+	player.angle.setRoll(0);
 	player.desiredangle = player.angle;
 }
 extern float PLAYER_ARMS_FOCAL;
@@ -1963,30 +1963,30 @@ void ARX_PLAYER_Frame_Update()
 	Entity *io = entities.player();
 
 	if(io && io->_npcdata->ex_rotate) {
-		float v = player.angle.a;
+		float v = player.angle.getYaw();
 
 		if(v > 160)
 			v = -(360 - v);
 
 		if(player.Interface & INTER_COMBATMODE) {
 			if (ARX_EQUIPMENT_GetPlayerWeaponType() == WEAPON_BOW) {
-				io->_npcdata->ex_rotate->group_rotate[0].a = 0; //head
-				io->_npcdata->ex_rotate->group_rotate[1].a = 0; //neck
-				io->_npcdata->ex_rotate->group_rotate[2].a = 0; //chest
-				io->_npcdata->ex_rotate->group_rotate[3].a = v; //belt
+				io->_npcdata->ex_rotate->group_rotate[0].setYaw(0); //head
+				io->_npcdata->ex_rotate->group_rotate[1].setYaw(0); //neck
+				io->_npcdata->ex_rotate->group_rotate[2].setYaw(0); //chest
+				io->_npcdata->ex_rotate->group_rotate[3].setYaw(v); //belt
 			} else {
 				v *= ( 1.0f / 10 ); 
-				io->_npcdata->ex_rotate->group_rotate[0].a = v; //head
-				io->_npcdata->ex_rotate->group_rotate[1].a = v; //neck
-				io->_npcdata->ex_rotate->group_rotate[2].a = v * 4; //chest
-				io->_npcdata->ex_rotate->group_rotate[3].a = v * 4; //belt
+				io->_npcdata->ex_rotate->group_rotate[0].setYaw(v); //head
+				io->_npcdata->ex_rotate->group_rotate[1].setYaw(v); //neck
+				io->_npcdata->ex_rotate->group_rotate[2].setYaw(v * 4); //chest
+				io->_npcdata->ex_rotate->group_rotate[3].setYaw(v * 4); //belt
 			}
 		} else {
 			v *= ( 1.0f / 4 ); 
-			io->_npcdata->ex_rotate->group_rotate[0].a = v; //head
-			io->_npcdata->ex_rotate->group_rotate[1].a = v; //neck
-			io->_npcdata->ex_rotate->group_rotate[2].a = v; //chest
-			io->_npcdata->ex_rotate->group_rotate[3].a = v; //belt*/
+			io->_npcdata->ex_rotate->group_rotate[0].setYaw(v); //head
+			io->_npcdata->ex_rotate->group_rotate[1].setYaw(v); //neck
+			io->_npcdata->ex_rotate->group_rotate[2].setYaw(v); //chest
+			io->_npcdata->ex_rotate->group_rotate[3].setYaw(v); //belt*/
 		}
 
 		if((player.Interface & INTER_COMBATMODE) || player.doingmagic == 2)

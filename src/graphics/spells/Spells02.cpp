@@ -73,7 +73,7 @@ CHeal::~CHeal() {
 
 void CHeal::Create() {
 	
-	SetAngle(MAKEANGLE(player.angle.b));
+	SetAngle(MAKEANGLE(player.angle.getPitch()));
 	
 	if(spells[spellinstance].caster == 0) {
 		eSrc = player.pos;

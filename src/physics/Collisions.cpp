@@ -465,7 +465,7 @@ bool CollidedFromBack(Entity * io,Entity * ioo)
 	ep.v[2].p.x = EEsin(ft) * 180.f;
 	ep.v[2].p.z = -EEcos(ft) * 180.f;
 
-	ft=radians(270.f-io->angle.b);
+	ft=radians(270.f-io->angle.getPitch());
 	float ec=EEcos(ft);
 	float es=EEsin(ft);
 	EE_RotateY(&ep.v[1], &ep.tv[1], ec, es);

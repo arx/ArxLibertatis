@@ -427,8 +427,8 @@ void Cinematic::Render(float FDIFF) {
 
 		m_camera.orgTrans.pos = pos;
 		m_camera.setTargetCamera(m_camera.orgTrans.pos.x, m_camera.orgTrans.pos.y, 0.f);
-		m_camera.angle.b = 0;
-		m_camera.angle.g = angz;
+		m_camera.angle.setPitch(0);
+		m_camera.angle.setRoll(angz);
 		m_camera.clip = Rect(LargeurRender, HauteurRender);
 		m_camera.center = m_camera.clip.center();
 		PrepareCamera(&m_camera);
@@ -470,8 +470,8 @@ void Cinematic::Render(float FDIFF) {
 				case INTERP_NO:
 					m_camera.orgTrans.pos = possuiv;
 					m_camera.setTargetCamera(m_camera.orgTrans.pos.x, m_camera.orgTrans.pos.y, 0.f);
-					m_camera.angle.b = 0;
-					m_camera.angle.g = angzsuiv;
+					m_camera.angle.setPitch(0);
+					m_camera.angle.setRoll(angzsuiv);
 					PrepareCamera(&m_camera);
 					break;
 				case INTERP_LINEAR:

@@ -213,7 +213,7 @@ CMagicMissile::~CMagicMissile()
 void CMagicMissile::Create(const Vec3f & aeSrc, const Anglef & angles)
 {
 	SetDuration(ulDuration);
-	SetAngle(angles.b);
+	SetAngle(angles.getPitch());
 
 	this->angles = angles;
 	eCurPos = eSrc = aeSrc;
@@ -222,7 +222,7 @@ void CMagicMissile::Create(const Vec3f & aeSrc, const Anglef & angles)
 
 	int i = 40;
 	e.x -= fBetaRadSin * 50 * i;
-	e.y += sin(radians(MAKEANGLE(this->angles.a))) * 50 * i;
+	e.y += sin(radians(MAKEANGLE(this->angles.getYaw()))) * 50 * i;
 	e.z += fBetaRadCos * 50 * i;
 
 	pathways[0].p = eSrc;
@@ -387,18 +387,18 @@ void CMagicMissile::Render()
 	Vec3f stitepos = lastpos;
 
 	Anglef stiteangle;
-	stiteangle.b = -degrees(bubu);
-	stiteangle.a = 0;
-	stiteangle.g = -(degrees(bubu1));
+	stiteangle.setPitch(-degrees(bubu));
+	stiteangle.setYaw(0);
+	stiteangle.setRoll(-(degrees(bubu1)));
 
 	if(av.x < 0)
-		stiteangle.g -= 90;
+		stiteangle.setRoll(stiteangle.getRoll() - 90);
 
 	if(av.x > 0)
-		stiteangle.g += 90;
+		stiteangle.setRoll(stiteangle.getRoll() + 90);
 
-	if(stiteangle.g < 0)
-		stiteangle.g += 360.0f;
+	if(stiteangle.getRoll() < 0)
+		stiteangle.setRoll(stiteangle.getRoll() + 360.0f);
 
 	Color3f stitecolor;
 	if(spells[spellinstance].caster == 0 && cur_mr == 3) {
@@ -470,8 +470,8 @@ void CMultiMagicMissile::Create()
 		Vec3f aePos;
 		float afAlpha, afBeta;
 		if(spells[spellinstance].caster == 0) { // player
-			afBeta = player.angle.b;
-			afAlpha = player.angle.a;
+			afBeta = player.angle.getPitch();
+			afAlpha = player.angle.getYaw();
 			Vec3f vector;
 			vector.x = -EEsin(radians(afBeta)) * EEcos(radians(afAlpha)) * 60.f;
 			vector.y = EEsin(radians(afAlpha)) * 60.f;
@@ -486,7 +486,7 @@ void CMultiMagicMissile::Create()
 			}
 		} else {
 			afAlpha = 0;
-			afBeta = entities[spells[spellinstance].caster]->angle.b;
+			afBeta = entities[spells[spellinstance].caster]->angle.getPitch();
 			Vec3f vector;
 			vector.x = -EEsin(radians(afBeta)) * EEcos(radians(afAlpha)) * 60;
 			vector.y = EEsin(radians(afAlpha)) * 60;
@@ -516,8 +516,8 @@ void CMultiMagicMissile::Create()
 				Anglef angles(afAlpha, afBeta, 0.f);
 
 				if(i > 0) {
-					angles.a += frand2() * 4.0f;
-					angles.b += frand2() * 6.0f;
+					angles.setYaw(angles.getYaw() + frand2() * 4.0f);
+					angles.setPitch(angles.getPitch() + frand2() * 6.0f);
 				}
 
 				pTab[i]->Create(aePos, angles);  

@@ -24,12 +24,16 @@
 
 #include <boost/static_assert.hpp>
 
+#define GLM_FORCE_RADIANS
+
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/quaternion.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <glm/gtx/epsilon.hpp>
 #include <glm/gtx/euler_angles.hpp>
-#include <glm/gtx/compatibility.hpp>
 #include <glm/gtx/norm.hpp>
+#include <glm/gtx/quaternion.hpp>
 #include <glm/gtx/transform.hpp>
 
 template <class T>
@@ -145,7 +149,12 @@ V componentwise_max(const V & v0, const V & v1) {
 
 template <class V>
 bool isallfinite(const V& vec) {
-	return glm::all(glm::isfinite(vec));
+	for(size_t i = 0; i < vec.length(); i++) {
+		if(!std::isfinite(vec[i]))
+			return false;
+	}
+
+	return true;
 }
 
 // Math constants

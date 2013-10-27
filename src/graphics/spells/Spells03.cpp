@@ -282,8 +282,8 @@ void CFireBall::Update(unsigned long aulTime)
 		float afAlpha = 0.f;
 	
 		if(spells[spellinstance].caster == 0) {
-			SetAngle(player.angle.b);
-			afAlpha = player.angle.a;
+			SetAngle(player.angle.getPitch());
+			afAlpha = player.angle.getYaw();
 			long idx = GetGroupOriginByName(entities[spells[spellinstance].caster]->obj, "chest");
 
 			if(idx) {
@@ -296,7 +296,7 @@ void CFireBall::Update(unsigned long aulTime)
 				eCurPos.z = player.pos.z + fBetaRadCos * 60;
 			}
 		} else {
-			SetAngle(entities[spells[spellinstance].caster]->angle.b);
+			SetAngle(entities[spells[spellinstance].caster]->angle.getPitch());
 
 			eCurPos.x = entities[spells[spellinstance].caster]->pos.x - fBetaRadSin * 60;
 			eCurPos.y = entities[spells[spellinstance].caster]->pos.y;
@@ -305,9 +305,9 @@ void CFireBall::Update(unsigned long aulTime)
 			if ((ValidIONum(spells[spellinstance].caster))
 			        && (entities[spells[spellinstance].caster]->ioflags & IO_NPC))
 			{
-				eCurPos.x -= EEsin(radians(entities[spells[spellinstance].caster]->angle.b)) * 30.f;
+				eCurPos.x -= EEsin(radians(entities[spells[spellinstance].caster]->angle.getPitch())) * 30.f;
 				eCurPos.y -= 80.f;
-				eCurPos.z += EEcos(radians(entities[spells[spellinstance].caster]->angle.b)) * 30.f;
+				eCurPos.z += EEcos(radians(entities[spells[spellinstance].caster]->angle.getPitch())) * 30.f;
 			}
 			
 			Entity * io = entities[spells[spellinstance].caster];
@@ -571,9 +571,9 @@ void CIceProjectile::Render()
 		Vec3f stitescale;
 		Color3f stitecolor;
 
-		stiteangle.b = (float) cos(radians(tPos[i].x)) * 360;
-		stiteangle.a = 0;
-		stiteangle.g = 0;
+		stiteangle.setPitch((float) cos(radians(tPos[i].x)) * 360);
+		stiteangle.setYaw(0);
+		stiteangle.setRoll(0);
 		stitepos = tPos[i];
 
 		float tt;

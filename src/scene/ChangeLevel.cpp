@@ -292,7 +292,8 @@ void ARX_CHANGELEVEL_Change(const string & level, const string & target, long an
 				NO_PLAYER_POSITION_RESET = 1;
 			}
 		}
-		player.desiredangle.b = player.angle.b = (float)angle;
+		player.desiredangle.setPitch(angle);
+		player.angle.setPitch(angle);
 		return; // nothing more to do :)
 	}
 	
@@ -338,7 +339,8 @@ void ARX_CHANGELEVEL_Change(const string & level, const string & target, long an
 	}
 	
 	CURRENTLEVEL = num;
-	player.desiredangle.b = player.angle.b = (float)angle;
+	player.desiredangle.setPitch(angle);
+	player.angle.setPitch(angle);
 	DONT_WANT_PLAYER_INZONE = 1;
 	ARX_PLAYER_RectifyPosition();
 	JUST_RELOADED = 1;

@@ -866,9 +866,9 @@ long DanaeLoadLevel(const res::path & file, bool loadEntities) {
 			fd->move.y = 0.f;
 			fd->move.z = 0.f;
 			Vec3f out;
-			float ta = radians(MAKEANGLE(fd->angle.b));
+			float ta = radians(MAKEANGLE(fd->angle.getPitch()));
 			YRotatePoint(&fd->move, &out, EEcos(ta), EEsin(ta));
-			float tb = radians(MAKEANGLE(fd->angle.a));
+			float tb = radians(MAKEANGLE(fd->angle.getYaw()));
 			XRotatePoint(&out, &fd->move, EEcos(tb), EEsin(tb));
 		}
 	}

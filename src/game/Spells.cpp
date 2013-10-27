@@ -598,9 +598,9 @@ void ARX_SPELLS_RequestSymbolDrawCommon(Entity *io, float duration, RuneInfo & i
 
 	sd->starttime = (unsigned long)(arxtime);
 	sd->lasttim = 0;
-	sd->lastpos.x = io->pos.x - EEsin(radians(MAKEANGLE(io->angle.b - 45.0F + info.startOffset.x*2))) * 60.0F;
+	sd->lastpos.x = io->pos.x - EEsin(radians(MAKEANGLE(io->angle.getPitch() - 45.0F + info.startOffset.x*2))) * 60.0F;
 	sd->lastpos.y = io->pos.y - 120.0F - info.startOffset.y*5;
-	sd->lastpos.z = io->pos.z + EEcos(radians(MAKEANGLE(io->angle.b - 45.0F + info.startOffset.x*2))) * 60.0F;
+	sd->lastpos.z = io->pos.z + EEcos(radians(MAKEANGLE(io->angle.getPitch() - 45.0F + info.startOffset.x * 2))) * 60.0F;
 
 	sd->cPosStartX = checked_range_cast<char>(info.startOffset.x);
 	sd->cPosStartY = checked_range_cast<char>(info.startOffset.y);
@@ -992,9 +992,9 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 
 			if(io->dynlight != -1) {
 				float rr = rnd();
-				DynLight[io->dynlight].pos.x=io->pos.x-EEsin(radians(MAKEANGLE(io->angle.b-45.f)))*60.f;
+				DynLight[io->dynlight].pos.x = io->pos.x - EEsin(radians(MAKEANGLE(io->angle.getPitch() - 45.f)))*60.f;
 				DynLight[io->dynlight].pos.y=io->pos.y-120.f;
-				DynLight[io->dynlight].pos.z=io->pos.z+EEcos(radians(MAKEANGLE(io->angle.b-45.f)))*60.f;
+				DynLight[io->dynlight].pos.z = io->pos.z + EEcos(radians(MAKEANGLE(io->angle.getPitch() - 45.f)))*60.f;
 				DynLight[io->dynlight].fallstart=140.f+(float)io->flarecount*0.333333f+rr*5.f;
 				DynLight[io->dynlight].fallend=220.f+(float)io->flarecount*0.5f+rr*5.f;
 				DynLight[io->dynlight].intensity=1.6f;
@@ -2855,16 +2855,16 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 	{
 		if (source==0) // no target... player spell targeted by sight
 		{
-			spells[i].target_pos.x=player.pos.x-EEsin(radians(player.angle.b))*60.f;
-			spells[i].target_pos.y=player.pos.y+EEsin(radians(player.angle.a))*60.f;
-			spells[i].target_pos.z=player.pos.z+EEcos(radians(player.angle.b))*60.f;
+			spells[i].target_pos.x = player.pos.x - EEsin(radians(player.angle.getPitch()))*60.f;
+			spells[i].target_pos.y = player.pos.y + EEsin(radians(player.angle.getYaw()))*60.f;
+			spells[i].target_pos.z = player.pos.z + EEcos(radians(player.angle.getPitch()))*60.f;
 		}
 		else
 		{
 			// TODO entities[target] with target < 0 ??? - uh oh!
-			spells[i].target_pos.x=entities[target]->pos.x-EEsin(radians(entities[target]->angle.b))*60.f;
+			spells[i].target_pos.x = entities[target]->pos.x - EEsin(radians(entities[target]->angle.getPitch()))*60.f;
 			spells[i].target_pos.y=entities[target]->pos.y-120.f;
-			spells[i].target_pos.z=entities[target]->pos.z+EEcos(radians(entities[target]->angle.b))*60.f;
+			spells[i].target_pos.z = entities[target]->pos.z + EEcos(radians(entities[target]->angle.getPitch()))*60.f;
 		}
 	} else if (target==0) {
 		// player target
@@ -3474,9 +3474,9 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 				if(ValidIONum(spells[i].caster)) {
 					Entity * c = entities[spells[i].caster];
 					if(c->ioflags & IO_NPC) {
-						target.x -= EEsin(radians(c->angle.b)) * 30.f;
+						target.x -= EEsin(radians(c->angle.getPitch())) * 30.f;
 						target.y -= 80.f;
-						target.z += EEcos(radians(c->angle.b)) * 30.f;
+						target.z += EEcos(radians(c->angle.getPitch())) * 30.f;
 					}
 				}
 			}
@@ -3485,7 +3485,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			
 			float anglea = 0, angleb;
 			if(spells[i].caster == 0) {
-				anglea = player.angle.a, angleb = player.angle.b;
+				anglea = player.angle.getYaw(), angleb = player.angle.getPitch();
 			} else {
 				
 				Vec3f start = entities[spells[i].caster]->pos;
@@ -3501,7 +3501,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 					anglea = degrees(getAngle(start.y, start.z, end.y, end.z + d));
 				}
 				
-				angleb = entities[spells[i].caster]->angle.b;
+				angleb = entities[spells[i].caster]->angle.getPitch();
 			}
 			
 			effect->Create(target, MAKEANGLE(angleb), anglea, spells[i].caster_level);
@@ -3548,10 +3548,10 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			float angleb;
 			if(spells[i].caster == 0) {
 				target = player.pos + Vec3f(0.f, 160.f, 0.f);
-				angleb = player.angle.b;
+				angleb = player.angle.getPitch();
 			} else {
 				target = entities[spells[i].caster]->pos;
-				angleb = entities[spells[i].caster]->angle.b;
+				angleb = entities[spells[i].caster]->angle.getPitch();
 			}
 			angleb = MAKEANGLE(angleb);
 			target.x -= EEsin(radians(angleb)) * 150.0f;
@@ -3586,7 +3586,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			CBless * effect = new CBless();
 			effect->spellinstance = i;
 			Vec3f target = entities[spells[i].caster]->pos;
-			effect->Create(target, MAKEANGLE(player.angle.b));
+			effect->Create(target, MAKEANGLE(player.angle.getPitch()));
 			effect->SetDuration(20000);
 			spells[i].pSpellFx = effect;
 			spells[i].tolive = effect->GetDuration();
@@ -3807,7 +3807,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 				target.y += entities[spells[i].target]->physics.cyl.height - 50.f;
 			}
 			
-			effect->Create(target, MAKEANGLE(player.angle.b));
+			effect->Create(target, MAKEANGLE(player.angle.getPitch()));
 			effect->SetDuration(spells[i].tolive);
 			spells[i].pSpellFx = effect;
 			spells[i].tolive = effect->GetDuration();
@@ -3932,7 +3932,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			
 			CRepelUndead * effect = new CRepelUndead();
 			effect->spellinstance = i;
-			effect->Create(player.pos, MAKEANGLE(player.angle.b));
+			effect->Create(player.pos, MAKEANGLE(player.angle.getPitch()));
 			effect->SetDuration(spells[i].tolive);
 			spells[i].pSpellFx = effect;
 			spells[i].tolive = effect->GetDuration();
@@ -3953,9 +3953,9 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			effect->SetDuration(8000ul);
 			float ang;
 			if(spells[i].caster == 0) {
-				ang = player.angle.b;
+				ang = player.angle.getPitch();
 			} else {
-				ang = entities[spells[i].caster]->angle.b;
+				ang = entities[spells[i].caster]->angle.getPitch();
 			}
 			effect->Create(Vec3f_ZERO, MAKEANGLE(ang));
 			spells[i].pSpellFx = effect;
@@ -3977,10 +3977,10 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			bool displace = true;
 			if(spells[i].caster == 0) {
 				target = player.basePosition();
-				beta = MAKEANGLE(player.angle.b);
+				beta = MAKEANGLE(player.angle.getPitch());
 			} else {
 				target = entities[spells[i].caster]->pos;
-				beta = MAKEANGLE(entities[spells[i].caster]->angle.b);
+				beta = MAKEANGLE(entities[spells[i].caster]->angle.getPitch());
 				displace = (entities[spells[i].caster]->ioflags & IO_NPC) == IO_NPC;
 			}
 			if(displace) {
@@ -4071,13 +4071,13 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			bool displace = false;
 			if(spells[i].caster == 0) {
 				target = entities.player()->pos;
-				beta = player.angle.b;
+				beta = player.angle.getPitch();
 				displace = true;
 			} else {
 				if(ValidIONum(spells[i].caster)) {
 					Entity * io = entities[spells[i].caster];
 					target = io->pos;
-					beta = io->angle.b;
+					beta = io->angle.getPitch();
 					displace = (io->ioflags & IO_NPC) == IO_NPC;
 				} else {
 					ARX_DEAD_CODE();
@@ -4142,7 +4142,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			CDisarmTrap * effect = new CDisarmTrap();
 			effect->spellinstance = i;
 			
-			effect->Create(player.pos, MAKEANGLE(player.angle.b));
+			effect->Create(player.pos, MAKEANGLE(player.angle.getPitch()));
 			effect->SetDuration(spells[i].tolive);
 			spells[i].pSpellFx = effect;
 			spells[i].tolive = effect->GetDuration();
@@ -4196,7 +4196,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			
 			CSlowDown * effect = new CSlowDown();
 			effect->spellinstance = i;
-			effect->Create(spells[i].target_pos, MAKEANGLE(player.angle.b));
+			effect->Create(spells[i].target_pos, MAKEANGLE(player.angle.getPitch()));
 			effect->SetDuration(spells[i].tolive);
 			spells[i].pSpellFx = effect;
 			spells[i].tolive = effect->GetDuration();
@@ -4225,7 +4225,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			spells[i].bDuration = true;
 			spells[i].fManaCostPerSecond = 3.2f;
 			eyeball.exist = 1;
-			float angleb = MAKEANGLE(player.angle.b);
+			float angleb = MAKEANGLE(player.angle.getPitch());
 			eyeball.pos.x = player.pos.x - EEsin(radians(angleb)) * 200.f;
 			eyeball.pos.y = player.pos.y + 50.f;
 			eyeball.pos.z = player.pos.z + EEcos(radians(angleb)) * 200.f;
@@ -4279,13 +4279,13 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			float displace = false;
 			if(spells[i].caster == 0) {
 				target = player.basePosition();
-				beta = player.angle.b;
+				beta = player.angle.getPitch();
 				displace = true;
 			} else {
 				if(ValidIONum(spells[i].caster)) {
 					Entity * io = entities[spells[i].caster];
 					target = io->pos;
-					beta = io->angle.b;
+					beta = io->angle.getPitch();
 					displace = (io->ioflags & IO_NPC);
 				} else {
 					ARX_DEAD_CODE();
@@ -4344,13 +4344,13 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			float displace = false;
 			if(spells[i].caster == 0) {
 				target = player.basePosition();
-				beta = player.angle.b;
+				beta = player.angle.getPitch();
 				displace = true;
 			} else {
 				if(ValidIONum(spells[i].caster)) {
 					Entity * io = entities[spells[i].caster];
 					target = io->pos;
-					beta = io->angle.b;
+					beta = io->angle.getPitch();
 					displace = (io->ioflags & IO_NPC);
 				} else {
 					ARX_DEAD_CODE();
@@ -4376,7 +4376,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 				damages[spells[i].longinfo].pos = target;
 			}
 			
-			effect->Create(target, MAKEANGLE(player.angle.b));
+			effect->Create(target, MAKEANGLE(player.angle.getPitch()));
 			effect->SetDuration(spells[i].tolive);
 			spells[i].pSpellFx = effect;
 			spells[i].tolive = effect->GetDuration();
@@ -4393,7 +4393,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			CLightning * effect = new CLightning();
 			effect->spellinstance = i;
 			Vec3f target(0.f, 0.f, -500.f);
-			effect->Create(Vec3f_ZERO, target, MAKEANGLE(player.angle.b));
+			effect->Create(Vec3f_ZERO, target, MAKEANGLE(player.angle.getPitch()));
 			effect->SetDuration(long(500 * spells[i].caster_level));
 			effect->lSrc = 0;
 			spells[i].pSpellFx = effect;
@@ -4422,7 +4422,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			
 			CConfuse * effect = new CConfuse();
 			effect->spellinstance = i;
-			effect->Create(player.pos, MAKEANGLE(player.angle.b));
+			effect->Create(player.pos, MAKEANGLE(player.angle.getPitch()));
 			effect->SetDuration(spells[i].tolive);
 			spells[i].pSpellFx = effect;
 			spells[i].tolive = effect->GetDuration();
@@ -4648,11 +4648,11 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			bool displace = false;
 			if(spells[i].caster == 0) {
 				target = player.basePosition();
-				beta = player.angle.b;
+				beta = player.angle.getPitch();
 				displace = true;
 			} else {
 				target = entities[spells[i].caster]->pos;
-				beta = entities[spells[i].caster]->angle.b;
+				beta = entities[spells[i].caster]->angle.getPitch();
 				displace = (entities[spells[i].caster]->ioflags & IO_NPC) == IO_NPC;
 			}
 			if(displace) {
@@ -4671,7 +4671,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			ARX_SOUND_PlaySFX(SND_SPELL_SUMMON_CREATURE, &spells[i].target_pos);
 			CSummonCreature * effect = new CSummonCreature();
 			effect->spellinstance = i;
-			effect->Create(target, MAKEANGLE(player.angle.b));
+			effect->Create(target, MAKEANGLE(player.angle.getPitch()));
 			effect->SetDuration(2000, 500, 1500);
 			effect->SetColorBorder(Color3f::red);
 			effect->SetColorRays1(Color3f::red);
@@ -4711,7 +4711,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			ARX_SOUND_PlaySFX(SND_SPELL_SUMMON_CREATURE, &spells[i].target_pos);
 			CSummonCreature * effect = new CSummonCreature();
 			effect->spellinstance = i;
-			effect->Create(target, MAKEANGLE(player.angle.b));
+			effect->Create(target, MAKEANGLE(player.angle.getPitch()));
 			effect->SetDuration(2000, 500, 1500);
 			effect->SetColorBorder(Color3f::red);
 			effect->SetColorRays1(Color3f::red);
@@ -4744,7 +4744,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			
 			CNegateMagic * effect = new CNegateMagic();
 			effect->spellinstance = i;
-			effect->Create(player.pos, MAKEANGLE(player.angle.b));
+			effect->Create(player.pos, MAKEANGLE(player.angle.getPitch()));
 			effect->SetDuration(spells[i].tolive);
 			spells[i].pSpellFx = effect;
 			spells[i].tolive = effect->GetDuration();
@@ -4859,17 +4859,17 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			float beta;
 			if(spells[i].caster == 0) {
 				target = player.pos + Vec3f(0.f, 150.f, 0.f);
-				beta = player.angle.b;
+				beta = player.angle.getPitch();
 			} else {
 				Entity * io = entities[spells[i].caster];
 				target = io->pos + Vec3f(0.f, -20.f, 0.f);
-				beta = io->angle.b;
+				beta = io->angle.getPitch();
 			}
 			target.x -= EEsin(radians(MAKEANGLE(beta))) * 500.f;
 			target.z += EEcos(radians(MAKEANGLE(beta))) * 500.f;
 			
 			effect->SetDuration(long(500 * spells[i].caster_level));
-			effect->Create(target, MAKEANGLE(player.angle.b));
+			effect->Create(target, MAKEANGLE(player.angle.getPitch()));
 			spells[i].pSpellFx = effect;
 			spells[i].tolive = effect->GetDuration();
 			
@@ -4926,7 +4926,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			
 			CControlTarget * effect = new CControlTarget();
 			effect->spellinstance = i;
-			effect->Create(player.pos, MAKEANGLE(player.angle.b));
+			effect->Create(player.pos, MAKEANGLE(player.angle.getPitch()));
 			effect->SetDuration(spells[i].tolive);
 			spells[i].pSpellFx = effect;
 			
@@ -5656,8 +5656,8 @@ void ARX_SPELLS_Update()
 					GRenderer->SetRenderState(Renderer::DepthWrite, false);
 
 					Anglef cabalangle(0.f, 0.f, 0.f);
-					cabalangle.b=spells[i].fdata+(float)framedelay*0.1f;
-					spells[i].fdata=cabalangle.b;
+					cabalangle.setPitch(spells[i].fdata+(float)framedelay*0.1f);
+					spells[i].fdata = cabalangle.getPitch();
 
 					Vec3f cabalscale = Vec3f(Es);
 					Color3f cabalcolor = Color3f(0.8f, 0.4f, 0.f);
@@ -5790,10 +5790,10 @@ void ARX_SPELLS_Update()
 							pBless->eSrc = entities[spells[i].target]->pos;
 							Anglef angle = Anglef::ZERO;
 
-							if (spells[i].target==0)
-								angle.b=player.angle.b;	
+							if(spells[i].target == 0)
+								angle.setPitch(player.angle.getPitch());
 							else 
-								angle.b=entities[spells[i].target]->angle.b;
+								angle.setPitch(entities[spells[i].target]->angle.getPitch());
 
 							pBless->Set_Angle(angle);
 						}
@@ -6565,8 +6565,8 @@ void ARX_SPELLS_Update()
 						GRenderer->SetRenderState(Renderer::DepthWrite, false);
 
 						Anglef cabalangle(0.f, 0.f, 0.f);
-						cabalangle.b=spells[i].fdata+(float)framedelay*0.1f;
-						spells[i].fdata=cabalangle.b;
+						cabalangle.setPitch(spells[i].fdata + (float)framedelay*0.1f);
+						spells[i].fdata = cabalangle.getPitch();
 												
 						Vec3f cabalscale = Vec3f(Es);
 						Color3f cabalcolor = Color3f(0.4f, 0.4f, 0.8f);
@@ -6587,7 +6587,7 @@ void ARX_SPELLS_Update()
 						cabalcolor = Color3f(0.f, 0.f, 0.15f);
 						DrawEERIEObjEx(cabal,&cabalangle,&cabalpos,&cabalscale, cabalcolor);
 
-						cabalangle.b=-cabalangle.b;
+						cabalangle.setPitch(-cabalangle.getPitch());
 						cabalpos.y=refpos-mov;
 						cabalscale = Vec3f(Es);
 						cabalcolor = Color3f(0.f, 0.f, 0.15f);
@@ -6608,7 +6608,7 @@ void ARX_SPELLS_Update()
 						cabalcolor = Color3f(0.4f, 0.4f, 0.8f);
 						DrawEERIEObjEx(cabal,&cabalangle,&cabalpos,&cabalscale, cabalcolor);
 
-						cabalangle.b=-cabalangle.b;
+						cabalangle.setPitch(-cabalangle.getPitch());
 						GRenderer->SetRenderState(Renderer::AlphaBlending, false);		
 						GRenderer->SetRenderState(Renderer::DepthWrite, true);	
 
@@ -6657,8 +6657,8 @@ void ARX_SPELLS_Update()
 						GRenderer->SetRenderState(Renderer::DepthWrite, false);
 
 						Anglef cabalangle(0.f, 0.f, 0.f);
-						cabalangle.b=spells[i].fdata+(float)framedelay*0.1f;
-						spells[i].fdata=cabalangle.b;
+						cabalangle.setPitch(spells[i].fdata+(float)framedelay*0.1f);
+						spells[i].fdata=cabalangle.getPitch();
 
 						Vec3f cabalscale = Vec3f(Es);
 						Color3f cabalcolor = Color3f(0.8f, 0.f, 0.f);
@@ -6679,7 +6679,7 @@ void ARX_SPELLS_Update()
 						cabalcolor = Color3f(0.15f, 0.f, 0.f);
 						DrawEERIEObjEx(cabal,&cabalangle,&cabalpos,&cabalscale, cabalcolor);
 
-						cabalangle.b=-cabalangle.b;
+						cabalangle.setPitch(-cabalangle.getPitch());
 						cabalpos.y=refpos-mov;
 						cabalscale = Vec3f(Es);
 						cabalcolor = Color3f(0.15f, 0.f, 0.f);
@@ -6700,7 +6700,7 @@ void ARX_SPELLS_Update()
 						cabalcolor = Color3f(0.8f, 0.f, 0.f);
 						DrawEERIEObjEx(cabal,&cabalangle,&cabalpos,&cabalscale, cabalcolor);
 
-						cabalangle.b=-cabalangle.b;
+						cabalangle.setPitch(-cabalangle.getPitch());
 						GRenderer->SetRenderState(Renderer::AlphaBlending, false);		
 						GRenderer->SetRenderState(Renderer::DepthWrite, true);	
 
@@ -6716,7 +6716,7 @@ void ARX_SPELLS_Update()
 						if(spells[i].lastupdate-spells[i].timcreation <= 3000) {
 							eyeball.exist = spells[i].lastupdate - spells[i].timcreation * (1.0f / 30);
 							eyeball.size = Vec3f(1.f - float(eyeball.exist) * 0.01f);
-							eyeball.angle.b += framediff3 * 0.6f;
+							eyeball.angle.setPitch(eyeball.angle.getPitch() + framediff3 * 0.6f);
 						} else {
 							eyeball.exist = 2;
 						}

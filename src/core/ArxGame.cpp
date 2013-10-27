@@ -825,7 +825,7 @@ void ArxGame::updateFirstPersonCamera() {
 		subj.d_angle = eyeball.angle;
 		EXTERNALVIEW = true;
 	} else if(EXTERNALVIEW) {
-		float t=radians(player.angle.b);
+		float t=radians(player.angle.getPitch());
 
 		for(long l=0; l < 250; l += 10) {
 			Vec3f tt = player.pos;
@@ -840,7 +840,7 @@ void ArxGame::updateFirstPersonCamera() {
 		}
 
 		subj.d_angle = player.angle;
-		subj.d_angle.a += 30.f;
+		subj.d_angle.setYaw(subj.d_angle.getYaw() + 30.f);
 	} else {
 		subj.angle = player.angle;
 		
@@ -907,13 +907,13 @@ void ArxGame::updateConversationCamera() {
 				conversationcamera.size = Anglef(rnd() * 50.f, 0.f, rnd() * 50.f);
 				conversationcamera.d_angle = Anglef::ZERO;
 				if(rnd() > 0.4f) {
-					conversationcamera.d_angle.a = (1.f - rnd() * 2.f) * (1.f / 30);
+					conversationcamera.d_angle.setYaw((1.f - rnd() * 2.f) * (1.f / 30));
 				}
 				if(rnd() > 0.4f) {
-					conversationcamera.d_angle.b = (1.f - rnd() * 1.2f) * 0.2f;
+					conversationcamera.d_angle.setPitch((1.f - rnd() * 1.2f) * 0.2f);
 				}
 				if(rnd() > 0.4f) {
-					conversationcamera.d_angle.g = (1.f - rnd() * 2.f) * 0.025f;
+					conversationcamera.d_angle.setRoll((1.f - rnd() * 2.f) * 0.025f);
 				}
 			}
 		} else {
@@ -927,7 +927,7 @@ void ArxGame::updateConversationCamera() {
 			sourcepos = conversationcamera.orgTrans.pos;
 		} else {
 			targetpos = player.pos;
-			float t=radians(player.angle.b);
+			float t = radians(player.angle.getPitch());
 			sourcepos.x=targetpos.x+(float)EEsin(t)*100.f;
 			sourcepos.y=targetpos.y;
 			sourcepos.z=targetpos.z-(float)EEcos(t)*100.f;
@@ -937,25 +937,25 @@ void ArxGame::updateConversationCamera() {
 		Vec3f vect = targetpos - sourcepos;
 		fnormalize(vect);
 
-		float dist = 250.f - conversationcamera.size.g;
+		float dist = 250.f - conversationcamera.size.getRoll();
 		if(dist < 0.f)
 			dist = 90.f - dist * (1.f/20);
 		else if(dist < 90.f)
 			dist = 90.f;
 
-		YRotatePoint(&vect, &vec2, EEcos(radians(conversationcamera.size.a)), EEsin(radians(conversationcamera.size.a)));
+		YRotatePoint(&vect, &vec2, EEcos(radians(conversationcamera.size.getYaw())), EEsin(radians(conversationcamera.size.getYaw())));
 
 		sourcepos = targetpos - vec2 * dist;
 
-		if(conversationcamera.size.b != 0.f)
-			sourcepos.y += 120.f - conversationcamera.size.b * (1.f/10);
+		if(conversationcamera.size.getPitch() != 0.f)
+			sourcepos.y += 120.f - conversationcamera.size.getPitch() * (1.f/10);
 
 		conversationcamera.orgTrans.pos = sourcepos;
 		conversationcamera.setTargetCamera(targetpos);
 		subj.orgTrans.pos = conversationcamera.orgTrans.pos;
-		subj.angle.a = MAKEANGLE(-conversationcamera.angle.a);
-		subj.angle.b = MAKEANGLE(conversationcamera.angle.b - 180.f);
-		subj.angle.g = 0.f;
+		subj.angle.setYaw(MAKEANGLE(-conversationcamera.angle.getYaw()));
+		subj.angle.setPitch(MAKEANGLE(conversationcamera.angle.getPitch() - 180.f));
+		subj.angle.setRoll(0.f);
 		EXTERNALVIEW = true;
 	} else {
 		ARX_CONVERSATION_MODE = -1;
@@ -998,26 +998,26 @@ void ArxGame::speechControlledCinematic() {
 			switch(acs->type) {
 			case ARX_CINE_SPEECH_KEEP: {
 				subj.orgTrans.pos = acs->pos1;
-				subj.angle.a=acs->pos2.x;
-				subj.angle.b=acs->pos2.y;
-				subj.angle.g=acs->pos2.z;
+				subj.angle.setYaw(acs->pos2.x);
+				subj.angle.setPitch(acs->pos2.y);
+				subj.angle.setRoll(acs->pos2.z);
 				EXTERNALVIEW = true;
 				break;
 									   }
 			case ARX_CINE_SPEECH_ZOOM: {
 				//need to compute current values
-				float alpha = acs->startangle.a * itime + acs->endangle.a * rtime;
-				float beta = acs->startangle.b * itime + acs->endangle.b * rtime;
+				float alpha = acs->startangle.getYaw() * itime + acs->endangle.getYaw() * rtime;
+				float beta = acs->startangle.getPitch() * itime + acs->endangle.getPitch() * rtime;
 				float distance = acs->startpos * itime + acs->endpos * rtime;
 				Vec3f targetpos = acs->pos1;
-				conversationcamera.orgTrans.pos.x=-EEsin(radians(MAKEANGLE(io->angle.b+beta)))*distance+targetpos.x;
-				conversationcamera.orgTrans.pos.y= EEsin(radians(MAKEANGLE(io->angle.a+alpha)))*distance+targetpos.y;
-				conversationcamera.orgTrans.pos.z= EEcos(radians(MAKEANGLE(io->angle.b+beta)))*distance+targetpos.z;
+				conversationcamera.orgTrans.pos.x=-EEsin(radians(MAKEANGLE(io->angle.getPitch()+beta)))*distance+targetpos.x;
+				conversationcamera.orgTrans.pos.y= EEsin(radians(MAKEANGLE(io->angle.getYaw()+alpha)))*distance+targetpos.y;
+				conversationcamera.orgTrans.pos.z= EEcos(radians(MAKEANGLE(io->angle.getPitch()+beta)))*distance+targetpos.z;
 				conversationcamera.setTargetCamera(targetpos);
 				subj.orgTrans.pos = conversationcamera.orgTrans.pos;
-				subj.angle.a=MAKEANGLE(-conversationcamera.angle.a);
-				subj.angle.b=MAKEANGLE(conversationcamera.angle.b-180.f);
-				subj.angle.g=0.f;
+				subj.angle.setYaw(MAKEANGLE(-conversationcamera.angle.getYaw()));
+				subj.angle.setPitch(MAKEANGLE(conversationcamera.angle.getPitch()-180.f));
+				subj.angle.setRoll(0.f);
 				EXTERNALVIEW = true;
 				break;
 									   }
@@ -1050,9 +1050,9 @@ void ArxGame::speechControlledCinematic() {
 					conversationcamera.orgTrans.pos.z=targetpos.z+vect2.z;
 					conversationcamera.setTargetCamera(targetpos);
 					subj.orgTrans.pos = conversationcamera.orgTrans.pos;
-					subj.angle.a=MAKEANGLE(-conversationcamera.angle.a);
-					subj.angle.b=MAKEANGLE(conversationcamera.angle.b-180.f);
-					subj.angle.g=0.f;
+					subj.angle.setYaw(MAKEANGLE(-conversationcamera.angle.getYaw()));
+					subj.angle.setPitch(MAKEANGLE(conversationcamera.angle.getPitch()-180.f));
+					subj.angle.setRoll(0.f);
 					EXTERNALVIEW = true;
 				}
 
@@ -1094,9 +1094,9 @@ void ArxGame::speechControlledCinematic() {
 					conversationcamera.orgTrans.pos = vect + targetpos + vect2;
 					conversationcamera.setTargetCamera(targetpos);
 					subj.orgTrans.pos = conversationcamera.orgTrans.pos;
-					subj.angle.a=MAKEANGLE(-conversationcamera.angle.a);
-					subj.angle.b=MAKEANGLE(conversationcamera.angle.b-180.f);
-					subj.angle.g=0.f;
+					subj.angle.setYaw(MAKEANGLE(-conversationcamera.angle.getYaw()));
+					subj.angle.setPitch(MAKEANGLE(conversationcamera.angle.getPitch()-180.f));
+					subj.angle.setRoll(0.f);
 					EXTERNALVIEW = true;
 				}
 
@@ -1142,9 +1142,9 @@ void ArxGame::handlePlayerDeath() {
 
 		conversationcamera.setTargetCamera(targetpos);
 		subj.orgTrans.pos=conversationcamera.orgTrans.pos;
-		subj.angle.a=MAKEANGLE(-conversationcamera.angle.a);
-		subj.angle.b=MAKEANGLE(conversationcamera.angle.b-180.f);
-		subj.angle.g = 0;
+		subj.angle.setYaw(MAKEANGLE(-conversationcamera.angle.getYaw()));
+		subj.angle.setPitch(MAKEANGLE(conversationcamera.angle.getPitch()-180.f));
+		subj.angle.setRoll(0);
 		EXTERNALVIEW = true;
 		BLOCK_PLAYER_CONTROLS = true;
 	}
@@ -1156,11 +1156,11 @@ void ArxGame::handleCameraController() {
 
 	if(CAMERACONTROLLER) {
 		if(lastCAMERACONTROLLER != CAMERACONTROLLER)
-			currentbeta = CAMERACONTROLLER->angle.b;
+			currentbeta = CAMERACONTROLLER->angle.getPitch();
 
 		Vec3f targetpos = CAMERACONTROLLER->pos + player.baseOffset();
 
-		float delta_angle = AngleDifference(currentbeta, CAMERACONTROLLER->angle.b);
+		float delta_angle = AngleDifference(currentbeta, CAMERACONTROLLER->angle.getPitch());
 		float delta_angle_t = delta_angle * framedelay * ( 1.0f / 1000 );
 
 		if(EEfabs(delta_angle_t) > EEfabs(delta_angle))
@@ -1174,9 +1174,9 @@ void ArxGame::handleCameraController() {
 
 		conversationcamera.setTargetCamera(targetpos);
 		subj.orgTrans.pos = conversationcamera.orgTrans.pos;
-		subj.angle.a=MAKEANGLE(-conversationcamera.angle.a);
-		subj.angle.b=MAKEANGLE(conversationcamera.angle.b-180.f);
-		subj.angle.g=0.f;
+		subj.angle.setYaw(MAKEANGLE(-conversationcamera.angle.getYaw()));
+		subj.angle.setPitch(MAKEANGLE(conversationcamera.angle.getPitch()-180.f));
+		subj.angle.setRoll(0.f);
 		EXTERNALVIEW = true;
 	}
 
@@ -1401,7 +1401,7 @@ void ArxGame::updateLevel() {
 
 	// Set Listener Position
 	{
-		float t = radians(MAKEANGLE(ACTIVECAM->angle.b));
+		float t = radians(MAKEANGLE(ACTIVECAM->angle.getPitch()));
 		Vec3f front(-EEsin(t), 0.f, EEcos(t));
 		front = normalize(front);
 

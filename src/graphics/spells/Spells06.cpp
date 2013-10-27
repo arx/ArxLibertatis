@@ -1750,14 +1750,12 @@ void CDisarmTrap::Render() {
 	GRenderer->SetTexture(0, tex_p2);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
-	Anglef stiteangle;
+	Anglef stiteangle = Anglef::ZERO;
 	Vec3f stitepos;
 	Vec3f stitescale;
 	Color3f stitecolor;
 
-	stiteangle.b = (float) ulCurrentTime * fOneOnDuration * 120;
-	stiteangle.a = 0;
-	stiteangle.g = 0;
+	stiteangle.setPitch((float) ulCurrentTime * fOneOnDuration * 120);
 	stitepos.x = x;
 	stitepos.y = y;
 	stitepos.z = z;

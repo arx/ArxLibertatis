@@ -84,9 +84,9 @@ void EERIE_PHYSICS_BOX_Launch(EERIE_3DOBJ * obj, const Vec3f & pos, const Anglef
 	for(int i = 0; i < obj->pbox->nb_physvert; i++) {
 		PHYSVERT * pv = &obj->pbox->vert[i];
 		pv->pos = pv->initpos;
-		VRotateY(&pv->pos, angle.b);
-		VRotateX(&pv->pos, angle.a);
-		VRotateZ(&pv->pos, angle.g);
+		VRotateY(&pv->pos, angle.getPitch());
+		VRotateX(&pv->pos, angle.getYaw());
+		VRotateZ(&pv->pos, angle.getRoll());
 		pv->pos += pos;
 
 		pv->inertia = Vec3f_ZERO;
