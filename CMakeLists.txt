@@ -294,6 +294,7 @@ include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
 # glm
 find_package(GLM REQUIRED)
 include_directories(SYSTEM ${GLM_INCLUDE_DIRS})
+add_definitions(-DGLM_FORCE_RADIANS)
 
 # Qt and DbgHelp
 set(ARX_HAVE_CRASHREPORTER 0)
