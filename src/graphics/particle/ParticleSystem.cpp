@@ -204,7 +204,7 @@ void ParticleSystem::SetParams(const ParticleParams & _pp) {
 
 	bParticleEndColorRandomLock = _pp.bEndLock;
 
-	p3ParticleDirection = normalize(p3ParticleDirection);
+	p3ParticleDirection = glm::normalize(p3ParticleDirection);
 	Vec3f eVect(p3ParticleDirection.x, -p3ParticleDirection.y, p3ParticleDirection.z);
 	GenerateMatrixUsingVector(&eMat, &eVect, 0);
 

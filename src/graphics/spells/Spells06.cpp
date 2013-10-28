@@ -1159,7 +1159,7 @@ void CParalyse::CreateLittlePrismTriangleList()
 		}
 
 		v = prismvertex;
-		vt = normalize(*v);
+		vt = glm::normalize(*v);
 		tabprism[i].offset.x = r * vt.x;
 		tabprism[i].offset.y = 0;
 		tabprism[i].offset.z = r * vt.z;

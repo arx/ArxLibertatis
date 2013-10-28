@@ -438,7 +438,7 @@ void ARX_PARTICLES_Spawn_Blood2(const Vec3f & pos, float dmgs, Color col, Entity
 		
 		Vec3f vect = pos - io->_npcdata->last_splat_pos;
 		float dist = glm::length(vect);
-		vect = normalize(vect);
+		vect = glm::normalize(vect);
 		long nb = long(dist / 4.f * power);
 		if(nb == 0) {
 			nb = 1;
@@ -1135,7 +1135,7 @@ void ARX_PARTICLES_Render(EERIE_CAMERA * cam)  {
 				part->ov = *part->source;
 				Entity * target = entities[part->sourceionum];
 				Vec3f vector = (part->ov - target->pos) * Vec3f(1.f, 0.5f, 1.f);
-				vector = normalize(vector);
+				vector = glm::normalize(vector);
 				part->move = vector * Vec3f(18.f, 5.f, 18.f) + randomVec(-0.5f, 0.5f);
 				
 			}
@@ -1545,7 +1545,7 @@ void TreatBackgroundActions() {
 					float t = rnd() * (PI * 2.f) - PI;
 					Vec3f s = Vec3f(EEsin(t), EEsin(t), EEcos(t)) * randomVec();
 					pd->ov = gl->pos + s * gl->ex_radius;
-					Vec3f vect = normalize(pd->ov - gl->pos);
+					Vec3f vect = glm::normalize(pd->ov - gl->pos);
 					float d = (gl->extras & EXTRAS_FIREPLACE) ? 6.f : 4.f;
 					pd->move = Vec3f(vect.x * d, -10.f - 8.f * rnd(), vect.z * d) * gl->ex_speed;
 					pd->siz = 4.f * gl->ex_size * 0.3f;

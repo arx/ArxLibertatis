@@ -37,11 +37,6 @@ bool fartherThan(const V & a, const V & b, typename V::value_type d) {
 }
 
 template <class V>
-V normalize(const V & v0) {
-	return glm::normalize(v0);
-}
-
-template <class V>
 V cross(const V & a, const V & b) {
 	return glm::cross(a, b);
 }

@@ -120,7 +120,7 @@ void CLightning::BuildS(LIGHTNING * pLInfo)
 		int moi = nbtotal;
 
 		if(pLInfo->abFollow) {
-			avect = normalize(eDest - pLInfo->eStart);
+			avect = glm::normalize(eDest - pLInfo->eStart);
 		}
 
 		float fAngleX = frand2() * (pLInfo->fAngleXMax - pLInfo->fAngleXMin) + pLInfo->fAngleXMin;
@@ -131,7 +131,7 @@ void CLightning::BuildS(LIGHTNING * pLInfo)
 		av.x = (float) cos(acos(avect.x) - radians(fAngleX));
 		av.y = (float) sin(asin(avect.y) - radians(fAngleY));
 		av.z = (float) tan(atan(avect.z) - radians(fAngleZ));
-		av = normalize(av);
+		av = glm::normalize(av);
 		avect = av;
 
 		float ts = rnd();

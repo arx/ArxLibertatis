@@ -1028,7 +1028,7 @@ void ArxGame::speechControlledCinematic() {
 					const Vec3f & from = acs->pos1;
 					const Vec3f & to = acs->pos2;
 
-					Vec3f vect = normalize(to - from);
+					Vec3f vect = glm::normalize(to - from);
 
 					Vec3f vect2;
 					if(acs->type==ARX_CINE_SPEECH_SIDE_LEFT) {
@@ -1080,8 +1080,8 @@ void ArxGame::speechControlledCinematic() {
 					Vec3f vect = conversationcamera.orgTrans.pos - targetpos;
 					Vec3f vect2;
 					Vector_RotateY(&vect2,&vect,90);
-					vect2 = normalize(vect2);
-					Vec3f vect3 = normalize(vect);
+					vect2 = glm::normalize(vect2);
+					Vec3f vect3 = glm::normalize(vect);
 
 					vect = vect * distance + vect3 * 80.f;
 					vect2 *= 45.f;
@@ -1404,7 +1404,7 @@ void ArxGame::updateLevel() {
 	{
 		float t = radians(MAKEANGLE(ACTIVECAM->angle.getPitch()));
 		Vec3f front(-EEsin(t), 0.f, EEcos(t));
-		front = normalize(front);
+		front = glm::normalize(front);
 
 		//TODO Hardcoded up vector
 		Vec3f up(0.f, 1.f, 0.f);

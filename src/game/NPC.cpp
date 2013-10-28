@@ -549,7 +549,7 @@ static long AnchorData_GetNearest_2(float beta, Vec3f * pos, EERIE_CYLINDER * cy
 	
 	float d = radians(beta);
 	Vec3f vect(-EEsin(d), 0, EEcos(d));
-	vect = normalize(vect);
+	vect = glm::normalize(vect);
 
 	Vec3f posi;
 	posi.x = pos->x + vect.x * 50.f;

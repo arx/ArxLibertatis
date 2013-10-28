@@ -872,20 +872,20 @@ void CalcObjFaceNormal(const Vec3f * v0, const Vec3f * v1, const Vec3f * v2,
 	Bz = v2->z - v0->z;
 	
 	ef->norm = Vec3f(Ay * Bz - Az * By, Az * Bx - Ax * Bz, Ax * By - Ay * Bx);
-	ef->norm = normalize(ef->norm);
+	ef->norm = glm::normalize(ef->norm);
 }
 
 void MatrixSetByVectors(EERIEMATRIX * m, const Vec3f * d, const Vec3f * u)
 {
 	float t;
 	Vec3f D, U, R;
-	D = normalize(*d);
+	D = glm::normalize(*d);
 	U = *u;
 	t = U.x * D.x + U.y * D.y + U.z * D.z;
 	U.x -= D.x * t;
 	U.y -= D.y * t;
 	U.z -= D.y * t; // TODO is this really supposed to be D.y?
-	U = normalize(U);
+	U = glm::normalize(U);
 	R = cross(U, D);
 	m->_11 = R.x;
 	m->_12 = R.y;
@@ -902,7 +902,7 @@ void GenerateMatrixUsingVector(EERIEMATRIX * matrix, const Vec3f * vect, float r
 {
 	// Get our direction vector (the Z vector component of the matrix)
 	// and make sure it's normalized into a unit vector
-	Vec3f zAxis = normalize(*vect);
+	Vec3f zAxis = glm::normalize(*vect);
 
 	// Build the Y vector of the matrix (handle the degenerate case
 	// in the way that 3DS does) -- This is not the true vector, only
@@ -915,10 +915,10 @@ void GenerateMatrixUsingVector(EERIEMATRIX * matrix, const Vec3f * vect, float r
 		yAxis = Vec3f(0.f, 1.f, 0.f);
 
 	// Build the X axis vector based on the two existing vectors
-	Vec3f xAxis = normalize(cross(yAxis, zAxis));
+	Vec3f xAxis = glm::normalize(cross(yAxis, zAxis));
 
 	// Correct the Y reference vector
-	yAxis = normalize(cross(xAxis, zAxis));
+	yAxis = glm::normalize(cross(xAxis, zAxis));
 	yAxis = -yAxis;
 
 	// Generate rotation matrix without roll included

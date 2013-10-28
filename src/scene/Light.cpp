@@ -627,7 +627,7 @@ ColorBGRA ApplyLight(const EERIE_QUAT * quat, const Vec3f & position, const Vec3
 		if(!light)
 			break;
 
-		Vec3f vLight = normalize(light->pos - position);
+		Vec3f vLight = glm::normalize(light->pos - position);
 
 		Vec3f Cur_vLights;
 		TransformInverseVertexQuat(quat, &vLight, &Cur_vLights);
@@ -696,7 +696,7 @@ void ApplyTileLights(EERIEPOLY * ep, short x, short y)
 		for(size_t i = 0; i < tls->el.size(); i++) {
 			EERIE_LIGHT * light = tls->el[i];
 
-			Vec3f vLight = normalize(light->pos - position);
+			Vec3f vLight = glm::normalize(light->pos - position);
 
 			float cosangle = dot(normal, vLight);
 
@@ -816,7 +816,7 @@ static void ARX_EERIE_LIGHT_Make(EERIEPOLY * ep, float * epr, float * epg, float
 		if(distance[i] < light->fallend) {
 			//MODE_NORMALS
 			if(ModeLight & MODE_NORMALS) {
-				Vec3f vLight = normalize(light->pos - ep->v[i].p); // vector (light to vertex)
+				Vec3f vLight = glm::normalize(light->pos - ep->v[i].p); // vector (light to vertex)
 
 				fRes = dot(vLight, ep->nrml[i]);
 

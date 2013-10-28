@@ -857,7 +857,7 @@ long ARX_SOUND_PlayCinematic(const res::path & name, bool isSpeech) {
 	if (ACTIVECAM) {
 		float t = radians(MAKEANGLE(ACTIVECAM->angle.getPitch()));
 		Vec3f front(-EEsin(t), 0.f, EEcos(t));
-		front = normalize(front);
+		front = glm::normalize(front);
 
 		//TODO Hardcoded up vector
 		Vec3f up(0.f, 1.f, 0.f);

@@ -6493,7 +6493,7 @@ long Manage3DCursor(long flags)
 	mvectx.x = -(float)EEsin(radians(player.angle.getPitch() - 90.f));
 	mvectx.y = 0;
 	mvectx.z = +(float)EEcos(radians(player.angle.getPitch() - 90.f));
-	mvectx = normalize(mvectx);
+	mvectx = glm::normalize(mvectx);
 
 	float xmod=(float)(DANAEMouse.x-g_size.center().x)/(float)g_size.center().x*160.f;
 	float ymod=(float)(DANAEMouse.y-g_size.center().y)/(float)g_size.center().y*220.f;
@@ -6509,7 +6509,7 @@ long Manage3DCursor(long flags)
 	dest.z=player.pos.z+(float)EEcos(radians(player.angle.getPitch()))*(float)EEcos(radians(player.angle.getYaw()))*10000.f + mvectx.z;
 	pos = orgn;
 
-	Vec3f movev = normalize(dest - orgn);
+	Vec3f movev = glm::normalize(dest - orgn);
 
 	float lastanything = 0.f;
 	float height = -( maxy - miny );
