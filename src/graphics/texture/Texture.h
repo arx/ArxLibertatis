@@ -22,7 +22,7 @@
 
 #include "graphics/image/Image.h"
 #include "io/resource/ResourcePath.h"
-#include "math/Vector2.h"
+#include "math/Vector.h"
 #include "platform/Flags.h"
 
 class Texture {

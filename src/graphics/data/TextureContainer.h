@@ -63,7 +63,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <boost/noncopyable.hpp>
 
 #include "io/resource/ResourcePath.h"
-#include "math/Vector2.h"
+#include "math/Vector.h"
 #include "platform/Flags.h"
 #include "graphics/GraphicsTypes.h"
 

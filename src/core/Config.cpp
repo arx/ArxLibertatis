@@ -33,7 +33,7 @@
 #include "io/IniSection.h"
 #include "io/IniWriter.h"
 #include "io/log/Logger.h"
-#include "math/Vector2.h"
+#include "math/Vector.h"
 #include "platform/CrashHandler.h"
 
 using std::string;

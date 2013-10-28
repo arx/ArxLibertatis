@@ -26,7 +26,7 @@
 #include <boost/noncopyable.hpp>
 
 #include "graphics/Color.h"
-#include "math/Vector2.h"
+#include "math/Vector.h"
 
 #include "io/resource/ResourcePath.h"
 

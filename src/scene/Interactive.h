@@ -53,7 +53,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/Entity.h"
 #include "game/EntityId.h"
 #include "graphics/data/MeshManipulation.h"
-#include "math/Vector2.h"
+#include "math/Vector.h"
 #include "math/Vector3.h"
 #include "platform/Flags.h"
 

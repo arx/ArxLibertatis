@@ -23,7 +23,7 @@
 #include <vector>
 #include <string>
 
-#include "math/Vector2.h"
+#include "math/Vector.h"
 
 class Window {
 	

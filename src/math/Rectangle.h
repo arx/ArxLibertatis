@@ -22,7 +22,7 @@
 
 #include <algorithm>
 
-#include "math/Vector2.h"
+#include "math/Vector.h"
 
 // name Rectangle is used in windows headers
 template<class T>

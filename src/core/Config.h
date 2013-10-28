@@ -27,7 +27,7 @@
 #include "io/fs/FilePath.h"
 
 #include "math/Types.h"
-#include "math/Vector2.h"
+#include "math/Vector.h"
 
 //! Enum for all the controlling actions
 enum ControlAction {

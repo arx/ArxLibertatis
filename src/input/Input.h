@@ -50,7 +50,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "input/Keyboard.h"
 #include "input/Mouse.h"
 #include "input/InputKey.h"
-#include "math/Vector2.h"
+#include "math/Vector.h"
 
 class Input {
 	

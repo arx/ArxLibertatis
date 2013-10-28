@@ -24,8 +24,8 @@
 #include <string>
 #include <vector>
 
-#include <math/Vector2.h>
-#include <math/Rectangle.h>
+#include "math/Vector.h"
+#include "math/Rectangle.h"
 
 class TextureContainer;
 

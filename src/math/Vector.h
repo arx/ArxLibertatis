@@ -92,4 +92,26 @@ bool isallfinite(const V & vec) {
 	return true;
 }
 
+// Constants
+
+const Vec2i Vec2i_ZERO(0, 0);
+const Vec2i Vec2i_ONE(1, 1);
+const Vec2i Vec2i_X_AXIS(1, 0);
+const Vec2i Vec2i_Y_AXIS(0, 1);
+
+const Vec2s Vec2s_ZERO(0, 0);
+const Vec2s Vec2s_ONE(1, 1);
+const Vec2s Vec2s_X_AXIS(1, 0);
+const Vec2s Vec2s_Y_AXIS(0, 1);
+
+const Vec2f Vec2f_ZERO(0, 0);
+const Vec2f Vec2f_ONE(1, 1);
+const Vec2f Vec2f_X_AXIS(1, 0);
+const Vec2f Vec2f_Y_AXIS(0, 1);
+
+const Vec2d Vec2d_ZERO(0, 0);
+const Vec2d Vec2d_ONE(1, 1);
+const Vec2d Vec2d_X_AXIS(1, 0);
+const Vec2d Vec2d_Y_AXIS(0, 1);
+
 #endif // ARX_MATH_VECTOR_H

@@ -25,7 +25,7 @@
 
 #include "graphics/image/Image.h"
 #include "math/Rectangle.h"
-#include "math/Vector2.h"
+#include "math/Vector.h"
 
 class Texture2D;
 

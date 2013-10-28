@@ -25,7 +25,7 @@
 #include "input/InputBackend.h"
 #include "input/Keyboard.h"
 #include "input/Mouse.h"
-#include "math/Vector2.h"
+#include "math/Vector.h"
 
 class SDLInputBackend : public InputBackend {
 	
