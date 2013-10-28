@@ -24,20 +24,12 @@
 
 namespace dialog {
 
-enum DialogType {
-	DialogInfo,
-	DialogWarning,
-	DialogError,
-	DialogYesNo,
-	DialogOkCancel
-};
+void showInfo(const std::string & message, const std::string & dialogTitle = "Information");
+void showWarning(const std::string & message, const std::string & dialogTitle = "Warning");
+void showError(const std::string & message, const std::string & dialogTitle = "Error");
 
-void showInfo(const std::string& message, const std::string& dialogTitle = "Information");
-void showWarning(const std::string& message, const std::string& dialogTitle = "Warning");
-void showError(const std::string& message, const std::string& dialogTitle = "Error");
-		
-bool askYesNo(const std::string& question, const std::string& dialogTitle = "Yes/No?");
-bool askOkCancel(const std::string& question, const std::string& dialogTitle = "Ok/Cancel?");
+bool askYesNo(const std::string & question, const std::string & dialogTitle = "Yes/No?");
+bool askOkCancel(const std::string & question, const std::string & dialogTitle = "Ok/Cancel?");
 
 }
 
