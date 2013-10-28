@@ -36,7 +36,7 @@
 #include <sys/time.h>
 #endif
 
-#if defined(ARX_HAVE_PRCTL)
+#if ARX_HAVE_PRCTL
 #include <sys/prctl.h>
 #ifndef PR_SET_PTRACER
 #define PR_SET_PTRACER 0x59616d61
@@ -94,7 +94,7 @@ ErrorReport::ErrorReport(const QString& sharedMemoryName)
 	, m_Username("CrashBot")
 	, m_Password("WbAtVjS9")
 {
-#if defined(ARX_HAVE_PRCTL)
+#if ARX_HAVE_PRCTL && defined(DEBUG)
 	// Allow debuggers to be attached to this process, for development purpose...
 	prctl(PR_SET_PTRACER, 1, 0, 0, 0);
 #endif

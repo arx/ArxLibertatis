@@ -31,7 +31,7 @@ void Thread::setThreadName(const std::string & _threadName) {
 #include <unistd.h>
 
 #if !defined(ARX_HAVE_PTHREAD_SETNAME_NP) && !defined(ARX_HAVE_PTHREAD_SET_NAME_NP) \
-    && defined(ARX_HAVE_PRCTL)
+    && ARX_HAVE_PRCTL
 #include <sys/prctl.h>
 #endif
 
@@ -105,7 +105,7 @@ void * Thread::entryPoint(void * param) {
 #elif defined(ARX_HAVE_PTHREAD_SET_NAME_NP)
 	// FreeBSD & OpenBSD
 	pthread_set_name_np(thread.thread, thread.threadName.c_str());
-#elif defined(ARX_HAVE_PRCTL) && defined(PR_SET_NAME)
+#elif ARX_HAVE_PRCTL && defined(PR_SET_NAME)
 	// Linux
 	prctl(PR_SET_NAME, reinterpret_cast<unsigned long>(thread.threadName.c_str()), 0, 0, 0);
 #else

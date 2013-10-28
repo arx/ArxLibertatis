@@ -25,7 +25,7 @@
 #include <execinfo.h>
 #endif
 
-#ifdef ARX_HAVE_PRCTL
+#if ARX_HAVE_PRCTL
 #include <sys/prctl.h>
 #ifndef PR_SET_PTRACER
 #define PR_SET_PTRACER 0x59616d61
@@ -103,7 +103,7 @@ bool CrashHandlerPOSIX::initialize() {
 	
 	m_pCrashInfo->signal = 0;
 	
-#ifdef ARX_HAVE_PRCTL
+#if ARX_HAVE_PRCTL
 	// Allow all processes in the same pid namespace to PTRACE this process
 	prctl(PR_SET_PTRACER, getpid());
 #endif
