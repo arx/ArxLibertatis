@@ -37,10 +37,6 @@ bool fartherThan(const V & a, const V & b, typename V::value_type d) {
 }
 
 template <class V>
-V componentwise_min(const V & v0, const V & v1) {
-	return glm::min(v0, v1);
-}
-template <class V>
 V componentwise_max(const V & v0, const V & v1) {
 	return glm::max(v0, v1);
 }

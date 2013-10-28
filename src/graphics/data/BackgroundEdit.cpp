@@ -133,7 +133,7 @@ bool Quadable(EERIEPOLY * ep, EERIEPOLY * ep2, float tolerance)
 
 	ep2->center = (ep2->v[0].p + ep2->v[1].p + ep2->v[2].p + ep2->v[3].p) * 0.25f;
 	ep2->max = componentwise_max(ep2->max, ep2->v[3].p);
-	ep2->min = componentwise_min(ep2->min, ep2->v[3].p);
+	ep2->min = glm::min(ep2->min, ep2->v[3].p);
 
 	ep2->norm2 = ep->norm;
 

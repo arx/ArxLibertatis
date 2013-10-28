@@ -618,7 +618,7 @@ void EERIE_PHYSICS_BOX_Create(EERIE_3DOBJ * obj)
 	
 	for(size_t k = 0; k < obj->vertexlist.size(); k++) {
 		if(long(k) != obj->origin) {
-			cubmin = componentwise_min(cubmin, obj->vertexlist[k].v);
+			cubmin = glm::min(cubmin, obj->vertexlist[k].v);
 			cubmax = componentwise_max(cubmax, obj->vertexlist[k].v);
 		}
 	}

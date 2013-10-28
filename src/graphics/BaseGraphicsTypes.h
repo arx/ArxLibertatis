@@ -115,7 +115,7 @@ struct EERIE_2D_BBOX {
 	}
 
 	void add(const Vec3f & pos) {
-		min = componentwise_min(min, Vec2f(pos));
+		min = glm::min(min, Vec2f(pos));
 		max = componentwise_max(max, Vec2f(pos));
 	}
 };
@@ -130,7 +130,7 @@ struct EERIE_3D_BBOX {
 	}
 
 	void add(const Vec3f & pos) {
-		min = componentwise_min(min, pos);
+		min = glm::min(min, pos);
 		max = componentwise_max(max, pos);
 	}
 };
