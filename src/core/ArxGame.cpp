@@ -119,6 +119,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/Screenshot.h"
 #include "io/log/Logger.h"
 
+#include "platform/Environment.h"
 #include "platform/Flags.h"
 #include "platform/Platform.h"
 
@@ -439,8 +440,7 @@ bool ArxGame::addPaks() {
 		
 		// Try to launch the data file installer on non-Windows systems
 		#if ARX_PLATFORM != ARX_PLATFORM_WIN32
-		int ret = system("nohup arx-install-data --gui >/dev/null 2>&1 &");
-		(void)ret; // we really don't care!
+		platform::runHelper("arx-install-data", "--gui");
 		#endif
 		
 		// Construct an informative error message about missing files
