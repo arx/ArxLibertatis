@@ -53,7 +53,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "audio/AudioBackend.h"
 #include "audio/AudioSource.h"
 #include "audio/AudioEnvironment.h"
-#ifdef ARX_HAVE_OPENAL
+#if ARX_HAVE_OPENAL
 	#include "audio/openal/OpenALBackend.h"
 #endif
 
@@ -87,7 +87,7 @@ aalError init(const string & backendName, bool enableEAX) {
 		
 		bool matched = false;
 		
-		#ifdef ARX_HAVE_OPENAL
+		#if ARX_HAVE_OPENAL
 		if(!backend && first == (autoBackend || backendName == "OpenAL")) {
 			matched = true;
 			LogDebug("initializing OpenAL backend");
@@ -106,7 +106,7 @@ aalError init(const string & backendName, bool enableEAX) {
 		}
 	}
 	
-	#if !defined(ARX_HAVE_OPENAL)
+	#if !ARX_HAVE_OPENAL
 	ARX_UNUSED(autoBackend), ARX_UNUSED(enableEAX);
 	#endif
 	

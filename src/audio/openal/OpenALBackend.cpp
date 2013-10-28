@@ -42,7 +42,7 @@ class Sample;
 #define ALError LogError
 
 OpenALBackend::OpenALBackend() : device(NULL), context(NULL),
-#ifdef ARX_HAVE_OPENAL_EFX
+#if ARX_HAVE_OPENAL_EFX
 	hasEFX(false), effectEnabled(false),
 #endif
 	rolloffFactor(1.f) {
@@ -95,7 +95,7 @@ aalError OpenALBackend::init(bool enableEffects) {
 	}
 	alcMakeContextCurrent(context);
 	
-#ifdef ARX_HAVE_OPENAL_EFX
+#if ARX_HAVE_OPENAL_EFX
 	hasEFX = enableEffects && alcIsExtensionPresent(device, "ALC_EXT_EFX");
 	if(enableEffects && !hasEFX) {
 		LogWarning << "Cannot enable effects, missing the EFX extension";
@@ -117,7 +117,7 @@ aalError OpenALBackend::init(bool enableEffects) {
 	const ALchar * renderer = alGetString(AL_RENDERER);
 	const ALchar * version = alGetString(AL_VERSION);
 	const char * efx_ver;
-#ifdef ARX_HAVE_OPENAL_EFX
+#if ARX_HAVE_OPENAL_EFX
 	if(hasEFX) {
 		efx_ver = " with EFX";
 	}
@@ -258,7 +258,7 @@ Backend::source_iterator OpenALBackend::deleteSource(source_iterator it) {
 
 aalError OpenALBackend::setUnitFactor(float factor) {
 	
-#ifdef ARX_HAVE_OPENAL_EFX
+#if ARX_HAVE_OPENAL_EFX
 	if(hasEFX) {
 		alListenerf(AL_METERS_PER_UNIT, factor);
 		AL_CHECK_ERROR("setting unit factor")
@@ -279,7 +279,7 @@ aalError OpenALBackend::setUnitFactor(float factor) {
 	return AAL_OK;
 }
 
-#ifdef ARX_HAVE_OPENAL_EFX
+#if ARX_HAVE_OPENAL_EFX
 
 aalError OpenALBackend::setReverbEnabled(bool enable) {
 	
@@ -329,7 +329,7 @@ aalError OpenALBackend::setEffect(ALenum type, float val) {
 	return AAL_OK;
 }
 
-#else // ARX_HAVE_OPENAL_EFX
+#else // !ARX_HAVE_OPENAL_EFX
 
 aalError OpenALBackend::setReverbEnabled(bool enable) {
 	ARX_UNUSED(enable);
@@ -346,6 +346,6 @@ aalError OpenALBackend::setListenerEnvironment(const Environment & env) {
 	return AAL_ERROR_SYSTEM;
 }
 
-#endif // ARX_HAVE_OPENAL_EFX
+#endif // !ARX_HAVE_OPENAL_EFX
 
 } // namespace audio

@@ -9,8 +9,8 @@
 #cmakedefine01 ARX_HAVE_PTHREAD_SET_NAME_NP
 
 // Audio backend
-#cmakedefine ARX_HAVE_OPENAL
-#cmakedefine ARX_HAVE_OPENAL_EFX
+#cmakedefine01 ARX_HAVE_OPENAL
+#cmakedefine01 ARX_HAVE_OPENAL_EFX
 
 // Renderer backend
 #cmakedefine ARX_HAVE_OPENGL

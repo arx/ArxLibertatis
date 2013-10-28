@@ -1104,7 +1104,7 @@ bool Menu2_Render() {
 						
 						slider->AddText(new CMenuElementText(-1, hFontMenu, "Auto-Select", 0, 0, lColor, 1.f, OPTIONS_AUDIO_BACKEND_AUTOMATIC));
 						slider->iPos = slider->vText.size() - 1;
-#ifdef ARX_HAVE_OPENAL
+#if ARX_HAVE_OPENAL
 						slider->AddText(new CMenuElementText(-1, hFontMenu, "OpenAL", 0, 0, lColor, 1.f, OPTIONS_AUDIO_BACKEND_OPENAL));
 						if(config.audio.backend == "OpenAL") {
 							slider->iPos = slider->vText.size() - 1;
