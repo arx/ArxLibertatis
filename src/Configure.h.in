@@ -24,6 +24,9 @@
 #cmakedefine01 ARX_HAVE_READLINK
 #cmakedefine01 ARX_HAVE_OPEN
 #cmakedefine01 ARX_HAVE_DUP2
+#cmakedefine01 ARX_HAVE_PIPE
+#cmakedefine01 ARX_HAVE_READ
+#cmakedefine01 ARX_HAVE_CLOSE
 #cmakedefine01 ARX_HAVE_ISATTY
 #cmakedefine01 ARX_HAVE_FPATHCONF
 #cmakedefine01 ARX_HAVE_PATHCONF

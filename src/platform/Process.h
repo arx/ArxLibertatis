@@ -20,9 +20,9 @@
 #ifndef ARX_PLATFORM_PROCESS_H
 #define ARX_PLATFORM_PROCESS_H
 
-#include <string>
+#include "platform/Platform.h"
 
-namespace fs { class path; }
+#include <string>
 
 namespace platform {
 
@@ -36,7 +36,7 @@ namespace platform {
  *
  * @return the programs exit code or a negative value on error.
  */
-int run(const fs::path & exe, const char * const args[]);
+int run(const std::string & exe, const char * const args[]);
 
 /*!
  * Start another executable without waiting for it to finish.
@@ -46,7 +46,21 @@ int run(const fs::path & exe, const char * const args[]);
  * @param args program arguments. The first arguments should be the program name/path and
  *             the last argument should be NULL.
  */
-void runAsync(const fs::path & exe, const char * const args[]);
+void runAsync(const std::string & exe, const char * const args[]);
+
+#if ARX_PLATFORM != ARX_PLATFORM_WIN32
+/*!
+ * Start another executable without waiting for it to finish.
+ * The executable's standard output is retuned, standard error is discarded.
+ *
+ * @param exe  the program to run, either an absolute path or a program name in the PATH.
+ * @param args program arguments. The first arguments should be the program name/path and
+ *             the last argument should be NULL.
+ * @param unlocalized true if localization environment varuables should be reset.
+ */
+std::string getOutputOf(const std::string & exe, const char * const args[],
+                        bool unlocalized = false);
+#endif
 
 /*!
  * Equivalent to
