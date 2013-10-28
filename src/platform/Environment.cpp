@@ -40,7 +40,7 @@
 #include <wordexp.h>
 #endif
 
-#if defined(ARX_HAVE_OPEN) && ARX_HAVE_DUP2
+#if ARX_HAVE_OPEN && ARX_HAVE_DUP2
 #include <fcntl.h>
 #endif
 
@@ -428,7 +428,7 @@ static int run(const fs::path & exe, bool wait, const char * const args[]) {
 	
 #else
 	
-	#if defined(ARX_HAVE_OPEN)
+	#if ARX_HAVE_OPEN
 	static int dev_null = open("/dev/null", O_RDWR);
 	#endif
 	
@@ -440,7 +440,7 @@ static int run(const fs::path & exe, bool wait, const char * const args[]) {
 	
 	// Redirect standard input, output and error to /dev/null
 	static posix_spawn_file_actions_t * file_actionsp = NULL;
-	#if defined(ARX_HAVE_OPEN) && defined(ARX_HAVE_CLOSE)
+	#if ARX_HAVE_OPEN
 	static posix_spawn_file_actions_t file_actions;
 	if(!file_actionsp && dev_null > 0 && !posix_spawn_file_actions_init(&file_actions)) {
 		file_actionsp = &file_actions;
@@ -472,7 +472,7 @@ static int run(const fs::path & exe, bool wait, const char * const args[]) {
 	if(pid == 0) {
 		
 		// Redirect standard input, output and error to /dev/null
-		#if defined(ARX_HAVE_OPEN) && ARX_HAVE_DUP2 && defined(ARX_HAVE_CLOSE)
+		#if ARX_HAVE_OPEN && ARX_HAVE_DUP2
 		if(dev_null > 0) {
 			(void)dup2(dev_null, 0);
 			(void)dup2(dev_null, 1);
