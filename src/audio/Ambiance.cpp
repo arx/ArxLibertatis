@@ -70,7 +70,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 using std::string;
 
-#ifdef UNITY_BUILD
+#if UNITY_BUILD
 // GCC complains if a type from an anonymous namespace
 // is used in a file that isn't the main source file
 #define ANONYMOUS_NAMESPACE extern "C++"

@@ -61,6 +61,6 @@
 #cmakedefine BUILD_EDIT_LOADSAVE
 
 // Build system
-#cmakedefine UNITY_BUILD
+#cmakedefine01 UNITY_BUILD
 
 #endif // ARX_CONFIGURE_H
