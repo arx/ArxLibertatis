@@ -149,7 +149,7 @@ bool copy_file(const path & from_p, const path & to_p, bool overwrite) {
 bool rename(const path & old_p, const path & new_p, bool overwrite) {
 	
 	if(!overwrite && exists(new_p)) {
-#if ARX_HAVE_PATHCONF && defined(ARX_HAVE_PC_CASE_SENSITIVE)
+#if ARX_HAVE_PATHCONF && ARX_HAVE_PC_CASE_SENSITIVE
 		if(boost::to_lower_copy(old_p.string()) == boost::to_lower_copy(new_p.string())) {
 			if(pathconf(old_p.string().c_str(), _PC_CASE_SENSITIVE)) {
 				return false; // filesystem is case-sensitive and destination file already exists
