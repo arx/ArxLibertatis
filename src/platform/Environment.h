@@ -41,6 +41,8 @@ void defineSystemDirectories(const char * argv0);
 //! Get the path to the current running executable if possible or an empty string otherwise.
 fs::path getExecutablePath();
 
+namespace platform {
+
 /*!
  * Get the full path to a helper executable
  *
@@ -52,8 +54,6 @@ fs::path getExecutablePath();
  * @return a path or name suitable for CreateProcess(), execlp() or system() calls.
  */
 fs::path getHelperExecutable(const std::string & name);
-
-namespace platform {
 
 /*!
  * Start another executable and wait for it to finish.

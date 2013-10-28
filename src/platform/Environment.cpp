@@ -361,6 +361,8 @@ fs::path getExecutablePath() {
 	return fs::path();
 }
 
+namespace platform {
+
 fs::path getHelperExecutable(const std::string & name) {
 	
 	fs::path exe = getExecutablePath();
@@ -387,8 +389,6 @@ fs::path getHelperExecutable(const std::string & name) {
 	
 	return fs::path(name);
 }
-
-namespace platform {
 
 static int run(const fs::path & exe, bool wait, const char * const args[]) {
 	

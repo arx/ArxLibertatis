@@ -44,7 +44,7 @@ bool CrashHandlerImpl::initialize() {
 	
 	bool initialized = true;
 	
-	m_CrashHandlerPath = getHelperExecutable(m_CrashHandlerApp);
+	m_CrashHandlerPath = platform::getHelperExecutable(m_CrashHandlerApp);
 	
 	if(!createSharedMemory()) {
 		return false;
