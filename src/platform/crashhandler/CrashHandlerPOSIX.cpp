@@ -21,7 +21,7 @@
 
 #include "Configure.h"
 
-#ifdef ARX_HAVE_BACKTRACE
+#if ARX_HAVE_BACKTRACE
 #include <execinfo.h>
 #endif
 
@@ -210,7 +210,7 @@ void CrashHandlerPOSIX::handleCrash(int signal, int code) {
 	m_pCrashInfo->code = code;
 	
 	// Store the backtrace in the shared crash info
-	#ifdef ARX_HAVE_BACKTRACE
+	#if ARX_HAVE_BACKTRACE
 		backtrace(m_pCrashInfo->backtrace, ARRAY_SIZE(m_pCrashInfo->backtrace));
 	#endif
 	

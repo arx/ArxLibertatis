@@ -431,7 +431,7 @@ bool ErrorReport::getCrashDescription() {
 		return false;
 	}
 	
-#ifdef ARX_HAVE_BACKTRACE
+#if ARX_HAVE_BACKTRACE
 	
 	boost::crc_32_type callstackCRC32;
 	
@@ -445,7 +445,7 @@ bool ErrorReport::getCrashDescription() {
 	u32 callstackCrc = callstackCRC32.checksum();
 	m_ReportUniqueID = QString("[%1]").arg(QString::number(callstackCrc, 16).toUpper());
 	
-#endif // ARX_HAVE_BACKTRACE
+#endif
 	
 	QFile traceFile(tracePath.string().c_str());
 	traceFile.open(QIODevice::ReadOnly);
