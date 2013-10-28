@@ -25,7 +25,7 @@
 
 namespace Time {
 
-#if defined(ARX_HAVE_CLOCK_GETTIME)
+#if ARX_HAVE_CLOCK_GETTIME
 
 #include <time.h>
 
