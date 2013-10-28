@@ -37,7 +37,7 @@
 #endif
 
 // yes, we need stdio.h, POSIX doesn't know about cstdio
-#ifdef ARX_HAVE_POPEN
+#if ARX_HAVE_POPEN
 #include <stdio.h>
 #endif
 
@@ -201,7 +201,7 @@ std::string getOSArchitecture() {
 
 #if ARX_PLATFORM == ARX_PLATFORM_LINUX
 
-#if defined(ARX_HAVE_POPEN) && defined(ARX_HAVE_PCLOSE)
+#if ARX_HAVE_POPEN && ARX_HAVE_PCLOSE
 
 static std::string getOutputOf(const char * command) {
 	FILE * pipe = popen(command, "r");
@@ -336,7 +336,7 @@ std::string getOSDistribution() {
 	// Get distribution information from `lsb_release -a` output.
 	// Don't parse /etc/lsb-release ourselves unless there is no other way
 	// because lsb_release may have distro-specific patches
-	#if defined(ARX_HAVE_POPEN) && defined(ARX_HAVE_PCLOSE)
+	#if ARX_HAVE_POPEN && ARX_HAVE_PCLOSE
 	{
 		std::istringstream iss(getOutputOf("lsb_release -a"));
 		const char * keys[] = { "Description", "Distributor ID", "Release", "(Codename" };

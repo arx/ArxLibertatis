@@ -46,8 +46,8 @@
 #cmakedefine01 ARX_HAVE_WORDEXP
 #cmakedefine01 ARX_HAVE_UNAME
 #cmakedefine01 ARX_HAVE_GETRUSAGE
-#cmakedefine ARX_HAVE_POPEN
-#cmakedefine ARX_HAVE_PCLOSE
+#cmakedefine01 ARX_HAVE_POPEN
+#cmakedefine01 ARX_HAVE_PCLOSE
 #cmakedefine ARX_HAVE_SYSCONF
 #cmakedefine ARX_HAVE_SIGACTION
 #cmakedefine ARX_HAVE_DIRFD
