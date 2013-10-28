@@ -74,18 +74,41 @@ extern Vec3f SPRmaxs;
 extern TextureContainer * Boom;
 
 std::vector<POLYBOOM> polyboom(MAX_POLYBOOM);
+std::vector<TexturedVertex> g_shadowBatch;
 
 extern Color ulBKGColor;
 
 void EE_RT2(TexturedVertex*,TexturedVertex*);
+void EE_P(Vec3f * in, TexturedVertex * out);
+
+void AddToShadowBatch(TexturedVertex * _pVertex1, TexturedVertex * _pVertex2, TexturedVertex * _pVertex3) {
+
+	TexturedVertex pPointAdd[3];
+	EE_P(&_pVertex1->p, &pPointAdd[0]);
+	EE_P(&_pVertex2->p, &pPointAdd[1]);
+	EE_P(&_pVertex3->p, &pPointAdd[2]);
+	pPointAdd[0].color = _pVertex1->color;
+	pPointAdd[0].specular = _pVertex1->specular;
+	pPointAdd[0].uv = _pVertex1->uv;
+	pPointAdd[1].color = _pVertex2->color;
+	pPointAdd[1].specular = _pVertex2->specular;
+	pPointAdd[1].uv = _pVertex2->uv;
+	pPointAdd[2].color = _pVertex3->color;
+	pPointAdd[2].specular = _pVertex3->specular;
+	pPointAdd[2].uv = _pVertex3->uv;
+
+	g_shadowBatch.push_back(pPointAdd[0]);
+	g_shadowBatch.push_back(pPointAdd[1]);
+	g_shadowBatch.push_back(pPointAdd[2]);
+}
 
 void ARXDRAW_DrawInterShadows()
 {	
+	g_shadowBatch.resize(0);
+
 	GRenderer->SetFogColor(Color::none);
 	SetZBias(1);
 
-	long first=1;
-	
 	for(long i=0; i<TREATZONE_CUR; i++) {
 		if(treatio[i].show != 1 || !treatio[i].io)
 			continue;
@@ -132,14 +155,6 @@ void ARXDRAW_DrawInterShadows()
 						long lv = r;
 						ltv[0].color=ltv[1].color=ltv[2].color=ltv[3].color=0xFF000000 | lv<<16 | lv<<8 | lv;
 
-						if(first) {
-							first=0;
-							GRenderer->SetRenderState(Renderer::DepthWrite, false);
-							GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
-							GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-							GRenderer->SetTexture(0, Boom);
-						}
-
 						EE_RT2(&in,&ltv[0]);
 						in.p.x+=s1;
 						EE_RT2(&in,&ltv[1]);
@@ -149,8 +164,8 @@ void ARXDRAW_DrawInterShadows()
 						EE_RT2(&in,&ltv[3]);
 
 						if(ltv[0].p.z > 0.f && ltv[1].p.z > 0.f && ltv[2].p.z > 0.f) {
-							ARX_DrawPrimitive(&ltv[0], &ltv[1], &ltv[2], 50.0f);
-							ARX_DrawPrimitive(&ltv[0], &ltv[2], &ltv[3], 50.0f);
+							AddToShadowBatch(&ltv[0], &ltv[1], &ltv[2]);
+							AddToShadowBatch(&ltv[0], &ltv[2], &ltv[3]);
 						}
 					}
 				}
@@ -176,15 +191,7 @@ void ARXDRAW_DrawInterShadows()
 						r*=255.f;
 						long lv = r;
 						ltv[0].color=ltv[1].color=ltv[2].color=ltv[3].color=0xFF000000 | lv<<16 | lv<<8 | lv;
-
-						if(first) {
-							first=0;
-							GRenderer->SetRenderState(Renderer::DepthWrite, false);
-							GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
-							GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-							GRenderer->SetTexture(0, Boom);
-						}
-
+												
 						EE_RT2(&in,&ltv[0]);
 						in.p.x+=s1;
 						EE_RT2(&in,&ltv[1]);
@@ -193,8 +200,8 @@ void ARXDRAW_DrawInterShadows()
 						in.p.x-=s1;
 						EE_RT2(&in,&ltv[3]);
 
-						ARX_DrawPrimitive(&ltv[0], &ltv[1], &ltv[2]);
-						ARX_DrawPrimitive(&ltv[0], &ltv[2], &ltv[3]);
+						AddToShadowBatch(&ltv[0], &ltv[1], &ltv[2]);
+						AddToShadowBatch(&ltv[0], &ltv[2], &ltv[3]);
 					}
 				}
 			}
@@ -202,10 +209,20 @@ void ARXDRAW_DrawInterShadows()
 
 	}
 
-	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-	GRenderer->SetRenderState(Renderer::DepthWrite, true);
-	SetZBias(0);
-	GRenderer->SetFogColor(ulBKGColor);
+	if(g_shadowBatch.size() > 0)
+	{
+		GRenderer->SetRenderState(Renderer::DepthWrite, false);
+		GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
+		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+		GRenderer->SetTexture(0, Boom);
+
+		EERIEDRAWPRIM(Renderer::TriangleList, &g_shadowBatch[0], g_shadowBatch.size());
+
+		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+		GRenderer->SetRenderState(Renderer::DepthWrite, true);
+		SetZBias(0);
+		GRenderer->SetFogColor(ulBKGColor);
+	}	
 }
 
 extern Entity * CAMERACONTROLLER;
