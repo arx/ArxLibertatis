@@ -195,7 +195,7 @@ path current_path() {
 	
 }
 
-#if defined(ARX_HAVE_DIRFD) && defined(ARX_HAVE_FSTATAT)
+#if ARX_HAVE_DIRFD && defined(ARX_HAVE_FSTATAT)
 
 #define ITERATOR_HANDLE(handle)
 
@@ -271,9 +271,8 @@ directory_iterator::directory_iterator(const path & p) : buf(NULL) {
 		
 		// Allocate a large enough buffer for readdir_r.
 		long name_max;
-#if ((defined(ARX_HAVE_DIRFD) && ARX_HAVE_FPATHCONF) || ARX_HAVE_PATHCONF) \
-		&& ARX_HAVE_PC_NAME_MAX
-#  if defined(ARX_HAVE_DIRFD) && ARX_HAVE_FPATHCONF
+#if ((ARX_HAVE_DIRFD && ARX_HAVE_FPATHCONF) || ARX_HAVE_PATHCONF) && ARX_HAVE_PC_NAME_MAX
+#  if ARX_HAVE_DIRFD && ARX_HAVE_FPATHCONF
 		name_max = fpathconf(dirfd(DIR_HANDLE(handle)), _PC_NAME_MAX);
 #  else
 		name_max = pathconf(p.string().c_str(), _PC_NAME_MAX);

@@ -30,6 +30,7 @@
 #cmakedefine01 ARX_HAVE_NAME_MAX
 #cmakedefine01 ARX_HAVE_PC_NAME_MAX
 #cmakedefine01 ARX_HAVE_PC_CASE_SENSITIVE
+#cmakedefine01 ARX_HAVE_DIRFD
 
 // Audio backend
 #cmakedefine01 ARX_HAVE_OPENAL
@@ -50,7 +51,6 @@
 #cmakedefine01 ARX_HAVE_POPEN
 #cmakedefine01 ARX_HAVE_PCLOSE
 #cmakedefine01 ARX_HAVE_SYSCONF
-#cmakedefine ARX_HAVE_DIRFD
 #cmakedefine ARX_HAVE_FSTATAT
 #cmakedefine ARX_HAVE_GETCWD
 #cmakedefine ARX_HAVE_GETEXECNAME
