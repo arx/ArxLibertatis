@@ -168,7 +168,7 @@ bool rename(const path & old_p, const path & new_p, bool overwrite) {
 path current_path() {
 	
 	size_t intitial_length = 1024;
-#if ARX_HAVE_PATHCONF && defined(ARX_HAVE_PC_NAME_MAX)
+#if ARX_HAVE_PATHCONF && ARX_HAVE_PC_NAME_MAX
 	size_t path_max = pathconf(".", _PC_PATH_MAX);
 	if(path_max <= 0) {
 		intitial_length = 1024;
@@ -272,7 +272,7 @@ directory_iterator::directory_iterator(const path & p) : buf(NULL) {
 		// Allocate a large enough buffer for readdir_r.
 		long name_max;
 #if ((defined(ARX_HAVE_DIRFD) && ARX_HAVE_FPATHCONF) || ARX_HAVE_PATHCONF) \
-		&& defined(ARX_HAVE_PC_NAME_MAX)
+		&& ARX_HAVE_PC_NAME_MAX
 #  if defined(ARX_HAVE_DIRFD) && ARX_HAVE_FPATHCONF
 		name_max = fpathconf(dirfd(DIR_HANDLE(handle)), _PC_NAME_MAX);
 #else

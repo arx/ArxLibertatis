@@ -25,6 +25,7 @@
 #cmakedefine01 ARX_HAVE_ISATTY
 #cmakedefine01 ARX_HAVE_FPATHCONF
 #cmakedefine01 ARX_HAVE_PATHCONF
+#cmakedefine01 ARX_HAVE_PC_NAME_MAX
 
 // Audio backend
 #cmakedefine01 ARX_HAVE_OPENAL
@@ -40,7 +41,6 @@
 // Misc POSIX / Linux features
 #cmakedefine01 ARX_HAVE_BACKTRACE
 #cmakedefine01 ARX_HAVE_WORDEXP
-#cmakedefine ARX_HAVE_PC_NAME_MAX
 #cmakedefine ARX_HAVE_PC_CASE_SENSITIVE
 #cmakedefine ARX_HAVE_NAME_MAX
 #cmakedefine ARX_HAVE_SCHED_GETSCHEDULER
