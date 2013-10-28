@@ -118,7 +118,6 @@ static void PopOneTriangleList(TextureContainer *_pTex) {
 		return;
 	}
 
-	GRenderer->SetCulling(Renderer::CullNone);
 	GRenderer->SetTexture(0, _pTex);
 
 	if(_pTex->userflags & POLY_LATE_MIP) {
@@ -147,7 +146,6 @@ static void PopOneTriangleListTransparency(TextureContainer *_pTex) {
 		return;
 	}
 
-	GRenderer->SetCulling(Renderer::CullNone);
 	GRenderer->SetTexture(0, _pTex);
 
 	if(_pTex->count[TextureContainer::Blended]) {
@@ -189,6 +187,8 @@ static void PopOneTriangleListTransparency(TextureContainer *_pTex) {
 
 void PopAllTriangleList() {
 	GRenderer->SetAlphaFunc(Renderer::CmpGreater, .5f);
+	GRenderer->SetCulling(Renderer::CullNone);
+
 	TextureContainer * pTex = GetTextureList();
 	while(pTex) {
 		PopOneTriangleList(pTex);
@@ -246,6 +246,8 @@ void PopAllTriangleListTransparency() {
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendOne);
 	GRenderer->SetAlphaFunc(Renderer::CmpGreater, .5f);
+
+	GRenderer->SetCulling(Renderer::CullNone);
 
 	PopOneTriangleList(&TexSpecialColor);
 
