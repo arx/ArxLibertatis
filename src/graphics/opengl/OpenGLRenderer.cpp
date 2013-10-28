@@ -606,7 +606,7 @@ void OpenGLRenderer::drawIndexed(Primitive primitive, const TexturedVertex * ver
 	
 	if(useVertexArrays && shader) {
 		
-		glBindBuffer(GL_ARRAY_BUFFER, GL_NONE);
+		bindBuffer(GL_NONE);
 		
 		setVertexArray(vertices, vertices);
 		

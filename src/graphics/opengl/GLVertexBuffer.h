@@ -37,6 +37,8 @@ enum GLArrayClientState {
 	GL_SMY_VERTEX3
 };
 
+void bindBuffer(GLuint buffer);
+void unbindBuffer(GLuint buffer);
 void setVertexArrayTexCoord(int index, const void * coord, size_t stride);
 bool switchVertexArray(GLArrayClientState type, const void * ref, int texcount);
 
@@ -121,7 +123,7 @@ public:
 		
 		arx_assert(buffer != GL_NONE);
 		
-		glBindBuffer(GL_ARRAY_BUFFER, buffer);
+		bindBuffer(buffer);
 		glBufferData(GL_ARRAY_BUFFER, capacity * sizeof(Vertex), NULL, arxToGlBufferUsage[usage]);
 		
 		CHECK_GL;
@@ -132,7 +134,7 @@ public:
 		
 		arx_assert(offset + count <= capacity());
 		
-		glBindBuffer(GL_ARRAY_BUFFER, buffer);
+		bindBuffer(buffer);
 		
 		if(GLEW_ARB_map_buffer_range && count != 0) {
 			
@@ -180,7 +182,7 @@ public:
 	Vertex * lock(BufferFlags flags, size_t offset, size_t count) {
 		ARX_UNUSED(flags);
 		
-		glBindBuffer(GL_ARRAY_BUFFER, buffer);
+		bindBuffer(buffer);
 		
 		Vertex * buf;
 		
@@ -225,7 +227,7 @@ public:
 	
 	void unlock() {
 		
-		glBindBuffer(GL_ARRAY_BUFFER, buffer);
+		bindBuffer(buffer);
 		
 		GLboolean ret = glUnmapBuffer(GL_ARRAY_BUFFER);
 		
@@ -243,7 +245,7 @@ public:
 		
 		renderer->beforeDraw<Vertex>();
 		
-		glBindBuffer(GL_ARRAY_BUFFER, buffer);
+		bindBuffer(buffer);
 		
 		setVertexArray<Vertex>(NULL, this);
 		
@@ -259,7 +261,7 @@ public:
 		
 		renderer->beforeDraw<Vertex>();
 		
-		glBindBuffer(GL_ARRAY_BUFFER, buffer);
+		bindBuffer(buffer);
 		
 		setVertexArray<Vertex>(NULL, this);
 		
@@ -294,7 +296,7 @@ public:
 	}
 	
 	~GLVertexBuffer() {
-		
+		unbindBuffer(buffer);
 		glDeleteBuffers(1, &buffer);
 		CHECK_GL;
 	};

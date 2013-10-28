@@ -22,6 +22,7 @@
 static GLArrayClientState glArrayClientState = GL_NoArray;
 static const void * glArrayClientStateRef = NULL;
 static int glArrayClientStateTexCount = 0;
+static GLuint glBoundBuffer = GL_NONE;
 
 std::vector<GLushort> glShortIndexBuffer;
 std::vector<GLuint> glIntIndexBuffer;
@@ -52,4 +53,17 @@ bool switchVertexArray(GLArrayClientState type, const void * ref, int texcount) 
 	glArrayClientStateRef = ref;
 
 	return true;
+}
+
+void bindBuffer(GLuint buffer) {
+	if(buffer != glBoundBuffer) {
+		glBoundBuffer = buffer;
+		glBindBuffer(GL_ARRAY_BUFFER, glBoundBuffer);
+	}
+}
+
+void unbindBuffer(GLuint buffer) {
+	if (buffer == glBoundBuffer) {
+		bindBuffer(GL_NONE);
+	}
 }
