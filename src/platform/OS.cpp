@@ -45,6 +45,7 @@
 #include "io/fs/Filesystem.h"
 #include "io/fs/FileStream.h"
 #include "platform/Architecture.h"
+#include "platform/Process.h"
 #include "util/String.h"
 
 namespace platform {
@@ -201,26 +202,6 @@ std::string getOSArchitecture() {
 
 #if ARX_PLATFORM == ARX_PLATFORM_LINUX
 
-#if ARX_HAVE_POPEN && ARX_HAVE_PCLOSE
-
-static std::string getOutputOf(const char * command) {
-	FILE * pipe = popen(command, "r");
-	if(!pipe) {
-		return std::string();
-	}
-	char buffer[1024];
-	std::string result;
-	while(!feof(pipe)) {
-		if(size_t count = fread(buffer, 1, ARRAY_SIZE(buffer), pipe)) {
-			result.append(buffer, count);
-		}
-	}
-	pclose(pipe);
-	return result;
-}
-
-#endif
-
 
 /*!
  * Parse key-value pairs from /etc/os-release or `lsb_release -a` to form a
@@ -338,7 +319,8 @@ std::string getOSDistribution() {
 	// because lsb_release may have distro-specific patches
 	#if ARX_HAVE_POPEN && ARX_HAVE_PCLOSE
 	{
-		std::istringstream iss(getOutputOf("lsb_release -a"));
+		const char * args[] = { "lsb_release", "-a", NULL };
+		std::istringstream iss(getOutputOf("lsb_release", args));
 		const char * keys[] = { "Description", "Distributor ID", "Release", "(Codename" };
 		std::string distro = parseDistributionName(iss, ':', keys, ARRAY_SIZE(keys));
 		if(!distro.empty()) {
