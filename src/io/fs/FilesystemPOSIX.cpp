@@ -271,9 +271,9 @@ directory_iterator::directory_iterator(const path & p) : buf(NULL) {
 		
 		// Allocate a large enough buffer for readdir_r.
 		long name_max;
-#if ((defined(ARX_HAVE_DIRFD) && defined(ARX_HAVE_FPATHCONF)) || defined(ARX_HAVE_PATHCONF)) \
+#if ((defined(ARX_HAVE_DIRFD) && ARX_HAVE_FPATHCONF) || defined(ARX_HAVE_PATHCONF)) \
 		&& defined(ARX_HAVE_PC_NAME_MAX)
-#  if defined(ARX_HAVE_DIRFD) && defined(ARX_HAVE_FPATHCONF)
+#  if defined(ARX_HAVE_DIRFD) && ARX_HAVE_FPATHCONF
 		name_max = fpathconf(dirfd(DIR_HANDLE(handle)), _PC_NAME_MAX);
 #else
 		name_max = pathconf(p.string().c_str(), _PC_NAME_MAX);
