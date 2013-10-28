@@ -48,7 +48,7 @@
 #include <unistd.h>
 #endif
 
-#if defined(ARX_HAVE_POSIX_SPAWNP)
+#if ARX_HAVE_POSIX_SPAWNP
 #include <spawn.h>
 extern char ** environ;
 #endif
@@ -434,7 +434,7 @@ static int run(const fs::path & exe, bool wait, const char * const args[]) {
 	
 	char ** argv = const_cast<char **>(args);
 	
-#if defined(ARX_HAVE_POSIX_SPAWNP) && 0
+#if ARX_HAVE_POSIX_SPAWNP
 	
 	// Fast POSIX implementation: posix_spawnp avoids unnecessary vm copies
 	
