@@ -37,11 +37,6 @@ bool fartherThan(const V & a, const V & b, typename V::value_type d) {
 }
 
 template <class V>
-V cross(const V & a, const V & b) {
-	return glm::cross(a, b);
-}
-
-template <class V>
 typename V::value_type dot(const V & a, const V & b) {
 	return glm::dot(a, b);
 }

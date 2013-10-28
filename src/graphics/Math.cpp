@@ -886,7 +886,7 @@ void MatrixSetByVectors(EERIEMATRIX * m, const Vec3f * d, const Vec3f * u)
 	U.y -= D.y * t;
 	U.z -= D.y * t; // TODO is this really supposed to be D.y?
 	U = glm::normalize(U);
-	R = cross(U, D);
+	R = glm::cross(U, D);
 	m->_11 = R.x;
 	m->_12 = R.y;
 	m->_21 = U.x;
@@ -915,10 +915,10 @@ void GenerateMatrixUsingVector(EERIEMATRIX * matrix, const Vec3f * vect, float r
 		yAxis = Vec3f(0.f, 1.f, 0.f);
 
 	// Build the X axis vector based on the two existing vectors
-	Vec3f xAxis = glm::normalize(cross(yAxis, zAxis));
+	Vec3f xAxis = glm::normalize(glm::cross(yAxis, zAxis));
 
 	// Correct the Y reference vector
-	yAxis = glm::normalize(cross(xAxis, zAxis));
+	yAxis = glm::normalize(glm::cross(xAxis, zAxis));
 	yAxis = -yAxis;
 
 	// Generate rotation matrix without roll included

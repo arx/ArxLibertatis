@@ -91,7 +91,7 @@ void Util_SetViewMatrix(EERIEMATRIX &mat, EERIE_TRANSFORM &transform) {
 
 	// The x basis vector is found simply with the cross product of the y
 	// and z basis vectors
-	Vec3f vRight = cross(vUp, vView);
+	Vec3f vRight = glm::cross(vUp, vView);
 
 	// Start building the matrix. The first three rows contains the basis
 	// vectors used to rotate the view to point at the lookat point
