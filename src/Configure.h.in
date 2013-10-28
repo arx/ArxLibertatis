@@ -9,6 +9,7 @@
 #cmakedefine01 ARX_HAVE_PTHREAD_SET_NAME_NP
 #cmakedefine01 ARX_HAVE_NANOSLEEP
 #cmakedefine01 ARX_HAVE_FORK
+#cmakedefine01 ARX_HAVE_SETPGRP
 
 // Time
 #cmakedefine01 ARX_HAVE_CLOCK_GETTIME
@@ -31,7 +32,6 @@
 #cmakedefine01 ARX_HAVE_CRASHHANDLER_WINDOWS
 
 // POSIX / Linux features
-#cmakedefine ARX_HAVE_SETPGRP
 #cmakedefine ARX_HAVE_EXECLP
 #cmakedefine ARX_HAVE_EXECVP
 #cmakedefine ARX_HAVE_POSIX_SPAWNP

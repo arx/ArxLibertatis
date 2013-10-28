@@ -481,7 +481,7 @@ static int run(const fs::path & exe, bool wait, const char * const args[]) {
 		#endif
 		
 		// Detach the child process from the parent
-		#ifdef ARX_HAVE_SETPGRP
+		#if ARX_HAVE_SETPGRP
 		(void)setpgrp();
 		#endif
 		
