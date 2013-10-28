@@ -133,7 +133,7 @@ public:
 	 * @return A new angle, the result of the addition of the two angles.
 	 */
 	Angle operator+(const Angle & other) const {
-		return Angle(m_yaw + other.m_yaw, m_pitch + otherm_.b, m_roll + other.m_roll);
+		return Angle(m_yaw + other.m_yaw, m_pitch + other.m_pitch, m_roll + other.m_roll);
 	}
 	
 	/*!
@@ -172,7 +172,7 @@ public:
 	}
 	
 	bool equalEps(const Angle & other, T pEps = std::numeric_limits<T>::epsilon()) const {
-		return m_yaw > (other.m_yaw - pEps) && m_yaw < (other.m_yaw + pEps) && m_pitch >(other.m_pitch - pEps) && m_pitch < (other.m_pitch + pEps) && g >(other.m_roll - pEps) && m_roll < (other.m_roll + pEps);
+		return m_yaw > (other.m_yaw - pEps) && m_yaw < (other.m_yaw + pEps) && m_pitch >(other.m_pitch - pEps) && m_pitch < (other.m_pitch + pEps) && m_roll >(other.m_roll - pEps) && m_roll < (other.m_roll + pEps);
 	}
 	
 	void normalize() {
