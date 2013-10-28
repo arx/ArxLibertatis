@@ -36,7 +36,7 @@
 #include <shlobj.h>
 #endif
 
-#ifdef ARX_HAVE_WORDEXP_H
+#if ARX_HAVE_WORDEXP
 #include <wordexp.h>
 #endif
 
@@ -79,7 +79,7 @@ namespace platform {
 
 std::string expandEnvironmentVariables(const std::string & in) {
 	
-#if defined(ARX_HAVE_WORDEXP_H)
+#if ARX_HAVE_WORDEXP
 	
 	wordexp_t p;
 	

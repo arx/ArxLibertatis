@@ -438,7 +438,7 @@ if(NOT MSVC)
 		                    ARX_HAVE_MACH_CLOCK)
 	endif()
 	
-	check_include_file("wordexp.h" ARX_HAVE_WORDEXP_H)
+	check_symbol_exists(wordexp "wordexp.h" ARX_HAVE_WORDEXP)
 	
 	check_symbol_exists(open "fcntl.h" ARX_HAVE_OPEN)
 	

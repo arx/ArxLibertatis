@@ -12,7 +12,6 @@
 #cmakedefine01 ARX_HAVE_SETPGRP
 #cmakedefine01 ARX_HAVE_EXECVP
 #cmakedefine01 ARX_HAVE_POSIX_SPAWNP
-#cmakedefine01 ARX_HAVE_BACKTRACE
 #cmakedefine01 ARX_HAVE_WAITPID
 
 // Time
@@ -36,8 +35,9 @@
 #cmakedefine01 ARX_HAVE_CRASHHANDLER_POSIX
 #cmakedefine01 ARX_HAVE_CRASHHANDLER_WINDOWS
 
-// POSIX / Linux features
-#cmakedefine ARX_HAVE_WORDEXP_H
+// Misc POSIX / Linux features
+#cmakedefine01 ARX_HAVE_BACKTRACE
+#cmakedefine01 ARX_HAVE_WORDEXP
 #cmakedefine ARX_HAVE_FPATHCONF
 #cmakedefine ARX_HAVE_PATHCONF
 #cmakedefine ARX_HAVE_PC_NAME_MAX
