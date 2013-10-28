@@ -181,6 +181,8 @@ bool getSystemConfiguration(const std::string & name, std::string & result) {
 	return false;
 }
 
+namespace platform {
+
 #if ARX_PLATFORM == ARX_PLATFORM_MACOSX
 
 void defineSystemDirectories(const char * argv0) {
@@ -258,8 +260,6 @@ void defineSystemDirectories(const char * argv0) {
 }
 
 #endif
-
-namespace platform {
 
 #if defined(ARX_HAVE_READLINK) && ARX_PLATFORM != ARX_PLATFORM_MACOSX
 static bool try_readlink(std::vector<char> & buffer, const char * path) {

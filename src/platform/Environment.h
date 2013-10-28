@@ -36,9 +36,9 @@ std::string expandEnvironmentVariables(const std::string & in);
 
 bool getSystemConfiguration(const std::string & name, std::string & result);
 
-void defineSystemDirectories(const char * argv0);
-
 namespace platform {
+
+void defineSystemDirectories(const char * argv0);
 
 //! Get the path to the current running executable if possible or an empty string otherwise.
 fs::path getExecutablePath();

@@ -90,7 +90,7 @@ ARX_PROGRAM_OPTION("help", "h", "Show supported options", &handleHelpOption);
 
 static ExitStatus parseCommandLine(int argc, char ** argv) {
 	
-	defineSystemDirectories(argv[0]);
+	platform::defineSystemDirectories(argv[0]);
 	
 	// Register all program options in the command line interpreter
 	util::cmdline::interpreter<std::string> cli;
