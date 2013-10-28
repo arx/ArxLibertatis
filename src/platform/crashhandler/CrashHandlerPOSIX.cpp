@@ -226,21 +226,14 @@ void CrashHandlerPOSIX::handleCrash(int signal, int code) {
 		}
 	}
 	
-	char arguments[256];
-	strcpy(arguments, "-crashinfo=");
-	strcat(arguments, m_SharedMemoryName.c_str());
+	char argument[256];
+	strcpy(argument, "-crashinfo=");
+	strcat(argument, m_SharedMemoryName.c_str());
 	
-	// Try a the crash reporter in the same directory as arx or in the current directory.
-#ifdef ARX_HAVE_EXECL
-	if(!m_CrashHandlerPath.empty()) {
-		execl(m_CrashHandlerPath.string().c_str(), m_CrashHandlerPath.string().c_str(),
-		      arguments, NULL);
-	}
-#endif
-	
-	// Try a crash reporter in the system path.
+	// Try to execute the crash reporter
 #ifdef ARX_HAVE_EXECLP
-	execlp(m_CrashHandlerApp.c_str(), m_CrashHandlerApp.c_str(), arguments, NULL);
+	execlp(m_CrashHandlerPath.string().c_str(), m_CrashHandlerPath.string().c_str(),
+	       argument, NULL);
 #endif
 	
 	// Something went wrong - the crash reporter failed to start!

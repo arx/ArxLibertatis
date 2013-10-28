@@ -25,7 +25,6 @@
 
 #include "io/fs/Filesystem.h"
 #include "io/fs/FilePath.h"
-#include "io/fs/PathConstants.h"
 
 #include "math/Random.h"
 
@@ -45,25 +44,7 @@ bool CrashHandlerImpl::initialize() {
 	
 	bool initialized = true;
 	
-	fs::path local_path = getExecutablePath();
-	if(!local_path.empty()) {
-		local_path = local_path.parent() / m_CrashHandlerApp;
-		if(fs::exists(local_path)) {
-			m_CrashHandlerPath = local_path;
-		}
-	}
-	if(m_CrashHandlerPath.empty()) {
-		local_path = m_CrashHandlerApp;
-		if(fs::exists(local_path)) {
-			m_CrashHandlerPath = local_path;
-		}
-	}
-	if(fs::libexec_dir && m_CrashHandlerPath.empty()) {
-		local_path = fs::path(fs::libexec_dir) / m_CrashHandlerApp;
-		if(fs::exists(local_path)) {
-			m_CrashHandlerPath = local_path;
-		}
-	}
+	m_CrashHandlerPath = getHelperExecutable(m_CrashHandlerApp);
 	
 	if(!createSharedMemory()) {
 		return false;

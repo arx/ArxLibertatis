@@ -30,7 +30,6 @@
 #cmakedefine ARX_HAVE_FORK
 #cmakedefine ARX_HAVE_READLINK
 #cmakedefine ARX_HAVE_DUP2
-#cmakedefine ARX_HAVE_EXECL
 #cmakedefine ARX_HAVE_EXECLP
 #cmakedefine ARX_HAVE_WAITPID
 #cmakedefine ARX_HAVE_BACKTRACE

@@ -52,7 +52,9 @@
 #include <sys/sysctl.h>
 #endif
 
+#include "io/fs/PathConstants.h"
 #include "io/fs/FilePath.h"
+#include "io/fs/Filesystem.h"
 #include "platform/Platform.h"
 #include "util/String.h"
 
@@ -343,3 +345,29 @@ fs::path getExecutablePath() {
 	return fs::path();
 }
 
+fs::path getHelperExecutable(const std::string & name) {
+	
+	fs::path exe = getExecutablePath();
+	if(!exe.empty()) {
+		if(exe.is_relative()) {
+			exe = fs::current_path() / exe;
+		}
+		fs::path helper = exe.parent() / name;
+		if(fs::is_regular_file(helper)) {
+			return helper;
+		}
+		helper = exe.parent().parent() / name;
+		if(fs::is_regular_file(helper)) {
+			return helper;
+		}
+	}
+	
+	if(fs::libexec_dir) {
+		fs::path helper = fs::path(fs::libexec_dir) / name;
+		if(fs::is_regular_file(helper)) {
+			return helper;
+		}
+	}
+	
+	return fs::path(name);
+}
