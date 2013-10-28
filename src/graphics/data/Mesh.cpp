@@ -1024,7 +1024,7 @@ bool GetRoomCenter(long room_num, Vec3f * center) {
 		feg = &ACTIVEBKG->fastdata[room.epdata[lll].px][room.epdata[lll].py];
 		EERIEPOLY * ep = &feg->polydata[room.epdata[lll].idx];
 		bbox.min = glm::min(bbox.min, ep->center);
-		bbox.max = componentwise_max(bbox.max, ep->center);
+		bbox.max = glm::max(bbox.max, ep->center);
 	}
 	
 	*center = (bbox.max + bbox.min) * .5f;
@@ -1378,7 +1378,7 @@ void EERIE_PORTAL_Blend_Portals_And_Rooms() {
 		for(long i = 1; i < to; i++) {
 			ep->center += ep->v[i].p;
 			ep->min = glm::min(ep->min, ep->v[i].p);
-			ep->max = componentwise_max(ep->max, ep->v[i].p);
+			ep->max = glm::max(ep->max, ep->v[i].p);
 		}
 		
 		ep->center *= divide;
@@ -1836,7 +1836,7 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 				for(long h = 0; h < to; h++) {
 					ep2->center += ep2->v[h].p;
 					if(h != 0) {
-						ep2->max = componentwise_max(ep2->max, ep2->v[h].p);
+						ep2->max = glm::max(ep2->max, ep2->v[h].p);
 						ep2->min = glm::min(ep2->min, ep2->v[h].p);
 					} else {
 						ep2->min = ep2->max = ep2->v[0].p;

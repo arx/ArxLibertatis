@@ -6476,7 +6476,7 @@ long Manage3DCursor(long flags)
 	Vec3f maxoff;
 	maxoff = minoff = io->obj->vertexlist[0].v;
 	for(size_t i = 0; i < io->obj->vertexlist.size(); i++) {
-		maxoff = componentwise_max(maxoff, io->obj->vertexlist[i].v);
+		maxoff = glm::max(maxoff, io->obj->vertexlist[i].v);
 		minoff = glm::min(minoff, io->obj->vertexlist[i].v);
 		miny = std::min(miny, io->obj->vertexlist[i].v.y);
 		maxy = std::max(maxy, io->obj->vertexlist[i].v.y);
