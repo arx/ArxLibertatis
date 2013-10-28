@@ -443,13 +443,21 @@ if(NOT MSVC)
 	
 	check_include_file("wordexp.h" ARX_HAVE_WORDEXP_H)
 	
+	check_symbol_exists(open "fcntl.h" ARX_HAVE_OPEN)
+	
 	check_symbol_exists(fork "unistd.h" ARX_HAVE_FORK)
 	check_symbol_exists(readlink "unistd.h" ARX_HAVE_READLINK)
 	check_symbol_exists(dup2 "unistd.h" ARX_HAVE_DUP2)
+	check_symbol_exists(close "unistd.h" ARX_HAVE_CLOSE)
+	check_symbol_exists(setpgrp "unistd.h" ARX_HAVE_SETPGRP)
 	check_symbol_exists(execlp "unistd.h" ARX_HAVE_EXECLP)
+	check_symbol_exists(execvp "unistd.h" ARX_HAVE_EXECVP)
+	check_symbol_exists(posix_spawnp "spawn.h" ARX_HAVE_POSIX_SPAWNP)
 	if(NOT WIN32)
 		check_symbol_exists(isatty "unistd.h" ARX_HAVE_ISATTY)
 	endif()
+	
+	check_symbol_exists(waitpid "sys/wait.h" ARX_HAVE_WAITPID)
 	
 	check_symbol_exists(sched_getscheduler "sched.h" ARX_HAVE_SCHED_GETSCHEDULER)
 	

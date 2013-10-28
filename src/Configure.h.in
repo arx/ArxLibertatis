@@ -30,10 +30,15 @@
 #cmakedefine ARX_HAVE_FORK
 #cmakedefine ARX_HAVE_READLINK
 #cmakedefine ARX_HAVE_DUP2
+#cmakedefine ARX_HAVE_OPEN
+#cmakedefine ARX_HAVE_CLOSE
+#cmakedefine ARX_HAVE_SETPGRP
 #cmakedefine ARX_HAVE_EXECLP
-#cmakedefine ARX_HAVE_WAITPID
+#cmakedefine ARX_HAVE_EXECVP
+#cmakedefine ARX_HAVE_POSIX_SPAWNP
 #cmakedefine ARX_HAVE_BACKTRACE
 #cmakedefine ARX_HAVE_ISATTY
+#cmakedefine ARX_HAVE_WAITPID
 #cmakedefine ARX_HAVE_WORDEXP_H
 #cmakedefine ARX_HAVE_FPATHCONF
 #cmakedefine ARX_HAVE_PATHCONF
