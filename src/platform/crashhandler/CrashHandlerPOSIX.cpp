@@ -39,7 +39,7 @@
 #include <iostream>
 
 
-#ifdef ARX_HAVE_SIGACTION
+#if ARX_HAVE_SIGACTION
 
 static void signalHandler(int signal, siginfo_t * info, void * context) {
 	ARX_UNUSED(context);
