@@ -83,7 +83,6 @@ struct CrashInfo : public CrashInfoBase {
 	int signal;
 	int code;
 	
-	char execFullName[512];
 	void * backtrace[100];
 	
 };

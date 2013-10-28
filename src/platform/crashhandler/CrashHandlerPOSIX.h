@@ -43,7 +43,6 @@ public:
 	
 private:
 	
-	void fillBasicCrashInfo();
 	bool registerCrashHandlers();
 	void unregisterCrashHandlers();
 	

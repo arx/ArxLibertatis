@@ -393,9 +393,9 @@ bool ErrorReport::getCrashDescription() {
 		close(fd);
 		
 		// Prepare pid argument for GDB.
-		char pid_buf[30];
+		char pid_buf[36];
 		memset(&pid_buf, 0, sizeof(pid_buf));
-		sprintf(pid_buf, "%d", m_pCrashInfo->processId);
+		sprintf(pid_buf, "--pid=%d", m_pCrashInfo->processId);
 		
 		// Turn off localization for the backtrace output
 		#ifdef ARX_HAVE_SETENV
@@ -404,7 +404,7 @@ bool ErrorReport::getCrashDescription() {
 		#endif
 		
 		// Try to execute gdb to get a very detailed stack trace.
-		execlp("gdb", "gdb", "--batch", "-n", "-ex", "thread", "-ex", "set confirm off", "-ex", "set print frame-arguments all", "-ex", "set print static-members off", "-ex", "info threads", "-ex", "thread apply all bt full", m_pCrashInfo->execFullName, pid_buf, NULL);
+		execlp("gdb", "gdb", "--batch", "-n", "-ex", "thread", "-ex", "set confirm off", "-ex", "set print frame-arguments all", "-ex", "set print static-members off", "-ex", "info threads", "-ex", "thread apply all bt full", pid_buf, NULL);
 		
 		// GDB failed to start.
 		exit(1);

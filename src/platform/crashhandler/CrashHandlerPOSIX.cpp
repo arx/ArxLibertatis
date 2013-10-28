@@ -122,16 +122,6 @@ CrashHandlerPOSIX& CrashHandlerPOSIX::getInstance() {
 	return *m_sInstance;
 }
 
-void CrashHandlerPOSIX::fillBasicCrashInfo() {
-	CrashHandlerImpl::fillBasicCrashInfo();
-	fs::path exe = getExecutablePath();
-	if(exe.string().length() < ARRAY_SIZE(m_pCrashInfo->execFullName)) {
-		strcpy(m_pCrashInfo->execFullName, exe.string().c_str());
-	} else {
-		m_pCrashInfo->execFullName[0] = '\0';
-	}
-}
-
 bool CrashHandlerPOSIX::registerCrashHandlers() {
 	
 	arx_assert(m_pPreviousCrashHandlers == 0);
