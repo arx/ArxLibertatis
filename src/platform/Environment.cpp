@@ -40,7 +40,7 @@
 #include <wordexp.h>
 #endif
 
-#if defined(ARX_HAVE_OPEN) && defined(ARX_HAVE_DUP2)
+#if defined(ARX_HAVE_OPEN) && ARX_HAVE_DUP2
 #include <fcntl.h>
 #endif
 
@@ -472,7 +472,7 @@ static int run(const fs::path & exe, bool wait, const char * const args[]) {
 	if(pid == 0) {
 		
 		// Redirect standard input, output and error to /dev/null
-		#if defined(ARX_HAVE_OPEN) && defined(ARX_HAVE_DUP2) && defined(ARX_HAVE_CLOSE)
+		#if defined(ARX_HAVE_OPEN) && ARX_HAVE_DUP2 && defined(ARX_HAVE_CLOSE)
 		if(dev_null > 0) {
 			(void)dup2(dev_null, 0);
 			(void)dup2(dev_null, 1);

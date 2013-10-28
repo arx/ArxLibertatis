@@ -16,6 +16,7 @@
 
 // Filesystem & I/O
 #cmakedefine01 ARX_HAVE_READLINK
+#cmakedefine01 ARX_HAVE_DUP2
 
 // Audio backend
 #cmakedefine01 ARX_HAVE_OPENAL
@@ -29,7 +30,6 @@
 #cmakedefine01 ARX_HAVE_CRASHHANDLER_WINDOWS
 
 // POSIX / Linux features
-#cmakedefine ARX_HAVE_DUP2
 #cmakedefine ARX_HAVE_OPEN
 #cmakedefine ARX_HAVE_CLOSE
 #cmakedefine ARX_HAVE_SETPGRP

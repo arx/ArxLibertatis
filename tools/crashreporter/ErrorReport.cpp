@@ -379,7 +379,7 @@ bool ErrorReport::getCrashDescription() {
 	
 	m_ReportDescriptionText = m_ReportDescription;
 	
-#if ARX_HAVE_FORK && defined(ARX_HAVE_EXECLP) && defined(ARX_HAVE_DUP2) && defined(ARX_HAVE_WAITPID)
+#if ARX_HAVE_FORK && defined(ARX_HAVE_EXECLP) && ARX_HAVE_DUP2 && defined(ARX_HAVE_WAITPID)
 	
 	fs::path tracePath = m_ReportFolder / "gdbtrace.txt";
 	
@@ -421,7 +421,7 @@ bool ErrorReport::getCrashDescription() {
 		// GDB failed to start.
 		exit(1);
 	}
-#endif // defined(ARX_HAVE_EXECLP) && defined(ARX_HAVE_DUP2)
+#endif
 	
 	bool bWroteDump = fs::exists(tracePath) && fs::file_size(tracePath) > 0;
 	if(!bWroteDump) {
