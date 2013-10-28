@@ -45,7 +45,7 @@
 #endif
 #endif
 
-#ifdef ARX_HAVE_SYSCONF
+#if ARX_HAVE_SYSCONF
 #include <unistd.h>
 #endif
 
@@ -206,7 +206,7 @@ void getResourceUsage(int pid, quint64 & memoryUsage, double & runningTimeSec) {
 	}
 #endif
 	
-#if defined(ARX_HAVE_SYSCONF) && (defined(_SC_PAGESIZE) || defined(_SC_CLK_TCK))
+#if ARX_HAVE_SYSCONF && (defined(_SC_PAGESIZE) || defined(_SC_CLK_TCK))
 	
 	u64 rss, startTicks, endTicks, dummy;
 	
