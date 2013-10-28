@@ -224,14 +224,13 @@ void CrashHandlerPOSIX::handleCrash(int signal, int code) {
 		}
 	}
 	
+	// Try to execute the crash reporter
+#ifdef ARX_HAVE_EXECVP
 	char argument[256];
 	strcpy(argument, "-crashinfo=");
 	strcat(argument, m_SharedMemoryName.c_str());
-	
-	// Try to execute the crash reporter
-#ifdef ARX_HAVE_EXECLP
-	execlp(m_CrashHandlerPath.string().c_str(), m_CrashHandlerPath.string().c_str(),
-	       argument, NULL);
+	const char * args[] = { m_CrashHandlerPath.string().c_str(), argument, NULL };
+	execvp(m_CrashHandlerPath.string().c_str(), const_cast<char **>(args));
 #endif
 	
 	// Something went wrong - the crash reporter failed to start!

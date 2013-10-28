@@ -379,7 +379,7 @@ bool ErrorReport::getCrashDescription() {
 	
 	m_ReportDescriptionText = m_ReportDescription;
 	
-#if ARX_HAVE_FORK && defined(ARX_HAVE_EXECLP) && ARX_HAVE_DUP2 && defined(ARX_HAVE_WAITPID)
+#if ARX_HAVE_FORK && ARX_HAVE_EXECVP && ARX_HAVE_DUP2 && defined(ARX_HAVE_WAITPID)
 	
 	fs::path tracePath = m_ReportFolder / "gdbtrace.txt";
 	
@@ -406,9 +406,8 @@ bool ErrorReport::getCrashDescription() {
 		setenv("LC_ALL", "C", 1);
 		#endif
 		
-		// Try to execute gdb to get a very detailed stack trace.
-		execlp(
-			"gdb", "gdb", "--batch", "-n",
+		const char * args[] = {
+			"gdb", "--batch", "-n",
 			"-ex", "thread",
 			"-ex", "set confirm off",
 			"-ex", "set print frame-arguments all",
@@ -416,7 +415,10 @@ bool ErrorReport::getCrashDescription() {
 			"-ex", "info threads",
 			"-ex", "thread apply all bt full",
 			pid_buf, NULL
-		);
+		};
+		
+		// Try to execute gdb to get a very detailed stack trace.
+		execvp("gdb", const_cast<char **>(args));
 		
 		// GDB failed to start.
 		exit(1);

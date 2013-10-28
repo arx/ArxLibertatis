@@ -33,7 +33,6 @@
 #cmakedefine01 ARX_HAVE_CRASHHANDLER_WINDOWS
 
 // POSIX / Linux features
-#cmakedefine ARX_HAVE_EXECLP
 #cmakedefine ARX_HAVE_POSIX_SPAWNP
 #cmakedefine ARX_HAVE_BACKTRACE
 #cmakedefine ARX_HAVE_ISATTY
