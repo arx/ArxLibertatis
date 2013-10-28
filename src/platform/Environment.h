@@ -87,12 +87,12 @@ void runAsync(const fs::path & exe, const char * const args[]);
  */
 void runHelper(const std::string & name, ...);
 
-} // namespace platform
-
 #if ARX_PLATFORM != ARX_PLATFORM_WIN32
 static const char * const env_list_seperators = ":";
 #else
 static const char * const env_list_seperators = ";";
 #endif
+
+} // namespace platform
 
 #endif // ARX_PLATFORM_ENVIRONMENT_H
