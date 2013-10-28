@@ -44,7 +44,7 @@
 #include <fcntl.h>
 #endif
 
-#if ARX_HAVE_READLINK || defined(ARX_HAVE_EXECVP)
+#if ARX_HAVE_READLINK || ARX_HAVE_EXECVP
 #include <unistd.h>
 #endif
 
@@ -463,7 +463,7 @@ static int run(const fs::path & exe, bool wait, const char * const args[]) {
 	pid_t pid;
 	(void)posix_spawnp(&pid, exe.string().c_str(), file_actionsp, attrp, argv, environ);
 	
-#elif ARX_HAVE_FORK && defined(ARX_HAVE_EXECVP)
+#elif ARX_HAVE_FORK && ARX_HAVE_EXECVP
 	
 	// Compatibility POSIX implementation
 	
