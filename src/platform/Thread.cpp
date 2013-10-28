@@ -25,7 +25,7 @@ void Thread::setThreadName(const std::string & _threadName) {
 	threadName = _threadName;
 }
 
-#if defined(ARX_HAVE_PTHREADS)
+#if ARX_HAVE_PTHREADS
 
 #include <sched.h>
 #include <unistd.h>

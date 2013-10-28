@@ -23,7 +23,7 @@
 #include "Configure.h"
 #include "platform/Platform.h"
 
-#if defined(ARX_HAVE_PTHREADS)
+#if ARX_HAVE_PTHREADS
 #include <pthread.h>
 #elif ARX_PLATFORM == ARX_PLATFORM_WIN32
 #include <windows.h>
@@ -35,7 +35,7 @@ class Lock {
 	
 private:
 	
-#if defined(ARX_HAVE_PTHREADS)
+#if ARX_HAVE_PTHREADS
 	pthread_mutex_t mutex;
 	pthread_cond_t cond;
 	bool locked;

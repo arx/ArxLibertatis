@@ -25,7 +25,7 @@
 
 #include <string>
 
-#if defined(ARX_HAVE_PTHREADS)
+#if ARX_HAVE_PTHREADS
 #include <pthread.h>
 #include <sys/types.h>
 typedef pthread_t thread_id_type;
@@ -42,7 +42,7 @@ class Thread {
 	
 private:
 	
-#if defined(ARX_HAVE_PTHREADS)
+#if ARX_HAVE_PTHREADS
 	
 	pthread_t thread;
 	int priority;
