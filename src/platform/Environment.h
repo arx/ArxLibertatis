@@ -26,12 +26,6 @@
 
 namespace fs { class path; }
 
-enum ExitStatus {
-	ExitSuccess,
-	ExitFailure,
-	RunProgram
-};
-
 namespace platform {
 
 std::string expandEnvironmentVariables(const std::string & in);

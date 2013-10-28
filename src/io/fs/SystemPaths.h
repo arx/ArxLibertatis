@@ -24,7 +24,12 @@
 #include <ostream>
 
 #include "io/fs/FilePath.h"
-#include "platform/Environment.h"
+
+enum ExitStatus {
+	ExitSuccess,
+	ExitFailure,
+	RunProgram
+};
 
 namespace fs {
 
