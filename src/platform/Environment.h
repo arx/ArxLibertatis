@@ -32,9 +32,9 @@ enum ExitStatus {
 	RunProgram
 };
 
-std::string expandEnvironmentVariables(const std::string & in);
-
 namespace platform {
+
+std::string expandEnvironmentVariables(const std::string & in);
 
 bool getSystemConfiguration(const std::string & name, std::string & result);
 

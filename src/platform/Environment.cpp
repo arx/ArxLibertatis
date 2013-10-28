@@ -75,6 +75,8 @@ extern char ** environ;
 #include "util/String.h"
 
 
+namespace platform {
+
 std::string expandEnvironmentVariables(const std::string & in) {
 	
 #if defined(ARX_HAVE_WORDEXP_H)
@@ -161,8 +163,6 @@ static bool getRegistryValue(HKEY hkey, const std::string & name, std::string & 
 	}
 }
 #endif
-
-namespace platform {
 
 bool getSystemConfiguration(const std::string & name, std::string & result) {
 	

@@ -48,7 +48,7 @@ static std::vector<path> getSearchPaths(const char * input) {
 	std::vector<path> result;
 	
 	if(input) {
-		std::string decoded = expandEnvironmentVariables(input);
+		std::string decoded = platform::expandEnvironmentVariables(input);
 		typedef boost::tokenizer< boost::char_separator<char> >  tokenizer;
 		boost::char_separator<char> sep(platform::env_list_seperators);
 		tokenizer tokens(decoded, sep);
