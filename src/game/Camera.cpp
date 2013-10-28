@@ -19,6 +19,8 @@
 
 #include "game/Camera.h"
 
+#include <glm/gtx/transform.hpp>
+
 void EERIE_TRANSFORM::updateFromAngle(const Anglef &angle) {
 	float yaw, pitch, roll;
 	yaw = radians(angle.getYaw());
