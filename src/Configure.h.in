@@ -22,6 +22,7 @@
 #cmakedefine01 ARX_HAVE_READLINK
 #cmakedefine01 ARX_HAVE_OPEN
 #cmakedefine01 ARX_HAVE_DUP2
+#cmakedefine01 ARX_HAVE_ISATTY
 
 // Audio backend
 #cmakedefine01 ARX_HAVE_OPENAL
@@ -35,7 +36,6 @@
 #cmakedefine01 ARX_HAVE_CRASHHANDLER_WINDOWS
 
 // POSIX / Linux features
-#cmakedefine ARX_HAVE_ISATTY
 #cmakedefine ARX_HAVE_WAITPID
 #cmakedefine ARX_HAVE_WORDEXP_H
 #cmakedefine ARX_HAVE_FPATHCONF

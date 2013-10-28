@@ -24,7 +24,7 @@
 
 #include "Configure.h"
 
-#if defined(ARX_HAVE_ISATTY) || ARX_HAVE_READLINK
+#if ARX_HAVE_ISATTY || ARX_HAVE_READLINK
 #include <unistd.h>
 #include <errno.h>
 #endif
@@ -68,7 +68,7 @@ static bool is_fd_disabled(int fd) {
 
 Backend * Console::get() {
 	
-#ifdef ARX_HAVE_ISATTY
+#if ARX_HAVE_ISATTY
 	if(isatty(1) && isatty(2)) {
 		return new ColorConsole;
 	}
