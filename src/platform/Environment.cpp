@@ -259,6 +259,8 @@ void defineSystemDirectories(const char * argv0) {
 
 #endif
 
+namespace platform {
+
 #if defined(ARX_HAVE_READLINK) && ARX_PLATFORM != ARX_PLATFORM_MACOSX
 static bool try_readlink(std::vector<char> & buffer, const char * path) {
 	
@@ -360,8 +362,6 @@ fs::path getExecutablePath() {
 	// Give up - we couldn't determine the exe path.
 	return fs::path();
 }
-
-namespace platform {
 
 fs::path getHelperExecutable(const std::string & name) {
 	

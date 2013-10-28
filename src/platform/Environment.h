@@ -38,10 +38,10 @@ bool getSystemConfiguration(const std::string & name, std::string & result);
 
 void defineSystemDirectories(const char * argv0);
 
+namespace platform {
+
 //! Get the path to the current running executable if possible or an empty string otherwise.
 fs::path getExecutablePath();
-
-namespace platform {
 
 /*!
  * Get the full path to a helper executable

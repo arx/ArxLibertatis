@@ -175,7 +175,7 @@ std::vector<path> SystemPaths::getSearchPaths(bool filter) const {
 	}
 	
 	// Check paths specified in environment variables
-	path exepath = getExecutablePath();
+	path exepath = platform::getExecutablePath();
 	#if ARX_PLATFORM != ARX_PLATFORM_WIN32
 	if(!exepath.empty()) {
 		std::string var = "${" + exepath.basename() + "_PATH}";
@@ -369,7 +369,7 @@ void SystemPaths::list(std::ostream & os, const std::string & forceUser,
 	if(!forceData.empty()) {
 		os << forceData;
 	}
-	path exepath = getExecutablePath();
+	path exepath = platform::getExecutablePath();
 	os << " - Paths specifed in ${" << exepath.basename() << "_PATH}\n";
 	os << " - The directory containing the game executable\n";
 	listDirectoriesFor(os, "DataDir", data_dir_prefixes, data_dir);
