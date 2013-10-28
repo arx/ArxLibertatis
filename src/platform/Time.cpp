@@ -86,7 +86,7 @@ u64 getUs() {
 	return valUs;
 }
 
-#elif defined(ARX_HAVE_MACH_CLOCK)
+#elif ARX_HAVE_MACH_CLOCK
 
 #include <mach/clock.h>
 #include <mach/clock_types.h>

@@ -11,6 +11,7 @@
 
 // Time
 #cmakedefine01 ARX_HAVE_CLOCK_GETTIME
+#cmakedefine01 ARX_HAVE_MACH_CLOCK
 
 // Audio backend
 #cmakedefine01 ARX_HAVE_OPENAL
@@ -55,9 +56,6 @@
 #cmakedefine ARX_HAVE_GETEXECNAME
 #cmakedefine ARX_HAVE_SYSCTL
 #cmakedefine ARX_HAVE_SETENV
-
-// Mac OS X features
-#cmakedefine ARX_HAVE_MACH_CLOCK
 
 // Arx components
 #cmakedefine BUILD_EDITOR
