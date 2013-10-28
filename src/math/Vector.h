@@ -22,7 +22,7 @@
 
 #include <glm/gtx/norm.hpp>
 
-#include "math/MathFwd.h"
+#include "math/Types.h"
 
 // TODO replace calls with their direct glm equivalents!
 

@@ -47,7 +47,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <stddef.h>
 #include <vector>
 
-#include "math/MathFwd.h"
+#include "math/Types.h"
 
 struct ANCHOR_DATA;
 struct EERIE_LIGHT;

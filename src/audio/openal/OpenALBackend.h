@@ -31,7 +31,7 @@
 #include "audio/AudioBackend.h"
 #include "audio/AudioTypes.h"
 #include "audio/AudioResource.h"
-#include "math/MathFwd.h"
+#include "math/Types.h"
 
 namespace audio {
 

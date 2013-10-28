@@ -47,7 +47,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_GRAPHICS_EFFECTS_FOG_H
 #define ARX_GRAPHICS_EFFECTS_FOG_H
 
-#include "math/MathFwd.h"
+#include "math/Types.h"
 
 struct EERIE_3DOBJ;
 

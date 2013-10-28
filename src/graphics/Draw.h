@@ -45,7 +45,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define ARX_GRAPHICS_DRAW_H
 
 #include "graphics/Renderer.h"
-#include "math/MathFwd.h"
+#include "math/Types.h"
 
 struct EERIEPOLY;
 struct EERIE_3DOBJ;

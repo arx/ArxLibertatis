@@ -73,7 +73,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/resource/ResourcePath.h"
 #include "io/log/Logger.h"
 
-#include "math/MathFwd.h"
+#include "math/Types.h"
 #include "math/Vector2.h"
 
 #include "scene/ChangeLevel.h"

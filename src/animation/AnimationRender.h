@@ -47,7 +47,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/BaseGraphicsTypes.h"
 #include "graphics/Color.h"
 #include "graphics/Math.h"
-#include "math/MathFwd.h"
+#include "math/Types.h"
 
 struct EERIE_3DOBJ;
 struct ANIM_USE;

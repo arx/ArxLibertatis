@@ -49,7 +49,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <string>
 #include <vector>
-#include "math/MathFwd.h"
+#include "math/Types.h"
 #include "gui/Interface.h"
 #include "gui/Text.h"
 #include "io/resource/PakReader.h"

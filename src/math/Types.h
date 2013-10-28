@@ -17,8 +17,8 @@
  * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ARX_MATH_MATHFWD_H
-#define ARX_MATH_MATHFWD_H
+#ifndef ARX_MATH_TYPES_H
+#define ARX_MATH_TYPES_H
 
 #include "platform/Platform.h"
 
@@ -83,4 +83,4 @@ typedef vec_traits<f64, 4>::type Vec4d;
 // Math constants
 #define PI 3.14159265358979323846f
 
-#endif // ARX_MATH_MATHFWD_H
+#endif // ARX_MATH_TYPES_H

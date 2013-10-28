@@ -23,7 +23,7 @@
 #include <vector>
 
 #include "platform/Flags.h"
-#include "math/MathFwd.h"
+#include "math/Types.h"
 #include "graphics/Color.h"
 
 struct EERIEMATRIX;

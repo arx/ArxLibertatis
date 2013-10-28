@@ -49,7 +49,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <cstdlib>
 
-#include "math/MathFwd.h"
+#include "math/Types.h"
 
 struct EERIE_3DOBJ;
 

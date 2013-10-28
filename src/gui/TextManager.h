@@ -48,7 +48,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <string>
 
 #include "graphics/Color.h"
-#include "math/MathFwd.h"
+#include "math/Types.h"
 
 class Font;
 

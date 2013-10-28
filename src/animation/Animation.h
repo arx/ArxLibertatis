@@ -50,7 +50,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <stddef.h>
 #include <string>
 
-#include "math/MathFwd.h"
+#include "math/Types.h"
 #include "graphics/BaseGraphicsTypes.h"
 #include "graphics/GraphicsTypes.h"
 

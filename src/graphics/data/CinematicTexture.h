@@ -46,7 +46,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <vector>
 
-#include "math/MathFwd.h"
+#include "math/Types.h"
 #include "math/Vector2.h"
 
 class Texture2D;

@@ -53,7 +53,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/Entity.h"
 #include "graphics/data/Mesh.h"
 #include "platform/Flags.h"
-#include "math/MathFwd.h"
+#include "math/Types.h"
 
 // ARX_COLLISIONS flags (cylinder move)
 enum CollisionFlag {

@@ -26,7 +26,7 @@
 
 #include "audio/AudioTypes.h"
 #include "audio/AudioSource.h"
-#include "math/MathFwd.h"
+#include "math/Types.h"
 
 namespace audio {
 

@@ -47,7 +47,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_PHYSICS_ATTRACTORS_H
 #define ARX_PHYSICS_ATTRACTORS_H
 
-#include "math/MathFwd.h"
+#include "math/Types.h"
 
 class Entity;
 

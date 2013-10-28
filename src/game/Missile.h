@@ -45,7 +45,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_GAME_MISSILE_H
 #define ARX_GAME_MISSILE_H
 
-#include "math/MathFwd.h"
+#include "math/Types.h"
 
 class Entity;
 

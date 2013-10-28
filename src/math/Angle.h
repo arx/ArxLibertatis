@@ -25,7 +25,7 @@
 
 #include <glm/gtx/quaternion.hpp>
 
-#include "math/MathFwd.h"
+#include "math/Types.h"
 
 inline float MAKEANGLE(float a) {
 	float angle = std::fmod(a, 360.f);

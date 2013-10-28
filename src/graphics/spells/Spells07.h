@@ -49,7 +49,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/data/Mesh.h"
 #include "graphics/effects/SpellEffects.h"
 #include "graphics/particle/ParticleSystem.h"
-#include "math/MathFwd.h"
+#include "math/Types.h"
 #include "math/Vector3.h"
 
 // Done By : Didier Pedreno

@@ -47,7 +47,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_SCENE_SCENE_H
 #define ARX_SCENE_SCENE_H
 
-#include "math/MathFwd.h"
+#include "math/Types.h"
 
 class Entity;
 

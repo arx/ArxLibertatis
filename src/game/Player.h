@@ -52,7 +52,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "game/Entity.h"
 #include "game/Spells.h"
-#include "math/MathFwd.h"
+#include "math/Types.h"
 #include "platform/Flags.h"
 
 struct EERIE_3DOBJ;
