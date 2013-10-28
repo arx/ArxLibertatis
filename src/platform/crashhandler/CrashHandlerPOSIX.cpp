@@ -38,8 +38,6 @@
 
 #include <iostream>
 
-#include "platform/Environment.h"
-
 
 #ifdef ARX_HAVE_SIGACTION
 
