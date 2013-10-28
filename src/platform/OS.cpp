@@ -20,13 +20,14 @@
 #include "platform/OS.h"
 
 #include "Configure.h"
+#include "platform/Platform.h"
 
 #include <sstream>
 #include <vector>
 #include <boost/algorithm/string/trim.hpp>
 #include <boost/algorithm/string/predicate.hpp>
 
-#ifdef ARX_HAVE_WINAPI
+#if ARX_PLATFORM == ARX_PLATFORM_WIN32
 #include <windows.h>
 #include <cstring>
 #endif
@@ -44,13 +45,12 @@
 #include "io/fs/Filesystem.h"
 #include "io/fs/FileStream.h"
 #include "platform/Architecture.h"
-#include "platform/Platform.h"
 #include "util/String.h"
 
 namespace platform {
 
 // Windows-specific functions
-#ifdef ARX_HAVE_WINAPI
+#if ARX_PLATFORM == ARX_PLATFORM_WIN32
 
 typedef void (WINAPI *PGNSI)(LPSYSTEM_INFO);
 
@@ -140,12 +140,12 @@ static std::string getWindowsVersionName() {
 	return os.str();
 }
 
-#endif // ARX_HAVE_WINAPI
+#endif // ARX_PLATFORM == ARX_PLATFORM_WIN32
 
 
 std::string getOSName() {
 	
-	#ifdef ARX_HAVE_WINAPI
+	#if ARX_PLATFORM == ARX_PLATFORM_WIN32
 	// Get operating system friendly name from registry.
 	return getWindowsVersionName();
 	#endif

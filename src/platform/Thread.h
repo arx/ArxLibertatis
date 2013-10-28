@@ -21,6 +21,7 @@
 #define ARX_PLATFORM_THREAD_H
 
 #include "Configure.h"
+#include "platform/Platform.h"
 
 #include <string>
 
@@ -29,12 +30,12 @@
 #include <sys/types.h>
 typedef pthread_t thread_id_type;
 typedef pid_t process_id_type;
-#elif defined(ARX_HAVE_WINAPI)
+#elif ARX_PLATFORM == ARX_PLATFORM_WIN32
 #include <windows.h>
 typedef DWORD thread_id_type;
 typedef DWORD process_id_type;
 #else
-#error "Threads not supported: need either ARX_HAVE_PTHREADS or ARX_HAVE_WINAPI"
+#error "Threads not supported: need ARX_HAVE_PTHREADS on non-Windows systems"
 #endif
 
 class Thread {
@@ -49,7 +50,7 @@ private:
 	
 	static void * entryPoint(void * param);
 	
-#elif defined(ARX_HAVE_WINAPI)
+#elif ARX_PLATFORM == ARX_PLATFORM_WIN32
 	
 	HANDLE thread;
 

@@ -281,7 +281,7 @@ void Logger::initialize() {
 	
 	add(logger::Console::get());
 	
-#ifdef ARX_HAVE_WINAPI
+#if ARX_PLATFORM == ARX_PLATFORM_WIN32
 	add(logger::MsvcDebugger::get());
 #endif
 	

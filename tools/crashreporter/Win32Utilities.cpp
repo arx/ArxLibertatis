@@ -19,7 +19,7 @@
 
 #include "crashreporter/Win32Utilities.h"
 
-#ifdef ARX_HAVE_WINAPI
+#if ARX_PLATFORM == ARX_PLATFORM_WIN32
 
 // Windows
 #include <windows.h>
@@ -254,4 +254,4 @@ std::string GetExceptionString( DWORD dwCode )
     return szBuffer;
 }
 
-#endif // ARX_HAVE_WINAPI
+#endif // ARX_PLATFORM == ARX_PLATFORM_WIN32

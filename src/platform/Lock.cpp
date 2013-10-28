@@ -19,8 +19,6 @@
 
 #include "platform/Lock.h"
 
-#include "platform/Platform.h"
-
 #if defined(ARX_HAVE_PTHREADS)
 
 Lock::Lock() : locked(false) {
@@ -55,7 +53,7 @@ void Lock::unlock() {
 	pthread_mutex_unlock(&mutex);
 }
 
-#elif defined(ARX_HAVE_WINAPI)
+#elif ARX_PLATFORM == ARX_PLATFORM_WIN32
 
 Lock::Lock() {
 	mutex = CreateMutex(NULL, false, NULL);

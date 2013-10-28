@@ -19,11 +19,15 @@
 
 #include "crashreporter/ErrorReport.h"
 
-#ifdef ARX_HAVE_WINAPI
+#include "platform/Platform.h"
+
+#if ARX_PLATFORM == ARX_PLATFORM_WIN32
 // Win32
 #include <windows.h>
 #include <psapi.h>
-#else
+#endif
+
+#if defined(ARX_HAVE_WAITPID)
 #include <sys/wait.h>
 #endif
 
@@ -134,7 +138,7 @@ bool ErrorReport::Initialize()
 
 bool ErrorReport::GetCrashDump(const fs::path & fileName) {
 	
-#ifdef ARX_HAVE_WINAPI
+#if ARX_PLATFORM == ARX_PLATFORM_WIN32
 	bool bHaveDump = false;
 
 	if(fs::exists(m_pCrashInfo->miniDumpTmpFile))
@@ -146,10 +150,10 @@ bool ErrorReport::GetCrashDump(const fs::path & fileName) {
 			bHaveDump = true;
 		}
 	}
-
+	
 	return bHaveDump;
 	
-#else // !ARX_HAVE_WINAPI
+#else //  ARX_PLATFORM != ARX_PLATFORM_WIN32
 	
 	ARX_UNUSED(fileName);
 	
@@ -158,10 +162,11 @@ bool ErrorReport::GetCrashDump(const fs::path & fileName) {
 	
 	return getCrashDescription();
 	
-#endif // !ARX_HAVE_WINAPI
+#endif
+	
 }
 
-#ifndef ARX_HAVE_WINAPI
+#if ARX_PLATFORM != ARX_PLATFORM_WIN32
 
 void getProcessSatus(QString filename, u64 & rss, u64 & startTicks) {
 	
@@ -248,15 +253,15 @@ void getResourceUsage(int pid, quint64 & memoryUsage, double & runningTimeSec) {
 	
 }
 
-#endif // !defined(ARX_HAVE_WINAPI)
+#endif //  ARX_PLATFORM != ARX_PLATFORM_WIN32
 
 bool ErrorReport::getCrashDescription() {
 	
-#ifdef ARX_HAVE_WINAPI
+#if ARX_PLATFORM == ARX_PLATFORM_WIN32
 	
 	return true;
 	
-#else // !defined(ARX_HAVE_WINAPI)
+#else // ARX_PLATFORM != ARX_PLATFORM_WIN32
 	
 	switch(m_pCrashInfo->signal) {
 		
@@ -376,7 +381,7 @@ bool ErrorReport::getCrashDescription() {
 	
 	m_ReportDescriptionText = m_ReportDescription;
 	
-#if defined(ARX_HAVE_FORK) && defined(ARX_HAVE_EXECLP) && defined(ARX_HAVE_DUP2)
+#if defined(ARX_HAVE_FORK) && defined(ARX_HAVE_EXECLP) && defined(ARX_HAVE_DUP2) && defined(ARX_HAVE_WAITPID)
 	
 	fs::path tracePath = m_ReportFolder / "gdbtrace.txt";
 	
@@ -493,7 +498,7 @@ bool ErrorReport::getCrashDescription() {
 	
 	m_ReportTitle = QString("%1 %2").arg(m_ReportUniqueID, callstackTop.trimmed());
 	
-#endif // !defined(ARX_HAVE_WINAPI)
+#endif // ARX_PLATFORM != ARX_PLATFORM_WIN32
 	
 	return true;
 }
@@ -509,7 +514,7 @@ bool ErrorReport::GetMiscCrashInfo() {
 	m_OSArchitecture = QString::fromUtf8(platform::getOSArchitecture().c_str());
 	m_OSDistribution = QString::fromUtf8(platform::getOSDistribution().c_str());
 	
-#ifdef ARX_HAVE_WINAPI
+#if ARX_PLATFORM == ARX_PLATFORM_WIN32
 	
 	// Open parent process handle
 	HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, m_pCrashInfo->processId);
@@ -585,11 +590,11 @@ bool ErrorReport::GetMiscCrashInfo() {
 	
 	m_ReportDescriptionText = m_ReportDescription;
 	
-#else // !ARX_HAVE_WINAPI
+#else // ARX_PLATFORM != ARX_PLATFORM_WIN32
 	
 	getResourceUsage(m_pCrashInfo->processId, m_ProcessMemoryUsage, m_RunningTimeSec);
 	
-#endif // !ARX_HAVE_WINAPI
+#endif
 
 	return true;
 }

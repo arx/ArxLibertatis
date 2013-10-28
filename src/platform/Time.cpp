@@ -57,7 +57,7 @@ u64 getUs() {
 	return (ts.tv_sec * 1000000ull) + (ts.tv_nsec / 1000);
 }
 
-#elif defined(ARX_HAVE_WINAPI)
+#elif ARX_PLATFORM == ARX_PLATFORM_WIN32
 
 #include <windows.h>
 
@@ -113,7 +113,7 @@ u64 getUs() {
 }
 
 #else
-#error "Time not supported: need either ARX_HAVE_CLOCK_GETTIME or ARX_HAVE_WINAPI or ARX_HAVE_MACH_CLOCK"
+#error "Time not supported: need ARX_HAVE_CLOCK_GETTIME or ARX_HAVE_MACH_CLOCK on non-Windows systems"
 #endif
 
 } // namespace Time

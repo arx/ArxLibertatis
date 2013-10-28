@@ -31,7 +31,7 @@
 
 #include "Configure.h"
 
-#ifdef ARX_HAVE_WINAPI
+#if ARX_PLATFORM == ARX_PLATFORM_WIN32
 #include <windows.h>
 #include <shlobj.h>
 #endif
@@ -100,7 +100,7 @@ std::string expandEnvironmentVariables(const std::string & in) {
 	
 	return oss.str();
 	
-#elif defined(ARX_HAVE_WINAPI)
+#elif ARX_PLATFORM == ARX_PLATFORM_WIN32
 	
 	size_t length = std::max<size_t>(in.length() * 2, 1024);
 	boost::scoped_array<char> buffer(new char[length]);
@@ -125,7 +125,7 @@ std::string expandEnvironmentVariables(const std::string & in) {
 #endif
 }
 
-#ifdef ARX_HAVE_WINAPI
+#if ARX_PLATFORM == ARX_PLATFORM_WIN32
 static bool getRegistryValue(HKEY hkey, const std::string & name, std::string & result) {
 	
 	boost::scoped_array<char> buffer(NULL);
@@ -166,7 +166,7 @@ static bool getRegistryValue(HKEY hkey, const std::string & name, std::string & 
 
 bool getSystemConfiguration(const std::string & name, std::string & result) {
 	
-#ifdef ARX_HAVE_WINAPI
+#if ARX_PLATFORM == ARX_PLATFORM_WIN32
 	
 	if(getRegistryValue(HKEY_CURRENT_USER, name, result)) {
 		return true;
@@ -189,7 +189,7 @@ void defineSystemDirectories(const char * argv0) {
 	ARX_UNUSED(argv0);
 }
 
-#elif defined(ARX_HAVE_WINAPI)
+#elif ARX_PLATFORM == ARX_PLATFORM_WIN32
 
 std::string ws2s(const std::basic_string<WCHAR> & s) {
 	size_t slength = (int)s.length() + 1;
@@ -297,7 +297,7 @@ fs::path getExecutablePath() {
 		}
 	}
 	
-#elif defined(ARX_HAVE_WINAPI)
+#elif ARX_PLATFORM == ARX_PLATFORM_WIN32
 	
 	std::vector<char> buffer;
 	buffer.resize(MAX_PATH);

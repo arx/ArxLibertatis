@@ -20,7 +20,6 @@
 #include "platform/Thread.h"
 
 #include "platform/CrashHandler.h"
-#include "platform/Platform.h"
 
 void Thread::setThreadName(const std::string & _threadName) {
 	threadName = _threadName;
@@ -133,7 +132,7 @@ process_id_type getProcessId() {
 	return getpid();
 }
 
-#elif defined(ARX_HAVE_WINAPI)
+#elif ARX_PLATFORM == ARX_PLATFORM_WIN32
 
 Thread::Thread() {
 	thread = CreateThread(NULL, 0, entryPoint, this, CREATE_SUSPENDED, NULL);
@@ -250,12 +249,12 @@ void Thread::sleep(unsigned milliseconds) {
 	nanosleep(&t, NULL);
 }
 
-#elif defined(ARX_HAVE_WINAPI)
+#elif ARX_PLATFORM == ARX_PLATFORM_WIN32
 
 void Thread::sleep(unsigned milliseconds) {
 	Sleep(milliseconds);
 }
 
 #else
-#error "Sleep not supported: need either ARX_HAVE_NANOSLEEP or ARX_HAVE_WINAPI"
+#error "Sleep not supported: need ARX_HAVE_NANOSLEEP in non-Windows systems"
 #endif

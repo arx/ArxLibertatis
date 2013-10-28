@@ -22,9 +22,9 @@
 
 #include "io/log/LogBackend.h"
 
-#include "Configure.h"
+#include "platform/Platform.h"
 
-#ifdef ARX_HAVE_WINAPI
+#if ARX_PLATFORM == ARX_PLATFORM_WIN32
 
 namespace logger {
 
@@ -48,6 +48,6 @@ public:
 
 } // namespace logger
 
-#endif // ARX_HAVE_WINAPI
+#endif // ARX_PLATFORM == ARX_PLATFORM_WIN32
 
 #endif // ARX_IO_LOG_MSVCLOGGER_H
