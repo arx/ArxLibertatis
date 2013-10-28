@@ -30,12 +30,11 @@ void Thread::setThreadName(const std::string & _threadName) {
 #include <sched.h>
 #include <unistd.h>
 
-#if !ARX_HAVE_PTHREAD_SETNAME_NP && !defined(ARX_HAVE_PTHREAD_SET_NAME_NP) \
-    && ARX_HAVE_PRCTL
+#if !ARX_HAVE_PTHREAD_SETNAME_NP && !ARX_HAVE_PTHREAD_SET_NAME_NP && ARX_HAVE_PRCTL
 #include <sys/prctl.h>
 #endif
 
-#if defined(ARX_HAVE_PTHREAD_SET_NAME_NP)
+#if ARX_HAVE_PTHREAD_SET_NAME_NP
 #include <pthread_np.h>
 #endif
 
@@ -102,7 +101,7 @@ void * Thread::entryPoint(void * param) {
 #elif ARX_HAVE_PTHREAD_SETNAME_NP && ARX_PLATFORM == ARX_PLATFORM_MACOSX
 	// Mac OS X
 	pthread_setname_np(thread.threadName.c_str());
-#elif defined(ARX_HAVE_PTHREAD_SET_NAME_NP)
+#elif ARX_HAVE_PTHREAD_SET_NAME_NP
 	// FreeBSD & OpenBSD
 	pthread_set_name_np(thread.thread, thread.threadName.c_str());
 #elif ARX_HAVE_PRCTL && defined(PR_SET_NAME)
