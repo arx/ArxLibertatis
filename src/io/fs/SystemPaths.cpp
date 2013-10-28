@@ -79,7 +79,7 @@ static path findUserPath(const char * name, const path & force,
 	
 	// Check system settings (windows registry)
 	std::string temp;
-	if(registry && getSystemConfiguration(registry, temp)) {
+	if(registry && platform::getSystemConfiguration(registry, temp)) {
 		path dir = canonical(temp);
 		if(!create) {
 			return dir;
@@ -188,7 +188,7 @@ std::vector<path> SystemPaths::getSearchPaths(bool filter) const {
 	
 	// Check system settings (windows registry)
 	std::string temp;
-	if(getSystemConfiguration("DataDir", temp)) {
+	if(platform::getSystemConfiguration("DataDir", temp)) {
 		path dir = canonical(temp);
 		if(addSearchPath(result, dir, filter)) {
 			LogDebug("got data dir from registry: \"" << temp << "\" = " << dir);
@@ -295,7 +295,7 @@ static void listDirectoriesFor(std::ostream & os, const std::string & regKey,
 		os << " - Registry key {HKCU,HKLM}\\Software\\ArxLibertatis\\"
 		   << regKey << '\n';
 		std::string temp;
-		if(getSystemConfiguration(regKey, temp)) {
+		if(platform::getSystemConfiguration(regKey, temp)) {
 			os << "   = " << canonical(temp) << '\n';
 		}
 	}

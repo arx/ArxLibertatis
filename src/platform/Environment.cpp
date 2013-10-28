@@ -162,6 +162,8 @@ static bool getRegistryValue(HKEY hkey, const std::string & name, std::string & 
 }
 #endif
 
+namespace platform {
+
 bool getSystemConfiguration(const std::string & name, std::string & result) {
 	
 #ifdef ARX_HAVE_WINAPI
@@ -180,8 +182,6 @@ bool getSystemConfiguration(const std::string & name, std::string & result) {
 	
 	return false;
 }
-
-namespace platform {
 
 #if ARX_PLATFORM == ARX_PLATFORM_MACOSX
 

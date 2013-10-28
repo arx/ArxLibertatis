@@ -34,9 +34,9 @@ enum ExitStatus {
 
 std::string expandEnvironmentVariables(const std::string & in);
 
-bool getSystemConfiguration(const std::string & name, std::string & result);
-
 namespace platform {
+
+bool getSystemConfiguration(const std::string & name, std::string & result);
 
 void defineSystemDirectories(const char * argv0);
 
