@@ -57,6 +57,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <boost/algorithm/string/predicate.hpp>
 
+#include <glm/gtx/norm.hpp>
+
 #include "animation/Animation.h"
 
 #include "ai/Paths.h"
@@ -459,7 +461,7 @@ long ARX_NPC_GetNextAttainableNodeIncrement(Entity * io)
 	if(!(io->ioflags & IO_NPC) || (io->_npcdata->behavior & BEHAVIOUR_WANDER_AROUND))
 		return 0;
 
-	float dists = distSqr(io->pos, ACTIVECAM->orgTrans.pos);
+	float dists = glm::distance2(io->pos, ACTIVECAM->orgTrans.pos);
 
 	if (dists > square(ACTIVECAM->cdepth) * square(1.0f / 2))
 		return 0;
@@ -506,7 +508,7 @@ long ARX_NPC_GetNextAttainableNodeIncrement(Entity * io)
 		if(io->physics.startpos == io->physics.targetpos
 		        || ((ARX_COLLISION_Move_Cylinder(&phys, io, 40, CFLAG_JUST_TEST | CFLAG_NPC))))
 		{
-			if(distSqr(phys.cyl.origin, ACTIVEBKG->anchors[pos].pos) < square(30.f)) {
+			if(closerThan(phys.cyl.origin, ACTIVEBKG->anchors[pos].pos, 30.f)) {
 				return l_try;
 			}
 		}
@@ -528,7 +530,7 @@ static long AnchorData_GetNearest(Vec3f * pos, EERIE_CYLINDER * cyl, long except
 			continue;
 
 		if(eb->anchors[i].nblinked) {
-			float d = distSqr(eb->anchors[i].pos, *pos);
+			float d = glm::distance2(eb->anchors[i].pos, *pos);
 
 			if ((d < distmax) && (eb->anchors[i].height <= cyl->height)
 			        && (eb->anchors[i].radius >= cyl->radius)
@@ -633,9 +635,9 @@ bool ARX_NPC_LaunchPathfind(Entity * io, long target)
 	
 	io->_npcdata->pathfind.truetarget = target;
 	
-	if ((distSqr(pos1, ACTIVECAM->orgTrans.pos) < square(ACTIVECAM->cdepth) * square(1.0f / 2))
+	if ((closerThan(pos1, ACTIVECAM->orgTrans.pos, ACTIVECAM->cdepth) * square(1.0f / 2))
 	        &&	(EEfabs(pos1.y - pos2.y) < 50.f)
-	        && (distSqr(pos1, pos2) < square(520)) && (io->_npcdata->behavior & BEHAVIOUR_MOVE_TO)
+	        && (closerThan(pos1, pos2, 520)) && (io->_npcdata->behavior & BEHAVIOUR_MOVE_TO)
 	        && (!(io->_npcdata->behavior & BEHAVIOUR_SNEAK))
 	        && (!(io->_npcdata->behavior & BEHAVIOUR_FLEE))
 	   )
@@ -651,7 +653,7 @@ bool ARX_NPC_LaunchPathfind(Entity * io, long target)
 		if(io->physics.startpos == io->physics.targetpos
 		        || ((ARX_COLLISION_Move_Cylinder(&phys, io, 40, CFLAG_JUST_TEST | CFLAG_NPC | CFLAG_NO_HEIGHT_MOD)) ))
 		{
-			if(distSqr(phys.cyl.origin, pos2) < square(100.f)) {
+			if(closerThan(phys.cyl.origin, pos2, 100.f)) {
 				io->_npcdata->pathfind.pathwait = 0;
 				return false;
 			}
@@ -1767,7 +1769,7 @@ void ARX_NPC_TryToCutSomething(Entity * target, Vec3f * pos)
 			}
 
 			if(out < 3) {
-				float dist = distSqr(*pos, target->obj->vertexlist3[target->obj->selections[i].selected[0]].v);
+				float dist = glm::distance2(*pos, target->obj->vertexlist3[target->obj->selections[i].selected[0]].v);
 
 				if(dist < mindistSqr) {
 					mindistSqr = dist;
@@ -2119,9 +2121,9 @@ void ARX_NPC_Manage_Anims(Entity * io, float TOLERANCE)
 	float tdist = std::numeric_limits<float>::max();
 
 	if(io->_npcdata->pathfind.listnb && ValidIONum(io->_npcdata->pathfind.truetarget)) {
-		tdist = distSqr(io->pos, entities[io->_npcdata->pathfind.truetarget]->pos);
+		tdist = glm::distance2(io->pos, entities[io->_npcdata->pathfind.truetarget]->pos);
 	} else if(ValidIONum(io->targetinfo)) {
-		tdist = distSqr(io->pos, entities[io->targetinfo]->pos);
+		tdist = glm::distance2(io->pos, entities[io->targetinfo]->pos);
 	}
 
 	Entity * ioo = io->_npcdata->weapon;
@@ -2745,7 +2747,7 @@ static void ManageNPCMovement(Entity * io)
 
 
 	// look around if finished fleeing or being looking around !
-	if((io->_npcdata->behavior & BEHAVIOUR_LOOK_AROUND) && distSqr(io->pos, io->target) > square(150.f)) {
+	if((io->_npcdata->behavior & BEHAVIOUR_LOOK_AROUND) && fartherThan(io->pos, io->target, 150.f)) {
 		if(!io->_npcdata->ex_rotate) {
 			ARX_NPC_CreateExRotateData(io);
 		} else { // already created
@@ -3384,7 +3386,7 @@ Entity * ARX_NPC_GetFirstNPCInSight(Entity * ioo)
 		return NULL;
 
 	// Basic Clipping to avoid performance loss
-	if(distSqr(ACTIVECAM->orgTrans.pos, ioo->pos) > square(2500)) {
+	if(fartherThan(ACTIVECAM->orgTrans.pos, ioo->pos, 2500)) {
 		return NULL;
 	}
 
@@ -3399,7 +3401,7 @@ Entity * ARX_NPC_GetFirstNPCInSight(Entity * ioo)
 				|| io->show != SHOW_FLAG_IN_SCENE)
 			continue;
 
-		float dist_io = distSqr(io->pos, ioo->pos);
+		float dist_io = glm::distance2(io->pos, ioo->pos);
 
 		if(dist_io > found_dist || dist_io > square(1800))
 			continue; // too far
@@ -3468,7 +3470,7 @@ Entity * ARX_NPC_GetFirstNPCInSight(Entity * ioo)
 						found_dist = dist_io;
 					}
 					continue;
-				} else if(distSqr(ppos, dest) < square(25.f)) {
+				} else if(closerThan(ppos, dest, 25.f)) {
 					if(found_dist > dist_io) {
 						found_io = io;
 						found_dist = dist_io;
@@ -3515,7 +3517,7 @@ void CheckNPC(Entity * io)
 void CheckNPCEx(Entity * io) {
 	
 	// Distance Between Player and IO
-	float ds = distSqr(io->pos, player.basePosition());
+	float ds = glm::distance2(io->pos, player.basePosition());
 	
 	// Start as not visible
 	long Visible = 0;
@@ -3557,7 +3559,7 @@ void CheckNPCEx(Entity * io) {
 					Vec3f ppos;
 					// Check for Geometrical Visibility
 					if(IO_Visible(&orgn, &dest, NULL, &ppos)
-					   || distSqr(ppos, dest) < square(25.f)) {
+					   || closerThan(ppos, dest, 25.f)) {
 						Visible = 1;
 					}
 				}

@@ -54,6 +54,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <boost/numeric/conversion/cast.hpp>
 #include <boost/static_assert.hpp>
 
+#include <glm/gtx/norm.hpp>
+
 using std::min;
 using std::max;
 
@@ -269,7 +271,7 @@ inline float square(float x) {
  * may use an approximative way of computing sqrt !
  */
 inline float fdist(const Vec3f & from, const Vec3f & to) {
-	return ffsqrt(distSqr(from, to));
+	return ffsqrt(glm::distance2(from, to));
 }
 
 /*!
@@ -277,7 +279,7 @@ inline float fdist(const Vec3f & from, const Vec3f & to) {
  * may use an approximative way of computing sqrt !
  */
 inline float fdist(const Vec2f & from, const Vec2f & to) {
-	return ffsqrt(distSqr(from, to));
+	return ffsqrt(glm::distance2(from, to));
 }
 
 inline bool PointInCylinder(const EERIE_CYLINDER * cyl, const Vec3f * pt) {

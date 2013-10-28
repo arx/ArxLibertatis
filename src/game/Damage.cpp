@@ -1225,17 +1225,15 @@ bool ARX_DAMAGES_TryToDoDamage(Vec3f * pos, float dmg, float radius, long source
 			float rad = radius + 5.f;
 
 			if(io->ioflags & IO_FIX) {
-				threshold = square(510);
+				threshold = 510;
 				rad += 10.f;
 			} else if(io->ioflags & IO_NPC) {
-				threshold = square(250);
+				threshold = 250;
 			} else {
-				threshold = square(350);
+				threshold = 350;
 			}
 
-			if(distSqr(*pos, io->pos) < threshold
-			   && SphereInIO(io, pos, rad)
-			) {
+			if(closerThan(*pos, io->pos, threshold) && SphereInIO(io, pos, rad)) {
 				if(io->ioflags & IO_NPC) {
 					if(ValidIONum(source))
 						ARX_EQUIPMENT_ComputeDamages(entities[source], io, 1.f);
@@ -1268,7 +1266,7 @@ void CheckForIgnition(Vec3f * pos, float radius, bool mode, long flag) {
 				if((el->extras & EXTRAS_FIREPLACE) && (flag & 2))
 					continue;
 
-				if(distSqr(*pos, el->pos) <= square(radius)) {
+				if(!fartherThan(*pos, el->pos, radius)) {
 					if(mode) {
 						if (!(el->extras & EXTRAS_NO_IGNIT))
 							el->status = 1;
@@ -1285,7 +1283,7 @@ void CheckForIgnition(Vec3f * pos, float radius, bool mode, long flag) {
 
 		if(io && io->show == 1 && io->obj && !(io->ioflags & IO_UNDERWATER) && io->obj->fastaccess.fire >= 0) {
 			
-			if(distSqr(*pos, io->obj->vertexlist3[io->obj->fastaccess.fire].v) < square(radius)) {
+			if(closerThan(*pos, io->obj->vertexlist3[io->obj->fastaccess.fire].v, radius)) {
 
 				if(mode && io->ignition <= 0 && io->obj->fastaccess.fire >= 0) {
 					io->ignition = 1;

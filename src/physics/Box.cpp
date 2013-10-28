@@ -133,8 +133,7 @@ bool IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, Vec3f * verts, long k, l
 
 		for (; nn < obj->pbox->nb_physvert; nn++)
 		{
-			if (distSqr(center, vert[nn].pos) <= max(square(60.0f), square(rad + 25)))
-			{
+			if(!fartherThan(center, vert[nn].pos, max(60.0f, rad + 25))) {
 				nn = 1000;
 			}
 		}
@@ -144,8 +143,9 @@ bool IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, Vec3f * verts, long k, l
 	}
 	else
 	{
-		if (distSqr(center, vert[k].pos) > square(rad + 25))
+		if(fartherThan(center, vert[k].pos, rad + 25)) {
 			return false;
+		}
 	}
 
 	//TOP

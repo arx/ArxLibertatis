@@ -454,7 +454,7 @@ class IfVisibleCommand : public Command {
 	
 	static bool hasVisibility(Entity * io, Entity * ioo) {
 		
-		if(distSqr(io->pos, ioo->pos) > square(20000)) {
+		if(fartherThan(io->pos, ioo->pos, 20000)) {
 			return false;
 		}
 		

@@ -267,7 +267,7 @@ bool FrustrumsClipSphere(const EERIE_FRUSTRUM_DATA & frustrums, const EERIE_SPHE
 bool VisibleSphere(float x, float y, float z, float radius) {
 	
 	Vec3f pos(x, y, z);
-	if(distSqr(pos, ACTIVECAM->orgTrans.pos) > square(ACTIVECAM->cdepth*0.5f + radius))
+	if(fartherThan(pos, ACTIVECAM->orgTrans.pos, ACTIVECAM->cdepth*0.5f + radius))
 		return false;
 
 	long room_num = ARX_PORTALS_GetRoomNumForPosition(&pos);

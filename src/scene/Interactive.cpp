@@ -56,6 +56,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <boost/algorithm/string/predicate.hpp>
 
+#include <glm/gtx/norm.hpp>
+
 #include "ai/Paths.h"
 
 #include "animation/Animation.h"
@@ -480,7 +482,7 @@ void CheckSetAnimOutOfTreatZone(Entity * io, long num)
 
 	if( io->animlayer[num].cur_anim &&
 		!(io->gameFlags & GFLAG_ISINTREATZONE) &&
-		distSqr(io->pos, ACTIVECAM->orgTrans.pos) > square(2500.f))
+		fartherThan(io->pos, ACTIVECAM->orgTrans.pos, 2500.f))
 	{
 
 		io->animlayer[num].ctime = io->animlayer[num].cur_anim->anims[io->animlayer[num].altidx_cur]->anim_time - 1;
@@ -499,7 +501,7 @@ void PrepareIOTreatZone(long flag)
 		status = 0;
 	}
 
-	if(distSqr(ACTIVECAM->orgTrans.pos, lastpos) > square(100.f)) {
+	if(fartherThan(ACTIVECAM->orgTrans.pos, lastpos, 100.f)) {
 		status = 0;
 		lastpos = ACTIVECAM->orgTrans.pos;
 	}
@@ -569,7 +571,7 @@ void PrepareIOTreatZone(long flag)
 					if(io->show == SHOW_FLAG_TELEPORTING) {
 						Vec3f pos;
 						GetItemWorldPosition(io, &pos);
-						dists = distSqr(ACTIVECAM->orgTrans.pos, pos);
+						dists = glm::distance2(ACTIVECAM->orgTrans.pos, pos);
 					} else {
 						if(io->room_flags & 1)
 							UpdateIORoom(io);
@@ -580,10 +582,10 @@ void PrepareIOTreatZone(long flag)
 					if(io->show == SHOW_FLAG_TELEPORTING) {
 						Vec3f pos;
 						GetItemWorldPosition(io, &pos);
-						dists = distSqr(ACTIVECAM->orgTrans.pos, pos); //&io->pos,&pos);
+						dists = glm::distance2(ACTIVECAM->orgTrans.pos, pos); //&io->pos,&pos);
 					}
 					else
-						dists = distSqr(io->pos, ACTIVECAM->orgTrans.pos);
+						dists = glm::distance2(io->pos, ACTIVECAM->orgTrans.pos);
 				}
 		
 				if(dists < square(TREATZONE_LIMIT))
@@ -663,7 +665,7 @@ void PrepareIOTreatZone(long flag)
 				Entity * ioo = treatio[ii].io;
 
 				if(ioo) {
-					if(distSqr(io->pos, ioo->pos) < square(300.f)) {
+					if(closerThan(io->pos, ioo->pos, 300.f)) {
 						toadd = 1;
 						break;
 					}
@@ -2342,8 +2344,8 @@ Entity * GetFirstInterAtPos(Vec2s * pos, long flag, Vec3f * _pRef, Entity ** _pT
 
 
 		if(flag && _pRef) {
-			float flDistanceToRef = distSqr(ACTIVECAM->orgTrans.pos, *_pRef);
-			float flDistanceToIO = distSqr(ACTIVECAM->orgTrans.pos, io->pos);
+			float flDistanceToRef = glm::distance2(ACTIVECAM->orgTrans.pos, *_pRef);
+			float flDistanceToIO = glm::distance2(ACTIVECAM->orgTrans.pos, io->pos);
 			bPass = bPlayerEquiped || (flDistanceToIO < flDistanceToRef);
 		}
 
@@ -2548,7 +2550,7 @@ bool ARX_INTERACTIVE_CheckCollision(EERIE_3DOBJ * obj, long kk, long source)
 		    && (!io->usepath)
 		)
 		{
-			if(distSqr(io->pos, obj->pbox->vert[0].pos) < square(450.f)
+			if(closerThan(io->pos, obj->pbox->vert[0].pos, 450.f)
 					&& In3DBBoxTolerance(&obj->pbox->vert[kk].pos, &io->bbox3D, obj->pbox->radius))
 			{
 				if((io->ioflags & IO_NPC) && io->_npcdata->life > 0.f) {
@@ -2626,7 +2628,7 @@ bool ARX_INTERACTIVE_CheckFULLCollision(EERIE_3DOBJ * obj, long source)
 		   || (io->ioflags & (IO_CAMERA | IO_MARKER | IO_ITEM))
 		   || io->usepath
 		   || ((io->ioflags & IO_NPC) && io_source && (io_source->ioflags & IO_NO_NPC_COLLIDE))
-		   || distSqr(io->pos, obj->pbox->vert[0].pos) >= square(600.f)
+		   || !closerThan(io->pos, obj->pbox->vert[0].pos, 600.f)
 		   || !In3DBBoxTolerance(&obj->pbox->vert[0].pos, &io->bbox3D, obj->pbox->radius)
 		) {
 			continue;

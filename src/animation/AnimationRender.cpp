@@ -541,7 +541,7 @@ bool Cedric_IO_Visible(const Vec3f & pos) {
 
 	if(ACTIVEBKG) {
 		//TODO maybe readd this
-		//if(distSqr(io->pos, ACTIVECAM->orgTrans.pos) > square(ACTIVECAM->cdepth) * square(0.6f))
+		//if(fartherThan(io->pos, ACTIVECAM->orgTrans.pos, ACTIVECAM->cdepth * 0.6f))
 		//	return false;
 
 		long xx = pos.x * ACTIVEBKG->Xmul;
@@ -1707,7 +1707,7 @@ void EERIEDrawAnimQuatRender(EERIE_3DOBJ *eobj, const Vec3f & pos, Entity *io, b
 	bool isFightingNpc = io &&
 						 (io->ioflags & IO_NPC) &&
 						 (io->_npcdata->behavior & BEHAVIOUR_FIGHT) &&
-						 distSqr(io->pos, player.pos) < square(240.f);
+						 closerThan(io->pos, player.pos, 240.f);
 
 	if(!isFightingNpc && ARX_SCENE_PORTAL_ClipIO(io, pos))
 		return;

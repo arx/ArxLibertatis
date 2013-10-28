@@ -27,18 +27,13 @@
 // TODO replace calls with their direct glm equivalents!
 
 template <class V>
-typename V::value_type distSqr(const V & a, const V & b) {
-	return glm::distance2(a, b);
-}
-
-template <class V>
 bool closerThan(const V & a, const V & b, typename V::value_type d) {
-	return distSqr(a, b) < (d * d);
+	return glm::distance2(a, b) < (d * d);
 }
 
 template <class V>
 bool fartherThan(const V & a, const V & b, typename V::value_type d) {
-	return distSqr(a, b) > (d * d);
+	return glm::distance2(a, b) > (d * d);
 }
 
 template <class V>

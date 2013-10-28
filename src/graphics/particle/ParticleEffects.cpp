@@ -48,6 +48,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <algorithm>
 
+#include <glm/gtx/norm.hpp>
+
 #include "core/Application.h"
 #include "core/Config.h"
 #include "core/Core.h"
@@ -486,7 +488,7 @@ void ARX_PARTICLES_Spawn_Blood(Vec3f * pos, float dmgs, long source) {
 	long count = entities[source]->obj->nbgroups;
 	for(long i = 0; i < count; i += 2) {
 		long vertex = entities[source]->obj->grouplist[i].origin;
-		float dist = distSqr(*pos, entities[source]->obj->vertexlist3[vertex].v);
+		float dist = glm::distance2(*pos, entities[source]->obj->vertexlist3[vertex].v);
 		if(dist < nearest_dist) {
 			nearest_dist = dist;
 			nearest = i;
@@ -1464,7 +1466,7 @@ void TreatBackgroundActions() {
 			continue;
 		}
 		
-		float dist = distSqr(gl->pos,	ACTIVECAM->orgTrans.pos);
+		float dist = glm::distance2(gl->pos,	ACTIVECAM->orgTrans.pos);
 		if(dist > fZFar) {
 			// Out of treat range
 			ARX_SOUND_Stop(gl->sample);

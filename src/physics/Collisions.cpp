@@ -590,7 +590,7 @@ float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,Entity * ioo,long flags) {
 				||	(	(io->show!=SHOW_FLAG_IN_SCENE)
 					||	((io->ioflags & IO_NO_COLLISIONS)  && !(flags & CFLAG_COLLIDE_NOCOL))
 					) 
-				||	distSqr(io->pos, cyl->origin) > square(1000.f)) continue;
+				|| fartherThan(io->pos, cyl->origin, 1000.f)) continue;
 	
 			{
 				EERIE_CYLINDER * io_cyl = &io->physics.cyl;
@@ -940,14 +940,14 @@ bool CheckEverythingInSphere(EERIE_SPHERE * sphere, long source, long targ, std:
 			}
 		}
 
-		if(distSqr(io->pos, sphere->origin) < square(sr180)) {
+		if(closerThan(io->pos, sphere->origin, sr180)) {
 
 			long amount = 1;
 			std::vector<EERIE_VERTEX> & vlist = io->obj->vertexlist3;
 
 			if(io->obj->nbgroups > 4) {
 				for(long ii = 0; ii < io->obj->nbgroups; ii++) {
-					if(distSqr(vlist[io->obj->grouplist[ii].origin].v, sphere->origin) < square(sr40)) {
+					if(closerThan(vlist[io->obj->grouplist[ii].origin].v, sphere->origin, sr40)) {
 
 						sphereContent.push_back(ret_idx);
 
@@ -968,10 +968,10 @@ bool CheckEverythingInSphere(EERIE_SPHERE * sphere, long source, long targ, std:
 				Vec3f fcenter = (vlist[ef->vid[0]].v + vlist[ef->vid[1]].v
 								 + vlist[ef->vid[2]].v) * (1.0f / 3);
 
-				if(distSqr(fcenter, sphere->origin) < square(sr30) ||
-				   distSqr(vlist[ef->vid[0]].v, sphere->origin) < square(sr30) ||
-				   distSqr(vlist[ef->vid[1]].v, sphere->origin) < square(sr30) ||
-				   distSqr(vlist[ef->vid[2]].v, sphere->origin) < square(sr30)) {
+				if(closerThan(fcenter, sphere->origin, sr30)
+				   || closerThan(vlist[ef->vid[0]].v, sphere->origin, sr30)
+				   || closerThan(vlist[ef->vid[1]].v, sphere->origin, sr30)
+				   || closerThan(vlist[ef->vid[2]].v, sphere->origin, sr30)) {
 
 					sphereContent.push_back(ret_idx);
 
@@ -1133,13 +1133,13 @@ bool CheckAnythingInSphere(EERIE_SPHERE * sphere, long source, CASFlags flags, l
 			}
 		}
 
-		if(distSqr(io->pos, sphere->origin) < square(sr180)) {
+		if(closerThan(io->pos, sphere->origin, sr180)) {
 			long amount = 1;
 			std::vector<EERIE_VERTEX> & vlist = io->obj->vertexlist3;
 
 			if(io->obj->nbgroups > 4) {
 				for(long ii = 0; ii < io->obj->nbgroups; ii++) {
-					if(distSqr(vlist[io->obj->grouplist[ii].origin].v, sphere->origin) < square(sr40)) {
+					if(closerThan(vlist[io->obj->grouplist[ii].origin].v, sphere->origin, sr40)) {
 						if(num)
 							*num = treatio[i].num;
 
@@ -1155,8 +1155,8 @@ bool CheckAnythingInSphere(EERIE_SPHERE * sphere, long source, CASFlags flags, l
 				if(io->obj->facelist[ii].facetype & POLY_HIDE)
 					continue;
 
-				if(distSqr(vlist[io->obj->facelist[ii].vid[0]].v, sphere->origin) < square(sr30)
-				   || distSqr(vlist[io->obj->facelist[ii].vid[1]].v, sphere->origin) < square(sr30)) {
+				if(closerThan(vlist[io->obj->facelist[ii].vid[0]].v, sphere->origin, sr30)
+				   || closerThan(vlist[io->obj->facelist[ii].vid[1]].v, sphere->origin, sr30)) {
 					if(num)
 						*num = treatio[i].num;
 
@@ -1185,7 +1185,7 @@ bool CheckIOInSphere(EERIE_SPHERE * sphere, long target, bool ignoreNoCollisionF
 	   && (io->gameFlags & GFLAG_ISINTREATZONE)
 	   && (io->obj)
 	) {
-		if(distSqr(io->pos, sphere->origin) < square(sr180)) {
+		if(closerThan(io->pos, sphere->origin, sr180)) {
 			vector<EERIE_VERTEX> & vlist = io->obj->vertexlist3;
 
 			if(io->obj->nbgroups>10) {
@@ -1193,7 +1193,7 @@ bool CheckIOInSphere(EERIE_SPHERE * sphere, long target, bool ignoreNoCollisionF
 				long ii=io->obj->nbgroups-1;
 
 				while(ii) {
-					if(distSqr(vlist[io->obj->grouplist[ii].origin].v, sphere->origin) < square(sr40)) {
+					if(closerThan(vlist[io->obj->grouplist[ii].origin].v, sphere->origin, sr40)) {
 						count++;
 
 						if(count>3)
@@ -1232,7 +1232,7 @@ bool CheckIOInSphere(EERIE_SPHERE * sphere, long target, bool ignoreNoCollisionF
 						if(kk != ii) {
 							for(float nn = 0.2f; nn < 1.f; nn += 0.2f) {
 								Vec3f posi = vlist[ii].v * nn + vlist[kk].v * (1.f - nn);
-								if(distSqr(sphere->origin, posi) <= square(sr30 + 20)) {
+								if(!fartherThan(sphere->origin, posi, sr30 + 20)) {
 									count++;
 
 									if(count > 3) {
@@ -1743,7 +1743,7 @@ void ANCHOR_BLOCK_By_IO(Entity * io, long status) {
 	for(long k = 0; k < eb->nbanchors; k++) {
 		ANCHOR_DATA * ad = &eb->anchors[k];
 
-		if(distSqr(ad->pos, io->pos) > square(600.f))
+		if(fartherThan(ad->pos, io->pos, 600.f))
 			continue;
 
 		if(closerThan(Vec2f(io->pos.x, io->pos.z), Vec2f(ad->pos.x, ad->pos.z), 440.f)) {

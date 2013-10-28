@@ -330,7 +330,7 @@ public:
 					GetItemWorldPosition(entities[l], &_pos);
 					GetItemWorldPosition(io, &_pos2);
 					
-					if(distSqr(_pos, _pos2) <= square(rad)) {
+					if(!fartherThan(_pos, _pos2, rad)) {
 						io->stat_sent++;
 						Stack_SendIOScriptEvent(entities[l], SM_NULL, params, event);
 					}

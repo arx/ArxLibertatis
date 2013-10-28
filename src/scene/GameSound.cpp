@@ -524,7 +524,7 @@ long ARX_SOUND_PlaySFX(SourceId & sample_id, const Vec3f * position, float pitch
 	channel.volume = 1.0F;
 	
 	if(position) {
-		if(ACTIVECAM && distSqr(ACTIVECAM->orgTrans.pos, *position) > square(ARX_SOUND_REFUSE_DISTANCE)) {
+		if(ACTIVECAM && fartherThan(ACTIVECAM->orgTrans.pos, *position, ARX_SOUND_REFUSE_DISTANCE)) {
 			return -1;
 		}
 	}
@@ -630,7 +630,7 @@ long ARX_SOUND_PlaySpeech(const res::path & name, const Entity * io)
 		else
 			channel.position = io->pos;
 
-		if(ACTIVECAM && distSqr(ACTIVECAM->orgTrans.pos, io->pos) > square(ARX_SOUND_REFUSE_DISTANCE)) {
+		if(ACTIVECAM && fartherThan(ACTIVECAM->orgTrans.pos, io->pos, ARX_SOUND_REFUSE_DISTANCE)) {
 			return ARX_SOUND_TOO_FAR; // TODO sample is never freed!
 		}
 
@@ -678,7 +678,7 @@ long ARX_SOUND_PlayCollision(long mat1, long mat2, float volume, float power, Ve
 
 	if (position)
 	{
-		if (ACTIVECAM && distSqr(ACTIVECAM->orgTrans.pos, *position) > square(ARX_SOUND_REFUSE_DISTANCE))
+		if (ACTIVECAM && fartherThan(ACTIVECAM->orgTrans.pos, *position, ARX_SOUND_REFUSE_DISTANCE))
 			return -1;
 	}
 	
@@ -786,7 +786,7 @@ long ARX_SOUND_PlayScript(const res::path & name, const Entity * io, float pitch
 	if(io) {
 		GetItemWorldPositionSound(io, &channel.position);
 		if(loop != ARX_SOUND_PLAY_LOOPED) {
-			if (ACTIVECAM && distSqr(ACTIVECAM->orgTrans.pos, channel.position) > square(ARX_SOUND_REFUSE_DISTANCE)) {
+			if (ACTIVECAM && fartherThan(ACTIVECAM->orgTrans.pos, channel.position, ARX_SOUND_REFUSE_DISTANCE)) {
 				// TODO the sample will never be freed!
 				return ARX_SOUND_TOO_FAR;
 			}
