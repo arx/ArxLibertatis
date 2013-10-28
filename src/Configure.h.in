@@ -53,7 +53,7 @@
 #cmakedefine01 ARX_HAVE_PCLOSE
 #cmakedefine01 ARX_HAVE_SYSCONF
 #cmakedefine01 ARX_HAVE_GETEXECNAME
-#cmakedefine ARX_HAVE_SYSCTL
+#cmakedefine01 ARX_HAVE_SYSCTL
 #cmakedefine ARX_HAVE_SETENV
 
 // Arx components

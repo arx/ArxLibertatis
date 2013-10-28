@@ -62,7 +62,7 @@ extern char ** environ;
 #include <sys/param.h>
 #endif
 
-#ifdef ARX_HAVE_SYSCTL
+#if ARX_HAVE_SYSCTL
 #include <sys/types.h>
 #include <sys/sysctl.h>
 #include <fcntl.h>
@@ -325,7 +325,7 @@ fs::path getExecutablePath() {
 	#endif
 	
 	// FreeBSD
-	#if defined(ARX_HAVE_SYSCTL) && defined(CTL_KERN) && defined(KERN_PROC) \
+	#if ARX_HAVE_SYSCTL && defined(CTL_KERN) && defined(KERN_PROC) \
 	    && defined(KERN_PROC_PATHNAME) && ARX_PLATFORM == ARX_PLATFORM_BSD \
 	    && defined(PATH_MAX)
 	int mib[4];
