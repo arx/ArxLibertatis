@@ -28,6 +28,7 @@ Reddit: [http://www.reddit.com/r/ArxFatalis/](http://www.reddit.com/r/ArxFatalis
 * **[CMake](http://www.cmake.org/) 2.8**+ (compile-time only, 2.8.5+ under Windows)
 * **[zlib](http://zlib.net/)**
 * **[Boost](http://www.boost.org/) 1.39**+ (headers only)
+* **[GLM](http://glm.g-truc.net/)**
 * **[Freetype](http://www.freetype.org/)**
 * **OpenAL 1.1**+ ([OpenAL Soft](http://kcat.strangesoft.net/openal.html) strongly recommended!)
 
