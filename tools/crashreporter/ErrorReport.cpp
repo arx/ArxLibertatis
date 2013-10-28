@@ -401,7 +401,7 @@ bool ErrorReport::getCrashDescription() {
 		sprintf(pid_buf, "--pid=%d", m_pCrashInfo->processId);
 		
 		// Turn off localization for the backtrace output
-		#ifdef ARX_HAVE_SETENV
+		#if ARX_HAVE_SETENV
 		setenv("LANG", "C", 1);
 		setenv("LC_ALL", "C", 1);
 		#endif
