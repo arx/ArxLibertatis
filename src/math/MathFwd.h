@@ -27,9 +27,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-#include <glm/gtx/epsilon.hpp>
 #include <glm/gtx/euler_angles.hpp>
-#include <glm/gtx/norm.hpp>
 
 template <class T>
 class Angle;
@@ -86,71 +84,6 @@ typedef vec_traits<f64, 3>::type Vec3d;
 typedef vec_traits<s32, 4>::type Vec4i;
 typedef vec_traits<f32, 4>::type Vec4f;
 typedef vec_traits<f64, 4>::type Vec4d;
-
-
-template<class V>
-typename V::value_type dist(const V & a, const V & b) {
-	return glm::distance(a, b);
-}
-
-template<class V>
-typename V::value_type distSqr(const V & a, const V & b) {
-	return glm::distance2(a, b);
-}
-
-template<class V>
-bool closerThan(const V & a, const V & b, typename V::value_type d) {
-	return distSqr(a, b) < (d * d);
-}
-
-template<class V>
-bool fartherThan(const V & a, const V & b, typename V::value_type d) {
-	return distSqr(a, b) > (d * d);
-}
-
-template<class V>
-V normalize(const V & v0) {
-	return glm::normalize(v0);
-}
-
-template<class V>
-typename V::value_type length(const V & v0) {
-	return glm::length(v0);
-}
-
-template<class V>
-typename V::value_type lengthSqr(const V & v0) {
-	return glm::length2(v0);
-}
-
-template<class V>
-V cross(const V & a, const V & b) {
-	return glm::cross(a, b);
-}
-
-template<class V>
-typename V::value_type dot(const V & a, const V & b) {
-	return glm::dot(a, b);
-}
-
-template <class V>
-V componentwise_min(const V & v0, const V & v1) {
-	return glm::min(v0, v1);
-}
-template <class V>
-V componentwise_max(const V & v0, const V & v1) {
-	return glm::max(v0, v1);
-}
-
-template <class V>
-bool isallfinite(const V& vec) {
-	for(size_t i = 0; i < vec.length(); i++) {
-		if(!std::isfinite(vec[i]))
-			return false;
-	}
-
-	return true;
-}
 
 // Math constants
 #define PI 3.14159265358979323846f

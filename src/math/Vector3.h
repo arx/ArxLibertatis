@@ -20,9 +20,10 @@
 #ifndef ARX_MATH_VECTOR3_H
 #define ARX_MATH_VECTOR3_H
 
-#include "math/MathFwd.h"
+#include "math/Vector.h"
 
 // Constants
+
 const Vec3i Vec3i_ZERO(0,0,0);
 const Vec3i Vec3i_ONE(1,1,1);
 const Vec3i Vec3i_X_AXIS(1,0,0);

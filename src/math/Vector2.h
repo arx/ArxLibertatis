@@ -20,7 +20,9 @@
 #ifndef ARX_MATH_VECTOR2_H
 #define ARX_MATH_VECTOR2_H
 
-#include "math/MathFwd.h"
+#include "math/Vector.h"
+
+// Constants
 
 const Vec2i Vec2i_ZERO(0,0);
 const Vec2i Vec2i_ONE(1,1);

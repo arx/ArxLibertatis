@@ -23,6 +23,8 @@
 #include <limits>
 #include <cmath>
 
+#include <glm/gtx/quaternion.hpp>
+
 #include "math/MathFwd.h"
 
 inline float MAKEANGLE(float a) {
@@ -55,7 +57,7 @@ public:
 	 */
 	Angle(const Angle & other) : m_yaw(other.m_yaw), m_pitch(other.m_pitch), m_roll(other.m_roll) {}
 
-	explicit Angle(glm::quat quat) {
+	explicit Angle(const glm::quat & quat) {
 		typename vec3_traits<T>::type v = glm::eulerAngles(quat);
 		m_yaw = degrees(v.x);
 		m_pitch = degrees(v.y);
