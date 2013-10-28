@@ -866,7 +866,7 @@ bool Menu2_Render() {
 						
 						slider->AddText(new CMenuElementText(-1, hFontMenu, "Auto-Select", 0, 0, lColor, 1.f, OPTIONS_VIDEO_RENDERER_AUTOMATIC));
 						slider->iPos = slider->vText.size() - 1;
-#ifdef ARX_HAVE_SDL
+#if ARX_HAVE_SDL
 						slider->AddText(new CMenuElementText(-1, hFontMenu, "OpenGL", 0, 0, lColor, 1.f, OPTIONS_VIDEO_RENDERER_OPENGL));
 						if(config.window.framework == "SDL") {
 							slider->iPos = slider->vText.size() - 1;
@@ -1193,7 +1193,7 @@ bool Menu2_Render() {
 						
 						slider->AddText(new CMenuElementText(-1, hFontMenu, "Auto-Select", 0, 0, lColor, 1.f, OPTIONS_INPUT_BACKEND_AUTOMATIC));
 						slider->iPos = slider->vText.size() - 1;
-#ifdef ARX_HAVE_SDL
+#if ARX_HAVE_SDL
 						slider->AddText(new CMenuElementText(-1, hFontMenu, "SDL", 0, 0, lColor, 1.f, OPTIONS_INPUT_BACKEND_SDL));
 						if(config.input.backend == "SDL") {
 							slider->iPos = slider->vText.size() - 1;

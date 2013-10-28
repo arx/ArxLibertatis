@@ -134,7 +134,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "Configure.h"
 #include "core/URLConstants.h"
 
-#ifdef ARX_HAVE_SDL
+#if ARX_HAVE_SDL
 #include "window/SDLWindow.h"
 #endif
 
@@ -349,7 +349,7 @@ bool ArxGame::initWindow() {
 		
 		bool matched = false;
 		
-		#ifdef ARX_HAVE_SDL
+		#if ARX_HAVE_SDL
 		if(!m_MainWindow && first == (autoFramework || config.window.framework == "SDL")) {
 			matched = true;
 			RenderWindow * window = new SDLWindow;

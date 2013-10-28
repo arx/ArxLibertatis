@@ -54,7 +54,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/GameTime.h"
 #include "graphics/Math.h"
 #include "input/InputBackend.h"
-#ifdef ARX_HAVE_SDL
+#if ARX_HAVE_SDL
 #include "input/SDLInputBackend.h"
 #endif
 #include "io/log/Logger.h"
@@ -214,7 +214,7 @@ bool Input::init() {
 		
 		bool matched = false;
 		
-		#ifdef ARX_HAVE_SDL
+		#if ARX_HAVE_SDL
 		if(!backend && first == (autoBackend || config.input.backend == "SDL")) {
 			matched = true;
 			backend = new SDLInputBackend;

@@ -13,7 +13,7 @@
 #cmakedefine01 ARX_HAVE_OPENAL_EFX
 
 // Input backend
-#cmakedefine ARX_HAVE_SDL
+#cmakedefine01 ARX_HAVE_SDL
 
 // Crash handler
 #cmakedefine ARX_HAVE_CRASHHANDLER_POSIX
