@@ -24,6 +24,8 @@
 
 #include "platform/Platform.h"
 
+namespace fs { class path; }
+
 enum ExitStatus {
 	ExitSuccess,
 	ExitFailure,
@@ -37,7 +39,7 @@ bool getSystemConfiguration(const std::string & name, std::string & result);
 void defineSystemDirectories(const char * argv0);
 
 //! Get the path to the current running executable if possible or an empty string otherwise.
-std::string getExecutablePath();
+fs::path getExecutablePath();
 
 #if ARX_PLATFORM != ARX_PLATFORM_WIN32
 static const char * const env_list_seperators = ":";

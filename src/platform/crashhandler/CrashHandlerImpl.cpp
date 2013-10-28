@@ -45,7 +45,7 @@ bool CrashHandlerImpl::initialize() {
 	
 	bool initialized = true;
 	
-	fs::path local_path = fs::path(getExecutablePath());
+	fs::path local_path = getExecutablePath();
 	if(!local_path.empty()) {
 		local_path = local_path.parent() / m_CrashHandlerApp;
 		if(fs::exists(local_path)) {
@@ -126,7 +126,7 @@ void CrashHandlerImpl::fillBasicCrashInfo() {
 
 	strcpy(m_pCrashInfo->crashReportFolder, "crashes");
 
-	strncpy(m_pCrashInfo->executablePath, getExecutablePath().c_str(), sizeof(m_pCrashInfo->executablePath));
+	strncpy(m_pCrashInfo->executablePath, getExecutablePath().string().c_str(), sizeof(m_pCrashInfo->executablePath));
 	m_pCrashInfo->executablePath[sizeof(m_pCrashInfo->executablePath)-1] = 0; // Make sure our string is null terminated
 
 	strncpy(m_pCrashInfo->executableVersion, arx_version.c_str(), sizeof(m_pCrashInfo->executableVersion));

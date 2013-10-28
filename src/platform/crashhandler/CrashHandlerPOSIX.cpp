@@ -124,9 +124,9 @@ CrashHandlerPOSIX& CrashHandlerPOSIX::getInstance() {
 
 void CrashHandlerPOSIX::fillBasicCrashInfo() {
 	CrashHandlerImpl::fillBasicCrashInfo();
-	std::string exe = getExecutablePath();
-	if(exe.length() < ARRAY_SIZE(m_pCrashInfo->execFullName)) {
-		strcpy(m_pCrashInfo->execFullName, exe.c_str());
+	fs::path exe = getExecutablePath();
+	if(exe.string().length() < ARRAY_SIZE(m_pCrashInfo->execFullName)) {
+		strcpy(m_pCrashInfo->execFullName, exe.string().c_str());
 	} else {
 		m_pCrashInfo->execFullName[0] = '\0';
 	}

@@ -52,6 +52,7 @@
 #include <sys/sysctl.h>
 #endif
 
+#include "io/fs/FilePath.h"
 #include "platform/Platform.h"
 #include "util/String.h"
 
@@ -258,7 +259,7 @@ static bool try_readlink(std::vector<char> & buffer, const char * path) {
 }
 #endif
 
-std::string getExecutablePath() {
+fs::path getExecutablePath() {
 	
 #if ARX_PLATFORM == ARX_PLATFORM_MACOSX
 	
@@ -281,7 +282,7 @@ std::string getExecutablePath() {
 	std::vector<char> buffer;
 	buffer.resize(MAX_PATH);
 	if(GetModuleFileNameA(NULL, &*buffer.begin(), buffer.size()) > 0) {
-		return std::string(buffer.begin(), buffer.end());
+		return fs::path(&*buffer.begin(), &*buffer.end());
 	}
 	
 #else
@@ -291,15 +292,15 @@ std::string getExecutablePath() {
 	std::vector<char> buffer(1024);
 	// Linux
 	if(try_readlink(buffer, "/proc/self/exe")) {
-		return std::string(buffer.begin(), buffer.end());
+		return fs::path(&*buffer.begin(), &*buffer.end());
 	}
 	// BSD
 	if(try_readlink(buffer, "/proc/curproc/file")) {
-		return std::string(buffer.begin(), buffer.end());
+		return fs::path(&*buffer.begin(), &*buffer.end());
 	}
 	// Solaris
 	if(try_readlink(buffer, "/proc/self/path/a.out")) {
-		return std::string(buffer.begin(), buffer.end());
+		return fs::path(&*buffer.begin(), &*buffer.end());
 	}
 	#endif
 	
@@ -339,6 +340,6 @@ std::string getExecutablePath() {
 #endif
 	
 	// Give up - we couldn't determine the exe path.
-	return std::string();
+	return fs::path();
 }
 
