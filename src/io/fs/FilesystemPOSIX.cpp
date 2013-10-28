@@ -195,7 +195,7 @@ path current_path() {
 	
 }
 
-#if ARX_HAVE_DIRFD && defined(ARX_HAVE_FSTATAT)
+#if ARX_HAVE_DIRFD && ARX_HAVE_FSTATAT
 
 #define ITERATOR_HANDLE(handle)
 
