@@ -275,17 +275,17 @@ directory_iterator::directory_iterator(const path & p) : buf(NULL) {
 		&& ARX_HAVE_PC_NAME_MAX
 #  if defined(ARX_HAVE_DIRFD) && ARX_HAVE_FPATHCONF
 		name_max = fpathconf(dirfd(DIR_HANDLE(handle)), _PC_NAME_MAX);
-#else
+#  else
 		name_max = pathconf(p.string().c_str(), _PC_NAME_MAX);
-#endif
+#  endif
 		if(name_max == -1) {
-#  if defined(ARX_HAVE_NAME_MAX)
+#  if ARX_HAVE_NAME_MAX
 			name_max = std::max(NAME_MAX, 255);
 #  else
 			arx_assert_msg(false, "cannot determine maximum dirname size");
 #  endif
 		}
-#elif defined(ARX_HAVE_NAME_MAX)
+#elif ARX_HAVE_NAME_MAX
 		name_max = std::max(NAME_MAX, 255);
 #else
 #  error "buffer size for readdir_r cannot be determined"
