@@ -53,7 +53,7 @@
 extern char ** environ;
 #endif
 
-#if defined(ARX_HAVE_WAITPID)
+#if ARX_HAVE_WAITPID
 #include <sys/wait.h>
 #endif
 
@@ -500,7 +500,7 @@ static int run(const fs::path & exe, bool wait, const char * const args[]) {
 		return -1;
 	}
 	
-	#if defined(ARX_HAVE_WAITPID)
+	#if ARX_HAVE_WAITPID
 	if(wait) {
 		int status;
 		(void)waitpid(pid, &status, 0);

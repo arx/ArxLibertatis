@@ -29,7 +29,7 @@
 #include <psapi.h>
 #endif
 
-#if defined(ARX_HAVE_WAITPID)
+#if ARX_HAVE_WAITPID
 #include <sys/wait.h>
 #endif
 
@@ -379,7 +379,7 @@ bool ErrorReport::getCrashDescription() {
 	
 	m_ReportDescriptionText = m_ReportDescription;
 	
-#if ARX_HAVE_FORK && ARX_HAVE_EXECVP && ARX_HAVE_DUP2 && defined(ARX_HAVE_WAITPID)
+#if ARX_HAVE_FORK && ARX_HAVE_EXECVP && ARX_HAVE_DUP2 && ARX_HAVE_WAITPID
 	
 	fs::path tracePath = m_ReportFolder / "gdbtrace.txt";
 	
