@@ -149,7 +149,7 @@ bool copy_file(const path & from_p, const path & to_p, bool overwrite) {
 bool rename(const path & old_p, const path & new_p, bool overwrite) {
 	
 	if(!overwrite && exists(new_p)) {
-#if defined(ARX_HAVE_PATHCONF) && defined(ARX_HAVE_PC_CASE_SENSITIVE)
+#if ARX_HAVE_PATHCONF && defined(ARX_HAVE_PC_CASE_SENSITIVE)
 		if(boost::to_lower_copy(old_p.string()) == boost::to_lower_copy(new_p.string())) {
 			if(pathconf(old_p.string().c_str(), _PC_CASE_SENSITIVE)) {
 				return false; // filesystem is case-sensitive and destination file already exists
@@ -168,7 +168,7 @@ bool rename(const path & old_p, const path & new_p, bool overwrite) {
 path current_path() {
 	
 	size_t intitial_length = 1024;
-#if defined(ARX_HAVE_PATHCONF) && defined(ARX_HAVE_PC_NAME_MAX)
+#if ARX_HAVE_PATHCONF && defined(ARX_HAVE_PC_NAME_MAX)
 	size_t path_max = pathconf(".", _PC_PATH_MAX);
 	if(path_max <= 0) {
 		intitial_length = 1024;
@@ -271,7 +271,7 @@ directory_iterator::directory_iterator(const path & p) : buf(NULL) {
 		
 		// Allocate a large enough buffer for readdir_r.
 		long name_max;
-#if ((defined(ARX_HAVE_DIRFD) && ARX_HAVE_FPATHCONF) || defined(ARX_HAVE_PATHCONF)) \
+#if ((defined(ARX_HAVE_DIRFD) && ARX_HAVE_FPATHCONF) || ARX_HAVE_PATHCONF) \
 		&& defined(ARX_HAVE_PC_NAME_MAX)
 #  if defined(ARX_HAVE_DIRFD) && ARX_HAVE_FPATHCONF
 		name_max = fpathconf(dirfd(DIR_HANDLE(handle)), _PC_NAME_MAX);
