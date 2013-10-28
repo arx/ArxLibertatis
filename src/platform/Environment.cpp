@@ -342,7 +342,7 @@ fs::path getExecutablePath() {
 	#endif
 	
 	// Solaris
-	#ifdef ARX_HAVE_GETEXECNAME
+	#if ARX_HAVE_GETEXECNAME
 	const char * execname = getexecname();
 	if(execname != NULL) {
 		return execname;
