@@ -213,6 +213,8 @@ void ARX_Menu_Resources_Create() {
 		
 		ARXmenu.mda->credits = arx_credits;
 		
+		ARXmenu.mda->credits += "\n\n\n" + arx_copyright;
+		
 		ARXmenu.mda->credits += "\n\n\n~ORIGINAL ARX FATALIS CREDITS:\n\n\n";
 		
 		ARXmenu.mda->credits += util::convertUTF16LEToUTF8(credits, credits + creditsSize);

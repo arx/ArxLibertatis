@@ -26,6 +26,7 @@ extern const std::string arx_version;
 extern const std::string arx_release_codename;
 
 extern const std::string arx_credits;
+extern const std::string arx_copyright;
 
 extern const int tbg_version_id;
 

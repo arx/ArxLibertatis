@@ -34,5 +34,6 @@ const std::string arx_release_codename = "${VERSION_4}";
 
 // TODO move this to an external file once we ship our own resources
 const std::string arx_credits = "${AUTHORS}";
+const std::string arx_copyright = "${COPYING}";
 
 const int tbg_version_id = ${VERSION_2};
