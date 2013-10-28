@@ -66,7 +66,7 @@ void Util_SetViewMatrix(EERIEMATRIX &mat, EERIE_TRANSFORM &transform) {
 
 	// Get the dot product, and calculate the projection of the z basis
 	// vector onto the up vector. The projection is the y basis vector.
-	float fDotProduct = dot(vWorldUp, vView);
+	float fDotProduct = glm::dot(vWorldUp, vView);
 
 	Vec3f vUp = vWorldUp - vView * fDotProduct;
 
@@ -106,8 +106,8 @@ void Util_SetViewMatrix(EERIEMATRIX &mat, EERIE_TRANSFORM &transform) {
 	mat._33 = vView.z;
 
 	// Do the translation values (rotations are still about the eyepoint)
-	mat._41 = -dot(vFrom, vRight);
-	mat._42 = -dot(vFrom, vUp);
-	mat._43 = -dot(vFrom, vView);
+	mat._41 = -glm::dot(vFrom, vRight);
+	mat._42 = -glm::dot(vFrom, vUp);
+	mat._43 = -glm::dot(vFrom, vView);
 	mat._44 = 1.0f;
 }

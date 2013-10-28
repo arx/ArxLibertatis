@@ -202,7 +202,7 @@ float GetSphereRadiusForGroup(EERIE_3DOBJ * obj, Vec3f * center, Vec3f * dirvect
 			continue;
 
 		Vec3f targvect = (target - *center) * 1.f / distance;
-		float val = dot(*dirvect, targvect);
+		float val = glm::dot(*dirvect, targvect);
 
 		if(fabs(val) < 1.2f) {
 			if(distance > maxi)

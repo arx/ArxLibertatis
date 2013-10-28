@@ -1162,8 +1162,8 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num, const EERIE_FRUSTRU
 		Vec3f nrm = ep->v[2].p - ACTIVECAM->orgTrans.pos;
 		int to = (ep->type & POLY_QUAD) ? 4 : 3;
 
-		if(!(ep->type & POLY_DOUBLESIDED) && dot(ep->norm , nrm) > 0.f) {
-			if(to == 3 || dot(ep->norm2 , nrm) > 0.f) {
+		if(!(ep->type & POLY_DOUBLESIDED) && glm::dot(ep->norm , nrm) > 0.f) {
+			if(to == 3 || glm::dot(ep->norm2 , nrm) > 0.f) {
 				continue;
 			}
 		}
@@ -1554,7 +1554,7 @@ void ARX_PORTALS_Frustrum_ComputeRoom(long room_num, const EERIE_FRUSTRUM & frus
 		}
 
 		Vec3f pos = epp->center - ACTIVECAM->orgTrans.pos;
-		float fRes = dot(pos, epp->norm);
+		float fRes = glm::dot(pos, epp->norm);
 
 		EERIERTPPoly2(epp);
 

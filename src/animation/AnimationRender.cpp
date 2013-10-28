@@ -740,7 +740,7 @@ void DrawEERIEInter_Render(EERIE_3DOBJ *eobj, const TransformInfo &t, Entity *io
 			normFace.y = (normV10.z * normV20.x) - (normV10.x * normV20.z);
 			normFace.z = (normV10.x * normV20.y) - (normV10.y * normV20.x);
 
-			if(dot(normFace, nrm) > 0.f)
+			if(glm::dot(normFace, nrm) > 0.f)
 				continue;
 		}
 
@@ -1073,7 +1073,7 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity *
 			normFace.y = (normV10.z * normV20.x) - (normV10.x * normV20.z);
 			normFace.z = (normV10.x * normV20.y) - (normV10.y * normV20.x);
 
-			if(dot(normFace, nrm) > 0.f)
+			if(glm::dot(normFace, nrm) > 0.f)
 				continue;
 		}
 

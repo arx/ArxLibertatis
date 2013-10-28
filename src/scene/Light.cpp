@@ -632,7 +632,7 @@ ColorBGRA ApplyLight(const EERIE_QUAT * quat, const Vec3f & position, const Vec3
 		Vec3f Cur_vLights;
 		TransformInverseVertexQuat(quat, &vLight, &Cur_vLights);
 
-		float cosangle = dot(normal, Cur_vLights);
+		float cosangle = glm::dot(normal, Cur_vLights);
 
 		// If light visible
 		if(cosangle > 0.f) {
@@ -698,7 +698,7 @@ void ApplyTileLights(EERIEPOLY * ep, short x, short y)
 
 			Vec3f vLight = glm::normalize(light->pos - position);
 
-			float cosangle = dot(normal, vLight);
+			float cosangle = glm::dot(normal, vLight);
 
 			if(cosangle > 0.f) {
 				float distance = fdist(light->pos, position);
@@ -776,7 +776,7 @@ float my_CheckInPoly(float x, float y, float z, EERIEPOLY * mon_ep, EERIE_LIGHT 
 								(fabs(ep->v[a].p.z - z) <= fDiff))
 						{
 
-							if(dot(*mon_ep->nrml, *ep->nrml) > 0.0f) {
+							if(glm::dot(*mon_ep->nrml, *ep->nrml) > 0.0f) {
 								nb_totalvertexinpoly += nbvert;
 								for(b = 0; b < nbvert; b++) {
 									dest = ep->v[b].p;
@@ -818,7 +818,7 @@ static void ARX_EERIE_LIGHT_Make(EERIEPOLY * ep, float * epr, float * epg, float
 			if(ModeLight & MODE_NORMALS) {
 				Vec3f vLight = glm::normalize(light->pos - ep->v[i].p); // vector (light to vertex)
 
-				fRes = dot(vLight, ep->nrml[i]);
+				fRes = glm::dot(vLight, ep->nrml[i]);
 
 				if(fRes < 0.0f)
 					fRes = 0.0f;

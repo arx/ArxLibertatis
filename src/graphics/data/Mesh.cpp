@@ -131,11 +131,11 @@ static bool IntersectLinePlane(const Vec3f & l1, const Vec3f & l2, const EERIEPO
 	
 	Vec3f v = l2 - l1;
 	
-	float d = dot(v, ep->norm);
+	float d = glm::dot(v, ep->norm);
 	
 	if(d != 0.0f) {
 		Vec3f v1 = ep->center - l2;
-		d = dot(v1, ep->norm) / d;
+		d = glm::dot(v1, ep->norm) / d;
 		
 		*intersect = (v * d) + l2;
 		

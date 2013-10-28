@@ -1150,7 +1150,7 @@ void ARX_ApplySpring(PHYSVERT * phys, long k, long l, float PHYSICS_constant,
 	Hterm = (dist - restlength) * PHYSICS_constant;
 
 	deltaV = pv_k->velocity - pv_l->velocity; // Delta Velocity Vector
-	Dterm = dot(deltaV, deltaP) * PHYSICS_Damp * divdist; // Damping Term
+	Dterm = glm::dot(deltaV, deltaP) * PHYSICS_Damp * divdist; // Damping Term
 	Dterm = (-(Hterm + Dterm));
 	divdist *= Dterm;
 	springforce = deltaP * divdist; // Normalize Distance Vector & Calc Force
@@ -1522,7 +1522,7 @@ static bool ARX_EERIE_PHYSICS_BOX_Compute(EERIE_3DOBJ * obj, float framediff, lo
 			for(long k = 0; k < obj->pbox->nb_physvert; k++) {
 				pv = &obj->pbox->vert[k];
 				
-				float t = dot(LAST_COLLISION_POLY->norm, pv->velocity);
+				float t = glm::dot(LAST_COLLISION_POLY->norm, pv->velocity);
 				pv->velocity -= LAST_COLLISION_POLY->norm * (2.f * t);
 				
 				pv->velocity.x *= 0.3f;
