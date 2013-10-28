@@ -3057,7 +3057,7 @@ static void ManageNPCMovement(Entity * io)
 	if(io->forcedmove == Vec3f_ZERO) {
 		ForcedMove = Vec3f_ZERO;
 	} else {
-		float dd = min(1.f, (float)framedelay * (1.0f / 6) / length(io->forcedmove));
+		float dd = min(1.f, (float)framedelay * (1.0f / 6) / glm::length(io->forcedmove));
 		ForcedMove = io->forcedmove * dd;
 	}
 

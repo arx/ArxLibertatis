@@ -2332,11 +2332,11 @@ void PlayerMovementIterate(float DeltaTime) {
 					short idx = entities.player()->animlayer[0].altidx_cur;
 					GetAnimTotalTranslate(entities.player()->animlayer[0].cur_anim, idx, &mv);
 					float time = entities.player()->animlayer[0].cur_anim->anims[idx]->anim_time;
-					scale = length(mv) / time * 0.0125f;
+					scale = glm::length(mv) / time * 0.0125f;
 				}
 			}
 			
-			impulse *= scale / length(impulse) * jump_mul;
+			impulse *= scale / glm::length(impulse) * jump_mul;
 		}
 		
 		if(player.jumpphase != NotJumping) {
@@ -2556,7 +2556,7 @@ void PlayerMovementIterate(float DeltaTime) {
 		}
 	} else {
 		Vec3f vect = moveto - player.pos;
-		float divv = length(vect);
+		float divv = glm::length(vect);
 		if(divv > 0.f) {
 			float mul = (float)framedelay * 0.001f * 200.f;
 			divv = mul / divv;

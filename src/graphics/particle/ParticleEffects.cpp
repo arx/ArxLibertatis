@@ -437,7 +437,7 @@ void ARX_PARTICLES_Spawn_Blood2(const Vec3f & pos, float dmgs, Color col, Entity
 		float power = (io->_npcdata->SPLAT_DAMAGES * (1.f/60)) + .9f;
 		
 		Vec3f vect = pos - io->_npcdata->last_splat_pos;
-		float dist = length(vect);
+		float dist = glm::length(vect);
 		vect = normalize(vect);
 		long nb = long(dist / 4.f * power);
 		if(nb == 0) {
