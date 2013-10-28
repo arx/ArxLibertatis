@@ -33,7 +33,7 @@
 #include <sys/wait.h>
 #endif
 
-#ifdef ARX_HAVE_GETRUSAGE
+#if ARX_HAVE_GETRUSAGE
 #include <sys/resource.h>
 #include <sys/time.h>
 #endif
@@ -197,7 +197,7 @@ void getResourceUsage(int pid, quint64 & memoryUsage, double & runningTimeSec) {
 	memoryUsage = 0;
 	runningTimeSec = 0.0;
 	
-#if defined(ARX_HAVE_GETRUSAGE) && ARX_PLATFORM != ARX_PLATFORM_MACOSX
+#if ARX_HAVE_GETRUSAGE && ARX_PLATFORM != ARX_PLATFORM_MACOSX
 	{
 		struct rusage usage;
 		if(getrusage(pid, &usage) == 0) {
