@@ -32,7 +32,7 @@
 #include <cstring>
 #endif
 
-#ifdef ARX_HAVE_UNAME
+#if ARX_HAVE_UNAME
 #include <sys/utsname.h>
 #endif
 
@@ -150,7 +150,7 @@ std::string getOSName() {
 	return getWindowsVersionName();
 	#endif
 	
-	#ifdef ARX_HAVE_UNAME
+	#if ARX_HAVE_UNAME
 	struct utsname uname_buf;
 	if(uname(&uname_buf) == 0) {
 		return std::string(uname_buf.sysname) + ' ' + uname_buf.release;
@@ -188,7 +188,7 @@ std::string getOSArchitecture() {
 	}
 	#endif
 	
-	#ifdef ARX_HAVE_UNAME
+	#if ARX_HAVE_UNAME
 	struct utsname uname_buf;
 	if(uname(&uname_buf) == 0) {
 		return uname_buf.machine;

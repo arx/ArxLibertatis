@@ -44,7 +44,7 @@
 // Misc POSIX / Linux features
 #cmakedefine01 ARX_HAVE_BACKTRACE
 #cmakedefine01 ARX_HAVE_WORDEXP
-#cmakedefine ARX_HAVE_UNAME
+#cmakedefine01 ARX_HAVE_UNAME
 #cmakedefine ARX_HAVE_GETRUSAGE
 #cmakedefine ARX_HAVE_POPEN
 #cmakedefine ARX_HAVE_PCLOSE
