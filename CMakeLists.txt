@@ -703,6 +703,7 @@ set(PLATFORM_SOURCES
 	src/platform/Lock.cpp
 	src/platform/OS.cpp
 	src/platform/Platform.cpp
+	src/platform/Process.cpp
 	src/platform/ProgramOptions.cpp
 	src/platform/Time.cpp
 )

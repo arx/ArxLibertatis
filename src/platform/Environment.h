@@ -49,38 +49,6 @@ fs::path getExecutablePath();
  */
 fs::path getHelperExecutable(const std::string & name);
 
-/*!
- * Start another executable and wait for it to finish.
- * The executable's standard output/error is discarded.
- *
- * @param exe  the program to run, either an absolute path or a program name in the PATH.
- * @param args program arguments. The first arguments should be the program name/path and
- *             the last argument should be NULL.
- *
- * @return the programs exit code or a negative value on error.
- */
-int run(const fs::path & exe, const char * const args[]);
-
-/*!
- * Start another executable without waiting for it to finish.
- * The executable's standard output/error is discarded.
- *
- * @param exe  the program to run, either an absolute path or a program name in the PATH.
- * @param args program arguments. The first arguments should be the program name/path and
- *             the last argument should be NULL.
- */
-void runAsync(const fs::path & exe, const char * const args[]);
-
-/*!
- * Equivalent to
- * @code
- *  fs::path exe = getHelperExecutable(name);
- *  const char * args[] = { exe.string.c_str(), ... };
- *  platform::runAsync(exe, args);
- * @endcode
- */
-void runHelper(const std::string & name, ...);
-
 #if ARX_PLATFORM != ARX_PLATFORM_WIN32
 static const char * const env_list_seperators = ":";
 #else
