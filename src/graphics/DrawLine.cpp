@@ -21,6 +21,8 @@
 
 #include <cstring>
 
+#include <glm/gtx/norm.hpp>
+
 #include "math/Angle.h"
 
 #include "graphics/Math.h"
@@ -187,7 +189,7 @@ void EERIEDraw3DCylinderBase(const EERIE_CYLINDER & cyl, Color col) {
 void EERIEDrawTrue3DLine(const Vec3f & orgn, const Vec3f & dest, Color col) {
 
 	Vec3f vect = dest - orgn;
-	float m = ffsqrt(lengthSqr(vect));
+	float m = ffsqrt(glm::length2(vect));
 
 	if(m <= 0)
 		return;

@@ -1975,7 +1975,7 @@ static void ARX_SPELLS_Analyse() {
 		
 		Vec2f d = Vec2f(plist[i-1] - plist[i]);
 		
-		if(lengthSqr(d) > 100) {
+		if(glm::length2(d) > 100) {
 			
 			float a = (float)abs(d.x);
 			float b = (float)abs(d.y);
