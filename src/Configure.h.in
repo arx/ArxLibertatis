@@ -7,6 +7,7 @@
 #cmakedefine01 ARX_HAVE_PRCTL
 #cmakedefine01 ARX_HAVE_PTHREAD_SETNAME_NP
 #cmakedefine01 ARX_HAVE_PTHREAD_SET_NAME_NP
+#cmakedefine01 ARX_HAVE_SCHED_GETSCHEDULER
 #cmakedefine01 ARX_HAVE_NANOSLEEP
 #cmakedefine01 ARX_HAVE_FORK
 #cmakedefine01 ARX_HAVE_SETPGRP
@@ -43,7 +44,6 @@
 // Misc POSIX / Linux features
 #cmakedefine01 ARX_HAVE_BACKTRACE
 #cmakedefine01 ARX_HAVE_WORDEXP
-#cmakedefine ARX_HAVE_SCHED_GETSCHEDULER
 #cmakedefine ARX_HAVE_UNAME
 #cmakedefine ARX_HAVE_GETRUSAGE
 #cmakedefine ARX_HAVE_POPEN

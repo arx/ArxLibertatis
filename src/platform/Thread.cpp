@@ -64,7 +64,7 @@ void Thread::start() {
 
 void Thread::setPriority(Priority _priority) {
 	
-#ifdef ARX_HAVE_SCHED_GETSCHEDULER
+#if ARX_HAVE_SCHED_GETSCHEDULER
 	int policy = sched_getscheduler(0);
 #else
 	int policy = SCHED_RR;
