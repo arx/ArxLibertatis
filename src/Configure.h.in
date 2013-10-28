@@ -14,6 +14,9 @@
 #cmakedefine01 ARX_HAVE_CLOCK_GETTIME
 #cmakedefine01 ARX_HAVE_MACH_CLOCK
 
+// Filesystem & I/O
+#cmakedefine01 ARX_HAVE_READLINK
+
 // Audio backend
 #cmakedefine01 ARX_HAVE_OPENAL
 #cmakedefine01 ARX_HAVE_OPENAL_EFX
@@ -26,7 +29,6 @@
 #cmakedefine01 ARX_HAVE_CRASHHANDLER_WINDOWS
 
 // POSIX / Linux features
-#cmakedefine ARX_HAVE_READLINK
 #cmakedefine ARX_HAVE_DUP2
 #cmakedefine ARX_HAVE_OPEN
 #cmakedefine ARX_HAVE_CLOSE

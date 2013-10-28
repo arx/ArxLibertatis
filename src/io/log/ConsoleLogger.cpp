@@ -24,7 +24,7 @@
 
 #include "Configure.h"
 
-#if defined(ARX_HAVE_ISATTY) || defined(ARX_HAVE_READLINK)
+#if defined(ARX_HAVE_ISATTY) || ARX_HAVE_READLINK
 #include <unistd.h>
 #include <errno.h>
 #endif
@@ -52,7 +52,7 @@ static bool is_fd_disabled(int fd) {
 	ARX_UNUSED(fd);
 	
 	// Disable the console log backend if output is redirected to /dev/null
-#ifdef ARX_HAVE_READLINK
+#if ARX_HAVE_READLINK
 	static const char * names[] = { NULL, "/proc/self/fd/1", "/proc/self/fd/2" };
 	char path[64];
 	ssize_t len = readlink(names[fd], path, ARRAY_SIZE(path));

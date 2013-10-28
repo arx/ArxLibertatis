@@ -44,7 +44,7 @@
 #include <fcntl.h>
 #endif
 
-#if defined(ARX_HAVE_READLINK) || defined(ARX_HAVE_EXECVP)
+#if ARX_HAVE_READLINK || defined(ARX_HAVE_EXECVP)
 #include <unistd.h>
 #endif
 
@@ -261,7 +261,7 @@ void defineSystemDirectories(const char * argv0) {
 
 #endif
 
-#if defined(ARX_HAVE_READLINK) && ARX_PLATFORM != ARX_PLATFORM_MACOSX
+#if ARX_HAVE_READLINK && ARX_PLATFORM != ARX_PLATFORM_MACOSX
 static bool try_readlink(std::vector<char> & buffer, const char * path) {
 	
 	int ret = readlink(path, &buffer.front(), buffer.size());
@@ -308,7 +308,7 @@ fs::path getExecutablePath() {
 #else
 	
 	// Try to get the path from OS-specific procfs entries
-	#ifdef ARX_HAVE_READLINK
+	#if ARX_HAVE_READLINK
 	std::vector<char> buffer(1024);
 	// Linux
 	if(try_readlink(buffer, "/proc/self/exe")) {
