@@ -104,7 +104,7 @@ extern QUAKE_FX_STRUCT QuakeFx;
 extern bool bGToggleCombatModeWithKey;
 extern bool bGCroucheToggle;
 
-#ifdef BUILD_EDIT_LOADSAVE
+#if BUILD_EDIT_LOADSAVE
 
 void LogDirCreation(const fs::path & dir) {
 	if(fs::is_directory(dir)) {
@@ -670,7 +670,7 @@ long DanaeLoadLevel(const res::path & file, bool loadEntities) {
 			LogDebug("done loading scene");
 			FASTmse = 1;
 		} else {
-#ifdef BUILD_EDIT_LOADSAVE
+#if BUILD_EDIT_LOADSAVE
 			LogDebug("fast loading scene failed");
 			ARX_SOUND_PlayCinematic("editor_humiliation", false);
 			mse = PAK_MultiSceneToEerie(scene);
@@ -690,7 +690,7 @@ long DanaeLoadLevel(const res::path & file, bool loadEntities) {
 		trans = Mscenepos;
 		player.pos = loddpos + trans;
 	}
-#ifdef BUILD_EDIT_LOADSAVE
+#if BUILD_EDIT_LOADSAVE
 	else if(mse != NULL) {
 		Mscenepos.x = -mse->cub.xmin - (mse->cub.xmax - mse->cub.xmin) * ( 1.0f / 2 ) + ((float)ACTIVEBKG->Xsize * (float)ACTIVEBKG->Xdiv) * ( 1.0f / 2 );
 		Mscenepos.z = -mse->cub.zmin - (mse->cub.zmax - mse->cub.zmin) * ( 1.0f / 2 ) + ((float)ACTIVEBKG->Zsize * (float)ACTIVEBKG->Zdiv) * ( 1.0f / 2 );
@@ -1117,7 +1117,7 @@ void DanaeClearLevel(long flag)
 	InitBkg(ACTIVEBKG, MAX_BKGX, MAX_BKGZ, BKG_SIZX, BKG_SIZZ);
 	ClearNodes();
 	
-#ifdef BUILD_EDIT_LOADSAVE
+#if BUILD_EDIT_LOADSAVE
 	if(mse != NULL) {
 		ReleaseMultiScene(mse);
 		mse = NULL;

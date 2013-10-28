@@ -51,7 +51,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "Configure.h"
 
-#ifdef BUILD_EDIT_LOADSAVE
+#if BUILD_EDIT_LOADSAVE
 
 namespace fs { class path; }
 

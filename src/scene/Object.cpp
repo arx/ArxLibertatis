@@ -235,7 +235,7 @@ void MakeUserFlag(TextureContainer * tc) {
 	
 }
 
-#ifdef BUILD_EDIT_LOADSAVE
+#if BUILD_EDIT_LOADSAVE
 
 static void ReCreateUVs(EERIE_3DOBJ * eerie) {
 	
@@ -1262,7 +1262,7 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 	}
 }
 
-#ifdef BUILD_EDIT_LOADSAVE
+#if BUILD_EDIT_LOADSAVE
 
 // Converts a Theo Object to an EERIE object
 static EERIE_3DOBJ * TheoToEerie(const char * adr, long size, const res::path & texpath, const res::path & fic) {
@@ -1455,7 +1455,7 @@ static EERIE_3DOBJ * TheoToEerie_Fast(const res::path & texpath, const res::path
 		return ret;
 	}
 	
-#ifndef BUILD_EDIT_LOADSAVE
+#if !BUILD_EDIT_LOADSAVE
 	ARX_UNUSED(texpath);
 #else
 	

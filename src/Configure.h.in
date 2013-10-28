@@ -58,7 +58,7 @@
 
 // Arx components
 #cmakedefine BUILD_EDITOR
-#cmakedefine BUILD_EDIT_LOADSAVE
+#cmakedefine01 BUILD_EDIT_LOADSAVE
 
 // Build system
 #cmakedefine01 UNITY_BUILD

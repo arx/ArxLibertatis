@@ -240,7 +240,7 @@ TextureContainer *	Boom=NULL;
 TextureContainer *	mecanism_tc=NULL;
 TextureContainer *	arrow_left_tc=NULL;
 
-#ifdef BUILD_EDIT_LOADSAVE
+#if BUILD_EDIT_LOADSAVE
 EERIE_MULTI3DSCENE * mse = NULL;
 long ADDED_IO_NOT_SAVED = 0;
 #endif
@@ -540,7 +540,7 @@ void InitializeDanae() {
 		if (FastSceneLoad(levelPath)) {
 			FASTmse = 1;
 		} else {
-#ifdef BUILD_EDIT_LOADSAVE
+#if BUILD_EDIT_LOADSAVE
 			ARX_SOUND_PlayCinematic("editor_humiliation", false);
 			mse = PAK_MultiSceneToEerie(levelPath);
 #else
@@ -1654,7 +1654,7 @@ void FirstFrameHandling() {
 		PROGRESS_BAR_COUNT += 4.f;
 		LoadLevelScreen();
 	}
-#ifdef BUILD_EDIT_LOADSAVE
+#if BUILD_EDIT_LOADSAVE
 	else if(mse) {
 		Mscenepos.x=-mse->cub.xmin-(mse->cub.xmax-mse->cub.xmin)*.5f+((float)ACTIVEBKG->Xsize*(float)ACTIVEBKG->Xdiv)*.5f;
 		Mscenepos.z=-mse->cub.zmin-(mse->cub.zmax-mse->cub.zmin)*.5f+((float)ACTIVEBKG->Zsize*(float)ACTIVEBKG->Zdiv)*.5f;

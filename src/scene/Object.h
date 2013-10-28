@@ -65,7 +65,7 @@ static T * copyStruct(const T * src, size_t n = 1) {
 
 extern TexturedVertex	vert_list[4];
 
-#ifdef BUILD_EDIT_LOADSAVE
+#if BUILD_EDIT_LOADSAVE
 EERIE_MULTI3DSCENE * PAK_MultiSceneToEerie(const res::path & dir);
 void ReleaseMultiScene(EERIE_MULTI3DSCENE * ms);
 #endif

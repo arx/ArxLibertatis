@@ -52,7 +52,7 @@ struct EERIE_3DOBJ;
 namespace fs { class path; }
 namespace res { class path; }
 
-#ifdef BUILD_EDIT_LOADSAVE
+#if BUILD_EDIT_LOADSAVE
 
 /*!
  * Save a FTL File

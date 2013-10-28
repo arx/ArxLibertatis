@@ -180,7 +180,7 @@ void DrawEERIEObjExEx(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f * pos, Vec3f * s
 long BKG_CountPolys(EERIE_BACKGROUND * eb);
 long BKG_CountIgnoredPolys(EERIE_BACKGROUND * eb);
 
-#ifdef BUILD_EDIT_LOADSAVE
+#if BUILD_EDIT_LOADSAVE
 void SceneAddMultiScnToBackground(EERIE_MULTI3DSCENE * ms);
 #endif
 

@@ -2095,7 +2095,7 @@ void ReloadAllScripts() {
 	}
 }
 
-#ifdef BUILD_EDIT_LOADSAVE
+#if BUILD_EDIT_LOADSAVE
 
 /*!
  * \brief Creates an unique identifier for an IO

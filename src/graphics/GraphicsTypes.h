@@ -459,7 +459,7 @@ struct EERIE_3DSCENE {
 };
 
 
-#ifdef BUILD_EDIT_LOADSAVE
+#if BUILD_EDIT_LOADSAVE
 const size_t MAX_SCENES = 64;
 struct EERIE_MULTI3DSCENE {
 	long nb_scenes;

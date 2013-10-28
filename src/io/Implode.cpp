@@ -48,7 +48,7 @@
 
 #include "io/Implode.h"
 
-#ifdef BUILD_EDIT_LOADSAVE
+#if BUILD_EDIT_LOADSAVE
 
 #include <cstring>
 

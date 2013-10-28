@@ -79,7 +79,7 @@ extern Vec3f moveto;
 extern Vec2s STARTDRAG;
 extern EERIE_3DOBJ * GoldCoinsObj[MAX_GOLD_COINS_VISUALS];
 extern Vec3f Mscenepos;
-#ifdef BUILD_EDIT_LOADSAVE
+#if BUILD_EDIT_LOADSAVE
 extern EERIE_MULTI3DSCENE * mse;
 extern long ADDED_IO_NOT_SAVED;
 #endif
