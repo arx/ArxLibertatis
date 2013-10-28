@@ -2,12 +2,13 @@
 #ifndef ARX_CONFIGURE_H
 #define ARX_CONFIGURE_H
 
-// Threads
+// Thread & process control
 #cmakedefine01 ARX_HAVE_PTHREADS
 #cmakedefine01 ARX_HAVE_PRCTL
 #cmakedefine01 ARX_HAVE_PTHREAD_SETNAME_NP
 #cmakedefine01 ARX_HAVE_PTHREAD_SET_NAME_NP
 #cmakedefine01 ARX_HAVE_NANOSLEEP
+#cmakedefine01 ARX_HAVE_FORK
 
 // Time
 #cmakedefine01 ARX_HAVE_CLOCK_GETTIME
@@ -25,7 +26,6 @@
 #cmakedefine01 ARX_HAVE_CRASHHANDLER_WINDOWS
 
 // POSIX / Linux features
-#cmakedefine ARX_HAVE_FORK
 #cmakedefine ARX_HAVE_READLINK
 #cmakedefine ARX_HAVE_DUP2
 #cmakedefine ARX_HAVE_OPEN

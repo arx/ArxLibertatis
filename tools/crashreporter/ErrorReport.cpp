@@ -379,7 +379,7 @@ bool ErrorReport::getCrashDescription() {
 	
 	m_ReportDescriptionText = m_ReportDescription;
 	
-#if defined(ARX_HAVE_FORK) && defined(ARX_HAVE_EXECLP) && defined(ARX_HAVE_DUP2) && defined(ARX_HAVE_WAITPID)
+#if ARX_HAVE_FORK && defined(ARX_HAVE_EXECLP) && defined(ARX_HAVE_DUP2) && defined(ARX_HAVE_WAITPID)
 	
 	fs::path tracePath = m_ReportFolder / "gdbtrace.txt";
 	
@@ -407,7 +407,16 @@ bool ErrorReport::getCrashDescription() {
 		#endif
 		
 		// Try to execute gdb to get a very detailed stack trace.
-		execlp("gdb", "gdb", "--batch", "-n", "-ex", "thread", "-ex", "set confirm off", "-ex", "set print frame-arguments all", "-ex", "set print static-members off", "-ex", "info threads", "-ex", "thread apply all bt full", pid_buf, NULL);
+		execlp(
+			"gdb", "gdb", "--batch", "-n",
+			"-ex", "thread",
+			"-ex", "set confirm off",
+			"-ex", "set print frame-arguments all",
+			"-ex", "set print static-members off",
+			"-ex", "info threads",
+			"-ex", "thread apply all bt full",
+			pid_buf, NULL
+		);
 		
 		// GDB failed to start.
 		exit(1);

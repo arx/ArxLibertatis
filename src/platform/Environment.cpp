@@ -463,7 +463,7 @@ static int run(const fs::path & exe, bool wait, const char * const args[]) {
 	pid_t pid;
 	(void)posix_spawnp(&pid, exe.string().c_str(), file_actionsp, attrp, argv, environ);
 	
-#elif defined(ARX_HAVE_FORK) && defined(ARX_HAVE_EXECVP)
+#elif ARX_HAVE_FORK && defined(ARX_HAVE_EXECVP)
 	
 	// Compatibility POSIX implementation
 	
