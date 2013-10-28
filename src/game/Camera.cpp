@@ -19,6 +19,7 @@
 
 #include "game/Camera.h"
 
+#include <glm/gtx/euler_angles.hpp>
 #include <glm/gtx/transform.hpp>
 
 void EERIE_TRANSFORM::updateFromAngle(const Anglef &angle) {
