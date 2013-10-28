@@ -17,7 +17,7 @@
 
 // Crash handler
 #cmakedefine01 ARX_HAVE_CRASHHANDLER_POSIX
-#cmakedefine ARX_HAVE_CRASHHANDLER_WINDOWS
+#cmakedefine01 ARX_HAVE_CRASHHANDLER_WINDOWS
 
 // POSIX / Linux features
 #cmakedefine ARX_HAVE_NANOSLEEP
