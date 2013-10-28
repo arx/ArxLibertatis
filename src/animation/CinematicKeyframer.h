@@ -45,7 +45,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define ARX_ANIMATION_CINEMATICKEYFRAMER_H
 
 #include "animation/Cinematic.h" // for CinematicLight
-#include "math/Vector3.h"
+#include "math/Vector.h"
 
 static const int INTERP_NO = -1;
 static const int INTERP_BEZIER = 0;

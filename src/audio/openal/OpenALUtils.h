@@ -24,7 +24,7 @@
 
 #include <al.h>
 
-#include "math/Vector3.h"
+#include "math/Vector.h"
 
 const char * getAlcErrorString(ALenum error);
 

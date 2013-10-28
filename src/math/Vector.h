@@ -114,4 +114,22 @@ const Vec2d Vec2d_ONE(1, 1);
 const Vec2d Vec2d_X_AXIS(1, 0);
 const Vec2d Vec2d_Y_AXIS(0, 1);
 
+const Vec3i Vec3i_ZERO(0,0,0);
+const Vec3i Vec3i_ONE(1,1,1);
+const Vec3i Vec3i_X_AXIS(1,0,0);
+const Vec3i Vec3i_Y_AXIS(0,1,0);
+const Vec3i Vec3i_Z_AXIS(0,0,1);
+
+const Vec3f Vec3f_ZERO(0,0,0);
+const Vec3f Vec3f_ONE(1,1,1);
+const Vec3f Vec3f_X_AXIS(1,0,0);
+const Vec3f Vec3f_Y_AXIS(0,1,0);
+const Vec3f Vec3f_Z_AXIS(0,0,1);
+
+const Vec3d Vec3d_ZERO(0,0,0);
+const Vec3d Vec3d_ONE(1,1,1);
+const Vec3d Vec3d_X_AXIS(1,0,0);
+const Vec3d Vec3d_Y_AXIS(0,1,0);
+const Vec3d Vec3d_Z_AXIS(0,0,1);
+
 #endif // ARX_MATH_VECTOR_H

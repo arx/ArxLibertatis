@@ -48,7 +48,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <vector>
 
 #include "graphics/Color.h"
-#include "math/Vector3.h"
+#include "math/Vector.h"
 #include "game/Camera.h"
 
 // TODO macros

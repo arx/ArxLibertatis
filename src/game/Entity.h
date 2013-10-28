@@ -56,7 +56,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/BaseGraphicsTypes.h"
 #include "io/resource/ResourcePath.h"
 #include "math/Vector.h"
-#include "math/Vector3.h"
 #include "math/Angle.h"
 #include "platform/Flags.h"
 #include "script/Script.h" // TODO remove this

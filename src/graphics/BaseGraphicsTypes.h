@@ -45,7 +45,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define ARX_GRAPHICS_BASEGRAPHICSTYPES_H
 
 #include "math/Vector.h"
-#include "math/Vector3.h"
 
 struct EERIE_QUAT {
 	float x;

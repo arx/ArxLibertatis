@@ -30,7 +30,7 @@
 #include "audio/AudioGlobal.h"
 #include "audio/AudioSource.h"
 #include "io/log/Logger.h"
-#include "math/Vector3.h"
+#include "math/Vector.h"
 #include "platform/Platform.h"
 #include "platform/CrashHandler.h"
 

@@ -53,7 +53,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/Color.h"
 #include "graphics/Vertex.h"
 #include "math/Types.h"
-#include "math/Vector3.h"
+#include "math/Vector.h"
 #include "math/Angle.h"
 
 struct EERIEPOLY;

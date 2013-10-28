@@ -30,7 +30,7 @@
 #include "audio/Mixer.h"
 #include "io/resource/ResourcePath.h"
 #include "io/log/Logger.h"
-#include "math/Vector3.h"
+#include "math/Vector.h"
 #include "platform/Platform.h"
 
 namespace audio {

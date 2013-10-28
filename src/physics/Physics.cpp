@@ -50,7 +50,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/GraphicsTypes.h"
 #include "graphics/data/Mesh.h"
-#include "math/Vector3.h"
+#include "math/Vector.h"
 
 EERIEPOLY * BCCheckInPoly(float x, float y, float z)
 {

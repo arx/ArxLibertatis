@@ -23,7 +23,7 @@
 #include <vector>
 #include <boost/circular_buffer.hpp>
 
-#include "math/Vector3.h"
+#include "math/Vector.h"
 #include "graphics/Color.h"
 
 class Trail {

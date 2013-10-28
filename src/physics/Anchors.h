@@ -47,7 +47,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_PHYSICS_ANCHORS_H
 #define ARX_PHYSICS_ANCHORS_H
 
-#include "math/Vector3.h"
+#include "math/Vector.h"
 #include "platform/Flags.h"
 
 struct EERIE_BACKGROUND;

@@ -50,7 +50,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <stddef.h>
 
 #include "math/Types.h"
-#include "math/Vector3.h"
+#include "math/Vector.h"
 #include "platform/Flags.h"
 
 class Entity;

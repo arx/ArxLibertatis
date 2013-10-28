@@ -44,7 +44,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_GRAPHICS_PARTICLE_PARTICLEPARAMS_H
 #define ARX_GRAPHICS_PARTICLE_PARTICLEPARAMS_H
 
-#include "math/Vector3.h"
+#include "math/Vector.h"
 
 class ParticleParams {
 	
