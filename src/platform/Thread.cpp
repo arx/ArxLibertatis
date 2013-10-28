@@ -235,7 +235,7 @@ process_id_type getProcessId() {
 
 #endif
 
-#if defined(ARX_HAVE_NANOSLEEP)
+#if ARX_HAVE_NANOSLEEP
 
 #include <time.h>
 
