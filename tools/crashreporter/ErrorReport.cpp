@@ -21,6 +21,8 @@
 
 #include "platform/Platform.h"
 
+#include <signal.h>
+
 #if ARX_PLATFORM == ARX_PLATFORM_WIN32
 // Win32
 #include <windows.h>
@@ -45,10 +47,6 @@
 
 #ifdef ARX_HAVE_SYSCONF
 #include <unistd.h>
-#endif
-
-#ifdef ARX_HAVE_CRASHHANDLER_POSIX
-#include <signal.h>
 #endif
 
 #ifdef ARX_HAVE_SETENV

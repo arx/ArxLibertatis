@@ -25,7 +25,7 @@
 #include "platform/Platform.h"
 #include "Configure.h"
 
-#if defined(ARX_HAVE_CRASHHANDLER_POSIX)
+#if ARX_HAVE_CRASHHANDLER_POSIX
 #include "platform/crashhandler/CrashHandlerPOSIX.h"
 #define ARX_HAVE_CRASHHANDLER
 #elif defined(ARX_HAVE_CRASHHANDLER_WINDOWS)
@@ -44,7 +44,7 @@ bool CrashHandler::initialize() {
 	
 	if(!gCrashHandlerImpl) {
 		
-#if defined(ARX_HAVE_CRASHHANDLER_POSIX)
+#if ARX_HAVE_CRASHHANDLER_POSIX
 		
 		gCrashHandlerImpl = new CrashHandlerPOSIX();
 		
