@@ -316,7 +316,7 @@ void CFireBall::Update(unsigned long aulTime)
 				Vec3f * p1 = &eCurPos;
 				Vec3f p2 = entities[io->targetinfo]->pos;
 				p2.y -= 60.f;
-				afAlpha = 360.f - (degrees(getAngle(p1->y, p1->z, p2.y, p2.z + dist(Vec2f(p2.x, p2.z), Vec2f(p1->x, p1->z))))); //alpha entre orgn et dest;
+				afAlpha = 360.f - (degrees(getAngle(p1->y, p1->z, p2.y, p2.z + glm::distance(Vec2f(p2.x, p2.z), Vec2f(p1->x, p1->z))))); //alpha entre orgn et dest;
 			}
 		}
 

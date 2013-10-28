@@ -1385,7 +1385,7 @@ void EERIE_PORTAL_Blend_Portals_And_Rooms() {
 		float d = 0.f;
 
 		for(long ii = 0; ii < to; ii++) {
-			d = max(d, dist(ep->center, ep->v[ii].p));
+			d = max(d, glm::distance(ep->center, ep->v[ii].p));
 		}
 
 		ep->norm2.x = d;
@@ -2182,7 +2182,7 @@ void ComputeRoomDistance() {
 				float d = 0.f;
 
 				for(size_t id = 1; id < rl.size() - 1; id++) {
-					d += dist(ad[rl[id - 1]].pos, ad[rl[id]].pos);
+					d += glm::distance(ad[rl[id - 1]].pos, ad[rl[id]].pos);
 				}
 
 				if(d < 0.f)
@@ -2260,7 +2260,7 @@ static void EERIE_PORTAL_Poly_Add(EERIEPOLY * ep, const std::string& name, long 
 		ep->center /= nbvert;
 
 		for(int ii = 0; ii < nbvert; ii++) {
-			float fDist = dist(ep->center, ep->v[ii].p);
+			float fDist = glm::distance(ep->center, ep->v[ii].p);
 			fDistMin = min(fDistMin, fDist);
 			fDistMax = max(fDistMax, fDist);
 		}

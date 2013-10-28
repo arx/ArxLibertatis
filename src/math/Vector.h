@@ -27,11 +27,6 @@
 // TODO replace calls with their direct glm equivalents!
 
 template <class V>
-typename V::value_type dist(const V & a, const V & b) {
-	return glm::distance(a, b);
-}
-
-template <class V>
 typename V::value_type distSqr(const V & a, const V & b) {
 	return glm::distance2(a, b);
 }

@@ -1434,7 +1434,7 @@ bool ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, Entity * io, float MOVE_CYLIND
 		return false;
 	}
 
-	float distance = dist(ip->startpos, ip->targetpos);
+	float distance = glm::distance(ip->startpos, ip->targetpos);
 
 	if(distance < 0.1f) {
 		MOVING_CYLINDER = 0;

@@ -1037,7 +1037,7 @@ void ArxGame::speechControlledCinematic() {
 
 					float distance=acs->f0*itime+acs->f1*rtime;
 					vect2 *= distance;
-					float _dist = dist(from, to);
+					float _dist = glm::distance(from, to);
 					Vec3f tfrom = from + vect * acs->startpos * (1.0f / 100) * _dist;
 					Vec3f tto = from + vect * acs->endpos * (1.0f / 100) * _dist;
 					Vec3f targetpos;

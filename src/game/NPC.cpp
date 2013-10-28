@@ -1188,7 +1188,7 @@ void StareAtTarget(Entity * io)
 	GetTargetPos(io);
 	Vec3f tv = io->pos;
 
-	if(dist(tv, io->target) <= 20.f)
+	if(glm::distance(tv, io->target) <= 20.f)
 		return; // To fix "stupid" rotation near target
 
 	if(io->target.x - tv.x == 0 && io->target.z - tv.z == 0)
@@ -1270,9 +1270,9 @@ float GetTRUETargetDist(Entity * io) {
 	
 	if(ValidIONum(t)) {
 		if(io->_npcdata->behavior & BEHAVIOUR_GO_HOME) {
-			return dist(io->pos, io->initpos);
+			return glm::distance(io->pos, io->initpos);
 		}
-		return dist(io->pos, entities[t]->pos);
+		return glm::distance(io->pos, entities[t]->pos);
 	}
 	
 	return 99999999.f;
@@ -1312,7 +1312,7 @@ long IsNearSelection(EERIE_3DOBJ * obj, long vert, long tw) {
 		return -1;
 
 	for(size_t i = 0; i < obj->selections[tw].selected.size(); i++) {
-		float d = dist(obj->vertexlist[obj->selections[tw].selected[i]].v,
+		float d = glm::distance(obj->vertexlist[obj->selections[tw].selected[i]].v,
 		               obj->vertexlist[vert].v);
 
 		if(d < 8.f)
@@ -2840,7 +2840,7 @@ static void ManageNPCMovement(Entity * io)
 	{
 
 	// XS : Moved to top of func
-	_dist = dist(Vec2f(io->pos.x, io->pos.z), Vec2f(io->target.x, io->target.z));
+	_dist = glm::distance(Vec2f(io->pos.x, io->pos.z), Vec2f(io->target.x, io->target.z));
 	dis = _dist;
 
 	if(io->_npcdata->pathfind.listnb > 0)
@@ -3112,7 +3112,7 @@ static void ManageNPCMovement(Entity * io)
 	io->physics.cyl.height = GetIOHeight(io);
 	
 	// Compute distance 2D to target.
-	_dist = dist(Vec2f(io->pos.x, io->pos.z), Vec2f(io->target.x, io->target.z));
+	_dist = glm::distance(Vec2f(io->pos.x, io->pos.z), Vec2f(io->target.x, io->target.z));
 	dis = _dist;
 
 	if(io->_npcdata->pathfind.listnb > 0)
@@ -3151,7 +3151,7 @@ static void ManageNPCMovement(Entity * io)
 			long t = AnchorData_GetNearest(p, &io->physics.cyl); 
 
 			if(t != -1 && t != io->_npcdata->pathfind.list[io->_npcdata->pathfind.listnb - 1]) {
-				float d = dist(ACTIVEBKG->anchors[t].pos, ACTIVEBKG->anchors[io->_npcdata->pathfind.list[io->_npcdata->pathfind.listnb-1]].pos);
+				float d = glm::distance(ACTIVEBKG->anchors[t].pos, ACTIVEBKG->anchors[io->_npcdata->pathfind.list[io->_npcdata->pathfind.listnb-1]].pos);
 
 				if(d > 200.f)
 					ARX_NPC_LaunchPathfind(io, io->_npcdata->pathfind.truetarget);

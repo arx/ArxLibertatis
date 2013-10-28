@@ -627,7 +627,7 @@ bool OpenALSource::updateCulling() {
 		AL_CHECK_ERROR_N("getting listener position", return tooFar;)
 	}
 	
-	float d = dist(channel.position, listener_pos);
+	float d = glm::distance(channel.position, listener_pos);
 	
 	if(tooFar) {
 		

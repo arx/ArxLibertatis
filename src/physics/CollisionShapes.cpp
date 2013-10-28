@@ -77,7 +77,7 @@ void EERIE_COLLISION_Cylinder_Create(Entity * io)
 	float height = 0.f;
 	for(size_t i = 0; i < obj->vertexlist.size(); i++) {
 		if(i != (size_t)obj->origin && EEfabs(io->physics.cyl.origin.y - obj->vertexlist[i].v.y) < 20.f) {
-			d = max(d, dist(io->physics.cyl.origin, obj->vertexlist[i].v));
+			d = max(d, glm::distance(io->physics.cyl.origin, obj->vertexlist[i].v));
 		}
 		height = max(height, io->physics.cyl.origin.y - obj->vertexlist[i].v.y);
 	}

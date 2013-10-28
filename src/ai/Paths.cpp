@@ -1052,7 +1052,7 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 												continue;
 
 											short vid = target->obj->facelist[ii].vid[0];
-											float d = dist(sphere.origin, target->obj->vertexlist3[vid].v);
+											float d = glm::distance(sphere.origin, target->obj->vertexlist3[vid].v);
 
 											if(d < curdist) {
 												hitpoint = target->obj->facelist[ii].vid[0];
@@ -1141,7 +1141,7 @@ void ARX_ApplySpring(PHYSVERT * phys, long k, long l, float PHYSICS_constant,
 	PHYSVERT * pv_l = &phys[l];
 	float Dterm, Hterm;
 
-	float restlength = dist(pv_k->initpos, pv_l->initpos);
+	float restlength = glm::distance(pv_k->initpos, pv_l->initpos);
 	// Computes Spring Magnitude
 	deltaP = pv_k->pos - pv_l->pos;
 	float dist = length(deltaP); // Magnitude of delta
@@ -1706,7 +1706,7 @@ void ARX_PrepareBackgroundNRMLs()
 				float d = 0.f;
 
 				for(long ii = 0; ii < nbvert; ii++) {
-					d = max(d, dist(ep->center, ep->v[ii].p));
+					d = max(d, glm::distance(ep->center, ep->v[ii].p));
 				}
 
 				ep->v[0].rhw = d;

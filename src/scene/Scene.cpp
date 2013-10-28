@@ -451,7 +451,7 @@ bool ARX_SCENE_PORTAL_ClipIO(Entity * io, const Vec3f & position) {
 			if(io) {
 				EERIE_SPHERE sphere;
 				sphere.origin = (io->bbox3D.min + io->bbox3D.max) * .5f;
-				sphere.radius = dist(sphere.origin, io->bbox3D.min) + 10.f;
+				sphere.radius = glm::distance(sphere.origin, io->bbox3D.min) + 10.f;
 
 				EERIE_FRUSTRUM_DATA & frustrums = RoomDraw[room_num].frustrum;
 

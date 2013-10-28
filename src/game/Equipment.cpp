@@ -737,7 +737,7 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 						if(target->obj->facelist[ii].facetype & POLY_HIDE)
 							continue;
 
-						float d = dist(sphere.origin, target->obj->vertexlist3[target->obj->facelist[ii].vid[0]].v);
+						float d = glm::distance(sphere.origin, target->obj->vertexlist3[target->obj->facelist[ii].vid[0]].v);
 
 						if(d < curdist) {
 							hitpoint = target->obj->facelist[ii].vid[0];

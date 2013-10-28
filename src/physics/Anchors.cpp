@@ -411,7 +411,7 @@ static bool ANCHOR_ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, Entity * io,
 		return false;
 	}
 
-	float distance = dist(ip->startpos, ip->targetpos);
+	float distance = glm::distance(ip->startpos, ip->targetpos);
 
 	if(distance <= 0.f) {
 		MOVING_CYLINDER = 0;
@@ -768,7 +768,7 @@ static bool AddAnchor_Original_Method(EERIE_BACKGROUND * eb, EERIE_BKG_INFO * eg
 
 			if (found)
 			{
-				float d = dist(*pos, currcyl.origin);
+				float d = glm::distance(*pos, currcyl.origin);
 
 				if (currcyl.radius >= bestcyl.radius)	
 				{
@@ -919,8 +919,8 @@ static void AnchorData_Create_Links_Original_Method(EERIE_BACKGROUND * eb) {
 							p2.y += 10.f;
 							long _onetwo = 0;
 							bool treat = true;
-							float _dist = dist(p1, p2);
-							float dd = dist(Vec2f(p1.x, p1.z), Vec2f(p2.x, p2.z));
+							float _dist = glm::distance(p1, p2);
+							float dd = glm::distance(Vec2f(p1.x, p1.z), Vec2f(p2.x, p2.z));
 
 							if (dd < 5.f) continue;
 

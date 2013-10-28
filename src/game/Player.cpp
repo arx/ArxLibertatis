@@ -2552,7 +2552,7 @@ void PlayerMovementIterate(float DeltaTime) {
 			}
 			
 			moveto = player.physics.cyl.origin + player.baseOffset();
-			d = dist(player.pos, moveto);
+			d = glm::distance(player.pos, moveto);
 		}
 	} else {
 		Vec3f vect = moveto - player.pos;

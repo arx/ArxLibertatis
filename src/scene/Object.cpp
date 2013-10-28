@@ -1342,7 +1342,7 @@ static EERIE_3DOBJ * TheoToEerie(const char * adr, long size, const res::path & 
 		const Vec3f & p0 = eerie->vertexlist[eerie->facelist[i].vid[0]].v;
 		const Vec3f & p1 = eerie->vertexlist[eerie->facelist[i].vid[1]].v;
 		const Vec3f & p2 = eerie->vertexlist[eerie->facelist[i].vid[2]].v;
-		eerie->facelist[i].temp = dist((p0 + p1) * .5f, p2) * dist(p0, p1) * .5f;
+		eerie->facelist[i].temp = glm::distance((p0 + p1) * .5f, p2) * glm::distance(p0, p1) * .5f;
 	}
 
 	for(size_t i = 0; i < eerie->facelist.size(); i++) {
@@ -1399,11 +1399,11 @@ static EERIE_3DOBJ * TheoToEerie(const char * adr, long size, const res::path & 
 			}
 			
 			center = (center * (1.f / count) + origin + origin) * (1.0f / 3);
-			float max_threshold = dist(origin, center);
+			float max_threshold = glm::distance(origin, center);
 			
 			for(size_t i = 0; i < eerie->grouplist[head_idx].indexes.size(); i++) {
 				EERIE_VERTEX * ev = &eerie->vertexlist[eerie->grouplist[head_idx].indexes[i]];
-				float d = dist(ev->v, origin);
+				float d = glm::distance(ev->v, origin);
 				float factor = 1.f;
 
 				if(d < max_threshold) {

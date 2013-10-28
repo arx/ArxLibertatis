@@ -480,11 +480,11 @@ void UpdateLlights(Vec3f & tv) {
 	llightsInit();
 
 	for(int i = 0; i < TOTIOPDL; i++) {
-		Insertllight(IO_PDL[i], dist(IO_PDL[i]->pos, tv));
+		Insertllight(IO_PDL[i], glm::distance(IO_PDL[i]->pos, tv));
 	}
 
 	for(int i = 0; i < TOTPDL; i++) {
-		Insertllight(PDL[i], dist(PDL[i]->pos, tv));
+		Insertllight(PDL[i], glm::distance(PDL[i]->pos, tv));
 	}
 }
 
@@ -808,7 +808,7 @@ static void ARX_EERIE_LIGHT_Make(EERIEPOLY * ep, float * epr, float * epg, float
 
 	// compute light - vertex distance
 	for(int i = 0; i < nbvert; i++) {
-		distance[i] = dist(light->pos, ep->v[i].p);
+		distance[i] = glm::distance(light->pos, ep->v[i].p);
 	}
 
 	for(int i = 0; i < nbvert; i++) {

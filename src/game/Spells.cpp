@@ -3496,7 +3496,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 				Entity * _io = entities[spells[i].caster];
 				if(ValidIONum(_io->targetinfo)) {
 					const Vec3f & end = entities[_io->targetinfo]->pos;
-					float d = dist(Vec2f(end.x, end.z), Vec2f(start.x, start.z));
+					float d = glm::distance(Vec2f(end.x, end.z), Vec2f(start.x, start.z));
 					anglea = degrees(getAngle(start.y, start.z, end.y, end.z + d));
 				}
 				
