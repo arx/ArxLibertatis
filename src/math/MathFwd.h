@@ -25,7 +25,6 @@
 #include <boost/static_assert.hpp>
 
 #include <glm/glm.hpp>
-#include <glm/gtc/type_ptr.hpp>
 
 template <class T>
 class Angle;
@@ -45,7 +44,6 @@ typedef Rectangle_<float> Rectf;
 		enum { num_components = N };
 		typedef T component_type;
 		typedef V<T, glm::highp> type;
-
 		BOOST_STATIC_ASSERT(sizeof(type) == sizeof(component_type) * N);
 	};
 #else
@@ -54,7 +52,6 @@ typedef Rectangle_<float> Rectf;
 		enum { num_components = N };
 		typedef T component_type;
 		typedef V<T> type;
-
 		BOOST_STATIC_ASSERT(sizeof(type) == sizeof(component_type) * N);
 	};
 #endif

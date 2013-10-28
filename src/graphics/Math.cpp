@@ -48,6 +48,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <algorithm>
 
+#include <glm/gtc/type_ptr.hpp>
+
 #include "graphics/GraphicsTypes.h"
 
 using std::min;
