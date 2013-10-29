@@ -136,9 +136,9 @@ static int run(const std::string & exe, bool wait, const char * const args[],
 			#endif
 			
 			// Detach the child process from the parent
-			#if ARX_HAVE_SETPGRP
+			#if ARX_HAVE_SETPGID
 			if(detach) {
-				(void)setpgrp();
+				(void)setpgid(0, 0);
 			}
 			#endif
 			
