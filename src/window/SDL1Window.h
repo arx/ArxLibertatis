@@ -63,9 +63,9 @@ private:
 	typedef std::vector<EventHandler *> EventHandlers;
 	EventHandlers m_handlers;
 	
-	DisplayMode desktopMode;
+	DisplayMode m_desktopMode;
 	
-	static SDL1Window * mainWindow;
+	static SDL1Window * s_mainWindow;
 	
 };
 

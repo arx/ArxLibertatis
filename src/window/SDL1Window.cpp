@@ -30,7 +30,7 @@
 #include "platform/CrashHandler.h"
 #include "platform/Platform.h"
 
-SDL1Window * SDL1Window::mainWindow = NULL;
+SDL1Window * SDL1Window::s_mainWindow = NULL;
 
 SDL1Window::SDL1Window() { }
 
@@ -43,15 +43,15 @@ SDL1Window::~SDL1Window() {
 	
 	arx_assert_msg(m_handlers.empty(), "Window is still being used!");
 	
-	if(mainWindow) {
-		SDL_Quit(), mainWindow = NULL;
+	if(s_mainWindow) {
+		SDL_Quit(), s_mainWindow = NULL;
 	}
 	
 }
 
 bool SDL1Window::initializeFramework() {
 	
-	arx_assert_msg(mainWindow == NULL, "SDL only supports one window");
+	arx_assert_msg(s_mainWindow == NULL, "SDL only supports one window");
 	arx_assert(displayModes.empty());
 	
 	const char * headerVersion = ARX_STR(SDL_MAJOR_VERSION) "." ARX_STR(SDL_MINOR_VERSION)
@@ -71,9 +71,9 @@ bool SDL1Window::initializeFramework() {
 	
 	const SDL_VideoInfo * vid = SDL_GetVideoInfo();
 	
-	desktopMode.resolution.x = vid->current_w;
-	desktopMode.resolution.y = vid->current_h;
-	desktopMode.depth = vid->vfmt->BitsPerPixel;
+	m_desktopMode.resolution.x = vid->current_w;
+	m_desktopMode.resolution.y = vid->current_h;
+	m_desktopMode.depth = vid->vfmt->BitsPerPixel;
 	
 	u32 flags = SDL_FULLSCREEN | SDL_ANYFORMAT | SDL_OPENGL | SDL_HWSURFACE;
 	SDL_Rect ** modes = SDL_ListModes(NULL, flags);
@@ -82,8 +82,8 @@ bool SDL1Window::initializeFramework() {
 		// Any mode is supported, add some standard modes.
 		
 #define ADD_MODE(x, y) \
-		if(desktopMode.resolution != Vec2i(x, y)) { \
-			displayModes.push_back(DisplayMode(Vec2i(x, y), desktopMode.depth)); \
+		if(m_desktopMode.resolution != Vec2i(x, y)) { \
+			displayModes.push_back(DisplayMode(Vec2i(x, y), m_desktopMode.depth)); \
 		}
 		
 		// 4:3
@@ -111,11 +111,11 @@ bool SDL1Window::initializeFramework() {
 		
 #undef ADD_MODE
 		
-		displayModes.push_back(desktopMode);
+		displayModes.push_back(m_desktopMode);
 		
 	} else if(modes) {
 		for(; *modes; modes++) {
-			DisplayMode mode(Vec2i((*modes)->w, (*modes)->h), desktopMode.depth);
+			DisplayMode mode(Vec2i((*modes)->w, (*modes)->h), m_desktopMode.depth);
 			displayModes.push_back(mode);
 		}
 	} else {
@@ -124,7 +124,7 @@ bool SDL1Window::initializeFramework() {
 	
 	std::sort(displayModes.begin(), displayModes.end());
 	
-	mainWindow = this;
+	s_mainWindow = this;
 	
 	SDL_SetEventFilter(eventFilter);
 	
@@ -194,9 +194,9 @@ bool SDL1Window::initialize(const std::string & title, Vec2i size, bool fullscre
 bool SDL1Window::setMode(DisplayMode mode, bool fullscreen) {
 	
 	if(fullscreen && mode.resolution == Vec2i_ZERO) {
-		mode = desktopMode;
+		mode = m_desktopMode;
 	} else if(mode.depth == 0) {
-		mode.depth = desktopMode.depth;
+		mode.depth = m_desktopMode.depth;
 	}
 	
 	bool needsReinit;
@@ -296,8 +296,8 @@ void SDL1Window::setWindowSize(Vec2i size) {
 
 int SDLCALL SDL1Window::eventFilter(const SDL_Event * event) {
 	
-	if(mainWindow && event->type == SDL_QUIT) {
-		return (mainWindow->onClose()) ? 1 : 0;
+	if(s_mainWindow && event->type == SDL_QUIT) {
+		return (s_mainWindow->onClose()) ? 1 : 0;
 	}
 	
 	return 1;
