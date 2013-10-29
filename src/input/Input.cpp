@@ -54,11 +54,15 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/GameTime.h"
 #include "graphics/Math.h"
 #include "input/InputBackend.h"
-#if ARX_HAVE_SDL
-#include "input/SDLInputBackend.h"
-#endif
 #include "io/log/Logger.h"
 #include "window/RenderWindow.h"
+
+#if ARX_HAVE_SDL2
+#include "input/SDL2InputBackend.h"
+#endif
+#if ARX_HAVE_SDL1
+#include "input/SDL1InputBackend.h"
+#endif
 
 Input * GInput = NULL;
 
@@ -214,10 +218,20 @@ bool Input::init() {
 		
 		bool matched = false;
 		
-		#if ARX_HAVE_SDL
+		#if ARX_HAVE_SDL2
 		if(!backend && first == (autoBackend || config.input.backend == "SDL")) {
 			matched = true;
-			backend = new SDLInputBackend;
+			backend = new SDL2InputBackend;
+			if(!backend->init()) {
+				delete backend, backend = NULL;
+			}
+		}
+		#endif
+		
+		#if ARX_HAVE_SDL1
+		if(!backend && first == (autoBackend || config.input.backend == "SDL")) {
+			matched = true;
+			backend = new SDL1InputBackend;
 			if(!backend->init()) {
 				delete backend, backend = NULL;
 			}

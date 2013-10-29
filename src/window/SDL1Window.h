@@ -24,14 +24,14 @@
 
 #include "window/RenderWindow.h"
 
-class SDLInputBackend;
+class SDL1InputBackend;
 
-class SDLWindow : public RenderWindow {
+class SDL1Window : public RenderWindow {
 	
 public:
 	
-	SDLWindow();
-	virtual ~SDLWindow();
+	SDL1Window();
+	virtual ~SDL1Window();
 	
 	bool initializeFramework();
 	bool initialize(const std::string & title, Vec2i size, bool fullscreen,
@@ -53,13 +53,13 @@ private:
 	
 	static int SDLCALL eventFilter(const SDL_Event * event);
 	
-	SDLInputBackend * input;
+	SDL1InputBackend * input;
 	
-	static SDLWindow * mainWindow;
+	static SDL1Window * mainWindow;
 	
 	DisplayMode desktopMode;
 	
-	friend class SDLInputBackend;
+	friend class SDL1InputBackend;
 };
 
 #endif // ARX_WINDOW_SDLWINDOW_H

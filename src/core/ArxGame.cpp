@@ -134,8 +134,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "Configure.h"
 #include "core/URLConstants.h"
 
-#if ARX_HAVE_SDL
-#include "window/SDLWindow.h"
+#if ARX_HAVE_SDL2
+#include "window/SDL2Window.h"
+#endif
+#if ARX_HAVE_SDL1
+#include "window/SDL1Window.h"
 #endif
 
 enum InfoPanels {
@@ -349,10 +352,20 @@ bool ArxGame::initWindow() {
 		
 		bool matched = false;
 		
-		#if ARX_HAVE_SDL
+		#if ARX_HAVE_SDL2
 		if(!m_MainWindow && first == (autoFramework || config.window.framework == "SDL")) {
 			matched = true;
-			RenderWindow * window = new SDLWindow;
+			RenderWindow * window = new SDL2Window;
+			if(!initWindow(window)) {
+				delete window;
+			}
+		}
+		#endif
+		
+		#if ARX_HAVE_SDL1
+		if(!m_MainWindow && first == (autoFramework || config.window.framework == "SDL")) {
+			matched = true;
+			RenderWindow * window = new SDL1Window;
 			if(!initWindow(window)) {
 				delete window;
 			}

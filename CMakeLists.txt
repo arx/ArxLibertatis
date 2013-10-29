@@ -39,7 +39,8 @@ option(INSTALL_SCRIPTS "Install the data install script" ON)
 # Optional dependencies
 option(USE_OPENAL "Build the OpenAL audio backend" ON)
 option(USE_OPENGL "Build the OpenGL renderer backend" ON)
-option(USE_SDL "Build the SDL windowing backend" ON)
+option(USE_SDL2 "Build the SDL 2 windowing backend" OFF)
+option(USE_SDL1 "Build the SDL 1.2 windowing backend" ON)
 option(USE_NATIVE_FS "Use the native filesystem backend directly instead of boost" ON)
 option(USE_QT5 "Use Qt 5 if available" ON)
 option(USE_QT4 "Use Qt 4 if available" ON)
@@ -270,7 +271,23 @@ if(USE_OPENAL)
 endif()
 
 # SDL
-if(USE_SDL)
+if(NOT ARX_HAVE_SDL AND USE_SDL2)
+	if(USE_SDL1)
+		set(SDL_OPTIONAL_DEPENDENCY)
+	else()
+		set(SDL_OPTIONAL_DEPENDENCY ${OPTIONAL_DEPENDENCY})
+	endif()
+	set(SDL2_BUILDING_LIBRARY 1) # we don't need SDL2main!
+	find_package(SDL2 ${OPTIONAL_DEPENDENCY})
+	if(SDL2_FOUND)
+		if(NOT MSVC)
+			check_link_library(SDL2 SDL2_LIBRARY)
+		endif()
+		set(ARX_HAVE_SDL2 1)
+		set(ARX_HAVE_SDL 1)
+	endif()
+endif()
+if(NOT ARX_HAVE_SDL AND USE_SDL1)
 	if(NOT MACOSX)
 		# Required to avoid linking with SDLmain except for OS X where it is necessary
 		# due to the need to have NSApplication correctly setup by SDLmain.
@@ -281,6 +298,8 @@ if(USE_SDL)
 		if(NOT MSVC)
 			check_link_library(SDL SDL_LIBRARY)
 		endif()
+		set(ARX_HAVE_SDL1 1)
+		set(ARX_HAVE_SDL 1)
 	endif(SDL_FOUND)
 endif()
 
@@ -645,7 +664,8 @@ set(GUI_SOURCES
 )
 
 set(INPUT_SOURCES src/input/Input.cpp)
-set(INPUT_SDL_SOURCES src/input/SDLInputBackend.cpp)
+set(INPUT_SDL1_SOURCES src/input/SDL1InputBackend.cpp)
+set(INPUT_SDL2_SOURCES src/input/SDL2InputBackend.cpp)
 
 set(IO_SOURCES
 	src/io/CinematicLoad.cpp
@@ -764,7 +784,8 @@ set(WINDOW_SOURCES
 	src/window/RenderWindow.cpp
 	src/window/Window.cpp
 )
-set(WINDOW_SDL_SOURCES src/window/SDLWindow.cpp)
+set(WINDOW_SDL1_SOURCES src/window/SDL1Window.cpp)
+set(WINDOW_SDL2_SOURCES src/window/SDL2Window.cpp)
 
 # TODO manually specify theese like we do for the tools
 file(GLOB_RECURSE ALL_INCLUDES RELATIVE ${CMAKE_SOURCE_DIR} ${SRC_DIR}/*.h)
@@ -793,15 +814,26 @@ if(USE_OPENGL AND OPENGL_FOUND AND GLEW_FOUND)
 	include_directories(SYSTEM ${OPENGL_INCLUDE_DIR} ${GLEW_INCLUDE_DIR})
 	add_definitions(${GLEW_DEFINITIONS})
 	set(ARX_HAVE_OPENGL 1)
+else()
+	# SDL backends require OpenGL
+	unset(ARX_HAVE_SDL)
+	unset(ARX_HAVE_SDL1)
+	unset(ARX_HAVE_SDL2)
 endif()
 
 # Windowing / input
-if(USE_SDL AND ARX_HAVE_OPENGL AND SDL_FOUND)
-	list(APPEND WINDOW_SOURCES ${WINDOW_SDL_SOURCES})
-	list(APPEND INPUT_SOURCES ${INPUT_SDL_SOURCES})
-	list(APPEND ARX_LIBRARIES ${SDL_LIBRARY})
-	include_directories(SYSTEM ${SDL_INCLUDE_DIR})
-	set(ARX_HAVE_SDL 1)
+if(ARX_HAVE_SDL)
+	if(ARX_HAVE_SDL2)
+		list(APPEND WINDOW_SOURCES ${WINDOW_SDL2_SOURCES})
+		list(APPEND INPUT_SOURCES ${INPUT_SDL2_SOURCES})
+		list(APPEND ARX_LIBRARIES ${SDL2_LIBRARY})
+		include_directories(SYSTEM ${SDL2_INCLUDE_DIR})
+	elseif(ARX_HAVE_SDL1)
+		list(APPEND WINDOW_SOURCES ${WINDOW_SDL1_SOURCES})
+		list(APPEND INPUT_SOURCES ${INPUT_SDL1_SOURCES})
+		list(APPEND ARX_LIBRARIES ${SDL_LIBRARY})
+		include_directories(SYSTEM ${SDL_INCLUDE_DIR})
+	endif()
 endif()
 
 # Logging
@@ -1206,11 +1238,9 @@ print_configuration("Renderer"
 print_configuration("Audio backend"
 	ARX_HAVE_OPENAL "OpenAL"
 )
-print_configuration("Input backend"
-	ARX_HAVE_SDL     "SDL"
-)
 print_configuration("Windowing"
-	ARX_HAVE_SDL     "SDL"
+	ARX_HAVE_SDL2     "SDL 2"
+	ARX_HAVE_SDL1     "SDL 1.2"
 )
 print_configuration("Crash handler"
 	ARX_HAVE_CRASHHANDLER_POSIX   "POSIX"
@@ -1240,10 +1270,7 @@ if(NOT (ARX_HAVE_OPENAL))
 	message(WARNING "No audio backend enabled - need OpenAL")
 endif()
 if(NOT (ARX_HAVE_SDL))
-	message(SEND_ERROR "No input backend available - need SDL")
-endif()
-if(NOT (ARX_HAVE_SDL))
-	message(SEND_ERROR "No windowing backend available - need SDL")
+	message(SEND_ERROR "No windowing backend available - need SDL 2 or 1.2")
 endif()
 if(NOT (ARX_HAVE_NANOSLEEP OR WIN32))
 	message(SEND_ERROR "Need either nanosleep or WIN32.")

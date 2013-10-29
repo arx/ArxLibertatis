@@ -17,7 +17,7 @@
  * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "window/SDLWindow.h"
+#include "window/SDL1Window.h"
 
 #include <sstream>
 
@@ -28,16 +28,16 @@
 
 #include "core/Config.h"
 #include "graphics/opengl/OpenGLRenderer.h"
-#include "input/SDLInputBackend.h"
+#include "input/SDL1InputBackend.h"
 #include "io/log/Logger.h"
 #include "math/Rectangle.h"
 #include "platform/CrashHandler.h"
 
-SDLWindow * SDLWindow::mainWindow = NULL;
+SDL1Window * SDL1Window::mainWindow = NULL;
 
-SDLWindow::SDLWindow() : input(NULL) { }
+SDL1Window::SDL1Window() : input(NULL) { }
 
-SDLWindow::~SDLWindow() {
+SDL1Window::~SDL1Window() {
 	
 	if(renderer) {
 		onRendererShutdown();
@@ -50,7 +50,7 @@ SDLWindow::~SDLWindow() {
 	
 }
 
-bool SDLWindow::initializeFramework() {
+bool SDL1Window::initializeFramework() {
 	
 	arx_assert_msg(mainWindow == NULL, "SDL only supports one window");
 	arx_assert(displayModes.empty());
@@ -130,7 +130,7 @@ bool SDLWindow::initializeFramework() {
 	return true;
 }
 
-bool SDLWindow::initialize(const std::string & title, Vec2i size, bool fullscreen,
+bool SDL1Window::initialize(const std::string & title, Vec2i size, bool fullscreen,
                            unsigned depth) {
 	
 	arx_assert(!displayModes.empty());
@@ -192,7 +192,7 @@ bool SDLWindow::initialize(const std::string & title, Vec2i size, bool fullscree
 	return true;
 }
 
-bool SDLWindow::setMode(DisplayMode mode, bool fullscreen) {
+bool SDL1Window::setMode(DisplayMode mode, bool fullscreen) {
 	
 	if(fullscreen && mode.resolution == Vec2i_ZERO) {
 		mode = desktopMode;
@@ -225,7 +225,7 @@ bool SDLWindow::setMode(DisplayMode mode, bool fullscreen) {
 	return (win != NULL);
 }
 
-void SDLWindow::updateSize(bool reinit) {
+void SDL1Window::updateSize(bool reinit) {
 	
 	const SDL_VideoInfo * vid = SDL_GetVideoInfo();
 	
@@ -258,7 +258,7 @@ void SDLWindow::updateSize(bool reinit) {
 	}
 }
 
-void * SDLWindow::getHandle() {
+void * SDL1Window::getHandle() {
 	
 #if ARX_PLATFORM == ARX_PLATFORM_WIN32
 	
@@ -280,7 +280,7 @@ void * SDLWindow::getHandle() {
 	
 }
 
-void SDLWindow::setFullscreenMode(Vec2i resolution, unsigned _depth) {
+void SDL1Window::setFullscreenMode(Vec2i resolution, unsigned _depth) {
 	
 	if(isFullscreen_ && size_ == resolution && depth_ == _depth) {
 		return;
@@ -300,7 +300,7 @@ void SDLWindow::setFullscreenMode(Vec2i resolution, unsigned _depth) {
 	
 }
 
-void SDLWindow::setWindowSize(Vec2i size) {
+void SDL1Window::setWindowSize(Vec2i size) {
 	
 	if(!isFullscreen_ && size == getSize()) {
 		return;
@@ -317,7 +317,7 @@ void SDLWindow::setWindowSize(Vec2i size) {
 	}
 }
 
-int SDLCALL SDLWindow::eventFilter(const SDL_Event * event) {
+int SDLCALL SDL1Window::eventFilter(const SDL_Event * event) {
 	
 	if(mainWindow && event->type == SDL_QUIT) {
 		return (mainWindow->onClose()) ? 1 : 0;
@@ -326,7 +326,7 @@ int SDLCALL SDLWindow::eventFilter(const SDL_Event * event) {
 	return 1;
 }
 
-void SDLWindow::tick() {
+void SDL1Window::tick() {
 	
 	SDL_Event event;
 	while(SDL_PollEvent(&event)) {
@@ -416,17 +416,17 @@ void SDLWindow::tick() {
 	
 }
 
-Vec2i SDLWindow::getCursorPosition() const {
+Vec2i SDL1Window::getCursorPosition() const {
 	int cursorPosX, cursorPosY;
 	SDL_GetMouseState(&cursorPosX, &cursorPosY);
 	return Vec2i(cursorPosX, cursorPosY);
 }
 
-void SDLWindow::showFrame() {
+void SDL1Window::showFrame() {
 	SDL_GL_SwapBuffers();
 }
 
-void SDLWindow::hide() {
+void SDL1Window::hide() {
 	SDL_WM_IconifyWindow();
 	onShow(false);
 }

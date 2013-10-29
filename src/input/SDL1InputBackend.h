@@ -27,12 +27,12 @@
 #include "input/Mouse.h"
 #include "math/Vector.h"
 
-class SDLInputBackend : public InputBackend {
+class SDL1InputBackend : public InputBackend {
 	
 public:
 	
-	SDLInputBackend();
-	~SDLInputBackend();
+	SDL1InputBackend();
+	~SDL1InputBackend();
 	
 	bool init();
 	bool update();
@@ -70,7 +70,7 @@ private:
 	
 	Vec2i lastCursorAbs;
 	
-	friend class SDLWindow;
+	friend class SDL1Window;
 };
 
 #endif // ARX_INPUT_SDLINPUTBACKEND_H

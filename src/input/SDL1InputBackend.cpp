@@ -17,12 +17,12 @@
  * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "input/SDLInputBackend.h"
+#include "input/SDL1InputBackend.h"
 
 #include <boost/static_assert.hpp>
 
 #include "io/log/Logger.h"
-#include "window/SDLWindow.h"
+#include "window/SDL1Window.h"
 
 #ifndef SDL_BUTTON_X1
 #define SDL_BUTTON_X1 6
@@ -31,12 +31,12 @@
 #define SDL_BUTTON_X2 7
 #endif
 
-SDLInputBackend::SDLInputBackend() { }
+SDL1InputBackend::SDL1InputBackend() { }
 
-SDLInputBackend::~SDLInputBackend() {
+SDL1InputBackend::~SDL1InputBackend() {
 	
-	if(SDLWindow::mainWindow && SDLWindow::mainWindow->input == this) {
-		SDLWindow::mainWindow->input = NULL;
+	if(SDL1Window::mainWindow && SDL1Window::mainWindow->input == this) {
+		SDL1Window::mainWindow->input = NULL;
 	}
 }
 
@@ -44,16 +44,16 @@ static int sdlToArxKey[SDLK_LAST];
 
 static int sdlToArxButton[10];
 
-bool SDLInputBackend::init() {
+bool SDL1InputBackend::init() {
 	
-	if(!SDLWindow::mainWindow) {
+	if(!SDL1Window::mainWindow) {
 		LogError << "Cannot initialize SDL input without SDL window.";
 		return false;
 	}
 	
 	cursorInWindow = false;
 	
-	SDLWindow::mainWindow->input = this;
+	SDL1Window::mainWindow->input = this;
 	
 	SDL_EventState(SDL_KEYDOWN, SDL_ENABLE);
 	SDL_EventState(SDL_KEYUP, SDL_ENABLE);
@@ -239,10 +239,10 @@ bool SDLInputBackend::init() {
 	return true;
 }
 
-bool SDLInputBackend::update() {
+bool SDL1InputBackend::update() {
 	
-	if(SDLWindow::mainWindow) {
-		SDLWindow::mainWindow->tick();
+	if(SDL1Window::mainWindow) {
+		SDL1Window::mainWindow->tick();
 	}
 	
 	
@@ -261,41 +261,41 @@ bool SDLInputBackend::update() {
 	return true;
 }
 
-void SDLInputBackend::acquireDevices() {
+void SDL1InputBackend::acquireDevices() {
 	// SDL_WM_GrabInput(SDL_GRAB_ON);
 }
 
-void SDLInputBackend::unacquireDevices() {
+void SDL1InputBackend::unacquireDevices() {
 	// SDL_WM_GrabInput(SDL_GRAB_OFF);
 }
 
-bool SDLInputBackend::getAbsoluteMouseCoords(int & absX, int & absY) const {
+bool SDL1InputBackend::getAbsoluteMouseCoords(int & absX, int & absY) const {
 	absX = cursorAbs.x, absY = cursorAbs.y;
 	return cursorInWindow;
 }
 
-void SDLInputBackend::setAbsoluteMouseCoords(int absX, int absY) {
+void SDL1InputBackend::setAbsoluteMouseCoords(int absX, int absY) {
 	lastCursorAbs = cursorAbs = Vec2i(absX, absY);
 	SDL_WarpMouse(absX, absY);
 }
 
-void SDLInputBackend::getRelativeMouseCoords(int & relX, int & relY, int & wheelDir) const {
+void SDL1InputBackend::getRelativeMouseCoords(int & relX, int & relY, int & wheelDir) const {
 	relX = cursorRel.x, relY = cursorRel.y, wheelDir = currentWheel;
 }
 
-bool SDLInputBackend::isMouseButtonPressed(int buttonId, int & deltaTime) const  {
+bool SDL1InputBackend::isMouseButtonPressed(int buttonId, int & deltaTime) const  {
 	arx_assert(buttonId >= Mouse::ButtonBase && buttonId < Mouse::ButtonMax);
 	deltaTime = 0; // TODO
 	return buttonStates[buttonId - Mouse::ButtonBase];
 }
 
-void SDLInputBackend::getMouseButtonClickCount(int buttonId, int & numClick, int & numUnClick) const {
+void SDL1InputBackend::getMouseButtonClickCount(int buttonId, int & numClick, int & numUnClick) const {
 	arx_assert(buttonId >= Mouse::ButtonBase && buttonId < Mouse::ButtonMax);
 	size_t i = buttonId - Mouse::ButtonBase;
 	numClick = currentClickCount[i], numUnClick = currentUnclickCount[i];
 }
 
-bool SDLInputBackend::isKeyboardKeyPressed(int keyId) const {
+bool SDL1InputBackend::isKeyboardKeyPressed(int keyId) const {
 	arx_assert(keyId >= Keyboard::KeyBase && keyId < Keyboard::KeyMax);
 	return keyStates[keyId - Keyboard::KeyBase];
 }
@@ -424,7 +424,7 @@ static const char arxKeys[][2] = {
 	
 };
 
-bool SDLInputBackend::getKeyAsText(int keyId, char & result) const {
+bool SDL1InputBackend::getKeyAsText(int keyId, char & result) const {
 	
 	// TODO we should use SDL_StartTextInput + SDL_SetTextInputRect to allow unicode input
 	
@@ -446,7 +446,7 @@ bool SDLInputBackend::getKeyAsText(int keyId, char & result) const {
 	return false;
 }
 
-void SDLInputBackend::onInputEvent(const SDL_Event & event) {
+void SDL1InputBackend::onInputEvent(const SDL_Event & event) {
 	
 	switch(event.type) {
 		
