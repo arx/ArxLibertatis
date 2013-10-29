@@ -39,7 +39,7 @@ option(INSTALL_SCRIPTS "Install the data install script" ON)
 # Optional dependencies
 option(USE_OPENAL "Build the OpenAL audio backend" ON)
 option(USE_OPENGL "Build the OpenGL renderer backend" ON)
-option(USE_SDL2 "Build the SDL 2 windowing backend" OFF)
+option(USE_SDL2 "Build the SDL 2 windowing backend" ON)
 option(USE_SDL1 "Build the SDL 1.2 windowing backend" ON)
 option(USE_NATIVE_FS "Use the native filesystem backend directly instead of boost" ON)
 option(USE_QT5 "Use Qt 5 if available" ON)
