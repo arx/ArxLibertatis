@@ -388,7 +388,7 @@ bool ArxGame::initWindow() {
 bool ArxGame::initInput() {
 	
 	LogDebug("Input init");
-	bool init = ARX_INPUT_Init();
+	bool init = ARX_INPUT_Init(m_MainWindow);
 	if(!init) {
 		LogCritical << "Input initialization failed.";
 	}

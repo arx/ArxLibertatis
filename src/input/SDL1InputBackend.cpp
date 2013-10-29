@@ -44,7 +44,9 @@ static int sdlToArxKey[SDLK_LAST];
 
 static int sdlToArxButton[10];
 
-bool SDL1InputBackend::init() {
+bool SDL1InputBackend::init(Window * window) {
+	
+	ARX_UNUSED(window); // TODO
 	
 	if(!SDL1Window::mainWindow) {
 		LogError << "Cannot initialize SDL input without SDL window.";

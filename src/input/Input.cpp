@@ -186,10 +186,10 @@ static const std::string PREFIX_BUTTON = "Button";
 static const char SEPARATOR = '+';
 const std::string Input::KEY_NONE = "---";
 
-bool ARX_INPUT_Init() {
+bool ARX_INPUT_Init(Window * window) {
 	GInput = new Input();
 	
-	bool ret = GInput->init();
+	bool ret = GInput->init(window);
 	if(!ret) {
 		delete GInput;
 		GInput = NULL;
@@ -208,7 +208,7 @@ Input::Input() : backend(NULL) {
 	reset();
 }
 
-bool Input::init() {
+bool Input::init(Window * window) {
 	arx_assert(backend == NULL);
 	
 	bool autoBackend = (config.input.backend == "auto");
@@ -222,7 +222,7 @@ bool Input::init() {
 		if(!backend && first == (autoBackend || config.input.backend == "SDL")) {
 			matched = true;
 			backend = new SDL2InputBackend;
-			if(!backend->init()) {
+			if(!backend->init(window)) {
 				delete backend, backend = NULL;
 			}
 		}
@@ -232,7 +232,7 @@ bool Input::init() {
 		if(!backend && first == (autoBackend || config.input.backend == "SDL")) {
 			matched = true;
 			backend = new SDL1InputBackend;
-			if(!backend->init()) {
+			if(!backend->init(window)) {
 				delete backend, backend = NULL;
 			}
 		}

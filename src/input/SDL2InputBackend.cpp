@@ -37,7 +37,9 @@ static int sdlToArxKey[SDL_NUM_SCANCODES];
 
 static int sdlToArxButton[10];
 
-bool SDL2InputBackend::init() {
+bool SDL2InputBackend::init(Window * window) {
+	
+	ARX_UNUSED(window); // TODO
 	
 	if(!SDL2Window::mainWindow) {
 		LogError << "Cannot initialize SDL input without SDL window.";

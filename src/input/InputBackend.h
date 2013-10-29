@@ -20,11 +20,13 @@
 #ifndef ARX_INPUT_INPUTBACKEND_H
 #define ARX_INPUT_INPUTBACKEND_H
 
+class Window;
+
 class InputBackend {
 public:
 	virtual ~InputBackend() {}
 
-	virtual bool init() = 0;
+	virtual bool init(Window * window) = 0;
 
 	virtual bool update() = 0;	
 

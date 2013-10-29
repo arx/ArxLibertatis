@@ -34,7 +34,7 @@ public:
 	SDL1InputBackend();
 	~SDL1InputBackend();
 	
-	bool init();
+	bool init(Window * window);
 	bool update();
 	
 	// Mouse

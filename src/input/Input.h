@@ -52,6 +52,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "input/InputKey.h"
 #include "math/Vector.h"
 
+class Window;
+
 class Input {
 	
 public:
@@ -61,7 +63,7 @@ public:
 	Input();
 	virtual ~Input();
 	
-	bool init();
+	bool init(Window * window);
 	void reset();
 	
 	void update();
@@ -133,7 +135,7 @@ private:
 
 extern Input * GInput;
 
-bool ARX_INPUT_Init();
+bool ARX_INPUT_Init(Window * window);
 void ARX_INPUT_Release();
  
 #endif // ARX_INPUT_INPUT_H
