@@ -17,21 +17,21 @@
  * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ARX_WINDOW_SDL1WINDOW_H
-#define ARX_WINDOW_SDL1WINDOW_H
+#ifndef ARX_WINDOW_SDL2WINDOW_H
+#define ARX_WINDOW_SDL2WINDOW_H
 
 #include <SDL.h>
 
 #include "window/RenderWindow.h"
 
-class SDL1InputBackend;
+class SDL2InputBackend;
 
-class SDL1Window : public RenderWindow {
+class SDL2Window : public RenderWindow {
 	
 public:
 	
-	SDL1Window();
-	virtual ~SDL1Window();
+	SDL2Window();
+	virtual ~SDL2Window();
 	
 	bool initializeFramework();
 	bool initialize(const std::string & title, Vec2i size, bool fullscreen,
@@ -48,17 +48,20 @@ public:
 private:
 	
 	bool setMode(DisplayMode mode, bool fullscreen);
-	void updateSize(bool reinit);
+	void updateSize();
+	void cleanupRenderer(bool wasOrIsFullscreen);
+	void reinitializeRenderer();
 	
-	static int SDLCALL eventFilter(const SDL_Event * event);
+	static int SDLCALL eventFilter(void * userdata, SDL_Event * event);
 	
-	SDL1InputBackend * input;
+	SDL_Window * window;
+	SDL_GLContext context;
 	
-	static SDL1Window * mainWindow;
+	SDL2InputBackend * input;
 	
-	DisplayMode desktopMode;
+	static SDL2Window * mainWindow;
 	
-	friend class SDL1InputBackend;
+	friend class SDL2InputBackend;
 };
 
-#endif // ARX_WINDOW_SDL1WINDOW_H
+#endif // ARX_WINDOW_SDL2WINDOW_H

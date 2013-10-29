@@ -126,7 +126,6 @@ private:
 	virtual void onWindowGotFocus(const Window & window);
 	virtual void onWindowLostFocus(const Window & window);
 	virtual void onResizeWindow(const Window & window);
-	virtual void onPaintWindow(const Window & window);
 	virtual void onDestroyWindow(const Window & window);
 	virtual void onToggleFullscreen(const Window & window);
 	

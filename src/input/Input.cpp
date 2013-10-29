@@ -253,10 +253,6 @@ Input::~Input() {
 void Input::reset() {
 	iMouseR = Vec2s_ZERO;
 
-	Vec2s wndSize((short)mainApp->getWindow()->getSize().x, (short)mainApp->getWindow()->getSize().y); 
-	Vec2s absPos = wndSize * Vec2s(2);
-	setMousePosAbs(absPos);
-	
 	for(size_t i = 0; i < Mouse::ButtonCount; i++) {
 		iMouseTime[i] = 0;
 		iMouseTimeSet[i] = 0;

@@ -116,6 +116,7 @@ void OpenGLRenderer::Initialize() {
 	
 	if(glewInit() != GLEW_OK) {
 		LogError << "GLEW init failed";
+		return;
 	}
 	
 	CrashHandler::setVariable("GLEW version", glewGetString(GLEW_VERSION));

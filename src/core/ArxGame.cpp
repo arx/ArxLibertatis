@@ -556,21 +556,13 @@ void ArxGame::onResizeWindow(const Window & window) {
 	}
 }
 
-void ArxGame::onPaintWindow(const Window& window)
-{
-	ARX_UNUSED(window);
-}
-
 void ArxGame::onDestroyWindow(const Window &) {
-	
 	LogInfo << "Application window is being destroyed";
 	quit();
 }
 
 void ArxGame::onToggleFullscreen(const Window & window) {
 	config.video.fullscreen = window.isFullScreen();
-	GInput->reset();
-	wasResized = true;
 }
 
 /*!
@@ -587,7 +579,7 @@ void ArxGame::run() {
 			break;
 		}
 		
-		if(m_MainWindow->hasFocus() && m_bReady) {
+		if(m_MainWindow->isVisible() && !m_MainWindow->isMinimized() && m_bReady) {
 			doFrame();
 			
 			// Show the frame on the primary surface.

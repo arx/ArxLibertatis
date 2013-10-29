@@ -17,43 +17,36 @@
  * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "input/SDL1InputBackend.h"
+#include "input/SDL2InputBackend.h"
 
 #include <boost/static_assert.hpp>
 
 #include "io/log/Logger.h"
-#include "window/SDL1Window.h"
+#include "window/SDL2Window.h"
 
-#ifndef SDL_BUTTON_X1
-#define SDL_BUTTON_X1 6
-#endif
-#ifndef SDL_BUTTON_X2
-#define SDL_BUTTON_X2 7
-#endif
+SDL2InputBackend::SDL2InputBackend() { }
 
-SDL1InputBackend::SDL1InputBackend() { }
-
-SDL1InputBackend::~SDL1InputBackend() {
+SDL2InputBackend::~SDL2InputBackend() {
 	
-	if(SDL1Window::mainWindow && SDL1Window::mainWindow->input == this) {
-		SDL1Window::mainWindow->input = NULL;
+	if(SDL2Window::mainWindow && SDL2Window::mainWindow->input == this) {
+		SDL2Window::mainWindow->input = NULL;
 	}
 }
 
-static int sdlToArxKey[SDLK_LAST];
+static int sdlToArxKey[SDL_NUM_SCANCODES];
 
 static int sdlToArxButton[10];
 
-bool SDL1InputBackend::init() {
+bool SDL2InputBackend::init() {
 	
-	if(!SDL1Window::mainWindow) {
+	if(!SDL2Window::mainWindow) {
 		LogError << "Cannot initialize SDL input without SDL window.";
 		return false;
 	}
 	
 	cursorInWindow = false;
 	
-	SDL1Window::mainWindow->input = this;
+	SDL2Window::mainWindow->input = this;
 	
 	SDL_EventState(SDL_KEYDOWN, SDL_ENABLE);
 	SDL_EventState(SDL_KEYUP, SDL_ENABLE);
@@ -70,141 +63,120 @@ bool SDL1InputBackend::init() {
 	
 	// TODO we should have different key contants for shifted keys!
 	
-	sdlToArxKey[SDLK_BACKSPACE] = Keyboard::Key_Backspace;
-	sdlToArxKey[SDLK_TAB] = Keyboard::Key_Tab;
-	// sdlToArxKey[SDLK_CLEAR] = -1; // TODO
-	sdlToArxKey[SDLK_RETURN] = Keyboard::Key_Enter;
-	sdlToArxKey[SDLK_PAUSE] = Keyboard::Key_Pause;
-	sdlToArxKey[SDLK_ESCAPE] = Keyboard::Key_Escape;
-	sdlToArxKey[SDLK_SPACE] = Keyboard::Key_Spacebar;
-	sdlToArxKey[SDLK_EXCLAIM] = Keyboard::Key_1; // TODO
-	sdlToArxKey[SDLK_QUOTEDBL] = Keyboard::Key_Apostrophe; // TODO
-	sdlToArxKey[SDLK_HASH] = Keyboard::Key_3; // TODO
-	sdlToArxKey[SDLK_DOLLAR] = Keyboard::Key_4; // TODO
-	sdlToArxKey[SDLK_AMPERSAND] = Keyboard::Key_7; // TODO
-	sdlToArxKey[SDLK_QUOTE] = Keyboard::Key_Apostrophe; // TODO
-	sdlToArxKey[SDLK_LEFTPAREN] = Keyboard::Key_9; // TODO
-	sdlToArxKey[SDLK_RIGHTPAREN] = Keyboard::Key_0; // TODO
-	sdlToArxKey[SDLK_ASTERISK] = Keyboard::Key_8; // TODO
-	sdlToArxKey[SDLK_PLUS] = Keyboard::Key_Equals; // TODO
-	sdlToArxKey[SDLK_COMMA] = Keyboard::Key_Comma;
-	sdlToArxKey[SDLK_MINUS] = Keyboard::Key_Minus;
-	sdlToArxKey[SDLK_PERIOD] = Keyboard::Key_Period;
-	sdlToArxKey[SDLK_SLASH] = Keyboard::Key_Slash;
-	sdlToArxKey[SDLK_0] = Keyboard::Key_0;
-	sdlToArxKey[SDLK_1] = Keyboard::Key_1;
-	sdlToArxKey[SDLK_2] = Keyboard::Key_2;
-	sdlToArxKey[SDLK_3] = Keyboard::Key_3;
-	sdlToArxKey[SDLK_4] = Keyboard::Key_4;
-	sdlToArxKey[SDLK_5] = Keyboard::Key_5;
-	sdlToArxKey[SDLK_6] = Keyboard::Key_6;
-	sdlToArxKey[SDLK_7] = Keyboard::Key_7;
-	sdlToArxKey[SDLK_8] = Keyboard::Key_8;
-	sdlToArxKey[SDLK_9] = Keyboard::Key_9;
-	sdlToArxKey[SDLK_COLON] = Keyboard::Key_Semicolon; // TODO
-	sdlToArxKey[SDLK_SEMICOLON] = Keyboard::Key_Semicolon;
-	sdlToArxKey[SDLK_LESS] = Keyboard::Key_Comma; // TODO
-	sdlToArxKey[SDLK_EQUALS] = Keyboard::Key_Equals;
-	sdlToArxKey[SDLK_GREATER] = Keyboard::Key_Period; // TODO
-	sdlToArxKey[SDLK_QUESTION] = Keyboard::Key_Slash; // TODO
-	sdlToArxKey[SDLK_AT] = Keyboard::Key_2; // TODO
-	sdlToArxKey[SDLK_LEFTBRACKET] = Keyboard::Key_LeftBracket;
-	sdlToArxKey[SDLK_BACKSLASH] = Keyboard::Key_Backslash;
-	sdlToArxKey[SDLK_RIGHTBRACKET] = Keyboard::Key_RightBracket;
-	sdlToArxKey[SDLK_CARET] = Keyboard::Key_6; // TODO
-	sdlToArxKey[SDLK_UNDERSCORE] = Keyboard::Key_Minus; // TODO
-	sdlToArxKey[SDLK_BACKQUOTE] = Keyboard::Key_Grave;
-	sdlToArxKey[SDLK_a] = Keyboard::Key_A;
-	sdlToArxKey[SDLK_b] = Keyboard::Key_B;
-	sdlToArxKey[SDLK_c] = Keyboard::Key_C;
-	sdlToArxKey[SDLK_d] = Keyboard::Key_D;
-	sdlToArxKey[SDLK_e] = Keyboard::Key_E;
-	sdlToArxKey[SDLK_f] = Keyboard::Key_F;
-	sdlToArxKey[SDLK_g] = Keyboard::Key_G;
-	sdlToArxKey[SDLK_h] = Keyboard::Key_H;
-	sdlToArxKey[SDLK_i] = Keyboard::Key_I;
-	sdlToArxKey[SDLK_j] = Keyboard::Key_J;
-	sdlToArxKey[SDLK_k] = Keyboard::Key_K;
-	sdlToArxKey[SDLK_l] = Keyboard::Key_L;
-	sdlToArxKey[SDLK_m] = Keyboard::Key_M;
-	sdlToArxKey[SDLK_n] = Keyboard::Key_N;
-	sdlToArxKey[SDLK_o] = Keyboard::Key_O;
-	sdlToArxKey[SDLK_p] = Keyboard::Key_P;
-	sdlToArxKey[SDLK_q] = Keyboard::Key_Q;
-	sdlToArxKey[SDLK_r] = Keyboard::Key_R;
-	sdlToArxKey[SDLK_s] = Keyboard::Key_S;
-	sdlToArxKey[SDLK_t] = Keyboard::Key_T;
-	sdlToArxKey[SDLK_u] = Keyboard::Key_U;
-	sdlToArxKey[SDLK_v] = Keyboard::Key_V;
-	sdlToArxKey[SDLK_w] = Keyboard::Key_W;
-	sdlToArxKey[SDLK_x] = Keyboard::Key_X;
-	sdlToArxKey[SDLK_y] = Keyboard::Key_Y;
-	sdlToArxKey[SDLK_z] = Keyboard::Key_Z;
-	sdlToArxKey[SDLK_DELETE] = Keyboard::Key_Delete;
-	sdlToArxKey[SDLK_KP0] = Keyboard::Key_NumPad0;
-	sdlToArxKey[SDLK_KP1] = Keyboard::Key_NumPad1;
-	sdlToArxKey[SDLK_KP2] = Keyboard::Key_NumPad2;
-	sdlToArxKey[SDLK_KP3] = Keyboard::Key_NumPad3;
-	sdlToArxKey[SDLK_KP4] = Keyboard::Key_NumPad4;
-	sdlToArxKey[SDLK_KP5] = Keyboard::Key_NumPad5;
-	sdlToArxKey[SDLK_KP6] = Keyboard::Key_NumPad6;
-	sdlToArxKey[SDLK_KP7] = Keyboard::Key_NumPad7;
-	sdlToArxKey[SDLK_KP8] = Keyboard::Key_NumPad8;
-	sdlToArxKey[SDLK_KP9] = Keyboard::Key_NumPad9;
-	sdlToArxKey[SDLK_KP_PERIOD] = Keyboard::Key_NumPoint;
-	sdlToArxKey[SDLK_KP_DIVIDE] = Keyboard::Key_NumDivide;
-	sdlToArxKey[SDLK_KP_MULTIPLY] = Keyboard::Key_NumMultiply;
-	sdlToArxKey[SDLK_KP_MINUS] = Keyboard::Key_NumSubtract;
-	sdlToArxKey[SDLK_KP_PLUS] = Keyboard::Key_NumAdd;
-	sdlToArxKey[SDLK_KP_ENTER] = Keyboard::Key_NumPadEnter;
-	sdlToArxKey[SDLK_KP_EQUALS] = Keyboard::Key_NumPadEnter;
-	sdlToArxKey[SDLK_UP] = Keyboard::Key_UpArrow;
-	sdlToArxKey[SDLK_DOWN] = Keyboard::Key_DownArrow;
-	sdlToArxKey[SDLK_RIGHT] = Keyboard::Key_RightArrow;
-	sdlToArxKey[SDLK_LEFT] = Keyboard::Key_LeftArrow;
-	sdlToArxKey[SDLK_INSERT] = Keyboard::Key_Insert;
-	sdlToArxKey[SDLK_HOME] = Keyboard::Key_Home;
-	sdlToArxKey[SDLK_END] = Keyboard::Key_End;
-	sdlToArxKey[SDLK_PAGEUP] = Keyboard::Key_PageUp;
-	sdlToArxKey[SDLK_PAGEDOWN] = Keyboard::Key_PageDown;
-	sdlToArxKey[SDLK_F1] = Keyboard::Key_F1;
-	sdlToArxKey[SDLK_F2] = Keyboard::Key_F2;
-	sdlToArxKey[SDLK_F3] = Keyboard::Key_F3;
-	sdlToArxKey[SDLK_F4] = Keyboard::Key_F4;
-	sdlToArxKey[SDLK_F5] = Keyboard::Key_F5;
-	sdlToArxKey[SDLK_F6] = Keyboard::Key_F6;
-	sdlToArxKey[SDLK_F7] = Keyboard::Key_F7;
-	sdlToArxKey[SDLK_F8] = Keyboard::Key_F8;
-	sdlToArxKey[SDLK_F9] = Keyboard::Key_F9;
-	sdlToArxKey[SDLK_F10] = Keyboard::Key_F10;
-	sdlToArxKey[SDLK_F11] = Keyboard::Key_F11;
-	sdlToArxKey[SDLK_F12] = Keyboard::Key_F12;
-	sdlToArxKey[SDLK_F13] = Keyboard::Key_F13;
-	sdlToArxKey[SDLK_F14] = Keyboard::Key_F14;
-	sdlToArxKey[SDLK_F15] = Keyboard::Key_F15;
-	sdlToArxKey[SDLK_NUMLOCK] = Keyboard::Key_NumLock;
-	sdlToArxKey[SDLK_CAPSLOCK] = Keyboard::Key_CapsLock;
-	sdlToArxKey[SDLK_SCROLLOCK] = Keyboard::Key_ScrollLock;
-	sdlToArxKey[SDLK_RSHIFT] = Keyboard::Key_RightShift;
-	sdlToArxKey[SDLK_LSHIFT] = Keyboard::Key_LeftShift;
-	sdlToArxKey[SDLK_RCTRL] = Keyboard::Key_RightCtrl;
-	sdlToArxKey[SDLK_LCTRL] = Keyboard::Key_LeftCtrl;
-	sdlToArxKey[SDLK_RALT] = Keyboard::Key_RightAlt;
-	sdlToArxKey[SDLK_LALT] = Keyboard::Key_LeftAlt;
-	sdlToArxKey[SDLK_RMETA] = Keyboard::Key_RightWin;
-	sdlToArxKey[SDLK_LMETA] = Keyboard::Key_LeftWin;
-	sdlToArxKey[SDLK_LSUPER] = Keyboard::Key_RightWin;
-	sdlToArxKey[SDLK_RSUPER] = Keyboard::Key_LeftWin;
-	sdlToArxKey[SDLK_MODE] = Keyboard::Key_RightAlt;
-	sdlToArxKey[SDLK_COMPOSE] = Keyboard::Key_Apps;
-	// sdlToArxKey[SDLK_HELP] = -1; // TODO
-	sdlToArxKey[SDLK_PRINT] = Keyboard::Key_PrintScreen;
-	// sdlToArxKey[SDLK_SYSREQ] = -1; // TODO
-	// sdlToArxKey[SDLK_BREAK] = -1; // TODO
-	// sdlToArxKey[SDLK_MENU] = -1; // TODO
-	// sdlToArxKey[SDLK_POWER] = -1; // TODO
-	// sdlToArxKey[SDLK_EURO] = -1; // TODO
-	// sdlToArxKey[SDLK_UNDO] = -1; // TODO
+	sdlToArxKey[SDL_SCANCODE_BACKSPACE] = Keyboard::Key_Backspace;
+	sdlToArxKey[SDL_SCANCODE_TAB] = Keyboard::Key_Tab;
+	sdlToArxKey[SDL_SCANCODE_RETURN] = Keyboard::Key_Enter;
+	sdlToArxKey[SDL_SCANCODE_PAUSE] = Keyboard::Key_Pause;
+	sdlToArxKey[SDL_SCANCODE_ESCAPE] = Keyboard::Key_Escape;
+	sdlToArxKey[SDL_SCANCODE_SPACE] = Keyboard::Key_Spacebar;
+	sdlToArxKey[SDL_SCANCODE_COMMA] = Keyboard::Key_Comma;
+	sdlToArxKey[SDL_SCANCODE_MINUS] = Keyboard::Key_Minus;
+	sdlToArxKey[SDL_SCANCODE_PERIOD] = Keyboard::Key_Period;
+	sdlToArxKey[SDL_SCANCODE_SLASH] = Keyboard::Key_Slash;
+	sdlToArxKey[SDL_SCANCODE_0] = Keyboard::Key_0;
+	sdlToArxKey[SDL_SCANCODE_1] = Keyboard::Key_1;
+	sdlToArxKey[SDL_SCANCODE_2] = Keyboard::Key_2;
+	sdlToArxKey[SDL_SCANCODE_3] = Keyboard::Key_3;
+	sdlToArxKey[SDL_SCANCODE_4] = Keyboard::Key_4;
+	sdlToArxKey[SDL_SCANCODE_5] = Keyboard::Key_5;
+	sdlToArxKey[SDL_SCANCODE_6] = Keyboard::Key_6;
+	sdlToArxKey[SDL_SCANCODE_7] = Keyboard::Key_7;
+	sdlToArxKey[SDL_SCANCODE_8] = Keyboard::Key_8;
+	sdlToArxKey[SDL_SCANCODE_9] = Keyboard::Key_9;
+	sdlToArxKey[SDL_SCANCODE_SEMICOLON] = Keyboard::Key_Semicolon;
+	sdlToArxKey[SDL_SCANCODE_EQUALS] = Keyboard::Key_Equals;
+	sdlToArxKey[SDL_SCANCODE_LEFTBRACKET] = Keyboard::Key_LeftBracket;
+	sdlToArxKey[SDL_SCANCODE_BACKSLASH] = Keyboard::Key_Backslash;
+	sdlToArxKey[SDL_SCANCODE_RIGHTBRACKET] = Keyboard::Key_RightBracket;
+	sdlToArxKey[SDL_SCANCODE_A] = Keyboard::Key_A;
+	sdlToArxKey[SDL_SCANCODE_B] = Keyboard::Key_B;
+	sdlToArxKey[SDL_SCANCODE_C] = Keyboard::Key_C;
+	sdlToArxKey[SDL_SCANCODE_D] = Keyboard::Key_D;
+	sdlToArxKey[SDL_SCANCODE_E] = Keyboard::Key_E;
+	sdlToArxKey[SDL_SCANCODE_F] = Keyboard::Key_F;
+	sdlToArxKey[SDL_SCANCODE_G] = Keyboard::Key_G;
+	sdlToArxKey[SDL_SCANCODE_H] = Keyboard::Key_H;
+	sdlToArxKey[SDL_SCANCODE_I] = Keyboard::Key_I;
+	sdlToArxKey[SDL_SCANCODE_J] = Keyboard::Key_J;
+	sdlToArxKey[SDL_SCANCODE_K] = Keyboard::Key_K;
+	sdlToArxKey[SDL_SCANCODE_L] = Keyboard::Key_L;
+	sdlToArxKey[SDL_SCANCODE_M] = Keyboard::Key_M;
+	sdlToArxKey[SDL_SCANCODE_N] = Keyboard::Key_N;
+	sdlToArxKey[SDL_SCANCODE_O] = Keyboard::Key_O;
+	sdlToArxKey[SDL_SCANCODE_P] = Keyboard::Key_P;
+	sdlToArxKey[SDL_SCANCODE_Q] = Keyboard::Key_Q;
+	sdlToArxKey[SDL_SCANCODE_R] = Keyboard::Key_R;
+	sdlToArxKey[SDL_SCANCODE_S] = Keyboard::Key_S;
+	sdlToArxKey[SDL_SCANCODE_T] = Keyboard::Key_T;
+	sdlToArxKey[SDL_SCANCODE_U] = Keyboard::Key_U;
+	sdlToArxKey[SDL_SCANCODE_V] = Keyboard::Key_V;
+	sdlToArxKey[SDL_SCANCODE_W] = Keyboard::Key_W;
+	sdlToArxKey[SDL_SCANCODE_X] = Keyboard::Key_X;
+	sdlToArxKey[SDL_SCANCODE_Y] = Keyboard::Key_Y;
+	sdlToArxKey[SDL_SCANCODE_Z] = Keyboard::Key_Z;
+	sdlToArxKey[SDL_SCANCODE_DELETE] = Keyboard::Key_Delete;
+	sdlToArxKey[SDL_SCANCODE_KP_0] = Keyboard::Key_NumPad0;
+	sdlToArxKey[SDL_SCANCODE_KP_1] = Keyboard::Key_NumPad1;
+	sdlToArxKey[SDL_SCANCODE_KP_2] = Keyboard::Key_NumPad2;
+	sdlToArxKey[SDL_SCANCODE_KP_3] = Keyboard::Key_NumPad3;
+	sdlToArxKey[SDL_SCANCODE_KP_4] = Keyboard::Key_NumPad4;
+	sdlToArxKey[SDL_SCANCODE_KP_5] = Keyboard::Key_NumPad5;
+	sdlToArxKey[SDL_SCANCODE_KP_6] = Keyboard::Key_NumPad6;
+	sdlToArxKey[SDL_SCANCODE_KP_7] = Keyboard::Key_NumPad7;
+	sdlToArxKey[SDL_SCANCODE_KP_8] = Keyboard::Key_NumPad8;
+	sdlToArxKey[SDL_SCANCODE_KP_9] = Keyboard::Key_NumPad9;
+	sdlToArxKey[SDL_SCANCODE_KP_PERIOD] = Keyboard::Key_NumPoint;
+	sdlToArxKey[SDL_SCANCODE_KP_DIVIDE] = Keyboard::Key_NumDivide;
+	sdlToArxKey[SDL_SCANCODE_KP_MULTIPLY] = Keyboard::Key_NumMultiply;
+	sdlToArxKey[SDL_SCANCODE_KP_MINUS] = Keyboard::Key_NumSubtract;
+	sdlToArxKey[SDL_SCANCODE_KP_PLUS] = Keyboard::Key_NumAdd;
+	sdlToArxKey[SDL_SCANCODE_KP_ENTER] = Keyboard::Key_NumPadEnter;
+	sdlToArxKey[SDL_SCANCODE_KP_EQUALS] = Keyboard::Key_NumPadEnter;
+	sdlToArxKey[SDL_SCANCODE_UP] = Keyboard::Key_UpArrow;
+	sdlToArxKey[SDL_SCANCODE_DOWN] = Keyboard::Key_DownArrow;
+	sdlToArxKey[SDL_SCANCODE_RIGHT] = Keyboard::Key_RightArrow;
+	sdlToArxKey[SDL_SCANCODE_LEFT] = Keyboard::Key_LeftArrow;
+	sdlToArxKey[SDL_SCANCODE_INSERT] = Keyboard::Key_Insert;
+	sdlToArxKey[SDL_SCANCODE_HOME] = Keyboard::Key_Home;
+	sdlToArxKey[SDL_SCANCODE_END] = Keyboard::Key_End;
+	sdlToArxKey[SDL_SCANCODE_PAGEUP] = Keyboard::Key_PageUp;
+	sdlToArxKey[SDL_SCANCODE_PAGEDOWN] = Keyboard::Key_PageDown;
+	sdlToArxKey[SDL_SCANCODE_F1] = Keyboard::Key_F1;
+	sdlToArxKey[SDL_SCANCODE_F2] = Keyboard::Key_F2;
+	sdlToArxKey[SDL_SCANCODE_F3] = Keyboard::Key_F3;
+	sdlToArxKey[SDL_SCANCODE_F4] = Keyboard::Key_F4;
+	sdlToArxKey[SDL_SCANCODE_F5] = Keyboard::Key_F5;
+	sdlToArxKey[SDL_SCANCODE_F6] = Keyboard::Key_F6;
+	sdlToArxKey[SDL_SCANCODE_F7] = Keyboard::Key_F7;
+	sdlToArxKey[SDL_SCANCODE_F8] = Keyboard::Key_F8;
+	sdlToArxKey[SDL_SCANCODE_F9] = Keyboard::Key_F9;
+	sdlToArxKey[SDL_SCANCODE_F10] = Keyboard::Key_F10;
+	sdlToArxKey[SDL_SCANCODE_F11] = Keyboard::Key_F11;
+	sdlToArxKey[SDL_SCANCODE_F12] = Keyboard::Key_F12;
+	sdlToArxKey[SDL_SCANCODE_F13] = Keyboard::Key_F13;
+	sdlToArxKey[SDL_SCANCODE_F14] = Keyboard::Key_F14;
+	sdlToArxKey[SDL_SCANCODE_F15] = Keyboard::Key_F15;
+	sdlToArxKey[SDL_SCANCODE_NUMLOCKCLEAR] = Keyboard::Key_NumLock;
+	sdlToArxKey[SDL_SCANCODE_CAPSLOCK] = Keyboard::Key_CapsLock;
+	sdlToArxKey[SDL_SCANCODE_SCROLLLOCK] = Keyboard::Key_ScrollLock;
+	sdlToArxKey[SDL_SCANCODE_RSHIFT] = Keyboard::Key_RightShift;
+	sdlToArxKey[SDL_SCANCODE_LSHIFT] = Keyboard::Key_LeftShift;
+	sdlToArxKey[SDL_SCANCODE_RCTRL] = Keyboard::Key_RightCtrl;
+	sdlToArxKey[SDL_SCANCODE_LCTRL] = Keyboard::Key_LeftCtrl;
+	sdlToArxKey[SDL_SCANCODE_RALT] = Keyboard::Key_RightAlt;
+	sdlToArxKey[SDL_SCANCODE_LALT] = Keyboard::Key_LeftAlt;
+	sdlToArxKey[SDL_SCANCODE_RGUI] = Keyboard::Key_RightWin;
+	sdlToArxKey[SDL_SCANCODE_LGUI] = Keyboard::Key_LeftWin;
+	sdlToArxKey[SDL_SCANCODE_MODE] = Keyboard::Key_RightAlt;
+	sdlToArxKey[SDL_SCANCODE_APPLICATION] = Keyboard::Key_Apps;
+	// sdlToArxKey[SDL_SCANCODE_HELP] = -1; // TODO
+	sdlToArxKey[SDL_SCANCODE_PRINTSCREEN] = Keyboard::Key_PrintScreen;
+	// sdlToArxKey[SDL_SCANCODE_SYSREQ] = -1; // TODO
+	// sdlToArxKey[SDL_SCANCODE_BREAK] = -1; // TODO
+	// sdlToArxKey[SDL_SCANCODE_MENU] = -1; // TODO
+	// sdlToArxKey[SDL_SCANCODE_POWER] = -1; // TODO
+	// sdlToArxKey[SDL_SCANCODE_EURO] = -1; // TODO
+	// sdlToArxKey[SDL_SCANCODE_UNDO] = -1; // TODO
 	
 	std::fill_n(sdlToArxButton, ARRAY_SIZE(sdlToArxButton), -1);
 	
@@ -239,10 +211,10 @@ bool SDL1InputBackend::init() {
 	return true;
 }
 
-bool SDL1InputBackend::update() {
+bool SDL2InputBackend::update() {
 	
-	if(SDL1Window::mainWindow) {
-		SDL1Window::mainWindow->tick();
+	if(SDL2Window::mainWindow) {
+		SDL2Window::mainWindow->tick();
 	}
 	
 	
@@ -261,41 +233,43 @@ bool SDL1InputBackend::update() {
 	return true;
 }
 
-void SDL1InputBackend::acquireDevices() {
+void SDL2InputBackend::acquireDevices() {
 	// SDL_WM_GrabInput(SDL_GRAB_ON);
 }
 
-void SDL1InputBackend::unacquireDevices() {
+void SDL2InputBackend::unacquireDevices() {
 	// SDL_WM_GrabInput(SDL_GRAB_OFF);
 }
 
-bool SDL1InputBackend::getAbsoluteMouseCoords(int & absX, int & absY) const {
+bool SDL2InputBackend::getAbsoluteMouseCoords(int & absX, int & absY) const {
 	absX = cursorAbs.x, absY = cursorAbs.y;
 	return cursorInWindow;
 }
 
-void SDL1InputBackend::setAbsoluteMouseCoords(int absX, int absY) {
+void SDL2InputBackend::setAbsoluteMouseCoords(int absX, int absY) {
 	lastCursorAbs = cursorAbs = Vec2i(absX, absY);
-	SDL_WarpMouse(absX, absY);
+	if(SDL2Window::mainWindow) {
+		SDL_WarpMouseInWindow(SDL2Window::mainWindow->window, absX, absY);
+	}
 }
 
-void SDL1InputBackend::getRelativeMouseCoords(int & relX, int & relY, int & wheelDir) const {
+void SDL2InputBackend::getRelativeMouseCoords(int & relX, int & relY, int & wheelDir) const {
 	relX = cursorRel.x, relY = cursorRel.y, wheelDir = currentWheel;
 }
 
-bool SDL1InputBackend::isMouseButtonPressed(int buttonId, int & deltaTime) const  {
+bool SDL2InputBackend::isMouseButtonPressed(int buttonId, int & deltaTime) const  {
 	arx_assert(buttonId >= Mouse::ButtonBase && buttonId < Mouse::ButtonMax);
 	deltaTime = 0; // TODO
 	return buttonStates[buttonId - Mouse::ButtonBase];
 }
 
-void SDL1InputBackend::getMouseButtonClickCount(int buttonId, int & numClick, int & numUnClick) const {
+void SDL2InputBackend::getMouseButtonClickCount(int buttonId, int & numClick, int & numUnClick) const {
 	arx_assert(buttonId >= Mouse::ButtonBase && buttonId < Mouse::ButtonMax);
 	size_t i = buttonId - Mouse::ButtonBase;
 	numClick = currentClickCount[i], numUnClick = currentUnclickCount[i];
 }
 
-bool SDL1InputBackend::isKeyboardKeyPressed(int keyId) const {
+bool SDL2InputBackend::isKeyboardKeyPressed(int keyId) const {
 	arx_assert(keyId >= Keyboard::KeyBase && keyId < Keyboard::KeyMax);
 	return keyStates[keyId - Keyboard::KeyBase];
 }
@@ -424,7 +398,7 @@ static const char arxKeys[][2] = {
 	
 };
 
-bool SDL1InputBackend::getKeyAsText(int keyId, char & result) const {
+bool SDL2InputBackend::getKeyAsText(int keyId, char & result) const {
 	
 	// TODO we should use SDL_StartTextInput + SDL_SetTextInputRect to allow unicode input
 	
@@ -446,22 +420,22 @@ bool SDL1InputBackend::getKeyAsText(int keyId, char & result) const {
 	return false;
 }
 
-void SDL1InputBackend::onInputEvent(const SDL_Event & event) {
+void SDL2InputBackend::onInputEvent(const SDL_Event & event) {
 	
 	switch(event.type) {
 		
-		case SDL_ACTIVEEVENT: {
-			if(event.active.state & SDL_APPMOUSEFOCUS) {
-				if(!event.active.gain) {
-					cursorInWindow = false;
-				}
+		case SDL_WINDOWEVENT: {
+			if(event.window.event == SDL_WINDOWEVENT_ENTER) {
+				cursorInWindow = true;
+			} else if(event.window.event == SDL_WINDOWEVENT_LEAVE) {
+				cursorInWindow = false;
 			}
 			break;
 		}
 		
 		case SDL_KEYDOWN:
 		case SDL_KEYUP: {
-			SDLKey key = event.key.keysym.sym;
+			SDL_Scancode key = event.key.keysym.scancode;
 			if(key >= 0 && size_t(key) < ARRAY_SIZE(sdlToArxKey) && sdlToArxKey[key] >= 0) {
 				keyStates[sdlToArxKey[key] - Keyboard::KeyBase] = (event.key.state == SDL_PRESSED);
 			} else {
@@ -476,14 +450,14 @@ void SDL1InputBackend::onInputEvent(const SDL_Event & event) {
 			break;
 		}
 		
+		case SDL_MOUSEWHEEL: {
+			wheel += event.wheel.y;
+		}
+		
 		case SDL_MOUSEBUTTONDOWN:
 		case SDL_MOUSEBUTTONUP: {
 			Uint8 button = event.button.button;
-			if(button == SDL_BUTTON_WHEELUP) {
-				wheel++;
-			} else if(button == SDL_BUTTON_WHEELDOWN) {
-				wheel--;
-			} else if(button < ARRAY_SIZE(sdlToArxButton) && sdlToArxButton[button] >= 0) {
+			if(button < ARRAY_SIZE(sdlToArxButton) && sdlToArxButton[button] >= 0) {
 				size_t i = sdlToArxButton[button] - Mouse::ButtonBase;
 				if((event.button.state == SDL_PRESSED)) {
 					buttonStates[i] = true, clickCount[i]++;

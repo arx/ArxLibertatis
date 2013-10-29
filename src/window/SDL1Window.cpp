@@ -21,17 +21,13 @@
 
 #include <sstream>
 
-#if ARX_PLATFORM == ARX_PLATFORM_WIN32
-	#undef WIN32_LEAN_AND_MEAN // SDL defines this... Bad SDL!
-	#include <SDL_syswm.h>
-#endif
-
 #include "core/Config.h"
 #include "graphics/opengl/OpenGLRenderer.h"
 #include "input/SDL1InputBackend.h"
 #include "io/log/Logger.h"
 #include "math/Rectangle.h"
 #include "platform/CrashHandler.h"
+#include "platform/Platform.h"
 
 SDL1Window * SDL1Window::mainWindow = NULL;
 
@@ -43,6 +39,8 @@ SDL1Window::~SDL1Window() {
 		onRendererShutdown();
 		delete renderer, renderer = NULL;
 	}
+	
+	arx_assert_msg(!input, "window is still being used!");
 	
 	if(mainWindow) {
 		SDL_Quit(), mainWindow = NULL;
@@ -127,14 +125,6 @@ bool SDL1Window::initializeFramework() {
 	
 	mainWindow = this;
 	
-	return true;
-}
-
-bool SDL1Window::initialize(const std::string & title, Vec2i size, bool fullscreen,
-                           unsigned depth) {
-	
-	arx_assert(!displayModes.empty());
-	
 	SDL_SetEventFilter(eventFilter);
 	
 	SDL_EventState(SDL_ACTIVEEVENT, SDL_ENABLE);
@@ -143,6 +133,14 @@ bool SDL1Window::initialize(const std::string & title, Vec2i size, bool fullscre
 	SDL_EventState(SDL_VIDEORESIZE, SDL_ENABLE);
 	SDL_EventState(SDL_VIDEOEXPOSE, SDL_ENABLE);
 	SDL_EventState(SDL_USEREVENT, SDL_IGNORE);
+	
+	return true;
+}
+
+bool SDL1Window::initialize(const std::string & title, Vec2i size, bool fullscreen,
+                           unsigned depth) {
+	
+	arx_assert(!displayModes.empty());
 	
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
@@ -240,7 +238,7 @@ void SDL1Window::updateSize(bool reinit) {
 #if ARX_PLATFORM == ARX_PLATFORM_WIN32
 	// use reinit as-is
 #elif ARX_PLATFORM == ARX_PLATFORM_LINUX || ARX_PLATFORM == ARX_PLATFORM_BSD
-	reinit = false; // Never needed under linux & bsd
+	reinit = false; // Never needed under Linux & BSD
 #else
 	reinit = true; // By default, always reinit to avoid issues on untested platforms
 #endif
@@ -256,28 +254,6 @@ void SDL1Window::updateSize(bool reinit) {
 	if(size_ != oldMode.resolution) {
 		onResize(size_.x, size_.y);
 	}
-}
-
-void * SDL1Window::getHandle() {
-	
-#if ARX_PLATFORM == ARX_PLATFORM_WIN32
-	
-	SDL_SysWMinfo wmi;
-	SDL_VERSION(&wmi.version);
-	
-	if(!SDL_GetWMInfo(&wmi)) {
-		return NULL;
-	}
-	
-	return wmi.window;
-	
-#else
-	
-	// TODO X11 needs more than one pointer (display+window)
-	return NULL;
-	
-#endif
-	
 }
 
 void SDL1Window::setFullscreenMode(Vec2i resolution, unsigned _depth) {

@@ -44,7 +44,6 @@ public:
 	//! Exits fullscreen mode and sets the window size.
 	virtual void setWindowSize(Vec2i size) = 0;
 	
-	virtual void * getHandle() = 0;
 	virtual void tick() = 0;
 	
 	virtual void hide() = 0;

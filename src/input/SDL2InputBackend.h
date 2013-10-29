@@ -17,8 +17,8 @@
  * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ARX_INPUT_SDL1INPUTBACKEND_H
-#define ARX_INPUT_SDL1INPUTBACKEND_H
+#ifndef ARX_INPUT_SDL2INPUTBACKEND_H
+#define ARX_INPUT_SDL2INPUTBACKEND_H
 
 #include <SDL.h>
 
@@ -27,12 +27,12 @@
 #include "input/Mouse.h"
 #include "math/Vector.h"
 
-class SDL1InputBackend : public InputBackend {
+class SDL2InputBackend : public InputBackend {
 	
 public:
 	
-	SDL1InputBackend();
-	~SDL1InputBackend();
+	SDL2InputBackend();
+	~SDL2InputBackend();
 	
 	bool init();
 	bool update();
@@ -70,7 +70,7 @@ private:
 	
 	Vec2i lastCursorAbs;
 	
-	friend class SDL1Window;
+	friend class SDL2Window;
 };
 
-#endif // ARX_INPUT_SDL1INPUTBACKEND_H
+#endif // ARX_INPUT_SDL2INPUTBACKEND_H
