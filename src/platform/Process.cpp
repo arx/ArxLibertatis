@@ -30,14 +30,17 @@
 #include "platform/Platform.h"
 
 #if ARX_PLATFORM == ARX_PLATFORM_WIN32
-#include <windows.h>
-#endif
 
-#if ARX_HAVE_OPEN && ARX_HAVE_DUP2
+#include <windows.h>
+
+#else // ARX_PLATFORM != ARX_PLATFORM_WIN32
+
+#if ARX_HAVE_OPEN
 #include <fcntl.h>
 #endif
 
-#if (ARX_HAVE_FORK && ARX_HAVE_EXECVP) || ARX_HAVE_PIPE
+#if (ARX_HAVE_FORK && ARX_HAVE_EXECVP) \
+ || (ARX_HAVE_PIPE && ARX_HAVE_READ && ARX_HAVE_CLOSE)
 #include <unistd.h>
 #endif
 
@@ -49,6 +52,8 @@ extern char ** environ;
 #if ARX_HAVE_WAITPID
 #include <sys/wait.h>
 #endif
+
+#endif // ARX_PLATFORM != ARX_PLATFORM_WIN32
 
 #include "io/fs/FilePath.h"
 #include "platform/Environment.h"
@@ -93,7 +98,7 @@ static int run(const std::string & exe, bool wait, const char * const args[],
 		// Detach the child process from the parent
 		static posix_spawnattr_t * attrp = NULL;
 		static posix_spawnattr_t attr;
-		if(!attrp && detach && !posix_spawnattr_init(&attr)) {
+		if(!attrp && !posix_spawnattr_init(&attr)) {
 			attrp = &attr;
 			(void)posix_spawnattr_setflags(attrp, POSIX_SPAWN_SETPGROUP);
 			(void)posix_spawnattr_setpgroup(attrp, 0);
