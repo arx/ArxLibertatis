@@ -34,7 +34,7 @@
 
 SDL2Window * SDL2Window::s_mainWindow = NULL;
 
-SDL2Window::SDL2Window() : m_window(NULL), m_glcontext(0) { }
+SDL2Window::SDL2Window() : m_fullscreenDesktop(false), m_window(NULL), m_glcontext(0) { }
 
 SDL2Window::~SDL2Window() {
 	
@@ -166,6 +166,7 @@ bool SDL2Window::initialize(const std::string & title, Vec2i size, bool fullscre
 	
 	title_ = title;
 	isFullscreen_ = fullscreen;
+	m_fullscreenDesktop = (size == Vec2i_ZERO);
 	
 	SDL_ShowCursor(SDL_DISABLE);
 	
@@ -261,10 +262,13 @@ bool SDL2Window::setMode(DisplayMode mode, bool makeFullscreen) {
 	}
 	
 	if(makeFullscreen) {
+		m_fullscreenDesktop = (mode.resolution == Vec2i_ZERO);
 		// SDL regrettably sends resize events when a fullscreen window is minimized.
 		// Because of that we ignore all size change events when fullscreen.
 		// Instead, handle the size change here.
 		updateSize();
+	} else {
+		m_fullscreenDesktop = false;
 	}
 	
 	tick();
@@ -301,7 +305,7 @@ void SDL2Window::setFullscreenMode(Vec2i resolution, unsigned _depth) {
 
 void SDL2Window::setWindowSize(Vec2i size) {
 	
-	if(!isFullscreen_ && size == getSize()) {
+	if(!isFullscreen_ && size == size_) {
 		return;
 	}
 	
@@ -335,9 +339,18 @@ void SDL2Window::tick() {
 					case SDL_WINDOWEVENT_EXPOSED:      onPaint();      break;
 					case SDL_WINDOWEVENT_MINIMIZED:    onMinimize();   break;
 					case SDL_WINDOWEVENT_MAXIMIZED:    onMaximize();   break;
-					case SDL_WINDOWEVENT_RESTORED:     onRestore();    break;
 					case SDL_WINDOWEVENT_FOCUS_GAINED: onFocus(true);  break;
 					case SDL_WINDOWEVENT_FOCUS_LOST:   onFocus(false); break;
+					
+					case SDL_WINDOWEVENT_RESTORED: {
+						if(isFullscreen_ && m_fullscreenDesktop) {
+							cleanupRenderer(true);
+							SDL_SetWindowFullscreen(m_window, 0);
+							SDL_SetWindowFullscreen(m_window, getSDLFlagsForMode(Vec2i_ZERO, true));
+						}
+						onRestore();
+						break;
+					}
 					
 					case SDL_WINDOWEVENT_MOVED: {
 						onMove(event.window.data1, event.window.data2);
