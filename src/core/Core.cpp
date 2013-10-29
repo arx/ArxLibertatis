@@ -228,7 +228,6 @@ static TextureContainer * npc_stop = NULL;
 TextureContainer *	sphere_particle=NULL;
 TextureContainer *	inventory_font=NULL;
 TextureContainer *	enviro=NULL;
-TextureContainer *	specular=NULL;
 TextureContainer *	stealth_gauge_tc=NULL;
 TextureContainer *	arx_logo_tc=NULL;
 TextureContainer *	TC_fire2=NULL;
@@ -1319,7 +1318,6 @@ void LoadSysTextures()
 	current->symbols[2]=RUNE_MEGA;
 	current->symbols[3]=RUNE_YOK;
 
-	specular=			TextureContainer::LoadUI("graph/particles/specular");
 	enviro=				TextureContainer::LoadUI("graph/particles/enviro");
 	sphere_particle=	TextureContainer::LoadUI("graph/particles/sphere");
 	inventory_font=		TextureContainer::LoadUI("graph/interface/font/font10x10_inventory");
