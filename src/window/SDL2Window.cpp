@@ -25,7 +25,6 @@
 
 #include "core/Config.h"
 #include "graphics/opengl/OpenGLRenderer.h"
-#include "input/SDL2InputBackend.h"
 #include "io/log/Logger.h"
 #include "math/Rectangle.h"
 #include "platform/CrashHandler.h"
@@ -33,9 +32,9 @@
 
 #define SDL_DISPLAY 0 // TODO don't hardcode this!
 
-SDL2Window * SDL2Window::mainWindow = NULL;
+SDL2Window * SDL2Window::s_mainWindow = NULL;
 
-SDL2Window::SDL2Window() : window(NULL), context(0) { }
+SDL2Window::SDL2Window() : m_window(NULL), m_glcontext(0) { }
 
 SDL2Window::~SDL2Window() {
 	
@@ -46,23 +45,23 @@ SDL2Window::~SDL2Window() {
 	
 	arx_assert_msg(m_handlers.empty(), "Window is still being used!");
 	
-	if(context) {
-		SDL_GL_DeleteContext(context);
+	if(m_glcontext) {
+		SDL_GL_DeleteContext(m_glcontext);
 	}
 	
-	if(window) {
-		SDL_DestroyWindow(window);
+	if(m_window) {
+		SDL_DestroyWindow(m_window);
 	}
 	
-	if(mainWindow) {
-		SDL_Quit(), mainWindow = NULL;
+	if(s_mainWindow) {
+		SDL_Quit(), s_mainWindow = NULL;
 	}
 	
 }
 
 bool SDL2Window::initializeFramework() {
 	
-	arx_assert_msg(mainWindow == NULL, "SDL only supports one window"); // TODO it supports multiple windows now!
+	arx_assert_msg(s_mainWindow == NULL, "SDL only supports one window"); // TODO it supports multiple windows now!
 	arx_assert(displayModes.empty());
 	
 	const char * headerVersion = ARX_STR(SDL_MAJOR_VERSION) "." ARX_STR(SDL_MINOR_VERSION)
@@ -91,7 +90,7 @@ bool SDL2Window::initializeFramework() {
 
 	std::sort(displayModes.begin(), displayModes.end());
 	
-	mainWindow = this;
+	s_mainWindow = this;
 	
 	SDL_SetEventFilter(eventFilter, NULL);
 	
@@ -144,20 +143,20 @@ bool SDL2Window::initialize(const std::string & title, Vec2i size, bool fullscre
 			return false;
 		}
 		
-		if(!window) {
-			window = SDL_CreateWindow(
+		if(!m_window) {
+			m_window = SDL_CreateWindow(
 				title.c_str(),
 				SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
 				size.x, size.y,
 				getSDLFlagsForMode(size, fullscreen) | SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE
 			);
-			if(!window) {
+			if(!m_window) {
 				continue;
 			}
 		}
 		
-		context = SDL_GL_CreateContext(window);
-		if(context) {
+		m_glcontext = SDL_GL_CreateContext(m_window);
+		if(m_glcontext) {
 			break;
 		}
 		
@@ -244,15 +243,15 @@ bool SDL2Window::setMode(DisplayMode mode, bool makeFullscreen) {
 			if(!SDL_GetClosestDisplayMode(SDL_DISPLAY, &requested, &sdlmode)) {
 				return false;
 			}
-			if(SDL_SetWindowDisplayMode(window, &sdlmode) < 0) {
+			if(SDL_SetWindowDisplayMode(m_window, &sdlmode) < 0) {
 				return false;
 			}
 		}
 	} else {
-		SDL_SetWindowSize(window, mode.resolution.x, mode.resolution.y);
+		SDL_SetWindowSize(m_window, mode.resolution.x, mode.resolution.y);
 	}
 	
-	if(SDL_SetWindowFullscreen(window, getSDLFlagsForMode(mode.resolution, makeFullscreen)) < 0) {
+	if(SDL_SetWindowFullscreen(m_window, getSDLFlagsForMode(mode.resolution, makeFullscreen)) < 0) {
 		return false;
 	}
 	
@@ -278,7 +277,7 @@ void SDL2Window::updateSize() {
 	Vec2i oldSize = size_;
 	
 	int w, h;
-	SDL_GetWindowSize(window, &w, &h);
+	SDL_GetWindowSize(m_window, &w, &h);
 	size_ = Vec2i(w, h);
 	depth_ = 32; // TODO?
 	
@@ -314,8 +313,8 @@ int SDLCALL SDL2Window::eventFilter(void * userdata, SDL_Event * event) {
 	ARX_UNUSED(userdata);
 	
 	// TODO support multiple windows!
-	if(mainWindow && event->type == SDL_QUIT) {
-		return (mainWindow->onClose()) ? 1 : 0;
+	if(s_mainWindow && event->type == SDL_QUIT) {
+		return (s_mainWindow->onClose()) ? 1 : 0;
 	}
 	
 	return 1;
@@ -394,11 +393,11 @@ Vec2i SDL2Window::getCursorPosition() const {
 }
 
 void SDL2Window::showFrame() {
-	SDL_GL_SwapWindow(window);
+	SDL_GL_SwapWindow(m_window);
 }
 
 void SDL2Window::hide() {
-	SDL_HideWindow(window);
+	SDL_HideWindow(m_window);
 	onShow(false);
 }
 

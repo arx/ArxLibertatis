@@ -22,7 +22,6 @@
 #include <boost/static_assert.hpp>
 
 #include "io/log/Logger.h"
-#include "window/SDL2Window.h"
 
 SDL2InputBackend::SDL2InputBackend() : m_window(NULL) { }
 

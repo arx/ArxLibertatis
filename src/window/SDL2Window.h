@@ -53,7 +53,7 @@ public:
 	void addEventHandler(EventHandler * handler);
 	void removeEventHandler(EventHandler * handler);
 	
-	SDL_Window * getSDLWindow() { return window; }
+	SDL_Window * getSDLWindow() { return m_window; }
 	
 private:
 	
@@ -64,13 +64,13 @@ private:
 	
 	static int SDLCALL eventFilter(void * userdata, SDL_Event * event);
 	
-	SDL_Window * window;
-	SDL_GLContext context;
+	SDL_Window * m_window;
+	SDL_GLContext m_glcontext;
 	
 	typedef std::vector<EventHandler *> EventHandlers;
 	EventHandlers m_handlers;
 	
-	static SDL2Window * mainWindow;
+	static SDL2Window * s_mainWindow;
 	
 };
 
