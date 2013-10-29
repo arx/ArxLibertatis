@@ -68,9 +68,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Some external defs needing to be cleaned...
 extern Rect g_size;
 
-extern Vec3f SPRmins;
-extern Vec3f SPRmaxs;
-
 extern TextureContainer * Boom;
 
 std::vector<POLYBOOM> polyboom(MAX_POLYBOOM);

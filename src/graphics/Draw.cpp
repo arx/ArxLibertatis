@@ -56,8 +56,6 @@ using std::max;
 
 long ZMAPMODE=1;
 TextureContainer * Zmap;
-Vec3f SPRmins;
-Vec3f SPRmaxs;
 
 extern TextureContainer * enviro;
 
@@ -109,20 +107,17 @@ void EERIEDrawSprite(TexturedVertex * in, float siz, TextureContainer * tex, Col
 			out.rhw *= (1.f/3000.f);
 		}
 
-		SPRmaxs.x=out.p.x+t;
-		SPRmins.x=out.p.x-t;
-		SPRmaxs.y=out.p.y+t;
-		SPRmins.y=out.p.y-t;
-
+		Vec3f maxs = out.p + t;
+		Vec3f mins = out.p - t;
+		
 		ColorBGRA col = color.toBGRA();
 		TexturedVertex v[4];
-		v[0] = TexturedVertex(Vec3f(SPRmins.x, SPRmins.y, out.p.z), out.rhw, col, out.specular, Vec2f_ZERO);
-		v[1] = TexturedVertex(Vec3f(SPRmaxs.x, SPRmins.y, out.p.z), out.rhw, col, out.specular, Vec2f_X_AXIS);
-		v[2] = TexturedVertex(Vec3f(SPRmins.x, SPRmaxs.y, out.p.z), out.rhw, col, out.specular, Vec2f_Y_AXIS);
-		v[3] = TexturedVertex(Vec3f(SPRmaxs.x, SPRmaxs.y, out.p.z), out.rhw, col, out.specular, Vec2f(1.f, 1.f));
+		v[0] = TexturedVertex(Vec3f(mins.x, mins.y, out.p.z), out.rhw, col, out.specular, Vec2f_ZERO);
+		v[1] = TexturedVertex(Vec3f(maxs.x, mins.y, out.p.z), out.rhw, col, out.specular, Vec2f_X_AXIS);
+		v[2] = TexturedVertex(Vec3f(mins.x, maxs.y, out.p.z), out.rhw, col, out.specular, Vec2f_Y_AXIS);
+		v[3] = TexturedVertex(Vec3f(maxs.x, maxs.y, out.p.z), out.rhw, col, out.specular, Vec2f(1.f, 1.f));
 		SetTextureDrawPrim(tex, v, Renderer::TriangleStrip);
 	}
-	else SPRmaxs.x=-1;
 }
 
 void EERIEDrawRotatedSprite(TexturedVertex * in, float siz, TextureContainer * tex, Color color, float Zpos, float rot) {
@@ -154,15 +149,6 @@ void EERIEDrawRotatedSprite(TexturedVertex * in, float siz, TextureContainer * t
 		v[2] = TexturedVertex(Vec3f(0, 0, out.p.z), out.rhw, col, out.specular, Vec2f(1.f, 1.f));
 		v[3] = TexturedVertex(Vec3f(0, 0, out.p.z), out.rhw, col, out.specular, Vec2f_Y_AXIS);
 		
-		
-		SPRmaxs.x=out.p.x+t;
-		SPRmins.x=out.p.x-t;
-		
-		SPRmaxs.y=out.p.y+t;			
-		SPRmins.y=out.p.y-t;
-
-		SPRmaxs.z = SPRmins.z = out.p.z; 
-
 		for(long i=0;i<4;i++) {
 			float tt = radians(MAKEANGLE(rot+90.f*i+45+90));
 			v[i].p.x = EEsin(tt) * t + out.p.x;
@@ -170,7 +156,6 @@ void EERIEDrawRotatedSprite(TexturedVertex * in, float siz, TextureContainer * t
 		}
 		SetTextureDrawPrim(tex, v, Renderer::TriangleFan);
 	}
-	else SPRmaxs.x=-1;
 }
 
 //! Match pixel and texel origins.

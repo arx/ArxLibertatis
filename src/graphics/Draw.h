@@ -53,9 +53,6 @@ struct EERIE_SPHERE;
 struct EERIE_CYLINDER;
 struct TexturedVertex;
 
-extern Vec3f SPRmins;
-extern Vec3f SPRmaxs;
-
 void EERIEDRAWPRIM(Renderer::Primitive primitive, const TexturedVertex * vertices, size_t count = 3, bool nocount = false);
 
 void EERIEDrawBitmap(Rect rect, float z, TextureContainer * tex, Color color);
