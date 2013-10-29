@@ -22,7 +22,6 @@
 #include <boost/static_assert.hpp>
 
 #include "io/log/Logger.h"
-#include "window/SDL1Window.h"
 
 #ifndef SDL_BUTTON_X1
 #define SDL_BUTTON_X1 6
@@ -34,9 +33,8 @@
 SDL1InputBackend::SDL1InputBackend() { }
 
 SDL1InputBackend::~SDL1InputBackend() {
-	
-	if(SDL1Window::mainWindow && SDL1Window::mainWindow->input == this) {
-		SDL1Window::mainWindow->input = NULL;
+	if(m_window) {
+		m_window->removeEventHandler(this);
 	}
 }
 
@@ -46,16 +44,14 @@ static int sdlToArxButton[10];
 
 bool SDL1InputBackend::init(Window * window) {
 	
-	ARX_UNUSED(window); // TODO
-	
-	if(!SDL1Window::mainWindow) {
-		LogError << "Cannot initialize SDL input without SDL window.";
+	arx_assert(window != NULL);
+	m_window = dynamic_cast<SDL1Window *>(window);
+	if(!m_window) {
 		return false;
 	}
+	m_window->addEventHandler(this);
 	
 	cursorInWindow = false;
-	
-	SDL1Window::mainWindow->input = this;
 	
 	SDL_EventState(SDL_KEYDOWN, SDL_ENABLE);
 	SDL_EventState(SDL_KEYUP, SDL_ENABLE);
@@ -243,10 +239,9 @@ bool SDL1InputBackend::init(Window * window) {
 
 bool SDL1InputBackend::update() {
 	
-	if(SDL1Window::mainWindow) {
-		SDL1Window::mainWindow->tick();
+	if(m_window) {
+		m_window->tick();
 	}
-	
 	
 	currentWheel = wheel;
 	std::copy(clickCount, clickCount + ARRAY_SIZE(clickCount), currentClickCount);
@@ -440,7 +435,7 @@ bool SDL1InputBackend::getKeyAsText(int keyId, char & result) const {
 	return false;
 }
 
-void SDL1InputBackend::onInputEvent(const SDL_Event & event) {
+void SDL1InputBackend::onEvent(const SDL_Event & event) {
 	
 	switch(event.type) {
 		

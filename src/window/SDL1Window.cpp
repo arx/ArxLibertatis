@@ -21,9 +21,10 @@
 
 #include <sstream>
 
+#include <boost/foreach.hpp>
+
 #include "core/Config.h"
 #include "graphics/opengl/OpenGLRenderer.h"
-#include "input/SDL1InputBackend.h"
 #include "io/log/Logger.h"
 #include "math/Rectangle.h"
 #include "platform/CrashHandler.h"
@@ -31,7 +32,7 @@
 
 SDL1Window * SDL1Window::mainWindow = NULL;
 
-SDL1Window::SDL1Window() : input(NULL) { }
+SDL1Window::SDL1Window() { }
 
 SDL1Window::~SDL1Window() {
 	
@@ -40,7 +41,7 @@ SDL1Window::~SDL1Window() {
 		delete renderer, renderer = NULL;
 	}
 	
-	arx_assert_msg(!input, "window is still being used!");
+	arx_assert_msg(m_handlers.empty(), "Window is still being used!");
 	
 	if(mainWindow) {
 		SDL_Quit(), mainWindow = NULL;
@@ -320,29 +321,26 @@ void SDL1Window::tick() {
 						onMinimize();
 					}
 				}
-				if(input != NULL && (event.active.state & SDL_APPMOUSEFOCUS)) {
-					input->onInputEvent(event);
-				}
 				break;
 			}
 			
-			case SDL_KEYDOWN:
+			case SDL_KEYDOWN: {
 				
 				// For some reason, release notes from SDL 1.2.12 says a SDL_QUIT message
 				// should be sent when Command+Q is pressed on Mac OS or ALT-F4 on other platforms
 				// but it doesn't look like it's working as expected...
-#if ARX_PLATFORM == ARX_PLATFORM_MACOSX
+				#if ARX_PLATFORM == ARX_PLATFORM_MACOSX
 				if(event.key.keysym.sym == SDLK_q
 					&& (event.key.keysym.mod & KMOD_META) != KMOD_NONE) {
-#else
+				#else
 				if(event.key.keysym.sym == SDLK_F4
 					&& (event.key.keysym.mod & KMOD_ALT) != KMOD_NONE) {
-#endif
+				#endif
 					onDestroy();
 					break;
 				}
 				
-#if ARX_PLATFORM != ARX_PLATFORM_WIN32
+				#if ARX_PLATFORM != ARX_PLATFORM_WIN32
 				// The SDL X11 backend always grabs all keys when in fullscreen mode,
 				// ufortunately breaking window manager shortcuts.
 				// At least provide users with a way to switch to other windows.
@@ -350,20 +348,8 @@ void SDL1Window::tick() {
 				   && (event.key.keysym.mod & KMOD_ALT) != KMOD_NONE) {
 					SDL_WM_IconifyWindow();
 				}
-#endif
+				#endif
 				
-			case SDL_KEYUP:
-			case SDL_MOUSEMOTION:
-			case SDL_MOUSEBUTTONDOWN:
-			case SDL_MOUSEBUTTONUP:
-			case SDL_JOYAXISMOTION:
-			case SDL_JOYBALLMOTION:
-			case SDL_JOYHATMOTION:
-			case SDL_JOYBUTTONDOWN:
-			case SDL_JOYBUTTONUP: {
-				if(input) {
-					input->onInputEvent(event);
-				}
 				break;
 			}
 			
@@ -388,6 +374,10 @@ void SDL1Window::tick() {
 			
 		}
 		
+		BOOST_FOREACH(EventHandler * handler, m_handlers) {
+			handler->onEvent(event);
+		}
+		
 	}
 	
 }
@@ -405,4 +395,15 @@ void SDL1Window::showFrame() {
 void SDL1Window::hide() {
 	SDL_WM_IconifyWindow();
 	onShow(false);
+}
+
+void SDL1Window::addEventHandler(EventHandler * handler) {
+	m_handlers.push_back(handler);
+}
+
+void SDL1Window::removeEventHandler(SDL1Window::EventHandler * handler) {
+	EventHandlers::iterator it = std::find(m_handlers.begin(), m_handlers.end(), handler);
+	if(it != m_handlers.end()) {
+		m_handlers.erase(it);
+	}
 }
