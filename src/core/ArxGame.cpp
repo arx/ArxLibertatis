@@ -440,7 +440,7 @@ bool ArxGame::addPaks() {
 		
 		// Try to launch the data file installer on non-Windows systems
 		#if ARX_PLATFORM != ARX_PLATFORM_WIN32
-		platform::runHelper("arx-install-data", "--gui");
+		platform::runHelper("arx-install-data", "--gui", NULL);
 		#endif
 		
 		// Construct an informative error message about missing files

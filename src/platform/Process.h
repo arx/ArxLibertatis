@@ -70,7 +70,7 @@ std::string getOutputOf(const std::string & exe, const char * const args[],
  *  platform::runAsync(exe, args);
  * @endcode
  */
-void runHelper(const std::string & name, ...);
+void runHelper(const char * name, ...);
 
 } // namespace platform
 
