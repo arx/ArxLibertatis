@@ -233,14 +233,6 @@ bool SDL2InputBackend::update() {
 	return true;
 }
 
-void SDL2InputBackend::acquireDevices() {
-	// SDL_WM_GrabInput(SDL_GRAB_ON);
-}
-
-void SDL2InputBackend::unacquireDevices() {
-	// SDL_WM_GrabInput(SDL_GRAB_OFF);
-}
-
 bool SDL2InputBackend::getAbsoluteMouseCoords(int & absX, int & absY) const {
 	absX = cursorAbs.x, absY = cursorAbs.y;
 	return cursorInWindow;

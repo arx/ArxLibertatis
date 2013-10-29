@@ -25,8 +25,6 @@ public:
 	virtual ~InputBackend() {}
 
 	virtual bool init() = 0;
-	virtual void acquireDevices() = 0;
-	virtual void unacquireDevices() = 0;
 
 	virtual bool update() = 0;	
 

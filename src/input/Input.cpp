@@ -271,14 +271,6 @@ void Input::reset() {
 	iWheelDir = 0;
 }
 
-void Input::acquireDevices() {
-	backend->acquireDevices();
-}
-
-void Input::unacquireDevices() {
-	backend->unacquireDevices();
-}
-
 void Input::setMousePosAbs(const Vec2s& mousePos) {
 	
 	if(backend) {

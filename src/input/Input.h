@@ -63,8 +63,6 @@ public:
 	
 	bool init();
 	void reset();
-	void acquireDevices();
-	void unacquireDevices();
 	
 	void update();
 	

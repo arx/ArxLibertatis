@@ -37,9 +37,6 @@ public:
 	bool init();
 	bool update();
 	
-	void acquireDevices();
-	void unacquireDevices();
-	
 	// Mouse
 	bool getAbsoluteMouseCoords(int & absX, int & absY) const;
 	void setAbsoluteMouseCoords(int absX, int absY);

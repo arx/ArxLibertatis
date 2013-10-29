@@ -520,18 +520,8 @@ bool ArxGame::create() {
 }
 
 void ArxGame::onWindowGotFocus(const Window &) {
-	
 	if(GInput) {
 		GInput->reset();
-		GInput->unacquireDevices();
-		GInput->acquireDevices();
-	}
-}
-
-void ArxGame::onWindowLostFocus(const Window &) {
-	
-	if(GInput) {
-		GInput->unacquireDevices();
 	}
 }
 
