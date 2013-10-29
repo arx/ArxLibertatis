@@ -24,12 +24,11 @@
 #include "io/log/Logger.h"
 #include "window/SDL2Window.h"
 
-SDL2InputBackend::SDL2InputBackend() { }
+SDL2InputBackend::SDL2InputBackend() : m_window(NULL) { }
 
 SDL2InputBackend::~SDL2InputBackend() {
-	
-	if(SDL2Window::mainWindow && SDL2Window::mainWindow->input == this) {
-		SDL2Window::mainWindow->input = NULL;
+	if(m_window) {
+		m_window->removeEventHandler(this);
 	}
 }
 
@@ -39,16 +38,14 @@ static int sdlToArxButton[10];
 
 bool SDL2InputBackend::init(Window * window) {
 	
-	ARX_UNUSED(window); // TODO
-	
-	if(!SDL2Window::mainWindow) {
-		LogError << "Cannot initialize SDL input without SDL window.";
+	arx_assert(window != NULL);
+	m_window = dynamic_cast<SDL2Window *>(window);
+	if(!m_window) {
 		return false;
 	}
+	m_window->addEventHandler(this);
 	
 	cursorInWindow = false;
-	
-	SDL2Window::mainWindow->input = this;
 	
 	SDL_EventState(SDL_KEYDOWN, SDL_ENABLE);
 	SDL_EventState(SDL_KEYUP, SDL_ENABLE);
@@ -215,10 +212,9 @@ bool SDL2InputBackend::init(Window * window) {
 
 bool SDL2InputBackend::update() {
 	
-	if(SDL2Window::mainWindow) {
-		SDL2Window::mainWindow->tick();
+	if(m_window) {
+		m_window->tick();
 	}
-	
 	
 	currentWheel = wheel;
 	std::copy(clickCount, clickCount + ARRAY_SIZE(clickCount), currentClickCount);
@@ -242,8 +238,8 @@ bool SDL2InputBackend::getAbsoluteMouseCoords(int & absX, int & absY) const {
 
 void SDL2InputBackend::setAbsoluteMouseCoords(int absX, int absY) {
 	lastCursorAbs = cursorAbs = Vec2i(absX, absY);
-	if(SDL2Window::mainWindow) {
-		SDL_WarpMouseInWindow(SDL2Window::mainWindow->window, absX, absY);
+	if(m_window) {
+		SDL_WarpMouseInWindow(m_window->getSDLWindow(), absX, absY);
 	}
 }
 
@@ -414,7 +410,7 @@ bool SDL2InputBackend::getKeyAsText(int keyId, char & result) const {
 	return false;
 }
 
-void SDL2InputBackend::onInputEvent(const SDL_Event & event) {
+void SDL2InputBackend::onEvent(const SDL_Event & event) {
 	
 	switch(event.type) {
 		

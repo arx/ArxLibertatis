@@ -26,8 +26,9 @@
 #include "input/Keyboard.h"
 #include "input/Mouse.h"
 #include "math/Vector.h"
+#include "window/SDL2Window.h"
 
-class SDL2InputBackend : public InputBackend {
+class SDL2InputBackend : public InputBackend, public SDL2Window::EventHandler {
 	
 public:
 	
@@ -48,9 +49,11 @@ public:
 	bool isKeyboardKeyPressed(int dikkey) const;
 	bool getKeyAsText(int keyId, char& result) const;
 	
+	void onEvent(const SDL_Event & event);
+	
 private:
 	
-	void onInputEvent(const SDL_Event & event);
+	SDL2Window * m_window;
 	
 	int wheel;
 	Vec2i cursorAbs;
@@ -67,7 +70,6 @@ private:
 	
 	Vec2i lastCursorAbs;
 	
-	friend class SDL2Window;
 };
 
 #endif // ARX_INPUT_SDL2INPUTBACKEND_H

@@ -21,6 +21,8 @@
 
 #include <sstream>
 
+#include <boost/foreach.hpp>
+
 #include "core/Config.h"
 #include "graphics/opengl/OpenGLRenderer.h"
 #include "input/SDL2InputBackend.h"
@@ -33,7 +35,7 @@
 
 SDL2Window * SDL2Window::mainWindow = NULL;
 
-SDL2Window::SDL2Window() : window(NULL), context(0), input(NULL) { }
+SDL2Window::SDL2Window() : window(NULL), context(0) { }
 
 SDL2Window::~SDL2Window() {
 	
@@ -42,7 +44,7 @@ SDL2Window::~SDL2Window() {
 		delete renderer, renderer = NULL;
 	}
 	
-	arx_assert_msg(!input, "Window is still being used!");
+	arx_assert_msg(m_handlers.empty(), "Window is still being used!");
 	
 	if(context) {
 		SDL_GL_DeleteContext(context);
@@ -376,8 +378,8 @@ void SDL2Window::tick() {
 			
 		}
 		
-		if(input) {
-			input->onInputEvent(event);
+		BOOST_FOREACH(EventHandler * handler, m_handlers) {
+			handler->onEvent(event);
 		}
 		
 	}
@@ -398,4 +400,15 @@ void SDL2Window::showFrame() {
 void SDL2Window::hide() {
 	SDL_HideWindow(window);
 	onShow(false);
+}
+
+void SDL2Window::addEventHandler(EventHandler * handler) {
+	m_handlers.push_back(handler);
+}
+
+void SDL2Window::removeEventHandler(SDL2Window::EventHandler * handler) {
+	EventHandlers::iterator it = std::find(m_handlers.begin(), m_handlers.end(), handler);
+	if(it != m_handlers.end()) {
+		m_handlers.erase(it);
+	}
 }
