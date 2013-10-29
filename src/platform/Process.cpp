@@ -21,8 +21,8 @@
 
 #include <sstream>
 #include <vector>
-#include <cstring>
 
+#include <string.h>
 #include <stdlib.h>
 #include <stdarg.h>
 
@@ -193,24 +193,29 @@ static int run(const std::string & exe, bool wait, const char * const args[]) {
 #if ARX_PLATFORM == ARX_PLATFORM_WIN32
 	
 	// Format the command line arguments
-	std::ostringstream cmdline;
+	std::ostringstream oss;
 	for(size_t i = 0; args[i] != NULL; i++) {
 		if(i == 0) {
 			continue; // skip the program name
 		} else if(i != 1) {
-			cmdline << ' ';
+			oss << ' ';
 		}
-		cmdline << util::escapeString(args[i], "\\\" '$!");
+		oss << util::escapeString(args[i], "\\\" '$!");
 	}
+	char * cmdline = strdup(oss.str().c_str());
 	
 	STARTUPINFO si;
-	std::memset(&si, 0, sizeof(STARTUPINFO));
+	memset(&si, 0, sizeof(STARTUPINFO));
 	si.cb = sizeof(STARTUPINFO);
 
 	PROCESS_INFORMATION pi;
-	std::memset(&pi, 0, sizeof(PROCESS_INFORMATION));
+	memset(&pi, 0, sizeof(PROCESS_INFORMATION));
 	
-	if(!CreateProcess(exe.c_str(), cmdline, 0, 0, 0, 0, 0, 0, &si, &pi)) {
+	bool success = CreateProcess(exe.c_str(), cmdline, 0, 0, 0, 0, 0, 0, &si, &pi);
+	
+	free(cmdline);
+	
+	if(!success) {
 		return -1; // Could not start process
 	}
 	
