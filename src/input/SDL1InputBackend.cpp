@@ -49,25 +49,22 @@ SDL1InputBackend::SDL1InputBackend() {
 	
 	std::fill_n(sdlToArxKey, ARRAY_SIZE(sdlToArxKey), -1);
 	
-	// TODO we should have different key contants for shifted keys!
-	
 	sdlToArxKey[SDLK_BACKSPACE] = Keyboard::Key_Backspace;
 	sdlToArxKey[SDLK_TAB] = Keyboard::Key_Tab;
-	// sdlToArxKey[SDLK_CLEAR] = -1; // TODO
 	sdlToArxKey[SDLK_RETURN] = Keyboard::Key_Enter;
 	sdlToArxKey[SDLK_PAUSE] = Keyboard::Key_Pause;
 	sdlToArxKey[SDLK_ESCAPE] = Keyboard::Key_Escape;
 	sdlToArxKey[SDLK_SPACE] = Keyboard::Key_Spacebar;
-	sdlToArxKey[SDLK_EXCLAIM] = Keyboard::Key_1; // TODO
-	sdlToArxKey[SDLK_QUOTEDBL] = Keyboard::Key_Apostrophe; // TODO
-	sdlToArxKey[SDLK_HASH] = Keyboard::Key_3; // TODO
-	sdlToArxKey[SDLK_DOLLAR] = Keyboard::Key_4; // TODO
-	sdlToArxKey[SDLK_AMPERSAND] = Keyboard::Key_7; // TODO
-	sdlToArxKey[SDLK_QUOTE] = Keyboard::Key_Apostrophe; // TODO
-	sdlToArxKey[SDLK_LEFTPAREN] = Keyboard::Key_9; // TODO
-	sdlToArxKey[SDLK_RIGHTPAREN] = Keyboard::Key_0; // TODO
-	sdlToArxKey[SDLK_ASTERISK] = Keyboard::Key_8; // TODO
-	sdlToArxKey[SDLK_PLUS] = Keyboard::Key_Equals; // TODO
+	sdlToArxKey[SDLK_EXCLAIM] = Keyboard::Key_1;
+	sdlToArxKey[SDLK_QUOTEDBL] = Keyboard::Key_Apostrophe;
+	sdlToArxKey[SDLK_HASH] = Keyboard::Key_3;
+	sdlToArxKey[SDLK_DOLLAR] = Keyboard::Key_4;
+	sdlToArxKey[SDLK_AMPERSAND] = Keyboard::Key_7;
+	sdlToArxKey[SDLK_QUOTE] = Keyboard::Key_Apostrophe;
+	sdlToArxKey[SDLK_LEFTPAREN] = Keyboard::Key_9;
+	sdlToArxKey[SDLK_RIGHTPAREN] = Keyboard::Key_0;
+	sdlToArxKey[SDLK_ASTERISK] = Keyboard::Key_8;
+	sdlToArxKey[SDLK_PLUS] = Keyboard::Key_Equals;
 	sdlToArxKey[SDLK_COMMA] = Keyboard::Key_Comma;
 	sdlToArxKey[SDLK_MINUS] = Keyboard::Key_Minus;
 	sdlToArxKey[SDLK_PERIOD] = Keyboard::Key_Period;
@@ -82,18 +79,18 @@ SDL1InputBackend::SDL1InputBackend() {
 	sdlToArxKey[SDLK_7] = Keyboard::Key_7;
 	sdlToArxKey[SDLK_8] = Keyboard::Key_8;
 	sdlToArxKey[SDLK_9] = Keyboard::Key_9;
-	sdlToArxKey[SDLK_COLON] = Keyboard::Key_Semicolon; // TODO
+	sdlToArxKey[SDLK_COLON] = Keyboard::Key_Semicolon;
 	sdlToArxKey[SDLK_SEMICOLON] = Keyboard::Key_Semicolon;
-	sdlToArxKey[SDLK_LESS] = Keyboard::Key_Comma; // TODO
+	sdlToArxKey[SDLK_LESS] = Keyboard::Key_Comma;
 	sdlToArxKey[SDLK_EQUALS] = Keyboard::Key_Equals;
-	sdlToArxKey[SDLK_GREATER] = Keyboard::Key_Period; // TODO
-	sdlToArxKey[SDLK_QUESTION] = Keyboard::Key_Slash; // TODO
-	sdlToArxKey[SDLK_AT] = Keyboard::Key_2; // TODO
+	sdlToArxKey[SDLK_GREATER] = Keyboard::Key_Period;
+	sdlToArxKey[SDLK_QUESTION] = Keyboard::Key_Slash;
+	sdlToArxKey[SDLK_AT] = Keyboard::Key_2;
 	sdlToArxKey[SDLK_LEFTBRACKET] = Keyboard::Key_LeftBracket;
 	sdlToArxKey[SDLK_BACKSLASH] = Keyboard::Key_Backslash;
 	sdlToArxKey[SDLK_RIGHTBRACKET] = Keyboard::Key_RightBracket;
-	sdlToArxKey[SDLK_CARET] = Keyboard::Key_6; // TODO
-	sdlToArxKey[SDLK_UNDERSCORE] = Keyboard::Key_Minus; // TODO
+	sdlToArxKey[SDLK_CARET] = Keyboard::Key_6;
+	sdlToArxKey[SDLK_UNDERSCORE] = Keyboard::Key_Minus;
 	sdlToArxKey[SDLK_BACKQUOTE] = Keyboard::Key_Grave;
 	sdlToArxKey[SDLK_a] = Keyboard::Key_A;
 	sdlToArxKey[SDLK_b] = Keyboard::Key_B;
@@ -178,14 +175,7 @@ SDL1InputBackend::SDL1InputBackend() {
 	sdlToArxKey[SDLK_RSUPER] = Keyboard::Key_LeftWin;
 	sdlToArxKey[SDLK_MODE] = Keyboard::Key_RightAlt;
 	sdlToArxKey[SDLK_COMPOSE] = Keyboard::Key_Apps;
-	// sdlToArxKey[SDLK_HELP] = -1; // TODO
 	sdlToArxKey[SDLK_PRINT] = Keyboard::Key_PrintScreen;
-	// sdlToArxKey[SDLK_SYSREQ] = -1; // TODO
-	// sdlToArxKey[SDLK_BREAK] = -1; // TODO
-	// sdlToArxKey[SDLK_MENU] = -1; // TODO
-	// sdlToArxKey[SDLK_POWER] = -1; // TODO
-	// sdlToArxKey[SDLK_EURO] = -1; // TODO
-	// sdlToArxKey[SDLK_UNDO] = -1; // TODO
 	
 	std::fill_n(sdlToArxButton, ARRAY_SIZE(sdlToArxButton), -1);
 	

@@ -42,8 +42,6 @@ SDL2InputBackend::SDL2InputBackend(SDL2Window * window) : m_window(window) {
 	
 	std::fill_n(sdlToArxKey, ARRAY_SIZE(sdlToArxKey), -1);
 	
-	// TODO we should have different key contants for shifted keys!
-	
 	sdlToArxKey[SDL_SCANCODE_BACKSPACE] = Keyboard::Key_Backspace;
 	sdlToArxKey[SDL_SCANCODE_TAB] = Keyboard::Key_Tab;
 	sdlToArxKey[SDL_SCANCODE_RETURN] = Keyboard::Key_Enter;
@@ -54,6 +52,8 @@ SDL2InputBackend::SDL2InputBackend(SDL2Window * window) : m_window(window) {
 	sdlToArxKey[SDL_SCANCODE_MINUS] = Keyboard::Key_Minus;
 	sdlToArxKey[SDL_SCANCODE_PERIOD] = Keyboard::Key_Period;
 	sdlToArxKey[SDL_SCANCODE_SLASH] = Keyboard::Key_Slash;
+	sdlToArxKey[SDL_SCANCODE_APOSTROPHE] = Keyboard::Key_Apostrophe;
+	sdlToArxKey[SDL_SCANCODE_GRAVE] = Keyboard::Key_Grave;
 	sdlToArxKey[SDL_SCANCODE_0] = Keyboard::Key_0;
 	sdlToArxKey[SDL_SCANCODE_1] = Keyboard::Key_1;
 	sdlToArxKey[SDL_SCANCODE_2] = Keyboard::Key_2;
@@ -119,6 +119,7 @@ SDL2InputBackend::SDL2InputBackend(SDL2Window * window) : m_window(window) {
 	sdlToArxKey[SDL_SCANCODE_LEFT] = Keyboard::Key_LeftArrow;
 	sdlToArxKey[SDL_SCANCODE_INSERT] = Keyboard::Key_Insert;
 	sdlToArxKey[SDL_SCANCODE_HOME] = Keyboard::Key_Home;
+	sdlToArxKey[SDL_SCANCODE_AC_HOME] = Keyboard::Key_Home;
 	sdlToArxKey[SDL_SCANCODE_END] = Keyboard::Key_End;
 	sdlToArxKey[SDL_SCANCODE_PAGEUP] = Keyboard::Key_PageUp;
 	sdlToArxKey[SDL_SCANCODE_PAGEDOWN] = Keyboard::Key_PageDown;
@@ -150,14 +151,7 @@ SDL2InputBackend::SDL2InputBackend(SDL2Window * window) : m_window(window) {
 	sdlToArxKey[SDL_SCANCODE_LGUI] = Keyboard::Key_LeftWin;
 	sdlToArxKey[SDL_SCANCODE_MODE] = Keyboard::Key_RightAlt;
 	sdlToArxKey[SDL_SCANCODE_APPLICATION] = Keyboard::Key_Apps;
-	// sdlToArxKey[SDL_SCANCODE_HELP] = -1; // TODO
 	sdlToArxKey[SDL_SCANCODE_PRINTSCREEN] = Keyboard::Key_PrintScreen;
-	// sdlToArxKey[SDL_SCANCODE_SYSREQ] = -1; // TODO
-	// sdlToArxKey[SDL_SCANCODE_BREAK] = -1; // TODO
-	// sdlToArxKey[SDL_SCANCODE_MENU] = -1; // TODO
-	// sdlToArxKey[SDL_SCANCODE_POWER] = -1; // TODO
-	// sdlToArxKey[SDL_SCANCODE_EURO] = -1; // TODO
-	// sdlToArxKey[SDL_SCANCODE_UNDO] = -1; // TODO
 	
 	std::fill_n(sdlToArxButton, ARRAY_SIZE(sdlToArxButton), -1);
 	
@@ -256,7 +250,7 @@ void SDL2InputBackend::onEvent(const SDL_Event & event) {
 			if(key >= 0 && size_t(key) < ARRAY_SIZE(sdlToArxKey) && sdlToArxKey[key] >= 0) {
 				keyStates[sdlToArxKey[key] - Keyboard::KeyBase] = (event.key.state == SDL_PRESSED);
 			} else {
-				LogWarning << "Unmapped SDL key: " << (int)key << " = " << SDL_GetKeyName(key);
+				LogWarning << "Unmapped SDL key: " << (int)key << " = " << SDL_GetScancodeName(key);
 			}
 			break;
 		}
@@ -281,7 +275,7 @@ void SDL2InputBackend::onEvent(const SDL_Event & event) {
 				} else {
 					buttonStates[i] = false, unclickCount[i]++;
 				}
-			} else {
+			} else if(button != 0) {
 				LogWarning << "Unmapped SDL mouse button: " << (int)button;
 			}
 			break;
