@@ -237,9 +237,7 @@ bool SDL2InputBackend::getAbsoluteMouseCoords(int & absX, int & absY) const {
 
 void SDL2InputBackend::setAbsoluteMouseCoords(int absX, int absY) {
 	lastCursorAbs = cursorAbs = Vec2i(absX, absY);
-	if(m_window) {
-		SDL_WarpMouseInWindow(m_window->getSDLWindow(), absX, absY);
-	}
+	SDL_WarpMouseInWindow(m_window->getSDLWindow(), absX, absY);
 }
 
 void SDL2InputBackend::getRelativeMouseCoords(int & relX, int & relY, int & wheelDir) const {
