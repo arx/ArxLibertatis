@@ -51,11 +51,6 @@ bool SDL2InputBackend::init(Window * window) {
 	SDL_EventState(SDL_MOUSEMOTION, SDL_ENABLE);
 	SDL_EventState(SDL_MOUSEBUTTONDOWN, SDL_ENABLE);
 	SDL_EventState(SDL_MOUSEBUTTONUP, SDL_ENABLE);
-	SDL_EventState(SDL_JOYAXISMOTION, SDL_ENABLE);
-	SDL_EventState(SDL_JOYBALLMOTION, SDL_ENABLE);
-	SDL_EventState(SDL_JOYHATMOTION, SDL_ENABLE);
-	SDL_EventState(SDL_JOYBUTTONDOWN, SDL_ENABLE);
-	SDL_EventState(SDL_JOYBUTTONUP, SDL_ENABLE);
 	
 	std::fill_n(sdlToArxKey, ARRAY_SIZE(sdlToArxKey), -1);
 	
@@ -310,12 +305,6 @@ void SDL2InputBackend::onEvent(const SDL_Event & event) {
 			}
 			break;
 		}
-		
-		case SDL_JOYAXISMOTION:
-		case SDL_JOYBALLMOTION:
-		case SDL_JOYHATMOTION:
-		case SDL_JOYBUTTONDOWN:
-		case SDL_JOYBUTTONUP: break;
 		
 	}
 	
