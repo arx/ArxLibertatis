@@ -219,8 +219,6 @@ SDL1InputBackend::SDL1InputBackend(SDL1Window * window) : m_window(window) {
 
 bool SDL1InputBackend::update() {
 	
-	m_window->tick();
-	
 	currentWheel = wheel;
 	std::copy(clickCount, clickCount + ARRAY_SIZE(clickCount), currentClickCount);
 	std::copy(unclickCount, unclickCount + ARRAY_SIZE(unclickCount), currentUnclickCount);
