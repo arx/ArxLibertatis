@@ -21,10 +21,9 @@
 
 #include <sstream>
 
-#include <boost/foreach.hpp>
-
 #include "core/Config.h"
 #include "graphics/opengl/OpenGLRenderer.h"
+#include "input/SDL1InputBackend.h"
 #include "io/log/Logger.h"
 #include "math/Rectangle.h"
 #include "platform/CrashHandler.h"
@@ -32,16 +31,20 @@
 
 SDL1Window * SDL1Window::s_mainWindow = NULL;
 
-SDL1Window::SDL1Window() { }
+SDL1Window::SDL1Window()
+	: m_input(NULL)
+	{ }
 
 SDL1Window::~SDL1Window() {
+	
+	if(m_input) {
+		delete m_input;
+	}
 	
 	if(renderer) {
 		onRendererShutdown();
 		delete renderer, renderer = NULL;
 	}
-	
-	arx_assert_msg(m_handlers.empty(), "Window is still being used!");
 	
 	if(s_mainWindow) {
 		SDL_Quit(), s_mainWindow = NULL;
@@ -374,8 +377,8 @@ void SDL1Window::tick() {
 			
 		}
 		
-		BOOST_FOREACH(EventHandler * handler, m_handlers) {
-			handler->onEvent(event);
+		if(m_input) {
+			m_input->onEvent(event);
 		}
 		
 	}
@@ -391,13 +394,9 @@ void SDL1Window::hide() {
 	onShow(false);
 }
 
-void SDL1Window::addEventHandler(EventHandler * handler) {
-	m_handlers.push_back(handler);
-}
-
-void SDL1Window::removeEventHandler(SDL1Window::EventHandler * handler) {
-	EventHandlers::iterator it = std::find(m_handlers.begin(), m_handlers.end(), handler);
-	if(it != m_handlers.end()) {
-		m_handlers.erase(it);
+InputBackend * SDL1Window::getInputBackend() {
+	if(!m_input) {
+		m_input = new SDL1InputBackend(this);
 	}
+	return m_input;
 }

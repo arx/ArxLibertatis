@@ -28,14 +28,12 @@
 #include "math/Vector.h"
 #include "window/SDL2Window.h"
 
-class SDL2InputBackend : public InputBackend, public SDL2Window::EventHandler {
+class SDL2InputBackend : public InputBackend {
 	
 public:
 	
-	SDL2InputBackend();
-	~SDL2InputBackend();
+	SDL2InputBackend(SDL2Window * window);
 	
-	bool init(Window * window);
 	bool update();
 	
 	// Mouse

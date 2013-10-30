@@ -23,26 +23,13 @@
 
 #include "io/log/Logger.h"
 
-SDL2InputBackend::SDL2InputBackend() : m_window(NULL) { }
-
-SDL2InputBackend::~SDL2InputBackend() {
-	if(m_window) {
-		m_window->removeEventHandler(this);
-	}
-}
-
 static int sdlToArxKey[SDL_NUM_SCANCODES];
 
 static int sdlToArxButton[10];
 
-bool SDL2InputBackend::init(Window * window) {
+SDL2InputBackend::SDL2InputBackend(SDL2Window * window) : m_window(window) {
 	
 	arx_assert(window != NULL);
-	m_window = dynamic_cast<SDL2Window *>(window);
-	if(!m_window) {
-		return false;
-	}
-	m_window->addEventHandler(this);
 	
 	cursorInWindow = false;
 	
@@ -200,16 +187,11 @@ bool SDL2InputBackend::init(Window * window) {
 	std::fill_n(clickCount, ARRAY_SIZE(clickCount), 0);
 	std::fill_n(unclickCount, ARRAY_SIZE(unclickCount), 0);
 	
-	LogInfo << "Using SDL input";
-	
-	return true;
 }
 
 bool SDL2InputBackend::update() {
 	
-	if(m_window) {
-		m_window->tick();
-	}
+	m_window->tick();
 	
 	currentWheel = wheel;
 	std::copy(clickCount, clickCount + ARRAY_SIZE(clickCount), currentClickCount);
@@ -233,7 +215,7 @@ bool SDL2InputBackend::getAbsoluteMouseCoords(int & absX, int & absY) const {
 
 void SDL2InputBackend::setAbsoluteMouseCoords(int absX, int absY) {
 	lastCursorAbs = cursorAbs = Vec2i(absX, absY);
-	SDL_WarpMouseInWindow(m_window->getSDLWindow(), absX, absY);
+	SDL_WarpMouseInWindow(m_window->m_window, absX, absY);
 }
 
 void SDL2InputBackend::getRelativeMouseCoords(int & relX, int & relY, int & wheelDir) const {

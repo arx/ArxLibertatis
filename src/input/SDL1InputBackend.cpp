@@ -30,26 +30,13 @@
 #define SDL_BUTTON_X2 7
 #endif
 
-SDL1InputBackend::SDL1InputBackend() { }
-
-SDL1InputBackend::~SDL1InputBackend() {
-	if(m_window) {
-		m_window->removeEventHandler(this);
-	}
-}
-
 static int sdlToArxKey[SDLK_LAST];
 
 static int sdlToArxButton[10];
 
-bool SDL1InputBackend::init(Window * window) {
+SDL1InputBackend::SDL1InputBackend(SDL1Window * window) : m_window(window) {
 	
 	arx_assert(window != NULL);
-	m_window = dynamic_cast<SDL1Window *>(window);
-	if(!m_window) {
-		return false;
-	}
-	m_window->addEventHandler(this);
 	
 	cursorInWindow = false;
 	
@@ -228,16 +215,11 @@ bool SDL1InputBackend::init(Window * window) {
 	std::fill_n(clickCount, ARRAY_SIZE(clickCount), 0);
 	std::fill_n(unclickCount, ARRAY_SIZE(unclickCount), 0);
 	
-	LogInfo << "Using SDL input";
-	
-	return true;
 }
 
 bool SDL1InputBackend::update() {
 	
-	if(m_window) {
-		m_window->tick();
-	}
+	m_window->tick();
 	
 	currentWheel = wheel;
 	std::copy(clickCount, clickCount + ARRAY_SIZE(clickCount), currentClickCount);

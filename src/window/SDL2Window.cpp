@@ -21,10 +21,9 @@
 
 #include <sstream>
 
-#include <boost/foreach.hpp>
-
 #include "core/Config.h"
 #include "graphics/opengl/OpenGLRenderer.h"
+#include "input/SDL2InputBackend.h"
 #include "io/log/Logger.h"
 #include "math/Rectangle.h"
 #include "platform/CrashHandler.h"
@@ -34,16 +33,23 @@
 
 SDL2Window * SDL2Window::s_mainWindow = NULL;
 
-SDL2Window::SDL2Window() : m_fullscreenDesktop(false), m_window(NULL), m_glcontext(0) { }
+SDL2Window::SDL2Window()
+	: m_fullscreenDesktop(false)
+	, m_window(NULL)
+	, m_glcontext(NULL)
+	, m_input(NULL)
+	{ }
 
 SDL2Window::~SDL2Window() {
+	
+	if(m_input) {
+		delete m_input;
+	}
 	
 	if(renderer) {
 		onRendererShutdown();
 		delete renderer, renderer = NULL;
 	}
-	
-	arx_assert_msg(m_handlers.empty(), "Window is still being used!");
 	
 	if(m_glcontext) {
 		SDL_GL_DeleteContext(m_glcontext);
@@ -241,7 +247,8 @@ bool SDL2Window::setMode(DisplayMode mode, bool makeFullscreen) {
 			requested.refresh_rate = 0;
 			requested.w = mode.resolution.x;
 			requested.h = mode.resolution.y;
-			if(!SDL_GetClosestDisplayMode(SDL_DISPLAY, &requested, &sdlmode)) {
+			int display = SDL_GetWindowDisplayIndex(m_window);
+			if(!SDL_GetClosestDisplayMode(display, &requested, &sdlmode)) {
 				return false;
 			}
 			if(SDL_SetWindowDisplayMode(m_window, &sdlmode) < 0) {
@@ -392,8 +399,8 @@ void SDL2Window::tick() {
 			
 		}
 		
-		BOOST_FOREACH(EventHandler * handler, m_handlers) {
-			handler->onEvent(event);
+		if(m_input) {
+			m_input->onEvent(event);
 		}
 		
 	}
@@ -410,13 +417,9 @@ void SDL2Window::hide() {
 	onShow(false);
 }
 
-void SDL2Window::addEventHandler(EventHandler * handler) {
-	m_handlers.push_back(handler);
-}
-
-void SDL2Window::removeEventHandler(SDL2Window::EventHandler * handler) {
-	EventHandlers::iterator it = std::find(m_handlers.begin(), m_handlers.end(), handler);
-	if(it != m_handlers.end()) {
-		m_handlers.erase(it);
+InputBackend * SDL2Window::getInputBackend() {
+	if(!m_input) {
+		m_input = new SDL2InputBackend(this);
 	}
+	return m_input;
 }

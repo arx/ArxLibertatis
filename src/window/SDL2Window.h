@@ -20,20 +20,15 @@
 #ifndef ARX_WINDOW_SDL2WINDOW_H
 #define ARX_WINDOW_SDL2WINDOW_H
 
-#include <vector>
-
 #include <SDL.h>
 
 #include "window/RenderWindow.h"
 
+class SDL2InputBackend;
+
 class SDL2Window : public RenderWindow {
 	
 public:
-	
-	class EventHandler {
-	public:
-		virtual void onEvent(const SDL_Event & event) = 0;
-	};
 	
 	SDL2Window();
 	virtual ~SDL2Window();
@@ -49,10 +44,7 @@ public:
 	
 	void hide();
 	
-	void addEventHandler(EventHandler * handler);
-	void removeEventHandler(EventHandler * handler);
-	
-	SDL_Window * getSDLWindow() { return m_window; }
+	InputBackend * getInputBackend();
 	
 private:
 	
@@ -67,11 +59,11 @@ private:
 	SDL_Window * m_window;
 	SDL_GLContext m_glcontext;
 	
-	typedef std::vector<EventHandler *> EventHandlers;
-	EventHandlers m_handlers;
+	SDL2InputBackend * m_input;
 	
 	static SDL2Window * s_mainWindow;
 	
+	friend class SDL2InputBackend;
 };
 
 #endif // ARX_WINDOW_SDL2WINDOW_H

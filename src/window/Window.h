@@ -25,6 +25,8 @@
 
 #include "math/Vector.h"
 
+class InputBackend;
+
 class Window {
 	
 public:
@@ -83,6 +85,8 @@ public:
 	unsigned getDepth() const { return depth_; }
 	
 	bool isFullScreen() const { return isFullscreen_; }
+	
+	virtual InputBackend * getInputBackend() = 0;
 	
 protected:
 	

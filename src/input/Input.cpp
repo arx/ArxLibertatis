@@ -57,13 +57,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/log/Logger.h"
 #include "window/RenderWindow.h"
 
-#if ARX_HAVE_SDL2
-#include "input/SDL2InputBackend.h"
-#endif
-#if ARX_HAVE_SDL1
-#include "input/SDL1InputBackend.h"
-#endif
-
 Input * GInput = NULL;
 
 // TODO-input: Clean me!
@@ -211,43 +204,9 @@ Input::Input() : backend(NULL) {
 bool Input::init(Window * window) {
 	arx_assert(backend == NULL);
 	
-	bool autoBackend = (config.input.backend == "auto");
-	
-	for(int i = 0; i < 2 && !backend; i++) {
-		bool first = (i == 0);
-		
-		bool matched = false;
-		
-		#if ARX_HAVE_SDL2
-		if(!backend && first == (autoBackend || config.input.backend == "SDL")) {
-			matched = true;
-			backend = new SDL2InputBackend;
-			if(!backend->init(window)) {
-				delete backend, backend = NULL;
-			}
-		}
-		#endif
-		
-		#if ARX_HAVE_SDL1
-		if(!backend && first == (autoBackend || config.input.backend == "SDL")) {
-			matched = true;
-			backend = new SDL1InputBackend;
-			if(!backend->init(window)) {
-				delete backend, backend = NULL;
-			}
-		}
-		#endif
-		
-		if(first && !matched) {
-			LogError << "Unknown backend: " << config.input.backend;
-		}
-	}
+	backend = window->getInputBackend();
 	
 	return (backend != NULL);
-}
-
-Input::~Input() {
-	delete backend;
 }
 
 void Input::reset() {

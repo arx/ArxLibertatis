@@ -26,10 +26,6 @@ class InputBackend {
 	
 public:
 	
-	virtual ~InputBackend() { }
-	
-	virtual bool init(Window * window) = 0;
-	
 	virtual bool update() = 0;	
 	
 	// Mouse 
@@ -42,6 +38,10 @@ public:
 	
 	// Keyboard
 	virtual bool isKeyboardKeyPressed(int keyId) const = 0;
+	
+protected:
+	
+	virtual ~InputBackend() { }
 	
 };
 

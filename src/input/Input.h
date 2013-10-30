@@ -61,7 +61,6 @@ public:
 	static const std::string KEY_NONE;
 	
 	Input();
-	virtual ~Input();
 	
 	bool init(Window * window);
 	void reset();

@@ -20,20 +20,15 @@
 #ifndef ARX_WINDOW_SDL1WINDOW_H
 #define ARX_WINDOW_SDL1WINDOW_H
 
-#include <vector>
-
 #include <SDL.h>
 
 #include "window/RenderWindow.h"
 
+class SDL1InputBackend;
+
 class SDL1Window : public RenderWindow {
 	
 public:
-	
-	class EventHandler {
-	public:
-		virtual void onEvent(const SDL_Event & event) = 0;
-	};
 	
 	SDL1Window();
 	virtual ~SDL1Window();
@@ -49,8 +44,7 @@ public:
 	
 	void hide();
 	
-	void addEventHandler(EventHandler * handler);
-	void removeEventHandler(EventHandler * handler);
+	InputBackend * getInputBackend();
 	
 private:
 	
@@ -59,8 +53,7 @@ private:
 	
 	static int SDLCALL eventFilter(const SDL_Event * event);
 	
-	typedef std::vector<EventHandler *> EventHandlers;
-	EventHandlers m_handlers;
+	SDL1InputBackend * m_input;
 	
 	DisplayMode m_desktopMode;
 	
