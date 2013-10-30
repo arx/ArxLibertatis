@@ -1096,8 +1096,6 @@ void LaunchFireballBoom(Vec3f * poss, float level, Vec3f * direction, Color3f * 
 
 void ARX_PARTICLES_Update(EERIE_CAMERA * cam)  {
 	
-	EERIEResetSprites();
-
 	if(!ACTIVEBKG) {
 		return;
 	}
@@ -1418,17 +1416,6 @@ void ARX_PARTICLES_Update(EERIE_CAMERA * cam)  {
 		pcc--;
 	}
 	
-	GRenderer->SetFogColor(ulBKGColor);
-	GRenderer->SetRenderState(Renderer::DepthTest, true);
-}
-
-void ARX_PARTICLES_Render()  {
-
-	GRenderer->SetCulling(Renderer::CullNone);
-	GRenderer->SetFogColor(Color::none);
-	
-	EERIERenderSprites();
-
 	GRenderer->SetFogColor(ulBKGColor);
 	GRenderer->SetRenderState(Renderer::DepthTest, true);
 }

@@ -1528,6 +1528,7 @@ void ArxGame::renderLevel() {
 	DrawDebugRender();
 
 	// Begin Particles
+	EERIEResetSprites();
 	
 	if(pParticleManager) {
 		pParticleManager->Render();
@@ -1538,8 +1539,7 @@ void ArxGame::renderLevel() {
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
 	ARX_PARTICLES_Update(&subj);
-	ARX_PARTICLES_Render();
-
+	
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
@@ -1548,7 +1548,7 @@ void ArxGame::renderLevel() {
 
 	// Renders Magical Flares
 	if(!((player.Interface & INTER_MAP) && !(player.Interface & INTER_COMBATMODE))) {
-		ARX_MAGICAL_FLARES_Draw();
+		ARX_MAGICAL_FLARES_Update();
 	}
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
@@ -1612,12 +1612,16 @@ void ArxGame::renderLevel() {
 		drawAllInterfaceFinish();
 
 		if((player.Interface & INTER_MAP) && !(player.Interface & INTER_COMBATMODE)) {
-			ARX_MAGICAL_FLARES_Draw();
+			ARX_MAGICAL_FLARES_Update();
 		}
 		
 		GRenderer->SetRenderState(Renderer::DepthTest, true);
 	}
 
+	GRenderer->SetFogColor(Color::none);
+	EERIERenderSprites();
+	GRenderer->SetFogColor(ulBKGColor);
+	
 	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
