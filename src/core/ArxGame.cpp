@@ -1618,6 +1618,7 @@ void ArxGame::renderLevel() {
 		GRenderer->SetRenderState(Renderer::DepthTest, true);
 	}
 
+	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	GRenderer->SetFogColor(Color::none);
 	EERIERenderSprites();
 	GRenderer->SetFogColor(ulBKGColor);
