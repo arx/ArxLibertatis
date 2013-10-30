@@ -211,7 +211,7 @@ static int run(const std::string & exe, bool wait, const char * const args[]) {
 	PROCESS_INFORMATION pi;
 	memset(&pi, 0, sizeof(PROCESS_INFORMATION));
 	
-	bool success = CreateProcess(exe.c_str(), cmdline, 0, 0, 0, 0, 0, 0, &si, &pi);
+	bool success = (CreateProcess(exe.c_str(), cmdline, 0, 0, 0, 0, 0, 0, &si, &pi) != 0);
 	
 	free(cmdline);
 	
