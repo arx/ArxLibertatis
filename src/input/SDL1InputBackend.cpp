@@ -34,7 +34,7 @@ static int sdlToArxKey[SDLK_LAST];
 
 static int sdlToArxButton[10];
 
-SDL1InputBackend::SDL1InputBackend(SDL1Window * window) : m_window(window) {
+SDL1InputBackend::SDL1InputBackend() {
 	
 	arx_assert(window != NULL);
 	

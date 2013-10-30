@@ -32,7 +32,7 @@ class SDL1InputBackend : public InputBackend {
 	
 public:
 	
-	explicit SDL1InputBackend(SDL1Window * window);
+	SDL1InputBackend();
 	
 	bool update();
 	
@@ -49,8 +49,6 @@ public:
 	void onEvent(const SDL_Event & event);
 	
 private:
-	
-	SDL1Window * m_window;
 	
 	int wheel;
 	Vec2i cursorAbs;

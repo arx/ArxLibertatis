@@ -396,7 +396,7 @@ void SDL1Window::hide() {
 
 InputBackend * SDL1Window::getInputBackend() {
 	if(!m_input) {
-		m_input = new SDL1InputBackend(this);
+		m_input = new SDL1InputBackend();
 	}
 	return m_input;
 }
