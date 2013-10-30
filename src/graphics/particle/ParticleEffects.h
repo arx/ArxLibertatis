@@ -194,7 +194,8 @@ long getParticleCount();
 
 void ARX_PARTICLES_FirstInit();
 void ARX_PARTICLES_ClearAll();
-void ARX_PARTICLES_Render(EERIE_CAMERA * cam);
+void ARX_PARTICLES_Update(EERIE_CAMERA * cam);
+void ARX_PARTICLES_Render();
 void ARX_PARTICLES_Spawn_Blood(Vec3f * pos, float dmgs, long source);
 void ARX_PARTICLES_Spawn_Blood2(const Vec3f & pos, float dmgs, Color col, Entity * io);
 void ARX_PARTICLES_Spawn_Lava_Burn(Vec3f * pos, Entity * io = NULL);

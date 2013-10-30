@@ -57,22 +57,42 @@ struct TexturedQuad {
 	TexturedVertex v[4];
 };
 
+struct SpriteMaterial {
+
+	enum BlendType {
+		Opaque,
+		Normal,
+		Additive,
+		Subtractive
+	};
+
+	SpriteMaterial();
+
+	bool operator<(const SpriteMaterial & other) const;
+	void apply() const;
+
+	TextureContainer *  texture;
+	bool                depthTest;
+	BlendType           blendType;
+};
+
 void EERIEDRAWPRIM(Renderer::Primitive primitive, const TexturedVertex * vertices, size_t count = 3, bool nocount = false);
 
 void EERIEDrawBitmap(Rect rect, float z, TextureContainer * tex, Color color);
 void EERIEDrawBitmap(float x, float y, float sx, float sy, float z, TextureContainer * tex, Color color);
-
-
 void EERIEDrawBitmap2DecalY(float x, float y, float sx, float sy, float z, TextureContainer * tex, Color col, float _fDeltaY);
 
-bool EERIECreateSprite(TexturedQuad& sprite, TexturedVertex * in, float siz, TextureContainer * tex, Color color, float Zpos, float rot = 0);
-void EERIEDrawSprite(TexturedVertex * in, float siz, TextureContainer * tex, Color col, float Zpos);
-void EERIEDrawRotatedSprite(TexturedVertex * in, float siz, TextureContainer * tex, Color col, float Zpos, float rot);
+void EERIEDrawSprite(const TexturedVertex & in, float siz, TextureContainer * tex, Color col, float Zpos);
+void EERIEDrawRotatedSprite(const TexturedVertex & in, float siz, TextureContainer * tex, Color col, float Zpos, float rot);
 
 void EERIEDrawBitmap2(float x, float y, float sx, float sy, float z, TextureContainer * tex, Color col);
-
 void EERIEDrawBitmap_uv(float x, float y, float sx, float sy, float z, TextureContainer * tex, Color col, float u0, float v0, float u1, float v1);
-
 void EERIEDrawBitmapUVs(float x, float y, float sx, float sy, float z, TextureContainer * tex, Color col, float u0, float v0, float u1, float v1, float u2, float v2, float u3, float v3);
+
+
+void EERIEResetSprites();
+void EERIERenderSprites();
+void EERIEAddBitmap(const SpriteMaterial& mat, float x, float y, float sx, float sy, float z, TextureContainer * tex, Color color);
+void EERIEAddSprite(const SpriteMaterial & mat, const TexturedVertex & in, float siz, TextureContainer * tex, Color color, float Zpos, float rot = 0);
 
 #endif // ARX_GRAPHICS_DRAW_H

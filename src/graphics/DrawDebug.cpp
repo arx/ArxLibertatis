@@ -119,7 +119,7 @@ void DrawDebugLights() {
 		}
 
 		GRenderer->SetBlendFunc(Renderer::BlendSrcAlpha, Renderer::BlendSrcAlpha);
-		EERIEDrawSprite(&in, 11.f, lightsource_tc, light->rgb.to<u8>(), 2.f);
+		EERIEDrawSprite(in, 11.f, lightsource_tc, light->rgb.to<u8>(), 2.f);
 	}
 }
 

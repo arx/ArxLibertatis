@@ -515,7 +515,7 @@ void EE_P(Vec3f * in, TexturedVertex * out) {
 	out->rhw = fZTemp;
 }
 
-void EE_RTP(TexturedVertex * in, TexturedVertex * out) {
+void EE_RTP(const TexturedVertex * in, TexturedVertex * out) {
 	EE_RT(in->p, out->p);
 	EE_P(&out->p, out);
 }

@@ -1094,8 +1094,10 @@ void LaunchFireballBoom(Vec3f * poss, float level, Vec3f * direction, Color3f * 
 	
 }
 
-void ARX_PARTICLES_Render(EERIE_CAMERA * cam)  {
+void ARX_PARTICLES_Update(EERIE_CAMERA * cam)  {
 	
+	EERIEResetSprites();
+
 	if(!ACTIVEBKG) {
 		return;
 	}
@@ -1114,12 +1116,26 @@ void ARX_PARTICLES_Render(EERIE_CAMERA * cam)  {
 	long pcc = ParticleCount;
 	
 	for(size_t i = 0; i < MAX_PARTICLES && pcc > 0; i++) {
+		SpriteMaterial mat;
 		
 		PARTICLE_DEF * part = &particle[i];
 		if(!part->exist) {
 			continue;
 		}
-		
+
+		mat.texture = part->tc;
+		mat.depthTest = !(part->special & PARTICLE_NOZBUFFER);
+
+		if(part->special & NO_TRANS) {
+			mat.blendType = SpriteMaterial::Opaque;
+		} else {
+			if(part->special & SUBSTRACT) {
+				mat.blendType = SpriteMaterial::Subtractive;
+			} else {
+				mat.blendType = SpriteMaterial::Additive;
+			}
+		}
+				
 		long framediff = part->timcreation + part->tolive - tim;
 		long framediff2 = tim - part->timcreation;
 		
@@ -1231,12 +1247,6 @@ void ARX_PARTICLES_Render(EERIE_CAMERA * cam)  {
 			in.p.y = inn.p.y = inn.p.y + 1.47f * val * val;
 		}
 		
-		if(part->special & PARTICLE_NOZBUFFER) {
-			GRenderer->SetRenderState(Renderer::DepthTest, false);
-		} else {
-			GRenderer->SetRenderState(Renderer::DepthTest, true);
-		}
-		
 		float fd = float(framediff2) / float(part->tolive);
 		float r = 1.f - fd;
 		if(part->special & FADE_IN_AND_OUT) {
@@ -1259,18 +1269,6 @@ void ARX_PARTICLES_Render(EERIE_CAMERA * cam)  {
 			
 			if(part->special & PARTICLE_SPARK) {
 				
-				if(part->special & NO_TRANS) {
-					GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-				} else {
-					GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-					if(part->special & SUBSTRACT) {
-						GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
-					} else {
-						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-					}
-				}
-				
-				GRenderer->SetCulling(Renderer::CullNone);
 				Vec3f vect = part->oldpos - in.p;
 				fnormalize(vect);
 				TexturedVertex tv[3];
@@ -1286,7 +1284,8 @@ void ARX_PARTICLES_Render(EERIE_CAMERA * cam)  {
 				
 				EE_RTP(&temp, &tv[2]);
 				GRenderer->ResetTexture(0);
-				
+
+				// TODO: This
 				EERIEDRAWPRIM(Renderer::TriangleStrip, tv);
 				if(!arxtime.is_paused()) {
 					part->oldpos = in.p;
@@ -1335,17 +1334,6 @@ void ARX_PARTICLES_Render(EERIE_CAMERA * cam)  {
 			continue;
 		}
 		
-		if(part->special & NO_TRANS) {
-			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-		} else {
-			GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-			if(part->special & SUBSTRACT) {
-				GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
-			} else {
-				GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-			}
-		}
-		
 		Vec3f op = part->oldpos;
 		if(!arxtime.is_paused()) {
 			part->oldpos = in.p;
@@ -1386,28 +1374,24 @@ void ARX_PARTICLES_Render(EERIE_CAMERA * cam)  {
 				}
 				
 				float temp = (part->zdec) ? 0.0001f : 2.f;
+
+				EERIEAddSprite(mat, in, siz, tc, color, temp, rott);
+
 				if(part->special & PARTICLE_SUB2) {
-					TexturedVertex in2 = in;
-					GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-					EERIEDrawRotatedSprite(&in, siz, tc, color, temp, rott);
-					GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
-					EERIEDrawRotatedSprite(&in2, siz, tc, Color::white, temp, rott);
-				} else {
-					EERIEDrawRotatedSprite(&in, siz, tc, color, temp, rott);
+					mat.blendType = SpriteMaterial::Subtractive;
+					EERIEAddSprite(mat, in, siz, tc, Color::white, temp, rott);
 				}
-				
+
 			}
 		} else if(part->type & PARTICLE_2D) {
 			
 			float siz2 = part->siz + part->scale.y * fd;
+
+			EERIEAddBitmap(mat, in.p.x, in.p.y, siz, siz2, in.p.z, tc, color);
+
 			if(part->special & PARTICLE_SUB2) {
-				TexturedVertex in2 = in;
-				GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-				EERIEDrawBitmap(in.p.x, in.p.y, siz, siz2, in.p.z, tc, color);
-				GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
-				EERIEDrawBitmap(in2.p.x, in.p.y, siz, siz2, in.p.z, tc, Color::white);
-			} else {
-				EERIEDrawBitmap(in.p.x, in.p.y, siz, siz2, in.p.z, tc, color);
+				mat.blendType = SpriteMaterial::Subtractive;
+				EERIEAddBitmap(mat, in.p.x, in.p.y, siz, siz2, in.p.z, tc, Color::white);
 			}
 			
 		} else if(part->type & PARTICLE_SPARK2) {
@@ -1417,25 +1401,34 @@ void ARX_PARTICLES_Render(EERIE_CAMERA * cam)  {
 			Vec3f end = pos - (pos - op) * 2.5f;
 			Color masked = Color::fromBGRA(col.toBGRA() & part->mask);
 			Draw3DLineTex2(end, pos, 2.f, masked, col);
-			EERIEDrawSprite(&in, 0.7f, tc, col, 2.f);
+			EERIEAddSprite(mat, in, 0.7f, tc, col, 2.f);
 			
 		} else {
 			
 			float temp = (part->zdec) ? 0.0001f : 2.f;
+
+			EERIEAddSprite(mat, in, siz, tc, color, temp);
+
 			if(part->special & PARTICLE_SUB2) {
-				TexturedVertex in2 = in;
-				GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-				EERIEDrawSprite(&in, siz, tc, color, temp);
-				GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
-				EERIEDrawSprite(&in2, siz, tc, Color::white, temp);
-			} else {
-				EERIEDrawSprite(&in, siz, tc, color, temp);
+				mat.blendType = SpriteMaterial::Subtractive;
+				EERIEAddSprite(mat, in, siz, tc, Color::white, temp);
 			}
 		}
 		
 		pcc--;
 	}
 	
+	GRenderer->SetFogColor(ulBKGColor);
+	GRenderer->SetRenderState(Renderer::DepthTest, true);
+}
+
+void ARX_PARTICLES_Render()  {
+
+	GRenderer->SetCulling(Renderer::CullNone);
+	GRenderer->SetFogColor(Color::none);
+	
+	EERIERenderSprites();
+
 	GRenderer->SetFogColor(ulBKGColor);
 	GRenderer->SetRenderState(Renderer::DepthTest, true);
 }

@@ -61,6 +61,89 @@ extern TextureContainer * enviro;
 
 CircularVertexBuffer<TexturedVertex> * pDynamicVertexBuffer_TLVERTEX;
 
+class SpriteBatcher {
+public:
+	void reset() {
+		m_BatchedSprites.clear();
+	}
+
+	void add(const SpriteMaterial& mat, const TexturedQuad& sprite) {
+		SpriteVertices& verts = m_BatchedSprites[mat];
+		verts.reserve(verts.size() + 6);
+		
+		verts.push_back(sprite.v[0]);
+		verts.push_back(sprite.v[1]);
+		verts.push_back(sprite.v[2]);
+
+		verts.push_back(sprite.v[0]);
+		verts.push_back(sprite.v[2]);
+		verts.push_back(sprite.v[3]);
+	}
+
+	void render() {
+		for(Batches::const_iterator it = m_BatchedSprites.begin(); it != m_BatchedSprites.end(); ++it) {
+			if(!it->second.empty()) {
+				it->first.apply();
+				EERIEDRAWPRIM(Renderer::TriangleList, &it->second[0], it->second.size());
+			}
+		}
+	}
+
+private:
+	typedef std::vector<TexturedVertex> SpriteVertices;
+	typedef std::map<SpriteMaterial, SpriteVertices> Batches;
+	Batches m_BatchedSprites;
+} g_SpriteBatcher;
+
+SpriteMaterial::SpriteMaterial() 
+	: texture(0)
+	, depthTest(false)
+	, blendType(Opaque) {
+}
+
+bool SpriteMaterial::operator<(const SpriteMaterial & other) const {
+	// First sort by blend type
+	if(blendType < other.blendType)
+		return true;
+
+	// Then texture
+	if(texture < other.texture)
+		return true;
+
+	// Then depth test state
+	if(depthTest != other.depthTest)
+		return depthTest;
+
+	return false;
+}
+
+void SpriteMaterial::apply() const {
+		
+	GRenderer->SetTexture(0, texture);
+	GRenderer->SetRenderState(Renderer::DepthTest, depthTest);
+
+	if(blendType == Opaque) {
+		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+	} else {
+		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+
+		switch(blendType) {
+		case Additive:
+			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+			break;
+
+		case Subtractive:
+			GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
+			break;
+
+		case Normal:
+		default:
+			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendInvSrcColor);
+		}
+	}
+}
+
+
 void EERIEDRAWPRIM(Renderer::Primitive primitive, const TexturedVertex * vertices, size_t count, bool nocount) {
 	
 	if(!nocount) {
@@ -77,10 +160,10 @@ void SetTextureDrawPrim(TextureContainer* tex, TexturedVertex* v, Renderer::Prim
 	EERIEDRAWPRIM(prim, v, 4);
 }
 
-bool EERIECreateSprite(TexturedQuad& sprite, TexturedVertex * in, float siz, TextureContainer * tex, Color color, float Zpos, float rot) {
+bool EERIECreateSprite(TexturedQuad& sprite, const TexturedVertex & in, float siz, TextureContainer * tex, Color color, float Zpos, float rot = 0) {
 
 	TexturedVertex out;
-	EE_RTP(in, &out);
+	EE_RTP(&in, &out);
 	out.rhw *= 3000.f;
 
 	if ((out.p.z>0.f) && (out.p.z<1000.f)
@@ -136,7 +219,24 @@ bool EERIECreateSprite(TexturedQuad& sprite, TexturedVertex * in, float siz, Tex
 	return false;
 }
 
-void EERIEDrawSprite(TexturedVertex * in, float siz, TextureContainer * tex, Color color, float Zpos) {
+void EERIEAddSprite(const SpriteMaterial & mat, const TexturedVertex & in, float siz, TextureContainer * tex, Color color, float Zpos, float rot)
+{
+	TexturedQuad s;
+
+	if(EERIECreateSprite(s, in, siz, tex, color, Zpos, rot)) {
+		g_SpriteBatcher.add(mat, s);
+	}
+}
+
+void EERIEResetSprites() {
+	g_SpriteBatcher.reset();
+}
+
+void EERIERenderSprites() {
+	g_SpriteBatcher.render();
+}
+
+void EERIEDrawSprite(const TexturedVertex & in, float siz, TextureContainer * tex, Color color, float Zpos) {
 	
 	TexturedQuad s;
 
@@ -145,7 +245,7 @@ void EERIEDrawSprite(TexturedVertex * in, float siz, TextureContainer * tex, Col
 	}
 }
 
-void EERIEDrawRotatedSprite(TexturedVertex * in, float siz, TextureContainer * tex, Color color, float Zpos, float rot) {
+void EERIEDrawRotatedSprite(const TexturedVertex & in, float siz, TextureContainer * tex, Color color, float Zpos, float rot) {
 	
 	TexturedQuad s;
 
@@ -163,32 +263,42 @@ void EERIEDrawBitmap(Rect rect, float z, TextureContainer * tex, Color color) {
 	EERIEDrawBitmap(rect.left, rect.top, rect.width(), rect.height(), z, tex, color);
 }
 
-void DrawBitmap(float x, float y, float sx, float sy, float z, TextureContainer * tex, Color color, bool isRhw) {
+void CreateBitmap(TexturedQuad& s, float x, float y, float sx, float sy, float z, TextureContainer * tex, Color color, bool isRhw) {
 	MatchPixTex(x, y);
-	Vec2f uv = (tex) ? tex->uv : Vec2f_ZERO;	
+	Vec2f uv = (tex) ? tex->uv : Vec2f_ZERO;
 	ColorBGRA col = color.toBGRA();
 	float val = 1.f;
 
 	if(isRhw) {
-		val -= z; 
+		val -= z;
 	}
 
-	TexturedVertex v[4];
-	v[0] = TexturedVertex(Vec3f(x,      y,      z), val, col, 0xFF000000, Vec2f(0.f,  0.f));
-	v[1] = TexturedVertex(Vec3f(x + sx, y,      z), val, col, 0xFF000000, Vec2f(uv.x, 0.f));
-	v[2] = TexturedVertex(Vec3f(x,      y + sy, z), val, col, 0xFF000000, Vec2f(0.f,  uv.y));
-	v[3] = TexturedVertex(Vec3f(x + sx, y + sy, z), val, col, 0xFF000000, Vec2f(uv.x, uv.y));
+	s.v[0] = TexturedVertex(Vec3f(x, y, z), val, col, 0xFF000000, Vec2f(0.f, 0.f));
+	s.v[1] = TexturedVertex(Vec3f(x + sx, y, z), val, col, 0xFF000000, Vec2f(uv.x, 0.f));
+	s.v[2] = TexturedVertex(Vec3f(x, y + sy, z), val, col, 0xFF000000, Vec2f(0.f, uv.y));
+	s.v[3] = TexturedVertex(Vec3f(x + sx, y + sy, z), val, col, 0xFF000000, Vec2f(uv.x, uv.y));
+}
 
+void DrawBitmap(float x, float y, float sx, float sy, float z, TextureContainer * tex, Color color, bool isRhw) {
+	TexturedQuad s;
+	CreateBitmap(s, x, y, sx, sy, z, tex, color, isRhw);
+	
 	GRenderer->SetTexture(0, tex);
 	if(isRhw) {
 		if(tex && tex->hasColorKey()) {
 			GRenderer->SetAlphaFunc(Renderer::CmpGreater, .5f);
-			EERIEDRAWPRIM(Renderer::TriangleStrip, v, 4);
+			EERIEDRAWPRIM(Renderer::TriangleStrip, s.v, 4);
 			GRenderer->SetAlphaFunc(Renderer::CmpNotEqual, 0.f);
 			return;
 		}
 	}
-	EERIEDRAWPRIM(Renderer::TriangleStrip, v, 4);
+	EERIEDRAWPRIM(Renderer::TriangleStrip, s.v, 4);
+}
+
+void EERIEAddBitmap(const SpriteMaterial& mat, float x, float y, float sx, float sy, float z, TextureContainer * tex, Color color) {
+	TexturedQuad s;
+	CreateBitmap(s, x, y, sx, sy, z, tex, color, false);
+	g_SpriteBatcher.add(mat, s);
 }
 
 void EERIEDrawBitmap(float x, float y, float sx, float sy, float z, TextureContainer * tex, Color color) {

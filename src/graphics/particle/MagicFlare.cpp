@@ -487,7 +487,7 @@ void ARX_MAGICAL_FLARES_Draw() {
 				EERIEDrawBitmap(flare.v.p.x, flare.v.p.y, s, s, flare.v.p.z,
 								surf, Color::fromBGRA(flare.tv.color));
 			} else {
-				EERIEDrawSprite(&flare.v, s * 0.025f + 1.f, surf,
+				EERIEDrawSprite(flare.v, s * 0.025f + 1.f, surf,
 								Color::fromBGRA(flare.tv.color), 2.f);
 			}
 

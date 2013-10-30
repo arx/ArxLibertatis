@@ -1537,7 +1537,8 @@ void ArxGame::renderLevel() {
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
-	ARX_PARTICLES_Render(&subj);
+	ARX_PARTICLES_Update(&subj);
+	ARX_PARTICLES_Render();
 
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
@@ -1931,7 +1932,7 @@ void ArxGame::goFor2DFX()
 				else
 					siz = -el->ex_flaresize;
 
-				EERIEDrawSprite(&lv, siz, tflare, (el->rgb * v).to<u8>(), ltvv.p.z);
+				EERIEDrawSprite(lv, siz, tflare, (el->rgb * v).to<u8>(), ltvv.p.z);
 
 			}
 		}
