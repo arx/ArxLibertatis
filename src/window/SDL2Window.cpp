@@ -248,12 +248,14 @@ bool SDL2Window::setMode(DisplayMode mode, bool makeFullscreen) {
 				return false;
 			}
 		}
-	} else {
-		SDL_SetWindowSize(m_window, mode.resolution.x, mode.resolution.y);
 	}
 	
 	if(SDL_SetWindowFullscreen(m_window, getSDLFlagsForMode(mode.resolution, makeFullscreen)) < 0) {
 		return false;
+	}
+	
+	if(!makeFullscreen) {
+		SDL_SetWindowSize(m_window, mode.resolution.x, mode.resolution.y);
 	}
 	
 	if(wasFullscreen != makeFullscreen) {
