@@ -46,6 +46,7 @@ bool SDL2InputBackend::init(Window * window) {
 	
 	cursorInWindow = false;
 	
+	SDL_EventState(SDL_WINDOWEVENT, SDL_ENABLE);
 	SDL_EventState(SDL_KEYDOWN, SDL_ENABLE);
 	SDL_EventState(SDL_KEYUP, SDL_ENABLE);
 	SDL_EventState(SDL_MOUSEMOTION, SDL_ENABLE);
