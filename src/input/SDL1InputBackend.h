@@ -32,7 +32,7 @@ class SDL1InputBackend : public InputBackend {
 	
 public:
 	
-	SDL1InputBackend(SDL1Window * window);
+	explicit SDL1InputBackend(SDL1Window * window);
 	
 	bool update();
 	
