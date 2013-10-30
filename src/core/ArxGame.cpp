@@ -290,12 +290,7 @@ bool ArxGame::initWindow(RenderWindow * window) {
 	
 	RenderWindow::DisplayMode mode(config.video.resolution, config.video.bpp);
 	
-	if(config.video.resolution == Vec2i_ZERO) {
-		
-		// Use the largest available resolution.
-		mode = modes.back();
-		
-	} else {
+	if(mode.resolution != Vec2i_ZERO) {
 		
 		// Find the next best available fullscreen mode.
 		RenderWindow::DisplayModes::const_iterator i;
@@ -306,14 +301,19 @@ bool ArxGame::initWindow(RenderWindow * window) {
 			mode = *i;
 		}
 		if(config.video.resolution != mode.resolution || unsigned(config.video.bpp) != mode.depth) {
-			LogWarning << "Fullscreen mode " << config.video.resolution.x << 'x' << config.video.resolution.y << '@' << config.video.bpp << " not supported, using " << mode.resolution.x << 'x' << mode.resolution.y 	<< '@' << mode.depth << " instead";
+			LogWarning << "Fullscreen mode " << config.video.resolution.x << 'x'
+			           << config.video.resolution.y << '@' << config.video.bpp
+			           << " not supported, using " << mode.resolution.x << 'x'
+			           << mode.resolution.y << '@' << mode.depth << " instead";
 		}
 		
 	}
 	
 	// Clamp to a sane resolution and window size!
-	mode.resolution.x = std::max(mode.resolution.x, s32(640));
-	mode.resolution.y = std::max(mode.resolution.y, s32(480));
+	if(mode.resolution != Vec2i_ZERO) {
+		mode.resolution.x = std::max(mode.resolution.x, s32(640));
+		mode.resolution.y = std::max(mode.resolution.y, s32(480));
+	}
 	config.window.size.x = std::max(config.window.size.x, s32(640));
 	config.window.size.y = std::max(config.window.size.y, s32(480));
 	
