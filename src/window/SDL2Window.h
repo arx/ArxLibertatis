@@ -44,7 +44,6 @@ public:
 	void setFullscreenMode(Vec2i resolution, unsigned depth = 0);
 	void setWindowSize(Vec2i size);
 	void tick();
-	Vec2i getCursorPosition() const;
 	
 	void showFrame();
 	
