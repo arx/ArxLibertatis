@@ -47,7 +47,6 @@ public:
 	
 	// Keyboard
 	bool isKeyboardKeyPressed(int dikkey) const;
-	bool getKeyAsText(int keyId, char& result) const;
 	
 	void onEvent(const SDL_Event & event);
 	
