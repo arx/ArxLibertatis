@@ -77,10 +77,9 @@ void SetTextureDrawPrim(TextureContainer* tex, TexturedVertex* v, Renderer::Prim
 	EERIEDRAWPRIM(prim, v, 4);
 }
 
-void EERIEDrawSprite(TexturedVertex * in, float siz, TextureContainer * tex, Color color, float Zpos) {
-	
+bool EERIECreateSprite(TexturedQuad& sprite, TexturedVertex * in, float siz, TextureContainer * tex, Color color, float Zpos, float rot) {
+
 	TexturedVertex out;
-	
 	EE_RTP(in, &out);
 	out.rhw *= 3000.f;
 
@@ -105,56 +104,53 @@ void EERIEDrawSprite(TexturedVertex * in, float siz, TextureContainer * tex, Col
 			out.rhw = 1.f - out.p.z;
 		} else {
 			out.rhw *= (1.f/3000.f);
-		}
-
-		Vec3f maxs = out.p + t;
-		Vec3f mins = out.p - t;
+		}		
 		
 		ColorBGRA col = color.toBGRA();
-		TexturedVertex v[4];
-		v[0] = TexturedVertex(Vec3f(mins.x, mins.y, out.p.z), out.rhw, col, out.specular, Vec2f_ZERO);
-		v[1] = TexturedVertex(Vec3f(maxs.x, mins.y, out.p.z), out.rhw, col, out.specular, Vec2f_X_AXIS);
-		v[2] = TexturedVertex(Vec3f(mins.x, maxs.y, out.p.z), out.rhw, col, out.specular, Vec2f_Y_AXIS);
-		v[3] = TexturedVertex(Vec3f(maxs.x, maxs.y, out.p.z), out.rhw, col, out.specular, Vec2f(1.f, 1.f));
-		SetTextureDrawPrim(tex, v, Renderer::TriangleStrip);
+		
+		sprite.v[0] = TexturedVertex(Vec3f(), out.rhw, col, out.specular, Vec2f_ZERO);
+		sprite.v[1] = TexturedVertex(Vec3f(), out.rhw, col, out.specular, Vec2f_X_AXIS);
+		sprite.v[2] = TexturedVertex(Vec3f(), out.rhw, col, out.specular, Vec2f(1.f, 1.f));
+		sprite.v[3] = TexturedVertex(Vec3f(), out.rhw, col, out.specular, Vec2f_Y_AXIS);
+		
+		if(rot == 0) {
+			Vec3f maxs = out.p + t;
+			Vec3f mins = out.p - t;
+
+			sprite.v[0].p = Vec3f(mins.x, mins.y, out.p.z);
+			sprite.v[1].p = Vec3f(maxs.x, mins.y, out.p.z);
+			sprite.v[2].p = Vec3f(maxs.x, maxs.y, out.p.z);
+			sprite.v[3].p = Vec3f(mins.x, maxs.y, out.p.z);
+		} else {
+			for(long i=0;i<4;i++) {
+				float tt = radians(MAKEANGLE(rot+90.f*i+45+90));
+				sprite.v[i].p.x = EEsin(tt) * t + out.p.x;
+				sprite.v[i].p.y = EEcos(tt) * t + out.p.y;
+				sprite.v[i].p.z = out.p.z;
+			}
+		}
+
+		return true;
+	}
+
+	return false;
+}
+
+void EERIEDrawSprite(TexturedVertex * in, float siz, TextureContainer * tex, Color color, float Zpos) {
+	
+	TexturedQuad s;
+
+	if(EERIECreateSprite(s, in, siz, tex, color, Zpos)) {
+		SetTextureDrawPrim(tex, s.v, Renderer::TriangleFan);
 	}
 }
 
 void EERIEDrawRotatedSprite(TexturedVertex * in, float siz, TextureContainer * tex, Color color, float Zpos, float rot) {
 	
-	TexturedVertex out;
+	TexturedQuad s;
 
-	EE_RTP(in, &out);
-	out.rhw *= 3000.f;
-	
-	if(out.p.z > 0.f && out.p.z < 1000.f) {
-		float use_focal = BASICFOCAL * Xratio;
-	
-		float t = siz * ((out.rhw - 1.f) * use_focal * 0.001f); 
-
-		if(t <= 0.f)
-			t = 0.00000001f;
-
-		if(Zpos<=1.f) {
-			out.p.z = Zpos; 
-			out.rhw = 1.f - out.p.z;
-		} else {
-			out.rhw *= (1.f/3000.f);
-		}
-
-		ColorBGRA col = color.toBGRA();
-		TexturedVertex v[4];
-		v[0] = TexturedVertex(Vec3f(0, 0, out.p.z), out.rhw, col, out.specular, Vec2f_ZERO);
-		v[1] = TexturedVertex(Vec3f(0, 0, out.p.z), out.rhw, col, out.specular, Vec2f_X_AXIS);
-		v[2] = TexturedVertex(Vec3f(0, 0, out.p.z), out.rhw, col, out.specular, Vec2f(1.f, 1.f));
-		v[3] = TexturedVertex(Vec3f(0, 0, out.p.z), out.rhw, col, out.specular, Vec2f_Y_AXIS);
-		
-		for(long i=0;i<4;i++) {
-			float tt = radians(MAKEANGLE(rot+90.f*i+45+90));
-			v[i].p.x = EEsin(tt) * t + out.p.x;
-			v[i].p.y = EEcos(tt) * t + out.p.y;
-		}
-		SetTextureDrawPrim(tex, v, Renderer::TriangleFan);
+	if(EERIECreateSprite(s, in, siz, tex, color, Zpos, rot)) {
+		SetTextureDrawPrim(tex, s.v, Renderer::TriangleFan);
 	}
 }
 

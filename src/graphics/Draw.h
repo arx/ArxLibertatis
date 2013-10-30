@@ -45,13 +45,17 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define ARX_GRAPHICS_DRAW_H
 
 #include "graphics/Renderer.h"
+#include "graphics/Vertex.h"
 #include "math/Types.h"
 
 struct EERIEPOLY;
 struct EERIE_3DOBJ;
 struct EERIE_SPHERE;
 struct EERIE_CYLINDER;
-struct TexturedVertex;
+
+struct TexturedQuad {
+	TexturedVertex v[4];
+};
 
 void EERIEDRAWPRIM(Renderer::Primitive primitive, const TexturedVertex * vertices, size_t count = 3, bool nocount = false);
 
@@ -61,6 +65,7 @@ void EERIEDrawBitmap(float x, float y, float sx, float sy, float z, TextureConta
 
 void EERIEDrawBitmap2DecalY(float x, float y, float sx, float sy, float z, TextureContainer * tex, Color col, float _fDeltaY);
 
+bool EERIECreateSprite(TexturedQuad& sprite, TexturedVertex * in, float siz, TextureContainer * tex, Color color, float Zpos, float rot = 0);
 void EERIEDrawSprite(TexturedVertex * in, float siz, TextureContainer * tex, Color col, float Zpos);
 void EERIEDrawRotatedSprite(TexturedVertex * in, float siz, TextureContainer * tex, Color col, float Zpos, float rot);
 
