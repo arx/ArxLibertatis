@@ -152,8 +152,6 @@ public:
 		int mouseSensitivity;
 		bool linkMouseLookToUse;
 		
-		std::string backend;
-		
 	} input;
 	
 	// section 'key'

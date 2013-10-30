@@ -54,7 +54,6 @@ const string
 	windowFramework = "auto",
 	windowSize = BOOST_PP_STRINGIZE(ARX_DEFAULT_WIDTH) "x"
 	             BOOST_PP_STRINGIZE(ARX_DEFAULT_HEIGHT),
-	inputBackend = "auto",
 	debugLevels = "";
 
 const int
@@ -177,8 +176,7 @@ const string
 	mouseLookToggle = "mouse_look_toggle",
 	mouseSensitivity = "mouse_sensitivity",
 	autoDescription = "auto_description",
-	linkMouseLookToUse = "link_mouse_look_to_use",
-	inputBackend = "backend";
+	linkMouseLookToUse = "link_mouse_look_to_use";
 
 // Input key options
 const string actions[NUM_ACTION_KEY] = {
@@ -404,7 +402,6 @@ bool Config::save() {
 	writer.writeKey(Key::mouseSensitivity, input.mouseSensitivity);
 	writer.writeKey(Key::autoDescription, input.autoDescription);
 	writer.writeKey(Key::linkMouseLookToUse, input.linkMouseLookToUse);
-	writer.writeKey(Key::inputBackend, input.backend);
 	
 	// key
 	writer.beginSection(Section::Key);
@@ -489,7 +486,6 @@ bool Config::init(const fs::path & file) {
 	input.mouseSensitivity = reader.getKey(Section::Input, Key::mouseSensitivity, Default::mouseSensitivity);
 	input.autoDescription = reader.getKey(Section::Input, Key::autoDescription, Default::autoDescription);
 	input.linkMouseLookToUse = reader.getKey(Section::Input, Key::linkMouseLookToUse, Default::linkMouseLookToUse);
-	input.backend = reader.getKey(Section::Input, Key::inputBackend, Default::inputBackend);
 	
 	// Get action key settings
 	for(size_t i = 0; i < NUM_ACTION_KEY; i++) {
