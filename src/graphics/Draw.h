@@ -61,8 +61,9 @@ struct SpriteMaterial {
 
 	enum BlendType {
 		Opaque,
-		Normal,
 		Additive,
+		AlphaAdditive,
+		Screen,
 		Subtractive
 	};
 

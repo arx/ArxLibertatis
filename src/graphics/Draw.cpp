@@ -132,13 +132,20 @@ void SpriteMaterial::apply() const {
 			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 			break;
 
+		case AlphaAdditive:
+			GRenderer->SetBlendFunc(Renderer::BlendSrcAlpha, Renderer::BlendOne);
+			break;
+
+		case Screen:
+			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendInvSrcColor);
+			break;
+
 		case Subtractive:
 			GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
 			break;
 
-		case Normal:
 		default:
-			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendInvSrcColor);
+			arx_error_msg("Invalid blend type.");
 		}
 	}
 }
