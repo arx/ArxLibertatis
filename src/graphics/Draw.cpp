@@ -240,7 +240,11 @@ void EERIEResetSprites() {
 }
 
 void EERIERenderSprites() {
+	GRenderer->SetCulling(Renderer::CullNone);
+	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	g_SpriteBatcher.render();
+	GRenderer->SetRenderState(Renderer::DepthWrite, true);
+	GRenderer->SetCulling(Renderer::CullCCW);
 }
 
 void EERIEDrawSprite(const TexturedVertex & in, float siz, TextureContainer * tex, Color color, float Zpos) {

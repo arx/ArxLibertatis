@@ -1592,11 +1592,17 @@ void ArxGame::renderLevel() {
 
 	GRenderer->SetCulling(Renderer::CullNone);
 	GRenderer->SetRenderState(Renderer::Fog, true);
-
+		
+	GRenderer->SetFogColor(Color::none);
+	EERIERenderSprites();
+	GRenderer->SetFogColor(ulBKGColor);
+	
 	// Manage Death visual & Launch menu...
 	ARX_PLAYER_Manage_Death();
 
 	// INTERFACE
+	EERIEResetSprites();
+
 	// Remove the Alphablend State if needed : NO Z Clear
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	GRenderer->SetRenderState(Renderer::Fog, false);
@@ -1613,16 +1619,12 @@ void ArxGame::renderLevel() {
 
 		if((player.Interface & INTER_MAP) && !(player.Interface & INTER_COMBATMODE)) {
 			ARX_MAGICAL_FLARES_Update();
+			EERIERenderSprites();
 		}
 		
 		GRenderer->SetRenderState(Renderer::DepthTest, true);
 	}
-
-	GRenderer->SetRenderState(Renderer::DepthWrite, false);
-	GRenderer->SetFogColor(Color::none);
-	EERIERenderSprites();
-	GRenderer->SetFogColor(ulBKGColor);
-	
+		
 	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
