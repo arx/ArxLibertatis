@@ -5846,12 +5846,14 @@ void UpdateInventory() {
 //TODO This is for the inventory coordinates. Remember to recalculate on res change.
 bool InvCoordsCalculated = false;
 
-struct {
+struct InventoryGuiCoords {
 	float fCenterX;
 	float fSizY;
 	float posx;
 	float posy;
-} InvCoords;
+};
+
+InventoryGuiCoords InvCoords;
 
 void CalculateInventoryCoordinates() {
 	InvCoords.fCenterX = g_size.center().x + INTERFACE_RATIO(-320 + 35) + INTERFACE_RATIO_DWORD(ITC.Get("hero_inventory")->m_dwWidth) - INTERFACE_RATIO(32 + 3) ;
@@ -6116,11 +6118,13 @@ void DrawIcons() {
 	}
 }
 
-struct {
+struct HudChangeLevelIcon{
 	float x;
 	float y;
 	float vv;
-} ChangeLevelIcon;
+};
+
+HudChangeLevelIcon ChangeLevelIcon;
 
 void UpdateChangeLevelIcon() {
 	ChangeLevelIcon.x = g_size.width() - INTERFACE_RATIO_DWORD(ChangeLevel->m_dwWidth);
@@ -6296,12 +6300,14 @@ void DrawMecanismIcon() {
                     0.01f, mecanism_tc, MecanismIconColor);
 }
 
-struct {
+struct HudScreenArrows{
 	float fSizeX;
 	float fSizeY;
 	float fArrowMove;
 	float fMove;
-} ScreenArrows;
+};
+
+HudScreenArrows ScreenArrows;
 
 void UpdateScreenBorderArrows() {
 	ScreenArrows.fSizeX = INTERFACE_RATIO_DWORD(arrow_left_tc->m_dwWidth);
