@@ -103,6 +103,7 @@ CFireBall::CFireBall() : CSpellFx() {
 	fire_1.fEndColorRandom[1] = 0;
 	fire_1.fEndColorRandom[2] = 0;
 	fire_1.fEndColorRandom[3] = 120; 
+	fire_1.blendMode = SpriteMaterial::Additive;
 
 	memset(&fire_2, 0, sizeof(fire_2));
 	fire_2.iNbMax = 20;
@@ -130,7 +131,8 @@ CFireBall::CFireBall() : CSpellFx() {
 	fire_2.fEndColorRandom[0] = 50; 
 	fire_2.fEndColorRandom[1] = 0;
 	fire_2.fEndColorRandom[2] = 0;
-	fire_2.fEndColorRandom[3] = 120; 
+	fire_2.fEndColorRandom[3] = 120;
+	fire_2.blendMode = SpriteMaterial::Additive;
 
 	memset(&smoke, 0, sizeof(smoke));
 	smoke.iNbMax = 30;
@@ -165,6 +167,7 @@ CFireBall::CFireBall() : CSpellFx() {
 	smoke.fEndColorRandom[1] = 0;
 	smoke.fEndColorRandom[2] = 0;
 	smoke.fEndColorRandom[3] = 20;
+	smoke.blendMode = SpriteMaterial::Additive;
 }
 
 CFireBall::~CFireBall()
@@ -883,7 +886,7 @@ void CCreateFood::Create() {
 	cp.fEndColorRandom[2] = 0;
 	cp.fEndColorRandom[3] = 0;
 
-	cp.iBlendMode = 0;
+	cp.blendMode = SpriteMaterial::Additive;
 
 	pPS->SetParams(cp);
 	pPS->ulParticleSpawn = PARTICLE_CIRCULAR | PARTICLE_BORDER;

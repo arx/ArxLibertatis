@@ -559,7 +559,7 @@ void CIncinerate::Create(Vec3f _eSrc, float _fBeta)
 	cp.bEndLock = true;
 	cp.bTexLoop = true;
 
-	cp.iBlendMode = 3;
+	cp.blendMode = SpriteMaterial::AlphaAdditive;
 
 	pPSStream.SetParams(cp);
 	pPSStream.ulParticleSpawn = 0;
@@ -616,7 +616,7 @@ void CIncinerate::Create(Vec3f _eSrc, float _fBeta)
 	cp.bEndLock = false;
 	cp.bTexLoop = true;
 
-	cp.iBlendMode = 0;
+	cp.blendMode = SpriteMaterial::Additive;
 
 	pPSHit.SetParams(cp);
 	pPSHit.ulParticleSpawn = 0;

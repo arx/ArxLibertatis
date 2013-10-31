@@ -48,6 +48,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/BaseGraphicsTypes.h"
 #include "graphics/Renderer.h"
+#include "graphics/Draw.h"
 #include "math/Types.h"
 #include "math/Vector.h"
 #include "platform/Flags.h"
@@ -118,9 +119,8 @@ public:
 	float fParticleEndColor[4];
 	float fParticleEndColorRandom[4];
 	
-	Renderer::PixelBlendingFactor iSrcBlend;
-	Renderer::PixelBlendingFactor iDstBlend;
-	
+	SpriteMaterial::BlendType blendMode;
+		
 	bool bParticleFollow;
 	
 	long lLightId;

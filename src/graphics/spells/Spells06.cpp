@@ -1259,7 +1259,7 @@ void CParalyse::Create(int adef, float arayon, float ahcapuchon, float ahauteur,
 	cp.fEndColorRandom[2] = 0;
 	cp.fEndColorRandom[3] = 0;
 
-	cp.iBlendMode = 5;
+	cp.blendMode = SpriteMaterial::Screen;
 
 	pPS->SetParams(cp);
 	pPS->ulParticleSpawn = 0;
@@ -1324,7 +1324,7 @@ void CParalyse::Create(int adef, float arayon, float ahcapuchon, float ahauteur,
 	cp.fEndColorRandom[2] = 0;
 	cp.fEndColorRandom[3] = 0;
 	cp.bEndLock = true;
-	cp.iBlendMode = 5;
+	cp.blendMode = SpriteMaterial::Screen;
 
 	pPS->SetParams(cp);
 	pPS->ulParticleSpawn = 0;

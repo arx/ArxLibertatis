@@ -87,8 +87,6 @@ ParticleSystem::ParticleSystem() {
 	fParticleRotation = 0;
 	
 	fParticleFreq = -1;
-	iSrcBlend = Renderer::BlendOne;
-	iDstBlend = Renderer::BlendOne;
 	ulParticleSpawn = 0;
 	
 	// default settings for EDITOR MODE only
@@ -133,8 +131,7 @@ ParticleSystem::ParticleSystem() {
 	fParticleEndColorRandom[2] = 0.1f;
 	fParticleEndColorRandom[3] = 0.1f;
 
-	iSrcBlend = Renderer::BlendOne;
-	iDstBlend = Renderer::BlendOne;
+	blendMode = SpriteMaterial::Additive;
 }
 
 ParticleSystem::~ParticleSystem() {
@@ -213,32 +210,7 @@ void ParticleSystem::SetParams(const ParticleParams & _pp) {
 	float b = (fParticleStartColor[2]  + fParticleEndColor[2] ) * 0.5f;
 	SetColor(r, g, b);
 
-	switch(_pp.iBlendMode) {
-		case 0:
-			iSrcBlend = Renderer::BlendOne;
-			iDstBlend = Renderer::BlendOne;
-			break;
-		case 1:
-			iSrcBlend = Renderer::BlendZero;
-			iDstBlend = Renderer::BlendInvSrcColor;
-			break;
-		case 2:
-			iSrcBlend = Renderer::BlendSrcColor;
-			iDstBlend = Renderer::BlendDstColor;
-			break;
-		case 3:
-			iSrcBlend = Renderer::BlendSrcAlpha;
-			iDstBlend = Renderer::BlendOne;
-			break;
-		case 5:
-			iSrcBlend = Renderer::BlendInvDstColor;
-			iDstBlend = Renderer::BlendOne;
-			break;
-		default:
-			iSrcBlend = Renderer::BlendOne;
-			iDstBlend = Renderer::BlendOne;
-			break;
-	}
+	blendMode = _pp.blendMode;
 
 	if(_pp.bTexInfo) {
 		SetTexture(_pp.lpszTexName, _pp.iTexNb, _pp.iTexTime, _pp.bTexLoop);
@@ -451,10 +423,8 @@ void ParticleSystem::Update(long _lTime) {
 
 void ParticleSystem::Render() {
 	
-	GRenderer->SetCulling(Renderer::CullNone);
-	GRenderer->SetRenderState(Renderer::DepthWrite, false);
-	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	GRenderer->SetBlendFunc(iSrcBlend, iDstBlend);
+	SpriteMaterial mat;
+	mat.blendType = blendMode;
 
 	int inumtex = 0;
 
@@ -502,6 +472,8 @@ void ParticleSystem::Render() {
 			if(bParticleFollow) {
 				p3pos.p += p3Pos;
 			}
+            
+			mat.texture = tex_tab[inumtex];
 			
 			if(fParticleRotation != 0) {
 				float fRot;
@@ -511,10 +483,10 @@ void ParticleSystem::Render() {
 					fRot = (-fParticleRotation) * p->ulTime + p->fRotStart;
 
 				if(tex_tab[inumtex])
-					EERIEDrawRotatedSprite(p3pos, p->fSize, tex_tab[inumtex], p->ulColor, 2, fRot);
+					EERIEAddSprite(mat, p3pos, p->fSize, tex_tab[inumtex], p->ulColor, 2, fRot);
 			} else {
 				if(tex_tab[inumtex])
-					EERIEDrawSprite(p3pos, p->fSize, tex_tab[inumtex], p->ulColor, 2);
+					EERIEAddSprite(mat, p3pos, p->fSize, tex_tab[inumtex], p->ulColor, 2);
 			}
 		}
 	}
