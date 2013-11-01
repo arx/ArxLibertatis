@@ -1963,6 +1963,8 @@ void ARX_PLAYER_Frame_Update()
 	Entity *io = entities.player();
 
 	if(io && io->_npcdata->ex_rotate) {
+		EERIE_EXTRA_ROTATE * extraRotation = io->_npcdata->ex_rotate;
+
 		float v = player.angle.getYaw();
 
 		if(v > 160)
@@ -1970,27 +1972,27 @@ void ARX_PLAYER_Frame_Update()
 
 		if(player.Interface & INTER_COMBATMODE) {
 			if (ARX_EQUIPMENT_GetPlayerWeaponType() == WEAPON_BOW) {
-				io->_npcdata->ex_rotate->group_rotate[0].setYaw(0); //head
-				io->_npcdata->ex_rotate->group_rotate[1].setYaw(0); //neck
-				io->_npcdata->ex_rotate->group_rotate[2].setYaw(0); //chest
-				io->_npcdata->ex_rotate->group_rotate[3].setYaw(v); //belt
+				extraRotation->group_rotate[0].setYaw(0); //head
+				extraRotation->group_rotate[1].setYaw(0); //neck
+				extraRotation->group_rotate[2].setYaw(0); //chest
+				extraRotation->group_rotate[3].setYaw(v); //belt
 			} else {
 				v *= ( 1.0f / 10 ); 
-				io->_npcdata->ex_rotate->group_rotate[0].setYaw(v); //head
-				io->_npcdata->ex_rotate->group_rotate[1].setYaw(v); //neck
-				io->_npcdata->ex_rotate->group_rotate[2].setYaw(v * 4); //chest
-				io->_npcdata->ex_rotate->group_rotate[3].setYaw(v * 4); //belt
+				extraRotation->group_rotate[0].setYaw(v); //head
+				extraRotation->group_rotate[1].setYaw(v); //neck
+				extraRotation->group_rotate[2].setYaw(v * 4); //chest
+				extraRotation->group_rotate[3].setYaw(v * 4); //belt
 			}
 		} else {
 			v *= ( 1.0f / 4 ); 
-			io->_npcdata->ex_rotate->group_rotate[0].setYaw(v); //head
-			io->_npcdata->ex_rotate->group_rotate[1].setYaw(v); //neck
-			io->_npcdata->ex_rotate->group_rotate[2].setYaw(v); //chest
-			io->_npcdata->ex_rotate->group_rotate[3].setYaw(v); //belt*/
+			extraRotation->group_rotate[0].setYaw(v); //head
+			extraRotation->group_rotate[1].setYaw(v); //neck
+			extraRotation->group_rotate[2].setYaw(v); //chest
+			extraRotation->group_rotate[3].setYaw(v); //belt*/
 		}
 
 		if((player.Interface & INTER_COMBATMODE) || player.doingmagic == 2)
-			io->_npcdata->ex_rotate->flags &= ~EXTRA_ROTATE_REALISTIC;
+			extraRotation->flags &= ~EXTRA_ROTATE_REALISTIC;
 	}
 
 	PLAYER_ARMS_FOCAL = static_cast<float>(CURRENT_BASE_FOCAL);
