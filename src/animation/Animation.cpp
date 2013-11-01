@@ -828,35 +828,34 @@ void ARX_SOUND_FreeAnimSamples() {
 
 	if(elems) {
 		for(long i = 0; i < nbelems; i++) {
-			free(elems[i]), elems[i] = NULL;
+			free(elems[i]);
+			elems[i] = NULL;
 		}
-		free(elems), elems = NULL;
+		free(elems);
+		elems = NULL;
 	}
 	nbelems = 0;
 
-	free(numbers), numbers = NULL;
+	free(numbers);
+	numbers = NULL;
 }
 
-void ARX_SOUND_PushAnimSamples()
-{
+void ARX_SOUND_PushAnimSamples() {
+
 	ARX_SOUND_FreeAnimSamples();
 
 	long number = 0;
 
 	for(size_t i = 0; i < MAX_ANIMATIONS; i++) {
 
-		if (!animations[i].path.empty())
-		{
-			for (long j = 0; j < animations[i].alt_nb; j++)
-			{
+		if(!animations[i].path.empty()) {
+			for(long j = 0; j < animations[i].alt_nb; j++) {
 				EERIE_ANIM * anim = animations[i].anims[j];
 
-				for (long k = 0; k < anim->nb_key_frames; k++)
-				{
+				for(long k = 0; k < anim->nb_key_frames; k++) {
 					number++;
 
-					if (anim->frames[k].sample != -1)
-					{
+					if(anim->frames[k].sample != -1) {
 						res::path dest;
 						audio::getSampleName(anim->frames[k].sample, dest);
 						if(!dest.empty()) {
@@ -873,11 +872,9 @@ void ARX_SOUND_PushAnimSamples()
 	}
 }
 
-void ARX_SOUND_PopAnimSamples()
-{
-	if ((!elems) ||
-			(!ARX_SOUND_IsEnabled()))
-	{
+void ARX_SOUND_PopAnimSamples() {
+
+	if(!elems || !ARX_SOUND_IsEnabled()) {
 		return;
 	}
 
@@ -885,19 +882,14 @@ void ARX_SOUND_PopAnimSamples()
 	long number = 0;
 
 	for(size_t i = 0; i < MAX_ANIMATIONS; i++) {
-
-		if (!animations[i].path.empty())
-		{
-			for (long j = 0; j < animations[i].alt_nb; j++)
-			{
+		if(!animations[i].path.empty()) {
+			for(long j = 0; j < animations[i].alt_nb; j++) {
 				EERIE_ANIM * anim = animations[i].anims[j];
 
-				for (long k = 0; k < anim->nb_key_frames; k++)
-				{
+				for(long k = 0; k < anim->nb_key_frames; k++) {
 					number++;
 
-					if (number == numbers[curelem])
-					{
+					if(number == numbers[curelem]) {
 						arx_assert(elems[curelem] != NULL);
 						anim->frames[k].sample = audio::createSample(elems[curelem++]);
 					}
@@ -906,12 +898,11 @@ void ARX_SOUND_PopAnimSamples()
 		}
 	}
 
-
 	ARX_SOUND_FreeAnimSamples();
 }
 
-void ReleaseAnimFromIO(Entity * io, long num)
-{
+void ReleaseAnimFromIO(Entity * io, long num) {
+
 	for(long count = 0; count < MAX_ANIM_LAYERS; count++) {
 		if(io->animlayer[count].cur_anim == io->anims[num]) {
 			memset(&io->animlayer[count], 0, sizeof(ANIM_USE));
