@@ -890,7 +890,7 @@ void DrawEERIEInter_Render(EERIE_3DOBJ *eobj, const TransformInfo &t, Entity *io
 				}
 
 				if(_ffr[first] > 70.f && _ffr[second] > 60.f) {
-					TexturedVertex *vert = Halo_AddVertex();
+					TexturedVertex vert[4];
 
 					vert[0] = tvList[first];
 					vert[1] = tvList[first];
@@ -937,6 +937,8 @@ void DrawEERIEInter_Render(EERIE_3DOBJ *eobj, const TransformInfo &t, Entity *io
 						vert[2].color = 0x00000000;
 					else
 						vert[2].color = 0xFF000000;
+
+					Halo_AddVertices(vert);
 				}
 			}
 		}
@@ -1186,7 +1188,7 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity *
 				}
 
 				if(_ffr[first] > 150.f && _ffr[second] > 110.f) {
-					TexturedVertex *vert = Halo_AddVertex();
+					TexturedVertex vert[4];
 
 					vert[0] = tvList[first];
 					vert[1] = tvList[first];
@@ -1257,6 +1259,8 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity *
 						vert[2].color = 0x00000000;
 					else
 						vert[2].color = 0xFF000000;
+
+					Halo_AddVertices(vert);
 				}
 			}
 		}

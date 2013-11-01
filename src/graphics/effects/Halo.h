@@ -24,7 +24,7 @@
 
 struct TexturedVertex;
 
-TexturedVertex * Halo_AddVertex();
+void Halo_AddVertices(TexturedVertex (&vert)[4]);
 
 void Halo_Render();
 
