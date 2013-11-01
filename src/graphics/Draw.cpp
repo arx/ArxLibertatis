@@ -256,15 +256,6 @@ void EERIEDrawSprite(const TexturedVertex & in, float siz, TextureContainer * te
 	}
 }
 
-void EERIEDrawRotatedSprite(const TexturedVertex & in, float siz, TextureContainer * tex, Color color, float Zpos, float rot) {
-	
-	TexturedQuad s;
-
-	if(EERIECreateSprite(s, in, siz, tex, color, Zpos, rot)) {
-		SetTextureDrawPrim(tex, s.v, Renderer::TriangleFan);
-	}
-}
-
 //! Match pixel and texel origins.
 void MatchPixTex(float& x, float& y) {
 	x -= .5f, y -= .5f;

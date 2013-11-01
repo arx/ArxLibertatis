@@ -84,12 +84,10 @@ void EERIEDrawBitmap(float x, float y, float sx, float sy, float z, TextureConta
 void EERIEDrawBitmap2DecalY(float x, float y, float sx, float sy, float z, TextureContainer * tex, Color col, float _fDeltaY);
 
 void EERIEDrawSprite(const TexturedVertex & in, float siz, TextureContainer * tex, Color col, float Zpos);
-void EERIEDrawRotatedSprite(const TexturedVertex & in, float siz, TextureContainer * tex, Color col, float Zpos, float rot);
 
 void EERIEDrawBitmap2(float x, float y, float sx, float sy, float z, TextureContainer * tex, Color col);
 void EERIEDrawBitmap_uv(float x, float y, float sx, float sy, float z, TextureContainer * tex, Color col, float u0, float v0, float u1, float v1);
 void EERIEDrawBitmapUVs(float x, float y, float sx, float sy, float z, TextureContainer * tex, Color col, float u0, float v0, float u1, float v1, float u2, float v2, float u3, float v3);
-
 
 void EERIEResetSprites();
 void EERIERenderSprites();
