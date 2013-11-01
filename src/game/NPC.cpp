@@ -2751,6 +2751,8 @@ static void ManageNPCMovement(Entity * io)
 		if(!io->_npcdata->ex_rotate) {
 			ARX_NPC_CreateExRotateData(io);
 		} else { // already created
+			EERIE_EXTRA_ROTATE * extraRotation = io->_npcdata->ex_rotate;
+
 			if((ause0->cur_anim == alist[ANIM_WAIT]
 					|| ause0->cur_anim == alist[ANIM_WALK]
 					|| ause0->cur_anim == alist[ANIM_WALK_SNEAK]
@@ -2761,10 +2763,10 @@ static void ManageNPCMovement(Entity * io)
 				io->_npcdata->look_around_inc = 0.f;
 
 				for(long n = 0; n < 4; n++) {
-					io->_npcdata->ex_rotate->group_rotate[n].setPitch(io->_npcdata->ex_rotate->group_rotate[n].getPitch() - io->_npcdata->ex_rotate->group_rotate[n].getPitch() * (1.0f / 3));
+					extraRotation->group_rotate[n].setPitch(extraRotation->group_rotate[n].getPitch() - extraRotation->group_rotate[n].getPitch() * (1.0f / 3));
 
-					if(fabs(io->_npcdata->ex_rotate->group_rotate[n].getPitch()) < 0.01f)
-						io->_npcdata->ex_rotate->group_rotate[n].setPitch(0.f);
+					if(fabs(extraRotation->group_rotate[n].getPitch()) < 0.01f)
+						extraRotation->group_rotate[n].setPitch(0.f);
 				}
 			} else {
 				if(io->_npcdata->look_around_inc == 0.f) {
@@ -2773,13 +2775,13 @@ static void ManageNPCMovement(Entity * io)
 
 				for(long n = 0; n < 4; n++) {
 					float t = 1.5f - (float)n * ( 1.0f / 5 );
-					io->_npcdata->ex_rotate->group_rotate[n].setPitch(io->_npcdata->ex_rotate->group_rotate[n].getPitch() + io->_npcdata->look_around_inc * framedelay * t);
+					extraRotation->group_rotate[n].setPitch(extraRotation->group_rotate[n].getPitch() + io->_npcdata->look_around_inc * framedelay * t);
 				}
 
-				if(io->_npcdata->ex_rotate->group_rotate[0].getPitch() > 30)
+				if(extraRotation->group_rotate[0].getPitch() > 30)
 					io->_npcdata->look_around_inc = -io->_npcdata->look_around_inc;
 
-				if(io->_npcdata->ex_rotate->group_rotate[0].getPitch() < -30)
+				if(extraRotation->group_rotate[0].getPitch() < -30)
 					io->_npcdata->look_around_inc = -io->_npcdata->look_around_inc;
 			}
 		}
