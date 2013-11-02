@@ -1575,9 +1575,6 @@ void ArxGame::renderLevel() {
 		GRenderer->SetRenderState(Renderer::DepthWrite, true);
 	}
 
-	if(FADEDIR)
-		ManageFade();
-
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 
@@ -1682,6 +1679,9 @@ void ArxGame::renderLevel() {
 
 	if(sp_max_start)
 		Manage_sp_max();
+
+	if(FADEDIR)
+		ManageFade();
 
 	GRenderer->EndScene();
 }
