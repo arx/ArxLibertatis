@@ -534,7 +534,29 @@ void ARX_DrawPrimitive(TexturedVertex * _pVertex1, TexturedVertex * _pVertex2, T
 	pPointAdd[2].specular = _pVertex3->specular;
 	pPointAdd[2].uv = _pVertex3->uv;
 
-	EERIEDRAWPRIM(Renderer::TriangleList, pPointAdd);
+	SpriteMaterial mat;
+	mat.setTexture(GRenderer->GetTexture(0));
+	if(GRenderer->GetRenderState(Renderer::AlphaBlending)) {
+		Renderer::PixelBlendingFactor srcFactor, dstFactor;
+		GRenderer->GetBlendFunc(srcFactor, dstFactor);
+		
+		if(srcFactor == Renderer::BlendOne && dstFactor == Renderer::BlendOne)
+			mat.setBlendType(SpriteMaterial::Additive);
+		else if(srcFactor == Renderer::BlendSrcAlpha && dstFactor == Renderer::BlendOne)
+			mat.setBlendType(SpriteMaterial::AlphaAdditive);
+		else if(srcFactor == Renderer::BlendOne && dstFactor == Renderer::BlendInvSrcColor)
+			mat.setBlendType(SpriteMaterial::Screen);
+		else if(srcFactor == Renderer::BlendZero && dstFactor == Renderer::BlendInvSrcColor)
+			mat.setBlendType(SpriteMaterial::Subtractive);
+		else
+			arx_error_msg("Unexpected blend func");
+	} else {
+		mat.setBlendType(SpriteMaterial::Opaque);
+	}
+	
+	mat.setDepthTest(GRenderer->GetRenderState(Renderer::DepthTest));
+	
+	EERIEAddTriangle(mat, pPointAdd);
 }
 
 bool Cedric_IO_Visible(const Vec3f & pos) {
