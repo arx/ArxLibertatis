@@ -1305,8 +1305,6 @@ void ARX_PLAYER_LoadHeroAnimsAndMesh(){
 	{
 		io->_npcdata->ex_rotate = new EERIE_EXTRA_ROTATE();
 
-		if(io->_npcdata->ex_rotate)
-		{
 			io->_npcdata->ex_rotate->group_number[0] = (short)EERIE_OBJECT_GetGroup(io->obj, "head");
 			io->_npcdata->ex_rotate->group_number[1] = (short)EERIE_OBJECT_GetGroup(io->obj, "neck");
 			io->_npcdata->ex_rotate->group_number[2] = (short)EERIE_OBJECT_GetGroup(io->obj, "chest");
@@ -1318,7 +1316,6 @@ void ARX_PLAYER_LoadHeroAnimsAndMesh(){
 			}
 
 			io->_npcdata->ex_rotate->flags = 0;
-		}
 	}
 
 	ARX_INTERACTIVE_RemoveGoreOnIO(entities.player());
