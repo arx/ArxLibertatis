@@ -51,6 +51,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/data/TextureContainer.h"
 #include "graphics/data/Mesh.h"
 
+#include <list>
+#include <map>
+#include <vector>
+
 using std::min;
 using std::max;
 
@@ -63,35 +67,79 @@ CircularVertexBuffer<TexturedVertex> * pDynamicVertexBuffer_TLVERTEX;
 
 class SpriteBatcher {
 public:
-	void reset() {
-		m_BatchedSprites.clear();
+	~SpriteBatcher() {
+		reset();
 	}
 
 	void add(const SpriteMaterial& mat, const TexturedQuad& sprite) {
-		SpriteVertices& verts = m_BatchedSprites[mat];
-		verts.reserve(verts.size() + 6);
-		
-		verts.push_back(sprite.v[0]);
-		verts.push_back(sprite.v[1]);
-		verts.push_back(sprite.v[2]);
+		SpriteVertices*& pVerts = m_BatchedSprites[mat];
+		if(!pVerts)
+			pVerts = requestBuffer();
 
-		verts.push_back(sprite.v[0]);
-		verts.push_back(sprite.v[2]);
-		verts.push_back(sprite.v[3]);
+		pVerts->reserve(pVerts->size() + NB_VERTICES_PER_SPRITE);
+		
+		pVerts->push_back(sprite.v[0]);
+		pVerts->push_back(sprite.v[1]);
+		pVerts->push_back(sprite.v[2]);
+
+		pVerts->push_back(sprite.v[0]);
+		pVerts->push_back(sprite.v[2]);
+		pVerts->push_back(sprite.v[3]);
 	}
 
-	void render() {
+	void render() const {
 		for(Batches::const_iterator it = m_BatchedSprites.begin(); it != m_BatchedSprites.end(); ++it) {
-			if(!it->second.empty()) {
+			if(!it->second->empty()) {
 				it->first.apply();
-				EERIEDRAWPRIM(Renderer::TriangleList, &it->second[0], it->second.size());
+				EERIEDRAWPRIM(Renderer::TriangleList, &it->second->front(), it->second->size());
 			}
 		}
 	}
 
+	void clear() {
+		for(Batches::iterator itBatch = m_BatchedSprites.begin(); itBatch != m_BatchedSprites.end(); ++itBatch)
+			releaseBuffer(itBatch->second);
+		m_BatchedSprites.clear();
+	}
+
+	void reset() {
+		clear();
+		
+		for(BufferPool::iterator it = m_BufferPool.begin(); it != m_BufferPool.end(); ++it) {
+			delete *it;
+		}
+
+		m_BufferPool.clear();
+	}
+	
 private:
 	typedef std::vector<TexturedVertex> SpriteVertices;
-	typedef std::map<SpriteMaterial, SpriteVertices> Batches;
+	typedef std::map<SpriteMaterial, SpriteVertices*> Batches;
+	typedef std::list<SpriteVertices*> BufferPool; // Avoid heavy reallocations on each frame
+
+	static const u32 DEFAULT_NB_SPRITES_PER_BUFFER = 512;
+	static const u32 NB_VERTICES_PER_SPRITE = 6;
+
+	SpriteVertices* requestBuffer() {
+		SpriteVertices* pVertices = NULL;
+		if(!m_BufferPool.empty()) {
+			pVertices = m_BufferPool.back();
+			m_BufferPool.pop_back();
+		} else {
+			pVertices = new SpriteVertices();
+			pVertices->reserve(DEFAULT_NB_SPRITES_PER_BUFFER * NB_VERTICES_PER_SPRITE);
+		}
+
+		return pVertices;
+	}
+
+	void releaseBuffer(SpriteVertices* pVertices) {
+		pVertices->clear();
+		m_BufferPool.push_back(pVertices);
+	}
+	
+private:
+	BufferPool m_BufferPool;
 	Batches m_BatchedSprites;
 } g_SpriteBatcher;
 
@@ -239,6 +287,10 @@ void EERIEResetSprites() {
 	g_SpriteBatcher.reset();
 }
 
+void EERIEClearSprites() {
+	g_SpriteBatcher.clear();
+}
+
 void EERIERenderSprites() {
 	GRenderer->SetCulling(Renderer::CullNone);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
@@ -278,7 +330,7 @@ void CreateBitmap(TexturedQuad& s, float x, float y, float sx, float sy, float z
 	s.v[0] = TexturedVertex(Vec3f(x, y, z), val, col, 0xFF000000, Vec2f(0.f, 0.f));
 	s.v[1] = TexturedVertex(Vec3f(x + sx, y, z), val, col, 0xFF000000, Vec2f(uv.x, 0.f));
 	s.v[2] = TexturedVertex(Vec3f(x + sx, y + sy, z), val, col, 0xFF000000, Vec2f(uv.x, uv.y));
-	s.v[3] = TexturedVertex(Vec3f(x, y + sy, z), val, col, 0xFF000000, Vec2f(0.f, uv.y));	
+	s.v[3] = TexturedVertex(Vec3f(x, y + sy, z), val, col, 0xFF000000, Vec2f(0.f, uv.y));
 }
 
 void DrawBitmap(float x, float y, float sx, float sy, float z, TextureContainer * tex, Color color, bool isRhw) {

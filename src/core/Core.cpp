@@ -1635,6 +1635,7 @@ void FirstFrameHandling() {
 
 	ARX_PARTICLES_FirstInit();
 	ARX_FOGS_TimeReset();
+	EERIEResetSprites();
 	
 	PROGRESS_BAR_COUNT += 2.f;
 	LoadLevelScreen();
@@ -3262,6 +3263,9 @@ void shutdownGame() {
 	
 	//animations
 	EERIE_ANIMMANAGER_ClearAll();
+
+	//sprites
+	EERIEResetSprites();
 	
 	//Scripts
 	if(svar) {

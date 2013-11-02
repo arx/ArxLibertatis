@@ -1528,7 +1528,7 @@ void ArxGame::renderLevel() {
 	DrawDebugRender();
 
 	// Begin Particles
-	EERIEResetSprites();
+	EERIEClearSprites();
 	
 	if(pParticleManager) {
 		pParticleManager->Render();
@@ -1598,7 +1598,7 @@ void ArxGame::renderLevel() {
 	ARX_PLAYER_Manage_Death();
 
 	// INTERFACE
-	EERIEResetSprites();
+	EERIEClearSprites();
 
 	// Remove the Alphablend State if needed : NO Z Clear
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
