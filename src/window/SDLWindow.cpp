@@ -145,7 +145,7 @@ bool SDLWindow::initialize(const std::string & title, Vec2i size, bool fullscree
 	SDL_EventState(SDL_USEREVENT, SDL_IGNORE);
 	
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
+	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
 
 	SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL, config.video.vsync ? 1 : 0);
 	
