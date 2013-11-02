@@ -1232,27 +1232,18 @@ void StareAtTarget(Entity * io)
 
 	io->head_rot += rot;
 
-	if(io->head_rot > 120.f)
-		io->head_rot = 120.f;
+	io->head_rot = clamp(io->head_rot, -120.f, 120.f);
 
-	if(io->head_rot < -120.f)
-		io->head_rot = -120.f;
+	float groupRotation[2];
 
-	io->_npcdata->ex_rotate->group_rotate[0].setPitch(io->head_rot * 1.5f);
+	groupRotation[0] = io->head_rot * 1.5f;
+	groupRotation[1] = io->head_rot * 0.5f;
 
-	if(io->_npcdata->ex_rotate->group_rotate[0].getPitch() > HEAD_ANGLE_THRESHOLD)
-		io->_npcdata->ex_rotate->group_rotate[0].setPitch(HEAD_ANGLE_THRESHOLD);
+	groupRotation[0] = clamp(groupRotation[0], -HEAD_ANGLE_THRESHOLD, HEAD_ANGLE_THRESHOLD);
+	groupRotation[1] = clamp(groupRotation[1], -HEAD_ANGLE_THRESHOLD, HEAD_ANGLE_THRESHOLD);
 
-	if(io->_npcdata->ex_rotate->group_rotate[0].getPitch() < -HEAD_ANGLE_THRESHOLD)
-		io->_npcdata->ex_rotate->group_rotate[0].setPitch(-HEAD_ANGLE_THRESHOLD);
-
-	io->_npcdata->ex_rotate->group_rotate[1].setPitch(io->head_rot * ( 1.0f / 2 ));
-
-	if(io->_npcdata->ex_rotate->group_rotate[1].getPitch() > HEAD_ANGLE_THRESHOLD)
-		io->_npcdata->ex_rotate->group_rotate[1].setPitch(HEAD_ANGLE_THRESHOLD);
-
-	if(io->_npcdata->ex_rotate->group_rotate[1].getPitch() < -HEAD_ANGLE_THRESHOLD)
-		io->_npcdata->ex_rotate->group_rotate[1].setPitch(-HEAD_ANGLE_THRESHOLD);
+	io->_npcdata->ex_rotate->group_rotate[0].setPitch(groupRotation[0]);
+	io->_npcdata->ex_rotate->group_rotate[1].setPitch(groupRotation[1]);
 
 	//MAKEANGLE(io->angle.b-rot); // -tt
 	return;
