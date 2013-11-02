@@ -277,8 +277,8 @@ void CreateBitmap(TexturedQuad& s, float x, float y, float sx, float sy, float z
 
 	s.v[0] = TexturedVertex(Vec3f(x, y, z), val, col, 0xFF000000, Vec2f(0.f, 0.f));
 	s.v[1] = TexturedVertex(Vec3f(x + sx, y, z), val, col, 0xFF000000, Vec2f(uv.x, 0.f));
-	s.v[2] = TexturedVertex(Vec3f(x, y + sy, z), val, col, 0xFF000000, Vec2f(0.f, uv.y));
-	s.v[3] = TexturedVertex(Vec3f(x + sx, y + sy, z), val, col, 0xFF000000, Vec2f(uv.x, uv.y));
+	s.v[2] = TexturedVertex(Vec3f(x + sx, y + sy, z), val, col, 0xFF000000, Vec2f(uv.x, uv.y));
+	s.v[3] = TexturedVertex(Vec3f(x, y + sy, z), val, col, 0xFF000000, Vec2f(0.f, uv.y));	
 }
 
 void DrawBitmap(float x, float y, float sx, float sy, float z, TextureContainer * tex, Color color, bool isRhw) {
@@ -289,12 +289,12 @@ void DrawBitmap(float x, float y, float sx, float sy, float z, TextureContainer 
 	if(isRhw) {
 		if(tex && tex->hasColorKey()) {
 			GRenderer->SetAlphaFunc(Renderer::CmpGreater, .5f);
-			EERIEDRAWPRIM(Renderer::TriangleStrip, s.v, 4);
+			EERIEDRAWPRIM(Renderer::TriangleFan, s.v, 4);
 			GRenderer->SetAlphaFunc(Renderer::CmpNotEqual, 0.f);
 			return;
 		}
 	}
-	EERIEDRAWPRIM(Renderer::TriangleStrip, s.v, 4);
+	EERIEDRAWPRIM(Renderer::TriangleFan, s.v, 4);
 }
 
 void EERIEAddBitmap(const SpriteMaterial& mat, float x, float y, float sx, float sy, float z, TextureContainer * tex, Color color) {
