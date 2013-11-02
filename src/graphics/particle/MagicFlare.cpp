@@ -405,7 +405,7 @@ void ARX_MAGICAL_FLARES_Update() {
 	bool key = !GInput->actionPressed(CONTROLS_CUST_MAGICMODE);
 
 	SpriteMaterial mat;
-	mat.blendType = SpriteMaterial::Additive;
+	mat.setBlendType(SpriteMaterial::Additive);
 
 	for(long j = 1; j < 5; j++) {
 
@@ -417,7 +417,7 @@ void ARX_MAGICAL_FLARES_Update() {
 			default: surf = flaretc.shine[shinum]; break;
 		}
 
-		mat.texture = surf;
+		mat.setTexture(surf);
 
 		for(long i = 0; i < MAX_FLARES; i++) {
 
@@ -477,7 +477,7 @@ void ARX_MAGICAL_FLARES_Update() {
 				el->rgb = c;
 			}
 
-			mat.depthTest = flare.io != NULL;
+			mat.setDepthTest(flare.io != NULL);
 			
 			if(flare.bDrawBitmap) {
 				s *= 2.f;

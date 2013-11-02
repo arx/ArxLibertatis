@@ -46,6 +46,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/Renderer.h"
 #include "graphics/Vertex.h"
+#include "graphics/data/TextureContainer.h"
 #include "math/Types.h"
 
 struct EERIEPOLY;
@@ -72,9 +73,20 @@ struct SpriteMaterial {
 	bool operator<(const SpriteMaterial & other) const;
 	void apply() const;
 
-	TextureContainer *  texture;
-	bool                depthTest;
-	BlendType           blendType;
+	Texture * getTexture() const { return texture; }
+	void setTexture(Texture * tex) { texture = tex; }
+	void setTexture(TextureContainer* texContainer) { texture = texContainer ? (Texture *)texContainer->m_pTexture : NULL; }
+
+	bool getDepthTest() const { return depthTest; }
+	void setDepthTest(bool bEnable) { depthTest = bEnable; }
+
+	BlendType getBlendType() const { return blendType; }
+	void setBlendType(BlendType type) { blendType = type; }
+
+private:
+	Texture *	 texture;
+	bool         depthTest;
+	BlendType    blendType;
 };
 
 void EERIEDRAWPRIM(Renderer::Primitive primitive, const TexturedVertex * vertices, size_t count = 3, bool nocount = false);
@@ -94,5 +106,6 @@ void EERIEResetSprites();             // Free all sprites memory pools
 void EERIERenderSprites();
 void EERIEAddBitmap(const SpriteMaterial& mat, float x, float y, float sx, float sy, float z, TextureContainer * tex, Color color);
 void EERIEAddSprite(const SpriteMaterial & mat, const TexturedVertex & in, float siz, TextureContainer * tex, Color color, float Zpos, float rot = 0);
+void EERIEAddTriangle(const SpriteMaterial & mat, const TexturedVertex (&vertices)[3]);
 
 #endif // ARX_GRAPHICS_DRAW_H

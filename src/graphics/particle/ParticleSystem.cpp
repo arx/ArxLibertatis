@@ -424,8 +424,8 @@ void ParticleSystem::Update(long _lTime) {
 void ParticleSystem::Render() {
 	
 	SpriteMaterial mat;
-	mat.blendType = blendMode;
-	mat.depthTest = true;
+	mat.setBlendType(blendMode);
+	mat.setDepthTest(true);
 
 	int inumtex = 0;
 
@@ -474,7 +474,7 @@ void ParticleSystem::Render() {
 				p3pos.p += p3Pos;
 			}
             
-			mat.texture = tex_tab[inumtex];
+			mat.setTexture(tex_tab[inumtex]);
 			
 			if(fParticleRotation != 0) {
 				float fRot;

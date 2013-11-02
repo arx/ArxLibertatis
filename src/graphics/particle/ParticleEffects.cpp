@@ -1121,16 +1121,16 @@ void ARX_PARTICLES_Update(EERIE_CAMERA * cam)  {
 			continue;
 		}
 
-		mat.texture = part->tc;
-		mat.depthTest = !(part->special & PARTICLE_NOZBUFFER);
+		mat.setTexture(part->tc);
+		mat.setDepthTest(!(part->special & PARTICLE_NOZBUFFER));
 
 		if(part->special & NO_TRANS) {
-			mat.blendType = SpriteMaterial::Opaque;
+			mat.setBlendType(SpriteMaterial::Opaque);
 		} else {
 			if(part->special & SUBSTRACT) {
-				mat.blendType = SpriteMaterial::Subtractive;
+				mat.setBlendType(SpriteMaterial::Subtractive);
 			} else {
-				mat.blendType = SpriteMaterial::Additive;
+				mat.setBlendType(SpriteMaterial::Additive);
 			}
 		}
 				
@@ -1376,7 +1376,7 @@ void ARX_PARTICLES_Update(EERIE_CAMERA * cam)  {
 				EERIEAddSprite(mat, in, siz, tc, color, temp, rott);
 
 				if(part->special & PARTICLE_SUB2) {
-					mat.blendType = SpriteMaterial::Subtractive;
+					mat.setBlendType(SpriteMaterial::Subtractive);
 					EERIEAddSprite(mat, in, siz, tc, Color::white, temp, rott);
 				}
 
@@ -1388,7 +1388,7 @@ void ARX_PARTICLES_Update(EERIE_CAMERA * cam)  {
 			EERIEAddBitmap(mat, in.p.x, in.p.y, siz, siz2, in.p.z, tc, color);
 
 			if(part->special & PARTICLE_SUB2) {
-				mat.blendType = SpriteMaterial::Subtractive;
+				mat.setBlendType(SpriteMaterial::Subtractive);
 				EERIEAddBitmap(mat, in.p.x, in.p.y, siz, siz2, in.p.z, tc, Color::white);
 			}
 			
@@ -1408,7 +1408,7 @@ void ARX_PARTICLES_Update(EERIE_CAMERA * cam)  {
 			EERIEAddSprite(mat, in, siz, tc, color, temp);
 
 			if(part->special & PARTICLE_SUB2) {
-				mat.blendType = SpriteMaterial::Subtractive;
+				mat.setBlendType(SpriteMaterial::Subtractive);
 				EERIEAddSprite(mat, in, siz, tc, Color::white, temp);
 			}
 		}

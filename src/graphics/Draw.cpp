@@ -71,6 +71,18 @@ public:
 		reset();
 	}
 
+	void add(const SpriteMaterial& mat, const TexturedVertex (&vertices)[3]) {
+		SpriteVertices*& pVerts = m_BatchedSprites[mat];
+		if(!pVerts)
+			pVerts = requestBuffer();
+
+		pVerts->reserve(pVerts->size() + 3);
+		
+		pVerts->push_back(vertices[0]);
+		pVerts->push_back(vertices[1]);
+		pVerts->push_back(vertices[2]);
+	}
+
 	void add(const SpriteMaterial& mat, const TexturedQuad& sprite) {
 		SpriteVertices*& pVerts = m_BatchedSprites[mat];
 		if(!pVerts)
@@ -274,13 +286,16 @@ bool EERIECreateSprite(TexturedQuad& sprite, const TexturedVertex & in, float si
 	return false;
 }
 
-void EERIEAddSprite(const SpriteMaterial & mat, const TexturedVertex & in, float siz, TextureContainer * tex, Color color, float Zpos, float rot)
-{
+void EERIEAddSprite(const SpriteMaterial & mat, const TexturedVertex & in, float siz, TextureContainer * tex, Color color, float Zpos, float rot) {
 	TexturedQuad s;
 
 	if(EERIECreateSprite(s, in, siz, tex, color, Zpos, rot)) {
 		g_SpriteBatcher.add(mat, s);
 	}
+}
+
+void EERIEAddTriangle(const SpriteMaterial & mat, const TexturedVertex (&vertices)[3]) {
+	g_SpriteBatcher.add(mat, vertices);
 }
 
 void EERIEResetSprites() {
