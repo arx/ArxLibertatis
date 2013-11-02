@@ -5405,15 +5405,17 @@ void ARX_INTERFACE_ManageOpenedBook()
 
 		IN_BOOK_DRAW=0;
 		
-		GRenderer->SetRenderState(Renderer::DepthTest, true);
-		GRenderer->GetTextureStage(0)->setMipFilter(TextureStage::FilterNone);
-		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-		PopAllTriangleList();
-		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-		PopAllTriangleListTransparency();
-		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-		GRenderer->GetTextureStage(0)->setMipFilter(TextureStage::FilterLinear);
-		GRenderer->SetRenderState(Renderer::DepthTest, false);
+		if(ARXmenu.currentmode == AMCM_NEWQUEST) {
+			GRenderer->SetRenderState(Renderer::DepthTest, true);
+			GRenderer->GetTextureStage(0)->setMipFilter(TextureStage::FilterNone);
+			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+			PopAllTriangleList();
+			GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+			PopAllTriangleListTransparency();
+			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+			GRenderer->GetTextureStage(0)->setMipFilter(TextureStage::FilterLinear);
+			GRenderer->SetRenderState(Renderer::DepthTest, false);
+		}
 
 		PDL[0]=SavePDL[0];
 		PDL[1]=SavePDL[1];

@@ -1623,10 +1623,15 @@ void ArxGame::renderLevel() {
 		}
 		
 		GRenderer->SetRenderState(Renderer::DepthTest, true);
-	}
-		
-	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
+		GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
 	
+		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+		PopAllTriangleList();
+		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+		PopAllTriangleListTransparency();
+		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+	}	
+
 	update2DFX();
 	goFor2DFX();
 
