@@ -1973,7 +1973,7 @@ IO_NPCDATA::IO_NPCDATA() {
 }
 
 IO_NPCDATA::~IO_NPCDATA() {
-	free(ex_rotate);
+	delete ex_rotate;
 	free(pathfind.list);
 }
 

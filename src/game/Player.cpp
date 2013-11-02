@@ -1303,7 +1303,7 @@ void ARX_PLAYER_LoadHeroAnimsAndMesh(){
 	        &&	(EERIE_OBJECT_GetGroup(io->obj, "chest") != -1)
 	        &&	(EERIE_OBJECT_GetGroup(io->obj, "belt") != -1))
 	{
-		io->_npcdata->ex_rotate = (EERIE_EXTRA_ROTATE *)malloc(sizeof(EERIE_EXTRA_ROTATE));
+		io->_npcdata->ex_rotate = new EERIE_EXTRA_ROTATE();
 
 		if(io->_npcdata->ex_rotate)
 		{

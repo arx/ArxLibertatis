@@ -2213,7 +2213,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) {
 				
 				if(ais->saveflags & SAVEFLAGS_EXTRA_ROTATE) {
 					if(io->_npcdata->ex_rotate == NULL) {
-						io->_npcdata->ex_rotate = (EERIE_EXTRA_ROTATE *)malloc(sizeof(EERIE_EXTRA_ROTATE));
+						io->_npcdata->ex_rotate = new EERIE_EXTRA_ROTATE();
 					}
 					*io->_npcdata->ex_rotate = as->ex_rotate;
 				}

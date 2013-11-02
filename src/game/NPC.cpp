@@ -243,7 +243,7 @@ void ARX_NPC_CreateExRotateData(Entity * io) {
 	if(!io || !(io->ioflags & IO_NPC) || io->_npcdata->ex_rotate)
 		return;
 	
-	io->_npcdata->ex_rotate = (EERIE_EXTRA_ROTATE *)malloc(sizeof(EERIE_EXTRA_ROTATE));
+	io->_npcdata->ex_rotate = new EERIE_EXTRA_ROTATE();
 	io->head_rot = 0;
 	
 	if(io->_npcdata->ex_rotate) {
