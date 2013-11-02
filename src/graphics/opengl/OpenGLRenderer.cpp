@@ -128,6 +128,9 @@ void OpenGLRenderer::Initialize() {
 	
 	LogInfo << " └─ Device: " << glGetString(GL_RENDERER);
 	CrashHandler::setVariable("OpenGL device", glGetString(GL_RENDERER));
+
+	m_cachedSrcBlend = BlendOne;
+	m_cachedDstBlend = BlendZero;
 	
 	reinit();
 }
@@ -331,12 +334,35 @@ Texture2D * OpenGLRenderer::CreateTexture2D() {
 	return texture;
 }
 
-static inline void setGLState(GLenum state, bool enable) {
-	if(enable) {
-		glEnable(state);
-	} else {
-		glDisable(state);
+bool OpenGLRenderer::getGLState(GLenum state) const {
+	BoolStateCache::iterator it = m_cachedStates.find(state);
+	
+	if(it != m_cachedStates.end()) {
+		return it->second;
 	}
+
+	bool isEnabled = glIsEnabled(state) == GL_TRUE;
+	m_cachedStates[state] = isEnabled;
+
+	return isEnabled;
+}
+
+void OpenGLRenderer::setGLState(GLenum state, bool enable) {
+	BoolStateCache::iterator it = m_cachedStates.find(state);
+
+	// No change ?
+	if(it == m_cachedStates.end() || it->second != enable) {
+		if(enable) {
+			glEnable(state);
+		} else {
+			glDisable(state);
+		}
+		m_cachedStates[state] = enable;
+	}
+}
+
+bool OpenGLRenderer::GetRenderState(RenderState renderState) const {
+	return getGLState(renderState);
 }
 
 void OpenGLRenderer::SetRenderState(RenderState renderState, bool enable) {
@@ -422,9 +448,18 @@ static const GLenum arxToGlBlendFactor[] = {
 	GL_ONE_MINUS_DST_ALPHA // BlendInvDstAlpha
 };
 
+void OpenGLRenderer::GetBlendFunc(PixelBlendingFactor& srcFactor, PixelBlendingFactor& dstFactor) const {
+	srcFactor = m_cachedSrcBlend;
+	dstFactor = m_cachedDstBlend;
+}
+
 void OpenGLRenderer::SetBlendFunc(PixelBlendingFactor srcFactor, PixelBlendingFactor dstFactor) {
-	glBlendFunc(arxToGlBlendFactor[srcFactor], arxToGlBlendFactor[dstFactor]);
-	CHECK_GL;
+	if(srcFactor != m_cachedSrcBlend || dstFactor != m_cachedDstBlend) {
+		glBlendFunc(arxToGlBlendFactor[srcFactor], arxToGlBlendFactor[dstFactor]);
+		m_cachedSrcBlend = srcFactor;
+		m_cachedDstBlend = dstFactor;
+		CHECK_GL;
+	}
 }
 
 void OpenGLRenderer::SetViewport(const Rect & _viewport) {

@@ -63,6 +63,7 @@ public:
 	explicit TextureStage(unsigned int stage);
 	virtual ~TextureStage() { }
 	
+	virtual Texture* getTexture() const = 0;
 	virtual void setTexture(Texture * pTexture) = 0;
 	virtual void resetTexture() = 0;
 	

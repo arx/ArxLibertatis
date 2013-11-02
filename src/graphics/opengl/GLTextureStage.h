@@ -35,6 +35,7 @@ public:
 	GLTextureStage(OpenGLRenderer * renderer, unsigned textureStage);
 	~GLTextureStage();
 	
+	Texture* getTexture() const;
 	void setTexture(Texture * pTexture);
 	void resetTexture();
 	

@@ -50,6 +50,10 @@ GLTextureStage::~GLTextureStage() {
 	resetTexture();
 }
 
+Texture* GLTextureStage::getTexture() const {
+	return tex;
+}
+
 void GLTextureStage::setTexture(Texture * texture) {
 	
 	arx_assert(texture != NULL);
