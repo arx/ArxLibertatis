@@ -425,6 +425,7 @@ void ParticleSystem::Render() {
 	
 	SpriteMaterial mat;
 	mat.blendType = blendMode;
+	mat.depthTest = true;
 
 	int inumtex = 0;
 
