@@ -133,6 +133,10 @@ bool SDL2Window::initialize(const std::string & title, Vec2i size, bool fullscre
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
 	
+	// TODO EGL and core profile are not supported yet
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_COMPATIBILITY);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_EGL, 0);
+	
 	size_ = Vec2i_ZERO;
 	depth_ = 0;
 	
@@ -168,7 +172,7 @@ bool SDL2Window::initialize(const std::string & title, Vec2i size, bool fullscre
 		
 	}
 	
-	SDL_GL_SetSwapInterval(config.video.vsync ? 1 : 0); // TODO support -1
+	SDL_GL_SetSwapInterval(config.video.vsync ? 1 : 0); // TODO support -1, support changing at runtime
 	
 	title_ = title;
 	isFullscreen_ = fullscreen;
