@@ -55,7 +55,6 @@ private:
 	
 	static int SDLCALL eventFilter(void * userdata, SDL_Event * event);
 	
-	bool m_fullscreenDesktop;
 	SDL_Window * m_window;
 	SDL_GLContext m_glcontext;
 	
