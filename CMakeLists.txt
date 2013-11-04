@@ -40,11 +40,10 @@ option(INSTALL_SCRIPTS "Install the data install script" ON)
 option(USE_OPENAL "Build the OpenAL audio backend" ON)
 option(USE_OPENGL "Build the OpenGL renderer backend" ON)
 option(USE_NATIVE_FS "Use the native filesystem backend directly instead of boost" ON)
-option(USE_QT5 "Use Qt 5 if available" ON)
-option(USE_QT4 "Use Qt 4 if available" ON)
 
 # Alternative dependencies
 set(WITH_SDL CACHE STRING "The SDL version to use: 1 or 2 or empty (use any)")
+set(WITH_QT CACHE STRING "The Qt version to use: 4 or 5 or empty (use any)")
 
 # Build types
 option(UNITY_BUILD "Unity build" OFF)
@@ -318,8 +317,8 @@ set(ARX_HAVE_CRASHREPORTER 0)
 if(BUILD_CRASHREPORTER)
 	
 	# Try to find Qt 5 modules
-	if(NOT HAVE_QT AND USE_QT5)
-		if(USE_QT4)
+	if(NOT HAVE_QT AND (NOT WITH_QT OR WITH_QT EQUAL 5))
+		if(NOT WITH_QT)
 			# Missing Qt5*Config.cmake files are not errors, reuduce log spam
 			set(Qt_OPTIONAL_DEPENDENCY QUIET)
 		else()
@@ -340,7 +339,7 @@ if(BUILD_CRASHREPORTER)
 	endif()
 	
 	# Otherwise, look for Qt 4
-	if(NOT HAVE_QT AND USE_QT4)
+	if(NOT HAVE_QT AND (NOT WITH_QT OR WITH_QT EQUAL 4))
 		find_package(Qt4 COMPONENTS QtCore QtGui QtNetwork ${OPTIONAL_DEPENDENCY})
 		if(QT_FOUND)
 			if(NOT MSVC)
