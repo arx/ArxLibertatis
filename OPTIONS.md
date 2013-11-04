@@ -76,8 +76,8 @@ By default, optional components will be automatically disabled if their dependen
 * `STRICT_USE` (default: OFF): Abort the configure step if one of the dependencies enabled with a `USE_*` configuration variable could not be found or if one of the components enabled with a `BUILD_*`configuration variable has missing dependencies. As most dependencies are enabled by default, you may need to explicitly disable some of them. Windows-specifc dependencies are still automatically disabled on non-Windows systems.
 * `USE_QT5` (default=ON): Use Qt 5 libraries for the crash reporter if available^1
 * `USE_QT4` (default=ON): Use Qt 4 libraries for the crash reporter if available^1
-* `USE_OPENAL` (default=ON): Build the OpenAL audio backend^2
-* `USE_OPENGL` (default=ON): Build the OpenGL renderer backend^3
+* `USE_OPENGL` (default=ON): Build the OpenGL renderer backend^2
+* `USE_OPENAL` (default=ON): Build the OpenAL audio backend^3
 * `USE_SDL2` (default=ON): Build the SDL 2 windowing and input backends^4
 * `USE_SDL1` (default=ON): Build the SDL 1.2 windowing and input backends^4
 
