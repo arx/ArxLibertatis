@@ -131,7 +131,7 @@ bool SDL2Window::initialize(const std::string & title, Vec2i size, bool fullscre
 	arx_assert(!displayModes.empty());
 	
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
+	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
 	
 	// TODO EGL and core profile are not supported yet
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_COMPATIBILITY);
