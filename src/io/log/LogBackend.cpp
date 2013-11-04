@@ -38,10 +38,14 @@ void logger::Backend::format(std::ostream & os, const Source & file,
 	}
 	os << ' ' << file.name << ':';
 	
+	std::ostream::fmtflags flags = os.flags();
+	
 	length += 1 + file.name.length() + 1;
 	if(length < alignment) {
 		os << std::left << std::setfill(' ') << std::setw(alignment - length);
 	}
 	
 	os << line << "  " << str << std::endl;
+	
+	os.flags(flags);
 }
