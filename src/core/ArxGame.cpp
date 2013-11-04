@@ -1993,6 +1993,9 @@ void ArxGame::onRendererInit(RenderWindow & window) {
 	
 	GRenderer = window.getRenderer();
 	
+	GRenderer->Clear(Renderer::ColorBuffer);
+	window.showFrame();
+	
 	if(GRenderer->GetTextureStageCount() < 3) {
 		LogError << "Arx Libertatis needs at least 3 texture units,"
 		         << " but only " << GRenderer->GetTextureStageCount() << " are available";
