@@ -148,7 +148,15 @@ bool SDL1Window::initialize(const std::string & title, Vec2i size, bool fullscre
 	
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
-
+	
+	// We need an accelerated OpenGL context or we'll likely fail later
+	// However, this attribute may have the opposite effect with SDL < 1.2.15 with some
+	// drivers - only enable it for new enough SDL versions.
+	const SDL_version * ver = SDL_Linked_Version();
+	if(SDL_VERSIONNUM(ver->major, ver->minor, ver->patch) >= SDL_VERSIONNUM(1, 2, 15)) {
+		SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
+	}
+	
 	SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL, config.video.vsync ? 1 : 0);
 	
 	size_ = Vec2i_ZERO;

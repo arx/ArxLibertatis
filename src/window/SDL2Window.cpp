@@ -133,6 +133,8 @@ bool SDL2Window::initialize(const std::string & title, Vec2i size, bool fullscre
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
 	
+	// We need an accelerated OpenGL context or we'll likely fail later
+	SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
 	// TODO EGL and core profile are not supported yet
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_COMPATIBILITY);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_EGL, 0);
