@@ -78,10 +78,8 @@ By default, optional components will be automatically disabled if their dependen
 * `USE_QT4` (default=ON): Use Qt 4 libraries for the crash reporter if available^1
 * `USE_OPENGL` (default=ON): Build the OpenGL renderer backend^2
 * `USE_OPENAL` (default=ON): Build the OpenAL audio backend^3
-* `USE_SDL2` (default=ON): Build the SDL 2 windowing and input backends^4
-* `USE_SDL1` (default=ON): Build the SDL 1.2 windowing and input backends^4
+* `WITH_SDL` (default=*not set*): Select the SDL version to use: 1 or 2. If not set, we will try to use either version, preferring SDL 2.
 
 1. If both `USE_QT5` and `USE_QT4` are enabled we will try to use Qt 5 if available and then fall back to Qt 4. Both are ignored if `BUILD_CRASHREPORTER` is disabled.
 2. There is currently no other rendering backend, disabling this will make the build fail.
 3. There is currently no other audo backend, there will be no audio when disabling this. Additionally, builds without audio are not well tested and there may be other problems.
-4. If both `USE_SDL2` and `USE_SDL1` are enabled we will try to use SDL 2 if available and then fall back to SDL 1.2.

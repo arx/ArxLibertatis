@@ -39,11 +39,12 @@ option(INSTALL_SCRIPTS "Install the data install script" ON)
 # Optional dependencies
 option(USE_OPENAL "Build the OpenAL audio backend" ON)
 option(USE_OPENGL "Build the OpenGL renderer backend" ON)
-option(USE_SDL2 "Build the SDL 2 windowing backend" ON)
-option(USE_SDL1 "Build the SDL 1.2 windowing backend" ON)
 option(USE_NATIVE_FS "Use the native filesystem backend directly instead of boost" ON)
 option(USE_QT5 "Use Qt 5 if available" ON)
 option(USE_QT4 "Use Qt 4 if available" ON)
+
+# Alternative dependencies
+set(WITH_SDL CACHE STRING "The SDL version to use: 1 or 2 or empty (use any)")
 
 # Build types
 option(UNITY_BUILD "Unity build" OFF)
@@ -271,8 +272,8 @@ if(USE_OPENAL)
 endif()
 
 # SDL
-if(NOT ARX_HAVE_SDL AND USE_SDL2)
-	if(USE_SDL1)
+if(NOT ARX_HAVE_SDL AND (NOT WITH_SDL OR WITH_SDL EQUAL 2))
+	if(NOT WITH_SDL)
 		set(SDL_OPTIONAL_DEPENDENCY)
 	else()
 		set(SDL_OPTIONAL_DEPENDENCY ${OPTIONAL_DEPENDENCY})
@@ -287,7 +288,7 @@ if(NOT ARX_HAVE_SDL AND USE_SDL2)
 		set(ARX_HAVE_SDL 1)
 	endif()
 endif()
-if(NOT ARX_HAVE_SDL AND USE_SDL1)
+if(NOT ARX_HAVE_SDL AND (NOT WITH_SDL OR WITH_SDL EQUAL 1))
 	if(NOT MACOSX)
 		# Required to avoid linking with SDLmain except for OS X where it is necessary
 		# due to the need to have NSApplication correctly setup by SDLmain.
