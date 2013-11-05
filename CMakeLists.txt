@@ -1186,6 +1186,25 @@ endif()
 # Install Arx Libertatis data files
 # TODO these should be zipped up once we support that
 install(DIRECTORY data/core/ DESTINATION "${INSTALL_DATADIR}")
+# Also copy / symlink the data file into the build directory to run dev builds of arx
+get_property(arx_location TARGET arx PROPERTY LOCATION)
+get_filename_component(arx_location "${arx_location}" PATH)
+set(arx_core_dir "${CMAKE_SOURCE_DIR}/data/core")
+file(GLOB arx_data_dirs RELATIVE "${arx_core_dir}" "${arx_core_dir}/*")
+add_custom_target(copy_data_dirs ALL)
+if(UNIX)
+	set(symlink_command "create_symlink")
+else()
+	set(symlink_command "copy_directory")
+endif()
+foreach(dir IN LISTS arx_data_dirs)
+	add_custom_command(TARGET copy_data_dirs PRE_BUILD
+		COMMAND "${remove_directory}" -E remove_directory "${arx_location}/${dir}"
+		COMMAND "${CMAKE_COMMAND}" -E
+			"${symlink_command}" "${arx_core_dir}/${dir}" "${arx_location}/${dir}"
+		VERBATIM
+	)
+endforeach()
 
 # Install the data install script
 if(INSTALL_SCRIPTS AND NOT WIN32)
