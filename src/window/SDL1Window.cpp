@@ -124,6 +124,7 @@ bool SDL1Window::initializeFramework() {
 	}
 	
 	std::sort(displayModes.begin(), displayModes.end());
+	displayModes.erase(std::unique(displayModes.begin(), displayModes.end()), displayModes.end());
 	
 	s_mainWindow = this;
 	
