@@ -210,7 +210,7 @@ bool SDL2Window::initialize() {
 	SDL_ShowWindow(m_window);
 	SDL_ShowCursor(SDL_DISABLE);
 	
-	m_renderer->Initialize();
+	m_renderer->initialize();
 	
 	onCreate();
 	onToggleFullscreen(m_fullscreen);

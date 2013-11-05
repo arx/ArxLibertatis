@@ -120,7 +120,7 @@ static GLuint loadVertexShader(const char * source) {
 	return shader;
 }
 
-void OpenGLRenderer::Initialize() {
+void OpenGLRenderer::initialize() {
 	
 	if(glewInit() != GLEW_OK) {
 		LogError << "GLEW init failed";
@@ -167,7 +167,6 @@ void OpenGLRenderer::beforeResize(bool wasOrIsFullscreen) {
 }
 
 void OpenGLRenderer::afterResize() {
-	LogWarning << isInitialized();
 	if(!isInitialized()) {
 		reinit();
 	}

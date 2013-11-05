@@ -137,10 +137,28 @@ public:
 	Renderer();
 	virtual ~Renderer();
 	
-	virtual void Initialize() = 0;
+	/*!
+	 * Basic renderer initialization.
+	 * Renderer will not be fully initialized until calling @ref afterResize().
+	 * Does *not* notify any listeners.
+	 */
+	virtual void initialize() = 0;
 	
+	//! * @return true if the renderer has been fully initialized and is ready for use.
 	bool isInitialized() { return m_initialized; }
+	
+	/*!
+	 * Indicate that the renderer's window will be resized and the renderer may need
+	 * to temporarily shutdown.
+	 * Will notify listeners if the renderer has been shut down.
+	 */
 	virtual void beforeResize(bool wasOrIsFullscreen) = 0;
+	
+	/*!
+	 * Indicate the renderer's window has been resized and the renderer may need to be
+	 * (re-)initialized.
+	 * Will notify listeners if the renderer wasn't already initialized.
+	 */
 	virtual void afterResize() = 0;
 	
 	void addListener(Listener * listener);

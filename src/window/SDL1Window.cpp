@@ -209,7 +209,7 @@ bool SDL1Window::initialize() {
 	
 	SDL_ShowCursor(SDL_DISABLE);
 	
-	m_renderer->Initialize();
+	m_renderer->initialize();
 	
 	onCreate();
 	onToggleFullscreen(m_fullscreen);

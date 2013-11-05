@@ -35,7 +35,7 @@ public:
 	OpenGLRenderer();
 	~OpenGLRenderer();
 	
-	void Initialize();
+	void initialize();
 	
 	void beforeResize(bool wasOrIsFullscreen);
 	void afterResize();
