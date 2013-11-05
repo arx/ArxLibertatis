@@ -80,7 +80,7 @@ public:
 	void removeListener(Listener * listener);
 	
 	bool hasFocus() const {
-		return hasFocus_ && !m_minimized; // We treat minimized as not having focus
+		return m_focused && !m_minimized; // We treat minimized as not having focus
 	}
 	bool isMinimized() const { return m_minimized; }
 	bool isMaximized() const { return m_maximized; }
@@ -116,7 +116,7 @@ protected:
 	bool m_maximized;    //!< Is maximized ?
 	bool m_visible;      //!< Is visible ?
 	bool m_fullscreen;   //!< Is fullscreen ?
-	bool hasFocus_; //!< Has focus ?
+	bool m_focused;      //!< Has focus ?
 	unsigned depth_;
 	
 private:

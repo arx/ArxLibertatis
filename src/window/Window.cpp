@@ -43,7 +43,7 @@ Window::Window()
 	, m_maximized(false)
 	, m_visible(false)
 	, m_fullscreen(false)
-	, hasFocus_(false) { }
+	, m_focused(false) { }
 
 Window::~Window() { }
 
@@ -127,7 +127,7 @@ void Window::onToggleFullscreen(bool fullscreen) {
 }
 	
 void Window::onFocus(bool hasFocus) {
-	hasFocus_ = hasFocus;
+	m_focused = hasFocus;
 	if(hasFocus) {
 		BOOST_FOREACH(Listener * listener, listeners) {
 			listener->onWindowGotFocus(*this);
