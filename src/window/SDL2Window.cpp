@@ -136,7 +136,7 @@ bool SDL2Window::initialize(Vec2i size, bool fullscreen, unsigned depth) {
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_COMPATIBILITY);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_EGL, 0);
 	
-	size_ = Vec2i_ZERO;
+	m_size = Vec2i_ZERO;
 	depth_ = 0;
 	
 	int x = SDL_WINDOWPOS_UNDEFINED, y = SDL_WINDOWPOS_UNDEFINED;
@@ -279,7 +279,7 @@ void SDL2Window::reinitializeRenderer() {
 	if(renderer && !reinterpret_cast<OpenGLRenderer *>(renderer)->isInitialized()) {
 		reinterpret_cast<OpenGLRenderer *>(renderer)->reinit();
 		updateSize();
-		renderer->SetViewport(Rect(size_.x, size_.y));
+		renderer->SetViewport(Rect(m_size.x, m_size.y));
 		onRendererInit();
 	}
 	
@@ -340,25 +340,25 @@ bool SDL2Window::setMode(DisplayMode mode, bool makeFullscreen) {
 
 void SDL2Window::updateSize() {
 	
-	Vec2i oldSize = size_;
+	Vec2i oldSize = m_size;
 	
 	int w, h;
 	SDL_GetWindowSize(m_window, &w, &h);
-	size_ = Vec2i(w, h);
+	m_size = Vec2i(w, h);
 	depth_ = 32; // TODO?
 	
-	if(size_ != oldSize) {
+	if(m_size != oldSize) {
 		if(renderer) {
 			reinitializeRenderer();
-			renderer->SetViewport(Rect(size_.x, size_.y));
+			renderer->SetViewport(Rect(m_size.x, m_size.y));
 		}
-		onResize(size_.x, size_.y);
+		onResize(m_size);
 	}
 }
 
 void SDL2Window::setFullscreenMode(Vec2i resolution, unsigned _depth) {
 	
-	if(isFullscreen_ && size_ == resolution && depth_ == _depth) {
+	if(isFullscreen_ && m_size == resolution && depth_ == _depth) {
 		return;
 	}
 	
@@ -367,7 +367,7 @@ void SDL2Window::setFullscreenMode(Vec2i resolution, unsigned _depth) {
 
 void SDL2Window::setWindowSize(Vec2i size) {
 	
-	if(!isFullscreen_ && size == size_) {
+	if(!isFullscreen_ && m_size == size) {
 		return;
 	}
 	
@@ -412,7 +412,7 @@ void SDL2Window::tick() {
 					
 					case SDL_WINDOWEVENT_SIZE_CHANGED: {
 						Vec2i newSize(event.window.data1, event.window.data2);
-						if(newSize != size_ && !isFullscreen_) {
+						if(newSize != m_size && !isFullscreen_) {
 							cleanupRenderer(false);
 							updateSize();
 						} else {

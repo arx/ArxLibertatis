@@ -87,7 +87,7 @@ public:
 	bool isVisible() const { return isVisible_; }
 	
 	const Vec2i & getPosition() const { return m_position; }
-	const Vec2i & getSize() const { return size_; }
+	const Vec2i & getSize() const { return m_size; }
 	unsigned getDepth() const { return depth_; }
 	
 	bool isFullScreen() const { return isFullscreen_; }
@@ -99,7 +99,7 @@ protected:
 	bool onClose();
 	void onDestroy();
 	void onMove(s32 x, s32 y);
-	void onResize(s32 width, s32 height);
+	void onResize(const Vec2i & size);
 	void onMinimize();
 	void onMaximize();
 	void onRestore();
@@ -111,7 +111,7 @@ protected:
 	
 	std::string m_title; //!< Window title bar caption.
 	Vec2i m_position; //!< Screen position in pixels (relative to the upper left corner)
-	Vec2i size_; //!< Size in pixels
+	Vec2i m_size; //!< Size in pixels
 	bool isMinimized_; //!< Is minimized ?
 	bool isMaximized_; //!< Is maximized ?
 	bool isVisible_; //!< Is visible ?

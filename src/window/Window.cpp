@@ -38,7 +38,7 @@ void Window::Listener::onPaintWindow( const Window & /*window*/ ) {}
 
 Window::Window()
 	: m_position(0, 0)
-	, size_(640, 480)
+	, m_size(640, 480)
 	, isMinimized_(false)
 	, isMaximized_(false)
 	, isVisible_(false)
@@ -87,8 +87,8 @@ void Window::onMove(s32 x, s32 y) {
 	}
 }
 
-void Window::onResize(s32 width, s32 height) {
-	size_ = Vec2i(width, height);
+void Window::onResize(const Vec2i & size) {
+	m_size = size;
 	BOOST_FOREACH(Listener * listener, listeners) {
 		listener->onResizeWindow(*this);
 	}

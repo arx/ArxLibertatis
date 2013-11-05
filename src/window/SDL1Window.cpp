@@ -158,7 +158,7 @@ bool SDL1Window::initialize(Vec2i size, bool fullscreen, unsigned depth) {
 	
 	SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL, m_vsync);
 	
-	size_ = Vec2i_ZERO;
+	m_size = Vec2i_ZERO;
 	depth_ = 0;
 	
 	for(int msaa = m_maxMSAALevel; msaa > 0; msaa--) {
@@ -280,9 +280,9 @@ void SDL1Window::updateSize(bool reinit) {
 	
 	const SDL_VideoInfo * vid = SDL_GetVideoInfo();
 	
-	DisplayMode oldMode(size_, depth_);
+	Vec2i oldSize = m_size;
 	
-	size_ = Vec2i(vid->current_w, vid->current_h);
+	m_size = Vec2i(vid->current_w, vid->current_h);
 	depth_ = vid->vfmt->BitsPerPixel;
 	
 	// Finally, set the viewport for the newly created device
@@ -298,20 +298,20 @@ void SDL1Window::updateSize(bool reinit) {
 	
 	if(reinit && !reinterpret_cast<OpenGLRenderer *>(renderer)->isInitialized()) {
 		reinterpret_cast<OpenGLRenderer *>(renderer)->reinit();
-		renderer->SetViewport(Rect(size_.x, size_.y));
+		renderer->SetViewport(Rect(m_size.x, m_size.y));
 		onRendererInit();
 	} else {
-		renderer->SetViewport(Rect(size_.x, size_.y));
+		renderer->SetViewport(Rect(m_size.x, m_size.y));
 	}
 	
-	if(size_ != oldMode.resolution) {
-		onResize(size_.x, size_.y);
+	if(m_size != oldSize) {
+		onResize(m_size);
 	}
 }
 
 void SDL1Window::setFullscreenMode(Vec2i resolution, unsigned _depth) {
 	
-	if(isFullscreen_ && size_ == resolution && depth_ == _depth) {
+	if(isFullscreen_ && m_size == resolution && depth_ == _depth) {
 		return;
 	}
 	
@@ -331,7 +331,7 @@ void SDL1Window::setFullscreenMode(Vec2i resolution, unsigned _depth) {
 
 void SDL1Window::setWindowSize(Vec2i size) {
 	
-	if(!isFullscreen_ && size == getSize()) {
+	if(!isFullscreen_ && m_size == size) {
 		return;
 	}
 	
@@ -412,7 +412,7 @@ void SDL1Window::tick() {
 			
 			case SDL_VIDEORESIZE: {
 				Vec2i newSize(event.resize.w, event.resize.h);
-				if(newSize != size_ && !isFullscreen_) {
+				if(newSize != m_size && !isFullscreen_) {
 					setMode(DisplayMode(newSize, depth_), false);
 					updateSize(false);
 				}
