@@ -83,7 +83,7 @@ public:
 		return hasFocus_ && !m_minimized; // We treat minimized as not having focus
 	}
 	bool isMinimized() const { return m_minimized; }
-	bool isMaximized() const { return isMaximized_; }
+	bool isMaximized() const { return m_maximized; }
 	bool isVisible() const { return isVisible_; }
 	
 	const Vec2i & getPosition() const { return m_position; }
@@ -113,7 +113,7 @@ protected:
 	Vec2i m_position;    //!< Screen position in pixels (relative to the upper left corner)
 	Vec2i m_size;        //!< Size in pixels
 	bool m_minimized;    //!< Is minimized ?
-	bool isMaximized_; //!< Is maximized ?
+	bool m_maximized;    //!< Is maximized ?
 	bool isVisible_; //!< Is visible ?
 	bool isFullscreen_; //!< Is fullscreen ?
 	bool hasFocus_; //!< Has focus ?

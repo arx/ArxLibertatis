@@ -40,7 +40,7 @@ Window::Window()
 	: m_position(0, 0)
 	, m_size(640, 480)
 	, m_minimized(false)
-	, isMaximized_(false)
+	, m_maximized(false)
 	, isVisible_(false)
 	, isFullscreen_(false)
 	, hasFocus_(false) { }
@@ -95,21 +95,21 @@ void Window::onResize(const Vec2i & size) {
 }
 
 void Window::onMinimize() {
-	m_minimized = true, isMaximized_ = false;
+	m_minimized = true, m_maximized = false;
 	BOOST_FOREACH(Listener * listener, listeners) {
 		listener->onMinimizeWindow(*this);
 	}
 }
 	
 void Window::onMaximize() {
-	m_minimized = false, isMaximized_ = true;
+	m_minimized = false, m_maximized = true;
 	BOOST_FOREACH(Listener * listener, listeners) {
 		listener->onMaximizeWindow(*this);
 	}
 }
 
 void Window::onRestore() {
-	m_minimized = false, isMaximized_ = false;
+	m_minimized = false, m_maximized = false;
 	BOOST_FOREACH(Listener * listener, listeners) {
 		listener->onRestoreWindow(*this);
 	}
