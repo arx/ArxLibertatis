@@ -84,7 +84,7 @@ public:
 	}
 	bool isMinimized() const { return m_minimized; }
 	bool isMaximized() const { return m_maximized; }
-	bool isVisible() const { return isVisible_; }
+	bool isVisible() const { return m_visible; }
 	
 	const Vec2i & getPosition() const { return m_position; }
 	const Vec2i & getSize() const { return m_size; }
@@ -114,7 +114,7 @@ protected:
 	Vec2i m_size;        //!< Size in pixels
 	bool m_minimized;    //!< Is minimized ?
 	bool m_maximized;    //!< Is maximized ?
-	bool isVisible_; //!< Is visible ?
+	bool m_visible;      //!< Is visible ?
 	bool isFullscreen_; //!< Is fullscreen ?
 	bool hasFocus_; //!< Has focus ?
 	unsigned depth_;

@@ -41,7 +41,7 @@ Window::Window()
 	, m_size(640, 480)
 	, m_minimized(false)
 	, m_maximized(false)
-	, isVisible_(false)
+	, m_visible(false)
 	, isFullscreen_(false)
 	, hasFocus_(false) { }
 
@@ -116,7 +116,7 @@ void Window::onRestore() {
 }
 
 void Window::onShow(bool isVisible) {
-	isVisible_ = isVisible;
+	m_visible = isVisible;
 }
 	
 void Window::onToggleFullscreen() {
