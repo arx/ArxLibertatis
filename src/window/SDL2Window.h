@@ -36,6 +36,7 @@ public:
 	bool initializeFramework();
 	bool initialize(const std::string & title, Vec2i size, bool fullscreen,
 	                unsigned depth = 0);
+	bool setVSync(int vsync);
 	void setFullscreenMode(Vec2i resolution, unsigned depth = 0);
 	void setWindowSize(Vec2i size);
 	void tick();

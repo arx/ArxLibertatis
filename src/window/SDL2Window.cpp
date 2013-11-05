@@ -21,7 +21,6 @@
 
 #include <sstream>
 
-#include "core/Config.h"
 #include "graphics/opengl/OpenGLRenderer.h"
 #include "input/SDL2InputBackend.h"
 #include "io/log/Logger.h"
@@ -141,7 +140,7 @@ bool SDL2Window::initialize(const std::string & title, Vec2i size, bool fullscre
 	Uint32 windowFlags = getSDLFlagsForMode(size, fullscreen);
 	windowFlags |= SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_HIDDEN;
 	
-	for(int msaa = config.video.antialiasing ? 8 : 1; msaa > 0; msaa--) {
+	for(int msaa = m_maxMSAALevel; msaa > 0; msaa--) {
 		bool lastTry = (msaa == 1);
 		
 		// Cleanup context and window from previous tries
@@ -204,7 +203,7 @@ bool SDL2Window::initialize(const std::string & title, Vec2i size, bool fullscre
 		break;
 	}
 	
-	SDL_GL_SetSwapInterval(config.video.vsync ? 1 : 0); // TODO support -1, support changing at runtime
+	setVSync(m_vsync);
 	
 	title_ = title;
 	isFullscreen_ = fullscreen;
@@ -223,6 +222,17 @@ bool SDL2Window::initialize(const std::string & title, Vec2i size, bool fullscre
 	
 	onRendererInit();
 	
+	return true;
+}
+
+bool SDL2Window::setVSync(int vsync) {
+	if(m_window && SDL_GL_SetSwapInterval(vsync) != 0) {
+		if(vsync != 0 && vsync != 1) {
+			return setVSync(1);
+		}
+		return false;
+	}
+	m_vsync = vsync;
 	return true;
 }
 

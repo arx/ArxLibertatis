@@ -21,7 +21,6 @@
 
 #include <sstream>
 
-#include "core/Config.h"
 #include "graphics/opengl/OpenGLRenderer.h"
 #include "input/SDL1InputBackend.h"
 #include "io/log/Logger.h"
@@ -157,12 +156,12 @@ bool SDL1Window::initialize(const std::string & title, Vec2i size, bool fullscre
 		SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
 	}
 	
-	SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL, config.video.vsync ? 1 : 0);
+	SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL, m_vsync);
 	
 	size_ = Vec2i_ZERO;
 	depth_ = 0;
 	
-	for(int msaa = config.video.antialiasing ? 8 : 1; msaa > 0; msaa--) {
+	for(int msaa = m_maxMSAALevel; msaa > 0; msaa--) {
 		bool lastTry = (msaa == 1);
 		
 		SDL_ClearError();
@@ -224,6 +223,15 @@ bool SDL1Window::initialize(const std::string & title, Vec2i size, bool fullscre
 	
 	onRendererInit();
 	
+	return true;
+}
+
+bool SDL1Window::setVSync(int vsync) {
+	if(s_mainWindow) {
+		// Cannot change vsync after init
+		return false;
+	}
+	m_vsync = (vsync != 0) ? 1 : 0;
 	return true;
 }
 

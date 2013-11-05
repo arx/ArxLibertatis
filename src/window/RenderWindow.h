@@ -21,6 +21,7 @@
 #define ARX_WINDOW_RENDERWINDOW_H
 
 #include <vector>
+#include <algorithm>
 
 #include "window/Window.h"
 
@@ -47,7 +48,13 @@ public:
 	
 	typedef std::vector<DisplayMode> DisplayModes;
 	
-	RenderWindow() : m_minTextureUnits(1), renderer(NULL) { }
+	RenderWindow()
+		: m_minTextureUnits(1)
+		, m_maxMSAALevel(1)
+		, m_vsync(1)
+		, renderer(NULL)
+		{ }
+	
 	virtual ~RenderWindow() { }
 	
 	class RendererListener {
@@ -63,15 +70,33 @@ public:
 	
 	/*!
 	 * Initialize the framework.
-	 * This needs to be called before init() or getDisplayModes()
+	 * This needs to be called before anything else!
 	 */
 	virtual bool initializeFramework() = 0;
 	
 	/*!
 	 * Set the minimum number of texture units required.
-	 * Mist be set before calling \ref initialize().
+	 * Must be set before calling @ref initialize().
 	 */
 	void setMinTextureUnits(int units) { m_minTextureUnits = units; }
+	
+	/*!
+	 * Set the maximum MSAA level to use.
+	 * Actual level may be lower if the requested one is not supported by the HW.
+	 * Must be set before calling @ref initialize().
+	 */
+	void setMaxMSAALevel(int msaa) { m_maxMSAALevel = std::max(1, msaa); }
+	
+	/*!
+	 * Enebly or disable vsync.
+	 * May not have any effect when called after @ref initialize().
+	 *
+	 * @param vsync 1 to enable vsync, 0 to disable or -1 to allow late swaps to
+	 *              happen immediately if supported.
+	 *
+	 * @return true if the vsync setting was successfully changed.
+	 */
+	virtual bool setVSync(int vsync) = 0;
 	
 	Renderer * getRenderer() { return renderer; }
 	
@@ -86,6 +111,8 @@ public:
 protected:
 	
 	int m_minTextureUnits;
+	int m_maxMSAALevel;
+	int m_vsync;
 	
 	Renderer * renderer;
 	DisplayModes displayModes; //! Available fullscreen modes.
