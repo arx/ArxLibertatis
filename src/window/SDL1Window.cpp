@@ -162,22 +162,47 @@ bool SDL1Window::initialize(const std::string & title, Vec2i size, bool fullscre
 	size_ = Vec2i_ZERO;
 	depth_ = 0;
 	
-	for(int msaa = config.video.antialiasing ? 8 : 1; msaa >= 0; msaa--) {
+	for(int msaa = config.video.antialiasing ? 8 : 1; msaa > 0; msaa--) {
+		bool lastTry = (msaa == 1);
 		
-		if(msaa > 1) {
-			SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
-			SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, msaa);
-		} else if(msaa > 0) {
-			SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 0);
-			SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 0);
-		} else {
-			LogError << "Failed to initialize SDL Window: " << SDL_GetError();
-			return false;
+		SDL_ClearError();
+		
+		SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, msaa > 1 ? 1 : 0);
+		SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, msaa > 1 ? msaa : 0);
+		
+		if(!setMode(DisplayMode(size, fullscreen ? depth : 0), fullscreen)) {
+			if(lastTry) {
+				LogError << "Could not initialize window: " << SDL_GetError();
+				return false;
+			}
+			continue;
 		}
 		
-		if(setMode(DisplayMode(size, fullscreen ? depth : 0), fullscreen)) {
-			break;
+		// Verify that the MSAA setting matches what was requested
+		if(!lastTry) {
+			int msaaEnabled, msaaValue;
+			SDL_GL_GetAttribute(SDL_GL_MULTISAMPLEBUFFERS, &msaaEnabled);
+			SDL_GL_GetAttribute(SDL_GL_MULTISAMPLESAMPLES, &msaaValue);
+			if(!msaaEnabled || msaaValue < msaa) {
+				continue;
+			}
 		}
+		
+		// Verify that we actually got an accelerated context
+		(void)glGetError(); // clear error flags
+		GLint texunits = 0;
+		glGetIntegerv(GL_MAX_TEXTURE_UNITS, &texunits);
+		if(glGetError() != GL_NO_ERROR || texunits < GLint(m_minTextureUnits)) {
+			if(lastTry) {
+				LogError << "Not enough GL texture units available: have " << texunits
+				         << ", need at least " << m_minTextureUnits;
+				return false;
+			}
+			continue;
+		}
+		
+		// All good
+		break;
 	}
 	
 	isFullscreen_ = fullscreen;

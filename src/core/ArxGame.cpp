@@ -319,6 +319,8 @@ bool ArxGame::initWindow(RenderWindow * window) {
 	
 	Vec2i size = config.video.fullscreen ? mode.resolution : config.window.size;
 	
+	m_MainWindow->setMinTextureUnits(3);
+	
 	if(!m_MainWindow->initialize(arx_version, size, config.video.fullscreen, mode.depth)) {
 		m_MainWindow = NULL;
 		return false;
@@ -1993,15 +1995,10 @@ void ArxGame::onRendererInit(RenderWindow & window) {
 	
 	GRenderer = window.getRenderer();
 	
+	arx_assert_msg(GRenderer->GetTextureStageCount() >= 3, "not enough texture units");
+	
 	GRenderer->Clear(Renderer::ColorBuffer);
 	window.showFrame();
-	
-	if(GRenderer->GetTextureStageCount() < 3) {
-		LogError << "Arx Libertatis needs at least 3 texture units,"
-		         << " but only " << GRenderer->GetTextureStageCount() << " are available";
-		GRenderer = NULL;
-		return;
-	}
 	
 	initDeviceObjects();
 	

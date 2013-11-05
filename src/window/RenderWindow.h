@@ -47,7 +47,7 @@ public:
 	
 	typedef std::vector<DisplayMode> DisplayModes;
 	
-	RenderWindow() : renderer(NULL) { }
+	RenderWindow() : m_minTextureUnits(1), renderer(NULL) { }
 	virtual ~RenderWindow() { }
 	
 	class RendererListener {
@@ -67,6 +67,12 @@ public:
 	 */
 	virtual bool initializeFramework() = 0;
 	
+	/*!
+	 * Set the minimum number of texture units required.
+	 * Mist be set before calling \ref initialize().
+	 */
+	void setMinTextureUnits(int units) { m_minTextureUnits = units; }
+	
 	Renderer * getRenderer() { return renderer; }
 	
 	//! Get a sorted list of supported fullscreen display modes.
@@ -78,6 +84,8 @@ public:
 	virtual void showFrame() = 0;
 	
 protected:
+	
+	int m_minTextureUnits;
 	
 	Renderer * renderer;
 	DisplayModes displayModes; //! Available fullscreen modes.

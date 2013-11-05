@@ -137,36 +137,71 @@ bool SDL2Window::initialize(const std::string & title, Vec2i size, bool fullscre
 	size_ = Vec2i_ZERO;
 	depth_ = 0;
 	
-	for(int msaa = config.video.antialiasing ? 8 : 1; msaa >= 0; msaa--) {
+	int x = SDL_WINDOWPOS_UNDEFINED, y = SDL_WINDOWPOS_UNDEFINED;
+	Uint32 windowFlags = getSDLFlagsForMode(size, fullscreen);
+	windowFlags |= SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_HIDDEN;
+	
+	for(int msaa = config.video.antialiasing ? 8 : 1; msaa > 0; msaa--) {
+		bool lastTry = (msaa == 1);
 		
-		if(msaa > 1) {
-			SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
-			SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, msaa);
-		} else if(msaa > 0) {
-			SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 0);
-			SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 0);
-		} else {
-			LogError << "Failed to initialize SDL Window: " << SDL_GetError();
-			return false;
+		// Cleanup context and window from previous tries
+		if(m_glcontext) {
+			SDL_GL_DeleteContext(m_glcontext);
+			m_glcontext = NULL;
+		}
+		if(m_window) {
+			SDL_DestroyWindow(m_window);
+			m_window = NULL;
 		}
 		
+		SDL_ClearError();
+		
+		SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, msaa > 1 ? 1 : 0);
+		SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, msaa > 1 ? msaa : 0);
+		
+		m_window = SDL_CreateWindow(title.c_str(), x, y, size.x, size.y, windowFlags);
 		if(!m_window) {
-			m_window = SDL_CreateWindow(
-				title.c_str(),
-				SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
-				size.x, size.y,
-				getSDLFlagsForMode(size, fullscreen) | SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE
-			);
-			if(!m_window) {
+			if(lastTry) {
+				LogError << "Could not create window: " << SDL_GetError();
+				return false;
+			}
+			continue;
+		}
+		
+		m_glcontext = SDL_GL_CreateContext(m_window);
+		if(!m_glcontext) {
+			if(lastTry) {
+				LogError << "Could not create GL context: " << SDL_GetError();
+				return false;
+			}
+			continue;
+		}
+		
+		// Verify that the MSAA setting matches what was requested
+		if(!lastTry) {
+			int msaaEnabled, msaaValue;
+			SDL_GL_GetAttribute(SDL_GL_MULTISAMPLEBUFFERS, &msaaEnabled);
+			SDL_GL_GetAttribute(SDL_GL_MULTISAMPLESAMPLES, &msaaValue);
+			if(!msaaEnabled || msaaValue < msaa) {
 				continue;
 			}
 		}
 		
-		m_glcontext = SDL_GL_CreateContext(m_window);
-		if(m_glcontext) {
-			break;
+		// Verify that we actually got an accelerated context
+		(void)glGetError(); // clear error flags
+		GLint texunits = 0;
+		glGetIntegerv(GL_MAX_TEXTURE_UNITS, &texunits);
+		if(glGetError() != GL_NO_ERROR || texunits < GLint(m_minTextureUnits)) {
+			if(lastTry) {
+				LogError << "Not enough GL texture units available: have " << texunits
+				         << ", need at least " << m_minTextureUnits;
+				return false;
+			}
+			continue;
 		}
 		
+		// All good
+		break;
 	}
 	
 	SDL_GL_SetSwapInterval(config.video.vsync ? 1 : 0); // TODO support -1, support changing at runtime
@@ -174,6 +209,7 @@ bool SDL2Window::initialize(const std::string & title, Vec2i size, bool fullscre
 	title_ = title;
 	isFullscreen_ = fullscreen;
 	
+	SDL_ShowWindow(m_window);
 	SDL_ShowCursor(SDL_DISABLE);
 	
 	renderer = new OpenGLRenderer;
