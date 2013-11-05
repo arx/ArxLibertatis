@@ -112,11 +112,14 @@ set(GAMESBINDIR "${CMAKE_INSTALL_BINDIR}" CACHE
     STRING "Install location for game executables (relative to prefix).")
 set(SCRIPTDIR "${CMAKE_INSTALL_BINDIR}" CACHE
     STRING "Where to install the data install script (relative to prefix).")
+set(INSTALL_DATADIR "${CMAKE_INSTALL_DATAROOTDIR}/games/arx" CACHE
+    STRING "Install location for Arx Libertatis data files (relative to prefix).")
 mark_as_advanced(
 	ICONDIR
 	APPDIR
 	GAMESBINDIR
 	SCRIPTDIR
+	INSTALL_DATADIR
 )
 
 # Default runtime user and data directories
@@ -1179,6 +1182,10 @@ if(BUILD_TESTS)
 	add_subdirectory(tests ${CMAKE_SOURCE_DIR}/bin/tests)
 endif()
 
+
+# Install Arx Libertatis data files
+# TODO these should be zipped up once we support that
+install(DIRECTORY data/core/ DESTINATION "${INSTALL_DATADIR}")
 
 # Install the data install script
 if(INSTALL_SCRIPTS AND NOT WIN32)

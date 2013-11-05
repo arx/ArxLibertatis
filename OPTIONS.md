@@ -66,6 +66,7 @@ The following options can be used to customize where `make install` puts the var
 * `GAMESBINDIR` (default: `${BINDIR}`): Where to install game executables
 * `CMAKE_INSTALL_LIBEXECDIR` (default: `libexec`): Where to install non-user executables
 * `SCRIPTDIR` (default: `${BINDIR}`): Where to install the data install script
+* `INSTALL_DATADIR` (default: `${DATAROOTDIR}/games/arx`): Where to install Arx Libertatis data files. This should be one of the directories found from DATA_DIR_PREFIXES + DATA_DIR combinations at runtime.
 
 * `INSTALL_SCRIPTS` (default: `ON`): Install the data install script. There is no data install script on Windows, so there this option does nothing.
 
