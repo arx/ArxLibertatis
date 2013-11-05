@@ -126,7 +126,7 @@ private:
 	typedef std::vector<Listener *> Listeners;
 	
 	//! Listeners that will be notified of change in the window properties.
-	Listeners listeners;
+	Listeners m_listeners;
 	
 };
 
