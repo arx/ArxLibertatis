@@ -340,11 +340,11 @@ void SDL1Window::updateSize(bool force) {
 	}
 }
 
-void SDL1Window::setFullscreenMode(Vec2i resolution) {
-	changeMode(resolution, true);
+void SDL1Window::setFullscreenMode(const DisplayMode & mode) {
+	changeMode(mode, true);
 }
 
-void SDL1Window::setWindowSize(Vec2i size) {
+void SDL1Window::setWindowSize(const Vec2i & size) {
 	changeMode(size, false);
 }
 

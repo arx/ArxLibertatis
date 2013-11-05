@@ -23,6 +23,18 @@
 
 #include <boost/foreach.hpp>
 
+bool DisplayMode::operator<(const DisplayMode & o) const {
+	if(resolution.x != o.resolution.x) {
+		return (resolution.x < o.resolution.x);
+	} else {
+		return (resolution.y < o.resolution.y);
+	}
+}
+
+std::ostream & operator<<(std::ostream & os, const DisplayMode & mode) {
+	return os << mode.resolution.x << 'x' << mode.resolution.y;
+}
+
 void Window::Listener::onCreateWindow( const Window & /*window*/ ) {}
 bool Window::Listener::onCloseWindow( const Window & /*window*/ ) { return true; }
 void Window::Listener::onDestroyWindow( const Window & /*window*/ ) {}

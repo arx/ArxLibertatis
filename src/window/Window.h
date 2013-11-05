@@ -20,12 +20,27 @@
 #ifndef ARX_WINDOW_WINDOW_H
 #define ARX_WINDOW_WINDOW_H
 
-#include <vector>
+#include <ostream>
 #include <string>
+#include <vector>
 
 #include "math/Vector.h"
 
 class InputBackend;
+
+struct DisplayMode {
+	
+	Vec2i resolution;
+	
+	DisplayMode() { }
+	DisplayMode(const DisplayMode & o) : resolution(o.resolution) { }
+	/* implicit */ DisplayMode(Vec2i res) : resolution(res) { }
+	bool operator<(const DisplayMode & other) const;
+	bool operator==(const DisplayMode & other) const {
+		return resolution == other.resolution;
+	}
+	
+};
 
 class Window {
 	
@@ -45,13 +60,13 @@ public:
 	 * If all parameters are zero, the desktop mode is used.
 	 * May be called before or after @ref initialize()
 	 */
-	virtual void setFullscreenMode(Vec2i resolution) = 0;
+	virtual void setFullscreenMode(const DisplayMode & mode) = 0;
 	
 	/*!
 	 * Exits fullscreen mode and sets the window size.
 	 * May be called before or after @ref initialize()
 	 */
-	virtual void setWindowSize(Vec2i size) = 0;
+	virtual void setWindowSize(const Vec2i & size) = 0;
 	
 	virtual bool initialize() = 0;
 	
@@ -92,6 +107,7 @@ public:
 	
 	const Vec2i & getPosition() const { return m_position; }
 	const Vec2i & getSize() const { return m_size; }
+	const DisplayMode getDisplayMode() const { return DisplayMode(m_size); }
 	
 	bool isFullScreen() const { return m_fullscreen; }
 	

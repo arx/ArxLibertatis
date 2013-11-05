@@ -521,13 +521,13 @@ void ArxGame::onResizeWindow(const Window & window) {
 	
 	if(window.isFullScreen()) {
 		if(config.video.resolution == Vec2i_ZERO) {
-			LogInfo << "Auto-selected fullscreen resolution " << DisplayMode(window.getSize());
+			LogInfo << "Auto-selected fullscreen resolution " << window.getDisplayMode();
 		} else {
-			LogInfo << "Changed fullscreen resolution to " << DisplayMode(window.getSize());
+			LogInfo << "Changed fullscreen resolution to " << window.getDisplayMode();
 			config.video.resolution = window.getSize();
 		}
 	} else {
-		LogInfo << "Changed window size to " << DisplayMode(window.getSize());
+		LogInfo << "Changed window size to " << window.getDisplayMode();
 		config.window.size = window.getSize();
 	}
 }

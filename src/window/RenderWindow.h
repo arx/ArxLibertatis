@@ -21,26 +21,11 @@
 #define ARX_WINDOW_RENDERWINDOW_H
 
 #include <algorithm>
-#include <ostream>
 #include <vector>
 
 #include "window/Window.h"
 
 class Renderer;
-
-struct DisplayMode {
-	
-	Vec2i resolution;
-	
-	DisplayMode() { }
-	DisplayMode(const DisplayMode & o) : resolution(o.resolution) { }
-	/* implicit */ DisplayMode(Vec2i res) : resolution(res) { }
-	bool operator<(const DisplayMode & other) const;
-	bool operator==(const DisplayMode & other) const {
-		return resolution == other.resolution;
-	}
-	
-};
 
 class RenderWindow : public Window {
 	
