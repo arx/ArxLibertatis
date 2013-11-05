@@ -38,22 +38,22 @@ std::ostream & operator<<(std::ostream & os, const DisplayMode & mode) {
 }
 
 void RenderWindow::addRenderListener(RendererListener * listener) {
-	renderListeners.push_back(listener);
+	m_renderListeners.push_back(listener);
 }
 
 void RenderWindow::removeRenderListener(RendererListener * listener) {
-	renderListeners.erase(std::remove(renderListeners.begin(), renderListeners.end(),
-	                      listener), renderListeners.end());
+	m_renderListeners.erase(std::remove(m_renderListeners.begin(), m_renderListeners.end(),
+	                        listener), m_renderListeners.end());
 }
 
 void RenderWindow::onRendererInit() {
-	BOOST_FOREACH(RendererListener * listener, renderListeners) {
+	BOOST_FOREACH(RendererListener * listener, m_renderListeners) {
 		listener->onRendererInit(*this);
 	}
 }
 
 void RenderWindow::onRendererShutdown() {
-	BOOST_FOREACH(RendererListener * listener, renderListeners) {
+	BOOST_FOREACH(RendererListener * listener, m_renderListeners) {
 		listener->onRendererShutdown(*this);
 	}
 }

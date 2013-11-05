@@ -124,7 +124,7 @@ private:
 	
 	typedef std::vector<RendererListener *> RendererListeners;
 	
-	RendererListeners renderListeners; //! Listeners for renderer events
+	RendererListeners m_renderListeners; //! Listeners for renderer events
 	
 };
 
