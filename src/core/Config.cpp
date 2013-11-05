@@ -57,7 +57,6 @@ const string
 	debugLevels = "";
 
 const int
-	bpp = 16,
 	levelOfDetail = 2,
 	fogDistance = 10,
 	volume = 10,
@@ -147,7 +146,6 @@ const string language = "string";
 // Video options
 const string
 	resolution = "resolution",
-	bpp = "bpp",
 	fullscreen = "full_screen",
 	levelOfDetail = "others_details",
 	fogDistance = "fog",
@@ -370,7 +368,6 @@ bool Config::save() {
 		oss << video.resolution.x << 'x' << video.resolution.y;
 		writer.writeKey(Key::resolution, oss.str());
 	}
-	writer.writeKey(Key::bpp, video.bpp);
 	writer.writeKey(Key::fullscreen, video.fullscreen);
 	writer.writeKey(Key::levelOfDetail, video.levelOfDetail);
 	writer.writeKey(Key::fogDistance, video.fogDistance);
@@ -458,7 +455,6 @@ bool Config::init(const fs::path & file) {
 	} else {
 		video.resolution = parseResolution(resolution);
 	}
-	video.bpp = reader.getKey(Section::Video, Key::bpp, Default::bpp);
 	video.fullscreen = reader.getKey(Section::Video, Key::fullscreen, Default::fullscreen);
 	video.levelOfDetail = reader.getKey(Section::Video, Key::levelOfDetail, Default::levelOfDetail);
 	video.fogDistance = reader.getKey(Section::Video, Key::fogDistance, Default::fogDistance);

@@ -109,7 +109,6 @@ public:
 	struct {
 		
 		Vec2i resolution;
-		int bpp;
 		
 		bool fullscreen;
 		int levelOfDetail;
@@ -117,6 +116,7 @@ public:
 		bool showCrosshair;
 		bool antialiasing;
 		bool vsync;
+		
 	} video;
 	
 	// section 'window'
