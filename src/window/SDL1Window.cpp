@@ -42,9 +42,9 @@ SDL1Window::~SDL1Window() {
 		delete m_input;
 	}
 	
-	if(renderer) {
+	if(m_renderer) {
 		onRendererShutdown();
-		delete renderer, renderer = NULL;
+		delete m_renderer, m_renderer = NULL;
 	}
 	
 	if(s_mainWindow) {
@@ -206,8 +206,8 @@ bool SDL1Window::initialize() {
 	
 	SDL_ShowCursor(SDL_DISABLE);
 	
-	renderer = new OpenGLRenderer;
-	renderer->Initialize();
+	m_renderer = new OpenGLRenderer;
+	m_renderer->Initialize();
 	
 	onCreate();
 	onToggleFullscreen(m_fullscreen);
@@ -253,9 +253,9 @@ void SDL1Window::cleanupRenderer(bool wasOrIsFullscreen) {
 	ARX_UNUSED(wasOrIsFullscreen);
 	#endif
 	
-	if(renderer && reinterpret_cast<OpenGLRenderer *>(renderer)->isInitialized()) {
+	if(m_renderer && reinterpret_cast<OpenGLRenderer *>(m_renderer)->isInitialized()) {
 		onRendererShutdown();
-		reinterpret_cast<OpenGLRenderer *>(renderer)->shutdown();
+		reinterpret_cast<OpenGLRenderer *>(m_renderer)->shutdown();
 	}
 	
 #endif
@@ -268,10 +268,10 @@ void SDL1Window::reinitializeRenderer() {
 	// not re-initialization needed
 	#else
 	
-	if(renderer && !reinterpret_cast<OpenGLRenderer *>(renderer)->isInitialized()) {
-		reinterpret_cast<OpenGLRenderer *>(renderer)->reinit();
+	if(m_renderer && !reinterpret_cast<OpenGLRenderer *>(m_renderer)->isInitialized()) {
+		reinterpret_cast<OpenGLRenderer *>(m_renderer)->reinit();
 		updateSize();
-		renderer->SetViewport(Rect(m_size.x, m_size.y));
+		m_renderer->SetViewport(Rect(m_size.x, m_size.y));
 		onRendererInit();
 	}
 	
@@ -331,9 +331,9 @@ void SDL1Window::updateSize(bool force) {
 	m_size = Vec2i(vid->current_w, vid->current_h);
 	
 	if(force || m_size != oldSize) {
-		if(renderer) {
+		if(m_renderer) {
 			reinitializeRenderer();
-			renderer->SetViewport(Rect(m_size.x, m_size.y));
+			m_renderer->SetViewport(Rect(m_size.x, m_size.y));
 		}
 		onResize(m_size);
 	}

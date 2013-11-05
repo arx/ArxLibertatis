@@ -52,7 +52,7 @@ public:
 		: m_minTextureUnits(1)
 		, m_maxMSAALevel(1)
 		, m_vsync(1)
-		, renderer(NULL)
+		, m_renderer(NULL)
 		{ }
 	
 	virtual ~RenderWindow() { }
@@ -98,7 +98,7 @@ public:
 	 */
 	virtual bool setVSync(int vsync) = 0;
 	
-	Renderer * getRenderer() { return renderer; }
+	Renderer * getRenderer() { return m_renderer; }
 	
 	//! Get a sorted list of supported fullscreen display modes.
 	const DisplayModes & getDisplayModes() { return displayModes; }
@@ -114,7 +114,7 @@ protected:
 	int m_maxMSAALevel;
 	int m_vsync;
 	
-	Renderer * renderer;
+	Renderer * m_renderer;
 	DisplayModes displayModes; //! Available fullscreen modes.
 	
 	void onRendererInit();
