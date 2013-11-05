@@ -40,16 +40,20 @@ public:
 	 */
 	virtual void setTitle(const std::string & title) = 0;
 	
-	virtual bool initialize(Vec2i size, bool fullscreen, unsigned depth = 0) = 0;
-	
 	/*!
 	 * Enter fullscreen and set the given video mode.
 	 * If all parameters are zero, the desktop mode is used.
+	 * May be called before or after @ref initialize()
 	 */
 	virtual void setFullscreenMode(Vec2i resolution, unsigned depth = 0) = 0;
 	
-	//! Exits fullscreen mode and sets the window size.
+	/*!
+	 * Exits fullscreen mode and sets the window size.
+	 * May be called before or after @ref initialize()
+	 */
 	virtual void setWindowSize(Vec2i size) = 0;
+	
+	virtual bool initialize() = 0;
 	
 	virtual void tick() = 0;
 	

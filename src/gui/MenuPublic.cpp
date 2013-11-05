@@ -124,7 +124,7 @@ void ARXMenu_Private_Options_Video_SetResolution(bool fullscreen, int _iWidth, i
 		
 		mainApp->getWindow()->showFrame();
 		
-		mainApp->setFullscreen(fullscreen);
+		mainApp->setWindowSize(fullscreen);
 		
 		GRenderer->BeginScene();
 		

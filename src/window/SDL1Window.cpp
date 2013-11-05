@@ -141,7 +141,7 @@ bool SDL1Window::initializeFramework() {
 	return true;
 }
 
-bool SDL1Window::initialize(Vec2i size, bool fullscreen, unsigned depth) {
+bool SDL1Window::initialize() {
 	
 	arx_assert(!displayModes.empty());
 	
@@ -158,9 +158,6 @@ bool SDL1Window::initialize(Vec2i size, bool fullscreen, unsigned depth) {
 	
 	SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL, m_vsync);
 	
-	m_size = Vec2i_ZERO;
-	depth_ = 0;
-	
 	for(int msaa = m_maxMSAALevel; msaa > 0; msaa--) {
 		bool lastTry = (msaa == 1);
 		
@@ -169,7 +166,7 @@ bool SDL1Window::initialize(Vec2i size, bool fullscreen, unsigned depth) {
 		SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, msaa > 1 ? 1 : 0);
 		SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, msaa > 1 ? msaa : 0);
 		
-		if(!setMode(DisplayMode(size, fullscreen ? depth : 0), fullscreen)) {
+		if(!setMode(DisplayMode(m_size, m_fullscreen ? depth_ : 0), m_fullscreen)) {
 			if(lastTry) {
 				LogError << "Could not initialize window: " << SDL_GetError();
 				return false;
@@ -214,8 +211,8 @@ bool SDL1Window::initialize(Vec2i size, bool fullscreen, unsigned depth) {
 	renderer->Initialize();
 	
 	onCreate();
-	onToggleFullscreen(fullscreen);
-	updateSize(false);
+	onToggleFullscreen(m_fullscreen);
+	updateSize(true);
 	
 	onShow(true);
 	onFocus(true);
@@ -241,6 +238,48 @@ bool SDL1Window::setVSync(int vsync) {
 	return true;
 }
 
+void SDL1Window::cleanupRenderer(bool wasOrIsFullscreen) {
+	
+#if ARX_PLATFORM == ARX_PLATFORM_LINUX || ARX_PLATFORM == ARX_PLATFORM_BSD
+	// No re-initialization needed
+	ARX_UNUSED(wasOrIsFullscreen);
+#else
+	
+	#if ARX_PLATFORM == ARX_PLATFORM_WIN32
+	if(!wasOrIsFullscreen) {
+		return;
+	}
+	#else
+	// By default, always reinit to avoid issues on untested platforms
+	ARX_UNUSED(wasOrIsFullscreen);
+	#endif
+	
+	if(renderer && reinterpret_cast<OpenGLRenderer *>(renderer)->isInitialized()) {
+		onRendererShutdown();
+		reinterpret_cast<OpenGLRenderer *>(renderer)->shutdown();
+	}
+	
+#endif
+	
+}
+
+void SDL1Window::reinitializeRenderer() {
+	
+	#if ARX_PLATFORM == ARX_PLATFORM_LINUX || ARX_PLATFORM == ARX_PLATFORM_BSD
+	// not re-initialization needed
+	#else
+	
+	if(renderer && !reinterpret_cast<OpenGLRenderer *>(renderer)->isInitialized()) {
+		reinterpret_cast<OpenGLRenderer *>(renderer)->reinit();
+		updateSize();
+		renderer->SetViewport(Rect(m_size.x, m_size.y));
+		onRendererInit();
+	}
+	
+	#endif
+	
+}
+
 bool SDL1Window::setMode(DisplayMode mode, bool fullscreen) {
 	
 	if(fullscreen && mode.resolution == Vec2i_ZERO) {
@@ -249,96 +288,69 @@ bool SDL1Window::setMode(DisplayMode mode, bool fullscreen) {
 		mode.depth = m_desktopMode.depth;
 	}
 	
-	bool needsReinit;
-	
-#if ARX_PLATFORM == ARX_PLATFORM_WIN32
-	needsReinit = m_fullscreen || fullscreen;
-#elif ARX_PLATFORM == ARX_PLATFORM_LINUX || ARX_PLATFORM == ARX_PLATFORM_BSD
-	needsReinit = false;
-#else
-	needsReinit = true; // By default, always reinit to avoid issues on untested platforms
-#endif
-	
-	if(needsReinit) {
-		if(renderer && reinterpret_cast<OpenGLRenderer *>(renderer)->isInitialized()) {
-			onRendererShutdown();
-			reinterpret_cast<OpenGLRenderer *>(renderer)->shutdown();
-		}
-	}
-	
 	Uint32 flags = SDL_ANYFORMAT | SDL_OPENGL | SDL_HWSURFACE;
 	flags |= (fullscreen) ? SDL_FULLSCREEN : SDL_RESIZABLE;
-	SDL_Surface * win = SDL_SetVideoMode(mode.resolution.x, mode.resolution.y,
-	                                     mode.depth, flags);
+	if(SDL_SetVideoMode(mode.resolution.x, mode.resolution.y, mode.depth, flags) == NULL) {
+		return false;
+	}
 	
-	return (win != NULL);
+	return true;
 }
 
-void SDL1Window::updateSize(bool reinit) {
+void SDL1Window::changeMode(DisplayMode mode, bool makeFullscreen) {
 	
-	const SDL_VideoInfo * vid = SDL_GetVideoInfo();
+	if(!m_initialized) {
+		m_size = mode.resolution;
+		depth_ = mode.depth;
+		m_fullscreen = makeFullscreen;
+		return;
+	}
+	
+	if(m_fullscreen == makeFullscreen && m_size == mode.resolution
+	   && (!makeFullscreen || depth_ == mode.depth)) {
+		return;
+	}
+	
+	bool wasFullscreen = m_fullscreen;
+	
+	cleanupRenderer(m_fullscreen || makeFullscreen);
+	
+	if(!setMode(mode, makeFullscreen)) {
+		return;
+	}
+	
+	if(wasFullscreen != makeFullscreen) {
+		onToggleFullscreen(makeFullscreen);
+	}
+	
+	updateSize();
+	
+	tick();
+}
+
+void SDL1Window::updateSize(bool force) {
 	
 	Vec2i oldSize = m_size;
 	
+	const SDL_VideoInfo * vid = SDL_GetVideoInfo();
 	m_size = Vec2i(vid->current_w, vid->current_h);
 	depth_ = vid->vfmt->BitsPerPixel;
 	
-	// Finally, set the viewport for the newly created device
-	arx_assert(renderer != NULL);
-	
-#if ARX_PLATFORM == ARX_PLATFORM_WIN32
-	// use reinit as-is
-#elif ARX_PLATFORM == ARX_PLATFORM_LINUX || ARX_PLATFORM == ARX_PLATFORM_BSD
-	reinit = false; // Never needed under Linux & BSD
-#else
-	reinit = true; // By default, always reinit to avoid issues on untested platforms
-#endif
-	
-	if(reinit && !reinterpret_cast<OpenGLRenderer *>(renderer)->isInitialized()) {
-		reinterpret_cast<OpenGLRenderer *>(renderer)->reinit();
-		renderer->SetViewport(Rect(m_size.x, m_size.y));
-		onRendererInit();
-	} else {
-		renderer->SetViewport(Rect(m_size.x, m_size.y));
-	}
-	
-	if(m_size != oldSize) {
+	if(force || m_size != oldSize) {
+		if(renderer) {
+			reinitializeRenderer();
+			renderer->SetViewport(Rect(m_size.x, m_size.y));
+		}
 		onResize(m_size);
 	}
 }
 
 void SDL1Window::setFullscreenMode(Vec2i resolution, unsigned _depth) {
-	
-	if(m_fullscreen && m_size == resolution && depth_ == _depth) {
-		return;
-	}
-	
-	if(!setMode(DisplayMode(resolution, depth_), true)) {
-		return;
-	}
-	
-	if(!m_fullscreen) {
-		onToggleFullscreen(true);
-	}
-	
-	updateSize(true);
+	changeMode(DisplayMode(resolution, _depth), true);
 }
 
 void SDL1Window::setWindowSize(Vec2i size) {
-	
-	if(!m_fullscreen && m_size == size) {
-		return;
-	}
-	
-	if(!setMode(DisplayMode(size, 0), false)) {
-		return;
-	}
-	
-	if(m_fullscreen) {
-		onToggleFullscreen(false);
-	}
-	
-	updateSize(true);
+	changeMode(DisplayMode(size, 0), false);
 }
 
 int SDLCALL SDL1Window::eventFilter(const SDL_Event * event) {
@@ -406,10 +418,8 @@ void SDL1Window::tick() {
 			}
 			
 			case SDL_VIDEORESIZE: {
-				Vec2i newSize(event.resize.w, event.resize.h);
-				if(newSize != m_size && !m_fullscreen) {
-					setMode(DisplayMode(newSize, depth_), false);
-					updateSize(false);
+				if(!m_fullscreen) {
+					changeMode(DisplayMode(Vec2i(event.resize.w, event.resize.h), depth_), false);
 				}
 				break;
 			}
@@ -427,6 +437,7 @@ void SDL1Window::tick() {
 		
 	}
 	
+	reinitializeRenderer();
 }
 
 void SDL1Window::showFrame() {

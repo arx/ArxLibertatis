@@ -248,7 +248,7 @@ bool ArxGame::initialize()
 	return true;
 }
 
-void ArxGame::setFullscreen(bool fullscreen) {
+void ArxGame::setWindowSize(bool fullscreen) {
 	
 	if(fullscreen) {
 		
@@ -286,13 +286,10 @@ bool ArxGame::initWindow(RenderWindow * window) {
 	m_MainWindow->addListener(this);
 	m_MainWindow->addRenderListener(this);
 	
-	const RenderWindow::DisplayModes & modes = window->getDisplayModes();
-	
-	RenderWindow::DisplayMode mode(config.video.resolution, config.video.bpp);
-	
-	if(mode.resolution != Vec2i_ZERO) {
-		
-		// Find the next best available fullscreen mode.
+	// Find the next best available fullscreen mode.
+	if(config.video.resolution != Vec2i_ZERO) {
+		const RenderWindow::DisplayModes & modes = window->getDisplayModes();
+		RenderWindow::DisplayMode mode(config.video.resolution, config.video.bpp);
 		RenderWindow::DisplayModes::const_iterator i;
 		i = std::lower_bound(modes.begin(), modes.end(), mode);
 		if(i == modes.end()) {
@@ -305,26 +302,19 @@ bool ArxGame::initWindow(RenderWindow * window) {
 			           << config.video.resolution.y << '@' << config.video.bpp
 			           << " not supported, using " << mode.resolution.x << 'x'
 			           << mode.resolution.y << '@' << mode.depth << " instead";
+			config.video.resolution = mode.resolution;
+			config.video.bpp = mode.depth;
 		}
-		
 	}
-	
-	// Clamp to a sane resolution and window size!
-	if(mode.resolution != Vec2i_ZERO) {
-		mode.resolution.x = std::max(mode.resolution.x, s32(640));
-		mode.resolution.y = std::max(mode.resolution.y, s32(480));
-	}
-	config.window.size.x = std::max(config.window.size.x, s32(640));
-	config.window.size.y = std::max(config.window.size.y, s32(480));
-	
-	Vec2i size = config.video.fullscreen ? mode.resolution : config.window.size;
 	
 	m_MainWindow->setTitle(arx_version);
 	m_MainWindow->setMinTextureUnits(3);
 	m_MainWindow->setMaxMSAALevel(config.video.antialiasing ? 8 : 1);
 	m_MainWindow->setVSync(config.video.vsync ? 1 : 0);
 	
-	if(!m_MainWindow->initialize(size, config.video.fullscreen, mode.depth)) {
+	setWindowSize(config.video.fullscreen);
+	
+	if(!m_MainWindow->initialize()) {
 		m_MainWindow = NULL;
 		return false;
 	}
@@ -334,11 +324,6 @@ bool ArxGame::initWindow(RenderWindow * window) {
 		m_MainWindow = NULL;
 		return false;
 	}
-	
-	if(!m_MainWindow->isFullScreen() && config.video.resolution != Vec2i_ZERO) {
-		config.video.resolution = mode.resolution;
-	}
-	config.video.bpp = mode.depth;
 	
 	return true;
 }
@@ -1244,7 +1229,7 @@ void ArxGame::updateInput() {
 	AdjustMousePosition();
 
 	if(GInput->actionNowPressed(CONTROLS_CUST_TOGGLE_FULLSCREEN)) {
-		setFullscreen(!getWindow()->isFullScreen());
+		setWindowSize(!getWindow()->isFullScreen());
 	}
 
 	if(GInput->isKeyPressedNowPressed(Keyboard::Key_F12)) {

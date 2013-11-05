@@ -121,9 +121,7 @@ static Uint32 getSDLFlagsForMode(const Vec2i & size, bool fullscreen) {
 	return flags;
 }
 
-bool SDL2Window::initialize(Vec2i size, bool fullscreen, unsigned depth) {
-	
-	ARX_UNUSED(depth); // TODO
+bool SDL2Window::initialize() {
 	
 	arx_assert(!displayModes.empty());
 	
@@ -136,11 +134,8 @@ bool SDL2Window::initialize(Vec2i size, bool fullscreen, unsigned depth) {
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_COMPATIBILITY);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_EGL, 0);
 	
-	m_size = Vec2i_ZERO;
-	depth_ = 0;
-	
 	int x = SDL_WINDOWPOS_UNDEFINED, y = SDL_WINDOWPOS_UNDEFINED;
-	Uint32 windowFlags = getSDLFlagsForMode(size, fullscreen);
+	Uint32 windowFlags = getSDLFlagsForMode(m_size, m_fullscreen);
 	windowFlags |= SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_HIDDEN;
 	
 	for(int msaa = m_maxMSAALevel; msaa > 0; msaa--) {
@@ -161,7 +156,7 @@ bool SDL2Window::initialize(Vec2i size, bool fullscreen, unsigned depth) {
 		SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, msaa > 1 ? 1 : 0);
 		SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, msaa > 1 ? msaa : 0);
 		
-		m_window = SDL_CreateWindow(m_title.c_str(), x, y, size.x, size.y, windowFlags);
+		m_window = SDL_CreateWindow(m_title.c_str(), x, y, m_size.x, m_size.y, windowFlags);
 		if(!m_window) {
 			if(lastTry) {
 				LogError << "Could not create window: " << SDL_GetError();
@@ -215,8 +210,8 @@ bool SDL2Window::initialize(Vec2i size, bool fullscreen, unsigned depth) {
 	renderer->Initialize();
 	
 	onCreate();
-	onToggleFullscreen(fullscreen);
-	updateSize();
+	onToggleFullscreen(m_fullscreen);
+	updateSize(true);
 	
 	onShow(true);
 	onFocus(true);
@@ -286,7 +281,19 @@ void SDL2Window::reinitializeRenderer() {
 	
 }
 
-bool SDL2Window::setMode(DisplayMode mode, bool makeFullscreen) {
+void SDL2Window::changeMode(DisplayMode mode, bool makeFullscreen) {
+	
+	if(!m_window) {
+		m_size = mode.resolution;
+		depth_ = mode.depth;
+		m_fullscreen = makeFullscreen;
+		return;
+	}
+	
+	if(m_fullscreen == makeFullscreen && m_size == mode.resolution
+	   && (!makeFullscreen || depth_ == mode.depth)) {
+		return;
+	}
 	
 	bool wasFullscreen = m_fullscreen;
 	
@@ -303,17 +310,17 @@ bool SDL2Window::setMode(DisplayMode mode, bool makeFullscreen) {
 			requested.h = mode.resolution.y;
 			int display = SDL_GetWindowDisplayIndex(m_window);
 			if(!SDL_GetClosestDisplayMode(display, &requested, &sdlmode)) {
-				return false;
+				return;
 			}
 			if(SDL_SetWindowDisplayMode(m_window, &sdlmode) < 0) {
-				return false;
+				return;
 			}
 		}
 	}
 	
 	Uint32 flags = getSDLFlagsForMode(mode.resolution, makeFullscreen);
 	if(SDL_SetWindowFullscreen(m_window, flags) < 0) {
-		return false;
+		return;
 	}
 	
 	if(!makeFullscreen) {
@@ -332,11 +339,9 @@ bool SDL2Window::setMode(DisplayMode mode, bool makeFullscreen) {
 	}
 	
 	tick();
-	
-	return true;
 }
 
-void SDL2Window::updateSize() {
+void SDL2Window::updateSize(bool force) {
 	
 	Vec2i oldSize = m_size;
 	
@@ -345,7 +350,7 @@ void SDL2Window::updateSize() {
 	m_size = Vec2i(w, h);
 	depth_ = 32; // TODO?
 	
-	if(m_size != oldSize) {
+	if(force || m_size != oldSize) {
 		if(renderer) {
 			reinitializeRenderer();
 			renderer->SetViewport(Rect(m_size.x, m_size.y));
@@ -355,21 +360,11 @@ void SDL2Window::updateSize() {
 }
 
 void SDL2Window::setFullscreenMode(Vec2i resolution, unsigned _depth) {
-	
-	if(m_fullscreen && m_size == resolution && depth_ == _depth) {
-		return;
-	}
-	
-	setMode(DisplayMode(resolution, depth_), true);
+	changeMode(DisplayMode(resolution, _depth), true);
 }
 
 void SDL2Window::setWindowSize(Vec2i size) {
-	
-	if(!m_fullscreen && m_size == size) {
-		return;
-	}
-	
-	setMode(DisplayMode(size, 0), false);
+	changeMode(DisplayMode(size, 0), false);
 }
 
 int SDLCALL SDL2Window::eventFilter(void * userdata, SDL_Event * event) {

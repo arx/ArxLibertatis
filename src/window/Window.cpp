@@ -43,7 +43,9 @@ Window::Window()
 	, m_maximized(false)
 	, m_visible(false)
 	, m_fullscreen(false)
-	, m_focused(false) { }
+	, m_focused(false)
+	, depth_(0)
+	{ }
 
 Window::~Window() { }
 
