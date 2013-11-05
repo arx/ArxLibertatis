@@ -29,8 +29,6 @@
 #include "platform/CrashHandler.h"
 #include "platform/Platform.h"
 
-#define SDL_DISPLAY 0 // TODO don't hardcode this!
-
 SDL2Window * SDL2Window::s_mainWindow = NULL;
 
 SDL2Window::SDL2Window()
@@ -86,14 +84,17 @@ bool SDL2Window::initializeFramework() {
 	CrashHandler::setVariable("SDL version", runtimeVersion.str());
 	LogInfo << "Using SDL " << runtimeVersion.str();
 	
-	int modes = SDL_GetNumDisplayModes(SDL_DISPLAY);
-	for(int i = 0; i < modes; i++) {
-		SDL_DisplayMode mode;
-		if(SDL_GetDisplayMode(SDL_DISPLAY, i, &mode) >= 0) {
-			m_displayModes.push_back(Vec2i(mode.w, mode.h));
+	int ndisplays = SDL_GetNumVideoDisplays();
+	for(int display = 0; display < ndisplays; display++) {
+		int modes = SDL_GetNumDisplayModes(display);
+		for(int i = 0; i < modes; i++) {
+			SDL_DisplayMode mode;
+			if(SDL_GetDisplayMode(display, i, &mode) >= 0) {
+				m_displayModes.push_back(Vec2i(mode.w, mode.h));
+			}
 		}
 	}
-
+	
 	std::sort(m_displayModes.begin(), m_displayModes.end());
 	m_displayModes.erase(std::unique(m_displayModes.begin(), m_displayModes.end()),
 	                     m_displayModes.end());
@@ -267,7 +268,9 @@ void SDL2Window::changeMode(DisplayMode mode, bool makeFullscreen) {
 			requested.h = mode.resolution.y;
 			int display = SDL_GetWindowDisplayIndex(m_window);
 			if(!SDL_GetClosestDisplayMode(display, &requested, &sdlmode)) {
-				return;
+				if(SDL_GetDesktopDisplayMode(display, &sdlmode)) {
+					return;
+				}
 			}
 			if(SDL_SetWindowDisplayMode(m_window, &sdlmode) < 0) {
 				return;
