@@ -37,7 +37,7 @@ void Window::Listener::onWindowLostFocus( const Window & /*window*/ ) {}
 void Window::Listener::onPaintWindow( const Window & /*window*/ ) {}
 
 Window::Window()
-	: position_(0, 0)
+	: m_position(0, 0)
 	, size_(640, 480)
 	, isMinimized_(false)
 	, isMaximized_(false)
@@ -81,7 +81,7 @@ void Window::onDestroy() {
 }
 
 void Window::onMove(s32 x, s32 y) {
-	position_ = Vec2i(x, y);
+	m_position = Vec2i(x, y);
 	BOOST_FOREACH(Listener * listener, listeners) {
 		listener->onMoveWindow(*this);
 	}
