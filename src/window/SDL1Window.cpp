@@ -206,17 +206,15 @@ bool SDL1Window::initialize(Vec2i size, bool fullscreen, unsigned depth) {
 	
 	m_initialized = true;
 	
-	isFullscreen_ = fullscreen;
-	
 	setTitle(m_title);
 	
 	SDL_ShowCursor(SDL_DISABLE);
 	
-	onCreate();
-	
 	renderer = new OpenGLRenderer;
 	renderer->Initialize();
 	
+	onCreate();
+	onToggleFullscreen(fullscreen);
 	updateSize(false);
 	
 	onShow(true);
@@ -254,7 +252,7 @@ bool SDL1Window::setMode(DisplayMode mode, bool fullscreen) {
 	bool needsReinit;
 	
 #if ARX_PLATFORM == ARX_PLATFORM_WIN32
-	needsReinit = isFullscreen_ || fullscreen;
+	needsReinit = m_fullscreen || fullscreen;
 #elif ARX_PLATFORM == ARX_PLATFORM_LINUX || ARX_PLATFORM == ARX_PLATFORM_BSD
 	needsReinit = false;
 #else
@@ -311,7 +309,7 @@ void SDL1Window::updateSize(bool reinit) {
 
 void SDL1Window::setFullscreenMode(Vec2i resolution, unsigned _depth) {
 	
-	if(isFullscreen_ && m_size == resolution && depth_ == _depth) {
+	if(m_fullscreen && m_size == resolution && depth_ == _depth) {
 		return;
 	}
 	
@@ -319,19 +317,16 @@ void SDL1Window::setFullscreenMode(Vec2i resolution, unsigned _depth) {
 		return;
 	}
 	
-	if(!isFullscreen_) {
-		isFullscreen_ = true;
-		updateSize(true);
-		onToggleFullscreen();
-	} else {
-		updateSize(true);
+	if(!m_fullscreen) {
+		onToggleFullscreen(true);
 	}
 	
+	updateSize(true);
 }
 
 void SDL1Window::setWindowSize(Vec2i size) {
 	
-	if(!isFullscreen_ && m_size == size) {
+	if(!m_fullscreen && m_size == size) {
 		return;
 	}
 	
@@ -339,11 +334,11 @@ void SDL1Window::setWindowSize(Vec2i size) {
 		return;
 	}
 	
-	if(isFullscreen_) {
-		isFullscreen_ = false;
-		updateSize(true);
-		onToggleFullscreen();
+	if(m_fullscreen) {
+		onToggleFullscreen(false);
 	}
+	
+	updateSize(true);
 }
 
 int SDLCALL SDL1Window::eventFilter(const SDL_Event * event) {
@@ -412,7 +407,7 @@ void SDL1Window::tick() {
 			
 			case SDL_VIDEORESIZE: {
 				Vec2i newSize(event.resize.w, event.resize.h);
-				if(newSize != m_size && !isFullscreen_) {
+				if(newSize != m_size && !m_fullscreen) {
 					setMode(DisplayMode(newSize, depth_), false);
 					updateSize(false);
 				}

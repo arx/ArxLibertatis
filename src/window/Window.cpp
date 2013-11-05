@@ -42,7 +42,7 @@ Window::Window()
 	, m_minimized(false)
 	, m_maximized(false)
 	, m_visible(false)
-	, isFullscreen_(false)
+	, m_fullscreen(false)
 	, hasFocus_(false) { }
 
 Window::~Window() { }
@@ -119,7 +119,8 @@ void Window::onShow(bool isVisible) {
 	m_visible = isVisible;
 }
 	
-void Window::onToggleFullscreen() {
+void Window::onToggleFullscreen(bool fullscreen) {
+	m_fullscreen = fullscreen;
 	BOOST_FOREACH(Listener * listener, listeners) {
 		listener->onToggleFullscreen(*this);
 	}

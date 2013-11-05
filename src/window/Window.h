@@ -90,7 +90,7 @@ public:
 	const Vec2i & getSize() const { return m_size; }
 	unsigned getDepth() const { return depth_; }
 	
-	bool isFullScreen() const { return isFullscreen_; }
+	bool isFullScreen() const { return m_fullscreen; }
 	
 	virtual InputBackend * getInputBackend() = 0;
 	
@@ -104,7 +104,7 @@ protected:
 	void onMaximize();
 	void onRestore();
 	void onShow(bool show);
-	void onToggleFullscreen();
+	void onToggleFullscreen(bool fullscreen);
 	void onFocus(bool hasFocus);
 	void onPaint();
 	void onCreate();
@@ -115,7 +115,7 @@ protected:
 	bool m_minimized;    //!< Is minimized ?
 	bool m_maximized;    //!< Is maximized ?
 	bool m_visible;      //!< Is visible ?
-	bool isFullscreen_; //!< Is fullscreen ?
+	bool m_fullscreen;   //!< Is fullscreen ?
 	bool hasFocus_; //!< Has focus ?
 	unsigned depth_;
 	
