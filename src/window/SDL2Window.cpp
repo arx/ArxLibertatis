@@ -66,7 +66,7 @@ SDL2Window::~SDL2Window() {
 bool SDL2Window::initializeFramework() {
 	
 	arx_assert_msg(s_mainWindow == NULL, "SDL only supports one window"); // TODO it supports multiple windows now!
-	arx_assert(displayModes.empty());
+	arx_assert(m_displayModes.empty());
 	
 	const char * headerVersion = ARX_STR(SDL_MAJOR_VERSION) "." ARX_STR(SDL_MINOR_VERSION)
 	                             "." ARX_STR(SDL_PATCHLEVEL);
@@ -88,12 +88,13 @@ bool SDL2Window::initializeFramework() {
 	for(int i = 0; i < modes; i++) {
 		SDL_DisplayMode mode;
 		if(SDL_GetDisplayMode(SDL_DISPLAY, i, &mode) >= 0) {
-			displayModes.push_back(Vec2i(mode.w, mode.h));
+			m_displayModes.push_back(Vec2i(mode.w, mode.h));
 		}
 	}
 
-	std::sort(displayModes.begin(), displayModes.end());
-	displayModes.erase(std::unique(displayModes.begin(), displayModes.end()), displayModes.end());
+	std::sort(m_displayModes.begin(), m_displayModes.end());
+	m_displayModes.erase(std::unique(m_displayModes.begin(), m_displayModes.end()),
+	                     m_displayModes.end());
 	
 	s_mainWindow = this;
 	
@@ -124,7 +125,7 @@ static Uint32 getSDLFlagsForMode(const Vec2i & size, bool fullscreen) {
 
 bool SDL2Window::initialize() {
 	
-	arx_assert(!displayModes.empty());
+	arx_assert(!m_displayModes.empty());
 	
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);

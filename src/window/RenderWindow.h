@@ -101,7 +101,7 @@ public:
 	Renderer * getRenderer() { return m_renderer; }
 	
 	//! Get a sorted list of supported fullscreen display modes.
-	const DisplayModes & getDisplayModes() { return displayModes; }
+	const DisplayModes & getDisplayModes() { return m_displayModes; }
 	
 	void addRenderListener(RendererListener * listener);
 	void removeRenderListener(RendererListener * listener);
@@ -115,7 +115,7 @@ protected:
 	int m_vsync;
 	
 	Renderer * m_renderer;
-	DisplayModes displayModes; //! Available fullscreen modes.
+	DisplayModes m_displayModes; //! Available fullscreen modes.
 	
 	void onRendererInit();
 	void onRendererShutdown();
