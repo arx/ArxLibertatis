@@ -80,9 +80,9 @@ public:
 	void removeListener(Listener * listener);
 	
 	bool hasFocus() const {
-		return hasFocus_ && !isMinimized_; // We treat minimized as not having focus
+		return hasFocus_ && !m_minimized; // We treat minimized as not having focus
 	}
-	bool isMinimized() const { return isMinimized_; }
+	bool isMinimized() const { return m_minimized; }
 	bool isMaximized() const { return isMaximized_; }
 	bool isVisible() const { return isVisible_; }
 	
@@ -110,9 +110,9 @@ protected:
 	void onCreate();
 	
 	std::string m_title; //!< Window title bar caption.
-	Vec2i m_position; //!< Screen position in pixels (relative to the upper left corner)
-	Vec2i m_size; //!< Size in pixels
-	bool isMinimized_; //!< Is minimized ?
+	Vec2i m_position;    //!< Screen position in pixels (relative to the upper left corner)
+	Vec2i m_size;        //!< Size in pixels
+	bool m_minimized;    //!< Is minimized ?
 	bool isMaximized_; //!< Is maximized ?
 	bool isVisible_; //!< Is visible ?
 	bool isFullscreen_; //!< Is fullscreen ?

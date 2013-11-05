@@ -39,7 +39,7 @@ void Window::Listener::onPaintWindow( const Window & /*window*/ ) {}
 Window::Window()
 	: m_position(0, 0)
 	, m_size(640, 480)
-	, isMinimized_(false)
+	, m_minimized(false)
 	, isMaximized_(false)
 	, isVisible_(false)
 	, isFullscreen_(false)
@@ -95,21 +95,21 @@ void Window::onResize(const Vec2i & size) {
 }
 
 void Window::onMinimize() {
-	isMinimized_ = true, isMaximized_ = false;
+	m_minimized = true, isMaximized_ = false;
 	BOOST_FOREACH(Listener * listener, listeners) {
 		listener->onMinimizeWindow(*this);
 	}
 }
 	
 void Window::onMaximize() {
-	isMinimized_ = false, isMaximized_ = true;
+	m_minimized = false, isMaximized_ = true;
 	BOOST_FOREACH(Listener * listener, listeners) {
 		listener->onMaximizeWindow(*this);
 	}
 }
 
 void Window::onRestore() {
-	isMinimized_ = false, isMaximized_ = false;
+	m_minimized = false, isMaximized_ = false;
 	BOOST_FOREACH(Listener * listener, listeners) {
 		listener->onRestoreWindow(*this);
 	}
