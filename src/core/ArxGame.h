@@ -47,12 +47,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <string>
 
 #include "core/Application.h"
+#include "graphics/Renderer.h"
 #include "window/Window.h"
 #include "window/RenderWindow.h"
 
 class Font;
 
-class ArxGame : public Application, public Window::Listener, public RenderWindow::RendererListener {
+class ArxGame : public Application, public Window::Listener, public Renderer::Listener {
 	
 protected:
 	
@@ -130,8 +131,8 @@ private:
 	
 	bool wasResized;
 	
-	void onRendererInit(RenderWindow &);
-	void onRendererShutdown(RenderWindow &);
+	void onRendererInit(Renderer &);
+	void onRendererShutdown(Renderer &);
 	
 	bool initWindow(RenderWindow * window);
 	

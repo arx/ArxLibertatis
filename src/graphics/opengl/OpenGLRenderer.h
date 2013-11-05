@@ -37,8 +37,8 @@ public:
 	
 	void Initialize();
 	
-	void shutdown();
-	void reinit();
+	void beforeResize(bool wasOrIsFullscreen);
+	void afterResize();
 	
 	// Scene begin/end...
 	void BeginScene();
@@ -102,9 +102,10 @@ public:
 		return reinterpret_cast<GLTextureStage *>(Renderer::GetTextureStage(textureStage));
 	}
 	
-	inline bool isInitialized() { return initialized; }
-	
 private:
+	
+	void shutdown();
+	void reinit();
 	
 	bool useVertexArrays;
 	bool useVBOs;
@@ -137,8 +138,6 @@ private:
 	
 	typedef boost::intrusive::list<GLTexture2D, boost::intrusive::constant_time_size<false> > TextureList;
 	TextureList textures;
-
-	bool initialized;
 	
 };
 

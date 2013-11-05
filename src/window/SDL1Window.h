@@ -52,8 +52,6 @@ private:
 	bool setMode(DisplayMode mode, bool fullscreen);
 	void changeMode(DisplayMode mode, bool fullscreen);
 	void updateSize(bool force = false);
-	void cleanupRenderer(bool wasOrIsFullscreen);
-	void reinitializeRenderer();
 	
 	static int SDLCALL eventFilter(const SDL_Event * event);
 	

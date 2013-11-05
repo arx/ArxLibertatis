@@ -19,6 +19,7 @@
 
 #include "window/SDL1Window.h"
 
+#include <algorithm>
 #include <sstream>
 
 #include "graphics/opengl/OpenGLRenderer.h"
@@ -34,7 +35,9 @@ SDL1Window::SDL1Window()
 	: m_initialized(false)
 	, m_desktopMode(Vec2i(640, 480))
 	, m_input(NULL)
-	{ }
+	{
+	m_renderer = new OpenGLRenderer;
+}
 
 SDL1Window::~SDL1Window() {
 	
@@ -43,7 +46,6 @@ SDL1Window::~SDL1Window() {
 	}
 	
 	if(m_renderer) {
-		onRendererShutdown();
 		delete m_renderer, m_renderer = NULL;
 	}
 	
@@ -207,7 +209,6 @@ bool SDL1Window::initialize() {
 	
 	SDL_ShowCursor(SDL_DISABLE);
 	
-	m_renderer = new OpenGLRenderer;
 	m_renderer->Initialize();
 	
 	onCreate();
@@ -216,8 +217,6 @@ bool SDL1Window::initialize() {
 	
 	onShow(true);
 	onFocus(true);
-	
-	onRendererInit();
 	
 	return true;
 }
@@ -236,48 +235,6 @@ bool SDL1Window::setVSync(int vsync) {
 	}
 	m_vsync = (vsync != 0) ? 1 : 0;
 	return true;
-}
-
-void SDL1Window::cleanupRenderer(bool wasOrIsFullscreen) {
-	
-#if ARX_PLATFORM == ARX_PLATFORM_LINUX || ARX_PLATFORM == ARX_PLATFORM_BSD
-	// No re-initialization needed
-	ARX_UNUSED(wasOrIsFullscreen);
-#else
-	
-	#if ARX_PLATFORM == ARX_PLATFORM_WIN32
-	if(!wasOrIsFullscreen) {
-		return;
-	}
-	#else
-	// By default, always reinit to avoid issues on untested platforms
-	ARX_UNUSED(wasOrIsFullscreen);
-	#endif
-	
-	if(m_renderer && reinterpret_cast<OpenGLRenderer *>(m_renderer)->isInitialized()) {
-		onRendererShutdown();
-		reinterpret_cast<OpenGLRenderer *>(m_renderer)->shutdown();
-	}
-	
-#endif
-	
-}
-
-void SDL1Window::reinitializeRenderer() {
-	
-	#if ARX_PLATFORM == ARX_PLATFORM_LINUX || ARX_PLATFORM == ARX_PLATFORM_BSD
-	// not re-initialization needed
-	#else
-	
-	if(m_renderer && !reinterpret_cast<OpenGLRenderer *>(m_renderer)->isInitialized()) {
-		reinterpret_cast<OpenGLRenderer *>(m_renderer)->reinit();
-		updateSize();
-		m_renderer->SetViewport(Rect(m_size.x, m_size.y));
-		onRendererInit();
-	}
-	
-	#endif
-	
 }
 
 bool SDL1Window::setMode(DisplayMode mode, bool fullscreen) {
@@ -309,7 +266,7 @@ void SDL1Window::changeMode(DisplayMode mode, bool makeFullscreen) {
 	
 	bool wasFullscreen = m_fullscreen;
 	
-	cleanupRenderer(m_fullscreen || makeFullscreen);
+	m_renderer->beforeResize(m_fullscreen || makeFullscreen);
 	
 	if(!setMode(mode, makeFullscreen)) {
 		return;
@@ -332,10 +289,8 @@ void SDL1Window::updateSize(bool force) {
 	m_size = Vec2i(vid->current_w, vid->current_h);
 	
 	if(force || m_size != oldSize) {
-		if(m_renderer) {
-			reinitializeRenderer();
-			m_renderer->SetViewport(Rect(m_size.x, m_size.y));
-		}
+		m_renderer->afterResize();
+		m_renderer->SetViewport(Rect(m_size.x, m_size.y));
 		onResize(m_size);
 	}
 }
@@ -432,7 +387,11 @@ void SDL1Window::tick() {
 		
 	}
 	
-	reinitializeRenderer();
+	if(!m_renderer->isInitialized()) {
+		updateSize();
+		m_renderer->afterResize();
+		m_renderer->SetViewport(Rect(m_size.x, m_size.y));
+	}
 }
 
 void SDL1Window::showFrame() {

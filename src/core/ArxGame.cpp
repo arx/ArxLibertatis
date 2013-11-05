@@ -85,7 +85,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/GraphicsModes.h"
 #include "graphics/GraphicsTypes.h"
 #include "graphics/Math.h"
-#include "graphics/Renderer.h"
 #include "graphics/Vertex.h"
 #include "graphics/VertexBuffer.h"
 #include "graphics/data/Mesh.h"
@@ -284,7 +283,7 @@ bool ArxGame::initWindow(RenderWindow * window) {
 	
 	// Register ourself as a listener for this window messages
 	m_MainWindow->addListener(this);
-	m_MainWindow->addRenderListener(this);
+	m_MainWindow->getRenderer()->addListener(this);
 	
 	// Find the next best available fullscreen mode.
 	if(config.video.resolution != Vec2i_ZERO) {
@@ -1976,16 +1975,18 @@ bool ArxGame::finalCleanup() {
 	return true;
 }
 
-void ArxGame::onRendererInit(RenderWindow & window) {
+void ArxGame::onRendererInit(Renderer & renderer) {
 	
 	arx_assert(GRenderer == NULL);
 	
-	GRenderer = window.getRenderer();
+	GRenderer = &renderer;
 	
 	arx_assert_msg(GRenderer->GetTextureStageCount() >= 3, "not enough texture units");
 	
-	GRenderer->Clear(Renderer::ColorBuffer);
-	window.showFrame();
+	if(m_MainWindow) {
+		GRenderer->Clear(Renderer::ColorBuffer);
+		m_MainWindow->showFrame();
+	}
 	
 	initDeviceObjects();
 	
@@ -1993,9 +1994,9 @@ void ArxGame::onRendererInit(RenderWindow & window) {
 	m_bReady = true;
 }
 
-void ArxGame::onRendererShutdown(RenderWindow &) {
+void ArxGame::onRendererShutdown(Renderer & renderer) {
 	
-	if(!GRenderer) {
+	if(GRenderer != &renderer) {
 		// onRendererInit() failed
 		return;
 	}

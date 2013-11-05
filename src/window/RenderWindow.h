@@ -21,7 +21,6 @@
 #define ARX_WINDOW_RENDERWINDOW_H
 
 #include <algorithm>
-#include <vector>
 
 #include "window/Window.h"
 
@@ -41,17 +40,6 @@ public:
 		{ }
 	
 	virtual ~RenderWindow() { }
-	
-	class RendererListener {
-		
-	public:
-		
-		virtual ~RendererListener() { }
-		
-		virtual void onRendererInit(RenderWindow &) { }
-		virtual void onRendererShutdown(RenderWindow &) { }
-		
-	};
 	
 	/*!
 	 * Initialize the framework.
@@ -88,9 +76,6 @@ public:
 	//! Get a sorted list of supported fullscreen display modes.
 	const DisplayModes & getDisplayModes() { return m_displayModes; }
 	
-	void addRenderListener(RendererListener * listener);
-	void removeRenderListener(RendererListener * listener);
-	
 	virtual void showFrame() = 0;
 	
 protected:
@@ -101,15 +86,6 @@ protected:
 	
 	Renderer * m_renderer;
 	DisplayModes m_displayModes; //! Available fullscreen modes.
-	
-	void onRendererInit();
-	void onRendererShutdown();
-	
-private:
-	
-	typedef std::vector<RendererListener *> RendererListeners;
-	
-	RendererListeners m_renderListeners; //! Listeners for renderer events
 	
 };
 

@@ -39,11 +39,19 @@ static const char vertexShaderSource[] = "void main() {\n"
 	"	gl_FogFragCoord = vertex.z;\n"
 	"}\n";
 
-OpenGLRenderer::OpenGLRenderer() : useVertexArrays(false), useVBOs(false), maxTextureStage(0), shader(0), maximumAnisotropy(1.f), initialized(false) { }
+OpenGLRenderer::OpenGLRenderer()
+	: useVertexArrays(false)
+	, useVBOs(false)
+	, maxTextureStage(0)
+	, shader(0)
+	, maximumAnisotropy(1.f)
+	{ }
 
 OpenGLRenderer::~OpenGLRenderer() {
 	
-	shutdown();
+	if(isInitialized()) {
+		shutdown();
+	}
 	
 	// TODO textures must be destructed before OpenGLRenderer or not at all
 	//for(TextureList::iterator it = textures.begin(); it != textures.end(); ++it) {
@@ -130,12 +138,44 @@ void OpenGLRenderer::Initialize() {
 	LogInfo << " └─ Device: " << glGetString(GL_RENDERER);
 	CrashHandler::setVariable("OpenGL device", glGetString(GL_RENDERER));
 	
-	reinit();
+}
+
+void OpenGLRenderer::beforeResize(bool wasOrIsFullscreen) {
+	
+#if ARX_PLATFORM == ARX_PLATFORM_LINUX || ARX_PLATFORM == ARX_PLATFORM_BSD
+	// No re-initialization needed
+	ARX_UNUSED(wasOrIsFullscreen);
+#else
+	
+	if(!isInitialized()) {
+		return;
+	}
+	
+	#if ARX_PLATFORM == ARX_PLATFORM_WIN32
+	if(!wasOrIsFullscreen) {
+		return;
+	}
+	#else
+	// By default, always reinit to avoid issues on untested platforms
+	ARX_UNUSED(wasOrIsFullscreen);
+	#endif
+	
+	shutdown();
+	
+#endif
+	
+}
+
+void OpenGLRenderer::afterResize() {
+	LogWarning << isInitialized();
+	if(!isInitialized()) {
+		reinit();
+	}
 }
 
 void OpenGLRenderer::reinit() {
 	
-	arx_assert(!initialized);
+	arx_assert(!isInitialized());
 	
 	if(!GLEW_ARB_vertex_array_bgra) {
 		LogWarning << "Missing OpenGL extension ARB_vertex_array_bgra, not using vertex arrays!";
@@ -195,12 +235,15 @@ void OpenGLRenderer::reinit() {
 		CHECK_GL;
 	}
 	
-	initialized = true;
+	onRendererInit();
+	
 }
 
 void OpenGLRenderer::shutdown() {
 	
-	arx_assert(initialized);
+	arx_assert(isInitialized());
+	
+	onRendererShutdown();
 	
 	if(shader) {
 		glDeleteObjectARB(shader);
@@ -214,7 +257,6 @@ void OpenGLRenderer::shutdown() {
 	
 	maximumAnisotropy = 1.f;
 	
-	initialized = false;
 }
 
 void OpenGLRenderer::BeginScene() {

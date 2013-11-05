@@ -41,6 +41,17 @@ class Renderer {
 	
 public:
 	
+	class Listener {
+		
+	public:
+		
+		virtual ~Listener() { }
+		
+		virtual void onRendererInit(Renderer &) { }
+		virtual void onRendererShutdown(Renderer &) { }
+		
+	};
+	
 	//! Render states
 	enum RenderState {
 		AlphaBlending,
@@ -128,6 +139,13 @@ public:
 	
 	virtual void Initialize() = 0;
 	
+	bool isInitialized() { return m_initialized; }
+	virtual void beforeResize(bool wasOrIsFullscreen) = 0;
+	virtual void afterResize() = 0;
+	
+	void addListener(Listener * listener);
+	void removeListener(Listener * listener);
+	
 	// Scene begin/end...
 	virtual void BeginScene() = 0;
 	virtual void EndScene() = 0;
@@ -195,6 +213,16 @@ public:
 protected:
 	
 	std::vector<TextureStage *> m_TextureStages;
+	bool m_initialized;
+	
+	void onRendererInit();
+	void onRendererShutdown();
+	
+private:
+	
+	typedef std::vector<Listener *> Listeners;
+	
+	Listeners m_listeners; //! Listeners for renderer events
 	
 };
 

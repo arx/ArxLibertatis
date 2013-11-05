@@ -18,28 +18,3 @@
  */
 
 #include "window/RenderWindow.h"
-
-#include <algorithm>
-
-#include <boost/foreach.hpp>
-
-void RenderWindow::addRenderListener(RendererListener * listener) {
-	m_renderListeners.push_back(listener);
-}
-
-void RenderWindow::removeRenderListener(RendererListener * listener) {
-	m_renderListeners.erase(std::remove(m_renderListeners.begin(), m_renderListeners.end(),
-	                        listener), m_renderListeners.end());
-}
-
-void RenderWindow::onRendererInit() {
-	BOOST_FOREACH(RendererListener * listener, m_renderListeners) {
-		listener->onRendererInit(*this);
-	}
-}
-
-void RenderWindow::onRendererShutdown() {
-	BOOST_FOREACH(RendererListener * listener, m_renderListeners) {
-		listener->onRendererShutdown(*this);
-	}
-}
