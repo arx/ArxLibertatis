@@ -34,14 +34,13 @@ public:
 	struct DisplayMode {
 		
 		Vec2i resolution;
-		unsigned depth;
 		
 		DisplayMode() { }
-		DisplayMode(const DisplayMode & o) : resolution(o.resolution), depth(o.depth) { }
-		DisplayMode(Vec2i res, unsigned bits) : resolution(res), depth(bits) { }
+		DisplayMode(const DisplayMode & o) : resolution(o.resolution) { }
+		DisplayMode(Vec2i res) : resolution(res) { }
 		bool operator<(const DisplayMode & other) const;
 		bool operator==(const DisplayMode & other) const {
-			return resolution == other.resolution && depth == other.depth;
+			return resolution == other.resolution;
 		}
 		
 	};

@@ -36,7 +36,7 @@ public:
 	bool initializeFramework();
 	void setTitle(const std::string & title);
 	bool setVSync(int vsync);
-	void setFullscreenMode(Vec2i resolution, unsigned depth = 0);
+	void setFullscreenMode(Vec2i resolution);
 	void setWindowSize(Vec2i size);
 	bool initialize();
 	void tick();
@@ -58,9 +58,9 @@ private:
 	static int SDLCALL eventFilter(const SDL_Event * event);
 	
 	bool m_initialized;
-	SDL1InputBackend * m_input;
-	
 	DisplayMode m_desktopMode;
+	
+	SDL1InputBackend * m_input;
 	
 	static SDL1Window * s_mainWindow;
 	

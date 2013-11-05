@@ -45,7 +45,7 @@ public:
 	 * If all parameters are zero, the desktop mode is used.
 	 * May be called before or after @ref initialize()
 	 */
-	virtual void setFullscreenMode(Vec2i resolution, unsigned depth = 0) = 0;
+	virtual void setFullscreenMode(Vec2i resolution) = 0;
 	
 	/*!
 	 * Exits fullscreen mode and sets the window size.
@@ -92,7 +92,6 @@ public:
 	
 	const Vec2i & getPosition() const { return m_position; }
 	const Vec2i & getSize() const { return m_size; }
-	unsigned getDepth() const { return depth_; }
 	
 	bool isFullScreen() const { return m_fullscreen; }
 	
@@ -121,7 +120,6 @@ protected:
 	bool m_visible;      //!< Is visible ?
 	bool m_fullscreen;   //!< Is fullscreen ?
 	bool m_focused;      //!< Has focus ?
-	unsigned depth_;
 	
 private:
 	

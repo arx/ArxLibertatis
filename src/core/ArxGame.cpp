@@ -258,7 +258,7 @@ void ArxGame::setWindowSize(bool fullscreen) {
 			config.video.resolution.y = std::max(config.video.resolution.y, s32(480));
 		}
 		
-		getWindow()->setFullscreenMode(config.video.resolution, config.video.bpp);
+		getWindow()->setFullscreenMode(config.video.resolution);
 		
 	} else {
 		
@@ -289,7 +289,7 @@ bool ArxGame::initWindow(RenderWindow * window) {
 	// Find the next best available fullscreen mode.
 	if(config.video.resolution != Vec2i_ZERO) {
 		const RenderWindow::DisplayModes & modes = window->getDisplayModes();
-		RenderWindow::DisplayMode mode(config.video.resolution, config.video.bpp);
+		RenderWindow::DisplayMode mode = config.video.resolution;
 		RenderWindow::DisplayModes::const_iterator i;
 		i = std::lower_bound(modes.begin(), modes.end(), mode);
 		if(i == modes.end()) {
@@ -297,13 +297,12 @@ bool ArxGame::initWindow(RenderWindow * window) {
 		} else {
 			mode = *i;
 		}
-		if(config.video.resolution != mode.resolution || unsigned(config.video.bpp) != mode.depth) {
+		if(config.video.resolution != mode.resolution) {
 			LogWarning << "Fullscreen mode " << config.video.resolution.x << 'x'
-			           << config.video.resolution.y << '@' << config.video.bpp
+			           << config.video.resolution.y
 			           << " not supported, using " << mode.resolution.x << 'x'
-			           << mode.resolution.y << '@' << mode.depth << " instead";
+			           << mode.resolution.y << " instead";
 			config.video.resolution = mode.resolution;
-			config.video.bpp = mode.depth;
 		}
 	}
 	
@@ -522,9 +521,9 @@ void ArxGame::onResizeWindow(const Window & window) {
 	
 	if(window.isFullScreen()) {
 		if(config.video.resolution == Vec2i_ZERO) {
-			LogInfo << "Auto-selected fullscreen resolution " << window.getSize().x << 'x' << window.getSize().y << '@' << window.getDepth();
+			LogInfo << "Auto-selected fullscreen resolution " << window.getSize().x << 'x' << window.getSize().y;
 		} else {
-			LogInfo << "Changed fullscreen resolution to " << window.getSize().x << 'x' << window.getSize().y << '@' << window.getDepth();
+			LogInfo << "Changed fullscreen resolution to " << window.getSize().x << 'x' << window.getSize().y;
 			config.video.resolution = window.getSize();
 		}
 	} else {

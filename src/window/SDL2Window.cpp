@@ -88,7 +88,7 @@ bool SDL2Window::initializeFramework() {
 	for(int i = 0; i < modes; i++) {
 		SDL_DisplayMode mode;
 		if(SDL_GetDisplayMode(SDL_DISPLAY, i, &mode) >= 0) {
-			displayModes.push_back(DisplayMode(Vec2i(mode.w, mode.h), 32)); // TODO depth
+			displayModes.push_back(Vec2i(mode.w, mode.h));
 		}
 	}
 
@@ -285,13 +285,11 @@ void SDL2Window::changeMode(DisplayMode mode, bool makeFullscreen) {
 	
 	if(!m_window) {
 		m_size = mode.resolution;
-		depth_ = mode.depth;
 		m_fullscreen = makeFullscreen;
 		return;
 	}
 	
-	if(m_fullscreen == makeFullscreen && m_size == mode.resolution
-	   && (!makeFullscreen || depth_ == mode.depth)) {
+	if(m_fullscreen == makeFullscreen && m_size == mode.resolution) {
 		return;
 	}
 	
@@ -348,7 +346,6 @@ void SDL2Window::updateSize(bool force) {
 	int w, h;
 	SDL_GetWindowSize(m_window, &w, &h);
 	m_size = Vec2i(w, h);
-	depth_ = 32; // TODO?
 	
 	if(force || m_size != oldSize) {
 		if(renderer) {
@@ -359,12 +356,12 @@ void SDL2Window::updateSize(bool force) {
 	}
 }
 
-void SDL2Window::setFullscreenMode(Vec2i resolution, unsigned _depth) {
-	changeMode(DisplayMode(resolution, _depth), true);
+void SDL2Window::setFullscreenMode(Vec2i resolution) {
+	changeMode(resolution, true);
 }
 
 void SDL2Window::setWindowSize(Vec2i size) {
-	changeMode(DisplayMode(size, 0), false);
+	changeMode(size, false);
 }
 
 int SDLCALL SDL2Window::eventFilter(void * userdata, SDL_Event * event) {

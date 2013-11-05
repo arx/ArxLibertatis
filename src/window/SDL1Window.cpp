@@ -32,6 +32,7 @@ SDL1Window * SDL1Window::s_mainWindow = NULL;
 
 SDL1Window::SDL1Window()
 	: m_initialized(false)
+	, m_desktopMode(640, 480)
 	, m_input(NULL)
 	{ }
 
@@ -73,10 +74,8 @@ bool SDL1Window::initializeFramework() {
 	LogInfo << "Using SDL " << runtimeVersion.str();
 	
 	const SDL_VideoInfo * vid = SDL_GetVideoInfo();
-	
 	m_desktopMode.resolution.x = vid->current_w;
 	m_desktopMode.resolution.y = vid->current_h;
-	m_desktopMode.depth = vid->vfmt->BitsPerPixel;
 	
 	u32 flags = SDL_FULLSCREEN | SDL_ANYFORMAT | SDL_OPENGL | SDL_HWSURFACE;
 	SDL_Rect ** modes = SDL_ListModes(NULL, flags);
@@ -86,7 +85,7 @@ bool SDL1Window::initializeFramework() {
 		
 #define ADD_MODE(x, y) \
 		if(m_desktopMode.resolution != Vec2i(x, y)) { \
-			displayModes.push_back(DisplayMode(Vec2i(x, y), m_desktopMode.depth)); \
+			displayModes.push_back(Vec2i(x, y)); \
 		}
 		
 		// 4:3
@@ -118,8 +117,7 @@ bool SDL1Window::initializeFramework() {
 		
 	} else if(modes) {
 		for(; *modes; modes++) {
-			DisplayMode mode(Vec2i((*modes)->w, (*modes)->h), m_desktopMode.depth);
-			displayModes.push_back(mode);
+			displayModes.push_back(Vec2i((*modes)->w, (*modes)->h));
 		}
 	} else {
 		return false;
@@ -166,7 +164,7 @@ bool SDL1Window::initialize() {
 		SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, msaa > 1 ? 1 : 0);
 		SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, msaa > 1 ? msaa : 0);
 		
-		if(!setMode(DisplayMode(m_size, m_fullscreen ? depth_ : 0), m_fullscreen)) {
+		if(!setMode(m_size, m_fullscreen)) {
 			if(lastTry) {
 				LogError << "Could not initialize window: " << SDL_GetError();
 				return false;
@@ -284,13 +282,11 @@ bool SDL1Window::setMode(DisplayMode mode, bool fullscreen) {
 	
 	if(fullscreen && mode.resolution == Vec2i_ZERO) {
 		mode = m_desktopMode;
-	} else if(mode.depth == 0) {
-		mode.depth = m_desktopMode.depth;
 	}
 	
 	Uint32 flags = SDL_ANYFORMAT | SDL_OPENGL | SDL_HWSURFACE;
 	flags |= (fullscreen) ? SDL_FULLSCREEN : SDL_RESIZABLE;
-	if(SDL_SetVideoMode(mode.resolution.x, mode.resolution.y, mode.depth, flags) == NULL) {
+	if(SDL_SetVideoMode(mode.resolution.x, mode.resolution.y, 0, flags) == NULL) {
 		return false;
 	}
 	
@@ -301,13 +297,11 @@ void SDL1Window::changeMode(DisplayMode mode, bool makeFullscreen) {
 	
 	if(!m_initialized) {
 		m_size = mode.resolution;
-		depth_ = mode.depth;
 		m_fullscreen = makeFullscreen;
 		return;
 	}
 	
-	if(m_fullscreen == makeFullscreen && m_size == mode.resolution
-	   && (!makeFullscreen || depth_ == mode.depth)) {
+	if(m_fullscreen == makeFullscreen && m_size == mode.resolution) {
 		return;
 	}
 	
@@ -334,7 +328,6 @@ void SDL1Window::updateSize(bool force) {
 	
 	const SDL_VideoInfo * vid = SDL_GetVideoInfo();
 	m_size = Vec2i(vid->current_w, vid->current_h);
-	depth_ = vid->vfmt->BitsPerPixel;
 	
 	if(force || m_size != oldSize) {
 		if(renderer) {
@@ -345,12 +338,12 @@ void SDL1Window::updateSize(bool force) {
 	}
 }
 
-void SDL1Window::setFullscreenMode(Vec2i resolution, unsigned _depth) {
-	changeMode(DisplayMode(resolution, _depth), true);
+void SDL1Window::setFullscreenMode(Vec2i resolution) {
+	changeMode(resolution, true);
 }
 
 void SDL1Window::setWindowSize(Vec2i size) {
-	changeMode(DisplayMode(size, 0), false);
+	changeMode(size, false);
 }
 
 int SDLCALL SDL1Window::eventFilter(const SDL_Event * event) {
@@ -419,7 +412,7 @@ void SDL1Window::tick() {
 			
 			case SDL_VIDEORESIZE: {
 				if(!m_fullscreen) {
-					changeMode(DisplayMode(Vec2i(event.resize.w, event.resize.h), depth_), false);
+					changeMode(Vec2i(event.resize.w, event.resize.h), false);
 				}
 				break;
 			}
