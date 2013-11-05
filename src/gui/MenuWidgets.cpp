@@ -909,7 +909,7 @@ bool Menu2_Render() {
 					const RenderWindow::DisplayModes & modes = mainApp->getWindow()->getDisplayModes();
 					for(size_t i = 0; i != modes.size(); ++i) {
 						
-						const RenderWindow::DisplayMode & mode = modes[i];
+						const DisplayMode & mode = modes[i];
 						
 						// find the aspect ratio
 						unsigned a = mode.resolution.x;
@@ -921,7 +921,7 @@ bool Menu2_Render() {
 						Vec2i aspect = mode.resolution / Vec2i(a);
 						
 						std::stringstream ss;
-						ss << mode.resolution.x << 'x' << mode.resolution.y;
+						ss << mode;
 						
 						if(aspect.x < 100 && aspect.y < 100) {
 							if(aspect == Vec2i(8, 5)) {

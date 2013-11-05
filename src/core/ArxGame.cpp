@@ -289,7 +289,7 @@ bool ArxGame::initWindow(RenderWindow * window) {
 	// Find the next best available fullscreen mode.
 	if(config.video.resolution != Vec2i_ZERO) {
 		const RenderWindow::DisplayModes & modes = window->getDisplayModes();
-		RenderWindow::DisplayMode mode = config.video.resolution;
+		DisplayMode mode = config.video.resolution;
 		RenderWindow::DisplayModes::const_iterator i;
 		i = std::lower_bound(modes.begin(), modes.end(), mode);
 		if(i == modes.end()) {
@@ -521,13 +521,13 @@ void ArxGame::onResizeWindow(const Window & window) {
 	
 	if(window.isFullScreen()) {
 		if(config.video.resolution == Vec2i_ZERO) {
-			LogInfo << "Auto-selected fullscreen resolution " << window.getSize().x << 'x' << window.getSize().y;
+			LogInfo << "Auto-selected fullscreen resolution " << DisplayMode(window.getSize());
 		} else {
-			LogInfo << "Changed fullscreen resolution to " << window.getSize().x << 'x' << window.getSize().y;
+			LogInfo << "Changed fullscreen resolution to " << DisplayMode(window.getSize());
 			config.video.resolution = window.getSize();
 		}
 	} else {
-		LogInfo << "Changed window size to " << window.getSize().x << 'x' << window.getSize().y;
+		LogInfo << "Changed window size to " << DisplayMode(window.getSize());
 		config.window.size = window.getSize();
 	}
 }

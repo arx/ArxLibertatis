@@ -25,12 +25,16 @@
 
 #include "graphics/Math.h"
 
-bool RenderWindow::DisplayMode::operator<(const DisplayMode & o) const {
+bool DisplayMode::operator<(const DisplayMode & o) const {
 	if(resolution.x != o.resolution.x) {
 		return (resolution.x < o.resolution.x);
 	} else {
 		return (resolution.y < o.resolution.y);
 	}
+}
+
+std::ostream & operator<<(std::ostream & os, const DisplayMode & mode) {
+	return os << mode.resolution.x << 'x' << mode.resolution.y;
 }
 
 void RenderWindow::addRenderListener(RendererListener * listener) {

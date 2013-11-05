@@ -20,30 +20,31 @@
 #ifndef ARX_WINDOW_RENDERWINDOW_H
 #define ARX_WINDOW_RENDERWINDOW_H
 
-#include <vector>
 #include <algorithm>
+#include <ostream>
+#include <vector>
 
 #include "window/Window.h"
 
 class Renderer;
 
+struct DisplayMode {
+	
+	Vec2i resolution;
+	
+	DisplayMode() { }
+	DisplayMode(const DisplayMode & o) : resolution(o.resolution) { }
+	/* implicit */ DisplayMode(Vec2i res) : resolution(res) { }
+	bool operator<(const DisplayMode & other) const;
+	bool operator==(const DisplayMode & other) const {
+		return resolution == other.resolution;
+	}
+	
+};
+
 class RenderWindow : public Window {
 	
 public:
-	
-	struct DisplayMode {
-		
-		Vec2i resolution;
-		
-		DisplayMode() { }
-		DisplayMode(const DisplayMode & o) : resolution(o.resolution) { }
-		DisplayMode(Vec2i res) : resolution(res) { }
-		bool operator<(const DisplayMode & other) const;
-		bool operator==(const DisplayMode & other) const {
-			return resolution == other.resolution;
-		}
-		
-	};
 	
 	typedef std::vector<DisplayMode> DisplayModes;
 	
@@ -126,5 +127,7 @@ private:
 	RendererListeners renderListeners; //! Listeners for renderer events
 	
 };
+
+std::ostream & operator<<(std::ostream & os, const DisplayMode & mode);
 
 #endif // ARX_WINDOW_RENDERWINDOW_H
