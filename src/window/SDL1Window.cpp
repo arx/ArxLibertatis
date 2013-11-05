@@ -31,7 +31,8 @@
 SDL1Window * SDL1Window::s_mainWindow = NULL;
 
 SDL1Window::SDL1Window()
-	: m_input(NULL)
+	: m_initialized(false)
+	, m_input(NULL)
 	{ }
 
 SDL1Window::~SDL1Window() {
@@ -140,8 +141,7 @@ bool SDL1Window::initializeFramework() {
 	return true;
 }
 
-bool SDL1Window::initialize(const std::string & title, Vec2i size, bool fullscreen,
-                           unsigned depth) {
+bool SDL1Window::initialize(Vec2i size, bool fullscreen, unsigned depth) {
 	
 	arx_assert(!displayModes.empty());
 	
@@ -204,10 +204,11 @@ bool SDL1Window::initialize(const std::string & title, Vec2i size, bool fullscre
 		break;
 	}
 	
+	m_initialized = true;
+	
 	isFullscreen_ = fullscreen;
 	
-	SDL_WM_SetCaption(title.c_str(), title.c_str());
-	title_ = title;
+	setTitle(m_title);
 	
 	SDL_ShowCursor(SDL_DISABLE);
 	
@@ -226,8 +227,15 @@ bool SDL1Window::initialize(const std::string & title, Vec2i size, bool fullscre
 	return true;
 }
 
+void SDL1Window::setTitle(const std::string & title) {
+	if(m_initialized) {
+		SDL_WM_SetCaption(title.c_str(), title.c_str());
+	}
+	m_title = title;
+}
+
 bool SDL1Window::setVSync(int vsync) {
-	if(s_mainWindow) {
+	if(m_initialized) {
 		// Cannot change vsync after init
 		return false;
 	}

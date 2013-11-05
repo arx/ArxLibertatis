@@ -34,9 +34,9 @@ public:
 	virtual ~SDL2Window();
 	
 	bool initializeFramework();
-	bool initialize(const std::string & title, Vec2i size, bool fullscreen,
-	                unsigned depth = 0);
+	void setTitle(const std::string & title);
 	bool setVSync(int vsync);
+	bool initialize(Vec2i size, bool fullscreen, unsigned depth = 0);
 	void setFullscreenMode(Vec2i resolution, unsigned depth = 0);
 	void setWindowSize(Vec2i size);
 	void tick();

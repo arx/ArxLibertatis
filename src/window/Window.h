@@ -34,8 +34,13 @@ public:
 	Window();
 	virtual ~Window();
 	
-	virtual bool initialize(const std::string & title, Vec2i size, bool fullscreen,
-	                        unsigned depth = 0) = 0;
+	/*!
+	 * Set the window titlebar caption.
+	 * May be called before or after @ref initialize()
+	 */
+	virtual void setTitle(const std::string & title) = 0;
+	
+	virtual bool initialize(Vec2i size, bool fullscreen, unsigned depth = 0) = 0;
 	
 	/*!
 	 * Enter fullscreen and set the given video mode.
@@ -103,7 +108,7 @@ protected:
 	void onPaint();
 	void onCreate();
 	
-	std::string title_; //!< Window title bar caption.
+	std::string m_title; //!< Window title bar caption.
 	Vec2i position_; //!< Screen position in pixels (relative to the upper left corner)
 	Vec2i size_; //!< Size in pixels
 	bool isMinimized_; //!< Is minimized ?

@@ -32,7 +32,11 @@
 
 SDL2Window * SDL2Window::s_mainWindow = NULL;
 
-SDL2Window::SDL2Window() : m_window(NULL), m_glcontext(NULL), m_input(NULL) { }
+SDL2Window::SDL2Window()
+	: m_window(NULL)
+	, m_glcontext(NULL)
+	, m_input(NULL)
+	{ }
 
 SDL2Window::~SDL2Window() {
 	
@@ -117,8 +121,7 @@ static Uint32 getSDLFlagsForMode(const Vec2i & size, bool fullscreen) {
 	return flags;
 }
 
-bool SDL2Window::initialize(const std::string & title, Vec2i size, bool fullscreen,
-                           unsigned depth) {
+bool SDL2Window::initialize(Vec2i size, bool fullscreen, unsigned depth) {
 	
 	ARX_UNUSED(depth); // TODO
 	
@@ -158,7 +161,7 @@ bool SDL2Window::initialize(const std::string & title, Vec2i size, bool fullscre
 		SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, msaa > 1 ? 1 : 0);
 		SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, msaa > 1 ? msaa : 0);
 		
-		m_window = SDL_CreateWindow(title.c_str(), x, y, size.x, size.y, windowFlags);
+		m_window = SDL_CreateWindow(m_title.c_str(), x, y, size.x, size.y, windowFlags);
 		if(!m_window) {
 			if(lastTry) {
 				LogError << "Could not create window: " << SDL_GetError();
@@ -205,7 +208,6 @@ bool SDL2Window::initialize(const std::string & title, Vec2i size, bool fullscre
 	
 	setVSync(m_vsync);
 	
-	title_ = title;
 	isFullscreen_ = fullscreen;
 	
 	SDL_ShowWindow(m_window);
@@ -223,6 +225,13 @@ bool SDL2Window::initialize(const std::string & title, Vec2i size, bool fullscre
 	onRendererInit();
 	
 	return true;
+}
+
+void SDL2Window::setTitle(const std::string & title) {
+	if(m_window) {
+		SDL_SetWindowTitle(m_window, title.c_str());
+	}
+	m_title = title;
 }
 
 bool SDL2Window::setVSync(int vsync) {

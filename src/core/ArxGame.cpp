@@ -319,11 +319,12 @@ bool ArxGame::initWindow(RenderWindow * window) {
 	
 	Vec2i size = config.video.fullscreen ? mode.resolution : config.window.size;
 	
+	m_MainWindow->setTitle(arx_version);
 	m_MainWindow->setMinTextureUnits(3);
 	m_MainWindow->setMaxMSAALevel(config.video.antialiasing ? 8 : 1);
 	m_MainWindow->setVSync(config.video.vsync ? 1 : 0);
 	
-	if(!m_MainWindow->initialize(arx_version, size, config.video.fullscreen, mode.depth)) {
+	if(!m_MainWindow->initialize(size, config.video.fullscreen, mode.depth)) {
 		m_MainWindow = NULL;
 		return false;
 	}
