@@ -126,6 +126,9 @@ extern float Original_framedelay;
 extern EERIE_3DOBJ *arrowobj;
 extern void InitTileLights();
 
+//! Hide the quick save indicator
+static void hideQuickSaveIcon();
+
 long Manage3DCursor(long flags); // flags & 1 == simulation
 long IN_BOOK_DRAW=0;
 
@@ -2899,6 +2902,7 @@ void ARX_INTERFACE_Reset()
 	CINEMASCOPE=0;
 	CINEMA_INC=0;
 	CINEMA_DECAL=0;
+	hideQuickSaveIcon();
 }
 
 //-----------------------------------------------------------------------------
@@ -6146,6 +6150,52 @@ void DrawChangeLevelIcon() {
 	}
 }
 
+static const unsigned QUICK_SAVE_ICON_TIME = 1000; //!< Time in ms to show the icon
+static unsigned g_quickSaveIconTime = 0; //!< Remaining time for the quick sive icon
+
+void showQuickSaveIcon() {
+	g_quickSaveIconTime = QUICK_SAVE_ICON_TIME;
+}
+
+static void hideQuickSaveIcon() {
+	g_quickSaveIconTime = 0;
+}
+
+static void updateQuickSaveIcon() {
+	if(g_quickSaveIconTime) {
+		if(g_quickSaveIconTime > unsigned(framedelay)) {
+			g_quickSaveIconTime -= unsigned(framedelay);
+		} else {
+			g_quickSaveIconTime = 0;
+		}
+	}
+}
+
+static void drawQuickSaveIcon() {
+	
+	if(!g_quickSaveIconTime) {
+		return;
+	}
+	
+	// Flash the icon twice, starting at about 0.7 opacity
+	float step = 1.f - float(g_quickSaveIconTime) * (1.f / QUICK_SAVE_ICON_TIME);
+	float alpha = std::min(1.f, 0.6f * (EEsin(step * (7.f / 2.f * PI)) + 1.f));
+	
+	TextureContainer * tex = TextureContainer::LoadUI("graph/interface/icons/menu_main_save");
+	if(!tex) {
+		return;
+	}
+	
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+	GRenderer->SetBlendFunc(Renderer::BlendSrcColor, Renderer::BlendOne);
+	
+	float w = INTERFACE_RATIO_DWORD(tex->m_dwWidth);
+	float h = INTERFACE_RATIO_DWORD(tex->m_dwHeight);
+	EERIEDrawBitmap2(0, 0, w, h, 0.f, tex, Color::gray(alpha));
+	
+	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+}
+
 int MemorizedSpellCount;
 Vec2f MemorizedSpellPos;
 
@@ -6344,6 +6394,7 @@ void UpdateInterface() {
 	UpdateHealthManaGauges();
 	UpdateMemorizedSpells();
 	UpdateChangeLevelIcon();
+	updateQuickSaveIcon();
 }
 
 void ArxGame::drawAllInterface() {
@@ -6376,6 +6427,7 @@ void ArxGame::drawAllInterface() {
 	if(CHANGE_LEVEL_ICON > -1 && ChangeLevel) {
 		DrawChangeLevelIcon();
 	}
+	drawQuickSaveIcon();
 	// Draw stealth gauge
 	ARX_INTERFACE_Draw_Stealth_Gauge();
 

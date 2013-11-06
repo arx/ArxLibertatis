@@ -111,7 +111,6 @@ extern long FORBID_SCRIPT_IO_CREATION;
 extern long NO_TIME_INIT;
 extern long CHANGE_LEVEL_ICON;
 extern bool TRUE_PLAYER_MOUSELOOK_ON;
-extern int iTimeToDrawD7;
 extern Vec3f LastValidPlayerPos;
 #define MAX_IO_SAVELOAD 1500
 
@@ -2854,8 +2853,6 @@ static bool ARX_CHANGELEVEL_Get_Player_LevelData(ARX_CHANGELEVEL_PLAYER_LEVEL_DA
 long ARX_CHANGELEVEL_Load(const fs::path & savefile) {
 	
 	LogDebug("begin ARX_CHANGELEVEL_Load " << savefile);
-	
-	iTimeToDrawD7 = -3000;
 	
 	PROGRESS_BAR_TOTAL = 238; 
 	OLD_PROGRESS_BAR_COUNT = PROGRESS_BAR_COUNT = 0;

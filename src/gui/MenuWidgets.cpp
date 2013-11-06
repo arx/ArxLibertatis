@@ -150,8 +150,6 @@ void ARX_MENU_Clicked_NEWQUEST();
 TextureContainer *pTextureLoad=NULL;
 static TextureContainer *pTextureLoadRender=NULL;
 
-int iTimeToDrawD7=-3000;
-
 void ARX_QuickSave() {
 	
 	if(REFUSE_GAME_RETURN) {
@@ -163,37 +161,6 @@ void ARX_QuickSave() {
 	savegames.quicksave(savegame_thumbnail);
 	
 	ARX_SOUND_MixerResume(ARX_SOUND_MixerGame);
-}
-
-void ARX_DrawAfterQuickLoad() {
-	
-	iTimeToDrawD7 -= checked_range_cast<int>(framedelay);
-	
-	float fColor;
-
-	if(iTimeToDrawD7 > 0) {
-		fColor=1.f;
-	} else {
-		int iFade=-iTimeToDrawD7;
-
-		if(iFade>1000)
-			return;
-
-		fColor=1.f-(((float)iFade)/1000.f);
-	}
-
-	TextureContainer *pTex = TextureContainer::Load("graph/interface/icons/menu_main_save");
-
-	if(!pTex)
-		return;
-
-	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-
-	EERIEDrawBitmap2(0, 0, INTERFACE_RATIO_DWORD(pTex->m_dwWidth),
-	                 INTERFACE_RATIO_DWORD(pTex->m_dwHeight), 0.f, pTex, Color::gray(fColor));
-
-	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 }
 
 bool ARX_LoadGame(const SaveGame & save) {

@@ -162,7 +162,6 @@ extern bool PLAYER_MOUSELOOK_ON;
 extern bool TRUE_PLAYER_MOUSELOOK_ON;
 extern long PLAYER_PARALYSED;
 extern long DeadTime;
-extern int iTimeToDrawD7;
 extern long LaunchDemo;
 
 extern long CURRENT_BASE_FOCAL;
@@ -603,19 +602,19 @@ void ArxGame::doFrame() {
 	}
 
 	if(PLAY_LOADED_CINEMATIC == 0 && !CINEMASCOPE && !BLOCK_PLAYER_CONTROLS && ARXmenu.currentmode == AMCM_OFF) {
+		
 		if(GInput->actionNowPressed(CONTROLS_CUST_QUICKLOAD)) {
 			ARX_QuickLoad();
 		}
-
+		
 		if(GInput->actionNowPressed(CONTROLS_CUST_QUICKSAVE)) {
-			iTimeToDrawD7=2000;
+			showQuickSaveIcon();
 			GRenderer->getSnapshot(savegame_thumbnail, 160, 100);
 			ARX_QuickSave();
 		}
-
-		ARX_DrawAfterQuickLoad();
-	}
 		
+	}
+	
 	if(FirstFrame) {
 		FirstFrameHandling();
 	} else {
