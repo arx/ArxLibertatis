@@ -1127,7 +1127,7 @@ void ARX_PARTICLES_Update(EERIE_CAMERA * cam)  {
 		if(part->special & NO_TRANS) {
 			mat.setBlendType(SpriteMaterial::Opaque);
 		} else {
-			if(part->special & SUBSTRACT) {
+			if((part->special & SUBSTRACT) && !(part->special & PARTICLE_SUB2)) {
 				mat.setBlendType(SpriteMaterial::Subtractive);
 			} else {
 				mat.setBlendType(SpriteMaterial::Additive);
