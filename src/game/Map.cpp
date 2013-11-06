@@ -167,8 +167,6 @@ bool C_ARX_Carte::Render(void)
 	CalcFPS();
 	GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer);
 
-	GRenderer->BeginScene();
-
 	int depx = (int)(this->posx * this->background->Xmul);
 
 	if(depx<0) depx=0;
@@ -384,7 +382,6 @@ float oldposx,oldposz;
 		while(nbxx--)
 		{
 			this->Render();
-			GRenderer->EndScene();
 
 			int dw=0;
 

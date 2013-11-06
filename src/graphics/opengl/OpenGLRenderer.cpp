@@ -258,14 +258,6 @@ void OpenGLRenderer::shutdown() {
 	
 }
 
-void OpenGLRenderer::BeginScene() {
-}
-
-void OpenGLRenderer::EndScene() {
-	
-	glFlush();
-}
-
 static EERIEMATRIX projection;
 static EERIEMATRIX view;
 

@@ -1473,8 +1473,6 @@ void ArxGame::renderLevel() {
 		GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer, Color::none, 0.0f, 2, rectz);
 	}
 
-	GRenderer->BeginScene();
-
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 
@@ -1656,7 +1654,6 @@ void ArxGame::renderLevel() {
 	if(sp_max_start)
 		Manage_sp_max();
 
-	GRenderer->EndScene();
 }
 
 void ArxGame::update() {	
@@ -1758,7 +1755,6 @@ void ArxGame::render() {
 	}
 	
 	if(showInfo != InfoPanelNone) {
-		GRenderer->BeginScene();
 		switch(showInfo) {
 		case InfoPanelFps: {
 			CalcFPS();
@@ -1779,7 +1775,6 @@ void ArxGame::render() {
 		}
 		default: break;
 		}
-		GRenderer->EndScene();
 	}
 	
 	if(LaunchDemo) {

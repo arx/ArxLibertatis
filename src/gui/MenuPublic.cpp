@@ -119,13 +119,10 @@ void ARXMenu_Private_Options_Video_SetResolution(bool fullscreen, int _iWidth, i
 	if(window->isFullScreen() != fullscreen || fullscreen) {
 		
 		GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer);
-		GRenderer->EndScene();
 		
 		mainApp->getWindow()->showFrame();
 		
 		mainApp->setWindowSize(fullscreen);
-		
-		GRenderer->BeginScene();
 		
 	}
 }

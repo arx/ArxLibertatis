@@ -187,7 +187,6 @@ void ARX_DrawAfterQuickLoad() {
 	if(!pTex)
 		return;
 
-	GRenderer->BeginScene();
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 
@@ -195,7 +194,6 @@ void ARX_DrawAfterQuickLoad() {
 	                 INTERFACE_RATIO_DWORD(pTex->m_dwHeight), 0.f, pTex, Color::gray(fColor));
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-	GRenderer->EndScene();
 }
 
 bool ARX_LoadGame(const SaveGame & save) {
@@ -404,8 +402,6 @@ bool Menu2_Render() {
 		return false;
 	}
 	
-	GRenderer->BeginScene();
-	
 	if(pTextManage) {
 		pTextManage->Clear();
 	}
@@ -502,7 +498,6 @@ bool Menu2_Render() {
 			GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
 			GRenderer->SetRenderState(Renderer::DepthWrite, true);
 			GRenderer->SetRenderState(Renderer::DepthTest, true);
-			GRenderer->EndScene();
 
 			return true;
 		} else if(eMenuState != NOP) {
@@ -1547,7 +1542,6 @@ bool Menu2_Render() {
 	GRenderer->SetRenderState(Renderer::DepthTest, true);
 	GRenderer->SetCulling(Renderer::CullCCW);
 
-	GRenderer->EndScene();
 	return true;
 }
 

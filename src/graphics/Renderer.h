@@ -164,10 +164,6 @@ public:
 	void addListener(Listener * listener);
 	void removeListener(Listener * listener);
 	
-	// Scene begin/end...
-	virtual void BeginScene() = 0;
-	virtual void EndScene() = 0;
-	
 	// Matrices
 	virtual void SetViewMatrix(const EERIEMATRIX & matView) = 0;
 	virtual void GetViewMatrix(EERIEMATRIX & matView) const = 0;

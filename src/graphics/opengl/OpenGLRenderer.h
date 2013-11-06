@@ -40,10 +40,6 @@ public:
 	void beforeResize(bool wasOrIsFullscreen);
 	void afterResize();
 	
-	// Scene begin/end...
-	void BeginScene();
-	void EndScene();
-	
 	// Matrices
 	void SetViewMatrix(const EERIEMATRIX & matView);
 	void GetViewMatrix(EERIEMATRIX & matView) const;

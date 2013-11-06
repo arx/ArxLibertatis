@@ -409,8 +409,6 @@ bool ARX_Menu_Render() {
 		EERIEMouseButton = 0;
 	}
 
-	GRenderer->BeginScene();
-
 	GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer);
 	
 	FLYING_OVER = 0;
@@ -682,6 +680,5 @@ bool ARX_Menu_Render() {
 		}
 	}
 
-	GRenderer->EndScene();
 	return true;
 }
