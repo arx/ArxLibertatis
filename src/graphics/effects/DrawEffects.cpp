@@ -104,7 +104,7 @@ void ARXDRAW_DrawInterShadows()
 	g_shadowBatch.resize(0);
 
 	GRenderer->SetFogColor(Color::none);
-	SetZBias(1);
+	GRenderer->SetDepthBias(1);
 
 	for(long i=0; i<TREATZONE_CUR; i++) {
 		if(treatio[i].show != 1 || !treatio[i].io)
@@ -217,7 +217,7 @@ void ARXDRAW_DrawInterShadows()
 
 		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 		GRenderer->SetRenderState(Renderer::DepthWrite, true);
-		SetZBias(0);
+		GRenderer->SetDepthBias(0);
 		GRenderer->SetFogColor(ulBKGColor);
 	}	
 }
@@ -243,7 +243,7 @@ void ARXDRAW_DrawPolyBoom()
 {
 	TexturedVertex ltv[4];
 
-	SetZBias(8);
+	GRenderer->SetDepthBias(8);
 	GRenderer->SetFogColor(Color::none);
 	unsigned long tim = (unsigned long)(arxtime);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
@@ -421,6 +421,6 @@ void ARXDRAW_DrawPolyBoom()
 		++ pb;
 	}
 
-	SetZBias(0);
+	GRenderer->SetDepthBias(0);
 	GRenderer->SetFogColor(ulBKGColor);
 }

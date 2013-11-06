@@ -1976,7 +1976,7 @@ bool ArxGame::initDeviceObjects() {
 	GRenderer->SetFogColor(current.depthcolor.to<u8>());
 	GRenderer->SetRenderState(Renderer::Fog, true);
 	
-	SetZBias(0);
+	GRenderer->SetDepthBias(0);
 
 	ComputePortalVertexBuffer();
 	VertexBuffer<SMY_VERTEX3> * vb3 = GRenderer->createVertexBuffer3(4000, Renderer::Stream);
