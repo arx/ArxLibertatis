@@ -203,6 +203,15 @@ bool SDL2Window::initialize() {
 		}
 		
 		// All good
+		int red = 0, green = 0, blue = 0, alpha = 0, depth = 0, doublebuffer = 0;
+		SDL_GL_GetAttribute(SDL_GL_RED_SIZE, &red);
+		SDL_GL_GetAttribute(SDL_GL_GREEN_SIZE, &green);
+		SDL_GL_GetAttribute(SDL_GL_BLUE_SIZE, &blue);
+		SDL_GL_GetAttribute(SDL_GL_ALPHA_SIZE, &alpha);
+		SDL_GL_GetAttribute(SDL_GL_DEPTH_SIZE, &depth);
+		SDL_GL_GetAttribute(SDL_GL_DOUBLEBUFFER, &doublebuffer);
+		LogInfo << "Window: r:" << red << " g:" << green << " b:" << blue << " a:" << alpha
+		        << " depth:" << depth << " aa:" << msaa << "x doublebuffer:" << doublebuffer;
 		break;
 	}
 	
