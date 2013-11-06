@@ -348,13 +348,15 @@ void SDL1Window::tick() {
 				// should be sent when Command+Q is pressed on Mac OS or ALT-F4 on other platforms
 				// but it doesn't look like it's working as expected...
 				#if ARX_PLATFORM == ARX_PLATFORM_MACOSX
-				if(event.key.keysym.sym == SDLK_q
-					&& (event.key.keysym.mod & KMOD_META) != KMOD_NONE) {
+				int quitkey = SDLK_q, quitmod = KMOD_META;
 				#else
-				if(event.key.keysym.sym == SDLK_F4
-					&& (event.key.keysym.mod & KMOD_ALT) != KMOD_NONE) {
+				int quitkey = SDLK_F4, quitmod = KMOD_ALT;
 				#endif
-					onDestroy();
+				if(event.key.keysym.sym == quitkey
+				   && (event.key.keysym.mod & quitmod) != KMOD_NONE) {
+					SDL_Event quitevent;
+					quitevent.type = SDL_QUIT;
+					SDL_PushEvent(&quitevent);
 					break;
 				}
 				

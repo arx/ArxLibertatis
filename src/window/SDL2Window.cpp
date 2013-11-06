@@ -390,20 +390,20 @@ void SDL2Window::tick() {
 				}
 				break;
 			}
-
-		#if ARX_PLATFORM == ARX_PLATFORM_WIN32
-			// SDL2 is still eating our ALT+F4 under windows...
-			// See bug report here: https://bugzilla.libsdl.org/show_bug.cgi?id=1555
+			
+			#if ARX_PLATFORM == ARX_PLATFORM_WIN32
 			case SDL_KEYDOWN: {
-				
+				// SDL2 is still eating our ALT+F4 under windows...
+				// See bug report here: https://bugzilla.libsdl.org/show_bug.cgi?id=1555
 				if(event.key.keysym.sym == SDLK_F4
-					&& (event.key.keysym.mod & KMOD_ALT) != KMOD_NONE) {
-					onDestroy();
-					return;
+				   && (event.key.keysym.mod & KMOD_ALT) != KMOD_NONE) {
+					SDL_Event quitevent;
+					quitevent.type = SDL_QUIT;
+					SDL_PushEvent(&quitevent);
 				}
 				break;
 			}
-		#endif
+			#endif
 			
 			case SDL_QUIT: {
 				// The user has requested to close the whole program
