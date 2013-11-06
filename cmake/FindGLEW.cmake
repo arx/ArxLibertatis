@@ -4,7 +4,7 @@
 #
 # GLEW_FOUND
 # GLEW_INCLUDE_DIR   Where to find GL/glew.h
-# GLEW_LIBRARIES     The glew library library
+# GLEW_LIBRARIES     The glew library
 # GLEW_DEFINITIONS   Definitions to use when compiling code that uses glew
 #
 # Typical usage could be something like:

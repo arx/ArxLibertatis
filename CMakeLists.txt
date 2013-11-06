@@ -39,10 +39,11 @@ option(INSTALL_SCRIPTS "Install the data install script" ON)
 # Optional dependencies
 option(USE_OPENAL "Build the OpenAL audio backend" ON)
 option(USE_OPENGL "Build the OpenGL renderer backend" ON)
-option(USE_SDL "Build the SDL windowing backend" ON)
 option(USE_NATIVE_FS "Use the native filesystem backend directly instead of boost" ON)
-option(USE_QT5 "Use Qt 5 if available" ON)
-option(USE_QT4 "Use Qt 4 if available" ON)
+
+# Alternative dependencies
+set(WITH_SDL CACHE STRING "The SDL version to use: 1 or 2 or empty (use any)")
+set(WITH_QT CACHE STRING "The Qt version to use: 4 or 5 or empty (use any)")
 
 # Build types
 option(UNITY_BUILD "Unity build" OFF)
@@ -111,11 +112,14 @@ set(GAMESBINDIR "${CMAKE_INSTALL_BINDIR}" CACHE
     STRING "Install location for game executables (relative to prefix).")
 set(SCRIPTDIR "${CMAKE_INSTALL_BINDIR}" CACHE
     STRING "Where to install the data install script (relative to prefix).")
+set(INSTALL_DATADIR "${CMAKE_INSTALL_DATAROOTDIR}/games/arx" CACHE
+    STRING "Install location for Arx Libertatis data files (relative to prefix).")
 mark_as_advanced(
 	ICONDIR
 	APPDIR
 	GAMESBINDIR
 	SCRIPTDIR
+	INSTALL_DATADIR
 )
 
 # Default runtime user and data directories
@@ -270,7 +274,23 @@ if(USE_OPENAL)
 endif()
 
 # SDL
-if(USE_SDL)
+if(NOT ARX_HAVE_SDL AND (NOT WITH_SDL OR WITH_SDL EQUAL 2))
+	if(NOT WITH_SDL)
+		set(SDL_OPTIONAL_DEPENDENCY)
+	else()
+		set(SDL_OPTIONAL_DEPENDENCY ${OPTIONAL_DEPENDENCY})
+	endif()
+	set(SDL2_BUILDING_LIBRARY 1) # we don't need SDL2main!
+	find_package(SDL2 ${OPTIONAL_DEPENDENCY})
+	if(SDL2_FOUND)
+		if(NOT MSVC)
+			check_link_library(SDL2 SDL2_LIBRARIES)
+		endif()
+		set(ARX_HAVE_SDL2 1)
+		set(ARX_HAVE_SDL 1)
+	endif()
+endif()
+if(NOT ARX_HAVE_SDL AND (NOT WITH_SDL OR WITH_SDL EQUAL 1))
 	if(NOT MACOSX)
 		# Required to avoid linking with SDLmain except for OS X where it is necessary
 		# due to the need to have NSApplication correctly setup by SDLmain.
@@ -281,6 +301,8 @@ if(USE_SDL)
 		if(NOT MSVC)
 			check_link_library(SDL SDL_LIBRARY)
 		endif()
+		set(ARX_HAVE_SDL1 1)
+		set(ARX_HAVE_SDL 1)
 	endif(SDL_FOUND)
 endif()
 
@@ -298,8 +320,8 @@ set(ARX_HAVE_CRASHREPORTER 0)
 if(BUILD_CRASHREPORTER)
 	
 	# Try to find Qt 5 modules
-	if(NOT HAVE_QT AND USE_QT5)
-		if(USE_QT4)
+	if(NOT HAVE_QT AND (NOT WITH_QT OR WITH_QT EQUAL 5))
+		if(NOT WITH_QT)
 			# Missing Qt5*Config.cmake files are not errors, reuduce log spam
 			set(Qt_OPTIONAL_DEPENDENCY QUIET)
 		else()
@@ -310,14 +332,17 @@ if(BUILD_CRASHREPORTER)
 		find_package(Qt5Widgets ${Qt_OPTIONAL_DEPENDENCY})
 		find_package(Qt5Network ${Qt_OPTIONAL_DEPENDENCY})
 		if(Qt5Core_FOUND AND Qt5Gui_FOUND AND Qt5Widgets_FOUND AND Qt5Network_FOUND)
-			message(STATUS "Using Qt 5")
+			if(NOT ARX_FOUND_QT_VERSION EQUAL 5)
+				message(STATUS "Using Qt 5")
+				set(ARX_FOUND_QT_VERSION 5 CACHE INTERNAL "foobar")
+			endif()
 			set(HAVE_QT5 1)
 			set(HAVE_QT 1)
 		endif()
 	endif()
 	
 	# Otherwise, look for Qt 4
-	if(NOT HAVE_QT AND USE_QT4)
+	if(NOT HAVE_QT AND (NOT WITH_QT OR WITH_QT EQUAL 4))
 		find_package(Qt4 COMPONENTS QtCore QtGui QtNetwork ${OPTIONAL_DEPENDENCY})
 		if(QT_FOUND)
 			if(NOT MSVC)
@@ -325,7 +350,10 @@ if(BUILD_CRASHREPORTER)
 				check_link_library(QtGui QT_QTGUI_LIBRARY_RELEASE QT_QTGUI)
 				check_link_library(QtNetwork QT_QTNETWORK_LIBRARY_RELEASE QT_QTNETWORK)
 			endif()
-			message(STATUS "Using Qt 4")
+			if(NOT ARX_FOUND_QT_VERSION EQUAL 4)
+				message(STATUS "Using Qt 4")
+				set(ARX_FOUND_QT_VERSION 4 CACHE INTERNAL "foobar")
+			endif()
 			set(HAVE_QT4 1)
 			set(HAVE_QT 1)
 		endif()
@@ -645,7 +673,8 @@ set(GUI_SOURCES
 )
 
 set(INPUT_SOURCES src/input/Input.cpp)
-set(INPUT_SDL_SOURCES src/input/SDLInputBackend.cpp)
+set(INPUT_SDL1_SOURCES src/input/SDL1InputBackend.cpp)
+set(INPUT_SDL2_SOURCES src/input/SDL2InputBackend.cpp)
 
 set(IO_SOURCES
 	src/io/CinematicLoad.cpp
@@ -764,7 +793,8 @@ set(WINDOW_SOURCES
 	src/window/RenderWindow.cpp
 	src/window/Window.cpp
 )
-set(WINDOW_SDL_SOURCES src/window/SDLWindow.cpp)
+set(WINDOW_SDL1_SOURCES src/window/SDL1Window.cpp)
+set(WINDOW_SDL2_SOURCES src/window/SDL2Window.cpp)
 
 # TODO manually specify theese like we do for the tools
 file(GLOB_RECURSE ALL_INCLUDES RELATIVE ${CMAKE_SOURCE_DIR} ${SRC_DIR}/*.h)
@@ -793,15 +823,27 @@ if(USE_OPENGL AND OPENGL_FOUND AND GLEW_FOUND)
 	include_directories(SYSTEM ${OPENGL_INCLUDE_DIR} ${GLEW_INCLUDE_DIR})
 	add_definitions(${GLEW_DEFINITIONS})
 	set(ARX_HAVE_OPENGL 1)
+else()
+	# SDL backends require OpenGL
+	unset(ARX_HAVE_SDL)
+	unset(ARX_HAVE_SDL1)
+	unset(ARX_HAVE_SDL2)
 endif()
 
 # Windowing / input
-if(USE_SDL AND ARX_HAVE_OPENGL AND SDL_FOUND)
-	list(APPEND WINDOW_SOURCES ${WINDOW_SDL_SOURCES})
-	list(APPEND INPUT_SOURCES ${INPUT_SDL_SOURCES})
-	list(APPEND ARX_LIBRARIES ${SDL_LIBRARY})
-	include_directories(SYSTEM ${SDL_INCLUDE_DIR})
-	set(ARX_HAVE_SDL 1)
+if(ARX_HAVE_SDL)
+	if(ARX_HAVE_SDL2)
+		list(APPEND WINDOW_SOURCES ${WINDOW_SDL2_SOURCES})
+		list(APPEND INPUT_SOURCES ${INPUT_SDL2_SOURCES})
+		list(APPEND ARX_LIBRARIES ${SDL2_LIBRARIES})
+		include_directories(SYSTEM ${SDL2_INCLUDE_DIR})
+	elseif(ARX_HAVE_SDL1)
+		list(APPEND WINDOW_SOURCES ${WINDOW_SDL1_SOURCES})
+		list(APPEND INPUT_SOURCES ${INPUT_SDL1_SOURCES})
+		list(APPEND ARX_LIBRARIES ${SDL_LIBRARY})
+		include_directories(SYSTEM ${SDL_INCLUDE_DIR})
+	endif()
+	add_definitions(-DNO_SDL_GLEXT) # we use GLEW for that
 endif()
 
 # Logging
@@ -1141,6 +1183,29 @@ if(BUILD_TESTS)
 endif()
 
 
+# Install Arx Libertatis data files
+# TODO these should be zipped up once we support that
+install(DIRECTORY data/core/ DESTINATION "${INSTALL_DATADIR}")
+# Also copy / symlink the data file into the build directory to run dev builds of arx
+get_property(arx_location TARGET arx PROPERTY LOCATION)
+get_filename_component(arx_location "${arx_location}" PATH)
+set(arx_core_dir "${CMAKE_SOURCE_DIR}/data/core")
+file(GLOB arx_data_dirs RELATIVE "${arx_core_dir}" "${arx_core_dir}/*")
+add_custom_target(copy_data_dirs ALL)
+if(UNIX)
+	set(symlink_command "create_symlink")
+else()
+	set(symlink_command "copy_directory")
+endif()
+foreach(dir IN LISTS arx_data_dirs)
+	add_custom_command(TARGET copy_data_dirs PRE_BUILD
+		COMMAND "${remove_directory}" -E remove_directory "${arx_location}/${dir}"
+		COMMAND "${CMAKE_COMMAND}" -E
+			"${symlink_command}" "${arx_core_dir}/${dir}" "${arx_location}/${dir}"
+		VERBATIM
+	)
+endforeach()
+
 # Install the data install script
 if(INSTALL_SCRIPTS AND NOT WIN32)
 	install(PROGRAMS scripts/arx-install-data DESTINATION "${SCRIPTDIR}")
@@ -1206,11 +1271,9 @@ print_configuration("Renderer"
 print_configuration("Audio backend"
 	ARX_HAVE_OPENAL "OpenAL"
 )
-print_configuration("Input backend"
-	ARX_HAVE_SDL     "SDL"
-)
 print_configuration("Windowing"
-	ARX_HAVE_SDL     "SDL"
+	ARX_HAVE_SDL2     "SDL 2"
+	ARX_HAVE_SDL1     "SDL 1.2"
 )
 print_configuration("Crash handler"
 	ARX_HAVE_CRASHHANDLER_POSIX   "POSIX"
@@ -1240,10 +1303,7 @@ if(NOT (ARX_HAVE_OPENAL))
 	message(WARNING "No audio backend enabled - need OpenAL")
 endif()
 if(NOT (ARX_HAVE_SDL))
-	message(SEND_ERROR "No input backend available - need SDL")
-endif()
-if(NOT (ARX_HAVE_SDL))
-	message(SEND_ERROR "No windowing backend available - need SDL")
+	message(SEND_ERROR "No windowing backend available - need SDL 2 or 1.2")
 endif()
 if(NOT (ARX_HAVE_NANOSLEEP OR WIN32))
 	message(SEND_ERROR "Need either nanosleep or WIN32.")

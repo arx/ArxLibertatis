@@ -98,7 +98,6 @@ const std::string AUTO_RESOLUTION_STRING = "Automatic";
 
 static int newWidth;
 static int newHeight;
-static int newBpp;
 static bool newFullscreen;
 
 #define NODEBUGZONE
@@ -122,7 +121,7 @@ extern float PROGRESS_BAR_COUNT;
 float INTERFACE_RATIO(float a);
 bool bNoMenu=false;
 
-void ARXMenu_Private_Options_Video_SetResolution(bool fullscreen, int _iWidth, int _iHeight, int _bpp);
+void ARXMenu_Private_Options_Video_SetResolution(bool fullscreen, int _iWidth, int _iHeight);
 
 static MenuCursor * pMenuCursor = NULL;
 
@@ -136,7 +135,6 @@ CMenuElementText *pDeleteConfirm=NULL;
 CMenuElementText *pDeleteButton=NULL;
 CMenuCheckButton * fullscreenCheckbox = NULL;
 static CMenuSliderText * pMenuSliderResol = NULL;
-static CMenuSliderText * pMenuSliderBpp = NULL;
 
 float ARXTimeMenu;
 float ARXOldTimeMenu;
@@ -266,7 +264,6 @@ void Check_Apply() {
 		if(config.video.resolution.x != newWidth
 		   || config.video.resolution.y != newHeight
 		   || config.video.fullscreen != newFullscreen
-		   || config.video.bpp != newBpp
 		) {
 			pMenuElementApply->SetCheckOn();
 			((CMenuElementText*)pMenuElementApply)->lColor=((CMenuElementText*)pMenuElementApply)->lOldColor;
@@ -866,7 +863,7 @@ bool Menu2_Render() {
 						
 						slider->AddText(new CMenuElementText(-1, hFontMenu, "Auto-Select", 0, 0, lColor, 1.f, OPTIONS_VIDEO_RENDERER_AUTOMATIC));
 						slider->iPos = slider->vText.size() - 1;
-#if ARX_HAVE_SDL
+#if ARX_HAVE_SDL1 || ARX_HAVE_SDL2
 						slider->AddText(new CMenuElementText(-1, hFontMenu, "OpenGL", 0, 0, lColor, 1.f, OPTIONS_VIDEO_RENDERER_OPENGL));
 						if(config.window.framework == "SDL") {
 							slider->iPos = slider->vText.size() - 1;
@@ -909,20 +906,10 @@ bool Menu2_Render() {
 					
 					pMenuSliderResol->setEnabled(config.video.fullscreen);
 					
-					std::vector<unsigned> vBpp;
-					
 					const RenderWindow::DisplayModes & modes = mainApp->getWindow()->getDisplayModes();
 					for(size_t i = 0; i != modes.size(); ++i) {
 						
-						const RenderWindow::DisplayMode & mode = modes[i];
-						
-						if(std::find(vBpp.begin(), vBpp.end(), mode.depth) == vBpp.end()) {
-							vBpp.push_back(mode.depth);
-						}
-						
-						if(mode.depth != unsigned(config.video.bpp)) {
-							continue;
-						}
+						const DisplayMode & mode = modes[i];
 						
 						// find the aspect ratio
 						unsigned a = mode.resolution.x;
@@ -934,7 +921,7 @@ bool Menu2_Render() {
 						Vec2i aspect = mode.resolution / Vec2i(a);
 						
 						std::stringstream ss;
-						ss << mode.resolution.x << 'x' << mode.resolution.y;
+						ss << mode;
 						
 						if(aspect.x < 100 && aspect.y < 100) {
 							if(aspect == Vec2i(8, 5)) {
@@ -963,42 +950,6 @@ bool Menu2_Render() {
 
 					pc->AddElement(pMenuSliderResol);
 
-					pWindowMenuConsole->AddMenuCenterY(pc);
-
-					int iSize = me->GetWidth();
-					pc = new CMenuPanel();
-					szMenuText = getLocalised("system_menus_options_video_bpp");
-					szMenuText += " ";
-					me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
-					me->SetCheckOff();
-					pc->AddElement(me);
-					me = new CMenuSliderText(BUTTON_MENUOPTIONSVIDEO_BPP, 0, 0);
-					pMenuSliderBpp = (CMenuSliderText*)me;
-					pMenuSliderBpp->setEnabled(config.video.fullscreen);
-
-					
-					std::sort(vBpp.begin(), vBpp.end());
-
-					std::vector<unsigned>::iterator ii;
-					for(ii=vBpp.begin();ii!=vBpp.end();++ii)
-					{
-						std::stringstream bpp;
-						bpp << *ii;
-						((CMenuSliderText*)me)->AddText(new CMenuElementText(-1, hFontMenu, bpp.str(), 0, 0, lColor, 1.f, (MENUSTATE)(BUTTON_MENUOPTIONSVIDEO_BPP)));
-
-						if(*ii == unsigned(config.video.bpp)) {
-							((CMenuSliderText*)me)->iPos = ((CMenuSliderText*)me)->vText.size()-1;
-						}
-					}
-
-					((CMenuSliderText *)me)->SetWidth(iSize);
-
-
-					fRatio    = (RATIO_X(iWindowConsoleWidth-9) - me->GetWidth()); 
-					me->Move(checked_range_cast<int>(fRatio), 0); 
-
-
-					pc->AddElement(me);
 					pWindowMenuConsole->AddMenuCenterY(pc);
 
 					pc = new CMenuPanel();
@@ -1179,33 +1130,6 @@ bool Menu2_Render() {
 
 					//------------------ START INPUT
 					pWindowMenuConsole = new CWindowMenuConsole(iWindowConsoleOffsetX,iWindowConsoleOffsetY,iWindowConsoleWidth,iWindowConsoleHeight, OPTIONS_INPUT);
-					
-					// Input backend selection
-					{
-						
-						pc = new CMenuPanel();
-						szMenuText = getLocalised("system_menus_options_input_backend", "Backend");
-						szMenuText += "  ";
-						me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
-						me->SetCheckOff();
-						pc->AddElement(me);
-						CMenuSliderText * slider = new CMenuSliderText(BUTTON_MENUOPTIONS_CONTROLS_BACKEND, 0, 0);
-						
-						slider->AddText(new CMenuElementText(-1, hFontMenu, "Auto-Select", 0, 0, lColor, 1.f, OPTIONS_INPUT_BACKEND_AUTOMATIC));
-						slider->iPos = slider->vText.size() - 1;
-#if ARX_HAVE_SDL
-						slider->AddText(new CMenuElementText(-1, hFontMenu, "SDL", 0, 0, lColor, 1.f, OPTIONS_INPUT_BACKEND_SDL));
-						if(config.input.backend == "SDL") {
-							slider->iPos = slider->vText.size() - 1;
-						}
-#endif
-					
-						float fRatio    = (RATIO_X(iWindowConsoleWidth-9) - slider->GetWidth()); 
-						slider->Move(checked_range_cast<int>(fRatio), 0); 
-						pc->AddElement(slider);
-						pWindowMenuConsole->AddMenuCenterY(pc);
-						
-					}
 					
 					szMenuText = getLocalised("system_menus_options_input_customize_controls");
 					me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, OPTIONS_INPUT_CUSTOMIZE_KEYS_1);
@@ -1667,10 +1591,6 @@ CMenuElement::~CMenuElement() {
 	if(this == fullscreenCheckbox) {
 		fullscreenCheckbox = NULL;
 	}
-
-	if(this == pMenuSliderBpp) {
-		pMenuSliderBpp = NULL;
-	}
 }
 
 CMenuElement* CMenuElement::OnShortCut() {
@@ -1828,7 +1748,6 @@ bool CMenuElementText::OnMouseClick(int _iMouseButton) {
 			newWidth = config.video.resolution.x;
 			newHeight = config.video.resolution.y;
 			newFullscreen = config.video.fullscreen;
-			newBpp = config.video.bpp;
 			break;
 		}
 	case BUTTON_MENUEDITQUEST_LOAD_INIT: {
@@ -1977,11 +1896,9 @@ bool CMenuElementText::OnMouseClick(int _iMouseButton) {
 			if(newWidth != config.video.resolution.x
 			   || newHeight!=config.video.resolution.y
 			   || newFullscreen != config.video.fullscreen
-			   || newBpp != config.video.bpp
 			) {
-				ARXMenu_Private_Options_Video_SetResolution(newFullscreen, newWidth, newHeight, newBpp);
+				ARXMenu_Private_Options_Video_SetResolution(newFullscreen, newWidth, newHeight);
 				pMenuSliderResol->iOldPos = -1;
-				pMenuSliderBpp->iOldPos = -1;
 				fullscreenCheckbox->iOldState = -1;
 			}
 			pMenu->bReInitAll=true;
@@ -2567,9 +2484,6 @@ bool CMenuCheckButton::OnMouseClick(int _iMouseButton) {
 			if(pMenuSliderResol) {
 				pMenuSliderResol->setEnabled(newFullscreen);
 			}
-			if(pMenuSliderBpp) {
-				pMenuSliderBpp->setEnabled(newFullscreen);
-			}
 			
 		}
 		break;
@@ -2618,12 +2532,6 @@ bool CMenuCheckButton::OnMouseClick(int _iMouseButton) {
 			newHeight=config.video.resolution.y;
 		}
 		
-		if(pMenuSliderBpp && pMenuSliderBpp->iOldPos >= 0) {
-			pMenuSliderBpp->iPos=pMenuSliderBpp->iOldPos;
-			pMenuSliderBpp->iOldPos=-1;
-			newBpp=config.video.bpp;
-		}
-				
 		if(fullscreenCheckbox && fullscreenCheckbox->iOldState >= 0) {
 			fullscreenCheckbox->iState = fullscreenCheckbox->iOldState;
 			fullscreenCheckbox->iOldState = -1;
@@ -4122,21 +4030,7 @@ bool CMenuSliderText::OnMouseClick(int _iMouseButton) {
 			}
 			break;
 		}
-		case BUTTON_MENUOPTIONS_CONTROLS_BACKEND: {
-			switch((vText.at(iPos))->eMenuState) {
-				case OPTIONS_INPUT_BACKEND_SDL:       config.input.backend = "SDL"; break;
-				case OPTIONS_INPUT_BACKEND_AUTOMATIC: config.input.backend = "auto"; break;
-				default: break;
-			}
-			break;
-		}
 		// MENUOPTIONS_VIDEO
-		case BUTTON_MENUOPTIONSVIDEO_BPP: {
-			std::stringstream ss;
-			ss << vText[iPos]->lpszText;
-			ss >> newBpp;
-			break;
-		}
 		case BUTTON_MENUOPTIONSVIDEO_OTHERSDETAILS: {
 			ARXMenu_Options_Video_SetDetailsQuality(iPos);
 			break;

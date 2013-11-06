@@ -114,7 +114,6 @@ aalError OpenALBackend::init(bool enableEffects) {
 	
 	AL_CHECK_ERROR("initializing")
 	
-	const ALchar * renderer = alGetString(AL_RENDERER);
 	const ALchar * version = alGetString(AL_VERSION);
 	const char * efx_ver;
 #if ARX_HAVE_OPENAL_EFX
@@ -126,16 +125,14 @@ aalError OpenALBackend::init(bool enableEffects) {
 	{
 		efx_ver = " without EFX";
 	}
-	const char * prefix = "";
-	if(std::strncmp(renderer, "OpenAL", 6) != 0) {
-		prefix = "OpenAL ";
-	}
-	LogInfo << "Using " << prefix << renderer << ' ' << version << efx_ver;
-	CrashHandler::setVariable("OpenAL renderer", renderer);
+	LogInfo << "Using OpenAL " << version << efx_ver;
 	CrashHandler::setVariable("OpenAL version", version);
 	
-	LogInfo << " └─ Vendor: " << alGetString(AL_VENDOR);
+	LogInfo << " ├─ Vendor: " << alGetString(AL_VENDOR);
 	CrashHandler::setVariable("OpenAL vendor", alGetString(AL_VENDOR));
+	
+	LogInfo << " └─ Device: " << alGetString(AL_RENDERER);
+	CrashHandler::setVariable("OpenAL device", alGetString(AL_RENDERER));
 	
 	LogDebug("AL extensions: " << alGetString(AL_EXTENSIONS));
 	LogDebug("ALC extensions: " << alcGetString(device, ALC_EXTENSIONS));

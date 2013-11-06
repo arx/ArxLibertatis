@@ -98,20 +98,19 @@ extern int iFadeAction;
 extern long ZMAPMODE;
 
 //-----------------------------------------------------------------------------
-void ARXMenu_Private_Options_Video_SetResolution(bool fullscreen, int _iWidth, int _iHeight, int _iBpp) {
+void ARXMenu_Private_Options_Video_SetResolution(bool fullscreen, int _iWidth, int _iHeight) {
 	
 	if(!GRenderer) {
 		return;
 	}
 	
 	config.video.resolution = Vec2i(_iWidth, _iHeight);
-	config.video.bpp = _iBpp;
 	
 	if(!fullscreen) {
 		if(config.video.resolution == Vec2i_ZERO) {
 			LogInfo << "Configuring automatic fullscreen resolution selection";
 		} else {
-			LogInfo << "Configuring fullscreen resolution to " << _iWidth << 'x' << _iHeight << '@' << _iBpp;
+			LogInfo << "Configuring fullscreen resolution to " << DisplayMode(config.video.resolution);
 		}
 	}
 	
@@ -124,7 +123,7 @@ void ARXMenu_Private_Options_Video_SetResolution(bool fullscreen, int _iWidth, i
 		
 		mainApp->getWindow()->showFrame();
 		
-		mainApp->setFullscreen(fullscreen);
+		mainApp->setWindowSize(fullscreen);
 		
 		GRenderer->BeginScene();
 		

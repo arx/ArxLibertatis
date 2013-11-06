@@ -54,9 +54,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/GameTime.h"
 #include "graphics/Math.h"
 #include "input/InputBackend.h"
-#if ARX_HAVE_SDL
-#include "input/SDLInputBackend.h"
-#endif
 #include "io/log/Logger.h"
 #include "window/RenderWindow.h"
 
@@ -182,10 +179,10 @@ static const std::string PREFIX_BUTTON = "Button";
 static const char SEPARATOR = '+';
 const std::string Input::KEY_NONE = "---";
 
-bool ARX_INPUT_Init() {
+bool ARX_INPUT_Init(Window * window) {
 	GInput = new Input();
 	
-	bool ret = GInput->init();
+	bool ret = GInput->init(window);
 	if(!ret) {
 		delete GInput;
 		GInput = NULL;
@@ -204,45 +201,17 @@ Input::Input() : backend(NULL) {
 	reset();
 }
 
-bool Input::init() {
+bool Input::init(Window * window) {
 	arx_assert(backend == NULL);
 	
-	bool autoBackend = (config.input.backend == "auto");
-	
-	for(int i = 0; i < 2 && !backend; i++) {
-		bool first = (i == 0);
-		
-		bool matched = false;
-		
-		#if ARX_HAVE_SDL
-		if(!backend && first == (autoBackend || config.input.backend == "SDL")) {
-			matched = true;
-			backend = new SDLInputBackend;
-			if(!backend->init()) {
-				delete backend, backend = NULL;
-			}
-		}
-		#endif
-		
-		if(first && !matched) {
-			LogError << "Unknown backend: " << config.input.backend;
-		}
-	}
+	backend = window->getInputBackend();
 	
 	return (backend != NULL);
-}
-
-Input::~Input() {
-	delete backend;
 }
 
 void Input::reset() {
 	iMouseR = Vec2s_ZERO;
 
-	Vec2s wndSize((short)mainApp->getWindow()->getSize().x, (short)mainApp->getWindow()->getSize().y); 
-	Vec2s absPos = wndSize * Vec2s(2);
-	setMousePosAbs(absPos);
-	
 	for(size_t i = 0; i < Mouse::ButtonCount; i++) {
 		iMouseTime[i] = 0;
 		iMouseTimeSet[i] = 0;
@@ -259,14 +228,6 @@ void Input::reset() {
 	EERIEMouseButton = 0;
 
 	iWheelDir = 0;
-}
-
-void Input::acquireDevices() {
-	backend->acquireDevices();
-}
-
-void Input::unacquireDevices() {
-	backend->unacquireDevices();
 }
 
 void Input::setMousePosAbs(const Vec2s& mousePos) {
@@ -563,8 +524,150 @@ bool Input::isKeyPressedNowUnPressed(int keyId) const {
 	return !backend->isKeyboardKeyPressed(keyId) && (keysStates[keyId] == 1);
 }
 
-bool Input::getKeyAsText(int keyId, char& result) const {
-	return backend->getKeyAsText(keyId, result);
+static const char arxKeys[][2] = {
+	
+	{ '0', ')' }, // Key_0,
+	{ '1', '!' }, // Key_1,
+	{ '2', '@' }, // Key_2,
+	{ '3', '#' }, // Key_3,
+	{ '4', '$' }, // Key_4,
+	{ '5', '%' }, // Key_5,
+	{ '6', '^' }, // Key_6,
+	{ '7', '&' }, // Key_7,
+	{ '8', '*' }, // Key_8,
+	{ '9', '(' }, // Key_9,
+	
+	{ 'a', 'A' }, // Key_A,
+	{ 'b', 'B' }, // Key_B,
+	{ 'c', 'C' }, // Key_C,
+	{ 'd', 'D' }, // Key_D,
+	{ 'e', 'E' }, // Key_E,
+	{ 'f', 'F' }, // Key_F,
+	{ 'g', 'G' }, // Key_G,
+	{ 'h', 'H' }, // Key_H,
+	{ 'i', 'I' }, // Key_I,
+	{ 'j', 'J' }, // Key_J,
+	{ 'k', 'K' }, // Key_K,
+	{ 'l', 'L' }, // Key_L,
+	{ 'm', 'M' }, // Key_M,
+	{ 'n', 'N' }, // Key_N,
+	{ 'o', 'O' }, // Key_O,
+	{ 'p', 'P' }, // Key_P,
+	{ 'q', 'Q' }, // Key_Q,
+	{ 'r', 'R' }, // Key_R,
+	{ 's', 'S' }, // Key_S,
+	{ 't', 'T' }, // Key_T,
+	{ 'u', 'U' }, // Key_U,
+	{ 'v', 'V' }, // Key_V,
+	{ 'w', 'W' }, // Key_W,
+	{ 'x', 'X' }, // Key_X,
+	{ 'y', 'Y' }, // Key_Y,
+	{ 'z', 'Z' }, // Key_Z,
+	
+	{ 0, 0 }, // Key_F1,
+	{ 0, 0 }, // Key_F2,
+	{ 0, 0 }, // Key_F3,
+	{ 0, 0 }, // Key_F4,
+	{ 0, 0 }, // Key_F5,
+	{ 0, 0 }, // Key_F6,
+	{ 0, 0 }, // Key_F7,
+	{ 0, 0 }, // Key_F8,
+	{ 0, 0 }, // Key_F9,
+	{ 0, 0 }, // Key_F10,
+	{ 0, 0 }, // Key_F11,
+	{ 0, 0 }, // Key_F12,
+	{ 0, 0 }, // Key_F13,
+	{ 0, 0 }, // Key_F14,
+	{ 0, 0 }, // Key_F15,
+	
+	{ 0, 0 }, // Key_UpArrow,
+	{ 0, 0 }, // Key_DownArrow,
+	{ 0, 0 }, // Key_LeftArrow,
+	{ 0, 0 }, // Key_RightArrow,
+	
+	{ 0, 0 }, // Key_Home,
+	{ 0, 0 }, // Key_End,
+	{ 0, 0 }, // Key_PageUp,
+	{ 0, 0 }, // Key_PageDown,
+	{ 0, 0 }, // Key_Insert,
+	{ 0, 0 }, // Key_Delete,
+	
+	{ 0, 0 }, // Key_Escape,
+	
+	{ 0, 0 }, // Key_NumLock,
+	{ '0', '0' }, // Key_0,
+	{ '1', '1' }, // Key_1,
+	{ '2', '2' }, // Key_2,
+	{ '3', '3' }, // Key_3,
+	{ '4', '4' }, // Key_4,
+	{ '5', '5' }, // Key_5,
+	{ '6', '6' }, // Key_6,
+	{ '7', '7' }, // Key_7,
+	{ '8', '8' }, // Key_8,
+	{ '9', '9' }, // Key_9,
+	{ '\n', '\n' }, // Key_NumPadEnter,
+	{ '-', '-' }, // Key_NumSubtract,
+	{ '+', '+' }, // Key_NumAdd,
+	{ '*', '*' }, // Key_NumMultiply,
+	{ '/', '/' }, // Key_NumDivide,
+	{ '.', '.' }, // Key_NumPoint,
+	
+	{ '[', '{' }, // Key_LeftBracket,
+	{ 0, 0 }, // Key_LeftCtrl,
+	{ 0, 0 }, // Key_LeftAlt,
+	{ 0, 0 }, // Key_LeftShift,
+	{ 0, 0 }, // Key_LeftWin,
+	
+	{ ']', '}' }, // Key_RightBracket,
+	{ 0, 0 }, // Key_RightCtrl,
+	{ 0, 0 }, // Key_RightAlt,
+	{ 0, 0 }, // Key_RightShift,
+	{ 0, 0 }, // Key_RightWin,
+	
+	{ 0, 0 }, // Key_PrintScreen,
+	{ 0, 0 }, // Key_ScrollLock,
+	{ 0, 0 }, // Key_Pause,
+	
+	{ ' ', ' ' }, // Key_Spacebar,
+	{ 0, 0 }, // Key_Backspace,
+	{ '\n', '\n' }, // Key_Enter,
+	{ '\t', '\t' }, // Key_Tab,
+
+	{ 0, 0 }, // Key_Apps,
+	{ 0, 0 }, // Key_CapsLock,
+
+	{ '/', '?' }, // Key_Slash,
+	{ '\\', '|' }, // Key_Backslash,
+	{ ',', '<' }, // Key_Comma,
+	{ ';', ':' }, // Key_Semicolon,
+	{ '.', '>' }, // Key_Period,
+	{ '`', '~' }, // Key_Grave,
+	{ '\'', '"' }, // Key_Apostrophe,
+	{ '-', '_' }, // Key_Minus,
+	{ '=', '+' }, // Key_Equals,
+	
+};
+
+bool Input::getKeyAsText(int keyId, char & result) const {
+	
+	// TODO we should use SDL_StartTextInput + SDL_SetTextInputRect to allow unicode input
+	
+	keyId -= Keyboard::KeyBase;
+	
+	if(keyId < 0 || size_t(keyId) >= ARRAY_SIZE(arxKeys)) {
+		return false;
+	}
+	
+	bool shift = isKeyPressed(Keyboard::Key_LeftShift)
+	             || isKeyPressed(Keyboard::Key_RightShift);
+	
+	char c = arxKeys[keyId][shift ? 1 : 0];
+	if(c) {
+		result = c;
+		return true;
+	}
+	
+	return false;
 }
 
 bool Input::getMouseButton(int buttonId) const {

@@ -17,49 +17,51 @@
  * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ARX_WINDOW_SDLWINDOW_H
-#define ARX_WINDOW_SDLWINDOW_H
+#ifndef ARX_WINDOW_SDL2WINDOW_H
+#define ARX_WINDOW_SDL2WINDOW_H
 
 #include <SDL.h>
 
 #include "window/RenderWindow.h"
 
-class SDLInputBackend;
+class SDL2InputBackend;
 
-class SDLWindow : public RenderWindow {
+class SDL2Window : public RenderWindow {
 	
 public:
 	
-	SDLWindow();
-	virtual ~SDLWindow();
+	SDL2Window();
+	virtual ~SDL2Window();
 	
 	bool initializeFramework();
-	bool initialize(const std::string & title, Vec2i size, bool fullscreen,
-	                unsigned depth = 0);
-	void * getHandle();
-	void setFullscreenMode(Vec2i resolution, unsigned depth = 0);
-	void setWindowSize(Vec2i size);
+	void setTitle(const std::string & title);
+	bool setVSync(int vsync);
+	void setFullscreenMode(const DisplayMode & mode);
+	void setWindowSize(const Vec2i & size);
+	bool initialize();
 	void tick();
-	Vec2i getCursorPosition() const;
 	
 	void showFrame();
 	
 	void hide();
 	
+	InputBackend * getInputBackend();
+	
 private:
 	
-	bool setMode(DisplayMode mode, bool fullscreen);
-	void updateSize(bool reinit);
+	void changeMode(DisplayMode mode, bool fullscreen);
+	void updateSize(bool force = false);
 	
-	static int SDLCALL eventFilter(const SDL_Event * event);
+	static int SDLCALL eventFilter(void * userdata, SDL_Event * event);
 	
-	SDLInputBackend * input;
+	SDL_Window * m_window;
+	SDL_GLContext m_glcontext;
 	
-	static SDLWindow * mainWindow;
+	SDL2InputBackend * m_input;
 	
-	DisplayMode desktopMode;
+	static SDL2Window * s_mainWindow;
 	
-	friend class SDLInputBackend;
+	friend class SDL2InputBackend;
 };
 
-#endif // ARX_WINDOW_SDLWINDOW_H
+#endif // ARX_WINDOW_SDL2WINDOW_H

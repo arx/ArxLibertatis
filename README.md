@@ -38,7 +38,7 @@ Systems without Win32 or POSIX filesystem support will also need **Boost 1.44** 
 
 There is currently a single rendering backend for OpenGL:
 
-* **[SDL](http://www.libsdl.org/) 1.2.10**+
+* **[SDL](http://www.libsdl.org/)** **1.2.10**+ *or* **2.0.0**+
 * **OpenGL 1.5**+ (OpenGL 2.1 or newer is recommended)
 * **[GLEW](http://glew.sourceforge.net/) 1.5.2**+
 
@@ -79,9 +79,6 @@ Getting all the dependencies set up for Windows is more tricky. Pre-build depend
 * `CMAKE_BUILD_TYPE` (default=Release): Set to `Debug` for debug binaries
 * `DEBUG` (default=OFF^1): Enable debug output and runtime checks
 * `DEBUG_EXTRA` (default=OFF): Expensive debug options
-* `USE_OPENAL` (default=ON): Build the OpenAL audio backend
-* `USE_OPENGL` (default=ON): Build the OpenGL renderer backend
-* `USE_SDL` (default=ON): Build the SDL windowing and input backends
 * `USE_NATIVE_FS` (default=ON): Use the native filesystem backend (POSIX / Win32) if available and not boost::filesystem.
 
 1. Enabled automatically if `CMAKE_BUILD_TYPE` is set to `Debug`.

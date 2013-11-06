@@ -66,6 +66,7 @@ The following options can be used to customize where `make install` puts the var
 * `GAMESBINDIR` (default: `${BINDIR}`): Where to install game executables
 * `CMAKE_INSTALL_LIBEXECDIR` (default: `libexec`): Where to install non-user executables
 * `SCRIPTDIR` (default: `${BINDIR}`): Where to install the data install script
+* `INSTALL_DATADIR` (default: `${DATAROOTDIR}/games/arx`): Where to install Arx Libertatis data files. This should be one of the directories found from DATA_DIR_PREFIXES + DATA_DIR combinations at runtime.
 
 * `INSTALL_SCRIPTS` (default: `ON`): Install the data install script. There is no data install script on Windows, so there this option does nothing.
 
@@ -74,7 +75,11 @@ The following options can be used to customize where `make install` puts the var
 By default, optional components will be automatically disabled if their dependencies could not be found. This might be undesirable in some situations, so the following option can be used to change this behavior:
 
 * `STRICT_USE` (default: OFF): Abort the configure step if one of the dependencies enabled with a `USE_*` configuration variable could not be found or if one of the components enabled with a `BUILD_*`configuration variable has missing dependencies. As most dependencies are enabled by default, you may need to explicitly disable some of them. Windows-specifc dependencies are still automatically disabled on non-Windows systems.
-* `USE_QT5` (default=ON): Use Qt 5 libraries for the crash reporter if available^1
-* `USE_QT4` (default=ON): Use Qt 4 libraries for the crash reporter if available^1
+* `USE_OPENGL` (default=ON): Build the OpenGL renderer backend^1
+* `USE_OPENAL` (default=ON): Build the OpenAL audio backend^2
+* `WITH_SDL` (default=*not set*): Select the SDL version to use: 1 or 2. If not set, we will try to use either version, preferring SDL 2. ^3
+* `WITH_QT` (default=*not set*): Select the Qt version to use: 4 or 5. If not set, we will try to use either version, preferring Qt 5. Ignored if `BUILD_CRASHREPORTER` is disabled. ^3
 
-1. If both `USE_QT5` and `USE_QT4` are enabled we will try to use Qt 5 if available and then fall back to Qt 4. Both are ignored if `BUILD_CRASHREPORTER` is disabled.
+1. There is currently no other rendering backend, disabling this will make the build fail.
+2. There is currently no other audo backend, there will be no audio when disabling this. Additionally, builds without audio are not well tested and there may be other problems.
+3. Existing options can be unset by passing `-U<option>` to cmake.

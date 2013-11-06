@@ -151,7 +151,7 @@ public:
 	virtual bool finalCleanup() = 0;
 	virtual void cleanup3DEnvironment() = 0;
 	
-	virtual void setFullscreen(bool fullscreen) = 0;
+	virtual void setWindowSize(bool fullscreen) = 0;
 
 protected:
 	bool m_RunLoop;

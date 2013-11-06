@@ -17,8 +17,8 @@
  * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ARX_INPUT_SDLINPUTBACKEND_H
-#define ARX_INPUT_SDLINPUTBACKEND_H
+#ifndef ARX_INPUT_SDL2INPUTBACKEND_H
+#define ARX_INPUT_SDL2INPUTBACKEND_H
 
 #include <SDL.h>
 
@@ -26,19 +26,15 @@
 #include "input/Keyboard.h"
 #include "input/Mouse.h"
 #include "math/Vector.h"
+#include "window/SDL2Window.h"
 
-class SDLInputBackend : public InputBackend {
+class SDL2InputBackend : public InputBackend {
 	
 public:
 	
-	SDLInputBackend();
-	~SDLInputBackend();
+	explicit SDL2InputBackend(SDL2Window * window);
 	
-	bool init();
 	bool update();
-	
-	void acquireDevices();
-	void unacquireDevices();
 	
 	// Mouse
 	bool getAbsoluteMouseCoords(int & absX, int & absY) const;
@@ -49,11 +45,12 @@ public:
 	
 	// Keyboard
 	bool isKeyboardKeyPressed(int dikkey) const;
-	bool getKeyAsText(int keyId, char& result) const;
+	
+	void onEvent(const SDL_Event & event);
 	
 private:
 	
-	void onInputEvent(const SDL_Event & event);
+	SDL2Window * m_window;
 	
 	int wheel;
 	Vec2i cursorAbs;
@@ -70,7 +67,6 @@ private:
 	
 	Vec2i lastCursorAbs;
 	
-	friend class SDLWindow;
 };
 
-#endif // ARX_INPUT_SDLINPUTBACKEND_H
+#endif // ARX_INPUT_SDL2INPUTBACKEND_H
