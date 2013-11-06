@@ -191,7 +191,7 @@ public:
 private:
 	void LookForRefinementMap(TCFlags flags);
 	
-	typedef std::map<res::path, res::path> RefinementMap;
+	typedef std::map<std::string, res::path> RefinementMap;
 	static RefinementMap s_GlobalRefine;
 	static RefinementMap s_Refine;
 	

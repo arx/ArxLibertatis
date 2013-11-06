@@ -401,9 +401,11 @@ static void ConvertData(string & dat) {
 	}
 	
 	dat = dat.substr(substrStart, substrLen);
+	
+	boost::to_lower(dat);
 }
 
-static void LoadRefinementMap(const res::path & fileName, map<res::path, res::path> & refinementMap) {
+static void LoadRefinementMap(const res::path & fileName, map<std::string, res::path> & refinementMap) {
 	
 	size_t fileSize = 0;
 	char * from = resources->readAlloc(fileName, fileSize);
@@ -437,14 +439,10 @@ static void LoadRefinementMap(const res::path & fileName, map<res::path, res::pa
 		if(count == 0) {
 			name = data;
 		} else if(count == 1) {
-			
-			
-			boost::to_lower(data);
-			
 			if(data != "none") {
-				refinementMap[res::path::load(name)] = res::path::load(data);
+				refinementMap[name] = res::path::load(data);
 			} else {
-				refinementMap[res::path::load(name)].clear();
+				refinementMap[name].clear();
 			}
 		}
 		
@@ -467,18 +465,23 @@ void TextureContainer::LookForRefinementMap(TCFlags flags) {
 		loadedRefinements = true;
 	}
 	
-	RefinementMap::const_iterator it = s_Refine.find(m_texName);
+	string name = m_texName.filename();
+	
+	RefinementMap::const_iterator it = s_Refine.find(name);
 	if(it != s_Refine.end()) {
 		if(!it->second.empty()) {
+			LogDebug("refining " << m_texName << " with " << it->second << " (local)");
 			TextureRefinement = Load("graph/obj3d/textures/refinement" / it->second, flags);
 		}
 		return;
 	}
 	
-	it = s_GlobalRefine.find(m_texName);
-	if(it != s_GlobalRefine.end() && !it->second.empty()) {
-		TextureRefinement = Load("graph/obj3d/textures/refinement" / it->second, flags);
+	for(it = s_GlobalRefine.cbegin(); it != s_GlobalRefine.cend(); it++) {
+		if(!it->second.empty() && name.find(it->first) != std::string::npos) {
+			LogDebug("refining " << m_texName << " with " << it->second << " (global)");
+			TextureRefinement = Load("graph/obj3d/textures/refinement" / it->second, flags);
+			return;
+		}
 	}
-	
 	
 }
