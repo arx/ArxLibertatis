@@ -1311,6 +1311,8 @@ extern int iHighLight;
 
 void ArxGame::updateLevel() {
 
+	EERIEClearSprites();
+
 	if(!PLAYER_PARALYSED) {
 		manageEditorControls();
 
@@ -1528,8 +1530,7 @@ void ArxGame::renderLevel() {
 	DrawDebugRender();
 
 	// Begin Particles
-	EERIEClearSprites();
-	
+		
 	if(pParticleManager) {
 		pParticleManager->Render();
 	}
