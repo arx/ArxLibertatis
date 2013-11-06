@@ -129,9 +129,6 @@ void OpenGLRenderer::Initialize() {
 	LogInfo << " └─ Device: " << glGetString(GL_RENDERER);
 	CrashHandler::setVariable("OpenGL device", glGetString(GL_RENDERER));
 
-	m_cachedSrcBlend = BlendOne;
-	m_cachedDstBlend = BlendZero;
-	
 	reinit();
 }
 
@@ -152,6 +149,10 @@ void OpenGLRenderer::reinit() {
 	if(useVBOs && !GLEW_ARB_map_buffer_range) {
 		LogWarning << "Missing OpenGL extension ARB_map_buffer_range, VBO performance will suffer.";
 	}
+
+	m_cachedStates.clear();
+	m_cachedSrcBlend = BlendOne;
+	m_cachedDstBlend = BlendZero;
 	
 	glEnable(GL_POLYGON_OFFSET_FILL);
 	
