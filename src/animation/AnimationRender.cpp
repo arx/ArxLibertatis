@@ -544,7 +544,8 @@ void ARX_DrawPrimitive(TexturedVertex * _pVertex1, TexturedVertex * _pVertex2, T
 			mat.setBlendType(SpriteMaterial::Additive);
 		else if(srcFactor == Renderer::BlendSrcAlpha && dstFactor == Renderer::BlendOne)
 			mat.setBlendType(SpriteMaterial::AlphaAdditive);
-		else if(srcFactor == Renderer::BlendOne && dstFactor == Renderer::BlendInvSrcColor)
+		else if((srcFactor == Renderer::BlendOne && dstFactor == Renderer::BlendInvSrcColor) ||
+				(srcFactor == Renderer::BlendInvDstColor && dstFactor == Renderer::BlendOne))
 			mat.setBlendType(SpriteMaterial::Screen);
 		else if(srcFactor == Renderer::BlendZero && dstFactor == Renderer::BlendInvSrcColor)
 			mat.setBlendType(SpriteMaterial::Subtractive);
