@@ -613,6 +613,7 @@ void setupScriptedIOProperties() {
 	ScriptEvent::registerCommand(new IOFlagCommand("setshadow", IO_NOSHADOW, true));
 	ScriptEvent::registerCommand(new IOFlagCommand("setshop", IO_SHOP));
 	ScriptEvent::registerCommand(new IOFlagCommand("setbump", IO_BUMP));
+	// IO_ZMAP Currently has no effect, but keep for now as it affects save state
 	ScriptEvent::registerCommand(new IOFlagCommand("setzmap", IO_ZMAP));
 	ScriptEvent::registerCommand(new IOFlagCommand("invertedobject", IO_INVERTED));
 	ScriptEvent::registerCommand(new SetTrapCommand);

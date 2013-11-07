@@ -166,6 +166,7 @@ enum EntityFlag {
 	IO_BUMP                = (1<<22),
 	IO_ANGULAR             = (1<<23),
 	IO_BODY_CHUNK          = (1<<24),
+	// IO_ZMAP Currently has no effect, but keep for now as it affects save state
 	IO_ZMAP                = (1<<25),
 	IO_INVERTED            = (1<<26),
 	IO_JUST_COLLIDE        = (1<<27),
