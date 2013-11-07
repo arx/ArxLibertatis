@@ -85,6 +85,7 @@ public:
 	// Rasterizer
 	void SetAntialiasing(bool enable);
 	void SetCulling(CullingMode mode);
+	int GetDepthBias() const;
 	void SetDepthBias(int depthBias);
 	void SetFillMode(FillMode mode);
 	
@@ -147,10 +148,12 @@ private:
 	bool initialized;
 
 	// State cache...
+	void resetStateCache();
 	typedef std::map<GLenum, bool> BoolStateCache;
 	mutable BoolStateCache m_cachedStates;
 	PixelBlendingFactor	m_cachedSrcBlend;
 	PixelBlendingFactor	m_cachedDstBlend;
+	int m_cachedDepthBias;
 };
 
 template <class Vertex>

@@ -46,6 +46,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/Renderer.h"
 #include "graphics/Vertex.h"
+#include "graphics/texture/TextureStage.h"
 #include "graphics/data/TextureContainer.h"
 #include "math/Types.h"
 
@@ -83,10 +84,18 @@ struct SpriteMaterial {
 	BlendType getBlendType() const { return blendType; }
 	void setBlendType(BlendType type) { blendType = type; }
 
+	TextureStage::WrapMode getWrapMode() const { return wrapMode; }
+	void setWrapMode(TextureStage::WrapMode mode) { wrapMode = mode; }
+
+	int getDepthBias() const { return depthBias; }
+	void setDepthBias(int bias) { depthBias = bias; }
+
 private:
-	Texture *	 texture;
-	bool         depthTest;
-	BlendType    blendType;
+	Texture * texture;
+	bool depthTest;
+	BlendType blendType;
+	TextureStage::WrapMode wrapMode;
+	int depthBias;
 };
 
 void EERIEDRAWPRIM(Renderer::Primitive primitive, const TexturedVertex * vertices, size_t count = 3, bool nocount = false);

@@ -258,6 +258,10 @@ void GLTextureStage::setAlphaOp(TextureOp op) {
 	setOp(Alpha, op);
 }
 
+TextureStage::WrapMode GLTextureStage::getWrapMode() const {
+	return wrapMode;
+}
+
 void GLTextureStage::setWrapMode(WrapMode _wrapMode) {
 	wrapMode = _wrapMode;
 }

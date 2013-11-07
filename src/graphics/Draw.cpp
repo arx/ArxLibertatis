@@ -158,28 +158,51 @@ private:
 SpriteMaterial::SpriteMaterial() 
 	: texture(0)
 	, depthTest(false)
-	, blendType(Opaque) {
+	, blendType(Opaque)
+	, wrapMode(TextureStage::WrapRepeat)
+	, depthBias(0) {
 }
 
 bool SpriteMaterial::operator<(const SpriteMaterial & other) const {
 	// First sort by blend type
-	if(blendType < other.blendType)
+	if(blendType < other.blendType) {
 		return true;
+	}
 
 	// Then texture
-	if(texture < other.texture)
+	if(texture < other.texture) {
 		return true;
+	}
 
 	// Then depth test state
-	if(depthTest != other.depthTest)
+	if(depthTest != other.depthTest) {
 		return depthTest;
+	}
+
+	// Then wrap mode
+	if(wrapMode < other.wrapMode) {
+		return true;
+	}
+
+	// Then depth bias
+	if(depthBias > other.depthBias) {
+		return true;
+	}
 
 	return false;
 }
 
 void SpriteMaterial::apply() const {
 		
-	GRenderer->SetTexture(0, texture);
+	if(texture) {
+		GRenderer->SetTexture(0, texture);
+	} else {
+		GRenderer->ResetTexture(0);
+	}
+
+	GRenderer->GetTextureStage(0)->setWrapMode(wrapMode);
+	GRenderer->SetDepthBias(depthBias);
+
 	GRenderer->SetRenderState(Renderer::DepthTest, depthTest);
 
 	if(blendType == Opaque) {

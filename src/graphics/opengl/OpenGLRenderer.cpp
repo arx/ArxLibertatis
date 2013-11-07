@@ -150,11 +150,9 @@ void OpenGLRenderer::reinit() {
 		LogWarning << "Missing OpenGL extension ARB_map_buffer_range, VBO performance will suffer.";
 	}
 
-	m_cachedStates.clear();
-	m_cachedSrcBlend = BlendOne;
-	m_cachedDstBlend = BlendZero;
+	resetStateCache();
 	
-	glEnable(GL_POLYGON_OFFSET_FILL);
+	SetRenderState(ZBias, true);
 	
 	glDepthFunc(GL_LEQUAL);
 	
@@ -199,6 +197,13 @@ void OpenGLRenderer::reinit() {
 	}
 	
 	initialized = true;
+}
+
+void OpenGLRenderer::resetStateCache() {
+	m_cachedStates.clear();
+	m_cachedSrcBlend = BlendOne;
+	m_cachedDstBlend = BlendZero;
+	m_cachedDepthBias = 0;
 }
 
 void OpenGLRenderer::shutdown() {
@@ -363,7 +368,38 @@ void OpenGLRenderer::setGLState(GLenum state, bool enable) {
 }
 
 bool OpenGLRenderer::GetRenderState(RenderState renderState) const {
-	return getGLState(renderState);
+
+	switch(renderState) {
+		
+		case AlphaBlending: {
+			return getGLState(GL_BLEND);
+		}
+		
+		case AlphaTest: {
+			return getGLState(GL_ALPHA_TEST);
+		}
+
+		case DepthTest: {
+			return getGLState(GL_DEPTH_TEST);
+		}
+				
+		case Fog: {
+			return getGLState(GL_FOG);
+		}
+		
+		case Lighting: {
+			return getGLState(GL_LIGHTING);
+		}
+		
+		case ZBias: {
+			return getGLState(GL_POLYGON_OFFSET_FILL);
+		}
+		
+		default:
+			LogWarning << "Unsupported render state: " << renderState;
+	}
+
+	return false;
 }
 
 void OpenGLRenderer::SetRenderState(RenderState renderState, bool enable) {
@@ -576,17 +612,25 @@ static const GLenum arxToGlCullMode[] = {
 
 void OpenGLRenderer::SetCulling(CullingMode mode) {
 	if(mode == CullNone) {
-		glDisable(GL_CULL_FACE);
+		setGLState(GL_CULL_FACE, false);
 	} else {
-		glEnable(GL_CULL_FACE);
+		setGLState(GL_CULL_FACE, true);
 		glCullFace(arxToGlCullMode[mode]);
 	}
 	CHECK_GL;
 }
 
+int OpenGLRenderer::GetDepthBias() const {
+	return m_cachedDepthBias;
+}
+
 void OpenGLRenderer::SetDepthBias(int depthBias) {
+	if(depthBias == m_cachedDepthBias)
+		return;
 	
-	float bias = -(float)depthBias;
+	m_cachedDepthBias = depthBias;
+
+	float bias = -(float)m_cachedDepthBias;
 	
 	glPolygonOffset(bias, bias);
 	

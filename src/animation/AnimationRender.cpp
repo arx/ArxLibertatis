@@ -555,6 +555,8 @@ void ARX_DrawPrimitive(TexturedVertex * _pVertex1, TexturedVertex * _pVertex2, T
 		mat.setBlendType(SpriteMaterial::Opaque);
 	}
 	
+	mat.setDepthBias(GRenderer->GetDepthBias());
+	mat.setWrapMode(GRenderer->GetTextureStage(0)->getWrapMode());
 	mat.setDepthTest(GRenderer->GetRenderState(Renderer::DepthTest));
 	
 	EERIEAddTriangle(mat, pPointAdd);
