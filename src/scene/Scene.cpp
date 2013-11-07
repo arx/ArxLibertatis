@@ -1182,12 +1182,6 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num, const EERIE_FRUSTRU
 			}
 		} else {
 			transparencyType = SMY_ARXMAT::Opaque;
-
-			if(ZMAPMODE) {
-				if(fDist < 200 && ep->tex->TextureRefinement) {
-					ep->tex->TextureRefinement->vPolyZMap.push_back(ep);
-				}
-			}
 		}
 
 		SMY_ARXMAT & roomMat = ep->tex->tMatRoom[room_num];
@@ -1335,112 +1329,10 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoftRender(long room_num) {
 
 		ppTexCurr++;
 	}
-
-	//////////////////////////////
-	// ZMapp
+	
 	GRenderer->GetTextureStage(0)->setColorOp(TextureStage::OpModulate);
-
 	GRenderer->SetAlphaFunc(Renderer::CmpNotEqual, 0.f);
-	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	GRenderer->SetRenderState(Renderer::DepthWrite, false);
-
-	iNbTex=room.usNbTextures;
-	ppTexCurr=room.ppTextureContainer;
-
-	// For each tex in portals->room[room_num]
-	while(iNbTex--) {
-		TextureContainer * pTexCurr	= *ppTexCurr;
-
-		if(pTexCurr->TextureRefinement && pTexCurr->TextureRefinement->vPolyZMap.size()) {
-
-			GRenderer->SetTexture(0, pTexCurr->TextureRefinement);
-
-			dynamicVertices.lock();
-			unsigned short *pussInd = dynamicVertices.indices;
-			unsigned short iNbIndice = 0;
-
-			vector<EERIEPOLY *>::iterator it = pTexCurr->TextureRefinement->vPolyZMap.begin();
-
-			for(;it != pTexCurr->TextureRefinement->vPolyZMap.end(); ++it) {
-				EERIEPOLY * ep = *it;
-
-				unsigned short iNbVertex = (ep->type & POLY_QUAD) ? 4 : 3;
-				SMY_VERTEX3 *pVertex = dynamicVertices.append(iNbVertex);
-
-				if(!pVertex) {
-					dynamicVertices.unlock();
-					if(dynamicVertices.nbindices) {
-						dynamicVertices.draw(Renderer::TriangleList);
-					}
-					dynamicVertices.reset();
-					dynamicVertices.lock();
-					iNbIndice = 0;
-					pussInd = dynamicVertices.indices;
-					pVertex = dynamicVertices.append(iNbVertex);
-				}
-
-				// PRECALCUL
-				float tu[4];
-				float tv[4];
-				float _fTransp[4];
-
-				bool nrm = EEfabs(ep->nrml[0].y) >= 0.9f || EEfabs(ep->nrml[1].y) >= 0.9f || EEfabs(ep->nrml[2].y) >= 0.9f;
-
-				for(int nu = 0; nu < iNbVertex; nu++) {
-					if(nrm) {
-						tu[nu] = ep->v[nu].p.x * (1.0f/50);
-						tv[nu] = ep->v[nu].p.z * (1.0f/50);
-					} else {
-						tu[nu] = ep->v[nu].uv.x * 4.f;
-						tv[nu] = ep->v[nu].uv.y * 4.f;
-					}
-
-					float t = max(10.f, fdist(ACTIVECAM->orgTrans.pos, ep->v[nu].p) - 80.f);
-
-					_fTransp[nu] = (150.f - t) * 0.006666666f;
-
-					if(_fTransp[nu] < 0.f)
-						_fTransp[nu] = 0.f;
-					// t cannot be greater than 1.f (b should be negative for that)
-				}
-
-				// FILL DATA
-				for(int idx = 0; idx < iNbVertex; ++idx) {
-					pVertex->p.x     =  ep->v[idx].p.x;
-					pVertex->p.y     = -ep->v[idx].p.y;
-					pVertex->p.z     =  ep->v[idx].p.z;
-					pVertex->color   = Color::gray(_fTransp[idx]).toBGR();
-					pVertex->uv[0].x = tu[idx];
-					pVertex->uv[0].y = tv[idx];
-					pVertex++;
-
-					*pussInd++ = iNbIndice++;
-					dynamicVertices.nbindices++;
-				}
-
-				if(iNbVertex == 4) {
-					*pussInd++ = iNbIndice-2;
-					*pussInd++ = iNbIndice-3;
-					dynamicVertices.nbindices += 2;
-				}
-			}
-
-			// CLEAR CURRENT ZMAP
-			pTexCurr->TextureRefinement->vPolyZMap.clear();
-
-			dynamicVertices.unlock();
-			if(dynamicVertices.nbindices) {
-				dynamicVertices.draw(Renderer::TriangleList);
-			}
-			dynamicVertices.done();
-
-		}
-
-		ppTexCurr++;
-	}
-
-	GRenderer->SetRenderState(Renderer::DepthWrite, true);
-	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+	
 }
 
 //-----------------------------------------------------------------------------

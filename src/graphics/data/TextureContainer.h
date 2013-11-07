@@ -167,7 +167,6 @@ public:
 	
 	// BEGIN TODO: Move to a RenderBatch class... This RenderBatch class should contain a pointer to the TextureContainer used by the batch
 	
-	std::vector<EERIEPOLY *> vPolyZMap;
 	std::vector<SMY_ZMAPPINFO> vPolyInterZMap;
 	
 	SMY_ARXMAT * tMatRoom;
