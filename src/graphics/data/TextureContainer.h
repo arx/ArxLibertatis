@@ -86,9 +86,8 @@ public:
 	enum TCFlag {
 		NoMipmap     = (1<<0),
 		NoInsert     = (1<<1),
-		NoRefinement = (1<<2),
-		Level        = (1<<3),
-		NoColorKey   = (1<<4)
+		Level        = (1<<2),
+		NoColorKey   = (1<<3)
 	};
 	
 	DECLARE_FLAGS(TCFlag, TCFlags)

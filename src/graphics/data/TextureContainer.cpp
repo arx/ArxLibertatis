@@ -75,7 +75,7 @@ long GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE = 0;
 //-----------------------------------------------------------------------------
 
 
-const TextureContainer::TCFlags TextureContainer::UI = (TextureContainer::NoMipmap | TextureContainer::NoRefinement);
+const TextureContainer::TCFlags TextureContainer::UI = (TextureContainer::NoMipmap);
 
 static TextureContainer * g_ptcTextureList = NULL;
 
@@ -287,7 +287,7 @@ bool TextureContainer::CreateHalo() {
 	// Allocate and add the texture to the linked list of textures;
 	res::path haloName = m_texName.string();
 	haloName.append("_halo");
-	TextureHalo = new TextureContainer(haloName, NoMipmap | NoRefinement | NoColorKey);
+	TextureHalo = new TextureContainer(haloName, NoMipmap | NoColorKey);
 	if(!TextureHalo) {
 		return false;
 	}
