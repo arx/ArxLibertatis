@@ -85,7 +85,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 using std::vector;
 
 extern TextureContainer *enviro;
-extern long ZMAPMODE;
 extern Color ulBKGColor;
 
 EERIE_PORTAL_DATA * portals = NULL;

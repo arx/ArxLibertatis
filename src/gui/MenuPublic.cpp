@@ -95,9 +95,6 @@ extern bool bFade;
 extern bool	bFadeInOut;
 extern int iFadeAction;
 
-extern long ZMAPMODE;
-
-//-----------------------------------------------------------------------------
 void ARXMenu_Private_Options_Video_SetResolution(bool fullscreen, int _iWidth, int _iHeight) {
 	
 	if(!GRenderer) {
@@ -143,15 +140,12 @@ void ARXMenu_Options_Video_SetDetailsQuality(int _iQuality)
 	switch (config.video.levelOfDetail)
 	{
 		case 0:
-			ZMAPMODE = 0;
 			MAX_LLIGHTS = 6;
 			break;
 		case 1:
-			ZMAPMODE = 1;
 			MAX_LLIGHTS = 10;
 			break;
 		case 2:
-			ZMAPMODE = 1;
 			MAX_LLIGHTS = 15;
 			break;
 	}

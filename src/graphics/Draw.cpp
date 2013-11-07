@@ -54,7 +54,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 using std::min;
 using std::max;
 
-long ZMAPMODE=1;
 Vec3f SPRmins;
 Vec3f SPRmaxs;
 

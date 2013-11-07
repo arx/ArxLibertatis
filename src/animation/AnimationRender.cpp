@@ -229,8 +229,6 @@ extern long BH_MODE;
 
 extern TextureContainer TexSpecialColor;
 
-extern long ZMAPMODE;
-
 extern bool EXTERNALVIEW;
 
 void EE_RT(const Vec3f & in, Vec3f & out);
