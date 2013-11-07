@@ -55,7 +55,6 @@ using std::min;
 using std::max;
 
 long ZMAPMODE=1;
-TextureContainer * Zmap;
 Vec3f SPRmins;
 Vec3f SPRmaxs;
 
