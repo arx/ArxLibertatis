@@ -1154,11 +1154,6 @@ void DanaeClearLevel(long flag)
 	FAST_RELEASE = 0;
 }
 
-void DanaeClearAll()
-{
-	DanaeClearLevel();
-}
-
 void RestoreLastLoadedLightning()
 {
 	long pos = 0;

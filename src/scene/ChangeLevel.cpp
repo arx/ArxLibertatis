@@ -2606,7 +2606,7 @@ static bool ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag) {
 	
 	// Clears All Scene contents...
 	LogDebug("Before DANAE ClearAll");
-	DanaeClearAll();
+	DanaeClearLevel();
 	LogDebug("After  DANAE ClearAll");
 	
 	arxtime.pause();

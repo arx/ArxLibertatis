@@ -2667,7 +2667,7 @@ void DANAE_StartNewQuest()
 	char loadfrom[256];
 	sprintf(loadfrom, "graph/levels/level1/level1.dlf");
 	DONT_ERASE_PLAYER=1;
-	DanaeClearAll();
+	DanaeClearLevel();
 	PROGRESS_BAR_COUNT+=2.f;
 	LoadLevelScreen();
 	DanaeLoadLevel(loadfrom);
