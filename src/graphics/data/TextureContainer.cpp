@@ -105,8 +105,6 @@ void ResetVertexLists(TextureContainer * tex) {
 	tex->max[TextureContainer::Subtractive] = 0;
 	tex->max[TextureContainer::Multiplicative] = 0;
 	
-	tex->vPolyInterZMap.clear();
-	
 	free(tex->list[TextureContainer::Opaque]);
 	tex->list[TextureContainer::Opaque] = NULL;
 	free(tex->list[TextureContainer::Blended]);
@@ -171,7 +169,6 @@ TextureContainer::TextureContainer(const res::path & strName, TCFlags flags) : m
 
 	tMatRoom = NULL;
 
-	vPolyInterZMap.clear();
 }
 
 TextureContainer::~TextureContainer() {

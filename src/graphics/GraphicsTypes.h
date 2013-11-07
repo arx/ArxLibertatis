@@ -513,13 +513,6 @@ struct EERIE_PORTAL_DATA
 	std::vector<EERIE_PORTALS> portals;
 };
 
-struct SMY_ZMAPPINFO
-{
-	TexturedVertex pVertex[3];
-	float		uv[6];
-	float		color[3];
-};
-
 struct SMY_ARXMAT
 {
 	unsigned long uslStartVertex;

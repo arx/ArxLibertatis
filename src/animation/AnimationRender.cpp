@@ -197,48 +197,6 @@ void PopAllTriangleList() {
 	GRenderer->SetAlphaFunc(Renderer::CmpNotEqual, 0.f);
 }
 
-//-----------------------------------------------------------------------------
-void PopOneInterZMapp(TextureContainer *_pTex)
-{
-	if(!_pTex->TextureRefinement) return;
-
-	GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
-
-	if(_pTex->TextureRefinement->vPolyInterZMap.size())
-	{
-		GRenderer->SetTexture(0, _pTex->TextureRefinement);
-
-		int iPos=0;
-
-		std::vector<SMY_ZMAPPINFO>::iterator it;
-
-		for (it = _pTex->TextureRefinement->vPolyInterZMap.begin();
-			it != _pTex->TextureRefinement->vPolyInterZMap.end();
-			++it)
-		{
-			SMY_ZMAPPINFO *pSMY = &(*it);
-
-			tTexturedVertexTab2[iPos]        = pSMY->pVertex[0];
-			tTexturedVertexTab2[iPos].color  = Color::gray(pSMY->color[0]).toBGR();
-			tTexturedVertexTab2[iPos].uv.x   = pSMY->uv[0];
-			tTexturedVertexTab2[iPos++].uv.y = pSMY->uv[1];
-			tTexturedVertexTab2[iPos]        = pSMY->pVertex[1];
-			tTexturedVertexTab2[iPos].color  = Color::gray(pSMY->color[1]).toBGR();
-			tTexturedVertexTab2[iPos].uv.x   = pSMY->uv[2];
-			tTexturedVertexTab2[iPos++].uv.y = pSMY->uv[3];
-			tTexturedVertexTab2[iPos]        = pSMY->pVertex[2];
-			tTexturedVertexTab2[iPos].color  = Color::gray(pSMY->color[2]).toBGR();
-			tTexturedVertexTab2[iPos].uv.x   = pSMY->uv[4];
-			tTexturedVertexTab2[iPos++].uv.y = pSMY->uv[5];
-		}
-
-		EERIEDRAWPRIM(Renderer::TriangleList, tTexturedVertexTab2, iPos);
-
-		_pTex->TextureRefinement->vPolyInterZMap.clear();
-	}
-}
-
-//-----------------------------------------------------------------------------
 void PopAllTriangleListTransparency() {
 
 	GRenderer->SetFogColor(Color::none);
@@ -252,15 +210,9 @@ void PopAllTriangleListTransparency() {
 	PopOneTriangleList(&TexSpecialColor);
 
 	TextureContainer * pTex = GetTextureList();
-
-	while(pTex)
-	{
+	while(pTex) {
 		PopOneTriangleListTransparency(pTex);
-
-		//ZMAP
-		PopOneInterZMapp(pTex);
-
-		pTex=pTex->m_pNext;
+		pTex = pTex->m_pNext;
 	}
 
 	GRenderer->SetFogColor(ulBKGColor);
@@ -605,50 +557,6 @@ void MakeCLight2(const EERIE_QUAT *quat, EERIE_3DOBJ *eobj, long ii, const Color
 	}
 }
 
-void CalculateInterZMapp(EERIE_3DOBJ * _pobj3dObj, long lIdList, long * _piInd,
-						 TextureContainer * _pTex, TexturedVertex * _pVertex) {
-
-	SMY_ZMAPPINFO sZMappInfo;
-
-	if(!ZMAPMODE || !_pTex->TextureRefinement)
-		return;
-
-	bool bUp = false;
-
-	if(fabs(_pobj3dObj->vertexlist[_piInd[0]].norm.y) >= .9f
-	   || fabs(_pobj3dObj->vertexlist[_piInd[1]].norm.y) >= .9f
-	   || fabs(_pobj3dObj->vertexlist[_piInd[2]].norm.y) >= .9f) {
-		bUp = true;
-	}
-
-	for(int iI=0; iI<3; iI++) {
-		if(bUp) {
-			sZMappInfo.uv[iI<<1]=(_pobj3dObj->vertexlist3[_piInd[iI]].v.x*( 1.0f / 50 ));
-			sZMappInfo.uv[(iI<<1)+1]=(_pobj3dObj->vertexlist3[_piInd[iI]].v.z*( 1.0f / 50 ));
-		} else {
-			sZMappInfo.uv[iI<<1]=(_pobj3dObj->facelist[lIdList].u[iI]*4.f);
-			sZMappInfo.uv[(iI<<1)+1]=(_pobj3dObj->facelist[lIdList].v[iI]*4.f);
-		}
-
-		float fDist = fdist(ACTIVECAM->orgTrans.pos, _pobj3dObj->vertexlist3[_piInd[iI]].v) - 80.f;
-
-		if(fDist < 10.f)
-			fDist = 10.f;
-
-		sZMappInfo.color[iI] = (150.f - fDist) * 0.006666666f;
-
-		if(sZMappInfo.color[iI] < 0.f)
-			sZMappInfo.color[iI] = 0.f;
-
-		sZMappInfo.pVertex[iI]=_pVertex[iI];
-	}
-
-	//optim
-	if(sZMappInfo.color[0] != 0.f || sZMappInfo.color[1] != 0.f || sZMappInfo.color[2] != 0.f) {
-		_pTex->TextureRefinement->vPolyInterZMap.push_back(sZMappInfo);
-	}
-}
-
 void UpdateBbox3d(EERIE_3DOBJ *eobj, EERIE_3D_BBOX & box3D) {
 
 	box3D.reset();
@@ -822,10 +730,6 @@ void DrawEERIEInter_Render(EERIE_3DOBJ *eobj, const TransformInfo &t, Entity *io
 		// Transparent poly: storing info to draw later
 		if((eface->facetype & POLY_TRANS) || invisibility > 0.f) {
 			tvList[0].color = tvList[1].color = tvList[2].color = Color::gray(fTransp).toBGR();
-		}
-
-		if(io && (io->ioflags & IO_ZMAP)) {
-			CalculateInterZMapp(eobj,i,paf,pTex,tvList);
 		}
 
 		// HALO HANDLING START
@@ -1114,9 +1018,6 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity *
 		if((eface->facetype & POLY_TRANS) || invisibility > 0.f) {
 			tvList[0].color = tvList[1].color = tvList[2].color = Color::gray(fTransp).toBGR();
 		}
-
-		if(io && (io->ioflags & IO_ZMAP))
-			CalculateInterZMapp(eobj, i, paf, pTex, tvList);
 
 		////////////////////////////////////////////////////////////////////////
 		// HALO HANDLING START

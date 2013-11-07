@@ -68,7 +68,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/GraphicsTypes.h"
 
 struct SMY_ARXMAT;
-struct SMY_ZMAPPINFO;
 struct EERIEPOLY;
 struct TexturedVertex;
 class Texture2D;
@@ -166,8 +165,6 @@ public:
 	TCFlags systemflags;
 	
 	// BEGIN TODO: Move to a RenderBatch class... This RenderBatch class should contain a pointer to the TextureContainer used by the batch
-	
-	std::vector<SMY_ZMAPPINFO> vPolyInterZMap;
 	
 	SMY_ARXMAT * tMatRoom;
 	
