@@ -454,6 +454,11 @@ ARX_PATH * ARX_PATHS_ExistName(const string & name) {
 	return NULL;
 }
 
+Vec3f ARX_PATH::interpolateCurve(size_t i, float step) {
+	Vec3f p0 = pathways[i + 0].rpos, p1 = pathways[i + 1].rpos, p2 = pathways[i + 2].rpos;
+	return pos + p0 * (1 - step) + p1 * (step - square(step)) + p2 * square(step);
+}
+
 long ARX_PATHS_Interpolate(ARX_USE_PATH * aup, Vec3f * pos) {
 	
 	ARX_PATH * ap = aup->path;
@@ -518,11 +523,7 @@ long ARX_PATHS_Interpolate(ARX_USE_PATH * aup, Vec3f * pos) {
 					}
 					
 					float rel = tim / ap->pathways[targetwaypoint]._time;
-					float mull = square(rel);
-					
-					*pos = ap->pos + ap->pathways[targetwaypoint].rpos * mull;
-					*pos += ap->pathways[targetwaypoint - 1].rpos * (rel - mull);
-					*pos += ap->pathways[targetwaypoint - 2].rpos * (1 - rel);
+					*pos = ap->interpolateCurve(targetwaypoint - 2, rel);
 				}
 				
 				return targetwaypoint - 1;
