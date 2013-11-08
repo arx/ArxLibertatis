@@ -147,54 +147,70 @@ void DrawDebugPortals() {
 	GRenderer->SetRenderState(Renderer::Fog, true);
 }
 
-void DrawDebugPaths() {
-	GRenderer->SetRenderState(Renderer::Fog, false);
+static void drawDebugPaths() {
+	
 	GRenderer->SetRenderState(Renderer::DepthTest, false);
-
+	
 	for(long i = 0; i < nbARXpaths; i++) {
+		
 		ARX_PATH * path = ARXpaths[i];
-
-		if(!path)
+		if(!path) {
 			continue;
-
-		bool isBezier = false;
+		}
+		
+		Vec3f center = Vec3f_ZERO;
+		int n = 0;
+		
 		std::vector<Vec3f> points;
-
 		for(long i = 0; i < path->nb_pathways; i++) {
-			ARX_PATHWAY node = path->pathways[i];
-
-			if(node.flag != PATHWAY_STANDARD) {
-				isBezier = true;
+			const ARX_PATHWAY & node = path->pathways[i];
+			Vec3f pos = path->pos + node.rpos;
+			points.push_back(pos);
+			center += pos, n++;
+			if(node.flag == PATHWAY_BEZIER) {
+				// Interpolate bezier curve by creating linear segments
+				if(i + 2 >= path->nb_pathways) {
+					break;
+				}
+				const size_t nsegments = 20;
+				for(size_t j = 0; j < nsegments; j++) {
+					points.push_back(path->interpolateCurve(i, float(j) / nsegments));
+				}
+				i++; // Skip the control point
 			}
-
-			points.push_back(path->pos + node.rpos);
 		}
-
-		if(isBezier) {
-			// TODO Bezier path handling
-			continue;
+		
+		// Zones only check the bounding box for the y coordinate - adjust display for that
+		if(path->height > 0) {
+			for(size_t i = 0; i < points.size(); i++) {
+				points[i].y = path->bbmin.y;
+			}
 		}
-
-		if(points.size() > 0) {
+		
+		if(path->height != 0 || ((path->flags & PATH_LOOP) && points.size() > 0)) {
 			points.push_back(points[0]);
 		}
-
+		
+		Color color = (path->height != 0) ? Color::green : Color::red;
+		
 		for(size_t i = 0; i + 1 < points.size(); i++) {
-			EERIEDraw3DLine(points[i], points[i+1], Color::red);
+			EERIEDraw3DLine(points[i], points[i + 1], color);
 		}
-
+		
 		if(path->height > 0) {
-			Vec3f offset(0.f, -path->height, 0.f);
-
+			Vec3f offset(0.f, (path->bbmax.y - path->bbmin.y), 0.f);
 			for(size_t i = 0; i + 1 < points.size(); i++) {
-				EERIEDraw3DLine(points[i] + offset, points[i+1] + offset, Color::red);
+				EERIEDraw3DLine(points[i] + offset, points[i + 1] + offset, color);
 			}
-
 			for(size_t i = 0; i < points.size(); i++) {
-				EERIEDraw3DLine(points[i], points[i] + offset, Color::red);
+				EERIEDraw3DLine(points[i], points[i] + offset, color);
 			}
 		}
+		
 	}
+	
+	GRenderer->SetRenderState(Renderer::DepthTest, true);
+	
 }
 
 
@@ -376,8 +392,8 @@ void DrawDebugRender() {
 		break;
 	}
 	case EDITION_Paths: {
-		ss << "Paths";
-		DrawDebugPaths();
+		ss << "Paths and Zones";
+		drawDebugPaths();
 		break;
 	}
 	default:
