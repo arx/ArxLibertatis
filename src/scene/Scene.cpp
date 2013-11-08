@@ -86,6 +86,7 @@ using std::vector;
 
 extern TextureContainer *enviro;
 extern Color ulBKGColor;
+extern bool EXTERNALVIEW; // *sigh*
 
 EERIE_PORTAL_DATA * portals = NULL;
 
@@ -1573,7 +1574,21 @@ void ARX_SCENE_Render() {
 	}
 
 	PopAllTriangleList();
-		
+	
+	// *Now* draw the player
+	if(entities.player() && entities.player()->animlayer[0].cur_anim) {
+		float invisibility = std::min(0.9f, entities.player()->invisibility);
+		AnimatedEntityRender(entities.player(), invisibility);
+		if(!EXTERNALVIEW) {
+			// In first person mode, always render the player over other objects
+			// in order to avoid clipping the player and weapon with walls.
+			GRenderer->SetRenderState(Renderer::DepthTest, false);
+			PopAllTriangleList(/*clear=*/false);
+			GRenderer->SetRenderState(Renderer::DepthTest, true);
+		}
+		PopAllTriangleList();
+	}
+	
 	ARXDRAW_DrawEyeBall();
 
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);

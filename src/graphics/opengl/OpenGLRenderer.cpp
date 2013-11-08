@@ -192,7 +192,8 @@ void OpenGLRenderer::reinit() {
 	
 	glEnable(GL_POLYGON_OFFSET_FILL);
 	
-	glDepthFunc(GL_LEQUAL);
+	glEnable(GL_DEPTH_TEST);
+	SetRenderState(DepthTest, false);
 	
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 	glPixelStorei(GL_PACK_ALIGNMENT, 1);
@@ -395,7 +396,7 @@ void OpenGLRenderer::SetRenderState(RenderState renderState, bool enable) {
 		}
 		
 		case DepthTest: {
-			setGLState(GL_DEPTH_TEST, enable);
+			glDepthFunc(enable ? GL_LEQUAL : GL_ALWAYS);
 			break;
 		}
 		

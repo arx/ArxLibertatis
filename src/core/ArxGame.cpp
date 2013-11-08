@@ -1485,23 +1485,11 @@ void ArxGame::renderLevel() {
 
 	GRenderer->SetFogParams(Renderer::FogLinear, fogStart, fogEnd);
 	GRenderer->SetFogColor(ulBKGColor);
-
-	// NOW DRAW the player (Really...)
-	if(entities.player() && entities.player()->animlayer[0].cur_anim) {
-
-		float invisibility = entities.player()->invisibility;
-
-		if(invisibility > 0.9f)
-			invisibility = 0.9f;
-
-		AnimatedEntityRender(entities.player(), invisibility);
-	}
-
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 	GRenderer->SetRenderState(Renderer::DepthTest, true);
 
 	ARX_SCENE_Render();
-
+	
 	DrawDebugRender();
 
 	// Begin Particles

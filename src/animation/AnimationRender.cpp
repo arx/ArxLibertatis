@@ -112,7 +112,7 @@ TexturedVertex * PushVertexInTable(TextureContainer *pTex, TextureContainer::Tra
 	return &pTex->list[type][pTex->count[type] - 3];
 }
 
-static void PopOneTriangleList(TextureContainer *_pTex) {
+static void PopOneTriangleList(TextureContainer * _pTex, bool clear) {
 
 	if(!_pTex->count[TextureContainer::Opaque]) {
 		return;
@@ -127,8 +127,10 @@ static void PopOneTriangleList(TextureContainer *_pTex) {
 
 
 	EERIEDRAWPRIM(Renderer::TriangleList, _pTex->list[TextureContainer::Opaque], _pTex->count[TextureContainer::Opaque]);
-
-	_pTex->count[TextureContainer::Opaque] = 0;
+	
+	if(clear) {
+		_pTex->count[TextureContainer::Opaque] = 0;
+	}
 
 	if(_pTex->userflags & POLY_LATE_MIP) {
 		float biasResetVal = 0;
@@ -185,13 +187,13 @@ static void PopOneTriangleListTransparency(TextureContainer *_pTex) {
 	}
 }
 
-void PopAllTriangleList() {
+void PopAllTriangleList(bool clear) {
 	GRenderer->SetAlphaFunc(Renderer::CmpGreater, .5f);
 	GRenderer->SetCulling(Renderer::CullNone);
 
 	TextureContainer * pTex = GetTextureList();
 	while(pTex) {
-		PopOneTriangleList(pTex);
+		PopOneTriangleList(pTex, clear);
 		pTex = pTex->m_pNext;
 	}
 	GRenderer->SetAlphaFunc(Renderer::CmpNotEqual, 0.f);
@@ -207,7 +209,7 @@ void PopAllTriangleListTransparency() {
 
 	GRenderer->SetCulling(Renderer::CullNone);
 
-	PopOneTriangleList(&TexSpecialColor);
+	PopOneTriangleList(&TexSpecialColor, true);
 
 	TextureContainer * pTex = GetTextureList();
 	while(pTex) {
