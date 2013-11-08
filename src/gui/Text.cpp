@@ -443,3 +443,31 @@ void ARX_Text_Close() {
 	
 	FontCache::shutdown();
 }
+
+void drawTextCentered(Font * font, Vec2f center, const std::string & text, Color color) {
+	Vec2i size = font->getTextSize(text);
+	Vec2f corner = center - Vec2f(size) / 2.f;
+	font->draw(corner.x, corner.y, text, color);
+}
+
+void drawTextAt(Font * font, const Vec3f & pos, const std::string & text, Color color,
+                const std::string & text2, Color color2) {
+	
+	// Project the 3d coordinates to get an on-screen position
+	TexturedVertex in, out;
+	in.p = pos;
+	EE_RTP(&in, &out);
+	if(out.p.z < 0.f) {
+		// Don't draw text behind the camera!
+		return;
+	}
+	
+	Vec2f pos2d = Vec2f(out.p.x, out.p.y);
+	drawTextCentered(font, pos2d, text, color);
+	
+	if(!text2.empty()) {
+		pos2d.y += font->getLineHeight() + 2;
+		drawTextCentered(font, pos2d, text2, color2);
+	}
+	
+}
