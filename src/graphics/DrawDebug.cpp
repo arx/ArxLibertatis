@@ -358,7 +358,7 @@ void RenderAllNodes() {
 			if(nodeobj->vertexlist[nodeobj->origin].vert.p.z > 0.f && nodeobj->vertexlist[nodeobj->origin].vert.p.z<0.9f) {
 				float xx = nodeobj->vertexlist[nodeobj->origin].vert.p.x - 40.f;
 				float yy = nodeobj->vertexlist[nodeobj->origin].vert.p.y - 40.f;
-				ARX_TEXT_Draw(hFontInBook, xx, yy, nodes.nodes[i].UName, Color::yellow); //font
+				ARX_TEXT_Draw(hFontDebug, xx, yy, nodes.nodes[i].UName, Color::yellow); //font
 			}
 
 			if(nodes.nodes[i].selected) {
@@ -378,48 +378,46 @@ void RenderAllNodes() {
 }
 
 void DrawDebugRender() {
-
-	if(EDITION == EDITION_NONE)
+	
+	if(EDITION == EDITION_NONE) {
 		return;
-
-	//RenderAllNodes();
-
+	}
+	
 	std::stringstream ss;
 	ss << "Debug Display: ";
-
+	
 	switch(EDITION) {
-	case EDITION_LIGHTS: {
-		ss << "Lights";
-		DrawDebugLights();
-		break;
+		case EDITION_LIGHTS: {
+			ss << "Lights";
+			DrawDebugLights();
+			break;
+		}
+		case EDITION_FOGS: {
+			DrawDebugFogs();
+			ss << "Fogs";
+			break;
+		}
+		case EDITION_BoundingBoxes: {
+			ss << "Bounding Boxes";
+			break;
+		}
+		case EDITION_CollisionShape: {
+			ss << "Collision Shapes";
+			break;
+		}
+		case EDITION_Portals: {
+			ss << "Portals";
+			DrawDebugPortals();
+			break;
+		}
+		case EDITION_Paths: {
+			ss << "Paths and Zones";
+			drawDebugPaths();
+			break;
+		}
+		default: return;
 	}
-	case EDITION_FOGS: {
-		DrawDebugFogs();
-		ss << "Fogs";
-		break;
-	}
-	case EDITION_BoundingBoxes: {
-		ss << "Bounding Boxes";
-		break;
-	}
-	case EDITION_CollisionShape: {
-		ss << "Collision Shapes";
-		break;
-	}
-	case EDITION_Portals: {
-		ss << "Portals";
-		DrawDebugPortals();
-		break;
-	}
-	case EDITION_Paths: {
-		ss << "Paths and Zones";
-		drawDebugPaths();
-		break;
-	}
-	default:
-		return;
-	}
-
+	
 	for(size_t i = 1; i < entities.size(); i++) {
 		Entity * io = entities[i];
 
@@ -435,7 +433,7 @@ void DrawDebugRender() {
 			DrawDebugScreenBoundingBox(io);
 		}
 	}
-
-	//ss <<  NbIOSelected;
-	ARX_TEXT_Draw(hFontInBook, 100, 2, ss.str(), Color::yellow);
+	
+	ARX_TEXT_Draw(hFontDebug, 100, 2, ss.str(), Color::yellow);
+	
 }
