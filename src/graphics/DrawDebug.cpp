@@ -37,6 +37,7 @@
 
 #include "game/Entity.h"
 #include "game/EntityManager.h"
+#include "game/Player.h"
 
 #include "ai/Paths.h"
 #include "graphics/effects/Fog.h"
@@ -204,6 +205,25 @@ static void drawDebugPaths() {
 			}
 			for(size_t i = 0; i < points.size(); i++) {
 				EERIEDraw3DLine(points[i], points[i] + offset, color);
+			}
+		}
+		
+		// Display the name and controlling entity for close zones
+		if(!path->name.empty() || !path->controled.empty()) {
+			if(path->height > 0) {
+				center = (path->bbmin + path->bbmax) / 2.f;
+			} else if(n != 0) {
+				center /= float(n);
+			} else {
+				center = path->pos;
+			}
+			if(closerThan(center, player.pos, 2000.f)) {
+				std::string controlledby;
+				if(!path->controled.empty()) {
+					controlledby = "Controlled by: " + path->controled;
+				}
+				Color textcolor = color * 0.5f + Color::gray(0.5f);
+				drawTextAt(hFontDebug, center, path->name, textcolor, controlledby);
 			}
 		}
 		
