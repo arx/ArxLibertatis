@@ -48,32 +48,32 @@ struct RenderMaterial {
 	bool operator<(const RenderMaterial & other) const;
 	void apply() const;
 
-	Texture * getTexture() const { return texture; }
-	void setTexture(Texture * tex) { texture = tex; }
-	void setTexture(TextureContainer* texContainer) { texture = texContainer ? (Texture *)texContainer->m_pTexture : NULL; }
+	Texture * getTexture() const { return m_texture; }
+	void setTexture(Texture * tex) { m_texture = tex; }
+	void setTexture(TextureContainer* texContainer) { m_texture = texContainer ? (Texture *)texContainer->m_pTexture : NULL; }
 
-	bool getDepthTest() const { return depthTest; }
-	void setDepthTest(bool bEnable) { depthTest = bEnable; }
+	bool getDepthTest() const { return m_depthTest; }
+	void setDepthTest(bool bEnable) { m_depthTest = bEnable; }
 
-	BlendType getBlendType() const { return blendType; }
-	void setBlendType(BlendType type) { blendType = type; }
+	BlendType getBlendType() const { return m_blendType; }
+	void setBlendType(BlendType type) { m_blendType = type; }
 
-	TextureStage::WrapMode getWrapMode() const { return wrapMode; }
-	void setWrapMode(TextureStage::WrapMode mode) { wrapMode = mode; }
+	TextureStage::WrapMode getWrapMode() const { return m_wrapMode; }
+	void setWrapMode(TextureStage::WrapMode mode) { m_wrapMode = mode; }
 
-	int getDepthBias() const { return depthBias; }
-	void setDepthBias(int bias) { depthBias = bias; }
+	int getDepthBias() const { return m_depthBias; }
+	void setDepthBias(int bias) { m_depthBias = bias; }
 
-	Renderer::CullingMode getCulling() const { return cullingMode; }
-	void setCulling(Renderer::CullingMode cullMode) { cullingMode = cullMode; }
+	Renderer::CullingMode getCulling() const { return m_cullingMode; }
+	void setCulling(Renderer::CullingMode cullMode) { m_cullingMode = cullMode; }
 
 private:
-	Texture * texture;
-	bool depthTest;
-	BlendType blendType;
-	TextureStage::WrapMode wrapMode;
-	int depthBias;
-	Renderer::CullingMode cullingMode;
+	Texture * m_texture;
+	bool m_depthTest;
+	BlendType m_blendType;
+	TextureStage::WrapMode m_wrapMode;
+	int m_depthBias;
+	Renderer::CullingMode m_cullingMode;
 };
 
 class RenderBatcher {

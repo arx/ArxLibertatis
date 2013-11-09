@@ -109,42 +109,42 @@ RenderBatcher& RenderBatcher::getInstance() {
 }
 
 RenderMaterial::RenderMaterial() 
-	: texture(0)
-	, depthTest(false)
-	, blendType(Opaque)
-	, wrapMode(TextureStage::WrapRepeat)
-	, depthBias(0)
-	, cullingMode(Renderer::CullNone) {
+	: m_texture(0)
+	, m_depthTest(false)
+	, m_blendType(Opaque)
+	, m_wrapMode(TextureStage::WrapRepeat)
+	, m_depthBias(0)
+	, m_cullingMode(Renderer::CullNone) {
 }
 
 bool RenderMaterial::operator<(const RenderMaterial & other) const {
 	// First sort by blend type
-	if(blendType < other.blendType) {
+	if(m_blendType < other.m_blendType) {
 		return true;
 	}
 
 	// Then texture
-	if(texture < other.texture) {
+	if(m_texture < other.m_texture) {
 		return true;
 	}
 
 	// Then depth test state
-	if(depthTest != other.depthTest) {
-		return depthTest;
+	if(m_depthTest != other.m_depthTest) {
+		return m_depthTest;
 	}
 
 	// Then cull mode
-	if(cullingMode < other.cullingMode) {
+	if(m_cullingMode < other.m_cullingMode) {
 		return true;
 	}
 
 	// Then wrap mode
-	if(wrapMode < other.wrapMode) {
+	if(m_wrapMode < other.m_wrapMode) {
 		return true;
 	}
 
 	// Then depth bias
-	if(depthBias > other.depthBias) {
+	if(m_depthBias > other.m_depthBias) {
 		return true;
 	}
 
@@ -153,25 +153,25 @@ bool RenderMaterial::operator<(const RenderMaterial & other) const {
 
 void RenderMaterial::apply() const {
 		
-	if(texture) {
-		GRenderer->SetTexture(0, texture);
+	if(m_texture) {
+		GRenderer->SetTexture(0, m_texture);
 	} else {
 		GRenderer->ResetTexture(0);
 	}
 
-	GRenderer->GetTextureStage(0)->setWrapMode(wrapMode);
-	GRenderer->SetDepthBias(depthBias);
+	GRenderer->GetTextureStage(0)->setWrapMode(m_wrapMode);
+	GRenderer->SetDepthBias(m_depthBias);
 
-	GRenderer->SetRenderState(Renderer::DepthTest, depthTest);
+	GRenderer->SetRenderState(Renderer::DepthTest, m_depthTest);
 
-	GRenderer->SetCulling(cullingMode);
+	GRenderer->SetCulling(m_cullingMode);
 
-	if(blendType == Opaque) {
+	if(m_blendType == Opaque) {
 		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	} else {
 		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
-		switch(blendType) {
+		switch(m_blendType) {
 		case Additive:
 			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 			break;
