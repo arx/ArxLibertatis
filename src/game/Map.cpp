@@ -164,7 +164,6 @@ bool C_ARX_Carte::Render(void)
 {
 	if(!this->background) return false;
 
-	CalcFPS();
 	GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer);
 
 	int depx = (int)(this->posx * this->background->Xmul);

@@ -142,11 +142,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 enum InfoPanels {
 	InfoPanelNone,
-	InfoPanelFps,
+	InfoPanelFramerate,
+	InfoPanelFramerateGraph,
 	InfoPanelDebug,
 	InfoPanelTest,
 	InfoPanelDebugToggles,
-
 	InfoPanelEnumSize
 };
 
@@ -1743,9 +1743,13 @@ void ArxGame::render() {
 	
 	if(g_debugInfo != InfoPanelNone) {
 		switch(g_debugInfo) {
-		case InfoPanelFps: {
+		case InfoPanelFramerate: {
 			CalcFPS();
 			ShowFPS();
+			break;
+		}
+		case InfoPanelFramerateGraph: {
+			ShowFpsGraph();
 			break;
 		}
 		case InfoPanelDebug: {

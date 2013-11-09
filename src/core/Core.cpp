@@ -350,7 +350,6 @@ bool g_debugToggles[10];
 //-----------------------------------------------------------------------------
 
 void LoadSysTextures();
-void ShowFPS();
 void ManageNONCombatModeAnimations();
 
 //-----------------------------------------------------------------------------
@@ -3100,21 +3099,16 @@ void ShowInfoText() {
 	ARX_SCRIPT_Init_Event_Stats();
 }
 
-void ShowFpsGraph();
 void ShowFPS() {
 
 	// TODO: make sure when adding text that it can fit here
 	// - this is extremely naughty, should use a std::string
 	char tex[32];
 	sprintf(tex, "%.02f fps", FPS);
-
+	
 	// top left
 	mainApp->outputTextGrid(0.0f, 0.0f, tex);
-
-	// bottom right
-	//mainApp->outputTextGrid(-0.5f, -1, tex);
-
-	ShowFpsGraph();
+	
 }
 
 void ShowDebugToggles() {

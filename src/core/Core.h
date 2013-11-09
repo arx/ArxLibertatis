@@ -150,6 +150,7 @@ void FirstFrameHandling();
 void ShowTestText();
 void ShowInfoText();
 void ShowFPS();
+void ShowFpsGraph();
 void ShowDebugToggles();
 
 void DrawImproveVisionInterface();
