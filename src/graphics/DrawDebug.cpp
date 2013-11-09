@@ -40,6 +40,7 @@
 #include "game/Player.h"
 
 #include "ai/Paths.h"
+#include "font/Font.h"
 #include "graphics/effects/Fog.h"
 #include "scene/Interactive.h"
 #include "scene/Light.h"
@@ -63,15 +64,14 @@ void DrawDebugRelease() {
 	nodeobj = NULL;
 }
 
-enum ARX_INTERFACE_EDITION_MODE
-{
+enum ARX_INTERFACE_EDITION_MODE {
 	EDITION_NONE,
+	EDITION_Entities,
+	EDITION_Paths,
 	EDITION_LIGHTS,
 	EDITION_FOGS,
-	EDITION_BoundingBoxes,
 	EDITION_CollisionShape,
 	EDITION_Portals,
-	EDITION_Paths,
 	EDITION_EnumSize
 };
 
@@ -298,7 +298,7 @@ void DrawDebugFogs() {
 extern float GetIOHeight(Entity * io);
 extern float GetIORadius(Entity * io);
 
-void debugEntityPhysicsCylinder(Entity * io) {
+static void drawDebugEntityPhysicsCylinder(Entity * io) {
 
 	if(!(io->ioflags & IO_NPC) )
 		return;
@@ -326,15 +326,53 @@ void debugEntityPhysicsCylinder(Entity * io) {
 	EERIEDraw3DCylinder(cyll, Color::red);
 }
 
-void DrawDebugScreenBoundingBox(Entity * io) {
-	Color color = Color::blue;
-	EERIE_2D_BBOX & box = io->bbox2D;
-	if(box.min.x != box.max.x && box.min.x < g_size.width()) {
+static void drawDebugEntityPhysicsCylinders() {
+	for(size_t i = 1; i < entities.size(); i++) {
+		Entity * entity = entities[i];
+		if(entity) {
+			DrawDebugCollisionShape(entity->obj);
+			drawDebugEntityPhysicsCylinder(entity);
+		}
+	}
+}
+
+static void drawDebugBoundingBox(const EERIE_2D_BBOX & box, Color color = Color::white) {
+	if(box.valid()) {
 		EERIEDraw2DLine(box.min.x, box.min.y, box.max.x, box.min.y, 0.01f, color);
 		EERIEDraw2DLine(box.max.x, box.min.y, box.max.x, box.max.y, 0.01f, color);
 		EERIEDraw2DLine(box.max.x, box.max.y, box.min.x, box.max.y, 0.01f, color);
 		EERIEDraw2DLine(box.min.x, box.max.y, box.min.x, box.min.y, 0.01f, color);
 	}
+}
+
+static void drawDebugEntities() {
+	
+	for(size_t i = 1; i < entities.size(); i++) {
+		
+		Entity * entity = entities[i];
+		if(!entity) {
+			continue;
+		}
+		
+		bool visible = (entity->show != SHOW_FLAG_HIDDEN)
+		               && !(entity->ioflags & IO_CAMERA) && !(entity->ioflags & IO_MARKER);
+		
+		if(visible) {
+			drawDebugBoundingBox(entity->bbox2D, Color::blue);
+		}
+		
+		if(closerThan(entity->pos, player.pos, 1000.f)) {
+			if(visible && entity->bbox2D.valid()) {
+				int x = (entity->bbox2D.min.x + entity->bbox2D.max.x) / 2;
+				int y = entity->bbox2D.min.y - hFontDebug->getLineHeight() - 2;
+				UNICODE_ARXDrawTextCenter(hFontDebug, x, y, entity->long_name(), Color::white);
+			} else {
+				drawTextAt(hFontDebug, entity->pos, entity->long_name());
+			}
+		}
+		
+	}
+	
 }
 
 void RenderAllNodes() {
@@ -387,6 +425,16 @@ void DrawDebugRender() {
 	ss << "Debug Display: ";
 	
 	switch(EDITION) {
+		case EDITION_Entities: {
+			ss << "Entities";
+			drawDebugEntities();
+			break;
+		}
+		case EDITION_Paths: {
+			ss << "Paths and Zones";
+			drawDebugPaths();
+			break;
+		}
 		case EDITION_LIGHTS: {
 			ss << "Lights";
 			DrawDebugLights();
@@ -397,12 +445,9 @@ void DrawDebugRender() {
 			ss << "Fogs";
 			break;
 		}
-		case EDITION_BoundingBoxes: {
-			ss << "Bounding Boxes";
-			break;
-		}
 		case EDITION_CollisionShape: {
 			ss << "Collision Shapes";
+			drawDebugEntityPhysicsCylinders();
 			break;
 		}
 		case EDITION_Portals: {
@@ -410,28 +455,7 @@ void DrawDebugRender() {
 			DrawDebugPortals();
 			break;
 		}
-		case EDITION_Paths: {
-			ss << "Paths and Zones";
-			drawDebugPaths();
-			break;
-		}
 		default: return;
-	}
-	
-	for(size_t i = 1; i < entities.size(); i++) {
-		Entity * io = entities[i];
-
-		if(!io)
-			continue;
-
-		if(EDITION == EDITION_CollisionShape) {
-			DrawDebugCollisionShape(io->obj);
-			debugEntityPhysicsCylinder(io);
-		}
-
-		if(EDITION == EDITION_BoundingBoxes) {
-			DrawDebugScreenBoundingBox(io);
-		}
 	}
 	
 	ARX_TEXT_Draw(hFontDebug, 100, 2, ss.str(), Color::yellow);
