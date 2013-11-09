@@ -68,7 +68,7 @@ void DrawDebugRelease() {
 	nodeobj = NULL;
 }
 
-enum ARX_INTERFACE_EDITION_MODE {
+enum DebugViewType {
 	EDITION_NONE,
 	EDITION_Entities,
 	EDITION_Paths,
@@ -80,10 +80,10 @@ enum ARX_INTERFACE_EDITION_MODE {
 	EDITION_EnumSize
 };
 
-static ARX_INTERFACE_EDITION_MODE g_debugView = EDITION_NONE;
+static DebugViewType g_debugView = EDITION_NONE;
 
 void drawDebugCycleViews() {
-	g_debugView = static_cast<ARX_INTERFACE_EDITION_MODE>(g_debugView + 1);
+	g_debugView = static_cast<DebugViewType>(g_debugView + 1);
 	if(g_debugView == EDITION_EnumSize) {
 		g_debugView = EDITION_NONE;
 	}
