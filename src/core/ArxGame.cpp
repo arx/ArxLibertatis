@@ -1428,9 +1428,6 @@ void ArxGame::renderLevel() {
 		GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer, Color::none, 0.0f, 2, rectz);
 	}
 
-	GRenderer->SetRenderState(Renderer::DepthWrite, true);
-	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-
 	float fogEnd = fZFogEnd;
 	float fogStart = fZFogStart;
 
@@ -1439,6 +1436,7 @@ void ArxGame::renderLevel() {
 		fogStart *= ACTIVECAM->cdepth;
 	}
 
+	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	GRenderer->SetFogParams(Renderer::FogLinear, fogStart, fogEnd);
 	GRenderer->SetFogColor(ulBKGColor);
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
