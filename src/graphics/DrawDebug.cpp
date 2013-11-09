@@ -488,7 +488,7 @@ void RenderAllNodes() {
 	}
 }
 
-void DrawDebugRender() {
+void drawDebugRender() {
 	
 	if(g_debugView == DebugView_None) {
 		return;

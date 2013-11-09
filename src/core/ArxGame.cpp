@@ -1490,7 +1490,7 @@ void ArxGame::renderLevel() {
 
 	ARX_SCENE_Render();
 	
-	DrawDebugRender();
+	drawDebugRender();
 
 	// Begin Particles
 	

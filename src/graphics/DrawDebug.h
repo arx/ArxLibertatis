@@ -25,6 +25,6 @@ void drawDebugRelease();
 
 void drawDebugCycleViews();
 
-void DrawDebugRender();
+void drawDebugRender();
 
 #endif // ARX_GRAPHICS_DRAWDEBUG_H
