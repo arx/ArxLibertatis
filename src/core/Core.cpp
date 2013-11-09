@@ -3100,15 +3100,9 @@ void ShowInfoText() {
 }
 
 void ShowFPS() {
-
-	// TODO: make sure when adding text that it can fit here
-	// - this is extremely naughty, should use a std::string
-	char tex[32];
-	sprintf(tex, "%.02f fps", FPS);
-	
-	// top left
-	mainApp->outputTextGrid(0.0f, 0.0f, tex);
-	
+	std::ostringstream oss;
+	oss << std::fixed << std::setprecision(2) << FPS << " FPS";
+	hFontDebug->draw(Vec2i(10, 10), oss.str(), Color::white);
 }
 
 void ShowDebugToggles() {
