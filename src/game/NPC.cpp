@@ -1076,10 +1076,6 @@ void ARX_PHYSICS_Apply() {
 			}
 
 			if(io->_npcdata->pathfind.pathwait) { // Waiting For Pathfinder Answer
-#ifdef BUILD_EDITOR
-				if ((ValidIONum(LastSelectedIONum)) &&
-				        (io == entities[LastSelectedIONum])) ShowIOPath(io);
-#endif
 				if(io->_npcdata->pathfind.listnb == 0) { // Not Found
 					SendIOScriptEvent(io, SM_PATHFINDER_FAILURE);
 					io->_npcdata->pathfind.pathwait = 0;

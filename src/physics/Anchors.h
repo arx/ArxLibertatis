@@ -54,7 +54,6 @@ struct EERIE_BACKGROUND;
 struct EERIE_CYLINDER;
 
 enum AnchorFlag {
-	ANCHOR_FLAG_GREEN_DRAW = (1<<0),
 	ANCHOR_FLAG_BLOCKED    = (1<<3)
 };
 DECLARE_FLAGS(AnchorFlag, AnchorFlags)

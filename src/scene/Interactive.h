@@ -239,7 +239,6 @@ void TREATZONE_RemoveIO(Entity * io);
 bool IsSameObject(Entity * io, Entity * ioo);
 void ARX_INTERACTIVE_ClearAllDynData();
 bool HaveCommonGroup(Entity * io, Entity * ioo);
-void ShowIOPath(Entity * io);
 void UpdateIOInvisibility(Entity * io);
 void CheckSetAnimOutOfTreatZone(Entity * io, long num);
 void RestoreAllIOInitPos();

@@ -1852,21 +1852,6 @@ static Entity * AddMarker(const res::path & classPath, EntityInstance instance) 
 	return io;
 }
 
-void ShowIOPath(Entity * io) {
-	
-	for(long i = 0; i < ACTIVEBKG->nbanchors; i++) {
-		ANCHOR_DATA * ad = &ACTIVEBKG->anchors[i];
-		ad->flags &= ~ANCHOR_FLAG_GREEN_DRAW;
-	}
-	
-	if(io && (io->ioflags & IO_NPC)) {
-		for(long j = 0; j < io->_npcdata->pathfind.listnb; j++) {
-			ANCHOR_DATA * ad = &ACTIVEBKG->anchors[io->_npcdata->pathfind.list[j]];
-			ad->flags |= ANCHOR_FLAG_GREEN_DRAW;
-		}
-	}
-}
-
 #ifdef BUILD_EDITOR
 
 //*************************************************************************************
