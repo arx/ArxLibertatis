@@ -81,6 +81,8 @@ public:
 	void render() const;
 	void clear();
 	void reset();
+
+	static RenderBatcher& getInstance();
 	
 private:
 	typedef std::vector<TexturedVertex> VertexBatch;

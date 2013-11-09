@@ -100,6 +100,11 @@ void RenderBatcher::releaseBuffer(VertexBatch* pVertices) {
 	m_BufferPool.push_back(pVertices);
 }
 
+static RenderBatcher& RenderBatcher::getInstance() {
+	static RenderBatcher renderBatcher;
+	return renderBatcher;
+}
+
 RenderMaterial::RenderMaterial() 
 	: texture(0)
 	, depthTest(false)
