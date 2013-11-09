@@ -49,20 +49,20 @@
 #include "physics/Collisions.h"
 
 TextureContainer * lightsource_tc = NULL;
-EERIE_3DOBJ * fogobj = NULL;
+static EERIE_3DOBJ * g_fogObject = NULL;
 static EERIE_3DOBJ * g_nodeObject = NULL;
 
 const float DebugTextMaxDistance = 1000.f;
 
 void drawDebugInitialize() {
 	lightsource_tc = TextureContainer::LoadUI("graph/particles/light");
-	fogobj = LoadTheObj("editor/obj3d/fog_generator.teo", "node_teo maps");
+	g_fogObject = LoadTheObj("editor/obj3d/fog_generator.teo", "node_teo maps");
 	g_nodeObject = LoadTheObj("editor/obj3d/node.teo", "node_teo maps");
 }
 
 void drawDebugRelease() {
-	delete fogobj;
-	fogobj = NULL;
+	delete g_fogObject;
+	g_fogObject = NULL;
 	delete g_nodeObject;
 	g_nodeObject = NULL;
 }
@@ -331,10 +331,10 @@ static void drawDebugFogs() {
 			continue;
 		}
 		
-		if(fogobj) {
+		if(g_fogObject) {
 			Anglef angle(0.f, 0.f, 0.f);
 			Vec3f scale(1.f);
-			DrawEERIEObjEx(fogobj, &angle, &fog->pos, &scale, Color3f::white);
+			DrawEERIEObjEx(g_fogObject, &angle, &fog->pos, &scale, Color3f::white);
 		}
 		
 		if(fog->special & FOG_DIRECTIONAL) {
