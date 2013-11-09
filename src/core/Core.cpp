@@ -3147,40 +3147,49 @@ void ShowFpsGraph() {
 		vertices[i].p.z = 1.0f;
 		vertices[i].rhw = 1.0f;
 	}
-
+	avg /= lastFPSArray.size();
+	
 	EERIEDRAWPRIM(Renderer::LineStrip, &vertices[0], vertices.size());
-
-	{
-		avg /= lastFPSArray.size();
-		float avgPos = windowSize.y - (avg * SCALE_Y);
 	
-		std::stringstream ss;
-		ss << "Average: " << std::fixed << std::setprecision(2) << avg << " FPS";
+	Color avgColor = Color::blue * 0.5f + Color::white * 0.5f;
+	float avgPos = windowSize.y - (avg * SCALE_Y);
+	EERIEDraw2DLine(0, avgPos,  windowSize.x, avgPos, 1.0f, Color::blue);
 	
-		Vec2i strPos = Vec2i(windowSize.x - hFontDebug->getTextSize(ss.str()).x - 5,avgPos - hFontDebug->getLineHeight());
-		hFontDebug->draw(strPos, ss.str(), Color::blue);
-		EERIEDraw2DLine(0, avgPos,  windowSize.x, avgPos, 1.0f, Color::blue);
+	Color worstColor = Color::red * 0.5f + Color::white * 0.5f;
+	float worstPos = windowSize.y - (worst * SCALE_Y);
+	EERIEDraw2DLine(0, worstPos,  windowSize.x, worstPos, 1.0f, Color::red);
+	
+	Font * font = hFontDebug;
+	float lineOffset = font->getLineHeight() + 2;
+	
+	std::string labels[3] = { "Average: ", "Worst: ", "Current: " };
+	Color colors[3] = { avgColor, worstColor, Color::white };
+	float values[3] = { avg, worst, lastFPSArray[0] };
+	
+	std::string texts[3];
+	float widths[3];
+	static float labelWidth = 0.f;
+	static float valueWidth = 0.f;
+	for(size_t i = 0; i < 3; i++) {
+		// Format value
+		std::ostringstream oss;
+		oss << std::fixed << std::setprecision(2) << values[i] << " FPS";
+		texts[i] = oss.str();
+		// Calculate widths (could be done more efficiently for monospace fonts...)
+		labelWidth = std::max(labelWidth, float(font->getTextSize(labels[i]).x));
+		widths[i] = font->getTextSize(texts[i]).x;
+		valueWidth = std::max(valueWidth, widths[i]);
 	}
-
-	{
-		float worstPos = windowSize.y - (worst * SCALE_Y);
-
-		std::stringstream ss;
-		ss << "Worst: " << std::fixed << std::setprecision(2) << worst << " FPS";
-		
-		Vec2i strPos = Vec2i(windowSize.x - hFontDebug->getTextSize(ss.str()).x - 5, worstPos - hFontDebug->getLineHeight());
-		hFontDebug->draw(strPos, ss.str(), Color::red);
-		EERIEDraw2DLine(0, worstPos,  windowSize.x, worstPos, 1.0f, Color::red);
+	
+	float x = 10;
+	float y = 10;
+	float xend = x + labelWidth + 10 + valueWidth;
+	for(size_t i = 0; i < 3; i++) {
+		font->draw(Vec2i(x, y), labels[i], Color::gray(0.8f));
+		font->draw(Vec2i(xend - widths[i], y), texts[i], colors[i]);
+		y += lineOffset;
 	}
-
-	{
-		float currentPos = windowSize.y - (lastFPSArray[0] * SCALE_Y);
-
-		std::stringstream ss;
-		ss << "Current: " << std::fixed << std::setprecision(2) << lastFPSArray[0] << " FPS";
-		Vec2i strPos = Vec2i(5, currentPos - hFontDebug->getLineHeight());
-		hFontDebug->draw(strPos, ss.str(), Color::white);
-	}
+	
 }
 
 void ARX_SetAntiAliasing() {
