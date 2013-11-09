@@ -1592,7 +1592,9 @@ void ArxGame::renderLevel() {
 	GRenderer->SetRenderState(Renderer::Fog, true);
 		
 	GRenderer->SetFogColor(Color::none);
-	EERIERenderSprites();
+	GRenderer->SetRenderState(Renderer::DepthWrite, false);
+	RenderBatcher::getInstance().render();
+	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 	GRenderer->SetFogColor(ulBKGColor);
 	
 	// Manage Death visual & Launch menu...
@@ -1617,7 +1619,9 @@ void ArxGame::renderLevel() {
 
 		if((player.Interface & INTER_MAP) && !(player.Interface & INTER_COMBATMODE)) {
 			ARX_MAGICAL_FLARES_Update();
-			EERIERenderSprites();
+			GRenderer->SetRenderState(Renderer::DepthWrite, false);
+			RenderBatcher::getInstance().render();
+			GRenderer->SetRenderState(Renderer::DepthWrite, true);
 		}
 		
 		GRenderer->SetRenderState(Renderer::DepthTest, true);

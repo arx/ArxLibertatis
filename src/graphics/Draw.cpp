@@ -175,12 +175,6 @@ void EERIEAddTriangle(const TexturedVertex (&vertices)[3]) {
 	RenderBatcher::getInstance().add(mat, vertices);
 }
 
-void EERIERenderSprites() {
-	GRenderer->SetRenderState(Renderer::DepthWrite, false);
-	RenderBatcher::getInstance().render();
-	GRenderer->SetRenderState(Renderer::DepthWrite, true);
-}
-
 void EERIEDrawSprite(const TexturedVertex & in, float siz, TextureContainer * tex, Color color, float Zpos) {
 	
 	TexturedQuad s;
