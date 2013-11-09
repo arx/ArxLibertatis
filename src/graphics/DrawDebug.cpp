@@ -37,6 +37,7 @@
 
 #include "game/Entity.h"
 #include "game/EntityManager.h"
+#include "game/Inventory.h"
 #include "game/NPC.h"
 #include "game/Player.h"
 
@@ -47,6 +48,11 @@
 #include "scene/Light.h"
 #include "physics/Anchors.h"
 #include "physics/Collisions.h"
+
+extern bool EXTERNALVIEW; // *sigh*
+extern bool MouseInRect(const float x0, const float y0, const float x1, const float y1);
+extern float GetIOHeight(Entity * io);
+extern float GetIORadius(Entity * io);
 
 static TextureContainer * g_lightSourceTexture = NULL;
 static EERIE_3DOBJ * g_fogObject = NULL;
@@ -87,8 +93,6 @@ void drawDebugCycleViews() {
 		g_debugView = DebugView_None;
 	}
 }
-
-extern bool MouseInRect(const float x0, const float y0, const float x1, const float y1);
 
 static void drawDebugBoundingBox(const EERIE_2D_BBOX & box, Color color = Color::white) {
 	if(box.valid()) {
@@ -350,9 +354,6 @@ static void drawDebugFogs() {
 	
 }
 
-extern float GetIOHeight(Entity * io);
-extern float GetIORadius(Entity * io);
-
 //! Debug function to show the physical box of an object
 static void drawDebugCollisionShape(EERIE_3DOBJ * obj) {
 	
@@ -423,25 +424,53 @@ static void drawDebugEntities() {
 	for(size_t i = 1; i < entities.size(); i++) {
 		
 		Entity * entity = entities[i];
-		if(!entity || entity->show == SHOW_FLAG_KILLED) {
+		if(!entity) {
 			continue;
 		}
 		
-		bool visible = entity->show != SHOW_FLAG_HIDDEN && entity->show != SHOW_FLAG_DESTROYED
-		               && !(entity->ioflags & IO_CAMERA) && !(entity->ioflags & IO_MARKER);
+		Color color = Color::white;
+		bool visible = true;
+		switch(entity->show) {
+			case SHOW_FLAG_DESTROYED:    continue; // Don't even display the name
+			case SHOW_FLAG_IN_INVENTORY: continue;
+			case SHOW_FLAG_ON_PLAYER:    continue;
+			case SHOW_FLAG_LINKED:       continue;
+			case SHOW_FLAG_NOT_DRAWN:    color = Color::magenta; visible = false; break;
+			case SHOW_FLAG_HIDDEN:       color = Color::yellow;  visible = false; break;
+			case SHOW_FLAG_MEGAHIDE:     color = Color::green;   visible = false; break;
+			case SHOW_FLAG_KILLED:       color = Color::red;     visible = false; break;
+			case SHOW_FLAG_IN_SCENE:     color = Color::white;   visible = true;  break;
+			case SHOW_FLAG_TELEPORTING:  color = Color::blue;    visible = true;  break;
+		}
+		if((entity->ioflags & IO_CAMERA) || (entity->ioflags & IO_MARKER)) {
+			color = Color::gray(0.7f), visible = false;
+		}
+		if(DRAGINTER == entity) {
+			color = Color::white, visible = true;
+		}
 		
 		if(visible) {
 			drawDebugBoundingBox(entity->bbox2D, Color::blue);
 		}
 		
 		if(closerThan(entity->pos, player.pos, DebugTextMaxDistance)) {
+			
 			if(visible && entity->bbox2D.valid()) {
 				int x = (entity->bbox2D.min.x + entity->bbox2D.max.x) / 2;
 				int y = entity->bbox2D.min.y - hFontDebug->getLineHeight() - 2;
-				UNICODE_ARXDrawTextCenter(hFontDebug, x, y, entity->long_name(), Color::white);
+				UNICODE_ARXDrawTextCenter(hFontDebug, x, y, entity->long_name(), color);
 			} else {
-				drawTextAt(hFontDebug, entity->pos, entity->long_name());
+				drawTextAt(hFontDebug, entity->pos, entity->long_name(), color);
 			}
+			
+			if(entity->obj) {
+				for(long j = 0; j < entity->obj->nblinked; j++) {
+					Vec3f pos = entity->obj->vertexlist3[entity->obj->linked[j].lidx].v;
+					Entity * other = entity->obj->linked[j].io;
+					drawTextAt(hFontDebug, pos, other->long_name(), Color::cyan);
+				}
+			}
+			
 		}
 		
 	}
