@@ -102,40 +102,39 @@ static void drawDebugBoundingBox(const EERIE_2D_BBOX & box, Color color = Color:
 	}
 }
 
-void DrawDebugLights() {
-
-	//GRenderer->SetCulling(Renderer::CullNone);
-	//GRenderer->SetRenderState(Renderer::DepthTest, true);
+static void drawDebugLights() {
+	
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-
+	
 	for(size_t i = 0; i < MAX_LIGHTS; i++) {
-		EERIE_LIGHT *light = GLight[i];
-
-		if(!light)
+		
+		EERIE_LIGHT * light = GLight[i];
+		if(!light) {
 			continue;
-
-		TexturedVertex in;
-		TexturedVertex center;
-
+		}
+		
+		TexturedVertex in, center;
 		in.p = light->pos;
 		EE_RTP(&in, &center);
-
 		if(MouseInRect(center.p.x - 20, center.p.y - 20, center.p.x + 20, center.p.y + 20)) {
 			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 			EERIE_SPHERE fallstart;
 			fallstart.origin = light->pos;
 			fallstart.radius = light->fallstart;
 			DrawLineSphere(fallstart, Color(Color3<u8>::green, 200));
-
 			EERIE_SPHERE fallend;
 			fallend.origin = light->pos;
 			fallend.radius = light->fallend;
 			DrawLineSphere(fallend, Color(Color3<u8>::red, 200));
 		}
-
+		
 		GRenderer->SetBlendFunc(Renderer::BlendSrcAlpha, Renderer::BlendSrcAlpha);
 		EERIEDrawSprite(&in, 11.f, lightsource_tc, light->rgb.to<u8>(), 2.f);
+		
 	}
+	
+	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+	
 }
 
 void DrawDebugPortals() {
@@ -515,7 +514,7 @@ void DrawDebugRender() {
 		}
 		case EDITION_LIGHTS: {
 			ss << "Lights";
-			DrawDebugLights();
+			drawDebugLights();
 			break;
 		}
 		case EDITION_FOGS: {
