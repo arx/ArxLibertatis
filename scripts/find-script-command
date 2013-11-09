@@ -23,4 +23,5 @@ nosym="[^a-zA-Z_0-9]"
 pattern="(^|$nosym)$(printf '%s' "$1" | sed 's/./\_\*\0/g')_*($nosym|$)"
 shift
 
-grep --color --ignore-case --perl-regexp --recursive --text "$pattern" "$@"
+grep --color --ignore-case --perl-regexp --recursive --text --include="*.asl*" \
+	"$pattern" "$@"
