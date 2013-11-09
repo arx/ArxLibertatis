@@ -87,6 +87,9 @@ public:
 	void clear();
 	void reset();
 
+	void initialize();
+	void shutdown();
+
 	static RenderBatcher& getInstance();
 	
 private:
@@ -100,7 +103,7 @@ private:
 private:
 	BufferPool m_BufferPool;
 	Batches m_BatchedSprites;
-	CircularVertexBuffer<TexturedVertex> m_VertexBuffer;
+	CircularVertexBuffer<TexturedVertex> * m_VertexBuffer;
 };
 
 #endif // ARX_GRAPHICS_RENDERBATCHER_H

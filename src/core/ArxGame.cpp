@@ -1985,6 +1985,8 @@ bool ArxGame::initDeviceObjects() {
 	VertexBuffer<TexturedVertex> * vb = GRenderer->createVertexBufferTL(4000, Renderer::Stream);
 	pDynamicVertexBuffer_TLVERTEX = new CircularVertexBuffer<TexturedVertex>(vb);
 
+	RenderBatcher::getInstance().initialize();
+
 	if(pMenu) {
 		pMenu->bReInitAll=true;
 	}
@@ -2035,6 +2037,8 @@ void ArxGame::onRendererShutdown(RenderWindow &) {
 
 	delete pDynamicVertexBuffer_TLVERTEX, pDynamicVertexBuffer_TLVERTEX = NULL;
 	delete pDynamicVertexBuffer, pDynamicVertexBuffer = NULL;
+
+	RenderBatcher::getInstance().shutdown();
 	
 	EERIE_PORTAL_ReleaseOnlyVertexBuffer();
 	

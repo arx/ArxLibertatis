@@ -23,7 +23,7 @@
 #include <map>
 #include <vector>
 
-RenderBatcher::RenderBatcher() : m_VertexBuffer(GRenderer->createVertexBufferTL(32*1024, Renderer::Stream)) {
+RenderBatcher::RenderBatcher() : m_VertexBuffer(NULL) {
 }
 
 RenderBatcher::~RenderBatcher() {
@@ -62,7 +62,7 @@ void RenderBatcher::render() {
 	for(Batches::const_iterator it = m_BatchedSprites.begin(); it != m_BatchedSprites.end(); ++it) {
 		if(!it->second->empty()) {
 			it->first.apply();
-			m_VertexBuffer.draw(Renderer::TriangleList, &it->second->front(), it->second->size());
+			m_VertexBuffer->draw(Renderer::TriangleList, &it->second->front(), it->second->size());
 		}
 	}
 }
@@ -81,6 +81,17 @@ void RenderBatcher::reset() {
 	}
 
 	m_BufferPool.clear();
+}
+
+void RenderBatcher::initialize() {
+	arx_assert(m_VertexBuffer == NULL);
+	m_VertexBuffer = new CircularVertexBuffer<TexturedVertex>(GRenderer->createVertexBufferTL(32 * 1024, Renderer::Stream));
+}
+
+void RenderBatcher::shutdown() {
+	arx_assert(m_VertexBuffer != NULL);
+	delete m_VertexBuffer;
+	m_VertexBuffer = NULL;
 }
 	
 RenderBatcher::VertexBatch* RenderBatcher::requestBuffer() {
