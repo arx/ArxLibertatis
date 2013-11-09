@@ -1539,7 +1539,7 @@ void ReleaseDanaeBeforeRun() {
 	delete markerobj, markerobj = NULL;
 	delete arrowobj, arrowobj = NULL;
 	
-	DrawDebugRelease();
+	drawDebugRelease();
 
 	BOOST_FOREACH(EERIE_3DOBJ * & obj, GoldCoinsObj) {
 		delete obj, obj = NULL;
@@ -3216,7 +3216,7 @@ void ReleaseSystemObjects() {
 	delete markerobj, markerobj = NULL;
 	delete arrowobj, arrowobj = NULL;
 	
-	DrawDebugRelease();
+	drawDebugRelease();
 
 	BOOST_FOREACH(EERIE_3DOBJ * & obj, GoldCoinsObj) {
 		delete obj, obj = NULL;

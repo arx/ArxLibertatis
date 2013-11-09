@@ -60,10 +60,9 @@ void DrawDebugInit() {
 	nodeobj = LoadTheObj("editor/obj3d/node.teo", "node_teo maps");
 }
 
-void DrawDebugRelease() {
+void drawDebugRelease() {
 	delete fogobj;
 	fogobj = NULL;
-
 	delete nodeobj;
 	nodeobj = NULL;
 }
