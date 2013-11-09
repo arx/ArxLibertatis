@@ -740,7 +740,7 @@ bool ArxGame::beforeRun() {
 		}
 	}
 	
-	DrawDebugInit();
+	drawDebugInitialize();
 
 	FlyingEye_Init();
 	

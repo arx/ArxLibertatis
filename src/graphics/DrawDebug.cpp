@@ -54,7 +54,7 @@ EERIE_3DOBJ * nodeobj = NULL;				// Node 3D Object
 
 const float DebugTextMaxDistance = 1000.f;
 
-void DrawDebugInit() {
+void drawDebugInitialize() {
 	lightsource_tc = TextureContainer::LoadUI("graph/particles/light");
 	fogobj = LoadTheObj("editor/obj3d/fog_generator.teo", "node_teo maps");
 	nodeobj = LoadTheObj("editor/obj3d/node.teo", "node_teo maps");

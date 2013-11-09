@@ -20,7 +20,7 @@
 #ifndef ARX_GRAPHICS_DRAWDEBUG_H
 #define ARX_GRAPHICS_DRAWDEBUG_H
 
-void DrawDebugInit();
+void drawDebugInitialize();
 void drawDebugRelease();
 
 void drawDebugCycleViews();
