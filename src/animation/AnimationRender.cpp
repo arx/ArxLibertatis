@@ -991,28 +991,12 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity *
 		float fTransp = 0.f;
 		TexturedVertex *tvList = GetNewVertexList(pTex, eface, invisibility, fTransp);
 
-		for(long n = 0 ; n < 3 ; n++) {
-			tvList[n].p = eobj->vertexlist3[paf[n]].vert.p;
-
-			// Nuky - this code takes 20% of the whole game performance O_O
-			//        AFAIK it allows to correctly display the blue magic effects
-			//        when one's hands are inside a wall. I've only managed to do that
-			//        while in combat mode, looking straight down, and touching a wall
-			//        So, for the greater good I think it's best to simply skip this test
-			//const float IN_FRONT_DIVIDER = 0.75f;
-			//const float IN_FRONT_DIVIDER_FEET = 0.998f;
-			//if (FORCE_FRONT_DRAW)
-			//{
-			//	if (IsInGroup(eobj, paf[n], 1) != -1)
-			//		tv[n].sz *= IN_FRONT_DIVIDER;
-			//	else
-			//		tv[n].sz *= IN_FRONT_DIVIDER_FEET;
-			//}
-
-			tvList[n].rhw	= eobj->vertexlist3[paf[n]].vert.rhw;
-			tvList[n].uv.x	= eface->u[n];
-			tvList[n].uv.y	= eface->v[n];
+		for(size_t n = 0; n < 3; n++) {
+			tvList[n].p     = eobj->vertexlist3[paf[n]].vert.p;
+			tvList[n].rhw   = eobj->vertexlist3[paf[n]].vert.rhw;
 			tvList[n].color = eobj->vertexlist3[paf[n]].vert.color;
+			tvList[n].uv.x  = eface->u[n];
+			tvList[n].uv.y  = eface->v[n];
 		}
 
 		if((eface->facetype & POLY_TRANS) || invisibility > 0.f) {
