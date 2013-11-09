@@ -50,21 +50,21 @@
 
 TextureContainer * lightsource_tc = NULL;
 EERIE_3DOBJ * fogobj = NULL;
-EERIE_3DOBJ * nodeobj = NULL;				// Node 3D Object
+static EERIE_3DOBJ * g_nodeObject = NULL;
 
 const float DebugTextMaxDistance = 1000.f;
 
 void drawDebugInitialize() {
 	lightsource_tc = TextureContainer::LoadUI("graph/particles/light");
 	fogobj = LoadTheObj("editor/obj3d/fog_generator.teo", "node_teo maps");
-	nodeobj = LoadTheObj("editor/obj3d/node.teo", "node_teo maps");
+	g_nodeObject = LoadTheObj("editor/obj3d/node.teo", "node_teo maps");
 }
 
 void drawDebugRelease() {
 	delete fogobj;
 	fogobj = NULL;
-	delete nodeobj;
-	nodeobj = NULL;
+	delete g_nodeObject;
+	g_nodeObject = NULL;
 }
 
 enum DebugViewType {
@@ -304,7 +304,7 @@ static void drawDebugPathFinding() {
 		if(k0 >= 0 && k0 < ACTIVEBKG->nbanchors) {
 			Anglef angle(0.f, 0.f, 0.f);
 			Vec3f scale(0.5f);
-			DrawEERIEObjEx(nodeobj, &angle, &ACTIVEBKG->anchors[k0].pos, &scale, Color3f::white);
+			DrawEERIEObjEx(g_nodeObject, &angle, &ACTIVEBKG->anchors[k0].pos, &scale, Color3f::white);
 		}
 		
 		// Show entity ID at the active node
@@ -457,7 +457,7 @@ void RenderAllNodes() {
 
 	for(long i=0; i<nodes.nbmax; i++) {
 		if (nodes.nodes[i].exist) {
-			DrawEERIEObjEx(nodeobj, &angle, &nodes.nodes[i].pos, &scale, Color3f::white);
+			DrawEERIEObjEx(g_nodeObject, &angle, &nodes.nodes[i].pos, &scale, Color3f::white);
 
 			/* FIXME DrawEERIEObjEx does not calculate BBOX2D
 			nodes.nodes[i].bboxmin.x=(short)BBOX2D.min.x;
@@ -466,9 +466,9 @@ void RenderAllNodes() {
 			nodes.nodes[i].bboxmax.y=(short)BBOX2D.max.y;
 			*/
 
-			if(nodeobj->vertexlist[nodeobj->origin].vert.p.z > 0.f && nodeobj->vertexlist[nodeobj->origin].vert.p.z<0.9f) {
-				float xx = nodeobj->vertexlist[nodeobj->origin].vert.p.x - 40.f;
-				float yy = nodeobj->vertexlist[nodeobj->origin].vert.p.y - 40.f;
+			if(g_nodeObject->vertexlist[g_nodeObject->origin].vert.p.z > 0.f && g_nodeObject->vertexlist[g_nodeObject->origin].vert.p.z<0.9f) {
+				float xx = g_nodeObject->vertexlist[g_nodeObject->origin].vert.p.x - 40.f;
+				float yy = g_nodeObject->vertexlist[g_nodeObject->origin].vert.p.y - 40.f;
 				ARX_TEXT_Draw(hFontDebug, xx, yy, nodes.nodes[i].UName, Color::yellow); //font
 			}
 
