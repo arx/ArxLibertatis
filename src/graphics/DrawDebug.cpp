@@ -37,6 +37,7 @@
 
 #include "game/Entity.h"
 #include "game/EntityManager.h"
+#include "game/NPC.h"
 #include "game/Player.h"
 
 #include "ai/Paths.h"
@@ -44,11 +45,14 @@
 #include "graphics/effects/Fog.h"
 #include "scene/Interactive.h"
 #include "scene/Light.h"
+#include "physics/Anchors.h"
 #include "physics/Collisions.h"
 
 TextureContainer * lightsource_tc = NULL;
 EERIE_3DOBJ * fogobj = NULL;
 EERIE_3DOBJ * nodeobj = NULL;				// Node 3D Object
+
+const float DebugTextMaxDistance = 1000.f;
 
 void DrawDebugInit() {
 	lightsource_tc = TextureContainer::LoadUI("graph/particles/light");
@@ -68,6 +72,7 @@ enum ARX_INTERFACE_EDITION_MODE {
 	EDITION_NONE,
 	EDITION_Entities,
 	EDITION_Paths,
+	EDITION_PathFind,
 	EDITION_LIGHTS,
 	EDITION_FOGS,
 	EDITION_CollisionShape,
@@ -226,7 +231,7 @@ static void drawDebugPaths() {
 			} else {
 				center = path->pos;
 			}
-			if(closerThan(center, player.pos, 2000.f)) {
+			if(closerThan(center, player.pos, DebugTextMaxDistance)) {
 				std::string controlledby;
 				if(!path->controled.empty()) {
 					controlledby = "Controlled by: " + path->controled;
@@ -242,6 +247,80 @@ static void drawDebugPaths() {
 	
 }
 
+static void drawDebugPathFinding() {
+	
+	if(!ACTIVEBKG || !ACTIVEBKG->anchors) {
+		return;
+	}
+	
+	const float zbias = 0.00001f;
+	
+	for(long i = 0; i < ACTIVEBKG->nbanchors; i++) {
+		
+		const ANCHOR_DATA & node = ACTIVEBKG->anchors[i];
+		
+		Color color1 = (node.flags & ANCHOR_FLAG_BLOCKED) ? Color::blue : Color::green;
+		for(long j = 0; j < node.nblinked; j++) {
+			long k = node.linked[j];
+			if(k >= 0 && k < ACTIVEBKG->nbanchors && i < k) {
+				const ANCHOR_DATA & other = ACTIVEBKG->anchors[k];
+				Color color2 = (other.flags & ANCHOR_FLAG_BLOCKED) ? Color::blue : Color::green;
+				EERIEDraw3DLine(node.pos, other.pos, color1, color2, zbias);
+			}
+		}
+		
+		if(node.height != 0.f) {
+			Vec3f toppos = node.pos + Vec3f(0.f, node.height, 0.f);
+			EERIEDraw3DLine(node.pos, toppos, Color::blue, zbias);
+		}
+		
+	}
+	
+	// Highlight active paths
+	for(size_t i = 1; i < entities.size(); i++) {
+		
+		const Entity * entity = entities[i];
+		if(!entity || !(entity->ioflags & IO_NPC)) {
+			continue;
+		}
+		const IO_PATHFIND & pathfind = entity->_npcdata->pathfind;
+		if(pathfind.listnb <= 0 || !pathfind.list) {
+			continue;
+		}
+		
+		// Draw visited nodes yello and target nodes as red
+		for(long j = 1; j < pathfind.listnb; j++) {
+			short k0 = pathfind.list[j - 1], k1 = pathfind.list[j];
+			if(k0 >= 0 && k0 < ACTIVEBKG->nbanchors && k1 >= 0 && k1 < ACTIVEBKG->nbanchors) {
+				const ANCHOR_DATA & n0 = ACTIVEBKG->anchors[k0], & n1 = ACTIVEBKG->anchors[k1];
+				Color color0 = (j     <= pathfind.listpos) ? Color::yellow : Color::red;
+				Color color1 = (j + 1 <= pathfind.listpos) ? Color::yellow : Color::red;
+				EERIEDraw3DLine(n0.pos, n1.pos, color0, color1, 2.f * zbias);
+			}
+		}
+		
+		// Highlight end nodes
+		short k0 = pathfind.list[pathfind.listnb - 1];
+		if(k0 >= 0 && k0 < ACTIVEBKG->nbanchors) {
+			Anglef angle(0.f, 0.f, 0.f);
+			Vec3f scale(0.5f);
+			DrawEERIEObjEx(nodeobj, &angle, &ACTIVEBKG->anchors[k0].pos, &scale, Color3f::white);
+		}
+		
+		// Show entity ID at the active node
+		if(pathfind.listpos < pathfind.listnb) {
+			short k1 = pathfind.list[pathfind.listpos];
+			if(k1 >= 0 && k1 < ACTIVEBKG->nbanchors) {
+				if(closerThan(ACTIVEBKG->anchors[k1].pos, player.pos, DebugTextMaxDistance)) {
+					drawTextAt(hFontDebug, ACTIVEBKG->anchors[k1].pos, entity->long_name());
+					GRenderer->SetRenderState(Renderer::DepthTest, true);
+				}
+			}
+		}
+		
+	}
+	
+}
 
 /**
  * @brief Debug function to show the physical box of an object
@@ -354,7 +433,7 @@ static void drawDebugEntities() {
 			drawDebugBoundingBox(entity->bbox2D, Color::blue);
 		}
 		
-		if(closerThan(entity->pos, player.pos, 1000.f)) {
+		if(closerThan(entity->pos, player.pos, DebugTextMaxDistance)) {
 			if(visible && entity->bbox2D.valid()) {
 				int x = (entity->bbox2D.min.x + entity->bbox2D.max.x) / 2;
 				int y = entity->bbox2D.min.y - hFontDebug->getLineHeight() - 2;
@@ -426,6 +505,11 @@ void DrawDebugRender() {
 		case EDITION_Paths: {
 			ss << "Paths and Zones";
 			drawDebugPaths();
+			break;
+		}
+		case EDITION_PathFind: {
+			ss << "Pathfinding";
+			drawDebugPathFinding();
 			break;
 		}
 		case EDITION_LIGHTS: {
