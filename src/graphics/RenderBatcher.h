@@ -74,11 +74,12 @@ private:
 
 class RenderBatcher {
 public:
+	RenderBatcher();
 	~RenderBatcher();
 
 	void add(const RenderMaterial& mat, const TexturedVertex(&vertices)[3]);
 	void add(const RenderMaterial& mat, const TexturedQuad& sprite);
-	void render() const;
+	void render();
 	void clear();
 	void reset();
 
@@ -95,7 +96,7 @@ private:
 private:
 	BufferPool m_BufferPool;
 	Batches m_BatchedSprites;
-	CircularVertexBuffer<TexturedVertex> * m_VertexBuffer;
+	CircularVertexBuffer<TexturedVertex> m_VertexBuffer;
 };
 
 #endif // ARX_GRAPHICS_RENDERBATCHER_H

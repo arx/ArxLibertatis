@@ -23,6 +23,9 @@
 #include <map>
 #include <vector>
 
+RenderBatcher::RenderBatcher() : m_VertexBuffer(GRenderer->createVertexBufferTL(32*1024, Renderer::Stream)) {
+}
+
 RenderBatcher::~RenderBatcher() {
 	reset();
 }
@@ -55,11 +58,11 @@ void RenderBatcher::add(const RenderMaterial& mat, const TexturedQuad& sprite) {
 	pVerts->push_back(sprite.v[3]);
 }
 
-void RenderBatcher::render() const {
+void RenderBatcher::render() {
 	for(Batches::const_iterator it = m_BatchedSprites.begin(); it != m_BatchedSprites.end(); ++it) {
 		if(!it->second->empty()) {
 			it->first.apply();
-			m_VertexBuffer->draw(Renderer::TriangleList, &it->second->front(), it->second->size());
+			m_VertexBuffer.draw(Renderer::TriangleList, &it->second->front(), it->second->size());
 		}
 	}
 }
@@ -100,7 +103,7 @@ void RenderBatcher::releaseBuffer(VertexBatch* pVertices) {
 	m_BufferPool.push_back(pVertices);
 }
 
-static RenderBatcher& RenderBatcher::getInstance() {
+RenderBatcher& RenderBatcher::getInstance() {
 	static RenderBatcher renderBatcher;
 	return renderBatcher;
 }
