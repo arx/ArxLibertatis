@@ -1255,7 +1255,7 @@ void ArxGame::updateInput() {
 	}
 
 	if(GInput->isKeyPressedNowPressed(Keyboard::Key_ScrollLock)) {
-		DrawDebugToggleDisplayTypes();
+		drawDebugCycleViews();
 	}
 
 	if(GInput->isKeyPressedNowPressed(Keyboard::Key_Spacebar)) {

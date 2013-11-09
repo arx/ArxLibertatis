@@ -82,10 +82,8 @@ enum ARX_INTERFACE_EDITION_MODE {
 
 static ARX_INTERFACE_EDITION_MODE g_debugView = EDITION_NONE;
 
-void DrawDebugToggleDisplayTypes() {
-
+void drawDebugCycleViews() {
 	g_debugView = static_cast<ARX_INTERFACE_EDITION_MODE>(g_debugView + 1);
-
 	if(g_debugView == EDITION_EnumSize) {
 		g_debugView = EDITION_NONE;
 	}

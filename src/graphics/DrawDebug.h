@@ -23,7 +23,7 @@
 void DrawDebugInit();
 void DrawDebugRelease();
 
-void DrawDebugToggleDisplayTypes();
+void drawDebugCycleViews();
 
 void DrawDebugRender();
 
