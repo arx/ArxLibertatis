@@ -322,32 +322,6 @@ static void drawDebugPathFinding() {
 	
 }
 
-/**
- * @brief Debug function to show the physical box of an object
- */
-void DrawDebugCollisionShape(EERIE_3DOBJ * obj) {
-
-	if(!obj || !obj->pbox)
-		return;
-
-	EERIE_SPHERE sphere;
-	sphere.origin = obj->pbox->vert[0].pos;
-	sphere.radius = obj->pbox->radius;
-	DrawLineSphere(sphere, Color::white);
-
-	GRenderer->SetRenderState(Renderer::DepthTest, false);
-
-	Color shapeColor = Color::yellow;
-
-	if(obj->pbox->active == 2) {
-		shapeColor = Color::green;
-	}
-
-	for(long k = 0; k + 1 < obj->pbox->nb_physvert; k++) {
-		EERIEDraw3DLine(obj->pbox->vert[k].pos, obj->pbox->vert[k+1].pos, shapeColor);
-	}
-}
-
 static void drawDebugFogs() {
 	
 	for(long i = 0; i < MAX_FOG; i++) {
@@ -379,39 +353,66 @@ static void drawDebugFogs() {
 extern float GetIOHeight(Entity * io);
 extern float GetIORadius(Entity * io);
 
-static void drawDebugEntityPhysicsCylinder(Entity * io) {
-
-	if(!(io->ioflags & IO_NPC) )
+//! Debug function to show the physical box of an object
+static void drawDebugCollisionShape(EERIE_3DOBJ * obj) {
+	
+	if(!obj || !obj->pbox) {
 		return;
+	}
+	
+	EERIE_SPHERE sphere;
+	sphere.origin = obj->pbox->vert[0].pos;
+	sphere.radius = obj->pbox->radius;
+	DrawLineSphere(sphere, Color::white);
+	
+	GRenderer->SetRenderState(Renderer::DepthTest, false);
+	
+	Color shapeColor = Color::yellow;
+	
+	if(obj->pbox->active == 2) {
+		shapeColor = Color::green;
+	}
+	
+	for(long k = 0; k + 1 < obj->pbox->nb_physvert; k++) {
+		EERIEDraw3DLine(obj->pbox->vert[k].pos, obj->pbox->vert[k+1].pos, shapeColor);
+	}
+	
+}
 
+static void drawDebugEntityPhysicsCylinder(Entity * io) {
+	
+	if(!(io->ioflags & IO_NPC)) {
+		return;
+	}
+	
 	CollisionFlags levitate = 0;
-
+	
 	if(ARX_SPELLS_GetSpellOn(io, SPELL_LEVITATE) >= 0) {
 		levitate = CFLAG_LEVITATE;
 	}
-
+	
 	EERIE_CYLINDER cyll;
 	cyll.height = GetIOHeight(io);
 	cyll.radius = GetIORadius(io);
 	cyll.origin = io->physics.startpos;
 	EERIEDraw3DCylinder(cyll, Color::green);
-
-	if (!(AttemptValidCylinderPos(&cyll, io, levitate | CFLAG_NPC)))
-	{
+	
+	if(!(AttemptValidCylinderPos(&cyll, io, levitate | CFLAG_NPC))) {
 		cyll.height = -40.f;
 		EERIEDraw3DCylinder(cyll, Color::blue);
 		cyll.height = GetIOHeight(io);
 	}
-
+	
 	cyll.origin = io->physics.targetpos;
 	EERIEDraw3DCylinder(cyll, Color::red);
+	
 }
 
 static void drawDebugEntityPhysicsCylinders() {
 	for(size_t i = 1; i < entities.size(); i++) {
 		Entity * entity = entities[i];
 		if(entity) {
-			DrawDebugCollisionShape(entity->obj);
+			drawDebugCollisionShape(entity->obj);
 			drawDebugEntityPhysicsCylinder(entity);
 		}
 	}
