@@ -175,10 +175,6 @@ void EERIEAddTriangle(const TexturedVertex (&vertices)[3]) {
 	RenderBatcher::getInstance().add(mat, vertices);
 }
 
-void EERIEClearSprites() {
-	RenderBatcher::getInstance().clear();
-}
-
 void EERIERenderSprites() {
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	RenderBatcher::getInstance().render();

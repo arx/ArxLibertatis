@@ -83,10 +83,14 @@ public:
 
 	void add(const RenderMaterial& mat, const TexturedVertex(&vertices)[3]);
 	void add(const RenderMaterial& mat, const TexturedQuad& sprite);
+
+	//! Render all batches
 	void render();
+
+	//! Remove all batches
 	void clear();
 
-	// Free all batches memory pools
+	//! Free all memory pools
 	void reset();
 
 	void initialize();

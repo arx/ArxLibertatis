@@ -1311,7 +1311,7 @@ extern int iHighLight;
 
 void ArxGame::updateLevel() {
 
-	EERIEClearSprites();
+	RenderBatcher::getInstance().clear();
 
 	if(!PLAYER_PARALYSED) {
 		manageEditorControls();
@@ -1599,7 +1599,7 @@ void ArxGame::renderLevel() {
 	ARX_PLAYER_Manage_Death();
 
 	// INTERFACE
-	EERIEClearSprites();
+	RenderBatcher::getInstance().clear();
 
 	// Remove the Alphablend State if needed : NO Z Clear
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
