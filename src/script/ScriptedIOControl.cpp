@@ -331,31 +331,6 @@ public:
 	
 };
 
-class KillMeCommand : public Command {
-	
-public:
-	
-	KillMeCommand() : Command("killme", AnyEntity) { }
-	
-	Result execute(Context & context) {
-		
-		DebugScript("");
-		
-		Entity * io = context.getEntity();
-		if((io->ioflags & IO_ITEM) && io->_itemdata->count > 1) {
-			io->_itemdata->count--;
-		} else {
-			io->show = SHOW_FLAG_KILLED;
-			io->gameFlags &= ~GFLAG_ISINTREATZONE;
-			RemoveFromAllInventories(io);
-			ARX_DAMAGES_ForceDeath(io, EVENT_SENDER);
-		}
-		
-		return Success;
-	}
-	
-};
-
 class PhysicalCommand : public Command {
 	
 public:
@@ -795,7 +770,6 @@ void setupScriptedIOControl() {
 	ScriptEvent::registerCommand(new ReplaceMeCommand);
 	ScriptEvent::registerCommand(new CollisionCommand);
 	ScriptEvent::registerCommand(new SpawnCommand);
-	ScriptEvent::registerCommand(new KillMeCommand);
 	ScriptEvent::registerCommand(new PhysicalCommand);
 	ScriptEvent::registerCommand(new LinkObjToMeCommand);
 	ScriptEvent::registerCommand(new IfExistInternalCommand);
