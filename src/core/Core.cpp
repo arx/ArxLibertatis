@@ -2929,20 +2929,28 @@ void AdjustMousePosition()
 	}
 }
 
-void ShowTestText()
-{
+void ShowTestText() {
+	
 	char tex[256];
-
-	mainApp->outputText(0, 16, arx_version);
-
-	sprintf(tex,"Level : %s", LastLoadedScene.string().c_str());
-	hFontDebug->draw(0, 32, tex, Color::white);
-
-	sprintf(tex,"Position : %5.0f %5.0f %5.0f",player.pos.x,player.pos.y,player.pos.z);
-	hFontDebug->draw(0, 48, tex, Color::white);
-
-	sprintf( tex,"Last Failed Sequence : %s",LAST_FAILED_SEQUENCE.c_str() );
-	hFontDebug->draw(0, 64, tex, Color::white);
+	
+	Vec2i pos(10, 10);
+	s32 lineOffset = hFontDebug->getLineHeight() + 2;
+	
+	hFontDebug->draw(pos, arx_version, Color::red + Color::green);
+	pos.y += lineOffset;
+	
+	sprintf(tex, "Level: %s", LastLoadedScene.string().c_str());
+	hFontDebug->draw(pos, tex, Color::white);
+	pos.y += lineOffset;
+	
+	sprintf(tex, "Position: %5.0f %5.0f %5.0f",player.pos.x,player.pos.y,player.pos.z);
+	hFontDebug->draw(pos, tex, Color::white);
+	pos.y += lineOffset;
+	
+	sprintf(tex, "Last Failed Sequence: %s", LAST_FAILED_SEQUENCE.c_str());
+	hFontDebug->draw(pos, tex, Color::white);
+	pos.y += lineOffset;
+	
 }
 
 extern float CURRENT_PLAYER_COLOR;
