@@ -93,14 +93,6 @@ public:
 	bool finalCleanup();
 	virtual void cleanup3DEnvironment();
 	
-	/*!
-	 * Writes text to the window
-	 * @param x The x coordinate for the text
-	 * @param y The y coordinate for the text
-	 * @param str The string of text to be written
-	 */
-	virtual void outputText(int x, int y, const std::string & str);
-	
 private:
 	void updateTime();
 	void updateInput();

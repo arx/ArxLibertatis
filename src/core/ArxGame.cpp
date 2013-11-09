@@ -634,18 +634,6 @@ void ArxGame::cleanup3DEnvironment() {
 	
 }
 
-/*!
- * \brief Draws text on the window.
- * \param x
- * \param y
- * \param str
- */
-void ArxGame::outputText(int x, int y, const string & str) {
-	if (m_bReady) {
-		hFontInGame->draw(x, y, str, Color(255, 255, 0));
-	}
-}
-
 bool ArxGame::beforeRun() {
 	
 	LogDebug("Before Run...");

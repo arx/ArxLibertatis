@@ -136,14 +136,6 @@ public:
 	
 	/* Virtual functions which may be overridden for specific implementations */
 	
-	/*!
-	 * Writes text to the window
-	 * @param x The x coordinate for the text in pixels
-	 * @param y The y coordinate for the text in pixels
-	 * @param str The string of text to be written
-	 */
-	virtual void outputText(int, int, const std::string &) {}
-	
 	virtual void run() = 0;
 	virtual void pause(bool bPause);
 	virtual void render() { }
