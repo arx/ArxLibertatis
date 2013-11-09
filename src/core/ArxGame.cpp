@@ -150,7 +150,7 @@ enum InfoPanels {
 	InfoPanelEnumSize
 };
 
-static InfoPanels showInfo = InfoPanelNone;
+static InfoPanels g_debugInfo = InfoPanelNone;
 
 using std::string;
 
@@ -1236,13 +1236,13 @@ void ArxGame::updateInput() {
 
 	if(GInput->isKeyPressedNowPressed(Keyboard::Key_F11)) {
 
-		showInfo = static_cast<InfoPanels>(showInfo + 1);
+		g_debugInfo = static_cast<InfoPanels>(g_debugInfo + 1);
 
-		if(showInfo == InfoPanelEnumSize)
-			showInfo = InfoPanelNone;
+		if(g_debugInfo == InfoPanelEnumSize)
+			g_debugInfo = InfoPanelNone;
 	}
 
-	if(showInfo == InfoPanelDebugToggles) {
+	if(g_debugInfo == InfoPanelDebugToggles) {
 		for(size_t i = 0; i < ARRAY_SIZE(g_debugToggles); i++) {
 			if(GInput->isKeyPressedNowPressed(Keyboard::Key_NumPad0 + i)) {
 				g_debugToggles[i] = !g_debugToggles[i];
@@ -1741,8 +1741,8 @@ void ArxGame::render() {
 #endif
 	}
 	
-	if(showInfo != InfoPanelNone) {
-		switch(showInfo) {
+	if(g_debugInfo != InfoPanelNone) {
+		switch(g_debugInfo) {
 		case InfoPanelFps: {
 			CalcFPS();
 			ShowFPS();
