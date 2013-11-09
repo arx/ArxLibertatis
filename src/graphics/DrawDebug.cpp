@@ -80,14 +80,14 @@ enum ARX_INTERFACE_EDITION_MODE {
 	EDITION_EnumSize
 };
 
-static ARX_INTERFACE_EDITION_MODE EDITION = EDITION_NONE;
+static ARX_INTERFACE_EDITION_MODE g_debugView = EDITION_NONE;
 
 void DrawDebugToggleDisplayTypes() {
 
-	EDITION = static_cast<ARX_INTERFACE_EDITION_MODE>(EDITION + 1);
+	g_debugView = static_cast<ARX_INTERFACE_EDITION_MODE>(g_debugView + 1);
 
-	if(EDITION == EDITION_EnumSize) {
-		EDITION = EDITION_NONE;
+	if(g_debugView == EDITION_EnumSize) {
+		g_debugView = EDITION_NONE;
 	}
 }
 
@@ -493,14 +493,14 @@ void RenderAllNodes() {
 
 void DrawDebugRender() {
 	
-	if(EDITION == EDITION_NONE) {
+	if(g_debugView == EDITION_NONE) {
 		return;
 	}
 	
 	std::stringstream ss;
 	ss << "Debug Display: ";
 	
-	switch(EDITION) {
+	switch(g_debugView) {
 		case EDITION_Entities: {
 			ss << "Entities";
 			drawDebugEntities();
