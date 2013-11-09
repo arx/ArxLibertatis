@@ -44,6 +44,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_GRAPHICS_DRAW_H
 #define ARX_GRAPHICS_DRAW_H
 
+#include "graphics/RenderBatcher.h"
 #include "graphics/Renderer.h"
 #include "graphics/Vertex.h"
 #include "graphics/texture/TextureStage.h"
@@ -54,49 +55,6 @@ struct EERIEPOLY;
 struct EERIE_3DOBJ;
 struct EERIE_SPHERE;
 struct EERIE_CYLINDER;
-
-struct TexturedQuad {
-	TexturedVertex v[4];
-};
-
-struct SpriteMaterial {
-
-	enum BlendType {
-		Opaque,
-		Additive,
-		AlphaAdditive,
-		Screen,
-		Subtractive
-	};
-
-	SpriteMaterial();
-
-	bool operator<(const SpriteMaterial & other) const;
-	void apply() const;
-
-	Texture * getTexture() const { return texture; }
-	void setTexture(Texture * tex) { texture = tex; }
-	void setTexture(TextureContainer* texContainer) { texture = texContainer ? (Texture *)texContainer->m_pTexture : NULL; }
-
-	bool getDepthTest() const { return depthTest; }
-	void setDepthTest(bool bEnable) { depthTest = bEnable; }
-
-	BlendType getBlendType() const { return blendType; }
-	void setBlendType(BlendType type) { blendType = type; }
-
-	TextureStage::WrapMode getWrapMode() const { return wrapMode; }
-	void setWrapMode(TextureStage::WrapMode mode) { wrapMode = mode; }
-
-	int getDepthBias() const { return depthBias; }
-	void setDepthBias(int bias) { depthBias = bias; }
-
-private:
-	Texture * texture;
-	bool depthTest;
-	BlendType blendType;
-	TextureStage::WrapMode wrapMode;
-	int depthBias;
-};
 
 void EERIEDRAWPRIM(Renderer::Primitive primitive, const TexturedVertex * vertices, size_t count = 3, bool nocount = false);
 
@@ -113,6 +71,7 @@ void EERIEDrawBitmapUVs(float x, float y, float sx, float sy, float z, TextureCo
 void EERIEClearSprites();             // Remove all batched sprites
 void EERIEResetSprites();             // Free all sprites memory pools
 void EERIERenderSprites();
+
 void EERIEAddBitmap(const SpriteMaterial& mat, float x, float y, float sx, float sy, float z, TextureContainer * tex, Color color);
 void EERIEAddSprite(const SpriteMaterial & mat, const TexturedVertex & in, float siz, TextureContainer * tex, Color color, float Zpos, float rot = 0);
 void EERIEAddTriangle(const SpriteMaterial & mat, const TexturedVertex (&vertices)[3]);

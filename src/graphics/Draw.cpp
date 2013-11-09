@@ -51,10 +51,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/data/TextureContainer.h"
 #include "graphics/data/Mesh.h"
 
-#include <list>
-#include <map>
-#include <vector>
-
 using std::min;
 using std::max;
 
@@ -64,175 +60,6 @@ TextureContainer * Zmap;
 extern TextureContainer * enviro;
 
 CircularVertexBuffer<TexturedVertex> * pDynamicVertexBuffer_TLVERTEX;
-
-class SpriteBatcher {
-public:
-	~SpriteBatcher() {
-		reset();
-	}
-
-	void add(const SpriteMaterial& mat, const TexturedVertex (&vertices)[3]) {
-		SpriteVertices*& pVerts = m_BatchedSprites[mat];
-		if(!pVerts)
-			pVerts = requestBuffer();
-
-		pVerts->reserve(pVerts->size() + 3);
-		
-		pVerts->push_back(vertices[0]);
-		pVerts->push_back(vertices[1]);
-		pVerts->push_back(vertices[2]);
-	}
-
-	void add(const SpriteMaterial& mat, const TexturedQuad& sprite) {
-		SpriteVertices*& pVerts = m_BatchedSprites[mat];
-		if(!pVerts)
-			pVerts = requestBuffer();
-
-		pVerts->reserve(pVerts->size() + NB_VERTICES_PER_SPRITE);
-		
-		pVerts->push_back(sprite.v[0]);
-		pVerts->push_back(sprite.v[1]);
-		pVerts->push_back(sprite.v[2]);
-
-		pVerts->push_back(sprite.v[0]);
-		pVerts->push_back(sprite.v[2]);
-		pVerts->push_back(sprite.v[3]);
-	}
-
-	void render() const {
-		for(Batches::const_iterator it = m_BatchedSprites.begin(); it != m_BatchedSprites.end(); ++it) {
-			if(!it->second->empty()) {
-				it->first.apply();
-				EERIEDRAWPRIM(Renderer::TriangleList, &it->second->front(), it->second->size());
-			}
-		}
-	}
-
-	void clear() {
-		for(Batches::iterator itBatch = m_BatchedSprites.begin(); itBatch != m_BatchedSprites.end(); ++itBatch)
-			releaseBuffer(itBatch->second);
-		m_BatchedSprites.clear();
-	}
-
-	void reset() {
-		clear();
-		
-		for(BufferPool::iterator it = m_BufferPool.begin(); it != m_BufferPool.end(); ++it) {
-			delete *it;
-		}
-
-		m_BufferPool.clear();
-	}
-	
-private:
-	typedef std::vector<TexturedVertex> SpriteVertices;
-	typedef std::map<SpriteMaterial, SpriteVertices*> Batches;
-	typedef std::list<SpriteVertices*> BufferPool; // Avoid heavy reallocations on each frame
-
-	static const u32 DEFAULT_NB_SPRITES_PER_BUFFER = 512;
-	static const u32 NB_VERTICES_PER_SPRITE = 6;
-
-	SpriteVertices* requestBuffer() {
-		SpriteVertices* pVertices = NULL;
-		if(!m_BufferPool.empty()) {
-			pVertices = m_BufferPool.back();
-			m_BufferPool.pop_back();
-		} else {
-			pVertices = new SpriteVertices();
-			pVertices->reserve(DEFAULT_NB_SPRITES_PER_BUFFER * NB_VERTICES_PER_SPRITE);
-		}
-
-		return pVertices;
-	}
-
-	void releaseBuffer(SpriteVertices* pVertices) {
-		pVertices->clear();
-		m_BufferPool.push_back(pVertices);
-	}
-	
-private:
-	BufferPool m_BufferPool;
-	Batches m_BatchedSprites;
-} g_SpriteBatcher;
-
-SpriteMaterial::SpriteMaterial() 
-	: texture(0)
-	, depthTest(false)
-	, blendType(Opaque)
-	, wrapMode(TextureStage::WrapRepeat)
-	, depthBias(0) {
-}
-
-bool SpriteMaterial::operator<(const SpriteMaterial & other) const {
-	// First sort by blend type
-	if(blendType < other.blendType) {
-		return true;
-	}
-
-	// Then texture
-	if(texture < other.texture) {
-		return true;
-	}
-
-	// Then depth test state
-	if(depthTest != other.depthTest) {
-		return depthTest;
-	}
-
-	// Then wrap mode
-	if(wrapMode < other.wrapMode) {
-		return true;
-	}
-
-	// Then depth bias
-	if(depthBias > other.depthBias) {
-		return true;
-	}
-
-	return false;
-}
-
-void SpriteMaterial::apply() const {
-		
-	if(texture) {
-		GRenderer->SetTexture(0, texture);
-	} else {
-		GRenderer->ResetTexture(0);
-	}
-
-	GRenderer->GetTextureStage(0)->setWrapMode(wrapMode);
-	GRenderer->SetDepthBias(depthBias);
-
-	GRenderer->SetRenderState(Renderer::DepthTest, depthTest);
-
-	if(blendType == Opaque) {
-		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-	} else {
-		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-
-		switch(blendType) {
-		case Additive:
-			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-			break;
-
-		case AlphaAdditive:
-			GRenderer->SetBlendFunc(Renderer::BlendSrcAlpha, Renderer::BlendOne);
-			break;
-
-		case Screen:
-			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendInvSrcColor);
-			break;
-
-		case Subtractive:
-			GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
-			break;
-
-		default:
-			arx_error_msg("Invalid blend type.");
-		}
-	}
-}
-
 
 void EERIEDRAWPRIM(Renderer::Primitive primitive, const TexturedVertex * vertices, size_t count, bool nocount) {
 	
@@ -308,6 +135,8 @@ bool EERIECreateSprite(TexturedQuad& sprite, const TexturedVertex & in, float si
 
 	return false;
 }
+
+SpriteBatcher g_SpriteBatcher;
 
 void EERIEAddSprite(const SpriteMaterial & mat, const TexturedVertex & in, float siz, TextureContainer * tex, Color color, float Zpos, float rot) {
 	TexturedQuad s;
