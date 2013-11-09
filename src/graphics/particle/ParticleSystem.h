@@ -119,7 +119,7 @@ public:
 	float fParticleEndColor[4];
 	float fParticleEndColorRandom[4];
 	
-	SpriteMaterial::BlendType blendMode;
+	RenderMaterial::BlendType blendMode;
 		
 	bool bParticleFollow;
 	

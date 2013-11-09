@@ -137,7 +137,7 @@ void LaunchMagicMissileExplosion(const Vec3f & _ePos, int t = 0, long spellinsta
 	cp.fEndColorRandom[2] = 50;
 	cp.fEndColorRandom[3] = 50;
 
-	cp.blendMode = SpriteMaterial::Additive;
+	cp.blendMode = RenderMaterial::Additive;
 
 	pPS->SetParams(cp);
 	pPS->ulParticleSpawn = 0;

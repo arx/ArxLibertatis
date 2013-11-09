@@ -33,7 +33,7 @@ struct TexturedQuad {
 	TexturedVertex v[4];
 };
 
-struct SpriteMaterial {
+struct RenderMaterial {
 
 	enum BlendType {
 		Opaque,
@@ -43,9 +43,9 @@ struct SpriteMaterial {
 		Subtractive
 	};
 
-	SpriteMaterial();
+	RenderMaterial();
 
-	bool operator<(const SpriteMaterial & other) const;
+	bool operator<(const RenderMaterial & other) const;
 	void apply() const;
 
 	Texture * getTexture() const { return texture; }
@@ -72,23 +72,23 @@ private:
 	int depthBias;
 };
 
-class SpriteBatcher {
+class RenderBatcher {
 public:
-	~SpriteBatcher();
+	~RenderBatcher();
 
-	void add(const SpriteMaterial& mat, const TexturedVertex(&vertices)[3]);
-	void add(const SpriteMaterial& mat, const TexturedQuad& sprite);
+	void add(const RenderMaterial& mat, const TexturedVertex(&vertices)[3]);
+	void add(const RenderMaterial& mat, const TexturedQuad& sprite);
 	void render() const;
 	void clear();
 	void reset();
 	
 private:
-	typedef std::vector<TexturedVertex> SpriteVertices;
-	typedef std::map<SpriteMaterial, SpriteVertices*> Batches;
-	typedef std::list<SpriteVertices*> BufferPool; // Avoid heavy reallocations on each frame
+	typedef std::vector<TexturedVertex> VertexBatch;
+	typedef std::map<RenderMaterial, VertexBatch*> Batches;
+	typedef std::list<VertexBatch*> BufferPool; // Avoid heavy reallocations on each frame
 
-	SpriteVertices* requestBuffer();
-	void releaseBuffer(SpriteVertices* pVertices);
+	VertexBatch* requestBuffer();
+	void releaseBuffer(VertexBatch* pVertices);
 	
 private:
 	BufferPool m_BufferPool;

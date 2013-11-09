@@ -23,12 +23,12 @@
 #include <map>
 #include <vector>
 
-SpriteBatcher::~SpriteBatcher() {
+RenderBatcher::~RenderBatcher() {
 	reset();
 }
 
-void SpriteBatcher::add(const SpriteMaterial& mat, const TexturedVertex (&vertices)[3]) {
-	SpriteVertices*& pVerts = m_BatchedSprites[mat];
+void RenderBatcher::add(const RenderMaterial& mat, const TexturedVertex (&vertices)[3]) {
+	VertexBatch*& pVerts = m_BatchedSprites[mat];
 	if(!pVerts)
 		pVerts = requestBuffer();
 
@@ -39,8 +39,8 @@ void SpriteBatcher::add(const SpriteMaterial& mat, const TexturedVertex (&vertic
 	pVerts->push_back(vertices[2]);
 }
 
-void SpriteBatcher::add(const SpriteMaterial& mat, const TexturedQuad& sprite) {
-	SpriteVertices*& pVerts = m_BatchedSprites[mat];
+void RenderBatcher::add(const RenderMaterial& mat, const TexturedQuad& sprite) {
+	VertexBatch*& pVerts = m_BatchedSprites[mat];
 	if(!pVerts)
 		pVerts = requestBuffer();
 
@@ -55,7 +55,7 @@ void SpriteBatcher::add(const SpriteMaterial& mat, const TexturedQuad& sprite) {
 	pVerts->push_back(sprite.v[3]);
 }
 
-void SpriteBatcher::render() const {
+void RenderBatcher::render() const {
 	for(Batches::const_iterator it = m_BatchedSprites.begin(); it != m_BatchedSprites.end(); ++it) {
 		if(!it->second->empty()) {
 			it->first.apply();
@@ -64,13 +64,13 @@ void SpriteBatcher::render() const {
 	}
 }
 
-void SpriteBatcher::clear() {
+void RenderBatcher::clear() {
 	for(Batches::iterator itBatch = m_BatchedSprites.begin(); itBatch != m_BatchedSprites.end(); ++itBatch)
 		releaseBuffer(itBatch->second);
 	m_BatchedSprites.clear();
 }
 
-void SpriteBatcher::reset() {
+void RenderBatcher::reset() {
 	clear();
 		
 	for(BufferPool::iterator it = m_BufferPool.begin(); it != m_BufferPool.end(); ++it) {
@@ -80,28 +80,27 @@ void SpriteBatcher::reset() {
 	m_BufferPool.clear();
 }
 	
-SpriteBatcher::SpriteVertices* SpriteBatcher::requestBuffer() {
-	static const u32 DEFAULT_NB_SPRITES_PER_BUFFER = 512;
-	static const u32 NB_VERTICES_PER_SPRITE = 6;
-
-	SpriteVertices* pVertices = NULL;
+RenderBatcher::VertexBatch* RenderBatcher::requestBuffer() {
+	static const u32 DEFAULT_NB_VERTICES_PER_BUFFER = 512;
+	
+	VertexBatch* pVertices = NULL;
 	if(!m_BufferPool.empty()) {
 		pVertices = m_BufferPool.back();
 		m_BufferPool.pop_back();
 	} else {
-		pVertices = new SpriteVertices();
-		pVertices->reserve(DEFAULT_NB_SPRITES_PER_BUFFER * NB_VERTICES_PER_SPRITE);
+		pVertices = new VertexBatch();
+		pVertices->reserve(DEFAULT_NB_VERTICES_PER_BUFFER);
 	}
 
 	return pVertices;
 }
 
-void SpriteBatcher::releaseBuffer(SpriteVertices* pVertices) {
+void RenderBatcher::releaseBuffer(VertexBatch* pVertices) {
 	pVertices->clear();
 	m_BufferPool.push_back(pVertices);
 }
 
-SpriteMaterial::SpriteMaterial() 
+RenderMaterial::RenderMaterial() 
 	: texture(0)
 	, depthTest(false)
 	, blendType(Opaque)
@@ -109,7 +108,7 @@ SpriteMaterial::SpriteMaterial()
 	, depthBias(0) {
 }
 
-bool SpriteMaterial::operator<(const SpriteMaterial & other) const {
+bool RenderMaterial::operator<(const RenderMaterial & other) const {
 	// First sort by blend type
 	if(blendType < other.blendType) {
 		return true;
@@ -138,7 +137,7 @@ bool SpriteMaterial::operator<(const SpriteMaterial & other) const {
 	return false;
 }
 
-void SpriteMaterial::apply() const {
+void RenderMaterial::apply() const {
 		
 	if(texture) {
 		GRenderer->SetTexture(0, texture);

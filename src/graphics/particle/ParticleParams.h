@@ -70,7 +70,7 @@ public:
 	bool bTexLoop;
 	int iTexNb;
 	int iTexTime;
-	SpriteMaterial::BlendType blendMode;
+	RenderMaterial::BlendType blendMode;
 	char * lpszTexName;
 	
 	bool bStartLock;

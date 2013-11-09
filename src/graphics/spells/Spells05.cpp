@@ -158,7 +158,7 @@ void CCurePoison::Create()
 	cp.fEndColorRandom[2] = 0;
 	cp.fEndColorRandom[3] = 0;
 	cp.bTexInfo = false;
-	cp.blendMode = SpriteMaterial::Additive;
+	cp.blendMode = RenderMaterial::Additive;
 
 	pPS->SetParams(cp);
 	pPS->ulParticleSpawn = PARTICLE_CIRCULAR | PARTICLE_BORDER;
@@ -468,7 +468,7 @@ void LaunchPoisonExplosion(Vec3f * aePos) {
 	cp.fEndColorRandom[3] = 20; 
 	cp.bEndLock = false;
 
-	cp.blendMode = SpriteMaterial::AlphaAdditive;
+	cp.blendMode = RenderMaterial::AlphaAdditive;
 	cp.iFreq = -1;
 	cp.bTexInfo = false;
 	pPS->SetParams(cp);
@@ -594,7 +594,7 @@ void CPoisonProjectile::Create(Vec3f _eSrc, float _fBeta)
 	cp.fEndColorRandom[3] = 50;
 	cp.bEndLock = false;
 
-	cp.blendMode = SpriteMaterial::Screen;
+	cp.blendMode = RenderMaterial::Screen;
 
 	pPS.SetParams(cp);
 	pPS.ulParticleSpawn = 0;
@@ -669,7 +669,7 @@ void CPoisonProjectile::Update(unsigned long _ulTime)
 			cp.fEndColorRandom[3] = 0; 
 			cp.bEndLock = false;
 
-			cp.blendMode = SpriteMaterial::Screen;
+			cp.blendMode = RenderMaterial::Screen;
 			cp.bTexInfo = false;
 			pPSStream.SetParams(cp);
 			pPSStream.ulParticleSpawn = 0;

@@ -404,8 +404,8 @@ void ARX_MAGICAL_FLARES_Update() {
 
 	bool key = !GInput->actionPressed(CONTROLS_CUST_MAGICMODE);
 
-	SpriteMaterial mat;
-	mat.setBlendType(SpriteMaterial::Additive);
+	RenderMaterial mat;
+	mat.setBlendType(RenderMaterial::Additive);
 
 	for(long j = 1; j < 5; j++) {
 

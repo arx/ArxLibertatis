@@ -136,9 +136,9 @@ bool EERIECreateSprite(TexturedQuad& sprite, const TexturedVertex & in, float si
 	return false;
 }
 
-SpriteBatcher g_SpriteBatcher;
+RenderBatcher g_SpriteBatcher;
 
-void EERIEAddSprite(const SpriteMaterial & mat, const TexturedVertex & in, float siz, TextureContainer * tex, Color color, float Zpos, float rot) {
+void EERIEAddSprite(const RenderMaterial & mat, const TexturedVertex & in, float siz, TextureContainer * tex, Color color, float Zpos, float rot) {
 	TexturedQuad s;
 
 	if(EERIECreateSprite(s, in, siz, tex, color, Zpos, rot)) {
@@ -146,7 +146,7 @@ void EERIEAddSprite(const SpriteMaterial & mat, const TexturedVertex & in, float
 	}
 }
 
-void EERIEAddTriangle(const SpriteMaterial & mat, const TexturedVertex (&vertices)[3]) {
+void EERIEAddTriangle(const RenderMaterial & mat, const TexturedVertex (&vertices)[3]) {
 	g_SpriteBatcher.add(mat, vertices);
 }
 
@@ -216,7 +216,7 @@ void DrawBitmap(float x, float y, float sx, float sy, float z, TextureContainer 
 	EERIEDRAWPRIM(Renderer::TriangleFan, s.v, 4);
 }
 
-void EERIEAddBitmap(const SpriteMaterial& mat, float x, float y, float sx, float sy, float z, TextureContainer * tex, Color color) {
+void EERIEAddBitmap(const RenderMaterial & mat, float x, float y, float sx, float sy, float z, TextureContainer * tex, Color color) {
 	TexturedQuad s;
 	CreateBitmap(s, x, y, sx, sy, z, tex, color, false);
 	g_SpriteBatcher.add(mat, s);

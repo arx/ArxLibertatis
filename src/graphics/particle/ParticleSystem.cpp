@@ -131,7 +131,7 @@ ParticleSystem::ParticleSystem() {
 	fParticleEndColorRandom[2] = 0.1f;
 	fParticleEndColorRandom[3] = 0.1f;
 
-	blendMode = SpriteMaterial::Additive;
+	blendMode = RenderMaterial::Additive;
 }
 
 ParticleSystem::~ParticleSystem() {
@@ -423,7 +423,7 @@ void ParticleSystem::Update(long _lTime) {
 
 void ParticleSystem::Render() {
 	
-	SpriteMaterial mat;
+	RenderMaterial mat;
 	mat.setBlendType(blendMode);
 	mat.setDepthTest(true);
 
