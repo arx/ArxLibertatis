@@ -646,38 +646,6 @@ void ArxGame::outputText(int x, int y, const string & str) {
 	}
 }
 
-/*!
- * \brief Draws text on the window using selected font and color at position defined by column, row.
- * \param column
- * \param row
- * \param text
- * \param color
- */
-void ArxGame::outputTextGrid(float column, float row, const std::string &text, const Color &color)
-{
-	Font *selected_font = hFontInGame;
-
-	// find display size
-	const Vec2i &window = getWindow()->getSize();
-
-	const int tsize = selected_font->getLineHeight();
-
-
-	// TODO: could use quadrants for width or something similar
-	// TODO: could center text in column/row
-	const Vec2i size(window.x / 4, selected_font->getLineHeight());
-
-	const Vec2i spacing(2, 2);
-	const Vec2i p(column + (column < 0), row + (row < 0));
-
-	// offset text into the screen a bit
-	const Vec2i offset((column < 0 ? window.x - tsize - size.x : tsize), (row < 0 ? window.y - tsize - size.y : tsize));
-
-	// print the text directly using our selected font
-	selected_font->draw(offset + Vec2i(p.x * (size + spacing).x, p.y * (size + spacing).y), text, color);
-
-}
-
 bool ArxGame::beforeRun() {
 	
 	LogDebug("Before Run...");

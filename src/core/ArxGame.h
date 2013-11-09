@@ -100,7 +100,6 @@ public:
 	 * @param str The string of text to be written
 	 */
 	virtual void outputText(int x, int y, const std::string & str);
-	virtual void outputTextGrid(float x, float y, const std::string &text, const Color &color);
 	
 private:
 	void updateTime();
