@@ -88,6 +88,15 @@ void DrawDebugToggleDisplayTypes() {
 
 extern bool MouseInRect(const float x0, const float y0, const float x1, const float y1);
 
+static void drawDebugBoundingBox(const EERIE_2D_BBOX & box, Color color = Color::white) {
+	if(box.valid()) {
+		EERIEDraw2DLine(box.min.x, box.min.y, box.max.x, box.min.y, 0.01f, color);
+		EERIEDraw2DLine(box.max.x, box.min.y, box.max.x, box.max.y, 0.01f, color);
+		EERIEDraw2DLine(box.max.x, box.max.y, box.min.x, box.max.y, 0.01f, color);
+		EERIEDraw2DLine(box.min.x, box.max.y, box.min.x, box.min.y, 0.01f, color);
+	}
+}
+
 void DrawDebugLights() {
 
 	//GRenderer->SetCulling(Renderer::CullNone);
@@ -260,39 +269,32 @@ void DrawDebugCollisionShape(EERIE_3DOBJ * obj) {
 	}
 }
 
-void DrawDebugFogs() {
-
-	EERIE_QUAT rotation;
-	Quat_Init(&rotation);
-
-	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-
+static void drawDebugFogs() {
+	
 	for(long i = 0; i < MAX_FOG; i++) {
-		FOG_DEF *fog = &fogs[i];
-
-		if(!fog->exist)
+		
+		FOG_DEF * fog = &fogs[i];
+		if(!fog->exist) {
 			continue;
-
-			if(fogobj) {
-				Anglef angle(0.f, 0.f, 0.f);
-				Vec3f scale(1.f, 1.f, 1.f);
-				DrawEERIEObjEx(fogobj, &angle, &fog->pos, &scale, Color3f::white);
-			}
-
-//			fog->bboxmin = BBOXMIN;
-//			fog->bboxmax = BBOXMAX;
-
-			if(fog->special & FOG_DIRECTIONAL) {
-				EERIEDraw3DLine(fog->pos, fog->pos + fog->move * 50.f, Color::white);
-			}
-
-//			if(fog->selected) {
-//				EERIEDraw2DLine(fog->bboxmin.x, fog->bboxmin.y, fog->bboxmax.x, fog->bboxmin.y, 0.01f, Color::yellow);
-//				EERIEDraw2DLine(fog->bboxmax.x, fog->bboxmin.y, fog->bboxmax.x, fog->bboxmax.y, 0.01f, Color::yellow);
-//				EERIEDraw2DLine(fog->bboxmax.x, fog->bboxmax.y, fog->bboxmin.x, fog->bboxmax.y, 0.01f, Color::yellow);
-//				EERIEDraw2DLine(fog->bboxmin.x, fog->bboxmax.y, fog->bboxmin.x, fog->bboxmin.y, 0.01f, Color::yellow);
-//			}
+		}
+		
+		if(fogobj) {
+			Anglef angle(0.f, 0.f, 0.f);
+			Vec3f scale(1.f);
+			DrawEERIEObjEx(fogobj, &angle, &fog->pos, &scale, Color3f::white);
+		}
+		
+		if(fog->special & FOG_DIRECTIONAL) {
+			EERIEDraw3DLine(fog->pos, fog->pos + fog->move * 50.f, Color::white);
+		}
+		
+		EERIE_SPHERE fogsize;
+		fogsize.origin = fog->pos;
+		fogsize.radius = fog->size;
+		DrawLineSphere(fogsize, Color(Color3<u8>::blue, 200));
+		
 	}
+	
 }
 
 extern float GetIOHeight(Entity * io);
@@ -333,15 +335,6 @@ static void drawDebugEntityPhysicsCylinders() {
 			DrawDebugCollisionShape(entity->obj);
 			drawDebugEntityPhysicsCylinder(entity);
 		}
-	}
-}
-
-static void drawDebugBoundingBox(const EERIE_2D_BBOX & box, Color color = Color::white) {
-	if(box.valid()) {
-		EERIEDraw2DLine(box.min.x, box.min.y, box.max.x, box.min.y, 0.01f, color);
-		EERIEDraw2DLine(box.max.x, box.min.y, box.max.x, box.max.y, 0.01f, color);
-		EERIEDraw2DLine(box.max.x, box.max.y, box.min.x, box.max.y, 0.01f, color);
-		EERIEDraw2DLine(box.min.x, box.max.y, box.min.x, box.min.y, 0.01f, color);
 	}
 }
 
@@ -441,7 +434,7 @@ void DrawDebugRender() {
 			break;
 		}
 		case EDITION_FOGS: {
-			DrawDebugFogs();
+			drawDebugFogs();
 			ss << "Fogs";
 			break;
 		}
