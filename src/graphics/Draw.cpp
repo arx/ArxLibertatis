@@ -144,7 +144,33 @@ void EERIEAddSprite(const RenderMaterial & mat, const TexturedVertex & in, float
 	}
 }
 
-void EERIEAddTriangle(const RenderMaterial & mat, const TexturedVertex (&vertices)[3]) {
+void EERIEAddTriangle(const TexturedVertex (&vertices)[3]) {
+
+	RenderMaterial mat;
+	mat.setTexture(GRenderer->GetTexture(0));
+	if(GRenderer->GetRenderState(Renderer::AlphaBlending)) {
+		Renderer::PixelBlendingFactor srcFactor, dstFactor;
+		GRenderer->GetBlendFunc(srcFactor, dstFactor);
+		
+		if(srcFactor == Renderer::BlendOne && dstFactor == Renderer::BlendOne)
+			mat.setBlendType(RenderMaterial::Additive);
+		else if(srcFactor == Renderer::BlendSrcAlpha && dstFactor == Renderer::BlendOne)
+			mat.setBlendType(RenderMaterial::AlphaAdditive);
+		else if((srcFactor == Renderer::BlendOne && dstFactor == Renderer::BlendInvSrcColor) ||
+				(srcFactor == Renderer::BlendInvDstColor && dstFactor == Renderer::BlendOne))
+			mat.setBlendType(RenderMaterial::Screen);
+		else if(srcFactor == Renderer::BlendZero && dstFactor == Renderer::BlendInvSrcColor)
+			mat.setBlendType(RenderMaterial::Subtractive);
+		else
+			arx_error_msg("Unexpected blend func");
+	} else {
+		mat.setBlendType(RenderMaterial::Opaque);
+	}
+	
+	mat.setDepthBias(GRenderer->GetDepthBias());
+	mat.setWrapMode(GRenderer->GetTextureStage(0)->getWrapMode());
+	mat.setDepthTest(GRenderer->GetRenderState(Renderer::DepthTest));
+
 	RenderBatcher::getInstance().add(mat, vertices);
 }
 
