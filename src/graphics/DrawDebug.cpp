@@ -536,6 +536,6 @@ void drawDebugRender() {
 		default: return;
 	}
 	
-	ARX_TEXT_Draw(hFontDebug, 100, 2, ss.str(), Color::yellow);
+	ARX_TEXT_Draw(hFontDebug, 100, 10, ss.str(), Color::yellow);
 	
 }
