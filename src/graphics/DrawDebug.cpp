@@ -48,14 +48,14 @@
 #include "physics/Anchors.h"
 #include "physics/Collisions.h"
 
-TextureContainer * lightsource_tc = NULL;
+static TextureContainer * g_lightSourceTexture = NULL;
 static EERIE_3DOBJ * g_fogObject = NULL;
 static EERIE_3DOBJ * g_nodeObject = NULL;
 
 const float DebugTextMaxDistance = 1000.f;
 
 void drawDebugInitialize() {
-	lightsource_tc = TextureContainer::LoadUI("graph/particles/light");
+	g_lightSourceTexture = TextureContainer::LoadUI("graph/particles/light");
 	g_fogObject = LoadTheObj("editor/obj3d/fog_generator.teo", "node_teo maps");
 	g_nodeObject = LoadTheObj("editor/obj3d/node.teo", "node_teo maps");
 }
@@ -126,7 +126,7 @@ static void drawDebugLights() {
 		}
 		
 		GRenderer->SetBlendFunc(Renderer::BlendSrcAlpha, Renderer::BlendSrcAlpha);
-		EERIEDrawSprite(&in, 11.f, lightsource_tc, light->rgb.to<u8>(), 2.f);
+		EERIEDrawSprite(&in, 11.f, g_lightSourceTexture, light->rgb.to<u8>(), 2.f);
 		
 	}
 	
