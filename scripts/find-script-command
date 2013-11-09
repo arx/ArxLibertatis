@@ -1,0 +1,26 @@
+#!/bin/sh
+
+if [ $# = 0 ] ; then
+	cat <<EOF
+Usage: find-script-command command [grep-options...]
+
+Finds a script command in arx script files.
+
+For optimum perfomance cd to graph/obj3d/interactive and then run e.g.
+ find-script-command teleport
+
+This script will automatically searcg for all different encodings of the
+command, ignoring case and adding as many underscores as needed.
+The provided command should *not* already contain any underscores.
+
+It will however not actually parse scripts so false positive matches
+(for example in strings and comments) are very much possible.
+EOF
+	exit 1
+fi
+
+nosym="[^a-zA-Z_0-9]"
+pattern="(^|$nosym)$(printf '%s' "$1" | sed 's/./\_\*\0/g')_*($nosym|$)"
+shift
+
+grep --color --ignore-case --perl-regexp --recursive --text "$pattern" "$@"
