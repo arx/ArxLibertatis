@@ -1635,7 +1635,7 @@ void FirstFrameHandling() {
 
 	ARX_PARTICLES_FirstInit();
 	ARX_FOGS_TimeReset();
-	EERIEResetSprites();
+	RenderBatcher::getInstance().reset();
 	
 	PROGRESS_BAR_COUNT += 2.f;
 	LoadLevelScreen();
@@ -3265,7 +3265,7 @@ void shutdownGame() {
 	EERIE_ANIMMANAGER_ClearAll();
 
 	//sprites
-	EERIEResetSprites();
+	RenderBatcher::getInstance().reset();
 	
 	//Scripts
 	if(svar) {

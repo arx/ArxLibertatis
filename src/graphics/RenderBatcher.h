@@ -85,6 +85,8 @@ public:
 	void add(const RenderMaterial& mat, const TexturedQuad& sprite);
 	void render();
 	void clear();
+
+	// Free all batches memory pools
 	void reset();
 
 	void initialize();
