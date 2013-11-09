@@ -536,6 +536,6 @@ void drawDebugRender() {
 		default: return;
 	}
 	
-	ARX_TEXT_Draw(hFontDebug, 100, 10, ss.str(), Color::yellow);
-	
+	s32 width = hFontDebug->getTextSize(ss.str()).x;
+	ARX_TEXT_Draw(hFontDebug, g_size.width() - 10 - width, 10, ss.str(), Color::yellow);
 }
