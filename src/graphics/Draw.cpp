@@ -157,11 +157,9 @@ void EERIEClearSprites() {
 }
 
 void EERIERenderSprites() {
-	GRenderer->SetCulling(Renderer::CullNone);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	RenderBatcher::getInstance().render();
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
-	GRenderer->SetCulling(Renderer::CullCCW);
 }
 
 void EERIEDrawSprite(const TexturedVertex & in, float siz, TextureContainer * tex, Color color, float Zpos) {

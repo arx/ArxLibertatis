@@ -113,7 +113,8 @@ RenderMaterial::RenderMaterial()
 	, depthTest(false)
 	, blendType(Opaque)
 	, wrapMode(TextureStage::WrapRepeat)
-	, depthBias(0) {
+	, depthBias(0)
+	, cullingMode(Renderer::CullNone) {
 }
 
 bool RenderMaterial::operator<(const RenderMaterial & other) const {
@@ -130,6 +131,11 @@ bool RenderMaterial::operator<(const RenderMaterial & other) const {
 	// Then depth test state
 	if(depthTest != other.depthTest) {
 		return depthTest;
+	}
+
+	// Then cull mode
+	if(cullingMode < other.cullingMode) {
+		return true;
 	}
 
 	// Then wrap mode
@@ -157,6 +163,8 @@ void RenderMaterial::apply() const {
 	GRenderer->SetDepthBias(depthBias);
 
 	GRenderer->SetRenderState(Renderer::DepthTest, depthTest);
+
+	GRenderer->SetCulling(cullingMode);
 
 	if(blendType == Opaque) {
 		GRenderer->SetRenderState(Renderer::AlphaBlending, false);

@@ -64,12 +64,16 @@ struct RenderMaterial {
 	int getDepthBias() const { return depthBias; }
 	void setDepthBias(int bias) { depthBias = bias; }
 
+	Renderer::CullingMode getCulling() const { return cullingMode; }
+	void setCulling(Renderer::CullingMode cullMode) { cullingMode = cullMode; }
+
 private:
 	Texture * texture;
 	bool depthTest;
 	BlendType blendType;
 	TextureStage::WrapMode wrapMode;
 	int depthBias;
+	Renderer::CullingMode cullingMode;
 };
 
 class RenderBatcher {
