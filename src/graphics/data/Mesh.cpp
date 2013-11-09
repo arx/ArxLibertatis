@@ -1535,7 +1535,7 @@ void DrawEERIEObjExEx(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *pos, Vec3f *scale
 
 	TexturedVertex v;
 	TexturedVertex rv;
-	TexturedVertex vert_list[4];
+	TexturedVertex vert_list[3];
 
 	float temp;
 
@@ -1590,7 +1590,7 @@ void DrawEERIEObjExEx(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *pos, Vec3f *scale
 		else
 			GRenderer->SetCulling(Renderer::CullCW);
 
-		EERIEDRAWPRIM(Renderer::TriangleList, vert_list);
+		EERIEAddTriangle(vert_list);
 	}
 }
 
