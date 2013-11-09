@@ -84,6 +84,7 @@ public:
 	
 	// Rasterizer
 	void SetAntialiasing(bool enable);
+	CullingMode GetCulling() const;
 	void SetCulling(CullingMode mode);
 	int GetDepthBias() const;
 	void SetDepthBias(int depthBias);
@@ -153,6 +154,7 @@ private:
 	mutable BoolStateCache m_cachedStates;
 	PixelBlendingFactor	m_cachedSrcBlend;
 	PixelBlendingFactor	m_cachedDstBlend;
+	CullingMode m_cachedCullMode;
 	int m_cachedDepthBias;
 };
 

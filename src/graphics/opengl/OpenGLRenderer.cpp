@@ -204,6 +204,7 @@ void OpenGLRenderer::resetStateCache() {
 	m_cachedSrcBlend = BlendOne;
 	m_cachedDstBlend = BlendZero;
 	m_cachedDepthBias = 0;
+	m_cachedCullMode = CullNone;
 }
 
 void OpenGLRenderer::shutdown() {
@@ -610,13 +611,23 @@ static const GLenum arxToGlCullMode[] = {
 	GL_FRONT, // CullCCW,
 };
 
+Renderer::CullingMode OpenGLRenderer::GetCulling() const {
+	return m_cachedCullMode;
+}
+
 void OpenGLRenderer::SetCulling(CullingMode mode) {
+	if(mode == m_cachedCullMode)
+		return;
+
+	m_cachedCullMode = mode;
+
 	if(mode == CullNone) {
 		setGLState(GL_CULL_FACE, false);
 	} else {
 		setGLState(GL_CULL_FACE, true);
 		glCullFace(arxToGlCullMode[mode]);
 	}
+
 	CHECK_GL;
 }
 

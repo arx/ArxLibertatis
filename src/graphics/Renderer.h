@@ -172,6 +172,7 @@ public:
 	
 	// Rasterizer
 	virtual void SetAntialiasing(bool enable) = 0;
+	virtual CullingMode GetCulling() const = 0;
 	virtual void SetCulling(CullingMode mode) = 0;
 	virtual int GetDepthBias() const = 0;
 	virtual void SetDepthBias(int depthBias) = 0;
