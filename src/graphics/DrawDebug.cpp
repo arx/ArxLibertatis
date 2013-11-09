@@ -69,23 +69,23 @@ void DrawDebugRelease() {
 }
 
 enum DebugViewType {
-	EDITION_NONE,
-	EDITION_Entities,
-	EDITION_Paths,
-	EDITION_PathFind,
-	EDITION_LIGHTS,
-	EDITION_FOGS,
-	EDITION_CollisionShape,
-	EDITION_Portals,
-	EDITION_EnumSize
+	DebugView_None,
+	DebugView_Entities,
+	DebugView_Paths,
+	DebugView_PathFind,
+	DebugView_Lights,
+	DebugView_Fogs,
+	DebugView_CollisionShapes,
+	DebugView_Portals,
+	DebugViewCount
 };
 
-static DebugViewType g_debugView = EDITION_NONE;
+static DebugViewType g_debugView = DebugView_None;
 
 void drawDebugCycleViews() {
 	g_debugView = static_cast<DebugViewType>(g_debugView + 1);
-	if(g_debugView == EDITION_EnumSize) {
-		g_debugView = EDITION_NONE;
+	if(g_debugView == DebugViewCount) {
+		g_debugView = DebugView_None;
 	}
 }
 
@@ -491,7 +491,7 @@ void RenderAllNodes() {
 
 void DrawDebugRender() {
 	
-	if(g_debugView == EDITION_NONE) {
+	if(g_debugView == DebugView_None) {
 		return;
 	}
 	
@@ -499,37 +499,37 @@ void DrawDebugRender() {
 	ss << "Debug Display: ";
 	
 	switch(g_debugView) {
-		case EDITION_Entities: {
+		case DebugView_Entities: {
 			ss << "Entities";
 			drawDebugEntities();
 			break;
 		}
-		case EDITION_Paths: {
+		case DebugView_Paths: {
 			ss << "Paths and Zones";
 			drawDebugPaths();
 			break;
 		}
-		case EDITION_PathFind: {
+		case DebugView_PathFind: {
 			ss << "Pathfinding";
 			drawDebugPathFinding();
 			break;
 		}
-		case EDITION_LIGHTS: {
+		case DebugView_Lights: {
 			ss << "Lights";
 			drawDebugLights();
 			break;
 		}
-		case EDITION_FOGS: {
+		case DebugView_Fogs: {
 			drawDebugFogs();
 			ss << "Fogs";
 			break;
 		}
-		case EDITION_CollisionShape: {
+		case DebugView_CollisionShapes: {
 			ss << "Collision Shapes";
 			drawDebugEntityPhysicsCylinders();
 			break;
 		}
-		case EDITION_Portals: {
+		case DebugView_Portals: {
 			ss << "Portals";
 			drawDebugPortals();
 			break;
