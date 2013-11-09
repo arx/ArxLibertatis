@@ -423,11 +423,11 @@ static void drawDebugEntities() {
 	for(size_t i = 1; i < entities.size(); i++) {
 		
 		Entity * entity = entities[i];
-		if(!entity) {
+		if(!entity || entity->show == SHOW_FLAG_KILLED) {
 			continue;
 		}
 		
-		bool visible = (entity->show != SHOW_FLAG_HIDDEN)
+		bool visible = entity->show != SHOW_FLAG_HIDDEN && entity->show != SHOW_FLAG_DESTROYED
 		               && !(entity->ioflags & IO_CAMERA) && !(entity->ioflags & IO_MARKER);
 		
 		if(visible) {
