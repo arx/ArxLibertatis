@@ -170,6 +170,7 @@ void EERIEAddTriangle(const TexturedVertex (&vertices)[3]) {
 	mat.setDepthBias(GRenderer->GetDepthBias());
 	mat.setWrapMode(GRenderer->GetTextureStage(0)->getWrapMode());
 	mat.setDepthTest(GRenderer->GetRenderState(Renderer::DepthTest));
+	mat.setCulling(GRenderer->GetCulling());
 
 	RenderBatcher::getInstance().add(mat, vertices);
 }
