@@ -1481,12 +1481,6 @@ void SetEditMode(long ed, const bool stop_sound) {
 		player.life = 0.1f;
 	}
 	
-	BOOST_FOREACH(Entity * e, entities) {
-		if(e && (e->show == SHOW_FLAG_HIDDEN || e->show == SHOW_FLAG_KILLED)) {
-			e->show = SHOW_FLAG_IN_SCENE;
-		}
-	}
-
 	RestoreAllLightsInitialStatus();
 
 	if (stop_sound) ARX_SOUND_MixerStop(ARX_SOUND_MixerGame);
