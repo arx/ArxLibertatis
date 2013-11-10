@@ -561,7 +561,6 @@ void ARX_DAMAGES_ForceDeath(Entity * io_dead, Entity * io_killer) {
 		}
 	}
 
-	IO_UnlinkAllLinkedObjects(io_dead);
 	io_dead->animlayer[1].cur_anim = NULL;
 	io_dead->animlayer[2].cur_anim = NULL;
 	io_dead->animlayer[3].cur_anim = NULL;
