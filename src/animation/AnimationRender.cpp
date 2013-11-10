@@ -761,7 +761,7 @@ void DrawEERIEInter_Render(EERIE_3DOBJ *eobj, const TransformInfo &t, Entity *io
 	}
 
 	for(size_t i = 0; i < eobj->facelist.size(); i++) {
-		EERIE_FACE & face = eobj->facelist[i];
+		const EERIE_FACE & face = eobj->facelist[i];
 
 		if(CullFace(eobj, face))
 			continue;
