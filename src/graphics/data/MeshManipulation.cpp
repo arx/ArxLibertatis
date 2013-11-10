@@ -477,38 +477,42 @@ static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERI
 	TextureContainer * tc = NULL;
 
 	for(size_t i = 0; i < obj1->facelist.size(); i++) {
-		if(((IsInSelection(obj1, obj1->facelist[i].vid[0], iw1) != -1)
-		        ||	(IsInSelection(obj1, obj1->facelist[i].vid[0], jw1) != -1))
-		        &&	((IsInSelection(obj1, obj1->facelist[i].vid[1], iw1) != -1)
-		             ||	(IsInSelection(obj1, obj1->facelist[i].vid[1], jw1) != -1))
-		        &&	((IsInSelection(obj1, obj1->facelist[i].vid[2], iw1) != -1)
-		             ||	(IsInSelection(obj1, obj1->facelist[i].vid[2], jw1) != -1))
+		const EERIE_FACE & face = obj1->facelist[i];
+
+		if(((IsInSelection(obj1, face.vid[0], iw1) != -1)
+				||	(IsInSelection(obj1, face.vid[0], jw1) != -1))
+				&&	((IsInSelection(obj1, face.vid[1], iw1) != -1)
+					 ||	(IsInSelection(obj1, face.vid[1], jw1) != -1))
+				&&	((IsInSelection(obj1, face.vid[2], iw1) != -1)
+					 ||	(IsInSelection(obj1, face.vid[2], jw1) != -1))
 		) {
-			if(obj1->facelist[i].texid != -1) {
-				if(tc != obj1->texturecontainer[obj1->facelist[i].texid]) {
-					tc = obj1->texturecontainer[obj1->facelist[i].texid];
+			if(face.texid != -1) {
+				if(tc != obj1->texturecontainer[face.texid]) {
+					tc = obj1->texturecontainer[face.texid];
 					ObjectAddMap(work, tc);
 				}
 			}
 
-			ObjectAddFace(work, &obj1->facelist[i], obj1);
+			ObjectAddFace(work, &face, obj1);
 		}
 	}
 
 	for(size_t i = 0; i < obj2->facelist.size(); i++) {
-		if(IsInSelection(obj2, obj2->facelist[i].vid[0], tw2) != -1
-		   || IsInSelection(obj2, obj2->facelist[i].vid[1], tw2) != -1
-		   || IsInSelection(obj2, obj2->facelist[i].vid[2], tw2) != -1
+		const EERIE_FACE & face = obj2->facelist[i];
+
+		if(IsInSelection(obj2, face.vid[0], tw2) != -1
+		   || IsInSelection(obj2, face.vid[1], tw2) != -1
+		   || IsInSelection(obj2, face.vid[2], tw2) != -1
 		) {
 
-			if(obj2->facelist[i].texid != -1) {
-				if(tc != obj2->texturecontainer[obj2->facelist[i].texid]) {
-					tc = obj2->texturecontainer[obj2->facelist[i].texid];
+			if(face.texid != -1) {
+				if(tc != obj2->texturecontainer[face.texid]) {
+					tc = obj2->texturecontainer[face.texid];
 					ObjectAddMap(work, tc);
 				}
 			}
 
-			ObjectAddFace(work, &obj2->facelist[i], obj2);
+			ObjectAddFace(work, &face, obj2);
 		}
 	}
 
