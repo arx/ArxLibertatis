@@ -783,22 +783,18 @@ void DrawEERIEInter_Render(EERIE_3DOBJ *eobj, const TransformInfo &t, Entity *io
 			tvList[n] = eobj->vertexlist[face.vid[n]].vert;
 			tvList[n].uv.x = face.u[n];
 			tvList[n].uv.y = face.v[n];
-		}
 
-		// Treat WATER Polys (modify UVs)
-		if(face.facetype & POLY_WATER) {
-			for(long k = 0; k < 3; k++) {
-				tvList[k].uv.x=face.u[k];
-				tvList[k].uv.y=face.v[k];
-				ApplyWaterFXToVertex(&eobj->vertexlist[face.vid[k]].v, &tvList[k], 0.3f);
+			// Treat WATER Polys (modify UVs)
+			if(face.facetype & POLY_WATER) {
+				ApplyWaterFXToVertex(&eobj->vertexlist[face.vid[n]].v, &tvList[n], 0.3f);
 			}
-		}
 
-		if(face.facetype & POLY_GLOW) { // unaffected by light
-			tvList[0].color=tvList[1].color=tvList[2].color=0xffffffff;
-		} else { // Normal Illuminations
-			for(long j = 0; j < 3; j++) {
-				tvList[j].color=eobj->vertexlist3[face.vid[j]].vert.color;
+			if(face.facetype & POLY_GLOW) {
+				// unaffected by light
+				tvList[n].color = 0xffffffff;
+			} else {
+				// Normal Illuminations
+				tvList[n].color = eobj->vertexlist3[face.vid[n]].vert.color;
 			}
 		}
 
