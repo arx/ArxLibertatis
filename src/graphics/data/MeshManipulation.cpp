@@ -435,24 +435,28 @@ static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERI
 
 	// Recreate Action Points included in work object.for Obj1
 	for(size_t i = 0; i < obj1->actionlist.size(); i++) {
-		if(IsInSelection(obj1, obj1->actionlist[i].idx, iw1) != -1
-				|| IsInSelection(obj1, obj1->actionlist[i].idx, jw1) != -1
-		        || obj1->actionlist[i].name == "head2chest"
-				|| obj1->actionlist[i].name == "chest2leggings"
+		const EERIE_ACTIONLIST & action = obj1->actionlist[i];
+
+		if(IsInSelection(obj1, action.idx, iw1) != -1
+				|| IsInSelection(obj1, action.idx, jw1) != -1
+				|| action.name == "head2chest"
+				|| action.name == "chest2leggings"
 		) {
-			ObjectAddAction(work, obj1->actionlist[i].name, obj1->actionlist[i].act,
-			                obj1->actionlist[i].sfx, &obj1vertexlist2[obj1->actionlist[i].idx]);
+			ObjectAddAction(work, action.name, action.act,
+							action.sfx, &obj1vertexlist2[action.idx]);
 		}
 	}
 
 	// Do the same for Obj2
 	for(size_t i = 0; i < obj2->actionlist.size(); i++) {
-		if(IsInSelection(obj2, obj2->actionlist[i].idx, tw2) != -1
-		        || obj2->actionlist[i].name == "head2chest"
-				|| obj2->actionlist[i].name == "chest2leggings"
+		const EERIE_ACTIONLIST & action = obj2->actionlist[i];
+
+		if(IsInSelection(obj2, action.idx, tw2) != -1
+				|| action.name == "head2chest"
+				|| action.name == "chest2leggings"
 		) {
-			ObjectAddAction(work, obj2->actionlist[i].name, obj2->actionlist[i].act,
-			                obj2->actionlist[i].sfx, &obj2vertexlist2[obj2->actionlist[i].idx]);
+			ObjectAddAction(work, action.name, action.act,
+							action.sfx, &obj2vertexlist2[action.idx]);
 		}
 	}
 
