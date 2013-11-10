@@ -214,8 +214,6 @@ void ARX_INTERACTIVE_DestroyDynamicInfo(Entity * io)
 
 	long n = io->index();
 
-	short sN = checked_range_cast<short>(n);
-
 	ARX_INTERACTIVE_ForceIOLeaveZone(io, 0);
 
 	for(long i = 0; i < MAX_EQUIPED; i++) {
@@ -257,32 +255,7 @@ void ARX_INTERACTIVE_DestroyDynamicInfo(Entity * io)
 
 	io->dynlight = -1;
 
-	if(io->obj) {
-		EERIE_3DOBJ * eobj = io->obj;
-
-		for(long k = 0; k < eobj->nblinked; k++) {
-			if(eobj->linked[k].lgroup != -1 && eobj->linked[k].obj) {
-				Entity * ioo = (Entity *)eobj->linked[k].io;
-
-				if(ioo && ValidIOAddress(ioo)) {
-					long ll = eobj->linked[k].lidx;
-					Vec3f pos, vector;
-					pos = io->obj->vertexlist3[ll].v;
-					ioo->angle = Anglef(rnd() * 40.f + 340.f, rnd() * 360.f, 0.f);
-					vector.x = -(float)EEsin(radians(ioo->angle.getPitch())) * ( 1.0f / 2 );
-					vector.y = EEsin(radians(ioo->angle.getYaw()));
-					vector.z = (float)EEcos(radians(ioo->angle.getPitch())) * ( 1.0f / 2 );
-					ioo->soundtime = 0;
-					ioo->soundcount = 0;
-					ioo->gameFlags |= GFLAG_NO_PHYS_IO_COL;
-					EERIE_PHYSICS_BOX_Launch(ioo->obj, pos, ioo->angle, vector);
-					ioo->show = SHOW_FLAG_IN_SCENE;
-					ioo->no_collide = sN;
-					EERIE_LINKEDOBJ_UnLinkObjectFromObject(io->obj, ioo->obj);
-				}
-			}
-		}
-	}
+	IO_UnlinkAllLinkedObjects(io);
 }
 
 
@@ -411,17 +384,35 @@ void UnlinkAllLinkedObjects() {
 }
 
 void IO_UnlinkAllLinkedObjects(Entity * io) {
-	if(io && io->obj) {
-		for(long k = 0; k < io->obj->nblinked; k++) {
-			if(io->obj->linked[k].io) {
-				Entity * ioo = io->obj->linked[k].io;
-				if(ValidIOAddress(ioo)) {
-					IO_Drop_Item(io, ioo);
-				}
-			}
-		}
-		EERIE_LINKEDOBJ_ReleaseData(io->obj);
+	
+	if(!io || !io->obj) {
+		return;
 	}
+	
+	for(long k = 0; k < io->obj->nblinked; k++) {
+		
+		Entity * linked = io->obj->linked[k].io;
+		if(!ValidIOAddress(linked)) {
+			continue;
+		}
+		
+		linked->angle = Anglef(rnd() * 40.f + 340.f, rnd() * 360.f, 0.f);
+		linked->soundtime = 0;
+		linked->soundcount = 0;
+		linked->gameFlags |= GFLAG_NO_PHYS_IO_COL;
+		linked->show = SHOW_FLAG_IN_SCENE;
+		linked->no_collide = checked_range_cast<short>(io->index());
+		
+		Vec3f pos = io->obj->vertexlist3[io->obj->linked[k].lidx].v;
+		Vec3f vector;
+		vector.x = -(float)EEsin(radians(linked->angle.getPitch())) * 0.5f;
+		vector.y = EEsin(radians(linked->angle.getYaw()));
+		vector.z = (float)EEcos(radians(linked->angle.getPitch())) * 0.5f;
+		EERIE_PHYSICS_BOX_Launch(linked->obj, pos, linked->angle, vector);
+		
+	}
+	
+	EERIE_LINKEDOBJ_ReleaseData(io->obj);
 }
 
 // First is always the player
