@@ -329,7 +329,7 @@ void Entity::destroy() {
 	if(scriptload) {
 		delete this;
 	} else {
-		show = SHOW_FLAG_KILLED;
+		show = SHOW_FLAG_DESTROYED;
 		cleanReferences();
 	}
 	
