@@ -102,6 +102,44 @@ class InventoryCommand : public Command {
 		
 	}
 	
+	class DestroyCommand : public SubCommand {
+		
+	public:
+		
+		static void destroyInventory(Entity * io) {
+			
+			INVENTORY_DATA * id = io->inventory;
+			if(!id) {
+				return;
+			}
+			
+			for(long nj = 0; nj < id->sizey; nj++) {
+				for(long ni = 0; ni < id->sizex; ni++) {
+					Entity * item = id->slot[ni][nj].io;
+					if(item) {
+						item->destroy();
+						id->slot[ni][nj].io = NULL;
+					}
+				}
+			}
+			
+			free(io->inventory);
+			io->inventory = NULL;
+		}
+		
+		DestroyCommand() : SubCommand("destroy") { }
+		
+		Result execute(Context & context) {
+			
+			DebugScript("");
+			
+			destroyInventory(context.getEntity());
+			
+			return Success;
+		}
+		
+	};
+	
 	class CreateCommand : public SubCommand {
 		
 	public:
@@ -114,26 +152,7 @@ class InventoryCommand : public Command {
 			
 			Entity * io = context.getEntity();
 			
-			if(io->inventory) {
-				
-				INVENTORY_DATA * id = io->inventory;
-				
-				for(long nj = 0; nj < id->sizey; nj++) {
-					for(long ni = 0; ni < id->sizex; ni++) {
-						
-						Entity * item = id->slot[ni][nj].io;
-						if(!item) {
-							continue;
-						}
-						
-						item->destroy();
-						
-						id->slot[ni][nj].io = NULL;
-					}
-				}
-				
-				free(io->inventory);
-			}
+			DestroyCommand::destroyInventory(io);
 			
 			io->inventory = (INVENTORY_DATA *)malloc(sizeof(INVENTORY_DATA));
 			memset(io->inventory, 0, sizeof(INVENTORY_DATA));
@@ -344,29 +363,6 @@ class InventoryCommand : public Command {
 			long xx, yy;
 			if(!CanBePutInSecondaryInventory(context.getEntity()->inventory, ioo, &xx, &yy)) {
 					PutInFrontOfPlayer(ioo);
-			}
-			
-			return Success;
-		}
-		
-	};
-	
-	class DestroyCommand : public SubCommand {
-		
-	public:
-		
-		DestroyCommand() : SubCommand("destroy") { }
-		
-		Result execute(Context & context) {
-			
-			DebugScript("");
-			
-			Entity * io = context.getEntity();
-			if(io->inventory) {
-				if(SecondaryInventory == io->inventory) {
-					SecondaryInventory = NULL;
-				}
-				free(io->inventory), io->inventory = NULL;
 			}
 			
 			return Success;
