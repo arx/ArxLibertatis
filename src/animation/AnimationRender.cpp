@@ -1125,8 +1125,6 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity *
 			continue;
 
 		//CULL3D
-		Vec3f nrm = eobj->vertexlist3[eface->vid[0]].v - ACTIVECAM->orgTrans.pos;
-
 		if(!(eface->facetype & POLY_DOUBLESIDED)) {
 			Vec3f normV10 = eobj->vertexlist3[eface->vid[1]].v - eobj->vertexlist3[eface->vid[0]].v;
 			Vec3f normV20 = eobj->vertexlist3[eface->vid[2]].v - eobj->vertexlist3[eface->vid[0]].v;
@@ -1134,6 +1132,8 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity *
 			normFace.x = (normV10.y * normV20.z) - (normV10.z * normV20.y);
 			normFace.y = (normV10.z * normV20.x) - (normV10.x * normV20.z);
 			normFace.z = (normV10.x * normV20.y) - (normV10.y * normV20.x);
+
+			Vec3f nrm = eobj->vertexlist3[eface->vid[0]].v - ACTIVECAM->orgTrans.pos;
 
 			if(glm::dot(normFace, nrm) > 0.f)
 				continue;
