@@ -407,8 +407,8 @@ static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERI
 	work->ident = obj1->ident;
 
 	// We reset all data to create a fresh object
-	memcpy(&work->cub, &obj1->cub, sizeof(CUB3D));
-	memcpy(&work->quat, &obj1->quat, sizeof(EERIE_QUAT));
+	work->cub = obj1->cub;
+	work->quat = obj1->quat;
 
 	// Linked objects are linked to this object.
 	if(obj1->nblinked > obj2->nblinked) {
