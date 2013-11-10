@@ -377,29 +377,26 @@ static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERI
 
 	// Now Retreives Tweak Action Points
 	{
-		long idx_head1, idx_head2;
-		long idx_torso1, idx_torso2;
+		long idx_head1 = GetActionPoint(obj1, "head2chest");
+		if(idx_head1 < 0)
+			return NULL;
 
-		idx_head1 = GetActionPoint(obj1, "head2chest");
+		long idx_head2 = GetActionPoint(obj2, "head2chest");
+		if(idx_head2 < 0)
+			return NULL;
 
-		if (idx_head1 < 0) return NULL;
+		long idx_torso1 = GetActionPoint(obj1, "chest2leggings");
+		if(idx_torso1 < 0)
+			return NULL;
 
-		idx_head2 = GetActionPoint(obj2, "head2chest");
-
-		if (idx_head2 < 0) return NULL;
-
-		idx_torso1 = GetActionPoint(obj1, "chest2leggings");
-
-		if (idx_torso1 < 0) return NULL;
-
-		idx_torso2 = GetActionPoint(obj2, "chest2leggings");
-
-		if (idx_torso2 < 0) return NULL;
+		long idx_torso2 = GetActionPoint(obj2, "chest2leggings");
+		if(idx_torso2 < 0)
+			return NULL;
 	}
 
 	// copy vertices
-	vector<EERIE_VERTEX> obj1vertexlist2 = obj1->vertexlist;
-	vector<EERIE_VERTEX> obj2vertexlist2 = obj2->vertexlist;
+	std::vector<EERIE_VERTEX> obj1vertexlist2 = obj1->vertexlist;
+	std::vector<EERIE_VERTEX> obj2vertexlist2 = obj2->vertexlist;
 
 	// Work will contain the Tweaked object
 	EERIE_3DOBJ * work = new EERIE_3DOBJ();
