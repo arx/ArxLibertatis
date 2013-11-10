@@ -904,6 +904,147 @@ void pushSlotHalo(std::vector<HaloRenderInfo> & halos, EquipmentSlot slot, short
 extern long IN_BOOK_DRAW;
 
 /* Render object */
+void AddAnimatedObjectHalo(long paf[], float invisibility, float ddist, EERIE_3DOBJ* eobj, float MAX_ZEDE, std::vector<HaloRenderInfo> halos, Entity* io, TexturedVertex *tvList, size_t i) {
+
+	IO_HALO * curhalo = NULL;
+
+	for(size_t h = 0; h < halos.size(); h++) {
+		if(halos[h].selection == -1 || IsInSelection(eobj, paf[0], halos[h].selection) >= 0) {
+			curhalo = halos[h].halo;
+			break;
+		}
+	}
+
+	if(!curhalo)
+		return;
+
+	float tot = 0;
+	float _ffr[3];
+	ColorBGRA colors[3];
+
+	for(size_t o = 0; o < 3; o++) {
+		float tttz	= EEfabs(eobj->vertexlist3[paf[o]].norm.z) * ( 1.0f / 2 );
+		float power = 255.f - (float)(255.f * tttz);
+		power *= (1.f - invisibility);
+
+		power = clamp(power, 0.f, 255.f);
+
+		tot += power;
+		_ffr[o] = power;
+
+		u8 lfr = curhalo->color.r * power;
+		u8 lfg = curhalo->color.g * power;
+		u8 lfb = curhalo->color.b * power;
+		colors[o] = ((0xFF << 24) | (lfr << 16) | (lfg << 8) | (lfb));
+	}
+
+	if(tot > 260) {
+		long first;
+		long second;
+		long third;
+
+		if(_ffr[0] >= _ffr[1] && _ffr[1] >= _ffr[2]) {
+			first = 0;
+			second = 1;
+			third = 2;
+		} else if(_ffr[0] >= _ffr[2] && _ffr[2] >= _ffr[1]) {
+			first = 0;
+			second = 2;
+			third = 1;
+		} else if(_ffr[1] >= _ffr[0] && _ffr[0] >= _ffr[2]) {
+			first = 1;
+			second = 0;
+			third = 2;
+		} else if(_ffr[1] >= _ffr[2] && _ffr[2] >= _ffr[0]) {
+			first = 1;
+			second = 2;
+			third = 0;
+		} else if(_ffr[2] >= _ffr[0] && _ffr[0] >= _ffr[1]) {
+			first = 2;
+			second = 0;
+			third = 1;
+		} else {
+			first = 2;
+			second = 1;
+			third = 0;
+		}
+
+		if(_ffr[first] > 150.f && _ffr[second] > 110.f) {
+			TexturedVertex *vert = Halo_AddVertex();
+
+			vert[0] = tvList[first];
+			vert[1] = tvList[first];
+			vert[2] = tvList[second];
+			vert[3] = tvList[second];
+
+			vert[0].color = colors[first];
+			vert[1].color = colors[first];
+			vert[2].color = colors[second];
+			vert[3].color = colors[second];
+
+			float siz = ddist * (curhalo->radius * (EEsin((arxtime.get_frame_time() + i) * .01f) * .1f + 1.f)) * .6f;
+
+			if(io == entities.player() && ddist > 0.8f && !EXTERNALVIEW)
+				siz *= 1.5f;
+
+			Vec3f vect1;
+			vect1.x = tvList[first].p.x - tvList[third].p.x;
+			vect1.y = tvList[first].p.y - tvList[third].p.y;
+			float len1 = 2.f / ffsqrt(vect1.x * vect1.x + vect1.y * vect1.y);
+
+			if(vect1.x < 0.f)
+				len1 *= 1.2f;
+
+			vect1.x *= len1;
+			vect1.y *= len1;
+
+			Vec3f vect2;
+			vect2.x = tvList[second].p.x - tvList[third].p.x;
+			vect2.y = tvList[second].p.y - tvList[third].p.y;
+			float len2 = 1.f / ffsqrt(vect2.x * vect2.x + vect2.y * vect2.y);
+
+			if(vect2.x < 0.f)
+				len2 *= 1.2f;
+
+			vect2.x *= len2;
+			vect2.y *= len2;
+
+			vert[1].p.x += (vect1.x + 0.2f - rnd() * 0.1f) * siz;
+			vert[1].p.y += (vect1.y + 0.2f - rnd() * 0.1f) * siz;
+			vert[1].color = 0xFF000000;
+
+			float valll;
+			valll = 0.005f + (EEfabs(tvList[first].p.z) - EEfabs(tvList[third].p.z))
+						   + (EEfabs(tvList[second].p.z) - EEfabs(tvList[third].p.z));
+			valll = 0.0001f + valll * ( 1.0f / 10 );
+
+			if(valll < 0.f)
+				valll = 0.f;
+
+			vert[1].p.z	+= valll;
+			vert[2].p.z	+= valll;
+
+			vert[0].p.z	+= 0.0001f;
+			vert[3].p.z	+= 0.0001f;//*( 1.0f / 2 );
+			vert[1].rhw	*= .98f;
+			vert[2].rhw	*= .98f;
+			vert[0].rhw	*= .98f;
+			vert[3].rhw	*= .98f;
+
+			vert[2].p.x += (vect2.x + 0.2f - rnd() * 0.1f) * siz;
+			vert[2].p.y += (vect2.y + 0.2f - rnd() * 0.1f) * siz;
+
+			vert[1].p.z = (vert[1].p.z + MAX_ZEDE) * ( 1.0f / 2 );
+			vert[2].p.z = (vert[2].p.z + MAX_ZEDE) * ( 1.0f / 2 );
+
+			if(curhalo->flags & HALO_NEGATIVE)
+				vert[2].color = 0x00000000;
+			else
+				vert[2].color = 0xFF000000;
+		}
+	}
+}
+
 static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity * io, const Vec3f & pos, float invisibility) {
 
 	float MAX_ZEDE = 0.f;
@@ -1003,147 +1144,8 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity *
 			tvList[0].color = tvList[1].color = tvList[2].color = Color::gray(fTransp).toBGR();
 		}
 
-		////////////////////////////////////////////////////////////////////////
-		// HALO HANDLING START
 		if(need_halo) {
-
-			IO_HALO * curhalo = NULL;
-
-			for(size_t h = 0; h < halos.size(); h++) {
-				if(halos[h].selection == -1 || IsInSelection(eobj, paf[0], halos[h].selection) >= 0) {
-					curhalo = halos[h].halo;
-					break;
-				}
-			}
-
-			if(!curhalo)
-				continue;
-
-			float tot = 0;
-			float _ffr[3];
-			ColorBGRA colors[3];
-
-			for(size_t o = 0; o < 3; o++) {
-				float tttz	= EEfabs(eobj->vertexlist3[paf[o]].norm.z) * ( 1.0f / 2 );
-				float power = 255.f - (float)(255.f * tttz);
-				power *= (1.f - invisibility);
-
-				power = clamp(power, 0.f, 255.f);
-
-				tot += power;
-				_ffr[o] = power;
-
-				u8 lfr = curhalo->color.r * power;
-				u8 lfg = curhalo->color.g * power;
-				u8 lfb = curhalo->color.b * power;
-				colors[o] = ((0xFF << 24) | (lfr << 16) | (lfg << 8) | (lfb));
-			}
-
-			if(tot > 260) {
-				long first;
-				long second;
-				long third;
-
-				if(_ffr[0] >= _ffr[1] && _ffr[1] >= _ffr[2]) {
-					first = 0;
-					second = 1;
-					third = 2;
-				} else if(_ffr[0] >= _ffr[2] && _ffr[2] >= _ffr[1]) {
-					first = 0;
-					second = 2;
-					third = 1;
-				} else if(_ffr[1] >= _ffr[0] && _ffr[0] >= _ffr[2]) {
-					first = 1;
-					second = 0;
-					third = 2;
-				} else if(_ffr[1] >= _ffr[2] && _ffr[2] >= _ffr[0]) {
-					first = 1;
-					second = 2;
-					third = 0;
-				} else if(_ffr[2] >= _ffr[0] && _ffr[0] >= _ffr[1]) {
-					first = 2;
-					second = 0;
-					third = 1;
-				} else {
-					first = 2;
-					second = 1;
-					third = 0;
-				}
-
-				if(_ffr[first] > 150.f && _ffr[second] > 110.f) {
-					TexturedVertex *vert = Halo_AddVertex();
-
-					vert[0] = tvList[first];
-					vert[1] = tvList[first];
-					vert[2] = tvList[second];
-					vert[3] = tvList[second];
-
-					vert[0].color = colors[first];
-					vert[1].color = colors[first];
-					vert[2].color = colors[second];
-					vert[3].color = colors[second];
-
-					float siz = ddist * (curhalo->radius * (EEsin((arxtime.get_frame_time() + i) * .01f) * .1f + 1.f)) * .6f;
-
-					if(io == entities.player() && ddist > 0.8f && !EXTERNALVIEW)
-						siz *= 1.5f;
-
-					Vec3f vect1;
-					vect1.x = tvList[first].p.x - tvList[third].p.x;
-					vect1.y = tvList[first].p.y - tvList[third].p.y;
-					float len1 = 2.f / ffsqrt(vect1.x * vect1.x + vect1.y * vect1.y);
-
-					if(vect1.x < 0.f)
-						len1 *= 1.2f;
-
-					vect1.x *= len1;
-					vect1.y *= len1;
-
-					Vec3f vect2;
-					vect2.x = tvList[second].p.x - tvList[third].p.x;
-					vect2.y = tvList[second].p.y - tvList[third].p.y;
-					float len2 = 1.f / ffsqrt(vect2.x * vect2.x + vect2.y * vect2.y);
-
-					if(vect2.x < 0.f)
-						len2 *= 1.2f;
-
-					vect2.x *= len2;
-					vect2.y *= len2;
-
-					vert[1].p.x += (vect1.x + 0.2f - rnd() * 0.1f) * siz;
-					vert[1].p.y += (vect1.y + 0.2f - rnd() * 0.1f) * siz;
-					vert[1].color = 0xFF000000;
-
-					float valll;
-					valll = 0.005f + (EEfabs(tvList[first].p.z) - EEfabs(tvList[third].p.z))
-								   + (EEfabs(tvList[second].p.z) - EEfabs(tvList[third].p.z));
-					valll = 0.0001f + valll * ( 1.0f / 10 );
-
-					if(valll < 0.f)
-						valll = 0.f;
-
-					vert[1].p.z	+= valll;
-					vert[2].p.z	+= valll;
-
-					vert[0].p.z	+= 0.0001f;
-					vert[3].p.z	+= 0.0001f;//*( 1.0f / 2 );
-					vert[1].rhw	*= .98f;
-					vert[2].rhw	*= .98f;
-					vert[0].rhw	*= .98f;
-					vert[3].rhw	*= .98f;
-
-					vert[2].p.x += (vect2.x + 0.2f - rnd() * 0.1f) * siz;
-					vert[2].p.y += (vect2.y + 0.2f - rnd() * 0.1f) * siz;
-
-					vert[1].p.z = (vert[1].p.z + MAX_ZEDE) * ( 1.0f / 2 );
-					vert[2].p.z = (vert[2].p.z + MAX_ZEDE) * ( 1.0f / 2 );
-
-					if(curhalo->flags & HALO_NEGATIVE)
-						vert[2].color = 0x00000000;
-					else
-						vert[2].color = 0xFF000000;
-				}
-			}
+			AddAnimatedObjectHalo(paf, invisibility, ddist, eobj, MAX_ZEDE, halos, io, tvList, i);
 		}
 	}
 }
