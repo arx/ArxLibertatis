@@ -66,6 +66,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/GameSound.h"
 #include "scene/Interactive.h"
 #include "scene/Light.h"
+#include "scene/LinkedObject.h"
 #include "scene/LoadLevel.h"
 
 extern Entity * pIOChangeWeapon;
@@ -211,10 +212,6 @@ Entity::~Entity() {
 		ARX_SOUND_Stop(ignit_sound), ignit_sound = audio::INVALID_ID;
 	}
 	
-	if(FlyingOverIO == this) {
-		FlyingOverIO = NULL;
-	}
-	
 	if((MasterCamera.exist & 1) && MasterCamera.io == this) {
 		MasterCamera.exist = 0;
 	}
@@ -223,12 +220,8 @@ Entity::~Entity() {
 		MasterCamera.exist = 0;
 	}
 	
-	ARX_INTERACTIVE_DestroyDynamicInfo(this);
-	IO_UnlinkAllLinkedObjects(this);
-	
 	// Releases ToBeDrawn Transparent Polys linked to this object !
 	tweaks.clear();
-	ARX_SCRIPT_Timer_Clear_For_IO(this);
 	
 	if(obj && !(ioflags & IO_CAMERA) && !(ioflags & IO_MARKER) && !(ioflags & IO_GOLD)) {
 		delete obj, obj = NULL;
@@ -238,8 +231,6 @@ Entity::~Entity() {
 	
 	delete tweakerinfo;
 	delete tweaky, tweaky = NULL;
-	
-	RemoveFromAllInventories(this);
 	
 	ReleaseScript(&script);
 	ReleaseScript(&over_script);
@@ -293,9 +284,6 @@ Entity::~Entity() {
 		entities.remove(m_index);
 	}
 	
-	if(pIOChangeWeapon == this) {
-		pIOChangeWeapon = NULL; // TODO we really need a proper weak_ptr
-	}
 }
 
 std::string Entity::short_name() const {
@@ -318,9 +306,42 @@ void Entity::cleanReferences() {
 		Set_DragInter(NULL);
 	}
 	
+	if(FlyingOverIO == this) {
+		FlyingOverIO = NULL;
+	}
+	
+	if(COMBINE == this) {
+		COMBINE = NULL;
+	}
+	
+	if(pIOChangeWeapon == this) {
+		pIOChangeWeapon = NULL; // TODO we really need a proper weak_ptr
+	}
+	
 	if(!FAST_RELEASE) {
 		TREATZONE_RemoveIO(this);
 	}
+	gameFlags &= ~GFLAG_ISINTREATZONE;
+	
+	if(obj) {
+		while(obj->nblinked) {
+			if(obj->linked[0].lgroup != -1 && obj->linked[0].obj) {
+				Entity * linked = obj->linked[0].io;
+				if(linked && ValidIOAddress(linked)) {
+					EERIE_LINKEDOBJ_UnLinkObjectFromObject(obj, linked->obj);
+					ARX_INTERACTIVE_DestroyIO(linked);
+				}
+			}
+		}
+	}
+	
+	ARX_INTERACTIVE_DestroyDynamicInfo(this);
+	
+	RemoveFromAllInventories(this);
+	
+	ARX_SCRIPT_Timer_Clear_For_IO(this);
+	
+	ARX_SPELLS_FizzleAllSpellsFromCaster(index());
 	
 }
 
