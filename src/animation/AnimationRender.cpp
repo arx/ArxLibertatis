@@ -545,18 +545,6 @@ void MakeCLight(const EERIE_QUAT *quat, EERIE_3DOBJ * eobj, const ColorMod & col
 	}
 }
 
-void MakeCLight2(const EERIE_QUAT *quat, EERIE_3DOBJ *eobj, const EERIE_FACE & face, const ColorMod & colorMod) {
-	
-	for(long i = 0; i < 3; i++) {
-		size_t vertexIndex = face.vid[i];
-
-		const Vec3f & position = eobj->vertexlist3[vertexIndex].v;
-		const Vec3f & normal = face.norm;
-
-		eobj->vertexlist3[vertexIndex].vert.color = ApplyLight(quat, position, normal, colorMod, 0.5f);
-	}
-}
-
 void UpdateBbox3d(EERIE_3DOBJ *eobj, EERIE_3D_BBOX & box3D) {
 
 	box3D.reset();
@@ -773,13 +761,18 @@ void DrawEERIEInter_Render(EERIE_3DOBJ *eobj, const TransformInfo &t, Entity *io
 		if(!pTex)
 			continue;
 
-		if(io && (io->ioflags & IO_ANGULAR))
-			MakeCLight2(&t.rotation, eobj, face, colorMod);
-
 		float fTransp = 0.f;
 		TexturedVertex *tvList = GetNewVertexList(pTex, face, invisibility, fTransp);
 
 		for(size_t n = 0; n < 3; n++) {
+
+			if(io && (io->ioflags & IO_ANGULAR)) {
+				const Vec3f & position = eobj->vertexlist3[face.vid[n]].v;
+				const Vec3f & normal = face.norm;
+
+				eobj->vertexlist3[face.vid[n]].vert.color = ApplyLight(&t.rotation, position, normal, colorMod, 0.5f);
+			}
+
 			tvList[n] = eobj->vertexlist[face.vid[n]].vert;
 			tvList[n].uv.x = face.u[n];
 			tvList[n].uv.y = face.v[n];
