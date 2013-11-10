@@ -920,7 +920,7 @@ void PrepareAnimatedObjectHalo(HaloInfo & haloInfo, const Vec3f& pos, EERIE_C_DA
 	}
 }
 
-void AddAnimatedObjectHalo(HaloInfo & haloInfo, const unsigned short * paf, float invisibility, EERIE_3DOBJ* eobj, Entity* io, TexturedVertex *tvList, size_t i) {
+void AddAnimatedObjectHalo(HaloInfo & haloInfo, const unsigned short * paf, float invisibility, EERIE_3DOBJ* eobj, Entity* io, TexturedVertex *tvList) {
 
 
 	float & ddist = haloInfo.ddist;
@@ -1003,7 +1003,7 @@ void AddAnimatedObjectHalo(HaloInfo & haloInfo, const unsigned short * paf, floa
 			vert[2].color = colors[second];
 			vert[3].color = colors[second];
 
-			float siz = ddist * (curhalo->radius * (EEsin((arxtime.get_frame_time() + i) * .01f) * .1f + 1.f)) * .6f;
+			float siz = ddist * (curhalo->radius * (EEsin(arxtime.get_frame_time() * .01f) * .1f + 1.f)) * .6f;
 
 			if(io == entities.player() && ddist > 0.8f && !EXTERNALVIEW)
 				siz *= 1.5f;
@@ -1113,7 +1113,7 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity *
 		}
 
 		if(haloInfo.need_halo) {
-			AddAnimatedObjectHalo(haloInfo, face.vid, invisibility, eobj, io, tvList, i);
+			AddAnimatedObjectHalo(haloInfo, face.vid, invisibility, eobj, io, tvList);
 		}
 	}
 }
