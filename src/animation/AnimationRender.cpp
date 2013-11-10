@@ -439,15 +439,15 @@ void Cedric_PrepareHalo(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj) {
 	}
 }
 
-TexturedVertex * GetNewVertexList(TextureContainer * container, EERIE_FACE * face, float invisibility, float & fTransp) {
+TexturedVertex * GetNewVertexList(TextureContainer * container, const EERIE_FACE & face, float invisibility, float & fTransp) {
 
 	fTransp = 0.f;
 
-	if((face->facetype & POLY_TRANS) || invisibility > 0.f) {
+	if((face.facetype & POLY_TRANS) || invisibility > 0.f) {
 		if(invisibility > 0.f)
 			fTransp = 2.f - invisibility;
 		else
-			fTransp = face->transval;
+			fTransp = face.transval;
 
 		if(fTransp >= 2.f) { //MULTIPLICATIVE
 			fTransp *= (1.f / 2);
@@ -663,7 +663,7 @@ void DrawEERIEInter_Render(EERIE_3DOBJ *eobj, const TransformInfo &t, Entity *io
 			MakeCLight2(&t.rotation, eobj, i, colorMod);
 
 		float fTransp = 0.f;
-		TexturedVertex *tvList = GetNewVertexList(pTex, eface, invisibility, fTransp);
+		TexturedVertex *tvList = GetNewVertexList(pTex, *eface, invisibility, fTransp);
 
 		tvList[0]=eobj->vertexlist[paf[0]].vert;
 		tvList[1]=eobj->vertexlist[paf[1]].vert;
@@ -1119,50 +1119,50 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity *
 	PrepareAnimatedObjectHalo(haloInfo, pos, obj, use_io, eobj);
 
 	for(size_t i = 0; i < eobj->facelist.size(); i++) {
-		EERIE_FACE *eface = &eobj->facelist[i];
+		const EERIE_FACE & face = eobj->facelist[i];
 
-		if((eface->facetype & POLY_HIDE) && !IN_BOOK_DRAW)
+		if((face.facetype & POLY_HIDE) && !IN_BOOK_DRAW)
 			continue;
 
 		//CULL3D
-		if(!(eface->facetype & POLY_DOUBLESIDED)) {
-			Vec3f normV10 = eobj->vertexlist3[eface->vid[1]].v - eobj->vertexlist3[eface->vid[0]].v;
-			Vec3f normV20 = eobj->vertexlist3[eface->vid[2]].v - eobj->vertexlist3[eface->vid[0]].v;
+		if(!(face.facetype & POLY_DOUBLESIDED)) {
+			Vec3f normV10 = eobj->vertexlist3[face.vid[1]].v - eobj->vertexlist3[face.vid[0]].v;
+			Vec3f normV20 = eobj->vertexlist3[face.vid[2]].v - eobj->vertexlist3[face.vid[0]].v;
 			Vec3f normFace;
 			normFace.x = (normV10.y * normV20.z) - (normV10.z * normV20.y);
 			normFace.y = (normV10.z * normV20.x) - (normV10.x * normV20.z);
 			normFace.z = (normV10.x * normV20.y) - (normV10.y * normV20.x);
 
-			Vec3f nrm = eobj->vertexlist3[eface->vid[0]].v - ACTIVECAM->orgTrans.pos;
+			Vec3f nrm = eobj->vertexlist3[face.vid[0]].v - ACTIVECAM->orgTrans.pos;
 
 			if(glm::dot(normFace, nrm) > 0.f)
 				continue;
 		}
 
-		if(eface->texid < 0)
+		if(face.texid < 0)
 			continue;
 
-		TextureContainer *pTex = eobj->texturecontainer[eface->texid];
+		TextureContainer *pTex = eobj->texturecontainer[face.texid];
 		if(!pTex)
 			continue;
 
 		float fTransp = 0.f;
-		TexturedVertex *tvList = GetNewVertexList(pTex, eface, invisibility, fTransp);
+		TexturedVertex *tvList = GetNewVertexList(pTex, face, invisibility, fTransp);
 
 		for(size_t n = 0; n < 3; n++) {
-			tvList[n].p     = eobj->vertexlist3[eface->vid[n]].vert.p;
-			tvList[n].rhw   = eobj->vertexlist3[eface->vid[n]].vert.rhw;
-			tvList[n].color = eobj->vertexlist3[eface->vid[n]].vert.color;
-			tvList[n].uv.x  = eface->u[n];
-			tvList[n].uv.y  = eface->v[n];
+			tvList[n].p     = eobj->vertexlist3[face.vid[n]].vert.p;
+			tvList[n].rhw   = eobj->vertexlist3[face.vid[n]].vert.rhw;
+			tvList[n].color = eobj->vertexlist3[face.vid[n]].vert.color;
+			tvList[n].uv.x  = face.u[n];
+			tvList[n].uv.y  = face.v[n];
 		}
 
-		if((eface->facetype & POLY_TRANS) || invisibility > 0.f) {
+		if((face.facetype & POLY_TRANS) || invisibility > 0.f) {
 			tvList[0].color = tvList[1].color = tvList[2].color = Color::gray(fTransp).toBGR();
 		}
 
 		if(haloInfo.need_halo) {
-			AddAnimatedObjectHalo(haloInfo, eface->vid, invisibility, eobj, io, tvList, i);
+			AddAnimatedObjectHalo(haloInfo, face.vid, invisibility, eobj, io, tvList, i);
 		}
 	}
 }
