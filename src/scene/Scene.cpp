@@ -183,11 +183,11 @@ std::vector<long> RoomDrawList;
 
 //*************************************************************************************
 //*************************************************************************************
-void ApplyWaterFXToVertex(Vec3f * odtv, TexturedVertex * dtv, float power)
+Vec2f getWaterFxUvOffset(const Vec3f & odtv, float power)
 {
 	power = power * 0.05f;
-	dtv->uv.x += EEsin(WATEREFFECT + odtv->x) * power;
-	dtv->uv.y += EEcos(WATEREFFECT + odtv->z) * power;
+	return Vec2f(EEsin(WATEREFFECT + odtv.x) * power,
+				 EEcos(WATEREFFECT + odtv.z) * power);
 }
 
 static void ApplyLavaGlowToVertex(Vec3f * odtv,TexturedVertex * dtv, float power) {
@@ -211,7 +211,7 @@ void ManageWater_VertexBuffer(EERIEPOLY * ep, const long to, const unsigned long
 	for(long k = 0; k < to; k++) {
 		ep->tv[k].uv = ep->v[k].uv;
 		
-		ApplyWaterFXToVertex(&ep->v[k].p, &ep->tv[k], 0.35f);
+		ep->tv[k].uv += getWaterFxUvOffset(ep->v[k].p, 0.35f);
 			
 		if(ep->type & POLY_FALL) {
 			ep->tv[k].uv.y -= (float)(tim) * (1.f/1000);
@@ -226,7 +226,7 @@ void ManageLava_VertexBuffer(EERIEPOLY * ep, const long to, const unsigned long 
 	for(long k = 0; k < to; k++) {
 		ep->tv[k].uv = ep->v[k].uv;
 		
-		ApplyWaterFXToVertex(&ep->v[k].p, &ep->tv[k], 0.35f); //0.25f
+		ep->tv[k].uv += getWaterFxUvOffset(ep->v[k].p, 0.35f); //0.25f
 		ApplyLavaGlowToVertex(&ep->v[k].p, &ep->tv[k], 0.6f);
 			
 		if(ep->type & POLY_FALL) {

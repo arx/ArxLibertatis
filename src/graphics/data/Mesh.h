@@ -200,7 +200,7 @@ void PrepareCamera(EERIE_CAMERA *cam);
 long MakeTopObjString(Entity * io, std::string& dest);
 void DeclareEGInfo(float x, float z);
 bool TryToQuadify(EERIEPOLY * ep,EERIE_3DOBJ * eobj);
-void ApplyWaterFXToVertex(Vec3f * odtv,TexturedVertex * dtv,float power);
+Vec2f getWaterFxUvOffset(const Vec3f & odtv, float power);
 
 //*************************************************************************************
 //*************************************************************************************

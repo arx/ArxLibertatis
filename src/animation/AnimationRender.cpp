@@ -786,7 +786,7 @@ void DrawEERIEInter_Render(EERIE_3DOBJ *eobj, const TransformInfo &t, Entity *io
 
 			// Treat WATER Polys (modify UVs)
 			if(face.facetype & POLY_WATER) {
-				ApplyWaterFXToVertex(&eobj->vertexlist[face.vid[n]].v, &tvList[n], 0.3f);
+				tvList[n].uv += getWaterFxUvOffset(eobj->vertexlist[face.vid[n]].v, 0.3f);
 			}
 
 			if(face.facetype & POLY_GLOW) {
