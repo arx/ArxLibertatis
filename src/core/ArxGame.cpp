@@ -1781,8 +1781,6 @@ void ArxGame::update2DFX()
 			{
 				Vec3f vector = lv.p - ACTIVECAM->orgTrans.pos;
 				lv.p -= vector * (50.f / glm::length(vector));
-				TexturedVertex ltvv2;
-				EE_RTP(&lv, &ltvv2);
 
 				float fZFar=ProjectionMatrix._33*(1.f/(ACTIVECAM->cdepth*fZFogEnd))+ProjectionMatrix._43;
 
