@@ -1675,19 +1675,20 @@ long ARX_NPC_ApplyCuts(Entity * io)
 		long numsel = GetCutSelection(io, flg);
 
 		if((io->_npcdata->cuts & flg) && numsel >= 0) {
-			for(size_t ll = 0; ll < io->obj->facelist.size(); ll++)
-			{
-				if	((IsInSelection(io->obj, io->obj->facelist[ll].vid[0], numsel) != -1)
-				        ||	(IsInSelection(io->obj, io->obj->facelist[ll].vid[1], numsel) != -1)
-				        ||	(IsInSelection(io->obj, io->obj->facelist[ll].vid[2], numsel) != -1)
+			for(size_t ll = 0; ll < io->obj->facelist.size(); ll++) {
+				EERIE_FACE & face = io->obj->facelist[ll];
+
+				if	((IsInSelection(io->obj, face.vid[0], numsel) != -1)
+						||	(IsInSelection(io->obj, face.vid[1], numsel) != -1)
+						||	(IsInSelection(io->obj, face.vid[2], numsel) != -1)
 				   )
 				{
-					if(!(io->obj->facelist[ll].facetype & POLY_HIDE)) {
-						if(io->obj->facelist[ll].texid != goretex)
+					if(!(face.facetype & POLY_HIDE)) {
+						if(face.texid != goretex)
 							hid = 1;
 					}
 
-					io->obj->facelist[ll].facetype |= POLY_HIDE;
+					face.facetype |= POLY_HIDE;
 				}
 			}
 
@@ -1737,12 +1738,14 @@ void ARX_NPC_TryToCutSomething(Entity * target, Vec3f * pos)
 			long out = 0;
 
 			for(size_t ll = 0; ll < target->obj->facelist.size(); ll++) {
-				if(target->obj->facelist[ll].texid != goretex) {
-					if(IsInSelection(target->obj, target->obj->facelist[ll].vid[0], i) != -1
-					   || IsInSelection(target->obj, target->obj->facelist[ll].vid[1], i) != -1
-					   || IsInSelection(target->obj, target->obj->facelist[ll].vid[2], i) != -1
+				EERIE_FACE & face = target->obj->facelist[ll];
+
+				if(face.texid != goretex) {
+					if(IsInSelection(target->obj, face.vid[0], i) != -1
+					   || IsInSelection(target->obj, face.vid[1], i) != -1
+					   || IsInSelection(target->obj, face.vid[2], i) != -1
 					) {
-						if(target->obj->facelist[ll].facetype & POLY_HIDE) {
+						if(face.facetype & POLY_HIDE) {
 							out++;
 						}
 					}
