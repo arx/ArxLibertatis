@@ -3093,7 +3093,6 @@ void ARX_INTERACTIVE_DestroyIO(Entity * ioo)
 
 		// Need To Kill timers
 		ARX_SCRIPT_Timer_Clear_By_IO(ioo);
-		ioo->show = SHOW_FLAG_DESTROYED;
 		ioo->gameFlags &= ~GFLAG_ISINTREATZONE;
 
 		if(!FAST_RELEASE)
@@ -3117,10 +3116,8 @@ void ARX_INTERACTIVE_DestroyIO(Entity * ioo)
 		}
 
 		ARX_INTERACTIVE_DestroyDynamicInfo(ioo);
-
-		if(ioo->scriptload) {
-			delete ioo;
-		}
+		
+		ioo->destroy();
 	}
 }
 
