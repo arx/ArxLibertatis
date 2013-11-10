@@ -900,11 +900,69 @@ void pushSlotHalo(std::vector<HaloRenderInfo> & halos, EquipmentSlot slot, short
 	}
 }
 
+struct HaloInfo {
+	bool need_halo;
+	float MAX_ZEDE;
+	float ddist;
+
+	HaloInfo()
+		: need_halo(0)
+		, MAX_ZEDE(0.f)
+		, ddist(0.f)
+	{}
+
+	std::vector<HaloRenderInfo> halos;
+};
+
 //-----------------------------------------------------------------------------
 extern long IN_BOOK_DRAW;
 
-/* Render object */
-void AddAnimatedObjectHalo(long paf[], float invisibility, float ddist, EERIE_3DOBJ* eobj, float MAX_ZEDE, std::vector<HaloRenderInfo> halos, Entity* io, TexturedVertex *tvList, size_t i) {
+void PrepareAnimatedObjectHalo(HaloInfo & haloInfo, const Vec3f& pos, EERIE_C_DATA* obj, Entity *use_io, EERIE_3DOBJ* eobj)
+{
+	std::vector<HaloRenderInfo> & halos = haloInfo.halos;
+
+	if(use_io == entities.player()) {
+		pushSlotHalo(halos, EQUIP_SLOT_HELMET,   eobj->fastaccess.sel_head);
+		pushSlotHalo(halos, EQUIP_SLOT_ARMOR,    eobj->fastaccess.sel_chest);
+		pushSlotHalo(halos, EQUIP_SLOT_LEGGINGS, eobj->fastaccess.sel_leggings);
+	}
+
+	if(use_io->halo.flags & HALO_ACTIVE) {
+		halos.push_back(HaloRenderInfo(&use_io->halo));
+	}
+
+	if(halos.size() > 0) {
+
+		Vec3f ftrPos = pos;
+		//TODO copy-pase
+		float mdist = ACTIVECAM->cdepth;
+		mdist *= ( 1.0f / 2 );
+
+		float ddist = mdist-fdist(ftrPos, ACTIVECAM->orgTrans.pos);
+		ddist = ddist/mdist;
+		ddist = std::pow(ddist, 6);
+		ddist = clamp(ddist, 0.25f, 0.9f);
+
+		haloInfo.ddist = ddist;
+
+		Cedric_PrepareHalo(eobj, obj);
+
+		haloInfo.MAX_ZEDE = 0.f;
+		for(size_t i = 0; i < eobj->vertexlist.size(); i++) {
+			if(eobj->vertexlist3[i].vert.rhw > 0.f)
+				haloInfo.MAX_ZEDE = std::max(eobj->vertexlist3[i].vert.p.z, haloInfo.MAX_ZEDE);
+		}
+
+		haloInfo.need_halo = true;
+	}
+}
+
+void AddAnimatedObjectHalo(HaloInfo & haloInfo, long paf[], float invisibility, EERIE_3DOBJ* eobj, Entity* io, TexturedVertex *tvList, size_t i) {
+
+
+	float & ddist = haloInfo.ddist;
+	float & MAX_ZEDE = haloInfo.MAX_ZEDE;
+	std::vector<HaloRenderInfo> & halos = haloInfo.halos;
 
 	IO_HALO * curhalo = NULL;
 
@@ -1047,13 +1105,8 @@ void AddAnimatedObjectHalo(long paf[], float invisibility, float ddist, EERIE_3D
 
 static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity * io, const Vec3f & pos, float invisibility) {
 
-	float MAX_ZEDE = 0.f;
-
 	if(invisibility == 1.f)
 		return;
-
-	float ddist = 0.f;
-	long need_halo = 0;
 
 	Entity *use_io = io;
 
@@ -1062,39 +1115,8 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity *
 
 	arx_assert(use_io);
 
-	std::vector<HaloRenderInfo> halos;
-
-	if(use_io == entities.player()) {
-		pushSlotHalo(halos, EQUIP_SLOT_HELMET,   eobj->fastaccess.sel_head);
-		pushSlotHalo(halos, EQUIP_SLOT_ARMOR,    eobj->fastaccess.sel_chest);
-		pushSlotHalo(halos, EQUIP_SLOT_LEGGINGS, eobj->fastaccess.sel_leggings);
-	}
-
-	if(use_io->halo.flags & HALO_ACTIVE) {
-		halos.push_back(HaloRenderInfo(&use_io->halo));
-	}
-
-	if(halos.size() > 0) {
-
-		Vec3f ftrPos = pos;
-		//TODO copy-pase
-		float mdist = ACTIVECAM->cdepth;
-		mdist *= ( 1.0f / 2 );
-		ddist = mdist-fdist(ftrPos, ACTIVECAM->orgTrans.pos);
-		ddist = ddist/mdist;
-		ddist = std::pow(ddist, 6);
-
-		ddist = clamp(ddist, 0.25f, 0.9f);
-
-		Cedric_PrepareHalo(eobj, obj);
-		need_halo = 1;
-
-		MAX_ZEDE = 0.f;
-		for(size_t i = 0; i < eobj->vertexlist.size(); i++) {
-			if(eobj->vertexlist3[i].vert.rhw > 0.f)
-				MAX_ZEDE = std::max(eobj->vertexlist3[i].vert.p.z, MAX_ZEDE);
-		}
-	}
+	HaloInfo haloInfo;
+	PrepareAnimatedObjectHalo(haloInfo, pos, obj, use_io, eobj);
 
 	for(size_t i = 0; i < eobj->facelist.size(); i++) {
 		EERIE_FACE *eface = &eobj->facelist[i];
@@ -1144,8 +1166,8 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity *
 			tvList[0].color = tvList[1].color = tvList[2].color = Color::gray(fTransp).toBGR();
 		}
 
-		if(need_halo) {
-			AddAnimatedObjectHalo(paf, invisibility, ddist, eobj, MAX_ZEDE, halos, io, tvList, i);
+		if(haloInfo.need_halo) {
+			AddAnimatedObjectHalo(haloInfo, paf, invisibility, eobj, io, tvList, i);
 		}
 	}
 }
