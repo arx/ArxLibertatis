@@ -394,6 +394,12 @@ public:
 	void destroy();
 	
 	/*!
+	 * If the entity is an item, decrease the stack count.
+	 * If the count reaches zero or if the entity is not an item, call destroy().
+	 */
+	void destroyOne();
+	
+	/*!
 	 * Get the class path for this entity.
 	 *
 	 * @return the full path to this entity's class

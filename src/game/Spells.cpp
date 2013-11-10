@@ -5161,7 +5161,7 @@ void ARX_SPELLS_Kill(long i) {
 						DynLight[nn].duration = 600;
 					}
 					
-					ARX_INTERACTIVE_DestroyIO(entities[spells[i].longinfo2]);
+					entities[spells[i].longinfo2]->destroyOne();
 				}
 			}
 			
@@ -5393,7 +5393,7 @@ void ARX_SPELLS_Update()
 								DynLight[nn].duration = 600;
 							}
 
-							ARX_INTERACTIVE_DestroyIO(entity);
+							entity->destroyOne();
 						}
 					}
 				break;

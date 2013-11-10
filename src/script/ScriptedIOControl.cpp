@@ -663,11 +663,16 @@ public:
 			return Success;
 		}
 		
-		bool self = (t == context.getEntity());
+		long index = context.getEntity()->index();
 		
-		ARX_INTERACTIVE_DestroyIO(t);
+		t->destroyOne();
 		
-		return self ? AbortAccept : Success; // Cannot process further if we destroyed the script's IO
+		if(!ValidIONum(index)) {
+			// Cannot process further if we destroyed the script's IO
+			return AbortAccept;
+		}
+		
+		return Success;
 	}
 	
 };

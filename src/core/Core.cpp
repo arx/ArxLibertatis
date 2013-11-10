@@ -2270,9 +2270,8 @@ void ManageCombatModeAnimations()
 
 					ARX_DAMAGES_DurabilityLoss(ioo, 1.f);
 
-					if(ValidIOAddress(ioo)) {
-						if(ioo->durability <= 0.f)
-							ARX_INTERACTIVE_DestroyIO(ioo);
+					if(ValidIOAddress(ioo) && ioo->durability <= 0.f) {
+						ioo->destroyOne();
 					}
 				}
 

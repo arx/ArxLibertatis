@@ -204,14 +204,6 @@ Entity::~Entity() {
 	
 	cleanReferences();
 	
-	if(ignit_light > -1) {
-		DynLight[ignit_light].exist = 0, ignit_light = -1;
-	}
-	
-	if(ignit_sound != audio::INVALID_ID) {
-		ARX_SOUND_Stop(ignit_sound), ignit_sound = audio::INVALID_ID;
-	}
-	
 	if((MasterCamera.exist & 1) && MasterCamera.io == this) {
 		MasterCamera.exist = 0;
 	}
@@ -329,7 +321,7 @@ void Entity::cleanReferences() {
 				Entity * linked = obj->linked[0].io;
 				if(linked && ValidIOAddress(linked)) {
 					EERIE_LINKEDOBJ_UnLinkObjectFromObject(obj, linked->obj);
-					ARX_INTERACTIVE_DestroyIO(linked);
+					linked->destroy();
 				}
 			}
 		}
@@ -342,6 +334,14 @@ void Entity::cleanReferences() {
 	ARX_SCRIPT_Timer_Clear_For_IO(this);
 	
 	ARX_SPELLS_FizzleAllSpellsFromCaster(index());
+	
+	if(ignit_light > -1) {
+		DynLight[ignit_light].exist = 0, ignit_light = -1;
+	}
+	
+	if(ignit_sound != audio::INVALID_ID) {
+		ARX_SOUND_Stop(ignit_sound), ignit_sound = audio::INVALID_ID;
+	}
 	
 }
 
@@ -356,3 +356,12 @@ void Entity::destroy() {
 	
 }
 
+void Entity::destroyOne() {
+	
+	if((ioflags & IO_ITEM) && _itemdata->count > 1) {
+		_itemdata->count--;
+	} else {
+		destroy();
+	}
+	
+}

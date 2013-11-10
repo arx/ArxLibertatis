@@ -3040,32 +3040,17 @@ void RenderInter() {
 
 std::vector<Entity *> toDestroy;
 
-void ARX_INTERACTIVE_DestroyIOdelayed(Entity * entity)
-{
+void ARX_INTERACTIVE_DestroyIOdelayed(Entity * entity) {
 	toDestroy.push_back(entity);
 }
 
-void ARX_INTERACTIVE_DestroyIOdelayedExecute()
-{
+void ARX_INTERACTIVE_DestroyIOdelayedExecute() {
 	for(std::vector<Entity *>::iterator it = toDestroy.begin(); it != toDestroy.end(); ++it) {
-
-		ARX_INTERACTIVE_DestroyIO(*it);
+		if(*it) {
+			(*it)->destroyOne();;
+		}
 	}
 	toDestroy.clear();
-}
-
-void ARX_INTERACTIVE_DestroyIO(Entity * ioo) {
-	
-	if(!ioo || ioo->show == SHOW_FLAG_DESTROYED) {
-		return;
-	}
-	
-	if((ioo->ioflags & IO_ITEM) && ioo->_itemdata->count > 1) {
-		ioo->_itemdata->count--;
-	} else {
-		ioo->destroy();
-	}
-	
 }
 
 bool IsSameObject(Entity * io, Entity * ioo)

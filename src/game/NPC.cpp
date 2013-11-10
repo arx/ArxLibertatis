@@ -994,7 +994,7 @@ void ARX_PHYSICS_Apply() {
 				ARX_PARTICLES_Spawn_Blood(&it->v, 20.f, io->index());
 			}
 
-			ARX_INTERACTIVE_DestroyIO(io);
+			io->destroyOne();
 			continue;
 		}
 
@@ -3728,30 +3728,10 @@ void ManageIgnition(Entity * io)
 		
 		io->ignition = 25.f;
 		io->durability -= framedelay * ( 1.0f / 10000 );
-
-		if(io->durability <= 0.F) {
-			if(ValidDynLight(io->ignit_light))
-				DynLight[io->ignit_light].exist = 0;
-
-			io->ignit_light = -1;
-
-			if(io->ignit_sound != audio::INVALID_ID) {
-				ARX_SOUND_Stop(io->ignit_sound);
-				io->ignit_sound = audio::INVALID_ID;
-			}
-
-			// Need To Kill timers
-			ARX_SCRIPT_Timer_Clear_For_IO(io);
-			io->show = SHOW_FLAG_KILLED;
-			io->gameFlags &= ~GFLAG_ISINTREATZONE;
-			RemoveFromAllInventories(io);
-			ARX_INTERACTIVE_DestroyDynamicInfo(io);
+		
+		if(io->durability <= 0.f) {
 			ARX_SOUND_PlaySFX(SND_TORCH_END, &io->pos);
-
-			if(io == DRAGINTER)
-				Set_DragInter(NULL);
-
-			ARX_INTERACTIVE_DestroyIO(io);
+			io->destroyOne();
 			return;
 		}
 		
