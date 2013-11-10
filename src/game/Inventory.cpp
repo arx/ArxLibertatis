@@ -543,12 +543,8 @@ private:
 			return false;
 		}
 		
-		// Delete or hide the old item
-		if(item->scriptload) {
-			delete item;
-		} else {
-			item->show = SHOW_FLAG_KILLED;
-		}
+		// Delete the old item
+		item->destroy();
 		return true;
 	}
 	
