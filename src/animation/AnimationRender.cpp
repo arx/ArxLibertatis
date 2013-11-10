@@ -796,20 +796,17 @@ void DrawEERIEInter_Render(EERIE_3DOBJ *eobj, const TransformInfo &t, Entity *io
 				// Normal Illuminations
 				tvList[n].color = eobj->vertexlist3[face.vid[n]].vert.color;
 			}
-		}
 
-		if(io && Project.improve) {
-			int to=3;
-
-			for(long k = 0; k < to; k++) {
-				long lr=(tvList[k].color>>16) & 255;
+			// TODO copy-paste
+			if(io && Project.improve) {
+				long lr=(tvList[n].color>>16) & 255;
 				float ffr=(float)(lr);
 
-				float dd = tvList[k].rhw;
+				float dd = tvList[n].rhw;
 
 				dd = clamp(dd, 0.f, 1.f);
 
-				Vec3f & norm = eobj->vertexlist[face.vid[k]].norm;
+				Vec3f & norm = eobj->vertexlist[face.vid[n]].norm;
 
 				float fb=((1.f-dd)*6.f + (EEfabs(norm.x) + EEfabs(norm.y))) * 0.125f;
 				float fr=((.6f-dd)*6.f + (EEfabs(norm.z) + EEfabs(norm.y))) * 0.125f;
@@ -825,13 +822,13 @@ void DrawEERIEInter_Render(EERIE_3DOBJ *eobj, const TransformInfo &t, Entity *io
 				u8 lfr = fr;
 				u8 lfb = fb;
 				u8 lfg = 0x1E;
-				tvList[k].color = (0xff000000L | (lfr << 16) | (lfg << 8) | (lfb));
+				tvList[n].color = (0xff000000L | (lfr << 16) | (lfg << 8) | (lfb));
 			}
-		}
 
-		// Transparent poly: storing info to draw later
-		if((face.facetype & POLY_TRANS) || invisibility > 0.f) {
-			tvList[0].color = tvList[1].color = tvList[2].color = Color::gray(fTransp).toBGR();
+			// Transparent poly: storing info to draw later
+			if((face.facetype & POLY_TRANS) || invisibility > 0.f) {
+				tvList[n].color = Color::gray(fTransp).toBGR();
+			}
 		}
 
 		// HALO HANDLING START
