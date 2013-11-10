@@ -203,10 +203,6 @@ Entity::~Entity() {
 	
 	cleanReferences();
 	
-	if(!FAST_RELEASE) {
-		TREATZONE_RemoveIO(this);
-	}
-	
 	if(ignit_light > -1) {
 		DynLight[ignit_light].exist = 0, ignit_light = -1;
 	}
@@ -320,6 +316,10 @@ void Entity::cleanReferences() {
 	
 	if(DRAGINTER == this) {
 		Set_DragInter(NULL);
+	}
+	
+	if(!FAST_RELEASE) {
+		TREATZONE_RemoveIO(this);
 	}
 	
 }
