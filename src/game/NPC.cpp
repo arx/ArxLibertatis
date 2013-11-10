@@ -1716,21 +1716,19 @@ void ARX_NPC_TryToCutSomething(Entity * target, Vec3f * pos)
 	long numsel = -1;
 	long goretex = -1;
 
-	for (size_t i = 0; i < target->obj->texturecontainer.size(); i++)
-	{
-		if (target->obj->texturecontainer[i]
-		        &&	(boost::contains(target->obj->texturecontainer[i]->m_texName.string(), "gore")))
-		{
+	for(size_t i = 0; i < target->obj->texturecontainer.size(); i++) {
+		if(target->obj->texturecontainer[i]
+		   && boost::contains(target->obj->texturecontainer[i]->m_texName.string(), "gore")
+		) {
 			goretex = i;
 			break;
 		}
 	}
 
-	for (size_t i = 0; i < target->obj->selections.size(); i++)
-	{ // TODO iterator
-		if ((target->obj->selections[i].selected.size() > 0)
-		        &&	(boost::contains(target->obj->selections[i].name, "cut_")))
-		{
+	for(size_t i = 0; i < target->obj->selections.size(); i++) {
+		if(target->obj->selections[i].selected.size() > 0
+		   && boost::contains(target->obj->selections[i].name, "cut_")
+		) {
 			short fll = GetCutFlag(target->obj->selections[i].name);
 
 			if(IsAlreadyCut(target, fll))
@@ -1740,11 +1738,10 @@ void ARX_NPC_TryToCutSomething(Entity * target, Vec3f * pos)
 
 			for(size_t ll = 0; ll < target->obj->facelist.size(); ll++) {
 				if(target->obj->facelist[ll].texid != goretex) {
-					if	((IsInSelection(target->obj, target->obj->facelist[ll].vid[0], i) != -1)
-					        ||	(IsInSelection(target->obj, target->obj->facelist[ll].vid[1], i) != -1)
-					        ||	(IsInSelection(target->obj, target->obj->facelist[ll].vid[2], i) != -1)
-					   )
-					{
+					if(IsInSelection(target->obj, target->obj->facelist[ll].vid[0], i) != -1
+					   || IsInSelection(target->obj, target->obj->facelist[ll].vid[1], i) != -1
+					   || IsInSelection(target->obj, target->obj->facelist[ll].vid[2], i) != -1
+					) {
 						if(target->obj->facelist[ll].facetype & POLY_HIDE) {
 							out++;
 						}
