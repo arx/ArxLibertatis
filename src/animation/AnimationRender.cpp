@@ -609,6 +609,25 @@ void DrawEERIEInter_ViewProjectTransform(EERIE_3DOBJ *eobj) {
 	}
 }
 
+bool CullFace(const EERIE_3DOBJ * eobj, const EERIE_FACE & face) {
+
+	if(!(face.facetype & POLY_DOUBLESIDED)) {
+		Vec3f normV10 = eobj->vertexlist3[face.vid[1]].v - eobj->vertexlist3[face.vid[0]].v;
+		Vec3f normV20 = eobj->vertexlist3[face.vid[2]].v - eobj->vertexlist3[face.vid[0]].v;
+		Vec3f normFace;
+		normFace.x = (normV10.y * normV20.z) - (normV10.z * normV20.y);
+		normFace.y = (normV10.z * normV20.x) - (normV10.x * normV20.z);
+		normFace.z = (normV10.x * normV20.y) - (normV10.y * normV20.x);
+
+		Vec3f nrm = eobj->vertexlist3[face.vid[0]].v - ACTIVECAM->orgTrans.pos;
+
+		if(glm::dot(normFace, nrm) > 0.f)
+			return true;
+	}
+
+	return false;
+}
+
 void DrawEERIEInter_Render(EERIE_3DOBJ *eobj, const TransformInfo &t, Entity *io, float invisibility) {
 
 	ColorMod colorMod;
@@ -632,20 +651,8 @@ void DrawEERIEInter_Render(EERIE_3DOBJ *eobj, const TransformInfo &t, Entity *io
 	for(size_t i = 0; i < eobj->facelist.size(); i++) {
 		EERIE_FACE & face = eobj->facelist[i];
 
-		//CULL3D
-		if(!(face.facetype & POLY_DOUBLESIDED)) {
-			Vec3f normV10 = eobj->vertexlist3[face.vid[1]].v - eobj->vertexlist3[face.vid[0]].v;
-			Vec3f normV20 = eobj->vertexlist3[face.vid[2]].v - eobj->vertexlist3[face.vid[0]].v;
-			Vec3f normFace;
-			normFace.x = (normV10.y * normV20.z) - (normV10.z * normV20.y);
-			normFace.y = (normV10.z * normV20.x) - (normV10.x * normV20.z);
-			normFace.z = (normV10.x * normV20.y) - (normV10.y * normV20.x);
-
-			Vec3f nrm = eobj->vertexlist3[face.vid[0]].v - ACTIVECAM->orgTrans.pos;
-
-			if(glm::dot(normFace, nrm) > 0.f)
-				continue;
-		}
+		if(CullFace(eobj, face))
+			continue;
 
 		if(face.texid < 0)
 			continue;
@@ -1119,20 +1126,8 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity *
 		if((face.facetype & POLY_HIDE) && !IN_BOOK_DRAW)
 			continue;
 
-		//CULL3D
-		if(!(face.facetype & POLY_DOUBLESIDED)) {
-			Vec3f normV10 = eobj->vertexlist3[face.vid[1]].v - eobj->vertexlist3[face.vid[0]].v;
-			Vec3f normV20 = eobj->vertexlist3[face.vid[2]].v - eobj->vertexlist3[face.vid[0]].v;
-			Vec3f normFace;
-			normFace.x = (normV10.y * normV20.z) - (normV10.z * normV20.y);
-			normFace.y = (normV10.z * normV20.x) - (normV10.x * normV20.z);
-			normFace.z = (normV10.x * normV20.y) - (normV10.y * normV20.x);
-
-			Vec3f nrm = eobj->vertexlist3[face.vid[0]].v - ACTIVECAM->orgTrans.pos;
-
-			if(glm::dot(normFace, nrm) > 0.f)
-				continue;
-		}
+		if(CullFace(eobj, face))
+			continue;
 
 		if(face.texid < 0)
 			continue;
