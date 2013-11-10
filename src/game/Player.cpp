@@ -311,24 +311,20 @@ void ARX_PLAYER_ClickedOnTorch(Entity * io)
 }
 
 static void ARX_PLAYER_ManageTorch() {
+	
 	if(player.torch) {
+		
 		player.torch->ignition = 0;
 		player.torch->durability -= framedelay * ( 1.0f / 10000 );
-
+		
 		if(player.torch->durability <= 0) {
-			ARX_SPEECH_ReleaseIOSpeech(player.torch);
-			// Need To Kill timers
-			ARX_SCRIPT_Timer_Clear_For_IO(player.torch);
-			player.torch->show = SHOW_FLAG_KILLED;
-			player.torch->gameFlags &= ~GFLAG_ISINTREATZONE;
-			RemoveFromAllInventories(player.torch);
-			ARX_INTERACTIVE_DestroyDynamicInfo(player.torch);
 			ARX_SOUND_PlaySFX(SND_TORCH_END);
 			ARX_SOUND_Stop(SND_TORCH_LOOP);
-			ARX_INTERACTIVE_DestroyIO(player.torch);
+			player.torch->destroy();
 			player.torch = NULL;
 			DynLight[0].exist = 0;
 		}
+		
 	}
 }
 
