@@ -628,7 +628,7 @@ bool CullFace(const EERIE_3DOBJ * eobj, const EERIE_FACE & face) {
 	return false;
 }
 
-void AddFixedObjectHalo(const EERIE_FACE & face, size_t i, const TransformInfo & t, const Entity * io, TexturedVertex * tvList, const EERIE_3DOBJ * eobj)
+void AddFixedObjectHalo(const EERIE_FACE & face, const TransformInfo & t, const Entity * io, TexturedVertex * tvList, const EERIE_3DOBJ * eobj)
 {
 	float mdist=ACTIVECAM->cdepth;
 	float ddist = mdist-fdist(t.pos, ACTIVECAM->orgTrans.pos);
@@ -696,7 +696,7 @@ void AddFixedObjectHalo(const EERIE_FACE & face, size_t i, const TransformInfo &
 			vert[2] = tvList[second];
 			vert[3] = tvList[second];
 
-			float siz = ddist * (io->halo.radius * 1.5f * (EEsin((arxtime.get_frame_time() + i) * .01f) * .1f + .7f)) * .6f;
+			float siz = ddist * (io->halo.radius * 1.5f * (EEsin(arxtime.get_frame_time() * .01f) * .1f + .7f)) * .6f;
 
 			Vec3f vect1;
 			vect1.x = tvList[first].p.x - tvList[third].p.x;
@@ -839,7 +839,7 @@ void DrawEERIEInter_Render(EERIE_3DOBJ *eobj, const TransformInfo &t, Entity *io
 
 		// HALO HANDLING START
 		if(io && (io->halo.flags & HALO_ACTIVE)) {
-			AddFixedObjectHalo(face, i, t, io, tvList, eobj);
+			AddFixedObjectHalo(face, t, io, tvList, eobj);
 		}
 	}
 }
