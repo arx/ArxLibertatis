@@ -667,16 +667,11 @@ void DrawEERIEInter_Render(EERIE_3DOBJ *eobj, const TransformInfo &t, Entity *io
 		float fTransp = 0.f;
 		TexturedVertex *tvList = GetNewVertexList(pTex, face, invisibility, fTransp);
 
-		tvList[0]=eobj->vertexlist[face.vid[0]].vert;
-		tvList[1]=eobj->vertexlist[face.vid[1]].vert;
-		tvList[2]=eobj->vertexlist[face.vid[2]].vert;
-
-		tvList[0].uv.x=face.u[0];
-		tvList[0].uv.y=face.v[0];
-		tvList[1].uv.x=face.u[1];
-		tvList[1].uv.y=face.v[1];
-		tvList[2].uv.x=face.u[2];
-		tvList[2].uv.y=face.v[2];
+		for(size_t n = 0; n < 3; n++) {
+			tvList[n] = eobj->vertexlist[face.vid[n]].vert;
+			tvList[n].uv.x = face.u[n];
+			tvList[n].uv.y = face.v[n];
+		}
 
 		// Treat WATER Polys (modify UVs)
 		if(face.facetype & POLY_WATER) {
