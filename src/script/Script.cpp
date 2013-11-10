@@ -1797,18 +1797,6 @@ void ARX_SCRIPT_Timer_Clear_All_Locals_For_IO(Entity * io)
 	}
 }
 
-void ARX_SCRIPT_Timer_Clear_By_IO(Entity * io)
-{
-	for (long i = 0; i < MAX_TIMER_SCRIPT; i++)
-	{
-		if (scr_timer[i].exist)
-		{
-			if (scr_timer[i].io == io)
-				ARX_SCRIPT_Timer_ClearByNum(i);
-		}
-	}
-}
-
 //*************************************************************************************
 // Initialise the timer list for the first time.
 //*************************************************************************************
@@ -1833,13 +1821,10 @@ void ARX_SCRIPT_Timer_ClearAll()
 	ActiveTimers = 0;
 }
 
-void ARX_SCRIPT_Timer_Clear_For_IO(Entity * io)
-{
-	for (long i = 0; i < MAX_TIMER_SCRIPT; i++)
-	{
-		if (scr_timer[i].exist)
-		{
-			if (scr_timer[i].io == io) ARX_SCRIPT_Timer_ClearByNum(i);
+void ARX_SCRIPT_Timer_Clear_For_IO(Entity * io) {
+	for(long i = 0; i < MAX_TIMER_SCRIPT; i++) {
+		if(scr_timer[i].exist && scr_timer[i].io == io) {
+			ARX_SCRIPT_Timer_ClearByNum(i);
 		}
 	}
 }

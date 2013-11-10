@@ -417,7 +417,6 @@ void ARX_SCRIPT_Timer_Check();
 void ARX_SCRIPT_Timer_FirstInit(long number);
 void ARX_SCRIPT_Timer_ClearAll();
 void ARX_SCRIPT_Timer_Clear_For_IO(Entity * io);
-void ARX_SCRIPT_Timer_Clear_By_IO(Entity * io);
 long ARX_SCRIPT_Timer_GetFree();
  
 void ARX_SCRIPT_SetMainEvent(Entity * io, const std::string & newevent);

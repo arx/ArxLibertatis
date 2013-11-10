@@ -3092,7 +3092,7 @@ void ARX_INTERACTIVE_DestroyIO(Entity * ioo)
 			ARX_SPELLS_FizzleAllSpellsFromCaster(numm);
 
 		// Need To Kill timers
-		ARX_SCRIPT_Timer_Clear_By_IO(ioo);
+		ARX_SCRIPT_Timer_Clear_For_IO(ioo);
 		ioo->gameFlags &= ~GFLAG_ISINTREATZONE;
 
 		if(!FAST_RELEASE)

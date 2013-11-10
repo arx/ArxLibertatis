@@ -2096,7 +2096,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) {
 		// Target Info
 		memcpy(Gaids[Gaids_Number]->targetinfo, ais->id_targetinfo, SIZE_ID);
 		
-		ARX_SCRIPT_Timer_Clear_By_IO(io);
+		ARX_SCRIPT_Timer_Clear_For_IO(io);
 		
 		for(int i = 0; i < ais->nbtimers; i++) {
 			

@@ -504,7 +504,7 @@ void ARX_DAMAGES_ForceDeath(Entity * io_dead, Entity * io_killer) {
 	ARX_SPEECH_ReleaseIOSpeech(io_dead);
 
 	//Kill all Timers...
-	ARX_SCRIPT_Timer_Clear_By_IO(io_dead);
+	ARX_SCRIPT_Timer_Clear_For_IO(io_dead);
 
 	if(io_dead->mainevent != "dead") {
 		if(SendIOScriptEvent(io_dead, SM_DIE) != REFUSE && ValidIOAddress(io_dead)) {

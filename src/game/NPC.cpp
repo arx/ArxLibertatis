@@ -3741,7 +3741,7 @@ void ManageIgnition(Entity * io)
 			}
 
 			// Need To Kill timers
-			ARX_SCRIPT_Timer_Clear_By_IO(io);
+			ARX_SCRIPT_Timer_Clear_For_IO(io);
 			io->show = SHOW_FLAG_KILLED;
 			io->gameFlags &= ~GFLAG_ISINTREATZONE;
 			RemoveFromAllInventories(io);

@@ -318,7 +318,7 @@ static void ARX_PLAYER_ManageTorch() {
 		if(player.torch->durability <= 0) {
 			ARX_SPEECH_ReleaseIOSpeech(player.torch);
 			// Need To Kill timers
-			ARX_SCRIPT_Timer_Clear_By_IO(player.torch);
+			ARX_SCRIPT_Timer_Clear_For_IO(player.torch);
 			player.torch->show = SHOW_FLAG_KILLED;
 			player.torch->gameFlags &= ~GFLAG_ISINTREATZONE;
 			RemoveFromAllInventories(player.torch);
