@@ -628,6 +628,118 @@ bool CullFace(const EERIE_3DOBJ * eobj, const EERIE_FACE & face) {
 	return false;
 }
 
+void AddFixedObjectHalo(const EERIE_FACE & face, size_t i, const TransformInfo & t, const Entity * io, TexturedVertex * tvList, const EERIE_3DOBJ * eobj)
+{
+	float mdist=ACTIVECAM->cdepth;
+	float ddist = mdist-fdist(t.pos, ACTIVECAM->orgTrans.pos);
+	ddist = ddist/mdist;
+	ddist = std::pow(ddist, 6);
+
+	ddist = clamp(ddist, 0.25f, 0.9f);
+
+	float tot=0;
+	float _ffr[3];
+
+	for(long o = 0; o < 3; o++) {
+		Vec3f temporary3D;
+		temporary3D = TransformVertexQuat(t.rotation, eobj->vertexlist[face.vid[o]].norm);
+
+		float power = 255.f-(float)EEfabs(255.f*(temporary3D.z)*( 1.0f / 2 ));
+
+		power = clamp(power, 0.f, 255.f);
+
+		tot += power;
+		_ffr[o] = power;
+
+		u8 lfr = io->halo.color.r * power;
+		u8 lfg = io->halo.color.g * power;
+		u8 lfb = io->halo.color.b * power;
+		tvList[o].color = ((0xFF << 24) | (lfr << 16) | (lfg << 8) | (lfb));
+	}
+
+	if(tot > 150.f) {
+		long first;
+		long second;
+		long third;
+
+		if(_ffr[0] >= _ffr[1] && _ffr[1] >= _ffr[2]) {
+			first = 0;
+			second = 1;
+			third = 2;
+		} else if(_ffr[0] >= _ffr[2] && _ffr[2] >= _ffr[1]) {
+			first = 0;
+			second = 2;
+			third = 1;
+		} else if(_ffr[1] >= _ffr[0] && _ffr[0] >= _ffr[2]) {
+			first = 1;
+			second = 0;
+			third = 2;
+		} else if(_ffr[1] >= _ffr[2] && _ffr[2] >= _ffr[0]) {
+			first = 1;
+			second = 2;
+			third = 0;
+		} else if(_ffr[2] >= _ffr[0] && _ffr[0] >= _ffr[1]) {
+			first = 2;
+			second = 0;
+			third = 1;
+		} else {
+			first = 2;
+			second = 1;
+			third = 0;
+		}
+
+		if(_ffr[first] > 70.f && _ffr[second] > 60.f) {
+			TexturedVertex *vert = Halo_AddVertex();
+
+			vert[0] = tvList[first];
+			vert[1] = tvList[first];
+			vert[2] = tvList[second];
+			vert[3] = tvList[second];
+
+			float siz = ddist * (io->halo.radius * 1.5f * (EEsin((arxtime.get_frame_time() + i) * .01f) * .1f + .7f)) * .6f;
+
+			Vec3f vect1;
+			vect1.x = tvList[first].p.x - tvList[third].p.x;
+			vect1.y = tvList[first].p.y - tvList[third].p.y;
+			float len1 = 1.f / ffsqrt(vect1.x * vect1.x + vect1.y * vect1.y);
+
+			if(vect1.x < 0.f)
+				len1 *= 1.2f;
+
+			vect1.x *= len1;
+			vect1.y *= len1;
+
+			Vec3f vect2;
+			vect2.x = tvList[second].p.x - tvList[third].p.x;
+			vect2.y = tvList[second].p.y - tvList[third].p.y;
+			float len2 = 1.f / ffsqrt(vect2.x * vect2.x + vect2.y * vect2.y);
+
+			if(vect2.x < 0.f)
+				len2 *= 1.2f;
+
+			vect2.x *= len2;
+			vect2.y *= len2;
+
+			vert[1].p.x += (vect1.x + 0.2f - rnd() * 0.1f) * siz;
+			vert[1].p.y += (vect1.y + 0.2f - rnd() * 0.1f) * siz;
+			vert[1].color = 0xFF000000;
+
+			vert[0].p.z += 0.0001f;
+			vert[3].p.z += 0.0001f;
+			vert[1].rhw *= .8f;
+			vert[2].rhw *= .8f;
+
+			vert[2].p.x += (vect2.x + 0.2f - rnd() * 0.1f) * siz;
+			vert[2].p.y += (vect2.y + 0.2f - rnd() * 0.1f) * siz;
+
+			if(io->halo.flags & HALO_NEGATIVE)
+				vert[2].color = 0x00000000;
+			else
+				vert[2].color = 0xFF000000;
+		}
+	}
+}
+
 void DrawEERIEInter_Render(EERIE_3DOBJ *eobj, const TransformInfo &t, Entity *io, float invisibility) {
 
 	ColorMod colorMod;
@@ -731,115 +843,7 @@ void DrawEERIEInter_Render(EERIE_3DOBJ *eobj, const TransformInfo &t, Entity *io
 
 		// HALO HANDLING START
 		if(io && (io->halo.flags & HALO_ACTIVE)) {
-
-			float mdist=ACTIVECAM->cdepth;
-			float ddist = mdist-fdist(t.pos, ACTIVECAM->orgTrans.pos);
-			ddist = ddist/mdist;
-			ddist = std::pow(ddist, 6);
-
-			ddist = clamp(ddist, 0.25f, 0.9f);
-
-			float tot=0;
-			float _ffr[3];
-
-			for(long o = 0; o < 3; o++) {
-				Vec3f temporary3D;
-				temporary3D = TransformVertexQuat(t.rotation, eobj->vertexlist[face.vid[o]].norm);
-
-				float power = 255.f-(float)EEfabs(255.f*(temporary3D.z)*( 1.0f / 2 ));
-
-				power = clamp(power, 0.f, 255.f);
-
-				tot += power;
-				_ffr[o] = power;
-
-				u8 lfr = io->halo.color.r * power;
-				u8 lfg = io->halo.color.g * power;
-				u8 lfb = io->halo.color.b * power;
-				tvList[o].color = ((0xFF << 24) | (lfr << 16) | (lfg << 8) | (lfb));
-			}
-
-			if(tot > 150.f) {
-				long first;
-				long second;
-				long third;
-
-				if(_ffr[0] >= _ffr[1] && _ffr[1] >= _ffr[2]) {
-					first = 0;
-					second = 1;
-					third = 2;
-				} else if(_ffr[0] >= _ffr[2] && _ffr[2] >= _ffr[1]) {
-					first = 0;
-					second = 2;
-					third = 1;
-				} else if(_ffr[1] >= _ffr[0] && _ffr[0] >= _ffr[2]) {
-					first = 1;
-					second = 0;
-					third = 2;
-				} else if(_ffr[1] >= _ffr[2] && _ffr[2] >= _ffr[0]) {
-					first = 1;
-					second = 2;
-					third = 0;
-				} else if(_ffr[2] >= _ffr[0] && _ffr[0] >= _ffr[1]) {
-					first = 2;
-					second = 0;
-					third = 1;
-				} else {
-					first = 2;
-					second = 1;
-					third = 0;
-				}
-
-				if(_ffr[first] > 70.f && _ffr[second] > 60.f) {
-					TexturedVertex *vert = Halo_AddVertex();
-
-					vert[0] = tvList[first];
-					vert[1] = tvList[first];
-					vert[2] = tvList[second];
-					vert[3] = tvList[second];
-
-					float siz = ddist * (io->halo.radius * 1.5f * (EEsin((arxtime.get_frame_time() + i) * .01f) * .1f + .7f)) * .6f;
-
-					Vec3f vect1;
-					vect1.x = tvList[first].p.x - tvList[third].p.x;
-					vect1.y = tvList[first].p.y - tvList[third].p.y;
-					float len1 = 1.f / ffsqrt(vect1.x * vect1.x + vect1.y * vect1.y);
-
-					if(vect1.x < 0.f)
-						len1 *= 1.2f;
-
-					vect1.x *= len1;
-					vect1.y *= len1;
-
-					Vec3f vect2;
-					vect2.x = tvList[second].p.x - tvList[third].p.x;
-					vect2.y = tvList[second].p.y - tvList[third].p.y;
-					float len2 = 1.f / ffsqrt(vect2.x * vect2.x + vect2.y * vect2.y);
-
-					if(vect2.x < 0.f)
-						len2 *= 1.2f;
-
-					vect2.x *= len2;
-					vect2.y *= len2;
-
-					vert[1].p.x += (vect1.x + 0.2f - rnd() * 0.1f) * siz;
-					vert[1].p.y += (vect1.y + 0.2f - rnd() * 0.1f) * siz;
-					vert[1].color = 0xFF000000;
-
-					vert[0].p.z += 0.0001f;
-					vert[3].p.z += 0.0001f;
-					vert[1].rhw *= .8f;
-					vert[2].rhw *= .8f;
-
-					vert[2].p.x += (vect2.x + 0.2f - rnd() * 0.1f) * siz;
-					vert[2].p.y += (vect2.y + 0.2f - rnd() * 0.1f) * siz;
-
-					if(io->halo.flags & HALO_NEGATIVE)
-						vert[2].color = 0x00000000;
-					else
-						vert[2].color = 0xFF000000;
-				}
-			}
+			AddFixedObjectHalo(face, i, t, io, tvList, eobj);
 		}
 	}
 }
