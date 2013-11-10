@@ -534,17 +534,6 @@ static void Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, const C
 	}
 }
 
-void MakeCLight(const EERIE_QUAT *quat, EERIE_3DOBJ * eobj, const ColorMod & colorMod) {
-		
-	for(size_t i = 0; i < eobj->vertexlist.size(); i++) {
-
-		Vec3f & position = eobj->vertexlist3[i].v;
-		Vec3f & normal = eobj->vertexlist[i].norm;
-
-		eobj->vertexlist3[i].vert.color = ApplyLight(quat, position, normal, colorMod);
-	}
-}
-
 void UpdateBbox3d(EERIE_3DOBJ *eobj, EERIE_3D_BBOX & box3D) {
 
 	box3D.reset();
@@ -742,12 +731,6 @@ void DrawEERIEInter_Render(EERIE_3DOBJ *eobj, const TransformInfo &t, Entity *io
 
 	UpdateLlights(tv);
 
-
-	// Precalc local lights for this object then interpolate
-	if(!(io && (io->ioflags & IO_ANGULAR))) {
-		MakeCLight(&t.rotation, eobj, colorMod);
-	}
-
 	for(size_t i = 0; i < eobj->facelist.size(); i++) {
 		const EERIE_FACE & face = eobj->facelist[i];
 
@@ -771,6 +754,11 @@ void DrawEERIEInter_Render(EERIE_3DOBJ *eobj, const TransformInfo &t, Entity *io
 				const Vec3f & normal = face.norm;
 
 				eobj->vertexlist3[face.vid[n]].vert.color = ApplyLight(&t.rotation, position, normal, colorMod, 0.5f);
+			} else {
+				Vec3f & position = eobj->vertexlist3[face.vid[n]].v;
+				Vec3f & normal = eobj->vertexlist[face.vid[n]].norm;
+
+				eobj->vertexlist3[face.vid[n]].vert.color = ApplyLight(&t.rotation, position, normal, colorMod);
 			}
 
 			tvList[n] = eobj->vertexlist[face.vid[n]].vert;
