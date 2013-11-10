@@ -80,8 +80,7 @@ void EERIE_MESH_TWEAK_Skin(EERIE_3DOBJ * obj, const res::path & s1, const res::p
 	
 	LogDebug("Tweak Skin " << s1 << " " << s2);
 
-	if ( obj == NULL || s1.empty() || s2.empty() )
-	{
+	if(obj == NULL || s1.empty() || s2.empty()) {
 		LogError << "Tweak Skin got NULL Pointer";
 		return;
 	}
@@ -93,37 +92,31 @@ void EERIE_MESH_TWEAK_Skin(EERIE_3DOBJ * obj, const res::path & s1, const res::p
 	res::path skinname = "graph/obj3d/textures" / s2;
 	TextureContainer * tex = TextureContainer::Load(skinname);
 
-	if (obj->originaltextures == NULL)
-	{
+	if(obj->originaltextures == NULL) {
 		obj->originaltextures = (char *)malloc(256 * obj->texturecontainer.size()); 
 		memset(obj->originaltextures, 0, 256 * obj->texturecontainer.size());
 
-		for (size_t i = 0; i < obj->texturecontainer.size(); i++)
-		{
-			if (obj->texturecontainer[i])
+		for(size_t i = 0; i < obj->texturecontainer.size(); i++) {
+			if(obj->texturecontainer[i]) {
 				strcpy(obj->originaltextures + 256 * i, obj->texturecontainer[i]->m_texName.string().c_str());
-
+			}
 		}
 	}
 
-	if ((tex != NULL) && (obj->originaltextures != NULL))
-	{
-		for (size_t i = 0; i < obj->texturecontainer.size(); i++)
-		{
-			if ((strstr(obj->originaltextures + 256 * i, skintochange.string().c_str())))
-			{
+	if(tex != NULL && obj->originaltextures != NULL) {
+		for(size_t i = 0; i < obj->texturecontainer.size(); i++) {
+			if(strstr(obj->originaltextures + 256 * i, skintochange.string().c_str())) {
 				skintochange = obj->texturecontainer[i]->m_texName;
 				break;
 			}
 		}
 
 		TextureContainer * tex2 = TextureContainer::Find(skintochange);
-		if (tex2)
-		{
-			for (size_t i = 0; i < obj->texturecontainer.size(); i++)
-			{
-				if (obj->texturecontainer[i] == tex2)
+		if(tex2) {
+			for(size_t i = 0; i < obj->texturecontainer.size(); i++) {
+				if(obj->texturecontainer[i] == tex2) {
 					obj->texturecontainer[i] = tex;
+				}
 			}
 		}
 	}
@@ -144,12 +137,13 @@ long IsInSelection(const EERIE_3DOBJ * obj, long vert, long tw) {
 
 static long GetEquivalentVertex(const EERIE_3DOBJ * obj, const EERIE_VERTEX * vert) {
 	
-	for (size_t i = 0; i < obj->vertexlist.size(); i++)
-	{
-		if ((obj->vertexlist[i].v.x == vert->v.x)
-		        &&	(obj->vertexlist[i].v.y == vert->v.y)
-		        &&	(obj->vertexlist[i].v.z == vert->v.z))
+	for(size_t i = 0; i < obj->vertexlist.size(); i++) {
+		if(obj->vertexlist[i].v.x == vert->v.x
+		   && obj->vertexlist[i].v.y == vert->v.y
+		   && obj->vertexlist[i].v.z == vert->v.z
+		) {
 			return i;
+		}
 	}
 
 	return -1;
@@ -157,24 +151,25 @@ static long GetEquivalentVertex(const EERIE_3DOBJ * obj, const EERIE_VERTEX * ve
 
 static long ObjectAddVertex(EERIE_3DOBJ * obj, const EERIE_VERTEX * vert) {
 	
-	for (size_t i = 0; i < obj->vertexlist.size(); i++)
-	{
-		if ((obj->vertexlist[i].v.x == vert->v.x)  
-		        &&	(obj->vertexlist[i].v.y == vert->v.y) 
-		        &&	(obj->vertexlist[i].v.z == vert->v.z)) 
+	for(size_t i = 0; i < obj->vertexlist.size(); i++) {
+		if(obj->vertexlist[i].v.x == vert->v.x
+		   && obj->vertexlist[i].v.y == vert->v.y
+		   && obj->vertexlist[i].v.z == vert->v.z
+		) {
 			return i;
+		}
 	}
 
 	obj->vertexlist.push_back(*vert);
-	return (obj->vertexlist.size() - 1);
+	return obj->vertexlist.size() - 1;
 }
 
 static long GetActionPoint(const EERIE_3DOBJ * obj, const char * name) {
 	
-	if (!obj) return -1;
+	if(!obj)
+		return -1;
 
-	for (size_t n = 0; n < obj->actionlist.size(); n++)
-	{ // TODO iterator
+	for(size_t n = 0; n < obj->actionlist.size(); n++) { // TODO iterator
 		if(obj->actionlist[n].name == name) {
 			return obj->actionlist[n].idx;
 		}
