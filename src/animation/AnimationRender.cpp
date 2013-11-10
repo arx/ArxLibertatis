@@ -829,9 +829,6 @@ void DrawEERIEInter_Render(EERIE_3DOBJ *eobj, const TransformInfo &t, Entity *io
 			}
 		}
 
-		for(long j = 0; j < 3; j++)
-			face.color[j]=Color::fromBGRA(tvList[j].color);
-
 		// Transparent poly: storing info to draw later
 		if((face.facetype & POLY_TRANS) || invisibility > 0.f) {
 			tvList[0].color = tvList[1].color = tvList[2].color = Color::gray(fTransp).toBGR();

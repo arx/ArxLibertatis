@@ -140,8 +140,6 @@ struct EERIE_FACE {
 	
 	short ou[IOPOLYVERT];
 	short ov[IOPOLYVERT];
-	Color color[IOPOLYVERT];
-	
 };
 
 struct NEIGHBOURS_DATA {
