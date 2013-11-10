@@ -129,8 +129,6 @@ public:
 				}
 			}
 			
-			io->show = SHOW_FLAG_KILLED;
-			
 			InventoryPos oldPos = removeFromInventories(io);
 			
 			SendInitScriptEvent(ioo);
@@ -168,12 +166,7 @@ public:
 				}
 			}
 			
-			if(io->scriptload) {
-				delete io;
-				return AbortRefuse;
-			} else {
-				TREATZONE_RemoveIO(io);
-			}
+			io->destroy();
 			
 			return AbortRefuse;
 		}
