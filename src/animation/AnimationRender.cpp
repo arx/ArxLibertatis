@@ -236,15 +236,6 @@ extern bool EXTERNALVIEW;
 void EE_RT(const Vec3f & in, Vec3f & out);
 void EE_P(Vec3f * in, TexturedVertex * out);
 
-float Cedric_GetScale(Entity * io) {
-	if(io) {
-		// Scaling Value for this object (Movements will also be scaled)
-		return io->scale;
-	} else {
-		return 1.f;
-	}
-}
-
 float Cedric_GetInvisibility(Entity *io) {
 	if(io) {
 		float invisibility = io->invisibility;
@@ -1510,7 +1501,8 @@ void EERIEDrawAnimQuatUpdate(EERIE_3DOBJ *eobj, ANIM_USE * animlayer,const Angle
 	Vec3f ftr = Vec3f_ZERO;
 
 	// Set scale and invisibility factors
-	float scale = Cedric_GetScale(io);
+	// Scaling Value for this object (Movements will also be scaled)
+	float scale = (io) ? io->scale : 1.f;
 
 	// Only layer 0 controls movement
 	CalcTranslation(&animlayer[0], ftr);
