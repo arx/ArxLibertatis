@@ -957,7 +957,7 @@ void PrepareAnimatedObjectHalo(HaloInfo & haloInfo, const Vec3f& pos, EERIE_C_DA
 	}
 }
 
-void AddAnimatedObjectHalo(HaloInfo & haloInfo, long paf[], float invisibility, EERIE_3DOBJ* eobj, Entity* io, TexturedVertex *tvList, size_t i) {
+void AddAnimatedObjectHalo(HaloInfo & haloInfo, const unsigned short * paf, float invisibility, EERIE_3DOBJ* eobj, Entity* io, TexturedVertex *tvList, size_t i) {
 
 
 	float & ddist = haloInfo.ddist;
@@ -1121,20 +1121,15 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity *
 	for(size_t i = 0; i < eobj->facelist.size(); i++) {
 		EERIE_FACE *eface = &eobj->facelist[i];
 
-		long paf[3];
-		paf[0]=eface->vid[0];
-		paf[1]=eface->vid[1];
-		paf[2]=eface->vid[2];
-
 		if((eface->facetype & POLY_HIDE) && !IN_BOOK_DRAW)
 			continue;
 
 		//CULL3D
-		Vec3f nrm = eobj->vertexlist3[paf[0]].v - ACTIVECAM->orgTrans.pos;
+		Vec3f nrm = eobj->vertexlist3[eface->vid[0]].v - ACTIVECAM->orgTrans.pos;
 
 		if(!(eface->facetype & POLY_DOUBLESIDED)) {
-			Vec3f normV10 = eobj->vertexlist3[paf[1]].v - eobj->vertexlist3[paf[0]].v;
-			Vec3f normV20 = eobj->vertexlist3[paf[2]].v - eobj->vertexlist3[paf[0]].v;
+			Vec3f normV10 = eobj->vertexlist3[eface->vid[1]].v - eobj->vertexlist3[eface->vid[0]].v;
+			Vec3f normV20 = eobj->vertexlist3[eface->vid[2]].v - eobj->vertexlist3[eface->vid[0]].v;
 			Vec3f normFace;
 			normFace.x = (normV10.y * normV20.z) - (normV10.z * normV20.y);
 			normFace.y = (normV10.z * normV20.x) - (normV10.x * normV20.z);
@@ -1155,9 +1150,9 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity *
 		TexturedVertex *tvList = GetNewVertexList(pTex, eface, invisibility, fTransp);
 
 		for(size_t n = 0; n < 3; n++) {
-			tvList[n].p     = eobj->vertexlist3[paf[n]].vert.p;
-			tvList[n].rhw   = eobj->vertexlist3[paf[n]].vert.rhw;
-			tvList[n].color = eobj->vertexlist3[paf[n]].vert.color;
+			tvList[n].p     = eobj->vertexlist3[eface->vid[n]].vert.p;
+			tvList[n].rhw   = eobj->vertexlist3[eface->vid[n]].vert.rhw;
+			tvList[n].color = eobj->vertexlist3[eface->vid[n]].vert.color;
 			tvList[n].uv.x  = eface->u[n];
 			tvList[n].uv.y  = eface->v[n];
 		}
@@ -1167,7 +1162,7 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity *
 		}
 
 		if(haloInfo.need_halo) {
-			AddAnimatedObjectHalo(haloInfo, paf, invisibility, eobj, io, tvList, i);
+			AddAnimatedObjectHalo(haloInfo, eface->vid, invisibility, eobj, io, tvList, i);
 		}
 	}
 }
