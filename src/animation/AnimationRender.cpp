@@ -630,32 +630,27 @@ void DrawEERIEInter_Render(EERIE_3DOBJ *eobj, const TransformInfo &t, Entity *io
 	}
 
 	for(size_t i = 0; i < eobj->facelist.size(); i++) {
-		EERIE_FACE *eface = &eobj->facelist[i];
-
-		long paf[3];
-		paf[0]=eface->vid[0];
-		paf[1]=eface->vid[1];
-		paf[2]=eface->vid[2];
+		EERIE_FACE & face = eobj->facelist[i];
 
 		//CULL3D
-		Vec3f nrm = eobj->vertexlist3[paf[0]].v - ACTIVECAM->orgTrans.pos;
-
-		if(!(eface->facetype & POLY_DOUBLESIDED)) {
-			Vec3f normV10 = eobj->vertexlist3[paf[1]].v - eobj->vertexlist3[paf[0]].v;
-			Vec3f normV20 = eobj->vertexlist3[paf[2]].v - eobj->vertexlist3[paf[0]].v;
+		if(!(face.facetype & POLY_DOUBLESIDED)) {
+			Vec3f normV10 = eobj->vertexlist3[face.vid[1]].v - eobj->vertexlist3[face.vid[0]].v;
+			Vec3f normV20 = eobj->vertexlist3[face.vid[2]].v - eobj->vertexlist3[face.vid[0]].v;
 			Vec3f normFace;
 			normFace.x = (normV10.y * normV20.z) - (normV10.z * normV20.y);
 			normFace.y = (normV10.z * normV20.x) - (normV10.x * normV20.z);
 			normFace.z = (normV10.x * normV20.y) - (normV10.y * normV20.x);
 
+			Vec3f nrm = eobj->vertexlist3[face.vid[0]].v - ACTIVECAM->orgTrans.pos;
+
 			if(glm::dot(normFace, nrm) > 0.f)
 				continue;
 		}
 
-		if(eface->texid < 0)
+		if(face.texid < 0)
 			continue;
 
-		TextureContainer *pTex = eobj->texturecontainer[eface->texid];
+		TextureContainer *pTex = eobj->texturecontainer[face.texid];
 		if(!pTex)
 			continue;
 
@@ -663,33 +658,33 @@ void DrawEERIEInter_Render(EERIE_3DOBJ *eobj, const TransformInfo &t, Entity *io
 			MakeCLight2(&t.rotation, eobj, i, colorMod);
 
 		float fTransp = 0.f;
-		TexturedVertex *tvList = GetNewVertexList(pTex, *eface, invisibility, fTransp);
+		TexturedVertex *tvList = GetNewVertexList(pTex, face, invisibility, fTransp);
 
-		tvList[0]=eobj->vertexlist[paf[0]].vert;
-		tvList[1]=eobj->vertexlist[paf[1]].vert;
-		tvList[2]=eobj->vertexlist[paf[2]].vert;
+		tvList[0]=eobj->vertexlist[face.vid[0]].vert;
+		tvList[1]=eobj->vertexlist[face.vid[1]].vert;
+		tvList[2]=eobj->vertexlist[face.vid[2]].vert;
 
-		tvList[0].uv.x=eface->u[0];
-		tvList[0].uv.y=eface->v[0];
-		tvList[1].uv.x=eface->u[1];
-		tvList[1].uv.y=eface->v[1];
-		tvList[2].uv.x=eface->u[2];
-		tvList[2].uv.y=eface->v[2];
+		tvList[0].uv.x=face.u[0];
+		tvList[0].uv.y=face.v[0];
+		tvList[1].uv.x=face.u[1];
+		tvList[1].uv.y=face.v[1];
+		tvList[2].uv.x=face.u[2];
+		tvList[2].uv.y=face.v[2];
 
 		// Treat WATER Polys (modify UVs)
-		if(eface->facetype & POLY_WATER) {
+		if(face.facetype & POLY_WATER) {
 			for(long k = 0; k < 3; k++) {
-				tvList[k].uv.x=eface->u[k];
-				tvList[k].uv.y=eface->v[k];
-				ApplyWaterFXToVertex(&eobj->vertexlist[eface->vid[k]].v, &tvList[k], 0.3f);
+				tvList[k].uv.x=face.u[k];
+				tvList[k].uv.y=face.v[k];
+				ApplyWaterFXToVertex(&eobj->vertexlist[face.vid[k]].v, &tvList[k], 0.3f);
 			}
 		}
 
-		if(eface->facetype & POLY_GLOW) { // unaffected by light
+		if(face.facetype & POLY_GLOW) { // unaffected by light
 			tvList[0].color=tvList[1].color=tvList[2].color=0xffffffff;
 		} else { // Normal Illuminations
 			for(long j = 0; j < 3; j++) {
-				tvList[j].color=eobj->vertexlist3[paf[j]].vert.color;
+				tvList[j].color=eobj->vertexlist3[face.vid[j]].vert.color;
 			}
 		}
 
@@ -704,7 +699,7 @@ void DrawEERIEInter_Render(EERIE_3DOBJ *eobj, const TransformInfo &t, Entity *io
 
 				dd = clamp(dd, 0.f, 1.f);
 
-				Vec3f & norm = eobj->vertexlist[paf[k]].norm;
+				Vec3f & norm = eobj->vertexlist[face.vid[k]].norm;
 
 				float fb=((1.f-dd)*6.f + (EEfabs(norm.x) + EEfabs(norm.y))) * 0.125f;
 				float fr=((.6f-dd)*6.f + (EEfabs(norm.z) + EEfabs(norm.y))) * 0.125f;
@@ -725,10 +720,10 @@ void DrawEERIEInter_Render(EERIE_3DOBJ *eobj, const TransformInfo &t, Entity *io
 		}
 
 		for(long j = 0; j < 3; j++)
-			eface->color[j]=Color::fromBGRA(tvList[j].color);
+			face.color[j]=Color::fromBGRA(tvList[j].color);
 
 		// Transparent poly: storing info to draw later
-		if((eface->facetype & POLY_TRANS) || invisibility > 0.f) {
+		if((face.facetype & POLY_TRANS) || invisibility > 0.f) {
 			tvList[0].color = tvList[1].color = tvList[2].color = Color::gray(fTransp).toBGR();
 		}
 
@@ -747,7 +742,7 @@ void DrawEERIEInter_Render(EERIE_3DOBJ *eobj, const TransformInfo &t, Entity *io
 
 			for(long o = 0; o < 3; o++) {
 				Vec3f temporary3D;
-				temporary3D = TransformVertexQuat(t.rotation, eobj->vertexlist[paf[o]].norm);
+				temporary3D = TransformVertexQuat(t.rotation, eobj->vertexlist[face.vid[o]].norm);
 
 				float power = 255.f-(float)EEfabs(255.f*(temporary3D.z)*( 1.0f / 2 ));
 
