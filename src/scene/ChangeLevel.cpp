@@ -1932,7 +1932,13 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) {
 		return NULL;
 	}
 	
-	if(ais->show == SHOW_FLAG_DESTROYED || (ais->ioflags & IO_NOSAVE)) {
+	if(ais->ioflags & IO_NOSAVE) {
+		// This item should not have been saved, yet here it is :(
+		free(dat);
+		return NULL;
+	}
+	
+	if(ais->show == SHOW_FLAG_DESTROYED || ais->show == SHOW_FLAG_KILLED) {
 		free(dat);
 		return NULL;
 	}
