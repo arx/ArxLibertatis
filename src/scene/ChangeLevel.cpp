@@ -207,6 +207,10 @@ long GetIOAnimIdx2(const Entity * io, ANIM_HANDLE * anim) {
 
 bool ARX_Changelevel_CurGame_Clear() {
 	
+	if(pSaveBlock) {
+		delete pSaveBlock, pSaveBlock = NULL;
+	}
+	
 	if(CURRENT_GAME_FILE.empty()) {
 		CURRENT_GAME_FILE = fs::paths.user / "current.sav";
 	}
@@ -222,42 +226,45 @@ bool ARX_Changelevel_CurGame_Clear() {
 	return true;
 }
 
-static SaveBlock * GLOBAL_pSaveB = NULL;
-
-void ARX_Changelevel_CurGame_Open() {
+static bool openCurrentGameFile() {
 	
-	if(GLOBAL_pSaveB) {
-		ARX_Changelevel_CurGame_Close();
-	}
+	arx_assert(!CURRENT_GAME_FILE.empty());
 	
 	if(pSaveBlock) {
-		return;
+		// Already open...
+		return true;
 	}
 	
-	if(CURRENT_GAME_FILE.empty() || !fs::exists(CURRENT_GAME_FILE)) {
-		// TODO this is normal when starting a new game
-		return;
+	pSaveBlock = new SaveBlock(CURRENT_GAME_FILE);
+	
+	if(!pSaveBlock->open(true)) {
+		LogError << "Error writing to save block " << CURRENT_GAME_FILE;
+		return false;
 	}
 	
-	GLOBAL_pSaveB = new SaveBlock(CURRENT_GAME_FILE);
-	if(!GLOBAL_pSaveB->open()) {
-		LogError << "Cannot read cur game save file" << CURRENT_GAME_FILE;
+	return true;
+}
+
+bool ARX_CHANGELEVEL_StartNew() {
+	
+	if(!ARX_Changelevel_CurGame_Clear()) {
+		return false;
 	}
+	
+	if(!openCurrentGameFile()) {
+		return false;
+	}
+	
+	return true;
 }
 
 bool ARX_Changelevel_CurGame_Seek(const std::string & ident) {
 	if(pSaveBlock) {
 		return pSaveBlock->hasFile(ident);
-	} else if(GLOBAL_pSaveB) {
-		return GLOBAL_pSaveB->hasFile(ident);
 	} else {
-		// this is normal when starting a new game
+		LogError << "Tried to access the current saved game state before a game was started";
 		return false;
 	}
-}
-
-void ARX_Changelevel_CurGame_Close() {
-	delete GLOBAL_pSaveB, GLOBAL_pSaveB = NULL;
 }
 
 extern long JUST_RELOADED;
@@ -302,11 +309,7 @@ void ARX_CHANGELEVEL_Change(const string & level, const string & target, long an
 	PROGRESS_BAR_COUNT += 1.f;
 	LoadLevelScreen(num);
 	
-	assert(!CURRENT_GAME_FILE.empty());
-	pSaveBlock = new SaveBlock(CURRENT_GAME_FILE);
-	
-	if(!pSaveBlock->open(true)) {
-		LogError << "Error writing to save block " << CURRENT_GAME_FILE;
+	if(!openCurrentGameFile()) {
 		return;
 	}
 	
@@ -317,7 +320,6 @@ void ARX_CHANGELEVEL_Change(const string & level, const string & target, long an
 	if(!pSaveBlock->flush("pld")) {
 		LogError << "Could not complete the save.";
 	}
-	delete pSaveBlock, pSaveBlock = NULL;
 	
 	arxtime.resume();
 	
@@ -2585,8 +2587,6 @@ static void ReleaseGaids() {
 
 static void ARX_CHANGELEVEL_PopLevel_Abort() {
 	
-	delete pSaveBlock, pSaveBlock = NULL;
-	
 	arxtime.resume();
 	
 	delete[] idx_io, idx_io = NULL;
@@ -2626,11 +2626,14 @@ static bool ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag) {
 	loadfile << "lvl" << std::setfill('0') << std::setw(3) << instance;
 	
 	// Open Saveblock for read
-	pSaveBlock = new SaveBlock(CURRENT_GAME_FILE);
+	if(!openCurrentGameFile()) {
+		ARX_CHANGELEVEL_PopLevel_Abort();
+		return false;
+	}
 	
 	// first time in this level ?
 	bool firstTime;
-	if(!pSaveBlock->open() || !pSaveBlock->hasFile(loadfile.str())) {
+	if(!pSaveBlock->hasFile(loadfile.str())) {
 		firstTime = true;
 		FORBID_SCRIPT_IO_CREATION = 0;
 		NO_PLAYER_POSITION_RESET = 0;
@@ -2741,11 +2744,6 @@ static bool ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag) {
 	NO_TIME_INIT = 1;
 	LogDebug("After  Memory Release");
 	
-	LogDebug("Before SaveBlock Release");
-	delete pSaveBlock;
-	pSaveBlock = NULL;
-	LogDebug("After  SaveBlock Release");
-	
 	LogDebug("Before Final Inits");
 	HERO_SHOW_1ST = -1;
 	
@@ -2783,10 +2781,7 @@ bool ARX_CHANGELEVEL_Save(const string & name, const fs::path & savefile) {
 		return false;
 	}
 	
-	pSaveBlock = new SaveBlock(CURRENT_GAME_FILE);
-	
-	if(!pSaveBlock->open(true)) {
-		LogError << "Opening savegame " << CURRENT_GAME_FILE;
+	if(!openCurrentGameFile()) {
 		return false;
 	}
 	
@@ -2815,7 +2810,6 @@ bool ARX_CHANGELEVEL_Save(const string & name, const fs::path & savefile) {
 		LogError << "Could not complete the save";
 		return false;
 	}
-	delete pSaveBlock, pSaveBlock = NULL;
 	
 	arxtime.resume();
 	

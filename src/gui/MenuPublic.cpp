@@ -76,7 +76,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "math/Types.h"
 #include "math/Vector.h"
 
-#include "scene/ChangeLevel.h"
 #include "scene/GameSound.h"
 #include "scene/LoadLevel.h"
 #include "scene/Light.h"

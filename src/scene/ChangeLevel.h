@@ -55,6 +55,8 @@ void ARX_CHANGELEVEL_Change(const std::string & level, const std::string & targe
 
 long ARX_CHANGELEVEL_GetInfo(const fs::path & savefile, std::string & name, float & version, long & level, unsigned long & time);
 
+bool ARX_CHANGELEVEL_StartNew();
+
 /*!
  * Load a GameSave
  */
@@ -63,8 +65,6 @@ long ARX_CHANGELEVEL_Load(const fs::path & savefile);
 bool ARX_CHANGELEVEL_Save(const std::string & name, const fs::path & savefile);
 
 bool ARX_Changelevel_CurGame_Clear();
-void ARX_Changelevel_CurGame_Open();
 bool ARX_Changelevel_CurGame_Seek(const std::string & ident);
-void ARX_Changelevel_CurGame_Close();
 
 #endif // ARX_SCENE_CHANGELEVEL_H

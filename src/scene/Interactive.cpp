@@ -1625,9 +1625,6 @@ static void MakeTemporaryIOIdent(Entity * io) {
 	if(!io)
 		return;
 	
-	// TODO keep the current game open all the time (or even in memory)
-	ARX_Changelevel_CurGame_Open();
-	
 	std::string className = io->short_name();
 	res::path classDir = io->classPath().parent();
 	
@@ -1662,8 +1659,6 @@ static void MakeTemporaryIOIdent(Entity * io) {
 		}
 		
 		io->ident = t;
-		
-		ARX_Changelevel_CurGame_Close();
 		
 		return;
 	}

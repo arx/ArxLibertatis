@@ -2749,8 +2749,8 @@ void ARX_PLAYER_Start_New_Quest() {
 	TSecondaryInventory = NULL;
 	ARX_EQUIPMENT_UnEquipAllPlayer();
 	
-	ARX_Changelevel_CurGame_Clear();
-
+	ARX_CHANGELEVEL_StartNew();
+	
 	entities.player()->halo.flags = 0;
 }
 
