@@ -335,10 +335,6 @@ void ARX_CHANGELEVEL_Change(const string & level, const string & target, long an
 	ARX_CHANGELEVEL_PushLevel(CURRENTLEVEL, num);
 	LogDebug("After  ARX_CHANGELEVEL_PushLevel");
 	
-	if(!pSaveBlock->flush("pld")) {
-		LogError << "Could not complete the save.";
-	}
-	
 	arxtime.resume();
 	
 	LogDebug("Before ARX_CHANGELEVEL_PopLevel");
