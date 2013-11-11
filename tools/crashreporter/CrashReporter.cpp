@@ -20,6 +20,7 @@
 #include <QApplication>
 
 #include <string>
+#include <cstdlib>
 
 #include "crashreporter/ui/ErrorReportDialog.h"
 #include "crashreporter/ErrorReport.h"
@@ -61,7 +62,8 @@ int main(int argc, char **argv) {
 	}
 	
 	if(sharedMemoryName.isEmpty()) {
-		return -1;
+		LogError << "Missing -crashinfo parameter!";
+		return EXIT_FAILURE;
 	}
 	
 	ErrorReport errorReport(sharedMemoryName);
