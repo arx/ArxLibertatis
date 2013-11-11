@@ -266,7 +266,8 @@ void MiniMap::resetLevels() {
 		m_levels[i].m_ratioY = 0.f;
 		m_levels[i].m_width = 0.f;
 		m_levels[i].m_height = 0.f;
-		memset(m_levels[i].m_revealed, 0, sizeof(m_levels[i].m_revealed[0][0] * MINIMAP_MAX_X * MINIMAP_MAX_Z)); // Sets the whole array to 0
+		// Sets the whole array to 0
+		memset(m_levels[i].m_revealed, 0, sizeof(m_levels[i].m_revealed));
 	}
 }
 
