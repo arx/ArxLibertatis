@@ -118,6 +118,9 @@ class InventoryCommand : public Command {
 					Entity * item = id->slot[ni][nj].io;
 					if(item) {
 						// Delay destruction of the object to avoid invalid references
+						if(item->ioflags & IO_ITEM) {
+							item->_itemdata->count = 1;
+						}
 						ARX_INTERACTIVE_DestroyIOdelayed(item);
 						id->slot[ni][nj].io = NULL;
 						// Prevent further script events as the object has been destroyed!
