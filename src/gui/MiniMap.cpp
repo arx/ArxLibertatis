@@ -183,32 +183,29 @@ void MiniMap::loadOffsets(PakReader *pakRes) {
 	
 	file->read(dat);
 	
-	if(dat) {
+	size_t pos = 0;
+	
+	for(int i = 0; i < 29; i++) { // Why 29?
 		
-		size_t pos = 0;
+		char t[512];
+		int nRead = sscanf(dat + pos, "%s %f %f", t, &m_miniOffsetX[i], &m_miniOffsetY[i]);
 		
-		for(int i = 0; i < 29; i++) { // Why 29?
-			
-			char t[512];
-			int nRead = sscanf(dat + pos, "%s %f %f", t, &m_miniOffsetX[i], &m_miniOffsetY[i]);
-			
-			if(nRead != 3) {
-				LogError << "Error parsing line " << i << " of mini_offsets.ini: read " << nRead;
-			}
-			
-			while((pos < fileSize) && (dat[pos] != '\n')) {
-				pos++;
-			}
-			
-			pos++;
-			
-			if(pos >= fileSize) {
-				break;
-			}
+		if(nRead != 3) {
+			LogError << "Error parsing line " << i << " of mini_offsets.ini: read " << nRead;
 		}
 		
-		delete[] dat;
+		while((pos < fileSize) && (dat[pos] != '\n')) {
+			pos++;
+		}
+		
+		pos++;
+		
+		if(pos >= fileSize) {
+			break;
+		}
 	}
+	
+	delete[] dat;
 	
 	m_miniOffsetX[0] = 0;
 	m_miniOffsetY[0] = -0.5;
