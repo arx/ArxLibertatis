@@ -289,7 +289,7 @@ std::string Entity::idString() const {
 	return ss.str();
 }
 
-res::path Entity::full_name() const {
+res::path Entity::instancePath() const {
 	return m_classPath.parent() / idString();
 }
 

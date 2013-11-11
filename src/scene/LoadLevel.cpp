@@ -515,7 +515,7 @@ void SaveIOScript(Entity * io, long fl) {
 				LogError << ("NO IDENT...");
 				return;
 			}
-			file = fs::paths.user / io->full_name().string();
+			file = fs::paths.user / io->instancePath().string();
 			if(!fs::is_directory(file)) {
 				LogError << "Local DIR don't Exists...";
 				return;
@@ -571,7 +571,7 @@ Entity * LoadInter_Ex(const res::path & classPath, EntityInstance instance,
 	io->move = Vec3f_ZERO;
 	io->initangle = io->angle = angle;
 	
-	res::path tmp = io->full_name(); // Get the directory name to check for
+	res::path tmp = io->instancePath(); // Get the directory name to check for
 	string id = io->className();
 	if(PakDirectory * dir = resources->getDirectory(tmp)) {
 		if(PakFile * file = dir->getFile(id + ".asl")) {

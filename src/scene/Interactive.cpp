@@ -1852,7 +1852,7 @@ void ARX_INTERACTIVE_DeleteByIndex(long i, DeleteByIndexFlags flag) {
 	//Must KILL dir...
 	if(!(flag & FLAG_DONTKILLDIR) && entities[i]->scriptload == 0 && entities[i]->ident > 0) {
 		
-		fs::path dir = fs::paths.user / entities[i]->full_name().string();
+		fs::path dir = fs::paths.user / entities[i]->instancePath().string();
 		
 		if(fs::is_directory(dir) && !fs::remove_all(dir)) {
 			LogError << "Could not remove directory " << dir;
@@ -2034,7 +2034,7 @@ void ReloadScript(Entity * io) {
 	ReleaseScript(&io->script);
 
 	loadScript(io->script, resources->getFile(io->classPath() + ".asl"));
-	loadScript(io->over_script, resources->getFile((io->full_name() / io->className()) + ".asl"));
+	loadScript(io->over_script, resources->getFile((io->instancePath() / io->className()) + ".asl"));
 
 	long num = io->index();
 
@@ -2079,7 +2079,7 @@ void MakeIOIdent(Entity * io) {
 	long t = 1;
 	
 	while(io->ident == 0) {	
-		fs::path temp = fs::paths.user / io->full_name().string();
+		fs::path temp = fs::paths.user / io->instancePath().string();
 		
 		if(!fs::is_directory(temp)) {
 			io->ident = t;

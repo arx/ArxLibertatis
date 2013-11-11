@@ -380,7 +380,7 @@ public:
 	 * with the the result of idString()
 	 * @return The directory of filename + idString()
 	 */
-	res::path full_name() const;
+	res::path instancePath() const;
 	
 	//! @return the index of this Entity in the EntityManager
 	size_t index() const { return m_index; }
