@@ -37,8 +37,8 @@ static const char vertexShaderSource[] =
 	"	vec4 vertex = vec4(in_Position.xyz * w, w);\n"
 	"	// We only need the projection matrix as modelview will always be idenity.\n"
 	"	gl_Position = gl_ProjectionMatrix * vertex;\n"
-	"	gl_FrontColor = gl_BackColor = ex_Color;\n"
-	"	gl_TexCoord[0].xy = ex_TexCoord;\n"
+	"	gl_FrontColor = gl_BackColor = in_Color;\n"
+	"	gl_TexCoord[0].xy = in_TexCoord;\n"
 	"	gl_FogFragCoord = vertex.z;\n"
 	"}\n";
 
