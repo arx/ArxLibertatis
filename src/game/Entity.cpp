@@ -336,8 +336,13 @@ void Entity::cleanReferences() {
 
 void Entity::destroy() {
 	
-	if(!scriptload) {
-		currentSavedGameStoreEntityDeletion(long_name());
+	if(ident > 0 && !(ioflags & IO_NOSAVE)) {
+		if(scriptload) {
+			// In case we previously saved this entity...
+			currentSavedGameRemoveEntity(long_name());
+		} else {
+			currentSavedGameStoreEntityDeletion(long_name());
+		}
 	}
 	
 	if(obj) {
