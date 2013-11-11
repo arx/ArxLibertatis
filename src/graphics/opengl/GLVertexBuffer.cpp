@@ -42,6 +42,19 @@ bool switchVertexArray(GLArrayClientState type, const void * ref, int texcount) 
 	}
 
 	if(glArrayClientState != type) {
+        
+		// Kind of a mess because we are using different methods
+		// Everything should use glVertexAttribPointer() at some point...
+		if(glArrayClientState == GL_TexturedVertex) {
+			glDisableVertexAttribArray(0);
+			glDisableVertexAttribArray(1);
+			glDisableVertexAttribArray(2);
+		} else if(type == GL_TexturedVertex) {
+			glDisableClientState(GL_VERTEX_ARRAY);
+			glDisableClientState(GL_COLOR_ARRAY);
+			glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+		}
+
 		for(int i = texcount; i < glArrayClientStateTexCount; i++) {
 			glClientActiveTexture(GL_TEXTURE0 + i);
 			glDisableClientState(GL_TEXTURE_COORD_ARRAY);
