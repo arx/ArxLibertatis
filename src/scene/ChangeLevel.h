@@ -65,6 +65,11 @@ long ARX_CHANGELEVEL_Load(const fs::path & savefile);
 bool ARX_CHANGELEVEL_Save(const std::string & name, const fs::path & savefile);
 
 bool ARX_Changelevel_CurGame_Clear();
-bool ARX_Changelevel_CurGame_Seek(const std::string & ident);
+
+/*!
+ * Check if the current saved game state contains an entry for the entity with the
+ * given ID string.
+ */
+bool currentSavedGameHasEntity(const std::string & idString);
 
 #endif // ARX_SCENE_CHANGELEVEL_H

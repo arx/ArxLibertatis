@@ -258,7 +258,7 @@ bool ARX_CHANGELEVEL_StartNew() {
 	return true;
 }
 
-bool ARX_Changelevel_CurGame_Seek(const std::string & ident) {
+bool currentSavedGameHasEntity(const std::string & ident) {
 	if(pSaveBlock) {
 		return pSaveBlock->hasFile(ident);
 	} else {

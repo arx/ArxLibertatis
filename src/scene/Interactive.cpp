@@ -1654,7 +1654,7 @@ static void MakeTemporaryIOIdent(Entity * io) {
 		}
 		
 		// Check if the candidate instance number is used in any visited area
-		if(ARX_Changelevel_CurGame_Seek(ss.str())) {
+		if(currentSavedGameHasEntity(ss.str())) {
 			continue;
 		}
 		
