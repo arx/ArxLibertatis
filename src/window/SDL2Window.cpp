@@ -22,6 +22,10 @@
 #include <algorithm>
 #include <sstream>
 
+#ifdef ARX_DEBUG
+#include <signal.h>
+#endif
+
 #include "graphics/opengl/OpenGLRenderer.h"
 #include "input/SDL2InputBackend.h"
 #include "io/log/Logger.h"
@@ -72,10 +76,20 @@ bool SDL2Window::initializeFramework() {
 	                             "." ARX_STR(SDL_PATCHLEVEL);
 	CrashHandler::setVariable("SDL version (headers)", headerVersion);
 	
-	if(SDL_Init(SDL_INIT_VIDEO) < 0) {
+	if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS) < 0) {
 		LogError << "Failed to initialize SDL: " << SDL_GetError();
 		return false;
 	}
+	
+	#ifdef ARX_DEBUG
+	// No SDL, this is more annoying than helpful!
+	#if defined(SIGINT)
+	signal(SIGINT, SIG_DFL);
+	#endif
+	#if defined(SIGTERM)
+	signal(SIGTERM, SIG_DFL);
+	#endif
+	#endif
 	
 	SDL_version ver;
 	SDL_GetVersion(&ver);
