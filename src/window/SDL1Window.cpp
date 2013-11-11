@@ -148,7 +148,7 @@ bool SDL1Window::initialize() {
 	arx_assert(!m_displayModes.empty());
 	
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
+	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
 	
 	// We need an accelerated OpenGL context or we'll likely fail later
 	// However, this attribute may have the opposite effect with SDL < 1.2.15 with some
