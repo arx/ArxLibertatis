@@ -662,17 +662,18 @@ public:
 		
 		DebugScript(' ' << target);
 		
-		Entity * t = entities.getById(target, context.getEntity());
-		if(!t) {
+		Entity * entity = entities.getById(target, context.getEntity());
+		if(!entity) {
 			return Success;
 		}
 		
-		long index = context.getEntity()->index();
+		// Delay destruction of the object to avoid invalid references
+		ARX_INTERACTIVE_DestroyIOdelayed(entity);
 		
-		t->destroyOne();
-		
-		if(!ValidIONum(index)) {
-			// Cannot process further if we destroyed the script's IO
+		// Prevent further script events as the object has been destroyed!
+		entity->show = SHOW_FLAG_MEGAHIDE;
+		entity->ioflags |= IO_FREEZESCRIPT;
+		if(entity == context.getEntity()) {
 			return AbortAccept;
 		}
 		
