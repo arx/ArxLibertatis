@@ -226,7 +226,7 @@ bool ARX_Changelevel_CurGame_Clear() {
 	return true;
 }
 
-static bool openCurrentGameFile() {
+static bool openCurrentSavedGameFile() {
 	
 	arx_assert(!CURRENT_GAME_FILE.empty());
 	
@@ -251,7 +251,7 @@ bool ARX_CHANGELEVEL_StartNew() {
 		return false;
 	}
 	
-	if(!openCurrentGameFile()) {
+	if(!openCurrentSavedGameFile()) {
 		return false;
 	}
 	
@@ -333,7 +333,7 @@ void ARX_CHANGELEVEL_Change(const string & level, const string & target, long an
 	PROGRESS_BAR_COUNT += 1.f;
 	LoadLevelScreen(num);
 	
-	if(!openCurrentGameFile()) {
+	if(!openCurrentSavedGameFile()) {
 		return;
 	}
 	
@@ -2649,7 +2649,7 @@ static bool ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag) {
 	loadfile << "lvl" << std::setfill('0') << std::setw(3) << instance;
 	
 	// Open Saveblock for read
-	if(!openCurrentGameFile()) {
+	if(!openCurrentSavedGameFile()) {
 		ARX_CHANGELEVEL_PopLevel_Abort();
 		return false;
 	}
@@ -2804,7 +2804,7 @@ bool ARX_CHANGELEVEL_Save(const string & name, const fs::path & savefile) {
 		return false;
 	}
 	
-	if(!openCurrentGameFile()) {
+	if(!openCurrentSavedGameFile()) {
 		return false;
 	}
 	
