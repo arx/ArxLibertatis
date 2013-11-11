@@ -267,6 +267,19 @@ bool currentSavedGameHasEntity(const std::string & ident) {
 	}
 }
 
+void currentSavedGameStoreEntityDeletion(const std::string & idString) {
+	
+	// Save a minimal entity save file containing just enough info so we know not to load it
+	ARX_CHANGELEVEL_IO_SAVE ais;
+	memset(&ais, 0, sizeof(ARX_CHANGELEVEL_IO_SAVE));
+	ais.version = ARX_GAMESAVE_VERSION;
+	ais.show = SHOW_FLAG_DESTROYED;
+	
+	const char * data = reinterpret_cast<const char *>(&ais);
+	pSaveBlock->save(idString, data, sizeof(ais));
+	
+}
+
 extern long JUST_RELOADED;
 
 void ARX_CHANGELEVEL_Change(const string & level, const string & target, long angle) {
