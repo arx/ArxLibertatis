@@ -1935,6 +1935,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) {
 	
 	if(ais->ioflags & IO_NOSAVE) {
 		// This item should not have been saved, yet here it is :(
+		LogWarning << "Tried to load entity that should never have been saved!";
 		free(dat);
 		return NULL;
 	}
