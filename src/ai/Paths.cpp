@@ -236,7 +236,7 @@ void ARX_PATH_UpdateAllZoneInOutInside() {
 						long t = entities.getById(op->controled);
 
 						if(t >= 0) {
-							string str = io->long_name() + ' ' + op->name;
+							string str = io->idString() + ' ' + op->name;
 							SendIOScriptEvent(entities[t], SM_CONTROLLEDZONE_LEAVE, str);
 						}
 					}
@@ -255,7 +255,7 @@ void ARX_PATH_UpdateAllZoneInOutInside() {
 							long t = entities.getById(p->controled);
 
 							if(t >= 0) {
-								string params = io->long_name() + ' ' + p->name;
+								string params = io->idString() + ' ' + p->name;
 								SendIOScriptEvent(entities[t], SM_CONTROLLEDZONE_ENTER, params);
 							}
 						}
@@ -267,7 +267,7 @@ void ARX_PATH_UpdateAllZoneInOutInside() {
 						long t = entities.getById(op->controled);
 
 						if(t >= 0) {
-							string str = io->long_name() + ' ' + op->name;
+							string str = io->idString() + ' ' + op->name;
 							SendIOScriptEvent(entities[t], SM_CONTROLLEDZONE_LEAVE, str);
 						}
 					}
@@ -279,7 +279,7 @@ void ARX_PATH_UpdateAllZoneInOutInside() {
 						long t = entities.getById(p->controled);
 
 						if(t >= 0) {
-							string str = io->long_name() + ' ' + p->name;
+							string str = io->idString() + ' ' + p->name;
 							SendIOScriptEvent(entities[t], SM_CONTROLLEDZONE_ENTER, str);
 						}
 					}

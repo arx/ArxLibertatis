@@ -283,14 +283,14 @@ std::string Entity::short_name() const {
 	return m_classPath.filename();
 }
 
-std::string Entity::long_name() const {
+std::string Entity::idString() const {
 	std::stringstream ss;
 	ss << short_name() << '_' << std::setw(4) << std::setfill('0') << ident;
 	return ss.str();
 }
 
 res::path Entity::full_name() const {
-	return m_classPath.parent() / long_name();
+	return m_classPath.parent() / idString();
 }
 
 void Entity::cleanReferences() {
@@ -339,9 +339,9 @@ void Entity::destroy() {
 	if(ident > 0 && !(ioflags & IO_NOSAVE)) {
 		if(scriptload) {
 			// In case we previously saved this entity...
-			currentSavedGameRemoveEntity(long_name());
+			currentSavedGameRemoveEntity(idString());
 		} else {
-			currentSavedGameStoreEntityDeletion(long_name());
+			currentSavedGameStoreEntityDeletion(idString());
 		}
 	}
 	

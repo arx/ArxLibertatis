@@ -4910,7 +4910,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 				if(closerThan(ioo->pos, spells[i].caster_pos, 900.f)) {
 					tcount++;
 					std::ostringstream oss;
-					oss << entities[spells[i].target]->long_name();
+					oss << entities[spells[i].target]->idString();
 					oss << ' ' << long(spells[i].caster_level);
 					SendIOScriptEvent(ioo, SM_NULL, oss.str(), "npc_control");
 				}

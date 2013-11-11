@@ -631,7 +631,7 @@ void FillIOIdent(char (&tofill)[N], const Entity * io) {
 		strcpy(tofill, "none");
 	} else {
 		
-		string ident = io->long_name();
+		string ident = io->idString();
 		
 		arx_assert(ident.length() <= N);
 		strncpy(tofill, ident.c_str(),  N);
@@ -891,7 +891,7 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 	arx_assert(io->show != SHOW_FLAG_KILLED);
 	
 	// Sets Savefile Name
-	string savefile = io->long_name();
+	string savefile = io->idString();
 	
 	// Define Type & Affiliated Structure Size
 	long type;

@@ -356,7 +356,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 	            : ((size_t)msg < ARRAY_SIZE(AS_EVENT) - 1) ? AS_EVENT[msg].name.substr(3)
 	            : "(none)")
 	         << " params=\"" << params << "\""
-	         << " io=" << (io ? io->long_name() : "unknown")
+	         << " io=" << (io ? io->idString() : "unknown")
 	         << (io == NULL ? "" : es == &io->script ? " base" : " overriding")
 	         << " pos=" << pos);
 

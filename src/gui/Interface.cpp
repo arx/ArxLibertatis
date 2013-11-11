@@ -925,7 +925,7 @@ void GetInfosCombineWithIO(Entity * _pWithIO)
 	if(!COMBINE)
 		return;
 
-	std::string tcIndent = COMBINE->long_name();
+	std::string tcIndent = COMBINE->idString();
 
 		char tTxtCombineDest[256];
 
@@ -1834,7 +1834,7 @@ void ArxGame::manageEditorControls() {
 				SendIOScriptEvent(io, SM_COMBINE, "gold_coin");
 			} else {
 				if(io != COMBINE) {
-					std::string temp = COMBINE->long_name();
+					std::string temp = COMBINE->idString();
 					EVENT_SENDER=COMBINE;
 
 					if(boost::starts_with(COMBINE->short_name(), "keyring")) {

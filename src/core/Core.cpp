@@ -3009,7 +3009,7 @@ void ShowInfoText() {
 				ScriptEvent::totalCount, ARX_SCRIPT_CountTimers());
 	} else {
 		sprintf(tex, "Events %ld (IOmax %s %d) Timers %ld",
-				ScriptEvent::totalCount, io->long_name().c_str(),
+				ScriptEvent::totalCount, io->idString().c_str(),
 				io->stat_count, ARX_SCRIPT_CountTimers());
 	}
 	hFontDebug->draw(70, 94, tex, Color::white);
@@ -3017,7 +3017,7 @@ void ShowInfoText() {
 	io = ARX_SCRIPT_Get_IO_Max_Events_Sent();
 
 	if(io) {
-		sprintf(tex, "Max SENDER %s %d)", io->long_name().c_str(), io->stat_sent);
+		sprintf(tex, "Max SENDER %s %d)", io->idString().c_str(), io->stat_sent);
 		hFontDebug->draw(70, 114, tex, Color::white);
 	}
 

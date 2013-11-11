@@ -346,7 +346,7 @@ bool contains(const SuppressionsForPos & list, const Context & context, const st
 		return false;
 	}
 	
-	SuppressionsForFile::const_iterator i1 = i0->second.find(context.getEntity() ? ((context.getScript() == &context.getEntity()->script) ? context.getEntity()->short_name() : context.getEntity()->long_name()) : "unknown");
+	SuppressionsForFile::const_iterator i1 = i0->second.find(context.getEntity() ? ((context.getScript() == &context.getEntity()->script) ? context.getEntity()->short_name() : context.getEntity()->idString()) : "unknown");
 	if(i1 == i0->second.end()) {
 		return false;
 	}

@@ -200,7 +200,7 @@ static void ARX_INTERACTIVE_ForceIOLeaveZone(Entity * io, long flags) {
 			long t = entities.getById(op->controled);
 
 			if(t >= 0) {
-				std::string str = io->long_name() + ' ' + temp;
+				std::string str = io->idString() + ' ' + temp;
 				SendIOScriptEvent( entities[t], SM_CONTROLLEDZONE_LEAVE, str ); 
 			}
 		}

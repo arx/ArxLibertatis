@@ -741,7 +741,7 @@ ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const string & 
 				} else if(EVENT_SENDER == entities.player()) {
 					txtcontent = "player";
 				} else {
-					txtcontent = EVENT_SENDER->long_name();
+					txtcontent = EVENT_SENDER->idString();
 				}
 				return TYPE_TEXT;
 			}
@@ -775,7 +775,7 @@ ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const string & 
 				} else if(entity == entities.player()) {
 					txtcontent = "player";
 				} else {
-					txtcontent = entity->long_name();
+					txtcontent = entity->idString();
 				}
 				return TYPE_TEXT;
 			}
@@ -839,7 +839,7 @@ ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const string & 
 			}
 			
 			if(boost::starts_with(name, "^last_spawned")) {
-				txtcontent = (LASTSPAWNED) ? LASTSPAWNED->long_name() : "none";
+				txtcontent = (LASTSPAWNED) ? LASTSPAWNED->idString() : "none";
 				return TYPE_TEXT;
 			}
 			
@@ -1077,7 +1077,7 @@ ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const string & 
 				} else if(ioo == entities.player()) {
 					txtcontent = "player";
 				} else {
-					txtcontent = ioo->long_name();
+					txtcontent = ioo->idString();
 				}
 				return TYPE_TEXT;
 			}
@@ -1095,7 +1095,7 @@ ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const string & 
 				} else if(!ValidIONum(entity->targetinfo)) {
 					txtcontent = "none";
 				} else {
-					txtcontent = entities[entity->targetinfo]->long_name();
+					txtcontent = entities[entity->targetinfo]->idString();
 				}
 				return TYPE_TEXT;
 			}

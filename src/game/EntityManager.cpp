@@ -96,7 +96,7 @@ long EntityManager::getById(const std::string & name) const {
 	for(size_t i = 0 ; i < size() ; i++) {
 		if(entries[i] != NULL && entries[i]->ident > -1) {
 			// TODO this check is inefficient!
-			if(name == entries[i]->long_name()) {
+			if(name == entries[i]->idString()) {
 				return i;
 			}
 		}

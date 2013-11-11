@@ -372,13 +372,13 @@ public:
 	 * in the form of "%s_%04ld"
 	 * @return The short name combined with a 4 digit ident, padded with 0
 	 */
-	std::string long_name() const;
+	std::string idString() const;
 	
 	/*!
 	 *  Returns the full name for this Object where the
 	 * directory portion of the filename member is combined
-	 * with the the result of long_name()
-	 * @return The directory of filename + long_name()
+	 * with the the result of idString()
+	 * @return The directory of filename + idString()
 	 */
 	res::path full_name() const;
 	

@@ -316,7 +316,7 @@ static void drawDebugPathFinding() {
 			short k1 = pathfind.list[pathfind.listpos];
 			if(k1 >= 0 && k1 < ACTIVEBKG->nbanchors) {
 				if(closerThan(ACTIVEBKG->anchors[k1].pos, player.pos, DebugTextMaxDistance)) {
-					drawTextAt(hFontDebug, ACTIVEBKG->anchors[k1].pos, entity->long_name());
+					drawTextAt(hFontDebug, ACTIVEBKG->anchors[k1].pos, entity->idString());
 					GRenderer->SetRenderState(Renderer::DepthTest, true);
 				}
 			}
@@ -458,16 +458,16 @@ static void drawDebugEntities() {
 			if(visible && entity->bbox2D.valid()) {
 				int x = (entity->bbox2D.min.x + entity->bbox2D.max.x) / 2;
 				int y = entity->bbox2D.min.y - hFontDebug->getLineHeight() - 2;
-				UNICODE_ARXDrawTextCenter(hFontDebug, x, y, entity->long_name(), color);
+				UNICODE_ARXDrawTextCenter(hFontDebug, x, y, entity->idString(), color);
 			} else {
-				drawTextAt(hFontDebug, entity->pos, entity->long_name(), color);
+				drawTextAt(hFontDebug, entity->pos, entity->idString(), color);
 			}
 			
 			if(entity->obj) {
 				for(long j = 0; j < entity->obj->nblinked; j++) {
 					Vec3f pos = entity->obj->vertexlist3[entity->obj->linked[j].lidx].v;
 					Entity * other = entity->obj->linked[j].io;
-					drawTextAt(hFontDebug, pos, other->long_name(), Color::cyan);
+					drawTextAt(hFontDebug, pos, other->idString(), Color::cyan);
 				}
 			}
 			

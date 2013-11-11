@@ -191,7 +191,7 @@ long MakeTopObjString(Entity * io,  string & dest) {
 							&& entities[i]->pos.z < box.max.z)
 					{
 						if(EEfabs(entities[i]->pos.y - box.min.y) < 40.f) {
-							dest += ' ' + entities[i]->long_name();
+							dest += ' ' + entities[i]->idString();
 						}
 					}
 				}

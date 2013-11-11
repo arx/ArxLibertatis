@@ -328,7 +328,7 @@ struct ItemSizeComaparator {
 		if(locname != 0) {
 			return (locname < 0);
 		}
-		int name = a->long_name().compare(b->long_name());
+		int name = a->idString().compare(b->idString());
 		if(name != 0) {
 			return (name < 0);
 		}
@@ -400,7 +400,7 @@ private:
 		arx_assert(pos.y + item->sizey <= height);
 		arx_assert(index(pos).io == item);
 		
-		LogDebug(" - " << pos << " remove " << item->long_name()
+		LogDebug(" - " << pos << " remove " << item->idString()
 		         << " [" << item->_itemdata->count << '/'
 		         << item->_itemdata->playerstacksize << "]: "
 		         << int(item->sizex) << 'x' << int(item->sizey));
@@ -434,7 +434,7 @@ private:
 			}
 		}
 		
-		LogDebug(" - " << pos << " := " << item->long_name()
+		LogDebug(" - " << pos << " := " << item->idString()
 		         << " [" << item->_itemdata->count << '/'
 		         << item->_itemdata->playerstacksize << "]: "
 		         << int(item->sizex) << 'x' << int(item->sizey));
@@ -503,10 +503,10 @@ private:
 		short int remainingSpace = io->_itemdata->playerstacksize - io->_itemdata->count;
 		short int count = std::min(item->_itemdata->count, remainingSpace);
 		
-		LogDebug(" - " << pos << " " << io->long_name()
+		LogDebug(" - " << pos << " " << io->idString()
 		         << " [" << io->_itemdata->count << '/'
 		         << io->_itemdata->playerstacksize << "] += "
-		         << item->long_name() << " x" << count << '/' << item->_itemdata->count);
+		         << item->idString() << " x" << count << '/' << item->_itemdata->count);
 		
 		io->_itemdata->count += count, item->_itemdata->count -= count;
 		
@@ -618,7 +618,7 @@ public:
 		LogDebug("sorting");
 	#ifdef ARX_DEBUG
 		BOOST_FOREACH(const Entity * item, items) {
-			LogDebug(" - " << item->long_name() << ": "
+			LogDebug(" - " << item->idString() << ": "
 							<< int(item->sizex) << 'x' << int(item->sizey));
 		}
 	#endif
@@ -631,7 +631,7 @@ public:
 				// TODO: oops - there was no space for the item
 				// ideally this should not happen, but the current sorting algorithm does not
 				// guarantee that the resulting order is at least as good as the existing one
-				LogDebug("could not insert " << item->long_name() << " after sorting inventory");
+				LogDebug("could not insert " << item->idString() << " after sorting inventory");
 				PutInFrontOfPlayer(item);
 			}
 		}

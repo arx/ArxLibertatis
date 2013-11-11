@@ -488,7 +488,7 @@ void WriteIOInfo(Entity * io, const fs::path & dir) {
 		return;
 	}
 	
-	ofs << "Object   : " << io->long_name() << std::endl;
+	ofs << "Object   : " << io->idString() << std::endl;
 	ofs << "_______________________________" << std::endl << std::endl;
 	ofs << "Level    : " << LastLoadedScene << std::endl;
 	ofs << "Position : x " << (io->initpos.x - Mscenepos.x)
