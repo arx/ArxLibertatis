@@ -208,13 +208,14 @@ void ARX_PATH_UpdateAllZoneInOutInside() {
 		for(long tt = 0; tt < f; tt++) {
 			long i = count;
 			Entity * io = entities[i];
+			
 
 			if(count < entities.size()
 			   && io
 			   && io->ioflags & (IO_NPC | IO_ITEM)
 			   && io->show != SHOW_FLAG_MEGAHIDE
-			   && io->show != SHOW_FLAG_DESTROYED
 			) {
+				arx_assert(io->show != SHOW_FLAG_DESTROYED);
 				ARX_PATH * p = ARX_PATH_CheckInZone(io);
 				ARX_PATH * op = io->inzone;
 

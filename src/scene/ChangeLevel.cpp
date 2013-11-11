@@ -262,12 +262,17 @@ bool currentSavedGameHasEntity(const std::string & ident) {
 	if(pSaveBlock) {
 		return pSaveBlock->hasFile(ident);
 	} else {
-		LogError << "Tried to access the current saved game state before a game was started";
+		ARX_DEAD_CODE();
 		return false;
 	}
 }
 
 void currentSavedGameStoreEntityDeletion(const std::string & idString) {
+	
+	if(!pSaveBlock) {
+		ARX_DEAD_CODE();
+		return;
+	}
 	
 	// Save a minimal entity save file containing just enough info so we know not to load it
 	ARX_CHANGELEVEL_IO_SAVE ais;
@@ -481,8 +486,7 @@ static bool ARX_CHANGELEVEL_Push_Index(long num) {
 		if(entities[i] != NULL
 		   && !(entities[i]->ioflags & IO_NOSAVE)
 		   && !IsInPlayerInventory(entities[i])
-		   && !IsPlayerEquipedWith(entities[i])
-		   && (entities[i]->show != SHOW_FLAG_DESTROYED)) {
+		   && !IsPlayerEquipedWith(entities[i])) {
 			ARX_CHANGELEVEL_IO_INDEX aii;
 			memset(&aii, 0, sizeof(aii));
 			strncpy(aii.filename,
@@ -880,6 +884,9 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 	if(!io) {
 		return -1;
 	}
+	
+	arx_assert(io->show != SHOW_FLAG_DESTROYED);
+	arx_assert(io->show != SHOW_FLAG_KILLED);
 	
 	// Sets Savefile Name
 	string savefile = io->long_name();

@@ -976,13 +976,13 @@ void ARX_PHYSICS_Apply() {
 			ARX_NPC_ManagePoison(io);
 
 		if((io->ioflags & IO_ITEM)
-				&& (io->show != SHOW_FLAG_DESTROYED)
 				&& (io->gameFlags & GFLAG_GOREEXPLODE)
 				&& float(arxtime) - io->animBlend.lastanimtime > 300
 				&& io->obj
 				&& !io->obj->vertexlist.empty()
 		   )
 		{
+			arx_assert(io->show != SHOW_FLAG_DESTROYED);
 			long cnt = (io->obj->vertexlist.size() << 12) + 1;
 
 			cnt = clamp(cnt, 2, 10);

@@ -216,7 +216,7 @@ enum EntityVisilibity {
 	SHOW_FLAG_KILLED       = 7, // Deprecated, use SHOW_FLAG_DESTROYED instead
 	SHOW_FLAG_MEGAHIDE     = 8,
 	SHOW_FLAG_ON_PLAYER    = 9,
-	SHOW_FLAG_DESTROYED    = 255
+	SHOW_FLAG_DESTROYED    = 255 // Only used in save files
 };
 
 struct AnimationBlendStatus {

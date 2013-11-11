@@ -63,6 +63,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "gui/Interface.h"
 
+#include "scene/ChangeLevel.h"
 #include "scene/GameSound.h"
 #include "scene/Interactive.h"
 #include "scene/Light.h"
@@ -315,18 +316,6 @@ void Entity::cleanReferences() {
 	}
 	gameFlags &= ~GFLAG_ISINTREATZONE;
 	
-	if(obj) {
-		while(obj->nblinked) {
-			if(obj->linked[0].lgroup != -1 && obj->linked[0].obj) {
-				Entity * linked = obj->linked[0].io;
-				if(linked && ValidIOAddress(linked)) {
-					EERIE_LINKEDOBJ_UnLinkObjectFromObject(obj, linked->obj);
-					linked->destroy();
-				}
-			}
-		}
-	}
-	
 	ARX_INTERACTIVE_DestroyDynamicInfo(this);
 	
 	RemoveFromAllInventories(this);
@@ -347,12 +336,23 @@ void Entity::cleanReferences() {
 
 void Entity::destroy() {
 	
-	if(scriptload) {
-		delete this;
-	} else {
-		show = SHOW_FLAG_DESTROYED;
-		cleanReferences();
+	if(!scriptload) {
+		currentSavedGameStoreEntityDeletion(long_name());
 	}
+	
+	if(obj) {
+		while(obj->nblinked) {
+			if(obj->linked[0].lgroup != -1 && obj->linked[0].obj) {
+				Entity * linked = obj->linked[0].io;
+				if(linked && ValidIOAddress(linked)) {
+					EERIE_LINKEDOBJ_UnLinkObjectFromObject(obj, linked->obj);
+					linked->destroy();
+				}
+			}
+		}
+	}
+	
+	delete this;
 	
 }
 
