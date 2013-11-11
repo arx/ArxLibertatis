@@ -178,8 +178,8 @@ void MiniMap::loadOffsets(PakReader *pakRes) {
 	}
 	
 	size_t fileSize = file->size();
-	char *dat = new char[fileSize + 2];
-	dat[fileSize + 1] = '\0';
+	char * dat = new char[fileSize + 1];
+	dat[fileSize] = '\0';
 	
 	file->read(dat);
 	
