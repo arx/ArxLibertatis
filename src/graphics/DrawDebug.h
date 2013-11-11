@@ -20,11 +20,11 @@
 #ifndef ARX_GRAPHICS_DRAWDEBUG_H
 #define ARX_GRAPHICS_DRAWDEBUG_H
 
-void DrawDebugInit();
-void DrawDebugRelease();
+void drawDebugInitialize();
+void drawDebugRelease();
 
-void DrawDebugToggleDisplayTypes();
+void drawDebugCycleViews();
 
-void DrawDebugRender();
+void drawDebugRender();
 
 #endif // ARX_GRAPHICS_DRAWDEBUG_H

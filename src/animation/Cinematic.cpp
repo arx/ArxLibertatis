@@ -375,7 +375,6 @@ void Cinematic::Render(float FDIFF) {
 
 	if(projectload) {
 		GRenderer->Clear(Renderer::ColorBuffer);
-		GRenderer->BeginScene();
 
 		GereTrack(this, FDIFF);
 
@@ -544,8 +543,6 @@ void Cinematic::Render(float FDIFF) {
 				break;
 		}
 		
-		GRenderer->EndScene();
-
 		CalcFPS();
-	}	
+	}
 }

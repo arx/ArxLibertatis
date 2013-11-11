@@ -80,8 +80,7 @@ void EERIE_MESH_TWEAK_Skin(EERIE_3DOBJ * obj, const res::path & s1, const res::p
 	
 	LogDebug("Tweak Skin " << s1 << " " << s2);
 
-	if ( obj == NULL || s1.empty() || s2.empty() )
-	{
+	if(obj == NULL || s1.empty() || s2.empty()) {
 		LogError << "Tweak Skin got NULL Pointer";
 		return;
 	}
@@ -93,37 +92,31 @@ void EERIE_MESH_TWEAK_Skin(EERIE_3DOBJ * obj, const res::path & s1, const res::p
 	res::path skinname = "graph/obj3d/textures" / s2;
 	TextureContainer * tex = TextureContainer::Load(skinname);
 
-	if (obj->originaltextures == NULL)
-	{
+	if(obj->originaltextures == NULL) {
 		obj->originaltextures = (char *)malloc(256 * obj->texturecontainer.size()); 
 		memset(obj->originaltextures, 0, 256 * obj->texturecontainer.size());
 
-		for (size_t i = 0; i < obj->texturecontainer.size(); i++)
-		{
-			if (obj->texturecontainer[i])
+		for(size_t i = 0; i < obj->texturecontainer.size(); i++) {
+			if(obj->texturecontainer[i]) {
 				strcpy(obj->originaltextures + 256 * i, obj->texturecontainer[i]->m_texName.string().c_str());
-
+			}
 		}
 	}
 
-	if ((tex != NULL) && (obj->originaltextures != NULL))
-	{
-		for (size_t i = 0; i < obj->texturecontainer.size(); i++)
-		{
-			if ((strstr(obj->originaltextures + 256 * i, skintochange.string().c_str())))
-			{
+	if(tex != NULL && obj->originaltextures != NULL) {
+		for(size_t i = 0; i < obj->texturecontainer.size(); i++) {
+			if(strstr(obj->originaltextures + 256 * i, skintochange.string().c_str())) {
 				skintochange = obj->texturecontainer[i]->m_texName;
 				break;
 			}
 		}
 
 		TextureContainer * tex2 = TextureContainer::Find(skintochange);
-		if (tex2)
-		{
-			for (size_t i = 0; i < obj->texturecontainer.size(); i++)
-			{
-				if (obj->texturecontainer[i] == tex2)
+		if(tex2) {
+			for(size_t i = 0; i < obj->texturecontainer.size(); i++) {
+				if(obj->texturecontainer[i] == tex2) {
 					obj->texturecontainer[i] = tex;
+				}
 			}
 		}
 	}
@@ -144,12 +137,13 @@ long IsInSelection(const EERIE_3DOBJ * obj, long vert, long tw) {
 
 static long GetEquivalentVertex(const EERIE_3DOBJ * obj, const EERIE_VERTEX * vert) {
 	
-	for (size_t i = 0; i < obj->vertexlist.size(); i++)
-	{
-		if ((obj->vertexlist[i].v.x == vert->v.x)
-		        &&	(obj->vertexlist[i].v.y == vert->v.y)
-		        &&	(obj->vertexlist[i].v.z == vert->v.z))
+	for(size_t i = 0; i < obj->vertexlist.size(); i++) {
+		if(obj->vertexlist[i].v.x == vert->v.x
+		   && obj->vertexlist[i].v.y == vert->v.y
+		   && obj->vertexlist[i].v.z == vert->v.z
+		) {
 			return i;
+		}
 	}
 
 	return -1;
@@ -157,24 +151,25 @@ static long GetEquivalentVertex(const EERIE_3DOBJ * obj, const EERIE_VERTEX * ve
 
 static long ObjectAddVertex(EERIE_3DOBJ * obj, const EERIE_VERTEX * vert) {
 	
-	for (size_t i = 0; i < obj->vertexlist.size(); i++)
-	{
-		if ((obj->vertexlist[i].v.x == vert->v.x)  
-		        &&	(obj->vertexlist[i].v.y == vert->v.y) 
-		        &&	(obj->vertexlist[i].v.z == vert->v.z)) 
+	for(size_t i = 0; i < obj->vertexlist.size(); i++) {
+		if(obj->vertexlist[i].v.x == vert->v.x
+		   && obj->vertexlist[i].v.y == vert->v.y
+		   && obj->vertexlist[i].v.z == vert->v.z
+		) {
 			return i;
+		}
 	}
 
 	obj->vertexlist.push_back(*vert);
-	return (obj->vertexlist.size() - 1);
+	return obj->vertexlist.size() - 1;
 }
 
 static long GetActionPoint(const EERIE_3DOBJ * obj, const char * name) {
 	
-	if (!obj) return -1;
+	if(!obj)
+		return -1;
 
-	for (size_t n = 0; n < obj->actionlist.size(); n++)
-	{ // TODO iterator
+	for(size_t n = 0; n < obj->actionlist.size(); n++) { // TODO iterator
 		if(obj->actionlist[n].name == name) {
 			return obj->actionlist[n].idx;
 		}
@@ -185,30 +180,29 @@ static long GetActionPoint(const EERIE_3DOBJ * obj, const char * name) {
 
 static long ObjectAddFace(EERIE_3DOBJ * obj, const EERIE_FACE * face, const EERIE_3DOBJ * srcobj) {
 	
-	for (size_t i = 0; i < obj->facelist.size(); i++) // Check Already existing faces
-	{
-		if ((obj->vertexlist[obj->facelist[i].vid[0]].v.x == srcobj->vertexlist[face->vid[0]].v.x)
-		        &&	(obj->vertexlist[obj->facelist[i].vid[1]].v.x == srcobj->vertexlist[face->vid[1]].v.x)
-		        &&	(obj->vertexlist[obj->facelist[i].vid[2]].v.x == srcobj->vertexlist[face->vid[2]].v.x)
-		        &&	(obj->vertexlist[obj->facelist[i].vid[0]].v.y == srcobj->vertexlist[face->vid[0]].v.y)
-		        &&	(obj->vertexlist[obj->facelist[i].vid[1]].v.y == srcobj->vertexlist[face->vid[1]].v.y)
-		        &&	(obj->vertexlist[obj->facelist[i].vid[2]].v.y == srcobj->vertexlist[face->vid[2]].v.y)
-		        &&	(obj->vertexlist[obj->facelist[i].vid[0]].v.z == srcobj->vertexlist[face->vid[0]].v.z)
-		        &&	(obj->vertexlist[obj->facelist[i].vid[1]].v.z == srcobj->vertexlist[face->vid[1]].v.z)
-		        &&	(obj->vertexlist[obj->facelist[i].vid[2]].v.z == srcobj->vertexlist[face->vid[2]].v.z)
-		   )
-
+	// Check Already existing faces
+	for(size_t i = 0; i < obj->facelist.size(); i++) {
+		if(obj->vertexlist[obj->facelist[i].vid[0]].v.x == srcobj->vertexlist[face->vid[0]].v.x
+		   && obj->vertexlist[obj->facelist[i].vid[1]].v.x == srcobj->vertexlist[face->vid[1]].v.x
+		   && obj->vertexlist[obj->facelist[i].vid[2]].v.x == srcobj->vertexlist[face->vid[2]].v.x
+		   && obj->vertexlist[obj->facelist[i].vid[0]].v.y == srcobj->vertexlist[face->vid[0]].v.y
+		   && obj->vertexlist[obj->facelist[i].vid[1]].v.y == srcobj->vertexlist[face->vid[1]].v.y
+		   && obj->vertexlist[obj->facelist[i].vid[2]].v.y == srcobj->vertexlist[face->vid[2]].v.y
+		   && obj->vertexlist[obj->facelist[i].vid[0]].v.z == srcobj->vertexlist[face->vid[0]].v.z
+		   && obj->vertexlist[obj->facelist[i].vid[1]].v.z == srcobj->vertexlist[face->vid[1]].v.z
+		   && obj->vertexlist[obj->facelist[i].vid[2]].v.z == srcobj->vertexlist[face->vid[2]].v.z
+		) {
 			return -1;
+		}
 	}
 
-	long f0, f1, f2;
-	f0 = ObjectAddVertex(obj, &srcobj->vertexlist[face->vid[0]]);
-	f1 = ObjectAddVertex(obj, &srcobj->vertexlist[face->vid[1]]);
-	f2 = ObjectAddVertex(obj, &srcobj->vertexlist[face->vid[2]]);
+	long f0 = ObjectAddVertex(obj, &srcobj->vertexlist[face->vid[0]]);
+	long f1 = ObjectAddVertex(obj, &srcobj->vertexlist[face->vid[1]]);
+	long f2 = ObjectAddVertex(obj, &srcobj->vertexlist[face->vid[2]]);
 
-	if ((f1 == -1) || (f2 == -1) || (f0 == -1)) return -1;
+	if(f1 == -1 || f2 == -1 || f0 == -1)
+		return -1;
 
-	
 	obj->facelist.push_back(*face);
 
 	obj->facelist.back().vid[0] = (unsigned short)f0;
@@ -216,16 +210,17 @@ static long ObjectAddFace(EERIE_3DOBJ * obj, const EERIE_FACE * face, const EERI
 	obj->facelist.back().vid[2] = (unsigned short)f2;
 	obj->facelist.back().texid = 0; 
 
-	for (size_t i = 0; i < obj->texturecontainer.size(); i++)
-	{
-		if (0 <= face->texid && (size_t)face->texid < srcobj->texturecontainer.size() && obj->texturecontainer[i] == srcobj->texturecontainer[face->texid])
-		{
+	for(size_t i = 0; i < obj->texturecontainer.size(); i++) {
+		if(0 <= face->texid
+		   && (size_t)face->texid < srcobj->texturecontainer.size()
+		   && obj->texturecontainer[i] == srcobj->texturecontainer[face->texid]
+		) {
 			obj->facelist.back().texid = (short)i;
 			break;
 		}
 	}
 
-	return (obj->facelist.size() - 1);
+	return obj->facelist.size() - 1;
 }
 
 static long ObjectAddAction(EERIE_3DOBJ * obj, const string & name, long act,
@@ -258,27 +253,26 @@ static long ObjectAddAction(EERIE_3DOBJ * obj, const string & name, long act,
 
 long ObjectAddMap(EERIE_3DOBJ * obj, TextureContainer * tc) {
 	
-	if (tc == NULL) return -1;
+	if(tc == NULL)
+		return -1;
 
-	for (size_t i = 0; i < obj->texturecontainer.size(); i++)
-	{
-		if (obj->texturecontainer[i] == tc)
+	for(size_t i = 0; i < obj->texturecontainer.size(); i++) {
+		if(obj->texturecontainer[i] == tc)
 			return i;
 	}
 
 	obj->texturecontainer.push_back(tc);
 
-	return (obj->texturecontainer.size() - 1);
+	return obj->texturecontainer.size() - 1;
 }
 
 static void AddVertexToGroup(EERIE_3DOBJ * obj, long group, const EERIE_VERTEX * vert) {
 
-	for (size_t i = 0; i < obj->vertexlist.size(); i++)
-	{
-		if ((obj->vertexlist[i].v.x == vert->v.x)
-		        &&	(obj->vertexlist[i].v.y == vert->v.y)
-		        &&	(obj->vertexlist[i].v.z == vert->v.z))
-		{
+	for(size_t i = 0; i < obj->vertexlist.size(); i++) {
+		if(obj->vertexlist[i].v.x == vert->v.x
+		   && obj->vertexlist[i].v.y == vert->v.y
+		   && obj->vertexlist[i].v.z == vert->v.z
+		) {
 			AddVertexIdxToGroup(obj, group, i);
 		}
 	}
@@ -297,9 +291,9 @@ void AddVertexIdxToGroup(EERIE_3DOBJ * obj, long group, long val) {
 
 static void ObjectAddSelection(EERIE_3DOBJ * obj, long numsel, long vidx) {
 	
-	for (size_t i = 0; i < obj->selections[numsel].selected.size(); i++)
-	{
-		if (obj->selections[numsel].selected[i] == vidx) return;
+	for(size_t i = 0; i < obj->selections[numsel].selected.size(); i++) {
+		if(obj->selections[numsel].selected[i] == vidx)
+			return;
 	}
 	
 	obj->selections[numsel].selected.push_back(vidx);
@@ -377,29 +371,26 @@ static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERI
 
 	// Now Retreives Tweak Action Points
 	{
-		long idx_head1, idx_head2;
-		long idx_torso1, idx_torso2;
+		long idx_head1 = GetActionPoint(obj1, "head2chest");
+		if(idx_head1 < 0)
+			return NULL;
 
-		idx_head1 = GetActionPoint(obj1, "head2chest");
+		long idx_head2 = GetActionPoint(obj2, "head2chest");
+		if(idx_head2 < 0)
+			return NULL;
 
-		if (idx_head1 < 0) return NULL;
+		long idx_torso1 = GetActionPoint(obj1, "chest2leggings");
+		if(idx_torso1 < 0)
+			return NULL;
 
-		idx_head2 = GetActionPoint(obj2, "head2chest");
-
-		if (idx_head2 < 0) return NULL;
-
-		idx_torso1 = GetActionPoint(obj1, "chest2leggings");
-
-		if (idx_torso1 < 0) return NULL;
-
-		idx_torso2 = GetActionPoint(obj2, "chest2leggings");
-
-		if (idx_torso2 < 0) return NULL;
+		long idx_torso2 = GetActionPoint(obj2, "chest2leggings");
+		if(idx_torso2 < 0)
+			return NULL;
 	}
 
 	// copy vertices
-	vector<EERIE_VERTEX> obj1vertexlist2 = obj1->vertexlist;
-	vector<EERIE_VERTEX> obj2vertexlist2 = obj2->vertexlist;
+	std::vector<EERIE_VERTEX> obj1vertexlist2 = obj1->vertexlist;
+	std::vector<EERIE_VERTEX> obj2vertexlist2 = obj2->vertexlist;
 
 	// Work will contain the Tweaked object
 	EERIE_3DOBJ * work = new EERIE_3DOBJ();
@@ -410,8 +401,8 @@ static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERI
 	work->ident = obj1->ident;
 
 	// We reset all data to create a fresh object
-	memcpy(&work->cub, &obj1->cub, sizeof(CUB3D));
-	memcpy(&work->quat, &obj1->quat, sizeof(EERIE_QUAT));
+	work->cub = obj1->cub;
+	work->quat = obj1->quat;
 
 	// Linked objects are linked to this object.
 	if(obj1->nblinked > obj2->nblinked) {
@@ -438,24 +429,28 @@ static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERI
 
 	// Recreate Action Points included in work object.for Obj1
 	for(size_t i = 0; i < obj1->actionlist.size(); i++) {
-		if(IsInSelection(obj1, obj1->actionlist[i].idx, iw1) != -1
-				|| IsInSelection(obj1, obj1->actionlist[i].idx, jw1) != -1
-		        || obj1->actionlist[i].name == "head2chest"
-				|| obj1->actionlist[i].name == "chest2leggings"
+		const EERIE_ACTIONLIST & action = obj1->actionlist[i];
+
+		if(IsInSelection(obj1, action.idx, iw1) != -1
+				|| IsInSelection(obj1, action.idx, jw1) != -1
+				|| action.name == "head2chest"
+				|| action.name == "chest2leggings"
 		) {
-			ObjectAddAction(work, obj1->actionlist[i].name, obj1->actionlist[i].act,
-			                obj1->actionlist[i].sfx, &obj1vertexlist2[obj1->actionlist[i].idx]);
+			ObjectAddAction(work, action.name, action.act,
+							action.sfx, &obj1vertexlist2[action.idx]);
 		}
 	}
 
 	// Do the same for Obj2
 	for(size_t i = 0; i < obj2->actionlist.size(); i++) {
-		if(IsInSelection(obj2, obj2->actionlist[i].idx, tw2) != -1
-		        || obj2->actionlist[i].name == "head2chest"
-				|| obj2->actionlist[i].name == "chest2leggings"
+		const EERIE_ACTIONLIST & action = obj2->actionlist[i];
+
+		if(IsInSelection(obj2, action.idx, tw2) != -1
+				|| action.name == "head2chest"
+				|| action.name == "chest2leggings"
 		) {
-			ObjectAddAction(work, obj2->actionlist[i].name, obj2->actionlist[i].act,
-			                obj2->actionlist[i].sfx, &obj2vertexlist2[obj2->actionlist[i].idx]);
+			ObjectAddAction(work, action.name, action.act,
+							action.sfx, &obj2vertexlist2[action.idx]);
 		}
 	}
 
@@ -480,38 +475,42 @@ static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERI
 	TextureContainer * tc = NULL;
 
 	for(size_t i = 0; i < obj1->facelist.size(); i++) {
-		if(((IsInSelection(obj1, obj1->facelist[i].vid[0], iw1) != -1)
-		        ||	(IsInSelection(obj1, obj1->facelist[i].vid[0], jw1) != -1))
-		        &&	((IsInSelection(obj1, obj1->facelist[i].vid[1], iw1) != -1)
-		             ||	(IsInSelection(obj1, obj1->facelist[i].vid[1], jw1) != -1))
-		        &&	((IsInSelection(obj1, obj1->facelist[i].vid[2], iw1) != -1)
-		             ||	(IsInSelection(obj1, obj1->facelist[i].vid[2], jw1) != -1))
+		const EERIE_FACE & face = obj1->facelist[i];
+
+		if(((IsInSelection(obj1, face.vid[0], iw1) != -1)
+				||	(IsInSelection(obj1, face.vid[0], jw1) != -1))
+				&&	((IsInSelection(obj1, face.vid[1], iw1) != -1)
+					 ||	(IsInSelection(obj1, face.vid[1], jw1) != -1))
+				&&	((IsInSelection(obj1, face.vid[2], iw1) != -1)
+					 ||	(IsInSelection(obj1, face.vid[2], jw1) != -1))
 		) {
-			if(obj1->facelist[i].texid != -1) {
-				if(tc != obj1->texturecontainer[obj1->facelist[i].texid]) {
-					tc = obj1->texturecontainer[obj1->facelist[i].texid];
+			if(face.texid != -1) {
+				if(tc != obj1->texturecontainer[face.texid]) {
+					tc = obj1->texturecontainer[face.texid];
 					ObjectAddMap(work, tc);
 				}
 			}
 
-			ObjectAddFace(work, &obj1->facelist[i], obj1);
+			ObjectAddFace(work, &face, obj1);
 		}
 	}
 
 	for(size_t i = 0; i < obj2->facelist.size(); i++) {
-		if(IsInSelection(obj2, obj2->facelist[i].vid[0], tw2) != -1
-		   || IsInSelection(obj2, obj2->facelist[i].vid[1], tw2) != -1
-		   || IsInSelection(obj2, obj2->facelist[i].vid[2], tw2) != -1
+		const EERIE_FACE & face = obj2->facelist[i];
+
+		if(IsInSelection(obj2, face.vid[0], tw2) != -1
+		   || IsInSelection(obj2, face.vid[1], tw2) != -1
+		   || IsInSelection(obj2, face.vid[2], tw2) != -1
 		) {
 
-			if(obj2->facelist[i].texid != -1) {
-				if(tc != obj2->texturecontainer[obj2->facelist[i].texid]) {
-					tc = obj2->texturecontainer[obj2->facelist[i].texid];
+			if(face.texid != -1) {
+				if(tc != obj2->texturecontainer[face.texid]) {
+					tc = obj2->texturecontainer[face.texid];
 					ObjectAddMap(work, tc);
 				}
 			}
 
-			ObjectAddFace(work, &obj2->facelist[i], obj2);
+			ObjectAddFace(work, &face, obj2);
 		}
 	}
 

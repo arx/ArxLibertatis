@@ -106,33 +106,49 @@ struct EERIE_SPHERE {
 };
 
 struct EERIE_2D_BBOX {
+	
 	Vec2f min;
 	Vec2f max;
-
+	
 	void reset() {
-		min.y = min.x = 32000;
-		max.y = max.x = -32000;
+		min = Vec2f(32000);
+		max = Vec2f(-32000);
 	}
-
+	
 	void add(const Vec3f & pos) {
 		min = glm::min(min, Vec2f(pos));
 		max = glm::max(max, Vec2f(pos));
 	}
+	
+	bool valid() const {
+		return (min.x <= max.x && min.y <= max.y);
+	}
+	
 };
 
 struct EERIE_3D_BBOX {
+	
 	Vec3f min;
 	Vec3f max;
-
+	
+	EERIE_3D_BBOX() { }
+	
+	EERIE_3D_BBOX(const Vec3f & min, const Vec3f & max) : min(min), max(max) { }
+	
 	void reset() {
 		min = Vec3f(99999999.f);
 		max = Vec3f(-99999999.f);
 	}
-
+	
 	void add(const Vec3f & pos) {
 		min = glm::min(min, pos);
 		max = glm::max(max, pos);
 	}
+	
+	bool valid() const {
+		return (min.x <= max.x && min.y <= max.y && min.z <= max.z);
+	}
+	
 };
 
 enum Material {

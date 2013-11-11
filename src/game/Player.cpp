@@ -311,24 +311,20 @@ void ARX_PLAYER_ClickedOnTorch(Entity * io)
 }
 
 static void ARX_PLAYER_ManageTorch() {
+	
 	if(player.torch) {
+		
 		player.torch->ignition = 0;
 		player.torch->durability -= framedelay * ( 1.0f / 10000 );
-
+		
 		if(player.torch->durability <= 0) {
-			ARX_SPEECH_ReleaseIOSpeech(player.torch);
-			// Need To Kill timers
-			ARX_SCRIPT_Timer_Clear_By_IO(player.torch);
-			player.torch->show = SHOW_FLAG_KILLED;
-			player.torch->gameFlags &= ~GFLAG_ISINTREATZONE;
-			RemoveFromAllInventories(player.torch);
-			ARX_INTERACTIVE_DestroyDynamicInfo(player.torch);
 			ARX_SOUND_PlaySFX(SND_TORCH_END);
 			ARX_SOUND_Stop(SND_TORCH_LOOP);
-			ARX_INTERACTIVE_DestroyIO(player.torch);
+			player.torch->destroy();
 			player.torch = NULL;
 			DynLight[0].exist = 0;
 		}
+		
 	}
 }
 
@@ -1303,10 +1299,8 @@ void ARX_PLAYER_LoadHeroAnimsAndMesh(){
 	        &&	(EERIE_OBJECT_GetGroup(io->obj, "chest") != -1)
 	        &&	(EERIE_OBJECT_GetGroup(io->obj, "belt") != -1))
 	{
-		io->_npcdata->ex_rotate = (EERIE_EXTRA_ROTATE *)malloc(sizeof(EERIE_EXTRA_ROTATE));
+		io->_npcdata->ex_rotate = new EERIE_EXTRA_ROTATE();
 
-		if(io->_npcdata->ex_rotate)
-		{
 			io->_npcdata->ex_rotate->group_number[0] = (short)EERIE_OBJECT_GetGroup(io->obj, "head");
 			io->_npcdata->ex_rotate->group_number[1] = (short)EERIE_OBJECT_GetGroup(io->obj, "neck");
 			io->_npcdata->ex_rotate->group_number[2] = (short)EERIE_OBJECT_GetGroup(io->obj, "chest");
@@ -1318,7 +1312,6 @@ void ARX_PLAYER_LoadHeroAnimsAndMesh(){
 			}
 
 			io->_npcdata->ex_rotate->flags = 0;
-		}
 	}
 
 	ARX_INTERACTIVE_RemoveGoreOnIO(entities.player());
@@ -1963,6 +1956,8 @@ void ARX_PLAYER_Frame_Update()
 	Entity *io = entities.player();
 
 	if(io && io->_npcdata->ex_rotate) {
+		EERIE_EXTRA_ROTATE * extraRotation = io->_npcdata->ex_rotate;
+
 		float v = player.angle.getYaw();
 
 		if(v > 160)
@@ -1970,27 +1965,27 @@ void ARX_PLAYER_Frame_Update()
 
 		if(player.Interface & INTER_COMBATMODE) {
 			if (ARX_EQUIPMENT_GetPlayerWeaponType() == WEAPON_BOW) {
-				io->_npcdata->ex_rotate->group_rotate[0].setYaw(0); //head
-				io->_npcdata->ex_rotate->group_rotate[1].setYaw(0); //neck
-				io->_npcdata->ex_rotate->group_rotate[2].setYaw(0); //chest
-				io->_npcdata->ex_rotate->group_rotate[3].setYaw(v); //belt
+				extraRotation->group_rotate[0].setYaw(0); //head
+				extraRotation->group_rotate[1].setYaw(0); //neck
+				extraRotation->group_rotate[2].setYaw(0); //chest
+				extraRotation->group_rotate[3].setYaw(v); //belt
 			} else {
 				v *= ( 1.0f / 10 ); 
-				io->_npcdata->ex_rotate->group_rotate[0].setYaw(v); //head
-				io->_npcdata->ex_rotate->group_rotate[1].setYaw(v); //neck
-				io->_npcdata->ex_rotate->group_rotate[2].setYaw(v * 4); //chest
-				io->_npcdata->ex_rotate->group_rotate[3].setYaw(v * 4); //belt
+				extraRotation->group_rotate[0].setYaw(v); //head
+				extraRotation->group_rotate[1].setYaw(v); //neck
+				extraRotation->group_rotate[2].setYaw(v * 4); //chest
+				extraRotation->group_rotate[3].setYaw(v * 4); //belt
 			}
 		} else {
 			v *= ( 1.0f / 4 ); 
-			io->_npcdata->ex_rotate->group_rotate[0].setYaw(v); //head
-			io->_npcdata->ex_rotate->group_rotate[1].setYaw(v); //neck
-			io->_npcdata->ex_rotate->group_rotate[2].setYaw(v); //chest
-			io->_npcdata->ex_rotate->group_rotate[3].setYaw(v); //belt*/
+			extraRotation->group_rotate[0].setYaw(v); //head
+			extraRotation->group_rotate[1].setYaw(v); //neck
+			extraRotation->group_rotate[2].setYaw(v); //chest
+			extraRotation->group_rotate[3].setYaw(v); //belt*/
 		}
 
 		if((player.Interface & INTER_COMBATMODE) || player.doingmagic == 2)
-			io->_npcdata->ex_rotate->flags &= ~EXTRA_ROTATE_REALISTIC;
+			extraRotation->flags &= ~EXTRA_ROTATE_REALISTIC;
 	}
 
 	PLAYER_ARMS_FOCAL = static_cast<float>(CURRENT_BASE_FOCAL);
@@ -2754,8 +2749,8 @@ void ARX_PLAYER_Start_New_Quest() {
 	TSecondaryInventory = NULL;
 	ARX_EQUIPMENT_UnEquipAllPlayer();
 	
-	ARX_Changelevel_CurGame_Clear();
-
+	ARX_CHANGELEVEL_StartNew();
+	
 	entities.player()->halo.flags = 0;
 }
 

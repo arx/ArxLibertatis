@@ -274,7 +274,7 @@ float ARX_DAMAGES_DamagePlayer(float dmg, DamageType type, long source) {
 							} else if(source <= -1) {
 								killer = "none";
 							} else if(ValidIONum(source)) {
-								killer = entities[source]->long_name();
+								killer = entities[source]->idString();
 							}
 							SendIOScriptEvent(entities[i], SM_NULL, killer, "target_death");
 						}
@@ -504,7 +504,7 @@ void ARX_DAMAGES_ForceDeath(Entity * io_dead, Entity * io_killer) {
 	ARX_SPEECH_ReleaseIOSpeech(io_dead);
 
 	//Kill all Timers...
-	ARX_SCRIPT_Timer_Clear_By_IO(io_dead);
+	ARX_SCRIPT_Timer_Clear_For_IO(io_dead);
 
 	if(io_dead->mainevent != "dead") {
 		if(SendIOScriptEvent(io_dead, SM_DIE) != REFUSE && ValidIOAddress(io_dead)) {
@@ -533,7 +533,7 @@ void ARX_DAMAGES_ForceDeath(Entity * io_dead, Entity * io_killer) {
 		killer = "player";
 	} else {
 		if(io_killer)
-			killer = io_killer->long_name();
+			killer = io_killer->idString();
 	}
 
 	for(size_t i = 1; i < entities.size(); i++) {
@@ -561,7 +561,6 @@ void ARX_DAMAGES_ForceDeath(Entity * io_dead, Entity * io_killer) {
 		}
 	}
 
-	IO_UnlinkAllLinkedObjects(io_dead);
 	io_dead->animlayer[1].cur_anim = NULL;
 	io_dead->animlayer[2].cur_anim = NULL;
 	io_dead->animlayer[3].cur_anim = NULL;

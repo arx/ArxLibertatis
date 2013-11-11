@@ -47,12 +47,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <string>
 
 #include "core/Application.h"
+#include "graphics/Renderer.h"
 #include "window/Window.h"
 #include "window/RenderWindow.h"
 
 class Font;
 
-class ArxGame : public Application, public Window::Listener, public RenderWindow::RendererListener {
+class ArxGame : public Application, public Window::Listener, public Renderer::Listener {
 	
 protected:
 	
@@ -92,15 +93,6 @@ public:
 	bool finalCleanup();
 	virtual void cleanup3DEnvironment();
 	
-	/*!
-	 * Writes text to the window
-	 * @param x The x coordinate for the text
-	 * @param y The y coordinate for the text
-	 * @param str The string of text to be written
-	 */
-	virtual void outputText(int x, int y, const std::string & str);
-	virtual void outputTextGrid(float x, float y, const std::string &text, const Color &color);
-	
 private:
 	void updateTime();
 	void updateInput();
@@ -124,20 +116,18 @@ private:
 
 	
 	virtual void onWindowGotFocus(const Window & window);
-	virtual void onWindowLostFocus(const Window & window);
 	virtual void onResizeWindow(const Window & window);
-	virtual void onPaintWindow(const Window & window);
 	virtual void onDestroyWindow(const Window & window);
 	virtual void onToggleFullscreen(const Window & window);
 	
 	bool wasResized;
 	
-	void onRendererInit(RenderWindow &);
-	void onRendererShutdown(RenderWindow &);
+	void onRendererInit(Renderer &);
+	void onRendererShutdown(Renderer &);
 	
 	bool initWindow(RenderWindow * window);
 	
-	void setFullscreen(bool fullscreen);
+	void setWindowSize(bool fullscreen);
 };
 
 #endif // ARX_CORE_ARXGAME_H

@@ -253,6 +253,4 @@ void ARX_INVENTORY_IdentifyAll();
 void ARX_INVENTORY_OpenClose(Entity * io);
 void ARX_INVENTORY_TakeAllFromSecondaryInventory();
 
-void IO_Drop_Item(Entity * io_src, Entity * io);
-
 #endif // ARX_GAME_INVENTORY_H

@@ -63,9 +63,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "gui/Interface.h"
 
+#include "scene/ChangeLevel.h"
 #include "scene/GameSound.h"
 #include "scene/Interactive.h"
 #include "scene/Light.h"
+#include "scene/LinkedObject.h"
 #include "scene/LoadLevel.h"
 
 extern Entity * pIOChangeWeapon;
@@ -203,22 +205,6 @@ Entity::~Entity() {
 	
 	cleanReferences();
 	
-	if(!FAST_RELEASE) {
-		TREATZONE_RemoveIO(this);
-	}
-	
-	if(ignit_light > -1) {
-		DynLight[ignit_light].exist = 0, ignit_light = -1;
-	}
-	
-	if(ignit_sound != audio::INVALID_ID) {
-		ARX_SOUND_Stop(ignit_sound), ignit_sound = audio::INVALID_ID;
-	}
-	
-	if(FlyingOverIO == this) {
-		FlyingOverIO = NULL;
-	}
-	
 	if((MasterCamera.exist & 1) && MasterCamera.io == this) {
 		MasterCamera.exist = 0;
 	}
@@ -227,12 +213,8 @@ Entity::~Entity() {
 		MasterCamera.exist = 0;
 	}
 	
-	ARX_INTERACTIVE_DestroyDynamicInfo(this);
-	IO_UnlinkAllLinkedObjects(this);
-	
 	// Releases ToBeDrawn Transparent Polys linked to this object !
 	tweaks.clear();
-	ARX_SCRIPT_Timer_Clear_For_IO(this);
 	
 	if(obj && !(ioflags & IO_CAMERA) && !(ioflags & IO_MARKER) && !(ioflags & IO_GOLD)) {
 		delete obj, obj = NULL;
@@ -242,8 +224,6 @@ Entity::~Entity() {
 	
 	delete tweakerinfo;
 	delete tweaky, tweaky = NULL;
-	
-	RemoveFromAllInventories(this);
 	
 	ReleaseScript(&script);
 	ReleaseScript(&over_script);
@@ -297,23 +277,20 @@ Entity::~Entity() {
 		entities.remove(m_index);
 	}
 	
-	if(pIOChangeWeapon == this) {
-		pIOChangeWeapon = NULL; // TODO we really need a proper weak_ptr
-	}
 }
 
-std::string Entity::short_name() const {
+std::string Entity::className() const {
 	return m_classPath.filename();
 }
 
-std::string Entity::long_name() const {
+std::string Entity::idString() const {
 	std::stringstream ss;
-	ss << short_name() << '_' << std::setw(4) << std::setfill('0') << ident;
+	ss << className() << '_' << std::setw(4) << std::setfill('0') << ident;
 	return ss.str();
 }
 
-res::path Entity::full_name() const {
-	return m_classPath.parent() / long_name();
+res::path Entity::instancePath() const {
+	return m_classPath.parent() / idString();
 }
 
 void Entity::cleanReferences() {
@@ -322,16 +299,74 @@ void Entity::cleanReferences() {
 		Set_DragInter(NULL);
 	}
 	
-}
-
-void Entity::destroy() {
+	if(FlyingOverIO == this) {
+		FlyingOverIO = NULL;
+	}
 	
-	if(scriptload) {
-		delete this;
-	} else {
-		show = SHOW_FLAG_KILLED;
-		cleanReferences();
+	if(COMBINE == this) {
+		COMBINE = NULL;
+	}
+	
+	if(pIOChangeWeapon == this) {
+		pIOChangeWeapon = NULL; // TODO we really need a proper weak_ptr
+	}
+	
+	if(!FAST_RELEASE) {
+		TREATZONE_RemoveIO(this);
+	}
+	gameFlags &= ~GFLAG_ISINTREATZONE;
+	
+	ARX_INTERACTIVE_DestroyDynamicInfo(this);
+	
+	RemoveFromAllInventories(this);
+	
+	ARX_SCRIPT_Timer_Clear_For_IO(this);
+	
+	ARX_SPELLS_FizzleAllSpellsFromCaster(index());
+	
+	if(ignit_light > -1) {
+		DynLight[ignit_light].exist = 0, ignit_light = -1;
+	}
+	
+	if(ignit_sound != audio::INVALID_ID) {
+		ARX_SOUND_Stop(ignit_sound), ignit_sound = audio::INVALID_ID;
 	}
 	
 }
 
+void Entity::destroy() {
+	
+	if(ident > 0 && !(ioflags & IO_NOSAVE)) {
+		if(scriptload) {
+			// In case we previously saved this entity...
+			currentSavedGameRemoveEntity(idString());
+		} else {
+			currentSavedGameStoreEntityDeletion(idString());
+		}
+	}
+	
+	if(obj) {
+		while(obj->nblinked) {
+			if(obj->linked[0].lgroup != -1 && obj->linked[0].obj) {
+				Entity * linked = obj->linked[0].io;
+				if(linked && ValidIOAddress(linked)) {
+					EERIE_LINKEDOBJ_UnLinkObjectFromObject(obj, linked->obj);
+					linked->destroy();
+				}
+			}
+		}
+	}
+	
+	delete this;
+	
+}
+
+void Entity::destroyOne() {
+	
+	if((ioflags & IO_ITEM) && _itemdata->count > 1) {
+		_itemdata->count--;
+	} else {
+		destroy();
+	}
+	
+}

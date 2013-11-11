@@ -36,14 +36,10 @@ public:
 	OpenGLRenderer();
 	~OpenGLRenderer();
 	
-	void Initialize();
+	void initialize();
 	
-	void shutdown();
-	void reinit();
-	
-	// Scene begin/end...
-	void BeginScene();
-	void EndScene();
+	void beforeResize(bool wasOrIsFullscreen);
+	void afterResize();
 	
 	// Matrices
 	void SetViewMatrix(const EERIEMATRIX & matView);
@@ -107,9 +103,10 @@ public:
 		return reinterpret_cast<GLTextureStage *>(Renderer::GetTextureStage(textureStage));
 	}
 	
-	inline bool isInitialized() { return initialized; }
-	
 private:
+	
+	void shutdown();
+	void reinit();
 	
 	bool useVertexArrays;
 	bool useVBOs;
@@ -145,8 +142,6 @@ private:
 	
 	typedef boost::intrusive::list<GLTexture2D, boost::intrusive::constant_time_size<false> > TextureList;
 	TextureList textures;
-
-	bool initialized;
 
 	// State cache...
 	void resetStateCache();

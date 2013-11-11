@@ -23,6 +23,18 @@
 
 #include <boost/foreach.hpp>
 
+bool DisplayMode::operator<(const DisplayMode & o) const {
+	if(resolution.x != o.resolution.x) {
+		return (resolution.x < o.resolution.x);
+	} else {
+		return (resolution.y < o.resolution.y);
+	}
+}
+
+std::ostream & operator<<(std::ostream & os, const DisplayMode & mode) {
+	return os << mode.resolution.x << 'x' << mode.resolution.y;
+}
+
 void Window::Listener::onCreateWindow( const Window & /*window*/ ) {}
 bool Window::Listener::onCloseWindow( const Window & /*window*/ ) { return true; }
 void Window::Listener::onDestroyWindow( const Window & /*window*/ ) {}
@@ -37,29 +49,30 @@ void Window::Listener::onWindowLostFocus( const Window & /*window*/ ) {}
 void Window::Listener::onPaintWindow( const Window & /*window*/ ) {}
 
 Window::Window()
-	: position_(0, 0)
-	, size_(640, 480)
-	, isMinimized_(false)
-	, isMaximized_(false)
-	, isVisible_(false)
-	, isFullscreen_(false)
-	, hasFocus_(false) { }
+	: m_position(0, 0)
+	, m_size(640, 480)
+	, m_minimized(false)
+	, m_maximized(false)
+	, m_visible(false)
+	, m_fullscreen(false)
+	, m_focused(false)
+	{ }
 
 Window::~Window() { }
 
 void Window::addListener(Listener * listener) {
-	listeners.push_back(listener);
+	m_listeners.push_back(listener);
 }
 
 void Window::removeListener(Listener * listener) {
-	Listeners::iterator it = std::find(listeners.begin(), listeners.end(), listener);
-	if(it != listeners.end()) {
-		listeners.erase(it);
+	Listeners::iterator it = std::find(m_listeners.begin(), m_listeners.end(), listener);
+	if(it != m_listeners.end()) {
+		m_listeners.erase(it);
 	}
 }
 
 bool Window::onClose() {
-	BOOST_FOREACH(Listener * listener, listeners) {
+	BOOST_FOREACH(Listener * listener, m_listeners) {
 		bool shouldClose = listener->onCloseWindow(*this);
 		if(!shouldClose) {
 			return false;
@@ -69,77 +82,78 @@ bool Window::onClose() {
 }
 
 void Window::onCreate() {
-	BOOST_FOREACH(Listener * listener, listeners) {
+	BOOST_FOREACH(Listener * listener, m_listeners) {
 		listener->onCreateWindow(*this);
 	}
 }
 
 void Window::onDestroy() {
-	BOOST_FOREACH(Listener * listener, listeners) {
+	BOOST_FOREACH(Listener * listener, m_listeners) {
 		listener->onDestroyWindow(*this);
 	}
 }
 
 void Window::onMove(s32 x, s32 y) {
-	position_ = Vec2i(x, y);
-	BOOST_FOREACH(Listener * listener, listeners) {
+	m_position = Vec2i(x, y);
+	BOOST_FOREACH(Listener * listener, m_listeners) {
 		listener->onMoveWindow(*this);
 	}
 }
 
-void Window::onResize(s32 width, s32 height) {
-	size_ = Vec2i(width, height);
-	BOOST_FOREACH(Listener * listener, listeners) {
+void Window::onResize(const Vec2i & size) {
+	m_size = size;
+	BOOST_FOREACH(Listener * listener, m_listeners) {
 		listener->onResizeWindow(*this);
 	}
 }
 
 void Window::onMinimize() {
-	isMinimized_ = true, isMaximized_ = false;
-	BOOST_FOREACH(Listener * listener, listeners) {
+	m_minimized = true, m_maximized = false;
+	BOOST_FOREACH(Listener * listener, m_listeners) {
 		listener->onMinimizeWindow(*this);
 	}
 }
 	
 void Window::onMaximize() {
-	isMinimized_ = false, isMaximized_ = true;
-	BOOST_FOREACH(Listener * listener, listeners) {
+	m_minimized = false, m_maximized = true;
+	BOOST_FOREACH(Listener * listener, m_listeners) {
 		listener->onMaximizeWindow(*this);
 	}
 }
 
 void Window::onRestore() {
-	isMinimized_ = false, isMaximized_ = false;
-	BOOST_FOREACH(Listener * listener, listeners) {
+	m_minimized = false, m_maximized = false;
+	BOOST_FOREACH(Listener * listener, m_listeners) {
 		listener->onRestoreWindow(*this);
 	}
 }
 
 void Window::onShow(bool isVisible) {
-	isVisible_ = isVisible;
+	m_visible = isVisible;
 }
 	
-void Window::onToggleFullscreen() {
-	BOOST_FOREACH(Listener * listener, listeners) {
+void Window::onToggleFullscreen(bool fullscreen) {
+	m_fullscreen = fullscreen;
+	BOOST_FOREACH(Listener * listener, m_listeners) {
 		listener->onToggleFullscreen(*this);
 	}
 }
 	
 void Window::onFocus(bool hasFocus) {
-	hasFocus_ = hasFocus;
+	m_focused = hasFocus;
 	if(hasFocus) {
-		BOOST_FOREACH(Listener * listener, listeners) {
+		BOOST_FOREACH(Listener * listener, m_listeners) {
 			listener->onWindowGotFocus(*this);
 		}
 	} else {
-		BOOST_FOREACH(Listener * listener, listeners) {
+		BOOST_FOREACH(Listener * listener, m_listeners) {
 			listener->onWindowLostFocus(*this);
 		}
 	}
 }
 
 void Window::onPaint() {
-	BOOST_FOREACH(Listener * listener, listeners) {
+	BOOST_FOREACH(Listener * listener, m_listeners) {
 		listener->onPaintWindow(*this);
 	}
 }

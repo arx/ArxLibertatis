@@ -349,7 +349,6 @@ bool g_debugToggles[10];
 //-----------------------------------------------------------------------------
 
 void LoadSysTextures();
-void ShowFPS();
 void ManageNONCombatModeAnimations();
 
 //-----------------------------------------------------------------------------
@@ -1480,12 +1479,6 @@ void SetEditMode(long ed, const bool stop_sound) {
 		player.life = 0.1f;
 	}
 	
-	BOOST_FOREACH(Entity * e, entities) {
-		if(e && (e->show == SHOW_FLAG_HIDDEN || e->show == SHOW_FLAG_KILLED)) {
-			e->show = SHOW_FLAG_IN_SCENE;
-		}
-	}
-
 	RestoreAllLightsInitialStatus();
 
 	if (stop_sound) ARX_SOUND_MixerStop(ARX_SOUND_MixerGame);
@@ -1537,7 +1530,7 @@ void ReleaseDanaeBeforeRun() {
 	delete markerobj, markerobj = NULL;
 	delete arrowobj, arrowobj = NULL;
 	
-	DrawDebugRelease();
+	drawDebugRelease();
 
 	BOOST_FOREACH(EERIE_3DOBJ * & obj, GoldCoinsObj) {
 		delete obj, obj = NULL;
@@ -1864,7 +1857,7 @@ long Player_Arrow_Count() {
 				for(size_t i = 0; i < INVENTORY_X; i++) {
 					Entity * io = inventory[iNbBag][i][j].io;
 					if(io) {
-						if(io->short_name() == "arrows") {
+						if(io->className() == "arrows") {
 							if(io->durability >= 1.f) {
 								count += checked_range_cast<long>(io->durability);
 							}
@@ -1886,7 +1879,7 @@ Entity * Player_Arrow_Count_Decrease() {
 		for(size_t j = 0; j < INVENTORY_Y; j++) {
 			for(size_t i = 0; i < INVENTORY_X; i++) {
 				Entity * ioo = inventory[iNbBag][i][j].io;
-				if(ioo && ioo->short_name() == "arrows" && ioo->durability >= 1.f) {
+				if(ioo && ioo->className() == "arrows" && ioo->durability >= 1.f) {
 					if(!io || io->durability > ioo->durability)
 						io = ioo;
 				}
@@ -2276,9 +2269,8 @@ void ManageCombatModeAnimations()
 
 					ARX_DAMAGES_DurabilityLoss(ioo, 1.f);
 
-					if(ValidIOAddress(ioo)) {
-						if(ioo->durability <= 0.f)
-							ARX_INTERACTIVE_DestroyIO(ioo);
+					if(ValidIOAddress(ioo) && ioo->durability <= 0.f) {
+						ioo->destroyOne();
 					}
 				}
 
@@ -2666,7 +2658,7 @@ void DANAE_StartNewQuest()
 	char loadfrom[256];
 	sprintf(loadfrom, "graph/levels/level1/level1.dlf");
 	DONT_ERASE_PLAYER=1;
-	DanaeClearAll();
+	DanaeClearLevel();
 	PROGRESS_BAR_COUNT+=2.f;
 	LoadLevelScreen();
 	DanaeLoadLevel(loadfrom);
@@ -2929,20 +2921,28 @@ void AdjustMousePosition()
 	}
 }
 
-void ShowTestText()
-{
+void ShowTestText() {
+	
 	char tex[256];
-
-	mainApp->outputText(0, 16, arx_version);
-
-	sprintf(tex,"Level : %s", LastLoadedScene.string().c_str());
-	hFontDebug->draw(0, 32, tex, Color::white);
-
-	sprintf(tex,"Position : %5.0f %5.0f %5.0f",player.pos.x,player.pos.y,player.pos.z);
-	hFontDebug->draw(0, 48, tex, Color::white);
-
-	sprintf( tex,"Last Failed Sequence : %s",LAST_FAILED_SEQUENCE.c_str() );
-	hFontDebug->draw(0, 64, tex, Color::white);
+	
+	Vec2i pos(10, 10);
+	s32 lineOffset = hFontDebug->getLineHeight() + 2;
+	
+	hFontDebug->draw(pos, arx_version, Color::red + Color::green);
+	pos.y += lineOffset;
+	
+	sprintf(tex, "Level: %s", LastLoadedScene.string().c_str());
+	hFontDebug->draw(pos, tex, Color::white);
+	pos.y += lineOffset;
+	
+	sprintf(tex, "Position: %5.0f %5.0f %5.0f",player.pos.x,player.pos.y,player.pos.z);
+	hFontDebug->draw(pos, tex, Color::white);
+	pos.y += lineOffset;
+	
+	sprintf(tex, "Last Failed Sequence: %s", LAST_FAILED_SEQUENCE.c_str());
+	hFontDebug->draw(pos, tex, Color::white);
+	pos.y += lineOffset;
+	
 }
 
 extern float CURRENT_PLAYER_COLOR;
@@ -3008,7 +3008,7 @@ void ShowInfoText() {
 				ScriptEvent::totalCount, ARX_SCRIPT_CountTimers());
 	} else {
 		sprintf(tex, "Events %ld (IOmax %s %d) Timers %ld",
-				ScriptEvent::totalCount, io->long_name().c_str(),
+				ScriptEvent::totalCount, io->idString().c_str(),
 				io->stat_count, ARX_SCRIPT_CountTimers());
 	}
 	hFontDebug->draw(70, 94, tex, Color::white);
@@ -3016,7 +3016,7 @@ void ShowInfoText() {
 	io = ARX_SCRIPT_Get_IO_Max_Events_Sent();
 
 	if(io) {
-		sprintf(tex, "Max SENDER %s %d)", io->long_name().c_str(), io->stat_sent);
+		sprintf(tex, "Max SENDER %s %d)", io->idString().c_str(), io->stat_sent);
 		hFontDebug->draw(70, 114, tex, Color::white);
 	}
 
@@ -3099,21 +3099,10 @@ void ShowInfoText() {
 	ARX_SCRIPT_Init_Event_Stats();
 }
 
-void ShowFpsGraph();
 void ShowFPS() {
-
-	// TODO: make sure when adding text that it can fit here
-	// - this is extremely naughty, should use a std::string
-	char tex[32];
-	sprintf(tex, "%.02f fps", FPS);
-
-	// top left
-	mainApp->outputTextGrid(0.0f, 0.0f, tex);
-
-	// bottom right
-	//mainApp->outputTextGrid(-0.5f, -1, tex);
-
-	ShowFpsGraph();
+	std::ostringstream oss;
+	oss << std::fixed << std::setprecision(2) << FPS << " FPS";
+	hFontDebug->draw(Vec2i(10, 10), oss.str(), Color::white);
 }
 
 void ShowDebugToggles() {
@@ -3158,40 +3147,49 @@ void ShowFpsGraph() {
 		vertices[i].p.z = 1.0f;
 		vertices[i].rhw = 1.0f;
 	}
-
+	avg /= lastFPSArray.size();
+	
 	EERIEDRAWPRIM(Renderer::LineStrip, &vertices[0], vertices.size());
-
-	{
-		avg /= lastFPSArray.size();
-		float avgPos = windowSize.y - (avg * SCALE_Y);
 	
-		std::stringstream ss;
-		ss << "Average: " << std::fixed << std::setprecision(2) << avg << " FPS";
+	Color avgColor = Color::blue * 0.5f + Color::white * 0.5f;
+	float avgPos = windowSize.y - (avg * SCALE_Y);
+	EERIEDraw2DLine(0, avgPos,  windowSize.x, avgPos, 1.0f, Color::blue);
 	
-		Vec2i strPos = Vec2i(windowSize.x - hFontDebug->getTextSize(ss.str()).x - 5,avgPos - hFontDebug->getLineHeight());
-		hFontDebug->draw(strPos, ss.str(), Color::blue);
-		EERIEDraw2DLine(0, avgPos,  windowSize.x, avgPos, 1.0f, Color::blue);
+	Color worstColor = Color::red * 0.5f + Color::white * 0.5f;
+	float worstPos = windowSize.y - (worst * SCALE_Y);
+	EERIEDraw2DLine(0, worstPos,  windowSize.x, worstPos, 1.0f, Color::red);
+	
+	Font * font = hFontDebug;
+	float lineOffset = font->getLineHeight() + 2;
+	
+	std::string labels[3] = { "Average: ", "Worst: ", "Current: " };
+	Color colors[3] = { avgColor, worstColor, Color::white };
+	float values[3] = { avg, worst, lastFPSArray[0] };
+	
+	std::string texts[3];
+	float widths[3];
+	static float labelWidth = 0.f;
+	static float valueWidth = 0.f;
+	for(size_t i = 0; i < 3; i++) {
+		// Format value
+		std::ostringstream oss;
+		oss << std::fixed << std::setprecision(2) << values[i] << " FPS";
+		texts[i] = oss.str();
+		// Calculate widths (could be done more efficiently for monospace fonts...)
+		labelWidth = std::max(labelWidth, float(font->getTextSize(labels[i]).x));
+		widths[i] = font->getTextSize(texts[i]).x;
+		valueWidth = std::max(valueWidth, widths[i]);
 	}
-
-	{
-		float worstPos = windowSize.y - (worst * SCALE_Y);
-
-		std::stringstream ss;
-		ss << "Worst: " << std::fixed << std::setprecision(2) << worst << " FPS";
-		
-		Vec2i strPos = Vec2i(windowSize.x - hFontDebug->getTextSize(ss.str()).x - 5, worstPos - hFontDebug->getLineHeight());
-		hFontDebug->draw(strPos, ss.str(), Color::red);
-		EERIEDraw2DLine(0, worstPos,  windowSize.x, worstPos, 1.0f, Color::red);
+	
+	float x = 10;
+	float y = 10;
+	float xend = x + labelWidth + 10 + valueWidth;
+	for(size_t i = 0; i < 3; i++) {
+		font->draw(Vec2i(x, y), labels[i], Color::gray(0.8f));
+		font->draw(Vec2i(xend - widths[i], y), texts[i], colors[i]);
+		y += lineOffset;
 	}
-
-	{
-		float currentPos = windowSize.y - (lastFPSArray[0] * SCALE_Y);
-
-		std::stringstream ss;
-		ss << "Current: " << std::fixed << std::setprecision(2) << lastFPSArray[0] << " FPS";
-		Vec2i strPos = Vec2i(5, currentPos - hFontDebug->getLineHeight());
-		hFontDebug->draw(strPos, ss.str(), Color::white);
-	}
+	
 }
 
 void ARX_SetAntiAliasing() {
@@ -3215,7 +3213,7 @@ void ReleaseSystemObjects() {
 	delete markerobj, markerobj = NULL;
 	delete arrowobj, arrowobj = NULL;
 	
-	DrawDebugRelease();
+	drawDebugRelease();
 
 	BOOST_FOREACH(EERIE_3DOBJ * & obj, GoldCoinsObj) {
 		delete obj, obj = NULL;

@@ -208,13 +208,14 @@ void ARX_PATH_UpdateAllZoneInOutInside() {
 		for(long tt = 0; tt < f; tt++) {
 			long i = count;
 			Entity * io = entities[i];
+			
 
 			if(count < entities.size()
 			   && io
 			   && io->ioflags & (IO_NPC | IO_ITEM)
 			   && io->show != SHOW_FLAG_MEGAHIDE
-			   && io->show != SHOW_FLAG_DESTROYED
 			) {
+				arx_assert(io->show != SHOW_FLAG_DESTROYED);
 				ARX_PATH * p = ARX_PATH_CheckInZone(io);
 				ARX_PATH * op = io->inzone;
 
@@ -235,7 +236,7 @@ void ARX_PATH_UpdateAllZoneInOutInside() {
 						long t = entities.getById(op->controled);
 
 						if(t >= 0) {
-							string str = io->long_name() + ' ' + op->name;
+							string str = io->idString() + ' ' + op->name;
 							SendIOScriptEvent(entities[t], SM_CONTROLLEDZONE_LEAVE, str);
 						}
 					}
@@ -254,7 +255,7 @@ void ARX_PATH_UpdateAllZoneInOutInside() {
 							long t = entities.getById(p->controled);
 
 							if(t >= 0) {
-								string params = io->long_name() + ' ' + p->name;
+								string params = io->idString() + ' ' + p->name;
 								SendIOScriptEvent(entities[t], SM_CONTROLLEDZONE_ENTER, params);
 							}
 						}
@@ -266,7 +267,7 @@ void ARX_PATH_UpdateAllZoneInOutInside() {
 						long t = entities.getById(op->controled);
 
 						if(t >= 0) {
-							string str = io->long_name() + ' ' + op->name;
+							string str = io->idString() + ' ' + op->name;
 							SendIOScriptEvent(entities[t], SM_CONTROLLEDZONE_LEAVE, str);
 						}
 					}
@@ -278,7 +279,7 @@ void ARX_PATH_UpdateAllZoneInOutInside() {
 						long t = entities.getById(p->controled);
 
 						if(t >= 0) {
-							string str = io->long_name() + ' ' + p->name;
+							string str = io->idString() + ' ' + p->name;
 							SendIOScriptEvent(entities[t], SM_CONTROLLEDZONE_ENTER, str);
 						}
 					}
@@ -454,6 +455,11 @@ ARX_PATH * ARX_PATHS_ExistName(const string & name) {
 	return NULL;
 }
 
+Vec3f ARX_PATH::interpolateCurve(size_t i, float step) {
+	Vec3f p0 = pathways[i + 0].rpos, p1 = pathways[i + 1].rpos, p2 = pathways[i + 2].rpos;
+	return pos + p0 * (1 - step) + p1 * (step - square(step)) + p2 * square(step);
+}
+
 long ARX_PATHS_Interpolate(ARX_USE_PATH * aup, Vec3f * pos) {
 	
 	ARX_PATH * ap = aup->path;
@@ -518,11 +524,7 @@ long ARX_PATHS_Interpolate(ARX_USE_PATH * aup, Vec3f * pos) {
 					}
 					
 					float rel = tim / ap->pathways[targetwaypoint]._time;
-					float mull = square(rel);
-					
-					*pos = ap->pos + ap->pathways[targetwaypoint].rpos * mull;
-					*pos += ap->pathways[targetwaypoint - 1].rpos * (rel - mull);
-					*pos += ap->pathways[targetwaypoint - 2].rpos * (1 - rel);
+					*pos = ap->interpolateCurve(targetwaypoint - 2, rel);
 				}
 				
 				return targetwaypoint - 1;

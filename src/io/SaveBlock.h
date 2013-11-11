@@ -140,6 +140,11 @@ public:
 	 */
 	bool save(const std::string & name, const char * data, size_t size);
 	
+	/*!
+	 * Remove a file from the save block.
+	 */
+	void remove(const std::string & name);
+	
 	char * load(const std::string & name, size_t & size);
 	bool hasFile(const std::string & name) const;
 	

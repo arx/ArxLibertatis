@@ -481,14 +481,14 @@ void WriteIOInfo(Entity * io, const fs::path & dir) {
 		return;
 	}
 	
-	fs::path file = (dir / io->short_name()).set_ext("log");
+	fs::path file = (dir / io->className()).set_ext("log");
 	
 	fs::ofstream ofs(file, fs::fstream::out | fs::fstream::trunc);
 	if(!ofs.is_open()) {
 		return;
 	}
 	
-	ofs << "Object   : " << io->long_name() << std::endl;
+	ofs << "Object   : " << io->idString() << std::endl;
 	ofs << "_______________________________" << std::endl << std::endl;
 	ofs << "Level    : " << LastLoadedScene << std::endl;
 	ofs << "Position : x " << (io->initpos.x - Mscenepos.x)
@@ -515,12 +515,12 @@ void SaveIOScript(Entity * io, long fl) {
 				LogError << ("NO IDENT...");
 				return;
 			}
-			file = fs::paths.user / io->full_name().string();
+			file = fs::paths.user / io->instancePath().string();
 			if(!fs::is_directory(file)) {
 				LogError << "Local DIR don't Exists...";
 				return;
 			}
-			file /= io->short_name();
+			file /= io->className();
 			script = &io->over_script;
 			break;
 		}
@@ -571,8 +571,8 @@ Entity * LoadInter_Ex(const res::path & classPath, EntityInstance instance,
 	io->move = Vec3f_ZERO;
 	io->initangle = io->angle = angle;
 	
-	res::path tmp = io->full_name(); // Get the directory name to check for
-	string id = io->short_name();
+	res::path tmp = io->instancePath(); // Get the directory name to check for
+	string id = io->className();
 	if(PakDirectory * dir = resources->getDirectory(tmp)) {
 		if(PakFile * file = dir->getFile(id + ".asl")) {
 			loadScript(io->over_script, file);
@@ -1152,11 +1152,6 @@ void DanaeClearLevel(long flag)
 	TREATZONE_Clear();
 	
 	FAST_RELEASE = 0;
-}
-
-void DanaeClearAll()
-{
-	DanaeClearLevel();
 }
 
 void RestoreLastLoadedLightning()

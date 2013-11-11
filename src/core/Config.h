@@ -109,7 +109,6 @@ public:
 	struct {
 		
 		Vec2i resolution;
-		int bpp;
 		
 		bool fullscreen;
 		int levelOfDetail;
@@ -117,6 +116,7 @@ public:
 		bool showCrosshair;
 		bool antialiasing;
 		bool vsync;
+		
 	} video;
 	
 	// section 'window'
@@ -151,8 +151,6 @@ public:
 		bool autoDescription;
 		int mouseSensitivity;
 		bool linkMouseLookToUse;
-		
-		std::string backend;
 		
 	} input;
 	

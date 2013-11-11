@@ -234,9 +234,6 @@ void Credits::render() {
 	//We display them
 	if(CreditsData.iFontAverageHeight != -1) {
 		
-		//Set the device
-		GRenderer->BeginScene();
-		
 		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 		GRenderer->SetRenderState(Renderer::Fog, false);
 		GRenderer->SetRenderState(Renderer::DepthWrite, true);
@@ -304,8 +301,6 @@ void Credits::render() {
 			break;
 		}
 	}
-	
-	GRenderer->EndScene();
 	
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 	GRenderer->SetRenderState(Renderer::DepthTest, true);

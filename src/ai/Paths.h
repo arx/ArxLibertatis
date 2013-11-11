@@ -87,6 +87,7 @@ enum PathFlag {
 DECLARE_FLAGS(PathFlag, PathFlags)
 DECLARE_FLAGS_OPERATORS(PathFlags)
 
+// TODO this struct is used both for paths followed by NPCs and for zones
 struct ARX_PATH {
 	
 	ARX_PATH(const std::string & name, const Vec3f & pos);
@@ -111,6 +112,8 @@ struct ARX_PATH {
 	float amb_max_vol;
 	Vec3f bbmin;
 	Vec3f bbmax;
+	
+	Vec3f interpolateCurve(size_t i, float step);
 	
 };
 

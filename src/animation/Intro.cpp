@@ -123,12 +123,8 @@ void ARX_INTERFACE_ShowLogo(TextureContainer * logo) {
 	
 	GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer);
 	
-	GRenderer->BeginScene();
-	
 	GRenderer->SetRenderState(Renderer::Fog, false);
 	DrawCenteredImage(logo);
-	
-	GRenderer->EndScene();
 	
 	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
 	GRenderer->SetRenderState(Renderer::ColorKey, true);
@@ -185,8 +181,6 @@ void LoadLevelScreen(long num) {
 
 		GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer);
 		
-		GRenderer->BeginScene();
-		
 		GRenderer->SetRenderState(Renderer::DepthTest, true);
 		GRenderer->SetCulling(Renderer::CullNone);
 		GRenderer->SetRenderState(Renderer::DepthWrite, true);
@@ -232,7 +226,6 @@ void LoadLevelScreen(long num) {
 			EERIEDrawBitmap_uv(px, py, px2, py2, 0.f, pbar, Color::gray(1.0f), 0.f, 0.f, ratio, 1.f);
 		}
 		
-		GRenderer->EndScene();
 		mainApp->getWindow()->showFrame();
 		
 		OLD_PROGRESS_BAR_COUNT = PROGRESS_BAR_COUNT;

@@ -126,6 +126,9 @@ extern float Original_framedelay;
 extern EERIE_3DOBJ *arrowobj;
 extern void InitTileLights();
 
+//! Hide the quick save indicator
+static void hideQuickSaveIcon();
+
 long Manage3DCursor(long flags); // flags & 1 == simulation
 long IN_BOOK_DRAW=0;
 
@@ -145,10 +148,10 @@ struct ARX_INTERFACE_HALO_STRUCT
 	float fRatioY;
 };
 //-----------------------------------------------------------------------------
-#define GL_DECAL_ICONS		0
-#define BOOKMARKS_POS_X		216.f
-#define BOOKMARKS_POS_Y		60.f
-#define PAGE_CHAR_SIZE		4096
+static const int GL_DECAL_ICONS = 0;
+static const float BOOKMARKS_POS_X = 216.f;
+static const float BOOKMARKS_POS_Y = 60.f;
+static const int PAGE_CHAR_SIZE = 4096;
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
@@ -922,7 +925,7 @@ void GetInfosCombineWithIO(Entity * _pWithIO)
 	if(!COMBINE)
 		return;
 
-	std::string tcIndent = COMBINE->long_name();
+	std::string tcIndent = COMBINE->idString();
 
 		char tTxtCombineDest[256];
 
@@ -975,7 +978,7 @@ void GetInfosCombineWithIO(Entity * _pWithIO)
 									memcpy(tTxtCombineDest,pStartString,pEndString-pStartString);
 									tTxtCombineDest[pEndString-pStartString]=0;
 
-									if(tTxtCombineDest == COMBINE->short_name()) {
+									if(tTxtCombineDest == COMBINE->className()) {
 										//same class
 										bCanCombine=true;
 									}
@@ -1110,7 +1113,7 @@ void GetInfosCombineWithIO(Entity * _pWithIO)
 								memcpy(tTxtCombineDest,pStartString,pEndString-pStartString);
 								tTxtCombineDest[pEndString-pStartString]=0;
 
-								if(tTxtCombineDest == COMBINE->short_name()) {
+								if(tTxtCombineDest == COMBINE->className()) {
 									//same class
 									bCanCombine=true;
 								}
@@ -1831,10 +1834,10 @@ void ArxGame::manageEditorControls() {
 				SendIOScriptEvent(io, SM_COMBINE, "gold_coin");
 			} else {
 				if(io != COMBINE) {
-					std::string temp = COMBINE->long_name();
+					std::string temp = COMBINE->idString();
 					EVENT_SENDER=COMBINE;
 
-					if(boost::starts_with(COMBINE->short_name(), "keyring")) {
+					if(boost::starts_with(COMBINE->className(), "keyring")) {
 						ARX_KEYRING_Combine(io);
 					} else {
 						SendIOScriptEvent(io, SM_COMBINE, temp);
@@ -2899,6 +2902,7 @@ void ARX_INTERFACE_Reset()
 	CINEMASCOPE=0;
 	CINEMA_INC=0;
 	CINEMA_DECAL=0;
+	hideQuickSaveIcon();
 }
 
 //-----------------------------------------------------------------------------
@@ -5846,12 +5850,14 @@ void UpdateInventory() {
 //TODO This is for the inventory coordinates. Remember to recalculate on res change.
 bool InvCoordsCalculated = false;
 
-struct {
+struct InventoryGuiCoords {
 	float fCenterX;
 	float fSizY;
 	float posx;
 	float posy;
-} InvCoords;
+};
+
+InventoryGuiCoords InvCoords;
 
 void CalculateInventoryCoordinates() {
 	InvCoords.fCenterX = g_size.center().x + INTERFACE_RATIO(-320 + 35) + INTERFACE_RATIO_DWORD(ITC.Get("hero_inventory")->m_dwWidth) - INTERFACE_RATIO(32 + 3) ;
@@ -6116,11 +6122,13 @@ void DrawIcons() {
 	}
 }
 
-struct {
+struct HudChangeLevelIcon{
 	float x;
 	float y;
 	float vv;
-} ChangeLevelIcon;
+};
+
+HudChangeLevelIcon ChangeLevelIcon;
 
 void UpdateChangeLevelIcon() {
 	ChangeLevelIcon.x = g_size.width() - INTERFACE_RATIO_DWORD(ChangeLevel->m_dwWidth);
@@ -6140,6 +6148,52 @@ void DrawChangeLevelIcon() {
 			CHANGE_LEVEL_ICON = 200;
 		}
 	}
+}
+
+static const unsigned QUICK_SAVE_ICON_TIME = 1000; //!< Time in ms to show the icon
+static unsigned g_quickSaveIconTime = 0; //!< Remaining time for the quick sive icon
+
+void showQuickSaveIcon() {
+	g_quickSaveIconTime = QUICK_SAVE_ICON_TIME;
+}
+
+static void hideQuickSaveIcon() {
+	g_quickSaveIconTime = 0;
+}
+
+static void updateQuickSaveIcon() {
+	if(g_quickSaveIconTime) {
+		if(g_quickSaveIconTime > unsigned(framedelay)) {
+			g_quickSaveIconTime -= unsigned(framedelay);
+		} else {
+			g_quickSaveIconTime = 0;
+		}
+	}
+}
+
+static void drawQuickSaveIcon() {
+	
+	if(!g_quickSaveIconTime) {
+		return;
+	}
+	
+	// Flash the icon twice, starting at about 0.7 opacity
+	float step = 1.f - float(g_quickSaveIconTime) * (1.f / QUICK_SAVE_ICON_TIME);
+	float alpha = std::min(1.f, 0.6f * (EEsin(step * (7.f / 2.f * PI)) + 1.f));
+	
+	TextureContainer * tex = TextureContainer::LoadUI("graph/interface/icons/menu_main_save");
+	if(!tex) {
+		return;
+	}
+	
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+	GRenderer->SetBlendFunc(Renderer::BlendSrcColor, Renderer::BlendOne);
+	
+	float w = INTERFACE_RATIO_DWORD(tex->m_dwWidth);
+	float h = INTERFACE_RATIO_DWORD(tex->m_dwHeight);
+	EERIEDrawBitmap2(0, 0, w, h, 0.f, tex, Color::gray(alpha));
+	
+	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 }
 
 int MemorizedSpellCount;
@@ -6296,12 +6350,14 @@ void DrawMecanismIcon() {
                     0.01f, mecanism_tc, MecanismIconColor);
 }
 
-struct {
+struct HudScreenArrows{
 	float fSizeX;
 	float fSizeY;
 	float fArrowMove;
 	float fMove;
-} ScreenArrows;
+};
+
+HudScreenArrows ScreenArrows;
 
 void UpdateScreenBorderArrows() {
 	ScreenArrows.fSizeX = INTERFACE_RATIO_DWORD(arrow_left_tc->m_dwWidth);
@@ -6338,6 +6394,7 @@ void UpdateInterface() {
 	UpdateHealthManaGauges();
 	UpdateMemorizedSpells();
 	UpdateChangeLevelIcon();
+	updateQuickSaveIcon();
 }
 
 void ArxGame::drawAllInterface() {
@@ -6370,6 +6427,7 @@ void ArxGame::drawAllInterface() {
 	if(CHANGE_LEVEL_ICON > -1 && ChangeLevel) {
 		DrawChangeLevelIcon();
 	}
+	drawQuickSaveIcon();
 	// Draw stealth gauge
 	ARX_INTERFACE_Draw_Stealth_Gauge();
 

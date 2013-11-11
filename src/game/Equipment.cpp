@@ -225,11 +225,13 @@ static void applyTweak(EquipmentSlot equip, TweakType tw, const string & selecti
 	}
 	
 	for(size_t i = 0; i < io->obj->facelist.size(); i++) {
-		if(IsInSelection(io->obj, io->obj->facelist[i].vid[0], sel) != -1
-		   && IsInSelection(io->obj, io->obj->facelist[i].vid[1], sel) != -1
-		   && IsInSelection(io->obj, io->obj->facelist[i].vid[2], sel) != -1) {
-			if(io->obj->facelist[i].texid == textochange) {
-				io->obj->facelist[i].texid = (short)mapidx;
+		EERIE_FACE & face = io->obj->facelist[i];
+
+		if(IsInSelection(io->obj, face.vid[0], sel) != -1
+		   && IsInSelection(io->obj, face.vid[1], sel) != -1
+		   && IsInSelection(io->obj, face.vid[2], sel) != -1) {
+			if(face.texid == textochange) {
+				face.texid = (short)mapidx;
 			}
 		}
 	}

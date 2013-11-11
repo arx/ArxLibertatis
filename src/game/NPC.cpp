@@ -243,11 +243,9 @@ void ARX_NPC_CreateExRotateData(Entity * io) {
 	if(!io || !(io->ioflags & IO_NPC) || io->_npcdata->ex_rotate)
 		return;
 	
-	io->_npcdata->ex_rotate = (EERIE_EXTRA_ROTATE *)malloc(sizeof(EERIE_EXTRA_ROTATE));
+	io->_npcdata->ex_rotate = new EERIE_EXTRA_ROTATE();
 	io->head_rot = 0;
 	
-	if(io->_npcdata->ex_rotate) {
-		
 		io->_npcdata->ex_rotate->group_number[0] = (short)EERIE_OBJECT_GetGroup(io->obj, "head");
 		io->_npcdata->ex_rotate->group_number[1] = (short)EERIE_OBJECT_GetGroup(io->obj, "neck");
 		io->_npcdata->ex_rotate->group_number[2] = (short)EERIE_OBJECT_GetGroup(io->obj, "chest");
@@ -258,7 +256,6 @@ void ARX_NPC_CreateExRotateData(Entity * io) {
 		}
 		
 		io->_npcdata->ex_rotate->flags = 0;
-	}
 	
 	io->_npcdata->look_around_inc = 0.f;
 }
@@ -979,13 +976,13 @@ void ARX_PHYSICS_Apply() {
 			ARX_NPC_ManagePoison(io);
 
 		if((io->ioflags & IO_ITEM)
-				&& (io->show != SHOW_FLAG_DESTROYED)
 				&& (io->gameFlags & GFLAG_GOREEXPLODE)
 				&& float(arxtime) - io->animBlend.lastanimtime > 300
 				&& io->obj
 				&& !io->obj->vertexlist.empty()
 		   )
 		{
+			arx_assert(io->show != SHOW_FLAG_DESTROYED);
 			long cnt = (io->obj->vertexlist.size() << 12) + 1;
 
 			cnt = clamp(cnt, 2, 10);
@@ -997,7 +994,7 @@ void ARX_PHYSICS_Apply() {
 				ARX_PARTICLES_Spawn_Blood(&it->v, 20.f, io->index());
 			}
 
-			ARX_INTERACTIVE_DestroyIO(io);
+			io->destroyOne();
 			continue;
 		}
 
@@ -1079,10 +1076,6 @@ void ARX_PHYSICS_Apply() {
 			}
 
 			if(io->_npcdata->pathfind.pathwait) { // Waiting For Pathfinder Answer
-#ifdef BUILD_EDITOR
-				if ((ValidIONum(LastSelectedIONum)) &&
-				        (io == entities[LastSelectedIONum])) ShowIOPath(io);
-#endif
 				if(io->_npcdata->pathfind.listnb == 0) { // Not Found
 					SendIOScriptEvent(io, SM_PATHFINDER_FAILURE);
 					io->_npcdata->pathfind.pathwait = 0;
@@ -1235,27 +1228,18 @@ void StareAtTarget(Entity * io)
 
 	io->head_rot += rot;
 
-	if(io->head_rot > 120.f)
-		io->head_rot = 120.f;
+	io->head_rot = clamp(io->head_rot, -120.f, 120.f);
 
-	if(io->head_rot < -120.f)
-		io->head_rot = -120.f;
+	float groupRotation[2];
 
-	io->_npcdata->ex_rotate->group_rotate[0].setPitch(io->head_rot * 1.5f);
+	groupRotation[0] = io->head_rot * 1.5f;
+	groupRotation[1] = io->head_rot * 0.5f;
 
-	if(io->_npcdata->ex_rotate->group_rotate[0].getPitch() > HEAD_ANGLE_THRESHOLD)
-		io->_npcdata->ex_rotate->group_rotate[0].setPitch(HEAD_ANGLE_THRESHOLD);
+	groupRotation[0] = clamp(groupRotation[0], -HEAD_ANGLE_THRESHOLD, HEAD_ANGLE_THRESHOLD);
+	groupRotation[1] = clamp(groupRotation[1], -HEAD_ANGLE_THRESHOLD, HEAD_ANGLE_THRESHOLD);
 
-	if(io->_npcdata->ex_rotate->group_rotate[0].getPitch() < -HEAD_ANGLE_THRESHOLD)
-		io->_npcdata->ex_rotate->group_rotate[0].setPitch(-HEAD_ANGLE_THRESHOLD);
-
-	io->_npcdata->ex_rotate->group_rotate[1].setPitch(io->head_rot * ( 1.0f / 2 ));
-
-	if(io->_npcdata->ex_rotate->group_rotate[1].getPitch() > HEAD_ANGLE_THRESHOLD)
-		io->_npcdata->ex_rotate->group_rotate[1].setPitch(HEAD_ANGLE_THRESHOLD);
-
-	if(io->_npcdata->ex_rotate->group_rotate[1].getPitch() < -HEAD_ANGLE_THRESHOLD)
-		io->_npcdata->ex_rotate->group_rotate[1].setPitch(-HEAD_ANGLE_THRESHOLD);
+	io->_npcdata->ex_rotate->group_rotate[0].setPitch(groupRotation[0]);
+	io->_npcdata->ex_rotate->group_rotate[1].setPitch(groupRotation[1]);
 
 	//MAKEANGLE(io->angle.b-rot); // -tt
 	return;
@@ -1691,19 +1675,20 @@ long ARX_NPC_ApplyCuts(Entity * io)
 		long numsel = GetCutSelection(io, flg);
 
 		if((io->_npcdata->cuts & flg) && numsel >= 0) {
-			for(size_t ll = 0; ll < io->obj->facelist.size(); ll++)
-			{
-				if	((IsInSelection(io->obj, io->obj->facelist[ll].vid[0], numsel) != -1)
-				        ||	(IsInSelection(io->obj, io->obj->facelist[ll].vid[1], numsel) != -1)
-				        ||	(IsInSelection(io->obj, io->obj->facelist[ll].vid[2], numsel) != -1)
+			for(size_t ll = 0; ll < io->obj->facelist.size(); ll++) {
+				EERIE_FACE & face = io->obj->facelist[ll];
+
+				if	((IsInSelection(io->obj, face.vid[0], numsel) != -1)
+						||	(IsInSelection(io->obj, face.vid[1], numsel) != -1)
+						||	(IsInSelection(io->obj, face.vid[2], numsel) != -1)
 				   )
 				{
-					if(!(io->obj->facelist[ll].facetype & POLY_HIDE)) {
-						if(io->obj->facelist[ll].texid != goretex)
+					if(!(face.facetype & POLY_HIDE)) {
+						if(face.texid != goretex)
 							hid = 1;
 					}
 
-					io->obj->facelist[ll].facetype |= POLY_HIDE;
+					face.facetype |= POLY_HIDE;
 				}
 			}
 
@@ -1732,21 +1717,19 @@ void ARX_NPC_TryToCutSomething(Entity * target, Vec3f * pos)
 	long numsel = -1;
 	long goretex = -1;
 
-	for (size_t i = 0; i < target->obj->texturecontainer.size(); i++)
-	{
-		if (target->obj->texturecontainer[i]
-		        &&	(boost::contains(target->obj->texturecontainer[i]->m_texName.string(), "gore")))
-		{
+	for(size_t i = 0; i < target->obj->texturecontainer.size(); i++) {
+		if(target->obj->texturecontainer[i]
+		   && boost::contains(target->obj->texturecontainer[i]->m_texName.string(), "gore")
+		) {
 			goretex = i;
 			break;
 		}
 	}
 
-	for (size_t i = 0; i < target->obj->selections.size(); i++)
-	{ // TODO iterator
-		if ((target->obj->selections[i].selected.size() > 0)
-		        &&	(boost::contains(target->obj->selections[i].name, "cut_")))
-		{
+	for(size_t i = 0; i < target->obj->selections.size(); i++) {
+		if(target->obj->selections[i].selected.size() > 0
+		   && boost::contains(target->obj->selections[i].name, "cut_")
+		) {
 			short fll = GetCutFlag(target->obj->selections[i].name);
 
 			if(IsAlreadyCut(target, fll))
@@ -1755,13 +1738,14 @@ void ARX_NPC_TryToCutSomething(Entity * target, Vec3f * pos)
 			long out = 0;
 
 			for(size_t ll = 0; ll < target->obj->facelist.size(); ll++) {
-				if(target->obj->facelist[ll].texid != goretex) {
-					if	((IsInSelection(target->obj, target->obj->facelist[ll].vid[0], i) != -1)
-					        ||	(IsInSelection(target->obj, target->obj->facelist[ll].vid[1], i) != -1)
-					        ||	(IsInSelection(target->obj, target->obj->facelist[ll].vid[2], i) != -1)
-					   )
-					{
-						if(target->obj->facelist[ll].facetype & POLY_HIDE) {
+				EERIE_FACE & face = target->obj->facelist[ll];
+
+				if(face.texid != goretex) {
+					if(IsInSelection(target->obj, face.vid[0], i) != -1
+					   || IsInSelection(target->obj, face.vid[1], i) != -1
+					   || IsInSelection(target->obj, face.vid[2], i) != -1
+					) {
+						if(face.facetype & POLY_HIDE) {
 							out++;
 						}
 					}
@@ -2751,6 +2735,8 @@ static void ManageNPCMovement(Entity * io)
 		if(!io->_npcdata->ex_rotate) {
 			ARX_NPC_CreateExRotateData(io);
 		} else { // already created
+			EERIE_EXTRA_ROTATE * extraRotation = io->_npcdata->ex_rotate;
+
 			if((ause0->cur_anim == alist[ANIM_WAIT]
 					|| ause0->cur_anim == alist[ANIM_WALK]
 					|| ause0->cur_anim == alist[ANIM_WALK_SNEAK]
@@ -2761,10 +2747,10 @@ static void ManageNPCMovement(Entity * io)
 				io->_npcdata->look_around_inc = 0.f;
 
 				for(long n = 0; n < 4; n++) {
-					io->_npcdata->ex_rotate->group_rotate[n].setPitch(io->_npcdata->ex_rotate->group_rotate[n].getPitch() - io->_npcdata->ex_rotate->group_rotate[n].getPitch() * (1.0f / 3));
+					extraRotation->group_rotate[n].setPitch(extraRotation->group_rotate[n].getPitch() - extraRotation->group_rotate[n].getPitch() * (1.0f / 3));
 
-					if(fabs(io->_npcdata->ex_rotate->group_rotate[n].getPitch()) < 0.01f)
-						io->_npcdata->ex_rotate->group_rotate[n].setPitch(0.f);
+					if(fabs(extraRotation->group_rotate[n].getPitch()) < 0.01f)
+						extraRotation->group_rotate[n].setPitch(0.f);
 				}
 			} else {
 				if(io->_npcdata->look_around_inc == 0.f) {
@@ -2773,13 +2759,13 @@ static void ManageNPCMovement(Entity * io)
 
 				for(long n = 0; n < 4; n++) {
 					float t = 1.5f - (float)n * ( 1.0f / 5 );
-					io->_npcdata->ex_rotate->group_rotate[n].setPitch(io->_npcdata->ex_rotate->group_rotate[n].getPitch() + io->_npcdata->look_around_inc * framedelay * t);
+					extraRotation->group_rotate[n].setPitch(extraRotation->group_rotate[n].getPitch() + io->_npcdata->look_around_inc * framedelay * t);
 				}
 
-				if(io->_npcdata->ex_rotate->group_rotate[0].getPitch() > 30)
+				if(extraRotation->group_rotate[0].getPitch() > 30)
 					io->_npcdata->look_around_inc = -io->_npcdata->look_around_inc;
 
-				if(io->_npcdata->ex_rotate->group_rotate[0].getPitch() < -30)
+				if(extraRotation->group_rotate[0].getPitch() < -30)
 					io->_npcdata->look_around_inc = -io->_npcdata->look_around_inc;
 			}
 		}
@@ -3742,30 +3728,10 @@ void ManageIgnition(Entity * io)
 		
 		io->ignition = 25.f;
 		io->durability -= framedelay * ( 1.0f / 10000 );
-
-		if(io->durability <= 0.F) {
-			if(ValidDynLight(io->ignit_light))
-				DynLight[io->ignit_light].exist = 0;
-
-			io->ignit_light = -1;
-
-			if(io->ignit_sound != audio::INVALID_ID) {
-				ARX_SOUND_Stop(io->ignit_sound);
-				io->ignit_sound = audio::INVALID_ID;
-			}
-
-			// Need To Kill timers
-			ARX_SCRIPT_Timer_Clear_By_IO(io);
-			io->show = SHOW_FLAG_KILLED;
-			io->gameFlags &= ~GFLAG_ISINTREATZONE;
-			RemoveFromAllInventories(io);
-			ARX_INTERACTIVE_DestroyDynamicInfo(io);
+		
+		if(io->durability <= 0.f) {
 			ARX_SOUND_PlaySFX(SND_TORCH_END, &io->pos);
-
-			if(io == DRAGINTER)
-				Set_DragInter(NULL);
-
-			ARX_INTERACTIVE_DestroyIO(io);
+			io->destroyOne();
 			return;
 		}
 		

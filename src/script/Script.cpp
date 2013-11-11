@@ -741,7 +741,7 @@ ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const string & 
 				} else if(EVENT_SENDER == entities.player()) {
 					txtcontent = "player";
 				} else {
-					txtcontent = EVENT_SENDER->long_name();
+					txtcontent = EVENT_SENDER->idString();
 				}
 				return TYPE_TEXT;
 			}
@@ -775,7 +775,7 @@ ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const string & 
 				} else if(entity == entities.player()) {
 					txtcontent = "player";
 				} else {
-					txtcontent = entity->long_name();
+					txtcontent = entity->idString();
 				}
 				return TYPE_TEXT;
 			}
@@ -839,7 +839,7 @@ ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const string & 
 			}
 			
 			if(boost::starts_with(name, "^last_spawned")) {
-				txtcontent = (LASTSPAWNED) ? LASTSPAWNED->long_name() : "none";
+				txtcontent = (LASTSPAWNED) ? LASTSPAWNED->idString() : "none";
 				return TYPE_TEXT;
 			}
 			
@@ -1077,7 +1077,7 @@ ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const string & 
 				} else if(ioo == entities.player()) {
 					txtcontent = "player";
 				} else {
-					txtcontent = ioo->long_name();
+					txtcontent = ioo->idString();
 				}
 				return TYPE_TEXT;
 			}
@@ -1095,7 +1095,7 @@ ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const string & 
 				} else if(!ValidIONum(entity->targetinfo)) {
 					txtcontent = "none";
 				} else {
-					txtcontent = entities[entity->targetinfo]->long_name();
+					txtcontent = entities[entity->targetinfo]->idString();
 				}
 				return TYPE_TEXT;
 			}
@@ -1797,18 +1797,6 @@ void ARX_SCRIPT_Timer_Clear_All_Locals_For_IO(Entity * io)
 	}
 }
 
-void ARX_SCRIPT_Timer_Clear_By_IO(Entity * io)
-{
-	for (long i = 0; i < MAX_TIMER_SCRIPT; i++)
-	{
-		if (scr_timer[i].exist)
-		{
-			if (scr_timer[i].io == io)
-				ARX_SCRIPT_Timer_ClearByNum(i);
-		}
-	}
-}
-
 //*************************************************************************************
 // Initialise the timer list for the first time.
 //*************************************************************************************
@@ -1833,13 +1821,10 @@ void ARX_SCRIPT_Timer_ClearAll()
 	ActiveTimers = 0;
 }
 
-void ARX_SCRIPT_Timer_Clear_For_IO(Entity * io)
-{
-	for (long i = 0; i < MAX_TIMER_SCRIPT; i++)
-	{
-		if (scr_timer[i].exist)
-		{
-			if (scr_timer[i].io == io) ARX_SCRIPT_Timer_ClearByNum(i);
+void ARX_SCRIPT_Timer_Clear_For_IO(Entity * io) {
+	for(long i = 0; i < MAX_TIMER_SCRIPT; i++) {
+		if(scr_timer[i].exist && scr_timer[i].io == io) {
+			ARX_SCRIPT_Timer_ClearByNum(i);
 		}
 	}
 }

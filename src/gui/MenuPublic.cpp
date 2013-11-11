@@ -76,7 +76,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "math/Types.h"
 #include "math/Vector.h"
 
-#include "scene/ChangeLevel.h"
 #include "scene/GameSound.h"
 #include "scene/LoadLevel.h"
 #include "scene/Light.h"
@@ -95,23 +94,19 @@ extern bool bFade;
 extern bool	bFadeInOut;
 extern int iFadeAction;
 
-extern long ZMAPMODE;
-
-//-----------------------------------------------------------------------------
-void ARXMenu_Private_Options_Video_SetResolution(bool fullscreen, int _iWidth, int _iHeight, int _iBpp) {
+void ARXMenu_Private_Options_Video_SetResolution(bool fullscreen, int _iWidth, int _iHeight) {
 	
 	if(!GRenderer) {
 		return;
 	}
 	
 	config.video.resolution = Vec2i(_iWidth, _iHeight);
-	config.video.bpp = _iBpp;
 	
 	if(!fullscreen) {
 		if(config.video.resolution == Vec2i_ZERO) {
 			LogInfo << "Configuring automatic fullscreen resolution selection";
 		} else {
-			LogInfo << "Configuring fullscreen resolution to " << _iWidth << 'x' << _iHeight << '@' << _iBpp;
+			LogInfo << "Configuring fullscreen resolution to " << DisplayMode(config.video.resolution);
 		}
 	}
 	
@@ -120,13 +115,10 @@ void ARXMenu_Private_Options_Video_SetResolution(bool fullscreen, int _iWidth, i
 	if(window->isFullScreen() != fullscreen || fullscreen) {
 		
 		GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer);
-		GRenderer->EndScene();
 		
 		mainApp->getWindow()->showFrame();
 		
-		mainApp->setFullscreen(fullscreen);
-		
-		GRenderer->BeginScene();
+		mainApp->setWindowSize(fullscreen);
 		
 	}
 }
@@ -147,15 +139,12 @@ void ARXMenu_Options_Video_SetDetailsQuality(int _iQuality)
 	switch (config.video.levelOfDetail)
 	{
 		case 0:
-			ZMAPMODE = 0;
 			MAX_LLIGHTS = 6;
 			break;
 		case 1:
-			ZMAPMODE = 1;
 			MAX_LLIGHTS = 10;
 			break;
 		case 2:
-			ZMAPMODE = 1;
 			MAX_LLIGHTS = 15;
 			break;
 	}

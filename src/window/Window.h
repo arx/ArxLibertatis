@@ -20,10 +20,27 @@
 #ifndef ARX_WINDOW_WINDOW_H
 #define ARX_WINDOW_WINDOW_H
 
-#include <vector>
+#include <ostream>
 #include <string>
+#include <vector>
 
 #include "math/Vector.h"
+
+class InputBackend;
+
+struct DisplayMode {
+	
+	Vec2i resolution;
+	
+	DisplayMode() { }
+	DisplayMode(const DisplayMode & o) : resolution(o.resolution) { }
+	/* implicit */ DisplayMode(Vec2i res) : resolution(res) { }
+	bool operator<(const DisplayMode & other) const;
+	bool operator==(const DisplayMode & other) const {
+		return resolution == other.resolution;
+	}
+	
+};
 
 class Window {
 	
@@ -32,26 +49,31 @@ public:
 	Window();
 	virtual ~Window();
 	
-	virtual bool initialize(const std::string & title, Vec2i size, bool fullscreen,
-	                        unsigned depth = 0) = 0;
+	/*!
+	 * Set the window titlebar caption.
+	 * May be called before or after @ref initialize()
+	 */
+	virtual void setTitle(const std::string & title) = 0;
 	
 	/*!
 	 * Enter fullscreen and set the given video mode.
 	 * If all parameters are zero, the desktop mode is used.
+	 * May be called before or after @ref initialize()
 	 */
-	virtual void setFullscreenMode(Vec2i resolution, unsigned depth = 0) = 0;
+	virtual void setFullscreenMode(const DisplayMode & mode) = 0;
 	
-	//! Exits fullscreen mode and sets the window size.
-	virtual void setWindowSize(Vec2i size) = 0;
+	/*!
+	 * Exits fullscreen mode and sets the window size.
+	 * May be called before or after @ref initialize()
+	 */
+	virtual void setWindowSize(const Vec2i & size) = 0;
 	
-	virtual void * getHandle() = 0;
+	virtual bool initialize() = 0;
+	
 	virtual void tick() = 0;
 	
 	virtual void hide() = 0;
 
-	//! Obtain the cursor position relative to this window.
-	virtual Vec2i getCursorPosition() const = 0;
-	
 	class Listener {
 		
 	public:
@@ -77,48 +99,50 @@ public:
 	void removeListener(Listener * listener);
 	
 	bool hasFocus() const {
-		return hasFocus_ && !isMinimized_; // We treat minimized as not having focus
+		return m_focused && !m_minimized; // We treat minimized as not having focus
 	}
-	bool isMinimized() const { return isMinimized_; }
-	bool isMaximized() const { return isMaximized_; }
-	bool isVisible() const { return isVisible_; }
+	bool isMinimized() const { return m_minimized; }
+	bool isMaximized() const { return m_maximized; }
+	bool isVisible() const { return m_visible; }
 	
-	const Vec2i & getSize() const { return size_; }
-	unsigned getDepth() const { return depth_; }
+	const Vec2i & getPosition() const { return m_position; }
+	const Vec2i & getSize() const { return m_size; }
+	const DisplayMode getDisplayMode() const { return DisplayMode(m_size); }
 	
-	bool isFullScreen() const { return isFullscreen_; }
+	bool isFullScreen() const { return m_fullscreen; }
+	
+	virtual InputBackend * getInputBackend() = 0;
 	
 protected:
 	
 	bool onClose();
 	void onDestroy();
 	void onMove(s32 x, s32 y);
-	void onResize(s32 width, s32 height);
+	void onResize(const Vec2i & size);
 	void onMinimize();
 	void onMaximize();
 	void onRestore();
 	void onShow(bool show);
-	void onToggleFullscreen();
+	void onToggleFullscreen(bool fullscreen);
 	void onFocus(bool hasFocus);
 	void onPaint();
 	void onCreate();
 	
-	std::string title_; //!< Window title bar caption.
-	Vec2i position_; //!< Screen position in pixels (relative to the upper left corner)
-	Vec2i size_; //!< Size in pixels
-	bool isMinimized_; //!< Is minimized ?
-	bool isMaximized_; //!< Is maximized ?
-	bool isVisible_; //!< Is visible ?
-	bool isFullscreen_; //!< Is fullscreen ?
-	bool hasFocus_; //!< Has focus ?
-	unsigned depth_;
+	std::string m_title; //!< Window title bar caption.
+	Vec2i m_position;    //!< Screen position in pixels (relative to the upper left corner)
+	Vec2i m_size;        //!< Size in pixels
+	bool m_minimized;    //!< Is minimized ?
+	bool m_maximized;    //!< Is maximized ?
+	bool m_visible;      //!< Is visible ?
+	bool m_fullscreen;   //!< Is fullscreen ?
+	bool m_focused;      //!< Has focus ?
 	
 private:
 	
 	typedef std::vector<Listener *> Listeners;
 	
 	//! Listeners that will be notified of change in the window properties.
-	Listeners listeners;
+	Listeners m_listeners;
 	
 };
 

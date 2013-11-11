@@ -569,8 +569,7 @@ void AnchorData_ClearAll(EERIE_BACKGROUND * eb) {
 	eb->nbanchors = 0;
 }
 
-#define INC_HEIGHT 20
-#define INC_RADIUS 10
+static const int INC_RADIUS = 10;
 
 bool CylinderAboveInvalidZone(EERIE_CYLINDER * cyl) {
 	
@@ -1106,7 +1105,7 @@ void AnchorData_Create(EERIE_BACKGROUND * eb) {
 	EERIE_BKG_INFO * eg;
 	EERIEPOLY * ep;
 	Vec3f pos;
-#define DECALLL 20.f
+
 	float count = 0;
 	long lastper	=	-1;
 	long per;

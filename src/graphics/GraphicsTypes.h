@@ -140,8 +140,6 @@ struct EERIE_FACE {
 	
 	short ou[IOPOLYVERT];
 	short ov[IOPOLYVERT];
-	Color color[IOPOLYVERT];
-	
 };
 
 struct NEIGHBOURS_DATA {
@@ -511,13 +509,6 @@ struct EERIE_PORTAL_DATA
 
 	EERIE_ROOM_DATA * room;
 	std::vector<EERIE_PORTALS> portals;
-};
-
-struct SMY_ZMAPPINFO
-{
-	TexturedVertex pVertex[3];
-	float		uv[6];
-	float		color[3];
 };
 
 struct SMY_ARXMAT

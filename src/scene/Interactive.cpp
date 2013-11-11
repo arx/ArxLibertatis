@@ -200,7 +200,7 @@ static void ARX_INTERACTIVE_ForceIOLeaveZone(Entity * io, long flags) {
 			long t = entities.getById(op->controled);
 
 			if(t >= 0) {
-				std::string str = io->long_name() + ' ' + temp;
+				std::string str = io->idString() + ' ' + temp;
 				SendIOScriptEvent( entities[t], SM_CONTROLLEDZONE_LEAVE, str ); 
 			}
 		}
@@ -213,8 +213,6 @@ void ARX_INTERACTIVE_DestroyDynamicInfo(Entity * io)
 		return;
 
 	long n = io->index();
-
-	short sN = checked_range_cast<short>(n);
 
 	ARX_INTERACTIVE_ForceIOLeaveZone(io, 0);
 
@@ -257,32 +255,7 @@ void ARX_INTERACTIVE_DestroyDynamicInfo(Entity * io)
 
 	io->dynlight = -1;
 
-	if(io->obj) {
-		EERIE_3DOBJ * eobj = io->obj;
-
-		for(long k = 0; k < eobj->nblinked; k++) {
-			if(eobj->linked[k].lgroup != -1 && eobj->linked[k].obj) {
-				Entity * ioo = (Entity *)eobj->linked[k].io;
-
-				if(ioo && ValidIOAddress(ioo)) {
-					long ll = eobj->linked[k].lidx;
-					Vec3f pos, vector;
-					pos = io->obj->vertexlist3[ll].v;
-					ioo->angle = Anglef(rnd() * 40.f + 340.f, rnd() * 360.f, 0.f);
-					vector.x = -(float)EEsin(radians(ioo->angle.getPitch())) * ( 1.0f / 2 );
-					vector.y = EEsin(radians(ioo->angle.getYaw()));
-					vector.z = (float)EEcos(radians(ioo->angle.getPitch())) * ( 1.0f / 2 );
-					ioo->soundtime = 0;
-					ioo->soundcount = 0;
-					ioo->gameFlags |= GFLAG_NO_PHYS_IO_COL;
-					EERIE_PHYSICS_BOX_Launch(ioo->obj, pos, ioo->angle, vector);
-					ioo->show = SHOW_FLAG_IN_SCENE;
-					ioo->no_collide = sN;
-					EERIE_LINKEDOBJ_UnLinkObjectFromObject(io->obj, ioo->obj);
-				}
-			}
-		}
-	}
+	IO_UnlinkAllLinkedObjects(io);
 }
 
 
@@ -411,17 +384,35 @@ void UnlinkAllLinkedObjects() {
 }
 
 void IO_UnlinkAllLinkedObjects(Entity * io) {
-	if(io && io->obj) {
-		for(long k = 0; k < io->obj->nblinked; k++) {
-			if(io->obj->linked[k].io) {
-				Entity * ioo = io->obj->linked[k].io;
-				if(ValidIOAddress(ioo)) {
-					IO_Drop_Item(io, ioo);
-				}
-			}
-		}
-		EERIE_LINKEDOBJ_ReleaseData(io->obj);
+	
+	if(!io || !io->obj) {
+		return;
 	}
+	
+	for(long k = 0; k < io->obj->nblinked; k++) {
+		
+		Entity * linked = io->obj->linked[k].io;
+		if(!ValidIOAddress(linked)) {
+			continue;
+		}
+		
+		linked->angle = Anglef(rnd() * 40.f + 340.f, rnd() * 360.f, 0.f);
+		linked->soundtime = 0;
+		linked->soundcount = 0;
+		linked->gameFlags |= GFLAG_NO_PHYS_IO_COL;
+		linked->show = SHOW_FLAG_IN_SCENE;
+		linked->no_collide = checked_range_cast<short>(io->index());
+		
+		Vec3f pos = io->obj->vertexlist3[io->obj->linked[k].lidx].v;
+		Vec3f vector;
+		vector.x = -(float)EEsin(radians(linked->angle.getPitch())) * 0.5f;
+		vector.y = EEsin(radians(linked->angle.getYaw()));
+		vector.z = (float)EEcos(radians(linked->angle.getPitch())) * 0.5f;
+		EERIE_PHYSICS_BOX_Launch(linked->obj, pos, linked->angle, vector);
+		
+	}
+	
+	EERIE_LINKEDOBJ_ReleaseData(io->obj);
 }
 
 // First is always the player
@@ -1634,10 +1625,7 @@ static void MakeTemporaryIOIdent(Entity * io) {
 	if(!io)
 		return;
 	
-	// TODO keep the current game open all the time (or even in memory)
-	ARX_Changelevel_CurGame_Open();
-	
-	std::string className = io->short_name();
+	std::string className = io->className();
 	res::path classDir = io->classPath().parent();
 	
 	for(long t = 1; ; t++) {
@@ -1647,7 +1635,7 @@ static void MakeTemporaryIOIdent(Entity * io) {
 		// TODO replace this loop by an (className, instance) index
 		for(size_t i = 0; i < entities.size(); i++) {
 			if(entities[i] && entities[i]->ident == t && io != entities[i]) {
-				if(entities[i]->short_name() == className) {
+				if(entities[i]->className() == className) {
 					used = true;
 					break;
 				}
@@ -1666,13 +1654,11 @@ static void MakeTemporaryIOIdent(Entity * io) {
 		}
 		
 		// Check if the candidate instance number is used in any visited area
-		if(ARX_Changelevel_CurGame_Seek(ss.str())) {
+		if(currentSavedGameHasEntity(ss.str())) {
 			continue;
 		}
 		
 		io->ident = t;
-		
-		ARX_Changelevel_CurGame_Close();
 		
 		return;
 	}
@@ -1852,21 +1838,6 @@ static Entity * AddMarker(const res::path & classPath, EntityInstance instance) 
 	return io;
 }
 
-void ShowIOPath(Entity * io) {
-	
-	for(long i = 0; i < ACTIVEBKG->nbanchors; i++) {
-		ANCHOR_DATA * ad = &ACTIVEBKG->anchors[i];
-		ad->flags &= ~ANCHOR_FLAG_GREEN_DRAW;
-	}
-	
-	if(io && (io->ioflags & IO_NPC)) {
-		for(long j = 0; j < io->_npcdata->pathfind.listnb; j++) {
-			ANCHOR_DATA * ad = &ACTIVEBKG->anchors[io->_npcdata->pathfind.list[j]];
-			ad->flags |= ANCHOR_FLAG_GREEN_DRAW;
-		}
-	}
-}
-
 #ifdef BUILD_EDITOR
 
 //*************************************************************************************
@@ -1881,7 +1852,7 @@ void ARX_INTERACTIVE_DeleteByIndex(long i, DeleteByIndexFlags flag) {
 	//Must KILL dir...
 	if(!(flag & FLAG_DONTKILLDIR) && entities[i]->scriptload == 0 && entities[i]->ident > 0) {
 		
-		fs::path dir = fs::paths.user / entities[i]->full_name().string();
+		fs::path dir = fs::paths.user / entities[i]->instancePath().string();
 		
 		if(fs::is_directory(dir) && !fs::remove_all(dir)) {
 			LogError << "Could not remove directory " << dir;
@@ -1973,7 +1944,7 @@ IO_NPCDATA::IO_NPCDATA() {
 }
 
 IO_NPCDATA::~IO_NPCDATA() {
-	free(ex_rotate);
+	delete ex_rotate;
 	free(pathfind.list);
 }
 
@@ -2063,7 +2034,7 @@ void ReloadScript(Entity * io) {
 	ReleaseScript(&io->script);
 
 	loadScript(io->script, resources->getFile(io->classPath() + ".asl"));
-	loadScript(io->over_script, resources->getFile((io->full_name() / io->short_name()) + ".asl"));
+	loadScript(io->over_script, resources->getFile((io->instancePath() / io->className()) + ".asl"));
 
 	long num = io->index();
 
@@ -2108,7 +2079,7 @@ void MakeIOIdent(Entity * io) {
 	long t = 1;
 	
 	while(io->ident == 0) {	
-		fs::path temp = fs::paths.user / io->full_name().string();
+		fs::path temp = fs::paths.user / io->instancePath().string();
 		
 		if(!fs::is_directory(temp)) {
 			io->ident = t;
@@ -3064,79 +3035,17 @@ void RenderInter() {
 
 std::vector<Entity *> toDestroy;
 
-void ARX_INTERACTIVE_DestroyIOdelayed(Entity * entity)
-{
+void ARX_INTERACTIVE_DestroyIOdelayed(Entity * entity) {
 	toDestroy.push_back(entity);
 }
 
-void ARX_INTERACTIVE_DestroyIOdelayedExecute()
-{
+void ARX_INTERACTIVE_DestroyIOdelayedExecute() {
 	for(std::vector<Entity *>::iterator it = toDestroy.begin(); it != toDestroy.end(); ++it) {
-
-		ARX_INTERACTIVE_DestroyIO(*it);
+		if(*it) {
+			(*it)->destroyOne();
+		}
 	}
 	toDestroy.clear();
-}
-
-void ARX_INTERACTIVE_DestroyIO(Entity * ioo)
-{
-	if(!ioo)
-		return;
-
-	if(ioo->show == SHOW_FLAG_DESTROYED)
-		return;
-
-	ARX_INTERACTIVE_ForceIOLeaveZone(ioo, 0);
-
-	if(DRAGINTER == ioo)
-		Set_DragInter(NULL);
-
-	if(FlyingOverIO == ioo)
-		FlyingOverIO = NULL;
-
-	if(COMBINE == ioo)
-		COMBINE = NULL;
-
-	if((ioo->ioflags & IO_ITEM) && ioo->_itemdata->count > 1) {
-		ioo->_itemdata->count--;
-	} else {
-		// Kill all spells
-		long numm = ioo->index();
-
-		if(ValidIONum(numm))
-			ARX_SPELLS_FizzleAllSpellsFromCaster(numm);
-
-		// Need To Kill timers
-		ARX_SCRIPT_Timer_Clear_By_IO(ioo);
-		ioo->show = SHOW_FLAG_DESTROYED;
-		ioo->gameFlags &= ~GFLAG_ISINTREATZONE;
-
-		if(!FAST_RELEASE)
-			RemoveFromAllInventories(ioo);
-
-		if(ioo->obj) {
-			EERIE_3DOBJ * eobj = ioo->obj;
-
-			while(eobj->nblinked) {
-				long k = 0;
-
-				if(eobj->linked[k].lgroup != -1 && eobj->linked[k].obj) {
-					Entity * iooo = (Entity *)eobj->linked[k].io;
-
-					if(iooo && ValidIOAddress(iooo)) {
-						EERIE_LINKEDOBJ_UnLinkObjectFromObject(ioo->obj, iooo->obj);
-						ARX_INTERACTIVE_DestroyIO(iooo);
-					}
-				}
-			}
-		}
-
-		ARX_INTERACTIVE_DestroyDynamicInfo(ioo);
-
-		if(ioo->scriptload) {
-			delete ioo;
-		}
-	}
 }
 
 bool IsSameObject(Entity * io, Entity * ioo)

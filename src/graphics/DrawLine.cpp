@@ -207,29 +207,35 @@ void EERIEDrawTrue3DLine(const Vec3f & orgn, const Vec3f & dest, Color col) {
 	}
 }
 
-void EERIEDraw3DLine(const Vec3f & orgn, const Vec3f & dest, Color col) {
-
+void EERIEDraw3DLine(const Vec3f & orgn, const Vec3f & dest, Color color1, Color color2, float zbias) {
+	
 	TexturedVertex v[2];
 	TexturedVertex in;
-
+	
 	in.p = orgn;
-	EE_RTP(&in,&v[0]);
+	EE_RTP(&in, &v[0]);
 	if(v[0].p.z < 0.f) {
 		return;
 	}
-
+	
 	in.p = dest;
 	EE_RTP(&in,&v[1]);
-	if(v[1].p.z<0.f) {
+	if(v[1].p.z < 0.f) {
 		return;
 	}
-
+	
+	v[0].p.z -= zbias, v[1].p.z -= zbias;
+	
 	GRenderer->ResetTexture(0);
-	v[1].color = v[0].color = col.toBGRA();
-
+	v[0].color = color1.toBGRA();
+	v[1].color = color2.toBGRA();
+	
 	EERIEDRAWPRIM(Renderer::LineList, v, 2);
 }
 
+void EERIEDraw3DLine(const Vec3f & orgn, const Vec3f & dest, Color color, float zbias) {
+	EERIEDraw3DLine(orgn, dest, color, color, zbias);
+}
 
 void EERIEPOLY_DrawWired(EERIEPOLY * ep, Color color) {
 

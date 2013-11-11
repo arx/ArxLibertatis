@@ -67,7 +67,6 @@ void SaveIOScript(Entity * io, long fl);
 
 long DanaeLoadLevel(const res::path & file, bool loadEntities = true);
 void DanaeClearLevel(long flags = 0);
-void DanaeClearAll();
 void RestoreLastLoadedLightning();
 
 extern long FAST_RELEASE;

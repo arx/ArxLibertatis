@@ -75,7 +75,7 @@ long GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE = 0;
 //-----------------------------------------------------------------------------
 
 
-const TextureContainer::TCFlags TextureContainer::UI = (TextureContainer::NoMipmap | TextureContainer::NoRefinement);
+const TextureContainer::TCFlags TextureContainer::UI = (TextureContainer::NoMipmap);
 
 static TextureContainer * g_ptcTextureList = NULL;
 
@@ -104,9 +104,6 @@ void ResetVertexLists(TextureContainer * tex) {
 	tex->max[TextureContainer::Additive] = 0;
 	tex->max[TextureContainer::Subtractive] = 0;
 	tex->max[TextureContainer::Multiplicative] = 0;
-	
-	tex->vPolyInterZMap.clear();
-	tex->vPolyZMap.clear();
 	
 	free(tex->list[TextureContainer::Opaque]);
 	tex->list[TextureContainer::Opaque] = NULL;
@@ -172,8 +169,6 @@ TextureContainer::TextureContainer(const res::path & strName, TCFlags flags) : m
 
 	tMatRoom = NULL;
 
-	vPolyInterZMap.clear();
-	vPolyZMap.clear();
 }
 
 TextureContainer::~TextureContainer() {
@@ -273,10 +268,6 @@ TextureContainer * TextureContainer::Load(const res::path & name, TCFlags flags)
 		return NULL;
 	}
 	
-	if(!(flags & NoRefinement)) {
-		newTexture->LookForRefinementMap(flags);
-	}
-	
 	MakeUserFlag(newTexture);
 	
 	return newTexture;
@@ -296,7 +287,7 @@ bool TextureContainer::CreateHalo() {
 	// Allocate and add the texture to the linked list of textures;
 	res::path haloName = m_texName.string();
 	haloName.append("_halo");
-	TextureHalo = new TextureContainer(haloName, NoMipmap | NoRefinement | NoColorKey);
+	TextureHalo = new TextureContainer(haloName, NoMipmap | NoColorKey);
 	if(!TextureHalo) {
 		return false;
 	}
@@ -378,107 +369,4 @@ void TextureContainer::DeleteAll(TCFlags flag)
 
 		pCurrentTexture = pNextTexture;
 	}
-}
-
-TextureContainer::RefinementMap TextureContainer::s_GlobalRefine;
-TextureContainer::RefinementMap TextureContainer::s_Refine;
-
-static void ConvertData(string & dat) {
-	
-	size_t substrStart = 0;
-	size_t substrLen = string::npos;
-	
-	size_t posStart = dat.find_first_of('"');
-	if(posStart != string::npos) {
-		substrStart = posStart + 1;
-		
-		size_t posEnd = dat.find_last_of('"');
-		arx_assert(posEnd != string::npos);
-		
-		if(posEnd != posStart) {
-			substrLen = posEnd - substrStart;
-		}
-	}
-	
-	dat = dat.substr(substrStart, substrLen);
-}
-
-static void LoadRefinementMap(const res::path & fileName, map<res::path, res::path> & refinementMap) {
-	
-	size_t fileSize = 0;
-	char * from = resources->readAlloc(fileName, fileSize);
-	if(!from) {
-		return;
-	}
-	
-	size_t pos = 0;
-	long count = 0;
-	
-	std::string name;
-	
-	while(pos < fileSize) {
-		
-		string data;
-		
-		while(pos < fileSize && from[pos] != '\r' && from[pos] != '\n') {
-			data += from[pos++];
-		}
-		while(pos < fileSize && (from[pos] == '\r' || from[pos] == '\n')) {
-			pos++;
-		}
-		
-		if(count == 2) {
-			count = 0;
-			continue;
-		}
-		
-		ConvertData(data);
-		
-		if(count == 0) {
-			name = data;
-		} else if(count == 1) {
-			
-			
-			boost::to_lower(data);
-			
-			if(data != "none") {
-				refinementMap[res::path::load(name)] = res::path::load(data);
-			} else {
-				refinementMap[res::path::load(name)].clear();
-			}
-		}
-		
-		count++;
-	}
-	
-	free(from);
-}
-
-void TextureContainer::LookForRefinementMap(TCFlags flags) {
-	
-	TextureRefinement = NULL;
-	
-	static bool loadedRefinements = false;
-	if(!loadedRefinements) {
-		const char INI_REFINEMENT_GLOBAL[] = "graph/obj3d/textures/refinement/globalrefinement.ini";
-		const char INI_REFINEMENT[] = "graph/obj3d/textures/refinement/refinement.ini";
-		LoadRefinementMap(INI_REFINEMENT_GLOBAL, s_GlobalRefine);
-		LoadRefinementMap(INI_REFINEMENT, s_Refine);
-		loadedRefinements = true;
-	}
-	
-	RefinementMap::const_iterator it = s_Refine.find(m_texName);
-	if(it != s_Refine.end()) {
-		if(!it->second.empty()) {
-			TextureRefinement = Load("graph/obj3d/textures/refinement" / it->second, flags);
-		}
-		return;
-	}
-	
-	it = s_GlobalRefine.find(m_texName);
-	if(it != s_GlobalRefine.end() && !it->second.empty()) {
-		TextureRefinement = Load("graph/obj3d/textures/refinement" / it->second, flags);
-	}
-	
-	
 }

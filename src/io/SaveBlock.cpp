@@ -541,6 +541,10 @@ bool SaveBlock::save(const string & name, const char * data, size_t size) {
 	return !handle.fail();
 }
 
+void SaveBlock::remove(const string & name) {
+	files.erase(name);
+}
+
 char * SaveBlock::load(const string & name, size_t & size) {
 	
 	arx_assert_msg(name.find_first_of(BADSAVCHAR) == string::npos,

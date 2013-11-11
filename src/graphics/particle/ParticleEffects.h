@@ -117,8 +117,6 @@ struct FOG_DEF
 	float		speed;
 	float		rotatespeed;
 	long		tolive;
-	Vec3f	bboxmin;
-	Vec3f	bboxmax;
 	long		blend;
 	float		frequency;
 	unsigned long lastupdate;

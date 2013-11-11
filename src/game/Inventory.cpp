@@ -280,33 +280,6 @@ void PutInFrontOfPlayer(Entity * io)
 	}
 }
 
-/*!
- * \brief forces "io_scr" IO to drop "io" item with physics
- * \param io_src
- * \param io
- */
-void IO_Drop_Item(Entity * io_src, Entity * io)
-{
-	if(!io || !io_src)
-		return;
-
-	float t = radians(io_src->angle.getPitch());
-	io->velocity.x = -(float)EEsin(t) * 50.f;
-	io->velocity.y = 0.3f;
-	io->velocity.z = (float)EEcos(t) * 50.f;
-	io->angle = Anglef::ZERO;
-	io->stopped = 0;
-	io->show = SHOW_FLAG_IN_SCENE;
-	
-	if(io->obj && io->obj->pbox) {
-		Vec3f vector(0.f, 100.f, 0.f);
-		io->soundtime = 0;
-		io->soundcount = 0;
-		io->gameFlags |= GFLAG_NO_PHYS_IO_COL;
-		EERIE_PHYSICS_BOX_Launch(io->obj, io->pos, io->angle, vector);
-	}
-}
-
 std::ostream & operator<<(std::ostream & strm, const InventoryPos & p) {
 	return strm << '(' << p.io << ", " << p.bag << ", " << p.x << ", " << p.y << ')';
 }
@@ -355,7 +328,7 @@ struct ItemSizeComaparator {
 		if(locname != 0) {
 			return (locname < 0);
 		}
-		int name = a->long_name().compare(b->long_name());
+		int name = a->idString().compare(b->idString());
 		if(name != 0) {
 			return (name < 0);
 		}
@@ -427,7 +400,7 @@ private:
 		arx_assert(pos.y + item->sizey <= height);
 		arx_assert(index(pos).io == item);
 		
-		LogDebug(" - " << pos << " remove " << item->long_name()
+		LogDebug(" - " << pos << " remove " << item->idString()
 		         << " [" << item->_itemdata->count << '/'
 		         << item->_itemdata->playerstacksize << "]: "
 		         << int(item->sizex) << 'x' << int(item->sizey));
@@ -461,7 +434,7 @@ private:
 			}
 		}
 		
-		LogDebug(" - " << pos << " := " << item->long_name()
+		LogDebug(" - " << pos << " := " << item->idString()
 		         << " [" << item->_itemdata->count << '/'
 		         << item->_itemdata->playerstacksize << "]: "
 		         << int(item->sizex) << 'x' << int(item->sizey));
@@ -530,10 +503,10 @@ private:
 		short int remainingSpace = io->_itemdata->playerstacksize - io->_itemdata->count;
 		short int count = std::min(item->_itemdata->count, remainingSpace);
 		
-		LogDebug(" - " << pos << " " << io->long_name()
+		LogDebug(" - " << pos << " " << io->idString()
 		         << " [" << io->_itemdata->count << '/'
 		         << io->_itemdata->playerstacksize << "] += "
-		         << item->long_name() << " x" << count << '/' << item->_itemdata->count);
+		         << item->idString() << " x" << count << '/' << item->_itemdata->count);
 		
 		io->_itemdata->count += count, item->_itemdata->count -= count;
 		
@@ -543,12 +516,8 @@ private:
 			return false;
 		}
 		
-		// Delete or hide the old item
-		if(item->scriptload) {
-			delete item;
-		} else {
-			item->show = SHOW_FLAG_KILLED;
-		}
+		// Delete the old item
+		item->destroy();
 		return true;
 	}
 	
@@ -649,7 +618,7 @@ public:
 		LogDebug("sorting");
 	#ifdef ARX_DEBUG
 		BOOST_FOREACH(const Entity * item, items) {
-			LogDebug(" - " << item->long_name() << ": "
+			LogDebug(" - " << item->idString() << ": "
 							<< int(item->sizex) << 'x' << int(item->sizey));
 		}
 	#endif
@@ -662,7 +631,7 @@ public:
 				// TODO: oops - there was no space for the item
 				// ideally this should not happen, but the current sorting algorithm does not
 				// guarantee that the resulting order is at least as good as the existing one
-				LogDebug("could not insert " << item->long_name() << " after sorting inventory");
+				LogDebug("could not insert " << item->idString() << " after sorting inventory");
 				PutInFrontOfPlayer(item);
 			}
 		}

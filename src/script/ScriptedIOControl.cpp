@@ -129,8 +129,6 @@ public:
 				}
 			}
 			
-			io->show = SHOW_FLAG_KILLED;
-			
 			InventoryPos oldPos = removeFromInventories(io);
 			
 			SendInitScriptEvent(ioo);
@@ -168,12 +166,7 @@ public:
 				}
 			}
 			
-			if(io->scriptload) {
-				delete io;
-				return AbortRefuse;
-			} else {
-				TREATZONE_RemoveIO(io);
-			}
+			io->destroy();
 			
 			return AbortRefuse;
 		}
@@ -324,31 +317,6 @@ public:
 		} else {
 			ScriptWarning << "unexpected type: " << type;
 			return Failed;
-		}
-		
-		return Success;
-	}
-	
-};
-
-class KillMeCommand : public Command {
-	
-public:
-	
-	KillMeCommand() : Command("killme", AnyEntity) { }
-	
-	Result execute(Context & context) {
-		
-		DebugScript("");
-		
-		Entity * io = context.getEntity();
-		if((io->ioflags & IO_ITEM) && io->_itemdata->count > 1) {
-			io->_itemdata->count--;
-		} else {
-			io->show = SHOW_FLAG_KILLED;
-			io->gameFlags &= ~GFLAG_ISINTREATZONE;
-			RemoveFromAllInventories(io);
-			ARX_DAMAGES_ForceDeath(io, EVENT_SENDER);
 		}
 		
 		return Success;
@@ -695,11 +663,16 @@ public:
 			return Success;
 		}
 		
-		bool self = (t == context.getEntity());
+		long index = context.getEntity()->index();
 		
-		ARX_INTERACTIVE_DestroyIO(t);
+		t->destroyOne();
 		
-		return self ? AbortAccept : Success; // Cannot process further if we destroyed the script's IO
+		if(!ValidIONum(index)) {
+			// Cannot process further if we destroyed the script's IO
+			return AbortAccept;
+		}
+		
+		return Success;
 	}
 	
 };
@@ -795,7 +768,6 @@ void setupScriptedIOControl() {
 	ScriptEvent::registerCommand(new ReplaceMeCommand);
 	ScriptEvent::registerCommand(new CollisionCommand);
 	ScriptEvent::registerCommand(new SpawnCommand);
-	ScriptEvent::registerCommand(new KillMeCommand);
 	ScriptEvent::registerCommand(new PhysicalCommand);
 	ScriptEvent::registerCommand(new LinkObjToMeCommand);
 	ScriptEvent::registerCommand(new IfExistInternalCommand);

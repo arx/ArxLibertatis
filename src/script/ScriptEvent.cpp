@@ -180,10 +180,7 @@ static bool checkInteractiveObject(Entity * io, ScriptMessage msg, ScriptResult 
 		return true;
 	}
 	
-	if(io->show == SHOW_FLAG_DESTROYED) {
-		ret = ACCEPT;
-		return true;
-	}
+	arx_assert(io->show != SHOW_FLAG_DESTROYED);
 	
 	if(io->ioflags & IO_FREEZESCRIPT) {
 		ret = (msg == SM_LOAD) ? ACCEPT : REFUSE;
@@ -359,7 +356,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 	            : ((size_t)msg < ARRAY_SIZE(AS_EVENT) - 1) ? AS_EVENT[msg].name.substr(3)
 	            : "(none)")
 	         << " params=\"" << params << "\""
-	         << " io=" << (io ? io->long_name() : "unknown")
+	         << " io=" << (io ? io->idString() : "unknown")
 	         << (io == NULL ? "" : es == &io->script ? " base" : " overriding")
 	         << " pos=" << pos);
 

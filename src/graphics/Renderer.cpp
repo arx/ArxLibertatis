@@ -19,6 +19,10 @@
 
 #include "graphics/Renderer.h"
 
+#include <algorithm>
+
+#include <boost/foreach.hpp>
+
 #include "graphics/GraphicsUtility.h"
 #include "graphics/texture/TextureStage.h"
 #include "graphics/data/TextureContainer.h"
@@ -56,10 +60,36 @@ void Renderer::SetTexture(unsigned int textureStage, TextureContainer * pTexture
 	}
 }
 
-Renderer::Renderer() { }
+Renderer::Renderer() : m_initialized(false) { }
 
 Renderer::~Renderer() {
+	if(isInitialized()) {
+		onRendererShutdown();
+	}
 	for(size_t i = 0; i < m_TextureStages.size(); ++i) {
 		delete m_TextureStages[i];
 	}
+}
+
+void Renderer::addListener(Listener * listener) {
+	m_listeners.push_back(listener);
+}
+
+void Renderer::removeListener(Listener * listener) {
+	m_listeners.erase(std::remove(m_listeners.begin(), m_listeners.end(), listener),
+	                  m_listeners.end());
+}
+
+void Renderer::onRendererInit() {
+	m_initialized = true;
+	BOOST_FOREACH(Listener * listener, m_listeners) {
+		listener->onRendererInit(*this);
+	}
+}
+
+void Renderer::onRendererShutdown() {
+	BOOST_FOREACH(Listener * listener, m_listeners) {
+		listener->onRendererShutdown(*this);
+	}
+	m_initialized = false;
 }

@@ -514,7 +514,7 @@ public:
 			return Failed;
 		}
 		
-		ap->controled = context.getEntity()->long_name();
+		ap->controled = context.getEntity()->idString();
 		
 		return Success;
 	}

@@ -166,6 +166,7 @@ enum EntityFlag {
 	IO_BUMP                = (1<<22),
 	IO_ANGULAR             = (1<<23),
 	IO_BODY_CHUNK          = (1<<24),
+	// IO_ZMAP Currently has no effect, but keep for now as it affects save state
 	IO_ZMAP                = (1<<25),
 	IO_INVERTED            = (1<<26),
 	IO_JUST_COLLIDE        = (1<<27),
@@ -212,10 +213,10 @@ enum EntityVisilibity {
 	SHOW_FLAG_IN_INVENTORY = 4,
 	SHOW_FLAG_HIDDEN       = 5,
 	SHOW_FLAG_TELEPORTING  = 6,
-	SHOW_FLAG_KILLED       = 7,
+	SHOW_FLAG_KILLED       = 7, // Deprecated, use SHOW_FLAG_DESTROYED instead
 	SHOW_FLAG_MEGAHIDE     = 8,
 	SHOW_FLAG_ON_PLAYER    = 9,
-	SHOW_FLAG_DESTROYED    = 255
+	SHOW_FLAG_DESTROYED    = 255 // Only used in save files
 };
 
 struct AnimationBlendStatus {
@@ -363,7 +364,7 @@ public:
 	 * of the file is returned
 	 * @return The name of the file at the end of the filename path
 	 */
-	std::string short_name() const;
+	std::string className() const;
 	
 	/*!
 	 *  Returns the long name for this Object where the short name
@@ -371,15 +372,15 @@ public:
 	 * in the form of "%s_%04ld"
 	 * @return The short name combined with a 4 digit ident, padded with 0
 	 */
-	std::string long_name() const;
+	std::string idString() const;
 	
 	/*!
 	 *  Returns the full name for this Object where the
 	 * directory portion of the filename member is combined
-	 * with the the result of long_name()
-	 * @return The directory of filename + long_name()
+	 * with the the result of idString()
+	 * @return The directory of filename + idString()
 	 */
-	res::path full_name() const;
+	res::path instancePath() const;
 	
 	//! @return the index of this Entity in the EntityManager
 	size_t index() const { return m_index; }
@@ -391,6 +392,12 @@ public:
 	 * Otherwise the object is kept so that the id won't be reused.
 	 */
 	void destroy();
+	
+	/*!
+	 * If the entity is an item, decrease the stack count.
+	 * If the count reaches zero or if the entity is not an item, call destroy().
+	 */
+	void destroyOne();
 	
 	/*!
 	 * Get the class path for this entity.

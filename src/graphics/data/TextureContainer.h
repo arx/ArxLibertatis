@@ -68,7 +68,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/GraphicsTypes.h"
 
 struct SMY_ARXMAT;
-struct SMY_ZMAPPINFO;
 struct EERIEPOLY;
 struct TexturedVertex;
 class Texture2D;
@@ -87,9 +86,8 @@ public:
 	enum TCFlag {
 		NoMipmap     = (1<<0),
 		NoInsert     = (1<<1),
-		NoRefinement = (1<<2),
-		Level        = (1<<3),
-		NoColorKey   = (1<<4)
+		Level        = (1<<2),
+		NoColorKey   = (1<<3)
 	};
 	
 	DECLARE_FLAGS(TCFlag, TCFlags)
@@ -167,9 +165,6 @@ public:
 	
 	// BEGIN TODO: Move to a RenderBatch class... This RenderBatch class should contain a pointer to the TextureContainer used by the batch
 	
-	std::vector<EERIEPOLY *> vPolyZMap;
-	std::vector<SMY_ZMAPPINFO> vPolyInterZMap;
-	
 	SMY_ARXMAT * tMatRoom;
 	
 	enum TransparencyType {
@@ -187,13 +182,6 @@ public:
 	// END TODO
 	
 	bool hasColorKey();
-	
-private:
-	void LookForRefinementMap(TCFlags flags);
-	
-	typedef std::map<res::path, res::path> RefinementMap;
-	static RefinementMap s_GlobalRefine;
-	static RefinementMap s_Refine;
 	
 };
 

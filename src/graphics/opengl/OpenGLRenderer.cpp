@@ -42,11 +42,19 @@ static const char vertexShaderSource[] =
 	"	gl_FogFragCoord = vertex.z;\n"
 	"}\n";
 
-OpenGLRenderer::OpenGLRenderer() : useVertexArrays(false), useVBOs(false), maxTextureStage(0), shader(0), maximumAnisotropy(1.f), initialized(false) { }
+OpenGLRenderer::OpenGLRenderer()
+	: useVertexArrays(false)
+	, useVBOs(false)
+	, maxTextureStage(0)
+	, shader(0)
+	, maximumAnisotropy(1.f)
+	{ }
 
 OpenGLRenderer::~OpenGLRenderer() {
 	
-	shutdown();
+	if(isInitialized()) {
+		shutdown();
+	}
 	
 	// TODO textures must be destructed before OpenGLRenderer or not at all
 	//for(TextureList::iterator it = textures.begin(); it != textures.end(); ++it) {
@@ -119,10 +127,11 @@ static GLuint loadVertexShader(const char * source) {
 	return shader;
 }
 
-void OpenGLRenderer::Initialize() {
+void OpenGLRenderer::initialize() {
 	
 	if(glewInit() != GLEW_OK) {
 		LogError << "GLEW init failed";
+		return;
 	}
 	
 	CrashHandler::setVariable("GLEW version", glewGetString(GLEW_VERSION));
@@ -136,12 +145,43 @@ void OpenGLRenderer::Initialize() {
 	LogInfo << " └─ Device: " << glGetString(GL_RENDERER);
 	CrashHandler::setVariable("OpenGL device", glGetString(GL_RENDERER));
 
-	reinit();
+}
+
+void OpenGLRenderer::beforeResize(bool wasOrIsFullscreen) {
+	
+#if ARX_PLATFORM == ARX_PLATFORM_LINUX || ARX_PLATFORM == ARX_PLATFORM_BSD
+	// No re-initialization needed
+	ARX_UNUSED(wasOrIsFullscreen);
+#else
+	
+	if(!isInitialized()) {
+		return;
+	}
+	
+	#if ARX_PLATFORM == ARX_PLATFORM_WIN32
+	if(!wasOrIsFullscreen) {
+		return;
+	}
+	#else
+	// By default, always reinit to avoid issues on untested platforms
+	ARX_UNUSED(wasOrIsFullscreen);
+	#endif
+	
+	shutdown();
+	
+#endif
+	
+}
+
+void OpenGLRenderer::afterResize() {
+	if(!isInitialized()) {
+		reinit();
+	}
 }
 
 void OpenGLRenderer::reinit() {
 	
-	arx_assert(!initialized);
+	arx_assert(!isInitialized());
 	
 	if(!GLEW_ARB_vertex_array_bgra) {
 		LogWarning << "Missing OpenGL extension ARB_vertex_array_bgra, not using vertex arrays!";
@@ -161,7 +201,8 @@ void OpenGLRenderer::reinit() {
 	
 	SetRenderState(ZBias, true);
 	
-	glDepthFunc(GL_LEQUAL);
+	glEnable(GL_DEPTH_TEST);
+	SetRenderState(DepthTest, false);
 	
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 	glPixelStorei(GL_PACK_ALIGNMENT, 1);
@@ -203,7 +244,8 @@ void OpenGLRenderer::reinit() {
 		CHECK_GL;
 	}
 	
-	initialized = true;
+	onRendererInit();
+	
 }
 
 void OpenGLRenderer::resetStateCache() {
@@ -216,7 +258,9 @@ void OpenGLRenderer::resetStateCache() {
 
 void OpenGLRenderer::shutdown() {
 	
-	arx_assert(initialized);
+	arx_assert(isInitialized());
+	
+	onRendererShutdown();
 	
 	if(shader) {
 		glDeleteObjectARB(shader);
@@ -230,15 +274,6 @@ void OpenGLRenderer::shutdown() {
 	
 	maximumAnisotropy = 1.f;
 	
-	initialized = false;
-}
-
-void OpenGLRenderer::BeginScene() {
-}
-
-void OpenGLRenderer::EndScene() {
-	
-	glFlush();
 }
 
 static EERIEMATRIX projection;
@@ -432,7 +467,7 @@ void OpenGLRenderer::SetRenderState(RenderState renderState, bool enable) {
 		}
 		
 		case DepthTest: {
-			setGLState(GL_DEPTH_TEST, enable);
+			glDepthFunc(enable ? GL_LEQUAL : GL_ALWAYS);
 			break;
 		}
 		
