@@ -2764,7 +2764,9 @@ bool HandleGameFlowTransitions() {
 		ARX_INTERFACE_KillFISHTANK();
 		ARX_INTERFACE_KillARKANE();
 		char loadfrom[256];
-
+		
+		ARX_CHANGELEVEL_StartNew();
+		
 		sprintf(loadfrom, "graph/levels/level%d/level%d.dlf", LEVEL_TO_LOAD, LEVEL_TO_LOAD);
 		OLD_PROGRESS_BAR_COUNT=PROGRESS_BAR_COUNT=0;
 		PROGRESS_BAR_TOTAL = 108;
