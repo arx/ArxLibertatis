@@ -978,7 +978,7 @@ void GetInfosCombineWithIO(Entity * _pWithIO)
 									memcpy(tTxtCombineDest,pStartString,pEndString-pStartString);
 									tTxtCombineDest[pEndString-pStartString]=0;
 
-									if(tTxtCombineDest == COMBINE->short_name()) {
+									if(tTxtCombineDest == COMBINE->className()) {
 										//same class
 										bCanCombine=true;
 									}
@@ -1113,7 +1113,7 @@ void GetInfosCombineWithIO(Entity * _pWithIO)
 								memcpy(tTxtCombineDest,pStartString,pEndString-pStartString);
 								tTxtCombineDest[pEndString-pStartString]=0;
 
-								if(tTxtCombineDest == COMBINE->short_name()) {
+								if(tTxtCombineDest == COMBINE->className()) {
 									//same class
 									bCanCombine=true;
 								}
@@ -1837,7 +1837,7 @@ void ArxGame::manageEditorControls() {
 					std::string temp = COMBINE->idString();
 					EVENT_SENDER=COMBINE;
 
-					if(boost::starts_with(COMBINE->short_name(), "keyring")) {
+					if(boost::starts_with(COMBINE->className(), "keyring")) {
 						ARX_KEYRING_Combine(io);
 					} else {
 						SendIOScriptEvent(io, SM_COMBINE, temp);

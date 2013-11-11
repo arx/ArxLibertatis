@@ -1625,7 +1625,7 @@ static void MakeTemporaryIOIdent(Entity * io) {
 	if(!io)
 		return;
 	
-	std::string className = io->short_name();
+	std::string className = io->className();
 	res::path classDir = io->classPath().parent();
 	
 	for(long t = 1; ; t++) {
@@ -1635,7 +1635,7 @@ static void MakeTemporaryIOIdent(Entity * io) {
 		// TODO replace this loop by an (className, instance) index
 		for(size_t i = 0; i < entities.size(); i++) {
 			if(entities[i] && entities[i]->ident == t && io != entities[i]) {
-				if(entities[i]->short_name() == className) {
+				if(entities[i]->className() == className) {
 					used = true;
 					break;
 				}
@@ -2034,7 +2034,7 @@ void ReloadScript(Entity * io) {
 	ReleaseScript(&io->script);
 
 	loadScript(io->script, resources->getFile(io->classPath() + ".asl"));
-	loadScript(io->over_script, resources->getFile((io->full_name() / io->short_name()) + ".asl"));
+	loadScript(io->over_script, resources->getFile((io->full_name() / io->className()) + ".asl"));
 
 	long num = io->index();
 

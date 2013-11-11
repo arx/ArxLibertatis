@@ -168,7 +168,7 @@ bool isBlockEndSuprressed(const Context & context, const std::string & command);
 
 size_t initSuppressions();
 
-#define ScriptContextPrefix(context) '[' << ((context).getEntity() ? (((context).getScript() == &(context).getEntity()->script) ? (context).getEntity()->short_name() : (context).getEntity()->idString()) : "unknown") << ':' << (context).getPosition() << "] "
+#define ScriptContextPrefix(context) '[' << ((context).getEntity() ? (((context).getScript() == &(context).getEntity()->script) ? (context).getEntity()->className() : (context).getEntity()->idString()) : "unknown") << ':' << (context).getPosition() << "] "
 #define ScriptPrefix ScriptContextPrefix(context) << getName() <<
 #define DebugScript(args) LogDebug(ScriptPrefix args)
 #define ScriptInfo(args) LogInfo << ScriptPrefix args

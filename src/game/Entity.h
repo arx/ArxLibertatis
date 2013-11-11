@@ -364,7 +364,7 @@ public:
 	 * of the file is returned
 	 * @return The name of the file at the end of the filename path
 	 */
-	std::string short_name() const;
+	std::string className() const;
 	
 	/*!
 	 *  Returns the long name for this Object where the short name

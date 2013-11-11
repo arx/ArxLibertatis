@@ -279,13 +279,13 @@ Entity::~Entity() {
 	
 }
 
-std::string Entity::short_name() const {
+std::string Entity::className() const {
 	return m_classPath.filename();
 }
 
 std::string Entity::idString() const {
 	std::stringstream ss;
-	ss << short_name() << '_' << std::setw(4) << std::setfill('0') << ident;
+	ss << className() << '_' << std::setw(4) << std::setfill('0') << ident;
 	return ss.str();
 }
 

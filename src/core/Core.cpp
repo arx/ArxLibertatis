@@ -1858,7 +1858,7 @@ long Player_Arrow_Count() {
 				for(size_t i = 0; i < INVENTORY_X; i++) {
 					Entity * io = inventory[iNbBag][i][j].io;
 					if(io) {
-						if(io->short_name() == "arrows") {
+						if(io->className() == "arrows") {
 							if(io->durability >= 1.f) {
 								count += checked_range_cast<long>(io->durability);
 							}
@@ -1880,7 +1880,7 @@ Entity * Player_Arrow_Count_Decrease() {
 		for(size_t j = 0; j < INVENTORY_Y; j++) {
 			for(size_t i = 0; i < INVENTORY_X; i++) {
 				Entity * ioo = inventory[iNbBag][i][j].io;
-				if(ioo && ioo->short_name() == "arrows" && ioo->durability >= 1.f) {
+				if(ioo && ioo->className() == "arrows" && ioo->durability >= 1.f) {
 					if(!io || io->durability > ioo->durability)
 						io = ioo;
 				}

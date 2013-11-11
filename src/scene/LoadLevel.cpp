@@ -481,7 +481,7 @@ void WriteIOInfo(Entity * io, const fs::path & dir) {
 		return;
 	}
 	
-	fs::path file = (dir / io->short_name()).set_ext("log");
+	fs::path file = (dir / io->className()).set_ext("log");
 	
 	fs::ofstream ofs(file, fs::fstream::out | fs::fstream::trunc);
 	if(!ofs.is_open()) {
@@ -520,7 +520,7 @@ void SaveIOScript(Entity * io, long fl) {
 				LogError << "Local DIR don't Exists...";
 				return;
 			}
-			file /= io->short_name();
+			file /= io->className();
 			script = &io->over_script;
 			break;
 		}
@@ -572,7 +572,7 @@ Entity * LoadInter_Ex(const res::path & classPath, EntityInstance instance,
 	io->initangle = io->angle = angle;
 	
 	res::path tmp = io->full_name(); // Get the directory name to check for
-	string id = io->short_name();
+	string id = io->className();
 	if(PakDirectory * dir = resources->getDirectory(tmp)) {
 		if(PakFile * file = dir->getFile(id + ".asl")) {
 			loadScript(io->over_script, file);
