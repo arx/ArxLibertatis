@@ -466,7 +466,8 @@ static bool ARX_CHANGELEVEL_Push_Index(long num) {
 		if(entities[i] != NULL
 		   && !(entities[i]->ioflags & IO_NOSAVE)
 		   && !IsInPlayerInventory(entities[i])
-		   && !IsPlayerEquipedWith(entities[i])) {
+		   && !IsPlayerEquipedWith(entities[i])
+		   && (entities[i]->show != SHOW_FLAG_DESTROYED)) {
 			ARX_CHANGELEVEL_IO_INDEX aii;
 			memset(&aii, 0, sizeof(aii));
 			strncpy(aii.filename,
