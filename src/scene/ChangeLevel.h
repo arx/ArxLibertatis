@@ -73,10 +73,16 @@ bool ARX_Changelevel_CurGame_Clear();
 bool currentSavedGameHasEntity(const std::string & idString);
 
 /*!
- * Mark the entity with ID string as deleted in the save game.
+ * Mark the entity with ID string as deleted in the current save game state.
  * This needs to be done for entities referenced in level files or we will recreate
  * the entity the next time the level is loaded.
  */
 void currentSavedGameStoreEntityDeletion(const std::string & idString);
+
+/*!
+ * Completely remove an entity from the current save game state.
+ * This should only be done when the entity isn't referenced anymore (destroyed).
+ */
+void currentSavedGameRemoveEntity(const std::string & idString);
 
 #endif // ARX_SCENE_CHANGELEVEL_H

@@ -285,6 +285,12 @@ void currentSavedGameStoreEntityDeletion(const std::string & idString) {
 	
 }
 
+void currentSavedGameRemoveEntity(const string & idString) {
+	if(pSaveBlock) {
+		pSaveBlock->remove(idString);
+	}
+}
+
 extern long JUST_RELOADED;
 
 void ARX_CHANGELEVEL_Change(const string & level, const string & target, long angle) {
