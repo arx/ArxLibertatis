@@ -3047,7 +3047,7 @@ void ARX_INTERACTIVE_DestroyIOdelayed(Entity * entity) {
 void ARX_INTERACTIVE_DestroyIOdelayedExecute() {
 	for(std::vector<Entity *>::iterator it = toDestroy.begin(); it != toDestroy.end(); ++it) {
 		if(*it) {
-			(*it)->destroyOne();;
+			(*it)->destroyOne();
 		}
 	}
 	toDestroy.clear();

@@ -361,20 +361,13 @@ public:
 		
 		DebugScript("");
 		
-		Entity * io = context.getEntity();
+		Entity * entity = context.getEntity();
 		
-		if(io->ioflags & IO_ITEM) {
-			player.hunger += min(io->_itemdata->food_value * 4.f, 100.f);
+		if(entity->ioflags & IO_ITEM) {
+			player.hunger += min(entity->_itemdata->food_value * 4.f, 100.f);
 		}
 		
-		if((io->ioflags & IO_ITEM) && io->_itemdata->count > 1) {
-			io->_itemdata->count--;
-		} else {
-			io->show = SHOW_FLAG_KILLED;
-			io->gameFlags &= ~GFLAG_ISINTREATZONE;
-			RemoveFromAllInventories(io);
-			ARX_DAMAGES_ForceDeath(io, EVENT_SENDER);
-		}
+		ARX_INTERACTIVE_DestroyIOdelayed(entity);
 		
 		return Success;
 	}
