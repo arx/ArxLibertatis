@@ -166,8 +166,12 @@ public:
 				}
 			}
 			
-			io->destroy();
+			// Delay destruction of the object to avoid invalid references
+			ARX_INTERACTIVE_DestroyIOdelayed(io);
 			
+			// Prevent further script events as the object has been destroyed!
+			io->show = SHOW_FLAG_MEGAHIDE;
+			io->ioflags |= IO_FREEZESCRIPT;
 			return AbortRefuse;
 		}
 		

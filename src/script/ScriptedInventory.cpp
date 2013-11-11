@@ -117,8 +117,12 @@ class InventoryCommand : public Command {
 				for(long ni = 0; ni < id->sizex; ni++) {
 					Entity * item = id->slot[ni][nj].io;
 					if(item) {
-						item->destroy();
+						// Delay destruction of the object to avoid invalid references
+						ARX_INTERACTIVE_DestroyIOdelayed(item);
 						id->slot[ni][nj].io = NULL;
+						// Prevent further script events as the object has been destroyed!
+						item->show = SHOW_FLAG_MEGAHIDE;
+						item->ioflags |= IO_FREEZESCRIPT;
 					}
 				}
 			}
