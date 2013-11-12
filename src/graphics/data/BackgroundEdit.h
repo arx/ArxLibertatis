@@ -20,6 +20,6 @@
 #define ARX_GRAPHICS_DATA_BACKGROUNDEDIT_H
 
 
-
+void ARX_PrepareBackgroundNRMLs();
 
 #endif // ARX_GRAPHICS_DATA_BACKGROUNDEDIT_H
