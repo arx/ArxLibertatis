@@ -82,6 +82,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Light.h"
 #include "scene/Interactive.h"
 
+#include "physics/Projectile.h"
+
 using std::vector;
 
 extern TextureContainer *enviro;
