@@ -133,12 +133,6 @@ struct ARX_USE_PATH {
 	long lastWP;
 };
 
-struct MASTER_CAMERA_STRUCT {
-	long exist; // 2== want to change to want_vars...
-	Entity * io;
-	Entity * want_io;
-};
-
 enum PathMod {
 	ARX_PATH_MOD_POSITION  = (1<<0),
 	ARX_PATH_MOD_FLAGS     = (1<<1),
@@ -149,7 +143,6 @@ enum PathMod {
 DECLARE_FLAGS(PathMod, PathMods)
 DECLARE_FLAGS_OPERATORS(PathMods)
 
-extern MASTER_CAMERA_STRUCT MasterCamera;
 extern ARX_PATH ** ARXpaths;
 #ifdef BUILD_EDITOR
 extern ARX_PATH * ARX_PATHS_FlyingOverAP;

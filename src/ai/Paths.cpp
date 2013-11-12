@@ -77,8 +77,8 @@ using std::string;
 
 extern long CHANGE_LEVEL_ICON;
 extern float framedelay;
+
 ARX_PATH ** ARXpaths = NULL;
-MASTER_CAMERA_STRUCT MasterCamera;
 long nbARXpaths = 0;
 
 void ARX_PATH_ComputeBB(ARX_PATH * ap) {
