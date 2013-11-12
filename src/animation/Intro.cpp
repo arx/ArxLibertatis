@@ -176,8 +176,7 @@ void LoadLevelScreen(long num) {
 
 		float ratio = (PROGRESS_BAR_TOTAL > 0.f ? PROGRESS_BAR_COUNT / PROGRESS_BAR_TOTAL : 0); 
 
-		if (ratio > 1.f) ratio = 1.f;
-		else if (ratio < 0.f) ratio = 0.f;
+		ratio = glm::clamp(ratio, 0.f, 1.f);
 
 		GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer);
 		
