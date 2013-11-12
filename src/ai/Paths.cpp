@@ -52,40 +52,22 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <boost/foreach.hpp>
 
-#include "animation/AnimationRender.h"
-
 #include "core/GameTime.h"
 #include "core/Core.h"
 
-#include "game/Spells.h"
-#include "game/NPC.h"
 #include "game/Player.h"
-#include "game/Damage.h"
 #include "game/EntityManager.h"
-#include "game/Equipment.h"
 #include "game/Inventory.h"
 
 #include "graphics/GraphicsModes.h"
 #include "graphics/GraphicsTypes.h"
 #include "graphics/Math.h"
-#include "graphics/Renderer.h"
-#include "graphics/effects/SpellEffects.h"
-#include "graphics/particle/ParticleEffects.h"
-#include "graphics/data/Mesh.h"
-#include "graphics/data/TextureContainer.h"
-
-#include "io/resource/ResourcePath.h"
 
 #include "math/Random.h"
 
 #include "platform/Platform.h"
 
-#include "physics/Box.h"
-#include "physics/Collisions.h"
-
 #include "scene/GameSound.h"
-#include "scene/Interactive.h"
-#include "scene/Light.h"
 
 #include "script/Script.h"
 

@@ -57,12 +57,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "math/Vector.h"
 #include "platform/Flags.h"
 
-#include "graphics/effects/Trail.h"
-
-struct EERIE_CAMERA;
-struct EERIE_3DOBJ;
 class Entity;
-class Trail;
 
 enum PathwayType {
 	PATHWAY_STANDARD = 0,
