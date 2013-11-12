@@ -176,6 +176,4 @@ ARX_PATH * ARX_PATHS_ExistName(const std::string & name);
 void ARX_PATHS_Delete(ARX_PATH * ap);
 long ARX_PATHS_Interpolate(ARX_USE_PATH * aup, Vec3f * pos);
 
-long ARX_PHYSICS_BOX_ApplyModel(EERIE_3DOBJ * obj, float framediff, float rubber, long source);
-
 #endif // ARX_AI_PATHS_H
