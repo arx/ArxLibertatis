@@ -163,7 +163,6 @@ extern TextureContainer * scursor[];
 extern TextureContainer * pTCCrossHair;
 extern TextureContainer * mecanism_tc;
 extern TextureContainer * arrow_left_tc;
-extern TexturedVertex LATERDRAWHALO[];
 extern Notification speech[];
 extern std::string WILLADDSPEECH;
 extern float PLAYER_ROTATION;
