@@ -45,6 +45,8 @@ bool switchVertexArray(GLArrayClientState type, const void * ref, int texcount);
 template <>
 inline void setVertexArray(const TexturedVertex * vertices, const void * ref) {
 	
+	ARX_UNUSED(vertices);
+
 	if(!switchVertexArray(GL_TexturedVertex, ref, 1)) {
 		return;
 	}
