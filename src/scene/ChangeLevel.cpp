@@ -1965,7 +1965,8 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) {
 	}
 	
 	if(ais->show == SHOW_FLAG_DESTROYED || ais->show == SHOW_FLAG_KILLED) {
-		arx_assert_msg(!ais->scriptload, "destroyed entity still referenced somewhere");
+		// Not supposed to happen anymore, but older saves have these (this is harmless bloat)
+		LogWarning << "Found destroyed entity " << ident << " in save file";
 		free(dat);
 		return NULL;
 	}

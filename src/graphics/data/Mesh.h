@@ -213,7 +213,6 @@ float PtIn2DPolyProj(EERIE_3DOBJ * obj,EERIE_FACE * ef, float x, float z);
 float PtIn2DPolyProjV2(EERIE_3DOBJ * obj,EERIE_FACE * ef, float x, float z);
 
 long GetVertexPos(Entity * io,long id,Vec3f * pos);
-void ARX_PrepareBackgroundNRMLs();
 long CountBkgVertex();
 
 void SetCameraDepth(EERIE_CAMERA &cam, float depth);

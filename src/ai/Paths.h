@@ -57,12 +57,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "math/Vector.h"
 #include "platform/Flags.h"
 
-#include "graphics/effects/Trail.h"
-
-struct EERIE_CAMERA;
-struct EERIE_3DOBJ;
 class Entity;
-class Trail;
 
 enum PathwayType {
 	PATHWAY_STANDARD = 0,
@@ -138,12 +133,6 @@ struct ARX_USE_PATH {
 	long lastWP;
 };
 
-struct MASTER_CAMERA_STRUCT {
-	long exist; // 2== want to change to want_vars...
-	Entity * io;
-	Entity * want_io;
-};
-
 enum PathMod {
 	ARX_PATH_MOD_POSITION  = (1<<0),
 	ARX_PATH_MOD_FLAGS     = (1<<1),
@@ -154,7 +143,6 @@ enum PathMod {
 DECLARE_FLAGS(PathMod, PathMods)
 DECLARE_FLAGS_OPERATORS(PathMods)
 
-extern MASTER_CAMERA_STRUCT MasterCamera;
 extern ARX_PATH ** ARXpaths;
 #ifdef BUILD_EDITOR
 extern ARX_PATH * ARX_PATHS_FlyingOverAP;
@@ -175,43 +163,5 @@ void ARX_PATH_ComputeAllBoundingBoxes();
 ARX_PATH * ARX_PATHS_ExistName(const std::string & name);
 void ARX_PATHS_Delete(ARX_PATH * ap);
 long ARX_PATHS_Interpolate(ARX_USE_PATH * aup, Vec3f * pos);
-
-enum ThrownObjectFlag {
-	ATO_EXIST      = (1<<0),
-	ATO_MOVING     = (1<<1),
-	ATO_UNDERWATER = (1<<2),
-	ATO_FIERY      = (1<<3)
-};
-DECLARE_FLAGS(ThrownObjectFlag, ThrownObjectFlags)
-DECLARE_FLAGS_OPERATORS(ThrownObjectFlags)
-
-struct ARX_THROWN_OBJECT {
-	ThrownObjectFlags flags;
-	Vec3f vector;
-	EERIE_QUAT quat;
-	Vec3f initial_position;
-	float velocity;
-	Vec3f position;
-	float damages;
-	EERIE_3DOBJ * obj;
-	long source;
-	unsigned long creation_time;
-	float poisonous;
-	Trail * pRuban;
-};
-
-const size_t MAX_THROWN_OBJECTS = 100;
-
-extern ARX_THROWN_OBJECT Thrown[MAX_THROWN_OBJECTS];
-
-
-
-long ARX_THROWN_OBJECT_GetFree();
-long ARX_THROWN_OBJECT_Throw(long source, Vec3f * position, Vec3f * vect, EERIE_QUAT * quat, float velocity, float damages, float poisonous);
-void ARX_THROWN_OBJECT_KillAll();
-void ARX_THROWN_OBJECT_Manage(unsigned long time_offset);
-void ARX_THROWN_OBJECT_Render();
-
-long ARX_PHYSICS_BOX_ApplyModel(EERIE_3DOBJ * obj, float framediff, float rubber, long source);
 
 #endif // ARX_AI_PATHS_H

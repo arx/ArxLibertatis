@@ -50,3 +50,5 @@ void EERIE_TRANSFORM::updateFromAngle(const Anglef &angle) {
 	glm::mat4 rotateZ = glm::eulerAngleZ(-roll);
 	worldToView = rotateZ * rotateX * rotateY * translation;
 }
+
+MASTER_CAMERA_STRUCT MasterCamera;

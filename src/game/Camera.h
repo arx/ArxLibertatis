@@ -87,4 +87,13 @@ struct IO_CAMDATA {
 	EERIE_CAMERA cam;
 };
 
+
+struct MASTER_CAMERA_STRUCT {
+	long exist; // 2== want to change to want_vars...
+	Entity * io;
+	Entity * want_io;
+};
+
+extern MASTER_CAMERA_STRUCT MasterCamera;
+
 #endif // ARX_GAME_CAMERA_H

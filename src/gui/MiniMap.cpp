@@ -178,37 +178,34 @@ void MiniMap::loadOffsets(PakReader *pakRes) {
 	}
 	
 	size_t fileSize = file->size();
-	char *dat = new char[fileSize + 2];
-	dat[fileSize + 1] = '\0';
+	char * dat = new char[fileSize + 1];
+	dat[fileSize] = '\0';
 	
 	file->read(dat);
 	
-	if(dat) {
+	size_t pos = 0;
+	
+	for(int i = 0; i < 29; i++) { // Why 29?
 		
-		size_t pos = 0;
+		char t[512];
+		int nRead = sscanf(dat + pos, "%s %f %f", t, &m_miniOffsetX[i], &m_miniOffsetY[i]);
 		
-		for(int i = 0; i < 29; i++) { // Why 29?
-			
-			char t[512];
-			int nRead = sscanf(dat + pos, "%s %f %f", t, &m_miniOffsetX[i], &m_miniOffsetY[i]);
-			
-			if(nRead != 3) {
-				LogError << "Error parsing line " << i << " of mini_offsets.ini: read " << nRead;
-			}
-			
-			while((pos < fileSize) && (dat[pos] != '\n')) {
-				pos++;
-			}
-			
-			pos++;
-			
-			if(pos >= fileSize) {
-				break;
-			}
+		if(nRead != 3) {
+			LogError << "Error parsing line " << i << " of mini_offsets.ini: read " << nRead;
 		}
 		
-		delete[] dat;
+		while((pos < fileSize) && (dat[pos] != '\n')) {
+			pos++;
+		}
+		
+		pos++;
+		
+		if(pos >= fileSize) {
+			break;
+		}
 	}
+	
+	delete[] dat;
 	
 	m_miniOffsetX[0] = 0;
 	m_miniOffsetY[0] = -0.5;
@@ -269,7 +266,8 @@ void MiniMap::resetLevels() {
 		m_levels[i].m_ratioY = 0.f;
 		m_levels[i].m_width = 0.f;
 		m_levels[i].m_height = 0.f;
-		memset(m_levels[i].m_revealed, 0, sizeof(m_levels[i].m_revealed[0][0] * MINIMAP_MAX_X * MINIMAP_MAX_Z)); // Sets the whole array to 0
+		// Sets the whole array to 0
+		memset(m_levels[i].m_revealed, 0, sizeof(m_levels[i].m_revealed));
 	}
 }
 

@@ -196,3 +196,118 @@ bool TryToQuadify(EERIEPOLY * ep,EERIE_3DOBJ * eobj)
 
 	return false;
 }
+
+
+void ARX_PrepareBackgroundNRMLs()
+{
+	long i, j, k;
+	long i2, j2, k2;
+	EERIE_BKG_INFO * eg;
+	EERIE_BKG_INFO * eg2;
+	EERIEPOLY * ep;
+	EERIEPOLY * ep2;
+	Vec3f nrml;
+	Vec3f cur_nrml;
+	float count;
+
+	for(j = 0; j < ACTIVEBKG->Zsize; j++)
+		for(i = 0; i < ACTIVEBKG->Xsize; i++) {
+			eg = &ACTIVEBKG->Backg[i+j*ACTIVEBKG->Xsize];
+
+			for(long l = 0; l < eg->nbpoly; l++) {
+				ep = &eg->polydata[l];
+
+				long nbvert = (ep->type & POLY_QUAD) ? 4 : 3;
+
+				for(k = 0; k < nbvert; k++) {
+					float ttt = 1.f;
+
+					if(k == 3) {
+						nrml = ep->norm2;
+						count = 1.f;
+					} else if(k > 0 && nbvert > 3) {
+						nrml = (ep->norm + ep->norm2);
+						count = 2.f;
+						ttt = .5f;
+					} else {
+						nrml = ep->norm;
+						count = 1.f;
+					}
+
+					cur_nrml = nrml * ttt;
+
+					long mii = std::max(i - 4, 0L);
+					long mai = std::min(i + 4, ACTIVEBKG->Xsize - 1L);
+					long mij = std::max(j - 4, 0L);
+					long maj = std::min(j + 4, ACTIVEBKG->Zsize - 1L);
+
+					for(j2 = mij; j2 < maj; j2++)
+						for(i2 = mii; i2 < mai; i2++) {
+							eg2 = &ACTIVEBKG->Backg[i2+j2*ACTIVEBKG->Xsize];
+
+							for(long kr = 0; kr < eg2->nbpoly; kr++) {
+								ep2 = &eg2->polydata[kr];
+
+								long nbvert2 = (ep2->type & POLY_QUAD) ? 4 : 3;
+
+								if(ep != ep2)
+									for(k2 = 0; k2 < nbvert2; k2++) {
+										if(EEfabs(ep2->v[k2].p.x - ep->v[k].p.x) < 2.f
+										   && EEfabs(ep2->v[k2].p.y - ep->v[k].p.y) < 2.f
+										   && EEfabs(ep2->v[k2].p.z - ep->v[k].p.z) < 2.f
+										) {
+											if(k2 == 3) {
+												if(LittleAngularDiff(&cur_nrml, &ep2->norm2)) {
+													nrml += ep2->norm2;
+													count += 1.f;
+													nrml += cur_nrml;
+													count += 1.f;
+												}
+											} else if(k2 > 0 && nbvert2 > 3) {
+												Vec3f tnrml = (ep2->norm + ep2->norm2) * .5f;
+												if(LittleAngularDiff(&cur_nrml, &tnrml)) {
+													nrml += tnrml * 2.f;
+													count += 2.f;
+												}
+											} else {
+												if(LittleAngularDiff(&cur_nrml, &ep2->norm)) {
+													nrml += ep2->norm;
+													count += 1.f;
+												}
+											}
+										}
+									}
+							}
+						}
+
+					count = 1.f / count;
+					ep->tv[k].p = nrml * count;
+
+				}
+			}
+		}
+
+	for(j = 0; j < ACTIVEBKG->Zsize; j++)
+		for(i = 0; i < ACTIVEBKG->Xsize; i++) {
+			eg = &ACTIVEBKG->Backg[i+j*ACTIVEBKG->Xsize];
+
+			for(long l = 0; l < eg->nbpoly; l++) {
+				ep = &eg->polydata[l];
+
+				long nbvert = (ep->type & POLY_QUAD) ? 4 : 3;
+
+				for(k = 0; k < nbvert; k++) {
+					ep->nrml[k] = ep->tv[k].p;
+				}
+
+				float d = 0.f;
+
+				for(long ii = 0; ii < nbvert; ii++) {
+					d = max(d, glm::distance(ep->center, ep->v[ii].p));
+				}
+
+				ep->v[0].rhw = d;
+			}
+		}
+
+}

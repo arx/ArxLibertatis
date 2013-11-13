@@ -104,6 +104,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "physics/Collisions.h"
 #include "physics/Attractors.h"
+#include "physics/Projectile.h"
 
 #include "platform/Platform.h"
 

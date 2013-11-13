@@ -726,6 +726,7 @@ set(PHYSICS_SOURCES
 	src/physics/Clothes.cpp
 	src/physics/Collisions.cpp
 	src/physics/CollisionShapes.cpp
+	src/physics/Projectile.cpp
 	src/physics/Physics.cpp
 )
 

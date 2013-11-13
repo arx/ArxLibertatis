@@ -530,27 +530,27 @@ EERIE_3DOBJ * ARX_FTL_Load(const res::path & file) {
 		
 		// Copy the face data in
 		for(long ii = 0; ii < af3Ddh->nb_faces; ii++) {
+			EERIE_FACE & face = obj->facelist[ii];
 			
 			const EERIE_FACE_FTL * eff = reinterpret_cast<const EERIE_FACE_FTL*>(dat + pos);
 			pos += sizeof(EERIE_FACE_FTL); 
 			
-			obj->facelist[ii].facetype = PolyType::load(eff->facetype);
-			obj->facelist[ii].texid = eff->texid;
-			obj->facelist[ii].transval = eff->transval;
-			obj->facelist[ii].temp = eff->temp;
-			obj->facelist[ii].norm = eff->norm.toVec3();
+			face.facetype = PolyType::load(eff->facetype);
+			face.texid = eff->texid;
+			face.transval = eff->transval;
+			face.temp = eff->temp;
+			face.norm = eff->norm.toVec3();
 			
 			// Copy in all the texture and normals data
 			BOOST_STATIC_ASSERT(IOPOLYVERT_FTL == IOPOLYVERT);
 			for(size_t kk = 0; kk < IOPOLYVERT_FTL; kk++) {
-				obj->facelist[ii].nrmls[kk] = eff->nrmls[kk].toVec3();
-				obj->facelist[ii].vid[kk] = eff->vid[kk];
-				obj->facelist[ii].u[kk] = eff->u[kk];
-				obj->facelist[ii].v[kk] = eff->v[kk];
-				obj->facelist[ii].ou[kk] = eff->ou[kk];
-				obj->facelist[ii].ov[kk] = eff->ov[kk];
+				face.nrmls[kk] = eff->nrmls[kk].toVec3();
+				face.vid[kk] = eff->vid[kk];
+				face.u[kk] = eff->u[kk];
+				face.v[kk] = eff->v[kk];
+				face.ou[kk] = eff->ou[kk];
+				face.ov[kk] = eff->ov[kk];
 			}
-			
 		}
 	}
 	
