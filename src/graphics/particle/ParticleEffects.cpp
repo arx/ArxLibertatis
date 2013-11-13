@@ -1373,11 +1373,11 @@ void ARX_PARTICLES_Update(EERIE_CAMERA * cam)  {
 				
 				float temp = (part->zdec) ? 0.0001f : 2.f;
 
-				EERIEAddSprite(mat, in, siz, tc, color, temp, rott);
+				EERIEAddSprite(mat, in, siz, color, temp, rott);
 
 				if(part->special & PARTICLE_SUB2) {
 					mat.setBlendType(RenderMaterial::Subtractive);
-					EERIEAddSprite(mat, in, siz, tc, Color::white, temp, rott);
+					EERIEAddSprite(mat, in, siz, Color::white, temp, rott);
 				}
 
 			}
@@ -1399,17 +1399,17 @@ void ARX_PARTICLES_Update(EERIE_CAMERA * cam)  {
 			Vec3f end = pos - (pos - op) * 2.5f;
 			Color masked = Color::fromBGRA(col.toBGRA() & part->mask);
 			Draw3DLineTex2(end, pos, 2.f, masked, col);
-			EERIEAddSprite(mat, in, 0.7f, tc, col, 2.f);
+			EERIEAddSprite(mat, in, 0.7f, col, 2.f);
 			
 		} else {
 			
 			float temp = (part->zdec) ? 0.0001f : 2.f;
 
-			EERIEAddSprite(mat, in, siz, tc, color, temp);
+			EERIEAddSprite(mat, in, siz, color, temp);
 
 			if(part->special & PARTICLE_SUB2) {
 				mat.setBlendType(RenderMaterial::Subtractive);
-				EERIEAddSprite(mat, in, siz, tc, Color::white, temp);
+				EERIEAddSprite(mat, in, siz, Color::white, temp);
 			}
 		}
 		

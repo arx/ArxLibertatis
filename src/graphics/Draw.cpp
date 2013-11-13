@@ -75,7 +75,7 @@ void SetTextureDrawPrim(TextureContainer* tex, TexturedVertex* v, Renderer::Prim
 	EERIEDRAWPRIM(prim, v, 4);
 }
 
-bool EERIECreateSprite(TexturedQuad& sprite, const TexturedVertex & in, float siz, TextureContainer * tex, Color color, float Zpos, float rot = 0) {
+bool EERIECreateSprite(TexturedQuad& sprite, const TexturedVertex & in, float siz, Color color, float Zpos, float rot = 0) {
 
 	TexturedVertex out;
 	EE_RTP(&in, &out);
@@ -134,10 +134,10 @@ bool EERIECreateSprite(TexturedQuad& sprite, const TexturedVertex & in, float si
 	return false;
 }
 
-void EERIEAddSprite(const RenderMaterial & mat, const TexturedVertex & in, float siz, TextureContainer * tex, Color color, float Zpos, float rot) {
+void EERIEAddSprite(const RenderMaterial & mat, const TexturedVertex & in, float siz, Color color, float Zpos, float rot) {
 	TexturedQuad s;
 
-	if(EERIECreateSprite(s, in, siz, tex, color, Zpos, rot)) {
+	if(EERIECreateSprite(s, in, siz, color, Zpos, rot)) {
 		RenderBatcher::getInstance().add(mat, s);
 	}
 }
@@ -177,7 +177,7 @@ void EERIEDrawSprite(const TexturedVertex & in, float siz, TextureContainer * te
 	
 	TexturedQuad s;
 
-	if(EERIECreateSprite(s, in, siz, tex, color, Zpos)) {
+	if(EERIECreateSprite(s, in, siz, color, Zpos)) {
 		SetTextureDrawPrim(tex, s.v, Renderer::TriangleFan);
 	}
 }

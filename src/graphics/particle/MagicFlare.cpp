@@ -484,8 +484,8 @@ void ARX_MAGICAL_FLARES_Update() {
 				EERIEAddBitmap(mat, flare.v.p.x, flare.v.p.y, s, s, flare.v.p.z,
 								surf, Color::fromBGRA(flare.tv.color));
 			} else {
-				EERIEAddSprite(mat, flare.v, s * 0.025f + 1.f, surf,
-								Color::fromBGRA(flare.tv.color), 2.f);
+				EERIEAddSprite(mat, flare.v, s * 0.025f + 1.f,
+				               Color::fromBGRA(flare.tv.color), 2.f);
 			}
 
 		}
