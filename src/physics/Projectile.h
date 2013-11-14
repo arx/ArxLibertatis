@@ -20,42 +20,10 @@
 #ifndef ARX_PHYSICS_PROJECTILE_H
 #define ARX_PHYSICS_PROJECTILE_H
 
-#include "platform/Flags.h"
 #include "graphics/GraphicsTypes.h"
-#include "graphics/effects/Trail.h"
 
-enum ThrownObjectFlag {
-	ATO_EXIST      = (1<<0),
-	ATO_MOVING     = (1<<1),
-	ATO_UNDERWATER = (1<<2),
-	ATO_FIERY      = (1<<3)
-};
-DECLARE_FLAGS(ThrownObjectFlag, ThrownObjectFlags)
-DECLARE_FLAGS_OPERATORS(ThrownObjectFlags)
-
-struct ARX_THROWN_OBJECT {
-	ThrownObjectFlags flags;
-	Vec3f vector;
-	EERIE_QUAT quat;
-	Vec3f initial_position;
-	float velocity;
-	Vec3f position;
-	float damages;
-	EERIE_3DOBJ * obj;
-	long source;
-	unsigned long creation_time;
-	float poisonous;
-	Trail * pRuban;
-};
-
-const size_t MAX_THROWN_OBJECTS = 100;
-
-extern ARX_THROWN_OBJECT Thrown[MAX_THROWN_OBJECTS];
-
-
-
-long ARX_THROWN_OBJECT_GetFree();
 long ARX_THROWN_OBJECT_Throw(long source, Vec3f * position, Vec3f * vect, EERIE_QUAT * quat, float velocity, float damages, float poisonous);
+
 void ARX_THROWN_OBJECT_KillAll();
 void ARX_THROWN_OBJECT_Manage(unsigned long time_offset);
 void ARX_THROWN_OBJECT_Render();

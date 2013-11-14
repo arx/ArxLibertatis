@@ -21,6 +21,8 @@
 
 #include <string>
 
+#include "platform/Flags.h"
+
 #include "core/GameTime.h"
 
 #include "game/Equipment.h"
@@ -39,10 +41,38 @@
 #include "graphics/Renderer.h"
 #include "graphics/data/TextureContainer.h"
 #include "graphics/particle/ParticleEffects.h"
+#include "graphics/effects/Trail.h"
 
 using std::string;
 
 extern float framedelay;
+
+
+enum ThrownObjectFlag {
+	ATO_EXIST      = (1<<0),
+	ATO_MOVING     = (1<<1),
+	ATO_UNDERWATER = (1<<2),
+	ATO_FIERY      = (1<<3)
+};
+DECLARE_FLAGS(ThrownObjectFlag, ThrownObjectFlags)
+DECLARE_FLAGS_OPERATORS(ThrownObjectFlags)
+
+struct ARX_THROWN_OBJECT {
+	ThrownObjectFlags flags;
+	Vec3f vector;
+	EERIE_QUAT quat;
+	Vec3f initial_position;
+	float velocity;
+	Vec3f position;
+	float damages;
+	EERIE_3DOBJ * obj;
+	long source;
+	unsigned long creation_time;
+	float poisonous;
+	Trail * pRuban;
+};
+
+const size_t MAX_THROWN_OBJECTS = 100;
 
 ARX_THROWN_OBJECT Thrown[MAX_THROWN_OBJECTS];
 
