@@ -126,9 +126,6 @@ ARX_NODES nodes;
 static float TREATZONE_LIMIT = 1800.f;
  
 long HERO_SHOW_1ST = 1;
-#ifdef BUILD_EDITOR
-long NbIOSelected = 0;
-#endif
 
 static bool IsCollidingInter(Entity * io, Vec3f * pos);
 static Entity * AddCamera(const res::path & classPath, EntityInstance instance = -1);

@@ -104,12 +104,7 @@ enum DeleteByIndexFlag {
 DECLARE_FLAGS(DeleteByIndexFlag, DeleteByIndexFlags)
 DECLARE_FLAGS_OPERATORS(DeleteByIndexFlags)
 
-
 extern ARX_NODES nodes;
-
-#ifdef BUILD_EDITOR
-extern long NbIOSelected;
-#endif
 
 void ARX_INTERACTIVE_UnfreezeAll();
 void ARX_INTERACTIVE_TWEAK_Icon(Entity * io, const res::path & s1);
