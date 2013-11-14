@@ -2708,148 +2708,146 @@ void UpdateCameras() {
 		if(!io)
 			continue;
 
-		{
-			// interpolate & send events
-			if(io->usepath) {
+		// interpolate & send events
+		if(io->usepath) {
 
-				ARX_USE_PATH * aup = io->usepath;
-				float diff = float(arxtime) - aup->_curtime;
+			ARX_USE_PATH * aup = io->usepath;
+			float diff = float(arxtime) - aup->_curtime;
 
-				if(aup->aupflags & ARX_USEPATH_FORWARD) {
-					if (aup->aupflags & ARX_USEPATH_FLAG_FINISHED)
-					{}
-					else aup->_curtime += diff;
-				}
+			if(aup->aupflags & ARX_USEPATH_FORWARD) {
+				if (aup->aupflags & ARX_USEPATH_FLAG_FINISHED)
+				{}
+				else aup->_curtime += diff;
+			}
 
-				if(aup->aupflags & ARX_USEPATH_BACKWARD) {
-					aup->_starttime += diff * 2;
-					aup->_curtime += diff;
+			if(aup->aupflags & ARX_USEPATH_BACKWARD) {
+				aup->_starttime += diff * 2;
+				aup->_curtime += diff;
 
-					if(aup->_starttime >= aup->_curtime)
-						aup->_curtime = aup->_starttime + 1;
-				}
+				if(aup->_starttime >= aup->_curtime)
+					aup->_curtime = aup->_starttime + 1;
+			}
 
-				if(aup->aupflags & ARX_USEPATH_PAUSE) {
-					aup->_starttime += diff;
-					aup->_curtime += diff;
-				}
+			if(aup->aupflags & ARX_USEPATH_PAUSE) {
+				aup->_starttime += diff;
+				aup->_curtime += diff;
+			}
 
-				long last = ARX_PATHS_Interpolate(aup, &io->pos);
+			long last = ARX_PATHS_Interpolate(aup, &io->pos);
 
-				if(aup->lastWP != last) {
-					if(last == -2) {
-						char str[16];
-						sprintf(str, "%ld", aup->path->nb_pathways - 1);
-						EVENT_SENDER = NULL;
-						SendIOScriptEvent(io, SM_WAYPOINT, str);
-						sprintf(str, "waypoint%ld", aup->path->nb_pathways - 1);
-						SendIOScriptEvent(io, SM_NULL, "", str);
+			if(aup->lastWP != last) {
+				if(last == -2) {
+					char str[16];
+					sprintf(str, "%ld", aup->path->nb_pathways - 1);
+					EVENT_SENDER = NULL;
+					SendIOScriptEvent(io, SM_WAYPOINT, str);
+					sprintf(str, "waypoint%ld", aup->path->nb_pathways - 1);
+					SendIOScriptEvent(io, SM_NULL, "", str);
+					SendIOScriptEvent(io, SM_PATHEND);
+					aup->lastWP = last;
+				} else {
+					last--;
+					long _from = aup->lastWP;
+					long _to = last;
+
+					if (_from > _to) _from = -1;
+
+					if (_from < 0) _from = -1;
+
+					long ii = _from + 1;
+
+					char str[16];
+					sprintf(str, "%ld", ii);
+					EVENT_SENDER = NULL;
+					SendIOScriptEvent(io, SM_WAYPOINT, str);
+					sprintf(str, "waypoint%ld", ii);
+					SendIOScriptEvent(io, SM_NULL, "", str);
+
+					if(ii == aup->path->nb_pathways) {
 						SendIOScriptEvent(io, SM_PATHEND);
-						aup->lastWP = last;
-					} else {
-						last--;
-						long _from = aup->lastWP;
-						long _to = last;
-
-						if (_from > _to) _from = -1;
-
-						if (_from < 0) _from = -1;
-
-						long ii = _from + 1;
-						
-						char str[16];
-						sprintf(str, "%ld", ii);
-						EVENT_SENDER = NULL;
-						SendIOScriptEvent(io, SM_WAYPOINT, str);
-						sprintf(str, "waypoint%ld", ii);
-						SendIOScriptEvent(io, SM_NULL, "", str);
-
-						if(ii == aup->path->nb_pathways) {
-							SendIOScriptEvent(io, SM_PATHEND);
-						}
-						
-						aup->lastWP = last + 1;
 					}
+
+					aup->lastWP = last + 1;
 				}
+			}
 
-				if(io->damager_damages > 0 && io->show == SHOW_FLAG_IN_SCENE) {
-					for(size_t ii = 0; ii < entities.size(); ii++) {
-						Entity * ioo = entities[ii];
+			if(io->damager_damages > 0 && io->show == SHOW_FLAG_IN_SCENE) {
+				for(size_t ii = 0; ii < entities.size(); ii++) {
+					Entity * ioo = entities[ii];
 
-						if(ioo && ii != i
-						        &&	(ioo->show == SHOW_FLAG_IN_SCENE)
-						        &&	(ioo->ioflags & IO_NPC)
-						        &&	closerThan(io->pos, ioo->pos, 600.f))
-						{
-							bool Touched = false;
+					if(ioo && ii != i
+							&&	(ioo->show == SHOW_FLAG_IN_SCENE)
+							&&	(ioo->ioflags & IO_NPC)
+							&&	closerThan(io->pos, ioo->pos, 600.f))
+					{
+						bool Touched = false;
 
-							for (size_t ri = 0; ri < io->obj->vertexlist.size(); ri += 3) {
-								for (size_t rii = 0; rii < ioo->obj->vertexlist.size(); rii += 3) {
-									if(closerThan(io->obj->vertexlist3[ri].v, ioo->obj->vertexlist3[rii].v, 20.f)) {
-										Touched = true;
-										ri = io->obj->vertexlist.size();
-										break;
-									}
+						for (size_t ri = 0; ri < io->obj->vertexlist.size(); ri += 3) {
+							for (size_t rii = 0; rii < ioo->obj->vertexlist.size(); rii += 3) {
+								if(closerThan(io->obj->vertexlist3[ri].v, ioo->obj->vertexlist3[rii].v, 20.f)) {
+									Touched = true;
+									ri = io->obj->vertexlist.size();
+									break;
 								}
 							}
-
-							if(Touched)
-								ARX_DAMAGES_DealDamages(ii, io->damager_damages, i, io->damager_type, &ioo->pos);
 						}
+
+						if(Touched)
+							ARX_DAMAGES_DealDamages(ii, io->damager_damages, i, io->damager_type, &ioo->pos);
 					}
 				}
 			}
-			
-			if(io->ioflags & IO_CAMERA) {
-				
-				io->_camdata->cam.orgTrans.pos = io->pos;
+		}
 
-				if(io->targetinfo != TARGET_NONE) { // Follows target
-					GetTargetPos(io, (unsigned long)io->_camdata->cam.smoothing);
-					io->target += io->_camdata->cam.translatetarget;
+		if(io->ioflags & IO_CAMERA) {
 
-					if(io->_camdata->cam.lastinfovalid && io->_camdata->cam.smoothing != 0.f) {
-						Vec3f smoothtarget;
- 
-						float vv = (float)io->_camdata->cam.smoothing;
+			io->_camdata->cam.orgTrans.pos = io->pos;
 
-						if (vv > 8000) vv = 8000;
+			if(io->targetinfo != TARGET_NONE) { // Follows target
+				GetTargetPos(io, (unsigned long)io->_camdata->cam.smoothing);
+				io->target += io->_camdata->cam.translatetarget;
 
-						vv = (8000 - vv) * ( 1.0f / 4000 );
+				if(io->_camdata->cam.lastinfovalid && io->_camdata->cam.smoothing != 0.f) {
+					Vec3f smoothtarget;
 
-						float f1 = framedelay * ( 1.0f / 1000 ) * vv; 
+					float vv = (float)io->_camdata->cam.smoothing;
 
-						if (f1 > 1.f) f1 = 1.f;
+					if (vv > 8000) vv = 8000;
 
-						float f2 = 1.f - f1;
-						smoothtarget = io->target * f2 + io->_camdata->cam.lasttarget * f1;
+					vv = (8000 - vv) * ( 1.0f / 4000 );
 
-						io->_camdata->cam.setTargetCamera(smoothtarget);
-						io->_camdata->cam.lasttarget = smoothtarget;
-					} else {
-						io->_camdata->cam.setTargetCamera(io->target);
-						io->_camdata->cam.lasttarget = io->target;
-					}
+					float f1 = framedelay * ( 1.0f / 1000 ) * vv;
 
-					io->_camdata->cam.angle.setPitch(io->_camdata->cam.angle.getPitch() - 180.f);
-					io->_camdata->cam.angle.setYaw(-io->_camdata->cam.angle.getYaw());
-					io->angle.setYaw(0.f);
-					io->angle.setPitch(io->_camdata->cam.angle.getPitch() + 90.f);
-					io->angle.setRoll(0.f);
-				}	
-				else // no target...
-				{
-					float tr = radians(MAKEANGLE(io->angle.getPitch() + 90));
-					io->target.x = io->pos.x - (float)EEsin(tr) * 20.f;
-					io->target.y = io->pos.y; 
-					io->target.z = io->pos.z + (float)EEcos(tr) * 20.f;
+					if (f1 > 1.f) f1 = 1.f;
+
+					float f2 = 1.f - f1;
+					smoothtarget = io->target * f2 + io->_camdata->cam.lasttarget * f1;
+
+					io->_camdata->cam.setTargetCamera(smoothtarget);
+					io->_camdata->cam.lasttarget = smoothtarget;
+				} else {
 					io->_camdata->cam.setTargetCamera(io->target);
 					io->_camdata->cam.lasttarget = io->target;
 				}
 
-				io->_camdata->cam.lastinfovalid = true;
-				io->_camdata->cam.lastpos = io->_camdata->cam.orgTrans.pos;
+				io->_camdata->cam.angle.setPitch(io->_camdata->cam.angle.getPitch() - 180.f);
+				io->_camdata->cam.angle.setYaw(-io->_camdata->cam.angle.getYaw());
+				io->angle.setYaw(0.f);
+				io->angle.setPitch(io->_camdata->cam.angle.getPitch() + 90.f);
+				io->angle.setRoll(0.f);
 			}
+			else // no target...
+			{
+				float tr = radians(MAKEANGLE(io->angle.getPitch() + 90));
+				io->target.x = io->pos.x - (float)EEsin(tr) * 20.f;
+				io->target.y = io->pos.y;
+				io->target.z = io->pos.z + (float)EEcos(tr) * 20.f;
+				io->_camdata->cam.setTargetCamera(io->target);
+				io->_camdata->cam.lasttarget = io->target;
+			}
+
+			io->_camdata->cam.lastinfovalid = true;
+			io->_camdata->cam.lastpos = io->_camdata->cam.orgTrans.pos;
 		}
 	}
 }
