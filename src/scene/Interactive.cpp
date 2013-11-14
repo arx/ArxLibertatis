@@ -2710,14 +2710,14 @@ void UpdateCameras() {
 
 		// interpolate & send events
 		if(io->usepath) {
-
 			ARX_USE_PATH * aup = io->usepath;
 			float diff = float(arxtime) - aup->_curtime;
 
 			if(aup->aupflags & ARX_USEPATH_FORWARD) {
-				if (aup->aupflags & ARX_USEPATH_FLAG_FINISHED)
-				{}
-				else aup->_curtime += diff;
+				if(aup->aupflags & ARX_USEPATH_FLAG_FINISHED) {
+				} else {
+					aup->_curtime += diff;
+				}
 			}
 
 			if(aup->aupflags & ARX_USEPATH_BACKWARD) {
@@ -2750,9 +2750,11 @@ void UpdateCameras() {
 					long _from = aup->lastWP;
 					long _to = last;
 
-					if (_from > _to) _from = -1;
+					if(_from > _to)
+						_from = -1;
 
-					if (_from < 0) _from = -1;
+					if(_from < 0)
+						_from = -1;
 
 					long ii = _from + 1;
 
@@ -2775,15 +2777,16 @@ void UpdateCameras() {
 				for(size_t ii = 0; ii < entities.size(); ii++) {
 					Entity * ioo = entities[ii];
 
-					if(ioo && ii != i
-							&&	(ioo->show == SHOW_FLAG_IN_SCENE)
-							&&	(ioo->ioflags & IO_NPC)
-							&&	closerThan(io->pos, ioo->pos, 600.f))
-					{
+					if(ioo
+					   && ii != i
+					   && ioo->show == SHOW_FLAG_IN_SCENE
+					   && (ioo->ioflags & IO_NPC)
+					   && closerThan(io->pos, ioo->pos, 600.f)
+					) {
 						bool Touched = false;
 
-						for (size_t ri = 0; ri < io->obj->vertexlist.size(); ri += 3) {
-							for (size_t rii = 0; rii < ioo->obj->vertexlist.size(); rii += 3) {
+						for(size_t ri = 0; ri < io->obj->vertexlist.size(); ri += 3) {
+							for(size_t rii = 0; rii < ioo->obj->vertexlist.size(); rii += 3) {
 								if(closerThan(io->obj->vertexlist3[ri].v, ioo->obj->vertexlist3[rii].v, 20.f)) {
 									Touched = true;
 									ri = io->obj->vertexlist.size();
@@ -2803,7 +2806,8 @@ void UpdateCameras() {
 
 			io->_camdata->cam.orgTrans.pos = io->pos;
 
-			if(io->targetinfo != TARGET_NONE) { // Follows target
+			if(io->targetinfo != TARGET_NONE) {
+				// Follows target
 				GetTargetPos(io, (unsigned long)io->_camdata->cam.smoothing);
 				io->target += io->_camdata->cam.translatetarget;
 
@@ -2812,13 +2816,15 @@ void UpdateCameras() {
 
 					float vv = (float)io->_camdata->cam.smoothing;
 
-					if (vv > 8000) vv = 8000;
+					if(vv > 8000)
+						vv = 8000;
 
 					vv = (8000 - vv) * ( 1.0f / 4000 );
 
 					float f1 = framedelay * ( 1.0f / 1000 ) * vv;
 
-					if (f1 > 1.f) f1 = 1.f;
+					if(f1 > 1.f)
+						f1 = 1.f;
 
 					float f2 = 1.f - f1;
 					smoothtarget = io->target * f2 + io->_camdata->cam.lasttarget * f1;
@@ -2835,9 +2841,8 @@ void UpdateCameras() {
 				io->angle.setYaw(0.f);
 				io->angle.setPitch(io->_camdata->cam.angle.getPitch() + 90.f);
 				io->angle.setRoll(0.f);
-			}
-			else // no target...
-			{
+			} else {
+				// no target...
 				float tr = radians(MAKEANGLE(io->angle.getPitch() + 90));
 				io->target.x = io->pos.x - (float)EEsin(tr) * 20.f;
 				io->target.y = io->pos.y;
