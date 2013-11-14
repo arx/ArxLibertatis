@@ -2812,9 +2812,8 @@ void UpdateCameras() {
 				io->target += io->_camdata->cam.translatetarget;
 
 				if(io->_camdata->cam.lastinfovalid && io->_camdata->cam.smoothing != 0.f) {
-					Vec3f smoothtarget;
 
-					float vv = (float)io->_camdata->cam.smoothing;
+					float vv = io->_camdata->cam.smoothing;
 
 					if(vv > 8000)
 						vv = 8000;
@@ -2827,7 +2826,7 @@ void UpdateCameras() {
 						f1 = 1.f;
 
 					float f2 = 1.f - f1;
-					smoothtarget = io->target * f2 + io->_camdata->cam.lasttarget * f1;
+					Vec3f smoothtarget = io->target * f2 + io->_camdata->cam.lasttarget * f1;
 
 					io->_camdata->cam.setTargetCamera(smoothtarget);
 					io->_camdata->cam.lasttarget = smoothtarget;
