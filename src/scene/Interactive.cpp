@@ -536,7 +536,6 @@ void PrepareIOTreatZone(long flag)
 			TREATZONE_LIMIT += 500;
 	}
 	
-	char treat;
 	for(size_t i = 1; i < entities.size(); i++) {
 		Entity * io = entities[i];
 
@@ -546,6 +545,8 @@ void PrepareIOTreatZone(long flag)
 		             ||	(io->show == SHOW_FLAG_ON_PLAYER)
 		             ||	(io->show == SHOW_FLAG_HIDDEN)))   
 		{
+			char treat;
+
 			if (io->ioflags & IO_CAMERA) {
 				treat = 0;
 			} else if (io->ioflags & IO_MARKER) {
