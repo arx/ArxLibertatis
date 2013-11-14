@@ -123,7 +123,6 @@ extern Entity * CAMERACONTROLLER;
 extern TextureContainer * Movable;
 
 ARX_NODES nodes;
-static float TREATZONE_LIMIT = 1800.f;
  
 long HERO_SHOW_1ST = 1;
 
@@ -518,7 +517,7 @@ void PrepareIOTreatZone(long flag)
 	if(DRAGINTER)
 		TREATZONE_AddIO(DRAGINTER);
 
-	TREATZONE_LIMIT = 3200; 
+	float TREATZONE_LIMIT = 3200;
 
 	if(RoomDistance) {
 		TREATZONE_LIMIT += 600; 
