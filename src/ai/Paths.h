@@ -144,12 +144,6 @@ DECLARE_FLAGS(PathMod, PathMods)
 DECLARE_FLAGS_OPERATORS(PathMods)
 
 extern ARX_PATH ** ARXpaths;
-#ifdef BUILD_EDITOR
-extern ARX_PATH * ARX_PATHS_FlyingOverAP;
-extern ARX_PATH * ARX_PATHS_SelectedAP;
-extern long	ARX_PATHS_SelectedNum;
-extern long	ARX_PATHS_FlyingOverNum;
-#endif
 extern long	nbARXpaths;
 
 void ARX_PATH_UpdateAllZoneInOutInside();
