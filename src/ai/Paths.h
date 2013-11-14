@@ -154,7 +154,6 @@ ARX_PATH * ARX_PATH_GetAddressByName(const std::string & name);
 void ARX_PATH_ClearAllControled();
 void ARX_PATH_ComputeAllBoundingBoxes();
 
-ARX_PATH * ARX_PATHS_ExistName(const std::string & name);
 void ARX_PATHS_Delete(ARX_PATH * ap);
 long ARX_PATHS_Interpolate(ARX_USE_PATH * aup, Vec3f * pos);
 

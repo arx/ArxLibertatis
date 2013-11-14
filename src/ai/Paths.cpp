@@ -390,9 +390,7 @@ void ARX_PATH_ClearAllControled() {
 }
 
 ARX_PATH * ARX_PATH_GetAddressByName(const string & name) {
-	
-	// TODO this is almost the same as ARX_PATHS_ExistName()
-	
+
 	if(name.empty() || !ARXpaths) {
 		return NULL;
 	}
@@ -419,21 +417,6 @@ void ARX_PATH_ReleaseAllPath() {
 	
 	free(ARXpaths), ARXpaths = NULL;
 	nbARXpaths = 0;
-}
-
-ARX_PATH * ARX_PATHS_ExistName(const string & name) {
-	
-	if(!ARXpaths) {
-		return NULL;
-	}
-	
-	for(long i = 0; i < nbARXpaths; i++) {
-		if(ARXpaths[i]->name == name) {
-			return ARXpaths[i];
-		}
-	}
-	
-	return NULL;
 }
 
 Vec3f ARX_PATH::interpolateCurve(size_t i, float step) {
