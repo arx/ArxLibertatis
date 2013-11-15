@@ -28,19 +28,18 @@
 #include "platform/CrashHandler.h"
 #include "window/RenderWindow.h"
 
-static const char vertexShaderSource[] =
-	"in vec4 in_Position;\n"
-	"in vec4 in_Color;\n"
-	"in vec2 in_TexCoord;\n"
-	"void main() {\n"
-	"	float w = 1.0 / in_Position.w;\n"
-	"	vec4 vertex = vec4(in_Position.xyz * w, w);\n"
+static const char vertexShaderSource[] = "void main() {\n"
+	"	// Convert pre-transformed D3D vertices to OpenGL vertices.\n"
+	"	float w = 1.0 / gl_Vertex.w;\n"
+	"	vec4 vertex = vec4(gl_Vertex.xyz * w, w);\n"
 	"	// We only need the projection matrix as modelview will always be idenity.\n"
 	"	gl_Position = gl_ProjectionMatrix * vertex;\n"
-	"	gl_FrontColor = gl_BackColor = in_Color;\n"
-	"	gl_TexCoord[0].xy = in_TexCoord;\n"
+	"	gl_FrontColor = gl_BackColor = gl_Color;\n"
+	"	gl_TexCoord[0] = gl_MultiTexCoord0;\n"
 	"	gl_FogFragCoord = vertex.z;\n"
 	"}\n";
+
+
 
 OpenGLRenderer::OpenGLRenderer()
 	: useVertexArrays(false)
@@ -113,10 +112,6 @@ static GLuint loadVertexShader(const char * source) {
 	
 	glAttachObjectARB(shader, obj);
 	glDeleteObjectARB(obj);
-	
-	glBindAttribLocation(shader, 0, "in_Position");
-	glBindAttribLocation(shader, 1, "in_Color");
-	glBindAttribLocation(shader, 2, "in_TexCoord");
 	
 	glLinkProgramARB(shader);
 	if(!checkShader(shader, "link", GL_OBJECT_LINK_STATUS_ARB)) {

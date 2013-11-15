@@ -51,18 +51,15 @@ inline void setVertexArray(const TexturedVertex * vertices, const void * ref) {
 		return;
 	}
 	
-	// Position
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(TexturedVertex), (void*)offsetof(TexturedVertex, p));
-	
-	// Color
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, GL_BGRA, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(TexturedVertex), (void*)offsetof(TexturedVertex, color));
-	
-	// TexCoord
-	glEnableVertexAttribArray(2);
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(TexturedVertex), (void*)offsetof(TexturedVertex, uv));
-	
+	// rhw -> w conversion is done in a vertex shader
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glVertexPointer(4, GL_FLOAT, sizeof(TexturedVertex), &vertices->p);
+
+	glEnableClientState(GL_COLOR_ARRAY);
+	glColorPointer(GL_BGRA, GL_UNSIGNED_BYTE, sizeof(TexturedVertex), &vertices->color);
+
+	setVertexArrayTexCoord(0, &vertices->uv, sizeof(TexturedVertex));
+
 	CHECK_GL;
 }
 
