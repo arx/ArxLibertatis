@@ -191,12 +191,6 @@ void EERIEAddPoly(TexturedVertex * vert, TexturedVertex * vert2, TextureContaine
 // BACKGROUND MANAGEMENT FUNCTIONS END
 //****************************************************************************
 
-//****************************************************************************
-// CAMERA FUNCTIONS START
-void PrepareCamera(EERIE_CAMERA *cam);
-// CAMERA FUNCTIONS END
-//****************************************************************************
-
 long MakeTopObjString(Entity * io, std::string& dest);
 void DeclareEGInfo(float x, float z);
 bool TryToQuadify(EERIEPOLY * ep,EERIE_3DOBJ * eobj);
@@ -212,8 +206,6 @@ float PtIn2DPolyProjV2(EERIE_3DOBJ * obj,EERIE_FACE * ef, float x, float z);
 
 long GetVertexPos(Entity * io,long id,Vec3f * pos);
 long CountBkgVertex();
-
-void SetCameraDepth(EERIE_CAMERA &cam, float depth);
 
 bool RayCollidingPoly(Vec3f * orgn,Vec3f * dest,EERIEPOLY * ep,Vec3f * hit);
 

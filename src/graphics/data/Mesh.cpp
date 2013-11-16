@@ -673,11 +673,6 @@ int PointIn2DPolyXZ(const EERIEPOLY * ep, float x, float z) {
 
 extern EERIE_CAMERA raycam;
 
-static void SP_PrepareCamera(EERIE_CAMERA * cam) {
-	cam->orgTrans.updateFromAngle(cam->angle);
-	cam->orgTrans.mod = Vec2f(cam->center + cam->clip.origin.toVec2());
-}
-
 static bool RayIn3DPolyNoCull(Vec3f * orgn, Vec3f * dest, EERIEPOLY * epp) {
 
 	EERIEPOLY ep;
@@ -1419,74 +1414,6 @@ static void EERIE_PORTAL_Release() {
 	portals = NULL;
 }
 
-float EERIE_TransformOldFocalToNewFocal(float _fOldFocal)
-{
-	if(_fOldFocal < 200)
-		return (-.34f * _fOldFocal + 168.5f);
-	else if(_fOldFocal < 300)
-		return (-.25f * _fOldFocal + 150.5f);
-	else if(_fOldFocal < 400)
-		return (-.155f * _fOldFocal + 124.f);
-	else if(_fOldFocal < 500)
-		return (-.11f * _fOldFocal + 106.f);
-	else if(_fOldFocal < 600)
-		return (-.075f * _fOldFocal + 88.5f);
-	else if(_fOldFocal < 700)
-		return (-.055f * _fOldFocal + 76.5f);
-	else if(_fOldFocal < 800)
-		return (-.045f * _fOldFocal + 69.5f);
-	else
-		return 33.5f;
-}
-
-void EERIE_CreateMatriceProj(float _fWidth, float _fHeight, EERIE_CAMERA * cam) {
-
-	float _fFOV = EERIE_TransformOldFocalToNewFocal(cam->focal);
-	float _fZNear = 1.f;
-	float _fZFar = cam->cdepth;
-
-
-	float fAspect = _fHeight / _fWidth;
-	float fFOV = radians(_fFOV);
-	float fFarPlane = _fZFar;
-	float fNearPlane = _fZNear;
-	float w = fAspect * (cosf(fFOV / 2) / sinf(fFOV / 2));
-	float h =   1.0f  * (cosf(fFOV / 2) / sinf(fFOV / 2));
-	float Q = fFarPlane / (fFarPlane - fNearPlane);
-
-	memset(&ProjectionMatrix, 0, sizeof(EERIEMATRIX));
-	ProjectionMatrix._11 = w;
-	ProjectionMatrix._22 = h;
-	ProjectionMatrix._33 = Q;
-	ProjectionMatrix._43 = (-Q * fNearPlane);
-	ProjectionMatrix._34 = 1.f;
-	GRenderer->SetProjectionMatrix(ProjectionMatrix);
-
-	EERIEMATRIX tempViewMatrix;
-	Util_SetViewMatrix(tempViewMatrix, cam->orgTrans);
-	GRenderer->SetViewMatrix(tempViewMatrix);
-
-	ProjectionMatrix._11 *= _fWidth * .5f;
-	ProjectionMatrix._22 *= _fHeight * .5f;
-	ProjectionMatrix._33 = -(fFarPlane * fNearPlane) / (fFarPlane - fNearPlane);	//HYPERBOLIC
-	ProjectionMatrix._43 = Q;
-
-	GRenderer->SetViewport(Rect(static_cast<s32>(_fWidth), static_cast<s32>(_fHeight)));
-}
-
-void PrepareCamera(EERIE_CAMERA * cam)
-{
-	SP_PrepareCamera(cam);
-
-	EERIE_CreateMatriceProj(static_cast<float>(g_size.width()),
-							static_cast<float>(g_size.height()),
-							cam);
-
-}
-
-void SetCameraDepth(EERIE_CAMERA &cam, float depth) {
-	cam.cdepth = depth;
-}
 
 long CountBkgVertex() {
 
