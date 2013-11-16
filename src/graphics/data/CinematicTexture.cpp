@@ -66,13 +66,11 @@ void FreeGrille(CinematicGrid * grille);
 
 static void ReajustUV(CinematicBitmap* bi);
 
-/*-----------------------------------------------------------*/
 CinematicBitmap::~CinematicBitmap()
 {
 	FreeGrille(&grid);
 }
 
-/*-----------------------------------------------------------*/
 bool AllocGrille(CinematicGrid * grille, int nbx, int nby, float tx, float ty, float dx, float dy, int echelle)
 {
 	grille->echelle = echelle;
@@ -105,22 +103,19 @@ bool AllocGrille(CinematicGrid * grille, int nbx, int nby, float tx, float ty, f
 	Vec3f * v = grille->vertexs;
 	float olddyy = olddy;
 
-	while (oldnby--)
-	{
+	while(oldnby--) {
 		nby = echelle;
 
-		if (!oldnby) nby = 1;
+		if(!oldnby)
+			nby = 1;
 
-		while (nby--)
-		{
- 
+		while(nby--) {
 			float olddxx = olddx;
 			float depxx = depx;
 			float dxx = dx;
 			int oldnbxx = oldnbx;
 
-			while (oldnbxx--)
-			{
+			while(oldnbxx--) {
 				nbx = echelle;
 
 				if (!oldnbxx) nbx = 1;
@@ -133,8 +128,7 @@ bool AllocGrille(CinematicGrid * grille, int nbx, int nby, float tx, float ty, f
 
 				olddxx += olddx;
 
-				if (olddxx > (tx * 2.f))
-				{
+				if(olddxx > (tx * 2.f)) {
 					dxx = tx - depxx;
 					dxx /= (float)echelle;
 				}
@@ -146,8 +140,7 @@ bool AllocGrille(CinematicGrid * grille, int nbx, int nby, float tx, float ty, f
 		
 			olddyy += olddy;
 
-			if (olddyy > (ty * 2.f))
-			{
+			if(olddyy > (ty * 2.f)) {
 				dy = ty - depy;
 				dy /= (float)echelle;
 			}
@@ -156,14 +149,14 @@ bool AllocGrille(CinematicGrid * grille, int nbx, int nby, float tx, float ty, f
 
 	return true;
 }
-/*-----------------------------------------------------------*/
+
 int AddMaterial(CinematicGrid * grille, Texture2D* tex)
 {
 	int matIdx = grille->mats.size();
 	grille->mats.resize(matIdx + 1);
 
 	int deb;
-	if (matIdx == 0) 
+	if(matIdx == 0)
 		deb = 0;
 	else
 		deb = grille->mats[matIdx-1].startind + grille->mats[matIdx-1].nbind;
@@ -195,11 +188,10 @@ void GetIndNumCube(CinematicGrid * grille, int cx, int cy, int * i1, int * i2, i
 	*i3 = *i1 + (grille->nbx + 1);
 	*i4 = *i3 + 1;
 }
-/*-----------------------------------------------------------*/
+
 void AddPoly(CinematicGrid * grille, int matIdx, int i0, int i1, int i2) {
 	
-	if (grille->nbinds == grille->nbindsmalloc)
-	{
+	if(grille->nbinds == grille->nbindsmalloc) {
 		grille->nbindsmalloc += 100;
 		grille->inds = (C_IND *)realloc((void *)grille->inds, grille->nbindsmalloc * sizeof(C_IND));
 	}
@@ -210,7 +202,7 @@ void AddPoly(CinematicGrid * grille, int matIdx, int i0, int i1, int i2) {
 	grille->mats[matIdx].nbind += 3;
 
 }
-/*-----------------------------------------------------------*/
+
 void AddQuadUVs(CinematicGrid * grille, int depcx, int depcy, int tcx, int tcy, int bitmapposx, int bitmapposy, int bitmapwx, int bitmapwy, Texture2D* tex)
 {
 	int matIdx = AddMaterial(grille, tex);
@@ -220,8 +212,7 @@ void AddQuadUVs(CinematicGrid * grille, int depcx, int depcy, int tcx, int tcy, 
 	grille->mats[matIdx].bitmaph = bitmapwy;
 	grille->mats[matIdx].nbvertexs = (tcx + 1) * (tcy + 1);
 
-	if ((grille->nbuvs + (4 *(tcx * tcy))) > grille->nbuvsmalloc)
-	{
+	if((grille->nbuvs + (4 *(tcx * tcy))) > grille->nbuvsmalloc) {
 		grille->nbuvsmalloc += 4 * (tcx * tcy);
 		grille->uvs = (C_UV *)realloc((void *)grille->uvs, grille->nbuvsmalloc * sizeof(C_UV));
 	}
@@ -234,14 +225,12 @@ void AddQuadUVs(CinematicGrid * grille, int depcx, int depcy, int tcx, int tcy, 
 	int tcyy = tcy;
 	int depcyy = depcy;
 
-	while (tcyy--)
-	{
+	while(tcyy--) {
 		float u = 0.f;
 		int depcxx = depcx;
 		int tcxx = tcx;
 
-		while (tcxx--)
-		{
+		while(tcxx--) {
 			int i0, i1, i2, i3;
 			GetIndNumCube(grille, depcxx, depcyy, &i0, &i1, &i2, &i3);
 
@@ -260,13 +249,11 @@ void AddQuadUVs(CinematicGrid * grille, int depcx, int depcy, int tcx, int tcy, 
 	tcx--;
 	tcy--;
 
-	while (tcy--)
-	{
+	while(tcy--) {
 		int depcxx = depcx;
 		int tcxx = tcx;
 
-		while (tcxx--)
-		{
+		while(tcxx--) {
 			int i0, i1, i2, i3;
 			GetIndNumCube(grille, depcxx, depcy, &i0, &i1, &i2, &i3);
 
@@ -305,11 +292,10 @@ CinematicBitmap* CreateCinematicBitmap(const res::path & path, int scale) {
 		data = resources->readAlloc(filename, size);
 	}
 
-	if(!data)
-		{
-			LogError << path << " not found";
+	if(!data) {
+		LogError << path << " not found";
 		return 0;
-		}
+	}
 
 	Image cinematicImage;
 	cinematicImage.LoadFromMemory(data, size);
@@ -321,10 +307,10 @@ CinematicBitmap* CreateCinematicBitmap(const res::path & path, int scale) {
 	nbx = width / MaxW;
 	nby = height / MaxH;
 
-	if (width % MaxW) 
+	if(width % MaxW)
 		nbx++;
 
-	if (height % MaxH)
+	if(height % MaxH)
 		nby++;
 
 	bi->w = width;
@@ -339,20 +325,20 @@ CinematicBitmap* CreateCinematicBitmap(const res::path & path, int scale) {
 	h = bi->h;
 	float dy = -(float)(bi->h >> 1);
 
-	while (nby)
-	{
+	while(nby) {
 		float dx = -(float)(bi->w >> 1);
 
 		int h2;
 
-		if ((h - MaxH) < 0) h2 = h;
-		else h2 = MaxH;
+		if((h - MaxH) < 0)
+			h2 = h;
+		else
+			h2 = MaxH;
 
 		w = bi->w;
 		int nbxx = nbx;
 
-		while (nbxx)
-		{
+		while(nbxx) {
 			int w2 = (w - MaxW) < 0 ? w : MaxW;
 
 			Texture2D* tex = GRenderer->CreateTexture2D();
@@ -381,7 +367,6 @@ CinematicBitmap* CreateCinematicBitmap(const res::path & path, int scale) {
 	return bi;
 }
 
-/*-----------------------------------------------------------*/
 static void ReajustUV(CinematicBitmap* cb) {
 
 	C_UV* uvs = cb->grid.uvs;
@@ -390,7 +375,7 @@ static void ReajustUV(CinematicBitmap* cb) {
 	{
 		Texture2D* tex = mat->tex;
 
-		if (!tex)
+		if(!tex)
 			return;
 
 		int w, h;
@@ -398,22 +383,18 @@ static void ReajustUV(CinematicBitmap* cb) {
 		w = tex->getStoredSize().x;
 		h = tex->getStoredSize().y;
 
-		if ((w != (int)mat->bitmapw) || (h != (int)mat->bitmaph))
-		{
+		if((w != (int)mat->bitmapw) || (h != (int)mat->bitmaph)) {
 			float dx = (.999999f * (float)mat->bitmapw) / ((float)w);
 			float dy = (.999999f * (float)mat->bitmaph) / ((float)h);
 
 			int nb2 = mat->nbvertexs;
 
-			while (nb2--)
-			{
+			while(nb2--) {
 				uvs->uv.x *= dx;
 				uvs->uv.y *= dy;
 				uvs++;
 			}
-		}
-		else
-		{
+		} else {
 			uvs += mat->nbvertexs;
 		}
 	}
