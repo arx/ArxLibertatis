@@ -197,6 +197,15 @@ bool TryToQuadify(EERIEPOLY * ep,EERIE_3DOBJ * eobj)
 	return false;
 }
 
+/**
+ * @brief Checks for angular difference between normals
+ * @param norm
+ * @param norm2
+ * @return
+ */
+bool LittleAngularDiff(Vec3f * norm, Vec3f * norm2) {
+    return closerThan(*norm, *norm2, 1.41421f);
+}
 
 void ARX_PrepareBackgroundNRMLs()
 {
