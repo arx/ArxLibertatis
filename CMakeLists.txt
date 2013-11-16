@@ -661,6 +661,7 @@ set(GRAPHICS_OPENGL_SOURCES
 
 set(GUI_SOURCES
 	src/gui/Credits.cpp
+	src/gui/Cursor.cpp
 	src/gui/Interface.cpp
 	src/gui/Menu.cpp
 	src/gui/MenuPublic.cpp

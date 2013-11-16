@@ -70,6 +70,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "gui/MenuWidgets.h"
 #include "gui/Text.h"
 #include "gui/TextManager.h"
+#include "gui/Cursor.h"
 
 #include "graphics/Draw.h"
 #include "graphics/Math.h"
@@ -380,7 +381,7 @@ void ARX_Menu_Manage() {
 			break;
 	}
 }
-extern long PLAYER_INTERFACE_HIDE_COUNT;
+
 //-----------------------------------------------------------------------------
 // ARX Menu Rendering Func
 // returns false if no menu needs to be displayed

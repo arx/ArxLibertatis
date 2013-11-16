@@ -55,6 +55,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "gui/Note.h"
 
+#include "graphics/Color.h"
+
 struct EERIE_CAMERA;
 class TextureContainer;
 class Entity;
@@ -221,7 +223,6 @@ bool ARX_INTERFACE_MouseInBook();
 void ARX_INTERFACE_PlayerInterfaceModify(long showhide, long smooth);
 void ARX_INTERFACE_Reset();
 void ARX_INTERFACE_SetCinemascope(long v, long vv);
-void ARX_INTERFACE_RenderCursor(long flag = 0);
 void ARX_INTERFACE_ManageOpenedBook();
 void ARX_INTERFACE_ManageOpenedBook_Finish();
 void ARX_INTERFACE_NoteManage();
@@ -240,12 +241,16 @@ void ARX_INTERFACE_KillARKANE();
 
 void ARX_INTERFACE_EndIntro();
 void ARX_INTERFACE_HALO_Flush();
+bool NeedHalo(Entity * io);
+
 void LoadScreen();
 void LoadLevelScreen();
 void LoadLevelScreen(long lev);
+void ARX_INTERFACE_HALO_Draw(Entity * io, TextureContainer * tc, TextureContainer * tc2, float POSX, float POSY, float _fRatioX = 1, float _fRatioY = 1);
 void ReleaseHalo();
 void ResetPlayerInterface();
 void Set_DragInter(Entity * io);
+void ARX_INTERFACE_DrawNumber(const float x, const float y, const long num, const int _iNb, const Color color);
 void CreateInterfaceTextureContainers();
 void KillInterfaceTextureContainers();
 
