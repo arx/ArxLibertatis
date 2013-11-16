@@ -135,3 +135,10 @@ void PrepareCamera(EERIE_CAMERA * cam)
 void SetCameraDepth(EERIE_CAMERA &cam, float depth) {
 	cam.cdepth = depth;
 }
+
+EERIE_CAMERA * ACTIVECAM = NULL;
+
+void SetActiveCamera(EERIE_CAMERA * cam)
+{
+	if (ACTIVECAM != cam) ACTIVECAM = cam;
+}

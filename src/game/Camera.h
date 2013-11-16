@@ -100,4 +100,6 @@ void SP_PrepareCamera(EERIE_CAMERA * cam);
 void PrepareCamera(EERIE_CAMERA *cam);
 void SetCameraDepth(EERIE_CAMERA &cam, float depth);
 
+void SetActiveCamera(EERIE_CAMERA* cam);
+
 #endif // ARX_GAME_CAMERA_H

@@ -129,7 +129,6 @@ extern EERIE_CAMERA * ACTIVECAM;
 extern float Xratio;
 extern float Yratio;
 
-void SetActiveCamera(EERIE_CAMERA* cam);
 //	Entity Struct End
 
 bool Visible(Vec3f * orgn, Vec3f * dest,EERIEPOLY * epp,Vec3f * hit);

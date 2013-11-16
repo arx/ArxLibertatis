@@ -477,19 +477,6 @@ bool GetTruePolyY(const EERIEPOLY * ep, const Vec3f * pos, float * ret) {
 //*************************************************************************************
 EERIE_BACKGROUND * ACTIVEBKG = NULL;
 
-//*************************************************************************************
-// Selects Active Background Structure
-//*************************************************************************************
-EERIE_CAMERA * ACTIVECAM = NULL;
-
-//*************************************************************************************
-// Selects Active Camera
-//*************************************************************************************
-void SetActiveCamera(EERIE_CAMERA * cam)
-{
-	if (ACTIVECAM != cam) ACTIVECAM = cam;
-}
-
 void EE_RT(const Vec3f & in, Vec3f & out) {
 	out = Vec3f(ACTIVECAM->orgTrans.worldToView * Vec4f(in, 1.0f));
 }
