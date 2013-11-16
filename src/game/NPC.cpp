@@ -124,10 +124,6 @@ void CheckNPCEx(Entity * io);
 static const float ARX_NPC_ON_HEAR_MAX_DISTANCE_STEP(600.0F);
 static const float ARX_NPC_ON_HEAR_MAX_DISTANCE_ITEM(800.0F);
 
-#ifdef BUILD_EDITOR
-extern long LastSelectedIONum;
-#endif
-
 void StareAtTarget(Entity * io);
 #define RUN_WALK_RADIUS 450
 
