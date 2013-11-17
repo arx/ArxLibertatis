@@ -61,8 +61,8 @@ extern float STARTED_ANGLE;
 long SPECIAL_DRAGINTER_RENDER=0;
 long CANNOT_PUT_IT_HERE=0;
 
-long Manage3DCursor(long flags)
-{
+long Manage3DCursor(long flags) {
+
 	if(BLOCK_PLAYER_CONTROLS)
 		return 0;
 
@@ -71,7 +71,7 @@ long Manage3DCursor(long flags)
 	if(ag > 180)
 		ag = ag - 360;
 
-	float drop_miny=(float)(g_size.center().y)-g_size.center().y*(ag*( 1.0f / 70 ));
+	float drop_miny = (float)(g_size.center().y) - g_size.center().y * (ag * (1.f/70));
 
 	if(DANAEMouse.y < drop_miny)
 		return 0;
@@ -82,21 +82,20 @@ long Manage3DCursor(long flags)
 
 	Anglef temp = Anglef::ZERO;
 
-	if (io->ioflags & IO_INVERTED)
-	{
+	if(io->ioflags & IO_INVERTED) {
 		temp.setYaw(180.f);
 		temp.setPitch(-MAKEANGLE(270.f - io->angle.getPitch() - (player.angle.getPitch() - STARTED_ANGLE)));
-	}
-	else
-	{
+	} else {
 		temp.setPitch(MAKEANGLE(270.f - io->angle.getPitch() - (player.angle.getPitch() - STARTED_ANGLE)));
 	}
 
-	float angle=radians(MAKEANGLE(player.angle.getPitch()));
-	float angle2=radians(MAKEANGLE(player.angle.getPitch()-90.f));
+	float angle = radians(MAKEANGLE(player.angle.getPitch()));
+	float angle2 = radians(MAKEANGLE(player.angle.getPitch() - 90.f));
 
-	float zrange=(g_size.height()-DANAEMouse.y)/(g_size.height()-drop_miny); //between 0 (bottom) and 1 (top)
-	float va=player.angle.getYaw();
+	//between 0 (bottom) and 1 (top)
+	float zrange = (g_size.height() - DANAEMouse.y) / (g_size.height() - drop_miny);
+
+	float va = player.angle.getYaw();
 
 	if(va > 180)
 		va = 0;
@@ -110,10 +109,13 @@ long Manage3DCursor(long flags)
 	mod *= (1.f / 20);
 	va = vd * (1.3f + 0.3f * mod);
 
-	vd=((1.f-zrange)*0.6f-vd)*150.f;
+	vd = ((1.f-zrange)*0.6f-vd)*150.f;
 
-	if (va<0) va=0;
-	if (vd<0) vd=0;
+	if(va<0)
+		va = 0;
+
+	if(vd < 0)
+		vd = 0;
 
 	float mx = DANAEMouse.x;
 
@@ -122,14 +124,14 @@ long Manage3DCursor(long flags)
 	}
 
 	Vec3f pos;
-	pos.x=player.pos.x+EEsin(angle2)*(g_size.center().x-mx)*0.7f*va - EEsin(angle)*(va*zrange*400.f+vd);
-	pos.z=player.pos.z-EEcos(angle2)*(g_size.center().x-mx)*0.7f*va + EEcos(angle)*(va*zrange*400.f+vd);
-	pos.y=player.pos.y;
+	pos.x = player.pos.x + EEsin(angle2) * (g_size.center().x - mx)*0.7f*va - EEsin(angle)*(va*zrange*400.f+vd);
+	pos.z = player.pos.z - EEcos(angle2) * (g_size.center().x - mx)*0.7f*va + EEcos(angle)*(va*zrange*400.f+vd);
+	pos.y = player.pos.y;
 
 	Vec3f objcenter = Vec3f_ZERO;
-	float maxdist= 0.f;
-	float miny=  99999999.f;
-	float maxy= -99999999.f;
+	float maxdist = 0.f;
+	float miny = 99999999.f;
+	float maxy = -99999999.f;
 	Vec3f minoff;
 	Vec3f maxoff;
 	maxoff = minoff = io->obj->vertexlist[0].v;
@@ -141,9 +143,9 @@ long Manage3DCursor(long flags)
 	}
 
 	EERIE_CYLINDER cyl;
-	cyl.origin.x=pos.x-(maxoff.x-minoff.x)*0.5f;
-	cyl.origin.y=pos.y;
-	cyl.origin.z=pos.z-(maxoff.z-minoff.z)*0.5f;
+	cyl.origin.x = pos.x - (maxoff.x - minoff.x)*0.5f;
+	cyl.origin.y = pos.y;
+	cyl.origin.z = pos.z - (maxoff.z - minoff.z)*0.5f;
 	cyl.height=-50.f;
 	cyl.radius=40.f;
 
@@ -153,8 +155,8 @@ long Manage3DCursor(long flags)
 	mvectx.z = +(float)EEcos(radians(player.angle.getPitch() - 90.f));
 	mvectx = glm::normalize(mvectx);
 
-	float xmod=(float)(DANAEMouse.x-g_size.center().x)/(float)g_size.center().x*160.f;
-	float ymod=(float)(DANAEMouse.y-g_size.center().y)/(float)g_size.center().y*220.f;
+	float xmod = (float)(DANAEMouse.x-g_size.center().x) / (float)g_size.center().x*160.f;
+	float ymod = (float)(DANAEMouse.y-g_size.center().y) / (float)g_size.center().y*220.f;
 	mvectx *= xmod;
 	Vec3f mvecty(0, ymod, 0);
 
@@ -170,22 +172,22 @@ long Manage3DCursor(long flags)
 	Vec3f movev = glm::normalize(dest - orgn);
 
 	float lastanything = 0.f;
-	float height = -( maxy - miny );
+	float height = -(maxy - miny);
 
-	if ( height > -30.f ) height = -30.f;
+	if(height > -30.f)
+		height = -30.f;
 
-	objcenter.x	=	minoff.x + (maxoff.x - minoff.x) * 0.5f;
-	objcenter.y	=	0;
-	objcenter.z	=	minoff.z + (maxoff.z - minoff.z) * 0.5f;
+	objcenter.x = minoff.x + (maxoff.x - minoff.x) * 0.5f;
+	objcenter.y = 0;
+	objcenter.z = minoff.z + (maxoff.z - minoff.z) * 0.5f;
 
-	for ( size_t i = 0 ; i < io->obj->vertexlist.size() ; i++ )
-	{
+	for(size_t i = 0; i < io->obj->vertexlist.size(); i++) {
 		maxdist = std::max(maxdist, glm::distance(Vec2f(objcenter.x, objcenter.z),
 						   Vec2f(io->obj->vertexlist[i].v.x, io->obj->vertexlist[i].v.z)) - 4.f);
 	}
 
-	if (io->obj->pbox) {
-		for (int i=1; i<io->obj->pbox->nb_physvert; i++) {
+	if(io->obj->pbox) {
+		for(int i = 1; i < io->obj->pbox->nb_physvert; i++) {
 			maxdist = std::max(maxdist, glm::distance(Vec2f(io->obj->pbox->vert[0].initpos.x,
 								io->obj->pbox->vert[0].initpos.z),
 								Vec2f(io->obj->pbox->vert[i].initpos.x,
@@ -198,10 +200,10 @@ long Manage3DCursor(long flags)
 	maxdist = clamp(maxdist, 15.f, 150.f);
 
 	bool bCollidposNoInit = true;
-	Vec3f           collidpos   = Vec3f_ZERO;
-	EERIE_CYLINDER	cyl2;
-	float			inc			=	10.f;
-	long			iterating	=	40;
+	Vec3f collidpos = Vec3f_ZERO;
+	EERIE_CYLINDER cyl2;
+	float inc = 10.f;
+	long iterating = 40;
 
 	cyl2.height = std::min(-30.f, height);
 	cyl2.radius = std::max(20.f, maxdist);
@@ -212,7 +214,7 @@ long Manage3DCursor(long flags)
 		cyl2.origin.y = pos.y + movev.y * inc + maxy;
 		cyl2.origin.z = pos.z + movev.z * inc;
 
-		float anything = CheckAnythingInCylinder( &cyl2, io, CFLAG_JUST_TEST | CFLAG_COLLIDE_NOCOL | CFLAG_NO_NPC_COLLIDE );
+		float anything = CheckAnythingInCylinder(&cyl2, io, CFLAG_JUST_TEST | CFLAG_COLLIDE_NOCOL | CFLAG_NO_NPC_COLLIDE);
 
 		if(anything < 0.f) {
 			if(iterating == 40) {
@@ -237,12 +239,13 @@ long Manage3DCursor(long flags)
 		iterating--;
 	}
 
-	collidpos.x	-=	objcenter.x;
-	collidpos.z	-=	objcenter.z;
-	pos.x		-=	objcenter.x;
-	pos.z		-=	objcenter.z;
+	collidpos.x -= objcenter.x;
+	collidpos.z -= objcenter.z;
 
-	if ( iterating != -1 ) {
+	pos.x -= objcenter.x;
+	pos.z -= objcenter.z;
+
+	if(iterating != -1) {
 		CANNOT_PUT_IT_HERE = 1;
 		return 0;
 	}
@@ -251,9 +254,9 @@ long Manage3DCursor(long flags)
 		if(flags & 1) {
 			ARX_INTERACTIVE_Teleport(io, &pos, true);
 
-			io->gameFlags		&=	~GFLAG_NOCOMPUTATION;
+			io->gameFlags &= ~GFLAG_NOCOMPUTATION;
 
-			if( bCollidposNoInit ) {
+			if(bCollidposNoInit) {
 				ARX_DEAD_CODE();
 			}
 
@@ -279,10 +282,10 @@ long Manage3DCursor(long flags)
 			}
 		} else {
 			if(EEfabs(lastanything) > std::min(EEfabs(height), 12.0f)) {
-				Entity * io=DRAGINTER;
+				Entity * io = DRAGINTER;
 				ARX_PLAYER_Remove_Invisibility();
-				io->obj->pbox->active=1;
-				io->obj->pbox->stopcount=0;
+				io->obj->pbox->active = 1;
+				io->obj->pbox->stopcount = 0;
 				io->pos = collidpos;
 				io->velocity = Vec3f_ZERO;
 
@@ -294,11 +297,11 @@ long Manage3DCursor(long flags)
 				Vec3f viewvector = movev;
 
 				Anglef angle = temp;
-				io->soundtime=0;
-				io->soundcount=0;
+				io->soundtime = 0;
+				io->soundcount = 0;
 				EERIE_PHYSICS_BOX_Launch(io->obj, io->pos, angle, viewvector);
 				ARX_SOUND_PlaySFX(SND_WHOOSH, &pos);
-				io->show=SHOW_FLAG_IN_SCENE;
+				io->show = SHOW_FLAG_IN_SCENE;
 				Set_DragInter(NULL);
 			} else {
 				ARX_PLAYER_Remove_Invisibility();
@@ -306,11 +309,12 @@ long Manage3DCursor(long flags)
 				ARX_INTERACTIVE_Teleport(io, &pos, true);
 
 				io->angle.setYaw(temp.getYaw());
-				io->angle.setPitch(270.f-temp.getPitch());
+				io->angle.setPitch(270.f - temp.getPitch());
 				io->angle.setRoll(temp.getRoll());
-				io->stopped=0;
-				io->show=SHOW_FLAG_IN_SCENE;
-				io->obj->pbox->active=0;
+
+				io->stopped = 0;
+				io->show = SHOW_FLAG_IN_SCENE;
+				io->obj->pbox->active = 0;
 				Set_DragInter(NULL);
 			}
 		}
