@@ -805,13 +805,10 @@ bool insertIntoInventory(Entity * item, const InventoryPos & pos) {
 	return false;
 }
 
-//*************************************************************************************
-// bool CanBePutInInventory(Entity * io)
-//-------------------------------------------------------------------------------------
-// FUNCTION/RESULT:
-//   tries to put an object in player inventory
-//*************************************************************************************
 // TODO replace remaining uses of this with playerInventory.insert()
+/**
+ * @brief tries to put an object in player inventory
+ */
 bool CanBePutInInventory(Entity * io)
 {
 	if (io == NULL) return false;
@@ -986,12 +983,9 @@ bool CanBePutInInventory(Entity * io)
 	return false;
 }
 
-//*************************************************************************************
-// bool CanBePutInSecondaryInventory(INVENTORY_DATA * id,Entity * io,long * xx,long * yy)
-//------------------------------------------------------------------------------------------------
-// FUNCTION/RESULT:
-//   Tries to put an object in secondary inventory
-//*************************************************************************************
+/**
+ * @brief Tries to put an object in secondary inventory
+ */
 bool CanBePutInSecondaryInventory(INVENTORY_DATA * id, Entity * io, long * xx, long * yy)
 {
 	if (!id) return false;
@@ -1157,12 +1151,10 @@ bool CanBePutInSecondaryInventory(INVENTORY_DATA * id, Entity * io, long * xx, l
 	return false;
 }
 
-//*************************************************************************************
-// bool PutInInventory()
-//-------------------------------------------------------------------------------------
-// FUNCTION/RESULT:
-//   Try to put DRAGINTER object in an inventory
-//*************************************************************************************
+/**
+ * @brief Try to put DRAGINTER object in an inventory
+ * @return
+ */
 bool PutInInventory()
 {
 	// Check Validity
@@ -1465,12 +1457,10 @@ bool PutInInventory()
 	Set_DragInter(NULL);
 	return true;
 }
-//*************************************************************************************
-// bool InSecondaryInventoryPos(EERIE_S2D * pos)
-//-------------------------------------------------------------------------------------
-// FUNCTION/RESULT:
-//   Returns true if xx,yy is a position in secondary inventory
-//*************************************************************************************
+
+/**
+ * @brief Returns true if xx,yy is a position in secondary inventory
+ */
 bool InSecondaryInventoryPos(Vec2s * pos)
 {
 	if (SecondaryInventory != NULL)
@@ -1493,12 +1483,9 @@ bool InSecondaryInventoryPos(Vec2s * pos)
 	return false;
 }
 
-//*************************************************************************************
-// bool InPlayerInventoryPos(EERIE_S2D * pos)
-//-------------------------------------------------------------------------------------
-// FUNCTION/RESULT:
-//   Returns true if xx,yy is a position in player inventory
-//*************************************************************************************
+/**
+ * @brief Returns true if xx,yy is a position in player inventory
+ */
 bool InPlayerInventoryPos(Vec2s * pos)
 {
 	if (PLAYER_INTERFACE_HIDE_COUNT) return false;
@@ -1564,12 +1551,10 @@ bool InPlayerInventoryPos(Vec2s * pos)
 
 	return false;
 }
-//*************************************************************************************
-// bool InInventoryPos(EERIE_S2D * pos)
-//-------------------------------------------------------------------------------------
-// FUNCTION/RESULT:
-//   Returns true if "pos" is a position in player inventory or in SECONDARY inventory
-//*************************************************************************************
+
+/**
+ * @brief Returns true if "pos" is a position in player inventory or in SECONDARY inventory
+ */
 bool InInventoryPos(Vec2s * pos)
 {
 	if (InSecondaryInventoryPos(pos))
@@ -1578,12 +1563,9 @@ bool InInventoryPos(Vec2s * pos)
 	return (InPlayerInventoryPos(pos));
 }
 
-//*************************************************************************************
-// bool IsFlyingOverInventory(EERIE_S2D * pos)
-//-------------------------------------------------------------------------------------
-// FUNCTION/RESULT:
-//   returns true if cursor is flying over any inventory
-//*************************************************************************************
+/**
+ * @brief returns true if cursor is flying over any inventory
+ */
 bool IsFlyingOverInventory(Vec2s * pos)
 {
 	//	if(eMouseState==MOUSE_IN_WORLD) return false;
@@ -1604,13 +1586,9 @@ bool IsFlyingOverInventory(Vec2s * pos)
 	return InPlayerInventoryPos(pos);
 }
 
-//*************************************************************************************
-// Entity * GetFromInventory(EERIE_S2D * pos)
-//-------------------------------------------------------------------------------------
-// FUNCTION/RESULT:
-//   Returns IO under position xx,yy in any INVENTORY or NULL if no IO
-//   was found
-//*************************************************************************************
+/**
+ * @brief Returns IO under position xx,yy in any INVENTORY or NULL if no IO was found
+ */
 Entity * GetFromInventory(Vec2s * pos)
 {
 	HERO_OR_SECONDARY = 0;
@@ -1651,16 +1629,13 @@ Entity * GetFromInventory(Vec2s * pos)
 	return GetInventoryObj(pos);
 }
 
-//*************************************************************************************
-// bool GetItemWorldPosition( Entity * io,EERIE_3D * pos)
-//-------------------------------------------------------------------------------------
-// FUNCTION:
-//   Gets real world position for an IO (can be used for non items)
-//   (even in an inventory or being dragged)
-// RESULT:
-//   Put the position in "pos". returns true if position was found
-//   or false if object is invalid, or position not defined.
-//*************************************************************************************
+/**
+ * @brief Gets real world position for an IO (can be used for non items)
+ * (even in an inventory or being dragged)
+ *
+ * Put the position in "pos". returns true if position was found
+ * or false if object is invalid, or position not defined.
+ */
 bool GetItemWorldPosition(Entity * io, Vec3f * pos)
 {
 	// Valid IO ?
@@ -1725,12 +1700,9 @@ bool GetItemWorldPosition(Entity * io, Vec3f * pos)
 	return true;
 }
 
-//*************************************************************************************
-// bool GetItemWorldPositionSound( Entity * io,EERIE_3D * pos)
-//-------------------------------------------------------------------------------------
-// FUNCTION:
-//   Gets real world position for an IO to spawn a sound
-//*************************************************************************************
+/**
+ * @brief Gets real world position for an IO to spawn a sound
+ */
 bool GetItemWorldPositionSound(const Entity * io, Vec3f * pos) {
 	
 	if(!io) {
@@ -1784,12 +1756,9 @@ bool GetItemWorldPositionSound(const Entity * io, Vec3f * pos) {
 	return true;
 }
 
-//*************************************************************************************
-// void RemoveFromAllInventories(Entity * io)
-//-------------------------------------------------------------------------------------
-// FUNCTION:
-//   Seeks an IO in all Inventories to remove it
-//*************************************************************************************
+/**
+ * @brief Seeks an IO in all Inventories to remove it
+ */
 void RemoveFromAllInventories(const Entity * io) {
 	
 	if(!io) {
@@ -1817,9 +1786,9 @@ void RemoveFromAllInventories(const Entity * io) {
 	}
 }
 
-//*************************************************************************************
-// Seeks an IO in all Inventories to replace it by another IO
-//*************************************************************************************
+/**
+ * @brief Seeks an IO in all Inventories to replace it by another IO
+ */
 void CheckForInventoryReplaceMe(Entity * io, Entity * old) {
 	
 	for(size_t i = 0; i < entities.size(); i++) {
@@ -1844,12 +1813,12 @@ void CheckForInventoryReplaceMe(Entity * io, Entity * old) {
 	}
 }
 
-//*************************************************************************************
-// Takes an object from an inventory (be it player's or secondary inventory)
-// at screen position "xx,yy"
-// Puts that object in player's "hand" (cursor)
-// returns true if an object was taken false elseway
-//*************************************************************************************
+/**
+ * @brief Takes an object from an inventory (be it player's or secondary inventory)
+ * at screen position "xx,yy" and Puts that object in player's "hand" (cursor)
+ *
+ * @return true if an object was taken
+ */
 bool TakeFromInventory(Vec2s * pos)
 {
 	long i, j;
