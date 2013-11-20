@@ -153,7 +153,7 @@ unsigned int Image::GetNumChannels(Image::Format pFormat) {
 		case Format_DXT1:     return 3;
 		case Format_DXT3:     return 4;
 		case Format_DXT5:     return 4;
-		default:              arx_assert_msg(0, "Invalid image format"); return 0;
+		default:              arx_assert(0, "Invalid image format"); return 0;
 	}
 }
 
@@ -214,7 +214,7 @@ bool Image::LoadFromMemory(void * pData, unsigned int size, const char * file) {
 		case stbi::STBI_grey_alpha: mFormat = Image::Format_L8A8; break;
 		case stbi::STBI_rgb:        mFormat = Image::Format_R8G8B8; break;
 		case stbi::STBI_rgb_alpha:  mFormat = Image::Format_R8G8B8A8; break;
-		default: arx_assert_msg(0, "Invalid bpp");
+		default: arx_assert(0, "Invalid bpp");
 	}
 	
 	unsigned int dataSize = Image::GetSizeWithMipmaps(mFormat, mWidth, mHeight, mDepth, mNumMipmaps);
@@ -243,11 +243,11 @@ bool Image::LoadFromMemory(void * pData, unsigned int size, const char * file) {
 
 void Image::Create(unsigned int pWidth, unsigned int pHeight, Image::Format pFormat, unsigned int pNumMipmaps, unsigned int pDepth) {
 	
-	arx_assert_msg(pWidth > 0, "[Image::Create] Width is 0!");
-	arx_assert_msg(pHeight > 0, "[Image::Create] Width is 0!");
-	arx_assert_msg(pFormat < Format_Unknown, "[Image::Create] Unknown texture format!");
-	arx_assert_msg(pNumMipmaps > 0, "[Image::Create] Mipmap count must at least be 1!");
-	arx_assert_msg(pDepth > 0, "[Image::Create] Image depth must at least be 1!");
+	arx_assert(pWidth > 0, "[Image::Create] Width is 0!");
+	arx_assert(pHeight > 0, "[Image::Create] Width is 0!");
+	arx_assert(pFormat < Format_Unknown, "[Image::Create] Unknown texture format!");
+	arx_assert(pNumMipmaps > 0, "[Image::Create] Mipmap count must at least be 1!");
+	arx_assert(pDepth > 0, "[Image::Create] Image depth must at least be 1!");
 	
 	mWidth  = pWidth;
 	mHeight = pHeight;
@@ -267,9 +267,9 @@ void Image::Create(unsigned int pWidth, unsigned int pHeight, Image::Format pFor
 
 
 bool Image::ConvertTo(Image::Format format) {
-	arx_assert_msg( !IsCompressed(), "[Image::ConvertTo] Conversion of compressed images not supported yet!" );
-	arx_assert_msg( !IsVolume(), "[Image::ConvertTo] Conversion of volume images not supported yet!" );
-	arx_assert_msg( GetSize(mFormat) == GetSize(format), "[Image::ConvertTo] Conversion of images with different BPP not supported yet!" );
+	arx_assert( !IsCompressed(), "[Image::ConvertTo] Conversion of compressed images not supported yet!" );
+	arx_assert( !IsVolume(), "[Image::ConvertTo] Conversion of volume images not supported yet!" );
+	arx_assert( GetSize(mFormat) == GetSize(format), "[Image::ConvertTo] Conversion of images with different BPP not supported yet!" );
 	if(IsCompressed() || IsVolume() || GetSize(mFormat) != GetSize(format))
 		return false;
 
@@ -290,7 +290,7 @@ bool Image::ConvertTo(Image::Format format) {
 		}
 		break;
 	default:
-		arx_error_msg("[Image::ConvertTo] Unsupported conversion!" );
+		arx_assert(false, "[Image::ConvertTo] Unsupported conversion!");
 		return false;
 	};
 
@@ -361,8 +361,8 @@ void Image::Clear() {
 
 bool Image::Copy(const Image & srcImage, unsigned int dstX, unsigned int dstY, unsigned int srcX, unsigned int srcY, unsigned int width, unsigned int height) {
 	
-	arx_assert_msg( !IsCompressed(), "[Image::Copy] Copy of compressed images not supported yet!" );
-	arx_assert_msg( !IsVolume(), "[Image::Copy] Copy of volume images not supported yet!" );
+	arx_assert( !IsCompressed(), "[Image::Copy] Copy of compressed images not supported yet!" );
+	arx_assert( !IsVolume(), "[Image::Copy] Copy of volume images not supported yet!" );
 	
 	unsigned int bpp = SIZE_TABLE[mFormat];
 	
@@ -403,8 +403,8 @@ bool Image::Copy(const Image & srcImage, unsigned int destX, unsigned int destY)
 
 void Image::QuakeGamma(float pGamma) {
 	
-	arx_assert_msg(!IsCompressed(), "[Image::ChangeGamma] Gamma change of compressed images not supported yet!");
-	arx_assert_msg(!IsVolume(), "[Image::ChangeGamma] Gamma change of volume images not supported yet!");
+	arx_assert(!IsCompressed(), "[Image::ChangeGamma] Gamma change of compressed images not supported yet!");
+	arx_assert(!IsVolume(), "[Image::ChangeGamma] Gamma change of volume images not supported yet!");
 	
 	// This function was taken from a couple engines that I saw,
 	// which most likely originated from the Aftershock engine.
@@ -470,9 +470,9 @@ void Image::QuakeGamma(float pGamma) {
 
 void Image::AdjustGamma(const float &v) {
 	
-	arx_assert_msg(!IsCompressed(), "[Image::ChangeGamma] Gamma change of compressed images not supported yet!");
-	arx_assert_msg(!IsVolume(), "[Image::ChangeGamma] Gamma change of volume images not supported yet!");
-	arx_assert_msg(v <= 1.0f, "BUG WARNING: If gamma values greater than 1.0 needed, should fix the way the calculations are optimized!");
+	arx_assert(!IsCompressed(), "[Image::ChangeGamma] Gamma change of compressed images not supported yet!");
+	arx_assert(!IsVolume(), "[Image::ChangeGamma] Gamma change of volume images not supported yet!");
+	arx_assert(v <= 1.0f, "BUG WARNING: If gamma values greater than 1.0 needed, should fix the way the calculations are optimized!");
 
 	unsigned int numComponents = SIZE_TABLE[mFormat];
 	unsigned int size = mWidth * mHeight;
@@ -519,8 +519,8 @@ void Image::AdjustGamma(const float &v) {
 
 void Image::ApplyThreshold(unsigned char threshold, int component_mask) {
 	
-	arx_assert_msg(!IsCompressed(), "[Image::ChangeGamma] Gamma change of compressed images not supported yet!");
-	arx_assert_msg(!IsVolume(), "[Image::ChangeGamma] Gamma change of volume images not supported yet!");
+	arx_assert(!IsCompressed(), "[Image::ChangeGamma] Gamma change of compressed images not supported yet!");
+	arx_assert(!IsVolume(), "[Image::ChangeGamma] Gamma change of volume images not supported yet!");
 
 	unsigned int numComponents = SIZE_TABLE[mFormat];
 	unsigned int size = mWidth * mHeight;
@@ -552,11 +552,11 @@ inline static bool sample(const u8 * src, int w, int h, int x, int y, u8 * dst, 
 
 void Image::ApplyColorKeyToAlpha(Color key) {
 	
-	arx_assert_msg(!IsCompressed(), "ApplyColorKeyToAlpha Not supported for compressed textures!");
-	arx_assert_msg(!IsVolume(), "ApplyColorKeyToAlpha Not supported for 3d textures!");
+	arx_assert(!IsCompressed(), "ApplyColorKeyToAlpha Not supported for compressed textures!");
+	arx_assert(!IsVolume(), "ApplyColorKeyToAlpha Not supported for 3d textures!");
 	
 	if(mFormat != Format_R8G8B8 && mFormat != Format_B8G8R8) {
-		arx_assert_msg(false, "ApplyColorKeyToAlpha not supported for format %d", mFormat);
+		arx_assert(false, "ApplyColorKeyToAlpha not supported for format %d", mFormat);
 		return;
 	}
 	
@@ -745,9 +745,9 @@ bool Image::ToNormalMap() {
 
 void Image::Blur(int radius)
 {
-	arx_assert_msg(!IsCompressed(), "Blur not yet supported for compressed textures!");
-	arx_assert_msg(!IsVolume(), "Blur not yet supported for 3d textures!");
-	arx_assert_msg(mNumMipmaps == 1, "Blur not yet supported for textures with mipmaps!");
+	arx_assert(!IsCompressed(), "Blur not yet supported for compressed textures!");
+	arx_assert(!IsVolume(), "Blur not yet supported for 3d textures!");
+	arx_assert(mNumMipmaps == 1, "Blur not yet supported for textures with mipmaps!");
 
 	// Create kernel and precompute multiplication table
 	int kernelSize = 1 + radius * 2;
@@ -845,8 +845,8 @@ void Image::Blur(int radius)
 
 void Image::SetAlpha(const Image& img, bool bInvertAlpha)
 {
-	arx_assert_msg(!IsCompressed(), "SetAlpha() not yet supported for compressed textures!");
-	arx_assert_msg(!IsVolume(), "SetAlpha() not yet supported for 3d textures!");
+	arx_assert(!IsCompressed(), "SetAlpha() not yet supported for compressed textures!");
+	arx_assert(!IsVolume(), "SetAlpha() not yet supported for 3d textures!");
 	arx_assert(mWidth == img.mWidth);
 	arx_assert(mHeight == img.mHeight);
 	arx_assert(mNumMipmaps == img.mNumMipmaps);

@@ -389,8 +389,8 @@ bool SaveBlock::open(bool writable) {
 
 bool SaveBlock::flush(const string & important) {
 	
-	arx_assert_msg(important.find_first_of(BADSAVCHAR) == string::npos,
-	               "bad save filename: \"%s\"", important.c_str());
+	arx_assert(important.find_first_of(BADSAVCHAR) == string::npos,
+	           "bad save filename: \"%s\"", important.c_str());
 	
 	if((usedSize * 2 < totalSize || chunkCount > (files.size() * 4 / 3))) {
 		defragment();
@@ -480,8 +480,8 @@ bool SaveBlock::save(const string & name, const char * data, size_t size) {
 		return false;
 	}
 	
-	arx_assert_msg(name.find_first_of(BADSAVCHAR) == string::npos,
-	               "bad save filename: \"%s\"", name.c_str());
+	arx_assert(name.find_first_of(BADSAVCHAR) == string::npos,
+	           "bad save filename: \"%s\"", name.c_str());
 	
 	File * file = &files[name];
 	
@@ -547,8 +547,8 @@ void SaveBlock::remove(const string & name) {
 
 char * SaveBlock::load(const string & name, size_t & size) {
 	
-	arx_assert_msg(name.find_first_of(BADSAVCHAR) == string::npos,
-	               "bad save filename: \"%s\"", name.c_str());
+	arx_assert(name.find_first_of(BADSAVCHAR) == string::npos,
+	           "bad save filename: \"%s\"", name.c_str());
 	
 	Files::const_iterator file = files.find(name);
 	
@@ -556,8 +556,8 @@ char * SaveBlock::load(const string & name, size_t & size) {
 }
 
 bool SaveBlock::hasFile(const string & name) const {
-	arx_assert_msg(name.find_first_of(BADSAVCHAR) == string::npos,
-	               "bad save filename: \"%s\"", name.c_str());
+	arx_assert(name.find_first_of(BADSAVCHAR) == string::npos,
+	           "bad save filename: \"%s\"", name.c_str());
 	return (files.find(name) != files.end());
 }
 
@@ -574,8 +574,8 @@ vector<string> SaveBlock::getFiles() const {
 
 char * SaveBlock::load(const fs::path & savefile, const std::string & filename, size_t & size) {
 	
-	arx_assert_msg(filename.find_first_of(BADSAVCHAR) == string::npos,
-	               "bad save filename: \"%s\"", filename.c_str());
+	arx_assert(filename.find_first_of(BADSAVCHAR) == string::npos,
+	           "bad save filename: \"%s\"", filename.c_str());
 	
 	LogDebug("reading savefile " << savefile);
 	

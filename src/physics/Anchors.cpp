@@ -1158,10 +1158,6 @@ void AnchorData_Create(EERIE_BACKGROUND * eb) {
 					divvx = 2;
 					divvy = 2;
 					break;
-				default:
-					arx_error_msg("Invalid divv value");
-					divvx = 0;
-					divvy = 0;
 				}
 
 				per = count / total * 100.f;

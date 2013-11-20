@@ -312,8 +312,7 @@ void ReleaseScript(EERIE_SCRIPT * es) {
 ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const string & name,
                        std::string& txtcontent, float * fcontent,long * lcontent) {
 	
-	arx_assert_msg(!name.empty() && name[0] == '^', "bad system variable: \"%s\"",
-	               name.c_str());
+	arx_assert(!name.empty() && name[0] == '^', "bad system variable: \"%s\"", name.c_str());
 	
 	char c = (name.length() < 2) ? '\0' : name[1];
 	switch(c) {
@@ -1911,8 +1910,8 @@ void ARX_SCRIPT_Timer_Check() {
 		if((st->flags & 1) && !(st->io->gameFlags & GFLAG_ISINTREATZONE)) {
 			long increment = (now - st->tim) / st->msecs;
 			st->tim += st->msecs * increment;
-			arx_assert_msg(st->tim <= now && st->tim + st->msecs > now,
-			               "start=%lu wait=%ld now=%lu", st->tim, st->msecs, now);
+			arx_assert(st->tim <= now && st->tim + st->msecs > now,
+			           "start=%lu wait=%ld now=%lu", st->tim, st->msecs, now);
 			continue;
 		}
 		

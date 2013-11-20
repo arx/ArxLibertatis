@@ -227,7 +227,7 @@ void defineSystemDirectories(const char * argv0) {
 			strPath += "\\My Games";
 		}
 	} else {
-		arx_assert_msg(false, "Unsupported windows version (below WinXP)");
+		arx_assert(false, "Unsupported windows version (below WinXP)");
 	}
 	
 	if(!strPath.empty()) {

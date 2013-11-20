@@ -212,7 +212,7 @@ static mode_t dirstat(void * handle, void * entry) {
 	const char * name = reinterpret_cast<dirent *>(entry)->d_name;
 	struct stat buf;
 	int ret = fstatat(fd, name, &buf, 0);
-	arx_assert_msg(ret == 0, "fstatat failed: %d", ret); ARX_UNUSED(ret);
+	arx_assert(ret == 0, "fstatat failed: %d", ret); ARX_UNUSED(ret);
 	
 	return buf.st_mode;
 }
@@ -238,7 +238,7 @@ static mode_t dirstat(void * handle, void * entry) {
 	
 	struct stat buf;
 	int ret = stat(file.string().c_str(), &buf);
-	arx_assert_msg(ret == 0, "stat failed: %d", ret); ARX_UNUSED(ret);
+	arx_assert(ret == 0, "stat failed: %d", ret); ARX_UNUSED(ret);
 	
 	return buf.st_mode;
 }
@@ -281,7 +281,7 @@ directory_iterator::directory_iterator(const path & p) : buf(NULL) {
 #  if ARX_HAVE_NAME_MAX
 			name_max = std::max(NAME_MAX, 255);
 #  else
-			arx_assert_msg(false, "cannot determine maximum dirname size");
+			arx_assert(false, "cannot determine maximum dirname size");
 #  endif
 		}
 #elif ARX_HAVE_NAME_MAX

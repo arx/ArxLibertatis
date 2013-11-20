@@ -53,7 +53,7 @@ void assertionFailed(const char * expr, const char * file, unsigned int line,
 
 namespace boost {
 	void throw_exception(const std::exception & e) {
-		arx_assert_msg(false, "Boost triggered an unhandled exception! %s", e.what());
+		arx_assert(false, "Boost triggered an unhandled exception! %s", e.what());
 		ARX_UNUSED(e);
 	}
 }

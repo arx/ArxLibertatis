@@ -1920,7 +1920,7 @@ void ArxGame::onRendererInit(Renderer & renderer) {
 	
 	GRenderer = &renderer;
 	
-	arx_assert_msg(GRenderer->GetTextureStageCount() >= 3, "not enough texture units");
+	arx_assert(GRenderer->GetTextureStageCount() >= 3, "not enough texture units");
 	
 	if(m_MainWindow) {
 		GRenderer->Clear(Renderer::ColorBuffer);

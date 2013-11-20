@@ -170,7 +170,7 @@ void ErrorReportDialog::onPaneChanged(int index)
 	}
 	
 	default:
-		arx_error();
+		ARX_DEAD_CODE();
 	}
 }
 

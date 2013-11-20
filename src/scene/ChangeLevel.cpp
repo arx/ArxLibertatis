@@ -142,7 +142,7 @@ static Entity * convertToValidIO(const string & ident) {
 		return NULL;
 	}
 	
-	arx_assert_msg(
+	arx_assert(
 		ident.find_first_not_of("abcdefghijklmnopqrstuvwxyz_0123456789") == string::npos,
 		"bad interactive object ident: \"%s\"", ident.c_str()
 	);
@@ -150,7 +150,7 @@ static Entity * convertToValidIO(const string & ident) {
 	long t = entities.getById(ident);
 	
 	if(t > 0) {
-		arx_assert_msg(ValidIONum(t), "got invalid IO num %ld", t);
+		arx_assert(ValidIONum(t), "got invalid IO num %ld", t);
 		return entities[t];
 	}
 	
