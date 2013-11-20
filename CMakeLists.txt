@@ -309,6 +309,7 @@ endif()
 # Boost
 find_package(Boost 1.48 REQUIRED)
 include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
+add_definitions(-DBOOST_ALL_NO_LIB)
 
 # glm
 find_package(GLM REQUIRED)

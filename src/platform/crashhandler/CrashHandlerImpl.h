@@ -34,7 +34,6 @@
 #endif
 
 // BOOST
-#define BOOST_DATE_TIME_NO_LIB
 #include <boost/interprocess/mapped_region.hpp>
 #include <boost/interprocess/shared_memory_object.hpp>
 #include <boost/lexical_cast.hpp>
