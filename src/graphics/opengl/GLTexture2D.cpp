@@ -75,7 +75,7 @@ void GLTexture2D::Upload() {
 	} else if(mFormat == Image::Format_B8G8R8A8) {
 		internal = GL_RGBA8, format = GL_BGRA;
 	} else {
-		arx_assert(false, "Unsupported image format: %l", long(format));
+		arx_assert(false, "Unsupported image format: %ld", long(format));
 		return;
 	}
 	
