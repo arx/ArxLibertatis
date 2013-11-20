@@ -5845,7 +5845,7 @@ struct InventoryGuiCoords {
 	float posy;
 };
 
-InventoryGuiCoords InvCoords;
+static InventoryGuiCoords InvCoords;
 
 void CalculateInventoryCoordinates() {
 	InvCoords.fCenterX = g_size.center().x + INTERFACE_RATIO(-320 + 35) + INTERFACE_RATIO_DWORD(ITC.Get("hero_inventory")->m_dwWidth) - INTERFACE_RATIO(32 + 3) ;
@@ -5890,11 +5890,11 @@ void DrawInventory() {
 			if(sActiveInventory < player.bag-1) {
 				float fRatio = INTERFACE_RATIO(32 + 5);
 
-				InvCoords.posy += checked_range_cast<int>(fRatio);
+				float posy = InvCoords.posy + checked_range_cast<int>(fRatio);
 
 				ARX_INTERFACE_DrawItem(ITC.Get("hero_inventory_down"),	InvCoords.posx, g_size.height() - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY) + INTERFACE_RATIO(-3 + 64));
 
-				if(MouseInRect(InvCoords.posx, InvCoords.posy, InvCoords.posx + INTERFACE_RATIO(32), InvCoords.posy + INTERFACE_RATIO(32))) {
+				if(MouseInRect(InvCoords.posx, posy, InvCoords.posx + INTERFACE_RATIO(32), posy + INTERFACE_RATIO(32))) {
 					GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 					GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 					ARX_INTERFACE_DrawItem(ITC.Get("hero_inventory_down"),	InvCoords.posx, g_size.height() - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY) + INTERFACE_RATIO(-3 + 64));
