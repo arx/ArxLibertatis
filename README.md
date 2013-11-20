@@ -46,7 +46,7 @@ There is currently a single rendering backend for OpenGL:
 
 Arx Libertatis comes with an optional gui crash reporter which has additional dependencies:
 
-* **Qt 4** or **5** (`QtCore`, `QtGui`, `QtWidgets`^1 and `QtNetwork` libraries)
+* **Qt 4.7**+ or **5** (`QtCore`, `QtGui`, `QtWidgets`^1 and `QtNetwork` libraries)
 * **GDB** (Linux-only, optional, run-time only)
 * **DbgHelp** (Windows-only)
 

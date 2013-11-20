@@ -344,7 +344,7 @@ if(BUILD_CRASHREPORTER)
 	
 	# Otherwise, look for Qt 4
 	if(NOT HAVE_QT AND (NOT WITH_QT OR WITH_QT EQUAL 4))
-		find_package(Qt4 COMPONENTS QtCore QtGui QtNetwork ${OPTIONAL_DEPENDENCY})
+		find_package(Qt4 4.7 COMPONENTS QtCore QtGui QtNetwork ${OPTIONAL_DEPENDENCY})
 		if(QT_FOUND)
 			if(NOT MSVC)
 				check_link_library(QtCore QT_QTCORE_LIBRARY_RELEASE QT_QTCORE)
