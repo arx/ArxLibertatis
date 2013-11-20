@@ -36,6 +36,7 @@
 #endif
 
 #include <boost/foreach.hpp>
+#include <boost/version.hpp>
 
 /*
  * Under OS X we want SDLmain to replace the entry point with its own.

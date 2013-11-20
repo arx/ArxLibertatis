@@ -23,16 +23,8 @@
 #include "Configure.h"
 
 #define BOOST_DATE_TIME_NO_LIB
-#include <boost/version.hpp>
-#if BOOST_VERSION < 104500
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-fpermissive"
-#endif
 #include <boost/interprocess/sync/interprocess_semaphore.hpp>
 #include <boost/interprocess/detail/os_thread_functions.hpp>
-#if BOOST_VERSION < 104500
-#pragma GCC diagnostic pop
-#endif
 
 #include "platform/Platform.h"
 #include "platform/Thread.h"

@@ -307,7 +307,7 @@ if(NOT ARX_HAVE_SDL AND (NOT WITH_SDL OR WITH_SDL EQUAL 1))
 endif()
 
 # Boost
-find_package(Boost 1.39 REQUIRED)
+find_package(Boost 1.48 REQUIRED)
 include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
 
 # glm
@@ -397,9 +397,7 @@ if(NOT MSVC)
 		endif()
 	endif()
 	
-	if(${Boost_VERSION} LESS 104800)
-		# Older Boost versions don't work with C++11
-	elseif(USE_CXX11)
+	if(USE_CXX11)
 		add_cxxflag("-std=c++11")
 		
 		if(WIN32)
@@ -866,9 +864,9 @@ elseif(USE_NATIVE_FS AND WIN32)
 	add_definitions(-DARX_HAVE_WINDOWS_FILESYSTEM)
 	list(APPEND IO_FILESYSTEM_SOURCES ${IO_FILESYSTEM_WINDOWS_SOURCES})
 	set(ARX_HAVE_WIN32_FILESYSTEM 1)
-elseif(NOT ${Boost_VERSION} LESS 104400)
+else()
 	
-	find_package(Boost 1.44 REQUIRED COMPONENTS filesystem system)
+	find_package(Boost 1.48 REQUIRED COMPONENTS filesystem system)
 	set(ARX_HAVE_BOOST_FILESYSTEM_V3 1)
 	add_definitions(-DBOOST_FILESYSTEM_VERSION=3)
 	add_definitions(-DBOOST_FILESYSTEM_NO_DEPRECATED)
@@ -892,9 +890,6 @@ elseif(NOT ${Boost_VERSION} LESS 104400)
 		)
 	endif()
 	
-else()
-	message(FATAL_ERROR "You need either Boost >= 1.44 or Windows API"
-	        "or enough POSIX functionality; Found boost version ${Boost_VERSION}")
 endif()
 list(APPEND IO_SOURCES ${IO_FILESYSTEM_SOURCES})
 
