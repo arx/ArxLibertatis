@@ -3020,6 +3020,7 @@ esac
 # Optional files - we don't need them, but copy them anyway if available
 optional_file 'manual.pdf'
 optional_file 'map.pdf'
+optional_file 'arx_handbuch.pdf'
 
 print
 
