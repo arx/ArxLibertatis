@@ -32,6 +32,10 @@
 #endif
 #endif
 
+#if ARX_HAVE_WAITPID
+#include <sys/wait.h>
+#endif
+
 #include <signal.h>
 #include <string.h>
 #include <unistd.h>
@@ -218,20 +222,26 @@ void CrashHandlerPOSIX::handleCrash(int signal, int code) {
 	// Maybe we should use the fork() syscall directly, like google breakpad does.
 	// TODO Or better yet, switch to using google breakpad!
 	if(fork() > 0) {
+		#if ARX_HAVE_WAITPID
+		int status;
+		(void)waitpid(-1, &status, 0);
+		// Exit if the crash reporter failed
+		exit(0);
+		#else
 		while(true) {
-			// Busy wait so we don't enter any additional stack frames
-			// and keep the backtrace clean.
+			// Busy wait - we'll be killed by our child anyway
 		}
+		#endif
 	}
 	
 	// Try to execute the crash reporter
-#ifdef ARX_HAVE_EXECVP
+	#ifdef ARX_HAVE_EXECVP
 	char argument[256];
 	strcpy(argument, "-crashinfo=");
 	strcat(argument, m_SharedMemoryName.c_str());
 	const char * args[] = { m_CrashHandlerPath.string().c_str(), argument, NULL };
 	execvp(m_CrashHandlerPath.string().c_str(), const_cast<char **>(args));
-#endif
+	#endif
 	
 	// Something went wrong - the crash reporter failed to start!
 	
@@ -241,7 +251,7 @@ void CrashHandlerPOSIX::handleCrash(int signal, int code) {
 	std::cerr << "Please install " << m_CrashHandlerApp
 	          << " to generate a detailed bug report!" << std::endl;
 	
-	// Kill the original, busy-waiting process.
+	// Kill the original process
 	kill(m_pCrashInfo->processId, SIGKILL);
 	
 	exit(0);
