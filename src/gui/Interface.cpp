@@ -5838,9 +5838,6 @@ void UpdateInventory() {
 	}
 }
 
-//TODO This is for the inventory coordinates. Remember to recalculate on res change.
-bool InvCoordsCalculated = false;
-
 struct InventoryGuiCoords {
 	float fCenterX;
 	float fSizY;
@@ -5864,10 +5861,7 @@ void DrawInventory() {
 
 			arx_assert(ITC.Get("hero_inventory") != NULL);
 
-			if(!InvCoordsCalculated) {
-				CalculateInventoryCoordinates();
-				InvCoordsCalculated = true;
-			}
+			CalculateInventoryCoordinates();
 
 			if(sActiveInventory > 0) {
 				ARX_INTERFACE_DrawItem(ITC.Get("hero_inventory_up"),	InvCoords.posx, InvCoords.posy);
