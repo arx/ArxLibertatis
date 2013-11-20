@@ -59,83 +59,193 @@ namespace util {
 typedef u32 Unicode;
 static const Unicode INVALID_CHAR = Unicode(-1);
 static const Unicode REPLACEMENT_CHAR = 0xfffd; //!< Unicode replacement character
-static const Unicode BYTE_ORDER_MARK = 0xfeff;
+static const Unicode BYTE_ORDER_MARK = 0xfeff; //!< Unicode byte order mark - for UTF-16
 
+//! Functions to read and write UTF-8 encoded data
+struct UTF8 {
+	
+	//! @return true c is not the first byte of an UTF-8 character
+	static bool isContinuationByte(u8 chr) {
+		return (chr & 0xc0) == 0x80;
+	}
+	
+	/*!
+	* Decode the first character from an UTF-8 string
+	* @tparam In          An InputIterator type for the input string
+	* @param  it          Start of the input string - will be advanced by the bytes read
+	* @param  end         End of the inputstring
+	* @param  replacement Replacement code point for invalid data
+	* @return one Unicode code point or INVALID_CHAR if we are at the end of the range
+	*/
+	template <typename In>
+	static Unicode read(In & it, In end, Unicode replacement = REPLACEMENT_CHAR);
+	
+	//! Get the number of UTF-8 bytes required for a unicode character
+	static size_t length(Unicode chr);
+	
+	/*!
+	* Encode one character to an UTF8 string
+	* @tparam Out  An OutputIterator type for the input string
+	* @param  it  Output iterator to write the encoded caracter to
+	* @return new output iterator after the written bytes
+	*/
+	template <typename Out>
+	static Out write(Out it, Unicode chr);
+	
+};
 
-//! @return true c is is the first part of an UTF-16 surrogate pair
-inline bool isUTF16HighSurrogate(u16 chr) {
-	return chr >= 0xd800 && chr <= 0xdbff;
-}
+//! Functions to read UTF-16 little-endian encoded data
+struct UTF16LE {
+	
+	//! @return true c is is the first part of an UTF-16 surrogate pair
+	static bool isHighSurrogate(u16 chr) {
+		return chr >= 0xd800 && chr <= 0xdbff;
+	}
 
-//! @return true c is is the first part of an UTF-16 surrogate pair
-inline bool isUTF16LowSurrogate(u16 chr) {
-	return chr >= 0xdc00 && chr <= 0xdfff;
-}
+	//! @return true c is is the first part of an UTF-16 surrogate pair
+	static bool isLowSurrogate(u16 chr) {
+		return chr >= 0xdc00 && chr <= 0xdfff;
+	}
+	
+	/*!
+	* Decode the first character from an UTF-16 little-endian string
+	* @tparam In          An InputIterator type for the input string
+	* @param  it          Start of the input string - will be advanced by the bytes read
+	* @param  end         End of the inputstring
+	* @param  replacement Replacement code point for invalid data
+	* @return one Unicode code point or INVALID_CHAR if we are at the end of the range
+	*/
+	template <typename In>
+	static Unicode read(In & it, In end, Unicode replacement = REPLACEMENT_CHAR);
+	
+	// writing not supported
+	
+};
 
-//! @return true c is not the first byte of an UTF-8 character
-inline bool isUTF8ContinuationByte(u8 chr) {
-	return (chr & 0xc0) == 0x80;
-}
-
+//! Functions to read ISO_8859-1  encoded data
+struct ISO_8859_1 {
+	
+	/*!
+	* Decode the first character from an ISO_8859-1 string
+	* @tparam In          An InputIterator type for the input string
+	* @param  it          Start of the input string - will be advanced by the bytes read
+	* @param  end         End of the inputstring
+	* @param  replacement Replacement code point for invalid data
+	* @return one Unicode code point or INVALID_CHAR if we are at the end of the range
+	*/
+	template <typename In>
+	static Unicode read(In & it, In end, Unicode replacement = REPLACEMENT_CHAR);
+	
+	// writing not supported
+	
+};
 
 /*!
- * Decode the first character from an UTF-16 LE string
- * @param it Start of the string. Will be advanced by the bytes read
- * @param end End of the string
- * @param replacement Replacement code point for invalid data
- * @return one Unicode code point or INVALID_CHAR if we are at the end of the range
+ * Convert a string from one encoding to another
+ * @tparam InEnc       The encoding of the input string
+ * @tparam OutEnc      The output encoding to write
+ * @tparam In          An InputIterator type for the input string
+ * @tparam Out         An OutputIterator type for the input string
+ * @param  begin       Start of the string in the source endocing
+ * @param  end         End of the string in the source encoding
+ * @param  output      Output iterator to write the result to
+ * @param  replacement Replacement code point for invalid data
+ * @return new output iterator position after the written bytes
  */
-template <typename In>
-Unicode readUTF16LE(In & it, In end, Unicode replacement = REPLACEMENT_CHAR) {
+template <typename InEnc, typename OutEnc, typename In, typename Out>
+Out convert(In begin, In end, Out output, Unicode replacement = REPLACEMENT_CHAR) {
 	
-	if(it == end) {
-		return INVALID_CHAR;
-	}
-	Unicode chr = u8(*it++);
-	if(it == end) {
-		return replacement;
-	}
-	chr |= Unicode(u8(*it++)) << 8;
-	
-	// If it's a surrogate pair, first convert to a single UTF-32 character
-	if(isUTF16HighSurrogate(chr)) {
-		if(it != end) {
-			// The second element is valid : convert the two elements to a UTF-32 character
-			Unicode d = u8(*it++);
-			if(it == end) {
-				return replacement;
-			}
-			d |= Unicode(u8(*it++)) << 8;
-			if(isUTF16LowSurrogate(d)) {
-				chr = ((chr - 0xd800) << 10) + (d - 0xdc00) + 0x0010000;
-			} else {
-				return replacement;
-			}
+	Unicode chr;
+	for(In it = begin; (chr = InEnc::read(it, end, replacement)) != INVALID_CHAR;) {
+		if(chr == BYTE_ORDER_MARK) {
+			// The BOM is useless and annoying in UTF-8, so strip it
 		} else {
-			// Invalid second element
-			return replacement;
+			output = OutEnc::write(output, chr);
 		}
 	}
 	
-	// Replace invalid characters
-	if(chr > 0x0010FFFF) {
-		// Invalid character (greater than the maximum unicode value)
-		return replacement;
-	}
-	
-	return chr;
+	return output;
 }
 
+/*!
+ * Get the number of bytes required to represent an string in one encoding in another one
+ * @tparam InEnc       The encoding of the input string
+ * @tparam OutEnc      The output encoding to count the required characters for
+ * @tparam In          An InputIterator type for the input string
+ * @param  begin       Start of the string in the source endocing
+ * @param  end         End of the string in the source encoding
+ * @param  replacement Replacement code point for invalid data
+ * @return the number of bytes required to represent the input string in the output
+ *         encoding
+ */
+template <typename InEnc, typename OutEnc, typename In>
+size_t getConvertedLength(In begin, In end, Unicode replacement = REPLACEMENT_CHAR) {
+	
+	size_t length = 0;
+	
+	Unicode chr;
+	for(In it = begin; (chr = InEnc::read(it, end, replacement)) != INVALID_CHAR;) {
+		if(chr == BYTE_ORDER_MARK) {
+			// The BOM is useless and annoying in UTF-8, so strip it
+		} else {
+			length += OutEnc::length(chr);
+		}
+	}
+	
+	return length;
+}
 
 /*!
- * Decode the first character from an UTF-8 string
- * @param it Start of the string. Will be advanced by the bytes read
- * @param end End of the string
- * @param replacement Replacement code point for invalid data
- * @return one Unicode code point or INVALID_CHAR if we are at the end of the range
+ * Convert a string from one encoding to another
+ * @tparam InEnc  The encoding of the input string
+ * @tparam OutEnc The output encoding to return
+ * @tparam In     A ForwardIterator type for the input string
+ * @param  begin  Start of the string in the source endocing
+ * @param  end    End of the string in the source encoding
+ * @return an \ref std::string with the string in the destination encoding
  */
+template <typename InEnc, typename OutEnc, typename In>
+std::string convert(In begin, In end) {
+	std::string buffer;
+	buffer.resize(getConvertedLength<InEnc, OutEnc>(begin, end));
+	std::string::iterator oend = convert<InEnc, OutEnc>(begin, end, buffer.begin());
+	arx_assert(oend == buffer.end()); ARX_UNUSED(oend);
+	return buffer;
+}
+
+/*!
+ * Convert a string from one encoding to another
+ * @tparam InEnc  The encoding of the input string
+ * @tparam OutEnc The output encoding to return
+ * @param  str    The input string
+ * @return an \ref std::string with the string in the destination encoding
+ */
+template <typename InEnc, typename OutEnc>
+std::string convert(const std::string & str) {
+	return convert<InEnc, OutEnc>(str.begin(), str.end());
+}
+
+/*!
+ * Encode a Unicode character according to a given encoding
+ * This is a small convenience wrapper around \ref OutEnc::write()
+ * @tparam OutEnc    The encoding to use
+ * @param  character The Unicode code point to encode
+ * @return an \ref std::string containing the encoded caracter
+ */
+template <typename OutEnc>
+std::string encode(Unicode character) {
+	std::string result;
+	result.resize(OutEnc::length(character));
+	std::string::iterator oend = OutEnc::write(result.begin(), character);
+	arx_assert(oend == result.end()); ARX_UNUSED(oend);
+	return result;
+}
+
+//---------------------------------------------------------------------------------------
+// Implementation
+
 template <typename In>
-Unicode readUTF8(In & it, In end, Unicode replacement = REPLACEMENT_CHAR) {
+Unicode UTF8::read(In & it, In end, Unicode replacement) {
 	
 	if(it == end) {
 		return INVALID_CHAR;
@@ -145,12 +255,12 @@ Unicode readUTF8(In & it, In end, Unicode replacement = REPLACEMENT_CHAR) {
 	// For multi-byte characters, read the remaining bytes
 	if(chr & (1 << 7)) {
 		
-		if(isUTF8ContinuationByte(chr)) {
+		if(isContinuationByte(chr)) {
 			// Bad start position
 			return replacement;
 		}
 		
-		if(it == end || !isUTF8ContinuationByte(u8(*it))) {
+		if(it == end || !isContinuationByte(u8(*it))) {
 			// Unexpected end of multi-byte sequence
 			return replacement;
 		}
@@ -158,7 +268,7 @@ Unicode readUTF8(In & it, In end, Unicode replacement = REPLACEMENT_CHAR) {
 		
 		if(chr & (1 << (5 + 6))) {
 			
-			if(it == end || !isUTF8ContinuationByte(u8(*it))) {
+			if(it == end || !isContinuationByte(u8(*it))) {
 				// Unexpected end of multi-byte sequence
 				return replacement;
 			}
@@ -166,7 +276,7 @@ Unicode readUTF8(In & it, In end, Unicode replacement = REPLACEMENT_CHAR) {
 			
 			if(chr & (1 << (4 + 6 + 6))) {
 				
-				if(it == end || !isUTF8ContinuationByte(u8(*it))) {
+				if(it == end || !isContinuationByte(u8(*it))) {
 					// Unexpected end of multi-byte sequence
 					return replacement;
 				}
@@ -184,8 +294,7 @@ Unicode readUTF8(In & it, In end, Unicode replacement = REPLACEMENT_CHAR) {
 	return chr;
 }
 
-//! Get the number of UTF-8 bytes required for a unicode character
-inline size_t getUTF8Length(Unicode chr) {
+inline size_t UTF8::length(Unicode chr) {
 	if     (chr <  0x80)       return 1;
 	else if(chr <  0x800)      return 2;
 	else if(chr <  0x10000)    return 3;
@@ -193,18 +302,13 @@ inline size_t getUTF8Length(Unicode chr) {
 	return 1;
 }
 
-/*!
- * Encode one character to an UTF8 string
- * @param it Output iterator
- * @return New output iterator after the written bytes
- */
 template <typename Out>
-Out writeUTF8(Out it, Unicode chr) {
+Out UTF8::write(Out it, Unicode chr) {
 	
 	static const u8 utf8FirstBytes[7] = { 0x00, 0x00, 0xc0, 0xe0, 0xf0, 0xf8, 0xfc };
 	
 	// Get number of bytes to write
-	int bytesToWrite = getUTF8Length(chr);
+	int bytesToWrite = length(chr);
 	
 	// Extract bytes to write
 	u8 bytes[4];
@@ -227,64 +331,60 @@ Out writeUTF8(Out it, Unicode chr) {
 	return it;
 }
 
-
-/*!
- * Convert an UTF-16 LE string to an UTF-8 string
- * @param begin Start of the string
- * @param end End of the string
- * @param output Output iterator
- * @param replacement Replacement code point for invalid data
- * @return New output iterator after the written bytes
- */
-template <typename In, typename Out>
-Out convertUTF16LEToUTF8(In begin, In end, Out output,
-                         Unicode replacement = REPLACEMENT_CHAR) {
+template <typename In>
+Unicode UTF16LE::read(In & it, In end, Unicode replacement) {
 	
-	Unicode chr;
-	for(In it = begin; (chr = readUTF16LE(it, end, replacement)) != INVALID_CHAR;) {
-		if(chr == BYTE_ORDER_MARK) {
-			// The BOM is useless and annoying in UTF-8, so strip it
+	if(it == end) {
+		return INVALID_CHAR;
+	}
+	Unicode chr = u8(*it++);
+	if(it == end) {
+		return replacement;
+	}
+	chr |= Unicode(u8(*it++)) << 8;
+	
+	// If it's a surrogate pair, convert to a single UTF-32 character
+	if(isHighSurrogate(chr)) {
+		if(it != end) {
+			Unicode d = u8(*it++);
+			if(it == end) {
+				return replacement;
+			}
+			d |= Unicode(u8(*it++)) << 8;
+			if(isLowSurrogate(d)) {
+				chr = ((chr - 0xd800) << 10) + (d - 0xdc00) + 0x0010000;
+			} else {
+				return replacement;
+			}
 		} else {
-			output = writeUTF8(output, chr);
+			// Invalid second element
+			return replacement;
 		}
 	}
 	
-	return output;
-}
-
-
-//! Get the number of UTF-8 bytes required to represent an UTF-16 LE string
-template <typename In>
-size_t getUTF16LEToUTF8Length(In begin, In end,
-                              Unicode replacement = REPLACEMENT_CHAR) {
-	
-	size_t length = 0;
-	
-	Unicode chr;
-	for(In it = begin; (chr = readUTF16LE(it, end, replacement)) != INVALID_CHAR;) {
-		if(chr == BYTE_ORDER_MARK) {
-			// The BOM is useless and annoying in UTF-8, so strip it
-		} else {
-			length += getUTF8Length(chr);
-		}
+	// Replace invalid characters
+	if(chr > 0x0010FFFF) {
+		// Invalid character (greater than the maximum unicode value)
+		return replacement;
 	}
 	
-	return length;
+	return chr;
 }
 
-
-/*!
- * Convert an UTF-16 string to an UTF-8 string
- * @param begin Start of the string
- * @param end End of the string
- */
 template <typename In>
-std::string convertUTF16LEToUTF8(In begin, In end) {
-	std::string buffer;
-	buffer.resize(getUTF16LEToUTF8Length(begin, end));
-	std::string::iterator oend = convertUTF16LEToUTF8(begin, end, buffer.begin());
-	arx_assert(oend == buffer.end()); ARX_UNUSED(oend);
-	return buffer;
+Unicode ISO_8859_1::read(In & it, In end, Unicode replacement) {
+	
+	if(it == end) {
+		return INVALID_CHAR;
+	}
+	
+	Unicode chr = u8(*it++);
+	if(chr >= 128 && chr < 160) {
+		return replacement;
+	}
+	
+	// ISO-8859-1 maps directly to Unicode - yay!
+	return chr;
 }
 
 } // namespace util

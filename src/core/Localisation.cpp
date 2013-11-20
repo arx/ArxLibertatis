@@ -149,7 +149,7 @@ bool initLocalisation() {
 	}
 	
 	LogDebug("Loaded localisation file of size " << file->size());
-	std::string out = util::convertUTF16LEToUTF8(data, data + file->size());
+	std::string out = util::convert<util::UTF16LE, util::UTF8>(data, data + file->size());
 	LogDebug("Converted to UTF8 string of length " << out.size());
 	
 	if(!out.empty()) {

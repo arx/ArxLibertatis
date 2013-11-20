@@ -99,10 +99,9 @@ void Font::insertPlaceholderGlyph(Char character) {
 		
 	} else {
 		
-		std::ostringstream oss;
-		util::writeUTF8(std::ostream_iterator<char>(oss), character);
 		LogWarning << "No glyph for character U+" << std::hex << character
-		           << " (" << oss.str() << ") in font " << info.name;
+		           << " (" << util::encode<util::UTF8>(character) << ") in font "
+		           << info.name;
 		
 		arx_assert(glyphs.find(util::REPLACEMENT_CHAR) != glyphs.end());
 		glyphs[character] = glyphs[util::REPLACEMENT_CHAR];
@@ -162,10 +161,9 @@ bool Font::insertGlyph(Char character) {
 		
 		Vec2i offset;
 		if(!textures->insertImage(imgGlyph, glyph.texture, offset)) {
-			std::ostringstream oss;
-			util::writeUTF8(std::ostream_iterator<char>(oss), character);
 			LogWarning << "Could not upload glyph for character U+" << std::hex << character
-			           << " (" << oss.str() << ") in font " << info.name;
+			           << " (" << util::encode<util::UTF8>(character) << ") in font "
+			           << info.name;
 			insertPlaceholderGlyph(character);
 			return false;
 		}
@@ -209,7 +207,7 @@ bool Font::insertMissingGlyphs(text_iterator begin, text_iterator end) {
 	Char chr;
 	bool changed = false;
 	
-	for(text_iterator it = begin; (chr = util::readUTF8(it, end)) != util::INVALID_CHAR; ) {
+	for(text_iterator it = begin; (chr = util::UTF8::read(it, end)) != util::INVALID_CHAR; ) {
 		if(glyphs.find(chr) == glyphs.end()) {
 			if(chr >= FONT_PRELOAD_LIMIT && insertGlyph(chr)) {
 				changed = true;
@@ -222,7 +220,7 @@ bool Font::insertMissingGlyphs(text_iterator begin, text_iterator end) {
 
 Font::glyph_iterator Font::getNextGlyph(text_iterator & it, text_iterator end) {
 	
-	Char chr = util::readUTF8(it, end);
+	Char chr = util::UTF8::read(it, end);
 	if(chr == util::INVALID_CHAR) {
 		return glyphs.end();
 	}

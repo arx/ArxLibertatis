@@ -217,7 +217,8 @@ void ARX_Menu_Resources_Create() {
 		
 		ARXmenu.mda->credits += "\n\n\n~ORIGINAL ARX FATALIS CREDITS:\n\n\n";
 		
-		ARXmenu.mda->credits += util::convertUTF16LEToUTF8(credits, credits + creditsSize);
+		char * creditsEnd = credits + creditsSize;
+		ARXmenu.mda->credits += util::convert<util::UTF16LE, util::UTF8>(credits, creditsEnd);
 		
 		LogDebug("Converted to UTF8 string of length " << ARXmenu.mda->credits.size());
 		
