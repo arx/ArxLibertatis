@@ -128,15 +128,21 @@ void ANIM_Set(ANIM_USE *au, ANIM_HANDLE *anim)
 	au->flags &= ~EA_FORCEPLAY;
 }
 
+void changeAnimationLayer(Entity * entity, size_t layer, ANIM_HANDLE * animation,
+                          AnimUseType flags, bool startAtBeginning) {
+	ANIM_USE  & animlayer = entity->animlayer[layer];
+	AcquireLastAnim(entity);
+	FinishAnim(entity, animlayer.cur_anim);
+	ANIM_Set(&animlayer, animation);
+	animlayer.flags |= flags;
+	if(startAtBeginning) {
+		animlayer.altidx_cur = 0;
+	}
+}
+
 void changeAnimation(Entity * entity, ANIM_HANDLE * animation, AnimUseType flags,
                      bool startAtBeginning) {
-	AcquireLastAnim(entity);
-	FinishAnim(entity, entity->animlayer[0].cur_anim);
-	ANIM_Set(&entity->animlayer[0], animation);
-	entity->animlayer[0].flags |= flags;
-	if(startAtBeginning) {
-		entity->animlayer[0].altidx_cur = 0;
-	}
+	changeAnimationLayer(entity, 0, animation, flags, startAtBeginning);
 }
 
 void setAnimation(Entity * entity, ANIM_HANDLE * animation, AnimUseType flags) {

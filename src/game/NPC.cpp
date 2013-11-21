@@ -1887,11 +1887,8 @@ void ARX_NPC_Manage_Fight(Entity * io)
 			        && (ause->cur_anim != io->anims[ANIM_CAST_START]))
 			        || (ause->cur_anim == NULL))
 			{
-				AcquireLastAnim(io);
-				FinishAnim(io, ause->cur_anim);
-				ANIM_Set(ause, io->anims[ANIM_BARE_WAIT]);
+				changeAnimationLayer(io, 1, io->anims[ANIM_BARE_WAIT], EA_LOOP);
 				Strike_StartTickCount(io);
-				ause->flags |= EA_LOOP;
 			}
 		}
 		// DAGGER fight !!! ***********************************
@@ -1918,11 +1915,8 @@ void ARX_NPC_Manage_Fight(Entity * io)
 			        && (ause->cur_anim != io->anims[ANIM_CAST_START]))
 			        || (ause->cur_anim == NULL))
 			{
-				AcquireLastAnim(io);
-				FinishAnim(io, ause->cur_anim);
-				ANIM_Set(ause, io->anims[ANIM_DAGGER_WAIT]);
+				changeAnimationLayer(io, 1, io->anims[ANIM_DAGGER_WAIT], EA_LOOP);
 				Strike_StartTickCount(io);
-				ause->flags |= EA_LOOP;
 			}
 		}
 		// 1H fight !!! ***************************************
@@ -1949,11 +1943,8 @@ void ARX_NPC_Manage_Fight(Entity * io)
 			        && (ause->cur_anim != io->anims[ANIM_CAST_START]))
 			        || (ause->cur_anim == NULL))
 			{
-				AcquireLastAnim(io);
-				FinishAnim(io, ause->cur_anim);
-				ANIM_Set(ause, io->anims[ANIM_1H_WAIT]);
+				changeAnimationLayer(io, 1, io->anims[ANIM_1H_WAIT], EA_LOOP);
 				Strike_StartTickCount(io);
-				ause->flags |= EA_LOOP;
 			}
 		}
 		// 2H fight !!! ***************************************
@@ -1980,10 +1971,7 @@ void ARX_NPC_Manage_Fight(Entity * io)
 			        && (ause->cur_anim != io->anims[ANIM_CAST_START]))
 			        || (ause->cur_anim == NULL))
 			{
-				AcquireLastAnim(io);
-				FinishAnim(io, ause->cur_anim);
-				ANIM_Set(ause, io->anims[ANIM_2H_WAIT]);
-				ause->flags |= EA_LOOP;
+				changeAnimationLayer(io, 1, io->anims[ANIM_2H_WAIT], EA_LOOP);
 			}
 		}
 		// BOW fight !!! **************************************
