@@ -63,6 +63,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "gui/Interface.h"
 
+#include "io/log/Logger.h"
+
 #include "scene/ChangeLevel.h"
 #include "scene/GameSound.h"
 #include "scene/Interactive.h"
@@ -335,6 +337,8 @@ void Entity::cleanReferences() {
 }
 
 void Entity::destroy() {
+	
+	LogDebug("destroying entity " << idString());
 	
 	if(ident > 0 && !(ioflags & IO_NOSAVE)) {
 		if(scriptload) {

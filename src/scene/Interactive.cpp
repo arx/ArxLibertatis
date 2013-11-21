@@ -3031,12 +3031,16 @@ void RenderInter() {
 static std::vector<Entity *> toDestroy;
 
 void ARX_INTERACTIVE_DestroyIOdelayed(Entity * entity) {
+	LogDebug("will destroy entity " << entity->idString());
 	if(std::find(toDestroy.begin(), toDestroy.end(), entity) == toDestroy.end()) {
 		toDestroy.push_back(entity);
 	}
 }
 
 void ARX_INTERACTIVE_DestroyIOdelayedExecute() {
+	if(!toDestroy.empty()) {
+		LogDebug("executing delayed entity destruction");
+	}
 	for(std::vector<Entity *>::iterator it = toDestroy.begin(); it != toDestroy.end(); ++it) {
 		if(*it) {
 			(*it)->destroyOne();
