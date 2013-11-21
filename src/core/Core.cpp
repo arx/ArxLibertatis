@@ -1832,17 +1832,13 @@ void ManageNONCombatModeAnimations()
 			&& (useanim3->cur_anim!=alist[ANIM_SHIELD_HIT])
 			&& (useanim3->cur_anim!=alist[ANIM_SHIELD_START]) ) )
 		{
-			AcquireLastAnim(io);
-			ANIM_Set(useanim3,alist[ANIM_SHIELD_START]);
+			changeAnimation(io, 3, alist[ANIM_SHIELD_START]);
 		} else if(useanim3->cur_anim==alist[ANIM_SHIELD_START] && (useanim3->flags & EA_ANIMEND)) {
-			AcquireLastAnim(io);
-			ANIM_Set(useanim3,alist[ANIM_SHIELD_CYCLE]);
-			useanim3->flags|=EA_LOOP;
+			changeAnimation(io, 3, alist[ANIM_SHIELD_CYCLE], EA_LOOP);
 		}
 	} else {
 		if(useanim3->cur_anim==alist[ANIM_SHIELD_CYCLE]) {
-			AcquireLastAnim(io);
-			ANIM_Set(useanim3,alist[ANIM_SHIELD_END]);
+			changeAnimation(io, 3, alist[ANIM_SHIELD_END]);
 		} else if(useanim3->cur_anim == alist[ANIM_SHIELD_END] && (useanim3->flags & EA_ANIMEND)) {
 			useanim3->cur_anim=NULL;
 		}
