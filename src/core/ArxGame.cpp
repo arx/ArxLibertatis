@@ -899,9 +899,7 @@ void ArxGame::updateConversationCamera() {
 		ARX_CONVERSATION_LASTIS = -1;
 
 		if(LAST_CONVERSATION) {
-			AcquireLastAnim(entities.player());
-			ANIM_Set(&entities.player()->animlayer[1], entities.player()->anims[ANIM_WAIT]);
-			entities.player()->animlayer[1].flags |= EA_LOOP;
+			changeAnimation(entities.player(), 1, entities.player()->anims[ANIM_WAIT], EA_LOOP);
 		}
 	}
 
