@@ -159,8 +159,8 @@ void changeAnimation(Entity * entity, size_t layer, ANIM_HANDLE * animation,
  * @param startAtBeginning force the animation to start at the first keyframe
  *                         - otherwise it may start at a randomly chosen one
  */
-void changeAnimation(Entity * entity, ANIM_HANDLE * animation, AnimUseType flags = 0,
-                     bool startAtBeginning = false);
+void changeAnimation(Entity * entity, ANIM_HANDLE * animation,
+                     AnimUseType flags = 0, bool startAtBeginning = false);
 
 /*!
  * Change the animation of an entity if it isn't already set to the same one.
@@ -170,7 +170,8 @@ void changeAnimation(Entity * entity, ANIM_HANDLE * animation, AnimUseType flags
  * @param animation the new animation to set
  * @param flags     animation use flags to set if the animation has been changed
  */
-void setAnimation(Entity * entity, ANIM_HANDLE * animation, AnimUseType flags = 0);
+void setAnimation(Entity * entity, ANIM_HANDLE * animation,
+                  AnimUseType flags = 0, bool startAtBeginning = false);
 
 /*!
  * Stop the current animation.

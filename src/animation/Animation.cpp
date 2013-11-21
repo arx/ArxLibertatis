@@ -147,14 +147,15 @@ void changeAnimation(Entity * entity, size_t layer, ANIM_HANDLE * animation,
 	}
 }
 
-void changeAnimation(Entity * entity, ANIM_HANDLE * animation, AnimUseType flags,
-                     bool startAtBeginning) {
+void changeAnimation(Entity * entity, ANIM_HANDLE * animation,
+                     AnimUseType flags, bool startAtBeginning) {
 	changeAnimation(entity, 0, animation, flags, startAtBeginning);
 }
 
-void setAnimation(Entity * entity, ANIM_HANDLE * animation, AnimUseType flags) {
+void setAnimation(Entity * entity, ANIM_HANDLE * animation,
+                  AnimUseType flags, bool startAtBeginning) {
 	if(entity->animlayer[0].cur_anim != animation) {
-		changeAnimation(entity, animation, flags);
+		changeAnimation(entity, animation, flags, startAtBeginning);
 	}
 }
 
