@@ -476,8 +476,7 @@ void ARX_EQUIPMENT_LaunchPlayerUnReadyWeapon()
 			break;
 	}
 
-	AcquireLastAnim(io);
-	ANIM_Set(&io->animlayer[1], anim);
+	changeAnimation(io, 1, anim);
 }
 
 float ARX_EQUIPMENT_ComputeDamages(Entity * io_source, Entity * io_target, float ratioaim, Vec3f * position)
@@ -955,8 +954,7 @@ void ARX_EQUIPMENT_LaunchPlayerReadyWeapon()
 			break;
 	}
 
-	AcquireLastAnim(io);
-	ANIM_Set(&io->animlayer[1], anim);
+	changeAnimation(io, 1, anim);
 }
 
 void ARX_EQUIPMENT_UnEquipPlayerWeapon()
