@@ -950,6 +950,7 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 					ANIM_USE * ause1=&io->animlayer[1];
 
 					if(ause1->cur_anim==io->anims[ANIM_CAST_START]  && (ause1->flags & EA_ANIMEND)) {
+						// TODO why no AcquireLastAnim() like everywhere else?
 						FinishAnim(io,ause1->cur_anim);
 						ANIM_Set(ause1,io->anims[ANIM_CAST_CYCLE]);
 						tst = 1;
@@ -977,10 +978,7 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 					ARX_SPELLS_Launch(io->spellcast_data.castingspell,i,io->spellcast_data.spell_flags,io->spellcast_data.spell_level,io->spellcast_data.target,io->spellcast_data.duration);
 
 					if(!(io->spellcast_data.spell_flags & SPELLCAST_FLAG_NOANIM) && (io->ioflags & IO_NPC)) {
-						ANIM_USE *ause1 = &io->animlayer[1];
-						AcquireLastAnim(io);
-						FinishAnim(io, ause1->cur_anim);
-						ANIM_Set(ause1, io->anims[ANIM_CAST]);
+						changeAnimation(io, 1, io->anims[ANIM_CAST]);
 					}
 					io->spellcast_data.castingspell = SPELL_NONE;
 				}
@@ -2116,11 +2114,9 @@ void ARX_SPELLS_ManageMagic() {
 		}
 
 		if(player.doingmagic != 2) {
-			player.doingmagic=2;
-
+			player.doingmagic = 2;
 			if(io->anims[ANIM_CAST_START]) {
-				AcquireLastAnim(io);
-				ANIM_Set(&io->animlayer[1], io->anims[ANIM_CAST_START]);
+				changeAnimation(io, 1, io->anims[ANIM_CAST_START]);
 				MAGICMODE = 1;
 			}
 		}
@@ -2176,13 +2172,10 @@ void ARX_SPELLS_ManageMagic() {
 
 		if(player.doingmagic != 0) { //==2)
 			player.doingmagic = 0;//1
-
 			if(io->anims[ANIM_CAST_END]) {
-				AcquireLastAnim(io);
-				ANIM_Set(&io->animlayer[1], io->anims[ANIM_CAST_END]);
+				changeAnimation(io, 1, io->anims[ANIM_CAST_END]);
 			}
-			
-			ARX_FLARES_broken=3;
+			ARX_FLARES_broken = 3;
 		}
 	}
 	
@@ -2216,8 +2209,7 @@ void ARX_SPELLS_ManageMagic() {
 		if(CurrSpellSymbol != 0) {
 			if(!ARX_SPELLS_AnalyseSPELL()) {
 				if(io->anims[ANIM_CAST]) {
-					AcquireLastAnim(io);
-					ANIM_Set(&io->animlayer[1], io->anims[ANIM_CAST]);
+					changeAnimation(io, 1, io->anims[ANIM_CAST]);
 				}
 			}
 		}
@@ -2565,10 +2557,7 @@ void ARX_SPELLS_Precast_Check() {
 					}
 				}
 			} else {
-				ANIM_USE * ause1 = &entities.player()->animlayer[1];
-				AcquireLastAnim(entities.player());
-				FinishAnim(entities.player(), ause1->cur_anim);
-				ANIM_Set(ause1, entities.player()->anims[ANIM_CAST]);	
+				changeAnimation(entities.player(), 1, entities.player()->anims[ANIM_CAST]);
 			}
 		}
 	}
@@ -6753,14 +6742,10 @@ void TryToCastSpell(Entity * io, Spell spellid, long level, long target, Spellca
 
 	// checks for symbol drawing...
 	if(!flags.has(SPELLCAST_FLAG_NOANIM) && io->ioflags.has(IO_NPC)) {
-		ANIM_USE *ause1 = &io->animlayer[1];
-
-		AcquireLastAnim(io);
-		FinishAnim(io, ause1->cur_anim);
-		ANIM_Set(ause1, io->anims[ANIM_CAST_START]);
-
-		for (unsigned long j(0); j < 4; j++)
+		changeAnimation(io, 1, io->anims[ANIM_CAST_START]);
+		for(unsigned long j = 0; j < 4; j++) {
 			io->spellcast_data.symb[j] = spellicons[i].symbols[j];
+		}
 	}
 
 	io->spellcast_data.castingspell = spellid;
