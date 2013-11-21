@@ -240,7 +240,7 @@ public:
 
 } // namespace script
 
-#define ScriptEventWarning Logger(__FILE__,__LINE__, isSuppressed(context, word) ? Logger::Debug : Logger::Warning) << ScriptContextPrefix(context) << (((size_t)msg < ARRAY_SIZE(AS_EVENT) - 1 && msg != SM_NULL) ? AS_EVENT[msg].name : "on " + evname) << ": "
+#define ScriptEventWarning Logger(__FILE__,__LINE__, isSuppressed(context, word) ? Logger::Debug : Logger::Warning) << ScriptContextPrefix(context) << getName(msg, evname) << ": "
 
 #ifdef ARX_DEBUG
 static const char * toString(ScriptResult ret) {
@@ -351,12 +351,9 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 	}
 	
 	
-	LogDebug("--> SendScriptEvent event="
-	         << (!evname.empty() ? evname
-	            : ((size_t)msg < ARRAY_SIZE(AS_EVENT) - 1) ? AS_EVENT[msg].name.substr(3)
-	            : "(none)")
+	LogDebug("--> " << getName(msg, evname)
 	         << " params=\"" << params << "\""
-	         << " io=" << (io ? io->idString() : "unknown")
+	         << " entity=" << (io ? io->idString() : "unknown")
 	         << (io == NULL ? "" : es == &io->script ? " base" : " overriding")
 	         << " pos=" << pos);
 
@@ -375,7 +372,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 	if(msg != SM_EXECUTELINE) {
 		string word = context.getCommand();
 		if(word != "{") {
-			ScriptEventWarning << "--> missing bracket after event, got \"" << word << "\"";
+			ScriptEventWarning << "<-- missing bracket after event, got \"" << word << "\"";
 			return ACCEPT;
 		}
 	}
@@ -388,10 +385,10 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 		if(word.empty()) {
 			if(msg == SM_EXECUTELINE && context.pos != es->size) {
 				arx_assert(es->data[context.pos] == '\n');
-				LogDebug("--> line end");
+				LogDebug("<-- line end");
 				return ACCEPT;
 			}
-			ScriptEventWarning << "--> reached script end without accept / refuse / return";
+			ScriptEventWarning << "<-- reached script end without accept / refuse / return";
 			return ACCEPT;
 		}
 		
@@ -447,7 +444,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 					if(isBlockEndSuprressed(context, word)) { // TODO(broken-scripts)
 						brackets++;
 					} else {
-						ScriptEventWarning << "--> event block ended without accept or refuse!";
+						ScriptEventWarning << "<-- event block ended without accept or refuse!";
 						return ACCEPT;
 					}
 				}
@@ -458,7 +455,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				return ACCEPT;
 			}
 			
-			ScriptEventWarning << "--> unknown command: " << word;
+			ScriptEventWarning << "<-- unknown command: " << word;
 			
 			// TODO(broken-scripts)
 			if(!isSuppressed(context, word)) {
@@ -471,15 +468,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 		
 	}
 	
-	if(msg == SM_EXECUTELINE) {
-		LogDebug("--> executeline finished: " << toString(ret));
-	} else if(evname != "") {
-		LogDebug("--> " << eventname << " event finished: " << toString(ret));
-	} else if(msg != SM_DUMMY) {
-		LogDebug("--> " << AS_EVENT[msg].name.substr(3) << " event finished: " << toString(ret));
-	} else {
-		LogDebug("--> dummy event finished: " << toString(ret));
-	}
+	LogDebug("<-- " << getName(msg, evname) << " finished: " << toString(ret));
 	
 	return ret;
 }
@@ -529,6 +518,20 @@ void ScriptEvent::init() {
 	registerCommand(new script::ObsoleteCommand("detachnpcfromplayer"));
 	
 	LogInfo << "Scripting system initialized with " << commands.size() << " commands and " << count << " suppressions";
+}
+
+std::string ScriptEvent::getName(ScriptMessage msg, const std::string & eventname) {
+	if(msg == SM_EXECUTELINE) {
+		return "executeline";
+	} else if(msg == SM_DUMMY)  {
+		return "dummy event";
+	} else if(!eventname.empty()) {
+		return "on " + eventname + " event";
+	} else if(msg <= ARRAY_SIZE(AS_EVENT) - 1) {
+		return AS_EVENT[msg].name + " event";
+	} else {
+		return "(no event)";
+	}
 }
 
 ScriptEvent::Commands ScriptEvent::commands;

@@ -42,6 +42,8 @@ class ScriptEvent {
 	
 public:
 	
+	static std::string getName(ScriptMessage msg, const std::string & eventname);
+	
 	static long totalCount;
 	
 	ScriptEvent();
