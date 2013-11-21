@@ -2023,18 +2023,17 @@ bool TryIOAnimMove(Entity * io, long animnum)
 
 	return false;
 }
-void TryAndCheckAnim(Entity * io, long animnum, long layer)
-{
-	if(!io)
+
+void TryAndCheckAnim(Entity * io, long animnum, long layer) {
+	
+	if(!io) {
 		return;
-
+	}
+	
 	ANIM_USE * ause = &io->animlayer[layer];
-
 	if(ause->cur_anim != io->anims[animnum] && ause->cur_anim) {
 		if(TryIOAnimMove(io, animnum)) {
-			AcquireLastAnim(io);
-			FinishAnim(io, ause->cur_anim);
-			ANIM_Set(ause, io->anims[animnum]);
+			changeAnimationLayer(io, layer, io->anims[animnum]);
 		}
 	}
 }
