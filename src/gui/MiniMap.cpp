@@ -441,7 +441,7 @@ void MiniMap::showBookEntireMap(int showLevel) {
 		if(MouseInRect(verts[0].p.x, verts[0].p.y, verts[2].p.x, verts[2].p.y)) {
 			if(!m_mapMarkers[i].m_text.empty()) {
 				
-				Rect bRect(140, 290, 140 + 205, 358);
+				Rect bRect(140, 295, 140 + 205, 358);
 				
 				Rect::Num left = checked_range_cast<Rect::Num>((bRect.left) * Xratio);
 				Rect::Num right = checked_range_cast<Rect::Num>((bRect.right) * Xratio);
