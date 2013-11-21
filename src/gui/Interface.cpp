@@ -151,7 +151,6 @@ struct ARX_INTERFACE_HALO_STRUCT
 static const int GL_DECAL_ICONS = 0;
 static const float BOOKMARKS_POS_X = 216.f;
 static const float BOOKMARKS_POS_Y = 60.f;
-static const int PAGE_CHAR_SIZE = 4096;
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
