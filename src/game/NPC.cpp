@@ -311,47 +311,41 @@ void ARX_NPC_Revive(Entity * io, long flags)
  * \param behavior
  * \param behavior_param
  */
-void ARX_NPC_Behaviour_Change(Entity * io, Behaviour behavior, long behavior_param)
-{
-	if(!io || !(io->ioflags & IO_NPC))
+void ARX_NPC_Behaviour_Change(Entity * io, Behaviour behavior, long behavior_param) {
+	
+	if(!io || !(io->ioflags & IO_NPC)) {
 		return;
-
+	}
+	
 	if((io->_npcdata->behavior & BEHAVIOUR_FIGHT) && !(behavior & BEHAVIOUR_FIGHT)) {
 		ANIM_USE * ause1 = &io->animlayer[1];
 		AcquireLastAnim(io);
 		FinishAnim(io, ause1->cur_anim);
 		ause1->cur_anim = NULL;
 	}
-
+	
 	if((behavior & BEHAVIOUR_NONE) || (behavior == 0)) {
-		ANIM_USE * ause0 = &io->animlayer[0];
-		AcquireLastAnim(io);
-		FinishAnim(io, ause0->cur_anim);
-		ause0->cur_anim = NULL;
-		ANIM_Set(ause0, io->anims[ANIM_DEFAULT]);
-		ause0->flags &= ~EA_LOOP;
-
+		
+		changeAnimation(io, io->anims[ANIM_DEFAULT]);
+		io->animlayer[0].flags &= ~EA_LOOP;
+		
 		ANIM_USE * ause1 = &io->animlayer[1];
 		AcquireLastAnim(io);
 		FinishAnim(io, ause1->cur_anim);
 		ause1->cur_anim = NULL;
 		ause1->flags &= ~EA_LOOP;
-
+		
 		ANIM_USE * ause2 = &io->animlayer[2];
 		AcquireLastAnim(io);
 		FinishAnim(io, ause2->cur_anim);
 		ause2->cur_anim = NULL;
 		ause2->flags &= ~EA_LOOP;
 	}
-
+	
 	if(behavior & BEHAVIOUR_FRIENDLY) {
-		ANIM_USE * ause0 = &io->animlayer[0];
-		AcquireLastAnim(io);
-		FinishAnim(io, ause0->cur_anim);
-		ANIM_Set(ause0, io->anims[ANIM_DEFAULT]);
-		ause0->altidx_cur = 0;
+		changeAnimation(io, io->anims[ANIM_DEFAULT], 0, true);
 	}
-
+	
 	io->_npcdata->behavior = behavior;
 	io->_npcdata->behavior_param = (float)behavior_param;
 }
