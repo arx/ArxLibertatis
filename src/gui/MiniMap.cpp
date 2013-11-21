@@ -531,7 +531,7 @@ Vec2f MiniMap::computePlayerPos(float zoom, int showLevel) {
 
 void MiniMap::drawBackground(int showLevel, Rect boundaries, float startX, float startY, float zoom, float fadeBorder, float decalX, float decalY, bool invColor, float alpha) {
 	
-    m_mapVertices.resize(0);
+	m_mapVertices.resize(0);
 
 	float caseX = zoom / ((float)MINIMAP_MAX_X);
 	float caseY = zoom / ((float)MINIMAP_MAX_Z);
@@ -564,6 +564,8 @@ void MiniMap::drawBackground(int showLevel, Rect boundaries, float startX, float
 		GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
 	}
 	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapClamp);
+	GRenderer->GetTextureStage(0)->setMinFilter(TextureStage::FilterLinear);
+	GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterLinear);
 
 	for(int j = -2; j < MINIMAP_MAX_Z + 2; j++) {
 		for(int i = -2; i < MINIMAP_MAX_X + 2; i++) {
