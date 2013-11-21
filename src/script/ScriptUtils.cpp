@@ -471,6 +471,7 @@ size_t initSuppressions() {
 	suppress("goblin_base", 30010, "goto"); // missing label "main_alert"
 	
 	suppress("goblin_base_0009", 1455, "setevent"); // unsupported event: combine
+	suppress("goblin_base_0009", 3864, "playanim"); // used -e flag without command
 	
 	suppress("goblin_base_0034", 771, "detach"); // object mug_full_0003 already destroyed
 	
