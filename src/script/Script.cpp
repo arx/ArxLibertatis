@@ -51,8 +51,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <sstream>
 #include <cstdio>
 #include <algorithm>
+#include <limits>
 
 #include <boost/algorithm/string/predicate.hpp>
+#include <boost/foreach.hpp>
 
 #include "ai/Paths.h"
 
@@ -1498,119 +1500,102 @@ void MakeSSEPARAMS(const char * params)
 	}
 }
 
-#define MAX_EVENT_STACK 800
-struct STACKED_EVENT {
-	Entity * sender;
-	long              exist;
-	Entity * io;
-	ScriptMessage     msg;
-	std::string       params;
-	std::string       eventname;
+struct QueuedEvent {
+	
+	bool          exists;
+	Entity *      sender;
+	Entity *      entity;
+	ScriptMessage msg;
+	std::string   params;
+	std::string   eventname;
+	
+	void clear() {
+		exists = false;
+		sender = NULL;
+		entity = NULL;
+		msg = SM_NULL;
+		params.clear();
+		eventname.clear();
+	}
+	
 };
 
-STACKED_EVENT eventstack[MAX_EVENT_STACK];
+// TODO use a queue
+static QueuedEvent g_eventQueue[800];
 
-void ARX_SCRIPT_EventStackInit()
-{
-	ARX_SCRIPT_EventStackClear( false ); // Clear everything in the stack
-}
-void ARX_SCRIPT_EventStackClear( bool check_exist )
-{
-	LogDebug("Event Stack Clear");
-	for (long i = 0; i < MAX_EVENT_STACK; i++)
-	{
-		if ( check_exist ) // If we're not blatantly clearing everything
-			if ( !eventstack[i].exist ) // If the Stacked_Event is not being used
-				continue; // Continue on to the next one
-
-			// Otherwise, clear all the fields in this stacked_event
-			eventstack[i].sender = NULL;
-			eventstack[i].exist = 0;
-			eventstack[i].io = NULL;
-			eventstack[i].msg = SM_NULL;
-			eventstack[i].params.clear();
-			eventstack[i].eventname.clear();
-	}
+void ARX_SCRIPT_EventStackInit() {
+	ARX_SCRIPT_EventStackClear(false); // Clear everything in the stack
 }
 
-long STACK_FLOW = 8;
-
-void ARX_SCRIPT_EventStackClearForIo(Entity * io)
-{
-	for (long i = 0; i < MAX_EVENT_STACK; i++)
-	{
-		if (eventstack[i].exist)
-		{
-			if (eventstack[i].io == io)
-			{
-				eventstack[i].sender = NULL;
-				eventstack[i].exist = 0;
-				eventstack[i].io = NULL;
-				eventstack[i].msg = SM_NULL;
-				eventstack[i].params.clear();
-				eventstack[i].eventname.clear();
-			}
+void ARX_SCRIPT_EventStackClear(bool check_exist) {
+	LogDebug("clearing event queue");
+	BOOST_FOREACH(QueuedEvent & event, g_eventQueue) {
+		if(!check_exist || event.exists) {
+			event.clear();
 		}
 	}
 }
 
-void ARX_SCRIPT_EventStackExecute()
-{
-	long count = 0;
-
-	for (long i = 0; i < MAX_EVENT_STACK; i++)
-	{
-		if (eventstack[i].exist)
-		{
-			if(ValidIOAddress(eventstack[i].io)) {
-
-			if (ValidIOAddress(eventstack[i].sender))
-				EVENT_SENDER = eventstack[i].sender;
-			else
-				EVENT_SENDER = NULL;
-
-			SendIOScriptEvent(eventstack[i].io, eventstack[i].msg, eventstack[i].params, eventstack[i].eventname);
-			}
-
-			eventstack[i].sender = NULL;
-			eventstack[i].exist = 0;
-			eventstack[i].io = NULL;
-			eventstack[i].msg = SM_NULL;
-			eventstack[i].params.clear();
-			eventstack[i].eventname.clear();
-			count++;
-
-			if (count >= STACK_FLOW) return;
+void ARX_SCRIPT_EventStackClearForIo(Entity * io) {
+	BOOST_FOREACH(QueuedEvent & event, g_eventQueue) {
+		if(event.exists && event.entity == io) {
+			LogDebug("clearing queued " << ScriptEvent::getName(event.msg, event.eventname)
+			         << " for " << io->idString());
+			event.clear();
 		}
 	}
 }
 
-void ARX_SCRIPT_EventStackExecuteAll()
-{
-	STACK_FLOW = 9999999;
-	ARX_SCRIPT_EventStackExecute();
-	STACK_FLOW = 20;
+void ARX_SCRIPT_EventStackExecute(size_t limit) {
+	
+	size_t count = 0;
+	
+	BOOST_FOREACH(QueuedEvent & event, g_eventQueue) {
+		
+		if(!event.exists) {
+			continue;
+		}
+		
+		if(ValidIOAddress(event.entity)) {
+			EVENT_SENDER = ValidIOAddress(event.sender) ? event.sender : NULL;
+			LogDebug("running queued " << ScriptEvent::getName(event.msg, event.eventname)
+			         << " for " << event.entity->idString());
+			SendIOScriptEvent(event.entity, event.msg, event.params, event.eventname);
+		} else {
+			LogDebug("could not run queued " << ScriptEvent::getName(event.msg, event.eventname)
+			         << " params=\"" << event.params << "\" - entity vanished");
+		}
+		event.clear();
+		
+		// Abort if the event limit was reached
+		if(++count >= limit) {
+			return;
+		}
+		
+	}
+	
 }
 
-void Stack_SendIOScriptEvent(Entity * io, ScriptMessage msg, const std::string& params, const std::string& eventname)
-{
-	for (long i = 0; i < MAX_EVENT_STACK; i++)
-	{
-		if (!eventstack[i].exist)
-		{
-			eventstack[i].sender = EVENT_SENDER;
-			eventstack[i].io = io;
-			eventstack[i].msg = msg;
-			eventstack[i].exist = 1;
-			eventstack[i].params = params;
-			eventstack[i].eventname = eventname;
+void ARX_SCRIPT_EventStackExecuteAll() {
+	ARX_SCRIPT_EventStackExecute(std::numeric_limits<size_t>::max());
+}
 
+void Stack_SendIOScriptEvent(Entity * io, ScriptMessage msg, const std::string & params,
+                             const std::string & eventname) {
+	BOOST_FOREACH(QueuedEvent & event, g_eventQueue) {
+		if(!event.exists) {
+			event.sender = EVENT_SENDER;
+			event.entity = io;
+			event.msg = msg;
+			event.params = params;
+			event.eventname = eventname;
+			event.exists = true;
 			return;
 		}
 	}
 }
 
-ScriptResult SendIOScriptEventReverse(Entity * io, ScriptMessage msg, const std::string& params, const std::string& eventname)
+static ScriptResult SendIOScriptEventReverse(Entity * io, ScriptMessage msg, const std::string& params, const std::string& eventname)
 {
 	// checks invalid IO
 	if (!io) return REFUSE;

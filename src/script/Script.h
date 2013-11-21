@@ -420,7 +420,7 @@ void ARX_SCRIPT_Timer_Clear_For_IO(Entity * io);
 long ARX_SCRIPT_Timer_GetFree();
  
 void ARX_SCRIPT_SetMainEvent(Entity * io, const std::string & newevent);
-void ARX_SCRIPT_EventStackExecute();
+void ARX_SCRIPT_EventStackExecute(size_t limit = 20);
 void ARX_SCRIPT_EventStackExecuteAll();
 void ARX_SCRIPT_EventStackInit();
 void ARX_SCRIPT_EventStackClear(bool check_exist = true);
