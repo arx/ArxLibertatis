@@ -1981,41 +1981,23 @@ void ARX_NPC_Manage_Fight(Entity * io)
 		}
 }
 
-void ARX_NPC_Manage_Anims_End(Entity * io)
-{
+void ARX_NPC_Manage_Anims_End(Entity * io) {
+	
 	ANIM_USE * ause = &io->animlayer[0];
-
 	if((ause->flags & EA_ANIMEND) && ause->cur_anim) {
+		
 		if(ause->flags & EA_FORCEPLAY) {
-			AcquireLastAnim(io);
-			FinishAnim(io, ause->cur_anim);
-			ANIM_Set(ause, io->anims[ANIM_DEFAULT]);
-
-			if(io->_npcdata->behavior & BEHAVIOUR_FRIENDLY)
-				ause->altidx_cur = 0;
+			bool startAtBeginning = (io->_npcdata->behavior & BEHAVIOUR_FRIENDLY) != 0;
+			changeAnimation(io, io->anims[ANIM_DEFAULT], 0, startAtBeginning);
 		}
-
+		
 		// some specific code for combat animation end management
-		if(ause->cur_anim == io->anims[ANIM_FIGHT_STRAFE_LEFT]) {
-			AcquireLastAnim(io);
-			FinishAnim(io, ause->cur_anim);
-			ANIM_Set(ause, io->anims[ANIM_FIGHT_WAIT]);
-			ause->flags |= EA_LOOP;
+		if(ause->cur_anim == io->anims[ANIM_FIGHT_STRAFE_LEFT]
+		   || ause->cur_anim == io->anims[ANIM_FIGHT_STRAFE_RIGHT]
+		   || ause->cur_anim == io->anims[ANIM_FIGHT_WALK_BACKWARD]) {
+			changeAnimation(io, io->anims[ANIM_FIGHT_WAIT], EA_LOOP);
 		}
-
-		if(ause->cur_anim == io->anims[ANIM_FIGHT_STRAFE_RIGHT]) {
-			AcquireLastAnim(io);
-			FinishAnim(io, ause->cur_anim);
-			ANIM_Set(ause, io->anims[ANIM_FIGHT_WAIT]);
-			ause->flags |= EA_LOOP;
-		}
-
-		if(ause->cur_anim == io->anims[ANIM_FIGHT_WALK_BACKWARD]) {
-			AcquireLastAnim(io);
-			FinishAnim(io, ause->cur_anim);
-			ANIM_Set(ause, io->anims[ANIM_FIGHT_WAIT]);
-			ause->flags |= EA_LOOP;
-		}
+		
 	}
 }
 
