@@ -810,56 +810,47 @@ void ARX_TEMPORARY_TrySound(float volume) {
 /*!
  * \brief Sets a New MoveMode for a NPC
  */
-void ARX_NPC_ChangeMoveMode(Entity * io, MoveMode MOVEMODE)
-{
-	if(!io || !(io->ioflags & IO_NPC))
+void ARX_NPC_ChangeMoveMode(Entity * io, MoveMode MOVEMODE) {
+	
+	if(!io || !(io->ioflags & IO_NPC)) {
 		return;
-
-	ANIM_USE * ause0 = &io->animlayer[0];
-	ANIM_HANDLE ** alist = io->anims;
-
-	switch(MOVEMODE) {
-		case RUNMODE:
-			if (((ause0->cur_anim == alist[ANIM_WALK]) && (alist[ANIM_WALK]))
-			        || ((ause0->cur_anim == alist[ANIM_WALK_SNEAK]) && (alist[ANIM_WALK_SNEAK])))
-			{
-				AcquireLastAnim(io);
-				FinishAnim(io, ause0->cur_anim);
-				ANIM_Set(ause0, alist[ANIM_RUN]);
-				ause0->altidx_cur = 0;
-			}
-			break;
-		case WALKMODE:
-			if (((ause0->cur_anim == alist[ANIM_RUN]) && (alist[ANIM_RUN]))
-			        || ((ause0->cur_anim == alist[ANIM_WALK_SNEAK]) && (alist[ANIM_WALK_SNEAK])))
-			{
-				AcquireLastAnim(io);
-				FinishAnim(io, ause0->cur_anim);
-				ANIM_Set(ause0, alist[ANIM_WALK]);
-			}
-			break;
-		case NOMOVEMODE:
-			if (((ause0->cur_anim == alist[ANIM_WALK]) && (alist[ANIM_WALK]))
-			        || ((ause0->cur_anim == alist[ANIM_RUN]) && (alist[ANIM_RUN]))
-			        || ((ause0->cur_anim == alist[ANIM_WALK_SNEAK]) && (alist[ANIM_WALK_SNEAK])))
-			{
-				AcquireLastAnim(io);
-				FinishAnim(io, ause0->cur_anim);
-				ANIM_Set(ause0, alist[ANIM_WAIT]);
-				ause0->altidx_cur = 0;
-			}
-			break;
-		case SNEAKMODE:
-			if (((ause0->cur_anim == alist[ANIM_WALK]) && (alist[ANIM_WALK]))
-			        || ((ause0->cur_anim == alist[ANIM_RUN]) && (alist[ANIM_RUN])))
-			{
-				AcquireLastAnim(io);
-				FinishAnim(io, ause0->cur_anim);
-				ANIM_Set(ause0, alist[ANIM_WALK_SNEAK]);
-			}
-			break;
 	}
-
+	
+	ANIM_HANDLE * cur = io->animlayer[0].cur_anim;
+	ANIM_HANDLE ** alist = io->anims;
+	
+	switch(MOVEMODE) {
+		case RUNMODE: {
+			if((cur == alist[ANIM_WALK] && alist[ANIM_WALK])
+			   || (cur == alist[ANIM_WALK_SNEAK] && alist[ANIM_WALK_SNEAK])) {
+				changeAnimation(io, alist[ANIM_RUN], 0, true);
+			}
+			break;
+		}
+		case WALKMODE: {
+			if((cur == alist[ANIM_RUN] && alist[ANIM_RUN])
+			   || (cur == alist[ANIM_WALK_SNEAK] && alist[ANIM_WALK_SNEAK])) {
+				changeAnimation(io, alist[ANIM_WALK]);
+			}
+			break;
+		}
+		case NOMOVEMODE: {
+			if((cur == alist[ANIM_WALK] && alist[ANIM_WALK])
+			   || (cur == alist[ANIM_RUN] && alist[ANIM_RUN])
+			   || (cur == alist[ANIM_WALK_SNEAK] && alist[ANIM_WALK_SNEAK])) {
+				changeAnimation(io, alist[ANIM_WAIT], 0, true);
+			}
+			break;
+		}
+		case SNEAKMODE: {
+			if((cur == alist[ANIM_WALK] && alist[ANIM_WALK])
+			   || (cur == alist[ANIM_RUN] && alist[ANIM_RUN])) {
+				changeAnimation(io, alist[ANIM_WALK_SNEAK]);
+			}
+			break;
+		}
+	}
+	
 	io->_npcdata->movemode = MOVEMODE;
 }
 
