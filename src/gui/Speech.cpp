@@ -481,8 +481,7 @@ void ARX_SPEECH_Update() {
 					if ((io->animlayer[2].cur_anim != io->anims[aspeech[i].mood])
 							||	(io->animlayer[2].flags & EA_ANIMEND))
 					{
-						AcquireLastAnim(io);
-						ANIM_Set(&io->animlayer[2], io->anims[aspeech[i].mood]);
+						changeAnimation(io, 2, io->anims[aspeech[i].mood]);
 					}
 				}
 			}
