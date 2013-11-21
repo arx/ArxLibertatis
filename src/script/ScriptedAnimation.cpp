@@ -269,26 +269,33 @@ public:
 			}
 			
 			size_t pos = context.skipCommand();
-			if(pos != (size_t)-1) {
-				scr_timer[num2].reset();
-				ActiveTimers++;
-				scr_timer[num2].es = context.getScript();
-				scr_timer[num2].exist = 1;
-				scr_timer[num2].io = context.getEntity();
-				scr_timer[num2].msecs = 1000.f;
-				// Don't assume that we successfully set the animation - use the current animation
-				if(layer.cur_anim) {
-					arx_assert(layer.altidx_cur >= 0 && layer.altidx_cur < layer.cur_anim->alt_nb);
-					if(layer.cur_anim->anims[layer.altidx_cur]->anim_time > scr_timer[num2].msecs) {
-						scr_timer[num2].msecs = layer.cur_anim->anims[layer.altidx_cur]->anim_time;
-					}
-				}
-				scr_timer[num2].name = timername;
-				scr_timer[num2].pos = pos;
-				scr_timer[num2].tim = (unsigned long)(arxtime);
-				scr_timer[num2].times = 1;
-				scr_timer[num2].longinfo = 0;
+			if(pos == size_t(-1)) {
+				ScriptWarning << "used -e flag without command to execute";
+				return Success;
 			}
+			
+			scr_timer[num2].reset();
+			ActiveTimers++;
+			scr_timer[num2].es = context.getScript();
+			scr_timer[num2].exist = 1;
+			scr_timer[num2].io = context.getEntity();
+			scr_timer[num2].msecs = 1000.f;
+			// Don't assume that we successfully set the animation - use the current animation
+			if(layer.cur_anim) {
+				arx_assert(layer.altidx_cur >= 0 && layer.altidx_cur < layer.cur_anim->alt_nb);
+				if(layer.cur_anim->anims[layer.altidx_cur]->anim_time > scr_timer[num2].msecs) {
+					scr_timer[num2].msecs = layer.cur_anim->anims[layer.altidx_cur]->anim_time;
+				}
+			}
+			scr_timer[num2].name = timername;
+			scr_timer[num2].pos = pos;
+			scr_timer[num2].tim = (unsigned long)(arxtime);
+			scr_timer[num2].times = 1;
+			scr_timer[num2].longinfo = 0;
+			
+			DebugScript(": scheduled timer #" << num2 << ' ' << timername << " in "
+			            << scr_timer[num2].msecs << "ms");
+			
 		}
 		
 		return Success;
