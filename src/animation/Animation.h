@@ -148,7 +148,7 @@ struct ANIM_USE {
  * @param startAtBeginning force the animation to start at the first keyframe
  *                         - otherwise it may start at a randomly chosen one
  */
-void changeAnimationLayer(Entity * entity, size_t layer, ANIM_HANDLE * animation,
+void changeAnimation(Entity * entity, size_t layer, ANIM_HANDLE * animation,
                           AnimUseType flags = 0, bool startAtBeginning = false);
 /*!
  * Cancel any existing primary animation and then start a new one.
@@ -171,6 +171,13 @@ void changeAnimation(Entity * entity, ANIM_HANDLE * animation, AnimUseType flags
  * @param flags     animation use flags to set if the animation has been changed
  */
 void setAnimation(Entity * entity, ANIM_HANDLE * animation, AnimUseType flags = 0);
+
+/*!
+ * Stop the current animation.
+ * @param entity           the entity being animated
+ * @param layer            the animation layer to change
+ */
+void stopAnimation(Entity * entity, size_t layer = 0);
 
 short ANIM_GetAltIdx(ANIM_HANDLE * ah,long old);
 void ANIM_Set(ANIM_USE * au,ANIM_HANDLE * anim);

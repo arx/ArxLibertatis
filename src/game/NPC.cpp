@@ -127,6 +127,25 @@ static const float ARX_NPC_ON_HEAR_MAX_DISTANCE_ITEM(800.0F);
 void StareAtTarget(Entity * io);
 #define RUN_WALK_RADIUS 450
 
+static bool isCurrentAnimation(Entity * entity, size_t layer, AnimationNumber anim) {
+	ANIM_HANDLE * animation = entity->anims[anim];
+	return animation != NULL && entity->animlayer[layer].cur_anim == animation;
+}
+
+static bool isCurrentAnimation(Entity * entity, AnimationNumber anim) {
+	return isCurrentAnimation(entity, 0, anim);
+}
+
+static void changeAnimation(Entity * entity, size_t layer, AnimationNumber anim,
+                          AnimUseType flags = 0, bool startAtBeginning = false) {
+	changeAnimation(entity, layer, entity->anims[anim], flags, startAtBeginning);
+}
+
+static void changeAnimation(Entity * entity, AnimationNumber anim,
+                          AnimUseType flags = 0, bool startAtBeginning = false) {
+	changeAnimation(entity, entity->anims[anim], flags, startAtBeginning);
+}
+
 static void CheckHit(Entity * io, float ratioaim) {
 
 	if(!io)
@@ -318,32 +337,20 @@ void ARX_NPC_Behaviour_Change(Entity * io, Behaviour behavior, long behavior_par
 	}
 	
 	if((io->_npcdata->behavior & BEHAVIOUR_FIGHT) && !(behavior & BEHAVIOUR_FIGHT)) {
-		ANIM_USE * ause1 = &io->animlayer[1];
-		AcquireLastAnim(io);
-		FinishAnim(io, ause1->cur_anim);
-		ause1->cur_anim = NULL;
+		stopAnimation(io, 1);
 	}
 	
 	if((behavior & BEHAVIOUR_NONE) || (behavior == 0)) {
-		
-		changeAnimation(io, io->anims[ANIM_DEFAULT]);
+		changeAnimation(io, 0, ANIM_DEFAULT);
 		io->animlayer[0].flags &= ~EA_LOOP;
-		
-		ANIM_USE * ause1 = &io->animlayer[1];
-		AcquireLastAnim(io);
-		FinishAnim(io, ause1->cur_anim);
-		ause1->cur_anim = NULL;
-		ause1->flags &= ~EA_LOOP;
-		
-		ANIM_USE * ause2 = &io->animlayer[2];
-		AcquireLastAnim(io);
-		FinishAnim(io, ause2->cur_anim);
-		ause2->cur_anim = NULL;
-		ause2->flags &= ~EA_LOOP;
+		stopAnimation(io, 1);
+		io->animlayer[1].flags &= ~EA_LOOP;
+		stopAnimation(io, 2);
+		io->animlayer[2].flags &= ~EA_LOOP;
 	}
 	
 	if(behavior & BEHAVIOUR_FRIENDLY) {
-		changeAnimation(io, io->anims[ANIM_DEFAULT], 0, true);
+		changeAnimation(io, ANIM_DEFAULT, 0, true);
 	}
 	
 	io->_npcdata->behavior = behavior;
@@ -816,36 +823,29 @@ void ARX_NPC_ChangeMoveMode(Entity * io, MoveMode MOVEMODE) {
 		return;
 	}
 	
-	ANIM_HANDLE * cur = io->animlayer[0].cur_anim;
-	ANIM_HANDLE ** alist = io->anims;
-	
 	switch(MOVEMODE) {
 		case RUNMODE: {
-			if((cur == alist[ANIM_WALK] && alist[ANIM_WALK])
-			   || (cur == alist[ANIM_WALK_SNEAK] && alist[ANIM_WALK_SNEAK])) {
-				changeAnimation(io, alist[ANIM_RUN], 0, true);
+			if(isCurrentAnimation(io, ANIM_WALK) || isCurrentAnimation(io, ANIM_WALK_SNEAK)) {
+				changeAnimation(io, ANIM_RUN, 0, true);
 			}
 			break;
 		}
 		case WALKMODE: {
-			if((cur == alist[ANIM_RUN] && alist[ANIM_RUN])
-			   || (cur == alist[ANIM_WALK_SNEAK] && alist[ANIM_WALK_SNEAK])) {
-				changeAnimation(io, alist[ANIM_WALK]);
+			if(isCurrentAnimation(io, ANIM_RUN) || isCurrentAnimation(io, ANIM_WALK_SNEAK)) {
+				changeAnimation(io, ANIM_WALK);
 			}
 			break;
 		}
 		case NOMOVEMODE: {
-			if((cur == alist[ANIM_WALK] && alist[ANIM_WALK])
-			   || (cur == alist[ANIM_RUN] && alist[ANIM_RUN])
-			   || (cur == alist[ANIM_WALK_SNEAK] && alist[ANIM_WALK_SNEAK])) {
-				changeAnimation(io, alist[ANIM_WAIT], 0, true);
+			if(isCurrentAnimation(io, ANIM_WALK) || isCurrentAnimation(io, ANIM_RUN)
+			   || isCurrentAnimation(io, ANIM_WALK_SNEAK)) {
+				changeAnimation(io, ANIM_WAIT, 0, true);
 			}
 			break;
 		}
 		case SNEAKMODE: {
-			if((cur == alist[ANIM_WALK] && alist[ANIM_WALK])
-			   || (cur == alist[ANIM_RUN] && alist[ANIM_RUN])) {
-				changeAnimation(io, alist[ANIM_WALK_SNEAK]);
+			if(isCurrentAnimation(io, ANIM_WALK) || isCurrentAnimation(io, ANIM_RUN)) {
+				changeAnimation(io, ANIM_WALK_SNEAK);
 			}
 			break;
 		}
@@ -1887,7 +1887,7 @@ void ARX_NPC_Manage_Fight(Entity * io)
 			        && (ause->cur_anim != io->anims[ANIM_CAST_START]))
 			        || (ause->cur_anim == NULL))
 			{
-				changeAnimationLayer(io, 1, io->anims[ANIM_BARE_WAIT], EA_LOOP);
+				changeAnimation(io, 1, ANIM_BARE_WAIT, EA_LOOP);
 				Strike_StartTickCount(io);
 			}
 		}
@@ -1915,7 +1915,7 @@ void ARX_NPC_Manage_Fight(Entity * io)
 			        && (ause->cur_anim != io->anims[ANIM_CAST_START]))
 			        || (ause->cur_anim == NULL))
 			{
-				changeAnimationLayer(io, 1, io->anims[ANIM_DAGGER_WAIT], EA_LOOP);
+				changeAnimation(io, 1, ANIM_DAGGER_WAIT, EA_LOOP);
 				Strike_StartTickCount(io);
 			}
 		}
@@ -1943,7 +1943,7 @@ void ARX_NPC_Manage_Fight(Entity * io)
 			        && (ause->cur_anim != io->anims[ANIM_CAST_START]))
 			        || (ause->cur_anim == NULL))
 			{
-				changeAnimationLayer(io, 1, io->anims[ANIM_1H_WAIT], EA_LOOP);
+				changeAnimation(io, 1, ANIM_1H_WAIT, EA_LOOP);
 				Strike_StartTickCount(io);
 			}
 		}
@@ -1971,7 +1971,7 @@ void ARX_NPC_Manage_Fight(Entity * io)
 			        && (ause->cur_anim != io->anims[ANIM_CAST_START]))
 			        || (ause->cur_anim == NULL))
 			{
-				changeAnimationLayer(io, 1, io->anims[ANIM_2H_WAIT], EA_LOOP);
+				changeAnimation(io, 1, ANIM_2H_WAIT, EA_LOOP);
 			}
 		}
 		// BOW fight !!! **************************************
@@ -1988,14 +1988,14 @@ void ARX_NPC_Manage_Anims_End(Entity * io) {
 		
 		if(ause->flags & EA_FORCEPLAY) {
 			bool startAtBeginning = (io->_npcdata->behavior & BEHAVIOUR_FRIENDLY) != 0;
-			changeAnimation(io, io->anims[ANIM_DEFAULT], 0, startAtBeginning);
+			changeAnimation(io, ANIM_DEFAULT, 0, startAtBeginning);
 		}
 		
 		// some specific code for combat animation end management
-		if(ause->cur_anim == io->anims[ANIM_FIGHT_STRAFE_LEFT]
-		   || ause->cur_anim == io->anims[ANIM_FIGHT_STRAFE_RIGHT]
-		   || ause->cur_anim == io->anims[ANIM_FIGHT_WALK_BACKWARD]) {
-			changeAnimation(io, io->anims[ANIM_FIGHT_WAIT], EA_LOOP);
+		if(isCurrentAnimation(io, ANIM_FIGHT_STRAFE_LEFT)
+		   || isCurrentAnimation(io, ANIM_FIGHT_STRAFE_RIGHT)
+		   || isCurrentAnimation(io, ANIM_FIGHT_WALK_BACKWARD)) {
+			changeAnimation(io, ANIM_FIGHT_WAIT, EA_LOOP);
 		}
 		
 	}
@@ -2033,7 +2033,7 @@ void TryAndCheckAnim(Entity * io, long animnum, long layer) {
 	ANIM_USE * ause = &io->animlayer[layer];
 	if(ause->cur_anim != io->anims[animnum] && ause->cur_anim) {
 		if(TryIOAnimMove(io, animnum)) {
-			changeAnimationLayer(io, layer, io->anims[animnum]);
+			changeAnimation(io, layer, AnimationNumber(animnum));
 		}
 	}
 }
@@ -2048,386 +2048,279 @@ static const int STRIKE_DISTANCE = 220;
  * \param io
  * \param TOLERANCE
  */
-void ARX_NPC_Manage_Anims(Entity * io, float TOLERANCE)
-{
+void ARX_NPC_Manage_Anims(Entity * io, float TOLERANCE) {
+	
 	io->_npcdata->strike_time += (short)framedelay;
+	
 	ANIM_USE * ause = &io->animlayer[0];
 	ANIM_USE * ause1 = &io->animlayer[1];
+	
 	float tdist = std::numeric_limits<float>::max();
-
 	if(io->_npcdata->pathfind.listnb && ValidIONum(io->_npcdata->pathfind.truetarget)) {
 		tdist = glm::distance2(io->pos, entities[io->_npcdata->pathfind.truetarget]->pos);
 	} else if(ValidIONum(io->targetinfo)) {
 		tdist = glm::distance2(io->pos, entities[io->targetinfo]->pos);
 	}
-
-	Entity * ioo = io->_npcdata->weapon;
-
-	if(ValidIOAddress(ioo))
-		io->_npcdata->weapontype = ioo->type_flags;
-	else
+	
+	if(ValidIOAddress(io->_npcdata->weapon)) {
+		io->_npcdata->weapontype = io->_npcdata->weapon->type_flags;
+	} else {
 		io->_npcdata->weapontype = 0;
-
-	if ((io->_npcdata->behavior & BEHAVIOUR_FIGHT)
-	        &&	(tdist <= square(TOLERANCE + 10))
-	        &&	((tdist <= square(TOLERANCE - 20)) || (rnd() > 0.97f)))
-	{
-		{
-			if ((ause->cur_anim == io->anims[ANIM_FIGHT_WAIT])
-			        && (ause->cur_anim != NULL))
-			{
-				float r = rnd();
-
-				if(tdist < square(TOLERANCE - 20))
-					r = 0;
-
-				if(r < 0.1f)
-					TryAndCheckAnim(io, ANIM_FIGHT_WALK_BACKWARD, 0);
-				else if(r < 0.55f)
-					TryAndCheckAnim(io, ANIM_FIGHT_STRAFE_LEFT, 0);
-				else
-					TryAndCheckAnim(io, ANIM_FIGHT_STRAFE_RIGHT, 0);
-
-			}
+	}
+	
+	
+	// Manage combat movement
+	
+	if((io->_npcdata->behavior & BEHAVIOUR_FIGHT) && tdist <= square(TOLERANCE + 10)
+	   && (tdist <= square(TOLERANCE - 20) || rnd() > 0.97f)
+	   && isCurrentAnimation(io, ANIM_FIGHT_WAIT)) {
+		// Evade during combat
+		
+		float r = (tdist < square(TOLERANCE - 20)) ? 0.f : rnd();
+		if(r < 0.1f) {
+			TryAndCheckAnim(io, ANIM_FIGHT_WALK_BACKWARD, 0);
+		} else if(r < 0.55f) {
+			TryAndCheckAnim(io, ANIM_FIGHT_STRAFE_LEFT, 0);
+		} else {
+			TryAndCheckAnim(io, ANIM_FIGHT_STRAFE_RIGHT, 0);
+		}
+		
+	} else if(((io->_npcdata->behavior & (BEHAVIOUR_MAGIC | BEHAVIOUR_DISTANT))
+	           || io->spellcast_data.castingspell != SPELL_NONE)
+	          && rnd() > 0.85f && isCurrentAnimation(io, ANIM_FIGHT_WAIT) ) {
+		// Evade while (not) casting
+		
+		AcquireLastAnim(io);
+		FinishAnim(io, ause->cur_anim);
+		float r = (tdist < square(340)) ? 0.f : rnd();
+		if(r < 0.33f) {
+			TryAndCheckAnim(io, ANIM_FIGHT_WALK_BACKWARD, 0);
+		} else if(r < 0.66f) {
+			TryAndCheckAnim(io, ANIM_FIGHT_STRAFE_LEFT, 0);
+		} else {
+			TryAndCheckAnim(io, ANIM_FIGHT_STRAFE_RIGHT, 0);
+		}
+		
+	}
+	
+	if(IsPlayerStriking() && isCurrentAnimation(io, ANIM_FIGHT_WAIT)) {
+		AcquireLastAnim(io);
+		FinishAnim(io, ause->cur_anim);
+		float r = rnd();
+		if(r < 0.2f) {
+			TryAndCheckAnim(io, ANIM_FIGHT_WALK_BACKWARD, 0);
+		} else if(r < 0.6f) {
+			TryAndCheckAnim(io, ANIM_FIGHT_STRAFE_LEFT, 0);
+		} else {
+			TryAndCheckAnim(io, ANIM_FIGHT_STRAFE_RIGHT, 0);
 		}
 	}
-	//Decides fight moves
-	else if ((io->_npcdata->behavior & (BEHAVIOUR_MAGIC | BEHAVIOUR_DISTANT))
-	         ||	(io->spellcast_data.castingspell != SPELL_NONE))
-	{
-		if (rnd() > 0.85f)
-		{
-			if ((ause->cur_anim == io->anims[ANIM_FIGHT_WAIT])
-			        && (ause->cur_anim != NULL))
-			{
-				AcquireLastAnim(io);
-				FinishAnim(io, ause->cur_anim);
-				float r = rnd();
-
-				if(tdist < square(340))
-					r = 0;
-
-				if(r < 0.33f)
-					TryAndCheckAnim(io, ANIM_FIGHT_WALK_BACKWARD, 0);
-				else if(r < 0.66f)
-					TryAndCheckAnim(io, ANIM_FIGHT_STRAFE_LEFT, 0);
-				else
-					TryAndCheckAnim(io, ANIM_FIGHT_STRAFE_RIGHT, 0);
-			}
+	
+	
+	// Manage casting animation
+	
+	if(ause1->flags & EA_ANIMEND) {
+		if(isCurrentAnimation(io, 1, ANIM_CAST)) {
+			changeAnimation(io, 1, ANIM_CAST_END);
+		} else if(isCurrentAnimation(io, 1, ANIM_CAST_END)) {
+			stopAnimation(io, 1);
 		}
 	}
-
-
-	if(IsPlayerStriking()) {
-		if ((ause->cur_anim == io->anims[ANIM_FIGHT_WAIT])
-		        && (ause->cur_anim != NULL))
-		{
-			AcquireLastAnim(io);
-			FinishAnim(io, ause->cur_anim);
-			float r = rnd();
-
-			if(r < 0.2f)
-				TryAndCheckAnim(io, ANIM_FIGHT_WALK_BACKWARD, 0);
-			else if(r < 0.6f)
-				TryAndCheckAnim(io, ANIM_FIGHT_STRAFE_LEFT, 0);
-			else
-				TryAndCheckAnim(io, ANIM_FIGHT_STRAFE_RIGHT, 0);
-		}
+	
+	if(io->spellcast_data.castingspell == SPELL_NONE
+	   && isCurrentAnimation(io, 1, ANIM_CAST_START)) {
+		changeAnimation(io, 1, ANIM_CAST);
 	}
-	long j;
-
-
-	// MAGICAL FIGHT
-	if ((ause1->cur_anim == io->anims[ANIM_CAST])
-	        &&	(io->anims[ANIM_CAST])
-	        &&	(ause1->flags & EA_ANIMEND))
-	{
-		AcquireLastAnim(io);
-		FinishAnim(io, ause1->cur_anim);
-		ANIM_Set(ause1, io->anims[ANIM_CAST_END]);
-	}
-	else if ((ause1->cur_anim == io->anims[ANIM_CAST_END])
-	         &&	(io->anims[ANIM_CAST_END])
-	         &&	(ause1->flags & EA_ANIMEND))
-	{
-		AcquireLastAnim(io);
-		FinishAnim(io, ause1->cur_anim);
-		ause1->cur_anim = NULL;
-	}
-
-	if ((io->spellcast_data.castingspell == SPELL_NONE)
-	        &&	(ause1->cur_anim == io->anims[ANIM_CAST_START])
-	        &&	(io->anims[ANIM_CAST_START]))
-	{
-		AcquireLastAnim(io);
-		FinishAnim(io, ause1->cur_anim);
-		ANIM_Set(ause1, io->anims[ANIM_CAST]);
-	}
-
-	if ((ause1->cur_anim == io->anims[ANIM_CAST_START])
-	        &&	(io->anims[ANIM_CAST_START]))
-	{
+	
+	if(io->spellcast_data.castingspell != SPELL_NONE) {
 		return;
 	}
-
-	if ((ause1->cur_anim == io->anims[ANIM_CAST_CYCLE])
-	        &&	(io->anims[ANIM_CAST_CYCLE]))
-	{
+	
+	if(isCurrentAnimation(io, 1, ANIM_CAST_CYCLE)
+	   || isCurrentAnimation(io, 1, ANIM_CAST)
+	   || isCurrentAnimation(io, 1, ANIM_CAST_END)
+	   || isCurrentAnimation(io, 1, ANIM_CAST_START)) {
 		return;
 	}
-
-	if (io->spellcast_data.castingspell != SPELL_NONE) return;
-
-	if (ause1->cur_anim)
-	{
-		if ((ause1->cur_anim == io->anims[ANIM_CAST_CYCLE])
-		        ||	(ause1->cur_anim == io->anims[ANIM_CAST])
-		        ||	(ause1->cur_anim == io->anims[ANIM_CAST_END])
-		        ||	(ause1->cur_anim == io->anims[ANIM_CAST_START]))
-			return;
-	}
-
-	// BARE HANDS fight !!! *******************************
-	if (io->_npcdata->weapontype == 0)
-	{
-		if (io->_npcdata->weaponinhand == -1)
-		{
+	
+	
+	// Manage fighting animations
+	
+	if(io->_npcdata->weapontype == 0) {
+		// Hand to hand combat
+		
+		if(io->_npcdata->weaponinhand == -1) {
 			io->_npcdata->weaponinhand = 1;
 		}
-
-		if ((ause1->cur_anim == io->anims[ANIM_BARE_WAIT])
-		        &&	(ause1->cur_anim))
-		{
-			if ((io->_npcdata->behavior & BEHAVIOUR_FIGHT)
-			        &&	(tdist < square(STRIKE_DISTANCE))
-			        &&	(io->_npcdata->strike_time > 0))
-			{
-				AcquireLastAnim(io);
-				j = Random::get(0, 3);
-				FinishAnim(io, ause1->cur_anim);
-				ANIM_Set(ause1, io->anims[ANIM_BARE_STRIKE_LEFT_START+j*3]);
-			}
+		
+		if(isCurrentAnimation(io, 1, ANIM_BARE_WAIT)
+			 && (io->_npcdata->behavior & BEHAVIOUR_FIGHT)
+			 && tdist < square(STRIKE_DISTANCE) && io->_npcdata->strike_time > 0) {
+			size_t j = Random::get(0, 3); // Choose a random attack move
+			changeAnimation(io, 1, AnimationNumber(ANIM_BARE_STRIKE_LEFT_START + j * 3));
 		}
-
-		for (j = 0; j < 4; j++)
-		{
-			if ((ause1->cur_anim == io->anims[ANIM_BARE_STRIKE_LEFT_START+j*3])
-			        &&	(ause1->cur_anim)
-			        &&	(ause1->flags & EA_ANIMEND))
-			{
+		
+		for(size_t j = 0; j < 4; j++) {
+			
+			AnimationNumber start = AnimationNumber(ANIM_BARE_STRIKE_LEFT_START + j * 3);
+			AnimationNumber cycle = AnimationNumber(ANIM_BARE_STRIKE_LEFT_CYCLE + j * 3);
+			AnimationNumber strike = AnimationNumber(ANIM_BARE_STRIKE_LEFT + j * 3);
+			
+			if(isCurrentAnimation(io, 1, start) && (ause1->flags & EA_ANIMEND)) {
+				
 				io->ioflags &= ~IO_HIT;
-				AcquireLastAnim(io);
-				FinishAnim(io, ause1->cur_anim);
-				ANIM_Set(ause1, io->anims[ANIM_BARE_STRIKE_LEFT_CYCLE+j*3]);
-				io->_npcdata->aiming_start	=	(long)arxtime;
-				ause1->flags |= EA_LOOP;
-			}
-			else if ((ause1->cur_anim == io->anims[ANIM_BARE_STRIKE_LEFT_CYCLE+j*3])
-			         &&	(ause1->cur_anim))
-			{
-				if (((float(arxtime) > io->_npcdata->aiming_start + io->_npcdata->aimtime) || ((float(arxtime) > io->_npcdata->aiming_start + io->_npcdata->aimtime * ( 1.0f / 2 )) && (rnd() > 0.9f)))
-				        &&	(tdist < square(STRIKE_DISTANCE)))
-				{
-					AcquireLastAnim(io);
-					FinishAnim(io, ause1->cur_anim);
-					ANIM_Set(ause1, io->anims[ANIM_BARE_STRIKE_LEFT+j*3]);
+				changeAnimation(io, 1, cycle, EA_LOOP);
+				io->_npcdata->aiming_start = long(arxtime);
+				
+			} else if(isCurrentAnimation(io, 1, cycle)) {
+				
+				float elapsed = float(arxtime) - float(io->_npcdata->aiming_start);
+				float aimtime = io->_npcdata->aimtime;
+				if((elapsed > aimtime || (elapsed > aimtime * 0.5f && rnd() > 0.9f))
+				    && tdist < square(STRIKE_DISTANCE)) {
+					changeAnimation(io, 1, strike);
 					SendIOScriptEvent(io, SM_STRIKE, "bare");
 				}
-			}
-			else if ((ause1->cur_anim == io->anims[ANIM_BARE_STRIKE_LEFT+j*3])
-			         &&	(ause1->cur_anim))
-			{
-
-				if (ause1->flags & EA_ANIMEND)
-				{
-					AcquireLastAnim(io);
-					FinishAnim(io, ause1->cur_anim);
-					ANIM_Set(ause1, io->anims[ANIM_BARE_WAIT]);
-					Strike_StartTickCount(io);
+				
+			} else if(isCurrentAnimation(io, 1, strike)) {
+				
+				if(ause1->flags & EA_ANIMEND) {
 					io->ioflags &= ~IO_HIT;
-
-					if ((io->ioflags & IO_NPC) && (!io->_npcdata->reachedtarget))
+					changeAnimation(io, 1, ANIM_BARE_WAIT);
+					Strike_StartTickCount(io);
+					if((io->ioflags & IO_NPC) && !io->_npcdata->reachedtarget) {
 						ause1->cur_anim = NULL;
-				}
-				else if (!(io->ioflags & IO_HIT))
-				{
-					if ((ause1->ctime > ause1->cur_anim->anims[0]->anim_time * STRIKE_MUL)
-					        &&	(ause1->ctime <= ause1->cur_anim->anims[0]->anim_time * STRIKE_MUL2))
-					{
+					}
+				} else if(!(io->ioflags & IO_HIT)) {
+					long ctime = ause1->ctime;
+					long animtime = ause1->cur_anim->anims[0]->anim_time;
+					if(ctime > animtime * STRIKE_MUL && ctime <= animtime * STRIKE_MUL2) {
 						CheckHit(io, 1.f);
 						io->ioflags |= IO_HIT;
 					}
 				}
+				
 			}
+			
 		}
-
-	}
-	
-	// 1H fight !!! ***************************************
-	else if (io->_npcdata->weapontype & (OBJECT_TYPE_1H | OBJECT_TYPE_2H | OBJECT_TYPE_DAGGER))
-	{
-		long ANIMBase = 0;
-
-		if(io->_npcdata->weapontype & OBJECT_TYPE_1H)
-			ANIMBase = 0;
-		else if(io->_npcdata->weapontype & OBJECT_TYPE_2H)
-			ANIMBase = ANIM_2H_READY_PART_1 - ANIM_1H_READY_PART_1;
-		else if(io->_npcdata->weapontype & OBJECT_TYPE_DAGGER)
-			ANIMBase = ANIM_DAGGER_READY_PART_1 - ANIM_1H_READY_PART_1;
-
-		// desire to remove weapon
-		if (io->_npcdata->weaponinhand == 2)
-		{
-			if ((ause1->cur_anim == io->anims[ANIM_1H_UNREADY_PART_1+ANIMBase])
-			        &&	(ause1->cur_anim)
-			        &&	(ause1->flags & EA_ANIMEND))
-			{
+		
+	} else if(io->_npcdata->weapontype & (OBJECT_TYPE_1H | OBJECT_TYPE_2H | OBJECT_TYPE_DAGGER)) {
+		// Melee combat
+		
+		long wtype = 0;
+		if(io->_npcdata->weapontype & OBJECT_TYPE_1H) {
+			wtype = 0;
+		} else if(io->_npcdata->weapontype & OBJECT_TYPE_2H) {
+			wtype = ANIM_2H_READY_PART_1 - ANIM_1H_READY_PART_1;
+		} else if(io->_npcdata->weapontype & OBJECT_TYPE_DAGGER) {
+			wtype = ANIM_DAGGER_READY_PART_1 - ANIM_1H_READY_PART_1;
+		}
+		
+		AnimationNumber ready = AnimationNumber(ANIM_1H_WAIT + wtype);
+		
+		if(io->_npcdata->weaponinhand == 2) {
+			// Unequipping weapon
+			
+			AnimationNumber part1 = AnimationNumber(ANIM_1H_UNREADY_PART_1 + wtype);
+			AnimationNumber part2 = AnimationNumber(ANIM_1H_UNREADY_PART_2 + wtype);
+			if(isCurrentAnimation(io, 1, part1) && (ause1->flags & EA_ANIMEND)) {
 				SetWeapon_Back(io);
-
-				AcquireLastAnim(io);
-				FinishAnim(io, ause1->cur_anim);
-				ANIM_Set(ause1, io->anims[ANIM_1H_UNREADY_PART_2+ANIMBase]);
-			}
-			else if ((ause1->cur_anim == io->anims[ANIM_1H_UNREADY_PART_2+ANIMBase])
-			         &&	(ause1->cur_anim)
-			         &&	(ause1->flags & EA_ANIMEND))
-			{
-				AcquireLastAnim(io);
-				FinishAnim(io, ause1->cur_anim);
-				ause1->cur_anim = NULL;
+				changeAnimation(io, 1, part2);
+			} else if(isCurrentAnimation(io, 1, part2) && (ause1->flags & EA_ANIMEND)) {
+				stopAnimation(io, 1);
 				io->_npcdata->weaponinhand = 0;
+			} else if(!isCurrentAnimation(io, 1, part1) && isCurrentAnimation(io, 1, part2)) {
+				changeAnimation(io, 1, part1);
 			}
-			else if ((ause1->cur_anim != io->anims[ANIM_1H_UNREADY_PART_1+ANIMBase])
-			         &&	(ause1->cur_anim != io->anims[ANIM_1H_UNREADY_PART_2+ANIMBase]))
-			{
-				AcquireLastAnim(io);
-				FinishAnim(io, ause1->cur_anim);
-				ANIM_Set(ause1, io->anims[ANIM_1H_UNREADY_PART_1+ANIMBase]);
-			}
-		}
-		// Desire to have weapon in hand...
-		else if (io->_npcdata->weaponinhand == -1)
-		{
-			if ((ause1->cur_anim == io->anims[ANIM_1H_READY_PART_1+ANIMBase])
-			        &&	(ause1->cur_anim)
-			        &&	(ause1->flags & EA_ANIMEND))
-			{
+			
+		} else if(io->_npcdata->weaponinhand == -1) {
+			// Equipping weapon
+			
+			AnimationNumber part1 = AnimationNumber(ANIM_1H_READY_PART_1 + wtype);
+			AnimationNumber part2 = AnimationNumber(ANIM_1H_READY_PART_2 + wtype);
+			if(isCurrentAnimation(io, 1, part1) && (ause1->flags & EA_ANIMEND)) {
 				SetWeapon_On(io);
-
-				AcquireLastAnim(io);
-				FinishAnim(io, ause1->cur_anim);
-				ANIM_Set(ause1, io->anims[ANIM_1H_READY_PART_2+ANIMBase]);
-
-			}
-			else if ((ause1->cur_anim == io->anims[ANIM_1H_READY_PART_2+ANIMBase])
-			         &&	(ause1->cur_anim)
-			         &&	(ause1->flags & EA_ANIMEND))
-			{
-				AcquireLastAnim(io);
-				FinishAnim(io, ause1->cur_anim);
-
-				if (io->_npcdata->behavior & BEHAVIOUR_FIGHT)
-				{
-					ANIM_Set(ause1, io->anims[ANIM_1H_WAIT+ANIMBase]);
+				changeAnimation(io, 1, part2);
+			} else if(isCurrentAnimation(io, 1, part2) &&	(ause1->flags & EA_ANIMEND)) {
+				if(io->_npcdata->behavior & BEHAVIOUR_FIGHT) {
+					changeAnimation(io, 1, ready, EA_LOOP);
 					Strike_StartTickCount(io);
-					ause1->flags |= EA_LOOP;
+				} else {
+					stopAnimation(io, 1);
 				}
-				else ause1->cur_anim = NULL;
-
 				io->_npcdata->weaponinhand = 1;
+			} else if(!ause1->cur_anim || (ause1->flags & EA_ANIMEND)) {
+				changeAnimation(io, 1, part1);
 			}
-			else if ((!ause1->cur_anim)
-			         ||	((ause1->cur_anim) && (ause1->flags & EA_ANIMEND)))
-			{
-				AcquireLastAnim(io);
-				FinishAnim(io, ause1->cur_anim);
-				ANIM_Set(ause1, io->anims[ANIM_1H_READY_PART_1+ANIMBase]);
+			
+		} else if(io->_npcdata->weaponinhand > 0) {
+			// Weapon in hand... ready to strike
+			
+			if(isCurrentAnimation(io, 1, ready) && (io->_npcdata->behavior & BEHAVIOUR_FIGHT)
+				 && tdist < square(STRIKE_DISTANCE) && io->_npcdata->strike_time > 0) {
+				size_t j = Random::get(0, 3); // Choose a random attack move
+				changeAnimation(io, 1, AnimationNumber(ANIM_1H_STRIKE_LEFT_START + j * 3 + wtype));
 			}
-		}
-		// Weapon in hand... ready to strike
-		else if (io->_npcdata->weaponinhand > 0)
-		{
-			if ((ause1->cur_anim == io->anims[ANIM_1H_WAIT+ANIMBase])
-			        &&	(ause1->cur_anim))
-			{
-				if ((io->_npcdata->behavior & BEHAVIOUR_FIGHT)
-				        &&	(tdist < square(STRIKE_DISTANCE))
-				        &&	(io->_npcdata->strike_time > 0))
-				{
-					AcquireLastAnim(io);
-					FinishAnim(io, ause1->cur_anim);
-					j = Random::get(0, 3);
-					ANIM_Set(ause1, io->anims[ANIM_1H_STRIKE_LEFT_START+j*3+ANIMBase]);
-				}
-			}
-
-			for (j = 0; j < 4; j++)
-			{
-				if ((ause1->cur_anim == io->anims[ANIM_1H_STRIKE_LEFT_START+j*3+ANIMBase])
-				        &&	(ause1->cur_anim)
-				        &&	(ause1->flags & EA_ANIMEND))
-				{
-					AcquireLastAnim(io);
-					FinishAnim(io, ause1->cur_anim);
-					ANIM_Set(ause1, io->anims[ANIM_1H_STRIKE_LEFT_CYCLE+j*3+ANIMBase]);
-					io->_npcdata->aiming_start	=	(long)arxtime;
-					ause1->flags |= EA_LOOP;
-				}
-				else if ((ause1->cur_anim == io->anims[ANIM_1H_STRIKE_LEFT_CYCLE+j*3+ANIMBase])
-				         &&	(ause1->cur_anim))
-				{
-					if (((float(arxtime) > io->_npcdata->aiming_start + io->_npcdata->aimtime) || ((float(arxtime) > io->_npcdata->aiming_start + io->_npcdata->aimtime * ( 1.0f / 2 )) && (rnd() > 0.9f)))
-					        &&	(tdist < square(STRIKE_DISTANCE)))
-					{
-						AcquireLastAnim(io);
-						FinishAnim(io, ause1->cur_anim);
-						ANIM_Set(ause1, io->anims[ANIM_1H_STRIKE_LEFT+j*3+ANIMBase]);
-
-						if (io->_npcdata->weapontype & OBJECT_TYPE_1H)
+			
+			for(size_t j = 0; j < 4; j++) {
+				
+				AnimationNumber start = AnimationNumber(ANIM_1H_STRIKE_LEFT_START + j * 3 + wtype);
+				AnimationNumber cycle = AnimationNumber(ANIM_1H_STRIKE_LEFT_CYCLE + j * 3 + wtype);
+				AnimationNumber strike = AnimationNumber(ANIM_1H_STRIKE_LEFT + j * 3 + wtype);
+				
+				if(isCurrentAnimation(io, 1, start) && (ause1->flags & EA_ANIMEND)) {
+					
+					changeAnimation(io, 1, cycle, EA_LOOP);
+					io->_npcdata->aiming_start = long(arxtime);
+					
+				} else if(isCurrentAnimation(io, 1, cycle)) {
+					
+					float elapsed = float(arxtime) - float(io->_npcdata->aiming_start);
+					float aimtime = io->_npcdata->aimtime;
+					if((elapsed > aimtime || (elapsed > aimtime * 0.5f && rnd() > 0.9f))
+					   && tdist < square(STRIKE_DISTANCE)) {
+						changeAnimation(io, 1, strike);
+						if(io->_npcdata->weapontype & OBJECT_TYPE_1H) {
 							SendIOScriptEvent(io, SM_STRIKE, "1h");
-
-						if (io->_npcdata->weapontype & OBJECT_TYPE_2H)
+						}
+						if(io->_npcdata->weapontype & OBJECT_TYPE_2H) {
 							SendIOScriptEvent(io, SM_STRIKE, "2h");
-
-						if (io->_npcdata->weapontype & OBJECT_TYPE_DAGGER)
+						}
+						if(io->_npcdata->weapontype & OBJECT_TYPE_DAGGER) {
 							SendIOScriptEvent(io, SM_STRIKE, "dagger");
-					}
-				}
-				else if ((ause1->cur_anim == io->anims[ANIM_1H_STRIKE_LEFT+j*3+ANIMBase])
-				         &&	(ause1->cur_anim))
-				{
-					if (ause1->flags & EA_ANIMEND)
-					{
-						AcquireLastAnim(io);
-						FinishAnim(io, ause1->cur_anim);
-						ANIM_Set(ause1, io->anims[ANIM_1H_WAIT+ANIMBase]);
-						Strike_StartTickCount(io);
-						io->ioflags &= ~IO_HIT;
-					}
-					else 
-					{
-						if ((ause1->ctime > ause1->cur_anim->anims[0]->anim_time * STRIKE_MUL)
-						        &&	(ause1->ctime <= ause1->cur_anim->anims[0]->anim_time * STRIKE_MUL2))
-						{
-							if (!(io->ioflags & IO_HIT))
-							{
-								if (ARX_EQUIPMENT_Strike_Check(io, io->_npcdata->weapon, 1, 0, io->targetinfo))
-									io->ioflags |= IO_HIT;
-							}
-							else
-								ARX_EQUIPMENT_Strike_Check(io, io->_npcdata->weapon, 1, 1, io->targetinfo);
-
 						}
 					}
+					
+				} else if(isCurrentAnimation(io, 1, strike)) {
+					
+					if(ause1->flags & EA_ANIMEND) {
+						io->ioflags &= ~IO_HIT;
+						changeAnimation(io, 1, ready);
+						Strike_StartTickCount(io);
+					} else {
+						long ctime = ause1->ctime;
+						long animtime = ause1->cur_anim->anims[0]->anim_time;
+						if(ctime > animtime * STRIKE_MUL && ctime <= animtime * STRIKE_MUL2) {
+							if(!(io->ioflags & IO_HIT)) {
+								if(ARX_EQUIPMENT_Strike_Check(io, io->_npcdata->weapon, 1, 0, io->targetinfo)) {
+									io->ioflags |= IO_HIT;
+								}
+							} else {
+								ARX_EQUIPMENT_Strike_Check(io, io->_npcdata->weapon, 1, 1, io->targetinfo);
+							}
+						}
+					}
+					
 				}
+				
 			}
+			
 		}
+		
+	} else if(io->_npcdata->weapontype & OBJECT_TYPE_BOW) {
+		// TODO ranged combat
 	}
-	// BOW fight !!! **************************************
-	else if (io->_npcdata->weapontype & OBJECT_TYPE_BOW)
-	{
-		////////////// later...
-	}
+	
 }
 
 float GetIOHeight(Entity * io)
