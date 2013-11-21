@@ -2911,18 +2911,17 @@ static void ManageNPCMovement(Entity * io)
 			if((io->_npcdata->behavior & (BEHAVIOUR_FIGHT | BEHAVIOUR_MAGIC | BEHAVIOUR_DISTANT))
 			        && io->anims[ANIM_FIGHT_WAIT])
 			{
-				// TODO what is supposed to happen here ?
 				if((ause0->cur_anim != alist[ANIM_FIGHT_WAIT])
 				        &&	(ause0->cur_anim != alist[ANIM_FIGHT_STRAFE_LEFT])
 				        &&	(ause0->cur_anim != alist[ANIM_FIGHT_STRAFE_RIGHT])
 				        &&	(ause0->cur_anim != alist[ANIM_FIGHT_WALK_BACKWARD])
 				        &&	(ause0->cur_anim != alist[ANIM_FIGHT_WALK_FORWARD])
-				   )
-
+				   ) {
 				AcquireLastAnim(io);
 				FinishAnim(io, ause0->cur_anim);
 				ANIM_Set(ause0, alist[ANIM_FIGHT_WAIT]);
 				ause0->flags |= EA_LOOP;
+				}
 				
 			} else { // Stop it and put it in Wait anim after finishing his walk anim...
 				if(ause0->cur_anim == alist[ANIM_FIGHT_WALK_FORWARD]) {
