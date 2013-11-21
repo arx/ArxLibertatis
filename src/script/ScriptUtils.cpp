@@ -380,6 +380,7 @@ size_t initSuppressions() {
 	suppress("akbaa_phase2", 18549, "playanim"); // animation 'grunt' not loaded
 	
 	suppress("akbaa_tentacle", 2432, "on"); // unknown command 'on' (bad newline!)
+	suppress("akbaa_tentacle", 3424, "on"); // unknown command 'on' (bad newline!)
 	
 	suppress("axe_2handed", 26, "settwohanded"); // obsolete command
 	
