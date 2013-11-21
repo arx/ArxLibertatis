@@ -135,7 +135,7 @@ public:
 		
 		Entity & io = *context.getEntity();
 		if(!io.anims[num]) {
-			ScriptWarning << "animation " << anim << " not set";
+			ScriptWarning << "animation " << anim << " not loaded";
 			return Failed;
 		}
 		
