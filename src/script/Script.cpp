@@ -1755,6 +1755,7 @@ long ARX_SCRIPT_CountTimers() {
 //*************************************************************************************
 void ARX_SCRIPT_Timer_ClearByNum(long timer_idx) {
 	if(scr_timer[timer_idx].exist) {
+		LogDebug("clearing timer " << scr_timer[timer_idx].name);
 		scr_timer[timer_idx].name.clear();
 		ActiveTimers--;
 		scr_timer[timer_idx].exist = 0;
@@ -1910,6 +1911,10 @@ void ARX_SCRIPT_Timer_Check() {
 			}
 		}
 		
+		#ifdef ARX_DEBUG
+		std::string name = st->name;
+		#endif
+		
 		if(st->times == 1) {
 			ARX_SCRIPT_Timer_ClearByNum(i);
 		} else {
@@ -1920,7 +1925,10 @@ void ARX_SCRIPT_Timer_Check() {
 		}
 		
 		if(es && ValidIOAddress(io)) {
+			LogDebug("running timer \"" << name << "\" for entity " << io->idString());
 			ScriptEvent::send(es, SM_EXECUTELINE, "", io, "", pos);
+		} else {
+			LogDebug("could not run timer \"" << name << "\" - entity vanished");
 		}
 		
 	}

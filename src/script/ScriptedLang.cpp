@@ -390,6 +390,7 @@ public:
 			
 			Entity * t = entities.getById(target, io);
 			if(!t) {
+				DebugScript(": target does not exist");
 				EVENT_SENDER = oes;
 				return Failed;
 			}
@@ -850,19 +851,17 @@ void timerCommand(const string & timer, Context & context) {
 	
 	string command = context.getWord();
 	
-	DebugScript(' ' << options << ' ' << command);
-	
 	Entity * io = context.getEntity();
 	
 	if(command == "kill_local") {
-		DebugScript(' ' << options << " kill_local");
+		DebugScript(" kill_local");
 		ARX_SCRIPT_Timer_Clear_All_Locals_For_IO(io);
 		return;
 	}
 	
 	ARX_SCRIPT_Timer_Clear_By_Name_And_IO(timername, io);
 	if(command == "off") {
-		DebugScript(' ' << options << " off");
+		DebugScript(timername << " off");
 		return;
 	}
 	
@@ -872,6 +871,8 @@ void timerCommand(const string & timer, Context & context) {
 	if(!mili) {
 		millisecons *= 1000;
 	}
+	
+	DebugScript(timername << ' ' << options << ' ' << count << ' ' << millisecons);
 	
 	size_t pos = context.skipCommand();
 	
