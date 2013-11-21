@@ -5396,7 +5396,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 		arx_assert(player.bookAnimation[0].cur_anim);
 
 		EERIEDrawAnimQuat(entities.player()->obj, player.bookAnimation, ePlayerAngle, pos,
-						  checked_range_cast<unsigned long>(Original_framedelay), NULL, true, true, invisibility);
+						  checked_range_cast<unsigned long>(Original_framedelay), NULL, true, invisibility);
 
 		IN_BOOK_DRAW=0;
 

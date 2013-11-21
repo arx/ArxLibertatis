@@ -1555,7 +1555,7 @@ void EERIEDrawAnimQuatUpdate(EERIE_3DOBJ *eobj, ANIM_USE * animlayer,const Angle
 	Cedric_ViewProjectTransform(io, eobj);
 }
 
-void EERIEDrawAnimQuatRender(EERIE_3DOBJ *eobj, const Vec3f & pos, Entity *io, bool render, float invisibility) {
+void EERIEDrawAnimQuatRender(EERIE_3DOBJ *eobj, const Vec3f & pos, Entity *io, float invisibility) {
 
 	if(io && io != entities.player() && !Cedric_IO_Visible(io->pos))
 		return;
@@ -1568,14 +1568,13 @@ void EERIEDrawAnimQuatRender(EERIE_3DOBJ *eobj, const Vec3f & pos, Entity *io, b
 	if(!isFightingNpc && ARX_SCENE_PORTAL_ClipIO(io, pos))
 		return;
 
-	if(render)
-		Cedric_AnimateDrawEntityRender(eobj, pos, io, invisibility);
+	Cedric_AnimateDrawEntityRender(eobj, pos, io, invisibility);
 }
 
-void EERIEDrawAnimQuat(EERIE_3DOBJ *eobj, ANIM_USE * animlayer,const Anglef & angle, const Vec3f & pos, unsigned long time, Entity *io, bool render, bool update_movement, float invisibility) {
+void EERIEDrawAnimQuat(EERIE_3DOBJ *eobj, ANIM_USE * animlayer,const Anglef & angle, const Vec3f & pos, unsigned long time, Entity *io, bool update_movement, float invisibility) {
 
 	EERIEDrawAnimQuatUpdate(eobj, animlayer,angle, pos, time, io, update_movement);
-	EERIEDrawAnimQuatRender(eobj, pos, io, render, invisibility);
+	EERIEDrawAnimQuatRender(eobj, pos, io, invisibility);
 }
 
 void AnimatedEntityUpdate(Entity * entity, float time) {
@@ -1586,5 +1585,5 @@ void AnimatedEntityUpdate(Entity * entity, float time) {
 void AnimatedEntityRender(Entity * entity, float invisibility) {
 
 	Cedric_ViewProjectTransform(entity, entity->obj);
-	EERIEDrawAnimQuatRender(entity->obj, entity->pos, entity, true, invisibility);
+	EERIEDrawAnimQuatRender(entity->obj, entity->pos, entity, invisibility);
 }

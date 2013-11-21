@@ -2982,16 +2982,12 @@ void RenderInter() {
 				pos.y = io->_npcdata->vvpos;
 			}
 
-			bool render = !ARX_SCENE_PORTAL_Basic_ClipIO(io);
 			float invisibility = Cedric_GetInvisibility(io);
 
-			EERIEDrawAnimQuatRender(io->obj, pos, io, render, invisibility);
+			EERIEDrawAnimQuatRender(io->obj, pos, io, invisibility);
 		} else {
 			io->bbox2D.min.x = 9999;
 			io->bbox2D.max.x = -1;
-
-			if(ARX_SCENE_PORTAL_Basic_ClipIO(io))
-				continue;
 
 			if(io->obj) {
 				UpdateGoldObject(io);

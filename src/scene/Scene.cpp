@@ -346,65 +346,6 @@ bool FrustrumsClipBBox3D(const EERIE_FRUSTRUM_DATA & frustrums, const EERIE_3D_B
 	return false;
 }
 
-bool ARX_SCENE_PORTAL_Basic_ClipIO(Entity * io) {
-	arx_assert(io);
-	if(io == entities.player() || (io->ioflags & IO_FORCEDRAW)) {
-		return false;
-	}
-	
-	if(!(USE_PORTALS && portals))
-		return false;
-
-	Vec3f posi = io->pos;
-	posi.y -= 20.f;
-
-	if(io->room_flags & 1)
-		UpdateIORoom(io);
-
-	long room_num = io->room;
-
-	if(room_num == -1) {
-		posi.y = io->pos.y-120;
-		room_num=ARX_PORTALS_GetRoomNumForPosition(&posi);
-	}
-
-	if(room_num >= 0 && size_t(room_num) < RoomDraw.size() && RoomDraw[room_num].count) {
-		float yOffset = 0.f;
-		float radius = 0.f;
-		if(io->ioflags & IO_ITEM) {
-			yOffset = -40.f;
-			if(io->ioflags & IO_MOVABLE)
-				radius = 160.f;
-			else
-				radius = 75.f;
-		} else if(io->ioflags & IO_FIX) {
-			yOffset = -60.f;
-			radius = 340.f;
-		} else if(io->ioflags & IO_NPC) {
-			yOffset = -120.f;
-			radius = 120.f;
-		}
-
-		EERIE_SPHERE sphere;
-
-		if(radius != 0.f) {
-			sphere.origin.x=io->pos.x;
-			sphere.origin.y=io->pos.y + yOffset;
-			sphere.origin.z=io->pos.z;
-			sphere.radius=radius;
-		}
-
-		EERIE_FRUSTRUM_DATA & frustrums = RoomDraw[room_num].frustrum;
-
-		if (FrustrumsClipSphere(frustrums, sphere)) {
-			io->bbox2D.min = Vec2f(-1.f, -1.f);
-			io->bbox2D.max = Vec2f(-1.f, -1.f);
-			return true;
-		}
-	}
-	return false;
-}
-
 // USAGE/FUNCTION
 //   io can be NULL if io is valid io->bbox3D contains 3D world-bbox
 //   bboxmin & bboxmax ARE in fact 2D-screen BBOXes using only (x,y).
