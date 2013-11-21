@@ -128,6 +128,23 @@ void ANIM_Set(ANIM_USE *au, ANIM_HANDLE *anim)
 	au->flags &= ~EA_FORCEPLAY;
 }
 
+void changeAnimation(Entity * entity, ANIM_HANDLE * animation, AnimUseType flags,
+                     bool startAtBeginning) {
+	AcquireLastAnim(entity);
+	FinishAnim(entity, entity->animlayer[0].cur_anim);
+	ANIM_Set(&entity->animlayer[0], animation);
+	entity->animlayer[0].flags |= flags;
+	if(startAtBeginning) {
+		entity->animlayer[0].altidx_cur = 0;
+	}
+}
+
+void setAnimation(Entity * entity, ANIM_HANDLE * animation, AnimUseType flags) {
+	if(entity->animlayer[0].cur_anim != animation) {
+		changeAnimation(entity, animation, flags);
+	}
+}
+
 ANIM_HANDLE::ANIM_HANDLE() : path() {
 	
 	anims = NULL;
