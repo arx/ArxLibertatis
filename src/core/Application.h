@@ -57,7 +57,6 @@ class RenderWindow;
 
 enum ViewModeFlag {
 	VIEWMODE_FLAT           = (1<<2),
-	VIEWMODE_NOLIGHTSOURCES = (1<<3),
 	VIEWMODE_INFOTEXT       = (1<<4)
 };
 DECLARE_FLAGS(ViewModeFlag, ViewModeFlags)
