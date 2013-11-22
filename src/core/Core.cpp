@@ -614,7 +614,7 @@ static bool initializeGame() {
 	
 	ARX_SCRIPT_Timer_FirstInit(512);
 	LogDebug("Timer Init");
-	ARX_FOGS_FirstInit();
+	ARX_FOGS_Clear();
 	LogDebug("Fogs Init");
 	
 	EERIE_LIGHT_GlobalInit();

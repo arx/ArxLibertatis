@@ -60,11 +60,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 FOG_DEF fogs[MAX_FOG];
 
-void ARX_FOGS_FirstInit()
-{
-	ARX_FOGS_Clear();
-}
-
 void ARX_FOGS_Clear()
 {
 	for(long i = 0; i < MAX_FOG; i++) {
