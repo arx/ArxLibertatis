@@ -1208,7 +1208,7 @@ void StareAtTarget(Entity * io)
 	rot *= ( 1.0f / 2 );
 	float HEAD_ANGLE_THRESHOLD;
 
-	if(io && (io->ioflags & IO_NPC))
+	if(io->ioflags & IO_NPC)
 		HEAD_ANGLE_THRESHOLD = 45.f * io->_npcdata->stare_factor;
 	else
 		HEAD_ANGLE_THRESHOLD = 45.f;
