@@ -231,7 +231,6 @@ void ARX_INTERACTIVE_ClearAllDynData();
 bool HaveCommonGroup(Entity * io, Entity * ioo);
 void UpdateIOInvisibility(Entity * io);
 void CheckSetAnimOutOfTreatZone(Entity * io, long num);
-void RestoreAllIOInitPos();
 void ARX_HALO_SetToNative(Entity * io);
 void ARX_INTERACTIVE_ActivatePhysics(long t);
 void ResetVVPos(Entity * io);

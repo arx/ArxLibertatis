@@ -1040,12 +1040,6 @@ static void RestoreIOInitPos(Entity * io) {
 	}
 }
 
-void RestoreAllIOInitPos() {
-	for(size_t i = 1; i < entities.size(); i++) {
-		RestoreIOInitPos(entities[i]);
-	}
-}
-
 void ARX_HALO_SetToNative(Entity * io) {
 	io->halo.color = io->halo_native.color;
 	io->halo.radius = io->halo_native.radius;
