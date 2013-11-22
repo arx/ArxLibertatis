@@ -72,14 +72,6 @@ void ARX_FOGS_Clear()
 	}
 }
 
-void ARX_FOGS_TranslateSelected(Vec3f * trans) {
-	for(long i = 0; i < MAX_FOG; i++) {
-		if(fogs[i].selected) {
-			fogs[i].pos += *trans;
-		}
-	}
-}
-
 void ARX_FOGS_Select(long n)
 {
 	if(fogs[n].selected)
