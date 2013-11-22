@@ -72,8 +72,6 @@ struct ARX_NODE {
 	long link[MAX_LINKS];
 	char lnames[MAX_LINKS][64];
 	Vec3f pos;
-	Vec2s bboxmin;
-	Vec2s bboxmax;
 };
 
 struct ARX_NODES {

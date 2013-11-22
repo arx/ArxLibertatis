@@ -488,24 +488,10 @@ void RenderAllNodes() {
 		if (nodes.nodes[i].exist) {
 			DrawEERIEObjEx(g_nodeObject, &angle, &nodes.nodes[i].pos, &scale, Color3f::white);
 
-			/* FIXME DrawEERIEObjEx does not calculate BBOX2D
-			nodes.nodes[i].bboxmin.x=(short)BBOX2D.min.x;
-			nodes.nodes[i].bboxmin.y=(short)BBOX2D.min.y;
-			nodes.nodes[i].bboxmax.x=(short)BBOX2D.max.x;
-			nodes.nodes[i].bboxmax.y=(short)BBOX2D.max.y;
-			*/
-
 			if(g_nodeObject->vertexlist[g_nodeObject->origin].vert.p.z > 0.f && g_nodeObject->vertexlist[g_nodeObject->origin].vert.p.z<0.9f) {
 				float xx = g_nodeObject->vertexlist[g_nodeObject->origin].vert.p.x - 40.f;
 				float yy = g_nodeObject->vertexlist[g_nodeObject->origin].vert.p.y - 40.f;
 				ARX_TEXT_Draw(hFontDebug, xx, yy, nodes.nodes[i].UName, Color::yellow); //font
-			}
-
-			if(nodes.nodes[i].selected) {
-				EERIEDraw2DLine(nodes.nodes[i].bboxmin.x, nodes.nodes[i].bboxmin.y, nodes.nodes[i].bboxmax.x, nodes.nodes[i].bboxmin.y, 0.01f, Color::yellow);
-				EERIEDraw2DLine(nodes.nodes[i].bboxmax.x, nodes.nodes[i].bboxmin.y, nodes.nodes[i].bboxmax.x, nodes.nodes[i].bboxmax.y, 0.01f, Color::yellow);
-				EERIEDraw2DLine(nodes.nodes[i].bboxmax.x, nodes.nodes[i].bboxmax.y, nodes.nodes[i].bboxmin.x, nodes.nodes[i].bboxmax.y, 0.01f, Color::yellow);
-				EERIEDraw2DLine(nodes.nodes[i].bboxmin.x, nodes.nodes[i].bboxmax.y, nodes.nodes[i].bboxmin.x, nodes.nodes[i].bboxmin.y, 0.01f, Color::yellow);
 			}
 
 			for(size_t j = 0; j < MAX_LINKS; j++) {
