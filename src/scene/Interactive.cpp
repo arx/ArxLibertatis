@@ -690,7 +690,6 @@ void RestoreNodeNumbers() {
 void ClearNode(long i, long first = 0) {
 	
 	nodes.nodes[i].exist = 0;
-	nodes.nodes[i].selected = 0;
 
 	for(size_t j = 0; j < MAX_LINKS; j++) {
 		if((nodes.nodes[i].link[j] != -1) && !first) {

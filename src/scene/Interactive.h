@@ -66,7 +66,6 @@ const size_t MAX_LINKS = 12;
 
 struct ARX_NODE {
 	short exist;
-	short selected;
 	std::string UName;
 	char name[64];
 	long link[MAX_LINKS];

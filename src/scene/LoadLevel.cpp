@@ -837,7 +837,6 @@ long DanaeLoadLevel(const res::path & file, bool loadEntities) {
 	for(long i = 0; i < nb_nodes; i++) {
 		
 		nodes.nodes[i].exist = 1;
-		nodes.nodes[i].selected = 0;
 		const DANAE_LS_NODE * dln = reinterpret_cast<const DANAE_LS_NODE *>(dat + pos);
 		pos += sizeof(DANAE_LS_NODE);
 		
