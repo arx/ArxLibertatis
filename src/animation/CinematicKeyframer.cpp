@@ -799,14 +799,6 @@ void PlayTrack(Cinematic * c)
 	c->flTime = 0; 
 }
 
-int GetCurrentFrame(void)
-{
-	if(!CKTrack)
-		return -1;
-
-	return (int)CKTrack->currframe;
-}
-
 float GetTimeKeyFramer()
 {
 	if(!CKTrack)

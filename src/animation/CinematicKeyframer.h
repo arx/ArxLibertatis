@@ -89,7 +89,6 @@ bool AddKeyLoad(C_KEY * key);
 bool GereTrack(Cinematic * c, float fpscurr);
 
 void PlayTrack(Cinematic * c);
-int GetCurrentFrame();
 int GetStartFrame();
 int GetEndFrame();
 void SetCurrFrame(int frame);
