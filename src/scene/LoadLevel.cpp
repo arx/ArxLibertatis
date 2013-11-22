@@ -804,8 +804,7 @@ bool DanaeLoadLevel(const res::path & file, bool loadEntities) {
 	LoadLevelScreen();
 	
 	// Skip nodes
-	long nb_nodes = (dlh.version < 1.001f) ? 0 : dlh.nb_nodes;
-	pos += nb_nodes * (sizeof(DANAE_LS_NODE) + dlh.nb_nodeslinks * 64);
+	pos += (dlh.version < 1.001f) ? 0 : dlh.nb_nodes * (204 + dlh.nb_nodeslinks * 64);
 	
 	LogDebug("Loading Paths");
 	ARX_PATH_ReleaseAllPath();

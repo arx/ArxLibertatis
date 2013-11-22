@@ -140,13 +140,6 @@ struct DANAE_LS_FOG {
 	char cpadd[256];
 };
 
-struct DANAE_LS_NODE {
-	char name[64];
-	SavedVec3 pos;
-	s32 pad[16];
-	f32 fpad[16];
-};
-
 struct DANAE_LS_PATH {
 	char name[64];
 	s16 idx;
