@@ -325,7 +325,6 @@ CinematicBitmap* CreateCinematicBitmap(const res::path & path, int scale) {
 	h = bi->h;
 
 	while(nby) {
-		float dx = -(float)(bi->w >> 1);
 
 		int h2;
 
@@ -347,7 +346,6 @@ CinematicBitmap* CreateCinematicBitmap(const res::path & path, int scale) {
 
 			AddQuadUVs(&bi->grid, (bi->nbx - nbxx) * scale, (bi->nby - nby) * scale, scale, scale, bi->w - w, bi->h - h, w2, h2, tex);
 
-			dx += (float)w2;
 			w -= MaxW;
 
 			num++;
