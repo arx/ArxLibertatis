@@ -1177,9 +1177,6 @@ bool PutInInventory()
 	{
 		if (CanBePutInInventory(DRAGINTER))
 		{
-			if (DRAGINTER)
-				DRAGINTER->show = SHOW_FLAG_IN_INVENTORY;
-
 			ARX_SOUND_PlayInterface(SND_INVSTD);
 			Set_DragInter(NULL);
 		}
