@@ -425,7 +425,6 @@ long DanaeSaveLevel(const fs::path & _fic) {
 		return -1;
 	}
 	
-	compressed = NULL;
 	cpr_pos = 0;
 	compressed = implodeAlloc(dat, pos, cpr_pos);
 	delete[] dat;
