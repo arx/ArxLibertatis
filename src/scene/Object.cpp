@@ -363,8 +363,6 @@ static void loadObjectData(EERIE_3DOBJ * eerie, const char * adr, size_t * poss,
 			if(num_map >= 0 && eerie->texturecontainer[num_map] && (eerie->texturecontainer[num_map]->userflags & POLY_NOCOL)) {
 				eerie->facelist[i].facetype |= POLY_NOCOL;
 			}
-		} else if(ptf3006->rgb) {
-			eerie->facelist[i].texid = -1;
 		} else {
 			eerie->facelist[i].texid = -1;
 		}
