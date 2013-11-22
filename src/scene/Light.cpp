@@ -732,68 +732,6 @@ void ApplyTileLights(EERIEPOLY * ep, short x, short y)
  * @{
  */
 
-float my_CheckInPoly(float x, float y, float z, EERIEPOLY * mon_ep, EERIE_LIGHT * light)
-{
-	long px = x * ACTIVEBKG->Xmul;
-	long pz = z * ACTIVEBKG->Zmul;
-
-	if(px < 2 || px > ACTIVEBKG->Xsize - 3 || pz < 2 || pz > ACTIVEBKG->Zsize - 3)
-		return 0;
-
-	float nb_shadowvertexinpoly = 0.0f;
-	float nb_totalvertexinpoly = 0.0f;
-
-	EERIEPOLY * ep;
-	EERIE_BKG_INFO * eg;
-
-	Vec3f dest;
-	Vec3f hit;
-
-	Vec3f orgn = light->pos;
-
-	for (long j = pz - 2; j <= pz + 2; j++)
-		for (long i = px - 2; i <= px + 2; i++)
-		{
-			eg = &ACTIVEBKG->Backg[i+j*ACTIVEBKG->Xsize];
-
-			for (long k = 0; k < eg->nbpoly; k++)
-			{
-				ep = &eg->polydata[k];
-
-				if (!(ep->type & POLY_WATER) &&  !(ep->type & POLY_TRANS))
-				{
-
-					long nbvert = (ep->type & POLY_QUAD) ? 4 : 3;
-
-					long a, b;
-
-					for (a = 0; a < nbvert; a++)
-					{
-						float fDiff = 5.f;
-
-						if ((fabs(ep->v[a].p.x - x) <= fDiff) &&
-								(fabs(ep->v[a].p.y - y) <= fDiff) &&
-								(fabs(ep->v[a].p.z - z) <= fDiff))
-						{
-
-							if(glm::dot(*mon_ep->nrml, *ep->nrml) > 0.0f) {
-								nb_totalvertexinpoly += nbvert;
-								for(b = 0; b < nbvert; b++) {
-									dest = ep->v[b].p;
-									if(Visible(&orgn, &dest, ep, &hit)) {
-										nb_shadowvertexinpoly ++;
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-
-	return nb_shadowvertexinpoly / nb_totalvertexinpoly;
-}
-
 void EERIERemovePrecalcLights() {
 
 	for(size_t i = 0; i < MAX_LIGHTS; i++) {
