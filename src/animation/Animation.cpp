@@ -547,34 +547,6 @@ ANIM_HANDLE * EERIE_ANIMMANAGER_Load_NoWarning(const res::path & path) {
 }
 
 /*!
- * \note tex Must be of sufficient size...
- */
-long EERIE_ANIMMANAGER_Count( std::string& tex, long * memsize)
-{
-	char temp[512];
-	long count=0;
-	*memsize=0;
-
-	for(size_t i = 0; i < MAX_ANIMATIONS; i++) {
-		
-		if(!animations[i].path.empty()) {
-			count++;
-			char txx[256];
-			strcpy(txx,animations[i].path.string().c_str());
-			long totsize=0;
-
-			sprintf(temp, "%3ld[%3lu] %s size %ld Locks %ld Alt %d\r\n", count, (unsigned long)i,
-			        txx, totsize, animations[i].locks, animations[i].alt_nb - 1);
-			memsize+=totsize;
-			tex += temp;
-		}
-	}
-
-	return count;
-}
-
-//
-/*!
  * \brief Fill "pos" with "eanim" total translation
  */
 void GetAnimTotalTranslate( ANIM_HANDLE * eanim, long alt_idx, Vec3f * pos) {
