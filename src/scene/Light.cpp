@@ -919,22 +919,6 @@ void EERIEPrecalcLights(long minx, long minz, long maxx, long maxz)
 	}
 }
 
-void RecalcLightZone(float x, float z, long siz) {
-
-	long px = x * ACTIVEBKG->Xmul;
-	long pz = z * ACTIVEBKG->Zmul;
-
-	long x0 = std::max(px - siz, 0L);
-	long x1 = std::min(px + siz, ACTIVEBKG->Xsize - 1L);
-	long z0 = std::max(pz - siz, 0L);
-	long z1 = std::min(pz + siz, ACTIVEBKG->Zsize - 1L);
-
-	LightMode oldml = ModeLight;
-	ModeLight &= ~MODE_RAYLAUNCH;
-	EERIEPrecalcLights(x0, z0, x1, z1);
-	ModeLight = oldml;
-}
-
 void EERIERemovePrecalcLights() {
 
 	for(size_t i = 0; i < MAX_LIGHTS; i++) {
