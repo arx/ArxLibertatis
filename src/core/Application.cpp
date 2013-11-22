@@ -82,7 +82,6 @@ long EERIEMouseGrab = 0;
 Application * mainApp = 0;
 float FPS;
 LightMode ModeLight = 0;
-ViewModeFlags ViewMode = 0;
 
 static int iCurrZBias;
 

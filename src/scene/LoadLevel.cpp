@@ -419,7 +419,7 @@ long DanaeSaveLevel(const fs::path & _fic) {
 	memset(&dll, 0, sizeof(DANAE_LS_LIGHTINGHEADER));
 	dll.nb_values = bcount;
 	dll.ModeLight = ModeLight;
-	dll.ViewMode = ViewMode;
+	dll.ViewMode = 0;
 	memcpy(dat + pos, &dll, sizeof(DANAE_LS_LIGHTINGHEADER));
 	pos += sizeof(DANAE_LS_LIGHTINGHEADER);
 	
@@ -735,7 +735,6 @@ long DanaeLoadLevel(const res::path & file, bool loadEntities) {
 		}
 		
 		ModeLight = LightMode::load(dll->ModeLight); // TODO save/load flags
-		ViewMode = ViewModeFlags::load(dll->ViewMode); // TODO save/load flags
 	}
 	
 	PROGRESS_BAR_COUNT += 1;
@@ -1023,7 +1022,6 @@ long DanaeLoadLevel(const res::path & file, bool loadEntities) {
 	arx_assert(pos <= FileSize);
 	
 	ModeLight = LightMode::load(dll->ModeLight); // TODO save/load flags
-	ViewMode = ViewModeFlags::load(dll->ViewMode); // TODO save/load flags
 	
 	free(dat);
 	

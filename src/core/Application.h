@@ -55,12 +55,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 class RenderWindow;
 
-enum ViewModeFlag {
-	VIEWMODE_FLAT           = (1<<2)
-};
-DECLARE_FLAGS(ViewModeFlag, ViewModeFlags)
-DECLARE_FLAGS_OPERATORS(ViewModeFlags)
-
 enum LightModeFlag {
 	MODE_STATICLIGHT  = (1<<0),
 	MODE_DEPTHCUEING  = (1<<1),
@@ -90,8 +84,6 @@ struct PROJECT {
 extern PROJECT Project;
 extern float FPS;
 extern LightMode ModeLight;
-
-extern ViewModeFlags ViewMode;
 
 extern long EERIEMouseButton, EERIEMouseGrab;
 

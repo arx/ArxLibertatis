@@ -92,7 +92,7 @@ struct DANAE_LS_SCENE {
 
 struct DANAE_LS_LIGHTINGHEADER {
 	s32 nb_values;
-	s32 ViewMode;
+	s32 ViewMode; // unused
 	s32 ModeLight;
 	s32 pad;
 };
