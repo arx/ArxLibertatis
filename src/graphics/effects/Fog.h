@@ -54,7 +54,6 @@ struct EERIE_3DOBJ;
 void ARX_FOGS_Render();
 long ARX_FOGS_Count();
 long ARX_FOGS_GetFree();
-void ARX_FOGS_KillByIndex(long num);
 void ARX_FOGS_Clear();
 void AddPoisonFog(Vec3f * pos, float power);
 

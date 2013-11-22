@@ -67,13 +67,6 @@ void ARX_FOGS_Clear()
 	}
 }
 
-void ARX_FOGS_KillByIndex(long num)
-{
-	if(num >= 0 && num < MAX_FOG) {
-		memset(&fogs[num], 0, sizeof(FOG_DEF));
-	}
-}
-
 long ARX_FOGS_GetFree()
 {
 	for(long i = 0; i < MAX_FOG; i++) {
