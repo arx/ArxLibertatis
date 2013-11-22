@@ -56,7 +56,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 class RenderWindow;
 
 enum ViewModeFlag {
-	VIEWMODE_WIRE           = (1<<0),
 	VIEWMODE_NORMALS        = (1<<1),
 	VIEWMODE_FLAT           = (1<<2),
 	VIEWMODE_NOLIGHTSOURCES = (1<<3),

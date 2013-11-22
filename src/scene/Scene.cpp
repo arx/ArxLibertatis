@@ -1173,9 +1173,6 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num, const EERIE_FRUSTRU
 				}
 			}
 
-			if((ViewMode & VIEWMODE_WIRE) && EERIERTPPoly(ep))
-				EERIEPOLY_DrawWired(ep);
-
 		} else { // Improve Vision Activated
 			if(!(ep->type & POLY_TRANS)) {
 				if(!EERIERTPPoly(ep)) { // RotTransProject Vertices

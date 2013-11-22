@@ -736,7 +736,6 @@ long DanaeLoadLevel(const res::path & file, bool loadEntities) {
 		
 		ModeLight = LightMode::load(dll->ModeLight); // TODO save/load flags
 		ViewMode = ViewModeFlags::load(dll->ViewMode); // TODO save/load flags
-		ViewMode &= ~VIEWMODE_WIRE;
 	}
 	
 	PROGRESS_BAR_COUNT += 1;
@@ -1025,7 +1024,6 @@ long DanaeLoadLevel(const res::path & file, bool loadEntities) {
 	
 	ModeLight = LightMode::load(dll->ModeLight); // TODO save/load flags
 	ViewMode = ViewModeFlags::load(dll->ViewMode); // TODO save/load flags
-	ViewMode &= ~VIEWMODE_WIRE;
 	
 	free(dat);
 	
