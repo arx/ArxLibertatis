@@ -800,16 +800,6 @@ void InitNodes(long nb)
 	ClearNodes();
 }
 
-long GetFreeNode()
-{
-	for(long i = 0; i < nodes.nbmax; i++) {
-		if(!nodes.nodes[i].exist)
-			return i;
-	}
-
-	return -1;
-}
-
 void ReleaseNode() {
 	free(nodes.nodes), nodes.nodes = NULL;
 	nodes.nbmax = 0;
