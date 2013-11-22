@@ -554,7 +554,7 @@ Vec3f MSP;
 
 extern long FASTmse;
 
-long DanaeLoadLevel(const res::path & file, bool loadEntities) {
+bool DanaeLoadLevel(const res::path & file, bool loadEntities) {
 	
 	LogInfo << "Loading Level " << file;
 	
@@ -569,7 +569,7 @@ long DanaeLoadLevel(const res::path & file, bool loadEntities) {
 	char * dat = resources->readAlloc(file, FileSize);
 	if(!dat) {
 		LogError << "Unable to find " << file;
-		return -1;
+		return false;
 	}
 	
 	PakFile * lightingFile = resources->getFile(lightingFileName);
@@ -589,7 +589,7 @@ long DanaeLoadLevel(const res::path & file, bool loadEntities) {
 		LogError << "Unexpected level file version: " << dlh.version << " for " << file;
 		free(dat);
 		dat = NULL;
-		return -1;
+		return false;
 	}
 	
 	// using compression
@@ -599,8 +599,8 @@ long DanaeLoadLevel(const res::path & file, bool loadEntities) {
 		free(torelease);
 		pos = 0;
 		if(!dat) {
-			LogError << "STD_Explode did not return anything " << file;
-			return -1;
+			LogError << "Could not decompress level file " << file;
+			return false;
 		}
 	}
 	
@@ -609,7 +609,7 @@ long DanaeLoadLevel(const res::path & file, bool loadEntities) {
 	
 	if(strcmp(dlh.ident, "DANAE_FILE")) {
 		LogError << "Not a valid file " << file << ": \"" << util::loadString(dlh.ident) << '"';
-		return -1;
+		return false;
 	}
 	
 	LogDebug("Loading Scene");
@@ -930,7 +930,7 @@ long DanaeLoadLevel(const res::path & file, bool loadEntities) {
 		FASTmse = 0;
 		USE_PLAYERCOLLISIONS = true;
 		LogInfo << "Done loading level";
-		return 1;
+		return true;
 	}
 	
 	const DANAE_LLF_HEADER * llh = reinterpret_cast<DANAE_LLF_HEADER *>(dat + pos);
@@ -1033,7 +1033,7 @@ long DanaeLoadLevel(const res::path & file, bool loadEntities) {
 	
 	LogInfo << "Done loading level";
 	
-	return 1;
+	return true;
 	
 }
 

@@ -64,7 +64,7 @@ void LogDirCreation(const fs::path & dir);
 void WriteIOInfo(Entity * io, const fs::path & dir);
 #endif
 
-long DanaeLoadLevel(const res::path & file, bool loadEntities = true);
+bool DanaeLoadLevel(const res::path & file, bool loadEntities = true);
 void DanaeClearLevel(long flags = 0);
 void RestoreLastLoadedLightning();
 
