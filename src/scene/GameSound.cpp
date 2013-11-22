@@ -1030,22 +1030,6 @@ bool ARX_SOUND_PlayZoneAmbiance(const res::path & name, SoundLoopMode loop, floa
 	return true;
 }
 
-AmbianceId ARX_SOUND_SetAmbianceTrackStatus(const string & ambiance_name, const string & track_name, unsigned long status) {
-	
-	if(!bIsActive) {
-		return INVALID_ID;
-	}
-	
-	AmbianceId ambiance_id = audio::getAmbiance(res::path(ambiance_name).set_ext("amb"));
-	if(ambiance_id == INVALID_ID) {
-		return INVALID_ID;
-	}
-	
-	audio::muteAmbianceTrack(ambiance_id, track_name, status != 0);
-	
-	return ambiance_id;
-}
-
 void ARX_SOUND_KillAmbiances() {
 	
 	if(!bIsActive) {

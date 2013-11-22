@@ -259,7 +259,6 @@ void ARX_SOUND_Stop(audio::SourceId & sample_id);
 bool ARX_SOUND_PlayScriptAmbiance(const res::path & ambiance_name, SoundLoopMode loop = ARX_SOUND_PLAY_LOOPED, float volume = 1.0F);
 bool ARX_SOUND_PlayZoneAmbiance(const res::path & ambiance_name, SoundLoopMode loop = ARX_SOUND_PLAY_LOOPED, float volume = 1.0F);
 audio::AmbianceId ARX_SOUND_PlayMenuAmbiance(const res::path & ambiance_name);
-audio::AmbianceId ARX_SOUND_SetAmbianceTrackStatus(const res::path & ambiance_name, const std::string & track_name, unsigned long status); //0 = off; 1 = on TODO this is wrong?
 void ARX_SOUND_KillAmbiances();
 char * ARX_SOUND_AmbianceSavePlayList(size_t & size);
 void ARX_SOUND_AmbianceRestorePlayList(const char * play_list, size_t size);
