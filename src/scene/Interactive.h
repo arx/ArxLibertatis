@@ -116,7 +116,6 @@ void ARX_INTERACTIVE_Show_Hide_1st(Entity * io, long state);
 void ARX_INTERACTIVE_RemoveGoreOnIO(Entity * io);
 bool ARX_INTERACTIVE_ConvertToValidPosForIO(Entity * io, Vec3f * target);
 void ARX_INTERACTIVE_TeleportBehindTarget(Entity * io);
-bool ARX_INTERACTIVE_CheckCollision(EERIE_3DOBJ * obj, long kk, long source = -1);
 void ARX_INTERACTIVE_MEMO_TWEAK(Entity * io, TweakType type, const res::path & param1, const res::path & param2);
 void ARX_INTERACTIVE_APPLY_TWEAK_INFO(Entity * io);
 bool ARX_INTERACTIVE_USEMESH(Entity * io, const res::path & temp);
