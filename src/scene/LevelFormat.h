@@ -193,8 +193,6 @@ struct DANAE_LS_INTER {
 	f32 fpad[16];
 };
 
-const size_t SAVED_MAX_LINKS = 12;
-
 
 #pragma pack(pop)
 

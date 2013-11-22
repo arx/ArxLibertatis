@@ -154,7 +154,7 @@ long DanaeSaveLevel(const fs::path & _fic) {
 	DANAE_LS_HEADER dlh;
 	memset(&dlh, 0, sizeof(DANAE_LS_HEADER));
 	dlh.nb_nodes = 0;
-	dlh.nb_nodeslinks = SAVED_MAX_LINKS;
+	dlh.nb_nodeslinks = 0;
 	dlh.nb_lights = 0; // MUST BE 0 !!!!
 	dlh.nb_fogs = ARX_FOGS_Count();
 	dlh.nb_bkgpolys = BKG_CountPolys(ACTIVEBKG);
