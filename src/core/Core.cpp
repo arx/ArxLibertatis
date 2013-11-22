@@ -493,7 +493,6 @@ void InitializeDanae() {
 	memset(&DefaultBkg, 0, sizeof(EERIE_BACKGROUND));
 	ACTIVEBKG=&DefaultBkg;
 	InitBkg(ACTIVEBKG,MAX_BKGX,MAX_BKGZ,BKG_SIZX,BKG_SIZZ);
-	InitNodes(1);
 	
 	player.size.y = -player.baseHeight();
 	player.size.x = player.baseRadius();
@@ -3209,8 +3208,6 @@ void shutdownGame() {
 	
 	delete resources;
 	
-	ReleaseNode();
-
 	// Current game
 	ARX_Changelevel_CurGame_Clear();
 	

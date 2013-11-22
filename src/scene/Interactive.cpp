@@ -122,8 +122,6 @@ using std::vector;
 extern Entity * CAMERACONTROLLER;
 extern TextureContainer * Movable;
 
-ARX_NODES nodes;
- 
 long HERO_SHOW_1ST = 1;
 
 static bool IsCollidingInter(Entity * io, Vec3f * pos);
@@ -665,54 +663,6 @@ void PrepareIOTreatZone(long flag)
 			}
 		}
 	}
-}
-
-void ClearNode(long i, long first = 0) {
-	
-	nodes.nodes[i].exist = 0;
-
-	for(size_t j = 0; j < MAX_LINKS; j++) {
-		if((nodes.nodes[i].link[j] != -1) && !first) {
-			long k = nodes.nodes[i].link[j];
-
-			for(size_t l = 0; l < MAX_LINKS; l++)
-				if(nodes.nodes[k].link[l] == i)
-					nodes.nodes[k].link[l] = -1;
-		}
-
-		nodes.nodes[i].lnames[j][0] = 0;
-		nodes.nodes[i].link[j] = -1;
-	}
-
-	strcpy(nodes.nodes[i].name, "");
-	nodes.nodes[i].pos = Vec3f_ZERO;
-}
-
-void ClearNodes()
-{
-	static long first = 1;
-
-	for(long i = 0; i < nodes.nbmax; i++) {
-		ClearNode(i, first);
-	}
-
-	first = 0;
-}
-
-void InitNodes(long nb)
-{
-	if(nb < 1)
-		nb = 1;
-
-	nodes.nbmax = nb;
-	nodes.nodes = (ARX_NODE *)malloc(sizeof(ARX_NODE) * nodes.nbmax);
-	memset(nodes.nodes, 0, sizeof(ARX_NODE)*nodes.nbmax);
-	ClearNodes();
-}
-
-void ReleaseNode() {
-	free(nodes.nodes), nodes.nodes = NULL;
-	nodes.nbmax = 0;
 }
 
 /*!

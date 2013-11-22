@@ -62,21 +62,6 @@ struct EERIE_3DOBJ;
 
 namespace res { class path; }
 
-const size_t MAX_LINKS = 12;
-
-struct ARX_NODE {
-	short exist;
-	char name[64];
-	long link[MAX_LINKS];
-	char lnames[MAX_LINKS][64];
-	Vec3f pos;
-};
-
-struct ARX_NODES {
-	long nbmax;
-	ARX_NODE * nodes;
-};
-
 enum TargetInfo {
 	TARGET_PATH = -3,
 	TARGET_NONE = -2,
@@ -98,8 +83,6 @@ enum DeleteByIndexFlag {
 };
 DECLARE_FLAGS(DeleteByIndexFlag, DeleteByIndexFlags)
 DECLARE_FLAGS_OPERATORS(DeleteByIndexFlags)
-
-extern ARX_NODES nodes;
 
 void ARX_INTERACTIVE_TWEAK_Icon(Entity * io, const res::path & s1);
 void ARX_INTERACTIVE_DestroyDynamicInfo(Entity * io);
@@ -140,10 +123,6 @@ void SetWeapon_Back(Entity * io);
 
 bool ForceNPC_Above_Ground(Entity * io);
 
-void InitNodes(long nb);
-void ClearNode(long i, long spec);
-void ClearNodes();
-void ReleaseNode();
 void RestoreInitialIOStatus();
 
 #ifdef BUILD_EDITOR
