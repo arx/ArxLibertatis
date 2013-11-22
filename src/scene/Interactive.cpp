@@ -769,15 +769,6 @@ void RemoveLink(long i, long j)
 	}
 }
 
-void ClearSelectedNodes()
-{
-	for(long i = 0; i < nodes.nbmax; i++) {
-		if(nodes.nodes[i].exist && nodes.nodes[i].selected) {
-			ClearNode(i, 0);
-		}
-	}
-}
-
 bool ExistNodeName(char * name)
 {
 	for(long i = 0; i < nodes.nbmax; i++) {
