@@ -25,7 +25,6 @@
 
 #include "graphics/Draw.h"
 
-void EERIEDrawCircle(float x0, float y0, float r, Color col, float z);
 void EERIEDraw2DLine(float x0, float y0, float x1, float y1, float z, Color col);
 
 void EERIEDraw2DRect(float x0, float y0, float x1, float y1, float z, Color col);

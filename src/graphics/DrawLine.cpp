@@ -33,22 +33,6 @@ extern void EE_RT(const Vec3f & in, Vec3f & out);
 extern void EE_P(Vec3f * in, TexturedVertex * out);
 extern void EE_RTP(TexturedVertex * in, TexturedVertex * out);
 
-void EERIEDrawCircle(float x0, float y0, float r, Color col, float z) {
-
-	float lx = x0;
-	float ly = y0 + r;
-	GRenderer->ResetTexture(0);
-
-	for(long i = 0; i < 361; i += 10) {
-		float t = radians((float)i);
-		float x = x0 - sin(t) * r;
-		float y = y0 + cos(t) * r;
-		EERIEDraw2DLine(lx, ly, x, y, z, col);
-		lx = x;
-		ly = y;
-	}
-}
-
 void EERIEDraw2DLine(float x0, float y0, float x1, float y1, float z, Color col) {
 
 	TexturedVertex v[2];
