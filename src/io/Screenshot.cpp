@@ -95,19 +95,6 @@ bool SnapShot::GetSnapShot() {
 	return image.save(file);
 }
 
-bool SnapShot::GetSnapShotDim(int width, int height) {
-	
-	Image image;
-	
-	if(!GRenderer->getSnapshot(image, width, height)) {
-		return false;
-	}
-
-	fs::path file = getNextFilePath();
-	
-	return image.save(file);
-}
-
 void InitSnapShot(const fs::path & name) {
 	FreeSnapShot();
 	pSnapShot = new SnapShot(name);

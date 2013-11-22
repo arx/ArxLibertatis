@@ -56,7 +56,6 @@ public:
 	fs::path getNextFilePath();
 	
 	bool GetSnapShot();
-	bool GetSnapShotDim(int width, int height);
 	
 private:
 	
