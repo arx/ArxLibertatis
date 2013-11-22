@@ -497,50 +497,6 @@ void WriteIOInfo(Entity * io, const fs::path & dir) {
 	
 }
 
-void SaveIOScript(Entity * io, long fl) {
-	
-	fs::path file;
-	EERIE_SCRIPT * script;
-	
-	switch(fl) {
-		
-		case 1: { // class script
-			file = fs::paths.user / io->classPath().string();
-			script = &io->script;
-			break;
-		}
-		
-		case 2: { // local script
-			if(io->ident == 0) {
-				LogError << ("NO IDENT...");
-				return;
-			}
-			file = fs::paths.user / io->instancePath().string();
-			if(!fs::is_directory(file)) {
-				LogError << "Local DIR don't Exists...";
-				return;
-			}
-			file /= io->className();
-			script = &io->over_script;
-			break;
-		}
-		
-		default: return;
-	}
-	
-	file.append(".asl");
-	
-	fs::ofstream ofs(file, fs::fstream::out | fs::fstream::trunc | fs::fstream::binary);
-	if(!ofs.is_open()) {
-		LogError << ("Unable To Save...");
-		return;
-	}
-	
-	ofs.write(script->data, script->size);
-	
-	ARX_SCRIPT_ComputeShortcuts(*script);
-}
-
 #endif // BUILD_EDIT_LOADSAVE
 
 

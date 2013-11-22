@@ -62,7 +62,6 @@ namespace fs { class path; }
 long DanaeSaveLevel(const fs::path & file);
 void LogDirCreation(const fs::path & dir);
 void WriteIOInfo(Entity * io, const fs::path & dir);
-void SaveIOScript(Entity * io, long fl);
 #endif
 
 long DanaeLoadLevel(const res::path & file, bool loadEntities = true);
