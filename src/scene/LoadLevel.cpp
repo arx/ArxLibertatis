@@ -153,8 +153,7 @@ long DanaeSaveLevel(const fs::path & _fic) {
 	
 	DANAE_LS_HEADER dlh;
 	memset(&dlh, 0, sizeof(DANAE_LS_HEADER));
-	dlh.nb_nodes = CountNodes();
-	BOOST_STATIC_ASSERT(SAVED_MAX_LINKS == MAX_LINKS);
+	dlh.nb_nodes = 0;
 	dlh.nb_nodeslinks = SAVED_MAX_LINKS;
 	dlh.nb_lights = 0; // MUST BE 0 !!!!
 	dlh.nb_fogs = ARX_FOGS_Count();
@@ -166,7 +165,6 @@ long DanaeSaveLevel(const fs::path & _fic) {
 	long bcount = CountBkgVertex();
 	size_t allocsize = sizeof(DANAE_LS_HEADER) + sizeof(DANAE_LS_HEADER) * 1 + sizeof(DANAE_LS_INTER) * nb_inter + 512
 					 + sizeof(DANAE_LS_LIGHTINGHEADER) + (bcount + 1) * sizeof(u32)
-					 + dlh.nb_nodes * (sizeof(DANAE_LS_NODE) + 64 * dlh.nb_nodeslinks)
 					 + dlh.nb_lights * sizeof(DANAE_LS_LIGHT)
 
 					 + 1000000
@@ -269,31 +267,6 @@ long DanaeSaveLevel(const fs::path & _fic) {
 			dlf.tolive = fog->tolive;
 			memcpy(dat + pos, &dlf, sizeof(DANAE_LS_FOG));
 			pos += sizeof(DANAE_LS_FOG);
-	}
-	
-	for(long i = 0; i < nodes.nbmax; i++) {
-		if(nodes.nodes[i].exist) {
-			
-			DANAE_LS_NODE dln;
-			memset(&dln, 0, sizeof(DANAE_LS_NODE));
-			strcpy(dln.name, nodes.nodes[i].name);
-			dln.pos = nodes.nodes[i].pos - Mscenepos;
-			memcpy(dat + pos, &dln, sizeof(DANAE_LS_NODE));
-			pos += sizeof(DANAE_LS_NODE);
-			
-			for(size_t j = 0; j < SAVED_MAX_LINKS; j++) {
-				
-				char name[64];
-				memset(name, 0, 64);
-				
-				if(nodes.nodes[i].link[j] != -1 && nodes.nodes[nodes.nodes[i].link[j]].exist) {
-						strcpy(name, nodes.nodes[nodes.nodes[i].link[j]].name);
-				}
-				
-				memcpy(dat + pos, name, 64);
-				pos += 64;
-			}
-		}
 	}
 	
 	for(long i = 0; i < nbARXpaths; i++) {
@@ -830,28 +803,9 @@ bool DanaeLoadLevel(const res::path & file, bool loadEntities) {
 	PROGRESS_BAR_COUNT += 2.f;
 	LoadLevelScreen();
 	
-	LogDebug("Loading Nodes");
-	ClearNodes();
-	
+	// Skip nodes
 	long nb_nodes = (dlh.version < 1.001f) ? 0 : dlh.nb_nodes;
-	for(long i = 0; i < nb_nodes; i++) {
-		
-		nodes.nodes[i].exist = 1;
-		const DANAE_LS_NODE * dln = reinterpret_cast<const DANAE_LS_NODE *>(dat + pos);
-		pos += sizeof(DANAE_LS_NODE);
-		
-		strcpy(nodes.nodes[i].name, boost::to_lower_copy(util::loadString(dln->name)).c_str());
-		nodes.nodes[i].pos = dln->pos.toVec3() + trans;
-		
-		for(long j = 0; j < dlh.nb_nodeslinks; j++) {
-			if(dat[pos] != '\0') {
-				strcpy(nodes.nodes[i].lnames[j], boost::to_lower_copy(util::loadString(dat + pos, 64)).c_str());
-			}
-			pos += 64;
-		}
-	}
-	
-	RestoreNodeNumbers();
+	pos += nb_nodes * (sizeof(DANAE_LS_NODE) + dlh.nb_nodeslinks * 64);
 	
 	LogDebug("Loading Paths");
 	ARX_PATH_ReleaseAllPath();
