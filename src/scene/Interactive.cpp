@@ -720,15 +720,6 @@ void ClearNodes()
 	first = 0;
 }
 
-void SelectNode(long i)
-{
-	if(i >= nodes.nbmax || i < 0)
-		return;
-
-	if(nodes.nodes[i].exist)
-		nodes.nodes[i].selected = 1;
-}
-
 bool IsLinkedNode(long i, long j)
 {
 	if(!nodes.nodes[i].exist || !nodes.nodes[j].exist)
