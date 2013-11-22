@@ -2707,9 +2707,9 @@ static bool intersect(const std::set<std::string> & set1, const std::set<std::st
 		if(*it1 == *it2) {
 			return true;
 		} else if(*it1 < *it2) {
-			it1++;
+			++it1;
 		} else {
-			it2++;
+			++it2;
 		}
 	}
 	
