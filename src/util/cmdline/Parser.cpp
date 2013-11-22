@@ -86,7 +86,7 @@ void parse(interpreter<std::string> & cli, int argc, char ** argv) {
 					option = option.substr(0, sep);
 				} else {
 					// Token fully consumed as an option
-					p++;
+					++p;
 				}
 				
 				// Special option -- forces the remaining tokens to be treated as positional args
@@ -107,7 +107,7 @@ void parse(interpreter<std::string> & cli, int argc, char ** argv) {
 					option.resize(2);
 				} else {
 					// Token fully consumed as an option
-					p++;
+					++p;
 				}
 				
 			} else {
