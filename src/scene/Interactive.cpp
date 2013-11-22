@@ -719,16 +719,6 @@ void ClearNodes()
 	first = 0;
 }
 
-long CountNodes() {
-	long count = 0;
-	for(long i = 0; i < nodes.nbmax; i++) {
-		if(nodes.nodes[i].exist) {
-			count++;
-		}
-	}
-	return count;
-}
-
 void InitNodes(long nb)
 {
 	if(nb < 1)
