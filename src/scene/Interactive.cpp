@@ -2011,18 +2011,6 @@ void ReloadScript(Entity * io) {
 	}
 }
 
-/*!
- * \brief Reloads All Scripts for all IOs
- */
-void ReloadAllScripts() {
-	ARX_SCRIPT_Timer_ClearAll();
-	for(size_t i = 0; i < entities.size(); i++) {
-		if(entities[i]) {
-			ReloadScript(entities[i]);
-		}
-	}
-}
-
 #if BUILD_EDIT_LOADSAVE
 
 /*!

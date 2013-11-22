@@ -146,7 +146,6 @@ void RestoreInitialIOStatusOfIO(Entity * io);
 
 void SetWeapon_Back(Entity * io);
 
-void ReloadAllScripts();
 bool ForceNPC_Above_Ground(Entity * io);
 
 void InitNodes(long nb);
