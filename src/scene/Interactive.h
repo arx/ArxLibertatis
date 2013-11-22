@@ -154,7 +154,6 @@ void ClearNodes();
 long GetFreeNode();
 void ClearSelectedNodes();
 bool ExistNodeName(char * name);
-void LinkNodeToNode(long i, long j);
 long CountNodes();
 void RestoreNodeNumbers();
 long GetNumNodeByName(char * name);

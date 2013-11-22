@@ -769,15 +769,6 @@ void RemoveLink(long i, long j)
 	}
 }
 
-void LinkNodeToNode(long i, long j)
-{
-	if(!IsLinkedNode(i, j) || !IsLinkedNode(j, i))
-		return;
-
-	AddLink(i, j);
-	AddLink(j, i);
-}
-
 void ClearSelectedNodes()
 {
 	for(long i = 0; i < nodes.nbmax; i++) {
