@@ -155,21 +155,6 @@ void EERIEDraw3DCylinder(const EERIE_CYLINDER & cyl, Color col) {
 	}
 }
 
-void EERIEDraw3DCylinderBase(const EERIE_CYLINDER & cyl, Color col) {
-
-	#define STEPCYL 16
-	for(long i = 0; i < 360 - STEPCYL; i += STEPCYL) {
-
-		float es = sin(radians(MAKEANGLE((float)i))) * cyl.radius;
-		float ec = cos(radians(MAKEANGLE((float)i))) * cyl.radius;
-		float es2 = sin(radians(MAKEANGLE((float)(i + STEPCYL)))) * cyl.radius;
-		float ec2 = cos(radians(MAKEANGLE((float)(i + STEPCYL)))) * cyl.radius;
-
-		// Draw low pos
-		EERIEDraw3DLine(cyl.origin + Vec3f(es, 0.f, ec), cyl.origin + Vec3f(es2, 0.f, ec2),  col);
-	}
-}
-
 void EERIEDrawTrue3DLine(const Vec3f & orgn, const Vec3f & dest, Color col) {
 
 	Vec3f vect = dest - orgn;
