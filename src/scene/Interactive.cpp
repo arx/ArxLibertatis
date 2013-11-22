@@ -769,16 +769,6 @@ void RemoveLink(long i, long j)
 	}
 }
 
-bool ExistNodeName(char * name)
-{
-	for(long i = 0; i < nodes.nbmax; i++) {
-		if(nodes.nodes[i].exist && !strcmp(name, nodes.nodes[i].name))
-			return true;
-	}
-
-	return false;
-}
-
 void InitNodes(long nb)
 {
 	if(nb < 1)
