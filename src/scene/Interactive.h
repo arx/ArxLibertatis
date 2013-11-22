@@ -153,7 +153,6 @@ void InitNodes(long nb);
 void ClearNode(long i, long spec);
 void ClearNodes();
 long GetFreeNode();
-void UnselectAllNodes();
 void SelectNode(long i);
 void MakeNodeName(long i);
 void TranslateSelectedNodes(Vec3f * trans);
