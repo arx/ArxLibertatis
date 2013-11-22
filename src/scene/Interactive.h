@@ -73,7 +73,6 @@ struct ARX_NODE {
 };
 
 struct ARX_NODES {
-	long init;
 	long nbmax;
 	ARX_NODE * nodes;
 };

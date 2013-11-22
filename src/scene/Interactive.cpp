@@ -734,7 +734,6 @@ void InitNodes(long nb)
 	if(nb < 1)
 		nb = 1;
 
-	nodes.init = 1;
 	nodes.nbmax = nb;
 	nodes.nodes = (ARX_NODE *)malloc(sizeof(ARX_NODE) * nodes.nbmax);
 	memset(nodes.nodes, 0, sizeof(ARX_NODE)*nodes.nbmax);
