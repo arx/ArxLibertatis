@@ -1764,37 +1764,6 @@ Entity * AddNPC(const res::path & classPath, EntityInstance instance, AddInterac
 	return io;
 }
 
-/*!
- * \brief Reload Scripts (Class & Local) for an IO
- * \param io
- */
-void ReloadScript(Entity * io) {
-	
-	ARX_SCRIPT_Timer_Clear_For_IO(io);
-	ReleaseScript(&io->over_script);
-	ReleaseScript(&io->script);
-
-	loadScript(io->script, resources->getFile(io->classPath() + ".asl"));
-	loadScript(io->over_script, resources->getFile((io->instancePath() / io->className()) + ".asl"));
-
-	long num = io->index();
-
-	if (ValidIONum(num))
-	{
-		if (entities[num] && entities[num]->script.data)
-			ScriptEvent::send(&entities[num]->script, SM_INIT, "", entities[num], "");
-
-		if (entities[num] && entities[num]->over_script.data)
-			ScriptEvent::send(&entities[num]->over_script, SM_INIT, "", entities[num], "");
-
-		if (entities[num] && entities[num]->script.data)
-			ScriptEvent::send(&entities[num]->script, SM_INITEND, "", entities[num], "");
-
-		if (entities[num] && entities[num]->over_script.data)
-			ScriptEvent::send(&entities[num]->over_script, SM_INITEND, "", entities[num], "");
-	}
-}
-
 #if BUILD_EDIT_LOADSAVE
 
 /*!
