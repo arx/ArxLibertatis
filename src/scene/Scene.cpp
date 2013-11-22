@@ -1094,14 +1094,9 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num, const EERIE_FRUSTRU
 			continue;
 		}
 
-		//Clipp ZNear + Distance pour les ZMapps!!!
-		float fDist = efpPlaneNear.getDist(ep->center);
-
-		if(ep->v[0].rhw < -fDist) {
+		if(ep->v[0].rhw < -efpPlaneNear.getDist(ep->center)) {
 			continue;
 		}
-
-		fDist -= ep->v[0].rhw;
 
 		Vec3f nrm = ep->v[2].p - ACTIVECAM->orgTrans.pos;
 		int to = (ep->type & POLY_QUAD) ? 4 : 3;
