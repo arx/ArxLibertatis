@@ -346,7 +346,7 @@ void ARX_EQUIPMENT_UnEquip(Entity * target, Entity * tounequip, long flags)
 			target->bbox2D.min.x = 9999;
 			target->bbox2D.max.x = -9999;
 			
-			if(!flags & 1) {
+			if(!flags) {
 				if(!DRAGINTER) {
 					ARX_SOUND_PlayInterface(SND_INVSTD);
 					Set_DragInter(tounequip);
