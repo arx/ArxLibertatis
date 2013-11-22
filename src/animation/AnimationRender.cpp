@@ -1204,21 +1204,19 @@ static void StoreEntityMovement(Entity * io, Vec3f & ftr, float scale) {
 
 	Vec3f ftr2 = Vec3f_ZERO;
 
-	if(ftr != Vec3f_ZERO) {
-		ftr *= scale;
+	ftr *= scale;
 
-		float temp;
-		if (io == entities.player()) {
-			temp = radians(MAKEANGLE(180.f - player.angle.getPitch()));
-		} else {
-			temp = radians(MAKEANGLE(180.f - io->angle.getPitch()));
-		}
-
-		YRotatePoint(&ftr, &ftr2, std::cos(temp), std::sin(temp));
-
-		// stores Translations for a later use
-		io->move = ftr2;
+	float temp;
+	if (io == entities.player()) {
+		temp = radians(MAKEANGLE(180.f - player.angle.getPitch()));
+	} else {
+		temp = radians(MAKEANGLE(180.f - io->angle.getPitch()));
 	}
+
+	YRotatePoint(&ftr, &ftr2, std::cos(temp), std::sin(temp));
+
+	// stores Translations for a later use
+	io->move = ftr2;
 
 	if(io->animlayer[0].cur_anim) {
 
