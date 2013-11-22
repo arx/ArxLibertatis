@@ -4369,10 +4369,11 @@ void MenuCursor::Update() {
 	
 	iOldCoord[iNbOldCoord] = GInput->getMousePosAbs() + iDiff;
 	
-	const float targetFPS = 59.f;
+	const float targetFPS = 61.f;
+	const float targetDelay = 1000.f / targetFPS;
 	m_storedTime += arxtime.get_frame_delay();
-	if(m_storedTime > 1000.f / targetFPS) {
-		m_storedTime = 0;
+	if(m_storedTime > targetDelay) {
+		m_storedTime = std::min(targetDelay, m_storedTime - targetDelay);
 		
 		iNbOldCoord++;
 		
