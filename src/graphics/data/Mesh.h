@@ -134,8 +134,6 @@ extern float Yratio;
 bool Visible(Vec3f * orgn, Vec3f * dest,EERIEPOLY * epp,Vec3f * hit);
 void FaceTarget(Entity * io);
 
-void DebugAddParticle(const Vec3f & position, float siz, long tim, Color color);
-
 FAST_BKG_DATA * getFastBackgroundData(float x, float z);
 
 EERIEPOLY * CheckTopPoly(float x,float y,float z);

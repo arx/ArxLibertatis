@@ -111,23 +111,6 @@ EERIEMATRIX ProjectionMatrix;
 
 extern TextureContainer * sphere_particle;
 
-void DebugAddParticle(const Vec3f & position, float siz, long tim, Color color) {
-	
-	arxtime.update();
-	
-	PARTICLE_DEF * pd = createParticle();
-	if(!pd) {
-		return;
-	}
-	
-	pd->ov = position;
-	pd->scale = Vec3f_ZERO;
-	pd->tolive = tim;
-	pd->tc = sphere_particle;
-	pd->siz = siz;
-	pd->rgb = color.to<float>();
-}
-
 static bool IntersectLinePlane(const Vec3f & l1, const Vec3f & l2, const EERIEPOLY * ep, Vec3f * intersect) {
 	
 	Vec3f v = l2 - l1;
