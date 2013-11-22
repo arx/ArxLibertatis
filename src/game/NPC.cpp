@@ -1266,19 +1266,6 @@ bool IsDeadNPC(Entity * io) {
 	return (io->_npcdata->life <= 0 || io->mainevent == "dead");
 }
 
-long IsInGroup(EERIE_3DOBJ * obj, long vert, long tw) {
-
-	if(!obj || tw < 0 || tw > obj->nbgroups || vert < 0)
-		return -1;
-
-	for(size_t i = 0; i < obj->grouplist[tw].indexes.size(); i++) {
-		if(obj->grouplist[tw].indexes[i] == vert)
-			return i;
-	}
-
-	return -1;
-}
-
 long IsNearSelection(EERIE_3DOBJ * obj, long vert, long tw) {
 
 	if(!obj || tw < 0 || vert < 0)
