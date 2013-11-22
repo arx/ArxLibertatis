@@ -797,23 +797,6 @@ bool ExistNodeName(char * name)
 	return false;
 }
 
-void MakeNodeName(long i)
-{
-	char name[64];
-	long o;
-	//float f;
-	sprintf(name, "node_%08ld", i);
-
-	while(ExistNodeName(name)) {
-		//f=rnd()*99999999.f;
-		//o=(long)f;
-		o = rnd() * 99999999.f;
-		sprintf(name, "node_%08ld", o);
-	}
-
-	strcpy(nodes.nodes[i].name, name);
-}
-
 void InitNodes(long nb)
 {
 	if(nb < 1)

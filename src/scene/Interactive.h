@@ -152,7 +152,6 @@ void InitNodes(long nb);
 void ClearNode(long i, long spec);
 void ClearNodes();
 long GetFreeNode();
-void MakeNodeName(long i);
 void ClearSelectedNodes();
 bool ExistNodeName(char * name);
 void LinkNodeToNode(long i, long j);
