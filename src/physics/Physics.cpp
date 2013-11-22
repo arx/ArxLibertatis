@@ -63,59 +63,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "physics/Collisions.h"
 
 
-EERIEPOLY * BCCheckInPoly(float x, float y, float z)
-{
-	long px = x * ACTIVEBKG->Xmul;
-	long pz = z * ACTIVEBKG->Zmul;
-
-	if(px < 0 || px >= ACTIVEBKG->Xsize || pz < 0 || pz >= ACTIVEBKG->Zsize)
-		return NULL;
-
-	EERIEPOLY * found = NULL;
-
-	EERIE_BKG_INFO *eg = &ACTIVEBKG->Backg[px + pz * ACTIVEBKG->Xsize];
-
-	for(long k = 0; k < eg->nbpolyin; k++) {
-		EERIEPOLY *ep = eg->polyin[k];
-
-		if(!(ep->type & POLY_WATER) && !(ep->type & POLY_TRANS)) {
-			if(ep->min.y > y) {
-				if(PointIn2DPolyXZ(ep, x, z)) {
-					if(!found)
-						found = ep;
-					else if(ep->min.y < found->min.y)
-						found = ep;
-				}
-			} else if(ep->min.y + 45.f > y) {
-				if(PointIn2DPolyXZ(ep, x, z))
-					return NULL;
-			}
-		}
-	}
-
-	if(found) {
-		EERIE_BKG_INFO *eg = &ACTIVEBKG->Backg[px + pz * ACTIVEBKG->Xsize];
-
-		for(long k = 0; k < eg->nbpolyin; k++) {
-			EERIEPOLY *ep = eg->polyin[k];
-
-			if(!(ep->type & POLY_WATER) && !(ep->type & POLY_TRANS)) {
-				if(ep != found) {
-					if(ep->min.y < found->min.y) {
-						if(ep->min.y > found->min.y - 160.f) {
-							if(PointIn2DPolyXZ(ep, x, z))
-								return NULL;
-						}
-					}
-				}
-			}
-		}
-	}
-
-	return found;
-}
-
-
 extern bool IsValidPos3(Vec3f * pos);
 
 static EERIEPOLY * LAST_COLLISION_POLY = NULL;

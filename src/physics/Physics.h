@@ -51,8 +51,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 struct EERIEPOLY;
 
-EERIEPOLY * BCCheckInPoly(float x, float y, float z);
-
 long ARX_PHYSICS_BOX_ApplyModel(EERIE_3DOBJ * obj, float framediff, float rubber, long source);
 
 #endif // ARX_PHYSICS_PHYSICS_H
