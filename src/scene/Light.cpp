@@ -852,39 +852,6 @@ static void ARX_EERIE_LIGHT_Make(EERIEPOLY * ep, float * epr, float * epg, float
 	}
 }
 
-void EERIE_LIGHT_Apply(EERIEPOLY * ep) {
-
-	if(ep->type & POLY_IGNORE)
-		return;
-
-	float epr[4];
-	float epg[4];
-	float epb[4];
-
-	epr[3] = epr[2] = epr[1] = epr[0] = 0;
-	epg[3] = epg[2] = epg[1] = epg[0] = 0;
-	epb[3] = epb[2] = epb[1] = epb[0] = 0;
-
-	for(size_t i = 0; i < MAX_LIGHTS; i++) {
-		EERIE_LIGHT * el = GLight[i];
-
-		if(el && el->treat && el->exist && el->status && !(el->extras & EXTRAS_SEMIDYNAMIC)) {
-			if(closerThan(el->pos, ep->center, el->fallend + 100.f)) {
-				ARX_EERIE_LIGHT_Make(ep, epr, epg, epb, el);
-			}
-		}
-	}
-
-	long nbvert = (ep->type & POLY_QUAD) ? 4 : 3;
-
-	for(long i = 0; i < nbvert; i++) {
-		epr[i] = clamp(epr[i], ACTIVEBKG->ambient.r, 1.f);
-		epg[i] = clamp(epg[i], ACTIVEBKG->ambient.g, 1.f);
-		epb[i] = clamp(epb[i], ACTIVEBKG->ambient.b, 1.f);
-		ep->v[i].color = Color3f(epr[i], epg[i], epb[i]).toBGR();
-	}
-}
-
 void EERIERemovePrecalcLights() {
 
 	for(size_t i = 0; i < MAX_LIGHTS; i++) {
