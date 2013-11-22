@@ -381,13 +381,6 @@ bool MouseInBookRect(const float x, const float y, const float cx, const float c
 		&& DANAEMouse.y <= (cy + BOOKDECY) * Yratio;
 }
 
-bool MouseInCam(EERIE_CAMERA * cam) {
-	return DANAEMouse.x > cam->clip.left
-		&& DANAEMouse.x < cam->clip.right
-		&& DANAEMouse.x > cam->clip.top
-		&& DANAEMouse.y < cam->clip.bottom;
-}
-
 bool MouseInRect(const float x0, const float y0, const float x1=32, const float y1=32) {
 	return DANAEMouse.x >= x0
 		&& DANAEMouse.x <= x1
