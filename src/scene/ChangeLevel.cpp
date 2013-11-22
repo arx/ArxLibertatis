@@ -2028,6 +2028,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) {
 		io->stopped = ais->stopped;
 		io->basespeed = 1;
 		io->speed_modif = 0.f; // TODO why are these not loaded from the savegame?
+		io->frameloss = 0;
 		io->rubber = ais->rubber;
 		io->max_durability = ais->max_durability;
 		io->durability = ais->durability;

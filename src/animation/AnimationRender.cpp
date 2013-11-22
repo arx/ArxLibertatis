@@ -1487,7 +1487,20 @@ void EERIEDrawAnimQuatUpdate(EERIE_3DOBJ *eobj, ANIM_USE * animlayer,const Angle
 		if(speedfactor < 0)
 			speedfactor = 0;
 
-		time = time * speedfactor;
+		float tim = (float)time * speedfactor;
+
+		if(tim<=0.f)
+			time=0;
+		else
+			time=(unsigned long)tim;
+
+		io->frameloss += tim - time;
+
+		if(io->frameloss > 1.f) { // recover lost time...
+			long tt = io->frameloss;
+			io->frameloss -= tt;
+			time += tt;
+		}
 	}
 
 	if(time > 0) {

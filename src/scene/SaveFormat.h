@@ -635,7 +635,7 @@ struct ARX_CHANGELEVEL_IO_SAVE {
 	s32 system_flags;
 	f32 basespeed;
 	f32 speed_modif;
-	f32 frameloss; // TODO remove
+	f32 frameloss;
 	SavedSpellcastData spellcast_data;
 	
 	f32 rubber;

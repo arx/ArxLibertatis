@@ -1468,7 +1468,11 @@ void ARX_PLAYER_Manage_Visual() {
 			if(ause0->cur_anim == alist[ANIM_U_TURN_LEFT]
 			   || ause0->cur_anim == alist[ANIM_U_TURN_LEFT_FIGHT])
 			{
-				long vv = PLAYER_ROTATION * 5;
+				float fv = PLAYER_ROTATION * 5;
+				long vv = fv;
+				io->frameloss -= fv - (float)vv;
+
+				if (io->frameloss < 0) io->frameloss = 0;
 
 				ause0->ctime -= vv;
 
@@ -1479,6 +1483,10 @@ void ARX_PLAYER_Manage_Visual() {
 					 ||	ause0->cur_anim == alist[ANIM_U_TURN_RIGHT_FIGHT])
 			{
 				long vv = PLAYER_ROTATION * 5;
+				float fv = PLAYER_ROTATION * 5;
+				io->frameloss += fv - (float)vv;
+
+				if (io->frameloss < 0) io->frameloss = 0;
 
 				ause0->ctime += vv;
 
