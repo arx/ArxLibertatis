@@ -155,7 +155,6 @@ void ClearNodes();
 long GetFreeNode();
 void SelectNode(long i);
 void MakeNodeName(long i);
-void TranslateSelectedNodes(Vec3f * trans);
 void ClearSelectedNodes();
 bool ExistNodeName(char * name);
 void LinkNodeToNode(long i, long j);

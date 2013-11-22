@@ -729,14 +729,6 @@ void SelectNode(long i)
 		nodes.nodes[i].selected = 1;
 }
 
-void TranslateSelectedNodes(Vec3f * trans) {
-	for(long i = 0; i < nodes.nbmax; i++) {
-		if(nodes.nodes[i].exist && nodes.nodes[i].selected) {
-			nodes.nodes[i].pos += *trans;
-		}
-	}
-}
-
 bool IsLinkedNode(long i, long j)
 {
 	if(!nodes.nodes[i].exist || !nodes.nodes[j].exist)
