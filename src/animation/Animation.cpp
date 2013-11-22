@@ -789,33 +789,6 @@ void EERIE_ANIMMANAGER_ClearAll() {
 	}
 }
 
-void EERIE_ANIMMANAGER_ReloadAll() {
-	
-	BOOST_FOREACH(Entity * e, entities) {
-		if(e) {
-			
-			for(size_t j = 0; j < MAX_ANIMS; j++) {
-				EERIE_ANIMMANAGER_ReleaseHandle(e->anims[j]);
-				e->anims[j] = NULL;
-			}
-			
-			for(size_t count = 0; count < MAX_ANIM_LAYERS; count++) {
-				memset(&e->animlayer[count], 0, sizeof(ANIM_USE));
-				e->animlayer[count].cur_anim = NULL;
-				e->animlayer[count].next_anim = NULL;
-			}
-		}
-	}
-	
-	for(size_t i = 0; i < MAX_ANIMATIONS; i++) {
-		if(!animations[i].path.empty()) {
-			res::path path = animations[i].path;
-			EERIE_ANIMMANAGER_Clear(i);
-			EERIE_ANIMMANAGER_Load(path);
-		}
-	}
-}
-
 /*!
  * \brief Memorizes information for animation to animation smoothing interpolation
  * \param io the animated Entity

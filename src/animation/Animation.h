@@ -195,8 +195,6 @@ ANIM_HANDLE * EERIE_ANIMMANAGER_Load_NoWarning(const res::path & path);
 void PrepareAnim(ANIM_USE *eanim, unsigned long time, Entity *io);
 void ResetAnim(ANIM_USE * eanim);
 
-void EERIE_ANIMMANAGER_ReloadAll();
-
 void AcquireLastAnim(Entity * io);
 void FinishAnim(Entity * io,ANIM_HANDLE * eanim);
 
