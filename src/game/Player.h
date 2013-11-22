@@ -333,7 +333,6 @@ void ARX_PLAYER_GotoAnyPoly();
 void ARX_PLAYER_Quest_Add(const std::string & quest, bool _bLoad = false);
 void ARX_PLAYER_Quest_Init();
 void ARX_PLAYER_FrontPos(Vec3f * pos);
-void ARX_PLAYER_MakePowerfullHero();
 void ARX_PLAYER_ComputePlayerFullStats();
 void ARX_PLAYER_MakeFreshHero();
 void ARX_PLAYER_QuickGeneration();

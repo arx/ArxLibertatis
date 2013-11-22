@@ -872,43 +872,6 @@ void ARX_PLAYER_MakeSpHero()
 }
 
 /*!
- * \brief Creates a POWERFULL hero
- */
-void ARX_PLAYER_MakePowerfullHero()
-{
-	player.Attribute_Strength = 18;
-	player.Attribute_Mind = 18;
-	player.Attribute_Dexterity = 18;
-	player.Attribute_Constitution = 18;
-
-	player.Old_Skill_Stealth			=	player.Skill_Stealth			= 82;
-	player.Old_Skill_Mecanism			=	player.Skill_Mecanism			= 82;
-	player.Old_Skill_Intuition			=	player.Skill_Intuition			= 82;
-	player.Old_Skill_Etheral_Link		=	player.Skill_Etheral_Link		= 82;
-	player.Old_Skill_Object_Knowledge	=	player.Skill_Object_Knowledge	= 82;
-	player.Old_Skill_Casting			=	player.Skill_Casting			= 82;
-	player.Old_Skill_Projectile			=	player.Skill_Projectile			= 82;
-	player.Old_Skill_Close_Combat		=	player.Skill_Close_Combat		= 82;
-	player.Old_Skill_Defense			=	player.Skill_Defense			= 82;
-
-	player.Attribute_Redistribute = 0;
-	player.Skill_Redistribute = 0;
-
-	player.level = 10;
-	player.xp = 178000;
-	player.poison = 0.f;
-	player.hunger = 100.f;
-	player.skin = 0;
-
-	ARX_PLAYER_ComputePlayerStats();
-	player.life = player.maxlife;
-	player.mana = player.maxmana;
-
-	player.rune_flags = RuneFlags::all();
-	player.SpellToMemorize.bSpell = false;
-}
-
-/*!
  * \brief Creates an Average hero
  */
 void ARX_PLAYER_MakeAverageHero()
