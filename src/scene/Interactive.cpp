@@ -677,16 +677,6 @@ long GetNumNodeByName(char * name)
 	return -1;
 }
 
-void RestoreNodeNumbers() {
-	for(long i = 0; i < nodes.nbmax; i++) {
-		for(size_t j = 0; j < MAX_LINKS; j++) {
-			if(nodes.nodes[i].lnames[j][0] != 0) {
-				nodes.nodes[i].link[j] = GetNumNodeByName(nodes.nodes[i].lnames[j]);
-			}
-		}
-	}
-}
-
 void ClearNode(long i, long first = 0) {
 	
 	nodes.nodes[i].exist = 0;
