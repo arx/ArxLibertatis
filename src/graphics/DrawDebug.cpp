@@ -491,7 +491,7 @@ void RenderAllNodes() {
 			if(g_nodeObject->vertexlist[g_nodeObject->origin].vert.p.z > 0.f && g_nodeObject->vertexlist[g_nodeObject->origin].vert.p.z<0.9f) {
 				float xx = g_nodeObject->vertexlist[g_nodeObject->origin].vert.p.x - 40.f;
 				float yy = g_nodeObject->vertexlist[g_nodeObject->origin].vert.p.y - 40.f;
-				ARX_TEXT_Draw(hFontDebug, xx, yy, nodes.nodes[i].UName, Color::yellow); //font
+				ARX_TEXT_Draw(hFontDebug, xx, yy, nodes.nodes[i].name, Color::yellow); //font
 			}
 
 			for(size_t j = 0; j < MAX_LINKS; j++) {
