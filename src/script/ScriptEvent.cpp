@@ -521,7 +521,7 @@ std::string ScriptEvent::getName(ScriptMessage msg, const std::string & eventnam
 		return "dummy event";
 	} else if(!eventname.empty()) {
 		return "on " + eventname + " event";
-	} else if(msg <= ARRAY_SIZE(AS_EVENT) - 1) {
+	} else if(size_t(msg) <= ARRAY_SIZE(AS_EVENT) - 1) {
 		return AS_EVENT[msg].name + " event";
 	} else {
 		return "(no event)";
