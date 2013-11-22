@@ -295,17 +295,6 @@ long ARX_SPEECH_GetFree() {
 	return -1;
 }
 
-long ARX_SPEECH_GetIOSpeech(Entity * io) {
-	
-	for(size_t i = 0; i < MAX_ASPEECH; i++) {
-		if(aspeech[i].exist && aspeech[i].io == io) {
-			return i;
-		}
-	}
-	
-	return -1;
-}
-
 void ARX_SPEECH_Release(long i) {
 	
 	if(aspeech[i].exist) {
