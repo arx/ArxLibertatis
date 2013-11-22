@@ -332,7 +332,7 @@ void ARX_INTERACTIVE_HideGore(Entity * io, long flag)
 	if (!io || !io->obj || io->obj->texturecontainer.empty())
 		return;
 
-	if(io == entities.player() && (!flag & 1)) //TODO this looks like a broken flag check
+	if(io == entities.player() && !flag)
 		return;
 
 	long gorenum = -1;
