@@ -281,7 +281,6 @@ void Application::pause(bool bPause)
 //*************************************************************************************
 void CalcFPS(bool reset)
 {
-	static float fFPS      = 0.0f;
 	static float fLastTime = 0.0f;
 	static u32 dwFrames  = 0L;
 
@@ -289,7 +288,7 @@ void CalcFPS(bool reset)
 	{
 		dwFrames = 0;
 		fLastTime = 0.f;
-		FPS = fFPS = 7.f * FPS;
+		FPS = 7.f * FPS;
 	}
 	else
 	{
@@ -304,7 +303,7 @@ void CalcFPS(bool reset)
 		// Update the frame rate once per second
 		if (tmp > 1.f)
 		{
-			FPS = fFPS      = dwFrames / tmp ;
+			FPS = dwFrames / tmp ;
 			fLastTime = fTime;
 			dwFrames  = 0L;
 		}
