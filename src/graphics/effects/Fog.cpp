@@ -79,15 +79,6 @@ void ARX_FOGS_KillByIndex(long num)
 	}
 }
 
-void ARX_FOGS_KillSelected()
-{
-	for(long i = 0; i < MAX_FOG; i++) {
-		if(fogs[i].selected) {
-			ARX_FOGS_KillByIndex(i);
-		}
-	}
-}
-
 long ARX_FOGS_GetFree()
 {
 	for(long i = 0; i < MAX_FOG; i++) {
