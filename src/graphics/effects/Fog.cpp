@@ -72,14 +72,6 @@ void ARX_FOGS_Clear()
 	}
 }
 
-void ARX_FOGS_Select(long n)
-{
-	if(fogs[n].selected)
-		fogs[n].selected = 0;
-	else
-		fogs[n].selected = 1;
-}
-
 void ARX_FOGS_KillByIndex(long num)
 {
 	if(num >= 0 && num < MAX_FOG) {

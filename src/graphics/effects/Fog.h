@@ -56,7 +56,6 @@ long ARX_FOGS_Count();
 long ARX_FOGS_GetFree();
 void ARX_FOGS_KillSelected();
 void ARX_FOGS_KillByIndex(long num);
-void ARX_FOGS_Select(long n);
 void ARX_FOGS_Clear();
 void ARX_FOGS_FirstInit();
 void ARX_FOGS_TimeReset();
