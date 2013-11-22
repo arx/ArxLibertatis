@@ -106,7 +106,6 @@ struct PARTICLE_DEF {
 struct FOG_DEF
 {
 	bool		exist;
-	long		selected;
 	Vec3f	pos;
 	Color3f	rgb;
 	float		size;
