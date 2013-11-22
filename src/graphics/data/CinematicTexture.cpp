@@ -323,7 +323,6 @@ CinematicBitmap* CreateCinematicBitmap(const res::path & path, int scale) {
 
 	num = 0;
 	h = bi->h;
-	float dy = -(float)(bi->h >> 1);
 
 	while(nby) {
 		float dx = -(float)(bi->w >> 1);
@@ -355,7 +354,6 @@ CinematicBitmap* CreateCinematicBitmap(const res::path & path, int scale) {
 			nbxx--;
 		}
 
-		dy += (float)h2;
 		h -= MaxH;
 		nby--;
 	}
