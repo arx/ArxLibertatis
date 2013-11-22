@@ -275,37 +275,3 @@ void EERIEPOLY_DrawWired(EERIEPOLY * ep, Color color) {
 
 	EERIEDRAWPRIM(Renderer::LineStrip, ltv, to + 1);
 }
-
-void EERIEPOLY_DrawNormals(EERIEPOLY * ep) {
-	TexturedVertex ltv[5];
-	ltv[0] = TexturedVertex(Vec3f(0, 0, 0.5), 1.f, 1, 1, Vec2f_ZERO);
-	ltv[1] = TexturedVertex(Vec3f(0, 0, 0.5), 1.f, 1, 1, Vec2f_X_AXIS);
-	ltv[2] = TexturedVertex(Vec3f(0, 0, 0.5), 1.f, 1, 1, Vec2f(1.f, 1.f));
-	ltv[3] = TexturedVertex(Vec3f(0, 0, 0.5), 1.f, 1, 1, Vec2f_Y_AXIS);
-	ltv[4] = TexturedVertex(Vec3f(0, 0, 0.5), 1.f, 1, 1, Vec2f_Y_AXIS);
-
-	TexturedVertex lv;
-	long to = (ep->type & POLY_QUAD) ? 4 : 3;
-
-	lv.p = ep->center;
-	EE_RTP(&lv,&ltv[0]);
-	lv.p += ep->norm * 10.f;
-	EE_RTP(&lv,&ltv[1]);
-	GRenderer->ResetTexture(0);
-	ltv[1].color=ltv[0].color=0xFFFF0000;
-
-	if ((ltv[1].p.z>0.f) && (ltv[0].p.z>0.f))
-		EERIEDRAWPRIM(Renderer::LineList, ltv, 3);
-
-	for(long h = 0; h < to; h++) {
-		lv.p = ep->v[h].p;
-		EE_RTP(&lv,&ltv[0]);
-		lv.p += ep->nrml[h] * 10.f;
-		EE_RTP(&lv,&ltv[1]);
-		GRenderer->ResetTexture(0);
-		ltv[1].color=ltv[0].color=Color::yellow.toBGR();
-
-		if ((ltv[1].p.z>0.f) &&  (ltv[0].p.z>0.f))
-			EERIEDRAWPRIM(Renderer::LineList, ltv, 3);
-	}
-}

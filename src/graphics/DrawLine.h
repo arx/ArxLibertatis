@@ -39,6 +39,5 @@ void EERIEDraw3DLine(const Vec3f & orgn, const Vec3f & dest, Color col, float zb
 void EERIEDraw3DLine(const Vec3f & orgn, const Vec3f & dest, Color color1, Color color2, float zbias = 0.f);
 
 void EERIEPOLY_DrawWired(EERIEPOLY * ep, Color col = Color::none);
-void EERIEPOLY_DrawNormals(EERIEPOLY * ep);
 
 #endif // ARX_GRAPHICS_DRAWLINE_H
