@@ -1167,15 +1167,18 @@ void Cedric_AnimateDrawEntityRender(EERIE_3DOBJ *eobj, const Vec3f & pos, Entity
 	}
 }
 
-static void CalcTranslation(ANIM_USE * animuse, Vec3f & ftr) {
-	if(!animuse || !animuse->cur_anim)
-		return;
-
+static Vec3f CalcTranslation(ANIM_USE * animuse) {
+	
+	if(!animuse || !animuse->cur_anim) {
+		return Vec3f_ZERO;
+	}
+	
 	EERIE_ANIM	*eanim = animuse->cur_anim->anims[animuse->altidx_cur];
-
-	if(!eanim)
-		return;
-
+	
+	if(!eanim) {
+		return Vec3f_ZERO;
+	}
+	
 	//Avoiding impossible cases
 	if(animuse->fr < 0) {
 		animuse->fr = 0;
@@ -1185,16 +1188,16 @@ static void CalcTranslation(ANIM_USE * animuse, Vec3f & ftr) {
 		animuse->pour = 1.f;
 	}
 	animuse->pour = clamp(animuse->pour, 0.f, 1.f);
-
-
+	
 	// FRAME TRANSLATE : Gives the Virtual pos of Main Object
 	if(eanim->frames[animuse->fr].f_translate && !(animuse->flags & EA_STATICANIM)) {
-		EERIE_FRAME *sFrame = &eanim->frames[animuse->fr];
-		EERIE_FRAME *eFrame = &eanim->frames[animuse->fr+1];
-
+		EERIE_FRAME * sFrame = &eanim->frames[animuse->fr];
+		EERIE_FRAME * eFrame = &eanim->frames[animuse->fr+1];
 		// Linear interpolation of object translation (MOVE)
-		ftr = sFrame->translate + (eFrame->translate - sFrame->translate) * animuse->pour;
+		return sFrame->translate + (eFrame->translate - sFrame->translate) * animuse->pour;
 	}
+	
+	return Vec3f_ZERO;
 }
 
 static void StoreEntityMovement(Entity * io, Vec3f & ftr, float scale) {
@@ -1495,15 +1498,12 @@ void EERIEDrawAnimQuatUpdate(EERIE_3DOBJ *eobj, ANIM_USE * animlayer,const Angle
 		}
 	}
 
-	// Reset Frame Translate
-	Vec3f ftr = Vec3f_ZERO;
-
 	// Set scale and invisibility factors
 	// Scaling Value for this object (Movements will also be scaled)
 	float scale = (io) ? io->scale : 1.f;
 
 	// Only layer 0 controls movement
-	CalcTranslation(&animlayer[0], ftr);
+	Vec3f ftr = CalcTranslation(&animlayer[0]);
 
 
 	if(update_movement)
