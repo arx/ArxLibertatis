@@ -101,10 +101,6 @@ long ARX_FOGS_Count()
 	return count;
 }
 
-void ARX_FOGS_TimeReset()
-{
-}
-
 void AddPoisonFog(Vec3f * pos, float power) {
 	
 	int iDiv = 4 - config.video.levelOfDetail;

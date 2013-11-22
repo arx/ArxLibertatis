@@ -2858,7 +2858,6 @@ void ARX_GAME_Reset(long type) {
 		pParticleManager->Clear();
 
 	// Fogs
-	ARX_FOGS_TimeReset();
 	ARX_FOGS_Render();
 
 	// Anchors
