@@ -794,64 +794,6 @@ float my_CheckInPoly(float x, float y, float z, EERIEPOLY * mon_ep, EERIE_LIGHT 
 	return nb_shadowvertexinpoly / nb_totalvertexinpoly;
 }
 
-static void ARX_EERIE_LIGHT_Make(EERIEPOLY * ep, float * epr, float * epg, float * epb, EERIE_LIGHT * light)
-{
-	float	distance[4];	// distance from light to each vertex
-
-	if (ep->type & POLY_IGNORE)
-		return;
-
-	// number or vertices per face (3 or 4)
-	int nbvert = (ep->type & POLY_QUAD) ? 4 : 3;
-
-	// compute light - vertex distance
-	for(int i = 0; i < nbvert; i++) {
-		distance[i] = glm::distance(light->pos, ep->v[i].p);
-	}
-
-	for(int i = 0; i < nbvert; i++) {
-		// value of light intensity for a given vertex
-		float fRes = 1.0f;
-
-		if(distance[i] < light->fallend) {
-			//MODE_NORMALS
-			if(ModeLight & MODE_NORMALS) {
-				Vec3f vLight = glm::normalize(light->pos - ep->v[i].p); // vector (light to vertex)
-
-				fRes = glm::dot(vLight, ep->nrml[i]);
-
-				if(fRes < 0.0f)
-					fRes = 0.0f;
-			}
-
-			//MODE_RAYLAUNCH
-			if((ModeLight & MODE_RAYLAUNCH) && !(light->extras & EXTRAS_NOCASTED)) {
-				Vec3f orgn = light->pos, dest = ep->v[i].p, hit;
-
-				if(ModeLight & MODE_SMOOTH)
-					fRes *= my_CheckInPoly(ep->v[i].p.x, ep->v[i].p.y, ep->v[i].p.z, ep, light);
-				else
-					fRes *= Visible(&orgn, &dest, ep, &hit);
-			}
-
-			float fTemp1 = light->intensity * fRes * GLOBAL_LIGHT_FACTOR;
-
-			if(distance[i] > light->fallstart) {
-				float intensity = (light->falldiff - (distance[i] - light->fallstart)) * light->falldiffmul;
-				fTemp1 *= intensity;
-			}
-
-			float fr = light->rgb.r * fTemp1;
-			float fg = light->rgb.g * fTemp1;
-			float fb = light->rgb.b * fTemp1;
-
-			epr[i] += fr;
-			epg[i] += fg;
-			epb[i] += fb;
-		}
-	}
-}
-
 void EERIERemovePrecalcLights() {
 
 	for(size_t i = 0; i < MAX_LIGHTS; i++) {
