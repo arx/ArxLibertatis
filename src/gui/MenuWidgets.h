@@ -468,7 +468,6 @@ class CMenuSliderText: public CMenuElement {
 		void Render();
 		void RenderMouseOver();
 		void EmptyFunction();
-		void SetWidth(int width);
 		virtual void setEnabled(bool enable);
 };
 

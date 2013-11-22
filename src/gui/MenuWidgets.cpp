@@ -3834,24 +3834,6 @@ CMenuSliderText::~CMenuSliderText() {
 	}
 }
 
-void CMenuSliderText::SetWidth(int _iWidth) {
-	
-	rZone.right  = max(rZone.right, rZone.left +  _iWidth);
-	pRightButton->SetPos(rZone.right - pRightButton->GetWidth(), pRightButton->rZone.top);
-
-	int dx=rZone.right-rZone.left-pLeftButton->GetWidth()-pRightButton->GetWidth();
-	//on recentre tout
-	vector<CMenuElementText*>::iterator it;
-
-	for(it = vText.begin(); it < vText.end(); ++it) {
-		CMenuElementText *pMenuElementText=*it;
-		Vec2i textSize = pMenuElementText->GetTextSize();
-
-		int dxx=(dx-textSize.x)>>1;
-		pMenuElementText->SetPos(static_cast<float>(pLeftButton->rZone.right + dxx), static_cast<float>(rZone.top));
-	}
-}
-
 void CMenuSliderText::AddText(CMenuElementText *_pText) {
 	
 	_pText->setEnabled(enabled);
