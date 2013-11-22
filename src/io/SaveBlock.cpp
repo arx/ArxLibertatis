@@ -182,6 +182,11 @@ char * SaveBlock::File::loadData(std::istream & handle, size_t & size, const std
 	LogDebug("Loading " << name << ' ' << storedSize << "b in " << chunks.size() << " chunks, "
 	         << compressionName() << " -> " << (int)uncompressedSize << "b");
 	
+	if(storedSize == 0) {
+		size = 0;
+		return NULL;
+	}
+	
 	char * buf = (char*)malloc(storedSize);
 	char * p = buf;
 	
