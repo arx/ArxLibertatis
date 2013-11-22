@@ -56,13 +56,13 @@ std::string unescapeString(const std::string & text) {
 	
 	std::string::const_iterator begin = text.begin(), end = text.end();
 	if(!text.empty() && text[0] == '"') {
-		begin++;
+		++begin;
 		if(begin != end && text[text.size() - 1] == '"') {
-			end--;
+			--end;
 		}
 	}
 	
-	for(std::string::const_iterator i = begin; i != end; i++) {
+	for(std::string::const_iterator i = begin; i != end; ++i) {
 		if(*i == '\\' && ++i == end) {
 			break;
 		}
