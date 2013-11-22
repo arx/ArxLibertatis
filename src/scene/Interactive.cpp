@@ -667,16 +667,6 @@ void PrepareIOTreatZone(long flag)
 	}
 }
 
-long GetNumNodeByName(char * name)
-{
-	for(long i = 0; i < nodes.nbmax; i++) {
-		if(nodes.nodes[i].exist && !strcmp(name, nodes.nodes[i].name))
-			return i;
-	}
-
-	return -1;
-}
-
 void ClearNode(long i, long first = 0) {
 	
 	nodes.nodes[i].exist = 0;

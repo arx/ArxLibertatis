@@ -143,7 +143,6 @@ bool ForceNPC_Above_Ground(Entity * io);
 void InitNodes(long nb);
 void ClearNode(long i, long spec);
 void ClearNodes();
-long GetNumNodeByName(char * name);
 void ReleaseNode();
 void RestoreInitialIOStatus();
 
