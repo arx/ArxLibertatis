@@ -6245,11 +6245,6 @@ void UpdateHealthManaGauges() {
 }
 
 void DrawHealthManaGauges() {
-	TexturedVertex v[4];
-	v[0] = TexturedVertex(Vec3f(0, 0, .001f), 1.f, Color::white.toBGR(), 1, Vec2f_ZERO);
-	v[1] = TexturedVertex(Vec3f(0, 0, .001f), 1.f, Color::white.toBGR(), 1, Vec2f_X_AXIS);
-	v[2] = TexturedVertex(Vec3f(0, 0, .001f), 1.f, Color::white.toBGR(), 1, Vec2f(1.f, 1.f));
-	v[3] = TexturedVertex(Vec3f(0, 0, .001f), 1.f, Color::white.toBGR(), 1, Vec2f_Y_AXIS);
 
 	ARX_INTERFACE_DrawItem(ITC.Get("empty_gauge_blue"), HealthGaugePos.x, HealthGaugePos.y, 0.f); //399
 
