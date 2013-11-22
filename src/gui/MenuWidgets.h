@@ -646,6 +646,8 @@ private:
 	
 	bool exited; //! Has the mouse exited the window
 	
+	float m_storedTime;
+	
 	// Cursor
 	TextureContainer	* pTex[8];
 	long				lFrameDiff;

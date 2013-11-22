@@ -4368,11 +4368,19 @@ void MenuCursor::Update() {
 	}
 	
 	iOldCoord[iNbOldCoord] = GInput->getMousePosAbs() + iDiff;
-	iNbOldCoord++;
 	
-	if(iNbOldCoord >= iMaxOldCoord) {
-		iNbOldCoord = iMaxOldCoord - 1;
-		memmove(iOldCoord, iOldCoord + 1, sizeof(Vec2s) * iNbOldCoord);
+	const float targetFPS = 59.f;
+	m_storedTime += arxtime.get_frame_delay();
+	if(m_storedTime > 1000.f / targetFPS) {
+		m_storedTime = 0;
+		
+		iNbOldCoord++;
+		
+		if(iNbOldCoord >= iMaxOldCoord) {
+			iNbOldCoord = iMaxOldCoord - 1;
+			memmove(iOldCoord, iOldCoord + 1, sizeof(Vec2s) * iNbOldCoord);
+		}
+		
 	}
 	
 }
