@@ -84,21 +84,6 @@ using std::max;
 //TODO(lubosz): extern globals :(
 extern Color ulBKGColor;
 
-struct OBJFX {
-	Vec3f pos;
-	Vec3f move;
-	Vec3f scale;
-	Color3f fade;
-	EERIE_3DOBJ * obj;
-	long special;
-	Anglef spe[8];
-	Anglef speinc[8];
-	unsigned long tim_start;
-	unsigned long duration;
-	bool exist;
-	long dynlight;
-};
-
 static const size_t MAX_PARTICLES = 2200;
 static long ParticleCount = 0;
 static PARTICLE_DEF particle[MAX_PARTICLES];
