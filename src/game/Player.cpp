@@ -2617,20 +2617,6 @@ float GetPlayerStealth() {
 }
 
 /*!
- * \brief Teleport player to any poly
- */
-void ARX_PLAYER_GotoAnyPoly() {
-	for(long j = 0; j < ACTIVEBKG->Zsize; j++) {
-		for(long i = 0; i < ACTIVEBKG->Xsize; i++) {
-			EERIE_BKG_INFO * eg = &ACTIVEBKG->Backg[i + j * ACTIVEBKG->Xsize];
-			if(eg->nbpoly) {
-				player.pos = moveto = eg->polydata[0].center + player.baseOffset();
-			}
-		}
-	}
-}
-
-/*!
  * \brief Force Player to standard stance
  * \param val
  */
