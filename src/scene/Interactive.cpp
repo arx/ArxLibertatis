@@ -1750,32 +1750,6 @@ static Entity * AddMarker(const res::path & classPath, EntityInstance instance) 
 	return io;
 }
 
-#ifdef BUILD_EDITOR
-
-//*************************************************************************************
-// Delete All Selected IOs
-//*************************************************************************************
-void ARX_INTERACTIVE_DeleteByIndex(long i, DeleteByIndexFlags flag) {
-	
-	if(!ValidIONum(i) || i == 0) {
-		return;
-	}
-	
-	//Must KILL dir...
-	if(!(flag & FLAG_DONTKILLDIR) && entities[i]->scriptload == 0 && entities[i]->ident > 0) {
-		
-		fs::path dir = fs::paths.user / entities[i]->instancePath().string();
-		
-		if(fs::is_directory(dir) && !fs::remove_all(dir)) {
-			LogError << "Could not remove directory " << dir;
-		}
-	}
-	
-	delete entities[i];
-}
-
-#endif // BUILD_EDITOR
-
 IO_NPCDATA::IO_NPCDATA() {
 	
 	life = maxlife = 20.f;

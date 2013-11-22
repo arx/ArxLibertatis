@@ -109,7 +109,6 @@ extern ARX_NODES nodes;
 void ARX_INTERACTIVE_TWEAK_Icon(Entity * io, const res::path & s1);
 void ARX_INTERACTIVE_DestroyDynamicInfo(Entity * io);
 void ARX_INTERACTIVE_HideGore(Entity * io, long flag = 0);
-void ARX_INTERACTIVE_DeleteByIndex(long i, DeleteByIndexFlags flag = 0);
 bool ARX_INTERACTIVE_Attach(long n_source, long n_target, const std::string & ap_source, const std::string & ap_target);
 void ARX_INTERACTIVE_Detach(long n_source, long n_target);
 void ARX_INTERACTIVE_Show_Hide_1st(Entity * io, long state);
