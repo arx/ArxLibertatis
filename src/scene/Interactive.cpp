@@ -1793,20 +1793,6 @@ void ARX_INTERACTIVE_DeleteByIndex(long i, DeleteByIndexFlags flag) {
 	delete entities[i];
 }
 
-// Snaps to ground all selected IOs
-void GroundSnapSelectedIO() {
-	for(size_t i = 1; i < entities.size(); i++) {
-		if(entities[i] != NULL && false /* is selected */) {
-			Entity * io = entities[i];
-			float ay;
-			EERIEPOLY * ep = CheckInPoly(io->pos.x, io->pos.y + player.baseHeight(), io->pos.z);
-			if(ep && GetTruePolyY(ep, &io->pos, &ay)) {
-				io->initpos.y = io->pos.y = ay;
-			}
-		}
-	}
-}
-
 #endif // BUILD_EDITOR
 
 IO_NPCDATA::IO_NPCDATA() {

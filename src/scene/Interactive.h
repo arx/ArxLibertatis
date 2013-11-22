@@ -165,7 +165,6 @@ void SelectIO(Entity * io);
 void UnSelectIO(Entity * io);
 void RotateSelectedIO(Anglef * op);
 void TranslateSelectedIO(Vec3f * op);
-void GroundSnapSelectedIO();
 void DeleteSelectedIO();
 void ResetSelectedIORot();
 #endif
