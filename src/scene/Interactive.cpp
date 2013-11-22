@@ -349,7 +349,7 @@ void ARX_INTERACTIVE_HideGore(Entity * io, long flag)
 			//Hide Gore Polys...
 			if(io->obj->facelist[nn].texid == gorenum)
 				io->obj->facelist[nn].facetype |= POLY_HIDE;
-			else if(!flag & 1) //TODO this looks like a broken flag check
+			else if(!flag)
 				io->obj->facelist[nn].facetype &= ~POLY_HIDE;
 		}
 	}
