@@ -251,7 +251,7 @@ bool SaveGameList::quicksave(const Image & thumbnail) {
 	size_t nfound = 0;
 	
 	// Find the oldest quicksave.
-	for(iterator i = begin(); i != end(); i++) {
+	for(iterator i = begin(); i != end(); ++i) {
 		if(i->quicksave) {
 			nfound++;
 			if(i->stime < time) {
