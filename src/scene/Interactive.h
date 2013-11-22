@@ -159,7 +159,6 @@ void TranslateSelectedNodes(Vec3f * trans);
 void ClearSelectedNodes();
 bool ExistNodeName(char * name);
 void LinkNodeToNode(long i, long j);
-void UnLinkNodeFromNode(long i, long j);
 long CountNodes();
 void RestoreNodeNumbers();
 long GetNumNodeByName(char * name);
