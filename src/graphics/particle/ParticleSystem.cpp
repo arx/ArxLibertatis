@@ -317,7 +317,6 @@ void ParticleSystem::SetParticleParams(Particle * pP) {
 	float fAngleX = rnd() * fParticleAngle; //*0.5f;
  
 	Vec3f vv1, vvz;
-	vv1 = p3ParticleDirection;
 	
 	// ici modifs ----------------------------------
 	
