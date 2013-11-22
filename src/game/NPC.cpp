@@ -2545,7 +2545,6 @@ static void ManageNPCMovement(Entity * io)
 				|| ause0->cur_anim == alist[ANIM_WALK_SNEAK]
 				|| ause0->cur_anim == alist[ANIM_FIGHT_WALK_FORWARD]
 				|| ause0->cur_anim == alist[ANIM_RUN]
-				|| ause0->cur_anim == alist[ANIM_RUN] //TODO copy-paste error or missing check ?
 				|| ause0->cur_anim == alist[ANIM_FIGHT_STRAFE_LEFT]
 				|| ause0->cur_anim == alist[ANIM_FIGHT_STRAFE_RIGHT]
 				|| ause0->cur_anim == alist[ANIM_FIGHT_WALK_BACKWARD]
