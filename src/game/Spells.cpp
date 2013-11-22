@@ -1541,7 +1541,6 @@ static void ARX_SPELLS_AnalyseSYMBOL() {
 				ApplySPuw();
 
 			goto failed; 
-		break;
 		case 161:
 		case 1621:
 		case 1261: {
@@ -1563,7 +1562,6 @@ static void ARX_SPELLS_AnalyseSYMBOL() {
 			}
 
 			goto failed;
-			break;
 		}
 		case 83614:
 		case 8361:
@@ -1597,7 +1595,6 @@ static void ARX_SPELLS_AnalyseSYMBOL() {
 			}
 
 			goto failed;
-			break;
 		}
 		case 83692:
 		case 823982:
@@ -1624,7 +1621,6 @@ static void ARX_SPELLS_AnalyseSYMBOL() {
 			}
 
 			goto failed;
-			break;
 		}
 		case 98324:
 		case 92324:
@@ -1652,7 +1648,6 @@ static void ARX_SPELLS_AnalyseSYMBOL() {
 				cur_sm++;
 
 			goto failed;
-			break;
 		}
 		case 3249:
 		case 2349:
@@ -1667,7 +1662,6 @@ static void ARX_SPELLS_AnalyseSYMBOL() {
 			}
 
 			goto failed;
-			break;
 		}
 		case 26: {
 			if(cur_pnux == 1)
@@ -1679,7 +1673,6 @@ static void ARX_SPELLS_AnalyseSYMBOL() {
 			}
 
 			goto failed;
-			break;
 		}
 		case 9232187:
 		case 93187:
@@ -1696,7 +1689,6 @@ static void ARX_SPELLS_AnalyseSYMBOL() {
 				cur_sos++;
 
 			goto failed;
-			break;
 		}
 		case 82313:
 		case 8343:
@@ -1713,7 +1705,6 @@ static void ARX_SPELLS_AnalyseSYMBOL() {
 				cur_rf = 1;
 
 			goto failed;
-			break;
 		}
 		case 86: {
 			if(cur_rf == 2) {
@@ -1723,7 +1714,6 @@ static void ARX_SPELLS_AnalyseSYMBOL() {
 			}
 
 			goto failed;
-			break;
 		}
 		case 626262: {
 			passwall++;
@@ -1745,7 +1735,6 @@ static void ARX_SPELLS_AnalyseSYMBOL() {
 
 			ARX_EQUIPMENT_RecreatePlayerMesh();
 			goto failed;
-			break;
 		}
 		default: {
 		failed:
