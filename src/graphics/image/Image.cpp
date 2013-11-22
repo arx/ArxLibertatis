@@ -1091,14 +1091,6 @@ void FlipDXT5(unsigned char * data, unsigned int count) {
 	}
 }
 
-void Flip3dc(unsigned char * data, unsigned int count) {
-	for(unsigned int i = 0; i < count; ++i) {
-		FlipComplexAlphaBlock(data);
-		FlipComplexAlphaBlock(data + 8);
-		data += 16; // Advance to next block
-	}
-}
-
 bool Image::save(const fs::path & filename) const {
 	
 	if(mFormat < 0 || mFormat >= Format_Unknown) {
