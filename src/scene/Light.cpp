@@ -885,40 +885,6 @@ void EERIE_LIGHT_Apply(EERIEPOLY * ep) {
 	}
 }
 
-void EERIEPrecalcLights(long minx, long minz, long maxx, long maxz)
-{
-	minx = clamp(minx, 0, ACTIVEBKG->Xsize - 1);
-	maxx = clamp(maxx, 0, ACTIVEBKG->Xsize - 1);
-	minz = clamp(minz, 0, ACTIVEBKG->Zsize - 1);
-	maxz = clamp(maxz, 0, ACTIVEBKG->Zsize - 1);
-
-	for(size_t i = 0; i < MAX_LIGHTS; i++) {
-		if(GLight[i]) {
-			if((GLight[i]->extras & EXTRAS_SEMIDYNAMIC)) {
-				GLight[i]->treat = 0;
-			} else if (!GLight[i]->treat) {
-				GLight[i]->treat = 1;
-			}
-			RecalcLight(GLight[i]);
-		}
-	}
-
-	for(long j = minz; j <= maxz; j++) {
-		for(long i = minx; i <= maxx; i++) {
-			EERIE_BKG_INFO *eg = &ACTIVEBKG->Backg[i+j*ACTIVEBKG->Xsize];
-
-			for(long k = 0; k < eg->nbpoly; k++) {
-				EERIEPOLY * ep = &eg->polydata[k];
-
-				if(ep) {
-					ep->type &= ~POLY_IGNORE;
-					EERIE_LIGHT_Apply(ep);
-				}
-			}
-		}
-	}
-}
-
 void EERIERemovePrecalcLights() {
 
 	for(size_t i = 0; i < MAX_LIGHTS; i++) {
