@@ -849,7 +849,7 @@ long ARX_SOUND_PlayCinematic(const res::path & name, bool isSpeech) {
 	audio::Channel channel;
 	channel.mixer = ARX_SOUND_MixerGameSpeech;
 	channel.flags = FLAG_VOLUME | FLAG_AUTOFREE | FLAG_POSITION | FLAG_FALLOFF
-	                | FLAG_REVERBERATION | FLAG_POSITION;
+	                | FLAG_REVERBERATION;
 	channel.volume = 1.0f;
 	channel.falloff.start = ARX_SOUND_DEFAULT_FALLSTART;
 	channel.falloff.end = ARX_SOUND_DEFAULT_FALLEND;
