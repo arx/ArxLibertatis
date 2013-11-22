@@ -730,19 +730,6 @@ long CountNodes() {
 	return count;
 }
 
-void AddLink(long i, long j)
-{
-	if(!nodes.nodes[i].exist || !nodes.nodes[j].exist)
-		return;
-
-	for(size_t k = 0; k < MAX_LINKS; k++) {
-		if(nodes.nodes[i].link[k] == -1) {
-			nodes.nodes[i].link[k] = j;
-			return;
-		}
-	}
-}
-
 void RemoveLink(long i, long j)
 {
 	if(!nodes.nodes[i].exist || !nodes.nodes[j].exist)
