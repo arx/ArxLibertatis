@@ -1240,10 +1240,7 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoftRender(long room_num) {
 
 		SMY_ARXMAT & roomMat = pTexCurr->tMatRoom[room_num];
 
-		if(ViewMode & VIEWMODE_FLAT)
-			GRenderer->ResetTexture(0);
-		else
-			GRenderer->SetTexture(0, pTexCurr);
+		GRenderer->SetTexture(0, pTexCurr);
 
 		if(roomMat.count[SMY_ARXMAT::Opaque]) {
 			if (pTexCurr->userflags & POLY_METAL)
