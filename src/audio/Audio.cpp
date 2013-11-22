@@ -453,23 +453,6 @@ aalError setMixerParent(MixerId m_id, MixerId pm_id) {
 	return _mixer[m_id]->setParent(_mixer[pm_id]);
 }
 
-// Mixer status
-
-aalError getMixerVolume(MixerId m_id, float * volume) {
-	
-	*volume = DEFAULT_VOLUME;
-	
-	AAL_ENTRY
-	
-	if(!_mixer.isValid(m_id)) {
-		return AAL_ERROR_HANDLE;
-	}
-	
-	*volume = _mixer[m_id]->getVolume();
-	
-	return AAL_OK;
-}
-
 // Mixer control 
 
 aalError mixerStop(MixerId m_id) {

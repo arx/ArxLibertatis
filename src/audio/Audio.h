@@ -107,8 +107,6 @@ aalError setListenerEnvironment(EnvId environment_id);
 aalError setMixerVolume(MixerId mixer_id, float volume);
 aalError setMixerParent(MixerId mixer_id, MixerId parent_mixer_id);
 
-aalError getMixerVolume(MixerId mixer_id, float * volume);
-
 aalError mixerStop(MixerId mixer_id);
 aalError mixerPause(MixerId mixer_id);
 aalError mixerResume(MixerId mixer_id);

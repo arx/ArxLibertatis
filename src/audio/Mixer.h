@@ -58,7 +58,6 @@ public:
 	aalError setVolume(float volume);
 	aalError setParent(const Mixer * mixer);
 	
-	inline float getVolume() const { return volume; }
 	inline bool isPaused() const { return paused; }
 	inline float getFinalVolume() const { return finalVolume; }
 	
