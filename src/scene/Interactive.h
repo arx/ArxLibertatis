@@ -106,7 +106,6 @@ DECLARE_FLAGS_OPERATORS(DeleteByIndexFlags)
 
 extern ARX_NODES nodes;
 
-void ARX_INTERACTIVE_UnfreezeAll();
 void ARX_INTERACTIVE_TWEAK_Icon(Entity * io, const res::path & s1);
 void ARX_INTERACTIVE_DestroyDynamicInfo(Entity * io);
 void ARX_INTERACTIVE_HideGore(Entity * io, long flag = 0);

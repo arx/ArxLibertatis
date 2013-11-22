@@ -2745,14 +2745,6 @@ void UpdateCameras() {
 	}
 }
 
-void ARX_INTERACTIVE_UnfreezeAll() {
-	for(size_t i = 0; i < entities.size(); i++) {
-		if(entities[i]) {
-			entities[i]->ioflags &= ~IO_FREEZESCRIPT;
-		}
-	}
-}
-
 void UpdateIOInvisibility(Entity * io)
 {
 	if(io && io->invisibility <= 1.f) {
