@@ -720,19 +720,6 @@ void ClearNodes()
 	first = 0;
 }
 
-bool IsLinkedNode(long i, long j)
-{
-	if(!nodes.nodes[i].exist || !nodes.nodes[j].exist)
-		return false;
-
-	for(size_t k = 0; k < MAX_LINKS; k++) {
-		if(nodes.nodes[i].link[k] == j)
-			return true;
-	}
-
-	return false;
-}
-
 long CountNodes() {
 	long count = 0;
 	for(long i = 0; i < nodes.nbmax; i++) {
