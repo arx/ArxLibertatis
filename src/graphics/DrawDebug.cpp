@@ -477,32 +477,6 @@ static void drawDebugEntities() {
 	
 }
 
-void RenderAllNodes() {
-
-	Anglef angle(0.f, 0.f, 0.f);
-	Vec3f scale(1.f, 1.f, 1.f);
-
-	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-
-	for(long i=0; i<nodes.nbmax; i++) {
-		if (nodes.nodes[i].exist) {
-			DrawEERIEObjEx(g_nodeObject, &angle, &nodes.nodes[i].pos, &scale, Color3f::white);
-
-			if(g_nodeObject->vertexlist[g_nodeObject->origin].vert.p.z > 0.f && g_nodeObject->vertexlist[g_nodeObject->origin].vert.p.z<0.9f) {
-				float xx = g_nodeObject->vertexlist[g_nodeObject->origin].vert.p.x - 40.f;
-				float yy = g_nodeObject->vertexlist[g_nodeObject->origin].vert.p.y - 40.f;
-				ARX_TEXT_Draw(hFontDebug, xx, yy, nodes.nodes[i].name, Color::yellow); //font
-			}
-
-			for(size_t j = 0; j < MAX_LINKS; j++) {
-				if(nodes.nodes[i].link[j]!=-1) {
-					EERIEDrawTrue3DLine(nodes.nodes[i].pos, nodes.nodes[nodes.nodes[i].link[j]].pos, Color::green);
-				}
-			}
-		}
-	}
-}
-
 void drawDebugRender() {
 	
 	if(g_debugView == DebugView_None) {
