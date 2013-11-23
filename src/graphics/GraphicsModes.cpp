@@ -129,7 +129,7 @@ void ARX_GLOBALMODS_Apply() {
 
 	float fZclipp = ((((float)config.video.fogDistance) * 1.2f) * (DEFAULT_ZCLIP - DEFAULT_MINZCLIP) / 10.f) + DEFAULT_MINZCLIP;
 	fZclipp += (ACTIVECAM->focal - 310.f) * 5.f;
-	SetCameraDepth(*ACTIVECAM, min(current.zclip, fZclipp));
+	ACTIVECAM->cdepth = min(current.zclip, fZclipp);
 
 	ulBKGColor = current.depthcolor.to<u8>();
 }

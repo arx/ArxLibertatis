@@ -497,9 +497,9 @@ void InitializeDanae() {
 	subj.center = subj.clip.center();
 	subj.focal = BASE_FOCAL;
 	subj.bkgcolor = Color::none;
+	subj.cdepth = 2100.f;
 	
 	SetActiveCamera(&subj);
-	SetCameraDepth(subj, 2100.f);
 
 	bookcam = subj;
 	raycam = subj;

@@ -98,7 +98,6 @@ extern MASTER_CAMERA_STRUCT MasterCamera;
 
 void SP_PrepareCamera(EERIE_CAMERA * cam);
 void PrepareCamera(EERIE_CAMERA *cam);
-void SetCameraDepth(EERIE_CAMERA &cam, float depth);
 
 void SetActiveCamera(EERIE_CAMERA* cam);
 

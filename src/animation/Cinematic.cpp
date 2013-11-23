@@ -153,8 +153,7 @@ void Cinematic::OneTimeSceneReInit() {
 	m_camera.center = m_camera.clip.center();
 	m_camera.focal = 350.f;
 	m_camera.bkgcolor = Color::none;
-
-	SetCameraDepth(m_camera, 2500.f);
+	m_camera.cdepth = 2500.f;
 	
 	numbitmap = -1;
 	numbitmapsuiv = -1;
