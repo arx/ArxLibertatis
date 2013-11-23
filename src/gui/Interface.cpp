@@ -2488,46 +2488,29 @@ void ArxGame::managePlayerControls()
 		SHOW_INGAME_MINIMAP = !SHOW_INGAME_MINIMAP;
 	}
 
-	if (GInput->actionNowPressed(CONTROLS_CUST_PREVIOUS))
-	{
-		if (eMouseState == MOUSE_IN_BOOK)
-		{
-			if (player.Interface & INTER_MAP)
-			{
+	if(GInput->actionNowPressed(CONTROLS_CUST_PREVIOUS)) {
+		if(eMouseState == MOUSE_IN_BOOK) {
+			if(player.Interface & INTER_MAP) {
 				openBookPage(prevBookPage());
 			}
-		}
-		else if (InPlayerInventoryPos(&DANAEMouse))
-		{
-			if (!PLAYER_INTERFACE_HIDE_COUNT)
-			{
-				if ((player.Interface & INTER_INVENTORY))
-				{
-					if (player.bag)
-					{
-						if (sActiveInventory > 0)
-						{
+		} else if(InPlayerInventoryPos(&DANAEMouse)) {
+			if(!PLAYER_INTERFACE_HIDE_COUNT) {
+				if((player.Interface & INTER_INVENTORY)) {
+					if(player.bag) {
+						if(sActiveInventory > 0) {
 							ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
 							sActiveInventory --;
 						}
 					}
 				}
 			}
-		}
-		else if (player.Interface & INTER_MAP)
-		{
+		} else if(player.Interface & INTER_MAP) {
 			openBookPage(prevBookPage());
-		}
-		else
-		{
-			if (!PLAYER_INTERFACE_HIDE_COUNT)
-			{
-				if ((player.Interface & INTER_INVENTORY))
-				{
-					if (player.bag)
-					{
-						if (sActiveInventory > 0)
-						{
+		} else {
+			if(!PLAYER_INTERFACE_HIDE_COUNT) {
+				if((player.Interface & INTER_INVENTORY)) {
+					if(player.bag) {
+						if(sActiveInventory > 0) {
 							ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
 							sActiveInventory --;
 						}
@@ -2537,46 +2520,29 @@ void ArxGame::managePlayerControls()
 		}
 	}
 
-	if (GInput->actionNowPressed(CONTROLS_CUST_NEXT))
-	{
-		if (eMouseState == MOUSE_IN_BOOK)
-		{
-			if (player.Interface & INTER_MAP)
-			{
+	if(GInput->actionNowPressed(CONTROLS_CUST_NEXT)) {
+		if(eMouseState == MOUSE_IN_BOOK) {
+			if(player.Interface & INTER_MAP) {
 				openBookPage(nextBookPage());
 			}
-		}
-		else if (InPlayerInventoryPos(&DANAEMouse))
-		{
-			if (!PLAYER_INTERFACE_HIDE_COUNT)
-			{
-				if ((player.Interface & INTER_INVENTORY))
-				{
-					if (player.bag)
-					{
-						if (sActiveInventory < player.bag - 1)
-						{
+		} else if(InPlayerInventoryPos(&DANAEMouse)) {
+			if(!PLAYER_INTERFACE_HIDE_COUNT) {
+				if((player.Interface & INTER_INVENTORY)) {
+					if(player.bag) {
+						if(sActiveInventory < player.bag - 1) {
 							ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
 							sActiveInventory ++;
 						}
 					}
 				}
 			}
-		}
-		else if (player.Interface & INTER_MAP)
-		{
+		} else if(player.Interface & INTER_MAP) {
 			openBookPage(nextBookPage());
-		}
-		else
-		{
-			if (!PLAYER_INTERFACE_HIDE_COUNT)
-			{
-				if ((player.Interface & INTER_INVENTORY))
-				{
-					if (player.bag)
-					{
-						if (sActiveInventory < player.bag - 1)
-						{
+		} else {
+			if(!PLAYER_INTERFACE_HIDE_COUNT) {
+				if((player.Interface & INTER_INVENTORY)) {
+					if(player.bag) {
+						if(sActiveInventory < player.bag - 1) {
 							ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
 							sActiveInventory ++;
 						}
