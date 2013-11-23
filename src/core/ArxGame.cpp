@@ -1141,14 +1141,12 @@ void ArxGame::updateActiveCamera() {
 		cam = &subj;
 	}
 
+	ManageQuakeFX(cam);
+
 	SetActiveCamera(cam);
+	PrepareCamera(cam);
 
-	ManageQuakeFX(ACTIVECAM);
-
-	// Prepare ActiveCamera
-	PrepareCamera(ACTIVECAM);
 	// Recenter Viewport depending on Resolution
-
 	ACTIVECAM->center = Vec2i(g_size.center().x, g_size.center().y);
 	ACTIVECAM->orgTrans.mod = Vec2f(ACTIVECAM->center);
 }
