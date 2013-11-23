@@ -1120,6 +1120,8 @@ void ArxGame::handleCameraController() {
 
 void ArxGame::updateActiveCamera() {
 
+	EERIE_CAMERA * cam = NULL;
+
 	if(MasterCamera.exist) {
 		if(MasterCamera.exist & 2) {
 			MasterCamera.exist &= ~2;
@@ -1127,17 +1129,17 @@ void ArxGame::updateActiveCamera() {
 			MasterCamera.io=MasterCamera.want_io;
 		}
 
-		EERIE_CAMERA * cam = &MasterCamera.io->_camdata->cam;
+		cam = &MasterCamera.io->_camdata->cam;
 
 		if(cam->focal < 100.f)
 			cam->focal = 350.f;
 
-		SetActiveCamera(cam);
 		EXTERNALVIEW = true;
 	} else {
-		// Set active camera for this viewport
-		SetActiveCamera(&subj);
+		cam = &subj;
 	}
+
+	SetActiveCamera(cam);
 
 	ManageQuakeFX(ACTIVECAM);
 
