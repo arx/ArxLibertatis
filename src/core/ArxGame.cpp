@@ -98,6 +98,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/texture/TextureStage.h"
 
 #include "gui/Cursor.h"
+#include "gui/DebugHud.h"
 #include "gui/Interface.h"
 #include "gui/Menu.h"
 #include "gui/MenuWidgets.h"

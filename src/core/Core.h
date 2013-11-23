@@ -137,12 +137,6 @@ void DANAE_Manage_Cinematic();
 void DanaeRestoreFullScreen();
 void FirstFrameHandling();
 
-void ShowTestText();
-void ShowInfoText();
-void ShowFPS();
-void ShowFpsGraph();
-void ShowDebugToggles();
-
 void DrawImproveVisionInterface();
 
 void ManageFade();
