@@ -49,6 +49,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/Entity.h"
 #include "game/EntityManager.h"
 #include "game/Camera.h"
+#include "game/effect/Quake.h"
 #include "graphics/Math.h"
 #include "graphics/data/Mesh.h"
 #include "gui/Interface.h"

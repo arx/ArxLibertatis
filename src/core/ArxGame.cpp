@@ -77,6 +77,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/Spells.h"
 #include "game/spell/FlyingEye.h"
 #include "game/spell/Cheat.h"
+#include "game/effect/Quake.h"
 
 #include "graphics/BaseGraphicsTypes.h"
 #include "graphics/Color.h"

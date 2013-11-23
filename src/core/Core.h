@@ -121,19 +121,9 @@ extern std::string WILL_LAUNCH_CINE;
 extern long PLAY_LOADED_CINEMATIC;
 extern long CINE_PRELOAD;
 
-struct QUAKE_FX_STRUCT {
-	float intensity;
-	float frequency;
-	unsigned long start;
-	unsigned long duration;
-	long	flags;
-};
-extern QUAKE_FX_STRUCT QuakeFx;
-
 extern bool g_debugToggles[10];
 
 void SetEditMode(long ed, const bool stop_sound = true);
-void AddQuakeFX(float intensity, float duration, float period, long flags);
 
 void SendGameReadyMsg();
 void DanaeSwitchFullScreen();
@@ -156,7 +146,6 @@ void ShowDebugToggles();
 void DrawImproveVisionInterface();
 
 void ManageFade();
-void ManageQuakeFX(EERIE_CAMERA *cam);
 
 void ManageCombatModeAnimations();
 void ManageCombatModeAnimationsEND();

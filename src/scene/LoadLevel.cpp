@@ -100,7 +100,6 @@ extern float PROGRESS_BAR_COUNT;
 extern float PROGRESS_BAR_TOTAL;
 extern long DONT_ERASE_PLAYER;
 
-extern QUAKE_FX_STRUCT QuakeFx;
 extern bool bGToggleCombatModeWithKey;
 extern bool bGCroucheToggle;
 

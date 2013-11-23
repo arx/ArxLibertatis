@@ -72,6 +72,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/NPC.h"
 #include "game/spell/FlyingEye.h"
 #include "game/spell/Cheat.h"
+#include "game/effect/Quake.h"
 
 #include "gui/Menu.h"
 #include "gui/Text.h"
@@ -125,7 +126,7 @@ extern long		REQUEST_SPEECH_SKIP;
 extern long		CHANGE_LEVEL_ICON;
 extern long		DONT_ERASE_PLAYER;
 extern long		GLOBAL_MAGIC_MODE;
-extern QUAKE_FX_STRUCT QuakeFx;
+
 extern Entity * CAMERACONTROLLER;
 extern ParticleManager * pParticleManager;
 
@@ -2928,7 +2929,7 @@ void ARX_GAME_Reset(long type) {
 	player.jumpphase = NotJumping;
 	player.inzone = NULL;
 
-	QuakeFx.intensity = 0.f;
+	RemoveQuakeFX();
 	Project.improve = 0;
 
 	if(eyeball.exist) {

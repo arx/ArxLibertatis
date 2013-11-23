@@ -604,6 +604,7 @@ set(GAME_SOURCES
 	src/game/Spells.cpp
 	src/game/spell/FlyingEye.cpp
 	src/game/spell/Cheat.cpp
+	src/game/effect/Quake.cpp
 )
 
 set(GRAPHICS_SOURCES

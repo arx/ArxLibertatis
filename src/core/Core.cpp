@@ -86,6 +86,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/Spells.h"
 #include "game/spell/FlyingEye.h"
 #include "game/spell/Cheat.h"
+#include "game/effect/Quake.h"
 
 #include "gui/MenuPublic.h"
 #include "gui/Menu.h"
@@ -267,7 +268,6 @@ string WILLADDSPEECH;
 Vec2s STARTDRAG;
 Entity * COMBINE=NULL;
 
-QUAKE_FX_STRUCT QuakeFx;
 string LAST_FAILED_SEQUENCE = "none";
 // START - Information for Player Teleport between/in Levels-------------------------------------
 char TELEPORT_TO_LEVEL[64];
@@ -635,7 +635,7 @@ static bool initializeGame() {
 	ARX_CONVERSATION_FirstInit();
 	ARX_SPEECH_Init();
 	ARX_SPEECH_ClearAll();
-	QuakeFx.intensity=0.f;
+	RemoveQuakeFX();
 	
 	LogDebug("Launching DANAE");
 	
@@ -2511,64 +2511,6 @@ void DrawImproveVisionInterface() {
 	if(ombrignon) {
 		float mod = 0.6f + PULSATE * 0.35f;
 		EERIEDrawBitmap(g_size, 0.0001f, ombrignon, Color3f((0.5f+PULSATE*( 1.0f / 10 ))*mod,0.f,0.f).to<u8>());
-	}
-}
-
-void AddQuakeFX(float intensity,float duration,float period,long flags) {
-
-	if(QuakeFx.intensity > 0.f) {
-		QuakeFx.intensity += intensity;
-
-		QuakeFx.duration += (unsigned long)duration;
-		QuakeFx.frequency += period;
-		QuakeFx.frequency *= .5f;
-		QuakeFx.flags |= flags;
-
-		if(flags & 1)
-			ARX_SOUND_PlaySFX(SND_QUAKE, NULL, 1.0F - 0.5F * QuakeFx.intensity);
-	} else {
-		QuakeFx.intensity = intensity;
-
-		QuakeFx.start = checked_range_cast<unsigned long>(arxtime.get_frame_time());
-
-		QuakeFx.duration = (unsigned long)duration;
-		QuakeFx.frequency = period;
-		QuakeFx.flags = flags;
-
-		if(flags & 1)
-			ARX_SOUND_PlaySFX(SND_QUAKE, NULL, 1.0F - 0.5F * QuakeFx.intensity);
-	}
-
-	if(!(flags & 1)) {
-		if(QuakeFx.duration > 1500)
-			QuakeFx.duration = 1500;
-
-		if(QuakeFx.intensity > 220)
-			QuakeFx.intensity = 220;
-	}
-}
-
-void ManageQuakeFX(EERIE_CAMERA * cam) {
-	if(QuakeFx.intensity>0.f) {
-		float tim=(float)arxtime.get_frame_time()-(float)QuakeFx.start;
-
-		if(tim >= QuakeFx.duration) {
-			QuakeFx.intensity=0.f;
-			return;
-		}
-
-		float itmod=1.f-(tim/QuakeFx.duration);
-		float periodicity=EEsin((float)arxtime.get_frame_time()*QuakeFx.frequency*( 1.0f / 100 ));
-
-		if(periodicity > 0.5f && (QuakeFx.flags & 1))
-			ARX_SOUND_PlaySFX(SND_QUAKE, NULL, 1.0F - 0.5F * QuakeFx.intensity);
-
-		float truepower = periodicity * QuakeFx.intensity * itmod * 0.01f;
-		float halfpower = truepower * .5f;
-		cam->orgTrans.pos += randomVec(-halfpower, halfpower);
-		cam->angle.setYaw(cam->angle.getYaw() + rnd() * truepower - halfpower);
-		cam->angle.setPitch(cam->angle.getPitch() + rnd() * truepower - halfpower);
-		cam->angle.setRoll(cam->angle.getRoll() + rnd() * truepower - halfpower);
 	}
 }
 
