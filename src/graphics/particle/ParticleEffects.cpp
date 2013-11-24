@@ -1114,26 +1114,12 @@ void ARX_PARTICLES_Update(EERIE_CAMERA * cam)  {
 	long pcc = ParticleCount;
 	
 	for(size_t i = 0; i < MAX_PARTICLES && pcc > 0; i++) {
-		RenderMaterial mat;
-		
+
 		PARTICLE_DEF * part = &particle[i];
 		if(!part->exist) {
 			continue;
 		}
 
-		mat.setTexture(part->tc);
-		mat.setDepthTest(!(part->special & PARTICLE_NOZBUFFER));
-
-		if(part->special & NO_TRANS) {
-			mat.setBlendType(RenderMaterial::Opaque);
-		} else {
-			if((part->special & SUBSTRACT) && !(part->special & PARTICLE_SUB2)) {
-				mat.setBlendType(RenderMaterial::Subtractive);
-			} else {
-				mat.setBlendType(RenderMaterial::Additive);
-			}
-		}
-				
 		long framediff = part->timcreation + part->tolive - tim;
 		long framediff2 = tim - part->timcreation;
 		
@@ -1360,6 +1346,20 @@ void ARX_PARTICLES_Update(EERIE_CAMERA * cam)  {
 		}
 		
 		float siz = part->siz + part->scale.x * fd;
+
+		RenderMaterial mat;
+		mat.setTexture(tc);
+		mat.setDepthTest(!(part->special & PARTICLE_NOZBUFFER));
+
+		if(part->special & NO_TRANS) {
+			mat.setBlendType(RenderMaterial::Opaque);
+		} else {
+			if((part->special & SUBSTRACT) && !(part->special & PARTICLE_SUB2)) {
+				mat.setBlendType(RenderMaterial::Subtractive);
+			} else {
+				mat.setBlendType(RenderMaterial::Additive);
+			}
+		}
 		
 		if(part->special & ROTATING) {
 			if(!(part->type & PARTICLE_2D)) {
