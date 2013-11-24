@@ -130,13 +130,8 @@ RenderMaterial::RenderMaterial()
 
 bool RenderMaterial::operator<(const RenderMaterial & other) const {
 	// First sort by blend type
-	if(m_blendType < other.m_blendType) {
-		return true;
-	}
-
-	// Then texture
-	if(m_texture < other.m_texture) {
-		return true;
+	if(m_blendType != other.m_blendType) {
+		return m_blendType < other.m_blendType;
 	}
 
 	// Then depth test state
@@ -144,21 +139,27 @@ bool RenderMaterial::operator<(const RenderMaterial & other) const {
 		return m_depthTest;
 	}
 
+	// Then depth bias
+	if(m_depthBias != other.m_depthBias) {
+		return m_depthBias < other.m_depthBias;
+	}
+
+	// Then texture
+	if(m_texture != other.m_texture) {
+		return m_texture < other.m_texture;
+	}
+	
 	// Then cull mode
-	if(m_cullingMode < other.m_cullingMode) {
-		return true;
+	if(m_cullingMode != other.m_cullingMode) {
+		return m_cullingMode < other.m_cullingMode;
 	}
 
 	// Then wrap mode
-	if(m_wrapMode < other.m_wrapMode) {
-		return true;
-	}
+	if(m_wrapMode != other.m_wrapMode) {
+		return m_wrapMode < other.m_wrapMode;
+	}	
 
-	// Then depth bias
-	if(m_depthBias > other.m_depthBias) {
-		return true;
-	}
-
+	// Materials are equals...
 	return false;
 }
 
