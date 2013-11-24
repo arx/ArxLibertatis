@@ -61,6 +61,13 @@ void RenderBatcher::render() {
 			m_VertexBuffer->draw(Renderer::TriangleList, &it->second.front(), it->second.size());
 		}
 	}
+
+	GRenderer->ResetTexture(0);
+	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
+	GRenderer->SetDepthBias(0);
+	GRenderer->SetRenderState(Renderer::DepthTest, true);
+	GRenderer->SetCulling(Renderer::CullCCW);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 }
 
 void RenderBatcher::clear() {
