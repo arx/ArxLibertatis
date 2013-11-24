@@ -1282,7 +1282,7 @@ bool AttemptValidCylinderPos(EERIE_CYLINDER * cyl, Entity * io, CollisionFlags f
 
 	if(!(flags & CFLAG_ANCHOR_GENERATION)) {
 		
-		memcpy(&tmp, cyl, sizeof(EERIE_CYLINDER));
+		tmp = *cyl;
 
 		while(anything < 0.f) {
 			tmp.origin.y += anything;
@@ -1322,8 +1322,7 @@ bool AttemptValidCylinderPos(EERIE_CYLINDER * cyl, Entity * io, CollisionFlags f
 		}
 		
 		if(io && (flags & CFLAG_PLAYER) && anything < 0.f && (flags & CFLAG_JUST_TEST)) {
-			EERIE_CYLINDER tmpp;
-			memcpy(&tmpp, cyl, sizeof(EERIE_CYLINDER));
+			EERIE_CYLINDER tmpp = *cyl;
 			tmpp.radius *= 0.7f;
 
 			float tmp = CheckAnythingInCylinder(&tmpp, io, flags | CFLAG_JUST_TEST);
@@ -1359,8 +1358,7 @@ bool AttemptValidCylinderPos(EERIE_CYLINDER * cyl, Entity * io, CollisionFlags f
 					return false;
 				}
 
-				EERIE_CYLINDER tmpp;
-				memcpy(&tmpp, cyl, sizeof(EERIE_CYLINDER));
+				EERIE_CYLINDER tmpp = *cyl;
 				tmpp.radius *= 0.65f; 
 				float tmp = CheckAnythingInCylinder(&tmpp, io, flags | CFLAG_JUST_TEST);
 
@@ -1385,7 +1383,7 @@ bool AttemptValidCylinderPos(EERIE_CYLINDER * cyl, Entity * io, CollisionFlags f
 		return false;
 	}
 
-	memcpy(&tmp, cyl, sizeof(EERIE_CYLINDER));
+	tmp = *cyl;
 	tmp.origin.y += anything;
 	anything = CheckAnythingInCylinder(&tmp, io, flags);
 
@@ -1454,7 +1452,7 @@ bool ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, Entity * io, float MOVE_CYLIND
 		distance -= curmovedist;
 
 		// Store our cylinder desc into a test struct
-		memcpy(&test, ip, sizeof(IO_PHYSICS));
+		test = *ip;
 
 		// uses test struct to simulate movement.
 		vector2D.x = mvector.x * curmovedist;
@@ -1470,18 +1468,18 @@ bool ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, Entity * io, float MOVE_CYLIND
 
 		if(AttemptValidCylinderPos(&test.cyl,io,flags)) {
 			// Found without complication
-			memcpy(ip, &test, sizeof(IO_PHYSICS));
+			*ip = test;
 		} else {
 			//return false;
 			if(mvector.x == 0.f && mvector.z == 0.f)
 				return true;
 			
 			if(flags & CFLAG_CLIMBING) {
-				memcpy(&test.cyl, &ip->cyl, sizeof(EERIE_CYLINDER)); 
+				test.cyl = ip->cyl;
 				test.cyl.origin.y += mvector.y * curmovedist;
 
 				if(AttemptValidCylinderPos(&test.cyl, io, flags)) {
-					memcpy(ip,&test,sizeof(IO_PHYSICS)); 
+					*ip = test;
 					goto oki;
 				}
 			}
@@ -1508,7 +1506,7 @@ bool ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, Entity * io, float MOVE_CYLIND
 
 
 			while(rangle <= maxRANGLE) { //tries on the Right and Left sides
-				memcpy(&test.cyl, &ip->cyl, sizeof(EERIE_CYLINDER)); 
+				test.cyl = ip->cyl;
 				float t = radians(MAKEANGLE(rangle));
 				YRotatePoint(&mvector, &vecatt, EEcos(t), EEsin(t));
 				test.cyl.origin += vecatt * curmovedist;
@@ -1523,7 +1521,7 @@ bool ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, Entity * io, float MOVE_CYLIND
 
 				rangle += ANGLESTEPP;
 
-				memcpy(&test.cyl, &ip->cyl, sizeof(EERIE_CYLINDER)); 
+				test.cyl = ip->cyl;
 				t = radians(MAKEANGLE(langle));
 				YRotatePoint(&mvector, &vecatt, EEcos(t), EEsin(t));
 				test.cyl.origin += vecatt * curmovedist;
