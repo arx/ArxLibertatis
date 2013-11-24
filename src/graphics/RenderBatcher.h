@@ -93,6 +93,8 @@ public:
 	//! Free all memory pools
 	void reset();
 
+	u32 getMemoryUsed() const;
+
 	void initialize();
 	void shutdown();
 
@@ -100,14 +102,9 @@ public:
 	
 private:
 	typedef std::vector<TexturedVertex> VertexBatch;
-	typedef std::map<RenderMaterial, VertexBatch*> Batches;
-	typedef std::list<VertexBatch*> BufferPool; // Avoid heavy reallocations on each frame
-
-	VertexBatch* requestBuffer();
-	void releaseBuffer(VertexBatch* pVertices);
+	typedef std::map<RenderMaterial, VertexBatch> Batches;
 	
 private:
-	BufferPool m_BufferPool;
 	Batches m_BatchedSprites;
 	CircularVertexBuffer<TexturedVertex> * m_VertexBuffer;
 };

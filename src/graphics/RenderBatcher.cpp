@@ -30,57 +30,57 @@ RenderBatcher::~RenderBatcher() {
 	reset();
 }
 
-void RenderBatcher::add(const RenderMaterial& mat, const TexturedVertex (&vertices)[3]) {
-	VertexBatch*& pVerts = m_BatchedSprites[mat];
-	if(!pVerts)
-		pVerts = requestBuffer();
+void RenderBatcher::add(const RenderMaterial& mat, const TexturedVertex (&tri)[3]) {
+	VertexBatch& batch = m_BatchedSprites[mat];
 
-	pVerts->reserve(pVerts->size() + 3);
+	batch.reserve(batch.size() + 3);
 		
-	pVerts->push_back(vertices[0]);
-	pVerts->push_back(vertices[1]);
-	pVerts->push_back(vertices[2]);
+	batch.push_back(tri[0]);
+	batch.push_back(tri[1]);
+	batch.push_back(tri[2]);
 }
 
 void RenderBatcher::add(const RenderMaterial& mat, const TexturedQuad& sprite) {
-	VertexBatch*& pVerts = m_BatchedSprites[mat];
-	if(!pVerts)
-		pVerts = requestBuffer();
+	VertexBatch& batch = m_BatchedSprites[mat];
 
-	pVerts->reserve(pVerts->size() + 6);
+	batch.reserve(batch.size() + 6);
 		
-	pVerts->push_back(sprite.v[0]);
-	pVerts->push_back(sprite.v[1]);
-	pVerts->push_back(sprite.v[2]);
+	batch.push_back(sprite.v[0]);
+	batch.push_back(sprite.v[1]);
+	batch.push_back(sprite.v[2]);
 
-	pVerts->push_back(sprite.v[0]);
-	pVerts->push_back(sprite.v[2]);
-	pVerts->push_back(sprite.v[3]);
+	batch.push_back(sprite.v[0]);
+	batch.push_back(sprite.v[2]);
+	batch.push_back(sprite.v[3]);
 }
 
 void RenderBatcher::render() {
 	for(Batches::const_iterator it = m_BatchedSprites.begin(); it != m_BatchedSprites.end(); ++it) {
-		if(!it->second->empty()) {
+		if(!it->second.empty()) {
 			it->first.apply();
-			m_VertexBuffer->draw(Renderer::TriangleList, &it->second->front(), it->second->size());
+			m_VertexBuffer->draw(Renderer::TriangleList, &it->second.front(), it->second.size());
 		}
 	}
 }
 
 void RenderBatcher::clear() {
 	for(Batches::iterator itBatch = m_BatchedSprites.begin(); itBatch != m_BatchedSprites.end(); ++itBatch)
-		releaseBuffer(itBatch->second);
-	m_BatchedSprites.clear();
+		itBatch->second.clear();
 }
 
 void RenderBatcher::reset() {
 	clear();
-		
-	for(BufferPool::iterator it = m_BufferPool.begin(); it != m_BufferPool.end(); ++it) {
-		delete *it;
+	m_BatchedSprites.clear();
+}
+
+u32 RenderBatcher::getMemoryUsed() const {
+	u32 memoryUsed = 0;
+
+	for(Batches::const_iterator it = m_BatchedSprites.begin(); it != m_BatchedSprites.end(); ++it) {
+		memoryUsed += it->second.capacity() * sizeof(TexturedVertex);
 	}
 
-	m_BufferPool.clear();
+	return memoryUsed;
 }
 
 void RenderBatcher::initialize() {
@@ -92,26 +92,6 @@ void RenderBatcher::shutdown() {
 	arx_assert(m_VertexBuffer != NULL);
 	delete m_VertexBuffer;
 	m_VertexBuffer = NULL;
-}
-	
-RenderBatcher::VertexBatch* RenderBatcher::requestBuffer() {
-	static const u32 DEFAULT_NB_VERTICES_PER_BUFFER = 512;
-	
-	VertexBatch* pVertices = NULL;
-	if(!m_BufferPool.empty()) {
-		pVertices = m_BufferPool.back();
-		m_BufferPool.pop_back();
-	} else {
-		pVertices = new VertexBatch();
-		pVertices->reserve(DEFAULT_NB_VERTICES_PER_BUFFER);
-	}
-
-	return pVertices;
-}
-
-void RenderBatcher::releaseBuffer(VertexBatch* pVertices) {
-	pVertices->clear();
-	m_BufferPool.push_back(pVertices);
 }
 
 RenderBatcher& RenderBatcher::getInstance() {
