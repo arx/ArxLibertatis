@@ -106,6 +106,7 @@ static void drawDebugBoundingBox(const EERIE_2D_BBOX & box, Color color = Color:
 static void drawDebugLights() {
 	
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+	GRenderer->SetCulling(Renderer::CullNone);
 	
 	for(size_t i = 0; i < MAX_LIGHTS; i++) {
 		
@@ -134,6 +135,7 @@ static void drawDebugLights() {
 		
 	}
 	
+	GRenderer->SetCulling(Renderer::CullCCW);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	
 }
