@@ -500,8 +500,7 @@ long ARX_NPC_GetNextAttainableNodeIncrement(Entity * io)
 			continue;
 
 		io->physics.targetpos.y += 60.f; // FAKE Gravity !
-		IO_PHYSICS phys;
-		memcpy(&phys, &io->physics, sizeof(IO_PHYSICS));
+		IO_PHYSICS phys = io->physics;
 		GetIOCyl(io, &phys.cyl);
 
 		// Now we try the physical move for real
@@ -645,8 +644,7 @@ bool ARX_NPC_LaunchPathfind(Entity * io, long target)
 		// COLLISION Management START *********************************************************************
 		io->physics.startpos = pos1;
 		io->physics.targetpos = pos2;
-		IO_PHYSICS phys;
-		memcpy(&phys, &io->physics, sizeof(IO_PHYSICS));
+		IO_PHYSICS phys = io->physics;
 		GetIOCyl(io, &phys.cyl);
 
 		// Now we try the physical move for real
@@ -2002,8 +2000,7 @@ bool TryIOAnimMove(Entity * io, long animnum)
 	GetAnimTotalTranslate(io->anims[animnum], 0, &trans);
 	float temp = radians(MAKEANGLE(180.f - io->angle.getPitch()));
 	YRotatePoint(&trans, &trans2, (float)EEcos(temp), (float)EEsin(temp));
-	IO_PHYSICS phys;
-	memcpy(&phys, &io->physics, sizeof(IO_PHYSICS));
+	IO_PHYSICS phys = io->physics;
 	GetIOCyl(io, &phys.cyl);
 
 	phys.startpos = io->pos;
@@ -2812,7 +2809,7 @@ static void ManageNPCMovement(Entity * io)
 	io->physics.targetpos.x = io->pos.x + io->move.x + ForcedMove.x;
 	io->physics.targetpos.z = io->pos.z + io->move.z + ForcedMove.z;
 	// IO_PHYSICS phys;	// XS : Moved to func beginning
-	memcpy(&phys, &io->physics, sizeof(IO_PHYSICS));
+	phys = io->physics;
 	GetIOCyl(io, &phys.cyl);
 
 	CollisionFlags levitate = 0;
@@ -2832,7 +2829,7 @@ static void ManageNPCMovement(Entity * io)
 		phys.cyl.origin.y -= 10.f;
 	}
 
-	memcpy(&phys, &io->physics, sizeof(IO_PHYSICS));
+	phys = io->physics;
 	GetIOCyl(io, &phys.cyl);
 	
 	io->forcedmove -= ForcedMove;
