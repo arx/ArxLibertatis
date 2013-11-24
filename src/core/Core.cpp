@@ -513,7 +513,6 @@ void InitializeDanae() {
 	bookcam.focal = BASE_FOCAL;
 	
 	ACTIVEBKG->ambient = Color3f(0.09f, 0.09f, 0.09f);
-	ACTIVEBKG->ambient255 = ACTIVEBKG->ambient * 255.f;
 	
 	LoadSysTextures();
 	CreateInterfaceTextureContainers();

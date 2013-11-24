@@ -114,7 +114,6 @@ struct EERIE_BACKGROUND
 	float		Zmul;
 	EERIE_BKG_INFO * Backg;
 	Color3f ambient;
-	Color3f ambient255;
 	EERIE_SMINMAX *	minmax;
 	long		  nbanchors;
 	ANCHOR_DATA * anchors;

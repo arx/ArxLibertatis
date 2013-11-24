@@ -93,7 +93,7 @@ void ColorMod::updateFromEntity(Entity *io, bool inBook) {
 	}
 
 	// Ambient light
-	ambientColor = ACTIVEBKG->ambient255;
+	ambientColor = ACTIVEBKG->ambient * 255.f;
 	if(io && (io->ioflags & (IO_NPC | IO_ITEM)))
 	   ambientColor = Color3f::gray(NPC_ITEMS_AMBIENT_VALUE_255);
 }
