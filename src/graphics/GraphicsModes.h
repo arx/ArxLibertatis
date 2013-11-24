@@ -61,6 +61,12 @@ struct GLOBAL_MODS {
 	GMODFlags flags;
 	Color3f depthcolor;
 	float zclip;
+
+	GLOBAL_MODS()
+		: flags(0)
+		, depthcolor(Color3f::black)
+		, zclip(0.f)
+	{}
 };
 
 extern GLOBAL_MODS current;

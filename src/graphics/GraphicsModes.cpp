@@ -66,10 +66,11 @@ static const float DEFAULT_MINZCLIP = 1200.f;
 Color ulBKGColor = Color::none;
 
 void ARX_GLOBALMODS_Reset() {
-	memset(&desired, 0, sizeof(GLOBAL_MODS));
-	memset(&current, 0, sizeof(GLOBAL_MODS));
+
+	desired = GLOBAL_MODS();
+	current = GLOBAL_MODS();
+	stacked = GLOBAL_MODS();
 	current.zclip = DEFAULT_ZCLIP;
-	memset(&stacked, 0, sizeof(GLOBAL_MODS));
 	stacked.zclip = DEFAULT_ZCLIP;
 	desired.zclip = DEFAULT_ZCLIP;
 	desired.depthcolor = Color3f::black;
@@ -93,14 +94,15 @@ float Approach(float current, float desired, float increment)
 }
 
 void ARX_GLOBALMODS_Stack() {
-	memcpy(&stacked, &desired, sizeof(GLOBAL_MODS));
+
+	stacked = desired;
 	desired.depthcolor = Color3f::black;
 	desired.zclip = DEFAULT_ZCLIP;
 }
 
-void ARX_GLOBALMODS_UnStack()
-{
-	memcpy(&desired, &stacked, sizeof(GLOBAL_MODS));
+void ARX_GLOBALMODS_UnStack() {
+
+	desired = stacked;
 }
 
 void ARX_GLOBALMODS_Apply() {
