@@ -314,7 +314,7 @@ static bool ANCHOR_AttemptValidCylinderPos(EERIE_CYLINDER * cyl, Entity * io,
 
 	if(!(flags & CFLAG_ANCHOR_GENERATION)) {
 
-		memcpy(&tmp, cyl, sizeof(EERIE_CYLINDER));
+		tmp = *cyl;
 
 		while(anything < 0.f) {
 			tmp.origin.y += anything;
@@ -376,7 +376,7 @@ static bool ANCHOR_AttemptValidCylinderPos(EERIE_CYLINDER * cyl, Entity * io,
 		return false;
 	}
 
-	memcpy(&tmp, cyl, sizeof(EERIE_CYLINDER));
+	tmp = *cyl;
 	tmp.origin.y += anything;
 	anything = ANCHOR_CheckAnythingInCylinder(&tmp, flags); 
 
@@ -427,7 +427,7 @@ static bool ANCHOR_ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, Entity * io,
 		distance -= curmovedist;
 		//CUR_FRAME_SLICE=curmovedist*onedist;
 		// Store our cylinder desc into a test struct
-		memcpy(&test, ip, sizeof(IO_PHYSICS));
+		test = *ip;
 
 		// uses test struct to simulate movement.
 		test.cyl.origin += mvector * curmovedist;
@@ -441,15 +441,15 @@ static bool ANCHOR_ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, Entity * io,
 			return false;
 
 		if(ANCHOR_AttemptValidCylinderPos(&test.cyl, io, flags)) {
-			memcpy(ip, &test, sizeof(IO_PHYSICS));
+			*ip = test;
 
 		} else {
 			if(flags & CFLAG_CLIMBING) {
-				memcpy(&test.cyl, &ip->cyl, sizeof(EERIE_CYLINDER));
+				test.cyl = ip->cyl;
 				test.cyl.origin.y += mvector.y * curmovedist;
 
 				if(ANCHOR_AttemptValidCylinderPos(&test.cyl, io, flags)) {
-					memcpy(ip, &test, sizeof(IO_PHYSICS));
+					*ip = test;
 					goto oki;
 				}
 			}
@@ -477,7 +477,7 @@ static bool ANCHOR_ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, Entity * io,
 
 			//tries on the Right and Left sides
 			while(rangle <= maxRANGLE) {
-				memcpy(&test.cyl, &ip->cyl, sizeof(EERIE_CYLINDER)); 
+				test.cyl = ip->cyl;
 				float t = radians(MAKEANGLE(rangle));
 				YRotatePoint(&mvector, &vecatt, EEcos(t), EEsin(t));
 				test.cyl.origin += vecatt * curmovedist;
@@ -489,7 +489,7 @@ static bool ANCHOR_ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, Entity * io,
 
 				rangle += ANGLESTEPP;
 
-				memcpy(&test.cyl, &ip->cyl, sizeof(EERIE_CYLINDER));   
+				test.cyl = ip->cyl;
 				t = radians(MAKEANGLE(langle));
 				YRotatePoint(&mvector, &vecatt, EEcos(t), EEsin(t));
 				test.cyl.origin += vecatt * curmovedist;
@@ -634,12 +634,12 @@ static bool DirectAddAnchor_Original_Method(EERIE_BACKGROUND * eb, EERIE_BKG_INF
 
 	while (stop_radius != 1)
 	{
-		memcpy(&testcyl, &currcyl, sizeof(EERIE_CYLINDER));
+		testcyl = currcyl;
 		testcyl.radius += INC_RADIUS;
 
 		if (ANCHOR_AttemptValidCylinderPos(&testcyl, NULL, CFLAG_NO_INTERCOL | CFLAG_EXTRA_PRECISION | CFLAG_ANCHOR_GENERATION))
 		{
-			memcpy(&currcyl, &testcyl, sizeof(EERIE_CYLINDER));
+			currcyl = testcyl;
 			found = 1;
 		}
 		else
@@ -648,7 +648,7 @@ static bool DirectAddAnchor_Original_Method(EERIE_BACKGROUND * eb, EERIE_BKG_INF
 			        && (EEfabs(testcyl.origin.y - pos->y) < 50))
 			{
 				testcyl.radius -= INC_RADIUS;
-				memcpy(&currcyl, &testcyl, sizeof(EERIE_CYLINDER));
+				currcyl = testcyl;
 				climb++;
 			}
 			else
@@ -739,12 +739,12 @@ static bool AddAnchor_Original_Method(EERIE_BACKGROUND * eb, EERIE_BKG_INFO * eg
 
 			while ((stop_radius != 1))
 			{
-				memcpy(&testcyl, &currcyl, sizeof(EERIE_CYLINDER));
+				testcyl = currcyl;
 				testcyl.radius += INC_RADIUS;
 
 				if (ANCHOR_AttemptValidCylinderPos(&testcyl, NULL, CFLAG_NO_INTERCOL | CFLAG_EXTRA_PRECISION | CFLAG_ANCHOR_GENERATION))
 				{
-					memcpy(&currcyl, &testcyl, sizeof(EERIE_CYLINDER));
+					currcyl = testcyl;
 					found = 1;
 				}
 				else
@@ -753,7 +753,7 @@ static bool AddAnchor_Original_Method(EERIE_BACKGROUND * eb, EERIE_BKG_INFO * eg
 					        && (EEfabs(testcyl.origin.y - pos->y) < 50))
 					{
 						testcyl.radius -= INC_RADIUS;
-						memcpy(&currcyl, &testcyl, sizeof(EERIE_CYLINDER));
+						currcyl = testcyl;
 						climb++;
 					}
 					else
@@ -774,7 +774,7 @@ static bool AddAnchor_Original_Method(EERIE_BACKGROUND * eb, EERIE_BKG_INFO * eg
 					if (((best_dist > d) && (currcyl.radius == bestcyl.radius))
 					        || (currcyl.radius > bestcyl.radius))
 					{
-						memcpy(&bestcyl, &currcyl, sizeof(EERIE_CYLINDER));
+						bestcyl = currcyl;
 						best_dist = d;
 						best = 1;
 					}
