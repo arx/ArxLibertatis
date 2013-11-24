@@ -1822,7 +1822,7 @@ void ARX_PLAYER_Manage_Visual() {
 			}
 		}
 
-		memcpy(&io->physics, &player.physics, sizeof(IO_PHYSICS));
+		io->physics = player.physics;
 	}
 
 nochanges:
@@ -2190,8 +2190,7 @@ void PlayerMovementIterate(float DeltaTime) {
 		
 		lastposy = player.pos.y;
 		float anything;
-		EERIE_CYLINDER testcyl;
-		memcpy(&testcyl, &player.physics.cyl, sizeof(EERIE_CYLINDER));
+		EERIE_CYLINDER testcyl = player.physics.cyl;
 		testcyl.origin.y += 3.f;
 		ON_PLATFORM = 0;
 		anything = CheckAnythingInCylinder(&testcyl, entities.player(), 0);
@@ -2640,8 +2639,7 @@ void ARX_PLAYER_PutPlayerInNormalStance(long val) {
 	
 	if(player.jumpphase != NotJumping || player.falling) {
 		player.physics.cyl.origin = player.basePosition();
-		IO_PHYSICS phys;
-		memcpy(&phys, &player.physics, sizeof(IO_PHYSICS));
+		IO_PHYSICS phys = player.physics;
 		AttemptValidCylinderPos(&phys.cyl, entities.player(), CFLAG_RETURN_HEIGHT);
 		player.pos.y = phys.cyl.origin.y + player.baseHeight();
 		player.jumpphase = NotJumping;
