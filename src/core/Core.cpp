@@ -220,7 +220,6 @@ TextureContainer *	pTCCrossHair;			// Animated Hand Cursor TC
 TextureContainer *	iconequip[5];
 TextureContainer *	GoldCoinsTC[MAX_GOLD_COINS_VISUALS]; // Gold Coins Icons
 TextureContainer *	explo[MAX_EXPLO];		// TextureContainer for animated explosion bitmaps (24 frames)
-TextureContainer *	blood_splat = NULL;		// TextureContainer for blood splat particles
 
 TextureContainer *	tflare = NULL;
 static TextureContainer * npc_fight = NULL;
@@ -1348,8 +1347,6 @@ void LoadSysTextures()
 		sprintf(temp,"graph/particles/fireb_%02ld",i+1);
 		explo[i]= TextureContainer::LoadUI(temp);
 	}
-
-	blood_splat=TextureContainer::LoadUI("graph/particles/new_blood2");
 
 	TextureContainer::LoadUI("graph/particles/square");
 	

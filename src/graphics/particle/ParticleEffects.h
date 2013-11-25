@@ -160,7 +160,6 @@ enum ARX_PARTICLES_TYPE_FLAG {
 
 //-----------------------------------------------------------------------------
 extern TextureContainer * explo[MAX_EXPLO];
-extern TextureContainer * blood_splat;
 
 extern short OPIPOrgb;
 extern short PIPOrgb;

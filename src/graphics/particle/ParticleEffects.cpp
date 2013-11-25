@@ -103,6 +103,7 @@ static const size_t MAX_PARTICLES = 2200;
 static long ParticleCount = 0;
 static PARTICLE_DEF particle[MAX_PARTICLES];
 
+static TextureContainer * blood_splat = NULL;
 static TextureContainer * bloodsplat[6];
 TextureContainer * water_splat[3];
 static TextureContainer * water_drop[3];
@@ -843,6 +844,7 @@ void ARX_PARTICLES_FirstInit() {
 	bloodsplat[4] = TextureContainer::Load("graph/particles/new_blood_splat4", TextureContainer::NoMipmap);
 	bloodsplat[5] = TextureContainer::Load("graph/particles/new_blood_splat5", TextureContainer::NoMipmap);
 	bloodsplatter = bloodsplat[0];
+	blood_splat = TextureContainer::LoadUI("graph/particles/new_blood2", TextureContainer::NoMipmap);
 	
 	water_splat[0] = TextureContainer::Load("graph/particles/[fx]_water01", TextureContainer::NoMipmap);
 	water_splat[1] = TextureContainer::Load("graph/particles/[fx]_water02", TextureContainer::NoMipmap);
