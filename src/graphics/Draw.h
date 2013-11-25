@@ -70,6 +70,5 @@ void EERIEDrawBitmapUVs(float x, float y, float sx, float sy, float z, TextureCo
 
 void EERIEAddBitmap(const RenderMaterial& mat, float x, float y, float sx, float sy, float z, TextureContainer * tex, Color color);
 void EERIEAddSprite(const RenderMaterial & mat, const TexturedVertex & in, float siz, Color color, float Zpos, float rot = 0);
-void EERIEAddTriangle(const TexturedVertex (&vertices)[3]);
 
 #endif // ARX_GRAPHICS_DRAW_H

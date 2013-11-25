@@ -49,8 +49,11 @@ struct RenderMaterial {
 	void apply() const;
 
 	Texture * getTexture() const { return m_texture; }
+	void resetTexture() { m_texture = NULL; }
 	void setTexture(Texture * tex) { m_texture = tex; }
-	void setTexture(TextureContainer* texContainer) { m_texture = texContainer ? (Texture *)texContainer->m_pTexture : NULL; }
+	void setTexture(TextureContainer * texContainer) {
+		m_texture = texContainer ? (Texture *)texContainer->m_pTexture : NULL;
+	}
 
 	bool getDepthTest() const { return m_depthTest; }
 	void setDepthTest(bool bEnable) { m_depthTest = bEnable; }
@@ -66,7 +69,10 @@ struct RenderMaterial {
 
 	Renderer::CullingMode getCulling() const { return m_cullingMode; }
 	void setCulling(Renderer::CullingMode cullMode) { m_cullingMode = cullMode; }
-
+	
+	// TODO remove this - construct material instead of setting render state directly
+	static RenderMaterial getCurrent();
+	
 private:
 	Texture * m_texture;
 	bool m_depthTest;

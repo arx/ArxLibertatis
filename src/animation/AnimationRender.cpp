@@ -477,7 +477,9 @@ void ARX_DrawPrimitive(TexturedVertex * _pVertex1, TexturedVertex * _pVertex2, T
 	pPointAdd[2].specular = _pVertex3->specular;
 	pPointAdd[2].uv = _pVertex3->uv;
 
-	EERIEAddTriangle(pPointAdd);
+	RenderMaterial mat = RenderMaterial::getCurrent();
+
+	RenderBatcher::getInstance().add(mat, pPointAdd);
 }
 
 bool Cedric_IO_Visible(const Vec3f & pos) {

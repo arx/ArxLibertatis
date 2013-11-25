@@ -1533,6 +1533,9 @@ void DrawEERIEObjExEx(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *pos, Vec3f *scale
 {
 	if(!eobj)
 		return;
+	
+	// TODO: move to caller!
+	RenderMaterial mat = RenderMaterial::getCurrent();
 
 	TexturedVertex v;
 	TexturedVertex rv;
@@ -1582,16 +1585,16 @@ void DrawEERIEObjExEx(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *pos, Vec3f *scale
 		vert_list[0].color = vert_list[1].color = vert_list[2].color = coll;
 
 		if(face.facetype == 0 || eobj->texturecontainer[face.texid] == NULL)
-			GRenderer->ResetTexture(0);
+			mat.resetTexture();
 		else
-			GRenderer->SetTexture(0, eobj->texturecontainer[face.texid]);
+			mat.setTexture(eobj->texturecontainer[face.texid]);
 
 		if(face.facetype & POLY_DOUBLESIDED)
-			GRenderer->SetCulling(Renderer::CullNone);
+			mat.setCulling(Renderer::CullNone);
 		else
-			GRenderer->SetCulling(Renderer::CullCW);
+			mat.setCulling(Renderer::CullCW);
 
-		EERIEAddTriangle(vert_list);
+		RenderBatcher::getInstance().add(mat, vert_list);
 	}
 }
 
