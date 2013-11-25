@@ -40,7 +40,8 @@ struct RenderMaterial {
 		Additive,
 		AlphaAdditive,
 		Screen,
-		Subtractive
+		Subtractive,
+		Subtractive2
 	};
 
 	RenderMaterial();

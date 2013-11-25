@@ -1350,15 +1350,16 @@ void ARX_PARTICLES_Update(EERIE_CAMERA * cam)  {
 		RenderMaterial mat;
 		mat.setTexture(tc);
 		mat.setDepthTest(!(part->special & PARTICLE_NOZBUFFER));
-
-		if(part->special & NO_TRANS) {
+		
+		if(part->special & PARTICLE_SUB2) {
+			mat.setBlendType(RenderMaterial::Subtractive2);
+			color = color * 0.8f;
+		} else if(part->special & NO_TRANS) {
 			mat.setBlendType(RenderMaterial::Opaque);
+		} else if(part->special & SUBSTRACT) {
+			mat.setBlendType(RenderMaterial::Subtractive);
 		} else {
-			if((part->special & SUBSTRACT) && !(part->special & PARTICLE_SUB2)) {
-				mat.setBlendType(RenderMaterial::Subtractive);
-			} else {
-				mat.setBlendType(RenderMaterial::Additive);
-			}
+			mat.setBlendType(RenderMaterial::Additive);
 		}
 		
 		if(part->special & ROTATING) {
@@ -1372,25 +1373,13 @@ void ARX_PARTICLES_Update(EERIE_CAMERA * cam)  {
 				}
 				
 				float temp = (part->zdec) ? 0.0001f : 2.f;
-
 				EERIEAddSprite(mat, in, siz, color, temp, rott);
-
-				if(part->special & PARTICLE_SUB2) {
-					mat.setBlendType(RenderMaterial::Subtractive);
-					EERIEAddSprite(mat, in, siz, Color::white, temp, rott);
-				}
-
+				
 			}
 		} else if(part->type & PARTICLE_2D) {
 			
 			float siz2 = part->siz + part->scale.y * fd;
-
 			EERIEAddBitmap(mat, in.p.x, in.p.y, siz, siz2, in.p.z, tc, color);
-
-			if(part->special & PARTICLE_SUB2) {
-				mat.setBlendType(RenderMaterial::Subtractive);
-				EERIEAddBitmap(mat, in.p.x, in.p.y, siz, siz2, in.p.z, tc, Color::white);
-			}
 			
 		} else if(part->type & PARTICLE_SPARK2) {
 			
@@ -1404,13 +1393,8 @@ void ARX_PARTICLES_Update(EERIE_CAMERA * cam)  {
 		} else {
 			
 			float temp = (part->zdec) ? 0.0001f : 2.f;
-
 			EERIEAddSprite(mat, in, siz, color, temp);
-
-			if(part->special & PARTICLE_SUB2) {
-				mat.setBlendType(RenderMaterial::Subtractive);
-				EERIEAddSprite(mat, in, siz, Color::white, temp);
-			}
+			
 		}
 		
 		pcc--;

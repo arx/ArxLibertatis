@@ -310,7 +310,7 @@ void ARXDRAW_DrawPolyBoom()
 			float div = 1.f / (float)pb->tolive;
 			float tt = t * div;
 			float tr = std::max(1.f, tt * 2 - 0.5f);
-			ColorBGRA col = (pb->rgb * tt).toBGR();
+			ColorBGRA col = (pb->rgb * tt * 0.8f).toBGR();
 			
 			IncrementPolyWithNormalOutput(pb->ep, ltv);
 			
@@ -323,17 +323,8 @@ void ARXDRAW_DrawPolyBoom()
 			}
 			
 			mat.setWrapMode(TextureStage::WrapClamp);
-			mat.setBlendType(RenderMaterial::Additive);
+			mat.setBlendType(RenderMaterial::Subtractive2);
 			mat.setTexture(pb->tc);
-			
-			drawTriangle(mat, &ltv[0]);
-			if(pb->nbvert & 4) {
-				drawTriangle(mat, &ltv[1]);
-			}
-			
-			ltv[0].color = ltv[1].color = ltv[2].color = ltv[3].color = Color::gray(tt).toBGR();
-			
-			mat.setBlendType(RenderMaterial::Subtractive);
 			
 			drawTriangle(mat, &ltv[0]);
 			if(pb->nbvert & 4) {

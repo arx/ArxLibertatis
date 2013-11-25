@@ -169,24 +169,36 @@ void RenderMaterial::apply() const {
 		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	} else {
 		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-
+		
 		switch(m_blendType) {
+		
 		case Additive:
 			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 			break;
-
+		
 		case AlphaAdditive:
 			GRenderer->SetBlendFunc(Renderer::BlendSrcAlpha, Renderer::BlendOne);
 			break;
-
+		
 		case Screen:
 			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendInvSrcColor);
 			break;
-
+		
 		case Subtractive:
 			GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
 			break;
-
+		
+		case Subtractive2:
+			/*
+			 * TODO This is a special blend mode used for blood splatter.
+			 * Originally, the BlendInvSrcColor didn't take the vertex color into account,
+			 * only the texture sample, so this efact isn't exactly the same.
+			 * It still gives a better result than applying all adds and the  all subtracts.
+			 * In the future we may want to implement this correctly in a shader.
+			 */
+			GRenderer->SetBlendFunc(Renderer::BlendInvSrcColor, Renderer::BlendInvSrcColor);
+			break;
+		
 		default:
 			arx_error_msg("Invalid blend type.");
 		}
