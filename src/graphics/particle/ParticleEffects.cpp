@@ -108,7 +108,6 @@ static TextureContainer * bloodsplat[6];
 TextureContainer * water_splat[3];
 static TextureContainer * water_drop[3];
 static TextureContainer * smokeparticle = NULL;
-static TextureContainer * bloodsplatter = NULL;
 static TextureContainer * healing = NULL;
 static TextureContainer * tzupouf = NULL;
 TextureContainer * fire2=NULL;
@@ -214,7 +213,7 @@ static void ARX_PARTICLES_Spawn_Blood3(const Vec3f & pos, float dmgs, Color col,
 		              | flags;
 		pd->tolive = 1100;
 		pd->rgb = col.to<float>();
-		pd->tc = bloodsplatter;
+		pd->tc = bloodsplat[0];
 		pd->fparam = rnd() * 0.1f - .05f;
 	}
 	
@@ -520,7 +519,7 @@ void ARX_PARTICLES_Spawn_Blood(Vec3f * pos, float dmgs, long source) {
 		totdelay += 45 + Random::get(0, 150 - spawn_nb);
 		pd->delay = totdelay;
 		pd->rgb = Color3f(.9f, 0.f, 0.f);
-		pd->tc = bloodsplatter;
+		pd->tc = bloodsplat[0];
 		pd->fparam = rnd() * 0.1f - 0.05f;
 	}
 }
@@ -843,7 +842,6 @@ void ARX_PARTICLES_FirstInit() {
 	bloodsplat[3] = TextureContainer::Load("graph/particles/new_blood_splat3", TextureContainer::NoMipmap);
 	bloodsplat[4] = TextureContainer::Load("graph/particles/new_blood_splat4", TextureContainer::NoMipmap);
 	bloodsplat[5] = TextureContainer::Load("graph/particles/new_blood_splat5", TextureContainer::NoMipmap);
-	bloodsplatter = bloodsplat[0];
 	blood_splat = TextureContainer::LoadUI("graph/particles/new_blood2", TextureContainer::NoMipmap);
 	
 	water_splat[0] = TextureContainer::Load("graph/particles/[fx]_water01", TextureContainer::NoMipmap);
