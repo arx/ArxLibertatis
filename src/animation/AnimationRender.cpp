@@ -459,9 +459,7 @@ TexturedVertex * GetNewVertexList(TextureContainer * container, const EERIE_FACE
 	}
 }
 
-void ARX_DrawPrimitive(TexturedVertex * _pVertex1, TexturedVertex * _pVertex2, TexturedVertex * _pVertex3, float _fAddZ) {
-	
-	ARX_UNUSED(_fAddZ);
+void ARX_DrawPrimitive(TexturedVertex * _pVertex1, TexturedVertex * _pVertex2, TexturedVertex * _pVertex3) {
 	
 	TexturedVertex pPointAdd[3];
 	EE_P(&_pVertex1->p, &pPointAdd[0]);
