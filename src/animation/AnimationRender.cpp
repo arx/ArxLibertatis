@@ -234,7 +234,7 @@ extern TextureContainer TexSpecialColor;
 extern bool EXTERNALVIEW;
 
 void EE_RT(const Vec3f & in, Vec3f & out);
-void EE_P(Vec3f * in, TexturedVertex * out);
+void EE_P(const Vec3f * in, TexturedVertex * out);
 
 float Cedric_GetInvisibility(Entity *io) {
 	if(io) {
@@ -459,25 +459,30 @@ TexturedVertex * GetNewVertexList(TextureContainer * container, const EERIE_FACE
 	}
 }
 
-void ARX_DrawPrimitive(TexturedVertex * _pVertex1, TexturedVertex * _pVertex2, TexturedVertex * _pVertex3) {
+// TODO remove this function, use drawTriangle directly!
+void ARX_DrawPrimitive(TexturedVertex * v0, TexturedVertex * v1, TexturedVertex * v2) {
+	TexturedVertex vertices[3];
+	vertices[0] = *v0, vertices[1] = *v1, vertices[2] = *v2;
+	drawTriangle(RenderMaterial::getCurrent(), vertices);
+}
+
+void drawTriangle(const RenderMaterial & mat, const TexturedVertex * vertices) {
 	
-	TexturedVertex pPointAdd[3];
-	EE_P(&_pVertex1->p, &pPointAdd[0]);
-	EE_P(&_pVertex2->p, &pPointAdd[1]);
-	EE_P(&_pVertex3->p, &pPointAdd[2]);
-	pPointAdd[0].color = _pVertex1->color;
-	pPointAdd[0].specular = _pVertex1->specular;
-	pPointAdd[0].uv = _pVertex1->uv;
-	pPointAdd[1].color = _pVertex2->color;
-	pPointAdd[1].specular = _pVertex2->specular;
-	pPointAdd[1].uv = _pVertex2->uv;
-	pPointAdd[2].color = _pVertex3->color;
-	pPointAdd[2].specular = _pVertex3->specular;
-	pPointAdd[2].uv = _pVertex3->uv;
-
-	RenderMaterial mat = RenderMaterial::getCurrent();
-
-	RenderBatcher::getInstance().add(mat, pPointAdd);
+	TexturedVertex projected[3];
+	EE_P(&vertices[0].p, &projected[0]);
+	EE_P(&vertices[1].p, &projected[1]);
+	EE_P(&vertices[2].p, &projected[2]);
+	projected[0].color = vertices[0].color;
+	projected[0].specular = vertices[0].specular;
+	projected[0].uv = vertices[0].uv;
+	projected[1].color = vertices[1].color;
+	projected[1].specular = vertices[1].specular;
+	projected[1].uv = vertices[1].uv;
+	projected[2].color = vertices[2].color;
+	projected[2].specular = vertices[2].specular;
+	projected[2].uv = vertices[2].uv;
+	
+	RenderBatcher::getInstance().add(mat, projected);
 }
 
 bool Cedric_IO_Visible(const Vec3f & pos) {

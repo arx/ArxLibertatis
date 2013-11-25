@@ -30,7 +30,7 @@
 
 
 extern void EE_RT(const Vec3f & in, Vec3f & out);
-extern void EE_P(Vec3f * in, TexturedVertex * out);
+extern void EE_P(const Vec3f * in, TexturedVertex * out);
 extern void EE_RTP(const TexturedVertex * in, TexturedVertex * out);
 
 void EERIEDrawCircle(float x0, float y0, float r, Color col, float z) {
