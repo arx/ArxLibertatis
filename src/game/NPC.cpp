@@ -1468,7 +1468,7 @@ void ARX_NPC_SpawnMember(Entity * ioo, long num) {
 	
 	memset(io->_itemdata, 0, sizeof(IO_ITEMDATA));
 	
-	io->ioflags = IO_ITEM;
+	io->ioflags = IO_ITEM | IO_NOSAVE | IO_MOVABLE;
 	io->script.size = 0;
 	io->script.data = NULL;
 	io->gameFlags |= GFLAG_NO_PHYS_IO_COL;
@@ -1491,7 +1491,6 @@ void ARX_NPC_SpawnMember(Entity * ioo, long num) {
 	io->gameFlags = ioo->gameFlags;
 	io->halo = ioo->halo;
 	ioo->halo.dynlight = -1;
-	io->ioflags |= IO_MOVABLE;
 	
 	io->angle.setYaw(rnd() * 40.f + 340.f);
 	io->angle.setPitch(rnd() * 360.f);
