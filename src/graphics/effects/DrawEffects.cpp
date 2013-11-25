@@ -243,10 +243,11 @@ void ARXDRAW_DrawPolyBoom()
 {
 	TexturedVertex ltv[4];
 
-	GRenderer->SetDepthBias(8);
-	GRenderer->SetFogColor(Color::none);
+	GRenderer->SetFogColor(Color::none); // TODO: not handled by RenderMaterial
 	unsigned long tim = (unsigned long)(arxtime);
-	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+	
+	RenderMaterial mat = RenderMaterial::getCurrent();
+	mat.setDepthBias(8);
 
 	std::vector<POLYBOOM>::iterator pb = polyboom.begin();
 	while (pb != polyboom.end()) {
@@ -272,101 +273,88 @@ void ARXDRAW_DrawPolyBoom()
 
 		long typp = pb->type;
 		typp &= ~128;
-
+		
 		switch(typp) {
-		case 0:
-		{
+			
+		case 0: {
+			
 			float tt = t / (float)pb->tolive * 0.8f;
-
+			
 			IncrementPolyWithNormalOutput(pb->ep,ltv);
-			EE_RT2(&ltv[0],&ltv[0]);
-			EE_RT2(&ltv[1],&ltv[1]);
-			EE_RT2(&ltv[2],&ltv[2]);
-
+			
 			for(long k = 0; k < pb->nbvert; k++) {
+				EE_RT2(&ltv[k], &ltv[k]);
 				ltv[k].uv.x=pb->u[k];
 				ltv[k].uv.y=pb->v[k];
 				ltv[k].color = (Project.improve ? (Color3f::red * (tt*.5f)) : Color3f::gray(tt)).toBGR();
 				ltv[k].specular = Color::black.toBGR();
 			}
-
+			
 			if(Project.improve) {
-				GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+				mat.setBlendType(RenderMaterial::Additive);
 			} else {
-				GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
+				mat.setBlendType(RenderMaterial::Subtractive);
 			}
-
-			GRenderer->SetTexture(0, Boom);
-			ARX_DrawPrimitive(&ltv[0], &ltv[1], &ltv[2]);
-
+			mat.setTexture(Boom);
+			
+			drawTriangle(mat, &ltv[0]);
 			if(pb->nbvert & 4) {
-				EE_RT2(&ltv[3],&ltv[3]);
-				ARX_DrawPrimitive(&ltv[1], &ltv[2], &ltv[3]);
+				drawTriangle(mat, &ltv[1]);
 			}
+			
+			break;
 		}
-		break;
-		case 1:	// Blood
-		{
-			float div=1.f/(float)pb->tolive;
-			float tt=(float)t*div;
-			float tr = tt * 2 - 0.5f;
-
-			if(tr < 1.f)
-				tr = 1.f;
-
+		
+		case 1: { // Blood
+			
+			float div = 1.f / (float)pb->tolive;
+			float tt = t * div;
+			float tr = std::max(1.f, tt * 2 - 0.5f);
 			ColorBGRA col = (pb->rgb * tt).toBGR();
-
+			
+			IncrementPolyWithNormalOutput(pb->ep, ltv);
+			
 			for(long k = 0; k < pb->nbvert; k++) {
+				EE_RT2(&ltv[k], &ltv[k]);
 				ltv[k].uv.x=(pb->u[k]-0.5f)*(tr)+0.5f;
 				ltv[k].uv.y=(pb->v[k]-0.5f)*(tr)+0.5f;
-				ltv[k].color=col;
-				ltv[k].specular=0xFF000000;
+				ltv[k].color = col;
+				ltv[k].specular = Color::black.toBGR();
 			}
-
-			IncrementPolyWithNormalOutput(pb->ep,ltv);
-			EE_RT2(&ltv[0],&ltv[0]);
-			EE_RT2(&ltv[1],&ltv[1]);
-			EE_RT2(&ltv[2],&ltv[2]);
-
+			
+			mat.setWrapMode(TextureStage::WrapClamp);
+			mat.setBlendType(RenderMaterial::Additive);
+			mat.setTexture(pb->tc);
+			
+			drawTriangle(mat, &ltv[0]);
 			if(pb->nbvert & 4) {
-				EE_RT2(&ltv[3],&ltv[3]);
+				drawTriangle(mat, &ltv[1]);
 			}
-
-			GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapClamp);
-			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-			GRenderer->SetTexture(0, pb->tc);
-
-			ARX_DrawPrimitive(&ltv[0], &ltv[1], &ltv[2]);
-
-			if(pb->nbvert & 4) {
-				ARX_DrawPrimitive(&ltv[1], &ltv[2], &ltv[3]);
-			}
-
+			
 			ltv[0].color = ltv[1].color = ltv[2].color = ltv[3].color = Color::gray(tt).toBGR();
-
-			GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
-
-			ARX_DrawPrimitive(&ltv[0], &ltv[1], &ltv[2]);
-
+			
+			mat.setBlendType(RenderMaterial::Subtractive);
+			
+			drawTriangle(mat, &ltv[0]);
 			if(pb->nbvert & 4) {
-				ARX_DrawPrimitive(&ltv[1], &ltv[2], &ltv[3]);
+				drawTriangle(mat, &ltv[1]);
 			}
-
-			GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
+			
+			break;
 		}
-		break;
-		case 2: // WATER
-		{
-			float div=1.f/(float)pb->tolive;
-			float tt=(float)t*div;
-			float tr = (tt * 2 - 0.5f);
-
-			if (tr<1.f) tr=1.f;
-
-			float ttt=tt*0.5f;
+		
+		case 2: { // Water
+			
+			float div = 1.f / (float)pb->tolive;
+			float tt = t * div;
+			float tr = std::max(1.f, tt * 2 - 0.5f);
+			float ttt = tt * 0.5f;
 			ColorBGRA col = (pb->rgb * ttt).toBGR();
-
+			
+			IncrementPolyWithNormalOutput(pb->ep,ltv);
+			
 			for(long k = 0; k < pb->nbvert; k++) {
+				EE_RT2(&ltv[k], &ltv[k]);
 				ltv[k].uv.x=(pb->u[k]-0.5f)*(tr)+0.5f;
 				ltv[k].uv.y=(pb->v[k]-0.5f)*(tr)+0.5f;
 				ltv[k].color=col;
@@ -396,31 +384,22 @@ void ARXDRAW_DrawPolyBoom()
 				&&	(ltv[2].uv.y>1.f)
 				&&	(ltv[3].uv.y>1.f) )
 				break;
-
-			IncrementPolyWithNormalOutput(pb->ep,ltv);
-			EE_RT2(&ltv[0],&ltv[0]);
-			EE_RT2(&ltv[1],&ltv[1]);
-			EE_RT2(&ltv[2],&ltv[2]);
-
-			GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapClamp);
-			GRenderer->SetBlendFunc(Renderer::BlendInvDstColor, Renderer::BlendOne);
-			GRenderer->SetTexture(0, pb->tc);
-
-			ARX_DrawPrimitive(&ltv[0], &ltv[1], &ltv[2]);
-
+			
+			mat.setWrapMode(TextureStage::WrapClamp);
+			mat.setBlendType(RenderMaterial::Screen);
+			mat.setTexture(pb->tc);
+			
+			drawTriangle(mat, &ltv[0]);
 			if(pb->nbvert & 4) {
-				EE_RT2(&ltv[3],&ltv[3]);
-				ARX_DrawPrimitive(&ltv[1], &ltv[2], &ltv[3]);
+				drawTriangle(mat, &ltv[1]);
 			}
-
-			GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
+			
+			break;
 		}
-		break;
 		}
-
-		++ pb;
+		
+		++pb;
 	}
-
-	GRenderer->SetDepthBias(0);
+	
 	GRenderer->SetFogColor(ulBKGColor);
 }
