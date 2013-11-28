@@ -117,16 +117,6 @@ extern Image savegame_thumbnail;
 
 extern float Original_framedelay;
 extern long LOADEDD;
-extern std::string WILL_LAUNCH_CINE;
-
-enum CinematicState {
-	Cinematic_Stopped,
-	Cinematic_StartRequested,
-	Cinematic_Started
-};
-extern CinematicState PLAY_LOADED_CINEMATIC;
-
-extern long CINE_PRELOAD;
 
 extern bool g_debugToggles[10];
 
@@ -134,13 +124,11 @@ void SetEditMode(long ed, const bool stop_sound = true);
 
 void SendGameReadyMsg();
 void DanaeSwitchFullScreen();
-void DANAE_KillCinematic();
 void ARX_SetAntiAliasing();
 void ReMappDanaeButton();
 void AdjustMousePosition();
 void DANAE_StartNewQuest();
 bool HandleGameFlowTransitions();
-void DANAE_Manage_Cinematic();
 void DanaeRestoreFullScreen();
 void FirstFrameHandling();
 

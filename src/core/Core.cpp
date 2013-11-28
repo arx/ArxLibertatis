@@ -209,7 +209,7 @@ PROJECT Project;
 
 //-----------------------------------------------------------------------------
 Vec3f PUSH_PLAYER_FORCE;
-Cinematic			*ControlCinematique=NULL;	// 2D Cinematic Controller
+
 ParticleManager	*pParticleManager = NULL;
 static TextureContainer * ombrignon = NULL;
 TextureContainer *	scursor[8];			// Animated Hand Cursor TC
@@ -269,9 +269,8 @@ char TELEPORT_TO_LEVEL[64];
 char TELEPORT_TO_POSITION[64];
 long TELEPORT_TO_ANGLE;
 // END -   Information for Player Teleport between/in Levels---------------------------------------
-std::string WILL_LAUNCH_CINE;
 res::path LastLoadedScene;
-static std::string LAST_LAUNCHED_CINE;
+
 float BASE_FOCAL=350.f;
 float STRIKE_AIMTIME=0.f;
 float SLID_VALUE=0.f;
@@ -285,8 +284,6 @@ Rect g_size(640, 480);
 long CurrFightPos=0;
 long NO_PLAYER_POSITION_RESET=0;
 long CURRENT_BASE_FOCAL=310;
-long CINE_PRELOAD=0;
-CinematicState PLAY_LOADED_CINEMATIC = Cinematic_Stopped;
 
 float BOW_FOCAL=0;
 long PlayerWeaponBlocked=-1;
@@ -294,7 +291,6 @@ long PlayerWeaponBlocked=-1;
 long REQUEST_SPEECH_SKIP= 0;
 long CURRENTLEVEL		= -1;
 long DONT_ERASE_PLAYER	= 0;
-static float LastFrameTicks = 0;
 long FASTmse			= 0;
 
 //-----------------------------------------------------------------------------
@@ -333,7 +329,6 @@ long EXITING=0;
 
 bool USE_PORTALS = false;
 
-Vec3f ePos;
 extern EERIE_CAMERA * ACTIVECAM;
 
 
@@ -377,16 +372,6 @@ void SendGameReadyMsg()
 {
 	LogDebug("SendGameReadyMsg");
 	SendMsgToAllIO(SM_GAME_READY);
-}
-
-void DANAE_KillCinematic() {
-	if(ControlCinematique && ControlCinematique->projectload) {
-		ControlCinematique->projectload = false;
-		ControlCinematique->OneTimeSceneReInit();
-		ControlCinematique->DeleteDeviceObjects();
-		PLAY_LOADED_CINEMATIC = Cinematic_Stopped;
-		CINE_PRELOAD = 0;
-	}
 }
 
 static bool AdjustUI() {
@@ -2640,95 +2625,6 @@ bool HandleGameFlowTransitions() {
 	return false;
 }
 
-void LaunchWaitingCine() {
-	
-	LogDebug("LaunchWaitingCine " << CINE_PRELOAD);
-
-	if(ACTIVECAM) {
-		ePos = ACTIVECAM->orgTrans.pos;
-	}
-	
-	DANAE_KillCinematic();
-	
-	res::path cinematic = res::path("graph/interface/illustrations") / WILL_LAUNCH_CINE;
-	
-	if(resources->getFile(cinematic)) {
-		
-		ControlCinematique->OneTimeSceneReInit();
-		
-		if(loadCinematic(ControlCinematique, cinematic)) {
-			
-			if(CINE_PRELOAD) {
-				LogDebug("only preloaded cinematic");
-				PLAY_LOADED_CINEMATIC = Cinematic_Stopped;
-			} else {
-				LogDebug("starting cinematic");
-				PLAY_LOADED_CINEMATIC = Cinematic_StartRequested;
-				arxtime.pause();
-			}
-			
-			LAST_LAUNCHED_CINE = WILL_LAUNCH_CINE;
-		} else {
-			LogWarning << "Error loading cinematic " << cinematic;
-		}
-		
-	} else {
-		LogWarning << "Could not find cinematic " << cinematic;
-	}
-	
-	WILL_LAUNCH_CINE.clear();
-}
-
-// Manages Currently playing 2D cinematic
-void DANAE_Manage_Cinematic() {
-	
-	float FrameTicks = arxtime.get_updated(false);
-	
-	if(PLAY_LOADED_CINEMATIC == Cinematic_StartRequested) {
-		LogDebug("really starting cinematic now");
-		LastFrameTicks = FrameTicks;
-		PLAY_LOADED_CINEMATIC = Cinematic_Started;
-	}
-	
-	PlayTrack(ControlCinematique);
-	ControlCinematique->InitDeviceObjects();
-	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	
-	ControlCinematique->Render(FrameTicks - LastFrameTicks);
-	
-	//fin de l'anim
-	if ((!ControlCinematique->key)
-		|| (GInput->isKeyPressedNowUnPressed(Keyboard::Key_Escape))
-		|| (GInput->isKeyPressedNowUnPressed(Keyboard::Key_Escape)))
-	{			
-		ControlCinematique->projectload=false;
-		StopSoundKeyFramer();
-		ControlCinematique->OneTimeSceneReInit();
-		ControlCinematique->DeleteDeviceObjects();
-		arxtime.resume();
-		PLAY_LOADED_CINEMATIC = Cinematic_Stopped;
-		
-		bool bWasBlocked = false;
-		if(BLOCK_PLAYER_CONTROLS) {
-			bWasBlocked = true;
-		}
-		
-		// !! avant le cine end
-		if(ACTIVECAM) {
-			ACTIVECAM->orgTrans.pos = ePos;
-		}
-		
-		if(bWasBlocked) {
-			BLOCK_PLAYER_CONTROLS = true;
-		}
-		
-		ARX_SPEECH_Reset();
-		SendMsgToAllIO(SM_CINE_END, LAST_LAUNCHED_CINE);
-	}
-	
-	LastFrameTicks = FrameTicks;
-}
-
 void ReMappDanaeButton() {
 	
 	// Handle double clicks.
@@ -2805,6 +2701,8 @@ void ReleaseSystemObjects() {
 		delete obj, obj = NULL;
 	}
 }
+
+extern Cinematic* ControlCinematique;
 
 void shutdownGame() {
 	

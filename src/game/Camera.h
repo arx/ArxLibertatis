@@ -99,6 +99,7 @@ extern MASTER_CAMERA_STRUCT MasterCamera;
 void SP_PrepareCamera(EERIE_CAMERA * cam);
 void PrepareCamera(EERIE_CAMERA *cam);
 
+extern EERIE_CAMERA * ACTIVECAM;
 void SetActiveCamera(EERIE_CAMERA* cam);
 
 #endif // ARX_GAME_CAMERA_H

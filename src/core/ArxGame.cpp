@@ -59,6 +59,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "animation/Animation.h"
 #include "animation/AnimationRender.h"
 #include "animation/Cinematic.h"
+#include "animation/CinematicController.h"
 
 #include "core/Core.h"
 #include "core/Config.h"
@@ -177,9 +178,6 @@ extern float LAST_FADEVALUE;
 extern float PROGRESS_BAR_TOTAL;
 extern float PROGRESS_BAR_COUNT;
 extern float OLD_PROGRESS_BAR_COUNT;
-
-extern void DANAE_KillCinematic();
-extern void LaunchWaitingCine();
 
 extern Cinematic* ControlCinematique;
 extern EERIE_3DOBJ * arrowobj;

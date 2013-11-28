@@ -550,6 +550,7 @@ set(ANIMATION_SOURCES
 	src/animation/Animation.cpp
 	src/animation/AnimationRender.cpp
 	src/animation/Cinematic.cpp
+	src/animation/CinematicController.cpp
 	src/animation/CinematicKeyframer.cpp
 	src/animation/Intro.cpp
 )
