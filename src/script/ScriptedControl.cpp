@@ -229,7 +229,7 @@ public:
 		if(name == "kill") {
 			DANAE_KillCinematic();
 		} else if(name == "play") {
-			PLAY_LOADED_CINEMATIC = 1;
+			PLAY_LOADED_CINEMATIC = Cinematic_StartRequested;
 			arxtime.pause();
 		} else {
 			

@@ -157,7 +157,8 @@ static InfoPanels g_debugInfo = InfoPanelNone;
 
 using std::string;
 
-extern long PLAY_LOADED_CINEMATIC;
+extern CinematicState PLAY_LOADED_CINEMATIC;
+
 extern long START_NEW_QUEST;
 long LOADQUEST_SLOT = -1; // OH NO, ANOTHER GLOBAL! - TEMP PATCH TO CLEAN CODE FLOW
 extern long CHANGE_LEVEL_ICON;
@@ -604,7 +605,11 @@ void ArxGame::doFrame() {
 		LOADQUEST_SLOT = -1;
 	}
 
-	if(PLAY_LOADED_CINEMATIC == 0 && !CINEMASCOPE && !BLOCK_PLAYER_CONTROLS && ARXmenu.currentmode == AMCM_OFF) {
+	if(PLAY_LOADED_CINEMATIC == Cinematic_Stopped
+	   && !CINEMASCOPE
+	   && !BLOCK_PLAYER_CONTROLS
+	   && ARXmenu.currentmode == AMCM_OFF
+	) {
 		
 		if(GInput->actionNowPressed(CONTROLS_CUST_QUICKLOAD)) {
 			ARX_QuickLoad();
@@ -1235,7 +1240,9 @@ void ArxGame::renderMenu() {
 }
 
 bool ArxGame::isInCinematic() const {
-	return PLAY_LOADED_CINEMATIC && ControlCinematique && ControlCinematique->projectload;
+	return PLAY_LOADED_CINEMATIC != Cinematic_Stopped
+			&& ControlCinematique
+			&& ControlCinematique->projectload;
 }
 
 void ArxGame::renderCinematic() {
@@ -1562,7 +1569,7 @@ void ArxGame::renderLevel() {
 	}
 
 	if(SHOW_INGAME_MINIMAP
-		&& PLAY_LOADED_CINEMATIC == 0
+		&& PLAY_LOADED_CINEMATIC == Cinematic_Stopped
 		&& !CINEMASCOPE
 		&& !BLOCK_PLAYER_CONTROLS
 		&& !(player.Interface & INTER_MAP))

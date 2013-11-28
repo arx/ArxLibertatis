@@ -286,7 +286,8 @@ long CurrFightPos=0;
 long NO_PLAYER_POSITION_RESET=0;
 long CURRENT_BASE_FOCAL=310;
 long CINE_PRELOAD=0;
-long PLAY_LOADED_CINEMATIC=0;
+CinematicState PLAY_LOADED_CINEMATIC = Cinematic_Stopped;
+
 float BOW_FOCAL=0;
 long PlayerWeaponBlocked=-1;
 
@@ -383,7 +384,7 @@ void DANAE_KillCinematic() {
 		ControlCinematique->projectload = false;
 		ControlCinematique->OneTimeSceneReInit();
 		ControlCinematique->DeleteDeviceObjects();
-		PLAY_LOADED_CINEMATIC = 0;
+		PLAY_LOADED_CINEMATIC = Cinematic_Stopped;
 		CINE_PRELOAD = 0;
 	}
 }
@@ -2659,10 +2660,10 @@ void LaunchWaitingCine() {
 			
 			if(CINE_PRELOAD) {
 				LogDebug("only preloaded cinematic");
-				PLAY_LOADED_CINEMATIC = 0;
+				PLAY_LOADED_CINEMATIC = Cinematic_Stopped;
 			} else {
 				LogDebug("starting cinematic");
-				PLAY_LOADED_CINEMATIC = 1;
+				PLAY_LOADED_CINEMATIC = Cinematic_StartRequested;
 				arxtime.pause();
 			}
 			
@@ -2683,10 +2684,10 @@ void DANAE_Manage_Cinematic() {
 	
 	float FrameTicks = arxtime.get_updated(false);
 	
-	if(PLAY_LOADED_CINEMATIC == 1) {
+	if(PLAY_LOADED_CINEMATIC == Cinematic_StartRequested) {
 		LogDebug("really starting cinematic now");
 		LastFrameTicks = FrameTicks;
-		PLAY_LOADED_CINEMATIC=2;
+		PLAY_LOADED_CINEMATIC = Cinematic_Started;
 	}
 	
 	PlayTrack(ControlCinematique);
@@ -2705,7 +2706,7 @@ void DANAE_Manage_Cinematic() {
 		ControlCinematique->OneTimeSceneReInit();
 		ControlCinematique->DeleteDeviceObjects();
 		arxtime.resume();
-		PLAY_LOADED_CINEMATIC=0;
+		PLAY_LOADED_CINEMATIC = Cinematic_Stopped;
 		
 		bool bWasBlocked = false;
 		if(BLOCK_PLAYER_CONTROLS) {

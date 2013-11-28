@@ -118,7 +118,14 @@ extern Image savegame_thumbnail;
 extern float Original_framedelay;
 extern long LOADEDD;
 extern std::string WILL_LAUNCH_CINE;
-extern long PLAY_LOADED_CINEMATIC;
+
+enum CinematicState {
+	Cinematic_Stopped,
+	Cinematic_StartRequested,
+	Cinematic_Started
+};
+extern CinematicState PLAY_LOADED_CINEMATIC;
+
 extern long CINE_PRELOAD;
 
 extern bool g_debugToggles[10];
