@@ -41,96 +41,64 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
 
-#ifndef ARX_IO_CINEMATICFORMAT_H
-#define ARX_IO_CINEMATICFORMAT_H
+#ifndef ARX_CINEMATIC_CINEMATICKEYFRAMER_H
+#define ARX_CINEMATIC_CINEMATICKEYFRAMER_H
 
-#include "animation/Cinematic.h"
-#include "graphics/GraphicsFormat.h"
-#include "platform/Platform.h"
+#include "cinematic/Cinematic.h" // for CinematicLight
+#include "math/Vector.h"
 
+static const int INTERP_NO = -1;
+static const int INTERP_BEZIER = 0;
+static const int INTERP_LINEAR = 1;
 
-#pragma pack(push,1)
-
-static const s32 CINEMATIC_VERSION_1_75 = (1<<16) | 75;
-static const s32 CINEMATIC_VERSION_1_76 = (1<<16) | 76;
-static const s16 INTERP_NO_FADE = 2;
-
-// Version 1.75 structures
-
-struct CinematicLight_1_71 {
+struct C_KEY {
 	
-	SavedVec3 pos;
-	f32 fallin;
-	f32 fallout;
-	SavedColor color;
-	f32 intensity;
-	f32 intensiternd;
-	s32 prev; // ignored
-	s32 next; // ignored
+	int frame;
+	int numbitmap;
+	int fx; // associated fx
+	short typeinterp, force;
+	Vec3f pos;
+	float angz;
+	int color;
+	int colord;
+	int colorf;
+	float speed;
+	CinematicLight light;
+	Vec3f posgrille;
+	float angzgrille;
+	float speedtrack;
 	
-	inline operator CinematicLight() {
-		CinematicLight l;
-		l.pos = pos.toVec3();
-		l.fallin = fallin;
-		l.fallout = fallout;
-		l.color = color;
-		l.intensity = intensity;
-		l.intensiternd = intensiternd;
-		return l;
-	}
+	int idsound;
 	
 };
 
-struct C_KEY_1_75 {
-	s32 frame;
-	s32 numbitmap;
-	s32 fx; // associated fx
-	s16 typeinterp, force;
-	SavedVec3 pos;
-	f32 angz;
-	s32 color;
-	s32 colord;
-	s32 colorf;
-	s32 idsound;
-	f32 speed;
-	CinematicLight_1_71 light;
-	SavedVec3 posgrille;
-	f32 angzgrille;
-	f32 speedtrack;
+struct CinematicTrack {
+	int startframe;
+	int endframe;
+	float currframe;
+	float fps;
+	int nbkey;
+	int pause;
+	C_KEY * key;
 };
 
-// Version 1.76 structures
+bool DeleteTrack();
+bool AllocTrack(int sf, int ef, float fps);
+bool AddKey(C_KEY * key, bool writecolor, bool writecolord, bool writecolorf);
+bool AddKeyLoad(C_KEY * key);
+bool GereTrack(Cinematic * c, float fpscurr);
 
-struct C_KEY_1_76 {
-	s32 frame;
-	s32 numbitmap;
-	s32 fx; // associated fx
-	s16 typeinterp, force;
-	SavedVec3 pos;
-	f32 angz;
-	s32 color;
-	s32 colord;
-	s32 colorf;
-	f32 speed;
-	CinematicLight_1_71 light;
-	SavedVec3 posgrille;
-	f32 angzgrille;
-	f32 speedtrack;
-	s32 idsound[16];
-};
+void PlayTrack(Cinematic * c);
+int GetStartFrame();
+int GetEndFrame();
+void SetCurrFrame(int frame);
+bool GereTrackNoPlay(Cinematic * c);
+float GetTrackFPS();
 
+C_KEY * GetKey(int f, int * num);
+C_KEY * SearchKey(int f, int * num);
 
-struct SavedCinematicTrack {
-	s32 startframe;
-	s32 endframe;
-	f32 currframe;
-	f32 fps;
-	s32 nbkey;
-	s32 pause;
-};
+float GetTimeKeyFramer();
+void UpDateAllKeyLight();
 
-
-#pragma pack(pop)
-
-
-#endif // ARX_IO_CINEMATICFORMAT_H
+#endif // ARX_CINEMATIC_CINEMATICKEYFRAMER_H

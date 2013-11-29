@@ -17,15 +17,22 @@
  * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ARX_SCENE_CINEMATICSOUND_H
-#define ARX_SCENE_CINEMATICSOUND_H
+#ifndef ARX_CINEMATIC_CINEMATICCONTROLLER_H
+#define ARX_CINEMATIC_CINEMATICCONTROLLER_H
 
-#include "io/resource/ResourcePath.h"
-#include "platform/Platform.h"
+#include <string>
 
-void DeleteAllSound();
-void AddSoundToList(const res::path & path, bool isSpeech);
-bool PlaySoundKeyFramer(int index);
-void StopSoundKeyFramer();
+void cinematicPrepare(std::string name, bool preload);
 
-#endif // ARX_SCENE_CINEMATICSOUND_H
+void cinematicRequestStart();
+
+void DANAE_KillCinematic();
+
+void LaunchWaitingCine();
+
+bool cinematicIsStopped();
+
+bool isInCinematic();
+void cinematicRender();
+
+#endif // ARX_CINEMATIC_CINEMATICCONTROLLER_H

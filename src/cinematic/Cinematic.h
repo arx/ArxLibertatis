@@ -41,8 +41,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
 
-#ifndef ARX_ANIMATION_CINEMATIC_H
-#define ARX_ANIMATION_CINEMATIC_H
+#ifndef ARX_CINEMATIC_CINEMATIC_H
+#define ARX_CINEMATIC_CINEMATIC_H
 
 #include <stddef.h>
 #include <vector>
@@ -152,4 +152,4 @@ private:
 void DrawGrille(CinematicGrid * grille, int col, int fx, CinematicLight * light, Vec3f * posgrillesuiv, float angzgrillesuiv);
 void FillKeyTemp(Vec3f * pos, float az, int frame, int numbitmap, int numfx, short ti, int color, int colord, int colorf, float speed, int idsound, short force, CinematicLight * light, Vec3f * posgrille, float angzgrille, float speedtrack);
 
-#endif // ARX_ANIMATION_CINEMATIC_H
+#endif // ARX_CINEMATIC_CINEMATIC_H

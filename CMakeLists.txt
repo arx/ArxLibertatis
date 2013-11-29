@@ -549,10 +549,17 @@ set(AI_SOURCES
 set(ANIMATION_SOURCES
 	src/animation/Animation.cpp
 	src/animation/AnimationRender.cpp
-	src/animation/Cinematic.cpp
-	src/animation/CinematicController.cpp
-	src/animation/CinematicKeyframer.cpp
 	src/animation/Intro.cpp
+)
+
+set(CINEMATIC_SOURCES
+	src/cinematic/Cinematic.cpp
+	src/cinematic/CinematicController.cpp
+	src/cinematic/CinematicKeyframer.cpp
+	src/cinematic/CinematicLoad.cpp
+	src/cinematic/CinematicTexture.cpp
+	src/cinematic/CinematicEffects.cpp
+	src/cinematic/CinematicSound.cpp
 )
 
 set(AUDIO_SOURCES
@@ -616,14 +623,12 @@ set(GRAPHICS_SOURCES
 	src/graphics/GraphicsUtility.cpp
 	src/graphics/Math.cpp
 	src/graphics/Renderer.cpp
-	src/graphics/data/CinematicTexture.cpp
 	src/graphics/data/FTL.cpp
 	src/graphics/data/Mesh.cpp
 	src/graphics/data/MeshManipulation.cpp
 	src/graphics/data/BackgroundEdit.cpp
 	src/graphics/data/Progressive.cpp
 	src/graphics/data/TextureContainer.cpp
-	src/graphics/effects/CinematicEffects.cpp
 	src/graphics/effects/DrawEffects.cpp
 	src/graphics/effects/Fog.cpp
 	src/graphics/effects/SpellEffects.cpp
@@ -680,7 +685,6 @@ set(INPUT_SDL1_SOURCES src/input/SDL1InputBackend.cpp)
 set(INPUT_SDL2_SOURCES src/input/SDL2InputBackend.cpp)
 
 set(IO_SOURCES
-	src/io/CinematicLoad.cpp
 	src/io/Implode.cpp
 	src/io/IniReader.cpp
 	src/io/IniSection.cpp
@@ -760,7 +764,6 @@ set(PLATFORM_CRASHHANDLER_WINDOWS_SOURCES src/platform/crashhandler/CrashHandler
 
 set(SCENE_SOURCES
 	src/scene/ChangeLevel.cpp
-	src/scene/CinematicSound.cpp
 	src/scene/GameSound.cpp
 	src/scene/Interactive.cpp
 	src/scene/Light.cpp
@@ -929,6 +932,7 @@ endif()
 set(ARX_SOURCES
 	${AI_SOURCES}
 	${ANIMATION_SOURCES}
+	${CINEMATIC_SOURCES}
 	${AUDIO_SOURCES}
 	${CORE_SOURCES}
 	${GAME_SOURCES}

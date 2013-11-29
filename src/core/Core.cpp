@@ -65,8 +65,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "animation/Animation.h"
 #include "animation/AnimationRender.h"
-#include "animation/Cinematic.h"
-#include "animation/CinematicKeyframer.h"
+
+#include "cinematic/Cinematic.h"
+#include "cinematic/CinematicKeyframer.h"
 
 #include "core/Application.h"
 #include "core/ArxGame.h"
@@ -124,7 +125,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/fs/SystemPaths.h"
 #include "io/resource/ResourcePath.h"
 #include "io/resource/PakReader.h"
-#include "io/CinematicLoad.h"
+#include "cinematic/CinematicLoad.h"
 #include "io/Screenshot.h"
 #include "io/log/Logger.h"
 
@@ -142,7 +143,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "platform/ProgramOptions.h"
 
 #include "scene/LinkedObject.h"
-#include "scene/CinematicSound.h"
+#include "cinematic/CinematicSound.h"
 #include "scene/ChangeLevel.h"
 #include "scene/Scene.h"
 #include "scene/GameSound.h"

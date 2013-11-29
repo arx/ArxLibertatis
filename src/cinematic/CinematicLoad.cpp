@@ -41,7 +41,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
 
-#include "io/CinematicLoad.h"
+#include "cinematic/CinematicLoad.h"
 
 #include <stddef.h>
 #include <cstring>
@@ -52,21 +52,21 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <boost/algorithm/string/case_conv.hpp>
 #include <boost/algorithm/string/predicate.hpp>
 
-#include "animation/Cinematic.h"
-#include "animation/CinematicKeyframer.h"
+#include "cinematic/Cinematic.h"
+#include "cinematic/CinematicKeyframer.h"
 
 #include "core/Config.h"
 
-#include "graphics/data/CinematicTexture.h"
+#include "cinematic/CinematicTexture.h"
 
 #include "io/resource/PakReader.h"
 #include "io/log/Logger.h"
 #include "io/resource/ResourcePath.h"
-#include "io/CinematicFormat.h"
+#include "cinematic/CinematicFormat.h"
 
 #include "platform/Platform.h"
 
-#include "scene/CinematicSound.h"
+#include "cinematic/CinematicSound.h"
 
 extern C_KEY KeyTemp;
 

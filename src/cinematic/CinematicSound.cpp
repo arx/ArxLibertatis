@@ -41,20 +41,103 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
 
-#ifndef ARX_GRAPHICS_EFFECTS_CINEMATICEFFECTS_H
-#define ARX_GRAPHICS_EFFECTS_CINEMATICEFFECTS_H
+#include "cinematic/CinematicSound.h"
 
-#include "game/Camera.h"
+#include <iomanip>
 
-class TextureContainer;
-class CinematicBitmap;
-class Cinematic;
+#include "audio/AudioTypes.h"
+#include "graphics/Math.h"
+#include "io/log/Logger.h"
+#include "io/resource/ResourcePath.h"
+#include "scene/GameSound.h"
 
+using std::string;
 
-int FX_FadeIN(float a, int color, int colord);
-int FX_FadeOUT(float a, int color, int colord);
-bool FX_FlashBlanc(float w, float h, float speed, int color, float fps, float currfps);
-bool FX_Blur(Cinematic * c, CinematicBitmap * tb, EERIE_CAMERA &camera);
-void FX_DreamPrecalc(CinematicBitmap * bi, float amp, float fps);
+namespace {
 
-#endif // ARX_GRAPHICS_EFFECTS_CINEMATICEFFECTS_H
+// TODO move this into the Cinematic class
+
+struct CinematicSound {
+	
+	CinematicSound()
+		: exists(false), isSpeech(false), handle(audio::INVALID_ID) { }
+	
+	bool exists;
+	bool isSpeech;
+	res::path file;
+	audio::SourceId handle;
+	
+};
+
+static CinematicSound TabSound[256];
+
+} // anonymous namespace
+
+static CinematicSound * GetFreeSound() {
+	
+	for(size_t i = 0; i < ARRAY_SIZE(TabSound); i++) {
+		if(!TabSound[i].exists) {
+			return &TabSound[i];
+		}
+	}
+	
+	return NULL;
+}
+
+static bool DeleteFreeSound(int num) {
+	
+	if(!TabSound[num].exists) {
+		return false;
+	}
+	
+	TabSound[num].file.clear();
+	
+	TabSound[num].exists = false;
+	
+	return true;
+}
+
+void DeleteAllSound(void) {
+	
+	for(size_t i = 0; i < ARRAY_SIZE(TabSound); i++) {
+		DeleteFreeSound(i);
+	}
+}
+
+void AddSoundToList(const res::path & path, bool isSpeech) {
+	
+	CinematicSound * cs = GetFreeSound();
+	if(!cs) {
+		LogError << "AddSoundToList failed for " << path;
+		return;
+	}
+	
+	cs->file = path;
+	cs->isSpeech = isSpeech;
+	cs->exists = true;
+}
+
+bool PlaySoundKeyFramer(int index) {
+	
+	if(index < 0 || size_t(index) >= ARRAY_SIZE(TabSound) || !TabSound[index].exists) {
+		return false;
+	}
+	
+	CinematicSound & cs = TabSound[index];
+	
+	LogDebug("playing " << (cs.isSpeech ? "speech" : "sound")
+	         << ' ' << index << " = " << cs.file);
+	cs.handle = ARX_SOUND_PlayCinematic(cs.file, cs.isSpeech);
+	
+	return true;
+}
+
+void StopSoundKeyFramer() {
+	
+	for(size_t i = 0; i < ARRAY_SIZE(TabSound); i++) {
+		if(TabSound[i].exists && TabSound[i].handle != audio::INVALID_ID) {
+			ARX_SOUND_Stop(TabSound[i].handle);
+			TabSound[i].handle = audio::INVALID_ID;
+		}
+	}
+}

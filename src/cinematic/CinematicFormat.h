@@ -41,70 +41,96 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
 
-#ifndef ARX_GRAPHICS_DATA_CINEMATICTEXTURE_H
-#define ARX_GRAPHICS_DATA_CINEMATICTEXTURE_H
+#ifndef ARX_CINEMATIC_CINEMATICFORMAT_H
+#define ARX_CINEMATIC_CINEMATICFORMAT_H
 
-#include <vector>
+#include "cinematic/Cinematic.h"
+#include "graphics/GraphicsFormat.h"
+#include "platform/Platform.h"
 
-#include "math/Types.h"
-#include "math/Vector.h"
 
-class Texture2D;
-namespace res { class path; }
+#pragma pack(push,1)
 
-// TODO better name
-struct C_INDEXED {
-	int bitmapdepx;
-	int bitmapdepy;
-	int bitmapw;
-	int bitmaph;
-	int nbvertexs;
-	Texture2D * tex;
-	int startind;
-	int nbind;
+static const s32 CINEMATIC_VERSION_1_75 = (1<<16) | 75;
+static const s32 CINEMATIC_VERSION_1_76 = (1<<16) | 76;
+static const s16 INTERP_NO_FADE = 2;
+
+// Version 1.75 structures
+
+struct CinematicLight_1_71 {
+	
+	SavedVec3 pos;
+	f32 fallin;
+	f32 fallout;
+	SavedColor color;
+	f32 intensity;
+	f32 intensiternd;
+	s32 prev; // ignored
+	s32 next; // ignored
+	
+	inline operator CinematicLight() {
+		CinematicLight l;
+		l.pos = pos.toVec3();
+		l.fallin = fallin;
+		l.fallout = fallout;
+		l.color = color;
+		l.intensity = intensity;
+		l.intensiternd = intensiternd;
+		return l;
+	}
+	
 };
 
-// TODO better name
-struct C_IND {
-	unsigned short i1;
-	unsigned short i2;
-	unsigned short i3;
+struct C_KEY_1_75 {
+	s32 frame;
+	s32 numbitmap;
+	s32 fx; // associated fx
+	s16 typeinterp, force;
+	SavedVec3 pos;
+	f32 angz;
+	s32 color;
+	s32 colord;
+	s32 colorf;
+	s32 idsound;
+	f32 speed;
+	CinematicLight_1_71 light;
+	SavedVec3 posgrille;
+	f32 angzgrille;
+	f32 speedtrack;
 };
 
-struct C_UV {
-	Vec2f uv;
-	int indvertex;
+// Version 1.76 structures
+
+struct C_KEY_1_76 {
+	s32 frame;
+	s32 numbitmap;
+	s32 fx; // associated fx
+	s16 typeinterp, force;
+	SavedVec3 pos;
+	f32 angz;
+	s32 color;
+	s32 colord;
+	s32 colorf;
+	f32 speed;
+	CinematicLight_1_71 light;
+	SavedVec3 posgrille;
+	f32 angzgrille;
+	f32 speedtrack;
+	s32 idsound[16];
 };
 
-struct CinematicGrid {
-	int nbvertexs;
-	int nbfaces;
-	int nbinds;
-	int nbindsmalloc;
-	int nbuvs;
-	int nbuvsmalloc;
-	Vec3f * vertexs;
-	C_UV * uvs;
-	C_IND * inds;
-	std::vector<C_INDEXED> mats;
-	float dx;
-	float dy;
-	int nbx;
-	int nby;
-	int echelle;
+
+struct SavedCinematicTrack {
+	s32 startframe;
+	s32 endframe;
+	f32 currframe;
+	f32 fps;
+	s32 nbkey;
+	s32 pause;
 };
 
-class CinematicBitmap {
-public:
-	~CinematicBitmap();
 
-public:
-	int w, h;
-	int nbx, nby;
-	CinematicGrid grid;
-	int dreaming;
-};
+#pragma pack(pop)
 
-CinematicBitmap * CreateCinematicBitmap(const res::path & path, int scale);
 
-#endif // ARX_GRAPHICS_DATA_CINEMATICTEXTURE_H
+#endif // ARX_CINEMATIC_CINEMATICFORMAT_H

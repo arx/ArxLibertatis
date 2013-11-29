@@ -41,13 +41,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
 
-#include "animation/CinematicKeyframer.h"
+#include "cinematic/CinematicKeyframer.h"
 
 #include <cmath>
 #include <cstdlib>
 #include <cstring>
 
-#include "animation/Cinematic.h"
+#include "cinematic/Cinematic.h"
 #include "core/GameTime.h"
 
 static const float C_MIN_F32 = 1.175494351e-38F;

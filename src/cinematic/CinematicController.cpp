@@ -17,17 +17,17 @@
  * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "animation/CinematicController.h"
+#include "cinematic/CinematicController.h"
 
 #include "core/GameTime.h"
 
 #include "io/log/Logger.h"
 #include "io/resource/PakReader.h"
-#include "io/CinematicLoad.h"
+#include "cinematic/CinematicLoad.h"
 
-#include "animation/Cinematic.h"
-#include "animation/CinematicKeyframer.h"
-#include "scene/CinematicSound.h"
+#include "cinematic/Cinematic.h"
+#include "cinematic/CinematicKeyframer.h"
+#include "cinematic/CinematicSound.h"
 
 #include "game/Camera.h"
 #include "game/Player.h"

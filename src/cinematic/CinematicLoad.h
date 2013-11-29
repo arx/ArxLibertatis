@@ -17,8 +17,8 @@
  * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ARX_IO_CINEMATICLOAD_H
-#define ARX_IO_CINEMATICLOAD_H
+#ifndef ARX_CINEMATIC_CINEMATICLOAD_H
+#define ARX_CINEMATIC_CINEMATICLOAD_H
 
 namespace res { class path; }
 
@@ -26,4 +26,4 @@ class Cinematic;
 
 bool loadCinematic(Cinematic * c, const res::path & file);
 
-#endif // ARX_IO_CINEMATICLOAD_H
+#endif // ARX_CINEMATIC_CINEMATICLOAD_H

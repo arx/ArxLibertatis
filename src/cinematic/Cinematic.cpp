@@ -41,12 +41,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
 
-#include "animation/Cinematic.h"
+#include "cinematic/Cinematic.h"
 
 #include <cmath>
 #include <algorithm>
 
-#include "animation/CinematicKeyframer.h"
+#include "cinematic/CinematicKeyframer.h"
 
 #include "core/Application.h"
 
@@ -55,14 +55,14 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/Renderer.h"
 #include "graphics/Vertex.h"
 #include "graphics/data/Mesh.h"
-#include "graphics/data/CinematicTexture.h"
-#include "graphics/effects/CinematicEffects.h"
+#include "cinematic/CinematicTexture.h"
+#include "cinematic/CinematicEffects.h"
 #include "graphics/texture/TextureStage.h"
 #include "graphics/texture/Texture.h"
 
 #include "math/Angle.h"
 
-#include "scene/CinematicSound.h"
+#include "cinematic/CinematicSound.h"
 
 static const int WIDTHS = 512;
 static const int HEIGHTS = 384;

@@ -41,103 +41,70 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
 
-#include "scene/CinematicSound.h"
+#ifndef ARX_CINEMATIC_CINEMATICTEXTURE_H
+#define ARX_CINEMATIC_CINEMATICTEXTURE_H
 
-#include <iomanip>
+#include <vector>
 
-#include "audio/AudioTypes.h"
-#include "graphics/Math.h"
-#include "io/log/Logger.h"
-#include "io/resource/ResourcePath.h"
-#include "scene/GameSound.h"
+#include "math/Types.h"
+#include "math/Vector.h"
 
-using std::string;
+class Texture2D;
+namespace res { class path; }
 
-namespace {
-
-// TODO move this into the Cinematic class
-
-struct CinematicSound {
-	
-	CinematicSound()
-		: exists(false), isSpeech(false), handle(audio::INVALID_ID) { }
-	
-	bool exists;
-	bool isSpeech;
-	res::path file;
-	audio::SourceId handle;
-	
+// TODO better name
+struct C_INDEXED {
+	int bitmapdepx;
+	int bitmapdepy;
+	int bitmapw;
+	int bitmaph;
+	int nbvertexs;
+	Texture2D * tex;
+	int startind;
+	int nbind;
 };
 
-static CinematicSound TabSound[256];
+// TODO better name
+struct C_IND {
+	unsigned short i1;
+	unsigned short i2;
+	unsigned short i3;
+};
 
-} // anonymous namespace
+struct C_UV {
+	Vec2f uv;
+	int indvertex;
+};
 
-static CinematicSound * GetFreeSound() {
-	
-	for(size_t i = 0; i < ARRAY_SIZE(TabSound); i++) {
-		if(!TabSound[i].exists) {
-			return &TabSound[i];
-		}
-	}
-	
-	return NULL;
-}
+struct CinematicGrid {
+	int nbvertexs;
+	int nbfaces;
+	int nbinds;
+	int nbindsmalloc;
+	int nbuvs;
+	int nbuvsmalloc;
+	Vec3f * vertexs;
+	C_UV * uvs;
+	C_IND * inds;
+	std::vector<C_INDEXED> mats;
+	float dx;
+	float dy;
+	int nbx;
+	int nby;
+	int echelle;
+};
 
-static bool DeleteFreeSound(int num) {
-	
-	if(!TabSound[num].exists) {
-		return false;
-	}
-	
-	TabSound[num].file.clear();
-	
-	TabSound[num].exists = false;
-	
-	return true;
-}
+class CinematicBitmap {
+public:
+	~CinematicBitmap();
 
-void DeleteAllSound(void) {
-	
-	for(size_t i = 0; i < ARRAY_SIZE(TabSound); i++) {
-		DeleteFreeSound(i);
-	}
-}
+public:
+	int w, h;
+	int nbx, nby;
+	CinematicGrid grid;
+	int dreaming;
+};
 
-void AddSoundToList(const res::path & path, bool isSpeech) {
-	
-	CinematicSound * cs = GetFreeSound();
-	if(!cs) {
-		LogError << "AddSoundToList failed for " << path;
-		return;
-	}
-	
-	cs->file = path;
-	cs->isSpeech = isSpeech;
-	cs->exists = true;
-}
+CinematicBitmap * CreateCinematicBitmap(const res::path & path, int scale);
 
-bool PlaySoundKeyFramer(int index) {
-	
-	if(index < 0 || size_t(index) >= ARRAY_SIZE(TabSound) || !TabSound[index].exists) {
-		return false;
-	}
-	
-	CinematicSound & cs = TabSound[index];
-	
-	LogDebug("playing " << (cs.isSpeech ? "speech" : "sound")
-	         << ' ' << index << " = " << cs.file);
-	cs.handle = ARX_SOUND_PlayCinematic(cs.file, cs.isSpeech);
-	
-	return true;
-}
-
-void StopSoundKeyFramer() {
-	
-	for(size_t i = 0; i < ARRAY_SIZE(TabSound); i++) {
-		if(TabSound[i].exists && TabSound[i].handle != audio::INVALID_ID) {
-			ARX_SOUND_Stop(TabSound[i].handle);
-			TabSound[i].handle = audio::INVALID_ID;
-		}
-	}
-}
+#endif // ARX_CINEMATIC_CINEMATICTEXTURE_H

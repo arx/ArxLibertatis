@@ -41,64 +41,20 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
 
-#ifndef ARX_ANIMATION_CINEMATICKEYFRAMER_H
-#define ARX_ANIMATION_CINEMATICKEYFRAMER_H
+#ifndef ARX_CINEMATIC_CINEMATICEFFECTS_H
+#define ARX_CINEMATIC_CINEMATICEFFECTS_H
 
-#include "animation/Cinematic.h" // for CinematicLight
-#include "math/Vector.h"
+#include "game/Camera.h"
 
-static const int INTERP_NO = -1;
-static const int INTERP_BEZIER = 0;
-static const int INTERP_LINEAR = 1;
+class TextureContainer;
+class CinematicBitmap;
+class Cinematic;
 
-struct C_KEY {
-	
-	int frame;
-	int numbitmap;
-	int fx; // associated fx
-	short typeinterp, force;
-	Vec3f pos;
-	float angz;
-	int color;
-	int colord;
-	int colorf;
-	float speed;
-	CinematicLight light;
-	Vec3f posgrille;
-	float angzgrille;
-	float speedtrack;
-	
-	int idsound;
-	
-};
 
-struct CinematicTrack {
-	int startframe;
-	int endframe;
-	float currframe;
-	float fps;
-	int nbkey;
-	int pause;
-	C_KEY * key;
-};
+int FX_FadeIN(float a, int color, int colord);
+int FX_FadeOUT(float a, int color, int colord);
+bool FX_FlashBlanc(float w, float h, float speed, int color, float fps, float currfps);
+bool FX_Blur(Cinematic * c, CinematicBitmap * tb, EERIE_CAMERA &camera);
+void FX_DreamPrecalc(CinematicBitmap * bi, float amp, float fps);
 
-bool DeleteTrack();
-bool AllocTrack(int sf, int ef, float fps);
-bool AddKey(C_KEY * key, bool writecolor, bool writecolord, bool writecolorf);
-bool AddKeyLoad(C_KEY * key);
-bool GereTrack(Cinematic * c, float fpscurr);
-
-void PlayTrack(Cinematic * c);
-int GetStartFrame();
-int GetEndFrame();
-void SetCurrFrame(int frame);
-bool GereTrackNoPlay(Cinematic * c);
-float GetTrackFPS();
-
-C_KEY * GetKey(int f, int * num);
-C_KEY * SearchKey(int f, int * num);
-
-float GetTimeKeyFramer();
-void UpDateAllKeyLight();
-
-#endif // ARX_ANIMATION_CINEMATICKEYFRAMER_H
+#endif // ARX_GRAPHICS_EFFECTS_CINEMATICEFFECTS_H
