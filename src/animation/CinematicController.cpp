@@ -107,6 +107,12 @@ void LaunchWaitingCine() {
 	WILL_LAUNCH_CINE.clear();
 }
 
+bool isInCinematic() {
+	return PLAY_LOADED_CINEMATIC != Cinematic_Stopped
+			&& ControlCinematique
+			&& ControlCinematique->projectload;
+}
+
 static float LastFrameTicks = 0;
 
 // Manages Currently playing 2D cinematic

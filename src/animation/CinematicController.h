@@ -34,6 +34,8 @@ void cinematicPrepare(std::string name, bool preload);
 void DANAE_KillCinematic();
 
 void LaunchWaitingCine();
+
+bool isInCinematic();
 void DANAE_Manage_Cinematic();
 
 #endif // ARX_ANIMATION_CINEMATICCONTROLLER_H

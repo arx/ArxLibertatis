@@ -106,7 +106,6 @@ private:
 	void updateActiveCamera();
 
 	bool isInMenu() const;
-	bool isInCinematic() const;
 
 	void renderMenu();
 	void renderCinematic();

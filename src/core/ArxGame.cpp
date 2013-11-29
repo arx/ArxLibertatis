@@ -1237,12 +1237,6 @@ void ArxGame::renderMenu() {
 	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat); // << NEEDED?
 }
 
-bool ArxGame::isInCinematic() const {
-	return PLAY_LOADED_CINEMATIC != Cinematic_Stopped
-			&& ControlCinematique
-			&& ControlCinematique->projectload;
-}
-
 void ArxGame::renderCinematic() {
 
 	DANAE_Manage_Cinematic();
