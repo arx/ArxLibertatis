@@ -37,7 +37,12 @@
 #include "graphics/Renderer.h"
 #include "input/Input.h"
 
-CinematicState PLAY_LOADED_CINEMATIC = Cinematic_Stopped;
+enum CinematicState {
+	Cinematic_Stopped,
+	Cinematic_StartRequested,
+	Cinematic_Started
+};
+static CinematicState PLAY_LOADED_CINEMATIC = Cinematic_Stopped;
 
 static bool CINE_PRELOAD = false;
 static std::string WILL_LAUNCH_CINE;
@@ -49,6 +54,11 @@ void cinematicPrepare(std::string name, bool preload) {
 
 	WILL_LAUNCH_CINE = name;
 	CINE_PRELOAD = preload;
+}
+
+void cinematicRequestStart() {
+
+	PLAY_LOADED_CINEMATIC = Cinematic_StartRequested;
 }
 
 void DANAE_KillCinematic() {
@@ -107,6 +117,11 @@ void LaunchWaitingCine() {
 	WILL_LAUNCH_CINE.clear();
 }
 
+bool cinematicIsStopped() {
+	return PLAY_LOADED_CINEMATIC == Cinematic_Stopped;
+}
+
+
 bool isInCinematic() {
 	return PLAY_LOADED_CINEMATIC != Cinematic_Stopped
 			&& ControlCinematique
@@ -164,6 +179,3 @@ void DANAE_Manage_Cinematic() {
 
 	LastFrameTicks = FrameTicks;
 }
-
-
-

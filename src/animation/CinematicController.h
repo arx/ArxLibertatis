@@ -22,18 +22,15 @@
 
 #include <string>
 
-enum CinematicState {
-	Cinematic_Stopped,
-	Cinematic_StartRequested,
-	Cinematic_Started
-};
-extern CinematicState PLAY_LOADED_CINEMATIC;
-
 void cinematicPrepare(std::string name, bool preload);
+
+void cinematicRequestStart();
 
 void DANAE_KillCinematic();
 
 void LaunchWaitingCine();
+
+bool cinematicIsStopped();
 
 bool isInCinematic();
 void DANAE_Manage_Cinematic();

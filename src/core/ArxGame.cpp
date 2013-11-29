@@ -158,8 +158,6 @@ static InfoPanels g_debugInfo = InfoPanelNone;
 
 using std::string;
 
-extern CinematicState PLAY_LOADED_CINEMATIC;
-
 extern long START_NEW_QUEST;
 long LOADQUEST_SLOT = -1; // OH NO, ANOTHER GLOBAL! - TEMP PATCH TO CLEAN CODE FLOW
 extern long CHANGE_LEVEL_ICON;
@@ -603,7 +601,7 @@ void ArxGame::doFrame() {
 		LOADQUEST_SLOT = -1;
 	}
 
-	if(PLAY_LOADED_CINEMATIC == Cinematic_Stopped
+	if(cinematicIsStopped()
 	   && !CINEMASCOPE
 	   && !BLOCK_PLAYER_CONTROLS
 	   && ARXmenu.currentmode == AMCM_OFF
@@ -1561,7 +1559,7 @@ void ArxGame::renderLevel() {
 	}
 
 	if(SHOW_INGAME_MINIMAP
-		&& PLAY_LOADED_CINEMATIC == Cinematic_Stopped
+		&& cinematicIsStopped()
 		&& !CINEMASCOPE
 		&& !BLOCK_PLAYER_CONTROLS
 		&& !(player.Interface & INTER_MAP))
