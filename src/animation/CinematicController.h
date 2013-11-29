@@ -29,7 +29,7 @@ enum CinematicState {
 };
 extern CinematicState PLAY_LOADED_CINEMATIC;
 
-extern long CINE_PRELOAD;
+extern bool CINE_PRELOAD;
 extern std::string WILL_LAUNCH_CINE;
 
 void DANAE_KillCinematic();

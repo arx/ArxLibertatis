@@ -39,7 +39,7 @@
 
 
 CinematicState PLAY_LOADED_CINEMATIC = Cinematic_Stopped;
-long CINE_PRELOAD=0;
+bool CINE_PRELOAD = false;
 static std::string LAST_LAUNCHED_CINE;
 std::string WILL_LAUNCH_CINE;
 
@@ -51,7 +51,7 @@ void DANAE_KillCinematic() {
 		ControlCinematique->OneTimeSceneReInit();
 		ControlCinematique->DeleteDeviceObjects();
 		PLAY_LOADED_CINEMATIC = Cinematic_Stopped;
-		CINE_PRELOAD = 0;
+		CINE_PRELOAD = false;
 	}
 }
 
