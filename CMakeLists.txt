@@ -34,6 +34,7 @@ endif()
 option(BUILD_CRASHREPORTER "Build the crash reporter" ${def_BUILD_CRASHREPORTER})
 option(BUILD_EDITOR "Build editor" OFF)
 option(BUILD_EDIT_LOADSAVE "Build save/load functions only used by the editor" ON)
+option(BUILD_IO_LIBRARY "Build shared library for reading and writing arx data" ON)
 option(INSTALL_SCRIPTS "Install the data install script" ON)
 
 # Optional dependencies
@@ -1151,6 +1152,26 @@ if(BUILD_TOOLS)
 	
 	add_executable_shared(arxunpak "" "${arxunpak_SOURCES}" "${arxunpak_LIBRARIES}" "")
 	
+endif()
+
+if(BUILD_IO_LIBRARY)
+
+	set(arxiolibrary_SOURCES
+		src/lib/ArxIO.cpp
+		src/io/Blast.cpp
+		src/platform/Lock.cpp
+		src/platform/Platform.cpp
+		src/platform/ProgramOptions.cpp
+		src/platform/Environment.cpp
+		${IO_FILESYSTEM_SOURCES}
+		${IO_LOGGER_SOURCES}
+		${UTIL_SOURCES}
+	)
+
+	set(arxiolibrary_LIBRARIES ${BASE_LIBRARIES} ${ZLIB_LIBRARIES})
+
+	add_library(ArxIO SHARED "" ${arxiolibrary_SOURCES} ${arxiolibrary_LIBRARIES})
+
 endif()
 
 
