@@ -235,8 +235,7 @@ public:
 		} else {
 			
 			if(resources->getFile(res::path("graph/interface/illustrations") / (name + ".cin"))) {
-				WILL_LAUNCH_CINE = name + ".cin";
-				CINE_PRELOAD = preload;
+				cinematicPrepare(name + ".cin", preload);
 			} else {
 				ScriptWarning << "unable to find cinematic \"" << name << '"';
 				return Failed;

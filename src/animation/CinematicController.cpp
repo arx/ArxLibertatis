@@ -37,13 +37,19 @@
 #include "graphics/Renderer.h"
 #include "input/Input.h"
 
-
 CinematicState PLAY_LOADED_CINEMATIC = Cinematic_Stopped;
-bool CINE_PRELOAD = false;
+
+static bool CINE_PRELOAD = false;
+static std::string WILL_LAUNCH_CINE;
 static std::string LAST_LAUNCHED_CINE;
-std::string WILL_LAUNCH_CINE;
 
 Cinematic			*ControlCinematique=NULL;	// 2D Cinematic Controller
+
+void cinematicPrepare(std::string name, bool preload) {
+
+	WILL_LAUNCH_CINE = name;
+	CINE_PRELOAD = preload;
+}
 
 void DANAE_KillCinematic() {
 	if(ControlCinematique && ControlCinematique->projectload) {
@@ -152,3 +158,6 @@ void DANAE_Manage_Cinematic() {
 
 	LastFrameTicks = FrameTicks;
 }
+
+
+
