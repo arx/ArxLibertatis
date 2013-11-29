@@ -1604,10 +1604,8 @@ void ArxGame::renderLevel() {
 }
 
 void ArxGame::update() {	
-	if(!WILL_LAUNCH_CINE.empty()) {
-		// A cinematic is waiting to be played...
-		LaunchWaitingCine();
-	}
+
+	LaunchWaitingCine();
 }
 
 void ArxGame::render() {

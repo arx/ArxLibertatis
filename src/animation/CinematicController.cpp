@@ -59,6 +59,11 @@ Vec3f ePos;
 
 void LaunchWaitingCine() {
 
+	// A cinematic is waiting to be played...
+	if(WILL_LAUNCH_CINE.empty()) {
+		return;
+	}
+
 	LogDebug("LaunchWaitingCine " << CINE_PRELOAD);
 
 	if(ACTIVECAM) {
