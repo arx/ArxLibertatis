@@ -1235,11 +1235,6 @@ void ArxGame::renderMenu() {
 	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat); // << NEEDED?
 }
 
-void ArxGame::renderCinematic() {
-
-	DANAE_Manage_Cinematic();
-}
-
 extern int iHighLight;
 
 void ArxGame::updateLevel() {
@@ -1679,7 +1674,7 @@ void ArxGame::render() {
 	if(isInMenu()) {
 		renderMenu();
 	} else if(isInCinematic()) {
-		renderCinematic();
+		cinematicRender();
 	} else {
 		updateLevel();
 		UpdateInterface();

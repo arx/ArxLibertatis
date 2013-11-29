@@ -33,6 +33,6 @@ void LaunchWaitingCine();
 bool cinematicIsStopped();
 
 bool isInCinematic();
-void DANAE_Manage_Cinematic();
+void cinematicRender();
 
 #endif // ARX_ANIMATION_CINEMATICCONTROLLER_H

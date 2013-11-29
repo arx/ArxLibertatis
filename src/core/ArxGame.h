@@ -108,7 +108,6 @@ private:
 	bool isInMenu() const;
 
 	void renderMenu();
-	void renderCinematic();
 
 	void updateLevel();
 	void renderLevel();

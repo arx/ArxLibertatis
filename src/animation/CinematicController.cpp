@@ -131,7 +131,7 @@ bool isInCinematic() {
 static float LastFrameTicks = 0;
 
 // Manages Currently playing 2D cinematic
-void DANAE_Manage_Cinematic() {
+void cinematicRender() {
 
 	float FrameTicks = arxtime.get_updated(false);
 
