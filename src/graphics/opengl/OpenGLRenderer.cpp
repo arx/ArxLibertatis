@@ -20,6 +20,7 @@
 #include "graphics/opengl/OpenGLRenderer.h"
 
 #include "core/Application.h"
+#include "graphics/opengl/GLDebug.h"
 #include "graphics/opengl/GLNoVertexBuffer.h"
 #include "graphics/opengl/GLTexture2D.h"
 #include "graphics/opengl/GLTextureStage.h"
@@ -129,6 +130,7 @@ void OpenGLRenderer::initialize() {
 		return;
 	}
 	
+	LogInfo << "Using GLEW " << glewGetString(GLEW_VERSION);
 	CrashHandler::setVariable("GLEW version", glewGetString(GLEW_VERSION));
 	
 	LogInfo << "Using OpenGL " << glGetString(GL_VERSION);
@@ -139,7 +141,10 @@ void OpenGLRenderer::initialize() {
 	
 	LogInfo << " └─ Device: " << glGetString(GL_RENDERER);
 	CrashHandler::setVariable("OpenGL device", glGetString(GL_RENDERER));
-
+	
+#ifdef ARX_DEBUG
+	gldebug::initialize();
+#endif
 }
 
 void OpenGLRenderer::beforeResize(bool wasOrIsFullscreen) {
