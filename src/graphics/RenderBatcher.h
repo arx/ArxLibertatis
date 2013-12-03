@@ -44,6 +44,13 @@ struct RenderMaterial {
 		Subtractive2
 	};
 
+	enum Layer {
+		Decal,
+		Effect,
+		FullscreenEffect,
+		HUDEffect
+	};
+
 	RenderMaterial();
 
 	bool operator<(const RenderMaterial & other) const;
@@ -62,6 +69,9 @@ struct RenderMaterial {
 	BlendType getBlendType() const { return m_blendType; }
 	void setBlendType(BlendType type) { m_blendType = type; }
 
+	Layer getLayer() const { return m_layer; }
+	void setLayer(Layer layer) { m_layer = layer; }
+
 	TextureStage::WrapMode getWrapMode() const { return m_wrapMode; }
 	void setWrapMode(TextureStage::WrapMode mode) { m_wrapMode = mode; }
 
@@ -78,6 +88,7 @@ private:
 	Texture * m_texture;
 	bool m_depthTest;
 	BlendType m_blendType;
+	Layer m_layer;
 	TextureStage::WrapMode m_wrapMode;
 	int m_depthBias;
 	Renderer::CullingMode m_cullingMode;

@@ -108,13 +108,19 @@ RenderMaterial::RenderMaterial()
 	: m_texture(0)
 	, m_depthTest(false)
 	, m_blendType(Opaque)
+	, m_layer(Effect)
 	, m_wrapMode(TextureStage::WrapRepeat)
 	, m_depthBias(0)
 	, m_cullingMode(Renderer::CullNone) {
 }
 
 bool RenderMaterial::operator<(const RenderMaterial & other) const {
-	// First sort by blend type
+	// First, sort by layer
+	if(m_layer != other.m_layer) {
+		return m_layer < other.m_layer;
+	}
+
+	// Then by blend type
 	if(m_blendType != other.m_blendType) {
 		return m_blendType < other.m_blendType;
 	}
