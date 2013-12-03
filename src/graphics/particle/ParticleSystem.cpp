@@ -483,8 +483,10 @@ void ParticleSystem::Render() {
 				else
 					fRot = (-fParticleRotation) * p->ulTime + p->fRotStart;
 
+				float size = std::max(p->fSize, 0.f);
+				
 				if(tex_tab[inumtex])
-					EERIEAddSprite(mat, p3pos, p->fSize, p->ulColor, 2, fRot);
+					EERIEAddSprite(mat, p3pos, size, p->ulColor, 2, fRot);
 			} else {
 				if(tex_tab[inumtex])
 					EERIEAddSprite(mat, p3pos, p->fSize, p->ulColor, 2);

@@ -1373,7 +1373,8 @@ void ARX_PARTICLES_Update(EERIE_CAMERA * cam)  {
 				}
 				
 				float temp = (part->zdec) ? 0.0001f : 2.f;
-				EERIEAddSprite(mat, in, siz, color, temp, rott);
+				float size = std::max(siz, 0.f);
+				EERIEAddSprite(mat, in, size, color, temp, rott);
 				
 			}
 		} else if(part->type & PARTICLE_2D) {
