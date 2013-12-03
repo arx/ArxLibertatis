@@ -935,7 +935,7 @@ void CRiseDead::Update(unsigned long _ulTime)
 }
 
 //-----------------------------------------------------------------------------
-// rendu de la déchirure spatio temporelle
+// render the space time tearing
 void CRiseDead::Render()
 {
 	if(ulCurrentTime >= (ulDurationIntro + ulDurationRender + ulDurationOuttro))
