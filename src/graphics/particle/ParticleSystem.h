@@ -51,6 +51,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/Draw.h"
 #include "math/Types.h"
 #include "math/Vector.h"
+#include "math/Quantizer.h"
 #include "platform/Flags.h"
  
 class Particle;
@@ -86,6 +87,8 @@ public:
 	
 	unsigned long ulTime;
 	unsigned long ulNbParticleGen;
+	
+	math::Quantizer m_storedTime;
 	
 	// these are used for the particles it creates
 	Vec3f p3ParticlePos;

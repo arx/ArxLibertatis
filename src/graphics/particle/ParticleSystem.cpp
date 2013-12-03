@@ -404,11 +404,11 @@ void ParticleSystem::Update(long _lTime) {
 	// création de particules en fct de la fréquence
 	if(iParticleNbAlive < iParticleNbMax) {
 		long t = iParticleNbMax - iParticleNbAlive;
-
-		if(fParticleFreq != -1) {
-			t = max(min(checked_range_cast<long>(fTimeSec * fParticleFreq), t), 1l);
+		
+		if(fParticleFreq != -1.f) {
+			t = std::min(long(m_storedTime.update(fTimeSec * fParticleFreq)), t);
 		}
-
+		
 		for(iNb = 0; iNb < t; iNb++) {
 			Particle * pP  = new Particle();
 			SetParticleParams(pP);
