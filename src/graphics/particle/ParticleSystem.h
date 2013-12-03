@@ -85,7 +85,6 @@ public:
 	
 	EERIEMATRIX eMat;
 	
-	unsigned long ulTime;
 	unsigned long ulNbParticleGen;
 	
 	math::Quantizer m_storedTime;

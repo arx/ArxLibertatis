@@ -79,7 +79,6 @@ ParticleSystem::ParticleSystem() {
 	
 	iParticleNbMax = 50;
 	
-	ulTime = 0;
 	ulNbParticleGen = 10;
 	iParticleNbAlive = 0;
 	iNbTex = 0;
@@ -366,7 +365,6 @@ void ParticleSystem::Update(long _lTime) {
 	if(arxtime.is_paused())
 		return;
 
-	ulTime += _lTime;
 	int nbtotal = 0;
 	int iNb;
 	float fTimeSec = _lTime * ( 1.0f / 1000 );
