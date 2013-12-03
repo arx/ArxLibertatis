@@ -1470,12 +1470,15 @@ void TreatBackgroundActions() {
 			ARX_SOUND_RefreshPosition(gl->sample, &gl->pos);
 		}
 		
-		long count = 2;
+		float amount = 2.f;
 		if(dist < square(ACTIVECAM->cdepth * (1.f / 6))) {
-			count = 4;
-		} else if(dist > square(ACTIVECAM->cdepth * (1.f / 3))) {
-			count = 3;
+			amount = 3.f;
+		} else if(dist < square(ACTIVECAM->cdepth * (1.f / 3))) {
+			amount = 2.5f;
 		}
+		const float targetFPS = 61.f;
+		const float targetDelay = 1000.f / targetFPS;
+		long count = gl->m_storedFlameTime.update(amount * framedelay * (1.f / targetDelay));
 		
 		for(long n = 0; n < count; n++) {
 			
