@@ -248,6 +248,7 @@ void ARXDRAW_DrawPolyBoom()
 	
 	RenderMaterial mat = RenderMaterial::getCurrent();
 	mat.setDepthBias(8);
+	mat.setLayer(RenderMaterial::Decal);
 
 	std::vector<POLYBOOM>::iterator pb = polyboom.begin();
 	while (pb != polyboom.end()) {
