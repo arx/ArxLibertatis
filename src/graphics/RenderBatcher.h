@@ -47,6 +47,7 @@ struct RenderMaterial {
 	enum Layer {
 		Decal,
 		Effect,
+		EffectForeground,
 		FullscreenEffect,
 		HUDEffect
 	};
