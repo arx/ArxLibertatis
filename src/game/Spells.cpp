@@ -5350,9 +5350,11 @@ void ARX_SPELLS_Update()
 					entities[spells[i].target]->ioflags &= ~IO_FREEZESCRIPT;
 				break;
 				case SPELL_RISE_DEAD:
-					ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &entities[spells[i].longinfo]->pos);
 
 					if(ValidIONum(spells[i].longinfo) && spells[i].longinfo != 0) {
+						
+						ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &entities[spells[i].longinfo]->pos);
+						
 						Entity *entity = entities[spells[i].longinfo];
 
 						if(entity->scriptload && (entity->ioflags & IO_NOSAVE)) {
@@ -5443,7 +5445,10 @@ void ARX_SPELLS_Update()
 				}
 				break;
 				case SPELL_SUMMON_CREATURE :
-					ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &entities[spells[i].longinfo2]->pos);
+					
+					if(ValidIONum(spells[i].longinfo2) && spells[i].longinfo2 != 0) {
+						ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &entities[spells[i].longinfo2]->pos);
+					}
 
 					if(spells[i].pSpellFx->lLightId > -1) {
 						long id = spells[i].pSpellFx->lLightId;
