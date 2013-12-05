@@ -50,10 +50,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <stddef.h>
 
-#include "math/Types.h"
-#include "graphics/Color.h"
-#include "platform/Flags.h"
 #include "audio/AudioTypes.h"
+#include "graphics/Color.h"
+#include "math/Types.h"
+#include "math/Quantizer.h"
+#include "platform/Flags.h"
 
 struct EERIE_LIGHT;
 struct EERIEPOLY;
@@ -123,6 +124,7 @@ struct EERIE_LIGHT {
 	unsigned long time_creation;
 	long duration; // will start to fade before the end of duration...
 	audio::SourceId sample;
+	math::Quantizer m_storedFlameTime;
 };
 
 struct ColorMod {

@@ -386,7 +386,7 @@ void FlareLine(const Vec2s & pos0, const Vec2s & pos1, Entity * io)
 
 static unsigned long FRAMETICKS=0;
 
-void ARX_MAGICAL_FLARES_Draw() {
+void ARX_MAGICAL_FLARES_Update() {
 
 	if(!flarenum)
 		return;
@@ -402,11 +402,10 @@ void ARX_MAGICAL_FLARES_Draw() {
 		return;
 	}
 
-	GRenderer->SetRenderState(Renderer::DepthWrite, false);
-	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-
 	bool key = !GInput->actionPressed(CONTROLS_CUST_MAGICMODE);
+
+	RenderMaterial mat;
+	mat.setBlendType(RenderMaterial::Additive);
 
 	for(long j = 1; j < 5; j++) {
 
@@ -417,6 +416,8 @@ void ARX_MAGICAL_FLARES_Draw() {
 			case 4:  surf = flaretc.plasm; break;
 			default: surf = flaretc.shine[shinum]; break;
 		}
+
+		mat.setTexture(surf);
 
 		for(long i = 0; i < MAX_FLARES; i++) {
 
@@ -476,26 +477,19 @@ void ARX_MAGICAL_FLARES_Draw() {
 				el->rgb = c;
 			}
 
-			if(!flare.io) {
-				GRenderer->SetRenderState(Renderer::DepthTest, false);
-			} else {
-				GRenderer->SetRenderState(Renderer::DepthTest, true);
-			}
-
+			mat.setDepthTest(flare.io != NULL);
+			
 			if(flare.bDrawBitmap) {
 				s *= 2.f;
-				EERIEDrawBitmap(flare.v.p.x, flare.v.p.y, s, s, flare.v.p.z,
+				EERIEAddBitmap(mat, flare.v.p.x, flare.v.p.y, s, s, flare.v.p.z,
 								surf, Color::fromBGRA(flare.tv.color));
 			} else {
-				EERIEDrawSprite(&flare.v, s * 0.025f + 1.f, surf,
-								Color::fromBGRA(flare.tv.color), 2.f);
+				EERIEAddSprite(mat, flare.v, s * 0.025f + 1.f,
+				               Color::fromBGRA(flare.tv.color), 2.f);
 			}
 
 		}
 	}
 
 	DynLight[0].rgb = componentwise_min(DynLight[0].rgb, Color3f::white);
-
-	GRenderer->SetRenderState(Renderer::DepthWrite, true);
-	GRenderer->SetRenderState(Renderer::DepthTest, true);
 }

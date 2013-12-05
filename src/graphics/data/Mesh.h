@@ -157,7 +157,7 @@ int PointIn2DPolyXZ(const EERIEPOLY * ep, float x, float z);
 int EERIELaunchRay3(Vec3f * orgn, Vec3f * dest,  Vec3f * hit, EERIEPOLY * tp, long flag);
 
 void EE_RotateY(TexturedVertex *in,TexturedVertex *out,float c, float s);
-void EE_RTP(TexturedVertex *in,TexturedVertex *out);
+void EE_RTP(const TexturedVertex *in,TexturedVertex *out);
 
 // FAST SAVE LOAD
 bool FastSceneLoad(const res::path & path);

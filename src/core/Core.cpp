@@ -218,7 +218,6 @@ TextureContainer *	pTCCrossHair;			// Animated Hand Cursor TC
 TextureContainer *	iconequip[5];
 TextureContainer *	GoldCoinsTC[MAX_GOLD_COINS_VISUALS]; // Gold Coins Icons
 TextureContainer *	explo[MAX_EXPLO];		// TextureContainer for animated explosion bitmaps (24 frames)
-TextureContainer *	blood_splat = NULL;		// TextureContainer for blood splat particles
 
 TextureContainer *	tflare = NULL;
 static TextureContainer * npc_fight = NULL;
@@ -227,7 +226,6 @@ static TextureContainer * npc_stop = NULL;
 TextureContainer *	sphere_particle=NULL;
 TextureContainer *	inventory_font=NULL;
 TextureContainer *	enviro=NULL;
-TextureContainer *	specular=NULL;
 TextureContainer *	stealth_gauge_tc=NULL;
 TextureContainer *	arx_logo_tc=NULL;
 TextureContainer *	TC_fire2=NULL;
@@ -1294,7 +1292,6 @@ void LoadSysTextures()
 	current->symbols[2]=RUNE_MEGA;
 	current->symbols[3]=RUNE_YOK;
 
-	specular=			TextureContainer::LoadUI("graph/particles/specular");
 	enviro=				TextureContainer::LoadUI("graph/particles/enviro");
 	sphere_particle=	TextureContainer::LoadUI("graph/particles/sphere");
 	inventory_font=		TextureContainer::LoadUI("graph/interface/font/font10x10_inventory");
@@ -1325,8 +1322,6 @@ void LoadSysTextures()
 		sprintf(temp,"graph/particles/fireb_%02ld",i+1);
 		explo[i]= TextureContainer::LoadUI(temp);
 	}
-
-	blood_splat=TextureContainer::LoadUI("graph/particles/new_blood2");
 
 	TextureContainer::LoadUI("graph/particles/square");
 	
@@ -1605,6 +1600,7 @@ void FirstFrameHandling() {
 	FirstFrame = true;
 
 	ARX_PARTICLES_FirstInit();
+	RenderBatcher::getInstance().reset();
 	
 	PROGRESS_BAR_COUNT += 2.f;
 	LoadLevelScreen();
@@ -2746,6 +2742,9 @@ void shutdownGame() {
 	
 	//animations
 	EERIE_ANIMMANAGER_ClearAll();
+
+	//sprites
+	RenderBatcher::getInstance().reset();
 	
 	//Scripts
 	if(svar) {

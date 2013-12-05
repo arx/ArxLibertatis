@@ -54,8 +54,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 using std::min;
 using std::max;
 
-Vec3f SPRmins;
-Vec3f SPRmaxs;
 
 extern TextureContainer * enviro;
 
@@ -77,11 +75,10 @@ void SetTextureDrawPrim(TextureContainer* tex, TexturedVertex* v, Renderer::Prim
 	EERIEDRAWPRIM(prim, v, 4);
 }
 
-void EERIEDrawSprite(TexturedVertex * in, float siz, TextureContainer * tex, Color color, float Zpos) {
-	
+bool EERIECreateSprite(TexturedQuad& sprite, const TexturedVertex & in, float siz, Color color, float Zpos, float rot = 0) {
+
 	TexturedVertex out;
-	
-	EE_RTP(in, &out);
+	EE_RTP(&in, &out);
 	out.rhw *= 3000.f;
 
 	if ((out.p.z>0.f) && (out.p.z<1000.f)
@@ -105,70 +102,53 @@ void EERIEDrawSprite(TexturedVertex * in, float siz, TextureContainer * tex, Col
 			out.rhw = 1.f - out.p.z;
 		} else {
 			out.rhw *= (1.f/3000.f);
+		}		
+		
+		ColorBGRA col = color.toBGRA();
+		
+		sprite.v[0] = TexturedVertex(Vec3f(), out.rhw, col, out.specular, Vec2f_ZERO);
+		sprite.v[1] = TexturedVertex(Vec3f(), out.rhw, col, out.specular, Vec2f_X_AXIS);
+		sprite.v[2] = TexturedVertex(Vec3f(), out.rhw, col, out.specular, Vec2f(1.f, 1.f));
+		sprite.v[3] = TexturedVertex(Vec3f(), out.rhw, col, out.specular, Vec2f_Y_AXIS);
+		
+		if(rot == 0) {
+			Vec3f maxs = out.p + t;
+			Vec3f mins = out.p - t;
+
+			sprite.v[0].p = Vec3f(mins.x, mins.y, out.p.z);
+			sprite.v[1].p = Vec3f(maxs.x, mins.y, out.p.z);
+			sprite.v[2].p = Vec3f(maxs.x, maxs.y, out.p.z);
+			sprite.v[3].p = Vec3f(mins.x, maxs.y, out.p.z);
+		} else {
+			for(long i=0;i<4;i++) {
+				float tt = radians(MAKEANGLE(rot+90.f*i+45+90));
+				sprite.v[i].p.x = EEsin(tt) * t + out.p.x;
+				sprite.v[i].p.y = EEcos(tt) * t + out.p.y;
+				sprite.v[i].p.z = out.p.z;
+			}
 		}
 
-		SPRmaxs.x=out.p.x+t;
-		SPRmins.x=out.p.x-t;
-		SPRmaxs.y=out.p.y+t;
-		SPRmins.y=out.p.y-t;
-
-		ColorBGRA col = color.toBGRA();
-		TexturedVertex v[4];
-		v[0] = TexturedVertex(Vec3f(SPRmins.x, SPRmins.y, out.p.z), out.rhw, col, out.specular, Vec2f_ZERO);
-		v[1] = TexturedVertex(Vec3f(SPRmaxs.x, SPRmins.y, out.p.z), out.rhw, col, out.specular, Vec2f_X_AXIS);
-		v[2] = TexturedVertex(Vec3f(SPRmins.x, SPRmaxs.y, out.p.z), out.rhw, col, out.specular, Vec2f_Y_AXIS);
-		v[3] = TexturedVertex(Vec3f(SPRmaxs.x, SPRmaxs.y, out.p.z), out.rhw, col, out.specular, Vec2f(1.f, 1.f));
-		SetTextureDrawPrim(tex, v, Renderer::TriangleStrip);
+		return true;
 	}
-	else SPRmaxs.x=-1;
+
+	return false;
 }
 
-void EERIEDrawRotatedSprite(TexturedVertex * in, float siz, TextureContainer * tex, Color color, float Zpos, float rot) {
-	
-	TexturedVertex out;
+void EERIEAddSprite(const RenderMaterial & mat, const TexturedVertex & in, float siz, Color color, float Zpos, float rot) {
+	TexturedQuad s;
 
-	EE_RTP(in, &out);
-	out.rhw *= 3000.f;
-	
-	if(out.p.z > 0.f && out.p.z < 1000.f) {
-		float use_focal = BASICFOCAL * Xratio;
-	
-		float t = siz * ((out.rhw - 1.f) * use_focal * 0.001f); 
-
-		if(t <= 0.f)
-			t = 0.00000001f;
-
-		if(Zpos<=1.f) {
-			out.p.z = Zpos; 
-			out.rhw = 1.f - out.p.z;
-		} else {
-			out.rhw *= (1.f/3000.f);
-		}
-
-		ColorBGRA col = color.toBGRA();
-		TexturedVertex v[4];
-		v[0] = TexturedVertex(Vec3f(0, 0, out.p.z), out.rhw, col, out.specular, Vec2f_ZERO);
-		v[1] = TexturedVertex(Vec3f(0, 0, out.p.z), out.rhw, col, out.specular, Vec2f_X_AXIS);
-		v[2] = TexturedVertex(Vec3f(0, 0, out.p.z), out.rhw, col, out.specular, Vec2f(1.f, 1.f));
-		v[3] = TexturedVertex(Vec3f(0, 0, out.p.z), out.rhw, col, out.specular, Vec2f_Y_AXIS);
-		
-		
-		SPRmaxs.x=out.p.x+t;
-		SPRmins.x=out.p.x-t;
-		
-		SPRmaxs.y=out.p.y+t;			
-		SPRmins.y=out.p.y-t;
-
-		SPRmaxs.z = SPRmins.z = out.p.z; 
-
-		for(long i=0;i<4;i++) {
-			float tt = radians(MAKEANGLE(rot+90.f*i+45+90));
-			v[i].p.x = EEsin(tt) * t + out.p.x;
-			v[i].p.y = EEcos(tt) * t + out.p.y;
-		}
-		SetTextureDrawPrim(tex, v, Renderer::TriangleFan);
+	if(EERIECreateSprite(s, in, siz, color, Zpos, rot)) {
+		RenderBatcher::getInstance().add(mat, s);
 	}
-	else SPRmaxs.x=-1;
+}
+
+void EERIEDrawSprite(const TexturedVertex & in, float siz, TextureContainer * tex, Color color, float Zpos) {
+	
+	TexturedQuad s;
+
+	if(EERIECreateSprite(s, in, siz, color, Zpos)) {
+		SetTextureDrawPrim(tex, s.v, Renderer::TriangleFan);
+	}
 }
 
 //! Match pixel and texel origins.
@@ -180,32 +160,42 @@ void EERIEDrawBitmap(Rect rect, float z, TextureContainer * tex, Color color) {
 	EERIEDrawBitmap(rect.left, rect.top, rect.width(), rect.height(), z, tex, color);
 }
 
-void DrawBitmap(float x, float y, float sx, float sy, float z, TextureContainer * tex, Color color, bool isRhw) {
+void CreateBitmap(TexturedQuad& s, float x, float y, float sx, float sy, float z, TextureContainer * tex, Color color, bool isRhw) {
 	MatchPixTex(x, y);
-	Vec2f uv = (tex) ? tex->uv : Vec2f_ZERO;	
+	Vec2f uv = (tex) ? tex->uv : Vec2f_ZERO;
 	ColorBGRA col = color.toBGRA();
 	float val = 1.f;
 
 	if(isRhw) {
-		val -= z; 
+		val -= z;
 	}
 
-	TexturedVertex v[4];
-	v[0] = TexturedVertex(Vec3f(x,      y,      z), val, col, 0xFF000000, Vec2f(0.f,  0.f));
-	v[1] = TexturedVertex(Vec3f(x + sx, y,      z), val, col, 0xFF000000, Vec2f(uv.x, 0.f));
-	v[2] = TexturedVertex(Vec3f(x,      y + sy, z), val, col, 0xFF000000, Vec2f(0.f,  uv.y));
-	v[3] = TexturedVertex(Vec3f(x + sx, y + sy, z), val, col, 0xFF000000, Vec2f(uv.x, uv.y));
+	s.v[0] = TexturedVertex(Vec3f(x, y, z), val, col, 0xFF000000, Vec2f(0.f, 0.f));
+	s.v[1] = TexturedVertex(Vec3f(x + sx, y, z), val, col, 0xFF000000, Vec2f(uv.x, 0.f));
+	s.v[2] = TexturedVertex(Vec3f(x + sx, y + sy, z), val, col, 0xFF000000, Vec2f(uv.x, uv.y));
+	s.v[3] = TexturedVertex(Vec3f(x, y + sy, z), val, col, 0xFF000000, Vec2f(0.f, uv.y));
+}
 
+void DrawBitmap(float x, float y, float sx, float sy, float z, TextureContainer * tex, Color color, bool isRhw) {
+	TexturedQuad s;
+	CreateBitmap(s, x, y, sx, sy, z, tex, color, isRhw);
+	
 	GRenderer->SetTexture(0, tex);
 	if(isRhw) {
 		if(tex && tex->hasColorKey()) {
 			GRenderer->SetAlphaFunc(Renderer::CmpGreater, .5f);
-			EERIEDRAWPRIM(Renderer::TriangleStrip, v, 4);
+			EERIEDRAWPRIM(Renderer::TriangleFan, s.v, 4);
 			GRenderer->SetAlphaFunc(Renderer::CmpNotEqual, 0.f);
 			return;
 		}
 	}
-	EERIEDRAWPRIM(Renderer::TriangleStrip, v, 4);
+	EERIEDRAWPRIM(Renderer::TriangleFan, s.v, 4);
+}
+
+void EERIEAddBitmap(const RenderMaterial & mat, float x, float y, float sx, float sy, float z, TextureContainer * tex, Color color) {
+	TexturedQuad s;
+	CreateBitmap(s, x, y, sx, sy, z, tex, color, false);
+	RenderBatcher::getInstance().add(mat, s);
 }
 
 void EERIEDrawBitmap(float x, float y, float sx, float sy, float z, TextureContainer * tex, Color color) {

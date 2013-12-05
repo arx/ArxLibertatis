@@ -1240,6 +1240,8 @@ extern int iHighLight;
 
 void ArxGame::updateLevel() {
 
+	RenderBatcher::getInstance().clear();
+
 	if(!PLAYER_PARALYSED) {
 		manageEditorControls();
 
@@ -1441,7 +1443,7 @@ void ArxGame::renderLevel() {
 	drawDebugRender();
 
 	// Begin Particles
-	
+		
 	if(pParticleManager) {
 		pParticleManager->Render();
 	}
@@ -1450,8 +1452,8 @@ void ArxGame::renderLevel() {
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
-	ARX_PARTICLES_Render(&subj);
-
+	ARX_PARTICLES_Update(&subj);
+	
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
@@ -1460,7 +1462,7 @@ void ArxGame::renderLevel() {
 
 	// Renders Magical Flares
 	if(!((player.Interface & INTER_MAP) && !(player.Interface & INTER_COMBATMODE))) {
-		ARX_MAGICAL_FLARES_Draw();
+		ARX_MAGICAL_FLARES_Update();
 	}
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
@@ -1487,9 +1489,6 @@ void ArxGame::renderLevel() {
 		GRenderer->SetRenderState(Renderer::DepthWrite, true);
 	}
 
-	if(FADEDIR)
-		ManageFade();
-
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 
@@ -1504,11 +1503,19 @@ void ArxGame::renderLevel() {
 
 	GRenderer->SetCulling(Renderer::CullNone);
 	GRenderer->SetRenderState(Renderer::Fog, true);
-
+		
+	GRenderer->SetFogColor(Color::none);
+	GRenderer->SetRenderState(Renderer::DepthWrite, false);
+	RenderBatcher::getInstance().render();
+	GRenderer->SetRenderState(Renderer::DepthWrite, true);
+	GRenderer->SetFogColor(ulBKGColor);
+	
 	// Manage Death visual & Launch menu...
 	ARX_PLAYER_Manage_Death();
 
 	// INTERFACE
+	RenderBatcher::getInstance().clear();
+
 	// Remove the Alphablend State if needed : NO Z Clear
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	GRenderer->SetRenderState(Renderer::Fog, false);
@@ -1524,19 +1531,21 @@ void ArxGame::renderLevel() {
 		drawAllInterfaceFinish();
 
 		if((player.Interface & INTER_MAP) && !(player.Interface & INTER_COMBATMODE)) {
-			ARX_MAGICAL_FLARES_Draw();
+			ARX_MAGICAL_FLARES_Update();
+			GRenderer->SetRenderState(Renderer::DepthWrite, false);
+			RenderBatcher::getInstance().render();
+			GRenderer->SetRenderState(Renderer::DepthWrite, true);
 		}
 		
 		GRenderer->SetRenderState(Renderer::DepthTest, true);
-	}
-
-	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
-
-	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-	PopAllTriangleList();
-	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	PopAllTriangleListTransparency();
-	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+		GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
+	
+		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+		PopAllTriangleList();
+		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+		PopAllTriangleListTransparency();
+		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+	}	
 
 	update2DFX();
 	goFor2DFX();
@@ -1589,6 +1598,8 @@ void ArxGame::renderLevel() {
 	if(sp_max_start)
 		Manage_sp_max();
 
+	if(FADEDIR)
+		ManageFade();
 }
 
 void ArxGame::update() {	
@@ -1841,7 +1852,7 @@ void ArxGame::goFor2DFX()
 				else
 					siz = -el->ex_flaresize;
 
-				EERIEDrawSprite(&lv, siz, tflare, (el->rgb * v).to<u8>(), ltvv.p.z);
+				EERIEDrawSprite(lv, siz, tflare, (el->rgb * v).to<u8>(), ltvv.p.z);
 
 			}
 		}
@@ -1878,7 +1889,7 @@ bool ArxGame::initDeviceObjects() {
 	GRenderer->SetFogColor(current.depthcolor.to<u8>());
 	GRenderer->SetRenderState(Renderer::Fog, true);
 	
-	SetZBias(0);
+	GRenderer->SetDepthBias(0);
 
 	ComputePortalVertexBuffer();
 	VertexBuffer<SMY_VERTEX3> * vb3 = GRenderer->createVertexBuffer3(4000, Renderer::Stream);
@@ -1886,6 +1897,8 @@ bool ArxGame::initDeviceObjects() {
 	
 	VertexBuffer<TexturedVertex> * vb = GRenderer->createVertexBufferTL(4000, Renderer::Stream);
 	pDynamicVertexBuffer_TLVERTEX = new CircularVertexBuffer<TexturedVertex>(vb);
+
+	RenderBatcher::getInstance().initialize();
 
 	if(pMenu) {
 		pMenu->bReInitAll=true;
@@ -1937,6 +1950,8 @@ void ArxGame::onRendererShutdown(Renderer & renderer) {
 
 	delete pDynamicVertexBuffer_TLVERTEX, pDynamicVertexBuffer_TLVERTEX = NULL;
 	delete pDynamicVertexBuffer, pDynamicVertexBuffer = NULL;
+
+	RenderBatcher::getInstance().shutdown();
 	
 	EERIE_PORTAL_ReleaseOnlyVertexBuffer();
 	

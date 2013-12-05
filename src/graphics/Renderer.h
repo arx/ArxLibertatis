@@ -178,10 +178,12 @@ public:
 	virtual Texture2D * CreateTexture2D() = 0;
 	
 	// Render states
+	virtual bool GetRenderState(RenderState renderState) const = 0;
 	virtual void SetRenderState(RenderState renderState, bool enable) = 0;
 	
 	// Alphablending & Transparency
 	virtual void SetAlphaFunc(PixelCompareFunc func, float fef) = 0; // Ref = [0.0f, 1.0f]
+	virtual void GetBlendFunc(PixelBlendingFactor& srcFactor, PixelBlendingFactor& dstFactor) const = 0;
 	virtual void SetBlendFunc(PixelBlendingFactor srcFactor, PixelBlendingFactor dstFactor) = 0;
 	
 	// Viewport
@@ -202,14 +204,18 @@ public:
 	
 	// Rasterizer
 	virtual void SetAntialiasing(bool enable) = 0;
+	virtual CullingMode GetCulling() const = 0;
 	virtual void SetCulling(CullingMode mode) = 0;
+	virtual int GetDepthBias() const = 0;
 	virtual void SetDepthBias(int depthBias) = 0;
 	virtual void SetFillMode(FillMode mode) = 0;
 	
 	// Texturing
 	inline unsigned int GetTextureStageCount() const { return m_TextureStages.size(); }
 	TextureStage * GetTextureStage(unsigned int textureStage);
+	const TextureStage * GetTextureStage(unsigned int textureStage) const;
 	void ResetTexture(unsigned int textureStage);
+	Texture * GetTexture(unsigned int textureStage) const;
 	void SetTexture(unsigned int textureStage, Texture * pTexture);
 	void SetTexture(unsigned int textureStage, TextureContainer * pTextureContainer);
 	

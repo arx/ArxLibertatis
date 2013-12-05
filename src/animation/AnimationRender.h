@@ -55,6 +55,7 @@ class Entity;
 struct EERIEMATRIX;
 struct EERIE_QUAT;
 struct TexturedVertex;
+struct RenderMaterial;
 
 float Cedric_GetInvisibility(Entity *io);
 
@@ -63,7 +64,8 @@ void Cedric_ApplyLightingFirstPartRefactor(Entity *io);
 void PopAllTriangleList(bool clear = true);
 void PopAllTriangleListTransparency();
 
-void ARX_DrawPrimitive(TexturedVertex *, TexturedVertex *, TexturedVertex *, float _fAdd = 0.0f);
+void ARX_DrawPrimitive(TexturedVertex *, TexturedVertex *, TexturedVertex *);
+void drawTriangle(const RenderMaterial & mat, const TexturedVertex * vertices);
 
 struct TransformInfo {
 

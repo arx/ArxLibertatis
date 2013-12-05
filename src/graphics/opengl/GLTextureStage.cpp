@@ -50,6 +50,10 @@ GLTextureStage::~GLTextureStage() {
 	resetTexture();
 }
 
+Texture* GLTextureStage::getTexture() const {
+	return tex;
+}
+
 void GLTextureStage::setTexture(Texture * texture) {
 	
 	arx_assert(texture != NULL);
@@ -252,6 +256,10 @@ void GLTextureStage::setAlphaOp(TextureOp op, TextureArg arg0, TextureArg arg1) 
 
 void GLTextureStage::setAlphaOp(TextureOp op) {
 	setOp(Alpha, op);
+}
+
+TextureStage::WrapMode GLTextureStage::getWrapMode() const {
+	return wrapMode;
 }
 
 void GLTextureStage::setWrapMode(WrapMode _wrapMode) {

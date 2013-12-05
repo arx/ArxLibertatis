@@ -26,40 +26,48 @@
 
 const size_t HALOMAX = 2000;
 
-long HALOCUR = 0;
-TexturedVertex LATERDRAWHALO[HALOMAX * 4];
+long HALOCUR[2] = {};
+TexturedVertex LATERDRAWHALO[2][HALOMAX * 6];
 
-TexturedVertex * Halo_AddVertex() {
-	TexturedVertex *vert = &LATERDRAWHALO[(HALOCUR << 2)];
+void Halo_AddVertices(TexturedVertex (&inVerts)[4]) {
+	int blendType = inVerts[2].color == 0 ? 0 : 1;
 
-	if(HALOCUR < ((long)HALOMAX) - 1) {
-		HALOCUR++;
+	TexturedVertex *vert = &LATERDRAWHALO[blendType][(HALOCUR[blendType] * 6)];
+	if(HALOCUR[blendType] < ((long)HALOMAX) - 1) {
+		HALOCUR[blendType]++;
 	}
-	return vert;
+
+	vert[0] = inVerts[0];
+	vert[1] = inVerts[1];
+	vert[2] = inVerts[2];
+	
+	vert[3] = inVerts[0];
+	vert[4] = inVerts[2];
+	vert[5] = inVerts[3];
 }
 
 void Halo_Render() {
-	if(HALOCUR > 0) {
-		GRenderer->ResetTexture(0);
-		GRenderer->SetBlendFunc(Renderer::BlendSrcColor, Renderer::BlendOne);
-		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-		GRenderer->SetCulling(Renderer::CullNone);
-		GRenderer->SetRenderState(Renderer::DepthWrite, false);
+	
+	if(HALOCUR[0] == 0 && HALOCUR[1] == 0)
+		return;
 
-		for(int i=0; i < HALOCUR; i++) {
-			TexturedVertex *vert = &LATERDRAWHALO[(i<<2)];
+	GRenderer->ResetTexture(0);
+	GRenderer->SetBlendFunc(Renderer::BlendSrcColor, Renderer::BlendOne);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+	GRenderer->SetCulling(Renderer::CullNone);
+	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 
-			if(vert[2].color == 0) {
-				GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
-				vert[2].color =0xFF000000;
-				EERIEDRAWPRIM(Renderer::TriangleFan, vert, 4);
-				GRenderer->SetBlendFunc(Renderer::BlendSrcColor, Renderer::BlendOne);
-			} else {
-				EERIEDRAWPRIM(Renderer::TriangleFan, vert, 4);
-			}
-		}
-
-		HALOCUR = 0;
-		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+	if(HALOCUR[0] > 0) {
+		GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
+		EERIEDRAWPRIM(Renderer::TriangleList, LATERDRAWHALO[0], HALOCUR[0] * 6);
+		HALOCUR[0] = 0;
 	}
+
+	if(HALOCUR[1] > 0) {
+		GRenderer->SetBlendFunc(Renderer::BlendSrcColor, Renderer::BlendOne);
+		EERIEDRAWPRIM(Renderer::TriangleList, LATERDRAWHALO[1], HALOCUR[1] * 6);
+		HALOCUR[1] = 0;
+	}
+
+	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 }

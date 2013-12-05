@@ -79,7 +79,6 @@ ParticleSystem::ParticleSystem() {
 	
 	iParticleNbMax = 50;
 	
-	ulTime = 0;
 	ulNbParticleGen = 10;
 	iParticleNbAlive = 0;
 	iNbTex = 0;
@@ -87,8 +86,6 @@ ParticleSystem::ParticleSystem() {
 	fParticleRotation = 0;
 	
 	fParticleFreq = -1;
-	iSrcBlend = Renderer::BlendOne;
-	iDstBlend = Renderer::BlendOne;
 	ulParticleSpawn = 0;
 	
 	// default settings for EDITOR MODE only
@@ -133,8 +130,7 @@ ParticleSystem::ParticleSystem() {
 	fParticleEndColorRandom[2] = 0.1f;
 	fParticleEndColorRandom[3] = 0.1f;
 
-	iSrcBlend = Renderer::BlendOne;
-	iDstBlend = Renderer::BlendOne;
+	blendMode = RenderMaterial::Additive;
 }
 
 ParticleSystem::~ParticleSystem() {
@@ -213,32 +209,7 @@ void ParticleSystem::SetParams(const ParticleParams & _pp) {
 	float b = (fParticleStartColor[2]  + fParticleEndColor[2] ) * 0.5f;
 	SetColor(r, g, b);
 
-	switch(_pp.iBlendMode) {
-		case 0:
-			iSrcBlend = Renderer::BlendOne;
-			iDstBlend = Renderer::BlendOne;
-			break;
-		case 1:
-			iSrcBlend = Renderer::BlendZero;
-			iDstBlend = Renderer::BlendInvSrcColor;
-			break;
-		case 2:
-			iSrcBlend = Renderer::BlendSrcColor;
-			iDstBlend = Renderer::BlendDstColor;
-			break;
-		case 3:
-			iSrcBlend = Renderer::BlendSrcAlpha;
-			iDstBlend = Renderer::BlendOne;
-			break;
-		case 5:
-			iSrcBlend = Renderer::BlendInvDstColor;
-			iDstBlend = Renderer::BlendOne;
-			break;
-		default:
-			iSrcBlend = Renderer::BlendOne;
-			iDstBlend = Renderer::BlendOne;
-			break;
-	}
+	blendMode = _pp.blendMode;
 
 	if(_pp.bTexInfo) {
 		SetTexture(_pp.lpszTexName, _pp.iTexNb, _pp.iTexTime, _pp.bTexLoop);
@@ -393,7 +364,6 @@ void ParticleSystem::Update(long _lTime) {
 	if(arxtime.is_paused())
 		return;
 
-	ulTime += _lTime;
 	int nbtotal = 0;
 	int iNb;
 	float fTimeSec = _lTime * ( 1.0f / 1000 );
@@ -431,11 +401,11 @@ void ParticleSystem::Update(long _lTime) {
 	// création de particules en fct de la fréquence
 	if(iParticleNbAlive < iParticleNbMax) {
 		long t = iParticleNbMax - iParticleNbAlive;
-
-		if(fParticleFreq != -1) {
-			t = max(min(checked_range_cast<long>(fTimeSec * fParticleFreq), t), 1l);
+		
+		if(fParticleFreq != -1.f) {
+			t = std::min(long(m_storedTime.update(fTimeSec * fParticleFreq)), t);
 		}
-
+		
 		for(iNb = 0; iNb < t; iNb++) {
 			Particle * pP  = new Particle();
 			SetParticleParams(pP);
@@ -450,10 +420,9 @@ void ParticleSystem::Update(long _lTime) {
 
 void ParticleSystem::Render() {
 	
-	GRenderer->SetCulling(Renderer::CullNone);
-	GRenderer->SetRenderState(Renderer::DepthWrite, false);
-	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	GRenderer->SetBlendFunc(iSrcBlend, iDstBlend);
+	RenderMaterial mat;
+	mat.setBlendType(blendMode);
+	mat.setDepthTest(true);
 
 	int inumtex = 0;
 
@@ -501,6 +470,8 @@ void ParticleSystem::Render() {
 			if(bParticleFollow) {
 				p3pos.p += p3Pos;
 			}
+            
+			mat.setTexture(tex_tab[inumtex]);
 			
 			if(fParticleRotation != 0) {
 				float fRot;
@@ -509,11 +480,13 @@ void ParticleSystem::Render() {
 				else
 					fRot = (-fParticleRotation) * p->ulTime + p->fRotStart;
 
+				float size = std::max(p->fSize, 0.f);
+				
 				if(tex_tab[inumtex])
-					EERIEDrawRotatedSprite(&p3pos, p->fSize, tex_tab[inumtex], p->ulColor, 2, fRot);
+					EERIEAddSprite(mat, p3pos, size, p->ulColor, 2, fRot);
 			} else {
 				if(tex_tab[inumtex])
-					EERIEDrawSprite(&p3pos, p->fSize, tex_tab[inumtex], p->ulColor, 2);
+					EERIEAddSprite(mat, p3pos, p->fSize, p->ulColor, 2);
 			}
 		}
 	}

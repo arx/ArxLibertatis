@@ -63,6 +63,7 @@ public:
 	explicit TextureStage(unsigned int stage);
 	virtual ~TextureStage() { }
 	
+	virtual Texture* getTexture() const = 0;
 	virtual void setTexture(Texture * pTexture) = 0;
 	virtual void resetTexture() = 0;
 	
@@ -76,6 +77,7 @@ public:
 	inline void setAlphaOp(TextureArg texArg);
 	inline void disableAlpha();
 	
+	virtual WrapMode getWrapMode() const = 0;
 	virtual void setWrapMode(WrapMode wrapMode) = 0;
 	
 	virtual void setMinFilter(FilterMode filterMode) = 0;

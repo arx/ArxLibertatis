@@ -36,8 +36,6 @@ static int sdlToArxButton[10];
 
 SDL1InputBackend::SDL1InputBackend() {
 	
-	arx_assert(window != NULL);
-	
 	cursorInWindow = false;
 	
 	SDL_EventState(SDL_ACTIVEEVENT, SDL_ENABLE);

@@ -35,8 +35,16 @@ TextureStage * Renderer::GetTextureStage(unsigned int textureStage) {
 	return (textureStage < m_TextureStages.size()) ? m_TextureStages[textureStage] : NULL;
 }
 
+const TextureStage * Renderer::GetTextureStage(unsigned int textureStage) const {
+	return (textureStage < m_TextureStages.size()) ? m_TextureStages[textureStage] : NULL;
+}
+
 void Renderer::ResetTexture(unsigned int textureStage) {
 	GetTextureStage(textureStage)->resetTexture();
+}
+
+Texture * Renderer::GetTexture(unsigned int textureStage) const {
+	return GetTextureStage(textureStage)->getTexture();
 }
 
 void Renderer::SetTexture(unsigned int textureStage, Texture * pTexture) {

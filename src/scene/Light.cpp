@@ -398,6 +398,7 @@ long GetFreeDynLight() {
 			DynLight[i].time_creation = (unsigned long)(arxtime);
 			DynLight[i].duration = 0;
 			DynLight[i].extras = 0;
+			DynLight[i].m_storedFlameTime.reset();
 			return i;
 		}
 	}

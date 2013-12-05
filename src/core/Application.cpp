@@ -83,8 +83,6 @@ Application * mainApp = 0;
 float FPS;
 LightMode ModeLight = 0;
 
-static int iCurrZBias;
-
 //*************************************************************************************
 // Application()
 // Constructor
@@ -308,20 +306,4 @@ void CalcFPS(bool reset)
 			dwFrames  = 0L;
 		}
 	}
-}
-
-void SetZBias(int _iZBias)
-{
-	if (_iZBias < 0)
-	{
-		_iZBias = 0;
-		_iZBias = max(iCurrZBias, -_iZBias);
-	}
-
-	if (_iZBias == iCurrZBias) 
-		return;
-
-	iCurrZBias = _iZBias;
-
-	GRenderer->SetDepthBias(iCurrZBias);
 }

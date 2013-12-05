@@ -45,6 +45,8 @@ bool switchVertexArray(GLArrayClientState type, const void * ref, int texcount);
 template <>
 inline void setVertexArray(const TexturedVertex * vertices, const void * ref) {
 	
+	ARX_UNUSED(vertices);
+
 	if(!switchVertexArray(GL_TexturedVertex, ref, 1)) {
 		return;
 	}
@@ -52,12 +54,12 @@ inline void setVertexArray(const TexturedVertex * vertices, const void * ref) {
 	// rhw -> w conversion is done in a vertex shader
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glVertexPointer(4, GL_FLOAT, sizeof(TexturedVertex), &vertices->p);
-	
+
 	glEnableClientState(GL_COLOR_ARRAY);
 	glColorPointer(GL_BGRA, GL_UNSIGNED_BYTE, sizeof(TexturedVertex), &vertices->color);
-	
+
 	setVertexArrayTexCoord(0, &vertices->uv, sizeof(TexturedVertex));
-	
+
 	CHECK_GL;
 }
 

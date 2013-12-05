@@ -30,8 +30,8 @@
 
 
 extern void EE_RT(const Vec3f & in, Vec3f & out);
-extern void EE_P(Vec3f * in, TexturedVertex * out);
-extern void EE_RTP(TexturedVertex * in, TexturedVertex * out);
+extern void EE_P(const Vec3f * in, TexturedVertex * out);
+extern void EE_RTP(const TexturedVertex * in, TexturedVertex * out);
 
 void EERIEDraw2DLine(float x0, float y0, float x1, float y1, float z, Color col) {
 

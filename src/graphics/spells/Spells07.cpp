@@ -762,7 +762,7 @@ void CFireField::Create(float largeur, Vec3f * pos, int _ulDuration)
 	cp.bEndLock = false;
 	cp.bTexLoop = true;
 
-	cp.iBlendMode = 3;
+	cp.blendMode = RenderMaterial::AlphaAdditive;
 
 	pPSStream.SetParams(cp);
 	pPSStream.ulParticleSpawn = 0;
@@ -818,7 +818,7 @@ void CFireField::Create(float largeur, Vec3f * pos, int _ulDuration)
 	cp.bEndLock = false;
 	cp.bTexLoop = false;
 
-	cp.iBlendMode = 0;
+	cp.blendMode = RenderMaterial::Additive;
 
 	pPSStream1.SetParams(cp);
 	pPSStream1.ulParticleSpawn = 0;

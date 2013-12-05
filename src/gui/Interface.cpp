@@ -160,7 +160,6 @@ extern TextureContainer * ChangeLevel;
 extern TextureContainer * inventory_font;
 extern TextureContainer * mecanism_tc;
 extern TextureContainer * arrow_left_tc;
-extern TexturedVertex LATERDRAWHALO[];
 extern Notification speech[];
 extern std::string WILLADDSPEECH;
 extern float PLAYER_ROTATION;
@@ -5357,7 +5356,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 						  checked_range_cast<unsigned long>(Original_framedelay), NULL, true, invisibility);
 
 		IN_BOOK_DRAW=0;
-
+		
 		if(ARXmenu.currentmode == AMCM_NEWQUEST) {
 			GRenderer->SetRenderState(Renderer::DepthTest, true);
 			GRenderer->GetTextureStage(0)->setMipFilter(TextureStage::FilterNone);

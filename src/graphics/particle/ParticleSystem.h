@@ -48,8 +48,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/BaseGraphicsTypes.h"
 #include "graphics/Renderer.h"
+#include "graphics/Draw.h"
 #include "math/Types.h"
 #include "math/Vector.h"
+#include "math/Quantizer.h"
 #include "platform/Flags.h"
  
 class Particle;
@@ -83,8 +85,9 @@ public:
 	
 	EERIEMATRIX eMat;
 	
-	unsigned long ulTime;
 	unsigned long ulNbParticleGen;
+	
+	math::Quantizer m_storedTime;
 	
 	// these are used for the particles it creates
 	Vec3f p3ParticlePos;
@@ -118,9 +121,8 @@ public:
 	float fParticleEndColor[4];
 	float fParticleEndColorRandom[4];
 	
-	Renderer::PixelBlendingFactor iSrcBlend;
-	Renderer::PixelBlendingFactor iDstBlend;
-	
+	RenderMaterial::BlendType blendMode;
+		
 	bool bParticleFollow;
 	
 	long lLightId;

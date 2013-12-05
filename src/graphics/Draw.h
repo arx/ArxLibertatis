@@ -44,33 +44,31 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_GRAPHICS_DRAW_H
 #define ARX_GRAPHICS_DRAW_H
 
+#include "graphics/RenderBatcher.h"
 #include "graphics/Renderer.h"
+#include "graphics/Vertex.h"
+#include "graphics/texture/TextureStage.h"
+#include "graphics/data/TextureContainer.h"
 #include "math/Types.h"
 
 struct EERIEPOLY;
 struct EERIE_3DOBJ;
 struct EERIE_SPHERE;
 struct EERIE_CYLINDER;
-struct TexturedVertex;
-
-extern Vec3f SPRmins;
-extern Vec3f SPRmaxs;
 
 void EERIEDRAWPRIM(Renderer::Primitive primitive, const TexturedVertex * vertices, size_t count = 3, bool nocount = false);
 
 void EERIEDrawBitmap(Rect rect, float z, TextureContainer * tex, Color color);
 void EERIEDrawBitmap(float x, float y, float sx, float sy, float z, TextureContainer * tex, Color color);
-
-
 void EERIEDrawBitmap2DecalY(float x, float y, float sx, float sy, float z, TextureContainer * tex, Color col, float _fDeltaY);
 
-void EERIEDrawSprite(TexturedVertex * in, float siz, TextureContainer * tex, Color col, float Zpos);
-void EERIEDrawRotatedSprite(TexturedVertex * in, float siz, TextureContainer * tex, Color col, float Zpos, float rot);
+void EERIEDrawSprite(const TexturedVertex & in, float siz, TextureContainer * tex, Color col, float Zpos);
 
 void EERIEDrawBitmap2(float x, float y, float sx, float sy, float z, TextureContainer * tex, Color col);
-
 void EERIEDrawBitmap_uv(float x, float y, float sx, float sy, float z, TextureContainer * tex, Color col, float u0, float v0, float u1, float v1);
-
 void EERIEDrawBitmapUVs(float x, float y, float sx, float sy, float z, TextureContainer * tex, Color col, float u0, float v0, float u1, float v1, float u2, float v2, float u3, float v3);
+
+void EERIEAddBitmap(const RenderMaterial& mat, float x, float y, float sx, float sy, float z, TextureContainer * tex, Color color);
+void EERIEAddSprite(const RenderMaterial & mat, const TexturedVertex & in, float siz, Color color, float Zpos, float rot = 0);
 
 #endif // ARX_GRAPHICS_DRAW_H

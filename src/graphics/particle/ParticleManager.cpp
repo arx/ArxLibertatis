@@ -93,13 +93,11 @@ void ParticleManager::Update(long _lTime) {
 
 void ParticleManager::Render() {
 
-	int ilekel = 0;
 	list<ParticleSystem *>::iterator i;
 
 	for(i = listParticleSystem.begin(); i != listParticleSystem.end(); ++i) {
 		ParticleSystem * p = *i;
 		p->Render();
-		ilekel++;
 	}
 }
 

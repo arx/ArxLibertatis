@@ -1306,22 +1306,22 @@ void ARX_PORTALS_Frustrum_RenderRoom_TransparencyTSoftCull(long room_num)
 				continue;
 			}
 			case SMY_ARXMAT::Blended: {
-				SetZBias(2);
+				GRenderer->SetDepthBias(2);
 				GRenderer->SetBlendFunc(Renderer::BlendSrcColor, Renderer::BlendDstColor);
 				break;
 			}
 			case SMY_ARXMAT::Multiplicative: {
-				SetZBias(2);
+				GRenderer->SetDepthBias(2);
 				GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 				break;
 			}
 			case SMY_ARXMAT::Additive: {
-				SetZBias(2);
+				GRenderer->SetDepthBias(2);
 				GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 				break;
 			}
 			case SMY_ARXMAT::Subtractive: {
-				SetZBias(8);
+				GRenderer->SetDepthBias(8);
 				GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
 				break;
 			}
@@ -1541,7 +1541,7 @@ void ARX_SCENE_Render() {
 		ARX_PORTALS_Frustrum_RenderRoom_TransparencyTSoftCull(RoomDrawList[i]);
 	}
 
-	SetZBias(8);
+	GRenderer->SetDepthBias(8);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	GRenderer->SetCulling(Renderer::CullCW);
 	GRenderer->SetAlphaFunc(Renderer::CmpNotEqual, 0.f);
@@ -1549,7 +1549,7 @@ void ARX_SCENE_Render() {
 	RenderWater();
 	RenderLava();
 
-	SetZBias(0);
+	GRenderer->SetDepthBias(0);
 	GRenderer->SetFogColor(ulBKGColor);
 	GRenderer->GetTextureStage(0)->setColorOp(TextureStage::OpModulate);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);

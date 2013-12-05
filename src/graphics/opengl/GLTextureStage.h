@@ -35,6 +35,7 @@ public:
 	GLTextureStage(OpenGLRenderer * renderer, unsigned textureStage);
 	~GLTextureStage();
 	
+	Texture* getTexture() const;
 	void setTexture(Texture * pTexture);
 	void resetTexture();
 	
@@ -43,6 +44,7 @@ public:
 	void setAlphaOp(TextureOp textureOp, TextureArg arg0, TextureArg arg1);
 	void setAlphaOp(TextureOp textureOp);
 	
+	WrapMode getWrapMode() const;
 	void setWrapMode(WrapMode wrapMode);
 	
 	void setMinFilter(FilterMode filterMode);

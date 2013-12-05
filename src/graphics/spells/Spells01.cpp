@@ -72,7 +72,7 @@ extern ParticleManager * pParticleManager;
  
 extern long cur_mr;
 
-void LaunchMagicMissileExplosion(Vec3f & _ePos, int t = 0, long spellinstance = -1)
+void LaunchMagicMissileExplosion(const Vec3f & _ePos, int t = 0, long spellinstance = -1)
 {
 	// système de partoches pour l'explosion
 	ParticleSystem * pPS = new ParticleSystem();
@@ -136,6 +136,8 @@ void LaunchMagicMissileExplosion(Vec3f & _ePos, int t = 0, long spellinstance = 
 	cp.fEndColorRandom[1] = 50;
 	cp.fEndColorRandom[2] = 50;
 	cp.fEndColorRandom[3] = 50;
+
+	cp.blendMode = RenderMaterial::Additive;
 
 	pPS->SetParams(cp);
 	pPS->ulParticleSpawn = 0;

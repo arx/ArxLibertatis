@@ -623,6 +623,7 @@ set(GRAPHICS_SOURCES
 	src/graphics/GraphicsUtility.cpp
 	src/graphics/Math.cpp
 	src/graphics/Renderer.cpp
+	src/graphics/RenderBatcher.cpp
 	src/graphics/data/FTL.cpp
 	src/graphics/data/Mesh.cpp
 	src/graphics/data/MeshManipulation.cpp

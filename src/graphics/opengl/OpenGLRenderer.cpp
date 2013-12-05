@@ -39,6 +39,8 @@ static const char vertexShaderSource[] = "void main() {\n"
 	"	gl_FogFragCoord = vertex.z;\n"
 	"}\n";
 
+
+
 OpenGLRenderer::OpenGLRenderer()
 	: useVertexArrays(false)
 	, useVBOs(false)
@@ -137,7 +139,7 @@ void OpenGLRenderer::initialize() {
 	
 	LogInfo << " └─ Device: " << glGetString(GL_RENDERER);
 	CrashHandler::setVariable("OpenGL device", glGetString(GL_RENDERER));
-	
+
 }
 
 void OpenGLRenderer::beforeResize(bool wasOrIsFullscreen) {
@@ -189,8 +191,10 @@ void OpenGLRenderer::reinit() {
 	if(useVBOs && !GLEW_ARB_map_buffer_range) {
 		LogWarning << "Missing OpenGL extension ARB_map_buffer_range, VBO performance will suffer.";
 	}
+
+	resetStateCache();
 	
-	glEnable(GL_POLYGON_OFFSET_FILL);
+	SetRenderState(ZBias, true);
 	
 	glEnable(GL_DEPTH_TEST);
 	SetRenderState(DepthTest, false);
@@ -237,6 +241,14 @@ void OpenGLRenderer::reinit() {
 	
 	onRendererInit();
 	
+}
+
+void OpenGLRenderer::resetStateCache() {
+	m_cachedStates.clear();
+	m_cachedSrcBlend = BlendOne;
+	m_cachedDstBlend = BlendZero;
+	m_cachedDepthBias = 0;
+	m_cachedCullMode = CullNone;
 }
 
 void OpenGLRenderer::shutdown() {
@@ -366,12 +378,66 @@ Texture2D * OpenGLRenderer::CreateTexture2D() {
 	return texture;
 }
 
-static inline void setGLState(GLenum state, bool enable) {
-	if(enable) {
-		glEnable(state);
-	} else {
-		glDisable(state);
+bool OpenGLRenderer::getGLState(GLenum state) const {
+	BoolStateCache::iterator it = m_cachedStates.find(state);
+	
+	if(it != m_cachedStates.end()) {
+		return it->second;
 	}
+
+	bool isEnabled = glIsEnabled(state) == GL_TRUE;
+	m_cachedStates[state] = isEnabled;
+
+	return isEnabled;
+}
+
+void OpenGLRenderer::setGLState(GLenum state, bool enable) {
+	BoolStateCache::iterator it = m_cachedStates.find(state);
+
+	// No change ?
+	if(it == m_cachedStates.end() || it->second != enable) {
+		if(enable) {
+			glEnable(state);
+		} else {
+			glDisable(state);
+		}
+		m_cachedStates[state] = enable;
+	}
+}
+
+bool OpenGLRenderer::GetRenderState(RenderState renderState) const {
+
+	switch(renderState) {
+		
+		case AlphaBlending: {
+			return getGLState(GL_BLEND);
+		}
+		
+		case AlphaTest: {
+			return getGLState(GL_ALPHA_TEST);
+		}
+
+		case DepthTest: {
+			return getGLState(GL_DEPTH_TEST);
+		}
+				
+		case Fog: {
+			return getGLState(GL_FOG);
+		}
+		
+		case Lighting: {
+			return getGLState(GL_LIGHTING);
+		}
+		
+		case ZBias: {
+			return getGLState(GL_POLYGON_OFFSET_FILL);
+		}
+		
+		default:
+			LogWarning << "Unsupported render state: " << renderState;
+	}
+
+	return false;
 }
 
 void OpenGLRenderer::SetRenderState(RenderState renderState, bool enable) {
@@ -457,9 +523,18 @@ static const GLenum arxToGlBlendFactor[] = {
 	GL_ONE_MINUS_DST_ALPHA // BlendInvDstAlpha
 };
 
+void OpenGLRenderer::GetBlendFunc(PixelBlendingFactor& srcFactor, PixelBlendingFactor& dstFactor) const {
+	srcFactor = m_cachedSrcBlend;
+	dstFactor = m_cachedDstBlend;
+}
+
 void OpenGLRenderer::SetBlendFunc(PixelBlendingFactor srcFactor, PixelBlendingFactor dstFactor) {
-	glBlendFunc(arxToGlBlendFactor[srcFactor], arxToGlBlendFactor[dstFactor]);
-	CHECK_GL;
+	if(srcFactor != m_cachedSrcBlend || dstFactor != m_cachedDstBlend) {
+		glBlendFunc(arxToGlBlendFactor[srcFactor], arxToGlBlendFactor[dstFactor]);
+		m_cachedSrcBlend = srcFactor;
+		m_cachedDstBlend = dstFactor;
+		CHECK_GL;
+	}
 }
 
 void OpenGLRenderer::SetViewport(const Rect & _viewport) {
@@ -573,19 +648,37 @@ static const GLenum arxToGlCullMode[] = {
 	GL_FRONT, // CullCCW,
 };
 
+Renderer::CullingMode OpenGLRenderer::GetCulling() const {
+	return m_cachedCullMode;
+}
+
 void OpenGLRenderer::SetCulling(CullingMode mode) {
+	if(mode == m_cachedCullMode)
+		return;
+
+	m_cachedCullMode = mode;
+
 	if(mode == CullNone) {
-		glDisable(GL_CULL_FACE);
+		setGLState(GL_CULL_FACE, false);
 	} else {
-		glEnable(GL_CULL_FACE);
+		setGLState(GL_CULL_FACE, true);
 		glCullFace(arxToGlCullMode[mode]);
 	}
+
 	CHECK_GL;
 }
 
+int OpenGLRenderer::GetDepthBias() const {
+	return m_cachedDepthBias;
+}
+
 void OpenGLRenderer::SetDepthBias(int depthBias) {
+	if(depthBias == m_cachedDepthBias)
+		return;
 	
-	float bias = -(float)depthBias;
+	m_cachedDepthBias = depthBias;
+
+	float bias = -(float)m_cachedDepthBias;
 	
 	glPolygonOffset(bias, bias);
 	
