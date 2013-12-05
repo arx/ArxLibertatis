@@ -710,6 +710,9 @@ void CRiseDead::RenderFissure()
 	etarget.y = 0;
 	etarget.z = fBetaRadSin;
 
+	RenderMaterial mat = RenderMaterial::getCurrent();
+	mat.setLayer(RenderMaterial::EffectForeground);
+
 	//-------------------------------------------------------------------------
 	// computation des sommets
 	float fTempCos, fTempSin;
@@ -739,7 +742,7 @@ void CRiseDead::RenderFissure()
 
 	//-------------------------------------------------------------------------
 	// rendu de la fissure
-	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+	mat.setBlendType(RenderMaterial::Opaque);
 	vr[0].color = vr[1].color = vr[2].color = vr[3].color = Color::black.toBGR();
 
 	if(bIntro) {
@@ -748,8 +751,8 @@ void CRiseDead::RenderFissure()
 			EE_RT2(&v1b[i], &vr[1]);
 			EE_RT2(&v1a[i+1], &vr[2]);
 			EE_RT2(&v1b[i+1], &vr[3]);
-			ARX_DrawPrimitive(&vr[0], &vr[1], &vr[2]);
-			ARX_DrawPrimitive(&vr[1], &vr[2], &vr[3]);
+			drawTriangle(mat, &vr[0]);
+			drawTriangle(mat, &vr[1]);
 		}
 	} else {
 		for(i = 0; i < min(end, (int)fSizeIntro); i++) {
@@ -757,14 +760,14 @@ void CRiseDead::RenderFissure()
 			EE_RT2(&vb[i], &vr[1]);
 			EE_RT2(&va[i+1], &vr[2]);
 			EE_RT2(&vb[i+1], &vr[3]);
-			ARX_DrawPrimitive(&vr[0], &vr[1], &vr[2]);
-			ARX_DrawPrimitive(&vr[1], &vr[2], &vr[3]);
+			drawTriangle(mat, &vr[0]);
+			drawTriangle(mat, &vr[1]);
 		}
 	}
 
 	//-------------------------------------------------------------------------
 	// rendu de la bordure
-	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+	mat.setBlendType(RenderMaterial::Additive);	
 	vr[0].color = vr[1].color = Color::black.toBGR();
 	vr[2].color = vr[3].color = Color3f(fColorBorder[0], fColorBorder[1], fColorBorder[2]).toBGR();
 
@@ -776,8 +779,8 @@ void CRiseDead::RenderFissure()
 		EE_RT2(&vt[2], &vr[1]);
 		EE_RT2(&va[i+1], &vr[2]);
 		EE_RT2(&va[i], &vr[3]);
-		ARX_DrawPrimitive(&vr[0], &vr[1], &vr[2]);
-		ARX_DrawPrimitive(&vr[1], &vr[2], &vr[3]);
+		drawTriangle(mat, &vr[0]);
+		drawTriangle(mat, &vr[1]);
 		
 		vt[2].p = vb[i].p - (vb[i].p - eSrc) * 0.2f;
 		vt[3].p = vb[i + 1].p - (vb[i + 1].p - eSrc) * 0.2f;
@@ -786,8 +789,8 @@ void CRiseDead::RenderFissure()
 		EE_RT2(&vb[i+1], &vr[2]);
 		EE_RT2(&vt[2], &vr[1]);
 		EE_RT2(&vt[3], &vr[0]);
-		ARX_DrawPrimitive(&vr[0], &vr[1], &vr[2]);
-		ARX_DrawPrimitive(&vr[1], &vr[2], &vr[3]);
+		drawTriangle(mat, &vr[0]);
+		drawTriangle(mat, &vr[1]);
 	}
 
 	//-------------------------------------------------------------------------
@@ -795,9 +798,8 @@ void CRiseDead::RenderFissure()
 	// blend additif ou mul
 	// smooth sur les cotés ou pas ..
 	// texture sympa avec glow au milieu ou uv wrap
-	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapMirror);
-	GRenderer->SetTexture(0, tex_light);
+	mat.setWrapMode(TextureStage::WrapMirror);
+	mat.setTexture(tex_light);
 
 	target.p.x = eSrc.x ;
 	target.p.y = eSrc.y + 1.5f * sizeF; 
@@ -896,8 +898,8 @@ void CRiseDead::RenderFissure()
 			EE_RT2(&vt[1], &vr[1]);
 			EE_RT2(&vt[2], &vr[2]);
 			EE_RT2(&vt[3], &vr[3]);
-			ARX_DrawPrimitive(&vr[0], &vr[1], &vr[2]);
-			ARX_DrawPrimitive(&vr[1], &vr[2], &vr[3]);
+			drawTriangle(mat, &vr[0]);
+			drawTriangle(mat, &vr[1]);
 		}
 		
 		if(i < fSizeIntro) {
@@ -919,8 +921,8 @@ void CRiseDead::RenderFissure()
 			EE_RT2(&vt[1], &vr[1]);
 			EE_RT2(&vt[2], &vr[2]);
 			EE_RT2(&vt[3], &vr[3]);
-			ARX_DrawPrimitive(&vr[0], &vr[1], &vr[2]);
-			ARX_DrawPrimitive(&vr[1], &vr[2], &vr[3]);
+			drawTriangle(mat, &vr[0]);
+			drawTriangle(mat, &vr[1]);
 		}
 	}
 }
