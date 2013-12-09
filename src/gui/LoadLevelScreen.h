@@ -21,9 +21,9 @@
 #define ARX_GUI_LOADLEVELSCREEN_H
 
 extern float PROGRESS_BAR_COUNT;
-extern float PROGRESS_BAR_TOTAL;
 
 void progressBarReset();
+void progressBarSetTotal(float total);
 
 void LoadLevelScreen();
 void LoadLevelScreen(long lev);

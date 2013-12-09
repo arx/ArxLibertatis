@@ -31,7 +31,7 @@
 #include "graphics/data/TextureContainer.h"
 #include "window/RenderWindow.h"
 
-float PROGRESS_BAR_TOTAL = 0;
+static float PROGRESS_BAR_TOTAL = 0;
 float PROGRESS_BAR_COUNT = 0;
 static float OLD_PROGRESS_BAR_COUNT = 0;
 
@@ -43,6 +43,10 @@ static long lastnum = -1;
 
 void progressBarReset() {
 	OLD_PROGRESS_BAR_COUNT = PROGRESS_BAR_COUNT = 0;
+}
+
+void progressBarSetTotal(float total) {
+	PROGRESS_BAR_TOTAL = total;
 }
 
 void LoadLevelScreen(long num) {

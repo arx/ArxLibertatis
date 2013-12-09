@@ -2488,7 +2488,7 @@ void DrawImproveVisionInterface() {
 void DANAE_StartNewQuest()
 {
 	player.Interface = INTER_LIFE_MANA | INTER_MINIBACK | INTER_MINIBOOK;
-	PROGRESS_BAR_TOTAL = 108;
+	progressBarSetTotal(108);
 	progressBarReset();
 	LoadLevelScreen(1);
 	char loadfrom[256];
@@ -2604,7 +2604,7 @@ bool HandleGameFlowTransitions() {
 		
 		sprintf(loadfrom, "graph/levels/level%d/level%d.dlf", LEVEL_TO_LOAD, LEVEL_TO_LOAD);
 		progressBarReset();
-		PROGRESS_BAR_TOTAL = 108;
+		progressBarSetTotal(108);
 		LoadLevelScreen(LEVEL_TO_LOAD);
 
 		DanaeLoadLevel(loadfrom);

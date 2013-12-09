@@ -162,7 +162,7 @@ void ARX_QuickSave() {
 bool ARX_LoadGame(const SaveGame & save) {
 	
 	LoadLevelScreen();
-	PROGRESS_BAR_TOTAL = 238;
+	progressBarSetTotal(238);
 	progressBarReset();
 	PROGRESS_BAR_COUNT += 1.f;
 	LoadLevelScreen(save.level);
