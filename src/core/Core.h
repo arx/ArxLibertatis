@@ -63,7 +63,6 @@ struct EERIE_MULTI3DSCENE;
 
 const size_t MAX_GOLD_COINS_VISUALS = 7;
 
-extern Color3f FADECOLOR;
 extern TextureContainer * TC_fire2;
 extern TextureContainer * TC_fire;
 extern TextureContainer * TC_smoke;
@@ -98,8 +97,6 @@ extern float Yratio;
 inline Vec2f sizeRatio() { return Vec2f(Xratio, Yratio); }
 inline float minSizeRatio() { return std::min(Xratio, Yratio); }
 
-extern long	FADEDURATION;
-extern long	FADEDIR;
 extern float framedelay;
 extern bool FirstFrame;
 
@@ -111,7 +108,6 @@ extern long TELEPORT_TO_ANGLE;
 
 extern Rect g_size;
 
-extern unsigned long FADESTART;
 extern unsigned long AimTime;
 
 class Image;

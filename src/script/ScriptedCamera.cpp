@@ -52,6 +52,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/effect/Quake.h"
 #include "graphics/Math.h"
 #include "graphics/data/Mesh.h"
+#include "graphics/effects/Fade.h"
 #include "gui/Interface.h"
 #include "scene/Interactive.h"
 #include "script/ScriptUtils.h"

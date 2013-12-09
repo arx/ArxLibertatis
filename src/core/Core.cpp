@@ -109,6 +109,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/Vertex.h"
 #include "graphics/data/FTL.h"
 #include "graphics/data/TextureContainer.h"
+#include "graphics/effects/Fade.h"
 #include "graphics/effects/Fog.h"
 #include "graphics/image/Image.h"
 #include "graphics/particle/ParticleEffects.h"
@@ -312,13 +313,9 @@ bool FirstFrame=true;
 unsigned long WILLADDSPEECHTIME=0;
 unsigned long AimTime;
 //-----------------------------------------------------------------------------
-Color3f FADECOLOR;
 
 long START_NEW_QUEST=0;
 static long LAST_WEAPON_TYPE = -1;
-long	FADEDURATION=0;
-long	FADEDIR=0;
-unsigned long FADESTART=0;
 
 float Original_framedelay=0.f;
 
@@ -2439,42 +2436,6 @@ void ManageCombatModeAnimationsEND()
 			useanim3->cur_anim = NULL;
 		}
 	}
-}
-
-float LAST_FADEVALUE=1.f;
-void ManageFade()
-{
-	float tim = arxtime.get_updated() - (float)FADESTART;
-
-	if(tim <= 0.f)
-		return;
-
-	float Visibility = tim / (float)FADEDURATION;
-
-	if(FADEDIR > 0)
-		Visibility = 1.f - Visibility;
-
-	if(Visibility > 1.f)
-		Visibility = 1.f;
-
-	if(Visibility < 0.f) {
-		FADEDIR = 0;
-		return;
-	}
-
-	LAST_FADEVALUE=Visibility;
-	GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
-	GRenderer->SetRenderState(Renderer::DepthWrite, false);
-	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	
-	EERIEDrawBitmap(g_size, 0.0001f, NULL, Color::gray(Visibility));
-
-	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-	float col=Visibility;
-	EERIEDrawBitmap(g_size, 0.0001f, NULL, Color(col * FADECOLOR.r, col * FADECOLOR.g, col * FADECOLOR.b));
-
-	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 }
 
 void DrawImproveVisionInterface() {

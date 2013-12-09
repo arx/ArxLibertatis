@@ -631,6 +631,7 @@ set(GRAPHICS_SOURCES
 	src/graphics/data/Progressive.cpp
 	src/graphics/data/TextureContainer.cpp
 	src/graphics/effects/DrawEffects.cpp
+	src/graphics/effects/Fade.cpp
 	src/graphics/effects/Fog.cpp
 	src/graphics/effects/SpellEffects.cpp
 	src/graphics/effects/Halo.cpp
