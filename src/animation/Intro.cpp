@@ -68,10 +68,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 using std::min;
 using std::max;
 
-extern float PROGRESS_BAR_TOTAL;
-extern float PROGRESS_BAR_COUNT;
-extern float OLD_PROGRESS_BAR_COUNT;
-
 static TextureContainer * FISHTANK_img = NULL;
 static TextureContainer * ARKANE_img = NULL;
 
@@ -138,103 +134,7 @@ void ARX_INTERFACE_ShowARKANE() {
 	ARX_INTERFACE_ShowLogo(ARKANE_img);
 }
 
-static long lastloadednum = -1;
-static TextureContainer * tc = NULL;
-static TextureContainer * pbar = NULL;
-static long nopbar = -1;
-static long lastnum = -1;
 
-void LoadLevelScreen(long num) {
-	
-	// resets status
-	if(num < -1) {
-		delete tc, tc = NULL;
-		lastloadednum = -1;
-		lastnum = -1;
-		PROGRESS_BAR_TOTAL = 0;
-		return;
-	}
-	
-	if(num == -1) {
-		num = lastnum;
-	}
-	lastnum = num;
-	
-	if(num < 0) {
-		return;
-	}
-	
-	static u32 last_progress_bar_update = Time::getMs();
-	
-	// only update if time since last update to progress bar > 16ms
-	// and progress bar's value has actually changed
-	if (Time::getElapsedMs(last_progress_bar_update) > 16 &&
-		 OLD_PROGRESS_BAR_COUNT != PROGRESS_BAR_COUNT)
-	{
-		GRenderer->GetTextureStage(0)->setMinFilter(TextureStage::FilterLinear);
-		GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterLinear);
-
-		float ratio = (PROGRESS_BAR_TOTAL > 0.f ? PROGRESS_BAR_COUNT / PROGRESS_BAR_TOTAL : 0); 
-
-		ratio = glm::clamp(ratio, 0.f, 1.f);
-
-		GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer);
-		
-		GRenderer->SetRenderState(Renderer::DepthTest, true);
-		GRenderer->SetCulling(Renderer::CullNone);
-		GRenderer->SetRenderState(Renderer::DepthWrite, true);
-		GRenderer->SetRenderState(Renderer::Fog, false);
-		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-		
-		if (num == 10) {
-			pbar = TextureContainer::LoadUI("graph/interface/menus/load_full");
-		} else {
-			pbar = TextureContainer::LoadUI("graph/interface/menus/load_full_level");
-		}
-		
-		nopbar = 1;
-		
-		if(num != lastloadednum) {
-			delete tc, tc = NULL;
-			lastloadednum = num;
-			char temp[256];
-			char tx[256];
-			GetLevelNameByNum(num, tx);
-			sprintf(temp, "graph/levels/level%s/loading", tx);
-			tc = TextureContainer::LoadUI(temp, TextureContainer::NoColorKey);
-		}
-		
-		float scale = minSizeRatio();
-		
-		if(tc) {
-			GRenderer->SetRenderState(Renderer::ColorKey, false);
-			
-			Vec2f size = (num == 10) ? Vec2f(640, 480) : Vec2f(320, 390);
-			size *= scale;
-			EERIEDrawBitmap2(g_size.center().x - size.x * 0.5f, g_size.center().y - size.y * 0.5f,
-												size.x, size.y, 0.001f, tc, Color::white);
-			
-			GRenderer->SetRenderState(Renderer::ColorKey, true);
-		}
-		
-		if(pbar) {
-			float px = g_size.center().x - 100 * scale;
-			float py = g_size.center().y + ((num == 10) ? 221 : 35) * scale;
-			float px2 = ratio * 200 * scale;
-			float py2 = 8 * scale;
-			EERIEDrawBitmap_uv(px, py, px2, py2, 0.f, pbar, Color::gray(1.0f), 0.f, 0.f, ratio, 1.f);
-		}
-		
-		mainApp->getWindow()->showFrame();
-		
-		OLD_PROGRESS_BAR_COUNT = PROGRESS_BAR_COUNT;
-		last_progress_bar_update = Time::getMs();
-	}
-}
-
-void LoadLevelScreen() {
-	LoadLevelScreen(-1);
-}
 
 //-----------------------------------------------------------------------------
 void ARX_INTERFACE_EndIntro()

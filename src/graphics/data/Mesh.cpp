@@ -66,6 +66,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/EntityManager.h"
 #include "game/Player.h"
 
+#include "gui/LoadLevelScreen.h"
+
 #include "graphics/Draw.h"
 #include "graphics/Math.h"
 #include "graphics/VertexBuffer.h"
@@ -1503,12 +1505,6 @@ bool IsVertexIdxInGroup(EERIE_3DOBJ *eobj, long idx, long grs) {
 
 	return false;
 }
-
-extern void LoadLevelScreen();
-extern void LoadLevelScreen(long lev);
-
-extern float PROGRESS_BAR_COUNT;
-
 
 struct file_truncated_exception { };
 

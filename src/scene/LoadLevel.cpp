@@ -65,6 +65,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/Levels.h"
 #include "game/Player.h"
 
+#include "gui/LoadLevelScreen.h"
 #include "gui/MiniMap.h"
 #include "gui/Interface.h"
 
@@ -96,8 +97,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 using std::max;
 using std::string;
 
-extern float PROGRESS_BAR_COUNT;
-extern float PROGRESS_BAR_TOTAL;
 extern long DONT_ERASE_PLAYER;
 
 extern bool bGToggleCombatModeWithKey;

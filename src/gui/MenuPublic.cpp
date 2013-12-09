@@ -268,9 +268,6 @@ void ARXMenu_NewQuest()
 //-----------------------------------------------------------------------------
 //LOAD QUEST
 //-----------------------------------------------------------------------------
-extern float PROGRESS_BAR_TOTAL;
-extern float OLD_PROGRESS_BAR_COUNT;
-extern float PROGRESS_BAR_COUNT;
 void ARXMenu_LoadQuest(size_t num) {
 	
 	LOADQUEST_SLOT = num;

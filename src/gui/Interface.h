@@ -243,8 +243,7 @@ void ARX_INTERFACE_HALO_Flush();
 bool NeedHalo(Entity * io);
 
 void LoadScreen();
-void LoadLevelScreen();
-void LoadLevelScreen(long lev);
+
 void ARX_INTERFACE_HALO_Draw(Entity * io, TextureContainer * tc, TextureContainer * tc2, float POSX, float POSY, float _fRatioX = 1, float _fRatioY = 1);
 void ReleaseHalo();
 void ResetPlayerInterface();

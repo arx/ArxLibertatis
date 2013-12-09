@@ -65,6 +65,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/SaveGame.h"
 #include "core/Version.h"
 
+#include "gui/LoadLevelScreen.h"
 #include "gui/Menu.h"
 #include "gui/MenuPublic.h"
 #include "gui/Text.h"
@@ -112,11 +113,6 @@ extern TextureContainer * scursor[];
 extern Rect g_size;
 
 extern long REFUSE_GAME_RETURN;
-
-extern float PROGRESS_BAR_TOTAL;
-extern float OLD_PROGRESS_BAR_COUNT;
-extern float PROGRESS_BAR_COUNT;
-
 
 float INTERFACE_RATIO(float a);
 bool bNoMenu=false;

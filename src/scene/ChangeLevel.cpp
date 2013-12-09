@@ -69,6 +69,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/Inventory.h"
 #include "game/spell/Cheat.h"
 
+#include "gui/LoadLevelScreen.h"
 #include "gui/MiniMap.h"
 #include "gui/Interface.h"
 
@@ -99,9 +100,6 @@ extern Vec3f WILL_RESTORE_PLAYER_POSITION;
 extern long WILL_RESTORE_PLAYER_POSITION_FLAG;
 extern long NO_GMOD_RESET;
 
-extern float PROGRESS_BAR_COUNT;
-extern float OLD_PROGRESS_BAR_COUNT;
-extern float PROGRESS_BAR_TOTAL;
 extern long NO_PLAYER_POSITION_RESET;
 extern float InventoryDir;
 extern long HERO_SHOW_1ST;

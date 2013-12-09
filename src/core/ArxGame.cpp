@@ -174,10 +174,6 @@ extern float BOW_FOCAL;
 extern float GLOBAL_SLOWDOWN;
 extern float LAST_FADEVALUE;
 
-extern float PROGRESS_BAR_TOTAL;
-extern float PROGRESS_BAR_COUNT;
-extern float OLD_PROGRESS_BAR_COUNT;
-
 extern Cinematic* ControlCinematique;
 extern EERIE_3DOBJ * arrowobj;
 extern TextureContainer * Movable;

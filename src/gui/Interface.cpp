@@ -226,9 +226,6 @@ float				CINEMA_DECAL=0.f;
 float				SLID_START=0.f; // Charging Weapon
 float				BOOKDECX=0.f;
 float				BOOKDECY=0.f;
-float				PROGRESS_BAR_TOTAL=0;
-float				PROGRESS_BAR_COUNT=0;
-float				OLD_PROGRESS_BAR_COUNT=0;
 
 bool				PLAYER_MOUSELOOK_ON = false;
 bool				TRUE_PLAYER_MOUSELOOK_ON = false;

@@ -89,6 +89,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/spell/Cheat.h"
 #include "game/effect/Quake.h"
 
+#include "gui/LoadLevelScreen.h"
 #include "gui/MenuPublic.h"
 #include "gui/Menu.h"
 #include "gui/MenuWidgets.h"
@@ -175,8 +176,7 @@ extern TextManager	*pTextManage;
 extern float FORCE_TIME_RESTORE;
 extern CMenuState		*pMenu;
 extern float	InventoryX;
-extern float	PROGRESS_BAR_COUNT;
-extern float	PROGRESS_BAR_TOTAL;
+
 extern long		DONT_WANT_PLAYER_INZONE;
 extern long		TOTPDL;
 extern long		COLLIDED_CLIMB_POLY;
@@ -185,7 +185,6 @@ extern float ARXOldTimeMenu;
 extern bool		PLAYER_MOUSELOOK_ON;
 extern bool bFadeInOut;
 extern 	bool bFade;			//active le fade
-extern float OLD_PROGRESS_BAR_COUNT;
 
 extern EERIE_3DOBJ * ssol;
 extern long ssol_count;
