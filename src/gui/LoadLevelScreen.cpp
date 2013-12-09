@@ -31,15 +31,19 @@
 #include "graphics/data/TextureContainer.h"
 #include "window/RenderWindow.h"
 
-float				PROGRESS_BAR_TOTAL=0;
-float				PROGRESS_BAR_COUNT=0;
-float				OLD_PROGRESS_BAR_COUNT=0;
+float PROGRESS_BAR_TOTAL = 0;
+float PROGRESS_BAR_COUNT = 0;
+static float OLD_PROGRESS_BAR_COUNT = 0;
 
 static long lastloadednum = -1;
 static TextureContainer * tc = NULL;
 static TextureContainer * pbar = NULL;
 static long nopbar = -1;
 static long lastnum = -1;
+
+void progressBarReset() {
+	OLD_PROGRESS_BAR_COUNT = PROGRESS_BAR_COUNT = 0;
+}
 
 void LoadLevelScreen(long num) {
 	

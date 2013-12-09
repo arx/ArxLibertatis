@@ -22,7 +22,8 @@
 
 extern float PROGRESS_BAR_COUNT;
 extern float PROGRESS_BAR_TOTAL;
-extern float OLD_PROGRESS_BAR_COUNT;
+
+void progressBarReset();
 
 void LoadLevelScreen();
 void LoadLevelScreen(long lev);

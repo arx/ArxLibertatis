@@ -296,7 +296,7 @@ void ARX_CHANGELEVEL_Change(const string & level, const string & target, long an
 	LogDebug("ARX_CHANGELEVEL_Change " << level << " " << target << " " << angle);
 	
 	PROGRESS_BAR_TOTAL = 238; 
-	OLD_PROGRESS_BAR_COUNT = PROGRESS_BAR_COUNT = 0;
+	progressBarReset();
 	
 	ARX_CHANGELEVEL_DesiredTime = arxtime.get_updated();
 		
@@ -2880,7 +2880,7 @@ long ARX_CHANGELEVEL_Load(const fs::path & savefile) {
 	LogDebug("begin ARX_CHANGELEVEL_Load " << savefile);
 	
 	PROGRESS_BAR_TOTAL = 238; 
-	OLD_PROGRESS_BAR_COUNT = PROGRESS_BAR_COUNT = 0;
+	progressBarReset();
 	
 	arxtime.pause();
 	

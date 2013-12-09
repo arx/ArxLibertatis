@@ -2489,7 +2489,7 @@ void DANAE_StartNewQuest()
 {
 	player.Interface = INTER_LIFE_MANA | INTER_MINIBACK | INTER_MINIBOOK;
 	PROGRESS_BAR_TOTAL = 108;
-	OLD_PROGRESS_BAR_COUNT=PROGRESS_BAR_COUNT=0;
+	progressBarReset();
 	LoadLevelScreen(1);
 	char loadfrom[256];
 	sprintf(loadfrom, "graph/levels/level1/level1.dlf");
@@ -2603,7 +2603,7 @@ bool HandleGameFlowTransitions() {
 		ARX_CHANGELEVEL_StartNew();
 		
 		sprintf(loadfrom, "graph/levels/level%d/level%d.dlf", LEVEL_TO_LOAD, LEVEL_TO_LOAD);
-		OLD_PROGRESS_BAR_COUNT=PROGRESS_BAR_COUNT=0;
+		progressBarReset();
 		PROGRESS_BAR_TOTAL = 108;
 		LoadLevelScreen(LEVEL_TO_LOAD);
 
