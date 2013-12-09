@@ -85,8 +85,10 @@ extern long ADDED_IO_NOT_SAVED;
 #endif
 extern Entity * COMBINE;
 extern res::path LastLoadedScene;
-extern char TELEPORT_TO_LEVEL[64];
-extern char TELEPORT_TO_POSITION[64];
+
+extern std::string TELEPORT_TO_LEVEL;
+extern std::string TELEPORT_TO_POSITION;
+
 extern float PULSATE;
 extern float framedelay;
 extern float BASE_FOCAL;

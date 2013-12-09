@@ -264,8 +264,8 @@ Vec2s STARTDRAG;
 Entity * COMBINE=NULL;
 
 // START - Information for Player Teleport between/in Levels-------------------------------------
-char TELEPORT_TO_LEVEL[64];
-char TELEPORT_TO_POSITION[64];
+std::string TELEPORT_TO_LEVEL;
+std::string TELEPORT_TO_POSITION;
 long TELEPORT_TO_ANGLE;
 // END -   Information for Player Teleport between/in Levels---------------------------------------
 res::path LastLoadedScene;
@@ -575,8 +575,8 @@ static bool initializeGame() {
 	ModeLight = MODE_DEPTHCUEING;
 	
 	memset(&DefaultBkg,0,sizeof(EERIE_BACKGROUND));
-	memset(TELEPORT_TO_LEVEL,0,64);
-	memset(TELEPORT_TO_POSITION,0,64);
+	TELEPORT_TO_LEVEL.clear();
+	TELEPORT_TO_POSITION.clear();
 	LogDebug("Mset");
 	
 	LogDebug("AnimManager Init");

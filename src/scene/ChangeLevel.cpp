@@ -670,13 +670,13 @@ static long ARX_CHANGELEVEL_Push_Player(long level) {
 	asp->Interface = player.Interface;
 	asp->playerflags = player.playerflags;
 
-	if (TELEPORT_TO_LEVEL[0])
-		strcpy(asp->TELEPORT_TO_LEVEL, TELEPORT_TO_LEVEL);
+	if(!TELEPORT_TO_LEVEL.empty())
+		strcpy(asp->TELEPORT_TO_LEVEL, TELEPORT_TO_LEVEL.c_str());
 	else
 		memset(asp->TELEPORT_TO_LEVEL, 0, 64);
 
-	if (TELEPORT_TO_POSITION[0])
-		strcpy(asp->TELEPORT_TO_POSITION, TELEPORT_TO_POSITION);
+	if(!TELEPORT_TO_POSITION.empty())
+		strcpy(asp->TELEPORT_TO_POSITION, TELEPORT_TO_POSITION.c_str());
 	else
 		memset(asp->TELEPORT_TO_POSITION, 0, 64);
 
@@ -1673,15 +1673,15 @@ static long ARX_CHANGELEVEL_Pop_Player() {
 	player.playerflags = PlayerFlags::load(asp->playerflags); // TODO save/load flags
 	
 	if(asp->TELEPORT_TO_LEVEL[0]) {
-		strcpy(TELEPORT_TO_LEVEL, boost::to_lower_copy(util::loadString(asp->TELEPORT_TO_LEVEL)).c_str());
+		TELEPORT_TO_LEVEL = boost::to_lower_copy(util::loadString(asp->TELEPORT_TO_LEVEL)).c_str();
 	} else {
-		memset(TELEPORT_TO_LEVEL, 0, 64);
+		TELEPORT_TO_LEVEL.clear();
 	}
 	
 	if(asp->TELEPORT_TO_POSITION[0]) {
-		strcpy(TELEPORT_TO_POSITION, boost::to_lower_copy(util::loadString(asp->TELEPORT_TO_POSITION)).c_str());
+		TELEPORT_TO_POSITION = boost::to_lower_copy(util::loadString(asp->TELEPORT_TO_POSITION)).c_str();
 	} else {
-		memset(TELEPORT_TO_POSITION, 0, 64);
+		TELEPORT_TO_POSITION.clear();
 	}
 	
 	TELEPORT_TO_ANGLE = asp->TELEPORT_TO_ANGLE;

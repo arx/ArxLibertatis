@@ -589,12 +589,12 @@ void ArxGame::doFrame() {
 	}
 
 	// Are we being teleported ?
-	if(TELEPORT_TO_LEVEL[0] && CHANGE_LEVEL_ICON == 200) {
+	if(!TELEPORT_TO_LEVEL.empty() && CHANGE_LEVEL_ICON == 200) {
 		LogDebug("teleport to " << TELEPORT_TO_LEVEL << " " << TELEPORT_TO_POSITION << " " << TELEPORT_TO_ANGLE);
 		CHANGE_LEVEL_ICON = -1;
 		ARX_CHANGELEVEL_Change(TELEPORT_TO_LEVEL, TELEPORT_TO_POSITION, TELEPORT_TO_ANGLE);
-		memset(TELEPORT_TO_LEVEL,0,64);
-		memset(TELEPORT_TO_POSITION,0,64);
+		TELEPORT_TO_LEVEL.clear();
+		TELEPORT_TO_POSITION.clear();
 	}
 
 	if(LOADQUEST_SLOT != -1) {

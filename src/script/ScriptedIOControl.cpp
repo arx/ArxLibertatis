@@ -543,8 +543,8 @@ public:
 				string level = context.getWord();
 				string target = context.getWord();
 				
-				strcpy(TELEPORT_TO_LEVEL, level.c_str());
-				strcpy(TELEPORT_TO_POSITION, target.c_str());
+				TELEPORT_TO_LEVEL = level;
+				TELEPORT_TO_POSITION = target;
 				
 				if(angle == -1) {
 					TELEPORT_TO_ANGLE	=	static_cast<long>(player.angle.getPitch());
