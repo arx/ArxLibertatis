@@ -27,6 +27,8 @@ extern long	FADEDIR;
 extern unsigned long FADESTART;
 extern Color3f FADECOLOR;
 
+void fadeReset();
+
 void ManageFade();
 
 #endif // ARX_GRAPHICS_EFFECTS_FADE_H

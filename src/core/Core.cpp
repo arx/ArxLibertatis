@@ -2462,8 +2462,7 @@ void DANAE_StartNewQuest()
 	FirstFrame=true;
 	START_NEW_QUEST=0;
 	BLOCK_PLAYER_CONTROLS = false;
-	FADEDURATION=0;
-	FADEDIR=0;
+	fadeReset();
 	player.Interface = INTER_LIFE_MANA | INTER_MINIBACK | INTER_MINIBOOK;
 }
 

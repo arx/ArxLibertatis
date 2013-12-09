@@ -2941,12 +2941,9 @@ void ARX_GAME_Reset(long type) {
 		entities.player()->ouch_time = 0;
 		entities.player()->invisibility = 0.f;
 	}
-
-	FADEDIR = 0;
-	FADEDURATION = 0;
-	FADESTART = 0;
-	FADECOLOR = Color3f::black;
-
+	
+	fadeReset();
+	
 	// GLOBALMods
 	ARX_GLOBALMODS_Reset();
 

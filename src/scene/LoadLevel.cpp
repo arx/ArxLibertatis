@@ -1001,8 +1001,7 @@ void DanaeClearLevel(long flag)
 	JUST_RELOADED = 0;
 	g_miniMap.reset();
 
-	FADEDIR = 0;
-	FADEDURATION = 0;
+	fadeReset();
 	LAST_JUMP_ENDTIME = 0;
 	FAST_RELEASE = 1;
 	MCache_ClearAll();

@@ -31,6 +31,13 @@ Color3f FADECOLOR;
 
 extern Rect g_size;
 
+void fadeReset() {
+	FADEDIR = 0;
+	FADEDURATION = 0;
+	FADESTART = 0;
+	FADECOLOR = Color3f::black;
+}
+
 void ManageFade()
 {
 	float tim = arxtime.get_updated() - (float)FADESTART;
