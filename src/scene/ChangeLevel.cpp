@@ -328,7 +328,7 @@ void ARX_CHANGELEVEL_Change(const string & level, const string & target, long an
 	ARX_PLAYER_Reset_Fall();
 	
 	arxtime.pause();
-	PROGRESS_BAR_COUNT += 1.f;
+	progressBarAdvance();
 	LoadLevelScreen(num);
 	
 	if(!openCurrentSavedGameFile()) {
@@ -1833,7 +1833,7 @@ static long ARX_CHANGELEVEL_Pop_Player() {
 	
 	ARX_PLAYER_Modify_XP(0);
 	
-	PROGRESS_BAR_COUNT += 10.f;
+	progressBarAdvance(10.f);
 	LoadLevelScreen();
 	
 	// Restoring Player equipment...
@@ -1842,7 +1842,7 @@ static long ARX_CHANGELEVEL_Pop_Player() {
 	player.leftIO = ConvertToValidIO(asp->leftIO);
 	player.rightIO = ConvertToValidIO(asp->rightIO);
 	player.torch = ConvertToValidIO(asp->curtorch);
-	PROGRESS_BAR_COUNT += 1.f;
+	progressBarAdvance();
 	LoadLevelScreen();
 	
 	assert(SAVED_MAX_EQUIPED == MAX_EQUIPED);
@@ -1856,7 +1856,7 @@ static long ARX_CHANGELEVEL_Pop_Player() {
 	
 	free(dat);
 	
-	PROGRESS_BAR_COUNT += 2.f;
+	progressBarAdvance(2.f);
 	LoadLevelScreen();
 	
 	return 1;
@@ -2385,13 +2385,13 @@ static void ARX_CHANGELEVEL_PopAllIO(ARX_CHANGELEVEL_INDEX * asi) {
 	if(asi->nb_inter > 0) {
 		increment = (60.f / (float)asi->nb_inter);
 	} else {
-		PROGRESS_BAR_COUNT += 60;
+		progressBarAdvance(60);
 		LoadLevelScreen();
 	}
 	
 	for (long i = 0; i < asi->nb_inter; i++) {
 		
-		PROGRESS_BAR_COUNT += increment;
+		progressBarAdvance(increment);
 		LoadLevelScreen();
 		
 		std::ostringstream oss;
@@ -2667,7 +2667,7 @@ static bool ARX_CHANGELEVEL_PopLevel(long instance, bool reloadflag) {
 	}
 	LogDebug("firstTime = " << firstTime);
 	
-	PROGRESS_BAR_COUNT += 2.f;
+	progressBarAdvance(2.f);
 	LoadLevelScreen(instance);
 	
 	arx_assert(idx_io == NULL);
@@ -2690,7 +2690,7 @@ static bool ARX_CHANGELEVEL_PopLevel(long instance, bool reloadflag) {
 		
 	}
 	
-	PROGRESS_BAR_COUNT += 2.f;
+	progressBarAdvance(2.f);
 	LoadLevelScreen(instance);
 	
 	LogDebug("Before ARX_CHANGELEVEL_Pop_Level");
@@ -2701,7 +2701,7 @@ static bool ARX_CHANGELEVEL_PopLevel(long instance, bool reloadflag) {
 	}
 	
 	LogDebug("After  ARX_CHANGELEVEL_Pop_Index");
-	PROGRESS_BAR_COUNT += 20.f;
+	progressBarAdvance(20.f);
 	LoadLevelScreen(instance);
 	
 	if(firstTime) {
@@ -2717,7 +2717,7 @@ static bool ARX_CHANGELEVEL_PopLevel(long instance, bool reloadflag) {
 		LogDebug("After  ARX_CHANGELEVEL_PopAllIO");
 	}
 	
-	PROGRESS_BAR_COUNT += 20.f;
+	progressBarAdvance(20.f);
 	LoadLevelScreen(instance);
 	LogDebug("Before ARX_CHANGELEVEL_Pop_Player");
 	
@@ -2733,12 +2733,12 @@ static bool ARX_CHANGELEVEL_PopLevel(long instance, bool reloadflag) {
 	ARX_CHANGELEVEL_PopAllIO_FINISH(reloadflag, firstTime);
 	LogDebug("After  ARX_CHANGELEVEL_PopAllIO_FINISH");
 	
-	PROGRESS_BAR_COUNT += 15.f;
+	progressBarAdvance(15.f);
 	LoadLevelScreen();
 	
 	ReleaseGaids();
 	
-	PROGRESS_BAR_COUNT += 3.f;
+	progressBarAdvance(3.f);
 	LoadLevelScreen();
 	
 	if(!firstTime) {
@@ -2747,13 +2747,13 @@ static bool ARX_CHANGELEVEL_PopLevel(long instance, bool reloadflag) {
 		LogDebug("After  ARX_CHANGELEVEL_Pop_Zones_n_Lights");
 	}
 	
-	PROGRESS_BAR_COUNT += 1.f;
+	progressBarAdvance();
 	LoadLevelScreen();
 	
 	LogDebug("Before Player Misc Init");
 	ARX_EQUIPMENT_RecreatePlayerMesh();
 	
-	PROGRESS_BAR_COUNT += 1.f;
+	progressBarAdvance();
 	LoadLevelScreen();
 	
 	arxtime.force_time_restore(ARX_CHANGELEVEL_DesiredTime);
@@ -2783,7 +2783,7 @@ static bool ARX_CHANGELEVEL_PopLevel(long instance, bool reloadflag) {
 	// disable combat mode
 	player.Interface &= ~INTER_COMBATMODE;
 	
-	PROGRESS_BAR_COUNT += 1.f;
+	progressBarAdvance();
 	LoadLevelScreen();
 	
 	LogDebug("After  Final Inits");
@@ -2899,12 +2899,12 @@ long ARX_CHANGELEVEL_Load(const fs::path & savefile) {
 	// Retrieves Player LevelData
 	ARX_CHANGELEVEL_PLAYER_LEVEL_DATA pld;
 	if(ARX_CHANGELEVEL_Get_Player_LevelData(pld, CURRENT_GAME_FILE)) {
-		PROGRESS_BAR_COUNT += 2.f;
+		progressBarAdvance(2.f);
 		LoadLevelScreen(pld.level);
 		
 		float fPldTime = static_cast<float>(pld.time);
 		DanaeClearLevel();
-		PROGRESS_BAR_COUNT += 2.f;
+		progressBarAdvance(2.f);
 		LoadLevelScreen(pld.level);
 		CURRENTLEVEL = pld.level;
 		ARX_CHANGELEVEL_DesiredTime	=	fPldTime;

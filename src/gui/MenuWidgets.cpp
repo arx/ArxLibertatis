@@ -164,7 +164,7 @@ bool ARX_LoadGame(const SaveGame & save) {
 	LoadLevelScreen();
 	progressBarSetTotal(238);
 	progressBarReset();
-	PROGRESS_BAR_COUNT += 1.f;
+	progressBarAdvance();
 	LoadLevelScreen(save.level);
 	
 	DanaeClearLevel();

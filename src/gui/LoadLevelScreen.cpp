@@ -32,7 +32,7 @@
 #include "window/RenderWindow.h"
 
 static float PROGRESS_BAR_TOTAL = 0;
-float PROGRESS_BAR_COUNT = 0;
+static float PROGRESS_BAR_COUNT = 0;
 static float OLD_PROGRESS_BAR_COUNT = 0;
 
 static long lastloadednum = -1;
@@ -47,6 +47,10 @@ void progressBarReset() {
 
 void progressBarSetTotal(float total) {
 	PROGRESS_BAR_TOTAL = total;
+}
+
+void progressBarAdvance(float delta) {
+	PROGRESS_BAR_COUNT += delta;
 }
 
 void LoadLevelScreen(long num) {

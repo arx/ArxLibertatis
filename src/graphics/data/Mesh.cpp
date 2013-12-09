@@ -1574,13 +1574,15 @@ bool FastSceneLoad(const res::path & partial_path) {
 			         << FTS_VERSION << " in " << file;
 			return false;
 		}
-		PROGRESS_BAR_COUNT += 1.f, LoadLevelScreen();
+		progressBarAdvance();
+		LoadLevelScreen();
 		
 		
 		// Skip .scn file list and initialize the scene data
 		(void)fts_read<UNIQUE_HEADER3>(data, end, uh->count);
 		InitBkg(ACTIVEBKG, MAX_BKGX, MAX_BKGZ, BKG_SIZX, BKG_SIZZ);
-		PROGRESS_BAR_COUNT += 1.f, LoadLevelScreen();
+		progressBarAdvance();
+		LoadLevelScreen();
 		
 		
 		// Decompress the actual scene data
@@ -1601,7 +1603,8 @@ bool FastSceneLoad(const res::path & partial_path) {
 			LogWarning << "FTS: unexpected decompressed size: " << size << " < "
 			           << uh->uncompressedsize << " in " << file;
 		}
-		PROGRESS_BAR_COUNT += 3.f, LoadLevelScreen();
+		progressBarAdvance(3.f);
+		LoadLevelScreen();
 		
 		
 	} catch(file_truncated_exception) {
@@ -1648,7 +1651,8 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 			textures[ftc[k].tc] = tmpTC;
 		}
 	}
-	PROGRESS_BAR_COUNT += 4.f, LoadLevelScreen();
+	progressBarAdvance(4.f);
+	LoadLevelScreen();
 	
 	
 	// Load cells with polygons and anchors
@@ -1764,7 +1768,8 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 			
 		}
 	}
-	PROGRESS_BAR_COUNT += 4.f, LoadLevelScreen();
+	progressBarAdvance(4.f);
+	LoadLevelScreen();
 	
 	
 	// Load anchor links
@@ -1796,7 +1801,8 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 			std::copy(links, links + fad->nb_linked, anchor.linked);
 		}
 	}
-	PROGRESS_BAR_COUNT += 1.f, LoadLevelScreen();
+	progressBarAdvance();
+	LoadLevelScreen();
 	
 	
 	// Load rooms and portals
@@ -1903,7 +1909,8 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 			}
 		}
 	}
-	PROGRESS_BAR_COUNT += 1.f, LoadLevelScreen();
+	progressBarAdvance();
+	LoadLevelScreen();
 	
 	
 	// Prepare the loaded data
@@ -1911,14 +1918,17 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 	LogDebug("FTS: preparing scene data ...");
 	
 	EERIEPOLY_Compute_PolyIn();
-	PROGRESS_BAR_COUNT += 3.f, LoadLevelScreen();
+	progressBarAdvance(3.f);
+	LoadLevelScreen();
 	
 	EERIE_PATHFINDER_Create();
 	EERIE_PORTAL_Blend_Portals_And_Rooms();
-	PROGRESS_BAR_COUNT += 1.f, LoadLevelScreen();
+	progressBarAdvance();
+	LoadLevelScreen();
 	
 	ComputePortalVertexBuffer();
-	PROGRESS_BAR_COUNT += 1.f, LoadLevelScreen();
+	progressBarAdvance();
+	LoadLevelScreen();
 	
 	
 	if(data != end) {

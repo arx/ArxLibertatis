@@ -20,10 +20,9 @@
 #ifndef ARX_GUI_LOADLEVELSCREEN_H
 #define ARX_GUI_LOADLEVELSCREEN_H
 
-extern float PROGRESS_BAR_COUNT;
-
 void progressBarReset();
 void progressBarSetTotal(float total);
+void progressBarAdvance(float delta = 1.f);
 
 void LoadLevelScreen();
 void LoadLevelScreen(long lev);

@@ -540,7 +540,7 @@ bool DanaeLoadLevel(const res::path & file, bool loadEntities) {
 	
 	PakFile * lightingFile = resources->getFile(lightingFileName);
 	
-	PROGRESS_BAR_COUNT += 1.f;
+	progressBarAdvance();
 	LoadLevelScreen();
 	
 	size_t pos = 0;
@@ -596,7 +596,7 @@ bool DanaeLoadLevel(const res::path & file, bool loadEntities) {
 			LogDebug("fast loading scene failed");
 			ARX_SOUND_PlayCinematic("editor_humiliation", false);
 			mse = PAK_MultiSceneToEerie(scene);
-			PROGRESS_BAR_COUNT += 20.f;
+			progressBarAdvance(20.f);
 			LoadLevelScreen();
 #else
 			LogError << "Fast loading scene failed";
@@ -643,13 +643,13 @@ bool DanaeLoadLevel(const res::path & file, bool loadEntities) {
 	if(dlh.nb_inter > 0) {
 		increment = (60.f / (float)dlh.nb_inter);
 	} else {
-		PROGRESS_BAR_COUNT += 60;
+		progressBarAdvance(60);
 		LoadLevelScreen();
 	}
 	
 	for(long i = 0 ; i < dlh.nb_inter ; i++) {
 		
-		PROGRESS_BAR_COUNT += increment;
+		progressBarAdvance(increment);
 		LoadLevelScreen();
 		
 		const DANAE_LS_INTER * dli = reinterpret_cast<const DANAE_LS_INTER *>(dat + pos);
@@ -703,7 +703,7 @@ bool DanaeLoadLevel(const res::path & file, bool loadEntities) {
 		ModeLight = LightMode::load(dll->ModeLight); // TODO save/load flags
 	}
 	
-	PROGRESS_BAR_COUNT += 1;
+	progressBarAdvance();
 	LoadLevelScreen();
 	
 	long nb_lights = (dlh.version < 1.003f) ? 0 : dlh.nb_lights;
@@ -793,7 +793,7 @@ bool DanaeLoadLevel(const res::path & file, bool loadEntities) {
 		}
 	}
 	
-	PROGRESS_BAR_COUNT += 2.f;
+	progressBarAdvance(2.f);
 	LoadLevelScreen();
 	
 	// Skip nodes
@@ -845,7 +845,7 @@ bool DanaeLoadLevel(const res::path & file, bool loadEntities) {
 	}
 	
 	ARX_PATH_ComputeAllBoundingBoxes();
-	PROGRESS_BAR_COUNT += 5.f;
+	progressBarAdvance(5.f);
 	LoadLevelScreen();
 	
 	
@@ -882,7 +882,7 @@ bool DanaeLoadLevel(const res::path & file, bool loadEntities) {
 	const DANAE_LLF_HEADER * llh = reinterpret_cast<DANAE_LLF_HEADER *>(dat + pos);
 	pos += sizeof(DANAE_LLF_HEADER);
 	
-	PROGRESS_BAR_COUNT += 4.f;
+	progressBarAdvance(4.f);
 	LoadLevelScreen();
 	
 	if(llh->nb_lights != 0) {
@@ -938,7 +938,7 @@ bool DanaeLoadLevel(const res::path & file, bool loadEntities) {
 		}
 	}
 	
-	PROGRESS_BAR_COUNT += 2.f;
+	progressBarAdvance(2.f);
 	LoadLevelScreen();
 	
 	const DANAE_LS_LIGHTINGHEADER * dll = reinterpret_cast<const DANAE_LS_LIGHTINGHEADER *>(dat + pos);
@@ -970,7 +970,7 @@ bool DanaeLoadLevel(const res::path & file, bool loadEntities) {
 	
 	free(dat);
 	
-	PROGRESS_BAR_COUNT += 1.f;
+	progressBarAdvance();
 	LoadLevelScreen();
 	
 	LOADEDD = 1;

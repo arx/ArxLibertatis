@@ -1601,7 +1601,7 @@ void FirstFrameHandling() {
 	ARX_PARTICLES_FirstInit();
 	RenderBatcher::getInstance().reset();
 	
-	PROGRESS_BAR_COUNT += 2.f;
+	progressBarAdvance(2.f);
 	LoadLevelScreen();
 	
 	FirstFrameProc();
@@ -1614,7 +1614,7 @@ void FirstFrameHandling() {
 		} else {
 			player.pos.y += player.baseHeight();
 		}
-		PROGRESS_BAR_COUNT += 4.f;
+		progressBarAdvance(4.f);
 		LoadLevelScreen();
 	}
 #if BUILD_EDIT_LOADSAVE
@@ -1640,12 +1640,12 @@ void FirstFrameHandling() {
 
 		EERIERemovePrecalcLights();
 
-		PROGRESS_BAR_COUNT+=1.f;
+		progressBarAdvance();
 		LoadLevelScreen();
 
 		SceneAddMultiScnToBackground(mse);
 
-		PROGRESS_BAR_COUNT+=2.f;
+		progressBarAdvance(2.f);
 		LoadLevelScreen();
 
 		trans = mse->pos;
@@ -1663,13 +1663,13 @@ void FirstFrameHandling() {
 
 		NO_PLAYER_POSITION_RESET=0;
 
-		PROGRESS_BAR_COUNT+=1.f;
+		progressBarAdvance();
 		LoadLevelScreen();
 	}
 #endif // BUILD_EDIT_LOADSAVE
 	else
 	{
-		PROGRESS_BAR_COUNT+=4.f;
+		progressBarAdvance(4.f);
 		LoadLevelScreen();
 	}
 
@@ -1686,19 +1686,19 @@ void FirstFrameHandling() {
 	
 	RestoreLastLoadedLightning();
 
-	PROGRESS_BAR_COUNT+=1.f;
+	progressBarAdvance();
 	LoadLevelScreen();
 
 	if(!LOAD_N_DONT_ERASE)
 		SetEditMode(0);
 
-	PROGRESS_BAR_COUNT+=1.f;
+	progressBarAdvance();
 	LoadLevelScreen();
 
 	LOAD_N_DONT_ERASE=0;
 	DONT_ERASE_PLAYER=0;
 
-	PROGRESS_BAR_COUNT+=1.f;
+	progressBarAdvance();
 	LoadLevelScreen();
 
 	FirstFrame=false;
@@ -1710,7 +1710,7 @@ void FirstFrameHandling() {
 	
 	arxtime.update_last_frame_time();
 	
-	PROGRESS_BAR_COUNT += 1.f;
+	progressBarAdvance();
 	LoadLevelScreen();
 	
 	delete ITC.Get("presentation");
@@ -1721,7 +1721,7 @@ void FirstFrameHandling() {
 		DONT_WANT_PLAYER_INZONE = 0;
 	}
 	
-	PROGRESS_BAR_COUNT+=1.f;
+	progressBarAdvance();
 	LoadLevelScreen();
 
 	player.desiredangle.setYaw(0.f);
@@ -1766,7 +1766,7 @@ void FirstFrameHandling() {
 	
 	ResetVVPos(entities.player());
 	
-	PROGRESS_BAR_COUNT+=1.f;
+	progressBarAdvance();
 	LoadLevelScreen();
 	LoadLevelScreen(-2);
 	
@@ -2495,7 +2495,7 @@ void DANAE_StartNewQuest()
 	sprintf(loadfrom, "graph/levels/level1/level1.dlf");
 	DONT_ERASE_PLAYER=1;
 	DanaeClearLevel();
-	PROGRESS_BAR_COUNT+=2.f;
+	progressBarAdvance(2.f);
 	LoadLevelScreen();
 	DanaeLoadLevel(loadfrom);
 	FirstFrame=true;
