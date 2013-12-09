@@ -116,7 +116,7 @@ extern Vec3f LastValidPlayerPos;
 
 static bool ARX_CHANGELEVEL_Push_Index(long num);
 static bool ARX_CHANGELEVEL_PushLevel(long num, long newnum);
-static bool ARX_CHANGELEVEL_PopLevel(long num, long reloadflag = 0);
+static bool ARX_CHANGELEVEL_PopLevel(long num, bool reloadflag = false);
 static void ARX_CHANGELEVEL_Push_Globals();
 static void ARX_CHANGELEVEL_Pop_Globals();
 static long ARX_CHANGELEVEL_Push_Player(long level);
@@ -344,7 +344,7 @@ void ARX_CHANGELEVEL_Change(const string & level, const string & target, long an
 	arxtime.resume();
 	
 	LogDebug("Before ARX_CHANGELEVEL_PopLevel");
-	ARX_CHANGELEVEL_PopLevel(num, 1);
+	ARX_CHANGELEVEL_PopLevel(num, true);
 	LogDebug("After  ARX_CHANGELEVEL_PopLevel");
 	
 	// Now restore player pos to destination
@@ -2407,7 +2407,7 @@ static void ARX_CHANGELEVEL_PopAllIO(ARX_CHANGELEVEL_INDEX * asi) {
 
 extern void GetIOCyl(Entity * io, EERIE_CYLINDER * cyl);
 
-static void ARX_CHANGELEVEL_PopAllIO_FINISH(long reloadflag, bool firstTime) {
+static void ARX_CHANGELEVEL_PopAllIO_FINISH(bool reloadflag, bool firstTime) {
 	
 	bool * treated = new bool[MAX_IO_SAVELOAD];
 	memset(treated, 0, sizeof(unsigned char)*MAX_IO_SAVELOAD);
@@ -2620,7 +2620,7 @@ static void ARX_CHANGELEVEL_PopLevel_Abort() {
 	FORBID_SCRIPT_IO_CREATION = 0;
 }
 
-static bool ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag) {
+static bool ARX_CHANGELEVEL_PopLevel(long instance, bool reloadflag) {
 	
 	DANAE_ReleaseAllDatasDynamic();
 	
@@ -2910,7 +2910,7 @@ long ARX_CHANGELEVEL_Load(const fs::path & savefile) {
 		LoadLevelScreen(pld.level);
 		CURRENTLEVEL = pld.level;
 		ARX_CHANGELEVEL_DesiredTime	=	fPldTime;
-		ARX_CHANGELEVEL_PopLevel(pld.level, 0);
+		ARX_CHANGELEVEL_PopLevel(pld.level, false);
 		arxtime.force_time_restore(fPldTime);
 		NO_TIME_INIT = 1;
 		FORCE_TIME_RESTORE = fPldTime;
