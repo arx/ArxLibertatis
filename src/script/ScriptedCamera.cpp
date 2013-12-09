@@ -215,12 +215,15 @@ public:
 		
 		if(inout == "out") {
 			
-			FADECOLOR.r = context.getFloat();
-			FADECOLOR.g = context.getFloat();
-			FADECOLOR.b = context.getFloat();
+			Color3f color;
+			color.r = context.getFloat();
+			color.g = context.getFloat();
+			color.b = context.getFloat();
+			fadeSetColor(color);
+			
 			FADEDIR = -1;
 			
-			DebugScript(" out " << FADEDURATION << ' ' << FADECOLOR.r << ' ' << FADECOLOR.g << ' ' << FADECOLOR.b);
+			DebugScript(" out " << FADEDURATION << ' ' << color.r << ' ' << color.g << ' ' << color.b);
 			
 		} else if(inout == "in") {
 			

@@ -25,9 +25,10 @@
 extern long	FADEDURATION;
 extern long	FADEDIR;
 extern unsigned long FADESTART;
-extern Color3f FADECOLOR;
 
 void fadeReset();
+
+void fadeSetColor(Color3f color);
 
 void ManageFade();
 
