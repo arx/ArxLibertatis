@@ -22,13 +22,17 @@
 
 #include "graphics/Color.h"
 
-extern long	FADEDURATION;
 extern long	FADEDIR;
-extern unsigned long FADESTART;
+
+enum FadeType {
+    FadeType_In,
+    FadeType_Out
+};
 
 void fadeReset();
 
 void fadeSetColor(Color3f color);
+void fadeRequestStart(FadeType type, float duration);
 
 void ManageFade();
 

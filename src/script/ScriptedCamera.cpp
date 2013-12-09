@@ -209,9 +209,7 @@ public:
 	Result execute(Context & context) {
 		
 		string inout = context.getWord();
-		
-		FADEDURATION = context.getFloat();
-		FADESTART = arxtime.get_updated_ul();
+		float duration = context.getFloat();
 		
 		if(inout == "out") {
 			
@@ -221,16 +219,14 @@ public:
 			color.b = context.getFloat();
 			fadeSetColor(color);
 			
-			FADEDIR = -1;
+			fadeRequestStart(FadeType_Out, duration);
 			
-			DebugScript(" out " << FADEDURATION << ' ' << color.r << ' ' << color.g << ' ' << color.b);
-			
+			DebugScript(" out " << duration << ' ' << color.r << ' ' << color.g << ' ' << color.b);
 		} else if(inout == "in") {
 			
-			FADEDIR = 1;
+			fadeRequestStart(FadeType_In, duration);
 			
-			DebugScript(" in " << FADEDURATION);
-			
+			DebugScript(" in " << duration);
 		} else {
 			ScriptWarning << "unexpected fade direction: " << inout;
 			return Failed;

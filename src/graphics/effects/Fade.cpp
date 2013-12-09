@@ -42,6 +42,20 @@ void fadeSetColor(Color3f color) {
 	FADECOLOR = color;
 }
 
+void fadeRequestStart(FadeType type, float duration) {
+	switch(type) {
+		case FadeType_In:
+			FADEDIR = 1;
+			break;
+		case FadeType_Out:
+			FADEDIR = -1;
+			break;
+	}
+	
+	FADEDURATION = duration;
+	FADESTART = arxtime.get_updated_ul();
+}
+
 void ManageFade()
 {
 	float tim = arxtime.get_updated() - (float)FADESTART;
