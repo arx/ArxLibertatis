@@ -692,7 +692,7 @@ void ARX_INTERFACE_RenderCursorInternal(long flag)
 						float POSY = g_size.center().y - surf->m_dwHeight * .5f;
 
 						EERIEDrawBitmap(POSX, POSY, float(surf->m_dwWidth),
-										float(surf->m_dwHeight), 0.f, surf, Color::gray(.5f));
+										float(surf->m_dwHeight), 0.f, surf, Color3f::gray(.5f).to<u8>());
 
 						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 					}

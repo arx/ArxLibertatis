@@ -3464,7 +3464,7 @@ void ARX_INTERFACE_DrawSecondaryInventory(bool _bSteal) {
 						float fColorPulse = fabs(cos(radians(fDecPulse)));
 						EERIEDrawBitmap(px, py, INTERFACE_RATIO_DWORD(tc->m_dwWidth),
 						                INTERFACE_RATIO_DWORD(tc->m_dwHeight), 0.001f, tc,
-						                Color::gray(fColorPulse));
+						                Color3f::gray(fColorPulse).to<u8>());
 						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 					}
 
@@ -3524,7 +3524,7 @@ void ARX_INTERFACE_DrawInventory(short _sNum, int _iX=0, int _iY=0)
 						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 						EERIEDrawBitmap(px, py, INTERFACE_RATIO_DWORD(tc->m_dwWidth),
 						                INTERFACE_RATIO_DWORD(tc->m_dwHeight), 0.001f, tc, 
-						                Color::gray(fColorPulse));
+						                Color3f::gray(fColorPulse).to<u8>());
 						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 					}
 
@@ -3573,7 +3573,7 @@ void ARX_INTERFACE_Draw_Stealth_Gauge() {
 			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 			EERIEDrawBitmap(px, py, INTERFACE_RATIO_DWORD(stealth_gauge_tc->m_dwWidth),
 			                INTERFACE_RATIO_DWORD(stealth_gauge_tc->m_dwHeight), 0.01f,
-			                stealth_gauge_tc, Color::gray(v));
+			                stealth_gauge_tc, Color3f::gray(v).to<u8>());
 			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 		}
 	}
@@ -3853,7 +3853,7 @@ void ManageSpellIcon(long i,float rrr,long flag)
 		posy = g_size.height() - INTERFACE_RATIO(126+32); // niveau du stealth
 		typ = (Spell)i; // TODO ugh
 	} else {
-		color = Color::gray(rrr);
+		color = Color3f::gray(rrr).to<u8>();
 	}
 
 	bool bOk=true;
@@ -5661,7 +5661,7 @@ void drawCombatInterface() {
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	ARX_INTERFACE_DrawItem(ITC.Get("aim_maxi"), g_size.center().x + INTERFACE_RATIO(-320+262.f), g_size.height() + INTERFACE_RATIO(-72.f), 0.0001f, Color::gray(HitStrengthVal));
+	ARX_INTERFACE_DrawItem(ITC.Get("aim_maxi"), g_size.center().x + INTERFACE_RATIO(-320+262.f), g_size.height() + INTERFACE_RATIO(-72.f), 0.0001f, Color3f::gray(HitStrengthVal).to<u8>());
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	ARX_INTERFACE_DrawItem(ITC.Get("aim_empty"), g_size.center().x + INTERFACE_RATIO(-320+262.f), g_size.height() + INTERFACE_RATIO(-72.f), 0.0001f, Color::white);
 	if(bHitFlash && player.Full_Skill_Etheral_Link >= 40) {
@@ -6078,7 +6078,7 @@ void UpdateChangeLevelIcon() {
 
 void DrawChangeLevelIcon() {
 
-    ARX_INTERFACE_DrawItem(ChangeLevel, ChangeLevelIcon.x, ChangeLevelIcon.y, 0.0001f, Color::gray(ChangeLevelIcon.vv));
+    ARX_INTERFACE_DrawItem(ChangeLevel, ChangeLevelIcon.x, ChangeLevelIcon.y, 0.0001f, Color3f::gray(ChangeLevelIcon.vv).to<u8>());
     if(MouseInRect(ChangeLevelIcon.x, ChangeLevelIcon.y, ChangeLevelIcon.x + INTERFACE_RATIO_DWORD(ChangeLevel->m_dwWidth),
         ChangeLevelIcon.y + INTERFACE_RATIO_DWORD(ChangeLevel->m_dwHeight)))
 	{
@@ -6304,7 +6304,7 @@ void UpdateScreenBorderArrows() {
 }
 
 void DrawScreenBorderArrows() {	
-	Color lcolor = Color::gray(.5f);	
+	Color lcolor = Color3f::gray(.5f).to<u8>();
 	// Left
 	EERIEDrawBitmap(0 + ScreenArrows.fMove, g_size.center().y - (ScreenArrows.fSizeY * .5f), 
 		ScreenArrows.fSizeX, ScreenArrows.fSizeY, 0.01f, arrow_left_tc, lcolor);
