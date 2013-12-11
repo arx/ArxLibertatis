@@ -6181,7 +6181,7 @@ void DrawMemorizedSpells() {
 			if(!(player.rune_flags & (RuneFlag)(1<<player.SpellToMemorize.iSpellSymbols[i]))) {
 				GRenderer->SetBlendFunc(Renderer::BlendInvDstColor, Renderer::BlendOne);
 				GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-				EERIEDrawBitmap2(MemorizedSpellPos.x, MemorizedSpellPos.y, INTERFACE_RATIO(32), INTERFACE_RATIO(32), 0, Movable, Color::gray(.8f));
+				EERIEDrawBitmap2(MemorizedSpellPos.x, MemorizedSpellPos.y, INTERFACE_RATIO(32), INTERFACE_RATIO(32), 0, Movable, Color3f::gray(.8f).to<u8>());
 				GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 			}
 			MemorizedSpellPos.x += INTERFACE_RATIO(32);

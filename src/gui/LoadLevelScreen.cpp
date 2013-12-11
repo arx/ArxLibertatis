@@ -131,7 +131,7 @@ void LoadLevelScreen(long num) {
 			float py = g_size.center().y + ((num == 10) ? 221 : 35) * scale;
 			float px2 = ratio * 200 * scale;
 			float py2 = 8 * scale;
-			EERIEDrawBitmap_uv(px, py, px2, py2, 0.f, pbar, Color::gray(1.0f), 0.f, 0.f, ratio, 1.f);
+			EERIEDrawBitmap_uv(px, py, px2, py2, 0.f, pbar, Color::white, 0.f, 0.f, ratio, 1.f);
 		}
 		
 		mainApp->getWindow()->showFrame();
