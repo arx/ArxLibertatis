@@ -24,6 +24,7 @@
 #include "io/log/Logger.h"
 
 #include "savetool/SaveFix.h"
+#include "savetool/SaveRename.h"
 #include "savetool/SaveView.h"
 
 using std::vector;
@@ -38,6 +39,7 @@ static void print_help() {
 	cout << " - extract <savefile>" << endl;
 	cout << " - add <savefile> [<files>...]" << endl;
 	cout << " - fix <savefile>" << endl;
+	cout << " - rename <savefile> <newname>" << endl;
 	cout << " - view <savefile> [<ident>]" << endl;
 }
 
@@ -143,6 +145,8 @@ int main(int argc, char ** argv) {
 		ret = main_add(save, argc, argv);
 	} else if(command == "f" || command == "fix") {
 		ret = main_fix(save, argc, argv);
+	} else if(command == "r" || command == "rename") {
+		ret = main_rename(save, argc, argv);
 	} else if(command == "v" || command == "view") {
 		ret = main_view(save, argc, argv);
 	}

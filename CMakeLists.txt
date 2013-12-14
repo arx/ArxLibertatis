@@ -1128,6 +1128,7 @@ if(BUILD_TOOLS)
 		src/io/IniSection.cpp
 		tools/savetool/SaveFix.h
 		tools/savetool/SaveFix.cpp
+		tools/savetool/SaveRename.cpp
 		tools/savetool/SaveTool.cpp
 		tools/savetool/SaveView.h
 		tools/savetool/SaveView.cpp
