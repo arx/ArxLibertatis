@@ -1507,21 +1507,6 @@ void ReleaseDanaeBeforeRun() {
 	
 }
 
-void FirstTimeThings() {
-	
-	eyeball.exist=0;
-	WILLADDSPEECHTIME=0;
-	WILLADDSPEECH.clear();
-	
-	for(size_t i = 0; i < MAX_DYNLIGHTS; i++) {
-		DynLight[i].exist = 0;
-	}
-	
-	arxtime.update_last_frame_time();
-}
-
-//*************************************************************************************
-
 long NO_GMOD_RESET=0;
 
 void FirstFrameProc() {
@@ -1556,8 +1541,16 @@ void FirstFrameProc() {
 
 	ARX_SPELLS_ResetRecognition();
 	
-	FirstTimeThings();
-
+	eyeball.exist=0;
+	WILLADDSPEECHTIME=0;
+	WILLADDSPEECH.clear();
+	
+	for(size_t i = 0; i < MAX_DYNLIGHTS; i++) {
+		DynLight[i].exist = 0;
+	}
+	
+	arxtime.update_last_frame_time();
+	
 	if(!LOAD_N_DONT_ERASE) {
 		CleanInventory();
 		ARX_SCRIPT_Timer_ClearAll();
