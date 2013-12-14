@@ -132,8 +132,6 @@ void FirstFrameHandling();
 
 void DrawImproveVisionInterface();
 
-void ManageFade();
-
 void ManageCombatModeAnimations();
 void ManageCombatModeAnimationsEND();
 void ManageNONCombatModeAnimations();
