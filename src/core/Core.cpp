@@ -2658,8 +2658,6 @@ void shutdownGame() {
 	
 	mainApp->getWindow()->hide();
 	
-	g_miniMap.purgeTexContainer();
-	
 	KillInterfaceTextureContainers();
 	Menu2_Close();
 	DanaeClearLevel(2);
