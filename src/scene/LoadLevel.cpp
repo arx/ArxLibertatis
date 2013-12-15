@@ -1005,7 +1005,6 @@ void DanaeClearLevel(long flag)
 	LAST_JUMP_ENDTIME = 0;
 	FAST_RELEASE = 1;
 	MCache_ClearAll();
-	g_miniMap.purgeTexContainer();
 	ARX_GAME_Reset(flag);
 	FlyingOverIO = NULL;
 
