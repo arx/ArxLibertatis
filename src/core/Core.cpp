@@ -2445,13 +2445,11 @@ void DANAE_StartNewQuest()
 	progressBarSetTotal(108);
 	progressBarReset();
 	LoadLevelScreen(1);
-	char loadfrom[256];
-	sprintf(loadfrom, "graph/levels/level1/level1.dlf");
 	DONT_ERASE_PLAYER=1;
 	DanaeClearLevel();
 	progressBarAdvance(2.f);
 	LoadLevelScreen();
-	DanaeLoadLevel(loadfrom);
+	DanaeLoadLevel("graph/levels/level1/level1.dlf");
 	FirstFrame=true;
 	START_NEW_QUEST=0;
 	BLOCK_PLAYER_CONTROLS = false;
