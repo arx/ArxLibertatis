@@ -23,5 +23,11 @@ nosym='![a-zA-Z_0-9]'
 pattern="(?<$nosym)$(printf '%s' "$1" | sed 's/./\_\*\0/g')_*(?$nosym)"
 shift
 
+# Some grep/pcre versions can't deal with invalid UTF-8 sequences!
+# The script files use one of the ISO-8859-* encodings, but as we only care about
+# ASCII for script command names, use the "C" locale - others aren't guaranteed to
+# be available.
+export LC_ALL=C
+
 grep --color --ignore-case --perl-regexp --recursive --text --include="*.asl*" \
 	"$pattern" "$@"
