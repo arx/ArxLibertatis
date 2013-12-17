@@ -25,6 +25,8 @@
 
 namespace gldebug {
 
+#if defined(GL_ARB_debug_output)
+
 static const char * sourceToString(GLenum source) {
 	
 	switch(source) {
@@ -130,6 +132,14 @@ void initialize() {
 	                        GL_DEBUG_SEVERITY_LOW_ARB,
 	                        GLsizei(strInitialized.size()), strInitialized.c_str());
 }
+
+#else // !defined(GL_ARB_debug_output)
+
+void initialize() {
+	LogWarning << "OpenGL debug output not supported in this build";
+}
+
+#endif
 
 }
 
