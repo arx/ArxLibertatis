@@ -19,6 +19,8 @@
 
 #include "savetool/SaveRename.h"
 
+#include <iostream>
+
 #include "io/SaveBlock.h"
 #include "scene/SaveFormat.h"
 #include "util/String.h"
