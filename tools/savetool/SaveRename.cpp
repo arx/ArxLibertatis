@@ -28,7 +28,8 @@
 class MappedPld {
 	
 public:
-	MappedPld(SaveBlock & save)
+	
+	explicit MappedPld(SaveBlock & save)
 		: m_save(save)
 		, m_fileName("pld")
 		, m_data(NULL)
