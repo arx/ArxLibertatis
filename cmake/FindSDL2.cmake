@@ -130,15 +130,6 @@ endif()
 use_static_libs_restore()
 
 
-# SDL2 may require threads on your system.
-# The Apple build may not need an explicit flag because one of the
-# frameworks may already provide it.
-# But for non-OSX systems, I will use the CMake Threads package.
-if(NOT APPLE)
-	find_package(Threads)
-endif()
-
-
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(SDL2 DEFAULT_MSG SDL2_LIBRARY SDL2_INCLUDE_DIR)
 
@@ -146,6 +137,18 @@ find_package_handle_standard_args(SDL2 DEFAULT_MSG SDL2_LIBRARY SDL2_INCLUDE_DIR
 IF(SDL2_LIBRARY)
 	
 	set(SDL2_LIBRARIES ${SDL2_LIBRARY})
+	
+	# If we're linking against a static libSDL2 we also need to link against some other
+	# libraries. However, which libraries to link varies wildly depending on how SDL2 was
+	# configured, so we must trust pkg-config.
+	if(SDL2_USE_STATIC_LIBS AND _PC_SDL2_STATIC_LDFLAGS)
+		foreach(_sdl2_dependency IN LISTS _PC_SDL2_STATIC_LDFLAGS)
+			# Filter out libSDL2 references as we want to link that statically!
+			if(NOT ${_sdl2_dependency} MATCHES "^(-l|.*/lib)SDL2([.\\-][^/]*)?$")
+				list(APPEND SDL2_LIBRARIES ${_sdl2_dependency})
+			endif()
+		endforeach()
+	endif()
 	
 	# For SDL2main
 	if(NOT SDL2_BUILDING_LIBRARY AND SDL2MAIN_LIBRARY)
@@ -155,13 +158,6 @@ IF(SDL2_LIBRARY)
 	# For OS X, SDL2 uses Cocoa as a backend so it must link to Cocoa.
 	if(APPLE)
 		list(APPEND SDL2_LIBRARIES "-framework Cocoa")
-	endif(APPLE)
-	
-	# For threads, as mentioned Apple doesn't need this.
-	# In fact, there seems to be a problem if I used the Threads package
-	# and try using this line, so I'm just skipping it entirely for OS X.
-	if(NOT APPLE)
-		list(APPEND SDL2_LIBRARIES ${CMAKE_THREAD_LIBS_INIT})
-	endif(NOT APPLE)
+	endif()
 	
 endif()
