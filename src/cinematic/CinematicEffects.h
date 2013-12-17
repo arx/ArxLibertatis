@@ -57,4 +57,4 @@ bool FX_FlashBlanc(float w, float h, float speed, int color, float fps, float cu
 bool FX_Blur(Cinematic * c, CinematicBitmap * tb, EERIE_CAMERA &camera);
 void FX_DreamPrecalc(CinematicBitmap * bi, float amp, float fps);
 
-#endif // ARX_GRAPHICS_EFFECTS_CINEMATICEFFECTS_H
+#endif // ARX_CINEMATIC_CINEMATICEFFECTS_H
