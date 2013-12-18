@@ -43,6 +43,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/spells/Spells09.h"
 
+#include <cmath>
+
 #include "animation/AnimationRender.h"
 
 #include "core/GameTime.h"
@@ -759,13 +761,14 @@ void CNegateMagic::Render() {
 	
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	
-	Anglef stiteangle(0.f, -(float) ulCurrentTime * fOneOnDuration * 120, 0.f);
+	Anglef stiteangle(0.f, -(float) ulCurrentTime * 0.02f, 0.f);
 	Color3f stitecolor = Color3f::gray(.4f);
-	Vec3f stitescale = Vec3f(3.f);
+	float scalediff = std::sin(ulCurrentTime * 0.004f);
+	Vec3f stitescale = Vec3f(3.f + 0.5f * scalediff);
 	DrawEERIEObjEx(ssol, &stiteangle, &stitepos, &stitescale, stitecolor);
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	stitecolor = Color3f(.5f, 0.f, .5f);
-	stitescale = Vec3f(3.1f);
+	stitescale = Vec3f(3.1f + 0.2f * scalediff);
 	DrawEERIEObjEx(ssol, &stiteangle, &stitepos, &stitescale, stitecolor);
 }
 
