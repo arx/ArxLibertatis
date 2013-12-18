@@ -44,6 +44,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/spells/Spells05.h"
 
 #include <climits>
+#include <cmath>
 
 #include "animation/AnimationRender.h"
 
@@ -368,7 +369,7 @@ void CRuneOfGuarding::Render()
 	Anglef stiteangle;
 	Color3f stitecolor;
 	
-	float stiteangleb = (float) ulCurrentTime * fOneOnDuration * 120;
+	float stiteangleb = float(ulCurrentTime) * 0.01f;
 	stiteangle.setYaw(0);
 	stiteangle.setRoll(0);
 	Vec3f stitepos = Vec3f(x, y, z);
@@ -379,6 +380,7 @@ void CRuneOfGuarding::Render()
 	stitecolor.r = 0.4f - v;
 	stitecolor.g = 0.4f - v;
 	stitecolor.b = 0.6f - v;
+	float scale = std::sin(ulCurrentTime * 0.015f);
 	Vec3f stitescale = Vec3f(1.f, -0.1f, 1.f);
 	
 	if(slight) {
@@ -389,7 +391,7 @@ void CRuneOfGuarding::Render()
 	stitecolor.r = 0.6f;
 	stitecolor.g = 0.f;
 	stitecolor.b = 0.f;
-	stitescale = Vec3f(2.f);
+	stitescale = Vec3f(2.f) * (1.f + 0.01f * scale);
 	
 	if(ssol) {
 		DrawEERIEObjEx(ssol, &stiteangle, &stitepos, &stitescale, stitecolor);
@@ -398,7 +400,7 @@ void CRuneOfGuarding::Render()
 	stitecolor.r = 0.6f;
 	stitecolor.g = 0.3f;
 	stitecolor.b = 0.45f;
-	stitescale = Vec3f(1.8f);
+	stitescale = Vec3f(1.8f) * (1.f + 0.02f * scale);
 	
 	if(srune) {
 		DrawEERIEObjEx(srune, &stiteangle, &stitepos, &stitescale, stitecolor);
