@@ -234,7 +234,7 @@ find_package(Threads REQUIRED)
 if(NOT MSVC AND CMAKE_THREAD_LIBS_INIT)
 	check_link_library(Threads CMAKE_THREAD_LIBS_INIT)
 endif()
-list(APPEND ARX_LIBARIES ${CMAKE_THREAD_LIBS_INIT})
+list(APPEND ARX_LIBRARIES ${CMAKE_THREAD_LIBS_INIT})
 
 # FreeType
 find_package(Freetype REQUIRED)
