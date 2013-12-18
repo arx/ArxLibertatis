@@ -112,30 +112,6 @@ class CColdProtection: public CSpellFx
  
 };
 
-class CTelekinesis: public CSpellFx
-{
-	public:
-		bool bDone;
-		int iNumber;
-		Vec3f eSrc;
-		Vec3f eTarget;
-		TextureContainer * tex_p1;
-		TextureContainer * tex_p2;
-
-		int iMax;
-		float fSize;
-
-	public:
-		~CTelekinesis();
-
-		// surcharge
-	public:
-		void	Create(Vec3f, float afBeta = 0);
-		void	Kill();
-		void	Update(unsigned long);
-		void Render();
-};
-
 class CCurse: public CSpellFx
 {
 	public:
