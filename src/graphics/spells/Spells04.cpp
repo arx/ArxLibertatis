@@ -177,44 +177,6 @@ void CBless::Render()
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 }
 
-void CDispellField::Create(Vec3f aeSrc, float afBeta) {
-	
-	SetDuration(ulDuration);
-	eSrc = aeSrc;
-	fBeta = afBeta;
-	fBetaRad = radians(fBeta);
-	fBetaRadCos = (float) cos(fBetaRad);
-	fBetaRadSin = (float) sin(fBetaRad);
-	eTarget = eSrc;
-	fSize = 1;
-	bDone = true;
-}
-
-void CDispellField::Update(unsigned long _ulTime) {
-	ulCurrentTime += _ulTime;
-}
-
-void CDispellField::Render() {
-	
-	if(ulCurrentTime >= ulDuration)
-		return;
-	
-	GRenderer->SetRenderState(Renderer::DepthWrite, false);
-	GRenderer->SetTexture(0, tex_p2);
-	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-
-	Anglef stiteangle(0.f, float(ulCurrentTime) * fOneOnDuration * 180.f, 0.f);
-	Vec3f stitepos = player.pos + Vec3f(0.f, 80.f, 0.f);
-	Color3f stitecolor = Color3f::white;
-	Vec3f stitescale = Vec3f(2.f);
-	DrawEERIEObjEx(ssol, &stiteangle, &stitepos, &stitescale, stitecolor);
-	
-	stitepos.y = player.pos.y + 20;
-	stitecolor = Color3f::white;
-	stitescale = Vec3f(1.8f);
-	DrawEERIEObjEx(srune, &stiteangle, &stitepos, &stitescale, stitecolor);
-}
-
 CTelekinesis::~CTelekinesis()
 {
 	ssol_count--;

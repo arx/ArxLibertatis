@@ -83,27 +83,6 @@ class CBless: public CSpellFx
 		void	Kill();
 };
 
-// Done By : Didier Pedreno
-class CDispellField: public CSpellFx
-{
-	public:
-		bool bDone;
-		int iNumber;
-		Vec3f eSrc;
-		Vec3f eTarget;
-		TextureContainer * tex_p1;
-		TextureContainer * tex_p2;
-		int iMax;
-		float fSize;
-
-		// surcharge
-	public:
-		void	Create(Vec3f, float afBeta = 0);
-		void	Kill();
-		void	Update(unsigned long);
-		void Render();
-};
-
 class CFireProtection: public CSpellFx {
 	
 public:
