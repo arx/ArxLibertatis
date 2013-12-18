@@ -457,10 +457,10 @@ void LaunchAntiMagicField(size_t ident) {
 		
 		Vec3f pos;
 		GetSpellPosition(&pos,n);
-		if(closerThan(pos, entities[spells[ident].caster]->pos, 600.f)) {
+		if(closerThan(pos, entities[spells[ident].target]->pos, 600.f)) {
 			if(spells[n].type != SPELL_CREATE_FIELD) {
 				spells[n].tolive = 0;
-			} else if(spells[ident].caster == 0 && spells[n].caster == 0) {
+			} else if(spells[ident].target == 0 && spells[n].caster == 0) {
 				spells[n].tolive = 0;
 			}
 		}
@@ -4706,7 +4706,11 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			break;
 		}
 		case SPELL_NEGATE_MAGIC: {
-			ARX_SOUND_PlaySFX(SND_SPELL_NEGATE_MAGIC);
+			if(spells[i].caster == 0) {
+				spells[i].target = 0;
+			}
+			
+			ARX_SOUND_PlaySFX(SND_SPELL_NEGATE_MAGIC, &entities[spells[i].target]->pos);
 			
 			spells[i].exist = true;
 			spells[i].lastupdate = spells[i].timcreation = (unsigned long)(arxtime);
@@ -4716,14 +4720,10 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			
 			CNegateMagic * effect = new CNegateMagic();
 			effect->spellinstance = i;
-			effect->Create(player.pos, MAKEANGLE(player.angle.getPitch()));
+			effect->Create(spells[i].target_pos, MAKEANGLE(entities[spells[i].target]->angle.getPitch()));
 			effect->SetDuration(spells[i].tolive);
 			spells[i].pSpellFx = effect;
 			spells[i].tolive = effect->GetDuration();
-			
-			if(spells[i].caster == 0) {
-				spells[i].target = 0;
-			}
 			
 			if(ValidIONum(spells[i].target)) {
 				LaunchAntiMagicField(i);
