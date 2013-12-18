@@ -137,37 +137,4 @@ class CNegateMagic: public CSpellFx
 		void Render();
 };
 
-// Done By : Did
-class CIncinerate: public CSpellFx
-{
-	public:
-		int iNumber;
-		Vec3f eSrc;
-		Vec3f eTarget;
-		TextureContainer * tex_flamme;
-		TextureContainer * tex_pouf_noir;
-		ParticleSystem pPSStream;
-		ParticleSystem pPSHit;
-		TexturedVertex tv1a[150+1];
-
-		int iMax;
-		float fSize;
-
-	public:
-		~CIncinerate();
-
-		// accesseurs
-	public:
-		void	SetPos(Vec3f);
- 
-
-		// surcharge
-	public:
-		void	Create(Vec3f, float afBeta = 0);
-		void	Create(Vec3f, float, float);
-		void	Kill();
-		void	Update(unsigned long);
-		void Render();
-};
-
 #endif // ARX_GRAPHICS_SPELLS_SPELLS09_H
