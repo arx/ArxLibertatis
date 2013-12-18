@@ -49,7 +49,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/effects/SpellEffects.h"
 
 class CLightning;
-class CIncinerate;
 
 // Done By : Didier Pedreno
 class CMassLightning: public CSpellFx
@@ -105,23 +104,6 @@ class CControlTarget: public CSpellFx
 		void	Kill();
 		void	Update(unsigned long);
 		void Render();
-};
-
-// Done By : did
-class CMassIncinerate: public CSpellFx
-{
-	private:
-		CIncinerate ** pTabIncinerate;
-
-	public:
- 
-		~CMassIncinerate();
-
-	public:
-		void	Create(Vec3f, float);
-		void	Update(unsigned long);
-		void Render();
- 
 };
 
 #endif // ARX_GRAPHICS_SPELLS_SPELLS10_H

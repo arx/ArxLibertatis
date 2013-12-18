@@ -276,33 +276,3 @@ void CControlTarget::Render()
 	
 	eCurPos = lastpos;
 }
-
-CMassIncinerate::~CMassIncinerate()
-{
-}
-
-void CMassIncinerate::Create(Vec3f aePos, float afBeta = 0) {
-	
-	(void)afBeta;
-	
-	aePos.y += 150.0f;
-
-	for(int i = 0; i < 10; i++) {
-		pTabIncinerate[i]->Create(aePos, i * 36.f);
-	}
-}
-
-void CMassIncinerate::Update(unsigned long _ulTime)
-{
-	for(int i = 0; i < 10; i++) {
-		pTabIncinerate[i]->Update(_ulTime);
-	}
-}
-
-void CMassIncinerate::Render()
-{
-	for(int i = 0; i < 10; i++) {
-		pTabIncinerate[i]->Render();
-	}
-}
-
