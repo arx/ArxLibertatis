@@ -122,7 +122,6 @@ class CNegateMagic: public CSpellFx
 		TextureContainer * tex_sol;
 
 		int iMax;
-		float fSize;
 
 	public:
 		CNegateMagic();

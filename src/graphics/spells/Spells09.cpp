@@ -708,7 +708,6 @@ void CNegateMagic::Create(Vec3f aeSrc, float afBeta) {
 	fBetaRadSin = (float) sin(fBetaRad);
 	
 	eTarget = eSrc;
-	fSize = 1;
 	bDone = true;
 }
 
@@ -738,8 +737,6 @@ void CNegateMagic::Render() {
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
-	fSize = ulCurrentTime * fOneOnDuration * 200;
-	
 	for(i = 0; i < 360; i++) {
 		float t = rnd();
 		if(t < 0.04f) {
