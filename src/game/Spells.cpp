@@ -4119,14 +4119,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			spells[i].lastupdate = spells[i].timcreation = (unsigned long)(arxtime);
 			spells[i].tolive = 1;
 			
-			CDisarmTrap * effect = new CDisarmTrap();
-			effect->spellinstance = i;
-			
-			effect->Create(player.pos, MAKEANGLE(player.angle.getPitch()));
-			effect->SetDuration(spells[i].tolive);
-			spells[i].pSpellFx = effect;
-			spells[i].tolive = effect->GetDuration();
-			
 			EERIE_SPHERE sphere;
 			sphere.origin = player.pos;
 			sphere.radius = 400.f;
