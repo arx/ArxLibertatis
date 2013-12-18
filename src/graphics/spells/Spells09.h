@@ -47,8 +47,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/effects/SpellEffects.h"
 #include "graphics/particle/ParticleSystem.h"
 
-class CParalyse;
-
 // Done By : Didier Pedreno
 class CSummonCreature: public CSpellFx
 {
@@ -168,28 +166,6 @@ class CIncinerate: public CSpellFx
 		void	Create(Vec3f, float afBeta = 0);
 		void	Create(Vec3f, float, float);
 		void	Kill();
-		void	Update(unsigned long);
-		void Render();
-};
-
-// Done By : seb
-class CMassParalyse: public CSpellFx
-{
-	private:
-		Vec3f	ePos;
-		float		fRayon;
-		int			iNbParalyse;
-
-		struct T_PARALYSE
-		{
-			int	id;
-			CParalyse * paralyse;
-		};
-
-		T_PARALYSE tabparalyse[256];
-
-	public:
- 
 		void	Update(unsigned long);
 		void Render();
 };
