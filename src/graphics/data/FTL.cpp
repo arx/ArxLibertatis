@@ -445,11 +445,20 @@ EERIE_3DOBJ * ARX_FTL_Load(const res::path & file) {
 		return NULL;
 	}
 	
-	size_t allocsize; // The size of the data TODO size ignored
-	char * dat = blastMemAlloc(compressedData, compressedSize, allocsize);
-	if(!dat) {
-		LogError << "ARX_FTL_Load: error decompressing " << filename;
-		return NULL;
+	char * dat;
+	
+	// Check if we have an uncompressed FTL file
+	if(compressedData[0] == 'F' && compressedData[1] == 'T' && compressedData[2] == 'L') {
+		LogInfo << "Uncompressed FTL found: " << filename;
+		dat = (char *) malloc(compressedSize);
+		memcpy(dat, compressedData, compressedSize);
+	} else {
+		size_t allocsize; // The size of the data TODO size ignored
+		dat = blastMemAlloc(compressedData, compressedSize, allocsize);
+		if(!dat) {
+			LogError << "ARX_FTL_Load: error decompressing " << filename;
+			return NULL;
+		}
 	}
 	
 	if(!NOrelease) {
