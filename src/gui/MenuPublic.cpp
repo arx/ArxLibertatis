@@ -130,12 +130,8 @@ void ARXMenu_Options_Video_SetFogDistance(int _iFog) {
 //-----------------------------------------------------------------------------
 void ARXMenu_Options_Video_SetDetailsQuality(int _iQuality)
 {
-	if (_iQuality > 3) _iQuality = 2;
-
-	if (_iQuality < 0) _iQuality = 0;
-
-	config.video.levelOfDetail = _iQuality;
-
+	config.video.levelOfDetail = clamp(_iQuality, 0, 2);
+	
 	switch (config.video.levelOfDetail)
 	{
 		case 0:
@@ -153,34 +149,32 @@ void ARXMenu_Options_Video_SetDetailsQuality(int _iQuality)
 //OPTIONS AUDIO
 
 void ARXMenu_Options_Audio_SetMasterVolume(int _iVolume) {
-	if (_iVolume > 10) _iVolume = 10;
-	else if (_iVolume < 0) _iVolume = 0;
+	_iVolume = clamp(_iVolume, 0, 10);
+	
 	float fVolume = ((float)_iVolume) * 0.1f;
 	ARX_SOUND_MixerSetVolume(ARX_SOUND_MixerMenu, fVolume);
 	config.audio.volume = _iVolume;
 }
 
 void ARXMenu_Options_Audio_SetSfxVolume(int _iVolume) {
-	if (_iVolume > 10) _iVolume = 10;
-	else if (_iVolume < 0) _iVolume = 0;
+	_iVolume = clamp(_iVolume, 0, 10);
+	
 	float fVolume = ((float)_iVolume) * 0.1f;
 	ARX_SOUND_MixerSetVolume(ARX_SOUND_MixerMenuSample, fVolume);
 	config.audio.sfxVolume = _iVolume;
 }
 
 void ARXMenu_Options_Audio_SetSpeechVolume(int _iVolume) {
-	if (_iVolume > 10) _iVolume = 10;
-	else if (_iVolume < 0) _iVolume = 0;
-
+	_iVolume = clamp(_iVolume, 0, 10);
+	
 	float fVolume = ((float)_iVolume) * 0.1f;
 	ARX_SOUND_MixerSetVolume(ARX_SOUND_MixerMenuSpeech, fVolume);
 	config.audio.speechVolume = _iVolume;
 }
 
 void ARXMenu_Options_Audio_SetAmbianceVolume(int _iVolume) {
-	if (_iVolume > 10) _iVolume = 10;
-	else if (_iVolume < 0) _iVolume = 0;
-
+	_iVolume = clamp(_iVolume, 0, 10);
+	
 	float fVolume = ((float)_iVolume) * 0.1f;
 	ARX_SOUND_MixerSetVolume(ARX_SOUND_MixerMenuAmbiance, fVolume);
 	config.audio.ambianceVolume = _iVolume;
