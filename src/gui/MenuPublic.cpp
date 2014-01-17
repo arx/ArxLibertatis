@@ -127,26 +127,24 @@ void ARXMenu_Options_Video_SetFogDistance(int _iFog) {
 	config.video.fogDistance = clamp(_iFog, 0, 10);
 }
 
-//-----------------------------------------------------------------------------
-void ARXMenu_Options_Video_SetDetailsQuality(int _iQuality)
-{
+void ARXMenu_Options_Video_SetDetailsQuality(int _iQuality) {
 	config.video.levelOfDetail = clamp(_iQuality, 0, 2);
 	
-	switch (config.video.levelOfDetail)
-	{
-		case 0:
+	switch(config.video.levelOfDetail) {
+		case 0: {
 			MAX_LLIGHTS = 6;
 			break;
-		case 1:
+		}
+		case 1: {
 			MAX_LLIGHTS = 10;
 			break;
-		case 2:
+		}
+		case 2: {
 			MAX_LLIGHTS = 15;
 			break;
+		}
 	}
 }
-
-//OPTIONS AUDIO
 
 void ARXMenu_Options_Audio_SetMasterVolume(int _iVolume) {
 	_iVolume = clamp(_iVolume, 0, 10);
@@ -231,26 +229,17 @@ void ARXMenu_Options_Control_SetMouseSensitivity(int sensitivity) {
 	GInput->setMouseSensitivity(config.input.mouseSensitivity);
 }
 
-//-----------------------------------------------------------------------------
-//RESUME GAME
-//-----------------------------------------------------------------------------
 bool ARXMenu_CanResumeGame() {
 	return !REFUSE_GAME_RETURN;
 }
 
-//-----------------------------------------------------------------------------
-void ARXMenu_ResumeGame()
-{
+void ARXMenu_ResumeGame() {
 	ARX_Menu_Resources_Release();
 	arxtime.resume();
 	EERIEMouseButton = 0;
 }
 
-//-----------------------------------------------------------------------------
-//NEW QUEST
-//-----------------------------------------------------------------------------
-void ARXMenu_NewQuest()
-{
+void ARXMenu_NewQuest() {
 	bFadeInOut = true;	//fade out
 	bFade = true;			//active le fade
 	iFadeAction = AMCM_NEWQUEST;	//action a la fin du fade
@@ -259,9 +248,6 @@ void ARXMenu_NewQuest()
 	ARX_PLAYER_MakeFreshHero();
 }
 
-//-----------------------------------------------------------------------------
-//LOAD QUEST
-//-----------------------------------------------------------------------------
 void ARXMenu_LoadQuest(size_t num) {
 	
 	LOADQUEST_SLOT = num;
@@ -271,8 +257,6 @@ void ARXMenu_LoadQuest(size_t num) {
 	ARX_MENU_Clicked_QUIT();
 }
 
-//SAVE QUEST
-//-----------------------------------------------------------------------------
 void ARXMenu_SaveQuest(const std::string & name, size_t num) {
 	
 	ARX_SOUND_MixerPause(ARX_SOUND_MixerMenu);
@@ -282,20 +266,13 @@ void ARXMenu_SaveQuest(const std::string & name, size_t num) {
 	ARX_SOUND_MixerResume(ARX_SOUND_MixerMenu);
 }
 
-//CREDITS
-//-----------------------------------------------------------------------------
-void ARXMenu_Credits()
-{
+void ARXMenu_Credits() {
 	bFadeInOut = true;	//fade out
 	bFade = true;			//active le fade
 	iFadeAction = AMCM_CREDITS;	//action a la fin du fade
 }
 
-//QUIT
-//-----------------------------------------------------------------------------
-void ARXMenu_Quit()
-{
-
+void ARXMenu_Quit() {
 	bFadeInOut = true;		//fade out
 	bFade = true;				//active le fade
 	iFadeAction = AMCM_OFF;	//action a la fin du fade
