@@ -2031,7 +2031,7 @@ void ManageCasseDArme(Entity * io)
 									{
 										if (pObjMin)
 										{
-											if (inventory[iNbBag][i][j].io->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Damages].value > pObjMin->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Damages].value)
+											if (inventory[iNbBag][i][j].io->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Damages].value < pObjMin->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Damages].value)
 											{
 												pObjMin = inventory[iNbBag][i][j].io;
 											}
@@ -2047,7 +2047,7 @@ void ManageCasseDArme(Entity * io)
 										{
 											if (pObjMax)
 											{
-												if (inventory[iNbBag][i][j].io->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Damages].value < pObjMax->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Damages].value)
+												if (inventory[iNbBag][i][j].io->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Damages].value > pObjMax->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Damages].value)
 												{
 													pObjMax = inventory[iNbBag][i][j].io;
 												}
