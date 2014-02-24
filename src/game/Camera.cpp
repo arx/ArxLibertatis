@@ -78,7 +78,7 @@ float EERIE_TransformOldFocalToNewFocal(float _fOldFocal)
 		return 33.5f;
 }
 
-extern EERIEMATRIX ProjectionMatrix;
+EERIEMATRIX ProjectionMatrix;
 
 void EERIE_CreateMatriceProj(float _fWidth, float _fHeight, EERIE_CAMERA * cam) {
 

@@ -109,8 +109,6 @@ float Yratio = 1.f;
 
 static bool RayIn3DPolyNoCull(Vec3f * orgn, Vec3f * dest, EERIEPOLY * epp);
 
-EERIEMATRIX ProjectionMatrix;
-
 extern TextureContainer * sphere_particle;
 
 static bool IntersectLinePlane(const Vec3f & l1, const Vec3f & l2, const EERIEPOLY * ep, Vec3f * intersect) {
@@ -477,6 +475,8 @@ static inline float clamp_and_invert(float z) {
 	
 	return 1.f / std::max(z, near_clamp);
 }
+
+extern EERIEMATRIX ProjectionMatrix;
 
 void EE_P(const Vec3f * in, TexturedVertex * out) {
 	
