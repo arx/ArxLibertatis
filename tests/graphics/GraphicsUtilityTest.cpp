@@ -17,6 +17,7 @@
  * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <iomanip>
 #include <cppunit/TestAssert.h>
 
 #include "GraphicsUtilityTest.h"
@@ -41,13 +42,15 @@ namespace CppUnit {
 					checkFloat(mat._41,other._41) && checkFloat(mat._42,other._42) && checkFloat(mat._43,other._43) && checkFloat(mat._44,other._44);
 		}
 
-		static std::string toString(const EERIEMATRIX &matrix) {
+		static std::string toString(const EERIEMATRIX &m) {
 			OStringStream ost;
-			ost << std::endl << std::fixed;
-			ost << matrix._11 << "\t" << matrix._12 << "\t" << matrix._13 << "\t" << matrix._14 << std::endl;
-			ost << matrix._21 << "\t" << matrix._22 << "\t" << matrix._23 << "\t" << matrix._24 << std::endl;
-			ost << matrix._31 << "\t" << matrix._32 << "\t" << matrix._33 << "\t" << matrix._34 << std::endl;
-			ost << matrix._41 << "\t" << matrix._42 << "\t" << matrix._43 << "\t" << matrix._44 << std::endl;
+						
+			static const int l = 14;
+			ost << std::endl << std::fixed << std::setprecision(5);
+			ost << std::setw(l) << m._11 << std::setw(l) << m._12 << std::setw(l) << m._13 << std::setw(l) << m._14 << std::endl;
+			ost << std::setw(l) << m._21 << std::setw(l) << m._22 << std::setw(l) << m._23 << std::setw(l) << m._24 << std::endl;
+			ost << std::setw(l) << m._31 << std::setw(l) << m._32 << std::setw(l) << m._33 << std::setw(l) << m._34 << std::endl;
+			ost << std::setw(l) << m._41 << std::setw(l) << m._42 << std::setw(l) << m._43 << std::setw(l) << m._44 << std::endl;
 			return ost.str();
 		}
 	};
@@ -65,11 +68,6 @@ void GraphicsUtilityTest::back() {
 	transform.updateFromAngle(Anglef(180.f, 180.f, 0.f));
 	Util_SetViewMatrix(matrix, transform);
 	expected.setToIdentity();
-	expected._12 = 7.64274186e-15f;
-	expected._13 = -8.74227766e-08f;
-	expected._23 = 8.74227766e-08f;
-	expected._31 = 8.74227766e-08f;
-	expected._32 = -8.74227766e-08f;
 	CPPUNIT_ASSERT_EQUAL(expected, matrix);
 }
 
@@ -79,13 +77,10 @@ void GraphicsUtilityTest::edgeCase1()
 	transform.updateFromAngle(Anglef(90.f, 90.f, 0.f));
 	Util_SetViewMatrix(matrix, transform);
 	expected.setToIdentity();
-	expected._12 = -8.35187172e-23f;
-	expected._13 = 4.37113883e-08f;
-	expected._21 = 4.37113883e-08f;
-	expected._22 = 1.91068547e-15f;
+	expected._22 =  0.f;
 	expected._23 = -1.f;
-	expected._32 = 1.f;
-	expected._33 = 1.91068547e-15f;
+	expected._32 =  1.f;
+	expected._33 =  0.f;
 	CPPUNIT_ASSERT_EQUAL(expected, matrix);
 }
 
@@ -95,13 +90,10 @@ void GraphicsUtilityTest::edgeCase2()
 	Util_SetViewMatrix(matrix, transform);
 	expected.setToIdentity();
 	expected._11 = -1.f;
-	expected._12 = 8.35187172e-23f;
-	expected._13 = -4.37113883e-08f;
-	expected._21 = -4.37113883e-08f;
-	expected._22 = -1.91068547e-15f;
-	expected._23 = 1.f;
-	expected._32 = 1.f;
-	expected._33 = 1.91068547e-15f;
+	expected._22 =  0.f;
+	expected._23 =  1.f;
+	expected._32 =  1.f;
+	expected._33 =  0.f;
 	CPPUNIT_ASSERT_EQUAL(expected, matrix);
 }
 
@@ -111,9 +103,9 @@ void GraphicsUtilityTest::translation()
 	transform.updateFromAngle(Anglef(0.f, 0.f, 0.f));
 	Util_SetViewMatrix(matrix, transform);
 	expected.setToIdentity();
-	expected._41 = -10;
-	expected._42 = 200;
-	expected._43 = -3000;
+	expected._41 = -10.f;
+	expected._42 = 200.f;
+	expected._43 = -3000.f;
 	CPPUNIT_ASSERT_EQUAL(expected, matrix);
 }
 
@@ -126,7 +118,7 @@ void GraphicsUtilityTest::combined()
 	expected._12 = 0.5f;
 	expected._13 = 0.5f;
 	expected._14 = 0.f;
-	expected._21 = 1.49011612e-08f;
+	expected._21 = 0.f;
 	expected._22 = 0.707106769f;
 	expected._23 = -0.707106769f;
 	expected._24 = 0.f;
