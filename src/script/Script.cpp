@@ -1300,11 +1300,12 @@ float GetVarValueInterpretedAsFloat(const string & temp1, const EERIE_SCRIPT * e
 		switch (getSystemVar(esss,io,temp1,tv,&fv,&lv)) {
 			case TYPE_TEXT:
 				return (float)atof(tv.c_str());
+				break;
 			case TYPE_LONG:
 				return (float)lv;
-				// TODO unreachable code (should it be case TYPE_FLOAT: ?)
-				//return (fv);
+				break;
 			default:
+				return (fv);
 				break;
 		}
 	} else if(temp1[0] == '#') {
