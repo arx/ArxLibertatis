@@ -25,7 +25,7 @@ void ColorTest::Color3fToColorBGRA()
 {
 	Color3f white(1.f, 1.f, 1.f);
 
-	ColorBGRA result = white.toBGR();
+	ColorBGRA result = white.toBGR(255);
 
 	CPPUNIT_ASSERT_EQUAL(0xFFFFFFFF, result);
 }
