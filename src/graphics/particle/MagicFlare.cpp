@@ -183,7 +183,7 @@ void AddFlare(const Vec2s & pos, float sm, short typ, Entity * io, bool bookDraw
 		ka.angle = Anglef(360.f, 360.f, 360.f) - ka.angle;
 		EERIE_CAMERA * oldcam = ACTIVECAM;
 		SetActiveCamera(&ka);
-		PrepareCamera(&ka);
+		PrepareCamera(&ka, g_size);
 		fl->v.p += ka.orgTrans.pos;
 		EE_RTP(&fl->tv, &fl->v);
 		fl->v.p += ka.orgTrans.pos;
@@ -200,7 +200,7 @@ void AddFlare(const Vec2s & pos, float sm, short typ, Entity * io, bool bookDraw
 			fl->v.p.z = 75.f;
 			ka = *oldcam;
 			SetActiveCamera(&ka);
-			PrepareCamera(&ka);
+			PrepareCamera(&ka, g_size);
 			float temp = (fl->v.p.y * -ka.orgTrans.xsin) + (fl->v.p.z * ka.orgTrans.xcos);
 			fl->v.p.y = (fl->v.p.y * ka.orgTrans.xcos) - (-fl->v.p.z * ka.orgTrans.xsin);
 			fl->v.p.z = (temp * ka.orgTrans.ycos) - (-fl->v.p.x * ka.orgTrans.ysin);
@@ -209,7 +209,7 @@ void AddFlare(const Vec2s & pos, float sm, short typ, Entity * io, bool bookDraw
 		}
 		fl->tv.p = fl->v.p;
 		SetActiveCamera(oldcam);
-		PrepareCamera(oldcam);
+		PrepareCamera(oldcam, g_size);
 	} else {
 		fl->tv.p = Vec3f(fl->x, fl->y, 0.001f);
 	}

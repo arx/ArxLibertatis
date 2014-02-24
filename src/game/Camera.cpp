@@ -120,16 +120,12 @@ void SP_PrepareCamera(EERIE_CAMERA * cam) {
 	cam->orgTrans.mod = Vec2f(cam->center + cam->clip.origin.toVec2());
 }
 
-extern Rect g_size;
-
-void PrepareCamera(EERIE_CAMERA * cam)
-{
+void PrepareCamera(EERIE_CAMERA * cam, const Rect & size) {
+	
 	SP_PrepareCamera(cam);
-
-	EERIE_CreateMatriceProj(static_cast<float>(g_size.width()),
-							static_cast<float>(g_size.height()),
-							cam);
-
+	EERIE_CreateMatriceProj(static_cast<float>(size.width()),
+	                        static_cast<float>(size.height()),
+	                        cam);
 }
 
 EERIE_CAMERA * ACTIVECAM = NULL;

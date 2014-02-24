@@ -3913,7 +3913,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 					bookcam.center.y = (100 + ypos * 64 + BOOKDECY) * Yratio;
 
 					SetActiveCamera(&bookcam);
-					PrepareCamera(&bookcam);
+					PrepareCamera(&bookcam, g_size);
 
 					// First draw the lace
 					angle.setPitch(0.f);
@@ -4208,7 +4208,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 
 			memcpy(&DynLight[0],&tl,sizeof(EERIE_LIGHT));
 			SetActiveCamera(oldcam);
-			PrepareCamera(oldcam);
+			PrepareCamera(oldcam, g_size);
 		}
 	}
 }
@@ -5292,7 +5292,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 		EERIE_CAMERA * oldcam = ACTIVECAM;
 		bookcam.center = rec.center();
 		SetActiveCamera(&bookcam);
-		PrepareCamera(&bookcam);
+		PrepareCamera(&bookcam, g_size);
 
 		Anglef ePlayerAngle = Anglef::ZERO;
 
@@ -5380,7 +5380,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 		GRenderer->SetCulling(Renderer::CullNone);
 		SetActiveCamera(oldcam);
-		PrepareCamera(oldcam);
+		PrepareCamera(oldcam, g_size);
 
 		Entity *io = entities.player();
 

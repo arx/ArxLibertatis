@@ -429,7 +429,7 @@ void Cinematic::Render(float FDIFF) {
 		m_camera.angle.setRoll(angz);
 		m_camera.clip = Rect(LargeurRender, HauteurRender);
 		m_camera.center = m_camera.clip.center();
-		PrepareCamera(&m_camera);
+		PrepareCamera(&m_camera, g_size);
 		SetActiveCamera(&m_camera);
 
 		int alpha = ((int)(a * 255.f)) << 24;
@@ -470,7 +470,7 @@ void Cinematic::Render(float FDIFF) {
 					m_camera.setTargetCamera(m_camera.orgTrans.pos.x, m_camera.orgTrans.pos.y, 0.f);
 					m_camera.angle.setPitch(0);
 					m_camera.angle.setRoll(angzsuiv);
-					PrepareCamera(&m_camera);
+					PrepareCamera(&m_camera, g_size);
 					break;
 				case INTERP_LINEAR:
 					break;

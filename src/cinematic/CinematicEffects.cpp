@@ -114,6 +114,8 @@ int FX_FadeOUT(float a, int color, int colord)
 
 static float LastTime;
 
+extern Rect g_size;
+
 bool FX_Blur(Cinematic *c, CinematicBitmap *tb, EERIE_CAMERA &camera)
 {
 	if(c->numbitmap < 0 || !tb)
@@ -143,7 +145,7 @@ bool FX_Blur(Cinematic *c, CinematicBitmap *tb, EERIE_CAMERA &camera)
 		camera.setTargetCamera(camera.orgTrans.pos.x, camera.orgTrans.pos.y, 0.f);
 		camera.angle.setPitch(0);
 		camera.angle.setRoll(*az);
-		PrepareCamera(&camera);
+		PrepareCamera(&camera, g_size);
 
 		int col = (int)alpha;
 		col = (col << 24) | 0x00FFFFFF;
