@@ -191,7 +191,6 @@ inline float fnormalize(Vec3f & v) {
 // Matrix functions
 
 void MatrixSetByVectors(glm::mat4x4 & m, const Vec3f & d, const Vec3f & u);
-void MatrixMultiply(glm::mat4x4 & q, const glm::mat4x4 & a, const glm::mat4x4 & b);
 void VectorMatrixMultiply(Vec3f & vDest, const Vec3f & vSrc, const glm::mat4x4 & mat);
 void GenerateMatrixUsingVector(glm::mat4x4 & matrix, const Vec3f & vect, float rollDegrees);
 

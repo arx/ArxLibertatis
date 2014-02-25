@@ -944,29 +944,7 @@ void GenerateMatrixUsingVector(glm::mat4x4 & matrix, const Vec3f & vect, float r
 
 	// Concatinate them for a complete rotation matrix that includes
 	// all rotations
-	MatrixMultiply(matrix, rot, roll);
-}
-
-
-//-----------------------------------------------------------------------------
-// MatrixMultiply()
-// Does the matrix operation: [Q] = [A] * [B]. Note that the order of
-// this operation was changed from the previous version of the DXSDK.
-//-----------------------------------------------------------------------------
-void MatrixMultiply(glm::mat4x4 & q, const glm::mat4x4 & a, const glm::mat4x4 & b)
-{
-	const float * pA = &a[0][0];
-	const float * pB = &b[0][0];
-	float pM[16];
-
-	memset(pM, 0, sizeof(glm::mat4x4));
-
-	for (size_t i = 0; i < 4; i++)
-		for (size_t j = 0; j < 4; j++)
-			for (size_t k = 0; k < 4; k++)
-				pM[4*i+j] +=  pA[4*i+k] * pB[4*k+j];
-
-	memcpy(&q, pM, sizeof(glm::mat4x4));
+	matrix = roll * rot;
 }
 
 // Desc: Multiplies a vector by a matrix
