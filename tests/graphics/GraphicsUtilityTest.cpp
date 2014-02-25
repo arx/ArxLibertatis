@@ -17,118 +17,228 @@
  * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <sstream>
 #include <iomanip>
 #include <cppunit/TestAssert.h>
+#include <glm/gtx/epsilon.hpp>
 
 #include "GraphicsUtilityTest.h"
 
 #include "graphics/Math.h"
 
-
 CPPUNIT_TEST_SUITE_REGISTRATION(GraphicsUtilityTest);
 
-bool checkFloat(float a, float b) {
-	return std::fabs(a-b) < 0.001f;
-}
+#include <glm/gtc/matrix_access.hpp>
 
 namespace CppUnit {
-
+	
 	template<>
-	struct assertion_traits<EERIEMATRIX> {
-		static bool equal(const EERIEMATRIX &mat, const EERIEMATRIX &other) {
-			return  checkFloat(mat._11,other._11) && checkFloat(mat._12,other._12) && checkFloat(mat._13,other._13) && checkFloat(mat._14,other._14) &&
-					checkFloat(mat._21,other._21) && checkFloat(mat._22,other._22) && checkFloat(mat._23,other._23) && checkFloat(mat._24,other._24) &&
-					checkFloat(mat._31,other._31) && checkFloat(mat._32,other._32) && checkFloat(mat._33,other._33) && checkFloat(mat._34,other._34) &&
-					checkFloat(mat._41,other._41) && checkFloat(mat._42,other._42) && checkFloat(mat._43,other._43) && checkFloat(mat._44,other._44);
+	struct assertion_traits<glm::mat4x4> {
+		static bool equal(const glm::mat4x4 & mat, const glm::mat4x4 & other) {
+			
+			for(int i = 0; i < 4; i++) {
+				if(! glm::all(glm::gtx::epsilon::equalEpsilon(glm::row(mat, i), glm::row(other, i), 0.001f))) {
+					return false;
+				}
+			}
+			return true;
 		}
-
-		static std::string toString(const EERIEMATRIX &m) {
+		
+		static std::string toString(const glm::mat4x4 &m) {
 			OStringStream ost;
-						
-			static const int l = 14;
 			ost << std::endl << std::fixed << std::setprecision(5);
-			ost << std::setw(l) << m._11 << std::setw(l) << m._12 << std::setw(l) << m._13 << std::setw(l) << m._14 << std::endl;
-			ost << std::setw(l) << m._21 << std::setw(l) << m._22 << std::setw(l) << m._23 << std::setw(l) << m._24 << std::endl;
-			ost << std::setw(l) << m._31 << std::setw(l) << m._32 << std::setw(l) << m._33 << std::setw(l) << m._34 << std::endl;
-			ost << std::setw(l) << m._41 << std::setw(l) << m._42 << std::setw(l) << m._43 << std::setw(l) << m._44 << std::endl;
+			
+			for(int i = 0; i < 4; i++) {
+				for(int u = 0; u < 4; u++) {
+					// Print columns as rows !
+					ost << std::setw(14) << glm::column(m, i)[u];
+				}
+				ost << std::endl;
+			}
+			
 			return ost.str();
 		}
 	};
 }
 
-void GraphicsUtilityTest::front() {
-	transform.pos = Vec3f(0.f, 0.f, 0.f);
-	transform.updateFromAngle(Anglef(0.f, 0.f, 0.f));
+glm::mat4x4 fromEerieMatrix(const EERIEMATRIX & other) {
+	glm::mat4x4 result;
+	
+	result[0][0] = other._11;
+	result[0][1] = other._12;
+	result[0][2] = other._13;
+	result[0][3] = other._14;
+	
+	result[1][0] = other._21;
+	result[1][1] = other._22;
+	result[1][2] = other._23;
+	result[1][3] = other._24;
+	
+	result[2][0] = other._31;
+	result[2][1] = other._32;
+	result[2][2] = other._33;
+	result[2][3] = other._34;
+	
+	result[3][0] = other._41;
+	result[3][1] = other._42;
+	result[3][2] = other._43;
+	result[3][3] = other._44;
+	
+	return result;
+}
+
+inline void checkMatrix(Vec3f pos, Anglef angle, glm::mat4x4 expected) {
+	EERIE_TRANSFORM transform;
+	transform.pos = pos;
+	transform.updateFromAngle(angle);
+	
+	EERIEMATRIX matrix;
 	Util_SetViewMatrix(matrix, transform);
-	expected.setToIdentity();
-	CPPUNIT_ASSERT_EQUAL(expected, matrix);
+	
+	glm::mat4x4 result = fromEerieMatrix(matrix);
+	
+	std::ostringstream ost;
+	ost << std::endl << std::fixed << std::setprecision(3);
+	ost << "Input:" << std::endl;
+	ost << std::setw(8) << pos.x;
+	ost << std::setw(8) << pos.y;
+	ost << std::setw(8) << pos.z;
+	ost << std::endl;
+	ost << std::setw(8) << angle.getYaw();
+	ost << std::setw(8) << angle.getPitch();
+	ost << std::setw(8) << angle.getRoll();
+	ost << std::endl;
+	
+	CPPUNIT_ASSERT_EQUAL_MESSAGE(ost.str(), expected, result);
+}
+
+void GraphicsUtilityTest::front() {
+	checkMatrix(
+		Vec3f(0.f, 0.f, 0.f),
+		Anglef(0.f, 0.f, 0.f),
+		glm::mat4x4(
+		 1, 0, 0, 0,
+		 0, 1, 0, 0,
+		 0, 0, 1, 0,
+		 0, 0, 0, 1)
+	);
 }
 
 void GraphicsUtilityTest::back() {
-	transform.updateFromAngle(Anglef(180.f, 180.f, 0.f));
-	Util_SetViewMatrix(matrix, transform);
-	expected.setToIdentity();
-	CPPUNIT_ASSERT_EQUAL(expected, matrix);
-}
-
-void GraphicsUtilityTest::edgeCase1()
-{
-	transform.pos = Vec3f(0.f, 0.f, 0.f);
-	transform.updateFromAngle(Anglef(90.f, 90.f, 0.f));
-	Util_SetViewMatrix(matrix, transform);
-	expected.setToIdentity();
-	expected._22 =  0.f;
-	expected._23 = -1.f;
-	expected._32 =  1.f;
-	expected._33 =  0.f;
-	CPPUNIT_ASSERT_EQUAL(expected, matrix);
-}
-
-void GraphicsUtilityTest::edgeCase2()
-{
-	transform.updateFromAngle(Anglef(-90.f, -90.f, 0.f));
-	Util_SetViewMatrix(matrix, transform);
-	expected.setToIdentity();
-	expected._11 = -1.f;
-	expected._22 =  0.f;
-	expected._23 =  1.f;
-	expected._32 =  1.f;
-	expected._33 =  0.f;
-	CPPUNIT_ASSERT_EQUAL(expected, matrix);
+	checkMatrix(
+		Vec3f(0.f, 0.f, 0.f),
+		Anglef(180.f, 180.f, 0.f),
+		glm::mat4x4(
+		 1, 0, 0, 0,
+		 0, 1, 0, 0,
+		 0, 0, 1, 0,
+		 0, 0, 0, 1)
+	);
 }
 
 void GraphicsUtilityTest::translation()
 {
-	transform.pos = Vec3f(10.f, 200.f, 3000.f);
-	transform.updateFromAngle(Anglef(0.f, 0.f, 0.f));
-	Util_SetViewMatrix(matrix, transform);
-	expected.setToIdentity();
-	expected._41 = -10.f;
-	expected._42 = 200.f;
-	expected._43 = -3000.f;
-	CPPUNIT_ASSERT_EQUAL(expected, matrix);
+	checkMatrix(
+		Vec3f(10.f, 200.f, 3000.f),
+		Anglef(0.f, 0.f, 0.f),
+		glm::mat4x4(
+		 1, 0, 0, 0,
+		 0, 1, 0, 0,
+		 0, 0, 1, 0,
+		 -10, 200, -3000, 1)
+	);
 }
 
-void GraphicsUtilityTest::combined()
-{
-	transform.pos = Vec3f(10.f, 200.f, 3000.f);
-	transform.updateFromAngle(Anglef(45.f, -45.f, 0.f));
-	Util_SetViewMatrix(matrix, transform);
-	expected._11 = 0.707106709f;
-	expected._12 = 0.5f;
-	expected._13 = 0.5f;
-	expected._14 = 0.f;
-	expected._21 = 0.f;
-	expected._22 = 0.707106769f;
-	expected._23 = -0.707106769f;
-	expected._24 = 0.f;
-	expected._31 = -0.707106769f;
-	expected._32 = 0.5f;
-	expected._33 = 0.5f;
-	expected._34 = 0.f;
-	expected._41 = 2114.24927f;
-	expected._42 = -1363.57849f;
-	expected._43 = -1646.42126f;
-	expected._44 = 1.f;
-	CPPUNIT_ASSERT_EQUAL(expected, matrix);
+void GraphicsUtilityTest::testMatrix1() {
+	checkMatrix(
+		Vec3f(0.f, 0.f, 0.f),
+		Anglef(90.f, 0.f, 0.f),
+		glm::mat4x4(
+		 1, 0, 0, 0,
+		 0, 0,-1, 0,
+		 0, 1, 0, 0,
+		 0, 0, 0, 1)
+	);
+}
+
+void GraphicsUtilityTest::testMatrix2() {
+	checkMatrix(
+		Vec3f(0.f, 0.f, 0.f),
+		Anglef(0.f, 90.f, 0.f),
+		glm::mat4x4(
+		 0, 0,-1, 0,
+		 0, 1, 0, 0,
+		 1, 0, 0, 0,
+		 0, 0, 0, 1)
+	);
+}
+
+void GraphicsUtilityTest::testMatrix3() {
+	checkMatrix(
+		Vec3f(0.f, 0.f, 0.f),
+		Anglef(0.f, 0.f, 90.f),
+		glm::mat4x4(
+		 1, 0, 0, 0,
+		 0, 1, 0, 0,
+		 0, 0, 1, 0,
+		 0, 0, 0, 1)
+	);
+	
+	checkMatrix(
+		Vec3f(0.f, 0.f, 0.f),
+		Anglef(0.f, 0.f, -180.f),
+		glm::mat4x4(
+		 1, 0, 0, 0,
+		 0, 1, 0, 0,
+		 0, 0, 1, 0,
+		 0, 0, 0, 1)
+	);
+}
+
+void GraphicsUtilityTest::testMatrix4() {
+	checkMatrix(
+		Vec3f(0.f, 0.f, 0.f),
+		Anglef(90.f, 90.f, 0.f),
+		glm::mat4x4(
+		 1, 0, 0, 0,
+		 0, 0,-1, 0,
+		 0, 1, 0, 0,
+		 0, 0, 0, 1)
+	);
+}
+
+void GraphicsUtilityTest::testMatrix5() {
+	checkMatrix(
+		Vec3f(0.f, 0.f, 0.f),
+		Anglef(-90.f, -90.f, 0.f),
+		glm::mat4x4(
+		-1, 0, 0, 0,
+		 0, 0, 1, 0,
+		 0, 1, 0, 0,
+		 0, 0, 0, 1)
+	);
+}
+
+void GraphicsUtilityTest::testMatrix6() {
+	checkMatrix(
+		Vec3f(1.f, 0.f, 0.f),
+		Anglef(90.f, 0.f, 0.f),
+		glm::mat4x4(
+		 1, 0, 0, 0,
+		 0, 0,-1, 0,
+		 0, 1, 0, 0,
+		-1, 0, 0, 1)
+	);
+}
+
+void GraphicsUtilityTest::testMatrix7() {
+	checkMatrix(
+		Vec3f(10.f, 200.f, 3000.f),
+		Anglef(45.f, -45.f, 0.f),
+		glm::mat4x4(
+		    0.70711,     0.5    ,     0.5    , 0,
+		    0      ,     0.70711,    -0.70711, 0,
+		   -0.70711,     0.5    ,     0.5    , 0,
+		 2114.24927, -1363.57849, -1646.42126, 1)
+	);
 }
