@@ -219,10 +219,10 @@ inline void Quat_Init(EERIE_QUAT * quat, float x = 0, float y = 0, float z = 0, 
 }
 
 // Transforms a Vertex by a matrix
-inline void TransformVertexMatrix(EERIEMATRIX * mat, Vec3f * vertexin, Vec3f * vertexout) {
-	vertexout->x = vertexin->x * mat->_11 + vertexin->y * mat->_21 + vertexin->z * mat->_31;
-	vertexout->y = vertexin->x * mat->_12 + vertexin->y * mat->_22 + vertexin->z * mat->_32;
-	vertexout->z = vertexin->x * mat->_13 + vertexin->y * mat->_23 + vertexin->z * mat->_33;
+inline void TransformVertexMatrix(const EERIEMATRIX & mat, const Vec3f & vertexin, Vec3f & vertexout) {
+	vertexout.x = vertexin.x * mat._11 + vertexin.y * mat._21 + vertexin.z * mat._31;
+	vertexout.y = vertexin.x * mat._12 + vertexin.y * mat._22 + vertexin.z * mat._32;
+	vertexout.z = vertexin.x * mat._13 + vertexin.y * mat._23 + vertexin.z * mat._33;
 }
 
 // Transforms a Vertex by a quaternion

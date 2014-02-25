@@ -1399,13 +1399,13 @@ void Cedric_TransformVerts(EERIE_3DOBJ *eobj, const Vec3f & pos) {
 		for(int v = 0; v != bone.nb_idxvertices; v++) {
 			long index = bone.idxvertices[v];
 
-			EERIE_3DPAD * inVert  = &eobj->vertexlocal[index];
-			EERIE_VERTEX * outVert = &eobj->vertexlist3[index];
+			EERIE_3DPAD & inVert = eobj->vertexlocal[index];
+			EERIE_VERTEX & outVert = eobj->vertexlist3[index];
 
-			TransformVertexMatrix(&matrix, inVert, &outVert->v);
-			outVert->v += vector;
+			TransformVertexMatrix(matrix, inVert, outVert.v);
+			outVert.v += vector;
 
-			outVert->vert.p = outVert->v;
+			outVert.vert.p = outVert.v;
 		}
 	}
 
