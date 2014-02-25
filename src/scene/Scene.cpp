@@ -745,7 +745,7 @@ void CreateScreenFrustrum(EERIE_FRUSTRUM * frustrum) {
 	GRenderer->GetViewMatrix(matView);
 	
 	EERIEMATRIX matres;
-	MatrixMultiply(&matres, &matView, &matProj);
+	MatrixMultiply(matres, matView, matProj);
 
 	float a,b,c,d,n;
 	a=matres._14-matres._11;

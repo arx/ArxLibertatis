@@ -898,11 +898,11 @@ void MatrixSetByVectors(EERIEMATRIX & m, const Vec3f & d, const Vec3f & u)
 	m._23 = U.z;
 }
 
-void GenerateMatrixUsingVector(EERIEMATRIX * matrix, const Vec3f * vect, float rollDegrees)
+void GenerateMatrixUsingVector(EERIEMATRIX & matrix, const Vec3f & vect, float rollDegrees)
 {
 	// Get our direction vector (the Z vector component of the matrix)
 	// and make sure it's normalized into a unit vector
-	Vec3f zAxis = glm::normalize(*vect);
+	Vec3f zAxis = glm::normalize(vect);
 
 	// Build the Y vector of the matrix (handle the degenerate case
 	// in the way that 3DS does) -- This is not the true vector, only
@@ -944,7 +944,7 @@ void GenerateMatrixUsingVector(EERIEMATRIX * matrix, const Vec3f * vect, float r
 
 	// Concatinate them for a complete rotation matrix that includes
 	// all rotations
-	MatrixMultiply(matrix, &rot, &roll);
+	MatrixMultiply(matrix, rot, roll);
 }
 
 
@@ -953,10 +953,10 @@ void GenerateMatrixUsingVector(EERIEMATRIX * matrix, const Vec3f * vect, float r
 // Does the matrix operation: [Q] = [A] * [B]. Note that the order of
 // this operation was changed from the previous version of the DXSDK.
 //-----------------------------------------------------------------------------
-void MatrixMultiply(EERIEMATRIX * q, const EERIEMATRIX * a, const EERIEMATRIX * b)
+void MatrixMultiply(EERIEMATRIX & q, const EERIEMATRIX & a, const EERIEMATRIX & b)
 {
-	const float * pA = &a->_11;
-	const float * pB = &b->_11;
+	const float * pA = &a._11;
+	const float * pB = &b._11;
 	float pM[16];
 
 	memset(pM, 0, sizeof(EERIEMATRIX));
@@ -966,7 +966,7 @@ void MatrixMultiply(EERIEMATRIX * q, const EERIEMATRIX * a, const EERIEMATRIX * 
 			for (size_t k = 0; k < 4; k++)
 				pM[4*i+j] +=  pA[4*i+k] * pB[4*k+j];
 
-	memcpy(q, pM, sizeof(EERIEMATRIX));
+	memcpy(&q, pM, sizeof(EERIEMATRIX));
 }
 
 // Desc: Multiplies a vector by a matrix

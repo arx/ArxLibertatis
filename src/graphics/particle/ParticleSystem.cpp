@@ -65,7 +65,7 @@ using std::list;
 void ParticleSystem::RecomputeDirection() {
 	Vec3f eVect = p3ParticleDirection;
 	eVect.y = -eVect.y;
-	GenerateMatrixUsingVector(&eMat, &eVect, 0);
+	GenerateMatrixUsingVector(eMat, eVect, 0);
 }
 
 ParticleSystem::ParticleSystem() {
@@ -91,7 +91,7 @@ ParticleSystem::ParticleSystem() {
 	// default settings for EDITOR MODE only
 	Vec3f eVect = p3ParticleDirection = -Vec3f_Y_AXIS;
 	eVect.y = -eVect.y;
-	GenerateMatrixUsingVector(&eMat, &eVect, 0);
+	GenerateMatrixUsingVector(eMat, eVect, 0);
 	
 	fParticleStartSize = 1;
 	fParticleEndSize = 1;
@@ -202,7 +202,7 @@ void ParticleSystem::SetParams(const ParticleParams & _pp) {
 
 	p3ParticleDirection = glm::normalize(p3ParticleDirection);
 	Vec3f eVect(p3ParticleDirection.x, -p3ParticleDirection.y, p3ParticleDirection.z);
-	GenerateMatrixUsingVector(&eMat, &eVect, 0);
+	GenerateMatrixUsingVector(eMat, eVect, 0);
 
 	float r = (fParticleStartColor[0]  + fParticleEndColor[0] ) * 0.5f;
 	float g = (fParticleStartColor[1]  + fParticleEndColor[1] ) * 0.5f;
