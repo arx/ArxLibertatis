@@ -33,6 +33,24 @@ CPPUNIT_TEST_SUITE_REGISTRATION(GraphicsUtilityTest);
 namespace CppUnit {
 	
 	template<>
+	struct assertion_traits<Vec3f> {
+		static bool equal(const Vec3f & v, const Vec3f & other) {
+			return glm::all(glm::gtx::epsilon::equalEpsilon(v, other, 0.001f));
+		}
+		
+		static std::string toString(const Vec3f &v) {
+			OStringStream ost;
+			ost << std::endl << std::fixed << std::setprecision(5);
+			
+			for(int i = 0; i < 3; i++) {
+				ost << std::setw(14) << v[i] << std::endl;
+			}
+			
+			return ost.str();
+		}
+	};
+	
+	template<>
 	struct assertion_traits<glm::mat4x4> {
 		static bool equal(const glm::mat4x4 & mat, const glm::mat4x4 & other) {
 			
