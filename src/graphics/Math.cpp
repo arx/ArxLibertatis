@@ -946,11 +946,3 @@ void GenerateMatrixUsingVector(glm::mat4x4 & matrix, const Vec3f & vect, float r
 	// all rotations
 	matrix = roll * rot;
 }
-
-// Desc: Multiplies a vector by a matrix
-void VectorMatrixMultiply(Vec3f & vDest, const Vec3f & vSrc, const glm::mat4x4 & mat) {
-	float x = vSrc.x * mat[0][0] + vSrc.y * mat[1][0] + vSrc.z * mat[2][0] + mat[3][0];
-	float y = vSrc.x * mat[0][1] + vSrc.y * mat[1][1] + vSrc.z * mat[2][1] + mat[3][1];
-	float z = vSrc.x * mat[0][2] + vSrc.y * mat[1][2] + vSrc.z * mat[2][2] + mat[3][2];
-	vDest = Vec3f(x, y, z);
-}
