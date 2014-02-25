@@ -61,41 +61,13 @@ namespace CppUnit {
 	};
 }
 
-glm::mat4x4 fromEerieMatrix(const EERIEMATRIX & other) {
-	glm::mat4x4 result;
-	
-	result[0][0] = other._11;
-	result[0][1] = other._12;
-	result[0][2] = other._13;
-	result[0][3] = other._14;
-	
-	result[1][0] = other._21;
-	result[1][1] = other._22;
-	result[1][2] = other._23;
-	result[1][3] = other._24;
-	
-	result[2][0] = other._31;
-	result[2][1] = other._32;
-	result[2][2] = other._33;
-	result[2][3] = other._34;
-	
-	result[3][0] = other._41;
-	result[3][1] = other._42;
-	result[3][2] = other._43;
-	result[3][3] = other._44;
-	
-	return result;
-}
-
 inline void checkMatrix(Vec3f pos, Anglef angle, glm::mat4x4 expected) {
 	EERIE_TRANSFORM transform;
 	transform.pos = pos;
 	transform.updateFromAngle(angle);
 	
-	EERIEMATRIX matrix;
-	Util_SetViewMatrix(matrix, transform);
-	
-	glm::mat4x4 result = fromEerieMatrix(matrix);
+	glm::mat4x4 result;
+	Util_SetViewMatrix(result, transform);
 	
 	std::ostringstream ost;
 	ost << std::endl << std::fixed << std::setprecision(3);

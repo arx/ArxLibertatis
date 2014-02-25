@@ -42,10 +42,10 @@ public:
 	void afterResize();
 	
 	// Matrices
-	void SetViewMatrix(const EERIEMATRIX & matView);
-	void GetViewMatrix(EERIEMATRIX & matView) const;
-	void SetProjectionMatrix(const EERIEMATRIX & matProj);
-	void GetProjectionMatrix(EERIEMATRIX & matProj) const;
+	void SetViewMatrix(const glm::mat4x4 & matView);
+	void GetViewMatrix(glm::mat4x4 & matView) const;
+	void SetProjectionMatrix(const glm::mat4x4 & matProj);
+	void GetProjectionMatrix(glm::mat4x4 & matProj) const;
 	
 	// Texture management
 	void ReleaseAllTextures();

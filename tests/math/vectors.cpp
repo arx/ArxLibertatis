@@ -26,10 +26,10 @@ public:
 
   void runTest() {
    
-    EERIEMATRIX a, b;
+    glm::mat4x4 a, b;
     
 	//MatrixReset(&a);
 	//MatrixReset(&b);
-	CPPUNIT_ASSERT( a._11 == b._11 );
+	CPPUNIT_ASSERT( a[0][0] == b[0][0] );
   }
 };

@@ -190,10 +190,10 @@ inline float fnormalize(Vec3f & v) {
 
 // Matrix functions
 
-void MatrixSetByVectors(EERIEMATRIX & m, const Vec3f & d, const Vec3f & u);
-void MatrixMultiply(EERIEMATRIX & q, const EERIEMATRIX & a, const EERIEMATRIX & b);
-void VectorMatrixMultiply(Vec3f & vDest, const Vec3f & vSrc, const EERIEMATRIX & mat);
-void GenerateMatrixUsingVector(EERIEMATRIX & matrix, const Vec3f & vect, float rollDegrees);
+void MatrixSetByVectors(glm::mat4x4 & m, const Vec3f & d, const Vec3f & u);
+void MatrixMultiply(glm::mat4x4 & q, const glm::mat4x4 & a, const glm::mat4x4 & b);
+void VectorMatrixMultiply(Vec3f & vDest, const Vec3f & vSrc, const glm::mat4x4 & mat);
+void GenerateMatrixUsingVector(glm::mat4x4 & matrix, const Vec3f & vect, float rollDegrees);
 
 // Rotation Functions
 
@@ -219,10 +219,10 @@ inline void Quat_Init(EERIE_QUAT * quat, float x = 0, float y = 0, float z = 0, 
 }
 
 // Transforms a Vertex by a matrix
-inline void TransformVertexMatrix(const EERIEMATRIX & mat, const Vec3f & vertexin, Vec3f & vertexout) {
-	vertexout.x = vertexin.x * mat._11 + vertexin.y * mat._21 + vertexin.z * mat._31;
-	vertexout.y = vertexin.x * mat._12 + vertexin.y * mat._22 + vertexin.z * mat._32;
-	vertexout.z = vertexin.x * mat._13 + vertexin.y * mat._23 + vertexin.z * mat._33;
+inline void TransformVertexMatrix(const glm::mat4x4 & mat, const Vec3f & vertexin, Vec3f & vertexout) {
+	vertexout.x = vertexin.x * mat[0][0] + vertexin.y * mat[1][0] + vertexin.z * mat[2][0];
+	vertexout.y = vertexin.x * mat[0][1] + vertexin.y * mat[1][1] + vertexin.z * mat[2][1];
+	vertexout.z = vertexin.x * mat[0][2] + vertexin.y * mat[1][2] + vertexin.z * mat[2][2];
 }
 
 // Transforms a Vertex by a quaternion
@@ -255,12 +255,12 @@ void Vector_RotateZ(Vec3f * dest, const Vec3f * src, const float angle);
 void VRotateX(Vec3f * v1, const float angle);
 void VRotateY(Vec3f * v1, const float angle);
 void VRotateZ(Vec3f * v1, const float angle);
-void QuatFromMatrix(EERIE_QUAT & quat, EERIEMATRIX & mat);
+void QuatFromMatrix(EERIE_QUAT & quat, glm::mat4x4 & mat);
 
 void CalcFaceNormal(EERIEPOLY * ep, const TexturedVertex * v);
 void CalcObjFaceNormal(const Vec3f * v0, const Vec3f * v1, const Vec3f * v2, EERIE_FACE * ef);
 bool Triangles_Intersect(const EERIE_TRI * v, const EERIE_TRI * u);
-void MatrixFromQuat(EERIEMATRIX & mat, const EERIE_QUAT & q);
+void MatrixFromQuat(glm::mat4x4 & mat, const EERIE_QUAT & q);
 
 inline float square(float x) {
 	return x * x;

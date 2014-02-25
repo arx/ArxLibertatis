@@ -476,15 +476,15 @@ static inline float clamp_and_invert(float z) {
 	return 1.f / std::max(z, near_clamp);
 }
 
-extern EERIEMATRIX ProjectionMatrix;
+extern glm::mat4x4 ProjectionMatrix;
 
 void EE_P(const Vec3f * in, TexturedVertex * out) {
 	
 	float fZTemp = clamp_and_invert(in->z);
 	
-	out->p.z = fZTemp * ProjectionMatrix._33 + ProjectionMatrix._43; //HYPERBOLIC
-	out->p.x = in->x * ProjectionMatrix._11 * fZTemp + ACTIVECAM->orgTrans.mod.x;
-	out->p.y = in->y * ProjectionMatrix._22 * fZTemp + ACTIVECAM->orgTrans.mod.y;
+	out->p.z = fZTemp * ProjectionMatrix[2][2] + ProjectionMatrix[3][2]; //HYPERBOLIC
+	out->p.x = in->x * ProjectionMatrix[0][0] * fZTemp + ACTIVECAM->orgTrans.mod.x;
+	out->p.y = in->y * ProjectionMatrix[1][1] * fZTemp + ACTIVECAM->orgTrans.mod.y;
 	out->rhw = fZTemp;
 }
 

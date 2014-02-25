@@ -55,7 +55,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "math/Types.h"
 #include "game/Camera.h"
 
-void Util_SetViewMatrix(EERIEMATRIX &mat, EERIE_TRANSFORM &transform);
+void Util_SetViewMatrix(glm::mat4x4 &mat, EERIE_TRANSFORM &transform);
 
 #define SAFE_RELEASE(p) { if(p) { (p)->Release(); (p)=NULL; } }
 

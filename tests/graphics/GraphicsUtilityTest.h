@@ -36,8 +36,8 @@ public:
 
 private:
 	EERIE_TRANSFORM transform;
-	EERIEMATRIX matrix;
-	EERIEMATRIX expected;
+	glm::mat4x4 matrix;
+	glm::mat4x4 expected;
 };
 
 #endif

@@ -1421,7 +1421,7 @@ static void PlayerLaunchArrow_Test(float aimratio, float poisonous, Vec3f * pos,
 	vv = Vec3f(0,-1,0);
 	Vector_RotateZ(&v2,&vv,aa);
 	VRotateY(&v2,ab);
-	EERIEMATRIX tmat;
+	glm::mat4x4 tmat;
 	MatrixSetByVectors(tmat, v1, v2);
 	QuatFromMatrix(quat,tmat);
 

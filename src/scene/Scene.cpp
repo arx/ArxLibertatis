@@ -738,53 +738,53 @@ void CreateFrustrum(EERIE_FRUSTRUM *frustrum, Vec3f * pos, EERIEPOLY *ep, bool c
 
 void CreateScreenFrustrum(EERIE_FRUSTRUM * frustrum) {
 		
-	EERIEMATRIX matProj;
+	glm::mat4x4 matProj;
 	GRenderer->GetProjectionMatrix(matProj);
 	
-	EERIEMATRIX matView;
+	glm::mat4x4 matView;
 	GRenderer->GetViewMatrix(matView);
 	
-	EERIEMATRIX matres;
+	glm::mat4x4 matres;
 	MatrixMultiply(matres, matView, matProj);
 
 	float a,b,c,d,n;
-	a=matres._14-matres._11;
-	b=matres._24-matres._21;
-	c=matres._34-matres._31;
-	d=matres._44-matres._41;
+	a=matres[0][3]-matres[0][0];
+	b=matres[1][3]-matres[1][0];
+	c=matres[2][3]-matres[2][0];
+	d=matres[3][3]-matres[3][0];
  b=-b;
 	n = (float)(1.f /sqrt(a*a+b*b+c*c));
 
 	Frustrum_Set(frustrum,0,a*n,b*n,c*n,d*n);
-	a=matres._14+matres._11;
-	b=matres._24+matres._21;
-	c=matres._34+matres._31;
-	d=matres._44+matres._41;
+	a=matres[0][3]+matres[0][0];
+	b=matres[1][3]+matres[1][0];
+	c=matres[2][3]+matres[2][0];
+	d=matres[3][3]+matres[3][0];
  b=-b;
 	n = (float)(1.f/sqrt(a*a+b*b+c*c));
 
 	Frustrum_Set(frustrum,1,a*n,b*n,c*n,d*n);
-	a=matres._14-matres._12;
-	b=matres._24-matres._22;
-	c=matres._34-matres._32;
-	d=matres._44-matres._42;
+	a=matres[0][3]-matres[0][1];
+	b=matres[1][3]-matres[1][1];
+	c=matres[2][3]-matres[2][1];
+	d=matres[3][3]-matres[3][1];
  b=-b;
 	n = (float)(1.f/sqrt(a*a+b*b+c*c));
 
 	Frustrum_Set(frustrum,2,a*n,b*n,c*n,d*n);
-	a=matres._14+matres._12;
-	b=matres._24+matres._22;
-	c=matres._34+matres._32;
-	d=matres._44+matres._42;
+	a=matres[0][3]+matres[0][1];
+	b=matres[1][3]+matres[1][1];
+	c=matres[2][3]+matres[2][1];
+	d=matres[3][3]+matres[3][1];
  b=-b;
 	n = (float)(1.f/sqrt(a*a+b*b+c*c));
 
 	Frustrum_Set(frustrum,3,a*n,b*n,c*n,d*n);
 
-	a=matres._14+matres._13;
-	b=matres._24+matres._23;
-	c=matres._34+matres._33;
-	d=matres._44+matres._43;
+	a=matres[0][3]+matres[0][2];
+	b=matres[1][3]+matres[1][2];
+	c=matres[2][3]+matres[2][2];
+	d=matres[3][3]+matres[3][2];
  b=-b;
 	n = (float)(1.f/sqrt(a*a+b*b+c*c));
 	efpPlaneNear.a=a*n;

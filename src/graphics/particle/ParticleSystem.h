@@ -83,7 +83,7 @@ public:
 	int iTexTime;
 	bool bTexLoop;
 	
-	EERIEMATRIX eMat;
+	glm::mat4x4 eMat;
 	
 	unsigned long ulNbParticleGen;
 	

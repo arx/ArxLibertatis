@@ -276,8 +276,8 @@ void OpenGLRenderer::shutdown() {
 	
 }
 
-static EERIEMATRIX projection;
-static EERIEMATRIX view;
+static glm::mat4x4 projection;
+static glm::mat4x4 view;
 
 void OpenGLRenderer::enableTransform() {
 	
@@ -290,10 +290,10 @@ void OpenGLRenderer::enableTransform() {
 	}
 	
 	glMatrixMode(GL_MODELVIEW);
-	glLoadMatrixf(&view._11);
+	glLoadMatrixf(&view[0][0]);
 		
 	glMatrixMode(GL_PROJECTION);
-	glLoadMatrixf(&projection._11);
+	glLoadMatrixf(&projection[0][0]);
 	
 	currentTransform = GL_ModelViewProjectionTransform;
 	
@@ -331,9 +331,9 @@ void OpenGLRenderer::disableTransform() {
 	CHECK_GL;
 }
 
-void OpenGLRenderer::SetViewMatrix(const EERIEMATRIX & matView) {
+void OpenGLRenderer::SetViewMatrix(const glm::mat4x4 & matView) {
 	
-	if(!memcmp(&view, &matView, sizeof(EERIEMATRIX))) {
+	if(!memcmp(&view, &matView, sizeof(glm::mat4x4))) {
 		return;
 	}
 	
@@ -344,13 +344,13 @@ void OpenGLRenderer::SetViewMatrix(const EERIEMATRIX & matView) {
 	view = matView;
 }
 
-void OpenGLRenderer::GetViewMatrix(EERIEMATRIX & matView) const {
+void OpenGLRenderer::GetViewMatrix(glm::mat4x4 & matView) const {
 	matView = view;
 }
 
-void OpenGLRenderer::SetProjectionMatrix(const EERIEMATRIX & matProj) {
+void OpenGLRenderer::SetProjectionMatrix(const glm::mat4x4 & matProj) {
 	
-	if(!memcmp(&projection, &matProj, sizeof(EERIEMATRIX))) {
+	if(!memcmp(&projection, &matProj, sizeof(glm::mat4x4))) {
 		return;
 	}
 	
@@ -361,7 +361,7 @@ void OpenGLRenderer::SetProjectionMatrix(const EERIEMATRIX & matProj) {
 	projection = matProj;
 }
 
-void OpenGLRenderer::GetProjectionMatrix(EERIEMATRIX & matProj) const {
+void OpenGLRenderer::GetProjectionMatrix(glm::mat4x4 & matProj) const {
 	matProj = projection;
 }
 

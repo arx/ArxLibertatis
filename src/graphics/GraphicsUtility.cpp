@@ -46,7 +46,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/GraphicsUtility.h"
 
-void Util_SetViewMatrix(EERIEMATRIX &mat, EERIE_TRANSFORM &transform) {
+void Util_SetViewMatrix(glm::mat4x4 &mat, EERIE_TRANSFORM &transform) {
 
 	Vec3f vFrom(transform.pos.x, -transform.pos.y, transform.pos.z);
 	Vec3f vTout(0.0f, 0.0f, 1.0f);
@@ -95,19 +95,19 @@ void Util_SetViewMatrix(EERIEMATRIX &mat, EERIE_TRANSFORM &transform) {
 
 	// Start building the matrix. The first three rows contains the basis
 	// vectors used to rotate the view to point at the lookat point
-	mat._11 = vRight.x;
-	mat._12 = vUp.x;
-	mat._13 = vView.x;
-	mat._21 = vRight.y;
-	mat._22 = vUp.y;
-	mat._23 = vView.y;
-	mat._31 = vRight.z;
-	mat._32 = vUp.z;
-	mat._33 = vView.z;
+	mat[0][0] = vRight.x;
+	mat[0][1] = vUp.x;
+	mat[0][2] = vView.x;
+	mat[1][0] = vRight.y;
+	mat[1][1] = vUp.y;
+	mat[1][2] = vView.y;
+	mat[2][0] = vRight.z;
+	mat[2][1] = vUp.z;
+	mat[2][2] = vView.z;
 
 	// Do the translation values (rotations are still about the eyepoint)
-	mat._41 = -glm::dot(vFrom, vRight);
-	mat._42 = -glm::dot(vFrom, vUp);
-	mat._43 = -glm::dot(vFrom, vView);
-	mat._44 = 1.0f;
+	mat[3][0] = -glm::dot(vFrom, vRight);
+	mat[3][1] = -glm::dot(vFrom, vUp);
+	mat[3][2] = -glm::dot(vFrom, vView);
+	mat[3][3] = 1.0f;
 }

@@ -26,7 +26,6 @@
 #include "math/Types.h"
 #include "graphics/Color.h"
 
-struct EERIEMATRIX;
 struct TexturedVertex;
 struct SMY_VERTEX;
 struct SMY_VERTEX3;
@@ -165,10 +164,10 @@ public:
 	void removeListener(Listener * listener);
 	
 	// Matrices
-	virtual void SetViewMatrix(const EERIEMATRIX & matView) = 0;
-	virtual void GetViewMatrix(EERIEMATRIX & matView) const = 0;
-	virtual void SetProjectionMatrix(const EERIEMATRIX & matProj) = 0;
-	virtual void GetProjectionMatrix(EERIEMATRIX & matProj) const = 0;
+	virtual void SetViewMatrix(const glm::mat4x4 & matView) = 0;
+	virtual void GetViewMatrix(glm::mat4x4 & matView) const = 0;
+	virtual void SetProjectionMatrix(const glm::mat4x4 & matProj) = 0;
+	virtual void GetProjectionMatrix(glm::mat4x4 & matProj) const = 0;
 	
 	// Texture management
 	virtual void ReleaseAllTextures() {}

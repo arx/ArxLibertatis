@@ -189,7 +189,7 @@ extern CircularVertexBuffer<TexturedVertex> * pDynamicVertexBuffer_TLVERTEX; // 
 extern CircularVertexBuffer<SMY_VERTEX3> * pDynamicVertexBuffer;
 extern CMenuState * pMenu;
 
-extern EERIEMATRIX ProjectionMatrix;
+extern glm::mat4x4 ProjectionMatrix;
 
 TextureContainer * ChangeLevel = NULL;
 TextureContainer * Movable = NULL;   // TextureContainer for Movable Items (Red Cross)
@@ -1782,7 +1782,7 @@ void ArxGame::update2DFX()
 				Vec3f vector = lv.p - ACTIVECAM->orgTrans.pos;
 				lv.p -= vector * (50.f / glm::length(vector));
 
-				float fZFar=ProjectionMatrix._33*(1.f/(ACTIVECAM->cdepth*fZFogEnd))+ProjectionMatrix._43;
+				float fZFar=ProjectionMatrix[2][2]*(1.f/(ACTIVECAM->cdepth*fZFogEnd))+ProjectionMatrix[3][2];
 
 				Vec3f hit;
 				EERIEPOLY *tp=NULL;

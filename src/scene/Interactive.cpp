@@ -2500,7 +2500,7 @@ void UpdateIOInvisibility(Entity * io)
 	}
 }
 
-EERIEMATRIX convertToMatrixForDrawEERIEInter(const PHYSICS_BOX_DATA &box) {
+glm::mat4x4 convertToMatrixForDrawEERIEInter(const PHYSICS_BOX_DATA &box) {
 	Vec3f tmp = box.vert[14].pos - box.vert[13].pos;
 	Vec3f up  = box.vert[2].pos  - box.vert[1].pos;
 	up += box.vert[3].pos  - box.vert[4].pos;
@@ -2508,10 +2508,10 @@ EERIEMATRIX convertToMatrixForDrawEERIEInter(const PHYSICS_BOX_DATA &box) {
 	up += box.vert[11].pos - box.vert[12].pos;
 	up *= 0.25f;
 
-	EERIEMATRIX mat;
+	glm::mat4x4 mat;
 	MatrixSetByVectors(mat, up, tmp);
-	mat._14 = mat._24 = mat._34 = 0.f;
-	mat._41 = mat._42 = mat._43 = mat._44 = 0.f;
+	mat[0][3] = mat[1][3] = mat[2][3] = 0.f;
+	mat[3][0] = mat[3][1] = mat[3][2] = mat[3][3] = 0.f;
 
 	return mat;
 }
@@ -2616,7 +2616,7 @@ void RenderInter() {
 				if(io->obj) {
 
 					if(io->obj->pbox && io->obj->pbox->active) {
-						EERIEMATRIX mat = convertToMatrixForDrawEERIEInter(*io->obj->pbox);
+						glm::mat4x4 mat = convertToMatrixForDrawEERIEInter(*io->obj->pbox);
 						EERIE_QUAT rotation;
 						Quat_Init(&rotation);
 

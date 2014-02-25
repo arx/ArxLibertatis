@@ -673,7 +673,7 @@ void worldAngleToQuat(EERIE_QUAT *dest, const Anglef & src, bool isNpc) {
 		Anglef ang = src;
 		ang.setYaw(360 - ang.getYaw());
 		
-		EERIEMATRIX mat;
+		glm::mat4x4 mat;
 		Vec3f vect(0, 0, 1);
 		Vec3f up(0, 1, 0);
 		VRotateY(&vect, ang.getPitch());
@@ -695,7 +695,7 @@ void worldAngleToQuat(EERIE_QUAT *dest, const Anglef & src, bool isNpc) {
 // Converts a unit quaternion into a rotation matrix.
 //*************************************************************************************
 
-void MatrixFromQuat(EERIEMATRIX & m, const EERIE_QUAT & quat)
+void MatrixFromQuat(glm::mat4x4 & m, const EERIE_QUAT & quat)
 {
 	float wx, wy, wz, xx, yy, yz, xy, xz, zz, x2, y2, z2;
 
@@ -713,44 +713,44 @@ void MatrixFromQuat(EERIEMATRIX & m, const EERIE_QUAT & quat)
 	wy = quat.w * y2;
 	wz = quat.w * z2;
 
-	m._11 = 1.0F - (yy + zz);
-	m._21 = xy - wz;
-	m._31 = xz + wy;
-	m._41 = 0.0F;
+	m[0][0] = 1.0F - (yy + zz);
+	m[1][0] = xy - wz;
+	m[2][0] = xz + wy;
+	m[3][0] = 0.0F;
 
-	m._12 = xy + wz;
-	m._22 = 1.0F - (xx + zz);
-	m._32 = yz - wx;
-	m._42 = 0.0F;
+	m[0][1] = xy + wz;
+	m[1][1] = 1.0F - (xx + zz);
+	m[2][1] = yz - wx;
+	m[3][1] = 0.0F;
 
-	m._13 = xz - wy;
-	m._23 = yz + wx;
-	m._33 = 1.0F - (xx + yy);
-	m._43 = 0.0F;
+	m[0][2] = xz - wy;
+	m[1][2] = yz + wx;
+	m[2][2] = 1.0F - (xx + yy);
+	m[3][2] = 0.0F;
 }
 
 //*************************************************************************************
 // Converts a rotation matrix into a unit quaternion.
 //*************************************************************************************
-void QuatFromMatrix(EERIE_QUAT & quat, EERIEMATRIX & mat)
+void QuatFromMatrix(EERIE_QUAT & quat, glm::mat4x4 & mat)
 {
 	float m[4][4];
-	m[0][0] = mat._11;
-	m[0][1] = mat._12;
-	m[0][2] = mat._13;
-	m[0][3] = mat._14;
-	m[1][0] = mat._21;
-	m[1][1] = mat._22;
-	m[1][2] = mat._23;
-	m[1][3] = mat._24;
-	m[2][0] = mat._31;
-	m[2][1] = mat._32;
-	m[2][2] = mat._33;
-	m[2][3] = mat._34;
-	m[3][0] = mat._41;
-	m[3][1] = mat._42;
-	m[3][2] = mat._43;
-	m[3][3] = mat._44;
+	m[0][0] = mat[0][0];
+	m[0][1] = mat[0][1];
+	m[0][2] = mat[0][2];
+	m[0][3] = mat[0][3];
+	m[1][0] = mat[1][0];
+	m[1][1] = mat[1][1];
+	m[1][2] = mat[1][2];
+	m[1][3] = mat[1][3];
+	m[2][0] = mat[2][0];
+	m[2][1] = mat[2][1];
+	m[2][2] = mat[2][2];
+	m[2][3] = mat[2][3];
+	m[3][0] = mat[3][0];
+	m[3][1] = mat[3][1];
+	m[3][2] = mat[3][2];
+	m[3][3] = mat[3][3];
 	float  tr, s, q[4];
 
 	int nxt[3] = {1, 2, 0};
@@ -875,7 +875,7 @@ void CalcObjFaceNormal(const Vec3f * v0, const Vec3f * v1, const Vec3f * v2,
 	ef->norm = glm::normalize(ef->norm);
 }
 
-void MatrixSetByVectors(EERIEMATRIX & m, const Vec3f & d, const Vec3f & u)
+void MatrixSetByVectors(glm::mat4x4 & m, const Vec3f & d, const Vec3f & u)
 {
 	float t;
 	Vec3f D, U, R;
@@ -887,18 +887,18 @@ void MatrixSetByVectors(EERIEMATRIX & m, const Vec3f & d, const Vec3f & u)
 	U.z -= D.y * t; // TODO is this really supposed to be D.y?
 	U = glm::normalize(U);
 	R = glm::cross(U, D);
-	m._11 = R.x;
-	m._12 = R.y;
-	m._21 = U.x;
-	m._22 = U.y;
-	m._31 = D.x;
-	m._32 = D.y;
-	m._33 = D.z;
-	m._13 = R.z;
-	m._23 = U.z;
+	m[0][0] = R.x;
+	m[0][1] = R.y;
+	m[1][0] = U.x;
+	m[1][1] = U.y;
+	m[2][0] = D.x;
+	m[2][1] = D.y;
+	m[2][2] = D.z;
+	m[0][2] = R.z;
+	m[1][2] = U.z;
 }
 
-void GenerateMatrixUsingVector(EERIEMATRIX & matrix, const Vec3f & vect, float rollDegrees)
+void GenerateMatrixUsingVector(glm::mat4x4 & matrix, const Vec3f & vect, float rollDegrees)
 {
 	// Get our direction vector (the Z vector component of the matrix)
 	// and make sure it's normalized into a unit vector
@@ -922,25 +922,25 @@ void GenerateMatrixUsingVector(EERIEMATRIX & matrix, const Vec3f & vect, float r
 	yAxis = -yAxis;
 
 	// Generate rotation matrix without roll included
-	EERIEMATRIX rot;
-	EERIEMATRIX roll;
-	rot._11 = yAxis.x;
-	rot._12 = yAxis.y;
-	rot._13 = yAxis.z;
-	rot._21 = zAxis.x;
-	rot._22 = zAxis.y;
-	rot._23 = zAxis.z;
-	rot._31 = xAxis.x;
-	rot._32 = xAxis.y;
-	rot._33 = xAxis.z;
+	glm::mat4x4 rot;
+	glm::mat4x4 roll;
+	rot[0][0] = yAxis.x;
+	rot[0][1] = yAxis.y;
+	rot[0][2] = yAxis.z;
+	rot[1][0] = zAxis.x;
+	rot[1][1] = zAxis.y;
+	rot[1][2] = zAxis.z;
+	rot[2][0] = xAxis.x;
+	rot[2][1] = xAxis.y;
+	rot[2][2] = xAxis.z;
 
 	// Generate the Z rotation matrix for roll
-	roll._33 = 1.f;
-	roll._44 = 1.f;
-	roll._11 = EEcos(radians(rollDegrees));
-	roll._12 = -EEsin(radians(rollDegrees));
-	roll._21 = EEsin(radians(rollDegrees));
-	roll._22 = EEcos(radians(rollDegrees));
+	roll[2][2] = 1.f;
+	roll[3][3] = 1.f;
+	roll[0][0] = EEcos(radians(rollDegrees));
+	roll[0][1] = -EEsin(radians(rollDegrees));
+	roll[1][0] = EEsin(radians(rollDegrees));
+	roll[1][1] = EEcos(radians(rollDegrees));
 
 	// Concatinate them for a complete rotation matrix that includes
 	// all rotations
@@ -953,26 +953,26 @@ void GenerateMatrixUsingVector(EERIEMATRIX & matrix, const Vec3f & vect, float r
 // Does the matrix operation: [Q] = [A] * [B]. Note that the order of
 // this operation was changed from the previous version of the DXSDK.
 //-----------------------------------------------------------------------------
-void MatrixMultiply(EERIEMATRIX & q, const EERIEMATRIX & a, const EERIEMATRIX & b)
+void MatrixMultiply(glm::mat4x4 & q, const glm::mat4x4 & a, const glm::mat4x4 & b)
 {
-	const float * pA = &a._11;
-	const float * pB = &b._11;
+	const float * pA = &a[0][0];
+	const float * pB = &b[0][0];
 	float pM[16];
 
-	memset(pM, 0, sizeof(EERIEMATRIX));
+	memset(pM, 0, sizeof(glm::mat4x4));
 
 	for (size_t i = 0; i < 4; i++)
 		for (size_t j = 0; j < 4; j++)
 			for (size_t k = 0; k < 4; k++)
 				pM[4*i+j] +=  pA[4*i+k] * pB[4*k+j];
 
-	memcpy(&q, pM, sizeof(EERIEMATRIX));
+	memcpy(&q, pM, sizeof(glm::mat4x4));
 }
 
 // Desc: Multiplies a vector by a matrix
-void VectorMatrixMultiply(Vec3f & vDest, const Vec3f & vSrc, const EERIEMATRIX & mat) {
-	float x = vSrc.x * mat._11 + vSrc.y * mat._21 + vSrc.z * mat._31 + mat._41;
-	float y = vSrc.x * mat._12 + vSrc.y * mat._22 + vSrc.z * mat._32 + mat._42;
-	float z = vSrc.x * mat._13 + vSrc.y * mat._23 + vSrc.z * mat._33 + mat._43;
+void VectorMatrixMultiply(Vec3f & vDest, const Vec3f & vSrc, const glm::mat4x4 & mat) {
+	float x = vSrc.x * mat[0][0] + vSrc.y * mat[1][0] + vSrc.z * mat[2][0] + mat[3][0];
+	float y = vSrc.x * mat[0][1] + vSrc.y * mat[1][1] + vSrc.z * mat[2][1] + mat[3][1];
+	float z = vSrc.x * mat[0][2] + vSrc.y * mat[1][2] + vSrc.z * mat[2][2] + mat[3][2];
 	vDest = Vec3f(x, y, z);
 }
