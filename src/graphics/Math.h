@@ -216,13 +216,6 @@ inline void Quat_Init(EERIE_QUAT * quat, float x = 0, float y = 0, float z = 0, 
 	quat->w = w;
 }
 
-// Transforms a Vertex by a matrix
-inline void TransformVertexMatrix(const glm::mat4x4 & mat, const Vec3f & vertexin, Vec3f & vertexout) {
-	vertexout.x = vertexin.x * mat[0][0] + vertexin.y * mat[1][0] + vertexin.z * mat[2][0];
-	vertexout.y = vertexin.x * mat[0][1] + vertexin.y * mat[1][1] + vertexin.z * mat[2][1];
-	vertexout.z = vertexin.x * mat[0][2] + vertexin.y * mat[1][2] + vertexin.z * mat[2][2];
-}
-
 // Transforms a Vertex by a quaternion
 inline Vec3f TransformVertexQuat(const EERIE_QUAT & quat, const Vec3f & vertexin) {
 	

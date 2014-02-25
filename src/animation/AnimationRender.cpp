@@ -1401,10 +1401,10 @@ void Cedric_TransformVerts(EERIE_3DOBJ *eobj, const Vec3f & pos) {
 
 			EERIE_3DPAD & inVert = eobj->vertexlocal[index];
 			EERIE_VERTEX & outVert = eobj->vertexlist3[index];
-
-			TransformVertexMatrix(matrix, inVert, outVert.v);
+			
+			outVert.v = Vec3f(matrix * Vec4f(inVert, 1.f));
 			outVert.v += vector;
-
+			
 			outVert.vert.p = outVert.v;
 		}
 	}
