@@ -190,7 +190,7 @@ inline float fnormalize(Vec3f & v) {
 
 // Matrix functions
 
-void MatrixSetByVectors(EERIEMATRIX * m, const Vec3f * d, const Vec3f * u);
+void MatrixSetByVectors(EERIEMATRIX & m, const Vec3f & d, const Vec3f & u);
 void MatrixMultiply(EERIEMATRIX * q, const EERIEMATRIX * a, const EERIEMATRIX * b);
 void VectorMatrixMultiply(Vec3f * vDest, const Vec3f * vSrc, const EERIEMATRIX * mat);
 void GenerateMatrixUsingVector(EERIEMATRIX * matrix, const Vec3f * vect, float rollDegrees);

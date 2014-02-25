@@ -2509,7 +2509,7 @@ EERIEMATRIX convertToMatrixForDrawEERIEInter(const PHYSICS_BOX_DATA &box) {
 	up *= 0.25f;
 
 	EERIEMATRIX mat;
-	MatrixSetByVectors(&mat, &up, &tmp);
+	MatrixSetByVectors(mat, up, tmp);
 	mat._14 = mat._24 = mat._34 = 0.f;
 	mat._41 = mat._42 = mat._43 = mat._44 = 0.f;
 

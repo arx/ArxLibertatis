@@ -1422,7 +1422,7 @@ static void PlayerLaunchArrow_Test(float aimratio, float poisonous, Vec3f * pos,
 	Vector_RotateZ(&v2,&vv,aa);
 	VRotateY(&v2,ab);
 	EERIEMATRIX tmat;
-	MatrixSetByVectors(&tmat,&v1,&v2);
+	MatrixSetByVectors(tmat, v1, v2);
 	QuatFromMatrix(quat,tmat);
 
 	float wd = getEquipmentBaseModifier(IO_EQUIPITEM_ELEMENT_Damages);

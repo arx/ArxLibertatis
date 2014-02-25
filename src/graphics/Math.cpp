@@ -682,7 +682,7 @@ void worldAngleToQuat(EERIE_QUAT *dest, const Anglef & src, bool isNpc) {
 		VRotateY(&up, ang.getPitch());
 		VRotateX(&up, ang.getYaw());
 		VRotateZ(&up, ang.getRoll());
-		MatrixSetByVectors(&mat, &vect, &up);
+		MatrixSetByVectors(mat, vect, up);
 		QuatFromMatrix(*dest, mat);
 	} else {
 		Anglef vt1 = Anglef(radians(src.getYaw()), radians(src.getPitch()), radians(src.getRoll()));
@@ -875,27 +875,27 @@ void CalcObjFaceNormal(const Vec3f * v0, const Vec3f * v1, const Vec3f * v2,
 	ef->norm = glm::normalize(ef->norm);
 }
 
-void MatrixSetByVectors(EERIEMATRIX * m, const Vec3f * d, const Vec3f * u)
+void MatrixSetByVectors(EERIEMATRIX & m, const Vec3f & d, const Vec3f & u)
 {
 	float t;
 	Vec3f D, U, R;
-	D = glm::normalize(*d);
-	U = *u;
+	D = glm::normalize(d);
+	U = u;
 	t = U.x * D.x + U.y * D.y + U.z * D.z;
 	U.x -= D.x * t;
 	U.y -= D.y * t;
 	U.z -= D.y * t; // TODO is this really supposed to be D.y?
 	U = glm::normalize(U);
 	R = glm::cross(U, D);
-	m->_11 = R.x;
-	m->_12 = R.y;
-	m->_21 = U.x;
-	m->_22 = U.y;
-	m->_31 = D.x;
-	m->_32 = D.y;
-	m->_33 = D.z;
-	m->_13 = R.z;
-	m->_23 = U.z;
+	m._11 = R.x;
+	m._12 = R.y;
+	m._21 = U.x;
+	m._22 = U.y;
+	m._31 = D.x;
+	m._32 = D.y;
+	m._33 = D.z;
+	m._13 = R.z;
+	m._23 = U.z;
 }
 
 void GenerateMatrixUsingVector(EERIEMATRIX * matrix, const Vec3f * vect, float rollDegrees)
