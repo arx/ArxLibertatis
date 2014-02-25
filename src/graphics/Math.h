@@ -260,7 +260,7 @@ void QuatFromMatrix(EERIE_QUAT & quat, EERIEMATRIX & mat);
 void CalcFaceNormal(EERIEPOLY * ep, const TexturedVertex * v);
 void CalcObjFaceNormal(const Vec3f * v0, const Vec3f * v1, const Vec3f * v2, EERIE_FACE * ef);
 bool Triangles_Intersect(const EERIE_TRI * v, const EERIE_TRI * u);
-void MatrixFromQuat(EERIEMATRIX * mat, const EERIE_QUAT * q);
+void MatrixFromQuat(EERIEMATRIX & mat, const EERIE_QUAT & q);
 
 inline float square(float x) {
 	return x * x;

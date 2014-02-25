@@ -695,38 +695,38 @@ void worldAngleToQuat(EERIE_QUAT *dest, const Anglef & src, bool isNpc) {
 // Converts a unit quaternion into a rotation matrix.
 //*************************************************************************************
 
-void MatrixFromQuat(EERIEMATRIX * m, const EERIE_QUAT * quat)
+void MatrixFromQuat(EERIEMATRIX & m, const EERIE_QUAT & quat)
 {
 	float wx, wy, wz, xx, yy, yz, xy, xz, zz, x2, y2, z2;
 
 	// calculate coefficients
-	x2 = quat->x + quat->x;
-	y2 = quat->y + quat->y;
-	z2 = quat->z + quat->z;
-	xx = quat->x * x2;
-	xy = quat->x * y2;
-	xz = quat->x * z2;
-	yy = quat->y * y2;
-	yz = quat->y * z2;
-	zz = quat->z * z2;
-	wx = quat->w * x2;
-	wy = quat->w * y2;
-	wz = quat->w * z2;
+	x2 = quat.x + quat.x;
+	y2 = quat.y + quat.y;
+	z2 = quat.z + quat.z;
+	xx = quat.x * x2;
+	xy = quat.x * y2;
+	xz = quat.x * z2;
+	yy = quat.y * y2;
+	yz = quat.y * z2;
+	zz = quat.z * z2;
+	wx = quat.w * x2;
+	wy = quat.w * y2;
+	wz = quat.w * z2;
 
-	m->_11 = 1.0F - (yy + zz);
-	m->_21 = xy - wz;
-	m->_31 = xz + wy;
-	m->_41 = 0.0F;
+	m._11 = 1.0F - (yy + zz);
+	m._21 = xy - wz;
+	m._31 = xz + wy;
+	m._41 = 0.0F;
 
-	m->_12 = xy + wz;
-	m->_22 = 1.0F - (xx + zz);
-	m->_32 = yz - wx;
-	m->_42 = 0.0F;
+	m._12 = xy + wz;
+	m._22 = 1.0F - (xx + zz);
+	m._32 = yz - wx;
+	m._42 = 0.0F;
 
-	m->_13 = xz - wy;
-	m->_23 = yz + wx;
-	m->_33 = 1.0F - (xx + yy);
-	m->_43 = 0.0F;
+	m._13 = xz - wy;
+	m._23 = yz + wx;
+	m._33 = 1.0F - (xx + yy);
+	m._43 = 0.0F;
 }
 
 //*************************************************************************************

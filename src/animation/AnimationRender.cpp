@@ -1379,7 +1379,7 @@ void Cedric_TransformVerts(EERIE_3DOBJ *eobj, const Vec3f & pos) {
 
 		EERIEMATRIX	 matrix;
 
-		MatrixFromQuat(&matrix, &bone.anim.quat);
+		MatrixFromQuat(matrix, bone.anim.quat);
 
 		// Apply Scale
 		matrix._11 *= bone.anim.scale.x;
