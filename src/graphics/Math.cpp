@@ -970,9 +970,9 @@ void MatrixMultiply(EERIEMATRIX & q, const EERIEMATRIX & a, const EERIEMATRIX & 
 }
 
 // Desc: Multiplies a vector by a matrix
-void VectorMatrixMultiply(Vec3f * vDest, const Vec3f * vSrc, const EERIEMATRIX * mat) {
-	float x = vSrc->x * mat->_11 + vSrc->y * mat->_21 + vSrc->z * mat->_31 + mat->_41;
-	float y = vSrc->x * mat->_12 + vSrc->y * mat->_22 + vSrc->z * mat->_32 + mat->_42;
-	float z = vSrc->x * mat->_13 + vSrc->y * mat->_23 + vSrc->z * mat->_33 + mat->_43;
-	*vDest = Vec3f(x, y, z);
+void VectorMatrixMultiply(Vec3f & vDest, const Vec3f & vSrc, const EERIEMATRIX & mat) {
+	float x = vSrc.x * mat._11 + vSrc.y * mat._21 + vSrc.z * mat._31 + mat._41;
+	float y = vSrc.x * mat._12 + vSrc.y * mat._22 + vSrc.z * mat._32 + mat._42;
+	float z = vSrc.x * mat._13 + vSrc.y * mat._23 + vSrc.z * mat._33 + mat._43;
+	vDest = Vec3f(x, y, z);
 }
