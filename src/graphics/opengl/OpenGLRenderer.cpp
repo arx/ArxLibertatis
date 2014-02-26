@@ -19,6 +19,8 @@
 
 #include "graphics/opengl/OpenGLRenderer.h"
 
+#include <glm/gtc/type_ptr.hpp>
+
 #include "core/Application.h"
 #include "graphics/opengl/GLDebug.h"
 #include "graphics/opengl/GLNoVertexBuffer.h"
@@ -293,10 +295,10 @@ void OpenGLRenderer::enableTransform() {
 	}
 	
 	glMatrixMode(GL_MODELVIEW);
-	glLoadMatrixf(&view[0][0]);
+	glLoadMatrixf(glm::value_ptr(view));
 		
 	glMatrixMode(GL_PROJECTION);
-	glLoadMatrixf(&projection[0][0]);
+	glLoadMatrixf(glm::value_ptr(projection));
 	
 	currentTransform = GL_ModelViewProjectionTransform;
 	
