@@ -2622,7 +2622,8 @@ void AdjustMousePosition()
 }
 
 void ARX_SetAntiAliasing() {
-	GRenderer->SetAntialiasing(config.video.antialiasing);
+	bool enabled = config.video.antialiasing && mainApp->getWindow()->getMSAALevel() > 0;
+	GRenderer->SetAntialiasing(enabled);
 }
 
 void ReleaseSystemObjects() {

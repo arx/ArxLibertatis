@@ -177,13 +177,18 @@ bool SDL1Window::initialize() {
 		}
 		
 		// Verify that the MSAA setting matches what was requested
+		int msaaEnabled, msaaValue;
+		SDL_GL_GetAttribute(SDL_GL_MULTISAMPLEBUFFERS, &msaaEnabled);
+		SDL_GL_GetAttribute(SDL_GL_MULTISAMPLESAMPLES, &msaaValue);
 		if(!lastTry) {
-			int msaaEnabled, msaaValue;
-			SDL_GL_GetAttribute(SDL_GL_MULTISAMPLEBUFFERS, &msaaEnabled);
-			SDL_GL_GetAttribute(SDL_GL_MULTISAMPLESAMPLES, &msaaValue);
 			if(!msaaEnabled || msaaValue < msaa) {
 				continue;
 			}
+		}
+		if(msaaEnabled) {
+			m_MSAALevel = msaaValue;
+		} else {
+			m_MSAALevel = 0;
 		}
 		
 		// Verify that we actually got an accelerated context

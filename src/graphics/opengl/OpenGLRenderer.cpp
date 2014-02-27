@@ -48,6 +48,9 @@ OpenGLRenderer::OpenGLRenderer()
 	, maxTextureStage(0)
 	, shader(0)
 	, maximumAnisotropy(1.f)
+	, m_hasMSAA(false)
+	, m_hasColorKey(false)
+	, m_hasBlend(false)
 	{ }
 
 OpenGLRenderer::~OpenGLRenderer() {
@@ -415,13 +418,13 @@ bool OpenGLRenderer::GetRenderState(RenderState renderState) const {
 	switch(renderState) {
 		
 		case AlphaBlending: {
-			return getGLState(GL_BLEND);
+			return m_hasBlend;
 		}
 		
-		case AlphaTest: {
-			return getGLState(GL_ALPHA_TEST);
+		case ColorKey: {
+			return m_hasColorKey;
 		}
-
+		
 		case DepthTest: {
 			return getGLState(GL_DEPTH_TEST);
 		}
@@ -450,19 +453,44 @@ void OpenGLRenderer::SetRenderState(RenderState renderState, bool enable) {
 	switch(renderState) {
 		
 		case AlphaBlending: {
+			if(m_hasBlend == enable) {
+				return;
+			}
+			/*
+			 * When rendering color-keyed textures with GL_BLEND enabled we still
+			 * need to 'discard' transparent texels, as blending might not use the src alpha!
+			 * On the other hand, we can't use GL_SAMPLE_ALPHA_TO_COVERAGE when blending
+			 * as that could result in the src alpha being applied twice (e.g. for text).
+			 * So we must toggle between alpha to coverage and alpha test when toggling blending.
+			 * TODO Fix it so that the apha channel from the color-keyed textures is
+			 *      always used as part of the blending factor.
+			 */
+			bool colorkey = m_hasColorKey;
+			if(colorkey && m_hasMSAA) {
+				SetRenderState(ColorKey, false);
+			}
+			m_hasBlend = enable;
+			if(colorkey && m_hasMSAA) {
+				SetRenderState(ColorKey, true);
+			}
 			setGLState(GL_BLEND, enable);
 			break;
 		}
 		
-		case AlphaTest: {
-			setGLState(GL_ALPHA_TEST, enable);
-			break;
-		}
-
 		case ColorKey: {
-			SetRenderState(AlphaTest, enable);
-			if(enable)
-				SetAlphaFunc(CmpNotEqual, 0.0f);
+			if(m_hasColorKey == enable) {
+				return;
+			}
+			m_hasColorKey = enable;
+			if(m_hasMSAA && !m_hasBlend) {
+				// TODO(option-video) add a config option for this
+				setGLState(GL_SAMPLE_ALPHA_TO_COVERAGE, enable);
+			} else {
+				setGLState(GL_ALPHA_TEST, enable);
+				if(enable) {
+					SetAlphaFunc(CmpNotEqual, 0.0f);
+				}
+			}
 			break;
 		}
 		
@@ -641,8 +669,19 @@ void OpenGLRenderer::SetFogParams(FogMode fogMode, float fogStart, float fogEnd,
 
 void OpenGLRenderer::SetAntialiasing(bool enable) {
 	
+	bool colorkey = m_hasColorKey;
+	if(colorkey) {
+		SetRenderState(ColorKey, false);
+	}
+	
 	// This is mostly useless as multisampling must be enabled/disabled at GL context creation.
 	setGLState(GL_MULTISAMPLE, enable);
+	
+	m_hasMSAA = enable;
+	
+	if(colorkey) {
+		SetRenderState(ColorKey, true);
+	}
 	
 	CHECK_GL;
 }

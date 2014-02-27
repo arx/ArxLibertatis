@@ -54,7 +54,6 @@ public:
 	//! Render states
 	enum RenderState {
 		AlphaBlending,
-		AlphaTest,
 		ColorKey,
 		DepthTest,
 		DepthWrite,

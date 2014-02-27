@@ -151,6 +151,11 @@ private:
 	PixelBlendingFactor	m_cachedDstBlend;
 	CullingMode m_cachedCullMode;
 	int m_cachedDepthBias;
+	
+	bool m_hasMSAA;
+	bool m_hasColorKey;
+	bool m_hasBlend;
+	
 };
 
 template <class Vertex>
