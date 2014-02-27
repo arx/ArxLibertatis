@@ -305,6 +305,7 @@ void ARX_MENU_Launch(bool allowResume) {
 
 	ARXmenu.currentmode = AMCM_MAIN;
 	ARX_Menu_Resources_Create();
+	Menu2_Open();
 }
 
 void ARX_Menu_Manage() {

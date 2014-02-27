@@ -634,6 +634,7 @@ public:
 	MenuCursor();
 	virtual ~MenuCursor();
 	
+	void reset();
 	void update(float time);
 	void SetMouseOver();
 	void SetCursorOn();
@@ -665,6 +666,7 @@ private:
 	
 };
 
+void Menu2_Open();
 bool Menu2_Render();
 void Menu2_Close();
 

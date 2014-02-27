@@ -4347,12 +4347,16 @@ void MenuCursor::DrawOneCursor(const Vec2s& mousePos) {
 	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
 }
 
+void MenuCursor::reset() {
+	iNbOldCoord = 0;
+}
+
 void MenuCursor::update(float time) {
 	
 	bool inWindow = GInput->isMouseInWindow();
 	if(inWindow && exited) {
 		// Mouse is re-entering the window - reset the cursor trail
-		iNbOldCoord = 0;
+		reset();
 	}
 	exited = !inWindow;
 	
@@ -4507,6 +4511,12 @@ void MenuCursor::DrawCursor()
 	}
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+}
+
+void Menu2_Open() {
+	if(pMenuCursor) {
+		pMenuCursor->reset();
+	}
 }
 
 void Menu2_Close() {
