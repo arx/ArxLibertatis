@@ -158,6 +158,8 @@ else(MSVC)
 		add_cxxflag("-fbounds-checking")
 		add_cxxflag("-fcatch-undefined-behavior")
 		add_cxxflag("-Wstrict-aliasing=1")
+		add_cxxflag("-fstack-protector-all")
+		add_definitions(-D_FORTIFY_SOURCE=2)
 	endif(DEBUG_EXTRA)
 	
 	if(CMAKE_BUILD_TYPE STREQUAL "")
