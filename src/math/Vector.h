@@ -41,7 +41,7 @@ bool fartherThan(const V & a, const V & b, typename V::value_type d) {
 template <class V>
 bool isallfinite(const V & vec) {
 	
-	for(size_t i = 0; i < vec.length(); i++) {
+	for(size_t i = 0; i < size_t(vec.length()); i++) {
 		if(!(boost::math::isfinite)(vec[i])) {
 			return false;
 		}
