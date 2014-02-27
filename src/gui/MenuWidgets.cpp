@@ -335,19 +335,19 @@ void MACRO_MENU_PRINCIPALE(int iPosMenuPrincipaleX,
 
 bool Menu2_Render() {
 	
-	if(pMenuCursor == NULL)
-		pMenuCursor = new MenuCursor();
-
-	pMenuCursor->Update();
-
 	ARXOldTimeMenu = ARXTimeMenu;
-	ARXTimeMenu = arxtime.get_updated( false );
-	ARXDiffTimeMenu = ARXTimeMenu-ARXOldTimeMenu;
+	ARXTimeMenu = arxtime.get_updated(false);
+	ARXDiffTimeMenu = ARXTimeMenu - ARXOldTimeMenu;
 	
 	// this means ArxTimeMenu is reset
 	if(ARXDiffTimeMenu < 0) {
 		ARXDiffTimeMenu = 0;
 	}
+	
+	if(pMenuCursor == NULL) {
+		pMenuCursor = new MenuCursor();
+	}
+	pMenuCursor->update(ARXDiffTimeMenu);
 	
 	GRenderer->GetTextureStage(0)->setMinFilter(TextureStage::FilterLinear);
 	GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterLinear);
@@ -4347,7 +4347,7 @@ void MenuCursor::DrawOneCursor(const Vec2s& mousePos) {
 	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
 }
 
-void MenuCursor::Update() {
+void MenuCursor::update(float time) {
 	
 	bool inWindow = GInput->isMouseInWindow();
 	if(inWindow && exited) {
@@ -4367,7 +4367,7 @@ void MenuCursor::Update() {
 	
 	const float targetFPS = 61.f;
 	const float targetDelay = 1000.f / targetFPS;
-	m_storedTime += arxtime.get_frame_delay();
+	m_storedTime += time;
 	if(m_storedTime > targetDelay) {
 		m_storedTime = std::min(targetDelay, m_storedTime - targetDelay);
 		

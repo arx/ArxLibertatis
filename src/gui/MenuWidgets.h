@@ -634,7 +634,7 @@ public:
 	MenuCursor();
 	virtual ~MenuCursor();
 	
-	void Update();
+	void update(float time);
 	void SetMouseOver();
 	void SetCursorOn();
 	void SetCursorOff();
