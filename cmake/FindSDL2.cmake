@@ -134,7 +134,7 @@ include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(SDL2 DEFAULT_MSG SDL2_LIBRARY SDL2_INCLUDE_DIR)
 
 
-IF(SDL2_LIBRARY)
+if(SDL2_LIBRARY)
 	
 	set(SDL2_LIBRARIES ${SDL2_LIBRARY})
 	

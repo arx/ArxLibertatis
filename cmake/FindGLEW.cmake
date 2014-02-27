@@ -51,7 +51,7 @@ if(WIN32)
 endif()
 
 # Prefer libraries in the same prefix as the include files
-string(REGEX REPLACE "(.*)/include/?" "\\1" GLEW_BASE_DIR ${GLEW_INCLUDE_DIR})
+string(REGEX REPLACE "(.*)/include/?" "\\1" GLEW_BASE_DIR "${GLEW_INCLUDE_DIR}")
 
 find_library(GLEW_LIBRARY
 	NAMES ${_glew_library_names}
