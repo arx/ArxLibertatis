@@ -81,6 +81,8 @@ void GLTexture2D::Upload() {
 	
 	if(hasMipmaps()) {
 		glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE);
+	} else {
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
 	}
 	
 	// TODO handle GL_MAX_TEXTURE_SIZE
