@@ -1300,11 +1300,12 @@ float GetVarValueInterpretedAsFloat(const string & temp1, const EERIE_SCRIPT * e
 		switch (getSystemVar(esss,io,temp1,tv,&fv,&lv)) {
 			case TYPE_TEXT:
 				return (float)atof(tv.c_str());
+				break;
 			case TYPE_LONG:
 				return (float)lv;
-				// TODO unreachable code (should it be case TYPE_FLOAT: ?)
-				//return (fv);
+				break;
 			default:
+				return (fv);
 				break;
 		}
 	} else if(temp1[0] == '#') {
@@ -2031,7 +2032,7 @@ void ManageCasseDArme(Entity * io)
 									{
 										if (pObjMin)
 										{
-											if (inventory[iNbBag][i][j].io->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Damages].value > pObjMin->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Damages].value)
+											if (inventory[iNbBag][i][j].io->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Damages].value < pObjMin->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Damages].value)
 											{
 												pObjMin = inventory[iNbBag][i][j].io;
 											}
@@ -2047,7 +2048,7 @@ void ManageCasseDArme(Entity * io)
 										{
 											if (pObjMax)
 											{
-												if (inventory[iNbBag][i][j].io->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Damages].value < pObjMax->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Damages].value)
+												if (inventory[iNbBag][i][j].io->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Damages].value > pObjMax->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Damages].value)
 												{
 													pObjMax = inventory[iNbBag][i][j].io;
 												}

@@ -3839,7 +3839,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			Vec3f target;
 			if(spells[i].target == 0) {
 				target = player.pos + Vec3f(0.f, 150.f, 0.f);
-				spells[i].target = 0;
 				spells[i].tolive = 200000000;
 				player.levitate = 1;
 			} else {
