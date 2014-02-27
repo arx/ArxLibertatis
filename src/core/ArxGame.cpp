@@ -507,6 +507,16 @@ void ArxGame::onWindowGotFocus(const Window &) {
 	}
 }
 
+void ARX_INTERFACE_Combat_Mode(long i);
+
+void ArxGame::onWindowLostFocus(const Window &) {
+	// TODO(option-control) add a config option for this
+	ARX_INTERFACE_Combat_Mode(0);
+	TRUE_PLAYER_MOUSELOOK_ON = false;
+	PLAYER_MOUSELOOK_ON = false;
+	// TODO(option-audio) add a config option to disable audio on focus loss
+}
+
 void ArxGame::onResizeWindow(const Window & window) {
 	
 	arx_assert(window.getSize() != Vec2i_ZERO);
