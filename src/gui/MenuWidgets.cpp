@@ -4294,6 +4294,7 @@ MenuCursor::MenuCursor() {
 	iMaxOldCoord=40;
 	
 	exited = true;
+	m_storedTime = 0;
 	
 	bMouseOver=false;
 
