@@ -275,6 +275,8 @@ static void loadObjectData(EERIE_3DOBJ * eerie, const char * adr, size_t * poss,
 	LogDebug("Nb Faces " << tn->nb_faces << " Nb Groups " << tn->nb_groups);
 	
 	eerie->vertexlist.resize(tn->nb_vertex);
+	eerie->vertexlist3.resize(tn->nb_vertex);
+	
 	eerie->facelist.resize(tn->nb_faces);
 	eerie->nbgroups = tn->nb_groups;
 	eerie->actionlist.resize(tn->nb_action_point);
@@ -283,8 +285,6 @@ static void loadObjectData(EERIE_3DOBJ * eerie, const char * adr, size_t * poss,
 	eerie->pdata = NULL;
 	eerie->cdata = NULL;
 	eerie->sdata = NULL;
-	
-	eerie->vertexlist3.resize(tn->nb_vertex);
 	
 	if(tn->nb_groups == 0) {
 		eerie->grouplist = NULL;
