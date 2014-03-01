@@ -1137,8 +1137,8 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 			AddIdxToBone(&bone, i);
 
 		// Initialize the bone
-		Quat_Init(&bone.init.quat);
-		Quat_Init(&bone.anim.quat);
+		bone.init.quat = EERIE_QUAT();
+		bone.anim.quat = EERIE_QUAT();
 		bone.init.scale = Vec3f_ZERO;
 		bone.anim.scale = Vec3f_ZERO;
 		bone.init.trans = Vec3f_ZERO;
@@ -1170,8 +1170,8 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 				}
 			}
 
-			Quat_Init(&bone.init.quat);
-			Quat_Init(&bone.anim.quat);
+			bone.init.quat = EERIE_QUAT();
+			bone.anim.quat = EERIE_QUAT();
 			bone.init.scale = Vec3f_ZERO;
 			bone.anim.scale = Vec3f_ZERO;
 			bone.init.trans = Vec3f(v_origin->v.x, v_origin->v.y, v_origin->v.z);

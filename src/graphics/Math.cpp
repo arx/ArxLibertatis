@@ -634,7 +634,6 @@ EERIE_QUAT Quat_Slerp(const EERIE_QUAT & from, EERIE_QUAT to, float ratio)
 void Quat_Reverse(EERIE_QUAT * q)
 {
 	EERIE_QUAT qw, qr;
-	Quat_Init(&qw);
 	Quat_Divide(&qr, q, &qw);
 	*q = qr;
 }

@@ -207,15 +207,6 @@ inline void YXZRotatePoint(Vec3f * in, Vec3f * out, EERIE_CAMERA * cam) {
 
 // QUATERNION Funcs/Defs
 
-//! Quaternion Initialization
-//!  quat -> quaternion to init
-inline void Quat_Init(EERIE_QUAT * quat, float x = 0, float y = 0, float z = 0, float w = 1) {
-	quat->x = x;
-	quat->y = y;
-	quat->z = z;
-	quat->w = w;
-}
-
 // Transforms a Vertex by a quaternion
 inline Vec3f TransformVertexQuat(const EERIE_QUAT & quat, const Vec3f & vertexin) {
 	

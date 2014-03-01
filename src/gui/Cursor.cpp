@@ -261,8 +261,7 @@ long Manage3DCursor(long flags) {
 			}
 
 			EERIE_QUAT rotation;
-			Quat_Init(&rotation);
-
+			
 			worldAngleToQuat(&rotation, temp);
 
 			if(SPECIAL_DRAGINTER_RENDER) {

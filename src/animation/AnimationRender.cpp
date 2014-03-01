@@ -1454,7 +1454,7 @@ void Cedric_AnimateDrawEntity(EERIE_C_DATA & rig, ANIM_USE * animlayer, EERIE_EX
 	for(long i = 0; i != rig.nb_bones; i++) {
 		EERIE_BONE & bone = rig.bones[i];
 
-		Quat_Init(&bone.init.quat);
+		bone.init.quat = EERIE_QUAT();
 		bone.init.trans = bone.transinit_global;
 	}
 
