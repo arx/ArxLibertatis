@@ -29,8 +29,24 @@
 CPPUNIT_TEST_SUITE_REGISTRATION(GraphicsUtilityTest);
 
 #include <glm/gtc/matrix_access.hpp>
+#include <glm/gtc/quaternion.hpp>
+#include <glm/gtx/string_cast.hpp>
 
 namespace CppUnit {
+	
+	template<>
+	struct assertion_traits<glm::quat> {
+		static bool equal(const glm::quat & v, const glm::quat & other) {
+			return glm::equalEpsilon(v.w, other.w, 0.001f)
+				&& glm::equalEpsilon(v.x, other.x, 0.001f)
+				&& glm::equalEpsilon(v.y, other.y, 0.001f)
+				&& glm::equalEpsilon(v.z, other.z, 0.001f);
+		}
+		
+		static std::string toString(const glm::quat & v) {			
+			return glm::gtx::string_cast::to_string(Vec4f(v.w, v.x, v.y, v.z));
+		}
+	};
 	
 	template<>
 	struct assertion_traits<Vec3f> {
@@ -232,3 +248,65 @@ void GraphicsUtilityTest::testMatrix7() {
 		 2114.24927, -1363.57849, -1646.42126, 1)
 	);
 }
+
+
+
+EERIE_QUAT quatConvert(const glm::quat quat) {
+	return EERIE_QUAT(quat.x, quat.y, quat.z, quat.w);
+}
+
+glm::quat quatConvert(const EERIE_QUAT quat) {
+	return glm::quat(quat.w, quat.x, quat.y, quat.z);
+}
+
+void GraphicsUtilityTest::quaternionTests()
+{
+	std::vector<glm::quat> testQuats;
+	
+	// Identity (no rotation)
+	testQuats.push_back(glm::quat( 1.f, 0.f, 0.f, 0.f));
+	testQuats.push_back(glm::quat(-1.f, 0.f, 0.f, 0.f));
+	
+	// 180 degrees about x-axis
+	testQuats.push_back(glm::quat(0.f,  1.f, 0.f, 0.f));
+	testQuats.push_back(glm::quat(0.f, -1.f, 0.f, 0.f));
+	
+	//  180 degrees about y-axis
+	testQuats.push_back(glm::quat(0.f, 0.f,  1.f, 0.f));
+	testQuats.push_back(glm::quat(0.f, 0.f, -1.f, 0.f));
+	
+	// 180 degrees about z-axis
+	testQuats.push_back(glm::quat(0.f, 0.f, 0.f,  1.f));
+	testQuats.push_back(glm::quat(0.f, 0.f, 0.f, -1.f));
+	
+	std::vector<glm::quat>::iterator it;
+	for(it = testQuats.begin(); it != testQuats.end(); ++it) {
+		
+		EERIE_QUAT A = quatConvert(*it);	
+		glm::quat B = *it;
+	
+		CPPUNIT_ASSERT_EQUAL(quatConvert(A), B);
+		
+		EERIE_QUAT inverseA = A;
+		Quat_Reverse(&inverseA);
+		glm::quat inverseB = glm::gtc::quaternion::inverse(B);
+		
+		CPPUNIT_ASSERT_EQUAL(quatConvert(inverseA), inverseB);
+	
+		Vec3f vecA = TransformVertexQuat(A, Vec3f(1.f, 0.5f, 0.1f));
+		Vec3f vecB = B * Vec3f(1.f, 0.5f, 0.1f);
+		
+		CPPUNIT_ASSERT_EQUAL(vecA, vecB);
+	}
+	
+	{
+		glm::quat A = glm::quat(0.f,  1.f, 0.f, 0.f);
+		glm::quat B = glm::quat(0.f,  0.f, 1.f, 0.f);
+		
+		CPPUNIT_ASSERT_EQUAL(A * B,
+		quatConvert(Quat_Multiply(quatConvert(A), quatConvert(B))));
+	}
+	
+}
+
+

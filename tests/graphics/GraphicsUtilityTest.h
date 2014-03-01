@@ -18,6 +18,8 @@ class GraphicsUtilityTest : public CppUnit::TestCase {
 	CPPUNIT_TEST(testMatrix5);
 	CPPUNIT_TEST(testMatrix6);
 	CPPUNIT_TEST(testMatrix7);
+	
+	CPPUNIT_TEST(quaternionTests);
 	CPPUNIT_TEST_SUITE_END();
 public:
 	GraphicsUtilityTest() : CppUnit::TestCase("GraphicsUtilityTest") {}
@@ -33,6 +35,8 @@ public:
 	void testMatrix5();
 	void testMatrix6();
 	void testMatrix7();
+	
+	void quaternionTests();
 
 private:
 	EERIE_TRANSFORM transform;
