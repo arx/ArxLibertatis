@@ -539,21 +539,20 @@ void UpdateBbox3d(EERIE_3DOBJ *eobj, EERIE_3D_BBOX & box3D) {
 	}
 }
 
-void UpdateBbox2d(EERIE_3DOBJ *eobj, EERIE_2D_BBOX & box2D) {
+void UpdateBbox2d(const EERIE_3DOBJ & eobj, EERIE_2D_BBOX & box2D) {
 
 	box2D.reset();
 
-	for(size_t i = 0 ; i < eobj->vertexlist.size(); i++) {
-		// Memorizes 2D Bounding Box using vertex min/max x,y pos
-		if(eobj->vertexlist[i].vert.rhw > 0.f) {
+	for(size_t i = 0; i < eobj.vertexlist.size(); i++) {
+		const EERIE_VERTEX & vertex = eobj.vertexlist[i];
 
-			if ((eobj->vertexlist[i].vert.p.x >= -32000) &&
-				(eobj->vertexlist[i].vert.p.x <= 32000) &&
-				(eobj->vertexlist[i].vert.p.y >= -32000) &&
-				(eobj->vertexlist[i].vert.p.y <= 32000))
-			{
-				box2D.add(eobj->vertexlist[i].vert.p);
-			}
+		if(   vertex.vert.rhw > 0.f
+		   && vertex.vert.p.x >= -32000
+		   && vertex.vert.p.x <=  32000
+		   && vertex.vert.p.y >= -32000
+		   && vertex.vert.p.y <=  32000
+		) {
+			box2D.add(vertex.vert.p);
 		}
 	}
 }
@@ -833,7 +832,7 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, const TransformInfo &t, Entity *io, bool 
 
 	DrawEERIEInter_ViewProjectTransform(eobj);
 	if(io) {
-		UpdateBbox2d(eobj, io->bbox2D);
+		UpdateBbox2d(*eobj, io->bbox2D);
 	}
 
 	if(!forceDraw && ARX_SCENE_PORTAL_ClipIO(io, t.pos))

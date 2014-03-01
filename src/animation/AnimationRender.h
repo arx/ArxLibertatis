@@ -89,7 +89,7 @@ struct TransformInfo {
 	{}
 };
 
-void UpdateBbox2d(EERIE_3DOBJ *eobj, EERIE_2D_BBOX & box2D);
+void UpdateBbox2d(const EERIE_3DOBJ & eobj, EERIE_2D_BBOX & box2D);
 
 void DrawEERIEInter_ModelTransform(EERIE_3DOBJ *eobj, const TransformInfo &t);
 void DrawEERIEInter_ViewProjectTransform(EERIE_3DOBJ *eobj);

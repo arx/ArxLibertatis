@@ -3950,7 +3950,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 						DrawEERIEInter(necklace.runes[i], t2, NULL);
 
 						EERIE_2D_BBOX runeBox;
-						UpdateBbox2d(necklace.runes[i], runeBox);
+						UpdateBbox2d(*necklace.runes[i], runeBox);
 
 						PopAllTriangleList();
 
