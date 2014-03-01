@@ -1416,10 +1416,7 @@ void Cedric_TransformVerts(EERIE_3DOBJ *eobj, const Vec3f & pos) {
 	}
 }
 
-void Cedric_ViewProjectTransform(Entity *io, EERIE_3DOBJ *eobj) {
-
-	EERIE_2D_BBOX box2D;
-	box2D.reset();
+void Cedric_ViewProjectTransform(EERIE_3DOBJ *eobj) {
 
 	for(size_t i = 0; i < eobj->vertexlist.size(); i++) {
 		EERIE_VERTEX * outVert = &eobj->vertexlist3[i];
@@ -1427,23 +1424,27 @@ void Cedric_ViewProjectTransform(Entity *io, EERIE_3DOBJ *eobj) {
 		Vec3f tempWorld;
 		EE_RT(outVert->v, tempWorld);
 		EE_P(&tempWorld, &outVert->vert);
-		
-		if(outVert->vert.rhw > 0.f) {
-
-			if(   outVert->vert.p.x >= -32000
-			   && outVert->vert.p.x <=  32000
-			   && outVert->vert.p.y >= -32000
-			   && outVert->vert.p.y <=  32000
-			) {
-				box2D.add(outVert->vert.p);
-			}
-		}
-	}
-
-	if(io) {
-		io->bbox2D = box2D;
 	}
 }
+
+void Cedric_UpdateBbox2d(const EERIE_3DOBJ & eobj, EERIE_2D_BBOX & box2D) {
+
+	box2D.reset();
+
+	for(size_t i = 0; i < eobj.vertexlist.size(); i++) {
+		const EERIE_VERTEX & vertex = eobj.vertexlist3[i];
+		
+		if(   vertex.vert.rhw > 0.f
+		   && vertex.vert.p.x >= -32000
+		   && vertex.vert.p.x <=  32000
+		   && vertex.vert.p.y >= -32000
+		   && vertex.vert.p.y <=  32000
+		) {
+			box2D.add(vertex.vert.p);
+		}
+	}
+}
+
 
 /*!
  * \brief Apply animation and draw object
@@ -1578,7 +1579,10 @@ void EERIEDrawAnimQuatUpdate(EERIE_3DOBJ *eobj, ANIM_USE * animlayer,const Angle
 		UpdateBbox3d(eobj, io->bbox3D);
 	}
 
-	Cedric_ViewProjectTransform(io, eobj);
+	Cedric_ViewProjectTransform(eobj);
+	if(io) {
+		Cedric_UpdateBbox2d(*eobj, io->bbox2D);
+	}
 }
 
 void EERIEDrawAnimQuatRender(EERIE_3DOBJ *eobj, const Vec3f & pos, Entity *io, float invisibility) {
@@ -1610,6 +1614,8 @@ void AnimatedEntityUpdate(Entity * entity, float time) {
 
 void AnimatedEntityRender(Entity * entity, float invisibility) {
 
-	Cedric_ViewProjectTransform(entity, entity->obj);
+	Cedric_ViewProjectTransform(entity->obj);
+	Cedric_UpdateBbox2d(*entity->obj, entity->bbox2D);
+
 	EERIEDrawAnimQuatRender(entity->obj, entity->pos, entity, invisibility);
 }
