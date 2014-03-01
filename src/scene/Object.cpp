@@ -1251,7 +1251,7 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 				EERIE_3DPAD & outVert = eobj->vertexlocal[idx];
 				
 				Vec3f temp = inVert.v - vector;
-				TransformInverseVertexQuat(&obj->bones[i].anim.quat, &temp, &temp);
+				TransformInverseVertexQuat(obj->bones[i].anim.quat, temp, temp);
 				outVert.x = temp.x;
 				outVert.y = temp.y;
 				outVert.z = temp.z;

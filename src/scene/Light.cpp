@@ -631,7 +631,7 @@ ColorBGRA ApplyLight(const EERIE_QUAT * quat, const Vec3f & position, const Vec3
 		Vec3f vLight = glm::normalize(light->pos - position);
 
 		Vec3f Cur_vLights;
-		TransformInverseVertexQuat(quat, &vLight, &Cur_vLights);
+		TransformInverseVertexQuat(*quat, vLight, Cur_vLights);
 
 		float cosangle = glm::dot(normal, Cur_vLights);
 

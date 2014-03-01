@@ -570,15 +570,15 @@ void Quat_Divide(EERIE_QUAT * dest, const EERIE_QUAT * q1, const EERIE_QUAT * q2
 }
 
 // Invert-Transform of vertex by a quaternion
-void TransformInverseVertexQuat(const EERIE_QUAT * quat, const Vec3f * vertexin,
-                                Vec3f * vertexout) {
+void TransformInverseVertexQuat(const EERIE_QUAT & quat, const Vec3f & vertexin,
+                                Vec3f & vertexout) {
 	
-	EERIE_QUAT rev_quat = *quat;
+	EERIE_QUAT rev_quat = quat;
 	Quat_Reverse(&rev_quat);
 	
-	float x = vertexin->x;
-	float y = vertexin->y;
-	float z = vertexin->z;
+	float x = vertexin.x;
+	float y = vertexin.y;
+	float z = vertexin.z;
 	
 	float qx = rev_quat.x;
 	float qy = rev_quat.y;
@@ -590,9 +590,9 @@ void TransformInverseVertexQuat(const EERIE_QUAT * quat, const Vec3f * vertexin,
 	float rz = z * qw - x * qy + y * qx;
 	float rw = x * qx + y * qy + z * qz;
 	
-	vertexout->x = qw * rx + qx * rw + qy * rz - qz * ry;
-	vertexout->y = qw * ry + qy * rw + qz * rx - qx * rz;
-	vertexout->z = qw * rz + qz * rw + qx * ry - qy * rx;
+	vertexout.x = qw * rx + qx * rw + qy * rz - qz * ry;
+	vertexout.y = qw * ry + qy * rw + qz * rx - qx * rz;
+	vertexout.z = qw * rz + qz * rw + qx * ry - qy * rx;
 }
 
 
