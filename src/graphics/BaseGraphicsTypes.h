@@ -59,7 +59,7 @@ struct EERIE_QUAT {
 		, w(1.f)
 	{}
 
-	EERIE_QUAT(float x, float y, float z, float w)
+	EERIE_QUAT(float w, float x, float y, float z)
 		: x(x)
 		, y(y)
 		, z(z)

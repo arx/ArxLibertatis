@@ -552,10 +552,11 @@ EERIE_QUAT Quat_Multiply(const EERIE_QUAT & q1, const EERIE_QUAT & q2)
 	  */
 
 	return EERIE_QUAT(
+		q1.w * q2.w - q1.x * q2.x - q1.y * q2.y - q1.z * q2.z,
 		q1.w * q2.x + q1.x * q2.w + q1.y * q2.z - q1.z * q2.y,
 		q1.w * q2.y + q1.y * q2.w + q1.z * q2.x - q1.x * q2.z,
-		q1.w * q2.z + q1.z * q2.w + q1.x * q2.y - q1.y * q2.x,
-		q1.w * q2.w - q1.x * q2.x - q1.y * q2.y - q1.z * q2.z);
+		q1.w * q2.z + q1.z * q2.w + q1.x * q2.y - q1.y * q2.x
+	);
 }
 
 //*************************************************************************************
@@ -620,10 +621,11 @@ EERIE_QUAT Quat_Slerp(const EERIE_QUAT & from, EERIE_QUAT to, float ratio)
 	}
 
 	return EERIE_QUAT(
+		fBeta * from.w + ratio * to.w,
 		fBeta * from.x + ratio * to.x,
 		fBeta * from.y + ratio * to.y,
-		fBeta * from.z + ratio * to.z,
-		fBeta * from.w + ratio * to.w);
+		fBeta * from.z + ratio * to.z
+	);
 }
 
 

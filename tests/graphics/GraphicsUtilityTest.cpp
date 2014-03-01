@@ -252,7 +252,7 @@ void GraphicsUtilityTest::testMatrix7() {
 
 
 EERIE_QUAT quatConvert(const glm::quat quat) {
-	return EERIE_QUAT(quat.x, quat.y, quat.z, quat.w);
+	return EERIE_QUAT(quat.w, quat.x, quat.y, quat.z);
 }
 
 glm::quat quatConvert(const EERIE_QUAT quat) {
