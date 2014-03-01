@@ -1427,10 +1427,16 @@ void Cedric_ViewProjectTransform(Entity *io, EERIE_3DOBJ *eobj) {
 		Vec3f tempWorld;
 		EE_RT(outVert->v, tempWorld);
 		EE_P(&tempWorld, &outVert->vert);
-
-		// Updates 2D Bounding Box
+		
 		if(outVert->vert.rhw > 0.f) {
-			box2D.add(outVert->vert.p);
+
+			if(   outVert->vert.p.x >= -32000
+			   && outVert->vert.p.x <=  32000
+			   && outVert->vert.p.y >= -32000
+			   && outVert->vert.p.y <=  32000
+			) {
+				box2D.add(outVert->vert.p);
+			}
 		}
 	}
 
