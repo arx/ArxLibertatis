@@ -1398,7 +1398,7 @@ void ClearSysTextures() {
 static void PlayerLaunchArrow_Test(float aimratio, float poisonous, Vec3f * pos, Anglef * angle) {
 	
 	Vec3f vect;
-	EERIE_QUAT quat;
+	glm::quat quat;
 	
 	Vec3f position = *pos;
 	float anglea = radians(angle->getYaw());

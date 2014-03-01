@@ -208,7 +208,7 @@ inline void YXZRotatePoint(Vec3f * in, Vec3f * out, EERIE_CAMERA * cam) {
 // QUATERNION Funcs/Defs
 
 // Transforms a Vertex by a quaternion
-inline Vec3f TransformVertexQuat(const EERIE_QUAT & quat, const Vec3f & vertexin) {
+inline Vec3f TransformVertexQuat(const glm::quat & quat, const Vec3f & vertexin) {
 	
 	float rx = vertexin.x * quat.w - vertexin.y * quat.z + vertexin.z * quat.y;
 	float ry = vertexin.y * quat.w - vertexin.z * quat.x + vertexin.x * quat.z;
@@ -221,14 +221,14 @@ inline Vec3f TransformVertexQuat(const EERIE_QUAT & quat, const Vec3f & vertexin
 		quat.w * rz + quat.z * rw + quat.x * ry - quat.y * rx);
 }
 
-void TransformInverseVertexQuat(const EERIE_QUAT & quat, const Vec3f & vertexin, Vec3f & vertexout);
-void Quat_Divide(EERIE_QUAT * dest, const EERIE_QUAT * q1, const EERIE_QUAT * q2);
-EERIE_QUAT Quat_Multiply(const EERIE_QUAT & q1, const EERIE_QUAT & q2);
+void TransformInverseVertexQuat(const glm::quat & quat, const Vec3f & vertexin, Vec3f & vertexout);
+void Quat_Divide(glm::quat * dest, const glm::quat * q1, const glm::quat * q2);
+glm::quat Quat_Multiply(const glm::quat & q1, const glm::quat & q2);
 
-EERIE_QUAT Quat_Slerp(const EERIE_QUAT & from, EERIE_QUAT to, float t);
-void Quat_Reverse(EERIE_QUAT * quat);
+glm::quat Quat_Slerp(const glm::quat & from, glm::quat to, float t);
+void Quat_Reverse(glm::quat * quat);
 
-void worldAngleToQuat(EERIE_QUAT *dest, const Anglef & src, bool isNpc = false);
+void worldAngleToQuat(glm::quat *dest, const Anglef & src, bool isNpc = false);
 
 // VECTORS Functions
 
@@ -237,12 +237,12 @@ void Vector_RotateZ(Vec3f * dest, const Vec3f * src, const float angle);
 void VRotateX(Vec3f * v1, const float angle);
 void VRotateY(Vec3f * v1, const float angle);
 void VRotateZ(Vec3f * v1, const float angle);
-void QuatFromMatrix(EERIE_QUAT & quat, glm::mat4x4 & mat);
+void QuatFromMatrix(glm::quat & quat, glm::mat4x4 & mat);
 
 void CalcFaceNormal(EERIEPOLY * ep, const TexturedVertex * v);
 void CalcObjFaceNormal(const Vec3f * v0, const Vec3f * v1, const Vec3f * v2, EERIE_FACE * ef);
 bool Triangles_Intersect(const EERIE_TRI * v, const EERIE_TRI * u);
-void MatrixFromQuat(glm::mat4x4 & mat, const EERIE_QUAT & q);
+void MatrixFromQuat(glm::mat4x4 & mat, const glm::quat & q);
 
 inline float square(float x) {
 	return x * x;
@@ -300,7 +300,7 @@ inline long PointInUnderCylinder(const EERIE_CYLINDER * cyl, const Vec3f * pt) {
 
 // ANGLES Functions
 
-void QuatFromAngles(EERIE_QUAT * q, const Anglef * angle);
+void QuatFromAngles(glm::quat * q, const Anglef * angle);
 
 template <class T1, class T2, class T3>
 inline T1 clamp(T1 value, T2 min, T3 max) {

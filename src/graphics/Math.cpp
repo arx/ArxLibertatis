@@ -521,7 +521,7 @@ bool SphereInCylinder(const EERIE_CYLINDER * cyl1, const EERIE_SPHERE * s)
 //*************************************************************************************
 // Multiply Quaternion 'q1' by Quaternion 'q2', returns result in Quaternion 'dest'
 //*************************************************************************************
-EERIE_QUAT Quat_Multiply(const EERIE_QUAT & q1, const EERIE_QUAT & q2)
+glm::quat Quat_Multiply(const glm::quat & q1, const glm::quat & q2)
 {
 	/*
 	Fast multiplication
@@ -551,7 +551,7 @@ EERIE_QUAT Quat_Multiply(const EERIE_QUAT & q1, const EERIE_QUAT & q2)
 	additions/subtractions. Generally, this is still an improvement.
 	  */
 
-	return EERIE_QUAT(
+	return glm::quat(
 		q1.w * q2.w - q1.x * q2.x - q1.y * q2.y - q1.z * q2.z,
 		q1.w * q2.x + q1.x * q2.w + q1.y * q2.z - q1.z * q2.y,
 		q1.w * q2.y + q1.y * q2.w + q1.z * q2.x - q1.x * q2.z,
@@ -562,7 +562,7 @@ EERIE_QUAT Quat_Multiply(const EERIE_QUAT & q1, const EERIE_QUAT & q2)
 //*************************************************************************************
 // Invert Multiply of a quaternion by another quaternion
 //*************************************************************************************
-void Quat_Divide(EERIE_QUAT * dest, const EERIE_QUAT * q1, const EERIE_QUAT * q2)
+void Quat_Divide(glm::quat * dest, const glm::quat * q1, const glm::quat * q2)
 {
 	dest->x = q1->w * q2->x - q1->x * q2->w - q1->y * q2->z + q1->z * q2->y;
 	dest->y = q1->w * q2->y - q1->y * q2->w - q1->z * q2->x + q1->x * q2->z;
@@ -571,10 +571,10 @@ void Quat_Divide(EERIE_QUAT * dest, const EERIE_QUAT * q1, const EERIE_QUAT * q2
 }
 
 // Invert-Transform of vertex by a quaternion
-void TransformInverseVertexQuat(const EERIE_QUAT & quat, const Vec3f & vertexin,
+void TransformInverseVertexQuat(const glm::quat & quat, const Vec3f & vertexin,
                                 Vec3f & vertexout) {
 	
-	EERIE_QUAT rev_quat = quat;
+	glm::quat rev_quat = quat;
 	Quat_Reverse(&rev_quat);
 	
 	float x = vertexin.x;
@@ -597,7 +597,7 @@ void TransformInverseVertexQuat(const EERIE_QUAT & quat, const Vec3f & vertexin,
 }
 
 
-EERIE_QUAT Quat_Slerp(const EERIE_QUAT & from, EERIE_QUAT to, float ratio)
+glm::quat Quat_Slerp(const glm::quat & from, glm::quat to, float ratio)
 {
 	float fCosTheta = from.x * to.x + from.y * to.y + from.z * to.z + from.w * to.w;
 
@@ -620,7 +620,7 @@ EERIE_QUAT Quat_Slerp(const EERIE_QUAT & from, EERIE_QUAT to, float ratio)
 		ratio = EEsin(fTheta * ratio) * t ;
 	}
 
-	return EERIE_QUAT(
+	return glm::quat(
 		fBeta * from.w + ratio * to.w,
 		fBeta * from.x + ratio * to.x,
 		fBeta * from.y + ratio * to.y,
@@ -633,9 +633,9 @@ EERIE_QUAT Quat_Slerp(const EERIE_QUAT & from, EERIE_QUAT to, float ratio)
 //*************************************************************************************
 // Inverts a Quaternion
 //*************************************************************************************
-void Quat_Reverse(EERIE_QUAT * q)
+void Quat_Reverse(glm::quat * q)
 {
-	EERIE_QUAT qw, qr;
+	glm::quat qw, qr;
 	Quat_Divide(&qr, q, &qw);
 	*q = qr;
 }
@@ -644,7 +644,7 @@ void Quat_Reverse(EERIE_QUAT * q)
 //*************************************************************************************
 // Converts euler angles to a unit quaternion.
 //*************************************************************************************
-void QuatFromAngles(EERIE_QUAT * q, const Anglef * angle)
+void QuatFromAngles(glm::quat * q, const Anglef * angle)
 
 {
 	float A, B;
@@ -667,7 +667,7 @@ void QuatFromAngles(EERIE_QUAT * q, const Anglef * angle)
 
 }
 
-void worldAngleToQuat(EERIE_QUAT *dest, const Anglef & src, bool isNpc) {
+void worldAngleToQuat(glm::quat *dest, const Anglef & src, bool isNpc) {
 
 	if(!isNpc) {
 		// To correct invalid angle in Animated FIX/ITEMS
@@ -696,7 +696,7 @@ void worldAngleToQuat(EERIE_QUAT *dest, const Anglef & src, bool isNpc) {
 // Converts a unit quaternion into a rotation matrix.
 //*************************************************************************************
 
-void MatrixFromQuat(glm::mat4x4 & m, const EERIE_QUAT & quat)
+void MatrixFromQuat(glm::mat4x4 & m, const glm::quat & quat)
 {
 	float wx, wy, wz, xx, yy, yz, xy, xz, zz, x2, y2, z2;
 
@@ -733,7 +733,7 @@ void MatrixFromQuat(glm::mat4x4 & m, const EERIE_QUAT & quat)
 //*************************************************************************************
 // Converts a rotation matrix into a unit quaternion.
 //*************************************************************************************
-void QuatFromMatrix(EERIE_QUAT & quat, glm::mat4x4 & mat)
+void QuatFromMatrix(glm::quat & quat, glm::mat4x4 & mat)
 {
 	float m[4][4];
 	m[0][0] = mat[0][0];

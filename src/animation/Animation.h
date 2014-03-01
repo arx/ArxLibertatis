@@ -65,7 +65,7 @@ struct EERIE_FRAME
 	short		f_rotate; //int
 	float		time;
 	Vec3f	translate;
-	EERIE_QUAT	quat;
+	glm::quat	quat;
 	audio::SampleId	sample;
 };
 
@@ -73,7 +73,7 @@ struct EERIE_GROUP
 {
 	int		key;
 	Vec3f	translate;
-	EERIE_QUAT	quat;
+	glm::quat	quat;
 	Vec3f	zoom;
 };
 

@@ -3919,7 +3919,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 					angle.setPitch(0.f);
 
 					if(player.rune_flags & (RuneFlag)(1<<i)) {
-						EERIE_QUAT rotation;
+						glm::quat rotation;
 
 						worldAngleToQuat(&rotation, angle);
 
@@ -3977,7 +3977,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 								GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 								GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 
-								EERIE_QUAT rotation;
+								glm::quat rotation;
 								
 								worldAngleToQuat(&rotation, angle);
 

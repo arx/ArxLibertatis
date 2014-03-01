@@ -52,7 +52,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 struct EERIE_3DOBJ;
 struct ANIM_USE;
 class Entity;
-struct EERIE_QUAT;
 struct TexturedVertex;
 struct RenderMaterial;
 
@@ -69,7 +68,7 @@ void drawTriangle(const RenderMaterial & mat, const TexturedVertex * vertices);
 struct TransformInfo {
 
 	Vec3f pos;
-	EERIE_QUAT rotation;
+	glm::quat rotation;
 	float scale;
 	Vec3f offset;
 
@@ -78,10 +77,10 @@ struct TransformInfo {
 		, scale(1.f)
 		, offset(Vec3f_ZERO)
 	{
-		rotation = EERIE_QUAT();
+		rotation = glm::quat();
 	}
 
-	TransformInfo(Vec3f pos, EERIE_QUAT rotation, float scale = 1.f, Vec3f offset = Vec3f_ZERO)
+	TransformInfo(Vec3f pos, glm::quat rotation, float scale = 1.f, Vec3f offset = Vec3f_ZERO)
 		: pos(pos)
 		, rotation(rotation)
 		, scale(scale)

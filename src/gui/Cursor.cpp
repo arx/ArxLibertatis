@@ -260,7 +260,7 @@ long Manage3DCursor(long flags) {
 				ARX_DEAD_CODE();
 			}
 
-			EERIE_QUAT rotation;
+			glm::quat rotation;
 			
 			worldAngleToQuat(&rotation, temp);
 

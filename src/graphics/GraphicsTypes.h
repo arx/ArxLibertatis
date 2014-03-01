@@ -317,7 +317,7 @@ struct EERIE_FASTACCESS
 /////////////////////////////////////////////////////////////////////////////////
 
 struct BoneTransform {
-	EERIE_QUAT quat;
+	glm::quat quat;
 	Vec3f      trans;
 	Vec3f      scale;
 };
@@ -428,7 +428,7 @@ struct EERIE_3DOBJ
 
 	char * originaltextures;
 	CUB3D cub;
-	EERIE_QUAT quat;
+	glm::quat quat;
 	EERIE_LINKED * linked;
 	long nblinked;
 

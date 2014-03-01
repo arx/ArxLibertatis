@@ -58,7 +58,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 struct EERIE_LIGHT;
 struct EERIEPOLY;
-struct EERIE_QUAT;
 struct SMY_VERTEX;
 class Entity;
 
@@ -159,7 +158,7 @@ void ComputeTileLights(short x,short z);
 void ClearTileLights();
 
 float GetColorz(const Vec3f &pos);
-ColorBGRA ApplyLight(const EERIE_QUAT * quat, const Vec3f & position, const Vec3f & normal, const ColorMod & colorMod, float materialDiffuse = 1.f);
+ColorBGRA ApplyLight(const glm::quat * quat, const Vec3f & position, const Vec3f & normal, const ColorMod & colorMod, float materialDiffuse = 1.f);
 void ApplyTileLights(EERIEPOLY * ep, short x, short y);
 
 void EERIERemovePrecalcLights();

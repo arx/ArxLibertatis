@@ -2617,7 +2617,7 @@ void RenderInter() {
 
 					if(io->obj->pbox && io->obj->pbox->active) {
 						glm::mat4x4 mat = convertToMatrixForDrawEERIEInter(*io->obj->pbox);
-						EERIE_QUAT rotation;
+						glm::quat rotation;
 						
 						QuatFromMatrix(rotation, mat);
 
@@ -2629,7 +2629,7 @@ void RenderInter() {
 
 						DrawEERIEInter(io->obj, t, io, false, invisibility);
 					} else {
-						EERIE_QUAT rotation;
+						glm::quat rotation;
 						
 						worldAngleToQuat(&rotation, temp);
 

@@ -46,27 +46,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "math/Vector.h"
 
-struct EERIE_QUAT {
-	float x;
-	float y;
-	float z;
-	float w;
-
-	EERIE_QUAT()
-		: x(0.f)
-		, y(0.f)
-		, z(0.f)
-		, w(1.f)
-	{}
-
-	EERIE_QUAT(float w, float x, float y, float z)
-		: x(x)
-		, y(y)
-		, z(z)
-		, w(w)
-	{}
-};
-
 struct EERIE_CYLINDER {
 	Vec3f origin;
 	float radius;

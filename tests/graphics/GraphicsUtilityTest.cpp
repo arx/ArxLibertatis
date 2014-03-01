@@ -249,16 +249,6 @@ void GraphicsUtilityTest::testMatrix7() {
 	);
 }
 
-
-
-EERIE_QUAT quatConvert(const glm::quat quat) {
-	return EERIE_QUAT(quat.w, quat.x, quat.y, quat.z);
-}
-
-glm::quat quatConvert(const EERIE_QUAT quat) {
-	return glm::quat(quat.w, quat.x, quat.y, quat.z);
-}
-
 void GraphicsUtilityTest::quaternionTests()
 {
 	std::vector<glm::quat> testQuats;
@@ -282,16 +272,16 @@ void GraphicsUtilityTest::quaternionTests()
 	std::vector<glm::quat>::iterator it;
 	for(it = testQuats.begin(); it != testQuats.end(); ++it) {
 		
-		EERIE_QUAT A = quatConvert(*it);	
+		glm::quat A = *it;	
 		glm::quat B = *it;
 	
-		CPPUNIT_ASSERT_EQUAL(quatConvert(A), B);
+		CPPUNIT_ASSERT_EQUAL(A, B);
 		
-		EERIE_QUAT inverseA = A;
+		glm::quat inverseA = A;
 		Quat_Reverse(&inverseA);
 		glm::quat inverseB = glm::gtc::quaternion::inverse(B);
 		
-		CPPUNIT_ASSERT_EQUAL(quatConvert(inverseA), inverseB);
+		CPPUNIT_ASSERT_EQUAL(inverseA, inverseB);
 	
 		Vec3f vecA = TransformVertexQuat(A, Vec3f(1.f, 0.5f, 0.1f));
 		Vec3f vecB = B * Vec3f(1.f, 0.5f, 0.1f);
@@ -303,8 +293,7 @@ void GraphicsUtilityTest::quaternionTests()
 		glm::quat A = glm::quat(0.f,  1.f, 0.f, 0.f);
 		glm::quat B = glm::quat(0.f,  0.f, 1.f, 0.f);
 		
-		CPPUNIT_ASSERT_EQUAL(A * B,
-		quatConvert(Quat_Multiply(quatConvert(A), quatConvert(B))));
+		CPPUNIT_ASSERT_EQUAL(A * B, Quat_Multiply(A, B));
 	}
 	
 }

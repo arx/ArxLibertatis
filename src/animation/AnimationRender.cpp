@@ -414,7 +414,7 @@ void Cedric_PrepareHalo(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj) {
 
 	// Apply light on all vertices
 	for(long i = 0; i != obj->nb_bones; i++) {
-		EERIE_QUAT qt1 = obj->bones[i].anim.quat;
+		glm::quat qt1 = obj->bones[i].anim.quat;
 		TransformInverseVertexQuat(qt1, cam_vector, t_vector);
 
 		// Get light value for each vertex
@@ -516,7 +516,7 @@ static void Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, const C
 	/* Apply light on all vertices */
 	for(int i = 0; i != obj->nb_bones; i++) {
 
-		EERIE_QUAT *quat = &obj->bones[i].anim.quat;
+		glm::quat *quat = &obj->bones[i].anim.quat;
 
 		/* Get light value for each vertex */
 		for(int v = 0; v != obj->bones[i].nb_idxvertices; v++) {
@@ -1454,7 +1454,7 @@ void Cedric_AnimateDrawEntity(EERIE_C_DATA & rig, ANIM_USE * animlayer, EERIE_EX
 	for(long i = 0; i != rig.nb_bones; i++) {
 		EERIE_BONE & bone = rig.bones[i];
 
-		bone.init.quat = EERIE_QUAT();
+		bone.init.quat = glm::quat();
 		bone.init.trans = bone.transinit_global;
 	}
 
@@ -1540,7 +1540,7 @@ void EERIEDrawAnimQuatUpdate(EERIE_3DOBJ *eobj, ANIM_USE * animlayer,const Angle
 	if(io && io != entities.player() && !Cedric_IO_Visible(io->pos))
 		return;
 
-	EERIE_QUAT rotation;
+	glm::quat rotation;
 
 	bool isNpc = io && (io->ioflags & IO_NPC);
 	worldAngleToQuat(&rotation, angle, isNpc);

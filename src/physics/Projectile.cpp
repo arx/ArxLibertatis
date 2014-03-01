@@ -60,7 +60,7 @@ DECLARE_FLAGS_OPERATORS(ThrownObjectFlags)
 struct ARX_THROWN_OBJECT {
 	ThrownObjectFlags flags;
 	Vec3f vector;
-	EERIE_QUAT quat;
+	glm::quat quat;
 	Vec3f initial_position;
 	float velocity;
 	Vec3f position;
@@ -140,7 +140,7 @@ long ARX_THROWN_OBJECT_GetFree() {
 extern EERIE_3DOBJ * arrowobj;
 
 long ARX_THROWN_OBJECT_Throw(long source, Vec3f * position, Vec3f * vect,
-							 EERIE_QUAT * quat, float velocity, float damages, float poison) {
+							 glm::quat * quat, float velocity, float damages, float poison) {
 
 	long num = ARX_THROWN_OBJECT_GetFree();
 
