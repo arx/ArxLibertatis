@@ -21,6 +21,7 @@ add_executable(arxtest
 	../src/game/Camera.cpp
 	
 	math/AssertionTraits.h
+	math/LegacyMath.h
 	math/LegacyMathTest.cpp
 	graphics/GraphicsUtilityTest.cpp
 	graphics/ColorTest.cpp
