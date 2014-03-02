@@ -25,30 +25,71 @@
 
 CPPUNIT_TEST_SUITE_REGISTRATION(LegacyMathTest);
 
-void LegacyMathTest::quaternionTests() {
-	std::vector<glm::quat> testQuats;
+struct TestRotation {
+	glm::quat quat;
+	Anglef angle;
+	
+	TestRotation(glm::quat quat, Anglef angle)
+		: quat(quat)
+		, angle(angle)
+	{}
+};
+
+std::vector<TestRotation> rotations;
+
+static void addTestData(glm::quat quat, Anglef angle) {
+	rotations.push_back(TestRotation(quat, angle));
+}
+
+void LegacyMathTest::setUp() {
+	// Data from: http://www.euclideanspace.com/maths/geometry/rotations/conversions/eulerToQuaternion/steps/index.htm
 	
 	// Identity (no rotation)
-	testQuats.push_back(glm::quat( 1.f, 0.f, 0.f, 0.f));
-	testQuats.push_back(glm::quat(-1.f, 0.f, 0.f, 0.f));
+	addTestData(glm::quat(    1.f,    0.0f,    0.0f,    0.0f), Anglef(  0.f,   0.f,   0.f));
+	// 90 degrees about y axis
+	addTestData(glm::quat(0.7071f,    0.0f, 0.7071f,    0.0f), Anglef( 90.f,   0.f,   0.f));
+	// 180 degrees about y axis
+	addTestData(glm::quat(   0.0f,    0.0f,     1.f,    0.0f), Anglef(180.f,   0.f,   0.f));
+	// 270 degrees about y axis
+	addTestData(glm::quat(0.7071f,    0.0f,-0.7071f,    0.0f), Anglef(-90.f,   0.f,   0.f));
 	
-	// 180 degrees about x-axis
-	testQuats.push_back(glm::quat(0.f,  1.f, 0.f, 0.f));
-	testQuats.push_back(glm::quat(0.f, -1.f, 0.f, 0.f));
+	addTestData(glm::quat(0.7071f,    0.0f,    0.0f, 0.7071f), Anglef(  0.f,  90.f,   0.f));
+	addTestData(glm::quat(   0.5f,    0.5f,    0.5f,    0.5f), Anglef( 90.f,  90.f,   0.f));
+	addTestData(glm::quat(   0.0f, 0.7071f, 0.7071f,    0.0f), Anglef(180.f,  90.f,   0.f));
+	addTestData(glm::quat(   0.5f,   -0.5f,   -0.5f,    0.5f), Anglef(-90.f,  90.f,   0.f));
 	
-	//  180 degrees about y-axis
-	testQuats.push_back(glm::quat(0.f, 0.f,  1.f, 0.f));
-	testQuats.push_back(glm::quat(0.f, 0.f, -1.f, 0.f));
+	addTestData(glm::quat(0.7071f,    0.0f,    0.0f,-0.7071f), Anglef(  0.f, -90.f,   0.f));
+	addTestData(glm::quat(   0.5f,   -0.5f,    0.5f,   -0.5f), Anglef( 90.f, -90.f,   0.f));
+	addTestData(glm::quat(   0.0f,-0.7071f, 0.7071f,    0.0f), Anglef(180.f, -90.f,   0.f));
+	addTestData(glm::quat(   0.5f,    0.5f,   -0.5f,   -0.5f), Anglef(-90.f, -90.f,   0.f));
 	
-	// 180 degrees about z-axis
-	testQuats.push_back(glm::quat(0.f, 0.f, 0.f,  1.f));
-	testQuats.push_back(glm::quat(0.f, 0.f, 0.f, -1.f));
+	addTestData(glm::quat(0.7071f, 0.7071f,    0.0f,    0.0f), Anglef(  0.f,   0.f,  90.f));
+	addTestData(glm::quat(   0.5f,    0.5f,    0.5f,   -0.5f), Anglef( 90.f,   0.f,  90.f));
+	addTestData(glm::quat(   0.0f,    0.0f, 0.7071f,-0.7071f), Anglef(180.f,   0.f,  90.f));
+	addTestData(glm::quat(   0.5f,    0.5f,   -0.5f,    0.5f), Anglef(-90.f,   0.f,  90.f));
 	
-	std::vector<glm::quat>::iterator it;
-	for(it = testQuats.begin(); it != testQuats.end(); ++it) {
+	addTestData(glm::quat(   0.0f,    1.0f,    0.0f,    0.0f), Anglef(  0.f,   0.f, 180.f));
+	addTestData(glm::quat(   0.0f, 0.7071f,    0.0f,-0.7071f), Anglef( 90.f,   0.f, 180.f));
+	addTestData(glm::quat(   0.0f,    0.0f,    0.0f,    1.0f), Anglef(180.f,   0.f, 180.f));
+	addTestData(glm::quat(   0.0f, 0.7071f,    0.0f, 0.7071f), Anglef(-90.f,   0.f, 180.f));
+	
+	addTestData(glm::quat(0.7071f,-0.7071f,    0.0f,    0.0f), Anglef(  0.f,   0.f, -90.f));
+	addTestData(glm::quat(   0.5f,   -0.5f,    0.5f,    0.5f), Anglef( 90.f,   0.f, -90.f));
+	addTestData(glm::quat(   0.0f,    0.0f, 0.7071f, 0.7071f), Anglef(180.f,   0.f, -90.f));
+	addTestData(glm::quat(   0.5f,   -0.5f,   -0.5f,   -0.5f), Anglef(-90.f,   0.f, -90.f));
+}
+
+void LegacyMathTest::tearDown() {
+	rotations.clear();
+}
+
+void LegacyMathTest::quaternionTests() {
+	
+	std::vector<TestRotation>::iterator it;
+	for(it = rotations.begin(); it != rotations.end(); ++it) {
 		
-		glm::quat A = *it;	
-		glm::quat B = *it;
+		glm::quat A = it->quat;	
+		glm::quat B = it->quat;
 	
 		CPPUNIT_ASSERT_EQUAL(A, B);
 		
@@ -62,6 +103,13 @@ void LegacyMathTest::quaternionTests() {
 		Vec3f vecB = B * Vec3f(1.f, 0.5f, 0.1f);
 		
 		CPPUNIT_ASSERT_EQUAL(vecA, vecB);
+		
+		glm::mat4x4 matrixA;
+		MatrixFromQuat(matrixA, A);
+		
+		glm::mat4x4 matrixB = glm::toMat4(B);
+		
+		CPPUNIT_ASSERT_EQUAL(matrixA, matrixB);
 	}
 }
 

@@ -37,8 +37,8 @@ public:
 		: CppUnit::TestFixture()
 	{}
 	
-	void setUp(){}
-    void tearDown() {}
+	void setUp();
+	void tearDown();
 	
 	void quaternionTests();
 	void quatMuliplyTest();
