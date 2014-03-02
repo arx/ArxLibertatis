@@ -36,6 +36,22 @@ Vec3f TransformVertexQuat(const glm::quat & quat, const Vec3f & vertexin) {
 		quat.w * rz + quat.z * rw + quat.x * ry - quat.y * rx);
 }
 
+//! Invert Multiply of a quaternion by another quaternion
+void Quat_Divide(glm::quat * dest, const glm::quat * q1, const glm::quat * q2) {
+	dest->x = q1->w * q2->x - q1->x * q2->w - q1->y * q2->z + q1->z * q2->y;
+	dest->y = q1->w * q2->y - q1->y * q2->w - q1->z * q2->x + q1->x * q2->z;
+	dest->z = q1->w * q2->z - q1->z * q2->w - q1->x * q2->y + q1->y * q2->x;
+	dest->w = q1->w * q2->w + q1->x * q2->x + q1->y * q2->y + q1->z * q2->z;
+}
+
+//! Inverts a Quaternion
+void Quat_Reverse(glm::quat * q) {
+	glm::quat qw, qr;
+	Quat_Divide(&qr, q, &qw);
+	*q = qr;
+}
+
+
 glm::quat Quat_Multiply(const glm::quat & q1, const glm::quat & q2) {
 	/*
 	Fast multiplication

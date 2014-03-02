@@ -518,24 +518,11 @@ bool SphereInCylinder(const EERIE_CYLINDER * cyl1, const EERIE_SPHERE * s)
 // Quaternions Funcs
 //--------------------------------------------------------------------------------------
 
-
-//*************************************************************************************
-// Invert Multiply of a quaternion by another quaternion
-//*************************************************************************************
-void Quat_Divide(glm::quat * dest, const glm::quat * q1, const glm::quat * q2)
-{
-	dest->x = q1->w * q2->x - q1->x * q2->w - q1->y * q2->z + q1->z * q2->y;
-	dest->y = q1->w * q2->y - q1->y * q2->w - q1->z * q2->x + q1->x * q2->z;
-	dest->z = q1->w * q2->z - q1->z * q2->w - q1->x * q2->y + q1->y * q2->x;
-	dest->w = q1->w * q2->w + q1->x * q2->x + q1->y * q2->y + q1->z * q2->z;
-}
-
 // Invert-Transform of vertex by a quaternion
 void TransformInverseVertexQuat(const glm::quat & quat, const Vec3f & vertexin,
                                 Vec3f & vertexout) {
 	
-	glm::quat rev_quat = quat;
-	Quat_Reverse(&rev_quat);
+	glm::quat rev_quat = glm::inverse(quat);
 	
 	float x = vertexin.x;
 	float y = vertexin.y;
@@ -587,19 +574,6 @@ glm::quat Quat_Slerp(const glm::quat & from, glm::quat to, float ratio)
 		fBeta * from.z + ratio * to.z
 	);
 }
-
-
-
-//*************************************************************************************
-// Inverts a Quaternion
-//*************************************************************************************
-void Quat_Reverse(glm::quat * q)
-{
-	glm::quat qw, qr;
-	Quat_Divide(&qr, q, &qw);
-	*q = qr;
-}
-
 
 //*************************************************************************************
 // Converts euler angles to a unit quaternion.
