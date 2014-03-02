@@ -223,7 +223,6 @@ inline Vec3f TransformVertexQuat(const glm::quat & quat, const Vec3f & vertexin)
 
 void TransformInverseVertexQuat(const glm::quat & quat, const Vec3f & vertexin, Vec3f & vertexout);
 void Quat_Divide(glm::quat * dest, const glm::quat * q1, const glm::quat * q2);
-glm::quat Quat_Multiply(const glm::quat & q1, const glm::quat & q2);
 
 glm::quat Quat_Slerp(const glm::quat & from, glm::quat to, float t);
 void Quat_Reverse(glm::quat * quat);

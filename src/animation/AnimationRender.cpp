@@ -1293,7 +1293,7 @@ static void Cedric_AnimateObject(EERIE_C_DATA * obj, ANIM_USE * animlayer)
 				temp.trans = sGroup->translate + (eGroup->translate - sGroup->translate) * animuse->pour;
 				temp.scale = sGroup->zoom + (eGroup->zoom - sGroup->zoom) * animuse->pour;
 
-				bone.init.quat = Quat_Multiply(bone.init.quat, temp.quat);
+				bone.init.quat = bone.init.quat * temp.quat;
 				bone.init.trans = temp.trans + bone.transinit_global;
 				bone.init.scale = temp.scale;
 			}
@@ -1340,7 +1340,7 @@ static void Cedric_ConcatenateTM(EERIE_C_DATA & rig, const TransformInfo & t) {
 		if(bone->father >= 0) { // Child Bones
 			EERIE_BONE * parent = &rig.bones[bone->father];
 			// Rotation
-			bone->anim.quat = Quat_Multiply(parent->anim.quat, bone->init.quat);
+			bone->anim.quat = parent->anim.quat * bone->init.quat;
 
 			// Translation
 			bone->anim.trans = bone->init.trans * parent->anim.scale;
@@ -1351,7 +1351,7 @@ static void Cedric_ConcatenateTM(EERIE_C_DATA & rig, const TransformInfo & t) {
 			bone->anim.scale = (bone->init.scale + Vec3f_ONE) * parent->anim.scale;
 		} else { // Root Bone
 			// Rotation
-			bone->anim.quat = Quat_Multiply(t.rotation, bone->init.quat);
+			bone->anim.quat = t.rotation * bone->init.quat;
 
 			// Translation
 			Vec3f vt1 = bone->init.trans + t.offset;
