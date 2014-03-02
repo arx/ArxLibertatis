@@ -120,3 +120,18 @@ void LegacyMathTest::quatMuliplyTest() {
 	
 	CPPUNIT_ASSERT_EQUAL(A * B, Quat_Multiply(A, B));
 }
+
+void LegacyMathTest::quatSlerpTest() {
+	
+	typedef std::vector<TestRotation>::iterator itr;
+	
+	for(itr iA = rotations.begin(); iA != rotations.end(); ++iA) {
+		for(itr iB = rotations.begin(); iB != rotations.end(); ++iB) {
+			
+			glm::quat expected = glm::mix(iA->quat, iB->quat, 0.5f);
+			glm::quat result = Quat_Slerp(iA->quat, iB->quat, 0.5f);
+			
+			CPPUNIT_ASSERT_EQUAL(expected, result);
+		}
+	}
+}

@@ -30,6 +30,7 @@ class LegacyMathTest : public CppUnit::TestFixture {
 	CPPUNIT_TEST_SUITE(LegacyMathTest);	
 	CPPUNIT_TEST(quaternionTests);
 	CPPUNIT_TEST(quatMuliplyTest);
+	CPPUNIT_TEST(quatSlerpTest);
 	CPPUNIT_TEST_SUITE_END();
 	
 public:
@@ -42,6 +43,7 @@ public:
 	
 	void quaternionTests();
 	void quatMuliplyTest();
+	void quatSlerpTest();
 };
 
 #endif // ARX_TESTS_GRAPHICS_LEGACYMATHTEST_H
