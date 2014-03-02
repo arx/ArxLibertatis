@@ -20,7 +20,21 @@
 #ifndef ARX_TESTS_GRAPHICS_LEGACYMATH_H
 #define ARX_TESTS_GRAPHICS_LEGACYMATH_H
 
-#include <glm/gtc/quaternion.hpp>
+#include "graphics/Math.h"
+
+//! Transforms a Vertex by a quaternion
+Vec3f TransformVertexQuat(const glm::quat & quat, const Vec3f & vertexin) {
+	
+	float rx = vertexin.x * quat.w - vertexin.y * quat.z + vertexin.z * quat.y;
+	float ry = vertexin.y * quat.w - vertexin.z * quat.x + vertexin.x * quat.z;
+	float rz = vertexin.z * quat.w - vertexin.x * quat.y + vertexin.y * quat.x;
+	float rw = vertexin.x * quat.x + vertexin.y * quat.y + vertexin.z * quat.z;
+	
+	return Vec3f(
+		quat.w * rx + quat.x * rw + quat.y * rz - quat.z * ry,
+		quat.w * ry + quat.y * rw + quat.z * rx - quat.x * rz,
+		quat.w * rz + quat.z * rw + quat.x * ry - quat.y * rx);
+}
 
 glm::quat Quat_Multiply(const glm::quat & q1, const glm::quat & q2) {
 	/*

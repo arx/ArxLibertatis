@@ -565,7 +565,7 @@ void DrawEERIEInter_ModelTransform(EERIE_3DOBJ *eobj, const TransformInfo &t) {
 
 		temp -= t.offset;
 		temp *= t.scale;
-		temp = TransformVertexQuat(t.rotation, temp);
+		temp = t.rotation * temp;
 		temp += t.pos;
 
 		eobj->vertexlist3[i].v = temp;
@@ -614,7 +614,7 @@ void AddFixedObjectHalo(const EERIE_FACE & face, const TransformInfo & t, const 
 
 	for(long o = 0; o < 3; o++) {
 		Vec3f temporary3D;
-		temporary3D = TransformVertexQuat(t.rotation, eobj->vertexlist[face.vid[o]].norm);
+		temporary3D = t.rotation * eobj->vertexlist[face.vid[o]].norm;
 
 		float power = 255.f-(float)EEfabs(255.f*(temporary3D.z)*( 1.0f / 2 ));
 
@@ -1344,7 +1344,7 @@ static void Cedric_ConcatenateTM(EERIE_C_DATA & rig, const TransformInfo & t) {
 
 			// Translation
 			bone->anim.trans = bone->init.trans * parent->anim.scale;
-			bone->anim.trans = TransformVertexQuat(parent->anim.quat, bone->anim.trans);
+			bone->anim.trans = parent->anim.quat * bone->anim.trans;
 			bone->anim.trans = parent->anim.trans + bone->anim.trans;
 
 			// Scale
@@ -1355,7 +1355,7 @@ static void Cedric_ConcatenateTM(EERIE_C_DATA & rig, const TransformInfo & t) {
 
 			// Translation
 			Vec3f vt1 = bone->init.trans + t.offset;
-			bone->anim.trans = TransformVertexQuat(t.rotation, vt1);
+			bone->anim.trans = t.rotation * vt1;
 			bone->anim.trans *= t.scale;
 			bone->anim.trans += t.pos;
 

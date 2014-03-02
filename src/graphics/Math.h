@@ -207,20 +207,6 @@ inline void YXZRotatePoint(Vec3f * in, Vec3f * out, EERIE_CAMERA * cam) {
 
 // QUATERNION Funcs/Defs
 
-// Transforms a Vertex by a quaternion
-inline Vec3f TransformVertexQuat(const glm::quat & quat, const Vec3f & vertexin) {
-	
-	float rx = vertexin.x * quat.w - vertexin.y * quat.z + vertexin.z * quat.y;
-	float ry = vertexin.y * quat.w - vertexin.z * quat.x + vertexin.x * quat.z;
-	float rz = vertexin.z * quat.w - vertexin.x * quat.y + vertexin.y * quat.x;
-	float rw = vertexin.x * quat.x + vertexin.y * quat.y + vertexin.z * quat.z;
-	
-	return Vec3f(
-		quat.w * rx + quat.x * rw + quat.y * rz - quat.z * ry,
-		quat.w * ry + quat.y * rw + quat.z * rx - quat.x * rz,
-		quat.w * rz + quat.z * rw + quat.x * ry - quat.y * rx);
-}
-
 void TransformInverseVertexQuat(const glm::quat & quat, const Vec3f & vertexin, Vec3f & vertexout);
 void Quat_Divide(glm::quat * dest, const glm::quat * q1, const glm::quat * q2);
 

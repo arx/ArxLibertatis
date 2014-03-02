@@ -1226,7 +1226,7 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 				/* Rotation*/
 				bone.anim.quat = obj->bones[bone.father].anim.quat * bone.init.quat;
 				/* Translation */
-				bone.anim.trans = TransformVertexQuat(obj->bones[bone.father].anim.quat, bone.init.trans);
+				bone.anim.trans = obj->bones[bone.father].anim.quat * bone.init.trans;
 				bone.anim.trans = obj->bones[bone.father].anim.trans + bone.anim.trans;
 			} else {
 				/* Rotation*/
