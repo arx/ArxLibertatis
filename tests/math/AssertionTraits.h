@@ -1,0 +1,107 @@
+/*
+ * Copyright 2011-2014 Arx Libertatis Team (see the AUTHORS file)
+ *
+ * This file is part of Arx Libertatis.
+ *
+ * Arx Libertatis is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Arx Libertatis is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+#ifndef ARX_TESTS_MATH_ASSERTIONTRAITS_H
+#define ARX_TESTS_MATH_ASSERTIONTRAITS_H
+
+#include <sstream>
+#include <iomanip>
+
+#include <glm/glm.hpp>
+#include <glm/ext.hpp>
+
+#include "graphics/Math.h"
+
+namespace CppUnit {
+	
+	template<>
+	struct assertion_traits<glm::quat> {
+		static bool equal(const glm::quat & v, const glm::quat & other) {
+			
+			return glm::all(glm::gtx::epsilon::equalEpsilon( \
+			glm::vec4(v.w, v.x, v.y, v.z), \
+			glm::vec4(other.w, other.x, other.y, other.z), \
+			0.001f));
+		}
+		
+		static std::string toString(const glm::quat quat) {
+			std::ostringstream ost;
+			ost << std::endl << std::fixed << std::setprecision(4);
+			
+			ost << "glm::quat(";
+			ost << quat.w << ", ";
+			ost << quat.x << ", ";
+			ost << quat.y << ", ";
+			ost << quat.z << ")" << std::endl;			
+			return ost.str();
+		}
+	};
+	
+	template<>
+	struct assertion_traits<Vec3f> {
+		static bool equal(const Vec3f & v, const Vec3f & other) {
+			return glm::all(glm::gtx::epsilon::equalEpsilon(v, other, 0.001f));
+		}
+		
+		static std::string toString(const Vec3f &v) {
+			return glm::to_string(v);
+		}
+	};
+	
+	template<>
+	struct assertion_traits<Vec4f> {
+		static bool equal(const Vec4f & v, const Vec4f & other) {
+			return glm::all(glm::gtx::epsilon::equalEpsilon(v, other, 0.001f));
+		}
+		
+		static std::string toString(const Vec4f &v) {
+			return glm::to_string(v);
+		}
+	};
+	
+	template<>
+	struct assertion_traits<glm::mat4x4> {
+		static bool equal(const glm::mat4x4 & mat, const glm::mat4x4 & other) {
+			
+			for(int i = 0; i < 4; i++) {
+				if(! glm::all(glm::gtx::epsilon::equalEpsilon(glm::row(mat, i), glm::row(other, i), 0.001f))) {
+					return false;
+				}
+			}
+			return true;
+		}
+		
+		static std::string toString(const glm::mat4x4 &m) {
+			OStringStream ost;
+			ost << std::endl << std::fixed << std::setprecision(5);
+			
+			for(int i = 0; i < 4; i++) {
+				for(int u = 0; u < 4; u++) {
+					// Print columns as rows !
+					ost << std::setw(14) << glm::column(m, i)[u];
+				}
+				ost << std::endl;
+			}
+			
+			return ost.str();
+		}
+	};
+}
+
+#endif // ARX_TESTS_MATH_ASSERTIONTRAITS_H

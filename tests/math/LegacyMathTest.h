@@ -1,5 +1,5 @@
 /*
- * Copyright 2011-2012 Arx Libertatis Team (see the AUTHORS file)
+ * Copyright 2011-2014 Arx Libertatis Team (see the AUTHORS file)
  *
  * This file is part of Arx Libertatis.
  *
@@ -17,19 +17,31 @@
  * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#ifndef ARX_TESTS_GRAPHICS_LEGACYMATHTEST_H
+#define ARX_TESTS_GRAPHICS_LEGACYMATHTEST_H
+
 #include <cppunit/TestCase.h>
-#include "graphics/Math.h"
+#include <cppunit/extensions/HelperMacros.h>
 
-class VectorTest : public CppUnit::TestCase {
+#include "graphics/GraphicsUtility.h"
+
+class LegacyMathTest : public CppUnit::TestFixture {
+	
+	CPPUNIT_TEST_SUITE(LegacyMathTest);	
+	CPPUNIT_TEST(quaternionTests);
+	CPPUNIT_TEST(quatMuliplyTest);
+	CPPUNIT_TEST_SUITE_END();
+	
 public:
-  VectorTest( std::string name ) : CppUnit::TestCase( name ) {}
-
-  void runTest() {
-   
-    glm::mat4x4 a, b;
-    
-	//MatrixReset(&a);
-	//MatrixReset(&b);
-	CPPUNIT_ASSERT( a[0][0] == b[0][0] );
-  }
+	LegacyMathTest()
+		: CppUnit::TestFixture()
+	{}
+	
+	void setUp(){}
+    void tearDown() {}
+	
+	void quaternionTests();
+	void quatMuliplyTest();
 };
+
+#endif // ARX_TESTS_GRAPHICS_LEGACYMATHTEST_H

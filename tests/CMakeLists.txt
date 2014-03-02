@@ -20,7 +20,8 @@ add_executable(arxtest
 	../src/graphics/Renderer.cpp
 	../src/game/Camera.cpp
 	
-	math/vectors.cpp
+	math/AssertionTraits.h
+	math/LegacyMathTest.cpp
 	graphics/GraphicsUtilityTest.cpp
 	graphics/ColorTest.cpp
 )
