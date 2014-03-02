@@ -59,4 +59,38 @@ glm::quat Quat_Multiply(const glm::quat & q1, const glm::quat & q2) {
 	);
 }
 
+//! Converts a unit quaternion into a rotation matrix.
+void MatrixFromQuat(glm::mat4x4 & m, const glm::quat & quat) {
+	float wx, wy, wz, xx, yy, yz, xy, xz, zz, x2, y2, z2;
+
+	// calculate coefficients
+	x2 = quat.x + quat.x;
+	y2 = quat.y + quat.y;
+	z2 = quat.z + quat.z;
+	xx = quat.x * x2;
+	xy = quat.x * y2;
+	xz = quat.x * z2;
+	yy = quat.y * y2;
+	yz = quat.y * z2;
+	zz = quat.z * z2;
+	wx = quat.w * x2;
+	wy = quat.w * y2;
+	wz = quat.w * z2;
+
+	m[0][0] = 1.0F - (yy + zz);
+	m[1][0] = xy - wz;
+	m[2][0] = xz + wy;
+	m[3][0] = 0.0F;
+
+	m[0][1] = xy + wz;
+	m[1][1] = 1.0F - (xx + zz);
+	m[2][1] = yz - wx;
+	m[3][1] = 0.0F;
+
+	m[0][2] = xz - wy;
+	m[1][2] = yz + wx;
+	m[2][2] = 1.0F - (xx + yy);
+	m[3][2] = 0.0F;
+}
+
 #endif // ARX_TESTS_GRAPHICS_LEGACYMATH_H

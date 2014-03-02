@@ -241,7 +241,6 @@ void QuatFromMatrix(glm::quat & quat, glm::mat4x4 & mat);
 void CalcFaceNormal(EERIEPOLY * ep, const TexturedVertex * v);
 void CalcObjFaceNormal(const Vec3f * v0, const Vec3f * v1, const Vec3f * v2, EERIE_FACE * ef);
 bool Triangles_Intersect(const EERIE_TRI * v, const EERIE_TRI * u);
-void MatrixFromQuat(glm::mat4x4 & mat, const glm::quat & q);
 
 inline float square(float x) {
 	return x * x;

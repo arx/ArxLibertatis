@@ -1376,10 +1376,8 @@ void Cedric_TransformVerts(EERIE_3DOBJ *eobj, const Vec3f & pos) {
 	for(long i = 0; i != rig.nb_bones; i++) {
 		EERIE_BONE & bone = rig.bones[i];
 
-		glm::mat4x4	 matrix;
-
-		MatrixFromQuat(matrix, bone.anim.quat);
-
+		glm::mat4x4 matrix = glm::toMat4(bone.anim.quat);
+		
 		// Apply Scale
 		matrix[0][0] *= bone.anim.scale.x;
 		matrix[0][1] *= bone.anim.scale.x;
