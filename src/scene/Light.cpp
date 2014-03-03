@@ -630,9 +630,8 @@ ColorBGRA ApplyLight(const glm::quat * quat, const Vec3f & position, const Vec3f
 
 		Vec3f vLight = glm::normalize(light->pos - position);
 
-		Vec3f Cur_vLights;
-		TransformInverseVertexQuat(*quat, vLight, Cur_vLights);
-
+		Vec3f Cur_vLights = glm::inverse(*quat) * vLight;
+		
 		float cosangle = glm::dot(normal, Cur_vLights);
 
 		// If light visible

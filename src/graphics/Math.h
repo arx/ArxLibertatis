@@ -207,8 +207,6 @@ inline void YXZRotatePoint(Vec3f * in, Vec3f * out, EERIE_CAMERA * cam) {
 
 // QUATERNION Funcs/Defs
 
-void TransformInverseVertexQuat(const glm::quat & quat, const Vec3f & vertexin, Vec3f & vertexout);
-
 glm::quat Quat_Slerp(const glm::quat & from, glm::quat to, float t);
 
 void worldAngleToQuat(glm::quat *dest, const Anglef & src, bool isNpc = false);

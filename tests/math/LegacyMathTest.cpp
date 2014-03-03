@@ -135,3 +135,24 @@ void LegacyMathTest::quatSlerpTest() {
 		}
 	}
 }
+
+void LegacyMathTest::quatTransformVectorTest() {
+	
+	typedef std::vector<TestRotation>::iterator Itr;
+	
+	for(Itr it = rotations.begin(); it != rotations.end(); ++it) {
+		const Vec3f testVert(1.f, 0.5f, 0.1f);
+		
+		Vec3f vecA = TransformVertexQuat(it->quat, testVert);
+		Vec3f vecB = it->quat * testVert;
+		
+		CPPUNIT_ASSERT_EQUAL(vecA, vecB);
+		
+		Vec3f vecC;
+		TransformInverseVertexQuat(it->quat, testVert, vecC);
+		
+		Vec3f vecD = glm::inverse(it->quat) * testVert;
+		
+		CPPUNIT_ASSERT_EQUAL(vecC, vecD);
+	}
+}

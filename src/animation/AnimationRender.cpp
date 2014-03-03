@@ -415,7 +415,7 @@ void Cedric_PrepareHalo(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj) {
 	// Apply light on all vertices
 	for(long i = 0; i != obj->nb_bones; i++) {
 		glm::quat qt1 = obj->bones[i].anim.quat;
-		TransformInverseVertexQuat(qt1, cam_vector, t_vector);
+		t_vector = glm::inverse(qt1) * cam_vector;
 
 		// Get light value for each vertex
 		for(long v = 0; v != obj->bones[i].nb_idxvertices; v++) {

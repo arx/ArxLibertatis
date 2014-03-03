@@ -518,32 +518,6 @@ bool SphereInCylinder(const EERIE_CYLINDER * cyl1, const EERIE_SPHERE * s)
 // Quaternions Funcs
 //--------------------------------------------------------------------------------------
 
-// Invert-Transform of vertex by a quaternion
-void TransformInverseVertexQuat(const glm::quat & quat, const Vec3f & vertexin,
-                                Vec3f & vertexout) {
-	
-	glm::quat rev_quat = glm::inverse(quat);
-	
-	float x = vertexin.x;
-	float y = vertexin.y;
-	float z = vertexin.z;
-	
-	float qx = rev_quat.x;
-	float qy = rev_quat.y;
-	float qz = rev_quat.z;
-	float qw = rev_quat.w;
-	
-	float rx = x * qw - y * qz + z * qy;
-	float ry = y * qw - z * qx + x * qz;
-	float rz = z * qw - x * qy + y * qx;
-	float rw = x * qx + y * qy + z * qz;
-	
-	vertexout.x = qw * rx + qx * rw + qy * rz - qz * ry;
-	vertexout.y = qw * ry + qy * rw + qz * rx - qx * rz;
-	vertexout.z = qw * rz + qz * rw + qx * ry - qy * rx;
-}
-
-
 glm::quat Quat_Slerp(const glm::quat & from, glm::quat to, float ratio)
 {
 	float fCosTheta = from.x * to.x + from.y * to.y + from.z * to.z + from.w * to.w;
