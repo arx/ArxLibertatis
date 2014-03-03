@@ -1219,12 +1219,12 @@ static void StoreEntityMovement(Entity * io, Vec3f & ftr, float scale) {
 
 	float temp;
 	if (io == entities.player()) {
-		temp = radians(MAKEANGLE(180.f - player.angle.getPitch()));
+		temp = MAKEANGLE(180.f - player.angle.getPitch());
 	} else {
-		temp = radians(MAKEANGLE(180.f - io->angle.getPitch()));
+		temp = MAKEANGLE(180.f - io->angle.getPitch());
 	}
 
-	YRotatePoint(&ftr, &ftr2, std::cos(temp), std::sin(temp));
+	ftr2 = VRotateY(ftr, temp);
 
 	// stores Translations for a later use
 	io->move = ftr2;

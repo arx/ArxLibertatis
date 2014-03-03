@@ -478,8 +478,8 @@ static bool ANCHOR_ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, Entity * io,
 			//tries on the Right and Left sides
 			while(rangle <= maxRANGLE) {
 				test.cyl = ip->cyl;
-				float t = radians(MAKEANGLE(rangle));
-				YRotatePoint(&mvector, &vecatt, EEcos(t), EEsin(t));
+				float t = MAKEANGLE(rangle);
+				vecatt = VRotateY(mvector, t);
 				test.cyl.origin += vecatt * curmovedist;
 
 				if(ANCHOR_AttemptValidCylinderPos(&test.cyl, io, flags)) {
@@ -490,8 +490,8 @@ static bool ANCHOR_ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, Entity * io,
 				rangle += ANGLESTEPP;
 
 				test.cyl = ip->cyl;
-				t = radians(MAKEANGLE(langle));
-				YRotatePoint(&mvector, &vecatt, EEcos(t), EEsin(t));
+				t = MAKEANGLE(langle);
+				vecatt = VRotateY(mvector, t);
 				test.cyl.origin += vecatt * curmovedist;
 
 				if(ANCHOR_AttemptValidCylinderPos(&test.cyl, io, flags)) {

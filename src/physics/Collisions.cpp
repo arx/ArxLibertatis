@@ -1507,8 +1507,8 @@ bool ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, Entity * io, float MOVE_CYLIND
 
 			while(rangle <= maxRANGLE) { //tries on the Right and Left sides
 				test.cyl = ip->cyl;
-				float t = radians(MAKEANGLE(rangle));
-				YRotatePoint(&mvector, &vecatt, EEcos(t), EEsin(t));
+				float t = MAKEANGLE(rangle);
+				vecatt = VRotateY(mvector, t);
 				test.cyl.origin += vecatt * curmovedist;
 				float cc = io->_npcdata->climb_count;
 
@@ -1522,8 +1522,8 @@ bool ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, Entity * io, float MOVE_CYLIND
 				rangle += ANGLESTEPP;
 
 				test.cyl = ip->cyl;
-				t = radians(MAKEANGLE(langle));
-				YRotatePoint(&mvector, &vecatt, EEcos(t), EEsin(t));
+				t = MAKEANGLE(langle);
+				vecatt = VRotateY(mvector, t);
 				test.cyl.origin += vecatt * curmovedist;
 				cc = io->_npcdata->climb_count;
 

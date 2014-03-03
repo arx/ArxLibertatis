@@ -880,8 +880,7 @@ void ArxGame::updateConversationCamera() {
 			sourcepos.y=targetpos.y;
 			sourcepos.z=targetpos.z-(float)EEcos(t)*100.f;
 		}
-
-		Vec3f vec2;
+		
 		Vec3f vect = targetpos - sourcepos;
 		fnormalize(vect);
 
@@ -891,7 +890,7 @@ void ArxGame::updateConversationCamera() {
 		else if(dist < 90.f)
 			dist = 90.f;
 
-		YRotatePoint(&vect, &vec2, EEcos(radians(conversationcamera.size.getYaw())), EEsin(radians(conversationcamera.size.getYaw())));
+		Vec3f vec2 = VRotateY(vect, conversationcamera.size.getYaw());
 
 		sourcepos = targetpos - vec2 * dist;
 
