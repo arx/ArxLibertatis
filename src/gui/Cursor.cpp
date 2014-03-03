@@ -195,7 +195,7 @@ long Manage3DCursor(long flags) {
 		}
 	}
 
-	VRotateY(&objcenter,temp.getPitch());
+	objcenter = VRotateY(objcenter, temp.getPitch());
 
 	maxdist = clamp(maxdist, 15.f, 150.f);
 

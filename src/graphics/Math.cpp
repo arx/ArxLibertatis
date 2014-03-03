@@ -585,12 +585,12 @@ void worldAngleToQuat(glm::quat *dest, const Anglef & src, bool isNpc) {
 		glm::mat4x4 mat;
 		Vec3f vect(0, 0, 1);
 		Vec3f up(0, 1, 0);
-		VRotateY(&vect, ang.getPitch());
-		VRotateX(&vect, ang.getYaw());
-		VRotateZ(&vect, ang.getRoll());
-		VRotateY(&up, ang.getPitch());
-		VRotateX(&up, ang.getYaw());
-		VRotateZ(&up, ang.getRoll());
+		vect = VRotateY(vect, ang.getPitch());
+		vect = VRotateX(vect, ang.getYaw());
+		vect = VRotateZ(vect, ang.getRoll());
+		up = VRotateY(up, ang.getPitch());
+		up = VRotateX(up, ang.getYaw());
+		up = VRotateZ(up, ang.getRoll());
 		MatrixSetByVectors(mat, vect, up);
 		QuatFromMatrix(*dest, mat);
 	} else {
@@ -673,30 +673,27 @@ void QuatFromMatrix(glm::quat & quat, glm::mat4x4 & mat)
 //--------------------------------------------------------------------------------------
 
 // Rotates a Vector around X. angle is given in degrees
-void VRotateX(Vec3f * out, const float angle) {
-	Vec3f in = *out;
+Vec3f VRotateX(const Vec3f in, const float angle) {
 	float s = radians(angle);
 	float c = EEcos(s);
 	s = EEsin(s);
-	*out = Vec3f(in.x, (in.y * c) + (in.z * s), (in.z * c) - (in.y * s));
+	return Vec3f(in.x, (in.y * c) + (in.z * s), (in.z * c) - (in.y * s));
 }
 
 // Rotates a Vector around Y. angle is given in degrees
-void VRotateY(Vec3f * out, const float angle) {
-	Vec3f in = *out;
+Vec3f VRotateY(const Vec3f in, const float angle) {
 	float s = radians(angle);
 	float c = EEcos(s);
 	s = EEsin(s);
-	*out = Vec3f((in.x * c) + (in.z * s), in.y, (in.z * c) - (in.x * s));
+	return Vec3f((in.x * c) + (in.z * s), in.y, (in.z * c) - (in.x * s));
 }
 
 // Rotates a Vector around Z. angle is given in degrees
-void VRotateZ(Vec3f * out, const float angle) {
-	Vec3f in = *out;
+Vec3f VRotateZ(const Vec3f in, const float angle) {
 	float s = radians(angle);
 	float c = EEcos(s);
 	s = EEsin(s);
-	*out = Vec3f((in.x * c) + (in.y * s), (in.y * c) - (in.x * s), in.z);
+	return Vec3f((in.x * c) + (in.y * s), (in.y * c) - (in.x * s), in.z);
 }
 
 // Rotates a Vector around Y. angle is given in degrees

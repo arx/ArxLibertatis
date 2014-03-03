@@ -215,9 +215,9 @@ void worldAngleToQuat(glm::quat *dest, const Anglef & src, bool isNpc = false);
 
 Vec3f Vector_RotateY(const Vec3f & src, const float angle);
 Vec3f Vector_RotateZ(const Vec3f & src, const float angle);
-void VRotateX(Vec3f * v1, const float angle);
-void VRotateY(Vec3f * v1, const float angle);
-void VRotateZ(Vec3f * v1, const float angle);
+Vec3f VRotateX(const Vec3f in, const float angle);
+Vec3f VRotateY(const Vec3f in, const float angle);
+Vec3f VRotateZ(const Vec3f in, const float angle);
 void QuatFromMatrix(glm::quat & quat, glm::mat4x4 & mat);
 
 void CalcFaceNormal(EERIEPOLY * ep, const TexturedVertex * v);
