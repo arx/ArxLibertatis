@@ -147,4 +147,16 @@ void MatrixFromQuat(glm::mat4x4 & m, const glm::quat & quat) {
 	m[3][2] = 0.0F;
 }
 
+inline void ZRotatePoint(Vec3f * in, Vec3f * out, float c, float s) {
+	*out = Vec3f(in->x * c + in->y * s, in->y * c - in->x * s, in->z);
+}
+
+inline void YRotatePoint(Vec3f * in, Vec3f * out, float c, float s) {
+	*out = Vec3f(in->x * c + in->z * s, in->y, in->z * c - in->x * s);
+}
+
+inline void XRotatePoint(Vec3f * in, Vec3f * out, float c, float s) {
+	*out = Vec3f(in->x, in->y * c - in->z * s, in->y * s + in->z * c);
+}
+
 #endif // ARX_TESTS_GRAPHICS_LEGACYMATH_H

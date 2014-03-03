@@ -2296,27 +2296,18 @@ static void EERIEAddPolyToBackground(TexturedVertex * vert2, TextureContainer * 
 
 static void SceneAddObjToBackground(EERIE_3DOBJ * eobj) {
 	
-	float       Xcos, Ycos, Zcos, Xsin, Ysin, Zsin;
-
 	TexturedVertex vlist[3];
-	float tempAngle;
-	tempAngle = radians(eobj->angle.getYaw());
-	Xcos = (float)EEcos(tempAngle);
-	Xsin = (float)EEsin(tempAngle);
-	tempAngle = radians(eobj->angle.getPitch());
-	Ycos = (float)EEcos(tempAngle);
-	Ysin = (float)EEsin(tempAngle);
-	tempAngle = radians(eobj->angle.getRoll());
-	Zcos = (float)EEcos(tempAngle);
-	Zsin = (float)EEsin(tempAngle);
-
+	
+	EERIE_TRANSFORM trans;
+	trans.pos = Vec3f();
+	trans.updateFromAngle(eobj->angle);
+	
 	for(size_t i = 0; i < eobj->vertexlist.size(); i++) {
 		//Local Transform
 		Vec3f p = eobj->vertexlist[i].v - eobj->point0;
-		Vec3f rp;
-		YRotatePoint(&p, &rp, Ycos, Ysin);
-		XRotatePoint(&rp, &p, Xcos, Xsin);
-		ZRotatePoint(&p, &rp, Zcos, Zsin);
+		
+		Vec3f rp = Vec3f(trans.worldToView * Vec4f(p, 1.f));
+		
 		eobj->vertexlist[i].vert.p = rp + eobj->pos + eobj->point0;
 	}
 
