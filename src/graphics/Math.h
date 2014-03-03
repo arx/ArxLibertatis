@@ -213,8 +213,8 @@ void worldAngleToQuat(glm::quat *dest, const Anglef & src, bool isNpc = false);
 
 // VECTORS Functions
 
-Vec3f Vector_RotateY(const Vec3f & src, const float angle);
-Vec3f Vector_RotateZ(const Vec3f & src, const float angle);
+Vec3f Vector_RotateY(const Vec3f in, const float angle);
+Vec3f Vector_RotateZ(const Vec3f in, const float angle);
 Vec3f VRotateX(const Vec3f in, const float angle);
 Vec3f VRotateY(const Vec3f in, const float angle);
 Vec3f VRotateZ(const Vec3f in, const float angle);
