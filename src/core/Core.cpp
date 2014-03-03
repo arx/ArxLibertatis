@@ -1411,16 +1411,16 @@ static void PlayerLaunchArrow_Test(float aimratio, float poisonous, Vec3f * pos,
 
 	if(velocity < 0.9f)
 		velocity = 0.9f;
-
-	Vec3f v1,v2;
+	
 	Vec3f vv(0,0,1);
 	float aa=angle->getYaw();
 	float ab=90-angle->getPitch();
 	
-	Vector_RotateZ(v1, vv, aa);
+	Vec3f v1 = Vector_RotateZ(vv, aa);
 	VRotateY(&v1,ab);
+	
 	vv = Vec3f(0,-1,0);
-	Vector_RotateZ(v2, vv, aa);
+	Vec3f v2 = Vector_RotateZ(vv, aa);
 	VRotateY(&v2,ab);
 	glm::mat4x4 tmat;
 	MatrixSetByVectors(tmat, v1, v2);

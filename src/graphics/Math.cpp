@@ -700,19 +700,19 @@ void VRotateZ(Vec3f * out, const float angle) {
 }
 
 // Rotates a Vector around Y. angle is given in degrees
-void Vector_RotateY(Vec3f & dest, const Vec3f & src, const float angle) {
+Vec3f Vector_RotateY(const Vec3f & src, const float angle) {
 	float s = radians(angle);
 	float c = EEcos(s);
 	s = EEsin(s);
-	dest = Vec3f((src.x * c) + (src.z * s), src.y, (src.z * c) - (src.x * s));
+	return Vec3f((src.x * c) + (src.z * s), src.y, (src.z * c) - (src.x * s));
 }
 
 // Rotates a Vector around Z. angle is given in degrees
-void Vector_RotateZ(Vec3f & dest, const Vec3f & src, const float angle) {
+Vec3f Vector_RotateZ(const Vec3f & src, const float angle) {
 	float s = radians(angle);
 	float c = EEcos(s);
 	s = EEsin(s);
-	dest = Vec3f((src.x * c) + (src.y * s), (src.y * c) - (src.x * s), src.z);
+	return Vec3f((src.x * c) + (src.y * s), (src.y * c) - (src.x * s), src.z);
 }
 
 //A x B = <Ay*Bz - Az*By, Az*Bx - Ax*Bz, Ax*By - Ay*Bx>
