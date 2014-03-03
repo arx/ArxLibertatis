@@ -193,18 +193,6 @@ inline float fnormalize(Vec3f & v) {
 void MatrixSetByVectors(glm::mat4x4 & m, const Vec3f & d, const Vec3f & u);
 void GenerateMatrixUsingVector(glm::mat4x4 & matrix, const Vec3f & vect, float rollDegrees);
 
-// Rotation Functions
-
-inline void YXZRotatePoint(Vec3f * in, Vec3f * out, EERIE_CAMERA * cam) {
-	float tempy;
-	out->z = (in->z * cam->orgTrans.ycos) - (in->x * cam->orgTrans.ysin);
-	out->y = (in->x * cam->orgTrans.ycos) + (in->z * cam->orgTrans.ysin);
-	tempy = (in->y * cam->orgTrans.xcos) - (out->z * cam->orgTrans.xsin);
-	out->x = (out->y * cam->orgTrans.zcos) + (tempy * cam->orgTrans.zsin);
-	out->y = (tempy * cam->orgTrans.zcos) - (out->y * cam->orgTrans.zsin);
-	out->z = (in->y * cam->orgTrans.xsin) + (out->z * cam->orgTrans.xcos);
-}
-
 // QUATERNION Funcs/Defs
 
 glm::quat Quat_Slerp(const glm::quat & from, glm::quat to, float t);
