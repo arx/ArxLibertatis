@@ -1433,28 +1433,16 @@ void DrawEERIEObjExEx(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *pos, Vec3f *scale
 	TexturedVertex v;
 	TexturedVertex rv;
 	TexturedVertex vert_list[3];
-
-	float temp;
-
-	temp = radians(angle->getYaw());
-	float Xcos = (float)EEcos(temp);
-	float Xsin = (float)EEsin(temp);
-
-	temp = radians(angle->getPitch());
-	float Ycos = (float)EEcos(temp);
-	float Ysin = (float)EEsin(temp);
-
-	temp = radians(angle->getRoll());
-	float Zcos = (float)EEcos(temp);
-	float Zsin = (float)EEsin(temp);
-
+	
+	EERIE_TRANSFORM trans;
+	trans.pos = Vec3f();
+	trans.updateFromAngle(*angle);
+	
 	for(size_t i = 0; i < eobj->vertexlist.size(); i++) {
 		v.p = eobj->vertexlist[i].v * *scale;
-
-		YRotatePoint(&v.p, &rv.p, Ycos, Ysin);
-		XRotatePoint(&rv.p, &v.p, Xcos, Xsin);
-		ZRotatePoint(&v.p, &rv.p, Zcos, Zsin);
-
+		
+		rv.p = Vec3f(trans.worldToView * Vec4f(v.p, 1.f));
+		
 		eobj->vertexlist3[i].v = (rv.p += *pos);
 
 		Vec3f tempWorld;
