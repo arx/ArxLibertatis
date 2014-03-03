@@ -696,22 +696,6 @@ Vec3f VRotateZ(const Vec3f in, const float angle) {
 	return Vec3f((in.x * c) + (in.y * s), (in.y * c) - (in.x * s), in.z);
 }
 
-// Rotates a Vector around Y. angle is given in degrees
-Vec3f Vector_RotateY(const Vec3f in, const float angle) {
-	float s = radians(angle);
-	float c = EEcos(s);
-	s = EEsin(s);
-	return Vec3f((in.x * c) + (in.z * s), in.y, (in.z * c) - (in.x * s));
-}
-
-// Rotates a Vector around Z. angle is given in degrees
-Vec3f Vector_RotateZ(const Vec3f in, const float angle) {
-	float s = radians(angle);
-	float c = EEcos(s);
-	s = EEsin(s);
-	return Vec3f((in.x * c) + (in.y * s), (in.y * c) - (in.x * s), in.z);
-}
-
 //A x B = <Ay*Bz - Az*By, Az*Bx - Ax*Bz, Ax*By - Ay*Bx>
 void CalcFaceNormal(EERIEPOLY * ep, const TexturedVertex * v) {
 	

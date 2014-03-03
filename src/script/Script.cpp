@@ -1831,7 +1831,7 @@ long Manage_Specific_RAT_Timer(SCR_TIMER * st)
 	GetTargetPos(io);
 	Vec3f target = io->target - io->pos;
 	fnormalize(target);
-	Vec3f targ = Vector_RotateY(target, rnd() * 60.f - 30.f);
+	Vec3f targ = VRotateY(target, rnd() * 60.f - 30.f);
 	target = io->target + targ * 100.f;
 
 	if (ARX_INTERACTIVE_ConvertToValidPosForIO(io, &target))
