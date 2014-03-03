@@ -468,11 +468,11 @@ void CLightning::Render()
 			Vec3f vv2;
 			Vec3f vv1 = astart;
 			VRotateX(&vv1, (falpha));  
-			Vector_RotateY(&vv2, &vv1,  180 - MAKEANGLE(fBeta)); 
+			Vector_RotateY(vv2, vv1, 180 - MAKEANGLE(fBeta));
 			astart = vv2;
 			vv1 = a;
 			VRotateX(&vv1, (falpha)); 
-			Vector_RotateY(&vv2, &vv1, 180 - MAKEANGLE(fBeta)); 
+			Vector_RotateY(vv2, vv1, 180 - MAKEANGLE(fBeta));
 			a = vv2;
 			astart += ePos;
 			a += ePos;

@@ -977,9 +977,9 @@ void ArxGame::speechControlledCinematic() {
 
 					Vec3f vect2;
 					if(acs->type==ARX_CINE_SPEECH_SIDE_LEFT) {
-						Vector_RotateY(&vect2,&vect,-90);
+						Vector_RotateY(vect2, vect, -90.f);
 					} else {
-						Vector_RotateY(&vect2,&vect,90);
+						Vector_RotateY(vect2, vect, 90.f);
 					}
 
 					float distance=acs->f0*itime+acs->f1*rtime;
@@ -1024,7 +1024,7 @@ void ArxGame::speechControlledCinematic() {
 
 					Vec3f vect = conversationcamera.orgTrans.pos - targetpos;
 					Vec3f vect2;
-					Vector_RotateY(&vect2,&vect,90);
+					Vector_RotateY(vect2, vect, 90.f);
 					vect2 = glm::normalize(vect2);
 					Vec3f vect3 = glm::normalize(vect);
 

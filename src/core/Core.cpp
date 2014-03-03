@@ -1416,6 +1416,7 @@ static void PlayerLaunchArrow_Test(float aimratio, float poisonous, Vec3f * pos,
 	Vec3f vv(0,0,1);
 	float aa=angle->getYaw();
 	float ab=90-angle->getPitch();
+	
 	Vector_RotateZ(&v1,&vv,aa);
 	VRotateY(&v1,ab);
 	vv = Vec3f(0,-1,0);

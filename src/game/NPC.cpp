@@ -158,7 +158,7 @@ static void CheckHit(Entity * io, float ratioaim) {
 
 	Vec3f ppos, pos, to;
 	Vec3f from(0.f, 0.f, -90.f);
-	Vector_RotateY(&to, &from, MAKEANGLE(180.f - io->angle.getPitch()));
+	Vector_RotateY(to, from, MAKEANGLE(180.f - io->angle.getPitch()));
 	ppos.x = io->pos.x;
 	pos.x = ppos.x + to.x;
 	ppos.y = io->pos.y - (80.f);
@@ -1136,9 +1136,9 @@ void FaceTarget2(Entity * io)
 	
 	if(rot != 0) {
 		Vec3f temp = io->move;
-		Vector_RotateY(&io->move, &temp, rot);
+		Vector_RotateY(io->move, temp, rot);
 		temp = io->lastmove;
-		Vector_RotateY(&io->lastmove, &temp, rot);
+		Vector_RotateY(io->lastmove, temp, rot);
 	}
 	
 	// Needed angle to turn toward target
