@@ -102,7 +102,6 @@ void RecalcLight(EERIE_LIGHT * el) {
 	el->rgb255 = el->rgb * 255.f;
 	el->falldiff = el->fallend - el->fallstart;
 	el->falldiffmul = 1.f / el->falldiff;
-	el->precalc = el->intensity * GLOBAL_LIGHT_FACTOR;
 }
 
 void EERIE_LIGHT_GlobalInit() {
@@ -643,14 +642,14 @@ ColorBGRA ApplyLight(const glm::quat * quat, const Vec3f & position, const Vec3f
 
 			// Evaluate its intensity depending on the distance Light<->Object
 			if(distance <= light->fallstart) {
-				cosangle *= light->precalc;
+				cosangle *= light->intensity * GLOBAL_LIGHT_FACTOR;
 			} else {
 				float p = ((light->fallend - distance) * light->falldiffmul);
 
 				if(p <= 0.f)
 					cosangle = 0.f;
 				else
-					cosangle *= p * light->precalc;
+					cosangle *= p * (light->intensity * GLOBAL_LIGHT_FACTOR);
 			}
 
 			cosangle *= materialDiffuse;
@@ -707,14 +706,14 @@ void ApplyTileLights(EERIEPOLY * ep, short x, short y)
 				float distance = fdist(light->pos, position);
 
 				if(distance <= light->fallstart) {
-					cosangle *= light->precalc;
+					cosangle *= light->intensity * GLOBAL_LIGHT_FACTOR;
 				} else {
 					float p = ((light->fallend - distance) * light->falldiffmul);
 
 					if(p <= 0.f)
 						cosangle = 0.f;
 					else
-						cosangle *= p * light->precalc;
+						cosangle *= p * (light->intensity * GLOBAL_LIGHT_FACTOR);
 				}
 				cosangle *= 0.5f;
 

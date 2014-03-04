@@ -104,7 +104,6 @@ struct EERIE_LIGHT {
 	float fallend;
 	float falldiff;
 	float falldiffmul;
-	float precalc;
 	Color3f rgb255;
 	float intensity;
 	Color3f rgb;
