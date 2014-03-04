@@ -480,27 +480,15 @@ void Insertllight(EERIE_LIGHT * el, const Vec3f & pos, bool forPlayerColor)
 	}
 }
 
-void UpdateLlights(const Vec3f pos) {
+void UpdateLlights(const Vec3f pos, bool forPlayerColor) {
 	llightsInit();
 
 	for(int i = 0; i < TOTIOPDL; i++) {
-		Insertllight(IO_PDL[i], pos, false);
+		Insertllight(IO_PDL[i], pos, forPlayerColor);
 	}
 
 	for(int i = 0; i < TOTPDL; i++) {
-		Insertllight(PDL[i], pos, false);
-	}
-}
-
-void UpdateLlightsGetColorz(const Vec3f pos) {
-	llightsInit();
-
-	for(int i = 0; i < TOTIOPDL; i++) {
-		Insertllight(IO_PDL[i], pos, true);
-	}
-
-	for(int i = 0; i < TOTPDL; i++) {
-		Insertllight(PDL[i], pos, true);
+		Insertllight(PDL[i], pos, forPlayerColor);
 	}
 }
 
@@ -552,7 +540,7 @@ void ClearTileLights() {
 
 float GetColorz(const Vec3f &pos) {
 
-	UpdateLlightsGetColorz(pos);
+	UpdateLlights(pos, true);
 
 	float ffr = 0;
 	float ffg = 0;

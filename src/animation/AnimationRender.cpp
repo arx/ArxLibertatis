@@ -726,7 +726,7 @@ void DrawEERIEInter_Render(EERIE_3DOBJ *eobj, const TransformInfo &t, Entity *io
 	else
 		tv.y -= 90.f;
 
-	UpdateLlights(tv);
+	UpdateLlights(tv, false);
 
 	for(size_t i = 0; i < eobj->facelist.size(); i++) {
 		const EERIE_FACE & face = eobj->facelist[i];
@@ -1144,7 +1144,7 @@ void Cedric_AnimateDrawEntityRender(EERIE_3DOBJ *eobj, const Vec3f & pos, Entity
 	else
 		tv.y -= 90.f;
 
-	UpdateLlights(tv);
+	UpdateLlights(tv, false);
 
 	Cedric_ApplyLighting(eobj, obj, colorMod);
 

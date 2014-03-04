@@ -150,7 +150,7 @@ long GetFreeDynLight();
 void ClearDynLights();
 void PrecalcDynamicLighting(long x0,long x1,long z0,long z1);
 
-void UpdateLlights(const Vec3f pos);
+void UpdateLlights(const Vec3f pos, bool forPlayerColor);
 
 void InitTileLights();
 void ResetTileLights();
