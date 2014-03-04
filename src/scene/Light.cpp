@@ -482,6 +482,20 @@ void UpdateLlights(Vec3f & tv) {
 	}
 }
 
+void UpdateLlightsGetColorz(const Vec3f & pos) {
+	llightsInit();
+
+	for(long i = 0; i < TOTIOPDL; i++) {
+		if(IO_PDL[i]->fallstart > 10.f && IO_PDL[i]->fallend > 100.f)
+			Insertllight(IO_PDL[i], fdist(IO_PDL[i]->pos, pos) - IO_PDL[i]->fallstart);
+	}
+
+	for(int i = 0; i < TOTPDL; i++) {
+		if(PDL[i]->fallstart > 10.f && PDL[i]->fallend > 100.f)
+			Insertllight(PDL[i], fdist(PDL[i]->pos, pos) - PDL[i]->fallstart);
+	}
+}
+
 struct TILE_LIGHTS
 {
 	std::vector<EERIE_LIGHT *> el;
@@ -530,17 +544,7 @@ void ClearTileLights() {
 
 float GetColorz(const Vec3f &pos) {
 
-	llightsInit();
-
-	for(long i = 0; i < TOTIOPDL; i++) {
-		if(IO_PDL[i]->fallstart > 10.f && IO_PDL[i]->fallend > 100.f)
-			Insertllight(IO_PDL[i], fdist(IO_PDL[i]->pos, pos) - IO_PDL[i]->fallstart);
-	}
-
-	for(int i = 0; i < TOTPDL; i++) {
-		if(PDL[i]->fallstart > 10.f && PDL[i]->fallend > 100.f)
-			Insertllight(PDL[i], fdist(PDL[i]->pos, pos) - PDL[i]->fallstart);
-	}
+	UpdateLlightsGetColorz(pos);
 
 	float ffr = 0;
 	float ffg = 0;
