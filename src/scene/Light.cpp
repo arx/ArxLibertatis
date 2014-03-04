@@ -426,13 +426,11 @@ void ClearDynLights() {
 
 long MAX_LLIGHTS = 18;
 EERIE_LIGHT * llights[32];
-float dists[32];
 float values[32];
 
 void llightsInit() {
 	for(long i = 0; i < MAX_LLIGHTS; i++) {
 		llights[i] = NULL;
-		dists[i] = 999999999.f;
 		values[i] = 999999999.f;
 	}
 }
@@ -455,20 +453,17 @@ void Insertllight(EERIE_LIGHT * el,float dist)
 	for(long i=0; i < MAX_LLIGHTS; i++) {
 		if(!llights[i]) {
 			llights[i]=el;
-			dists[i]=dist;
 			values[i]=val;
 			return;
 		} else if (val <= values[i]) { // Inserts light at the right place
 			for(long j = MAX_LLIGHTS - 2; j >= i; j--) {
 				if(llights[j]) {
 					llights[j+1]=llights[j];
-					dists[j+1]=dists[j];
 					values[j+1]=values[j];
 				}
 			}
 
 			llights[i]=el;
-			dists[i]=dist;
 			values[i]=val;
 			return;
 		}
