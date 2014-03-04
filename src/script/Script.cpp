@@ -445,7 +445,7 @@ ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const string & 
 			}
 			
 			if(name == "^gamedays") {
-				*lcontent = static_cast<long>(float(arxtime) / 864000000);
+				*lcontent = static_cast<long>(float(arxtime) / 86400000);
 				return TYPE_LONG;
 			}
 			
