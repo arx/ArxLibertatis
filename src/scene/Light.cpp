@@ -480,22 +480,22 @@ void Insertllight(EERIE_LIGHT * el, const Vec3f & pos, bool forPlayerColor)
 	}
 }
 
-void UpdateLlights(Vec3f & tv) {
+void UpdateLlights(const Vec3f pos) {
 	llightsInit();
 
 	for(int i = 0; i < TOTIOPDL; i++) {
-		Insertllight(IO_PDL[i], tv, false);
+		Insertllight(IO_PDL[i], pos, false);
 	}
 
 	for(int i = 0; i < TOTPDL; i++) {
-		Insertllight(PDL[i], tv, false);
+		Insertllight(PDL[i], pos, false);
 	}
 }
 
-void UpdateLlightsGetColorz(const Vec3f & pos) {
+void UpdateLlightsGetColorz(const Vec3f pos) {
 	llightsInit();
 
-	for(long i = 0; i < TOTIOPDL; i++) {
+	for(int i = 0; i < TOTIOPDL; i++) {
 		Insertllight(IO_PDL[i], pos, true);
 	}
 
