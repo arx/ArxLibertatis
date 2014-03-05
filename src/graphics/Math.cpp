@@ -592,79 +592,10 @@ void worldAngleToQuat(glm::quat *dest, const Anglef & src, bool isNpc) {
 		up = VRotateX(up, ang.getYaw());
 		up = VRotateZ(up, ang.getRoll());
 		MatrixSetByVectors(mat, vect, up);
-		QuatFromMatrix(*dest, mat);
+		*dest = glm::toQuat(mat);
 	} else {
 		Anglef vt1 = Anglef(radians(src.getYaw()), radians(src.getPitch()), radians(src.getRoll()));
 		QuatFromAngles(dest, &vt1);
-	}
-}
-
-
-//*************************************************************************************
-// Converts a rotation matrix into a unit quaternion.
-//*************************************************************************************
-void QuatFromMatrix(glm::quat & quat, const glm::mat4x4 & mat)
-{
-	float m[4][4];
-	m[0][0] = mat[0][0];
-	m[0][1] = mat[0][1];
-	m[0][2] = mat[0][2];
-	m[0][3] = mat[0][3];
-	m[1][0] = mat[1][0];
-	m[1][1] = mat[1][1];
-	m[1][2] = mat[1][2];
-	m[1][3] = mat[1][3];
-	m[2][0] = mat[2][0];
-	m[2][1] = mat[2][1];
-	m[2][2] = mat[2][2];
-	m[2][3] = mat[2][3];
-	m[3][0] = mat[3][0];
-	m[3][1] = mat[3][1];
-	m[3][2] = mat[3][2];
-	m[3][3] = mat[3][3];
-	float  tr, s, q[4];
-
-	int nxt[3] = {1, 2, 0};
-
-	tr = m[0][0] + m[1][1] + m[2][2];
-
-	// check the diagonal
-	if (tr > 0.0f)
-	{
-		s = sqrt(tr + 1.0f);
-		quat.w = s * ( 1.0f / 2 );
-		s = 0.5f / s;
-		quat.x = (m[1][2] - m[2][1]) * s;
-		quat.y = (m[2][0] - m[0][2]) * s;
-		quat.z = (m[0][1] - m[1][0]) * s;
-	}
-	else
-	{
-		// diagonal is negative
-		int i = 0;
-
-		if (m[1][1] > m[0][0]) i = 1;
-
-		if (m[2][2] > m[i][i]) i = 2;
-
-		int j = nxt[i];
-		int k = nxt[j];
-
-		s = sqrt((m[i][i] - (m[j][j] + m[k][k])) + 1.0f);
-
-		q[i] = s * 0.5f;
-
-		if (s != 0.0) s = 0.5f / s;
-
-		q[3] = (m[j][k] - m[k][j]) * s;
-		q[j] = (m[i][j] + m[j][i]) * s;
-		q[k] = (m[i][k] + m[k][i]) * s;
-
-
-		quat.x = q[0];
-		quat.y = q[1];
-		quat.z = q[2];
-		quat.w = q[3];
 	}
 }
 

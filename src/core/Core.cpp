@@ -1424,7 +1424,7 @@ static void PlayerLaunchArrow_Test(float aimratio, float poisonous, Vec3f * pos,
 	v2 = VRotateY(v2, ab);
 	glm::mat4x4 tmat;
 	MatrixSetByVectors(tmat, v1, v2);
-	QuatFromMatrix(quat,tmat);
+	quat = glm::toQuat(tmat);
 
 	float wd = getEquipmentBaseModifier(IO_EQUIPITEM_ELEMENT_Damages);
 	// TODO Why ignore relative modifiers? Why not just use player.Full_damages?

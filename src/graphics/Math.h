@@ -190,7 +190,6 @@ void worldAngleToQuat(glm::quat *dest, const Anglef & src, bool isNpc = false);
 Vec3f VRotateX(const Vec3f in, const float angle);
 Vec3f VRotateY(const Vec3f in, const float angle);
 Vec3f VRotateZ(const Vec3f in, const float angle);
-void QuatFromMatrix(glm::quat & quat, const glm::mat4x4 & mat);
 
 void CalcFaceNormal(EERIEPOLY * ep, const TexturedVertex * v);
 void CalcObjFaceNormal(const Vec3f * v0, const Vec3f * v1, const Vec3f * v2, EERIE_FACE * ef);

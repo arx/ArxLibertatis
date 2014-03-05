@@ -170,7 +170,7 @@ void LegacyMathTest::quatMatrixConversionTest() {
 		
 		glm::quat q;
 		QuatFromMatrix(q, glm::mat4(it->mat));
-		CPPUNIT_ASSERT_EQUAL(it->quat, q);
+		CPPUNIT_ASSERT_EQUAL(glm::toQuat(it->mat), q);
 	}
 }
 
