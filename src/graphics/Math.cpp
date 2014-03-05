@@ -603,7 +603,7 @@ void worldAngleToQuat(glm::quat *dest, const Anglef & src, bool isNpc) {
 //*************************************************************************************
 // Converts a rotation matrix into a unit quaternion.
 //*************************************************************************************
-void QuatFromMatrix(glm::quat & quat, glm::mat4x4 & mat)
+void QuatFromMatrix(glm::quat & quat, const glm::mat4x4 & mat)
 {
 	float m[4][4];
 	m[0][0] = mat[0][0];

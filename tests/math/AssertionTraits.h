@@ -34,10 +34,12 @@ namespace CppUnit {
 	struct assertion_traits<glm::quat> {
 		static bool equal(const glm::quat & v, const glm::quat & other) {
 			
-			return glm::all(glm::gtx::epsilon::equalEpsilon( \
-			glm::vec4(v.w, v.x, v.y, v.z), \
-			glm::vec4(other.w, other.x, other.y, other.z), \
-			0.001f));
+			glm::vec4 a = glm::vec4(v.w, v.x, v.y, v.z);
+			glm::vec4 b = glm::vec4(other.w, other.x, other.y, other.z);
+			
+			return
+			   glm::all(glm::gtx::epsilon::equalEpsilon(a, b, 0.001f))
+			|| glm::all(glm::gtx::epsilon::equalEpsilon(a, b * -1, 0.001f));
 		}
 		
 		static std::string toString(const glm::quat quat) {

@@ -167,6 +167,10 @@ void LegacyMathTest::quatMatrixConversionTest() {
 	
 	for(Itr it = rotations.begin(); it != rotations.end(); ++it) {
 		CPPUNIT_ASSERT_EQUAL(glm::toMat4(it->quat), glm::mat4(it->mat));
+		
+		glm::quat q;
+		QuatFromMatrix(q, glm::mat4(it->mat));
+		CPPUNIT_ASSERT_EQUAL(it->quat, q);
 	}
 }
 
