@@ -163,7 +163,7 @@ int ArxIO_ftlGetRawData(char * outData, int size) {
 		return -1;
 	}
 
-	if(size < loadedFtlBufferSize) {
+	if(size < int(loadedFtlBufferSize)) {
 		LogError << "Supplied buffer too small for data";
 		return -2;
 	}
