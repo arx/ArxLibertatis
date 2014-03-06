@@ -22,27 +22,27 @@
 
 #if defined _WIN32 || defined __CYGWIN__
 	#ifdef __GNUC__
-		#define LIB_PUBLIC __attribute__ ((dllexport))
+		#define ARX_LIB_PUBLIC __attribute__ ((dllexport))
 	#else
-		#define LIB_PUBLIC __declspec(dllexport)
+		#define ARX_LIB_PUBLIC __declspec(dllexport)
 	#endif
 #else
 	#if __GNUC__ >= 4
-		#define LIB_PUBLIC __attribute__ ((visibility ("default")))
+		#define ARX_LIB_PUBLIC __attribute__ ((visibility ("default")))
 	#endif
 #endif
 
 extern "C" {
 
-LIB_PUBLIC void ArxIO_init();
+ARX_LIB_PUBLIC void ArxIO_init();
 
-LIB_PUBLIC void ArxIO_getError(char * outMessage, int size);
-LIB_PUBLIC int  ArxIO_getLogLine(char * outMessage, int size);
+ARX_LIB_PUBLIC void ArxIO_getError(char * outMessage, int size);
+ARX_LIB_PUBLIC int  ArxIO_getLogLine(char * outMessage, int size);
 
-LIB_PUBLIC int  ArxIO_ftlLoad(char * filePath);
-LIB_PUBLIC int  ArxIO_ftlRelease();
-LIB_PUBLIC int  ArxIO_ftlGetRawDataSize();
-LIB_PUBLIC int  ArxIO_ftlGetRawData(char * outData, int size);
+ARX_LIB_PUBLIC int  ArxIO_ftlLoad(char * filePath);
+ARX_LIB_PUBLIC int  ArxIO_ftlRelease();
+ARX_LIB_PUBLIC int  ArxIO_ftlGetRawDataSize();
+ARX_LIB_PUBLIC int  ArxIO_ftlGetRawData(char * outData, int size);
 
 }
 
