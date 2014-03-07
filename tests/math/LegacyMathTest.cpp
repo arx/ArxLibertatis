@@ -174,6 +174,24 @@ void LegacyMathTest::quatMatrixConversionTest() {
 	}
 }
 
+void LegacyMathTest::vecMatrixConversionTest() {
+	
+	typedef std::vector<TestRotation>::iterator Itr;
+	
+	for(Itr it = rotations.begin(); it != rotations.end(); ++it) {
+		Vec3f front(0, 0, 1);
+		Vec3f up(0, 1, 0);
+		
+		front = it->quat * front;
+		up = it->quat * up;
+		
+		glm::mat4 mat;
+		MatrixSetByVectors(mat, front, up);
+		
+		CPPUNIT_ASSERT_EQUAL(glm::mat4(it->mat), mat);
+	}
+}
+
 void LegacyMathTest::angleTest()
 {
 	typedef std::vector<TestRotation>::iterator Itr;
