@@ -260,10 +260,8 @@ long Manage3DCursor(long flags) {
 				ARX_DEAD_CODE();
 			}
 
-			glm::quat rotation;
+			glm::quat rotation = glm::toQuat(toRotationMatrix(temp));
 			
-			worldAngleToQuat(&rotation, temp);
-
 			if(SPECIAL_DRAGINTER_RENDER) {
 			if(EEfabs(lastanything) > EEfabs(height)) {
 				TransformInfo t(collidpos, rotation, io->scale);

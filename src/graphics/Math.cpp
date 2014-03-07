@@ -576,17 +576,6 @@ void QuatFromAngles(glm::quat * q, const Anglef * angle)
 
 }
 
-void worldAngleToQuat(glm::quat *dest, const Anglef & src, bool isNpc) {
-
-	if(!isNpc) {
-		// To correct invalid angle in Animated FIX/ITEMS
-		*dest = glm::toQuat(toRotationMatrix(src));
-	} else {
-		Anglef vt1 = Anglef(radians(src.getYaw()), radians(src.getPitch()), radians(src.getRoll()));
-		QuatFromAngles(dest, &vt1);
-	}
-}
-
 glm::mat4 toRotationMatrix(const Anglef & angle) {
 	float yaw = radians(angle.getYaw());
 	float pitch = radians(angle.getPitch());

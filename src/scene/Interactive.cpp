@@ -2627,10 +2627,8 @@ void RenderInter() {
 
 						DrawEERIEInter(io->obj, t, io, false, invisibility);
 					} else {
-						glm::quat rotation;
+						glm::quat rotation = glm::toQuat(toRotationMatrix(temp));
 						
-						worldAngleToQuat(&rotation, temp);
-
 						TransformInfo t(io->pos, rotation, io->scale);
 
 						float invisibility = Cedric_GetInvisibility(io);

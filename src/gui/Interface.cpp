@@ -3919,11 +3919,8 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 					angle.setPitch(0.f);
 
 					if(player.rune_flags & (RuneFlag)(1<<i)) {
-						glm::quat rotation;
-
-						worldAngleToQuat(&rotation, angle);
-
-						TransformInfo t1(pos, rotation);
+						
+						TransformInfo t1(pos, glm::toQuat(toRotationMatrix(angle)));
 						DrawEERIEInter(necklace.lacet, t1, NULL);
 
 						if(necklace.runes[i]->angle.getPitch() != 0.f) {
@@ -3943,9 +3940,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 						DynLight[0].exist=1;	
 						
 						// Now draw the rune
-						worldAngleToQuat(&rotation, angle);
-
-						TransformInfo t2(pos, rotation);
+						TransformInfo t2(pos, glm::toQuat(toRotationMatrix(angle)));
 						DrawEERIEInter(necklace.runes[i], t2, NULL);
 
 						EERIE_2D_BBOX runeBox;
@@ -3976,12 +3971,8 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 							if(r) {
 								GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 								GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-
-								glm::quat rotation;
 								
-								worldAngleToQuat(&rotation, angle);
-
-								TransformInfo t(pos, rotation);
+								TransformInfo t(pos, glm::toQuat(toRotationMatrix(angle)));
 								DrawEERIEInter(necklace.runes[i], t, NULL);
 
 								necklace.runes[i]->angle.setPitch(necklace.runes[i]->angle.getPitch() + framedelay*2.f);

@@ -183,7 +183,7 @@ void GenerateMatrixUsingVector(glm::mat4x4 & matrix, const Vec3f & vect, float r
 
 glm::quat Quat_Slerp(const glm::quat & from, glm::quat to, float t);
 
-void worldAngleToQuat(glm::quat *dest, const Anglef & src, bool isNpc = false);
+void QuatFromAngles(glm::quat * q, const Anglef * angle);
 glm::mat4 toRotationMatrix(const Anglef & angle);
 
 // VECTORS Functions
