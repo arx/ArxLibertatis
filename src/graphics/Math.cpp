@@ -49,6 +49,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <algorithm>
 
 #include <glm/gtc/type_ptr.hpp>
+#include <glm/gtx/euler_angles.hpp>
 
 #include "graphics/GraphicsTypes.h"
 
@@ -597,6 +598,27 @@ void worldAngleToQuat(glm::quat *dest, const Anglef & src, bool isNpc) {
 		Anglef vt1 = Anglef(radians(src.getYaw()), radians(src.getPitch()), radians(src.getRoll()));
 		QuatFromAngles(dest, &vt1);
 	}
+}
+
+glm::mat4 toRotationMatrix(const Anglef & angle) {
+	float yaw = radians(angle.getYaw());
+	float pitch = radians(angle.getPitch());
+	float roll = radians(angle.getRoll());
+	
+	// 0.9.4.5 and older have a reversed sign in glm::eulerAngleY()
+#if GLM_VERSION_MAJOR == 0 \
+	&& (GLM_VERSION_MINOR < 9 || (GLM_VERSION_MINOR == 9 \
+		&& (GLM_VERSION_PATCH < 4 || (GLM_VERSION_PATCH == 4 \
+			&& GLM_VERSION_REVISION < 6 \
+		)) \
+	))
+	pitch = -pitch;
+#endif
+	
+	glm::mat4 rotateX = glm::eulerAngleX(yaw);
+	glm::mat4 rotateY = glm::eulerAngleY(pitch);
+	glm::mat4 rotateZ = glm::eulerAngleZ(-roll);
+	return rotateZ * rotateX * rotateY;
 }
 
 //--------------------------------------------------------------------------------------
