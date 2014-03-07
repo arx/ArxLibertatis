@@ -424,24 +424,13 @@ void ClearDynLights() {
 }
 
 long MAX_LLIGHTS = 18;
-int llightsCount = 0;
 EERIE_LIGHT * llights[32];
 float values[32];
 
 void llightsInit() {
-	llightsCount = 0;
 	for(long i = 0; i < MAX_LLIGHTS; i++) {
 		llights[i] = NULL;
 		values[i] = 999999999.f;
-	}
-}
-
-void llightsUpdateCount() {
-	for(int i = 0; i < MAX_LLIGHTS; i++) {
-		if(!llights[i])
-			return;
-		
-		llightsCount = i;
 	}
 }
 
@@ -500,8 +489,6 @@ void UpdateLlights(const Vec3f pos, bool forPlayerColor) {
 	for(int i = 0; i < TOTPDL; i++) {
 		Insertllight(PDL[i], pos, forPlayerColor);
 	}
-	
-	llightsUpdateCount();
 }
 
 struct TILE_LIGHTS
@@ -558,9 +545,10 @@ float GetColorz(const Vec3f &pos) {
 	float ffg = 0;
 	float ffb = 0;
 
-	for(long k = 0; k < llightsCount; k++) {
+	for(long k = 0; k < MAX_LLIGHTS; k++) {
 		EERIE_LIGHT * el = llights[k];
 
+		if(el) {
 			float dd = fdist(el->pos, pos);
 
 			if(dd < el->fallend) {
@@ -582,6 +570,7 @@ float GetColorz(const Vec3f &pos) {
 				ffg = std::max(ffg, el->rgb.g * dc);
 				ffb = std::max(ffb, el->rgb.b * dc);
 			}
+		}
 	}
 
 
@@ -627,9 +616,12 @@ ColorBGRA ApplyLight(const glm::quat * quat, const Vec3f & position, const Vec3f
 	Color3f tempColor = colorMod.ambientColor;
 
 	// Dynamic lights
-	for(int l = 0; l != llightsCount; l++) {
+	for(int l = 0; l != MAX_LLIGHTS; l++) {
 		EERIE_LIGHT * light = llights[l];
-		
+
+		if(!light)
+			break;
+
 		Vec3f vLight = glm::normalize(light->pos - position);
 
 		Vec3f Cur_vLights = glm::inverse(*quat) * vLight;
