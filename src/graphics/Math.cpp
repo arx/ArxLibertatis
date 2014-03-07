@@ -576,28 +576,11 @@ void QuatFromAngles(glm::quat * q, const Anglef * angle)
 
 }
 
-glm::quat toNonNpcRotation(const Anglef & src) {
-	Anglef ang = src;
-	ang.setYaw(360 - ang.getYaw());
-	
-	glm::mat4x4 mat;
-	Vec3f vect(0, 0, 1);
-	Vec3f up(0, 1, 0);
-	vect = VRotateY(vect, ang.getPitch());
-	vect = VRotateX(vect, ang.getYaw());
-	vect = VRotateZ(vect, ang.getRoll());
-	up = VRotateY(up, ang.getPitch());
-	up = VRotateX(up, ang.getYaw());
-	up = VRotateZ(up, ang.getRoll());
-	MatrixSetByVectors(mat, vect, up);
-	return glm::toQuat(mat);
-}
-
 void worldAngleToQuat(glm::quat *dest, const Anglef & src, bool isNpc) {
 
 	if(!isNpc) {
 		// To correct invalid angle in Animated FIX/ITEMS
-		*dest = toNonNpcRotation(src);
+		*dest = glm::toQuat(toRotationMatrix(src));
 	} else {
 		Anglef vt1 = Anglef(radians(src.getYaw()), radians(src.getPitch()), radians(src.getRoll()));
 		QuatFromAngles(dest, &vt1);

@@ -219,8 +219,7 @@ void LegacyMathTest::angleConversionTest()
 	typedef std::vector<TestRotation>::iterator Itr;
 	for(Itr it = rotations.begin(); it != rotations.end(); ++it) {
 		
-		glm::quat q;
-		worldAngleToQuat(&q, it->angle, false);
+		glm::quat q = toNonNpcRotation(it->angle);
 		
 		glm::quat q2 = glm::toQuat(toRotationMatrix(it->angle));
 		

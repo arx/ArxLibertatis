@@ -225,4 +225,21 @@ inline void XRotatePoint(Vec3f * in, Vec3f * out, float c, float s) {
 	*out = Vec3f(in->x, in->y * c - in->z * s, in->y * s + in->z * c);
 }
 
+glm::quat toNonNpcRotation(const Anglef & src) {
+	Anglef ang = src;
+	ang.setYaw(360 - ang.getYaw());
+	
+	glm::mat4x4 mat;
+	Vec3f vect(0, 0, 1);
+	Vec3f up(0, 1, 0);
+	vect = VRotateY(vect, ang.getPitch());
+	vect = VRotateX(vect, ang.getYaw());
+	vect = VRotateZ(vect, ang.getRoll());
+	up = VRotateY(up, ang.getPitch());
+	up = VRotateX(up, ang.getYaw());
+	up = VRotateZ(up, ang.getRoll());
+	MatrixSetByVectors(mat, vect, up);
+	return glm::toQuat(mat);
+}
+
 #endif // ARX_TESTS_GRAPHICS_LEGACYMATH_H
