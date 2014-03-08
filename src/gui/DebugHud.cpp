@@ -151,7 +151,6 @@ void ShowInfoText() {
 
 	unsigned long uGAT = (unsigned long)(arxtime) / 1000;
 	long GAT=(long)uGAT;
-	char tex[256];
 	float fpss2=1000.f/framedelay;
 	LASTfpscount++;
 
@@ -166,81 +165,124 @@ void ShowInfoText() {
 	} else {
 		LASTfps2 = fpss2;
 	}
-
-	sprintf(tex, "%ld Prims %4.02f fps ( %3.02f - %3.02f ) [%3.0fms]",
-			EERIEDrawnPolys, FPS, fps2min, fps2, framedelay);
-	hFontDebug->draw(70, 32, tex, Color::white);
-
-	float poss = -666.66f;
+	
+	std::stringstream ss;
+	
+	ss << boost::format("%4.02f fps ( %3.02f - %3.02f ) [%3.0fms]\n")
+	% FPS
+	% fps2min
+	% fps2
+	% framedelay;
+	
+	ss << boost::format("Prims %ld, Particles %ld\n")
+	% EERIEDrawnPolys
+	% getParticleCount();
+	
+	ss << boost::format("TIME %lds\n") % GAT;
+	
+	ss << "Player:\n";
+	ss << boost::format(" ├─ Position:  Vec3f(%6.0f,%6.0f,%6.0f)\n")
+	% player.pos.x
+	% (player.pos.y + player.size.y)
+	% player.pos.z;
+	
+	ss << boost::format(" ├─ AnchorPos: Vec3f(%6.0f,%6.0f,%6.0f)\n")
+	% (player.pos.x - Mscenepos.x)
+	% (player.pos.y + player.size.y - Mscenepos.y)
+	% (player.pos.z - Mscenepos.z);
+	
+	ss << boost::format(" ├─ Rotation:  Angle(%3.0f,%3.0f,%3.0f)\n")
+	% player.angle.getYaw()
+	% player.angle.getPitch()
+	% player.angle.getRoll();
+	
+	ss << boost::format(" ├─ Velocity:  Vec3f(%3.0f,%3.0f,%3.0f)\n")
+	% player.physics.velocity.x
+	% player.physics.velocity.y
+	% player.physics.velocity.z;
+	
+	ss << " ├─ Ground\n";
+	
 	EERIEPOLY * ep = CheckInPoly(player.pos.x, player.pos.y, player.pos.z);
-	float tempo = 0.f;
 
-	if(ep && GetTruePolyY(ep, player.pos, &tempo))
-		poss = tempo;
-
-	sprintf(tex, "Position  x:%7.0f y:%7.0f [%7.0f] z:%6.0f a%3.0f b%3.0f FOK %3.0f",
-			player.pos.x, player.pos.y + player.size.y, poss, player.pos.z,
-			player.angle.getYaw(), player.angle.getPitch(),
-			ACTIVECAM->focal);
-	hFontDebug->draw(70, 48, tex, Color::white);
-
-	sprintf(tex, "AnchorPos x:%6.0f y:%6.0f z:%6.0f TIME %lds Part %ld - %d",
-			player.pos.x - Mscenepos.x,
-			player.pos.y + player.size.y - Mscenepos.y,
-			player.pos.z - Mscenepos.z,
-			GAT, getParticleCount(), player.doingmagic);
-	hFontDebug->draw(70, 64, tex, Color::white);
-
-	if(player.onfirmground == 0)
-		hFontDebug->draw(200, 280, "OFFGRND", Color::white);
-
-	sprintf(tex, "Jump %f cinema %f %d %d - Pathfind %ld(%s)",
-			player.jumplastposition, CINEMA_DECAL,
-			DANAEMouse.x, DANAEMouse.y,
-			EERIE_PATHFINDER_Get_Queued_Number(),
-			PATHFINDER_WORKING ? "Working" : "Idled");
-	hFontDebug->draw(70, 80, tex, Color::white);
-
-	Entity * io=ARX_SCRIPT_Get_IO_Max_Events();
-
-	if(!io) {
-		sprintf(tex, "Events %ld (IOmax N/A) Timers %ld",
-				ScriptEvent::totalCount, ARX_SCRIPT_CountTimers());
-	} else {
-		sprintf(tex, "Events %ld (IOmax %s %d) Timers %ld",
-				ScriptEvent::totalCount, io->idString().c_str(),
-				io->stat_count, ARX_SCRIPT_CountTimers());
+	float truePolyY = -666.66f;
+	if(ep) {
+		float tempY = 0.f;
+		if(GetTruePolyY(ep, player.pos, &tempY)) {
+			truePolyY = tempY;
+		}
 	}
-	hFontDebug->draw(70, 94, tex, Color::white);
-
-	io = ARX_SCRIPT_Get_IO_Max_Events_Sent();
-
-	if(io) {
-		sprintf(tex, "Max SENDER %s %d)", io->idString().c_str(), io->stat_sent);
-		hFontDebug->draw(70, 114, tex, Color::white);
-	}
-
-	float slope = 0.f;
+	
 	ep = CheckInPoly(player.pos.x, player.pos.y - 10.f, player.pos.z);
-
+	float slope = 0.f;
 	if(ep)
 		slope = ep->norm.y;
-
-	sprintf(tex, "Velocity %3.0f %3.0f %3.0f Slope %3.3f",
-			player.physics.velocity.x, player.physics.velocity.y, player.physics.velocity.z, slope);
-	hFontDebug->draw(70, 128, tex, Color::white);
 	
-	sprintf(tex, "Player: Life %4.0f/%4.0f Mana %4.0f/%4.0f Poisoned %3.1f Hunger %4.1f",
-			player.life, player.maxlife, player.mana, player.maxmana, player.poison, player.hunger);
-	hFontDebug->draw(70, 138, tex, Color::white);
+	long zap = IsAnyPolyThere(player.pos.x,player.pos.z);
 	
+	ss << boost::format(" ├─  ├─ Slope %3.3f\n ├─  ├─ truePolyY %6.0f\n ├─  └─ POLY %ld\n")
+	% slope
+	% truePolyY
+	% zap;
+	
+	ss << boost::format("Color: %3.0f; Stealth %3.0f\n")
+	% CURRENT_PLAYER_COLOR
+	% GetPlayerStealth();
+	
+	ss << boost::format("Jump %f %s\n")
+	% player.jumplastposition
+	% (player.onfirmground == 0 ? "OFFGRND" : "");
+	
+	ss << boost::format("Life %4.0f/%4.0f Mana %4.0f/%4.0f Poisoned %3.1f Hunger %4.1f\n")
+	% player.life
+	% player.maxlife
+	% player.mana
+	% player.maxmana
+	% player.poison
+	% player.hunger;
+	
+	ss << boost::format("Magic: %d\n")
+	% player.doingmagic;
+	
+	ss << boost::format("Camera focal: %3.0f\n")
+	% ACTIVECAM->focal;
+	
+	ss << boost::format("Cinema: %f; Mouse: (%d, %d); Pathfind %ld(%s)\n")
+	% CINEMA_DECAL
+	% DANAEMouse.x
+	% DANAEMouse.y
+	% EERIE_PATHFINDER_Get_Queued_Number()
+	% (PATHFINDER_WORKING ? "Working" : "Idled");
+	
+	ss << boost::format("Events %ld\nTimers %ld\n")
+	% ScriptEvent::totalCount
+	% ARX_SCRIPT_CountTimers();
+	
+	Entity * io = ARX_SCRIPT_Get_IO_Max_Events();
+	
+	ss << "Max events ";
+	if(io) {
+		ss << boost::format("%d %s\n")
+		% io->stat_count
+		% io->idString();
+	} else {
+		ss << "\n";
+	}
+	
+	io = ARX_SCRIPT_Get_IO_Max_Events_Sent();
+	ss << "Max sender ";
+	if(io) {
+		ss << boost::format("%d %s\n")
+		% io->stat_sent
+		% io->idString();
+	} else {
+		ss << "\n";
+	}
 	
 	if(ValidIONum(LastSelectedIONum)) {
 		io = entities[LastSelectedIONum];
 
-		if(io) {		
-			std::stringstream ss;
-			
+		if(io) {
 			ss << boost::format("%4.0f %4.0f %4.0f - %4.0f %4.0f %4.0f\n")
 			% io->pos.x % io->pos.y % io->pos.z
 			% io->move.x % io->move.y % io->move.z;
@@ -285,19 +327,11 @@ void ShowInfoText() {
 				% io->poisonous_count;
 			}
 			
-			drawMultilineText(Vec2i(10, 300), ss.str());
-			
 			drawMultilineText(Vec2i(10, 450), debugPrintEntityFlags(io->ioflags));
 		}
 	}
 	
-	long zap = IsAnyPolyThere(player.pos.x,player.pos.z);
-	sprintf(tex, "POLY %ld", zap);
-	hFontDebug->draw(270, 220, tex, Color::white);
-
-	sprintf(tex, "COLOR %3.0f Stealth %3.0f",
-			CURRENT_PLAYER_COLOR, GetPlayerStealth());
-	hFontDebug->draw(270, 200, tex, Color::white);
+	drawMultilineText(Vec2i(10, 10), ss.str());
 
 	ARX_SCRIPT_Init_Event_Stats();
 }
