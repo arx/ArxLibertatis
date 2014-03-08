@@ -1434,14 +1434,12 @@ void DrawEERIEObjExEx(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *pos, Vec3f *scale
 	TexturedVertex rv;
 	TexturedVertex vert_list[3];
 	
-	EERIE_TRANSFORM trans;
-	trans.pos = Vec3f();
-	trans.updateFromAngle(*angle);
+	glm::mat4 rotation = toRotationMatrix(*angle);
 	
 	for(size_t i = 0; i < eobj->vertexlist.size(); i++) {
 		v.p = eobj->vertexlist[i].v * *scale;
 		
-		rv.p = Vec3f(trans.worldToView * Vec4f(v.p, 1.f));
+		rv.p = Vec3f(rotation * Vec4f(v.p, 1.f));
 		
 		eobj->vertexlist3[i].v = (rv.p += *pos);
 
@@ -2298,15 +2296,13 @@ static void SceneAddObjToBackground(EERIE_3DOBJ * eobj) {
 	
 	TexturedVertex vlist[3];
 	
-	EERIE_TRANSFORM trans;
-	trans.pos = Vec3f();
-	trans.updateFromAngle(eobj->angle);
+	glm::mat4 rotation = toRotationMatrix(eobj->angle);
 	
 	for(size_t i = 0; i < eobj->vertexlist.size(); i++) {
 		//Local Transform
 		Vec3f p = eobj->vertexlist[i].v - eobj->point0;
 		
-		Vec3f rp = Vec3f(trans.worldToView * Vec4f(p, 1.f));
+		Vec3f rp = Vec3f(rotation * Vec4f(p, 1.f));
 		
 		eobj->vertexlist[i].vert.p = rp + eobj->pos + eobj->point0;
 	}
