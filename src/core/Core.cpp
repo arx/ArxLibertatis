@@ -1395,10 +1395,25 @@ void ClearSysTextures() {
 	}
 }
 
+glm::quat angleToQuatForArrow(const Anglef & angle) {
+	Vec3f vv(0,0,1);
+	float aa=angle.getYaw();
+	float ab=90-angle.getPitch();
+	
+	Vec3f v1 = VRotateZ(vv, aa);
+	v1 = VRotateY(v1, ab);
+	
+	vv = Vec3f(0,-1,0);
+	Vec3f v2 = VRotateZ(vv, aa);
+	v2 = VRotateY(v2, ab);
+	glm::mat4x4 tmat;
+	MatrixSetByVectors(tmat, v1, v2);
+	return glm::toQuat(tmat);
+}
+
 static void PlayerLaunchArrow_Test(float aimratio, float poisonous, Vec3f * pos, Anglef * angle) {
 	
 	Vec3f vect;
-	glm::quat quat;
 	
 	Vec3f position = *pos;
 	float anglea = radians(angle->getYaw());
@@ -1412,19 +1427,7 @@ static void PlayerLaunchArrow_Test(float aimratio, float poisonous, Vec3f * pos,
 	if(velocity < 0.9f)
 		velocity = 0.9f;
 	
-	Vec3f vv(0,0,1);
-	float aa=angle->getYaw();
-	float ab=90-angle->getPitch();
-	
-	Vec3f v1 = VRotateZ(vv, aa);
-	v1 = VRotateY(v1, ab);
-	
-	vv = Vec3f(0,-1,0);
-	Vec3f v2 = VRotateZ(vv, aa);
-	v2 = VRotateY(v2, ab);
-	glm::mat4x4 tmat;
-	MatrixSetByVectors(tmat, v1, v2);
-	quat = glm::toQuat(tmat);
+	glm::quat quat = angleToQuatForArrow(*angle);
 
 	float wd = getEquipmentBaseModifier(IO_EQUIPITEM_ELEMENT_Damages);
 	// TODO Why ignore relative modifiers? Why not just use player.Full_damages?
