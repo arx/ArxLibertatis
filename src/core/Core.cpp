@@ -1396,18 +1396,19 @@ void ClearSysTextures() {
 }
 
 glm::quat angleToQuatForArrow(const Anglef & angle) {
-	Vec3f vv(0,0,1);
-	float aa=angle.getYaw();
-	float ab=90-angle.getPitch();
+	float aa = angle.getYaw();
+	float ab = 90 - angle.getPitch();
 	
-	Vec3f v1 = VRotateZ(vv, aa);
-	v1 = VRotateY(v1, ab);
+	Vec3f front(0,0,1);
+	Vec3f up(0,-1,0);
 	
-	vv = Vec3f(0,-1,0);
-	Vec3f v2 = VRotateZ(vv, aa);
-	v2 = VRotateY(v2, ab);
+	front = VRotateZ(front, aa);
+	front = VRotateY(front, ab);
+	up = VRotateZ(up, aa);
+	up = VRotateY(up, ab);
+	
 	glm::mat4x4 tmat;
-	MatrixSetByVectors(tmat, v1, v2);
+	MatrixSetByVectors(tmat, front, up);
 	return glm::toQuat(tmat);
 }
 
