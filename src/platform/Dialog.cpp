@@ -40,14 +40,6 @@
 
 namespace dialog {
 
-enum DialogType {
-	DialogInfo,
-	DialogWarning,
-	DialogError,
-	DialogYesNo,
-	DialogOkCancel
-};
-
 #if ARX_PLATFORM == ARX_PLATFORM_WIN32
 
 static bool showDialog(DialogType type, const std::string & message,

@@ -24,6 +24,14 @@
 
 namespace dialog {
 
+enum DialogType {
+	DialogInfo,
+	DialogWarning,
+	DialogError,
+	DialogYesNo,
+	DialogOkCancel
+};
+
 void showInfo(const std::string & message, const std::string & dialogTitle = "Information");
 void showWarning(const std::string & message, const std::string & dialogTitle = "Warning");
 void showError(const std::string & message, const std::string & dialogTitle = "Error");
