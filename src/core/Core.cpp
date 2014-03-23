@@ -1873,7 +1873,7 @@ void strikeSpeak(Entity * io) {
 
 void ManageCombatModeAnimations()
 {
-	Entity *io = entities.player();
+	Entity * const io = entities.player();
 	if(!io)
 		return;
 
@@ -2184,8 +2184,8 @@ void ManageCombatModeAnimations()
 				orgPos.y=player.pos.y+40.f;
 				orgPos.z=player.pos.z;
 
-				if(entities.player()->obj->fastaccess.left_attach >= 0) {
-					orgPos = entities.player()->obj->vertexlist3[entities.player()->obj->fastaccess.left_attach].v;
+				if(io->obj->fastaccess.left_attach >= 0) {
+					orgPos = io->obj->vertexlist3[io->obj->fastaccess.left_attach].v;
 				}
 
 				Anglef orgAngle = player.angle;
