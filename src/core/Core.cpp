@@ -2155,22 +2155,22 @@ void ManageCombatModeAnimations()
 				SendIOScriptEvent(io, SM_STRIKE, "bow");
 				StrikeAimtime();
 				STRIKE_AIMTIME = (float)(BOW_FOCAL)/710.f;
-				Entity * ioo = Player_Arrow_Count_Decrease();
+				Entity * quiver = Player_Arrow_Count_Decrease();
 				float poisonous = 0.f;
 
-				if(ioo) {
-					poisonous = ioo->poisonous;
-					if(ioo->poisonous_count > 0) {
-						ioo->poisonous_count--;
+				if(quiver) {
+					poisonous = quiver->poisonous;
+					if(quiver->poisonous_count > 0) {
+						quiver->poisonous_count--;
 
-						if(ioo->poisonous_count <= 0)
-							ioo->poisonous = 0;
+						if(quiver->poisonous_count <= 0)
+							quiver->poisonous = 0;
 					}
 
-					ARX_DAMAGES_DurabilityLoss(ioo, 1.f);
+					ARX_DAMAGES_DurabilityLoss(quiver, 1.f);
 
-					if(ValidIOAddress(ioo) && ioo->durability <= 0.f) {
-						ioo->destroyOne();
+					if(ValidIOAddress(quiver) && quiver->durability <= 0.f) {
+						quiver->destroyOne();
 					}
 				}
 
