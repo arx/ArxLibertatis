@@ -2636,7 +2636,7 @@ void ReleaseSystemObjects() {
 	}
 }
 
-void ReleaseDanaeBeforeRun() {
+void ReleaseNecklace() {
 	
 	delete necklace.lacet, necklace.lacet = NULL;
 	
@@ -2644,20 +2644,6 @@ void ReleaseDanaeBeforeRun() {
 		delete necklace.runes[i], necklace.runes[i] = NULL;
 		necklace.pTexTab[i] = NULL;
 	}
-	
-	FlyingEye_Release();
-
-	delete cabal, cabal = NULL;
-	delete cameraobj, cameraobj = NULL;
-	delete markerobj, markerobj = NULL;
-	delete arrowobj, arrowobj = NULL;
-	
-	drawDebugRelease();
-
-	BOOST_FOREACH(EERIE_3DOBJ * & obj, GoldCoinsObj) {
-		delete obj, obj = NULL;
-	}
-	
 }
 
 extern Cinematic* ControlCinematique;
@@ -2722,7 +2708,7 @@ void shutdownGame() {
 	ARX_Text_Close();
 	
 	//object loaders from beforerun
-	ReleaseDanaeBeforeRun();
+	ReleaseNecklace();
 	
 	delete resources;
 	
