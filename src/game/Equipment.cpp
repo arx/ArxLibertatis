@@ -448,6 +448,8 @@ WeaponType ARX_EQUIPMENT_GetPlayerWeaponType()
 
 void ARX_EQUIPMENT_LaunchPlayerUnReadyWeapon()
 {
+	arx_assert(arrowobj);
+	
 	Entity * io = entities.player();
 	if(!io)
 		return;
@@ -467,9 +469,7 @@ void ARX_EQUIPMENT_LaunchPlayerUnReadyWeapon()
 			break;
 		case WEAPON_BOW:
 			anim = io->anims[ANIM_MISSILE_UNREADY_PART_1];
-
-			if(arrowobj)
-				EERIE_LINKEDOBJ_UnLinkObjectFromObject(io->obj, arrowobj);
+			EERIE_LINKEDOBJ_UnLinkObjectFromObject(io->obj, arrowobj);
 			break;
 		default:
 			anim = io->anims[ANIM_BARE_UNREADY];

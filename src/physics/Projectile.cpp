@@ -142,6 +142,8 @@ extern EERIE_3DOBJ * arrowobj;
 long ARX_THROWN_OBJECT_Throw(long source, Vec3f * position, Vec3f * vect,
 							 glm::quat * quat, float velocity, float damages, float poison) {
 
+	arx_assert(arrowobj);
+	
 	long num = ARX_THROWN_OBJECT_GetFree();
 
 	if(num >= 0) {
@@ -162,11 +164,8 @@ long ARX_THROWN_OBJECT_Throw(long source, Vec3f * position, Vec3f * vect,
 		thrownObj->pRuban->Update();
 
 		thrownObj->obj = arrowobj;
-
-		if(thrownObj->obj) {
-			thrownObj->creation_time = (unsigned long)(arxtime);
-			thrownObj->flags |= ATO_EXIST | ATO_MOVING;
-		}
+		thrownObj->creation_time = (unsigned long)(arxtime);
+		thrownObj->flags |= ATO_EXIST | ATO_MOVING;
 
 		if(source == 0
 		   && player.equiped[EQUIP_SLOT_WEAPON] != 0

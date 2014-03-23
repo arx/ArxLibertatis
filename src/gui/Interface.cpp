@@ -2022,6 +2022,8 @@ void ArxGame::manageEditorControls() {
 //-----------------------------------------------------------------------------
 void ARX_INTERFACE_Combat_Mode(long i)
 {
+	arx_assert(arrowobj);
+	
 	if(i >= 1 && (player.Interface & INTER_COMBATMODE))
 		return;
 
@@ -2035,7 +2037,7 @@ void ARX_INTERFACE_Combat_Mode(long i)
 		ARX_EQUIPMENT_LaunchPlayerUnReadyWeapon();
 		WeaponType weapontype = ARX_EQUIPMENT_GetPlayerWeaponType();
 
-		if(entities.player() && arrowobj && (weapontype == WEAPON_BOW)) {
+		if(entities.player() && (weapontype == WEAPON_BOW)) {
 			EERIE_LINKEDOBJ_UnLinkObjectFromObject(entities.player()->obj, arrowobj);
 		}
 
