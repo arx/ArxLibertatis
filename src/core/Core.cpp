@@ -1412,17 +1412,22 @@ glm::quat angleToQuatForArrow(const Anglef & angle) {
 	return glm::toQuat(tmat);
 }
 
-static void PlayerLaunchArrow_Test(float aimratio, float poisonous, Vec3f * pos, Anglef * angle) {
+Vec3f angleToVecForArrow(const Anglef & angle) {
+	float anglea = radians(angle.getYaw());
+	float angleb = radians(angle.getPitch());
 	
 	Vec3f vect;
-	
-	Vec3f position = *pos;
-	float anglea = radians(angle->getYaw());
-	float angleb = radians(angle->getPitch());
 	vect.x=-EEsin(angleb)*EEcos(anglea);
 	vect.y= EEsin(anglea);
 	vect.z= EEcos(angleb)*EEcos(anglea);
+	
+	return vect;
+}
 
+static void PlayerLaunchArrow_Test(float aimratio, float poisonous, Vec3f * pos, Anglef * angle) {
+	
+	Vec3f vect = angleToVecForArrow(*angle);
+	Vec3f position = *pos;
 	float velocity = aimratio + 0.3f;
 
 	if(velocity < 0.9f)
