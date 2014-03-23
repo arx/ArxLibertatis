@@ -1437,10 +1437,8 @@ static void PlayerLaunchArrow_Test(float aimratio, float poisonous, Vec3f * pos,
 
 	float wd = getEquipmentBaseModifier(IO_EQUIPITEM_ELEMENT_Damages);
 	// TODO Why ignore relative modifiers? Why not just use player.Full_damages?
-
-	float weapon_damages=wd;
-
-	float damages = weapon_damages*(1.f + (float)(player.Full_Skill_Projectile + player.Full_Attribute_Dexterity )*( 1.0f / 50 ));
+	
+	float damages = wd * (1.f + (player.Full_Skill_Projectile + player.Full_Attribute_Dexterity) * (1.f/50));
 
 	ARX_THROWN_OBJECT_Throw(/*source*/0, &position, &vect, &quat, velocity, damages, poisonous);
 }
