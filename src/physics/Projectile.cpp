@@ -156,7 +156,7 @@ void ARX_THROWN_OBJECT_Throw(long source, Vec3f * position, Vec3f * vect,
 	thrownObj->vector = *vect;
 	thrownObj->quat = *quat;
 	thrownObj->source = source;
-	thrownObj->obj = NULL;
+	thrownObj->obj = arrowobj;
 	thrownObj->velocity = velocity;
 	thrownObj->poisonous = poison;
 	
@@ -164,7 +164,6 @@ void ARX_THROWN_OBJECT_Throw(long source, Vec3f * position, Vec3f * vect,
 	thrownObj->pRuban->SetNextPosition(thrownObj->position);
 	thrownObj->pRuban->Update();
 	
-	thrownObj->obj = arrowobj;
 	thrownObj->creation_time = (unsigned long)(arxtime);
 	thrownObj->flags |= ATO_EXIST | ATO_MOVING;
 	
