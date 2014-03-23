@@ -22,7 +22,7 @@
 
 #include "graphics/GraphicsTypes.h"
 
-long ARX_THROWN_OBJECT_Throw(long source, Vec3f * position, Vec3f * vect, glm::quat * quat, float velocity, float damages, float poisonous);
+void ARX_THROWN_OBJECT_Throw(long source, Vec3f * position, Vec3f * vect, glm::quat * quat, float velocity, float damages, float poisonous);
 
 void ARX_THROWN_OBJECT_KillAll();
 void ARX_THROWN_OBJECT_Manage(unsigned long time_offset);

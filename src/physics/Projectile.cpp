@@ -139,7 +139,7 @@ long ARX_THROWN_OBJECT_GetFree() {
 
 extern EERIE_3DOBJ * arrowobj;
 
-long ARX_THROWN_OBJECT_Throw(long source, Vec3f * position, Vec3f * vect,
+void ARX_THROWN_OBJECT_Throw(long source, Vec3f * position, Vec3f * vect,
 							 glm::quat * quat, float velocity, float damages, float poison) {
 
 	arx_assert(arrowobj);
@@ -176,10 +176,7 @@ long ARX_THROWN_OBJECT_Throw(long source, Vec3f * position, Vec3f * vect,
 			if(tio->ioflags & IO_FIERY)
 				thrownObj->flags |= ATO_FIERY;
 		}
-
 	}
-
-	return num;
 }
 
 float ARX_THROWN_ComputeDamages(long thrownum, long source, long target)
