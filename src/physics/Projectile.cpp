@@ -141,42 +141,42 @@ extern EERIE_3DOBJ * arrowobj;
 
 void ARX_THROWN_OBJECT_Throw(long source, Vec3f * position, Vec3f * vect,
 							 glm::quat * quat, float velocity, float damages, float poison) {
-
+	
 	arx_assert(arrowobj);
 	
 	long num = ARX_THROWN_OBJECT_GetFree();
 	if(num < 0)
 		return;
 		
-		ARX_THROWN_OBJECT *thrownObj = &Thrown[num];
-
-		thrownObj->damages = damages;
-		thrownObj->position = *position;
-		thrownObj->initial_position = *position;
-		thrownObj->vector = *vect;
-		thrownObj->quat = *quat;
-		thrownObj->source = source;
-		thrownObj->obj = NULL;
-		thrownObj->velocity = velocity;
-		thrownObj->poisonous = poison;
-
-		thrownObj->pRuban = new ArrowTrail();
-		thrownObj->pRuban->SetNextPosition(thrownObj->position);
-		thrownObj->pRuban->Update();
-
-		thrownObj->obj = arrowobj;
-		thrownObj->creation_time = (unsigned long)(arxtime);
-		thrownObj->flags |= ATO_EXIST | ATO_MOVING;
-
-		if(source == 0
-		   && player.equiped[EQUIP_SLOT_WEAPON] != 0
-		   && ValidIONum(player.equiped[EQUIP_SLOT_WEAPON])
-		) {
-			Entity * tio = entities[player.equiped[EQUIP_SLOT_WEAPON]];
-
-			if(tio->ioflags & IO_FIERY)
-				thrownObj->flags |= ATO_FIERY;
-		}
+	ARX_THROWN_OBJECT *thrownObj = &Thrown[num];
+	
+	thrownObj->damages = damages;
+	thrownObj->position = *position;
+	thrownObj->initial_position = *position;
+	thrownObj->vector = *vect;
+	thrownObj->quat = *quat;
+	thrownObj->source = source;
+	thrownObj->obj = NULL;
+	thrownObj->velocity = velocity;
+	thrownObj->poisonous = poison;
+	
+	thrownObj->pRuban = new ArrowTrail();
+	thrownObj->pRuban->SetNextPosition(thrownObj->position);
+	thrownObj->pRuban->Update();
+	
+	thrownObj->obj = arrowobj;
+	thrownObj->creation_time = (unsigned long)(arxtime);
+	thrownObj->flags |= ATO_EXIST | ATO_MOVING;
+	
+	if(source == 0
+	   && player.equiped[EQUIP_SLOT_WEAPON] != 0
+	   && ValidIONum(player.equiped[EQUIP_SLOT_WEAPON])
+	) {
+		Entity * tio = entities[player.equiped[EQUIP_SLOT_WEAPON]];
+		
+		if(tio->ioflags & IO_FIERY)
+			thrownObj->flags |= ATO_FIERY;
+	}
 }
 
 float ARX_THROWN_ComputeDamages(long thrownum, long source, long target)
