@@ -1797,8 +1797,6 @@ void MakeIOIdent(Entity * io) {
 
 #endif // BUILD_EDIT_LOADSAVE
 
-extern EERIE_3DOBJ	* arrowobj;
-
 Entity * AddItem(const res::path & classPath_, EntityInstance instance, AddInteractiveFlags flags) {
 	
 	EntityFlags type = IO_ITEM;
