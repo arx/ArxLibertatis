@@ -1922,33 +1922,14 @@ void ManageCombatModeAnimations()
 							&& useanim->ctime < useanim->cur_anim->anims[useanim->altidx_cur]->anim_time * 0.8f
 							&& PlayerWeaponBlocked == -1
 					) {
+						long id = -1;
+						
 						if(useanim->cur_anim == alist[ANIM_BARE_STRIKE_LEFT]) {
-							long id = io->obj->fastaccess.left_attach;
-
-							if(id != -1) {
-								EERIE_SPHERE sphere;
-								sphere.origin = io->obj->vertexlist3[id].v;
-								sphere.radius = 25.f;
-
-								long num;
-
-								if(CheckAnythingInSphere(&sphere, 0, 0, &num)) {
-									float dmgs = (player.Full_damages + 1) * STRIKE_AIMTIME;
-
-									if(ARX_DAMAGES_TryToDoDamage(&io->obj->vertexlist3[id].v, dmgs, 40, 0)) {
-										PlayerWeaponBlocked = useanim->ctime;
-									}
-
-									ARX_PARTICLES_Spawn_Spark(&sphere.origin, dmgs, 2);
-
-									if(ValidIONum(num)) {
-										ARX_SOUND_PlayCollision(entities[num]->material, MATERIAL_FLESH, 1.f, 1.f, &sphere.origin, NULL);
-									}
-								}
-							}
+							id = io->obj->fastaccess.left_attach;
 						} else { // Strike Right
-							long id = io->obj->fastaccess.primary_attach;
-
+							id = io->obj->fastaccess.primary_attach;
+						}
+						
 							if(id != -1) {
 								EERIE_SPHERE sphere;
 								sphere.origin = io->obj->vertexlist3[id].v;
@@ -1970,7 +1951,6 @@ void ManageCombatModeAnimations()
 									}
 								}
 							}
-						}
 					}
 				}
 			}
