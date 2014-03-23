@@ -2145,12 +2145,12 @@ extern unsigned long REQUEST_JUMP;
 //-----------------------------------------------------------------------------
 void ArxGame::managePlayerControls()
 {
-	if(((EERIEMouseButton & 4) && !(player.Interface & INTER_COMBATMODE))
-		&& !player.doingmagic
-		&& !(ARX_MOUSE_OVER & ARX_MOUSE_OVER_BOOK)
-		&& eMouseState != MOUSE_IN_NOTE
-		)
-	{
+	if(   (EERIEMouseButton & 4)
+	   && !(player.Interface & INTER_COMBATMODE)
+	   && !player.doingmagic
+	   && !(ARX_MOUSE_OVER & ARX_MOUSE_OVER_BOOK)
+	   && eMouseState != MOUSE_IN_NOTE
+	) {
 		Entity *t = InterClick(&DANAEMouse);
 
 		if(t) {
