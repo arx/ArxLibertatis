@@ -145,8 +145,9 @@ void ARX_THROWN_OBJECT_Throw(long source, Vec3f * position, Vec3f * vect,
 	arx_assert(arrowobj);
 	
 	long num = ARX_THROWN_OBJECT_GetFree();
-
-	if(num >= 0) {
+	if(num < 0)
+		return;
+		
 		ARX_THROWN_OBJECT *thrownObj = &Thrown[num];
 
 		thrownObj->damages = damages;
@@ -176,7 +177,6 @@ void ARX_THROWN_OBJECT_Throw(long source, Vec3f * position, Vec3f * vect,
 			if(tio->ioflags & IO_FIERY)
 				thrownObj->flags |= ATO_FIERY;
 		}
-	}
 }
 
 float ARX_THROWN_ComputeDamages(long thrownum, long source, long target)
