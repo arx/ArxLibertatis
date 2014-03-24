@@ -589,7 +589,7 @@ EERIE_3DOBJ * ARX_FTL_Load(const res::path & file) {
 	if(obj->nbgroups > 0) {
 		
 		// Alloc the grouplists
-		obj->grouplist = new EERIE_GROUPLIST[obj->nbgroups];
+		obj->grouplist = new VertexGroup[obj->nbgroups];
 		
 		// Copy in the grouplist data
 		for(long i = 0 ; i < obj->nbgroups ; i++) {

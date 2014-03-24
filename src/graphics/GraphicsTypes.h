@@ -386,7 +386,7 @@ struct EERIE_3DOBJ
 	std::vector<EERIE_VERTEX> vertexlist3;
 
 	std::vector<EERIE_FACE> facelist;
-	EERIE_GROUPLIST * grouplist;
+	VertexGroup * grouplist;
 	std::vector<EERIE_ACTIONLIST> actionlist;
 	std::vector<EERIE_SELECTIONS> selections;
 	std::vector<TextureContainer*> texturecontainer;

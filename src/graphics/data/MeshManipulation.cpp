@@ -516,7 +516,7 @@ static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERI
 
 	// Recreate Groups
 	work->nbgroups = max(obj1->nbgroups, obj2->nbgroups);
-	work->grouplist = new EERIE_GROUPLIST[work->nbgroups];
+	work->grouplist = new VertexGroup[work->nbgroups];
 
 	for(long k = 0; k < obj1->nbgroups; k++) {
 		work->grouplist[k].name = obj1->grouplist[k].name;

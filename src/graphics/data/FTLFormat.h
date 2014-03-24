@@ -140,7 +140,7 @@ struct EERIE_GROUPLIST_FTL {
 	s32 indexes;
 	f32 siz;
 	
-	EERIE_GROUPLIST_FTL & operator=(const EERIE_GROUPLIST & b) {
+	EERIE_GROUPLIST_FTL & operator=(const VertexGroup & b) {
 		strcpy(name, b.name.c_str());
 		origin = b.origin;
 		nb_index = b.indexes.size();

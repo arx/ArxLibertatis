@@ -663,7 +663,7 @@ void CSpeed::Create(int numinteractive, int duration)
 	if(nb > 256)
 		nb = 256;
 
-	EERIE_GROUPLIST * grouplist = entities[this->num]->obj->grouplist;
+	VertexGroup * grouplist = entities[this->num]->obj->grouplist;
 	nb >>= 1;
 
 	while(nb--) {

@@ -27,13 +27,13 @@
 
 #include "math/Types.h"
 
-struct EERIE_GROUPLIST {
+struct VertexGroup {
 	std::string       name;
 	long              origin;
 	std::vector<long> indexes;
 	float             siz;
 	
-	EERIE_GROUPLIST()
+	VertexGroup()
 		: name()
 		, origin(0)
 		, indexes()
@@ -50,7 +50,7 @@ struct BoneTransform {
 struct Bone {
 	long              nb_idxvertices;
 	long            * idxvertices;
-	EERIE_GROUPLIST * original_group;
+	VertexGroup     * original_group;
 	long              father;
 	
 	BoneTransform     anim;

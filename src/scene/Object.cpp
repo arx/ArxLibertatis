@@ -289,7 +289,7 @@ static void loadObjectData(EERIE_3DOBJ * eerie, const char * adr, size_t * poss,
 	if(tn->nb_groups == 0) {
 		eerie->grouplist = NULL;
 	} else {
-		eerie->grouplist = new EERIE_GROUPLIST[tn->nb_groups]; 
+		eerie->grouplist = new VertexGroup[tn->nb_groups]; 
 	}
 	
 	// read vertices
@@ -1023,7 +1023,7 @@ EERIE_3DOBJ * Eerie_Copy(const EERIE_3DOBJ * obj) {
 
 	if(obj->nbgroups) {
 		nouvo->nbgroups = obj->nbgroups;
-		nouvo->grouplist = new EERIE_GROUPLIST[obj->nbgroups];
+		nouvo->grouplist = new VertexGroup[obj->nbgroups];
 		std::copy(obj->grouplist, obj->grouplist + obj->nbgroups, nouvo->grouplist);
 	}
 
@@ -1158,7 +1158,7 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 		memset(temp, 0, eobj->vertexlist.size());
 
 		for(long i = eobj->nbgroups - 1; i >= 0; i--) {
-			EERIE_GROUPLIST & group = eobj->grouplist[i];
+			VertexGroup & group = eobj->grouplist[i];
 			Bone & bone = eobj->m_skeleton->bones[i];
 
 			EERIE_VERTEX * v_origin = &eobj->vertexlist[group.origin];
