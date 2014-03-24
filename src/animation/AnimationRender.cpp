@@ -1442,6 +1442,16 @@ void Cedric_UpdateBbox2d(const EERIE_3DOBJ & eobj, EERIE_2D_BBOX & box2D) {
 	}
 }
 
+glm::quat angleToQuatForExtraRotation(const Anglef & angle) {
+	Anglef vt1;
+	vt1.setYaw(radians(angle.getRoll()));
+	vt1.setPitch(radians(angle.getPitch()));
+	vt1.setRoll(radians(angle.getYaw()));
+	
+	glm::quat result;
+	QuatFromAngles(&result, &vt1);
+	return result;
+}
 
 /*!
  * \brief Apply animation and draw object
@@ -1462,12 +1472,7 @@ void Cedric_AnimateDrawEntity(EERIE_C_DATA & rig, ANIM_USE * animlayer, EERIE_EX
 			long i = extraRotation->group_number[k];
 
 			if(i >= 0) {
-				Anglef vt1;
-				vt1.setYaw(radians(extraRotation->group_rotate[k].getRoll()));
-				vt1.setPitch(radians(extraRotation->group_rotate[k].getPitch()));
-				vt1.setRoll(radians(extraRotation->group_rotate[k].getYaw()));
-
-				QuatFromAngles(&rig.bones[i].init.quat, &vt1);
+				rig.bones[i].init.quat = angleToQuatForExtraRotation(extraRotation->group_rotate[k]);
 			}
 		}
 	}
