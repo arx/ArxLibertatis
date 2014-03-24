@@ -250,7 +250,7 @@ long ARX_SOUND_IsPlaying(audio::SourceId & sample_id);
 float ARX_SOUND_GetDuration(audio::SampleId & sample_id);
 
 void ARX_SOUND_RefreshVolume(audio::SourceId & sample_id, float volume);
-void ARX_SOUND_RefreshPosition(audio::SourceId & sample_id, const Vec3f * position = NULL);
+void ARX_SOUND_RefreshPosition(audio::SourceId & sample_id, const Vec3f & position);
 void ARX_SOUND_RefreshPitch(audio::SourceId & sample_id, float pitch);
 void ARX_SOUND_RefreshSpeechPosition(audio::SourceId & sample_id, const Entity * io = NULL);
 

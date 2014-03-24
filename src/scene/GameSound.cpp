@@ -887,16 +887,10 @@ void ARX_SOUND_RefreshPitch(SourceId & sample_id, float pitch) {
 	}
 }
 
-void ARX_SOUND_RefreshPosition(SourceId & sample_id, const Vec3f * position) {
+void ARX_SOUND_RefreshPosition(SourceId & sample_id, const Vec3f & position) {
 	
 	if(bIsActive && sample_id != INVALID_ID) {
-		if(position) {
-			audio::setSamplePosition(sample_id, *position);
-		} else {
-			Vec3f pos;
-			ARX_PLAYER_FrontPos(&pos);
-			audio::setSamplePosition(sample_id, pos);
-		}
+		audio::setSamplePosition(sample_id, position);
 	}
 }
 

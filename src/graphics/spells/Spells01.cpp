@@ -269,7 +269,7 @@ void CMagicMissile::SetTTL(unsigned long aulTTL)
 
 void CMagicMissile::Update(unsigned long aulTime)
 {
-	ARX_SOUND_RefreshPosition(snd_loop, &eCurPos);
+	ARX_SOUND_RefreshPosition(snd_loop, eCurPos);
 
 	ulCurrentTime += aulTime;
 

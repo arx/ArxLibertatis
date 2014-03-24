@@ -1448,7 +1448,7 @@ void TreatBackgroundActions() {
 			float pitch = 0.95f + 0.1f * rnd();
 			ARX_SOUND_PlaySFX(gl->sample, &gl->pos, pitch, ARX_SOUND_PLAY_LOOPED);
 		} else {
-			ARX_SOUND_RefreshPosition(gl->sample, &gl->pos);
+			ARX_SOUND_RefreshPosition(gl->sample, gl->pos);
 		}
 		
 		float amount = 2.f;

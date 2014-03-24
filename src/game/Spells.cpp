@@ -5565,8 +5565,11 @@ void ARX_SPELLS_Update()
 			break;
 			case SPELL_DETECT_TRAP:				
 			{
-				if(spells[i].caster == 0)
-					ARX_SOUND_RefreshPosition(spells[i].snd_loop);
+				if(spells[i].caster == 0) {
+					Vec3f pos;
+					ARX_PLAYER_FrontPos(&pos);
+					ARX_SOUND_RefreshPosition(spells[i].snd_loop, pos);
+				}
 
 				CSpellFx *pCSpellFX = spells[i].pSpellFx;
 
@@ -5586,7 +5589,7 @@ void ARX_SPELLS_Update()
 					pCSpellFX->Render();
 				}
 				
-				ARX_SOUND_RefreshPosition(spells[i].snd_loop, &entities[spells[i].target]->pos);
+				ARX_SOUND_RefreshPosition(spells[i].snd_loop, entities[spells[i].target]->pos);
 			} 
 			break;
 			case SPELL_HARM:
@@ -5657,7 +5660,7 @@ void ARX_SPELLS_Update()
 					GRenderer->SetRenderState(Renderer::AlphaBlending, false);		
 					GRenderer->SetRenderState(Renderer::DepthWrite, true);	
 					
-					ARX_SOUND_RefreshPosition(spells[i].snd_loop, &cabalpos);
+					ARX_SOUND_RefreshPosition(spells[i].snd_loop, cabalpos);
 				}
 			}
 			break;				
@@ -5728,7 +5731,7 @@ void ARX_SPELLS_Update()
 					}
 
 					pCSpellFX->Update(framedelay);
-					ARX_SOUND_RefreshPosition(spells[i].snd_loop, &pCF->eCurPos);
+					ARX_SOUND_RefreshPosition(spells[i].snd_loop, pCF->eCurPos);
 				}
 			}
 			break;
@@ -5736,7 +5739,7 @@ void ARX_SPELLS_Update()
 
 			if(spells[i].pSpellFx) {
 				if(spells[i].caster == 0)
-					ARX_SOUND_RefreshPosition(spells[i].snd_loop, &entities[spells[i].target]->pos);
+					ARX_SOUND_RefreshPosition(spells[i].snd_loop, entities[spells[i].target]->pos);
 
 				spells[i].pSpellFx->Update(framedelay);
 				spells[i].pSpellFx->Render();
@@ -5805,12 +5808,12 @@ void ARX_SPELLS_Update()
 			case SPELL_FIRE_PROTECTION:
 				spells[i].pSpellFx->Update(framedelay);
 				spells[i].pSpellFx->Render();
-				ARX_SOUND_RefreshPosition(spells[i].snd_loop, &entities[spells[i].target]->pos);
+				ARX_SOUND_RefreshPosition(spells[i].snd_loop, entities[spells[i].target]->pos);
 			break;
 			case SPELL_COLD_PROTECTION:
 				spells[i].pSpellFx->Update(framedelay);
 				spells[i].pSpellFx->Render();
-				ARX_SOUND_RefreshPosition(spells[i].snd_loop, &entities[spells[i].target]->pos);
+				ARX_SOUND_RefreshPosition(spells[i].snd_loop, entities[spells[i].target]->pos);
 			break;
 			//****************************************************************************
 			// LEVEL 5 SPELLS
@@ -5855,7 +5858,7 @@ void ARX_SPELLS_Update()
 					spells[i].pSpellFx->Render();					
 
 					if (spells[i].target == 0)
-						ARX_SOUND_RefreshPosition(spells[i].snd_loop, &entities[spells[i].target]->pos);
+						ARX_SOUND_RefreshPosition(spells[i].snd_loop, entities[spells[i].target]->pos);
 				}
 			}
 			break;
@@ -5891,7 +5894,7 @@ void ARX_SPELLS_Update()
 					pCSpellFX->Update(framedelay);
 					pCSpellFX->Render();
 				}
-				ARX_SOUND_RefreshPosition(spells[i].snd_loop, &entities[spells[i].target]->pos);
+				ARX_SOUND_RefreshPosition(spells[i].snd_loop, entities[spells[i].target]->pos);
 			}
 			break;
 			//****************************************************************************
@@ -6157,7 +6160,7 @@ void ARX_SPELLS_Update()
 						pCSpellFX->Render();
 					}
 					
-					ARX_SOUND_RefreshPosition(spells[i].snd_loop, &entities[spells[i].caster]->pos);
+					ARX_SOUND_RefreshPosition(spells[i].snd_loop, entities[spells[i].caster]->pos);
 				}
 			break;
 			//****************************************************************************
@@ -6371,7 +6374,7 @@ void ARX_SPELLS_Update()
 			case SPELL_INCINERATE:
 			{
 				if(ValidIONum(spells[i].caster)) {
-					ARX_SOUND_RefreshPosition(spells[i].snd_loop, &entities[spells[i].target]->pos);
+					ARX_SOUND_RefreshPosition(spells[i].snd_loop, entities[spells[i].target]->pos);
 				}
 			}
 			break;
@@ -6407,7 +6410,7 @@ void ARX_SPELLS_Update()
 			case SPELL_MASS_INCINERATE:
 			{
 				if(ValidIONum(spells[i].caster)) {
-					ARX_SOUND_RefreshPosition(spells[i].snd_loop, &entities[spells[i].caster]->pos);
+					ARX_SOUND_RefreshPosition(spells[i].snd_loop, entities[spells[i].caster]->pos);
 				}
 			}
 			break;
@@ -6431,7 +6434,7 @@ void ARX_SPELLS_Update()
 				spells[i].lastupdate=tim;
 
 				position = _source + randomVec(-250.f, 250.f);
-				ARX_SOUND_RefreshPosition(spells[i].snd_loop, &position);
+				ARX_SOUND_RefreshPosition(spells[i].snd_loop, position);
 				ARX_SOUND_RefreshVolume(spells[i].snd_loop, _fx + 0.5F);
 				ARX_SOUND_RefreshPitch(spells[i].snd_loop, 0.8F + 0.4F * rnd());
 				
@@ -6482,7 +6485,9 @@ void ARX_SPELLS_Update()
 				break;				
 				case SPELL_MAGIC_SIGHT:
 					if(spells[i].caster == 0) {
-						ARX_SOUND_RefreshPosition(spells[i].snd_loop);
+						Vec3f pos;
+						ARX_PLAYER_FrontPos(&pos);
+						ARX_SOUND_RefreshPosition(spells[i].snd_loop, pos);
 
 						if(subj.focal > IMPROVED_FOCAL)
 							subj.focal -= DEC_FOCAL;
@@ -6588,7 +6593,7 @@ void ARX_SPELLS_Update()
 						GRenderer->SetRenderState(Renderer::AlphaBlending, false);		
 						GRenderer->SetRenderState(Renderer::DepthWrite, true);	
 
-						ARX_SOUND_RefreshPosition(spells[i].snd_loop, &cabalpos);
+						ARX_SOUND_RefreshPosition(spells[i].snd_loop, cabalpos);
 					}
 					}
 				break;				
@@ -6680,7 +6685,7 @@ void ARX_SPELLS_Update()
 						GRenderer->SetRenderState(Renderer::AlphaBlending, false);		
 						GRenderer->SetRenderState(Renderer::DepthWrite, true);	
 
-						ARX_SOUND_RefreshPosition(spells[i].snd_loop, &cabalpos);
+						ARX_SOUND_RefreshPosition(spells[i].snd_loop, cabalpos);
 						}
 					}
 				break;

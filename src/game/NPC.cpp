@@ -3594,9 +3594,9 @@ void ManageIgnition_2(Entity * io) {
 		if(io->ignit_sound == audio::INVALID_ID) {
 			io->ignit_sound = SND_FIREPLACE;
 			ARX_SOUND_PlaySFX(io->ignit_sound, &position, 0.95F + 0.1F * rnd(), ARX_SOUND_PLAY_LOOPED);
+		} else {
+			ARX_SOUND_RefreshPosition(io->ignit_sound, position);
 		}
-		else
-			ARX_SOUND_RefreshPosition(io->ignit_sound, &position);
 
 		if(rnd() > 0.9f)
 			CheckForIgnition(&position, io->ignition, 1);
