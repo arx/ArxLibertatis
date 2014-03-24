@@ -934,7 +934,7 @@ void EERIE_3DOBJ::clear() {
 		fastaccess.carry_attach = 0;
 		fastaccess.padding_ = 0;
 
-		c_data = 0;
+		m_skeleton = 0;
 		
 	cub.xmin = cub.ymin = cub.zmin = std::numeric_limits<float>::max();
 	cub.xmax = cub.ymax = cub.zmax = std::numeric_limits<float>::min();
@@ -989,7 +989,7 @@ EERIE_3DOBJ * Eerie_Copy(const EERIE_3DOBJ * obj) {
 	nouvo->pdata = NULL;
 	nouvo->cdata = NULL;
 	nouvo->sdata = NULL;
-	nouvo->c_data = NULL;
+	nouvo->m_skeleton = NULL;
 	nouvo->vertexlocal = NULL;
 	
 	nouvo->angle = obj->angle;
@@ -1104,33 +1104,33 @@ long GetFather(EERIE_3DOBJ * eobj, long origin, long startgroup)
 
 void EERIE_RemoveCedricData(EERIE_3DOBJ * eobj) {
 	
-	if(!eobj || !eobj->c_data)
+	if(!eobj || !eobj->m_skeleton)
 		return;
 	
-	for(long i = 0; i < eobj->c_data->nb_bones; i++) {
-		free(eobj->c_data->bones[i].idxvertices);
-		eobj->c_data->bones[i].idxvertices = NULL;
+	for(long i = 0; i < eobj->m_skeleton->nb_bones; i++) {
+		free(eobj->m_skeleton->bones[i].idxvertices);
+		eobj->m_skeleton->bones[i].idxvertices = NULL;
 	}
 	
-	delete[] eobj->c_data->bones, eobj->c_data->bones = NULL;
-	delete eobj->c_data, eobj->c_data = NULL;
+	delete[] eobj->m_skeleton->bones, eobj->m_skeleton->bones = NULL;
+	delete eobj->m_skeleton, eobj->m_skeleton = NULL;
 	delete[] eobj->vertexlocal, eobj->vertexlocal = NULL;
 }
 
 void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 	
-	eobj->c_data = new Skeleton();
-	memset(eobj->c_data, 0, sizeof(Skeleton));
+	eobj->m_skeleton = new Skeleton();
+	memset(eobj->m_skeleton, 0, sizeof(Skeleton));
 
 	if(eobj->nbgroups <= 0) {
 		// If no groups were specified
 
 		// Make one bone
-		eobj->c_data->nb_bones = 1;
-		eobj->c_data->bones = new Bone[eobj->c_data->nb_bones];
-		memset(eobj->c_data->bones, 0, sizeof(Bone)*eobj->c_data->nb_bones);
+		eobj->m_skeleton->nb_bones = 1;
+		eobj->m_skeleton->bones = new Bone[eobj->m_skeleton->nb_bones];
+		memset(eobj->m_skeleton->bones, 0, sizeof(Bone)*eobj->m_skeleton->nb_bones);
 
-		Bone & bone = eobj->c_data->bones[0];
+		Bone & bone = eobj->m_skeleton->bones[0];
 
 		// Add all vertices to the bone
 		for(size_t i = 0; i < eobj->vertexlist.size(); i++)
@@ -1149,17 +1149,17 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 		// Groups were specified
 
 		// Alloc the bones
-		eobj->c_data->nb_bones = eobj->nbgroups;
-		eobj->c_data->bones = new Bone[eobj->c_data->nb_bones];
+		eobj->m_skeleton->nb_bones = eobj->nbgroups;
+		eobj->m_skeleton->bones = new Bone[eobj->m_skeleton->nb_bones];
 		// TODO memset -> use constructor instead
-		memset(eobj->c_data->bones, 0, sizeof(Bone)*eobj->c_data->nb_bones);
+		memset(eobj->m_skeleton->bones, 0, sizeof(Bone)*eobj->m_skeleton->nb_bones);
 
 		bool * temp = new bool[eobj->vertexlist.size()];
 		memset(temp, 0, eobj->vertexlist.size());
 
 		for(long i = eobj->nbgroups - 1; i >= 0; i--) {
 			EERIE_GROUPLIST & group = eobj->grouplist[i];
-			Bone & bone = eobj->c_data->bones[i];
+			Bone & bone = eobj->m_skeleton->bones[i];
 
 			EERIE_VERTEX * v_origin = &eobj->vertexlist[group.origin];
 
@@ -1199,16 +1199,16 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 			}
 
 			if(!ok) {
-				AddIdxToBone(&eobj->c_data->bones[0], i);
+				AddIdxToBone(&eobj->m_skeleton->bones[0], i);
 			}
 		}
 		
 		for(long i = eobj->nbgroups - 1; i >= 0; i--) {
-			Bone & bone = eobj->c_data->bones[i];
+			Bone & bone = eobj->m_skeleton->bones[i];
 
 			if(bone.father >= 0) {
 				long father = bone.father;
-				bone.init.trans -= eobj->c_data->bones[father].init.trans;
+				bone.init.trans -= eobj->m_skeleton->bones[father].init.trans;
 			}
 			bone.transinit_global = bone.init.trans;
 		}
@@ -1217,7 +1217,7 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 
 	/* Build proper mesh */
 	{
-		Skeleton* obj = eobj->c_data;
+		Skeleton* obj = eobj->m_skeleton;
 
 		for(long i = 0; i != obj->nb_bones; i++) {
 			Bone & bone = obj->bones[i];
@@ -1422,7 +1422,7 @@ static EERIE_3DOBJ * TheoToEerie(const char * adr, long size, const res::path & 
 	//***********************************************************
 
 	EERIE_LINKEDOBJ_InitData(eerie);
-	eerie->c_data = NULL;
+	eerie->m_skeleton = NULL;
 	EERIE_CreateCedricData(eerie);
 	return eerie;
 }

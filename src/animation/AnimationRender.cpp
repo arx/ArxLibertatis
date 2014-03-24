@@ -1128,7 +1128,7 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, Skeleton * obj, Entity * io,
 
 void Cedric_AnimateDrawEntityRender(EERIE_3DOBJ *eobj, const Vec3f & pos, Entity *io, float invisibility) {
 
-	Skeleton *obj = eobj->c_data;
+	Skeleton *obj = eobj->m_skeleton;
 
 	if(!obj)
 		return;
@@ -1167,7 +1167,7 @@ void Cedric_AnimateDrawEntityRender(EERIE_3DOBJ *eobj, const Vec3f & pos, Entity
 
 		TransformInfo t(
 			eobj->vertexlist3[link.lidx].v,
-			eobj->c_data->bones[link.lgroup].anim.quat,
+			eobj->m_skeleton->bones[link.lgroup].anim.quat,
 			link.io ? link.io->scale : 1.f,
 			link.obj->vertexlist[link.lidx2].v - link.obj->vertexlist[link.obj->origin].v);
 
@@ -1370,7 +1370,7 @@ static void Cedric_ConcatenateTM(Skeleton & rig, const TransformInfo & t) {
  */
 void Cedric_TransformVerts(EERIE_3DOBJ *eobj, const Vec3f & pos) {
 
-	Skeleton & rig = *eobj->c_data;
+	Skeleton & rig = *eobj->m_skeleton;
 
 	// Transform & project all vertices
 	for(long i = 0; i != rig.nb_bones; i++) {
@@ -1561,8 +1561,8 @@ void EERIEDrawAnimQuatUpdate(EERIE_3DOBJ *eobj, ANIM_USE * animlayer,const Angle
 		extraScale.scale = Vec3f_ONE;
 	}
 
-	arx_assert(eobj->c_data);
-	Skeleton & skeleton = *eobj->c_data;
+	arx_assert(eobj->m_skeleton);
+	Skeleton & skeleton = *eobj->m_skeleton;
 
 	Cedric_AnimateDrawEntity(skeleton, animlayer, extraRotation, animBlend, extraScale);
 

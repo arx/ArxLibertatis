@@ -366,7 +366,7 @@ struct EERIE_3DOBJ
 		fastaccess.carry_attach = 0;
 		fastaccess.padding_ = 0;
 
-		c_data = NULL;
+		m_skeleton = NULL;
 	}
 	
 	void clear();
@@ -404,7 +404,7 @@ struct EERIE_3DOBJ
 	CLOTHES_DATA * cdata;
 	COLLISION_SPHERES_DATA * sdata;
 	EERIE_FASTACCESS fastaccess;
-	Skeleton * c_data;
+	Skeleton * m_skeleton;
 	
 };
 
