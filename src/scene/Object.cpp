@@ -1119,8 +1119,8 @@ void EERIE_RemoveCedricData(EERIE_3DOBJ * eobj) {
 
 void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 	
-	eobj->c_data = new EERIE_C_DATA();
-	memset(eobj->c_data, 0, sizeof(EERIE_C_DATA));
+	eobj->c_data = new Skeleton();
+	memset(eobj->c_data, 0, sizeof(Skeleton));
 
 	if(eobj->nbgroups <= 0) {
 		// If no groups were specified
@@ -1217,7 +1217,7 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 
 	/* Build proper mesh */
 	{
-		EERIE_C_DATA* obj = eobj->c_data;
+		Skeleton* obj = eobj->c_data;
 
 		for(long i = 0; i != obj->nb_bones; i++) {
 			EERIE_BONE & bone = obj->bones[i];

@@ -406,7 +406,7 @@ void Cedric_ApplyLightingFirstPartRefactor(Entity *io) {
 	}
 }
 
-void Cedric_PrepareHalo(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj) {
+void Cedric_PrepareHalo(EERIE_3DOBJ * eobj, Skeleton * obj) {
 	Vec3f cam_vector, t_vector;
 	cam_vector.x = -std::sin(radians(ACTIVECAM->angle.getPitch())) * std::cos(radians(ACTIVECAM->angle.getYaw()));
 	cam_vector.y =  std::sin(radians(ACTIVECAM->angle.getYaw()));
@@ -511,7 +511,7 @@ bool Cedric_IO_Visible(const Vec3f & pos) {
 }
 
 /* Object dynamic lighting */
-static void Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, const ColorMod & colorMod) {
+static void Cedric_ApplyLighting(EERIE_3DOBJ * eobj, Skeleton * obj, const ColorMod & colorMod) {
 
 	/* Apply light on all vertices */
 	for(int i = 0; i != obj->nb_bones; i++) {
@@ -886,7 +886,7 @@ struct HaloInfo {
 //-----------------------------------------------------------------------------
 extern long IN_BOOK_DRAW;
 
-void PrepareAnimatedObjectHalo(HaloInfo & haloInfo, const Vec3f& pos, EERIE_C_DATA* obj, Entity *use_io, EERIE_3DOBJ* eobj)
+void PrepareAnimatedObjectHalo(HaloInfo & haloInfo, const Vec3f& pos, Skeleton* obj, Entity *use_io, EERIE_3DOBJ* eobj)
 {
 	std::vector<HaloRenderInfo> & halos = haloInfo.halos;
 
@@ -1074,7 +1074,7 @@ void AddAnimatedObjectHalo(HaloInfo & haloInfo, const unsigned short * paf, floa
 	}
 }
 
-static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity * io, const Vec3f & pos, float invisibility) {
+static void Cedric_RenderObject(EERIE_3DOBJ * eobj, Skeleton * obj, Entity * io, const Vec3f & pos, float invisibility) {
 
 	if(invisibility == 1.f)
 		return;
@@ -1128,7 +1128,7 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity *
 
 void Cedric_AnimateDrawEntityRender(EERIE_3DOBJ *eobj, const Vec3f & pos, Entity *io, float invisibility) {
 
-	EERIE_C_DATA *obj = eobj->c_data;
+	Skeleton *obj = eobj->c_data;
 
 	if(!obj)
 		return;
@@ -1247,7 +1247,7 @@ static void StoreEntityMovement(Entity * io, Vec3f & ftr, float scale) {
 /*!
  * Animate skeleton
  */
-static void Cedric_AnimateObject(EERIE_C_DATA * obj, ANIM_USE * animlayer)
+static void Cedric_AnimateObject(Skeleton * obj, ANIM_USE * animlayer)
 {
 	std::vector<unsigned char> grps(obj->nb_bones);
 
@@ -1301,7 +1301,7 @@ static void Cedric_AnimateObject(EERIE_C_DATA * obj, ANIM_USE * animlayer)
 	}
 }
 
-void Cedric_BlendAnimation(EERIE_C_DATA & rig, AnimationBlendStatus * animBlend) {
+void Cedric_BlendAnimation(Skeleton & rig, AnimationBlendStatus * animBlend) {
 
 	if(!animBlend->nb_lastanimvertex) {
 		return;
@@ -1332,7 +1332,7 @@ void Cedric_BlendAnimation(EERIE_C_DATA & rig, AnimationBlendStatus * animBlend)
 /*!
  * Apply transformations on all bones
  */
-static void Cedric_ConcatenateTM(EERIE_C_DATA & rig, const TransformInfo & t) {
+static void Cedric_ConcatenateTM(Skeleton & rig, const TransformInfo & t) {
 
 	for(int i = 0; i != rig.nb_bones; i++) {
 		EERIE_BONE * bone = &rig.bones[i];
@@ -1370,7 +1370,7 @@ static void Cedric_ConcatenateTM(EERIE_C_DATA & rig, const TransformInfo & t) {
  */
 void Cedric_TransformVerts(EERIE_3DOBJ *eobj, const Vec3f & pos) {
 
-	EERIE_C_DATA & rig = *eobj->c_data;
+	Skeleton & rig = *eobj->c_data;
 
 	// Transform & project all vertices
 	for(long i = 0; i != rig.nb_bones; i++) {
@@ -1445,7 +1445,7 @@ void Cedric_UpdateBbox2d(const EERIE_3DOBJ & eobj, EERIE_2D_BBOX & box2D) {
 /*!
  * \brief Apply animation and draw object
  */
-void Cedric_AnimateDrawEntity(EERIE_C_DATA & skeleton, ANIM_USE * animlayer, EERIE_EXTRA_ROTATE * extraRotation, AnimationBlendStatus * animBlend, EERIE_EXTRA_SCALE & extraScale) {
+void Cedric_AnimateDrawEntity(Skeleton & skeleton, ANIM_USE * animlayer, EERIE_EXTRA_ROTATE * extraRotation, AnimationBlendStatus * animBlend, EERIE_EXTRA_SCALE & extraScale) {
 
 	// Initialize the rig
 	for(long i = 0; i != skeleton.nb_bones; i++) {
@@ -1562,7 +1562,7 @@ void EERIEDrawAnimQuatUpdate(EERIE_3DOBJ *eobj, ANIM_USE * animlayer,const Angle
 	}
 
 	arx_assert(eobj->c_data);
-	EERIE_C_DATA & skeleton = *eobj->c_data;
+	Skeleton & skeleton = *eobj->c_data;
 
 	Cedric_AnimateDrawEntity(skeleton, animlayer, extraRotation, animBlend, extraScale);
 

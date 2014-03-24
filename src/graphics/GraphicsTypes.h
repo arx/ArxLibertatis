@@ -336,7 +336,7 @@ struct EERIE_BONE
 	Vec3f			transinit_global;
 };
 
-struct EERIE_C_DATA
+struct Skeleton
 {
 	EERIE_BONE *	bones;
 	long			nb_bones;
@@ -439,7 +439,7 @@ struct EERIE_3DOBJ
 	CLOTHES_DATA * cdata;
 	COLLISION_SPHERES_DATA * sdata;
 	EERIE_FASTACCESS fastaccess;
-	EERIE_C_DATA * c_data;
+	Skeleton * c_data;
 	
 };
 
