@@ -627,6 +627,17 @@ Vec3f angleToVecForArrow(const Anglef & angle) {
 	return vect;
 }
 
+glm::quat angleToQuatForExtraRotation(const Anglef & angle) {
+	Anglef vt1;
+	vt1.setYaw(radians(angle.getRoll()));
+	vt1.setPitch(radians(angle.getPitch()));
+	vt1.setRoll(radians(angle.getYaw()));
+	
+	glm::quat result;
+	QuatFromAngles(&result, &vt1);
+	return result;
+}
+
 //--------------------------------------------------------------------------------------
 // VECTORS Functions
 //--------------------------------------------------------------------------------------

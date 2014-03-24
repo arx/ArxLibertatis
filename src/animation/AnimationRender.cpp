@@ -1442,17 +1442,6 @@ void Cedric_UpdateBbox2d(const EERIE_3DOBJ & eobj, EERIE_2D_BBOX & box2D) {
 	}
 }
 
-glm::quat angleToQuatForExtraRotation(const Anglef & angle) {
-	Anglef vt1;
-	vt1.setYaw(radians(angle.getRoll()));
-	vt1.setPitch(radians(angle.getPitch()));
-	vt1.setRoll(radians(angle.getYaw()));
-	
-	glm::quat result;
-	QuatFromAngles(&result, &vt1);
-	return result;
-}
-
 /*!
  * \brief Apply animation and draw object
  */
