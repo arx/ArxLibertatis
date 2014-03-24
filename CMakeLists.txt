@@ -550,6 +550,7 @@ set(AI_SOURCES
 set(ANIMATION_SOURCES
 	src/animation/Animation.cpp
 	src/animation/AnimationRender.cpp
+	src/animation/Skeleton.cpp
 	src/animation/Intro.cpp
 )
 

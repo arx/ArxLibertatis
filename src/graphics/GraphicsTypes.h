@@ -47,6 +47,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cmath>
 #include <vector>
 
+#include "animation/Skeleton.h"
 #include "audio/AudioTypes.h"
 #include "graphics/BaseGraphicsTypes.h"
 #include "graphics/Color.h"
@@ -242,16 +243,6 @@ struct PHYSICS_BOX_DATA
 	float	storedtiming;
 };
 
-
-struct EERIE_GROUPLIST {
-	std::string name;
-	long origin;
-	std::vector<long> indexes;
-	float siz;
-	
-	EERIE_GROUPLIST() : name(), origin(0), indexes(), siz(0.0f) { }
-};
-
 struct EERIE_ACTIONLIST {
 	std::string name;
 	long idx; //index vertex;
@@ -315,32 +306,6 @@ struct EERIE_FASTACCESS
 };
 
 /////////////////////////////////////////////////////////////////////////////////
-
-struct BoneTransform {
-	glm::quat quat;
-	Vec3f      trans;
-	Vec3f      scale;
-};
-
-struct Bone
-{
-	long				nb_idxvertices;
-	long 		*		idxvertices;
-	EERIE_GROUPLIST *	original_group;
-	long				father;
-
-	BoneTransform anim;
-	BoneTransform last;
-	BoneTransform init;
-
-	Vec3f			transinit_global;
-};
-
-struct Skeleton
-{
-	Bone *	bones;
-	long			nb_bones;
-};
 
 struct EERIE_3DPAD : public Vec3f {
 	float w;
