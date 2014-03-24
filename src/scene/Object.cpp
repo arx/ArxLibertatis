@@ -1079,7 +1079,7 @@ long EERIE_OBJECT_GetGroup(const EERIE_3DOBJ * obj, const string & groupname) {
 	return -1;
 }
 
-void AddIdxToBone(EERIE_BONE * bone, long idx)
+void AddIdxToBone(Bone * bone, long idx)
 {
 	bone->idxvertices = (long *)realloc(bone->idxvertices, sizeof(long) * (bone->nb_idxvertices + 1));
 
@@ -1127,10 +1127,10 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 
 		// Make one bone
 		eobj->c_data->nb_bones = 1;
-		eobj->c_data->bones = new EERIE_BONE[eobj->c_data->nb_bones];
-		memset(eobj->c_data->bones, 0, sizeof(EERIE_BONE)*eobj->c_data->nb_bones);
+		eobj->c_data->bones = new Bone[eobj->c_data->nb_bones];
+		memset(eobj->c_data->bones, 0, sizeof(Bone)*eobj->c_data->nb_bones);
 
-		EERIE_BONE & bone = eobj->c_data->bones[0];
+		Bone & bone = eobj->c_data->bones[0];
 
 		// Add all vertices to the bone
 		for(size_t i = 0; i < eobj->vertexlist.size(); i++)
@@ -1150,16 +1150,16 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 
 		// Alloc the bones
 		eobj->c_data->nb_bones = eobj->nbgroups;
-		eobj->c_data->bones = new EERIE_BONE[eobj->c_data->nb_bones];
+		eobj->c_data->bones = new Bone[eobj->c_data->nb_bones];
 		// TODO memset -> use constructor instead
-		memset(eobj->c_data->bones, 0, sizeof(EERIE_BONE)*eobj->c_data->nb_bones);
+		memset(eobj->c_data->bones, 0, sizeof(Bone)*eobj->c_data->nb_bones);
 
 		bool * temp = new bool[eobj->vertexlist.size()];
 		memset(temp, 0, eobj->vertexlist.size());
 
 		for(long i = eobj->nbgroups - 1; i >= 0; i--) {
 			EERIE_GROUPLIST & group = eobj->grouplist[i];
-			EERIE_BONE & bone = eobj->c_data->bones[i];
+			Bone & bone = eobj->c_data->bones[i];
 
 			EERIE_VERTEX * v_origin = &eobj->vertexlist[group.origin];
 
@@ -1204,7 +1204,7 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 		}
 		
 		for(long i = eobj->nbgroups - 1; i >= 0; i--) {
-			EERIE_BONE & bone = eobj->c_data->bones[i];
+			Bone & bone = eobj->c_data->bones[i];
 
 			if(bone.father >= 0) {
 				long father = bone.father;
@@ -1220,7 +1220,7 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 		Skeleton* obj = eobj->c_data;
 
 		for(long i = 0; i != obj->nb_bones; i++) {
-			EERIE_BONE & bone = obj->bones[i];
+			Bone & bone = obj->bones[i];
 
 			if(bone.father >= 0) {
 				/* Rotation*/

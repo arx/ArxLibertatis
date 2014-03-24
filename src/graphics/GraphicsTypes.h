@@ -322,7 +322,7 @@ struct BoneTransform {
 	Vec3f      scale;
 };
 
-struct EERIE_BONE
+struct Bone
 {
 	long				nb_idxvertices;
 	long 		*		idxvertices;
@@ -338,7 +338,7 @@ struct EERIE_BONE
 
 struct Skeleton
 {
-	EERIE_BONE *	bones;
+	Bone *	bones;
 	long			nb_bones;
 };
 

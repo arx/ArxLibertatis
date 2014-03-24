@@ -1285,7 +1285,7 @@ static void Cedric_AnimateObject(Skeleton * obj, ANIM_USE * animlayer)
 				grps[j] = 1;
 
 			if(eanim->nb_key_frames != 1) {
-				EERIE_BONE & bone = obj->bones[j];
+				Bone & bone = obj->bones[j];
 
 				BoneTransform temp;
 
@@ -1320,7 +1320,7 @@ void Cedric_BlendAnimation(Skeleton & rig, AnimationBlendStatus * animBlend) {
 	}
 
 	for(long i = 0; i < rig.nb_bones; i++) {
-		EERIE_BONE * bone = &rig.bones[i];
+		Bone * bone = &rig.bones[i];
 
 		bone->init.quat = Quat_Slerp(bone->last.quat, bone->init.quat, timm);
 
@@ -1335,10 +1335,10 @@ void Cedric_BlendAnimation(Skeleton & rig, AnimationBlendStatus * animBlend) {
 static void Cedric_ConcatenateTM(Skeleton & rig, const TransformInfo & t) {
 
 	for(int i = 0; i != rig.nb_bones; i++) {
-		EERIE_BONE * bone = &rig.bones[i];
+		Bone * bone = &rig.bones[i];
 
 		if(bone->father >= 0) { // Child Bones
-			EERIE_BONE * parent = &rig.bones[bone->father];
+			Bone * parent = &rig.bones[bone->father];
 			// Rotation
 			bone->anim.quat = parent->anim.quat * bone->init.quat;
 
@@ -1374,7 +1374,7 @@ void Cedric_TransformVerts(EERIE_3DOBJ *eobj, const Vec3f & pos) {
 
 	// Transform & project all vertices
 	for(long i = 0; i != rig.nb_bones; i++) {
-		EERIE_BONE & bone = rig.bones[i];
+		Bone & bone = rig.bones[i];
 
 		glm::mat4x4 matrix = glm::toMat4(bone.anim.quat);
 		
@@ -1449,7 +1449,7 @@ void Cedric_AnimateDrawEntity(Skeleton & skeleton, ANIM_USE * animlayer, EERIE_E
 
 	// Initialize the rig
 	for(long i = 0; i != skeleton.nb_bones; i++) {
-		EERIE_BONE & bone = skeleton.bones[i];
+		Bone & bone = skeleton.bones[i];
 
 		bone.init.quat = glm::quat();
 		bone.init.trans = bone.transinit_global;
@@ -1470,7 +1470,7 @@ void Cedric_AnimateDrawEntity(Skeleton & skeleton, ANIM_USE * animlayer, EERIE_E
 	Cedric_AnimateObject(&skeleton, animlayer);
 
 	if(extraScale.groupIndex != -1) {
-		EERIE_BONE & bone = skeleton.bones[extraScale.groupIndex];
+		Bone & bone = skeleton.bones[extraScale.groupIndex];
 
 		bone.init.scale += extraScale.scale;
 	}
