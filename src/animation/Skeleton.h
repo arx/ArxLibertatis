@@ -28,38 +28,41 @@
 #include "math/Types.h"
 
 struct EERIE_GROUPLIST {
-	std::string name;
-	long origin;
+	std::string       name;
+	long              origin;
 	std::vector<long> indexes;
-	float siz;
+	float             siz;
 	
-	EERIE_GROUPLIST() : name(), origin(0), indexes(), siz(0.0f) { }
+	EERIE_GROUPLIST()
+		: name()
+		, origin(0)
+		, indexes()
+		, siz(0.0f)
+	{}
 };
 
 struct BoneTransform {
 	glm::quat quat;
-	Vec3f      trans;
-	Vec3f      scale;
+	Vec3f     trans;
+	Vec3f     scale;
 };
 
-struct Bone
-{
-	long				nb_idxvertices;
-	long 		*		idxvertices;
-	EERIE_GROUPLIST *	original_group;
-	long				father;
-
-	BoneTransform anim;
-	BoneTransform last;
-	BoneTransform init;
-
-	Vec3f			transinit_global;
+struct Bone {
+	long              nb_idxvertices;
+	long            * idxvertices;
+	EERIE_GROUPLIST * original_group;
+	long              father;
+	
+	BoneTransform     anim;
+	BoneTransform     last;
+	BoneTransform     init;
+	
+	Vec3f             transinit_global;
 };
 
-struct Skeleton
-{
-	Bone *	bones;
-	long			nb_bones;
+struct Skeleton {
+	Bone * bones;
+	long   nb_bones;
 };
 
 #endif // ARX_ANIMATION_SKELETON_H
