@@ -613,14 +613,14 @@ float ARX_EQUIPMENT_ComputeDamages(Entity * io_source, Entity * io_target, float
 	Vec3f pos = io_target->pos;
 	float power = std::min(1.f, dmgs * 0.05f) * 0.1f + 0.9f;
 	
-	ARX_SOUND_PlayCollision(*amat, *wmat, power, 1.f, &pos, io_source);
+	ARX_SOUND_PlayCollision(*amat, *wmat, power, 1.f, pos, io_source);
 	
 	float chance = 100.f - (ac - attack); 
 	if(rnd() * 100.f > chance) {
 		return 0.f;
 	}
 	
-	ARX_SOUND_PlayCollision("flesh", *wmat, power, 1.f, &pos, io_source);
+	ARX_SOUND_PlayCollision("flesh", *wmat, power, 1.f, pos, io_source);
 	
 	if(dmgs > 0.f) {
 		
@@ -818,11 +818,11 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 								io_weapon = NULL;
 						} else {
 							if(target->ioflags & IO_ITEM)
-								ARX_PARTICLES_Spawn_Spark(&pos, rnd() * 3.f, 0);
+								ARX_PARTICLES_Spawn_Spark(pos, rnd() * 3.f, 0);
 							else
-								ARX_PARTICLES_Spawn_Spark(&pos, rnd() * 30.f, 0);
+								ARX_PARTICLES_Spawn_Spark(pos, rnd() * 30.f, 0);
 
-							ARX_NPC_SpawnAudibleSound(&pos, io_source);
+							ARX_NPC_SpawnAudibleSound(pos, io_source);
 
 							if(io_source == entities.player())
 								HIT_SPARK = 1;
@@ -838,8 +838,8 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 						if(target->ioflags & IO_ITEM)
 							nb = 1;
 
-						ARX_PARTICLES_Spawn_Spark(&pos, (float)nb, 0); 
-						ARX_NPC_SpawnAudibleSound(&pos, io_source);
+						ARX_PARTICLES_Spawn_Spark(pos, (float)nb, 0); 
+						ARX_NPC_SpawnAudibleSound(pos, io_source);
 						target->spark_n_blood = SP_SPARKING;
 
 						if(!(target->ioflags & IO_NPC))
@@ -855,8 +855,8 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 						if(target->ioflags & IO_ITEM)
 							nb = 1;
 
-						ARX_PARTICLES_Spawn_Spark(&pos, (float)nb, 0);
-						ARX_NPC_SpawnAudibleSound(&pos, io_source);
+						ARX_PARTICLES_Spawn_Spark(pos, (float)nb, 0);
+						ARX_NPC_SpawnAudibleSound(pos, io_source);
 						target->spark_n_blood = SP_SPARKING;
 
 						if (!(target->ioflags & IO_NPC))
@@ -881,7 +881,7 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 								char bkg_material[128];
 
 								if(ARX_MATERIAL_GetNameById(target->material, bkg_material))
-									ARX_SOUND_PlayCollision(*weapon_material, bkg_material, 1.f, 1.f, &sphere.origin, NULL);
+									ARX_SOUND_PlayCollision(*weapon_material, bkg_material, 1.f, 1.f, sphere.origin, NULL);
 							}
 						}
 					}
@@ -910,13 +910,13 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 						if(ep && ep->tex && !ep->tex->m_texName.empty())
 							bkg_material = GetMaterialString(ep->tex->m_texName);
 
-						ARX_SOUND_PlayCollision(*weapon_material, bkg_material, 1.f, 1.f, &sphere.origin, io_source);
+						ARX_SOUND_PlayCollision(*weapon_material, bkg_material, 1.f, 1.f, sphere.origin, io_source);
 					}
 				}
 			}
 
-			ARX_PARTICLES_Spawn_Spark(&sphere.origin, rnd() * 10.f, 0);
-			ARX_NPC_SpawnAudibleSound(&sphere.origin, io_source);
+			ARX_PARTICLES_Spawn_Spark(sphere.origin, rnd() * 10.f, 0);
+			ARX_NPC_SpawnAudibleSound(sphere.origin, io_source);
 		}
 	}
 

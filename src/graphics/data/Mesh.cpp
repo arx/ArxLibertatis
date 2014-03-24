@@ -260,7 +260,7 @@ EERIEPOLY * CheckInPoly(float x, float y, float z, float * needY)
 				&& ep->max.y >= poss.y
 				&& ep != found
 				&& PointIn2DPolyXZ(ep, poss.x, poss.z)
-				&& GetTruePolyY(ep, &poss, &rz)
+				&& GetTruePolyY(ep, poss, &rz)
 				&& rz >= poss.y
 				&& (!found || (found && rz <= foundY))
 				) {
@@ -364,7 +364,7 @@ EERIEPOLY * GetMinPoly(float x, float y, float z) {
 		
 		if(PointIn2DPolyXZ(ep, x, z)) {
 			float ret;
-			if(GetTruePolyY(ep, &pos, &ret)) {
+			if(GetTruePolyY(ep, pos, &ret)) {
 				if(!found || ret > foundy) {
 					found = ep;
 					foundy = ret;
@@ -396,7 +396,7 @@ EERIEPOLY * GetMaxPoly(float x, float y, float z) {
 		
 		if(PointIn2DPolyXZ(ep, x, z)) {
 			float ret;
-			if(GetTruePolyY(ep, &pos, &ret)) {
+			if(GetTruePolyY(ep, pos, &ret)) {
 				if(!found || ret < foundy) {
 					found = ep;
 					foundy = ret;
@@ -408,9 +408,9 @@ EERIEPOLY * GetMaxPoly(float x, float y, float z) {
 	return found;
 }
 
-EERIEPOLY * EEIsUnderWater(const Vec3f * pos) {
+EERIEPOLY * EEIsUnderWater(const Vec3f & pos) {
 	
-	FAST_BKG_DATA * feg = getFastBackgroundData(pos->x, pos->z);
+	FAST_BKG_DATA * feg = getFastBackgroundData(pos.x, pos.z);
 	if(!feg) {
 		return NULL;
 	}
@@ -421,7 +421,7 @@ EERIEPOLY * EEIsUnderWater(const Vec3f * pos) {
 		EERIEPOLY * ep = feg->polyin[k];
 		
 		if(ep->type & POLY_WATER) {
-			if(ep->max.y < pos->y && PointIn2DPolyXZ(ep, pos->x, pos->z)) {
+			if(ep->max.y < pos.y && PointIn2DPolyXZ(ep, pos.x, pos.z)) {
 				if(!found || ep->max.y < found->max.y) {
 					found = ep;
 				}
@@ -431,7 +431,7 @@ EERIEPOLY * EEIsUnderWater(const Vec3f * pos) {
 	return found;
 }
 
-bool GetTruePolyY(const EERIEPOLY * ep, const Vec3f * pos, float * ret) {
+bool GetTruePolyY(const EERIEPOLY * ep, const Vec3f & pos, float * ret) {
 	
 	
 	Vec3f s21 = ep->v[1].p - ep->v[0].p;
@@ -446,7 +446,7 @@ bool GetTruePolyY(const EERIEPOLY * ep, const Vec3f * pos, float * ret) {
 	// uses s21.x instead of d
 	s21.x = ep->v[0].p.x * n.x + ep->v[0].p.y * n.y + ep->v[0].p.z * n.z;
 	
-	s21.x = (s21.x - (n.x * pos->x) - (n.z * pos->z)) / n.y;
+	s21.x = (s21.x - (n.x * pos.x) - (n.z * pos.z)) / n.y;
 	
 	// Perhaps we can remove the two following lines... (need to test)
 	if (s21.x < ep->min.y) s21.x = ep->min.y;
@@ -967,7 +967,7 @@ void UpdateIORoom(Entity * io)
 	Vec3f pos = io->pos;
 	pos.y -= 60.f;
 
-	long roo = ARX_PORTALS_GetRoomNumForPosition(&pos, 2);
+	long roo = ARX_PORTALS_GetRoomNumForPosition(pos, 2);
 
 	if(roo >= 0)
 		io->room = checked_range_cast<short>(roo);
@@ -1037,9 +1037,9 @@ static float GetRoomDistance(long i, long j, Vec3f * p1, Vec3f * p2)
 	return RoomDistance[offs].distance;
 }
 
-float SP_GetRoomDist(Vec3f * pos, Vec3f * c_pos, long io_room, long Cam_Room)
+float SP_GetRoomDist(const Vec3f & pos, const Vec3f & c_pos, long io_room, long Cam_Room)
 {
-	float dst = fdist(*pos, *c_pos);
+	float dst = fdist(pos, c_pos);
 
 	if(dst < 150.f)
 		return dst;
@@ -1054,8 +1054,8 @@ float SP_GetRoomDist(Vec3f * pos, Vec3f * c_pos, long io_room, long Cam_Room)
 		float v = GetRoomDistance(Cam_Room, Room, &p1, &p2);
 
 		if(v > 0.f) {
-			v += fdist(*pos, p2);
-			v += fdist(*c_pos, p1);
+			v += fdist(pos, p2);
+			v += fdist(c_pos, p1);
 			return v;
 		}
 	}

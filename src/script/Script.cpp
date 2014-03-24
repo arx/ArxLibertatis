@@ -535,8 +535,8 @@ ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const string & 
 						if(entity->room_flags & 1) {
 							UpdateIORoom(entity);
 						}
-						long Player_Room = ARX_PORTALS_GetRoomNumForPosition(&player.pos, 1);
-						*fcontent = SP_GetRoomDist(&entity->pos, &player.pos, entity->room, Player_Room);
+						long Player_Room = ARX_PORTALS_GetRoomNumForPosition(player.pos, 1);
+						*fcontent = SP_GetRoomDist(entity->pos, player.pos, entity->room, Player_Room);
 						return TYPE_FLOAT;
 					}
 					
@@ -559,7 +559,7 @@ ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const string & 
 								UpdateIORoom(entities[t]);
 							}
 							
-							*fcontent = SP_GetRoomDist(&pos, &pos2, entity->room, entities[t]->room);
+							*fcontent = SP_GetRoomDist(pos, pos2, entity->room, entities[t]->room);
 							
 						} else {
 							// Out of this world item

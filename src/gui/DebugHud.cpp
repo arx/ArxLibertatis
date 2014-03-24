@@ -113,7 +113,7 @@ void ShowInfoText() {
 	EERIEPOLY * ep = CheckInPoly(player.pos.x, player.pos.y, player.pos.z);
 	float tempo = 0.f;
 
-	if(ep && GetTruePolyY(ep, &player.pos, &tempo))
+	if(ep && GetTruePolyY(ep, player.pos, &tempo))
 		poss = tempo;
 
 	sprintf(tex, "Position  x:%7.0f y:%7.0f [%7.0f] z:%6.0f a%3.0f b%3.0f FOK %3.0f",

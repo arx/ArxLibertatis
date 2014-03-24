@@ -1999,7 +1999,7 @@ static void ARX_PLAYER_MakeStepNoise() {
 		}
 		
 		Vec3f pos = player.basePosition();
-		ARX_NPC_NeedStepSound(entities.player(), &pos, volume, factor);
+		ARX_NPC_NeedStepSound(entities.player(), pos, volume, factor);
 	}
 	
 	while(currentdistance >= STEP_DISTANCE) {
@@ -2132,7 +2132,7 @@ void PlayerMovementIterate(float DeltaTime) {
 			float t = (float)float(arxtime) - (float)REQUEST_JUMP;
 			if(t >= 0.f && t <= 350.f) {
 				REQUEST_JUMP = 0;
-				ARX_NPC_SpawnAudibleSound(&player.pos, entities.player());
+				ARX_NPC_SpawnAudibleSound(player.pos, entities.player());
 				ARX_SPEECH_Launch_No_Unicode_Seek("player_jump", entities.player());
 				player.onfirmground = 0;
 				player.jumpphase = JumpStart;

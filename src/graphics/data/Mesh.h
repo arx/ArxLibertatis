@@ -144,9 +144,9 @@ EERIEPOLY * EECheckInPoly(const Vec3f * pos,float * needY = NULL);
  * 
  * @return the lowest water polygon pos is under, or NULL if pos is not under water.
  */
-EERIEPOLY * EEIsUnderWater(const Vec3f * pos);
+EERIEPOLY * EEIsUnderWater(const Vec3f & pos);
 
-bool GetTruePolyY(const EERIEPOLY * ep, const Vec3f * pos,float * ret);
+bool GetTruePolyY(const EERIEPOLY * ep, const Vec3f & pos, float * ret);
 bool IsAnyPolyThere(float x, float z);
 bool IsVertexIdxInGroup(EERIE_3DOBJ * eobj,long idx,long grs);
 EERIEPOLY * GetMinPoly(float x, float y, float z);
@@ -256,7 +256,7 @@ struct ROOM_DIST_DATA
 extern ROOM_DIST_DATA * RoomDistance;
 
 void UpdateIORoom(Entity * io);
-float SP_GetRoomDist(Vec3f * pos,Vec3f * c_pos,long io_room,long Cam_Room);
+float SP_GetRoomDist(const Vec3f & pos, const Vec3f & c_pos, long io_room, long Cam_Room);
 float CEDRIC_PtIn2DPolyProjV2(EERIE_3DOBJ * obj,EERIE_FACE * ef, float x, float z);
 void EERIE_PORTAL_ReleaseOnlyVertexBuffer();
 void ComputePortalVertexBuffer();

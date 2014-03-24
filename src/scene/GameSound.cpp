@@ -648,7 +648,7 @@ long ARX_SOUND_PlaySpeech(const res::path & name, const Entity * io)
 	return sample_id;
 }
 
-long ARX_SOUND_PlayCollision(long mat1, long mat2, float volume, float power, Vec3f * position, Entity * source)
+long ARX_SOUND_PlayCollision(long mat1, long mat2, float volume, float power, const Vec3f & position, Entity * source)
 {
 	if (!bIsActive) return 0;
 
@@ -675,22 +675,14 @@ long ARX_SOUND_PlayCollision(long mat1, long mat2, float volume, float power, Ve
 	presence = GetSamplePresenceFactor(sample_name);
 	channel.falloff.start = ARX_SOUND_DEFAULT_FALLSTART * presence;
 	channel.falloff.end = ARX_SOUND_DEFAULT_FALLEND * presence;
-
-	if (position)
-	{
-		if (ACTIVECAM && fartherThan(ACTIVECAM->orgTrans.pos, *position, ARX_SOUND_REFUSE_DISTANCE))
-			return -1;
-	}
+	
+	if(ACTIVECAM && fartherThan(ACTIVECAM->orgTrans.pos, position, ARX_SOUND_REFUSE_DISTANCE))
+		return -1;
 	
 	//Launch 'ON HEAR' script event
 	ARX_NPC_SpawnAudibleSound(position, source, power, presence);
 	
-	if(position) {
-		channel.position = *position;
-	} else {
-		ARX_PLAYER_FrontPos(&channel.position);
-	}
-	
+	channel.position = position;
 	channel.pitch = 0.9F + 0.2F * rnd();
 	channel.volume = volume;
 	audio::samplePlay(sample_id, channel);
@@ -701,7 +693,7 @@ long ARX_SOUND_PlayCollision(long mat1, long mat2, float volume, float power, Ve
 	return (long)(channel.pitch * length);
 }
 
-long ARX_SOUND_PlayCollision(const string & name1, const string & name2, float volume, float power, Vec3f * position, Entity * source) {
+long ARX_SOUND_PlayCollision(const string & name1, const string & name2, float volume, float power, const Vec3f & position, Entity * source) {
 	
 	if(!bIsActive) {
 		return 0;
@@ -743,13 +735,9 @@ long ARX_SOUND_PlayCollision(const string & name1, const string & name2, float v
 	// Launch 'ON HEAR' script event
 	ARX_NPC_SpawnAudibleSound(position, source, power, presence);
 	
-	if(position) {
-		channel.position = *position;
-		if(ACTIVECAM && fartherThan(ACTIVECAM->orgTrans.pos, *position, ARX_SOUND_REFUSE_DISTANCE)) {
-			return -1;
-		}
-	} else {
-		ARX_PLAYER_FrontPos(&channel.position);
+	channel.position = position;
+	if(ACTIVECAM && fartherThan(ACTIVECAM->orgTrans.pos, position, ARX_SOUND_REFUSE_DISTANCE)) {
+		return -1;
 	}
 	
 	channel.pitch = 0.975f + 0.5f * rnd();

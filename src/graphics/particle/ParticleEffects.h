@@ -195,9 +195,9 @@ void ARX_PARTICLES_Spawn_Blood(Vec3f * pos, float dmgs, long source);
 void ARX_PARTICLES_Spawn_Blood2(const Vec3f & pos, float dmgs, Color col, Entity * io);
 void ARX_PARTICLES_Spawn_Lava_Burn(Vec3f * pos, Entity * io = NULL);
 void ARX_PARTICLES_Add_Smoke(Vec3f * pos, long flags, long amount, Color3f * rgb = NULL); // flag 1 = randomize pos
-void ARX_PARTICLES_Spawn_Spark(Vec3f * pos, float dmgs, long flags);
+void ARX_PARTICLES_Spawn_Spark(const Vec3f & pos, float dmgs, long flags);
 void ARX_PARTICLES_Spawn_Splat(const Vec3f & pos, float dmgs, Color col);
-void ARX_PARTICLES_SpawnWaterSplash(const Vec3f * pos);
+void ARX_PARTICLES_SpawnWaterSplash(const Vec3f & pos);
 
 void ARX_BOOMS_ClearAllPolyBooms();
 void ARX_BOOMS_Add(Vec3f * pos, long type = 0);

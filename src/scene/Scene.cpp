@@ -273,7 +273,7 @@ bool VisibleSphere(float x, float y, float z, float radius) {
 	if(fartherThan(pos, ACTIVECAM->orgTrans.pos, ACTIVECAM->cdepth*0.5f + radius))
 		return false;
 
-	long room_num = ARX_PORTALS_GetRoomNumForPosition(&pos);
+	long room_num = ARX_PORTALS_GetRoomNumForPosition(pos);
 
 	if (room_num>=0)
 	{
@@ -375,12 +375,12 @@ bool ARX_SCENE_PORTAL_ClipIO(Entity * io, const Vec3f & position) {
 
 			room_num = io->room;//
 		} else {
-			room_num = ARX_PORTALS_GetRoomNumForPosition(&posi);
+			room_num = ARX_PORTALS_GetRoomNumForPosition(posi);
 		}
 
 		if(room_num == -1) {
 			posi.y = position.y - 120;
-			room_num = ARX_PORTALS_GetRoomNumForPosition(&posi);
+			room_num = ARX_PORTALS_GetRoomNumForPosition(posi);
 		}
 
 		if(room_num >= 0 && size_t(room_num) < RoomDraw.size()) {
@@ -413,17 +413,17 @@ bool ARX_SCENE_PORTAL_ClipIO(Entity * io, const Vec3f & position) {
 	return false;
 }
 
-long ARX_PORTALS_GetRoomNumForPosition2(Vec3f * pos,long flag,float * height)
+long ARX_PORTALS_GetRoomNumForPosition2(const Vec3f & pos, long flag, float * height)
 {
 	EERIEPOLY * ep; 
 
 	if(flag & 1) {
-		ep=CheckInPoly(pos->x,pos->y-150.f,pos->z);
+		ep=CheckInPoly(pos.x,pos.y-150.f,pos.z);
 
 		if (!ep)
-			ep=CheckInPoly(pos->x,pos->y-1.f,pos->z);
+			ep=CheckInPoly(pos.x,pos.y-1.f,pos.z);
 	} else {
-		ep=CheckInPoly(pos->x,pos->y,pos->z);
+		ep=CheckInPoly(pos.x,pos.y,pos.z);
 	}
 
 	if(ep && ep->room>-1) {
@@ -434,7 +434,7 @@ long ARX_PORTALS_GetRoomNumForPosition2(Vec3f * pos,long flag,float * height)
 	}
 
 	// Security... ?
-	ep=GetMinPoly(pos->x,pos->y,pos->z);
+	ep=GetMinPoly(pos.x,pos.y,pos.z);
 
 	if(ep && ep->room > -1) {
 		if(height)
@@ -442,7 +442,7 @@ long ARX_PORTALS_GetRoomNumForPosition2(Vec3f * pos,long flag,float * height)
 
 		return ep->room;
 	} else if( !(flag & 1) ) {
-		ep=CheckInPoly(pos->x,pos->y,pos->z);
+		ep=CheckInPoly(pos.x,pos.y,pos.z);
 
 		if(ep && ep->room > -1) {
 			if(height)
@@ -454,7 +454,7 @@ long ARX_PORTALS_GetRoomNumForPosition2(Vec3f * pos,long flag,float * height)
 
 	if(flag & 2) {
 		float off=20.f;
-		ep=CheckInPoly(pos->x-off,pos->y-off,pos->z);
+		ep=CheckInPoly(pos.x-off,pos.y-off,pos.z);
 
 		if(ep && ep->room > -1) {
 			if(height)
@@ -463,7 +463,7 @@ long ARX_PORTALS_GetRoomNumForPosition2(Vec3f * pos,long flag,float * height)
 			return ep->room;
 		}
 
-		ep=CheckInPoly(pos->x-off,pos->y-20,pos->z-off);
+		ep=CheckInPoly(pos.x-off,pos.y-20,pos.z-off);
 
 		if(ep && ep->room > -1) {
 			if(height)
@@ -472,7 +472,7 @@ long ARX_PORTALS_GetRoomNumForPosition2(Vec3f * pos,long flag,float * height)
 			return ep->room;
 		}
 
-		ep=CheckInPoly(pos->x-off,pos->y-20,pos->z+off);
+		ep=CheckInPoly(pos.x-off,pos.y-20,pos.z+off);
 
 		if(ep && ep->room > -1) {
 			if(height)
@@ -481,7 +481,7 @@ long ARX_PORTALS_GetRoomNumForPosition2(Vec3f * pos,long flag,float * height)
 			return ep->room;
 		}
 
-		ep=CheckInPoly(pos->x+off,pos->y-20,pos->z);
+		ep=CheckInPoly(pos.x+off,pos.y-20,pos.z);
 
 		if(ep && ep->room>-1) {
 			if(height)
@@ -490,7 +490,7 @@ long ARX_PORTALS_GetRoomNumForPosition2(Vec3f * pos,long flag,float * height)
 			return ep->room;
 		}
 
-		ep=CheckInPoly(pos->x+off,pos->y-20,pos->z+off);
+		ep=CheckInPoly(pos.x+off,pos.y-20,pos.z+off);
 
 		if(ep && ep->room > -1) {
 			if(height)
@@ -499,7 +499,7 @@ long ARX_PORTALS_GetRoomNumForPosition2(Vec3f * pos,long flag,float * height)
 			return ep->room;
 		}
 
-		ep=CheckInPoly(pos->x+off,pos->y-20,pos->z-off);
+		ep=CheckInPoly(pos.x+off,pos.y-20,pos.z-off);
 
 		if(ep && ep->room > -1) {
 			if(height)
@@ -554,7 +554,7 @@ long ARX_PORTALS_GetRoomNumForCamera(float * height)
 }
 
 // flag==1 for player
-long ARX_PORTALS_GetRoomNumForPosition(Vec3f * pos,long flag)
+long ARX_PORTALS_GetRoomNumForPosition(const Vec3f & pos,long flag)
 {
 	long num;
 	float height;
@@ -573,18 +573,18 @@ long ARX_PORTALS_GetRoomNumForPosition(Vec3f * pos,long flag)
 				EERIE_PORTALS *po = &portals->portals[portals->room[n].portals[lll]];
 				EERIEPOLY *epp = &po->poly;
 
-				if(PointIn2DPolyXZ(epp, pos->x, pos->z)) {
+				if(PointIn2DPolyXZ(epp, pos.x, pos.z)) {
 					float yy;
 
-					if(GetTruePolyY(epp,pos,&yy)) {
+					if(GetTruePolyY(epp, pos, &yy)) {
 						if(height > yy) {
-							if(yy >= pos->y && yy-pos->y < nearest_dist) {
+							if(yy >= pos.y && yy-pos.y < nearest_dist) {
 								if(epp->norm.y>0)
 									nearest = po->room_2;
 								else
 									nearest = po->room_1;
 
-								nearest_dist = yy - pos->y;
+								nearest_dist = yy - pos.y;
 							}
 						}
 					}
@@ -1446,7 +1446,7 @@ void ARX_SCENE_Update() {
 
 	ResetTileLights();
 
-	long room_num=ARX_PORTALS_GetRoomNumForPosition(&ACTIVECAM->orgTrans.pos,1);
+	long room_num = ARX_PORTALS_GetRoomNumForPosition(ACTIVECAM->orgTrans.pos, 1);
 	if(room_num>-1) {
 
 		ARX_PORTALS_InitDrawnRooms();

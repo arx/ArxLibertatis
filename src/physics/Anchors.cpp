@@ -87,7 +87,7 @@ static EERIEPOLY * ANCHOR_CheckInPolyPrecis(float x, float y, float z) {
 					poss.z = z;
 					float yy;
 
-					if(GetTruePolyY(ep, &poss, &yy) && yy >= y && (!found || (found && (yy <= foundY)))) {
+					if(GetTruePolyY(ep, poss, &yy) && yy >= y && (!found || (found && (yy <= foundY)))) {
 						found = ep;
 						foundY = yy;
 					}
@@ -287,7 +287,7 @@ static float ANCHOR_CheckAnythingInCylinder(EERIE_CYLINDER *cyl, CollisionFlags 
 
 	float tempo;
 
-	if(ep && GetTruePolyY(ep, &cyl->origin, &tempo))
+	if(ep && GetTruePolyY(ep, cyl->origin, &tempo))
 		anything = std::min(anything, tempo);
 
 	anything = anything - cyl->origin.y;
@@ -595,7 +595,7 @@ bool CylinderAboveInvalidZone(EERIE_CYLINDER * cyl) {
 
 			count += 1.f;
 			float vy;
-			GetTruePolyY(ep, &pos, &vy);
+			GetTruePolyY(ep, pos, &vy);
 
 			if(EEfabs(vy - cyl->origin.y) > 160.f)
 				failcount++;

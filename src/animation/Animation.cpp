@@ -710,11 +710,11 @@ suite:
 					if(eanim->lastframe < fr && eanim->lastframe != -1) {
 						for(long n = eanim->lastframe + 1; n <= fr; n++) {
 							if(eanim->cur_anim->anims[eanim->altidx_cur]->frames[n].flag == 9)
-								ARX_NPC_NeedStepSound(io, &io->pos);
+								ARX_NPC_NeedStepSound(io, io->pos);
 						}
 					}
 					else if(eanim->cur_anim->anims[eanim->altidx_cur]->frames[fr].flag == 9)
-						ARX_NPC_NeedStepSound(io, &io->pos);
+						ARX_NPC_NeedStepSound(io, io->pos);
 				}
 			}
 			

@@ -76,7 +76,7 @@ const size_t MAX_THROWN_OBJECTS = 100;
 
 ARX_THROWN_OBJECT Thrown[MAX_THROWN_OBJECTS];
 
-static bool IsPointInField(Vec3f * pos) {
+static bool IsPointInField(const Vec3f & pos) {
 
 	for(size_t i = 0; i < MAX_SPELLS; i++) {
 
@@ -88,7 +88,7 @@ static bool IsPointInField(Vec3f * pos) {
 				EERIE_CYLINDER cyl;
 				cyl.height = -35.f;
 				cyl.radius = 35.f;
-				cyl.origin = *pos + Vec3f(0.f, 17.5f, 0.f);
+				cyl.origin = pos + Vec3f(0.f, 17.5f, 0.f);
 
 				if(CylinderPlatformCollide(&cyl, pfrm) != 0.f) {
 					return true;
@@ -266,7 +266,7 @@ float ARX_THROWN_ComputeDamages(long thrownum, long source, long target)
 
 	power = power * 0.15f + 0.85f;
 
-	ARX_SOUND_PlayCollision(*amat, wmat, power, 1.f, &Thrown[thrownum].position, io_source);
+	ARX_SOUND_PlayCollision(*amat, wmat, power, 1.f, Thrown[thrownum].position, io_source);
 
 	dmgs *= backstab;
 	dmgs -= dmgs * (absorb * ( 1.0f / 100 ));
@@ -348,7 +348,7 @@ void CheckExp(long i) {
 		DoSphericDamage(&Thrown[i].position, 4.f * 2, 50.f,
 						DAMAGE_AREA, DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL, 0);
 		ARX_SOUND_PlaySFX(SND_SPELL_FIRE_HIT, &Thrown[i].position);
-		ARX_NPC_SpawnAudibleSound(&Thrown[i].position, entities.player());
+		ARX_NPC_SpawnAudibleSound(Thrown[i].position, entities.player());
 		long id = GetFreeDynLight();
 
 		if(id != -1 && framedelay > 0) {
@@ -479,7 +479,7 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 
 			Vec3f wpos = thrownObj->position;
 			wpos.y += 20.f;
-			EERIEPOLY * ep = EEIsUnderWater(&wpos);
+			EERIEPOLY * ep = EEIsUnderWater(wpos);
 
 			if(thrownObj->flags & ATO_UNDERWATER) {
 				if(!ep) {
@@ -502,7 +502,7 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 
 				rad *= .5f;
 
-				Vec3f * v0 = &thrownObj->obj->vertexlist3[thrownObj->obj->actionlist[j].idx].v;
+				const Vec3f v0 = thrownObj->obj->vertexlist3[thrownObj->obj->actionlist[j].idx].v;
 				Vec3f dest = original_pos + thrownObj->vector * 95.f;
 				Vec3f orgn = original_pos - thrownObj->vector * 25.f;
 				EERIEPOLY * ep = CheckArrowPolyCollision(&orgn, &dest);
@@ -550,7 +550,7 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 				} else {
 					for(float precision = 0.5f; precision <= 6.f; precision += 0.5f) {
 						EERIE_SPHERE sphere;
-						sphere.origin = *v0 + thrownObj->vector * precision * 4.5f;
+						sphere.origin = v0 + thrownObj->vector * precision * 4.5f;
 						sphere.radius = rad + 3.f;
 
 						std::vector<long> sphereContent;

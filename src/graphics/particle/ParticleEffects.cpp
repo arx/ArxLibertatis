@@ -513,12 +513,8 @@ long SPARK_COUNT = 0;
 
 // flag & 1 punch failed
 // flag & 2 punch success
-void ARX_PARTICLES_Spawn_Spark(Vec3f * pos, float dmgs, long flags) {
+void ARX_PARTICLES_Spawn_Spark(const Vec3f & pos, float dmgs, long flags) {
 	
-	if(!pos) {
-		return;
-	}
-
 	long spawn_nb = dmgs;
 	
 	if(SPARK_COUNT < 1000) {
@@ -535,7 +531,7 @@ void ARX_PARTICLES_Spawn_Spark(Vec3f * pos, float dmgs, long flags) {
 			return;
 		}
 		
-		pd->oldpos = pd->ov = *pos + randomVec(-5.f, 5.f);
+		pd->oldpos = pd->ov = pos + randomVec(-5.f, 5.f);
 		pd->siz = 2.f;
 		pd->move = randomVec(-6.f, 6.f);
 		
@@ -983,7 +979,7 @@ void ARX_PARTICLES_Spawn_Splat(const Vec3f & pos, float dmgs, Color col) {
 	}
 }
 
-void ARX_PARTICLES_SpawnWaterSplash(const Vec3f * _ePos) {
+void ARX_PARTICLES_SpawnWaterSplash(const Vec3f & _ePos) {
 	
 	long nbParticles = Random::get(15, 35);
 	for(long kk=0; kk < nbParticles; kk++) {
@@ -995,7 +991,7 @@ void ARX_PARTICLES_SpawnWaterSplash(const Vec3f * _ePos) {
 		
 		pd->special = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING
 		              | GRAVITY | SPLAT_WATER;
-		pd->ov = *_ePos + Vec3f(30.f * rnd(), -20.f * rnd(), 30.f * rnd());
+		pd->ov = _ePos + Vec3f(30.f * rnd(), -20.f * rnd(), 30.f * rnd());
 		pd->move = Vec3f(6.5f * frand2(), -11.5f * rnd(), 6.5f * frand2());
 		pd->tolive = Random::get(1000, 1300);
 		

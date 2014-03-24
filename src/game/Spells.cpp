@@ -2792,7 +2792,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 	}
 	
 	if(ValidIONum(source) && spellicons[typ].bAudibleAtStart) {
-		ARX_NPC_SpawnAudibleSound(&entities[source]->pos, entities[source]);
+		ARX_NPC_SpawnAudibleSound(entities[source]->pos, entities[source]);
 	}
 	
 	spells[i].caster = source;	// Caster...
@@ -5724,7 +5724,7 @@ void ARX_SPELLS_Update()
 						DoSphericDamage(&pCF->eCurPos,3.f*spells[i].caster_level,30.f*spells[i].caster_level,DAMAGE_AREA,DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL,spells[i].caster);
 						spells[i].tolive=0;
 						ARX_SOUND_PlaySFX(SND_SPELL_FIRE_HIT, &sphere.origin);
-						ARX_NPC_SpawnAudibleSound(&sphere.origin, entities[spells[i].caster]);
+						ARX_NPC_SpawnAudibleSound(sphere.origin, entities[spells[i].caster]);
 					}
 
 					pCSpellFX->Update(framedelay);

@@ -495,8 +495,8 @@ void PrepareIOTreatZone(long flag)
 		return;
 
 	TREATZONE_Clear();
-	long Cam_Room = ARX_PORTALS_GetRoomNumForPosition(&ACTIVECAM->orgTrans.pos, 1);
-	long PlayerRoom = ARX_PORTALS_GetRoomNumForPosition(&player.pos, 1);
+	long Cam_Room = ARX_PORTALS_GetRoomNumForPosition(ACTIVECAM->orgTrans.pos, 1);
+	long PlayerRoom = ARX_PORTALS_GetRoomNumForPosition(player.pos, 1);
 	TREATZONE_AddIO(entities.player());
 
 	short sGlobalPlayerRoom = checked_range_cast<short>(PlayerRoom);
@@ -562,7 +562,7 @@ void PrepareIOTreatZone(long flag)
 						if(io->room_flags & 1)
 							UpdateIORoom(io);
 
-						dists = square(SP_GetRoomDist(&io->pos, &ACTIVECAM->orgTrans.pos, io->room, Cam_Room));
+						dists = square(SP_GetRoomDist(io->pos, ACTIVECAM->orgTrans.pos, io->room, Cam_Room));
 					}
 				} else {
 					if(io->show == SHOW_FLAG_TELEPORTING) {
@@ -1486,7 +1486,7 @@ Entity * AddFix(const res::path & classPath, EntityInstance instance, AddInterac
 	
 	float tempo;
 	EERIEPOLY * ep = CheckInPoly(io->pos.x, io->pos.y + player.baseHeight(), io->pos.z);
-	if(ep && GetTruePolyY(ep, &io->pos, &tempo)) {
+	if(ep && GetTruePolyY(ep, io->pos, &tempo)) {
 		io->lastpos.y = io->initpos.y = io->pos.y = tempo;
 	}
 	
@@ -1601,7 +1601,7 @@ static Entity * AddMarker(const res::path & classPath, EntityInstance instance) 
 	float tempo;
 	EERIEPOLY * ep;
 	ep = CheckInPoly(io->pos.x, io->pos.y + player.baseHeight(), io->pos.z);
-	if(ep && GetTruePolyY(ep, &io->pos, &tempo)) {
+	if(ep && GetTruePolyY(ep, io->pos, &tempo)) {
 		io->lastpos.y = io->initpos.y = io->pos.y = tempo;
 	}
 	
@@ -1735,7 +1735,7 @@ Entity * AddNPC(const res::path & classPath, EntityInstance instance, AddInterac
 	
 	float tempo;
 	EERIEPOLY * ep = CheckInPoly(io->pos.x, io->pos.y + player.baseHeight(), io->pos.z);
-	if(ep && GetTruePolyY(ep, &io->pos, &tempo)) {
+	if(ep && GetTruePolyY(ep, io->pos, &tempo)) {
 		io->lastpos.y = io->initpos.y = io->pos.y = tempo; 
 	}
 	
@@ -1868,7 +1868,7 @@ Entity * AddItem(const res::path & classPath_, EntityInstance instance, AddInter
 	if(ep) {
 		float tempo;
 
-		if(GetTruePolyY(ep, &io->pos, &tempo))
+		if(GetTruePolyY(ep, io->pos, &tempo))
 			io->lastpos.y = io->initpos.y = io->pos.y = tempo; 
 	}
 

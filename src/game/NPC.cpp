@@ -801,7 +801,7 @@ void ARX_TEMPORARY_TrySound(float volume) {
 
 			if(PHYSICS_CURIO->soundcount < 5) {
 				long material;
-				if(EEIsUnderWater(&PHYSICS_CURIO->pos))
+				if(EEIsUnderWater(PHYSICS_CURIO->pos))
 					material = MATERIAL_WATER;
 				else if(PHYSICS_CURIO->material)
 					material = PHYSICS_CURIO->material;
@@ -811,7 +811,7 @@ void ARX_TEMPORARY_TrySound(float volume) {
 				if(volume > 1.f)
 					volume = 1.f;
 
-				PHYSICS_CURIO->soundtime = at + (ARX_SOUND_PlayCollision(material, CUR_COLLISION_MATERIAL, volume, 1.f, &PHYSICS_CURIO->pos, PHYSICS_CURIO) >> 4) + 50;
+				PHYSICS_CURIO->soundtime = at + (ARX_SOUND_PlayCollision(material, CUR_COLLISION_MATERIAL, volume, 1.f, PHYSICS_CURIO->pos, PHYSICS_CURIO) >> 4) + 50;
 			}
 		}
 	}
@@ -901,18 +901,18 @@ void ARX_NPC_ManagePoison(Entity * io)
 static void CheckUnderWaterIO(Entity * io) {
 	
 	Vec3f ppos = io->pos;
-	EERIEPOLY * ep = EEIsUnderWater(&ppos);
+	EERIEPOLY * ep = EEIsUnderWater(ppos);
 
 	if(io->ioflags & IO_UNDERWATER) {
 		if(!ep) {
 			io->ioflags &= ~IO_UNDERWATER;
 			ARX_SOUND_PlaySFX(SND_PLOUF, &ppos);
-			ARX_PARTICLES_SpawnWaterSplash(&ppos);
+			ARX_PARTICLES_SpawnWaterSplash(ppos);
 		}
 	} else if(ep) {
 		io->ioflags |= IO_UNDERWATER;
 		ARX_SOUND_PlaySFX(SND_PLOUF, &ppos);
-		ARX_PARTICLES_SpawnWaterSplash(&ppos);
+		ARX_PARTICLES_SpawnWaterSplash(ppos);
 
 		if(io->ignition > 0.f) {
 			ARX_SOUND_PlaySFX(SND_TORCH_END, &ppos);
@@ -3263,9 +3263,9 @@ void CheckNPCEx(Entity * io) {
 			UpdateIORoom(io);
 		}
 		
-		long playerRoom = ARX_PORTALS_GetRoomNumForPosition(&player.pos, 1);
+		long playerRoom = ARX_PORTALS_GetRoomNumForPosition(player.pos, 1);
 		
-		float fdist = SP_GetRoomDist(&io->pos, &player.pos, io->room, playerRoom);
+		float fdist = SP_GetRoomDist(io->pos, player.pos, io->room, playerRoom);
 		
 		// Use Portal Room Distance for Extra Visibility Clipping.
 		if(playerRoom > -1 && io->room > -1 && fdist > 2000.f) {
@@ -3315,7 +3315,7 @@ void CheckNPCEx(Entity * io) {
 	}
 }
 
-void ARX_NPC_NeedStepSound(Entity * io, Vec3f * pos, const float volume, const float power) {
+void ARX_NPC_NeedStepSound(Entity * io, const Vec3f & pos, const float volume, const float power) {
 	
 	string _step_material = "foot_bare";
 	const string * step_material = &_step_material;
@@ -3324,7 +3324,7 @@ void ARX_NPC_NeedStepSound(Entity * io, Vec3f * pos, const float volume, const f
 	if(EEIsUnderWater(pos)) {
 		floor_material = "water";
 	} else {
-		EERIEPOLY *ep = CheckInPoly(pos->x, pos->y - 100.0F, pos->z);
+		EERIEPOLY *ep = CheckInPoly(pos.x, pos.y - 100.0F, pos.z);
 
 		if(ep && ep->tex && !ep->tex->m_texName.empty())
 			floor_material = GetMaterialString(ep->tex->m_texName);
@@ -3350,7 +3350,7 @@ void ARX_NPC_NeedStepSound(Entity * io, Vec3f * pos, const float volume, const f
  * \brief Sends ON HEAR events to NPCs for audible sounds
  * \note factor > 1.0F harder to hear, < 0.0F easier to hear
  */
-void ARX_NPC_SpawnAudibleSound(Vec3f * pos, Entity * source, const float factor, const float presence)
+void ARX_NPC_SpawnAudibleSound(const Vec3f & pos, Entity * source, const float factor, const float presence)
 {
 	float max_distance;
 
@@ -3379,14 +3379,14 @@ void ARX_NPC_SpawnAudibleSound(Vec3f * pos, Entity * source, const float factor,
 		        &&	(entities[i]->_npcdata->life > 0.f)
 		   )
 		{
-			float distance = fdist(*pos, entities[i]->pos);
+			float distance = fdist(pos, entities[i]->pos);
 
 			if(distance < max_distance) {
 				if(entities[i]->room_flags & 1)
 					UpdateIORoom(entities[i]);
 
 				if(Source_Room > -1 && entities[i]->room > -1) {
-					float fdist = SP_GetRoomDist(pos, &entities[i]->pos, Source_Room, entities[i]->room);
+					float fdist = SP_GetRoomDist(pos, entities[i]->pos, Source_Room, entities[i]->room);
 
 					if(fdist < max_distance * 1.5f) {
 						long ldistance = fdist;

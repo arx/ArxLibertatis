@@ -587,7 +587,7 @@ void CMultiMagicMissile::CheckCollision()
 					if(spellinstance != -1 && (CheckAnythingInSphere(&sphere, spells[spellinstance].caster, CAS_NO_SAME_GROUP)))
 					{
 						LaunchMagicMissileExplosion(pMM->eCurPos, 0, spellinstance);
-						ARX_NPC_SpawnAudibleSound(&pMM->eCurPos, entities[spells[spellinstance].caster]);
+						ARX_NPC_SpawnAudibleSound(pMM->eCurPos, entities[spells[spellinstance].caster]);
 
 						pMM->SetTTL(1000);
 						pMM->bExplo = true;

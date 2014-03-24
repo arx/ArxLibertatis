@@ -51,7 +51,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 class Entity;
 
-long ARX_PORTALS_GetRoomNumForPosition(Vec3f * pos, long flag = 0);
+long ARX_PORTALS_GetRoomNumForPosition(const Vec3f & pos, long flag = 0);
 
 void ARX_SCENE_Update();
 void ARX_SCENE_Render();
