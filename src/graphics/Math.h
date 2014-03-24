@@ -186,6 +186,9 @@ glm::quat Quat_Slerp(const glm::quat & from, glm::quat to, float t);
 void QuatFromAngles(glm::quat * q, const Anglef * angle);
 glm::mat4 toRotationMatrix(const Anglef & angle);
 
+glm::quat angleToQuatForArrow(const Anglef & angle);
+Vec3f angleToVecForArrow(const Anglef & angle);
+
 // VECTORS Functions
 
 Vec3f VRotateX(const Vec3f in, const float angle);

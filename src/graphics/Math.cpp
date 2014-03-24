@@ -597,6 +597,36 @@ glm::mat4 toRotationMatrix(const Anglef & angle) {
 	return rotateZ * rotateX * rotateY;
 }
 
+
+glm::quat angleToQuatForArrow(const Anglef & angle) {
+	float aa = angle.getYaw();
+	float ab = 90 - angle.getPitch();
+	
+	Vec3f front(0,0,1);
+	Vec3f up(0,-1,0);
+	
+	front = VRotateZ(front, aa);
+	front = VRotateY(front, ab);
+	up = VRotateZ(up, aa);
+	up = VRotateY(up, ab);
+	
+	glm::mat4x4 tmat;
+	MatrixSetByVectors(tmat, front, up);
+	return glm::toQuat(tmat);
+}
+
+Vec3f angleToVecForArrow(const Anglef & angle) {
+	float anglea = radians(angle.getYaw());
+	float angleb = radians(angle.getPitch());
+	
+	Vec3f vect;
+	vect.x=-EEsin(angleb)*EEcos(anglea);
+	vect.y= EEsin(anglea);
+	vect.z= EEcos(angleb)*EEcos(anglea);
+	
+	return vect;
+}
+
 //--------------------------------------------------------------------------------------
 // VECTORS Functions
 //--------------------------------------------------------------------------------------
