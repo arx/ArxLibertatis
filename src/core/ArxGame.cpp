@@ -1345,7 +1345,7 @@ void ArxGame::updateLevel() {
 
 		//TODO Hardcoded up vector
 		Vec3f up(0.f, 1.f, 0.f);
-		ARX_SOUND_SetListener(&ACTIVECAM->orgTrans.pos, &front, &up);
+		ARX_SOUND_SetListener(ACTIVECAM->orgTrans.pos, front, up);
 	}
 
 	// Check For Hiding/unHiding Player Gore

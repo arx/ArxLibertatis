@@ -492,10 +492,10 @@ void ARX_SOUND_MixerSwitch(audio::MixerId from, audio::MixerId to) {
 }
 
 // Sets the position of the listener
-void ARX_SOUND_SetListener(const Vec3f * position, const Vec3f * front, const Vec3f * up) {
+void ARX_SOUND_SetListener(const Vec3f & position, const Vec3f & front, const Vec3f & up) {
 	if(bIsActive) {
-		audio::setListenerPosition(*position);
-		audio::setListenerDirection(*front, *up);
+		audio::setListenerPosition(position);
+		audio::setListenerDirection(front, up);
 	}
 }
 
@@ -849,7 +849,7 @@ long ARX_SOUND_PlayCinematic(const res::path & name, bool isSpeech) {
 
 		//TODO Hardcoded up vector
 		Vec3f up(0.f, 1.f, 0.f);
-		ARX_SOUND_SetListener(&ACTIVECAM->orgTrans.pos, &front, &up);
+		ARX_SOUND_SetListener(ACTIVECAM->orgTrans.pos, front, up);
 	}
 	
 	ARX_SOUND_IOFrontPos(NULL, channel.position); 
