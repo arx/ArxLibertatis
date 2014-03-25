@@ -1548,7 +1548,7 @@ void EERIEDrawAnimQuatUpdate(EERIE_3DOBJ *eobj, ANIM_USE * animlayer,const Angle
 		rotation = glm::toQuat(toRotationMatrix(angle));
 	} else {
 		Anglef vt1 = Anglef(radians(angle.getYaw()), radians(angle.getPitch()), radians(angle.getRoll()));
-		QuatFromAngles(&rotation, &vt1);
+		rotation = QuatFromAngles(vt1);
 	}
 
 	EERIE_EXTRA_ROTATE * extraRotation = NULL;

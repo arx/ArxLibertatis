@@ -553,27 +553,27 @@ glm::quat Quat_Slerp(const glm::quat & from, glm::quat to, float ratio)
 //*************************************************************************************
 // Converts euler angles to a unit quaternion.
 //*************************************************************************************
-void QuatFromAngles(glm::quat * q, const Anglef * angle)
-
-{
+glm::quat QuatFromAngles(const Anglef & angle) {
 	float A, B;
-	A = angle->getYaw() * ( 1.0f / 2 );
-	B = angle->getPitch() * ( 1.0f / 2 );
+	A = angle.getYaw() * ( 1.0f / 2 );
+	B = angle.getPitch() * ( 1.0f / 2 );
 
 	float fSinYaw   = sinf(A);
 	float fCosYaw   = cosf(A);
 	float fSinPitch = sinf(B);
 	float fCosPitch = cosf(B);
-	A = angle->getRoll() * ( 1.0f / 2 );
+	A = angle.getRoll() * ( 1.0f / 2 );
 	float fSinRoll  = sinf(A);
 	float fCosRoll  = cosf(A);
 	A = fCosRoll * fCosPitch;
 	B = fSinRoll * fSinPitch;
-	q->x = fSinRoll * fCosPitch * fCosYaw - fCosRoll * fSinPitch * fSinYaw;
-	q->y = fCosRoll * fSinPitch * fCosYaw + fSinRoll * fCosPitch * fSinYaw;
-	q->z = A * fSinYaw - B * fCosYaw;
-	q->w = A * fCosYaw + B * fSinYaw;
-
+	
+	glm::quat q;
+	q.x = fSinRoll * fCosPitch * fCosYaw - fCosRoll * fSinPitch * fSinYaw;
+	q.y = fCosRoll * fSinPitch * fCosYaw + fSinRoll * fCosPitch * fSinYaw;
+	q.z = A * fSinYaw - B * fCosYaw;
+	q.w = A * fCosYaw + B * fSinYaw;
+	return q;
 }
 
 glm::mat4 toRotationMatrix(const Anglef & angle) {
@@ -633,9 +633,7 @@ glm::quat angleToQuatForExtraRotation(const Anglef & angle) {
 	vt1.setPitch(radians(angle.getPitch()));
 	vt1.setRoll(radians(angle.getYaw()));
 	
-	glm::quat result;
-	QuatFromAngles(&result, &vt1);
-	return result;
+	return QuatFromAngles(vt1);
 }
 
 //--------------------------------------------------------------------------------------
