@@ -777,9 +777,9 @@ void ArxGame::updateFirstPersonCamera() {
 
 		for(long l=0; l < 250; l += 10) {
 			Vec3f tt = player.pos;
-			tt.x += (float)EEsin(t)*(float)l;
+			tt.x += std::sin(t)*(float)l;
 			tt.y -= 50.f;
-			tt.z -= (float)EEcos(t)*(float)l;
+			tt.z -= std::cos(t)*(float)l;
 			EERIEPOLY * ep = EECheckInPoly(&tt);
 			if(ep) {
 				subj.d_pos = tt;
@@ -876,9 +876,9 @@ void ArxGame::updateConversationCamera() {
 		} else {
 			targetpos = player.pos;
 			float t = radians(player.angle.getPitch());
-			sourcepos.x=targetpos.x+(float)EEsin(t)*100.f;
+			sourcepos.x=targetpos.x+std::sin(t)*100.f;
 			sourcepos.y=targetpos.y;
-			sourcepos.z=targetpos.z-(float)EEcos(t)*100.f;
+			sourcepos.z=targetpos.z-std::cos(t)*100.f;
 		}
 		
 		Vec3f vect = targetpos - sourcepos;
@@ -955,9 +955,9 @@ void ArxGame::speechControlledCinematic() {
 				float beta = acs->startangle.getPitch() * itime + acs->endangle.getPitch() * rtime;
 				float distance = acs->startpos * itime + acs->endpos * rtime;
 				Vec3f targetpos = acs->pos1;
-				conversationcamera.orgTrans.pos.x=-EEsin(radians(MAKEANGLE(io->angle.getPitch()+beta)))*distance+targetpos.x;
-				conversationcamera.orgTrans.pos.y= EEsin(radians(MAKEANGLE(io->angle.getYaw()+alpha)))*distance+targetpos.y;
-				conversationcamera.orgTrans.pos.z= EEcos(radians(MAKEANGLE(io->angle.getPitch()+beta)))*distance+targetpos.z;
+				conversationcamera.orgTrans.pos.x=-std::sin(radians(MAKEANGLE(io->angle.getPitch()+beta)))*distance+targetpos.x;
+				conversationcamera.orgTrans.pos.y= std::sin(radians(MAKEANGLE(io->angle.getYaw()+alpha)))*distance+targetpos.y;
+				conversationcamera.orgTrans.pos.z= std::cos(radians(MAKEANGLE(io->angle.getPitch()+beta)))*distance+targetpos.z;
 				conversationcamera.setTargetCamera(targetpos);
 				subj.orgTrans.pos = conversationcamera.orgTrans.pos;
 				subj.angle.setYaw(MAKEANGLE(-conversationcamera.angle.getYaw()));
@@ -1113,9 +1113,9 @@ void ArxGame::handleCameraController() {
 
 		currentbeta += delta_angle_t;
 		float t=radians(MAKEANGLE(currentbeta));
-		conversationcamera.orgTrans.pos.x=targetpos.x+(float)EEsin(t)*160.f;
+		conversationcamera.orgTrans.pos.x=targetpos.x+std::sin(t)*160.f;
 		conversationcamera.orgTrans.pos.y=targetpos.y+40.f;
-		conversationcamera.orgTrans.pos.z=targetpos.z-(float)EEcos(t)*160.f;
+		conversationcamera.orgTrans.pos.z=targetpos.z-std::cos(t)*160.f;
 
 		conversationcamera.setTargetCamera(targetpos);
 		subj.orgTrans.pos = conversationcamera.orgTrans.pos;
@@ -1340,7 +1340,7 @@ void ArxGame::updateLevel() {
 	// Set Listener Position
 	{
 		float t = radians(MAKEANGLE(ACTIVECAM->angle.getPitch()));
-		Vec3f front(-EEsin(t), 0.f, EEcos(t));
+		Vec3f front(-std::sin(t), 0.f, std::cos(t));
 		front = glm::normalize(front);
 
 		//TODO Hardcoded up vector
@@ -1628,7 +1628,7 @@ void ArxGame::render() {
 
 	// SPECIFIC code for Snapshot MODE... to insure constant capture framerate
 
-	PULSATE = EEsin(arxtime.get_frame_time() / 800);
+	PULSATE = std::sin(arxtime.get_frame_time() / 800);
 	EERIEDrawnPolys = 0;
 
 	// Checks for Keyboard & Moulinex

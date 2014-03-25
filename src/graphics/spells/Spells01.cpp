@@ -475,24 +475,24 @@ void CMultiMagicMissile::Create()
 			afBeta = player.angle.getPitch();
 			afAlpha = player.angle.getYaw();
 			Vec3f vector;
-			vector.x = -EEsin(radians(afBeta)) * EEcos(radians(afAlpha)) * 60.f;
-			vector.y = EEsin(radians(afAlpha)) * 60.f;
-			vector.z = EEcos(radians(afBeta)) * EEcos(radians(afAlpha)) * 60.f;
+			vector.x = -std::sin(radians(afBeta)) * std::cos(radians(afAlpha)) * 60.f;
+			vector.y = std::sin(radians(afAlpha)) * 60.f;
+			vector.z = std::cos(radians(afBeta)) * std::cos(radians(afAlpha)) * 60.f;
 
 			if(spells[spellinstance].hand_group != -1) {
 				aePos = spells[spellinstance].hand_pos + vector;
 			} else {
-				aePos.x = player.pos.x - EEsin(radians(afBeta)) + vector.x; 
+				aePos.x = player.pos.x - std::sin(radians(afBeta)) + vector.x; 
 				aePos.y = player.pos.y + vector.y; //;
-				aePos.z = player.pos.z + EEcos(radians(afBeta)) + vector.z; 
+				aePos.z = player.pos.z + std::cos(radians(afBeta)) + vector.z; 
 			}
 		} else {
 			afAlpha = 0;
 			afBeta = entities[spells[spellinstance].caster]->angle.getPitch();
 			Vec3f vector;
-			vector.x = -EEsin(radians(afBeta)) * EEcos(radians(afAlpha)) * 60;
-			vector.y = EEsin(radians(afAlpha)) * 60;
-			vector.z = EEcos(radians(afBeta)) * EEcos(radians(afAlpha)) * 60;
+			vector.x = -std::sin(radians(afBeta)) * std::cos(radians(afAlpha)) * 60;
+			vector.y =  std::sin(radians(afAlpha)) * 60;
+			vector.z =  std::cos(radians(afBeta)) * std::cos(radians(afAlpha)) * 60;
 
 			if(spells[spellinstance].hand_group != -1) {
 				aePos = spells[spellinstance].hand_pos + vector;

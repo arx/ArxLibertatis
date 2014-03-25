@@ -399,9 +399,9 @@ void IO_UnlinkAllLinkedObjects(Entity * io) {
 		
 		Vec3f pos = io->obj->vertexlist3[io->obj->linked[k].lidx].v;
 		Vec3f vector;
-		vector.x = -(float)EEsin(radians(linked->angle.getPitch())) * 0.5f;
-		vector.y = EEsin(radians(linked->angle.getYaw()));
-		vector.z = (float)EEcos(radians(linked->angle.getPitch())) * 0.5f;
+		vector.x = -std::sin(radians(linked->angle.getPitch())) * 0.5f;
+		vector.y =  std::sin(radians(linked->angle.getYaw()));
+		vector.z =  std::cos(radians(linked->angle.getPitch())) * 0.5f;
 		EERIE_PHYSICS_BOX_Launch(linked->obj, pos, linked->angle, vector);
 		
 	}
@@ -1137,8 +1137,8 @@ bool ARX_INTERACTIVE_ConvertToValidPosForIO(Entity * io, Vec3f * target) {
 	long count = 0;
 	
 	while(count < 600) {
-		float modx = -EEsin(count) * (float)count * ( 1.0f / 3 );
-		float modz = EEcos(count) * (float)count * ( 1.0f / 3 );
+		float modx = -std::sin(count) * (float)count * ( 1.0f / 3 );
+		float modz =  std::cos(count) * (float)count * ( 1.0f / 3 );
 		phys.origin.x = target->x + modx;
 		phys.origin.z = target->z + modz;
 		float anything = CheckAnythingInCylinder(&phys, io, CFLAG_JUST_TEST);
@@ -1478,8 +1478,8 @@ Entity * AddFix(const res::path & classPath, EntityInstance instance, AddInterac
 	
 	io->spellcast_data.castingspell = SPELL_NONE;
 	io->pos = player.pos;
-	io->pos.x -= EEsin(radians(player.angle.getPitch())) * 140.f;
-	io->pos.z += EEcos(radians(player.angle.getPitch())) * 140.f;
+	io->pos.x -= std::sin(radians(player.angle.getPitch())) * 140.f;
+	io->pos.z += std::cos(radians(player.angle.getPitch())) * 140.f;
 	io->lastpos = io->initpos = io->pos;
 	io->lastpos.x = io->initpos.x = EEfabs(io->initpos.x / 20) * 20.f;
 	io->lastpos.z = io->initpos.z = EEfabs(io->initpos.z / 20) * 20.f;
@@ -1538,8 +1538,8 @@ static Entity * AddCamera(const res::path & classPath, EntityInstance instance) 
 	GetIOScript(io, script);
 	
 	io->pos = player.pos;
-	io->pos.x -= EEsin(radians(player.angle.getPitch())) * 140.f;
-	io->pos.z += EEcos(radians(player.angle.getPitch())) * 140.f;
+	io->pos.x -= std::sin(radians(player.angle.getPitch())) * 140.f;
+	io->pos.z += std::cos(radians(player.angle.getPitch())) * 140.f;
 	io->lastpos = io->initpos = io->pos;
 	io->lastpos.x = io->initpos.x = EEfabs(io->initpos.x / 20) * 20.f;
 	io->lastpos.z = io->initpos.z = EEfabs(io->initpos.z / 20) * 20.f;
@@ -1592,8 +1592,8 @@ static Entity * AddMarker(const res::path & classPath, EntityInstance instance) 
 	GetIOScript(io, script);
 	
 	io->pos = player.pos;
-	io->pos.x -= EEsin(radians(player.angle.getPitch())) * 140.f;
-	io->pos.z += EEcos(radians(player.angle.getPitch())) * 140.f;
+	io->pos.x -= std::sin(radians(player.angle.getPitch())) * 140.f;
+	io->pos.z += std::cos(radians(player.angle.getPitch())) * 140.f;
 	io->lastpos = io->initpos = io->pos;
 	io->lastpos.x = io->initpos.x = EEfabs(io->initpos.x / 20) * 20.f;
 	io->lastpos.z = io->initpos.z = EEfabs(io->initpos.z / 20) * 20.f;
@@ -1727,8 +1727,8 @@ Entity * AddNPC(const res::path & classPath, EntityInstance instance, AddInterac
 	}
 	
 	io->pos = player.pos;
-	io->pos.x -= EEsin(radians(player.angle.getPitch())) * 140.f;
-	io->pos.z += EEcos(radians(player.angle.getPitch())) * 140.f;
+	io->pos.x -= std::sin(radians(player.angle.getPitch())) * 140.f;
+	io->pos.z += std::cos(radians(player.angle.getPitch())) * 140.f;
 	io->lastpos = io->initpos = io->pos;
 	io->lastpos.x = io->initpos.x = EEfabs(io->initpos.x / 20) * 20.f;
 	io->lastpos.z = io->initpos.z = EEfabs(io->initpos.z / 20) * 20.f;
@@ -1856,9 +1856,9 @@ Entity * AddItem(const res::path & classPath_, EntityInstance instance, AddInter
 	}
 	
 	io->spellcast_data.castingspell = SPELL_NONE;
-	io->lastpos.x = io->initpos.x = io->pos.x = player.pos.x - (float)EEsin(radians(player.angle.getPitch())) * 140.f;
+	io->lastpos.x = io->initpos.x = io->pos.x = player.pos.x - std::sin(radians(player.angle.getPitch())) * 140.f;
 	io->lastpos.y = io->initpos.y = io->pos.y = player.pos.y;
-	io->lastpos.z = io->initpos.z = io->pos.z = player.pos.z + (float)EEcos(radians(player.angle.getPitch())) * 140.f;
+	io->lastpos.z = io->initpos.z = io->pos.z = player.pos.z + std::cos(radians(player.angle.getPitch())) * 140.f;
 	io->lastpos.x = io->initpos.x = (float)((long)(io->initpos.x / 20)) * 20.f;
 	io->lastpos.z = io->initpos.z = (float)((long)(io->initpos.z / 20)) * 20.f;
 
@@ -2468,9 +2468,9 @@ void UpdateCameras() {
 			} else {
 				// no target...
 				float tr = radians(MAKEANGLE(io->angle.getPitch() + 90));
-				io->target.x = io->pos.x - (float)EEsin(tr) * 20.f;
+				io->target.x = io->pos.x - std::sin(tr) * 20.f;
 				io->target.y = io->pos.y;
-				io->target.z = io->pos.z + (float)EEcos(tr) * 20.f;
+				io->target.z = io->pos.z + std::cos(tr) * 20.f;
 				io->_camdata->cam.setTargetCamera(io->target);
 				io->_camdata->cam.lasttarget = io->target;
 			}

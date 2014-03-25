@@ -375,7 +375,7 @@ void CRuneOfGuarding::Render()
 	Vec3f stitepos = Vec3f(x, y, z);
 
 	float gtc = arxtime.get_updated();
-	float v = EEsin(gtc * ( 1.0f / 1000 )) * ( 1.0f / 10 );
+	float v = std::sin(gtc * ( 1.0f / 1000 )) * ( 1.0f / 10 );
 	stiteangle.setPitch(MAKEANGLE(gtc * ( 1.0f / 1000 )));
 	stitecolor.r = 0.4f - v;
 	stitecolor.g = 0.4f - v;
@@ -815,25 +815,25 @@ void CMultiPoisonProjectile::Create(Vec3f _eSrc, float _afBeta = 0) {
 		afBeta = player.angle.getPitch();
 
 		if(spells[spellinstance].hand_group != -1) {
-			_eSrc.x = spells[spellinstance].hand_pos.x - EEsin(radians(afBeta)) * 90;
+			_eSrc.x = spells[spellinstance].hand_pos.x - std::sin(radians(afBeta)) * 90;
 			_eSrc.y = spells[spellinstance].hand_pos.y;
-			_eSrc.z = spells[spellinstance].hand_pos.z + EEcos(radians(afBeta)) * 90;
+			_eSrc.z = spells[spellinstance].hand_pos.z + std::cos(radians(afBeta)) * 90;
 		} else {
-			_eSrc.x = player.pos.x - EEsin(radians(afBeta)) * 90;
+			_eSrc.x = player.pos.x - std::sin(radians(afBeta)) * 90;
 			_eSrc.y = player.pos.y;
-			_eSrc.z = player.pos.z + EEcos(radians(afBeta)) * 90;
+			_eSrc.z = player.pos.z + std::cos(radians(afBeta)) * 90;
 		}
 	} else {
 		afBeta = entities[spells[spellinstance].caster]->angle.getPitch();
 
 		if(spells[spellinstance].hand_group != -1) {
-			_eSrc.x = spells[spellinstance].hand_pos.x - EEsin(radians(afBeta)) * 90;
+			_eSrc.x = spells[spellinstance].hand_pos.x - std::sin(radians(afBeta)) * 90;
 			_eSrc.y = spells[spellinstance].hand_pos.y;
-			_eSrc.z = spells[spellinstance].hand_pos.z + EEcos(radians(afBeta)) * 90;
+			_eSrc.z = spells[spellinstance].hand_pos.z + std::cos(radians(afBeta)) * 90;
 		} else {
-			_eSrc.x = entities[spells[spellinstance].caster]->pos.x - EEsin(radians(afBeta)) * 90;
+			_eSrc.x = entities[spells[spellinstance].caster]->pos.x - std::sin(radians(afBeta)) * 90;
 			_eSrc.y = entities[spells[spellinstance].caster]->pos.y;
-			_eSrc.z = entities[spells[spellinstance].caster]->pos.z + EEcos(radians(afBeta)) * 90;
+			_eSrc.z = entities[spells[spellinstance].caster]->pos.z + std::cos(radians(afBeta)) * 90;
 		}
 	}
 
@@ -1018,7 +1018,7 @@ void CRepelUndead::Render() {
 	rgbObjColor.g = 0.6f;
 	rgbObjColor.b = 0.8f;
 
-	float vv = 1.f + (EEsin(arxtime.get_updated() * ( 1.0f / 1000 ))); 
+	float vv = 1.f + (std::sin(arxtime.get_updated() * ( 1.0f / 1000 ))); 
 	vv *= ( 1.0f / 2 );
 	vv += 1.1f;
 	eObjScale.z = vv;
@@ -1038,8 +1038,8 @@ void CRepelUndead::Render() {
 			break;
 		}
 		
-		float dx = -EEsin(frand2() * 360.f) * vv;
-		float dz =  EEcos(frand2() * 360.f) * vv;
+		float dx = -std::sin(frand2() * 360.f) * vv;
+		float dz =  std::cos(frand2() * 360.f) * vv;
 		pd->ov = eSrc + Vec3f(dx, 0.f, dz);
 		pd->move = Vec3f(0.8f * frand2(), -4.f * rnd(), 0.8f * frand2());
 		pd->scale = Vec3f(-0.1f);
@@ -1141,8 +1141,8 @@ void CLevitate::CreateConeStrip(float rbase, float rhaut, float hauteur, int def
 	while(nb) {
 		*pind++ = ind++;
 		*pind++ = ind++;
-		*vertex++ = Vec3f(rhaut * EEcos(radians(a)), -hauteur, rhaut * EEsin(radians(a)));
-		*vertex++ = Vec3f(rbase * EEcos(radians(a)), 0.f, rbase * EEsin(radians(a)));
+		*vertex++ = Vec3f(rhaut * std::cos(radians(a)), -hauteur, rhaut * std::sin(radians(a)));
+		*vertex++ = Vec3f(rbase * std::cos(radians(a)), 0.f, rbase * std::sin(radians(a)));
 		a += da;
 		nb--;
 	}
@@ -1391,7 +1391,7 @@ void CLevitate::Render()
 				}
 				
 				float a = radians(360.f * rnd());
-				pd->ov = pos + Vec3f(rbase * EEcos(a), 0.f, rbase * EEsin(a));
+				pd->ov = pos + Vec3f(rbase * std::cos(a), 0.f, rbase * std::sin(a));
 				float t = fdist(pd->ov, pos);
 				pd->move = Vec3f((5.f + 5.f * rnd()) * ((pd->ov.x - pos.x) / t), 3.f * rnd(),
 				                 (5.f + 5.f * rnd()) * ((pd->ov.z - pos.z) / t));
@@ -1458,7 +1458,7 @@ void CLevitate::Render()
 				}
 				
 				float a = radians(360.f * rnd());
-				pd->ov = pos + Vec3f(rbase * EEcos(a), 0.f, rbase * EEsin(a));
+				pd->ov = pos + Vec3f(rbase * std::cos(a), 0.f, rbase * std::sin(a));
 				float t = fdist(pd->ov, pos);
 				pd->move = Vec3f((5.f + 5.f * rnd()) * ((pd->ov.x - pos.x) / t), 3.f * rnd(),
 				                 (5.f + 5.f * rnd()) * ((pd->ov.z - pos.z) / t));

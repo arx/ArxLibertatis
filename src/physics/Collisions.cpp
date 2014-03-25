@@ -204,8 +204,8 @@ inline float IsPolyInCylinder(EERIEPOLY * ep, EERIE_CYLINDER * cyl, long flag) {
 
 	for (long j=0;j<360;j+=90)
 	{
-		float xx=-EEsin(radians((float)j))*cyl->radius;
-		float yy=EEcos(radians((float)j))*cyl->radius;
+		float xx=-std::sin(radians((float)j))*cyl->radius;
+		float yy=std::cos(radians((float)j))*cyl->radius;
 		EERIE_3D pos;
 		pos.x=cyl->origin.x+xx;
 
@@ -458,16 +458,16 @@ bool CollidedFromBack(Entity * io,Entity * ioo)
 	ep.v[0].p.z=io->pos.z;
 
 	float ft = radians(135.f + 90.f);
-	ep.v[1].p.x = EEsin(ft) * 180.f;
-	ep.v[1].p.z = -EEcos(ft) * 180.f;
+	ep.v[1].p.x =  std::sin(ft) * 180.f;
+	ep.v[1].p.z = -std::cos(ft) * 180.f;
 
 	ft = radians(225.f + 90.f);
-	ep.v[2].p.x = EEsin(ft) * 180.f;
-	ep.v[2].p.z = -EEcos(ft) * 180.f;
+	ep.v[2].p.x =  std::sin(ft) * 180.f;
+	ep.v[2].p.z = -std::cos(ft) * 180.f;
 
 	ft=radians(270.f-io->angle.getPitch());
-	float ec=EEcos(ft);
-	float es=EEsin(ft);
+	float ec=std::cos(ft);
+	float es=std::sin(ft);
 	EE_RotateY(&ep.v[1], &ep.tv[1], ec, es);
 	EE_RotateY(&ep.v[2], &ep.tv[2], ec, es);
 	ep.v[1].p.x=ep.tv[1].p.x+ep.v[0].p.x;

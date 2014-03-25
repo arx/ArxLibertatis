@@ -79,8 +79,6 @@ inline Vec3f randomVec(float min = 0.f, float max = 1.f) {
 }
 
 //Approximative Methods
-#define EEcos(val)  (float)cos((float)val)
-#define EEsin(val)  (float)sin((float)val)
 #define EEfabs(val) (float)fabs(val)
 
 inline bool In3DBBoxTolerance(const Vec3f * pos, const EERIE_3D_BBOX * bbox, const float tolerance) {

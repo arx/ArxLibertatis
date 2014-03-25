@@ -659,7 +659,7 @@ void CConfuse::Render() {
 		
 		float ang = radians(rnd() * 360.f);
 		float rad = rnd() * 15.f;
-		pd->ov = stitepos + Vec3f(-EEsin(ang) * rad, 0.f, EEcos(ang) * rad);
+		pd->ov = stitepos + Vec3f(-std::sin(ang) * rad, 0.f, std::cos(ang) * rad);
 		pd->move = Vec3f(0.f, rnd() * 3.f + 1.f, 0.f);
 		pd->siz = 0.25f;
 		pd->tolive = Random::get(2300, 3300);

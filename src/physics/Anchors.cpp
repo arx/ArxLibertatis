@@ -582,9 +582,9 @@ bool CylinderAboveInvalidZone(EERIE_CYLINDER * cyl) {
 				ang = 360;
 
 			Vec3f pos;
-			pos.x = cyl->origin.x - EEsin(radians(ang)) * rad;
+			pos.x = cyl->origin.x - std::sin(radians(ang)) * rad;
 			pos.y = cyl->origin.y - 20.f;
-			pos.z = cyl->origin.z + EEcos(radians(ang)) * rad;
+			pos.z = cyl->origin.z + std::cos(radians(ang)) * rad;
 			EERIEPOLY * ep = ANCHOR_CheckInPoly(pos.x, pos.y, pos.z);
 
 			if(!ep)
@@ -729,9 +729,9 @@ static bool AddAnchor_Original_Method(EERIE_BACKGROUND * eb, EERIE_BKG_INFO * eg
 			// We set our current position depending on given position, radius & angle.
 			currcyl.radius = 40; 
 			currcyl.height = -165; 
-			currcyl.origin.x = pos->x - EEsin(t) * (float)rad;
+			currcyl.origin.x = pos->x - std::sin(t) * (float)rad;
 			currcyl.origin.y = pos->y;
-			currcyl.origin.z = pos->z + EEcos(t) * (float)rad;
+			currcyl.origin.z = pos->z + std::cos(t) * (float)rad;
 
 			stop_radius = 0;
 			found = 0;

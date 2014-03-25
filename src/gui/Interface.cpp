@@ -561,7 +561,7 @@ void ARX_INTERFACE_HALO_Render(float _fR, float _fG, float _fB,
 							   float POSX, float POSY, float fRatioX = 1, float fRatioY = 1)
 {
 	float power = 0.9f;
-	power -= EEsin(arxtime.get_frame_time()*0.01f) * 0.3f;
+	power -= std::sin(arxtime.get_frame_time()*0.01f) * 0.3f;
 
 	_fR = clamp(_fR * power, 0, 1);
 	_fG = clamp(_fG * power, 0, 1);
@@ -2240,16 +2240,16 @@ void ArxGame::managePlayerControls()
 			// Checks WALK_FORWARD Key Status.
 			if(GInput->actionPressed(CONTROLS_CUST_WALKFORWARD)) {
 				float tr=radians(eyeball.angle.getPitch());
-				eyeball.pos.x+=-(float)EEsin(tr)*20.f*(float)FD*0.033f;
-				eyeball.pos.z+=+(float)EEcos(tr)*20.f*(float)FD*0.033f;
+				eyeball.pos.x += -std::sin(tr)*20.f*(float)FD*0.033f;
+				eyeball.pos.z += +std::cos(tr)*20.f*(float)FD*0.033f;
 				NOMOREMOVES=1;
 			}
 
 			// Checks WALK_BACKWARD Key Status.
 			if(GInput->actionPressed(CONTROLS_CUST_WALKBACKWARD)) {
 				float tr=radians(eyeball.angle.getPitch());
-				eyeball.pos.x+=(float)EEsin(tr)*20.f*(float)FD*0.033f;
-				eyeball.pos.z+=-(float)EEcos(tr)*20.f*(float)FD*0.033f;
+				eyeball.pos.x +=  std::sin(tr)*20.f*(float)FD*0.033f;
+				eyeball.pos.z += -std::cos(tr)*20.f*(float)FD*0.033f;
 				NOMOREMOVES=1;
 			}
 
@@ -2259,8 +2259,8 @@ void ArxGame::managePlayerControls()
 				&& !NOMOREMOVES)
 			{
 				float tr=radians(MAKEANGLE(eyeball.angle.getPitch()+90.f));
-				eyeball.pos.x+=-(float)EEsin(tr)*10.f*(float)FD*0.033f;
-				eyeball.pos.z+=+(float)EEcos(tr)*10.f*(float)FD*0.033f;
+				eyeball.pos.x += -std::sin(tr)*10.f*(float)FD*0.033f;
+				eyeball.pos.z += +std::cos(tr)*10.f*(float)FD*0.033f;
 				NOMOREMOVES=1;			
 			}
 
@@ -2270,9 +2270,9 @@ void ArxGame::managePlayerControls()
 				&& !NOMOREMOVES)
 			{
 				float tr=radians(MAKEANGLE(eyeball.angle.getPitch()-90.f));
-				eyeball.pos.x+=-(float)EEsin(tr)*10.f*(float)FD*0.033f;
+				eyeball.pos.x += -std::sin(tr)*10.f*(float)FD*0.033f;
 				//eyeball.pos.y+=FD*0.33f;
-				eyeball.pos.z+=(float)EEcos(tr)*10.f*(float)FD*0.033f;
+				eyeball.pos.z +=  std::cos(tr)*10.f*(float)FD*0.033f;
 				NOMOREMOVES=1;
 			}
 
@@ -2334,12 +2334,12 @@ void ArxGame::managePlayerControls()
 
 			float t = radians(player.angle.getPitch());
 			multi=5.f*(float)FD*MoveDiv*multi;
-			tm.x+=(float)EEsin(t)*multi;
-			tm.z-=(float)EEcos(t)*multi;
+			tm.x += std::sin(t) * multi;
+			tm.z -= std::cos(t) * multi;
 
 			if(!USE_PLAYERCOLLISIONS) {
 				t=radians(player.angle.getYaw());
-				tm.y-=(float)EEsin(t)*multi;
+				tm.y-=std::sin(t)*multi;
 			}
 
 			player.Current_Movement|=PLAYER_MOVE_WALK_BACKWARD;
@@ -2361,12 +2361,12 @@ void ArxGame::managePlayerControls()
 
 			float t = radians(player.angle.getPitch());
 			multi=10.f*(float)FD*MoveDiv*multi;
-			tm.x-=(float)EEsin(t)*multi;
-			tm.z+=(float)EEcos(t)*multi;
+			tm.x -= std::sin(t) * multi;
+			tm.z += std::cos(t) * multi;
 
 			if(!USE_PLAYERCOLLISIONS) {
 				t=radians(player.angle.getYaw());
-				tm.y+=(float)EEsin(t)*multi;
+				tm.y+=std::sin(t)*multi;
 			}
 
 			player.Current_Movement|=PLAYER_MOVE_WALK_FORWARD;
@@ -2382,8 +2382,8 @@ void ArxGame::managePlayerControls()
 			CurrFightPos=0;
 			float t = radians(MAKEANGLE(player.angle.getPitch()+90.f));
 			float multi=6.f*(float)FD*MoveDiv;
-			tm.x-=(float)EEsin(t)*multi;
-			tm.z+=(float)EEcos(t)*multi;
+			tm.x -= std::sin(t) * multi;
+			tm.z += std::cos(t) * multi;
 
 			player.Current_Movement|=PLAYER_MOVE_STRAFE_LEFT;
 
@@ -2398,8 +2398,8 @@ void ArxGame::managePlayerControls()
 			CurrFightPos=1;
 			float t = radians(MAKEANGLE(player.angle.getPitch()-90.f));
 			float multi=6.f*(float)FD*MoveDiv;
-			tm.x-=(float)EEsin(t)*multi;
-			tm.z+=(float)EEcos(t)*multi;
+			tm.x -= std::sin(t) * multi;
+			tm.z += std::cos(t) * multi;
 
 			player.Current_Movement|=PLAYER_MOVE_STRAFE_RIGHT;
 
@@ -3929,7 +3929,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 							if(necklace.runes[i]->angle.getPitch() > 300.f)
 								necklace.runes[i]->angle.setPitch(300.f);
 
-							angle.setPitch(EEsin(arxtime.get_updated() * (1.0f / 200)) * necklace.runes[i]->angle.getPitch() * (1.0f / 40));
+							angle.setPitch(std::sin(arxtime.get_updated() * (1.0f / 200)) * necklace.runes[i]->angle.getPitch() * (1.0f / 40));
 						}
 
 						necklace.runes[i]->angle.setPitch(necklace.runes[i]->angle.getPitch() - framedelay * 0.2f);
@@ -6063,7 +6063,7 @@ HudChangeLevelIcon ChangeLevelIcon;
 void UpdateChangeLevelIcon() {
 	ChangeLevelIcon.x = g_size.width() - INTERFACE_RATIO_DWORD(ChangeLevel->m_dwWidth);
 	ChangeLevelIcon.y = 0;
-	ChangeLevelIcon.vv = 0.9f - EEsin(arxtime.get_frame_time()*( 1.0f / 50 ))*0.5f+rnd()*( 1.0f / 10 );
+	ChangeLevelIcon.vv = 0.9f - std::sin(arxtime.get_frame_time()*( 1.0f / 50 ))*0.5f+rnd()*( 1.0f / 10 );
 	ChangeLevelIcon.vv = clamp(ChangeLevelIcon.vv, 0.f, 1.f);
 }
 
@@ -6109,7 +6109,7 @@ static void drawQuickSaveIcon() {
 	
 	// Flash the icon twice, starting at about 0.7 opacity
 	float step = 1.f - float(g_quickSaveIconTime) * (1.f / QUICK_SAVE_ICON_TIME);
-	float alpha = std::min(1.f, 0.6f * (EEsin(step * (7.f / 2.f * PI)) + 1.f));
+	float alpha = std::min(1.f, 0.6f * (std::sin(step * (7.f / 2.f * PI)) + 1.f));
 	
 	TextureContainer * tex = TextureContainer::LoadUI("graph/interface/icons/menu_main_save");
 	if(!tex) {

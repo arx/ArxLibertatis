@@ -600,9 +600,9 @@ void ARX_SPELLS_RequestSymbolDrawCommon(Entity *io, float duration, RuneInfo & i
 
 	sd->starttime = (unsigned long)(arxtime);
 	sd->lasttim = 0;
-	sd->lastpos.x = io->pos.x - EEsin(radians(MAKEANGLE(io->angle.getPitch() - 45.0F + info.startOffset.x*2))) * 60.0F;
+	sd->lastpos.x = io->pos.x - std::sin(radians(MAKEANGLE(io->angle.getPitch() - 45.0F + info.startOffset.x*2))) * 60.0F;
 	sd->lastpos.y = io->pos.y - 120.0F - info.startOffset.y*5;
-	sd->lastpos.z = io->pos.z + EEcos(radians(MAKEANGLE(io->angle.getPitch() - 45.0F + info.startOffset.x * 2))) * 60.0F;
+	sd->lastpos.z = io->pos.z + std::cos(radians(MAKEANGLE(io->angle.getPitch() - 45.0F + info.startOffset.x * 2))) * 60.0F;
 
 	sd->cPosStartX = checked_range_cast<char>(info.startOffset.x);
 	sd->cPosStartY = checked_range_cast<char>(info.startOffset.y);
@@ -992,9 +992,9 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 
 			if(io->dynlight != -1) {
 				float rr = rnd();
-				DynLight[io->dynlight].pos.x = io->pos.x - EEsin(radians(MAKEANGLE(io->angle.getPitch() - 45.f)))*60.f;
+				DynLight[io->dynlight].pos.x = io->pos.x - std::sin(radians(MAKEANGLE(io->angle.getPitch() - 45.f)))*60.f;
 				DynLight[io->dynlight].pos.y=io->pos.y-120.f;
-				DynLight[io->dynlight].pos.z = io->pos.z + EEcos(radians(MAKEANGLE(io->angle.getPitch() - 45.f)))*60.f;
+				DynLight[io->dynlight].pos.z = io->pos.z + std::cos(radians(MAKEANGLE(io->angle.getPitch() - 45.f)))*60.f;
 				DynLight[io->dynlight].fallstart=140.f+(float)io->flarecount*0.333333f+rr*5.f;
 				DynLight[io->dynlight].fallend=220.f+(float)io->flarecount*0.5f+rr*5.f;
 				DynLight[io->dynlight].intensity=1.6f;
@@ -2835,16 +2835,16 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 	{
 		if (source==0) // no target... player spell targeted by sight
 		{
-			spells[i].target_pos.x = player.pos.x - EEsin(radians(player.angle.getPitch()))*60.f;
-			spells[i].target_pos.y = player.pos.y + EEsin(radians(player.angle.getYaw()))*60.f;
-			spells[i].target_pos.z = player.pos.z + EEcos(radians(player.angle.getPitch()))*60.f;
+			spells[i].target_pos.x = player.pos.x - std::sin(radians(player.angle.getPitch()))*60.f;
+			spells[i].target_pos.y = player.pos.y + std::sin(radians(player.angle.getYaw()))*60.f;
+			spells[i].target_pos.z = player.pos.z + std::cos(radians(player.angle.getPitch()))*60.f;
 		}
 		else
 		{
 			// TODO entities[target] with target < 0 ??? - uh oh!
-			spells[i].target_pos.x = entities[target]->pos.x - EEsin(radians(entities[target]->angle.getPitch()))*60.f;
+			spells[i].target_pos.x = entities[target]->pos.x - std::sin(radians(entities[target]->angle.getPitch()))*60.f;
 			spells[i].target_pos.y=entities[target]->pos.y-120.f;
-			spells[i].target_pos.z = entities[target]->pos.z + EEcos(radians(entities[target]->angle.getPitch()))*60.f;
+			spells[i].target_pos.z = entities[target]->pos.z + std::cos(radians(entities[target]->angle.getPitch()))*60.f;
 		}
 	} else if (target==0) {
 		// player target
@@ -3454,9 +3454,9 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 				if(ValidIONum(spells[i].caster)) {
 					Entity * c = entities[spells[i].caster];
 					if(c->ioflags & IO_NPC) {
-						target.x -= EEsin(radians(c->angle.getPitch())) * 30.f;
+						target.x -= std::sin(radians(c->angle.getPitch())) * 30.f;
 						target.y -= 80.f;
-						target.z += EEcos(radians(c->angle.getPitch())) * 30.f;
+						target.z += std::cos(radians(c->angle.getPitch())) * 30.f;
 					}
 				}
 			}
@@ -3534,8 +3534,8 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 				angleb = entities[spells[i].caster]->angle.getPitch();
 			}
 			angleb = MAKEANGLE(angleb);
-			target.x -= EEsin(radians(angleb)) * 150.0f;
-			target.z += EEcos(radians(angleb)) * 150.0f;
+			target.x -= std::sin(radians(angleb)) * 150.0f;
+			target.z += std::cos(radians(angleb)) * 150.0f;
 			effect->Create(target, angleb, spells[i].caster_level);
 			
 			effect->SetDuration(spells[i].tolive);
@@ -3963,8 +3963,8 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 				displace = (entities[spells[i].caster]->ioflags & IO_NPC) == IO_NPC;
 			}
 			if(displace) {
-				target.x -= EEsin(radians(beta)) * 300.f;
-				target.z += EEcos(radians(beta)) * 300.f;
+				target.x -= std::sin(radians(beta)) * 300.f;
+				target.z += std::cos(radians(beta)) * 300.f;
 			}
 			if(!ARX_INTERACTIVE_ConvertToValidPosForIO(NULL, &target)) {
 				ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE);
@@ -4063,8 +4063,8 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 				}
 			}
 			if(displace) {
-				target.x -= EEsin(radians(MAKEANGLE(beta))) * 250.f;
-				target.z += EEcos(radians(MAKEANGLE(beta))) * 250.f;
+				target.x -= std::sin(radians(MAKEANGLE(beta))) * 250.f;
+				target.z += std::cos(radians(MAKEANGLE(beta))) * 250.f;
 			}
 			
 			ARX_SOUND_PlaySFX(SND_SPELL_CREATE_FIELD, &target);
@@ -4197,9 +4197,9 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			spells[i].fManaCostPerSecond = 3.2f;
 			eyeball.exist = 1;
 			float angleb = MAKEANGLE(player.angle.getPitch());
-			eyeball.pos.x = player.pos.x - EEsin(radians(angleb)) * 200.f;
+			eyeball.pos.x = player.pos.x - std::sin(radians(angleb)) * 200.f;
 			eyeball.pos.y = player.pos.y + 50.f;
-			eyeball.pos.z = player.pos.z + EEcos(radians(angleb)) * 200.f;
+			eyeball.pos.z = player.pos.z + std::cos(radians(angleb)) * 200.f;
 			eyeball.angle = player.angle;
 			
 			for(long n = 0; n < 12; n++) {
@@ -4263,8 +4263,8 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 				}
 			}
 			if(displace) {
-				target.x -= EEsin(radians(MAKEANGLE(beta))) * 250.f;
-				target.z += EEcos(radians(MAKEANGLE(beta))) * 250.f;
+				target.x -= std::sin(radians(MAKEANGLE(beta))) * 250.f;
+				target.z += std::cos(radians(MAKEANGLE(beta))) * 250.f;
 			}
 			
 			spells[i].longinfo = ARX_DAMAGES_GetFree();
@@ -4328,8 +4328,8 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 				}
 			}
 			if(displace) {
-				target.x -= EEsin(radians(MAKEANGLE(beta))) * 250.f;
-				target.z += EEcos(radians(MAKEANGLE(beta))) * 250.f;
+				target.x -= std::sin(radians(MAKEANGLE(beta))) * 250.f;
+				target.z += std::cos(radians(MAKEANGLE(beta))) * 250.f;
 			}
 			
 			spells[i].longinfo = ARX_DAMAGES_GetFree();
@@ -4526,8 +4526,8 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			for(long i_angle = 0 ; i_angle < 360 ; i_angle += 12) {
 				for(long j = -100 ; j < 100 ; j += 50) {
 					float rr = radians(float(i_angle));
-					Vec3f pos(target.x - EEsin(rr) * 360.f, target.y,
-					          target.z + EEcos(rr) * 360.f);
+					Vec3f pos(target.x - std::sin(rr) * 360.f, target.y,
+					          target.z + std::cos(rr) * 360.f);
 					Vec3f dir = glm::normalize(Vec3f(pos.x - target.x, 
                                                 0.f,
                                                 pos.z - target.z)) * 60.f;
@@ -4627,8 +4627,8 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 				displace = (entities[spells[i].caster]->ioflags & IO_NPC) == IO_NPC;
 			}
 			if(displace) {
-				target.x -= EEsin(radians(MAKEANGLE(beta))) * 300.f;
-				target.z += EEcos(radians(MAKEANGLE(beta))) * 300.f;
+				target.x -= std::sin(radians(MAKEANGLE(beta))) * 300.f;
+				target.z += std::cos(radians(MAKEANGLE(beta))) * 300.f;
 			}
 			
 			if(!ARX_INTERACTIVE_ConvertToValidPosForIO(NULL, &target)) {
@@ -4836,8 +4836,8 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 				target = io->pos + Vec3f(0.f, -20.f, 0.f);
 				beta = io->angle.getPitch();
 			}
-			target.x -= EEsin(radians(MAKEANGLE(beta))) * 500.f;
-			target.z += EEcos(radians(MAKEANGLE(beta))) * 500.f;
+			target.x -= std::sin(radians(MAKEANGLE(beta))) * 500.f;
+			target.z += std::cos(radians(MAKEANGLE(beta))) * 500.f;
 			
 			effect->SetDuration(long(500 * spells[i].caster_level));
 			effect->Create(target, MAKEANGLE(player.angle.getPitch()));
@@ -5604,7 +5604,7 @@ void ARX_SPELLS_Update()
 						scaley = EEfabs(entities[spells[i].caster]->physics.cyl.height*( 1.0f / 2 ))+30.f;
 
  
-					float mov=EEsin((float)arxtime.get_frame_time()*( 1.0f / 800 ))*scaley;
+					float mov=std::sin((float)arxtime.get_frame_time()*( 1.0f / 800 ))*scaley;
 
 					Vec3f cabalpos;
 					if(spells[i].caster==0) {
@@ -5619,7 +5619,7 @@ void ARX_SPELLS_Update()
 						refpos=entities[spells[i].caster]->pos.y-scaley;							
 					}
 
-					float Es=EEsin((float)arxtime.get_frame_time()*( 1.0f / 800 ) + radians(scaley));
+					float Es=std::sin((float)arxtime.get_frame_time()*( 1.0f / 800 ) + radians(scaley));
 
 					if(spells[i].longinfo2!=-1) {
 						DynLight[spells[i].longinfo2].pos.x = cabalpos.x;
@@ -5642,17 +5642,17 @@ void ARX_SPELLS_Update()
 					Color3f cabalcolor = Color3f(0.8f, 0.4f, 0.f);
 					DrawEERIEObjEx(cabal,&cabalangle,&cabalpos,&cabalscale, cabalcolor);
 
-					mov=EEsin((float)(arxtime.get_frame_time()-30.f)*( 1.0f / 800 ))*scaley;
+					mov=std::sin((float)(arxtime.get_frame_time()-30.f)*( 1.0f / 800 ))*scaley;
 					cabalpos.y = refpos - mov;
 					cabalcolor = Color3f(0.5f, 3.f, 0.f);
 					DrawEERIEObjEx(cabal,&cabalangle,&cabalpos,&cabalscale, cabalcolor);
 
-					mov=EEsin((float)(arxtime.get_frame_time()-60.f)*( 1.0f / 800 ))*scaley;
+					mov=std::sin((float)(arxtime.get_frame_time()-60.f)*( 1.0f / 800 ))*scaley;
 					cabalpos.y=refpos-mov;
 					cabalcolor = Color3f(0.25f, 0.1f, 0.f);
 					DrawEERIEObjEx(cabal,&cabalangle,&cabalpos,&cabalscale, cabalcolor);
 
-					mov=EEsin((float)(arxtime.get_frame_time()-120.f)*( 1.0f / 800 ))*scaley;
+					mov=std::sin((float)(arxtime.get_frame_time()-120.f)*( 1.0f / 800 ))*scaley;
 					cabalpos.y=refpos-mov;
 					cabalcolor = Color3f(0.15f, 0.1f, 0.f);
 					DrawEERIEObjEx(cabal,&cabalangle,&cabalpos,&cabalscale, cabalcolor);
@@ -6089,8 +6089,8 @@ void ARX_SPELLS_Update()
 							}
 							
 							float t = rnd() * (PI * 2.f) - PI;
-							float ts = EEsin(t);
-							float tc = EEcos(t);
+							float ts = std::sin(t);
+							float tc = std::cos(t);
 							pd->ov = pf->pos + Vec3f(120.f * ts, 15.f * ts, 120.f * tc) * randomVec();
 							pd->move = Vec3f(2.f - 4.f * rnd(), 1.f - 8.f * rnd(), 2.f - 4.f * rnd());
 							pd->siz = 7.f;
@@ -6196,24 +6196,24 @@ void ARX_SPELLS_Update()
 						long lvl = Random::get(9, 13);
 						rr=radians(rnd()*360.f);
 						r2=radians(rnd()*360.f);
-						pos.x=DynLight[id].pos.x-EEsin(rr)*260;
-						pos.y=DynLight[id].pos.y-EEsin(r2)*260;
-						pos.z=DynLight[id].pos.z+EEcos(rr)*260;
+						pos.x=DynLight[id].pos.x-std::sin(rr)*260;
+						pos.y=DynLight[id].pos.y-std::sin(r2)*260;
+						pos.z=DynLight[id].pos.z+std::cos(rr)*260;
 						Color3f rgb(0.1f + rnd()*(1.f/3), 0.1f + rnd()*(1.0f/3), 0.8f + rnd()*(1.0f/5));
 						LaunchFireballBoom(&pos, static_cast<float>(lvl), NULL, &rgb);
 					} else if(choice > .6f) {
 						rr=radians(rnd()*360.f);
 						r2=radians(rnd()*360.f);
-						pos.x=DynLight[id].pos.x-EEsin(rr)*260;
-						pos.y=DynLight[id].pos.y-EEsin(r2)*260;
-						pos.z=DynLight[id].pos.z+EEcos(rr)*260;
+						pos.x=DynLight[id].pos.x-std::sin(rr)*260;
+						pos.y=DynLight[id].pos.y-std::sin(r2)*260;
+						pos.z=DynLight[id].pos.z+std::cos(rr)*260;
 						MakeCoolFx(&pos);
 					} else if(choice > 0.4f) {
 						rr=radians(rnd()*360.f);
 						r2=radians(rnd()*360.f);
-						pos.x=DynLight[id].pos.x-EEsin(rr)*160;
-						pos.y=DynLight[id].pos.y-EEsin(r2)*160;
-						pos.z=DynLight[id].pos.z+EEcos(rr)*160;
+						pos.x=DynLight[id].pos.x-std::sin(rr)*160;
+						pos.y=DynLight[id].pos.y-std::sin(r2)*160;
+						pos.z=DynLight[id].pos.z+std::cos(rr)*160;
 						ARX_PARTICLES_Add_Smoke(&pos, 2, 20); // flag 1 = randomize pos
 					}
 				}
@@ -6516,7 +6516,7 @@ void ARX_SPELLS_Update()
 						else
 							scaley=EEfabs(entities[spells[i].caster]->physics.cyl.height*( 1.0f / 2 ))+30.f;
 
-						float mov=EEsin((float)arxtime.get_frame_time()*( 1.0f / 800 ))*scaley;
+						float mov=std::sin((float)arxtime.get_frame_time()*( 1.0f / 800 ))*scaley;
 
 						Vec3f cabalpos;
 						if(spells[i].caster == 0) {
@@ -6531,7 +6531,7 @@ void ARX_SPELLS_Update()
 							refpos=entities[spells[i].caster]->pos.y-scaley;
 						}
 
-						float Es=EEsin((float)arxtime.get_frame_time()*( 1.0f / 800 ) + radians(scaley));
+						float Es=std::sin((float)arxtime.get_frame_time()*( 1.0f / 800 ) + radians(scaley));
 
 						if(spells[i].longinfo2 != -1) {
 							DynLight[spells[i].longinfo2].pos.x = cabalpos.x;
@@ -6553,17 +6553,17 @@ void ARX_SPELLS_Update()
 						Color3f cabalcolor = Color3f(0.4f, 0.4f, 0.8f);
 						DrawEERIEObjEx(cabal,&cabalangle,&cabalpos,&cabalscale, cabalcolor);
 
-						mov=EEsin((float)(arxtime.get_frame_time()-30.f)*( 1.0f / 800 ))*scaley;
+						mov=std::sin((float)(arxtime.get_frame_time()-30.f)*( 1.0f / 800 ))*scaley;
 						cabalpos.y = refpos - mov;
 						cabalcolor = Color3f(0.2f, 0.2f, 0.5f);
 						DrawEERIEObjEx(cabal,&cabalangle,&cabalpos,&cabalscale, cabalcolor);
 
-						mov=EEsin((float)(arxtime.get_frame_time()-60.f)*( 1.0f / 800 ))*scaley;
+						mov=std::sin((float)(arxtime.get_frame_time()-60.f)*( 1.0f / 800 ))*scaley;
 						cabalpos.y=refpos-mov;
 						cabalcolor = Color3f(0.1f, 0.1f, 0.25f);
 						DrawEERIEObjEx(cabal,&cabalangle,&cabalpos,&cabalscale, cabalcolor);
 
-						mov=EEsin((float)(arxtime.get_frame_time()-120.f)*( 1.0f / 800 ))*scaley;
+						mov=std::sin((float)(arxtime.get_frame_time()-120.f)*( 1.0f / 800 ))*scaley;
 						cabalpos.y=refpos-mov;
 						cabalcolor = Color3f(0.f, 0.f, 0.15f);
 						DrawEERIEObjEx(cabal,&cabalangle,&cabalpos,&cabalscale, cabalcolor);
@@ -6574,17 +6574,17 @@ void ARX_SPELLS_Update()
 						cabalcolor = Color3f(0.f, 0.f, 0.15f);
 						DrawEERIEObjEx(cabal,&cabalangle,&cabalpos,&cabalscale, cabalcolor);
 
-						mov=EEsin((float)(arxtime.get_frame_time()+30.f)*( 1.0f / 800 ))*scaley;
+						mov=std::sin((float)(arxtime.get_frame_time()+30.f)*( 1.0f / 800 ))*scaley;
 						cabalpos.y=refpos+mov;
 						cabalcolor = Color3f(0.1f, 0.1f, 0.25f);
 						DrawEERIEObjEx(cabal,&cabalangle,&cabalpos,&cabalscale, cabalcolor);
 
-						mov=EEsin((float)(arxtime.get_frame_time()+60.f)*( 1.0f / 800 ))*scaley;
+						mov=std::sin((float)(arxtime.get_frame_time()+60.f)*( 1.0f / 800 ))*scaley;
 						cabalpos.y=refpos+mov;
 						cabalcolor = Color3f(0.2f, 0.2f, 0.5f);
 						DrawEERIEObjEx(cabal,&cabalangle,&cabalpos,&cabalscale, cabalcolor);
 
-						mov=EEsin((float)(arxtime.get_frame_time()+120.f)*( 1.0f / 800 ))*scaley;
+						mov=std::sin((float)(arxtime.get_frame_time()+120.f)*( 1.0f / 800 ))*scaley;
 						cabalpos.y=refpos+mov;
 						cabalcolor = Color3f(0.4f, 0.4f, 0.8f);
 						DrawEERIEObjEx(cabal,&cabalangle,&cabalpos,&cabalscale, cabalcolor);
@@ -6607,7 +6607,7 @@ void ARX_SPELLS_Update()
 						else
 							scaley=EEfabs(entities[spells[i].caster]->physics.cyl.height*( 1.0f / 2 ))+30.f;
 
-						float mov=EEsin((float)arxtime.get_frame_time()*( 1.0f / 800 ))*scaley;
+						float mov=std::sin((float)arxtime.get_frame_time()*( 1.0f / 800 ))*scaley;
 
 						Vec3f cabalpos;
 						if(spells[i].caster == 0) {
@@ -6622,7 +6622,7 @@ void ARX_SPELLS_Update()
 							refpos=entities[spells[i].caster]->pos.y-scaley;							
 						}
 
-						float Es=EEsin((float)arxtime.get_frame_time()*( 1.0f / 800 ) + radians(scaley));
+						float Es=std::sin((float)arxtime.get_frame_time()*( 1.0f / 800 ) + radians(scaley));
 
 						if(spells[i].longinfo2 != -1) {
 							DynLight[spells[i].longinfo2].pos.x = cabalpos.x;
@@ -6645,17 +6645,17 @@ void ARX_SPELLS_Update()
 						Color3f cabalcolor = Color3f(0.8f, 0.f, 0.f);
 						DrawEERIEObjEx(cabal,&cabalangle,&cabalpos,&cabalscale, cabalcolor);
 
-						mov=EEsin((float)(arxtime.get_frame_time()-30.f)*( 1.0f / 800 ))*scaley;
+						mov=std::sin((float)(arxtime.get_frame_time()-30.f)*( 1.0f / 800 ))*scaley;
 						cabalpos.y=refpos-mov;
 						cabalcolor = Color3f(0.5f, 0.f, 0.f);
 						DrawEERIEObjEx(cabal,&cabalangle,&cabalpos,&cabalscale, cabalcolor);
 
-						mov=EEsin((float)(arxtime.get_frame_time()-60.f)*( 1.0f / 800 ))*scaley;
+						mov=std::sin((float)(arxtime.get_frame_time()-60.f)*( 1.0f / 800 ))*scaley;
 						cabalpos.y=refpos-mov;
 						cabalcolor = Color3f(0.25f, 0.f, 0.f);
 						DrawEERIEObjEx(cabal,&cabalangle,&cabalpos,&cabalscale, cabalcolor);
 
-						mov=EEsin((float)(arxtime.get_frame_time()-120.f)*( 1.0f / 800 ))*scaley;
+						mov=std::sin((float)(arxtime.get_frame_time()-120.f)*( 1.0f / 800 ))*scaley;
 						cabalpos.y=refpos-mov;
 						cabalcolor = Color3f(0.15f, 0.f, 0.f);
 						DrawEERIEObjEx(cabal,&cabalangle,&cabalpos,&cabalscale, cabalcolor);
@@ -6666,17 +6666,17 @@ void ARX_SPELLS_Update()
 						cabalcolor = Color3f(0.15f, 0.f, 0.f);
 						DrawEERIEObjEx(cabal,&cabalangle,&cabalpos,&cabalscale, cabalcolor);
 
-						mov=EEsin((float)(arxtime.get_frame_time()+30.f)*( 1.0f / 800 ))*scaley;
+						mov=std::sin((float)(arxtime.get_frame_time()+30.f)*( 1.0f / 800 ))*scaley;
 						cabalpos.y=refpos+mov;
 						cabalcolor = Color3f(0.25f, 0.f, 0.f);
 						DrawEERIEObjEx(cabal,&cabalangle,&cabalpos,&cabalscale, cabalcolor);
 
-						mov=EEsin((float)(arxtime.get_frame_time()+60.f)*( 1.0f / 800 ))*scaley;
+						mov=std::sin((float)(arxtime.get_frame_time()+60.f)*( 1.0f / 800 ))*scaley;
 						cabalpos.y=refpos+mov;
 						cabalcolor = Color3f(0.5f, 0.f, 0.f);
 						DrawEERIEObjEx(cabal,&cabalangle,&cabalpos,&cabalscale, cabalcolor);
 
-						mov=EEsin((float)(arxtime.get_frame_time()+120.f)*( 1.0f / 800 ))*scaley;
+						mov=std::sin((float)(arxtime.get_frame_time()+120.f)*( 1.0f / 800 ))*scaley;
 						cabalpos.y=refpos+mov;
 						cabalcolor = Color3f(0.8f, 0.f, 0.f);
 						DrawEERIEObjEx(cabal,&cabalangle,&cabalpos,&cabalscale, cabalcolor);
@@ -6691,7 +6691,7 @@ void ARX_SPELLS_Update()
 				break;
 				case SPELL_FLYING_EYE: {
 					
-						eyeball.floating = EEsin(spells[i].lastupdate-spells[i].timcreation * 0.001f);
+						eyeball.floating = std::sin(spells[i].lastupdate-spells[i].timcreation * 0.001f);
 						eyeball.floating *= 10.f;
 						
 						if(spells[i].lastupdate-spells[i].timcreation <= 3000) {

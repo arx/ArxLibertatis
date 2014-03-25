@@ -189,14 +189,14 @@ std::vector<long> RoomDrawList;
 Vec2f getWaterFxUvOffset(const Vec3f & odtv, float power)
 {
 	power = power * 0.05f;
-	return Vec2f(EEsin(WATEREFFECT + odtv.x) * power,
-				 EEcos(WATEREFFECT + odtv.z) * power);
+	return Vec2f(std::sin(WATEREFFECT + odtv.x) * power,
+				 std::cos(WATEREFFECT + odtv.z) * power);
 }
 
 static void ApplyLavaGlowToVertex(Vec3f * odtv,TexturedVertex * dtv, float power) {
 	float f;
 	long lr, lg, lb;
-	power = 1.f - EEsin(WATEREFFECT + odtv->x + odtv->z) * 0.05f * power;
+	power = 1.f - std::sin(WATEREFFECT + odtv->x + odtv->z) * 0.05f * power;
 	f = ((dtv->color >> 16) & 255) * power;
 	lr = clipByte(f);
 
@@ -536,9 +536,9 @@ long ARX_PORTALS_GetRoomNumForCamera(float * height)
 
 	while(dist<=20.f) {
 		float vvv=radians(ACTIVECAM->angle.getPitch());
-		ep=CheckInPoly(	ACTIVECAM->orgTrans.pos.x+EEsin(vvv)*dist,
+		ep=CheckInPoly(ACTIVECAM->orgTrans.pos.x + std::sin(vvv) * dist,
 								ACTIVECAM->orgTrans.pos.y,
-								ACTIVECAM->orgTrans.pos.z-EEcos(vvv)*dist);
+								ACTIVECAM->orgTrans.pos.z - std::cos(vvv) * dist);
 
 		if(ep && ep->room > -1) {
 			if(height)

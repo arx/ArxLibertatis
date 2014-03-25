@@ -122,8 +122,8 @@ bool EERIECreateSprite(TexturedQuad& sprite, const TexturedVertex & in, float si
 		} else {
 			for(long i=0;i<4;i++) {
 				float tt = radians(MAKEANGLE(rot+90.f*i+45+90));
-				sprite.v[i].p.x = EEsin(tt) * t + out.p.x;
-				sprite.v[i].p.y = EEcos(tt) * t + out.p.y;
+				sprite.v[i].p.x = std::sin(tt) * t + out.p.x;
+				sprite.v[i].p.y = std::cos(tt) * t + out.p.y;
 				sprite.v[i].p.z = out.p.z;
 			}
 		}

@@ -244,14 +244,14 @@ void ParticleSystem::SpawnParticle(Particle * pP) {
 	if((ulParticleSpawn & PARTICLE_CIRCULAR) == PARTICLE_CIRCULAR
 	   && (ulParticleSpawn & PARTICLE_BORDER) == PARTICLE_BORDER) {
 		float randd = rnd() * 360.f;
-		pP->p3Pos.x = EEsin(randd) * p3ParticlePos.x;
+		pP->p3Pos.x = std::sin(randd) * p3ParticlePos.x;
 		pP->p3Pos.y = rnd() * p3ParticlePos.y;
-		pP->p3Pos.z = EEcos(randd) * p3ParticlePos.z;
+		pP->p3Pos.z = std::cos(randd) * p3ParticlePos.z;
 	} else if((ulParticleSpawn & PARTICLE_CIRCULAR) == PARTICLE_CIRCULAR) {
 		float randd = rnd() * 360.f;
-		pP->p3Pos.x = EEsin(randd) * rnd() * p3ParticlePos.x;
+		pP->p3Pos.x = std::sin(randd) * rnd() * p3ParticlePos.x;
 		pP->p3Pos.y = rnd() * p3ParticlePos.y;
-		pP->p3Pos.z = EEcos(randd) * rnd() * p3ParticlePos.z;
+		pP->p3Pos.z = std::cos(randd) * rnd() * p3ParticlePos.z;
 	} else {
 		pP->p3Pos = p3ParticlePos * randomVec(-1.f, 1.f);
 	}
@@ -262,16 +262,16 @@ void ParticleSystem::SpawnParticle(Particle * pP) {
 }
 
 void VectorRotateY(Vec3f & _eIn, Vec3f & _eOut, float _fAngle) {
-	float c = EEcos(_fAngle);
-	float s = EEsin(_fAngle);
+	float c = std::cos(_fAngle);
+	float s = std::sin(_fAngle);
 	_eOut.x = (_eIn.x * c) + (_eIn.z * s);
 	_eOut.y =  _eIn.y;
 	_eOut.z = (_eIn.z * c) - (_eIn.x * s);
 }
 
 void VectorRotateZ(Vec3f & _eIn, Vec3f & _eOut, float _fAngle) {
-	float c = EEcos(_fAngle);
-	float s = EEsin(_fAngle);
+	float c = std::cos(_fAngle);
+	float s = std::sin(_fAngle);
 	_eOut.x = (_eIn.x * c) + (_eIn.y * s);
 	_eOut.y = (_eIn.y * c) - (_eIn.x * s);
 	_eOut.z =  _eIn.z;

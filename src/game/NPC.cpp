@@ -547,7 +547,7 @@ static long AnchorData_GetNearest(Vec3f * pos, EERIE_CYLINDER * cyl, long except
 static long AnchorData_GetNearest_2(float beta, Vec3f * pos, EERIE_CYLINDER * cyl) {
 	
 	float d = radians(beta);
-	Vec3f vect(-EEsin(d), 0, EEcos(d));
+	Vec3f vect(-std::sin(d), 0, std::cos(d));
 	vect = glm::normalize(vect);
 
 	Vec3f posi;
@@ -1502,9 +1502,9 @@ void ARX_NPC_SpawnMember(Entity * ioo, long num) {
 	io->stopped = 1;
 	
 	Vec3f vector;
-	vector.x = -(float)EEsin(radians(io->angle.getPitch()));
-	vector.y = EEsin(radians(io->angle.getYaw())) * 2.f;
-	vector.z = (float)EEcos(radians(io->angle.getPitch()));
+	vector.x = -std::sin(radians(io->angle.getPitch()));
+	vector.y = std::sin(radians(io->angle.getYaw())) * 2.f;
+	vector.z = std::cos(radians(io->angle.getPitch()));
 	fnormalize(vector);
 	io->rubber = 0.6f;
 	

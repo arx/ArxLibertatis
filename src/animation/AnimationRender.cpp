@@ -676,7 +676,7 @@ void AddFixedObjectHalo(const EERIE_FACE & face, const TransformInfo & t, const 
 			vert[2] = tvList[second];
 			vert[3] = tvList[second];
 
-			float siz = ddist * (io->halo.radius * 1.5f * (EEsin(arxtime.get_frame_time() * .01f) * .1f + .7f)) * .6f;
+			float siz = ddist * (io->halo.radius * 1.5f * (std::sin(arxtime.get_frame_time() * .01f) * .1f + .7f)) * .6f;
 
 			Vec3f vect1;
 			vect1.x = tvList[first].p.x - tvList[third].p.x;
@@ -1017,7 +1017,7 @@ void AddAnimatedObjectHalo(HaloInfo & haloInfo, const unsigned short * paf, floa
 			vert[2].color = colors[second];
 			vert[3].color = colors[second];
 
-			float siz = ddist * (curhalo->radius * (EEsin(arxtime.get_frame_time() * .01f) * .1f + 1.f)) * .6f;
+			float siz = ddist * (curhalo->radius * (std::sin(arxtime.get_frame_time() * .01f) * .1f + 1.f)) * .6f;
 
 			if(io == entities.player() && ddist > 0.8f && !EXTERNALVIEW)
 				siz *= 1.5f;

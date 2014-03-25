@@ -308,9 +308,9 @@ void CFireBall::Update(unsigned long aulTime)
 			if ((ValidIONum(spells[spellinstance].caster))
 			        && (entities[spells[spellinstance].caster]->ioflags & IO_NPC))
 			{
-				eCurPos.x -= EEsin(radians(entities[spells[spellinstance].caster]->angle.getPitch())) * 30.f;
+				eCurPos.x -= std::sin(radians(entities[spells[spellinstance].caster]->angle.getPitch())) * 30.f;
 				eCurPos.y -= 80.f;
-				eCurPos.z += EEcos(radians(entities[spells[spellinstance].caster]->angle.getPitch())) * 30.f;
+				eCurPos.z += std::cos(radians(entities[spells[spellinstance].caster]->angle.getPitch())) * 30.f;
 			}
 			
 			Entity * io = entities[spells[spellinstance].caster];

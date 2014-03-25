@@ -114,7 +114,7 @@ void LaunchDummyParticle() {
 	}
 	
 	float f = radians(player.angle.getPitch());
-	pd->ov = player.pos + Vec3f(EEsin(f) * 100.f, 0.f, -EEcos(f) * 100.f);
+	pd->ov = player.pos + Vec3f(std::sin(f) * 100.f, 0.f, -std::cos(f) * 100.f);
 	pd->tolive = 600;
 	pd->tc = smokeparticle;
 	pd->siz = 15.f;
@@ -948,7 +948,7 @@ void createSphericalSparks(const Vec3f & pos, float r, TextureContainer * tc,
 		pd->type = PARTICLE_SPARK2;
 		pd->special = GRAVITY;
 		pd->ov = pd->oldpos = pos;
-		pd->move = Vec3f(EEsin(a) * EEcos(b), EEsin(a) * EEsin(b), EEcos(a)) * r;
+		pd->move = Vec3f(std::sin(a) * std::cos(b), std::sin(a) * std::sin(b), std::cos(a)) * r;
 		pd->tolive = Random::get(1000, 1500);
 		pd->rgb = color;
 		pd->tc = tc;
@@ -1467,7 +1467,7 @@ void TreatBackgroundActions() {
 				PARTICLE_DEF * pd = createParticle();
 				if(pd) {
 					float t = rnd() * PI;
-					Vec3f s = Vec3f(EEsin(t), EEsin(t), EEcos(t)) * randomVec();
+					Vec3f s = Vec3f(std::sin(t), std::sin(t), std::cos(t)) * randomVec();
 					pd->ov = gl->pos + s * gl->ex_radius;
 					pd->move = Vec3f(2.f - 4.f * rnd(), 2.f - 22.f * rnd(), 2.f - 4.f * rnd());
 					pd->move *= gl->ex_speed;
@@ -1492,7 +1492,7 @@ void TreatBackgroundActions() {
 				PARTICLE_DEF * pd = createParticle();
 				if(pd) {
 					float t = rnd() * (PI * 2.f) - PI;
-					Vec3f s = Vec3f(EEsin(t), EEsin(t), EEcos(t)) * randomVec();
+					Vec3f s = Vec3f(std::sin(t), std::sin(t), std::cos(t)) * randomVec();
 					pd->ov = gl->pos + s * gl->ex_radius;
 					Vec3f vect = glm::normalize(pd->ov - gl->pos);
 					float d = (gl->extras & EXTRAS_FIREPLACE) ? 6.f : 4.f;

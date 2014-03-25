@@ -537,9 +537,9 @@ glm::quat Quat_Slerp(const glm::quat & from, glm::quat to, float ratio)
 	if (1.0f - fCosTheta > 0.001f)
 	{
 		float fTheta = acosf(fCosTheta);
-		float t = 1 / EEsin(fTheta);
-		fBeta  = EEsin(fTheta * fBeta) * t ;
-		ratio = EEsin(fTheta * ratio) * t ;
+		float t = 1 / std::sin(fTheta);
+		fBeta = std::sin(fTheta * fBeta) * t ;
+		ratio = std::sin(fTheta * ratio) * t ;
 	}
 
 	return glm::quat(
@@ -620,9 +620,9 @@ Vec3f angleToVecForArrow(const Anglef & angle) {
 	float angleb = radians(angle.getPitch());
 	
 	Vec3f vect;
-	vect.x=-EEsin(angleb)*EEcos(anglea);
-	vect.y= EEsin(anglea);
-	vect.z= EEcos(angleb)*EEcos(anglea);
+	vect.x=-std::sin(angleb)*std::cos(anglea);
+	vect.y= std::sin(anglea);
+	vect.z= std::cos(angleb)*std::cos(anglea);
 	
 	return vect;
 }
@@ -643,24 +643,24 @@ glm::quat angleToQuatForExtraRotation(const Anglef & angle) {
 // Rotates a Vector around X. angle is given in degrees
 Vec3f VRotateX(const Vec3f in, const float angle) {
 	float s = radians(angle);
-	float c = EEcos(s);
-	s = EEsin(s);
+	float c = std::cos(s);
+	s = std::sin(s);
 	return Vec3f(in.x, (in.y * c) + (in.z * s), (in.z * c) - (in.y * s));
 }
 
 // Rotates a Vector around Y. angle is given in degrees
 Vec3f VRotateY(const Vec3f in, const float angle) {
 	float s = radians(angle);
-	float c = EEcos(s);
-	s = EEsin(s);
+	float c = std::cos(s);
+	s = std::sin(s);
 	return Vec3f((in.x * c) + (in.z * s), in.y, (in.z * c) - (in.x * s));
 }
 
 // Rotates a Vector around Z. angle is given in degrees
 Vec3f VRotateZ(const Vec3f in, const float angle) {
 	float s = radians(angle);
-	float c = EEcos(s);
-	s = EEsin(s);
+	float c = std::cos(s);
+	s = std::sin(s);
 	return Vec3f((in.x * c) + (in.y * s), (in.y * c) - (in.x * s), in.z);
 }
 
@@ -757,10 +757,10 @@ void GenerateMatrixUsingVector(glm::mat4x4 & matrix, const Vec3f & vect, float r
 	// Generate the Z rotation matrix for roll
 	roll[2][2] = 1.f;
 	roll[3][3] = 1.f;
-	roll[0][0] = EEcos(radians(rollDegrees));
-	roll[0][1] = -EEsin(radians(rollDegrees));
-	roll[1][0] = EEsin(radians(rollDegrees));
-	roll[1][1] = EEcos(radians(rollDegrees));
+	roll[0][0] =  std::cos(radians(rollDegrees));
+	roll[0][1] = -std::sin(radians(rollDegrees));
+	roll[1][0] =  std::sin(radians(rollDegrees));
+	roll[1][1] =  std::cos(radians(rollDegrees));
 
 	// Concatinate them for a complete rotation matrix that includes
 	// all rotations

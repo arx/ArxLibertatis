@@ -275,8 +275,8 @@ public:
 				
 				if(t->ioflags & IO_NPC) {
 					float dist = t->physics.cyl.radius + ioo->physics.cyl.radius + 10;
-					ioo->pos.x += -EEsin(radians(t->angle.getPitch())) * dist;
-					ioo->pos.z += EEcos(radians(t->angle.getPitch())) * dist;
+					ioo->pos.x += -std::sin(radians(t->angle.getPitch())) * dist;
+					ioo->pos.z +=  std::cos(radians(t->angle.getPitch())) * dist;
 				}
 				
 				TREATZONE_AddIO(ioo);

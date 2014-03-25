@@ -124,8 +124,8 @@ long Manage3DCursor(long flags) {
 	}
 
 	Vec3f pos;
-	pos.x = player.pos.x + EEsin(angle2) * (g_size.center().x - mx)*0.7f*va - EEsin(angle)*(va*zrange*400.f+vd);
-	pos.z = player.pos.z - EEcos(angle2) * (g_size.center().x - mx)*0.7f*va + EEcos(angle)*(va*zrange*400.f+vd);
+	pos.x = player.pos.x + std::sin(angle2) * (g_size.center().x - mx)*0.7f*va - std::sin(angle)*(va*zrange*400.f+vd);
+	pos.z = player.pos.z - std::cos(angle2) * (g_size.center().x - mx)*0.7f*va + std::cos(angle)*(va*zrange*400.f+vd);
 	pos.y = player.pos.y;
 
 	Vec3f objcenter = Vec3f_ZERO;
@@ -150,9 +150,9 @@ long Manage3DCursor(long flags) {
 	cyl.radius=40.f;
 
 	Vec3f orgn,dest,mvectx;
-	mvectx.x = -(float)EEsin(radians(player.angle.getPitch() - 90.f));
+	mvectx.x = -std::sin(radians(player.angle.getPitch() - 90.f));
 	mvectx.y = 0;
-	mvectx.z = +(float)EEcos(radians(player.angle.getPitch() - 90.f));
+	mvectx.z = +std::cos(radians(player.angle.getPitch() - 90.f));
 	mvectx = glm::normalize(mvectx);
 
 	float xmod = (float)(DANAEMouse.x-g_size.center().x) / (float)g_size.center().x*160.f;
@@ -160,13 +160,13 @@ long Manage3DCursor(long flags) {
 	mvectx *= xmod;
 	Vec3f mvecty(0, ymod, 0);
 
-	orgn.x=player.pos.x-(float)EEsin(radians(player.angle.getPitch()))*(float)EEcos(radians(player.angle.getYaw()))*50.f + mvectx.x;
-	orgn.y=player.pos.y+(float)EEsin(radians(player.angle.getYaw()))*50.f + mvectx.y + mvecty.y;
-	orgn.z=player.pos.z+(float)EEcos(radians(player.angle.getPitch()))*(float)EEcos(radians(player.angle.getYaw()))*50.f + mvectx.z;
+	orgn.x=player.pos.x- std::sin(radians(player.angle.getPitch())) * std::cos(radians(player.angle.getYaw()))*50.f + mvectx.x;
+	orgn.y=player.pos.y+ std::sin(radians(player.angle.getYaw()))*50.f + mvectx.y + mvecty.y;
+	orgn.z=player.pos.z+ std::cos(radians(player.angle.getPitch())) * std::cos(radians(player.angle.getYaw()))*50.f + mvectx.z;
 
-	dest.x=player.pos.x-(float)EEsin(radians(player.angle.getPitch()))*(float)EEcos(radians(player.angle.getYaw()))*10000.f + mvectx.x;
-	dest.y=player.pos.y+(float)EEsin(radians(player.angle.getYaw()))*10000.f + mvectx.y + mvecty.y * 5.f;
-	dest.z=player.pos.z+(float)EEcos(radians(player.angle.getPitch()))*(float)EEcos(radians(player.angle.getYaw()))*10000.f + mvectx.z;
+	dest.x=player.pos.x- std::sin(radians(player.angle.getPitch())) * std::cos(radians(player.angle.getYaw()))*10000.f + mvectx.x;
+	dest.y=player.pos.y+ std::sin(radians(player.angle.getYaw()))*10000.f + mvectx.y + mvecty.y * 5.f;
+	dest.z=player.pos.z+ std::cos(radians(player.angle.getPitch())) * std::cos(radians(player.angle.getYaw()))*10000.f + mvectx.z;
 	pos = orgn;
 
 	Vec3f movev = glm::normalize(dest - orgn);

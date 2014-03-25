@@ -262,9 +262,9 @@ void PutInFrontOfPlayer(Entity * io)
 		return;
 
 	float t = radians(player.angle.getPitch());
-	io->pos.x = player.pos.x - (float)EEsin(t) * 80.f;
+	io->pos.x = player.pos.x - std::sin(t) * 80.f;
 	io->pos.y = player.pos.y + 20.f; 
-	io->pos.z = player.pos.z + (float)EEcos(t) * 80.f;
+	io->pos.z = player.pos.z + std::cos(t) * 80.f;
 	io->velocity.y = 0.3f;
 	io->velocity.x = 0; 
 	io->velocity.z = 0; 

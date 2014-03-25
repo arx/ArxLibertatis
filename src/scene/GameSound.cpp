@@ -590,13 +590,13 @@ long ARX_SOUND_PlayMenu(SourceId & sample_id, float pitch, SoundLoopMode loop) {
 
 void ARX_SOUND_IOFrontPos(const Entity * io, Vec3f & pos) {
 	if(io) {
-		pos.x = io->pos.x - EEsin(radians(MAKEANGLE(io->angle.getPitch()))) * 100.0F;
+		pos.x = io->pos.x - std::sin(radians(MAKEANGLE(io->angle.getPitch()))) * 100.0F;
 		pos.y = io->pos.y - 100.0F;
-		pos.z = io->pos.z + EEcos(radians(MAKEANGLE(io->angle.getPitch()))) * 100.0F;
+		pos.z = io->pos.z + std::cos(radians(MAKEANGLE(io->angle.getPitch()))) * 100.0F;
 	} else if(ACTIVECAM) {
-		pos.x = ACTIVECAM->orgTrans.pos.x - EEsin(radians(MAKEANGLE(ACTIVECAM->angle.getPitch()))) * 100.0F;
+		pos.x = ACTIVECAM->orgTrans.pos.x - std::sin(radians(MAKEANGLE(ACTIVECAM->angle.getPitch()))) * 100.0F;
 		pos.y = ACTIVECAM->orgTrans.pos.y - 100.0F;
-		pos.z = ACTIVECAM->orgTrans.pos.z + EEcos(radians(MAKEANGLE(ACTIVECAM->angle.getPitch()))) * 100.0F;
+		pos.z = ACTIVECAM->orgTrans.pos.z + std::cos(radians(MAKEANGLE(ACTIVECAM->angle.getPitch()))) * 100.0F;
 	} else {
 		pos = Vec3f_ZERO;
 	}
@@ -844,7 +844,7 @@ long ARX_SOUND_PlayCinematic(const res::path & name, bool isSpeech) {
 	
 	if (ACTIVECAM) {
 		float t = radians(MAKEANGLE(ACTIVECAM->angle.getPitch()));
-		Vec3f front(-EEsin(t), 0.f, EEcos(t));
+		Vec3f front(-std::sin(t), 0.f, std::cos(t));
 		front = glm::normalize(front);
 
 		//TODO Hardcoded up vector
