@@ -216,19 +216,19 @@ void FX_DreamPrecalc(CinematicBitmap * bi, float amp, float fps)
 	a2 = DreamAng2;
 
 	///////////////////////
-	s1 = bi->nbx * EEcos(radians(0));
-	s2 = bi->nby * EEcos(radians(0));
+	s1 = bi->nbx * std::cos(radians(0));
+	s2 = bi->nby * std::cos(radians(0));
 	nx = (bi->nbx + 1) << 1;
 	ny = (bi->nby + 1) << 1;
 	nnx = ((float)nx) + s1;
 	nny = ((float)ny) + s2;
 
-	ox = amp * ((2 * ((float)sin(nnx / 20) + (float)sin(nnx * nny / 2000)
-	                  + (float)sin((nnx + nny) / 100) + (float)sin((nny - nnx) / 70) + (float)sin((nnx + 4 * nny) / 70)
-	                  + 2 * (float)sin(hypot(256 - nnx, (150 - nny / 8)) / 40))));
-	oy = amp * ((((float)cos(nnx / 31) + (float)cos(nnx * nny / 1783) +
-	              + 2 * (float)cos((nnx + nny) / 137) + (float)cos((nny - nnx) / 55) + 2 * (float)cos((nnx + 8 * nny) / 57)
-	              + (float)cos(hypot(384 - nnx, (274 - nny / 9)) / 51))));
+	ox = amp * ((2 * (std::sin(nnx / 20) + std::sin(nnx * nny / 2000)
+	                  + std::sin((nnx + nny) / 100) + std::sin((nny - nnx) / 70) + std::sin((nnx + 4 * nny) / 70)
+	                  + 2 * std::sin(hypot(256 - nnx, (150 - nny / 8)) / 40))));
+	oy = amp * (((std::cos(nnx / 31) + std::cos(nnx * nny / 1783) +
+	              + 2 * std::cos((nnx + nny) / 137) + std::cos((nny - nnx) / 55) + 2 * std::cos((nnx + 8 * nny) / 57)
+	              + std::cos(hypot(384 - nnx, (274 - nny / 9)) / 51))));
 
 	///////////////////////
 	t = DreamTable;
@@ -241,20 +241,20 @@ void FX_DreamPrecalc(CinematicBitmap * bi, float amp, float fps)
 		while (nx)
 		{
 
-			s1 = bi->nbx * EEcos(radians(a));
-			s2 = bi->nby * EEcos(radians(a2));
+			s1 = bi->nbx * std::cos(radians(a));
+			s2 = bi->nby * std::cos(radians(a2));
 			a -= 15.f;
 			a2 += 8.f;
 
 			nnx = ((float)nx) + s1;
 			nny = ((float)ny) + s2;
 
-			*t++ = (float)(-ox + amp * ((2 * (sin(nnx / 20) + sin(nnx * nny / 2000)
-			                                  + sin((nnx + nny) / 100) + sin((nny - nnx) / 70) + sin((nnx + 4 * nny) / 70)
-			                                  + 2 * sin(hypot(256 - nnx, (150 - nny / 8)) / 40)))));
-			*t++ = (float)(-oy + amp * (((cos(nnx / 31) + cos(nnx * nny / 1783) +
-			                              + 2 * cos((nnx + nny) / 137) + cos((nny - nnx) / 55) + 2 * cos((nnx + 8 * nny) / 57)
-			                              + cos(hypot(384 - nnx, (274 - nny / 9)) / 51)))));
+			*t++ = (float)(-ox + amp * ((2 * (std::sin(nnx / 20) + std::sin(nnx * nny / 2000)
+			                                  + std::sin((nnx + nny) / 100) + std::sin((nny - nnx) / 70) + std::sin((nnx + 4 * nny) / 70)
+			                                  + 2 * std::sin(hypot(256 - nnx, (150 - nny / 8)) / 40)))));
+			*t++ = (float)(-oy + amp * (((std::cos(nnx / 31) + std::cos(nnx * nny / 1783) +
+			                              + 2 * std::cos((nnx + nny) / 137) + std::cos((nny - nnx) / 55) + 2 * std::cos((nnx + 8 * nny) / 57)
+			                              + std::cos(hypot(384 - nnx, (274 - nny / 9)) / 51)))));
 
 			nx--;
 		}
