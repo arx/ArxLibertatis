@@ -420,7 +420,7 @@ void Cedric_PrepareHalo(EERIE_3DOBJ * eobj, Skeleton * obj) {
 		// Get light value for each vertex
 		for(long v = 0; v != obj->bones[i].nb_idxvertices; v++) {
 			//inVert  = &eobj->normallocal[obj->bones[i].idxvertices[v]];
-			EERIE_3DPAD * inVert = (EERIE_3DPAD *)&eobj->vertexlist[obj->bones[i].idxvertices[v]].norm;
+			Vec3f * inVert = (Vec3f *)&eobj->vertexlist[obj->bones[i].idxvertices[v]].norm;
 
 			// Get cos angle between light and vertex norm
 			eobj->vertexlist3[obj->bones[i].idxvertices[v]].norm.z =
@@ -1396,7 +1396,7 @@ void Cedric_TransformVerts(EERIE_3DOBJ *eobj, const Vec3f & pos) {
 		for(int v = 0; v != bone.nb_idxvertices; v++) {
 			long index = bone.idxvertices[v];
 
-			EERIE_3DPAD & inVert = eobj->vertexlocal[index];
+			Vec3f & inVert = eobj->vertexlocal[index];
 			EERIE_VERTEX & outVert = eobj->vertexlist3[index];
 			
 			outVert.v = Vec3f(matrix * Vec4f(inVert, 1.f));

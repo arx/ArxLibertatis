@@ -307,10 +307,6 @@ struct EERIE_FASTACCESS
 
 /////////////////////////////////////////////////////////////////////////////////
 
-struct EERIE_3DPAD : public Vec3f {
-	float w;
-};
-
 struct EERIE_3DOBJ
 {
 	EERIE_3DOBJ()
@@ -381,7 +377,7 @@ struct EERIE_3DOBJ
 	long origin;
 	long ident;
 	long nbgroups;
-	EERIE_3DPAD * vertexlocal;
+	Vec3f * vertexlocal;
 	std::vector<EERIE_VERTEX> vertexlist;
 	std::vector<EERIE_VERTEX> vertexlist3;
 

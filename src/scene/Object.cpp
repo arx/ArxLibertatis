@@ -1237,9 +1237,9 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 			bone.anim.scale = Vec3f_ONE;
 		}
 
-		eobj->vertexlocal = new EERIE_3DPAD[eobj->vertexlist.size()];
+		eobj->vertexlocal = new Vec3f[eobj->vertexlist.size()];
 		// TODO constructor is better than memset
-		memset(eobj->vertexlocal, 0, sizeof(EERIE_3DPAD)*eobj->vertexlist.size());
+		memset(eobj->vertexlocal, 0, sizeof(Vec3f)*eobj->vertexlist.size());
 
 		for(long i = 0; i != obj->nb_bones; i++) {
 			Vec3f vector = obj->bones[i].anim.trans;
@@ -1248,7 +1248,7 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 				
 				long idx = obj->bones[i].idxvertices[v];
 				const EERIE_VERTEX & inVert = eobj->vertexlist[idx];
-				EERIE_3DPAD & outVert = eobj->vertexlocal[idx];
+				Vec3f & outVert = eobj->vertexlocal[idx];
 				
 				Vec3f temp = inVert.v - vector;
 				temp = glm::inverse(obj->bones[i].anim.quat) * temp;
