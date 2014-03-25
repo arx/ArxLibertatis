@@ -189,6 +189,8 @@ Vec3f angleToVecForArrow(const Anglef & angle);
 
 glm::quat angleToQuatForExtraRotation(const Anglef & angle);
 
+std::pair<Vec3f, Vec3f> angleToFrontUpVecForSound(const Anglef & angle);
+
 // VECTORS Functions
 
 Vec3f VRotateX(const Vec3f in, const float angle);
