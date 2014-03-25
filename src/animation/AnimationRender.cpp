@@ -414,12 +414,14 @@ void Cedric_PrepareHalo(EERIE_3DOBJ * eobj, Skeleton * obj) {
 
 	// Apply light on all vertices
 	for(long i = 0; i != obj->nb_bones; i++) {
-		glm::quat qt1 = obj->bones[i].anim.quat;
+		const Bone & bone = obj->bones[i];
+		
+		glm::quat qt1 = bone.anim.quat;
 		t_vector = glm::inverse(qt1) * cam_vector;
 
 		// Get light value for each vertex
-		for(long v = 0; v != obj->bones[i].nb_idxvertices; v++) {
-			long vertIndex = obj->bones[i].idxvertices[v];
+		for(long v = 0; v != bone.nb_idxvertices; v++) {
+			long vertIndex = bone.idxvertices[v];
 			const Vec3f & inVert = eobj->vertexlist[vertIndex].norm;
 
 			// Get cos angle between light and vertex norm
