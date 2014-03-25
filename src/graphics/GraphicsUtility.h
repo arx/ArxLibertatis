@@ -57,6 +57,4 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 void Util_SetViewMatrix(glm::mat4x4 &mat, EERIE_TRANSFORM &transform);
 
-#define SAFE_RELEASE(p) { if(p) { (p)->Release(); (p)=NULL; } }
-
 #endif // ARX_GRAPHICS_GRAPHICSUTILITY_H

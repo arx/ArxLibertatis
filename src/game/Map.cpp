@@ -65,6 +65,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "window/Window.h"
 
+
+#define SAFE_RELEASE(p) { if(p) { (p)->Release(); (p)=NULL; } }
+
 extern long CURRENTLEVEL;
 char ThisLevelMap[256];
 
