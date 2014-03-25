@@ -406,18 +406,24 @@ void Cedric_ApplyLightingFirstPartRefactor(Entity *io) {
 	}
 }
 
-void Cedric_PrepareHalo(EERIE_3DOBJ * eobj, Skeleton * obj) {
-	Vec3f cam_vector, t_vector;
-	cam_vector.x = -std::sin(radians(ACTIVECAM->angle.getPitch())) * std::cos(radians(ACTIVECAM->angle.getYaw()));
-	cam_vector.y =  std::sin(radians(ACTIVECAM->angle.getYaw()));
-	cam_vector.z =  std::cos(radians(ACTIVECAM->angle.getPitch())) * std::cos(radians(ACTIVECAM->angle.getYaw()));
+Vec3f angleToVecForCedricHalo(const Anglef & angle) {
+	Vec3f cam_vector;
+	cam_vector.x = -std::sin(radians(angle.getPitch())) * std::cos(radians(angle.getYaw()));
+	cam_vector.y =  std::sin(radians(angle.getYaw()));
+	cam_vector.z =  std::cos(radians(angle.getPitch())) * std::cos(radians(angle.getYaw()));
+	
+	return cam_vector;
+}
 
+void Cedric_PrepareHalo(EERIE_3DOBJ * eobj, Skeleton * obj) {
+	Vec3f cam_vector = angleToVecForCedricHalo(ACTIVECAM->angle);
+	
 	// Apply light on all vertices
 	for(long i = 0; i != obj->nb_bones; i++) {
 		const Bone & bone = obj->bones[i];
 		
 		glm::quat qt1 = bone.anim.quat;
-		t_vector = glm::inverse(qt1) * cam_vector;
+		Vec3f t_vector = glm::inverse(qt1) * cam_vector;
 
 		// Get light value for each vertex
 		for(long v = 0; v != bone.nb_idxvertices; v++) {
