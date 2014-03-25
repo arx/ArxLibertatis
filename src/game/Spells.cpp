@@ -5640,22 +5640,22 @@ void ARX_SPELLS_Update()
 
 					Vec3f cabalscale = Vec3f(Es);
 					Color3f cabalcolor = Color3f(0.8f, 0.4f, 0.f);
-					DrawEERIEObjEx(cabal,&cabalangle,&cabalpos,&cabalscale, cabalcolor);
+					DrawEERIEObjEx(cabal, cabalangle, cabalpos, cabalscale, cabalcolor);
 
 					mov=std::sin((float)(arxtime.get_frame_time()-30.f)*( 1.0f / 800 ))*scaley;
 					cabalpos.y = refpos - mov;
 					cabalcolor = Color3f(0.5f, 3.f, 0.f);
-					DrawEERIEObjEx(cabal,&cabalangle,&cabalpos,&cabalscale, cabalcolor);
+					DrawEERIEObjEx(cabal, cabalangle, cabalpos, cabalscale, cabalcolor);
 
 					mov=std::sin((float)(arxtime.get_frame_time()-60.f)*( 1.0f / 800 ))*scaley;
 					cabalpos.y=refpos-mov;
 					cabalcolor = Color3f(0.25f, 0.1f, 0.f);
-					DrawEERIEObjEx(cabal,&cabalangle,&cabalpos,&cabalscale, cabalcolor);
+					DrawEERIEObjEx(cabal, cabalangle, cabalpos, cabalscale, cabalcolor);
 
 					mov=std::sin((float)(arxtime.get_frame_time()-120.f)*( 1.0f / 800 ))*scaley;
 					cabalpos.y=refpos-mov;
 					cabalcolor = Color3f(0.15f, 0.1f, 0.f);
-					DrawEERIEObjEx(cabal,&cabalangle,&cabalpos,&cabalscale, cabalcolor);
+					DrawEERIEObjEx(cabal, cabalangle, cabalpos, cabalscale, cabalcolor);
 
 					GRenderer->SetRenderState(Renderer::AlphaBlending, false);		
 					GRenderer->SetRenderState(Renderer::DepthWrite, true);	
@@ -6551,43 +6551,43 @@ void ARX_SPELLS_Update()
 												
 						Vec3f cabalscale = Vec3f(Es);
 						Color3f cabalcolor = Color3f(0.4f, 0.4f, 0.8f);
-						DrawEERIEObjEx(cabal,&cabalangle,&cabalpos,&cabalscale, cabalcolor);
+						DrawEERIEObjEx(cabal, cabalangle, cabalpos, cabalscale, cabalcolor);
 
 						mov=std::sin((float)(arxtime.get_frame_time()-30.f)*( 1.0f / 800 ))*scaley;
 						cabalpos.y = refpos - mov;
 						cabalcolor = Color3f(0.2f, 0.2f, 0.5f);
-						DrawEERIEObjEx(cabal,&cabalangle,&cabalpos,&cabalscale, cabalcolor);
+						DrawEERIEObjEx(cabal, cabalangle, cabalpos, cabalscale, cabalcolor);
 
 						mov=std::sin((float)(arxtime.get_frame_time()-60.f)*( 1.0f / 800 ))*scaley;
 						cabalpos.y=refpos-mov;
 						cabalcolor = Color3f(0.1f, 0.1f, 0.25f);
-						DrawEERIEObjEx(cabal,&cabalangle,&cabalpos,&cabalscale, cabalcolor);
+						DrawEERIEObjEx(cabal, cabalangle, cabalpos, cabalscale, cabalcolor);
 
 						mov=std::sin((float)(arxtime.get_frame_time()-120.f)*( 1.0f / 800 ))*scaley;
 						cabalpos.y=refpos-mov;
 						cabalcolor = Color3f(0.f, 0.f, 0.15f);
-						DrawEERIEObjEx(cabal,&cabalangle,&cabalpos,&cabalscale, cabalcolor);
+						DrawEERIEObjEx(cabal, cabalangle, cabalpos, cabalscale, cabalcolor);
 
 						cabalangle.setPitch(-cabalangle.getPitch());
 						cabalpos.y=refpos-mov;
 						cabalscale = Vec3f(Es);
 						cabalcolor = Color3f(0.f, 0.f, 0.15f);
-						DrawEERIEObjEx(cabal,&cabalangle,&cabalpos,&cabalscale, cabalcolor);
+						DrawEERIEObjEx(cabal, cabalangle, cabalpos, cabalscale, cabalcolor);
 
 						mov=std::sin((float)(arxtime.get_frame_time()+30.f)*( 1.0f / 800 ))*scaley;
 						cabalpos.y=refpos+mov;
 						cabalcolor = Color3f(0.1f, 0.1f, 0.25f);
-						DrawEERIEObjEx(cabal,&cabalangle,&cabalpos,&cabalscale, cabalcolor);
+						DrawEERIEObjEx(cabal, cabalangle, cabalpos, cabalscale, cabalcolor);
 
 						mov=std::sin((float)(arxtime.get_frame_time()+60.f)*( 1.0f / 800 ))*scaley;
 						cabalpos.y=refpos+mov;
 						cabalcolor = Color3f(0.2f, 0.2f, 0.5f);
-						DrawEERIEObjEx(cabal,&cabalangle,&cabalpos,&cabalscale, cabalcolor);
+						DrawEERIEObjEx(cabal, cabalangle, cabalpos, cabalscale, cabalcolor);
 
 						mov=std::sin((float)(arxtime.get_frame_time()+120.f)*( 1.0f / 800 ))*scaley;
 						cabalpos.y=refpos+mov;
 						cabalcolor = Color3f(0.4f, 0.4f, 0.8f);
-						DrawEERIEObjEx(cabal,&cabalangle,&cabalpos,&cabalscale, cabalcolor);
+						DrawEERIEObjEx(cabal, cabalangle, cabalpos, cabalscale, cabalcolor);
 
 						cabalangle.setPitch(-cabalangle.getPitch());
 						GRenderer->SetRenderState(Renderer::AlphaBlending, false);		
@@ -6643,43 +6643,43 @@ void ARX_SPELLS_Update()
 
 						Vec3f cabalscale = Vec3f(Es);
 						Color3f cabalcolor = Color3f(0.8f, 0.f, 0.f);
-						DrawEERIEObjEx(cabal,&cabalangle,&cabalpos,&cabalscale, cabalcolor);
+						DrawEERIEObjEx(cabal, cabalangle, cabalpos, cabalscale, cabalcolor);
 
 						mov=std::sin((float)(arxtime.get_frame_time()-30.f)*( 1.0f / 800 ))*scaley;
 						cabalpos.y=refpos-mov;
 						cabalcolor = Color3f(0.5f, 0.f, 0.f);
-						DrawEERIEObjEx(cabal,&cabalangle,&cabalpos,&cabalscale, cabalcolor);
+						DrawEERIEObjEx(cabal, cabalangle, cabalpos, cabalscale, cabalcolor);
 
 						mov=std::sin((float)(arxtime.get_frame_time()-60.f)*( 1.0f / 800 ))*scaley;
 						cabalpos.y=refpos-mov;
 						cabalcolor = Color3f(0.25f, 0.f, 0.f);
-						DrawEERIEObjEx(cabal,&cabalangle,&cabalpos,&cabalscale, cabalcolor);
+						DrawEERIEObjEx(cabal, cabalangle, cabalpos, cabalscale, cabalcolor);
 
 						mov=std::sin((float)(arxtime.get_frame_time()-120.f)*( 1.0f / 800 ))*scaley;
 						cabalpos.y=refpos-mov;
 						cabalcolor = Color3f(0.15f, 0.f, 0.f);
-						DrawEERIEObjEx(cabal,&cabalangle,&cabalpos,&cabalscale, cabalcolor);
+						DrawEERIEObjEx(cabal, cabalangle, cabalpos, cabalscale, cabalcolor);
 
 						cabalangle.setPitch(-cabalangle.getPitch());
 						cabalpos.y=refpos-mov;
 						cabalscale = Vec3f(Es);
 						cabalcolor = Color3f(0.15f, 0.f, 0.f);
-						DrawEERIEObjEx(cabal,&cabalangle,&cabalpos,&cabalscale, cabalcolor);
+						DrawEERIEObjEx(cabal, cabalangle, cabalpos, cabalscale, cabalcolor);
 
 						mov=std::sin((float)(arxtime.get_frame_time()+30.f)*( 1.0f / 800 ))*scaley;
 						cabalpos.y=refpos+mov;
 						cabalcolor = Color3f(0.25f, 0.f, 0.f);
-						DrawEERIEObjEx(cabal,&cabalangle,&cabalpos,&cabalscale, cabalcolor);
+						DrawEERIEObjEx(cabal, cabalangle, cabalpos, cabalscale, cabalcolor);
 
 						mov=std::sin((float)(arxtime.get_frame_time()+60.f)*( 1.0f / 800 ))*scaley;
 						cabalpos.y=refpos+mov;
 						cabalcolor = Color3f(0.5f, 0.f, 0.f);
-						DrawEERIEObjEx(cabal,&cabalangle,&cabalpos,&cabalscale, cabalcolor);
+						DrawEERIEObjEx(cabal, cabalangle, cabalpos, cabalscale, cabalcolor);
 
 						mov=std::sin((float)(arxtime.get_frame_time()+120.f)*( 1.0f / 800 ))*scaley;
 						cabalpos.y=refpos+mov;
 						cabalcolor = Color3f(0.8f, 0.f, 0.f);
-						DrawEERIEObjEx(cabal,&cabalangle,&cabalpos,&cabalscale, cabalcolor);
+						DrawEERIEObjEx(cabal, cabalangle, cabalpos, cabalscale, cabalcolor);
 
 						cabalangle.setPitch(-cabalangle.getPitch());
 						GRenderer->SetRenderState(Renderer::AlphaBlending, false);		

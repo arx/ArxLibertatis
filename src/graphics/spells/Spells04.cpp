@@ -237,7 +237,7 @@ void CCurse::Render() {
 		Vec3f stitepos = eTarget;
 		Vec3f stitescale = Vec3f_ONE;
 		Color3f stitecolor = Color3f::white;
-		DrawEERIEObjEx(svoodoo , &stiteangle, &stitepos, &stitescale, stitecolor);
+		DrawEERIEObjEx(svoodoo, stiteangle, stitepos, stitescale, stitecolor);
 	}
 	
 	for(int i = 0; i < 4; i++) {

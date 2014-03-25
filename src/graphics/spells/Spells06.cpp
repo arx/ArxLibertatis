@@ -652,7 +652,7 @@ void CRiseDead::DrawStone()
 			}
 
 			int col = Color::white.toBGR((int)(255.f * (1.f - a)));
-			DrawEERIEObjExEx(this->stone[this->tstone[nb].numstone], &this->tstone[nb].ang, &this->tstone[nb].pos, &this->tstone[nb].scale, col);
+			DrawEERIEObjExEx(this->stone[this->tstone[nb].numstone], this->tstone[nb].ang, this->tstone[nb].pos, this->tstone[nb].scale, col);
 			
 			PARTICLE_DEF * pd = createParticle();
 			if(pd) {

@@ -1411,8 +1411,7 @@ long CountBkgVertex() {
 	return count;
 }
 
-
-void DrawEERIEObjEx(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *pos, Vec3f *scale, const Color3f & col) {
+void DrawEERIEObjEx(EERIE_3DOBJ *eobj, const Anglef & angle, const Vec3f & pos, const Vec3f & scale, const Color3f & col) {
 	if(!eobj)
 		return;
 
@@ -1422,7 +1421,7 @@ void DrawEERIEObjEx(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *pos, Vec3f *scale, 
 //*************************************************************************************
 //routine qui gere l'alpha au vertex SEB
 //*************************************************************************************
-void DrawEERIEObjExEx(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *pos, Vec3f *scale, int coll)
+void DrawEERIEObjExEx(EERIE_3DOBJ *eobj, const Anglef & angle, const Vec3f & pos, const Vec3f & scale, int coll)
 {
 	if(!eobj)
 		return;
@@ -1434,14 +1433,14 @@ void DrawEERIEObjExEx(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *pos, Vec3f *scale
 	TexturedVertex rv;
 	TexturedVertex vert_list[3];
 	
-	glm::mat4 rotation = toRotationMatrix(*angle);
+	glm::mat4 rotation = toRotationMatrix(angle);
 	
 	for(size_t i = 0; i < eobj->vertexlist.size(); i++) {
-		v.p = eobj->vertexlist[i].v * *scale;
+		v.p = eobj->vertexlist[i].v * scale;
 		
 		rv.p = Vec3f(rotation * Vec4f(v.p, 1.f));
 		
-		eobj->vertexlist3[i].v = (rv.p += *pos);
+		eobj->vertexlist3[i].v = (rv.p += pos);
 
 		Vec3f tempWorld;
 		EE_RT(rv.p, tempWorld);

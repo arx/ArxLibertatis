@@ -310,7 +310,7 @@ static void drawDebugPathFinding() {
 		if(k0 >= 0 && k0 < ACTIVEBKG->nbanchors) {
 			Anglef angle(0.f, 0.f, 0.f);
 			Vec3f scale(0.5f);
-			DrawEERIEObjEx(g_nodeObject, &angle, &ACTIVEBKG->anchors[k0].pos, &scale, Color3f::white);
+			DrawEERIEObjEx(g_nodeObject, angle, ACTIVEBKG->anchors[k0].pos, scale, Color3f::white);
 		}
 		
 		// Show entity ID at the active node
@@ -340,7 +340,7 @@ static void drawDebugFogs() {
 		if(g_fogObject) {
 			Anglef angle(0.f, 0.f, 0.f);
 			Vec3f scale(1.f);
-			DrawEERIEObjEx(g_fogObject, &angle, &fog->pos, &scale, Color3f::white);
+			DrawEERIEObjEx(g_fogObject, angle, fog->pos, scale, Color3f::white);
 		}
 		
 		if(fog->special & FOG_DIRECTIONAL) {
