@@ -97,7 +97,6 @@ extern float Yratio;
 inline Vec2f sizeRatio() { return Vec2f(Xratio, Yratio); }
 inline float minSizeRatio() { return std::min(Xratio, Yratio); }
 
-extern float framedelay;
 extern bool FirstFrame;
 
 #ifdef BUILD_EDITOR

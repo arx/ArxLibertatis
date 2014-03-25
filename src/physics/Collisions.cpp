@@ -61,7 +61,6 @@ using std::max;
 using std::vector;
 
 //-----------------------------------------------------------------------------
-extern float framedelay;
 long ON_PLATFORM=0;
 //-----------------------------------------------------------------------------
 size_t EXCEPTIONS_LIST_Pos = 0;
