@@ -555,14 +555,14 @@ glm::quat Quat_Slerp(const glm::quat & from, glm::quat to, float ratio)
 //*************************************************************************************
 glm::quat QuatFromAngles(const Anglef & angle) {
 	float A, B;
-	A = angle.getYaw() * ( 1.0f / 2 );
-	B = angle.getPitch() * ( 1.0f / 2 );
+	A = radians(angle.getYaw()) * ( 1.0f / 2 );
+	B = radians(angle.getPitch()) * ( 1.0f / 2 );
 
 	float fSinYaw   = sinf(A);
 	float fCosYaw   = cosf(A);
 	float fSinPitch = sinf(B);
 	float fCosPitch = cosf(B);
-	A = angle.getRoll() * ( 1.0f / 2 );
+	A = radians(angle.getRoll()) * ( 1.0f / 2 );
 	float fSinRoll  = sinf(A);
 	float fCosRoll  = cosf(A);
 	A = fCosRoll * fCosPitch;
@@ -629,9 +629,9 @@ Vec3f angleToVecForArrow(const Anglef & angle) {
 
 glm::quat angleToQuatForExtraRotation(const Anglef & angle) {
 	Anglef vt1;
-	vt1.setYaw(radians(angle.getRoll()));
-	vt1.setPitch(radians(angle.getPitch()));
-	vt1.setRoll(radians(angle.getYaw()));
+	vt1.setYaw(angle.getRoll());
+	vt1.setPitch(angle.getPitch());
+	vt1.setRoll(angle.getYaw());
 	
 	return QuatFromAngles(vt1);
 }

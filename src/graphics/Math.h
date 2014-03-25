@@ -255,10 +255,6 @@ inline long PointInUnderCylinder(const EERIE_CYLINDER * cyl, const Vec3f * pt) {
 	return 0;
 }
 
-// ANGLES Functions
-
-void QuatFromAngles(glm::quat * q, const Anglef * angle);
-
 template <class T1, class T2, class T3>
 inline T1 clamp(T1 value, T2 min, T3 max) {
 	return (value <= min) ? min : ((value >= max) ? max : value);

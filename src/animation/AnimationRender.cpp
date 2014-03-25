@@ -1547,8 +1547,7 @@ void EERIEDrawAnimQuatUpdate(EERIE_3DOBJ *eobj, ANIM_USE * animlayer,const Angle
 		// To correct invalid angle in Animated FIX/ITEMS
 		rotation = glm::toQuat(toRotationMatrix(angle));
 	} else {
-		Anglef vt1 = Anglef(radians(angle.getYaw()), radians(angle.getPitch()), radians(angle.getRoll()));
-		rotation = QuatFromAngles(vt1);
+		rotation = QuatFromAngles(angle);
 	}
 
 	EERIE_EXTRA_ROTATE * extraRotation = NULL;
