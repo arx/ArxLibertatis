@@ -1748,8 +1748,10 @@ void ArxGame::manageEditorControls() {
 				Set_DragInter(NULL);
 			} else if(DRAGINTER) {
 
-				if(!((DRAGINTER->ioflags & IO_ITEM) && DRAGINTER->_itemdata->count > 1))
-					if(DRAGINTER->obj && DRAGINTER->obj->pbox) {
+				if(   !((DRAGINTER->ioflags & IO_ITEM) && DRAGINTER->_itemdata->count > 1)
+				   && DRAGINTER->obj
+				   && DRAGINTER->obj->pbox
+				) {
 						//Put object in fromt of player
 						if(!InInventoryPos(&DANAEMouse)) {
 							if(ARX_MOUSE_OVER & ARX_MOUSE_OVER_BOOK)
