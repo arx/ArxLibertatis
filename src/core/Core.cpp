@@ -1395,16 +1395,16 @@ void ClearSysTextures() {
 	}
 }
 
-static void PlayerLaunchArrow_Test(float aimratio, float poisonous, Vec3f * pos, Anglef * angle) {
+static void PlayerLaunchArrow_Test(float aimratio, float poisonous, const Vec3f & pos, const Anglef & angle) {
 	
-	Vec3f vect = angleToVecForArrow(*angle);
-	Vec3f position = *pos;
+	Vec3f vect = angleToVecForArrow(angle);
+	Vec3f position = pos;
 	float velocity = aimratio + 0.3f;
 
 	if(velocity < 0.9f)
 		velocity = 0.9f;
 	
-	glm::quat quat = angleToQuatForArrow(*angle);
+	glm::quat quat = angleToQuatForArrow(angle);
 
 	float wd = getEquipmentBaseModifier(IO_EQUIPITEM_ELEMENT_Damages);
 	// TODO Why ignore relative modifiers? Why not just use player.Full_damages?
@@ -2141,7 +2141,7 @@ void ManageCombatModeAnimations()
 
 				Anglef orgAngle = player.angle;
 
-				PlayerLaunchArrow_Test(aimratio, poisonous, &orgPos, &orgAngle);
+				PlayerLaunchArrow_Test(aimratio, poisonous, orgPos, orgAngle);
 
 				if(sp_max) {
 					Anglef angle;
@@ -2152,16 +2152,16 @@ void ManageCombatModeAnimations()
 					angle.setYaw(player.angle.getYaw());
 					angle.setPitch(player.angle.getPitch() + 8);
 					angle.setRoll(player.angle.getRoll());
-					PlayerLaunchArrow_Test(aimratio, poisonous, &pos, &angle);
+					PlayerLaunchArrow_Test(aimratio, poisonous, pos, angle);
 					angle.setYaw(player.angle.getYaw());
 					angle.setPitch(player.angle.getPitch() - 8);
-					PlayerLaunchArrow_Test(aimratio, poisonous, &pos, &angle);
+					PlayerLaunchArrow_Test(aimratio, poisonous, pos, angle);
 					angle.setYaw(player.angle.getYaw());
 					angle.setPitch(player.angle.getPitch() + 4.f);
-					PlayerLaunchArrow_Test(aimratio, poisonous, &pos, &angle);
+					PlayerLaunchArrow_Test(aimratio, poisonous, pos, angle);
 					angle.setYaw(player.angle.getYaw());
 					angle.setPitch(player.angle.getPitch() - 4.f);
-					PlayerLaunchArrow_Test(aimratio, poisonous, &pos, &angle);
+					PlayerLaunchArrow_Test(aimratio, poisonous, pos, angle);
 				}
 
 				AimTime = 0;
