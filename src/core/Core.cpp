@@ -1411,7 +1411,7 @@ static void PlayerLaunchArrow_Test(float aimratio, float poisonous, Vec3f * pos,
 	
 	float damages = wd * (1.f + (player.Full_Skill_Projectile + player.Full_Attribute_Dexterity) * (1.f/50));
 
-	ARX_THROWN_OBJECT_Throw(/*source*/0, &position, &vect, &quat, velocity, damages, poisonous);
+	ARX_THROWN_OBJECT_Throw(/*source*/0, position, vect, quat, velocity, damages, poisonous);
 }
 
 extern unsigned long LAST_JUMP_ENDTIME;

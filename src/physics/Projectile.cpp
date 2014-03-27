@@ -139,8 +139,8 @@ long ARX_THROWN_OBJECT_GetFree() {
 
 extern EERIE_3DOBJ * arrowobj;
 
-void ARX_THROWN_OBJECT_Throw(long source, Vec3f * position, Vec3f * vect,
-							 glm::quat * quat, float velocity, float damages, float poison) {
+void ARX_THROWN_OBJECT_Throw(long source, const Vec3f & position, const Vec3f & vect,
+							 const glm::quat & quat, float velocity, float damages, float poison) {
 	
 	arx_assert(arrowobj);
 	
@@ -151,10 +151,10 @@ void ARX_THROWN_OBJECT_Throw(long source, Vec3f * position, Vec3f * vect,
 	ARX_THROWN_OBJECT *thrownObj = &Thrown[num];
 	
 	thrownObj->damages = damages;
-	thrownObj->position = *position;
-	thrownObj->initial_position = *position;
-	thrownObj->vector = *vect;
-	thrownObj->quat = *quat;
+	thrownObj->position = position;
+	thrownObj->initial_position = position;
+	thrownObj->vector = vect;
+	thrownObj->quat = quat;
 	thrownObj->source = source;
 	thrownObj->obj = arrowobj;
 	thrownObj->velocity = velocity;
