@@ -1202,14 +1202,12 @@ bool PutInInventory() {
 				return false;
 		}
 		
-		Entity * ioo;
-
 		// SHOP
 		if(io->ioflags & IO_SHOP) {
 			// Check shop group
 			for(j = 0; j < SecondaryInventory->sizey; j++) {
 				for(i = 0; i < SecondaryInventory->sizex; i++) {
-					ioo = (Entity *)SecondaryInventory->slot[i][j].io;
+					Entity * ioo = SecondaryInventory->slot[i][j].io;
 					
 					if(ioo) {
 						if(IsSameObject(DRAGINTER, ioo)) {
