@@ -344,10 +344,8 @@ long CURCURTIME=0;
 long CURCURPOS=0;
 long CURCURDELAY=70;
 
-void ARX_INTERFACE_RenderCursorInternal(long flag)
-{
-	TextureContainer * surf;
-
+void ARX_INTERFACE_RenderCursorInternal(long flag) {
+	
 	if(   !SPECIAL_DRAGINTER_RENDER
 	   && LOOKING_FOR_SPELL_TARGET
 	) {
@@ -355,6 +353,8 @@ void ARX_INTERFACE_RenderCursorInternal(long flag)
 			ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE, &player.pos);
 			ARX_SPELLS_CancelSpellTarget();
 		}
+		
+		TextureContainer * surf;
 		
 		if(FlyingOverIO
 			&& (((LOOKING_FOR_SPELL_TARGET & 1) && (FlyingOverIO->ioflags & IO_NPC))
@@ -490,7 +490,9 @@ void ARX_INTERFACE_RenderCursorInternal(long flag)
 						EERIEDrawBitmap(POSX + MODIF, POSY + MODIF, fTexSizeX, fTexSizeY, 0.00001f, tc, Color::fromBGRA(0xFFFFAA66));
 					}
 				}
-
+				
+				TextureContainer * surf;
+				
 				switch(SpecialCursor) {
 				case CURSOR_REDIST:
 					surf = ITC.Get("ptexcursorredist");
@@ -585,7 +587,7 @@ void ARX_INTERFACE_RenderCursorInternal(long flag)
 						MAGICMODE=1;
 					}
 
-					surf=ITC.Get("magic");
+					TextureContainer * surf = ITC.Get("magic");
 
 					float POSX=DANAEMouse.x;
 					float POSY=DANAEMouse.y;
@@ -667,7 +669,7 @@ void ARX_INTERFACE_RenderCursorInternal(long flag)
 						if(CURCURPOS > 7)
 							CURCURPOS = 0;
 
-						surf=scursor[CURCURPOS];
+						TextureContainer * surf = scursor[CURCURPOS];
 
 						if(surf) {
 							EERIEDrawBitmap(POSX, POSY, INTERFACE_RATIO_DWORD(surf->m_dwWidth),
@@ -685,7 +687,7 @@ void ARX_INTERFACE_RenderCursorInternal(long flag)
 
 					CURCURPOS = 0;
 
-					surf = pTCCrossHair ? pTCCrossHair : ITC.Get("target_off");
+					TextureContainer * surf = pTCCrossHair ? pTCCrossHair : ITC.Get("target_off");
 
 					if(surf) {
 						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
