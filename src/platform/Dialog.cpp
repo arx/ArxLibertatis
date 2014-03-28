@@ -330,7 +330,7 @@ static bool showDialog(DialogType type, const std::string & message,
 	 * We can't use SDL_ShowMessageBox for additional button support as that requires
 	 * SDL to be initialized.
 	 */
-#if ARX_HAVE_SDL2
+	#if ARX_HAVE_SDL2
 	Uint32 flags = 0;
 	switch(type) {
 		case DialogInfo:    flags = SDL_MESSAGEBOX_INFORMATION; break;
@@ -341,7 +341,7 @@ static bool showDialog(DialogType type, const std::string & message,
 	if(flags && !SDL_ShowSimpleMessageBox(flags, title.c_str(), message.c_str(), NULL)) {
 		return true;
 	}
-#endif
+	#endif
 	
 	std::cerr << "Failed to show a dialog: " << title << ": " << message << std::endl;
 	return true;
