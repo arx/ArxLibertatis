@@ -1752,40 +1752,40 @@ void ArxGame::manageEditorControls() {
 				   && DRAGINTER->obj
 				   && DRAGINTER->obj->pbox
 				) {
-						//Put object in fromt of player
-						if(!InInventoryPos(&DANAEMouse)) {
-							if(ARX_MOUSE_OVER & ARX_MOUSE_OVER_BOOK)
-								 goto suivant2;
+					//Put object in fromt of player
+					if(!InInventoryPos(&DANAEMouse)) {
+						if(ARX_MOUSE_OVER & ARX_MOUSE_OVER_BOOK)
+							 goto suivant2;
 
-						long res = Manage3DCursor(0);
-						// Throw Object
-						if(res==0) {
-							Entity * io=DRAGINTER;
-							ARX_PLAYER_Remove_Invisibility();
-							io->obj->pbox->active=1;
-							io->obj->pbox->stopcount=0;
-							io->pos = player.pos + Vec3f(0.f, 80.f, 0.f);
-							io->velocity = Vec3f_ZERO;
-							io->stopped = 1;
+					long res = Manage3DCursor(0);
+					// Throw Object
+					if(res==0) {
+						Entity * io=DRAGINTER;
+						ARX_PLAYER_Remove_Invisibility();
+						io->obj->pbox->active=1;
+						io->obj->pbox->stopcount=0;
+						io->pos = player.pos + Vec3f(0.f, 80.f, 0.f);
+						io->velocity = Vec3f_ZERO;
+						io->stopped = 1;
 
-							float y_ratio=(float)((float)DANAEMouse.y-(float)g_size.center().y)/(float)g_size.height()*2;
-							float x_ratio=-(float)((float)DANAEMouse.x-(float)g_size.center().x)/(float)g_size.center().x;
-							Vec3f viewvector;
-							viewvector.x = -std::sin(radians(player.angle.getPitch()+(x_ratio*30.f))) * std::cos(radians(player.angle.getYaw()));
-							viewvector.y =  std::sin(radians(player.angle.getYaw())) + y_ratio;
-							viewvector.z =  std::cos(radians(player.angle.getPitch()+(x_ratio*30.f))) * std::cos(radians(player.angle.getYaw()));
+						float y_ratio=(float)((float)DANAEMouse.y-(float)g_size.center().y)/(float)g_size.height()*2;
+						float x_ratio=-(float)((float)DANAEMouse.x-(float)g_size.center().x)/(float)g_size.center().x;
+						Vec3f viewvector;
+						viewvector.x = -std::sin(radians(player.angle.getPitch()+(x_ratio*30.f))) * std::cos(radians(player.angle.getYaw()));
+						viewvector.y =  std::sin(radians(player.angle.getYaw())) + y_ratio;
+						viewvector.z =  std::cos(radians(player.angle.getPitch()+(x_ratio*30.f))) * std::cos(radians(player.angle.getYaw()));
 
-							io->soundtime=0;
-							io->soundcount=0;
+						io->soundtime=0;
+						io->soundcount=0;
 
-							EERIE_PHYSICS_BOX_Launch(io->obj, io->pos, io->angle, viewvector);
-							ARX_SOUND_PlaySFX(SND_WHOOSH, &io->pos);
+						EERIE_PHYSICS_BOX_Launch(io->obj, io->pos, io->angle, viewvector);
+						ARX_SOUND_PlaySFX(SND_WHOOSH, &io->pos);
 
-							io->show=SHOW_FLAG_IN_SCENE;
-							Set_DragInter(NULL);
-						}
-						}
+						io->show=SHOW_FLAG_IN_SCENE;
+						Set_DragInter(NULL);
 					}
+					}
+				}
 
 			suivant2:
 				;
