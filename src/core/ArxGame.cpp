@@ -473,7 +473,6 @@ bool ArxGame::addPaks() {
 		}
 		oss << "\nSee  " << url::help_get_data;
 		oss << "  and  " << url::help_install_data << "\n";
-		oss << "\nThe search path can be adjusted with command-line parameters.\n";
 		#if ARX_PLATFORM != ARX_PLATFORM_WIN32
 		oss << "\nWe will now try to launch the data install script for you...\n";
 		#endif
