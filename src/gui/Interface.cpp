@@ -1712,8 +1712,11 @@ void ArxGame::manageEditorControls() {
 
 
 	// Single Click On Object
-	if((LastMouseClick & 1) && !(EERIEMouseButton & 1)) {
-		if(FlyingOverIO && !DRAGINTER) {
+	if(   (LastMouseClick & 1)
+	   && !(EERIEMouseButton & 1)
+	   && FlyingOverIO
+	   && !DRAGINTER
+	) {
 			SendIOScriptEvent(FlyingOverIO, SM_CLICKED);
 			bool bOk = true;
 
@@ -1783,7 +1786,6 @@ void ArxGame::manageEditorControls() {
 
 							FlyingOverIO = NULL;
 			}
-		}
 	}
 
 	if(!(player.Interface & INTER_COMBATMODE)) {
