@@ -328,7 +328,7 @@ long Manage3DCursor(long flags) {
 extern long LOOKING_FOR_SPELL_TARGET;
 extern unsigned long LOOKING_FOR_SPELL_TARGET_TIME;
 extern long PLAYER_INTERFACE_HIDE_COUNT;
-extern long COMBINEGOLD;
+extern bool COMBINEGOLD;
 extern bool PLAYER_MOUSELOOK_ON;
 extern E_ARX_STATE_MOUSE eMouseState;
 extern long MAGICMODE;

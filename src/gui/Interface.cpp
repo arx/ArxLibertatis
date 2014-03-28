@@ -232,7 +232,7 @@ bool				TRUE_PLAYER_MOUSELOOK_ON = false;
 bool				LAST_PLAYER_MOUSELOOK_ON = false;
 static bool MEMO_PLAYER_MOUSELOOK_ON = false;
 
-long				COMBINEGOLD=0;
+bool				COMBINEGOLD = false;
 ARX_INTERFACE_BOOK_MODE Book_Mode = BOOKMODE_STATS;
 long				Book_MapPage=1;
 long				Book_SpellPage=1;
@@ -1449,7 +1449,7 @@ void ArxGame::manageEditorControls() {
 						   && !COMBINEGOLD
 						   && (EERIEMouseButton & 4)
 						) {
-							COMBINEGOLD = 1;
+							COMBINEGOLD = true;
 						}
 
 						if(!DRAGINTER)
@@ -1855,7 +1855,7 @@ void ArxGame::manageEditorControls() {
 			}
 		}
 
-		COMBINEGOLD=0;
+		COMBINEGOLD = false;
 		bool bQuitCombine = true;
 
 		if((player.Interface & INTER_INVENTORY)) {
