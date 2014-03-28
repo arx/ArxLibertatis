@@ -377,7 +377,7 @@ bool MouseInBookRect(const float x, const float y, const float cx, const float c
 		&& DANAEMouse.y <= (cy + BOOKDECY) * Yratio;
 }
 
-bool MouseInRect(const float x0, const float y0, const float x1=32, const float y1=32) {
+bool MouseInRect(const float x0, const float y0, const float x1, const float y1) {
 	return DANAEMouse.x >= x0
 		&& DANAEMouse.x <= x1
 		&& DANAEMouse.y >= y0
