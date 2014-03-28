@@ -1991,8 +1991,6 @@ void ArxGame::manageEditorControls() {
 				ARX_PLAYER_Remove_Invisibility();
 		}
 	
-
-#ifdef BUILD_EDITOR
 		// Debug Selection
 		if((LastMouseClick & 1) && !(EERIEMouseButton & 1)) {
 			Entity * io = GetFirstInterAtPos(&DANAEMouse);
@@ -2006,8 +2004,6 @@ void ArxGame::manageEditorControls() {
 					LastSelectedIONum = -1;
 			}
 		}
-#endif
-
 	}
 }
 

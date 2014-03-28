@@ -81,9 +81,7 @@ void ShowTestText() {
 }
 
 extern float CURRENT_PLAYER_COLOR;
-#ifdef BUILD_EDITOR
 long LastSelectedIONum = -1;
-#endif
 
 void ShowInfoText() {
 
@@ -167,8 +165,7 @@ void ShowInfoText() {
 	sprintf(tex, "Velocity %3.0f %3.0f %3.0f Slope %3.3f",
 			player.physics.velocity.x, player.physics.velocity.y, player.physics.velocity.z, slope);
 	hFontDebug->draw(70, 128, tex, Color::white);
-
-#ifdef BUILD_EDITOR
+	
 	if(ValidIONum(LastSelectedIONum)) {
 		io = entities[LastSelectedIONum];
 
@@ -224,8 +221,7 @@ void ShowInfoText() {
 			}
 		}
 	}
-#endif // BUILD_EDITOR
-
+	
 	long zap = IsAnyPolyThere(player.pos.x,player.pos.z);
 	sprintf(tex, "POLY %ld", zap);
 	hFontDebug->draw(270, 220, tex, Color::white);
