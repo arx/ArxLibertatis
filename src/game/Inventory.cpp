@@ -1241,12 +1241,11 @@ bool PutInInventory() {
 			
 			for(j = 0; j < sy; j++)
 				for(i = 0; i < sx; i++) {
-					if(SecondaryInventory->slot[tx+i][ty+j].io != NULL) {
+					Entity * ioo = SecondaryInventory->slot[tx+i][ty+j].io;
+					
+					if(ioo) {
 						long xx, yy;
 						DRAGINTER->show = SHOW_FLAG_IN_INVENTORY;
-						
-						//Superposition d'objets
-						Entity * ioo = SecondaryInventory->slot[tx+i][ty+j].io;
 						
 						if(   ioo->_itemdata->playerstacksize > 1
 						   && IsSameObject(DRAGINTER, ioo)
