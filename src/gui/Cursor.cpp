@@ -434,7 +434,11 @@ void ARX_INTERFACE_RenderCursorInternal(long flag)
 
 			float drop_miny=(float)(g_size.center().y)-g_size.center().y*(ag*( 1.0f / 70 ));
 
-			if(DANAEMouse.y > drop_miny && DRAGINTER && !InInventoryPos(&DANAEMouse) && !(ARX_MOUSE_OVER & ARX_MOUSE_OVER_BOOK)) {
+			if(   DANAEMouse.y > drop_miny
+			   && DRAGINTER
+			   && !InInventoryPos(&DANAEMouse)
+			   && !(ARX_MOUSE_OVER & ARX_MOUSE_OVER_BOOK)
+			) {
 				if(Manage3DCursor(1) == 0)
 					CANNOT_PUT_IT_HERE = -1;
 
@@ -442,8 +446,9 @@ void ARX_INTERFACE_RenderCursorInternal(long flag)
 					CANNOT_PUT_IT_HERE=0;
 					return;
 				}
+			} else {
+				CANNOT_PUT_IT_HERE = -1;
 			}
-			else CANNOT_PUT_IT_HERE = -1;
 
 			if(SPECIAL_DRAGINTER_RENDER)
 				return;
@@ -481,9 +486,9 @@ void ARX_INTERFACE_RenderCursorInternal(long flag)
 								ARX_INTERFACE_DrawNumber(POSX + MODIF - 16, POSY + MODIF - 10, t, 6, Color::cyan);
 							}
 						}
-					}
-					else
+					} else {
 						EERIEDrawBitmap(POSX + MODIF, POSY + MODIF, fTexSizeX, fTexSizeY, 0.00001f, tc, Color::fromBGRA(0xFFFFAA66));
+					}
 				}
 
 				switch(SpecialCursor) {
@@ -568,10 +573,11 @@ void ARX_INTERFACE_RenderCursorInternal(long flag)
 
 				SpecialCursor=0;
 			} else {
-				if (!(player.Current_Movement & PLAYER_CROUCH) && (!BLOCK_PLAYER_CONTROLS
-					&& (GInput->actionPressed(CONTROLS_CUST_MAGICMODE)))
-					&& (ARXmenu.currentmode==AMCM_OFF))
-				{
+				if(   !(player.Current_Movement & PLAYER_CROUCH)
+				   && !BLOCK_PLAYER_CONTROLS
+				   && GInput->actionPressed(CONTROLS_CUST_MAGICMODE)
+				   && ARXmenu.currentmode == AMCM_OFF
+				) {
 					if(MAGICMODE < 0) {
 						if(player.Interface & INTER_MAP) {
 							ARX_INTERFACE_BookOpenClose(2); // Forced Closing
