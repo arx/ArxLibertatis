@@ -351,43 +351,43 @@ void ARX_INTERFACE_RenderCursorInternal(long flag)
 	if(   !SPECIAL_DRAGINTER_RENDER
 	   && LOOKING_FOR_SPELL_TARGET
 	) {
-			if(float(arxtime) > LOOKING_FOR_SPELL_TARGET_TIME + 7000) {
+		if(float(arxtime) > LOOKING_FOR_SPELL_TARGET_TIME + 7000) {
+			ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE, &player.pos);
+			ARX_SPELLS_CancelSpellTarget();
+		}
+		
+		if(FlyingOverIO
+			&& (((LOOKING_FOR_SPELL_TARGET & 1) && (FlyingOverIO->ioflags & IO_NPC))
+			||  ((LOOKING_FOR_SPELL_TARGET & 2) && (FlyingOverIO->ioflags & IO_ITEM)))
+		){
+			surf=ITC.Get("target_on");
+			
+			if(!(EERIEMouseButton & 1) && (LastMouseClick & 1)) {
+				ARX_SPELLS_LaunchSpellTarget(FlyingOverIO);
+			}
+		} else {
+			surf=ITC.Get("target_off");
+			
+			if(GInput->actionPressed(CONTROLS_CUST_MAGICMODE)) {
 				ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE, &player.pos);
 				ARX_SPELLS_CancelSpellTarget();
 			}
-
-			if(FlyingOverIO
-				&& (((LOOKING_FOR_SPELL_TARGET & 1) && (FlyingOverIO->ioflags & IO_NPC))
-				||  ((LOOKING_FOR_SPELL_TARGET & 2) && (FlyingOverIO->ioflags & IO_ITEM)))
-			){
-				surf=ITC.Get("target_on");
-
-				if(!(EERIEMouseButton & 1) && (LastMouseClick & 1)) {
-					ARX_SPELLS_LaunchSpellTarget(FlyingOverIO);
-				}
-			} else {
-				surf=ITC.Get("target_off");
-
-				if(GInput->actionPressed(CONTROLS_CUST_MAGICMODE)) {
-					ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE, &player.pos);
-					ARX_SPELLS_CancelSpellTarget();
-				}
-			}
-
-			float POSX=DANAEMouse.x;
-			float POSY=DANAEMouse.y;
-
-			if(TRUE_PLAYER_MOUSELOOK_ON) {
-				POSX = MemoMouse.x;
-				POSY = MemoMouse.y;
-			}
-
-			float fTexSizeX = INTERFACE_RATIO_DWORD(surf->m_dwWidth);
-			float fTexSizeY = INTERFACE_RATIO_DWORD(surf->m_dwHeight);
-
-			EERIEDrawBitmap(POSX - fTexSizeX * 0.5f, POSY - surf->m_dwHeight * 0.5f, fTexSizeX, fTexSizeY, 0.f, surf, Color::white);
-
-			return;
+		}
+		
+		float POSX=DANAEMouse.x;
+		float POSY=DANAEMouse.y;
+		
+		if(TRUE_PLAYER_MOUSELOOK_ON) {
+			POSX = MemoMouse.x;
+			POSY = MemoMouse.y;
+		}
+		
+		float fTexSizeX = INTERFACE_RATIO_DWORD(surf->m_dwWidth);
+		float fTexSizeY = INTERFACE_RATIO_DWORD(surf->m_dwHeight);
+		
+		EERIEDrawBitmap(POSX - fTexSizeX * 0.5f, POSY - surf->m_dwHeight * 0.5f, fTexSizeX, fTexSizeY, 0.f, surf, Color::white);
+		
+		return;
 	}
 
 	if(flag || (!BLOCK_PLAYER_CONTROLS && !PLAYER_INTERFACE_HIDE_COUNT)) {
