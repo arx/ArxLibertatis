@@ -241,7 +241,7 @@ float				g_TimeStartCinemascope = 0;
 long				CINEMA_INC=0;
 long				SMOOTHSLID=0;
 long				currpos=50;
-long				DRAGGING = 0;
+bool				DRAGGING = false;
 long				INVERTMOUSE=0;
 long				PLAYER_INTERFACE_HIDE_COUNT=0;
 long				MAGICMODE=-1;
@@ -1316,17 +1316,17 @@ void ArxGame::manageEditorControls() {
 		if(!(LastMouseClick & 1)) {
 			
 			STARTDRAG = DANAEMouse;
-			DRAGGING = 0;
+			DRAGGING = false;
 			dragThreshold = Vec2s_ZERO;
 		} else {
 			dragThreshold += GInput->getMousePosRel();
 			if((abs(DANAEMouse.x - STARTDRAG.x) > 2 && abs(DANAEMouse.y - STARTDRAG.y) > 2)
 			   || (abs(dragThreshold.x) > 2 || abs(dragThreshold.y) > 2)) {
-				DRAGGING = 1;
+				DRAGGING = true;
 			}
 		}
 	} else {
-		DRAGGING = 0;
+		DRAGGING = false;
 	}
 
 	//-------------------------------------------------------------------------
@@ -1390,7 +1390,7 @@ void ArxGame::manageEditorControls() {
 
 						if((EERIEMouseButton & 1) && (LastMouseClick & 1)) {
 							if(abs(DANAEMouse.x-STARTDRAG.x) > 2 || abs(DANAEMouse.y-STARTDRAG.y) > 2)
-								DRAGGING = 1;
+								DRAGGING = true;
 						}
 
 						if(!DRAGINTER && !PLAYER_MOUSELOOK_ON && DRAGGING) {
@@ -2156,7 +2156,7 @@ void ArxGame::managePlayerControls()
 						EERIEMouseButton&=~4;
 
 						if(DRAGGING)
-							DRAGGING = 0;
+							DRAGGING = false;
 					} else {
 						if(t->inventory) {
 							if(player.Interface & INTER_STEAL)
@@ -2200,7 +2200,7 @@ void ArxGame::managePlayerControls()
 				EERIEMouseButton&=~4;
 
 				if(DRAGGING)
-					DRAGGING = 0;
+					DRAGGING = false;
 
 				EERIEMouseButton = 0;
 			}

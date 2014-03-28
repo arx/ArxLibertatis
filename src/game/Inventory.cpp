@@ -93,7 +93,7 @@ extern E_ARX_STATE_MOUSE eMouseState;
 extern float InventoryX;
 extern float InventoryDir;
 extern long PLAYER_INTERFACE_HIDE_COUNT;
-extern long	DRAGGING;
+extern bool	DRAGGING;
 
 extern bool TRUE_PLAYER_MOUSELOOK_ON;
 
@@ -2101,7 +2101,7 @@ void ARX_INVENTORY_OpenClose(Entity * _io)
 		EERIEMouseButton &= ~4;
 
 		if(DRAGGING)
-			DRAGGING = 0;
+			DRAGGING = false;
 	} else {
 		if(TSecondaryInventory && TSecondaryInventory->io)
 			SendIOScriptEvent(TSecondaryInventory->io, SM_INVENTORY2_CLOSE);
@@ -2131,7 +2131,7 @@ void ARX_INVENTORY_OpenClose(Entity * _io)
 		EERIEMouseButton &= ~4;
 
 		if(DRAGGING)
-			DRAGGING = 0;
+			DRAGGING = false;
 	}
 
 	if(player.Interface & INTER_INVENTORYALL) {
