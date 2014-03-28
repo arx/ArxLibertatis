@@ -125,15 +125,6 @@ bool ForceNPC_Above_Ground(Entity * io);
 
 void RestoreInitialIOStatus();
 
-#ifdef BUILD_EDITOR
-void SelectIO(Entity * io);
-void UnSelectIO(Entity * io);
-void RotateSelectedIO(Anglef * op);
-void TranslateSelectedIO(Vec3f * op);
-void DeleteSelectedIO();
-void ResetSelectedIORot();
-#endif
-
 #ifdef BUILD_EDIT_LOADSAVE
 void MakeIOIdent(Entity * io);
 #endif
