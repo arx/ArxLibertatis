@@ -374,8 +374,8 @@ void ARX_INTERFACE_RenderCursorInternal(long flag) {
 			}
 		}
 		
-		float POSX=DANAEMouse.x;
-		float POSY=DANAEMouse.y;
+		float POSX = DANAEMouse.x;
+		float POSY = DANAEMouse.y;
 		
 		if(TRUE_PLAYER_MOUSELOOK_ON) {
 			POSX = MemoMouse.x;
@@ -405,8 +405,8 @@ void ARX_INTERFACE_RenderCursorInternal(long flag) {
 			if(FlyingOverIO || DRAGINTER) {
 				fHighLightAng += (float)(framedelay*0.5);
 
-				if(fHighLightAng>90.f)
-					fHighLightAng=90.f;
+				if(fHighLightAng > 90.f)
+					fHighLightAng = 90.f;
 
 				float fHLight = 100.f * sin(radians(fHighLightAng));
 
@@ -453,8 +453,8 @@ void ARX_INTERFACE_RenderCursorInternal(long flag) {
 			if(SPECIAL_DRAGINTER_RENDER)
 				return;
 
-			float POSX=(float)DANAEMouse.x;
-			float POSY=(float)DANAEMouse.y;
+			float POSX = (float)DANAEMouse.x;
+			float POSY = (float)DANAEMouse.y;
 
 			if(SpecialCursor && !DRAGINTER) {
 				if((COMBINE && COMBINE->inv) || COMBINEGOLD) {
@@ -498,12 +498,12 @@ void ARX_INTERFACE_RenderCursorInternal(long flag) {
 					surf = ITC.Get("ptexcursorredist");
 					break;
 				case CURSOR_COMBINEOFF:
-					surf=ITC.Get("target_off");
+					surf = ITC.Get("target_off");
 					POSX -= 16.f;
 					POSY -= 16.f;
 					break;
 				case CURSOR_COMBINEON:
-					surf=ITC.Get("target_on");
+					surf = ITC.Get("target_on");
 
 					if(surf)
 						POSX -= 16.f;
@@ -511,7 +511,7 @@ void ARX_INTERFACE_RenderCursorInternal(long flag) {
 					POSY -= 16.f;
 					break;
 				case CURSOR_FIREBALLAIM: {
-					surf=ITC.Get("target_on");
+					surf = ITC.Get("target_on");
 
 					Vec2i size;
 					if(surf) {
@@ -538,7 +538,7 @@ void ARX_INTERFACE_RenderCursorInternal(long flag) {
 					if(CURCURPOS > 7)
 						CURCURPOS = 0;
 
-					surf=scursor[CURCURPOS];
+					surf = scursor[CURCURPOS];
 					break;
 				default:
 					if(CURCURPOS) {
@@ -553,7 +553,7 @@ void ARX_INTERFACE_RenderCursorInternal(long flag) {
 					if(CURCURPOS > 7)
 						CURCURPOS = 0;
 
-					surf=scursor[CURCURPOS];
+					surf = scursor[CURCURPOS];
 					break;
 				}
 
@@ -573,7 +573,7 @@ void ARX_INTERFACE_RenderCursorInternal(long flag) {
 					}
 				}
 
-				SpecialCursor=0;
+				SpecialCursor = 0;
 			} else {
 				if(   !(player.Current_Movement & PLAYER_CROUCH)
 				   && !BLOCK_PLAYER_CONTROLS
@@ -584,13 +584,13 @@ void ARX_INTERFACE_RenderCursorInternal(long flag) {
 						if(player.Interface & INTER_MAP) {
 							ARX_INTERFACE_BookOpenClose(2); // Forced Closing
 						}
-						MAGICMODE=1;
+						MAGICMODE = 1;
 					}
 
 					TextureContainer * surf = ITC.Get("magic");
 
-					float POSX=DANAEMouse.x;
-					float POSY=DANAEMouse.y;
+					float POSX = DANAEMouse.x;
+					float POSY = DANAEMouse.y;
 
 					if(TRUE_PLAYER_MOUSELOOK_ON) {
 						POSX = MemoMouse.x;
@@ -605,14 +605,13 @@ void ARX_INTERFACE_RenderCursorInternal(long flag) {
 				} else {
 					if(MAGICMODE > -1) {
 						ARX_SOUND_Stop(SND_MAGIC_DRAW);
-						MAGICMODE=-1;
+						MAGICMODE = -1;
 					}
 
 					if(DRAGINTER && DRAGINTER->inv) {
-						TextureContainer * tc;
-						TextureContainer * tc2=NULL;
-						tc=DRAGINTER->inv;
-
+						TextureContainer * tc = DRAGINTER->inv;
+						TextureContainer * tc2 = NULL;
+						
 						if(NeedHalo(DRAGINTER))
 							tc2 = DRAGINTER->inv->getHalo();//>_itemdata->halo_tc;
 
@@ -643,10 +642,10 @@ void ARX_INTERFACE_RenderCursorInternal(long flag) {
 						//cross not over inventory icon
 						if(CANNOT_PUT_IT_HERE && (eMouseState != MOUSE_IN_INVENTORY_ICON)) {
 							if(!InInventoryPos(&DANAEMouse) && !InSecondaryInventoryPos(&DANAEMouse) && !ARX_INTERFACE_MouseInBook()) {
-								TextureContainer * tcc=Movable;
+								TextureContainer * tcc = Movable;
 
-								if(CANNOT_PUT_IT_HERE==-1)
-									tcc=ThrowObject;
+								if(CANNOT_PUT_IT_HERE == -1)
+									tcc = ThrowObject;
 
 								if(tcc && tcc != tc) // to avoid movable double red cross...
 									EERIEDrawBitmap(mx + 16, my, INTERFACE_RATIO_DWORD(tcc->m_dwWidth),
