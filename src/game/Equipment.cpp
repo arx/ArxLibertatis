@@ -712,7 +712,7 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 
 		std::vector<long> sphereContent;
 
-		if(CheckEverythingInSphere(&sphere, source, targ, sphereContent)) {
+		if(CheckEverythingInSphere(sphere, source, targ, sphereContent)) {
 			for(size_t jj = 0; jj < sphereContent.size(); jj++) {
 				if(ValidIONum(sphereContent[jj])
 						&& !(entities[sphereContent[jj]]->ioflags & IO_BODY_CHUNK))

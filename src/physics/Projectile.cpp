@@ -555,7 +555,7 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 
 						std::vector<long> sphereContent;
 
-						if(CheckEverythingInSphere(&sphere, thrownObj->source, -1, sphereContent)) {
+						if(CheckEverythingInSphere(sphere, thrownObj->source, -1, sphereContent)) {
 							for(size_t jj = 0; jj < sphereContent.size(); jj++) {
 
 								if(ValidIONum(sphereContent[jj])

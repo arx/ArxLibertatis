@@ -851,16 +851,16 @@ static bool InExceptionList(long val) {
 	return false;
 }
 
-bool CheckEverythingInSphere(EERIE_SPHERE * sphere, long source, long targ, std::vector<long> & sphereContent) //except source...
+bool CheckEverythingInSphere(const EERIE_SPHERE & sphere, long source, long targ, std::vector<long> & sphereContent) //except source...
 {
 	bool vreturn = false;
 	
 	Entity * io;
 	long ret_idx = -1;
 	
-	float sr30 = sphere->radius + 20.f;
-	float sr40 = sphere->radius + 30.f;
-	float sr180 = sphere->radius + 500.f;
+	float sr30 = sphere.radius + 20.f;
+	float sr40 = sphere.radius + 30.f;
+	float sr180 = sphere.radius + 500.f;
 
 	for(long i = 0; i < TREATZONE_CUR; i++) {
 		if(targ > -1) {
@@ -901,10 +901,10 @@ bool CheckEverythingInSphere(EERIE_SPHERE * sphere, long source, long targ, std:
 			float miny = io->bbox3D.min.y;
 			float maxy = io->bbox3D.max.y;
 
-			if(maxy <= sphere->origin.y + sphere->radius || miny >= sphere->origin.y)
-			if(In3DBBoxTolerance(&sphere->origin, &io->bbox3D, sphere->radius))
+			if(maxy <= sphere.origin.y + sphere.radius || miny >= sphere.origin.y)
+			if(In3DBBoxTolerance(&sphere.origin, &io->bbox3D, sphere.radius))
 			{
-				if(closerThan(Vec2f(io->pos.x, io->pos.z), Vec2f(sphere->origin.x, sphere->origin.z), 440.f + sphere->radius)) {
+				if(closerThan(Vec2f(io->pos.x, io->pos.z), Vec2f(sphere.origin.x, sphere.origin.z), 440.f + sphere.radius)) {
 
 					EERIEPOLY ep;
 					ep.type = 0;
@@ -928,7 +928,7 @@ bool CheckEverythingInSphere(EERIE_SPHERE * sphere, long source, long targ, std:
 							ep.v[kk].p.z = (ep.v[kk].p.z - cz) * 3.5f + cz;
 						}
 
-						if(PointIn2DPolyXZ(&ep, sphere->origin.x, sphere->origin.z)) {
+						if(PointIn2DPolyXZ(&ep, sphere.origin.x, sphere.origin.z)) {
 							sphereContent.push_back(ret_idx);
 
 							vreturn = true;
@@ -939,14 +939,14 @@ bool CheckEverythingInSphere(EERIE_SPHERE * sphere, long source, long targ, std:
 			}
 		}
 
-		if(closerThan(io->pos, sphere->origin, sr180)) {
+		if(closerThan(io->pos, sphere.origin, sr180)) {
 
 			long amount = 1;
 			std::vector<EERIE_VERTEX> & vlist = io->obj->vertexlist3;
 
 			if(io->obj->nbgroups > 4) {
 				for(long ii = 0; ii < io->obj->nbgroups; ii++) {
-					if(closerThan(vlist[io->obj->grouplist[ii].origin].v, sphere->origin, sr40)) {
+					if(closerThan(vlist[io->obj->grouplist[ii].origin].v, sphere.origin, sr40)) {
 
 						sphereContent.push_back(ret_idx);
 
@@ -967,10 +967,10 @@ bool CheckEverythingInSphere(EERIE_SPHERE * sphere, long source, long targ, std:
 				Vec3f fcenter = (vlist[ef->vid[0]].v + vlist[ef->vid[1]].v
 								 + vlist[ef->vid[2]].v) * (1.0f / 3);
 
-				if(closerThan(fcenter, sphere->origin, sr30)
-				   || closerThan(vlist[ef->vid[0]].v, sphere->origin, sr30)
-				   || closerThan(vlist[ef->vid[1]].v, sphere->origin, sr30)
-				   || closerThan(vlist[ef->vid[2]].v, sphere->origin, sr30)) {
+				if(closerThan(fcenter, sphere.origin, sr30)
+				   || closerThan(vlist[ef->vid[0]].v, sphere.origin, sr30)
+				   || closerThan(vlist[ef->vid[1]].v, sphere.origin, sr30)
+				   || closerThan(vlist[ef->vid[2]].v, sphere.origin, sr30)) {
 
 					sphereContent.push_back(ret_idx);
 
