@@ -141,14 +141,7 @@ long Manage3DCursor(long flags) {
 		miny = std::min(miny, io->obj->vertexlist[i].v.y);
 		maxy = std::max(maxy, io->obj->vertexlist[i].v.y);
 	}
-
-	EERIE_CYLINDER cyl;
-	cyl.origin.x = pos.x - (maxoff.x - minoff.x)*0.5f;
-	cyl.origin.y = pos.y;
-	cyl.origin.z = pos.z - (maxoff.z - minoff.z)*0.5f;
-	cyl.height=-50.f;
-	cyl.radius=40.f;
-
+	
 	Vec3f orgn,dest,mvectx;
 	mvectx.x = -std::sin(radians(player.angle.getPitch() - 90.f));
 	mvectx.y = 0;
