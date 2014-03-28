@@ -1752,11 +1752,10 @@ void ArxGame::manageEditorControls() {
 				   && DRAGINTER->obj
 				   && DRAGINTER->obj->pbox
 				   && !InInventoryPos(&DANAEMouse)
+				   && !(ARX_MOUSE_OVER & ARX_MOUSE_OVER_BOOK)
 				) {
 					//Put object in fromt of player
-						if(ARX_MOUSE_OVER & ARX_MOUSE_OVER_BOOK)
-							 goto suivant2;
-
+					
 					long res = Manage3DCursor(0);
 					// Throw Object
 					if(res==0) {
@@ -1785,9 +1784,6 @@ void ArxGame::manageEditorControls() {
 						Set_DragInter(NULL);
 					}
 				}
-
-			suivant2:
-				;
 			}
 		}
 
