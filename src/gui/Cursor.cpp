@@ -348,8 +348,9 @@ void ARX_INTERFACE_RenderCursorInternal(long flag)
 {
 	TextureContainer * surf;
 
-	if(!SPECIAL_DRAGINTER_RENDER) {
-		if(LOOKING_FOR_SPELL_TARGET) {
+	if(   !SPECIAL_DRAGINTER_RENDER
+	   && LOOKING_FOR_SPELL_TARGET
+	) {
 			if(float(arxtime) > LOOKING_FOR_SPELL_TARGET_TIME + 7000) {
 				ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE, &player.pos);
 				ARX_SPELLS_CancelSpellTarget();
@@ -387,7 +388,6 @@ void ARX_INTERFACE_RenderCursorInternal(long flag)
 			EERIEDrawBitmap(POSX - fTexSizeX * 0.5f, POSY - surf->m_dwHeight * 0.5f, fTexSizeX, fTexSizeY, 0.f, surf, Color::white);
 
 			return;
-		}
 	}
 
 	if(flag || (!BLOCK_PLAYER_CONTROLS && !PLAYER_INTERFACE_HIDE_COUNT)) {
