@@ -23,13 +23,23 @@
 
 #include "platform/Platform.h"
 
+#include "Configure.h"
+
 #if ARX_PLATFORM == ARX_PLATFORM_WIN32
+
 #include <windows.h>
+
 #else
+
 #include <cstdlib>
 #include <sstream>
 #include <cstring>
 #include <sys/wait.h>
+
+#if ARX_HAVE_SDL2
+#include <SDL.h>
+#endif
+
 #endif
 
 #include <boost/format.hpp>
@@ -315,9 +325,29 @@ static bool showDialog(DialogType type, const std::string & message,
 		}
 	}
 	
+	/*
+	 * If we have no native way to display a message box, fall back to SDL.
+	 * This will look ugly on Linux, so do this only if we really have to.
+	 * We can't use SDL_ShowMessageBox for additional button support as that requires
+	 * SDL to be initialized.
+	 */
+#if ARX_HAVE_SDL2
+	Uint32 flags = 0;
+	switch(type) {
+		case DialogInfo:    flags = SDL_MESSAGEBOX_INFORMATION; break;
+		case DialogWarning: flags = SDL_MESSAGEBOX_WARNING;     break;
+		case DialogError:   flags = SDL_MESSAGEBOX_ERROR;       break;
+		default: /* unsupported */ break;
+	}
+	if(flags && !SDL_ShowSimpleMessageBox(flags, dialogTitle.c_str(), message.c_str(), NULL)) {
+		return true;
+	}
+#endif
+	
 	std::cerr << "Failed to show a dialog: " << dialogTitle << ": " << message << std::endl;
 	return true;
 }
+
 #endif
 
 void showInfo(const std::string & message, const std::string & dialogTitle) {
