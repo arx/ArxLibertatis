@@ -2154,9 +2154,7 @@ void ArxGame::managePlayerControls()
 					if(t->_npcdata->life>0.f) {
 						SendIOScriptEvent(t,SM_CHAT);
 						EERIEMouseButton&=~4;
-
-						if(DRAGGING)
-							DRAGGING = false;
+						DRAGGING = false;
 					} else {
 						if(t->inventory) {
 							if(player.Interface & INTER_STEAL)
@@ -2196,12 +2194,8 @@ void ArxGame::managePlayerControls()
 				} else if (t->script.data) {
 					SendIOScriptEvent(t,SM_ACTION);
 				}
-
 				EERIEMouseButton&=~4;
-
-				if(DRAGGING)
-					DRAGGING = false;
-
+				DRAGGING = false;
 				EERIEMouseButton = 0;
 			}
 

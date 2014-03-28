@@ -2099,9 +2099,7 @@ void ARX_INVENTORY_OpenClose(Entity * _io)
 		TSecondaryInventory = SecondaryInventory;
 		SecondaryInventory = NULL;
 		EERIEMouseButton &= ~4;
-
-		if(DRAGGING)
-			DRAGGING = false;
+		DRAGGING = false;
 	} else {
 		if(TSecondaryInventory && TSecondaryInventory->io)
 			SendIOScriptEvent(TSecondaryInventory->io, SM_INVENTORY2_CLOSE);
@@ -2129,9 +2127,7 @@ void ARX_INVENTORY_OpenClose(Entity * _io)
 			ARX_INVENTORY_ReOrder();
 
 		EERIEMouseButton &= ~4;
-
-		if(DRAGGING)
-			DRAGGING = false;
+		DRAGGING = false;
 	}
 
 	if(player.Interface & INTER_INVENTORYALL) {
