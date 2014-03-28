@@ -384,7 +384,7 @@ void ARX_INTERFACE_RenderCursorInternal(long flag)
 			float fTexSizeX = INTERFACE_RATIO_DWORD(surf->m_dwWidth);
 			float fTexSizeY = INTERFACE_RATIO_DWORD(surf->m_dwHeight);
 
-			EERIEDrawBitmap((float)(POSX-(fTexSizeX*0.5f)), (float)(POSY-(surf->m_dwHeight*0.5f)), fTexSizeX, fTexSizeY, 0.f, surf, Color::white);
+			EERIEDrawBitmap(POSX - fTexSizeX * 0.5f, POSY - surf->m_dwHeight * 0.5f, fTexSizeX, fTexSizeY, 0.f, surf, Color::white);
 
 			return;
 		}
