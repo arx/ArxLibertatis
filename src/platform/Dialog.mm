@@ -24,12 +24,12 @@
 
 namespace dialog {
 
-bool showDialog(DialogType type, const std::string& message, const std::string& dialogTitle) {
+bool showDialog(DialogType type, const std::string & message, const std::string & title) {
 	
 	bool result = true;
 	NSAlert *alert = [NSAlert new];
 	
-	[alert setMessageText: [NSString stringWithUTF8String: dialogTitle.c_str()]];
+	[alert setMessageText: [NSString stringWithUTF8String: title.c_str()]];
 	[alert setInformativeText: [NSString stringWithUTF8String: message.c_str()]];
 	
 	switch(type) {

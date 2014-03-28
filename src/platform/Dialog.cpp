@@ -53,7 +53,7 @@ namespace dialog {
 #if ARX_PLATFORM == ARX_PLATFORM_WIN32
 
 static bool showDialog(DialogType type, const std::string & message,
-                       const std::string & dialogTitle) {
+                       const std::string & title) {
 	
 	UINT flags;
 	switch(type) {
@@ -64,7 +64,7 @@ static bool showDialog(DialogType type, const std::string & message,
 		case DialogOkCancel: flags = MB_ICONQUESTION | MB_OKCANCEL; break;
 	}
 	
-	int ret = MessageBoxA(NULL, message.c_str(), dialogTitle.c_str(),
+	int ret = MessageBoxA(NULL, message.c_str(), title.c_str(),
 	                      flags | MB_SETFOREGROUND | MB_TOPMOST);
 	
 	switch(ret) {
@@ -82,8 +82,7 @@ static bool showDialog(DialogType type, const std::string & message,
 #elif ARX_PLATFORM == ARX_PLATFORM_MACOSX
 
 // See Dialog.mm for the implementation of showDialog
-bool showDialog(DialogType type, const std::string & message,
-                const std::string & dialogTitle);
+bool showDialog(DialogType type, const std::string & message, const std::string & title);
 
 #else
 
@@ -198,7 +197,7 @@ static std::string formatAsHtml(const std::string & text, bool newline, bool ul 
 }
 
 static int zenityCommand(DialogType type, const std::string & message,
-                         const std::string & dialogTitle) {
+                         const std::string & title) {
 	
 	const char * options = "";
 	switch(type) {
@@ -214,13 +213,13 @@ static int zenityCommand(DialogType type, const std::string & message,
 	boost::format command("zenity %1% --no-wrap --text=\"%2%\" --title=\"%3%\"");
 	command = command % options;
 	command = command % escape(formatAsHtml(message, true));
-	command = command % escape(dialogTitle);
+	command = command % escape(title);
 	
 	return system(command.str().c_str());
 }
 
 static int kdialogCommand(DialogType type, const std::string & message,
-                          const std::string & dialogTitle) {
+                          const std::string & title) {
 	
 	const char * options = "";
 	switch(type) {
@@ -235,13 +234,13 @@ static int kdialogCommand(DialogType type, const std::string & message,
 	                      " --icon arx-libertatis");
 	command = command % options;
 	command = command % escape(formatAsHtml(message, false));
-	command = command % escape(dialogTitle);
+	command = command % escape(title);
 	
 	return system(command.str().c_str());
 }
 
 static int gxmessageCommand(DialogType type, const std::string & message,
-                            const std::string & dialogTitle) {
+                            const std::string & title) {
 	
 	const char * options = "";
 	switch(type) {
@@ -252,14 +251,14 @@ static int gxmessageCommand(DialogType type, const std::string & message,
 	
 	boost::format command("gxmessage -center %1% -title \"%2%\" \"%3%\"");
 	command = command % options;
-	command = command % escape(dialogTitle);
+	command = command % escape(title);
 	command = command % escape(message);
 	
 	return system(command.str().c_str());
 }
 
 static int xdialogCommand(DialogType type, const std::string & message,
-                          const std::string & dialogTitle) {
+                          const std::string & title) {
 	
 	const char * options = "";
 	switch(type) {
@@ -272,15 +271,15 @@ static int xdialogCommand(DialogType type, const std::string & message,
 	                      " %1% \"%2%\" 0 0");
 	command = command % options;
 	command = command % escape(message);
-	command = command % escape(dialogTitle);
+	command = command % escape(title);
 	
 	return system(command.str().c_str());
 }
 
 static int xmessageCommand(DialogType type, const std::string & message,
-                           const std::string & dialogTitle) {
+                           const std::string & title) {
 	
-	ARX_UNUSED(dialogTitle);
+	ARX_UNUSED(title);
 	
 	const char * options = "";
 	switch(type) {
@@ -297,10 +296,10 @@ static int xmessageCommand(DialogType type, const std::string & message,
 }
 
 static bool showDialog(DialogType type, const std::string & message,
-                       const std::string & dialogTitle) {
+                       const std::string & title) {
 	
 	typedef int (*dialogCommand_t)(DialogType type, const std::string & message,
-	                               const std::string & dialogTitle);
+	                               const std::string & title);
 	
 	// This may not be the best way
 	const char * session = getenv("DESKTOP_SESSION");
@@ -318,7 +317,7 @@ static bool showDialog(DialogType type, const std::string & message,
 	};
 	
 	BOOST_FOREACH(dialogCommand_t command, commands) {
-		int exitCode = command(type, message, dialogTitle);
+		int exitCode = command(type, message, title);
 		if(WIFEXITED(exitCode) && WEXITSTATUS(exitCode) >= 0
 		   && WEXITSTATUS(exitCode) < 127) {
 			return WEXITSTATUS(exitCode) == 0;
@@ -339,35 +338,35 @@ static bool showDialog(DialogType type, const std::string & message,
 		case DialogError:   flags = SDL_MESSAGEBOX_ERROR;       break;
 		default: /* unsupported */ break;
 	}
-	if(flags && !SDL_ShowSimpleMessageBox(flags, dialogTitle.c_str(), message.c_str(), NULL)) {
+	if(flags && !SDL_ShowSimpleMessageBox(flags, title.c_str(), message.c_str(), NULL)) {
 		return true;
 	}
 #endif
 	
-	std::cerr << "Failed to show a dialog: " << dialogTitle << ": " << message << std::endl;
+	std::cerr << "Failed to show a dialog: " << title << ": " << message << std::endl;
 	return true;
 }
 
 #endif
 
-void showInfo(const std::string & message, const std::string & dialogTitle) {
-	showDialog(DialogInfo, message, dialogTitle);
+void showInfo(const std::string & message, const std::string & title) {
+	showDialog(DialogInfo, message, title);
 }
 
-void showWarning(const std::string & message, const std::string & dialogTitle) {
-	showDialog(DialogWarning, message, dialogTitle);
+void showWarning(const std::string & message, const std::string & title) {
+	showDialog(DialogWarning, message, title);
 }
 
-void showError(const std::string & message, const std::string & dialogTitle) {
-	showDialog(DialogError, message, dialogTitle);
+void showError(const std::string & message, const std::string & title) {
+	showDialog(DialogError, message, title);
 }
 
-bool askYesNo(const std::string & question, const std::string & dialogTitle) {
-	return showDialog(DialogYesNo, question, dialogTitle);
+bool askYesNo(const std::string & question, const std::string & title) {
+	return showDialog(DialogYesNo, question, title);
 }
 
-bool askOkCancel(const std::string & question, const std::string & dialogTitle) {
-	return showDialog(DialogOkCancel, question, dialogTitle);
+bool askOkCancel(const std::string & question, const std::string & title) {
+	return showDialog(DialogOkCancel, question, title);
 }
 
 }

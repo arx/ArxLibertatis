@@ -32,12 +32,12 @@ enum DialogType {
 	DialogOkCancel
 };
 
-void showInfo(const std::string & message, const std::string & dialogTitle = "Information");
-void showWarning(const std::string & message, const std::string & dialogTitle = "Warning");
-void showError(const std::string & message, const std::string & dialogTitle = "Error");
+void showInfo(const std::string & message, const std::string & title = "Information");
+void showWarning(const std::string & message, const std::string & title = "Warning");
+void showError(const std::string & message, const std::string & title = "Error");
 
-bool askYesNo(const std::string & question, const std::string & dialogTitle = "Yes/No?");
-bool askOkCancel(const std::string & question, const std::string & dialogTitle = "Ok/Cancel?");
+bool askYesNo(const std::string & question, const std::string & title = "Yes/No?");
+bool askOkCancel(const std::string & question, const std::string & title = "Ok/Cancel?");
 
 }
 
