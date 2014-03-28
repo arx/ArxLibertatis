@@ -148,7 +148,7 @@ void EERIE_OBJECT_SetBHMode()
 	else
 	{
 		BH_MODE=1;
-		MakeCoolFx(&player.pos);
+		MakeCoolFx(player.pos);
 		MakeSpCol();
 		strcpy(sp_max_ch,"!!!_Super-Deformed_!!!");
 		sp_max_nb=strlen(sp_max_ch);
@@ -167,8 +167,8 @@ void ApplySPWep() {
 		if(ioo) {
 
 			sp_wep = 1;
-			MakeCoolFx(&player.pos);
-			MakeCoolFx(&player.pos);
+			MakeCoolFx(player.pos);
+			MakeCoolFx(player.pos);
 			ioo->scriptload = 1;
 			SendInitScriptEvent(ioo);
 
@@ -200,8 +200,8 @@ void ApplySPBow() {
 	Entity * ioo = AddItem(cls);
 	if(ioo) {
 
-		MakeCoolFx(&player.pos);
-		MakeCoolFx(&player.pos);
+		MakeCoolFx(player.pos);
+		MakeCoolFx(player.pos);
 
 		ioo->scriptload = 1;
 		SendInitScriptEvent(ioo);
@@ -238,8 +238,8 @@ void ApplySPArm() {
 	if(ioo) {
 
 		sp_wep = 1;
-		MakeCoolFx(&player.pos);
-		MakeCoolFx(&player.pos);
+		MakeCoolFx(player.pos);
+		MakeCoolFx(player.pos);
 		ioo->scriptload = 1;
 		SendInitScriptEvent(ioo);
 
@@ -320,7 +320,7 @@ void ApplySPuw() {
 	uw_mode_pos=0;
 	uw_mode=~uw_mode;
 	ARX_SOUND_PlayCinematic("menestrel_uw2", true);
-	MakeCoolFx(&player.pos);
+	MakeCoolFx(player.pos);
 	if(uw_mode) {
 		MakeSpCol();
 		strcpy(sp_max_ch,"~-__-~~-__.U.W.__-~~-__-~");
@@ -331,7 +331,7 @@ void ApplySPuw() {
 
 void ApplySPMax() {
 
-	MakeCoolFx(&player.pos);
+	MakeCoolFx(player.pos);
 	sp_max=~sp_max;
 
 	if (sp_max)

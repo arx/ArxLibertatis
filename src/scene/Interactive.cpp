@@ -1190,7 +1190,7 @@ void ARX_INTERACTIVE_TeleportBehindTarget(Entity * io)
 			io->room_flags |= 1;
 			io->room = -1;
 			ARX_PARTICLES_Add_Smoke(&pos, 3, 20);
-			MakeCoolFx(&io->pos);
+			MakeCoolFx(io->pos);
 			io->gameFlags |= GFLAG_INVISIBILITY;
 		}
 	}

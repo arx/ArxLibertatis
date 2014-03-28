@@ -1843,7 +1843,7 @@ long Manage_Specific_RAT_Timer(SCR_TIMER * st)
 		pos.z = io->pos.z;
 		ARX_PARTICLES_Add_Smoke(&pos, 3, 20);
 		AddRandomSmoke(io, 20);
-		MakeCoolFx(&io->pos);
+		MakeCoolFx(io->pos);
 		io->show = SHOW_FLAG_IN_SCENE;
 
 		for (long kl = 0; kl < 10; kl++)

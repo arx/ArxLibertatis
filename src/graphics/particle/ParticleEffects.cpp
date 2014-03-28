@@ -551,13 +551,13 @@ void ARX_PARTICLES_Spawn_Spark(const Vec3f & pos, float dmgs, long flags) {
 	}
 }
 
-void MakeCoolFx(Vec3f * pos) {
-	ARX_BOOMS_Add(pos,1);
+void MakeCoolFx(const Vec3f & pos) {
+	ARX_BOOMS_Add(pos, 1);
 }
 
 void MakePlayerAppearsFX(Entity * io) {
-	MakeCoolFx(&io->pos);
-	MakeCoolFx(&io->pos);
+	MakeCoolFx(io->pos);
+	MakeCoolFx(io->pos);
 	AddRandomSmoke(io, 30);
 	ARX_PARTICLES_Add_Smoke(&io->pos, 1 | 2, 20); // flag 1 = randomize pos
 }
@@ -682,14 +682,14 @@ void ARX_BOOMS_ClearAllPolyBooms() {
 	polyboom.clear();
 }
 
-void ARX_BOOMS_Add(Vec3f * poss,long type) {
+void ARX_BOOMS_Add(const Vec3f & poss,long type) {
 	
 	PARTICLE_DEF * pd = createParticle(true);
 	if(pd) {
 		
 		static TextureContainer * tc1 = TextureContainer::Load("graph/particles/fire_hit");
 		
-		pd->ov = *poss;
+		pd->ov = poss;
 		pd->move = Vec3f(3.f - 6.f * rnd(), 4.f - 12.f * rnd(), 3.f - 6.f * rnd());
 		pd->tolive = Random::get(600, 700);
 		pd->tc = tc1;
@@ -701,7 +701,7 @@ void ARX_BOOMS_Add(Vec3f * poss,long type) {
 		
 		pd = createParticle(true);
 		if(pd) {
-			pd->ov = *poss;
+			pd->ov = poss;
 			pd->move = Vec3f(3.f - 6.f * rnd(), 4.f - 12.f * rnd(), 3.f - 6.f * rnd());
 			pd->tolive = Random::get(600, 700);
 			pd->tc = tc1;
@@ -717,8 +717,8 @@ void ARX_BOOMS_Add(Vec3f * poss,long type) {
 	static TextureContainer * tc2 = TextureContainer::Load("graph/particles/boom");
 	
 	// TODO was F2L at some point - should this be rounded?
-	long x0 = long(poss->x * ACTIVEBKG->Xmul) - 3;
-	long z0 = long(poss->z * ACTIVEBKG->Zmul) - 3;
+	long x0 = long(poss.x * ACTIVEBKG->Xmul) - 3;
+	long z0 = long(poss.z * ACTIVEBKG->Zmul) - 3;
 	long x1 = x0 + 6;
 	long z1 = z0 + 6;
 	x0 = clamp(x0, 0l, ACTIVEBKG->Xsize - 1l);
@@ -741,7 +741,7 @@ void ARX_BOOMS_Add(Vec3f * poss,long type) {
 			
 			bool dod = true;
 			for(long k = 0; k < nbvert; k++) {
-				float ddd = fdist(ep->v[k].p, *poss);
+				float ddd = fdist(ep->v[k].p, poss);
 				if(ddd > BOOM_RADIUS) {
 					dod = false;
 					break;

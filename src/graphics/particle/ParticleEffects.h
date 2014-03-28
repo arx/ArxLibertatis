@@ -182,7 +182,7 @@ void ManageTorch();
 void createSphericalSparks(const Vec3f & pos, float r, TextureContainer * tc,
                            const Color3f & color, int mask);
 void MakePlayerAppearsFX(Entity * io);
-void MakeCoolFx(Vec3f * pos);
+void MakeCoolFx(const Vec3f & pos);
 void SpawnGroundSplat(EERIE_SPHERE * sp, Color3f * rgb, float size, long flags);
 
 PARTICLE_DEF * createParticle(bool allocateWhilePaused = false);
@@ -200,7 +200,7 @@ void ARX_PARTICLES_Spawn_Splat(const Vec3f & pos, float dmgs, Color col);
 void ARX_PARTICLES_SpawnWaterSplash(const Vec3f & pos);
 
 void ARX_BOOMS_ClearAllPolyBooms();
-void ARX_BOOMS_Add(Vec3f * pos, long type = 0);
+void ARX_BOOMS_Add(const Vec3f & pos, long type = 0);
 
 
 

@@ -1632,17 +1632,17 @@ static void ARX_SPELLS_AnalyseSYMBOL() {
 		case 934: {
 			if(cur_mr == 1) {
 				cur_mr = 2;
-				MakeCoolFx(&player.pos);
+				MakeCoolFx(player.pos);
 			}
 
 			if(cur_mx == 1) {
 				cur_mx = 2;
-				MakeCoolFx(&player.pos);
+				MakeCoolFx(player.pos);
 			}
 
 			if(cur_rf == 1) {
 				cur_rf = 2;
-				MakeCoolFx(&player.pos);
+				MakeCoolFx(player.pos);
 			}
 
 			if(cur_sm == 1)
@@ -1698,7 +1698,7 @@ static void ARX_SPELLS_AnalyseSYMBOL() {
 		case 8313: {
 			if(cur_mr == 2) {
 				cur_mr = 3;
-				MakeCoolFx(&player.pos);
+				MakeCoolFx(player.pos);
 				ApplyCurMr();
 			}
 
@@ -1710,7 +1710,7 @@ static void ARX_SPELLS_AnalyseSYMBOL() {
 		case 86: {
 			if(cur_rf == 2) {
 				cur_rf = 3;
-				MakeCoolFx(&player.pos);
+				MakeCoolFx(player.pos);
 				ApplySPRf();
 			}
 
@@ -5118,7 +5118,7 @@ void ARX_SPELLS_Kill(long i) {
 					AddRandomSmoke(entities[spells[i].longinfo2], 100);
 					Vec3f posi = entities[spells[i].longinfo2]->pos;
 					posi.y -= 100.f;
-					MakeCoolFx(&posi);
+					MakeCoolFx(posi);
 				
 					long nn = GetFreeDynLight();
 					if(nn >= 0) {
@@ -5352,7 +5352,7 @@ void ARX_SPELLS_Update()
 							AddRandomSmoke(entity,100);
 							Vec3f posi = entity->pos;
 							posi.y-=100.f;
-							MakeCoolFx(&posi);
+							MakeCoolFx(posi);
 							long nn=GetFreeDynLight();
 
 							if(nn >= 0) {
@@ -5715,7 +5715,7 @@ void ARX_SPELLS_Update()
 
 					if(!pCF->bExplo)
 					if(CheckAnythingInSphere(&sphere, spells[i].caster, CAS_NO_SAME_GROUP)) {
-						ARX_BOOMS_Add(&pCF->eCurPos);
+						ARX_BOOMS_Add(pCF->eCurPos);
 						LaunchFireballBoom(&pCF->eCurPos,(float)spells[i].caster_level);
 						pCF->pPSFire.iParticleNbMax = 0;
 						pCF->pPSFire2.iParticleNbMax = 0;
@@ -5841,7 +5841,7 @@ void ARX_SPELLS_Update()
 
 						if (CheckAnythingInSphere(&sphere,spells[i].caster,CAS_NO_SAME_GROUP | CAS_NO_BACKGROUND_COL | CAS_NO_ITEM_COL| CAS_NO_FIX_COL | CAS_NO_DEAD_COL))
 						{
-							ARX_BOOMS_Add(&pCRG->eSrc);
+							ARX_BOOMS_Add(pCRG->eSrc);
 							LaunchFireballBoom(&pCRG->eSrc,(float)spells[i].caster_level);
 							DoSphericDamage(&pCRG->eSrc,4.f*spells[i].caster_level,30.f*spells[i].caster_level,DAMAGE_AREA,DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL,spells[i].caster);
 							spells[i].tolive=0;
@@ -5972,7 +5972,7 @@ void ARX_SPELLS_Update()
 									pos.x=prise->eSrc.x+rnd()*100.f-50.f;
 									pos.y=prise->eSrc.y+100+rnd()*100.f-50.f;
 									pos.z=prise->eSrc.z+rnd()*100.f-50.f;
-									MakeCoolFx(&pos);
+									MakeCoolFx(pos);
 								}
 
 								pCSpellFX->lLightId=-1;
@@ -5986,7 +5986,7 @@ void ARX_SPELLS_Update()
 					  if(rnd() > 0.95f) {
 							CRiseDead *pRD = (CRiseDead*)pCSpellFX;
 							Vec3f pos = pRD->eSrc;
-							MakeCoolFx(&pos);
+							MakeCoolFx(pos);
 						}
 					}
 
@@ -6207,7 +6207,7 @@ void ARX_SPELLS_Update()
 						pos.x=DynLight[id].pos.x-std::sin(rr)*260;
 						pos.y=DynLight[id].pos.y-std::sin(r2)*260;
 						pos.z=DynLight[id].pos.z+std::cos(rr)*260;
-						MakeCoolFx(&pos);
+						MakeCoolFx(pos);
 					} else if(choice > 0.4f) {
 						rr=radians(rnd()*360.f);
 						r2=radians(rnd()*360.f);
@@ -6229,7 +6229,7 @@ void ARX_SPELLS_Update()
 							CSummonCreature * pSummon = (CSummonCreature *)spells[i].pSpellFx;
 							if(pSummon) {
 								Vec3f pos = pSummon->eSrc;
-								MakeCoolFx(&pos);
+								MakeCoolFx(pos);
 							}
 						}
 
@@ -6336,7 +6336,7 @@ void ARX_SPELLS_Update()
 									pos.x=pSummon->eSrc.x+rnd()*100.f-50.f;
 									pos.y=pSummon->eSrc.y+100+rnd()*100.f-50.f;
 									pos.z=pSummon->eSrc.z+rnd()*100.f-50.f;
-									MakeCoolFx(&pos);
+									MakeCoolFx(pos);
 								}
 
 								if(tokeep==1)
@@ -6359,7 +6359,7 @@ void ARX_SPELLS_Update()
 							CSummonCreature * pSummon = (CSummonCreature *)spells[i].pSpellFx;
 							if(pSummon) {
 								Vec3f pos = pSummon->eSrc;
-								MakeCoolFx(&pos);
+								MakeCoolFx(pos);
 							}
 						}
 
