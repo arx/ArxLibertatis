@@ -1172,9 +1172,15 @@ bool PutInInventory()
 	sx = DRAGINTER->sizex;
 	sy = DRAGINTER->sizey;
 
+	const Rect backpackMouseTestRect(
+	g_size.width() - 35,
+	g_size.height() - 113,
+	g_size.width() - 35 + 32,
+	g_size.height() - 113 + 32
+	);
+
 	// Check for backpack Icon
-	if (MouseInRect((float)g_size.width() - 35, (float)g_size.height() - 113, (float)g_size.width() - 35 + 32, (float)g_size.height() - 113 + 32))
-	{
+	if(backpackMouseTestRect.contains(Vec2i(DANAEMouse))){
 		if (CanBePutInInventory(DRAGINTER))
 		{
 			ARX_SOUND_PlayInterface(SND_INVSTD);

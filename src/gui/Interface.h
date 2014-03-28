@@ -216,7 +216,6 @@ float INTERFACE_RATIO_LONG(const long);
 float INTERFACE_RATIO_DWORD(const u32);
 short SHORT_INTERFACE_RATIO(const float);
 
-bool MouseInRect(float x0, float y0, float x1, float y1);
 long GetMainSpeakingIO();
 bool ARX_INTERFACE_MouseInBook();
 void ARX_INTERFACE_PlayerInterfaceModify(long showhide, long smooth);

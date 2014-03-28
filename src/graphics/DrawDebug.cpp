@@ -50,7 +50,6 @@
 #include "physics/Collisions.h"
 
 extern bool EXTERNALVIEW; // *sigh*
-extern bool MouseInRect(const float x0, const float y0, const float x1, const float y1);
 extern float GetIOHeight(Entity * io);
 extern float GetIORadius(Entity * io);
 
@@ -118,7 +117,15 @@ static void drawDebugLights() {
 		TexturedVertex in, center;
 		in.p = light->pos;
 		EE_RTP(&in, &center);
-		if(MouseInRect(center.p.x - 20, center.p.y - 20, center.p.x + 20, center.p.y + 20)) {
+		
+		const Rect mouseTestRect(
+		center.p.x - 20,
+		center.p.y - 20,
+		center.p.x + 20,
+		center.p.y + 20
+		);
+		
+		if(mouseTestRect.contains(Vec2i(DANAEMouse))) {
 			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 			EERIE_SPHERE fallstart;
 			fallstart.origin = light->pos;

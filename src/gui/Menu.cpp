@@ -546,8 +546,15 @@ bool ARX_Menu_Render() {
 			//---------------------------------------------------------------------
 			// Button QUICK GENERATION
 			fPosX = (g_size.width() - (513 * Xratio)) * 0.5f;
-
-			if(MouseInRect(fPosX, fPosY, fPosX + fSizeX + 50, fPosY + fSizeY)) {
+			
+			const Rect quickGenerateButtonMouseTestRect(
+				fPosX,
+				fPosY,
+				fPosX + fSizeX,
+				fPosY + fSizeY
+			);
+			
+			if(quickGenerateButtonMouseTestRect.contains(Vec2i(DANAEMouse))) {
 				SpecialCursor = CURSOR_INTERACTION_ON;
 				FLYING_OVER = BUTTON_QUICK_GENERATION;
 
@@ -578,8 +585,15 @@ bool ARX_Menu_Render() {
 			//---------------------------------------------------------------------
 			// Button SKIN
 			fPosX = g_size.width() * 0.5f;
-
-			if(MouseInRect(fPosX, fPosY, fPosX + fSizeX, fPosY + fSizeY)) {
+			
+			const Rect skinButtonMouseTestRect(
+				fPosX,
+				fPosY,
+				fPosX + fSizeX,
+				fPosY + fSizeY
+			);
+			
+			if(skinButtonMouseTestRect.contains(Vec2i(DANAEMouse))) {
 				SpecialCursor = CURSOR_INTERACTION_ON;
 				FLYING_OVER = BUTTON_SKIN;
 
@@ -605,8 +619,15 @@ bool ARX_Menu_Render() {
 			//---------------------------------------------------------------------
 			// Button DONE
 			fPosX = g_size.width() - (g_size.width() - 513 * Xratio) * 0.5f - 40 * Xratio;
-
-			if(MouseInRect(fPosX, fPosY, fPosX + fSizeX, fPosY + fSizeY)) {
+			
+			const Rect doneButtonMouseTestRect(
+				fPosX,
+				fPosY,
+				fPosX + fSizeX,
+				fPosY + fSizeY
+			);
+			
+			if(doneButtonMouseTestRect.contains(Vec2i(DANAEMouse))) {
 				if(DONE)
 					SpecialCursor = CURSOR_INTERACTION_ON;
 

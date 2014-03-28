@@ -377,13 +377,6 @@ bool MouseInBookRect(const float x, const float y, const float cx, const float c
 		&& DANAEMouse.y <= (cy + BOOKDECY) * Yratio;
 }
 
-bool MouseInRect(const float x0, const float y0, const float x1, const float y1) {
-	return DANAEMouse.x >= x0
-		&& DANAEMouse.x <= x1
-		&& DANAEMouse.y >= y0
-		&& DANAEMouse.y <= y1;
-}
-
 bool ARX_INTERFACE_MouseInBook() {
 	if((player.Interface & INTER_MAP) && !(player.Interface & INTER_COMBATMODE)) {
 		return MouseInBookRect(99, 65, 599, 372);
@@ -1347,7 +1340,15 @@ void ArxGame::manageEditorControls() {
 				py = g_size.height() - INTERFACE_RATIO(158+32);
 
 				if(player.torch) {
-					if(MouseInRect(px, py, px + INTERFACE_RATIO(32), py + INTERFACE_RATIO(64))) {
+					
+					const Rect mouseTestRect(
+					px,
+					py,
+					px + INTERFACE_RATIO(32),
+					py + INTERFACE_RATIO(64)
+					);
+					
+					if(mouseTestRect.contains(Vec2i(DANAEMouse))) {
 						eMouseState=MOUSE_IN_TORCH_ICON;
 						SpecialCursor=CURSOR_INTERACTION_ON;
 
@@ -1420,8 +1421,15 @@ void ArxGame::manageEditorControls() {
 				if((player.Skill_Redistribute) || (player.Attribute_Redistribute)) {
 					px = g_size.width() - INTERFACE_RATIO(35) + lSLID_VALUE + GL_DECAL_ICONS;
 					py = g_size.height() - INTERFACE_RATIO(218);
+					
+					const Rect mouseTestRect(
+					px,
+					py,
+					px + INTERFACE_RATIO(32),
+					py + INTERFACE_RATIO(32)
+					);
 
-					if(MouseInRect(px, py, px + INTERFACE_RATIO(32), py + INTERFACE_RATIO(32))) {
+					if(mouseTestRect.contains(Vec2i(DANAEMouse))) {
 						eMouseState = MOUSE_IN_REDIST_ICON;
 						SpecialCursor = CURSOR_INTERACTION_ON;
 
@@ -1438,8 +1446,15 @@ void ArxGame::manageEditorControls() {
 				if(player.gold > 0) {
 					px = g_size.width() - INTERFACE_RATIO(35) + lSLID_VALUE + GL_DECAL_ICONS;
 					py = g_size.height() - INTERFACE_RATIO(183);
-
-					if(MouseInRect(px, py, px + INTERFACE_RATIO(32), py + INTERFACE_RATIO(32))) {
+					
+					const Rect mouseTestRect(
+					px,
+					py,
+					px + INTERFACE_RATIO(32),
+					py + INTERFACE_RATIO(32)
+					);
+					
+					if(mouseTestRect.contains(Vec2i(DANAEMouse))) {
 						eMouseState = MOUSE_IN_GOLD_ICON;
 						SpecialCursor = CURSOR_INTERACTION_ON;
 
@@ -1461,7 +1476,14 @@ void ArxGame::manageEditorControls() {
 				px = g_size.width() - INTERFACE_RATIO(35) + lSLID_VALUE + GL_DECAL_ICONS;
 				py = g_size.height() - INTERFACE_RATIO(148);
 
-				if(MouseInRect(px, py, px + INTERFACE_RATIO(32), py + INTERFACE_RATIO(32))) {
+				const Rect bookMouseTestRect(
+				px,
+				py,
+				px + INTERFACE_RATIO(32),
+				py + INTERFACE_RATIO(32)
+				);
+				
+				if(bookMouseTestRect.contains(Vec2i(DANAEMouse))) {
 					eMouseState = MOUSE_IN_BOOK_ICON;
 					SpecialCursor = CURSOR_INTERACTION_ON;
 
@@ -1476,8 +1498,15 @@ void ArxGame::manageEditorControls() {
 				px = g_size.width() - INTERFACE_RATIO(35) + lSLID_VALUE + GL_DECAL_ICONS;
 				py = g_size.height() - INTERFACE_RATIO(113);
 				static float flDelay=0;
-
-				if(MouseInRect(px, py, px + INTERFACE_RATIO(32), py + INTERFACE_RATIO(32)) || flDelay) {
+				
+				const Rect inventoryMouseTestRect(
+				px,
+				py,
+				px + INTERFACE_RATIO(32),
+				py + INTERFACE_RATIO(32)
+				);
+				
+				if(inventoryMouseTestRect.contains(Vec2i(DANAEMouse)) || flDelay) {
 					eMouseState = MOUSE_IN_INVENTORY_ICON;
 					SpecialCursor = CURSOR_INTERACTION_ON;
 
@@ -1548,8 +1577,15 @@ void ArxGame::manageEditorControls() {
 			if(player.Interface & INTER_STEAL) {
 				px = static_cast<float>(-lSLID_VALUE);
 				py = g_size.height() - INTERFACE_RATIO(78 + 32);
-
-				if(MouseInRect(px, py, px + INTERFACE_RATIO(32), py + INTERFACE_RATIO(32))) {
+				
+				const Rect mouseTestRect(
+				px,
+				py,
+				px + INTERFACE_RATIO(32),
+				py + INTERFACE_RATIO(32)
+				);
+				
+				if(mouseTestRect.contains(Vec2i(DANAEMouse))) {
 					eMouseState=MOUSE_IN_STEAL_ICON;
 					SpecialCursor=CURSOR_INTERACTION_ON;
 
@@ -1584,7 +1620,14 @@ void ArxGame::manageEditorControls() {
 		
 		TextureContainer* playerbook = ITC.Get("playerbook");
 		if(playerbook) {
-			if(MouseInRect(px, py, px + playerbook->m_dwWidth * Xratio, py + playerbook->m_dwHeight * Yratio)) {
+			const Rect mouseTestRect(
+			px,
+			py,
+			px + playerbook->m_dwWidth * Xratio,
+			py + playerbook->m_dwHeight * Yratio
+			);
+			
+			if(mouseTestRect.contains(Vec2i(DANAEMouse))) {
 				eMouseState = MOUSE_IN_BOOK;
 			}
 		}
@@ -1604,7 +1647,14 @@ void ArxGame::manageEditorControls() {
 		Entity * temp=(Entity *)TSecondaryInventory->io;
 
 		if(temp && !(temp->ioflags & IO_SHOP) && !(temp == ioSteal)) {
-			if(MouseInRect(px,py, px + INTERFACE_RATIO(16), py + INTERFACE_RATIO(16))) {
+			const Rect mouseTestRect(
+			px,
+			py,
+			px + INTERFACE_RATIO(16),
+			py + INTERFACE_RATIO(16)
+			);
+			
+			if(mouseTestRect.contains(Vec2i(DANAEMouse))) {
 				eMouseState = MOUSE_IN_INVENTORY_PICKALL_ICON;
 				SpecialCursor=CURSOR_INTERACTION_ON;
 
@@ -1625,7 +1675,14 @@ void ArxGame::manageEditorControls() {
 		//py = 20;
 		px = INTERFACE_RATIO(InventoryX) + INTERFACE_RATIO_DWORD(BasicInventorySkin->m_dwWidth) - INTERFACE_RATIO(32);
 
-		if(MouseInRect(px,py, px + INTERFACE_RATIO(16), py + INTERFACE_RATIO(16))) {
+		const Rect mouseTestRect(
+		px,
+		py,
+		px + INTERFACE_RATIO(16),
+		py + INTERFACE_RATIO(16)
+		);
+		
+		if(mouseTestRect.contains(Vec2i(DANAEMouse))) {
 			eMouseState = MOUSE_IN_INVENTORY_CLOSE_ICON;
 			SpecialCursor=CURSOR_INTERACTION_ON;
 
@@ -1833,7 +1890,14 @@ void ArxGame::manageEditorControls() {
 					!fartherThan(GLight[i]->pos, player.pos, fMaxdist) &&
 					!(GLight[i]->extras & EXTRAS_NO_IGNIT))
 				{
-					if(MouseInRect(GLight[i]->mins.x, GLight[i]->mins.y, GLight[i]->maxs.x, GLight[i]->maxs.y)) {
+					const Rect mouseTestRect(
+					GLight[i]->mins.x,
+					GLight[i]->mins.y,
+					GLight[i]->maxs.x,
+					GLight[i]->maxs.y
+					);
+					
+					if(mouseTestRect.contains(Vec2i(DANAEMouse))) {
 						if(COMBINE->ioflags & IO_ITEM) {
 							if((COMBINE == player.torch) || (COMBINE->_itemdata->LightValue == 1)) {
 								if(GLight[i]->status != 1) {
@@ -1868,7 +1932,14 @@ void ArxGame::manageEditorControls() {
 				float posy = ARX_CAST_TO_INT_THEN_FLOAT( fSizY );
 
 				if(sActiveInventory > 0) {
-					if(MouseInRect(posx, posy, posx+INTERFACE_RATIO(32), posy+INTERFACE_RATIO(32)))
+					const Rect mouseTestRect(
+					posx,
+					posy,
+					posx + INTERFACE_RATIO(32),
+					posy + INTERFACE_RATIO(32)
+					);
+					
+					if(mouseTestRect.contains(Vec2i(DANAEMouse)))
 						bQuitCombine = false;
 				}
 
@@ -1876,8 +1947,15 @@ void ArxGame::manageEditorControls() {
 					float fRatio = INTERFACE_RATIO(32 + 5);
 
 					posy += checked_range_cast<int>(fRatio);
-
-					if(MouseInRect(posx, posy, posx+INTERFACE_RATIO(32), posy+INTERFACE_RATIO(32)))
+					
+					const Rect mouseTestRect(
+					posx,
+					posy,
+					posx + INTERFACE_RATIO(32),
+					posy + INTERFACE_RATIO(32)
+					);
+					
+					if(mouseTestRect.contains(Vec2i(DANAEMouse)))
 						bQuitCombine = false;
 				}
 			}
@@ -1902,7 +1980,14 @@ void ArxGame::manageEditorControls() {
 				!fartherThan(GLight[i]->pos, player.pos, fMaxdist) &&
 				!(GLight[i]->extras & EXTRAS_NO_IGNIT))
 			{
-				if(MouseInRect(GLight[i]->mins.x, GLight[i]->mins.y, GLight[i]->maxs.x, GLight[i]->maxs.y)) {
+				const Rect mouseTestRect(
+				GLight[i]->mins.x,
+				GLight[i]->mins.y,
+				GLight[i]->maxs.x,
+				GLight[i]->maxs.y
+				);
+				
+				if(mouseTestRect.contains(Vec2i(DANAEMouse))) {
 					SpecialCursor = CURSOR_INTERACTION_ON;
 				}
 			}
@@ -3790,8 +3875,16 @@ static void StdDraw(float posx, float posy, Color color, TextureContainer * tcc,
 		}
 
 		if(!(flag & 1)) {
-			if(!(player.Interface & INTER_COMBATMODE))
-				if(MouseInRect(posx, posy, posx + INTERFACE_RATIO(32), posy + INTERFACE_RATIO(32))) {
+			if(!(player.Interface & INTER_COMBATMODE)) {
+				
+				const Rect mouseTestRect(
+				posx,
+				posy,
+				posx + INTERFACE_RATIO(32),
+				posy + INTERFACE_RATIO(32)
+				);
+				
+				if(mouseTestRect.contains(Vec2i(DANAEMouse))) {
 					SpecialCursor=CURSOR_INTERACTION_ON;
 
 					if((LastMouseClick & 1) && !(EERIEMouseButton & 1)) {
@@ -3819,6 +3912,7 @@ static void StdDraw(float posx, float posy, Color color, TextureContainer * tcc,
 						}
 					}
 				}
+			}
 		}
 	}
 }
@@ -3944,9 +4038,16 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 							xpos = 0;
 							ypos++;
 						}
+						
+						const Rect runeMouseTestRect(
+						runeBox.min.x,
+						runeBox.min.y,
+						runeBox.max.x,
+						runeBox.max.y
+						);
 
 						// Checks for Mouse floating over a rune...
-						if(!found2 && MouseInRect(runeBox.min.x, runeBox.min.y, runeBox.max.x, runeBox.max.y)) {
+						if(!found2 && runeMouseTestRect.contains(Vec2i(DANAEMouse))) {
 							long r=0;
 
 							for(size_t j = 0; j < necklace.runes[i]->facelist.size(); j++) {
@@ -5799,7 +5900,14 @@ void DrawInventory() {
 			if(sActiveInventory > 0) {
 				ARX_INTERFACE_DrawItem(ITC.Get("hero_inventory_up"),	InvCoords.posx, InvCoords.posy);
 
-				if(MouseInRect(InvCoords.posx, InvCoords.posy, InvCoords.posx + INTERFACE_RATIO(32), InvCoords.posy + INTERFACE_RATIO(32))) {
+				const Rect inventoryUpMouseTestRect(
+				InvCoords.posx,
+				InvCoords.posy,
+				InvCoords.posx + INTERFACE_RATIO(32),
+				InvCoords.posy + INTERFACE_RATIO(32)
+				);
+				
+				if(inventoryUpMouseTestRect.contains(Vec2i(DANAEMouse))) {
 					GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 					GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 					SpecialCursor=CURSOR_INTERACTION_ON;
@@ -5827,7 +5935,14 @@ void DrawInventory() {
 
 				ARX_INTERFACE_DrawItem(ITC.Get("hero_inventory_down"),	InvCoords.posx, g_size.height() - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY) + INTERFACE_RATIO(-3 + 64));
 
-				if(MouseInRect(InvCoords.posx, posy, InvCoords.posx + INTERFACE_RATIO(32), posy + INTERFACE_RATIO(32))) {
+				const Rect inventoryDownMouseTestRect(
+				InvCoords.posx,
+				posy,
+				InvCoords.posx + INTERFACE_RATIO(32),
+				posy + INTERFACE_RATIO(32)
+				);
+				
+				if(inventoryDownMouseTestRect.contains(Vec2i(DANAEMouse))) {
 					GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 					GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 					ARX_INTERFACE_DrawItem(ITC.Get("hero_inventory_down"),	InvCoords.posx, g_size.height() - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY) + INTERFACE_RATIO(-3 + 64));
@@ -6058,9 +6173,15 @@ void UpdateChangeLevelIcon() {
 void DrawChangeLevelIcon() {
 
     ARX_INTERFACE_DrawItem(ChangeLevel, ChangeLevelIcon.x, ChangeLevelIcon.y, 0.0001f, Color3f::gray(ChangeLevelIcon.vv).to<u8>());
-    if(MouseInRect(ChangeLevelIcon.x, ChangeLevelIcon.y, ChangeLevelIcon.x + INTERFACE_RATIO_DWORD(ChangeLevel->m_dwWidth),
-        ChangeLevelIcon.y + INTERFACE_RATIO_DWORD(ChangeLevel->m_dwHeight)))
-	{
+	
+	const Rect changeLevelIconMouseTestRect(
+	ChangeLevelIcon.x,
+	ChangeLevelIcon.y,
+	ChangeLevelIcon.x + INTERFACE_RATIO_DWORD(ChangeLevel->m_dwWidth),
+	ChangeLevelIcon.y + INTERFACE_RATIO_DWORD(ChangeLevel->m_dwHeight)
+	);
+	
+    if(changeLevelIconMouseTestRect.contains(Vec2i(DANAEMouse))) {
 		SpecialCursor=CURSOR_INTERACTION_ON;
 		if(!(EERIEMouseButton & 1) && (LastMouseClick & 1)) {
 			CHANGE_LEVEL_ICON = 200;
@@ -6206,8 +6327,15 @@ void DrawHealthManaGauges() {
 		0.f, ITC.Get("filled_gauge_red"), ulcolor, (1.f - HealthGaugeAmount));
 
 	if(!(player.Interface & INTER_COMBATMODE)) {
-		if(MouseInRect(fSLID_VALUE_neg, g_size.height() - INTERFACE_RATIO(78), fSLID_VALUE_neg + INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_red")->m_dwWidth), g_size.height() - INTERFACE_RATIO(78) + INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_red")->m_dwHeight)))
-		{
+		
+		const Rect redGaugeMouseTestRect(
+			fSLID_VALUE_neg,
+			g_size.height() - INTERFACE_RATIO(78),
+			fSLID_VALUE_neg + INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_red")->m_dwWidth),
+			g_size.height() - INTERFACE_RATIO(78) + INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_red")->m_dwHeight)
+		);
+		
+		if(redGaugeMouseTestRect.contains(Vec2i(DANAEMouse))) {
 			if((EERIEMouseButton & 1) && !(LastMouseClick & 1)) {
 				std::stringstream ss;
 				ss << checked_range_cast<int>(player.life);
@@ -6232,8 +6360,15 @@ void DrawHealthManaGauges() {
 		ITC.Get("filled_gauge_blue"), Color::white, (1.f - ManaGaugeAmount));
 
 	if(!(player.Interface & INTER_COMBATMODE)) {
-		if(MouseInRect(g_size.width() - INTERFACE_RATIO(33) + lSLID_VALUE,g_size.height() - INTERFACE_RATIO(81),g_size.width() - INTERFACE_RATIO(33) + lSLID_VALUE+LARGG,g_size.height() - INTERFACE_RATIO(81)+HAUTT))
-		{
+		
+		const Rect blueGaugeMouseTestRect(
+			g_size.width()  - INTERFACE_RATIO(33) + lSLID_VALUE,
+			g_size.height() - INTERFACE_RATIO(81),
+			g_size.width()  - INTERFACE_RATIO(33) + lSLID_VALUE + LARGG,
+			g_size.height() - INTERFACE_RATIO(81) + HAUTT
+		);
+		
+		if(blueGaugeMouseTestRect.contains(Vec2i(DANAEMouse))) {
 			if((EERIEMouseButton & 1) && !(LastMouseClick & 1)) {
 				std::stringstream ss;
 				ss << checked_range_cast<int>(player.mana);

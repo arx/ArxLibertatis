@@ -438,7 +438,14 @@ void MiniMap::showBookEntireMap(int showLevel) {
 		verts[2].uv = Vec2f_ONE;
 		verts[3].uv = Vec2f_Y_AXIS;
 		
-		if(MouseInRect(verts[0].p.x, verts[0].p.y, verts[2].p.x, verts[2].p.y)) {
+		const Rect mouseTestRect(
+			verts[0].p.x,
+			verts[0].p.y,
+			verts[2].p.x,
+			verts[2].p.y
+		);
+		
+		if(mouseTestRect.contains(Vec2i(DANAEMouse))) {
 			if(!m_mapMarkers[i].m_text.empty()) {
 				
 				Rect bRect(140, 295, 140 + 205, 358);
