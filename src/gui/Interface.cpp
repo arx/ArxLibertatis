@@ -1885,11 +1885,11 @@ void ArxGame::manageEditorControls() {
 				fMaxdist = 850;
 
 			for(size_t i = 0; i < MAX_LIGHTS; i++) {
-				if ((GLight[i]!=NULL) &&
-					(GLight[i]->exist) &&
-					!fartherThan(GLight[i]->pos, player.pos, fMaxdist) &&
-					!(GLight[i]->extras & EXTRAS_NO_IGNIT))
-				{
+				if(   GLight[i]
+				   && GLight[i]->exist
+				   && !fartherThan(GLight[i]->pos, player.pos, fMaxdist)
+				   && !(GLight[i]->extras & EXTRAS_NO_IGNIT)
+				) {
 					const Rect mouseTestRect(
 					GLight[i]->mins.x,
 					GLight[i]->mins.y,
@@ -1897,8 +1897,9 @@ void ArxGame::manageEditorControls() {
 					GLight[i]->maxs.y
 					);
 					
-					if(mouseTestRect.contains(Vec2i(DANAEMouse))) {
-						if(COMBINE->ioflags & IO_ITEM) {
+					if(   mouseTestRect.contains(Vec2i(DANAEMouse))
+					   && (COMBINE->ioflags & IO_ITEM)
+					) {
 							if((COMBINE == player.torch) || (COMBINE->_itemdata->LightValue == 1)) {
 								if(GLight[i]->status != 1) {
 									GLight[i]->status = 1;
@@ -1913,7 +1914,6 @@ void ArxGame::manageEditorControls() {
 									SendIOScriptEvent(COMBINE, SM_CUSTOM, "douse");
 								}
 							}
-						}
 					}
 				}
 			}
