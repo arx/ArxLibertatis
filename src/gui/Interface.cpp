@@ -1443,12 +1443,13 @@ void ArxGame::manageEditorControls() {
 						eMouseState = MOUSE_IN_GOLD_ICON;
 						SpecialCursor = CURSOR_INTERACTION_ON;
 
-						if(player.gold > 0
-							&& !GInput->actionPressed(CONTROLS_CUST_MAGICMODE)
-							&& !COMBINE && !COMBINEGOLD)
-						{
-							if (EERIEMouseButton & 4)
-								COMBINEGOLD=1;
+						if(   player.gold > 0
+						   && !GInput->actionPressed(CONTROLS_CUST_MAGICMODE)
+						   && !COMBINE
+						   && !COMBINEGOLD
+						   && (EERIEMouseButton & 4)
+						) {
+							COMBINEGOLD = 1;
 						}
 
 						if(!DRAGINTER)
