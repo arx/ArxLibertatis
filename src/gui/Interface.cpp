@@ -1717,75 +1717,75 @@ void ArxGame::manageEditorControls() {
 	   && FlyingOverIO
 	   && !DRAGINTER
 	) {
-			SendIOScriptEvent(FlyingOverIO, SM_CLICKED);
-			bool bOk = true;
-
-			if(SecondaryInventory) {
-				Entity *temp = SecondaryInventory->io;
-
-				if(IsInSecondaryInventory(FlyingOverIO) && (temp->ioflags & IO_SHOP))
-					bOk = false;
-			}
-
-			if(   !(FlyingOverIO->ioflags & IO_MOVABLE)
-			   && (FlyingOverIO->ioflags & IO_ITEM)
-			   && bOk
-			   && GInput->actionPressed(CONTROLS_CUST_STEALTHMODE)
-			   && !InPlayerInventoryPos(&DANAEMouse)
-			   && !ARX_INTERFACE_MouseInBook()
-			) {
-							long sx = 0;
-							long sy = 0;
-							bool bSecondary = false;
-
-							if(TSecondaryInventory && IsInSecondaryInventory(FlyingOverIO)) {
-								if(SecondaryInventory) {
-									bool bfound = true;
-
-									for(long j = 0; j < SecondaryInventory->sizey && bfound; j++) {
-										for (long i = 0; i < SecondaryInventory->sizex && bfound; i++) {
-											if(SecondaryInventory->slot[i][j].io == FlyingOverIO) {
-												sx = i;
-												sy = j;
-												bfound = false;
-											}
-										}
-									}
-
-									if(bfound)
-										ARX_DEAD_CODE();
-								}
-
-								bSecondary = true;
+		SendIOScriptEvent(FlyingOverIO, SM_CLICKED);
+		bool bOk = true;
+		
+		if(SecondaryInventory) {
+			Entity *temp = SecondaryInventory->io;
+			
+			if(IsInSecondaryInventory(FlyingOverIO) && (temp->ioflags & IO_SHOP))
+				bOk = false;
+		}
+		
+		if(   !(FlyingOverIO->ioflags & IO_MOVABLE)
+		   && (FlyingOverIO->ioflags & IO_ITEM)
+		   && bOk
+		   && GInput->actionPressed(CONTROLS_CUST_STEALTHMODE)
+		   && !InPlayerInventoryPos(&DANAEMouse)
+		   && !ARX_INTERFACE_MouseInBook()
+		) {
+			long sx = 0;
+			long sy = 0;
+			bool bSecondary = false;
+			
+			if(TSecondaryInventory && IsInSecondaryInventory(FlyingOverIO)) {
+				if(SecondaryInventory) {
+					bool bfound = true;
+					
+					for(long j = 0; j < SecondaryInventory->sizey && bfound; j++) {
+						for (long i = 0; i < SecondaryInventory->sizex && bfound; i++) {
+							if(SecondaryInventory->slot[i][j].io == FlyingOverIO) {
+								sx = i;
+								sy = j;
+								bfound = false;
 							}
-
-							RemoveFromAllInventories( FlyingOverIO );
-							FlyingOverIO->show = SHOW_FLAG_IN_INVENTORY;
-
-							if(FlyingOverIO->ioflags & IO_GOLD)
-								ARX_SOUND_PlayInterface(SND_GOLD);
-
-							ARX_SOUND_PlayInterface(SND_INVSTD);
-
-							if(!playerInventory.insert(FlyingOverIO)) {
-								if(TSecondaryInventory && bSecondary) {
-									extern short sInventory, sInventoryX, sInventoryY;
-									sInventory = 2;
-									sInventoryX = checked_range_cast<short>(sx);
-									sInventoryY = checked_range_cast<short>(sy);
-
-									CanBePutInSecondaryInventory( TSecondaryInventory, FlyingOverIO, &sx, &sy );
-								}
-
-								if(!bSecondary)
-									FlyingOverIO->show = SHOW_FLAG_IN_SCENE;
-							}
-
-							if(DRAGINTER == FlyingOverIO)
-								DRAGINTER = NULL;
-
-							FlyingOverIO = NULL;
+						}
+					}
+					
+					if(bfound)
+						ARX_DEAD_CODE();
+				}
+				
+				bSecondary = true;
 			}
+			
+			RemoveFromAllInventories( FlyingOverIO );
+			FlyingOverIO->show = SHOW_FLAG_IN_INVENTORY;
+			
+			if(FlyingOverIO->ioflags & IO_GOLD)
+				ARX_SOUND_PlayInterface(SND_GOLD);
+			
+			ARX_SOUND_PlayInterface(SND_INVSTD);
+			
+			if(!playerInventory.insert(FlyingOverIO)) {
+				if(TSecondaryInventory && bSecondary) {
+					extern short sInventory, sInventoryX, sInventoryY;
+					sInventory = 2;
+					sInventoryX = checked_range_cast<short>(sx);
+					sInventoryY = checked_range_cast<short>(sy);
+					
+					CanBePutInSecondaryInventory( TSecondaryInventory, FlyingOverIO, &sx, &sy );
+				}
+				
+				if(!bSecondary)
+					FlyingOverIO->show = SHOW_FLAG_IN_SCENE;
+			}
+			
+			if(DRAGINTER == FlyingOverIO)
+				DRAGINTER = NULL;
+			
+			FlyingOverIO = NULL;
+		}
 	}
 
 	if(!(player.Interface & INTER_COMBATMODE)) {
