@@ -369,4 +369,4 @@ bool askOkCancel(const std::string & question, const std::string & title) {
 	return showDialog(DialogOkCancel, question, title);
 }
 
-}
+} // namespace dialog

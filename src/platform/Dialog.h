@@ -39,6 +39,6 @@ void showError(const std::string & message, const std::string & title = "Error")
 bool askYesNo(const std::string & question, const std::string & title = "Yes/No?");
 bool askOkCancel(const std::string & question, const std::string & title = "Ok/Cancel?");
 
-}
+} // namespace dialog
 
 #endif // ARX_PLATFORM_DIALOG_H
