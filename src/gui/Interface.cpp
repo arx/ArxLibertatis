@@ -1724,10 +1724,13 @@ void ArxGame::manageEditorControls() {
 					bOk = false;
 			}
 
-			if(!(FlyingOverIO->ioflags & IO_MOVABLE)) {
-				if((FlyingOverIO->ioflags & IO_ITEM) && bOk) {
-					if(GInput->actionPressed(CONTROLS_CUST_STEALTHMODE)) {
-						if(!InPlayerInventoryPos(&DANAEMouse) && !ARX_INTERFACE_MouseInBook()) {
+			if(   !(FlyingOverIO->ioflags & IO_MOVABLE)
+			   && (FlyingOverIO->ioflags & IO_ITEM)
+			   && bOk
+			   && GInput->actionPressed(CONTROLS_CUST_STEALTHMODE)
+			   && !InPlayerInventoryPos(&DANAEMouse)
+			   && !ARX_INTERFACE_MouseInBook()
+			) {
 							long sx = 0;
 							long sy = 0;
 							bool bSecondary = false;
@@ -1779,9 +1782,6 @@ void ArxGame::manageEditorControls() {
 								DRAGINTER = NULL;
 
 							FlyingOverIO = NULL;
-						}
-					}
-				}
 			}
 		}
 	}
