@@ -132,9 +132,7 @@ static void hideQuickSaveIcon();
 long Manage3DCursor(long flags); // flags & 1 == simulation
 long IN_BOOK_DRAW=0;
 
-#ifdef BUILD_EDITOR
 extern long LastSelectedIONum;
-#endif
 
 //-----------------------------------------------------------------------------
 struct ARX_INTERFACE_HALO_STRUCT
