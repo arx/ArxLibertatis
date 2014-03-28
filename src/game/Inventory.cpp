@@ -1239,7 +1239,7 @@ bool PutInInventory() {
 			fcos = cos + cos * ((float)player.Full_Skill_Intuition) * 0.005f;
 			cos = checked_range_cast<long>(fcos);
 			
-			for(j = 0; j < sy; j++)
+			for(j = 0; j < sy; j++) {
 				for(i = 0; i < sx; i++) {
 					Entity * ioo = SecondaryInventory->slot[tx+i][ty+j].io;
 					
@@ -1256,8 +1256,9 @@ bool PutInInventory() {
 							if(ioo->_itemdata->count > ioo->_itemdata->playerstacksize) {
 								DRAGINTER->_itemdata->count = ioo->_itemdata->count - ioo->_itemdata->playerstacksize;
 								ioo->_itemdata->count = ioo->_itemdata->playerstacksize;
+							} else {
+								DRAGINTER->_itemdata->count = 0;
 							}
-							else DRAGINTER->_itemdata->count = 0;
 						}
 						
 						if(DRAGINTER->_itemdata->count) {
@@ -1277,6 +1278,7 @@ bool PutInInventory() {
 						return true;
 					}
 				}
+			}
 			
 			if(DRAGINTER->ioflags & IO_GOLD) {
 				ARX_PLAYER_AddGold(DRAGINTER);
