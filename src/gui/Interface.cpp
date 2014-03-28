@@ -1751,9 +1751,9 @@ void ArxGame::manageEditorControls() {
 				if(   !((DRAGINTER->ioflags & IO_ITEM) && DRAGINTER->_itemdata->count > 1)
 				   && DRAGINTER->obj
 				   && DRAGINTER->obj->pbox
+				   && !InInventoryPos(&DANAEMouse)
 				) {
 					//Put object in fromt of player
-					if(!InInventoryPos(&DANAEMouse)) {
 						if(ARX_MOUSE_OVER & ARX_MOUSE_OVER_BOOK)
 							 goto suivant2;
 
@@ -1783,7 +1783,6 @@ void ArxGame::manageEditorControls() {
 
 						io->show=SHOW_FLAG_IN_SCENE;
 						Set_DragInter(NULL);
-					}
 					}
 				}
 
