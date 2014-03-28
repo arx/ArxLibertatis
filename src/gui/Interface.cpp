@@ -2064,9 +2064,9 @@ void ArxGame::manageEditorControls() {
 						DRAGINTER->show=SHOW_FLAG_NOT_DRAWN;
 						ARX_SOUND_PlayInterface(SND_INVSTD);
 					}
-				}
-				else
+				} else {
 					Set_DragInter(NULL);
+				}
 
 				suivant:
 					;
