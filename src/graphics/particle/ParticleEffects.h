@@ -173,7 +173,7 @@ void TreatBackgroundActions();
 void TreatBackgroundDynlights();
 void MakeBookFX(const Vec3f & pos);
 
-void Add3DBoom(Vec3f * position);
+void Add3DBoom(const Vec3f & position);
 void AddRandomSmoke(Entity * io, long amount = 1);
 
 void LaunchDummyParticle();

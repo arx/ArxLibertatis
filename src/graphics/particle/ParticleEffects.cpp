@@ -776,14 +776,14 @@ void ARX_BOOMS_Add(Vec3f * poss,long type) {
 	}
 }
 
-void Add3DBoom(Vec3f * position) {
+void Add3DBoom(const Vec3f & position) {
 	
-	Vec3f poss = *position;
+	Vec3f poss = position;
 	ARX_SOUND_PlaySFX(SND_SPELL_FIRE_HIT, &poss);
 	
-	float dist = fdist(player.pos - Vec3f(0, 160.f, 0.f), *position);
+	float dist = fdist(player.pos - Vec3f(0, 160.f, 0.f), position);
 	if(dist < 300) {
-		Vec3f vect = (player.pos - *position - Vec3f(0.f, 160.f, 0.f)) / dist;
+		Vec3f vect = (player.pos - position - Vec3f(0.f, 160.f, 0.f)) / dist;
 		player.physics.forces += vect * ((300.f - dist) * 0.0125f);
 	}
 	
@@ -799,11 +799,11 @@ void Add3DBoom(Vec3f * position) {
 		}
 		
 		for(long k = 0; k < entity->obj->pbox->nb_physvert; k++) {
-			float dist = fdist(entity->obj->pbox->vert[k].pos, *position);
+			float dist = fdist(entity->obj->pbox->vert[k].pos, position);
 			if(dist < 300.f) {
 				entity->obj->pbox->active = 1;
 				entity->obj->pbox->stopcount = 0;
-				Vec3f vect = (entity->obj->pbox->vert[k].pos - *position) / dist;
+				Vec3f vect = (entity->obj->pbox->vert[k].pos - position) / dist;
 				entity->obj->pbox->vert[k].velocity += vect * ((300.f - dist) * 10.f);
 			}
 		}

@@ -211,7 +211,7 @@ void ARX_MISSILES_Update()
 				if(closerThan(player.pos, pos, 200.f)) {
 					ARX_MISSILES_Kill(i);
 					ARX_BOOMS_Add(&pos);
-					Add3DBoom(&pos);
+					Add3DBoom(pos);
 					DoSphericDamage(&dest, 180.0F, 200.0F, DAMAGE_AREAHALF, DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL);
 					break;
 				}
@@ -219,7 +219,7 @@ void ARX_MISSILES_Update()
 				if(ep && ep->center.y < dest.y) {
 					ARX_MISSILES_Kill(i);
 					ARX_BOOMS_Add(&dest);
-					Add3DBoom(&dest);
+					Add3DBoom(dest);
 					DoSphericDamage(&dest, 180.0F, 200.0F, DAMAGE_AREAHALF, DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL);
 					break;
 				}
@@ -227,7 +227,7 @@ void ARX_MISSILES_Update()
 				if(epp && epp->center.y > dest.y) {
 					ARX_MISSILES_Kill(i);
 					ARX_BOOMS_Add(&dest);
-					Add3DBoom(&dest);
+					Add3DBoom(dest);
 					DoSphericDamage(&dest, 180.0F, 200.0F, DAMAGE_AREAHALF, DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL);
 					break;
 				}
@@ -237,7 +237,7 @@ void ARX_MISSILES_Update()
 				if(EERIELaunchRay3(&orgn, &dest, &hit, tp, 1)) {
 					ARX_MISSILES_Kill(i);
 					ARX_BOOMS_Add(&hit);
-					Add3DBoom(&hit);
+					Add3DBoom(hit);
 					DoSphericDamage(&dest, 180.0F, 200.0F, DAMAGE_AREAHALF, DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL);
 					break;
 				}
@@ -245,7 +245,7 @@ void ARX_MISSILES_Update()
 				if(!EECheckInPoly(&dest) || EEIsUnderWater(dest)) {
 					ARX_MISSILES_Kill(i);
 					ARX_BOOMS_Add(&dest);
-					Add3DBoom(&dest);
+					Add3DBoom(dest);
 					DoSphericDamage(&dest, 180.0F, 200.0F, DAMAGE_AREAHALF, DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL);
 					break;
 				}
@@ -255,7 +255,7 @@ void ARX_MISSILES_Update()
 				if(ici != -1 && ici != missiles[i].owner) {
 					ARX_MISSILES_Kill(i);
 					ARX_BOOMS_Add(&dest);
-					Add3DBoom(&dest);
+					Add3DBoom(dest);
 					DoSphericDamage(&dest, 180.0F, 200.0F, DAMAGE_AREAHALF, DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL);
 					break;
 				}
