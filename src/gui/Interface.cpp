@@ -2016,18 +2016,12 @@ void ArxGame::manageEditorControls() {
 		}
 	}
 
-	// Checks for Object Dragging
-
-		if (( DRAGGING && !PLAYER_MOUSELOOK_ON &&
-			(!GInput->actionPressed(CONTROLS_CUST_MAGICMODE)) &&
-			(DRAGINTER==NULL)
-			)
-			|| // mode system shock
-			( DRAGGING && (config.input.autoReadyWeapon == false) &&
-			(!GInput->actionPressed(CONTROLS_CUST_MAGICMODE)) &&
-			(DRAGINTER==NULL))
-			)
-		{
+		// Checks for Object Dragging
+		if(DRAGGING
+		   && (!PLAYER_MOUSELOOK_ON || !config.input.autoReadyWeapon)
+		   && !GInput->actionPressed(CONTROLS_CUST_MAGICMODE)
+		   && !DRAGINTER
+		) {
 			if(!TakeFromInventory(&STARTDRAG)) {
 				bool bOk = false;
 
