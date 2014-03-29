@@ -5599,23 +5599,23 @@ void ARX_INTERFACE_ManageOpenedBook()
 	}	
 }
 
-//-----------------------------------------------------------------------------
-void ArxGame::drawAllInterfaceFinish()
-{
+void ArxGame::drawAllInterfaceFinish() {
 	currpos = static_cast<long>(INTERFACE_RATIO(50.f));
-	float rrr;
-	rrr=1.f-PULSATE*0.5f;
-
+	
+	float rrr = 1.f - PULSATE * 0.5f;
 	rrr = clamp(rrr, 0.f, 1.f);
 
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	PRECAST_NUM=0;
+	PRECAST_NUM = 0;
 
 	for(size_t i = 0; i < MAX_SPELLS; i++) {
-		if ((spells[i].exist) && (spells[i].caster==0))
-			if (spellicons[spells[i].type].bDuration)
-				ManageSpellIcon(i,rrr,0);
+		if(   spells[i].exist
+		   && spells[i].caster == 0
+		   && spellicons[spells[i].type].bDuration
+		) {
+			ManageSpellIcon(i, rrr, 0);
+		}
 	}
 
 	if (entities.player())
