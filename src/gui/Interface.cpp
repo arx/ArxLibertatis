@@ -2308,16 +2308,16 @@ void ArxGame::managePlayerControls()
 			// Checks WALK_FORWARD Key Status.
 			if(GInput->actionPressed(CONTROLS_CUST_WALKFORWARD)) {
 				float tr=radians(eyeball.angle.getPitch());
-				eyeball.pos.x += -std::sin(tr)*20.f*(float)FD*0.033f;
-				eyeball.pos.z += +std::cos(tr)*20.f*(float)FD*0.033f;
+				eyeball.pos.x += -std::sin(tr) * 20.f * FD * 0.033f;
+				eyeball.pos.z += +std::cos(tr) * 20.f * FD * 0.033f;
 				NOMOREMOVES=1;
 			}
 
 			// Checks WALK_BACKWARD Key Status.
 			if(GInput->actionPressed(CONTROLS_CUST_WALKBACKWARD)) {
 				float tr=radians(eyeball.angle.getPitch());
-				eyeball.pos.x +=  std::sin(tr)*20.f*(float)FD*0.033f;
-				eyeball.pos.z += -std::cos(tr)*20.f*(float)FD*0.033f;
+				eyeball.pos.x +=  std::sin(tr) * 20.f * FD * 0.033f;
+				eyeball.pos.z += -std::cos(tr) * 20.f * FD * 0.033f;
 				NOMOREMOVES=1;
 			}
 
@@ -2327,8 +2327,8 @@ void ArxGame::managePlayerControls()
 				&& !NOMOREMOVES)
 			{
 				float tr=radians(MAKEANGLE(eyeball.angle.getPitch()+90.f));
-				eyeball.pos.x += -std::sin(tr)*10.f*(float)FD*0.033f;
-				eyeball.pos.z += +std::cos(tr)*10.f*(float)FD*0.033f;
+				eyeball.pos.x += -std::sin(tr) * 10.f * FD * 0.033f;
+				eyeball.pos.z += +std::cos(tr) * 10.f * FD * 0.033f;
 				NOMOREMOVES=1;			
 			}
 
@@ -2338,9 +2338,9 @@ void ArxGame::managePlayerControls()
 				&& !NOMOREMOVES)
 			{
 				float tr=radians(MAKEANGLE(eyeball.angle.getPitch()-90.f));
-				eyeball.pos.x += -std::sin(tr)*10.f*(float)FD*0.033f;
+				eyeball.pos.x += -std::sin(tr) * 10.f * FD * 0.033f;
 				//eyeball.pos.y+=FD*0.33f;
-				eyeball.pos.z +=  std::cos(tr)*10.f*(float)FD*0.033f;
+				eyeball.pos.z +=  std::cos(tr) * 10.f * FD * 0.033f;
 				NOMOREMOVES=1;
 			}
 
@@ -2401,7 +2401,7 @@ void ArxGame::managePlayerControls()
 			}
 
 			float t = radians(player.angle.getPitch());
-			multi=5.f*(float)FD*MoveDiv*multi;
+			multi = 5.f * FD * MoveDiv * multi;
 			tm.x += std::sin(t) * multi;
 			tm.z -= std::cos(t) * multi;
 
@@ -2428,7 +2428,7 @@ void ArxGame::managePlayerControls()
 			}
 
 			float t = radians(player.angle.getPitch());
-			multi=10.f*(float)FD*MoveDiv*multi;
+			multi = 10.f * FD * MoveDiv * multi;
 			tm.x -= std::sin(t) * multi;
 			tm.z += std::cos(t) * multi;
 
@@ -2449,7 +2449,7 @@ void ArxGame::managePlayerControls()
 		if(left && !NOMOREMOVES) {
 			CurrFightPos=0;
 			float t = radians(MAKEANGLE(player.angle.getPitch()+90.f));
-			float multi=6.f*(float)FD*MoveDiv;
+			float multi = 6.f * FD * MoveDiv;
 			tm.x -= std::sin(t) * multi;
 			tm.z += std::cos(t) * multi;
 
@@ -2465,7 +2465,7 @@ void ArxGame::managePlayerControls()
 		if(right && !NOMOREMOVES) {
 			CurrFightPos=1;
 			float t = radians(MAKEANGLE(player.angle.getPitch()-90.f));
-			float multi=6.f*(float)FD*MoveDiv;
+			float multi = 6.f * FD * MoveDiv;
 			tm.x -= std::sin(t) * multi;
 			tm.z += std::cos(t) * multi;
 
