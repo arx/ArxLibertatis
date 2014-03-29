@@ -1996,12 +1996,13 @@ void ArxGame::manageEditorControls() {
 
 	// Double Clicked and not already combining.
 	if((EERIEMouseButton & 4) && (COMBINE==NULL)) {
-		long accept_combine=1;
+		bool accept_combine = true;
 
 		if((SecondaryInventory!=NULL) && (InSecondaryInventoryPos(&DANAEMouse))) {
 			Entity * io=(Entity *)SecondaryInventory->io;
 
-			if (io->ioflags & IO_SHOP) accept_combine=0;
+			if(io->ioflags & IO_SHOP)
+				accept_combine = false;
 		}
 
 		if(accept_combine) {
