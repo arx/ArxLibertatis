@@ -4,8 +4,13 @@ matrix:
     - os: linux
       sudo: required
       compiler: gcc
-    - os: osx
-      compiler: clang
+env:
+  global:
+   # The next declration is the encrypted COVERITY_SCAN_TOKEN, created
+   #   via the "travis encrypt" command using the project repo's public key
+   - secure: "ka4pcE7VYGihpJQrFYESvKpr+q1XTtn4z2Nfaw6464fdQgXXbbZF/7GGxiGWkCW1txwrht+sEp65BqKJcWVV4LBxhGC4TvebALNUAmtjVwyaVgIergUiozeoEblQSyN8/Tw5FEqLK/19CGJxNzxkHul6RlpU38OvLCqu4LQhJhA="
+git:
+  depth: 1000
 addons:
   apt:
     packages:
@@ -23,21 +28,23 @@ addons:
       - libqt4-dev
       - libcppunit-dev
       - libglm-dev
-before_install:
-  - if [ "$TRAVIS_OS_NAME" = osx ] ; then brew update ; fi
-  - if [ "$TRAVIS_OS_NAME" = osx ] ; then brew upgrade cmake boost ; fi
-  - if [ "$TRAVIS_OS_NAME" = osx ] ; then brew install zlib freetype sdl2 libepoxy qt5 cppunit glm ; fi
+  coverity_scan:
+    project:
+      name: "arx/ArxLibertatis"
+      description: "ArxLibertatis coverity scan"
+    notification_email: fabianroth64@googlemail.com
+    build_command_prepend: "mkdir build && cd build && cmake --version && cmake .. -DICON_TYPE=none -DUNITY_BUILD=false"
+    build_command: "make -j1"
+    branch_pattern: coverity_scan
 script:
-  - mkdir build
   - cd build
-  - cmake --version
-  - cmake .. -Werror=dev -Werror=deprecated -DCONTINUOUS_INTEGRATION=1 -DICON_TYPE=none
-  - make -j1
-  - make check
+  - ls -la cov-int
+  - cat cov-int/scm_log.txt
 branches:
   only:
     - master
     - travis
+    - coverity_scan
 notifications:
   irc:
     channels:
