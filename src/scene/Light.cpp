@@ -673,7 +673,7 @@ void ApplyTileLights(EERIEPOLY * ep, short x, short y)
 
 	for(size_t j = 0; j < nbvert; j++) {
 
-		if(tls->el.size() == 0) {
+		if(tls->el.empty()) {
 			ep->tv[j].color = ep->v[j].color;
 			continue;
 		}
