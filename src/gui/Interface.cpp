@@ -5618,34 +5618,31 @@ void ArxGame::drawAllInterfaceFinish() {
 		}
 	}
 
-	if (entities.player())
-	{
-		for (int i=0;i<entities.player()->nb_spells_on;i++)
-		{
-			if (spells[entities.player()->spells_on[i]].caster!=0)
-				if (spellicons[spells[i].type].bDuration)
-					ManageSpellIcon(entities.player()->spells_on[i],rrr,1);
+	if(entities.player()) {
+		for(int i = 0; i < entities.player()->nb_spells_on; i++) {
+			if(   spells[entities.player()->spells_on[i]].caster != 0
+			   && spellicons[spells[i].type].bDuration
+			) {
+				ManageSpellIcon(entities.player()->spells_on[i], rrr, 1);
+			}
 		}
 	}
 
-	if (!(player.Interface & INTER_INVENTORYALL) && !(player.Interface & INTER_MAP))
-	{
+	if(!(player.Interface & INTER_INVENTORYALL) && !(player.Interface & INTER_MAP)) {
 		for(size_t i = 0; i < MAX_PRECAST; i++) {
-			PRECAST_NUM=i;
+			PRECAST_NUM = i;
 
-			if (Precast[i].typ!=-1)
-			{
-				float val=rrr;
+			if(Precast[i].typ!=-1) {
+				float val = rrr;
 
-				if ((Precast[i].launch_time>0) &&(float(arxtime) >= Precast[i].launch_time))
-				{
-					float tt=(float(arxtime) - Precast[i].launch_time)*( 1.0f / 1000 );
+				if(Precast[i].launch_time > 0 && (float(arxtime) >= Precast[i].launch_time)) {
+					float tt = (float(arxtime) - Precast[i].launch_time) * (1.0f/1000);
 
-					if (tt>1.f) tt=1.f;
+					if(tt > 1.f)
+						tt = 1.f;
 
-					val*=(1.f-tt);
+					val *= (1.f - tt);
 				}
-
 				ManageSpellIcon(Precast[i].typ,val,2);
 			}
 		}
