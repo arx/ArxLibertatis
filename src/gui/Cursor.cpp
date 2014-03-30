@@ -175,8 +175,10 @@ long Manage3DCursor(long flags) {
 	objcenter.z = minoff.z + (maxoff.z - minoff.z) * 0.5f;
 
 	for(size_t i = 0; i < io->obj->vertexlist.size(); i++) {
-		maxdist = std::max(maxdist, glm::distance(Vec2f(objcenter.x, objcenter.z),
-						   Vec2f(io->obj->vertexlist[i].v.x, io->obj->vertexlist[i].v.z)) - 4.f);
+		const EERIE_VERTEX & vert = io->obj->vertexlist[i];
+		
+		float dist = glm::distance(Vec2f(objcenter.x, objcenter.z), Vec2f(vert.v.x, vert.v.z)) - 4.f;
+		maxdist = std::max(maxdist, dist);
 	}
 
 	if(io->obj->pbox) {
