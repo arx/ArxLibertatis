@@ -341,7 +341,8 @@ long CURCURTIME=0;
 long CURCURPOS=0;
 long CURCURDELAY=70;
 
-void ARX_INTERFACE_RenderCursorInternal(bool flag) {
+
+bool SelectSpellTargetCursorRender() {
 	
 	if(   !SPECIAL_DRAGINTER_RENDER
 	   && LOOKING_FOR_SPELL_TARGET
@@ -384,9 +385,18 @@ void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 		
 		EERIEDrawBitmap(POSX - fTexSizeX * 0.5f, POSY - surf->m_dwHeight * 0.5f, fTexSizeX, fTexSizeY, 0.f, surf, Color::white);
 		
+		return true;
+	}
+	return false;
+}
+
+
+void ARX_INTERFACE_RenderCursorInternal(bool flag) {
+	
+	if(SelectSpellTargetCursorRender()) {
 		return;
 	}
-
+	
 	if(flag || (!BLOCK_PLAYER_CONTROLS && !PLAYER_INTERFACE_HIDE_COUNT)) {
 		if(!SPECIAL_DRAGINTER_RENDER)
 			GRenderer->SetCulling(Renderer::CullNone);
