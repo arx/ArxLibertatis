@@ -684,7 +684,7 @@ bool ARX_Menu_Render() {
 	}
 
 	if(ARXmenu.currentmode != AMCM_CREDITS)
-		ARX_INTERFACE_RenderCursor(1);
+		ARX_INTERFACE_RenderCursor(true);
 
 	if(ARXmenu.currentmode == AMCM_NEWQUEST) {
 		if(ProcessFadeInOut(bFadeInOut, 0.1f)) {

@@ -20,6 +20,6 @@
 #ifndef ARX_GUI_CURSOR_H
 #define ARX_GUI_CURSOR_H
 
-void ARX_INTERFACE_RenderCursor(long flag = 0);
+void ARX_INTERFACE_RenderCursor(bool flag = false);
 
 #endif // ARX_GUI_CURSOR_H

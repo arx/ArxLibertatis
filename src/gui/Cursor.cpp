@@ -341,7 +341,7 @@ long CURCURTIME=0;
 long CURCURPOS=0;
 long CURCURDELAY=70;
 
-void ARX_INTERFACE_RenderCursorInternal(long flag) {
+void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 	
 	if(   !SPECIAL_DRAGINTER_RENDER
 	   && LOOKING_FOR_SPELL_TARGET
@@ -703,7 +703,7 @@ void ARX_INTERFACE_RenderCursorInternal(long flag) {
 	}
 }
 
-void ARX_INTERFACE_RenderCursor(long flag)
+void ARX_INTERFACE_RenderCursor(bool flag)
 {
 	if (!SPECIAL_DRAGINTER_RENDER)
 	{
