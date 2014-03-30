@@ -51,6 +51,68 @@
 
 #include "window/RenderWindow.h"
 
+struct EntityFlagName {
+	EntityFlags flag;
+	const char * name;
+};
+
+const EntityFlagName EntityFlagNames[] = {
+	{IO_UNDERWATER          , "UNDERWATER"},
+	{IO_FREEZESCRIPT        , "FREEZESCRIPT"},
+	{IO_ITEM                , "ITEM"},
+	{IO_NPC                 , "NPC"},
+	{IO_FIX                 , "FIX"},
+	{IO_NOSHADOW            , "NOSHADOW"},
+	{IO_CAMERA              , "CAMERA"},
+	{IO_MARKER              , "MARKER"},
+	{IO_ICONIC              , "ICONIC"},
+	{IO_NO_COLLISIONS       , "NO_COLLISIONS"},
+	{IO_GOLD                , "GOLD"},
+	{IO_INVULNERABILITY     , "INVULNERABILITY"},
+	{IO_NO_PHYSICS_INTERPOL , "NO_PHYSICS_INTERPOL"},
+	{IO_HIT                 , "HIT"},
+	{IO_PHYSICAL_OFF        , "PHYSICAL_OFF"},
+	{IO_MOVABLE             , "MOVABLE"},
+	{IO_UNIQUE              , "UNIQUE"},
+	{IO_SHOP                , "SHOP"},
+	{IO_BLACKSMITH          , "BLACKSMITH"},
+	{IO_NOSAVE              , "NOSAVE"},
+	{IO_FORCEDRAW           , "FORCEDRAW"},
+	{IO_FIELD               , "FIELD"},
+	{IO_BUMP                , "BUMP"},
+	{IO_ANGULAR             , "ANGULAR"},
+	{IO_BODY_CHUNK          , "BODY_CHUNK"},
+	{IO_ZMAP                , "ZMAP"},
+	{IO_INVERTED            , "INVERTED"},
+	{IO_JUST_COLLIDE        , "JUST_COLLIDE"},
+	{IO_FIERY               , "FIERY"},
+	{IO_NO_NPC_COLLIDE      , "NO_NPC_COLLIDE"},
+	{IO_CAN_COMBINE         , "CAN_COMBINE"}
+};
+
+std::string debugPrintEntityFlags(EntityFlags flags) {
+	
+	std::stringstream ss;
+	for(size_t i = 0; i < ARRAY_SIZE(EntityFlagNames); i++) {
+		ss << ((EntityFlagNames[i].flag & flags) ? "▣" : "□") << " " << EntityFlagNames[i].name << "\n";
+	}
+	
+	return ss.str();
+}
+
+void drawMultilineText(Vec2i originPos, const std::string & lines) {
+	
+	int lineHeight = hFontDebug->getLineHeight();
+	int lineOffset = 0;
+	
+	std::stringstream ss(lines);
+	std::string line;
+	while(std::getline(ss, line, '\n')){
+		hFontDebug->draw(originPos.x, originPos.y + lineOffset, line, Color::white);
+		lineOffset += lineHeight;
+	}
+}
+
 std::string LAST_FAILED_SEQUENCE = "none";
 
 static long LASTfpscount = 0;
@@ -177,6 +239,8 @@ void ShowInfoText() {
 		io = entities[LastSelectedIONum];
 
 		if(io) {
+			drawMultilineText(Vec2i(10, 400), debugPrintEntityFlags(io->ioflags));
+			
 			std::stringstream ss;
 			
 			ss << boost::format("%4.0f %4.0f %4.0f - %4.0f %4.0f %4.0f -- %3.0f %d/%ld targ %ld beh %ld\n")
@@ -187,7 +251,7 @@ void ShowInfoText() {
 			% io->_npcdata->pathfind.listnb
 			% io->_npcdata->pathfind.truetarget
 			% (long)io->_npcdata->behavior;
-				
+			
 			if(io->ioflags & IO_NPC) {
 				ss << boost::format("Life %4.0f/%4.0f Mana %4.0f/%4.0f Poisoned %3.1f\n")
 				% io->_npcdata->life
@@ -223,15 +287,7 @@ void ShowInfoText() {
 				% io->poisonous_count;
 			}
 		
-			Vec2i originPos(10, 420);
-			int lineHeight = hFontDebug->getLineHeight();
-			int lineOffset = 0;
-			
-			std::string line;
-			while(std::getline(ss, line, '\n')){
-				hFontDebug->draw(originPos.x, originPos.y + lineOffset, line, Color::white);
-				lineOffset += lineHeight;
-			}
+			drawMultilineText(Vec2i(10, 300), ss.str());
 		}
 	}
 	
