@@ -182,11 +182,13 @@ long Manage3DCursor(long flags) {
 	}
 
 	if(io->obj->pbox) {
+		Vec2f tmpVert(io->obj->pbox->vert[0].initpos.x, io->obj->pbox->vert[0].initpos.z);
+		
 		for(int i = 1; i < io->obj->pbox->nb_physvert; i++) {
-			maxdist = std::max(maxdist, glm::distance(Vec2f(io->obj->pbox->vert[0].initpos.x,
-								io->obj->pbox->vert[0].initpos.z),
-								Vec2f(io->obj->pbox->vert[i].initpos.x,
-							   io->obj->pbox->vert[i].initpos.z)) + 14.f);
+			const PHYSVERT & physVert = io->obj->pbox->vert[i];
+			
+			float dist = glm::distance(tmpVert, Vec2f(physVert.initpos.x, physVert.initpos.z)) + 14.f;
+			maxdist = std::max(maxdist, dist);
 		}
 	}
 
