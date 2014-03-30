@@ -856,7 +856,7 @@ static void RestoreIOInitPos(Entity * io) {
 		return;
 
 	{
-		ARX_INTERACTIVE_Teleport(io, &io->initpos);
+		ARX_INTERACTIVE_Teleport(io, io->initpos);
 		io->pos = io->lastpos = io->initpos;
 		io->move = Vec3f_ZERO;
 		io->lastmove = Vec3f_ZERO;
@@ -941,7 +941,7 @@ void RestoreInitialIOStatusOfIO(Entity * io)
 		io->room = -1;
 		io->room_flags = 1;
 		RestoreIOInitPos(io);
-		ARX_INTERACTIVE_Teleport(io, &io->initpos);
+		ARX_INTERACTIVE_Teleport(io, io->initpos);
 		io->animBlend.lastanimtime = 1;
 		io->secretvalue = -1;
 
@@ -1250,7 +1250,7 @@ void ComputeVVPos(Entity * io)
 	}
 }
 
-void ARX_INTERACTIVE_Teleport(Entity * io, Vec3f * target, bool flag) {
+void ARX_INTERACTIVE_Teleport(Entity * io, const Vec3f & target, bool flag) {
 	
 	if(!io)
 		return;
@@ -1260,7 +1260,7 @@ void ARX_INTERACTIVE_Teleport(Entity * io, Vec3f * target, bool flag) {
 	io->room = -1;
 	
 	if(io == entities.player()) {
-		moveto = player.pos = *target + player.baseOffset();
+		moveto = player.pos = target + player.baseOffset();
 	}
 	
 	// In case it is being dragged... (except for drag teleport update)
@@ -1272,8 +1272,8 @@ void ARX_INTERACTIVE_Teleport(Entity * io, Vec3f * target, bool flag) {
 		io->_npcdata->vvpos = io->pos.y;
 	}
 	
-	Vec3f translate = *target - io->pos;
-	io->lastpos = io->physics.cyl.origin = io->pos = *target;
+	Vec3f translate = target - io->pos;
+	io->lastpos = io->physics.cyl.origin = io->pos = target;
 	
 	if(io->obj) {
 		if(io->obj->pbox) {

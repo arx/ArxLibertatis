@@ -596,7 +596,7 @@ public:
 			}
 			
 			if(teleport_player) {
-				ARX_INTERACTIVE_Teleport(entities.player(), &pos);
+				ARX_INTERACTIVE_Teleport(entities.player(), pos);
 				return Success;
 			}
 			
@@ -604,7 +604,7 @@ public:
 				if(io->show != SHOW_FLAG_HIDDEN && io->show != SHOW_FLAG_MEGAHIDE) {
 					io->show = SHOW_FLAG_IN_SCENE;
 				}
-				ARX_INTERACTIVE_Teleport(io, &pos);
+				ARX_INTERACTIVE_Teleport(io, pos);
 			}
 			
 		} else {
@@ -617,13 +617,13 @@ public:
 			if(teleport_player) {
 				Vec3f pos;
 				if(GetItemWorldPosition(io, &pos)) {
-					ARX_INTERACTIVE_Teleport(entities.player(), &pos);
+					ARX_INTERACTIVE_Teleport(entities.player(), pos);
 				}
 			} else if(!(io->ioflags & IO_NPC) || io->_npcdata->life > 0) {
 				if(io->show != SHOW_FLAG_HIDDEN && io->show != SHOW_FLAG_MEGAHIDE) {
 					io->show = SHOW_FLAG_IN_SCENE;
 				}
-				ARX_INTERACTIVE_Teleport(io, &io->initpos);
+				ARX_INTERACTIVE_Teleport(io, io->initpos);
 			}
 		}
 		

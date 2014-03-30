@@ -249,7 +249,7 @@ long Manage3DCursor(bool simulate) {
 
 	if(iterating == -1 && closerThan(player.pos, pos, 300.f)) {
 		if(simulate) {
-			ARX_INTERACTIVE_Teleport(io, &pos, true);
+			ARX_INTERACTIVE_Teleport(io, pos, true);
 
 			io->gameFlags &= ~GFLAG_NOCOMPUTATION;
 
@@ -300,7 +300,7 @@ long Manage3DCursor(bool simulate) {
 			} else {
 				ARX_PLAYER_Remove_Invisibility();
 				ARX_SOUND_PlayInterface(SND_INVSTD);
-				ARX_INTERACTIVE_Teleport(io, &pos, true);
+				ARX_INTERACTIVE_Teleport(io, pos, true);
 
 				io->angle.setYaw(temp.getYaw());
 				io->angle.setPitch(270.f - temp.getPitch());
