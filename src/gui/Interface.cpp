@@ -2762,17 +2762,16 @@ void ArxGame::managePlayerControls()
 	if(GInput->actionNowPressed(CONTROLS_CUST_BOOK))
 		ARX_INTERFACE_BookOpenClose(0);
 
-	//	Check For Combat Mode ON/OFF
-	if (	(EERIEMouseButton & 1)
-		&&	(!(player.Interface & INTER_COMBATMODE))
-		&&	(!(ARX_MOUSE_OVER & ARX_MOUSE_OVER_BOOK))
-		&&	(!SpecialCursor)
-		&&  (PLAYER_MOUSELOOK_ON)
-		&&	(DRAGINTER==NULL)
-		&&	(!InInventoryPos(DANAEMouse)
-		&& (config.input.autoReadyWeapon))
-		)
-	{
+	// Check For Combat Mode ON/OFF
+	if(   (EERIEMouseButton & 1)
+	   && !(player.Interface & INTER_COMBATMODE)
+	   && !(ARX_MOUSE_OVER & ARX_MOUSE_OVER_BOOK)
+	   && !SpecialCursor
+	   && PLAYER_MOUSELOOK_ON
+	   && !DRAGINTER
+	   && !InInventoryPos(DANAEMouse)
+	   && config.input.autoReadyWeapon
+	) {
 		if(!(LastMouseClick & 1)) {
 			COMBAT_MODE_ON_START_TIME = (unsigned long)(arxtime);
 		} else {
