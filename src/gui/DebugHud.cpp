@@ -24,6 +24,8 @@
 #include <iomanip>
 #include <deque>
 
+#include "boost/format.hpp"
+
 #include "core/Core.h"
 #include "core/Application.h"
 #include "core/Version.h"
@@ -166,58 +168,69 @@ void ShowInfoText() {
 			player.physics.velocity.x, player.physics.velocity.y, player.physics.velocity.z, slope);
 	hFontDebug->draw(70, 128, tex, Color::white);
 	
+	sprintf(tex, "Player: Life %4.0f/%4.0f Mana %4.0f/%4.0f Poisoned %3.1f Hunger %4.1f",
+			player.life, player.maxlife, player.mana, player.maxmana, player.poison, player.hunger);
+	hFontDebug->draw(70, 138, tex, Color::white);
+	
+	
 	if(ValidIONum(LastSelectedIONum)) {
 		io = entities[LastSelectedIONum];
 
 		if(io) {
-			if(io == entities.player()) {
-				sprintf(tex, "%4.0f %4.0f %4.0f - %4.0f %4.0f %4.0f -- %3.0f %d/%ld targ %ld beh %ld",
-						io->pos.x, io->pos.y, io->pos.z,
-						io->move.x, io->move.y, io->move.z,
-						io->_npcdata->moveproblem, io->_npcdata->pathfind.listpos, io->_npcdata->pathfind.listnb,
-						io->_npcdata->pathfind.truetarget, (long)io->_npcdata->behavior);
-				hFontDebug->draw(170, 420, tex, Color::white);
+			std::stringstream ss;
+			
+			ss << boost::format("%4.0f %4.0f %4.0f - %4.0f %4.0f %4.0f -- %3.0f %d/%ld targ %ld beh %ld\n")
+			% io->pos.x % io->pos.y % io->pos.z
+			% io->move.x % io->move.y % io->move.z
+			% io->_npcdata->moveproblem
+			% io->_npcdata->pathfind.listpos
+			% io->_npcdata->pathfind.listnb
+			% io->_npcdata->pathfind.truetarget
+			% (long)io->_npcdata->behavior;
+				
+			if(io->ioflags & IO_NPC) {
+				ss << boost::format("Life %4.0f/%4.0f Mana %4.0f/%4.0f Poisoned %3.1f\n")
+				% io->_npcdata->life
+				% io->_npcdata->maxlife
+				% io->_npcdata->mana
+				% io->_npcdata->maxmana
+				% io->_npcdata->poisonned;
 
-				sprintf(tex, "Life %4.0f/%4.0f Mana %4.0f/%4.0f Poisoned %3.1f Hunger %4.1f",
-						player.life, player.maxlife, player.mana, player.maxmana, player.poison, player.hunger);
-				hFontDebug->draw(170, 320, tex, Color::white);
-			} else {
-				if(io->ioflags & IO_NPC) {
-					sprintf(tex, "%4.0f %4.0f %4.0f - %4.0f %4.0f %4.0f -- %3.0f %d/%ld targ %ld beh %ld",
-							io->pos.x, io->pos.y, io->pos.z,
-							io->move.x, io->move.y, io->move.z,
-							io->_npcdata->moveproblem, io->_npcdata->pathfind.listpos, io->_npcdata->pathfind.listnb,
-							io->_npcdata->pathfind.truetarget, (long)io->_npcdata->behavior);
-					hFontDebug->draw(170, 420, tex, Color::white);
+				ss << boost::format("AC %3.0f Absorb %3.0f\n")
+				% ARX_INTERACTIVE_GetArmorClass(io)
+				% io->_npcdata->absorb;
 
-					sprintf(tex, "Life %4.0f/%4.0f Mana %4.0f/%4.0f Poisoned %3.1f",
-							io->_npcdata->life, io->_npcdata->maxlife, io->_npcdata->mana,
-							io->_npcdata->maxmana, io->_npcdata->poisonned);
-					hFontDebug->draw(170, 320, tex, Color::white);
-
-					sprintf(tex, "AC %3.0f Absorb %3.0f",
-							ARX_INTERACTIVE_GetArmorClass(io), io->_npcdata->absorb);
-					hFontDebug->draw(170, 335, tex, Color::white);
-
-					if(io->_npcdata->pathfind.flags & PATHFIND_ALWAYS) {
-						hFontDebug->draw(170, 360, "PF_ALWAYS", Color::white);
-					} else {
-						sprintf(tex, "PF_%ld", (long)io->_npcdata->pathfind.flags);
-						hFontDebug->draw(170, 360, tex, Color::white);
-					}
+				if(io->_npcdata->pathfind.flags & PATHFIND_ALWAYS) {
+					ss << "PF_ALWAYS\n";
+				} else {
+					ss << boost::format("PF_%ld\n") % (long)io->_npcdata->pathfind.flags;
 				}
+			}
 
-				if(io->ioflags & IO_FIX) {
-					sprintf(tex, "Durability %4.0f/%4.0f Poisonous %3d count %d",
-							io->durability, io->max_durability, io->poisonous, io->poisonous_count);
-					hFontDebug->draw(170, 320, tex, Color::white);
-				}
+			if(io->ioflags & IO_FIX) {
+				ss << boost::format("Durability %4.0f/%4.0f Poisonous %3d count %d\n")
+				% io->durability
+				% io->max_durability
+				% io->poisonous
+				% io->poisonous_count;
+			}
 
-				if(io->ioflags & IO_ITEM) {
-					sprintf(tex, "Durability %4.0f/%4.0f Poisonous %3d count %d",
-							io->durability, io->max_durability, io->poisonous, io->poisonous_count);
-					hFontDebug->draw(170, 320, tex, Color::white);
-				}
+			if(io->ioflags & IO_ITEM) {
+				ss << boost::format("Durability %4.0f/%4.0f Poisonous %3d count %d\n")
+				% io->durability
+				% io->max_durability
+				% io->poisonous
+				% io->poisonous_count;
+			}
+		
+			Vec2i originPos(10, 420);
+			int lineHeight = hFontDebug->getLineHeight();
+			int lineOffset = 0;
+			
+			std::string line;
+			while(std::getline(ss, line, '\n')){
+				hFontDebug->draw(originPos.x, originPos.y + lineOffset, line, Color::white);
+				lineOffset += lineHeight;
 			}
 		}
 	}
