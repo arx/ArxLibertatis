@@ -238,31 +238,37 @@ void ShowInfoText() {
 	if(ValidIONum(LastSelectedIONum)) {
 		io = entities[LastSelectedIONum];
 
-		if(io) {
-			drawMultilineText(Vec2i(10, 400), debugPrintEntityFlags(io->ioflags));
-			
+		if(io) {		
 			std::stringstream ss;
 			
-			ss << boost::format("%4.0f %4.0f %4.0f - %4.0f %4.0f %4.0f -- %3.0f %d/%ld targ %ld beh %ld\n")
+			ss << boost::format("%4.0f %4.0f %4.0f - %4.0f %4.0f %4.0f\n")
 			% io->pos.x % io->pos.y % io->pos.z
-			% io->move.x % io->move.y % io->move.z
-			% io->_npcdata->moveproblem
-			% io->_npcdata->pathfind.listpos
-			% io->_npcdata->pathfind.listnb
-			% io->_npcdata->pathfind.truetarget
-			% (long)io->_npcdata->behavior;
+			% io->move.x % io->move.y % io->move.z;
 			
 			if(io->ioflags & IO_NPC) {
-				ss << boost::format("Life %4.0f/%4.0f Mana %4.0f/%4.0f Poisoned %3.1f\n")
-				% io->_npcdata->life
-				% io->_npcdata->maxlife
-				% io->_npcdata->mana
-				% io->_npcdata->maxmana
-				% io->_npcdata->poisonned;
+				IO_NPCDATA * npcData = io->_npcdata;
+				
+				ss << boost::format("Life %4.0f/%4.0f\n")
+				% npcData->life
+				% npcData->maxlife;
+				
+				ss << boost::format("Mana %4.0f/%4.0f\n")
+				% npcData->mana
+				% npcData->maxmana;
+				
+				ss << boost::format("Poisoned %3.1f\n")
+				% npcData->poisonned;
 
-				ss << boost::format("AC %3.0f Absorb %3.0f\n")
+				ss << boost::format("ArmorClass %3.0f\nAbsorb %3.0f\n")
 				% ARX_INTERACTIVE_GetArmorClass(io)
-				% io->_npcdata->absorb;
+				% npcData->absorb;
+				
+				ss << boost::format("Moveproblem %3.0f %d/%ld targ %ld\nbehavior %ld\n")
+				% npcData->moveproblem
+				% npcData->pathfind.listpos
+				% npcData->pathfind.listnb
+				% npcData->pathfind.truetarget
+				% npcData->behavior;
 
 				if(io->_npcdata->pathfind.flags & PATHFIND_ALWAYS) {
 					ss << "PF_ALWAYS\n";
@@ -271,23 +277,17 @@ void ShowInfoText() {
 				}
 			}
 
-			if(io->ioflags & IO_FIX) {
+			if(io->ioflags & (IO_FIX | IO_ITEM)) {
 				ss << boost::format("Durability %4.0f/%4.0f Poisonous %3d count %d\n")
 				% io->durability
 				% io->max_durability
 				% io->poisonous
 				% io->poisonous_count;
 			}
-
-			if(io->ioflags & IO_ITEM) {
-				ss << boost::format("Durability %4.0f/%4.0f Poisonous %3d count %d\n")
-				% io->durability
-				% io->max_durability
-				% io->poisonous
-				% io->poisonous_count;
-			}
-		
+			
 			drawMultilineText(Vec2i(10, 300), ss.str());
+			
+			drawMultilineText(Vec2i(10, 450), debugPrintEntityFlags(io->ioflags));
 		}
 	}
 	
