@@ -92,7 +92,7 @@ using std::string;
 extern E_ARX_STATE_MOUSE eMouseState;
 extern float InventoryX;
 extern float InventoryDir;
-extern long PLAYER_INTERFACE_HIDE_COUNT;
+extern bool PLAYER_INTERFACE_HIDE_COUNT;
 extern bool	DRAGGING;
 
 extern bool TRUE_PLAYER_MOUSELOOK_ON;

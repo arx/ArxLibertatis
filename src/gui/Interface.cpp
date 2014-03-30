@@ -241,7 +241,7 @@ long				SMOOTHSLID=0;
 long				currpos=50;
 bool				DRAGGING = false;
 long				INVERTMOUSE=0;
-long				PLAYER_INTERFACE_HIDE_COUNT=0;
+bool				PLAYER_INTERFACE_HIDE_COUNT = false;
 long				MAGICMODE=-1;
 long				SpecialCursor=0;
 long				FLYING_OVER		= 0;
@@ -2911,7 +2911,7 @@ void ArxGame::managePlayerControls()
 void ARX_INTERFACE_Reset()
 {
 	SMOOTHSLID=0;
-	PLAYER_INTERFACE_HIDE_COUNT=0;
+	PLAYER_INTERFACE_HIDE_COUNT = false;
 	BLOCK_PLAYER_CONTROLS = false;
 	SLID_VALUE=0;
 	CINEMASCOPE=0;
@@ -2962,13 +2962,10 @@ void ARX_INTERFACE_PlayerInterfaceModify(long showhide,long smooth)
 	}
 
 	if(showhide)
-		PLAYER_INTERFACE_HIDE_COUNT = 0;
+		PLAYER_INTERFACE_HIDE_COUNT = false;
 	else
-		PLAYER_INTERFACE_HIDE_COUNT = 1;
-
-	if(PLAYER_INTERFACE_HIDE_COUNT < 0)
-		PLAYER_INTERFACE_HIDE_COUNT = 0;
-
+		PLAYER_INTERFACE_HIDE_COUNT = true;
+	
 	if(smooth) {
 		if(showhide)
 			SMOOTHSLID = -1;
