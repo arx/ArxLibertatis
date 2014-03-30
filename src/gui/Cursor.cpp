@@ -61,7 +61,7 @@ extern float STARTED_ANGLE;
 long SPECIAL_DRAGINTER_RENDER=0;
 long CANNOT_PUT_IT_HERE=0;
 
-long Manage3DCursor(long flags) {
+long Manage3DCursor(bool simulate) {
 
 	if(BLOCK_PLAYER_CONTROLS)
 		return 0;
@@ -248,7 +248,7 @@ long Manage3DCursor(long flags) {
 	}
 
 	if(iterating == -1 && closerThan(player.pos, pos, 300.f)) {
-		if(flags & 1) {
+		if(simulate) {
 			ARX_INTERACTIVE_Teleport(io, &pos, true);
 
 			io->gameFlags &= ~GFLAG_NOCOMPUTATION;
@@ -436,7 +436,7 @@ void ARX_INTERFACE_RenderCursorInternal(long flag) {
 			   && !InInventoryPos(&DANAEMouse)
 			   && !(ARX_MOUSE_OVER & ARX_MOUSE_OVER_BOOK)
 			) {
-				if(Manage3DCursor(1) == 0)
+				if(Manage3DCursor(true) == 0)
 					CANNOT_PUT_IT_HERE = -1;
 
 				if(SPECIAL_DRAGINTER_RENDER) {

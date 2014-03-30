@@ -129,7 +129,7 @@ extern void InitTileLights();
 //! Hide the quick save indicator
 static void hideQuickSaveIcon();
 
-long Manage3DCursor(long flags); // flags & 1 == simulation
+long Manage3DCursor(bool simulate);
 long IN_BOOK_DRAW=0;
 
 extern long LastSelectedIONum;
@@ -1814,7 +1814,7 @@ void ArxGame::manageEditorControls() {
 				) {
 					//Put object in fromt of player
 					
-					long res = Manage3DCursor(0);
+					long res = Manage3DCursor(false);
 					// Throw Object
 					if(res==0) {
 						Entity * io=DRAGINTER;
