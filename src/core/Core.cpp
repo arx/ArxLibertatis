@@ -689,7 +689,7 @@ void runGame() {
 //   Returns IO under cursor, be it in inventories or in scene
 //   Returns NULL if no IO under cursor
 //*************************************************************************************
-Entity * FlyingOverObject(Vec2s * pos)
+Entity * FlyingOverObject(const Vec2s & pos)
 {
 	Entity* io = NULL;
 

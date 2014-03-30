@@ -133,7 +133,7 @@ long GetNumberInterWithOutScriptLoad();
 
 void UnlinkAllLinkedObjects();
 long IsCollidingAnyInter(float x, float y, float z, Vec3f * size);
-Entity * GetFirstInterAtPos(Vec2s * pos, long flag = 0, Vec3f * _pRef = NULL, Entity ** _pTable = NULL, int * _pnNbInTable = NULL);
+Entity * GetFirstInterAtPos(const Vec2s & pos, long flag = 0, Vec3f * _pRef = NULL, Entity ** _pTable = NULL, int * _pnNbInTable = NULL);
 
 /*!
  * Adds an Interactive Object to the Scene
@@ -148,7 +148,7 @@ Entity * AddFix(const res::path & classPath, EntityInstance instance = -1, AddIn
 
 void UpdateCameras();
 
-Entity * InterClick(Vec2s * pos);
+Entity * InterClick(const Vec2s & pos);
  
 void UpdateInter();
 void RenderInter();

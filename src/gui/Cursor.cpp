@@ -443,7 +443,7 @@ void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 
 			if(   DANAEMouse.y > drop_miny
 			   && DRAGINTER
-			   && !InInventoryPos(&DANAEMouse)
+			   && !InInventoryPos(DANAEMouse)
 			   && !(ARX_MOUSE_OVER & ARX_MOUSE_OVER_BOOK)
 			) {
 				if(Manage3DCursor(true) == 0)
@@ -641,14 +641,14 @@ void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 							if((DRAGINTER->ioflags & IO_ITEM) && DRAGINTER->_itemdata->count != 1)
 								ARX_INTERFACE_DrawNumber(mx + 2.f, my + 13.f, DRAGINTER->_itemdata->count, 3, Color::white);
 						} else {
-							if((InInventoryPos(&DANAEMouse) || InSecondaryInventoryPos(&DANAEMouse)) || CANNOT_PUT_IT_HERE != -1) {
+							if((InInventoryPos(DANAEMouse) || InSecondaryInventoryPos(DANAEMouse)) || CANNOT_PUT_IT_HERE != -1) {
 								EERIEDrawBitmap(mx, my, fTexSizeX, fTexSizeY, .00001f, tc, color);
 							}
 						}
 
 						//cross not over inventory icon
 						if(CANNOT_PUT_IT_HERE && (eMouseState != MOUSE_IN_INVENTORY_ICON)) {
-							if(!InInventoryPos(&DANAEMouse) && !InSecondaryInventoryPos(&DANAEMouse) && !ARX_INTERFACE_MouseInBook()) {
+							if(!InInventoryPos(DANAEMouse) && !InSecondaryInventoryPos(DANAEMouse) && !ARX_INTERFACE_MouseInBook()) {
 								TextureContainer * tcc = Movable;
 
 								if(CANNOT_PUT_IT_HERE == -1)

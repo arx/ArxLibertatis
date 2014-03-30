@@ -1642,9 +1642,9 @@ void ArxGame::render() {
 				) {
 					bookclick = DANAEMouse;
 				}
-			} else if(InSecondaryInventoryPos(&DANAEMouse)) {
+			} else if(InSecondaryInventoryPos(DANAEMouse)) {
 				ARX_MOUSE_OVER |= ARX_MOUSE_OVER_INVENTORY_2;
-			} else if(InPlayerInventoryPos(&DANAEMouse)) {
+			} else if(InPlayerInventoryPos(DANAEMouse)) {
 				ARX_MOUSE_OVER |= ARX_MOUSE_OVER_INVENTORY;
 			}
 		}
@@ -1658,7 +1658,7 @@ void ArxGame::render() {
 				   && !(ARX_MOUSE_OVER & ARX_MOUSE_OVER_BOOK)
 				   && eMouseState != MOUSE_IN_NOTE
 				) {
-					FlyingOverIO = FlyingOverObject(&DANAEMouse);
+					FlyingOverIO = FlyingOverObject(DANAEMouse);
 				} else {
 					FlyingOverIO = NULL;
 				}
@@ -1797,13 +1797,13 @@ void ArxGame::update2DFX()
 				ees2dlv.y = checked_range_cast<short>(ltvv.p.y);
 
 				if(!bComputeIO) {
-					GetFirstInterAtPos(&ees2dlv, 2, &ee3dlv, pTableIO, &nNbInTableIO);
+					GetFirstInterAtPos(ees2dlv, 2, &ee3dlv, pTableIO, &nNbInTableIO);
 					bComputeIO = true;
 				}
 
 				if(ltvv.p.z > fZFar ||
 					EERIELaunchRay3(&ACTIVECAM->orgTrans.pos, &ee3dlv, &hit, tp, 1) ||
-					GetFirstInterAtPos(&ees2dlv, 3, &ee3dlv, pTableIO, &nNbInTableIO )
+					GetFirstInterAtPos(ees2dlv, 3, &ee3dlv, pTableIO, &nNbInTableIO )
 					)
 				{
 					el->temp-=temp_increase*2.f;

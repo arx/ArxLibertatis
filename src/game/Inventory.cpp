@@ -169,7 +169,7 @@ extern Vec2s DANAEMouse;
 
 extern Rect g_size;
 
-static Entity * GetInventoryObj(Vec2s * pos) {
+static Entity * GetInventoryObj(const Vec2s & pos) {
 	
 	float fCenterX	= g_size.center().x - INTERFACE_RATIO(320) + INTERFACE_RATIO(35);
 	float fSizY		= g_size.height() - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY);
@@ -178,8 +178,8 @@ static Entity * GetInventoryObj(Vec2s * pos) {
 	int iPosY = checked_range_cast<int>(fSizY);
 
 	if(player.Interface & INTER_INVENTORY) {
-		long tx = pos->x - iPosX; //-4
-		long ty = pos->y - iPosY; //-2
+		long tx = pos.x - iPosX; //-4
+		long ty = pos.y - iPosY; //-2
 
 		if(tx >= 0 && ty >= 0) {
 			tx = checked_range_cast<long>(tx / INTERFACE_RATIO(32));
@@ -203,8 +203,8 @@ static Entity * GetInventoryObj(Vec2s * pos) {
 		int iY = checked_range_cast<int>(fBag);
 
 		for(int i = 0; i < player.bag; i++) {
-			long tx = pos->x - iPosX;
-			long ty = pos->y - iPosY - iY;
+			long tx = pos.x - iPosX;
+			long ty = pos.y - iPosY - iY;
 
 			tx = checked_range_cast<long>(tx / INTERFACE_RATIO(32));
 			ty = checked_range_cast<long>(ty / INTERFACE_RATIO(32));
@@ -227,7 +227,7 @@ static Entity * GetInventoryObj(Vec2s * pos) {
 	return NULL;
 }
 
-Entity * GetInventoryObj_INVENTORYUSE(Vec2s * pos)
+Entity * GetInventoryObj_INVENTORYUSE(const Vec2s & pos)
 {
 	Entity * io = GetFromInventory(pos);
 
@@ -1185,7 +1185,7 @@ bool PutInInventory() {
 	}
 	
 	// First Look for Identical Item...
-	if(SecondaryInventory && InSecondaryInventoryPos(&DANAEMouse)) {
+	if(SecondaryInventory && InSecondaryInventoryPos(DANAEMouse)) {
 		Entity * io = (Entity *)SecondaryInventory->io;
 		
 		float fcos = ARX_INTERACTIVE_GetPrice(DRAGINTER, io) / 3.0f; //>>1;
@@ -1313,7 +1313,7 @@ bool PutInInventory() {
 	if(InventoryY != 0)
 		return false;
 	
-	if(!InPlayerInventoryPos(&DANAEMouse))
+	if(!InPlayerInventoryPos(DANAEMouse))
 		return false;
 	
 	int iBag = 0;
@@ -1429,14 +1429,14 @@ bool PutInInventory() {
 /**
  * @brief Returns true if xx,yy is a position in secondary inventory
  */
-bool InSecondaryInventoryPos(Vec2s * pos)
+bool InSecondaryInventoryPos(const Vec2s & pos)
 {
 	if (SecondaryInventory != NULL)
 	{
 		short tx, ty;
 
-		tx = pos->x + checked_range_cast<short>(InventoryX) - SHORT_INTERFACE_RATIO(2);
-		ty = pos->y - SHORT_INTERFACE_RATIO(13);
+		tx = pos.x + checked_range_cast<short>(InventoryX) - SHORT_INTERFACE_RATIO(2);
+		ty = pos.y - SHORT_INTERFACE_RATIO(13);
 		tx = tx / SHORT_INTERFACE_RATIO(32);
 		ty = ty / SHORT_INTERFACE_RATIO(32);
 
@@ -1454,7 +1454,7 @@ bool InSecondaryInventoryPos(Vec2s * pos)
 /**
  * @brief Returns true if xx,yy is a position in player inventory
  */
-bool InPlayerInventoryPos(Vec2s * pos)
+bool InPlayerInventoryPos(const Vec2s & pos)
 {
 	if (PLAYER_INTERFACE_HIDE_COUNT) return false;
 
@@ -1469,8 +1469,8 @@ bool InPlayerInventoryPos(Vec2s * pos)
 
 	if (player.Interface & INTER_INVENTORY)
 	{
-		tx = pos->x - iPosX;
-		ty = pos->y - iPosY;//-2;
+		tx = pos.x - iPosX;
+		ty = pos.y - iPosY;//-2;
 
 		if ((tx >= 0) && (ty >= 0))
 		{
@@ -1491,16 +1491,16 @@ bool InPlayerInventoryPos(Vec2s * pos)
 		short iY = checked_range_cast<short>(fBag);
 
 		if ((
-		            (pos->x >= iPosX) &&
-		            (pos->x <= iPosX + INVENTORY_X * INTERFACE_RATIO(32)) &&
-		            (pos->y >= iPosY + iY) &&
-					(pos->y <= g_size.height())))
+		            (pos.x >= iPosX) &&
+		            (pos.x <= iPosX + INVENTORY_X * INTERFACE_RATIO(32)) &&
+		            (pos.y >= iPosY + iY) &&
+					(pos.y <= g_size.height())))
 			return true;
 
 		for (int i = 0; i < player.bag; i++)
 		{
-			tx = pos->x - iPosX;
-			ty = pos->y - iPosY - iY;
+			tx = pos.x - iPosX;
+			ty = pos.y - iPosY - iY;
 
 			if ((tx >= 0) && (ty >= 0))
 			{
@@ -1523,7 +1523,7 @@ bool InPlayerInventoryPos(Vec2s * pos)
 /**
  * @brief Returns true if "pos" is a position in player inventory or in SECONDARY inventory
  */
-bool InInventoryPos(Vec2s * pos)
+bool InInventoryPos(const Vec2s & pos)
 {
 	if (InSecondaryInventoryPos(pos))
 		return true;
@@ -1534,15 +1534,15 @@ bool InInventoryPos(Vec2s * pos)
 /**
  * @brief returns true if cursor is flying over any inventory
  */
-bool IsFlyingOverInventory(Vec2s * pos)
+bool IsFlyingOverInventory(const Vec2s & pos)
 {
 	//	if(eMouseState==MOUSE_IN_WORLD) return false;
 
 	if (SecondaryInventory != NULL)
 	{
 
-		short tx = pos->x + checked_range_cast<short>(InventoryX) - SHORT_INTERFACE_RATIO(2);
-		short ty = pos->y - SHORT_INTERFACE_RATIO(13);
+		short tx = pos.x + checked_range_cast<short>(InventoryX) - SHORT_INTERFACE_RATIO(2);
+		short ty = pos.y - SHORT_INTERFACE_RATIO(13);
 		tx /= SHORT_INTERFACE_RATIO(32);
 		ty /= SHORT_INTERFACE_RATIO(32);
 
@@ -1557,7 +1557,7 @@ bool IsFlyingOverInventory(Vec2s * pos)
 /**
  * @brief Returns IO under position xx,yy in any INVENTORY or NULL if no IO was found
  */
-Entity * GetFromInventory(Vec2s * pos)
+Entity * GetFromInventory(const Vec2s & pos)
 {
 	HERO_OR_SECONDARY = 0;
 
@@ -1566,8 +1566,8 @@ Entity * GetFromInventory(Vec2s * pos)
 
 	if (SecondaryInventory != NULL)
 	{
-		short tx = pos->x + checked_range_cast<short>(InventoryX) - SHORT_INTERFACE_RATIO(2);
-		short ty = pos->y - SHORT_INTERFACE_RATIO(13);
+		short tx = pos.x + checked_range_cast<short>(InventoryX) - SHORT_INTERFACE_RATIO(2);
+		short ty = pos.y - SHORT_INTERFACE_RATIO(13);
 
 		if ((tx >= 0) && (ty >= 0))
 		{
@@ -1787,7 +1787,7 @@ void CheckForInventoryReplaceMe(Entity * io, Entity * old) {
  *
  * @return true if an object was taken
  */
-bool TakeFromInventory(Vec2s * pos)
+bool TakeFromInventory(const Vec2s & pos)
 {
 	long i, j;
 	Entity * io = GetFromInventory(pos);
@@ -1845,8 +1845,8 @@ bool TakeFromInventory(Vec2s * pos)
 					sInventory = 2;
 
 
-					float fCalcX = (pos->x + InventoryX - INTERFACE_RATIO(2)) / INTERFACE_RATIO(32);
-					float fCalcY = (pos->y - INTERFACE_RATIO(13)) / INTERFACE_RATIO(32);
+					float fCalcX = (pos.x + InventoryX - INTERFACE_RATIO(2)) / INTERFACE_RATIO(32);
+					float fCalcY = (pos.y - INTERFACE_RATIO(13)) / INTERFACE_RATIO(32);
 
 					sInventoryX = checked_range_cast<short>(fCalcX);
 					sInventoryY = checked_range_cast<short>(fCalcY);
@@ -1869,8 +1869,8 @@ bool TakeFromInventory(Vec2s * pos)
 					SecondaryInventory->slot[i][j].show = 1;
 					sInventory = 2;
 
-					float fCalcX = (pos->x + InventoryX - INTERFACE_RATIO(2)) / INTERFACE_RATIO(32);
-					float fCalcY = (pos->y - INTERFACE_RATIO(13)) / INTERFACE_RATIO(32);
+					float fCalcX = (pos.x + InventoryX - INTERFACE_RATIO(2)) / INTERFACE_RATIO(32);
+					float fCalcY = (pos.y - INTERFACE_RATIO(13)) / INTERFACE_RATIO(32);
 
 					sInventoryX = checked_range_cast<short>(fCalcX);
 					sInventoryY = checked_range_cast<short>(fCalcY);
@@ -1901,8 +1901,8 @@ bool TakeFromInventory(Vec2s * pos)
 					RemoveFromAllInventories(ioo);
 					sInventory = 1;
 					
-					float fX = (pos->x - iPosX) / INTERFACE_RATIO(32);
-					float fY = (pos->y - iPosY) / INTERFACE_RATIO(32);
+					float fX = (pos.x - iPosX) / INTERFACE_RATIO(32);
+					float fY = (pos.y - iPosY) / INTERFACE_RATIO(32);
 					
 					sInventoryX = checked_range_cast<short>(fX);
 					sInventoryY = checked_range_cast<short>(fY);
@@ -1925,8 +1925,8 @@ bool TakeFromInventory(Vec2s * pos)
 						inventory[iNbBag][i][j].show = 1;
 						sInventory = 1;
 						
-						float fX = (pos->x - iPosX) / INTERFACE_RATIO(32);
-						float fY = (pos->y - iPosY) / INTERFACE_RATIO(32);
+						float fX = (pos.x - iPosX) / INTERFACE_RATIO(32);
+						float fY = (pos.y - iPosY) / INTERFACE_RATIO(32);
 						
 						sInventoryX = checked_range_cast<short>(fX);
 						sInventoryY = checked_range_cast<short>(fY);

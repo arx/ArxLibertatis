@@ -135,7 +135,7 @@ void ManageCombatModeAnimations();
 void ManageCombatModeAnimationsEND();
 void ManageNONCombatModeAnimations();
 
-Entity * FlyingOverObject(Vec2s * pos);
+Entity * FlyingOverObject(const Vec2s & pos);
 
 void runGame();
 

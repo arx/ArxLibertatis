@@ -1220,7 +1220,7 @@ void ArxGame::manageEditorControls() {
 		bool bOk = true;
 
 		if(TRUE_PLAYER_MOUSELOOK_ON) {
-			if(!(player.Interface & INTER_COMBATMODE) && player.doingmagic != 2 && !InInventoryPos(&DANAEMouse)) {
+			if(!(player.Interface & INTER_COMBATMODE) && player.doingmagic != 2 && !InInventoryPos(DANAEMouse)) {
 				bOk = false;
 
 				float t=float(arxtime);
@@ -1731,7 +1731,7 @@ void ArxGame::manageEditorControls() {
 		   && (FlyingOverIO->ioflags & IO_ITEM)
 		   && bOk
 		   && GInput->actionPressed(CONTROLS_CUST_STEALTHMODE)
-		   && !InPlayerInventoryPos(&DANAEMouse)
+		   && !InPlayerInventoryPos(DANAEMouse)
 		   && !ARX_INTERFACE_MouseInBook()
 		) {
 			long sx = 0;
@@ -1792,7 +1792,7 @@ void ArxGame::manageEditorControls() {
 		// Dropping an Interactive Object that has been dragged
 		if(!(EERIEMouseButton & 1) && (LastMouseClick & 1) && DRAGINTER) {
 			//if (ARX_EQUIPMENT_PutOnPlayer(DRAGINTER))
-			if(InInventoryPos(&DANAEMouse)) {// Attempts to put it in inventory
+			if(InInventoryPos(DANAEMouse)) {// Attempts to put it in inventory
 				PutInInventory();
 			} else if(eMouseState == MOUSE_IN_INVENTORY_ICON) {
 				PutInInventory();
@@ -1809,7 +1809,7 @@ void ArxGame::manageEditorControls() {
 				if(   !((DRAGINTER->ioflags & IO_ITEM) && DRAGINTER->_itemdata->count > 1)
 				   && DRAGINTER->obj
 				   && DRAGINTER->obj->pbox
-				   && !InInventoryPos(&DANAEMouse)
+				   && !InInventoryPos(DANAEMouse)
 				   && !(ARX_MOUSE_OVER & ARX_MOUSE_OVER_BOOK)
 				) {
 					//Put object in fromt of player
@@ -1998,7 +1998,7 @@ void ArxGame::manageEditorControls() {
 	if((EERIEMouseButton & 4) && (COMBINE==NULL)) {
 		bool accept_combine = true;
 
-		if((SecondaryInventory!=NULL) && (InSecondaryInventoryPos(&DANAEMouse))) {
+		if((SecondaryInventory!=NULL) && (InSecondaryInventoryPos(DANAEMouse))) {
 			Entity * io=(Entity *)SecondaryInventory->io;
 
 			if(io->ioflags & IO_SHOP)
@@ -2011,7 +2011,7 @@ void ArxGame::manageEditorControls() {
 				GetInfosCombine();
 				EERIEMouseButton &= ~4;
 			}
-			else if(InInventoryPos(&DANAEMouse))
+			else if(InInventoryPos(DANAEMouse))
 				EERIEMouseButton &= 4;
 		}
 	}
@@ -2022,10 +2022,10 @@ void ArxGame::manageEditorControls() {
 		   && !GInput->actionPressed(CONTROLS_CUST_MAGICMODE)
 		   && !DRAGINTER
 		) {
-			if(!TakeFromInventory(&STARTDRAG)) {
+			if(!TakeFromInventory(STARTDRAG)) {
 				bool bOk = false;
 
-				Entity *io = InterClick(&STARTDRAG);
+				Entity *io = InterClick(STARTDRAG);
 
 				if(io && !BLOCK_PLAYER_CONTROLS) {
 					if(ARX_MOUSE_OVER & ARX_MOUSE_OVER_BOOK) {
@@ -2074,7 +2074,7 @@ void ArxGame::manageEditorControls() {
 	
 		// Debug Selection
 		if((LastMouseClick & 1) && !(EERIEMouseButton & 1)) {
-			Entity * io = GetFirstInterAtPos(&DANAEMouse);
+			Entity * io = GetFirstInterAtPos(DANAEMouse);
 
 			if(io) {
 				LastSelectedIONum = io->index();
@@ -2227,7 +2227,7 @@ void ArxGame::managePlayerControls()
 	   && !(ARX_MOUSE_OVER & ARX_MOUSE_OVER_BOOK)
 	   && eMouseState != MOUSE_IN_NOTE
 	) {
-		Entity *t = InterClick(&DANAEMouse);
+		Entity *t = InterClick(DANAEMouse);
 
 		if(t) {
 			if(t->ioflags & IO_NPC) {
@@ -2559,7 +2559,7 @@ void ArxGame::managePlayerControls()
 			if(player.Interface & INTER_MAP) {
 				openBookPage(prevBookPage());
 			}
-		} else if(InPlayerInventoryPos(&DANAEMouse)) {
+		} else if(InPlayerInventoryPos(DANAEMouse)) {
 			if(!PLAYER_INTERFACE_HIDE_COUNT) {
 				if((player.Interface & INTER_INVENTORY)) {
 					if(player.bag) {
@@ -2591,7 +2591,7 @@ void ArxGame::managePlayerControls()
 			if(player.Interface & INTER_MAP) {
 				openBookPage(nextBookPage());
 			}
-		} else if(InPlayerInventoryPos(&DANAEMouse)) {
+		} else if(InPlayerInventoryPos(DANAEMouse)) {
 			if(!PLAYER_INTERFACE_HIDE_COUNT) {
 				if((player.Interface & INTER_INVENTORY)) {
 					if(player.bag) {
@@ -2769,7 +2769,7 @@ void ArxGame::managePlayerControls()
 		&&	(!SpecialCursor)
 		&&  (PLAYER_MOUSELOOK_ON)
 		&&	(DRAGINTER==NULL)
-		&&	(!InInventoryPos(&DANAEMouse)
+		&&	(!InInventoryPos(DANAEMouse)
 		&& (config.input.autoReadyWeapon))
 		)
 	{
@@ -3001,16 +3001,16 @@ void ArxGame::manageKeyMouse() {
 					DANAEMouse.x = checked_range_cast<short>(fX);
 					DANAEMouse.y = checked_range_cast<short>(fY);
 					
-					pIO = FlyingOverObject(&DANAEMouse);
+					pIO = FlyingOverObject(DANAEMouse);
 					if(pIO) {
 						FlyingOverIO = pIO;
 						MemoMouse = DANAEMouse;
 					}
 				} else {
-					pIO = FlyingOverObject(&poss);
+					pIO = FlyingOverObject(poss);
 				}
 			} else {
-				pIO = FlyingOverObject(&DANAEMouse);
+				pIO = FlyingOverObject(DANAEMouse);
 			}
 		}
 
@@ -3108,7 +3108,7 @@ void ArxGame::manageKeyMouse() {
 					if((EERIEMouseButton & 2) && !(LastMouseClick & 2) && config.input.linkMouseLookToUse) {
 						if(!(FlyingOverIO && (FlyingOverIO->ioflags & IO_ITEM)) || DRAGINTER) {
 							if(!TRUE_PLAYER_MOUSELOOK_ON) {
-								if(!InInventoryPos(&DANAEMouse)) {
+								if(!InInventoryPos(DANAEMouse)) {
 									if(!((player.Interface & INTER_MAP) && Book_Mode != BOOKMODE_MINIMAP)) {
 										TRUE_PLAYER_MOUSELOOK_ON = true;
 										EERIEMouseButton &= ~2;
@@ -3138,7 +3138,7 @@ void ArxGame::manageKeyMouse() {
 					) {
 						if(SPECIAL_DRAW_WEAPON) {
 							SPECIAL_DRAW_WEAPON = 0;
-						} else if(!InInventoryPos(&DANAEMouse)) {
+						} else if(!InInventoryPos(DANAEMouse)) {
 							if(SPECIAL_DRAW_WEAPON) {
 								TRUE_PLAYER_MOUSELOOK_ON = false;
 								SPECIAL_DRAW_WEAPON = 0;
@@ -3214,7 +3214,7 @@ void ArxGame::manageKeyMouse() {
 	
 	// Player/Eyeball Freelook Management
 	if(!BLOCK_PLAYER_CONTROLS) {
-		GetInventoryObj_INVENTORYUSE(&DANAEMouse);
+		GetInventoryObj_INVENTORYUSE(DANAEMouse);
 
 		bool bKeySpecialMove=false;
 
@@ -5987,7 +5987,7 @@ void DrawItemPrice() {
 		float px = DANAEMouse.x;
 		float py = static_cast<float>(DANAEMouse.y - 10);
 
-		if(InSecondaryInventoryPos(&DANAEMouse)) {
+		if(InSecondaryInventoryPos(DANAEMouse)) {
 			long amount=ARX_INTERACTIVE_GetPrice(FlyingOverIO,temp);
 			// achat
 			float famount = amount - amount * player.Full_Skill_Intuition * 0.005f;
@@ -5999,7 +5999,7 @@ void DrawItemPrice() {
 			} else {
 				ARX_INTERFACE_DrawNumber(px, py, amount, 6, Color::red);
 			}
-		} else if(InPlayerInventoryPos(&DANAEMouse)) {
+		} else if(InPlayerInventoryPos(DANAEMouse)) {
 			long amount = static_cast<long>( ARX_INTERACTIVE_GetPrice( FlyingOverIO, temp ) / 3.0f );
 			// achat
 			float famount = amount + amount * player.Full_Skill_Intuition * 0.005f;

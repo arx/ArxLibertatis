@@ -1937,7 +1937,7 @@ Entity * AddItem(const res::path & classPath_, EntityInstance instance, AddInter
  * \param _pnNbInTable
  * \return
  */
-Entity * GetFirstInterAtPos(Vec2s * pos, long flag, Vec3f * _pRef, Entity ** _pTable, int * _pnNbInTable)
+Entity * GetFirstInterAtPos(const Vec2s & pos, long flag, Vec3f * _pRef, Entity ** _pTable, int * _pnNbInTable)
 {
 	float n;
  
@@ -2002,10 +2002,10 @@ Entity * GetFirstInterAtPos(Vec2s * pos, long flag, Vec3f * _pRef, Entity ** _pT
 			continue;
 		}
 
-		if(pos->x < io->bbox2D.min.x ||
-		   pos->x > io->bbox2D.max.x ||
-		   pos->y < io->bbox2D.min.y ||
-		   pos->y > io->bbox2D.max.y)
+		if(pos.x < io->bbox2D.min.x ||
+		   pos.x > io->bbox2D.max.x ||
+		   pos.y < io->bbox2D.min.y ||
+		   pos.y > io->bbox2D.max.y)
 		{
 			continue;
 		}
@@ -2039,9 +2039,9 @@ Entity * GetFirstInterAtPos(Vec2s * pos, long flag, Vec3f * _pRef, Entity ** _pT
 			for(size_t j = 0; j < io->obj->facelist.size(); j++) {
 
 				if(io->animlayer[0].cur_anim != NULL) {
-					n = CEDRIC_PtIn2DPolyProjV2(io->obj, &io->obj->facelist[j] , pos->x, pos->y);
+					n = CEDRIC_PtIn2DPolyProjV2(io->obj, &io->obj->facelist[j] , pos.x, pos.y);
 				} else {
-					n = PtIn2DPolyProj(io->obj, &io->obj->facelist[j] , pos->x, pos->y);
+					n = PtIn2DPolyProj(io->obj, &io->obj->facelist[j] , pos.x, pos.y);
 				}
 
 				if(n > 0.f) {
@@ -2086,7 +2086,7 @@ bool IsEquipedByPlayer(const Entity * io)
 }
 
 extern long LOOKING_FOR_SPELL_TARGET;
-Entity * InterClick(Vec2s * pos) {
+Entity * InterClick(const Vec2s & pos) {
 	
 	if(IsFlyingOverInventory(pos)) {
 		return NULL;

@@ -231,22 +231,22 @@ void PutInFrontOfPlayer(Entity * io);
 bool GetItemWorldPosition(Entity * io, Vec3f * pos);
 bool GetItemWorldPositionSound(const Entity * io, Vec3f * pos);
 
-Entity * GetInventoryObj_INVENTORYUSE(Vec2s * pos);
+Entity * GetInventoryObj_INVENTORYUSE(const Vec2s & pos);
 void CheckForInventoryReplaceMe(Entity * io, Entity * old);
 
-bool InSecondaryInventoryPos(Vec2s * pos);
-bool InPlayerInventoryPos(Vec2s * pos);
+bool InSecondaryInventoryPos(const Vec2s & pos);
+bool InPlayerInventoryPos(const Vec2s & pos);
 bool CanBePutInSecondaryInventory(INVENTORY_DATA * id, Entity * io, long * xx, long * yy);
 
 void CleanInventory();
 void SendInventoryObjectCommand(const std::string & _lpszText, ScriptMessage _lCommand);
 bool PutInInventory();
-bool TakeFromInventory(Vec2s * pos);
-Entity * GetFromInventory(Vec2s * pos);
-bool IsFlyingOverInventory(Vec2s * pos);
+bool TakeFromInventory(const Vec2s & pos);
+Entity * GetFromInventory(const Vec2s & pos);
+bool IsFlyingOverInventory(const Vec2s & pos);
 bool IsInPlayerInventory(Entity * io);
 bool IsInSecondaryInventory(Entity * io);
-bool InInventoryPos(Vec2s * pos);
+bool InInventoryPos(const Vec2s & pos);
 void RemoveFromAllInventories(const Entity * io);
 Entity * ARX_INVENTORY_GetTorchLowestDurability();
 void ARX_INVENTORY_IdentifyAll();
