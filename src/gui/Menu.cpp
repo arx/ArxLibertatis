@@ -311,24 +311,18 @@ void ARX_MENU_Launch(bool allowResume) {
 void ARX_Menu_Manage() {
 	
 	// looks for keys for each mode.
-	switch (ARXmenu.currentmode)
-	{
-		case AMCM_OFF:
-		{
+	switch(ARXmenu.currentmode) {
+		case AMCM_OFF: {
 			// Checks for ESC key
-			if (GInput->isKeyPressedNowUnPressed(Keyboard::Key_Escape))
-			{
-				if (CINEMASCOPE)
-				{
-					if (!FADEDIR)	// Disabling ESC capture while fading in or out.
-					{
-						if (SendMsgToAllIO(SM_KEY_PRESSED,"")!=REFUSE)
-						{
+			if(GInput->isKeyPressedNowUnPressed(Keyboard::Key_Escape)) {
+				if(CINEMASCOPE) {
+					// Disabling ESC capture while fading in or out.
+					if(!FADEDIR) {
+						if(SendMsgToAllIO(SM_KEY_PRESSED, "") != REFUSE) {
 							REQUEST_SPEECH_SKIP=1;				
 						}
 					}
 				} else {
-					
 					GRenderer->getSnapshot(savegame_thumbnail, 160, 100);
 
 					arxtime.pause();
@@ -341,36 +335,31 @@ void ARX_Menu_Manage() {
 					ARX_PLAYER_PutPlayerInNormalStance(1);
 				}
 			}
+			break;
 		}
-		break;
-		case AMCM_NEWQUEST:
-		{
-			if (GInput->isKeyPressedNowUnPressed(Keyboard::Key_Escape)
-					&&	! bFadeInOut // XS: Disabling ESC capture while fading in or out.
-			   )
-			{
+		case AMCM_NEWQUEST: {
+			if(   GInput->isKeyPressedNowUnPressed(Keyboard::Key_Escape)
+			   && !bFadeInOut // XS: Disabling ESC capture while fading in or out.
+			) {
 				ARX_MENU_CLICKSOUND();
 				ARXmenu.currentmode = AMCM_MAIN;
 			}
-		}
-		break;
-		case AMCM_MAIN:
-
-			if (GInput->isKeyPressedNowUnPressed(Keyboard::Key_Escape))
-			{
-				if ((MENU_NoActiveWindow())  && (!REFUSE_GAME_RETURN))
-				{
-					arxtime.resume();
-					ARX_MENU_Clicked_QUIT();
-				}
-			}
-
 			break;
-		case AMCM_CREDITS:
-
-			if ((GInput->isKeyPressedNowUnPressed(Keyboard::Key_Escape))
-					|| (GInput->isKeyPressedNowUnPressed(Keyboard::Key_Spacebar)))
-			{
+		}
+		case AMCM_MAIN: {
+			if(   GInput->isKeyPressedNowUnPressed(Keyboard::Key_Escape)
+			   && MENU_NoActiveWindow()
+			   && !REFUSE_GAME_RETURN
+			) {
+				arxtime.resume();
+				ARX_MENU_Clicked_QUIT();
+			}
+			break;
+		}
+		case AMCM_CREDITS: {
+			if(   GInput->isKeyPressedNowUnPressed(Keyboard::Key_Escape)
+			   || GInput->isKeyPressedNowUnPressed(Keyboard::Key_Spacebar)
+			) {
 				ARX_MENU_CLICKSOUND();
 				bFadeInOut = true;	//fade out
 				bFade = true;			//active le fade
@@ -378,8 +367,8 @@ void ARX_Menu_Manage() {
 
 				ARX_MENU_LaunchAmb(AMB_MENU);
 			}
-
 			break;
+		}
 		default:
 			break;
 	}
