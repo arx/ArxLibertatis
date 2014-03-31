@@ -243,7 +243,6 @@ long ADDED_IO_NOT_SAVED = 0;
 #endif
 
 SPELL_ICON spellicons[SPELL_COUNT];
-bool bGToggleCombatModeWithKey;
 
 Vec2s DANAEMouse;
 Vec3f moveto;

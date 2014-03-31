@@ -100,7 +100,6 @@ using std::string;
 
 extern long DONT_ERASE_PLAYER;
 
-extern bool bGToggleCombatModeWithKey;
 extern bool bGCroucheToggle;
 
 #if BUILD_EDIT_LOADSAVE
@@ -1035,7 +1034,6 @@ void DanaeClearLevel(long flag)
 	
 	arxtime.init();
 	
-	bGToggleCombatModeWithKey = false;
 	bGCroucheToggle = false;
 	
 	for(size_t i = 0; i < MAX_DYNLIGHTS; i++) {

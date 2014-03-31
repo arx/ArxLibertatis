@@ -182,7 +182,6 @@ extern float ARXTimeMenu;
 extern float ARXOldTimeMenu;
 extern float ARXDiffTimeMenu;
 
-extern bool bGToggleCombatModeWithKey;
 extern unsigned char ucFlick;
 
 extern TextManager *pTextManageFlyingOver;
@@ -2688,7 +2687,6 @@ void ArxGame::managePlayerControls()
 		if(bGo) {
 			if(player.Interface & INTER_COMBATMODE) {
 				ARX_INTERFACE_Combat_Mode(0);
-				bGToggleCombatModeWithKey=false;
 				SPECIAL_DRAW_WEAPON=0;
 
 				if(config.input.mouseLookToggle)
@@ -2699,14 +2697,10 @@ void ArxGame::managePlayerControls()
 				TRUE_PLAYER_MOUSELOOK_ON = true;
 				SLID_START=float(arxtime);
 				ARX_INTERFACE_Combat_Mode(2);
-				bGToggleCombatModeWithKey=true;
 			}
 		}
 	}
-
-	if(EERIEMouseButton & 1)
-		bGToggleCombatModeWithKey = false;
-
+	
 	if(bForceEscapeFreeLook) {
 		TRUE_PLAYER_MOUSELOOK_ON = false;
 
@@ -2777,9 +2771,6 @@ void ArxGame::managePlayerControls()
 		} else {
 			if(float(arxtime) - COMBAT_MODE_ON_START_TIME > 10) {
 				ARX_INTERFACE_Combat_Mode(1);
-
-				if(!config.input.autoReadyWeapon)
-					bGToggleCombatModeWithKey=true;
 			}
 		}
 	}

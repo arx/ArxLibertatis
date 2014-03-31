@@ -169,7 +169,7 @@ struct SYMBOL_DRAW {
 };
 
 extern bool FrustrumsClipSphere(EERIE_FRUSTRUM_DATA * frustrums,EERIE_SPHERE * sphere);
-extern bool bGToggleCombatModeWithKey;
+
 void ARX_INTERFACE_Combat_Mode(long i);
 
 static float ARX_SPELLS_GetManaCost(Spell _lNumSpell,long _lNumSpellTab);
@@ -2092,7 +2092,6 @@ void ARX_SPELLS_ManageMagic() {
 			WILLRETURNTOCOMBATMODE = true;
 
 			ARX_INTERFACE_Combat_Mode(0);
-			bGToggleCombatModeWithKey=false;
 
 			ResetAnim(&io->animlayer[1]);
 			io->animlayer[1].flags&=~EA_LOOP;
@@ -2523,7 +2522,6 @@ void ARX_SPELLS_Precast_Check() {
 			if(player.Interface & INTER_COMBATMODE) {
 				WILLRETURNTOCOMBATMODE = true;
 				ARX_INTERFACE_Combat_Mode(0);
-				bGToggleCombatModeWithKey=false;
 				ResetAnim(&entities.player()->animlayer[1]);
 				entities.player()->animlayer[1].flags&=~EA_LOOP;
 			}
