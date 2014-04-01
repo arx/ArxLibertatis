@@ -84,6 +84,20 @@ struct CinematicSpeech {
 	Vec3f pos1;
 	Vec3f pos2;
 	
+	CinematicSpeech()
+		: type(ARX_CINE_SPEECH_NONE)
+		, startangle(Anglef::ZERO)
+		, endangle(Anglef::ZERO)
+		, startpos(0.f)
+		, endpos(0.f)
+		, f0(0.f)
+		, f1(0.f)
+		, f2(0.f)
+		, ionum(0)
+		, pos1(Vec3f_ZERO)
+		, pos2(Vec3f_ZERO)
+	{}
+	
 	void clear() {
 		type = ARX_CINE_SPEECH_NONE;
 		startangle = Anglef::ZERO;
