@@ -61,8 +61,7 @@ struct EERIE_CAMERA;
 class TextureContainer;
 class Entity;
 
-extern float BOOKDECX;
-extern float BOOKDECY;
+extern Vec2f BOOKDEC;
 
 extern Entity * FlyingOverIO;
 

@@ -222,12 +222,12 @@ void ARX_TEXT_Draw(Font* ef,
 }
 
 float DrawBookTextInRect(Font* font, float x, float y, float maxx, const std::string& text, Color col) {
-	return (float)ARX_UNICODE_DrawTextInRect(font, (BOOKDECX + x) * Xratio, (BOOKDECY + y) * Yratio, (BOOKDECX + maxx) * Xratio, text, col);
+	return (float)ARX_UNICODE_DrawTextInRect(font, (BOOKDEC.x + x) * Xratio, (BOOKDEC.y + y) * Yratio, (BOOKDEC.x + maxx) * Xratio, text, col);
 }
 
 void DrawBookTextCenter(Font* font, float x, float y, const std::string& text, Color col)
 {
-	UNICODE_ARXDrawTextCenter(font, (BOOKDECX + x)*Xratio, (BOOKDECY + y)*Yratio, text, col);
+	UNICODE_ARXDrawTextCenter(font, (BOOKDEC.x + x)*Xratio, (BOOKDEC.y + y)*Yratio, text, col);
 }
 
 long UNICODE_ARXDrawTextCenter(Font* font, float x, float y, const std::string& str, Color col) {

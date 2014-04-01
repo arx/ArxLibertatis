@@ -221,8 +221,8 @@ float				InventoryDir=0; // 0 stable, 1 to right, -1 to left
 
 float				CINEMA_DECAL=0.f;
 float				SLID_START=0.f; // Charging Weapon
-float				BOOKDECX=0.f;
-float				BOOKDECY=0.f;
+
+Vec2f				BOOKDEC = Vec2f(0.f, 0.f);
 
 bool				PLAYER_MOUSELOOK_ON = false;
 bool				TRUE_PLAYER_MOUSELOOK_ON = false;
@@ -368,10 +368,10 @@ float ARX_CAST_TO_INT_THEN_FLOAT( float _f )
 }
 
 bool MouseInBookRect(const float x, const float y, const float cx, const float cy) {
-	return DANAEMouse.x >= (x + BOOKDECX) * Xratio
-		&& DANAEMouse.x <= (cx + BOOKDECX) * Xratio
-		&& DANAEMouse.y >= (y + BOOKDECY) * Yratio
-		&& DANAEMouse.y <= (cy + BOOKDECY) * Yratio;
+	return DANAEMouse.x >= (x + BOOKDEC.x) * Xratio
+		&& DANAEMouse.x <= (cx + BOOKDEC.x) * Xratio
+		&& DANAEMouse.y >= (y + BOOKDEC.y) * Yratio
+		&& DANAEMouse.y <= (cy + BOOKDEC.y) * Yratio;
 }
 
 bool ARX_INTERFACE_MouseInBook() {
@@ -533,8 +533,8 @@ void INTERFACE_TC::Reset()
 static void DrawBookInterfaceItem(TextureContainer * tc, float x, float y, Color color = Color::white, float z = 0.000001f) {
 	if(tc) {
 		EERIEDrawBitmap2(
-			(x + BOOKDECX) * Xratio,
-			(y + BOOKDECY) * Yratio,
+			(x + BOOKDEC.x) * Xratio,
+			(y + BOOKDEC.y) * Yratio,
 			tc->m_dwWidth * Xratio,
 			tc->m_dwHeight * Yratio,
 			z,
@@ -3975,8 +3975,8 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 
 			for(size_t i = 0; i < RUNE_COUNT; i++) {
 				if(necklace.runes[i]) {
-					bookcam.center.x = (382 + xpos * 45 + BOOKDECX) * Xratio;
-					bookcam.center.y = (100 + ypos * 64 + BOOKDECY) * Yratio;
+					bookcam.center.x = (382 + xpos * 45 + BOOKDEC.x) * Xratio;
+					bookcam.center.y = (100 + ypos * 64 + BOOKDEC.y) * Yratio;
 
 					SetActiveCamera(&bookcam);
 					PrepareCamera(&bookcam, g_size);
@@ -4337,8 +4337,8 @@ void ARX_INTERFACE_ManageOpenedBook()
 		ARXDiffTimeMenu=0;
 	}
 
-	BOOKDECX = 0;
-	BOOKDECY = 0;
+	BOOKDEC.x = 0;
+	BOOKDEC.y = 0;
 	
 	GRenderer->GetTextureStage(0)->setMinFilter(TextureStage::FilterLinear);
 	GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterLinear);
@@ -4372,8 +4372,8 @@ void ARX_INTERFACE_ManageOpenedBook()
 			DrawBookInterfaceItem(ITC.Get("playerbook"), x, y);
 		}
 
-		BOOKDECX = x - 97;
-		BOOKDECY = x - 64 + 19;
+		BOOKDEC.x = x - 97;
+		BOOKDEC.y = x - 64 + 19;
 	}
 	
 	if(ARXmenu.currentmode != AMCM_NEWQUEST) {
@@ -4419,7 +4419,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 				if(NewSpell == 1) {
 					NewSpell = 2;
 					for(long nk = 0; nk < 2; nk++) {
-						MagFX(Vec3f(BOOKDECX + 220.f, BOOKDECY + 49.f, 0.000001f));
+						MagFX(Vec3f(BOOKDEC.x + 220.f, BOOKDEC.y + 49.f, 0.000001f));
 					}
 				}
 				
@@ -5302,8 +5302,8 @@ void ARX_INTERFACE_ManageOpenedBook()
 		Rect rec;
 		if (BOOKZOOM) {
 			
-			rec = Rect(s32((120.f + BOOKDECX) * Xratio), s32((69.f + BOOKDECY) * Yratio),
-			           s32((330.f + BOOKDECX) * Xratio), s32((300.f + BOOKDECY) * Yratio));
+			rec = Rect(s32((120.f + BOOKDEC.x) * Xratio), s32((69.f + BOOKDEC.y) * Yratio),
+			           s32((330.f + BOOKDEC.x) * Xratio), s32((300.f + BOOKDEC.y) * Yratio));
 			GRenderer->Clear(Renderer::DepthBuffer, Color::none, 1.f, 1, &rec);
 
 			if(ARXmenu.currentmode != AMCM_OFF) {
@@ -5312,8 +5312,8 @@ void ARX_INTERFACE_ManageOpenedBook()
 			}
 		} else {
 			
-			rec = Rect(s32((118.f + BOOKDECX) * Xratio), s32((69.f + BOOKDECY) * Yratio),
-			          s32((350.f + BOOKDECX) * Xratio), s32((338.f + BOOKDECY) * Yratio));
+			rec = Rect(s32((118.f + BOOKDEC.x) * Xratio), s32((69.f + BOOKDEC.y) * Yratio),
+			          s32((350.f + BOOKDEC.x) * Xratio), s32((338.f + BOOKDEC.y) * Yratio));
 			GRenderer->Clear(Renderer::DepthBuffer, Color::none, 1.f, 1, &rec);
 
 			rec.right -= 50;
@@ -5463,10 +5463,10 @@ void ARX_INTERFACE_ManageOpenedBook()
 					tod->bbox2D.min = Vec2f(195.f, 116.f);
 					tod->bbox2D.max = Vec2f(284.f, 182.f);
 
-					tod->bbox2D.min.x = (tod->bbox2D.min.x + BOOKDECX) * Xratio;
-					tod->bbox2D.max.x = (tod->bbox2D.max.x + BOOKDECX) * Xratio;
-					tod->bbox2D.min.y = (tod->bbox2D.min.y + BOOKDECY) * Yratio;
-					tod->bbox2D.max.y = (tod->bbox2D.max.y + BOOKDECY) * Yratio;
+					tod->bbox2D.min.x = (tod->bbox2D.min.x + BOOKDEC.x) * Xratio;
+					tod->bbox2D.max.x = (tod->bbox2D.max.x + BOOKDEC.x) * Xratio;
+					tod->bbox2D.min.y = (tod->bbox2D.min.y + BOOKDEC.y) * Yratio;
+					tod->bbox2D.max.y = (tod->bbox2D.max.y + BOOKDEC.y) * Yratio;
 
 					tod->ioflags |= IO_ICONIC;
 				}
@@ -5478,10 +5478,10 @@ void ARX_INTERFACE_ManageOpenedBook()
 					tod->bbox2D.min = Vec2f(218.f, 183.f);
 					tod->bbox2D.max = Vec2f(277.f, 322.f);
 
-					tod->bbox2D.min.x = (tod->bbox2D.min.x + BOOKDECX) * Xratio;
-					tod->bbox2D.max.x = (tod->bbox2D.max.x + BOOKDECX) * Xratio;
-					tod->bbox2D.min.y = (tod->bbox2D.min.y + BOOKDECY) * Yratio;
-					tod->bbox2D.max.y = (tod->bbox2D.max.y + BOOKDECY) * Yratio;
+					tod->bbox2D.min.x = (tod->bbox2D.min.x + BOOKDEC.x) * Xratio;
+					tod->bbox2D.max.x = (tod->bbox2D.max.x + BOOKDEC.x) * Xratio;
+					tod->bbox2D.min.y = (tod->bbox2D.min.y + BOOKDEC.y) * Yratio;
+					tod->bbox2D.max.y = (tod->bbox2D.max.y + BOOKDEC.y) * Yratio;
 
 					tod->ioflags |= IO_ICONIC;
 				}
@@ -5493,10 +5493,10 @@ void ARX_INTERFACE_ManageOpenedBook()
 					tod->bbox2D.min = Vec2f(218.f, 75.f);
 					tod->bbox2D.max = Vec2f(260.f, 115.f);
 
-					tod->bbox2D.min.x = (tod->bbox2D.min.x + BOOKDECX) * Xratio;
-					tod->bbox2D.max.x = (tod->bbox2D.max.x + BOOKDECX) * Xratio;
-					tod->bbox2D.min.y = (tod->bbox2D.min.y + BOOKDECY) * Yratio;
-					tod->bbox2D.max.y = (tod->bbox2D.max.y + BOOKDECY) * Yratio;
+					tod->bbox2D.min.x = (tod->bbox2D.min.x + BOOKDEC.x) * Xratio;
+					tod->bbox2D.max.x = (tod->bbox2D.max.x + BOOKDEC.x) * Xratio;
+					tod->bbox2D.min.y = (tod->bbox2D.min.y + BOOKDEC.y) * Yratio;
+					tod->bbox2D.max.y = (tod->bbox2D.max.y + BOOKDEC.y) * Yratio;
 
 					tod->ioflags |= IO_ICONIC;
 				}
@@ -5523,8 +5523,8 @@ void ARX_INTERFACE_ManageOpenedBook()
 					if(tc2) {
 						ARX_INTERFACE_HALO_Draw(
 							todraw, tc, tc2,
-							(todraw->bbox2D.min.x + BOOKDECX) * Xratio,
-							(todraw->bbox2D.min.y + BOOKDECY) * Yratio,
+							(todraw->bbox2D.min.x + BOOKDEC.x) * Xratio,
+							(todraw->bbox2D.min.y + BOOKDEC.y) * Yratio,
 							Xratio, Yratio
 						);
 					}
@@ -5532,10 +5532,10 @@ void ARX_INTERFACE_ManageOpenedBook()
 					todraw->bbox2D.max.x = todraw->bbox2D.min.x + static_cast<float>( tc->m_dwWidth );
 					todraw->bbox2D.max.y = todraw->bbox2D.min.y + static_cast<float>( tc->m_dwHeight );
 
-					todraw->bbox2D.min.x = (todraw->bbox2D.min.x + BOOKDECX) * Xratio;
-					todraw->bbox2D.max.x = (todraw->bbox2D.max.x + BOOKDECX) * Xratio;
-					todraw->bbox2D.min.y = (todraw->bbox2D.min.y + BOOKDECY) * Yratio;
-					todraw->bbox2D.max.y = (todraw->bbox2D.max.y + BOOKDECY) * Yratio;
+					todraw->bbox2D.min.x = (todraw->bbox2D.min.x + BOOKDEC.x) * Xratio;
+					todraw->bbox2D.max.x = (todraw->bbox2D.max.x + BOOKDEC.x) * Xratio;
+					todraw->bbox2D.min.y = (todraw->bbox2D.min.y + BOOKDEC.y) * Yratio;
+					todraw->bbox2D.max.y = (todraw->bbox2D.max.y + BOOKDEC.y) * Yratio;
 
 					todraw->ioflags |= IO_ICONIC;
 				}
@@ -5560,8 +5560,8 @@ void ARX_INTERFACE_ManageOpenedBook()
 					if(tc2) {
 						ARX_INTERFACE_HALO_Draw(
 							todraw, tc, tc2, 
-							(todraw->bbox2D.min.x + BOOKDECX) * Xratio,
-							(todraw->bbox2D.min.y + BOOKDECX) * Yratio,
+							(todraw->bbox2D.min.x + BOOKDEC.x) * Xratio,
+							(todraw->bbox2D.min.y + BOOKDEC.x) * Yratio,
 							Xratio, Yratio
 						);
 					}
@@ -5569,10 +5569,10 @@ void ARX_INTERFACE_ManageOpenedBook()
 					todraw->bbox2D.max.x = todraw->bbox2D.min.x + static_cast<float>( tc->m_dwWidth );
 					todraw->bbox2D.max.y = todraw->bbox2D.min.y + static_cast<float>( tc->m_dwHeight );
 
-					todraw->bbox2D.min.x = (todraw->bbox2D.min.x + BOOKDECX) * Xratio;
-					todraw->bbox2D.max.x = (todraw->bbox2D.max.x + BOOKDECX) * Xratio;
-					todraw->bbox2D.min.y = (todraw->bbox2D.min.y + BOOKDECY) * Yratio;
-					todraw->bbox2D.max.y = (todraw->bbox2D.max.y + BOOKDECY) * Yratio;
+					todraw->bbox2D.min.x = (todraw->bbox2D.min.x + BOOKDEC.x) * Xratio;
+					todraw->bbox2D.max.x = (todraw->bbox2D.max.x + BOOKDEC.x) * Xratio;
+					todraw->bbox2D.min.y = (todraw->bbox2D.min.y + BOOKDEC.y) * Yratio;
+					todraw->bbox2D.max.y = (todraw->bbox2D.max.y + BOOKDEC.y) * Yratio;
 
 					todraw->ioflags |= IO_ICONIC;
 				}
