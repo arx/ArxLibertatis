@@ -3621,15 +3621,17 @@ void GetTargetPos(Entity * io, unsigned long smoothing) {
 		return;
 	
 	if(io->ioflags & IO_NPC) {
+		IO_NPCDATA * npcData = io->_npcdata;
+		arx_assert(npcData);
 		
-		if(io->_npcdata->behavior & BEHAVIOUR_NONE) {
+		if(npcData->behavior & BEHAVIOUR_NONE) {
 			io->target = io->pos;
 			return;
 		}
 		
-		if(io->_npcdata->behavior & BEHAVIOUR_GO_HOME) {
-			if(io->_npcdata->pathfind.listpos < io->_npcdata->pathfind.listnb) {
-				long pos = io->_npcdata->pathfind.list[io->_npcdata->pathfind.listpos];
+		if(npcData->behavior & BEHAVIOUR_GO_HOME) {
+			if(npcData->pathfind.listpos < npcData->pathfind.listnb) {
+				long pos = npcData->pathfind.list[npcData->pathfind.listpos];
 				io->target = ACTIVEBKG->anchors[pos].pos;
 			} else {
 				io->target = io->initpos;
@@ -3637,13 +3639,13 @@ void GetTargetPos(Entity * io, unsigned long smoothing) {
 			return;
 		}
 		
-		if(io->_npcdata && io->_npcdata->pathfind.listnb != -1 && io->_npcdata->pathfind.list
-		   && !(io->_npcdata->behavior & BEHAVIOUR_FRIENDLY)) { // Targeting Anchors !
-			if(io->_npcdata->pathfind.listpos < io->_npcdata->pathfind.listnb) {
-				long pos = io->_npcdata->pathfind.list[io->_npcdata->pathfind.listpos];
+		if(npcData->pathfind.listnb != -1 && npcData->pathfind.list
+		   && !(npcData->behavior & BEHAVIOUR_FRIENDLY)) { // Targeting Anchors !
+			if(npcData->pathfind.listpos < npcData->pathfind.listnb) {
+				long pos = npcData->pathfind.list[npcData->pathfind.listpos];
 				io->target = ACTIVEBKG->anchors[pos].pos;
-			} else if(ValidIONum(io->_npcdata->pathfind.truetarget)) {
-				io->target = entities[io->_npcdata->pathfind.truetarget]->pos;
+			} else if(ValidIONum(npcData->pathfind.truetarget)) {
+				io->target = entities[npcData->pathfind.truetarget]->pos;
 			}
 			return;
 		}
