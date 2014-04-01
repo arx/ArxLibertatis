@@ -134,7 +134,7 @@ void ARX_MAGICAL_FLARES_KillAll()
 			flare.tolive=0;
 			flarenum--;
 
-			if (ValidDynLight(flare.dynlight!=-1))
+			if(ValidDynLight(flare.dynlight))
 				DynLight[flare.dynlight].exist=0;
 
 			flare.dynlight=-1;
