@@ -83,16 +83,16 @@ public:
 	C_KEY * prev;
 	C_KEY * next;
 	
-	CinematicLight() {
-		pos = Vec3f_ZERO;
-		fallin = 100.f;
-		fallout = 200.f;
-		color = Color3f::white * 255.f;
-		intensity = 1.f;
-		intensiternd = 0.2f;
-		next = NULL;
-	};
-	
+	CinematicLight()
+		: pos(Vec3f_ZERO)
+		, fallin(100.f)
+		, fallout(200.f)
+		, color(Color3f::white * 255.f)
+		, intensity(1.f)
+		, intensiternd(0.2f)
+		, prev(NULL)
+		, next(NULL)
+	{}
 };
 
 class Cinematic {
