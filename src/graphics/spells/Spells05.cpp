@@ -495,9 +495,8 @@ void LaunchPoisonExplosion(Vec3f * aePos) {
 		}
 	}
 
-	if(pParticleManager) {
-		pParticleManager->AddSystem(pPS);
-	}
+	arx_assert(pParticleManager);
+	pParticleManager->AddSystem(pPS);
 }
 
 

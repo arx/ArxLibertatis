@@ -170,8 +170,8 @@ void LaunchMagicMissileExplosion(const Vec3f & _ePos, int t = 0, long spellinsta
 		DynLight[id].duration = 1500;
 	}
 
-	if(pParticleManager)
-		pParticleManager->AddSystem(pPS);
+	arx_assert(pParticleManager);
+	pParticleManager->AddSystem(pPS);
 
 	ARX_SOUND_PlaySFX(SND_SPELL_MM_HIT, &_ePos);
 }
