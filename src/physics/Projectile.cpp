@@ -351,7 +351,7 @@ void CheckExp(long i) {
 		ARX_NPC_SpawnAudibleSound(Thrown[i].position, entities.player());
 		long id = GetFreeDynLight();
 
-		if(id != -1 && framedelay > 0) {
+		if(lightHandleIsValid(id) && framedelay > 0) {
 			EERIE_LIGHT * light = lightHandleGet(id);
 			
 			light->exist = 1;
@@ -417,7 +417,7 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 		   && !(thrownObj->flags & ATO_UNDERWATER)) {
 
 			long id = GetFreeDynLight();
-			if(id != -1 && framedelay > 0) {
+			if(lightHandleIsValid(id) && framedelay > 0) {
 				EERIE_LIGHT * light = lightHandleGet(id);
 				
 				light->exist = 1;

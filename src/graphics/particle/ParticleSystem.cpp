@@ -145,7 +145,7 @@ ParticleSystem::~ParticleSystem() {
 void ParticleSystem::SetPos(const Vec3f & _p3) {
 	
 	p3Pos = _p3;
-	if(lLightId != -1) {
+	if(lightHandleIsValid(lLightId)) {
 		EERIE_LIGHT * light = lightHandleGet(lLightId);
 		
 		light->pos = p3Pos;
@@ -153,7 +153,7 @@ void ParticleSystem::SetPos(const Vec3f & _p3) {
 }
 
 void ParticleSystem::SetColor(float _fR, float _fG, float _fB) {
-	if(lLightId != -1) {
+	if(lightHandleIsValid(lLightId)) {
 		EERIE_LIGHT * light = lightHandleGet(lLightId);
 		
 		light->rgb = Color3f(_fR, _fG, _fB);

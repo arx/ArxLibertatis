@@ -678,10 +678,10 @@ void CConfuse::Render() {
 		pd->rgb = Color3f(t1 * 0.8f, t2 * 0.8f, t3 * 0.8f);
 	}
 	
-	if(this->lLightId == -1)
+	if(!lightHandleIsValid(lLightId))
 		this->lLightId = GetFreeDynLight();
 
-	if(this->lLightId != -1) {
+	if(lightHandleIsValid(lLightId)) {
 		long id = this->lLightId;
 		EERIE_LIGHT * light = lightHandleGet(id);
 		

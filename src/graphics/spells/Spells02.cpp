@@ -83,7 +83,7 @@ void CHeal::Create() {
 	
 	pPS->lLightId = GetFreeDynLight();
 
-	if(pPS->lLightId != -1) {
+	if(lightHandleIsValid(pPS->lLightId)) {
 		long id = pPS->lLightId;
 		EERIE_LIGHT * light = lightHandleGet(id);
 		
@@ -166,10 +166,10 @@ void CHeal::Update(unsigned long aulTime)
 		eSrc = entities[spells[spellinstance].target]->pos;
 	}
 	
-	if(pPS->lLightId == -1)
+	if(!lightHandleIsValid(pPS->lLightId))
 		pPS->lLightId = GetFreeDynLight();
 
-	if(pPS->lLightId != -1) {
+	if(lightHandleIsValid(pPS->lLightId)) {
 		long id = pPS->lLightId;
 		EERIE_LIGHT * light = lightHandleGet(id);
 		

@@ -167,7 +167,7 @@ void CCurePoison::Create()
 
 	pPS->lLightId = GetFreeDynLight();
 
-	if(pPS->lLightId != -1) {
+	if(lightHandleIsValid(pPS->lLightId)) {
 		long id = pPS->lLightId;
 		EERIE_LIGHT * light = lightHandleGet(id);
 		
@@ -231,10 +231,10 @@ void CCurePoison::Update(unsigned long aulTime)
 	pPS->SetPos(eSrc);
 	pPS->Update(aulTime);
 
-	if(pPS->lLightId == -1)
+	if(!lightHandleIsValid(pPS->lLightId))
 		pPS->lLightId = GetFreeDynLight();
 
-	if(pPS->lLightId != -1) {
+	if(lightHandleIsValid(pPS->lLightId)) {
 		long id = pPS->lLightId;
 		EERIE_LIGHT * light = lightHandleGet(id);
 		
@@ -325,7 +325,7 @@ void CRuneOfGuarding::Create(Vec3f _eSrc, float _fBeta) {
 	bDone = true;
 	
 	lLightId = GetFreeDynLight();
-	if(lLightId != -1) {
+	if(lightHandleIsValid(lLightId)) {
 		long id = lLightId;
 		EERIE_LIGHT * light = lightHandleGet(id);
 		
@@ -348,7 +348,7 @@ void CRuneOfGuarding::Update(unsigned long _ulTime) {
 	
 	float fa = 1.0f - rnd() * 0.15f;
 	
-	if(lLightId != -1) {
+	if(lightHandleIsValid(lLightId)) {
 		long id = lLightId;
 		EERIE_LIGHT * light = lightHandleGet(id);
 		
@@ -791,7 +791,7 @@ CMultiPoisonProjectile::CMultiPoisonProjectile(long nbmissiles)
 CMultiPoisonProjectile::~CMultiPoisonProjectile()
 {
 	for(unsigned int i = 0 ; i < uiNumber ; i++) {
-		if(pTab[i]->lLightId != -1) {
+		if(lightHandleIsValid(pTab[i]->lLightId)) {
 			EERIE_LIGHT * light = lightHandleGet(pTab[i]->lLightId);
 			
 			light->duration = 2000;
@@ -859,7 +859,7 @@ void CMultiPoisonProjectile::Create(Vec3f _eSrc, float _afBeta = 0) {
 
 		pPP->lLightId = GetFreeDynLight();
 
-		if(pPP->lLightId != -1) {
+		if(lightHandleIsValid(pPP->lLightId)) {
 			long id						= pPP->lLightId;
 			EERIE_LIGHT * light = lightHandleGet(id);
 			
@@ -894,7 +894,7 @@ void CMultiPoisonProjectile::Render()
 
 		CPoisonProjectile * pPoisonProjectile = (CPoisonProjectile *) pTab[i];
 
-		if(pPoisonProjectile->lLightId != -1) {
+		if(lightHandleIsValid(pPoisonProjectile->lLightId)) {
 			long id					= pPoisonProjectile->lLightId;
 			EERIE_LIGHT * light = lightHandleGet(id);
 			
@@ -1063,13 +1063,12 @@ void CRepelUndead::Render() {
 		pd->rgb = Color3f(.4f, .4f, .6f);
 	}
 	
-	if(lLightId == -1) {
+	if(!lightHandleIsValid(lLightId)) {
 		lLightId = GetFreeDynLight();
 	}
 	
-	if(lLightId != -1) {
-		long id = lLightId;
-		EERIE_LIGHT * light = lightHandleGet(id);
+	if(lightHandleIsValid(lLightId)) {
+		EERIE_LIGHT * light = lightHandleGet(lLightId);
 		
 		light->exist = 1;
 		light->intensity = 2.3f;

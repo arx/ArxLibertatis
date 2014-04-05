@@ -361,7 +361,7 @@ void Cedric_ApplyLightingFirstPartRefactor(Entity *io) {
 						}
 
 						long nn = GetFreeDynLight();
-						if(nn >= 0) {
+						if(lightHandleIsValid(nn)) {
 							EERIE_LIGHT * light = lightHandleGet(nn);
 							
 							light->exist = 1;

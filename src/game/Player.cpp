@@ -1676,10 +1676,10 @@ void ARX_PLAYER_Manage_Visual() {
 				pouet--;
 
 				if(id != -1) {
-					if(special[pouet] == -1) {
+					if(!lightHandleIsValid(special[pouet])) {
 						special[pouet] = GetFreeDynLight();
 					}
-					if(special[pouet] != -1) {
+					if(lightHandleIsValid(special[pouet])) {
 						EERIE_LIGHT * el = lightHandleGet(special[pouet]);
 						el->intensity = 1.3f;
 						el->exist = 1;
@@ -1833,12 +1833,12 @@ nochanges:
 	player.Last_Movement = player.Current_Movement;
 
 	if(!light) {
-		if(special[2] != -1) {
+		if(lightHandleIsValid(special[2])) {
 			lightHandleGet(special[2])->exist = 0;
 			special[2] = -1;
 		}
 
-		if(special[1] != -1) {
+		if(lightHandleIsValid(special[1])) {
 			lightHandleGet(special[1])->exist = 0;
 			special[1] = -1;
 		}

@@ -3569,10 +3569,10 @@ void ManageIgnition_2(Entity * io) {
 		else
 			position = io->pos;
 
-		if(io->ignit_light == -1)
+		if(!lightHandleIsValid(io->ignit_light))
 			io->ignit_light = GetFreeDynLight();
 
-		if(io->ignit_light != -1) {
+		if(lightHandleIsValid(io->ignit_light)) {
 			long id = io->ignit_light;
 			EERIE_LIGHT * light = lightHandleGet(id);
 			

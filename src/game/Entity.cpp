@@ -329,7 +329,7 @@ void Entity::cleanReferences() {
 	
 	ARX_SPELLS_FizzleAllSpellsFromCaster(index());
 	
-	if(ignit_light > -1) {
+	if(lightHandleIsValid(ignit_light)) {
 		lightHandleGet(ignit_light)->exist = 0;
 	}
 	ignit_light = -1;

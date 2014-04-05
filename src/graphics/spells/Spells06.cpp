@@ -288,7 +288,7 @@ void CCreateField::Render()
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 
-	if(lLightId != -1) {
+	if(lightHandleIsValid(lLightId)) {
 		EERIE_LIGHT * light = lightHandleGet(lLightId);
 		
 		light->exist = 1;
