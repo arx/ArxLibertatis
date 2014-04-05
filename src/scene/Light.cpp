@@ -116,8 +116,8 @@ void EERIE_LIGHT_GlobalInit() {
 	
 	for(size_t i = 0; i < MAX_LIGHTS; i++) {
 		if(GLight[i]) {
-			if(GLight[i]->tl > 0) {
-				DynLight[GLight[i]->tl].exist = 0;
+			if(lightHandleIsValid(GLight[i]->tl)) {
+				lightHandleGet(GLight[i]->tl)->exist = 0;
 			}
 			free(GLight[i]);
 			GLight[i] = NULL;
@@ -240,8 +240,8 @@ void TreatBackgroundDynlights()
 
 			if(light->status == 0) {
 				// just extinguished
-				if(light->tl > 0) {
-					DynLight[light->tl].exist = 0;
+				if(lightHandleIsValid(light->tl)) {
+					lightHandleGet(light->tl)->exist = 0;
 					light->tl = -1;
 					Vec3f _pos2;
 
@@ -256,7 +256,7 @@ void TreatBackgroundDynlights()
 				}
 			} else {
 				// just light up
-				if(light->tl <= 0) {
+				if(!lightHandleIsValid(light->tl)) {
 					Vec3f _pos2;
 
 					for(size_t l = 0; l < entities.size(); l++) {
@@ -271,9 +271,8 @@ void TreatBackgroundDynlights()
 					light->tl = GetFreeDynLight();
 				}
 				
-				long n = light->tl;
-				if(n != -1) {
-					EERIE_LIGHT *dynamicLight = &DynLight[n];
+				if(lightHandleIsValid(light->tl)) {
+					EERIE_LIGHT *dynamicLight = lightHandleGet(light->tl);
 
 					dynamicLight->pos = light->pos;
 					dynamicLight->exist		=	1;
