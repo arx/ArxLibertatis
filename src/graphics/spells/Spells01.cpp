@@ -207,9 +207,7 @@ CMagicMissile::~CMagicMissile()
 		smissile = NULL;
 	}
 
-	if(this->lLightId != -1) {
-		this->lLightId = -1;
-	}
+	lLightId = -1;
 
 	ARX_SOUND_Stop(snd_loop);
 }
@@ -262,11 +260,8 @@ void CMagicMissile::SetTTL(unsigned long aulTTL)
 	ulDuration = std::min(ulCurrentTime + aulTTL, ulDuration);
 	SetDuration(ulDuration);
 	ulCurrentTime = t;
-
-	// Light
-	if(lLightId != -1) {
-		lLightId = -1;
-	}
+	
+	lLightId = -1;
 }
 
 void CMagicMissile::Update(unsigned long aulTime)
@@ -445,10 +440,8 @@ CMultiMagicMissile::~CMultiMagicMissile()
 {
 	for(unsigned int i = 0; i < uiNumber; i++) {
 		if(pTab[i]) {
-			if(pTab[i]->lLightId != -1) {
-				// no need to kill it because it's a duration light !
-				pTab[i]->lLightId = -1;
-			}
+			// no need to kill it because it's a duration light !
+			pTab[i]->lLightId = -1;
 
 			delete pTab[i];
 		}
@@ -595,8 +588,7 @@ void CMultiMagicMissile::CheckCollision()
 						pMM->bExplo = true;
 						pMM->bMove  = false;
 
-						if(pMM->lLightId != -1)
-							pMM->lLightId = -1;
+						pMM->lLightId = -1;
 
 						long ttt = ARX_DAMAGES_GetFree();
 

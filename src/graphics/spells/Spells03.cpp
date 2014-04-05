@@ -196,10 +196,8 @@ void CFireBall::SetTTL(unsigned long aulTTL)
 			}
 		}
 	}
-
-	// Light
-	if(lLightId != -1)
-		lLightId = -1;
+	
+	lLightId = -1;
 }
 
 void CFireBall::Create(Vec3f aeSrc, float afBeta, float afAlpha, float _fLevel)
