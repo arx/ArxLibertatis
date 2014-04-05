@@ -686,9 +686,9 @@ void CIgnit::Kill(void)
 	while(nb--) {
 		int id = this->tablight[nb].idl;
 
-		if(ValidDynLight(id))
-			DynLight[id].exist = 0;
-
+		if(ValidDynLight(id)) {
+			lightHandleGet(id)->exist = 0;
+		}
 		this->tablight[nb].idl = -1;
 	}
 

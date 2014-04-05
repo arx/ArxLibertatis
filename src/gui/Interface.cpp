@@ -1397,7 +1397,7 @@ void ArxGame::manageEditorControls() {
 							ARX_SOUND_PlaySFX(SND_TORCH_END);
 							ARX_SOUND_Stop(SND_TORCH_LOOP);
 							player.torch=NULL;
-							DynLight[0].exist=0;
+							lightHandleGet(0)->exist = 0;
 							Set_DragInter(io);
 							DRAGINTER->ignition=1;
 						} else {

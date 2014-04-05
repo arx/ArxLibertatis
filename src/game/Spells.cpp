@@ -1006,7 +1006,7 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 				light->rgb.b=0.008f*io->flarecount*2;
 			}
 		} else if(io->dynlight > -1) {
-			DynLight[io->dynlight].exist = 0;
+			lightHandleGet(io->dynlight)->exist = 0;
 			io->dynlight = -1;
 		}
 
@@ -4819,7 +4819,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			for(size_t ii = 0; ii < MAX_SPELLS; ii++) {
 				if(spells[ii].exist && spells[ii].type == typ) {
 					if(spells[ii].longinfo != -1) {
-						DynLight[spells[ii].longinfo].exist = 0;
+						lightHandleGet(spells[ii].longinfo)->exist = 0;
 					}
 					spells[ii].longinfo = -1;
 					spells[ii].tolive = 0;
@@ -5012,10 +5012,11 @@ void ARX_SPELLS_Kill(long i) {
 	spells[i].exist=false;
 
 	// All Levels - Kill Light
-	if (spells[i].pSpellFx && spells[i].pSpellFx->lLightId != -1)
-	{
-		DynLight[spells[i].pSpellFx->lLightId].duration = 500; 
-		DynLight[spells[i].pSpellFx->lLightId].time_creation = (unsigned long)(arxtime);
+	if(spells[i].pSpellFx && spells[i].pSpellFx->lLightId != -1) {
+		EERIE_LIGHT * light = lightHandleGet(spells[i].pSpellFx->lLightId);
+		
+		light->duration = 500; 
+		light->time_creation = (unsigned long)(arxtime);
 	}
 
 	switch(spells[i].type) {
@@ -5079,8 +5080,10 @@ void ARX_SPELLS_Kill(long i) {
 			}
 			
 			if(spells[i].longinfo2 != -1) {
-				DynLight[spells[i].longinfo2].time_creation = (unsigned long)(arxtime);
-				DynLight[spells[i].longinfo2].duration = 600; 
+				EERIE_LIGHT * light = lightHandleGet(spells[i].longinfo2);
+				
+				light->time_creation = (unsigned long)(arxtime);
+				light->duration = 600; 
 			}
 			
 			ARX_SOUND_Stop(spells[i].snd_loop);
@@ -5136,7 +5139,7 @@ void ARX_SPELLS_Kill(long i) {
 		case SPELL_SUMMON_CREATURE: {
 			if(spells[i].pSpellFx->lLightId > -1) {
 				long id = spells[i].pSpellFx->lLightId;
-				DynLight[id].exist = 0;
+				lightHandleGet(id)->exist = 0;
 				spells[i].pSpellFx->lLightId=-1;
 			}
 			
@@ -5173,7 +5176,7 @@ void ARX_SPELLS_Kill(long i) {
 		case SPELL_FAKE_SUMMON: {
 			if(spells[i].pSpellFx->lLightId > -1) {
 				long id = spells[i].pSpellFx->lLightId;
-				DynLight[id].exist = 0;
+				lightHandleGet(id)->exist = 0;
 				spells[i].pSpellFx->lLightId = -1;
 			}
 			
@@ -5410,7 +5413,7 @@ void ARX_SPELLS_Update()
 
 					if(pCreateField && pCreateField->lLightId != -1) {
 						long id=pCreateField->lLightId;
-						DynLight[id].duration=800;
+						lightHandleGet(id)->duration=800;
 					}
 
 					if(ValidIONum(spells[i].longinfo)) {
@@ -5479,7 +5482,7 @@ void ARX_SPELLS_Update()
 
 					if(spells[i].pSpellFx->lLightId > -1) {
 						long id = spells[i].pSpellFx->lLightId;
-						DynLight[id].exist = 0;
+						lightHandleGet(id)->exist = 0;
 						spells[i].pSpellFx->lLightId=-1;
 					}
 
@@ -5490,7 +5493,7 @@ void ARX_SPELLS_Update()
 
 					if(spells[i].pSpellFx->lLightId > -1) {
 						long id = spells[i].pSpellFx->lLightId;
-						DynLight[id].exist = 0;
+						lightHandleGet(id)->exist = 0;
 						spells[i].pSpellFx->lLightId=-1;
 					}
 				break;
@@ -6289,7 +6292,7 @@ void ARX_SPELLS_Update()
 					} else if(spells[i].longinfo) {
 						if(spells[i].pSpellFx->lLightId > -1) {
 							long id = spells[i].pSpellFx->lLightId;
-							DynLight[id].exist = 0;
+							lightHandleGet(id)->exist = 0;
 							spells[i].pSpellFx->lLightId=-1;
 						}
 

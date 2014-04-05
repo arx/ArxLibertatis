@@ -134,9 +134,9 @@ void ARX_MAGICAL_FLARES_KillAll()
 			flare.tolive=0;
 			flarenum--;
 
-			if(ValidDynLight(flare.dynlight))
-				DynLight[flare.dynlight].exist=0;
-
+			if(ValidDynLight(flare.dynlight)) {
+				lightHandleGet(flare.dynlight)->exist = 0;
+			}
 			flare.dynlight=-1;
 		}
 	}
@@ -453,7 +453,7 @@ void ARX_MAGICAL_FLARES_Update() {
 				}
 
 				if(ValidDynLight(flare.dynlight)) {
-					DynLight[flare.dynlight].exist = 0;
+					lightHandleGet(flare.dynlight)->exist = 0;
 				}
 
 				flare.dynlight = -1;

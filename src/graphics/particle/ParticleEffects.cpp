@@ -1392,7 +1392,7 @@ void RestoreAllLightsInitialStatus() {
 			GLight[i]->status = (GLight[i]->extras & EXTRAS_STARTEXTINGUISHED) ? 0 : 1;
 			if(GLight[i]->status == 0) {
 				if(ValidDynLight(GLight[i]->tl)) {
-					DynLight[GLight[i]->tl].exist = 0;
+					lightHandleGet(GLight[i]->tl)->exist = 0;
 				}
 				GLight[i]->tl = -1;
 			}
