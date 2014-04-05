@@ -3352,17 +3352,19 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 
 			spells[i].longinfo = ARX_DAMAGES_GetFree();
 			if(spells[i].longinfo != -1) {
-				damages[spells[i].longinfo].radius = 150.f;
-				damages[spells[i].longinfo].damages = 4.f;
-				damages[spells[i].longinfo].area = DAMAGE_FULL;
-				damages[spells[i].longinfo].duration = 100000000;
-				damages[spells[i].longinfo].source = spells[i].caster;
-				damages[spells[i].longinfo].flags = DAMAGE_FLAG_DONT_HURT_SOURCE
-				                                    | DAMAGE_FLAG_FOLLOW_SOURCE
-				                                    | DAMAGE_FLAG_ADD_VISUAL_FX;
-				damages[spells[i].longinfo].type = DAMAGE_TYPE_FAKEFIRE
-				                                   | DAMAGE_TYPE_MAGICAL;
-				damages[spells[i].longinfo].exist = true;
+				DAMAGE_INFO * damage = &damages[spells[i].longinfo];
+				
+				damage->radius = 150.f;
+				damage->damages = 4.f;
+				damage->area = DAMAGE_FULL;
+				damage->duration = 100000000;
+				damage->source = spells[i].caster;
+				damage->flags = DAMAGE_FLAG_DONT_HURT_SOURCE
+				              | DAMAGE_FLAG_FOLLOW_SOURCE
+				              | DAMAGE_FLAG_ADD_VISUAL_FX;
+				damage->type = DAMAGE_TYPE_FAKEFIRE
+				             | DAMAGE_TYPE_MAGICAL;
+				damage->exist = true;
 			}
 			
 			spells[i].longinfo2_light = GetFreeDynLight();
@@ -4277,17 +4279,19 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			
 			spells[i].longinfo = ARX_DAMAGES_GetFree();
 			if(spells[i].longinfo != -1) {
-				damages[spells[i].longinfo].radius = 150.f;
-				damages[spells[i].longinfo].damages = 10.f;
-				damages[spells[i].longinfo].area = DAMAGE_FULL;
-				damages[spells[i].longinfo].duration = 100000000;
-				damages[spells[i].longinfo].source = spells[i].caster;
-				damages[spells[i].longinfo].flags = 0;
-				damages[spells[i].longinfo].type = DAMAGE_TYPE_MAGICAL
-				                                   | DAMAGE_TYPE_FIRE
-				                                   | DAMAGE_TYPE_FIELD;
-				damages[spells[i].longinfo].exist = true;
-				damages[spells[i].longinfo].pos = target;
+				DAMAGE_INFO * damage = &damages[spells[i].longinfo];
+				
+				damage->radius = 150.f;
+				damage->damages = 10.f;
+				damage->area = DAMAGE_FULL;
+				damage->duration = 100000000;
+				damage->source = spells[i].caster;
+				damage->flags = 0;
+				damage->type = DAMAGE_TYPE_MAGICAL
+				             | DAMAGE_TYPE_FIRE
+				             | DAMAGE_TYPE_FIELD;
+				damage->exist = true;
+				damage->pos = target;
 			}
 			
 			effect->Create(200.f, &target, spells[i].tolive);
@@ -4342,17 +4346,19 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			
 			spells[i].longinfo = ARX_DAMAGES_GetFree();
 			if(spells[i].longinfo != -1) {
-				damages[spells[i].longinfo].radius = 150.f;
-				damages[spells[i].longinfo].damages = 10.f;
-				damages[spells[i].longinfo].area = DAMAGE_FULL;
-				damages[spells[i].longinfo].duration = 100000000;
-				damages[spells[i].longinfo].source = spells[i].caster;
-				damages[spells[i].longinfo].flags = 0;
-				damages[spells[i].longinfo].type = DAMAGE_TYPE_MAGICAL
-				                                   | DAMAGE_TYPE_COLD
-				                                   | DAMAGE_TYPE_FIELD;
-				damages[spells[i].longinfo].exist = true;
-				damages[spells[i].longinfo].pos = target;
+				DAMAGE_INFO * damage = &damages[spells[i].longinfo];
+				
+				damage->radius = 150.f;
+				damage->damages = 10.f;
+				damage->area = DAMAGE_FULL;
+				damage->duration = 100000000;
+				damage->source = spells[i].caster;
+				damage->flags = 0;
+				damage->type = DAMAGE_TYPE_MAGICAL
+				             | DAMAGE_TYPE_COLD
+				             | DAMAGE_TYPE_FIELD;
+				damage->exist = true;
+				damage->pos = target;
 			}
 			
 			effect->Create(target, MAKEANGLE(player.angle.getPitch()));
@@ -4457,18 +4463,20 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			
 			spells[i].longinfo = ARX_DAMAGES_GetFree();
 			if(spells[i].longinfo != -1) {
-				damages[spells[i].longinfo].radius = 150.f;
-				damages[spells[i].longinfo].damages = 8.f;
-				damages[spells[i].longinfo].area = DAMAGE_FULL;
-				damages[spells[i].longinfo].duration = 100000000;
-				damages[spells[i].longinfo].source = spells[i].caster;
-				damages[spells[i].longinfo].flags = DAMAGE_FLAG_DONT_HURT_SOURCE
-				                                    | DAMAGE_FLAG_FOLLOW_SOURCE
-				                                    | DAMAGE_FLAG_ADD_VISUAL_FX;
-				damages[spells[i].longinfo].type = DAMAGE_TYPE_FAKEFIRE
-				                                   | DAMAGE_TYPE_MAGICAL
-				                                   | DAMAGE_TYPE_DRAIN_MANA;
-				damages[spells[i].longinfo].exist = true;
+				DAMAGE_INFO * damage = &damages[spells[i].longinfo];
+				
+				damage->radius = 150.f;
+				damage->damages = 8.f;
+				damage->area = DAMAGE_FULL;
+				damage->duration = 100000000;
+				damage->source = spells[i].caster;
+				damage->flags = DAMAGE_FLAG_DONT_HURT_SOURCE
+				              | DAMAGE_FLAG_FOLLOW_SOURCE
+				              | DAMAGE_FLAG_ADD_VISUAL_FX;
+				damage->type = DAMAGE_TYPE_FAKEFIRE
+				             | DAMAGE_TYPE_MAGICAL
+				             | DAMAGE_TYPE_DRAIN_MANA;
+				damage->exist = true;
 			}
 			
 			spells[i].longinfo2_light = GetFreeDynLight();
@@ -4502,18 +4510,20 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			
 			spells[i].longinfo = ARX_DAMAGES_GetFree();
 			if(spells[i].longinfo != -1) {
-				damages[spells[i].longinfo].radius = 350.f;
-				damages[spells[i].longinfo].damages = 10.f;
-				damages[spells[i].longinfo].area = DAMAGE_AREA; 
-				damages[spells[i].longinfo].duration = spells[i].tolive;
-				damages[spells[i].longinfo].source = spells[i].caster;
-				damages[spells[i].longinfo].flags = DAMAGE_FLAG_DONT_HURT_SOURCE
-				                                    | DAMAGE_FLAG_FOLLOW_SOURCE
-				                                    | DAMAGE_FLAG_ADD_VISUAL_FX;
-				damages[spells[i].longinfo].type = DAMAGE_TYPE_FAKEFIRE
-				                                    | DAMAGE_TYPE_MAGICAL;
-				damages[spells[i].longinfo].exist = true;
-				damages[spells[i].longinfo].pos = target;
+				DAMAGE_INFO * damage = &damages[spells[i].longinfo];
+				
+				damage->radius = 350.f;
+				damage->damages = 10.f;
+				damage->area = DAMAGE_AREA; 
+				damage->duration = spells[i].tolive;
+				damage->source = spells[i].caster;
+				damage->flags = DAMAGE_FLAG_DONT_HURT_SOURCE
+				              | DAMAGE_FLAG_FOLLOW_SOURCE
+				              | DAMAGE_FLAG_ADD_VISUAL_FX;
+				damage->type = DAMAGE_TYPE_FAKEFIRE
+				             | DAMAGE_TYPE_MAGICAL;
+				damage->exist = true;
+				damage->pos = target;
 			}
 			
 			spells[i].longinfo2_light = GetFreeDynLight();
