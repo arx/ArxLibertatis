@@ -792,9 +792,12 @@ CMultiPoisonProjectile::~CMultiPoisonProjectile()
 {
 	for(unsigned int i = 0 ; i < uiNumber ; i++) {
 		if(pTab[i]->lLightId != -1) {
-			DynLight[pTab[i]->lLightId].duration	  = 2000;
-			DynLight[pTab[i]->lLightId].time_creation = (unsigned long)(arxtime);
-			pTab[i]->lLightId						  = -1;
+			EERIE_LIGHT * light = lightHandleGet(pTab[i]->lLightId);
+			
+			light->duration = 2000;
+			light->time_creation = (unsigned long)(arxtime);
+			
+			pTab[i]->lLightId = -1;
 		}
 
 		delete pTab[i];
