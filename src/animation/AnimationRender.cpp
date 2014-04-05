@@ -362,17 +362,19 @@ void Cedric_ApplyLightingFirstPartRefactor(Entity *io) {
 
 						long nn = GetFreeDynLight();
 						if(nn >= 0) {
-							DynLight[nn].exist = 1;
-							DynLight[nn].intensity = 0.7f + 2.f * rnd();
-							DynLight[nn].fallend = 600.f;
-							DynLight[nn].fallstart = 400.f;
-							DynLight[nn].rgb.r = 1.0f;
-							DynLight[nn].rgb.g = 0.8f;
-							DynLight[nn].rgb.b = .0f;
-							DynLight[nn].pos.x = io->pos.x;
-							DynLight[nn].pos.y = io->pos.y - 80.f;
-							DynLight[nn].pos.z = io->pos.z;
-							DynLight[nn].duration = 600;
+							EERIE_LIGHT * light = lightHandleGet(nn);
+							
+							light->exist = 1;
+							light->intensity = 0.7f + 2.f * rnd();
+							light->fallend = 600.f;
+							light->fallstart = 400.f;
+							light->rgb.r = 1.0f;
+							light->rgb.g = 0.8f;
+							light->rgb.b = .0f;
+							light->pos.x = io->pos.x;
+							light->pos.y = io->pos.y - 80.f;
+							light->pos.z = io->pos.z;
+							light->duration = 600;
 						}
 
 						if(io->sfx_flag & SFX_TYPE_INCINERATE) {
