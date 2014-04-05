@@ -99,7 +99,6 @@ struct EERIE_LIGHT {
 	char exist;
 	char type;
 	char treat;
-	char selected;
 	ExtrasType extras;
 	short status; // on/off 1/0
 	Vec3f pos;
@@ -110,11 +109,9 @@ struct EERIE_LIGHT {
 	Color3f rgb255;
 	float intensity;
 	Color3f rgb;
-	float i;
 	Vec3f mins;
 	Vec3f maxs;
 	float temp;
-	long ltemp;
 	Color3f ex_flicker;
 	float ex_radius;
 	float ex_frequency;

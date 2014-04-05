@@ -765,7 +765,6 @@ static EERIE_3DSCENE * ScnToEerie(const char * adr, size_t size, const res::path
 		light.intensity = (float)tsl3024->intensity;
 		light.exist = 1;
 		light.treat = 1;
-		light.selected = 0;
 		light.type = 0;
 		EERIE_LIGHT_GlobalAdd(&light);
 	}
