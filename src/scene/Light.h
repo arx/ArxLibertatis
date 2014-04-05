@@ -144,6 +144,8 @@ void EERIE_LIGHT_MoveAll(const Vec3f * trans);
 long EERIE_LIGHT_Create();
 void PrecalcIOLighting(const Vec3f * pos, float radius);
 
+EERIE_LIGHT * lightHandleGet(long lightHandle);
+
 bool ValidDynLight(long num);
 long GetFreeDynLight();
 void ClearDynLights();

@@ -382,6 +382,10 @@ void PrecalcIOLighting(const Vec3f * pos, float radius) {
 	}
 }
 
+EERIE_LIGHT * lightHandleGet(long lightHandle) {
+	return &DynLight[lightHandle];
+}
+
 bool ValidDynLight(long num)
 {
 	return num >= 0 && ((size_t)num < MAX_DYNLIGHTS) && DynLight[num].exist;

@@ -991,17 +991,19 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 				io->dynlight = (short)GetFreeDynLight();
 
 			if(io->dynlight != -1) {
+				EERIE_LIGHT * light = lightHandleGet(io->dynlight);
+				
 				float rr = rnd();
-				DynLight[io->dynlight].pos.x = io->pos.x - std::sin(radians(MAKEANGLE(io->angle.getPitch() - 45.f)))*60.f;
-				DynLight[io->dynlight].pos.y=io->pos.y-120.f;
-				DynLight[io->dynlight].pos.z = io->pos.z + std::cos(radians(MAKEANGLE(io->angle.getPitch() - 45.f)))*60.f;
-				DynLight[io->dynlight].fallstart=140.f+(float)io->flarecount*0.333333f+rr*5.f;
-				DynLight[io->dynlight].fallend=220.f+(float)io->flarecount*0.5f+rr*5.f;
-				DynLight[io->dynlight].intensity=1.6f;
-				DynLight[io->dynlight].exist=1;
-				DynLight[io->dynlight].rgb.r=0.01f*io->flarecount*2;
-				DynLight[io->dynlight].rgb.g=0.009f*io->flarecount*2;
-				DynLight[io->dynlight].rgb.b=0.008f*io->flarecount*2;
+				light->pos.x = io->pos.x - std::sin(radians(MAKEANGLE(io->angle.getPitch() - 45.f)))*60.f;
+				light->pos.y=io->pos.y-120.f;
+				light->pos.z = io->pos.z + std::cos(radians(MAKEANGLE(io->angle.getPitch() - 45.f)))*60.f;
+				light->fallstart=140.f+(float)io->flarecount*0.333333f+rr*5.f;
+				light->fallend=220.f+(float)io->flarecount*0.5f+rr*5.f;
+				light->intensity=1.6f;
+				light->exist=1;
+				light->rgb.r=0.01f*io->flarecount*2;
+				light->rgb.g=0.009f*io->flarecount*2;
+				light->rgb.b=0.008f*io->flarecount*2;
 			}
 		} else if(io->dynlight > -1) {
 			DynLight[io->dynlight].exist = 0;
@@ -1014,8 +1016,10 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 
 			if(tim > sd->duration) {
 				if(io->dynlight != -1) {
-					DynLight[io->dynlight].time_creation = (unsigned long)(arxtime);
-					DynLight[io->dynlight].duration = 600;
+					EERIE_LIGHT * light = lightHandleGet(io->dynlight);
+					
+					light->time_creation = (unsigned long)(arxtime);
+					light->duration = 600;
 					io->dynlight = -1;
 				}
 

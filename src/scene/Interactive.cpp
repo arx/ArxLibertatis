@@ -244,7 +244,7 @@ void ARX_INTERACTIVE_DestroyDynamicInfo(Entity * io)
 	}
 	
 	if(ValidDynLight(io->dynlight)) {
-		DynLight[io->dynlight].exist = 0;
+		lightHandleGet(io->dynlight)->exist = 0;
 	}
 
 	io->dynlight = -1;
@@ -753,7 +753,7 @@ void ARX_INTERACTIVE_ClearIODynData(Entity * io) {
 		return;
 	
 	if(ValidDynLight(io->dynlight)) {
-		DynLight[io->dynlight].exist = 0;
+		lightHandleGet(io->dynlight)->exist = 0;
 	}
 	io->dynlight = -1;
 	
