@@ -5256,10 +5256,7 @@ void ARX_SPELLS_Update()
 					ARX_SOUND_PlaySFX(SND_SPELL_VISION_START, &entities[spells[i].caster]->pos);					
 				break;
 				case SPELL_MAGIC_MISSILE: {
-					if(lightHandleIsValid(spells[i].longinfo_light)) {
-						EERIE_LIGHT * light = lightHandleGet(spells[i].longinfo_light);
-						light->exist = 0;
-					}
+					lightHandleDestroy(spells[i].longinfo_light);
 				}
 				break;
 				case SPELL_IGNIT: {
