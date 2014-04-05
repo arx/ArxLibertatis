@@ -3952,21 +3952,22 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 			Vec3f pos = Vec3f(0.f, 0.f, 2100.f);
 			Anglef angle = Anglef::ZERO;
 
-			EERIE_LIGHT tl;
-			memcpy(&tl,&DynLight[0],sizeof(EERIE_LIGHT));
-
 			EERIE_LIGHT * light = lightHandleGet(0);
+			
+			EERIE_LIGHT tl;
+			memcpy(&tl, light, sizeof(EERIE_LIGHT));
+
 			light->pos = Vec3f(500.f, -1960.f, 1590.f);
 			light->exist = 1;
 			light->rgb = Color3f(0.6f, 0.7f, 0.9f);
 			light->intensity  = 1.8f;
 			light->fallstart=4520.f;
 			light->fallend = light->fallstart + 600.f;
-			RecalcLight(&DynLight[0]);
+			RecalcLight(light);
 			
 			EERIE_CAMERA * oldcam = ACTIVECAM;
 			
-			PDL[0]=&DynLight[0];
+			PDL[0] = light;
 			TOTPDL=1;
 
 			long found2=0;
