@@ -3955,12 +3955,13 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 			EERIE_LIGHT tl;
 			memcpy(&tl,&DynLight[0],sizeof(EERIE_LIGHT));
 
-			DynLight[0].pos = Vec3f(500.f, -1960.f, 1590.f);
-			DynLight[0].exist = 1;
-			DynLight[0].rgb = Color3f(0.6f, 0.7f, 0.9f);
-			DynLight[0].intensity  = 1.8f;
-			DynLight[0].fallstart=4520.f;
-			DynLight[0].fallend = DynLight[0].fallstart + 600.f;
+			EERIE_LIGHT * light = lightHandleGet(0);
+			light->pos = Vec3f(500.f, -1960.f, 1590.f);
+			light->exist = 1;
+			light->rgb = Color3f(0.6f, 0.7f, 0.9f);
+			light->intensity  = 1.8f;
+			light->fallstart=4520.f;
+			light->fallend = light->fallstart + 600.f;
 			RecalcLight(&DynLight[0]);
 			
 			EERIE_CAMERA * oldcam = ACTIVECAM;
@@ -4003,7 +4004,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 
 						GRenderer->SetRenderState(Renderer::DepthWrite, true);
 						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-						DynLight[0].exist=1;	
+						light->exist = 1;
 						
 						// Now draw the rune
 						TransformInfo t2(pos, glm::toQuat(toRotationMatrix(angle)));
@@ -4268,7 +4269,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 				FLYING_OVER = -1;
 			}
 
-			memcpy(&DynLight[0],&tl,sizeof(EERIE_LIGHT));
+			memcpy(light, &tl, sizeof(EERIE_LIGHT));
 			SetActiveCamera(oldcam);
 			PrepareCamera(oldcam, g_size);
 		}
