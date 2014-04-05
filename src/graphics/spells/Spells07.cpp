@@ -683,16 +683,18 @@ void CConfuse::Render() {
 
 	if(this->lLightId != -1) {
 		long id = this->lLightId;
-		DynLight[id].exist = 1;
-		DynLight[id].intensity = 1.3f;
-		DynLight[id].fallstart = 180.f;
-		DynLight[id].fallend   = 420.f;
-		DynLight[id].rgb.r = 0.3f + rnd() * ( 1.0f / 5 );
-		DynLight[id].rgb.g = 0.3f;
-		DynLight[id].rgb.b = 0.5f + rnd() * ( 1.0f / 5 );
-		DynLight[id].pos = stitepos;
-		DynLight[id].duration = 200;
-		DynLight[id].extras = 0;
+		EERIE_LIGHT * light = lightHandleGet(id);
+		
+		light->exist = 1;
+		light->intensity = 1.3f;
+		light->fallstart = 180.f;
+		light->fallend   = 420.f;
+		light->rgb.r = 0.3f + rnd() * ( 1.0f / 5 );
+		light->rgb.g = 0.3f;
+		light->rgb.b = 0.5f + rnd() * ( 1.0f / 5 );
+		light->pos = stitepos;
+		light->duration = 200;
+		light->extras = 0;
 	}
 }
 

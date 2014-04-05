@@ -3574,21 +3574,23 @@ void ManageIgnition_2(Entity * io) {
 
 		if(io->ignit_light != -1) {
 			long id = io->ignit_light;
-			DynLight[id].exist = 1;
+			EERIE_LIGHT * light = lightHandleGet(id);
+			
+			light->exist = 1;
 
-			DynLight[id].intensity = max(io->ignition * ( 1.0f / 10 ), 1.f);
-			DynLight[id].fallstart = max(io->ignition * 10.f, 100.f);
-			DynLight[id].fallend   = max(io->ignition * 25.f, 240.f);
+			light->intensity = max(io->ignition * ( 1.0f / 10 ), 1.f);
+			light->fallstart = max(io->ignition * 10.f, 100.f);
+			light->fallend   = max(io->ignition * 25.f, 240.f);
 			float v = max((io->ignition * ( 1.0f / 10 )), 0.5f);
 			v = min(v, 1.f);
-			DynLight[id].rgb.r = (1.f - rnd() * 0.2f) * v;
-			DynLight[id].rgb.g = (0.8f - rnd() * 0.2f) * v;
-			DynLight[id].rgb.b = (0.6f - rnd() * 0.2f) * v;
-			DynLight[id].pos.x = position.x;
-			DynLight[id].pos.y = position.y - 30.f;
-			DynLight[id].pos.z = position.z;
-			DynLight[id].ex_flaresize = 40.f; //16.f;
-			DynLight[id].extras |= EXTRAS_FLARE;
+			light->rgb.r = (1.f - rnd() * 0.2f) * v;
+			light->rgb.g = (0.8f - rnd() * 0.2f) * v;
+			light->rgb.b = (0.6f - rnd() * 0.2f) * v;
+			light->pos.x = position.x;
+			light->pos.y = position.y - 30.f;
+			light->pos.z = position.z;
+			light->ex_flaresize = 40.f; //16.f;
+			light->extras |= EXTRAS_FLARE;
 		}
 
 		if(io->ignit_sound == audio::INVALID_ID) {

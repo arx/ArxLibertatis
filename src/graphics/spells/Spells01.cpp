@@ -151,23 +151,25 @@ void LaunchMagicMissileExplosion(const Vec3f & _ePos, int t = 0, long spellinsta
 	long id = GetFreeDynLight();
 
 	if(id != -1) {
-		DynLight[id].exist = 1;
-		DynLight[id].intensity = 2.3f;
-		DynLight[id].fallstart = 250.f;
-		DynLight[id].fallend   = 420.f;
+		EERIE_LIGHT * light = lightHandleGet(id);
+		
+		light->exist = 1;
+		light->intensity = 2.3f;
+		light->fallstart = 250.f;
+		light->fallend   = 420.f;
 
 		if(spellinstance >= 0 && spells[spellinstance].caster == 0 && cur_mr == 3) {
-			DynLight[id].rgb.r = 1.f;
-			DynLight[id].rgb.g = 0.3f;
-			DynLight[id].rgb.b = .8f;
+			light->rgb.r = 1.f;
+			light->rgb.g = 0.3f;
+			light->rgb.b = .8f;
 		} else {
-			DynLight[id].rgb.r = 0.f;
-			DynLight[id].rgb.g = 0.f;
-			DynLight[id].rgb.b = .8f;
+			light->rgb.r = 0.f;
+			light->rgb.g = 0.f;
+			light->rgb.b = .8f;
 		}
 
-		DynLight[id].pos = eP;
-		DynLight[id].duration = 1500;
+		light->pos = eP;
+		light->duration = 1500;
 	}
 
 	arx_assert(pParticleManager);
@@ -741,13 +743,14 @@ void CIgnit::AddLight(int aiLight)
 
 	if(this->tablight[this->nblight].idl > 0) {
 		int id = this->tablight[this->nblight].idl;
-		EERIE_LIGHT * el = &DynLight[id];
-		el->exist = 1;
-		el->intensity = 0.7f + 2.f * rnd();
-		el->fallend = 400.f;
-		el->fallstart = 300.f;
-		el->rgb = rgb;
-		el->pos = this->tablight[this->nblight].poslight;
+		EERIE_LIGHT * light = lightHandleGet(id);
+		
+		light->exist = 1;
+		light->intensity = 0.7f + 2.f * rnd();
+		light->fallend = 400.f;
+		light->fallstart = 300.f;
+		light->rgb = rgb;
+		light->pos = this->tablight[this->nblight].poslight;
 	}
 
 	this->nblight++;
@@ -778,8 +781,10 @@ void CIgnit::Update(unsigned long _ulTime)
 					int id = this->tablight[nb].idl;
 
 					if(id > 0) {
-						DynLight[id].intensity = 0.7f + 2.f * rnd();
-						DynLight[id].pos = this->tablight[nb].posfx;
+						EERIE_LIGHT * light = lightHandleGet(id);
+						
+						light->intensity = 0.7f + 2.f * rnd();
+						light->pos = this->tablight[nb].posfx;
 					}
 				}
 			}

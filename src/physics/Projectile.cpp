@@ -352,14 +352,16 @@ void CheckExp(long i) {
 		long id = GetFreeDynLight();
 
 		if(id != -1 && framedelay > 0) {
-			DynLight[id].exist = 1;
-			DynLight[id].intensity = 3.9f;
-			DynLight[id].fallstart = 400.f;
-			DynLight[id].fallend   = 440.f;
-			DynLight[id].rgb = Color3f(1.f - rnd() * .2f, .8f - rnd() * .2f, .6f - rnd() * .2f);
-			DynLight[id].pos = Thrown[i].position;
-			DynLight[id].ex_flaresize = 40.f;
-			DynLight[id].duration = 1500;
+			EERIE_LIGHT * light = lightHandleGet(id);
+			
+			light->exist = 1;
+			light->intensity = 3.9f;
+			light->fallstart = 400.f;
+			light->fallend   = 440.f;
+			light->rgb = Color3f(1.f - rnd() * .2f, .8f - rnd() * .2f, .6f - rnd() * .2f);
+			light->pos = Thrown[i].position;
+			light->ex_flaresize = 40.f;
+			light->duration = 1500;
 		}
 	}
 }

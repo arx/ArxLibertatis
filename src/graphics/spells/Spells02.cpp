@@ -85,18 +85,20 @@ void CHeal::Create() {
 
 	if(pPS->lLightId != -1) {
 		long id = pPS->lLightId;
-		DynLight[id].exist = 1;
-		DynLight[id].intensity = 2.3f;
-		DynLight[id].fallstart = 200.f;
-		DynLight[id].fallend   = 350.f;
-		DynLight[id].rgb.r = 0.4f;
-		DynLight[id].rgb.g = 0.4f;
-		DynLight[id].rgb.b = 1.0f;
-		DynLight[id].pos.x = eSrc.x;
-		DynLight[id].pos.y = eSrc.y - 50.f;
-		DynLight[id].pos.z = eSrc.z;
-		DynLight[id].duration = 200;
-		DynLight[id].extras = 0;
+		EERIE_LIGHT * light = lightHandleGet(id);
+		
+		light->exist = 1;
+		light->intensity = 2.3f;
+		light->fallstart = 200.f;
+		light->fallend   = 350.f;
+		light->rgb.r = 0.4f;
+		light->rgb.g = 0.4f;
+		light->rgb.b = 1.0f;
+		light->pos.x = eSrc.x;
+		light->pos.y = eSrc.y - 50.f;
+		light->pos.z = eSrc.z;
+		light->duration = 200;
+		light->extras = 0;
 	}
 
 	pPS->SetPos(eSrc);
@@ -169,18 +171,20 @@ void CHeal::Update(unsigned long aulTime)
 
 	if(pPS->lLightId != -1) {
 		long id = pPS->lLightId;
-		DynLight[id].exist = 1;
-		DynLight[id].intensity = 2.3f;
-		DynLight[id].fallstart = 200.f;
-		DynLight[id].fallend   = 350.f;
-		DynLight[id].rgb.r = 0.4f;
-		DynLight[id].rgb.g = 0.4f;
-		DynLight[id].rgb.b = 1.0f;
-		DynLight[id].pos.x = eSrc.x;
-		DynLight[id].pos.y = eSrc.y - 50.f;
-		DynLight[id].pos.z = eSrc.z;
-		DynLight[id].duration = 200;
-		DynLight[id].extras = 0;
+		EERIE_LIGHT * light = lightHandleGet(id);
+		
+		light->exist = 1;
+		light->intensity = 2.3f;
+		light->fallstart = 200.f;
+		light->fallend   = 350.f;
+		light->rgb.r = 0.4f;
+		light->rgb.g = 0.4f;
+		light->rgb.b = 1.0f;
+		light->pos.x = eSrc.x;
+		light->pos.y = eSrc.y - 50.f;
+		light->pos.z = eSrc.z;
+		light->duration = 200;
+		light->extras = 0;
 	}
 
 	unsigned long ulCalc = ulDuration - ulCurrentTime ;

@@ -169,19 +169,21 @@ void CCurePoison::Create()
 
 	if(pPS->lLightId != -1) {
 		long id = pPS->lLightId;
-		DynLight[id].exist = 1;
-		DynLight[id].intensity = 1.5f;
-		DynLight[id].fallstart = 200.f;
-		DynLight[id].fallend   = 350.f;
-		DynLight[id].rgb.r = 0.f;
-		DynLight[id].rgb.g = 1.f;
-		DynLight[id].rgb.b = 0.0f;
-		DynLight[id].pos.x = eSrc.x;
-		DynLight[id].pos.y = eSrc.y - 50.f;
-		DynLight[id].pos.z = eSrc.z;
-		DynLight[id].time_creation = (unsigned long)(arxtime);
-		DynLight[id].duration = 200;
-		DynLight[id].extras = 0;
+		EERIE_LIGHT * light = lightHandleGet(id);
+		
+		light->exist = 1;
+		light->intensity = 1.5f;
+		light->fallstart = 200.f;
+		light->fallend   = 350.f;
+		light->rgb.r = 0.f;
+		light->rgb.g = 1.f;
+		light->rgb.b = 0.0f;
+		light->pos.x = eSrc.x;
+		light->pos.y = eSrc.y - 50.f;
+		light->pos.z = eSrc.z;
+		light->time_creation = (unsigned long)(arxtime);
+		light->duration = 200;
+		light->extras = 0;
 	}
 
 	fSize = 1;
@@ -234,19 +236,21 @@ void CCurePoison::Update(unsigned long aulTime)
 
 	if(pPS->lLightId != -1) {
 		long id = pPS->lLightId;
-		DynLight[id].exist = 1;
-		DynLight[id].intensity = 2.3f;
-		DynLight[id].fallstart = 200.f;
-		DynLight[id].fallend   = 350.f;
-		DynLight[id].rgb.r = 0.4f;
-		DynLight[id].rgb.g = 1.f;
-		DynLight[id].rgb.b = 0.4f;
-		DynLight[id].pos.x = eSrc.x;
-		DynLight[id].pos.y = eSrc.y - 50.f;
-		DynLight[id].pos.z = eSrc.z;
-		DynLight[id].duration = 200;
-		DynLight[id].time_creation = (unsigned long)(arxtime);
-		DynLight[id].extras = 0;
+		EERIE_LIGHT * light = lightHandleGet(id);
+		
+		light->exist = 1;
+		light->intensity = 2.3f;
+		light->fallstart = 200.f;
+		light->fallend   = 350.f;
+		light->rgb.r = 0.4f;
+		light->rgb.g = 1.f;
+		light->rgb.b = 0.4f;
+		light->pos.x = eSrc.x;
+		light->pos.y = eSrc.y - 50.f;
+		light->pos.z = eSrc.z;
+		light->duration = 200;
+		light->time_creation = (unsigned long)(arxtime);
+		light->extras = 0;
 	}
 }
 
@@ -323,16 +327,18 @@ void CRuneOfGuarding::Create(Vec3f _eSrc, float _fBeta) {
 	lLightId = GetFreeDynLight();
 	if(lLightId != -1) {
 		long id = lLightId;
-		DynLight[id].exist = 1;
-		DynLight[id].intensity = 0.7f + 2.3f;
-		DynLight[id].fallend = 500.f;
-		DynLight[id].fallstart = 400.f;
-		DynLight[id].rgb.r = 1.0f;
-		DynLight[id].rgb.g = 0.2f;
-		DynLight[id].rgb.b = 0.2f;
-		DynLight[id].pos = eSrc - Vec3f(0.f, 50.f, 0.f);
-		DynLight[id].time_creation = (unsigned long)(arxtime);
-		DynLight[id].duration = 200;
+		EERIE_LIGHT * light = lightHandleGet(id);
+		
+		light->exist = 1;
+		light->intensity = 0.7f + 2.3f;
+		light->fallend = 500.f;
+		light->fallstart = 400.f;
+		light->rgb.r = 1.0f;
+		light->rgb.g = 0.2f;
+		light->rgb.b = 0.2f;
+		light->pos = eSrc - Vec3f(0.f, 50.f, 0.f);
+		light->time_creation = (unsigned long)(arxtime);
+		light->duration = 200;
 	}
 }
 
@@ -344,15 +350,17 @@ void CRuneOfGuarding::Update(unsigned long _ulTime) {
 	
 	if(lLightId != -1) {
 		long id = lLightId;
-		DynLight[id].exist = 1;
-		DynLight[id].intensity = 0.7f + 2.3f * fa;
-		DynLight[id].fallend = 350.f;
-		DynLight[id].fallstart = 150.f;
-		DynLight[id].rgb.r = 1.0f;
-		DynLight[id].rgb.g = 0.2f;
-		DynLight[id].rgb.b = 0.2f;
-		DynLight[id].time_creation = (unsigned long)(arxtime);
-		DynLight[id].duration = 200;
+		EERIE_LIGHT * light = lightHandleGet(id);
+		
+		light->exist = 1;
+		light->intensity = 0.7f + 2.3f * fa;
+		light->fallend = 350.f;
+		light->fallstart = 150.f;
+		light->rgb.r = 1.0f;
+		light->rgb.g = 0.2f;
+		light->rgb.b = 0.2f;
+		light->time_creation = (unsigned long)(arxtime);
+		light->duration = 200;
 	}
 }
 
@@ -850,14 +858,16 @@ void CMultiPoisonProjectile::Create(Vec3f _eSrc, float _afBeta = 0) {
 
 		if(pPP->lLightId != -1) {
 			long id						= pPP->lLightId;
-			DynLight[id].exist			= 1;
-			DynLight[id].intensity		= 2.3f;
-			DynLight[id].fallend		= 250.f;
-			DynLight[id].fallstart		= 150.f;
-			DynLight[id].rgb = Color3f::green;
-			DynLight[id].pos = pPP->eSrc;
-			DynLight[id].time_creation	= (unsigned long)(arxtime);
-			DynLight[id].duration		= 200;
+			EERIE_LIGHT * light = lightHandleGet(id);
+			
+			light->exist			= 1;
+			light->intensity		= 2.3f;
+			light->fallend		= 250.f;
+			light->fallstart		= 150.f;
+			light->rgb = Color3f::green;
+			light->pos = pPP->eSrc;
+			light->time_creation	= (unsigned long)(arxtime);
+			light->duration		= 200;
 		}
 
 		pTab[i]->spellinstance = this->spellinstance;
@@ -883,14 +893,16 @@ void CMultiPoisonProjectile::Render()
 
 		if(pPoisonProjectile->lLightId != -1) {
 			long id					= pPoisonProjectile->lLightId;
-			DynLight[id].exist		= 1;
-			DynLight[id].intensity	= 2.3f * pPoisonProjectile->lightIntensityFactor;
-			DynLight[id].fallend	= 250.f;
-			DynLight[id].fallstart	= 150.f;
-			DynLight[id].rgb = Color3f::green;
-			DynLight[id].pos = pPoisonProjectile->eCurPos;
-			DynLight[id].time_creation = (unsigned long)(arxtime);
-			DynLight[id].duration	= 200;
+			EERIE_LIGHT * light = lightHandleGet(id);
+			
+			light->exist		= 1;
+			light->intensity	= 2.3f * pPoisonProjectile->lightIntensityFactor;
+			light->fallend	= 250.f;
+			light->fallstart	= 150.f;
+			light->rgb = Color3f::green;
+			light->pos = pPoisonProjectile->eCurPos;
+			light->time_creation = (unsigned long)(arxtime);
+			light->duration	= 200;
 		}
 
 		long t = ARX_DAMAGES_GetFree();
@@ -1054,14 +1066,16 @@ void CRepelUndead::Render() {
 	
 	if(lLightId != -1) {
 		long id = lLightId;
-		DynLight[id].exist = 1;
-		DynLight[id].intensity = 2.3f;
-		DynLight[id].fallend = 350.f;
-		DynLight[id].fallstart = 150.f;
-		DynLight[id].rgb = Color3f(0.8f, 0.8f, 1.f);
-		DynLight[id].pos = eSrc + Vec3f(0.f, -50.f, 0.f);
-		DynLight[id].duration = 200;
-		DynLight[id].time_creation = (unsigned long)(arxtime);
+		EERIE_LIGHT * light = lightHandleGet(id);
+		
+		light->exist = 1;
+		light->intensity = 2.3f;
+		light->fallend = 350.f;
+		light->fallstart = 150.f;
+		light->rgb = Color3f(0.8f, 0.8f, 1.f);
+		light->pos = eSrc + Vec3f(0.f, -50.f, 0.f);
+		light->duration = 200;
+		light->time_creation = (unsigned long)(arxtime);
 	}
 }
 

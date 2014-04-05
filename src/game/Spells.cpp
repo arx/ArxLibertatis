@@ -2998,13 +2998,15 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			
 			long id = GetFreeDynLight();
 			if(id != -1) {
-				DynLight[id].exist     = 1;
-				DynLight[id].intensity = 1.8f;
-				DynLight[id].fallend   = 450.f;
-				DynLight[id].fallstart = 380.f;
-				DynLight[id].rgb       = Color3f(1.f, 0.75f, 0.5f);
-				DynLight[id].pos       = target;
-				DynLight[id].duration  = 300;
+				EERIE_LIGHT * light = lightHandleGet(id);
+				
+				light->exist     = 1;
+				light->intensity = 1.8f;
+				light->fallend   = 450.f;
+				light->fallstart = 380.f;
+				light->rgb       = Color3f(1.f, 0.75f, 0.5f);
+				light->pos       = target;
+				light->duration  = 300;
 			}
 			
 			float fPerimeter = 400.f + spells[i].caster_level * 30.f;
@@ -3365,12 +3367,14 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			spells[i].longinfo2 = GetFreeDynLight();
 			if(spells[i].longinfo2 != -1) {
 				long id = spells[i].longinfo2;
-				DynLight[id].exist = 1;
-				DynLight[id].intensity = 2.3f;
-				DynLight[id].fallend = 700.f;
-				DynLight[id].fallstart = 500.f;
-				DynLight[id].rgb = Color3f::red;
-				DynLight[id].pos = spells[i].caster_pos;
+				EERIE_LIGHT * light = lightHandleGet(id);
+				
+				light->exist = 1;
+				light->intensity = 2.3f;
+				light->fallend = 700.f;
+				light->fallstart = 500.f;
+				light->rgb = Color3f::red;
+				light->pos = spells[i].caster_pos;
 			}
 			
 			break;
@@ -3995,14 +3999,16 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			}
 			if(effect->lLightId != -1) {
 				long id = effect->lLightId;
-				DynLight[id].exist = 1;
-				DynLight[id].intensity = 1.3f;
-				DynLight[id].fallend = 450.f;
-				DynLight[id].fallstart = 380.f;
-				DynLight[id].rgb = Color3f::black;
-				DynLight[id].pos = target - Vec3f(0.f, 100.f, 0.f);
-				DynLight[id].duration = 200;
-				DynLight[id].time_creation = (unsigned long)(arxtime);
+				EERIE_LIGHT * light = lightHandleGet(id);
+				
+				light->exist = 1;
+				light->intensity = 1.3f;
+				light->fallend = 450.f;
+				light->fallstart = 380.f;
+				light->rgb = Color3f::black;
+				light->pos = target - Vec3f(0.f, 100.f, 0.f);
+				light->duration = 200;
+				light->time_creation = (unsigned long)(arxtime);
 			}
 			
 			spells[i].pSpellFx = effect;
@@ -4092,12 +4098,14 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 				
 				if(effect->lLightId != -1) {
 					long id = effect->lLightId;
-					DynLight[id].exist = 1;
-					DynLight[id].intensity = 0.7f + 2.3f;
-					DynLight[id].fallend = 500.f;
-					DynLight[id].fallstart = 400.f;
-					DynLight[id].rgb = Color3f(0.8f, 0.0f, 1.0f);
-					DynLight[id].pos = effect->eSrc - Vec3f(0.f, 150.f, 0.f);
+					EERIE_LIGHT * light = lightHandleGet(id);
+					
+					light->exist = 1;
+					light->intensity = 0.7f + 2.3f;
+					light->fallend = 500.f;
+					light->fallstart = 400.f;
+					light->rgb = Color3f(0.8f, 0.0f, 1.0f);
+					light->pos = effect->eSrc - Vec3f(0.f, 150.f, 0.f);
 				}
 				
 				spells[i].pSpellFx = effect;
@@ -4468,13 +4476,15 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			spells[i].longinfo2 = GetFreeDynLight();
 			if(spells[i].longinfo2 != -1) {
 				long id = spells[i].longinfo2;
-				DynLight[id].exist = 1;
-				DynLight[id].intensity = 2.3f;
-				DynLight[id].fallend = 700.f;
-				DynLight[id].fallstart = 500.f;
-				DynLight[id].rgb = Color3f::blue;
-				DynLight[id].pos = spells[i].caster_pos;
-				DynLight[id].duration=900;
+				EERIE_LIGHT * light = lightHandleGet(id);
+				
+				light->exist = 1;
+				light->intensity = 2.3f;
+				light->fallend = 700.f;
+				light->fallstart = 500.f;
+				light->rgb = Color3f::blue;
+				light->pos = spells[i].caster_pos;
+				light->duration=900;
 			}
 			
 			break;
@@ -4512,15 +4522,17 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			spells[i].longinfo2 = GetFreeDynLight();
 			if(spells[i].longinfo2 != -1) {
 				long id = spells[i].longinfo2;
-				DynLight[id].exist = 1;
-				DynLight[id].intensity = 2.3f;
-				DynLight[id].fallend = 700.f;
-				DynLight[id].fallstart = 500.f;
-				DynLight[id].rgb.r = 0.1f + rnd() * (1.f / 3);
-				DynLight[id].rgb.g = 0.1f + rnd() * (1.f / 3);
-				DynLight[id].rgb.b = 0.8f + rnd() * (1.f / 5);
-				DynLight[id].pos = target;
-				DynLight[id].duration = 200;
+				EERIE_LIGHT * light = lightHandleGet(id);
+				
+				light->exist = 1;
+				light->intensity = 2.3f;
+				light->fallend = 700.f;
+				light->fallstart = 500.f;
+				light->rgb.r = 0.1f + rnd() * (1.f / 3);
+				light->rgb.g = 0.1f + rnd() * (1.f / 3);
+				light->rgb.b = 0.8f + rnd() * (1.f / 5);
+				light->pos = target;
+				light->duration = 200;
 			}
 			
 			AddQuakeFX(300, 2000, 400, 1);
@@ -4593,13 +4605,15 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			spells[i].longinfo2 = GetFreeDynLight();
 			if(spells[i].longinfo2 != -1) {
 				long id = spells[i].longinfo2;
-				DynLight[id].exist = 1;
-				DynLight[id].intensity = 2.3f;
-				DynLight[id].fallend = 700.f;
-				DynLight[id].fallstart = 500.f;
-				DynLight[id].rgb = Color3f::red;
-				DynLight[id].pos = spells[i].caster_pos;
-				DynLight[id].duration = 900;
+				EERIE_LIGHT * light = lightHandleGet(id);
+				
+				light->exist = 1;
+				light->intensity = 2.3f;
+				light->fallend = 700.f;
+				light->fallstart = 500.f;
+				light->rgb = Color3f::red;
+				light->pos = spells[i].caster_pos;
+				light->duration = 900;
 			}
 			
 			break;
@@ -4653,12 +4667,14 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			effect->lLightId = GetFreeDynLight();
 			if(effect->lLightId > -1) {
 				long id = effect->lLightId;
-				DynLight[id].exist = 1;
-				DynLight[id].intensity = 0.3f;
-				DynLight[id].fallend = 500.f;
-				DynLight[id].fallstart = 400.f;
-				DynLight[id].rgb = Color3f::red;
-				DynLight[id].pos = effect->eSrc;
+				EERIE_LIGHT * light = lightHandleGet(id);
+				
+				light->exist = 1;
+				light->intensity = 0.3f;
+				light->fallend = 500.f;
+				light->fallstart = 400.f;
+				light->rgb = Color3f::red;
+				light->pos = effect->eSrc;
 			}
 			
 			spells[i].pSpellFx = effect;
@@ -4694,12 +4710,14 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			
 			if(effect->lLightId > -1) {
 				long id = effect->lLightId;
-				DynLight[id].exist = 1;
-				DynLight[id].intensity = 0.3f;
-				DynLight[id].fallend = 500.f;
-				DynLight[id].fallstart = 400.f;
-				DynLight[id].rgb = Color3f::red;
-				DynLight[id].pos = effect->eSrc;
+				EERIE_LIGHT * light = lightHandleGet(id);
+				
+				light->exist = 1;
+				light->intensity = 0.3f;
+				light->fallend = 500.f;
+				light->fallstart = 400.f;
+				light->rgb = Color3f::red;
+				light->pos = effect->eSrc;
 			}
 			
 			spells[i].pSpellFx = effect;
@@ -4816,12 +4834,14 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			spells[i].longinfo = GetFreeDynLight();
 			if(spells[i].longinfo != -1) {
 				long id = spells[i].longinfo;
-				DynLight[id].exist = 1;
-				DynLight[id].intensity = 1.8f;
-				DynLight[id].fallend = 450.f;
-				DynLight[id].fallstart = 380.f;
-				DynLight[id].rgb = Color3f(1.f, 0.75f, 0.75f);
-				DynLight[id].pos = spells[i].vsource;
+				EERIE_LIGHT * light = lightHandleGet(id);
+				
+				light->exist = 1;
+				light->intensity = 1.8f;
+				light->fallend = 450.f;
+				light->fallstart = 380.f;
+				light->rgb = Color3f(1.f, 0.75f, 0.75f);
+				light->pos = spells[i].vsource;
 			}
 			
 			long count = std::max(long(spells[i].caster_level), 1l);
@@ -5918,15 +5938,17 @@ void ARX_SPELLS_Update()
 
 					if(pCSpellFX->lLightId > -1) {
 						long id=pCSpellFX->lLightId;
-						DynLight[id].exist=1;
-						DynLight[id].intensity = 0.7f + 2.3f;
-						DynLight[id].fallend = 500.f;
-						DynLight[id].fallstart = 400.f;
-						DynLight[id].rgb.r = 0.8f;
-						DynLight[id].rgb.g = 0.2f;
-						DynLight[id].rgb.b = 0.2f;
-						DynLight[id].duration=800;
-						DynLight[id].time_creation = (unsigned long)(arxtime);
+						EERIE_LIGHT * light = lightHandleGet(id);
+						
+						light->exist=1;
+						light->intensity = 0.7f + 2.3f;
+						light->fallend = 500.f;
+						light->fallstart = 400.f;
+						light->rgb.r = 0.8f;
+						light->rgb.g = 0.2f;
+						light->rgb.b = 0.2f;
+						light->duration=800;
+						light->time_creation = (unsigned long)(arxtime);
 					}
 
 					unsigned long tim=pCSpellFX->getCurrentTime();
@@ -6185,10 +6207,12 @@ void ARX_SPELLS_Update()
 				if (spells[i].longinfo2 != -1)
 				{
 					long id = spells[i].longinfo2;
-					DynLight[id].rgb.r = 0.1f+rnd()*( 1.0f / 3 );;
-					DynLight[id].rgb.g = 0.1f+rnd()*( 1.0f / 3 );;
-					DynLight[id].rgb.b = 0.8f+rnd()*( 1.0f / 5 );;
-					DynLight[id].duration=200;
+					EERIE_LIGHT * light = lightHandleGet(id);
+					
+					light->rgb.r = 0.1f+rnd()*( 1.0f / 3 );;
+					light->rgb.g = 0.1f+rnd()*( 1.0f / 3 );;
+					light->rgb.b = 0.8f+rnd()*( 1.0f / 5 );;
+					light->duration=200;
 				
 					float rr,r2;
 					Vec3f pos;
@@ -6198,24 +6222,24 @@ void ARX_SPELLS_Update()
 						long lvl = Random::get(9, 13);
 						rr=radians(rnd()*360.f);
 						r2=radians(rnd()*360.f);
-						pos.x=DynLight[id].pos.x-std::sin(rr)*260;
-						pos.y=DynLight[id].pos.y-std::sin(r2)*260;
-						pos.z=DynLight[id].pos.z+std::cos(rr)*260;
+						pos.x=light->pos.x-std::sin(rr)*260;
+						pos.y=light->pos.y-std::sin(r2)*260;
+						pos.z=light->pos.z+std::cos(rr)*260;
 						Color3f rgb(0.1f + rnd()*(1.f/3), 0.1f + rnd()*(1.0f/3), 0.8f + rnd()*(1.0f/5));
 						LaunchFireballBoom(&pos, static_cast<float>(lvl), NULL, &rgb);
 					} else if(choice > .6f) {
 						rr=radians(rnd()*360.f);
 						r2=radians(rnd()*360.f);
-						pos.x=DynLight[id].pos.x-std::sin(rr)*260;
-						pos.y=DynLight[id].pos.y-std::sin(r2)*260;
-						pos.z=DynLight[id].pos.z+std::cos(rr)*260;
+						pos.x=light->pos.x-std::sin(rr)*260;
+						pos.y=light->pos.y-std::sin(r2)*260;
+						pos.z=light->pos.z+std::cos(rr)*260;
 						MakeCoolFx(pos);
 					} else if(choice > 0.4f) {
 						rr=radians(rnd()*360.f);
 						r2=radians(rnd()*360.f);
-						pos.x=DynLight[id].pos.x-std::sin(rr)*160;
-						pos.y=DynLight[id].pos.y-std::sin(r2)*160;
-						pos.z=DynLight[id].pos.z+std::cos(rr)*160;
+						pos.x=light->pos.x-std::sin(rr)*160;
+						pos.y=light->pos.y-std::sin(r2)*160;
+						pos.z=light->pos.z+std::cos(rr)*160;
 						ARX_PARTICLES_Add_Smoke(&pos, 2, 20); // flag 1 = randomize pos
 					}
 				}
