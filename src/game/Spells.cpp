@@ -5654,12 +5654,14 @@ void ARX_SPELLS_Update()
 					float Es=std::sin((float)arxtime.get_frame_time()*( 1.0f / 800 ) + radians(scaley));
 
 					if(spells[i].longinfo2!=-1) {
-						DynLight[spells[i].longinfo2].pos.x = cabalpos.x;
-						DynLight[spells[i].longinfo2].pos.y = refpos;
-						DynLight[spells[i].longinfo2].pos.z = cabalpos.z; 
-						DynLight[spells[i].longinfo2].rgb.r=rnd()*0.2f+0.8f;
-						DynLight[spells[i].longinfo2].rgb.g=rnd()*0.2f+0.6f;
-						DynLight[spells[i].longinfo2].fallstart=Es*1.5f;
+						EERIE_LIGHT * light = lightHandleGet(spells[i].longinfo2);
+						
+						light->pos.x = cabalpos.x;
+						light->pos.y = refpos;
+						light->pos.z = cabalpos.z; 
+						light->rgb.r=rnd()*0.2f+0.8f;
+						light->rgb.g=rnd()*0.2f+0.6f;
+						light->fallstart=Es*1.5f;
 					}
 
 					GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
@@ -6094,7 +6096,7 @@ void ARX_SPELLS_Update()
 
 					if (spells[i].longinfo2!=-1)
 					{
-						EERIE_LIGHT * el=&DynLight[spells[i].longinfo2];						
+						EERIE_LIGHT * el = lightHandleGet(spells[i].longinfo2);
 						
 						el->pos.x = pf->pos.x;
 						el->pos.y = pf->pos.y-120.f;
@@ -6165,7 +6167,7 @@ void ARX_SPELLS_Update()
 
 					if (spells[i].longinfo2!=-1)
 					{
-						EERIE_LIGHT * el=&DynLight[spells[i].longinfo2];						
+						EERIE_LIGHT * el = lightHandleGet(spells[i].longinfo2);
 						
 						el->pos.x = pf->eSrc.x;
 						el->pos.y = pf->eSrc.y-120.f;
@@ -6573,11 +6575,13 @@ void ARX_SPELLS_Update()
 						float Es=std::sin((float)arxtime.get_frame_time()*( 1.0f / 800 ) + radians(scaley));
 
 						if(spells[i].longinfo2 != -1) {
-							DynLight[spells[i].longinfo2].pos.x = cabalpos.x;
-							DynLight[spells[i].longinfo2].pos.y = refpos;
-							DynLight[spells[i].longinfo2].pos.z = cabalpos.z;
-							DynLight[spells[i].longinfo2].rgb.b=rnd()*0.2f+0.8f;
-							DynLight[spells[i].longinfo2].fallstart=Es*1.5f;
+							EERIE_LIGHT * light = lightHandleGet(spells[i].longinfo2);
+							
+							light->pos.x = cabalpos.x;
+							light->pos.y = refpos;
+							light->pos.z = cabalpos.z;
+							light->rgb.b=rnd()*0.2f+0.8f;
+							light->fallstart=Es*1.5f;
 						}
 
 						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
@@ -6664,11 +6668,13 @@ void ARX_SPELLS_Update()
 						float Es=std::sin((float)arxtime.get_frame_time()*( 1.0f / 800 ) + radians(scaley));
 
 						if(spells[i].longinfo2 != -1) {
-							DynLight[spells[i].longinfo2].pos.x = cabalpos.x;
-							DynLight[spells[i].longinfo2].pos.y = refpos;
-							DynLight[spells[i].longinfo2].pos.z = cabalpos.z; 
-							DynLight[spells[i].longinfo2].rgb.r=rnd()*0.2f+0.8f;
-							DynLight[spells[i].longinfo2].fallstart=Es*1.5f;
+							EERIE_LIGHT * light = lightHandleGet(spells[i].longinfo2);
+							
+							light->pos.x = cabalpos.x;
+							light->pos.y = refpos;
+							light->pos.z = cabalpos.z;
+							light->rgb.r = rnd() * 0.2f + 0.8f;
+							light->fallstart = Es * 1.5f;
 						}
 
 						GRenderer->SetCulling(Renderer::CullNone);

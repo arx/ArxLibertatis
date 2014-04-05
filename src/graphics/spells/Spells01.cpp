@@ -545,7 +545,7 @@ void CMultiMagicMissile::Create()
 				pTab[i]->lLightId = GetFreeDynLight();
 
 				if(pTab[i]->lLightId != -1) {
-					EERIE_LIGHT * el = &DynLight[pTab[i]->lLightId];
+					EERIE_LIGHT * el = lightHandleGet(pTab[i]->lLightId);
 					el->exist		= 1;
 					el->intensity	= 0.7f + 2.3f;
 					el->fallend		= 190.f;
@@ -657,7 +657,7 @@ void CMultiMagicMissile::Render()
 				CMagicMissile * pMM = (CMagicMissile *) pTab[i];
 
 				if(pMM->lLightId != -1) {
-					EERIE_LIGHT * el	= &DynLight[pMM->lLightId];
+					EERIE_LIGHT * el	= lightHandleGet(pMM->lLightId);
 					el->intensity		= 0.7f + 2.3f * pMM->lightIntensityFactor;
 					el->pos = pMM->eCurPos;
 					el->time_creation	= (unsigned long)(arxtime);
