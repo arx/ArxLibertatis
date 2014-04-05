@@ -243,8 +243,9 @@ Entity::~Entity() {
 	}
 	
 	if(ValidDynLight(dynlight)) {
-		DynLight[dynlight].exist = 0, dynlight = -1;
+		lightHandleGet(dynlight)->exist = 0;
 	}
+	dynlight = -1;
 	
 	if(ValidDynLight(halo.dynlight)) {
 		lightHandleGet(halo.dynlight)->exist = 0;
@@ -329,8 +330,9 @@ void Entity::cleanReferences() {
 	ARX_SPELLS_FizzleAllSpellsFromCaster(index());
 	
 	if(ignit_light > -1) {
-		DynLight[ignit_light].exist = 0, ignit_light = -1;
+		lightHandleGet(ignit_light)->exist = 0;
 	}
+	ignit_light = -1;
 	
 	if(ignit_sound != audio::INVALID_ID) {
 		ARX_SOUND_Stop(ignit_sound), ignit_sound = audio::INVALID_ID;

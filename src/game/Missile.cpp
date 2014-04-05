@@ -104,9 +104,10 @@ void ARX_MISSILES_Kill(long i)
 	{
 		case MISSILE_FIREBALL :
 
-			if (missiles[i].longinfo != -1)
-			{
-				DynLight[missiles[i].longinfo].duration = 150;
+			if(missiles[i].longinfo != -1) {
+				EERIE_LIGHT * light = lightHandleGet(missiles[i].longinfo);
+				
+				light->duration = 150;
 			}
 
 			break;
@@ -198,7 +199,9 @@ void ARX_MISSILES_Update()
 				pos = missiles[i].startpos + missiles[i].velocity * Vec3f(framediff3);
 
 				if(missiles[i].longinfo != -1) {
-					DynLight[missiles[i].longinfo].pos = pos;
+					EERIE_LIGHT * light = lightHandleGet(missiles[i].longinfo);
+					
+					light->pos = pos;
 				}
 
 				Vec3f orgn = missiles[i].lastpos;

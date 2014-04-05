@@ -917,9 +917,9 @@ static void CheckUnderWaterIO(Entity * io) {
 		if(io->ignition > 0.f) {
 			ARX_SOUND_PlaySFX(SND_TORCH_END, &ppos);
 
-			if(ValidDynLight(io->ignit_light))
-				DynLight[io->ignit_light].exist = 0;
-
+			if(ValidDynLight(io->ignit_light)) {
+				lightHandleGet(io->ignit_light)->exist = 0;
+			}
 			io->ignit_light = -1;
 
 			if(io->ignit_sound != audio::INVALID_ID) {
@@ -3417,9 +3417,9 @@ void ManageIgnition(Entity * io)
 		return;
 
 	if(player.torch == io) {
-		if (ValidDynLight(io->ignit_light))
-			DynLight[io->ignit_light].exist = 0;
-
+		if(ValidDynLight(io->ignit_light)) {
+			lightHandleGet(io->ignit_light)->exist = 0;
+		}
 		io->ignit_light = -1;
 
 		if (io->ignit_sound != audio::INVALID_ID)
@@ -3603,9 +3603,9 @@ void ManageIgnition_2(Entity * io) {
 		if(rnd() > 0.9f)
 			CheckForIgnition(&position, io->ignition, 1);
 	} else {
-		if(ValidDynLight(io->ignit_light))
-			DynLight[io->ignit_light].exist = 0;
-
+		if(ValidDynLight(io->ignit_light)) {
+			lightHandleGet(io->ignit_light)->exist = 0;
+		}
 		io->ignit_light = -1;
 
 		if(io->ignit_sound != audio::INVALID_ID) {

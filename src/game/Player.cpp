@@ -291,9 +291,9 @@ void ARX_PLAYER_ClickedOnTorch(Entity * io)
 
 	if(io->durability > 0) {
 		if(io->ignition > 0) {
-			if(ValidDynLight(io->ignit_light))
-				DynLight[io->ignit_light].exist = 0;
-
+			if(ValidDynLight(io->ignit_light)) {
+				lightHandleGet(io->ignit_light)->exist = 0;
+			}
 			io->ignit_light = -1;
 
 			if(io->ignit_sound != audio::INVALID_ID) {
