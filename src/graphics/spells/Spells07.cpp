@@ -684,7 +684,6 @@ void CConfuse::Render() {
 	if(lightHandleIsValid(lLightId)) {
 		EERIE_LIGHT * light = lightHandleGet(lLightId);
 		
-		light->exist = 1;
 		light->intensity = 1.3f;
 		light->fallstart = 180.f;
 		light->fallend   = 420.f;

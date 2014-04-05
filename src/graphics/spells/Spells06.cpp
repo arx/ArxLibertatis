@@ -291,7 +291,6 @@ void CCreateField::Render()
 	if(lightHandleIsValid(lLightId)) {
 		EERIE_LIGHT * light = lightHandleGet(lLightId);
 		
-		light->exist = 1;
 		light->intensity = 0.7f + 2.3f * falpha;
 		light->fallend = 500.f;
 		light->fallstart = 400.f;

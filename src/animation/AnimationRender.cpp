@@ -364,7 +364,6 @@ void Cedric_ApplyLightingFirstPartRefactor(Entity *io) {
 						if(lightHandleIsValid(nn)) {
 							EERIE_LIGHT * light = lightHandleGet(nn);
 							
-							light->exist = 1;
 							light->intensity = 0.7f + 2.f * rnd();
 							light->fallend = 600.f;
 							light->fallstart = 400.f;

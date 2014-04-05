@@ -275,7 +275,6 @@ void TreatBackgroundDynlights()
 					EERIE_LIGHT *dynamicLight = lightHandleGet(light->tl);
 
 					dynamicLight->pos = light->pos;
-					dynamicLight->exist		=	1;
 					dynamicLight->fallstart	=	light->fallstart;
 					dynamicLight->fallend		=	light->fallend;
 					dynamicLight->type		=	TYP_SPECIAL1;
@@ -387,7 +386,6 @@ EERIE_LIGHT * lightHandleGet(LightHandle lightHandle) {
 
 bool lightHandleIsValid(LightHandle num)
 {
-	
 	return (long)num >= 0 && ((size_t)num < MAX_DYNLIGHTS) && DynLight[num].exist;
 }
 
@@ -395,6 +393,7 @@ LightHandle GetFreeDynLight() {
 
 	for(size_t i = 1; i < MAX_DYNLIGHTS; i++) {
 		if(!(DynLight[i].exist)) {
+			DynLight[i].exist = 1;
 			DynLight[i].type = 0;
 			DynLight[i].intensity = 1.3f;
 			DynLight[i].treat = 1;

@@ -86,7 +86,6 @@ void CHeal::Create() {
 	if(lightHandleIsValid(pPS->lLightId)) {
 		EERIE_LIGHT * light = lightHandleGet(pPS->lLightId);
 		
-		light->exist = 1;
 		light->intensity = 2.3f;
 		light->fallstart = 200.f;
 		light->fallend   = 350.f;
@@ -171,7 +170,6 @@ void CHeal::Update(unsigned long aulTime)
 	if(lightHandleIsValid(pPS->lLightId)) {
 		EERIE_LIGHT * light = lightHandleGet(pPS->lLightId);
 		
-		light->exist = 1;
 		light->intensity = 2.3f;
 		light->fallstart = 200.f;
 		light->fallend   = 350.f;

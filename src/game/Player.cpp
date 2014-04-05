@@ -1682,7 +1682,6 @@ void ARX_PLAYER_Manage_Visual() {
 					if(lightHandleIsValid(special[pouet])) {
 						EERIE_LIGHT * el = lightHandleGet(special[pouet]);
 						el->intensity = 1.3f;
-						el->exist = 1;
 						el->fallend = 180.f;
 						el->fallstart = 50.f;
 						el->rgb = Color3f(0.7f, 0.3f, 1.f);

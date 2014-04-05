@@ -170,7 +170,6 @@ void CCurePoison::Create()
 	if(lightHandleIsValid(pPS->lLightId)) {
 		EERIE_LIGHT * light = lightHandleGet(pPS->lLightId);
 		
-		light->exist = 1;
 		light->intensity = 1.5f;
 		light->fallstart = 200.f;
 		light->fallend   = 350.f;
@@ -236,7 +235,6 @@ void CCurePoison::Update(unsigned long aulTime)
 	if(lightHandleIsValid(pPS->lLightId)) {
 		EERIE_LIGHT * light = lightHandleGet(pPS->lLightId);
 		
-		light->exist = 1;
 		light->intensity = 2.3f;
 		light->fallstart = 200.f;
 		light->fallend   = 350.f;
@@ -326,7 +324,6 @@ void CRuneOfGuarding::Create(Vec3f _eSrc, float _fBeta) {
 	if(lightHandleIsValid(lLightId)) {
 		EERIE_LIGHT * light = lightHandleGet(lLightId);
 		
-		light->exist = 1;
 		light->intensity = 0.7f + 2.3f;
 		light->fallend = 500.f;
 		light->fallstart = 400.f;
@@ -348,7 +345,6 @@ void CRuneOfGuarding::Update(unsigned long _ulTime) {
 	if(lightHandleIsValid(lLightId)) {
 		EERIE_LIGHT * light = lightHandleGet(lLightId);
 		
-		light->exist = 1;
 		light->intensity = 0.7f + 2.3f * fa;
 		light->fallend = 350.f;
 		light->fallstart = 150.f;
@@ -858,7 +854,6 @@ void CMultiPoisonProjectile::Create(Vec3f _eSrc, float _afBeta = 0) {
 		if(lightHandleIsValid(pPP->lLightId)) {
 			EERIE_LIGHT * light = lightHandleGet(pPP->lLightId);
 			
-			light->exist			= 1;
 			light->intensity		= 2.3f;
 			light->fallend		= 250.f;
 			light->fallstart		= 150.f;
@@ -892,7 +887,6 @@ void CMultiPoisonProjectile::Render()
 		if(lightHandleIsValid(pPoisonProjectile->lLightId)) {
 			EERIE_LIGHT * light = lightHandleGet(pPoisonProjectile->lLightId);
 			
-			light->exist		= 1;
 			light->intensity	= 2.3f * pPoisonProjectile->lightIntensityFactor;
 			light->fallend	= 250.f;
 			light->fallstart	= 150.f;
@@ -1064,7 +1058,6 @@ void CRepelUndead::Render() {
 	if(lightHandleIsValid(lLightId)) {
 		EERIE_LIGHT * light = lightHandleGet(lLightId);
 		
-		light->exist = 1;
 		light->intensity = 2.3f;
 		light->fallend = 350.f;
 		light->fallstart = 150.f;

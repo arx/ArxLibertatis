@@ -153,7 +153,6 @@ void LaunchMagicMissileExplosion(const Vec3f & _ePos, int t = 0, long spellinsta
 	if(lightHandleIsValid(id)) {
 		EERIE_LIGHT * light = lightHandleGet(id);
 		
-		light->exist = 1;
 		light->intensity = 2.3f;
 		light->fallstart = 250.f;
 		light->fallend   = 420.f;
@@ -539,7 +538,7 @@ void CMultiMagicMissile::Create()
 
 				if(lightHandleIsValid(pTab[i]->lLightId)) {
 					EERIE_LIGHT * el = lightHandleGet(pTab[i]->lLightId);
-					el->exist		= 1;
+					
 					el->intensity	= 0.7f + 2.3f;
 					el->fallend		= 190.f;
 					el->fallstart	= 80.f;
@@ -736,7 +735,6 @@ void CIgnit::AddLight(int aiLight)
 	if(lightHandleIsValid(tablight[this->nblight].idl)) {
 		EERIE_LIGHT * light = lightHandleGet(this->tablight[this->nblight].idl);
 		
-		light->exist = 1;
 		light->intensity = 0.7f + 2.f * rnd();
 		light->fallend = 400.f;
 		light->fallstart = 300.f;

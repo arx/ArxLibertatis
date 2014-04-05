@@ -1000,7 +1000,6 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 				light->fallstart=140.f+(float)io->flarecount*0.333333f+rr*5.f;
 				light->fallend=220.f+(float)io->flarecount*0.5f+rr*5.f;
 				light->intensity=1.6f;
-				light->exist=1;
 				light->rgb.r=0.01f*io->flarecount*2;
 				light->rgb.g=0.009f*io->flarecount*2;
 				light->rgb.b=0.008f*io->flarecount*2;
@@ -3007,7 +3006,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			if(lightHandleIsValid(id)) {
 				EERIE_LIGHT * light = lightHandleGet(id);
 				
-				light->exist     = 1;
 				light->intensity = 1.8f;
 				light->fallend   = 450.f;
 				light->fallstart = 380.f;
@@ -3377,7 +3375,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			if(lightHandleIsValid(spells[i].longinfo2_light)) {
 				EERIE_LIGHT * light = lightHandleGet(spells[i].longinfo2_light);
 				
-				light->exist = 1;
 				light->intensity = 2.3f;
 				light->fallend = 700.f;
 				light->fallstart = 500.f;
@@ -4008,7 +4005,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			if(lightHandleIsValid(effect->lLightId)) {
 				EERIE_LIGHT * light = lightHandleGet(effect->lLightId);
 				
-				light->exist = 1;
 				light->intensity = 1.3f;
 				light->fallend = 450.f;
 				light->fallstart = 380.f;
@@ -4106,7 +4102,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 				if(lightHandleIsValid(effect->lLightId)) {
 					EERIE_LIGHT * light = lightHandleGet(effect->lLightId);
 					
-					light->exist = 1;
 					light->intensity = 0.7f + 2.3f;
 					light->fallend = 500.f;
 					light->fallstart = 400.f;
@@ -4489,7 +4484,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			if(lightHandleIsValid(spells[i].longinfo2_light)) {
 				EERIE_LIGHT * light = lightHandleGet(spells[i].longinfo2_light);
 				
-				light->exist = 1;
 				light->intensity = 2.3f;
 				light->fallend = 700.f;
 				light->fallstart = 500.f;
@@ -4536,7 +4530,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			if(lightHandleIsValid(spells[i].longinfo2_light)) {
 				EERIE_LIGHT * light = lightHandleGet(spells[i].longinfo2_light);
 				
-				light->exist = 1;
 				light->intensity = 2.3f;
 				light->fallend = 700.f;
 				light->fallstart = 500.f;
@@ -4618,7 +4611,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			if(lightHandleIsValid(spells[i].longinfo2_light)) {
 				EERIE_LIGHT * light = lightHandleGet(spells[i].longinfo2_light);
 				
-				light->exist = 1;
 				light->intensity = 2.3f;
 				light->fallend = 700.f;
 				light->fallstart = 500.f;
@@ -4679,7 +4671,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			if(lightHandleIsValid(effect->lLightId)) {
 				EERIE_LIGHT * light = lightHandleGet(effect->lLightId);
 				
-				light->exist = 1;
 				light->intensity = 0.3f;
 				light->fallend = 500.f;
 				light->fallstart = 400.f;
@@ -4721,7 +4712,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			if(lightHandleIsValid(effect->lLightId)) {
 				EERIE_LIGHT * light = lightHandleGet(effect->lLightId);
 				
-				light->exist = 1;
 				light->intensity = 0.3f;
 				light->fallend = 500.f;
 				light->fallstart = 400.f;
@@ -4844,7 +4834,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			if(lightHandleIsValid(spells[i].longinfo_light)) {
 				EERIE_LIGHT * light = lightHandleGet(spells[i].longinfo_light);
 				
-				light->exist = 1;
 				light->intensity = 1.8f;
 				light->fallend = 450.f;
 				light->fallstart = 380.f;
@@ -5164,7 +5153,6 @@ void ARX_SPELLS_Kill(long i) {
 					if(lightHandleIsValid(nn)) {
 						EERIE_LIGHT * light = lightHandleGet(nn);
 						
-						light->exist = 1;
 						light->intensity = 0.7f + 2.f * rnd();
 						light->fallend = 600.f;
 						light->fallstart = 400.f;
@@ -5402,7 +5390,6 @@ void ARX_SPELLS_Update()
 							if(lightHandleIsValid(nn)) {
 								EERIE_LIGHT * light = lightHandleGet(nn);
 								
-								light->exist = 1;
 								light->intensity = 0.7f + 2.f*rnd();
 								light->fallend = 600.f;
 								light->fallstart = 400.f;
@@ -5724,7 +5711,6 @@ void ARX_SPELLS_Update()
 					if(lightHandleIsValid(spells[i].longinfo_light)) {
 						EERIE_LIGHT * light = lightHandleGet(spells[i].longinfo_light);
 						
-						light->exist=1;
 						light->pos = pCF->eCurPos;
 						light->intensity = 2.2f;
 						light->fallend = 500.f;
@@ -5962,7 +5948,6 @@ void ARX_SPELLS_Update()
 					if(lightHandleIsValid(pCSpellFX->lLightId)) {
 						EERIE_LIGHT * light = lightHandleGet(pCSpellFX->lLightId);
 						
-						light->exist=1;
 						light->intensity = 0.7f + 2.3f;
 						light->fallend = 500.f;
 						light->fallstart = 400.f;
@@ -6109,7 +6094,6 @@ void ARX_SPELLS_Update()
 						el->pos.x = pf->pos.x;
 						el->pos.y = pf->pos.y-120.f;
 						el->pos.z = pf->pos.z;
-						el->exist = 1;
 						el->intensity = 4.6f;
 						el->fallstart = 150.f+rnd()*30.f;
 						el->fallend   = 290.f+rnd()*30.f;
@@ -6179,7 +6163,6 @@ void ARX_SPELLS_Update()
 						el->pos.x = pf->eSrc.x;
 						el->pos.y = pf->eSrc.y-120.f;
 						el->pos.z = pf->eSrc.z;
-						el->exist = 1;
 						el->intensity = 4.6f;
 						el->fallstart = 150.f+rnd()*30.f;
 						el->fallend   = 290.f+rnd()*30.f;

@@ -4005,7 +4005,6 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 
 						GRenderer->SetRenderState(Renderer::DepthWrite, true);
 						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-						light->exist = 1;
 						
 						// Now draw the rune
 						TransformInfo t2(pos, glm::toQuat(toRotationMatrix(angle)));

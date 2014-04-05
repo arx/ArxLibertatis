@@ -3575,8 +3575,6 @@ void ManageIgnition_2(Entity * io) {
 		if(lightHandleIsValid(io->ignit_light)) {
 			EERIE_LIGHT * light = lightHandleGet(io->ignit_light);
 			
-			light->exist = 1;
-
 			light->intensity = max(io->ignition * ( 1.0f / 10 ), 1.f);
 			light->fallstart = max(io->ignition * 10.f, 100.f);
 			light->fallend   = max(io->ignition * 25.f, 240.f);

@@ -156,7 +156,6 @@ void ARX_MISSILES_Spawn(Entity * io, ARX_SPELLS_MISSILE_TYPE type, const Vec3f *
 				EERIE_LIGHT * light = lightHandleGet(missiles[i].longinfo);
 				
 				light->intensity = 1.3f;
-				light->exist = 1;
 				light->fallend = 420.f;
 				light->fallstart = 250.f;
 				light->rgb = Color3f(1.f, .8f, .6f);

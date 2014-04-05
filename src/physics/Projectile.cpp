@@ -354,7 +354,6 @@ void CheckExp(long i) {
 		if(lightHandleIsValid(id) && framedelay > 0) {
 			EERIE_LIGHT * light = lightHandleGet(id);
 			
-			light->exist = 1;
 			light->intensity = 3.9f;
 			light->fallstart = 400.f;
 			light->fallend   = 440.f;
@@ -420,7 +419,6 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 			if(lightHandleIsValid(id) && framedelay > 0) {
 				EERIE_LIGHT * light = lightHandleGet(id);
 				
-				light->exist = 1;
 				light->intensity = 1.f;
 				light->fallstart = 100.f;
 				light->fallend   = 240.f;
