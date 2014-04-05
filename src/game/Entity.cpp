@@ -247,8 +247,9 @@ Entity::~Entity() {
 	}
 	
 	if(ValidDynLight(halo.dynlight)) {
-		DynLight[halo.dynlight].exist = 0, halo.dynlight = -1;
+		lightHandleGet(halo.dynlight)->exist = 0;
 	}
+	halo.dynlight = -1;
 	
 	free(usepath);
 	free(symboldraw), symboldraw = NULL;

@@ -496,10 +496,11 @@ void ARX_DAMAGES_ForceDeath(Entity * io_dead, Entity * io_killer) {
 
 	io_dead->dynlight = -1;
 
-	if(ValidDynLight(io_dead->halo.dynlight))
-		DynLight[io_dead->halo.dynlight].exist = 0;
-
+	if(ValidDynLight(io_dead->halo.dynlight)) {
+		lightHandleGet(io_dead->halo.dynlight)->exist = 0;
+	}
 	io_dead->halo.dynlight = -1;
+	
 	ARX_NPC_Behaviour_Reset(io_dead);
 
 	ARX_SPEECH_ReleaseIOSpeech(io_dead);

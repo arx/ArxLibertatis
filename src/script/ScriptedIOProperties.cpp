@@ -472,7 +472,7 @@ public:
 			} else {
 				io->halo_native.flags &= ~HALO_DYNLIGHT;
 				if(ValidDynLight(io->halo_native.dynlight)) {
-					DynLight[io->halo_native.dynlight].exist = 0;
+					lightHandleGet(io->halo_native.dynlight)->exist = 0;
 				}
 				io->halo_native.dynlight = -1;
 			}
