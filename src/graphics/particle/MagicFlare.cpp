@@ -406,7 +406,9 @@ void ARX_MAGICAL_FLARES_Update() {
 
 	RenderMaterial mat;
 	mat.setBlendType(RenderMaterial::Additive);
-
+	
+	EERIE_LIGHT * light = lightHandleGet(0);
+	
 	for(long j = 1; j < 5; j++) {
 
 		TextureContainer * surf;
@@ -469,7 +471,7 @@ void ARX_MAGICAL_FLARES_Update() {
 			flare.tv.color = c.toBGR();
 			flare.v.p = flare.tv.p;
 
-			DynLight[0].rgb = componentwise_max(DynLight[0].rgb, c);
+			light->rgb = componentwise_max(light->rgb, c);
 
 			if(ValidDynLight(flare.dynlight)) {
 				EERIE_LIGHT * el = &DynLight[flare.dynlight];
@@ -491,5 +493,5 @@ void ARX_MAGICAL_FLARES_Update() {
 		}
 	}
 
-	DynLight[0].rgb = componentwise_min(DynLight[0].rgb, Color3f::white);
+	light->rgb = componentwise_min(light->rgb, Color3f::white);
 }

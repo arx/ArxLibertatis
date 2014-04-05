@@ -625,7 +625,7 @@ extern long cur_mr;
 
 void ManageTorch() {
 	
-	EERIE_LIGHT * el = &DynLight[0];
+	EERIE_LIGHT * el = lightHandleGet(0);
 	
 	if(player.torch) {
 		
