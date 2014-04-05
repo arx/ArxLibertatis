@@ -5021,8 +5021,10 @@ void ARX_SPELLS_Kill(long i) {
 	switch(spells[i].type) {
 		case SPELL_FIREBALL: {
 			if(spells[i].longinfo != -1) {
-				DynLight[spells[i].longinfo].duration = 500;
-				DynLight[spells[i].longinfo].time_creation = (unsigned long)(arxtime);
+				EERIE_LIGHT * light = lightHandleGet(spells[i].longinfo);
+				
+				light->duration = 500;
+				light->time_creation = (unsigned long)(arxtime);
 			}
 			spells[i].longinfo = -1;
 			
@@ -5030,8 +5032,10 @@ void ARX_SPELLS_Kill(long i) {
 		}
 		case SPELL_LIGHTNING_STRIKE: {
 			if(spells[i].longinfo != -1) {
-				DynLight[spells[i].longinfo].duration = 200;
-				DynLight[spells[i].longinfo].time_creation = (unsigned long)(arxtime);
+				EERIE_LIGHT * light = lightHandleGet(spells[i].longinfo);
+				
+				light->duration = 200;
+				light->time_creation = (unsigned long)(arxtime);
 			}
 			spells[i].longinfo = -1;
 			
@@ -5042,8 +5046,10 @@ void ARX_SPELLS_Kill(long i) {
 		}
 		case SPELL_MASS_LIGHTNING_STRIKE: {
 			if(spells[i].longinfo != -1) {
-				DynLight[spells[i].longinfo].duration = 200;
-				DynLight[spells[i].longinfo].time_creation = (unsigned long)(arxtime);
+				EERIE_LIGHT * light = lightHandleGet(spells[i].longinfo);
+				
+				light->duration = 200;
+				light->time_creation = (unsigned long)(arxtime);
 			}
 			spells[i].longinfo = -1;
 			
@@ -5054,8 +5060,10 @@ void ARX_SPELLS_Kill(long i) {
 		}
 		case SPELL_REPEL_UNDEAD: {
 			if(spells[i].longinfo != -1) {
-				DynLight[spells[i].longinfo].duration = 200;
-				DynLight[spells[i].longinfo].time_creation = (unsigned long)(arxtime);
+				EERIE_LIGHT * light = lightHandleGet(spells[i].longinfo);
+				
+				light->duration = 200;
+				light->time_creation = (unsigned long)(arxtime);
 			}
 			spells[i].longinfo = -1;
 			
@@ -5258,8 +5266,10 @@ void ARX_SPELLS_Update()
 					ARX_SOUND_PlaySFX(SND_SPELL_VISION_START, &entities[spells[i].caster]->pos);					
 				break;
 				case SPELL_MAGIC_MISSILE: {
-					if(spells[i].longinfo != -1)
-						DynLight[spells[i].longinfo].exist = 0;
+					if(spells[i].longinfo != -1) {
+						EERIE_LIGHT * light = lightHandleGet(spells[i].longinfo);
+						light->exist = 0;
+					}
 				}
 				break;
 				case SPELL_IGNIT: {
@@ -6481,6 +6491,8 @@ void ARX_SPELLS_Update()
 				}
 
 				if(spells[i].longinfo!=-1) {
+					EERIE_LIGHT * light = lightHandleGet(spells[i].longinfo);
+					
 					float fxx;
 
 					if(_fx > 0.2f)
@@ -6488,10 +6500,10 @@ void ARX_SPELLS_Update()
 					else
 						fxx = _fx * 5.f;
 
-					DynLight[spells[i].longinfo].intensity=1.3f+rnd()*1.f;
-					DynLight[spells[i].longinfo].fallend=850.f;
-					DynLight[spells[i].longinfo].fallstart=500.f;
-					DynLight[spells[i].longinfo].rgb = Color3f::red * fxx;
+					light->intensity = 1.3f + rnd() * 1.f;
+					light->fallend = 850.f;
+					light->fallstart = 500.f;
+					light->rgb = Color3f::red * fxx;
 				}
 			}
 			break;
