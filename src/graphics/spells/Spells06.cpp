@@ -289,17 +289,19 @@ void CCreateField::Render()
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 
 	if(lLightId != -1) {
-		DynLight[lLightId].exist = 1;
-		DynLight[lLightId].intensity = 0.7f + 2.3f * falpha;
-		DynLight[lLightId].fallend = 500.f;
-		DynLight[lLightId].fallstart = 400.f;
-		DynLight[lLightId].rgb.r = 0.8f;
-		DynLight[lLightId].rgb.g = 0.0f;
-		DynLight[lLightId].rgb.b = 1.0f;
-		DynLight[lLightId].pos.x = eSrc.x;
-		DynLight[lLightId].pos.y = eSrc.y - 150;
-		DynLight[lLightId].pos.z = eSrc.z;
-		DynLight[lLightId].duration = 800;
+		EERIE_LIGHT * light = lightHandleGet(lLightId);
+		
+		light->exist = 1;
+		light->intensity = 0.7f + 2.3f * falpha;
+		light->fallend = 500.f;
+		light->fallstart = 400.f;
+		light->rgb.r = 0.8f;
+		light->rgb.g = 0.0f;
+		light->rgb.b = 1.0f;
+		light->pos.x = eSrc.x;
+		light->pos.y = eSrc.y - 150;
+		light->pos.z = eSrc.z;
+		light->duration = 800;
 	}
 
 	//return falpha;
