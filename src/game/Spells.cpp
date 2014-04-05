@@ -2387,7 +2387,13 @@ static long ARX_SPELLS_GetFree() {
 	
 	for(size_t i = 0; i < MAX_SPELLS; i++) {
 		if(!spells[i].exist) {
-			spells[i].longinfo = -1;
+			spells[i].longinfo_entity = -1;
+			spells[i].longinfo_damage = -1;
+			spells[i].longinfo_time = -1;
+			spells[i].longinfo_summon_creature = -1;
+			spells[i].longinfo_lower_armor = -1;
+			spells[i].longinfo_light = -1;
+			
 			spells[i].longinfo2_light = -1;
 			spells[i].misc = NULL;
 			return i;
@@ -3350,9 +3356,9 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			spells[i].bDuration = true;
 			spells[i].fManaCostPerSecond = 0.4f;
 
-			spells[i].longinfo = ARX_DAMAGES_GetFree();
-			if(spells[i].longinfo != -1) {
-				DAMAGE_INFO * damage = &damages[spells[i].longinfo];
+			spells[i].longinfo_damage = ARX_DAMAGES_GetFree();
+			if(spells[i].longinfo_damage != -1) {
+				DAMAGE_INFO * damage = &damages[spells[i].longinfo_damage];
 				
 				damage->radius = 150.f;
 				damage->damages = 4.f;
@@ -3986,7 +3992,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			spells[i].tolive = (duration > -1) ? duration : 2000000;
 			spells[i].bDuration = true;
 			spells[i].fManaCostPerSecond = 1.2f;
-			spells[i].longinfo = -1;
+			spells[i].longinfo_entity = -1;
 			
 			CRiseDead * effect = new CRiseDead();
 			effect->spellinstance = i;
@@ -4087,7 +4093,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 				
 				ARX_INTERACTIVE_HideGore(io);
 				RestoreInitialIOStatusOfIO(io);
-				spells[i].longinfo = io->index();
+				spells[i].longinfo_entity = io->index();
 				io->scriptload = 1;
 				io->ioflags |= IO_NOSAVE | IO_FIELD;
 				io->initpos = io->pos = target;
@@ -4277,9 +4283,9 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 				target.z += std::cos(radians(MAKEANGLE(beta))) * 250.f;
 			}
 			
-			spells[i].longinfo = ARX_DAMAGES_GetFree();
-			if(spells[i].longinfo != -1) {
-				DAMAGE_INFO * damage = &damages[spells[i].longinfo];
+			spells[i].longinfo_damage = ARX_DAMAGES_GetFree();
+			if(spells[i].longinfo_damage != -1) {
+				DAMAGE_INFO * damage = &damages[spells[i].longinfo_damage];
 				
 				damage->radius = 150.f;
 				damage->damages = 10.f;
@@ -4344,9 +4350,9 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 				target.z += std::cos(radians(MAKEANGLE(beta))) * 250.f;
 			}
 			
-			spells[i].longinfo = ARX_DAMAGES_GetFree();
-			if(spells[i].longinfo != -1) {
-				DAMAGE_INFO * damage = &damages[spells[i].longinfo];
+			spells[i].longinfo_damage = ARX_DAMAGES_GetFree();
+			if(spells[i].longinfo_damage != -1) {
+				DAMAGE_INFO * damage = &damages[spells[i].longinfo_damage];
 				
 				damage->radius = 150.f;
 				damage->damages = 10.f;
@@ -4461,9 +4467,9 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			                                       &spells[i].caster_pos, 1.2f,
 			                                       ARX_SOUND_PLAY_LOOPED);
 			
-			spells[i].longinfo = ARX_DAMAGES_GetFree();
-			if(spells[i].longinfo != -1) {
-				DAMAGE_INFO * damage = &damages[spells[i].longinfo];
+			spells[i].longinfo_damage = ARX_DAMAGES_GetFree();
+			if(spells[i].longinfo_damage != -1) {
+				DAMAGE_INFO * damage = &damages[spells[i].longinfo_damage];
 				
 				damage->radius = 150.f;
 				damage->damages = 8.f;
@@ -4508,9 +4514,9 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 				target.y -= 60.f;
 			}
 			
-			spells[i].longinfo = ARX_DAMAGES_GetFree();
-			if(spells[i].longinfo != -1) {
-				DAMAGE_INFO * damage = &damages[spells[i].longinfo];
+			spells[i].longinfo_damage = ARX_DAMAGES_GetFree();
+			if(spells[i].longinfo_damage != -1) {
+				DAMAGE_INFO * damage = &damages[spells[i].longinfo_damage];
 				
 				damage->radius = 350.f;
 				damage->damages = 10.f;
@@ -4592,9 +4598,9 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			                                       &spells[i].caster_pos, 0.8f,
 			                                       ARX_SOUND_PLAY_LOOPED);
 			
-			spells[i].longinfo = ARX_DAMAGES_GetFree();
-			if(spells[i].longinfo != -1) {
-				long id = spells[i].longinfo;
+			spells[i].longinfo_damage = ARX_DAMAGES_GetFree();
+			if(spells[i].longinfo_damage != -1) {
+				long id = spells[i].longinfo_damage;
 				damages[id].radius = 150.f;
 				damages[id].damages = spells[i].caster_level * 0.08f;
 				damages[id].area = DAMAGE_AREA;
@@ -4631,7 +4637,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			spells[i].lastupdate = spells[i].timcreation = (unsigned long)(arxtime);
 			spells[i].bDuration = true;
 			spells[i].fManaCostPerSecond = 1.9f;
-			spells[i].longinfo = 0;
+			spells[i].longinfo_summon_creature = 0;
 			spells[i].longinfo2_entity = 0;
 			spells[i].tolive = (duration > -1) ? duration : 2000000;
 			
@@ -4821,10 +4827,10 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 		case SPELL_MASS_LIGHTNING_STRIKE: {
 			for(size_t ii = 0; ii < MAX_SPELLS; ii++) {
 				if(spells[ii].exist && spells[ii].type == typ) {
-					if(lightHandleIsValid(spells[ii].longinfo)) {
-						lightHandleGet(spells[ii].longinfo)->exist = 0;
+					if(lightHandleIsValid(spells[ii].longinfo_light)) {
+						lightHandleGet(spells[ii].longinfo_light)->exist = 0;
 					}
-					spells[ii].longinfo = -1;
+					spells[ii].longinfo_light = -1;
 					spells[ii].tolive = 0;
 				}
 			}
@@ -4834,9 +4840,9 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			spells[i].tolive = 5000; // TODO probably never read
 			spells[i].siz = 0;
 			
-			spells[i].longinfo = GetFreeDynLight();
-			if(lightHandleIsValid(spells[i].longinfo)) {
-				EERIE_LIGHT * light = lightHandleGet(spells[i].longinfo);
+			spells[i].longinfo_light = GetFreeDynLight();
+			if(lightHandleIsValid(spells[i].longinfo_light)) {
+				EERIE_LIGHT * light = lightHandleGet(spells[i].longinfo_light);
 				
 				light->exist = 1;
 				light->intensity = 1.8f;
@@ -4938,7 +4944,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			spells[i].tolive = (duration > -1) ? duration : 200000;
 			spells[i].bDuration = true;
 			spells[i].fManaCostPerSecond = 30.f * spells[i].siz;
-			spells[i].longinfo = (long)arxtime.get_updated();
+			spells[i].longinfo_time = (long)arxtime.get_updated();
 			
 			break;
 		}
@@ -5023,24 +5029,24 @@ void ARX_SPELLS_Kill(long i) {
 
 	switch(spells[i].type) {
 		case SPELL_FIREBALL: {
-			if(lightHandleIsValid(spells[i].longinfo)) {
-				EERIE_LIGHT * light = lightHandleGet(spells[i].longinfo);
+			if(lightHandleIsValid(spells[i].longinfo_light)) {
+				EERIE_LIGHT * light = lightHandleGet(spells[i].longinfo_light);
 				
 				light->duration = 500;
 				light->time_creation = (unsigned long)(arxtime);
 			}
-			spells[i].longinfo = -1;
+			spells[i].longinfo_light = -1;
 			
 			break;
 		}
 		case SPELL_LIGHTNING_STRIKE: {
-			if(lightHandleIsValid(spells[i].longinfo)) {
-				EERIE_LIGHT * light = lightHandleGet(spells[i].longinfo);
+			if(lightHandleIsValid(spells[i].longinfo_light)) {
+				EERIE_LIGHT * light = lightHandleGet(spells[i].longinfo_light);
 				
 				light->duration = 200;
 				light->time_creation = (unsigned long)(arxtime);
 			}
-			spells[i].longinfo = -1;
+			spells[i].longinfo_light = -1;
 			
 			ARX_SOUND_Stop(spells[i].snd_loop);
 			ARX_SOUND_PlaySFX(SND_SPELL_LIGHTNING_END, &entities[spells[i].caster]->pos);
@@ -5048,13 +5054,13 @@ void ARX_SPELLS_Kill(long i) {
 			break;
 		}
 		case SPELL_MASS_LIGHTNING_STRIKE: {
-			if(lightHandleIsValid(spells[i].longinfo)) {
-				EERIE_LIGHT * light = lightHandleGet(spells[i].longinfo);
+			if(lightHandleIsValid(spells[i].longinfo_light)) {
+				EERIE_LIGHT * light = lightHandleGet(spells[i].longinfo_light);
 				
 				light->duration = 200;
 				light->time_creation = (unsigned long)(arxtime);
 			}
-			spells[i].longinfo = -1;
+			spells[i].longinfo_light = -1;
 			
 			ARX_SOUND_Stop(spells[i].snd_loop);
 			ARX_SOUND_PlaySFX(SND_SPELL_LIGHTNING_END);
@@ -5062,13 +5068,13 @@ void ARX_SPELLS_Kill(long i) {
 			break;
 		}
 		case SPELL_REPEL_UNDEAD: {
-			if(lightHandleIsValid(spells[i].longinfo)) {
-				EERIE_LIGHT * light = lightHandleGet(spells[i].longinfo);
+			if(lightHandleIsValid(spells[i].longinfo_light)) {
+				EERIE_LIGHT * light = lightHandleGet(spells[i].longinfo_light);
 				
 				light->duration = 200;
 				light->time_creation = (unsigned long)(arxtime);
 			}
-			spells[i].longinfo = -1;
+			spells[i].longinfo_light = -1;
 			
 			ARX_SOUND_Stop(spells[i].snd_loop);
 			
@@ -5077,8 +5083,8 @@ void ARX_SPELLS_Kill(long i) {
 		case SPELL_HARM:
 		case SPELL_LIFE_DRAIN:
 		case SPELL_MANA_DRAIN: {
-			if(spells[i].longinfo != -1) {
-				damages[spells[i].longinfo].exist = false;
+			if(spells[i].longinfo_damage != -1) {
+				damages[spells[i].longinfo_damage].exist = false;
 			}
 			
 			if(lightHandleIsValid(spells[i].longinfo2_light)) {
@@ -5271,8 +5277,8 @@ void ARX_SPELLS_Update()
 					ARX_SOUND_PlaySFX(SND_SPELL_VISION_START, &entities[spells[i].caster]->pos);					
 				break;
 				case SPELL_MAGIC_MISSILE: {
-					if(lightHandleIsValid(spells[i].longinfo)) {
-						EERIE_LIGHT * light = lightHandleGet(spells[i].longinfo);
+					if(lightHandleIsValid(spells[i].longinfo_light)) {
+						EERIE_LIGHT * light = lightHandleGet(spells[i].longinfo_light);
 						light->exist = 0;
 					}
 				}
@@ -5309,7 +5315,7 @@ void ARX_SPELLS_Update()
 					ARX_SOUND_PlaySFX(SND_SPELL_LOWER_ARMOR_END);
 					Entity *io = entities[spells[i].target];
 
-					if(spells[i].longinfo) {
+					if(spells[i].longinfo_lower_armor) {
 						io->halo.flags &= ~HALO_ACTIVE;
 						ARX_HALO_SetToNative(io);
 					}
@@ -5379,11 +5385,11 @@ void ARX_SPELLS_Update()
 				break;
 				case SPELL_RISE_DEAD:
 
-					if(ValidIONum(spells[i].longinfo) && spells[i].longinfo != 0) {
+					if(ValidIONum(spells[i].longinfo_entity) && spells[i].longinfo_entity != 0) {
 						
-						ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &entities[spells[i].longinfo]->pos);
+						ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &entities[spells[i].longinfo_entity]->pos);
 						
-						Entity *entity = entities[spells[i].longinfo];
+						Entity *entity = entities[spells[i].longinfo_entity];
 
 						if(entity->scriptload && (entity->ioflags & IO_NOSAVE)) {
 							AddRandomSmoke(entity,100);
@@ -5416,8 +5422,8 @@ void ARX_SPELLS_Update()
 						lightHandleGet(pCreateField->lLightId)->duration = 800;
 					}
 
-					if(ValidIONum(spells[i].longinfo)) {
-						delete entities[spells[i].longinfo];
+					if(ValidIONum(spells[i].longinfo_entity)) {
+						delete entities[spells[i].longinfo_entity];
 					}
 				}
 				break;
@@ -5428,12 +5434,12 @@ void ARX_SPELLS_Update()
 				//****************************************************************************
 				// LEVEL 7
 				case SPELL_ICE_FIELD:
-					if(spells[i].longinfo != -1)
-						damages[spells[i].longinfo].exist = false;
+					if(spells[i].longinfo_damage != -1)
+						damages[spells[i].longinfo_damage].exist = false;
 				break;
 				case SPELL_FIRE_FIELD:
-					if(spells[i].longinfo != -1)
-						damages[spells[i].longinfo].exist = false;
+					if(spells[i].longinfo_damage != -1)
+						damages[spells[i].longinfo_damage].exist = false;
 				break;
 				case SPELL_LIGHTNING_STRIKE:					
 					ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &entities[spells[i].caster]->pos);					
@@ -5712,11 +5718,11 @@ void ARX_SPELLS_Update()
 				if(pCSpellFX) {
 					CFireBall *pCF = (CFireBall*) pCSpellFX;
 						
-					if(!lightHandleIsValid(spells[i].longinfo))
-						spells[i].longinfo = GetFreeDynLight();
+					if(!lightHandleIsValid(spells[i].longinfo_light))
+						spells[i].longinfo_light = GetFreeDynLight();
 
-					if(lightHandleIsValid(spells[i].longinfo)) {
-						EERIE_LIGHT * light = lightHandleGet(spells[i].longinfo);
+					if(lightHandleIsValid(spells[i].longinfo_light)) {
+						EERIE_LIGHT * light = lightHandleGet(spells[i].longinfo_light);
 						
 						light->exist=1;
 						light->pos = pCF->eCurPos;
@@ -5943,7 +5949,7 @@ void ARX_SPELLS_Update()
 				CSpellFx *pCSpellFX = spells[i].pSpellFx;
 
 				if(pCSpellFX) {
-					if(spells[i].longinfo==-2) {
+					if(spells[i].longinfo_entity == -2) {
 						pCSpellFX->lLightId=-1;
 						break;
 					}
@@ -5969,7 +5975,7 @@ void ARX_SPELLS_Update()
 
 					unsigned long tim=pCSpellFX->getCurrentTime();
 
-					if(tim > 3000 && spells[i].longinfo == -1) {
+					if(tim > 3000 && spells[i].longinfo_entity == -1) {
 						ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &spells[i].target_pos);
 						CRiseDead *prise = (CRiseDead *)spells[i].pSpellFx;
 
@@ -5994,7 +6000,7 @@ void ARX_SPELLS_Update()
 									io->summoner = checked_range_cast<short>(lSpellsCaster);
 									
 									io->ioflags|=IO_NOSAVE;
-									spells[i].longinfo = io->index();
+									spells[i].longinfo_entity = io->index();
 									io->scriptload=1;
 									
 									ARX_INTERACTIVE_Teleport(io, phys.origin);
@@ -6018,7 +6024,7 @@ void ARX_SPELLS_Update()
 								pCSpellFX->lLightId=-1;
 							} else {
 								ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE);
-								spells[i].longinfo=-2;
+								spells[i].longinfo_entity = -2;
 								spells[i].tolive=0;
 							}
 						}
@@ -6055,9 +6061,9 @@ void ARX_SPELLS_Update()
 
 				if (pCSpellFX)
 				{				
-					if (ValidIONum(spells[i].longinfo))
-					{
-						Entity * io=entities[spells[i].longinfo];
+					if(ValidIONum(spells[i].longinfo_entity)) {
+						Entity * io = entities[spells[i].longinfo_entity];
+						
 						CCreateField * ccf=(CCreateField *)pCSpellFX;
 						io->pos = ccf->eSrc;
 
@@ -6278,16 +6284,16 @@ void ARX_SPELLS_Update()
 							pCSpellFX->Render();
 						}	
 
-						spells[i].longinfo=1;
+						spells[i].longinfo_summon_creature = 1;
 						spells[i].longinfo2_entity = -1;
 
-					} else if(spells[i].longinfo) {
+					} else if(spells[i].longinfo_summon_creature) {
 						if(lightHandleIsValid(spells[i].pSpellFx->lLightId)) {
 							lightHandleGet(spells[i].pSpellFx->lLightId)->exist = 0;
 							spells[i].pSpellFx->lLightId=-1;
 						}
 
-						spells[i].longinfo=0;
+						spells[i].longinfo_summon_creature = 0;
 						ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &spells[i].target_pos);
 						CSummonCreature *pSummon;
 						pSummon= (CSummonCreature *)spells[i].pSpellFx;
@@ -6490,8 +6496,8 @@ void ARX_SPELLS_Update()
 					ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, NULL, 0.8F + 0.4F * rnd());
 				}
 
-				if(lightHandleIsValid(spells[i].longinfo)) {
-					EERIE_LIGHT * light = lightHandleGet(spells[i].longinfo);
+				if(lightHandleIsValid(spells[i].longinfo_light)) {
+					EERIE_LIGHT * light = lightHandleGet(spells[i].longinfo_light);
 					
 					float fxx;
 

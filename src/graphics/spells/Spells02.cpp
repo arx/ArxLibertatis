@@ -295,10 +295,10 @@ void CLowerArmor::Create(long _ulDuration) {
 			io->halo.color.b = 0.0f;
 			io->halo.radius = 45.f;
 			io->halo.dynlight = -1;
-			spells[spellinstance].longinfo = 1;
+			spells[spellinstance].longinfo_lower_armor = 1;
 		}
 		else
-			spells[spellinstance].longinfo = 0;
+			spells[spellinstance].longinfo_lower_armor = 0;
 	}
 }
 
@@ -317,7 +317,7 @@ void CLowerArmor::Update(unsigned long _ulTime)
 			io->halo.color.b = 0.0f;
 			io->halo.radius = 45.f;
 			io->halo.dynlight = -1;
-			spells[spellinstance].longinfo = 1;
+			spells[spellinstance].longinfo_lower_armor = 1;
 		}
 	}
 }

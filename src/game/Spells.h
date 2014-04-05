@@ -230,7 +230,13 @@ struct SPELL {
 	
 	TextureContainer * tc;
 	
-	LightHandle longinfo;
+	long longinfo_entity;
+	long longinfo_damage;
+	long longinfo_time;
+	long longinfo_summon_creature;
+	long longinfo_lower_armor;
+	LightHandle longinfo_light;
+	
 	long longinfo2_entity;
 	LightHandle longinfo2_light;
 	
