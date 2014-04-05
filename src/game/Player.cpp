@@ -291,10 +291,7 @@ void ARX_PLAYER_ClickedOnTorch(Entity * io)
 
 	if(io->durability > 0) {
 		if(io->ignition > 0) {
-			if(lightHandleIsValid(io->ignit_light)) {
-				lightHandleGet(io->ignit_light)->exist = 0;
-			}
-			io->ignit_light = -1;
+			lightHandleDestroy(io->ignit_light);
 
 			if(io->ignit_sound != audio::INVALID_ID) {
 				ARX_SOUND_Stop(io->ignit_sound);
@@ -1832,15 +1829,8 @@ nochanges:
 	player.Last_Movement = player.Current_Movement;
 
 	if(!light) {
-		if(lightHandleIsValid(special[2])) {
-			lightHandleGet(special[2])->exist = 0;
-			special[2] = -1;
-		}
-
-		if(lightHandleIsValid(special[1])) {
-			lightHandleGet(special[1])->exist = 0;
-			special[1] = -1;
-		}
+		lightHandleDestroy(special[2]);
+		lightHandleDestroy(special[1]);
 	}
 }
 

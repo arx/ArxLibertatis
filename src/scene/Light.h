@@ -153,6 +153,8 @@ EERIE_LIGHT * lightHandleGet(LightHandle lightHandle);
 
 bool lightHandleIsValid(LightHandle num);
 LightHandle GetFreeDynLight();
+void lightHandleDestroy(LightHandle & handle);
+
 void ClearDynLights();
 void PrecalcDynamicLighting(long x0,long x1,long z0,long z1);
 

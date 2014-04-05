@@ -675,12 +675,7 @@ void CIgnit::Kill(void)
 	int nb = this->nblight;
 
 	while(nb--) {
-		LightHandle id = this->tablight[nb].idl;
-
-		if(lightHandleIsValid(id)) {
-			lightHandleGet(id)->exist = 0;
-		}
-		this->tablight[nb].idl = -1;
+		lightHandleDestroy(tablight[nb].idl);
 	}
 
 	this->nblight = 0;

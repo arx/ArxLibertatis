@@ -4817,10 +4817,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 		case SPELL_MASS_LIGHTNING_STRIKE: {
 			for(size_t ii = 0; ii < MAX_SPELLS; ii++) {
 				if(spells[ii].exist && spells[ii].type == typ) {
-					if(lightHandleIsValid(spells[ii].longinfo_light)) {
-						lightHandleGet(spells[ii].longinfo_light)->exist = 0;
-					}
-					spells[ii].longinfo_light = -1;
+					lightHandleDestroy(spells[ii].longinfo_light);
 					spells[ii].tolive = 0;
 				}
 			}
@@ -5134,10 +5131,7 @@ void ARX_SPELLS_Kill(long i) {
 			break;
 		}
 		case SPELL_SUMMON_CREATURE: {
-			if(lightHandleIsValid(spells[i].pSpellFx->lLightId)) {
-				lightHandleGet(spells[i].pSpellFx->lLightId)->exist = 0;
-				spells[i].pSpellFx->lLightId=-1;
-			}
+			lightHandleDestroy(spells[i].pSpellFx->lLightId);
 			
 			if(ValidIONum(spells[i].longinfo2_entity) && spells[i].longinfo2_entity != 0) {
 				
@@ -5169,10 +5163,7 @@ void ARX_SPELLS_Kill(long i) {
 			break;
 		}
 		case SPELL_FAKE_SUMMON: {
-			if(lightHandleIsValid(spells[i].pSpellFx->lLightId)) {
-				lightHandleGet(spells[i].pSpellFx->lLightId)->exist = 0;
-				spells[i].pSpellFx->lLightId = -1;
-			}
+			lightHandleDestroy(spells[i].pSpellFx->lLightId);
 			
 			break;
 		}
@@ -5473,20 +5464,13 @@ void ARX_SPELLS_Update()
 						ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &entities[spells[i].longinfo2_entity]->pos);
 					}
 
-					if(lightHandleIsValid(spells[i].pSpellFx->lLightId)) {
-						lightHandleGet(spells[i].pSpellFx->lLightId)->exist = 0;
-						spells[i].pSpellFx->lLightId=-1;
-					}
-
+					lightHandleDestroy(spells[i].pSpellFx->lLightId);
 					// need to killio
 				break;
 				case SPELL_FAKE_SUMMON :
 					ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &spells[i].target_pos);						
-
-					if(lightHandleIsValid(spells[i].pSpellFx->lLightId)) {
-						lightHandleGet(spells[i].pSpellFx->lLightId)->exist = 0;
-						spells[i].pSpellFx->lLightId=-1;
-					}
+					
+					lightHandleDestroy(spells[i].pSpellFx->lLightId);
 				break;
 				case SPELL_INCINERATE:
 					ARX_SPELLS_RemoveSpellOn(spells[i].target, i);
@@ -6271,10 +6255,7 @@ void ARX_SPELLS_Update()
 						spells[i].longinfo2_entity = -1;
 
 					} else if(spells[i].longinfo_summon_creature) {
-						if(lightHandleIsValid(spells[i].pSpellFx->lLightId)) {
-							lightHandleGet(spells[i].pSpellFx->lLightId)->exist = 0;
-							spells[i].pSpellFx->lLightId=-1;
-						}
+						lightHandleDestroy(spells[i].pSpellFx->lLightId);
 
 						spells[i].longinfo_summon_creature = 0;
 						ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &spells[i].target_pos);

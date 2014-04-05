@@ -243,11 +243,7 @@ void ARX_INTERACTIVE_DestroyDynamicInfo(Entity * io)
 		memset(&io->_npcdata->pathfind, 0, sizeof(IO_PATHFIND));
 	}
 	
-	if(lightHandleIsValid(io->dynlight)) {
-		lightHandleGet(io->dynlight)->exist = 0;
-	}
-
-	io->dynlight = -1;
+	lightHandleDestroy(io->dynlight);
 
 	IO_UnlinkAllLinkedObjects(io);
 }
@@ -752,15 +748,8 @@ void ARX_INTERACTIVE_ClearIODynData(Entity * io) {
 	if(!io)
 		return;
 	
-	if(lightHandleIsValid(io->dynlight)) {
-		lightHandleGet(io->dynlight)->exist = 0;
-	}
-	io->dynlight = -1;
-	
-	if(lightHandleIsValid(io->halo.dynlight)) {
-		lightHandleGet(io->halo.dynlight)->exist = 0;
-	}
-	io->halo.dynlight = -1;
+	lightHandleDestroy(io->dynlight);
+	lightHandleDestroy(io->halo.dynlight);
 	
 	free(io->symboldraw), io->symboldraw = NULL;
 	

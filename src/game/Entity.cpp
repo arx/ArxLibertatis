@@ -242,15 +242,8 @@ Entity::~Entity() {
 		damages[damagedata].exist = 0;
 	}
 	
-	if(lightHandleIsValid(dynlight)) {
-		lightHandleGet(dynlight)->exist = 0;
-	}
-	dynlight = -1;
-	
-	if(lightHandleIsValid(halo.dynlight)) {
-		lightHandleGet(halo.dynlight)->exist = 0;
-	}
-	halo.dynlight = -1;
+	lightHandleDestroy(dynlight);
+	lightHandleDestroy(halo.dynlight);
 	
 	free(usepath);
 	free(symboldraw), symboldraw = NULL;
@@ -329,10 +322,7 @@ void Entity::cleanReferences() {
 	
 	ARX_SPELLS_FizzleAllSpellsFromCaster(index());
 	
-	if(lightHandleIsValid(ignit_light)) {
-		lightHandleGet(ignit_light)->exist = 0;
-	}
-	ignit_light = -1;
+	lightHandleDestroy(ignit_light);
 	
 	if(ignit_sound != audio::INVALID_ID) {
 		ARX_SOUND_Stop(ignit_sound), ignit_sound = audio::INVALID_ID;

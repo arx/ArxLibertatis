@@ -128,10 +128,7 @@ static void ARX_INVENTORY_Declare_InventoryIn(Entity * io) {
 	
 	if(io->ignition > 0) {
 		
-		if(lightHandleIsValid(io->ignit_light)) {
-			lightHandleGet(io->ignit_light)->exist = 0;
-		}
-		io->ignit_light = -1;
+		lightHandleDestroy(io->ignit_light);
 		
 		if (io->ignit_sound != audio::INVALID_ID) {
 			ARX_SOUND_Stop(io->ignit_sound);

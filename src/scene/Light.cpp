@@ -389,6 +389,13 @@ bool lightHandleIsValid(LightHandle num)
 	return (long)num >= 0 && ((size_t)num < MAX_DYNLIGHTS) && DynLight[num].exist;
 }
 
+void lightHandleDestroy(LightHandle & handle) {
+	if(lightHandleIsValid(handle)) {
+		lightHandleGet(handle)->exist = 0;
+	}
+	handle = -1;
+}
+
 LightHandle GetFreeDynLight() {
 
 	for(size_t i = 1; i < MAX_DYNLIGHTS; i++) {

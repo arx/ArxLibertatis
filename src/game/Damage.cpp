@@ -490,17 +490,11 @@ void ARX_DAMAGES_ForceDeath(Entity * io_dead, Entity * io_killer) {
 	if((MasterCamera.exist & 2) && (MasterCamera.want_io == io_dead))
 		MasterCamera.exist = 0;
 
-	//Kill all speeches
-	if(lightHandleIsValid(io_dead->dynlight)) {
-		lightHandleGet(io_dead->dynlight)->exist = 0;
-	}
-	io_dead->dynlight = -1;
-
-	if(lightHandleIsValid(io_dead->halo.dynlight)) {
-		lightHandleGet(io_dead->halo.dynlight)->exist = 0;
-	}
-	io_dead->halo.dynlight = -1;
+	lightHandleDestroy(io_dead->dynlight);
+	lightHandleDestroy(io_dead->halo.dynlight);
 	
+	//Kill all speeches
+
 	ARX_NPC_Behaviour_Reset(io_dead);
 
 	ARX_SPEECH_ReleaseIOSpeech(io_dead);
@@ -1291,11 +1285,7 @@ void CheckForIgnition(Vec3f * pos, float radius, bool mode, long flag) {
 				} else if(!mode && io->ignition > 0) {
 					if(io->obj->fastaccess.fire >= 0) {
 						io->ignition = 0; 
-
-						if(lightHandleIsValid(io->ignit_light)) {
-							lightHandleGet(io->ignit_light)->exist = 0;
-						}
-						io->ignit_light = -1;
+						lightHandleDestroy(io->ignit_light);
 
 						if(io->ignit_sound != audio::INVALID_ID) {
 							ARX_SOUND_Stop(io->ignit_sound);
