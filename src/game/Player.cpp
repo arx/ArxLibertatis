@@ -1680,7 +1680,7 @@ void ARX_PLAYER_Manage_Visual() {
 						special[pouet] = GetFreeDynLight();
 					}
 					if(special[pouet] != -1) {
-						EERIE_LIGHT * el = &DynLight[special[pouet]];
+						EERIE_LIGHT * el = lightHandleGet(special[pouet]);
 						el->intensity = 1.3f;
 						el->exist = 1;
 						el->fallend = 180.f;

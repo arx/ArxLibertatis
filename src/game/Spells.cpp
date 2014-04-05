@@ -5152,13 +5152,15 @@ void ARX_SPELLS_Kill(long i) {
 				
 					long nn = GetFreeDynLight();
 					if(nn >= 0) {
-						DynLight[nn].exist = 1;
-						DynLight[nn].intensity = 0.7f + 2.f * rnd();
-						DynLight[nn].fallend = 600.f;
-						DynLight[nn].fallstart = 400.f;
-						DynLight[nn].rgb = Color3f(1.0f, 0.8f, 0.0f);
-						DynLight[nn].pos = posi;
-						DynLight[nn].duration = 600;
+						EERIE_LIGHT * light = lightHandleGet(nn);
+						
+						light->exist = 1;
+						light->intensity = 0.7f + 2.f * rnd();
+						light->fallend = 600.f;
+						light->fallstart = 400.f;
+						light->rgb = Color3f(1.0f, 0.8f, 0.0f);
+						light->pos = posi;
+						light->duration = 600;
 					}
 					
 					entities[spells[i].longinfo2]->destroyOne();
@@ -5388,13 +5390,15 @@ void ARX_SPELLS_Update()
 							long nn=GetFreeDynLight();
 
 							if(nn >= 0) {
-								DynLight[nn].exist=1;
-								DynLight[nn].intensity = 0.7f + 2.f*rnd();
-								DynLight[nn].fallend = 600.f;
-								DynLight[nn].fallstart = 400.f;
-								DynLight[nn].rgb = Color3f(1.0f, 0.8f, 0.f);
-								DynLight[nn].pos = posi;
-								DynLight[nn].duration = 600;
+								EERIE_LIGHT * light = lightHandleGet(nn);
+								
+								light->exist = 1;
+								light->intensity = 0.7f + 2.f*rnd();
+								light->fallend = 600.f;
+								light->fallstart = 400.f;
+								light->rgb = Color3f(1.0f, 0.8f, 0.f);
+								light->pos = posi;
+								light->duration = 600;
 							}
 
 							entity->destroyOne();
