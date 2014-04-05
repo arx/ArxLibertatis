@@ -758,7 +758,7 @@ void ARX_INTERACTIVE_ClearIODynData(Entity * io) {
 	io->dynlight = -1;
 	
 	if(ValidDynLight(io->halo.dynlight)) {
-		DynLight[io->halo.dynlight].exist = 0;
+		lightHandleGet(io->halo.dynlight)->exist = 0;
 	}
 	io->halo.dynlight = -1;
 	

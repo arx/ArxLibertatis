@@ -416,15 +416,17 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 
 			long id = GetFreeDynLight();
 			if(id != -1 && framedelay > 0) {
-				DynLight[id].exist = 1;
-				DynLight[id].intensity = 1.f;
-				DynLight[id].fallstart = 100.f;
-				DynLight[id].fallend   = 240.f;
-				DynLight[id].rgb = Color3f(1.f - rnd() * .2f, .8f - rnd() * .2f, .6f - rnd() * .2f);
-				DynLight[id].pos = thrownObj->position;
-				DynLight[id].ex_flaresize = 40.f;
-				DynLight[id].extras |= EXTRAS_FLARE;
-				DynLight[id].duration = static_cast<long>(framedelay * 0.5f);
+				EERIE_LIGHT * light = lightHandleGet(id);
+				
+				light->exist = 1;
+				light->intensity = 1.f;
+				light->fallstart = 100.f;
+				light->fallend   = 240.f;
+				light->rgb = Color3f(1.f - rnd() * .2f, .8f - rnd() * .2f, .6f - rnd() * .2f);
+				light->pos = thrownObj->position;
+				light->ex_flaresize = 40.f;
+				light->extras |= EXTRAS_FLARE;
+				light->duration = static_cast<long>(framedelay * 0.5f);
 			}
 
 			float p = 3.f;
