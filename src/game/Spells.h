@@ -229,8 +229,11 @@ struct SPELL {
 	unsigned long tolive;
 	
 	TextureContainer * tc;
+	
 	LightHandle longinfo;
-	LightHandle longinfo2;
+	long longinfo2_entity;
+	LightHandle longinfo2_light;
+	
 	bool bDuration;
 	float fManaCostPerSecond;
 	
