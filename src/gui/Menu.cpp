@@ -664,8 +664,9 @@ bool ARX_Menu_Render() {
 		}
 	}
 
-	DynLight[0].pos.x = 0.f + GInput->getMousePosAbs().x - (g_size.width() >> 1);
-	DynLight[0].pos.y = 0.f + GInput->getMousePosAbs().y - (g_size.height() >> 1);
+	EERIE_LIGHT * light = lightHandleGet(0);
+	light->pos.x = 0.f + GInput->getMousePosAbs().x - (g_size.width() >> 1);
+	light->pos.y = 0.f + GInput->getMousePosAbs().y - (g_size.height() >> 1);
 
 	if(pTextManage) {
 		pTextManage->Update(framedelay);
