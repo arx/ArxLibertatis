@@ -4474,7 +4474,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			}
 			
 			spells[i].longinfo2 = GetFreeDynLight();
-			if(lightHandleIsValid(spells[i].longinfo)) {
+			if(lightHandleIsValid(spells[i].longinfo2)) {
 				long id = spells[i].longinfo2;
 				EERIE_LIGHT * light = lightHandleGet(id);
 				
