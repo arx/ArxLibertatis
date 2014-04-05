@@ -917,7 +917,7 @@ static void CheckUnderWaterIO(Entity * io) {
 		if(io->ignition > 0.f) {
 			ARX_SOUND_PlaySFX(SND_TORCH_END, &ppos);
 
-			if(ValidDynLight(io->ignit_light)) {
+			if(lightHandleIsValid(io->ignit_light)) {
 				lightHandleGet(io->ignit_light)->exist = 0;
 			}
 			io->ignit_light = -1;
@@ -3417,7 +3417,7 @@ void ManageIgnition(Entity * io)
 		return;
 
 	if(player.torch == io) {
-		if(ValidDynLight(io->ignit_light)) {
+		if(lightHandleIsValid(io->ignit_light)) {
 			lightHandleGet(io->ignit_light)->exist = 0;
 		}
 		io->ignit_light = -1;
@@ -3603,7 +3603,7 @@ void ManageIgnition_2(Entity * io) {
 		if(rnd() > 0.9f)
 			CheckForIgnition(&position, io->ignition, 1);
 	} else {
-		if(ValidDynLight(io->ignit_light)) {
+		if(lightHandleIsValid(io->ignit_light)) {
 			lightHandleGet(io->ignit_light)->exist = 0;
 		}
 		io->ignit_light = -1;

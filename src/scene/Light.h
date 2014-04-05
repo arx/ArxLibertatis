@@ -146,7 +146,7 @@ void PrecalcIOLighting(const Vec3f * pos, float radius);
 
 EERIE_LIGHT * lightHandleGet(long lightHandle);
 
-bool ValidDynLight(long num);
+bool lightHandleIsValid(long num);
 long GetFreeDynLight();
 void ClearDynLights();
 void PrecalcDynamicLighting(long x0,long x1,long z0,long z1);

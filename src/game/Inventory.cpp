@@ -128,7 +128,7 @@ static void ARX_INVENTORY_Declare_InventoryIn(Entity * io) {
 	
 	if(io->ignition > 0) {
 		
-		if(ValidDynLight(io->ignit_light)) {
+		if(lightHandleIsValid(io->ignit_light)) {
 			lightHandleGet(io->ignit_light)->exist = 0;
 		}
 		io->ignit_light = -1;

@@ -491,12 +491,12 @@ void ARX_DAMAGES_ForceDeath(Entity * io_dead, Entity * io_killer) {
 		MasterCamera.exist = 0;
 
 	//Kill all speeches
-	if(ValidDynLight(io_dead->dynlight)) {
+	if(lightHandleIsValid(io_dead->dynlight)) {
 		lightHandleGet(io_dead->dynlight)->exist = 0;
 	}
 	io_dead->dynlight = -1;
 
-	if(ValidDynLight(io_dead->halo.dynlight)) {
+	if(lightHandleIsValid(io_dead->halo.dynlight)) {
 		lightHandleGet(io_dead->halo.dynlight)->exist = 0;
 	}
 	io_dead->halo.dynlight = -1;
@@ -1292,7 +1292,7 @@ void CheckForIgnition(Vec3f * pos, float radius, bool mode, long flag) {
 					if(io->obj->fastaccess.fire >= 0) {
 						io->ignition = 0; 
 
-						if(ValidDynLight(io->ignit_light)) {
+						if(lightHandleIsValid(io->ignit_light)) {
 							lightHandleGet(io->ignit_light)->exist = 0;
 						}
 						io->ignit_light = -1;

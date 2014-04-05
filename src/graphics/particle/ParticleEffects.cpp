@@ -1391,7 +1391,7 @@ void RestoreAllLightsInitialStatus() {
 		if(GLight[i]) {
 			GLight[i]->status = (GLight[i]->extras & EXTRAS_STARTEXTINGUISHED) ? 0 : 1;
 			if(GLight[i]->status == 0) {
-				if(ValidDynLight(GLight[i]->tl)) {
+				if(lightHandleIsValid(GLight[i]->tl)) {
 					lightHandleGet(GLight[i]->tl)->exist = 0;
 				}
 				GLight[i]->tl = -1;

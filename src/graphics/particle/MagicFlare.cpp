@@ -134,7 +134,7 @@ void ARX_MAGICAL_FLARES_KillAll()
 			flare.tolive=0;
 			flarenum--;
 
-			if(ValidDynLight(flare.dynlight)) {
+			if(lightHandleIsValid(flare.dynlight)) {
 				lightHandleGet(flare.dynlight)->exist = 0;
 			}
 			flare.dynlight=-1;
@@ -452,7 +452,7 @@ void ARX_MAGICAL_FLARES_Update() {
 					flare.io->flarecount--;
 				}
 
-				if(ValidDynLight(flare.dynlight)) {
+				if(lightHandleIsValid(flare.dynlight)) {
 					lightHandleGet(flare.dynlight)->exist = 0;
 				}
 
@@ -473,7 +473,7 @@ void ARX_MAGICAL_FLARES_Update() {
 
 			light->rgb = componentwise_max(light->rgb, c);
 
-			if(ValidDynLight(flare.dynlight)) {
+			if(lightHandleIsValid(flare.dynlight)) {
 				EERIE_LIGHT * el = lightHandleGet(flare.dynlight);
 				el->pos = flare.v.p;
 				el->rgb = c;

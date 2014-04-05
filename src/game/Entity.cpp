@@ -242,12 +242,12 @@ Entity::~Entity() {
 		damages[damagedata].exist = 0;
 	}
 	
-	if(ValidDynLight(dynlight)) {
+	if(lightHandleIsValid(dynlight)) {
 		lightHandleGet(dynlight)->exist = 0;
 	}
 	dynlight = -1;
 	
-	if(ValidDynLight(halo.dynlight)) {
+	if(lightHandleIsValid(halo.dynlight)) {
 		lightHandleGet(halo.dynlight)->exist = 0;
 	}
 	halo.dynlight = -1;
