@@ -5700,15 +5700,16 @@ void ARX_SPELLS_Update()
 
 					if(spells[i].longinfo!=-1) {
 						long id=spells[i].longinfo;
-						EERIE_LIGHT * el=&DynLight[id];
-						el->exist=1;
-						el->pos = pCF->eCurPos;
-						el->intensity = 2.2f;
-						el->fallend = 500.f;
-						el->fallstart = 400.f;
-						el->rgb.r = 1.0f-rnd()*0.3f;
-						el->rgb.g = 0.6f-rnd()*0.1f;
-						el->rgb.b = 0.3f-rnd()*0.1f;
+						EERIE_LIGHT * light = lightHandleGet(id);
+						
+						light->exist=1;
+						light->pos = pCF->eCurPos;
+						light->intensity = 2.2f;
+						light->fallend = 500.f;
+						light->fallstart = 400.f;
+						light->rgb.r = 1.0f-rnd()*0.3f;
+						light->rgb.g = 0.6f-rnd()*0.1f;
+						light->rgb.b = 0.3f-rnd()*0.1f;
 					}
 
 					EERIE_SPHERE sphere;
