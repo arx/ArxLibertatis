@@ -54,6 +54,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "math/Random.h"
 #include "math/Vector.h"
 #include "platform/Flags.h"
+#include "scene/Light.h"
 
 class Entity;
 class CSpellFx;
@@ -228,8 +229,8 @@ struct SPELL {
 	unsigned long tolive;
 	
 	TextureContainer * tc;
-	long longinfo;
-	long longinfo2;
+	LightHandle longinfo;
+	LightHandle longinfo2;
 	bool bDuration;
 	float fManaCostPerSecond;
 	

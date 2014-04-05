@@ -1500,7 +1500,7 @@ void FirstFrameProc() {
 	WILLADDSPEECH.clear();
 	
 	for(size_t i = 0; i < MAX_DYNLIGHTS; i++) {
-		lightHandleGet(i)->exist = 0;
+		lightHandleGet((LightHandle)i)->exist = 0;
 	}
 	
 	arxtime.update_last_frame_time();

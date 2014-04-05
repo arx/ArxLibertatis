@@ -118,7 +118,7 @@ private:
 		Vec3f poslight;
 		Vec3f posfx;
 		int actif;
-		int idl;
+		LightHandle idl;
 		int iLightNum;
 	};
 	

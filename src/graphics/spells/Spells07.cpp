@@ -682,8 +682,7 @@ void CConfuse::Render() {
 		this->lLightId = GetFreeDynLight();
 
 	if(lightHandleIsValid(lLightId)) {
-		long id = this->lLightId;
-		EERIE_LIGHT * light = lightHandleGet(id);
+		EERIE_LIGHT * light = lightHandleGet(lLightId);
 		
 		light->exist = 1;
 		light->intensity = 1.3f;

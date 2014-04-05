@@ -148,7 +148,7 @@ void LaunchMagicMissileExplosion(const Vec3f & _ePos, int t = 0, long spellinsta
 	pPS->Update(0);
 	pPS->iParticleNbMax = 0;
 
-	long id = GetFreeDynLight();
+	LightHandle id = GetFreeDynLight();
 
 	if(lightHandleIsValid(id)) {
 		EERIE_LIGHT * light = lightHandleGet(id);
@@ -684,7 +684,7 @@ void CIgnit::Kill(void)
 	int nb = this->nblight;
 
 	while(nb--) {
-		int id = this->tablight[nb].idl;
+		LightHandle id = this->tablight[nb].idl;
 
 		if(lightHandleIsValid(id)) {
 			lightHandleGet(id)->exist = 0;
@@ -742,8 +742,7 @@ void CIgnit::AddLight(int aiLight)
 	this->tablight[this->nblight].idl = GetFreeDynLight();
 
 	if(lightHandleIsValid(tablight[this->nblight].idl)) {
-		int id = this->tablight[this->nblight].idl;
-		EERIE_LIGHT * light = lightHandleGet(id);
+		EERIE_LIGHT * light = lightHandleGet(this->tablight[this->nblight].idl);
 		
 		light->exist = 1;
 		light->intensity = 0.7f + 2.f * rnd();
@@ -778,7 +777,7 @@ void CIgnit::Update(unsigned long _ulTime)
 				if(this->tablight[nb].actif) {
 					this->tablight[nb].posfx = this->pos + (this->tablight[nb].poslight - this->pos) * a;
 
-					int id = this->tablight[nb].idl;
+					LightHandle id = this->tablight[nb].idl;
 
 					if(lightHandleIsValid(id)) {
 						EERIE_LIGHT * light = lightHandleGet(id);

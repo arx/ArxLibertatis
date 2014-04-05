@@ -58,6 +58,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "math/Vector.h"
 #include "math/Angle.h"
 #include "platform/Flags.h"
+#include "scene/Light.h"
 #include "script/Script.h" // TODO remove this
 
 class TextureContainer;
@@ -121,7 +122,7 @@ struct IO_HALO {
 	Color3f color;
 	float radius;
 	HaloFlags flags;
-	long dynlight;
+	LightHandle dynlight;
 	Vec3f offset;
 };
 
@@ -291,7 +292,7 @@ public:
 	
 	ARX_USE_PATH * usepath;
 	SYMBOL_DRAW * symboldraw;
-	short dynlight;
+	LightHandle dynlight;
 	short lastspeechflag;
 	ARX_PATH * inzone;
 	IO_HALO halo;
@@ -334,7 +335,7 @@ public:
 	short poisonous_count;
 	
 	float ignition;
-	long ignit_light;
+	LightHandle ignit_light;
 	audio::SampleId ignit_sound;
 	float head_rot;
 	

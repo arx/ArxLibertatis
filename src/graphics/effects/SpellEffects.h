@@ -50,6 +50,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/Color.h"
 #include "graphics/Math.h"
 #include "math/Types.h"
+#include "scene/Light.h"
 
 struct TexturedVertex;
 
@@ -74,7 +75,7 @@ class CSpellFx
 	public:
 		unsigned long ulDuration;
 		unsigned long ulCurrentTime;
-		long lLightId;
+		LightHandle lLightId;
 		long lSrc;
 
 	public:

@@ -273,7 +273,7 @@ void ARX_PLAYER_KillTorch() {
 	giveToPlayer(player.torch);
 	
 	player.torch = NULL;
-	lightHandleGet(0)->exist = 0;
+	lightHandleGet(torchLightHandle)->exist = 0;
 }
 
 void ARX_PLAYER_ClickedOnTorch(Entity * io)
@@ -327,7 +327,7 @@ static void ARX_PLAYER_ManageTorch() {
 			ARX_SOUND_Stop(SND_TORCH_LOOP);
 			player.torch->destroy();
 			player.torch = NULL;
-			lightHandleGet(0)->exist = 0;
+			lightHandleGet(torchLightHandle)->exist = 0;
 		}
 		
 	}
@@ -1341,7 +1341,7 @@ void ARX_PLAYER_Manage_Visual() {
 		}
 	}
 	
-	static long special[3];
+	static LightHandle special[3];
 	long light = 0;
 	
 	if(entities.player()) {

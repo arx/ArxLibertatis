@@ -360,7 +360,7 @@ void Cedric_ApplyLightingFirstPartRefactor(Entity *io) {
 							sp.radius = rnd() * 100.f + 100.f;
 						}
 
-						long nn = GetFreeDynLight();
+						LightHandle nn = GetFreeDynLight();
 						if(lightHandleIsValid(nn)) {
 							EERIE_LIGHT * light = lightHandleGet(nn);
 							

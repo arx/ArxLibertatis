@@ -381,16 +381,17 @@ void PrecalcIOLighting(const Vec3f * pos, float radius) {
 	}
 }
 
-EERIE_LIGHT * lightHandleGet(long lightHandle) {
+EERIE_LIGHT * lightHandleGet(LightHandle lightHandle) {
 	return &DynLight[lightHandle];
 }
 
-bool lightHandleIsValid(long num)
+bool lightHandleIsValid(LightHandle num)
 {
-	return num >= 0 && ((size_t)num < MAX_DYNLIGHTS) && DynLight[num].exist;
+	
+	return (long)num >= 0 && ((size_t)num < MAX_DYNLIGHTS) && DynLight[num].exist;
 }
 
-long GetFreeDynLight() {
+LightHandle GetFreeDynLight() {
 
 	for(size_t i = 1; i < MAX_DYNLIGHTS; i++) {
 		if(!(DynLight[i].exist)) {
@@ -401,11 +402,11 @@ long GetFreeDynLight() {
 			DynLight[i].duration = 0;
 			DynLight[i].extras = 0;
 			DynLight[i].m_storedFlameTime.reset();
-			return i;
+			return (LightHandle)i;
 		}
 	}
 
-	return -1;
+	return (LightHandle)-1;
 }
 
 void ClearDynLights() {

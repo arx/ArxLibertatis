@@ -1397,7 +1397,7 @@ void ArxGame::manageEditorControls() {
 							ARX_SOUND_PlaySFX(SND_TORCH_END);
 							ARX_SOUND_Stop(SND_TORCH_LOOP);
 							player.torch=NULL;
-							lightHandleGet(0)->exist = 0;
+							lightHandleGet(torchLightHandle)->exist = 0;
 							Set_DragInter(io);
 							DRAGINTER->ignition=1;
 						} else {
@@ -3952,7 +3952,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 			Vec3f pos = Vec3f(0.f, 0.f, 2100.f);
 			Anglef angle = Anglef::ZERO;
 
-			EERIE_LIGHT * light = lightHandleGet(0);
+			EERIE_LIGHT * light = lightHandleGet(torchLightHandle);
 			
 			EERIE_LIGHT tl;
 			memcpy(&tl, light, sizeof(EERIE_LIGHT));

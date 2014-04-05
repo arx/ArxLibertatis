@@ -51,7 +51,7 @@ struct FLARES {
 	float tolive;
 	Color3f rgb;
 	float size;
-	long dynlight;
+	LightHandle dynlight;
 	long move;
 	Entity * io;
 	bool bDrawBitmap;
@@ -407,7 +407,7 @@ void ARX_MAGICAL_FLARES_Update() {
 	RenderMaterial mat;
 	mat.setBlendType(RenderMaterial::Additive);
 	
-	EERIE_LIGHT * light = lightHandleGet(0);
+	EERIE_LIGHT * light = lightHandleGet(torchLightHandle);
 	
 	for(long j = 1; j < 5; j++) {
 

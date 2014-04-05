@@ -78,7 +78,7 @@ struct ARX_MISSILE
 	unsigned long timecreation;
 	unsigned long lastupdate;
 	unsigned long tolive;
-	long		longinfo;
+	LightHandle	longinfo;
 	long		owner;
 };
 

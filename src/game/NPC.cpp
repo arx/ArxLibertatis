@@ -3573,8 +3573,7 @@ void ManageIgnition_2(Entity * io) {
 			io->ignit_light = GetFreeDynLight();
 
 		if(lightHandleIsValid(io->ignit_light)) {
-			long id = io->ignit_light;
-			EERIE_LIGHT * light = lightHandleGet(id);
+			EERIE_LIGHT * light = lightHandleGet(io->ignit_light);
 			
 			light->exist = 1;
 

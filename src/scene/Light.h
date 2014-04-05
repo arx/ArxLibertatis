@@ -50,6 +50,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <stddef.h>
 
+#include <boost/serialization/strong_typedef.hpp>
+
 #include "audio/AudioTypes.h"
 #include "graphics/Color.h"
 #include "math/Types.h"
@@ -73,6 +75,7 @@ extern EERIE_LIGHT * IO_PDL[MAX_DYNLIGHTS];
 extern long TOTPDL;
 extern long TOTIOPDL;
 
+BOOST_STRONG_TYPEDEF(long, LightHandle)
 
 enum EERIE_TYPES_EXTRAS_MODE
 {
@@ -118,7 +121,7 @@ struct EERIE_LIGHT {
 	float ex_size;
 	float ex_speed;
 	float ex_flaresize;
-	long tl;
+	LightHandle tl;
 	unsigned long time_creation;
 	long duration; // will start to fade before the end of duration...
 	audio::SourceId sample;
@@ -144,10 +147,12 @@ void EERIE_LIGHT_MoveAll(const Vec3f * trans);
 long EERIE_LIGHT_Create();
 void PrecalcIOLighting(const Vec3f * pos, float radius);
 
-EERIE_LIGHT * lightHandleGet(long lightHandle);
+const LightHandle torchLightHandle = (LightHandle)0;
 
-bool lightHandleIsValid(long num);
-long GetFreeDynLight();
+EERIE_LIGHT * lightHandleGet(LightHandle lightHandle);
+
+bool lightHandleIsValid(LightHandle num);
+LightHandle GetFreeDynLight();
 void ClearDynLights();
 void PrecalcDynamicLighting(long x0,long x1,long z0,long z1);
 

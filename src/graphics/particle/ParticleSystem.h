@@ -53,6 +53,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "math/Vector.h"
 #include "math/Quantizer.h"
 #include "platform/Flags.h"
+#include "scene/Light.h"
  
 class Particle;
 class ParticleParams;
@@ -125,7 +126,7 @@ public:
 		
 	bool bParticleFollow;
 	
-	long lLightId;
+	LightHandle lLightId;
 	
 	// editor
 	float fMinx, fMaxx, fMiny, fMaxy;

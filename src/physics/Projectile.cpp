@@ -349,7 +349,7 @@ void CheckExp(long i) {
 						DAMAGE_AREA, DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL, 0);
 		ARX_SOUND_PlaySFX(SND_SPELL_FIRE_HIT, &Thrown[i].position);
 		ARX_NPC_SpawnAudibleSound(Thrown[i].position, entities.player());
-		long id = GetFreeDynLight();
+		LightHandle id = GetFreeDynLight();
 
 		if(lightHandleIsValid(id) && framedelay > 0) {
 			EERIE_LIGHT * light = lightHandleGet(id);
@@ -416,7 +416,7 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 		if((thrownObj->flags & ATO_FIERY) && (thrownObj->flags & ATO_MOVING)
 		   && !(thrownObj->flags & ATO_UNDERWATER)) {
 
-			long id = GetFreeDynLight();
+			LightHandle id = GetFreeDynLight();
 			if(lightHandleIsValid(id) && framedelay > 0) {
 				EERIE_LIGHT * light = lightHandleGet(id);
 				

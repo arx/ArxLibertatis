@@ -84,8 +84,7 @@ void CHeal::Create() {
 	pPS->lLightId = GetFreeDynLight();
 
 	if(lightHandleIsValid(pPS->lLightId)) {
-		long id = pPS->lLightId;
-		EERIE_LIGHT * light = lightHandleGet(id);
+		EERIE_LIGHT * light = lightHandleGet(pPS->lLightId);
 		
 		light->exist = 1;
 		light->intensity = 2.3f;
@@ -170,8 +169,7 @@ void CHeal::Update(unsigned long aulTime)
 		pPS->lLightId = GetFreeDynLight();
 
 	if(lightHandleIsValid(pPS->lLightId)) {
-		long id = pPS->lLightId;
-		EERIE_LIGHT * light = lightHandleGet(id);
+		EERIE_LIGHT * light = lightHandleGet(pPS->lLightId);
 		
 		light->exist = 1;
 		light->intensity = 2.3f;

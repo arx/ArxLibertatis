@@ -988,7 +988,7 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 
 		if(io->flarecount) {
 			if(!lightHandleIsValid(io->dynlight))
-				io->dynlight = (short)GetFreeDynLight();
+				io->dynlight = GetFreeDynLight();
 
 			if(lightHandleIsValid(io->dynlight)) {
 				EERIE_LIGHT * light = lightHandleGet(io->dynlight);
@@ -2996,7 +2996,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 				target = spells[i].caster_pos - Vec3f(0.f, 50.f, 0.f);
 			}
 			
-			long id = GetFreeDynLight();
+			LightHandle id = GetFreeDynLight();
 			if(lightHandleIsValid(id)) {
 				EERIE_LIGHT * light = lightHandleGet(id);
 				
@@ -3366,8 +3366,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			
 			spells[i].longinfo2 = GetFreeDynLight();
 			if(lightHandleIsValid(spells[i].longinfo2)) {
-				long id = spells[i].longinfo2;
-				EERIE_LIGHT * light = lightHandleGet(id);
+				EERIE_LIGHT * light = lightHandleGet(spells[i].longinfo2);
 				
 				light->exist = 1;
 				light->intensity = 2.3f;
@@ -3998,8 +3997,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 				effect->lLightId = GetFreeDynLight();
 			}
 			if(lightHandleIsValid(effect->lLightId)) {
-				long id = effect->lLightId;
-				EERIE_LIGHT * light = lightHandleGet(id);
+				EERIE_LIGHT * light = lightHandleGet(effect->lLightId);
 				
 				light->exist = 1;
 				light->intensity = 1.3f;
@@ -4097,8 +4095,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 				effect->lLightId = GetFreeDynLight();
 				
 				if(lightHandleIsValid(effect->lLightId)) {
-					long id = effect->lLightId;
-					EERIE_LIGHT * light = lightHandleGet(id);
+					EERIE_LIGHT * light = lightHandleGet(effect->lLightId);
 					
 					light->exist = 1;
 					light->intensity = 0.7f + 2.3f;
@@ -4475,8 +4472,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			
 			spells[i].longinfo2 = GetFreeDynLight();
 			if(lightHandleIsValid(spells[i].longinfo2)) {
-				long id = spells[i].longinfo2;
-				EERIE_LIGHT * light = lightHandleGet(id);
+				EERIE_LIGHT * light = lightHandleGet(spells[i].longinfo2);
 				
 				light->exist = 1;
 				light->intensity = 2.3f;
@@ -4521,8 +4517,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			
 			spells[i].longinfo2 = GetFreeDynLight();
 			if(lightHandleIsValid(spells[i].longinfo2)) {
-				long id = spells[i].longinfo2;
-				EERIE_LIGHT * light = lightHandleGet(id);
+				EERIE_LIGHT * light = lightHandleGet(spells[i].longinfo2);
 				
 				light->exist = 1;
 				light->intensity = 2.3f;
@@ -4604,8 +4599,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			
 			spells[i].longinfo2 = GetFreeDynLight();
 			if(lightHandleIsValid(spells[i].longinfo2)) {
-				long id = spells[i].longinfo2;
-				EERIE_LIGHT * light = lightHandleGet(id);
+				EERIE_LIGHT * light = lightHandleGet(spells[i].longinfo2);
 				
 				light->exist = 1;
 				light->intensity = 2.3f;
@@ -4666,8 +4660,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			
 			effect->lLightId = GetFreeDynLight();
 			if(lightHandleIsValid(effect->lLightId)) {
-				long id = effect->lLightId;
-				EERIE_LIGHT * light = lightHandleGet(id);
+				EERIE_LIGHT * light = lightHandleGet(effect->lLightId);
 				
 				light->exist = 1;
 				light->intensity = 0.3f;
@@ -4709,8 +4702,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			effect->lLightId = GetFreeDynLight();
 			
 			if(lightHandleIsValid(effect->lLightId)) {
-				long id = effect->lLightId;
-				EERIE_LIGHT * light = lightHandleGet(id);
+				EERIE_LIGHT * light = lightHandleGet(effect->lLightId);
 				
 				light->exist = 1;
 				light->intensity = 0.3f;
@@ -4833,8 +4825,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			
 			spells[i].longinfo = GetFreeDynLight();
 			if(lightHandleIsValid(spells[i].longinfo)) {
-				long id = spells[i].longinfo;
-				EERIE_LIGHT * light = lightHandleGet(id);
+				EERIE_LIGHT * light = lightHandleGet(spells[i].longinfo);
 				
 				light->exist = 1;
 				light->intensity = 1.8f;
@@ -5138,8 +5129,7 @@ void ARX_SPELLS_Kill(long i) {
 		}
 		case SPELL_SUMMON_CREATURE: {
 			if(lightHandleIsValid(spells[i].pSpellFx->lLightId)) {
-				long id = spells[i].pSpellFx->lLightId;
-				lightHandleGet(id)->exist = 0;
+				lightHandleGet(spells[i].pSpellFx->lLightId)->exist = 0;
 				spells[i].pSpellFx->lLightId=-1;
 			}
 			
@@ -5153,7 +5143,7 @@ void ARX_SPELLS_Kill(long i) {
 					posi.y -= 100.f;
 					MakeCoolFx(posi);
 				
-					long nn = GetFreeDynLight();
+					LightHandle nn = GetFreeDynLight();
 					if(lightHandleIsValid(nn)) {
 						EERIE_LIGHT * light = lightHandleGet(nn);
 						
@@ -5175,8 +5165,7 @@ void ARX_SPELLS_Kill(long i) {
 		}
 		case SPELL_FAKE_SUMMON: {
 			if(lightHandleIsValid(spells[i].pSpellFx->lLightId)) {
-				long id = spells[i].pSpellFx->lLightId;
-				lightHandleGet(id)->exist = 0;
+				lightHandleGet(spells[i].pSpellFx->lLightId)->exist = 0;
 				spells[i].pSpellFx->lLightId = -1;
 			}
 			
@@ -5390,7 +5379,8 @@ void ARX_SPELLS_Update()
 							Vec3f posi = entity->pos;
 							posi.y-=100.f;
 							MakeCoolFx(posi);
-							long nn=GetFreeDynLight();
+							
+							LightHandle nn = GetFreeDynLight();
 
 							if(lightHandleIsValid(nn)) {
 								EERIE_LIGHT * light = lightHandleGet(nn);
@@ -5412,8 +5402,7 @@ void ARX_SPELLS_Update()
 					CCreateField *pCreateField = (CCreateField *) spells[i].pSpellFx;
 
 					if(pCreateField && lightHandleIsValid(pCreateField->lLightId)) {
-						long id=pCreateField->lLightId;
-						lightHandleGet(id)->duration=800;
+						lightHandleGet(pCreateField->lLightId)->duration = 800;
 					}
 
 					if(ValidIONum(spells[i].longinfo)) {
@@ -5481,8 +5470,7 @@ void ARX_SPELLS_Update()
 					}
 
 					if(lightHandleIsValid(spells[i].pSpellFx->lLightId)) {
-						long id = spells[i].pSpellFx->lLightId;
-						lightHandleGet(id)->exist = 0;
+						lightHandleGet(spells[i].pSpellFx->lLightId)->exist = 0;
 						spells[i].pSpellFx->lLightId=-1;
 					}
 
@@ -5492,8 +5480,7 @@ void ARX_SPELLS_Update()
 					ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &spells[i].target_pos);						
 
 					if(lightHandleIsValid(spells[i].pSpellFx->lLightId)) {
-						long id = spells[i].pSpellFx->lLightId;
-						lightHandleGet(id)->exist = 0;
+						lightHandleGet(spells[i].pSpellFx->lLightId)->exist = 0;
 						spells[i].pSpellFx->lLightId=-1;
 					}
 				break;
@@ -5718,8 +5705,7 @@ void ARX_SPELLS_Update()
 						spells[i].longinfo = GetFreeDynLight();
 
 					if(lightHandleIsValid(spells[i].longinfo)) {
-						long id=spells[i].longinfo;
-						EERIE_LIGHT * light = lightHandleGet(id);
+						EERIE_LIGHT * light = lightHandleGet(spells[i].longinfo);
 						
 						light->exist=1;
 						light->pos = pCF->eCurPos;
@@ -5957,8 +5943,7 @@ void ARX_SPELLS_Update()
 					pCSpellFX->Render();
 
 					if(lightHandleIsValid(pCSpellFX->lLightId)) {
-						long id=pCSpellFX->lLightId;
-						EERIE_LIGHT * light = lightHandleGet(id);
+						EERIE_LIGHT * light = lightHandleGet(pCSpellFX->lLightId);
 						
 						light->exist=1;
 						light->intensity = 0.7f + 2.3f;
@@ -6223,8 +6208,7 @@ void ARX_SPELLS_Update()
 					spells[i].longinfo2=GetFreeDynLight();
 
 				if(lightHandleIsValid(spells[i].longinfo2)) {
-					long id = spells[i].longinfo2;
-					EERIE_LIGHT * light = lightHandleGet(id);
+					EERIE_LIGHT * light = lightHandleGet(spells[i].longinfo2);
 					
 					light->rgb.r = 0.1f+rnd()*( 1.0f / 3 );;
 					light->rgb.g = 0.1f+rnd()*( 1.0f / 3 );;
@@ -6288,8 +6272,7 @@ void ARX_SPELLS_Update()
 
 					} else if(spells[i].longinfo) {
 						if(lightHandleIsValid(spells[i].pSpellFx->lLightId)) {
-							long id = spells[i].pSpellFx->lLightId;
-							lightHandleGet(id)->exist = 0;
+							lightHandleGet(spells[i].pSpellFx->lLightId)->exist = 0;
 							spells[i].pSpellFx->lLightId=-1;
 						}
 

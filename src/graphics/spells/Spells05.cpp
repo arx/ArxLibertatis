@@ -168,8 +168,7 @@ void CCurePoison::Create()
 	pPS->lLightId = GetFreeDynLight();
 
 	if(lightHandleIsValid(pPS->lLightId)) {
-		long id = pPS->lLightId;
-		EERIE_LIGHT * light = lightHandleGet(id);
+		EERIE_LIGHT * light = lightHandleGet(pPS->lLightId);
 		
 		light->exist = 1;
 		light->intensity = 1.5f;
@@ -235,8 +234,7 @@ void CCurePoison::Update(unsigned long aulTime)
 		pPS->lLightId = GetFreeDynLight();
 
 	if(lightHandleIsValid(pPS->lLightId)) {
-		long id = pPS->lLightId;
-		EERIE_LIGHT * light = lightHandleGet(id);
+		EERIE_LIGHT * light = lightHandleGet(pPS->lLightId);
 		
 		light->exist = 1;
 		light->intensity = 2.3f;
@@ -326,8 +324,7 @@ void CRuneOfGuarding::Create(Vec3f _eSrc, float _fBeta) {
 	
 	lLightId = GetFreeDynLight();
 	if(lightHandleIsValid(lLightId)) {
-		long id = lLightId;
-		EERIE_LIGHT * light = lightHandleGet(id);
+		EERIE_LIGHT * light = lightHandleGet(lLightId);
 		
 		light->exist = 1;
 		light->intensity = 0.7f + 2.3f;
@@ -349,8 +346,7 @@ void CRuneOfGuarding::Update(unsigned long _ulTime) {
 	float fa = 1.0f - rnd() * 0.15f;
 	
 	if(lightHandleIsValid(lLightId)) {
-		long id = lLightId;
-		EERIE_LIGHT * light = lightHandleGet(id);
+		EERIE_LIGHT * light = lightHandleGet(lLightId);
 		
 		light->exist = 1;
 		light->intensity = 0.7f + 2.3f * fa;
@@ -860,8 +856,7 @@ void CMultiPoisonProjectile::Create(Vec3f _eSrc, float _afBeta = 0) {
 		pPP->lLightId = GetFreeDynLight();
 
 		if(lightHandleIsValid(pPP->lLightId)) {
-			long id						= pPP->lLightId;
-			EERIE_LIGHT * light = lightHandleGet(id);
+			EERIE_LIGHT * light = lightHandleGet(pPP->lLightId);
 			
 			light->exist			= 1;
 			light->intensity		= 2.3f;
@@ -895,8 +890,7 @@ void CMultiPoisonProjectile::Render()
 		CPoisonProjectile * pPoisonProjectile = (CPoisonProjectile *) pTab[i];
 
 		if(lightHandleIsValid(pPoisonProjectile->lLightId)) {
-			long id					= pPoisonProjectile->lLightId;
-			EERIE_LIGHT * light = lightHandleGet(id);
+			EERIE_LIGHT * light = lightHandleGet(pPoisonProjectile->lLightId);
 			
 			light->exist		= 1;
 			light->intensity	= 2.3f * pPoisonProjectile->lightIntensityFactor;
