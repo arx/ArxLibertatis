@@ -67,8 +67,7 @@ public:
 	Vec3f eCurPos;
 	Vec3f eMove;
 	bool bExplo;
-	float fLevel;
-
+	
 	ParticleSystem pPSFire;
 	ParticleSystem pPSFire2;
 	ParticleSystem pPSSmoke;

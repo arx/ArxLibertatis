@@ -212,9 +212,7 @@ void CFireBall::Create(Vec3f aeSrc, float afBeta, float afAlpha, float _fLevel)
 	eMove.x = - fBetaRadSin * 80 * cos(radians(MAKEANGLE(afAlpha)));
 	eMove.y = sin(radians(MAKEANGLE(afAlpha))) * 80;
 	eMove.z = + fBetaRadCos * 80 * cos(radians(MAKEANGLE(afAlpha)));
-
-	fLevel = _fLevel;
-
+	
 	//FIRE
 	fire_1.p3Direction = -eMove;
 	fire_1.fStartSize = 1 * _fLevel; 
