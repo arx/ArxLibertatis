@@ -41,13 +41,19 @@ class Sample;
 #undef ALError
 #define ALError LogError
 
-OpenALBackend::OpenALBackend() : device(NULL), context(NULL),
+OpenALBackend::OpenALBackend()
+	: device(NULL)
+	, context(NULL)
 #if ARX_HAVE_OPENAL_EFX
-	hasEFX(false), effectEnabled(false),
+	, hasEFX(false)
+	, alGenEffects(NULL)
+	, alDeleteEffects(NULL)
+	, alEffectf(NULL)
+	, effectEnabled(false)
+	, effect(0)
 #endif
-	rolloffFactor(1.f) {
-	
-}
+	, rolloffFactor(1.f)
+{}
 
 OpenALBackend::~OpenALBackend() {
 	
