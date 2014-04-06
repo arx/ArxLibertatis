@@ -147,8 +147,6 @@ void CControlTarget::Create(Vec3f aeSrc, float afBeta) {
 	fBetaRadCos = (float) cos(fBetaRad);
 	fBetaRadSin = (float) sin(fBetaRad);
 
-	fSize = 1;
-	bDone = true;
 	eTarget = eSrc + Vec3f(-fBetaRadSin * 1000.f, 100.f, fBetaRadCos * 1000.f);
 	
 	for(size_t i = 1; i < entities.size(); i++) {
@@ -157,7 +155,7 @@ void CControlTarget::Create(Vec3f aeSrc, float afBeta) {
 		}
 	}
 	
-	end = 20 - 1;
+	int end = 20 - 1;
 	v1a[0].p = eSrc + Vec3f(0.f, 100.f, 0.f);
 	v1a[end].p = eTarget;
 	
@@ -282,6 +280,4 @@ void CControlTarget::Render()
 	}
 	
 	arx_assert(arx_check_init >= 0);
-	
-	eCurPos = lastpos;
 }

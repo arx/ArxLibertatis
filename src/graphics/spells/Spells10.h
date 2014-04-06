@@ -74,21 +74,14 @@ class CMassLightning: public CSpellFx
 class CControlTarget: public CSpellFx
 {
 	public:
-		bool bDone;
-		int iNumber;
 		Vec3f eSrc;
 		Vec3f eTarget;
 		TextureContainer * tex_mm;
 		TexturedVertex v1a[40];
 		TexturedVertex pathways[40];
-		ANIM_USE au;
-		int end;
 		float fColor[3];
 		float fColor1[3];
-		Vec3f eCurPos;
 
-		int iMax;
-		float fSize;
 		float fTrail;
 
 	public:
