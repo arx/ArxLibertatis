@@ -159,10 +159,7 @@ class CCurePoison: public CSpellFx
 {
 	public:
 		Vec3f eSrc;
-		float	fSize;
 		ParticleSystem * pPS;
-		TextureContainer * tex_sol;
-		TextureContainer * tex_heal;
 
 	public:
 		CCurePoison();

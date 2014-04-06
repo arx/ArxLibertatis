@@ -183,8 +183,6 @@ void CCurePoison::Create()
 		light->duration = 200;
 		light->extras = 0;
 	}
-
-	fSize = 1;
 }
 
 void CCurePoison::Update(unsigned long aulTime)
