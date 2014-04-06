@@ -505,7 +505,6 @@ void CNegateMagic::Create(Vec3f aeSrc, float afBeta) {
 	fBetaRadSin = (float) sin(fBetaRad);
 	
 	eTarget = eSrc;
-	bDone = true;
 }
 
 void CNegateMagic::Update(unsigned long _ulTime) {

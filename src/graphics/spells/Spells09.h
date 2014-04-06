@@ -111,15 +111,10 @@ class CSummonCreature: public CSpellFx
 class CNegateMagic: public CSpellFx
 {
 	public:
-		bool bDone;
-		int iNumber;
 		Vec3f eSrc;
 		Vec3f eTarget;
-		TextureContainer * tex_p1;
 		TextureContainer * tex_p2;
 		TextureContainer * tex_sol;
-
-		int iMax;
 
 	public:
 		CNegateMagic();
