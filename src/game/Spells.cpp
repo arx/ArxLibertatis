@@ -5215,125 +5215,138 @@ float ARX_SPELLS_ApplyColdProtection(Entity * io,float damages)
 
 void ARX_SPELLS_Update_End(size_t i) {
 	switch(spells[i].type) {
-		case SPELL_TELEPORT:
+		case SPELL_TELEPORT: {
 			ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE, &spells[i].caster_pos);
-		break;
+			break;
+		}
 		//****************************************************************************
 		// LEVEL 1 SPELLS
-		case SPELL_MAGIC_SIGHT:
+		case SPELL_MAGIC_SIGHT: {
 			if(spells[i].caster == 0) {
 				Project.improve = 0;
 				ARX_SOUND_Stop(spells[i].snd_loop);
 			}
-
-			ARX_SOUND_PlaySFX(SND_SPELL_VISION_START, &entities[spells[i].caster]->pos);					
-		break;
+			ARX_SOUND_PlaySFX(SND_SPELL_VISION_START, &entities[spells[i].caster]->pos);
+			break;
+		}
 		case SPELL_MAGIC_MISSILE: {
 			lightHandleDestroy(spells[i].longinfo_light);
+			break;
 		}
-		break;
 		case SPELL_IGNIT: {
 			CIgnit *pIgnit = (CIgnit *)spells[i].pSpellFx;
-			pIgnit->Action(1);					
+			pIgnit->Action(1);
+			break;
 		}
-		break;
 		case SPELL_DOUSE: {
 			CDoze *pDoze = (CDoze *)spells[i].pSpellFx;
-			pDoze->Action(0);					
+			pDoze->Action(0);
+			break;
 		}
-		break;
 		//****************************************************************************
 		// LEVEL 2
-		case SPELL_DETECT_TRAP:
-			if(spells[i].caster == 0)
-				ARX_SOUND_Stop(spells[i].snd_loop);				
-
+		case SPELL_DETECT_TRAP: {
+			if(spells[i].caster == 0) {
+				ARX_SOUND_Stop(spells[i].snd_loop);
+			}
 			ARX_SPELLS_RemoveSpellOn(spells[i].target, i);
-		break;
+			break;
+		}
 		case SPELL_ARMOR: {
 			ARX_SOUND_Stop(spells[i].snd_loop);
 			ARX_SOUND_PlaySFX(SND_SPELL_ARMOR_END, &entities[spells[i].target]->pos);					
-
-			if(ValidIONum(spells[i].target))
+			
+			if(ValidIONum(spells[i].target)) {
 				ARX_HALO_SetToNative(entities[spells[i].target]);
-
+			}
+			
 			ARX_SPELLS_RemoveSpellOn(spells[i].target, i);
+			break;
 		}
-		break;
 		case SPELL_LOWER_ARMOR: {
 			ARX_SOUND_PlaySFX(SND_SPELL_LOWER_ARMOR_END);
 			Entity *io = entities[spells[i].target];
-
+			
 			if(spells[i].longinfo_lower_armor) {
 				io->halo.flags &= ~HALO_ACTIVE;
 				ARX_HALO_SetToNative(io);
 			}
-
+			
 			ARX_SPELLS_RemoveSpellOn(spells[i].target, i);
+			break;
 		}
-		break;					
 		//****************************************************************************
 		// LEVEL 3
-		case SPELL_SPEED:						
+		case SPELL_SPEED: {
 			ARX_SPELLS_RemoveSpellOn(spells[i].target,i);
-
+			
 			if(spells[i].caster == 0)
 				ARX_SOUND_Stop(spells[i].snd_loop);
-
+			
 			ARX_SOUND_PlaySFX(SND_SPELL_SPEED_END, &entities[spells[i].target]->pos);
-		break;
-		case SPELL_FIREBALL:
+			break;
+		}
+		case SPELL_FIREBALL: {
 			ARX_SOUND_Stop(spells[i].snd_loop);					
-		break;
+			break;
+		}
 		//****************************************************************************
 		// LEVEL 4
-		case SPELL_BLESS:
+		case SPELL_BLESS: {
 			ARX_SPELLS_RemoveSpellOn(spells[i].target,i);
-		break;
-		case SPELL_CURSE:
+			break;
+		}
+		case SPELL_CURSE: {
 			ARX_SPELLS_RemoveSpellOn(spells[i].target,i);
-		break;
-		case SPELL_TELEKINESIS:						
+			break;
+		}
+		case SPELL_TELEKINESIS: {
 			if(spells[i].caster == 0)
 				Project.telekinesis = 0;
-
+			
 			ARX_SOUND_PlaySFX(SND_SPELL_TELEKINESIS_END, &entities[spells[i].caster]->pos);					
-		break;
-		case SPELL_FIRE_PROTECTION:
+			break;
+		}
+		case SPELL_FIRE_PROTECTION: {
 			ARX_SOUND_Stop(spells[i].snd_loop);
 			ARX_SOUND_PlaySFX(SND_SPELL_FIRE_PROTECTION_END, &entities[spells[i].target]->pos);
 			ARX_SPELLS_RemoveSpellOn(spells[i].target, i);
-
+			
 			if(ValidIONum(spells[i].target))
 				ARX_HALO_SetToNative(entities[spells[i].target]);
-		break;
-		case SPELL_COLD_PROTECTION:
+			
+			break;
+		}
+		case SPELL_COLD_PROTECTION: {
 			ARX_SOUND_Stop(spells[i].snd_loop);
 			ARX_SOUND_PlaySFX(SND_SPELL_COLD_PROTECTION_END, &entities[spells[i].target]->pos);
 			ARX_SPELLS_RemoveSpellOn(spells[i].target, i);
-
+			
 			if(ValidIONum(spells[i].target))
 				ARX_HALO_SetToNative(entities[spells[i].target]);
-		break;
+			
+			break;
+		}
 		//****************************************************************************
 		// LEVEL 5
 		case SPELL_LEVITATE: {
 			ARX_SOUND_Stop(spells[i].snd_loop);
 			ARX_SOUND_PlaySFX(SND_SPELL_LEVITATE_END, &entities[spells[i].target]->pos);
 			ARX_SPELLS_RemoveSpellOn(spells[i].target, i);
-
+			
 			if(spells[i].target == 0)
 				player.levitate = 0;
+			
+			break;
 		}
-		break;
 		//****************************************************************************
 		// LEVEL 6 SPELLS
-		case SPELL_PARALYSE:
+		case SPELL_PARALYSE: {
 			ARX_SPELLS_RemoveSpellOn(spells[i].target,i);
 			entities[spells[i].target]->ioflags &= ~IO_FREEZESCRIPT;
-		break;
-		case SPELL_RISE_DEAD:
-
+			break;
+		}
+		case SPELL_RISE_DEAD: {
 			if(ValidIONum(spells[i].longinfo_entity) && spells[i].longinfo_entity != 0) {
 				
 				ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &entities[spells[i].longinfo_entity]->pos);
@@ -5362,7 +5375,8 @@ void ARX_SPELLS_Update_End(size_t i) {
 					entity->destroyOne();
 				}
 			}
-		break;
+			break;
+		}
 		case SPELL_CREATE_FIELD: {
 			CCreateField *pCreateField = (CCreateField *) spells[i].pSpellFx;
 
@@ -5373,43 +5387,52 @@ void ARX_SPELLS_Update_End(size_t i) {
 			if(ValidIONum(spells[i].longinfo_entity)) {
 				delete entities[spells[i].longinfo_entity];
 			}
+			break;
 		}
-		break;
-		case SPELL_SLOW_DOWN:
+		case SPELL_SLOW_DOWN: {
 			ARX_SOUND_PlaySFX(SND_SPELL_SLOW_DOWN_END);
 			ARX_SPELLS_RemoveSpellOn(spells[i].target, i);
-		break;				
+			break;
+		}
 		//****************************************************************************
 		// LEVEL 7
-		case SPELL_ICE_FIELD:
+		case SPELL_ICE_FIELD: {
 			if(spells[i].longinfo_damage != -1)
 				damages[spells[i].longinfo_damage].exist = false;
-		break;
-		case SPELL_FIRE_FIELD:
+			
+			break;
+		}
+		case SPELL_FIRE_FIELD: {
 			if(spells[i].longinfo_damage != -1)
 				damages[spells[i].longinfo_damage].exist = false;
-		break;
-		case SPELL_LIGHTNING_STRIKE:					
+			
+			break;
+		}
+		case SPELL_LIGHTNING_STRIKE: {
 			ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &entities[spells[i].caster]->pos);					
-		break;
-		case SPELL_FLYING_EYE:					
+			break;
+		}
+		case SPELL_FLYING_EYE: {
 			ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE, &entities[spells[i].caster]->pos);
-		break;
-		case SPELL_CONFUSE:
+			break;
+		}
+		case SPELL_CONFUSE: {
 			ARX_SPELLS_RemoveSpellOn(spells[i].target, i);
-		break;
+			break;
+		}
 		//****************************************************************************
 		// LEVEL 8
-		case SPELL_EXPLOSION:					
-		break;
+		case SPELL_EXPLOSION: {
+			break;
+		}
 		case SPELL_INVISIBILITY: {
 			if(ValidIONum(spells[i].target)) {
 				entities[spells[i].target]->gameFlags &= ~GFLAG_INVISIBILITY;
 				ARX_SOUND_PlaySFX(SND_SPELL_INVISIBILITY_END, &entities[spells[i].target]->pos);
 				ARX_SPELLS_RemoveSpellOn(spells[i].target, i);
 			}
+			break;
 		}
-		break;
 		//****************************************************************************
 		// LEVEL 9
 		case SPELL_MASS_PARALYSE: {
@@ -5426,39 +5449,42 @@ void ARX_SPELLS_Update_End(size_t i) {
 				free(spells[i].misc);
 
 			spells[i].misc=NULL;
+			break;
 		}
-		break;
-		case SPELL_SUMMON_CREATURE :
-			
+		case SPELL_SUMMON_CREATURE : {
 			if(ValidIONum(spells[i].longinfo2_entity) && spells[i].longinfo2_entity != 0) {
 				ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &entities[spells[i].longinfo2_entity]->pos);
 			}
 
 			lightHandleDestroy(spells[i].pSpellFx->lLightId);
 			// need to killio
-		break;
-		case SPELL_FAKE_SUMMON :
+			break;
+		}
+		case SPELL_FAKE_SUMMON: {
 			ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &spells[i].target_pos);						
 			
 			lightHandleDestroy(spells[i].pSpellFx->lLightId);
-		break;
-		case SPELL_INCINERATE:
+			break;
+		}
+		case SPELL_INCINERATE: {
 			ARX_SPELLS_RemoveSpellOn(spells[i].target, i);
 			ARX_SOUND_Stop(spells[i].snd_loop);
 			ARX_SOUND_PlaySFX(SND_SPELL_INCINERATE_END);
-		break;
+			break;
+		}
 		//****************************************************************************
 		// LEVEL 10
 		case SPELL_FREEZE_TIME: {
 			GLOBAL_SLOWDOWN += spells[i].siz;
 			ARX_SOUND_PlaySFX(SND_SPELL_TELEKINESIS_END, &entities[spells[i].caster]->pos);
+			break;
 		}
-		break;
-		case SPELL_MASS_INCINERATE:
+		case SPELL_MASS_INCINERATE: {
 			ARX_SPELLS_RemoveMultiSpellOn(i);
 			ARX_SOUND_Stop(spells[i].snd_loop);
 			ARX_SOUND_PlaySFX(SND_SPELL_INCINERATE_END);
-		break;
+			break;
+		}
 		default:
 			break;
 	}				
