@@ -378,6 +378,7 @@ CIceProjectile::~CIceProjectile()
 }
 
 CIceProjectile::CIceProjectile()
+	: fColor(1.f)
 {
 	SetDuration(1000);
 	ulCurrentTime = ulDuration + 1;
@@ -412,9 +413,7 @@ void CIceProjectile::Create(Vec3f aeSrc, float afBeta)
 {
 	SetDuration(ulDuration);
 	SetAngle(afBeta);
-
-	fSize = 1;
-
+	
 	float xmin, ymin, zmin;
 
 	Vec3f s, e, h;

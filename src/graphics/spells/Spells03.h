@@ -134,7 +134,6 @@ class CIceProjectile: public CSpellFx
 		int iNumber;
 		int iMax;
 		int	tType[MAX_ICE];
-		float fSize;
 		float fStep;
 		float fColor;
 		Vec3f tPos[MAX_ICE];
