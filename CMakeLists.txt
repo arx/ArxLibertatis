@@ -617,6 +617,7 @@ set(GAME_SOURCES
 	src/game/magic/Rune.cpp
 	src/game/magic/RuneDraw.cpp
 	src/game/magic/Spell.cpp
+	src/game/magic/SpellRecognition.cpp
 	src/game/spell/FlyingEye.cpp
 	src/game/spell/Cheat.cpp
 )

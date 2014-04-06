@@ -52,6 +52,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/magic/Precast.h"
 #include "game/magic/Rune.h"
 #include "game/magic/RuneDraw.h"
+#include "game/magic/SpellRecognition.h"
 #include "math/Types.h"
 #include "math/Angle.h"
 #include "math/Random.h"
@@ -65,10 +66,6 @@ class TextureContainer;
 
 SpellType GetSpellId(const std::string & spell);
 void TryToCastSpell(Entity * io, SpellType spellid, long level, long target, SpellcastFlags flags, long duration);
-
-const size_t MAX_SPELL_SYMBOLS = 6;
-extern Rune SpellSymbol[MAX_SPELL_SYMBOLS];
-extern size_t CurrSpellSymbol;
 
 struct SPELL {
 	
@@ -121,8 +118,6 @@ extern SPELL spells[MAX_SPELLS];
 extern long CurrPoint;
 
 bool ARX_SPELLS_Launch(SpellType typ, long source, SpellcastFlags flags = 0, long level = -1, long target = -1, long duration = -1);
-void ARX_SPELLS_ResetRecognition();
-void ARX_SPELLS_AddPoint(const Vec2s & pos);
 void ARX_SPELLS_AbortSpellSound();
 void ARX_SPELLS_Init();
 void ARX_SPELLS_ClearAll();
