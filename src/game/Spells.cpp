@@ -5231,7 +5231,10 @@ void ARX_SPELLS_Update()
 		if(!GLOBAL_MAGIC_MODE)
 			spells[i].tolive=0;
 
-		if(spells[i].exist) {
+		if(!spells[i].exist) {
+			continue;
+		}
+		
 			if(spells[i].bDuration && !CanPayMana(i, spells[i].fManaCostPerSecond * (float)framedelay * (1.0f/1000), false))
 				ARX_SPELLS_Fizzle(i);
 
@@ -6717,7 +6720,6 @@ void ARX_SPELLS_Update()
 				}
 				
 			}
-		}
 	}
 }
 
