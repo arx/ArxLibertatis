@@ -2077,19 +2077,18 @@ Vec2i CMenuElementText::GetTextSize() const {
 	return pFont->getTextSize(lpszText);
 }
 
-CMenuState::CMenuState(MENUSTATE _ms) {
-
-	bReInitAll=false;
-	eMenuState = _ms;
-	eOldMenuState = NOP;
-	eOldMenuWindowState= NOP;
-	pTexBackGround = NULL;
-	pTexBackGround1 = NULL;
-	fPos = 0;
-	pMenuAllZone=new CMenuAllZone();
-
-	iPosMenu=-1;
-}
+CMenuState::CMenuState(MENUSTATE _ms)
+	: bReInitAll(false)
+	, eMenuState(_ms)
+	, eOldMenuState(NOP)
+	, eOldMenuWindowState(NOP)
+	, pTexBackGround(NULL)
+	, pTexBackGround1(NULL)
+	, pMenuAllZone(new CMenuAllZone())
+	, pZoneClick(NULL)
+	, fPos(0.f)
+	, iPosMenu(-1)
+{}
 
 CMenuState::~CMenuState() {
 	delete pMenuAllZone;
