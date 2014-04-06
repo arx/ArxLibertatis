@@ -613,8 +613,10 @@ set(GAME_SOURCES
 	src/game/Player.cpp
 	src/game/Spells.cpp
 	src/game/effect/Quake.cpp
+	src/game/magic/Precast.cpp
 	src/game/magic/Rune.cpp
 	src/game/magic/RuneDraw.cpp
+	src/game/magic/Spell.cpp
 	src/game/spell/FlyingEye.cpp
 	src/game/spell/Cheat.cpp
 )

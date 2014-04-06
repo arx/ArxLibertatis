@@ -215,6 +215,8 @@ float INTERFACE_RATIO_LONG(const long);
 float INTERFACE_RATIO_DWORD(const u32);
 short SHORT_INTERFACE_RATIO(const float);
 
+void ARX_INTERFACE_Combat_Mode(long i);
+
 long GetMainSpeakingIO();
 bool ARX_INTERFACE_MouseInBook();
 void ARX_INTERFACE_PlayerInterfaceModify(long showhide, long smooth);
