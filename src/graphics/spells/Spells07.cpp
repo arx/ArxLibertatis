@@ -882,8 +882,9 @@ CIceField::~CIceField()
 	}
 }
 
-CIceField::CIceField() {
-	
+CIceField::CIceField()
+	: iMax(50)
+{
 	eSrc = Vec3f_ZERO;
 	eTarget = Vec3f_ZERO;
 	
@@ -919,7 +920,6 @@ void CIceField::Create(Vec3f aeSrc, float afBeta) {
 	
 	eTarget = eSrc;
 	iNumber = 50;
-	fSize = 1;
 	
 	float	xmin, ymin, zmin;
 	

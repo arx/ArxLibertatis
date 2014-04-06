@@ -185,7 +185,6 @@ class CIceField: public CSpellFx
 		TextureContainer * tex_p2;
 
 		int iMax;
-		float fSize;
 		int		 tType[50];
 		Vec3f tPos[50];
 		Vec3f tSize[50];
