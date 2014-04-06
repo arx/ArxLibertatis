@@ -2159,8 +2159,6 @@ CMenuZone::CMenuZone()
 	, rZone(0, 0, 0, 0)
 	, iID(-1)
 	, lData(0)
-	, pData(NULL)
-	, lPosition(0)
 {}
 
 CMenuZone::CMenuZone(int _iX1, int _iY1, int _iX2, int _iY2, CMenuZone * _pRef)
@@ -2171,8 +2169,6 @@ CMenuZone::CMenuZone(int _iX1, int _iY1, int _iX2, int _iY2, CMenuZone * _pRef)
 	, rZone(_iX1, _iY1, _iX2, _iY2)
 	, iID(-1)
 	, lData(0)
-	, pData(NULL)
-	, lPosition(0)
 {}
 
 CMenuZone::~CMenuZone() {

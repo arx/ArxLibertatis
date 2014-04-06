@@ -264,8 +264,6 @@ class CMenuZone
 		Rect	rZone;
 		int			iID;
 		long		lData;
-		long	*	pData;
-		long		lPosition;
 	public:
 		CMenuZone();
 		CMenuZone(int, int, int, int, CMenuZone *);
