@@ -316,8 +316,6 @@ void CRuneOfGuarding::Create(Vec3f _eSrc, float _fBeta) {
 	SetAngle(_fBeta);
 	eSrc = _eSrc;
 	eTarget = eSrc;
-	fSize = 1;
-	bDone = true;
 	
 	lLightId = GetFreeDynLight();
 	if(lightHandleIsValid(lLightId)) {

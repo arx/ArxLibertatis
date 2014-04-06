@@ -73,16 +73,9 @@ extern long svoodoo_count;
 class CRuneOfGuarding: public CSpellFx
 {
 	public:
-		bool bDone;
-		int iNumber;
 		Vec3f eSrc;
 		Vec3f eTarget;
-
-		TextureContainer * tex_p1;
 		TextureContainer * tex_p2;
-
-		int iMax;
-		float fSize;
 
 	public:
 		CRuneOfGuarding();
