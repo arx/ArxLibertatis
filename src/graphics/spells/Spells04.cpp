@@ -323,8 +323,8 @@ void CFireProtection::Render() {
 //	COLD PROTECTION
 //-----------------------------------------------------------------------------
 CColdProtection::CColdProtection()
-{
-}
+	: iNpc(-1)
+{}
 
 CColdProtection::~CColdProtection()
 {
