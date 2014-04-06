@@ -67,9 +67,16 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Interactive.h"
 
 CSummonCreature::CSummonCreature()
-	: fColorRays1(Color3f::white),
-	  fColorBorder(Color3f::white),
-	  fColorRays2(Color3f::black) {
+	: fColorRays1(Color3f::white)
+	, end(0)
+	, bIntro(true)
+	, sizeF(0.f)
+	, fSizeIntro(0.f)
+	, fRand(rand())
+	, fTexWrap(0.f)
+	, fColorBorder(Color3f::white)
+	, fColorRays2(Color3f::black)
+{
 	
 	eSrc = Vec3f_ZERO;
 	
