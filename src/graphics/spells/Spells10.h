@@ -57,11 +57,11 @@ class CMassLightning: public CSpellFx
 		long number;
 
 	private:
-		CLightning ** pTab;
+		std::vector<CLightning *> pTab;
 
 	public:
 		explicit CMassLightning(long nb);
-		~CMassLightning() { }
+		~CMassLightning();
 
 	public:
 		void	Create(Vec3f, float);

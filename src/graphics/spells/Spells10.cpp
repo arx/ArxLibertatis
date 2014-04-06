@@ -61,13 +61,22 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 CMassLightning::CMassLightning(long nbmissiles)
 {
 	SetDuration(2000);
-	pTab = new CLightning*[10];
 	number = std::min(10L, nbmissiles);
 
 	for(int i = 0; i < number; i++) {
-		pTab[i] = new CLightning();
-		pTab[i]->fDamage = 2;
+		CLightning * lightning = new CLightning();
+		lightning->fDamage = 2;
+		
+		pTab.push_back(lightning);
 	}
+}
+
+CMassLightning::~CMassLightning() {
+	for(std::vector<CLightning *>::iterator it = pTab.begin(); it != pTab.end(); ++it) {
+		delete *it;
+	}
+
+	pTab.clear();
 }
 
 void CMassLightning::Create(Vec3f aePos, float afBeta = 0) {
