@@ -5216,16 +5216,12 @@ float ARX_SPELLS_ApplyColdProtection(Entity * io,float damages)
 /*!
  * \brief Updates all currently working spells.
  */
-void ARX_SPELLS_Update()
-{
+void ARX_SPELLS_Update() {
 	
-	unsigned long tim;
-	long framediff,framediff3;
-
 	ucFlick++;
-
-	tim = (unsigned long)(arxtime);
-
+	
+	const unsigned long tim = (unsigned long)(arxtime);
+	
 	for(size_t i = 0; i < MAX_SPELLS; i++) {
 
 		if(!GLOBAL_MAGIC_MODE)
@@ -5238,8 +5234,8 @@ void ARX_SPELLS_Update()
 			if(spells[i].bDuration && !CanPayMana(i, spells[i].fManaCostPerSecond * (float)framedelay * (1.0f/1000), false))
 				ARX_SPELLS_Fizzle(i);
 
-			framediff = spells[i].timcreation + spells[i].tolive - tim;
-			framediff3 = tim - spells[i].lastupdate;
+			const long framediff = spells[i].timcreation + spells[i].tolive - tim;
+			const long framediff3 = tim - spells[i].lastupdate;
 
 			if(framediff < 0) {
 				SPELLEND_Notify(i);
