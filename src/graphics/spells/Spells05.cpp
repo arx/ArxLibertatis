@@ -978,8 +978,6 @@ void CRepelUndead::Create(Vec3f aeSrc, float afBeta) {
 	fBetaRad = radians(fBeta);
 	fBetaRadCos = (float)cos(fBetaRad);
 	fBetaRadSin = (float)sin(fBetaRad);
-	fSize = 1;
-	bDone = true;
 }
 
 void CRepelUndead::Update(unsigned long _ulTime) {
