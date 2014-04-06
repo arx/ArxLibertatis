@@ -369,8 +369,6 @@ void CSlowDown::Create(Vec3f aeSrc, float afBeta) {
 	fBetaRadCos = (float) cos(fBetaRad);
 	fBetaRadSin = (float) sin(fBetaRad);
 	eTarget = eSrc;
-	fSize = 1;
-	bDone = true;
 }
 
 void CSlowDown::Update(unsigned long _ulTime) {
