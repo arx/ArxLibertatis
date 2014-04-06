@@ -53,7 +53,9 @@ OpenGLRenderer::OpenGLRenderer()
 	, m_hasMSAA(false)
 	, m_hasColorKey(false)
 	, m_hasBlend(false)
-	{ }
+{
+	resetStateCache();
+}
 
 OpenGLRenderer::~OpenGLRenderer() {
 	
