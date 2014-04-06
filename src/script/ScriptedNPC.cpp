@@ -180,7 +180,7 @@ public:
 			if(flg & flag('k')) {
 				
 				string spellname = context.getWord();
-				Spell spellid = GetSpellId(spellname);
+				SpellType spellid = GetSpellId(spellname);
 				
 				DebugScript(' ' << options << ' ' << spellname);
 				
@@ -226,7 +226,7 @@ public:
 		}
 		
 		string spellname = context.getWord();
-		Spell spellid = GetSpellId(spellname);
+		SpellType spellid = GetSpellId(spellname);
 		
 		string target = context.getWord();
 		Entity * t = entities.getById(target, context.getEntity());

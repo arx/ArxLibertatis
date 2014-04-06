@@ -300,7 +300,7 @@ struct SavedPrecast {
 	
 	inline operator PRECAST_STRUCT() const {
 		PRECAST_STRUCT a;
-		a.typ = (typ < 0) ? SPELL_NONE : (Spell)typ; // TODO save/load enum
+		a.typ = (typ < 0) ? SPELL_NONE : (SpellType)typ; // TODO save/load enum
 		a.level = level;
 		a.launch_time = launch_time;
 		a.flags = SpellcastFlags::load(flags); // TODO save/load flags
@@ -533,7 +533,7 @@ struct SavedSpellcastData {
 	
 	inline operator IO_SPELLCAST_DATA() const {
 		IO_SPELLCAST_DATA a;
-		a.castingspell = (castingspell < 0) ? SPELL_NONE : (Spell)castingspell; // TODO save/load enum
+		a.castingspell = (castingspell < 0) ? SPELL_NONE : (SpellType)castingspell; // TODO save/load enum
 		BOOST_STATIC_ASSERT(ARRAY_SIZE(a.symb) == 4);
 		a.symb[0] = (Rune)symb[0]; // TODO save/load enum
 		a.symb[1] = (Rune)symb[1];

@@ -101,7 +101,7 @@ DECLARE_FLAGS(SpellcastFlag, SpellcastFlags)
 DECLARE_FLAGS_OPERATORS(SpellcastFlags)
 
 // Spell list
-enum Spell {
+enum SpellType {
 	
 	// LEVEL 1
 	SPELL_MAGIC_SIGHT           ,//= 11,
@@ -183,7 +183,7 @@ enum Spell {
 const size_t SPELL_COUNT = SPELL_FAKE_SUMMON + 1;
 
 struct PRECAST_STRUCT {
-	Spell typ;
+	SpellType typ;
 	long level;
 	unsigned long launch_time;
 	SpellcastFlags flags;
@@ -196,8 +196,8 @@ extern PRECAST_STRUCT Precast[MAX_PRECAST];
 void ARX_SPELLS_Precast_Reset();
 void ARX_SPELLS_Precast_Launch(long num);
 
-Spell GetSpellId(const std::string & spell);
-void TryToCastSpell(Entity * io, Spell spellid, long level, long target, SpellcastFlags flags, long duration);
+SpellType GetSpellId(const std::string & spell);
+void TryToCastSpell(Entity * io, SpellType spellid, long level, long target, SpellcastFlags flags, long duration);
 void ARX_SPELLS_Precast_Check();
 
 const size_t MAX_SPELL_SYMBOLS = 6;
@@ -218,7 +218,7 @@ struct SPELL {
 	
 	float fdata; //!< Specific use for each spell
 	
-	Spell type;
+	SpellType type;
 	Vec3f vsource; // TODO this is used but never set
 	
 	Vec3f move;
@@ -254,7 +254,7 @@ extern SPELL spells[MAX_SPELLS];
 
 extern long CurrPoint;
 
-bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flags = 0, long level = -1, long target = -1, long duration = -1);
+bool ARX_SPELLS_Launch(SpellType typ, long source, SpellcastFlags flags = 0, long level = -1, long target = -1, long duration = -1);
 void ARX_SPELLS_ResetRecognition();
 void ARX_SPELLS_AddPoint(const Vec2s & pos);
 void ARX_SPELLS_AbortSpellSound();
@@ -263,7 +263,7 @@ void ARX_SPELLS_ClearAll();
 void ARX_SPELLS_Update();
 
 void ARX_SPELLS_Kill(long i);
-long ARX_SPELLS_GetInstance(Spell typ);
+long ARX_SPELLS_GetInstance(SpellType typ);
 void ARX_SPELLS_ManageMagic();
 
 void ARX_SPELLS_RequestSymbolDraw(Entity * io, const std::string & name, float duration);
@@ -272,11 +272,11 @@ void ARX_SPELLS_ClearAllSymbolDraw();
 
 void ARX_SPELLS_Init_Rects();
 
-bool ARX_SPELLS_ExistAnyInstance(Spell typ);
+bool ARX_SPELLS_ExistAnyInstance(SpellType typ);
 void ARX_SPELLS_RemoveAllSpellsOn(Entity * io);
 bool spellHandleIsValid(long handle);
-long ARX_SPELLS_GetSpellOn(const Entity * io, Spell spellid);
-long ARX_SPELLS_GetInstanceForThisCaster(Spell typ, long caster);
+long ARX_SPELLS_GetSpellOn(const Entity * io, SpellType spellid);
+long ARX_SPELLS_GetInstanceForThisCaster(SpellType typ, long caster);
 
 void ARX_SPELLS_CancelSpellTarget();
 void ARX_SPELLS_LaunchSpellTarget(Entity * io);

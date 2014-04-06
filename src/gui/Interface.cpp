@@ -3905,7 +3905,7 @@ void ManageSpellIcon(long i,float rrr,long flag)
 	Color color;
 	float posx = POSX+lSLID_VALUE;
 	float posy = (float)currpos;
-	Spell typ=spells[i].type;
+	SpellType typ=spells[i].type;
 
 	if(flag & 1) {
 		color = Color3f(rrr, 0, 0).to<u8>();
@@ -3917,7 +3917,7 @@ void ManageSpellIcon(long i,float rrr,long flag)
 		}
 		posx = px + INTERFACE_RATIO(33 + 33 + 33) + PRECAST_NUM * INTERFACE_RATIO(33);
 		posy = g_size.height() - INTERFACE_RATIO(126+32); // niveau du stealth
-		typ = (Spell)i; // TODO ugh
+		typ = (SpellType)i; // TODO ugh
 	} else {
 		color = Color3f::gray(rrr).to<u8>();
 	}

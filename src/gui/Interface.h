@@ -94,7 +94,7 @@ struct SPELL_ICON {
 	std::string name;
 	std::string description;
 	long level;
-	Spell spellid;
+	SpellType spellid;
 	Rune symbols[6];
 	bool bSecret;
 	bool bDuration;

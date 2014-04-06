@@ -546,7 +546,7 @@ public:
 		
 		DebugScript(' ' << options << ' ' << duration << ' ' << level << ' ' << spellname);
 		
-		Spell spellid = GetSpellId(spellname);
+		SpellType spellid = GetSpellId(spellname);
 		if(spellid == SPELL_NONE) {
 			ScriptWarning << "unknown spell: " << spellname;
 			return Failed;

@@ -173,7 +173,7 @@ extern bool FrustrumsClipSphere(EERIE_FRUSTRUM_DATA * frustrums,EERIE_SPHERE * s
 
 void ARX_INTERFACE_Combat_Mode(long i);
 
-static float ARX_SPELLS_GetManaCost(Spell _lNumSpell,long _lNumSpellTab);
+static float ARX_SPELLS_GetManaCost(SpellType _lNumSpell,long _lNumSpellTab);
 
 ///////////////Spell Interpretation
 SPELL spells[MAX_SPELLS];
@@ -482,7 +482,7 @@ void ARX_SPELLS_AddSpellOn(const long &caster, const long &spell)
 	io->spellsOn.insert(spell);
 }
 
-long ARX_SPELLS_GetSpellOn(const Entity * io, Spell spellid)
+long ARX_SPELLS_GetSpellOn(const Entity * io, SpellType spellid)
 {
 	if(!io)
 		return -1;
@@ -636,7 +636,7 @@ Vec2s GetSymbVector(char c) {
 	}
 }
 
-static bool MakeSpellName(char * spell, Spell num) {
+static bool MakeSpellName(char * spell, SpellType num) {
 	
 	// TODO(spells) use map
 	
@@ -1747,7 +1747,7 @@ static void ARX_SPELLS_AnalyseSYMBOL() {
 
 struct SpellDefinition {
 	SpellDefinition * next[RUNE_COUNT];
-	Spell spell;
+	SpellType spell;
 	SpellDefinition() : spell(SPELL_NONE) {
 		for(size_t i = 0; i < RUNE_COUNT; i++) {
 			next[i] = NULL;
@@ -1762,10 +1762,10 @@ struct SpellDefinition {
 };
 
 static SpellDefinition definedSpells;
-typedef std::map<string, Spell> SpellNames;
+typedef std::map<string, SpellType> SpellNames;
 static SpellNames spellNames;
 
-static void addSpell(const Rune symbols[MAX_SPELL_SYMBOLS], Spell spell, const string & name) {
+static void addSpell(const Rune symbols[MAX_SPELL_SYMBOLS], SpellType spell, const string & name) {
 	
 	typedef std::pair<SpellNames::const_iterator, bool> Res;
 	Res res = spellNames.insert(std::make_pair(name, spell));
@@ -1795,7 +1795,7 @@ static void addSpell(const Rune symbols[MAX_SPELL_SYMBOLS], Spell spell, const s
 	def->spell = spell;
 }
 
-static Spell getSpell(const Rune symbols[MAX_SPELL_SYMBOLS]) {
+static SpellType getSpell(const Rune symbols[MAX_SPELL_SYMBOLS]) {
 	
 	const SpellDefinition * def = &definedSpells;
 	
@@ -1813,7 +1813,7 @@ static Spell getSpell(const Rune symbols[MAX_SPELL_SYMBOLS]) {
 	return def->spell;
 }
 
-Spell GetSpellId(const string & spell) {
+SpellType GetSpellId(const string & spell) {
 	
 	SpellNames::const_iterator it = spellNames.find(spell);
 	
@@ -1822,7 +1822,7 @@ Spell GetSpellId(const string & spell) {
 
 struct RawSpellDefinition {
 	Rune symbols[MAX_SPELL_SYMBOLS];
-	Spell spell;
+	SpellType spell;
 	std::string name;
 };
 
@@ -1903,7 +1903,7 @@ static bool ARX_SPELLS_AnalyseSPELL() {
 	
 	bPrecastSpell = false;
 	
-	Spell spell;
+	SpellType spell;
 	
 	if(SpellSymbol[0] == RUNE_MEGA && SpellSymbol[1] == RUNE_MEGA
 	   && SpellSymbol[2] == RUNE_MEGA && SpellSymbol[3] == RUNE_AAM
@@ -2385,7 +2385,7 @@ static long ARX_SPELLS_GetFree() {
 	return -1;
 }
 
-long ARX_SPELLS_GetInstance(Spell typ) {
+long ARX_SPELLS_GetInstance(SpellType typ) {
 	
 	for(size_t i = 0; i < MAX_SPELLS; i++) {
 		if(spells[i].exist && spells[i].type == typ) {
@@ -2397,11 +2397,11 @@ long ARX_SPELLS_GetInstance(Spell typ) {
 }
 
 // Checks for an existing instance of this spelltype
-bool ARX_SPELLS_ExistAnyInstance(Spell typ) {
+bool ARX_SPELLS_ExistAnyInstance(SpellType typ) {
 	return (ARX_SPELLS_GetInstance(typ) != -1);
 }
 
-long ARX_SPELLS_GetInstanceForThisCaster(Spell typ, long caster) {
+long ARX_SPELLS_GetInstanceForThisCaster(SpellType typ, long caster) {
 	
 	for(size_t i = 0; i < MAX_SPELLS; i++) {
 		if(spells[i].exist && spells[i].type == typ && spells[i].caster == caster) {
@@ -2412,7 +2412,7 @@ long ARX_SPELLS_GetInstanceForThisCaster(Spell typ, long caster) {
 	return -1;
 }
 
-static bool ARX_SPELLS_ExistAnyInstanceForThisCaster(Spell typ, long caster) {
+static bool ARX_SPELLS_ExistAnyInstanceForThisCaster(SpellType typ, long caster) {
 	return (ARX_SPELLS_GetInstanceForThisCaster(typ, caster) != -1);
 }
 
@@ -2438,7 +2438,7 @@ void ARX_SPELLS_Precast_Reset() {
 	}
 }
 
-void ARX_SPELLS_Precast_Add(Spell typ, long _level, SpellcastFlags flags, long duration) {
+void ARX_SPELLS_Precast_Add(SpellType typ, long _level, SpellcastFlags flags, long duration) {
 	
 	long found = -1;
 	
@@ -2490,7 +2490,7 @@ void ARX_SPELLS_Precast_Launch(long num) {
 	
 	if (float(arxtime) >= LAST_PRECAST_TIME+1000)
 	{
-		Spell iNumSpells=Precast[num].typ;
+		SpellType iNumSpells=Precast[num].typ;
 		float cost=ARX_SPELLS_GetManaCost(iNumSpells,-1);
 
 		if(		(iNumSpells != SPELL_NONE)
@@ -2545,7 +2545,7 @@ void ARX_SPELLS_Precast_Check() {
 }
 
 struct TARGETING_SPELL {
-	Spell typ;
+	SpellType typ;
 	SpellcastFlags flags;
 	long level;
 	long target;
@@ -2568,7 +2568,7 @@ void ARX_SPELLS_LaunchSpellTarget(Entity * io) {
 	}
 }
 
-static float ARX_SPELLS_GetManaCost(Spell spell, long index) {
+static float ARX_SPELLS_GetManaCost(SpellType spell, long index) {
 	
 	// Calculate the player's magic level
 	float playerCasterLevel = player.Full_Skill_Casting + player.Full_Attribute_Mind;
@@ -2639,7 +2639,7 @@ static float ARX_SPELLS_GetManaCost(Spell spell, long index) {
 	}
 }
 
-bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long levell, long target, long duration) {
+bool ARX_SPELLS_Launch(SpellType typ, long source, SpellcastFlags flagss, long levell, long target, long duration) {
 	
 	SpellcastFlags flags = flagss;
 	long level = levell;
@@ -6712,7 +6712,7 @@ void ARX_SPELLS_Update() {
 	}
 }
 
-void TryToCastSpell(Entity * io, Spell spellid, long level, long target, SpellcastFlags flags, long duration)
+void TryToCastSpell(Entity * io, SpellType spellid, long level, long target, SpellcastFlags flags, long duration)
 {
 	if(!io || io->spellcast_data.castingspell != SPELL_NONE)
 		return;

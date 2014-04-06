@@ -806,7 +806,7 @@ ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const string & 
 			}
 			
 			if(boost::starts_with(name, "^myspell_")) {
-				Spell id = GetSpellId(name.substr(9));
+				SpellType id = GetSpellId(name.substr(9));
 				if(id != SPELL_NONE) {
 					for(size_t i = 0; i < MAX_SPELLS; i++) {
 						if(spells[i].exist && spells[i].type == id && spells[i].caster >= 0
@@ -1047,7 +1047,7 @@ ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const string & 
 			if(boost::starts_with(name, "^playerspell_")) {
 				string temp = name.substr(13);
 				
-				Spell id = GetSpellId(temp);
+				SpellType id = GetSpellId(temp);
 				if(id != SPELL_NONE) {
 					for(size_t i = 0; i < MAX_SPELLS; i++) {
 						if(spells[i].exist && spells[i].type == id && spells[i].caster == 0) {
