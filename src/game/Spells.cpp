@@ -6693,18 +6693,20 @@ void ARX_SPELLS_Update() {
 	const unsigned long tim = (unsigned long)(arxtime);
 	
 	for(size_t i = 0; i < MAX_SPELLS; i++) {
+		SPELL & spell = spells[i];
+		
+		if(!GLOBAL_MAGIC_MODE) {
+			spell.tolive = 0;
+		}
 
-		if(!GLOBAL_MAGIC_MODE)
-			spells[i].tolive=0;
-
-		if(!spells[i].exist) {
+		if(!spell.exist) {
 			continue;
 		}
 		
-		if(spells[i].bDuration && !CanPayMana(i, spells[i].fManaCostPerSecond * (float)framedelay * (1.0f/1000), false))
+		if(spell.bDuration && !CanPayMana(i, spell.fManaCostPerSecond * (float)framedelay * (1.0f/1000), false))
 			ARX_SPELLS_Fizzle(i);
 		
-		const long framediff = spells[i].timcreation + spells[i].tolive - tim;
+		const long framediff = spell.timcreation + spell.tolive - tim;
 		
 		if(framediff < 0) {
 			SPELLEND_Notify(i);
@@ -6714,7 +6716,7 @@ void ARX_SPELLS_Update() {
 			continue;
 		}
 
-		if(spells[i].exist) {
+		if(spell.exist) {
 			ARX_SPELLS_Update_Update(i, tim);
 		}
 	}
