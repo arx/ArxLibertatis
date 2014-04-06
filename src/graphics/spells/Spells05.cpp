@@ -100,8 +100,8 @@ CCurePoison::CCurePoison()
 	pPS = new ParticleSystem();
 }
 
-CCurePoison::~CCurePoison()
-{
+CCurePoison::~CCurePoison() {
+	delete pPS;
 }
 
 void CCurePoison::Create()
