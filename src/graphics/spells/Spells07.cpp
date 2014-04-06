@@ -698,6 +698,7 @@ void CConfuse::Render() {
 //	FIRE FIELD
 //-----------------------------------------------------------------------------
 CFireField::CFireField()
+	: key(0)
 {
 }
 
@@ -707,6 +708,8 @@ CFireField::~CFireField()
 
 void CFireField::Create(float largeur, Vec3f * pos, int _ulDuration)
 {
+	ARX_UNUSED(largeur);
+	
 	this->key = 0;
 
 	SetDuration(_ulDuration);
@@ -714,7 +717,6 @@ void CFireField::Create(float largeur, Vec3f * pos, int _ulDuration)
 	pos->y -= 50;
 
 	this->pos = *pos;
-	this->demilargeur = largeur * .5f;
 
 	ParticleParams cp;
 	cp.iNbMax = 100;

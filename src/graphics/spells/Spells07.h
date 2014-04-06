@@ -146,8 +146,6 @@ class CFireField: public CSpellFx
 	public:
 		short		key;
 		Vec3f	pos;
-		float		demilargeur;
-		float		interp;
 		ParticleSystem pPSStream;
 		ParticleSystem pPSStream1;
 
