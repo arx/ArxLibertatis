@@ -68,10 +68,16 @@ using std::max;
 
 extern ParticleManager * pParticleManager;
 
-CCreateField::CCreateField() {
-	
-	fwrap = 0.f;
-	eSrc = Vec3f_ZERO;
+CCreateField::CCreateField()
+	: eSrc(Vec3f_ZERO)
+	, youp(true)
+	, fwrap(0.f)
+	, ysize(0.1f)
+	, size(0.1f)
+	, ft(0.0f)
+	, fglow(0.f)
+	, falpha(0.f)
+{
 	fColor1[0] = 0.4f;
 	fColor1[1] = 0.0f;
 	fColor1[2] = 0.4f;
