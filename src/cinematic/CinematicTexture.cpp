@@ -294,6 +294,7 @@ CinematicBitmap* CreateCinematicBitmap(const res::path & path, int scale) {
 
 	if(!data) {
 		LogError << path << " not found";
+		delete bi;
 		return 0;
 	}
 
