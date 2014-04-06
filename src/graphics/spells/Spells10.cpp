@@ -117,11 +117,11 @@ void CMassLightning::Render()
 	}
 }
 
-CControlTarget::CControlTarget() {
-	
-	eSrc = Vec3f_ZERO;
-	eTarget = Vec3f_ZERO;
-	
+CControlTarget::CControlTarget()
+	: eSrc(Vec3f_ZERO)
+	, eTarget(Vec3f_ZERO)
+	, fTrail(0.f)
+{	
 	SetDuration(8000);
 	ulCurrentTime = ulDuration + 1;
 	
