@@ -4095,7 +4095,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 				io->initpos = io->pos = target;
 				SendInitScriptEvent(io);
 				
-				effect->Create(target, 0);
+				effect->Create(target);
 				effect->SetDuration(spells[i].tolive);
 				effect->lLightId = GetFreeDynLight();
 				

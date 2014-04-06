@@ -57,8 +57,6 @@ class CCreateField: public CSpellFx
 		bool youp;
 		float	fColor1[3];
 		float	fColor2[3];
-		float	fSize;
-		float	fbeta;
 		float	fwrap;
 		float ysize;
 		float size;
@@ -76,7 +74,7 @@ class CCreateField: public CSpellFx
 		void RenderSubDivFace(TexturedVertex * b, TexturedVertex * t, int b1, int b2, int t1, int t2);
 
 	public:
-		void	Create(Vec3f, float afBeta = 0);
+		void	Create(Vec3f);
 		void	Kill();
 		void	Update(unsigned long);
 		void Render();

@@ -85,12 +85,11 @@ CCreateField::CCreateField() {
 	tex_jelly = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu3");
 }
 
-void CCreateField::Create(Vec3f aeSrc, float afBeta) {
+void CCreateField::Create(Vec3f aeSrc) {
 	
 	SetDuration(ulDuration);
 	
 	eSrc = aeSrc;
-	fbeta = afBeta;
 	ysize = 0.1f;
 	size = 0.1f;
 	ft = 0.0f;
