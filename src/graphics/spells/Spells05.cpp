@@ -207,7 +207,6 @@ void CCurePoison::Update(unsigned long aulTime)
 	long ff = 	static_cast<long>(ulCalc);
 
 	if(ff < 1500) {
-		pPS->uMaxParticles = 0;
 		pPS->ulParticleSpawn = PARTICLE_CIRCULAR;
 		pPS->p3ParticleGravity = Vec3f_ZERO;
 

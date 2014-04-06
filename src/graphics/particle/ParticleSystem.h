@@ -73,10 +73,7 @@ public:
 	std::list<Particle *> listParticle;
 	
 	Vec3f p3Pos;
-	
-	unsigned int uMaxParticles;
-	unsigned int uParticlesPerSec;
-	
+		
 	int iParticleNbAlive;
 	
 	TextureContainer * tex_tab[20];
@@ -127,9 +124,6 @@ public:
 	bool bParticleFollow;
 	
 	LightHandle lLightId;
-	
-	// editor
-	float fMinx, fMaxx, fMiny, fMaxy;
 	
 	ParticleSystem();
 	~ParticleSystem();
