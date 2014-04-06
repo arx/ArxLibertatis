@@ -604,7 +604,6 @@ class CWindowMenu {
 		TextureContainer	* pTexButton2;
 		TextureContainer	* pTexButton3;
 		TextureContainer	* pTexMain;
-		TextureContainer	* pTexMainShadow;
 		TextureContainer	* pTexGlissiere;
 		TextureContainer	* pTexGlissiereButton;
 		std::vector<CWindowMenuConsole *>	vWindowConsoleElement;
