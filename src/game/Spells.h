@@ -49,6 +49,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <string>
 
 #include "audio/AudioTypes.h"
+#include "game/magic/Rune.h"
+#include "game/magic/RuneDraw.h"
 #include "math/Types.h"
 #include "math/Angle.h"
 #include "math/Random.h"
@@ -60,32 +62,7 @@ class Entity;
 class CSpellFx;
 class TextureContainer;
 
-// Spells symbol list
-enum Rune {
-	RUNE_AAM = 0,     // Create
-	RUNE_NHI,         // Negate
-	RUNE_MEGA,        // Improve
-	RUNE_YOK,         // Fire
-	RUNE_TAAR,        // Projectile
-	RUNE_KAOM,        // Protection
-	RUNE_VITAE,       // Life
-	RUNE_VISTA,       // Vision
-	RUNE_STREGUM,     // Magic
-	RUNE_MORTE,       // Death
-	RUNE_COSUM,       // Object
-	RUNE_COMUNICATUM, // Communication
-	RUNE_MOVIS,       // Movement
-	RUNE_TEMPUS,      // Time
-	RUNE_FOLGORA,     // Storm
-	RUNE_SPACIUM,     // Space
-	RUNE_TERA,        // Earth
-	RUNE_CETRIUS,     // Poison
-	RUNE_RHAA,        // Lower
-	RUNE_FRIDD,       // Ice
-	RUNE_AKBAA,       // Akbaa
-	RUNE_NONE = 255
-};
-const size_t RUNE_COUNT = 21;
+
 
 enum SpellcastFlag {
 	SPELLCAST_FLAG_NODRAW         = (1<<0),
@@ -266,11 +243,8 @@ void ARX_SPELLS_Kill(long i);
 long ARX_SPELLS_GetInstance(SpellType typ);
 void ARX_SPELLS_ManageMagic();
 
-void ARX_SPELLS_RequestSymbolDraw(Entity * io, const std::string & name, float duration);
 void ARX_SPELLS_UpdateSymbolDraw();
 void ARX_SPELLS_ClearAllSymbolDraw();
-
-void ARX_SPELLS_Init_Rects();
 
 bool ARX_SPELLS_ExistAnyInstance(SpellType typ);
 void ARX_SPELLS_RemoveAllSpellsOn(Entity * io);

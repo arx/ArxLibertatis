@@ -612,9 +612,11 @@ set(GAME_SOURCES
 	src/game/NPC.cpp
 	src/game/Player.cpp
 	src/game/Spells.cpp
+	src/game/effect/Quake.cpp
+	src/game/magic/Rune.cpp
+	src/game/magic/RuneDraw.cpp
 	src/game/spell/FlyingEye.cpp
 	src/game/spell/Cheat.cpp
-	src/game/effect/Quake.cpp
 )
 
 set(GRAPHICS_SOURCES
