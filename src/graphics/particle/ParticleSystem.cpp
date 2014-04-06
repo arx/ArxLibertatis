@@ -83,6 +83,7 @@ ParticleSystem::ParticleSystem() {
 	iParticleNbAlive = 0;
 	iNbTex = 0;
 	iTexTime = 500;
+	bTexLoop = true;
 	fParticleRotation = 0;
 	
 	fParticleFreq = -1;
