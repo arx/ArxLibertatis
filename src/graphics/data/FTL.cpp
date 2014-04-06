@@ -343,6 +343,7 @@ bool ARX_FTL_Save(const fs::path & file, const EERIE_3DOBJ * obj) {
 	fs::ofstream ofs(gamefic, fs::fstream::out | fs::fstream::binary | fs::fstream::trunc);
 	if(!ofs.is_open()) {
 		LogError << "Unable to Open " << gamefic << " for Write...";
+		delete[] compressed;
 		return false;
 	}
 	
