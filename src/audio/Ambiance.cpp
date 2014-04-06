@@ -596,8 +596,17 @@ aalError Ambiance::Track::load(PakFileHandle * file, u32 version) {
 }
 
 Ambiance::Ambiance(const res::path & _name)
-	: status(Idle), loop(false), fade(None), start(0),
-	  time(0), name(_name), data(NULL) {
+	: status(Idle)
+	, loop(false)
+	, fade(None)
+	, fade_time(0.f)
+	, fade_interval(0.f)
+	, fade_max(0.f)
+	, start(0)
+	, time(0)
+	, name(_name)
+	, data(NULL)
+{
 	channel.flags = 0;
 }
 
