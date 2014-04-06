@@ -112,7 +112,13 @@ public:
 	unsigned short * indices;
 	size_t offset;
 	
-	DynamicVertexBuffer() : vertices(NULL), nbindices(0), indices(NULL) { }
+	DynamicVertexBuffer()
+		: vertices(NULL)
+		, start(0)
+		, nbindices(0)
+		, indices(NULL)
+		, offset(0)
+	{}
 	
 	void lock() {
 		
