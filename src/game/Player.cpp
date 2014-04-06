@@ -128,7 +128,7 @@ extern long		HERO_SHOW_1ST;
 extern long		REQUEST_SPEECH_SKIP;
 extern long		CHANGE_LEVEL_ICON;
 extern long		DONT_ERASE_PLAYER;
-extern long		GLOBAL_MAGIC_MODE;
+extern bool		GLOBAL_MAGIC_MODE;
 
 extern Entity * CAMERACONTROLLER;
 extern ParticleManager * pParticleManager;
@@ -2889,7 +2889,7 @@ void ARX_GAME_Reset(long type) {
 	// Player Init
 	if(!DONT_ERASE_PLAYER) {
 		g_miniMap.mapMarkerInit();
-		GLOBAL_MAGIC_MODE = 1;
+		GLOBAL_MAGIC_MODE = true;
 
 		// Linked Objects
 		if(!(type & 2)) {

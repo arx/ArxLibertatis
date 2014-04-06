@@ -58,7 +58,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 using std::string;
 
-extern long GLOBAL_MAGIC_MODE;
+extern bool GLOBAL_MAGIC_MODE;
 
 namespace script {
 
@@ -353,7 +353,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		GLOBAL_MAGIC_MODE = context.getBool() ? 1 : 0;
+		GLOBAL_MAGIC_MODE = context.getBool();
 		
 		DebugScript(' ' << GLOBAL_MAGIC_MODE);
 		

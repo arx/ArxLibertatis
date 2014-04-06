@@ -134,7 +134,7 @@ static const float IMPROVED_FOCAL = 320.0f;
 extern bool TRUE_PLAYER_MOUSELOOK_ON;
 long passwall=0;
 bool WILLRETURNTOFREELOOK = false;
-long GLOBAL_MAGIC_MODE=1;
+bool GLOBAL_MAGIC_MODE = true;
 bool bPrecastSpell = false;
 extern std::string LAST_FAILED_SEQUENCE;
 enum ARX_SPELLS_RuneDirection
