@@ -888,8 +888,6 @@ void CCreateFood::Create() {
 	pPS->SetParams(cp);
 	pPS->ulParticleSpawn = PARTICLE_CIRCULAR | PARTICLE_BORDER;
 	pPS->SetTexture("graph/particles/create_food", 0, 100); //5
-
-	fSize = 1;
 }
 
 void CCreateFood::Update(unsigned long aulTime)
