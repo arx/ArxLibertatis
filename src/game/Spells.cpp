@@ -5464,41 +5464,10 @@ void ARX_SPELLS_Update_End(size_t i) {
 	}				
 }
 
-
-
-/*!
- * \brief Updates all currently working spells.
- */
-void ARX_SPELLS_Update() {
+void ARX_SPELLS_Update_Update(size_t i, unsigned long tim) {
 	
-	ucFlick++;
+	const long framediff3 = tim - spells[i].lastupdate;
 	
-	const unsigned long tim = (unsigned long)(arxtime);
-	
-	for(size_t i = 0; i < MAX_SPELLS; i++) {
-
-		if(!GLOBAL_MAGIC_MODE)
-			spells[i].tolive=0;
-
-		if(!spells[i].exist) {
-			continue;
-		}
-		
-		if(spells[i].bDuration && !CanPayMana(i, spells[i].fManaCostPerSecond * (float)framedelay * (1.0f/1000), false))
-			ARX_SPELLS_Fizzle(i);
-		
-		const long framediff = spells[i].timcreation + spells[i].tolive - tim;
-		const long framediff3 = tim - spells[i].lastupdate;
-		
-		if(framediff < 0) {
-			SPELLEND_Notify(i);
-			ARX_SPELLS_Update_End(i);
-			ARX_SPELLS_Kill(i);
-			
-			continue;
-		}
-
-	if(spells[i].exist)
 		switch(spells[i].type) {
 			case SPELL_DISPELL_FIELD:
 			break;
@@ -6721,6 +6690,43 @@ void ARX_SPELLS_Update() {
 				}
 				
 			}
+}
+
+
+/*!
+ * \brief Updates all currently working spells.
+ */
+void ARX_SPELLS_Update() {
+	
+	ucFlick++;
+	
+	const unsigned long tim = (unsigned long)(arxtime);
+	
+	for(size_t i = 0; i < MAX_SPELLS; i++) {
+
+		if(!GLOBAL_MAGIC_MODE)
+			spells[i].tolive=0;
+
+		if(!spells[i].exist) {
+			continue;
+		}
+		
+		if(spells[i].bDuration && !CanPayMana(i, spells[i].fManaCostPerSecond * (float)framedelay * (1.0f/1000), false))
+			ARX_SPELLS_Fizzle(i);
+		
+		const long framediff = spells[i].timcreation + spells[i].tolive - tim;
+		
+		if(framediff < 0) {
+			SPELLEND_Notify(i);
+			ARX_SPELLS_Update_End(i);
+			ARX_SPELLS_Kill(i);
+			
+			continue;
+		}
+
+		if(spells[i].exist) {
+			ARX_SPELLS_Update_Update(i, tim);
+		}
 	}
 }
 
