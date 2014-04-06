@@ -879,8 +879,8 @@ void SPELLEND_Notify(long num)
 	if(num < 0 || size_t(num) >= MAX_SPELLS)
 		return;
 
-	char spell[128];
-	long source=spells[num].caster;
+	char spellName[128];
+	long source = spells[num].caster;
 
 	if(spells[num].type == SPELL_CONFUSE) {
 		if(ValidIONum(source))
@@ -889,27 +889,27 @@ void SPELLEND_Notify(long num)
 			EVENT_SENDER = NULL;
 
 		if(ValidIONum(spells[num].target)) {
-			if(MakeSpellName(spell,spells[num].type)) {
+			if(MakeSpellName(spellName,spells[num].type)) {
 				Entity * targ = entities[spells[num].target];
 				char param[128];
-				sprintf(param,"%s %ld",spell,(long)spells[num].caster_level);
-				SendIOScriptEvent(targ,SM_SPELLEND,param);
+				sprintf(param,"%s %ld", spellName, (long)spells[num].caster_level);
+				SendIOScriptEvent(targ, SM_SPELLEND, param);
 			}
 		}
 		return;
 	}
 	
 	// we only notify player spells end.
-	if(!MakeSpellName(spell,spells[num].type)) {
+	if(!MakeSpellName(spellName, spells[num].type)) {
 		return;
 	}
 	
-	for (size_t i = 0; i < entities.size(); i++) {
+	for(size_t i = 0; i < entities.size(); i++) {
 		if(entities[i]) {
 			EVENT_SENDER = ValidIONum(source) ? entities[source] : NULL;
 			char param[128];
-			sprintf(param,"%s %ld",spell,(long)spells[num].caster_level);
-			SendIOScriptEvent(entities[i],SM_SPELLEND,param);
+			sprintf(param, "%s %ld", spellName, (long)spells[num].caster_level);
+			SendIOScriptEvent(entities[i], SM_SPELLEND, param);
 		}
 	}
 }
