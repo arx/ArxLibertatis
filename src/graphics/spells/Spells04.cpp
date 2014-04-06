@@ -186,11 +186,12 @@ CCurse::~CCurse() {
 	}
 }
 
-CCurse::CCurse() {
-	
-	eSrc = Vec3f_ZERO;
-	eTarget = Vec3f_ZERO;
-	
+CCurse::CCurse()
+	: eSrc(Vec3f_ZERO)
+	, eTarget(Vec3f_ZERO)
+	, fRot(0.f)
+	, fRotPerMSec(0.25f)
+{	
 	SetDuration(3000);
 	ulCurrentTime = ulDuration + 1;
 	
@@ -215,7 +216,6 @@ void CCurse::Create(Vec3f aeSrc, float afBeta) {
 	fBetaRadSin = (float) sin(fBetaRad);
 	
 	eTarget = eSrc;
-	bDone = true;
 	fRot = 0;
 	fRotPerMSec = 0.25f;
 }
