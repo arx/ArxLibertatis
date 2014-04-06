@@ -987,7 +987,7 @@ void RestoreInitialIOStatusOfIO(Entity * io)
 			io->_npcdata->maxlife = 20.f;
 			io->_npcdata->life = io->_npcdata->maxlife;
 			io->_npcdata->maxmana = 10.f;
-			io->_npcdata->mana = io->_npcdata->mana;
+			io->_npcdata->mana = io->_npcdata->maxmana;
 			io->_npcdata->critical = 5.f;
 			io->infracolor.r = 1.f;
 			io->infracolor.g = 0.f;
