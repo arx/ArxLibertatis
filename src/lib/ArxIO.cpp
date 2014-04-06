@@ -119,6 +119,7 @@ int ArxIO_ftlLoad(char * filePath) {
 		LogInfo << "File read successfully";
 	} else {
 		LogError << "Full read failed " << (compressedSize - is.gcount()) << " bytes left";
+		delete[] compressedData;
 		return -1;
 	}
 
