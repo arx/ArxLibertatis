@@ -146,9 +146,7 @@ void CHeal::Create() {
 
 	pPS->SetParams(cp);
 	pPS->ulParticleSpawn = PARTICLE_CIRCULAR | PARTICLE_BORDER;
-	pPS->SetTexture("graph/particles/heal_0005", 0, 100); 
-
-	fSize = 1;
+	pPS->SetTexture("graph/particles/heal_0005", 0, 100);
 }
 
 void CHeal::Update(unsigned long aulTime)

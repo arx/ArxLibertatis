@@ -61,10 +61,7 @@ public:
 	void Render();
 
 	Vec3f eSrc;
-	float fSize;
 	ParticleSystem * pPS;
-	TextureContainer * tex_sol;
-	TextureContainer * tex_heal;
 };
 
 class CLowerArmor : public CSpellFx {
