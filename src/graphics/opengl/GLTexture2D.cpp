@@ -23,7 +23,15 @@
 #include "graphics/opengl/GLTextureStage.h"
 #include "graphics/opengl/OpenGLRenderer.h"
 
-GLTexture2D::GLTexture2D(OpenGLRenderer * _renderer) : renderer(_renderer), tex(GL_NONE) { }
+GLTexture2D::GLTexture2D(OpenGLRenderer * _renderer)
+	: renderer(_renderer)
+	, tex(GL_NONE)
+	, wrapMode(TextureStage::WrapRepeat)
+	, minFilter(TextureStage::FilterLinear)
+	, magFilter(TextureStage::FilterNearest)
+	, mipFilter(TextureStage::FilterLinear)
+{}
+
 GLTexture2D::~GLTexture2D() {
 	Destroy();
 }
