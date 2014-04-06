@@ -499,7 +499,12 @@ void LaunchPoisonExplosion(Vec3f * aePos) {
 }
 
 
-CPoisonProjectile::CPoisonProjectile() : eSrc(Vec3f_ZERO) {
+CPoisonProjectile::CPoisonProjectile()
+	: fTrail(-1.f)
+	, bOk(false)
+	, eSrc(Vec3f_ZERO)
+	, lightIntensityFactor(1.f)
+{
 	SetDuration(2000);
 	ulCurrentTime = ulDuration + 1;
 }
