@@ -883,11 +883,8 @@ void SPELLEND_Notify(long num)
 	long source = spells[num].caster;
 
 	if(spells[num].type == SPELL_CONFUSE) {
-		if(ValidIONum(source))
-			EVENT_SENDER = entities[source];
-		else 
-			EVENT_SENDER = NULL;
-
+		EVENT_SENDER = ValidIONum(source) ? entities[source] : NULL;
+		
 		if(ValidIONum(spells[num].target)) {
 			if(MakeSpellName(spellName,spells[num].type)) {
 				Entity * targ = entities[spells[num].target];
@@ -907,6 +904,7 @@ void SPELLEND_Notify(long num)
 	for(size_t i = 0; i < entities.size(); i++) {
 		if(entities[i]) {
 			EVENT_SENDER = ValidIONum(source) ? entities[source] : NULL;
+			
 			char param[128];
 			sprintf(param, "%s %ld", spellName, (long)spells[num].caster_level);
 			SendIOScriptEvent(entities[i], SM_SPELLEND, param);
