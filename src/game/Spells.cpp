@@ -6722,11 +6722,11 @@ void TryToCastSpell(Entity * io, SpellType spellid, long level, long target, Spe
 
 	unsigned long i(0);
 
-	for(; i < SPELL_COUNT; i++)
+	for(; i < SPELL_TYPES_COUNT; i++)
 		if(spellicons[i].spellid == spellid)
 			break;
 
-	if(i >= SPELL_COUNT)
+	if(i >= SPELL_TYPES_COUNT)
 		return; // not an existing spell...
 
 	for(unsigned long j(0); j < 4; j++)

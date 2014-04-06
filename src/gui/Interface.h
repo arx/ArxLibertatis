@@ -198,7 +198,7 @@ extern INTERFACE_TC ITC;
 extern Vec2s MemoMouse;
 extern Vec2s bookclick;
 
-extern SPELL_ICON spellicons[SPELL_COUNT];
+extern SPELL_ICON spellicons[SPELL_TYPES_COUNT];
 extern float CINEMA_DECAL;
 extern ARX_INTERFACE_BOOK_MODE Book_Mode;
 extern long SpecialCursor;

@@ -242,7 +242,7 @@ EERIE_MULTI3DSCENE * mse = NULL;
 long ADDED_IO_NOT_SAVED = 0;
 #endif
 
-SPELL_ICON spellicons[SPELL_COUNT];
+SPELL_ICON spellicons[SPELL_TYPES_COUNT];
 
 Vec2s DANAEMouse;
 Vec3f moveto;
@@ -710,7 +710,7 @@ void LoadSysTextures()
 {
 	MagicFlareLoadTextures();
 
-	for(size_t i = 0; i < SPELL_COUNT; i++) {
+	for(size_t i = 0; i < SPELL_TYPES_COUNT; i++) {
 		// TODO use constructor for initialization
 		for(long j = 0; j < 6; j++)
 			spellicons[i].symbols[j] = RUNE_NONE;
@@ -1383,7 +1383,7 @@ void LoadSysTextures()
 }
 
 void ClearSysTextures() {
-	for(size_t i = 0; i < SPELL_COUNT; i++) {
+	for(size_t i = 0; i < SPELL_TYPES_COUNT; i++) {
 		if(!spellicons[i].name.empty())
 			//free(spellicons[i].name);
 			spellicons[i].name.clear();

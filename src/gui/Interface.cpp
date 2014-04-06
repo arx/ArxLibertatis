@@ -3936,7 +3936,7 @@ void ManageSpellIcon(long i,float rrr,long flag)
 		}
 	}
 
-	if((bOk && typ >= 0 && (size_t)typ < SPELL_COUNT) || (flag == 2))
+	if((bOk && typ >= 0 && (size_t)typ < SPELL_TYPES_COUNT) || (flag == 2))
 		StdDraw(posx,posy,color,spellicons[typ].tc,flag,i);
 
 	currpos += static_cast<long>(INTERFACE_RATIO(33.f));
@@ -4165,7 +4165,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 			float fPosY = 0;
 			bool	bFlyingOver = false;
 
-			for(size_t i=0; i < SPELL_COUNT; i++) {
+			for(size_t i=0; i < SPELL_TYPES_COUNT; i++) {
 				if(spellicons[i].level==Book_SpellPage && !spellicons[i].bSecret) {
 					// check if player can cast it
 					bool bOk = true;
@@ -4511,7 +4511,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 
 		// calcul de la page de spells
 		if(Book_Mode == BOOKMODE_SPELLS) {
-			for(size_t i = 0; i < SPELL_COUNT; ++i) {
+			for(size_t i = 0; i < SPELL_TYPES_COUNT; ++i) {
 				if(spellicons[i].bSecret == false) {
 					bool bOk = true;
 

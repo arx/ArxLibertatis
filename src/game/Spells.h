@@ -180,7 +180,7 @@ enum SpellType {
 	SPELL_NONE = -1
 };
 
-const size_t SPELL_COUNT = SPELL_FAKE_SUMMON + 1;
+const size_t SPELL_TYPES_COUNT = SPELL_FAKE_SUMMON + 1;
 
 struct PRECAST_STRUCT {
 	SpellType typ;
