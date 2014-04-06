@@ -608,15 +608,11 @@ void CConfuse::Create(Vec3f aeSrc, float afBeta) {
 	SetDuration(ulDuration);
 	eSrc = aeSrc;
 	SetAngle(afBeta);
-	fSize = 1;
-	bDone = true;
 	eTarget = entities[spells[spellinstance].target]->pos;
-	end = 20 - 1;
 }
 
 void CConfuse::Update(unsigned long _ulTime) {
 	ulCurrentTime += _ulTime;
-	iElapsedTime = _ulTime;
 }
 
 void CConfuse::Render() {

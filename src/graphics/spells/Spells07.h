@@ -118,25 +118,13 @@ class CLightning: public CSpellFx
 class CConfuse: public CSpellFx
 {
 	public:
-		bool bDone;
-		int iNumber;
 		Vec3f eSrc;
 		Vec3f eTarget;
-		EERIE_ANIM	* anim_papi;
 		TextureContainer * tex_p1;
-		TextureContainer * tex_p2;
 		TextureContainer * tex_trail;
-		TextureContainer * tex_light;
-		TexturedVertex pathways[80];
 		ANIM_USE au;
-		int end;
 		float fColor[3];
-		int iElapsedTime;
 		Vec3f eCurPos;
-
-		int iMax;
-		float fSize;
-		float fTrail;
 
 	public:
 		CConfuse();
