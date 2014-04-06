@@ -1646,6 +1646,7 @@ static long ARX_CHANGELEVEL_Pop_Player() {
 	
 	if(size < sizeof(ARX_CHANGELEVEL_PLAYER)) {
 		LogError << "Truncated data";
+		free(dat);
 		return -1;
 	}
 	
