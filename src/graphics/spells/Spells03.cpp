@@ -835,7 +835,9 @@ CCreateFood::CCreateFood() {
 	pPS = new ParticleSystem();
 }
 
-CCreateFood::~CCreateFood() { }
+CCreateFood::~CCreateFood() {
+	delete pPS;
+}
 
 void CCreateFood::Create() {
 	
