@@ -119,6 +119,7 @@ struct ANIM_USE {
 		, cur_anim(NULL)
 		, altidx_next(0)
 		, altidx_cur(0)
+		, ctime(0)
 		, flags(0)
 		, nextflags(0)
 		, lastframe(-1)
