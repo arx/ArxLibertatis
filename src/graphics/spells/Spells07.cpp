@@ -93,9 +93,11 @@ CLightning::CLightning() :
 	fAngleYMin(5.0f),
 	fAngleYMax(32.0f),
 	fAngleZMin(5.0f),
-	fAngleZMax(32.0f),
-	falpha(1.0f),
-	fDamage(1)
+	fAngleZMax(32.0f)
+	, fbeta(0.f)
+	, iTTL(0)
+	, falpha(1.0f)
+	, fDamage(1)
 {
 	SetDuration(2000);
 	ulCurrentTime = ulDuration + 1;
