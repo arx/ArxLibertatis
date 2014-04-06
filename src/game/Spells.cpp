@@ -502,12 +502,12 @@ long ARX_SPELLS_GetSpellOn(const Entity * io, Spell spellid)
 	return -1;
 }
 
-void ARX_SPELLS_RemoveSpellOn(const long &caster, const long &spell)
+void ARX_SPELLS_RemoveSpellOn(const long & entityHandle, const long & spellHandle)
 {
-	if(caster < 0 || spell < 0)
+	if(entityHandle < 0 || spellHandle < 0)
 		return;
 
-	Entity *io = entities[caster];
+	Entity *io = entities[entityHandle];
 
 	if(!io || io->spellsOn.empty())
 		return;
@@ -517,7 +517,7 @@ void ARX_SPELLS_RemoveSpellOn(const long &caster, const long &spell)
 		return;
 	}
 	
-	io->spellsOn.erase(spell);
+	io->spellsOn.erase(spellHandle);
 }
 
 void ARX_SPELLS_RemoveMultiSpellOn(long spell_id) {
