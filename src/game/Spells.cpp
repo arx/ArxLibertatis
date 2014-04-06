@@ -55,6 +55,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <sstream>
 #include <utility>
 
+#include <boost/container/flat_set.hpp>
 #include <boost/foreach.hpp>
 #include <boost/lexical_cast.hpp>
 
@@ -467,21 +468,18 @@ void LaunchAntiMagicField(size_t ident) {
 	}
 }
 
+bool spellHandleIsValid(long handle) {
+	return (long)handle >= 0 && ((size_t)handle < MAX_SPELLS) && spells[handle].exist;
+}
+
 void ARX_SPELLS_AddSpellOn(const long &caster, const long &spell)
 {
 	if(caster < 0 ||  spell < 0 || !entities[caster])
 		return;
 
 	Entity *io = entities[caster];
-	void *ptr;
-
-	ptr = realloc(io->spells_on, sizeof(long) * (io->nb_spells_on + 1));
-	if(!ptr)
-		return;
-
-	io->spells_on = (long *)ptr;
-	io->spells_on[io->nb_spells_on] = spell;
-	io->nb_spells_on++;
+	
+	io->spellsOn.insert(spell);
 }
 
 long ARX_SPELLS_GetSpellOn(const Entity * io, Spell spellid)
@@ -489,12 +487,18 @@ long ARX_SPELLS_GetSpellOn(const Entity * io, Spell spellid)
 	if(!io)
 		return -1;
 
-	for(long i(0); i < io->nb_spells_on; i++) {
-		if (	(spells[io->spells_on[i]].type == spellid)
-			&&	(spells[io->spells_on[i]].exist)	)
-			return io->spells_on[i];
+	boost::container::flat_set<long>::const_iterator it;
+	for(it = io->spellsOn.begin(); it != io->spellsOn.end(); ++it) {
+		long spellHandle = *it;
+		if(spellHandleIsValid(spellHandle)) {
+			SPELL * spell = &spells[spellHandle];
+			
+			if(spell->type == spellid) {
+				return spellHandle;
+			}
+		}
 	}
-
+	
 	return -1;
 }
 
@@ -505,29 +509,15 @@ void ARX_SPELLS_RemoveSpellOn(const long &caster, const long &spell)
 
 	Entity *io = entities[caster];
 
-	if(!io || !io->nb_spells_on)
+	if(!io || io->spellsOn.empty())
 		return;
 
-	if(io->nb_spells_on == 1) {
-		free(io->spells_on);
-		io->spells_on = NULL;
-		io->nb_spells_on = 0;
+	if(io->spellsOn.size() == 1) {
+		io->spellsOn.clear();
 		return;
 	}
-
-	long i(0);
-
-	for(; i < io->nb_spells_on; i++)
-		if(io->spells_on[i] == spell)
-			break;
-
-	if(i >= io->nb_spells_on)
-		return;
-
-	io->nb_spells_on--;
-	memcpy(&io->spells_on[i], &io->spells_on[i + 1], sizeof(long) * (io->nb_spells_on - i));
-
-	io->spells_on = (long *)realloc(io->spells_on, sizeof(long) * io->nb_spells_on);
+	
+	io->spellsOn.erase(spell);
 }
 
 void ARX_SPELLS_RemoveMultiSpellOn(long spell_id) {
@@ -537,9 +527,7 @@ void ARX_SPELLS_RemoveMultiSpellOn(long spell_id) {
 }
 
 void ARX_SPELLS_RemoveAllSpellsOn(Entity *io) {
-	free(io->spells_on);
-	io->spells_on = NULL;
-	io->nb_spells_on = 0;
+	io->spellsOn.clear();
 }
 
 struct RuneInfo {
@@ -4153,10 +4141,17 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			long target = spells[i].target;
 			
 			Entity * io = entities[target];
-			for(int il = 0; il < io->nb_spells_on; il++) {
-				if(spells[io->spells_on[il]].type == SPELL_SLOW_DOWN) {
-					spells[i].exist = false;
-					return false;
+			
+			boost::container::flat_set<long>::const_iterator it;
+			for(it = io->spellsOn.begin(); it != io->spellsOn.end(); ++it) {
+				long spellHandle = *it;
+				if(spellHandleIsValid(spellHandle)) {
+					SPELL * spell = &spells[spellHandle];
+					
+					if(spell->type == SPELL_SLOW_DOWN) {
+						spell->exist = false;
+						return false;
+					}
 				}
 			}
 			

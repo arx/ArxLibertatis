@@ -2709,23 +2709,25 @@ float ARX_INTERACTIVE_GetArmorClass(Entity * io) {
 
 	float ac = io->_npcdata->armor_class;
 
-	for(long i = 0; i < io->nb_spells_on; i++) {
-		long n = io->spells_on[i];
-
-		if(spells[n].exist) {
-			switch(spells[n].type) {
-			case SPELL_ARMOR:
-				ac += spells[n].caster_level;
-				break;
-			case SPELL_LOWER_ARMOR:
-				ac -= spells[n].caster_level;
-				break;
-			default:
-				break;
+	boost::container::flat_set<long>::const_iterator it;
+	for(it = io->spellsOn.begin(); it != io->spellsOn.end(); ++it) {
+		long spellHandle = *it;
+		if(spellHandleIsValid(spellHandle)) {
+			SPELL * spell = &spells[spellHandle];
+			
+			switch(spell->type) {
+				case SPELL_ARMOR:
+					ac += spell->caster_level;
+					break;
+				case SPELL_LOWER_ARMOR:
+					ac -= spell->caster_level;
+					break;
+				default:
+					break;
 			}
 		}
 	}
-
+	
 	if(ac < 0)
 		ac = 0;
 

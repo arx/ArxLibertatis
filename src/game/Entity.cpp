@@ -171,8 +171,7 @@ Entity::Entity(const res::path & classPath)
 	basespeed = 1.f;
 	
 	speed_modif = 0.f;
-	spells_on = NULL;
-	nb_spells_on = 0;
+	spellsOn.clear();
 	damagedata = -1;
 	
 	rubber = BASE_RUBBER;

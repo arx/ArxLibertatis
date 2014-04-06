@@ -48,6 +48,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <string>
 #include <vector>
 
+#include <boost/container/flat_set.hpp>
+
 #include "animation/Animation.h"
 #include "audio/AudioTypes.h"
 #include "game/Damage.h" // TODO needed for DamageType
@@ -324,8 +326,7 @@ public:
 	float basespeed;
 	
 	float speed_modif;
-	long * spells_on;
-	short nb_spells_on;
+	boost::container::flat_set<long> spellsOn;
 	long damagedata;
 	
 	float rubber;

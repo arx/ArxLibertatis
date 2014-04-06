@@ -52,6 +52,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <algorithm>
 #include <limits>
 
+#include <boost/container/flat_set.hpp>
+
 #include "animation/Animation.h"
 #include "animation/AnimationRender.h"
 
@@ -537,12 +539,16 @@ void ARX_PLAYER_ComputePlayerFullStats() {
 	// External modifiers
 	
 	// Calculate for modifiers from spells
-	if(entities.player()) {
-		for(long i = 0; i < entities.player()->nb_spells_on; i++) {
-			long n = entities.player()->spells_on[i];
-			if(!spells[n].exist) {
+	if(entities.player()) {	
+		boost::container::flat_set<long>::const_iterator it;
+		for(it = entities.player()->spellsOn.begin(); it != entities.player()->spellsOn.end(); ++it) {
+			
+			long spellHandle = *it;
+			if(!spellHandleIsValid(spellHandle)) {
 				continue;
 			}
+			
+			long n = spellHandle;
 			switch (spells[n].type) {
 				case SPELL_ARMOR:
 					player.Mod_armor_class += spells[n].caster_level;

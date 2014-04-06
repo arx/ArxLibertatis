@@ -5607,11 +5607,17 @@ void ArxGame::drawAllInterfaceFinish() {
 	}
 
 	if(entities.player()) {
-		for(int i = 0; i < entities.player()->nb_spells_on; i++) {
-			if(   spells[entities.player()->spells_on[i]].caster != 0
-			   && spellicons[spells[i].type].bDuration
-			) {
-				ManageSpellIcon(entities.player()->spells_on[i], rrr, 1);
+		Entity * playerEntity = entities.player();
+		
+		boost::container::flat_set<long>::const_iterator it;
+		for(it = playerEntity->spellsOn.begin(); it != playerEntity->spellsOn.end(); ++it) {
+			long spellHandle = *it;
+			if(spellHandleIsValid(spellHandle)) {
+				SPELL * spell = &spells[spellHandle];
+				
+				if(spell->caster != 0 && spellicons[spell->type].bDuration) {
+					ManageSpellIcon(spellHandle, rrr, 1);
+				}
 			}
 		}
 	}

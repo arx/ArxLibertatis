@@ -274,6 +274,7 @@ void ARX_SPELLS_Init_Rects();
 
 bool ARX_SPELLS_ExistAnyInstance(Spell typ);
 void ARX_SPELLS_RemoveAllSpellsOn(Entity * io);
+bool spellHandleIsValid(long handle);
 long ARX_SPELLS_GetSpellOn(const Entity * io, Spell spellid);
 long ARX_SPELLS_GetInstanceForThisCaster(Spell typ, long caster);
 
