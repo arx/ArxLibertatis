@@ -2151,20 +2151,17 @@ void CMenuState::Render() {
 	pMenuAllZone->DrawZone();
 }
 
-CMenuZone::CMenuZone() {
-	bActif = true;
-	bCheck=true;
-	bTestYDouble=false;
-	iID=-1;
-	lData=0;
-	pData=NULL;
-	lPosition=0;
-
-	rZone.top = 0;
-	rZone.bottom = 0;
-	rZone.left = 0;
-	rZone.right = 0;
-}
+CMenuZone::CMenuZone()
+	: bActif(true)
+	, bCheck(true)
+	, bTestYDouble(false)
+	, pRef(NULL)
+	, rZone(0, 0, 0, 0)
+	, iID(-1)
+	, lData(0)
+	, pData(NULL)
+	, lPosition(0)
+{}
 
 CMenuZone::CMenuZone(int _iX1, int _iY1, int _iX2, int _iY2, CMenuZone * _pRef) {
 
