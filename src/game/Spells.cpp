@@ -874,22 +874,19 @@ void SPELLCAST_NotifyOnlyTarget(long num)
 	}	
 }
 
-void SPELLEND_Notify(long num)
-{
-	if(num < 0 || size_t(num) >= MAX_SPELLS)
-		return;
-
+void SPELLEND_Notify(SPELL & spell) {
+	
 	char spellName[128];
-	long source = spells[num].caster;
+	long source = spell.caster;
 
-	if(spells[num].type == SPELL_CONFUSE) {
+	if(spell.type == SPELL_CONFUSE) {
 		EVENT_SENDER = ValidIONum(source) ? entities[source] : NULL;
 		
-		if(ValidIONum(spells[num].target)) {
-			if(MakeSpellName(spellName,spells[num].type)) {
-				Entity * targ = entities[spells[num].target];
+		if(ValidIONum(spell.target)) {
+			if(MakeSpellName(spellName,spell.type)) {
+				Entity * targ = entities[spell.target];
 				char param[128];
-				sprintf(param,"%s %ld", spellName, (long)spells[num].caster_level);
+				sprintf(param,"%s %ld", spellName, (long)spell.caster_level);
 				SendIOScriptEvent(targ, SM_SPELLEND, param);
 			}
 		}
@@ -897,7 +894,7 @@ void SPELLEND_Notify(long num)
 	}
 	
 	// we only notify player spells end.
-	if(!MakeSpellName(spellName, spells[num].type)) {
+	if(!MakeSpellName(spellName, spell.type)) {
 		return;
 	}
 	
@@ -906,7 +903,7 @@ void SPELLEND_Notify(long num)
 			EVENT_SENDER = ValidIONum(source) ? entities[source] : NULL;
 			
 			char param[128];
-			sprintf(param, "%s %ld", spellName, (long)spells[num].caster_level);
+			sprintf(param, "%s %ld", spellName, (long)spell.caster_level);
 			SendIOScriptEvent(entities[i], SM_SPELLEND, param);
 		}
 	}
@@ -6707,7 +6704,7 @@ void ARX_SPELLS_Update() {
 		const long framediff = spell.timcreation + spell.tolive - tim;
 		
 		if(framediff < 0) {
-			SPELLEND_Notify(i);
+			SPELLEND_Notify(spell);
 			ARX_SPELLS_Update_End(i);
 			ARX_SPELLS_Kill(i);
 			
