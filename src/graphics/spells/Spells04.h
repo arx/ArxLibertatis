@@ -51,23 +51,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 class CBless: public CSpellFx
 {
 	public:
-		bool bDone;
-		int iNumber;
 		Vec3f eSrc;
 		Vec3f eTarget;
 		TextureContainer * tex_p1;
 		TextureContainer * tex_sol;
 		float fRot;
 		float fRotPerMSec;
-
-		int iNbPS;
-		ParticleSystem psTab[256];
-		int iNpcTab[256];
-
-		int iMax;
-		float fSize;
-
-		ParticleSystem		pPS;
 
 	public:
 		CBless();

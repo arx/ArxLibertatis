@@ -60,11 +60,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Object.h"
 #include "scene/Interactive.h"
 
-CBless::CBless() {
-	
-	eSrc = Vec3f_ZERO;
-	eTarget = Vec3f_ZERO;
-	
+CBless::CBless()
+	: eSrc(Vec3f_ZERO)
+	, eTarget(Vec3f_ZERO)
+	, fRot(0.f)
+	, fRotPerMSec(0.25f)
+{
 	SetDuration(4000);
 	ulCurrentTime = ulDuration + 1;
 	
@@ -79,10 +80,8 @@ void CBless::Create(Vec3f _eSrc, float _fBeta) {
 	
 	eSrc = _eSrc;
 	eTarget = eSrc;
-	fSize = 1;
 	fRot = 0;
 	fRotPerMSec = 0.25f;
-	bDone = true;
 }
 
 void CBless::Set_Angle(const Anglef & angle)
