@@ -5484,19 +5484,18 @@ void ARX_SPELLS_Update() {
 			continue;
 		}
 		
-			if(spells[i].bDuration && !CanPayMana(i, spells[i].fManaCostPerSecond * (float)framedelay * (1.0f/1000), false))
-				ARX_SPELLS_Fizzle(i);
-
-			const long framediff = spells[i].timcreation + spells[i].tolive - tim;
-			const long framediff3 = tim - spells[i].lastupdate;
-
-			if(framediff < 0) {
-				SPELLEND_Notify(i);
-
+		if(spells[i].bDuration && !CanPayMana(i, spells[i].fManaCostPerSecond * (float)framedelay * (1.0f/1000), false))
+			ARX_SPELLS_Fizzle(i);
+		
+		const long framediff = spells[i].timcreation + spells[i].tolive - tim;
+		const long framediff3 = tim - spells[i].lastupdate;
+		
+		if(framediff < 0) {
+			SPELLEND_Notify(i);
 			ARX_SPELLS_Update_End(i);
-
 			ARX_SPELLS_Kill(i);
-			continue;			
+			
+			continue;
 		}
 
 	if(spells[i].exist)
