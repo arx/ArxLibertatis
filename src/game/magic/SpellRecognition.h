@@ -33,6 +33,8 @@ extern std::string SpellMoves;
 void spellRecognitionInit();
 
 void ARX_SPELLS_ResetRecognition();
+
+void spellRecognitionPointsReset();
 void ARX_SPELLS_AddPoint(const Vec2s & pos);
 
 void ARX_SPELLS_Analyse();

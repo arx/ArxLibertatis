@@ -178,6 +178,12 @@ void ARX_SPELLS_ResetRecognition() {
 	CurrSpellSymbol = 0;
 }
 
+static long CurrPoint = 0;
+
+void spellRecognitionPointsReset() {
+	CurrPoint = 0;
+}
+
 // Adds a 2D point to currently drawn spell symbol
 void ARX_SPELLS_AddPoint(const Vec2s & pos) {
 	plist[CurrPoint] = pos;

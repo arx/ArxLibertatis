@@ -1375,7 +1375,7 @@ void ArxGame::updateLevel() {
 			if(!ARX_FLARES_Block) {
 				ARX_SPELLS_AddPoint(DANAEMouse);
 			} else {
-				CurrPoint = 0;
+				spellRecognitionPointsReset();
 				ARX_FLARES_Block = false;
 			}
 		} else if(!ARX_FLARES_Block) {

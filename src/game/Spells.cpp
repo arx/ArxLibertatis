@@ -154,8 +154,6 @@ void ARX_INTERFACE_Combat_Mode(long i);
 ///////////////Spell Interpretation
 SPELL spells[MAX_SPELLS];
 short ARX_FLARES_broken(1);
-long CurrPoint(0);
-
 
 static float LASTTELEPORT(0.0F);
 long snip=0;

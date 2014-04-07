@@ -115,8 +115,6 @@ struct SPELL {
 const size_t MAX_SPELLS = 20;
 extern SPELL spells[MAX_SPELLS];
 
-extern long CurrPoint;
-
 bool ARX_SPELLS_Launch(SpellType typ, long source, SpellcastFlags flags = 0, long level = -1, long target = -1, long duration = -1);
 void ARX_SPELLS_AbortSpellSound();
 void ARX_SPELLS_Init();
