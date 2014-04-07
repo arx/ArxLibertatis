@@ -20,7 +20,11 @@
 #ifndef ARX_GAME_MAGIC_SPELL_H
 #define ARX_GAME_MAGIC_SPELL_H
 
+#include "graphics/effects/SpellEffects.h"
 #include "platform/Flags.h"
+#include "scene/Light.h"
+
+class TextureContainer;
 
 // Spell list
 enum SpellType {
@@ -116,5 +120,51 @@ enum SpellcastFlag {
 };
 DECLARE_FLAGS(SpellcastFlag, SpellcastFlags)
 DECLARE_FLAGS_OPERATORS(SpellcastFlags)
+
+
+struct SPELL {
+	
+	bool exist;
+	long caster; //!< Number of the source interactive obj (0==player)
+	long target; //!< Number of the target interactive obj if any
+	float caster_level; //!< Level of Magic 1-10
+	
+	long hand_group;
+	Vec3f hand_pos; //!< Only valid if hand_group>=0
+	Vec3f caster_pos;
+	Vec3f target_pos;
+	
+	float fdata; //!< Specific use for each spell
+	
+	SpellType type;
+	Vec3f vsource; // TODO this is used but never set
+	
+	Vec3f move;
+	Vec3f scale;
+	float siz;
+	unsigned long timcreation;
+	unsigned long lastupdate;
+	unsigned long tolive;
+	
+	TextureContainer * tc;
+	
+	long longinfo_entity;
+	long longinfo_damage;
+	long longinfo_time;
+	long longinfo_summon_creature;
+	long longinfo_lower_armor;
+	LightHandle longinfo_light;
+	
+	long longinfo2_entity;
+	LightHandle longinfo2_light;
+	
+	bool bDuration;
+	float fManaCostPerSecond;
+	
+	SpellcastFlags flags;
+	audio::SourceId snd_loop;
+	CSpellFx * pSpellFx;
+	void * misc;
+};
 
 #endif // ARX_GAME_MAGIC_SPELL_H
