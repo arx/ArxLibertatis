@@ -95,19 +95,16 @@ void ARX_SPELLS_Precast_Launch(long num) {
 		return;
 	}
 	
-	if (float(arxtime) >= LAST_PRECAST_TIME+1000)
-	{
-		SpellType iNumSpells=Precast[num].typ;
-		float cost=ARX_SPELLS_GetManaCost(iNumSpells,-1);
+	if(float(arxtime) >= LAST_PRECAST_TIME + 1000) {
+		SpellType iNumSpells = Precast[num].typ;
+		float cost=ARX_SPELLS_GetManaCost(iNumSpells,  -1);
 
-		if(		(iNumSpells != SPELL_NONE)
-			&&	(!PrecastCheckCanPayMana(num,cost)	)  )
+		if(iNumSpells != SPELL_NONE && !PrecastCheckCanPayMana(num,cost))
 			return;
 
 		LAST_PRECAST_TIME = (unsigned long)(arxtime);
 
-		if ((Precast[num].typ != SPELL_NONE) && (Precast[num].launch_time==0))
-		{
+		if(Precast[num].typ != SPELL_NONE && Precast[num].launch_time == 0) {
 			Precast[num].launch_time = (unsigned long)(arxtime);
 			ARX_SOUND_PlaySFX(SND_SPELL_CREATE_FIELD);
 		}
