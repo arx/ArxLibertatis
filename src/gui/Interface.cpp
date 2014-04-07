@@ -2644,22 +2644,21 @@ void ArxGame::managePlayerControls()
 		}
 	}
 
-	if(GInput->actionNowPressed(CONTROLS_CUST_PRECAST1)) {
-		if(((player.Interface & INTER_COMBATMODE) && !bIsAiming) || !player.doingmagic)
+	if(((player.Interface & INTER_COMBATMODE) && !bIsAiming) || !player.doingmagic) {
+		if(GInput->actionNowPressed(CONTROLS_CUST_PRECAST1)) {
 			if(Precast[0].typ != -1)
 				ARX_SPELLS_Precast_Launch(0);
-	}
-
-	if(GInput->actionNowPressed(CONTROLS_CUST_PRECAST2)) {
-		if(((player.Interface & INTER_COMBATMODE) && !bIsAiming) || !player.doingmagic)
+		}
+	
+		if(GInput->actionNowPressed(CONTROLS_CUST_PRECAST2)) {
 			if(Precast[1].typ != -1)
 				ARX_SPELLS_Precast_Launch(1);
-	}
-
-	if(GInput->actionNowPressed(CONTROLS_CUST_PRECAST3)) {
-		if(((player.Interface & INTER_COMBATMODE) && !bIsAiming) || !player.doingmagic)
+		}
+	
+		if(GInput->actionNowPressed(CONTROLS_CUST_PRECAST3)) {
 			if(Precast[2].typ != -1)
 				ARX_SPELLS_Precast_Launch(2);
+		}
 	}
 
 	if(GInput->actionNowPressed(CONTROLS_CUST_WEAPON) || lChangeWeapon) {
