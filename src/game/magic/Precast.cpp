@@ -67,17 +67,17 @@ void ARX_SPELLS_Precast_Add(SpellType typ, long _level, SpellcastFlags flags, lo
 	Precast[found].duration = duration;
 }
 
-unsigned long LAST_PRECAST_TIME=0;
-long PrecastCheckCanPayMana(long num, float cost, bool _bSound = true)
-{
-	if (num<0) return 0;
+unsigned long LAST_PRECAST_TIME = 0;
 
-	if (Precast[num].flags & SPELLCAST_FLAG_NOMANA) return 1;
+long PrecastCheckCanPayMana(long num, float cost, bool _bSound = true) {
+	if(num < 0)
+		return 0;
 
-		if (player.mana>=cost)
-		{
-			return 1;
-		}
+	if(Precast[num].flags & SPELLCAST_FLAG_NOMANA)
+		return 1;
+
+	if(player.mana >= cost)
+		return 1;
 	
 	ARX_SPELLS_FizzleNoMana(num);
 
@@ -96,10 +96,10 @@ void ARX_SPELLS_Precast_Launch(long num) {
 	}
 	
 	if(float(arxtime) >= LAST_PRECAST_TIME + 1000) {
-		SpellType iNumSpells = Precast[num].typ;
-		float cost=ARX_SPELLS_GetManaCost(iNumSpells,  -1);
+		SpellType type = Precast[num].typ;
+		float cost=ARX_SPELLS_GetManaCost(type,  -1);
 
-		if(iNumSpells != SPELL_NONE && !PrecastCheckCanPayMana(num,cost))
+		if(type != SPELL_NONE && !PrecastCheckCanPayMana(num,cost))
 			return;
 
 		LAST_PRECAST_TIME = (unsigned long)(arxtime);
