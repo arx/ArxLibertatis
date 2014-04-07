@@ -67,63 +67,63 @@ typedef std::map<std::string, SpellType> SpellNames;
 static SpellNames spellNames;
 
 struct RawSpellDefinition {
-	Rune symbols[MAX_SPELL_SYMBOLS];
 	SpellType spell;
 	std::string name;
+	Rune symbols[MAX_SPELL_SYMBOLS];
 };
 
 // TODO move to external file
 static const RawSpellDefinition allSpells[] = {
-	{{RUNE_RHAA, RUNE_STREGUM, RUNE_VITAE, RUNE_NONE}, SPELL_CURSE, "curse"}, // level 4
-	{{RUNE_RHAA, RUNE_TEMPUS, RUNE_NONE}, SPELL_FREEZE_TIME, "freeze_time"}, // level 10
-	{{RUNE_RHAA, RUNE_KAOM, RUNE_NONE}, SPELL_LOWER_ARMOR, "lower_armor"}, // level 2
-	{{RUNE_RHAA, RUNE_MOVIS, RUNE_NONE}, SPELL_SLOW_DOWN, "slowdown"}, // level 6
-	{{RUNE_RHAA, RUNE_VITAE, RUNE_NONE}, SPELL_HARM, "harm"}, // level 2
-	{{RUNE_RHAA, RUNE_VISTA, RUNE_NONE}, SPELL_CONFUSE, "confuse"}, // level 7
-	{{RUNE_MEGA, RUNE_NHI, RUNE_MOVIS, RUNE_NONE}, SPELL_MASS_PARALYSE, "mass_paralyse"}, // level 9
-	{{RUNE_MEGA, RUNE_KAOM, RUNE_NONE}, SPELL_ARMOR, "armor"}, // level 2
-	{{RUNE_MEGA, RUNE_VISTA, RUNE_NONE}, SPELL_MAGIC_SIGHT, "magic_sight"}, // level 1
-	{{RUNE_MEGA, RUNE_VITAE, RUNE_NONE}, SPELL_HEAL, "heal"}, // level 2
-	{{RUNE_MEGA, RUNE_MOVIS, RUNE_NONE}, SPELL_SPEED, "speed"}, // level 3
-	{{RUNE_MEGA, RUNE_STREGUM, RUNE_VITAE, RUNE_NONE}, SPELL_BLESS, "bless"}, // level 4
-	{{RUNE_MEGA, RUNE_STREGUM, RUNE_COSUM, RUNE_NONE}, SPELL_ENCHANT_WEAPON, "enchant_weapon"}, // level 8
-	{{RUNE_MEGA, RUNE_AAM, RUNE_MEGA, RUNE_YOK, RUNE_NONE}, SPELL_MASS_INCINERATE, "mass_incinerate"}, // level 10
-	{{RUNE_MEGA, RUNE_SPACIUM, RUNE_NONE}, SPELL_ACTIVATE_PORTAL, "activate_portal"}, // level ?
-	{{RUNE_MEGA, RUNE_SPACIUM, RUNE_MOVIS, RUNE_NONE}, SPELL_LEVITATE, "levitate"}, // level 5
-	{{RUNE_NHI, RUNE_MOVIS, RUNE_NONE}, SPELL_PARALYSE, "paralyse"}, // level 6
-	{{RUNE_NHI, RUNE_CETRIUS, RUNE_NONE}, SPELL_CURE_POISON, "cure_poison"}, // level 5
-	{{RUNE_NHI, RUNE_YOK, RUNE_NONE}, SPELL_DOUSE, "douse"}, // level 1
-	{{RUNE_NHI, RUNE_STREGUM, RUNE_VISTA, RUNE_NONE}, SPELL_DISPELL_ILLUSION, "dispell_illusion"}, // level 3
-	{{RUNE_NHI, RUNE_STREGUM, RUNE_SPACIUM, RUNE_NONE}, SPELL_NEGATE_MAGIC, "negate_magic"}, // level 9
-	{{RUNE_NHI, RUNE_SPACIUM, RUNE_NONE}, SPELL_DISPELL_FIELD, "dispell_field"}, // level 4
-	{{RUNE_NHI, RUNE_MORTE, RUNE_COSUM, RUNE_NONE}, SPELL_DISARM_TRAP, "disarm_trap"}, // level 6
-	{{RUNE_NHI, RUNE_VISTA, RUNE_NONE}, SPELL_INVISIBILITY, "invisibility"}, // level ?
-	{{RUNE_VISTA, RUNE_MOVIS, RUNE_NONE}, SPELL_FLYING_EYE, "flying_eye"}, // level 7
-	{{RUNE_MORTE, RUNE_KAOM, RUNE_NONE}, SPELL_REPEL_UNDEAD, "repel_undead"}, // level 5
-	{{RUNE_MORTE, RUNE_COSUM, RUNE_VISTA, RUNE_NONE}, SPELL_DETECT_TRAP, "detect_trap"}, // level 2
-	{{RUNE_MOVIS, RUNE_COMUNICATUM, RUNE_NONE}, SPELL_CONTROL_TARGET, "control"}, // level 10
-	{{RUNE_STREGUM, RUNE_MOVIS, RUNE_NONE}, SPELL_MANA_DRAIN, "mana_drain"}, // level 8
-	{{RUNE_AAM, RUNE_MEGA, RUNE_YOK, RUNE_NONE}, SPELL_INCINERATE, "incinerate"}, // level 9
-	{{RUNE_AAM, RUNE_MEGA, RUNE_MORTE, RUNE_NONE}, SPELL_EXPLOSION, "explosion"}, // level 8
-	{{RUNE_AAM, RUNE_KAOM, RUNE_SPACIUM, RUNE_NONE}, SPELL_CREATE_FIELD, "create_field"}, // level 6
-	{{RUNE_AAM, RUNE_MORTE, RUNE_VITAE, RUNE_NONE}, SPELL_RISE_DEAD, "raise_dead"}, // level 6
-	{{RUNE_AAM, RUNE_MORTE, RUNE_COSUM, RUNE_NONE}, SPELL_RUNE_OF_GUARDING, "rune_of_guarding"}, // level 5
-	{{RUNE_AAM, RUNE_VITAE, RUNE_TERA, RUNE_NONE}, SPELL_SUMMON_CREATURE, "summon_creature"}, // level 9
-	{{RUNE_AAM, RUNE_VITAE, RUNE_COSUM, RUNE_NONE}, SPELL_CREATE_FOOD, "create_food"}, // level 3
-	{{RUNE_AAM, RUNE_FOLGORA, RUNE_TAAR, RUNE_NONE}, SPELL_LIGHTNING_STRIKE, "lightning_strike"}, // level 7
-	{{RUNE_AAM, RUNE_FOLGORA, RUNE_SPACIUM, RUNE_NONE}, SPELL_MASS_LIGHTNING_STRIKE, "mass_lightning_strike"}, // level 10
-	{{RUNE_AAM, RUNE_YOK, RUNE_NONE}, SPELL_IGNIT, "ignit"}, // level 1
-	{{RUNE_AAM, RUNE_YOK, RUNE_SPACIUM, RUNE_NONE}, SPELL_FIRE_FIELD, "fire_field"}, // level 7
-	{{RUNE_AAM, RUNE_YOK, RUNE_TAAR, RUNE_NONE}, SPELL_FIREBALL, "fireball"}, // level 3
-	{{RUNE_AAM, RUNE_FRIDD, RUNE_SPACIUM, RUNE_NONE}, SPELL_ICE_FIELD, "ice_field"}, // level 7
-	{{RUNE_AAM, RUNE_FRIDD, RUNE_TAAR, RUNE_NONE}, SPELL_ICE_PROJECTILE, "ice_projectile"}, // level 3
-	{{RUNE_AAM, RUNE_CETRIUS, RUNE_TAAR, RUNE_NONE}, SPELL_POISON_PROJECTILE, "poison_projectile"}, // level 5
-	{{RUNE_AAM, RUNE_TAAR, RUNE_NONE}, SPELL_MAGIC_MISSILE, "magic_missile"}, // level 1
-	{{RUNE_YOK, RUNE_KAOM, RUNE_NONE}, SPELL_FIRE_PROTECTION, "fire_protection"}, // level 4
-	{{RUNE_FRIDD, RUNE_KAOM, RUNE_NONE}, SPELL_COLD_PROTECTION, "cold_protection"}, // level 4
-	{{RUNE_VITAE, RUNE_MOVIS, RUNE_NONE}, SPELL_LIFE_DRAIN, "life_drain"}, // level 8
-	{{RUNE_SPACIUM, RUNE_COMUNICATUM, RUNE_NONE}, SPELL_TELEKINESIS, "telekinesis"}, // level 4
-	{{RUNE_NONE}, SPELL_FAKE_SUMMON, "fake_summon"}
+	{SPELL_CURSE,                 "curse",                 {RUNE_RHAA,    RUNE_STREGUM,     RUNE_VITAE,   RUNE_NONE}}, // level 4
+	{SPELL_FREEZE_TIME,           "freeze_time",           {RUNE_RHAA,    RUNE_TEMPUS,      RUNE_NONE}}, // level 10
+	{SPELL_LOWER_ARMOR,           "lower_armor",           {RUNE_RHAA,    RUNE_KAOM,        RUNE_NONE}}, // level 2
+	{SPELL_SLOW_DOWN,             "slowdown",              {RUNE_RHAA,    RUNE_MOVIS,       RUNE_NONE}}, // level 6
+	{SPELL_HARM,                  "harm",                  {RUNE_RHAA,    RUNE_VITAE,       RUNE_NONE}}, // level 2
+	{SPELL_CONFUSE,               "confuse",               {RUNE_RHAA,    RUNE_VISTA,       RUNE_NONE}}, // level 7
+	{SPELL_MASS_PARALYSE,         "mass_paralyse",         {RUNE_MEGA,    RUNE_NHI,         RUNE_MOVIS,   RUNE_NONE}}, // level 9
+	{SPELL_ARMOR,                 "armor",                 {RUNE_MEGA,    RUNE_KAOM,        RUNE_NONE}}, // level 2
+	{SPELL_MAGIC_SIGHT,           "magic_sight",           {RUNE_MEGA,    RUNE_VISTA,       RUNE_NONE}}, // level 1
+	{SPELL_HEAL,                  "heal",                  {RUNE_MEGA,    RUNE_VITAE,       RUNE_NONE}}, // level 2
+	{SPELL_SPEED,                 "speed",                 {RUNE_MEGA,    RUNE_MOVIS,       RUNE_NONE}}, // level 3
+	{SPELL_BLESS,                 "bless",                 {RUNE_MEGA,    RUNE_STREGUM,     RUNE_VITAE,   RUNE_NONE}}, // level 4
+	{SPELL_ENCHANT_WEAPON,        "enchant_weapon",        {RUNE_MEGA,    RUNE_STREGUM,     RUNE_COSUM,   RUNE_NONE}}, // level 8
+	{SPELL_MASS_INCINERATE,       "mass_incinerate",       {RUNE_MEGA,    RUNE_AAM,         RUNE_MEGA,    RUNE_YOK, RUNE_NONE}}, // level 10
+	{SPELL_ACTIVATE_PORTAL,       "activate_portal",       {RUNE_MEGA,    RUNE_SPACIUM,     RUNE_NONE}}, // level ?
+	{SPELL_LEVITATE,              "levitate",              {RUNE_MEGA,    RUNE_SPACIUM,     RUNE_MOVIS,   RUNE_NONE}}, // level 5
+	{SPELL_PARALYSE,              "paralyse",              {RUNE_NHI,     RUNE_MOVIS,       RUNE_NONE}}, // level 6
+	{SPELL_CURE_POISON,           "cure_poison",           {RUNE_NHI,     RUNE_CETRIUS,     RUNE_NONE}}, // level 5
+	{SPELL_DOUSE,                 "douse",                 {RUNE_NHI,     RUNE_YOK,         RUNE_NONE}}, // level 1
+	{SPELL_DISPELL_ILLUSION,      "dispell_illusion",      {RUNE_NHI,     RUNE_STREGUM,     RUNE_VISTA,   RUNE_NONE}}, // level 3
+	{SPELL_NEGATE_MAGIC,          "negate_magic",          {RUNE_NHI,     RUNE_STREGUM,     RUNE_SPACIUM, RUNE_NONE}}, // level 9
+	{SPELL_DISPELL_FIELD,         "dispell_field",         {RUNE_NHI,     RUNE_SPACIUM,     RUNE_NONE}}, // level 4
+	{SPELL_DISARM_TRAP,           "disarm_trap",           {RUNE_NHI,     RUNE_MORTE,       RUNE_COSUM,   RUNE_NONE}}, // level 6
+	{SPELL_INVISIBILITY,          "invisibility",          {RUNE_NHI,     RUNE_VISTA,       RUNE_NONE}}, // level ?
+	{SPELL_FLYING_EYE,            "flying_eye",            {RUNE_VISTA,   RUNE_MOVIS,       RUNE_NONE}}, // level 7
+	{SPELL_REPEL_UNDEAD,          "repel_undead",          {RUNE_MORTE,   RUNE_KAOM,        RUNE_NONE}}, // level 5
+	{SPELL_DETECT_TRAP,           "detect_trap",           {RUNE_MORTE,   RUNE_COSUM,       RUNE_VISTA,   RUNE_NONE}}, // level 2
+	{SPELL_CONTROL_TARGET,        "control",               {RUNE_MOVIS,   RUNE_COMUNICATUM, RUNE_NONE}}, // level 10
+	{SPELL_MANA_DRAIN,            "mana_drain",            {RUNE_STREGUM, RUNE_MOVIS,       RUNE_NONE}}, // level 8
+	{SPELL_INCINERATE,            "incinerate",            {RUNE_AAM,     RUNE_MEGA,        RUNE_YOK,     RUNE_NONE}}, // level 9
+	{SPELL_EXPLOSION,             "explosion",             {RUNE_AAM,     RUNE_MEGA,        RUNE_MORTE,   RUNE_NONE}}, // level 8
+	{SPELL_CREATE_FIELD,          "create_field",          {RUNE_AAM,     RUNE_KAOM,        RUNE_SPACIUM, RUNE_NONE}}, // level 6
+	{SPELL_RISE_DEAD,             "raise_dead",            {RUNE_AAM,     RUNE_MORTE,       RUNE_VITAE,   RUNE_NONE}}, // level 6
+	{SPELL_RUNE_OF_GUARDING,      "rune_of_guarding",      {RUNE_AAM,     RUNE_MORTE,       RUNE_COSUM,   RUNE_NONE}}, // level 5
+	{SPELL_SUMMON_CREATURE,       "summon_creature",       {RUNE_AAM,     RUNE_VITAE,       RUNE_TERA,    RUNE_NONE}}, // level 9
+	{SPELL_CREATE_FOOD,           "create_food",           {RUNE_AAM,     RUNE_VITAE,       RUNE_COSUM,   RUNE_NONE}}, // level 3
+	{SPELL_LIGHTNING_STRIKE,      "lightning_strike",      {RUNE_AAM,     RUNE_FOLGORA,     RUNE_TAAR,    RUNE_NONE}}, // level 7
+	{SPELL_MASS_LIGHTNING_STRIKE, "mass_lightning_strike", {RUNE_AAM,     RUNE_FOLGORA,     RUNE_SPACIUM, RUNE_NONE}}, // level 10
+	{SPELL_IGNIT,                 "ignit",                 {RUNE_AAM,     RUNE_YOK,         RUNE_NONE}}, // level 1
+	{SPELL_FIRE_FIELD,            "fire_field",            {RUNE_AAM,     RUNE_YOK,         RUNE_SPACIUM, RUNE_NONE}}, // level 7
+	{SPELL_FIREBALL,              "fireball",              {RUNE_AAM,     RUNE_YOK,         RUNE_TAAR,    RUNE_NONE}}, // level 3
+	{SPELL_ICE_FIELD,             "ice_field",             {RUNE_AAM,     RUNE_FRIDD,       RUNE_SPACIUM, RUNE_NONE}}, // level 7
+	{SPELL_ICE_PROJECTILE,        "ice_projectile",        {RUNE_AAM,     RUNE_FRIDD,       RUNE_TAAR,    RUNE_NONE}}, // level 3
+	{SPELL_POISON_PROJECTILE,     "poison_projectile",     {RUNE_AAM,     RUNE_CETRIUS,     RUNE_TAAR,    RUNE_NONE}}, // level 5
+	{SPELL_MAGIC_MISSILE,         "magic_missile",         {RUNE_AAM,     RUNE_TAAR,        RUNE_NONE}}, // level 1
+	{SPELL_FIRE_PROTECTION,       "fire_protection",       {RUNE_YOK,     RUNE_KAOM,        RUNE_NONE}}, // level 4
+	{SPELL_COLD_PROTECTION,       "cold_protection",       {RUNE_FRIDD,   RUNE_KAOM,        RUNE_NONE}}, // level 4
+	{SPELL_LIFE_DRAIN,            "life_drain",            {RUNE_VITAE,   RUNE_MOVIS,       RUNE_NONE}}, // level 8
+	{SPELL_TELEKINESIS,           "telekinesis",           {RUNE_SPACIUM, RUNE_COMUNICATUM, RUNE_NONE}}, // level 4
+	{SPELL_FAKE_SUMMON,           "fake_summon",           {RUNE_NONE}}
 };
 
 static void addSpell(const Rune symbols[MAX_SPELL_SYMBOLS], SpellType spell, const std::string & name) {
