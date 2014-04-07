@@ -91,6 +91,10 @@ long PrecastCheckCanPayMana(long num, float cost, bool _bSound = true)
 
 void ARX_SPELLS_Precast_Launch(long num) {
 	
+	if(Precast[num].typ == SPELL_NONE) {
+		return;
+	}
+	
 	if (float(arxtime) >= LAST_PRECAST_TIME+1000)
 	{
 		SpellType iNumSpells=Precast[num].typ;
