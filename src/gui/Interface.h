@@ -89,18 +89,6 @@ private:
 	
 };
 
-struct SPELL_ICON {
-	TextureContainer * tc;
-	std::string name;
-	std::string description;
-	long level;
-	SpellType spellid;
-	Rune symbols[6];
-	bool bSecret;
-	bool bDuration;
-	bool bAudibleAtStart;
-};
-
 enum E_ARX_STATE_MOUSE
 {
 	MOUSE_IN_WORLD,
@@ -198,7 +186,6 @@ extern INTERFACE_TC ITC;
 extern Vec2s MemoMouse;
 extern Vec2s bookclick;
 
-extern SPELL_ICON spellicons[SPELL_TYPES_COUNT];
 extern float CINEMA_DECAL;
 extern ARX_INTERFACE_BOOK_MODE Book_Mode;
 extern long SpecialCursor;
