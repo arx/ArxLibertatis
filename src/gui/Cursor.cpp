@@ -460,14 +460,12 @@ void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 			if(SPECIAL_DRAGINTER_RENDER)
 				return;
 
-			float POSX = (float)DANAEMouse.x;
-			float POSY = (float)DANAEMouse.y;
+			Vec2f mousePos = Vec2f(DANAEMouse);
 
 			if(SpecialCursor && !DRAGINTER) {
 				if((COMBINE && COMBINE->inv) || COMBINEGOLD) {
 					if(TRUE_PLAYER_MOUSELOOK_ON && (config.input.autoReadyWeapon)) {
-						POSX = MemoMouse.x;
-						POSY = MemoMouse.y;
+						mousePos = MemoMouse;
 					}
 
 					TextureContainer * tc;
@@ -481,18 +479,18 @@ void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 					float fTexSizeY = INTERFACE_RATIO_DWORD(tc->m_dwHeight);
 
 					if(SpecialCursor == CURSOR_COMBINEON) {
-						EERIEDrawBitmap(POSX, POSY, fTexSizeX, fTexSizeY, .00001f, tc, Color::white);
+						EERIEDrawBitmap(mousePos.x, mousePos.y, fTexSizeX, fTexSizeY, .00001f, tc, Color::white);
 
 						if(FlyingOverIO && (FlyingOverIO->ioflags & IO_BLACKSMITH)) {
 							float v=ARX_DAMAGES_ComputeRepairPrice(COMBINE,FlyingOverIO);
 
 							if(v > 0.f) {
 								long t = v;
-								ARX_INTERFACE_DrawNumber(POSX - 16, POSY - 10, t, 6, Color::cyan);
+								ARX_INTERFACE_DrawNumber(mousePos.x - 16, mousePos.y - 10, t, 6, Color::cyan);
 							}
 						}
 					} else {
-						EERIEDrawBitmap(POSX, POSY, fTexSizeX, fTexSizeY, 0.00001f, tc, Color::fromBGRA(0xFFFFAA66));
+						EERIEDrawBitmap(mousePos.x, mousePos.y, fTexSizeX, fTexSizeY, 0.00001f, tc, Color::fromBGRA(0xFFFFAA66));
 					}
 				}
 				
@@ -504,16 +502,16 @@ void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 					break;
 				case CURSOR_COMBINEOFF:
 					surf = ITC.Get("target_off");
-					POSX -= 16.f;
-					POSY -= 16.f;
+					mousePos.x -= 16.f;
+					mousePos.y -= 16.f;
 					break;
 				case CURSOR_COMBINEON:
 					surf = ITC.Get("target_on");
 
 					if(surf)
-						POSX -= 16.f;
+						mousePos.x -= 16.f;
 
-					POSY -= 16.f;
+					mousePos.y -= 16.f;
 					break;
 				case CURSOR_FIREBALLAIM: {
 					surf = ITC.Get("target_on");
@@ -526,8 +524,8 @@ void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 						size = Vec2i_ZERO;
 					}
 
-					POSX = 320.f - size.x / 2.f;
-					POSY = 280.f - size.y / 2.f;
+					mousePos.x = 320.f - size.x / 2.f;
+					mousePos.y = 280.f - size.y / 2.f;
 					break;
 				}
 				case CURSOR_INTERACTION_ON:
@@ -564,7 +562,7 @@ void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 
 				if(surf) {
 					if(SpecialCursor == CURSOR_REDIST) {
-						EERIEDrawBitmap(POSX, POSY, surf->m_dwWidth * Xratio, surf->m_dwHeight * Yratio,
+						EERIEDrawBitmap(mousePos.x, mousePos.y, surf->m_dwWidth * Xratio, surf->m_dwHeight * Yratio,
 										0.f, surf, Color::white);
 
 						std::stringstream ss;
@@ -574,7 +572,7 @@ void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 						float fTexSizeX = INTERFACE_RATIO_DWORD(surf->m_dwWidth);
 						float fTexSizeY = INTERFACE_RATIO_DWORD(surf->m_dwHeight);
 
-						EERIEDrawBitmap(POSX, POSY, fTexSizeX, fTexSizeY, 0.f, surf, Color::white);
+						EERIEDrawBitmap(mousePos.x, mousePos.y, fTexSizeX, fTexSizeY, 0.f, surf, Color::white);
 					}
 				}
 
@@ -622,8 +620,8 @@ void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 
 						Color color = (DRAGINTER->poisonous && DRAGINTER->poisonous_count != 0) ? Color::green : Color::white;
 
-						float mx = POSX;
-						float my = POSY;
+						float mx = mousePos.x;
+						float my = mousePos.y;
 
 						if(TRUE_PLAYER_MOUSELOOK_ON && config.input.autoReadyWeapon) {
 							mx = MemoMouse.x;
@@ -676,7 +674,7 @@ void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 						TextureContainer * surf = scursor[CURCURPOS];
 
 						if(surf) {
-							EERIEDrawBitmap(POSX, POSY, INTERFACE_RATIO_DWORD(surf->m_dwWidth),
+							EERIEDrawBitmap(mousePos.x, mousePos.y, INTERFACE_RATIO_DWORD(surf->m_dwWidth),
 											INTERFACE_RATIO_DWORD(surf->m_dwHeight), 0.f, surf, Color::white);
 						}
 					}
