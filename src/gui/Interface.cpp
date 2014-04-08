@@ -3895,7 +3895,7 @@ static void StdDraw(float posx, float posy, Color color, TextureContainer * tcc,
 	}
 }
 //---------------------------------------------------------------------------
-void ManageSpellIcon(long i,float rrr,long flag)
+void ManageSpellIcon(long i, float intensity, long flag)
 {
 	float POSX = g_size.width()-INTERFACE_RATIO(35);
 	Color color;
@@ -3904,9 +3904,9 @@ void ManageSpellIcon(long i,float rrr,long flag)
 	SpellType typ=spells[i].type;
 
 	if(flag & 1) {
-		color = Color3f(rrr, 0, 0).to<u8>();
+		color = Color3f(intensity, 0, 0).to<u8>();
 	} else if(flag & 2) {
-		color = Color3f(0, rrr * (1.0f/2), rrr).to<u8>();
+		color = Color3f(0, intensity * (1.0f/2), intensity).to<u8>();
 		float px = INTERFACE_RATIO(InventoryX) + INTERFACE_RATIO(110);
 		if(px < INTERFACE_RATIO(10)) {
 			px = INTERFACE_RATIO(10);
@@ -3915,7 +3915,7 @@ void ManageSpellIcon(long i,float rrr,long flag)
 		posy = g_size.height() - INTERFACE_RATIO(126+32); // niveau du stealth
 		typ = (SpellType)i; // TODO ugh
 	} else {
-		color = Color3f::gray(rrr).to<u8>();
+		color = Color3f::gray(intensity).to<u8>();
 	}
 
 	bool bOk=true;
