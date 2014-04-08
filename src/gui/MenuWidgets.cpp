@@ -4192,9 +4192,8 @@ void CMenuSlider::Render() {
 	pLeftButton->Render();
 	pRightButton->Render();
 
-	float iX = static_cast<float>( rZone.left + pLeftButton->GetWidth() );
-	float iY = static_cast<float>( rZone.top );
-
+	Vec2f pos(rZone.left + pLeftButton->GetWidth(), rZone.top);
+	
 	float iTexW = 0;
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
@@ -4221,10 +4220,10 @@ void CMenuSlider::Render() {
 		}
 		
 		if(pTex) {
-			EERIEDrawBitmap2(iX, iY, RATIO_X(pTex->m_dwWidth), RATIO_Y(pTex->m_dwHeight), 0, pTex, Color::white);
+			EERIEDrawBitmap2(pos.x, pos.y, RATIO_X(pTex->m_dwWidth), RATIO_Y(pTex->m_dwHeight), 0, pTex, Color::white);
 		}
 		
-		iX += iTexW;
+		pos.x += iTexW;
 	}
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
