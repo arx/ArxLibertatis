@@ -241,7 +241,9 @@ void Credits::render() {
 		
 		//Draw Background
 		if(ARXmenu.mda->pTexCredits) {
-			EERIEDrawBitmap2(0, 0, static_cast<float>(g_size.width()), static_cast<float>(g_size.height() + 1), .999f, ARXmenu.mda->pTexCredits, Color::white);
+			Rectf rect(Vec2f_ZERO, g_size.width(), g_size.height() + 1);
+			
+			EERIEDrawBitmap2(rect, .999f, ARXmenu.mda->pTexCredits, Color::white);
 		}
 		
 		// Use time passed between frame to create scroll effect

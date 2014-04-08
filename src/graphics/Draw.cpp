@@ -202,6 +202,10 @@ void EERIEDrawBitmap(float x, float y, float sx, float sy, float z, TextureConta
 	DrawBitmap(x, y, sx, sy, z, tex, color, false);
 }
 
+void EERIEDrawBitmap2(const Rectf & rect, float z, TextureContainer * tex, Color color) {
+	EERIEDrawBitmap2(rect.left, rect.top, rect.width(), rect.height(), z, tex, color);
+}
+
 void EERIEDrawBitmap2(float x, float y, float sx, float sy, float z, TextureContainer * tex, Color color) {
 	DrawBitmap(x, y, sx, sy, z, tex, color, true);
 }

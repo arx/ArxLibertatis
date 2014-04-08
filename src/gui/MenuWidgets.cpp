@@ -4328,9 +4328,9 @@ void MenuCursor::DrawOneCursor(const Vec2s& mousePos) {
 	GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterNearest);
 	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapClamp);
 
-	EERIEDrawBitmap2(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y),
-	                 INTERFACE_RATIO_DWORD(scursor[iNumCursor]->m_dwWidth),
-	                 INTERFACE_RATIO_DWORD(scursor[iNumCursor]->m_dwHeight),
+	EERIEDrawBitmap2(Rectf(Vec2f(mousePos),
+	                 scursor[iNumCursor]->m_dwWidth,
+	                 scursor[iNumCursor]->m_dwHeight),
 	                 0.00000001f, scursor[iNumCursor], Color::white);
 
 	GRenderer->GetTextureStage(0)->setMinFilter(TextureStage::FilterLinear);

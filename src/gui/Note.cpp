@@ -239,8 +239,7 @@ void Note::render() {
 	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapClamp);
 	
 	if(background) {
-		EERIEDrawBitmap2(_area.left, _area.top, _area.width(), _area.height(), z, background,
-		                 Color::white);
+		EERIEDrawBitmap2(_area, z, background, Color::white);
 	}
 	
 	if(pages.empty()) {
@@ -253,16 +252,14 @@ void Note::render() {
 	Rectf prevRect = prevPageButton();
 	if(!prevRect.empty()) {
 		arx_assert(prevPage != NULL);
-		EERIEDrawBitmap2(prevRect.left, prevRect.top, prevRect.width(), prevRect.height(), z, prevPage,
-		                 Color::white);
+		EERIEDrawBitmap2(prevRect, z, prevPage, Color::white);
 	}
 	
 	// Draw the "next page" button
 	Rectf nextRect = nextPageButton();
 	if(!nextRect.empty()) {
 		arx_assert(nextPage != NULL);
-		EERIEDrawBitmap2(nextRect.left, nextRect.top, nextRect.width(), nextRect.height(), z, nextPage,
-		                 Color::white);
+		EERIEDrawBitmap2(nextRect, z, nextPage, Color::white);
 	}
 	
 	Font * font = hFontInGameNote;
