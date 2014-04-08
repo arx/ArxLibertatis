@@ -6051,6 +6051,19 @@ public:
 	void draw() {
 		DrawIcon(BookIconCoords, "book", MOUSE_IN_BOOK_ICON);
 	}
+	
+	void drawHalo() {
+		if(bBookHalo) {
+			float fCalc = ulBookHaloTime + Original_framedelay;
+			ulBookHaloTime = checked_range_cast<unsigned long>(fCalc);
+			if(ulBookHaloTime >= 3000) { // ms
+				bBookHalo = false;
+			}
+			float POSX = g_size.width()-INTERFACE_RATIO(35)+lSLID_VALUE+GL_DECAL_ICONS;
+			float POSY = g_size.height()-INTERFACE_RATIO(148);
+			DrawHalo(0.2f, 0.4f, 0.8f, GetHaloForITC("book"), Vec2f(POSX, POSY));
+		}
+	}
 };
 
 static BookIconGui bookIconGui;
@@ -6209,17 +6222,7 @@ void DrawIcons() {
 		}
 		//A halo is drawn on the character's stats icon (book) when leveling up, for example.
 		purseIconGui.drawHalo();
-
-		if(bBookHalo) {
-			float fCalc = ulBookHaloTime + Original_framedelay;
-			ulBookHaloTime = checked_range_cast<unsigned long>(fCalc);
-			if(ulBookHaloTime >= 3000) { // ms
-				bBookHalo = false;
-			}
-			float POSX = g_size.width()-INTERFACE_RATIO(35)+lSLID_VALUE+GL_DECAL_ICONS;
-			float POSY = g_size.height()-INTERFACE_RATIO(148);
-			DrawHalo(0.2f, 0.4f, 0.8f, GetHaloForITC("book"), Vec2f(POSX, POSY));					
-		}
+		bookIconGui.drawHalo();
 	}
 	if(player.torch) {
 		ARX_INTERFACE_DrawCurrentTorch();
