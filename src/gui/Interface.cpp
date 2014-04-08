@@ -6063,16 +6063,27 @@ public:
 static BackpackIconGui backpackIconGui;
 
 
-Vec2f StealIconCoords;
+class StealIconGui {
+private:
+	Vec2f StealIconCoords;
+public:
+	void update() {
+		StealIconCoords.x = static_cast<float>(-lSLID_VALUE);
+		StealIconCoords.y = g_size.height() - INTERFACE_RATIO(78.f + 32);
+	}
+	
+	void draw() {
+		DrawIcon(StealIconCoords, "steal", MOUSE_IN_STEAL_ICON);
+	}
+};
+
+static StealIconGui stealIconGui;
+
+
 Vec2f PickAllIconCoords;
 Vec2f CloseSInvIconCoords;
 Vec2f LevelUpIconCoords;
 Vec2f PurseIconCoords;
-
-void CalculateStealIconCoords() {
-	StealIconCoords.x = static_cast<float>(-lSLID_VALUE);
-	StealIconCoords.y = g_size.height() - INTERFACE_RATIO(78.f + 32);
-}
 
 void CalculatePickAllIconCoords() {
 	PickAllIconCoords.x = INTERFACE_RATIO(InventoryX) + INTERFACE_RATIO(16);
@@ -6116,8 +6127,8 @@ void DrawIcons() {
 		backpackIconGui.draw();
 						
 		if(player.Interface & INTER_STEAL) {
-			CalculateStealIconCoords();
-			DrawIcon(StealIconCoords, "steal", MOUSE_IN_STEAL_ICON);
+			stealIconGui.update();
+			stealIconGui.draw();			
 		}
 		// Pick All/Close Secondary Inventory
 		if(!PLAYER_INTERFACE_HIDE_COUNT && TSecondaryInventory) {	
