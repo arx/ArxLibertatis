@@ -381,24 +381,23 @@ void MiniMap::showBookEntireMap(int showLevel) {
 	GRenderer->SetRenderState(Renderer::DepthTest, false);
 	
 	float zoom = 250.f;
-	float startX = 140.f;
-	float startY = 120.f;
+	
+	Vec2f start(140.f, 120.f);
 	
 	Vec2f playerPos(0.f, 0.f);
 	
 	if(showLevel == ARX_LEVELS_GetRealNum(m_currentLevel)) {
 		playerPos = computePlayerPos(zoom, showLevel);
-		playerPos.x += startX;
-		playerPos.y += startY;
+		playerPos.x += start.x;
 	}
 	
-	drawBackground(showLevel, Rect(0, 0, 345, 290), startX, startY, zoom);
+	drawBackground(showLevel, Rect(0, 0, 345, 290), start.x, start.y, zoom);
 	
 	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
 	
 	if(showLevel == ARX_LEVELS_GetRealNum(m_currentLevel)) {
 		drawPlayer(3.f, playerPos.x, playerPos.y);
-		drawDetectedEntities(showLevel, startX, startY, zoom);
+		drawDetectedEntities(showLevel, start.x, start.y, zoom);
 	}
 	
 	TexturedVertex verts[4];
@@ -418,8 +417,8 @@ void MiniMap::showBookEntireMap(int showLevel) {
 			continue;
 		}
 		
-		float pos_x = m_mapMarkers[i].m_x * 8 * ratio * m_activeBkg->Xmul * caseX + startX;
-		float pos_y = m_mapMarkers[i].m_y * 8 * ratio * m_activeBkg->Zmul * caseY + startY;
+		float pos_x = m_mapMarkers[i].m_x * 8 * ratio * m_activeBkg->Xmul * caseX + start.x;
+		float pos_y = m_mapMarkers[i].m_y * 8 * ratio * m_activeBkg->Zmul * caseY + start.y;
 		float size = 5.f * ratio;
 		verts[0].color = 0xFFFF0000;
 		verts[1].color = 0xFFFF0000;
