@@ -6095,16 +6095,26 @@ public:
 
 static PickAllIconGui pickAllIconGui;
 
+class CloseSecondaryInventoryIconGui {
+private:
+	Vec2f CloseSInvIconCoords;
+public:
+	void update() {
+		CloseSInvIconCoords.x = INTERFACE_RATIO(InventoryX) + INTERFACE_RATIO_DWORD(BasicInventorySkin->m_dwWidth) - INTERFACE_RATIO(32);
+		CloseSInvIconCoords.y = INTERFACE_RATIO_DWORD(BasicInventorySkin->m_dwHeight) - INTERFACE_RATIO(16);
+	}
+	
+	void draw() {
+		DrawIcon(CloseSInvIconCoords, "inventory_close", MOUSE_IN_INVENTORY_CLOSE_ICON);
+	}
+	
+};
+
+static CloseSecondaryInventoryIconGui closeSecondaryInventoryIconGui;
 
 
-Vec2f CloseSInvIconCoords;
 Vec2f LevelUpIconCoords;
 Vec2f PurseIconCoords;
-
-void CalculateCloseSInvIconCoords() {
-	CloseSInvIconCoords.x = INTERFACE_RATIO(InventoryX) + INTERFACE_RATIO_DWORD(BasicInventorySkin->m_dwWidth) - INTERFACE_RATIO(32);
-	CloseSInvIconCoords.y = INTERFACE_RATIO_DWORD(BasicInventorySkin->m_dwHeight) - INTERFACE_RATIO(16);
-}
 
 void CalculateLevelUpIconCoords() {
 	LevelUpIconCoords.x = g_size.width() - INTERFACE_RATIO(35) + lSLID_VALUE+GL_DECAL_ICONS;
@@ -6145,13 +6155,13 @@ void DrawIcons() {
 		if(!PLAYER_INTERFACE_HIDE_COUNT && TSecondaryInventory) {	
 			//These have to be calculated on each frame (to make them move).
 			pickAllIconGui.update();
+			closeSecondaryInventoryIconGui.update();
 			
-			CalculateCloseSInvIconCoords();
 			Entity *temp = TSecondaryInventory->io;
 			if(temp && !(temp->ioflags & IO_SHOP) && !(temp == ioSteal)) {
 				pickAllIconGui.draw();
 			}
-			DrawIcon(CloseSInvIconCoords, "inventory_close", MOUSE_IN_INVENTORY_CLOSE_ICON);				
+			closeSecondaryInventoryIconGui.draw();
 		}
 
 		if(player.Skill_Redistribute || player.Attribute_Redistribute) {
