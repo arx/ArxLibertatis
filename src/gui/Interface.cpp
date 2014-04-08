@@ -6112,14 +6112,27 @@ public:
 
 static CloseSecondaryInventoryIconGui closeSecondaryInventoryIconGui;
 
+class LevelUpIconGui {
+private:
+	Vec2f LevelUpIconCoords;
+public:
+	void update() {
+		LevelUpIconCoords.x = g_size.width() - INTERFACE_RATIO(35) + lSLID_VALUE+GL_DECAL_ICONS;
+		LevelUpIconCoords.y = g_size.height() - INTERFACE_RATIO(218);
+	}
+	
+	void draw() {
+		DrawIcon(LevelUpIconCoords, "icon_lvl_up", MOUSE_IN_REDIST_ICON);
+	}
+};
 
-Vec2f LevelUpIconCoords;
+LevelUpIconGui levelUpIconGui;
+
+
+
 Vec2f PurseIconCoords;
 
-void CalculateLevelUpIconCoords() {
-	LevelUpIconCoords.x = g_size.width() - INTERFACE_RATIO(35) + lSLID_VALUE+GL_DECAL_ICONS;
-	LevelUpIconCoords.y = g_size.height() - INTERFACE_RATIO(218);
-}
+
 
 void CalculatePurseIconCoords() {
 	PurseIconCoords.x = g_size.width() - INTERFACE_RATIO(35) + lSLID_VALUE+2+GL_DECAL_ICONS;
@@ -6165,8 +6178,8 @@ void DrawIcons() {
 		}
 
 		if(player.Skill_Redistribute || player.Attribute_Redistribute) {
-			CalculateLevelUpIconCoords();
-			DrawIcon(LevelUpIconCoords, "icon_lvl_up", MOUSE_IN_REDIST_ICON);
+			levelUpIconGui.update();
+			levelUpIconGui.draw();
 		}
 		// Draw/Manage Gold Purse Icon
 		if(player.gold > 0) {
