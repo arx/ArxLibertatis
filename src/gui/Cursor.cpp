@@ -591,18 +591,15 @@ void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 
 					TextureContainer * surf = ITC.Get("magic");
 
-					float POSX = DANAEMouse.x;
-					float POSY = DANAEMouse.y;
-
+					Vec2f pos = Vec2f(DANAEMouse);
+					
 					if(TRUE_PLAYER_MOUSELOOK_ON) {
-						POSX = MemoMouse.x;
-						POSY = MemoMouse.y;
+						pos = MemoMouse;
 					}
-
-					float fTexSizeX = INTERFACE_RATIO_DWORD(surf->m_dwWidth);
-					float fTexSizeY = INTERFACE_RATIO_DWORD(surf->m_dwHeight);
-
-					EERIEDrawBitmap(POSX - (fTexSizeX*0.5f), POSY - (fTexSizeY*0.5f), fTexSizeX, fTexSizeY,
+					
+					Vec2f size(surf->m_dwWidth, surf->m_dwHeight);
+					
+					EERIEDrawBitmap(pos.x - (size.x*0.5f), pos.y - (size.y*0.5f), size.x, size.y,
 									0.f, surf, Color::white);
 				} else {
 					if(MAGICMODE > -1) {
