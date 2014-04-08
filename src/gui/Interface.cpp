@@ -6014,7 +6014,37 @@ void DrawItemPrice() {
 	}
 }
 
-Vec2f BookIconCoords;
+
+//Used for drawing icons like the book or backpack icon.
+void DrawIcon(const Vec2f& coords, const char* itcName, E_ARX_STATE_MOUSE hoverMouseState) {
+	ARX_INTERFACE_DrawItem(ITC.Get(itcName), coords.x, coords.y);
+	if (eMouseState == hoverMouseState) {
+		GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+		ARX_INTERFACE_DrawItem(ITC.Get(itcName), coords.x, coords.y);
+		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+	}
+}
+
+class BookIconGui {
+private:
+	Vec2f BookIconCoords;
+	
+public:
+
+	void update() {
+		BookIconCoords.x = g_size.width() - INTERFACE_RATIO(35) + lSLID_VALUE+GL_DECAL_ICONS;
+		BookIconCoords.y = g_size.height() - INTERFACE_RATIO(148);
+	}
+	
+	void draw() {
+		DrawIcon(BookIconCoords, "book", MOUSE_IN_BOOK_ICON);
+	}
+};
+
+static BookIconGui bookIconGui;
+
+
 Vec2f BackpackIconCoords;
 Vec2f StealIconCoords;
 Vec2f PickAllIconCoords;
@@ -6022,10 +6052,7 @@ Vec2f CloseSInvIconCoords;
 Vec2f LevelUpIconCoords;
 Vec2f PurseIconCoords;
 
-void CalculateBookIconCoords() {
-	BookIconCoords.x = g_size.width() - INTERFACE_RATIO(35) + lSLID_VALUE+GL_DECAL_ICONS;
-	BookIconCoords.y = g_size.height() - INTERFACE_RATIO(148);
-}
+
 
 void CalculateBackpackIconCoords() {
 	BackpackIconCoords.x = g_size.width() - INTERFACE_RATIO(35) + lSLID_VALUE+GL_DECAL_ICONS;
@@ -6058,16 +6085,7 @@ void CalculatePurseIconCoords() {
 }
 
 
-//Used for drawing icons like the book or backpack icon.
-void DrawIcon(const Vec2f& coords, const char* itcName, E_ARX_STATE_MOUSE hoverMouseState) {
-	ARX_INTERFACE_DrawItem(ITC.Get(itcName), coords.x, coords.y);
-	if (eMouseState == hoverMouseState) {
-		GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-		ARX_INTERFACE_DrawItem(ITC.Get(itcName), coords.x, coords.y);
-		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-	}
-}
+
 
 TextureContainer* GetHaloForITC(const char* itcName) {
 	return ITC.Get(itcName)->getHalo();
@@ -6081,8 +6099,9 @@ void DrawHalo(float r, float g, float b, TextureContainer* halo, const Vec2f& co
 
 void DrawIcons() {
 	if(player.Interface & INTER_MINIBACK) {
-		CalculateBookIconCoords();
-		DrawIcon(BookIconCoords, "book", MOUSE_IN_BOOK_ICON);
+		bookIconGui.update();
+		bookIconGui.draw();
+		
 		CalculateBackpackIconCoords();
 		DrawIcon(BackpackIconCoords, "backpack", MOUSE_IN_INVENTORY_ICON);							
 		if(player.Interface & INTER_STEAL) {
