@@ -6015,6 +6015,16 @@ void DrawItemPrice() {
 }
 
 
+TextureContainer* GetHaloForITC(const char* itcName) {
+	return ITC.Get(itcName)->getHalo();
+}
+
+void DrawHalo(float r, float g, float b, TextureContainer* halo, const Vec2f& coords) {
+	if(halo) {
+		ARX_INTERFACE_HALO_Render(r, g, b, HALO_ACTIVE, halo, coords.x, coords.y, INTERFACE_RATIO(1), INTERFACE_RATIO(1));
+	}
+}
+
 //Used for drawing icons like the book or backpack icon.
 void DrawIcon(const Vec2f& coords, const char* itcName, E_ARX_STATE_MOUSE hoverMouseState) {
 	ARX_INTERFACE_DrawItem(ITC.Get(itcName), coords.x, coords.y);
@@ -6025,6 +6035,7 @@ void DrawIcon(const Vec2f& coords, const char* itcName, E_ARX_STATE_MOUSE hoverM
 		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	}
 }
+
 
 class BookIconGui {
 private:
@@ -6129,28 +6140,38 @@ public:
 LevelUpIconGui levelUpIconGui;
 
 
-
-Vec2f PurseIconCoords;
-
-
-
-void CalculatePurseIconCoords() {
-	PurseIconCoords.x = g_size.width() - INTERFACE_RATIO(35) + lSLID_VALUE+2+GL_DECAL_ICONS;
-	PurseIconCoords.y = g_size.height() - INTERFACE_RATIO(183);
-}
-
-
-
-
-TextureContainer* GetHaloForITC(const char* itcName) {
-	return ITC.Get(itcName)->getHalo();
-}
-
-void DrawHalo(float r, float g, float b, TextureContainer* halo, const Vec2f& coords) {
-	if(halo) {
-		ARX_INTERFACE_HALO_Render(r, g, b, HALO_ACTIVE, halo, coords.x, coords.y, INTERFACE_RATIO(1), INTERFACE_RATIO(1));
+class PurseIconGui {
+private:
+	Vec2f PurseIconCoords;
+public:
+	void update() {
+		PurseIconCoords.x = g_size.width() - INTERFACE_RATIO(35) + lSLID_VALUE+2+GL_DECAL_ICONS;
+		PurseIconCoords.y = g_size.height() - INTERFACE_RATIO(183);
 	}
-}
+	void draw() {
+		DrawIcon(PurseIconCoords, "gold", MOUSE_IN_GOLD_ICON);
+		if(eMouseState == MOUSE_IN_GOLD_ICON) {
+			SpecialCursor=CURSOR_INTERACTION_ON;
+			ARX_INTERFACE_DrawNumber(PurseIconCoords.x - INTERFACE_RATIO(30),
+				PurseIconCoords.y + INTERFACE_RATIO(10 - 25), player.gold, 6, Color::white);
+		}
+	}
+	
+	void drawHalo() {
+		//A halo is drawn on the character's stats icon (book) when leveling up, for example.
+		if(bGoldHalo) {
+			float fCalc = ulGoldHaloTime + Original_framedelay;
+			ulGoldHaloTime = checked_range_cast<unsigned long>(fCalc);
+			if(ulGoldHaloTime >= 1000) { // ms
+				bGoldHalo = false;
+			}
+			DrawHalo(0.9f, 0.9f, 0.1f, GetHaloForITC("gold"), PurseIconCoords);
+		}
+	}
+};
+
+static PurseIconGui purseIconGui;
+
 
 void DrawIcons() {
 	if(player.Interface & INTER_MINIBACK) {
@@ -6183,23 +6204,12 @@ void DrawIcons() {
 		}
 		// Draw/Manage Gold Purse Icon
 		if(player.gold > 0) {
-			CalculatePurseIconCoords();
-			DrawIcon(PurseIconCoords, "gold", MOUSE_IN_GOLD_ICON);			
-			if(eMouseState == MOUSE_IN_GOLD_ICON) {
-				SpecialCursor=CURSOR_INTERACTION_ON;
-				ARX_INTERFACE_DrawNumber(PurseIconCoords.x - INTERFACE_RATIO(30),
-					PurseIconCoords.y + INTERFACE_RATIO(10 - 25), player.gold, 6, Color::white);
-			}
+			purseIconGui.update();
+			purseIconGui.draw();
 		}
 		//A halo is drawn on the character's stats icon (book) when leveling up, for example.
-		if(bGoldHalo) {
-			float fCalc = ulGoldHaloTime + Original_framedelay;
-			ulGoldHaloTime = checked_range_cast<unsigned long>(fCalc);
-			if(ulGoldHaloTime >= 1000) { // ms
-				bGoldHalo = false;
-			}
-			DrawHalo(0.9f, 0.9f, 0.1f, GetHaloForITC("gold"), PurseIconCoords);			
-		}
+		purseIconGui.drawHalo();
+
 		if(bBookHalo) {
 			float fCalc = ulBookHaloTime + Original_framedelay;
 			ulBookHaloTime = checked_range_cast<unsigned long>(fCalc);
