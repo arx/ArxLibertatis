@@ -6044,20 +6044,30 @@ public:
 
 static BookIconGui bookIconGui;
 
+class BackpackIconGui {
+private:
+	Vec2f BackpackIconCoords;
+	
+public:
 
-Vec2f BackpackIconCoords;
+	void update() {
+		BackpackIconCoords.x = g_size.width() - INTERFACE_RATIO(35) + lSLID_VALUE+GL_DECAL_ICONS;
+		BackpackIconCoords.y = g_size.height() - INTERFACE_RATIO(113);
+	}
+	
+	void draw() {
+		DrawIcon(BackpackIconCoords, "backpack", MOUSE_IN_INVENTORY_ICON);
+	}
+};
+
+static BackpackIconGui backpackIconGui;
+
+
 Vec2f StealIconCoords;
 Vec2f PickAllIconCoords;
 Vec2f CloseSInvIconCoords;
 Vec2f LevelUpIconCoords;
 Vec2f PurseIconCoords;
-
-
-
-void CalculateBackpackIconCoords() {
-	BackpackIconCoords.x = g_size.width() - INTERFACE_RATIO(35) + lSLID_VALUE+GL_DECAL_ICONS;
-	BackpackIconCoords.y = g_size.height() - INTERFACE_RATIO(113);
-}
 
 void CalculateStealIconCoords() {
 	StealIconCoords.x = static_cast<float>(-lSLID_VALUE);
@@ -6102,8 +6112,9 @@ void DrawIcons() {
 		bookIconGui.update();
 		bookIconGui.draw();
 		
-		CalculateBackpackIconCoords();
-		DrawIcon(BackpackIconCoords, "backpack", MOUSE_IN_INVENTORY_ICON);							
+		backpackIconGui.update();
+		backpackIconGui.draw();
+						
 		if(player.Interface & INTER_STEAL) {
 			CalculateStealIconCoords();
 			DrawIcon(StealIconCoords, "steal", MOUSE_IN_STEAL_ICON);
