@@ -407,8 +407,7 @@ void MiniMap::showBookEntireMap(int showLevel) {
 		verts[k].p.z = 0.00001f;
 	}
 	
-	float caseX = zoom / ((float)MINIMAP_MAX_X);
-	float caseY = zoom / ((float)MINIMAP_MAX_Z);
+	Vec2f casePos(zoom / ((float)MINIMAP_MAX_X), zoom / ((float)MINIMAP_MAX_Z));
 	float ratio = 1.f;
 	
 	for(size_t i = 0; i < m_mapMarkers.size(); i++) {
@@ -417,8 +416,8 @@ void MiniMap::showBookEntireMap(int showLevel) {
 			continue;
 		}
 		
-		float pos_x = m_mapMarkers[i].m_x * 8 * ratio * m_activeBkg->Xmul * caseX + start.x;
-		float pos_y = m_mapMarkers[i].m_y * 8 * ratio * m_activeBkg->Zmul * caseY + start.y;
+		float pos_x = m_mapMarkers[i].m_x * 8 * ratio * m_activeBkg->Xmul * casePos.x + start.x;
+		float pos_y = m_mapMarkers[i].m_y * 8 * ratio * m_activeBkg->Zmul * casePos.y + start.y;
 		float size = 5.f * ratio;
 		verts[0].color = 0xFFFF0000;
 		verts[1].color = 0xFFFF0000;
