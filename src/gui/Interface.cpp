@@ -3685,12 +3685,10 @@ void ARX_INTERFACE_DrawDamagedEquipment()
 		GRenderer->SetRenderState(Renderer::DepthWrite, true);
 		GRenderer->SetRenderState(Renderer::Fog, false);
 
-		float px = INTERFACE_RATIO(InventoryX) + INTERFACE_RATIO(10 + 32 + 100);
-
-		if(px < INTERFACE_RATIO( 10 + 32 ))
-			px = INTERFACE_RATIO( 10 + 32 );
-
-		float py = g_size.height() - INTERFACE_RATIO(158);
+		Vec2f pos(InventoryX + 10 + 32 + 100, g_size.height() - 158);
+		
+		if(pos.x < INTERFACE_RATIO( 10 + 32 ))
+			pos.x = INTERFACE_RATIO( 10 + 32 );
 
 		for(long i = 0; i < 5; i++) {
 			if((needdraw & (1<<i)) && iconequip[i]) {
@@ -3718,7 +3716,7 @@ void ARX_INTERFACE_DrawDamagedEquipment()
 					Entity *io = entities[player.equiped[eq]];
 					float ratio = io->durability / io->max_durability;
 					Color col = Color3f(1.f-ratio, ratio, 0).to<u8>();
-					EERIEDrawBitmap2(px, py, INTERFACE_RATIO_DWORD(iconequip[i]->m_dwWidth),
+					EERIEDrawBitmap2(pos.x, pos.y, INTERFACE_RATIO_DWORD(iconequip[i]->m_dwWidth),
 					                 INTERFACE_RATIO_DWORD(iconequip[i]->m_dwHeight), 0.001f, iconequip[i], col);
 				}
 			}
