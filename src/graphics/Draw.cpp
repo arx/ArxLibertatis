@@ -156,10 +156,6 @@ void MatchPixTex(float& x, float& y) {
 	x -= .5f, y -= .5f;
 }
 
-void EERIEDrawBitmap(Rect rect, float z, TextureContainer * tex, Color color) {
-	EERIEDrawBitmap(rect.left, rect.top, rect.width(), rect.height(), z, tex, color);
-}
-
 void CreateBitmap(TexturedQuad& s, float x, float y, float sx, float sy, float z, TextureContainer * tex, Color color, bool isRhw) {
 	MatchPixTex(x, y);
 	Vec2f uv = (tex) ? tex->uv : Vec2f_ZERO;
@@ -196,6 +192,10 @@ void EERIEAddBitmap(const RenderMaterial & mat, float x, float y, float sx, floa
 	TexturedQuad s;
 	CreateBitmap(s, x, y, sx, sy, z, tex, color, false);
 	RenderBatcher::getInstance().add(mat, s);
+}
+
+void EERIEDrawBitmap(Rect rect, float z, TextureContainer * tex, Color color) {
+	EERIEDrawBitmap(rect.left, rect.top, rect.width(), rect.height(), z, tex, color);
 }
 
 void EERIEDrawBitmap(float x, float y, float sx, float sy, float z, TextureContainer * tex, Color color) {
