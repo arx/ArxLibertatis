@@ -5586,8 +5586,8 @@ void ARX_INTERFACE_ManageOpenedBook()
 void ArxGame::drawAllInterfaceFinish() {
 	currpos = static_cast<long>(INTERFACE_RATIO(50.f));
 	
-	float rrr = 1.f - PULSATE * 0.5f;
-	rrr = clamp(rrr, 0.f, 1.f);
+	float intensity = 1.f - PULSATE * 0.5f;
+	intensity = clamp(intensity, 0.f, 1.f);
 
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
@@ -5598,7 +5598,7 @@ void ArxGame::drawAllInterfaceFinish() {
 		   && spells[i].caster == 0
 		   && spellicons[spells[i].type].bDuration
 		) {
-			ManageSpellIcon(i, rrr, 0);
+			ManageSpellIcon(i, intensity, 0);
 		}
 	}
 
@@ -5612,7 +5612,7 @@ void ArxGame::drawAllInterfaceFinish() {
 				SPELL * spell = &spells[spellHandle];
 				
 				if(spell->caster != 0 && spellicons[spell->type].bDuration) {
-					ManageSpellIcon(spellHandle, rrr, 1);
+					ManageSpellIcon(spellHandle, intensity, 1);
 				}
 			}
 		}
@@ -5623,7 +5623,7 @@ void ArxGame::drawAllInterfaceFinish() {
 			PRECAST_NUM = i;
 
 			if(Precast[i].typ!=-1) {
-				float val = rrr;
+				float val = intensity;
 
 				if(Precast[i].launch_time > 0 && (float(arxtime) >= Precast[i].launch_time)) {
 					float tt = (float(arxtime) - Precast[i].launch_time) * (1.0f/1000);
