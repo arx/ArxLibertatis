@@ -202,6 +202,10 @@ void EERIEDrawBitmap(float x, float y, float sx, float sy, float z, TextureConta
 	DrawBitmap(x, y, sx, sy, z, tex, color, false);
 }
 
+void EERIEDrawBitmap2(float x, float y, float sx, float sy, float z, TextureContainer * tex, Color color) {
+	DrawBitmap(x, y, sx, sy, z, tex, color, true);
+}
+
 void EERIEDrawBitmap_uv(float x, float y, float sx, float sy, float z, TextureContainer * tex,
                         Color color, float u0, float v0, float u1, float v1) {
 	
@@ -232,10 +236,6 @@ void EERIEDrawBitmapUVs(float x, float y, float sx, float sy, float z, TextureCo
 	v[2] = TexturedVertex(Vec3f(x,      y + sy, z), 1.f, col, 0xff000000, Vec2f(u2, v2));
 	v[3] = TexturedVertex(Vec3f(x + sx, y + sy, z), 1.f, col, 0xff000000, Vec2f(u3, v3));	
 	SetTextureDrawPrim(tex, v, Renderer::TriangleStrip);
-}
-
-void EERIEDrawBitmap2(float x, float y, float sx, float sy, float z, TextureContainer * tex, Color color) {
-	DrawBitmap(x, y, sx, sy, z, tex, color, true);
 }
 
 void EERIEDrawBitmap2DecalY(float x, float y, float sx, float sy, float z, TextureContainer * tex,
