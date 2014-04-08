@@ -1323,26 +1323,25 @@ void ArxGame::manageEditorControls() {
 	// interface
 	//-------------------------------------------------------------------------
 	// torch
-	float px = 0;
-	float py = 0;
+	Vec2d pos = Vec2d(0, 0);
 
 	if(!BLOCK_PLAYER_CONTROLS) {
 		if(!(player.Interface & INTER_COMBATMODE)) {
 			if(!TRUE_PLAYER_MOUSELOOK_ON) {
-				px = INTERFACE_RATIO(InventoryX) + INTERFACE_RATIO(110);
+				pos.x = INTERFACE_RATIO(InventoryX) + INTERFACE_RATIO(110);
 
-				if(px < INTERFACE_RATIO(10))
-					px = INTERFACE_RATIO(10);
+				if(pos.x < INTERFACE_RATIO(10))
+					pos.x = INTERFACE_RATIO(10);
 
-				py = g_size.height() - INTERFACE_RATIO(158+32);
+				pos.y = g_size.height() - INTERFACE_RATIO(158+32);
 
 				if(player.torch) {
 					
 					const Rect mouseTestRect(
-					px,
-					py,
-					px + INTERFACE_RATIO(32),
-					py + INTERFACE_RATIO(64)
+					pos.x,
+					pos.y,
+					pos.x + INTERFACE_RATIO(32),
+					pos.y + INTERFACE_RATIO(64)
 					);
 					
 					if(mouseTestRect.contains(Vec2i(DANAEMouse))) {
@@ -1416,14 +1415,14 @@ void ArxGame::manageEditorControls() {
 
 				// redist
 				if((player.Skill_Redistribute) || (player.Attribute_Redistribute)) {
-					px = g_size.width() - INTERFACE_RATIO(35) + lSLID_VALUE + GL_DECAL_ICONS;
-					py = g_size.height() - INTERFACE_RATIO(218);
+					pos.x = g_size.width() - INTERFACE_RATIO(35) + lSLID_VALUE + GL_DECAL_ICONS;
+					pos.y = g_size.height() - INTERFACE_RATIO(218);
 					
 					const Rect mouseTestRect(
-					px,
-					py,
-					px + INTERFACE_RATIO(32),
-					py + INTERFACE_RATIO(32)
+					pos.x,
+					pos.y,
+					pos.x + INTERFACE_RATIO(32),
+					pos.y + INTERFACE_RATIO(32)
 					);
 
 					if(mouseTestRect.contains(Vec2i(DANAEMouse))) {
@@ -1441,14 +1440,14 @@ void ArxGame::manageEditorControls() {
 
 				// gold
 				if(player.gold > 0) {
-					px = g_size.width() - INTERFACE_RATIO(35) + lSLID_VALUE + GL_DECAL_ICONS;
-					py = g_size.height() - INTERFACE_RATIO(183);
+					pos.x = g_size.width() - INTERFACE_RATIO(35) + lSLID_VALUE + GL_DECAL_ICONS;
+					pos.y = g_size.height() - INTERFACE_RATIO(183);
 					
 					const Rect mouseTestRect(
-					px,
-					py,
-					px + INTERFACE_RATIO(32),
-					py + INTERFACE_RATIO(32)
+					pos.x,
+					pos.y,
+					pos.x + INTERFACE_RATIO(32),
+					pos.y + INTERFACE_RATIO(32)
 					);
 					
 					if(mouseTestRect.contains(Vec2i(DANAEMouse))) {
@@ -1470,14 +1469,14 @@ void ArxGame::manageEditorControls() {
 				}
 
 				// book
-				px = g_size.width() - INTERFACE_RATIO(35) + lSLID_VALUE + GL_DECAL_ICONS;
-				py = g_size.height() - INTERFACE_RATIO(148);
+				pos.x = g_size.width() - INTERFACE_RATIO(35) + lSLID_VALUE + GL_DECAL_ICONS;
+				pos.y = g_size.height() - INTERFACE_RATIO(148);
 
 				const Rect bookMouseTestRect(
-				px,
-				py,
-				px + INTERFACE_RATIO(32),
-				py + INTERFACE_RATIO(32)
+				pos.x,
+				pos.y,
+				pos.x + INTERFACE_RATIO(32),
+				pos.y + INTERFACE_RATIO(32)
 				);
 				
 				if(bookMouseTestRect.contains(Vec2i(DANAEMouse))) {
@@ -1492,15 +1491,15 @@ void ArxGame::manageEditorControls() {
 				}
 
 				// inventaire
-				px = g_size.width() - INTERFACE_RATIO(35) + lSLID_VALUE + GL_DECAL_ICONS;
-				py = g_size.height() - INTERFACE_RATIO(113);
+				pos.x = g_size.width() - INTERFACE_RATIO(35) + lSLID_VALUE + GL_DECAL_ICONS;
+				pos.y = g_size.height() - INTERFACE_RATIO(113);
 				static float flDelay=0;
 				
 				const Rect inventoryMouseTestRect(
-				px,
-				py,
-				px + INTERFACE_RATIO(32),
-				py + INTERFACE_RATIO(32)
+				pos.x,
+				pos.y,
+				pos.x + INTERFACE_RATIO(32),
+				pos.y + INTERFACE_RATIO(32)
 				);
 				
 				if(inventoryMouseTestRect.contains(Vec2i(DANAEMouse)) || flDelay) {
@@ -1572,14 +1571,14 @@ void ArxGame::manageEditorControls() {
 
 			// steal
 			if(player.Interface & INTER_STEAL) {
-				px = static_cast<float>(-lSLID_VALUE);
-				py = g_size.height() - INTERFACE_RATIO(78 + 32);
+				pos.x = static_cast<float>(-lSLID_VALUE);
+				pos.y = g_size.height() - INTERFACE_RATIO(78 + 32);
 				
 				const Rect mouseTestRect(
-				px,
-				py,
-				px + INTERFACE_RATIO(32),
-				py + INTERFACE_RATIO(32)
+				pos.x,
+				pos.y,
+				pos.x + INTERFACE_RATIO(32),
+				pos.y + INTERFACE_RATIO(32)
 				);
 				
 				if(mouseTestRect.contains(Vec2i(DANAEMouse))) {
@@ -1612,16 +1611,16 @@ void ArxGame::manageEditorControls() {
 
 	// gros player book
 	if(player.Interface & INTER_MAP) {
-		px = 97 * g_sizeRatio.x;
-		py = 64 * g_sizeRatio.y;
+		pos.x = 97 * g_sizeRatio.x;
+		pos.y = 64 * g_sizeRatio.y;
 		
 		TextureContainer* playerbook = ITC.Get("playerbook");
 		if(playerbook) {
 			const Rect mouseTestRect(
-			px,
-			py,
-			px + playerbook->m_dwWidth * g_sizeRatio.x,
-			py + playerbook->m_dwHeight * g_sizeRatio.y
+			pos.x,
+			pos.y,
+			pos.x + playerbook->m_dwWidth * g_sizeRatio.x,
+			pos.y + playerbook->m_dwHeight * g_sizeRatio.y
 			);
 			
 			if(mouseTestRect.contains(Vec2i(DANAEMouse))) {
@@ -1639,16 +1638,16 @@ void ArxGame::manageEditorControls() {
 	}
 	
 	if(!PLAYER_INTERFACE_HIDE_COUNT && TSecondaryInventory) {
-		px = INTERFACE_RATIO(InventoryX) + INTERFACE_RATIO(16);
-		py = INTERFACE_RATIO_DWORD(BasicInventorySkin->m_dwHeight) - INTERFACE_RATIO(16);
+		pos.x = INTERFACE_RATIO(InventoryX) + INTERFACE_RATIO(16);
+		pos.y = INTERFACE_RATIO_DWORD(BasicInventorySkin->m_dwHeight) - INTERFACE_RATIO(16);
 		Entity * temp=(Entity *)TSecondaryInventory->io;
 
 		if(temp && !(temp->ioflags & IO_SHOP) && !(temp == ioSteal)) {
 			const Rect mouseTestRect(
-			px,
-			py,
-			px + INTERFACE_RATIO(16),
-			py + INTERFACE_RATIO(16)
+			pos.x,
+			pos.y,
+			pos.x + INTERFACE_RATIO(16),
+			pos.y + INTERFACE_RATIO(16)
 			);
 			
 			if(mouseTestRect.contains(Vec2i(DANAEMouse))) {
@@ -1670,13 +1669,13 @@ void ArxGame::manageEditorControls() {
 		}
 
 		//py = 20;
-		px = INTERFACE_RATIO(InventoryX) + INTERFACE_RATIO_DWORD(BasicInventorySkin->m_dwWidth) - INTERFACE_RATIO(32);
+		pos.x = INTERFACE_RATIO(InventoryX) + INTERFACE_RATIO_DWORD(BasicInventorySkin->m_dwWidth) - INTERFACE_RATIO(32);
 
 		const Rect mouseTestRect(
-		px,
-		py,
-		px + INTERFACE_RATIO(16),
-		py + INTERFACE_RATIO(16)
+		pos.x,
+		pos.y,
+		pos.x + INTERFACE_RATIO(16),
+		pos.y + INTERFACE_RATIO(16)
 		);
 		
 		if(mouseTestRect.contains(Vec2i(DANAEMouse))) {
