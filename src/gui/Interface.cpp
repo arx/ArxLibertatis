@@ -5572,43 +5572,6 @@ void ArxGame::drawAllInterfaceFinish() {
 	}
 }
 
-void ARX_INTERFACE_DrawCurrentTorch() {
-	
-	if((player.Interface & INTER_NOTE) && TSecondaryInventory != NULL
-	   && (openNote.type() == gui::Note::BigNote || openNote.type() == gui::Note::Book)) {
-		return;
-	}
-	
-	float px = INTERFACE_RATIO(std::max(InventoryX + 110.f, 10.f));
-	float py = g_size.height() - INTERFACE_RATIO(158.f + 32.f);
-	
-	EERIEDrawBitmap(px, py,
-					INTERFACE_RATIO_DWORD(player.torch->inv->m_dwWidth),
-					INTERFACE_RATIO_DWORD(player.torch->inv->m_dwHeight),
-					0.001f, player.torch->inv, Color::white);
-	
-	if(rnd() <= 0.2f) {
-		return;
-	}
-	
-	PARTICLE_DEF * pd = createParticle();
-	if(!pd) {
-		return;
-	}
-	
-	pd->special = FIRE_TO_SMOKE;
-	pd->ov = Vec3f(px + INTERFACE_RATIO(12.f - rnd() * 3.f),
-	               py + INTERFACE_RATIO(rnd() * 6.f), 0.0000001f);
-	pd->move = Vec3f(INTERFACE_RATIO(1.5f - rnd() * 3.f),
-	                 -INTERFACE_RATIO(5.f + rnd() * 1.f), 0.f);
-	pd->scale = Vec3f(1.8f, 1.8f, 1.f);
-	pd->tolive = Random::get(500, 900);
-	pd->tc = fire2;
-	pd->rgb = Color3f(1.f, .6f, .5f);
-	pd->siz = INTERFACE_RATIO(14.f);
-	pd->type = PARTICLE_2D;
-}
-
 extern float GLOBAL_SLOWDOWN;
 
 /** EXTRACTION BEGINS HERE **/
@@ -6185,6 +6148,47 @@ public:
 
 static PurseIconGui purseIconGui;
 
+class CurrentTorchIconGui {
+public:
+	void draw() {
+		
+		if((player.Interface & INTER_NOTE) && TSecondaryInventory != NULL
+		   && (openNote.type() == gui::Note::BigNote || openNote.type() == gui::Note::Book)) {
+			return;
+		}
+		
+		float px = INTERFACE_RATIO(std::max(InventoryX + 110.f, 10.f));
+		float py = g_size.height() - INTERFACE_RATIO(158.f + 32.f);
+		
+		EERIEDrawBitmap(px, py,
+						INTERFACE_RATIO_DWORD(player.torch->inv->m_dwWidth),
+						INTERFACE_RATIO_DWORD(player.torch->inv->m_dwHeight),
+						0.001f, player.torch->inv, Color::white);
+		
+		if(rnd() <= 0.2f) {
+			return;
+		}
+		
+		PARTICLE_DEF * pd = createParticle();
+		if(!pd) {
+			return;
+		}
+		
+		pd->special = FIRE_TO_SMOKE;
+		pd->ov = Vec3f(px + INTERFACE_RATIO(12.f - rnd() * 3.f),
+		               py + INTERFACE_RATIO(rnd() * 6.f), 0.0000001f);
+		pd->move = Vec3f(INTERFACE_RATIO(1.5f - rnd() * 3.f),
+		                 -INTERFACE_RATIO(5.f + rnd() * 1.f), 0.f);
+		pd->scale = Vec3f(1.8f, 1.8f, 1.f);
+		pd->tolive = Random::get(500, 900);
+		pd->tc = fire2;
+		pd->rgb = Color3f(1.f, .6f, .5f);
+		pd->siz = INTERFACE_RATIO(14.f);
+		pd->type = PARTICLE_2D;
+	}
+};
+
+CurrentTorchIconGui currentTorchIconGui;
 
 void DrawIcons() {
 	if(player.Interface & INTER_MINIBACK) {
@@ -6225,7 +6229,7 @@ void DrawIcons() {
 		bookIconGui.drawHalo();
 	}
 	if(player.torch) {
-		ARX_INTERFACE_DrawCurrentTorch();
+		currentTorchIconGui.draw();
 	}
 }
 
