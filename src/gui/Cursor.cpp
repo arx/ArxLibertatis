@@ -475,11 +475,10 @@ void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 					else
 						tc = COMBINE->inv;
 					
-					float fTexSizeX = INTERFACE_RATIO_DWORD(tc->m_dwWidth);
-					float fTexSizeY = INTERFACE_RATIO_DWORD(tc->m_dwHeight);
+					Vec2f size(tc->m_dwWidth, tc->m_dwHeight);
 
 					if(SpecialCursor == CURSOR_COMBINEON) {
-						EERIEDrawBitmap(mousePos.x, mousePos.y, fTexSizeX, fTexSizeY, .00001f, tc, Color::white);
+						EERIEDrawBitmap(mousePos.x, mousePos.y, size.x, size.y, .00001f, tc, Color::white);
 
 						if(FlyingOverIO && (FlyingOverIO->ioflags & IO_BLACKSMITH)) {
 							float v=ARX_DAMAGES_ComputeRepairPrice(COMBINE,FlyingOverIO);
@@ -490,7 +489,7 @@ void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 							}
 						}
 					} else {
-						EERIEDrawBitmap(mousePos.x, mousePos.y, fTexSizeX, fTexSizeY, 0.00001f, tc, Color::fromBGRA(0xFFFFAA66));
+						EERIEDrawBitmap(mousePos.x, mousePos.y, size.x, size.y, 0.00001f, tc, Color::fromBGRA(0xFFFFAA66));
 					}
 				}
 				
