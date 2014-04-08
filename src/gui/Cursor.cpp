@@ -476,25 +476,23 @@ void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 						tc = GoldCoinsTC[5];
 					else
 						tc = COMBINE->inv;
-
-					float MODIF=0.f;
-
+					
 					float fTexSizeX = INTERFACE_RATIO_DWORD(tc->m_dwWidth);
 					float fTexSizeY = INTERFACE_RATIO_DWORD(tc->m_dwHeight);
 
 					if(SpecialCursor == CURSOR_COMBINEON) {
-						EERIEDrawBitmap(POSX + MODIF, POSY + MODIF, fTexSizeX, fTexSizeY, .00001f, tc, Color::white);
+						EERIEDrawBitmap(POSX, POSY, fTexSizeX, fTexSizeY, .00001f, tc, Color::white);
 
 						if(FlyingOverIO && (FlyingOverIO->ioflags & IO_BLACKSMITH)) {
 							float v=ARX_DAMAGES_ComputeRepairPrice(COMBINE,FlyingOverIO);
 
 							if(v > 0.f) {
 								long t = v;
-								ARX_INTERFACE_DrawNumber(POSX + MODIF - 16, POSY + MODIF - 10, t, 6, Color::cyan);
+								ARX_INTERFACE_DrawNumber(POSX - 16, POSY - 10, t, 6, Color::cyan);
 							}
 						}
 					} else {
-						EERIEDrawBitmap(POSX + MODIF, POSY + MODIF, fTexSizeX, fTexSizeY, 0.00001f, tc, Color::fromBGRA(0xFFFFAA66));
+						EERIEDrawBitmap(POSX, POSY, fTexSizeX, fTexSizeY, 0.00001f, tc, Color::fromBGRA(0xFFFFAA66));
 					}
 				}
 				
