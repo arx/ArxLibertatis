@@ -416,8 +416,8 @@ void MiniMap::showBookEntireMap(int showLevel) {
 			continue;
 		}
 		
-		float pos_x = m_mapMarkers[i].m_x * 8 * ratio * m_activeBkg->Xmul * casePos.x + start.x;
-		float pos_y = m_mapMarkers[i].m_y * 8 * ratio * m_activeBkg->Zmul * casePos.y + start.y;
+		float pos_x = m_mapMarkers[i].m_pos.x * 8 * ratio * m_activeBkg->Xmul * casePos.x + start.x;
+		float pos_y = m_mapMarkers[i].m_pos.y * 8 * ratio * m_activeBkg->Zmul * casePos.y + start.y;
 		float size = 5.f * ratio;
 		verts[0].color = 0xFFFF0000;
 		verts[1].color = 0xFFFF0000;
@@ -839,16 +839,16 @@ void MiniMap::mapMarkerAdd(float x, float y, int lvl, const std::string &name) {
 	if(num >= 0) {
 		// Already exists, update it
 		m_mapMarkers[num].m_lvl = lvl;
-		m_mapMarkers[num].m_x = x;
-		m_mapMarkers[num].m_y = y;
+		m_mapMarkers[num].m_pos.x = x;
+		m_mapMarkers[num].m_pos.y = y;
 		return;
 	}
 	
 	// Else, create one
 	MapMarkerData newMMD;
 	newMMD.m_lvl = lvl;
-	newMMD.m_x = x;
-	newMMD.m_y = y;
+	newMMD.m_pos.x = x;
+	newMMD.m_pos.y = y;
 	newMMD.m_name = name;
 	newMMD.m_text = getLocalised(name);
 	m_mapMarkers.push_back(newMMD);

@@ -92,8 +92,7 @@ public:
 	
 	//! Map markers
 	struct MapMarkerData {
-		float m_x;
-		float m_y;
+		Vec2f m_pos;
 		int m_lvl;
 		std::string m_name;
 		std::string m_text;
