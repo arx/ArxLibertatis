@@ -276,6 +276,7 @@ long LOAD_N_DONT_ERASE=0;
 long NO_TIME_INIT=0;
 
 Rect g_size(640, 480);
+Vec2f g_sizeRatio(1.f, 1.f);
 
 long CurrFightPos=0;
 long NO_PLAYER_POSITION_RESET=0;
@@ -372,8 +373,9 @@ static bool AdjustUI() {
 	g_size = Rect(mainApp->getWindow()->getSize().x, mainApp->getWindow()->getSize().y);
 		
 	// Computes X & Y screen ratios compared to a standard 640x480 screen
-	Xratio = g_size.width() * ( 1.0f / 640 );
-	Yratio = g_size.height() * ( 1.0f / 480 );
+	
+	g_sizeRatio.x = g_size.width() * ( 1.0f / 640 );
+	g_sizeRatio.y = g_size.height() * ( 1.0f / 480 );
 	
 	if(!ARX_Text_Init()) {
 		return false;

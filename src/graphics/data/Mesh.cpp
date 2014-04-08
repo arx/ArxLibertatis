@@ -104,9 +104,6 @@ void ComputeFastBkgData(EERIE_BACKGROUND * eb);
 
 static void EERIE_PORTAL_Release();
 
-float Xratio = 1.f;
-float Yratio = 1.f;
-
 static bool RayIn3DPolyNoCull(Vec3f * orgn, Vec3f * dest, EERIEPOLY * epp);
 
 extern TextureContainer * sphere_particle;
@@ -514,7 +511,7 @@ static void camEE_RTP(TexturedVertex * in, TexturedVertex * out, EERIE_CAMERA * 
 		out->rhw = 1.f / out->p.z;
 	}
 
-	tout.rhw = (cam->focal * Xratio) * out->rhw;
+	tout.rhw = (cam->focal * g_sizeRatio.x) * out->rhw;
 	out->p.z = out->p.z * (1.f / (cam->cdepth * 1.2f));
 	out->p.x = cam->orgTrans.mod.x + (tout.p.x * tout.rhw);
 	out->p.y = cam->orgTrans.mod.y + (tout.p.y * tout.rhw) ;

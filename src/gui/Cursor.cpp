@@ -561,12 +561,12 @@ void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 
 				if(surf) {
 					if(SpecialCursor == CURSOR_REDIST) {
-						EERIEDrawBitmap(mousePos.x, mousePos.y, surf->m_dwWidth * Xratio, surf->m_dwHeight * Yratio,
+						EERIEDrawBitmap(mousePos.x, mousePos.y, surf->m_dwWidth * g_sizeRatio.x, surf->m_dwHeight * g_sizeRatio.y,
 										0.f, surf, Color::white);
 
 						std::stringstream ss;
 						ss << std::setw(3) << lCursorRedistValue;
-						ARX_TEXT_Draw(hFontInBook, DANAEMouse.x + 6* Xratio, DANAEMouse.y + 11* Yratio, ss.str(), Color::black);
+						ARX_TEXT_Draw(hFontInBook, DANAEMouse.x + 6* g_sizeRatio.x, DANAEMouse.y + 11* g_sizeRatio.y, ss.str(), Color::black);
 					} else {
 						float fTexSizeX = INTERFACE_RATIO_DWORD(surf->m_dwWidth);
 						float fTexSizeY = INTERFACE_RATIO_DWORD(surf->m_dwHeight);

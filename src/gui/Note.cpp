@@ -66,7 +66,7 @@ void Note::deallocate() {
 
 bool Note::allocate() {
 	
-	if(allocatedForRatio == sizeRatio()) {
+	if(allocatedForRatio == g_sizeRatio) {
 		return background ? true : false;
 	}
 	
@@ -87,7 +87,7 @@ bool Note::allocate() {
 	
 	if(_type == QuestBook) {
 		// TODO change this once the aspect ratio in character screen, spell book, etc. is fixed.
-		scale = sizeRatio();
+		scale = g_sizeRatio;
 	}
 	
 	switch(_type) {
@@ -97,7 +97,7 @@ bool Note::allocate() {
 		case Notice: {
 			background = TextureContainer::LoadUI("graph/interface/book/notice");
 			if(background) {
-				newPos = Vec2f(320 * Xratio - background->m_dwWidth * 0.5f * scale.x, 47.f * scale.y);
+				newPos = Vec2f(320 * g_sizeRatio.x - background->m_dwWidth * 0.5f * scale.x, 47.f * scale.y);
 				newTextStart = Vec2f(50.f, 50.f);
 				newTextEnd = Vec2f(background->size()) - Vec2f(50.f, 50.f);
 			}
@@ -107,7 +107,7 @@ bool Note::allocate() {
 		case SmallNote: {
 			background = TextureContainer::LoadUI("graph/interface/book/bignote");
 			if(background) {
-				newPos = Vec2f(320 * Xratio - background->m_dwWidth * 0.5f * scale.x, 47.f * scale.y);
+				newPos = Vec2f(320 * g_sizeRatio.x - background->m_dwWidth * 0.5f * scale.x, 47.f * scale.y);
 				newTextStart = Vec2f(30.f, 30.f);
 				newTextEnd = Vec2f(background->size()) - Vec2f(30.f, 40.f);
 			}
@@ -117,7 +117,7 @@ bool Note::allocate() {
 		case BigNote: {
 			background = TextureContainer::LoadUI("graph/interface/book/very_bignote");
 			if(background) {
-				newPos = Vec2f(320 * Xratio - background->m_dwWidth * 0.5f * scale.x, 47.f * scale.y);
+				newPos = Vec2f(320 * g_sizeRatio.x - background->m_dwWidth * 0.5f * scale.x, 47.f * scale.y);
 				newTextStart = Vec2f(40.f, 40.f);
 				newTextEnd = Vec2f(background->size()) * Vec2f(0.5f, 1.f) - Vec2f(10.f, 40.f);
 				maxPages = 2;
@@ -130,7 +130,7 @@ bool Note::allocate() {
 			prevPage = TextureContainer::LoadUI("graph/interface/book/left_corner");
 			nextPage = TextureContainer::LoadUI("graph/interface/book/right_corner");
 			if(background) {
-				newPos = Vec2f(320 * Xratio - background->m_dwWidth * 0.5f * scale.x, 47.f * scale.y);
+				newPos = Vec2f(320 * g_sizeRatio.x - background->m_dwWidth * 0.5f * scale.x, 47.f * scale.y);
 				newTextStart = Vec2f(40.f, 20.f);
 				newTextEnd = Vec2f(background->size()) * Vec2f(0.5f, 1.f) - Vec2f(10.f, 40.f);
 				maxPages = std::numeric_limits<size_t>::max();
@@ -158,7 +158,7 @@ bool Note::allocate() {
 	}
 	
 	if(!background) {
-		allocatedForRatio = sizeRatio();
+		allocatedForRatio = g_sizeRatio;
 		return false;
 	}
 	
@@ -218,7 +218,7 @@ bool Note::allocate() {
 	// Clamp the current page to a valid page.
 	setPage(_page);
 	
-	allocatedForRatio = sizeRatio();
+	allocatedForRatio = g_sizeRatio;
 	
 	return true;
 }

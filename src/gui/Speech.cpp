@@ -192,10 +192,10 @@ void ARX_SPEECH_Render() {
 			continue;
 		}
 		
-		EERIEDrawBitmap(120 * Xratio - 16 * Xratio, static_cast<float>(igrec),
-		                16 * Xratio, 16 * Xratio, .00001f, arx_logo_tc, Color::white);
+		EERIEDrawBitmap(120 * g_sizeRatio.x - 16 * g_sizeRatio.x, static_cast<float>(igrec),
+		                16 * g_sizeRatio.x, 16 * g_sizeRatio.x, .00001f, arx_logo_tc, Color::white);
 		
-		igrec += ARX_UNICODE_DrawTextInRect(hFontInBook, 120.f * Xratio, (float)igrec, 500 * Xratio,
+		igrec += ARX_UNICODE_DrawTextInRect(hFontInBook, 120.f * g_sizeRatio.x, (float)igrec, 500 * g_sizeRatio.x,
 		                           ' ' + speech[i].text, Color::white, NULL);
 		
 		if(igrec > iEnd && !isLastSpeech(i)) {
@@ -520,7 +520,7 @@ void ARX_SPEECH_Update() {
 		Vec2i sSize = hFontInBook->getTextSize(speech->text);
 
 		float fZoneClippHeight	=	static_cast<float>(sSize.y * 3);
-		float fStartYY			=	100 * Yratio;
+		float fStartYY			=	100 * g_sizeRatio.y;
 		float fStartY			=	static_cast<float>(((int)fStartYY - (int)fZoneClippHeight) >> 1);
 		float fDepY				=	((float)g_size.height()) - fStartYY + fStartY - speech->fDeltaY + sSize.y;
 		float fZoneClippY		=	fDepY + speech->fDeltaY;

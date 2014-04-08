@@ -92,7 +92,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "util/Unicode.h"
 
 extern TextManager * pTextManage;
-extern float Xratio, Yratio;
 extern ARX_INTERFACE_BOOK_MODE Book_Mode;
 extern long START_NEW_QUEST;
 extern long LASTBOOKBUTTON;
@@ -493,12 +492,12 @@ bool ARX_Menu_Render() {
 				DONE = 1;
 
 			float ox, oy;
-			ox = Xratio;
-			oy = Yratio;
+			ox = g_sizeRatio.x;
+			oy = g_sizeRatio.y;
 			LASTBOOKBUTTON = BOOKBUTTON;
 			BOOKBUTTON = EERIEMouseButton;
-			Xratio = ox;
-			Yratio = oy;
+			g_sizeRatio.x = ox;
+			g_sizeRatio.y = oy;
 
 			if(!ARXmenu.mda->flyover[FLYING_OVER].empty() ) //=ARXmenu.mda->flyover[FLYING_OVER];
 			{
@@ -525,16 +524,16 @@ bool ARX_Menu_Render() {
 			}
 			
 			float fPosX = 0;
-			float fPosY = 313 * Yratio + (g_size.height() - 313 * Yratio) * 0.70f;
+			float fPosY = 313 * g_sizeRatio.y + (g_size.height() - 313 * g_sizeRatio.y) * 0.70f;
 
-			float fSizeX = 100 * Xratio;
-			float fSizeY = 100 * Yratio;
+			float fSizeX = 100 * g_sizeRatio.x;
+			float fSizeY = 100 * g_sizeRatio.y;
 
 			Color color = Color::none;
 
 			//---------------------------------------------------------------------
 			// Button QUICK GENERATION
-			fPosX = (g_size.width() - (513 * Xratio)) * 0.5f;
+			fPosX = (g_size.width() - (513 * g_sizeRatio.x)) * 0.5f;
 			
 			const Rect quickGenerateButtonMouseTestRect(
 				fPosX,
@@ -607,7 +606,7 @@ bool ARX_Menu_Render() {
 
 			//---------------------------------------------------------------------
 			// Button DONE
-			fPosX = g_size.width() - (g_size.width() - 513 * Xratio) * 0.5f - 40 * Xratio;
+			fPosX = g_size.width() - (g_size.width() - 513 * g_sizeRatio.x) * 0.5f - 40 * g_sizeRatio.x;
 			
 			const Rect doneButtonMouseTestRect(
 				fPosX,

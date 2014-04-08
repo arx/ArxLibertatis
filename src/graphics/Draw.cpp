@@ -43,6 +43,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/Draw.h"
 
+#include "core/Core.h"
 #include "core/Application.h"
 #include "core/GameTime.h"
 
@@ -85,7 +86,7 @@ bool EERIECreateSprite(TexturedQuad& sprite, const TexturedVertex & in, float si
 		&& (out.p.x>-1000) && (out.p.x<2500.f)
 		&& (out.p.y>-500) && (out.p.y<1800.f))
 	{
-		float use_focal=BASICFOCAL*Xratio;
+		float use_focal=BASICFOCAL*g_sizeRatio.x;
 		float t;
 
 		if(siz < 0) {

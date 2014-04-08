@@ -425,14 +425,14 @@ void MiniMap::showBookEntireMap(int showLevel) {
 		verts[1].color = 0xFFFF0000;
 		verts[2].color = 0xFFFF0000;
 		verts[3].color = 0xFFFF0000;
-		verts[0].p.x = (pos_x - size) * Xratio;
-		verts[0].p.y = (pos_y - size) * Yratio;
-		verts[1].p.x = (pos_x + size) * Xratio;
-		verts[1].p.y = (pos_y - size) * Yratio;
-		verts[2].p.x = (pos_x + size) * Xratio;
-		verts[2].p.y = (pos_y + size) * Yratio;
-		verts[3].p.x = (pos_x - size) * Xratio;
-		verts[3].p.y = (pos_y + size) * Yratio;
+		verts[0].p.x = (pos_x - size) * g_sizeRatio.x;
+		verts[0].p.y = (pos_y - size) * g_sizeRatio.y;
+		verts[1].p.x = (pos_x + size) * g_sizeRatio.x;
+		verts[1].p.y = (pos_y - size) * g_sizeRatio.y;
+		verts[2].p.x = (pos_x + size) * g_sizeRatio.x;
+		verts[2].p.y = (pos_y + size) * g_sizeRatio.y;
+		verts[3].p.x = (pos_x - size) * g_sizeRatio.x;
+		verts[3].p.y = (pos_y + size) * g_sizeRatio.y;
 		verts[0].uv = Vec2f_ZERO;
 		verts[1].uv = Vec2f_X_AXIS;
 		verts[2].uv = Vec2f_ONE;
@@ -450,10 +450,10 @@ void MiniMap::showBookEntireMap(int showLevel) {
 				
 				Rect bRect(140, 295, 140 + 205, 358);
 				
-				Rect::Num left = checked_range_cast<Rect::Num>((bRect.left) * Xratio);
-				Rect::Num right = checked_range_cast<Rect::Num>((bRect.right) * Xratio);
-				Rect::Num top = checked_range_cast<Rect::Num>((bRect.top) * Yratio);
-				Rect::Num bottom = checked_range_cast<Rect::Num>((bRect.bottom) * Yratio);
+				Rect::Num left = checked_range_cast<Rect::Num>((bRect.left) * g_sizeRatio.x);
+				Rect::Num right = checked_range_cast<Rect::Num>((bRect.right) * g_sizeRatio.x);
+				Rect::Num top = checked_range_cast<Rect::Num>((bRect.top) * g_sizeRatio.y);
+				Rect::Num bottom = checked_range_cast<Rect::Num>((bRect.bottom) * g_sizeRatio.y);
 				Rect rRect = Rect(left, top, right, bottom);
 				
 				long lLengthDraw = ARX_UNICODE_ForceFormattingInRect(hFontInGameNote, m_mapMarkers[i].m_text, rRect);
@@ -558,10 +558,10 @@ void MiniMap::drawBackground(int showLevel, Rect boundaries, float startX, float
 	
 	if(fadeBorder > 0.f) {
 		fadeDiv = 1.f/fadeBorder;
-		fadeBounds.left = checked_range_cast<Rect::Num>((boundaries.left + fadeBorder) * Xratio);
-		fadeBounds.right = checked_range_cast<Rect::Num>((boundaries.right - fadeBorder) * Xratio);
-		fadeBounds.top = checked_range_cast<Rect::Num>((boundaries.top + fadeBorder) * Yratio);
-		fadeBounds.bottom = checked_range_cast<Rect::Num>((boundaries.bottom - fadeBorder) * Yratio);
+		fadeBounds.left = checked_range_cast<Rect::Num>((boundaries.left + fadeBorder) * g_sizeRatio.x);
+		fadeBounds.right = checked_range_cast<Rect::Num>((boundaries.right - fadeBorder) * g_sizeRatio.x);
+		fadeBounds.top = checked_range_cast<Rect::Num>((boundaries.top + fadeBorder) * g_sizeRatio.y);
+		fadeBounds.bottom = checked_range_cast<Rect::Num>((boundaries.bottom - fadeBorder) * g_sizeRatio.y);
 	}
 	
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
@@ -583,13 +583,13 @@ void MiniMap::drawBackground(int showLevel, Rect boundaries, float startX, float
 			vx = (vxx * div) * dw;
 			vy = (vyy * div) * dh;
 			
-			float posx = (startX + i * caseX) * Xratio;
-			float posy = (startY + j * caseY) * Yratio;
+			float posx = (startX + i * caseX) * g_sizeRatio.x;
+			float posy = (startY + j * caseY) * g_sizeRatio.y;
 			
-			if((posx < boundaries.left * Xratio)
-			   || (posx > boundaries.right * Xratio)
-			   || (posy < boundaries.top * Yratio)
-			   || (posy > boundaries.bottom * Yratio)) {
+			if((posx < boundaries.left * g_sizeRatio.x)
+			   || (posx > boundaries.right * g_sizeRatio.x)
+			   || (posy < boundaries.top * g_sizeRatio.y)
+			   || (posy > boundaries.bottom * g_sizeRatio.y)) {
 				continue; // out of bounds
 			}
 
@@ -597,8 +597,8 @@ void MiniMap::drawBackground(int showLevel, Rect boundaries, float startX, float
 			
 			verts[3].p.x = verts[0].p.x = (posx);
 			verts[1].p.y = verts[0].p.y = (posy);
-			verts[2].p.x = verts[1].p.x = posx + (caseX * Xratio);
-			verts[3].p.y = verts[2].p.y = posy + (caseY * Yratio);
+			verts[2].p.x = verts[1].p.x = posx + (caseX * g_sizeRatio.x);
+			verts[3].p.y = verts[2].p.y = posy + (caseY * g_sizeRatio.y);
 			
 			verts[3].uv.x = verts[0].uv.x = vx;
 			verts[1].uv.y = verts[0].uv.y = vy;
@@ -670,14 +670,14 @@ void MiniMap::drawBackground(int showLevel, Rect boundaries, float startX, float
 			
 			if(oo > 0.f) {
 				
-				verts[0].p.x += decalX * Xratio;
-				verts[0].p.y += decalY * Yratio;
-				verts[1].p.x += decalX * Xratio;
-				verts[1].p.y += decalY * Yratio;
-				verts[2].p.x += decalX * Xratio;
-				verts[2].p.y += decalY * Yratio;
-				verts[3].p.x += decalX * Xratio;
-				verts[3].p.y += decalY * Yratio;
+				verts[0].p.x += decalX * g_sizeRatio.x;
+				verts[0].p.y += decalY * g_sizeRatio.y;
+				verts[1].p.x += decalX * g_sizeRatio.x;
+				verts[1].p.y += decalY * g_sizeRatio.y;
+				verts[2].p.x += decalX * g_sizeRatio.x;
+				verts[2].p.y += decalY * g_sizeRatio.y;
+				verts[3].p.x += decalX * g_sizeRatio.x;
+				verts[3].p.y += decalY * g_sizeRatio.y;
 				
 				m_mapVertices.push_back(verts[0]);
 				m_mapVertices.push_back(verts[1]);
@@ -718,12 +718,12 @@ void MiniMap::drawPlayer(float playerSize, float playerX, float playerY, bool al
 	float ca = std::cos(angle);
 	float sa = std::sin(angle);
 	
-	verts[0].p.x = (playerX + rx2 * ca + ry2 * sa) * Xratio;
-	verts[0].p.y = (playerY + ry2 * ca - rx2 * sa) * Yratio;
-	verts[1].p.x = (playerX + rx * ca + ry * sa) * Xratio;
-	verts[1].p.y = (playerY + ry * ca - rx * sa) * Yratio;
-	verts[2].p.x = (playerX + rx3 * ca + ry3 * sa) * Xratio;
-	verts[2].p.y = (playerY + ry3 * ca - rx3 * sa) * Yratio;
+	verts[0].p.x = (playerX + rx2 * ca + ry2 * sa) * g_sizeRatio.x;
+	verts[0].p.y = (playerY + ry2 * ca - rx2 * sa) * g_sizeRatio.y;
+	verts[1].p.x = (playerX + rx * ca + ry * sa) * g_sizeRatio.x;
+	verts[1].p.y = (playerY + ry * ca - rx * sa) * g_sizeRatio.y;
+	verts[2].p.x = (playerX + rx3 * ca + ry3 * sa) * g_sizeRatio.x;
+	verts[2].p.y = (playerY + ry3 * ca - rx3 * sa) * g_sizeRatio.y;
 	
 	GRenderer->ResetTexture(0);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, alphaBlending);
@@ -795,8 +795,8 @@ void MiniMap::drawDetectedEntities(int showLevel, float startX, float startY, fl
 			col = 1.f - (d - 600.f) * ( 1.0f / 200 );
 		}
 		
-		fpx *= Xratio;
-		fpy *= Yratio;
+		fpx *= g_sizeRatio.x;
+		fpy *= g_sizeRatio.y;
 		EERIEDrawBitmap(fpx, fpy, 5.f * ratio, 5.f * ratio, 0, m_pTexDetect,
 		Color3f(col, 0, 0).to<u8>());
 	}

@@ -103,8 +103,8 @@ static bool newFullscreen;
 
 #define NODEBUGZONE
 
-#define RATIO_X(a)    (((float)a)*Xratio)
-#define RATIO_Y(a)    (((float)a)*Yratio)
+#define RATIO_X(a)    (((float)a)*g_sizeRatio.x)
+#define RATIO_Y(a)    (((float)a)*g_sizeRatio.y)
 
 // Imported global variables and functions
 extern ARX_MENU_DATA ARXmenu;

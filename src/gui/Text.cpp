@@ -222,12 +222,12 @@ void ARX_TEXT_Draw(Font* ef,
 }
 
 float DrawBookTextInRect(Font* font, float x, float y, float maxx, const std::string& text, Color col) {
-	return (float)ARX_UNICODE_DrawTextInRect(font, (BOOKDEC.x + x) * Xratio, (BOOKDEC.y + y) * Yratio, (BOOKDEC.x + maxx) * Xratio, text, col);
+	return (float)ARX_UNICODE_DrawTextInRect(font, (BOOKDEC.x + x) * g_sizeRatio.x, (BOOKDEC.y + y) * g_sizeRatio.y, (BOOKDEC.x + maxx) * g_sizeRatio.x, text, col);
 }
 
 void DrawBookTextCenter(Font* font, float x, float y, const std::string& text, Color col)
 {
-	UNICODE_ARXDrawTextCenter(font, (BOOKDEC.x + x)*Xratio, (BOOKDEC.y + y)*Yratio, text, col);
+	UNICODE_ARXDrawTextCenter(font, (BOOKDEC.x + x)*g_sizeRatio.x, (BOOKDEC.y + y)*g_sizeRatio.y, text, col);
 }
 
 long UNICODE_ARXDrawTextCenter(Font* font, float x, float y, const std::string& str, Color col) {
@@ -332,7 +332,7 @@ bool ARX_Text_Init() {
 	
 	res::path debugFontFile = "misc/dejavusansmono.ttf";
 	
-	float scale = std::max(std::min(Yratio, Xratio), .001f);
+	float scale = std::max(std::min(g_sizeRatio.y, g_sizeRatio.x), .001f);
 	if(scale == created_font_scale) {
 		return true;
 	}

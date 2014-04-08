@@ -1418,7 +1418,7 @@ void ArxGame::renderLevel() {
 		rectz[0].left = rectz[1].left = 0;
 		rectz[0].right = rectz[1].right = g_size.width();
 		rectz[0].top = 0;
-		long lMulResult = checked_range_cast<long>(CINEMA_DECAL * Yratio);
+		long lMulResult = checked_range_cast<long>(CINEMA_DECAL * g_sizeRatio.y);
 		rectz[0].bottom = lMulResult;
 		rectz[1].top = g_size.height() - lMulResult;
 		rectz[1].bottom = g_size.height();
@@ -1778,9 +1778,9 @@ void ArxGame::update2DFX()
 
 			if(ltvv.rhw > 0.f &&
 				ltvv.p.x > 0.f &&
-				ltvv.p.y > (CINEMA_DECAL*Yratio) &&
+				ltvv.p.y > (CINEMA_DECAL*g_sizeRatio.y) &&
 				ltvv.p.x < g_size.width() &&
-				ltvv.p.y < (g_size.height()-(CINEMA_DECAL*Yratio))
+				ltvv.p.y < (g_size.height()-(CINEMA_DECAL*g_sizeRatio.y))
 				)
 			{
 				Vec3f vector = lv.p - ACTIVECAM->orgTrans.pos;

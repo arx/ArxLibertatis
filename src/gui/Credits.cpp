@@ -249,7 +249,7 @@ void Credits::render() {
 		// Use time passed between frame to create scroll effect
 		float time = arxtime.get_updated(false);
 		float dtime = (float)(time - ARXmenu.mda->creditstart);
-		ARXmenu.mda->creditspos -= 0.03f * Yratio * dtime;
+		ARXmenu.mda->creditspos -= 0.03f * g_sizeRatio.y * dtime;
 		ARXmenu.mda->creditstart = time;
 		
 		std::vector<CreditsTextInformations>::const_iterator it = CreditsData.aCreditsInformations.begin() + CreditsData.iFirstLine ;

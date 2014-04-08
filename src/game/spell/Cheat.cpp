@@ -21,6 +21,7 @@
 
 #include <cstring>
 
+#include "core/Core.h"
 #include "core/GameTime.h"
 
 #include "game/Entity.h"
@@ -377,7 +378,7 @@ void CheckMr() {
 
 	if(cur_mr == 3) {
 		if(GRenderer && Mr_tc) {
-			EERIEDrawBitmap(g_size.width()-(128.f*Xratio), 0.f, (float)128*Xratio, (float)128*Yratio,0.0001f,
+			EERIEDrawBitmap(g_size.width()-(128.f*g_sizeRatio.x), 0.f, (float)128*g_sizeRatio.x, (float)128*g_sizeRatio.y,0.0001f,
 							Mr_tc, Color3f::gray(0.5f + PULSATE * (1.0f/10)).to<u8>());
 		} else {
 			Mr_tc = TextureContainer::LoadUI("graph/particles/(fx)_mr");

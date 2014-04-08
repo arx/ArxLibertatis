@@ -92,11 +92,6 @@ extern float PULSATE;
 extern float framedelay;
 extern float BASE_FOCAL;
 
-extern float Xratio;
-extern float Yratio;
-inline Vec2f sizeRatio() { return Vec2f(Xratio, Yratio); }
-inline float minSizeRatio() { return std::min(Xratio, Yratio); }
-
 extern bool FirstFrame;
 
 #ifdef BUILD_EDITOR
@@ -106,6 +101,8 @@ extern long CURRENTLEVEL;
 extern long TELEPORT_TO_ANGLE;
 
 extern Rect g_size;
+extern Vec2f g_sizeRatio;
+inline float minSizeRatio() { return std::min(g_sizeRatio.x, g_sizeRatio.y); }
 
 extern unsigned long AimTime;
 

@@ -21,6 +21,7 @@
 
 #include <boost/foreach.hpp>
 
+#include "core/Core.h"
 #include "core/GameTime.h"
 #include "game/Entity.h"
 #include "game/EntityManager.h"
@@ -297,8 +298,8 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 						pos1.y = checked_range_cast<short>(fY);
 
 						Vec2s pos;
-						pos.x=(short)(pos1.x*Xratio);
-						pos.y=(short)(pos1.y*Yratio);
+						pos.x=(short)(pos1.x*g_sizeRatio.x);
+						pos.y=(short)(pos1.y*g_sizeRatio.y);
 
 						AddFlare(pos, 0.1f, 1, entities[i], true);
 

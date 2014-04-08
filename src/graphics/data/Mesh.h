@@ -125,9 +125,6 @@ extern long EERIEDrawnPolys;
 extern EERIE_BACKGROUND * ACTIVEBKG;
 extern EERIE_CAMERA * ACTIVECAM;
 
-extern float Xratio;
-extern float Yratio;
-
 //	Entity Struct End
 
 bool Visible(Vec3f * orgn, Vec3f * dest,EERIEPOLY * epp,Vec3f * hit);
