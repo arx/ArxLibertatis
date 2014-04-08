@@ -6079,16 +6079,27 @@ public:
 
 static StealIconGui stealIconGui;
 
+class PickAllIconGui {
+private:
+	Vec2f PickAllIconCoords;
+public:
+	void update() {
+		PickAllIconCoords.x = INTERFACE_RATIO(InventoryX) + INTERFACE_RATIO(16);
+		PickAllIconCoords.y = INTERFACE_RATIO_DWORD(BasicInventorySkin->m_dwHeight) - INTERFACE_RATIO(16);
+	}
+	
+	void draw() {
+		DrawIcon(PickAllIconCoords, "inventory_pickall", MOUSE_IN_INVENTORY_PICKALL_ICON);
+	}
+};
 
-Vec2f PickAllIconCoords;
+static PickAllIconGui pickAllIconGui;
+
+
+
 Vec2f CloseSInvIconCoords;
 Vec2f LevelUpIconCoords;
 Vec2f PurseIconCoords;
-
-void CalculatePickAllIconCoords() {
-	PickAllIconCoords.x = INTERFACE_RATIO(InventoryX) + INTERFACE_RATIO(16);
-	PickAllIconCoords.y = INTERFACE_RATIO_DWORD(BasicInventorySkin->m_dwHeight) - INTERFACE_RATIO(16);
-}
 
 void CalculateCloseSInvIconCoords() {
 	CloseSInvIconCoords.x = INTERFACE_RATIO(InventoryX) + INTERFACE_RATIO_DWORD(BasicInventorySkin->m_dwWidth) - INTERFACE_RATIO(32);
@@ -6132,11 +6143,13 @@ void DrawIcons() {
 		}
 		// Pick All/Close Secondary Inventory
 		if(!PLAYER_INTERFACE_HIDE_COUNT && TSecondaryInventory) {	
-			CalculatePickAllIconCoords(); //These have to be calculated on each frame (to make them move).
+			//These have to be calculated on each frame (to make them move).
+			pickAllIconGui.update();
+			
 			CalculateCloseSInvIconCoords();
 			Entity *temp = TSecondaryInventory->io;
 			if(temp && !(temp->ioflags & IO_SHOP) && !(temp == ioSteal)) {
-				DrawIcon(PickAllIconCoords, "inventory_pickall", MOUSE_IN_INVENTORY_PICKALL_ICON);					
+				pickAllIconGui.draw();
 			}
 			DrawIcon(CloseSInvIconCoords, "inventory_close", MOUSE_IN_INVENTORY_CLOSE_ICON);				
 		}
