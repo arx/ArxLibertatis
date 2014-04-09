@@ -3564,66 +3564,24 @@ void ARX_INTERFACE_Draw_Stealth_Gauge() {
 //-----------------------------------------------------------------------------
 // Damaged Equipment Drawing
 //-----------------------------------------------------------------------------
-void ARX_INTERFACE_DrawDamagedEquipment()
-{
-	if(CINEMASCOPE || BLOCK_PLAYER_CONTROLS)
-		return;
 
-	if(player.Interface & INTER_INVENTORYALL)
-		return;
-
-	long needdraw=0;
-
-	for(long i = 0; i < 5; i++) {
-		if(iconequip[i]) {
-			long eq=-1;
-
-			switch (i) {
-				case 0:
-					eq = EQUIP_SLOT_WEAPON;
-					break;
-				case 1:
-					eq = EQUIP_SLOT_SHIELD;
-					break;
-				case 2:
-					eq = EQUIP_SLOT_HELMET;
-					break;
-				case 3:
-					eq = EQUIP_SLOT_ARMOR;
-					break;
-				case 4:
-					eq = EQUIP_SLOT_LEGGINGS;
-					break;
-			}
-
-			if(player.equiped[eq] > 0) {
-				Entity *io = entities[player.equiped[eq]];
-				float ratio = io->durability / io->max_durability;
-
-				if(ratio <= 0.5f)
-					needdraw |= 1<<i;
-			}
-		}
-	}
-
-	if(needdraw) {
-		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-		GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-
-		GRenderer->SetCulling(Renderer::CullNone);
-		GRenderer->SetRenderState(Renderer::DepthWrite, true);
-		GRenderer->SetRenderState(Renderer::Fog, false);
-
-		Vec2f pos(InventoryX + 10 + 32 + 100, g_size.height() - 158);
-		
-		if(pos.x < INTERFACE_RATIO( 10 + 32 ))
-			pos.x = INTERFACE_RATIO( 10 + 32 );
-
+class DamagedEquipmentGui {
+public:
+	void draw()
+	{
+		if(CINEMASCOPE || BLOCK_PLAYER_CONTROLS)
+			return;
+	
+		if(player.Interface & INTER_INVENTORYALL)
+			return;
+	
+		long needdraw=0;
+	
 		for(long i = 0; i < 5; i++) {
-			if((needdraw & (1<<i)) && iconequip[i]) {
+			if(iconequip[i]) {
 				long eq=-1;
-
-				switch(i) {
+	
+				switch (i) {
 					case 0:
 						eq = EQUIP_SLOT_WEAPON;
 						break;
@@ -3640,21 +3598,70 @@ void ARX_INTERFACE_DrawDamagedEquipment()
 						eq = EQUIP_SLOT_LEGGINGS;
 						break;
 				}
-
+	
 				if(player.equiped[eq] > 0) {
 					Entity *io = entities[player.equiped[eq]];
 					float ratio = io->durability / io->max_durability;
-					Color col = Color3f(1.f-ratio, ratio, 0).to<u8>();
-					EERIEDrawBitmap2(pos.x, pos.y, INTERFACE_RATIO_DWORD(iconequip[i]->m_dwWidth),
-					                 INTERFACE_RATIO_DWORD(iconequip[i]->m_dwHeight), 0.001f, iconequip[i], col);
+	
+					if(ratio <= 0.5f)
+						needdraw |= 1<<i;
 				}
 			}
 		}
-
-		currpos += static_cast<long>(INTERFACE_RATIO(33.f));
-		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+	
+		if(needdraw) {
+			GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+	
+			GRenderer->SetCulling(Renderer::CullNone);
+			GRenderer->SetRenderState(Renderer::DepthWrite, true);
+			GRenderer->SetRenderState(Renderer::Fog, false);
+	
+			Vec2f pos(InventoryX + 10 + 32 + 100, g_size.height() - 158);
+			
+			if(pos.x < INTERFACE_RATIO( 10 + 32 ))
+				pos.x = INTERFACE_RATIO( 10 + 32 );
+	
+			for(long i = 0; i < 5; i++) {
+				if((needdraw & (1<<i)) && iconequip[i]) {
+					long eq=-1;
+	
+					switch(i) {
+						case 0:
+							eq = EQUIP_SLOT_WEAPON;
+							break;
+						case 1:
+							eq = EQUIP_SLOT_SHIELD;
+							break;
+						case 2:
+							eq = EQUIP_SLOT_HELMET;
+							break;
+						case 3:
+							eq = EQUIP_SLOT_ARMOR;
+							break;
+						case 4:
+							eq = EQUIP_SLOT_LEGGINGS;
+							break;
+					}
+	
+					if(player.equiped[eq] > 0) {
+						Entity *io = entities[player.equiped[eq]];
+						float ratio = io->durability / io->max_durability;
+						Color col = Color3f(1.f-ratio, ratio, 0).to<u8>();
+						EERIEDrawBitmap2(pos.x, pos.y, INTERFACE_RATIO_DWORD(iconequip[i]->m_dwWidth),
+						                 INTERFACE_RATIO_DWORD(iconequip[i]->m_dwHeight), 0.001f, iconequip[i], col);
+					}
+				}
+			}
+	
+			currpos += static_cast<long>(INTERFACE_RATIO(33.f));
+			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+		}
 	}
-}
+};
+DamagedEquipmentGui damagedEquipmentGui;
+
+
 
 //-----------------------------------------------------------------------------
 void ARX_INTERFACE_RELEASESOUND()
@@ -6608,7 +6615,7 @@ void ArxGame::drawAllInterface() {
 		}
 		SpecialCursor=CURSOR_INTERACTION_ON;
 	}
-	ARX_INTERFACE_DrawDamagedEquipment();
+	damagedEquipmentGui.draw();
 	if(!(player.Interface & INTER_COMBATMODE)) {
 		DrawIcons();
 	}
