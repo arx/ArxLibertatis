@@ -6320,9 +6320,8 @@ public:
 		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 		GRenderer->SetBlendFunc(Renderer::BlendSrcColor, Renderer::BlendOne);
 		
-		float w = INTERFACE_RATIO_DWORD(tex->m_dwWidth);
-		float h = INTERFACE_RATIO_DWORD(tex->m_dwHeight);
-		EERIEDrawBitmap2(0, 0, w, h, 0.f, tex, Color::gray(alpha));
+		Vec2f size = Vec2f(tex->size());
+		EERIEDrawBitmap2(0, 0, size.x, size.y, 0.f, tex, Color::gray(alpha));
 		
 		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	}
