@@ -6409,7 +6409,6 @@ public:
 		ARX_INTERFACE_DrawItem(ITC.Get("empty_gauge_blue"), HealthGaugePos.x, HealthGaugePos.y, 0.f); //399
 		
 		Color ulcolor = Color::red;
-		float fSLID_VALUE_neg = static_cast<float>(-lSLID_VALUE);
 		
 		if(player.poison > 0.f) {
 			float val = std::min(player.poison, 0.2f) * 255.f * 5.f;
@@ -6417,7 +6416,11 @@ public:
 			ulcolor = Color(u8(255 - g), u8(g) , 0);
 		}
 		
-		EERIEDrawBitmap2DecalY(fSLID_VALUE_neg, g_size.height() - INTERFACE_RATIO(78),
+		Vec2f pos = Vec2f(g_size.bottomLeft());
+		pos += Vec2f(0, -78);
+		pos.x += static_cast<float>(-lSLID_VALUE);
+		
+		EERIEDrawBitmap2DecalY(pos.x, pos.y,
 			INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_red")->m_dwWidth),
 			INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_red")->m_dwHeight),
 			0.f, ITC.Get("filled_gauge_red"), ulcolor, (1.f - HealthGaugeAmount));
@@ -6425,10 +6428,10 @@ public:
 		if(!(player.Interface & INTER_COMBATMODE)) {
 			
 			const Rect redGaugeMouseTestRect(
-				fSLID_VALUE_neg,
-				g_size.height() - INTERFACE_RATIO(78),
-				fSLID_VALUE_neg + INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_red")->m_dwWidth),
-				g_size.height() - INTERFACE_RATIO(78) + INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_red")->m_dwHeight)
+				pos.x,
+				pos.y,
+				pos.x + INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_red")->m_dwWidth),
+				pos.y + INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_red")->m_dwHeight)
 			);
 			
 			if(redGaugeMouseTestRect.contains(Vec2i(DANAEMouse))) {
