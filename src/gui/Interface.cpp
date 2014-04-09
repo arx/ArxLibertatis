@@ -5636,17 +5636,19 @@ public:
 		
 							float px = INTERFACE_RATIO(InventoryX) + (float)i*INTERFACE_RATIO(32) + INTERFACE_RATIO(2);
 							float py = (float)j*INTERFACE_RATIO(32) + INTERFACE_RATIO(13);
-		
+							
+							Vec2f size = Vec2f(tc->size());
+							
 							Color color = (io->poisonous && io->poisonous_count!=0) ? Color::green : Color::white;
-							EERIEDrawBitmap(px, py, INTERFACE_RATIO_DWORD(tc->m_dwWidth),
-							                INTERFACE_RATIO_DWORD(tc->m_dwHeight), 0.001f, tc, color);
-		
+							EERIEDrawBitmap(px, py, size.x, size.y, 0.001f, tc, color);
+							
 							if (!bItemSteal && (io==FlyingOverIO))
 							{
 								GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 								GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-								EERIEDrawBitmap(px, py, INTERFACE_RATIO_DWORD(tc->m_dwWidth),
-								                INTERFACE_RATIO_DWORD(tc->m_dwHeight), 0.001f, tc, Color::white);
+								
+								EERIEDrawBitmap(px, py, size.x, size.y, 0.001f, tc, Color::white);
+								
 								GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 							}
 							else if(!bItemSteal && (io->ioflags & IO_CAN_COMBINE)) {
@@ -5654,9 +5656,8 @@ public:
 								GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 								
 								float fColorPulse = fabs(cos(radians(fDecPulse)));
-								EERIEDrawBitmap(px, py, INTERFACE_RATIO_DWORD(tc->m_dwWidth),
-								                INTERFACE_RATIO_DWORD(tc->m_dwHeight), 0.001f, tc,
-								                Color3f::gray(fColorPulse).to<u8>());
+								EERIEDrawBitmap(px, py, size.x, size.y, 0.001f, tc, Color3f::gray(fColorPulse).to<u8>());
+								
 								GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 							}
 		
