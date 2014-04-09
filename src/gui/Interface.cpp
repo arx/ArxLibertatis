@@ -6123,8 +6123,11 @@ public:
 		DrawIcon(m_pos, "gold", MOUSE_IN_GOLD_ICON);
 		if(eMouseState == MOUSE_IN_GOLD_ICON) {
 			SpecialCursor=CURSOR_INTERACTION_ON;
-			ARX_INTERFACE_DrawNumber(m_pos.x - INTERFACE_RATIO(30),
-				m_pos.y + INTERFACE_RATIO(10 - 25), player.gold, 6, Color::white);
+			
+			Vec2f numberPos = m_pos;
+			numberPos += Vec2f(- INTERFACE_RATIO(30), + INTERFACE_RATIO(10 - 25));
+			
+			ARX_INTERFACE_DrawNumber(numberPos.x, numberPos.y, player.gold, 6, Color::white);
 		}
 	}
 	
