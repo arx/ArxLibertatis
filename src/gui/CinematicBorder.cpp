@@ -26,14 +26,13 @@
 
 float				g_TimeStartCinemascope = 0;
 
-
-long				CINEMA_INC=0;
 float				CINEMA_DECAL=0.f;
 
 CinematicBorder cinematicBorder = CinematicBorder();
 
 CinematicBorder::CinematicBorder()
 	: CINEMASCOPE(false)
+	, CINEMA_INC(0)
 {}
 
 bool CinematicBorder::isActive()

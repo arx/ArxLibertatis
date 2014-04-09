@@ -36,6 +36,7 @@ public:
 	
 private:
 	bool CINEMASCOPE;
+	long CINEMA_INC;
 };
 
 extern CinematicBorder cinematicBorder;
