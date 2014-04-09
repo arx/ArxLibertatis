@@ -6229,19 +6229,19 @@ void DrawIcons() {
 class ChangeLevelIconGui{
 private:
 	Vec2f m_pos;
-	float vv;
+	float m_intensity;
 	
 public:
 	void update() {
 		m_pos = g_size.topRight();
 		m_pos.x -= ChangeLevel->m_dwWidth;
 
-		vv = 0.9f - std::sin(arxtime.get_frame_time()*( 1.0f / 50 ))*0.5f+rnd()*( 1.0f / 10 );
-		vv = clamp(vv, 0.f, 1.f);
+		m_intensity = 0.9f - std::sin(arxtime.get_frame_time()*( 1.0f / 50 ))*0.5f+rnd()*( 1.0f / 10 );
+		m_intensity = clamp(m_intensity, 0.f, 1.f);
 	}
 	
 	void draw() {
-	    ARX_INTERFACE_DrawItem(ChangeLevel, m_pos.x, m_pos.y, 0.0001f, Color3f::gray(vv).to<u8>());
+	    ARX_INTERFACE_DrawItem(ChangeLevel, m_pos.x, m_pos.y, 0.0001f, Color3f::gray(m_intensity).to<u8>());
 		
 		const Rect changeLevelIconMouseTestRect(
 		m_pos.x,
