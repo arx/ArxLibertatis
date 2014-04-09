@@ -388,7 +388,7 @@ void MiniMap::showBookEntireMap(int showLevel) {
 	
 	if(showLevel == ARX_LEVELS_GetRealNum(m_currentLevel)) {
 		playerPos = computePlayerPos(zoom, showLevel);
-		playerPos.x += start.x;
+		playerPos += start;
 	}
 	
 	drawBackground(showLevel, Rect(0, 0, 345, 290), start.x, start.y, zoom);
