@@ -241,6 +241,8 @@ void KillInterfaceTextureContainers();
 
 void UpdateInterface();
 
+void drawAllInterfaceFinish();
+
 namespace gui {
 void updateQuestBook();
 } // namespace gui

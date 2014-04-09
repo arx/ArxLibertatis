@@ -74,7 +74,6 @@ protected:
 	void updateAllInterface();
 	void drawAllInterfac(); //TODO rename this
 	void drawAllInterface();
-	void drawAllInterfaceFinish();
 
 	void update2DFX();
 	void goFor2DFX();

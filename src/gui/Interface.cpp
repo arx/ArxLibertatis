@@ -3687,6 +3687,8 @@ bool CheckSkillClick(float x, float y, float * val, TextureContainer * tc, float
 }
 
 //AFFICHAGE ICONE DE SPELLS DE DURATION
+class ActiveSpellsGui {
+private:
 
 static void StdDraw(float posx, float posy, Color color, TextureContainer * tcc, long flag, long i) {
 	
@@ -3796,6 +3798,69 @@ void ManageSpellIcon(long i, float intensity, long flag)
 
 	currpos += static_cast<long>(INTERFACE_RATIO(33.f));
 }
+public:
+void drawAllInterfaceFinish() {
+	currpos = static_cast<long>(INTERFACE_RATIO(50.f));
+	
+	float intensity = 1.f - PULSATE * 0.5f;
+	intensity = clamp(intensity, 0.f, 1.f);
+
+	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+	PRECAST_NUM = 0;
+
+	for(size_t i = 0; i < MAX_SPELLS; i++) {
+		if(   spells[i].exist
+		   && spells[i].caster == 0
+		   && spellicons[spells[i].type].bDuration
+		) {
+			ManageSpellIcon(i, intensity, 0);
+		}
+	}
+
+	if(entities.player()) {
+		Entity * playerEntity = entities.player();
+		
+		boost::container::flat_set<long>::const_iterator it;
+		for(it = playerEntity->spellsOn.begin(); it != playerEntity->spellsOn.end(); ++it) {
+			long spellHandle = *it;
+			if(spellHandleIsValid(spellHandle)) {
+				SPELL * spell = &spells[spellHandle];
+				
+				if(spell->caster != 0 && spellicons[spell->type].bDuration) {
+					ManageSpellIcon(spellHandle, intensity, 1);
+				}
+			}
+		}
+	}
+
+	if(!(player.Interface & INTER_INVENTORYALL) && !(player.Interface & INTER_MAP)) {
+		for(size_t i = 0; i < MAX_PRECAST; i++) {
+			PRECAST_NUM = i;
+
+			if(Precast[i].typ!=-1) {
+				float val = intensity;
+
+				if(Precast[i].launch_time > 0 && (float(arxtime) >= Precast[i].launch_time)) {
+					float tt = (float(arxtime) - Precast[i].launch_time) * (1.0f/1000);
+
+					if(tt > 1.f)
+						tt = 1.f;
+
+					val *= (1.f - tt);
+				}
+				ManageSpellIcon(Precast[i].typ,val,2);
+			}
+		}
+	}
+}
+};
+ActiveSpellsGui activeSpellsGui;
+
+void drawAllInterfaceFinish() {
+	activeSpellsGui.drawAllInterfaceFinish();
+}
+
 
 void ARX_INTERFACE_ManageOpenedBook_Finish()
 {
@@ -5442,61 +5507,6 @@ void ARX_INTERFACE_ManageOpenedBook()
 	}	
 }
 
-void ArxGame::drawAllInterfaceFinish() {
-	currpos = static_cast<long>(INTERFACE_RATIO(50.f));
-	
-	float intensity = 1.f - PULSATE * 0.5f;
-	intensity = clamp(intensity, 0.f, 1.f);
-
-	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	PRECAST_NUM = 0;
-
-	for(size_t i = 0; i < MAX_SPELLS; i++) {
-		if(   spells[i].exist
-		   && spells[i].caster == 0
-		   && spellicons[spells[i].type].bDuration
-		) {
-			ManageSpellIcon(i, intensity, 0);
-		}
-	}
-
-	if(entities.player()) {
-		Entity * playerEntity = entities.player();
-		
-		boost::container::flat_set<long>::const_iterator it;
-		for(it = playerEntity->spellsOn.begin(); it != playerEntity->spellsOn.end(); ++it) {
-			long spellHandle = *it;
-			if(spellHandleIsValid(spellHandle)) {
-				SPELL * spell = &spells[spellHandle];
-				
-				if(spell->caster != 0 && spellicons[spell->type].bDuration) {
-					ManageSpellIcon(spellHandle, intensity, 1);
-				}
-			}
-		}
-	}
-
-	if(!(player.Interface & INTER_INVENTORYALL) && !(player.Interface & INTER_MAP)) {
-		for(size_t i = 0; i < MAX_PRECAST; i++) {
-			PRECAST_NUM = i;
-
-			if(Precast[i].typ!=-1) {
-				float val = intensity;
-
-				if(Precast[i].launch_time > 0 && (float(arxtime) >= Precast[i].launch_time)) {
-					float tt = (float(arxtime) - Precast[i].launch_time) * (1.0f/1000);
-
-					if(tt > 1.f)
-						tt = 1.f;
-
-					val *= (1.f - tt);
-				}
-				ManageSpellIcon(Precast[i].typ,val,2);
-			}
-		}
-	}
-}
 
 extern float GLOBAL_SLOWDOWN;
 
