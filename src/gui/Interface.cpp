@@ -5859,7 +5859,7 @@ public:
 		}
 	}
 	
-	void DrawInventory() {
+	void draw() {
 		if(player.Interface & INTER_INVENTORY) {		
 			if(player.bag) {
 				ARX_INTERFACE_DrawInventory(sActiveInventory);
@@ -6608,7 +6608,7 @@ void ArxGame::drawAllInterface() {
 	}	
 	secondaryInventory.draw();
 	if(!PLAYER_INTERFACE_HIDE_COUNT) {
-			inventoryGui.DrawInventory();
+			inventoryGui.draw();
 	}
 	if(FlyingOverIO 
 		&& !(player.Interface & INTER_COMBATMODE)
