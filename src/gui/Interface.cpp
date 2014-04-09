@@ -384,7 +384,7 @@ static void ARX_INTERFACE_DrawItem(TextureContainer * tc, float x, float y, floa
 	}
 }
 
-void ARX_INTERFACE_DrawNumber(const float x, const float y, const long num, const int _iNb, const Color color) {
+void ARX_INTERFACE_DrawNumber(const Vec2f & pos, const long num, const int _iNb, const Color color) {
 	
 	ColorBGRA col = color.toBGRA();
 	
@@ -416,10 +416,10 @@ void ARX_INTERFACE_DrawNumber(const float x, const float y, const long num, cons
 			if (tt>=0)
 			{
 				removezero=0;
-				v[0].p.x=v[3].p.x=x + i*INTERFACE_RATIO(10);
+				v[0].p.x=v[3].p.x=pos.x + i*INTERFACE_RATIO(10);
 				v[1].p.x = v[2].p.x = v[0].p.x + INTERFACE_RATIO(10);
-				v[0].p.y=v[1].p.y=y;
-				v[2].p.y=v[3].p.y=y + INTERFACE_RATIO(10);
+				v[0].p.y=v[1].p.y=pos.y;
+				v[2].p.y=v[3].p.y=pos.y + INTERFACE_RATIO(10);
 				v[0].color=v[1].color=v[2].color=v[3].color=col;
 
 				ttx = (float)((float)tt * (float)11.f) + 1.5f;
@@ -5665,7 +5665,7 @@ public:
 							}
 		
 							if((io->ioflags & IO_ITEM) && io->_itemdata->count != 1)
-								ARX_INTERFACE_DrawNumber(px, py, io->_itemdata->count, 3, Color::white);
+								ARX_INTERFACE_DrawNumber(Vec2f(px, py), io->_itemdata->count, 3, Color::white);
 						}
 					}
 				}
@@ -5818,7 +5818,7 @@ public:
 						}
 	
 						if((io->ioflags & IO_ITEM) && io->_itemdata->count != 1)
-							ARX_INTERFACE_DrawNumber(px, py, io->_itemdata->count, 3, Color::white);
+							ARX_INTERFACE_DrawNumber(Vec2f(px, py), io->_itemdata->count, 3, Color::white);
 					}
 				}
 			}
@@ -5937,9 +5937,9 @@ static InventoryGui inventoryGui;
 void DrawItemPrice() {
 	Entity *temp = SecondaryInventory->io;
 	if(temp->ioflags & IO_SHOP) {
-		float px = DANAEMouse.x;
-		float py = static_cast<float>(DANAEMouse.y - 10);
-
+		Vec2f pos = Vec2f(DANAEMouse);
+		pos += Vec2f(0, -10);
+		
 		if(InSecondaryInventoryPos(DANAEMouse)) {
 			long amount=ARX_INTERACTIVE_GetPrice(FlyingOverIO,temp);
 			// achat
@@ -5948,9 +5948,9 @@ void DrawItemPrice() {
 			amount = checked_range_cast<long>(famount);
 
 			if(amount <= player.gold) {
-				ARX_INTERFACE_DrawNumber(px, py, amount, 6, Color::green);
+				ARX_INTERFACE_DrawNumber(pos, amount, 6, Color::green);
 			} else {
-				ARX_INTERFACE_DrawNumber(px, py, amount, 6, Color::red);
+				ARX_INTERFACE_DrawNumber(pos, amount, 6, Color::red);
 			}
 		} else if(InPlayerInventoryPos(DANAEMouse)) {
 			long amount = static_cast<long>( ARX_INTERACTIVE_GetPrice( FlyingOverIO, temp ) / 3.0f );
@@ -5963,9 +5963,9 @@ void DrawItemPrice() {
 				if(temp->shop_category.empty() ||
 				   FlyingOverIO->groups.find(temp->shop_category) != FlyingOverIO->groups.end()) {
 
-					ARX_INTERFACE_DrawNumber(px, py, amount, 6, Color::green);
+					ARX_INTERFACE_DrawNumber(pos, amount, 6, Color::green);
 				} else {
-					ARX_INTERFACE_DrawNumber(px, py, amount, 6, Color::red);
+					ARX_INTERFACE_DrawNumber(pos, amount, 6, Color::red);
 				}
 			}
 		}
@@ -6132,7 +6132,7 @@ public:
 			Vec2f numberPos = m_pos;
 			numberPos += Vec2f(- INTERFACE_RATIO(30), + INTERFACE_RATIO(10 - 25));
 			
-			ARX_INTERFACE_DrawNumber(numberPos.x, numberPos.y, player.gold, 6, Color::white);
+			ARX_INTERFACE_DrawNumber(numberPos, player.gold, 6, Color::white);
 		}
 	}
 	

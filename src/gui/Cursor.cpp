@@ -484,7 +484,8 @@ void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 
 							if(v > 0.f) {
 								long t = v;
-								ARX_INTERFACE_DrawNumber(mousePos.x - 16, mousePos.y - 10, t, 6, Color::cyan);
+								Vec2f nuberOffset = Vec2f(-16, -10);
+								ARX_INTERFACE_DrawNumber(mousePos + nuberOffset, t, 6, Color::cyan);
 							}
 						}
 					} else {
@@ -629,8 +630,10 @@ void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 						if(!(DRAGINTER->ioflags & IO_MOVABLE)) {
 							EERIEDrawBitmap(mx, my, fTexSizeX, fTexSizeY, .00001f, tc, color);
 
-							if((DRAGINTER->ioflags & IO_ITEM) && DRAGINTER->_itemdata->count != 1)
-								ARX_INTERFACE_DrawNumber(mx + 2.f, my + 13.f, DRAGINTER->_itemdata->count, 3, Color::white);
+							if((DRAGINTER->ioflags & IO_ITEM) && DRAGINTER->_itemdata->count != 1) {
+								Vec2f nuberOffset = Vec2f(2.f, 13.f);
+								ARX_INTERFACE_DrawNumber(Vec2f(mx, my) + nuberOffset, DRAGINTER->_itemdata->count, 3, Color::white);
+							}
 						} else {
 							if((InInventoryPos(DANAEMouse) || InSecondaryInventoryPos(DANAEMouse)) || CANNOT_PUT_IT_HERE != -1) {
 								EERIEDrawBitmap(mx, my, fTexSizeX, fTexSizeY, .00001f, tc, color);
