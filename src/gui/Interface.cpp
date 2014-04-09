@@ -6520,52 +6520,51 @@ public:
 MecanismIcon mecanismIcon;
 
 
-
-
-
-
-
-struct HudScreenArrows{
+class ScreenArrows {
+private:
 	float fSizeX;
 	float fSizeY;
 	float fArrowMove;
 	float fMove;
-};
-
-HudScreenArrows ScreenArrows;
-
-void UpdateScreenBorderArrows() {
-	ScreenArrows.fSizeX = INTERFACE_RATIO_DWORD(arrow_left_tc->m_dwWidth);
-	ScreenArrows.fSizeY = INTERFACE_RATIO_DWORD(arrow_left_tc->m_dwHeight);
-	ScreenArrows.fArrowMove += .5f * framedelay;
-	if(ScreenArrows.fArrowMove > 180.f) {
-		ScreenArrows.fArrowMove=0.f;
+public:
+	void update() {
+		fSizeX = INTERFACE_RATIO_DWORD(arrow_left_tc->m_dwWidth);
+		fSizeY = INTERFACE_RATIO_DWORD(arrow_left_tc->m_dwHeight);
+		fArrowMove += .5f * framedelay;
+		if(fArrowMove > 180.f) {
+			fArrowMove=0.f;
+		}
+		fMove=fabs(sin(radians(fArrowMove)))*fSizeX*.5f;
 	}
-	ScreenArrows.fMove=fabs(sin(radians(ScreenArrows.fArrowMove)))*ScreenArrows.fSizeX*.5f;
-}
+	
+	void draw() {
+		Color lcolor = Color3f::gray(.5f).to<u8>();
+		// Left
+		EERIEDrawBitmap(0 + fMove, g_size.center().y - (fSizeY * .5f),
+			fSizeX, fSizeY, 0.01f, arrow_left_tc, lcolor);
+		// Right
+		EERIEDrawBitmapUVs(g_size.width() - fSizeX - fMove, g_size.center().y - (fSizeY * .5f),
+			fSizeX, fSizeY, .01f, arrow_left_tc, lcolor, 1.f, 0.f, 0.f, 0.f, 1.f, 1.f, 0.f, 1.f);
+		// Up
+		EERIEDrawBitmapUVs(g_size.center().x - (fSizeY * .5f), 0.f + fMove,
+			fSizeY, fSizeX, .01f, arrow_left_tc, lcolor, 0.f, 1.f, 0.f, 0.f, 1.f, 1.f, 1.f, 0.f);
+		// Down
+		EERIEDrawBitmapUVs(g_size.center().x - (fSizeY * .5f), (g_size.height() - fSizeX) - fMove,
+			fSizeY, fSizeX, .01f, arrow_left_tc, lcolor, 1.f, 1.f, 1.f, 0.f, 0.f, 1.f, 0.f, 0.f);
+	}
+};
+ScreenArrows screenArrows;
 
-void DrawScreenBorderArrows() {	
-	Color lcolor = Color3f::gray(.5f).to<u8>();
-	// Left
-	EERIEDrawBitmap(0 + ScreenArrows.fMove, g_size.center().y - (ScreenArrows.fSizeY * .5f), 
-		ScreenArrows.fSizeX, ScreenArrows.fSizeY, 0.01f, arrow_left_tc, lcolor);
-	// Right
-	EERIEDrawBitmapUVs(g_size.width() - ScreenArrows.fSizeX - ScreenArrows.fMove, g_size.center().y - (ScreenArrows.fSizeY * .5f), 
-		ScreenArrows.fSizeX, ScreenArrows.fSizeY, .01f, arrow_left_tc, lcolor, 1.f, 0.f, 0.f, 0.f, 1.f, 1.f, 0.f, 1.f);
-	// Up
-	EERIEDrawBitmapUVs(g_size.center().x - (ScreenArrows.fSizeY * .5f), 0.f + ScreenArrows.fMove, 
-		ScreenArrows.fSizeY, ScreenArrows.fSizeX, .01f, arrow_left_tc, lcolor, 0.f, 1.f, 0.f, 0.f, 1.f, 1.f, 1.f, 0.f);
-	// Down
-	EERIEDrawBitmapUVs(g_size.center().x - (ScreenArrows.fSizeY * .5f), (g_size.height() - ScreenArrows.fSizeX) - ScreenArrows.fMove, 
-		ScreenArrows.fSizeY, ScreenArrows.fSizeX, .01f, arrow_left_tc, lcolor, 1.f, 1.f, 1.f, 0.f, 0.f, 1.f, 0.f, 0.f);
-}
+
+
+
 
 void UpdateInterface() {
 	UpdateCombatInterface();
 	UpdateSecondaryInvOrStealInv();
 	UpdateInventory();	
 	mecanismIcon.update();
-	UpdateScreenBorderArrows();
+	screenArrows.update();
 	healthGauge.update();
 	manaGauge.update();
 	memorizedSpellIconsGui.update();
@@ -6624,7 +6623,7 @@ void ArxGame::drawAllInterface() {
 				mecanismIcon.draw();
 			}
 			if(arrow_left_tc) {
-				DrawScreenBorderArrows();
+				screenArrows.draw();
 			}
 			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 		}
