@@ -1446,27 +1446,26 @@ bool Menu2_Render() {
 
 	if(pTextureLoadRender) {
 		GRenderer->SetRenderState(Renderer::DepthTest, false);
-
-		int iOffsetX = 0;
-		int iOffsetY=0;
-
+		
+		Vec2f offset = Vec2f(0, 0);
+		
 		if((DANAEMouse.y + INTERFACE_RATIO_DWORD(pTextureLoad->m_dwHeight)) > g_size.height()) {
 			
-			float fOffestY = iOffsetY - INTERFACE_RATIO_DWORD(pTextureLoad->m_dwHeight) ;
-			iOffsetY = checked_range_cast<int>(fOffestY);
+			float fOffestY = offset.y - INTERFACE_RATIO_DWORD(pTextureLoad->m_dwHeight) ;
+			offset.y = checked_range_cast<int>(fOffestY);
 		}
 
-		EERIEDrawBitmap(static_cast<float>(DANAEMouse.x + iOffsetX),
-		                static_cast<float>(DANAEMouse.y + iOffsetY),
+		EERIEDrawBitmap(static_cast<float>(DANAEMouse.x + offset.x),
+		                static_cast<float>(DANAEMouse.y + offset.y),
 		                (float)INTERFACE_RATIO_DWORD(pTextureLoad->m_dwWidth),
 		                (float)INTERFACE_RATIO_DWORD(pTextureLoad->m_dwHeight),
 		                0.001f, pTextureLoad, Color::white);
 
 		GRenderer->ResetTexture(0);
-		EERIEDraw2DRect(static_cast<float>(DANAEMouse.x + iOffsetX),
-		                static_cast<float>(DANAEMouse.y + iOffsetY),
-		                DANAEMouse.x + iOffsetX + (float)INTERFACE_RATIO_DWORD(pTextureLoad->m_dwWidth),
-		                DANAEMouse.y + iOffsetY + (float)INTERFACE_RATIO_DWORD(pTextureLoad->m_dwHeight),
+		EERIEDraw2DRect(static_cast<float>(DANAEMouse.x + offset.x),
+		                static_cast<float>(DANAEMouse.y + offset.y),
+		                DANAEMouse.x + offset.x + (float)INTERFACE_RATIO_DWORD(pTextureLoad->m_dwWidth),
+		                DANAEMouse.y + offset.y + (float)INTERFACE_RATIO_DWORD(pTextureLoad->m_dwHeight),
 		                0.01f, Color::white);
 
 		pTextureLoadRender=NULL;
