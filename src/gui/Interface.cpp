@@ -5628,24 +5628,40 @@ void drawCombatInterface() {
 	PostCombatInterface(); //TODO this
 }
 
-Entity* getSecondaryOrStealInvEntity() {
-	if(SecondaryInventory) {
-		return SecondaryInventory->io;
-	} else if(player.Interface & INTER_STEAL) {
-		return ioSteal;
+class SecondaryInventoryGui {
+public:
+	Entity* getSecondaryOrStealInvEntity() {
+		if(SecondaryInventory) {
+			return SecondaryInventory->io;
+		} else if(player.Interface & INTER_STEAL) {
+			return ioSteal;
+		}
+		return NULL;
 	}
-	return NULL;
-}
-
-void UpdateSecondaryInvOrStealInv() {
-	Entity * io = getSecondaryOrStealInvEntity();
-	if(io) {
-		float dist = fdist(io->pos, player.pos + (Vec3f_Y_AXIS * 80.f));
-		if(Project.telekinesis) {
-			if(dist > 900.f) {
+	
+	void update() {
+		Entity * io = getSecondaryOrStealInvEntity();
+		if(io) {
+			float dist = fdist(io->pos, player.pos + (Vec3f_Y_AXIS * 80.f));
+			if(Project.telekinesis) {
+				if(dist > 900.f) {
+					if(InventoryDir != -1) {
+						ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
+	
+						InventoryDir=-1;
+						SendIOScriptEvent(io,SM_INVENTORY2_CLOSE);
+						TSecondaryInventory=SecondaryInventory;
+						SecondaryInventory=NULL;
+					} else {
+						if(player.Interface & INTER_STEAL) {
+							player.Interface &= ~INTER_STEAL;
+						}
+					}
+				}
+			} else if(dist > 350.f) {
 				if(InventoryDir != -1) {
 					ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
-
+	
 					InventoryDir=-1;
 					SendIOScriptEvent(io,SM_INVENTORY2_CLOSE);
 					TSecondaryInventory=SecondaryInventory;
@@ -5656,31 +5672,18 @@ void UpdateSecondaryInvOrStealInv() {
 					}
 				}
 			}
-		} else if(dist > 350.f) {
-			if(InventoryDir != -1) {
-				ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
-
-				InventoryDir=-1;
-				SendIOScriptEvent(io,SM_INVENTORY2_CLOSE);
-				TSecondaryInventory=SecondaryInventory;
-				SecondaryInventory=NULL;
-			} else {
-				if(player.Interface & INTER_STEAL) {
-					player.Interface &= ~INTER_STEAL;
-				}
-			}
+		} else if(InventoryDir != -1) {
+			InventoryDir = -1;
 		}
-	} else if(InventoryDir != -1) {
-		InventoryDir = -1;
 	}
-}
-
-void DrawSecondaryInvOrStealInv() {	
-	if(!PLAYER_INTERFACE_HIDE_COUNT && TSecondaryInventory) {
-		ARX_INTERFACE_DrawSecondaryInventory((bool)((player.Interface & INTER_STEAL) != 0));
+	
+	void draw() {
+		if(!PLAYER_INTERFACE_HIDE_COUNT && TSecondaryInventory) {
+			ARX_INTERFACE_DrawSecondaryInventory((bool)((player.Interface & INTER_STEAL) != 0));
+		}
 	}
-}
-
+};
+SecondaryInventoryGui secondaryInventory;
 
 
 class InventoryGui {
@@ -6563,7 +6566,7 @@ ScreenArrows screenArrows;
 
 void UpdateInterface() {
 	UpdateCombatInterface();
-	UpdateSecondaryInvOrStealInv();
+	secondaryInventory.update();
 	inventoryGui.update();
 	mecanismIcon.update();
 	screenArrows.update();
@@ -6583,7 +6586,7 @@ void ArxGame::drawAllInterface() {
 	if(player.Interface & INTER_COMBATMODE) {
 		drawCombatInterface();
 	}	
-	DrawSecondaryInvOrStealInv();	
+	secondaryInventory.draw();
 	if(!PLAYER_INTERFACE_HIDE_COUNT) {
 			inventoryGui.DrawInventory();
 	}
