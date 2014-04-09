@@ -22,6 +22,7 @@
 #include "core/Core.h"
 #include "core/GameTime.h"
 #include "game/Player.h"
+#include "graphics/Renderer.h"
 #include "gui/Interface.h"
 
 float				CINEMA_DECAL=0.f;
@@ -80,7 +81,6 @@ void CinematicBorder::set(bool status, bool smooth)
 		player.Interface &=~ INTER_INVENTORYALL;
 }
 
-
 void CinematicBorder::update() {
 	
 	if(CINEMA_INC == 1) {
@@ -97,5 +97,20 @@ void CinematicBorder::update() {
 			CINEMA_DECAL = 0.f;
 			CINEMA_INC = 0;
 		}
+	}
+}
+
+void CinematicBorder::render() {
+	
+	if(CINEMA_DECAL != 0.f) {
+		Rect rectz[2];
+		rectz[0].left = rectz[1].left = 0;
+		rectz[0].right = rectz[1].right = g_size.width();
+		rectz[0].top = 0;
+		long lMulResult = checked_range_cast<long>(CINEMA_DECAL * g_sizeRatio.y);
+		rectz[0].bottom = lMulResult;
+		rectz[1].top = g_size.height() - lMulResult;
+		rectz[1].bottom = g_size.height();
+		GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer, Color::none, 0.0f, 2, rectz);
 	}
 }

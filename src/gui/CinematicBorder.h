@@ -35,6 +35,8 @@ public:
 	void update();
 	void set(bool status, bool smooth);
 	
+	void render();
+	
 private:
 	bool CINEMASCOPE;
 	long CINEMA_INC;
