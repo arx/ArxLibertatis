@@ -6273,53 +6273,71 @@ public:
 ChangeLevelIconGui changeLevelIconGui;
 
 
+class QuickSaveIconGui {
+private:
+	//! Time in ms to show the icon
+	u32 QUICK_SAVE_ICON_TIME;
+	//! Remaining time for the quick sive icon
+	unsigned g_quickSaveIconTime;
+	
+public:
+	QuickSaveIconGui()
+		: QUICK_SAVE_ICON_TIME(1000)
+		, g_quickSaveIconTime(0)
+	{}
+	
+	void show() {
+		g_quickSaveIconTime = QUICK_SAVE_ICON_TIME;
+	}
+	
+	void hide() {
+		g_quickSaveIconTime = 0;
+	}
+	
+	void update() {
+		if(g_quickSaveIconTime) {
+			if(g_quickSaveIconTime > unsigned(framedelay)) {
+				g_quickSaveIconTime -= unsigned(framedelay);
+			} else {
+				g_quickSaveIconTime = 0;
+			}
+		}
+	}
+	
+	void draw() {
+		if(!g_quickSaveIconTime) {
+			return;
+		}
+		
+		// Flash the icon twice, starting at about 0.7 opacity
+		float step = 1.f - float(g_quickSaveIconTime) * (1.f / QUICK_SAVE_ICON_TIME);
+		float alpha = std::min(1.f, 0.6f * (std::sin(step * (7.f / 2.f * PI)) + 1.f));
+		
+		TextureContainer * tex = TextureContainer::LoadUI("graph/interface/icons/menu_main_save");
+		if(!tex) {
+			return;
+		}
+		
+		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+		GRenderer->SetBlendFunc(Renderer::BlendSrcColor, Renderer::BlendOne);
+		
+		float w = INTERFACE_RATIO_DWORD(tex->m_dwWidth);
+		float h = INTERFACE_RATIO_DWORD(tex->m_dwHeight);
+		EERIEDrawBitmap2(0, 0, w, h, 0.f, tex, Color::gray(alpha));
+		
+		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+	}
+};
 
+QuickSaveIconGui quickSaveIconGui = QuickSaveIconGui();
 
-
-static const unsigned QUICK_SAVE_ICON_TIME = 1000; //!< Time in ms to show the icon
-static unsigned g_quickSaveIconTime = 0; //!< Remaining time for the quick sive icon
 
 void showQuickSaveIcon() {
-	g_quickSaveIconTime = QUICK_SAVE_ICON_TIME;
+	quickSaveIconGui.show();
 }
 
 static void hideQuickSaveIcon() {
-	g_quickSaveIconTime = 0;
-}
-
-static void updateQuickSaveIcon() {
-	if(g_quickSaveIconTime) {
-		if(g_quickSaveIconTime > unsigned(framedelay)) {
-			g_quickSaveIconTime -= unsigned(framedelay);
-		} else {
-			g_quickSaveIconTime = 0;
-		}
-	}
-}
-
-static void drawQuickSaveIcon() {
-	
-	if(!g_quickSaveIconTime) {
-		return;
-	}
-	
-	// Flash the icon twice, starting at about 0.7 opacity
-	float step = 1.f - float(g_quickSaveIconTime) * (1.f / QUICK_SAVE_ICON_TIME);
-	float alpha = std::min(1.f, 0.6f * (std::sin(step * (7.f / 2.f * PI)) + 1.f));
-	
-	TextureContainer * tex = TextureContainer::LoadUI("graph/interface/icons/menu_main_save");
-	if(!tex) {
-		return;
-	}
-	
-	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	GRenderer->SetBlendFunc(Renderer::BlendSrcColor, Renderer::BlendOne);
-	
-	float w = INTERFACE_RATIO_DWORD(tex->m_dwWidth);
-	float h = INTERFACE_RATIO_DWORD(tex->m_dwHeight);
-	EERIEDrawBitmap2(0, 0, w, h, 0.f, tex, Color::gray(alpha));
-	
-	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+	quickSaveIconGui.hide();
 }
 
 int MemorizedSpellCount;
@@ -6529,7 +6547,7 @@ void UpdateInterface() {
 	UpdateHealthManaGauges();
 	UpdateMemorizedSpells();
 	changeLevelIconGui.update();
-	updateQuickSaveIcon();
+	quickSaveIconGui.update();
 }
 
 void ArxGame::drawAllInterface() {
@@ -6562,7 +6580,7 @@ void ArxGame::drawAllInterface() {
 	if(CHANGE_LEVEL_ICON > -1 && ChangeLevel) {
 		changeLevelIconGui.draw();
 	}
-	drawQuickSaveIcon();
+	quickSaveIconGui.draw();
 	// Draw stealth gauge
 	ARX_INTERFACE_Draw_Stealth_Gauge();
 
