@@ -6111,8 +6111,10 @@ private:
 	Vec2f m_pos;
 public:
 	void update() {
-		m_pos.x = g_size.width() - INTERFACE_RATIO(35) + lSLID_VALUE+2;
-		m_pos.y = g_size.height() - INTERFACE_RATIO(183);
+		m_pos = g_size.bottomRight();
+		m_pos += Vec2f(-35, -183);
+		m_pos.x += lSLID_VALUE;
+		m_pos.x += 2;
 	}
 	void draw() {
 		DrawIcon(m_pos, "gold", MOUSE_IN_GOLD_ICON);
