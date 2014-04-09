@@ -6526,35 +6526,35 @@ MecanismIcon mecanismIcon;
 
 class ScreenArrows {
 private:
-	float fSizeX;
-	float fSizeY;
+	Vec2f m_arrowSize;
+
 	float fArrowMove;
 	float fMove;
 public:
 	void update() {
-		fSizeX = INTERFACE_RATIO_DWORD(arrow_left_tc->m_dwWidth);
-		fSizeY = INTERFACE_RATIO_DWORD(arrow_left_tc->m_dwHeight);
+		m_arrowSize = Vec2f(arrow_left_tc->size());
+		
 		fArrowMove += .5f * framedelay;
 		if(fArrowMove > 180.f) {
 			fArrowMove=0.f;
 		}
-		fMove=fabs(sin(radians(fArrowMove)))*fSizeX*.5f;
+		fMove=fabs(sin(radians(fArrowMove)))*m_arrowSize.x*.5f;
 	}
 	
 	void draw() {
 		Color lcolor = Color3f::gray(.5f).to<u8>();
 		// Left
-		EERIEDrawBitmap(0 + fMove, g_size.center().y - (fSizeY * .5f),
-			fSizeX, fSizeY, 0.01f, arrow_left_tc, lcolor);
+		EERIEDrawBitmap(0 + fMove, g_size.center().y - (m_arrowSize.y * .5f),
+			m_arrowSize.x, m_arrowSize.y, 0.01f, arrow_left_tc, lcolor);
 		// Right
-		EERIEDrawBitmapUVs(g_size.width() - fSizeX - fMove, g_size.center().y - (fSizeY * .5f),
-			fSizeX, fSizeY, .01f, arrow_left_tc, lcolor, 1.f, 0.f, 0.f, 0.f, 1.f, 1.f, 0.f, 1.f);
+		EERIEDrawBitmapUVs(g_size.width() - m_arrowSize.x - fMove, g_size.center().y - (m_arrowSize.y * .5f),
+			m_arrowSize.x, m_arrowSize.y, .01f, arrow_left_tc, lcolor, 1.f, 0.f, 0.f, 0.f, 1.f, 1.f, 0.f, 1.f);
 		// Up
-		EERIEDrawBitmapUVs(g_size.center().x - (fSizeY * .5f), 0.f + fMove,
-			fSizeY, fSizeX, .01f, arrow_left_tc, lcolor, 0.f, 1.f, 0.f, 0.f, 1.f, 1.f, 1.f, 0.f);
+		EERIEDrawBitmapUVs(g_size.center().x - (m_arrowSize.y * .5f), 0.f + fMove,
+			m_arrowSize.y, m_arrowSize.x, .01f, arrow_left_tc, lcolor, 0.f, 1.f, 0.f, 0.f, 1.f, 1.f, 1.f, 0.f);
 		// Down
-		EERIEDrawBitmapUVs(g_size.center().x - (fSizeY * .5f), (g_size.height() - fSizeX) - fMove,
-			fSizeY, fSizeX, .01f, arrow_left_tc, lcolor, 1.f, 1.f, 1.f, 0.f, 0.f, 1.f, 0.f, 0.f);
+		EERIEDrawBitmapUVs(g_size.center().x - (m_arrowSize.y * .5f), (g_size.height() - m_arrowSize.x) - fMove,
+			m_arrowSize.y, m_arrowSize.x, .01f, arrow_left_tc, lcolor, 1.f, 1.f, 1.f, 0.f, 0.f, 1.f, 0.f, 0.f);
 	}
 };
 ScreenArrows screenArrows;
