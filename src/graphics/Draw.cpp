@@ -173,9 +173,9 @@ void CreateBitmap(TexturedQuad& s, float x, float y, float sx, float sy, float z
 	s.v[3] = TexturedVertex(Vec3f(x, y + sy, z), val, col, 0xFF000000, Vec2f(0.f, uv.y));
 }
 
-void DrawBitmap(float x, float y, float sx, float sy, float z, TextureContainer * tex, Color color, bool isRhw) {
+void DrawBitmap(const Vec2f & pos, float sx, float sy, float z, TextureContainer * tex, Color color, bool isRhw) {
 	TexturedQuad s;
-	CreateBitmap(s, x, y, sx, sy, z, tex, color, isRhw);
+	CreateBitmap(s, pos.x, pos.y, sx, sy, z, tex, color, isRhw);
 	
 	GRenderer->SetTexture(0, tex);
 	if(isRhw) {
@@ -200,7 +200,7 @@ void EERIEDrawBitmap(Rect rect, float z, TextureContainer * tex, Color color) {
 }
 
 void EERIEDrawBitmap(float x, float y, float sx, float sy, float z, TextureContainer * tex, Color color) {
-	DrawBitmap(x, y, sx, sy, z, tex, color, false);
+	DrawBitmap(Vec2f(x, y), sx, sy, z, tex, color, false);
 }
 
 void EERIEDrawBitmap2(const Rectf & rect, float z, TextureContainer * tex, Color color) {
@@ -208,7 +208,7 @@ void EERIEDrawBitmap2(const Rectf & rect, float z, TextureContainer * tex, Color
 }
 
 void EERIEDrawBitmap2(float x, float y, float sx, float sy, float z, TextureContainer * tex, Color color) {
-	DrawBitmap(x, y, sx, sy, z, tex, color, true);
+	DrawBitmap(Vec2f(x, y), sx, sy, z, tex, color, true);
 }
 
 void EERIEDrawBitmap_uv(float x, float y, float sx, float sy, float z, TextureContainer * tex,
