@@ -5997,17 +5997,17 @@ void DrawIcon(const Vec2f& coords, const char* itcName, E_ARX_STATE_MOUSE hoverM
 
 class BookIconGui {
 private:
-	Vec2f BookIconCoords;
+	Vec2f m_pos;
 	
 public:
 
 	void update() {
-		BookIconCoords.x = g_size.width() - INTERFACE_RATIO(35) + lSLID_VALUE+GL_DECAL_ICONS;
-		BookIconCoords.y = g_size.height() - INTERFACE_RATIO(148);
+		m_pos.x = g_size.width() - INTERFACE_RATIO(35) + lSLID_VALUE+GL_DECAL_ICONS;
+		m_pos.y = g_size.height() - INTERFACE_RATIO(148);
 	}
 	
 	void draw() {
-		DrawIcon(BookIconCoords, "book", MOUSE_IN_BOOK_ICON);
+		DrawIcon(m_pos, "book", MOUSE_IN_BOOK_ICON);
 	}
 	
 	void drawHalo() {
@@ -6028,17 +6028,17 @@ static BookIconGui bookIconGui;
 
 class BackpackIconGui {
 private:
-	Vec2f BackpackIconCoords;
+	Vec2f m_pos;
 	
 public:
 
 	void update() {
-		BackpackIconCoords.x = g_size.width() - INTERFACE_RATIO(35) + lSLID_VALUE+GL_DECAL_ICONS;
-		BackpackIconCoords.y = g_size.height() - INTERFACE_RATIO(113);
+		m_pos.x = g_size.width() - INTERFACE_RATIO(35) + lSLID_VALUE+GL_DECAL_ICONS;
+		m_pos.y = g_size.height() - INTERFACE_RATIO(113);
 	}
 	
 	void draw() {
-		DrawIcon(BackpackIconCoords, "backpack", MOUSE_IN_INVENTORY_ICON);
+		DrawIcon(m_pos, "backpack", MOUSE_IN_INVENTORY_ICON);
 	}
 };
 
@@ -6047,15 +6047,15 @@ static BackpackIconGui backpackIconGui;
 
 class StealIconGui {
 private:
-	Vec2f StealIconCoords;
+	Vec2f m_pos;
 public:
 	void update() {
-		StealIconCoords.x = static_cast<float>(-lSLID_VALUE);
-		StealIconCoords.y = g_size.height() - INTERFACE_RATIO(78.f + 32);
+		m_pos.x = static_cast<float>(-lSLID_VALUE);
+		m_pos.y = g_size.height() - INTERFACE_RATIO(78.f + 32);
 	}
 	
 	void draw() {
-		DrawIcon(StealIconCoords, "steal", MOUSE_IN_STEAL_ICON);
+		DrawIcon(m_pos, "steal", MOUSE_IN_STEAL_ICON);
 	}
 };
 
@@ -6063,15 +6063,15 @@ static StealIconGui stealIconGui;
 
 class PickAllIconGui {
 private:
-	Vec2f PickAllIconCoords;
+	Vec2f m_pos;
 public:
 	void update() {
-		PickAllIconCoords.x = INTERFACE_RATIO(InventoryX) + INTERFACE_RATIO(16);
-		PickAllIconCoords.y = INTERFACE_RATIO_DWORD(BasicInventorySkin->m_dwHeight) - INTERFACE_RATIO(16);
+		m_pos.x = INTERFACE_RATIO(InventoryX) + INTERFACE_RATIO(16);
+		m_pos.y = INTERFACE_RATIO_DWORD(BasicInventorySkin->m_dwHeight) - INTERFACE_RATIO(16);
 	}
 	
 	void draw() {
-		DrawIcon(PickAllIconCoords, "inventory_pickall", MOUSE_IN_INVENTORY_PICKALL_ICON);
+		DrawIcon(m_pos, "inventory_pickall", MOUSE_IN_INVENTORY_PICKALL_ICON);
 	}
 };
 
@@ -6079,15 +6079,15 @@ static PickAllIconGui pickAllIconGui;
 
 class CloseSecondaryInventoryIconGui {
 private:
-	Vec2f CloseSInvIconCoords;
+	Vec2f m_pos;
 public:
 	void update() {
-		CloseSInvIconCoords.x = INTERFACE_RATIO(InventoryX) + INTERFACE_RATIO_DWORD(BasicInventorySkin->m_dwWidth) - INTERFACE_RATIO(32);
-		CloseSInvIconCoords.y = INTERFACE_RATIO_DWORD(BasicInventorySkin->m_dwHeight) - INTERFACE_RATIO(16);
+		m_pos.x = INTERFACE_RATIO(InventoryX) + INTERFACE_RATIO_DWORD(BasicInventorySkin->m_dwWidth) - INTERFACE_RATIO(32);
+		m_pos.y = INTERFACE_RATIO_DWORD(BasicInventorySkin->m_dwHeight) - INTERFACE_RATIO(16);
 	}
 	
 	void draw() {
-		DrawIcon(CloseSInvIconCoords, "inventory_close", MOUSE_IN_INVENTORY_CLOSE_ICON);
+		DrawIcon(m_pos, "inventory_close", MOUSE_IN_INVENTORY_CLOSE_ICON);
 	}
 	
 };
@@ -6096,15 +6096,15 @@ static CloseSecondaryInventoryIconGui closeSecondaryInventoryIconGui;
 
 class LevelUpIconGui {
 private:
-	Vec2f LevelUpIconCoords;
+	Vec2f m_pos;
 public:
 	void update() {
-		LevelUpIconCoords.x = g_size.width() - INTERFACE_RATIO(35) + lSLID_VALUE+GL_DECAL_ICONS;
-		LevelUpIconCoords.y = g_size.height() - INTERFACE_RATIO(218);
+		m_pos.x = g_size.width() - INTERFACE_RATIO(35) + lSLID_VALUE+GL_DECAL_ICONS;
+		m_pos.y = g_size.height() - INTERFACE_RATIO(218);
 	}
 	
 	void draw() {
-		DrawIcon(LevelUpIconCoords, "icon_lvl_up", MOUSE_IN_REDIST_ICON);
+		DrawIcon(m_pos, "icon_lvl_up", MOUSE_IN_REDIST_ICON);
 	}
 };
 
@@ -6113,18 +6113,18 @@ LevelUpIconGui levelUpIconGui;
 
 class PurseIconGui {
 private:
-	Vec2f PurseIconCoords;
+	Vec2f m_pos;
 public:
 	void update() {
-		PurseIconCoords.x = g_size.width() - INTERFACE_RATIO(35) + lSLID_VALUE+2+GL_DECAL_ICONS;
-		PurseIconCoords.y = g_size.height() - INTERFACE_RATIO(183);
+		m_pos.x = g_size.width() - INTERFACE_RATIO(35) + lSLID_VALUE+2+GL_DECAL_ICONS;
+		m_pos.y = g_size.height() - INTERFACE_RATIO(183);
 	}
 	void draw() {
-		DrawIcon(PurseIconCoords, "gold", MOUSE_IN_GOLD_ICON);
+		DrawIcon(m_pos, "gold", MOUSE_IN_GOLD_ICON);
 		if(eMouseState == MOUSE_IN_GOLD_ICON) {
 			SpecialCursor=CURSOR_INTERACTION_ON;
-			ARX_INTERFACE_DrawNumber(PurseIconCoords.x - INTERFACE_RATIO(30),
-				PurseIconCoords.y + INTERFACE_RATIO(10 - 25), player.gold, 6, Color::white);
+			ARX_INTERFACE_DrawNumber(m_pos.x - INTERFACE_RATIO(30),
+				m_pos.y + INTERFACE_RATIO(10 - 25), player.gold, 6, Color::white);
 		}
 	}
 	
@@ -6136,7 +6136,7 @@ public:
 			if(ulGoldHaloTime >= 1000) { // ms
 				bGoldHalo = false;
 			}
-			DrawHalo(0.9f, 0.9f, 0.1f, GetHaloForITC("gold"), PurseIconCoords);
+			DrawHalo(0.9f, 0.9f, 0.1f, GetHaloForITC("gold"), m_pos);
 		}
 	}
 };
