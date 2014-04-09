@@ -6418,6 +6418,8 @@ public:
 	void draw() {
 		ARX_INTERFACE_DrawItem(ITC.Get("empty_gauge_blue"), m_pos.x, m_pos.y, 0.f); //399
 		
+		TextureContainer * filledTexture = ITC.Get("filled_gauge_red");
+		
 		Color ulcolor = Color::red;
 		
 		if(player.poison > 0.f) {
@@ -6430,18 +6432,18 @@ public:
 		pos += Vec2f(0, -78);
 		pos.x += static_cast<float>(-lSLID_VALUE);
 		
-		EERIEDrawBitmap2DecalY(pos.x, pos.y,
-			INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_red")->m_dwWidth),
-			INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_red")->m_dwHeight),
-			0.f, ITC.Get("filled_gauge_red"), ulcolor, (1.f - m_amount));
+		Vec2f size = Vec2f(filledTexture->size());
+		
+		EERIEDrawBitmap2DecalY(pos.x, pos.y, size.x, size.y,
+			0.f, filledTexture, ulcolor, (1.f - m_amount));
 		
 		if(!(player.Interface & INTER_COMBATMODE)) {
 			
 			const Rect redGaugeMouseTestRect(
 				pos.x,
 				pos.y,
-				pos.x + INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_red")->m_dwWidth),
-				pos.y + INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_red")->m_dwHeight)
+				pos.x + size.x,
+				pos.y + size.y
 			);
 			
 			if(redGaugeMouseTestRect.contains(Vec2i(DANAEMouse))) {
