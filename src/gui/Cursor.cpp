@@ -380,10 +380,9 @@ bool SelectSpellTargetCursorRender() {
 			POSY = MemoMouse.y;
 		}
 		
-		float fTexSizeX = INTERFACE_RATIO_DWORD(surf->m_dwWidth);
-		float fTexSizeY = INTERFACE_RATIO_DWORD(surf->m_dwHeight);
+		Vec2f texSize = Vec2f(surf->size());
 		
-		EERIEDrawBitmap(POSX - fTexSizeX * 0.5f, POSY - surf->m_dwHeight * 0.5f, fTexSizeX, fTexSizeY, 0.f, surf, Color::white);
+		EERIEDrawBitmap(POSX - texSize.x * 0.5f, POSY - surf->m_dwHeight * 0.5f, texSize.x, texSize.y, 0.f, surf, Color::white);
 		
 		return true;
 	}
