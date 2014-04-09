@@ -6237,39 +6237,44 @@ void DrawIcons() {
 	}
 }
 
-struct HudChangeLevelIcon{
+class ChangeLevelIconGui{
+private:
 	float x;
 	float y;
 	float vv;
-};
-
-HudChangeLevelIcon ChangeLevelIcon;
-
-void UpdateChangeLevelIcon() {
-	ChangeLevelIcon.x = g_size.width() - INTERFACE_RATIO_DWORD(ChangeLevel->m_dwWidth);
-	ChangeLevelIcon.y = 0;
-	ChangeLevelIcon.vv = 0.9f - std::sin(arxtime.get_frame_time()*( 1.0f / 50 ))*0.5f+rnd()*( 1.0f / 10 );
-	ChangeLevelIcon.vv = clamp(ChangeLevelIcon.vv, 0.f, 1.f);
-}
-
-void DrawChangeLevelIcon() {
-
-    ARX_INTERFACE_DrawItem(ChangeLevel, ChangeLevelIcon.x, ChangeLevelIcon.y, 0.0001f, Color3f::gray(ChangeLevelIcon.vv).to<u8>());
 	
-	const Rect changeLevelIconMouseTestRect(
-	ChangeLevelIcon.x,
-	ChangeLevelIcon.y,
-	ChangeLevelIcon.x + INTERFACE_RATIO_DWORD(ChangeLevel->m_dwWidth),
-	ChangeLevelIcon.y + INTERFACE_RATIO_DWORD(ChangeLevel->m_dwHeight)
-	);
+public:
+	void update() {
+		x = g_size.width() - INTERFACE_RATIO_DWORD(ChangeLevel->m_dwWidth);
+		y = 0;
+		vv = 0.9f - std::sin(arxtime.get_frame_time()*( 1.0f / 50 ))*0.5f+rnd()*( 1.0f / 10 );
+		vv = clamp(vv, 0.f, 1.f);
+	}
 	
-    if(changeLevelIconMouseTestRect.contains(Vec2i(DANAEMouse))) {
-		SpecialCursor=CURSOR_INTERACTION_ON;
-		if(!(EERIEMouseButton & 1) && (LastMouseClick & 1)) {
-			CHANGE_LEVEL_ICON = 200;
+	void draw() {
+	    ARX_INTERFACE_DrawItem(ChangeLevel, x, y, 0.0001f, Color3f::gray(vv).to<u8>());
+		
+		const Rect changeLevelIconMouseTestRect(
+		x,
+		y,
+		x + INTERFACE_RATIO_DWORD(ChangeLevel->m_dwWidth),
+		y + INTERFACE_RATIO_DWORD(ChangeLevel->m_dwHeight)
+		);
+		
+	    if(changeLevelIconMouseTestRect.contains(Vec2i(DANAEMouse))) {
+			SpecialCursor=CURSOR_INTERACTION_ON;
+			if(!(EERIEMouseButton & 1) && (LastMouseClick & 1)) {
+				CHANGE_LEVEL_ICON = 200;
+			}
 		}
 	}
-}
+};
+
+ChangeLevelIconGui changeLevelIconGui;
+
+
+
+
 
 static const unsigned QUICK_SAVE_ICON_TIME = 1000; //!< Time in ms to show the icon
 static unsigned g_quickSaveIconTime = 0; //!< Remaining time for the quick sive icon
@@ -6523,7 +6528,7 @@ void UpdateInterface() {
 	UpdateScreenBorderArrows();
 	UpdateHealthManaGauges();
 	UpdateMemorizedSpells();
-	UpdateChangeLevelIcon();
+	changeLevelIconGui.update();
 	updateQuickSaveIcon();
 }
 
@@ -6555,7 +6560,7 @@ void ArxGame::drawAllInterface() {
 		DrawIcons();
 	}
 	if(CHANGE_LEVEL_ICON > -1 && ChangeLevel) {
-		DrawChangeLevelIcon();
+		changeLevelIconGui.draw();
 	}
 	drawQuickSaveIcon();
 	// Draw stealth gauge
