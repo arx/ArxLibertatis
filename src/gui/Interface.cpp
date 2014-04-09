@@ -6448,16 +6448,16 @@ HealthGauge healthGauge;
 
 class ManaGauge {
 private:
-	Vec2f ManaGaugePos;
-	float ManaGaugeAmount;
+	Vec2f m_pos;
+	float m_amount;
 public:
 	void update() {
-		ManaGaugePos = Vec2f(0.f-lSLID_VALUE, g_size.height() - INTERFACE_RATIO(78));
-		ManaGaugeAmount = (float)player.mana/(float)player.Full_maxmana;
+		m_pos = Vec2f(0.f-lSLID_VALUE, g_size.height() - INTERFACE_RATIO(78));
+		m_amount = (float)player.mana/(float)player.Full_maxmana;
 	}
 	
 	void draw() {
-		ARX_INTERFACE_DrawItem(ITC.Get("empty_gauge_red"), ManaGaugePos.x, ManaGaugePos.y, 0.001f);
+		ARX_INTERFACE_DrawItem(ITC.Get("empty_gauge_red"), m_pos.x, m_pos.y, 0.001f);
 		
 		float LARGG=INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_blue")->m_dwWidth);
 		float HAUTT=INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_blue")->m_dwHeight);
@@ -6466,7 +6466,7 @@ public:
 		Vec2f pos = Vec2f(g_size.bottomRight()) + offset;
 		
 		EERIEDrawBitmap2DecalY(pos.x + 1 + lSLID_VALUE, pos.y, LARGG, HAUTT, 0.f,
-			ITC.Get("filled_gauge_blue"), Color::white, (1.f - ManaGaugeAmount));
+			ITC.Get("filled_gauge_blue"), Color::white, (1.f - m_amount));
 		
 		if(!(player.Interface & INTER_COMBATMODE)) {
 			
