@@ -3533,33 +3533,38 @@ extern float CURRENT_PLAYER_COLOR;
 /*!
  * \brief Stealth Gauge Drawing
  */
-void ARX_INTERFACE_Draw_Stealth_Gauge() {
+class StealthGauge {
+public:
+	void draw() {
+		
+		if(stealth_gauge_tc && !CINEMASCOPE) {
+			float v=GetPlayerStealth();
 	
-	if(stealth_gauge_tc && !CINEMASCOPE) {
-		float v=GetPlayerStealth();
-
-		if(CURRENT_PLAYER_COLOR < v) {
-			float px = INTERFACE_RATIO(InventoryX) + INTERFACE_RATIO(110);
-			if(px < INTERFACE_RATIO(10))
-				px = INTERFACE_RATIO(10);
-
-			float py = g_size.height() - INTERFACE_RATIO(126 + 32);
-			float t = v - CURRENT_PLAYER_COLOR;
-
-			if(t >= 15)
-				v = 1.f;
-			else
-				v = (t*( 1.0f / 15 ))* 0.9f + 0.1f;
-
-			GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-			EERIEDrawBitmap(px, py, INTERFACE_RATIO_DWORD(stealth_gauge_tc->m_dwWidth),
-			                INTERFACE_RATIO_DWORD(stealth_gauge_tc->m_dwHeight), 0.01f,
-			                stealth_gauge_tc, Color3f::gray(v).to<u8>());
-			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+			if(CURRENT_PLAYER_COLOR < v) {
+				float px = INTERFACE_RATIO(InventoryX) + INTERFACE_RATIO(110);
+				if(px < INTERFACE_RATIO(10))
+					px = INTERFACE_RATIO(10);
+	
+				float py = g_size.height() - INTERFACE_RATIO(126 + 32);
+				float t = v - CURRENT_PLAYER_COLOR;
+	
+				if(t >= 15)
+					v = 1.f;
+				else
+					v = (t*( 1.0f / 15 ))* 0.9f + 0.1f;
+	
+				GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+				GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+				EERIEDrawBitmap(px, py, INTERFACE_RATIO_DWORD(stealth_gauge_tc->m_dwWidth),
+				                INTERFACE_RATIO_DWORD(stealth_gauge_tc->m_dwHeight), 0.01f,
+				                stealth_gauge_tc, Color3f::gray(v).to<u8>());
+				GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+			}
 		}
 	}
-}
+};
+StealthGauge stealthGauge;
+
 
 //-----------------------------------------------------------------------------
 // Damaged Equipment Drawing
@@ -6623,8 +6628,7 @@ void ArxGame::drawAllInterface() {
 		changeLevelIconGui.draw();
 	}
 	quickSaveIconGui.draw();
-	// Draw stealth gauge
-	ARX_INTERFACE_Draw_Stealth_Gauge();
+	stealthGauge.draw();
 
 	if((player.Interface & INTER_MAP) && !(player.Interface & INTER_COMBATMODE)) {
 		ARX_INTERFACE_ManageOpenedBook();
