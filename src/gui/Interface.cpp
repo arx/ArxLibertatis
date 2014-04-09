@@ -6459,9 +6459,8 @@ public:
 		float LARGG=INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_blue")->m_dwWidth);
 		float HAUTT=INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_blue")->m_dwHeight);
 		
-		Vec2f bottomRight = Vec2f(g_size.width(), g_size.height());
 		Vec2f offset = Vec2f(-33, -81);
-		Vec2f pos = bottomRight + offset;
+		Vec2f pos = Vec2f(g_size.bottomRight()) + offset;
 		
 		EERIEDrawBitmap2DecalY(pos.x + 1 + lSLID_VALUE, pos.y, LARGG, HAUTT, 0.f,
 			ITC.Get("filled_gauge_blue"), Color::white, (1.f - ManaGaugeAmount));

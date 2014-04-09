@@ -388,8 +388,7 @@ void ARX_Player_Rune_Add(RuneFlag _ulRune)
 	}
 	
 	if(iNbSpellsAfter > iNbSpells) {
-		Vec2f bottomRight = Vec2f(g_size.width(), g_size.height());
-		MakeBookFX(Vec3f(bottomRight + Vec2f(-35, -148), 0.00001f));
+		MakeBookFX(Vec3f(Vec2f(g_size.bottomRight()) + Vec2f(-35, -148), 0.00001f));
 		bBookHalo = true;
 		ulBookHaloTime = 0;
 	}
