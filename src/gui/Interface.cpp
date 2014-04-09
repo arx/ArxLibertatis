@@ -6340,62 +6340,72 @@ static void hideQuickSaveIcon() {
 	quickSaveIconGui.hide();
 }
 
-int MemorizedSpellCount;
-Vec2f MemorizedSpellPos;
-
-void UpdateMemorizedSpells() {
-	int count = 0;
-	int count2 = 0;
-	for(long j = 0; j < 6; j++) {
-		if(player.SpellToMemorize.iSpellSymbols[j] != RUNE_NONE) {
-			count++;
+class MemorizedSpellIconsGui {
+private:
+	int MemorizedSpellCount;
+	Vec2f MemorizedSpellPos;
+	
+public:
+	void update() {
+		int count = 0;
+		int count2 = 0;
+		for(long j = 0; j < 6; j++) {
+			if(player.SpellToMemorize.iSpellSymbols[j] != RUNE_NONE) {
+				count++;
+			}
+			if(SpellSymbol[j] != RUNE_NONE) {
+				count2++;
+			}
 		}
-		if(SpellSymbol[j] != RUNE_NONE) {
-			count2++;
+		MemorizedSpellCount = std::max(count, count2);
+		MemorizedSpellPos.x = g_size.width() - (MemorizedSpellCount * INTERFACE_RATIO(32));
+		if(CHANGE_LEVEL_ICON > -1) {
+			MemorizedSpellPos.x -= INTERFACE_RATIO(32);
 		}
+		MemorizedSpellPos.y = 0;
 	}
-	MemorizedSpellCount = std::max(count, count2);
-	MemorizedSpellPos.x = g_size.width() - (MemorizedSpellCount * INTERFACE_RATIO(32));
-	if(CHANGE_LEVEL_ICON > -1) {
-		MemorizedSpellPos.x -= INTERFACE_RATIO(32);
-	}
-	MemorizedSpellPos.y = 0;
-}
-
-void DrawMemorizedSpells() {
-	for(int i = 0; i < 6; i++) {
-		bool bHalo = false;
-		if(SpellSymbol[i] != RUNE_NONE) {
-			if(SpellSymbol[i] == player.SpellToMemorize.iSpellSymbols[i]) {
-				bHalo = true;
-			} else {
-				player.SpellToMemorize.iSpellSymbols[i] = SpellSymbol[i];
-
-				for(int j = i+1; j < 6; j++) {
-					player.SpellToMemorize.iSpellSymbols[j] = RUNE_NONE;
+	
+	void draw() {
+		for(int i = 0; i < 6; i++) {
+			bool bHalo = false;
+			if(SpellSymbol[i] != RUNE_NONE) {
+				if(SpellSymbol[i] == player.SpellToMemorize.iSpellSymbols[i]) {
+					bHalo = true;
+				} else {
+					player.SpellToMemorize.iSpellSymbols[i] = SpellSymbol[i];
+	
+					for(int j = i+1; j < 6; j++) {
+						player.SpellToMemorize.iSpellSymbols[j] = RUNE_NONE;
+					}
 				}
 			}
+			if(player.SpellToMemorize.iSpellSymbols[i] != RUNE_NONE) {
+				EERIEDrawBitmap2(MemorizedSpellPos.x, MemorizedSpellPos.y, INTERFACE_RATIO(32), INTERFACE_RATIO(32), 0,
+					necklace.pTexTab[player.SpellToMemorize.iSpellSymbols[i]], Color::white);
+				if(bHalo) {				
+					TextureContainer *tc = necklace.pTexTab[player.SpellToMemorize.iSpellSymbols[i]];
+					DrawHalo(0.2f, 0.4f, 0.8f, tc->getHalo(), Vec2f(MemorizedSpellPos.x, MemorizedSpellPos.y));
+				}
+				if(!(player.rune_flags & (RuneFlag)(1<<player.SpellToMemorize.iSpellSymbols[i]))) {
+					GRenderer->SetBlendFunc(Renderer::BlendInvDstColor, Renderer::BlendOne);
+					GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+					EERIEDrawBitmap2(MemorizedSpellPos.x, MemorizedSpellPos.y, INTERFACE_RATIO(32), INTERFACE_RATIO(32), 0, Movable, Color3f::gray(.8f).to<u8>());
+					GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+				}
+				MemorizedSpellPos.x += INTERFACE_RATIO(32);
+			}
 		}
-		if(player.SpellToMemorize.iSpellSymbols[i] != RUNE_NONE) {
-			EERIEDrawBitmap2(MemorizedSpellPos.x, MemorizedSpellPos.y, INTERFACE_RATIO(32), INTERFACE_RATIO(32), 0,
-				necklace.pTexTab[player.SpellToMemorize.iSpellSymbols[i]], Color::white);
-			if(bHalo) {				
-				TextureContainer *tc = necklace.pTexTab[player.SpellToMemorize.iSpellSymbols[i]];
-				DrawHalo(0.2f, 0.4f, 0.8f, tc->getHalo(), Vec2f(MemorizedSpellPos.x, MemorizedSpellPos.y));
-			}
-			if(!(player.rune_flags & (RuneFlag)(1<<player.SpellToMemorize.iSpellSymbols[i]))) {
-				GRenderer->SetBlendFunc(Renderer::BlendInvDstColor, Renderer::BlendOne);
-				GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-				EERIEDrawBitmap2(MemorizedSpellPos.x, MemorizedSpellPos.y, INTERFACE_RATIO(32), INTERFACE_RATIO(32), 0, Movable, Color3f::gray(.8f).to<u8>());
-				GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-			}
-			MemorizedSpellPos.x += INTERFACE_RATIO(32);
+		if(float(arxtime) - player.SpellToMemorize.lTimeCreation > 30000) {
+			player.SpellToMemorize.bSpell = false;
 		}
 	}
-	if(float(arxtime) - player.SpellToMemorize.lTimeCreation > 30000) {
-		player.SpellToMemorize.bSpell = false;
-	}
-}
+};
+
+
+MemorizedSpellIconsGui memorizedSpellIconsGui;
+
+
+
 
 //Health/mana gauges
 Vec2f HealthGaugePos;
@@ -6545,7 +6555,7 @@ void UpdateInterface() {
 	UpdateMecanismIcon();
 	UpdateScreenBorderArrows();
 	UpdateHealthManaGauges();
-	UpdateMemorizedSpells();
+	memorizedSpellIconsGui.update();
 	changeLevelIconGui.update();
 	quickSaveIconGui.update();
 }
@@ -6589,7 +6599,7 @@ void ArxGame::drawAllInterface() {
 		ARX_INTERFACE_ManageOpenedBook_Finish();
 	}
 	if(CurrSpellSymbol || player.SpellToMemorize.bSpell) {
-		DrawMemorizedSpells();
+		memorizedSpellIconsGui.draw();
 	}
 	if(player.Interface & INTER_LIFE_MANA) {
 		DrawHealthManaGauges();
