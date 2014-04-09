@@ -1329,7 +1329,7 @@ void ArxGame::manageEditorControls() {
 
 				
 				if(player.torch) {
-					Vec2d pos(InventoryX + 110, g_size.height() - (158 + 32));
+					Vec2f pos(InventoryX + 110, g_size.height() - (158 + 32));
 					
 					if(pos.x < INTERFACE_RATIO(10))
 						pos.x = INTERFACE_RATIO(10);
@@ -1412,7 +1412,7 @@ void ArxGame::manageEditorControls() {
 
 				// redist
 				if((player.Skill_Redistribute) || (player.Attribute_Redistribute)) {
-					Vec2d pos(g_size.width() - 35 + lSLID_VALUE, g_size.height() - INTERFACE_RATIO(218));
+					Vec2f pos(g_size.width() - 35 + lSLID_VALUE, g_size.height() - INTERFACE_RATIO(218));
 					
 					const Rect mouseTestRect(
 					pos.x,
@@ -1436,7 +1436,7 @@ void ArxGame::manageEditorControls() {
 
 				// gold
 				if(player.gold > 0) {
-					Vec2d pos(g_size.width() - (35) + lSLID_VALUE, g_size.height() - 183);
+					Vec2f pos(g_size.width() - (35) + lSLID_VALUE, g_size.height() - 183);
 					
 					const Rect mouseTestRect(
 					pos.x,
@@ -1465,7 +1465,7 @@ void ArxGame::manageEditorControls() {
 
 				// book
 				{
-				Vec2d pos(g_size.width() - 35 + lSLID_VALUE, g_size.height() - 148);
+				Vec2f pos(g_size.width() - 35 + lSLID_VALUE, g_size.height() - 148);
 
 				const Rect bookMouseTestRect(
 				pos.x,
@@ -1488,7 +1488,7 @@ void ArxGame::manageEditorControls() {
 				
 				{
 				// inventaire
-				Vec2d pos(g_size.width() - (35) + lSLID_VALUE, g_size.height() - 113);
+				Vec2f pos(g_size.width() - (35) + lSLID_VALUE, g_size.height() - 113);
 				static float flDelay=0;
 				
 				const Rect inventoryMouseTestRect(
@@ -1568,7 +1568,7 @@ void ArxGame::manageEditorControls() {
 
 			// steal
 			if(player.Interface & INTER_STEAL) {
-				Vec2d pos(static_cast<float>(-lSLID_VALUE), g_size.height() - (78 + 32));
+				Vec2f pos(static_cast<float>(-lSLID_VALUE), g_size.height() - (78 + 32));
 				
 				const Rect mouseTestRect(
 				pos.x,
@@ -1607,7 +1607,7 @@ void ArxGame::manageEditorControls() {
 
 	// gros player book
 	if(player.Interface & INTER_MAP) {
-		Vec2d pos(97 * g_sizeRatio.x, 64 * g_sizeRatio.y);
+		Vec2f pos(97 * g_sizeRatio.x, 64 * g_sizeRatio.y);
 		
 		TextureContainer* playerbook = ITC.Get("playerbook");
 		if(playerbook) {
@@ -1637,7 +1637,7 @@ void ArxGame::manageEditorControls() {
 		Entity * temp=(Entity *)TSecondaryInventory->io;
 
 		if(temp && !(temp->ioflags & IO_SHOP) && !(temp == ioSteal)) {
-			Vec2d pos(InventoryX + 16, BasicInventorySkin->m_dwHeight - 16);
+			Vec2f pos(InventoryX + 16, BasicInventorySkin->m_dwHeight - 16);
 			
 			const Rect mouseTestRect(
 			pos.x,
@@ -1664,7 +1664,7 @@ void ArxGame::manageEditorControls() {
 			}
 		}
 
-		Vec2d pos(InventoryX + BasicInventorySkin->m_dwWidth - 32, BasicInventorySkin->m_dwHeight - 16);
+		Vec2f pos(InventoryX + BasicInventorySkin->m_dwWidth - 32, BasicInventorySkin->m_dwHeight - 16);
 
 		const Rect mouseTestRect(
 		pos.x,
@@ -5751,14 +5751,14 @@ private:
 	float posx;
 	float posy;
 	
-	Vec2d m_slotSize;
-	Vec2d m_slotSpacing;
+	Vec2f m_slotSize;
+	Vec2f m_slotSpacing;
 	
 public:
 	void CalculateInventoryCoordinates() {
 		
-		m_slotSize = Vec2d(32, 32);
-		m_slotSpacing = Vec2d(7, 6);	
+		m_slotSize = Vec2f(32, 32);
+		m_slotSpacing = Vec2f(7, 6);
 		
 		fCenterX = g_size.center().x + INTERFACE_RATIO(-320 + 35) + INTERFACE_RATIO_DWORD(ITC.Get("hero_inventory")->m_dwWidth) - INTERFACE_RATIO(32 + 3) ;
 		fSizY = g_size.height() - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY) + INTERFACE_RATIO(- 3 + 25) ;
