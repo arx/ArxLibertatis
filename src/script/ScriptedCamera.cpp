@@ -153,7 +153,7 @@ public:
 		
 		DebugScript(' ' << options << ' ' << enable);
 		
-		cinematicBorder.set(enable ? 1 : 0, smooth);
+		cinematicBorder.set(enable, smooth);
 		
 		return Success;
 	}

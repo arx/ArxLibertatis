@@ -36,7 +36,7 @@ void CinematicBorder::reset() {
 	CINEMA_INC=0;
 }
 
-void CinematicBorder::set(long status,long smooth)
+void CinematicBorder::set(bool status, bool smooth)
 {
 	if(status) {
 		CINEMASCOPE=1;//++;

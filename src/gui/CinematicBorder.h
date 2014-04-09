@@ -27,7 +27,7 @@ class CinematicBorder {
 public:
 	void reset();
 	void update();
-	void set(long v, long vv);
+	void set(bool status, bool smooth);
 };
 
 extern CinematicBorder cinematicBorder;
