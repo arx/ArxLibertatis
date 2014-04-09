@@ -146,7 +146,6 @@ struct ARX_INTERFACE_HALO_STRUCT
 	float fRatioY;
 };
 //-----------------------------------------------------------------------------
-static const int GL_DECAL_ICONS = 0;
 static const float BOOKMARKS_POS_X = 216.f;
 static const float BOOKMARKS_POS_Y = 60.f;
 
@@ -1413,7 +1412,7 @@ void ArxGame::manageEditorControls() {
 
 				// redist
 				if((player.Skill_Redistribute) || (player.Attribute_Redistribute)) {
-					Vec2d pos(g_size.width() - 35 + lSLID_VALUE + GL_DECAL_ICONS, g_size.height() - INTERFACE_RATIO(218));
+					Vec2d pos(g_size.width() - 35 + lSLID_VALUE, g_size.height() - INTERFACE_RATIO(218));
 					
 					const Rect mouseTestRect(
 					pos.x,
@@ -1437,7 +1436,7 @@ void ArxGame::manageEditorControls() {
 
 				// gold
 				if(player.gold > 0) {
-					Vec2d pos(g_size.width() - (35) + lSLID_VALUE + GL_DECAL_ICONS, g_size.height() - 183);
+					Vec2d pos(g_size.width() - (35) + lSLID_VALUE, g_size.height() - 183);
 					
 					const Rect mouseTestRect(
 					pos.x,
@@ -1466,7 +1465,7 @@ void ArxGame::manageEditorControls() {
 
 				// book
 				{
-				Vec2d pos(g_size.width() - 35 + lSLID_VALUE + GL_DECAL_ICONS, g_size.height() - 148);
+				Vec2d pos(g_size.width() - 35 + lSLID_VALUE, g_size.height() - 148);
 
 				const Rect bookMouseTestRect(
 				pos.x,
@@ -1489,7 +1488,7 @@ void ArxGame::manageEditorControls() {
 				
 				{
 				// inventaire
-				Vec2d pos(g_size.width() - (35) + lSLID_VALUE + GL_DECAL_ICONS, g_size.height() - 113);
+				Vec2d pos(g_size.width() - (35) + lSLID_VALUE, g_size.height() - 113);
 				static float flDelay=0;
 				
 				const Rect inventoryMouseTestRect(
@@ -6002,7 +6001,7 @@ private:
 public:
 
 	void update() {
-		m_pos.x = g_size.width() - INTERFACE_RATIO(35) + lSLID_VALUE+GL_DECAL_ICONS;
+		m_pos.x = g_size.width() - INTERFACE_RATIO(35) + lSLID_VALUE;
 		m_pos.y = g_size.height() - INTERFACE_RATIO(148);
 	}
 	
@@ -6017,7 +6016,7 @@ public:
 			if(ulBookHaloTime >= 3000) { // ms
 				bBookHalo = false;
 			}
-			float POSX = g_size.width()-INTERFACE_RATIO(35)+lSLID_VALUE+GL_DECAL_ICONS;
+			float POSX = g_size.width()-INTERFACE_RATIO(35)+lSLID_VALUE;
 			float POSY = g_size.height()-INTERFACE_RATIO(148);
 			DrawHalo(0.2f, 0.4f, 0.8f, GetHaloForITC("book"), Vec2f(POSX, POSY));
 		}
@@ -6033,7 +6032,7 @@ private:
 public:
 
 	void update() {
-		m_pos.x = g_size.width() - INTERFACE_RATIO(35) + lSLID_VALUE+GL_DECAL_ICONS;
+		m_pos.x = g_size.width() - INTERFACE_RATIO(35) + lSLID_VALUE;
 		m_pos.y = g_size.height() - INTERFACE_RATIO(113);
 	}
 	
@@ -6099,7 +6098,7 @@ private:
 	Vec2f m_pos;
 public:
 	void update() {
-		m_pos.x = g_size.width() - INTERFACE_RATIO(35) + lSLID_VALUE+GL_DECAL_ICONS;
+		m_pos.x = g_size.width() - INTERFACE_RATIO(35) + lSLID_VALUE;
 		m_pos.y = g_size.height() - INTERFACE_RATIO(218);
 	}
 	
@@ -6116,7 +6115,7 @@ private:
 	Vec2f m_pos;
 public:
 	void update() {
-		m_pos.x = g_size.width() - INTERFACE_RATIO(35) + lSLID_VALUE+2+GL_DECAL_ICONS;
+		m_pos.x = g_size.width() - INTERFACE_RATIO(35) + lSLID_VALUE+2;
 		m_pos.y = g_size.height() - INTERFACE_RATIO(183);
 	}
 	void draw() {
