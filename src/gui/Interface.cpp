@@ -5751,8 +5751,15 @@ private:
 	float posx;
 	float posy;
 	
+	Vec2d m_slotSize;
+	Vec2d m_slotSpacing;
+	
 public:
 	void CalculateInventoryCoordinates() {
+		
+		m_slotSize = Vec2d(32, 32);
+		m_slotSpacing = Vec2d(7, 6);	
+		
 		fCenterX = g_size.center().x + INTERFACE_RATIO(-320 + 35) + INTERFACE_RATIO_DWORD(ITC.Get("hero_inventory")->m_dwWidth) - INTERFACE_RATIO(32 + 3) ;
 		fSizY = g_size.height() - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY) + INTERFACE_RATIO(- 3 + 25) ;
 		posx = ARX_CAST_TO_INT_THEN_FLOAT( fCenterX );
@@ -5784,8 +5791,8 @@ public:
 						tc2 = io->inv->getHalo();
 	
 					if(tc) {
-						float px = fPosX + i*INTERFACE_RATIO(32) + INTERFACE_RATIO(7);
-						float py = fPosY + j*INTERFACE_RATIO(32) + INTERFACE_RATIO(6);
+						float px = fPosX + i*m_slotSize.x + m_slotSpacing.x;
+						float py = fPosY + j*m_slotSize.y + m_slotSpacing.y;
 						
 						Color color = (io->poisonous && io->poisonous_count != 0) ? Color::green : Color::white;
 						EERIEDrawBitmap(px, py, INTERFACE_RATIO_DWORD(tc->m_dwWidth),
