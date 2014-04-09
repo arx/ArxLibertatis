@@ -6471,14 +6471,13 @@ public:
 		
 		TextureContainer * filledTexture = ITC.Get("filled_gauge_blue");
 		
-		float LARGG=INTERFACE_RATIO_DWORD(filledTexture->m_dwWidth);
-		float HAUTT=INTERFACE_RATIO_DWORD(filledTexture->m_dwHeight);
+		Vec2f size = Vec2f(filledTexture->size());
 		
 		Vec2f pos = Vec2f(g_size.bottomRight());
 		pos += Vec2f(-33, -81);
 		pos.x += lSLID_VALUE;
 		
-		EERIEDrawBitmap2DecalY(pos.x + 1, pos.y, LARGG, HAUTT, 0.f,
+		EERIEDrawBitmap2DecalY(pos.x + 1, pos.y, size.x, size.y, 0.f,
 			filledTexture, Color::white, (1.f - m_amount));
 		
 		if(!(player.Interface & INTER_COMBATMODE)) {
@@ -6486,8 +6485,8 @@ public:
 			const Rect blueGaugeMouseTestRect(
 				pos.x,
 				pos.y,
-				pos.x + LARGG,
-				pos.y + HAUTT
+				pos.x + size.x,
+				pos.y + size.y
 			);
 			
 			if(blueGaugeMouseTestRect.contains(Vec2i(DANAEMouse))) {
