@@ -5674,8 +5674,7 @@ class InventoryGui {
 private:
 	float fCenterX;
 	float fSizY;
-	float posx;
-	float posy;
+	Vec2f m_pos;
 	
 	Vec2f m_slotSize;
 	Vec2f m_slotSpacing;
@@ -5751,8 +5750,8 @@ public:
 		
 		fCenterX = g_size.center().x + INTERFACE_RATIO(-320 + 35) + INTERFACE_RATIO_DWORD(ITC.Get("hero_inventory")->m_dwWidth) - INTERFACE_RATIO(32 + 3) ;
 		fSizY = g_size.height() - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY) + INTERFACE_RATIO(- 3 + 25) ;
-		posx = ARX_CAST_TO_INT_THEN_FLOAT( fCenterX );
-		posy = ARX_CAST_TO_INT_THEN_FLOAT( fSizY );
+		m_pos.x = ARX_CAST_TO_INT_THEN_FLOAT( fCenterX );
+		m_pos.y = ARX_CAST_TO_INT_THEN_FLOAT( fSizY );
 	}
 	
 	//-----------------------------------------------------------------------------
@@ -5830,20 +5829,20 @@ public:
 				CalculateInventoryCoordinates();
 				
 				if(sActiveInventory > 0) {
-					ARX_INTERFACE_DrawItem(ITC.Get("hero_inventory_up"),	posx, posy);
+					ARX_INTERFACE_DrawItem(ITC.Get("hero_inventory_up"),	m_pos.x, m_pos.y);
 					
 					const Rect inventoryUpMouseTestRect(
-					posx,
-					posy,
-					posx + INTERFACE_RATIO(32),
-					posy + INTERFACE_RATIO(32)
+					m_pos.x,
+					m_pos.y,
+					m_pos.x + INTERFACE_RATIO(32),
+					m_pos.y + INTERFACE_RATIO(32)
 					);
 					
 					if(inventoryUpMouseTestRect.contains(Vec2i(DANAEMouse))) {
 						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 						SpecialCursor=CURSOR_INTERACTION_ON;
-						ARX_INTERFACE_DrawItem(ITC.Get("hero_inventory_up"), posx, posy);
+						ARX_INTERFACE_DrawItem(ITC.Get("hero_inventory_up"), m_pos.x, m_pos.y);
 						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 						SpecialCursor=CURSOR_INTERACTION_ON;
 						
@@ -5865,19 +5864,19 @@ public:
 					
 					float posy = posy + checked_range_cast<int>(fRatio);
 					
-					ARX_INTERFACE_DrawItem(ITC.Get("hero_inventory_down"),	posx, g_size.height() - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY) + INTERFACE_RATIO(-3 + 64));
+					ARX_INTERFACE_DrawItem(ITC.Get("hero_inventory_down"),	m_pos.x, g_size.height() - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY) + INTERFACE_RATIO(-3 + 64));
 					
 					const Rect inventoryDownMouseTestRect(
-					posx,
+					m_pos.x,
 					posy,
-					posx + INTERFACE_RATIO(32),
+					m_pos.x + INTERFACE_RATIO(32),
 					posy + INTERFACE_RATIO(32)
 					);
 					
 					if(inventoryDownMouseTestRect.contains(Vec2i(DANAEMouse))) {
 						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-						ARX_INTERFACE_DrawItem(ITC.Get("hero_inventory_down"),	posx, g_size.height() - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY) + INTERFACE_RATIO(-3 + 64));
+						ARX_INTERFACE_DrawItem(ITC.Get("hero_inventory_down"),	m_pos.x, g_size.height() - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY) + INTERFACE_RATIO(-3 + 64));
 						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 						SpecialCursor=CURSOR_INTERACTION_ON;
 						
