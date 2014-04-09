@@ -6517,8 +6517,8 @@ public:
 	}
 	
 	void draw() {
-	    EERIEDrawBitmap(0, 0, INTERFACE_RATIO_DWORD(mecanism_tc->m_dwWidth), INTERFACE_RATIO_DWORD(mecanism_tc->m_dwHeight),
-	                    0.01f, mecanism_tc, m_color);
+		Vec2f size = Vec2f(mecanism_tc->size());
+	    EERIEDrawBitmap(0, 0, size.x, size.y, 0.01f, mecanism_tc, m_color);
 	}
 };
 MecanismIcon mecanismIcon;
