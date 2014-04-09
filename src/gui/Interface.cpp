@@ -5752,181 +5752,181 @@ private:
 	float posy;
 	
 public:
-void CalculateInventoryCoordinates() {
-	fCenterX = g_size.center().x + INTERFACE_RATIO(-320 + 35) + INTERFACE_RATIO_DWORD(ITC.Get("hero_inventory")->m_dwWidth) - INTERFACE_RATIO(32 + 3) ;
-	fSizY = g_size.height() - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY) + INTERFACE_RATIO(- 3 + 25) ;
-	posx = ARX_CAST_TO_INT_THEN_FLOAT( fCenterX );
-	posy = ARX_CAST_TO_INT_THEN_FLOAT( fSizY );
-}
-
-//-----------------------------------------------------------------------------
-void ARX_INTERFACE_DrawInventory(short _sNum, int _iX=0, int _iY=0)
-{
-	fDecPulse += framedelay * 0.5f;
-
-	float fCenterX	= g_size.center().x - INTERFACE_RATIO(320) + INTERFACE_RATIO(35) + _iX ;
-	float fSizY		= g_size.height() - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY) + _iY;
-
-	float fPosX = ARX_CAST_TO_INT_THEN_FLOAT( fCenterX );
-	float fPosY = ARX_CAST_TO_INT_THEN_FLOAT( fSizY );
-
-	ARX_INTERFACE_DrawItem(ITC.Get("hero_inventory"), fPosX, fPosY - INTERFACE_RATIO(5));
-
-	for(size_t j = 0; j < INVENTORY_Y; j++) {
-		for(size_t i = 0; i < INVENTORY_X; i++) {
-			Entity *io = inventory[_sNum][i][j].io;
-
-			if(io && inventory[_sNum][i][j].show) {
-				TextureContainer *tc = io->inv;
-				TextureContainer *tc2 = NULL;
-
-				if(NeedHalo(io))
-					tc2 = io->inv->getHalo();
-
-				if(tc) {
-					float px = fPosX + i*INTERFACE_RATIO(32) + INTERFACE_RATIO(7);
-					float py = fPosY + j*INTERFACE_RATIO(32) + INTERFACE_RATIO(6);
-					
-					Color color = (io->poisonous && io->poisonous_count != 0) ? Color::green : Color::white;
-					EERIEDrawBitmap(px, py, INTERFACE_RATIO_DWORD(tc->m_dwWidth),
-					                INTERFACE_RATIO_DWORD(tc->m_dwHeight), 0.001f, tc, color);
-					
-					if(io == FlyingOverIO) {
-						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+	void CalculateInventoryCoordinates() {
+		fCenterX = g_size.center().x + INTERFACE_RATIO(-320 + 35) + INTERFACE_RATIO_DWORD(ITC.Get("hero_inventory")->m_dwWidth) - INTERFACE_RATIO(32 + 3) ;
+		fSizY = g_size.height() - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY) + INTERFACE_RATIO(- 3 + 25) ;
+		posx = ARX_CAST_TO_INT_THEN_FLOAT( fCenterX );
+		posy = ARX_CAST_TO_INT_THEN_FLOAT( fSizY );
+	}
+	
+	//-----------------------------------------------------------------------------
+	void ARX_INTERFACE_DrawInventory(short _sNum, int _iX=0, int _iY=0)
+	{
+		fDecPulse += framedelay * 0.5f;
+	
+		float fCenterX	= g_size.center().x - INTERFACE_RATIO(320) + INTERFACE_RATIO(35) + _iX ;
+		float fSizY		= g_size.height() - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY) + _iY;
+	
+		float fPosX = ARX_CAST_TO_INT_THEN_FLOAT( fCenterX );
+		float fPosY = ARX_CAST_TO_INT_THEN_FLOAT( fSizY );
+	
+		ARX_INTERFACE_DrawItem(ITC.Get("hero_inventory"), fPosX, fPosY - INTERFACE_RATIO(5));
+	
+		for(size_t j = 0; j < INVENTORY_Y; j++) {
+			for(size_t i = 0; i < INVENTORY_X; i++) {
+				Entity *io = inventory[_sNum][i][j].io;
+	
+				if(io && inventory[_sNum][i][j].show) {
+					TextureContainer *tc = io->inv;
+					TextureContainer *tc2 = NULL;
+	
+					if(NeedHalo(io))
+						tc2 = io->inv->getHalo();
+	
+					if(tc) {
+						float px = fPosX + i*INTERFACE_RATIO(32) + INTERFACE_RATIO(7);
+						float py = fPosY + j*INTERFACE_RATIO(32) + INTERFACE_RATIO(6);
+						
+						Color color = (io->poisonous && io->poisonous_count != 0) ? Color::green : Color::white;
 						EERIEDrawBitmap(px, py, INTERFACE_RATIO_DWORD(tc->m_dwWidth),
-						                INTERFACE_RATIO_DWORD(tc->m_dwHeight), 0.001f, tc, Color::white);
-						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-					} else if(io->ioflags & IO_CAN_COMBINE) {
-						float fColorPulse = fabs(cos(radians(fDecPulse)));
-						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-						EERIEDrawBitmap(px, py, INTERFACE_RATIO_DWORD(tc->m_dwWidth),
-						                INTERFACE_RATIO_DWORD(tc->m_dwHeight), 0.001f, tc, 
-						                Color3f::gray(fColorPulse).to<u8>());
-						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+										INTERFACE_RATIO_DWORD(tc->m_dwHeight), 0.001f, tc, color);
+						
+						if(io == FlyingOverIO) {
+							GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+							GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+							EERIEDrawBitmap(px, py, INTERFACE_RATIO_DWORD(tc->m_dwWidth),
+											INTERFACE_RATIO_DWORD(tc->m_dwHeight), 0.001f, tc, Color::white);
+							GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+						} else if(io->ioflags & IO_CAN_COMBINE) {
+							float fColorPulse = fabs(cos(radians(fDecPulse)));
+							GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+							GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+							EERIEDrawBitmap(px, py, INTERFACE_RATIO_DWORD(tc->m_dwWidth),
+											INTERFACE_RATIO_DWORD(tc->m_dwHeight), 0.001f, tc, 
+											Color3f::gray(fColorPulse).to<u8>());
+							GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+						}
+	
+						if(tc2) {
+							ARX_INTERFACE_HALO_Render(
+								io->halo.color.r, io->halo.color.g, io->halo.color.b,
+								io->halo.flags,
+								tc2,
+								px,
+								py, INTERFACE_RATIO(1), INTERFACE_RATIO(1));
+						}
+	
+						if((io->ioflags & IO_ITEM) && io->_itemdata->count != 1)
+							ARX_INTERFACE_DrawNumber(px, py, io->_itemdata->count, 3, Color::white);
 					}
-
-					if(tc2) {
-						ARX_INTERFACE_HALO_Render(
-							io->halo.color.r, io->halo.color.g, io->halo.color.b,
-							io->halo.flags,
-							tc2,
-							px,
-							py, INTERFACE_RATIO(1), INTERFACE_RATIO(1));
-					}
-
-					if((io->ioflags & IO_ITEM) && io->_itemdata->count != 1)
-						ARX_INTERFACE_DrawNumber(px, py, io->_itemdata->count, 3, Color::white);
 				}
 			}
 		}
 	}
-}
-
-void DrawInventory() {
-	if(player.Interface & INTER_INVENTORY) {		
-		if(player.bag) {
-			ARX_INTERFACE_DrawInventory(sActiveInventory);
-
-			arx_assert(ITC.Get("hero_inventory") != NULL);
-
-			CalculateInventoryCoordinates();
-
-			if(sActiveInventory > 0) {
-				ARX_INTERFACE_DrawItem(ITC.Get("hero_inventory_up"),	posx, posy);
-
-				const Rect inventoryUpMouseTestRect(
-				posx,
-				posy,
-				posx + INTERFACE_RATIO(32),
-				posy + INTERFACE_RATIO(32)
-				);
+	
+	void DrawInventory() {
+		if(player.Interface & INTER_INVENTORY) {		
+			if(player.bag) {
+				ARX_INTERFACE_DrawInventory(sActiveInventory);
 				
-				if(inventoryUpMouseTestRect.contains(Vec2i(DANAEMouse))) {
-					GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-					GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-					SpecialCursor=CURSOR_INTERACTION_ON;
-					ARX_INTERFACE_DrawItem(ITC.Get("hero_inventory_up"), posx, posy);
-					GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-					SpecialCursor=CURSOR_INTERACTION_ON;
-
-					if (((EERIEMouseButton & 1)  && !(LastMouseClick & 1))
-						|| ((!(EERIEMouseButton & 1)) && (LastMouseClick & 1) && DRAGINTER))
-					{
-						if(sActiveInventory > 0) {
-							ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
-							sActiveInventory --;
+				arx_assert(ITC.Get("hero_inventory") != NULL);
+				
+				CalculateInventoryCoordinates();
+				
+				if(sActiveInventory > 0) {
+					ARX_INTERFACE_DrawItem(ITC.Get("hero_inventory_up"),	posx, posy);
+					
+					const Rect inventoryUpMouseTestRect(
+					posx,
+					posy,
+					posx + INTERFACE_RATIO(32),
+					posy + INTERFACE_RATIO(32)
+					);
+					
+					if(inventoryUpMouseTestRect.contains(Vec2i(DANAEMouse))) {
+						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+						SpecialCursor=CURSOR_INTERACTION_ON;
+						ARX_INTERFACE_DrawItem(ITC.Get("hero_inventory_up"), posx, posy);
+						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+						SpecialCursor=CURSOR_INTERACTION_ON;
+						
+						if (((EERIEMouseButton & 1)  && !(LastMouseClick & 1))
+							|| ((!(EERIEMouseButton & 1)) && (LastMouseClick & 1) && DRAGINTER))
+						{
+							if(sActiveInventory > 0) {
+								ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
+								sActiveInventory --;
+							}
+							
+							EERIEMouseButton &= ~1;
 						}
-
-						EERIEMouseButton &= ~1;
 					}
 				}
-			}
-
-			if(sActiveInventory < player.bag-1) {
-				float fRatio = INTERFACE_RATIO(32 + 5);
-
-				float posy = posy + checked_range_cast<int>(fRatio);
-
-				ARX_INTERFACE_DrawItem(ITC.Get("hero_inventory_down"),	posx, g_size.height() - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY) + INTERFACE_RATIO(-3 + 64));
-
-				const Rect inventoryDownMouseTestRect(
-				posx,
-				posy,
-				posx + INTERFACE_RATIO(32),
-				posy + INTERFACE_RATIO(32)
-				);
 				
-				if(inventoryDownMouseTestRect.contains(Vec2i(DANAEMouse))) {
-					GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-					GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+				if(sActiveInventory < player.bag-1) {
+					float fRatio = INTERFACE_RATIO(32 + 5);
+					
+					float posy = posy + checked_range_cast<int>(fRatio);
+					
 					ARX_INTERFACE_DrawItem(ITC.Get("hero_inventory_down"),	posx, g_size.height() - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY) + INTERFACE_RATIO(-3 + 64));
-					GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-					SpecialCursor=CURSOR_INTERACTION_ON;
-
-					if (((EERIEMouseButton & 1)  && !(LastMouseClick & 1))
-						|| ((!(EERIEMouseButton & 1)) && (LastMouseClick & 1) && DRAGINTER))
-					{
-						if(sActiveInventory < player.bag-1) {
-							ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
-							sActiveInventory ++;
+					
+					const Rect inventoryDownMouseTestRect(
+					posx,
+					posy,
+					posx + INTERFACE_RATIO(32),
+					posy + INTERFACE_RATIO(32)
+					);
+					
+					if(inventoryDownMouseTestRect.contains(Vec2i(DANAEMouse))) {
+						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+						ARX_INTERFACE_DrawItem(ITC.Get("hero_inventory_down"),	posx, g_size.height() - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY) + INTERFACE_RATIO(-3 + 64));
+						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+						SpecialCursor=CURSOR_INTERACTION_ON;
+						
+						if (((EERIEMouseButton & 1)  && !(LastMouseClick & 1))
+							|| ((!(EERIEMouseButton & 1)) && (LastMouseClick & 1) && DRAGINTER))
+						{
+							if(sActiveInventory < player.bag-1) {
+								ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
+								sActiveInventory ++;
+							}
+							
+							EERIEMouseButton &= ~1;
 						}
-
-						EERIEMouseButton &= ~1;
 					}
 				}
 			}
-		}
-	} else if((player.Interface & INTER_INVENTORYALL) || bInventoryClosing) {				
-
-		//TODO see about these coords, might be calculated once only
-		const float fBag = (player.bag-1) * INTERFACE_RATIO(-121);
-		float fCenterX = g_size.center().x + INTERFACE_RATIO(-320+35);
-		float fSizY = g_size.height() - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY) + INTERFACE_RATIO(-3.f + 25 - 32);
-		const float fOffsetY = INTERFACE_RATIO(121);
-
-		int iOffsetY = checked_range_cast<int>(fBag + fOffsetY);
-		int posx = checked_range_cast<int>(fCenterX);
-		int posy = checked_range_cast<int>(fSizY);
-
-		for(int i = 0; i < player.bag; i++) {
-			ARX_INTERFACE_DrawItem(ITC.Get("hero_inventory_link"), posx + INTERFACE_RATIO(45), static_cast<float>(posy + iOffsetY)) ;
-
-			ARX_INTERFACE_DrawItem(ITC.Get("hero_inventory_link"), posx + INTERFACE_RATIO_DWORD(ITC.Get("hero_inventory")->m_dwWidth)*0.5f + INTERFACE_RATIO(-16), posy+iOffsetY + INTERFACE_RATIO(-5));
-			ARX_INTERFACE_DrawItem(ITC.Get("hero_inventory_link"), posx + INTERFACE_RATIO_DWORD(ITC.Get("hero_inventory")->m_dwWidth) + INTERFACE_RATIO(-45-32), posy+iOffsetY + INTERFACE_RATIO(-15));
-
-			iOffsetY += checked_range_cast<int>(fOffsetY);
-		}
-
-		iOffsetY = checked_range_cast<int>(fBag);
-
-		for(short i = 0; i < player.bag; i++) {
-			ARX_INTERFACE_DrawInventory(i, 0, iOffsetY);
-			iOffsetY += checked_range_cast<int>(fOffsetY);
+		} else if((player.Interface & INTER_INVENTORYALL) || bInventoryClosing) {				
+			
+			//TODO see about these coords, might be calculated once only
+			const float fBag = (player.bag-1) * INTERFACE_RATIO(-121);
+			float fCenterX = g_size.center().x + INTERFACE_RATIO(-320+35);
+			float fSizY = g_size.height() - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY) + INTERFACE_RATIO(-3.f + 25 - 32);
+			const float fOffsetY = INTERFACE_RATIO(121);
+			
+			int iOffsetY = checked_range_cast<int>(fBag + fOffsetY);
+			int posx = checked_range_cast<int>(fCenterX);
+			int posy = checked_range_cast<int>(fSizY);
+			
+			for(int i = 0; i < player.bag; i++) {
+				ARX_INTERFACE_DrawItem(ITC.Get("hero_inventory_link"), posx + INTERFACE_RATIO(45), static_cast<float>(posy + iOffsetY)) ;
+				
+				ARX_INTERFACE_DrawItem(ITC.Get("hero_inventory_link"), posx + INTERFACE_RATIO_DWORD(ITC.Get("hero_inventory")->m_dwWidth)*0.5f + INTERFACE_RATIO(-16), posy+iOffsetY + INTERFACE_RATIO(-5));
+				ARX_INTERFACE_DrawItem(ITC.Get("hero_inventory_link"), posx + INTERFACE_RATIO_DWORD(ITC.Get("hero_inventory")->m_dwWidth) + INTERFACE_RATIO(-45-32), posy+iOffsetY + INTERFACE_RATIO(-15));
+				
+				iOffsetY += checked_range_cast<int>(fOffsetY);
+			}
+			
+			iOffsetY = checked_range_cast<int>(fBag);
+			
+			for(short i = 0; i < player.bag; i++) {
+				ARX_INTERFACE_DrawInventory(i, 0, iOffsetY);
+				iOffsetY += checked_range_cast<int>(fOffsetY);
+			}
 		}
 	}
-}
 };
 
 static InventoryGui inventoryGui;
