@@ -6077,8 +6077,9 @@ private:
 	Vec2f m_pos;
 public:
 	void update() {
-		m_pos.x = INTERFACE_RATIO(InventoryX) + INTERFACE_RATIO_DWORD(BasicInventorySkin->m_dwWidth) - INTERFACE_RATIO(32);
-		m_pos.y = INTERFACE_RATIO_DWORD(BasicInventorySkin->m_dwHeight) - INTERFACE_RATIO(16);
+		m_pos.x = INTERFACE_RATIO(InventoryX) + INTERFACE_RATIO_DWORD(BasicInventorySkin->m_dwWidth);
+		m_pos.y = INTERFACE_RATIO_DWORD(BasicInventorySkin->m_dwHeight);
+		m_pos += Vec2f(-32, -16);
 	}
 	
 	void draw() {
