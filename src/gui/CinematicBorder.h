@@ -27,6 +27,7 @@ public:
 	CinematicBorder();
 	
 	bool isActive();
+	float elapsedTime();
 	
 	void reset();
 	void reset2();
@@ -37,6 +38,7 @@ public:
 private:
 	bool CINEMASCOPE;
 	long CINEMA_INC;
+	float g_TimeStartCinemascope;
 };
 
 extern CinematicBorder cinematicBorder;

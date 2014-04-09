@@ -49,6 +49,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/Entity.h"
 #include "game/NPC.h"
 
+#include "gui/CinematicBorder.h"
+
 #include "io/log/Logger.h"
 
 #include "script/ScriptUtils.h"
@@ -69,8 +71,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 using std::max;
 using std::min;
 using std::string;
-
-extern float g_TimeStartCinemascope;
 
 long ScriptEvent::totalCount = 0;
 
@@ -317,8 +317,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 					if (esss->allowevents & DISABLE_EXPLORATIONMODE) return REFUSE;
 					break;
 				case SM_KEY_PRESSED: {
-					float dwCurrTime = arxtime.get_updated();
-					if ((dwCurrTime - g_TimeStartCinemascope) < 3000) {
+					if(cinematicBorder.elapsedTime() < 3000) {
 						LogDebug("refusing SM_KEY_PRESSED");
 						return REFUSE;
 					}

@@ -24,8 +24,6 @@
 #include "game/Player.h"
 #include "gui/Interface.h"
 
-float				g_TimeStartCinemascope = 0;
-
 float				CINEMA_DECAL=0.f;
 
 CinematicBorder cinematicBorder = CinematicBorder();
@@ -33,11 +31,17 @@ CinematicBorder cinematicBorder = CinematicBorder();
 CinematicBorder::CinematicBorder()
 	: CINEMASCOPE(false)
 	, CINEMA_INC(0)
+	, g_TimeStartCinemascope(0)
 {}
 
 bool CinematicBorder::isActive()
 {
 	return CINEMASCOPE;
+}
+
+float CinematicBorder::elapsedTime() {
+	float dwCurrTime = arxtime.get_updated();
+	return (dwCurrTime - g_TimeStartCinemascope);
 }
 
 void CinematicBorder::reset() {
