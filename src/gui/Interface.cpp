@@ -3446,86 +3446,6 @@ void ArxGame::manageKeyMouse() {
 
 static float fDecPulse;
 //-----------------------------------------------------------------------------
-void ARX_INTERFACE_DrawSecondaryInventory(bool _bSteal) {
-	
-	if(TSecondaryInventory->io && !TSecondaryInventory->io->inventory_skin.empty()) {
-		
-		res::path file = "graph/interface/inventory" / TSecondaryInventory->io->inventory_skin;
-		
-		TextureContainer * tc = TextureContainer::LoadUI(file);
-
-		if(tc) {
-			ITC.Set("ingame_inventory", tc);
-		} else {
-			ITC.Set("ingame_inventory", BasicInventorySkin);
-		}
-		
-	} else if(ITC.Get("ingame_inventory") != BasicInventorySkin) {
-		ITC.Set("ingame_inventory", BasicInventorySkin);
-	}
-
-	ARX_INTERFACE_DrawItem(ITC.Get("ingame_inventory"), INTERFACE_RATIO(InventoryX), 0.f);
-
-	for(long j = 0; j < TSecondaryInventory->sizey; j++) {
-		for(long i = 0; i < TSecondaryInventory->sizex; i++) {
-			Entity *io = TSecondaryInventory->slot[i][j].io;
-
-			if(io) {
-				bool bItemSteal = false;
-				TextureContainer *tc = io->inv;
-				TextureContainer *tc2 = NULL;
-
-				if(NeedHalo(io))
-					tc2 = io->inv->getHalo();
-
-				if(_bSteal) {
-					if(!ARX_PLAYER_CanStealItem(io)) {
-						bItemSteal = true;
-						tc = ITC.Get("item_cant_steal");
-						tc2 = NULL;
-					}
-				}
-
-				if(tc && (TSecondaryInventory->slot[i][j].show || bItemSteal)) {
-					UpdateGoldObject(io);
-
-					float px = INTERFACE_RATIO(InventoryX) + (float)i*INTERFACE_RATIO(32) + INTERFACE_RATIO(2);
-					float py = (float)j*INTERFACE_RATIO(32) + INTERFACE_RATIO(13);
-
-					Color color = (io->poisonous && io->poisonous_count!=0) ? Color::green : Color::white;
-					EERIEDrawBitmap(px, py, INTERFACE_RATIO_DWORD(tc->m_dwWidth),
-					                INTERFACE_RATIO_DWORD(tc->m_dwHeight), 0.001f, tc, color);
-
-					if (!bItemSteal && (io==FlyingOverIO))
-					{
-						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-						EERIEDrawBitmap(px, py, INTERFACE_RATIO_DWORD(tc->m_dwWidth),
-						                INTERFACE_RATIO_DWORD(tc->m_dwHeight), 0.001f, tc, Color::white);
-						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-					}
-					else if(!bItemSteal && (io->ioflags & IO_CAN_COMBINE)) {
-						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-						
-						float fColorPulse = fabs(cos(radians(fDecPulse)));
-						EERIEDrawBitmap(px, py, INTERFACE_RATIO_DWORD(tc->m_dwWidth),
-						                INTERFACE_RATIO_DWORD(tc->m_dwHeight), 0.001f, tc,
-						                Color3f::gray(fColorPulse).to<u8>());
-						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-					}
-
-					if(tc2) {
-						ARX_INTERFACE_HALO_Draw(io, tc, tc2, px, py, INTERFACE_RATIO(1), INTERFACE_RATIO(1));
-					}
-
-					if((io->ioflags & IO_ITEM) && io->_itemdata->count != 1)
-						ARX_INTERFACE_DrawNumber(px, py, io->_itemdata->count, 3, Color::white);
-				}
-			}
-		}
-	}
-}
 
 extern TextureContainer * stealth_gauge_tc;
 extern float CURRENT_PLAYER_COLOR;
@@ -5702,7 +5622,85 @@ public:
 	
 	void draw() {
 		if(!PLAYER_INTERFACE_HIDE_COUNT && TSecondaryInventory) {
-			ARX_INTERFACE_DrawSecondaryInventory((bool)((player.Interface & INTER_STEAL) != 0));
+			bool _bSteal = (bool)((player.Interface & INTER_STEAL) != 0);
+			
+			if(TSecondaryInventory->io && !TSecondaryInventory->io->inventory_skin.empty()) {
+				
+				res::path file = "graph/interface/inventory" / TSecondaryInventory->io->inventory_skin;
+				
+				TextureContainer * tc = TextureContainer::LoadUI(file);
+		
+				if(tc) {
+					ITC.Set("ingame_inventory", tc);
+				} else {
+					ITC.Set("ingame_inventory", BasicInventorySkin);
+				}
+				
+			} else if(ITC.Get("ingame_inventory") != BasicInventorySkin) {
+				ITC.Set("ingame_inventory", BasicInventorySkin);
+			}
+		
+			ARX_INTERFACE_DrawItem(ITC.Get("ingame_inventory"), INTERFACE_RATIO(InventoryX), 0.f);
+		
+			for(long j = 0; j < TSecondaryInventory->sizey; j++) {
+				for(long i = 0; i < TSecondaryInventory->sizex; i++) {
+					Entity *io = TSecondaryInventory->slot[i][j].io;
+		
+					if(io) {
+						bool bItemSteal = false;
+						TextureContainer *tc = io->inv;
+						TextureContainer *tc2 = NULL;
+		
+						if(NeedHalo(io))
+							tc2 = io->inv->getHalo();
+		
+						if(_bSteal) {
+							if(!ARX_PLAYER_CanStealItem(io)) {
+								bItemSteal = true;
+								tc = ITC.Get("item_cant_steal");
+								tc2 = NULL;
+							}
+						}
+		
+						if(tc && (TSecondaryInventory->slot[i][j].show || bItemSteal)) {
+							UpdateGoldObject(io);
+		
+							float px = INTERFACE_RATIO(InventoryX) + (float)i*INTERFACE_RATIO(32) + INTERFACE_RATIO(2);
+							float py = (float)j*INTERFACE_RATIO(32) + INTERFACE_RATIO(13);
+		
+							Color color = (io->poisonous && io->poisonous_count!=0) ? Color::green : Color::white;
+							EERIEDrawBitmap(px, py, INTERFACE_RATIO_DWORD(tc->m_dwWidth),
+							                INTERFACE_RATIO_DWORD(tc->m_dwHeight), 0.001f, tc, color);
+		
+							if (!bItemSteal && (io==FlyingOverIO))
+							{
+								GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+								GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+								EERIEDrawBitmap(px, py, INTERFACE_RATIO_DWORD(tc->m_dwWidth),
+								                INTERFACE_RATIO_DWORD(tc->m_dwHeight), 0.001f, tc, Color::white);
+								GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+							}
+							else if(!bItemSteal && (io->ioflags & IO_CAN_COMBINE)) {
+								GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+								GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+								
+								float fColorPulse = fabs(cos(radians(fDecPulse)));
+								EERIEDrawBitmap(px, py, INTERFACE_RATIO_DWORD(tc->m_dwWidth),
+								                INTERFACE_RATIO_DWORD(tc->m_dwHeight), 0.001f, tc,
+								                Color3f::gray(fColorPulse).to<u8>());
+								GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+							}
+		
+							if(tc2) {
+								ARX_INTERFACE_HALO_Draw(io, tc, tc2, px, py, INTERFACE_RATIO(1), INTERFACE_RATIO(1));
+							}
+		
+							if((io->ioflags & IO_ITEM) && io->_itemdata->count != 1)
+								ARX_INTERFACE_DrawNumber(px, py, io->_itemdata->count, 3, Color::white);
+						}
+					}
+				}
+			}
 		}
 	}
 };
