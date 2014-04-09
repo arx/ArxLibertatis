@@ -218,7 +218,6 @@ unsigned long		ulGoldHaloTime = 0;
 float				InventoryX=-60.f;
 float				InventoryDir=0; // 0 stable, 1 to right, -1 to left
 
-float				CINEMA_DECAL=0.f;
 float				SLID_START=0.f; // Charging Weapon
 
 Vec2f				BOOKDEC = Vec2f(0.f, 0.f);
@@ -232,9 +231,7 @@ bool				COMBINEGOLD = false;
 ARX_INTERFACE_BOOK_MODE Book_Mode = BOOKMODE_STATS;
 long				Book_MapPage=1;
 long				Book_SpellPage=1;
-long				CINEMASCOPE=0;
-float				g_TimeStartCinemascope = 0;
-long				CINEMA_INC=0;
+
 long				SMOOTHSLID=0;
 long				currpos=50;
 bool				DRAGGING = false;
@@ -1280,22 +1277,10 @@ void ArxGame::manageEditorControls() {
 		}
 		lSLID_VALUE = SLID_VALUE;
 	}
+	
+	CinematicBorderUpdate();
 
-	if(CINEMA_INC == 1) {
-		CINEMA_DECAL += (float)Original_framedelay*( 1.0f / 10 );
 
-		if(CINEMA_DECAL > 100.f) {
-			CINEMA_DECAL = 100.f;
-			CINEMA_INC = 0;
-		}
-	} else if(CINEMA_INC == -1) {
-		CINEMA_DECAL -= (float)Original_framedelay*( 1.0f / 10 );
-
-		if(CINEMA_DECAL < 0.f) {
-			CINEMA_DECAL = 0.f;
-			CINEMA_INC = 0;
-		}
-	}
 
 	/////////////////////////////////////////////////////
 
@@ -2898,38 +2883,6 @@ void ARX_INTERFACE_Reset()
 	CINEMA_INC=0;
 	CINEMA_DECAL=0;
 	hideQuickSaveIcon();
-}
-
-//-----------------------------------------------------------------------------
-void ARX_INTERFACE_SetCinemascope(long status,long smooth)
-{
-	if(status) {
-		CINEMASCOPE=1;//++;
-		g_TimeStartCinemascope = arxtime.get_updated();
-	} else {
-		CINEMASCOPE=0;//--;
-		g_TimeStartCinemascope = 0;
-	}
-
-	arx_assert(CINEMASCOPE >= 0);
-
-	if(CINEMASCOPE) {
-		if(smooth)
-			CINEMA_INC=1;
-		else
-			CINEMA_DECAL=100;
-	} else {
-		if(smooth)
-			CINEMA_INC=-1;
-		else
-			CINEMA_DECAL=0;
-	}
-
-	if(player.Interface & INTER_INVENTORY)
-		player.Interface &=~ INTER_INVENTORY;
-
-	if(player.Interface & INTER_INVENTORYALL)
-		player.Interface &=~ INTER_INVENTORYALL;
 }
 
 //-----------------------------------------------------------------------------

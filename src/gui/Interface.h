@@ -53,6 +53,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "Configure.h"
 
+#include "gui/CinematicBorder.h"
 #include "gui/Note.h"
 
 #include "graphics/Color.h"
@@ -186,14 +187,11 @@ extern INTERFACE_TC ITC;
 extern Vec2s MemoMouse;
 extern Vec2s bookclick;
 
-extern float CINEMA_DECAL;
 extern ARX_INTERFACE_BOOK_MODE Book_Mode;
 extern long SpecialCursor;
 
 extern long LastMouseClick;
 extern long INVERTMOUSE;
-extern long CINEMASCOPE;
-extern long CINEMA_INC;
 extern long CurrFightPos;
 
 //-----------------------------------------------------------------------------
@@ -208,7 +206,7 @@ long GetMainSpeakingIO();
 bool ARX_INTERFACE_MouseInBook();
 void ARX_INTERFACE_PlayerInterfaceModify(long showhide, long smooth);
 void ARX_INTERFACE_Reset();
-void ARX_INTERFACE_SetCinemascope(long v, long vv);
+
 void ARX_INTERFACE_ManageOpenedBook();
 void ARX_INTERFACE_ManageOpenedBook_Finish();
 void ARX_INTERFACE_NoteManage();

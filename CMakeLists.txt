@@ -677,6 +677,7 @@ set(GRAPHICS_OPENGL_SOURCES
 )
 
 set(GUI_SOURCES
+	src/gui/CinematicBorder.cpp
 	src/gui/Credits.cpp
 	src/gui/Cursor.cpp
 	src/gui/DebugHud.cpp
