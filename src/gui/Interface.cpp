@@ -6404,19 +6404,13 @@ MemorizedSpellIconsGui memorizedSpellIconsGui;
 
 class HealthGauge {
 private:
-	Vec2f m_pos;
 	float m_amount;
 public:
 	void update() {
-		m_pos = Vec2f(g_size.width() - INTERFACE_RATIO(33) + INTERFACE_RATIO(1) + lSLID_VALUE,
-								g_size.height() - INTERFACE_RATIO(81));
-		
 		m_amount = (float)player.life/(float)player.Full_maxlife;
 	}
 	
 	void draw() {
-		ARX_INTERFACE_DrawItem(ITC.Get("empty_gauge_blue"), m_pos.x, m_pos.y, 0.f); //399
-		
 		TextureContainer * filledTexture = ITC.Get("filled_gauge_red");
 		
 		Color ulcolor = Color::red;
@@ -6432,9 +6426,11 @@ public:
 		pos.x += static_cast<float>(-lSLID_VALUE);
 		
 		Vec2f size = Vec2f(filledTexture->size());
-		
+
 		EERIEDrawBitmap2DecalY(pos.x, pos.y, size.x, size.y,
 			0.f, filledTexture, ulcolor, (1.f - m_amount));
+		
+		ARX_INTERFACE_DrawItem(ITC.Get("empty_gauge_red"), pos.x, pos.y);
 		
 		if(!(player.Interface & INTER_COMBATMODE)) {
 			
@@ -6459,17 +6455,13 @@ HealthGauge healthGauge;
 
 class ManaGauge {
 private:
-	Vec2f m_posEmpty;
 	float m_amount;
 public:
 	void update() {
-		m_posEmpty = Vec2f(0.f-lSLID_VALUE, g_size.height() - INTERFACE_RATIO(78));
 		m_amount = player.mana / player.Full_maxmana;
 	}
 	
 	void draw() {
-		ARX_INTERFACE_DrawItem(ITC.Get("empty_gauge_red"), m_posEmpty.x, m_posEmpty.y, 0.001f);
-		
 		TextureContainer * filledTexture = ITC.Get("filled_gauge_blue");
 		
 		Vec2f size = Vec2f(filledTexture->size());
@@ -6480,6 +6472,8 @@ public:
 		
 		EERIEDrawBitmap2DecalY(pos.x + 1, pos.y, size.x, size.y, 0.f,
 			filledTexture, Color::white, (1.f - m_amount));
+		
+		ARX_INTERFACE_DrawItem(ITC.Get("empty_gauge_blue"), pos.x + 1, pos.y);
 		
 		if(!(player.Interface & INTER_COMBATMODE)) {
 			
