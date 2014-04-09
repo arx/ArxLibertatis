@@ -5681,68 +5681,7 @@ void DrawSecondaryInvOrStealInv() {
 	}
 }
 
-void UpdateInventory() {
-	if(player.Interface & INTER_INVENTORY) {
-		if((player.Interface & INTER_COMBATMODE) || player.doingmagic >= 2) {
-			long t = Original_framedelay * (1.f/5) + 2;
-			InventoryY += static_cast<long>(INTERFACE_RATIO_LONG(t));
 
-			if(InventoryY > INTERFACE_RATIO(110.f)) {
-				InventoryY = static_cast<long>(INTERFACE_RATIO(110.f));
-			}
-		} else {
-			if(bInventoryClosing) {
-				long t = Original_framedelay * (1.f/5) + 2;
-				InventoryY += static_cast<long>(INTERFACE_RATIO_LONG(t));
-
-				if(InventoryY > INTERFACE_RATIO(110)) {
-					InventoryY = static_cast<long>(INTERFACE_RATIO(110.f));
-					bInventoryClosing = false;
-
-					player.Interface &=~ INTER_INVENTORY;
-
-					if(bInventorySwitch) {
-						bInventorySwitch = false;
-						ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
-						player.Interface |= INTER_INVENTORYALL;
-						ARX_INTERFACE_NoteClose();
-						InventoryY = static_cast<long>(INTERFACE_RATIO(121.f) * player.bag);
-						lOldInterface=INTER_INVENTORYALL;
-					}
-				}
-			} else if(InventoryY > 0) {
-				InventoryY -= static_cast<long>(INTERFACE_RATIO((Original_framedelay * (1.f/5)) + 2.f));
-
-				if(InventoryY < 0) {
-					InventoryY = 0;
-				}
-			}
-		}
-	} else if((player.Interface & INTER_INVENTORYALL) || bInventoryClosing) {
-		float fSpeed = (1.f/3);
-		if((player.Interface & INTER_COMBATMODE) || player.doingmagic >= 2) {
-			if(InventoryY < INTERFACE_RATIO(121) * player.bag) {
-				InventoryY += static_cast<long>(INTERFACE_RATIO((Original_framedelay * fSpeed) + 2.f));
-			}
-		} else {
-			if(bInventoryClosing) {
-				InventoryY += static_cast<long>(INTERFACE_RATIO((Original_framedelay * fSpeed) + 2.f));
-				if(InventoryY > INTERFACE_RATIO(121) * player.bag) {
-					bInventoryClosing = false;
-					if(player.Interface & INTER_INVENTORYALL) {
-						player.Interface &= ~INTER_INVENTORYALL;
-					}
-					lOldInterface=0;
-				}
-			} else if(InventoryY > 0) {
-				InventoryY -= static_cast<long>(INTERFACE_RATIO((Original_framedelay * fSpeed) + 2.f));
-				if(InventoryY < 0) {
-					InventoryY = 0;
-				}
-			}
-		}
-	}
-}
 
 class InventoryGui {
 private:
@@ -5755,6 +5694,69 @@ private:
 	Vec2f m_slotSpacing;
 	
 public:
+	void update() {
+		if(player.Interface & INTER_INVENTORY) {
+			if((player.Interface & INTER_COMBATMODE) || player.doingmagic >= 2) {
+				long t = Original_framedelay * (1.f/5) + 2;
+				InventoryY += static_cast<long>(INTERFACE_RATIO_LONG(t));
+	
+				if(InventoryY > INTERFACE_RATIO(110.f)) {
+					InventoryY = static_cast<long>(INTERFACE_RATIO(110.f));
+				}
+			} else {
+				if(bInventoryClosing) {
+					long t = Original_framedelay * (1.f/5) + 2;
+					InventoryY += static_cast<long>(INTERFACE_RATIO_LONG(t));
+	
+					if(InventoryY > INTERFACE_RATIO(110)) {
+						InventoryY = static_cast<long>(INTERFACE_RATIO(110.f));
+						bInventoryClosing = false;
+	
+						player.Interface &=~ INTER_INVENTORY;
+	
+						if(bInventorySwitch) {
+							bInventorySwitch = false;
+							ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
+							player.Interface |= INTER_INVENTORYALL;
+							ARX_INTERFACE_NoteClose();
+							InventoryY = static_cast<long>(INTERFACE_RATIO(121.f) * player.bag);
+							lOldInterface=INTER_INVENTORYALL;
+						}
+					}
+				} else if(InventoryY > 0) {
+					InventoryY -= static_cast<long>(INTERFACE_RATIO((Original_framedelay * (1.f/5)) + 2.f));
+	
+					if(InventoryY < 0) {
+						InventoryY = 0;
+					}
+				}
+			}
+		} else if((player.Interface & INTER_INVENTORYALL) || bInventoryClosing) {
+			float fSpeed = (1.f/3);
+			if((player.Interface & INTER_COMBATMODE) || player.doingmagic >= 2) {
+				if(InventoryY < INTERFACE_RATIO(121) * player.bag) {
+					InventoryY += static_cast<long>(INTERFACE_RATIO((Original_framedelay * fSpeed) + 2.f));
+				}
+			} else {
+				if(bInventoryClosing) {
+					InventoryY += static_cast<long>(INTERFACE_RATIO((Original_framedelay * fSpeed) + 2.f));
+					if(InventoryY > INTERFACE_RATIO(121) * player.bag) {
+						bInventoryClosing = false;
+						if(player.Interface & INTER_INVENTORYALL) {
+							player.Interface &= ~INTER_INVENTORYALL;
+						}
+						lOldInterface=0;
+					}
+				} else if(InventoryY > 0) {
+					InventoryY -= static_cast<long>(INTERFACE_RATIO((Original_framedelay * fSpeed) + 2.f));
+					if(InventoryY < 0) {
+						InventoryY = 0;
+					}
+				}
+			}
+		}
+	}
+	
 	void CalculateInventoryCoordinates() {
 		
 		m_slotSize = Vec2f(32, 32);
@@ -6562,7 +6564,7 @@ ScreenArrows screenArrows;
 void UpdateInterface() {
 	UpdateCombatInterface();
 	UpdateSecondaryInvOrStealInv();
-	UpdateInventory();	
+	inventoryGui.update();
 	mecanismIcon.update();
 	screenArrows.update();
 	healthGauge.update();
