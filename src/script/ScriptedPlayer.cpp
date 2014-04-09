@@ -415,8 +415,8 @@ public:
 			
 			DebugScript(" newspell");
 			
-			MakeBookFX(Vec3f(g_size.width() - INTERFACE_RATIO(35), g_size.height() - INTERFACE_RATIO(148),
-			                 0.00001f));
+			Vec2f bottomRight = Vec2f(g_size.width(), g_size.height());
+			MakeBookFX(Vec3f(bottomRight + Vec2f(-35, -148), 0.00001f));
 			
 		} else if(type == "torch") {
 			
