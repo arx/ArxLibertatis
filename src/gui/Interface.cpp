@@ -1327,12 +1327,13 @@ void ArxGame::manageEditorControls() {
 	if(!BLOCK_PLAYER_CONTROLS) {
 		if(!(player.Interface & INTER_COMBATMODE)) {
 			if(!TRUE_PLAYER_MOUSELOOK_ON) {
-				Vec2d pos(InventoryX + 110, g_size.height() - (158 + 32));
-				
-				if(pos.x < INTERFACE_RATIO(10))
-					pos.x = INTERFACE_RATIO(10);
+
 				
 				if(player.torch) {
+					Vec2d pos(InventoryX + 110, g_size.height() - (158 + 32));
+					
+					if(pos.x < INTERFACE_RATIO(10))
+						pos.x = INTERFACE_RATIO(10);
 					
 					const Rect mouseTestRect(
 					pos.x,
@@ -1412,8 +1413,7 @@ void ArxGame::manageEditorControls() {
 
 				// redist
 				if((player.Skill_Redistribute) || (player.Attribute_Redistribute)) {
-					pos.x = g_size.width() - INTERFACE_RATIO(35) + lSLID_VALUE + GL_DECAL_ICONS;
-					pos.y = g_size.height() - INTERFACE_RATIO(218);
+					Vec2d pos(g_size.width() - 35 + lSLID_VALUE + GL_DECAL_ICONS, g_size.height() - INTERFACE_RATIO(218));
 					
 					const Rect mouseTestRect(
 					pos.x,
@@ -1437,8 +1437,7 @@ void ArxGame::manageEditorControls() {
 
 				// gold
 				if(player.gold > 0) {
-					pos.x = g_size.width() - INTERFACE_RATIO(35) + lSLID_VALUE + GL_DECAL_ICONS;
-					pos.y = g_size.height() - INTERFACE_RATIO(183);
+					Vec2d pos(g_size.width() - (35) + lSLID_VALUE + GL_DECAL_ICONS, g_size.height() - 183);
 					
 					const Rect mouseTestRect(
 					pos.x,
@@ -1466,8 +1465,8 @@ void ArxGame::manageEditorControls() {
 				}
 
 				// book
-				pos.x = g_size.width() - INTERFACE_RATIO(35) + lSLID_VALUE + GL_DECAL_ICONS;
-				pos.y = g_size.height() - INTERFACE_RATIO(148);
+				{
+				Vec2d pos(g_size.width() - 35 + lSLID_VALUE + GL_DECAL_ICONS, g_size.height() - 148);
 
 				const Rect bookMouseTestRect(
 				pos.x,
@@ -1486,10 +1485,11 @@ void ArxGame::manageEditorControls() {
 					}
 					return;
 				}
-
+				}
+				
+				{
 				// inventaire
-				pos.x = g_size.width() - INTERFACE_RATIO(35) + lSLID_VALUE + GL_DECAL_ICONS;
-				pos.y = g_size.height() - INTERFACE_RATIO(113);
+				Vec2d pos(g_size.width() - (35) + lSLID_VALUE + GL_DECAL_ICONS, g_size.height() - 113);
 				static float flDelay=0;
 				
 				const Rect inventoryMouseTestRect(
@@ -1563,6 +1563,7 @@ void ArxGame::manageEditorControls() {
 
 					if(DRAGINTER == NULL)
 						return;
+				}
 				}
 			}
 
