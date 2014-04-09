@@ -153,7 +153,7 @@ public:
 		
 		DebugScript(' ' << options << ' ' << enable);
 		
-		ARX_INTERFACE_SetCinemascope(enable ? 1 : 0, smooth);
+		cinematicBorder.set(enable ? 1 : 0, smooth);
 		
 		return Success;
 	}

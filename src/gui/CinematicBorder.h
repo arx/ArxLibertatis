@@ -23,8 +23,13 @@
 extern long CINEMASCOPE;
 extern float CINEMA_DECAL;
 
-void CinematicBorderReset();
-void CinematicBorderUpdate();
-void ARX_INTERFACE_SetCinemascope(long v, long vv);
+class CinematicBorder {
+public:
+	void reset();
+	void update();
+	void set(long v, long vv);
+};
+
+extern CinematicBorder cinematicBorder;
 
 #endif // ARX_GAME_GUI_CINEMATICBORDER_H

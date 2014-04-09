@@ -1278,7 +1278,7 @@ void ArxGame::manageEditorControls() {
 		lSLID_VALUE = SLID_VALUE;
 	}
 	
-	CinematicBorderUpdate();
+	cinematicBorder.update();
 
 
 
@@ -2880,7 +2880,7 @@ void ARX_INTERFACE_Reset()
 	BLOCK_PLAYER_CONTROLS = false;
 	SLID_VALUE=0;
 	CINEMASCOPE=0;
-	CinematicBorderReset();
+	cinematicBorder.reset();
 	CINEMA_DECAL=0;
 	hideQuickSaveIcon();
 }

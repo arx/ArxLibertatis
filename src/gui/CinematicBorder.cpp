@@ -30,11 +30,13 @@ long				CINEMASCOPE=0;
 long				CINEMA_INC=0;
 float				CINEMA_DECAL=0.f;
 
-void CinematicBorderReset() {
+CinematicBorder cinematicBorder = CinematicBorder();
+
+void CinematicBorder::reset() {
 	CINEMA_INC=0;
 }
 
-void ARX_INTERFACE_SetCinemascope(long status,long smooth)
+void CinematicBorder::set(long status,long smooth)
 {
 	if(status) {
 		CINEMASCOPE=1;//++;
@@ -66,7 +68,7 @@ void ARX_INTERFACE_SetCinemascope(long status,long smooth)
 }
 
 
-void CinematicBorderUpdate() {
+void CinematicBorder::update() {
 	
 	if(CINEMA_INC == 1) {
 		CINEMA_DECAL += (float)Original_framedelay*( 1.0f / 10 );
