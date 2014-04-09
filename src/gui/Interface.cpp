@@ -6492,12 +6492,12 @@ ManaGauge manaGauge;
 //The cogwheel icon that shows up when switching from mouseview to interaction mode.
 class MecanismIcon {
 private:
-	Color MecanismIconColor;
+	Color m_color;
 public:
 	void update() {
-		MecanismIconColor = Color::white;
+		m_color = Color::white;
 		if(lTimeToDrawMecanismCursor > 300) {
-			MecanismIconColor = Color::black;
+			m_color = Color::black;
 			if(lTimeToDrawMecanismCursor > 400) {
 				lTimeToDrawMecanismCursor=0;
 				lNbToDrawMecanismCursor++;
@@ -6508,7 +6508,7 @@ public:
 	
 	void draw() {
 	    EERIEDrawBitmap(0, 0, INTERFACE_RATIO_DWORD(mecanism_tc->m_dwWidth), INTERFACE_RATIO_DWORD(mecanism_tc->m_dwHeight),
-	                    0.01f, mecanism_tc, MecanismIconColor);
+	                    0.01f, mecanism_tc, m_color);
 	}
 };
 MecanismIcon mecanismIcon;
