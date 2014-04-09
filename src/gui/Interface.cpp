@@ -6495,26 +6495,35 @@ public:
 };
 ManaGauge manaGauge;
 
-
-Color MecanismIconColor;
-
 //The cogwheel icon that shows up when switching from mouseview to interaction mode.
-void UpdateMecanismIcon() {
-	MecanismIconColor = Color::white;
-	if(lTimeToDrawMecanismCursor > 300) {
-		MecanismIconColor = Color::black;
-		if(lTimeToDrawMecanismCursor > 400) {
-			lTimeToDrawMecanismCursor=0;
-			lNbToDrawMecanismCursor++;
+class MecanismIcon {
+private:
+	Color MecanismIconColor;
+public:
+	void update() {
+		MecanismIconColor = Color::white;
+		if(lTimeToDrawMecanismCursor > 300) {
+			MecanismIconColor = Color::black;
+			if(lTimeToDrawMecanismCursor > 400) {
+				lTimeToDrawMecanismCursor=0;
+				lNbToDrawMecanismCursor++;
+			}
 		}
+		lTimeToDrawMecanismCursor += static_cast<long>(framedelay);
 	}
-	lTimeToDrawMecanismCursor += static_cast<long>(framedelay);
-}
+	
+	void draw() {
+	    EERIEDrawBitmap(0, 0, INTERFACE_RATIO_DWORD(mecanism_tc->m_dwWidth), INTERFACE_RATIO_DWORD(mecanism_tc->m_dwHeight),
+	                    0.01f, mecanism_tc, MecanismIconColor);
+	}
+};
+MecanismIcon mecanismIcon;
 
-void DrawMecanismIcon() {
-    EERIEDrawBitmap(0, 0, INTERFACE_RATIO_DWORD(mecanism_tc->m_dwWidth), INTERFACE_RATIO_DWORD(mecanism_tc->m_dwHeight),
-                    0.01f, mecanism_tc, MecanismIconColor);
-}
+
+
+
+
+
 
 struct HudScreenArrows{
 	float fSizeX;
@@ -6555,7 +6564,7 @@ void UpdateInterface() {
 	UpdateCombatInterface();
 	UpdateSecondaryInvOrStealInv();
 	UpdateInventory();	
-	UpdateMecanismIcon();
+	mecanismIcon.update();
 	UpdateScreenBorderArrows();
 	healthGauge.update();
 	manaGauge.update();
@@ -6612,7 +6621,7 @@ void ArxGame::drawAllInterface() {
 			GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 			if(mecanism_tc && MAGICMODE < 0 && lNbToDrawMecanismCursor < 3) {
-				DrawMecanismIcon();
+				mecanismIcon.draw();
 			}
 			if(arrow_left_tc) {
 				DrawScreenBorderArrows();
