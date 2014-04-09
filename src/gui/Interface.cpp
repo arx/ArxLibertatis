@@ -1323,18 +1323,15 @@ void ArxGame::manageEditorControls() {
 	// interface
 	//-------------------------------------------------------------------------
 	// torch
-	Vec2d pos = Vec2d(0, 0);
 
 	if(!BLOCK_PLAYER_CONTROLS) {
 		if(!(player.Interface & INTER_COMBATMODE)) {
 			if(!TRUE_PLAYER_MOUSELOOK_ON) {
-				pos.x = INTERFACE_RATIO(InventoryX) + INTERFACE_RATIO(110);
-
+				Vec2d pos(InventoryX + 110, g_size.height() - (158 + 32));
+				
 				if(pos.x < INTERFACE_RATIO(10))
 					pos.x = INTERFACE_RATIO(10);
-
-				pos.y = g_size.height() - INTERFACE_RATIO(158+32);
-
+				
 				if(player.torch) {
 					
 					const Rect mouseTestRect(
@@ -1571,8 +1568,7 @@ void ArxGame::manageEditorControls() {
 
 			// steal
 			if(player.Interface & INTER_STEAL) {
-				pos.x = static_cast<float>(-lSLID_VALUE);
-				pos.y = g_size.height() - INTERFACE_RATIO(78 + 32);
+				Vec2d pos(static_cast<float>(-lSLID_VALUE), g_size.height() - (78 + 32));
 				
 				const Rect mouseTestRect(
 				pos.x,
@@ -1611,8 +1607,7 @@ void ArxGame::manageEditorControls() {
 
 	// gros player book
 	if(player.Interface & INTER_MAP) {
-		pos.x = 97 * g_sizeRatio.x;
-		pos.y = 64 * g_sizeRatio.y;
+		Vec2d pos(97 * g_sizeRatio.x, 64 * g_sizeRatio.y);
 		
 		TextureContainer* playerbook = ITC.Get("playerbook");
 		if(playerbook) {
@@ -1638,11 +1633,12 @@ void ArxGame::manageEditorControls() {
 	}
 	
 	if(!PLAYER_INTERFACE_HIDE_COUNT && TSecondaryInventory) {
-		pos.x = INTERFACE_RATIO(InventoryX) + INTERFACE_RATIO(16);
-		pos.y = INTERFACE_RATIO_DWORD(BasicInventorySkin->m_dwHeight) - INTERFACE_RATIO(16);
+		
 		Entity * temp=(Entity *)TSecondaryInventory->io;
 
 		if(temp && !(temp->ioflags & IO_SHOP) && !(temp == ioSteal)) {
+			Vec2d pos(InventoryX + 16, BasicInventorySkin->m_dwHeight - 16);
+			
 			const Rect mouseTestRect(
 			pos.x,
 			pos.y,
@@ -1668,8 +1664,7 @@ void ArxGame::manageEditorControls() {
 			}
 		}
 
-		//py = 20;
-		pos.x = INTERFACE_RATIO(InventoryX) + INTERFACE_RATIO_DWORD(BasicInventorySkin->m_dwWidth) - INTERFACE_RATIO(32);
+		Vec2d pos(InventoryX + BasicInventorySkin->m_dwWidth - 32, BasicInventorySkin->m_dwHeight - 16);
 
 		const Rect mouseTestRect(
 		pos.x,
