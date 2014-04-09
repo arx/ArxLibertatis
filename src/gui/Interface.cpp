@@ -6469,14 +6469,16 @@ public:
 	void draw() {
 		ARX_INTERFACE_DrawItem(ITC.Get("empty_gauge_red"), m_pos.x, m_pos.y, 0.001f);
 		
-		float LARGG=INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_blue")->m_dwWidth);
-		float HAUTT=INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_blue")->m_dwHeight);
+		TextureContainer * filledTexture = ITC.Get("filled_gauge_blue");
+		
+		float LARGG=INTERFACE_RATIO_DWORD(filledTexture->m_dwWidth);
+		float HAUTT=INTERFACE_RATIO_DWORD(filledTexture->m_dwHeight);
 		
 		Vec2f offset = Vec2f(-33, -81);
 		Vec2f pos = Vec2f(g_size.bottomRight()) + offset;
 		
 		EERIEDrawBitmap2DecalY(pos.x + 1 + lSLID_VALUE, pos.y, LARGG, HAUTT, 0.f,
-			ITC.Get("filled_gauge_blue"), Color::white, (1.f - m_amount));
+			filledTexture, Color::white, (1.f - m_amount));
 		
 		if(!(player.Interface & INTER_COMBATMODE)) {
 			
