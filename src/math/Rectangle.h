@@ -170,6 +170,26 @@ public:
 		return typename vec2_traits<T>::type(left + (right - left) / 2, top + (bottom - top) / 2);
 	}
 	
+	typename vec2_traits<T>::type topLeft() const {
+		return typename vec2_traits<T>::type(left, top);
+	}
+	
+	typename vec2_traits<T>::type bottomLeft() const {
+		return typename vec2_traits<T>::type(left, bottom);
+	}
+	
+	typename vec2_traits<T>::type bottomCenter() const {
+		return typename vec2_traits<T>::type(left + (right - left) / 2, bottom);
+	}
+	
+	typename vec2_traits<T>::type bottomRight() const {
+		return typename vec2_traits<T>::type(right, bottom);
+	}
+	
+	typename vec2_traits<T>::type topRight() const {
+		return typename vec2_traits<T>::type(right, top);
+	}
+	
 	static const Rectangle_ ZERO;
 	
 };
