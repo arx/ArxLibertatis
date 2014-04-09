@@ -26,7 +26,7 @@
 
 float				g_TimeStartCinemascope = 0;
 
-long				CINEMASCOPE=0;
+bool				CINEMASCOPE = false;
 long				CINEMA_INC=0;
 float				CINEMA_DECAL=0.f;
 
@@ -39,15 +39,13 @@ void CinematicBorder::reset() {
 void CinematicBorder::set(bool status, bool smooth)
 {
 	if(status) {
-		CINEMASCOPE=1;//++;
+		CINEMASCOPE = true;//++;
 		g_TimeStartCinemascope = arxtime.get_updated();
 	} else {
-		CINEMASCOPE=0;//--;
+		CINEMASCOPE = false;//--;
 		g_TimeStartCinemascope = 0;
 	}
-
-	arx_assert(CINEMASCOPE >= 0);
-
+	
 	if(CINEMASCOPE) {
 		if(smooth)
 			CINEMA_INC=1;

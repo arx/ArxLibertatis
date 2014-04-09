@@ -20,7 +20,7 @@
 #ifndef ARX_GAME_GUI_CINEMATICBORDER_H
 #define ARX_GAME_GUI_CINEMATICBORDER_H
 
-extern long CINEMASCOPE;
+extern bool CINEMASCOPE;
 extern float CINEMA_DECAL;
 
 class CinematicBorder {
