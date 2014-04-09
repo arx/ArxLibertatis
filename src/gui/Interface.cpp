@@ -5947,11 +5947,9 @@ void DrawItemPrice() {
 			// check should always be OK because amount is supposed positive
 			amount = checked_range_cast<long>(famount);
 
-			if(amount <= player.gold) {
-				ARX_INTERFACE_DrawNumber(pos, amount, 6, Color::green);
-			} else {
-				ARX_INTERFACE_DrawNumber(pos, amount, 6, Color::red);
-			}
+			Color color = (amount <= player.gold) ? Color::green : Color::red;
+			
+			ARX_INTERFACE_DrawNumber(pos, amount, 6, color);
 		} else if(InPlayerInventoryPos(DANAEMouse)) {
 			long amount = static_cast<long>( ARX_INTERACTIVE_GetPrice( FlyingOverIO, temp ) / 3.0f );
 			// achat
@@ -5960,13 +5958,14 @@ void DrawItemPrice() {
 			amount = checked_range_cast<long>( famount );
 
 			if(amount) {
+				Color color = Color::red;
+				
 				if(temp->shop_category.empty() ||
 				   FlyingOverIO->groups.find(temp->shop_category) != FlyingOverIO->groups.end()) {
 
-					ARX_INTERFACE_DrawNumber(pos, amount, 6, Color::green);
-				} else {
-					ARX_INTERFACE_DrawNumber(pos, amount, 6, Color::red);
+					color = Color::green;
 				}
+				ARX_INTERFACE_DrawNumber(pos, amount, 6, color);
 			}
 		}
 	}
