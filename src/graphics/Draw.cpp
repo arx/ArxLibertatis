@@ -157,8 +157,10 @@ void MatchPixTex(float& x, float& y) {
 	x -= .5f, y -= .5f;
 }
 
-void CreateBitmap(TexturedQuad& s, float x, float y, float sx, float sy, float z, TextureContainer * tex, Color color, bool isRhw) {
-	MatchPixTex(x, y);
+void CreateBitmap(TexturedQuad& s, Rectf rect, float z, TextureContainer * tex, Color color, bool isRhw) {
+	
+	rect.move(-.5f, -.5f);
+	
 	Vec2f uv = (tex) ? tex->uv : Vec2f_ZERO;
 	ColorBGRA col = color.toBGRA();
 	float val = 1.f;
@@ -166,16 +168,16 @@ void CreateBitmap(TexturedQuad& s, float x, float y, float sx, float sy, float z
 	if(isRhw) {
 		val -= z;
 	}
-
-	s.v[0] = TexturedVertex(Vec3f(x, y, z), val, col, 0xFF000000, Vec2f(0.f, 0.f));
-	s.v[1] = TexturedVertex(Vec3f(x + sx, y, z), val, col, 0xFF000000, Vec2f(uv.x, 0.f));
-	s.v[2] = TexturedVertex(Vec3f(x + sx, y + sy, z), val, col, 0xFF000000, Vec2f(uv.x, uv.y));
-	s.v[3] = TexturedVertex(Vec3f(x, y + sy, z), val, col, 0xFF000000, Vec2f(0.f, uv.y));
+	
+	s.v[0] = TexturedVertex(Vec3f(rect.topLeft(), z), val, col, 0xFF000000, Vec2f(0.f, 0.f));
+	s.v[1] = TexturedVertex(Vec3f(rect.topRight(), z), val, col, 0xFF000000, Vec2f(uv.x, 0.f));
+	s.v[2] = TexturedVertex(Vec3f(rect.bottomRight(), z), val, col, 0xFF000000, Vec2f(uv.x, uv.y));
+	s.v[3] = TexturedVertex(Vec3f(rect.bottomLeft(), z), val, col, 0xFF000000, Vec2f(0.f, uv.y));
 }
 
 void DrawBitmap(const Vec2f & pos, float sx, float sy, float z, TextureContainer * tex, Color color, bool isRhw) {
 	TexturedQuad s;
-	CreateBitmap(s, pos.x, pos.y, sx, sy, z, tex, color, isRhw);
+	CreateBitmap(s, Rectf(pos, sx, sy), z, tex, color, isRhw);
 	
 	GRenderer->SetTexture(0, tex);
 	if(isRhw) {
@@ -191,7 +193,7 @@ void DrawBitmap(const Vec2f & pos, float sx, float sy, float z, TextureContainer
 
 void EERIEAddBitmap(const RenderMaterial & mat, float x, float y, float sx, float sy, float z, TextureContainer * tex, Color color) {
 	TexturedQuad s;
-	CreateBitmap(s, x, y, sx, sy, z, tex, color, false);
+	CreateBitmap(s, Rectf(Vec2f(x, y), sx, sy), z, tex, color, false);
 	RenderBatcher::getInstance().add(mat, s);
 }
 
