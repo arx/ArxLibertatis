@@ -5997,8 +5997,9 @@ private:
 public:
 
 	void update() {
-		m_pos.x = g_size.width() - INTERFACE_RATIO(35) + lSLID_VALUE;
-		m_pos.y = g_size.height() - INTERFACE_RATIO(148);
+		m_pos = g_size.bottomRight();
+		m_pos += Vec2f(-35, -148);
+		m_pos.x += lSLID_VALUE;
 	}
 	
 	void draw() {
@@ -6012,9 +6013,7 @@ public:
 			if(ulBookHaloTime >= 3000) { // ms
 				bBookHalo = false;
 			}
-			float POSX = g_size.width()-INTERFACE_RATIO(35)+lSLID_VALUE;
-			float POSY = g_size.height()-INTERFACE_RATIO(148);
-			DrawHalo(0.2f, 0.4f, 0.8f, GetHaloForITC("book"), Vec2f(POSX, POSY));
+			DrawHalo(0.2f, 0.4f, 0.8f, GetHaloForITC("book"), m_pos);
 		}
 	}
 };
