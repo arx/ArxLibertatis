@@ -6331,8 +6331,8 @@ static void hideQuickSaveIcon() {
 
 class MemorizedSpellIconsGui {
 private:
-	int MemorizedSpellCount;
-	Vec2f MemorizedSpellPos;
+	int m_count;
+	Vec2f m_pos;
 	
 public:
 	void update() {
@@ -6346,12 +6346,12 @@ public:
 				count2++;
 			}
 		}
-		MemorizedSpellCount = std::max(count, count2);
-		MemorizedSpellPos.x = g_size.width() - (MemorizedSpellCount * INTERFACE_RATIO(32));
+		m_count = std::max(count, count2);
+		m_pos.x = g_size.width() - (m_count * INTERFACE_RATIO(32));
 		if(CHANGE_LEVEL_ICON > -1) {
-			MemorizedSpellPos.x -= INTERFACE_RATIO(32);
+			m_pos.x -= INTERFACE_RATIO(32);
 		}
-		MemorizedSpellPos.y = 0;
+		m_pos.y = 0;
 	}
 	
 	void draw() {
@@ -6369,19 +6369,19 @@ public:
 				}
 			}
 			if(player.SpellToMemorize.iSpellSymbols[i] != RUNE_NONE) {
-				EERIEDrawBitmap2(MemorizedSpellPos.x, MemorizedSpellPos.y, INTERFACE_RATIO(32), INTERFACE_RATIO(32), 0,
+				EERIEDrawBitmap2(m_pos.x, m_pos.y, INTERFACE_RATIO(32), INTERFACE_RATIO(32), 0,
 					necklace.pTexTab[player.SpellToMemorize.iSpellSymbols[i]], Color::white);
 				if(bHalo) {				
 					TextureContainer *tc = necklace.pTexTab[player.SpellToMemorize.iSpellSymbols[i]];
-					DrawHalo(0.2f, 0.4f, 0.8f, tc->getHalo(), Vec2f(MemorizedSpellPos.x, MemorizedSpellPos.y));
+					DrawHalo(0.2f, 0.4f, 0.8f, tc->getHalo(), Vec2f(m_pos.x, m_pos.y));
 				}
 				if(!(player.rune_flags & (RuneFlag)(1<<player.SpellToMemorize.iSpellSymbols[i]))) {
 					GRenderer->SetBlendFunc(Renderer::BlendInvDstColor, Renderer::BlendOne);
 					GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-					EERIEDrawBitmap2(MemorizedSpellPos.x, MemorizedSpellPos.y, INTERFACE_RATIO(32), INTERFACE_RATIO(32), 0, Movable, Color3f::gray(.8f).to<u8>());
+					EERIEDrawBitmap2(m_pos.x, m_pos.y, INTERFACE_RATIO(32), INTERFACE_RATIO(32), 0, Movable, Color3f::gray(.8f).to<u8>());
 					GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 				}
-				MemorizedSpellPos.x += INTERFACE_RATIO(32);
+				m_pos.x += INTERFACE_RATIO(32);
 			}
 		}
 		if(float(arxtime) - player.SpellToMemorize.lTimeCreation > 30000) {
