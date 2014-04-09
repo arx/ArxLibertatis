@@ -5513,18 +5513,24 @@ public:
 	}
 	
 	void draw() {
+		Vec2f pos = Vec2f(g_size.bottomCenter());
+		pos += Vec2f(-320 + 262.f, -72.f);
+		
 		GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	
 		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-		ARX_INTERFACE_DrawItem(ITC.Get("aim_maxi"), g_size.center().x + INTERFACE_RATIO(-320+262.f), g_size.height() + INTERFACE_RATIO(-72.f), 0.0001f, Color3f::gray(HitStrengthVal).to<u8>());
+		ARX_INTERFACE_DrawItem(ITC.Get("aim_maxi"), pos.x, pos.y, 0.0001f, Color3f::gray(HitStrengthVal).to<u8>());
 		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-		ARX_INTERFACE_DrawItem(ITC.Get("aim_empty"), g_size.center().x + INTERFACE_RATIO(-320+262.f), g_size.height() + INTERFACE_RATIO(-72.f), 0.0001f, Color::white);
+		ARX_INTERFACE_DrawItem(ITC.Get("aim_empty"), pos.x, pos.y, 0.0001f, Color::white);
 		if(bHitFlash && player.Full_Skill_Etheral_Link >= 40) {
+			Vec2f flashPos = pos;
+			flashPos += Vec2f(-25, -30);
+			
 			float j = 1.0f - fHitFlash;
 			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 			GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 			Color col = (j < 0.5f) ? Color3f(j*2.0f, 1, 0).to<u8>() : Color3f(1, fHitFlash, 0).to<u8>();
-			ARX_INTERFACE_DrawItem(ITC.Get("aim_hit"), g_size.center().x + INTERFACE_RATIO(-320+262.f-25), g_size.height() + INTERFACE_RATIO(-72.f-30), 0.0001f, col);
+			ARX_INTERFACE_DrawItem(ITC.Get("aim_hit"), flashPos.x, flashPos.y, 0.0001f, col);
 			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 		}
 		
