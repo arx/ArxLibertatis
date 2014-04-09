@@ -2880,7 +2880,7 @@ void ARX_INTERFACE_Reset()
 	BLOCK_PLAYER_CONTROLS = false;
 	SLID_VALUE=0;
 	CINEMASCOPE=0;
-	CINEMA_INC=0;
+	CinematicBorderReset();
 	CINEMA_DECAL=0;
 	hideQuickSaveIcon();
 }

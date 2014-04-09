@@ -30,6 +30,10 @@ long				CINEMASCOPE=0;
 long				CINEMA_INC=0;
 float				CINEMA_DECAL=0.f;
 
+void CinematicBorderReset() {
+	CINEMA_INC=0;
+}
+
 void ARX_INTERFACE_SetCinemascope(long status,long smooth)
 {
 	if(status) {

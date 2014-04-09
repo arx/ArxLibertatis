@@ -21,9 +21,9 @@
 #define ARX_GAME_GUI_CINEMATICBORDER_H
 
 extern long CINEMASCOPE;
-extern long CINEMA_INC;
 extern float CINEMA_DECAL;
 
+void CinematicBorderReset();
 void CinematicBorderUpdate();
 void ARX_INTERFACE_SetCinemascope(long v, long vv);
 
