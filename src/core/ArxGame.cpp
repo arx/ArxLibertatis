@@ -609,7 +609,7 @@ void ArxGame::doFrame() {
 	}
 
 	if(cinematicIsStopped()
-	   && !CINEMASCOPE
+	   && !cinematicBorder.isActive()
 	   && !BLOCK_PLAYER_CONTROLS
 	   && ARXmenu.currentmode == AMCM_OFF
 	) {
@@ -1522,7 +1522,7 @@ void ArxGame::renderLevel() {
 	GRenderer->SetRenderState(Renderer::Fog, false);
 
 	// Draw game interface if needed
-	if(ARXmenu.currentmode == AMCM_OFF && !CINEMASCOPE) {
+	if(ARXmenu.currentmode == AMCM_OFF && !cinematicBorder.isActive()) {
 	
 		GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapClamp);
 		GRenderer->SetRenderState(Renderer::DepthTest, false);
@@ -1566,7 +1566,7 @@ void ArxGame::renderLevel() {
 
 	if(SHOW_INGAME_MINIMAP
 		&& cinematicIsStopped()
-		&& !CINEMASCOPE
+		&& !cinematicBorder.isActive()
 		&& !BLOCK_PLAYER_CONTROLS
 		&& !(player.Interface & INTER_MAP))
 	{

@@ -402,7 +402,7 @@ public:
 		}
 		
 		
-		if(!CINEMASCOPE) {
+		if(!cinematicBorder.isActive()) {
 			voixoff |= ARX_SPEECH_FLAG_NOTEXT;
 		}
 		

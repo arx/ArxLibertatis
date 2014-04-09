@@ -26,14 +26,26 @@
 
 float				g_TimeStartCinemascope = 0;
 
-bool				CINEMASCOPE = false;
+
 long				CINEMA_INC=0;
 float				CINEMA_DECAL=0.f;
 
 CinematicBorder cinematicBorder = CinematicBorder();
 
+CinematicBorder::CinematicBorder()
+	: CINEMASCOPE(false)
+{}
+
+bool CinematicBorder::isActive()
+{
+	return CINEMASCOPE;
+}
+
 void CinematicBorder::reset() {
 	CINEMA_INC=0;
+}
+void CinematicBorder::reset2() {
+	CINEMASCOPE = false;
 }
 
 void CinematicBorder::set(bool status, bool smooth)

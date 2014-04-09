@@ -2058,7 +2058,7 @@ void PlayerMovementIterate(float DelatTime);
 void ARX_PLAYER_Manage_Movement() {
 	
 	// Is our player able to move ?
-	if(CINEMASCOPE || BLOCK_PLAYER_CONTROLS || !entities.player())
+	if(cinematicBorder.isActive() || BLOCK_PLAYER_CONTROLS || !entities.player())
 		return;
 
 	// Compute current player speedfactor

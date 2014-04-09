@@ -20,14 +20,22 @@
 #ifndef ARX_GAME_GUI_CINEMATICBORDER_H
 #define ARX_GAME_GUI_CINEMATICBORDER_H
 
-extern bool CINEMASCOPE;
 extern float CINEMA_DECAL;
 
 class CinematicBorder {
 public:
+	CinematicBorder();
+	
+	bool isActive();
+	
 	void reset();
+	void reset2();
+	
 	void update();
 	void set(bool status, bool smooth);
+	
+private:
+	bool CINEMASCOPE;
 };
 
 extern CinematicBorder cinematicBorder;

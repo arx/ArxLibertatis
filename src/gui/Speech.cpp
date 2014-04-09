@@ -445,7 +445,7 @@ void ARX_SPEECH_Update() {
 	
 	unsigned long tim = (unsigned long)(arxtime);
 
-	if(CINEMASCOPE || BLOCK_PLAYER_CONTROLS)
+	if(cinematicBorder.isActive() || BLOCK_PLAYER_CONTROLS)
 		ARX_CONVERSATION_CheckAcceleratedSpeech();
 
 	for(size_t i = 0; i < MAX_ASPEECH; i++) {
@@ -511,7 +511,7 @@ void ARX_SPEECH_Update() {
 				continue;
 		}
 
-		if(!CINEMASCOPE)
+		if(!cinematicBorder.isActive())
 			continue;
 
 		if(CINEMA_DECAL < 100.f)

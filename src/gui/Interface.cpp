@@ -2879,7 +2879,7 @@ void ARX_INTERFACE_Reset()
 	PLAYER_INTERFACE_HIDE_COUNT = false;
 	BLOCK_PLAYER_CONTROLS = false;
 	SLID_VALUE=0;
-	CINEMASCOPE = false;
+	cinematicBorder.reset2();
 	cinematicBorder.reset();
 	CINEMA_DECAL=0;
 	hideQuickSaveIcon();
@@ -3410,7 +3410,7 @@ class StealthGauge {
 public:
 	void draw() {
 		
-		if(stealth_gauge_tc && !CINEMASCOPE) {
+		if(stealth_gauge_tc && !cinematicBorder.isActive()) {
 			float v=GetPlayerStealth();
 	
 			if(CURRENT_PLAYER_COLOR < v) {
@@ -3447,7 +3447,7 @@ class DamagedEquipmentGui {
 public:
 	void draw()
 	{
-		if(CINEMASCOPE || BLOCK_PLAYER_CONTROLS)
+		if(cinematicBorder.isActive() || BLOCK_PLAYER_CONTROLS)
 			return;
 	
 		if(player.Interface & INTER_INVENTORYALL)

@@ -1485,7 +1485,7 @@ bool Menu2_Render() {
 			iFadeAction=-1;
 			bFadeInOut=false;
 			bFade=true;
-			CINEMASCOPE = false;
+			cinematicBorder.reset2();
 			break;
 		case AMCM_OFF:
 			ARX_MENU_Clicked_QUIT_GAME();

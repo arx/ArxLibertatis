@@ -314,7 +314,7 @@ void ARX_Menu_Manage() {
 		case AMCM_OFF: {
 			// Checks for ESC key
 			if(GInput->isKeyPressedNowUnPressed(Keyboard::Key_Escape)) {
-				if(CINEMASCOPE) {
+				if(cinematicBorder.isActive()) {
 					// Disabling ESC capture while fading in or out.
 					if(!FADEDIR) {
 						if(SendMsgToAllIO(SM_KEY_PRESSED, "") != REFUSE) {
