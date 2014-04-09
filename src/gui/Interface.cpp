@@ -6459,17 +6459,20 @@ public:
 		float LARGG=INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_blue")->m_dwWidth);
 		float HAUTT=INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_blue")->m_dwHeight);
 		
-		EERIEDrawBitmap2DecalY(g_size.width() - INTERFACE_RATIO(33) + INTERFACE_RATIO(1) + lSLID_VALUE,
-			g_size.height() - INTERFACE_RATIO(81), LARGG, HAUTT, 0.f,
+		Vec2f bottomRight = Vec2f(g_size.width(), g_size.height());
+		Vec2f offset = Vec2f(-33, -81);
+		Vec2f pos = bottomRight + offset;
+		
+		EERIEDrawBitmap2DecalY(pos.x + 1 + lSLID_VALUE, pos.y, LARGG, HAUTT, 0.f,
 			ITC.Get("filled_gauge_blue"), Color::white, (1.f - ManaGaugeAmount));
 		
 		if(!(player.Interface & INTER_COMBATMODE)) {
 			
 			const Rect blueGaugeMouseTestRect(
-				g_size.width()  - INTERFACE_RATIO(33) + lSLID_VALUE,
-				g_size.height() - INTERFACE_RATIO(81),
-				g_size.width()  - INTERFACE_RATIO(33) + lSLID_VALUE + LARGG,
-				g_size.height() - INTERFACE_RATIO(81) + HAUTT
+				pos.x + lSLID_VALUE,
+				pos.y,
+				pos.x + lSLID_VALUE + LARGG,
+				pos.y + HAUTT
 			);
 			
 			if(blueGaugeMouseTestRect.contains(Vec2i(DANAEMouse))) {
