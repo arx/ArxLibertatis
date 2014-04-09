@@ -6464,7 +6464,7 @@ private:
 public:
 	void update() {
 		m_posEmpty = Vec2f(0.f-lSLID_VALUE, g_size.height() - INTERFACE_RATIO(78));
-		m_amount = (float)player.mana/(float)player.Full_maxmana;
+		m_amount = player.mana / player.Full_maxmana;
 	}
 	
 	void draw() {
