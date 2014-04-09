@@ -6459,16 +6459,16 @@ HealthGauge healthGauge;
 
 class ManaGauge {
 private:
-	Vec2f m_pos;
+	Vec2f m_posEmpty;
 	float m_amount;
 public:
 	void update() {
-		m_pos = Vec2f(0.f-lSLID_VALUE, g_size.height() - INTERFACE_RATIO(78));
+		m_posEmpty = Vec2f(0.f-lSLID_VALUE, g_size.height() - INTERFACE_RATIO(78));
 		m_amount = (float)player.mana/(float)player.Full_maxmana;
 	}
 	
 	void draw() {
-		ARX_INTERFACE_DrawItem(ITC.Get("empty_gauge_red"), m_pos.x, m_pos.y, 0.001f);
+		ARX_INTERFACE_DrawItem(ITC.Get("empty_gauge_red"), m_posEmpty.x, m_posEmpty.y, 0.001f);
 		
 		TextureContainer * filledTexture = ITC.Get("filled_gauge_blue");
 		
