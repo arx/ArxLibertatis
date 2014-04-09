@@ -6404,94 +6404,97 @@ public:
 
 MemorizedSpellIconsGui memorizedSpellIconsGui;
 
-
-
-
-//Health/mana gauges
-Vec2f HealthGaugePos;
-Vec2f ManaGaugePos;
-float HealthGaugeAmount;
-float ManaGaugeAmount;
-
-void UpdateHealthManaGauges() {
-	HealthGaugePos = Vec2f(g_size.width() - INTERFACE_RATIO(33) + INTERFACE_RATIO(1) + lSLID_VALUE,
-							g_size.height() - INTERFACE_RATIO(81));
-	ManaGaugePos = Vec2f(0.f-lSLID_VALUE, g_size.height() - INTERFACE_RATIO(78));
-	HealthGaugeAmount = (float)player.life/(float)player.Full_maxlife;
-	ManaGaugeAmount = (float)player.mana/(float)player.Full_maxmana;
-}
-
-void DrawHealthManaGauges() {
-
-	ARX_INTERFACE_DrawItem(ITC.Get("empty_gauge_blue"), HealthGaugePos.x, HealthGaugePos.y, 0.f); //399
-
-	//---------------------------------------------------------------------
-	//RED GAUGE
-	Color ulcolor = Color::red;
-	float fSLID_VALUE_neg = static_cast<float>(-lSLID_VALUE);
-
-	if(player.poison > 0.f) {
-		float val = std::min(player.poison, 0.2f) * 255.f * 5.f;
-		long g = val;
-		ulcolor = Color(u8(255 - g), u8(g) , 0);
+class HealthGauge {
+private:
+	Vec2f HealthGaugePos;
+	float HealthGaugeAmount;
+public:
+	void update() {
+		HealthGaugePos = Vec2f(g_size.width() - INTERFACE_RATIO(33) + INTERFACE_RATIO(1) + lSLID_VALUE,
+								g_size.height() - INTERFACE_RATIO(81));
+		
+		HealthGaugeAmount = (float)player.life/(float)player.Full_maxlife;
 	}
-
-	EERIEDrawBitmap2DecalY(fSLID_VALUE_neg, g_size.height() - INTERFACE_RATIO(78),
-		INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_red")->m_dwWidth),
-		INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_red")->m_dwHeight),
-		0.f, ITC.Get("filled_gauge_red"), ulcolor, (1.f - HealthGaugeAmount));
-
-	if(!(player.Interface & INTER_COMBATMODE)) {
+	
+	void draw() {
+		ARX_INTERFACE_DrawItem(ITC.Get("empty_gauge_blue"), HealthGaugePos.x, HealthGaugePos.y, 0.f); //399
 		
-		const Rect redGaugeMouseTestRect(
-			fSLID_VALUE_neg,
-			g_size.height() - INTERFACE_RATIO(78),
-			fSLID_VALUE_neg + INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_red")->m_dwWidth),
-			g_size.height() - INTERFACE_RATIO(78) + INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_red")->m_dwHeight)
-		);
+		Color ulcolor = Color::red;
+		float fSLID_VALUE_neg = static_cast<float>(-lSLID_VALUE);
 		
-		if(redGaugeMouseTestRect.contains(Vec2i(DANAEMouse))) {
-			if((EERIEMouseButton & 1) && !(LastMouseClick & 1)) {
-				std::stringstream ss;
-				ss << checked_range_cast<int>(player.life);
-				ARX_SPEECH_Add(ss.str());
+		if(player.poison > 0.f) {
+			float val = std::min(player.poison, 0.2f) * 255.f * 5.f;
+			long g = val;
+			ulcolor = Color(u8(255 - g), u8(g) , 0);
+		}
+		
+		EERIEDrawBitmap2DecalY(fSLID_VALUE_neg, g_size.height() - INTERFACE_RATIO(78),
+			INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_red")->m_dwWidth),
+			INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_red")->m_dwHeight),
+			0.f, ITC.Get("filled_gauge_red"), ulcolor, (1.f - HealthGaugeAmount));
+		
+		if(!(player.Interface & INTER_COMBATMODE)) {
+			
+			const Rect redGaugeMouseTestRect(
+				fSLID_VALUE_neg,
+				g_size.height() - INTERFACE_RATIO(78),
+				fSLID_VALUE_neg + INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_red")->m_dwWidth),
+				g_size.height() - INTERFACE_RATIO(78) + INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_red")->m_dwHeight)
+			);
+			
+			if(redGaugeMouseTestRect.contains(Vec2i(DANAEMouse))) {
+				if((EERIEMouseButton & 1) && !(LastMouseClick & 1)) {
+					std::stringstream ss;
+					ss << checked_range_cast<int>(player.life);
+					ARX_SPEECH_Add(ss.str());
+				}
 			}
 		}
 	}
+};
+HealthGauge healthGauge;
 
-	//---------------------------------------------------------------------
-	//END RED GAUGE
-
-	ARX_INTERFACE_DrawItem(ITC.Get("empty_gauge_red"), ManaGaugePos.x, ManaGaugePos.y, 0.001f);
-
-	//---------------------------------------------------------------------
-	//BLUE GAUGE
-
-	float LARGG=INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_blue")->m_dwWidth);
-	float HAUTT=INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_blue")->m_dwHeight);
-
-	EERIEDrawBitmap2DecalY(g_size.width() - INTERFACE_RATIO(33) + INTERFACE_RATIO(1) + lSLID_VALUE,
-		g_size.height() - INTERFACE_RATIO(81), LARGG, HAUTT, 0.f,
-		ITC.Get("filled_gauge_blue"), Color::white, (1.f - ManaGaugeAmount));
-
-	if(!(player.Interface & INTER_COMBATMODE)) {
+class ManaGauge {
+private:
+	Vec2f ManaGaugePos;
+	float ManaGaugeAmount;
+public:
+	void update() {
+		ManaGaugePos = Vec2f(0.f-lSLID_VALUE, g_size.height() - INTERFACE_RATIO(78));
+		ManaGaugeAmount = (float)player.mana/(float)player.Full_maxmana;
+	}
+	
+	void draw() {
+		ARX_INTERFACE_DrawItem(ITC.Get("empty_gauge_red"), ManaGaugePos.x, ManaGaugePos.y, 0.001f);
 		
-		const Rect blueGaugeMouseTestRect(
-			g_size.width()  - INTERFACE_RATIO(33) + lSLID_VALUE,
-			g_size.height() - INTERFACE_RATIO(81),
-			g_size.width()  - INTERFACE_RATIO(33) + lSLID_VALUE + LARGG,
-			g_size.height() - INTERFACE_RATIO(81) + HAUTT
-		);
+		float LARGG=INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_blue")->m_dwWidth);
+		float HAUTT=INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_blue")->m_dwHeight);
 		
-		if(blueGaugeMouseTestRect.contains(Vec2i(DANAEMouse))) {
-			if((EERIEMouseButton & 1) && !(LastMouseClick & 1)) {
-				std::stringstream ss;
-				ss << checked_range_cast<int>(player.mana);
-				ARX_SPEECH_Add(ss.str());
+		EERIEDrawBitmap2DecalY(g_size.width() - INTERFACE_RATIO(33) + INTERFACE_RATIO(1) + lSLID_VALUE,
+			g_size.height() - INTERFACE_RATIO(81), LARGG, HAUTT, 0.f,
+			ITC.Get("filled_gauge_blue"), Color::white, (1.f - ManaGaugeAmount));
+		
+		if(!(player.Interface & INTER_COMBATMODE)) {
+			
+			const Rect blueGaugeMouseTestRect(
+				g_size.width()  - INTERFACE_RATIO(33) + lSLID_VALUE,
+				g_size.height() - INTERFACE_RATIO(81),
+				g_size.width()  - INTERFACE_RATIO(33) + lSLID_VALUE + LARGG,
+				g_size.height() - INTERFACE_RATIO(81) + HAUTT
+			);
+			
+			if(blueGaugeMouseTestRect.contains(Vec2i(DANAEMouse))) {
+				if((EERIEMouseButton & 1) && !(LastMouseClick & 1)) {
+					std::stringstream ss;
+					ss << checked_range_cast<int>(player.mana);
+					ARX_SPEECH_Add(ss.str());
+				}
 			}
 		}
 	}
-}
+};
+ManaGauge manaGauge;
+
 
 Color MecanismIconColor;
 
@@ -6554,7 +6557,8 @@ void UpdateInterface() {
 	UpdateInventory();	
 	UpdateMecanismIcon();
 	UpdateScreenBorderArrows();
-	UpdateHealthManaGauges();
+	healthGauge.update();
+	manaGauge.update();
 	memorizedSpellIconsGui.update();
 	changeLevelIconGui.update();
 	quickSaveIconGui.update();
@@ -6602,7 +6606,8 @@ void ArxGame::drawAllInterface() {
 		memorizedSpellIconsGui.draw();
 	}
 	if(player.Interface & INTER_LIFE_MANA) {
-		DrawHealthManaGauges();
+		healthGauge.draw();
+		manaGauge.draw();
 		if(bRenderInCursorMode) {
 			GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
