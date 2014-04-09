@@ -5974,7 +5974,7 @@ TextureContainer* GetHaloForITC(const char* itcName) {
 
 void DrawHalo(float r, float g, float b, TextureContainer* halo, const Vec2f& coords) {
 	if(halo) {
-		ARX_INTERFACE_HALO_Render(r, g, b, HALO_ACTIVE, halo, coords.x, coords.y, INTERFACE_RATIO(1), INTERFACE_RATIO(1));
+		ARX_INTERFACE_HALO_Render(r, g, b, HALO_ACTIVE, halo, coords.x, coords.y);
 	}
 }
 
