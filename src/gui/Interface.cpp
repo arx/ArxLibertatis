@@ -6395,18 +6395,18 @@ MemorizedSpellIconsGui memorizedSpellIconsGui;
 
 class HealthGauge {
 private:
-	Vec2f HealthGaugePos;
-	float HealthGaugeAmount;
+	Vec2f m_pos;
+	float m_amount;
 public:
 	void update() {
-		HealthGaugePos = Vec2f(g_size.width() - INTERFACE_RATIO(33) + INTERFACE_RATIO(1) + lSLID_VALUE,
+		m_pos = Vec2f(g_size.width() - INTERFACE_RATIO(33) + INTERFACE_RATIO(1) + lSLID_VALUE,
 								g_size.height() - INTERFACE_RATIO(81));
 		
-		HealthGaugeAmount = (float)player.life/(float)player.Full_maxlife;
+		m_amount = (float)player.life/(float)player.Full_maxlife;
 	}
 	
 	void draw() {
-		ARX_INTERFACE_DrawItem(ITC.Get("empty_gauge_blue"), HealthGaugePos.x, HealthGaugePos.y, 0.f); //399
+		ARX_INTERFACE_DrawItem(ITC.Get("empty_gauge_blue"), m_pos.x, m_pos.y, 0.f); //399
 		
 		Color ulcolor = Color::red;
 		
@@ -6423,7 +6423,7 @@ public:
 		EERIEDrawBitmap2DecalY(pos.x, pos.y,
 			INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_red")->m_dwWidth),
 			INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_red")->m_dwHeight),
-			0.f, ITC.Get("filled_gauge_red"), ulcolor, (1.f - HealthGaugeAmount));
+			0.f, ITC.Get("filled_gauge_red"), ulcolor, (1.f - m_amount));
 		
 		if(!(player.Interface & INTER_COMBATMODE)) {
 			
