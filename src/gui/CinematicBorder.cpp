@@ -30,46 +30,46 @@ float				CINEMA_DECAL=0.f;
 CinematicBorder cinematicBorder = CinematicBorder();
 
 CinematicBorder::CinematicBorder()
-	: CINEMASCOPE(false)
-	, CINEMA_INC(0)
-	, g_TimeStartCinemascope(0)
+	: m_active(false)
+	, m_direction(0)
+	, m_startTime(0)
 {}
 
 bool CinematicBorder::isActive()
 {
-	return CINEMASCOPE;
+	return m_active;
 }
 
 float CinematicBorder::elapsedTime() {
 	float dwCurrTime = arxtime.get_updated();
-	return (dwCurrTime - g_TimeStartCinemascope);
+	return (dwCurrTime - m_startTime);
 }
 
 void CinematicBorder::reset() {
-	CINEMA_INC=0;
+	m_direction=0;
 }
 void CinematicBorder::reset2() {
-	CINEMASCOPE = false;
+	m_active = false;
 }
 
 void CinematicBorder::set(bool status, bool smooth)
 {
 	if(status) {
-		CINEMASCOPE = true;//++;
-		g_TimeStartCinemascope = arxtime.get_updated();
+		m_active = true;//++;
+		m_startTime = arxtime.get_updated();
 	} else {
-		CINEMASCOPE = false;//--;
-		g_TimeStartCinemascope = 0;
+		m_active = false;//--;
+		m_startTime = 0;
 	}
 	
-	if(CINEMASCOPE) {
+	if(m_active) {
 		if(smooth)
-			CINEMA_INC=1;
+			m_direction=1;
 		else
 			CINEMA_DECAL=100;
 	} else {
 		if(smooth)
-			CINEMA_INC=-1;
+			m_direction=-1;
 		else
 			CINEMA_DECAL=0;
 	}
@@ -83,19 +83,19 @@ void CinematicBorder::set(bool status, bool smooth)
 
 void CinematicBorder::update() {
 	
-	if(CINEMA_INC == 1) {
+	if(m_direction == 1) {
 		CINEMA_DECAL += (float)Original_framedelay*( 1.0f / 10 );
 
 		if(CINEMA_DECAL > 100.f) {
 			CINEMA_DECAL = 100.f;
-			CINEMA_INC = 0;
+			m_direction = 0;
 		}
-	} else if(CINEMA_INC == -1) {
+	} else if(m_direction == -1) {
 		CINEMA_DECAL -= (float)Original_framedelay*( 1.0f / 10 );
 
 		if(CINEMA_DECAL < 0.f) {
 			CINEMA_DECAL = 0.f;
-			CINEMA_INC = 0;
+			m_direction = 0;
 		}
 	}
 }

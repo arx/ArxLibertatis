@@ -38,9 +38,9 @@ public:
 	void render();
 	
 private:
-	bool CINEMASCOPE;
-	long CINEMA_INC;
-	float g_TimeStartCinemascope;
+	bool m_active;
+	long m_direction;
+	float m_startTime;
 };
 
 extern CinematicBorder cinematicBorder;
