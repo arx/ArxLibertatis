@@ -1447,25 +1447,21 @@ bool Menu2_Render() {
 	if(pTextureLoadRender) {
 		GRenderer->SetRenderState(Renderer::DepthTest, false);
 		
+		Vec2f size = Vec2f(pTextureLoad->size());
+		
 		Vec2f offset = Vec2f(0, 0);
 		
-		if((DANAEMouse.y + INTERFACE_RATIO_DWORD(pTextureLoad->m_dwHeight)) > g_size.height()) {
-			
-			float fOffestY = offset.y - INTERFACE_RATIO_DWORD(pTextureLoad->m_dwHeight) ;
-			offset.y = checked_range_cast<int>(fOffestY);
+		if(DANAEMouse.y + size.y > g_size.height()) {
+			offset.y -= size.y;
 		}
 		
 		Vec2f pos = Vec2f(DANAEMouse) + offset;
 
-		EERIEDrawBitmap(pos.x, pos.y,
-		                (float)INTERFACE_RATIO_DWORD(pTextureLoad->m_dwWidth),
-		                (float)INTERFACE_RATIO_DWORD(pTextureLoad->m_dwHeight),
+		EERIEDrawBitmap(pos.x, pos.y, size.x, size.y,
 		                0.001f, pTextureLoad, Color::white);
 
 		GRenderer->ResetTexture(0);
-		EERIEDraw2DRect(pos.x, pos.y,
-		                pos.x + (float)INTERFACE_RATIO_DWORD(pTextureLoad->m_dwWidth),
-		                pos.y + (float)INTERFACE_RATIO_DWORD(pTextureLoad->m_dwHeight),
+		EERIEDraw2DRect(pos.x, pos.y, pos.x + size.x, pos.y + size.y,
 		                0.01f, Color::white);
 
 		pTextureLoadRender=NULL;
