@@ -205,20 +205,20 @@ void EERIEDrawBitmap2(const Rectf & rect, float z, TextureContainer * tex, Color
 	DrawBitmap(rect, z, tex, color, true);
 }
 
-void EERIEDrawBitmap_uv(float x, float y, float sx, float sy, float z, TextureContainer * tex,
+void EERIEDrawBitmap_uv(Rectf rect, float z, TextureContainer * tex,
                         Color color, float u0, float v0, float u1, float v1) {
 	
-	MatchPixTex(x, y);
+	rect.move(-.5f, -.5f);
 	
 	Vec2f uv = (tex) ? tex->uv : Vec2f_ONE;
 	u0 *= uv.x, u1 *= uv.x, v0 *= uv.y, v1 *= uv.y;
 
 	ColorBGRA col = color.toBGRA();
 	TexturedVertex v[4];
-	v[0] = TexturedVertex(Vec3f(x,      y,      z), 1.f, col, 0xff000000, Vec2f(u0, v0));
-	v[1] = TexturedVertex(Vec3f(x + sx, y,      z), 1.f, col, 0xff000000, Vec2f(u1, v0));
-	v[2] = TexturedVertex(Vec3f(x + sx, y + sy, z), 1.f, col, 0xff000000, Vec2f(u1, v1));
-	v[3] = TexturedVertex(Vec3f(x,      y + sy, z), 1.f, col, 0xff000000, Vec2f(u0, v1));
+	v[0] = TexturedVertex(Vec3f(rect.topLeft(),     z), 1.f, col, 0xff000000, Vec2f(u0, v0));
+	v[1] = TexturedVertex(Vec3f(rect.topRight(),    z), 1.f, col, 0xff000000, Vec2f(u1, v0));
+	v[2] = TexturedVertex(Vec3f(rect.bottomRight(), z), 1.f, col, 0xff000000, Vec2f(u1, v1));
+	v[3] = TexturedVertex(Vec3f(rect.bottomLeft(),  z), 1.f, col, 0xff000000, Vec2f(u0, v1));
 	SetTextureDrawPrim(tex, v, Renderer::TriangleFan);
 }
 
