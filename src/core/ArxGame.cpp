@@ -1516,8 +1516,7 @@ void ArxGame::renderLevel() {
 		
 		ARX_INTERFACE_NoteManage();
 		drawAllInterface();
-		activeSpellsGuiDraw();
-
+		
 		if((player.Interface & INTER_MAP) && !(player.Interface & INTER_COMBATMODE)) {
 			ARX_MAGICAL_FLARES_Update();
 			GRenderer->SetRenderState(Renderer::DepthWrite, false);

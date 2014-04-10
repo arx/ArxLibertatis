@@ -6730,6 +6730,8 @@ void ArxGame::drawAllInterface() {
 	GRenderer->GetTextureStage(0)->setMinFilter(TextureStage::FilterLinear);
 	GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterLinear);
 	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
+	
+	activeSpellsGuiDraw();
 }
 
 void hudElementsInit() {
