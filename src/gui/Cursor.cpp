@@ -599,8 +599,9 @@ void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 					
 					Vec2f size(surf->m_dwWidth, surf->m_dwHeight);
 					
-					EERIEDrawBitmap(pos.x - (size.x*0.5f), pos.y - (size.y*0.5f), size.x, size.y,
-									0.f, surf, Color::white);
+					pos += -size * 0.5f;
+					
+					EERIEDrawBitmap(Rectf(pos, size.x, size.y), 0.f, surf, Color::white);
 				} else {
 					if(MAGICMODE > -1) {
 						ARX_SOUND_Stop(SND_MAGIC_DRAW);
