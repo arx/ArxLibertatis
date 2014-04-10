@@ -120,8 +120,11 @@ void LoadLevelScreen(long num) {
 			
 			Vec2f size = (num == 10) ? Vec2f(640, 480) : Vec2f(320, 390);
 			size *= scale;
-			EERIEDrawBitmap2(g_size.center().x - size.x * 0.5f, g_size.center().y - size.y * 0.5f,
-												size.x, size.y, 0.001f, tc, Color::white);
+			
+			Vec2f pos = Vec2f(g_size.center());
+			pos += -size * 0.5f;
+			
+			EERIEDrawBitmap2(Rectf(pos, size.x, size.y), 0.001f, tc, Color::white);
 			
 			GRenderer->SetRenderState(Renderer::ColorKey, true);
 		}
