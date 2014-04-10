@@ -433,7 +433,6 @@ void CreateInterfaceTextureContainers()
 {
     ITC.Reset();
 	
-	ITC.Set("hero_inventory", "graph/interface/inventory/hero_inventory");
 	ITC.Set("hero_inventory_up", "graph/interface/inventory/scroll_up");
 	ITC.Set("hero_inventory_down", "graph/interface/inventory/scroll_down");
 	ITC.Set("hero_inventory_link", "graph/interface/inventory/hero_inventory_link");
@@ -4503,6 +4502,8 @@ SecondaryInventoryGui secondaryInventory;
 
 class InventoryGui {
 private:
+	TextureContainer * m_heroInventory;
+	
 	float fCenterX;
 	float fSizY;
 	Vec2f m_pos;
@@ -4511,8 +4512,13 @@ private:
 	Vec2f m_slotSpacing;
 	
 public:
+	void init() {
+		m_heroInventory = TextureContainer::LoadUI("graph/interface/inventory/hero_inventory");
+		arx_assert(m_heroInventory);
+	}
+	
 	bool updateInput() {
-		float fCenterX	= g_size.center().x + INTERFACE_RATIO(-320 + 35) + INTERFACE_RATIO_DWORD(ITC.Get("hero_inventory")->m_dwWidth) - INTERFACE_RATIO(32 + 3) ;
+		float fCenterX	= g_size.center().x + INTERFACE_RATIO(-320 + 35) + INTERFACE_RATIO_DWORD(m_heroInventory->m_dwWidth) - INTERFACE_RATIO(32 + 3) ;
 		float fSizY		= g_size.height() - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY) + INTERFACE_RATIO(- 3 + 25) ;
 
 		float posx = ARX_CAST_TO_INT_THEN_FLOAT( fCenterX );
@@ -4619,7 +4625,7 @@ public:
 		m_slotSize = Vec2f(32, 32);
 		m_slotSpacing = Vec2f(7, 6);
 		
-		fCenterX = g_size.center().x + INTERFACE_RATIO(-320 + 35) + INTERFACE_RATIO_DWORD(ITC.Get("hero_inventory")->m_dwWidth) - INTERFACE_RATIO(32 + 3) ;
+		fCenterX = g_size.center().x + INTERFACE_RATIO(-320 + 35) + INTERFACE_RATIO_DWORD(m_heroInventory->m_dwWidth) - INTERFACE_RATIO(32 + 3) ;
 		fSizY = g_size.height() - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY) + INTERFACE_RATIO(- 3 + 25) ;
 		m_pos.x = ARX_CAST_TO_INT_THEN_FLOAT( fCenterX );
 		m_pos.y = ARX_CAST_TO_INT_THEN_FLOAT( fSizY );
@@ -4636,7 +4642,7 @@ public:
 		float fPosX = ARX_CAST_TO_INT_THEN_FLOAT( fCenterX );
 		float fPosY = ARX_CAST_TO_INT_THEN_FLOAT( fSizY );
 	
-		ARX_INTERFACE_DrawItem(ITC.Get("hero_inventory"), fPosX, fPosY - INTERFACE_RATIO(5));
+		ARX_INTERFACE_DrawItem(m_heroInventory, fPosX, fPosY - INTERFACE_RATIO(5));
 	
 		for(size_t j = 0; j < INVENTORY_Y; j++) {
 			for(size_t i = 0; i < INVENTORY_X; i++) {
@@ -4708,8 +4714,6 @@ public:
 		if(player.Interface & INTER_INVENTORY) {		
 			if(player.bag) {
 				ARX_INTERFACE_DrawInventory(sActiveInventory);
-				
-				arx_assert(ITC.Get("hero_inventory") != NULL);
 				
 				CalculateInventoryCoordinates();
 				
@@ -4791,8 +4795,8 @@ public:
 			for(int i = 0; i < player.bag; i++) {
 				ARX_INTERFACE_DrawItem(ITC.Get("hero_inventory_link"), posx + INTERFACE_RATIO(45), static_cast<float>(posy + iOffsetY)) ;
 				
-				ARX_INTERFACE_DrawItem(ITC.Get("hero_inventory_link"), posx + INTERFACE_RATIO_DWORD(ITC.Get("hero_inventory")->m_dwWidth)*0.5f + INTERFACE_RATIO(-16), posy+iOffsetY + INTERFACE_RATIO(-5));
-				ARX_INTERFACE_DrawItem(ITC.Get("hero_inventory_link"), posx + INTERFACE_RATIO_DWORD(ITC.Get("hero_inventory")->m_dwWidth) + INTERFACE_RATIO(-45-32), posy+iOffsetY + INTERFACE_RATIO(-15));
+				ARX_INTERFACE_DrawItem(ITC.Get("hero_inventory_link"), posx + INTERFACE_RATIO_DWORD(m_heroInventory->m_dwWidth)*0.5f + INTERFACE_RATIO(-16), posy+iOffsetY + INTERFACE_RATIO(-5));
+				ARX_INTERFACE_DrawItem(ITC.Get("hero_inventory_link"), posx + INTERFACE_RATIO_DWORD(m_heroInventory->m_dwWidth) + INTERFACE_RATIO(-45-32), posy+iOffsetY + INTERFACE_RATIO(-15));
 				
 				iOffsetY += checked_range_cast<int>(fOffsetY);
 			}
@@ -6362,7 +6366,8 @@ void hudElementsInit() {
 	levelUpIconGui.init();
 	stealIconGui.init();
 	secondaryInventory.init();
-	TextureContainer::LoadUI("graph/interface/inventory/hero_inventory");
+	inventoryGui.init();
+
 	TextureContainer::LoadUI("graph/interface/inventory/scroll_up");
 	TextureContainer::LoadUI("graph/interface/inventory/scroll_down");
 	TextureContainer::LoadUI("graph/interface/inventory/hero_inventory_link");
