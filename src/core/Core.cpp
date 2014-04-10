@@ -215,7 +215,6 @@ ParticleManager	*pParticleManager = NULL;
 static TextureContainer * ombrignon = NULL;
 TextureContainer *	scursor[8];			// Animated Hand Cursor TC
 TextureContainer *	pTCCrossHair;			// Animated Hand Cursor TC
-TextureContainer *	iconequip[5];
 TextureContainer *	GoldCoinsTC[MAX_GOLD_COINS_VISUALS]; // Gold Coins Icons
 TextureContainer *	explo[MAX_EXPLO];		// TextureContainer for animated explosion bitmaps (24 frames)
 
@@ -728,11 +727,8 @@ void LoadSysTextures()
 	Boom=				TextureContainer::LoadUI("graph/particles/boom");
 	stealth_gauge_tc=	TextureContainer::LoadUI("graph/interface/icons/stealth_gauge");
 	arx_logo_tc=		TextureContainer::LoadUI("graph/interface/icons/arx_logo_32");
-	iconequip[0]=		TextureContainer::LoadUI("graph/interface/icons/equipment_sword");
-	iconequip[1]=		TextureContainer::LoadUI("graph/interface/icons/equipment_shield");
-	iconequip[2]=		TextureContainer::LoadUI("graph/interface/icons/equipment_helm");
-	iconequip[3]=		TextureContainer::LoadUI("graph/interface/icons/equipment_chest");
-	iconequip[4]=		TextureContainer::LoadUI("graph/interface/icons/equipment_leggings");
+
+	damagedEquipmentGuiInit();
 	mecanismIconInit();
 	arrow_left_tc=		TextureContainer::LoadUI("graph/interface/icons/arrow_left");
 

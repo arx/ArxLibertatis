@@ -151,7 +151,6 @@ static const float BOOKMARKS_POS_Y = 60.f;
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
-extern TextureContainer * iconequip[];
 extern TextureContainer * Movable;
 extern TextureContainer * inventory_font;
 extern TextureContainer * arrow_left_tc;
@@ -3438,7 +3437,17 @@ StealthGauge stealthGauge;
 //-----------------------------------------------------------------------------
 
 class DamagedEquipmentGui {
+private:
+	TextureContainer * iconequip[5];
 public:
+	void init() {
+		iconequip[0] = TextureContainer::LoadUI("graph/interface/icons/equipment_sword");
+		iconequip[1] = TextureContainer::LoadUI("graph/interface/icons/equipment_shield");
+		iconequip[2] = TextureContainer::LoadUI("graph/interface/icons/equipment_helm");
+		iconequip[3] = TextureContainer::LoadUI("graph/interface/icons/equipment_chest");
+		iconequip[4] = TextureContainer::LoadUI("graph/interface/icons/equipment_leggings");
+	}
+	
 	void draw()
 	{
 		if(cinematicBorder.isActive() || BLOCK_PLAYER_CONTROLS)
@@ -3532,6 +3541,9 @@ public:
 };
 DamagedEquipmentGui damagedEquipmentGui;
 
+void damagedEquipmentGuiInit() {
+	damagedEquipmentGui.init();
+}
 
 
 //-----------------------------------------------------------------------------

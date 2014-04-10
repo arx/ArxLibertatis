@@ -255,6 +255,7 @@ extern long ARX_MOUSE_OVER;
 //! Show the quick save indicator for a short time
 void showQuickSaveIcon();
 
+void damagedEquipmentGuiInit();
 void changeLevelIconGuiInit();
 void mecanismIconInit();
 void mecanismIconReset();
