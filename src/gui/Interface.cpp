@@ -432,10 +432,7 @@ void ARX_INTERFACE_DrawNumber(const Vec2f & pos, const long num, const int _iNb,
 void CreateInterfaceTextureContainers()
 {
     ITC.Reset();
-
-	ITC.Set("aim_empty", "graph/interface/bars/aim_empty");
-	ITC.Set("aim_maxi", "graph/interface/bars/aim_maxi");
-	ITC.Set("aim_hit", "graph/interface/bars/flash_gauge");
+	
 	ITC.Set("hero_inventory", "graph/interface/inventory/hero_inventory");
 	ITC.Set("hero_inventory_up", "graph/interface/inventory/scroll_up");
 	ITC.Set("hero_inventory_down", "graph/interface/inventory/scroll_down");
@@ -4268,6 +4265,10 @@ extern float GLOBAL_SLOWDOWN;
  */
 class HitStrengthGauge {
 private:
+	TextureContainer * m_emptyTex;
+	TextureContainer * m_fullTex;
+	TextureContainer * m_hitTex;
+	
 	float m_intensity;
 	bool bHitFlash;
 	unsigned long ulHitFlash;
@@ -4280,6 +4281,15 @@ public:
 		, ulHitFlash(0)
 		, m_flashIntensity(0.f)
 	{}
+	
+	void init() {
+		m_emptyTex = TextureContainer::LoadUI("graph/interface/bars/aim_empty");
+		m_fullTex = TextureContainer::LoadUI("graph/interface/bars/aim_maxi");
+		m_hitTex = TextureContainer::LoadUI("graph/interface/bars/flash_gauge");
+		arx_assert(m_emptyTex);
+		arx_assert(m_fullTex);
+		arx_assert(m_hitTex);
+	}
 	
 	void requestFlash(float flashIntensity) {
 		bHitFlash = true;
@@ -4325,9 +4335,10 @@ public:
 		GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	
 		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-		ARX_INTERFACE_DrawItem(ITC.Get("aim_maxi"), pos.x, pos.y, 0.0001f, Color3f::gray(m_intensity).to<u8>());
+		ARX_INTERFACE_DrawItem(m_fullTex, pos.x, pos.y, 0.0001f, Color3f::gray(m_intensity).to<u8>());
 		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-		ARX_INTERFACE_DrawItem(ITC.Get("aim_empty"), pos.x, pos.y, 0.0001f, Color::white);
+		ARX_INTERFACE_DrawItem(m_emptyTex, pos.x, pos.y, 0.0001f, Color::white);
+		
 		if(bHitFlash && player.Full_Skill_Etheral_Link >= 40) {
 			Vec2f flashPos = pos;
 			flashPos += Vec2f(-25, -30);
@@ -4335,8 +4346,9 @@ public:
 			float j = 1.0f - m_flashIntensity;
 			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 			GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+			
 			Color col = (j < 0.5f) ? Color3f(j*2.0f, 1, 0).to<u8>() : Color3f(1, m_flashIntensity, 0).to<u8>();
-			ARX_INTERFACE_DrawItem(ITC.Get("aim_hit"), flashPos.x, flashPos.y, 0.0001f, col);
+			ARX_INTERFACE_DrawItem(m_hitTex, flashPos.x, flashPos.y, 0.0001f, col);
 			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 		}
 	}
@@ -6272,9 +6284,7 @@ void hudElementsInit() {
 	TextureContainer::LoadUI("graph/interface/inventory/inv_pick");
 	TextureContainer::LoadUI("graph/interface/inventory/inv_close");
 	
-	TextureContainer::LoadUI("graph/interface/bars/aim_empty");
-	TextureContainer::LoadUI("graph/interface/bars/aim_maxi");
-	TextureContainer::LoadUI("graph/interface/bars/flash_gauge");
+	hitStrengthGauge.init();
 }
 
 //-----------------------------------------------------------------------------
