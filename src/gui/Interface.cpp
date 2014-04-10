@@ -4067,7 +4067,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 							flyingover = 1;
 
 							SpecialCursor=CURSOR_INTERACTION_ON;
-							DrawBookTextCenter(hFontInBook, 208, 90, spellicons[i].name, Color::none);
+							DrawBookTextCenter(hFontInBook, Vec2f(208, 90), spellicons[i].name, Color::none);
 
 							for(size_t si = 0; si < MAX_SPEECH; si++) {
 								if(speech[si].timecreation > 0)
@@ -4641,12 +4641,12 @@ void ARX_INTERFACE_ManageOpenedBook()
 		std::stringstream ss;
 		ss << ITC.Level << " " << std::setw(3) << (int)player.level;
 		tex = ss.str();
-		DrawBookTextCenter(hFontInBook, 398, 74, tex, color);
+		DrawBookTextCenter(hFontInBook, Vec2f(398, 74), tex, color);
 
 		std::stringstream ss2;
 		ss2 << ITC.Xp << " " << std::setw(8) << player.xp;
 		tex = ss2.str();
-		DrawBookTextCenter(hFontInBook, 510, 74, tex, color);
+		DrawBookTextCenter(hFontInBook, Vec2f(510, 74), tex, color);
 
 		if (MouseInBookRect(463, 74, 550, 94))
 			FLYING_OVER = WND_XP;
@@ -4861,7 +4861,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 				color = Color::red;
 		}
 
-		DrawBookTextCenter(hFontInBook, 391, 129, tex, color);
+		DrawBookTextCenter(hFontInBook, Vec2f(391, 129), tex, color);
 		
 		ss3.str(""); // clear the stream
 		ss3 << player.Full_Attribute_Mind;
@@ -4879,7 +4879,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 				color = Color::red;
 		}
 
-		DrawBookTextCenter(hFontInBook, 440, 129, tex, color);
+		DrawBookTextCenter(hFontInBook, Vec2f(440, 129), tex, color);
 		
 		ss3.str("");
 		ss3 << player.Full_Attribute_Dexterity;
@@ -4897,7 +4897,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 				color = Color::red;
 		}
 
-		DrawBookTextCenter(hFontInBook, 490, 129, tex, color);
+		DrawBookTextCenter(hFontInBook, Vec2f(490, 129), tex, color);
 		ss3.str("");
 		ss3 << player.Full_Attribute_Constitution;
 		tex = ss3.str();
@@ -4914,7 +4914,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 				color = Color::red;
 		}
 
-		DrawBookTextCenter(hFontInBook, 538, 129, tex, color);
+		DrawBookTextCenter(hFontInBook, Vec2f(538, 129), tex, color);
 
 		// Player Skills
 		ss3.str("");
@@ -4933,7 +4933,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 				color = Color::red;
 		}
 
-		DrawBookTextCenter(hFontInBook, 405, 210, tex, color);
+		DrawBookTextCenter(hFontInBook, Vec2f(405, 210), tex, color);
 		
 		ss3.str("");
 		ss3 << player.Full_Skill_Mecanism;
@@ -4951,7 +4951,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 				color = Color::red;
 		}
 
-		DrawBookTextCenter(hFontInBook, 469, 210, tex, color);
+		DrawBookTextCenter(hFontInBook, Vec2f(469, 210), tex, color);
 		
 		ss3.str("");
 		ss3 << player.Full_Skill_Intuition;
@@ -4969,7 +4969,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 				color = Color::red;
 		}
 
-		DrawBookTextCenter(hFontInBook, 533, 210, tex, color);
+		DrawBookTextCenter(hFontInBook, Vec2f(533, 210), tex, color);
 		
 		ss3.str("");
 		ss3 << player.Full_Skill_Etheral_Link;
@@ -4987,7 +4987,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 				color = Color::red;
 		}
 
-		DrawBookTextCenter(hFontInBook, 405, 265, tex, color);
+		DrawBookTextCenter(hFontInBook, Vec2f(405, 265), tex, color);
 		
 		ss3.str("");
 		ss3 << player.Full_Skill_Object_Knowledge;
@@ -5005,7 +5005,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 				color = Color::red;
 		}
 
-		DrawBookTextCenter(hFontInBook, 469, 265, tex, color);
+		DrawBookTextCenter(hFontInBook, Vec2f(469, 265), tex, color);
 		
 		ss3.str("");
 		ss3 << player.Full_Skill_Casting;
@@ -5023,7 +5023,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 				color = Color::red;
 		}
 
-		DrawBookTextCenter(hFontInBook, 533, 265, tex, color);
+		DrawBookTextCenter(hFontInBook, Vec2f(533, 265), tex, color);
 		
 		ss3.str("");
 		ss3 << player.Full_Skill_Close_Combat;
@@ -5041,7 +5041,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 				color = Color::red;
 		}
 
-		DrawBookTextCenter(hFontInBook, 405, 319, tex, color);
+		DrawBookTextCenter(hFontInBook, Vec2f(405, 319), tex, color);
 
 		
 		ss3.str("");
@@ -5060,7 +5060,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 				color = Color::red;
 		}
 
-		DrawBookTextCenter(hFontInBook, 469, 319, tex, color);
+		DrawBookTextCenter(hFontInBook, Vec2f(469, 319), tex, color);
 		
 		ss3.str("");
 		ss3 << player.Full_Skill_Defense;
@@ -5078,7 +5078,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 				color = Color::red;
 		}
 
-		DrawBookTextCenter(hFontInBook, 533, 319, tex, color);
+		DrawBookTextCenter(hFontInBook, Vec2f(533, 319), tex, color);
 
 		// Secondary Attributes
 		std::stringstream ss4;
@@ -5094,7 +5094,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 			color = Color::black;
 		}
 
-		DrawBookTextCenter( hFontInBook, 324, 158, tex, color );
+		DrawBookTextCenter(hFontInBook, Vec2f(324, 158), tex, color);
 		
 		ss4.str("");
 		ss4 << F2L_RoundUp(player.Full_maxmana);
@@ -5108,7 +5108,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 			color = Color::black;
 		}
 
-		DrawBookTextCenter( hFontInBook, 324, 218, tex, color );
+		DrawBookTextCenter(hFontInBook, Vec2f(324, 218), tex, color);
 		
 		ss4.str("");
 		ss4 << F2L_RoundUp(player.Full_damages);
@@ -5120,7 +5120,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 			color = Color::blue;
 		else color = Color::black;
 
-		DrawBookTextCenter(hFontInBook, 324, 278, tex, color);
+		DrawBookTextCenter(hFontInBook, Vec2f(324, 278), tex, color);
 
 		float ac = player.Full_armor_class;
 		ss4.str("");
@@ -5133,7 +5133,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 			color = Color::blue;
 		else color = Color::black;
 
-		DrawBookTextCenter(hFontInBook, 153, 158, tex, color);
+		DrawBookTextCenter(hFontInBook, Vec2f(153, 158), tex, color);
 
 		ss4.str("");
 		ss4 << std::setw(3) << std::setprecision(0) << F2L_RoundUp( player.Full_resist_magic );
@@ -5145,7 +5145,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 			color = Color::blue;
 		else color = Color::black;
 
-		DrawBookTextCenter(hFontInBook, 153, 218, tex, color);
+		DrawBookTextCenter(hFontInBook, Vec2f(153, 218), tex, color);
 		
 		ss4.str("");
 		ss4 << F2L_RoundUp( player.Full_resist_poison );
@@ -5157,7 +5157,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 			color = Color::blue;
 		else color = Color::black;
 
-		DrawBookTextCenter(hFontInBook, 153, 278, tex, color);
+		DrawBookTextCenter(hFontInBook, Vec2f(153, 278), tex, color);
 	}
 	else if (Book_Mode == BOOKMODE_MINIMAP)
 	{

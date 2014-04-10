@@ -222,16 +222,16 @@ float DrawBookTextInRect(Font* font, const Vec2f & pos, float maxx, const std::s
 	return (float)ARX_UNICODE_DrawTextInRect(font, (BOOKDEC + pos) * g_sizeRatio, (BOOKDEC.x + maxx) * g_sizeRatio.x, text, col);
 }
 
-void DrawBookTextCenter(Font* font, float x, float y, const std::string& text, Color col)
+void DrawBookTextCenter(Font* font, const Vec2f & pos, const std::string& text, Color col)
 {
-	UNICODE_ARXDrawTextCenter(font, (BOOKDEC.x + x)*g_sizeRatio.x, (BOOKDEC.y + y)*g_sizeRatio.y, text, col);
+	UNICODE_ARXDrawTextCenter(font, (BOOKDEC + pos) * g_sizeRatio, text, col);
 }
 
-long UNICODE_ARXDrawTextCenter(Font* font, float x, float y, const std::string& str, Color col) {
+long UNICODE_ARXDrawTextCenter(Font* font, const Vec2f & pos, const std::string& str, Color col) {
 
 	Vec2i size = font->getTextSize(str);
-	int drawX = ((int)x) - (size.x / 2);
-	int drawY = (int)y;
+	int drawX = ((int)pos.x) - (size.x / 2);
+	int drawY = (int)pos.y;
 
 	font->draw(drawX, drawY, str, col);
 
