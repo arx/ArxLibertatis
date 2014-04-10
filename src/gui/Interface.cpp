@@ -5926,16 +5926,14 @@ ScreenArrows screenArrows;
 //AFFICHAGE ICONE DE SPELLS DE DURATION
 class ActiveSpellsGui {
 private:
+	TextureContainer * m_texUnknown;
 	
-	static void StdDraw(float posx, float posy, Color color, TextureContainer * tcc, long flag, long i) {
+	void StdDraw(float posx, float posy, Color color, TextureContainer * tcc, long flag, long i) {
 		
 		TextureContainer * tc;
 		
 		if(!tcc) {
-			if(!ITC.Get("unknown"))
-				ITC.Set("unknown", TextureContainer::Load("graph/interface/icons/spell_unknown"));
-			
-			tc = ITC.Get("unknown");
+			tc = m_texUnknown;
 		}
 		else
 			tc = tcc;
@@ -6042,6 +6040,11 @@ private:
 		currpos += static_cast<long>(INTERFACE_RATIO(33.f));
 	}
 public:
+	void init() {
+		m_texUnknown = TextureContainer::Load("graph/interface/icons/spell_unknown");
+		arx_assert(m_texUnknown);
+	}
+	
 	void draw() {
 		currpos = static_cast<long>(INTERFACE_RATIO(50.f));
 		
@@ -6334,6 +6337,7 @@ void ArxGame::drawAllInterface() {
 
 void hudElementsInit() {
 	changeLevelIconGui.init();
+	activeSpellsGui.init();
 	damagedEquipmentGui.init();
 	mecanismIcon.init();
 	
