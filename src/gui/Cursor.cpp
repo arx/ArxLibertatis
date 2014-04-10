@@ -561,7 +561,7 @@ void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 
 				if(surf) {
 					if(SpecialCursor == CURSOR_REDIST) {
-						EERIEDrawBitmap(mousePos.x, mousePos.y, surf->m_dwWidth * g_sizeRatio.x, surf->m_dwHeight * g_sizeRatio.y,
+						EERIEDrawBitmap(Rectf(mousePos, surf->m_dwWidth * g_sizeRatio.x, surf->m_dwHeight * g_sizeRatio.y),
 										0.f, surf, Color::white);
 
 						std::stringstream ss;
