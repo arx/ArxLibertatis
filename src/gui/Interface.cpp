@@ -3828,11 +3828,6 @@ public:
 };
 ActiveSpellsGui activeSpellsGui;
 
-void activeSpellsGuiDraw() {
-	activeSpellsGui.draw();
-}
-
-
 void ARX_INTERFACE_ManageOpenedBook_Finish()
 {
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
@@ -6731,7 +6726,7 @@ void ArxGame::drawAllInterface() {
 	GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterLinear);
 	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
 	
-	activeSpellsGuiDraw();
+	activeSpellsGui.draw();
 }
 
 void hudElementsInit() {
