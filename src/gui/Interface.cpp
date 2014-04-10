@@ -433,7 +433,6 @@ void CreateInterfaceTextureContainers()
 {
     ITC.Reset();
 	
-	ITC.Set("hero_inventory_up", "graph/interface/inventory/scroll_up");
 	ITC.Set("hero_inventory_down", "graph/interface/inventory/scroll_down");
 	ITC.Set("inventory_pickall", "graph/interface/inventory/inv_pick");
 	ITC.Set("inventory_close", "graph/interface/inventory/inv_close");
@@ -4503,6 +4502,7 @@ class InventoryGui {
 private:
 	TextureContainer * m_heroInventory;
 	TextureContainer * m_heroInventoryLink;
+	TextureContainer * m_heroInventoryUp;
 	
 	float fCenterX;
 	float fSizY;
@@ -4515,8 +4515,10 @@ public:
 	void init() {
 		m_heroInventory = TextureContainer::LoadUI("graph/interface/inventory/hero_inventory");
 		m_heroInventoryLink = TextureContainer::LoadUI("graph/interface/inventory/hero_inventory_link");
+		m_heroInventoryUp = TextureContainer::LoadUI("graph/interface/inventory/scroll_up");
 		arx_assert(m_heroInventory);
 		arx_assert(m_heroInventoryLink);
+		arx_assert(m_heroInventoryUp);
 	}
 	
 	bool updateInput() {
@@ -4720,7 +4722,7 @@ public:
 				CalculateInventoryCoordinates();
 				
 				if(sActiveInventory > 0) {
-					ARX_INTERFACE_DrawItem(ITC.Get("hero_inventory_up"),	m_pos.x, m_pos.y);
+					ARX_INTERFACE_DrawItem(m_heroInventoryUp, m_pos.x, m_pos.y);
 					
 					const Rect inventoryUpMouseTestRect(
 					m_pos.x,
@@ -4733,7 +4735,7 @@ public:
 						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 						SpecialCursor=CURSOR_INTERACTION_ON;
-						ARX_INTERFACE_DrawItem(ITC.Get("hero_inventory_up"), m_pos.x, m_pos.y);
+						ARX_INTERFACE_DrawItem(m_heroInventoryUp, m_pos.x, m_pos.y);
 						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 						SpecialCursor=CURSOR_INTERACTION_ON;
 						
@@ -6369,8 +6371,7 @@ void hudElementsInit() {
 	stealIconGui.init();
 	secondaryInventory.init();
 	inventoryGui.init();
-
-	TextureContainer::LoadUI("graph/interface/inventory/scroll_up");
+	
 	TextureContainer::LoadUI("graph/interface/inventory/scroll_down");
 	TextureContainer::LoadUI("graph/interface/inventory/ingame_inventory");
 	purseIconGui.init();
