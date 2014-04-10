@@ -551,8 +551,7 @@ class CWindowMenuConsole {
 		bool					bMouseListen;
 		bool					bFrameOdd;
 
-		int						iPosX;
-		int						iPosY;
+		Vec2i m_pos;
 		int						iSavePosY;
 		int						iOldPosX;
 		int						iOldPosY;

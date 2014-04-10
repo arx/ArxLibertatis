@@ -2628,8 +2628,8 @@ void CWindowMenu::AddConsole(CWindowMenuConsole *_pMenuConsoleElement) {
 	vWindowConsoleElement.push_back(_pMenuConsoleElement);
 	_pMenuConsoleElement->iOldPosX = 0;
 	_pMenuConsoleElement->iOldPosY = 0;
-	_pMenuConsoleElement->iPosX = iPosX;
-	_pMenuConsoleElement->iPosY = iPosY;
+	_pMenuConsoleElement->m_pos.x = iPosX;
+	_pMenuConsoleElement->m_pos.y = iPosY;
 }
 
 void CWindowMenu::Update(float _fDTime) {
@@ -2852,7 +2852,7 @@ void CWindowMenuConsole::UpdateText() {
 				int iDx=pZoneClick->rZone.right-pZoneClick->rZone.left;
 
 				if(pZoneClick->ePlace) {
-					pZoneClick->rZone.left=iPosX+((iWidth-iDx)>>1);
+					pZoneClick->rZone.left=m_pos.x+((iWidth-iDx)>>1);
 
 					if(pZoneClick->rZone.left < 0) {
 						pZoneClick->rZone.left=0;
@@ -2911,7 +2911,7 @@ void CWindowMenuConsole::UpdateText() {
 			int iDx=pZoneClick->rZone.right-pZoneClick->rZone.left;
 
 			if(pZoneClick->ePlace) {
-				pZoneClick->rZone.left=iPosX+((iWidth-iDx)>>1);
+				pZoneClick->rZone.left=m_pos.x+((iWidth-iDx)>>1);
 
 				if(pZoneClick->rZone.left < 0) {
 					pZoneClick->rZone.left=0;
@@ -3036,7 +3036,7 @@ MENUSTATE CWindowMenuConsole::Update(int _iPosX, int _iPosY, int _iOffsetY) {
 		_iPosY-=(MenuAllZone.GetZoneNum(_iOffsetY)->rZone.top)-(MenuAllZone.GetZoneNum(0)->rZone.top);
 	}
 
-	MenuAllZone.Move((iPosX-iOldPosX),(iPosY-iOldPosY));
+	MenuAllZone.Move((m_pos.x-iOldPosX),(m_pos.y-iOldPosY));
 
 	int iI = MenuAllZone.GetNbZone();
 
@@ -3052,10 +3052,10 @@ MENUSTATE CWindowMenuConsole::Update(int _iPosX, int _iPosY, int _iOffsetY) {
 		pZone->bActif=true;
 	}
 
-	iOldPosX=iPosX;
-	iOldPosY=iPosY;
-	iPosX=_iPosX;
-	iPosY=_iPosY;
+	iOldPosX=m_pos.x;
+	iOldPosY=m_pos.y;
+	m_pos.x=_iPosX;
+	m_pos.y=_iPosY;
 
 	// Check if mouse over
 	if(bMouseListen) {
@@ -3314,7 +3314,7 @@ int CWindowMenuConsole::Render() {
 	GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
 	GRenderer->SetRenderState(Renderer::DepthTest, false);
 
-	EERIEDrawBitmap2(Rectf(Vec2f(iPosX, iSavePosY),
+	EERIEDrawBitmap2(Rectf(Vec2f(m_pos.x, iSavePosY),
 	                 RATIO_X(pTexBackground->m_dwWidth), RATIO_Y(pTexBackground->m_dwHeight)),
 	                 0, pTexBackground, Color::white);
 
@@ -3323,7 +3323,7 @@ int CWindowMenuConsole::Render() {
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-	EERIEDrawBitmap2(Rectf(Vec2f(iPosX, iSavePosY),
+	EERIEDrawBitmap2(Rectf(Vec2f(m_pos.x, iSavePosY),
 	                 RATIO_X(pTexBackgroundBorder->m_dwWidth), RATIO_Y(pTexBackgroundBorder->m_dwHeight)),
 	                 0, pTexBackgroundBorder, Color::white);
 
