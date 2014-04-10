@@ -3438,121 +3438,6 @@ public:
 };
 StealthGauge stealthGauge;
 
-
-//-----------------------------------------------------------------------------
-// Damaged Equipment Drawing
-//-----------------------------------------------------------------------------
-
-class DamagedEquipmentGui {
-private:
-	TextureContainer * iconequip[5];
-public:
-	void init() {
-		iconequip[0] = TextureContainer::LoadUI("graph/interface/icons/equipment_sword");
-		iconequip[1] = TextureContainer::LoadUI("graph/interface/icons/equipment_shield");
-		iconequip[2] = TextureContainer::LoadUI("graph/interface/icons/equipment_helm");
-		iconequip[3] = TextureContainer::LoadUI("graph/interface/icons/equipment_chest");
-		iconequip[4] = TextureContainer::LoadUI("graph/interface/icons/equipment_leggings");
-		arx_assert(iconequip[0]);
-		arx_assert(iconequip[1]);
-		arx_assert(iconequip[2]);
-		arx_assert(iconequip[3]);
-		arx_assert(iconequip[4]);
-	}
-	
-	void draw()
-	{
-		if(cinematicBorder.isActive() || BLOCK_PLAYER_CONTROLS)
-			return;
-	
-		if(player.Interface & INTER_INVENTORYALL)
-			return;
-	
-		long needdraw=0;
-	
-		for(long i = 0; i < 5; i++) {
-			if(iconequip[i]) {
-				long eq=-1;
-	
-				switch (i) {
-					case 0:
-						eq = EQUIP_SLOT_WEAPON;
-						break;
-					case 1:
-						eq = EQUIP_SLOT_SHIELD;
-						break;
-					case 2:
-						eq = EQUIP_SLOT_HELMET;
-						break;
-					case 3:
-						eq = EQUIP_SLOT_ARMOR;
-						break;
-					case 4:
-						eq = EQUIP_SLOT_LEGGINGS;
-						break;
-				}
-	
-				if(player.equiped[eq] > 0) {
-					Entity *io = entities[player.equiped[eq]];
-					float ratio = io->durability / io->max_durability;
-	
-					if(ratio <= 0.5f)
-						needdraw |= 1<<i;
-				}
-			}
-		}
-	
-		if(needdraw) {
-			GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-	
-			GRenderer->SetCulling(Renderer::CullNone);
-			GRenderer->SetRenderState(Renderer::DepthWrite, true);
-			GRenderer->SetRenderState(Renderer::Fog, false);
-	
-			Vec2f pos(InventoryX + 10 + 32 + 100, g_size.height() - 158);
-			
-			if(pos.x < INTERFACE_RATIO( 10 + 32 ))
-				pos.x = INTERFACE_RATIO( 10 + 32 );
-	
-			for(long i = 0; i < 5; i++) {
-				if((needdraw & (1<<i)) && iconequip[i]) {
-					long eq=-1;
-	
-					switch(i) {
-						case 0:
-							eq = EQUIP_SLOT_WEAPON;
-							break;
-						case 1:
-							eq = EQUIP_SLOT_SHIELD;
-							break;
-						case 2:
-							eq = EQUIP_SLOT_HELMET;
-							break;
-						case 3:
-							eq = EQUIP_SLOT_ARMOR;
-							break;
-						case 4:
-							eq = EQUIP_SLOT_LEGGINGS;
-							break;
-					}
-	
-					if(player.equiped[eq] > 0) {
-						Entity *io = entities[player.equiped[eq]];
-						float ratio = io->durability / io->max_durability;
-						Color col = Color3f(1.f-ratio, ratio, 0).to<u8>();
-						EERIEDrawBitmap2(Rectf(pos, iconequip[i]->m_dwWidth, iconequip[i]->m_dwHeight), 0.001f, iconequip[i], col);
-					}
-				}
-			}
-	
-			currpos += static_cast<long>(INTERFACE_RATIO(33.f));
-			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-		}
-	}
-};
-DamagedEquipmentGui damagedEquipmentGui;
-
 //-----------------------------------------------------------------------------
 void ARX_INTERFACE_RELEASESOUND()
 {
@@ -6655,6 +6540,121 @@ public:
 };
 ActiveSpellsGui activeSpellsGui;
 
+
+
+//-----------------------------------------------------------------------------
+// Damaged Equipment Drawing
+//-----------------------------------------------------------------------------
+
+class DamagedEquipmentGui {
+private:
+	TextureContainer * iconequip[5];
+public:
+	void init() {
+		iconequip[0] = TextureContainer::LoadUI("graph/interface/icons/equipment_sword");
+		iconequip[1] = TextureContainer::LoadUI("graph/interface/icons/equipment_shield");
+		iconequip[2] = TextureContainer::LoadUI("graph/interface/icons/equipment_helm");
+		iconequip[3] = TextureContainer::LoadUI("graph/interface/icons/equipment_chest");
+		iconequip[4] = TextureContainer::LoadUI("graph/interface/icons/equipment_leggings");
+		arx_assert(iconequip[0]);
+		arx_assert(iconequip[1]);
+		arx_assert(iconequip[2]);
+		arx_assert(iconequip[3]);
+		arx_assert(iconequip[4]);
+	}
+	
+	void draw()
+	{
+		if(cinematicBorder.isActive() || BLOCK_PLAYER_CONTROLS)
+			return;
+	
+		if(player.Interface & INTER_INVENTORYALL)
+			return;
+	
+		long needdraw=0;
+	
+		for(long i = 0; i < 5; i++) {
+			if(iconequip[i]) {
+				long eq=-1;
+	
+				switch (i) {
+					case 0:
+						eq = EQUIP_SLOT_WEAPON;
+						break;
+					case 1:
+						eq = EQUIP_SLOT_SHIELD;
+						break;
+					case 2:
+						eq = EQUIP_SLOT_HELMET;
+						break;
+					case 3:
+						eq = EQUIP_SLOT_ARMOR;
+						break;
+					case 4:
+						eq = EQUIP_SLOT_LEGGINGS;
+						break;
+				}
+	
+				if(player.equiped[eq] > 0) {
+					Entity *io = entities[player.equiped[eq]];
+					float ratio = io->durability / io->max_durability;
+	
+					if(ratio <= 0.5f)
+						needdraw |= 1<<i;
+				}
+			}
+		}
+	
+		if(needdraw) {
+			GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+	
+			GRenderer->SetCulling(Renderer::CullNone);
+			GRenderer->SetRenderState(Renderer::DepthWrite, true);
+			GRenderer->SetRenderState(Renderer::Fog, false);
+	
+			Vec2f pos(InventoryX + 10 + 32 + 100, g_size.height() - 158);
+			
+			if(pos.x < INTERFACE_RATIO( 10 + 32 ))
+				pos.x = INTERFACE_RATIO( 10 + 32 );
+	
+			for(long i = 0; i < 5; i++) {
+				if((needdraw & (1<<i)) && iconequip[i]) {
+					long eq=-1;
+	
+					switch(i) {
+						case 0:
+							eq = EQUIP_SLOT_WEAPON;
+							break;
+						case 1:
+							eq = EQUIP_SLOT_SHIELD;
+							break;
+						case 2:
+							eq = EQUIP_SLOT_HELMET;
+							break;
+						case 3:
+							eq = EQUIP_SLOT_ARMOR;
+							break;
+						case 4:
+							eq = EQUIP_SLOT_LEGGINGS;
+							break;
+					}
+	
+					if(player.equiped[eq] > 0) {
+						Entity *io = entities[player.equiped[eq]];
+						float ratio = io->durability / io->max_durability;
+						Color col = Color3f(1.f-ratio, ratio, 0).to<u8>();
+						EERIEDrawBitmap2(Rectf(pos, iconequip[i]->m_dwWidth, iconequip[i]->m_dwHeight), 0.001f, iconequip[i], col);
+					}
+				}
+			}
+	
+			currpos += static_cast<long>(INTERFACE_RATIO(33.f));
+			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+		}
+	}
+};
+DamagedEquipmentGui damagedEquipmentGui;
 
 void UpdateInterface() {
 	hitStrengthGauge.update();
