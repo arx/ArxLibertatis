@@ -372,17 +372,16 @@ bool SelectSpellTargetCursorRender() {
 			}
 		}
 		
-		float POSX = DANAEMouse.x;
-		float POSY = DANAEMouse.y;
+		Vec2f pos = Vec2f(DANAEMouse);
 		
 		if(TRUE_PLAYER_MOUSELOOK_ON) {
-			POSX = MemoMouse.x;
-			POSY = MemoMouse.y;
+			pos = MemoMouse;
 		}
 		
 		Vec2f texSize = Vec2f(surf->size());
+		pos += -texSize * 0.5f;
 		
-		EERIEDrawBitmap(POSX - texSize.x * 0.5f, POSY - surf->m_dwHeight * 0.5f, texSize.x, texSize.y, 0.f, surf, Color::white);
+		EERIEDrawBitmap(Rectf(pos, texSize.x, texSize.y), 0.f, surf, Color::white);
 		
 		return true;
 	}
