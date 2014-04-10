@@ -5009,6 +5009,38 @@ public:
 		m_pos.x += lSLID_VALUE;
 		m_pos.x += 2;
 	}
+	
+	void updateInput() {
+		// gold
+		if(player.gold > 0) {
+			Vec2f pos(g_size.width() - (35) + lSLID_VALUE, g_size.height() - 183);
+			
+			const Rect mouseTestRect(
+			pos.x,
+			pos.y,
+			pos.x + INTERFACE_RATIO(32),
+			pos.y + INTERFACE_RATIO(32)
+			);
+			
+			if(mouseTestRect.contains(Vec2i(DANAEMouse))) {
+				eMouseState = MOUSE_IN_GOLD_ICON;
+				SpecialCursor = CURSOR_INTERACTION_ON;
+
+				if(   player.gold > 0
+				   && !GInput->actionPressed(CONTROLS_CUST_MAGICMODE)
+				   && !COMBINE
+				   && !COMBINEGOLD
+				   && (EERIEMouseButton & 4)
+				) {
+					COMBINEGOLD = true;
+				}
+
+				if(!DRAGINTER)
+					return;
+			}
+		}
+	}
+	
 	void draw() {
 		DrawIcon(m_pos, ITC.Get("gold"), MOUSE_IN_GOLD_ICON);
 		if(eMouseState == MOUSE_IN_GOLD_ICON) {
@@ -6144,35 +6176,8 @@ void ArxGame::manageEditorControls() {
 				
 				currentTorchIconGui.updateInput();
 				levelUpIconGui.updateInput();
+				purseIconGui.updateInput();
 
-				// gold
-				if(player.gold > 0) {
-					Vec2f pos(g_size.width() - (35) + lSLID_VALUE, g_size.height() - 183);
-					
-					const Rect mouseTestRect(
-					pos.x,
-					pos.y,
-					pos.x + INTERFACE_RATIO(32),
-					pos.y + INTERFACE_RATIO(32)
-					);
-					
-					if(mouseTestRect.contains(Vec2i(DANAEMouse))) {
-						eMouseState = MOUSE_IN_GOLD_ICON;
-						SpecialCursor = CURSOR_INTERACTION_ON;
-
-						if(   player.gold > 0
-						   && !GInput->actionPressed(CONTROLS_CUST_MAGICMODE)
-						   && !COMBINE
-						   && !COMBINEGOLD
-						   && (EERIEMouseButton & 4)
-						) {
-							COMBINEGOLD = true;
-						}
-
-						if(!DRAGINTER)
-							return;
-					}
-				}
 
 				// book
 				{
