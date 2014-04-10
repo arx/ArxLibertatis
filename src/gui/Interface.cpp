@@ -6163,10 +6163,13 @@ public:
 		float px = INTERFACE_RATIO(std::max(InventoryX + 110.f, 10.f));
 		float py = g_size.height() - INTERFACE_RATIO(158.f + 32.f);
 		
-		EERIEDrawBitmap(px, py,
-						INTERFACE_RATIO_DWORD(player.torch->inv->m_dwWidth),
-						INTERFACE_RATIO_DWORD(player.torch->inv->m_dwHeight),
-						0.001f, player.torch->inv, Color::white);
+		Rectf rect(
+			Vec2f(px, py),
+			player.torch->inv->m_dwWidth,
+			player.torch->inv->m_dwHeight
+		);
+		
+		EERIEDrawBitmap(rect, 0.001f, player.torch->inv, Color::white);
 		
 		if(rnd() <= 0.2f) {
 			return;
@@ -6522,7 +6525,7 @@ public:
 	
 	void draw() {
 		Vec2f size = Vec2f(mecanism_tc->size());
-	    EERIEDrawBitmap(0, 0, size.x, size.y, 0.01f, mecanism_tc, m_color);
+	    EERIEDrawBitmap(Rectf(Vec2f(0, 0), size.x, size.y), 0.01f, mecanism_tc, m_color);
 	}
 };
 MecanismIcon mecanismIcon;
