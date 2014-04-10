@@ -477,7 +477,7 @@ void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 					Vec2f size(tc->m_dwWidth, tc->m_dwHeight);
 
 					if(SpecialCursor == CURSOR_COMBINEON) {
-						EERIEDrawBitmap(mousePos.x, mousePos.y, size.x, size.y, .00001f, tc, Color::white);
+						EERIEDrawBitmap(Rectf(mousePos, size.x, size.y), .00001f, tc, Color::white);
 
 						if(FlyingOverIO && (FlyingOverIO->ioflags & IO_BLACKSMITH)) {
 							float v=ARX_DAMAGES_ComputeRepairPrice(COMBINE,FlyingOverIO);
@@ -489,7 +489,7 @@ void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 							}
 						}
 					} else {
-						EERIEDrawBitmap(mousePos.x, mousePos.y, size.x, size.y, 0.00001f, tc, Color::fromBGRA(0xFFFFAA66));
+						EERIEDrawBitmap(Rectf(mousePos, size.x, size.y), 0.00001f, tc, Color::fromBGRA(0xFFFFAA66));
 					}
 				}
 				
@@ -568,10 +568,8 @@ void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 						ss << std::setw(3) << lCursorRedistValue;
 						ARX_TEXT_Draw(hFontInBook, DANAEMouse.x + 6* g_sizeRatio.x, DANAEMouse.y + 11* g_sizeRatio.y, ss.str(), Color::black);
 					} else {
-						float fTexSizeX = INTERFACE_RATIO_DWORD(surf->m_dwWidth);
-						float fTexSizeY = INTERFACE_RATIO_DWORD(surf->m_dwHeight);
 
-						EERIEDrawBitmap(mousePos.x, mousePos.y, fTexSizeX, fTexSizeY, 0.f, surf, Color::white);
+						EERIEDrawBitmap(Rectf(mousePos, surf->m_dwWidth, surf->m_dwHeight), 0.f, surf, Color::white);
 					}
 				}
 
