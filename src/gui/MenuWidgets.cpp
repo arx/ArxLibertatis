@@ -3711,8 +3711,7 @@ void CMenuButton::Render() {
 
 	//affichage de la texture
 	if(pTex) {
-		EERIEDrawBitmap2(static_cast<float>(rZone.left), static_cast<float>(rZone.top),
-		                 RATIO_X(pTex->m_dwWidth), RATIO_Y(pTex->m_dwHeight), 0, pTex, Color::white);
+		EERIEDrawBitmap2(Rectf(Vec2f(rZone.topLeft()), RATIO_X(pTex->m_dwWidth), RATIO_Y(pTex->m_dwHeight)), 0, pTex, Color::white);
 	}
 
 	//affichage de la font
@@ -4214,7 +4213,7 @@ void CMenuSlider::Render() {
 		}
 		
 		if(pTex) {
-			EERIEDrawBitmap2(pos.x, pos.y, RATIO_X(pTex->m_dwWidth), RATIO_Y(pTex->m_dwHeight), 0, pTex, Color::white);
+			EERIEDrawBitmap2(Rectf(pos, RATIO_X(pTex->m_dwWidth), RATIO_Y(pTex->m_dwHeight)), 0, pTex, Color::white);
 		}
 		
 		pos.x += iTexW;
