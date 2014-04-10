@@ -4843,6 +4843,31 @@ public:
 		m_pos.x += lSLID_VALUE;
 	}
 	
+	void updateInput() {
+		// book
+		{
+		Vec2f pos(g_size.width() - 35 + lSLID_VALUE, g_size.height() - 148);
+
+		const Rect bookMouseTestRect(
+		pos.x,
+		pos.y,
+		pos.x + INTERFACE_RATIO(32),
+		pos.y + INTERFACE_RATIO(32)
+		);
+		
+		if(bookMouseTestRect.contains(Vec2i(DANAEMouse))) {
+			eMouseState = MOUSE_IN_BOOK_ICON;
+			SpecialCursor = CURSOR_INTERACTION_ON;
+
+			if((EERIEMouseButton & 1) && !(LastMouseClick & 1)) {
+				ARX_INTERFACE_BookOpenClose(0);
+				EERIEMouseButton &=~1;
+			}
+			return;
+		}
+		}
+	}
+	
 	void draw() {
 		DrawIcon(m_pos, ITC.Get("book"), MOUSE_IN_BOOK_ICON);
 	}
@@ -6177,30 +6202,7 @@ void ArxGame::manageEditorControls() {
 				currentTorchIconGui.updateInput();
 				levelUpIconGui.updateInput();
 				purseIconGui.updateInput();
-
-
-				// book
-				{
-				Vec2f pos(g_size.width() - 35 + lSLID_VALUE, g_size.height() - 148);
-
-				const Rect bookMouseTestRect(
-				pos.x,
-				pos.y,
-				pos.x + INTERFACE_RATIO(32),
-				pos.y + INTERFACE_RATIO(32)
-				);
-				
-				if(bookMouseTestRect.contains(Vec2i(DANAEMouse))) {
-					eMouseState = MOUSE_IN_BOOK_ICON;
-					SpecialCursor = CURSOR_INTERACTION_ON;
-
-					if((EERIEMouseButton & 1) && !(LastMouseClick & 1)) {
-						ARX_INTERFACE_BookOpenClose(0);
-						EERIEMouseButton &=~1;
-					}
-					return;
-				}
-				}
+				bookIconGui.updateInput();
 				
 				{
 				// inventaire
