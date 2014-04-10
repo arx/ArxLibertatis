@@ -452,8 +452,6 @@ void CreateInterfaceTextureContainers()
 	ITC.Set("book", "graph/interface/icons/book");
 	ITC.Set("steal", "graph/interface/icons/steal");
 	ITC.Set("item_cant_steal", "graph/interface/icons/cant_steal_item");
-	ITC.Set("empty_gauge_blue", "graph/interface/bars/empty_gauge_blue");
-	ITC.Set("filled_gauge_blue", "graph/interface/bars/filled_gauge_blue");
 	
 	ITC.Set("target_on", "graph/interface/cursors/target_on");
 	ITC.Set("target_off", "graph/interface/cursors/target_off");
@@ -6184,11 +6182,14 @@ private:
 	TextureContainer * m_filledTex;
 	float m_amount;
 public:
-	void update() {
-		m_emptyTex = ITC.Get("empty_gauge_blue");
-		m_filledTex = ITC.Get("filled_gauge_blue");
+	void init() {
+		m_emptyTex = TextureContainer::LoadUI("graph/interface/bars/empty_gauge_blue");
+		m_filledTex = TextureContainer::LoadUI("graph/interface/bars/filled_gauge_blue");
 		arx_assert(m_emptyTex);
 		arx_assert(m_filledTex);
+	}
+	
+	void update() {
 		
 		m_amount = player.mana / player.Full_maxmana;
 	}
@@ -6735,8 +6736,7 @@ void hudElementsInit() {
 	screenArrows.init();
 	
 	healthGauge.init();
-	TextureContainer::LoadUI("graph/interface/bars/empty_gauge_blue");
-	TextureContainer::LoadUI("graph/interface/bars/filled_gauge_blue");
+	manaGauge.init();
 	TextureContainer::LoadUI("graph/interface/icons/book");
 	TextureContainer::LoadUI("graph/interface/icons/backpack");
 	TextureContainer::LoadUI("graph/interface/icons/lvl_up");
