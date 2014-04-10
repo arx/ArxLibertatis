@@ -255,4 +255,6 @@ extern long ARX_MOUSE_OVER;
 //! Show the quick save indicator for a short time
 void showQuickSaveIcon();
 
+void changeLevelIconGuiInit();
+
 #endif // ARX_GUI_INTERFACE_H

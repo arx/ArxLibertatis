@@ -153,7 +153,6 @@ static const float BOOKMARKS_POS_Y = 60.f;
 //-----------------------------------------------------------------------------
 extern TextureContainer * iconequip[];
 extern TextureContainer * Movable;
-extern TextureContainer * ChangeLevel;
 extern TextureContainer * inventory_font;
 extern TextureContainer * mecanism_tc;
 extern TextureContainer * arrow_left_tc;
@@ -6276,20 +6275,25 @@ void DrawIcons() {
 
 class ChangeLevelIconGui{
 private:
+	TextureContainer * m_tex;
 	Vec2f m_pos;
 	Rectf m_rect;
 	float m_intensity;
 	
 public:
+	void init() {
+		m_tex = TextureContainer::LoadUI("graph/interface/icons/change_lvl");
+	}
+	
 	void update() {
 		m_pos = g_size.topRight();
-		m_pos.x -= ChangeLevel->m_dwWidth;
+		m_pos.x -= m_tex->m_dwWidth;
 		
 		m_rect = Rectf(
 		m_pos.x,
 		m_pos.y,
-		m_pos.x + INTERFACE_RATIO_DWORD(ChangeLevel->m_dwWidth),
-		m_pos.y + INTERFACE_RATIO_DWORD(ChangeLevel->m_dwHeight)
+		m_pos.x + INTERFACE_RATIO_DWORD(m_tex->m_dwWidth),
+		m_pos.y + INTERFACE_RATIO_DWORD(m_tex->m_dwHeight)
 		);
 
 		m_intensity = 0.9f - std::sin(arxtime.get_frame_time()*( 1.0f / 50 ))*0.5f+rnd()*( 1.0f / 10 );
@@ -6297,7 +6301,7 @@ public:
 	}
 	
 	void draw() {
-		EERIEDrawBitmap(m_rect, 0.0001f, ChangeLevel, Color3f::gray(m_intensity).to<u8>());
+		EERIEDrawBitmap(m_rect, 0.0001f, m_tex, Color3f::gray(m_intensity).to<u8>());
 		
 	    if(m_rect.contains(Vec2f(DANAEMouse))) {
 			SpecialCursor=CURSOR_INTERACTION_ON;
@@ -6309,6 +6313,10 @@ public:
 };
 
 ChangeLevelIconGui changeLevelIconGui;
+
+void changeLevelIconGuiInit() {
+	changeLevelIconGui.init();
+}
 
 
 class QuickSaveIconGui {
@@ -6644,7 +6652,7 @@ void ArxGame::drawAllInterface() {
 	if(!(player.Interface & INTER_COMBATMODE)) {
 		DrawIcons();
 	}
-	if(CHANGE_LEVEL_ICON > -1 && ChangeLevel) {
+	if(CHANGE_LEVEL_ICON > -1) {
 		changeLevelIconGui.draw();
 	}
 	quickSaveIconGui.draw();

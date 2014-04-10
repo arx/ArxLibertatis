@@ -191,7 +191,6 @@ extern CMenuState * pMenu;
 
 extern glm::mat4x4 ProjectionMatrix;
 
-TextureContainer * ChangeLevel = NULL;
 TextureContainer * Movable = NULL;   // TextureContainer for Movable Items (Red Cross)
 
 long STOP_KEYBOARD_INPUT= 0;
@@ -741,7 +740,7 @@ bool ArxGame::beforeRun() {
 	}
 	
 	Movable = TextureContainer::LoadUI("graph/interface/cursors/wrong");
-	ChangeLevel = TextureContainer::LoadUI("graph/interface/icons/change_lvl");
+	changeLevelIconGuiInit();
 	
 	ARX_PLAYER_LoadHeroAnimsAndMesh();
 	
