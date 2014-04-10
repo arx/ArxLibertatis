@@ -5073,6 +5073,44 @@ public:
 		m_pos += Vec2f(-32, -16);
 	}
 	
+	void updateInput() {
+		Vec2f pos(InventoryX + BasicInventorySkin->m_dwWidth - 32, BasicInventorySkin->m_dwHeight - 16);
+
+		const Rect mouseTestRect(
+		pos.x,
+		pos.y,
+		pos.x + INTERFACE_RATIO(16),
+		pos.y + INTERFACE_RATIO(16)
+		);
+		
+		if(mouseTestRect.contains(Vec2i(DANAEMouse))) {
+			eMouseState = MOUSE_IN_INVENTORY_CLOSE_ICON;
+			SpecialCursor=CURSOR_INTERACTION_ON;
+
+			if((EERIEMouseButton & 1) && !(LastMouseClick & 1)) {
+				Entity * io = NULL;
+
+				if(SecondaryInventory)
+					io = (Entity *)SecondaryInventory->io;
+				else if (player.Interface & INTER_STEAL)
+					io = ioSteal;
+
+				if(io) {
+					ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
+					InventoryDir=-1;
+					SendIOScriptEvent(io,SM_INVENTORY2_CLOSE);
+					TSecondaryInventory=SecondaryInventory;
+					SecondaryInventory=NULL;
+				}
+
+				EERIEMouseButton &=~1;
+			}
+
+			if(DRAGINTER == NULL)
+				return;
+		}
+	}
+	
 	void draw() {
 		DrawIcon(m_pos, ITC.Get("inventory_close"), MOUSE_IN_INVENTORY_CLOSE_ICON);
 	}
@@ -6391,42 +6429,8 @@ void ArxGame::manageEditorControls() {
 		if(temp && !(temp->ioflags & IO_SHOP) && !(temp == ioSteal)) {
 			pickAllIconGui.updateInput();
 		}
-
-		Vec2f pos(InventoryX + BasicInventorySkin->m_dwWidth - 32, BasicInventorySkin->m_dwHeight - 16);
-
-		const Rect mouseTestRect(
-		pos.x,
-		pos.y,
-		pos.x + INTERFACE_RATIO(16),
-		pos.y + INTERFACE_RATIO(16)
-		);
 		
-		if(mouseTestRect.contains(Vec2i(DANAEMouse))) {
-			eMouseState = MOUSE_IN_INVENTORY_CLOSE_ICON;
-			SpecialCursor=CURSOR_INTERACTION_ON;
-
-			if((EERIEMouseButton & 1) && !(LastMouseClick & 1)) {
-				Entity * io = NULL;
-
-				if(SecondaryInventory)
-					io = (Entity *)SecondaryInventory->io;
-				else if (player.Interface & INTER_STEAL)
-					io = ioSteal;
-
-				if(io) {
-					ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
-					InventoryDir=-1;
-					SendIOScriptEvent(io,SM_INVENTORY2_CLOSE);
-					TSecondaryInventory=SecondaryInventory;
-					SecondaryInventory=NULL;
-				}
-
-				EERIEMouseButton &=~1;
-			}
-
-			if(DRAGINTER == NULL)
-				return;
-		}
+		closeSecondaryInventoryIconGui.updateInput();
 	}
 
 	//-------------------------------------------------------------------------
