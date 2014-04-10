@@ -441,7 +441,6 @@ void CreateInterfaceTextureContainers()
 	ITC.Set("inventory_close", "graph/interface/inventory/inv_close");
 	
 	ITC.Set("gold", "graph/interface/inventory/gold");
-	ITC.Set("book", "graph/interface/icons/book");
 	ITC.Set("item_cant_steal", "graph/interface/icons/cant_steal_item");
 	
 	ITC.Set("target_on", "graph/interface/cursors/target_on");
@@ -4835,6 +4834,7 @@ extern TextureContainer * healing;
 
 class BookIconGui : public HudIconBase {
 private:
+	TextureContainer * m_tex;
 	Vec2f m_pos;
 	
 	void MakeBookFX(const Vec3f & pos) {
@@ -4867,7 +4867,7 @@ private:
 			pd->move = Vec3f(-float(i) * 0.5f, -float(i) * 0.5f, 0.f);
 			pd->scale = Vec3f(float(i * 10), float(i * 10), 0.f);
 			pd->tolive = Random::get(1200, 1600);
-			pd->tc = ITC.Get("book");
+			pd->tc = m_tex;
 			pd->rgb = Color3f(1.f - float(i) * 0.1f, float(i) * 0.1f, 0.5f - float(i) * 0.1f);
 			pd->siz = 32.f + float(i * 4);
 			pd->type = PARTICLE_2D;
@@ -4878,7 +4878,8 @@ private:
 	
 public:
 	void init() {
-		
+		m_tex = TextureContainer::LoadUI("graph/interface/icons/book");
+		arx_assert(m_tex);
 	}
 	
 	void requestFX() {
@@ -4917,7 +4918,7 @@ public:
 	}
 	
 	void draw() {
-		DrawIcon(m_pos, ITC.Get("book"), MOUSE_IN_BOOK_ICON);
+		DrawIcon(m_pos, m_tex, MOUSE_IN_BOOK_ICON);
 	}
 	
 	void drawHalo() {
@@ -4927,7 +4928,7 @@ public:
 			if(ulBookHaloTime >= 3000) { // ms
 				bBookHalo = false;
 			}
-			DrawHalo(0.2f, 0.4f, 0.8f, GetHaloForITC("book"), m_pos);
+			DrawHalo(0.2f, 0.4f, 0.8f, m_tex->getHalo(), m_pos);
 		}
 	}
 };
@@ -6309,7 +6310,7 @@ void hudElementsInit() {
 	
 	healthGauge.init();
 	manaGauge.init();
-	TextureContainer::LoadUI("graph/interface/icons/book");
+	bookIconGui.init();
 	backpackIconGui.init();
 	levelUpIconGui.init();
 	stealIconGui.init();
