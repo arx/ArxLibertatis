@@ -1457,8 +1457,7 @@ bool Menu2_Render() {
 		
 		Vec2f pos = Vec2f(DANAEMouse) + offset;
 
-		EERIEDrawBitmap(pos.x, pos.y, size.x, size.y,
-		                0.001f, pTextureLoad, Color::white);
+		EERIEDrawBitmap(Rectf(pos, size.x, size.y), 0.001f, pTextureLoad, Color::white);
 
 		GRenderer->ResetTexture(0);
 		EERIEDraw2DRect(pos.x, pos.y, pos.x + size.x, pos.y + size.y,
