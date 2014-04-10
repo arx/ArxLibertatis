@@ -64,7 +64,7 @@ extern Font * hFontInGame;
 extern Font * hFontInGameNote;
 extern Font * hFontDebug;
 
-void ARX_TEXT_Draw(Font * ef, float x, float y, const std::string & car, Color colo);
+void ARX_TEXT_Draw(Font * ef, const Vec2f & pos, const std::string & car, Color colo);
 float DrawBookTextInRect(Font * font, const Vec2f & pos, float maxx, const std::string & text, Color col);
 void DrawBookTextCenter(Font * font, float x, float y, const std::string & text, Color col);
 long UNICODE_ARXDrawTextCenter(Font * font, float x, float y, const std::string & str, Color col);

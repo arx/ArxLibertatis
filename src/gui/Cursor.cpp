@@ -563,9 +563,12 @@ void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 						EERIEDrawBitmap(Rectf(mousePos, surf->m_dwWidth * g_sizeRatio.x, surf->m_dwHeight * g_sizeRatio.y),
 										0.f, surf, Color::white);
 
+						Vec2f textPos = Vec2f(DANAEMouse);
+						textPos += Vec2f(6, 11) * g_sizeRatio;
+						
 						std::stringstream ss;
 						ss << std::setw(3) << lCursorRedistValue;
-						ARX_TEXT_Draw(hFontInBook, DANAEMouse.x + 6* g_sizeRatio.x, DANAEMouse.y + 11* g_sizeRatio.y, ss.str(), Color::black);
+						ARX_TEXT_Draw(hFontInBook, textPos, ss.str(), Color::black);
 					} else {
 
 						EERIEDrawBitmap(Rectf(mousePos, surf->m_dwWidth, surf->m_dwHeight), 0.f, surf, Color::white);

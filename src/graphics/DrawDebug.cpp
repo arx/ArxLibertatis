@@ -535,5 +535,9 @@ void drawDebugRender() {
 	}
 	
 	s32 width = hFontDebug->getTextSize(ss.str()).x;
-	ARX_TEXT_Draw(hFontDebug, g_size.width() - 10 - width, 10, ss.str(), Color::yellow);
+	Vec2f pos = Vec2f(g_size.topRight());
+	pos += Vec2f(-10 , 10);
+	pos += Vec2f(-width, 0);
+	
+	ARX_TEXT_Draw(hFontDebug, pos, ss.str(), Color::yellow);
 }

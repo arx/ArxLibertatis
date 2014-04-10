@@ -210,15 +210,12 @@ long ARX_UNICODE_DrawTextInRect(Font* font,
 	return height;
 }
 
-void ARX_TEXT_Draw(Font* ef,
-                   float x, float y,
-                   const std::string& car,
-                   Color col) {
+void ARX_TEXT_Draw(Font* ef, const Vec2f & pos, const std::string& car, Color col) {
 	
 	if (car.empty() || car[0] == 0)
 		return;
-
-	ARX_UNICODE_DrawTextInRect(ef, Vec2f(x, y), std::numeric_limits<float>::infinity(), car, col);
+	
+	ARX_UNICODE_DrawTextInRect(ef, pos, std::numeric_limits<float>::infinity(), car, col);
 }
 
 float DrawBookTextInRect(Font* font, const Vec2f & pos, float maxx, const std::string& text, Color col) {
