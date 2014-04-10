@@ -214,8 +214,6 @@ Vec3f PUSH_PLAYER_FORCE;
 
 ParticleManager	*pParticleManager = NULL;
 static TextureContainer * ombrignon = NULL;
-TextureContainer *	scursor[8];			// Animated Hand Cursor TC
-TextureContainer *	pTCCrossHair;			// Animated Hand Cursor TC
 TextureContainer *	GoldCoinsTC[MAX_GOLD_COINS_VISUALS]; // Gold Coins Icons
 TextureContainer *	explo[MAX_EXPLO];		// TextureContainer for animated explosion bitmaps (24 frames)
 
@@ -542,8 +540,6 @@ static bool initializeGame() {
 	
 	g_miniMap.mapMarkerInit();
 	
-	memset(scursor, 0, sizeof(scursor));
-	
 	ARX_SPELLS_CancelSpellTarget();
 	
 	memset(explo, 0, sizeof(explo));
@@ -755,19 +751,6 @@ void LoadSysTextures()
 	TextureContainer::LoadUI("graph/interface/menus/menu_main_background", TextureContainer::NoColorKey);
 	TextureContainer::LoadUI("graph/interface/menus/menu_console_background");
 	TextureContainer::LoadUI("graph/interface/menus/menu_console_background_border");
-	
-	//CURSORS LOADING
-	TextureContainer::LoadUI("graph/interface/cursors/cursor");
-	TextureContainer::LoadUI("graph/interface/cursors/drop");
-	TextureContainer::LoadUI("graph/interface/cursors/throw");
-	
-	for(long i = 0; i < 8; i++) {
-		char temp[256];
-		sprintf(temp,"graph/interface/cursors/cursor%02ld", i);
-		scursor[i] = TextureContainer::LoadUI(temp);
-	}
-	
-	pTCCrossHair = TextureContainer::LoadUI("graph/interface/cursors/cruz");
 }
 
 void ClearSysTextures() {

@@ -69,6 +69,9 @@ static TextureContainer * cursorMagic = NULL;
 TextureContainer * ThrowObject = NULL;
 TextureContainer * ptexcursorredist = NULL;
 
+TextureContainer *	scursor[8];			// Animated Hand Cursor TC
+TextureContainer *	pTCCrossHair;			// Animated Hand Cursor TC
+
 void cursorTexturesInit() {
 	ITC.Reset();
 	
@@ -79,6 +82,7 @@ void cursorTexturesInit() {
 	cursorMagic = TextureContainer::LoadUI("graph/interface/cursors/magic");
 	ThrowObject = TextureContainer::LoadUI("graph/interface/cursors/throw");
 	ptexcursorredist =  TextureContainer::LoadUI("graph/interface/cursors/add_points");
+	pTCCrossHair = TextureContainer::LoadUI("graph/interface/cursors/cruz");
 	
 	arx_assert(cursorTargetOn);
 	arx_assert(cursorTargetOff);
@@ -87,6 +91,18 @@ void cursorTexturesInit() {
 	arx_assert(cursorMagic);
 	arx_assert(ThrowObject);
 	arx_assert(ptexcursorredist);
+	arx_assert(pTCCrossHair);
+	
+	for(long i = 0; i < 8; i++) {
+		char temp[256];
+		sprintf(temp,"graph/interface/cursors/cursor%02ld", i);
+		scursor[i] = TextureContainer::LoadUI(temp);
+		arx_assert(scursor[i]);
+	}
+	
+	// TODO currently unused
+	TextureContainer::LoadUI("graph/interface/cursors/cursor");
+	TextureContainer::LoadUI("graph/interface/cursors/drop");
 }
 
 
@@ -358,10 +374,8 @@ extern bool COMBINEGOLD;
 extern bool PLAYER_MOUSELOOK_ON;
 extern E_ARX_STATE_MOUSE eMouseState;
 extern long MAGICMODE;
-extern TextureContainer * scursor[];
 extern long lCursorRedistValue;
 extern TextureContainer * Movable;
-extern TextureContainer * pTCCrossHair;
 
 int iHighLight=0;
 float fHighLightAng=0.f;
