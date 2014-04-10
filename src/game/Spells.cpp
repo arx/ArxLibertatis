@@ -3431,7 +3431,7 @@ bool ARX_SPELLS_Launch(SpellType typ, long source, SpellcastFlags flagss, long l
 			// Draws White Flash on Screen
 			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 			GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-			EERIEDrawBitmap(g_size, 0.00009f, NULL, Color::white);
+			EERIEDrawBitmap(Rectf(g_size), 0.00009f, NULL, Color::white);
 			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 			
 			break;

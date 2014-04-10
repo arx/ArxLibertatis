@@ -1794,7 +1794,7 @@ void DrawImproveVisionInterface() {
 
 	if(ombrignon) {
 		float mod = 0.6f + PULSATE * 0.35f;
-		EERIEDrawBitmap(g_size, 0.0001f, ombrignon, Color3f((0.5f+PULSATE*( 1.0f / 10 ))*mod,0.f,0.f).to<u8>());
+		EERIEDrawBitmap(Rectf(g_size), 0.0001f, ombrignon, Color3f((0.5f+PULSATE*( 1.0f / 10 ))*mod,0.f,0.f).to<u8>());
 	}
 }
 

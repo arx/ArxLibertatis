@@ -81,12 +81,12 @@ void ManageFade()
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	
-	EERIEDrawBitmap(g_size, 0.0001f, NULL, Color3f::gray(Visibility).to<u8>());
+	EERIEDrawBitmap(Rectf(g_size), 0.0001f, NULL, Color3f::gray(Visibility).to<u8>());
 
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	float col=Visibility;
 	Color color = Color3f(col * FADECOLOR.r, col * FADECOLOR.g, col * FADECOLOR.b).to<u8>();
-	EERIEDrawBitmap(g_size, 0.0001f, NULL, color);
+	EERIEDrawBitmap(Rectf(g_size), 0.0001f, NULL, color);
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);

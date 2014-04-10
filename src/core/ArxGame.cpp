@@ -1473,7 +1473,7 @@ void ArxGame::renderLevel() {
 		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 		GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 
-		EERIEDrawBitmap(g_size, 0.0001f, NULL, Color(71, 71, 255));
+		EERIEDrawBitmap(Rectf(g_size), 0.0001f, NULL, Color(71, 71, 255));
 
 		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 		GRenderer->SetRenderState(Renderer::DepthWrite, true);

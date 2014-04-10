@@ -70,6 +70,14 @@ public:
 	
 	Rectangle_(const Rectangle_ & other) : origin(other.origin), end(other.end) { }
 	
+	template <class U>
+	explicit Rectangle_(Rectangle_<U> const & other)
+		: left(other.left)
+		, top(other.top)
+		, right(other.right)
+		, bottom(other.bottom)
+	{}
+	
 	Rectangle_() { }
 	
 	Rectangle_(T _left, T _top, T _right, T _bottom)
