@@ -5672,29 +5672,31 @@ void DrawItemPrice() {
 }
 
 
-TextureContainer* GetHaloForITC(const char* itcName) {
-	return ITC.Get(itcName)->getHalo();
-}
-
-void DrawHalo(float r, float g, float b, TextureContainer* halo, const Vec2f& coords) {
-	if(halo) {
-		ARX_INTERFACE_HALO_Render(r, g, b, HALO_ACTIVE, halo, coords.x, coords.y);
+class HudIconBase {
+protected:
+	TextureContainer* GetHaloForITC(const char* itcName) {
+		return ITC.Get(itcName)->getHalo();
 	}
-}
-
-//Used for drawing icons like the book or backpack icon.
-void DrawIcon(const Vec2f& coords, const char* itcName, E_ARX_STATE_MOUSE hoverMouseState) {
-	ARX_INTERFACE_DrawItem(ITC.Get(itcName), coords.x, coords.y);
-	if (eMouseState == hoverMouseState) {
-		GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+	
+	void DrawHalo(float r, float g, float b, TextureContainer* halo, const Vec2f& coords) {
+		if(halo) {
+			ARX_INTERFACE_HALO_Render(r, g, b, HALO_ACTIVE, halo, coords.x, coords.y);
+		}
+	}
+	
+	//Used for drawing icons like the book or backpack icon.
+	void DrawIcon(const Vec2f& coords, const char* itcName, E_ARX_STATE_MOUSE hoverMouseState) {
 		ARX_INTERFACE_DrawItem(ITC.Get(itcName), coords.x, coords.y);
-		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+		if (eMouseState == hoverMouseState) {
+			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+			GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+			ARX_INTERFACE_DrawItem(ITC.Get(itcName), coords.x, coords.y);
+			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+		}
 	}
-}
+};
 
-
-class BookIconGui {
+class BookIconGui : public HudIconBase {
 private:
 	Vec2f m_pos;
 	
@@ -5724,7 +5726,7 @@ public:
 
 static BookIconGui bookIconGui;
 
-class BackpackIconGui {
+class BackpackIconGui : public HudIconBase {
 private:
 	Vec2f m_pos;
 	
@@ -5744,7 +5746,7 @@ public:
 static BackpackIconGui backpackIconGui;
 
 
-class StealIconGui {
+class StealIconGui : public HudIconBase {
 private:
 	Vec2f m_pos;
 public:
@@ -5760,7 +5762,7 @@ public:
 
 static StealIconGui stealIconGui;
 
-class PickAllIconGui {
+class PickAllIconGui : public HudIconBase {
 private:
 	Vec2f m_pos;
 public:
@@ -5777,7 +5779,7 @@ public:
 
 static PickAllIconGui pickAllIconGui;
 
-class CloseSecondaryInventoryIconGui {
+class CloseSecondaryInventoryIconGui : public HudIconBase {
 private:
 	Vec2f m_pos;
 public:
@@ -5795,7 +5797,7 @@ public:
 
 static CloseSecondaryInventoryIconGui closeSecondaryInventoryIconGui;
 
-class LevelUpIconGui {
+class LevelUpIconGui : public HudIconBase {
 private:
 	Vec2f m_pos;
 public:
@@ -5813,7 +5815,7 @@ public:
 LevelUpIconGui levelUpIconGui;
 
 
-class PurseIconGui {
+class PurseIconGui : public HudIconBase {
 private:
 	Vec2f m_pos;
 public:
@@ -6052,7 +6054,7 @@ static void hideQuickSaveIcon() {
 	quickSaveIconGui.hide();
 }
 
-class MemorizedSpellIconsGui {
+class MemorizedSpellIconsGui : public HudIconBase {
 private:
 	int m_count;
 	Vec2f m_pos;
