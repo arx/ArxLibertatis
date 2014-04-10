@@ -739,14 +739,6 @@ void LoadSysTextures()
 	hudElementsInit();
 	
 	// MENU2
-	TextureContainer::LoadUI("graph/interface/cursors/cursor00");
-	TextureContainer::LoadUI("graph/interface/cursors/cursor01");
-	TextureContainer::LoadUI("graph/interface/cursors/cursor02");
-	TextureContainer::LoadUI("graph/interface/cursors/cursor03");
-	TextureContainer::LoadUI("graph/interface/cursors/cursor04");
-	TextureContainer::LoadUI("graph/interface/cursors/cursor05");
-	TextureContainer::LoadUI("graph/interface/cursors/cursor06");
-	TextureContainer::LoadUI("graph/interface/cursors/cursor07");
 	TextureContainer::LoadUI("graph/interface/cursors/cruz");
 	TextureContainer::LoadUI("graph/interface/menus/menu_main_background", TextureContainer::NoColorKey);
 	TextureContainer::LoadUI("graph/interface/menus/menu_console_background");

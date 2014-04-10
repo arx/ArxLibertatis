@@ -4260,16 +4260,7 @@ void CMenuSlider::RenderMouseOver() {
 }
 
 MenuCursor::MenuCursor() {
-
-	pTex[0]=TextureContainer::Find("graph/interface/cursors/cursor00");
-	pTex[1]=TextureContainer::Find("graph/interface/cursors/cursor01");
-	pTex[2]=TextureContainer::Find("graph/interface/cursors/cursor02");
-	pTex[3]=TextureContainer::Find("graph/interface/cursors/cursor03");
-	pTex[4]=TextureContainer::Find("graph/interface/cursors/cursor04");
-	pTex[5]=TextureContainer::Find("graph/interface/cursors/cursor05");
-	pTex[6]=TextureContainer::Find("graph/interface/cursors/cursor06");
-	pTex[7]=TextureContainer::Find("graph/interface/cursors/cursor07");
-
+	
 	SetCursorOff();
 	
 	iNbOldCoord=0;
@@ -4280,9 +4271,9 @@ MenuCursor::MenuCursor() {
 	
 	bMouseOver=false;
 
-	if(pTex[0]) {
-		fTailleX=(float)pTex[0]->m_dwWidth;
-		fTailleY=(float)pTex[0]->m_dwHeight;
+	if(scursor[0]) {
+		fTailleX = scursor[0]->m_dwWidth;
+		fTailleY = scursor[0]->m_dwHeight;
 	} else {
 		fTailleX=fTailleY=0.f;
 	}
@@ -4344,8 +4335,8 @@ void MenuCursor::update(float time) {
 	exited = !inWindow;
 	
 	Vec2s iDiff;
-	if(pTex[eNumTex]) {
-		iDiff = Vec2s(pTex[eNumTex]->m_dwWidth / 2, pTex[eNumTex]->m_dwHeight / 2);
+	if(scursor[eNumTex]) {
+		iDiff = Vec2s(scursor[eNumTex]->m_dwWidth / 2, scursor[eNumTex]->m_dwHeight / 2);
 	} else {
 		iDiff = Vec2s_ZERO;
 	}
@@ -4456,8 +4447,8 @@ void MenuCursor::DrawCursor()
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	DrawLine2D(iOldCoord, iNbOldCoord, 10.f, .725f, .619f, 0.56f);
 
-	if(pTex[iNumCursor]) 
-		GRenderer->SetTexture(0, pTex[iNumCursor]);
+	if(scursor[iNumCursor])
+		GRenderer->SetTexture(0, scursor[iNumCursor]);
 	else 
 		GRenderer->ResetTexture(0);
 

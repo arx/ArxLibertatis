@@ -645,7 +645,6 @@ private:
 	float m_storedTime;
 	
 	// Cursor
-	TextureContainer	* pTex[8];
 	long				lFrameDiff;
 	CURSORSTATE			eNumTex;
 	int					iNumCursor;
