@@ -1050,9 +1050,6 @@ void FirstFrameHandling() {
 	progressBarAdvance();
 	LoadLevelScreen();
 	
-	delete ITC.Get("presentation");
-	ITC.Set("presentation", NULL);
-	
 	if(DONT_WANT_PLAYER_INZONE) {
 		player.inzone = NULL;
 		DONT_WANT_PLAYER_INZONE = 0;
