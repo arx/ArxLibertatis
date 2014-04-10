@@ -439,7 +439,6 @@ void CreateInterfaceTextureContainers()
 	ITC.Set("interaction_off", "graph/interface/cursors/interaction_off");
 	ITC.Set("magic", "graph/interface/cursors/magic");
 	
-	BasicInventorySkin = TextureContainer::LoadUI("graph/interface/inventory/ingame_inventory");
 	ThrowObject = TextureContainer::LoadUI("graph/interface/cursors/throw");
 }
 
@@ -6374,7 +6373,7 @@ void hudElementsInit() {
 	secondaryInventory.init();
 	inventoryGui.init();
 	
-	TextureContainer::LoadUI("graph/interface/inventory/ingame_inventory");
+	BasicInventorySkin = TextureContainer::LoadUI("graph/interface/inventory/ingame_inventory");
 	purseIconGui.init();
 	pickAllIconGui.init();
 	closeSecondaryInventoryIconGui.init();
