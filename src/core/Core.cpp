@@ -117,6 +117,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/particle/MagicFlare.h"
 #include "graphics/texture/TextureStage.h"
 
+#include "gui/Cursor.h"
 #include "gui/Interface.h"
 #include "gui/Text.h"
 
@@ -491,7 +492,7 @@ void InitializeDanae() {
 	ACTIVEBKG->ambient = Color3f(0.09f, 0.09f, 0.09f);
 	
 	LoadSysTextures();
-	CursorTexturesInit();
+	cursorTexturesInit();
 	
 	if(LaunchDemo) {
 		LogInfo << "Launching splash screens.";

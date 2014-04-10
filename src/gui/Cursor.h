@@ -20,6 +20,8 @@
 #ifndef ARX_GUI_CURSOR_H
 #define ARX_GUI_CURSOR_H
 
+void cursorTexturesInit();
+
 void ARX_INTERFACE_RenderCursor(bool flag = false);
 
 #endif // ARX_GUI_CURSOR_H

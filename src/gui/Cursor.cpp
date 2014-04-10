@@ -61,6 +61,21 @@ extern float STARTED_ANGLE;
 long SPECIAL_DRAGINTER_RENDER=0;
 long CANNOT_PUT_IT_HERE=0;
 
+TextureContainer * ThrowObject = NULL;
+
+void cursorTexturesInit() {
+	ITC.Reset();
+	
+	ITC.Set("target_on", "graph/interface/cursors/target_on");
+	ITC.Set("target_off", "graph/interface/cursors/target_off");
+	ITC.Set("interaction_on", "graph/interface/cursors/interaction_on");
+	ITC.Set("interaction_off", "graph/interface/cursors/interaction_off");
+	ITC.Set("magic", "graph/interface/cursors/magic");
+	
+	ThrowObject = TextureContainer::LoadUI("graph/interface/cursors/throw");
+}
+
+
 long Manage3DCursor(bool simulate) {
 
 	if(BLOCK_PLAYER_CONTROLS)
@@ -332,7 +347,6 @@ extern long MAGICMODE;
 extern TextureContainer * scursor[];
 extern long lCursorRedistValue;
 extern TextureContainer * Movable;
-extern TextureContainer * ThrowObject;
 extern TextureContainer * pTCCrossHair;
 
 int iHighLight=0;

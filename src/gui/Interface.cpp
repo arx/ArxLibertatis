@@ -187,7 +187,7 @@ extern bool SHOW_INGAME_MINIMAP;
 
 //-----------------------------------------------------------------------------
 TextureContainer *	BasicInventorySkin=NULL;
-TextureContainer *	ThrowObject=NULL;
+
 ARX_INTERFACE_HALO_STRUCT * aiHalo=NULL;
 E_ARX_STATE_MOUSE	eMouseState;
 Vec2s bookclick;
@@ -425,24 +425,6 @@ void ARX_INTERFACE_DrawNumber(const Vec2f & pos, const long num, const int _iNb,
 		}
 	}
 }
-
-//-----------------------------------------------------------------------------
-// Interface Texture Containers creation
-//-----------------------------------------------------------------------------
-void CursorTexturesInit()
-{
-    ITC.Reset();
-	
-	ITC.Set("target_on", "graph/interface/cursors/target_on");
-	ITC.Set("target_off", "graph/interface/cursors/target_off");
-	ITC.Set("interaction_on", "graph/interface/cursors/interaction_on");
-	ITC.Set("interaction_off", "graph/interface/cursors/interaction_off");
-	ITC.Set("magic", "graph/interface/cursors/magic");
-	
-	ThrowObject = TextureContainer::LoadUI("graph/interface/cursors/throw");
-}
-
-//-----------------------------------------------------------------------------
 
 void KillInterfaceTextureContainers() {
 	ITC.Reset();
