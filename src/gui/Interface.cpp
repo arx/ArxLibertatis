@@ -3828,7 +3828,7 @@ public:
 };
 ActiveSpellsGui activeSpellsGui;
 
-void drawAllInterfaceFinish() {
+void activeSpellsGuiDraw() {
 	activeSpellsGui.draw();
 }
 

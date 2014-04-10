@@ -239,7 +239,7 @@ void KillInterfaceTextureContainers();
 
 void UpdateInterface();
 
-void drawAllInterfaceFinish();
+void activeSpellsGuiDraw();
 
 namespace gui {
 void updateQuestBook();
