@@ -65,13 +65,13 @@ extern Font * hFontInGameNote;
 extern Font * hFontDebug;
 
 void ARX_TEXT_Draw(Font * ef, float x, float y, const std::string & car, Color colo);
-float DrawBookTextInRect(Font * font, float x, float y, float maxx, const std::string & text, Color col);
+float DrawBookTextInRect(Font * font, const Vec2f & pos, float maxx, const std::string & text, Color col);
 void DrawBookTextCenter(Font * font, float x, float y, const std::string & text, Color col);
 long UNICODE_ARXDrawTextCenter(Font * font, float x, float y, const std::string & str, Color col);
  
 long UNICODE_ARXDrawTextCenteredScroll(Font * font, float x, float y, float x2, const std::string & str, Color col, int iTimeScroll, float fSpeed, int iNbLigne, int iTimeOut = INT_MAX);
 long ARX_UNICODE_ForceFormattingInRect(Font * font, const std::string & text, const Rect & _rRect);
-long ARX_UNICODE_DrawTextInRect(Font * font, float x, float y, float maxx, const std::string & text, Color col, const Rect * pClipRect = NULL);
+long ARX_UNICODE_DrawTextInRect(Font * font, const Vec2f & pos, float maxx, const std::string & text, Color col, const Rect * pClipRect = NULL);
 
 bool ARX_Text_Init();
 void ARX_Text_Close();

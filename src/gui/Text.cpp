@@ -182,7 +182,7 @@ long ARX_UNICODE_ForceFormattingInRect(Font * font, const string & text,
 }
 
 long ARX_UNICODE_DrawTextInRect(Font* font,
-                                float x, float y,
+                                const Vec2f & pos,
                                 float maxx,
                                 const std::string& _text,
                                 Color col,
@@ -195,7 +195,7 @@ long ARX_UNICODE_DrawTextInRect(Font* font,
 		GRenderer->SetViewport(*pClipRect); 
 	}
 
-	Rect rect((Rect::Num)x, (Rect::Num)y, (Rect::Num)maxx, Rect::Limits::max());
+	Rect rect((Rect::Num)pos.x, (Rect::Num)pos.y, (Rect::Num)maxx, Rect::Limits::max());
 	if(maxx == std::numeric_limits<float>::infinity()) {
 		rect.right = Rect::Limits::max();
 	}
@@ -218,11 +218,11 @@ void ARX_TEXT_Draw(Font* ef,
 	if (car.empty() || car[0] == 0)
 		return;
 
-	ARX_UNICODE_DrawTextInRect(ef, x, y, std::numeric_limits<float>::infinity(), car, col);
+	ARX_UNICODE_DrawTextInRect(ef, Vec2f(x, y), std::numeric_limits<float>::infinity(), car, col);
 }
 
-float DrawBookTextInRect(Font* font, float x, float y, float maxx, const std::string& text, Color col) {
-	return (float)ARX_UNICODE_DrawTextInRect(font, (BOOKDEC.x + x) * g_sizeRatio.x, (BOOKDEC.y + y) * g_sizeRatio.y, (BOOKDEC.x + maxx) * g_sizeRatio.x, text, col);
+float DrawBookTextInRect(Font* font, const Vec2f & pos, float maxx, const std::string& text, Color col) {
+	return (float)ARX_UNICODE_DrawTextInRect(font, (BOOKDEC + pos) * g_sizeRatio, (BOOKDEC.x + maxx) * g_sizeRatio.x, text, col);
 }
 
 void DrawBookTextCenter(Font* font, float x, float y, const std::string& text, Color col)

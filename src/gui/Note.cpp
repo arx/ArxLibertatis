@@ -268,8 +268,7 @@ void Note::render() {
 	{
 		ARX_UNICODE_DrawTextInRect(
 			font,
-			_area.left + _textArea.left,
-			_area.top + _textArea.top,
+			Vec2f(_area.left + _textArea.left, _area.top + _textArea.top),
 			_area.left + _textArea.right,
 			pages[_page],
 			Color::none
@@ -280,8 +279,7 @@ void Note::render() {
 	if(_page + 1 < pages.size()) {
 		ARX_UNICODE_DrawTextInRect(
 			font,
-			_area.left + _textArea.right + _pageSpacing,
-			_area.top + _textArea.top,
+			Vec2f(_area.left + _textArea.right + _pageSpacing, _area.top + _textArea.top),
 			_area.left + _textArea.right + _pageSpacing + _textArea.width(),
 			pages[_page + 1],
 			Color::none

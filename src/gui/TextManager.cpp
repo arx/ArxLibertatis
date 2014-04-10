@@ -173,8 +173,8 @@ void TextManager::Render() {
 			maxx = static_cast<float>(pArxText->rRect.right);
 		}
 
-		long height = ARX_UNICODE_DrawTextInRect(pArxText->pFont, static_cast<float>(pArxText->rRect.left),
-		                                         pArxText->rRect.top - pArxText->fDeltaY,
+		long height = ARX_UNICODE_DrawTextInRect(pArxText->pFont,
+		                                         Vec2f(pArxText->rRect.left, pArxText->rRect.top - pArxText->fDeltaY),
 		                                         maxx,
 		                                         pArxText->lpszUText, pArxText->lCol, pRectClip);
 		

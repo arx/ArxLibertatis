@@ -456,7 +456,7 @@ void MiniMap::showBookEntireMap(int showLevel) {
 				
 				long lLengthDraw = ARX_UNICODE_ForceFormattingInRect(hFontInGameNote, m_mapMarkers[i].m_text, rRect);
 				
-				DrawBookTextInRect(hFontInGameNote, float(bRect.left), float(bRect.top), float(bRect.right), m_mapMarkers[i].m_text.substr(0, lLengthDraw), Color::none);
+				DrawBookTextInRect(hFontInGameNote, Vec2f(bRect.topLeft()), float(bRect.right), m_mapMarkers[i].m_text.substr(0, lLengthDraw), Color::none);
 			}
 		}
 		
