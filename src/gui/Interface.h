@@ -257,4 +257,6 @@ void mecanismIconReset();
 
 void hudElementsInit();
 
+void hitStrengthGaugeRequestFlash();
+
 #endif // ARX_GUI_INTERFACE_H

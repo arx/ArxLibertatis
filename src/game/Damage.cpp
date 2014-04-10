@@ -688,7 +688,6 @@ float ARX_DAMAGES_DealDamages(long target, float dmg, long source, DamageType fl
 	return 0;
 }
 
-extern bool bHitFlash;
 extern float fHitFlash;
 extern unsigned long ulHitFlash;
 
@@ -823,9 +822,9 @@ float ARX_DAMAGES_DamageNPC(Entity * io, float dmg, long source, long flags, Vec
 
 		damagesdone = min(dmg, io->_npcdata->life);
 		io->_npcdata->life -= dmg;
-
-		bHitFlash = true;
-
+		
+		hitStrengthGaugeRequestFlash();
+		
 		if(io->_npcdata->life <= 0) {
 			fHitFlash = 0;
 		} else {

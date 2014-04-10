@@ -203,7 +203,6 @@ static gui::Note questBook;
 
 bool				bBookHalo = false;
 bool				bGoldHalo = false;
-bool				bHitFlash = false;
 bool				bInventoryClosing = false;
 bool				bInventorySwitch = false;
 bool				bIsAiming = false;
@@ -4272,11 +4271,17 @@ extern float GLOBAL_SLOWDOWN;
 class HitStrengthGauge {
 private:
 	float m_intensity;
+	bool bHitFlash;
 	
 public:
 	HitStrengthGauge()
 		: m_intensity(0.f)
+		, bHitFlash(false)
 	{}
+	
+	void requestFlash() {
+		bHitFlash = true;
+	}
 	
 	void update() {
 		if(AimTime == 0) {
@@ -4334,6 +4339,9 @@ public:
 };
 HitStrengthGauge hitStrengthGauge = HitStrengthGauge();
 
+void hitStrengthGaugeRequestFlash() {
+	hitStrengthGauge.requestFlash();
+}
 
 class SecondaryInventoryGui {
 public:
