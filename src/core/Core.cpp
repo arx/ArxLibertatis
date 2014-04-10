@@ -232,7 +232,6 @@ TextureContainer *	TC_smoke=NULL;
 static TextureContainer *	Z_map = NULL;
 TextureContainer *	Boom=NULL;
 //TextureContainer *	zbtex=NULL;
-TextureContainer *	arrow_left_tc=NULL;
 
 #if BUILD_EDIT_LOADSAVE
 EERIE_MULTI3DSCENE * mse = NULL;

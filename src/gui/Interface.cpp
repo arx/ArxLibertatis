@@ -153,7 +153,6 @@ static const float BOOKMARKS_POS_Y = 60.f;
 //-----------------------------------------------------------------------------
 extern TextureContainer * Movable;
 extern TextureContainer * inventory_font;
-extern TextureContainer * arrow_left_tc;
 extern Notification speech[];
 extern std::string WILLADDSPEECH;
 extern float PLAYER_ROTATION;
@@ -6610,13 +6609,19 @@ void mecanismIconReset() {
 
 class ScreenArrows {
 private:
+	TextureContainer * m_arrowLeftTex;
 	Vec2f m_arrowSize;
 
 	float fArrowMove;
 	float fMove;
 public:
+	void init() {
+		m_arrowLeftTex = TextureContainer::LoadUI("graph/interface/icons/arrow_left");
+		arx_assert(m_arrowLeftTex);
+	}
+	
 	void update() {
-		m_arrowSize = Vec2f(arrow_left_tc->size());
+		m_arrowSize = Vec2f(m_arrowLeftTex->size());
 		
 		fArrowMove += .5f * framedelay;
 		if(fArrowMove > 180.f) {
@@ -6630,16 +6635,16 @@ public:
 		
 		// Left
 		Rectf left(Vec2f(0 + fMove, g_size.center().y - (m_arrowSize.y * .5f)), m_arrowSize.x, m_arrowSize.y);
-		EERIEDrawBitmap(left, 0.01f, arrow_left_tc, lcolor);
+		EERIEDrawBitmap(left, 0.01f, m_arrowLeftTex, lcolor);
 		// Right
 		EERIEDrawBitmapUVs(g_size.width() - m_arrowSize.x - fMove, g_size.center().y - (m_arrowSize.y * .5f),
-			m_arrowSize.x, m_arrowSize.y, .01f, arrow_left_tc, lcolor, 1.f, 0.f, 0.f, 0.f, 1.f, 1.f, 0.f, 1.f);
+			m_arrowSize.x, m_arrowSize.y, .01f, m_arrowLeftTex, lcolor, 1.f, 0.f, 0.f, 0.f, 1.f, 1.f, 0.f, 1.f);
 		// Up
 		EERIEDrawBitmapUVs(g_size.center().x - (m_arrowSize.y * .5f), 0.f + fMove,
-			m_arrowSize.y, m_arrowSize.x, .01f, arrow_left_tc, lcolor, 0.f, 1.f, 0.f, 0.f, 1.f, 1.f, 1.f, 0.f);
+			m_arrowSize.y, m_arrowSize.x, .01f, m_arrowLeftTex, lcolor, 0.f, 1.f, 0.f, 0.f, 1.f, 1.f, 1.f, 0.f);
 		// Down
 		EERIEDrawBitmapUVs(g_size.center().x - (m_arrowSize.y * .5f), (g_size.height() - m_arrowSize.x) - fMove,
-			m_arrowSize.y, m_arrowSize.x, .01f, arrow_left_tc, lcolor, 1.f, 1.f, 1.f, 0.f, 0.f, 1.f, 0.f, 0.f);
+			m_arrowSize.y, m_arrowSize.x, .01f, m_arrowLeftTex, lcolor, 1.f, 1.f, 1.f, 0.f, 0.f, 1.f, 0.f, 0.f);
 	}
 };
 ScreenArrows screenArrows;
@@ -6707,9 +6712,7 @@ void ArxGame::drawAllInterface() {
 			if(MAGICMODE < 0) {
 				mecanismIcon.draw();
 			}
-			if(arrow_left_tc) {
-				screenArrows.draw();
-			}
+			screenArrows.draw();
 			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 		}
 	}
@@ -6724,8 +6727,7 @@ void hudElementsInit() {
 	mecanismIcon.init();
 	
 	stealthGauge.init();
-
-	arrow_left_tc=		TextureContainer::LoadUI("graph/interface/icons/arrow_left");
+	screenArrows.init();
 	
 	TextureContainer::LoadUI("graph/interface/bars/empty_gauge_red");
 	TextureContainer::LoadUI("graph/interface/bars/empty_gauge_blue");
