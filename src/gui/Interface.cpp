@@ -433,9 +433,6 @@ void CreateInterfaceTextureContainers()
 {
     ITC.Reset();
 	
-	ITC.Set("inventory_pickall", "graph/interface/inventory/inv_pick");
-	ITC.Set("inventory_close", "graph/interface/inventory/inv_close");
-	
 	ITC.Set("target_on", "graph/interface/cursors/target_on");
 	ITC.Set("target_off", "graph/interface/cursors/target_off");
 	ITC.Set("interaction_on", "graph/interface/cursors/interaction_on");
@@ -5163,10 +5160,11 @@ static StealIconGui stealIconGui;
 
 class PickAllIconGui : public HudIconBase {
 private:
+	TextureContainer * m_tex;
 	Vec2f m_pos;
 public:
 	void init() {
-		
+		m_tex = TextureContainer::LoadUI("graph/interface/inventory/inv_pick");
 	}
 	
 	void update() {
@@ -5204,7 +5202,7 @@ public:
 	}
 	
 	void draw() {
-		DrawIcon(m_pos, ITC.Get("inventory_pickall"), MOUSE_IN_INVENTORY_PICKALL_ICON);
+		DrawIcon(m_pos, m_tex, MOUSE_IN_INVENTORY_PICKALL_ICON);
 	}
 };
 
@@ -5212,10 +5210,12 @@ static PickAllIconGui pickAllIconGui;
 
 class CloseSecondaryInventoryIconGui : public HudIconBase {
 private:
+	TextureContainer * m_tex;
 	Vec2f m_pos;
 public:
 	void init() {
-		
+		m_tex = TextureContainer::LoadUI("graph/interface/inventory/inv_close");
+		arx_assert(m_tex);
 	}
 	
 	void update() {
@@ -5263,7 +5263,7 @@ public:
 	}
 	
 	void draw() {
-		DrawIcon(m_pos, ITC.Get("inventory_close"), MOUSE_IN_INVENTORY_CLOSE_ICON);
+		DrawIcon(m_pos, m_tex, MOUSE_IN_INVENTORY_CLOSE_ICON);
 	}
 	
 };
@@ -6376,9 +6376,8 @@ void hudElementsInit() {
 	
 	TextureContainer::LoadUI("graph/interface/inventory/ingame_inventory");
 	purseIconGui.init();
-	
-	TextureContainer::LoadUI("graph/interface/inventory/inv_pick");
-	TextureContainer::LoadUI("graph/interface/inventory/inv_close");
+	pickAllIconGui.init();
+	closeSecondaryInventoryIconGui.init();
 	
 	hitStrengthGauge.init();
 }
