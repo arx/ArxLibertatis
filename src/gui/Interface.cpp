@@ -4326,6 +4326,7 @@ void hitStrengthGaugeRequestFlash(float flashIntensity) {
 
 class SecondaryInventoryGui {
 private:
+	TextureContainer * ingame_inventory;
 	TextureContainer * m_tex;
 	
 public:
@@ -4379,16 +4380,16 @@ public:
 				TextureContainer * tc = TextureContainer::LoadUI(file);
 		
 				if(tc) {
-					ITC.Set("ingame_inventory", tc);
+					ingame_inventory = tc;
 				} else {
-					ITC.Set("ingame_inventory", BasicInventorySkin);
+					ingame_inventory = BasicInventorySkin;
 				}
 				
-			} else if(ITC.Get("ingame_inventory") != BasicInventorySkin) {
-				ITC.Set("ingame_inventory", BasicInventorySkin);
+			} else if(ingame_inventory != BasicInventorySkin) {
+				ingame_inventory = BasicInventorySkin;
 			}
 		
-			ARX_INTERFACE_DrawItem(ITC.Get("ingame_inventory"), INTERFACE_RATIO(InventoryX), 0.f);
+			ARX_INTERFACE_DrawItem(ingame_inventory, INTERFACE_RATIO(InventoryX), 0.f);
 		
 			for(long j = 0; j < TSecondaryInventory->sizey; j++) {
 				for(long i = 0; i < TSecondaryInventory->sizex; i++) {
@@ -6354,6 +6355,8 @@ void hudElementsInit() {
 	inventoryGui.init();
 	
 	BasicInventorySkin = TextureContainer::LoadUI("graph/interface/inventory/ingame_inventory");
+	arx_assert(BasicInventorySkin);
+	
 	purseIconGui.init();
 	pickAllIconGui.init();
 	closeSecondaryInventoryIconGui.init();
