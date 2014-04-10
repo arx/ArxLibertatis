@@ -740,7 +740,6 @@ bool ArxGame::beforeRun() {
 	}
 	
 	Movable = TextureContainer::LoadUI("graph/interface/cursors/wrong");
-	changeLevelIconGuiInit();
 	
 	ARX_PLAYER_LoadHeroAnimsAndMesh();
 	

@@ -3542,11 +3542,6 @@ public:
 };
 DamagedEquipmentGui damagedEquipmentGui;
 
-void damagedEquipmentGuiInit() {
-	damagedEquipmentGui.init();
-}
-
-
 //-----------------------------------------------------------------------------
 void ARX_INTERFACE_RELEASESOUND()
 {
@@ -6326,13 +6321,7 @@ public:
 		}
 	}
 };
-
 ChangeLevelIconGui changeLevelIconGui;
-
-void changeLevelIconGuiInit() {
-	changeLevelIconGui.init();
-}
-
 
 class QuickSaveIconGui {
 private:
@@ -6608,9 +6597,6 @@ public:
 };
 MecanismIcon mecanismIcon;
 
-void mecanismIconInit() {
-	mecanismIcon.init();
-}
 void mecanismIconReset() {
 	mecanismIcon.reset();
 }
@@ -6727,8 +6713,9 @@ void ArxGame::drawAllInterface() {
 }
 
 void hudElementsInit() {
-	damagedEquipmentGuiInit();
-	mecanismIconInit();
+	changeLevelIconGui.init();
+	damagedEquipmentGui.init();
+	mecanismIcon.init();
 	
 	stealth_gauge_tc=	TextureContainer::LoadUI("graph/interface/icons/stealth_gauge");
 	arrow_left_tc=		TextureContainer::LoadUI("graph/interface/icons/arrow_left");
