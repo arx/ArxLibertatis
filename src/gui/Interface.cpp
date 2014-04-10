@@ -3651,183 +3651,6 @@ bool CheckSkillClick(float x, float y, float * val, TextureContainer * tc, float
 	return rval;
 }
 
-//AFFICHAGE ICONE DE SPELLS DE DURATION
-class ActiveSpellsGui {
-private:
-	
-	static void StdDraw(float posx, float posy, Color color, TextureContainer * tcc, long flag, long i) {
-		
-		TextureContainer * tc;
-		
-		if(!tcc) {
-			if(!ITC.Get("unknown"))
-				ITC.Set("unknown", TextureContainer::Load("graph/interface/icons/spell_unknown"));
-			
-			tc = ITC.Get("unknown");
-		}
-		else
-			tc = tcc;
-		
-		if(tc) {
-			Rectf rect1(Vec2f(posx, posy), tc->m_dwWidth * 0.5f, tc->m_dwHeight * 0.5f);
-			EERIEDrawBitmap(rect1, 0.01f, tc, color);
-			
-			if(flag & 2) {
-				GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendOne);
-				
-				Rectf rect2(Vec2f(posx - 1, posy - 1), tc->m_dwWidth * 0.5f, tc->m_dwHeight * 0.5f);
-				EERIEDrawBitmap(rect2, 0.0001f, tc, color);
-				
-				Rectf rect3(Vec2f(posx + 1, posy + 1), tc->m_dwWidth * 0.5f, tc->m_dwHeight * 0.5f);
-				EERIEDrawBitmap(rect3, 0.0001f, tc, color);
-				
-				GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-			}
-	
-			if(!(flag & 1)) {
-				if(!(player.Interface & INTER_COMBATMODE)) {
-					
-					const Rect mouseTestRect(
-					posx,
-					posy,
-					posx + INTERFACE_RATIO(32),
-					posy + INTERFACE_RATIO(32)
-					);
-					
-					if(mouseTestRect.contains(Vec2i(DANAEMouse))) {
-						SpecialCursor=CURSOR_INTERACTION_ON;
-						
-						if((LastMouseClick & 1) && !(EERIEMouseButton & 1)) {
-							if(flag & 2) {
-								if(Precast[PRECAST_NUM].typ >= 0)
-									WILLADDSPEECH = spellicons[Precast[PRECAST_NUM].typ].name;
-								
-								WILLADDSPEECHTIME = (unsigned long)(arxtime);
-							} else {
-								if(spells[i].type >= 0)
-									WILLADDSPEECH = spellicons[spells[i].type].name;
-								
-								WILLADDSPEECHTIME = (unsigned long)(arxtime);
-							}
-						}
-						
-						if(EERIEMouseButton & 4) {
-							if(flag & 2) {
-								ARX_SPELLS_Precast_Launch(PRECAST_NUM);
-								EERIEMouseButton&=~4;
-							} else {
-								ARX_SPELLS_AbortSpellSound();
-								EERIEMouseButton&=~4;
-								spells[i].tolive=0;
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-	//---------------------------------------------------------------------------
-	void ManageSpellIcon(long i, float intensity, long flag)
-	{
-		float POSX = g_size.width()-INTERFACE_RATIO(35);
-		Color color;
-		float posx = POSX+lSLID_VALUE;
-		float posy = (float)currpos;
-		SpellType typ=spells[i].type;
-		
-		if(flag & 1) {
-			color = Color3f(intensity, 0, 0).to<u8>();
-		} else if(flag & 2) {
-			color = Color3f(0, intensity * (1.0f/2), intensity).to<u8>();
-			float px = INTERFACE_RATIO(InventoryX) + INTERFACE_RATIO(110);
-			if(px < INTERFACE_RATIO(10)) {
-				px = INTERFACE_RATIO(10);
-			}
-			posx = px + INTERFACE_RATIO(33 + 33 + 33) + PRECAST_NUM * INTERFACE_RATIO(33);
-			posy = g_size.height() - INTERFACE_RATIO(126+32); // niveau du stealth
-			typ = (SpellType)i; // TODO ugh
-		} else {
-			color = Color3f::gray(intensity).to<u8>();
-		}
-		
-		bool bOk=true;
-		
-		if(spells[i].bDuration) {
-			if(player.mana < 20 || spells[i].timcreation+spells[i].tolive - float(arxtime) < 2000) {
-				if(ucFlick&1)
-					bOk=false;
-			}
-		} else {
-			if(player.mana<20) {
-				if(ucFlick&1)
-					bOk=false;
-			}
-		}
-		
-		if((bOk && typ >= 0 && (size_t)typ < SPELL_TYPES_COUNT) || (flag == 2))
-			StdDraw(posx,posy,color,spellicons[typ].tc,flag,i);
-		
-		currpos += static_cast<long>(INTERFACE_RATIO(33.f));
-	}
-public:
-	void draw() {
-		currpos = static_cast<long>(INTERFACE_RATIO(50.f));
-		
-		float intensity = 1.f - PULSATE * 0.5f;
-		intensity = clamp(intensity, 0.f, 1.f);
-		
-		GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-		PRECAST_NUM = 0;
-		
-		for(size_t i = 0; i < MAX_SPELLS; i++) {
-			if(   spells[i].exist
-			   && spells[i].caster == 0
-			   && spellicons[spells[i].type].bDuration
-			) {
-				ManageSpellIcon(i, intensity, 0);
-			}
-		}
-		
-		if(entities.player()) {
-			Entity * playerEntity = entities.player();
-			
-			boost::container::flat_set<long>::const_iterator it;
-			for(it = playerEntity->spellsOn.begin(); it != playerEntity->spellsOn.end(); ++it) {
-				long spellHandle = *it;
-				if(spellHandleIsValid(spellHandle)) {
-					SPELL * spell = &spells[spellHandle];
-					
-					if(spell->caster != 0 && spellicons[spell->type].bDuration) {
-						ManageSpellIcon(spellHandle, intensity, 1);
-					}
-				}
-			}
-		}
-		
-		if(!(player.Interface & INTER_INVENTORYALL) && !(player.Interface & INTER_MAP)) {
-			for(size_t i = 0; i < MAX_PRECAST; i++) {
-				PRECAST_NUM = i;
-				
-				if(Precast[i].typ!=-1) {
-					float val = intensity;
-					
-					if(Precast[i].launch_time > 0 && (float(arxtime) >= Precast[i].launch_time)) {
-						float tt = (float(arxtime) - Precast[i].launch_time) * (1.0f/1000);
-						
-						if(tt > 1.f)
-							tt = 1.f;
-						
-						val *= (1.f - tt);
-					}
-					ManageSpellIcon(Precast[i].typ,val,2);
-				}
-			}
-		}
-	}
-};
-ActiveSpellsGui activeSpellsGui;
-
 void ARX_INTERFACE_ManageOpenedBook_Finish()
 {
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
@@ -6654,6 +6477,183 @@ public:
 	}
 };
 ScreenArrows screenArrows;
+
+//AFFICHAGE ICONE DE SPELLS DE DURATION
+class ActiveSpellsGui {
+private:
+	
+	static void StdDraw(float posx, float posy, Color color, TextureContainer * tcc, long flag, long i) {
+		
+		TextureContainer * tc;
+		
+		if(!tcc) {
+			if(!ITC.Get("unknown"))
+				ITC.Set("unknown", TextureContainer::Load("graph/interface/icons/spell_unknown"));
+			
+			tc = ITC.Get("unknown");
+		}
+		else
+			tc = tcc;
+		
+		if(tc) {
+			Rectf rect1(Vec2f(posx, posy), tc->m_dwWidth * 0.5f, tc->m_dwHeight * 0.5f);
+			EERIEDrawBitmap(rect1, 0.01f, tc, color);
+			
+			if(flag & 2) {
+				GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendOne);
+				
+				Rectf rect2(Vec2f(posx - 1, posy - 1), tc->m_dwWidth * 0.5f, tc->m_dwHeight * 0.5f);
+				EERIEDrawBitmap(rect2, 0.0001f, tc, color);
+				
+				Rectf rect3(Vec2f(posx + 1, posy + 1), tc->m_dwWidth * 0.5f, tc->m_dwHeight * 0.5f);
+				EERIEDrawBitmap(rect3, 0.0001f, tc, color);
+				
+				GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+			}
+	
+			if(!(flag & 1)) {
+				if(!(player.Interface & INTER_COMBATMODE)) {
+					
+					const Rect mouseTestRect(
+					posx,
+					posy,
+					posx + INTERFACE_RATIO(32),
+					posy + INTERFACE_RATIO(32)
+					);
+					
+					if(mouseTestRect.contains(Vec2i(DANAEMouse))) {
+						SpecialCursor=CURSOR_INTERACTION_ON;
+						
+						if((LastMouseClick & 1) && !(EERIEMouseButton & 1)) {
+							if(flag & 2) {
+								if(Precast[PRECAST_NUM].typ >= 0)
+									WILLADDSPEECH = spellicons[Precast[PRECAST_NUM].typ].name;
+								
+								WILLADDSPEECHTIME = (unsigned long)(arxtime);
+							} else {
+								if(spells[i].type >= 0)
+									WILLADDSPEECH = spellicons[spells[i].type].name;
+								
+								WILLADDSPEECHTIME = (unsigned long)(arxtime);
+							}
+						}
+						
+						if(EERIEMouseButton & 4) {
+							if(flag & 2) {
+								ARX_SPELLS_Precast_Launch(PRECAST_NUM);
+								EERIEMouseButton&=~4;
+							} else {
+								ARX_SPELLS_AbortSpellSound();
+								EERIEMouseButton&=~4;
+								spells[i].tolive=0;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	//---------------------------------------------------------------------------
+	void ManageSpellIcon(long i, float intensity, long flag)
+	{
+		float POSX = g_size.width()-INTERFACE_RATIO(35);
+		Color color;
+		float posx = POSX+lSLID_VALUE;
+		float posy = (float)currpos;
+		SpellType typ=spells[i].type;
+		
+		if(flag & 1) {
+			color = Color3f(intensity, 0, 0).to<u8>();
+		} else if(flag & 2) {
+			color = Color3f(0, intensity * (1.0f/2), intensity).to<u8>();
+			float px = INTERFACE_RATIO(InventoryX) + INTERFACE_RATIO(110);
+			if(px < INTERFACE_RATIO(10)) {
+				px = INTERFACE_RATIO(10);
+			}
+			posx = px + INTERFACE_RATIO(33 + 33 + 33) + PRECAST_NUM * INTERFACE_RATIO(33);
+			posy = g_size.height() - INTERFACE_RATIO(126+32); // niveau du stealth
+			typ = (SpellType)i; // TODO ugh
+		} else {
+			color = Color3f::gray(intensity).to<u8>();
+		}
+		
+		bool bOk=true;
+		
+		if(spells[i].bDuration) {
+			if(player.mana < 20 || spells[i].timcreation+spells[i].tolive - float(arxtime) < 2000) {
+				if(ucFlick&1)
+					bOk=false;
+			}
+		} else {
+			if(player.mana<20) {
+				if(ucFlick&1)
+					bOk=false;
+			}
+		}
+		
+		if((bOk && typ >= 0 && (size_t)typ < SPELL_TYPES_COUNT) || (flag == 2))
+			StdDraw(posx,posy,color,spellicons[typ].tc,flag,i);
+		
+		currpos += static_cast<long>(INTERFACE_RATIO(33.f));
+	}
+public:
+	void draw() {
+		currpos = static_cast<long>(INTERFACE_RATIO(50.f));
+		
+		float intensity = 1.f - PULSATE * 0.5f;
+		intensity = clamp(intensity, 0.f, 1.f);
+		
+		GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+		PRECAST_NUM = 0;
+		
+		for(size_t i = 0; i < MAX_SPELLS; i++) {
+			if(   spells[i].exist
+			   && spells[i].caster == 0
+			   && spellicons[spells[i].type].bDuration
+			) {
+				ManageSpellIcon(i, intensity, 0);
+			}
+		}
+		
+		if(entities.player()) {
+			Entity * playerEntity = entities.player();
+			
+			boost::container::flat_set<long>::const_iterator it;
+			for(it = playerEntity->spellsOn.begin(); it != playerEntity->spellsOn.end(); ++it) {
+				long spellHandle = *it;
+				if(spellHandleIsValid(spellHandle)) {
+					SPELL * spell = &spells[spellHandle];
+					
+					if(spell->caster != 0 && spellicons[spell->type].bDuration) {
+						ManageSpellIcon(spellHandle, intensity, 1);
+					}
+				}
+			}
+		}
+		
+		if(!(player.Interface & INTER_INVENTORYALL) && !(player.Interface & INTER_MAP)) {
+			for(size_t i = 0; i < MAX_PRECAST; i++) {
+				PRECAST_NUM = i;
+				
+				if(Precast[i].typ!=-1) {
+					float val = intensity;
+					
+					if(Precast[i].launch_time > 0 && (float(arxtime) >= Precast[i].launch_time)) {
+						float tt = (float(arxtime) - Precast[i].launch_time) * (1.0f/1000);
+						
+						if(tt > 1.f)
+							tt = 1.f;
+						
+						val *= (1.f - tt);
+					}
+					ManageSpellIcon(Precast[i].typ,val,2);
+				}
+			}
+		}
+	}
+};
+ActiveSpellsGui activeSpellsGui;
 
 
 void UpdateInterface() {
