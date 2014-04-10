@@ -5685,12 +5685,13 @@ protected:
 	}
 	
 	//Used for drawing icons like the book or backpack icon.
-	void DrawIcon(const Vec2f& coords, const char* itcName, E_ARX_STATE_MOUSE hoverMouseState) {
-		ARX_INTERFACE_DrawItem(ITC.Get(itcName), coords.x, coords.y);
+	void DrawIcon(const Vec2f& coords, TextureContainer * tex, E_ARX_STATE_MOUSE hoverMouseState) {
+		
+		ARX_INTERFACE_DrawItem(tex, coords.x, coords.y);
 		if (eMouseState == hoverMouseState) {
 			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 			GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-			ARX_INTERFACE_DrawItem(ITC.Get(itcName), coords.x, coords.y);
+			ARX_INTERFACE_DrawItem(tex, coords.x, coords.y);
 			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 		}
 	}
@@ -5712,7 +5713,7 @@ public:
 	}
 	
 	void draw() {
-		DrawIcon(m_pos, "book", MOUSE_IN_BOOK_ICON);
+		DrawIcon(m_pos, ITC.Get("book"), MOUSE_IN_BOOK_ICON);
 	}
 	
 	void drawHalo() {
@@ -5745,7 +5746,7 @@ public:
 	}
 	
 	void draw() {
-		DrawIcon(m_pos, "backpack", MOUSE_IN_INVENTORY_ICON);
+		DrawIcon(m_pos, ITC.Get("backpack"), MOUSE_IN_INVENTORY_ICON);
 	}
 };
 
@@ -5766,7 +5767,7 @@ public:
 	}
 	
 	void draw() {
-		DrawIcon(m_pos, "steal", MOUSE_IN_STEAL_ICON);
+		DrawIcon(m_pos, ITC.Get("steal"), MOUSE_IN_STEAL_ICON);
 	}
 };
 
@@ -5787,7 +5788,7 @@ public:
 	}
 	
 	void draw() {
-		DrawIcon(m_pos, "inventory_pickall", MOUSE_IN_INVENTORY_PICKALL_ICON);
+		DrawIcon(m_pos, ITC.Get("inventory_pickall"), MOUSE_IN_INVENTORY_PICKALL_ICON);
 	}
 };
 
@@ -5808,7 +5809,7 @@ public:
 	}
 	
 	void draw() {
-		DrawIcon(m_pos, "inventory_close", MOUSE_IN_INVENTORY_CLOSE_ICON);
+		DrawIcon(m_pos, ITC.Get("inventory_close"), MOUSE_IN_INVENTORY_CLOSE_ICON);
 	}
 	
 };
@@ -5830,7 +5831,7 @@ public:
 	}
 	
 	void draw() {
-		DrawIcon(m_pos, "icon_lvl_up", MOUSE_IN_REDIST_ICON);
+		DrawIcon(m_pos, ITC.Get("icon_lvl_up"), MOUSE_IN_REDIST_ICON);
 	}
 };
 
@@ -5852,7 +5853,7 @@ public:
 		m_pos.x += 2;
 	}
 	void draw() {
-		DrawIcon(m_pos, "gold", MOUSE_IN_GOLD_ICON);
+		DrawIcon(m_pos, ITC.Get("gold"), MOUSE_IN_GOLD_ICON);
 		if(eMouseState == MOUSE_IN_GOLD_ICON) {
 			SpecialCursor=CURSOR_INTERACTION_ON;
 			
