@@ -256,5 +256,6 @@ extern long ARX_MOUSE_OVER;
 void showQuickSaveIcon();
 
 void changeLevelIconGuiInit();
+void mecanismIconInit();
 
 #endif // ARX_GUI_INTERFACE_H

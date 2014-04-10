@@ -234,7 +234,6 @@ TextureContainer *	TC_smoke=NULL;
 static TextureContainer *	Z_map = NULL;
 TextureContainer *	Boom=NULL;
 //TextureContainer *	zbtex=NULL;
-TextureContainer *	mecanism_tc=NULL;
 TextureContainer *	arrow_left_tc=NULL;
 
 #if BUILD_EDIT_LOADSAVE
@@ -734,7 +733,7 @@ void LoadSysTextures()
 	iconequip[2]=		TextureContainer::LoadUI("graph/interface/icons/equipment_helm");
 	iconequip[3]=		TextureContainer::LoadUI("graph/interface/icons/equipment_chest");
 	iconequip[4]=		TextureContainer::LoadUI("graph/interface/icons/equipment_leggings");
-	mecanism_tc=		TextureContainer::LoadUI("graph/interface/cursors/mecanism");
+	mecanismIconInit();
 	arrow_left_tc=		TextureContainer::LoadUI("graph/interface/icons/arrow_left");
 
 	for(long i = 0; i < MAX_EXPLO; i++) {

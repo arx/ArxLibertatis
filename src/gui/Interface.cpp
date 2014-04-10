@@ -154,7 +154,6 @@ static const float BOOKMARKS_POS_Y = 60.f;
 extern TextureContainer * iconequip[];
 extern TextureContainer * Movable;
 extern TextureContainer * inventory_font;
-extern TextureContainer * mecanism_tc;
 extern TextureContainer * arrow_left_tc;
 extern Notification speech[];
 extern std::string WILLADDSPEECH;
@@ -6561,8 +6560,13 @@ ManaGauge manaGauge;
 //The cogwheel icon that shows up when switching from mouseview to interaction mode.
 class MecanismIcon {
 private:
+	TextureContainer * m_tex;
 	Color m_color;
 public:
+	void init() {
+		m_tex = TextureContainer::LoadUI("graph/interface/cursors/mecanism");
+	}
+	
 	void update() {
 		m_color = Color::white;
 		if(lTimeToDrawMecanismCursor > 300) {
@@ -6576,11 +6580,15 @@ public:
 	}
 	
 	void draw() {
-		Vec2f size = Vec2f(mecanism_tc->size());
-	    EERIEDrawBitmap(Rectf(Vec2f(0, 0), size.x, size.y), 0.01f, mecanism_tc, m_color);
+		Vec2f size = Vec2f(m_tex->size());
+		EERIEDrawBitmap(Rectf(Vec2f(0, 0), size.x, size.y), 0.01f, m_tex, m_color);
 	}
 };
 MecanismIcon mecanismIcon;
+
+void mecanismIconInit() {
+	mecanismIcon.init();
+}
 
 
 class ScreenArrows {
@@ -6679,7 +6687,7 @@ void ArxGame::drawAllInterface() {
 		if(bRenderInCursorMode) {
 			GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-			if(mecanism_tc && MAGICMODE < 0 && lNbToDrawMecanismCursor < 3) {
+			if(MAGICMODE < 0 && lNbToDrawMecanismCursor < 3) {
 				mecanismIcon.draw();
 			}
 			if(arrow_left_tc) {
