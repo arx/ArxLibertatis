@@ -4846,15 +4846,60 @@ protected:
 	}
 };
 
+extern TextureContainer * healing;
+
 class BookIconGui : public HudIconBase {
 private:
 	Vec2f m_pos;
+	
+	void MakeBookFX(const Vec3f & pos) {
+		
+		for(long i = 0; i < 12; i++) {
+			
+			PARTICLE_DEF * pd = createParticle();
+			if(!pd) {
+				break;
+			}
+			
+			pd->ov = pos + Vec3f(rnd() * 6.f - rnd() * 12.f, rnd() * 6.f - rnd() * 12.f, 0.f);
+			pd->move = Vec3f(6.f - rnd() * 12.f, -8.f + rnd() * 16.f, 0.f);
+			pd->scale = Vec3f(4.4f, 4.4f, 1.f);
+			pd->tolive = Random::get(1500, 2400);
+			pd->tc = healing;
+			pd->rgb = Color3f::magenta;
+			pd->siz = 56.f;
+			pd->type = PARTICLE_2D;
+		}
+		
+		for(int i = 0; i < 5; i++) {
+			
+			PARTICLE_DEF * pd = createParticle();
+			if(!pd) {
+				break;
+			}
+			
+			pd->ov = pos - Vec3f(float(i * 2), float(i * 2), 0.f);
+			pd->move = Vec3f(-float(i) * 0.5f, -float(i) * 0.5f, 0.f);
+			pd->scale = Vec3f(float(i * 10), float(i * 10), 0.f);
+			pd->tolive = Random::get(1200, 1600);
+			pd->tc = ITC.Get("book");
+			pd->rgb = Color3f(1.f - float(i) * 0.1f, float(i) * 0.1f, 0.5f - float(i) * 0.1f);
+			pd->siz = 32.f + float(i * 4);
+			pd->type = PARTICLE_2D;
+		}
+		
+		NewSpell = 1;
+	}
 	
 public:
 	void init() {
 		
 	}
-
+	
+	void requestFX() {
+		MakeBookFX(Vec3f(Vec2f(g_size.bottomRight()) + Vec2f(-35, -148), 0.00001f));
+	}
+	
 	void update() {
 		m_pos = g_size.bottomRight();
 		m_pos += Vec2f(-35, -148);
@@ -4903,6 +4948,10 @@ public:
 };
 
 static BookIconGui bookIconGui;
+
+void bookIconGuiRequestFX() {
+	bookIconGui.requestFX();
+}
 
 class BackpackIconGui : public HudIconBase {
 private:

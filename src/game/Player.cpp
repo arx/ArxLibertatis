@@ -388,7 +388,7 @@ void ARX_Player_Rune_Add(RuneFlag _ulRune)
 	}
 	
 	if(iNbSpellsAfter > iNbSpells) {
-		MakeBookFX(Vec3f(Vec2f(g_size.bottomRight()) + Vec2f(-35, -148), 0.00001f));
+		bookIconGuiRequestFX();
 		bBookHalo = true;
 		ulBookHaloTime = 0;
 	}

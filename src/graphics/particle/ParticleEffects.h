@@ -171,7 +171,6 @@ void MagFX(const Vec3f & pos);
 void RestoreAllLightsInitialStatus();
 void TreatBackgroundActions();
 void TreatBackgroundDynlights();
-void MakeBookFX(const Vec3f & pos);
 
 void Add3DBoom(const Vec3f & position);
 void AddRandomSmoke(Entity * io, long amount = 1);

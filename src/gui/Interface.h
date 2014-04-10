@@ -258,5 +258,6 @@ void mecanismIconReset();
 void hudElementsInit();
 
 void hitStrengthGaugeRequestFlash(float flashIntensity);
+void bookIconGuiRequestFX();
 
 #endif // ARX_GUI_INTERFACE_H

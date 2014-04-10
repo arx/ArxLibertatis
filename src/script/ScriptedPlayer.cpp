@@ -415,8 +415,7 @@ public:
 			
 			DebugScript(" newspell");
 			
-			MakeBookFX(Vec3f(Vec2f(g_size.bottomRight()) + Vec2f(-35, -148), 0.00001f));
-			
+			bookIconGuiRequestFX();
 		} else if(type == "torch") {
 			
 			DebugScript(" torch");
