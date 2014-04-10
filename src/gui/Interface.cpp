@@ -3770,7 +3770,7 @@ private:
 		currpos += static_cast<long>(INTERFACE_RATIO(33.f));
 	}
 public:
-	void drawAllInterfaceFinish() {
+	void draw() {
 		currpos = static_cast<long>(INTERFACE_RATIO(50.f));
 		
 		float intensity = 1.f - PULSATE * 0.5f;
@@ -3829,7 +3829,7 @@ public:
 ActiveSpellsGui activeSpellsGui;
 
 void drawAllInterfaceFinish() {
-	activeSpellsGui.drawAllInterfaceFinish();
+	activeSpellsGui.draw();
 }
 
 
