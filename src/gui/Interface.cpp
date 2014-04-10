@@ -6493,12 +6493,9 @@ public:
 };
 ActiveSpellsGui activeSpellsGui;
 
-
-
-//-----------------------------------------------------------------------------
-// Damaged Equipment Drawing
-//-----------------------------------------------------------------------------
-
+/*!
+ * \brief Damaged Equipment Drawing
+ */
 class DamagedEquipmentGui {
 private:
 	TextureContainer * iconequip[5];
