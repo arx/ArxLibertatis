@@ -528,11 +528,11 @@ void INTERFACE_TC::Reset()
 
 static void DrawBookInterfaceItem(TextureContainer * tc, float x, float y, Color color = Color::white, float z = 0.000001f) {
 	if(tc) {
-		EERIEDrawBitmap2(
+		EERIEDrawBitmap2(Rectf(Vec2f(
 			(x + BOOKDEC.x) * g_sizeRatio.x,
-			(y + BOOKDEC.y) * g_sizeRatio.y,
+			(y + BOOKDEC.y) * g_sizeRatio.y),
 			tc->m_dwWidth * g_sizeRatio.x,
-			tc->m_dwHeight * g_sizeRatio.y,
+			tc->m_dwHeight * g_sizeRatio.y),
 			z,
 			tc,
 			color
@@ -3527,8 +3527,7 @@ public:
 						Entity *io = entities[player.equiped[eq]];
 						float ratio = io->durability / io->max_durability;
 						Color col = Color3f(1.f-ratio, ratio, 0).to<u8>();
-						EERIEDrawBitmap2(pos.x, pos.y, INTERFACE_RATIO_DWORD(iconequip[i]->m_dwWidth),
-						                 INTERFACE_RATIO_DWORD(iconequip[i]->m_dwHeight), 0.001f, iconequip[i], col);
+						EERIEDrawBitmap2(Rectf(pos, iconequip[i]->m_dwWidth, iconequip[i]->m_dwHeight), 0.001f, iconequip[i], col);
 					}
 				}
 			}
@@ -6362,7 +6361,7 @@ public:
 		GRenderer->SetBlendFunc(Renderer::BlendSrcColor, Renderer::BlendOne);
 		
 		Vec2f size = Vec2f(tex->size());
-		EERIEDrawBitmap2(0, 0, size.x, size.y, 0.f, tex, Color::gray(alpha));
+		EERIEDrawBitmap2(Rectf(Vec2f(0, 0), size.x, size.y), 0.f, tex, Color::gray(alpha));
 		
 		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	}
@@ -6419,7 +6418,7 @@ public:
 				}
 			}
 			if(player.SpellToMemorize.iSpellSymbols[i] != RUNE_NONE) {
-				EERIEDrawBitmap2(m_pos.x, m_pos.y, INTERFACE_RATIO(32), INTERFACE_RATIO(32), 0,
+				EERIEDrawBitmap2(Rectf(m_pos, 32, 32), 0,
 					necklace.pTexTab[player.SpellToMemorize.iSpellSymbols[i]], Color::white);
 				if(bHalo) {				
 					TextureContainer *tc = necklace.pTexTab[player.SpellToMemorize.iSpellSymbols[i]];
@@ -6428,7 +6427,7 @@ public:
 				if(!(player.rune_flags & (RuneFlag)(1<<player.SpellToMemorize.iSpellSymbols[i]))) {
 					GRenderer->SetBlendFunc(Renderer::BlendInvDstColor, Renderer::BlendOne);
 					GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-					EERIEDrawBitmap2(m_pos.x, m_pos.y, INTERFACE_RATIO(32), INTERFACE_RATIO(32), 0, Movable, Color3f::gray(.8f).to<u8>());
+					EERIEDrawBitmap2(Rectf(m_pos, 32, 32), 0, Movable, Color3f::gray(.8f).to<u8>());
 					GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 				}
 				m_pos.x += INTERFACE_RATIO(32);
