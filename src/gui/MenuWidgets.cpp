@@ -2626,8 +2626,8 @@ CWindowMenu::~CWindowMenu() {
 void CWindowMenu::AddConsole(CWindowMenuConsole *_pMenuConsoleElement) {
 
 	vWindowConsoleElement.push_back(_pMenuConsoleElement);
-	_pMenuConsoleElement->iOldPosX = 0;
-	_pMenuConsoleElement->iOldPosY = 0;
+	_pMenuConsoleElement->m_oldPos.x = 0;
+	_pMenuConsoleElement->m_oldPos.y = 0;
 	_pMenuConsoleElement->m_pos.x = iPosX;
 	_pMenuConsoleElement->m_pos.y = iPosY;
 }
@@ -3036,7 +3036,7 @@ MENUSTATE CWindowMenuConsole::Update(int _iPosX, int _iPosY, int _iOffsetY) {
 		_iPosY-=(MenuAllZone.GetZoneNum(_iOffsetY)->rZone.top)-(MenuAllZone.GetZoneNum(0)->rZone.top);
 	}
 
-	MenuAllZone.Move((m_pos.x-iOldPosX),(m_pos.y-iOldPosY));
+	MenuAllZone.Move((m_pos.x-m_oldPos.x),(m_pos.y-m_oldPos.y));
 
 	int iI = MenuAllZone.GetNbZone();
 
@@ -3052,8 +3052,8 @@ MENUSTATE CWindowMenuConsole::Update(int _iPosX, int _iPosY, int _iOffsetY) {
 		pZone->bActif=true;
 	}
 
-	iOldPosX=m_pos.x;
-	iOldPosY=m_pos.y;
+	m_oldPos.x=m_pos.x;
+	m_oldPos.y=m_pos.y;
 	m_pos.x=_iPosX;
 	m_pos.y=_iPosY;
 

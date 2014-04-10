@@ -553,8 +553,7 @@ class CWindowMenuConsole {
 
 		Vec2i m_pos;
 		int						iSavePosY;
-		int						iOldPosX;
-		int						iOldPosY;
+		Vec2i m_oldPos;
 		int						iOX;
 		int						iOY;
 		int						iWidth;
