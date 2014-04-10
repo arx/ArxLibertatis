@@ -1187,875 +1187,6 @@ void GetInfosCombine()
 }
 
 //-----------------------------------------------------------------------------
-void ArxGame::manageEditorControls() {
-
-	eMouseState = MOUSE_IN_WORLD;
-
-	if(TRUE_PLAYER_MOUSELOOK_ON && config.input.autoReadyWeapon == false && config.input.mouseLookToggle) {
-		float fX = g_size.width() * 0.5f;
-		float fY = g_size.height() * 0.5f;
-		DANAEMouse.x = checked_range_cast<short>(fX);
-		DANAEMouse.y = checked_range_cast<short>(fY);
-	}
-
-	/////////////////////////////////////////////////////
-	// begining to count time for sliding interface
-	if(!PLAYER_INTERFACE_HIDE_COUNT && !SMOOTHSLID) {
-		bool bOk = true;
-
-		if(TRUE_PLAYER_MOUSELOOK_ON) {
-			if(!(player.Interface & INTER_COMBATMODE) && player.doingmagic != 2 && !InInventoryPos(DANAEMouse)) {
-				bOk = false;
-
-				float t=float(arxtime);
-
-				if(t-SLID_START > 10000.f) {
-					SLID_VALUE += (float)Original_framedelay*( 1.0f / 10 );
-
-					if(SLID_VALUE > 100.f)
-						SLID_VALUE = 100.f;
-
-					lSLID_VALUE = SLID_VALUE;
-				} else {
-					bOk = true;
-				}
-			}
-		}
-
-		if(bOk) {
-			SLID_VALUE -= (float)Original_framedelay*( 1.0f / 10 );
-
-			if(SLID_VALUE < 0.f)
-				SLID_VALUE = 0.f;
-
-			lSLID_VALUE = SLID_VALUE;
-		}
-	}
-
-	// on ferme
-	if((player.Interface & INTER_COMBATMODE) || player.doingmagic >= 2) {
-		Entity * io = NULL;
-
-		if(SecondaryInventory)
-			io = (Entity *)SecondaryInventory->io;
-		else if (player.Interface & INTER_STEAL)
-			io = ioSteal;
-
-		if(io) {
-			InventoryDir = -1;
-			SendIOScriptEvent(io, SM_INVENTORY2_CLOSE);
-			TSecondaryInventory = SecondaryInventory;
-			SecondaryInventory = NULL;
-		}
-	}
-
-	if(SMOOTHSLID == 1) {
-		SLID_VALUE += (float)Original_framedelay*( 1.0f / 10 );
-
-		if(SLID_VALUE > 100.f) {
-			SLID_VALUE = 100.f;
-			SMOOTHSLID = 0;
-		}
-		lSLID_VALUE = SLID_VALUE;
-	} else if(SMOOTHSLID == -1) {
-		SLID_VALUE -= (float)Original_framedelay*( 1.0f / 10 );
-
-		if (SLID_VALUE < 0.f) {
-			SLID_VALUE = 0.f;
-			SMOOTHSLID = 0;
-		}
-		lSLID_VALUE = SLID_VALUE;
-	}
-	
-	cinematicBorder.update();
-
-
-
-	/////////////////////////////////////////////////////
-
-	if(EERIEMouseButton & 1) {
-		static Vec2s dragThreshold = Vec2s_ZERO;
-		
-		if(!(LastMouseClick & 1)) {
-			
-			STARTDRAG = DANAEMouse;
-			DRAGGING = false;
-			dragThreshold = Vec2s_ZERO;
-		} else {
-			dragThreshold += GInput->getMousePosRel();
-			if((abs(DANAEMouse.x - STARTDRAG.x) > 2 && abs(DANAEMouse.y - STARTDRAG.y) > 2)
-			   || (abs(dragThreshold.x) > 2 || abs(dragThreshold.y) > 2)) {
-				DRAGGING = true;
-			}
-		}
-	} else {
-		DRAGGING = false;
-	}
-
-	//-------------------------------------------------------------------------
-	// interface
-	//-------------------------------------------------------------------------
-	// torch
-
-	if(!BLOCK_PLAYER_CONTROLS) {
-		if(!(player.Interface & INTER_COMBATMODE)) {
-			if(!TRUE_PLAYER_MOUSELOOK_ON) {
-
-				
-				if(player.torch) {
-					Vec2f pos(InventoryX + 110, g_size.height() - (158 + 32));
-					
-					if(pos.x < INTERFACE_RATIO(10))
-						pos.x = INTERFACE_RATIO(10);
-					
-					const Rect mouseTestRect(
-					pos.x,
-					pos.y,
-					pos.x + INTERFACE_RATIO(32),
-					pos.y + INTERFACE_RATIO(64)
-					);
-					
-					if(mouseTestRect.contains(Vec2i(DANAEMouse))) {
-						eMouseState=MOUSE_IN_TORCH_ICON;
-						SpecialCursor=CURSOR_INTERACTION_ON;
-
-						if((LastMouseClick & 1) && !(EERIEMouseButton & 1)) {
-							Entity * temp = player.torch;
-
-							if(temp && !temp->locname.empty()) {
-								if(((player.torch->ioflags & IO_ITEM) && player.torch->_itemdata->equipitem)
-									&& (player.Full_Skill_Object_Knowledge + player.Full_Attribute_Mind
-										>= player.torch->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Identify_Value].value) )
-								{
-									SendIOScriptEvent(FlyingOverIO,SM_IDENTIFY);
-								}
-
-								WILLADDSPEECH = getLocalised(temp->locname);
-
-								if(temp->ioflags & IO_GOLD) {
-									std::stringstream ss;
-									ss << temp->_itemdata->price << " " << WILLADDSPEECH;
-									WILLADDSPEECH = ss.str();
-								}
-
-								if(temp->poisonous > 0 && temp->poisonous_count != 0) {
-									std::string Text = getLocalised("description_poisoned", "error");
-									std::stringstream ss;
-									ss << WILLADDSPEECH << " (" << Text << " " << (int)temp->poisonous << ")";
-									WILLADDSPEECH = ss.str();
-								}
-
-								if ((temp->ioflags & IO_ITEM) && temp->durability < 100.f) {
-									std::string Text = getLocalised("description_durability", "error");
-									std::stringstream ss;
-									ss << WILLADDSPEECH << " " << Text << " " << std::fixed << std::setw(3) << std::setprecision(0) << temp->durability << std::setw(0) << "/" << std::setw(3) << temp->max_durability;
-									WILLADDSPEECH = ss.str();
-								}
-
-								WILLADDSPEECHTIME = (unsigned long)(arxtime);
-							}
-						}
-
-						if((EERIEMouseButton & 1) && (LastMouseClick & 1)) {
-							if(abs(DANAEMouse.x-STARTDRAG.x) > 2 || abs(DANAEMouse.y-STARTDRAG.y) > 2)
-								DRAGGING = true;
-						}
-
-						if(!DRAGINTER && !PLAYER_MOUSELOOK_ON && DRAGGING) {
-							Entity * io=player.torch;
-							player.torch->show=SHOW_FLAG_IN_SCENE;
-							ARX_SOUND_PlaySFX(SND_TORCH_END);
-							ARX_SOUND_Stop(SND_TORCH_LOOP);
-							player.torch=NULL;
-							lightHandleGet(torchLightHandle)->exist = 0;
-							Set_DragInter(io);
-							DRAGINTER->ignition=1;
-						} else {
-							if((EERIEMouseButton & 4) && !COMBINE) {
-								COMBINE = player.torch;
-							}
-
-							if(!(EERIEMouseButton & 2) && (LastMouseClick & 2)) {
-								ARX_PLAYER_ClickedOnTorch(player.torch);
-								EERIEMouseButton &= ~2;
-								TRUE_PLAYER_MOUSELOOK_ON = false;
-							}
-						}
-					}
-				}
-
-				// redist
-				if((player.Skill_Redistribute) || (player.Attribute_Redistribute)) {
-					Vec2f pos(g_size.width() - 35 + lSLID_VALUE, g_size.height() - INTERFACE_RATIO(218));
-					
-					const Rect mouseTestRect(
-					pos.x,
-					pos.y,
-					pos.x + INTERFACE_RATIO(32),
-					pos.y + INTERFACE_RATIO(32)
-					);
-
-					if(mouseTestRect.contains(Vec2i(DANAEMouse))) {
-						eMouseState = MOUSE_IN_REDIST_ICON;
-						SpecialCursor = CURSOR_INTERACTION_ON;
-
-						if((EERIEMouseButton & 1) && !(LastMouseClick & 1)) {
-							ARX_INTERFACE_BookOpenClose(1);
-							EERIEMouseButton &=~1;
-						}
-						return;
-					}
-				}
-
-
-				// gold
-				if(player.gold > 0) {
-					Vec2f pos(g_size.width() - (35) + lSLID_VALUE, g_size.height() - 183);
-					
-					const Rect mouseTestRect(
-					pos.x,
-					pos.y,
-					pos.x + INTERFACE_RATIO(32),
-					pos.y + INTERFACE_RATIO(32)
-					);
-					
-					if(mouseTestRect.contains(Vec2i(DANAEMouse))) {
-						eMouseState = MOUSE_IN_GOLD_ICON;
-						SpecialCursor = CURSOR_INTERACTION_ON;
-
-						if(   player.gold > 0
-						   && !GInput->actionPressed(CONTROLS_CUST_MAGICMODE)
-						   && !COMBINE
-						   && !COMBINEGOLD
-						   && (EERIEMouseButton & 4)
-						) {
-							COMBINEGOLD = true;
-						}
-
-						if(!DRAGINTER)
-							return;
-					}
-				}
-
-				// book
-				{
-				Vec2f pos(g_size.width() - 35 + lSLID_VALUE, g_size.height() - 148);
-
-				const Rect bookMouseTestRect(
-				pos.x,
-				pos.y,
-				pos.x + INTERFACE_RATIO(32),
-				pos.y + INTERFACE_RATIO(32)
-				);
-				
-				if(bookMouseTestRect.contains(Vec2i(DANAEMouse))) {
-					eMouseState = MOUSE_IN_BOOK_ICON;
-					SpecialCursor = CURSOR_INTERACTION_ON;
-
-					if((EERIEMouseButton & 1) && !(LastMouseClick & 1)) {
-						ARX_INTERFACE_BookOpenClose(0);
-						EERIEMouseButton &=~1;
-					}
-					return;
-				}
-				}
-				
-				{
-				// inventaire
-				Vec2f pos(g_size.width() - (35) + lSLID_VALUE, g_size.height() - 113);
-				static float flDelay=0;
-				
-				const Rect inventoryMouseTestRect(
-				pos.x,
-				pos.y,
-				pos.x + INTERFACE_RATIO(32),
-				pos.y + INTERFACE_RATIO(32)
-				);
-				
-				if(inventoryMouseTestRect.contains(Vec2i(DANAEMouse)) || flDelay) {
-					eMouseState = MOUSE_IN_INVENTORY_ICON;
-					SpecialCursor = CURSOR_INTERACTION_ON;
-
-					if(EERIEMouseButton & 4) {
-						ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
-
-						playerInventory.optimize();
-
-						flDelay=0;
-						EERIEMouseButton&=~4;
-					} else if(((EERIEMouseButton & 1) && !(LastMouseClick & 1)) || flDelay) {
-						if(!flDelay) {
-							flDelay=arxtime.get_updated();
-							return;
-						} else {
-							if((arxtime.get_updated() - flDelay) < 300) {
-								return;
-							} else {
-								flDelay=0;
-							}
-						}
-
-						if(player.Interface & INTER_INVENTORYALL) {
-							ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
-							bInventoryClosing = true;
-						} else {
-							bInverseInventory=!bInverseInventory;
-							lOldTruePlayerMouseLook=TRUE_PLAYER_MOUSELOOK_ON;
-						}
-
-						EERIEMouseButton &=~1;
-					} else if((EERIEMouseButton & 2) && !(LastMouseClick & 2)) {
-						ARX_INTERFACE_BookOpenClose(2);
-						ARX_INVENTORY_OpenClose(NULL);
-
-						if(player.Interface & INTER_INVENTORYALL) {
-							bInventoryClosing = true;
-						} else {
-							if(player.Interface & INTER_INVENTORY) {
-								ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
-								bInventoryClosing = true;
-								bInventorySwitch = true;
-							} else {
-								ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
-								player.Interface |= INTER_INVENTORYALL;
-
-								float fInventoryY = INTERFACE_RATIO(121.f) * (player.bag);
-								InventoryY = checked_range_cast<long>(fInventoryY);
-
-								ARX_INTERFACE_NoteClose();
-
-								if(TRUE_PLAYER_MOUSELOOK_ON) {
-									WILLRETURNTOFREELOOK = true;
-								}
-							}
-						}
-
-						EERIEMouseButton &= ~2;
-						TRUE_PLAYER_MOUSELOOK_ON = false;
-					}
-
-					if(DRAGINTER == NULL)
-						return;
-				}
-				}
-			}
-
-			// steal
-			if(player.Interface & INTER_STEAL) {
-				Vec2f pos(static_cast<float>(-lSLID_VALUE), g_size.height() - (78 + 32));
-				
-				const Rect mouseTestRect(
-				pos.x,
-				pos.y,
-				pos.x + INTERFACE_RATIO(32),
-				pos.y + INTERFACE_RATIO(32)
-				);
-				
-				if(mouseTestRect.contains(Vec2i(DANAEMouse))) {
-					eMouseState=MOUSE_IN_STEAL_ICON;
-					SpecialCursor=CURSOR_INTERACTION_ON;
-
-					if((EERIEMouseButton & 1) && !(LastMouseClick & 1)) {
-						ARX_INVENTORY_OpenClose(ioSteal);
-
-						if(player.Interface&(INTER_INVENTORY | INTER_INVENTORYALL)) {
-							ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
-						}
-
-						if(SecondaryInventory) {
-							SendIOScriptEvent(ioSteal, SM_STEAL);
-
-							bForceEscapeFreeLook=true;
-						    lOldTruePlayerMouseLook=!TRUE_PLAYER_MOUSELOOK_ON;
-						}
-
-						EERIEMouseButton &=~1;
-					}
-
-					if(DRAGINTER == NULL)
-						return;
-				}
-			}
-		}
-	}
-
-	// gros player book
-	if(player.Interface & INTER_MAP) {
-		Vec2f pos(97 * g_sizeRatio.x, 64 * g_sizeRatio.y);
-		
-		TextureContainer* playerbook = ITC.Get("playerbook");
-		if(playerbook) {
-			const Rect mouseTestRect(
-			pos.x,
-			pos.y,
-			pos.x + playerbook->m_dwWidth * g_sizeRatio.x,
-			pos.y + playerbook->m_dwHeight * g_sizeRatio.y
-			);
-			
-			if(mouseTestRect.contains(Vec2i(DANAEMouse))) {
-				eMouseState = MOUSE_IN_BOOK;
-			}
-		}
-	}
-	
-	// gros book/note
-	if(player.Interface & INTER_NOTE) {
-		if(openNote.area().contains(Vec2f(DANAEMouse))) {
-			eMouseState = MOUSE_IN_NOTE;
-			return;
-		}
-	}
-	
-	if(!PLAYER_INTERFACE_HIDE_COUNT && TSecondaryInventory) {
-		
-		Entity * temp=(Entity *)TSecondaryInventory->io;
-
-		if(temp && !(temp->ioflags & IO_SHOP) && !(temp == ioSteal)) {
-			Vec2f pos(InventoryX + 16, BasicInventorySkin->m_dwHeight - 16);
-			
-			const Rect mouseTestRect(
-			pos.x,
-			pos.y,
-			pos.x + INTERFACE_RATIO(16),
-			pos.y + INTERFACE_RATIO(16)
-			);
-			
-			if(mouseTestRect.contains(Vec2i(DANAEMouse))) {
-				eMouseState = MOUSE_IN_INVENTORY_PICKALL_ICON;
-				SpecialCursor=CURSOR_INTERACTION_ON;
-
-				if((EERIEMouseButton & 1) && !(LastMouseClick & 1)) {
-					if(TSecondaryInventory) {
-						// play un son que si un item est pris
-						ARX_INVENTORY_TakeAllFromSecondaryInventory();
-					}
-
-					EERIEMouseButton &=~1;
-				}
-
-				if(DRAGINTER == NULL)
-					return;
-			}
-		}
-
-		Vec2f pos(InventoryX + BasicInventorySkin->m_dwWidth - 32, BasicInventorySkin->m_dwHeight - 16);
-
-		const Rect mouseTestRect(
-		pos.x,
-		pos.y,
-		pos.x + INTERFACE_RATIO(16),
-		pos.y + INTERFACE_RATIO(16)
-		);
-		
-		if(mouseTestRect.contains(Vec2i(DANAEMouse))) {
-			eMouseState = MOUSE_IN_INVENTORY_CLOSE_ICON;
-			SpecialCursor=CURSOR_INTERACTION_ON;
-
-			if((EERIEMouseButton & 1) && !(LastMouseClick & 1)) {
-				Entity * io = NULL;
-
-				if(SecondaryInventory)
-					io = (Entity *)SecondaryInventory->io;
-				else if (player.Interface & INTER_STEAL)
-					io = ioSteal;
-
-				if(io) {
-					ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
-					InventoryDir=-1;
-					SendIOScriptEvent(io,SM_INVENTORY2_CLOSE);
-					TSecondaryInventory=SecondaryInventory;
-					SecondaryInventory=NULL;
-				}
-
-				EERIEMouseButton &=~1;
-			}
-
-			if(DRAGINTER == NULL)
-				return;
-		}
-	}
-
-	//-------------------------------------------------------------------------
-
-
-	// Single Click On Object
-	if(   (LastMouseClick & 1)
-	   && !(EERIEMouseButton & 1)
-	   && FlyingOverIO
-	   && !DRAGINTER
-	) {
-		SendIOScriptEvent(FlyingOverIO, SM_CLICKED);
-		bool bOk = true;
-		
-		if(SecondaryInventory) {
-			Entity *temp = SecondaryInventory->io;
-			
-			if(IsInSecondaryInventory(FlyingOverIO) && (temp->ioflags & IO_SHOP))
-				bOk = false;
-		}
-		
-		if(   !(FlyingOverIO->ioflags & IO_MOVABLE)
-		   && (FlyingOverIO->ioflags & IO_ITEM)
-		   && bOk
-		   && GInput->actionPressed(CONTROLS_CUST_STEALTHMODE)
-		   && !InPlayerInventoryPos(DANAEMouse)
-		   && !ARX_INTERFACE_MouseInBook()
-		) {
-			long sx = 0;
-			long sy = 0;
-			bool bSecondary = false;
-			
-			if(TSecondaryInventory && IsInSecondaryInventory(FlyingOverIO)) {
-				if(SecondaryInventory) {
-					bool bfound = true;
-					
-					for(long j = 0; j < SecondaryInventory->sizey && bfound; j++) {
-						for (long i = 0; i < SecondaryInventory->sizex && bfound; i++) {
-							if(SecondaryInventory->slot[i][j].io == FlyingOverIO) {
-								sx = i;
-								sy = j;
-								bfound = false;
-							}
-						}
-					}
-					
-					if(bfound)
-						ARX_DEAD_CODE();
-				}
-				
-				bSecondary = true;
-			}
-			
-			RemoveFromAllInventories( FlyingOverIO );
-			FlyingOverIO->show = SHOW_FLAG_IN_INVENTORY;
-			
-			if(FlyingOverIO->ioflags & IO_GOLD)
-				ARX_SOUND_PlayInterface(SND_GOLD);
-			
-			ARX_SOUND_PlayInterface(SND_INVSTD);
-			
-			if(!playerInventory.insert(FlyingOverIO)) {
-				if(TSecondaryInventory && bSecondary) {
-					extern short sInventory, sInventoryX, sInventoryY;
-					sInventory = 2;
-					sInventoryX = checked_range_cast<short>(sx);
-					sInventoryY = checked_range_cast<short>(sy);
-					
-					CanBePutInSecondaryInventory( TSecondaryInventory, FlyingOverIO, &sx, &sy );
-				}
-				
-				if(!bSecondary)
-					FlyingOverIO->show = SHOW_FLAG_IN_SCENE;
-			}
-			
-			if(DRAGINTER == FlyingOverIO)
-				DRAGINTER = NULL;
-			
-			FlyingOverIO = NULL;
-		}
-	}
-
-	if(!(player.Interface & INTER_COMBATMODE)) {
-		// Dropping an Interactive Object that has been dragged
-		if(!(EERIEMouseButton & 1) && (LastMouseClick & 1) && DRAGINTER) {
-			//if (ARX_EQUIPMENT_PutOnPlayer(DRAGINTER))
-			if(InInventoryPos(DANAEMouse)) {// Attempts to put it in inventory
-				PutInInventory();
-			} else if(eMouseState == MOUSE_IN_INVENTORY_ICON) {
-				PutInInventory();
-			} else if(ARX_INTERFACE_MouseInBook()) {
-				if(Book_Mode == BOOKMODE_STATS) {
-					SendIOScriptEvent(DRAGINTER,SM_INVENTORYUSE);
-					COMBINE=NULL;
-				}
-			} else if(DRAGINTER->ioflags & IO_GOLD) {
-				ARX_PLAYER_AddGold(DRAGINTER);
-				Set_DragInter(NULL);
-			} else if(DRAGINTER) {
-
-				if(   !((DRAGINTER->ioflags & IO_ITEM) && DRAGINTER->_itemdata->count > 1)
-				   && DRAGINTER->obj
-				   && DRAGINTER->obj->pbox
-				   && !InInventoryPos(DANAEMouse)
-				   && !(ARX_MOUSE_OVER & ARX_MOUSE_OVER_BOOK)
-				) {
-					//Put object in fromt of player
-					
-					long res = Manage3DCursor(false);
-					// Throw Object
-					if(res==0) {
-						Entity * io=DRAGINTER;
-						ARX_PLAYER_Remove_Invisibility();
-						io->obj->pbox->active=1;
-						io->obj->pbox->stopcount=0;
-						io->pos = player.pos + Vec3f(0.f, 80.f, 0.f);
-						io->velocity = Vec3f_ZERO;
-						io->stopped = 1;
-
-						float y_ratio=(float)((float)DANAEMouse.y-(float)g_size.center().y)/(float)g_size.height()*2;
-						float x_ratio=-(float)((float)DANAEMouse.x-(float)g_size.center().x)/(float)g_size.center().x;
-						Vec3f viewvector;
-						viewvector.x = -std::sin(radians(player.angle.getPitch()+(x_ratio*30.f))) * std::cos(radians(player.angle.getYaw()));
-						viewvector.y =  std::sin(radians(player.angle.getYaw())) + y_ratio;
-						viewvector.z =  std::cos(radians(player.angle.getPitch()+(x_ratio*30.f))) * std::cos(radians(player.angle.getYaw()));
-
-						io->soundtime=0;
-						io->soundcount=0;
-
-						EERIE_PHYSICS_BOX_Launch(io->obj, io->pos, io->angle, viewvector);
-						ARX_SOUND_PlaySFX(SND_WHOOSH, &io->pos);
-
-						io->show=SHOW_FLAG_IN_SCENE;
-						Set_DragInter(NULL);
-					}
-				}
-			}
-		}
-
-	if(COMBINE) {
-		if(!player.torch || (player.torch && (COMBINE != player.torch))) {
-			Vec3f pos;
-
-			if(GetItemWorldPosition(COMBINE, &pos)) {
-				if(fartherThan(pos, player.pos, 300.f))
-					COMBINE=NULL;
-			}
-			else
-				COMBINE=NULL;
-		}
-	}
-
-	if((EERIEMouseButton & 1) && !(LastMouseClick & 1) && (COMBINE || COMBINEGOLD)) {
-		ReleaseInfosCombine();
-
-		Entity * io;
-
-		if((io=FlyingOverIO)!=NULL) {
-			if(COMBINEGOLD) {
-				SendIOScriptEvent(io, SM_COMBINE, "gold_coin");
-			} else {
-				if(io != COMBINE) {
-					std::string temp = COMBINE->idString();
-					EVENT_SENDER=COMBINE;
-
-					if(boost::starts_with(COMBINE->className(), "keyring")) {
-						ARX_KEYRING_Combine(io);
-					} else {
-						SendIOScriptEvent(io, SM_COMBINE, temp);
-					}
-				}
-			}
-		} else { // GLights
-			float fMaxdist = 300;
-
-			if(Project.telekinesis)
-				fMaxdist = 850;
-
-			for(size_t i = 0; i < MAX_LIGHTS; i++) {
-				if(   GLight[i]
-				   && GLight[i]->exist
-				   && !fartherThan(GLight[i]->pos, player.pos, fMaxdist)
-				   && !(GLight[i]->extras & EXTRAS_NO_IGNIT)
-				) {
-					const Rect mouseTestRect(
-					GLight[i]->mins.x,
-					GLight[i]->mins.y,
-					GLight[i]->maxs.x,
-					GLight[i]->maxs.y
-					);
-					
-					if(   mouseTestRect.contains(Vec2i(DANAEMouse))
-					   && (COMBINE->ioflags & IO_ITEM)
-					) {
-							if((COMBINE == player.torch) || (COMBINE->_itemdata->LightValue == 1)) {
-								if(GLight[i]->status != 1) {
-									GLight[i]->status = 1;
-									ARX_SOUND_PlaySFX(SND_TORCH_START, &GLight[i]->pos);
-								}
-							}
-
-							if(COMBINE->_itemdata->LightValue == 0) {
-								if(GLight[i]->status != 0) {
-									GLight[i]->status = 0;
-									ARX_SOUND_PlaySFX(SND_TORCH_END, &GLight[i]->pos);
-									SendIOScriptEvent(COMBINE, SM_CUSTOM, "douse");
-								}
-							}
-					}
-				}
-			}
-		}
-
-		COMBINEGOLD = false;
-		bool bQuitCombine = true;
-
-		if((player.Interface & INTER_INVENTORY)) {
-			if(player.bag) {
-
-				float fCenterX	= g_size.center().x + INTERFACE_RATIO(-320 + 35) + INTERFACE_RATIO_DWORD(ITC.Get("hero_inventory")->m_dwWidth) - INTERFACE_RATIO(32 + 3) ;
-				float fSizY		= g_size.height() - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY) + INTERFACE_RATIO(- 3 + 25) ;
-
-				float posx = ARX_CAST_TO_INT_THEN_FLOAT( fCenterX );
-				float posy = ARX_CAST_TO_INT_THEN_FLOAT( fSizY );
-
-				if(sActiveInventory > 0) {
-					const Rect mouseTestRect(
-					posx,
-					posy,
-					posx + INTERFACE_RATIO(32),
-					posy + INTERFACE_RATIO(32)
-					);
-					
-					if(mouseTestRect.contains(Vec2i(DANAEMouse)))
-						bQuitCombine = false;
-				}
-
-				if(sActiveInventory < player.bag-1) {
-					float fRatio = INTERFACE_RATIO(32 + 5);
-
-					posy += checked_range_cast<int>(fRatio);
-					
-					const Rect mouseTestRect(
-					posx,
-					posy,
-					posx + INTERFACE_RATIO(32),
-					posy + INTERFACE_RATIO(32)
-					);
-					
-					if(mouseTestRect.contains(Vec2i(DANAEMouse)))
-						bQuitCombine = false;
-				}
-			}
-		}
-
-		if(bQuitCombine) {
-			COMBINE=NULL;
-			EERIEMouseButton &= ~1;
-		}
-	}
-
-	//lights
-	if(COMBINE) {
-		float fMaxdist = 300;
-
-		if(Project.telekinesis)
-			fMaxdist = 850;
-
-		for(size_t i = 0; i < MAX_LIGHTS; i++) {
-			if ((GLight[i]!=NULL) &&
-				(GLight[i]->exist) &&
-				!fartherThan(GLight[i]->pos, player.pos, fMaxdist) &&
-				!(GLight[i]->extras & EXTRAS_NO_IGNIT))
-			{
-				const Rect mouseTestRect(
-				GLight[i]->mins.x,
-				GLight[i]->mins.y,
-				GLight[i]->maxs.x,
-				GLight[i]->maxs.y
-				);
-				
-				if(mouseTestRect.contains(Vec2i(DANAEMouse))) {
-					SpecialCursor = CURSOR_INTERACTION_ON;
-				}
-			}
-		}
-	}
-
-	// Double Clicked and not already combining.
-	if((EERIEMouseButton & 4) && (COMBINE==NULL)) {
-		bool accept_combine = true;
-
-		if((SecondaryInventory!=NULL) && (InSecondaryInventoryPos(DANAEMouse))) {
-			Entity * io=(Entity *)SecondaryInventory->io;
-
-			if(io->ioflags & IO_SHOP)
-				accept_combine = false;
-		}
-
-		if(accept_combine) {
-			if(FlyingOverIO && ((FlyingOverIO->ioflags & IO_ITEM) && !(FlyingOverIO->ioflags & IO_MOVABLE))) {
-				COMBINE=FlyingOverIO;
-				GetInfosCombine();
-				EERIEMouseButton &= ~4;
-			}
-			else if(InInventoryPos(DANAEMouse))
-				EERIEMouseButton &= 4;
-		}
-	}
-
-		// Checks for Object Dragging
-		if(DRAGGING
-		   && (!PLAYER_MOUSELOOK_ON || !config.input.autoReadyWeapon)
-		   && !GInput->actionPressed(CONTROLS_CUST_MAGICMODE)
-		   && !DRAGINTER
-		) {
-			if(!TakeFromInventory(STARTDRAG)) {
-				bool bOk = false;
-
-				Entity *io = InterClick(STARTDRAG);
-
-				if(io && !BLOCK_PLAYER_CONTROLS) {
-					if(ARX_MOUSE_OVER & ARX_MOUSE_OVER_BOOK) {
-						if(io->show == SHOW_FLAG_ON_PLAYER)
-							bOk = true;
-					} else {
-						bOk = true;
-					}
-				}
-
-				if(bOk) {
-					Set_DragInter(io);
-
-					if(io) {
-						ARX_PLAYER_Remove_Invisibility();
-
-						if(DRAGINTER->show==SHOW_FLAG_ON_PLAYER) {
-							ARX_EQUIPMENT_UnEquip(entities.player(),DRAGINTER);
-							RemoveFromAllInventories(DRAGINTER);
-							DRAGINTER->bbox2D.max.x = -1;
-						}
-
-						if((io->ioflags & IO_NPC) || (io->ioflags & IO_FIX)) {
-							Set_DragInter(NULL);
-							goto suivant;
-						}
-
-						if(io->ioflags & IO_UNDERWATER) {
-							io->ioflags&=~IO_UNDERWATER;
-							ARX_SOUND_PlayInterface(SND_PLOUF, 0.8F + 0.4F * rnd());
-						}
-
-						DRAGINTER->show=SHOW_FLAG_NOT_DRAWN;
-						ARX_SOUND_PlayInterface(SND_INVSTD);
-					}
-				} else {
-					Set_DragInter(NULL);
-				}
-
-				suivant:
-					;
-			}
-			else
-				ARX_PLAYER_Remove_Invisibility();
-		}
-	
-		// Debug Selection
-		if((LastMouseClick & 1) && !(EERIEMouseButton & 1)) {
-			Entity * io = GetFirstInterAtPos(DANAEMouse);
-
-			if(io) {
-				LastSelectedIONum = io->index();
-			} else {
-				if(LastSelectedIONum == -1)
-					LastSelectedIONum = 0;
-				else
-					LastSelectedIONum = -1;
-			}
-		}
-	}
-}
-
-//-----------------------------------------------------------------------------
 // Switches from/to combat Mode i=-1 for switching from actual configuration
 // 2 to force Draw Weapon
 // 1 to force Combat Mode On
@@ -6784,4 +5915,873 @@ void hudElementsInit() {
 	TextureContainer::LoadUI("graph/interface/bars/aim_empty");
 	TextureContainer::LoadUI("graph/interface/bars/aim_maxi");
 	TextureContainer::LoadUI("graph/interface/bars/flash_gauge");
+}
+
+//-----------------------------------------------------------------------------
+void ArxGame::manageEditorControls() {
+
+	eMouseState = MOUSE_IN_WORLD;
+
+	if(TRUE_PLAYER_MOUSELOOK_ON && config.input.autoReadyWeapon == false && config.input.mouseLookToggle) {
+		float fX = g_size.width() * 0.5f;
+		float fY = g_size.height() * 0.5f;
+		DANAEMouse.x = checked_range_cast<short>(fX);
+		DANAEMouse.y = checked_range_cast<short>(fY);
+	}
+
+	/////////////////////////////////////////////////////
+	// begining to count time for sliding interface
+	if(!PLAYER_INTERFACE_HIDE_COUNT && !SMOOTHSLID) {
+		bool bOk = true;
+
+		if(TRUE_PLAYER_MOUSELOOK_ON) {
+			if(!(player.Interface & INTER_COMBATMODE) && player.doingmagic != 2 && !InInventoryPos(DANAEMouse)) {
+				bOk = false;
+
+				float t=float(arxtime);
+
+				if(t-SLID_START > 10000.f) {
+					SLID_VALUE += (float)Original_framedelay*( 1.0f / 10 );
+
+					if(SLID_VALUE > 100.f)
+						SLID_VALUE = 100.f;
+
+					lSLID_VALUE = SLID_VALUE;
+				} else {
+					bOk = true;
+				}
+			}
+		}
+
+		if(bOk) {
+			SLID_VALUE -= (float)Original_framedelay*( 1.0f / 10 );
+
+			if(SLID_VALUE < 0.f)
+				SLID_VALUE = 0.f;
+
+			lSLID_VALUE = SLID_VALUE;
+		}
+	}
+
+	// on ferme
+	if((player.Interface & INTER_COMBATMODE) || player.doingmagic >= 2) {
+		Entity * io = NULL;
+
+		if(SecondaryInventory)
+			io = (Entity *)SecondaryInventory->io;
+		else if (player.Interface & INTER_STEAL)
+			io = ioSteal;
+
+		if(io) {
+			InventoryDir = -1;
+			SendIOScriptEvent(io, SM_INVENTORY2_CLOSE);
+			TSecondaryInventory = SecondaryInventory;
+			SecondaryInventory = NULL;
+		}
+	}
+
+	if(SMOOTHSLID == 1) {
+		SLID_VALUE += (float)Original_framedelay*( 1.0f / 10 );
+
+		if(SLID_VALUE > 100.f) {
+			SLID_VALUE = 100.f;
+			SMOOTHSLID = 0;
+		}
+		lSLID_VALUE = SLID_VALUE;
+	} else if(SMOOTHSLID == -1) {
+		SLID_VALUE -= (float)Original_framedelay*( 1.0f / 10 );
+
+		if (SLID_VALUE < 0.f) {
+			SLID_VALUE = 0.f;
+			SMOOTHSLID = 0;
+		}
+		lSLID_VALUE = SLID_VALUE;
+	}
+	
+	cinematicBorder.update();
+
+
+
+	/////////////////////////////////////////////////////
+
+	if(EERIEMouseButton & 1) {
+		static Vec2s dragThreshold = Vec2s_ZERO;
+		
+		if(!(LastMouseClick & 1)) {
+			
+			STARTDRAG = DANAEMouse;
+			DRAGGING = false;
+			dragThreshold = Vec2s_ZERO;
+		} else {
+			dragThreshold += GInput->getMousePosRel();
+			if((abs(DANAEMouse.x - STARTDRAG.x) > 2 && abs(DANAEMouse.y - STARTDRAG.y) > 2)
+			   || (abs(dragThreshold.x) > 2 || abs(dragThreshold.y) > 2)) {
+				DRAGGING = true;
+			}
+		}
+	} else {
+		DRAGGING = false;
+	}
+
+	//-------------------------------------------------------------------------
+	// interface
+	//-------------------------------------------------------------------------
+	// torch
+
+	if(!BLOCK_PLAYER_CONTROLS) {
+		if(!(player.Interface & INTER_COMBATMODE)) {
+			if(!TRUE_PLAYER_MOUSELOOK_ON) {
+
+				
+				if(player.torch) {
+					Vec2f pos(InventoryX + 110, g_size.height() - (158 + 32));
+					
+					if(pos.x < INTERFACE_RATIO(10))
+						pos.x = INTERFACE_RATIO(10);
+					
+					const Rect mouseTestRect(
+					pos.x,
+					pos.y,
+					pos.x + INTERFACE_RATIO(32),
+					pos.y + INTERFACE_RATIO(64)
+					);
+					
+					if(mouseTestRect.contains(Vec2i(DANAEMouse))) {
+						eMouseState=MOUSE_IN_TORCH_ICON;
+						SpecialCursor=CURSOR_INTERACTION_ON;
+
+						if((LastMouseClick & 1) && !(EERIEMouseButton & 1)) {
+							Entity * temp = player.torch;
+
+							if(temp && !temp->locname.empty()) {
+								if(((player.torch->ioflags & IO_ITEM) && player.torch->_itemdata->equipitem)
+									&& (player.Full_Skill_Object_Knowledge + player.Full_Attribute_Mind
+										>= player.torch->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Identify_Value].value) )
+								{
+									SendIOScriptEvent(FlyingOverIO,SM_IDENTIFY);
+								}
+
+								WILLADDSPEECH = getLocalised(temp->locname);
+
+								if(temp->ioflags & IO_GOLD) {
+									std::stringstream ss;
+									ss << temp->_itemdata->price << " " << WILLADDSPEECH;
+									WILLADDSPEECH = ss.str();
+								}
+
+								if(temp->poisonous > 0 && temp->poisonous_count != 0) {
+									std::string Text = getLocalised("description_poisoned", "error");
+									std::stringstream ss;
+									ss << WILLADDSPEECH << " (" << Text << " " << (int)temp->poisonous << ")";
+									WILLADDSPEECH = ss.str();
+								}
+
+								if ((temp->ioflags & IO_ITEM) && temp->durability < 100.f) {
+									std::string Text = getLocalised("description_durability", "error");
+									std::stringstream ss;
+									ss << WILLADDSPEECH << " " << Text << " " << std::fixed << std::setw(3) << std::setprecision(0) << temp->durability << std::setw(0) << "/" << std::setw(3) << temp->max_durability;
+									WILLADDSPEECH = ss.str();
+								}
+
+								WILLADDSPEECHTIME = (unsigned long)(arxtime);
+							}
+						}
+
+						if((EERIEMouseButton & 1) && (LastMouseClick & 1)) {
+							if(abs(DANAEMouse.x-STARTDRAG.x) > 2 || abs(DANAEMouse.y-STARTDRAG.y) > 2)
+								DRAGGING = true;
+						}
+
+						if(!DRAGINTER && !PLAYER_MOUSELOOK_ON && DRAGGING) {
+							Entity * io=player.torch;
+							player.torch->show=SHOW_FLAG_IN_SCENE;
+							ARX_SOUND_PlaySFX(SND_TORCH_END);
+							ARX_SOUND_Stop(SND_TORCH_LOOP);
+							player.torch=NULL;
+							lightHandleGet(torchLightHandle)->exist = 0;
+							Set_DragInter(io);
+							DRAGINTER->ignition=1;
+						} else {
+							if((EERIEMouseButton & 4) && !COMBINE) {
+								COMBINE = player.torch;
+							}
+
+							if(!(EERIEMouseButton & 2) && (LastMouseClick & 2)) {
+								ARX_PLAYER_ClickedOnTorch(player.torch);
+								EERIEMouseButton &= ~2;
+								TRUE_PLAYER_MOUSELOOK_ON = false;
+							}
+						}
+					}
+				}
+
+				// redist
+				if((player.Skill_Redistribute) || (player.Attribute_Redistribute)) {
+					Vec2f pos(g_size.width() - 35 + lSLID_VALUE, g_size.height() - INTERFACE_RATIO(218));
+					
+					const Rect mouseTestRect(
+					pos.x,
+					pos.y,
+					pos.x + INTERFACE_RATIO(32),
+					pos.y + INTERFACE_RATIO(32)
+					);
+
+					if(mouseTestRect.contains(Vec2i(DANAEMouse))) {
+						eMouseState = MOUSE_IN_REDIST_ICON;
+						SpecialCursor = CURSOR_INTERACTION_ON;
+
+						if((EERIEMouseButton & 1) && !(LastMouseClick & 1)) {
+							ARX_INTERFACE_BookOpenClose(1);
+							EERIEMouseButton &=~1;
+						}
+						return;
+					}
+				}
+
+
+				// gold
+				if(player.gold > 0) {
+					Vec2f pos(g_size.width() - (35) + lSLID_VALUE, g_size.height() - 183);
+					
+					const Rect mouseTestRect(
+					pos.x,
+					pos.y,
+					pos.x + INTERFACE_RATIO(32),
+					pos.y + INTERFACE_RATIO(32)
+					);
+					
+					if(mouseTestRect.contains(Vec2i(DANAEMouse))) {
+						eMouseState = MOUSE_IN_GOLD_ICON;
+						SpecialCursor = CURSOR_INTERACTION_ON;
+
+						if(   player.gold > 0
+						   && !GInput->actionPressed(CONTROLS_CUST_MAGICMODE)
+						   && !COMBINE
+						   && !COMBINEGOLD
+						   && (EERIEMouseButton & 4)
+						) {
+							COMBINEGOLD = true;
+						}
+
+						if(!DRAGINTER)
+							return;
+					}
+				}
+
+				// book
+				{
+				Vec2f pos(g_size.width() - 35 + lSLID_VALUE, g_size.height() - 148);
+
+				const Rect bookMouseTestRect(
+				pos.x,
+				pos.y,
+				pos.x + INTERFACE_RATIO(32),
+				pos.y + INTERFACE_RATIO(32)
+				);
+				
+				if(bookMouseTestRect.contains(Vec2i(DANAEMouse))) {
+					eMouseState = MOUSE_IN_BOOK_ICON;
+					SpecialCursor = CURSOR_INTERACTION_ON;
+
+					if((EERIEMouseButton & 1) && !(LastMouseClick & 1)) {
+						ARX_INTERFACE_BookOpenClose(0);
+						EERIEMouseButton &=~1;
+					}
+					return;
+				}
+				}
+				
+				{
+				// inventaire
+				Vec2f pos(g_size.width() - (35) + lSLID_VALUE, g_size.height() - 113);
+				static float flDelay=0;
+				
+				const Rect inventoryMouseTestRect(
+				pos.x,
+				pos.y,
+				pos.x + INTERFACE_RATIO(32),
+				pos.y + INTERFACE_RATIO(32)
+				);
+				
+				if(inventoryMouseTestRect.contains(Vec2i(DANAEMouse)) || flDelay) {
+					eMouseState = MOUSE_IN_INVENTORY_ICON;
+					SpecialCursor = CURSOR_INTERACTION_ON;
+
+					if(EERIEMouseButton & 4) {
+						ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
+
+						playerInventory.optimize();
+
+						flDelay=0;
+						EERIEMouseButton&=~4;
+					} else if(((EERIEMouseButton & 1) && !(LastMouseClick & 1)) || flDelay) {
+						if(!flDelay) {
+							flDelay=arxtime.get_updated();
+							return;
+						} else {
+							if((arxtime.get_updated() - flDelay) < 300) {
+								return;
+							} else {
+								flDelay=0;
+							}
+						}
+
+						if(player.Interface & INTER_INVENTORYALL) {
+							ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
+							bInventoryClosing = true;
+						} else {
+							bInverseInventory=!bInverseInventory;
+							lOldTruePlayerMouseLook=TRUE_PLAYER_MOUSELOOK_ON;
+						}
+
+						EERIEMouseButton &=~1;
+					} else if((EERIEMouseButton & 2) && !(LastMouseClick & 2)) {
+						ARX_INTERFACE_BookOpenClose(2);
+						ARX_INVENTORY_OpenClose(NULL);
+
+						if(player.Interface & INTER_INVENTORYALL) {
+							bInventoryClosing = true;
+						} else {
+							if(player.Interface & INTER_INVENTORY) {
+								ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
+								bInventoryClosing = true;
+								bInventorySwitch = true;
+							} else {
+								ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
+								player.Interface |= INTER_INVENTORYALL;
+
+								float fInventoryY = INTERFACE_RATIO(121.f) * (player.bag);
+								InventoryY = checked_range_cast<long>(fInventoryY);
+
+								ARX_INTERFACE_NoteClose();
+
+								if(TRUE_PLAYER_MOUSELOOK_ON) {
+									WILLRETURNTOFREELOOK = true;
+								}
+							}
+						}
+
+						EERIEMouseButton &= ~2;
+						TRUE_PLAYER_MOUSELOOK_ON = false;
+					}
+
+					if(DRAGINTER == NULL)
+						return;
+				}
+				}
+			}
+
+			// steal
+			if(player.Interface & INTER_STEAL) {
+				Vec2f pos(static_cast<float>(-lSLID_VALUE), g_size.height() - (78 + 32));
+				
+				const Rect mouseTestRect(
+				pos.x,
+				pos.y,
+				pos.x + INTERFACE_RATIO(32),
+				pos.y + INTERFACE_RATIO(32)
+				);
+				
+				if(mouseTestRect.contains(Vec2i(DANAEMouse))) {
+					eMouseState=MOUSE_IN_STEAL_ICON;
+					SpecialCursor=CURSOR_INTERACTION_ON;
+
+					if((EERIEMouseButton & 1) && !(LastMouseClick & 1)) {
+						ARX_INVENTORY_OpenClose(ioSteal);
+
+						if(player.Interface&(INTER_INVENTORY | INTER_INVENTORYALL)) {
+							ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
+						}
+
+						if(SecondaryInventory) {
+							SendIOScriptEvent(ioSteal, SM_STEAL);
+
+							bForceEscapeFreeLook=true;
+						    lOldTruePlayerMouseLook=!TRUE_PLAYER_MOUSELOOK_ON;
+						}
+
+						EERIEMouseButton &=~1;
+					}
+
+					if(DRAGINTER == NULL)
+						return;
+				}
+			}
+		}
+	}
+
+	// gros player book
+	if(player.Interface & INTER_MAP) {
+		Vec2f pos(97 * g_sizeRatio.x, 64 * g_sizeRatio.y);
+		
+		TextureContainer* playerbook = ITC.Get("playerbook");
+		if(playerbook) {
+			const Rect mouseTestRect(
+			pos.x,
+			pos.y,
+			pos.x + playerbook->m_dwWidth * g_sizeRatio.x,
+			pos.y + playerbook->m_dwHeight * g_sizeRatio.y
+			);
+			
+			if(mouseTestRect.contains(Vec2i(DANAEMouse))) {
+				eMouseState = MOUSE_IN_BOOK;
+			}
+		}
+	}
+	
+	// gros book/note
+	if(player.Interface & INTER_NOTE) {
+		if(openNote.area().contains(Vec2f(DANAEMouse))) {
+			eMouseState = MOUSE_IN_NOTE;
+			return;
+		}
+	}
+	
+	if(!PLAYER_INTERFACE_HIDE_COUNT && TSecondaryInventory) {
+		
+		Entity * temp=(Entity *)TSecondaryInventory->io;
+
+		if(temp && !(temp->ioflags & IO_SHOP) && !(temp == ioSteal)) {
+			Vec2f pos(InventoryX + 16, BasicInventorySkin->m_dwHeight - 16);
+			
+			const Rect mouseTestRect(
+			pos.x,
+			pos.y,
+			pos.x + INTERFACE_RATIO(16),
+			pos.y + INTERFACE_RATIO(16)
+			);
+			
+			if(mouseTestRect.contains(Vec2i(DANAEMouse))) {
+				eMouseState = MOUSE_IN_INVENTORY_PICKALL_ICON;
+				SpecialCursor=CURSOR_INTERACTION_ON;
+
+				if((EERIEMouseButton & 1) && !(LastMouseClick & 1)) {
+					if(TSecondaryInventory) {
+						// play un son que si un item est pris
+						ARX_INVENTORY_TakeAllFromSecondaryInventory();
+					}
+
+					EERIEMouseButton &=~1;
+				}
+
+				if(DRAGINTER == NULL)
+					return;
+			}
+		}
+
+		Vec2f pos(InventoryX + BasicInventorySkin->m_dwWidth - 32, BasicInventorySkin->m_dwHeight - 16);
+
+		const Rect mouseTestRect(
+		pos.x,
+		pos.y,
+		pos.x + INTERFACE_RATIO(16),
+		pos.y + INTERFACE_RATIO(16)
+		);
+		
+		if(mouseTestRect.contains(Vec2i(DANAEMouse))) {
+			eMouseState = MOUSE_IN_INVENTORY_CLOSE_ICON;
+			SpecialCursor=CURSOR_INTERACTION_ON;
+
+			if((EERIEMouseButton & 1) && !(LastMouseClick & 1)) {
+				Entity * io = NULL;
+
+				if(SecondaryInventory)
+					io = (Entity *)SecondaryInventory->io;
+				else if (player.Interface & INTER_STEAL)
+					io = ioSteal;
+
+				if(io) {
+					ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
+					InventoryDir=-1;
+					SendIOScriptEvent(io,SM_INVENTORY2_CLOSE);
+					TSecondaryInventory=SecondaryInventory;
+					SecondaryInventory=NULL;
+				}
+
+				EERIEMouseButton &=~1;
+			}
+
+			if(DRAGINTER == NULL)
+				return;
+		}
+	}
+
+	//-------------------------------------------------------------------------
+
+
+	// Single Click On Object
+	if(   (LastMouseClick & 1)
+	   && !(EERIEMouseButton & 1)
+	   && FlyingOverIO
+	   && !DRAGINTER
+	) {
+		SendIOScriptEvent(FlyingOverIO, SM_CLICKED);
+		bool bOk = true;
+		
+		if(SecondaryInventory) {
+			Entity *temp = SecondaryInventory->io;
+			
+			if(IsInSecondaryInventory(FlyingOverIO) && (temp->ioflags & IO_SHOP))
+				bOk = false;
+		}
+		
+		if(   !(FlyingOverIO->ioflags & IO_MOVABLE)
+		   && (FlyingOverIO->ioflags & IO_ITEM)
+		   && bOk
+		   && GInput->actionPressed(CONTROLS_CUST_STEALTHMODE)
+		   && !InPlayerInventoryPos(DANAEMouse)
+		   && !ARX_INTERFACE_MouseInBook()
+		) {
+			long sx = 0;
+			long sy = 0;
+			bool bSecondary = false;
+			
+			if(TSecondaryInventory && IsInSecondaryInventory(FlyingOverIO)) {
+				if(SecondaryInventory) {
+					bool bfound = true;
+					
+					for(long j = 0; j < SecondaryInventory->sizey && bfound; j++) {
+						for (long i = 0; i < SecondaryInventory->sizex && bfound; i++) {
+							if(SecondaryInventory->slot[i][j].io == FlyingOverIO) {
+								sx = i;
+								sy = j;
+								bfound = false;
+							}
+						}
+					}
+					
+					if(bfound)
+						ARX_DEAD_CODE();
+				}
+				
+				bSecondary = true;
+			}
+			
+			RemoveFromAllInventories( FlyingOverIO );
+			FlyingOverIO->show = SHOW_FLAG_IN_INVENTORY;
+			
+			if(FlyingOverIO->ioflags & IO_GOLD)
+				ARX_SOUND_PlayInterface(SND_GOLD);
+			
+			ARX_SOUND_PlayInterface(SND_INVSTD);
+			
+			if(!playerInventory.insert(FlyingOverIO)) {
+				if(TSecondaryInventory && bSecondary) {
+					extern short sInventory, sInventoryX, sInventoryY;
+					sInventory = 2;
+					sInventoryX = checked_range_cast<short>(sx);
+					sInventoryY = checked_range_cast<short>(sy);
+					
+					CanBePutInSecondaryInventory( TSecondaryInventory, FlyingOverIO, &sx, &sy );
+				}
+				
+				if(!bSecondary)
+					FlyingOverIO->show = SHOW_FLAG_IN_SCENE;
+			}
+			
+			if(DRAGINTER == FlyingOverIO)
+				DRAGINTER = NULL;
+			
+			FlyingOverIO = NULL;
+		}
+	}
+
+	if(!(player.Interface & INTER_COMBATMODE)) {
+		// Dropping an Interactive Object that has been dragged
+		if(!(EERIEMouseButton & 1) && (LastMouseClick & 1) && DRAGINTER) {
+			//if (ARX_EQUIPMENT_PutOnPlayer(DRAGINTER))
+			if(InInventoryPos(DANAEMouse)) {// Attempts to put it in inventory
+				PutInInventory();
+			} else if(eMouseState == MOUSE_IN_INVENTORY_ICON) {
+				PutInInventory();
+			} else if(ARX_INTERFACE_MouseInBook()) {
+				if(Book_Mode == BOOKMODE_STATS) {
+					SendIOScriptEvent(DRAGINTER,SM_INVENTORYUSE);
+					COMBINE=NULL;
+				}
+			} else if(DRAGINTER->ioflags & IO_GOLD) {
+				ARX_PLAYER_AddGold(DRAGINTER);
+				Set_DragInter(NULL);
+			} else if(DRAGINTER) {
+
+				if(   !((DRAGINTER->ioflags & IO_ITEM) && DRAGINTER->_itemdata->count > 1)
+				   && DRAGINTER->obj
+				   && DRAGINTER->obj->pbox
+				   && !InInventoryPos(DANAEMouse)
+				   && !(ARX_MOUSE_OVER & ARX_MOUSE_OVER_BOOK)
+				) {
+					//Put object in fromt of player
+					
+					long res = Manage3DCursor(false);
+					// Throw Object
+					if(res==0) {
+						Entity * io=DRAGINTER;
+						ARX_PLAYER_Remove_Invisibility();
+						io->obj->pbox->active=1;
+						io->obj->pbox->stopcount=0;
+						io->pos = player.pos + Vec3f(0.f, 80.f, 0.f);
+						io->velocity = Vec3f_ZERO;
+						io->stopped = 1;
+
+						float y_ratio=(float)((float)DANAEMouse.y-(float)g_size.center().y)/(float)g_size.height()*2;
+						float x_ratio=-(float)((float)DANAEMouse.x-(float)g_size.center().x)/(float)g_size.center().x;
+						Vec3f viewvector;
+						viewvector.x = -std::sin(radians(player.angle.getPitch()+(x_ratio*30.f))) * std::cos(radians(player.angle.getYaw()));
+						viewvector.y =  std::sin(radians(player.angle.getYaw())) + y_ratio;
+						viewvector.z =  std::cos(radians(player.angle.getPitch()+(x_ratio*30.f))) * std::cos(radians(player.angle.getYaw()));
+
+						io->soundtime=0;
+						io->soundcount=0;
+
+						EERIE_PHYSICS_BOX_Launch(io->obj, io->pos, io->angle, viewvector);
+						ARX_SOUND_PlaySFX(SND_WHOOSH, &io->pos);
+
+						io->show=SHOW_FLAG_IN_SCENE;
+						Set_DragInter(NULL);
+					}
+				}
+			}
+		}
+
+	if(COMBINE) {
+		if(!player.torch || (player.torch && (COMBINE != player.torch))) {
+			Vec3f pos;
+
+			if(GetItemWorldPosition(COMBINE, &pos)) {
+				if(fartherThan(pos, player.pos, 300.f))
+					COMBINE=NULL;
+			}
+			else
+				COMBINE=NULL;
+		}
+	}
+
+	if((EERIEMouseButton & 1) && !(LastMouseClick & 1) && (COMBINE || COMBINEGOLD)) {
+		ReleaseInfosCombine();
+
+		Entity * io;
+
+		if((io=FlyingOverIO)!=NULL) {
+			if(COMBINEGOLD) {
+				SendIOScriptEvent(io, SM_COMBINE, "gold_coin");
+			} else {
+				if(io != COMBINE) {
+					std::string temp = COMBINE->idString();
+					EVENT_SENDER=COMBINE;
+
+					if(boost::starts_with(COMBINE->className(), "keyring")) {
+						ARX_KEYRING_Combine(io);
+					} else {
+						SendIOScriptEvent(io, SM_COMBINE, temp);
+					}
+				}
+			}
+		} else { // GLights
+			float fMaxdist = 300;
+
+			if(Project.telekinesis)
+				fMaxdist = 850;
+
+			for(size_t i = 0; i < MAX_LIGHTS; i++) {
+				if(   GLight[i]
+				   && GLight[i]->exist
+				   && !fartherThan(GLight[i]->pos, player.pos, fMaxdist)
+				   && !(GLight[i]->extras & EXTRAS_NO_IGNIT)
+				) {
+					const Rect mouseTestRect(
+					GLight[i]->mins.x,
+					GLight[i]->mins.y,
+					GLight[i]->maxs.x,
+					GLight[i]->maxs.y
+					);
+					
+					if(   mouseTestRect.contains(Vec2i(DANAEMouse))
+					   && (COMBINE->ioflags & IO_ITEM)
+					) {
+							if((COMBINE == player.torch) || (COMBINE->_itemdata->LightValue == 1)) {
+								if(GLight[i]->status != 1) {
+									GLight[i]->status = 1;
+									ARX_SOUND_PlaySFX(SND_TORCH_START, &GLight[i]->pos);
+								}
+							}
+
+							if(COMBINE->_itemdata->LightValue == 0) {
+								if(GLight[i]->status != 0) {
+									GLight[i]->status = 0;
+									ARX_SOUND_PlaySFX(SND_TORCH_END, &GLight[i]->pos);
+									SendIOScriptEvent(COMBINE, SM_CUSTOM, "douse");
+								}
+							}
+					}
+				}
+			}
+		}
+
+		COMBINEGOLD = false;
+		bool bQuitCombine = true;
+
+		if((player.Interface & INTER_INVENTORY)) {
+			if(player.bag) {
+
+				float fCenterX	= g_size.center().x + INTERFACE_RATIO(-320 + 35) + INTERFACE_RATIO_DWORD(ITC.Get("hero_inventory")->m_dwWidth) - INTERFACE_RATIO(32 + 3) ;
+				float fSizY		= g_size.height() - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY) + INTERFACE_RATIO(- 3 + 25) ;
+
+				float posx = ARX_CAST_TO_INT_THEN_FLOAT( fCenterX );
+				float posy = ARX_CAST_TO_INT_THEN_FLOAT( fSizY );
+
+				if(sActiveInventory > 0) {
+					const Rect mouseTestRect(
+					posx,
+					posy,
+					posx + INTERFACE_RATIO(32),
+					posy + INTERFACE_RATIO(32)
+					);
+					
+					if(mouseTestRect.contains(Vec2i(DANAEMouse)))
+						bQuitCombine = false;
+				}
+
+				if(sActiveInventory < player.bag-1) {
+					float fRatio = INTERFACE_RATIO(32 + 5);
+
+					posy += checked_range_cast<int>(fRatio);
+					
+					const Rect mouseTestRect(
+					posx,
+					posy,
+					posx + INTERFACE_RATIO(32),
+					posy + INTERFACE_RATIO(32)
+					);
+					
+					if(mouseTestRect.contains(Vec2i(DANAEMouse)))
+						bQuitCombine = false;
+				}
+			}
+		}
+
+		if(bQuitCombine) {
+			COMBINE=NULL;
+			EERIEMouseButton &= ~1;
+		}
+	}
+
+	//lights
+	if(COMBINE) {
+		float fMaxdist = 300;
+
+		if(Project.telekinesis)
+			fMaxdist = 850;
+
+		for(size_t i = 0; i < MAX_LIGHTS; i++) {
+			if ((GLight[i]!=NULL) &&
+				(GLight[i]->exist) &&
+				!fartherThan(GLight[i]->pos, player.pos, fMaxdist) &&
+				!(GLight[i]->extras & EXTRAS_NO_IGNIT))
+			{
+				const Rect mouseTestRect(
+				GLight[i]->mins.x,
+				GLight[i]->mins.y,
+				GLight[i]->maxs.x,
+				GLight[i]->maxs.y
+				);
+				
+				if(mouseTestRect.contains(Vec2i(DANAEMouse))) {
+					SpecialCursor = CURSOR_INTERACTION_ON;
+				}
+			}
+		}
+	}
+
+	// Double Clicked and not already combining.
+	if((EERIEMouseButton & 4) && (COMBINE==NULL)) {
+		bool accept_combine = true;
+
+		if((SecondaryInventory!=NULL) && (InSecondaryInventoryPos(DANAEMouse))) {
+			Entity * io=(Entity *)SecondaryInventory->io;
+
+			if(io->ioflags & IO_SHOP)
+				accept_combine = false;
+		}
+
+		if(accept_combine) {
+			if(FlyingOverIO && ((FlyingOverIO->ioflags & IO_ITEM) && !(FlyingOverIO->ioflags & IO_MOVABLE))) {
+				COMBINE=FlyingOverIO;
+				GetInfosCombine();
+				EERIEMouseButton &= ~4;
+			}
+			else if(InInventoryPos(DANAEMouse))
+				EERIEMouseButton &= 4;
+		}
+	}
+
+		// Checks for Object Dragging
+		if(DRAGGING
+		   && (!PLAYER_MOUSELOOK_ON || !config.input.autoReadyWeapon)
+		   && !GInput->actionPressed(CONTROLS_CUST_MAGICMODE)
+		   && !DRAGINTER
+		) {
+			if(!TakeFromInventory(STARTDRAG)) {
+				bool bOk = false;
+
+				Entity *io = InterClick(STARTDRAG);
+
+				if(io && !BLOCK_PLAYER_CONTROLS) {
+					if(ARX_MOUSE_OVER & ARX_MOUSE_OVER_BOOK) {
+						if(io->show == SHOW_FLAG_ON_PLAYER)
+							bOk = true;
+					} else {
+						bOk = true;
+					}
+				}
+
+				if(bOk) {
+					Set_DragInter(io);
+
+					if(io) {
+						ARX_PLAYER_Remove_Invisibility();
+
+						if(DRAGINTER->show==SHOW_FLAG_ON_PLAYER) {
+							ARX_EQUIPMENT_UnEquip(entities.player(),DRAGINTER);
+							RemoveFromAllInventories(DRAGINTER);
+							DRAGINTER->bbox2D.max.x = -1;
+						}
+
+						if((io->ioflags & IO_NPC) || (io->ioflags & IO_FIX)) {
+							Set_DragInter(NULL);
+							goto suivant;
+						}
+
+						if(io->ioflags & IO_UNDERWATER) {
+							io->ioflags&=~IO_UNDERWATER;
+							ARX_SOUND_PlayInterface(SND_PLOUF, 0.8F + 0.4F * rnd());
+						}
+
+						DRAGINTER->show=SHOW_FLAG_NOT_DRAWN;
+						ARX_SOUND_PlayInterface(SND_INVSTD);
+					}
+				} else {
+					Set_DragInter(NULL);
+				}
+
+				suivant:
+					;
+			}
+			else
+				ARX_PLAYER_Remove_Invisibility();
+		}
+	
+		// Debug Selection
+		if((LastMouseClick & 1) && !(EERIEMouseButton & 1)) {
+			Entity * io = GetFirstInterAtPos(DANAEMouse);
+
+			if(io) {
+				LastSelectedIONum = io->index();
+			} else {
+				if(LastSelectedIONum == -1)
+					LastSelectedIONum = 0;
+				else
+					LastSelectedIONum = -1;
+			}
+		}
+	}
 }
