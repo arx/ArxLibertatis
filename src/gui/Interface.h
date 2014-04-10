@@ -70,8 +70,9 @@ extern Entity * FlyingOverIO;
 class INTERFACE_TC
 {
 public:
-	INTERFACE_TC();
-	~INTERFACE_TC();
+	INTERFACE_TC()
+		: isInitialized(false)
+	{}
 
 	void Set(const std::string& textureName, TextureContainer* pTexture);
 	void Set(const std::string& textureName, const std::string& fileName);
@@ -80,6 +81,8 @@ public:
 	void Reset();
 
 public:
+	bool isInitialized;
+	
 	std::string        Level;
 	std::string        Xp;
 

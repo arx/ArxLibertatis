@@ -407,7 +407,8 @@ bool ARX_Menu_Render() {
 	//-------------------------------------------------------------------------
 
 	if(ARXmenu.currentmode == AMCM_NEWQUEST && ARXmenu.mda) {
-		if(ITC.Get("questbook") == NULL) {
+		if(!ITC.isInitialized) {
+			ITC.isInitialized = true;
 			ARX_Menu_Resources_Release(false);
 			ARX_Menu_Resources_Create();
 			

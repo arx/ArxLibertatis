@@ -430,21 +430,6 @@ void KillInterfaceTextureContainers() {
 	ITC.Reset();
 }
 
-INTERFACE_TC::INTERFACE_TC()
-{
-}
-
-INTERFACE_TC::~INTERFACE_TC() {
-	
-	arx_assert(m_Textures.empty());
-	
-	/*
-	 * Because this is the destructor of a global object we cannot cleanup textures here.
-	 * Doing so would mean accessing other global objects who'se destrcutors could be called before this one.
-	 */
-	
-}
-
 void INTERFACE_TC::Set(const std::string& textureName, TextureContainer* pTexture)
 {
 	m_Textures[textureName] = pTexture;
@@ -2911,12 +2896,12 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 	}
 }
 
-//-----------------------------------------------------------------------------
 void ARX_INTERFACE_ManageOpenedBook()
 {
 	GRenderer->SetRenderState(Renderer::Fog, false);
 	
-	if(ITC.Get("questbook") == NULL) {
+	if(!ITC.isInitialized) {
+		ITC.isInitialized = true;
 		ITC.Set("playerbook",          "graph/interface/book/character_sheet/char_sheet_book");
 		ITC.Set("ic_casting",          "graph/interface/book/character_sheet/buttons_carac/icone_casting");
 		ITC.Set("ic_close_combat",     "graph/interface/book/character_sheet/buttons_carac/icone_close_combat");
