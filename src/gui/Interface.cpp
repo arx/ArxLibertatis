@@ -5906,15 +5906,13 @@ public:
 				if(sActiveInventory < player.bag-1) {
 					float fRatio = INTERFACE_RATIO(32 + 5);
 					
-					float posy = posy + checked_range_cast<int>(fRatio);
-					
 					ARX_INTERFACE_DrawItem(ITC.Get("hero_inventory_down"),	m_pos.x, g_size.height() - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY) + INTERFACE_RATIO(-3 + 64));
 					
 					const Rect inventoryDownMouseTestRect(
 					m_pos.x,
-					posy,
+					m_pos.y + fRatio,
 					m_pos.x + INTERFACE_RATIO(32),
-					posy + INTERFACE_RATIO(32)
+					m_pos.y + fRatio + INTERFACE_RATIO(32)
 					);
 					
 					if(inventoryDownMouseTestRect.contains(Vec2i(DANAEMouse))) {
