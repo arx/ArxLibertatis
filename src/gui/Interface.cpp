@@ -3657,12 +3657,18 @@ private:
 			tc = tcc;
 		
 		if(tc) {
-			EERIEDrawBitmap(posx, posy, INTERFACE_RATIO_DWORD(tc->m_dwWidth) * 0.5f, INTERFACE_RATIO_DWORD(tc->m_dwHeight) * 0.5f, 0.01f, tc, color);
+			Rectf rect1(Vec2f(posx, posy), tc->m_dwWidth * 0.5f, tc->m_dwHeight * 0.5f);
+			EERIEDrawBitmap(rect1, 0.01f, tc, color);
 			
 			if(flag & 2) {
 				GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendOne);
-				EERIEDrawBitmap(posx - 1, posy - 1, INTERFACE_RATIO_DWORD(tc->m_dwWidth) * 0.5f, INTERFACE_RATIO_DWORD(tc->m_dwHeight) * 0.5f, 0.0001f, tc, color);
-				EERIEDrawBitmap(posx + 1, posy + 1, INTERFACE_RATIO_DWORD(tc->m_dwWidth) * 0.5f, INTERFACE_RATIO_DWORD(tc->m_dwHeight) * 0.5f, 0.0001f, tc, color);
+				
+				Rectf rect2(Vec2f(posx - 1, posy - 1), tc->m_dwWidth * 0.5f, tc->m_dwHeight * 0.5f);
+				EERIEDrawBitmap(rect2, 0.0001f, tc, color);
+				
+				Rectf rect3(Vec2f(posx + 1, posy + 1), tc->m_dwWidth * 0.5f, tc->m_dwHeight * 0.5f);
+				EERIEDrawBitmap(rect3, 0.0001f, tc, color);
+				
 				GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 			}
 	
