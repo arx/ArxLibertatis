@@ -6557,8 +6557,8 @@ class MecanismIcon {
 private:
 	TextureContainer * m_tex;
 	Color m_color;
-	long lTimeToDrawMecanismCursor;
-	long lNbToDrawMecanismCursor;
+	long m_timeToDraw;
+	long m_nbToDraw;
 	
 public:
 	void init() {
@@ -6568,24 +6568,24 @@ public:
 	}
 	
 	void reset() {
-		lTimeToDrawMecanismCursor = 0;
-		lNbToDrawMecanismCursor = 0;
+		m_timeToDraw = 0;
+		m_nbToDraw = 0;
 	}
 	
 	void update() {
 		m_color = Color::white;
-		if(lTimeToDrawMecanismCursor > 300) {
+		if(m_timeToDraw > 300) {
 			m_color = Color::black;
-			if(lTimeToDrawMecanismCursor > 400) {
-				lTimeToDrawMecanismCursor=0;
-				lNbToDrawMecanismCursor++;
+			if(m_timeToDraw > 400) {
+				m_timeToDraw=0;
+				m_nbToDraw++;
 			}
 		}
-		lTimeToDrawMecanismCursor += static_cast<long>(framedelay);
+		m_timeToDraw += static_cast<long>(framedelay);
 	}
 	
 	void draw() {
-		if(lNbToDrawMecanismCursor >= 3) {
+		if(m_nbToDraw >= 3) {
 			return;
 		}
 		
