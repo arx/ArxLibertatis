@@ -440,7 +440,6 @@ void CreateInterfaceTextureContainers()
 	ITC.Set("inventory_pickall", "graph/interface/inventory/inv_pick");
 	ITC.Set("inventory_close", "graph/interface/inventory/inv_close");
 	
-	ITC.Set("gold", "graph/interface/inventory/gold");
 	ITC.Set("item_cant_steal", "graph/interface/icons/cant_steal_item");
 	
 	ITC.Set("target_on", "graph/interface/cursors/target_on");
@@ -5268,10 +5267,13 @@ LevelUpIconGui levelUpIconGui;
 
 class PurseIconGui : public HudIconBase {
 private:
+	TextureContainer * m_tex;
 	Vec2f m_pos;
+	
 public:
 	void init() {
-		
+		m_tex = TextureContainer::LoadUI("graph/interface/inventory/gold");
+		arx_assert(m_tex);
 	}
 	
 	void update() {
@@ -5313,7 +5315,7 @@ public:
 	}
 	
 	void draw() {
-		DrawIcon(m_pos, ITC.Get("gold"), MOUSE_IN_GOLD_ICON);
+		DrawIcon(m_pos, m_tex, MOUSE_IN_GOLD_ICON);
 		if(eMouseState == MOUSE_IN_GOLD_ICON) {
 			SpecialCursor=CURSOR_INTERACTION_ON;
 			
@@ -5332,7 +5334,7 @@ public:
 			if(ulGoldHaloTime >= 1000) { // ms
 				bGoldHalo = false;
 			}
-			DrawHalo(0.9f, 0.9f, 0.1f, GetHaloForITC("gold"), m_pos);
+			DrawHalo(0.9f, 0.9f, 0.1f, m_tex->getHalo(), m_pos);
 		}
 	}
 };
@@ -6320,7 +6322,7 @@ void hudElementsInit() {
 	TextureContainer::LoadUI("graph/interface/inventory/scroll_down");
 	TextureContainer::LoadUI("graph/interface/inventory/hero_inventory_link");
 	TextureContainer::LoadUI("graph/interface/inventory/ingame_inventory");
-	TextureContainer::LoadUI("graph/interface/inventory/gold");
+	purseIconGui.init();
 	
 	TextureContainer::LoadUI("graph/interface/inventory/inv_pick");
 	TextureContainer::LoadUI("graph/interface/inventory/inv_close");
