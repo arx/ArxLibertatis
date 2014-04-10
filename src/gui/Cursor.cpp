@@ -616,27 +616,24 @@ void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 
 						Color color = (DRAGINTER->poisonous && DRAGINTER->poisonous_count != 0) ? Color::green : Color::white;
 
-						float mx = mousePos.x;
-						float my = mousePos.y;
-
+						Vec2f pos = mousePos;
+						
 						if(TRUE_PLAYER_MOUSELOOK_ON && config.input.autoReadyWeapon) {
-							mx = MemoMouse.x;
-							my = MemoMouse.y;
+							pos = MemoMouse;
 						}
-
-						float fTexSizeX = INTERFACE_RATIO_DWORD(tc->m_dwWidth);
-						float fTexSizeY = INTERFACE_RATIO_DWORD(tc->m_dwHeight);
+						
+						Rectf rect(pos, tc->m_dwWidth, tc->m_dwHeight);
 
 						if(!(DRAGINTER->ioflags & IO_MOVABLE)) {
-							EERIEDrawBitmap(mx, my, fTexSizeX, fTexSizeY, .00001f, tc, color);
+							EERIEDrawBitmap(rect, .00001f, tc, color);
 
 							if((DRAGINTER->ioflags & IO_ITEM) && DRAGINTER->_itemdata->count != 1) {
 								Vec2f nuberOffset = Vec2f(2.f, 13.f);
-								ARX_INTERFACE_DrawNumber(Vec2f(mx, my) + nuberOffset, DRAGINTER->_itemdata->count, 3, Color::white);
+								ARX_INTERFACE_DrawNumber(pos + nuberOffset, DRAGINTER->_itemdata->count, 3, Color::white);
 							}
 						} else {
 							if((InInventoryPos(DANAEMouse) || InSecondaryInventoryPos(DANAEMouse)) || CANNOT_PUT_IT_HERE != -1) {
-								EERIEDrawBitmap(mx, my, fTexSizeX, fTexSizeY, .00001f, tc, color);
+								EERIEDrawBitmap(rect, .00001f, tc, color);
 							}
 						}
 
@@ -649,12 +646,12 @@ void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 									tcc = ThrowObject;
 
 								if(tcc && tcc != tc) // to avoid movable double red cross...
-									EERIEDrawBitmap(Rectf(Vec2f(mx + 16, my), tcc->m_dwWidth, tcc->m_dwHeight), 0.00001f, tcc, Color::white);
+									EERIEDrawBitmap(Rectf(Vec2f(pos.x + 16, pos.y), tcc->m_dwWidth, tcc->m_dwHeight), 0.00001f, tcc, Color::white);
 							}
 						}
 
 						if(tc2) {
-							ARX_INTERFACE_HALO_Draw(DRAGINTER,tc,tc2,mx,my, INTERFACE_RATIO(1), INTERFACE_RATIO(1));
+							ARX_INTERFACE_HALO_Draw(DRAGINTER, tc, tc2, pos.x, pos.y, 1.f, 1.f);
 						}
 					} else {
 						if(CURCURPOS != 0) {
