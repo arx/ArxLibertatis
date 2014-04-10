@@ -5017,6 +5017,90 @@ private:
 	TextureContainer * m_tex;
 	
 public:
+	void updateInput() {
+		if(player.torch) {
+			Vec2f pos(InventoryX + 110, g_size.height() - (158 + 32));
+			
+			if(pos.x < INTERFACE_RATIO(10))
+				pos.x = INTERFACE_RATIO(10);
+			
+			const Rect mouseTestRect(
+			pos.x,
+			pos.y,
+			pos.x + INTERFACE_RATIO(32),
+			pos.y + INTERFACE_RATIO(64)
+			);
+			
+			if(mouseTestRect.contains(Vec2i(DANAEMouse))) {
+				eMouseState=MOUSE_IN_TORCH_ICON;
+				SpecialCursor=CURSOR_INTERACTION_ON;
+
+				if((LastMouseClick & 1) && !(EERIEMouseButton & 1)) {
+					Entity * temp = player.torch;
+
+					if(temp && !temp->locname.empty()) {
+						if(((player.torch->ioflags & IO_ITEM) && player.torch->_itemdata->equipitem)
+							&& (player.Full_Skill_Object_Knowledge + player.Full_Attribute_Mind
+								>= player.torch->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Identify_Value].value) )
+						{
+							SendIOScriptEvent(FlyingOverIO,SM_IDENTIFY);
+						}
+
+						WILLADDSPEECH = getLocalised(temp->locname);
+
+						if(temp->ioflags & IO_GOLD) {
+							std::stringstream ss;
+							ss << temp->_itemdata->price << " " << WILLADDSPEECH;
+							WILLADDSPEECH = ss.str();
+						}
+
+						if(temp->poisonous > 0 && temp->poisonous_count != 0) {
+							std::string Text = getLocalised("description_poisoned", "error");
+							std::stringstream ss;
+							ss << WILLADDSPEECH << " (" << Text << " " << (int)temp->poisonous << ")";
+							WILLADDSPEECH = ss.str();
+						}
+
+						if ((temp->ioflags & IO_ITEM) && temp->durability < 100.f) {
+							std::string Text = getLocalised("description_durability", "error");
+							std::stringstream ss;
+							ss << WILLADDSPEECH << " " << Text << " " << std::fixed << std::setw(3) << std::setprecision(0) << temp->durability << std::setw(0) << "/" << std::setw(3) << temp->max_durability;
+							WILLADDSPEECH = ss.str();
+						}
+
+						WILLADDSPEECHTIME = (unsigned long)(arxtime);
+					}
+				}
+
+				if((EERIEMouseButton & 1) && (LastMouseClick & 1)) {
+					if(abs(DANAEMouse.x-STARTDRAG.x) > 2 || abs(DANAEMouse.y-STARTDRAG.y) > 2)
+						DRAGGING = true;
+				}
+
+				if(!DRAGINTER && !PLAYER_MOUSELOOK_ON && DRAGGING) {
+					Entity * io=player.torch;
+					player.torch->show=SHOW_FLAG_IN_SCENE;
+					ARX_SOUND_PlaySFX(SND_TORCH_END);
+					ARX_SOUND_Stop(SND_TORCH_LOOP);
+					player.torch=NULL;
+					lightHandleGet(torchLightHandle)->exist = 0;
+					Set_DragInter(io);
+					DRAGINTER->ignition=1;
+				} else {
+					if((EERIEMouseButton & 4) && !COMBINE) {
+						COMBINE = player.torch;
+					}
+
+					if(!(EERIEMouseButton & 2) && (LastMouseClick & 2)) {
+						ARX_PLAYER_ClickedOnTorch(player.torch);
+						EERIEMouseButton &= ~2;
+						TRUE_PLAYER_MOUSELOOK_ON = false;
+					}
+				}
+			}
+		}
+	}
+	
 	void update() {
 		if((player.Interface & INTER_NOTE) && TSecondaryInventory != NULL
 		   && (openNote.type() == gui::Note::BigNote || openNote.type() == gui::Note::Book)) {
@@ -6031,90 +6115,9 @@ void ArxGame::manageEditorControls() {
 	if(!BLOCK_PLAYER_CONTROLS) {
 		if(!(player.Interface & INTER_COMBATMODE)) {
 			if(!TRUE_PLAYER_MOUSELOOK_ON) {
-
 				
-				if(player.torch) {
-					Vec2f pos(InventoryX + 110, g_size.height() - (158 + 32));
-					
-					if(pos.x < INTERFACE_RATIO(10))
-						pos.x = INTERFACE_RATIO(10);
-					
-					const Rect mouseTestRect(
-					pos.x,
-					pos.y,
-					pos.x + INTERFACE_RATIO(32),
-					pos.y + INTERFACE_RATIO(64)
-					);
-					
-					if(mouseTestRect.contains(Vec2i(DANAEMouse))) {
-						eMouseState=MOUSE_IN_TORCH_ICON;
-						SpecialCursor=CURSOR_INTERACTION_ON;
-
-						if((LastMouseClick & 1) && !(EERIEMouseButton & 1)) {
-							Entity * temp = player.torch;
-
-							if(temp && !temp->locname.empty()) {
-								if(((player.torch->ioflags & IO_ITEM) && player.torch->_itemdata->equipitem)
-									&& (player.Full_Skill_Object_Knowledge + player.Full_Attribute_Mind
-										>= player.torch->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Identify_Value].value) )
-								{
-									SendIOScriptEvent(FlyingOverIO,SM_IDENTIFY);
-								}
-
-								WILLADDSPEECH = getLocalised(temp->locname);
-
-								if(temp->ioflags & IO_GOLD) {
-									std::stringstream ss;
-									ss << temp->_itemdata->price << " " << WILLADDSPEECH;
-									WILLADDSPEECH = ss.str();
-								}
-
-								if(temp->poisonous > 0 && temp->poisonous_count != 0) {
-									std::string Text = getLocalised("description_poisoned", "error");
-									std::stringstream ss;
-									ss << WILLADDSPEECH << " (" << Text << " " << (int)temp->poisonous << ")";
-									WILLADDSPEECH = ss.str();
-								}
-
-								if ((temp->ioflags & IO_ITEM) && temp->durability < 100.f) {
-									std::string Text = getLocalised("description_durability", "error");
-									std::stringstream ss;
-									ss << WILLADDSPEECH << " " << Text << " " << std::fixed << std::setw(3) << std::setprecision(0) << temp->durability << std::setw(0) << "/" << std::setw(3) << temp->max_durability;
-									WILLADDSPEECH = ss.str();
-								}
-
-								WILLADDSPEECHTIME = (unsigned long)(arxtime);
-							}
-						}
-
-						if((EERIEMouseButton & 1) && (LastMouseClick & 1)) {
-							if(abs(DANAEMouse.x-STARTDRAG.x) > 2 || abs(DANAEMouse.y-STARTDRAG.y) > 2)
-								DRAGGING = true;
-						}
-
-						if(!DRAGINTER && !PLAYER_MOUSELOOK_ON && DRAGGING) {
-							Entity * io=player.torch;
-							player.torch->show=SHOW_FLAG_IN_SCENE;
-							ARX_SOUND_PlaySFX(SND_TORCH_END);
-							ARX_SOUND_Stop(SND_TORCH_LOOP);
-							player.torch=NULL;
-							lightHandleGet(torchLightHandle)->exist = 0;
-							Set_DragInter(io);
-							DRAGINTER->ignition=1;
-						} else {
-							if((EERIEMouseButton & 4) && !COMBINE) {
-								COMBINE = player.torch;
-							}
-
-							if(!(EERIEMouseButton & 2) && (LastMouseClick & 2)) {
-								ARX_PLAYER_ClickedOnTorch(player.torch);
-								EERIEMouseButton &= ~2;
-								TRUE_PLAYER_MOUSELOOK_ON = false;
-							}
-						}
-					}
-				}
-
+				currentTorchIconGui.updateInput();
+				
 				// redist
 				if((player.Skill_Redistribute) || (player.Attribute_Redistribute)) {
 					Vec2f pos(g_size.width() - 35 + lSLID_VALUE, g_size.height() - INTERFACE_RATIO(218));
