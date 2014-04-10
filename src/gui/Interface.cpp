@@ -206,7 +206,6 @@ bool				bGoldHalo = false;
 bool				bInventoryClosing = false;
 bool				bInventorySwitch = false;
 bool				bIsAiming = false;
-float				fHitFlash = 0;
 unsigned long		ulBookHaloTime = 0;
 unsigned long		ulGoldHaloTime = 0;
 float				InventoryX=-60.f;
@@ -4272,17 +4271,20 @@ private:
 	float m_intensity;
 	bool bHitFlash;
 	unsigned long ulHitFlash;
+	float m_flashIntensity;
 	
 public:
 	HitStrengthGauge()
 		: m_intensity(0.f)
 		, bHitFlash(false)
 		, ulHitFlash(0)
+		, m_flashIntensity(0.f)
 	{}
 	
-	void requestFlash() {
+	void requestFlash(float flashIntensity) {
 		bHitFlash = true;
 		ulHitFlash = 0;
+		m_flashIntensity = flashIntensity;
 	}
 	
 	void update() {
@@ -4330,10 +4332,10 @@ public:
 			Vec2f flashPos = pos;
 			flashPos += Vec2f(-25, -30);
 			
-			float j = 1.0f - fHitFlash;
+			float j = 1.0f - m_flashIntensity;
 			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 			GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-			Color col = (j < 0.5f) ? Color3f(j*2.0f, 1, 0).to<u8>() : Color3f(1, fHitFlash, 0).to<u8>();
+			Color col = (j < 0.5f) ? Color3f(j*2.0f, 1, 0).to<u8>() : Color3f(1, m_flashIntensity, 0).to<u8>();
 			ARX_INTERFACE_DrawItem(ITC.Get("aim_hit"), flashPos.x, flashPos.y, 0.0001f, col);
 			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 		}
@@ -4341,8 +4343,8 @@ public:
 };
 HitStrengthGauge hitStrengthGauge = HitStrengthGauge();
 
-void hitStrengthGaugeRequestFlash() {
-	hitStrengthGauge.requestFlash();
+void hitStrengthGaugeRequestFlash(float flashIntensity) {
+	hitStrengthGauge.requestFlash(flashIntensity);
 }
 
 class SecondaryInventoryGui {

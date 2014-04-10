@@ -688,8 +688,6 @@ float ARX_DAMAGES_DealDamages(long target, float dmg, long source, DamageType fl
 	return 0;
 }
 
-extern float fHitFlash;
-
 //*************************************************************************************
 // flags & 1 == spell damage
 //*************************************************************************************
@@ -822,14 +820,15 @@ float ARX_DAMAGES_DamageNPC(Entity * io, float dmg, long source, long flags, Vec
 		damagesdone = min(dmg, io->_npcdata->life);
 		io->_npcdata->life -= dmg;
 		
-		hitStrengthGaugeRequestFlash();
-		
+		float fHitFlash = 0;
 		if(io->_npcdata->life <= 0) {
 			fHitFlash = 0;
 		} else {
 			fHitFlash = io->_npcdata->life / io->_npcdata->maxlife;
 		}
-
+		hitStrengthGaugeRequestFlash(fHitFlash);
+		
+		
 		if(io->_npcdata->life <= 0.f) {
 			io->_npcdata->life = 0.f;
 
