@@ -433,7 +433,6 @@ void CreateInterfaceTextureContainers()
 {
     ITC.Reset();
 	
-	ITC.Set("hero_inventory_down", "graph/interface/inventory/scroll_down");
 	ITC.Set("inventory_pickall", "graph/interface/inventory/inv_pick");
 	ITC.Set("inventory_close", "graph/interface/inventory/inv_close");
 	
@@ -4503,6 +4502,7 @@ private:
 	TextureContainer * m_heroInventory;
 	TextureContainer * m_heroInventoryLink;
 	TextureContainer * m_heroInventoryUp;
+	TextureContainer * m_heroInventoryDown;
 	
 	float fCenterX;
 	float fSizY;
@@ -4516,9 +4516,11 @@ public:
 		m_heroInventory = TextureContainer::LoadUI("graph/interface/inventory/hero_inventory");
 		m_heroInventoryLink = TextureContainer::LoadUI("graph/interface/inventory/hero_inventory_link");
 		m_heroInventoryUp = TextureContainer::LoadUI("graph/interface/inventory/scroll_up");
+		m_heroInventoryDown = TextureContainer::LoadUI("graph/interface/inventory/scroll_down");
 		arx_assert(m_heroInventory);
 		arx_assert(m_heroInventoryLink);
 		arx_assert(m_heroInventoryUp);
+		arx_assert(m_heroInventoryDown);
 	}
 	
 	bool updateInput() {
@@ -4755,7 +4757,7 @@ public:
 				if(sActiveInventory < player.bag-1) {
 					float fRatio = INTERFACE_RATIO(32 + 5);
 					
-					ARX_INTERFACE_DrawItem(ITC.Get("hero_inventory_down"),	m_pos.x, g_size.height() - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY) + INTERFACE_RATIO(-3 + 64));
+					ARX_INTERFACE_DrawItem(m_heroInventoryDown, m_pos.x, g_size.height() - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY) + INTERFACE_RATIO(-3 + 64));
 					
 					const Rect inventoryDownMouseTestRect(
 					m_pos.x,
@@ -4767,7 +4769,7 @@ public:
 					if(inventoryDownMouseTestRect.contains(Vec2i(DANAEMouse))) {
 						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-						ARX_INTERFACE_DrawItem(ITC.Get("hero_inventory_down"),	m_pos.x, g_size.height() - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY) + INTERFACE_RATIO(-3 + 64));
+						ARX_INTERFACE_DrawItem(m_heroInventoryDown, m_pos.x, g_size.height() - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY) + INTERFACE_RATIO(-3 + 64));
 						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 						SpecialCursor=CURSOR_INTERACTION_ON;
 						
@@ -6372,7 +6374,6 @@ void hudElementsInit() {
 	secondaryInventory.init();
 	inventoryGui.init();
 	
-	TextureContainer::LoadUI("graph/interface/inventory/scroll_down");
 	TextureContainer::LoadUI("graph/interface/inventory/ingame_inventory");
 	purseIconGui.init();
 	
