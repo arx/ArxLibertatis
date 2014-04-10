@@ -795,7 +795,13 @@ void MiniMap::drawDetectedEntities(int showLevel, float startX, float startY, fl
 		
 		fpx *= g_sizeRatio.x;
 		fpy *= g_sizeRatio.y;
-		EERIEDrawBitmap(fpx, fpy, 5.f * ratio, 5.f * ratio, 0, m_pTexDetect,
+		
+		Rectf rect(
+			Vec2f(fpx, fpy),
+			5.f * ratio,
+			5.f * ratio
+		);
+		EERIEDrawBitmap(rect, 0, m_pTexDetect,
 		Color3f(col, 0, 0).to<u8>());
 	}
 	

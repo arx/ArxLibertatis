@@ -192,8 +192,13 @@ void ARX_SPEECH_Render() {
 			continue;
 		}
 		
-		EERIEDrawBitmap(120 * g_sizeRatio.x - 16 * g_sizeRatio.x, static_cast<float>(igrec),
-		                16 * g_sizeRatio.x, 16 * g_sizeRatio.x, .00001f, arx_logo_tc, Color::white);
+		Rectf rect(
+			Vec2f(120 * g_sizeRatio.x - 16 * g_sizeRatio.x, igrec),
+			16 * g_sizeRatio.x,
+			16 * g_sizeRatio.x
+		);
+		
+		EERIEDrawBitmap(rect, .00001f, arx_logo_tc, Color::white);
 		
 		igrec += ARX_UNICODE_DrawTextInRect(hFontInBook, 120.f * g_sizeRatio.x, (float)igrec, 500 * g_sizeRatio.x,
 		                           ' ' + speech[i].text, Color::white, NULL);
