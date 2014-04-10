@@ -1614,53 +1614,53 @@ void ArxGame::render() {
 
 	// Checks for Keyboard & Moulinex
 	{
-		ARX_MOUSE_OVER = 0;
-
-		if(ARXmenu.currentmode == AMCM_OFF) { // Playing Game
-			// Checks Clicks in Book Interface
-			if(ARX_INTERFACE_MouseInBook()) {
-				ARX_MOUSE_OVER |= ARX_MOUSE_OVER_BOOK;
-				LASTBOOKBUTTON = BOOKBUTTON;
-				BOOKBUTTON = EERIEMouseButton;
-
-				if(((EERIEMouseButton & 1) && !(LastMouseClick & 1))
-				   || ((EERIEMouseButton & 2) && !(LastMouseClick & 2))
-				) {
-					bookclick = DANAEMouse;
-				}
-			} else if(InSecondaryInventoryPos(DANAEMouse)) {
-				ARX_MOUSE_OVER |= ARX_MOUSE_OVER_INVENTORY_2;
-			} else if(InPlayerInventoryPos(DANAEMouse)) {
-				ARX_MOUSE_OVER |= ARX_MOUSE_OVER_INVENTORY;
+	ARX_MOUSE_OVER = 0;
+	
+	if(ARXmenu.currentmode == AMCM_OFF) { // Playing Game
+		// Checks Clicks in Book Interface
+		if(ARX_INTERFACE_MouseInBook()) {
+			ARX_MOUSE_OVER |= ARX_MOUSE_OVER_BOOK;
+			LASTBOOKBUTTON = BOOKBUTTON;
+			BOOKBUTTON = EERIEMouseButton;
+			
+			if(((EERIEMouseButton & 1) && !(LastMouseClick & 1))
+			   || ((EERIEMouseButton & 2) && !(LastMouseClick & 2))
+			) {
+				bookclick = DANAEMouse;
 			}
+		} else if(InSecondaryInventoryPos(DANAEMouse)) {
+			ARX_MOUSE_OVER |= ARX_MOUSE_OVER_INVENTORY_2;
+		} else if(InPlayerInventoryPos(DANAEMouse)) {
+			ARX_MOUSE_OVER |= ARX_MOUSE_OVER_INVENTORY;
 		}
-
-		if((player.Interface & INTER_COMBATMODE) || PLAYER_MOUSELOOK_ON) {
-			FlyingOverIO = NULL; // Avoid to check with those modes
-		} else {
-			if(!DRAGINTER) {
-				if(!BLOCK_PLAYER_CONTROLS
-				   && !TRUE_PLAYER_MOUSELOOK_ON
-				   && !(ARX_MOUSE_OVER & ARX_MOUSE_OVER_BOOK)
-				   && eMouseState != MOUSE_IN_NOTE
-				) {
-					FlyingOverIO = FlyingOverObject(DANAEMouse);
-				} else {
-					FlyingOverIO = NULL;
-				}
-			}
-		}
-
-		if(!PLAYER_PARALYSED || ARXmenu.currentmode != AMCM_OFF) {
-			if(!STOP_KEYBOARD_INPUT) {
-				manageKeyMouse();
+	}
+	
+	if((player.Interface & INTER_COMBATMODE) || PLAYER_MOUSELOOK_ON) {
+		FlyingOverIO = NULL; // Avoid to check with those modes
+	} else {
+		if(!DRAGINTER) {
+			if(!BLOCK_PLAYER_CONTROLS
+			   && !TRUE_PLAYER_MOUSELOOK_ON
+			   && !(ARX_MOUSE_OVER & ARX_MOUSE_OVER_BOOK)
+			   && eMouseState != MOUSE_IN_NOTE
+			) {
+				FlyingOverIO = FlyingOverObject(DANAEMouse);
 			} else {
-				STOP_KEYBOARD_INPUT++;
-
-				if(STOP_KEYBOARD_INPUT > 2)
-					STOP_KEYBOARD_INPUT = 0;
+				FlyingOverIO = NULL;
 			}
 		}
+	}
+	
+	if(!PLAYER_PARALYSED || ARXmenu.currentmode != AMCM_OFF) {
+		if(!STOP_KEYBOARD_INPUT) {
+			manageKeyMouse();
+		} else {
+			STOP_KEYBOARD_INPUT++;
+			
+			if(STOP_KEYBOARD_INPUT > 2)
+				STOP_KEYBOARD_INPUT = 0;
+		}
+	}
 	}
 
 	if(CheckInPoly(player.pos.x, player.pos.y, player.pos.z)) {
