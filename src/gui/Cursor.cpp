@@ -649,8 +649,7 @@ void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 									tcc = ThrowObject;
 
 								if(tcc && tcc != tc) // to avoid movable double red cross...
-									EERIEDrawBitmap(mx + 16, my, INTERFACE_RATIO_DWORD(tcc->m_dwWidth),
-													INTERFACE_RATIO_DWORD(tcc->m_dwHeight), 0.00001f, tcc, Color::white);
+									EERIEDrawBitmap(Rectf(Vec2f(mx + 16, my), tcc->m_dwWidth, tcc->m_dwHeight), 0.00001f, tcc, Color::white);
 							}
 						}
 
@@ -672,8 +671,7 @@ void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 						TextureContainer * surf = scursor[CURCURPOS];
 
 						if(surf) {
-							EERIEDrawBitmap(mousePos.x, mousePos.y, INTERFACE_RATIO_DWORD(surf->m_dwWidth),
-											INTERFACE_RATIO_DWORD(surf->m_dwHeight), 0.f, surf, Color::white);
+							EERIEDrawBitmap(Rectf(mousePos, surf->m_dwWidth, surf->m_dwHeight), 0.f, surf, Color::white);
 						}
 					}
 				}
