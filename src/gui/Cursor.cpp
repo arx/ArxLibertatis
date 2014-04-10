@@ -63,6 +63,9 @@ long CANNOT_PUT_IT_HERE=0;
 
 static TextureContainer * cursorTargetOn = NULL;
 static TextureContainer * cursorTargetOff = NULL;
+static TextureContainer * cursorInteractionOn = NULL;
+static TextureContainer * cursorInteractionOff = NULL;
+static TextureContainer * cursorMagic = NULL;
 
 TextureContainer * ThrowObject = NULL;
 
@@ -71,14 +74,17 @@ void cursorTexturesInit() {
 	
 	cursorTargetOn = TextureContainer::LoadUI("graph/interface/cursors/target_on");
 	cursorTargetOff = TextureContainer::LoadUI("graph/interface/cursors/target_off");
+	cursorInteractionOn = TextureContainer::LoadUI("graph/interface/cursors/interaction_on");
+	cursorInteractionOff = TextureContainer::LoadUI("graph/interface/cursors/interaction_off");
+	cursorMagic = TextureContainer::LoadUI("graph/interface/cursors/magic");
+	ThrowObject = TextureContainer::LoadUI("graph/interface/cursors/throw");
+	
 	arx_assert(cursorTargetOn);
 	arx_assert(cursorTargetOff);
-	
-	ITC.Set("interaction_on", "graph/interface/cursors/interaction_on");
-	ITC.Set("interaction_off", "graph/interface/cursors/interaction_off");
-	ITC.Set("magic", "graph/interface/cursors/magic");
-	
-	ThrowObject = TextureContainer::LoadUI("graph/interface/cursors/throw");
+	arx_assert(cursorInteractionOn);
+	arx_assert(cursorInteractionOff);
+	arx_assert(cursorMagic);
+	arx_assert(ThrowObject);
 }
 
 
@@ -609,7 +615,7 @@ void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 						MAGICMODE = 1;
 					}
 
-					TextureContainer * surf = ITC.Get("magic");
+					TextureContainer * surf = cursorMagic;
 
 					Vec2f pos = Vec2f(DANAEMouse);
 					

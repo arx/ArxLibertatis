@@ -758,9 +758,6 @@ void LoadSysTextures()
 	
 	//CURSORS LOADING
 	TextureContainer::LoadUI("graph/interface/cursors/cursor");
-	TextureContainer::LoadUI("graph/interface/cursors/magic");
-	TextureContainer::LoadUI("graph/interface/cursors/interaction_on");
-	TextureContainer::LoadUI("graph/interface/cursors/interaction_off");
 	TextureContainer::LoadUI("graph/interface/cursors/drop");
 	TextureContainer::LoadUI("graph/interface/cursors/throw");
 	
