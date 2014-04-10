@@ -5701,6 +5701,9 @@ private:
 	Vec2f m_pos;
 	
 public:
+	void init() {
+		
+	}
 
 	void update() {
 		m_pos = g_size.bottomRight();
@@ -5731,6 +5734,9 @@ private:
 	Vec2f m_pos;
 	
 public:
+	void init() {
+		
+	}
 
 	void update() {
 		m_pos = g_size.bottomRight();
@@ -5750,6 +5756,10 @@ class StealIconGui : public HudIconBase {
 private:
 	Vec2f m_pos;
 public:
+	void init() {
+		
+	}
+	
 	void update() {
 		m_pos.x = static_cast<float>(-lSLID_VALUE);
 		m_pos.y = g_size.height() - INTERFACE_RATIO(78.f + 32);
@@ -5766,6 +5776,10 @@ class PickAllIconGui : public HudIconBase {
 private:
 	Vec2f m_pos;
 public:
+	void init() {
+		
+	}
+	
 	void update() {
 		m_pos.x = INTERFACE_RATIO(InventoryX);
 		m_pos.y = INTERFACE_RATIO_DWORD(BasicInventorySkin->m_dwHeight);
@@ -5783,6 +5797,10 @@ class CloseSecondaryInventoryIconGui : public HudIconBase {
 private:
 	Vec2f m_pos;
 public:
+	void init() {
+		
+	}
+	
 	void update() {
 		m_pos.x = INTERFACE_RATIO(InventoryX) + INTERFACE_RATIO_DWORD(BasicInventorySkin->m_dwWidth);
 		m_pos.y = INTERFACE_RATIO_DWORD(BasicInventorySkin->m_dwHeight);
@@ -5801,6 +5819,10 @@ class LevelUpIconGui : public HudIconBase {
 private:
 	Vec2f m_pos;
 public:
+	void init() {
+		
+	}
+	
 	void update() {
 		m_pos = g_size.bottomRight();
 		m_pos += Vec2f(-35, -218);
@@ -5819,6 +5841,10 @@ class PurseIconGui : public HudIconBase {
 private:
 	Vec2f m_pos;
 public:
+	void init() {
+		
+	}
+	
 	void update() {
 		m_pos = g_size.bottomRight();
 		m_pos += Vec2f(-35, -183);
