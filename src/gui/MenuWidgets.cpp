@@ -2123,7 +2123,7 @@ void CMenuState::Render() {
 		return;
 
 	if(pTexBackGround)
-		EERIEDrawBitmap2(0, 0, static_cast<float>(g_size.width()), static_cast<float>(g_size.height()), 0.999f, pTexBackGround, Color::white);
+		EERIEDrawBitmap2(Rectf(Vec2f(0, 0), g_size.width(), g_size.height()), 0.999f, pTexBackGround, Color::white);
 
 	int t=pMenuAllZone->GetNbZone();
 
@@ -2514,7 +2514,7 @@ void CMenuCheckButton::Render() {
 		}
 		
 		//carre
-		EERIEDrawBitmap2(static_cast<float>(rZone.right - iTaille), iY, RATIO_X(iTaille), RATIO_Y(iTaille), 0.f, pTex, color);
+		EERIEDrawBitmap2(Rectf(Vec2f(rZone.right - iTaille, iY), RATIO_X(iTaille), RATIO_Y(iTaille)), 0.f, pTex, color);
 	}
 
 	if(pText)
@@ -2551,7 +2551,7 @@ void CMenuCheckButton::RenderMouseOver() {
 
 	//carre
 
-	EERIEDrawBitmap2(static_cast<float>(rZone.right - iTaille), iY, RATIO_X(iTaille), RATIO_Y(iTaille), 0.f, pTex, Color::white); 
+	EERIEDrawBitmap2(Rectf(Vec2f(rZone.right - iTaille, iY), RATIO_X(iTaille), RATIO_Y(iTaille)), 0.f, pTex, Color::white); 
 
 	//tick
 	if (pText)
