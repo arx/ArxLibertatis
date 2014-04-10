@@ -689,7 +689,6 @@ float ARX_DAMAGES_DealDamages(long target, float dmg, long source, DamageType fl
 }
 
 extern float fHitFlash;
-extern unsigned long ulHitFlash;
 
 //*************************************************************************************
 // flags & 1 == spell damage
@@ -830,8 +829,6 @@ float ARX_DAMAGES_DamageNPC(Entity * io, float dmg, long source, long flags, Vec
 		} else {
 			fHitFlash = io->_npcdata->life / io->_npcdata->maxlife;
 		}
-
-		ulHitFlash = 0;
 
 		if(io->_npcdata->life <= 0.f) {
 			io->_npcdata->life = 0.f;

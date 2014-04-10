@@ -207,7 +207,6 @@ bool				bInventoryClosing = false;
 bool				bInventorySwitch = false;
 bool				bIsAiming = false;
 float				fHitFlash = 0;
-unsigned long		ulHitFlash = 0;
 unsigned long		ulBookHaloTime = 0;
 unsigned long		ulGoldHaloTime = 0;
 float				InventoryX=-60.f;
@@ -4272,15 +4271,18 @@ class HitStrengthGauge {
 private:
 	float m_intensity;
 	bool bHitFlash;
+	unsigned long ulHitFlash;
 	
 public:
 	HitStrengthGauge()
 		: m_intensity(0.f)
 		, bHitFlash(false)
+		, ulHitFlash(0)
 	{}
 	
 	void requestFlash() {
 		bHitFlash = true;
+		ulHitFlash = 0;
 	}
 	
 	void update() {
