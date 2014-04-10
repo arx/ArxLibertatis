@@ -6547,9 +6547,10 @@ public:
 	
 	void draw() {
 		Color lcolor = Color3f::gray(.5f).to<u8>();
+		
 		// Left
-		EERIEDrawBitmap(0 + fMove, g_size.center().y - (m_arrowSize.y * .5f),
-			m_arrowSize.x, m_arrowSize.y, 0.01f, arrow_left_tc, lcolor);
+		Rectf left(Vec2f(0 + fMove, g_size.center().y - (m_arrowSize.y * .5f)), m_arrowSize.x, m_arrowSize.y);
+		EERIEDrawBitmap(left, 0.01f, arrow_left_tc, lcolor);
 		// Right
 		EERIEDrawBitmapUVs(g_size.width() - m_arrowSize.x - fMove, g_size.center().y - (m_arrowSize.y * .5f),
 			m_arrowSize.x, m_arrowSize.y, .01f, arrow_left_tc, lcolor, 1.f, 0.f, 0.f, 0.f, 1.f, 1.f, 0.f, 1.f);
