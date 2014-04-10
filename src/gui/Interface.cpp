@@ -6186,24 +6186,27 @@ public:
 static PurseIconGui purseIconGui;
 
 class CurrentTorchIconGui {
+private:
+	bool m_isActive;
+	Rectf m_rect;
+	TextureContainer * m_tex;
+	
 public:
-	void draw() {
-		
+	void update() {
 		if((player.Interface & INTER_NOTE) && TSecondaryInventory != NULL
 		   && (openNote.type() == gui::Note::BigNote || openNote.type() == gui::Note::Book)) {
+			m_isActive = false;
 			return;
 		}
+		m_isActive = true;
+		
+		m_tex = player.torch->inv;
+		
 		
 		float px = INTERFACE_RATIO(std::max(InventoryX + 110.f, 10.f));
 		float py = g_size.height() - INTERFACE_RATIO(158.f + 32.f);
 		
-		Rectf rect(
-			Vec2f(px, py),
-			player.torch->inv->m_dwWidth,
-			player.torch->inv->m_dwHeight
-		);
-		
-		EERIEDrawBitmap(rect, 0.001f, player.torch->inv, Color::white);
+		m_rect = Rectf(Vec2f(px, py), m_tex->m_dwWidth, m_tex->m_dwHeight);
 		
 		if(rnd() <= 0.2f) {
 			return;
@@ -6225,6 +6228,10 @@ public:
 		pd->rgb = Color3f(1.f, .6f, .5f);
 		pd->siz = INTERFACE_RATIO(14.f);
 		pd->type = PARTICLE_2D;
+	}
+	
+	void draw() {
+		EERIEDrawBitmap(m_rect, 0.001f, m_tex, Color::white);
 	}
 };
 
@@ -6269,6 +6276,7 @@ void DrawIcons() {
 		bookIconGui.drawHalo();
 	}
 	if(player.torch) {
+		currentTorchIconGui.update();
 		currentTorchIconGui.draw();
 	}
 }
