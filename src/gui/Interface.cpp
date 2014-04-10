@@ -5003,6 +5003,46 @@ public:
 		m_pos.y = g_size.height() - INTERFACE_RATIO(78.f + 32);
 	}
 	
+	void updateInput() {
+		
+		// steal
+		if(player.Interface & INTER_STEAL) {
+			Vec2f pos(static_cast<float>(-lSLID_VALUE), g_size.height() - (78 + 32));
+			
+			const Rect mouseTestRect(
+			pos.x,
+			pos.y,
+			pos.x + INTERFACE_RATIO(32),
+			pos.y + INTERFACE_RATIO(32)
+			);
+			
+			if(mouseTestRect.contains(Vec2i(DANAEMouse))) {
+				eMouseState=MOUSE_IN_STEAL_ICON;
+				SpecialCursor=CURSOR_INTERACTION_ON;
+
+				if((EERIEMouseButton & 1) && !(LastMouseClick & 1)) {
+					ARX_INVENTORY_OpenClose(ioSteal);
+
+					if(player.Interface&(INTER_INVENTORY | INTER_INVENTORYALL)) {
+						ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
+					}
+
+					if(SecondaryInventory) {
+						SendIOScriptEvent(ioSteal, SM_STEAL);
+
+						bForceEscapeFreeLook=true;
+					    lOldTruePlayerMouseLook=!TRUE_PLAYER_MOUSELOOK_ON;
+					}
+
+					EERIEMouseButton &=~1;
+				}
+
+				if(DRAGINTER == NULL)
+					return;
+			}
+		}
+	}
+	
 	void draw() {
 		DrawIcon(m_pos, ITC.Get("steal"), MOUSE_IN_STEAL_ICON);
 	}
@@ -6355,43 +6395,7 @@ void ArxGame::manageEditorControls() {
 				
 				
 			}
-
-			// steal
-			if(player.Interface & INTER_STEAL) {
-				Vec2f pos(static_cast<float>(-lSLID_VALUE), g_size.height() - (78 + 32));
-				
-				const Rect mouseTestRect(
-				pos.x,
-				pos.y,
-				pos.x + INTERFACE_RATIO(32),
-				pos.y + INTERFACE_RATIO(32)
-				);
-				
-				if(mouseTestRect.contains(Vec2i(DANAEMouse))) {
-					eMouseState=MOUSE_IN_STEAL_ICON;
-					SpecialCursor=CURSOR_INTERACTION_ON;
-
-					if((EERIEMouseButton & 1) && !(LastMouseClick & 1)) {
-						ARX_INVENTORY_OpenClose(ioSteal);
-
-						if(player.Interface&(INTER_INVENTORY | INTER_INVENTORYALL)) {
-							ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
-						}
-
-						if(SecondaryInventory) {
-							SendIOScriptEvent(ioSteal, SM_STEAL);
-
-							bForceEscapeFreeLook=true;
-						    lOldTruePlayerMouseLook=!TRUE_PLAYER_MOUSELOOK_ON;
-						}
-
-						EERIEMouseButton &=~1;
-					}
-
-					if(DRAGINTER == NULL)
-						return;
-				}
-			}
+			stealIconGui.updateInput();
 		}
 	}
 
