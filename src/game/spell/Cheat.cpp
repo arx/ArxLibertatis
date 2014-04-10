@@ -378,8 +378,15 @@ void CheckMr() {
 
 	if(cur_mr == 3) {
 		if(GRenderer && Mr_tc) {
-			EERIEDrawBitmap(g_size.width()-(128.f*g_sizeRatio.x), 0.f, (float)128*g_sizeRatio.x, (float)128*g_sizeRatio.y,0.0001f,
-							Mr_tc, Color3f::gray(0.5f + PULSATE * (1.0f/10)).to<u8>());
+			Vec2f pos = Vec2f(g_size.topRight());
+			pos += Vec2f(-128.f * g_sizeRatio.x, 0.f);
+			
+			Vec2f size = Vec2f(128.f, 128.f);
+			size *= g_sizeRatio;
+			
+			Rectf rect = Rectf(pos, size.x, size.y);
+			
+			EERIEDrawBitmap(rect, 0.0001f, Mr_tc, Color3f::gray(0.5f + PULSATE * (1.0f/10)).to<u8>());
 		} else {
 			Mr_tc = TextureContainer::LoadUI("graph/particles/(fx)_mr");
 		}
