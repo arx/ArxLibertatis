@@ -380,7 +380,7 @@ bool ARX_INTERFACE_MouseInBook() {
 
 static void ARX_INTERFACE_DrawItem(TextureContainer * tc, float x, float y, float z = 0.001f, Color col = Color::white) {
 	if(tc) {
-		EERIEDrawBitmap(x, y, INTERFACE_RATIO_DWORD(tc->m_dwWidth), INTERFACE_RATIO_DWORD(tc->m_dwHeight), z, tc, col);
+		EERIEDrawBitmap(Rectf(Vec2f(x, y), tc->m_dwWidth, tc->m_dwHeight), z, tc, col);
 	}
 }
 
@@ -570,7 +570,7 @@ void ARX_INTERFACE_HALO_Render(float _fR, float _fG, float _fB,
 	float width = haloTexture->m_dwWidth * fRatioX;
 	float height = haloTexture->m_dwHeight * fRatioY;
 	
-	EERIEDrawBitmap(x, y, width, height, 0.00001f, haloTexture, col);
+	EERIEDrawBitmap(Rectf(Vec2f(x, y), width, height), 0.00001f, haloTexture, col);
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 }
