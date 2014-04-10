@@ -4511,6 +4511,46 @@ private:
 	Vec2f m_slotSpacing;
 	
 public:
+	bool updateInput() {
+		float fCenterX	= g_size.center().x + INTERFACE_RATIO(-320 + 35) + INTERFACE_RATIO_DWORD(ITC.Get("hero_inventory")->m_dwWidth) - INTERFACE_RATIO(32 + 3) ;
+		float fSizY		= g_size.height() - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY) + INTERFACE_RATIO(- 3 + 25) ;
+
+		float posx = ARX_CAST_TO_INT_THEN_FLOAT( fCenterX );
+		float posy = ARX_CAST_TO_INT_THEN_FLOAT( fSizY );
+
+		bool bQuitCombine = true;
+		
+		if(sActiveInventory > 0) {
+			const Rect mouseTestRect(
+			posx,
+			posy,
+			posx + INTERFACE_RATIO(32),
+			posy + INTERFACE_RATIO(32)
+			);
+			
+			if(mouseTestRect.contains(Vec2i(DANAEMouse)))
+				bQuitCombine = false;
+		}
+
+		if(sActiveInventory < player.bag-1) {
+			float fRatio = INTERFACE_RATIO(32 + 5);
+
+			posy += checked_range_cast<int>(fRatio);
+			
+			const Rect mouseTestRect(
+			posx,
+			posy,
+			posx + INTERFACE_RATIO(32),
+			posy + INTERFACE_RATIO(32)
+			);
+			
+			if(mouseTestRect.contains(Vec2i(DANAEMouse)))
+				bQuitCombine = false;
+		}
+		
+		return bQuitCombine;
+	}
+	
 	void update() {
 		if(player.Interface & INTER_INVENTORY) {
 			if((player.Interface & INTER_COMBATMODE) || player.doingmagic >= 2) {
@@ -6717,40 +6757,7 @@ void ArxGame::manageEditorControls() {
 	
 			if((player.Interface & INTER_INVENTORY)) {
 				if(player.bag) {
-	
-					float fCenterX	= g_size.center().x + INTERFACE_RATIO(-320 + 35) + INTERFACE_RATIO_DWORD(ITC.Get("hero_inventory")->m_dwWidth) - INTERFACE_RATIO(32 + 3) ;
-					float fSizY		= g_size.height() - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY) + INTERFACE_RATIO(- 3 + 25) ;
-	
-					float posx = ARX_CAST_TO_INT_THEN_FLOAT( fCenterX );
-					float posy = ARX_CAST_TO_INT_THEN_FLOAT( fSizY );
-	
-					if(sActiveInventory > 0) {
-						const Rect mouseTestRect(
-						posx,
-						posy,
-						posx + INTERFACE_RATIO(32),
-						posy + INTERFACE_RATIO(32)
-						);
-						
-						if(mouseTestRect.contains(Vec2i(DANAEMouse)))
-							bQuitCombine = false;
-					}
-	
-					if(sActiveInventory < player.bag-1) {
-						float fRatio = INTERFACE_RATIO(32 + 5);
-	
-						posy += checked_range_cast<int>(fRatio);
-						
-						const Rect mouseTestRect(
-						posx,
-						posy,
-						posx + INTERFACE_RATIO(32),
-						posy + INTERFACE_RATIO(32)
-						);
-						
-						if(mouseTestRect.contains(Vec2i(DANAEMouse)))
-							bQuitCombine = false;
-					}
+					bQuitCombine = inventoryGui.updateInput();
 				}
 			}
 	
