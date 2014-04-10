@@ -4374,25 +4374,13 @@ public:
 		Entity * io = getSecondaryOrStealInvEntity();
 		if(io) {
 			float dist = fdist(io->pos, player.pos + (Vec3f_Y_AXIS * 80.f));
-			if(Project.telekinesis) {
-				if(dist > 900.f) {
-					if(InventoryDir != -1) {
-						ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
-	
-						InventoryDir=-1;
-						SendIOScriptEvent(io,SM_INVENTORY2_CLOSE);
-						TSecondaryInventory=SecondaryInventory;
-						SecondaryInventory=NULL;
-					} else {
-						if(player.Interface & INTER_STEAL) {
-							player.Interface &= ~INTER_STEAL;
-						}
-					}
-				}
-			} else if(dist > 350.f) {
+			
+			float maxDist = Project.telekinesis ? 900.f : 350.f;
+			
+			if(dist > maxDist) {
 				if(InventoryDir != -1) {
 					ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
-	
+
 					InventoryDir=-1;
 					SendIOScriptEvent(io,SM_INVENTORY2_CLOSE);
 					TSecondaryInventory=SecondaryInventory;
