@@ -3404,6 +3404,7 @@ private:
 public:
 	void init() {
 		stealth_gauge_tc = TextureContainer::LoadUI("graph/interface/icons/stealth_gauge");
+		arx_assert(stealth_gauge_tc);
 	}
 
 	void draw() {
@@ -3452,6 +3453,11 @@ public:
 		iconequip[2] = TextureContainer::LoadUI("graph/interface/icons/equipment_helm");
 		iconequip[3] = TextureContainer::LoadUI("graph/interface/icons/equipment_chest");
 		iconequip[4] = TextureContainer::LoadUI("graph/interface/icons/equipment_leggings");
+		arx_assert(iconequip[0]);
+		arx_assert(iconequip[1]);
+		arx_assert(iconequip[2]);
+		arx_assert(iconequip[3]);
+		arx_assert(iconequip[4]);
 	}
 	
 	void draw()
@@ -6208,6 +6214,7 @@ public:
 		m_isActive = true;
 		
 		m_tex = player.torch->inv;
+		arx_assert(m_tex);
 		
 		
 		float px = INTERFACE_RATIO(std::max(InventoryX + 110.f, 10.f));
@@ -6298,6 +6305,7 @@ private:
 public:
 	void init() {
 		m_tex = TextureContainer::LoadUI("graph/interface/icons/change_lvl");
+		arx_assert(m_tex);
 	}
 	
 	void update() {
@@ -6369,9 +6377,7 @@ public:
 		float alpha = std::min(1.f, 0.6f * (std::sin(step * (7.f / 2.f * PI)) + 1.f));
 		
 		TextureContainer * tex = TextureContainer::LoadUI("graph/interface/icons/menu_main_save");
-		if(!tex) {
-			return;
-		}
+		arx_assert(tex);
 		
 		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 		GRenderer->SetBlendFunc(Renderer::BlendSrcColor, Renderer::BlendOne);
@@ -6467,6 +6473,8 @@ public:
 	void update() {
 		m_emptyTex = ITC.Get("empty_gauge_red");
 		m_filledTex = ITC.Get("filled_gauge_red");
+		arx_assert(m_emptyTex);
+		arx_assert(m_filledTex);
 		
 		m_amount = (float)player.life/(float)player.Full_maxlife;
 	}
@@ -6522,6 +6530,8 @@ public:
 	void update() {
 		m_emptyTex = ITC.Get("empty_gauge_blue");
 		m_filledTex = ITC.Get("filled_gauge_blue");
+		arx_assert(m_emptyTex);
+		arx_assert(m_filledTex);
 		
 		m_amount = player.mana / player.Full_maxmana;
 	}
@@ -6570,6 +6580,7 @@ private:
 public:
 	void init() {
 		m_tex = TextureContainer::LoadUI("graph/interface/cursors/mecanism");
+		arx_assert(m_tex);
 		
 		reset();
 	}
