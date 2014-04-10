@@ -2028,12 +2028,9 @@ void CMenuElementText::RenderMouseOver() {
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-
-	Vec3f ePos;
-	ePos.x = (float)rZone.left;
-	ePos.y = (float)rZone.top;
-	ePos.z = 1;
-
+	
+	Vec3f ePos = Vec3f(Vec2f(rZone.topLeft()), 1.f);
+	
 	FontRenderText(pFont, ePos, lpszText, lColorHighlight);
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
