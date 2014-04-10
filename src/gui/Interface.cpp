@@ -4857,10 +4857,6 @@ void DrawItemPrice() {
 
 class HudIconBase {
 protected:
-	TextureContainer* GetHaloForITC(const char* itcName) {
-		return ITC.Get(itcName)->getHalo();
-	}
-	
 	void DrawHalo(float r, float g, float b, TextureContainer* halo, const Vec2f& coords) {
 		if(halo) {
 			ARX_INTERFACE_HALO_Render(r, g, b, HALO_ACTIVE, halo, coords.x, coords.y);
