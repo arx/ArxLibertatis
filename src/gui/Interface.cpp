@@ -4271,11 +4271,11 @@ extern float GLOBAL_SLOWDOWN;
  */
 class HitStrengthGauge {
 private:
-	float HitStrengthVal;
+	float m_intensity;
 	
 public:
 	HitStrengthGauge()
-		: HitStrengthVal(0.f)
+		: m_intensity(0.f)
 	{}
 	
 	float getHitStrengthColorVal() {
@@ -4312,7 +4312,7 @@ public:
 	}
 	
 	void update() {
-		HitStrengthVal = getHitStrengthColorVal();
+		m_intensity = getHitStrengthColorVal();
 	}
 	
 	void draw() {
@@ -4322,7 +4322,7 @@ public:
 		GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	
 		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-		ARX_INTERFACE_DrawItem(ITC.Get("aim_maxi"), pos.x, pos.y, 0.0001f, Color3f::gray(HitStrengthVal).to<u8>());
+		ARX_INTERFACE_DrawItem(ITC.Get("aim_maxi"), pos.x, pos.y, 0.0001f, Color3f::gray(m_intensity).to<u8>());
 		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 		ARX_INTERFACE_DrawItem(ITC.Get("aim_empty"), pos.x, pos.y, 0.0001f, Color::white);
 		if(bHitFlash && player.Full_Skill_Etheral_Link >= 40) {
