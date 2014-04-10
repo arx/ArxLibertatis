@@ -440,8 +440,6 @@ void CreateInterfaceTextureContainers()
 	ITC.Set("inventory_pickall", "graph/interface/inventory/inv_pick");
 	ITC.Set("inventory_close", "graph/interface/inventory/inv_close");
 	
-	ITC.Set("item_cant_steal", "graph/interface/icons/cant_steal_item");
-	
 	ITC.Set("target_on", "graph/interface/cursors/target_on");
 	ITC.Set("target_off", "graph/interface/cursors/target_off");
 	ITC.Set("interaction_on", "graph/interface/cursors/interaction_on");
@@ -4355,7 +4353,14 @@ void hitStrengthGaugeRequestFlash(float flashIntensity) {
 }
 
 class SecondaryInventoryGui {
+private:
+	TextureContainer * m_tex;
+	
 public:
+	void init() {
+		m_tex = TextureContainer::LoadUI("graph/interface/icons/cant_steal_item");
+	}
+	
 	Entity* getSecondaryOrStealInvEntity() {
 		if(SecondaryInventory) {
 			return SecondaryInventory->io;
@@ -4428,7 +4433,7 @@ public:
 						if(_bSteal) {
 							if(!ARX_PLAYER_CanStealItem(io)) {
 								bItemSteal = true;
-								tc = ITC.Get("item_cant_steal");
+								tc = m_tex;
 								tc2 = NULL;
 							}
 						}
@@ -6316,7 +6321,7 @@ void hudElementsInit() {
 	backpackIconGui.init();
 	levelUpIconGui.init();
 	stealIconGui.init();
-	TextureContainer::LoadUI("graph/interface/icons/cant_steal_item");
+	secondaryInventory.init();
 	TextureContainer::LoadUI("graph/interface/inventory/hero_inventory");
 	TextureContainer::LoadUI("graph/interface/inventory/scroll_up");
 	TextureContainer::LoadUI("graph/interface/inventory/scroll_down");
