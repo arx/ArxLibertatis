@@ -4955,6 +4955,32 @@ public:
 		
 	}
 	
+	void updateInput() {
+		
+		// redist
+		if((player.Skill_Redistribute) || (player.Attribute_Redistribute)) {
+			Vec2f pos(g_size.width() - 35 + lSLID_VALUE, g_size.height() - INTERFACE_RATIO(218));
+			
+			const Rect mouseTestRect(
+			pos.x,
+			pos.y,
+			pos.x + INTERFACE_RATIO(32),
+			pos.y + INTERFACE_RATIO(32)
+			);
+
+			if(mouseTestRect.contains(Vec2i(DANAEMouse))) {
+				eMouseState = MOUSE_IN_REDIST_ICON;
+				SpecialCursor = CURSOR_INTERACTION_ON;
+
+				if((EERIEMouseButton & 1) && !(LastMouseClick & 1)) {
+					ARX_INTERFACE_BookOpenClose(1);
+					EERIEMouseButton &=~1;
+				}
+				return;
+			}
+		}
+	}
+	
 	void update() {
 		m_pos = g_size.bottomRight();
 		m_pos += Vec2f(-35, -218);
@@ -6117,30 +6143,7 @@ void ArxGame::manageEditorControls() {
 			if(!TRUE_PLAYER_MOUSELOOK_ON) {
 				
 				currentTorchIconGui.updateInput();
-				
-				// redist
-				if((player.Skill_Redistribute) || (player.Attribute_Redistribute)) {
-					Vec2f pos(g_size.width() - 35 + lSLID_VALUE, g_size.height() - INTERFACE_RATIO(218));
-					
-					const Rect mouseTestRect(
-					pos.x,
-					pos.y,
-					pos.x + INTERFACE_RATIO(32),
-					pos.y + INTERFACE_RATIO(32)
-					);
-
-					if(mouseTestRect.contains(Vec2i(DANAEMouse))) {
-						eMouseState = MOUSE_IN_REDIST_ICON;
-						SpecialCursor = CURSOR_INTERACTION_ON;
-
-						if((EERIEMouseButton & 1) && !(LastMouseClick & 1)) {
-							ARX_INTERFACE_BookOpenClose(1);
-							EERIEMouseButton &=~1;
-						}
-						return;
-					}
-				}
-
+				levelUpIconGui.updateInput();
 
 				// gold
 				if(player.gold > 0) {
