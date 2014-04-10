@@ -3314,8 +3314,8 @@ int CWindowMenuConsole::Render() {
 	GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
 	GRenderer->SetRenderState(Renderer::DepthTest, false);
 
-	EERIEDrawBitmap2(static_cast<float>(iPosX), static_cast<float>(iSavePosY),
-	                 RATIO_X(pTexBackground->m_dwWidth), RATIO_Y(pTexBackground->m_dwHeight),
+	EERIEDrawBitmap2(Rectf(Vec2f(iPosX, iSavePosY),
+	                 RATIO_X(pTexBackground->m_dwWidth), RATIO_Y(pTexBackground->m_dwHeight)),
 	                 0, pTexBackground, Color::white);
 
 	GRenderer->SetRenderState(Renderer::DepthTest, true);
@@ -3323,8 +3323,8 @@ int CWindowMenuConsole::Render() {
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-	EERIEDrawBitmap2(static_cast<float>(iPosX), static_cast<float>(iSavePosY),
-	                 RATIO_X(pTexBackgroundBorder->m_dwWidth), RATIO_Y(pTexBackgroundBorder->m_dwHeight),
+	EERIEDrawBitmap2(Rectf(Vec2f(iPosX, iSavePosY),
+	                 RATIO_X(pTexBackgroundBorder->m_dwWidth), RATIO_Y(pTexBackgroundBorder->m_dwHeight)),
 	                 0, pTexBackgroundBorder, Color::white);
 
 	//------------------------------------------------------------------------
