@@ -66,8 +66,8 @@ static TextureContainer * cursorTargetOff = NULL;
 static TextureContainer * cursorInteractionOn = NULL;
 static TextureContainer * cursorInteractionOff = NULL;
 static TextureContainer * cursorMagic = NULL;
-
 TextureContainer * ThrowObject = NULL;
+TextureContainer * ptexcursorredist = NULL;
 
 void cursorTexturesInit() {
 	ITC.Reset();
@@ -78,6 +78,7 @@ void cursorTexturesInit() {
 	cursorInteractionOff = TextureContainer::LoadUI("graph/interface/cursors/interaction_off");
 	cursorMagic = TextureContainer::LoadUI("graph/interface/cursors/magic");
 	ThrowObject = TextureContainer::LoadUI("graph/interface/cursors/throw");
+	ptexcursorredist =  TextureContainer::LoadUI("graph/interface/cursors/add_points");
 	
 	arx_assert(cursorTargetOn);
 	arx_assert(cursorTargetOff);
@@ -85,6 +86,7 @@ void cursorTexturesInit() {
 	arx_assert(cursorInteractionOff);
 	arx_assert(cursorMagic);
 	arx_assert(ThrowObject);
+	arx_assert(ptexcursorredist);
 }
 
 
@@ -522,7 +524,7 @@ void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 				
 				switch(SpecialCursor) {
 				case CURSOR_REDIST:
-					surf = ITC.Get("ptexcursorredist");
+					surf = ptexcursorredist;
 					break;
 				case CURSOR_COMBINEOFF:
 					surf = cursorTargetOff;

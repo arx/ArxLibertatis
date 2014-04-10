@@ -455,9 +455,7 @@ bool ARX_Menu_Render() {
 			ITC.Set("current_8", "graph/interface/book/current_page/current_8");
 			ITC.Set("current_9", "graph/interface/book/current_page/current_9");
 			ITC.Set("current_10", "graph/interface/book/current_page/current_10");
-
-			ITC.Set("ptexcursorredist", "graph/interface/cursors/add_points");
-
+			
 			ITC.Level = getLocalised("system_charsheet_player_lvl");
 			ITC.Xp = getLocalised("system_charsheet_player_xp");
 
