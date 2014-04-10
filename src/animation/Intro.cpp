@@ -101,11 +101,13 @@ void ARX_INTERFACE_KillARKANE() {
 }
 
 static void DrawCenteredImage(TextureContainer * tc) {
-	EERIEDrawBitmap2(g_size.center().x - (tc->m_dwWidth * 0.5f),
-					 g_size.center().y - (tc->m_dwHeight * 0.5f),
-	                 static_cast<float>((int)(tc->m_dwWidth)),
-	                 static_cast<float>((int)(tc->m_dwHeight)),
-	                 0.001f, tc, Color::white);
+	
+	Vec2f size = Vec2f(tc->size());
+	
+	Vec2f pos = Vec2f(g_size.center());
+	pos += -size * 0.5f;
+	
+	EERIEDrawBitmap2(Rectf(pos, size.x, size.y), 0.001f, tc, Color::white);
 }
 
 void ARX_INTERFACE_ShowLogo(TextureContainer * logo) {
