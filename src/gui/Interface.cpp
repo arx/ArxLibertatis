@@ -439,7 +439,6 @@ void CreateInterfaceTextureContainers()
 	ITC.Set("hero_inventory_link", "graph/interface/inventory/hero_inventory_link");
 	ITC.Set("inventory_pickall", "graph/interface/inventory/inv_pick");
 	ITC.Set("inventory_close", "graph/interface/inventory/inv_close");
-	ITC.Set("icon_lvl_up", "graph/interface/icons/lvl_up");
 
 	ITC.Set("backpack", "graph/interface/icons/backpack");
 	ITC.Set("gold", "graph/interface/inventory/gold");
@@ -5216,10 +5215,12 @@ static CloseSecondaryInventoryIconGui closeSecondaryInventoryIconGui;
 
 class LevelUpIconGui : public HudIconBase {
 private:
+	TextureContainer * m_tex;
 	Vec2f m_pos;
 public:
 	void init() {
-		
+		m_tex = TextureContainer::LoadUI("graph/interface/icons/lvl_up");
+		arx_assert(m_tex);
 	}
 	
 	void updateInput() {
@@ -5255,7 +5256,7 @@ public:
 	}
 	
 	void draw() {
-		DrawIcon(m_pos, ITC.Get("icon_lvl_up"), MOUSE_IN_REDIST_ICON);
+		DrawIcon(m_pos, m_tex, MOUSE_IN_REDIST_ICON);
 	}
 };
 
@@ -6308,7 +6309,7 @@ void hudElementsInit() {
 	manaGauge.init();
 	TextureContainer::LoadUI("graph/interface/icons/book");
 	TextureContainer::LoadUI("graph/interface/icons/backpack");
-	TextureContainer::LoadUI("graph/interface/icons/lvl_up");
+	levelUpIconGui.init();
 	TextureContainer::LoadUI("graph/interface/icons/steal");
 	TextureContainer::LoadUI("graph/interface/icons/cant_steal_item");
 	TextureContainer::LoadUI("graph/interface/inventory/hero_inventory");
