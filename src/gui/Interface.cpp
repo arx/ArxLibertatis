@@ -5024,6 +5024,34 @@ public:
 		m_pos += Vec2f(16, -16);
 	}
 	
+	void updateInput() {
+		Vec2f pos(InventoryX + 16, BasicInventorySkin->m_dwHeight - 16);
+		
+		const Rect mouseTestRect(
+		pos.x,
+		pos.y,
+		pos.x + INTERFACE_RATIO(16),
+		pos.y + INTERFACE_RATIO(16)
+		);
+		
+		if(mouseTestRect.contains(Vec2i(DANAEMouse))) {
+			eMouseState = MOUSE_IN_INVENTORY_PICKALL_ICON;
+			SpecialCursor=CURSOR_INTERACTION_ON;
+
+			if((EERIEMouseButton & 1) && !(LastMouseClick & 1)) {
+				if(TSecondaryInventory) {
+					// play un son que si un item est pris
+					ARX_INVENTORY_TakeAllFromSecondaryInventory();
+				}
+
+				EERIEMouseButton &=~1;
+			}
+
+			if(DRAGINTER == NULL)
+				return;
+		}
+	}
+	
 	void draw() {
 		DrawIcon(m_pos, ITC.Get("inventory_pickall"), MOUSE_IN_INVENTORY_PICKALL_ICON);
 	}
@@ -6361,31 +6389,7 @@ void ArxGame::manageEditorControls() {
 		Entity * temp=(Entity *)TSecondaryInventory->io;
 
 		if(temp && !(temp->ioflags & IO_SHOP) && !(temp == ioSteal)) {
-			Vec2f pos(InventoryX + 16, BasicInventorySkin->m_dwHeight - 16);
-			
-			const Rect mouseTestRect(
-			pos.x,
-			pos.y,
-			pos.x + INTERFACE_RATIO(16),
-			pos.y + INTERFACE_RATIO(16)
-			);
-			
-			if(mouseTestRect.contains(Vec2i(DANAEMouse))) {
-				eMouseState = MOUSE_IN_INVENTORY_PICKALL_ICON;
-				SpecialCursor=CURSOR_INTERACTION_ON;
-
-				if((EERIEMouseButton & 1) && !(LastMouseClick & 1)) {
-					if(TSecondaryInventory) {
-						// play un son que si un item est pris
-						ARX_INVENTORY_TakeAllFromSecondaryInventory();
-					}
-
-					EERIEMouseButton &=~1;
-				}
-
-				if(DRAGINTER == NULL)
-					return;
-			}
+			pickAllIconGui.updateInput();
 		}
 
 		Vec2f pos(InventoryX + BasicInventorySkin->m_dwWidth - 32, BasicInventorySkin->m_dwHeight - 16);
