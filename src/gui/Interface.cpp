@@ -457,6 +457,7 @@ void CreateInterfaceTextureContainers()
 	ITC.Set("empty_gauge_blue", "graph/interface/bars/empty_gauge_blue");
 	ITC.Set("filled_gauge_red", "graph/interface/bars/filled_gauge_red");
 	ITC.Set("filled_gauge_blue", "graph/interface/bars/filled_gauge_blue");
+	
 	ITC.Set("target_on", "graph/interface/cursors/target_on");
 	ITC.Set("target_off", "graph/interface/cursors/target_off");
 	ITC.Set("interaction_on", "graph/interface/cursors/interaction_on");
@@ -6723,4 +6724,35 @@ void ArxGame::drawAllInterface() {
 	GRenderer->GetTextureStage(0)->setMinFilter(TextureStage::FilterLinear);
 	GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterLinear);
 	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
+}
+
+void hudElementsInit() {
+	damagedEquipmentGuiInit();
+	mecanismIconInit();
+	
+	stealth_gauge_tc=	TextureContainer::LoadUI("graph/interface/icons/stealth_gauge");
+	arrow_left_tc=		TextureContainer::LoadUI("graph/interface/icons/arrow_left");
+	
+	TextureContainer::LoadUI("graph/interface/bars/empty_gauge_red");
+	TextureContainer::LoadUI("graph/interface/bars/empty_gauge_blue");
+	TextureContainer::LoadUI("graph/interface/bars/filled_gauge_blue");
+	TextureContainer::LoadUI("graph/interface/bars/filled_gauge_red");
+	TextureContainer::LoadUI("graph/interface/icons/book");
+	TextureContainer::LoadUI("graph/interface/icons/backpack");
+	TextureContainer::LoadUI("graph/interface/icons/lvl_up");
+	TextureContainer::LoadUI("graph/interface/icons/steal");
+	TextureContainer::LoadUI("graph/interface/icons/cant_steal_item");
+	TextureContainer::LoadUI("graph/interface/inventory/hero_inventory");
+	TextureContainer::LoadUI("graph/interface/inventory/scroll_up");
+	TextureContainer::LoadUI("graph/interface/inventory/scroll_down");
+	TextureContainer::LoadUI("graph/interface/inventory/hero_inventory_link");
+	TextureContainer::LoadUI("graph/interface/inventory/ingame_inventory");
+	TextureContainer::LoadUI("graph/interface/inventory/gold");
+	
+	TextureContainer::LoadUI("graph/interface/inventory/inv_pick");
+	TextureContainer::LoadUI("graph/interface/inventory/inv_close");
+	
+	TextureContainer::LoadUI("graph/interface/bars/aim_empty");
+	TextureContainer::LoadUI("graph/interface/bars/aim_maxi");
+	TextureContainer::LoadUI("graph/interface/bars/flash_gauge");
 }

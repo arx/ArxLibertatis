@@ -725,13 +725,8 @@ void LoadSysTextures()
 	TextureContainer::LoadUI("graph/particles/missile");
 	Z_map = TextureContainer::LoadUI("graph/interface/misc/z-map");
 	Boom=				TextureContainer::LoadUI("graph/particles/boom");
-	stealth_gauge_tc=	TextureContainer::LoadUI("graph/interface/icons/stealth_gauge");
 	arx_logo_tc=		TextureContainer::LoadUI("graph/interface/icons/arx_logo_32");
-
-	damagedEquipmentGuiInit();
-	mecanismIconInit();
-	arrow_left_tc=		TextureContainer::LoadUI("graph/interface/icons/arrow_left");
-
+	
 	for(long i = 0; i < MAX_EXPLO; i++) {
 		char temp[256];
 		sprintf(temp,"graph/particles/fireb_%02ld",i+1);
@@ -746,24 +741,7 @@ void LoadSysTextures()
 	TextureContainer::LoadUI("graph/particles/cross");
 	
 	//INTERFACE LOADING
-	TextureContainer::LoadUI("graph/interface/bars/empty_gauge_red");
-	TextureContainer::LoadUI("graph/interface/bars/empty_gauge_blue");
-	TextureContainer::LoadUI("graph/interface/bars/filled_gauge_blue");
-	TextureContainer::LoadUI("graph/interface/bars/filled_gauge_red");
-	TextureContainer::LoadUI("graph/interface/icons/book");
-	TextureContainer::LoadUI("graph/interface/icons/backpack");
-	TextureContainer::LoadUI("graph/interface/icons/lvl_up");
-	TextureContainer::LoadUI("graph/interface/icons/steal");
-	TextureContainer::LoadUI("graph/interface/icons/cant_steal_item");
-	TextureContainer::LoadUI("graph/interface/inventory/hero_inventory");
-	TextureContainer::LoadUI("graph/interface/inventory/scroll_up");
-	TextureContainer::LoadUI("graph/interface/inventory/scroll_down");
-	TextureContainer::LoadUI("graph/interface/inventory/hero_inventory_link");
-	TextureContainer::LoadUI("graph/interface/inventory/ingame_inventory");
-	TextureContainer::LoadUI("graph/interface/inventory/gold");
-	
-	TextureContainer::LoadUI("graph/interface/inventory/inv_pick");
-	TextureContainer::LoadUI("graph/interface/inventory/inv_close");
+	hudElementsInit();
 	
 	// MENU2
 	TextureContainer::LoadUI("graph/interface/cursors/cursor00");
@@ -796,10 +774,6 @@ void LoadSysTextures()
 	}
 	
 	pTCCrossHair = TextureContainer::LoadUI("graph/interface/cursors/cruz");
-	
-	TextureContainer::LoadUI("graph/interface/bars/aim_empty");
-	TextureContainer::LoadUI("graph/interface/bars/aim_maxi");
-	TextureContainer::LoadUI("graph/interface/bars/flash_gauge");
 }
 
 void ClearSysTextures() {

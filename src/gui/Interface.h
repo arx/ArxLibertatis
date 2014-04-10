@@ -260,4 +260,6 @@ void changeLevelIconGuiInit();
 void mecanismIconInit();
 void mecanismIconReset();
 
+void hudElementsInit();
+
 #endif // ARX_GUI_INTERFACE_H
