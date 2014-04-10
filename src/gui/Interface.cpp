@@ -5640,14 +5640,25 @@ public:
 							Vec2f size = Vec2f(tc->size());
 							
 							Color color = (io->poisonous && io->poisonous_count!=0) ? Color::green : Color::white;
-							EERIEDrawBitmap(px, py, size.x, size.y, 0.001f, tc, color);
+							
+							Rectf rect(
+								Vec2f(px, py),
+								size.x,
+								size.y
+							);
+							EERIEDrawBitmap(rect, 0.001f, tc, color);
 							
 							if (!bItemSteal && (io==FlyingOverIO))
 							{
 								GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 								GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 								
-								EERIEDrawBitmap(px, py, size.x, size.y, 0.001f, tc, Color::white);
+								Rectf rect(
+									Vec2f(px, py),
+									size.x,
+									size.y
+								);
+								EERIEDrawBitmap(rect, 0.001f, tc, Color::white);
 								
 								GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 							}
@@ -5656,7 +5667,13 @@ public:
 								GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 								
 								float fColorPulse = fabs(cos(radians(fDecPulse)));
-								EERIEDrawBitmap(px, py, size.x, size.y, 0.001f, tc, Color3f::gray(fColorPulse).to<u8>());
+								
+								Rectf rect(
+									Vec2f(px, py),
+									size.x,
+									size.y
+								);
+								EERIEDrawBitmap(rect, 0.001f, tc, Color3f::gray(fColorPulse).to<u8>());
 								
 								GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 							}
