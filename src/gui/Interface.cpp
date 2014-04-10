@@ -3414,11 +3414,12 @@ public:
 			float v=GetPlayerStealth();
 	
 			if(CURRENT_PLAYER_COLOR < v) {
-				float px = INTERFACE_RATIO(InventoryX) + INTERFACE_RATIO(110);
-				if(px < INTERFACE_RATIO(10))
-					px = INTERFACE_RATIO(10);
+				Vec2f pos = Vec2f(InventoryX, g_size.height());
+				pos += Vec2f(110, -(126 + 32));
+				
+				if(pos.x < INTERFACE_RATIO(10))
+					pos.x = INTERFACE_RATIO(10);
 	
-				float py = g_size.height() - INTERFACE_RATIO(126 + 32);
 				float t = v - CURRENT_PLAYER_COLOR;
 	
 				if(t >= 15)
@@ -3429,7 +3430,7 @@ public:
 				GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 				GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 				
-				Rectf rect(Vec2f(px, py), stealth_gauge_tc->m_dwWidth, stealth_gauge_tc->m_dwHeight);
+				Rectf rect(pos, stealth_gauge_tc->m_dwWidth, stealth_gauge_tc->m_dwHeight);
 				EERIEDrawBitmap(rect, 0.01f, stealth_gauge_tc, Color3f::gray(v).to<u8>());
 				GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 			}
