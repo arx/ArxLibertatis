@@ -2916,8 +2916,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 {
 	GRenderer->SetRenderState(Renderer::Fog, false);
 	
-	if (ITC.Get("questbook")==NULL)
-	{
+	if(ITC.Get("questbook") == NULL) {
 		ITC.Set("playerbook",          "graph/interface/book/character_sheet/char_sheet_book");
 		ITC.Set("ic_casting",          "graph/interface/book/character_sheet/buttons_carac/icone_casting");
 		ITC.Set("ic_close_combat",     "graph/interface/book/character_sheet/buttons_carac/icone_close_combat");
@@ -2939,7 +2938,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 		ITC.Set("bookmark_magic", "graph/interface/book/bookmark_magic");
 		ITC.Set("bookmark_map",   "graph/interface/book/bookmark_map");
 		ITC.Set("bookmark_quest", "graph/interface/book/bookmark_quest");
-
+		
 		ITC.Set("accessible_1", "graph/interface/book/accessible/accessible_1");
 		ITC.Set("accessible_2", "graph/interface/book/accessible/accessible_2");
 		ITC.Set("accessible_3", "graph/interface/book/accessible/accessible_3");
@@ -2966,9 +2965,9 @@ void ARX_INTERFACE_ManageOpenedBook()
 		
 		ANIM_Set(&player.bookAnimation[0], herowaitbook);
 		player.bookAnimation[0].flags |= EA_LOOP;
-
-		ARXOldTimeMenu=ARXTimeMenu=arxtime.get_updated();
-		ARXDiffTimeMenu=0;
+		
+		ARXOldTimeMenu = ARXTimeMenu = arxtime.get_updated();
+		ARXDiffTimeMenu = 0;
 	}
 
 	BOOKDEC.x = 0;

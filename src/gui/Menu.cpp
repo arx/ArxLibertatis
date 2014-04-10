@@ -413,26 +413,26 @@ bool ARX_Menu_Render() {
 			
 			// TODO this is also in Interface.cpp
 
-			ITC.Set("playerbook", "graph/interface/book/character_sheet/char_sheet_book");
-			ITC.Set("ic_casting", "graph/interface/book/character_sheet/buttons_carac/icone_casting");
-			ITC.Set("ic_close_combat", "graph/interface/book/character_sheet/buttons_carac/icone_close_combat");
-			ITC.Set("ic_constitution", "graph/interface/book/character_sheet/buttons_carac/icone_constit");
-			ITC.Set("ic_defense", "graph/interface/book/character_sheet/buttons_carac/icone_defense");
-			ITC.Set("ic_dexterity", "graph/interface/book/character_sheet/buttons_carac/icone_dext");
-			ITC.Set("ic_etheral_link", "graph/interface/book/character_sheet/buttons_carac/icone_etheral_link");
-			ITC.Set("ic_mind", "graph/interface/book/character_sheet/buttons_carac/icone_intel");
-			ITC.Set("ic_intuition", "graph/interface/book/character_sheet/buttons_carac/icone_intuition");
-			ITC.Set("ic_mecanism", "graph/interface/book/character_sheet/buttons_carac/icone_mecanism");
+			ITC.Set("playerbook",          "graph/interface/book/character_sheet/char_sheet_book");
+			ITC.Set("ic_casting",          "graph/interface/book/character_sheet/buttons_carac/icone_casting");
+			ITC.Set("ic_close_combat",     "graph/interface/book/character_sheet/buttons_carac/icone_close_combat");
+			ITC.Set("ic_constitution",     "graph/interface/book/character_sheet/buttons_carac/icone_constit");
+			ITC.Set("ic_defense",          "graph/interface/book/character_sheet/buttons_carac/icone_defense");
+			ITC.Set("ic_dexterity",        "graph/interface/book/character_sheet/buttons_carac/icone_dext");
+			ITC.Set("ic_etheral_link",     "graph/interface/book/character_sheet/buttons_carac/icone_etheral_link");
+			ITC.Set("ic_mind",             "graph/interface/book/character_sheet/buttons_carac/icone_intel");
+			ITC.Set("ic_intuition",        "graph/interface/book/character_sheet/buttons_carac/icone_intuition");
+			ITC.Set("ic_mecanism",         "graph/interface/book/character_sheet/buttons_carac/icone_mecanism");
 			ITC.Set("ic_object_knowledge", "graph/interface/book/character_sheet/buttons_carac/icone_obj_knowledge");
-			ITC.Set("ic_projectile", "graph/interface/book/character_sheet/buttons_carac/icone_projectile");
-			ITC.Set("ic_stealth", "graph/interface/book/character_sheet/buttons_carac/icone_stealth");
-			ITC.Set("ic_strength", "graph/interface/book/character_sheet/buttons_carac/icone_strenght");
+			ITC.Set("ic_projectile",       "graph/interface/book/character_sheet/buttons_carac/icone_projectile");
+			ITC.Set("ic_stealth",          "graph/interface/book/character_sheet/buttons_carac/icone_stealth");
+			ITC.Set("ic_strength",         "graph/interface/book/character_sheet/buttons_carac/icone_strenght");
 
-			ITC.Set("questbook", "graph/interface/book/questbook");
-			ITC.Set("ptexspellbook", "graph/interface/book/spellbook");
-			ITC.Set("bookmark_char", "graph/interface/book/bookmark_char");
+			ITC.Set("questbook",      "graph/interface/book/questbook");
+			ITC.Set("ptexspellbook",  "graph/interface/book/spellbook");
+			ITC.Set("bookmark_char",  "graph/interface/book/bookmark_char");
 			ITC.Set("bookmark_magic", "graph/interface/book/bookmark_magic");
-			ITC.Set("bookmark_map", "graph/interface/book/bookmark_map");
+			ITC.Set("bookmark_map",   "graph/interface/book/bookmark_map");
 			ITC.Set("bookmark_quest", "graph/interface/book/bookmark_quest");
 
 			ITC.Set("accessible_1", "graph/interface/book/accessible/accessible_1");
