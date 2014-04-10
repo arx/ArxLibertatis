@@ -6516,7 +6516,7 @@ void ArxGame::manageEditorControls() {
 			FlyingOverIO = NULL;
 		}
 	}
-
+	
 	if(!(player.Interface & INTER_COMBATMODE)) {
 		// Dropping an Interactive Object that has been dragged
 		if(!(EERIEMouseButton & 1) && (LastMouseClick & 1) && DRAGINTER) {
@@ -6534,7 +6534,7 @@ void ArxGame::manageEditorControls() {
 				ARX_PLAYER_AddGold(DRAGINTER);
 				Set_DragInter(NULL);
 			} else if(DRAGINTER) {
-
+				
 				if(   !((DRAGINTER->ioflags & IO_ITEM) && DRAGINTER->_itemdata->count > 1)
 				   && DRAGINTER->obj
 				   && DRAGINTER->obj->pbox
@@ -6553,72 +6553,162 @@ void ArxGame::manageEditorControls() {
 						io->pos = player.pos + Vec3f(0.f, 80.f, 0.f);
 						io->velocity = Vec3f_ZERO;
 						io->stopped = 1;
-
+						
 						float y_ratio=(float)((float)DANAEMouse.y-(float)g_size.center().y)/(float)g_size.height()*2;
 						float x_ratio=-(float)((float)DANAEMouse.x-(float)g_size.center().x)/(float)g_size.center().x;
 						Vec3f viewvector;
 						viewvector.x = -std::sin(radians(player.angle.getPitch()+(x_ratio*30.f))) * std::cos(radians(player.angle.getYaw()));
 						viewvector.y =  std::sin(radians(player.angle.getYaw())) + y_ratio;
 						viewvector.z =  std::cos(radians(player.angle.getPitch()+(x_ratio*30.f))) * std::cos(radians(player.angle.getYaw()));
-
+						
 						io->soundtime=0;
 						io->soundcount=0;
-
+						
 						EERIE_PHYSICS_BOX_Launch(io->obj, io->pos, io->angle, viewvector);
 						ARX_SOUND_PlaySFX(SND_WHOOSH, &io->pos);
-
+						
 						io->show=SHOW_FLAG_IN_SCENE;
 						Set_DragInter(NULL);
 					}
 				}
 			}
 		}
-
-	if(COMBINE) {
-		if(!player.torch || (player.torch && (COMBINE != player.torch))) {
-			Vec3f pos;
-
-			if(GetItemWorldPosition(COMBINE, &pos)) {
-				if(fartherThan(pos, player.pos, 300.f))
+		
+		if(COMBINE) {
+			if(!player.torch || (player.torch && (COMBINE != player.torch))) {
+				Vec3f pos;
+				
+				if(GetItemWorldPosition(COMBINE, &pos)) {
+					if(fartherThan(pos, player.pos, 300.f))
+						COMBINE=NULL;
+				}
+				else
 					COMBINE=NULL;
 			}
-			else
-				COMBINE=NULL;
 		}
-	}
-
-	if((EERIEMouseButton & 1) && !(LastMouseClick & 1) && (COMBINE || COMBINEGOLD)) {
-		ReleaseInfosCombine();
-
-		Entity * io;
-
-		if((io=FlyingOverIO)!=NULL) {
-			if(COMBINEGOLD) {
-				SendIOScriptEvent(io, SM_COMBINE, "gold_coin");
-			} else {
-				if(io != COMBINE) {
-					std::string temp = COMBINE->idString();
-					EVENT_SENDER=COMBINE;
-
-					if(boost::starts_with(COMBINE->className(), "keyring")) {
-						ARX_KEYRING_Combine(io);
-					} else {
-						SendIOScriptEvent(io, SM_COMBINE, temp);
+		
+		if((EERIEMouseButton & 1) && !(LastMouseClick & 1) && (COMBINE || COMBINEGOLD)) {
+			ReleaseInfosCombine();
+			
+			Entity * io;
+			
+			if((io=FlyingOverIO)!=NULL) {
+				if(COMBINEGOLD) {
+					SendIOScriptEvent(io, SM_COMBINE, "gold_coin");
+				} else {
+					if(io != COMBINE) {
+						std::string temp = COMBINE->idString();
+						EVENT_SENDER=COMBINE;
+	
+						if(boost::starts_with(COMBINE->className(), "keyring")) {
+							ARX_KEYRING_Combine(io);
+						} else {
+							SendIOScriptEvent(io, SM_COMBINE, temp);
+						}
+					}
+				}
+			} else { // GLights
+				float fMaxdist = 300;
+	
+				if(Project.telekinesis)
+					fMaxdist = 850;
+	
+				for(size_t i = 0; i < MAX_LIGHTS; i++) {
+					if(   GLight[i]
+					   && GLight[i]->exist
+					   && !fartherThan(GLight[i]->pos, player.pos, fMaxdist)
+					   && !(GLight[i]->extras & EXTRAS_NO_IGNIT)
+					) {
+						const Rect mouseTestRect(
+						GLight[i]->mins.x,
+						GLight[i]->mins.y,
+						GLight[i]->maxs.x,
+						GLight[i]->maxs.y
+						);
+						
+						if(   mouseTestRect.contains(Vec2i(DANAEMouse))
+						   && (COMBINE->ioflags & IO_ITEM)
+						) {
+								if((COMBINE == player.torch) || (COMBINE->_itemdata->LightValue == 1)) {
+									if(GLight[i]->status != 1) {
+										GLight[i]->status = 1;
+										ARX_SOUND_PlaySFX(SND_TORCH_START, &GLight[i]->pos);
+									}
+								}
+	
+								if(COMBINE->_itemdata->LightValue == 0) {
+									if(GLight[i]->status != 0) {
+										GLight[i]->status = 0;
+										ARX_SOUND_PlaySFX(SND_TORCH_END, &GLight[i]->pos);
+										SendIOScriptEvent(COMBINE, SM_CUSTOM, "douse");
+									}
+								}
+						}
 					}
 				}
 			}
-		} else { // GLights
+	
+			COMBINEGOLD = false;
+			bool bQuitCombine = true;
+	
+			if((player.Interface & INTER_INVENTORY)) {
+				if(player.bag) {
+	
+					float fCenterX	= g_size.center().x + INTERFACE_RATIO(-320 + 35) + INTERFACE_RATIO_DWORD(ITC.Get("hero_inventory")->m_dwWidth) - INTERFACE_RATIO(32 + 3) ;
+					float fSizY		= g_size.height() - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY) + INTERFACE_RATIO(- 3 + 25) ;
+	
+					float posx = ARX_CAST_TO_INT_THEN_FLOAT( fCenterX );
+					float posy = ARX_CAST_TO_INT_THEN_FLOAT( fSizY );
+	
+					if(sActiveInventory > 0) {
+						const Rect mouseTestRect(
+						posx,
+						posy,
+						posx + INTERFACE_RATIO(32),
+						posy + INTERFACE_RATIO(32)
+						);
+						
+						if(mouseTestRect.contains(Vec2i(DANAEMouse)))
+							bQuitCombine = false;
+					}
+	
+					if(sActiveInventory < player.bag-1) {
+						float fRatio = INTERFACE_RATIO(32 + 5);
+	
+						posy += checked_range_cast<int>(fRatio);
+						
+						const Rect mouseTestRect(
+						posx,
+						posy,
+						posx + INTERFACE_RATIO(32),
+						posy + INTERFACE_RATIO(32)
+						);
+						
+						if(mouseTestRect.contains(Vec2i(DANAEMouse)))
+							bQuitCombine = false;
+					}
+				}
+			}
+	
+			if(bQuitCombine) {
+				COMBINE=NULL;
+				EERIEMouseButton &= ~1;
+			}
+		}
+		
+		//lights
+		if(COMBINE) {
 			float fMaxdist = 300;
-
+			
 			if(Project.telekinesis)
 				fMaxdist = 850;
-
+			
 			for(size_t i = 0; i < MAX_LIGHTS; i++) {
-				if(   GLight[i]
-				   && GLight[i]->exist
-				   && !fartherThan(GLight[i]->pos, player.pos, fMaxdist)
-				   && !(GLight[i]->extras & EXTRAS_NO_IGNIT)
-				) {
+				if ((GLight[i]!=NULL) &&
+					(GLight[i]->exist) &&
+					!fartherThan(GLight[i]->pos, player.pos, fMaxdist) &&
+					!(GLight[i]->extras & EXTRAS_NO_IGNIT))
+				{
 					const Rect mouseTestRect(
 					GLight[i]->mins.x,
 					GLight[i]->mins.y,
@@ -6626,125 +6716,35 @@ void ArxGame::manageEditorControls() {
 					GLight[i]->maxs.y
 					);
 					
-					if(   mouseTestRect.contains(Vec2i(DANAEMouse))
-					   && (COMBINE->ioflags & IO_ITEM)
-					) {
-							if((COMBINE == player.torch) || (COMBINE->_itemdata->LightValue == 1)) {
-								if(GLight[i]->status != 1) {
-									GLight[i]->status = 1;
-									ARX_SOUND_PlaySFX(SND_TORCH_START, &GLight[i]->pos);
-								}
-							}
-
-							if(COMBINE->_itemdata->LightValue == 0) {
-								if(GLight[i]->status != 0) {
-									GLight[i]->status = 0;
-									ARX_SOUND_PlaySFX(SND_TORCH_END, &GLight[i]->pos);
-									SendIOScriptEvent(COMBINE, SM_CUSTOM, "douse");
-								}
-							}
+					if(mouseTestRect.contains(Vec2i(DANAEMouse))) {
+						SpecialCursor = CURSOR_INTERACTION_ON;
 					}
 				}
 			}
 		}
 
-		COMBINEGOLD = false;
-		bool bQuitCombine = true;
-
-		if((player.Interface & INTER_INVENTORY)) {
-			if(player.bag) {
-
-				float fCenterX	= g_size.center().x + INTERFACE_RATIO(-320 + 35) + INTERFACE_RATIO_DWORD(ITC.Get("hero_inventory")->m_dwWidth) - INTERFACE_RATIO(32 + 3) ;
-				float fSizY		= g_size.height() - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY) + INTERFACE_RATIO(- 3 + 25) ;
-
-				float posx = ARX_CAST_TO_INT_THEN_FLOAT( fCenterX );
-				float posy = ARX_CAST_TO_INT_THEN_FLOAT( fSizY );
-
-				if(sActiveInventory > 0) {
-					const Rect mouseTestRect(
-					posx,
-					posy,
-					posx + INTERFACE_RATIO(32),
-					posy + INTERFACE_RATIO(32)
-					);
-					
-					if(mouseTestRect.contains(Vec2i(DANAEMouse)))
-						bQuitCombine = false;
-				}
-
-				if(sActiveInventory < player.bag-1) {
-					float fRatio = INTERFACE_RATIO(32 + 5);
-
-					posy += checked_range_cast<int>(fRatio);
-					
-					const Rect mouseTestRect(
-					posx,
-					posy,
-					posx + INTERFACE_RATIO(32),
-					posy + INTERFACE_RATIO(32)
-					);
-					
-					if(mouseTestRect.contains(Vec2i(DANAEMouse)))
-						bQuitCombine = false;
-				}
-			}
-		}
-
-		if(bQuitCombine) {
-			COMBINE=NULL;
-			EERIEMouseButton &= ~1;
-		}
-	}
-
-	//lights
-	if(COMBINE) {
-		float fMaxdist = 300;
-
-		if(Project.telekinesis)
-			fMaxdist = 850;
-
-		for(size_t i = 0; i < MAX_LIGHTS; i++) {
-			if ((GLight[i]!=NULL) &&
-				(GLight[i]->exist) &&
-				!fartherThan(GLight[i]->pos, player.pos, fMaxdist) &&
-				!(GLight[i]->extras & EXTRAS_NO_IGNIT))
-			{
-				const Rect mouseTestRect(
-				GLight[i]->mins.x,
-				GLight[i]->mins.y,
-				GLight[i]->maxs.x,
-				GLight[i]->maxs.y
-				);
+		// Double Clicked and not already combining.
+		if((EERIEMouseButton & 4) && (COMBINE==NULL)) {
+			bool accept_combine = true;
+			
+			if((SecondaryInventory!=NULL) && (InSecondaryInventoryPos(DANAEMouse))) {
+				Entity * io=(Entity *)SecondaryInventory->io;
 				
-				if(mouseTestRect.contains(Vec2i(DANAEMouse))) {
-					SpecialCursor = CURSOR_INTERACTION_ON;
+				if(io->ioflags & IO_SHOP)
+					accept_combine = false;
+			}
+			
+			if(accept_combine) {
+				if(FlyingOverIO && ((FlyingOverIO->ioflags & IO_ITEM) && !(FlyingOverIO->ioflags & IO_MOVABLE))) {
+					COMBINE=FlyingOverIO;
+					GetInfosCombine();
+					EERIEMouseButton &= ~4;
 				}
+				else if(InInventoryPos(DANAEMouse))
+					EERIEMouseButton &= 4;
 			}
 		}
-	}
-
-	// Double Clicked and not already combining.
-	if((EERIEMouseButton & 4) && (COMBINE==NULL)) {
-		bool accept_combine = true;
-
-		if((SecondaryInventory!=NULL) && (InSecondaryInventoryPos(DANAEMouse))) {
-			Entity * io=(Entity *)SecondaryInventory->io;
-
-			if(io->ioflags & IO_SHOP)
-				accept_combine = false;
-		}
-
-		if(accept_combine) {
-			if(FlyingOverIO && ((FlyingOverIO->ioflags & IO_ITEM) && !(FlyingOverIO->ioflags & IO_MOVABLE))) {
-				COMBINE=FlyingOverIO;
-				GetInfosCombine();
-				EERIEMouseButton &= ~4;
-			}
-			else if(InInventoryPos(DANAEMouse))
-				EERIEMouseButton &= 4;
-		}
-	}
-
+		
 		// Checks for Object Dragging
 		if(DRAGGING
 		   && (!PLAYER_MOUSELOOK_ON || !config.input.autoReadyWeapon)
