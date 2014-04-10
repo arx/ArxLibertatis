@@ -4278,11 +4278,11 @@ public:
 		: m_intensity(0.f)
 	{}
 	
-	float getHitStrengthColorVal() {
-		float j;
+	void update() {
 		if(AimTime == 0) {
-			return 0.2f;
+			m_intensity = 0.2f;
 		} else {
+			float j;
 			if(BOW_FOCAL) {
 				j=(float)(BOW_FOCAL)/710.f;
 			} else {
@@ -4296,11 +4296,9 @@ public:
 				float aim = static_cast<float>(player.Full_AimTime);
 				j=at/aim;
 			}
-			return clamp(j, 0.2f, 1.f);
+			m_intensity = clamp(j, 0.2f, 1.f);
 		}
-	}
-	
-	void PostCombatInterface() {
+		
 		if(bHitFlash) {
 			float fCalc = ulHitFlash + Original_framedelay;
 			ulHitFlash = checked_range_cast<unsigned long>(fCalc);
@@ -4309,10 +4307,6 @@ public:
 				ulHitFlash = 0;
 			}
 		}
-	}
-	
-	void update() {
-		m_intensity = getHitStrengthColorVal();
 	}
 	
 	void draw() {
@@ -4336,8 +4330,6 @@ public:
 			ARX_INTERFACE_DrawItem(ITC.Get("aim_hit"), flashPos.x, flashPos.y, 0.0001f, col);
 			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 		}
-		
-		PostCombatInterface(); //TODO this
 	}
 };
 HitStrengthGauge hitStrengthGauge = HitStrengthGauge();
