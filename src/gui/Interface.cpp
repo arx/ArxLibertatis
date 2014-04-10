@@ -435,7 +435,6 @@ void CreateInterfaceTextureContainers()
 	
 	ITC.Set("hero_inventory_up", "graph/interface/inventory/scroll_up");
 	ITC.Set("hero_inventory_down", "graph/interface/inventory/scroll_down");
-	ITC.Set("hero_inventory_link", "graph/interface/inventory/hero_inventory_link");
 	ITC.Set("inventory_pickall", "graph/interface/inventory/inv_pick");
 	ITC.Set("inventory_close", "graph/interface/inventory/inv_close");
 	
@@ -4503,6 +4502,7 @@ SecondaryInventoryGui secondaryInventory;
 class InventoryGui {
 private:
 	TextureContainer * m_heroInventory;
+	TextureContainer * m_heroInventoryLink;
 	
 	float fCenterX;
 	float fSizY;
@@ -4514,7 +4514,9 @@ private:
 public:
 	void init() {
 		m_heroInventory = TextureContainer::LoadUI("graph/interface/inventory/hero_inventory");
+		m_heroInventoryLink = TextureContainer::LoadUI("graph/interface/inventory/hero_inventory_link");
 		arx_assert(m_heroInventory);
+		arx_assert(m_heroInventoryLink);
 	}
 	
 	bool updateInput() {
@@ -4793,10 +4795,10 @@ public:
 			int posy = checked_range_cast<int>(fSizY);
 			
 			for(int i = 0; i < player.bag; i++) {
-				ARX_INTERFACE_DrawItem(ITC.Get("hero_inventory_link"), posx + INTERFACE_RATIO(45), static_cast<float>(posy + iOffsetY)) ;
+				ARX_INTERFACE_DrawItem(m_heroInventoryLink, posx + INTERFACE_RATIO(45), static_cast<float>(posy + iOffsetY)) ;
 				
-				ARX_INTERFACE_DrawItem(ITC.Get("hero_inventory_link"), posx + INTERFACE_RATIO_DWORD(m_heroInventory->m_dwWidth)*0.5f + INTERFACE_RATIO(-16), posy+iOffsetY + INTERFACE_RATIO(-5));
-				ARX_INTERFACE_DrawItem(ITC.Get("hero_inventory_link"), posx + INTERFACE_RATIO_DWORD(m_heroInventory->m_dwWidth) + INTERFACE_RATIO(-45-32), posy+iOffsetY + INTERFACE_RATIO(-15));
+				ARX_INTERFACE_DrawItem(m_heroInventoryLink, posx + INTERFACE_RATIO_DWORD(m_heroInventory->m_dwWidth)*0.5f + INTERFACE_RATIO(-16), posy+iOffsetY + INTERFACE_RATIO(-5));
+				ARX_INTERFACE_DrawItem(m_heroInventoryLink, posx + INTERFACE_RATIO_DWORD(m_heroInventory->m_dwWidth) + INTERFACE_RATIO(-45-32), posy+iOffsetY + INTERFACE_RATIO(-15));
 				
 				iOffsetY += checked_range_cast<int>(fOffsetY);
 			}
@@ -6370,7 +6372,6 @@ void hudElementsInit() {
 
 	TextureContainer::LoadUI("graph/interface/inventory/scroll_up");
 	TextureContainer::LoadUI("graph/interface/inventory/scroll_down");
-	TextureContainer::LoadUI("graph/interface/inventory/hero_inventory_link");
 	TextureContainer::LoadUI("graph/interface/inventory/ingame_inventory");
 	purseIconGui.init();
 	
