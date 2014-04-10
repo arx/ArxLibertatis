@@ -3393,14 +3393,20 @@ void ArxGame::manageKeyMouse() {
 static float fDecPulse;
 //-----------------------------------------------------------------------------
 
-extern TextureContainer * stealth_gauge_tc;
 extern float CURRENT_PLAYER_COLOR;
 
 /*!
  * \brief Stealth Gauge Drawing
  */
 class StealthGauge {
+private:
+	TextureContainer * stealth_gauge_tc;
+	
 public:
+	void init() {
+		stealth_gauge_tc = TextureContainer::LoadUI("graph/interface/icons/stealth_gauge");
+	}
+
 	void draw() {
 		
 		if(stealth_gauge_tc && !cinematicBorder.isActive()) {
@@ -6717,7 +6723,8 @@ void hudElementsInit() {
 	damagedEquipmentGui.init();
 	mecanismIcon.init();
 	
-	stealth_gauge_tc=	TextureContainer::LoadUI("graph/interface/icons/stealth_gauge");
+	stealthGauge.init();
+
 	arrow_left_tc=		TextureContainer::LoadUI("graph/interface/icons/arrow_left");
 	
 	TextureContainer::LoadUI("graph/interface/bars/empty_gauge_red");

@@ -225,7 +225,6 @@ static TextureContainer * npc_stop = NULL;
 TextureContainer *	sphere_particle=NULL;
 TextureContainer *	inventory_font=NULL;
 TextureContainer *	enviro=NULL;
-TextureContainer *	stealth_gauge_tc=NULL;
 TextureContainer *	arx_logo_tc=NULL;
 TextureContainer *	TC_fire2=NULL;
 TextureContainer *	TC_fire=NULL;
