@@ -4266,6 +4266,9 @@ extern float GLOBAL_SLOWDOWN;
 
 /** EXTRACTION BEGINS HERE **/
 
+/*!
+ * @brief the hit strength diamond shown at the bottom of the UI.
+ */
 class HitStrengthGauge {
 private:
 	float HitStrengthVal;
@@ -4275,7 +4278,6 @@ public:
 		: HitStrengthVal(0.f)
 	{}
 	
-	//For the hit strength diamond shown at the bottom of the UI.
 	float getHitStrengthColorVal() {
 		float j;
 		if(AimTime == 0) {
