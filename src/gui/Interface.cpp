@@ -3392,53 +3392,6 @@ void ArxGame::manageKeyMouse() {
 static float fDecPulse;
 //-----------------------------------------------------------------------------
 
-extern float CURRENT_PLAYER_COLOR;
-
-/*!
- * \brief Stealth Gauge Drawing
- */
-class StealthGauge {
-private:
-	TextureContainer * stealth_gauge_tc;
-	
-public:
-	void init() {
-		stealth_gauge_tc = TextureContainer::LoadUI("graph/interface/icons/stealth_gauge");
-		arx_assert(stealth_gauge_tc);
-	}
-
-	void draw() {
-		
-		if(stealth_gauge_tc && !cinematicBorder.isActive()) {
-			float v=GetPlayerStealth();
-	
-			if(CURRENT_PLAYER_COLOR < v) {
-				Vec2f pos = Vec2f(InventoryX, g_size.height());
-				pos += Vec2f(110, -(126 + 32));
-				
-				if(pos.x < INTERFACE_RATIO(10))
-					pos.x = INTERFACE_RATIO(10);
-	
-				float t = v - CURRENT_PLAYER_COLOR;
-	
-				if(t >= 15)
-					v = 1.f;
-				else
-					v = (t*( 1.0f / 15 ))* 0.9f + 0.1f;
-	
-				GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-				GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-				
-				Rectf rect(pos, stealth_gauge_tc->m_dwWidth, stealth_gauge_tc->m_dwHeight);
-				EERIEDrawBitmap(rect, 0.01f, stealth_gauge_tc, Color3f::gray(v).to<u8>());
-				GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-			}
-		}
-	}
-};
-StealthGauge stealthGauge;
-
-//-----------------------------------------------------------------------------
 void ARX_INTERFACE_RELEASESOUND()
 {
 	ARX_SOUND_PlayInterface(SND_MENU_RELEASE);
@@ -6655,6 +6608,52 @@ public:
 	}
 };
 DamagedEquipmentGui damagedEquipmentGui;
+
+extern float CURRENT_PLAYER_COLOR;
+
+/*!
+ * \brief Stealth Gauge Drawing
+ */
+class StealthGauge {
+private:
+	TextureContainer * stealth_gauge_tc;
+	
+public:
+	void init() {
+		stealth_gauge_tc = TextureContainer::LoadUI("graph/interface/icons/stealth_gauge");
+		arx_assert(stealth_gauge_tc);
+	}
+
+	void draw() {
+		
+		if(stealth_gauge_tc && !cinematicBorder.isActive()) {
+			float v=GetPlayerStealth();
+	
+			if(CURRENT_PLAYER_COLOR < v) {
+				Vec2f pos = Vec2f(InventoryX, g_size.height());
+				pos += Vec2f(110, -(126 + 32));
+				
+				if(pos.x < INTERFACE_RATIO(10))
+					pos.x = INTERFACE_RATIO(10);
+	
+				float t = v - CURRENT_PLAYER_COLOR;
+	
+				if(t >= 15)
+					v = 1.f;
+				else
+					v = (t*( 1.0f / 15 ))* 0.9f + 0.1f;
+	
+				GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+				GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+				
+				Rectf rect(pos, stealth_gauge_tc->m_dwWidth, stealth_gauge_tc->m_dwHeight);
+				EERIEDrawBitmap(rect, 0.01f, stealth_gauge_tc, Color3f::gray(v).to<u8>());
+				GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+			}
+		}
+	}
+};
+StealthGauge stealthGauge;
 
 void UpdateInterface() {
 	hitStrengthGauge.update();
