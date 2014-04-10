@@ -6277,12 +6277,20 @@ void DrawIcons() {
 class ChangeLevelIconGui{
 private:
 	Vec2f m_pos;
+	Rectf m_rect;
 	float m_intensity;
 	
 public:
 	void update() {
 		m_pos = g_size.topRight();
 		m_pos.x -= ChangeLevel->m_dwWidth;
+		
+		m_rect = Rectf(
+		m_pos.x,
+		m_pos.y,
+		m_pos.x + INTERFACE_RATIO_DWORD(ChangeLevel->m_dwWidth),
+		m_pos.y + INTERFACE_RATIO_DWORD(ChangeLevel->m_dwHeight)
+		);
 
 		m_intensity = 0.9f - std::sin(arxtime.get_frame_time()*( 1.0f / 50 ))*0.5f+rnd()*( 1.0f / 10 );
 		m_intensity = clamp(m_intensity, 0.f, 1.f);
@@ -6291,14 +6299,7 @@ public:
 	void draw() {
 	    ARX_INTERFACE_DrawItem(ChangeLevel, m_pos.x, m_pos.y, 0.0001f, Color3f::gray(m_intensity).to<u8>());
 		
-		const Rect changeLevelIconMouseTestRect(
-		m_pos.x,
-		m_pos.y,
-		m_pos.x + INTERFACE_RATIO_DWORD(ChangeLevel->m_dwWidth),
-		m_pos.y + INTERFACE_RATIO_DWORD(ChangeLevel->m_dwHeight)
-		);
-		
-	    if(changeLevelIconMouseTestRect.contains(Vec2i(DANAEMouse))) {
+	    if(m_rect.contains(Vec2f(DANAEMouse))) {
 			SpecialCursor=CURSOR_INTERACTION_ON;
 			if(!(EERIEMouseButton & 1) && (LastMouseClick & 1)) {
 				CHANGE_LEVEL_ICON = 200;
