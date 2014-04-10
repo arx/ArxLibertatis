@@ -6297,7 +6297,7 @@ public:
 	}
 	
 	void draw() {
-	    ARX_INTERFACE_DrawItem(ChangeLevel, m_pos.x, m_pos.y, 0.0001f, Color3f::gray(m_intensity).to<u8>());
+		EERIEDrawBitmap(m_rect, 0.0001f, ChangeLevel, Color3f::gray(m_intensity).to<u8>());
 		
 	    if(m_rect.contains(Vec2f(DANAEMouse))) {
 			SpecialCursor=CURSOR_INTERACTION_ON;
