@@ -491,7 +491,7 @@ void InitializeDanae() {
 	ACTIVEBKG->ambient = Color3f(0.09f, 0.09f, 0.09f);
 	
 	LoadSysTextures();
-	CreateInterfaceTextureContainers();
+	CursorTexturesInit();
 	
 	if(LaunchDemo) {
 		LogInfo << "Launching splash screens.";

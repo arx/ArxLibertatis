@@ -429,7 +429,7 @@ void ARX_INTERFACE_DrawNumber(const Vec2f & pos, const long num, const int _iNb,
 //-----------------------------------------------------------------------------
 // Interface Texture Containers creation
 //-----------------------------------------------------------------------------
-void CreateInterfaceTextureContainers()
+void CursorTexturesInit()
 {
     ITC.Reset();
 	
