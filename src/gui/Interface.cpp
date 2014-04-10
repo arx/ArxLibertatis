@@ -5790,22 +5790,36 @@ public:
 						float py = fPosY + j*m_slotSize.y + m_slotSpacing.y;
 						
 						Color color = (io->poisonous && io->poisonous_count != 0) ? Color::green : Color::white;
-						EERIEDrawBitmap(px, py, INTERFACE_RATIO_DWORD(tc->m_dwWidth),
-										INTERFACE_RATIO_DWORD(tc->m_dwHeight), 0.001f, tc, color);
+						
+						Rectf rect(
+							Vec2f(px, py),
+							tc->m_dwWidth,
+							tc->m_dwHeight
+						);
+						EERIEDrawBitmap(rect, 0.001f, tc, color);
 						
 						if(io == FlyingOverIO) {
 							GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 							GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-							EERIEDrawBitmap(px, py, INTERFACE_RATIO_DWORD(tc->m_dwWidth),
-											INTERFACE_RATIO_DWORD(tc->m_dwHeight), 0.001f, tc, Color::white);
+							
+							Rectf rect(
+								Vec2f(px, py),
+								tc->m_dwWidth,
+								tc->m_dwHeight
+							);
+							EERIEDrawBitmap(rect, 0.001f, tc, Color::white);
 							GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 						} else if(io->ioflags & IO_CAN_COMBINE) {
 							float fColorPulse = fabs(cos(radians(fDecPulse)));
 							GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 							GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-							EERIEDrawBitmap(px, py, INTERFACE_RATIO_DWORD(tc->m_dwWidth),
-											INTERFACE_RATIO_DWORD(tc->m_dwHeight), 0.001f, tc, 
-											Color3f::gray(fColorPulse).to<u8>());
+							
+							Rectf rect(
+								Vec2f(px, py),
+								tc->m_dwWidth,
+								tc->m_dwHeight
+							);
+							EERIEDrawBitmap(rect, 0.001f, tc, Color3f::gray(fColorPulse).to<u8>());
 							GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 						}
 	
