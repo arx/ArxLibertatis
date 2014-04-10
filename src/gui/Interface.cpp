@@ -3428,9 +3428,9 @@ public:
 	
 				GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 				GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-				EERIEDrawBitmap(px, py, INTERFACE_RATIO_DWORD(stealth_gauge_tc->m_dwWidth),
-				                INTERFACE_RATIO_DWORD(stealth_gauge_tc->m_dwHeight), 0.01f,
-				                stealth_gauge_tc, Color3f::gray(v).to<u8>());
+				
+				Rectf rect(Vec2f(px, py), stealth_gauge_tc->m_dwWidth, stealth_gauge_tc->m_dwHeight);
+				EERIEDrawBitmap(rect, 0.01f, stealth_gauge_tc, Color3f::gray(v).to<u8>());
 				GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 			}
 		}
