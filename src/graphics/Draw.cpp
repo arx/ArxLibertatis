@@ -201,10 +201,6 @@ void EERIEDrawBitmap(const Rectf & rect, float z, TextureContainer * tex, Color 
 	DrawBitmap(rect, z, tex, color, false);
 }
 
-void EERIEDrawBitmap(float x, float y, float sx, float sy, float z, TextureContainer * tex, Color color) {
-	DrawBitmap(Rectf(Vec2f(x, y), sx, sy), z, tex, color, false);
-}
-
 void EERIEDrawBitmap2(const Rectf & rect, float z, TextureContainer * tex, Color color) {
 	DrawBitmap(rect, z, tex, color, true);
 }
