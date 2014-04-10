@@ -281,11 +281,7 @@ bool bRenderInCursorMode = true;
 long lChangeWeapon=0;
 Entity *pIOChangeWeapon=NULL;
 
-static long lTimeToDrawMecanismCursor=0;
-static long lNbToDrawMecanismCursor=0;
 static long lOldInterface;
-
-
 
 namespace gui {
 
@@ -2775,9 +2771,8 @@ void ArxGame::managePlayerControls()
 			}
 		} else {
 			if(!bInventoryClosing) {
-				lTimeToDrawMecanismCursor=0;
-				lNbToDrawMecanismCursor=0;
-
+				mecanismIconReset();
+				
 				if(player.Interface & INTER_INVENTORYALL) {
 					ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
 					bInventoryClosing = true;
@@ -6562,9 +6557,19 @@ class MecanismIcon {
 private:
 	TextureContainer * m_tex;
 	Color m_color;
+	long lTimeToDrawMecanismCursor;
+	long lNbToDrawMecanismCursor;
+	
 public:
 	void init() {
 		m_tex = TextureContainer::LoadUI("graph/interface/cursors/mecanism");
+		
+		reset();
+	}
+	
+	void reset() {
+		lTimeToDrawMecanismCursor = 0;
+		lNbToDrawMecanismCursor = 0;
 	}
 	
 	void update() {
@@ -6580,6 +6585,10 @@ public:
 	}
 	
 	void draw() {
+		if(lNbToDrawMecanismCursor >= 3) {
+			return;
+		}
+		
 		Vec2f size = Vec2f(m_tex->size());
 		EERIEDrawBitmap(Rectf(Vec2f(0, 0), size.x, size.y), 0.01f, m_tex, m_color);
 	}
@@ -6588,6 +6597,9 @@ MecanismIcon mecanismIcon;
 
 void mecanismIconInit() {
 	mecanismIcon.init();
+}
+void mecanismIconReset() {
+	mecanismIcon.reset();
 }
 
 
@@ -6687,7 +6699,7 @@ void ArxGame::drawAllInterface() {
 		if(bRenderInCursorMode) {
 			GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-			if(MAGICMODE < 0 && lNbToDrawMecanismCursor < 3) {
+			if(MAGICMODE < 0) {
 				mecanismIcon.draw();
 			}
 			if(arrow_left_tc) {

@@ -257,5 +257,6 @@ void showQuickSaveIcon();
 
 void changeLevelIconGuiInit();
 void mecanismIconInit();
+void mecanismIconReset();
 
 #endif // ARX_GUI_INTERFACE_H
