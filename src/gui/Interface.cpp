@@ -4901,6 +4901,87 @@ public:
 		m_pos.x += lSLID_VALUE;
 	}
 	
+	void updateInput() {
+		{
+		// inventaire
+		Vec2f pos(g_size.width() - (35) + lSLID_VALUE, g_size.height() - 113);
+		static float flDelay=0;
+		
+		const Rect inventoryMouseTestRect(
+		pos.x,
+		pos.y,
+		pos.x + INTERFACE_RATIO(32),
+		pos.y + INTERFACE_RATIO(32)
+		);
+		
+		if(inventoryMouseTestRect.contains(Vec2i(DANAEMouse)) || flDelay) {
+			eMouseState = MOUSE_IN_INVENTORY_ICON;
+			SpecialCursor = CURSOR_INTERACTION_ON;
+
+			if(EERIEMouseButton & 4) {
+				ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
+
+				playerInventory.optimize();
+
+				flDelay=0;
+				EERIEMouseButton&=~4;
+			} else if(((EERIEMouseButton & 1) && !(LastMouseClick & 1)) || flDelay) {
+				if(!flDelay) {
+					flDelay=arxtime.get_updated();
+					return;
+				} else {
+					if((arxtime.get_updated() - flDelay) < 300) {
+						return;
+					} else {
+						flDelay=0;
+					}
+				}
+
+				if(player.Interface & INTER_INVENTORYALL) {
+					ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
+					bInventoryClosing = true;
+				} else {
+					bInverseInventory=!bInverseInventory;
+					lOldTruePlayerMouseLook=TRUE_PLAYER_MOUSELOOK_ON;
+				}
+
+				EERIEMouseButton &=~1;
+			} else if((EERIEMouseButton & 2) && !(LastMouseClick & 2)) {
+				ARX_INTERFACE_BookOpenClose(2);
+				ARX_INVENTORY_OpenClose(NULL);
+
+				if(player.Interface & INTER_INVENTORYALL) {
+					bInventoryClosing = true;
+				} else {
+					if(player.Interface & INTER_INVENTORY) {
+						ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
+						bInventoryClosing = true;
+						bInventorySwitch = true;
+					} else {
+						ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
+						player.Interface |= INTER_INVENTORYALL;
+
+						float fInventoryY = INTERFACE_RATIO(121.f) * (player.bag);
+						InventoryY = checked_range_cast<long>(fInventoryY);
+
+						ARX_INTERFACE_NoteClose();
+
+						if(TRUE_PLAYER_MOUSELOOK_ON) {
+							WILLRETURNTOFREELOOK = true;
+						}
+					}
+				}
+
+				EERIEMouseButton &= ~2;
+				TRUE_PLAYER_MOUSELOOK_ON = false;
+			}
+
+			if(DRAGINTER == NULL)
+				return;
+		}
+		}
+	}
+	
 	void draw() {
 		DrawIcon(m_pos, ITC.Get("backpack"), MOUSE_IN_INVENTORY_ICON);
 	}
@@ -6204,84 +6285,9 @@ void ArxGame::manageEditorControls() {
 				purseIconGui.updateInput();
 				bookIconGui.updateInput();
 				
-				{
-				// inventaire
-				Vec2f pos(g_size.width() - (35) + lSLID_VALUE, g_size.height() - 113);
-				static float flDelay=0;
+				backpackIconGui.updateInput();
 				
-				const Rect inventoryMouseTestRect(
-				pos.x,
-				pos.y,
-				pos.x + INTERFACE_RATIO(32),
-				pos.y + INTERFACE_RATIO(32)
-				);
 				
-				if(inventoryMouseTestRect.contains(Vec2i(DANAEMouse)) || flDelay) {
-					eMouseState = MOUSE_IN_INVENTORY_ICON;
-					SpecialCursor = CURSOR_INTERACTION_ON;
-
-					if(EERIEMouseButton & 4) {
-						ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
-
-						playerInventory.optimize();
-
-						flDelay=0;
-						EERIEMouseButton&=~4;
-					} else if(((EERIEMouseButton & 1) && !(LastMouseClick & 1)) || flDelay) {
-						if(!flDelay) {
-							flDelay=arxtime.get_updated();
-							return;
-						} else {
-							if((arxtime.get_updated() - flDelay) < 300) {
-								return;
-							} else {
-								flDelay=0;
-							}
-						}
-
-						if(player.Interface & INTER_INVENTORYALL) {
-							ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
-							bInventoryClosing = true;
-						} else {
-							bInverseInventory=!bInverseInventory;
-							lOldTruePlayerMouseLook=TRUE_PLAYER_MOUSELOOK_ON;
-						}
-
-						EERIEMouseButton &=~1;
-					} else if((EERIEMouseButton & 2) && !(LastMouseClick & 2)) {
-						ARX_INTERFACE_BookOpenClose(2);
-						ARX_INVENTORY_OpenClose(NULL);
-
-						if(player.Interface & INTER_INVENTORYALL) {
-							bInventoryClosing = true;
-						} else {
-							if(player.Interface & INTER_INVENTORY) {
-								ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
-								bInventoryClosing = true;
-								bInventorySwitch = true;
-							} else {
-								ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
-								player.Interface |= INTER_INVENTORYALL;
-
-								float fInventoryY = INTERFACE_RATIO(121.f) * (player.bag);
-								InventoryY = checked_range_cast<long>(fInventoryY);
-
-								ARX_INTERFACE_NoteClose();
-
-								if(TRUE_PLAYER_MOUSELOOK_ON) {
-									WILLRETURNTOFREELOOK = true;
-								}
-							}
-						}
-
-						EERIEMouseButton &= ~2;
-						TRUE_PLAYER_MOUSELOOK_ON = false;
-					}
-
-					if(DRAGINTER == NULL)
-						return;
-				}
-				}
 			}
 
 			// steal
