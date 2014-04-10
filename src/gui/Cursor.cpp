@@ -61,13 +61,19 @@ extern float STARTED_ANGLE;
 long SPECIAL_DRAGINTER_RENDER=0;
 long CANNOT_PUT_IT_HERE=0;
 
+static TextureContainer * cursorTargetOn = NULL;
+static TextureContainer * cursorTargetOff = NULL;
+
 TextureContainer * ThrowObject = NULL;
 
 void cursorTexturesInit() {
 	ITC.Reset();
 	
-	ITC.Set("target_on", "graph/interface/cursors/target_on");
-	ITC.Set("target_off", "graph/interface/cursors/target_off");
+	cursorTargetOn = TextureContainer::LoadUI("graph/interface/cursors/target_on");
+	cursorTargetOff = TextureContainer::LoadUI("graph/interface/cursors/target_off");
+	arx_assert(cursorTargetOn);
+	arx_assert(cursorTargetOff);
+	
 	ITC.Set("interaction_on", "graph/interface/cursors/interaction_on");
 	ITC.Set("interaction_off", "graph/interface/cursors/interaction_off");
 	ITC.Set("magic", "graph/interface/cursors/magic");
@@ -372,13 +378,13 @@ bool SelectSpellTargetCursorRender() {
 			&& (((LOOKING_FOR_SPELL_TARGET & 1) && (FlyingOverIO->ioflags & IO_NPC))
 			||  ((LOOKING_FOR_SPELL_TARGET & 2) && (FlyingOverIO->ioflags & IO_ITEM)))
 		){
-			surf=ITC.Get("target_on");
+			surf = cursorTargetOn;
 			
 			if(!(EERIEMouseButton & 1) && (LastMouseClick & 1)) {
 				ARX_SPELLS_LaunchSpellTarget(FlyingOverIO);
 			}
 		} else {
-			surf=ITC.Get("target_off");
+			surf = cursorTargetOff;
 			
 			if(GInput->actionPressed(CONTROLS_CUST_MAGICMODE)) {
 				ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE, &player.pos);
@@ -513,12 +519,12 @@ void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 					surf = ITC.Get("ptexcursorredist");
 					break;
 				case CURSOR_COMBINEOFF:
-					surf = ITC.Get("target_off");
+					surf = cursorTargetOff;
 					mousePos.x -= 16.f;
 					mousePos.y -= 16.f;
 					break;
 				case CURSOR_COMBINEON:
-					surf = ITC.Get("target_on");
+					surf = cursorTargetOn;
 
 					if(surf)
 						mousePos.x -= 16.f;
@@ -526,7 +532,7 @@ void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 					mousePos.y -= 16.f;
 					break;
 				case CURSOR_FIREBALLAIM: {
-					surf = ITC.Get("target_on");
+					surf = cursorTargetOn;
 
 					Vec2i size;
 					if(surf) {
@@ -697,7 +703,7 @@ void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 
 					CURCURPOS = 0;
 
-					TextureContainer * surf = pTCCrossHair ? pTCCrossHair : ITC.Get("target_off");
+					TextureContainer * surf = pTCCrossHair ? pTCCrossHair : cursorTargetOff;
 
 					if(surf) {
 						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
