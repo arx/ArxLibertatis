@@ -442,7 +442,6 @@ void CreateInterfaceTextureContainers()
 	
 	ITC.Set("gold", "graph/interface/inventory/gold");
 	ITC.Set("book", "graph/interface/icons/book");
-	ITC.Set("steal", "graph/interface/icons/steal");
 	ITC.Set("item_cant_steal", "graph/interface/icons/cant_steal_item");
 	
 	ITC.Set("target_on", "graph/interface/cursors/target_on");
@@ -5047,10 +5046,12 @@ static BackpackIconGui backpackIconGui;
 
 class StealIconGui : public HudIconBase {
 private:
+	TextureContainer * m_tex;
 	Vec2f m_pos;
 public:
 	void init() {
-		
+		m_tex = TextureContainer::LoadUI("graph/interface/icons/steal");
+		arx_assert(m_tex);
 	}
 	
 	void update() {
@@ -5099,7 +5100,7 @@ public:
 	}
 	
 	void draw() {
-		DrawIcon(m_pos, ITC.Get("steal"), MOUSE_IN_STEAL_ICON);
+		DrawIcon(m_pos, m_tex, MOUSE_IN_STEAL_ICON);
 	}
 };
 
@@ -6311,7 +6312,7 @@ void hudElementsInit() {
 	TextureContainer::LoadUI("graph/interface/icons/book");
 	backpackIconGui.init();
 	levelUpIconGui.init();
-	TextureContainer::LoadUI("graph/interface/icons/steal");
+	stealIconGui.init();
 	TextureContainer::LoadUI("graph/interface/icons/cant_steal_item");
 	TextureContainer::LoadUI("graph/interface/inventory/hero_inventory");
 	TextureContainer::LoadUI("graph/interface/inventory/scroll_up");
