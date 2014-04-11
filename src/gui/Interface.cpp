@@ -6012,6 +6012,26 @@ private:
 	};
 	
 	struct ActiveSpellIconSlot : public SpellIconSlot {
+		size_t spellIndex;
+		
+		void updateInput() {
+			if(m_rect.contains(Vec2f(DANAEMouse))) {
+				SpecialCursor = CURSOR_INTERACTION_ON;
+				
+				if((LastMouseClick & 1) && !(EERIEMouseButton & 1)) {
+					if(spells[spellIndex].type >= 0)
+						WILLADDSPEECH = spellicons[spells[spellIndex].type].name;
+					
+					WILLADDSPEECHTIME = (unsigned long)(arxtime);
+				}
+				
+				if(EERIEMouseButton & 4) {
+					ARX_SPELLS_AbortSpellSound();
+					EERIEMouseButton &= ~4;
+					spells[spellIndex].tolive = 0;
+				}
+			}
+		}
 		
 		void draw() {
 			EERIEDrawBitmap(m_rect, 0.01f, m_tc, m_color);
@@ -6019,6 +6039,24 @@ private:
 	};
 	
 	struct PrecastSpellIconSlot : public SpellIconSlot {
+		
+		void updateInput() {
+			if(m_rect.contains(Vec2f(DANAEMouse))) {
+				SpecialCursor = CURSOR_INTERACTION_ON;
+				
+				if((LastMouseClick & 1) && !(EERIEMouseButton & 1)) {
+					if(Precast[PRECAST_NUM].typ >= 0)
+						WILLADDSPEECH = spellicons[Precast[PRECAST_NUM].typ].name;
+					
+					WILLADDSPEECHTIME = (unsigned long)(arxtime);
+				}
+				
+				if(EERIEMouseButton & 4) {
+					ARX_SPELLS_Precast_Launch(PRECAST_NUM);
+					EERIEMouseButton &= ~4;
+				}
+			}
+		}
 		
 		void draw() {
 			EERIEDrawBitmap(m_rect, 0.01f, m_tc, m_color);
@@ -6043,43 +6081,18 @@ private:
 			
 			if(flag & 2) {
 				precastSpellIconSlot.update(rect, tc, color);
+				
+				if(!(player.Interface & INTER_COMBATMODE))
+					precastSpellIconSlot.updateInput();
+				
 				precastSpellIconSlot.draw();
 			} else {
 				activeSpellIconSlot.update(rect, tc, color);
-				activeSpellIconSlot.draw();
-			}
-			
-			if(!(flag & 1)) {
-				if(!(player.Interface & INTER_COMBATMODE)) {
-					if(rect.contains(Vec2f(DANAEMouse))) {
-						SpecialCursor=CURSOR_INTERACTION_ON;
-						
-						if((LastMouseClick & 1) && !(EERIEMouseButton & 1)) {
-							if(flag & 2) {
-								if(Precast[PRECAST_NUM].typ >= 0)
-									WILLADDSPEECH = spellicons[Precast[PRECAST_NUM].typ].name;
-								
-								WILLADDSPEECHTIME = (unsigned long)(arxtime);
-							} else {
-								if(spells[i].type >= 0)
-									WILLADDSPEECH = spellicons[spells[i].type].name;
-								
-								WILLADDSPEECHTIME = (unsigned long)(arxtime);
-							}
-						}
-						
-						if(EERIEMouseButton & 4) {
-							if(flag & 2) {
-								ARX_SPELLS_Precast_Launch(PRECAST_NUM);
-								EERIEMouseButton&=~4;
-							} else {
-								ARX_SPELLS_AbortSpellSound();
-								EERIEMouseButton&=~4;
-								spells[i].tolive=0;
-							}
-						}
-					}
+				activeSpellIconSlot.spellIndex = i;
+				if(!(flag & 1) && !(player.Interface & INTER_COMBATMODE)) {
+					activeSpellIconSlot.updateInput();
 				}
+				activeSpellIconSlot.draw();
 			}
 	}
 	//---------------------------------------------------------------------------
