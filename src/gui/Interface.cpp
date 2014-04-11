@@ -6041,53 +6041,7 @@ private:
 		}
 	};
 	std::vector<PrecastSpellIconSlot> m_icons;
-	
-	
-	void precastSlotDraw(long i, float intensity) {
-		if(Precast[i].typ == -1) {
-			return;
-		}
-		
-		PRECAST_NUM = i;
-		
-		float val = intensity;
-		
-		if(Precast[i].launch_time > 0 && (float(arxtime) >= Precast[i].launch_time)) {
-			float tt = (float(arxtime) - Precast[i].launch_time) * (1.0f/1000);
-			
-			if(tt > 1.f)
-				tt = 1.f;
-			
-			val *= (1.f - tt);
-		}
 
-		Color color = Color3f(0, val * (1.0f/2), val).to<u8>();
-		
-		Vec2f pos = Vec2f(g_size.bottomLeft());
-		pos += Vec2f(InventoryX, 0.f);
-		pos += Vec2f(110, -(126 + 32));
-		
-		if(pos.x < INTERFACE_RATIO(10)) {
-			pos.x = INTERFACE_RATIO(10);
-		}
-		
-		pos.x += (33 + 33 + 33);
-		pos.x += PRECAST_NUM * 33;
-		
-		SpellType typ = Precast[i].typ;
-		
-		TextureContainer * tc = spellicons[typ].tc;
-		arx_assert(tc);
-		Rectf rect(pos, tc->m_dwWidth * 0.5f, tc->m_dwHeight * 0.5f);
-		
-		PrecastSpellIconSlot icon;
-		icon.update(rect, tc, color);
-		
-		if(!(player.Interface & INTER_COMBATMODE))
-			icon.updateInput();
-		
-		m_icons.push_back(icon);
-	}
 public:
 	
 	void update() {
@@ -6103,7 +6057,50 @@ public:
 		PRECAST_NUM = 0;
 		
 		for(size_t i = 0; i < MAX_PRECAST; i++) {
-			precastSlotDraw(i, intensity);
+			
+			if(Precast[i].typ == -1) {
+				continue;
+			}
+			
+			PRECAST_NUM = i;
+			
+			float val = intensity;
+			
+			if(Precast[i].launch_time > 0 && (float(arxtime) >= Precast[i].launch_time)) {
+				float tt = (float(arxtime) - Precast[i].launch_time) * (1.0f/1000);
+				
+				if(tt > 1.f)
+					tt = 1.f;
+				
+				val *= (1.f - tt);
+			}
+	
+			Color color = Color3f(0, val * (1.0f/2), val).to<u8>();
+			
+			Vec2f pos = Vec2f(g_size.bottomLeft());
+			pos += Vec2f(InventoryX, 0.f);
+			pos += Vec2f(110, -(126 + 32));
+			
+			if(pos.x < INTERFACE_RATIO(10)) {
+				pos.x = INTERFACE_RATIO(10);
+			}
+			
+			pos.x += (33 + 33 + 33);
+			pos.x += PRECAST_NUM * 33;
+			
+			SpellType typ = Precast[i].typ;
+			
+			TextureContainer * tc = spellicons[typ].tc;
+			arx_assert(tc);
+			Rectf rect(pos, tc->m_dwWidth * 0.5f, tc->m_dwHeight * 0.5f);
+			
+			PrecastSpellIconSlot icon;
+			icon.update(rect, tc, color);
+			
+			if(!(player.Interface & INTER_COMBATMODE))
+				icon.updateInput();
+			
+			m_icons.push_back(icon);
 		}
 	}
 	
