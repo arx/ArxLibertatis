@@ -229,7 +229,7 @@ long				SMOOTHSLID=0;
 long				currpos=50;
 bool				DRAGGING = false;
 long				INVERTMOUSE=0;
-bool				PLAYER_INTERFACE_HIDE_COUNT = false;
+bool				PLAYER_INTERFACE_HIDE_COUNT = true;
 long				MAGICMODE=-1;
 long				SpecialCursor=0;
 long				FLYING_OVER		= 0;
@@ -1672,7 +1672,7 @@ void ArxGame::managePlayerControls()
 				openBookPage(prevBookPage());
 			}
 		} else if(InPlayerInventoryPos(DANAEMouse)) {
-			if(!PLAYER_INTERFACE_HIDE_COUNT) {
+			if(PLAYER_INTERFACE_HIDE_COUNT) {
 				if((player.Interface & INTER_INVENTORY)) {
 					if(player.bag) {
 						if(sActiveInventory > 0) {
@@ -1685,7 +1685,7 @@ void ArxGame::managePlayerControls()
 		} else if(player.Interface & INTER_MAP) {
 			openBookPage(prevBookPage());
 		} else {
-			if(!PLAYER_INTERFACE_HIDE_COUNT) {
+			if(PLAYER_INTERFACE_HIDE_COUNT) {
 				if((player.Interface & INTER_INVENTORY)) {
 					if(player.bag) {
 						if(sActiveInventory > 0) {
@@ -1704,7 +1704,7 @@ void ArxGame::managePlayerControls()
 				openBookPage(nextBookPage());
 			}
 		} else if(InPlayerInventoryPos(DANAEMouse)) {
-			if(!PLAYER_INTERFACE_HIDE_COUNT) {
+			if(PLAYER_INTERFACE_HIDE_COUNT) {
 				if((player.Interface & INTER_INVENTORY)) {
 					if(player.bag) {
 						if(sActiveInventory < player.bag - 1) {
@@ -1717,7 +1717,7 @@ void ArxGame::managePlayerControls()
 		} else if(player.Interface & INTER_MAP) {
 			openBookPage(nextBookPage());
 		} else {
-			if(!PLAYER_INTERFACE_HIDE_COUNT) {
+			if(PLAYER_INTERFACE_HIDE_COUNT) {
 				if((player.Interface & INTER_INVENTORY)) {
 					if(player.bag) {
 						if(sActiveInventory < player.bag - 1) {
@@ -2009,7 +2009,7 @@ void ArxGame::managePlayerControls()
 void ARX_INTERFACE_Reset()
 {
 	SMOOTHSLID=0;
-	PLAYER_INTERFACE_HIDE_COUNT = false;
+	PLAYER_INTERFACE_HIDE_COUNT = true;
 	BLOCK_PLAYER_CONTROLS = false;
 	SLID_VALUE=0;
 	cinematicBorder.reset2();
@@ -2028,9 +2028,9 @@ void playerInterfaceFaderRequestFade(FadeDirection showhide, long smooth)
 	}
 
 	if(showhide == FadeDirection_In)
-		PLAYER_INTERFACE_HIDE_COUNT = false;
-	else
 		PLAYER_INTERFACE_HIDE_COUNT = true;
+	else
+		PLAYER_INTERFACE_HIDE_COUNT = false;
 	
 	if(smooth) {
 		if(showhide == FadeDirection_In)
@@ -4372,7 +4372,7 @@ public:
 	}
 	
 	void draw() {
-		if(!PLAYER_INTERFACE_HIDE_COUNT && TSecondaryInventory) {
+		if(PLAYER_INTERFACE_HIDE_COUNT && TSecondaryInventory) {
 			bool _bSteal = (bool)((player.Interface & INTER_STEAL) != 0);
 			
 			if(TSecondaryInventory->io && !TSecondaryInventory->io->inventory_skin.empty()) {
@@ -5524,7 +5524,7 @@ void DrawIcons() {
 			stealIconGui.draw();			
 		}
 		// Pick All/Close Secondary Inventory
-		if(!PLAYER_INTERFACE_HIDE_COUNT && TSecondaryInventory) {	
+		if(PLAYER_INTERFACE_HIDE_COUNT && TSecondaryInventory) {
 			//These have to be calculated on each frame (to make them move).
 			pickAllIconGui.update();
 			closeSecondaryInventoryIconGui.update();
@@ -6288,7 +6288,7 @@ void ArxGame::drawAllInterface() {
 		hitStrengthGauge.draw();
 	}	
 	secondaryInventory.draw();
-	if(!PLAYER_INTERFACE_HIDE_COUNT) {
+	if(PLAYER_INTERFACE_HIDE_COUNT) {
 			inventoryGui.draw();
 	}
 	if(FlyingOverIO 
@@ -6380,7 +6380,7 @@ void ArxGame::manageEditorControls() {
 
 	/////////////////////////////////////////////////////
 	// begining to count time for sliding interface
-	if(!PLAYER_INTERFACE_HIDE_COUNT && !SMOOTHSLID) {
+	if(PLAYER_INTERFACE_HIDE_COUNT && !SMOOTHSLID) {
 		bool bOk = true;
 
 		if(TRUE_PLAYER_MOUSELOOK_ON) {
@@ -6521,7 +6521,7 @@ void ArxGame::manageEditorControls() {
 		}
 	}
 	
-	if(!PLAYER_INTERFACE_HIDE_COUNT && TSecondaryInventory) {
+	if(PLAYER_INTERFACE_HIDE_COUNT && TSecondaryInventory) {
 		
 		Entity * temp=(Entity *)TSecondaryInventory->io;
 
