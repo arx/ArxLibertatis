@@ -6122,7 +6122,24 @@ private:
 	}
 	
 	void precastSlotDraw(long i, float intensity) {
-		Color color = Color3f(0, intensity * (1.0f/2), intensity).to<u8>();
+		if(Precast[i].typ == -1) {
+			return;
+		}
+		
+		PRECAST_NUM = i;
+		
+		float val = intensity;
+		
+		if(Precast[i].launch_time > 0 && (float(arxtime) >= Precast[i].launch_time)) {
+			float tt = (float(arxtime) - Precast[i].launch_time) * (1.0f/1000);
+			
+			if(tt > 1.f)
+				tt = 1.f;
+			
+			val *= (1.f - tt);
+		}
+
+		Color color = Color3f(0, val * (1.0f/2), val).to<u8>();
 		
 		Vec2f pos = Vec2f(g_size.bottomLeft());
 		pos += Vec2f(InventoryX, 0.f);
@@ -6135,7 +6152,7 @@ private:
 		pos.x += (33 + 33 + 33);
 		pos.x += PRECAST_NUM * 33;
 		
-		SpellType typ = (SpellType)i; // TODO ugh
+		SpellType typ = Precast[i].typ;
 		
 		TextureContainer * tc = spellicons[typ].tc;
 		arx_assert(tc);
@@ -6187,22 +6204,7 @@ public:
 	void spellsPrecastedUpdate(float intensity) {
 		if(!(player.Interface & INTER_INVENTORYALL) && !(player.Interface & INTER_MAP)) {
 			for(size_t i = 0; i < MAX_PRECAST; i++) {
-				PRECAST_NUM = i;
-				
-				if(Precast[i].typ!=-1) {
-					float val = intensity;
-					
-					if(Precast[i].launch_time > 0 && (float(arxtime) >= Precast[i].launch_time)) {
-						float tt = (float(arxtime) - Precast[i].launch_time) * (1.0f/1000);
-						
-						if(tt > 1.f)
-							tt = 1.f;
-						
-						val *= (1.f - tt);
-					}
-					
-					precastSlotDraw(Precast[i].typ, val);
-				}
+				precastSlotDraw(i, intensity);
 			}
 		}
 	}
