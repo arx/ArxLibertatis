@@ -6116,16 +6116,7 @@ public:
 		arx_assert(m_texUnknown);
 	}
 	
-	void update() {
-		currpos = static_cast<long>(INTERFACE_RATIO(50.f));
-		
-		float intensity = 1.f - PULSATE * 0.5f;
-		intensity = clamp(intensity, 0.f, 1.f);
-		
-		GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-		PRECAST_NUM = 0;
-		
+	void spellsByPlayerUpdate(float intensity) {
 		for(size_t i = 0; i < MAX_SPELLS; i++) {
 			if(   spells[i].exist
 			   && spells[i].caster == 0
@@ -6134,7 +6125,9 @@ public:
 				ManageSpellIcon(i, intensity, 0);
 			}
 		}
-		
+	}
+	
+	void spellsOnPlayerUpdate(float intensity) {
 		if(entities.player()) {
 			Entity * playerEntity = entities.player();
 			
@@ -6150,7 +6143,9 @@ public:
 				}
 			}
 		}
-		
+	}
+	
+	void spellsPrecastedUpdate(float intensity) {
 		if(!(player.Interface & INTER_INVENTORYALL) && !(player.Interface & INTER_MAP)) {
 			for(size_t i = 0; i < MAX_PRECAST; i++) {
 				PRECAST_NUM = i;
@@ -6170,6 +6165,21 @@ public:
 				}
 			}
 		}
+	}
+	
+	void update() {
+		currpos = static_cast<long>(INTERFACE_RATIO(50.f));
+		
+		float intensity = 1.f - PULSATE * 0.5f;
+		intensity = clamp(intensity, 0.f, 1.f);
+		
+		GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+		PRECAST_NUM = 0;
+		
+		spellsByPlayerUpdate(intensity);
+		spellsOnPlayerUpdate(intensity);
+		spellsPrecastedUpdate(intensity);
 	}
 	
 	void draw() {
