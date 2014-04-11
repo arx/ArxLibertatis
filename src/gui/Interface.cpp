@@ -2039,6 +2039,42 @@ public:
 		}
 	}
 	
+	void updateFirst() {
+		/////////////////////////////////////////////////////
+		// begining to count time for sliding interface
+		if(PLAYER_INTERFACE_HIDE_COUNT && !SMOOTHSLID) {
+			bool bOk = true;
+	
+			if(TRUE_PLAYER_MOUSELOOK_ON) {
+				if(!(player.Interface & INTER_COMBATMODE) && player.doingmagic != 2 && !InInventoryPos(DANAEMouse)) {
+					bOk = false;
+	
+					float t=float(arxtime);
+	
+					if(t-SLID_START > 10000.f) {
+						SLID_VALUE += (float)Original_framedelay*( 1.0f / 10 );
+	
+						if(SLID_VALUE > 100.f)
+							SLID_VALUE = 100.f;
+	
+						lSLID_VALUE = SLID_VALUE;
+					} else {
+						bOk = true;
+					}
+				}
+			}
+	
+			if(bOk) {
+				SLID_VALUE -= (float)Original_framedelay*( 1.0f / 10 );
+	
+				if(SLID_VALUE < 0.f)
+					SLID_VALUE = 0.f;
+	
+				lSLID_VALUE = SLID_VALUE;
+			}
+		}
+	}
+	
 	void update() {
 		if(SMOOTHSLID == 1) {
 			SLID_VALUE += (float)Original_framedelay*( 1.0f / 10 );
@@ -6408,41 +6444,9 @@ void ArxGame::manageEditorControls() {
 		DANAEMouse.x = checked_range_cast<short>(fX);
 		DANAEMouse.y = checked_range_cast<short>(fY);
 	}
-
-	/////////////////////////////////////////////////////
-	// begining to count time for sliding interface
-	if(PLAYER_INTERFACE_HIDE_COUNT && !SMOOTHSLID) {
-		bool bOk = true;
-
-		if(TRUE_PLAYER_MOUSELOOK_ON) {
-			if(!(player.Interface & INTER_COMBATMODE) && player.doingmagic != 2 && !InInventoryPos(DANAEMouse)) {
-				bOk = false;
-
-				float t=float(arxtime);
-
-				if(t-SLID_START > 10000.f) {
-					SLID_VALUE += (float)Original_framedelay*( 1.0f / 10 );
-
-					if(SLID_VALUE > 100.f)
-						SLID_VALUE = 100.f;
-
-					lSLID_VALUE = SLID_VALUE;
-				} else {
-					bOk = true;
-				}
-			}
-		}
-
-		if(bOk) {
-			SLID_VALUE -= (float)Original_framedelay*( 1.0f / 10 );
-
-			if(SLID_VALUE < 0.f)
-				SLID_VALUE = 0.f;
-
-			lSLID_VALUE = SLID_VALUE;
-		}
-	}
-
+	
+	playerInterfaceFader.updateFirst();
+	
 	// on ferme
 	if((player.Interface & INTER_COMBATMODE) || player.doingmagic >= 2) {
 		Entity * io = NULL;
