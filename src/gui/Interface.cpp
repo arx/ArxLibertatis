@@ -5999,25 +5999,56 @@ private:
 	TextureContainer * m_texUnknown;
 	long currpos;
 	
+	struct SpellIconSlot {
+		Rectf m_rect;
+		TextureContainer * m_tc;
+		Color m_color;
+		
+		void update(const Rectf & rect, TextureContainer * tc, Color color) {
+			m_rect = rect;
+			m_tc = tc;
+			m_color = color;
+		}
+	};
+	
+	struct ActiveSpellIconSlot : public SpellIconSlot {
+		
+		void draw() {
+			EERIEDrawBitmap(m_rect, 0.01f, m_tc, m_color);
+		}
+	};
+	
+	struct PrecastSpellIconSlot : public SpellIconSlot {
+		
+		void draw() {
+			EERIEDrawBitmap(m_rect, 0.01f, m_tc, m_color);
+			
+			GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendOne);
+			
+			Rectf rect2 = m_rect;
+			rect2.move(-1, -1);
+			EERIEDrawBitmap(rect2, 0.0001f, m_tc, m_color);
+			
+			Rectf rect3 = m_rect;
+			rect3.move(1, 1);
+			EERIEDrawBitmap(rect3, 0.0001f, m_tc, m_color);
+			
+			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+		}
+	};
+	ActiveSpellIconSlot activeSpellIconSlot;
+	PrecastSpellIconSlot precastSpellIconSlot;
+	
 	void StdDraw(const Rectf & rect, Color color, TextureContainer * tc, long flag, long i) {
-		
-		
-			EERIEDrawBitmap(rect, 0.01f, tc, color);
 			
 			if(flag & 2) {
-				GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendOne);
-				
-				Rectf rect2 = rect;
-				rect2.move(-1, -1);
-				EERIEDrawBitmap(rect2, 0.0001f, tc, color);
-				
-				Rectf rect3 = rect;
-				rect3.move(1, 1);
-				EERIEDrawBitmap(rect3, 0.0001f, tc, color);
-				
-				GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+				precastSpellIconSlot.update(rect, tc, color);
+				precastSpellIconSlot.draw();
+			} else {
+				activeSpellIconSlot.update(rect, tc, color);
+				activeSpellIconSlot.draw();
 			}
-	
+			
 			if(!(flag & 1)) {
 				if(!(player.Interface & INTER_COMBATMODE)) {
 					if(rect.contains(Vec2f(DANAEMouse))) {
