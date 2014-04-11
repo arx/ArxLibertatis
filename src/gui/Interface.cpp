@@ -6116,7 +6116,7 @@ public:
 		arx_assert(m_texUnknown);
 	}
 	
-	void draw() {
+	void update() {
 		currpos = static_cast<long>(INTERFACE_RATIO(50.f));
 		
 		float intensity = 1.f - PULSATE * 0.5f;
@@ -6170,6 +6170,10 @@ public:
 				}
 			}
 		}
+	}
+	
+	void draw() {
+		update();
 	}
 };
 ActiveSpellsGui activeSpellsGui;
