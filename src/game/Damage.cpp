@@ -874,7 +874,7 @@ float ARX_DAMAGES_DamageNPC(Entity * io, float dmg, EntityHandle source, long fl
 				long xp = io->_npcdata->xpvalue;
 				ARX_DAMAGES_ForceDeath(io, entities[source]);
 
-				if(source == 0)
+				if(source == 0 || entities[source]->summoner == 0)
 					ARX_PLAYER_Modify_XP(xp);
 			}
 			else ARX_DAMAGES_ForceDeath(io, NULL);
