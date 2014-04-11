@@ -5993,48 +5993,8 @@ public:
 };
 ScreenArrows screenArrows;
 
-//AFFICHAGE ICONE DE SPELLS DE DURATION
-class ActiveSpellsGui {
+class PrecastSpellsGui {
 private:
-	TextureContainer * m_texUnknown;
-	long currpos;
-	
-	struct ActiveSpellIconSlot {
-		Rectf m_rect;
-		TextureContainer * m_tc;
-		Color m_color;
-		size_t spellIndex;
-		
-		void update(const Rectf & rect, TextureContainer * tc, Color color) {
-			m_rect = rect;
-			m_tc = tc;
-			m_color = color;
-		}
-		
-		void updateInput() {
-			if(m_rect.contains(Vec2f(DANAEMouse))) {
-				SpecialCursor = CURSOR_INTERACTION_ON;
-				
-				if((LastMouseClick & 1) && !(EERIEMouseButton & 1)) {
-					if(spells[spellIndex].type >= 0)
-						WILLADDSPEECH = spellicons[spells[spellIndex].type].name;
-					
-					WILLADDSPEECHTIME = (unsigned long)(arxtime);
-				}
-				
-				if(EERIEMouseButton & 4) {
-					ARX_SPELLS_AbortSpellSound();
-					EERIEMouseButton &= ~4;
-					spells[spellIndex].tolive = 0;
-				}
-			}
-		}
-		
-		void draw() {
-			EERIEDrawBitmap(m_rect, 0.01f, m_tc, m_color);
-		}
-	};
-	
 	struct PrecastSpellIconSlot {
 		Rectf m_rect;
 		TextureContainer * m_tc;
@@ -6080,52 +6040,8 @@ private:
 			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 		}
 	};
-	ActiveSpellIconSlot activeSpellIconSlot;
 	PrecastSpellIconSlot precastSpellIconSlot;
 	
-	void ManageSpellIcon(long i, float intensity, bool flag)
-	{
-		float POSX = g_size.width()-INTERFACE_RATIO(35);
-		Color color;
-		float posx = POSX+lSLID_VALUE;
-		float posy = (float)currpos;
-		SpellType typ=spells[i].type;
-		
-		if(flag) {
-			color = Color3f(intensity, 0, 0).to<u8>();
-		} else {
-			color = Color3f::gray(intensity).to<u8>();
-		}
-		
-		bool bOk=true;
-		
-		if(spells[i].bDuration) {
-			if(player.mana < 20 || spells[i].timcreation+spells[i].tolive - float(arxtime) < 2000) {
-				if(ucFlick&1)
-					bOk=false;
-			}
-		} else {
-			if(player.mana<20) {
-				if(ucFlick&1)
-					bOk=false;
-			}
-		}
-		
-		if(bOk && typ >= 0 && (size_t)typ < SPELL_TYPES_COUNT) {
-			TextureContainer * tc = spellicons[typ].tc;
-			arx_assert(tc);
-			Rectf rect(Vec2f(posx, posy), tc->m_dwWidth * 0.5f, tc->m_dwHeight * 0.5f);
-			
-			activeSpellIconSlot.update(rect, tc, color);
-			activeSpellIconSlot.spellIndex = i;
-			if(!flag && !(player.Interface & INTER_COMBATMODE)) {
-				activeSpellIconSlot.updateInput();
-			}
-			activeSpellIconSlot.draw();
-		}
-		
-		currpos += static_cast<long>(INTERFACE_RATIO(33.f));
-	}
 	
 	void precastSlotDraw(long i, float intensity) {
 		if(Precast[i].typ == -1) {
@@ -6171,6 +6087,115 @@ private:
 		
 		precastSpellIconSlot.draw();
 	}
+public:
+	void spellsPrecastedUpdate(float intensity) {
+		if(!(player.Interface & INTER_INVENTORYALL) && !(player.Interface & INTER_MAP)) {
+			for(size_t i = 0; i < MAX_PRECAST; i++) {
+				precastSlotDraw(i, intensity);
+			}
+		}
+	}
+	
+	void update() {		
+		float intensity = 1.f - PULSATE * 0.5f;
+		intensity = clamp(intensity, 0.f, 1.f);
+		
+		GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+		PRECAST_NUM = 0;
+		
+		spellsPrecastedUpdate(intensity);
+	}
+};
+PrecastSpellsGui precastSpellsGui;
+
+//AFFICHAGE ICONE DE SPELLS DE DURATION
+class ActiveSpellsGui {
+private:
+	TextureContainer * m_texUnknown;
+	long currpos;
+	
+	struct ActiveSpellIconSlot {
+		Rectf m_rect;
+		TextureContainer * m_tc;
+		Color m_color;
+		size_t spellIndex;
+		
+		void update(const Rectf & rect, TextureContainer * tc, Color color) {
+			m_rect = rect;
+			m_tc = tc;
+			m_color = color;
+		}
+		
+		void updateInput() {
+			if(m_rect.contains(Vec2f(DANAEMouse))) {
+				SpecialCursor = CURSOR_INTERACTION_ON;
+				
+				if((LastMouseClick & 1) && !(EERIEMouseButton & 1)) {
+					if(spells[spellIndex].type >= 0)
+						WILLADDSPEECH = spellicons[spells[spellIndex].type].name;
+					
+					WILLADDSPEECHTIME = (unsigned long)(arxtime);
+				}
+				
+				if(EERIEMouseButton & 4) {
+					ARX_SPELLS_AbortSpellSound();
+					EERIEMouseButton &= ~4;
+					spells[spellIndex].tolive = 0;
+				}
+			}
+		}
+		
+		void draw() {
+			EERIEDrawBitmap(m_rect, 0.01f, m_tc, m_color);
+		}
+	};
+	ActiveSpellIconSlot activeSpellIconSlot;
+	
+	
+	void ManageSpellIcon(long i, float intensity, bool flag)
+	{
+		float POSX = g_size.width()-INTERFACE_RATIO(35);
+		Color color;
+		float posx = POSX+lSLID_VALUE;
+		float posy = (float)currpos;
+		SpellType typ=spells[i].type;
+		
+		if(flag) {
+			color = Color3f(intensity, 0, 0).to<u8>();
+		} else {
+			color = Color3f::gray(intensity).to<u8>();
+		}
+		
+		bool bOk=true;
+		
+		if(spells[i].bDuration) {
+			if(player.mana < 20 || spells[i].timcreation+spells[i].tolive - float(arxtime) < 2000) {
+				if(ucFlick&1)
+					bOk=false;
+			}
+		} else {
+			if(player.mana<20) {
+				if(ucFlick&1)
+					bOk=false;
+			}
+		}
+		
+		if(bOk && typ >= 0 && (size_t)typ < SPELL_TYPES_COUNT) {
+			TextureContainer * tc = spellicons[typ].tc;
+			arx_assert(tc);
+			Rectf rect(Vec2f(posx, posy), tc->m_dwWidth * 0.5f, tc->m_dwHeight * 0.5f);
+			
+			activeSpellIconSlot.update(rect, tc, color);
+			activeSpellIconSlot.spellIndex = i;
+			if(!flag && !(player.Interface & INTER_COMBATMODE)) {
+				activeSpellIconSlot.updateInput();
+			}
+			activeSpellIconSlot.draw();
+		}
+		
+		currpos += static_cast<long>(INTERFACE_RATIO(33.f));
+	}
 	
 public:
 	void init() {
@@ -6207,14 +6232,6 @@ public:
 		}
 	}
 	
-	void spellsPrecastedUpdate(float intensity) {
-		if(!(player.Interface & INTER_INVENTORYALL) && !(player.Interface & INTER_MAP)) {
-			for(size_t i = 0; i < MAX_PRECAST; i++) {
-				precastSlotDraw(i, intensity);
-			}
-		}
-	}
-	
 	void update() {
 		currpos = static_cast<long>(INTERFACE_RATIO(50.f));
 		
@@ -6223,11 +6240,9 @@ public:
 		
 		GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-		PRECAST_NUM = 0;
 		
 		spellsByPlayerUpdate(intensity);
 		spellsOnPlayerUpdate(intensity);
-		spellsPrecastedUpdate(intensity);
 	}
 	
 	void draw() {
@@ -6464,6 +6479,7 @@ void ArxGame::drawAllInterface() {
 	GRenderer->GetTextureStage(0)->setMagFilter(TextureStage::FilterLinear);
 	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
 	
+	precastSpellsGui.update();
 	activeSpellsGui.draw();
 }
 
