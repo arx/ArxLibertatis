@@ -6077,25 +6077,6 @@ private:
 	ActiveSpellIconSlot activeSpellIconSlot;
 	PrecastSpellIconSlot precastSpellIconSlot;
 	
-	void StdDraw(const Rectf & rect, Color color, TextureContainer * tc, long flag, long i) {
-			
-			if(flag & 2) {
-				precastSpellIconSlot.update(rect, tc, color);
-				
-				if(!(player.Interface & INTER_COMBATMODE))
-					precastSpellIconSlot.updateInput();
-				
-				precastSpellIconSlot.draw();
-			} else {
-				activeSpellIconSlot.update(rect, tc, color);
-				activeSpellIconSlot.spellIndex = i;
-				if(!(flag & 1) && !(player.Interface & INTER_COMBATMODE)) {
-					activeSpellIconSlot.updateInput();
-				}
-				activeSpellIconSlot.draw();
-			}
-	}
-	//---------------------------------------------------------------------------
 	void ManageSpellIcon(long i, float intensity, long flag)
 	{
 		float POSX = g_size.width()-INTERFACE_RATIO(35);
@@ -6128,13 +6109,19 @@ private:
 			TextureContainer * tc = spellicons[typ].tc;
 			arx_assert(tc);
 			Rectf rect(Vec2f(posx, posy), tc->m_dwWidth * 0.5f, tc->m_dwHeight * 0.5f);
-			StdDraw(rect, color, tc, flag, i);
+			
+			activeSpellIconSlot.update(rect, tc, color);
+			activeSpellIconSlot.spellIndex = i;
+			if(!(flag & 1) && !(player.Interface & INTER_COMBATMODE)) {
+				activeSpellIconSlot.updateInput();
+			}
+			activeSpellIconSlot.draw();
 		}
 		
 		currpos += static_cast<long>(INTERFACE_RATIO(33.f));
 	}
 	
-	void precastSlotDraw(long i, float intensity, long flag) {
+	void precastSlotDraw(long i, float intensity) {
 		Color color = Color3f(0, intensity * (1.0f/2), intensity).to<u8>();
 		float px = INTERFACE_RATIO(InventoryX) + INTERFACE_RATIO(110);
 		if(px < INTERFACE_RATIO(10)) {
@@ -6147,7 +6134,13 @@ private:
 		TextureContainer * tc = spellicons[typ].tc;
 		arx_assert(tc);
 		Rectf rect(Vec2f(posx, posy), tc->m_dwWidth * 0.5f, tc->m_dwHeight * 0.5f);
-		StdDraw(rect, color, tc, flag, i);
+		
+		precastSpellIconSlot.update(rect, tc, color);
+		
+		if(!(player.Interface & INTER_COMBATMODE))
+			precastSpellIconSlot.updateInput();
+		
+		precastSpellIconSlot.draw();
 	}
 	
 public:
@@ -6202,7 +6195,7 @@ public:
 						val *= (1.f - tt);
 					}
 					
-					precastSlotDraw(Precast[i].typ, val, 2);
+					precastSlotDraw(Precast[i].typ, val);
 				}
 			}
 		}
