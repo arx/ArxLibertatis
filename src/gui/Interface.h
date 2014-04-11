@@ -248,7 +248,7 @@ enum FadeDirection {
 	FadeDirection_In,
 };
 
-void ARX_INTERFACE_PlayerInterfaceModify(FadeDirection showhide, long smooth);
+void playerInterfaceFaderRequestFade(FadeDirection showhide, long smooth);
 void ARX_INTERFACE_Reset();
 
 void ARX_INTERFACE_ManageOpenedBook();
