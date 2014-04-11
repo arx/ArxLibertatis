@@ -430,81 +430,100 @@ void KillInterfaceTextureContainers() {
 	ITC.Reset();
 }
 
-void INTERFACE_TC::Set(const std::string& textureName, TextureContainer* pTexture)
-{
-	m_Textures[textureName] = pTexture;
-}
-
-void INTERFACE_TC::Set(const std::string& textureName, const std::string& fileName)
-{
-	m_Textures[textureName] = TextureContainer::LoadUI(fileName.c_str());
-}
-
-TextureContainer* INTERFACE_TC::Get(const std::string& name)
-{
-	TextureDictionary::iterator it = m_Textures.find(name);
-	return it != m_Textures.end() ? (*it).second : NULL;		
-}
-
 void INTERFACE_TC::Reset()
 {
-	// For each item in the map...
-	for(TextureDictionary::iterator it = m_Textures.begin(); it != m_Textures.end(); ++it)
-	{
-		// Free the textures...
-		delete (*it).second;
-	}
-
-	m_Textures.clear();
-
 	ITC.Level.clear();
 	ITC.Xp.clear();
 }
 
 void INTERFACE_TC::init() {
 	
-	ITC.Set("playerbook",          "graph/interface/book/character_sheet/char_sheet_book");
-	ITC.Set("ic_casting",          "graph/interface/book/character_sheet/buttons_carac/icone_casting");
-	ITC.Set("ic_close_combat",     "graph/interface/book/character_sheet/buttons_carac/icone_close_combat");
-	ITC.Set("ic_constitution",     "graph/interface/book/character_sheet/buttons_carac/icone_constit");
-	ITC.Set("ic_defense",          "graph/interface/book/character_sheet/buttons_carac/icone_defense");
-	ITC.Set("ic_dexterity",        "graph/interface/book/character_sheet/buttons_carac/icone_dext");
-	ITC.Set("ic_etheral_link",     "graph/interface/book/character_sheet/buttons_carac/icone_etheral_link");
-	ITC.Set("ic_mind",             "graph/interface/book/character_sheet/buttons_carac/icone_intel");
-	ITC.Set("ic_intuition",        "graph/interface/book/character_sheet/buttons_carac/icone_intuition");
-	ITC.Set("ic_mecanism",         "graph/interface/book/character_sheet/buttons_carac/icone_mecanism");
-	ITC.Set("ic_object_knowledge", "graph/interface/book/character_sheet/buttons_carac/icone_obj_knowledge");
-	ITC.Set("ic_projectile",       "graph/interface/book/character_sheet/buttons_carac/icone_projectile");
-	ITC.Set("ic_stealth",          "graph/interface/book/character_sheet/buttons_carac/icone_stealth");
-	ITC.Set("ic_strength",         "graph/interface/book/character_sheet/buttons_carac/icone_strenght");
+	playerbook            = TextureContainer::LoadUI("graph/interface/book/character_sheet/char_sheet_book");
+	ic_casting            = TextureContainer::LoadUI("graph/interface/book/character_sheet/buttons_carac/icone_casting");
+	ic_close_combat       = TextureContainer::LoadUI("graph/interface/book/character_sheet/buttons_carac/icone_close_combat");
+	ic_constitution       = TextureContainer::LoadUI("graph/interface/book/character_sheet/buttons_carac/icone_constit");
+	ic_defense            = TextureContainer::LoadUI("graph/interface/book/character_sheet/buttons_carac/icone_defense");
+	ic_dexterity          = TextureContainer::LoadUI("graph/interface/book/character_sheet/buttons_carac/icone_dext");
+	ic_etheral_link       = TextureContainer::LoadUI("graph/interface/book/character_sheet/buttons_carac/icone_etheral_link");
+	ic_mind               = TextureContainer::LoadUI("graph/interface/book/character_sheet/buttons_carac/icone_intel");
+	ic_intuition          = TextureContainer::LoadUI("graph/interface/book/character_sheet/buttons_carac/icone_intuition");
+	ic_mecanism           = TextureContainer::LoadUI("graph/interface/book/character_sheet/buttons_carac/icone_mecanism");
+	ic_object_knowledge   = TextureContainer::LoadUI("graph/interface/book/character_sheet/buttons_carac/icone_obj_knowledge");
+	ic_projectile         = TextureContainer::LoadUI("graph/interface/book/character_sheet/buttons_carac/icone_projectile");
+	ic_stealth            = TextureContainer::LoadUI("graph/interface/book/character_sheet/buttons_carac/icone_stealth");
+	ic_strength           = TextureContainer::LoadUI("graph/interface/book/character_sheet/buttons_carac/icone_strenght");
 	
-	ITC.Set("questbook",      "graph/interface/book/questbook");
-	ITC.Set("ptexspellbook",  "graph/interface/book/spellbook");
-	ITC.Set("bookmark_char",  "graph/interface/book/bookmark_char");
-	ITC.Set("bookmark_magic", "graph/interface/book/bookmark_magic");
-	ITC.Set("bookmark_map",   "graph/interface/book/bookmark_map");
-	ITC.Set("bookmark_quest", "graph/interface/book/bookmark_quest");
+	questbook        = TextureContainer::LoadUI("graph/interface/book/questbook");
+	ptexspellbook    = TextureContainer::LoadUI("graph/interface/book/spellbook");
+	bookmark_char    = TextureContainer::LoadUI("graph/interface/book/bookmark_char");
+	bookmark_magic   = TextureContainer::LoadUI("graph/interface/book/bookmark_magic");
+	bookmark_map     = TextureContainer::LoadUI("graph/interface/book/bookmark_map");
+	bookmark_quest   = TextureContainer::LoadUI("graph/interface/book/bookmark_quest");
 	
-	ITC.Set("accessible_1", "graph/interface/book/accessible/accessible_1");
-	ITC.Set("accessible_2", "graph/interface/book/accessible/accessible_2");
-	ITC.Set("accessible_3", "graph/interface/book/accessible/accessible_3");
-	ITC.Set("accessible_4", "graph/interface/book/accessible/accessible_4");
-	ITC.Set("accessible_5", "graph/interface/book/accessible/accessible_5");
-	ITC.Set("accessible_6", "graph/interface/book/accessible/accessible_6");
-	ITC.Set("accessible_7", "graph/interface/book/accessible/accessible_7");
-	ITC.Set("accessible_8", "graph/interface/book/accessible/accessible_8");
-	ITC.Set("accessible_9", "graph/interface/book/accessible/accessible_9");
-	ITC.Set("accessible_10", "graph/interface/book/accessible/accessible_10");
-	ITC.Set("current_1", "graph/interface/book/current_page/current_1");
-	ITC.Set("current_2", "graph/interface/book/current_page/current_2");
-	ITC.Set("current_3", "graph/interface/book/current_page/current_3");
-	ITC.Set("current_4", "graph/interface/book/current_page/current_4");
-	ITC.Set("current_5", "graph/interface/book/current_page/current_5");
-	ITC.Set("current_6", "graph/interface/book/current_page/current_6");
-	ITC.Set("current_7", "graph/interface/book/current_page/current_7");
-	ITC.Set("current_8", "graph/interface/book/current_page/current_8");
-	ITC.Set("current_9", "graph/interface/book/current_page/current_9");
-	ITC.Set("current_10", "graph/interface/book/current_page/current_10");
+	accessible_1   = TextureContainer::LoadUI("graph/interface/book/accessible/accessible_1");
+	accessible_2   = TextureContainer::LoadUI("graph/interface/book/accessible/accessible_2");
+	accessible_3   = TextureContainer::LoadUI("graph/interface/book/accessible/accessible_3");
+	accessible_4   = TextureContainer::LoadUI("graph/interface/book/accessible/accessible_4");
+	accessible_5   = TextureContainer::LoadUI("graph/interface/book/accessible/accessible_5");
+	accessible_6   = TextureContainer::LoadUI("graph/interface/book/accessible/accessible_6");
+	accessible_7   = TextureContainer::LoadUI("graph/interface/book/accessible/accessible_7");
+	accessible_8   = TextureContainer::LoadUI("graph/interface/book/accessible/accessible_8");
+	accessible_9   = TextureContainer::LoadUI("graph/interface/book/accessible/accessible_9");
+	accessible_10  = TextureContainer::LoadUI("graph/interface/book/accessible/accessible_10");
+	current_1   = TextureContainer::LoadUI("graph/interface/book/current_page/current_1");
+	current_2   = TextureContainer::LoadUI("graph/interface/book/current_page/current_2");
+	current_3   = TextureContainer::LoadUI("graph/interface/book/current_page/current_3");
+	current_4   = TextureContainer::LoadUI("graph/interface/book/current_page/current_4");
+	current_5   = TextureContainer::LoadUI("graph/interface/book/current_page/current_5");
+	current_6   = TextureContainer::LoadUI("graph/interface/book/current_page/current_6");
+	current_7   = TextureContainer::LoadUI("graph/interface/book/current_page/current_7");
+	current_8   = TextureContainer::LoadUI("graph/interface/book/current_page/current_8");
+	current_9   = TextureContainer::LoadUI("graph/interface/book/current_page/current_9");
+	current_10  = TextureContainer::LoadUI("graph/interface/book/current_page/current_10");
+	
+	
+	arx_assert(playerbook);
+	arx_assert(ic_casting);
+	arx_assert(ic_close_combat);
+	arx_assert(ic_constitution);
+	arx_assert(ic_defense);
+	arx_assert(ic_dexterity);
+	arx_assert(ic_etheral_link);
+	arx_assert(ic_mind);
+	arx_assert(ic_intuition);
+	arx_assert(ic_mecanism);
+	arx_assert(ic_object_knowledge);
+	arx_assert(ic_projectile);
+	arx_assert(ic_stealth);
+	arx_assert(ic_strength);
+	
+	arx_assert(questbook);
+	arx_assert(ptexspellbook);
+	arx_assert(bookmark_char);
+	arx_assert(bookmark_magic);
+	arx_assert(bookmark_map);
+	arx_assert(bookmark_quest);
+	
+	arx_assert(accessible_1);
+	arx_assert(accessible_2);
+	arx_assert(accessible_3);
+	arx_assert(accessible_4);
+	arx_assert(accessible_5);
+	arx_assert(accessible_6);
+	arx_assert(accessible_7);
+	arx_assert(accessible_8);
+	arx_assert(accessible_9);
+	arx_assert(accessible_10);
+	arx_assert(current_1);
+	arx_assert(current_2);
+	arx_assert(current_3);
+	arx_assert(current_4);
+	arx_assert(current_5);
+	arx_assert(current_6);
+	arx_assert(current_7);
+	arx_assert(current_8);
+	arx_assert(current_9);
+	arx_assert(current_10);
 	
 	ITC.Level = getLocalised("system_charsheet_player_lvl");
 	ITC.Xp = getLocalised("system_charsheet_player_xp");
@@ -2969,15 +2988,15 @@ void ARX_INTERFACE_ManageOpenedBook()
 	if(ARXmenu.currentmode != AMCM_NEWQUEST) {
 		switch(Book_Mode) {
 			case BOOKMODE_STATS: {
-				DrawBookInterfaceItem(ITC.Get("playerbook"), 97, 64, Color::white, 0.9999f); 
+				DrawBookInterfaceItem(ITC.playerbook, 97, 64, Color::white, 0.9999f); 
 				break;
 			}
 			case BOOKMODE_SPELLS: {
-				DrawBookInterfaceItem(ITC.Get("ptexspellbook"), 97, 64, Color::white, 0.9999f);
+				DrawBookInterfaceItem(ITC.ptexspellbook, 97, 64, Color::white, 0.9999f);
 				break;
 			}
 			case BOOKMODE_MINIMAP: {
-				DrawBookInterfaceItem( ITC.Get("questbook"), 97, 64, Color::white, 0.9999f);
+				DrawBookInterfaceItem( ITC.questbook, 97, 64, Color::white, 0.9999f);
 				break;
 			}
 			case BOOKMODE_QUESTS: {
@@ -2988,11 +3007,11 @@ void ARX_INTERFACE_ManageOpenedBook()
 	} else {
 		float x = 0;
 		
-		if(ITC.Get("playerbook")) {
-			x = static_cast<float>((640 - ITC.Get("playerbook")->m_dwWidth) / 2);
-			float y = static_cast<float>((480 - ITC.Get("playerbook")->m_dwHeight) / 2);
+		if(ITC.playerbook) {
+			x = static_cast<float>((640 - ITC.playerbook->m_dwWidth) / 2);
+			float y = static_cast<float>((480 - ITC.playerbook->m_dwHeight) / 2);
 
-			DrawBookInterfaceItem(ITC.Get("playerbook"), x, y);
+			DrawBookInterfaceItem(ITC.playerbook, x, y);
 		}
 
 		BOOKDEC.x = x - 97;
@@ -3010,7 +3029,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 		if(Book_Mode != BOOKMODE_STATS) {
 			float px=BOOKMARKS_POS_X;
 			float py=BOOKMARKS_POS_Y;
-			TextureContainer* tcBookmarkChar = ITC.Get("bookmark_char");
+			TextureContainer* tcBookmarkChar = ITC.bookmark_char;
 			DrawBookInterfaceItem(tcBookmarkChar, px, py);
 
 			// Check for cursor on charcter sheet bookmark
@@ -3037,7 +3056,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 			if(player.rune_flags) {
 				float px=BOOKMARKS_POS_X + 32;
 				float py=BOOKMARKS_POS_Y;
-				DrawBookInterfaceItem(ITC.Get("bookmark_magic"), px, py);
+				DrawBookInterfaceItem(ITC.bookmark_magic, px, py);
 
 				if(NewSpell == 1) {
 					NewSpell = 2;
@@ -3046,13 +3065,13 @@ void ARX_INTERFACE_ManageOpenedBook()
 					}
 				}
 				
-				if (	ITC.Get("bookmark_magic") 
-					&&	MouseInBookRect(px, py, px + ITC.Get("bookmark_magic")->m_dwWidth, py + ITC.Get("bookmark_magic")->m_dwHeight))
+				if (	ITC.bookmark_magic 
+					&&	MouseInBookRect(px, py, px + ITC.bookmark_magic->m_dwWidth, py + ITC.bookmark_magic->m_dwHeight))
 				{
 					// Draw highlighted Magic sheet icon
 					GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 					GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-					DrawBookInterfaceItem(ITC.Get("bookmark_magic"), px, py, Color::grayb(0x55));
+					DrawBookInterfaceItem(ITC.bookmark_magic, px, py, Color::grayb(0x55));
 					GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 
 					// Set cursor to interacting
@@ -3072,14 +3091,14 @@ void ARX_INTERFACE_ManageOpenedBook()
 			float px=BOOKMARKS_POS_X + 64;
 			float py=BOOKMARKS_POS_Y;
 
-			DrawBookInterfaceItem(ITC.Get("bookmark_map"), px, py);
+			DrawBookInterfaceItem(ITC.bookmark_map, px, py);
 
-			if (	ITC.Get("bookmark_map")
-				&&	MouseInBookRect(px, py, px + ITC.Get("bookmark_map")->m_dwWidth, py + ITC.Get("bookmark_map")->m_dwHeight))
+			if (	ITC.bookmark_map
+				&&	MouseInBookRect(px, py, px + ITC.bookmark_map->m_dwWidth, py + ITC.bookmark_map->m_dwHeight))
 			{
 				GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 				GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-				DrawBookInterfaceItem(ITC.Get("bookmark_map"), px, py, Color::grayb(0x55));
+				DrawBookInterfaceItem(ITC.bookmark_map, px, py, Color::grayb(0x55));
 				GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 
 				// Set cursor to interacting
@@ -3097,14 +3116,14 @@ void ARX_INTERFACE_ManageOpenedBook()
 		if(Book_Mode != BOOKMODE_QUESTS) {
 			float px=BOOKMARKS_POS_X + 96;
 			float py=BOOKMARKS_POS_Y;
-			DrawBookInterfaceItem(ITC.Get("bookmark_quest"), px, py);
+			DrawBookInterfaceItem(ITC.bookmark_quest, px, py);
 
-			if (	ITC.Get("bookmark_quest")
-				&&	MouseInBookRect(px, py, px + ITC.Get("bookmark_quest")->m_dwWidth, py + ITC.Get("bookmark_quest")->m_dwHeight))
+			if (	ITC.bookmark_quest
+				&&	MouseInBookRect(px, py, px + ITC.bookmark_quest->m_dwWidth, py + ITC.bookmark_quest->m_dwHeight))
 			{
 				GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 				GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-				DrawBookInterfaceItem(ITC.Get("bookmark_quest"), px, py, Color::grayb(0x55));
+				DrawBookInterfaceItem(ITC.bookmark_quest, px, py, Color::grayb(0x55));
 				GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 
 				// Set cursor to interacting
@@ -3155,12 +3174,12 @@ void ARX_INTERFACE_ManageOpenedBook()
 				if(Book_Page!=1) {
 					float px=100.f;
 					float py=82.f;
-					DrawBookInterfaceItem(ITC.Get("accessible_1"), px, py);
+					DrawBookInterfaceItem(ITC.accessible_1, px, py);
 
 					if(MouseInBookRect(px, py, px + 32, py + 32)) {
 						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-						DrawBookInterfaceItem(ITC.Get("accessible_1"), px, py, Color::grayb(0x55));
+						DrawBookInterfaceItem(ITC.accessible_1, px, py, Color::grayb(0x55));
 						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 						SpecialCursor=CURSOR_INTERACTION_ON;
 						if(bookclick.x != -1) {
@@ -3169,19 +3188,19 @@ void ARX_INTERFACE_ManageOpenedBook()
 						}
 					}
 				}
-				else DrawBookInterfaceItem(ITC.Get("current_1"), 102.f, 82.f);
+				else DrawBookInterfaceItem(ITC.current_1, 102.f, 82.f);
 			}
 
 			if(bOnglet[2]) {
 				if(Book_Page!=2) {
 					float px=98.f;
 					float py=112.f;
-					DrawBookInterfaceItem(ITC.Get("accessible_2"), px, py);
+					DrawBookInterfaceItem(ITC.accessible_2, px, py);
 
 					if(MouseInBookRect(px, py, px + 32, py + 32)) {
 						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-						DrawBookInterfaceItem(ITC.Get("accessible_2"), px, py, Color::grayb(0x55));
+						DrawBookInterfaceItem(ITC.accessible_2, px, py, Color::grayb(0x55));
 						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 						SpecialCursor=CURSOR_INTERACTION_ON;
 						if(bookclick.x != -1) {
@@ -3190,19 +3209,19 @@ void ARX_INTERFACE_ManageOpenedBook()
 						}
 					}
 				}
-				else DrawBookInterfaceItem(ITC.Get("current_2"), 100.f, 114.f);
+				else DrawBookInterfaceItem(ITC.current_2, 100.f, 114.f);
 			}
 
 			if(bOnglet[3]) {
 				if(Book_Page!=3) {
 					float px=97.f;
 					float py=143.f;
-					DrawBookInterfaceItem(ITC.Get("accessible_3"), px, py);
+					DrawBookInterfaceItem(ITC.accessible_3, px, py);
 
 					if(MouseInBookRect(px, py, px + 32, py + 32)) {
 						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-						DrawBookInterfaceItem(ITC.Get("accessible_3"), px, py, Color::grayb(0x55));
+						DrawBookInterfaceItem(ITC.accessible_3, px, py, Color::grayb(0x55));
 						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 						SpecialCursor=CURSOR_INTERACTION_ON;
 						if(bookclick.x != -1) {
@@ -3211,19 +3230,19 @@ void ARX_INTERFACE_ManageOpenedBook()
 						}
 					}
 				}
-				else DrawBookInterfaceItem(ITC.Get("current_3"), 101.f, 141.f);
+				else DrawBookInterfaceItem(ITC.current_3, 101.f, 141.f);
 			}
 
 			if(bOnglet[4]) {
 				if(Book_Page!=4) {
 					float px=95.f;
 					float py=170.f;
-					DrawBookInterfaceItem(ITC.Get("accessible_4"), px, py);
+					DrawBookInterfaceItem(ITC.accessible_4, px, py);
 
 					if(MouseInBookRect(px, py, px + 32, py + 32)) {
 						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-						DrawBookInterfaceItem(ITC.Get("accessible_4"), px, py, Color::grayb(0x55));
+						DrawBookInterfaceItem(ITC.accessible_4, px, py, Color::grayb(0x55));
 						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 						SpecialCursor=CURSOR_INTERACTION_ON;
 						if(bookclick.x != -1) {
@@ -3232,19 +3251,19 @@ void ARX_INTERFACE_ManageOpenedBook()
 						}
 					}
 				}
-				else DrawBookInterfaceItem(ITC.Get("current_4"), 100.f, 170.f);
+				else DrawBookInterfaceItem(ITC.current_4, 100.f, 170.f);
 			}
 
 			if(bOnglet[5]) {
 				if(Book_Page!=5) {
 					float px=95.f;
 					float py=200.f;
-					DrawBookInterfaceItem(ITC.Get("accessible_5"), px, py);
+					DrawBookInterfaceItem(ITC.accessible_5, px, py);
 
 					if(MouseInBookRect(px, py, px + 32, py + 32)) {
 						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-						DrawBookInterfaceItem(ITC.Get("accessible_5"), px, py, Color::grayb(0x55));
+						DrawBookInterfaceItem(ITC.accessible_5, px, py, Color::grayb(0x55));
 						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 						SpecialCursor=CURSOR_INTERACTION_ON;
 						if(bookclick.x != -1) {
@@ -3253,19 +3272,19 @@ void ARX_INTERFACE_ManageOpenedBook()
 						}
 					}
 				}
-				else DrawBookInterfaceItem(ITC.Get("current_5"), 97.f, 199.f);
+				else DrawBookInterfaceItem(ITC.current_5, 97.f, 199.f);
 			}
 
 			if(bOnglet[6]) {
 				if(Book_Page!=6) {
 					float px=94.f;
 					float py=229.f;
-					DrawBookInterfaceItem(ITC.Get("accessible_6"), px, py);
+					DrawBookInterfaceItem(ITC.accessible_6, px, py);
 
 					if(MouseInBookRect(px, py, px + 32, py + 32)) {
 						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-						DrawBookInterfaceItem(ITC.Get("accessible_6"), px, py, Color::grayb(0x55));
+						DrawBookInterfaceItem(ITC.accessible_6, px, py, Color::grayb(0x55));
 						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 						SpecialCursor=CURSOR_INTERACTION_ON;
 						if(bookclick.x != -1) {
@@ -3274,19 +3293,19 @@ void ARX_INTERFACE_ManageOpenedBook()
 						}
 					}
 				}
-				else DrawBookInterfaceItem(ITC.Get("current_6"), 103.f, 226.f);
+				else DrawBookInterfaceItem(ITC.current_6, 103.f, 226.f);
 			}
 
 			if(bOnglet[7]) {
 				if(Book_Page!=7) {
 					float px=94.f;
 					float py=259.f;
-					DrawBookInterfaceItem(ITC.Get("accessible_7"), px, py);
+					DrawBookInterfaceItem(ITC.accessible_7, px, py);
 
 					if(MouseInBookRect(px, py, px + 32, py + 32)) {
 						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-						DrawBookInterfaceItem(ITC.Get("accessible_7"), px, py, Color::grayb(0x55));
+						DrawBookInterfaceItem(ITC.accessible_7, px, py, Color::grayb(0x55));
 						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 						SpecialCursor=CURSOR_INTERACTION_ON;
 						if(bookclick.x != -1) {
@@ -3295,19 +3314,19 @@ void ARX_INTERFACE_ManageOpenedBook()
 						}
 					}
 				}
-				else DrawBookInterfaceItem(ITC.Get("current_7"), 101.f, 255.f);
+				else DrawBookInterfaceItem(ITC.current_7, 101.f, 255.f);
 			}
 
 			if(bOnglet[8]) {
 				if(Book_Page!=8) {
 					float px=92.f;
 					float py=282.f;
-					DrawBookInterfaceItem(ITC.Get("accessible_8"), px, py);
+					DrawBookInterfaceItem(ITC.accessible_8, px, py);
 
 					if(MouseInBookRect(px, py, px + 32, py + 32)) {
 						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-						DrawBookInterfaceItem(ITC.Get("accessible_8"), px, py, Color::grayb(0x55));
+						DrawBookInterfaceItem(ITC.accessible_8, px, py, Color::grayb(0x55));
 						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 						SpecialCursor=CURSOR_INTERACTION_ON;
 						if(bookclick.x != -1) {
@@ -3316,19 +3335,19 @@ void ARX_INTERFACE_ManageOpenedBook()
 						}
 					}
 				}
-				else DrawBookInterfaceItem(ITC.Get("current_8"), 99.f, 283.f);
+				else DrawBookInterfaceItem(ITC.current_8, 99.f, 283.f);
 			}
 
 			if(bOnglet[9]) {
 				if(Book_Page!=9) {
 					float px=90.f;
 					float py=308.f;
-					DrawBookInterfaceItem(ITC.Get("accessible_9"), px, py);
+					DrawBookInterfaceItem(ITC.accessible_9, px, py);
 
 					if(MouseInBookRect(px, py, px + 32, py + 32)) {
 						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-						DrawBookInterfaceItem(ITC.Get("accessible_9"), px, py, Color::grayb(0x55));
+						DrawBookInterfaceItem(ITC.accessible_9, px, py, Color::grayb(0x55));
 						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 						SpecialCursor=CURSOR_INTERACTION_ON;
 						if(bookclick.x != -1) {
@@ -3337,19 +3356,19 @@ void ARX_INTERFACE_ManageOpenedBook()
 						}
 					}
 				}
-				else DrawBookInterfaceItem(ITC.Get("current_9"), 99.f, 307.f);
+				else DrawBookInterfaceItem(ITC.current_9, 99.f, 307.f);
 			}
 
 			if (bOnglet[10]) {
 				if (Book_Page!=10) {
 					float px=97.f;
 					float py=331.f;
-					DrawBookInterfaceItem(ITC.Get("accessible_10"), px, py);
+					DrawBookInterfaceItem(ITC.accessible_10, px, py);
 
 					if(MouseInBookRect(px, py, px + 32, py + 32)) {
 						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-						DrawBookInterfaceItem(ITC.Get("accessible_10"), px, py, Color::grayb(0x55));
+						DrawBookInterfaceItem(ITC.accessible_10, px, py, Color::grayb(0x55));
 						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 						SpecialCursor=CURSOR_INTERACTION_ON;
 						if(bookclick.x != -1) {
@@ -3358,7 +3377,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 						}
 					}
 				}
-				else DrawBookInterfaceItem(ITC.Get("current_10"), 104.f, 331.f);
+				else DrawBookInterfaceItem(ITC.current_10, 104.f, 331.f);
 			}
 			
 			if(Book_Mode == BOOKMODE_SPELLS) {
@@ -3411,28 +3430,28 @@ void ARX_INTERFACE_ManageOpenedBook()
 		if (!((player.Attribute_Redistribute == 0) && (ARXmenu.currentmode != AMCM_NEWQUEST)))
 		{
 			// Main Player Attributes
-			if (CheckAttributeClick(379,95,&player.Attribute_Strength,		ITC.Get("ic_strength")))
+			if (CheckAttributeClick(379,95,&player.Attribute_Strength,		ITC.ic_strength))
 			{
 				FLYING_OVER=BOOK_STRENGTH;
 				SpecialCursor = CURSOR_REDIST;
 				lCursorRedistValue = player.Attribute_Redistribute;
 			}
 
-			if (CheckAttributeClick(428,95,&player.Attribute_Mind,			ITC.Get("ic_mind")))
+			if (CheckAttributeClick(428,95,&player.Attribute_Mind,			ITC.ic_mind))
 			{
 				FLYING_OVER=BOOK_MIND;
 				SpecialCursor = CURSOR_REDIST;
 				lCursorRedistValue = player.Attribute_Redistribute;
 			}
 
-			if (CheckAttributeClick(477,95,&player.Attribute_Dexterity,		ITC.Get("ic_dexterity")))
+			if (CheckAttributeClick(477,95,&player.Attribute_Dexterity,		ITC.ic_dexterity))
 			{
 				FLYING_OVER=BOOK_DEXTERITY;
 				SpecialCursor = CURSOR_REDIST;
 				lCursorRedistValue = player.Attribute_Redistribute;
 			}
 
-			if (CheckAttributeClick(526,95,&player.Attribute_Constitution,	ITC.Get("ic_constitution")))
+			if (CheckAttributeClick(526,95,&player.Attribute_Constitution,	ITC.ic_constitution))
 			{
 				FLYING_OVER=BOOK_CONSTITUTION;
 				SpecialCursor = CURSOR_REDIST;
@@ -3442,35 +3461,35 @@ void ARX_INTERFACE_ManageOpenedBook()
 
 		if (!((player.Skill_Redistribute == 0) && (ARXmenu.currentmode != AMCM_NEWQUEST)))
 		{
-			if (CheckSkillClick(389,177,&player.Skill_Stealth,		ITC.Get("ic_stealth"),&player.Old_Skill_Stealth))
+			if (CheckSkillClick(389,177,&player.Skill_Stealth,		ITC.ic_stealth,&player.Old_Skill_Stealth))
 			{
 				FLYING_OVER=BOOK_STEALTH;
 				SpecialCursor = CURSOR_REDIST;
 				lCursorRedistValue = player.Skill_Redistribute;
 			}
 
-			if (CheckSkillClick(453,177,&player.Skill_Mecanism,		ITC.Get("ic_mecanism"),&player.Old_Skill_Mecanism))
+			if (CheckSkillClick(453,177,&player.Skill_Mecanism,		ITC.ic_mecanism,&player.Old_Skill_Mecanism))
 			{
 				FLYING_OVER=BOOK_MECANISM;
 				SpecialCursor = CURSOR_REDIST;
 				lCursorRedistValue = player.Skill_Redistribute;
 			}
 
-			if (CheckSkillClick(516,177,&player.Skill_Intuition,	ITC.Get("ic_intuition"),&player.Old_Skill_Intuition))
+			if (CheckSkillClick(516,177,&player.Skill_Intuition,	ITC.ic_intuition,&player.Old_Skill_Intuition))
 			{
 				FLYING_OVER=BOOK_INTUITION;
 				SpecialCursor = CURSOR_REDIST;
 				lCursorRedistValue = player.Skill_Redistribute;
 			}
 
-			if (CheckSkillClick(389,230,&player.Skill_Etheral_Link,	ITC.Get("ic_etheral_link"),&player.Old_Skill_Etheral_Link))
+			if (CheckSkillClick(389,230,&player.Skill_Etheral_Link,	ITC.ic_etheral_link,&player.Old_Skill_Etheral_Link))
 			{
 				FLYING_OVER=BOOK_ETHERAL_LINK;
 				SpecialCursor = CURSOR_REDIST;
 				lCursorRedistValue = player.Skill_Redistribute;
 			}
 
-			if (CheckSkillClick(453,230,&player.Skill_Object_Knowledge,ITC.Get("ic_object_knowledge"),&player.Old_Skill_Object_Knowledge))
+			if (CheckSkillClick(453,230,&player.Skill_Object_Knowledge,ITC.ic_object_knowledge,&player.Old_Skill_Object_Knowledge))
 			{
 				FLYING_OVER=BOOK_OBJECT_KNOWLEDGE;
 				SpecialCursor = CURSOR_REDIST;
@@ -3485,28 +3504,28 @@ void ARX_INTERFACE_ManageOpenedBook()
 				ARX_PLAYER_ComputePlayerFullStats();
 			}
 
-			if (CheckSkillClick(516,230,&player.Skill_Casting,		ITC.Get("ic_casting"),&player.Old_Skill_Casting))
+			if (CheckSkillClick(516,230,&player.Skill_Casting,		ITC.ic_casting,&player.Old_Skill_Casting))
 			{
 				FLYING_OVER=BOOK_CASTING;
 				SpecialCursor = CURSOR_REDIST;
 				lCursorRedistValue = player.Skill_Redistribute;
 			}
 
-			if (CheckSkillClick(389,284,&player.Skill_Close_Combat,	ITC.Get("ic_close_combat"),&player.Old_Skill_Close_Combat))
+			if (CheckSkillClick(389,284,&player.Skill_Close_Combat,	ITC.ic_close_combat,&player.Old_Skill_Close_Combat))
 			{
 				FLYING_OVER=BOOK_CLOSE_COMBAT;
 				SpecialCursor = CURSOR_REDIST;
 				lCursorRedistValue = player.Skill_Redistribute;
 			}
 
-			if (CheckSkillClick(453,284,&player.Skill_Projectile,	ITC.Get("ic_projectile"),&player.Old_Skill_Projectile))
+			if (CheckSkillClick(453,284,&player.Skill_Projectile,	ITC.ic_projectile,&player.Old_Skill_Projectile))
 			{
 				FLYING_OVER=BOOK_PROJECTILE;
 				SpecialCursor = CURSOR_REDIST;
 				lCursorRedistValue = player.Skill_Redistribute;
 			}
 
-			if (CheckSkillClick(516,284,&player.Skill_Defense,		ITC.Get("ic_defense"),&player.Old_Skill_Defense))
+			if (CheckSkillClick(516,284,&player.Skill_Defense,		ITC.ic_defense,&player.Old_Skill_Defense))
 			{
 				FLYING_OVER=BOOK_DEFENSE;
 				SpecialCursor = CURSOR_REDIST;
@@ -6485,7 +6504,7 @@ void ArxGame::manageEditorControls() {
 	if(player.Interface & INTER_MAP) {
 		Vec2f pos(97 * g_sizeRatio.x, 64 * g_sizeRatio.y);
 		
-		TextureContainer* playerbook = ITC.Get("playerbook");
+		TextureContainer* playerbook = ITC.playerbook;
 		if(playerbook) {
 			const Rect mouseTestRect(
 			pos.x,

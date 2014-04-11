@@ -73,11 +73,7 @@ public:
 	INTERFACE_TC()
 		: isInitialized(false)
 	{}
-
-	void Set(const std::string& textureName, TextureContainer* pTexture);
-	void Set(const std::string& textureName, const std::string& fileName);
-	TextureContainer* Get(const std::string& name);
-
+	
 	void Reset();
 	
 	void init();
@@ -85,14 +81,51 @@ public:
 public:
 	bool isInitialized;
 	
+	TextureContainer * playerbook;
+	TextureContainer * ic_casting;
+	TextureContainer * ic_close_combat;
+	TextureContainer * ic_constitution;
+	TextureContainer * ic_defense;
+	TextureContainer * ic_dexterity;
+	TextureContainer * ic_etheral_link;
+	TextureContainer * ic_mind;
+	TextureContainer * ic_intuition;
+	TextureContainer * ic_mecanism;
+	TextureContainer * ic_object_knowledge;
+	TextureContainer * ic_projectile;
+	TextureContainer * ic_stealth;
+	TextureContainer * ic_strength;
+	
+	TextureContainer * questbook;
+	TextureContainer * ptexspellbook;
+	TextureContainer * bookmark_char;
+	TextureContainer * bookmark_magic;
+	TextureContainer * bookmark_map;
+	TextureContainer * bookmark_quest;
+	
+	TextureContainer * accessible_1;
+	TextureContainer * accessible_2;
+	TextureContainer * accessible_3;
+	TextureContainer * accessible_4;
+	TextureContainer * accessible_5;
+	TextureContainer * accessible_6;
+	TextureContainer * accessible_7;
+	TextureContainer * accessible_8;
+	TextureContainer * accessible_9;
+	TextureContainer * accessible_10;
+	TextureContainer * current_1;
+	TextureContainer * current_2;
+	TextureContainer * current_3;
+	TextureContainer * current_4;
+	TextureContainer * current_5;
+	TextureContainer * current_6;
+	TextureContainer * current_7;
+	TextureContainer * current_8;
+	TextureContainer * current_9;
+	TextureContainer * current_10;
+	
 	std::string        Level;
 	std::string        Xp;
-
-private:
-	typedef std::map<std::string, TextureContainer*>  TextureDictionary;
-
-	TextureDictionary  m_Textures;
-	
 };
 
 enum E_ARX_STATE_MOUSE
