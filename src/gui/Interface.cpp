@@ -5999,20 +5999,17 @@ private:
 	TextureContainer * m_texUnknown;
 	long currpos;
 	
-	struct SpellIconSlot {
+	struct ActiveSpellIconSlot {
 		Rectf m_rect;
 		TextureContainer * m_tc;
 		Color m_color;
+		size_t spellIndex;
 		
 		void update(const Rectf & rect, TextureContainer * tc, Color color) {
 			m_rect = rect;
 			m_tc = tc;
 			m_color = color;
 		}
-	};
-	
-	struct ActiveSpellIconSlot : public SpellIconSlot {
-		size_t spellIndex;
 		
 		void updateInput() {
 			if(m_rect.contains(Vec2f(DANAEMouse))) {
@@ -6038,7 +6035,16 @@ private:
 		}
 	};
 	
-	struct PrecastSpellIconSlot : public SpellIconSlot {
+	struct PrecastSpellIconSlot {
+		Rectf m_rect;
+		TextureContainer * m_tc;
+		Color m_color;
+		
+		void update(const Rectf & rect, TextureContainer * tc, Color color) {
+			m_rect = rect;
+			m_tc = tc;
+			m_color = color;
+		}
 		
 		void updateInput() {
 			if(m_rect.contains(Vec2f(DANAEMouse))) {
