@@ -2018,33 +2018,41 @@ void ARX_INTERFACE_Reset()
 	hideQuickSaveIcon();
 }
 
-//-----------------------------------------------------------------------------
-void playerInterfaceFaderRequestFade(FadeDirection showhide, long smooth)
-{
-	if(showhide == FadeDirection_Out) {
-		InventoryOpenClose(2);
-		ARX_INTERFACE_BookOpenClose(2);
-		ARX_INTERFACE_NoteClose();
-	}
 
-	if(showhide == FadeDirection_In)
-		PLAYER_INTERFACE_HIDE_COUNT = true;
-	else
-		PLAYER_INTERFACE_HIDE_COUNT = false;
-	
-	if(smooth) {
-		if(showhide == FadeDirection_In)
-			SMOOTHSLID = -1;
-		else
-			SMOOTHSLID = 1;
-	} else {
-		if(showhide == FadeDirection_In)
-			SLID_VALUE = 0.f;
-		else
-			SLID_VALUE = 100.f;
 
-		lSLID_VALUE = SLID_VALUE;
+class PlayerInterfaceFader {
+public:
+	void requestFade(FadeDirection showhide, long smooth) {
+		if(showhide == FadeDirection_Out) {
+			InventoryOpenClose(2);
+			ARX_INTERFACE_BookOpenClose(2);
+			ARX_INTERFACE_NoteClose();
+		}
+		
+		if(showhide == FadeDirection_In)
+			PLAYER_INTERFACE_HIDE_COUNT = true;
+		else
+			PLAYER_INTERFACE_HIDE_COUNT = false;
+		
+		if(smooth) {
+			if(showhide == FadeDirection_In)
+				SMOOTHSLID = -1;
+			else
+				SMOOTHSLID = 1;
+		} else {
+			if(showhide == FadeDirection_In)
+				SLID_VALUE = 0.f;
+			else
+				SLID_VALUE = 100.f;
+			
+			lSLID_VALUE = SLID_VALUE;
+		}
 	}
+};
+PlayerInterfaceFader playerInterfaceFader;
+
+void playerInterfaceFaderRequestFade(FadeDirection showhide, long smooth) {
+	playerInterfaceFader.requestFade(showhide, smooth);
 }
 
 void ArxGame::manageKeyMouse() {
