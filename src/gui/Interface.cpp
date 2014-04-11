@@ -6123,17 +6123,23 @@ private:
 	
 	void precastSlotDraw(long i, float intensity) {
 		Color color = Color3f(0, intensity * (1.0f/2), intensity).to<u8>();
-		float px = INTERFACE_RATIO(InventoryX) + INTERFACE_RATIO(110);
-		if(px < INTERFACE_RATIO(10)) {
-			px = INTERFACE_RATIO(10);
+		
+		Vec2f pos = Vec2f(g_size.bottomLeft());
+		pos += Vec2f(InventoryX, 0.f);
+		pos += Vec2f(110, -(126 + 32));
+		
+		if(pos.x < INTERFACE_RATIO(10)) {
+			pos.x = INTERFACE_RATIO(10);
 		}
-		float posx = px + INTERFACE_RATIO(33 + 33 + 33) + PRECAST_NUM * INTERFACE_RATIO(33);
-		float posy = g_size.height() - INTERFACE_RATIO(126+32); // niveau du stealth
+		
+		pos.x += (33 + 33 + 33);
+		pos.x += PRECAST_NUM * 33;
+		
 		SpellType typ = (SpellType)i; // TODO ugh
 		
 		TextureContainer * tc = spellicons[typ].tc;
 		arx_assert(tc);
-		Rectf rect(Vec2f(posx, posy), tc->m_dwWidth * 0.5f, tc->m_dwHeight * 0.5f);
+		Rectf rect(pos, tc->m_dwWidth * 0.5f, tc->m_dwHeight * 0.5f);
 		
 		precastSpellIconSlot.update(rect, tc, color);
 		
