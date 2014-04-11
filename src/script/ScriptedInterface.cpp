@@ -238,9 +238,9 @@ public:
 		DebugScript(' ' << options << ' ' << command);
 		
 		if(command == "hide") {
-			ARX_INTERFACE_PlayerInterfaceModify(0, smooth);
+			ARX_INTERFACE_PlayerInterfaceModify(FadeDirection_Out, smooth);
 		} else if(command == "show") {
-			ARX_INTERFACE_PlayerInterfaceModify(1, smooth);
+			ARX_INTERFACE_PlayerInterfaceModify(FadeDirection_In, smooth);
 		} else {
 			ScriptWarning << "unknown command: " << command;
 			return Failed;

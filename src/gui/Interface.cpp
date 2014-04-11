@@ -2019,26 +2019,26 @@ void ARX_INTERFACE_Reset()
 }
 
 //-----------------------------------------------------------------------------
-void ARX_INTERFACE_PlayerInterfaceModify(long showhide,long smooth)
+void ARX_INTERFACE_PlayerInterfaceModify(FadeDirection showhide, long smooth)
 {
-	if(showhide == 0) {
+	if(showhide == FadeDirection_Out) {
 		InventoryOpenClose(2);
 		ARX_INTERFACE_BookOpenClose(2);
 		ARX_INTERFACE_NoteClose();
 	}
 
-	if(showhide)
+	if(showhide == FadeDirection_In)
 		PLAYER_INTERFACE_HIDE_COUNT = false;
 	else
 		PLAYER_INTERFACE_HIDE_COUNT = true;
 	
 	if(smooth) {
-		if(showhide)
+		if(showhide == FadeDirection_In)
 			SMOOTHSLID = -1;
 		else
 			SMOOTHSLID = 1;
 	} else {
-		if(showhide)
+		if(showhide == FadeDirection_In)
 			SLID_VALUE = 0.f;
 		else
 			SLID_VALUE = 100.f;

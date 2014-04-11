@@ -242,7 +242,13 @@ void ARX_INTERFACE_Combat_Mode(long i);
 
 long GetMainSpeakingIO();
 bool ARX_INTERFACE_MouseInBook();
-void ARX_INTERFACE_PlayerInterfaceModify(long showhide, long smooth);
+
+enum FadeDirection {
+	FadeDirection_Out,
+	FadeDirection_In,
+};
+
+void ARX_INTERFACE_PlayerInterfaceModify(FadeDirection showhide, long smooth);
 void ARX_INTERFACE_Reset();
 
 void ARX_INTERFACE_ManageOpenedBook();
