@@ -6089,23 +6089,22 @@ private:
 		m_icons.push_back(icon);
 	}
 public:
-	void spellsPrecastedUpdate(float intensity) {
-		if(!(player.Interface & INTER_INVENTORYALL) && !(player.Interface & INTER_MAP)) {
-			for(size_t i = 0; i < MAX_PRECAST; i++) {
-				precastSlotDraw(i, intensity);
-			}
-		}
-	}
 	
 	void update() {
 		m_icons.clear();
+		
+		if(!(!(player.Interface & INTER_INVENTORYALL) && !(player.Interface & INTER_MAP))) {
+			return;
+		}
 		
 		float intensity = 1.f - PULSATE * 0.5f;
 		intensity = clamp(intensity, 0.f, 1.f);
 		
 		PRECAST_NUM = 0;
 		
-		spellsPrecastedUpdate(intensity);
+		for(size_t i = 0; i < MAX_PRECAST; i++) {
+			precastSlotDraw(i, intensity);
+		}
 	}
 	
 	void draw() {
