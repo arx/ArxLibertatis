@@ -2038,6 +2038,26 @@ public:
 			lSLID_VALUE = SLID_VALUE;
 		}
 	}
+	
+	void update() {
+		if(SMOOTHSLID == 1) {
+			SLID_VALUE += (float)Original_framedelay*( 1.0f / 10 );
+			
+			if(SLID_VALUE > 100.f) {
+				SLID_VALUE = 100.f;
+				SMOOTHSLID = 0;
+			}
+			lSLID_VALUE = SLID_VALUE;
+		} else if(SMOOTHSLID == -1) {
+			SLID_VALUE -= (float)Original_framedelay*( 1.0f / 10 );
+			
+			if (SLID_VALUE < 0.f) {
+				SLID_VALUE = 0.f;
+				SMOOTHSLID = 0;
+			}
+			lSLID_VALUE = SLID_VALUE;
+		}
+	}
 };
 PlayerInterfaceFader playerInterfaceFader;
 
@@ -6439,24 +6459,8 @@ void ArxGame::manageEditorControls() {
 			SecondaryInventory = NULL;
 		}
 	}
-
-	if(SMOOTHSLID == 1) {
-		SLID_VALUE += (float)Original_framedelay*( 1.0f / 10 );
-
-		if(SLID_VALUE > 100.f) {
-			SLID_VALUE = 100.f;
-			SMOOTHSLID = 0;
-		}
-		lSLID_VALUE = SLID_VALUE;
-	} else if(SMOOTHSLID == -1) {
-		SLID_VALUE -= (float)Original_framedelay*( 1.0f / 10 );
-
-		if (SLID_VALUE < 0.f) {
-			SLID_VALUE = 0.f;
-			SMOOTHSLID = 0;
-		}
-		lSLID_VALUE = SLID_VALUE;
-	}
+	
+	playerInterfaceFader.update();
 	
 	cinematicBorder.update();
 
