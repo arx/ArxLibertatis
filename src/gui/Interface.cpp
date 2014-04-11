@@ -461,6 +461,55 @@ void INTERFACE_TC::Reset()
 	ITC.Xp.clear();
 }
 
+void INTERFACE_TC::init() {
+	
+	ITC.Set("playerbook",          "graph/interface/book/character_sheet/char_sheet_book");
+	ITC.Set("ic_casting",          "graph/interface/book/character_sheet/buttons_carac/icone_casting");
+	ITC.Set("ic_close_combat",     "graph/interface/book/character_sheet/buttons_carac/icone_close_combat");
+	ITC.Set("ic_constitution",     "graph/interface/book/character_sheet/buttons_carac/icone_constit");
+	ITC.Set("ic_defense",          "graph/interface/book/character_sheet/buttons_carac/icone_defense");
+	ITC.Set("ic_dexterity",        "graph/interface/book/character_sheet/buttons_carac/icone_dext");
+	ITC.Set("ic_etheral_link",     "graph/interface/book/character_sheet/buttons_carac/icone_etheral_link");
+	ITC.Set("ic_mind",             "graph/interface/book/character_sheet/buttons_carac/icone_intel");
+	ITC.Set("ic_intuition",        "graph/interface/book/character_sheet/buttons_carac/icone_intuition");
+	ITC.Set("ic_mecanism",         "graph/interface/book/character_sheet/buttons_carac/icone_mecanism");
+	ITC.Set("ic_object_knowledge", "graph/interface/book/character_sheet/buttons_carac/icone_obj_knowledge");
+	ITC.Set("ic_projectile",       "graph/interface/book/character_sheet/buttons_carac/icone_projectile");
+	ITC.Set("ic_stealth",          "graph/interface/book/character_sheet/buttons_carac/icone_stealth");
+	ITC.Set("ic_strength",         "graph/interface/book/character_sheet/buttons_carac/icone_strenght");
+	
+	ITC.Set("questbook",      "graph/interface/book/questbook");
+	ITC.Set("ptexspellbook",  "graph/interface/book/spellbook");
+	ITC.Set("bookmark_char",  "graph/interface/book/bookmark_char");
+	ITC.Set("bookmark_magic", "graph/interface/book/bookmark_magic");
+	ITC.Set("bookmark_map",   "graph/interface/book/bookmark_map");
+	ITC.Set("bookmark_quest", "graph/interface/book/bookmark_quest");
+	
+	ITC.Set("accessible_1", "graph/interface/book/accessible/accessible_1");
+	ITC.Set("accessible_2", "graph/interface/book/accessible/accessible_2");
+	ITC.Set("accessible_3", "graph/interface/book/accessible/accessible_3");
+	ITC.Set("accessible_4", "graph/interface/book/accessible/accessible_4");
+	ITC.Set("accessible_5", "graph/interface/book/accessible/accessible_5");
+	ITC.Set("accessible_6", "graph/interface/book/accessible/accessible_6");
+	ITC.Set("accessible_7", "graph/interface/book/accessible/accessible_7");
+	ITC.Set("accessible_8", "graph/interface/book/accessible/accessible_8");
+	ITC.Set("accessible_9", "graph/interface/book/accessible/accessible_9");
+	ITC.Set("accessible_10", "graph/interface/book/accessible/accessible_10");
+	ITC.Set("current_1", "graph/interface/book/current_page/current_1");
+	ITC.Set("current_2", "graph/interface/book/current_page/current_2");
+	ITC.Set("current_3", "graph/interface/book/current_page/current_3");
+	ITC.Set("current_4", "graph/interface/book/current_page/current_4");
+	ITC.Set("current_5", "graph/interface/book/current_page/current_5");
+	ITC.Set("current_6", "graph/interface/book/current_page/current_6");
+	ITC.Set("current_7", "graph/interface/book/current_page/current_7");
+	ITC.Set("current_8", "graph/interface/book/current_page/current_8");
+	ITC.Set("current_9", "graph/interface/book/current_page/current_9");
+	ITC.Set("current_10", "graph/interface/book/current_page/current_10");
+	
+	ITC.Level = getLocalised("system_charsheet_player_lvl");
+	ITC.Xp = getLocalised("system_charsheet_player_xp");
+}
+
 static void DrawBookInterfaceItem(TextureContainer * tc, float x, float y, Color color = Color::white, float z = 0.000001f) {
 	if(tc) {
 		EERIEDrawBitmap2(Rectf(Vec2f(
@@ -2902,51 +2951,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 	
 	if(!ITC.isInitialized) {
 		ITC.isInitialized = true;
-		ITC.Set("playerbook",          "graph/interface/book/character_sheet/char_sheet_book");
-		ITC.Set("ic_casting",          "graph/interface/book/character_sheet/buttons_carac/icone_casting");
-		ITC.Set("ic_close_combat",     "graph/interface/book/character_sheet/buttons_carac/icone_close_combat");
-		ITC.Set("ic_constitution",     "graph/interface/book/character_sheet/buttons_carac/icone_constit");
-		ITC.Set("ic_defense",          "graph/interface/book/character_sheet/buttons_carac/icone_defense");
-		ITC.Set("ic_dexterity",        "graph/interface/book/character_sheet/buttons_carac/icone_dext");
-		ITC.Set("ic_etheral_link",     "graph/interface/book/character_sheet/buttons_carac/icone_etheral_link");
-		ITC.Set("ic_mind",             "graph/interface/book/character_sheet/buttons_carac/icone_intel");
-		ITC.Set("ic_intuition",        "graph/interface/book/character_sheet/buttons_carac/icone_intuition");
-		ITC.Set("ic_mecanism",         "graph/interface/book/character_sheet/buttons_carac/icone_mecanism");
-		ITC.Set("ic_object_knowledge", "graph/interface/book/character_sheet/buttons_carac/icone_obj_knowledge");
-		ITC.Set("ic_projectile",       "graph/interface/book/character_sheet/buttons_carac/icone_projectile");
-		ITC.Set("ic_stealth",          "graph/interface/book/character_sheet/buttons_carac/icone_stealth");
-		ITC.Set("ic_strength",         "graph/interface/book/character_sheet/buttons_carac/icone_strenght");
-		
-		ITC.Set("questbook",      "graph/interface/book/questbook");
-		ITC.Set("ptexspellbook",  "graph/interface/book/spellbook");
-		ITC.Set("bookmark_char",  "graph/interface/book/bookmark_char");
-		ITC.Set("bookmark_magic", "graph/interface/book/bookmark_magic");
-		ITC.Set("bookmark_map",   "graph/interface/book/bookmark_map");
-		ITC.Set("bookmark_quest", "graph/interface/book/bookmark_quest");
-		
-		ITC.Set("accessible_1", "graph/interface/book/accessible/accessible_1");
-		ITC.Set("accessible_2", "graph/interface/book/accessible/accessible_2");
-		ITC.Set("accessible_3", "graph/interface/book/accessible/accessible_3");
-		ITC.Set("accessible_4", "graph/interface/book/accessible/accessible_4");
-		ITC.Set("accessible_5", "graph/interface/book/accessible/accessible_5");
-		ITC.Set("accessible_6", "graph/interface/book/accessible/accessible_6");
-		ITC.Set("accessible_7", "graph/interface/book/accessible/accessible_7");
-		ITC.Set("accessible_8", "graph/interface/book/accessible/accessible_8");
-		ITC.Set("accessible_9", "graph/interface/book/accessible/accessible_9");
-		ITC.Set("accessible_10", "graph/interface/book/accessible/accessible_10");
-		ITC.Set("current_1", "graph/interface/book/current_page/current_1");
-		ITC.Set("current_2", "graph/interface/book/current_page/current_2");
-		ITC.Set("current_3", "graph/interface/book/current_page/current_3");
-		ITC.Set("current_4", "graph/interface/book/current_page/current_4");
-		ITC.Set("current_5", "graph/interface/book/current_page/current_5");
-		ITC.Set("current_6", "graph/interface/book/current_page/current_6");
-		ITC.Set("current_7", "graph/interface/book/current_page/current_7");
-		ITC.Set("current_8", "graph/interface/book/current_page/current_8");
-		ITC.Set("current_9", "graph/interface/book/current_page/current_9");
-		ITC.Set("current_10", "graph/interface/book/current_page/current_10");
-		
-		ITC.Level = getLocalised("system_charsheet_player_lvl");
-		ITC.Xp = getLocalised("system_charsheet_player_xp");
+		ITC.init();
 		
 		ANIM_Set(&player.bookAnimation[0], herowaitbook);
 		player.bookAnimation[0].flags |= EA_LOOP;

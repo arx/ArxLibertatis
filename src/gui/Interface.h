@@ -79,6 +79,8 @@ public:
 	TextureContainer* Get(const std::string& name);
 
 	void Reset();
+	
+	void init();
 
 public:
 	bool isInitialized;
