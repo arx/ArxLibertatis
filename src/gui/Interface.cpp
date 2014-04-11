@@ -3033,7 +3033,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 			DrawBookInterfaceItem(tcBookmarkChar, px, py);
 
 			// Check for cursor on charcter sheet bookmark
-			if(tcBookmarkChar && MouseInBookRect(px, py, px + tcBookmarkChar->m_dwWidth, py + tcBookmarkChar->m_dwHeight)) {
+			if(MouseInBookRect(px, py, px + tcBookmarkChar->m_dwWidth, py + tcBookmarkChar->m_dwHeight)) {
 				// Draw highlighted Character sheet icon
 				GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 				GRenderer->SetRenderState(Renderer::AlphaBlending, true);
@@ -3065,9 +3065,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 					}
 				}
 				
-				if (	ITC.bookmark_magic 
-					&&	MouseInBookRect(px, py, px + ITC.bookmark_magic->m_dwWidth, py + ITC.bookmark_magic->m_dwHeight))
-				{
+				if(MouseInBookRect(px, py, px + ITC.bookmark_magic->m_dwWidth, py + ITC.bookmark_magic->m_dwHeight)) {
 					// Draw highlighted Magic sheet icon
 					GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 					GRenderer->SetRenderState(Renderer::AlphaBlending, true);
@@ -3093,9 +3091,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 
 			DrawBookInterfaceItem(ITC.bookmark_map, px, py);
 
-			if (	ITC.bookmark_map
-				&&	MouseInBookRect(px, py, px + ITC.bookmark_map->m_dwWidth, py + ITC.bookmark_map->m_dwHeight))
-			{
+			if(MouseInBookRect(px, py, px + ITC.bookmark_map->m_dwWidth, py + ITC.bookmark_map->m_dwHeight)) {
 				GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 				GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 				DrawBookInterfaceItem(ITC.bookmark_map, px, py, Color::grayb(0x55));
@@ -3118,9 +3114,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 			float py=BOOKMARKS_POS_Y;
 			DrawBookInterfaceItem(ITC.bookmark_quest, px, py);
 
-			if (	ITC.bookmark_quest
-				&&	MouseInBookRect(px, py, px + ITC.bookmark_quest->m_dwWidth, py + ITC.bookmark_quest->m_dwHeight))
-			{
+			if(MouseInBookRect(px, py, px + ITC.bookmark_quest->m_dwWidth, py + ITC.bookmark_quest->m_dwHeight)) {
 				GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 				GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 				DrawBookInterfaceItem(ITC.bookmark_quest, px, py, Color::grayb(0x55));
