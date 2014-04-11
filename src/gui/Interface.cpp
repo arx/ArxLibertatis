@@ -2007,6 +2007,11 @@ void ArxGame::managePlayerControls()
 
 class PlayerInterfaceFader {
 public:
+	void reset() {
+		SMOOTHSLID=0;
+		PLAYER_INTERFACE_HIDE_COUNT = true;
+	}
+	
 	void requestFade(FadeDirection showhide, long smooth) {
 		if(showhide == FadeDirection_Out) {
 			InventoryOpenClose(2);
@@ -2043,8 +2048,7 @@ void playerInterfaceFaderRequestFade(FadeDirection showhide, long smooth) {
 
 void ARX_INTERFACE_Reset()
 {
-	SMOOTHSLID=0;
-	PLAYER_INTERFACE_HIDE_COUNT = true;
+	playerInterfaceFader.reset();
 	BLOCK_PLAYER_CONTROLS = false;
 	SLID_VALUE=0;
 	cinematicBorder.reset2();
