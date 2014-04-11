@@ -6078,15 +6078,6 @@ private:
 		
 		if(flag & 1) {
 			color = Color3f(intensity, 0, 0).to<u8>();
-		} else if(flag & 2) {
-			color = Color3f(0, intensity * (1.0f/2), intensity).to<u8>();
-			float px = INTERFACE_RATIO(InventoryX) + INTERFACE_RATIO(110);
-			if(px < INTERFACE_RATIO(10)) {
-				px = INTERFACE_RATIO(10);
-			}
-			posx = px + INTERFACE_RATIO(33 + 33 + 33) + PRECAST_NUM * INTERFACE_RATIO(33);
-			posy = g_size.height() - INTERFACE_RATIO(126+32); // niveau du stealth
-			typ = (SpellType)i; // TODO ugh
 		} else {
 			color = Color3f::gray(intensity).to<u8>();
 		}
@@ -6105,11 +6096,25 @@ private:
 			}
 		}
 		
-		if((bOk && typ >= 0 && (size_t)typ < SPELL_TYPES_COUNT) || (flag == 2))
+		if(bOk && typ >= 0 && (size_t)typ < SPELL_TYPES_COUNT)
 			StdDraw(posx,posy,color,spellicons[typ].tc,flag,i);
 		
 		currpos += static_cast<long>(INTERFACE_RATIO(33.f));
 	}
+	
+	void precastSlotDraw(long i, float intensity, long flag) {
+		Color color = Color3f(0, intensity * (1.0f/2), intensity).to<u8>();
+		float px = INTERFACE_RATIO(InventoryX) + INTERFACE_RATIO(110);
+		if(px < INTERFACE_RATIO(10)) {
+			px = INTERFACE_RATIO(10);
+		}
+		float posx = px + INTERFACE_RATIO(33 + 33 + 33) + PRECAST_NUM * INTERFACE_RATIO(33);
+		float posy = g_size.height() - INTERFACE_RATIO(126+32); // niveau du stealth
+		SpellType typ = (SpellType)i; // TODO ugh
+		
+		StdDraw(posx,posy,color,spellicons[typ].tc,flag,i);
+	}
+	
 public:
 	void init() {
 		m_texUnknown = TextureContainer::Load("graph/interface/icons/spell_unknown");
@@ -6161,7 +6166,8 @@ public:
 						
 						val *= (1.f - tt);
 					}
-					ManageSpellIcon(Precast[i].typ,val,2);
+					
+					precastSlotDraw(Precast[i].typ, val, 2);
 				}
 			}
 		}
