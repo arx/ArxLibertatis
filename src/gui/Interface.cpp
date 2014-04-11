@@ -6040,7 +6040,7 @@ private:
 			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 		}
 	};
-	PrecastSpellIconSlot precastSpellIconSlot;
+	std::vector<PrecastSpellIconSlot> m_icons;
 	
 	
 	void precastSlotDraw(long i, float intensity) {
@@ -6080,12 +6080,13 @@ private:
 		arx_assert(tc);
 		Rectf rect(pos, tc->m_dwWidth * 0.5f, tc->m_dwHeight * 0.5f);
 		
-		precastSpellIconSlot.update(rect, tc, color);
+		PrecastSpellIconSlot icon;
+		icon.update(rect, tc, color);
 		
 		if(!(player.Interface & INTER_COMBATMODE))
-			precastSpellIconSlot.updateInput();
+			icon.updateInput();
 		
-		precastSpellIconSlot.draw();
+		m_icons.push_back(icon);
 	}
 public:
 	void spellsPrecastedUpdate(float intensity) {
@@ -6096,15 +6097,25 @@ public:
 		}
 	}
 	
-	void update() {		
+	void update() {
+		m_icons.clear();
+		
 		float intensity = 1.f - PULSATE * 0.5f;
 		intensity = clamp(intensity, 0.f, 1.f);
 		
-		GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 		PRECAST_NUM = 0;
 		
 		spellsPrecastedUpdate(intensity);
+	}
+	
+	void draw() {
+		GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+		
+		std::vector<PrecastSpellIconSlot>::iterator itr;
+		for(itr = m_icons.begin(); itr != m_icons.end(); ++itr) {
+			itr->draw();
+		}
 	}
 };
 PrecastSpellsGui precastSpellsGui;
@@ -6480,6 +6491,7 @@ void ArxGame::drawAllInterface() {
 	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapRepeat);
 	
 	precastSpellsGui.update();
+	precastSpellsGui.draw();
 	activeSpellsGui.draw();
 }
 
