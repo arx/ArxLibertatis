@@ -226,7 +226,7 @@ long				Book_MapPage=1;
 long				Book_SpellPage=1;
 
 long				SMOOTHSLID=0;
-long				currpos=50;
+
 bool				DRAGGING = false;
 long				INVERTMOUSE=0;
 bool				PLAYER_INTERFACE_HIDE_COUNT = true;
@@ -5997,6 +5997,7 @@ ScreenArrows screenArrows;
 class ActiveSpellsGui {
 private:
 	TextureContainer * m_texUnknown;
+	long currpos;
 	
 	void StdDraw(float posx, float posy, Color color, TextureContainer * tcc, long flag, long i) {
 		
@@ -6278,8 +6279,7 @@ public:
 					}
 				}
 			}
-	
-			currpos += static_cast<long>(INTERFACE_RATIO(33.f));
+			
 			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 		}
 	}
