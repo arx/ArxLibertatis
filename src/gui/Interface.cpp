@@ -2005,21 +2005,6 @@ void ArxGame::managePlayerControls()
 	}
 }
 
-//-----------------------------------------------------------------------------
-void ARX_INTERFACE_Reset()
-{
-	SMOOTHSLID=0;
-	PLAYER_INTERFACE_HIDE_COUNT = true;
-	BLOCK_PLAYER_CONTROLS = false;
-	SLID_VALUE=0;
-	cinematicBorder.reset2();
-	cinematicBorder.reset();
-	CINEMA_DECAL=0;
-	hideQuickSaveIcon();
-}
-
-
-
 class PlayerInterfaceFader {
 public:
 	void requestFade(FadeDirection showhide, long smooth) {
@@ -2054,6 +2039,20 @@ PlayerInterfaceFader playerInterfaceFader;
 void playerInterfaceFaderRequestFade(FadeDirection showhide, long smooth) {
 	playerInterfaceFader.requestFade(showhide, smooth);
 }
+
+
+void ARX_INTERFACE_Reset()
+{
+	SMOOTHSLID=0;
+	PLAYER_INTERFACE_HIDE_COUNT = true;
+	BLOCK_PLAYER_CONTROLS = false;
+	SLID_VALUE=0;
+	cinematicBorder.reset2();
+	cinematicBorder.reset();
+	CINEMA_DECAL=0;
+	hideQuickSaveIcon();
+}
+
 
 void ArxGame::manageKeyMouse() {
 	
