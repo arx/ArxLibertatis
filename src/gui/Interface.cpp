@@ -5999,7 +5999,7 @@ private:
 	TextureContainer * m_texUnknown;
 	long currpos;
 	
-	void StdDraw(float posx, float posy, Color color, TextureContainer * tcc, long flag, long i) {
+	void StdDraw(const Rectf & rect, Color color, TextureContainer * tcc, long flag, long i) {
 		
 		TextureContainer * tc;
 		
@@ -6010,16 +6010,17 @@ private:
 			tc = tcc;
 		
 		if(tc) {
-			Rectf rect1(Vec2f(posx, posy), tc->m_dwWidth * 0.5f, tc->m_dwHeight * 0.5f);
-			EERIEDrawBitmap(rect1, 0.01f, tc, color);
+			EERIEDrawBitmap(rect, 0.01f, tc, color);
 			
 			if(flag & 2) {
 				GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendOne);
 				
-				Rectf rect2(Vec2f(posx - 1, posy - 1), tc->m_dwWidth * 0.5f, tc->m_dwHeight * 0.5f);
+				Rectf rect2 = rect;
+				rect2.move(-1, -1);
 				EERIEDrawBitmap(rect2, 0.0001f, tc, color);
 				
-				Rectf rect3(Vec2f(posx + 1, posy + 1), tc->m_dwWidth * 0.5f, tc->m_dwHeight * 0.5f);
+				Rectf rect3 = rect;
+				rect3.move(1, 1);
 				EERIEDrawBitmap(rect3, 0.0001f, tc, color);
 				
 				GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
@@ -6027,15 +6028,7 @@ private:
 	
 			if(!(flag & 1)) {
 				if(!(player.Interface & INTER_COMBATMODE)) {
-					
-					const Rect mouseTestRect(
-					posx,
-					posy,
-					posx + INTERFACE_RATIO(32),
-					posy + INTERFACE_RATIO(32)
-					);
-					
-					if(mouseTestRect.contains(Vec2i(DANAEMouse))) {
+					if(rect.contains(Vec2f(DANAEMouse))) {
 						SpecialCursor=CURSOR_INTERACTION_ON;
 						
 						if((LastMouseClick & 1) && !(EERIEMouseButton & 1)) {
@@ -6096,8 +6089,11 @@ private:
 			}
 		}
 		
-		if(bOk && typ >= 0 && (size_t)typ < SPELL_TYPES_COUNT)
-			StdDraw(posx,posy,color,spellicons[typ].tc,flag,i);
+		if(bOk && typ >= 0 && (size_t)typ < SPELL_TYPES_COUNT) {
+			TextureContainer * tc = spellicons[typ].tc;
+			Rectf rect(Vec2f(posx, posy), tc->m_dwWidth * 0.5f, tc->m_dwHeight * 0.5f);
+			StdDraw(rect, color, tc, flag, i);
+		}
 		
 		currpos += static_cast<long>(INTERFACE_RATIO(33.f));
 	}
@@ -6112,7 +6108,9 @@ private:
 		float posy = g_size.height() - INTERFACE_RATIO(126+32); // niveau du stealth
 		SpellType typ = (SpellType)i; // TODO ugh
 		
-		StdDraw(posx,posy,color,spellicons[typ].tc,flag,i);
+		TextureContainer * tc = spellicons[typ].tc;
+		Rectf rect(Vec2f(posx, posy), tc->m_dwWidth * 0.5f, tc->m_dwHeight * 0.5f);
+		StdDraw(rect, color, tc, flag, i);
 	}
 	
 public:
