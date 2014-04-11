@@ -5999,17 +5999,9 @@ private:
 	TextureContainer * m_texUnknown;
 	long currpos;
 	
-	void StdDraw(const Rectf & rect, Color color, TextureContainer * tcc, long flag, long i) {
+	void StdDraw(const Rectf & rect, Color color, TextureContainer * tc, long flag, long i) {
 		
-		TextureContainer * tc;
 		
-		if(!tcc) {
-			tc = m_texUnknown;
-		}
-		else
-			tc = tcc;
-		
-		if(tc) {
 			EERIEDrawBitmap(rect, 0.01f, tc, color);
 			
 			if(flag & 2) {
@@ -6058,7 +6050,6 @@ private:
 					}
 				}
 			}
-		}
 	}
 	//---------------------------------------------------------------------------
 	void ManageSpellIcon(long i, float intensity, long flag)
@@ -6091,6 +6082,7 @@ private:
 		
 		if(bOk && typ >= 0 && (size_t)typ < SPELL_TYPES_COUNT) {
 			TextureContainer * tc = spellicons[typ].tc;
+			arx_assert(tc);
 			Rectf rect(Vec2f(posx, posy), tc->m_dwWidth * 0.5f, tc->m_dwHeight * 0.5f);
 			StdDraw(rect, color, tc, flag, i);
 		}
@@ -6109,6 +6101,7 @@ private:
 		SpellType typ = (SpellType)i; // TODO ugh
 		
 		TextureContainer * tc = spellicons[typ].tc;
+		arx_assert(tc);
 		Rectf rect(Vec2f(posx, posy), tc->m_dwWidth * 0.5f, tc->m_dwHeight * 0.5f);
 		StdDraw(rect, color, tc, flag, i);
 	}
