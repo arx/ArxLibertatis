@@ -6077,7 +6077,7 @@ private:
 	ActiveSpellIconSlot activeSpellIconSlot;
 	PrecastSpellIconSlot precastSpellIconSlot;
 	
-	void ManageSpellIcon(long i, float intensity, long flag)
+	void ManageSpellIcon(long i, float intensity, bool flag)
 	{
 		float POSX = g_size.width()-INTERFACE_RATIO(35);
 		Color color;
@@ -6085,7 +6085,7 @@ private:
 		float posy = (float)currpos;
 		SpellType typ=spells[i].type;
 		
-		if(flag & 1) {
+		if(flag) {
 			color = Color3f(intensity, 0, 0).to<u8>();
 		} else {
 			color = Color3f::gray(intensity).to<u8>();
@@ -6112,7 +6112,7 @@ private:
 			
 			activeSpellIconSlot.update(rect, tc, color);
 			activeSpellIconSlot.spellIndex = i;
-			if(!(flag & 1) && !(player.Interface & INTER_COMBATMODE)) {
+			if(!flag && !(player.Interface & INTER_COMBATMODE)) {
 				activeSpellIconSlot.updateInput();
 			}
 			activeSpellIconSlot.draw();
@@ -6155,7 +6155,7 @@ public:
 			   && spells[i].caster == 0
 			   && spellicons[spells[i].type].bDuration
 			) {
-				ManageSpellIcon(i, intensity, 0);
+				ManageSpellIcon(i, intensity, false);
 			}
 		}
 	}
@@ -6171,7 +6171,7 @@ public:
 					SPELL * spell = &spells[spellHandle];
 					
 					if(spell->caster != 0 && spellicons[spell->type].bDuration) {
-						ManageSpellIcon(spellHandle, intensity, 1);
+						ManageSpellIcon(spellHandle, intensity, true);
 					}
 				}
 			}
