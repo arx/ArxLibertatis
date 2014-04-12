@@ -1478,8 +1478,9 @@ void ManageCombatModeAnimations()
 
 					ARX_DAMAGES_DurabilityLoss(quiver, 1.f);
 
+					// TODO is this needed ?, quivers seem to self destruct via script, but maybe not all
 					if(ValidIOAddress(quiver) && quiver->durability <= 0.f) {
-						quiver->destroyOne();
+						ARX_INTERACTIVE_DestroyIOdelayed(quiver);
 					}
 				}
 
