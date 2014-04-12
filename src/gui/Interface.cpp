@@ -1672,7 +1672,6 @@ void ArxGame::managePlayerControls()
 				openBookPage(prevBookPage());
 			}
 		} else if(InPlayerInventoryPos(DANAEMouse)) {
-			if(PLAYER_INTERFACE_HIDE_COUNT) {
 				if((player.Interface & INTER_INVENTORY)) {
 					if(player.bag) {
 						if(sActiveInventory > 0) {
@@ -1681,11 +1680,9 @@ void ArxGame::managePlayerControls()
 						}
 					}
 				}
-			}
 		} else if(player.Interface & INTER_MAP) {
 			openBookPage(prevBookPage());
 		} else {
-			if(PLAYER_INTERFACE_HIDE_COUNT) {
 				if((player.Interface & INTER_INVENTORY)) {
 					if(player.bag) {
 						if(sActiveInventory > 0) {
@@ -1694,7 +1691,6 @@ void ArxGame::managePlayerControls()
 						}
 					}
 				}
-			}
 		}
 	}
 
@@ -1704,7 +1700,6 @@ void ArxGame::managePlayerControls()
 				openBookPage(nextBookPage());
 			}
 		} else if(InPlayerInventoryPos(DANAEMouse)) {
-			if(PLAYER_INTERFACE_HIDE_COUNT) {
 				if((player.Interface & INTER_INVENTORY)) {
 					if(player.bag) {
 						if(sActiveInventory < player.bag - 1) {
@@ -1713,11 +1708,9 @@ void ArxGame::managePlayerControls()
 						}
 					}
 				}
-			}
 		} else if(player.Interface & INTER_MAP) {
 			openBookPage(nextBookPage());
 		} else {
-			if(PLAYER_INTERFACE_HIDE_COUNT) {
 				if((player.Interface & INTER_INVENTORY)) {
 					if(player.bag) {
 						if(sActiveInventory < player.bag - 1) {
@@ -1726,7 +1719,6 @@ void ArxGame::managePlayerControls()
 						}
 					}
 				}
-			}
 		}
 	}
 	
@@ -4439,7 +4431,7 @@ public:
 	}
 	
 	void draw() {
-		if(PLAYER_INTERFACE_HIDE_COUNT && TSecondaryInventory) {
+		if(TSecondaryInventory) {
 			bool _bSteal = (bool)((player.Interface & INTER_STEAL) != 0);
 			
 			if(TSecondaryInventory->io && !TSecondaryInventory->io->inventory_skin.empty()) {
@@ -5591,7 +5583,7 @@ void DrawIcons() {
 			stealIconGui.draw();			
 		}
 		// Pick All/Close Secondary Inventory
-		if(PLAYER_INTERFACE_HIDE_COUNT && TSecondaryInventory) {
+		if(TSecondaryInventory) {
 			//These have to be calculated on each frame (to make them move).
 			pickAllIconGui.update();
 			closeSecondaryInventoryIconGui.update();
@@ -6439,9 +6431,8 @@ void ArxGame::drawAllInterface() {
 		hitStrengthGauge.draw();
 	}	
 	secondaryInventory.draw();
-	if(PLAYER_INTERFACE_HIDE_COUNT) {
-			inventoryGui.draw();
-	}
+	inventoryGui.draw();
+	
 	if(FlyingOverIO 
 		&& !(player.Interface & INTER_COMBATMODE)
 		&& !GInput->actionPressed(CONTROLS_CUST_MAGICMODE)
@@ -6626,7 +6617,7 @@ void ArxGame::manageEditorControls() {
 		}
 	}
 	
-	if(PLAYER_INTERFACE_HIDE_COUNT && TSecondaryInventory) {
+	if(TSecondaryInventory) {
 		
 		Entity * temp=(Entity *)TSecondaryInventory->io;
 

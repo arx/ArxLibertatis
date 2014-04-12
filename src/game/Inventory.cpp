@@ -92,7 +92,6 @@ using std::string;
 extern E_ARX_STATE_MOUSE eMouseState;
 extern float InventoryX;
 extern float InventoryDir;
-extern bool PLAYER_INTERFACE_HIDE_COUNT;
 extern bool	DRAGGING;
 
 extern bool TRUE_PLAYER_MOUSELOOK_ON;
@@ -1453,9 +1452,6 @@ bool InSecondaryInventoryPos(const Vec2s & pos)
  */
 bool InPlayerInventoryPos(const Vec2s & pos)
 {
-	if (PLAYER_INTERFACE_HIDE_COUNT) return false;
-
-
 	float fCenterX	= g_size.center().x - INTERFACE_RATIO(320) + INTERFACE_RATIO(35);
 	float fSizY		= g_size.height() - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY);
 
