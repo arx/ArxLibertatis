@@ -288,9 +288,6 @@ void updateQuestBook();
 } // namespace gui
 
 #define ARX_MOUSE_OVER_BOOK			1
-#define ARX_MOUSE_OVER_INVENTORY	2
-#define ARX_MOUSE_OVER_INVENTORY_2	4
-#define ARX_MOUSE_OVER_IO			8
 
 extern long ARX_MOUSE_OVER;
 

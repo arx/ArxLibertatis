@@ -1628,10 +1628,6 @@ void ArxGame::render() {
 			) {
 				bookclick = DANAEMouse;
 			}
-		} else if(InSecondaryInventoryPos(DANAEMouse)) {
-			ARX_MOUSE_OVER |= ARX_MOUSE_OVER_INVENTORY_2;
-		} else if(InPlayerInventoryPos(DANAEMouse)) {
-			ARX_MOUSE_OVER |= ARX_MOUSE_OVER_INVENTORY;
 		}
 	}
 	
