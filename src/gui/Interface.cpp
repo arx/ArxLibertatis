@@ -4191,10 +4191,9 @@ void ARX_INTERFACE_ManageOpenedBook()
 							g_sizeRatio.x, g_sizeRatio.y
 						);
 					}
-
-					todraw->bbox2D.max.x = todraw->bbox2D.min.x + static_cast<float>( tc->m_dwWidth );
-					todraw->bbox2D.max.y = todraw->bbox2D.min.y + static_cast<float>( tc->m_dwHeight );
-
+					
+					todraw->bbox2D.max = todraw->bbox2D.min + Vec2f(tc->size());
+					
 					todraw->bbox2D.min = (todraw->bbox2D.min + BOOKDEC) * g_sizeRatio;
 					todraw->bbox2D.max = (todraw->bbox2D.max + BOOKDEC) * g_sizeRatio;
 
@@ -4226,10 +4225,9 @@ void ARX_INTERFACE_ManageOpenedBook()
 							g_sizeRatio.x, g_sizeRatio.y
 						);
 					}
-
-					todraw->bbox2D.max.x = todraw->bbox2D.min.x + static_cast<float>( tc->m_dwWidth );
-					todraw->bbox2D.max.y = todraw->bbox2D.min.y + static_cast<float>( tc->m_dwHeight );
-
+					
+					todraw->bbox2D.max = todraw->bbox2D.min + Vec2f(tc->size());
+					
 					todraw->bbox2D.min = (todraw->bbox2D.min + BOOKDEC) * g_sizeRatio;
 					todraw->bbox2D.min = (todraw->bbox2D.min + BOOKDEC) * g_sizeRatio;
 
