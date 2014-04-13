@@ -476,8 +476,9 @@ bool ARX_Menu_Render() {
 				OLD_FLYING_OVER = -1;
 			}
 			
-			float fPosX = 0;
-			float fPosY = 313 * g_sizeRatio.y + (g_size.height() - 313 * g_sizeRatio.y) * 0.70f;
+			Vec2f pos;
+			pos.x = 0;
+			pos.y = 313 * g_sizeRatio.y + (g_size.height() - 313 * g_sizeRatio.y) * 0.70f;
 
 			float fSizeX = 100 * g_sizeRatio.x;
 			float fSizeY = 100 * g_sizeRatio.y;
@@ -486,13 +487,13 @@ bool ARX_Menu_Render() {
 
 			//---------------------------------------------------------------------
 			// Button QUICK GENERATION
-			fPosX = (g_size.width() - (513 * g_sizeRatio.x)) * 0.5f;
+			pos.x = (g_size.width() - (513 * g_sizeRatio.x)) * 0.5f;
 			
 			const Rect quickGenerateButtonMouseTestRect(
-				fPosX,
-				fPosY,
-				fPosX + fSizeX,
-				fPosY + fSizeY
+				pos.x,
+				pos.y,
+				pos.x + fSizeX,
+				pos.y + fSizeY
 			);
 			
 			if(quickGenerateButtonMouseTestRect.contains(Vec2i(DANAEMouse))) {
@@ -521,17 +522,17 @@ bool ARX_Menu_Render() {
 			else
 				color = Color(232, 204, 143);
 
-			pTextManage->AddText(hFontMenu, ARXmenu.mda->str_button_quickgen, static_cast<long>(fPosX), static_cast<long>(fPosY), color);
+			pTextManage->AddText(hFontMenu, ARXmenu.mda->str_button_quickgen, static_cast<long>(pos.x), static_cast<long>(pos.y), color);
 
 			//---------------------------------------------------------------------
 			// Button SKIN
-			fPosX = g_size.width() * 0.5f;
+			pos.x = g_size.width() * 0.5f;
 			
 			const Rect skinButtonMouseTestRect(
-				fPosX,
-				fPosY,
-				fPosX + fSizeX,
-				fPosY + fSizeY
+				pos.x,
+				pos.y,
+				pos.x + fSizeX,
+				pos.y + fSizeY
 			);
 			
 			if(skinButtonMouseTestRect.contains(Vec2i(DANAEMouse))) {
@@ -555,17 +556,17 @@ bool ARX_Menu_Render() {
 			else
 				color = Color(232, 204, 143);
 
-			pTextManage->AddText(hFontMenu, ARXmenu.mda->str_button_skin, static_cast<long>(fPosX), static_cast<long>(fPosY), color);
+			pTextManage->AddText(hFontMenu, ARXmenu.mda->str_button_skin, static_cast<long>(pos.x), static_cast<long>(pos.y), color);
 
 			//---------------------------------------------------------------------
 			// Button DONE
-			fPosX = g_size.width() - (g_size.width() - 513 * g_sizeRatio.x) * 0.5f - 40 * g_sizeRatio.x;
+			pos.x = g_size.width() - (g_size.width() - 513 * g_sizeRatio.x) * 0.5f - 40 * g_sizeRatio.x;
 			
 			const Rect doneButtonMouseTestRect(
-				fPosX,
-				fPosY,
-				fPosX + fSizeX,
-				fPosY + fSizeY
+				pos.x,
+				pos.y,
+				pos.x + fSizeX,
+				pos.y + fSizeY
 			);
 			
 			if(doneButtonMouseTestRect.contains(Vec2i(DANAEMouse))) {
@@ -612,7 +613,7 @@ bool ARX_Menu_Render() {
 			if(SKIN_MOD < 0)
 				color = Color(255, 0, 255);
 
-			pTextManage->AddText(hFontMenu, ARXmenu.mda->str_button_done, static_cast<long>(fPosX), static_cast<long>(fPosY), color);
+			pTextManage->AddText(hFontMenu, ARXmenu.mda->str_button_done, static_cast<long>(pos.x), static_cast<long>(pos.y), color);
 		}
 	}
 
