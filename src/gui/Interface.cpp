@@ -190,7 +190,7 @@ TextureContainer *	BasicInventorySkin=NULL;
 
 ARX_INTERFACE_HALO_STRUCT * aiHalo=NULL;
 E_ARX_STATE_MOUSE	eMouseState;
-Vec2s bookclick;
+bool bookclick;
 Vec2s MemoMouse;
 
 INVENTORY_DATA *	TSecondaryInventory;
@@ -3103,7 +3103,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 				SpecialCursor=CURSOR_INTERACTION_ON;
 
 				// Check for click
-				if(bookclick.x != -1) {
+				if(bookclick) {
 					ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
 					openBookPage(BOOKMODE_STATS);
 					pTextManage->Clear();
@@ -3135,7 +3135,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 					SpecialCursor=CURSOR_INTERACTION_ON;
 
 					// Check for click
-					if(bookclick.x != -1) {
+					if(bookclick) {
 						ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
 						openBookPage(BOOKMODE_SPELLS);
 						pTextManage->Clear();
@@ -3160,7 +3160,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 				SpecialCursor=CURSOR_INTERACTION_ON;
 
 				// Check for click
-				if(bookclick.x != -1) {
+				if(bookclick) {
 					ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
 					openBookPage(BOOKMODE_MINIMAP);
 					pTextManage->Clear();
@@ -3183,7 +3183,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 				SpecialCursor=CURSOR_INTERACTION_ON;
 
 				// Check for click
-				if(bookclick.x != -1) {
+				if(bookclick) {
 					ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
 					openBookPage(BOOKMODE_QUESTS);
 					pTextManage->Clear();
@@ -3235,7 +3235,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 						DrawBookInterfaceItem(ITC.accessible_1, px, py, Color::grayb(0x55));
 						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 						SpecialCursor=CURSOR_INTERACTION_ON;
-						if(bookclick.x != -1) {
+						if(bookclick) {
 							Book_Page=1;
 							ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
 						}
@@ -3256,7 +3256,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 						DrawBookInterfaceItem(ITC.accessible_2, px, py, Color::grayb(0x55));
 						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 						SpecialCursor=CURSOR_INTERACTION_ON;
-						if(bookclick.x != -1) {
+						if(bookclick) {
 							Book_Page=2;
 							ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
 						}
@@ -3277,7 +3277,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 						DrawBookInterfaceItem(ITC.accessible_3, px, py, Color::grayb(0x55));
 						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 						SpecialCursor=CURSOR_INTERACTION_ON;
-						if(bookclick.x != -1) {
+						if(bookclick) {
 							Book_Page=3;
 							ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
 						}
@@ -3298,7 +3298,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 						DrawBookInterfaceItem(ITC.accessible_4, px, py, Color::grayb(0x55));
 						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 						SpecialCursor=CURSOR_INTERACTION_ON;
-						if(bookclick.x != -1) {
+						if(bookclick) {
 							Book_Page=4;
 							ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
 						}
@@ -3319,7 +3319,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 						DrawBookInterfaceItem(ITC.accessible_5, px, py, Color::grayb(0x55));
 						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 						SpecialCursor=CURSOR_INTERACTION_ON;
-						if(bookclick.x != -1) {
+						if(bookclick) {
 							Book_Page=5;
 							ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
 						}
@@ -3340,7 +3340,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 						DrawBookInterfaceItem(ITC.accessible_6, px, py, Color::grayb(0x55));
 						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 						SpecialCursor=CURSOR_INTERACTION_ON;
-						if(bookclick.x != -1) {
+						if(bookclick) {
 							Book_Page=6;
 							ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
 						}
@@ -3361,7 +3361,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 						DrawBookInterfaceItem(ITC.accessible_7, px, py, Color::grayb(0x55));
 						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 						SpecialCursor=CURSOR_INTERACTION_ON;
-						if(bookclick.x != -1) {
+						if(bookclick) {
 							Book_Page=7;
 							ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
 						}
@@ -3382,7 +3382,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 						DrawBookInterfaceItem(ITC.accessible_8, px, py, Color::grayb(0x55));
 						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 						SpecialCursor=CURSOR_INTERACTION_ON;
-						if(bookclick.x != -1) {
+						if(bookclick) {
 							Book_Page=8;
 							ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
 						}
@@ -3403,7 +3403,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 						DrawBookInterfaceItem(ITC.accessible_9, px, py, Color::grayb(0x55));
 						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 						SpecialCursor=CURSOR_INTERACTION_ON;
-						if(bookclick.x != -1) {
+						if(bookclick) {
 							Book_Page=9;
 							ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
 						}
@@ -3424,7 +3424,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 						DrawBookInterfaceItem(ITC.accessible_10, px, py, Color::grayb(0x55));
 						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 						SpecialCursor=CURSOR_INTERACTION_ON;
-						if(bookclick.x != -1) {
+						if(bookclick) {
 							Book_Page=10;
 							ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
 						}
@@ -3440,7 +3440,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 			}
 		}
 
-		bookclick.x=-1;
+		bookclick = false;
 	}
 	
 	GRenderer->GetTextureStage(0)->setMinFilter(TextureStage::FilterNearest);

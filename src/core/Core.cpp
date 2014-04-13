@@ -837,7 +837,7 @@ void FirstFrameProc() {
 	
 	STARTDRAG = Vec2s_ZERO;
 	DANAEMouse = Vec2s_ZERO;
-	bookclick = Vec2s(-1, -1);
+	bookclick = false;
 	
 	if(!LOAD_N_DONT_ERASE)
 		arxtime.init();

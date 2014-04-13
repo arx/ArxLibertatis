@@ -1626,7 +1626,7 @@ void ArxGame::render() {
 			if(((EERIEMouseButton & 1) && !(LastMouseClick & 1))
 			   || ((EERIEMouseButton & 2) && !(LastMouseClick & 2))
 			) {
-				bookclick = DANAEMouse;
+				bookclick = true;
 			}
 		}
 	}
