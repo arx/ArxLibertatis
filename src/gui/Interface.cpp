@@ -2257,7 +2257,7 @@ void ArxGame::manageKeyMouse() {
 			} else {
 				if(eMouseState != MOUSE_IN_NOTE) {
 					if((EERIEMouseButton & 2)
-					   && !(ARX_MOUSE_OVER & ARX_MOUSE_OVER_BOOK & (Book_Mode != BOOKMODE_MINIMAP))
+					   && !((ARX_MOUSE_OVER & ARX_MOUSE_OVER_BOOK) && (Book_Mode != BOOKMODE_MINIMAP))
 					   && (!TRUE_PLAYER_MOUSELOOK_ON || SPECIAL_DRAW_WEAPON)
 					   && config.input.linkMouseLookToUse
 					) {
