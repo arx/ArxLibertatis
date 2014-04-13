@@ -741,21 +741,21 @@ void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 
 			if(TRUE_PLAYER_MOUSELOOK_ON && config.video.showCrosshair) {
 				if(!(player.Interface & (INTER_COMBATMODE | INTER_NOTE | INTER_MAP))) {
-
+					
 					cursorAnimatedHand.reset();
-
+					
 					TextureContainer * surf = pTCCrossHair;
 					arx_assert(surf);
-
-						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-
-						float POSX = g_size.center().x - surf->m_dwWidth * .5f;
-						float POSY = g_size.center().y - surf->m_dwHeight * .5f;
-
-						EERIEDrawBitmap(Rectf(Vec2f(POSX, POSY), surf->m_dwWidth, surf->m_dwHeight), 0.f, surf, Color3f::gray(.5f).to<u8>());
-
-						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+					
+					GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+					GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+					
+					float POSX = g_size.center().x - surf->m_dwWidth * .5f;
+					float POSY = g_size.center().y - surf->m_dwHeight * .5f;
+					
+					EERIEDrawBitmap(Rectf(Vec2f(POSX, POSY), surf->m_dwWidth, surf->m_dwHeight), 0.f, surf, Color3f::gray(.5f).to<u8>());
+					
+					GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 				}
 			}
 		}
