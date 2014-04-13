@@ -3664,124 +3664,124 @@ void ARX_INTERFACE_ManageOpenedBook()
 		std::stringstream ss3;
 		ss3 << std::setw(3) << std::setprecision(0) << std::fixed << player.Full_Attribute_Strength;
 		tex = ss3.str();
-
-		if (player.Mod_Attribute_Strength<0.f)
+		
+		if(player.Mod_Attribute_Strength < 0.f)
 			color = Color::red;
-		else if (player.Mod_Attribute_Strength>0.f)
+		else if(player.Mod_Attribute_Strength > 0.f)
 			color = Color::blue;
-		else color = Color::black;
-
-		if (ARXmenu.currentmode==AMCM_NEWQUEST)
-		{
-			if (player.Full_Attribute_Strength == 6)
+		else
+			color = Color::black;
+		
+		if(ARXmenu.currentmode == AMCM_NEWQUEST) {
+			if(player.Full_Attribute_Strength == 6)
 				color = Color::red;
 		}
-
+		
 		DrawBookTextCenter(hFontInBook, Vec2f(391, 129), tex, color);
 		
 		ss3.str(""); // clear the stream
 		ss3 << player.Full_Attribute_Mind;
 		tex = ss3.str();
-
-		if (player.Mod_Attribute_Mind<0.f)
+		
+		if(player.Mod_Attribute_Mind < 0.f)
 			color = Color::red;
-		else if (player.Mod_Attribute_Mind>0.f)
+		else if(player.Mod_Attribute_Mind > 0.f)
 			color = Color::blue;
-		else color = Color::black;
-
-		if (ARXmenu.currentmode==AMCM_NEWQUEST)
-		{
-			if (player.Full_Attribute_Mind == 6)
+		else
+			color = Color::black;
+		
+		if(ARXmenu.currentmode == AMCM_NEWQUEST) {
+			if(player.Full_Attribute_Mind == 6)
 				color = Color::red;
 		}
-
+		
 		DrawBookTextCenter(hFontInBook, Vec2f(440, 129), tex, color);
 		
 		ss3.str("");
 		ss3 << player.Full_Attribute_Dexterity;
 		tex = ss3.str();
 
-		if (player.Mod_Attribute_Dexterity<0.f)
+		if(player.Mod_Attribute_Dexterity < 0.f)
 			color = Color::red;
-		else if (player.Mod_Attribute_Dexterity>0.f)
+		else if(player.Mod_Attribute_Dexterity > 0.f)
 			color = Color::blue;
-		else color = Color::black;
-
-		if (ARXmenu.currentmode==AMCM_NEWQUEST)
-		{
-			if (player.Full_Attribute_Dexterity == 6)
+		else
+			color = Color::black;
+		
+		if(ARXmenu.currentmode == AMCM_NEWQUEST) {
+			if(player.Full_Attribute_Dexterity == 6)
 				color = Color::red;
 		}
-
+		
 		DrawBookTextCenter(hFontInBook, Vec2f(490, 129), tex, color);
 		ss3.str("");
 		ss3 << player.Full_Attribute_Constitution;
 		tex = ss3.str();
-
-		if (player.Mod_Attribute_Constitution<0.f)
+		
+		if(player.Mod_Attribute_Constitution < 0.f)
 			color = Color::red;
-		else if (player.Mod_Attribute_Constitution>0.f)
+		else if(player.Mod_Attribute_Constitution > 0.f)
 			color = Color::blue;
-		else color = Color::black;
-
-		if (ARXmenu.currentmode==AMCM_NEWQUEST)
-		{
-			if (player.Full_Attribute_Constitution == 6)
+		else
+			color = Color::black;
+		
+		if(ARXmenu.currentmode == AMCM_NEWQUEST) {
+			if(player.Full_Attribute_Constitution == 6)
 				color = Color::red;
 		}
-
+		
 		DrawBookTextCenter(hFontInBook, Vec2f(538, 129), tex, color);
-
+		
 		// Player Skills
 		ss3.str("");
 		ss3 << player.Full_Skill_Stealth;
 		tex = ss3.str();
-
-		if (player.Mod_Skill_Stealth<0.f)
+		
+		if (player.Mod_Skill_Stealth < 0.f)
 			color = Color::red;
-		else if (player.Mod_Skill_Stealth>0.f)
+		else if (player.Mod_Skill_Stealth > 0.f)
 			color = Color::blue;
-		else color = Color::black;
-
-		if (ARXmenu.currentmode==AMCM_NEWQUEST)
-		{
-			if (player.Skill_Stealth == 0)
+		else
+			color = Color::black;
+		
+		if(ARXmenu.currentmode == AMCM_NEWQUEST) {
+			if(player.Skill_Stealth == 0)
 				color = Color::red;
 		}
-
+		
 		DrawBookTextCenter(hFontInBook, Vec2f(405, 210), tex, color);
 		
 		ss3.str("");
 		ss3 << player.Full_Skill_Mecanism;
 		tex = ss3.str();
-
-		if (player.Mod_Skill_Mecanism<0.f)
+		
+		if (player.Mod_Skill_Mecanism < 0.f)
 			color = Color::red;
-		else if (player.Mod_Skill_Mecanism>0.f)
+		else if (player.Mod_Skill_Mecanism > 0.f)
 			color = Color::blue;
-		else color = Color::black;
-
-		if (ARXmenu.currentmode==AMCM_NEWQUEST)
-		{
-			if (player.Skill_Mecanism == 0)
+		else
+			color = Color::black;
+		
+		if(ARXmenu.currentmode == AMCM_NEWQUEST) {
+			if(player.Skill_Mecanism == 0)
 				color = Color::red;
 		}
-
+		
 		DrawBookTextCenter(hFontInBook, Vec2f(469, 210), tex, color);
 		
 		ss3.str("");
 		ss3 << player.Full_Skill_Intuition;
 		tex = ss3.str();
-
-		if (player.Mod_Skill_Intuition<0.f)
+		
+		if (player.Mod_Skill_Intuition < 0.f)
 			color = Color::red;
-		else if (player.Mod_Skill_Intuition>0.f)
+		else if (player.Mod_Skill_Intuition > 0.f)
 			color = Color::blue;
-		else color = Color::black;
-
-		if (ARXmenu.currentmode==AMCM_NEWQUEST)
-		{
-			if (player.Skill_Intuition == 0)
+		else
+			color = Color::black;
+		
+		if(ARXmenu.currentmode == AMCM_NEWQUEST) {
+			if(player.Skill_Intuition == 0)
 				color = Color::red;
 		}
 
@@ -3791,15 +3791,15 @@ void ARX_INTERFACE_ManageOpenedBook()
 		ss3 << player.Full_Skill_Etheral_Link;
 		tex = ss3.str();
 
-		if (player.Mod_Skill_Etheral_Link<0.f)
+		if(player.Mod_Skill_Etheral_Link < 0.f)
 			color = Color::red;
-		else if (player.Mod_Skill_Etheral_Link>0.f)
+		else if(player.Mod_Skill_Etheral_Link > 0.f)
 			color = Color::blue;
-		else color = Color::black;
-
-		if (ARXmenu.currentmode==AMCM_NEWQUEST)
-		{
-			if (player.Skill_Etheral_Link == 0)
+		else
+			color = Color::black;
+		
+		if(ARXmenu.currentmode == AMCM_NEWQUEST) {
+			if(player.Skill_Etheral_Link == 0)
 				color = Color::red;
 		}
 
@@ -3809,33 +3809,33 @@ void ARX_INTERFACE_ManageOpenedBook()
 		ss3 << player.Full_Skill_Object_Knowledge;
 		tex = ss3.str();
 
-		if (player.Mod_Skill_Object_Knowledge<0.f)
+		if(player.Mod_Skill_Object_Knowledge < 0.f)
 			color = Color::red;
-		else if (player.Mod_Skill_Object_Knowledge>0.f)
+		else if(player.Mod_Skill_Object_Knowledge > 0.f)
 			color = Color::blue;
-		else color = Color::black;
-
-		if (ARXmenu.currentmode==AMCM_NEWQUEST)
-		{
-			if (player.Skill_Object_Knowledge == 0)
+		else
+			color = Color::black;
+		
+		if(ARXmenu.currentmode == AMCM_NEWQUEST) {
+			if(player.Skill_Object_Knowledge == 0)
 				color = Color::red;
 		}
-
+		
 		DrawBookTextCenter(hFontInBook, Vec2f(469, 265), tex, color);
 		
 		ss3.str("");
 		ss3 << player.Full_Skill_Casting;
 		tex = ss3.str();
-
-		if (player.Mod_Skill_Casting<0.f)
+		
+		if (player.Mod_Skill_Casting < 0.f)
 			color = Color::red;
-		else if (player.Mod_Skill_Casting>0.f)
+		else if (player.Mod_Skill_Casting > 0.f)
 			color = Color::blue;
-		else color = Color::black;
-
-		if (ARXmenu.currentmode==AMCM_NEWQUEST)
-		{
-			if (player.Skill_Casting == 0)
+		else
+			color = Color::black;
+		
+		if(ARXmenu.currentmode == AMCM_NEWQUEST) {
+			if(player.Skill_Casting == 0)
 				color = Color::red;
 		}
 
@@ -3845,15 +3845,15 @@ void ARX_INTERFACE_ManageOpenedBook()
 		ss3 << player.Full_Skill_Close_Combat;
 		tex = ss3.str();
 
-		if (player.Mod_Skill_Close_Combat<0.f)
+		if (player.Mod_Skill_Close_Combat < 0.f)
 			color = Color::red;
-		else if (player.Mod_Skill_Close_Combat>0.f)
+		else if (player.Mod_Skill_Close_Combat > 0.f)
 			color = Color::blue;
-		else color = Color::black;
-
-		if (ARXmenu.currentmode==AMCM_NEWQUEST)
-		{
-			if (player.Skill_Close_Combat == 0)
+		else
+			color = Color::black;
+		
+		if(ARXmenu.currentmode == AMCM_NEWQUEST) {
+			if(player.Skill_Close_Combat == 0)
 				color = Color::red;
 		}
 
@@ -3864,15 +3864,15 @@ void ARX_INTERFACE_ManageOpenedBook()
 		ss3 << player.Full_Skill_Projectile;
 		tex = ss3.str();
 
-		if (player.Mod_Skill_Projectile<0.f)
+		if(player.Mod_Skill_Projectile < 0.f)
 			color = Color::red;
-		else if (player.Mod_Skill_Projectile>0.f)
+		else if(player.Mod_Skill_Projectile > 0.f)
 			color = Color::blue;
-		else color = Color::black;
-
-		if (ARXmenu.currentmode==AMCM_NEWQUEST)
-		{
-			if (player.Skill_Projectile == 0)
+		else
+			color = Color::black;
+		
+		if(ARXmenu.currentmode == AMCM_NEWQUEST) {
+			if(player.Skill_Projectile == 0)
 				color = Color::red;
 		}
 
@@ -3882,26 +3882,26 @@ void ARX_INTERFACE_ManageOpenedBook()
 		ss3 << player.Full_Skill_Defense;
 		tex = ss3.str();
 
-		if (player.Mod_Skill_Defense<0.f)
+		if (player.Mod_Skill_Defense < 0.f)
 			color = Color::red;
-		else if (player.Mod_Skill_Defense>0.f)
+		else if (player.Mod_Skill_Defense > 0.f)
 			color = Color::blue;
-		else color = Color::black;
-
-		if (ARXmenu.currentmode==AMCM_NEWQUEST)
-		{
-			if (player.Skill_Defense == 0)
+		else
+			color = Color::black;
+		
+		if(ARXmenu.currentmode == AMCM_NEWQUEST) {
+			if(player.Skill_Defense == 0)
 				color = Color::red;
 		}
-
+		
 		DrawBookTextCenter(hFontInBook, Vec2f(533, 319), tex, color);
-
+		
 		// Secondary Attributes
 		std::stringstream ss4;
 		ss4.str("");
 		ss4 << F2L_RoundUp(player.Full_maxlife);
 		tex = ss4.str();
-
+		
 		if(player.Full_maxlife < player.maxlife) {
 			color = Color::red;
 		} else if(player.Full_maxlife > player.maxlife) {
@@ -3909,7 +3909,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 		} else {
 			color = Color::black;
 		}
-
+		
 		DrawBookTextCenter(hFontInBook, Vec2f(324, 158), tex, color);
 		
 		ss4.str("");
@@ -3923,44 +3923,47 @@ void ARX_INTERFACE_ManageOpenedBook()
 		} else {
 			color = Color::black;
 		}
-
+		
 		DrawBookTextCenter(hFontInBook, Vec2f(324, 218), tex, color);
 		
 		ss4.str("");
 		ss4 << F2L_RoundUp(player.Full_damages);
 		tex = ss4.str();
-
-		if (player.Mod_damages<0.f)
+		
+		if (player.Mod_damages < 0.f)
 			color = Color::red;
-		else if (player.Mod_damages>0.f)
+		else if (player.Mod_damages > 0.f)
 			color = Color::blue;
-		else color = Color::black;
-
+		else
+			color = Color::black;
+		
 		DrawBookTextCenter(hFontInBook, Vec2f(324, 278), tex, color);
-
+		
 		float ac = player.Full_armor_class;
 		ss4.str("");
 		ss4 << F2L_RoundUp(ac);
 		tex = ss4.str();
-
-		if (player.Mod_armor_class<0.f)
+		
+		if (player.Mod_armor_class < 0.f)
 			color = Color::red;
-		else if (player.Mod_armor_class>0.f)
+		else if (player.Mod_armor_class > 0.f)
 			color = Color::blue;
-		else color = Color::black;
-
+		else
+			color = Color::black;
+		
 		DrawBookTextCenter(hFontInBook, Vec2f(153, 158), tex, color);
-
+		
 		ss4.str("");
 		ss4 << std::setw(3) << std::setprecision(0) << F2L_RoundUp( player.Full_resist_magic );
 		tex = ss4.str();
-
-		if (player.Mod_resist_magic<0.f)
+		
+		if (player.Mod_resist_magic < 0.f)
 			color = Color::red;
-		else if (player.Mod_resist_magic>0.f)
+		else if (player.Mod_resist_magic > 0.f)
 			color = Color::blue;
-		else color = Color::black;
-
+		else
+			color = Color::black;
+		
 		DrawBookTextCenter(hFontInBook, Vec2f(153, 218), tex, color);
 		
 		ss4.str("");
@@ -3971,27 +3974,24 @@ void ARX_INTERFACE_ManageOpenedBook()
 			color = Color::red;
 		else if (player.Mod_resist_poison>0.f)
 			color = Color::blue;
-		else color = Color::black;
-
+		else
+			color = Color::black;
+		
 		DrawBookTextCenter(hFontInBook, Vec2f(153, 278), tex, color);
-	}
-	else if (Book_Mode == BOOKMODE_MINIMAP)
-	{
+	} else if (Book_Mode == BOOKMODE_MINIMAP) {
 		long SHOWLEVEL = Book_MapPage - 1;
 
-		if (SHOWLEVEL >= 0 && SHOWLEVEL < 32)
+		if(SHOWLEVEL >= 0 && SHOWLEVEL < 32)
 			g_miniMap.showBookEntireMap(SHOWLEVEL);
 
 		SHOWLEVEL = ARX_LEVELS_GetRealNum(CURRENTLEVEL);
 
-		if (SHOWLEVEL >= 0 && SHOWLEVEL < 32)
+		if(SHOWLEVEL >= 0 && SHOWLEVEL < 32)
 			g_miniMap.showBookMiniMap(SHOWLEVEL);
-		
 	}
 
-	if ((Book_Mode == BOOKMODE_STATS) && (entities.player()->obj != NULL))
-	{
-
+	if((Book_Mode == BOOKMODE_STATS) && entities.player()->obj) {
+		
 		GRenderer->SetRenderState(Renderer::DepthWrite, true);
 
 		Rect rec;
