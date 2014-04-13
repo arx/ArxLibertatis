@@ -287,7 +287,7 @@ namespace gui {
 void updateQuestBook();
 } // namespace gui
 
-extern bool ARX_MOUSE_OVER;
+extern bool g_cursorOverBook;
 
 //! Show the quick save indicator for a short time
 void showQuickSaveIcon();
