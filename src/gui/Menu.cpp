@@ -479,9 +479,10 @@ bool ARX_Menu_Render() {
 			Vec2f pos;
 			pos.x = 0;
 			pos.y = 313 * g_sizeRatio.y + (g_size.height() - 313 * g_sizeRatio.y) * 0.70f;
-
-			float fSizeX = 100 * g_sizeRatio.x;
-			float fSizeY = 100 * g_sizeRatio.y;
+			
+			Vec2f size;
+			size.x = 100 * g_sizeRatio.x;
+			size.y = 100 * g_sizeRatio.y;
 
 			Color color = Color::none;
 
@@ -492,8 +493,8 @@ bool ARX_Menu_Render() {
 			const Rect quickGenerateButtonMouseTestRect(
 				pos.x,
 				pos.y,
-				pos.x + fSizeX,
-				pos.y + fSizeY
+				pos.x + size.x,
+				pos.y + size.y
 			);
 			
 			if(quickGenerateButtonMouseTestRect.contains(Vec2i(DANAEMouse))) {
@@ -531,8 +532,8 @@ bool ARX_Menu_Render() {
 			const Rect skinButtonMouseTestRect(
 				pos.x,
 				pos.y,
-				pos.x + fSizeX,
-				pos.y + fSizeY
+				pos.x + size.x,
+				pos.y + size.y
 			);
 			
 			if(skinButtonMouseTestRect.contains(Vec2i(DANAEMouse))) {
@@ -565,8 +566,8 @@ bool ARX_Menu_Render() {
 			const Rect doneButtonMouseTestRect(
 				pos.x,
 				pos.y,
-				pos.x + fSizeX,
-				pos.y + fSizeY
+				pos.x + size.x,
+				pos.y + size.y
 			);
 			
 			if(doneButtonMouseTestRect.contains(Vec2i(DANAEMouse))) {
