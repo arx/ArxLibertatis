@@ -531,9 +531,8 @@ void INTERFACE_TC::init() {
 
 static void DrawBookInterfaceItem(TextureContainer * tc, Vec2f pos, Color color = Color::white, float z = 0.000001f) {
 	if(tc) {
-		EERIEDrawBitmap2(Rectf(Vec2f(
-			(pos.x + BOOKDEC.x) * g_sizeRatio.x,
-			(pos.y + BOOKDEC.y) * g_sizeRatio.y),
+		EERIEDrawBitmap2(Rectf(
+			(pos + BOOKDEC) * g_sizeRatio,
 			tc->m_dwWidth * g_sizeRatio.x,
 			tc->m_dwHeight * g_sizeRatio.y),
 			z,
@@ -4133,10 +4132,8 @@ void ARX_INTERFACE_ManageOpenedBook()
 					tod->bbox2D.min = Vec2f(195.f, 116.f);
 					tod->bbox2D.max = Vec2f(284.f, 182.f);
 
-					tod->bbox2D.min.x = (tod->bbox2D.min.x + BOOKDEC.x) * g_sizeRatio.x;
-					tod->bbox2D.max.x = (tod->bbox2D.max.x + BOOKDEC.x) * g_sizeRatio.x;
-					tod->bbox2D.min.y = (tod->bbox2D.min.y + BOOKDEC.y) * g_sizeRatio.y;
-					tod->bbox2D.max.y = (tod->bbox2D.max.y + BOOKDEC.y) * g_sizeRatio.y;
+					tod->bbox2D.min = (tod->bbox2D.min + BOOKDEC) * g_sizeRatio;
+					tod->bbox2D.max = (tod->bbox2D.max + BOOKDEC) * g_sizeRatio;
 
 					tod->ioflags |= IO_ICONIC;
 				}
@@ -4148,10 +4145,8 @@ void ARX_INTERFACE_ManageOpenedBook()
 					tod->bbox2D.min = Vec2f(218.f, 183.f);
 					tod->bbox2D.max = Vec2f(277.f, 322.f);
 
-					tod->bbox2D.min.x = (tod->bbox2D.min.x + BOOKDEC.x) * g_sizeRatio.x;
-					tod->bbox2D.max.x = (tod->bbox2D.max.x + BOOKDEC.x) * g_sizeRatio.x;
-					tod->bbox2D.min.y = (tod->bbox2D.min.y + BOOKDEC.y) * g_sizeRatio.y;
-					tod->bbox2D.max.y = (tod->bbox2D.max.y + BOOKDEC.y) * g_sizeRatio.y;
+					tod->bbox2D.min = (tod->bbox2D.min + BOOKDEC) * g_sizeRatio;
+					tod->bbox2D.max = (tod->bbox2D.max + BOOKDEC) * g_sizeRatio;
 
 					tod->ioflags |= IO_ICONIC;
 				}
@@ -4163,10 +4158,8 @@ void ARX_INTERFACE_ManageOpenedBook()
 					tod->bbox2D.min = Vec2f(218.f, 75.f);
 					tod->bbox2D.max = Vec2f(260.f, 115.f);
 
-					tod->bbox2D.min.x = (tod->bbox2D.min.x + BOOKDEC.x) * g_sizeRatio.x;
-					tod->bbox2D.max.x = (tod->bbox2D.max.x + BOOKDEC.x) * g_sizeRatio.x;
-					tod->bbox2D.min.y = (tod->bbox2D.min.y + BOOKDEC.y) * g_sizeRatio.y;
-					tod->bbox2D.max.y = (tod->bbox2D.max.y + BOOKDEC.y) * g_sizeRatio.y;
+					tod->bbox2D.min = (tod->bbox2D.min + BOOKDEC) * g_sizeRatio;
+					tod->bbox2D.max = (tod->bbox2D.max + BOOKDEC) * g_sizeRatio;
 
 					tod->ioflags |= IO_ICONIC;
 				}
@@ -4202,10 +4195,8 @@ void ARX_INTERFACE_ManageOpenedBook()
 					todraw->bbox2D.max.x = todraw->bbox2D.min.x + static_cast<float>( tc->m_dwWidth );
 					todraw->bbox2D.max.y = todraw->bbox2D.min.y + static_cast<float>( tc->m_dwHeight );
 
-					todraw->bbox2D.min.x = (todraw->bbox2D.min.x + BOOKDEC.x) * g_sizeRatio.x;
-					todraw->bbox2D.max.x = (todraw->bbox2D.max.x + BOOKDEC.x) * g_sizeRatio.x;
-					todraw->bbox2D.min.y = (todraw->bbox2D.min.y + BOOKDEC.y) * g_sizeRatio.y;
-					todraw->bbox2D.max.y = (todraw->bbox2D.max.y + BOOKDEC.y) * g_sizeRatio.y;
+					todraw->bbox2D.min = (todraw->bbox2D.min + BOOKDEC) * g_sizeRatio;
+					todraw->bbox2D.max = (todraw->bbox2D.max + BOOKDEC) * g_sizeRatio;
 
 					todraw->ioflags |= IO_ICONIC;
 				}
@@ -4239,10 +4230,8 @@ void ARX_INTERFACE_ManageOpenedBook()
 					todraw->bbox2D.max.x = todraw->bbox2D.min.x + static_cast<float>( tc->m_dwWidth );
 					todraw->bbox2D.max.y = todraw->bbox2D.min.y + static_cast<float>( tc->m_dwHeight );
 
-					todraw->bbox2D.min.x = (todraw->bbox2D.min.x + BOOKDEC.x) * g_sizeRatio.x;
-					todraw->bbox2D.max.x = (todraw->bbox2D.max.x + BOOKDEC.x) * g_sizeRatio.x;
-					todraw->bbox2D.min.y = (todraw->bbox2D.min.y + BOOKDEC.y) * g_sizeRatio.y;
-					todraw->bbox2D.max.y = (todraw->bbox2D.max.y + BOOKDEC.y) * g_sizeRatio.y;
+					todraw->bbox2D.min = (todraw->bbox2D.min + BOOKDEC) * g_sizeRatio;
+					todraw->bbox2D.min = (todraw->bbox2D.min + BOOKDEC) * g_sizeRatio;
 
 					todraw->ioflags |= IO_ICONIC;
 				}
