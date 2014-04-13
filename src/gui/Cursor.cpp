@@ -429,51 +429,51 @@ bool SelectSpellTargetCursorRender() {
 
 class CursorAnimatedHand {
 private:
-	long CURCURTIME;
-	long CURCURPOS;
-	long CURCURDELAY;
+	long m_time;
+	long m_frame;
+	long m_delay;
 	
 public:
 	CursorAnimatedHand()
-		: CURCURTIME(0)
-		, CURCURPOS(0)
-		, CURCURDELAY(70)
+		: m_time(0)
+		, m_frame(0)
+		, m_delay(70)
 	{}
 	
 	void reset() {
-		CURCURPOS = 0;
+		m_frame = 0;
 	}
 	
 	void update1() {
-		CURCURTIME += checked_range_cast<long>(Original_framedelay);
+		m_time += checked_range_cast<long>(Original_framedelay);
 		
-		if(CURCURPOS!=3) {
-			while(CURCURTIME > CURCURDELAY) {
-				CURCURTIME -= CURCURDELAY;
-				CURCURPOS++;
+		if(m_frame!=3) {
+			while(m_time > m_delay) {
+				m_time -= m_delay;
+				m_frame++;
 			}
 		}
 
-		if(CURCURPOS > 7)
-			CURCURPOS = 0;
+		if(m_frame > 7)
+			m_frame = 0;
 	}
 	
 	void update2() {
-		if(CURCURPOS) {
-			CURCURTIME += checked_range_cast<long>(Original_framedelay);
+		if(m_frame) {
+			m_time += checked_range_cast<long>(Original_framedelay);
 
-			while(CURCURTIME > CURCURDELAY) {
-				CURCURTIME -= CURCURDELAY;
-				CURCURPOS++;
+			while(m_time > m_delay) {
+				m_time -= m_delay;
+				m_frame++;
 			}
 		}
 
-		if(CURCURPOS > 7)
-			CURCURPOS = 0;
+		if(m_frame > 7)
+			m_frame = 0;
 	}
 	
 	TextureContainer * getCurrentTexture() {
-		TextureContainer * tc = scursor[CURCURPOS];
+		TextureContainer * tc = scursor[m_frame];
 		arx_assert(tc);
 		return tc;
 	}
