@@ -3067,10 +3067,10 @@ void ARX_INTERFACE_ManageOpenedBook()
 		float x = 0;
 		
 		arx_assert(ITC.playerbook);
-			x = static_cast<float>((640 - ITC.playerbook->m_dwWidth) / 2);
-			float y = static_cast<float>((480 - ITC.playerbook->m_dwHeight) / 2);
-
-			DrawBookInterfaceItem(ITC.playerbook, x, y);
+		x = static_cast<float>((640 - ITC.playerbook->m_dwWidth) / 2);
+		float y = static_cast<float>((480 - ITC.playerbook->m_dwHeight) / 2);
+		
+		DrawBookInterfaceItem(ITC.playerbook, x, y);
 
 		BOOKDEC.x = x - 97;
 		BOOKDEC.y = x - 64 + 19;
@@ -6572,18 +6572,18 @@ void ArxGame::manageEditorControls() {
 		
 		TextureContainer* playerbook = ITC.playerbook;
 		arx_assert(ITC.playerbook);
-
-			const Rect mouseTestRect(
-			pos.x,
-			pos.y,
-			pos.x + playerbook->m_dwWidth * g_sizeRatio.x,
-			pos.y + playerbook->m_dwHeight * g_sizeRatio.y
-			);
-			
-			if(mouseTestRect.contains(Vec2i(DANAEMouse))) {
-				eMouseState = MOUSE_IN_BOOK;
-			}
-	}
+		
+		const Rect mouseTestRect(
+		pos.x,
+		pos.y,
+		pos.x + playerbook->m_dwWidth * g_sizeRatio.x,
+		pos.y + playerbook->m_dwHeight * g_sizeRatio.y
+		);
+		
+		if(mouseTestRect.contains(Vec2i(DANAEMouse))) {
+			eMouseState = MOUSE_IN_BOOK;
+		}
+}
 	
 	// gros book/note
 	if(player.Interface & INTER_NOTE) {
