@@ -230,7 +230,7 @@ long				SMOOTHSLID=0;
 bool				DRAGGING = false;
 long				INVERTMOUSE=0;
 bool				PLAYER_INTERFACE_HIDE_COUNT = true;
-long				MAGICMODE=-1;
+bool				MAGICMODE = false;
 long				SpecialCursor=0;
 long				FLYING_OVER		= 0;
 long				OLD_FLYING_OVER	= 0;
@@ -1898,7 +1898,7 @@ void ArxGame::managePlayerControls()
 		if(bInverseInventory) {
 			bRenderInCursorMode=true;
 
-			if(MAGICMODE < 0) {
+			if(!MAGICMODE) {
 				InventoryOpenClose(1);
 			}
 		} else {
@@ -1969,7 +1969,7 @@ void ArxGame::managePlayerControls()
 		} else {
 			bRenderInCursorMode=true;
 
-			if(MAGICMODE<0) {
+			if(!MAGICMODE) {
 				if(lOldInterfaceTemp) {
 					lOldInterface=lOldInterfaceTemp;
 					lOldInterfaceTemp=0;
@@ -6443,7 +6443,7 @@ void ArxGame::drawAllInterface() {
 		if(bRenderInCursorMode) {
 			GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-			if(MAGICMODE < 0) {
+			if(!MAGICMODE) {
 				mecanismIcon.draw();
 			}
 			screenArrows.draw();

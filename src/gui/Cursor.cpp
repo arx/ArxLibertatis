@@ -373,7 +373,7 @@ extern bool PLAYER_INTERFACE_HIDE_COUNT;
 extern bool COMBINEGOLD;
 extern bool PLAYER_MOUSELOOK_ON;
 extern E_ARX_STATE_MOUSE eMouseState;
-extern long MAGICMODE;
+extern bool MAGICMODE;
 extern long lCursorRedistValue;
 extern TextureContainer * Movable;
 
@@ -470,7 +470,7 @@ void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 			&& (FlyingOverIO->ioflags & IO_ITEM)
 			&& (FlyingOverIO->gameFlags & GFLAG_INTERACTIVITY)
 			&& (config.input.autoReadyWeapon == false))
-			|| ((MAGICMODE==1) && PLAYER_MOUSELOOK_ON))
+			|| (MAGICMODE && PLAYER_MOUSELOOK_ON))
 		{
 
 			CANNOT_PUT_IT_HERE=0;
@@ -624,11 +624,11 @@ void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 				   && GInput->actionPressed(CONTROLS_CUST_MAGICMODE)
 				   && ARXmenu.currentmode == AMCM_OFF
 				) {
-					if(MAGICMODE < 0) {
+					if(!MAGICMODE) {
 						if(player.Interface & INTER_MAP) {
 							ARX_INTERFACE_BookOpenClose(2); // Forced Closing
 						}
-						MAGICMODE = 1;
+						MAGICMODE = true;
 					}
 
 					TextureContainer * surf = cursorMagic;
@@ -645,9 +645,9 @@ void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 					
 					EERIEDrawBitmap(Rectf(pos, size.x, size.y), 0.f, surf, Color::white);
 				} else {
-					if(MAGICMODE > -1) {
+					if(MAGICMODE) {
 						ARX_SOUND_Stop(SND_MAGIC_DRAW);
-						MAGICMODE = -1;
+						MAGICMODE = false;
 					}
 
 					if(DRAGINTER && DRAGINTER->inv) {
