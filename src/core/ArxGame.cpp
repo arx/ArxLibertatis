@@ -1614,12 +1614,12 @@ void ArxGame::render() {
 
 	// Checks for Keyboard & Moulinex
 	{
-	ARX_MOUSE_OVER = 0;
+	ARX_MOUSE_OVER = false;
 	
 	if(ARXmenu.currentmode == AMCM_OFF) { // Playing Game
 		// Checks Clicks in Book Interface
 		if(ARX_INTERFACE_MouseInBook()) {
-			ARX_MOUSE_OVER |= ARX_MOUSE_OVER_BOOK;
+			ARX_MOUSE_OVER = true;
 			LASTBOOKBUTTON = BOOKBUTTON;
 			BOOKBUTTON = EERIEMouseButton;
 			
@@ -1637,7 +1637,7 @@ void ArxGame::render() {
 		if(!DRAGINTER) {
 			if(!BLOCK_PLAYER_CONTROLS
 			   && !TRUE_PLAYER_MOUSELOOK_ON
-			   && !(ARX_MOUSE_OVER & ARX_MOUSE_OVER_BOOK)
+			   && !ARX_MOUSE_OVER
 			   && eMouseState != MOUSE_IN_NOTE
 			) {
 				FlyingOverIO = FlyingOverObject(DANAEMouse);

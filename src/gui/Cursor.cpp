@@ -465,7 +465,7 @@ void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 		}
 
 		if ((SpecialCursor) || !PLAYER_MOUSELOOK_ON || (DRAGINTER!=NULL)
-				|| ((FlyingOverIO) && PLAYER_MOUSELOOK_ON && !(ARX_MOUSE_OVER & ARX_MOUSE_OVER_BOOK)
+				|| ((FlyingOverIO) && PLAYER_MOUSELOOK_ON && !ARX_MOUSE_OVER
 			&& (eMouseState != MOUSE_IN_NOTE)
 			&& (FlyingOverIO->ioflags & IO_ITEM)
 			&& (FlyingOverIO->gameFlags & GFLAG_INTERACTIVITY)
@@ -484,7 +484,7 @@ void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 			if(   DANAEMouse.y > drop_miny
 			   && DRAGINTER
 			   && !InInventoryPos(DANAEMouse)
-			   && !(ARX_MOUSE_OVER & ARX_MOUSE_OVER_BOOK)
+			   && !ARX_MOUSE_OVER
 			) {
 				if(Manage3DCursor(true) == 0)
 					CANNOT_PUT_IT_HERE = -1;

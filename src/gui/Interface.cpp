@@ -1336,7 +1336,7 @@ void ArxGame::managePlayerControls()
 	if(   (EERIEMouseButton & 4)
 	   && !(player.Interface & INTER_COMBATMODE)
 	   && !player.doingmagic
-	   && !(ARX_MOUSE_OVER & ARX_MOUSE_OVER_BOOK)
+	   && !ARX_MOUSE_OVER
 	   && eMouseState != MOUSE_IN_NOTE
 	) {
 		Entity *t = InterClick(DANAEMouse);
@@ -1860,7 +1860,7 @@ void ArxGame::managePlayerControls()
 	// Check For Combat Mode ON/OFF
 	if(   (EERIEMouseButton & 1)
 	   && !(player.Interface & INTER_COMBATMODE)
-	   && !(ARX_MOUSE_OVER & ARX_MOUSE_OVER_BOOK)
+	   && !ARX_MOUSE_OVER
 	   && !SpecialCursor
 	   && PLAYER_MOUSELOOK_ON
 	   && !DRAGINTER
@@ -2139,7 +2139,7 @@ void ArxGame::manageKeyMouse() {
 			}
 		}
 
-		if(pIO && (ARX_MOUSE_OVER & ARX_MOUSE_OVER_BOOK)) {
+		if(pIO && ARX_MOUSE_OVER) {
 			for(long i = 0; i < MAX_EQUIPED; i++) {
 				if(player.equiped[i] != 0
 				   && ValidIONum(player.equiped[i])
@@ -2152,7 +2152,7 @@ void ArxGame::manageKeyMouse() {
 
 		if(pIO
 		   && (pIO->gameFlags & GFLAG_INTERACTIVITY)
-		   && !(ARX_MOUSE_OVER & ARX_MOUSE_OVER_BOOK)
+		   && !ARX_MOUSE_OVER
 		   && eMouseState != MOUSE_IN_NOTE
 		) {
 			if(!(EERIEMouseButton & 2)
@@ -2226,7 +2226,7 @@ void ArxGame::manageKeyMouse() {
 		}
 
 		if((eMouseState == MOUSE_IN_WORLD) ||
-			((eMouseState == MOUSE_IN_BOOK) && (!((ARX_MOUSE_OVER & ARX_MOUSE_OVER_BOOK) && (Book_Mode != BOOKMODE_MINIMAP))))
+			((eMouseState == MOUSE_IN_BOOK) && !(ARX_MOUSE_OVER && (Book_Mode != BOOKMODE_MINIMAP)))
 		) {
 			if(config.input.mouseLookToggle) {
 				if(eMouseState != MOUSE_IN_NOTE) {
@@ -2257,7 +2257,7 @@ void ArxGame::manageKeyMouse() {
 			} else {
 				if(eMouseState != MOUSE_IN_NOTE) {
 					if((EERIEMouseButton & 2)
-					   && !((ARX_MOUSE_OVER & ARX_MOUSE_OVER_BOOK) && (Book_Mode != BOOKMODE_MINIMAP))
+					   && !(ARX_MOUSE_OVER && (Book_Mode != BOOKMODE_MINIMAP))
 					   && (!TRUE_PLAYER_MOUSELOOK_ON || SPECIAL_DRAW_WEAPON)
 					   && config.input.linkMouseLookToUse
 					) {
@@ -6730,7 +6730,7 @@ void ArxGame::manageEditorControls() {
 				   && DRAGINTER->obj
 				   && DRAGINTER->obj->pbox
 				   && !InInventoryPos(DANAEMouse)
-				   && !(ARX_MOUSE_OVER & ARX_MOUSE_OVER_BOOK)
+				   && !ARX_MOUSE_OVER
 				) {
 					//Put object in fromt of player
 					
@@ -6915,7 +6915,7 @@ void ArxGame::manageEditorControls() {
 				Entity *io = InterClick(STARTDRAG);
 
 				if(io && !BLOCK_PLAYER_CONTROLS) {
-					if(ARX_MOUSE_OVER & ARX_MOUSE_OVER_BOOK) {
+					if(ARX_MOUSE_OVER) {
 						if(io->show == SHOW_FLAG_ON_PLAYER)
 							bOk = true;
 					} else {

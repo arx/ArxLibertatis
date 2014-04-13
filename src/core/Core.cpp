@@ -297,7 +297,7 @@ long DEBUGNPCMOVE = 0; // Debug NPC Movements
 
 long CHANGE_LEVEL_ICON=-1;
 
-long ARX_MOUSE_OVER=0;
+bool ARX_MOUSE_OVER = false;
 //-----------------------------------------------------------------------------
 // DEBUG FLAGS/Vars
 //-----------------------------------------------------------------------------
