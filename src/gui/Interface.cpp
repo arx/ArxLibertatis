@@ -556,15 +556,12 @@ void ARX_INTERFACE_HALO_Render(float _fR, float _fG, float _fB,
 	_fB = clamp(_fB * power, 0, 1);
 	Color col=Color4f(_fR,_fG,_fB).to<u8>();
 
-	if (_lHaloType & HALO_NEGATIVE)
-	{
+	if(_lHaloType & HALO_NEGATIVE) {
 		GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
-	}
-	else
-	{
+	} else {
 		GRenderer->SetBlendFunc(Renderer::BlendSrcAlpha, Renderer::BlendOne);
 	}
-
+	
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	
 	float x = POSX - TextureContainer::HALO_RADIUS * fRatioX;
