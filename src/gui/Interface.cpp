@@ -3619,8 +3619,8 @@ void ARX_INTERFACE_ManageOpenedBook()
 		}
 
 		//------------------------------ SEB 04/12/2001
-		if (ARXmenu.mda && !ARXmenu.mda->flyover[FLYING_OVER].empty()) //=ARXmenu.mda->flyover[FLYING_OVER];
-		{
+		if(ARXmenu.mda && !ARXmenu.mda->flyover[FLYING_OVER].empty()) {
+			
 			float fRandom = rnd() * 2;
 
 			int t = checked_range_cast<int>(fRandom);
@@ -3631,15 +3631,12 @@ void ARX_INTERFACE_ManageOpenedBook()
 			std::string toDisplay;
 
 			// Nuky Note: the text used never scrolls, centered function with wordwrap would be enough
-			if (FLYING_OVER == WND_XP)
-			{
+			if(FLYING_OVER == WND_XP) {
 				std::stringstream ss;
 				ss << ARXmenu.mda->flyover[WND_XP] << " " << std::setw(8) << GetXPforLevel(player.level+1)-player.xp;
 
 				toDisplay = ss.str();
-			}
-			else
-			{
+			} else {
 				toDisplay = ARXmenu.mda->flyover[FLYING_OVER];
 			}
 
@@ -3653,9 +3650,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 				0.01f,
 				3,
 				0);
-		}
-		else
-		{
+		} else {
 			OLD_FLYING_OVER=-1;
 		}
 
