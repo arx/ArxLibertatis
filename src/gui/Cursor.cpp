@@ -744,10 +744,9 @@ void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 
 					cursorAnimatedHand.reset();
 
+					TextureContainer * surf = pTCCrossHair;
+					arx_assert(surf);
 
-					TextureContainer * surf = pTCCrossHair ? pTCCrossHair : cursorTargetOff;
-
-					if(surf) {
 						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 
@@ -757,7 +756,6 @@ void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 						EERIEDrawBitmap(Rectf(Vec2f(POSX, POSY), surf->m_dwWidth, surf->m_dwHeight), 0.f, surf, Color3f::gray(.5f).to<u8>());
 
 						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-					}
 				}
 			}
 		}
