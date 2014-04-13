@@ -379,10 +379,6 @@ extern TextureContainer * Movable;
 
 int iHighLight=0;
 float fHighLightAng=0.f;
-long CURCURTIME=0;
-long CURCURPOS=0;
-long CURCURDELAY=70;
-
 
 bool SelectSpellTargetCursorRender() {
 	
@@ -429,6 +425,61 @@ bool SelectSpellTargetCursorRender() {
 	}
 	return false;
 }
+
+
+class CursorAnimatedHand {
+private:
+	long CURCURTIME;
+	long CURCURPOS;
+	long CURCURDELAY;
+	
+public:
+	CursorAnimatedHand()
+		: CURCURTIME(0)
+		, CURCURPOS(0)
+		, CURCURDELAY(70)
+	{}
+	
+	void reset() {
+		CURCURPOS = 0;
+	}
+	
+	void update1() {
+		CURCURTIME += checked_range_cast<long>(Original_framedelay);
+		
+		if(CURCURPOS!=3) {
+			while(CURCURTIME > CURCURDELAY) {
+				CURCURTIME -= CURCURDELAY;
+				CURCURPOS++;
+			}
+		}
+
+		if(CURCURPOS > 7)
+			CURCURPOS = 0;
+	}
+	
+	void update2() {
+		if(CURCURPOS) {
+			CURCURTIME += checked_range_cast<long>(Original_framedelay);
+
+			while(CURCURTIME > CURCURDELAY) {
+				CURCURTIME -= CURCURDELAY;
+				CURCURPOS++;
+			}
+		}
+
+		if(CURCURPOS > 7)
+			CURCURPOS = 0;
+	}
+	
+	TextureContainer * getCurrentTexture() {
+		TextureContainer * tc = scursor[CURCURPOS];
+		arx_assert(tc);
+		return tc;
+	}
+};
+CursorAnimatedHand cursorAnimatedHand = CursorAnimatedHand();
+
 
 
 void ARX_INTERFACE_RenderCursorInternal(bool flag) {
@@ -569,34 +620,12 @@ void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 					break;
 				}
 				case CURSOR_INTERACTION_ON:
-					CURCURTIME += checked_range_cast<long>(Original_framedelay);
-
-					if(CURCURPOS!=3) {
-						while(CURCURTIME > CURCURDELAY) {
-							CURCURTIME -= CURCURDELAY;
-							CURCURPOS++;
-						}
-					}
-
-					if(CURCURPOS > 7)
-						CURCURPOS = 0;
-
-					surf = scursor[CURCURPOS];
+					cursorAnimatedHand.update1();
+					surf = cursorAnimatedHand.getCurrentTexture();
 					break;
 				default:
-					if(CURCURPOS) {
-						CURCURTIME += checked_range_cast<long>(Original_framedelay);
-
-						while(CURCURTIME > CURCURDELAY) {
-							CURCURTIME -= CURCURDELAY;
-							CURCURPOS++;
-						}
-					}
-
-					if(CURCURPOS > 7)
-						CURCURPOS = 0;
-
-					surf = scursor[CURCURPOS];
+					cursorAnimatedHand.update2();
+					surf = cursorAnimatedHand.getCurrentTexture();
 					break;
 				}
 
@@ -697,18 +726,8 @@ void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 							ARX_INTERFACE_HALO_Draw(DRAGINTER, tc, tc2, pos.x, pos.y, 1.f, 1.f);
 						}
 					} else {
-						if(CURCURPOS != 0) {
-							CURCURTIME += checked_range_cast<long>(Original_framedelay);
-							while(CURCURTIME > CURCURDELAY) {
-								CURCURTIME -= CURCURDELAY;
-								CURCURPOS++;
-							}
-						}
-
-						if(CURCURPOS > 7)
-							CURCURPOS = 0;
-
-						TextureContainer * surf = scursor[CURCURPOS];
+						cursorAnimatedHand.update2();
+						TextureContainer * surf = cursorAnimatedHand.getCurrentTexture();
 
 						if(surf) {
 							EERIEDrawBitmap(Rectf(mousePos, surf->m_dwWidth, surf->m_dwHeight), 0.f, surf, Color::white);
@@ -723,7 +742,8 @@ void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 			if(TRUE_PLAYER_MOUSELOOK_ON && config.video.showCrosshair) {
 				if(!(player.Interface & (INTER_COMBATMODE | INTER_NOTE | INTER_MAP))) {
 
-					CURCURPOS = 0;
+					cursorAnimatedHand.reset();
+
 
 					TextureContainer * surf = pTCCrossHair ? pTCCrossHair : cursorTargetOff;
 
