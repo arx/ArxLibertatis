@@ -480,24 +480,22 @@ bool ARX_Menu_Render() {
 			pos.x = 0;
 			pos.y = 313 * g_sizeRatio.y + (g_size.height() - 313 * g_sizeRatio.y) * 0.70f;
 			
-			Vec2f size;
-			size.x = 100 * g_sizeRatio.x;
-			size.y = 100 * g_sizeRatio.y;
-
+			Vec2f size = g_sizeRatio;
+			size *= 100;
+			
 			Color color = Color::none;
 
 			//---------------------------------------------------------------------
 			// Button QUICK GENERATION
 			pos.x = (g_size.width() - (513 * g_sizeRatio.x)) * 0.5f;
 			
-			const Rect quickGenerateButtonMouseTestRect(
-				pos.x,
-				pos.y,
-				pos.x + size.x,
-				pos.y + size.y
+			const Rectf quickGenerateButtonMouseTestRect(
+				pos,
+				size.x,
+				size.y
 			);
 			
-			if(quickGenerateButtonMouseTestRect.contains(Vec2i(DANAEMouse))) {
+			if(quickGenerateButtonMouseTestRect.contains(Vec2f(DANAEMouse))) {
 				SpecialCursor = CURSOR_INTERACTION_ON;
 				FLYING_OVER = BUTTON_QUICK_GENERATION;
 
@@ -529,14 +527,13 @@ bool ARX_Menu_Render() {
 			// Button SKIN
 			pos.x = g_size.width() * 0.5f;
 			
-			const Rect skinButtonMouseTestRect(
-				pos.x,
-				pos.y,
-				pos.x + size.x,
-				pos.y + size.y
+			const Rectf skinButtonMouseTestRect(
+				pos,
+				size.x,
+				size.y
 			);
 			
-			if(skinButtonMouseTestRect.contains(Vec2i(DANAEMouse))) {
+			if(skinButtonMouseTestRect.contains(Vec2f(DANAEMouse))) {
 				SpecialCursor = CURSOR_INTERACTION_ON;
 				FLYING_OVER = BUTTON_SKIN;
 
@@ -563,14 +560,13 @@ bool ARX_Menu_Render() {
 			// Button DONE
 			pos.x = g_size.width() - (g_size.width() - 513 * g_sizeRatio.x) * 0.5f - 40 * g_sizeRatio.x;
 			
-			const Rect doneButtonMouseTestRect(
-				pos.x,
-				pos.y,
-				pos.x + size.x,
-				pos.y + size.y
+			const Rectf doneButtonMouseTestRect(
+				pos,
+				size.x,
+				size.y
 			);
 			
-			if(doneButtonMouseTestRect.contains(Vec2i(DANAEMouse))) {
+			if(doneButtonMouseTestRect.contains(Vec2f(DANAEMouse))) {
 				if(DONE)
 					SpecialCursor = CURSOR_INTERACTION_ON;
 
