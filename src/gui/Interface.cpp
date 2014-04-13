@@ -3480,76 +3480,64 @@ void ARX_INTERFACE_ManageOpenedBook()
 		else if (MouseInBookRect(97+211,64+178, 97+211+32, 64+178+32))
 			FLYING_OVER = WND_DAMAGE;
 
-		if (!((player.Attribute_Redistribute == 0) && (ARXmenu.currentmode != AMCM_NEWQUEST)))
-		{
+		if(!((player.Attribute_Redistribute == 0) && (ARXmenu.currentmode != AMCM_NEWQUEST))) {
 			// Main Player Attributes
-			if (CheckAttributeClick(379,95,&player.Attribute_Strength,		ITC.ic_strength))
-			{
-				FLYING_OVER=BOOK_STRENGTH;
+			if(CheckAttributeClick(379, 95, &player.Attribute_Strength, ITC.ic_strength)) {
+				FLYING_OVER = BOOK_STRENGTH;
 				SpecialCursor = CURSOR_REDIST;
 				lCursorRedistValue = player.Attribute_Redistribute;
 			}
 
-			if (CheckAttributeClick(428,95,&player.Attribute_Mind,			ITC.ic_mind))
-			{
-				FLYING_OVER=BOOK_MIND;
+			if(CheckAttributeClick(428, 95, &player.Attribute_Mind, ITC.ic_mind)) {
+				FLYING_OVER = BOOK_MIND;
 				SpecialCursor = CURSOR_REDIST;
 				lCursorRedistValue = player.Attribute_Redistribute;
 			}
 
-			if (CheckAttributeClick(477,95,&player.Attribute_Dexterity,		ITC.ic_dexterity))
-			{
-				FLYING_OVER=BOOK_DEXTERITY;
+			if(CheckAttributeClick(477, 95, &player.Attribute_Dexterity, ITC.ic_dexterity)) {
+				FLYING_OVER = BOOK_DEXTERITY;
 				SpecialCursor = CURSOR_REDIST;
 				lCursorRedistValue = player.Attribute_Redistribute;
 			}
 
-			if (CheckAttributeClick(526,95,&player.Attribute_Constitution,	ITC.ic_constitution))
-			{
-				FLYING_OVER=BOOK_CONSTITUTION;
+			if(CheckAttributeClick(526, 95, &player.Attribute_Constitution, ITC.ic_constitution)) {
+				FLYING_OVER = BOOK_CONSTITUTION;
 				SpecialCursor = CURSOR_REDIST;
 				lCursorRedistValue = player.Attribute_Redistribute;
 			}
 		}
 
-		if (!((player.Skill_Redistribute == 0) && (ARXmenu.currentmode != AMCM_NEWQUEST)))
-		{
-			if (CheckSkillClick(389,177,&player.Skill_Stealth,		ITC.ic_stealth,&player.Old_Skill_Stealth))
-			{
-				FLYING_OVER=BOOK_STEALTH;
+		if(!((player.Skill_Redistribute == 0) && (ARXmenu.currentmode != AMCM_NEWQUEST))) {
+			if (CheckSkillClick(389, 177, &player.Skill_Stealth, ITC.ic_stealth, &player.Old_Skill_Stealth)) {
+				FLYING_OVER = BOOK_STEALTH;
 				SpecialCursor = CURSOR_REDIST;
 				lCursorRedistValue = player.Skill_Redistribute;
 			}
 
-			if (CheckSkillClick(453,177,&player.Skill_Mecanism,		ITC.ic_mecanism,&player.Old_Skill_Mecanism))
-			{
-				FLYING_OVER=BOOK_MECANISM;
+			if(CheckSkillClick(453, 177, &player.Skill_Mecanism, ITC.ic_mecanism, &player.Old_Skill_Mecanism)) {
+				FLYING_OVER = BOOK_MECANISM;
 				SpecialCursor = CURSOR_REDIST;
 				lCursorRedistValue = player.Skill_Redistribute;
 			}
 
-			if (CheckSkillClick(516,177,&player.Skill_Intuition,	ITC.ic_intuition,&player.Old_Skill_Intuition))
-			{
-				FLYING_OVER=BOOK_INTUITION;
+			if(CheckSkillClick(516, 177, &player.Skill_Intuition, ITC.ic_intuition, &player.Old_Skill_Intuition)) {
+				FLYING_OVER = BOOK_INTUITION;
 				SpecialCursor = CURSOR_REDIST;
 				lCursorRedistValue = player.Skill_Redistribute;
 			}
 
-			if (CheckSkillClick(389,230,&player.Skill_Etheral_Link,	ITC.ic_etheral_link,&player.Old_Skill_Etheral_Link))
-			{
-				FLYING_OVER=BOOK_ETHERAL_LINK;
+			if(CheckSkillClick(389, 230, &player.Skill_Etheral_Link, ITC.ic_etheral_link, &player.Old_Skill_Etheral_Link)) {
+				FLYING_OVER = BOOK_ETHERAL_LINK;
 				SpecialCursor = CURSOR_REDIST;
 				lCursorRedistValue = player.Skill_Redistribute;
 			}
 
-			if (CheckSkillClick(453,230,&player.Skill_Object_Knowledge,ITC.ic_object_knowledge,&player.Old_Skill_Object_Knowledge))
-			{
-				FLYING_OVER=BOOK_OBJECT_KNOWLEDGE;
+			if(CheckSkillClick(453, 230, &player.Skill_Object_Knowledge, ITC.ic_object_knowledge, &player.Old_Skill_Object_Knowledge)) {
+				FLYING_OVER = BOOK_OBJECT_KNOWLEDGE;
 				SpecialCursor = CURSOR_REDIST;
 				lCursorRedistValue = player.Skill_Redistribute;
 
-				if ((BOOKBUTTON & 1) && !(LASTBOOKBUTTON & 1))
-				{
+				if((BOOKBUTTON & 1) && !(LASTBOOKBUTTON & 1)) {
 					ARX_INVENTORY_IdentifyAll();
 					ARX_EQUIPMENT_IdentifyAll();
 				}
@@ -3557,36 +3545,30 @@ void ARX_INTERFACE_ManageOpenedBook()
 				ARX_PLAYER_ComputePlayerFullStats();
 			}
 
-			if (CheckSkillClick(516,230,&player.Skill_Casting,		ITC.ic_casting,&player.Old_Skill_Casting))
-			{
-				FLYING_OVER=BOOK_CASTING;
+			if(CheckSkillClick(516, 230, &player.Skill_Casting, ITC.ic_casting, &player.Old_Skill_Casting)) {
+				FLYING_OVER = BOOK_CASTING;
 				SpecialCursor = CURSOR_REDIST;
 				lCursorRedistValue = player.Skill_Redistribute;
 			}
 
-			if (CheckSkillClick(389,284,&player.Skill_Close_Combat,	ITC.ic_close_combat,&player.Old_Skill_Close_Combat))
-			{
-				FLYING_OVER=BOOK_CLOSE_COMBAT;
+			if(CheckSkillClick(389, 284, &player.Skill_Close_Combat, ITC.ic_close_combat, &player.Old_Skill_Close_Combat)) {
+				FLYING_OVER = BOOK_CLOSE_COMBAT;
 				SpecialCursor = CURSOR_REDIST;
 				lCursorRedistValue = player.Skill_Redistribute;
 			}
 
-			if (CheckSkillClick(453,284,&player.Skill_Projectile,	ITC.ic_projectile,&player.Old_Skill_Projectile))
-			{
-				FLYING_OVER=BOOK_PROJECTILE;
+			if(CheckSkillClick(453, 284, &player.Skill_Projectile, ITC.ic_projectile, &player.Old_Skill_Projectile)) {
+				FLYING_OVER = BOOK_PROJECTILE;
 				SpecialCursor = CURSOR_REDIST;
 				lCursorRedistValue = player.Skill_Redistribute;
 			}
 
-			if (CheckSkillClick(516,284,&player.Skill_Defense,		ITC.ic_defense,&player.Old_Skill_Defense))
-			{
-				FLYING_OVER=BOOK_DEFENSE;
+			if(CheckSkillClick(516, 284, &player.Skill_Defense, ITC.ic_defense, &player.Old_Skill_Defense)) {
+				FLYING_OVER = BOOK_DEFENSE;
 				SpecialCursor = CURSOR_REDIST;
 				lCursorRedistValue = player.Skill_Redistribute;
 			}
-		}
-		else
-		{
+		} else {
 			//------------------------------------PRIMARY
 			if (MouseInBookRect(379,95, 379+32, 95+32))
 				FLYING_OVER=BOOK_STRENGTH;
