@@ -598,23 +598,17 @@ void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 					break;
 				case CURSOR_COMBINEON:
 					surf = cursorTargetOn;
-
-					if(surf)
-						mousePos.x -= 16.f;
-
+					arx_assert(surf);
+					
+					mousePos.x -= 16.f;
 					mousePos.y -= 16.f;
 					break;
 				case CURSOR_FIREBALLAIM: {
 					surf = cursorTargetOn;
-
-					Vec2i size;
-					if(surf) {
-						size = Vec2i(surf->m_dwWidth, surf->m_dwHeight);
-					} else {
-						ARX_DEAD_CODE();
-						size = Vec2i_ZERO;
-					}
-
+					arx_assert(surf);
+					
+					Vec2i size = Vec2i(surf->m_dwWidth, surf->m_dwHeight);
+					
 					mousePos.x = 320.f - size.x / 2.f;
 					mousePos.y = 280.f - size.y / 2.f;
 					break;
@@ -628,8 +622,9 @@ void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 					surf = cursorAnimatedHand.getCurrentTexture();
 					break;
 				}
-
-				if(surf) {
+				
+				arx_assert(surf);
+				
 					if(SpecialCursor == CURSOR_REDIST) {
 						EERIEDrawBitmap(Rectf(mousePos, surf->m_dwWidth * g_sizeRatio.x, surf->m_dwHeight * g_sizeRatio.y),
 										0.f, surf, Color::white);
@@ -644,8 +639,7 @@ void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 
 						EERIEDrawBitmap(Rectf(mousePos, surf->m_dwWidth, surf->m_dwHeight), 0.f, surf, Color::white);
 					}
-				}
-
+				
 				SpecialCursor = 0;
 			} else {
 				if(   !(player.Current_Movement & PLAYER_CROUCH)
