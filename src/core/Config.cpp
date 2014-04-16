@@ -77,7 +77,6 @@ const bool
 	autoReadyWeapon = false,
 	mouseLookToggle = true,
 	autoDescription = true,
-	linkMouseLookToUse = false,
 	forceToggle = false;
 
 ActionKey actions[NUM_ACTION_KEY] = {
@@ -173,8 +172,7 @@ const string
 	autoReadyWeapon = "auto_ready_weapon",
 	mouseLookToggle = "mouse_look_toggle",
 	mouseSensitivity = "mouse_sensitivity",
-	autoDescription = "auto_description",
-	linkMouseLookToUse = "link_mouse_look_to_use";
+	autoDescription = "auto_description";
 
 // Input key options
 const string actions[NUM_ACTION_KEY] = {
@@ -295,8 +293,6 @@ void Config::setDefaultActionKeys() {
 	for(size_t i = 0; i < NUM_ACTION_KEY; i++) {
 		actions[i] = Default::actions[i];
 	}
-	
-	config.input.linkMouseLookToUse = false;
 }
 
 bool Config::setActionKey(ControlAction actionId, int index, InputKeyId key) {
@@ -398,7 +394,6 @@ bool Config::save() {
 	writer.writeKey(Key::mouseLookToggle, input.mouseLookToggle);
 	writer.writeKey(Key::mouseSensitivity, input.mouseSensitivity);
 	writer.writeKey(Key::autoDescription, input.autoDescription);
-	writer.writeKey(Key::linkMouseLookToUse, input.linkMouseLookToUse);
 	
 	// key
 	writer.beginSection(Section::Key);
@@ -481,7 +476,6 @@ bool Config::init(const fs::path & file) {
 	input.mouseLookToggle = reader.getKey(Section::Input, Key::mouseLookToggle, Default::mouseLookToggle);
 	input.mouseSensitivity = reader.getKey(Section::Input, Key::mouseSensitivity, Default::mouseSensitivity);
 	input.autoDescription = reader.getKey(Section::Input, Key::autoDescription, Default::autoDescription);
-	input.linkMouseLookToUse = reader.getKey(Section::Input, Key::linkMouseLookToUse, Default::linkMouseLookToUse);
 	
 	// Get action key settings
 	for(size_t i = 0; i < NUM_ACTION_KEY; i++) {

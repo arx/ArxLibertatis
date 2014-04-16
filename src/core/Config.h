@@ -150,7 +150,6 @@ public:
 		bool mouseLookToggle;
 		bool autoDescription;
 		int mouseSensitivity;
-		bool linkMouseLookToUse;
 		
 	} input;
 	

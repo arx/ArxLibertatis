@@ -2224,66 +2224,7 @@ void ArxGame::manageKeyMouse() {
 		if((eMouseState == MOUSE_IN_WORLD) ||
 			((eMouseState == MOUSE_IN_BOOK) && !(g_cursorOverBook && (Book_Mode != BOOKMODE_MINIMAP)))
 		) {
-			if(config.input.mouseLookToggle) {
-				if(eMouseState != MOUSE_IN_NOTE) {
-					if((EERIEMouseButton & 2) && !(LastMouseClick & 2) && config.input.linkMouseLookToUse) {
-						if(!(FlyingOverIO && (FlyingOverIO->ioflags & IO_ITEM)) || DRAGINTER) {
-							if(!TRUE_PLAYER_MOUSELOOK_ON) {
-								if(!InInventoryPos(DANAEMouse)) {
-									if(!((player.Interface & INTER_MAP) && Book_Mode != BOOKMODE_MINIMAP)) {
-										TRUE_PLAYER_MOUSELOOK_ON = true;
-										EERIEMouseButton &= ~2;
-										SLID_START = float(arxtime);
-									}
-								}
-							} else {
-								if(!(config.input.autoReadyWeapon == false
-									 && config.input.mouseLookToggle
-									 && FlyingOverIO
-									 && (FlyingOverIO->ioflags & IO_ITEM))
-								) {
-									TRUE_PLAYER_MOUSELOOK_ON = false;
-									if(player.Interface & INTER_COMBATMODE && !(player.Interface & INTER_NOTE))
-										ARX_INTERFACE_Combat_Mode(0);
-								}
-							}
-						}
-					}
-				}
-			} else {
-				if(eMouseState != MOUSE_IN_NOTE) {
-					if((EERIEMouseButton & 2)
-					   && !(g_cursorOverBook && (Book_Mode != BOOKMODE_MINIMAP))
-					   && (!TRUE_PLAYER_MOUSELOOK_ON || SPECIAL_DRAW_WEAPON)
-					   && config.input.linkMouseLookToUse
-					) {
-						if(SPECIAL_DRAW_WEAPON) {
-							SPECIAL_DRAW_WEAPON = 0;
-						} else if(!InInventoryPos(DANAEMouse)) {
-							if(SPECIAL_DRAW_WEAPON) {
-								TRUE_PLAYER_MOUSELOOK_ON = false;
-								SPECIAL_DRAW_WEAPON = 0;
-							} else {
-								TRUE_PLAYER_MOUSELOOK_ON = true;
-								SLID_START = float(arxtime);
-							}
-						}
-					} else if(!(EERIEMouseButton & 2)
-							  && config.input.linkMouseLookToUse
-							  && (LastMouseClick & 2)
-					) {
-						if(!SPECIAL_DRAW_WEAPON) {
-							if(!GInput->actionPressed(CONTROLS_CUST_FREELOOK))
-								TRUE_PLAYER_MOUSELOOK_ON = false;
-
-							if((player.Interface & INTER_COMBATMODE) && !GInput->actionPressed(CONTROLS_CUST_FREELOOK))
-								ARX_INTERFACE_Combat_Mode(0);
-						}
-
-						EERIEMouseButton &= ~2;
-					}
-				}
-
+			if(!config.input.mouseLookToggle) {
 				if(TRUE_PLAYER_MOUSELOOK_ON && !(EERIEMouseButton & 2) && !SPECIAL_DRAW_WEAPON) {
 					if(!GInput->actionPressed(CONTROLS_CUST_FREELOOK))
 						TRUE_PLAYER_MOUSELOOK_ON = false;

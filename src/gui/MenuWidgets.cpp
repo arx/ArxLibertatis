@@ -2458,10 +2458,6 @@ bool CMenuCheckButton::OnMouseClick(int _iMouseButton) {
 		config.input.autoDescription = (iState) ? true : false;
 		break;
 	}
-	case BUTTON_MENUOPTIONS_CONTROLS_LINK: {
-		config.input.linkMouseLookToUse = (iState) ? true : false;
-		break;
-	}
 	case BUTTON_MENUOPTIONSVIDEO_BACK: {
 		if(pMenuSliderResol && pMenuSliderResol->iOldPos >= 0) {
 			pMenuSliderResol->iPos=pMenuSliderResol->iOldPos;
