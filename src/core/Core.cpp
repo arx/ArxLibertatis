@@ -738,6 +738,9 @@ void LoadSysTextures()
 	//INTERFACE LOADING
 	hudElementsInit();
 	
+	// Load book textures and text
+	ITC.init();
+	
 	// MENU2
 	TextureContainer::LoadUI("graph/interface/menus/menu_main_background", TextureContainer::NoColorKey);
 	TextureContainer::LoadUI("graph/interface/menus/menu_console_background");
