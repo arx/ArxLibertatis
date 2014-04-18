@@ -1274,18 +1274,18 @@ void ARX_PLAYER_LoadHeroAnimsAndMesh(){
 	        &&	(EERIE_OBJECT_GetGroup(io->obj, "belt") != -1))
 	{
 		io->_npcdata->ex_rotate = new EERIE_EXTRA_ROTATE();
-
-			io->_npcdata->ex_rotate->group_number[0] = (short)EERIE_OBJECT_GetGroup(io->obj, "head");
-			io->_npcdata->ex_rotate->group_number[1] = (short)EERIE_OBJECT_GetGroup(io->obj, "neck");
-			io->_npcdata->ex_rotate->group_number[2] = (short)EERIE_OBJECT_GetGroup(io->obj, "chest");
-			io->_npcdata->ex_rotate->group_number[3] = (short)EERIE_OBJECT_GetGroup(io->obj, "belt");
-
-			for (long n = 0; n < MAX_EXTRA_ROTATE; n++)
-			{
-				io->_npcdata->ex_rotate->group_rotate[n] = Anglef::ZERO;
-			}
-
-			io->_npcdata->ex_rotate->flags = 0;
+		
+		io->_npcdata->ex_rotate->group_number[0] = (short)EERIE_OBJECT_GetGroup(io->obj, "head");
+		io->_npcdata->ex_rotate->group_number[1] = (short)EERIE_OBJECT_GetGroup(io->obj, "neck");
+		io->_npcdata->ex_rotate->group_number[2] = (short)EERIE_OBJECT_GetGroup(io->obj, "chest");
+		io->_npcdata->ex_rotate->group_number[3] = (short)EERIE_OBJECT_GetGroup(io->obj, "belt");
+		
+		for (long n = 0; n < MAX_EXTRA_ROTATE; n++)
+		{
+			io->_npcdata->ex_rotate->group_rotate[n] = Anglef::ZERO;
+		}
+		
+		io->_npcdata->ex_rotate->flags = 0;
 	}
 
 	ARX_INTERACTIVE_RemoveGoreOnIO(entities.player());
