@@ -124,7 +124,7 @@ extern TextureContainer * Movable;
 
 long HERO_SHOW_1ST = 1;
 
-static bool IsCollidingInter(Entity * io, Vec3f * pos);
+static bool IsCollidingInter(Entity * io, const Vec3f & pos);
 static Entity * AddCamera(const res::path & classPath, EntityInstance instance = -1);
 static Entity * AddMarker(const res::path & classPath, EntityInstance instance = -1);
 
@@ -2129,12 +2129,12 @@ long IsCollidingAnyInter(float x, float y, float z, Vec3f * size) {
 			pos.y = y;
 			pos.z = z;
 
-			if(IsCollidingInter(io, &pos))
+			if(IsCollidingInter(io, pos))
 				return i;
 
 			pos.y += size->y;
 
-			if(IsCollidingInter(io, &pos))
+			if(IsCollidingInter(io, pos))
 				return i;
 
 		suitet:
@@ -2148,12 +2148,12 @@ long IsCollidingAnyInter(float x, float y, float z, Vec3f * size) {
 //*************************************************************************************
 // To upgrade to a more precise collision.
 //*************************************************************************************
-static bool IsCollidingInter(Entity * io, Vec3f * pos) {
+static bool IsCollidingInter(Entity * io, const Vec3f & pos) {
 	
 	if(!io || !io->obj)
 		return false;
 
-	if(closerThan(*pos, io->pos, 190.f)) {
+	if(closerThan(pos, io->pos, 190.f)) {
 		
 		vector<EERIE_VERTEX> & vlist = io->obj->vertexlist3;
 
@@ -2161,7 +2161,7 @@ static bool IsCollidingInter(Entity * io, Vec3f * pos) {
 			for(long i = 0; i < io->obj->nbgroups; i++) {
 				long idx = io->obj->grouplist[i].origin;
 
-				if(!fartherThan(*pos, vlist[idx].v, 50.f)) {
+				if(!fartherThan(pos, vlist[idx].v, 50.f)) {
 					return true;
 				}
 			}
@@ -2169,7 +2169,7 @@ static bool IsCollidingInter(Entity * io, Vec3f * pos) {
 			long nbv = io->obj->vertexlist3.size();
 			for(long i = 0; i < nbv; i++) {
 				if(i != io->obj->origin)
-					if(!fartherThan(*pos, vlist[i].v, 30.f)) {
+					if(!fartherThan(pos, vlist[i].v, 30.f)) {
 						return true;
 					}
 			}
