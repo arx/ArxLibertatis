@@ -55,7 +55,6 @@ class TextureContainer;
 
 struct MENU_DYNAMIC_DATA {
 	
-	TextureContainer * Background;
 	TextureContainer * BookBackground;
 	TextureContainer * pTexCredits;
 	float creditspos;
@@ -67,8 +66,12 @@ struct MENU_DYNAMIC_DATA {
 	std::string str_button_skin;
 	std::string str_button_done;
 	
-	MENU_DYNAMIC_DATA() : Background(NULL), BookBackground(NULL),
-	  pTexCredits(NULL), creditspos(0), creditstart(0) { }
+	MENU_DYNAMIC_DATA()
+		: BookBackground(NULL)
+		, pTexCredits(NULL)
+		, creditspos(0)
+		, creditstart(0)
+	{}
 	
 };
 

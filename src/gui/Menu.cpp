@@ -231,7 +231,6 @@ void ARX_Menu_Resources_Release(bool _bNoSound) {
 		return;
 	}
 	
-	delete ARXmenu.mda->Background;
 	delete ARXmenu.mda->BookBackground;
 	delete ARXmenu.mda, ARXmenu.mda = NULL;
 	
