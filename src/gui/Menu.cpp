@@ -126,11 +126,6 @@ long REFUSE_GAME_RETURN = 0;
 
 static long SP_HEAD = 0;
 
-//-----------------------------------------------------------------------------
-#define ARX_MENU_SIZE_Y 24
-
-
-
 void ARX_MENU_CLICKSOUND() {
 	ARX_SOUND_PlayMenu(SND_MENU_CLICK);
 }
