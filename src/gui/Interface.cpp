@@ -4152,7 +4152,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 					todraw->bbox2D.max = todraw->bbox2D.min + Vec2f(tc->size());
 					
 					todraw->bbox2D.min = (todraw->bbox2D.min + BOOKDEC) * g_sizeRatio;
-					todraw->bbox2D.min = (todraw->bbox2D.min + BOOKDEC) * g_sizeRatio;
+					todraw->bbox2D.max = (todraw->bbox2D.max + BOOKDEC) * g_sizeRatio;
 
 					todraw->ioflags |= IO_ICONIC;
 				}
