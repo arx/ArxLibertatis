@@ -173,10 +173,6 @@ extern Vec2s DANAEMouse;
 extern short sActiveInventory;
 extern unsigned long WILLADDSPEECHTIME;
 
-extern float ARXTimeMenu;
-extern float ARXOldTimeMenu;
-extern float ARXDiffTimeMenu;
-
 extern unsigned char ucFlick;
 
 extern TextManager *pTextManageFlyingOver;
@@ -2964,17 +2960,6 @@ void ARX_INTERFACE_ManageOpenedBook()
 {
 	GRenderer->SetRenderState(Renderer::Fog, false);
 	
-	if(!ITC.isInitialized) {
-		ITC.isInitialized = true;
-		ITC.init();
-		
-		ANIM_Set(&player.bookAnimation[0], herowaitbook);
-		player.bookAnimation[0].flags |= EA_LOOP;
-		
-		ARXOldTimeMenu = ARXTimeMenu = arxtime.get_updated();
-		ARXDiffTimeMenu = 0;
-	}
-
 	BOOKDEC.x = 0;
 	BOOKDEC.y = 0;
 	

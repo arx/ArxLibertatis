@@ -71,7 +71,6 @@ class INTERFACE_TC
 {
 public:
 	INTERFACE_TC()
-		: isInitialized(false)
 	{}
 	
 	void Reset();
@@ -79,8 +78,6 @@ public:
 	void init();
 
 public:
-	bool isInitialized;
-	
 	TextureContainer * playerbook;
 	TextureContainer * ic_casting;
 	TextureContainer * ic_close_combat;

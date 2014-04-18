@@ -99,8 +99,6 @@ extern long BOOKBUTTON;
 extern long OLD_FLYING_OVER;
 extern long FLYING_OVER;
 extern long BOOKZOOM;
-extern float ARXTimeMenu;
-extern float ARXOldTimeMenu;
 extern bool bFadeInOut;
 extern bool bFade;
 extern int iFadeAction;
@@ -111,7 +109,6 @@ extern char QUICK_MOD;
 
 extern float ARXTimeMenu;
 extern float ARXOldTimeMenu;
-extern float ARXDiffTimeMenu;
 
 extern long	REQUEST_SPEECH_SKIP;
 extern bool TRUE_PLAYER_MOUSELOOK_ON;
@@ -292,6 +289,9 @@ void ARX_MENU_Clicked_QUIT_GAME() {
 
 void ARX_MENU_Launch(bool allowResume) {
 	
+	ARXTimeMenu = arxtime.get_updated();
+	ARXOldTimeMenu = ARXTimeMenu;
+	
 	REFUSE_GAME_RETURN = !allowResume;
 
 	arxtime.pause();
@@ -325,7 +325,7 @@ void ARX_Menu_Manage() {
 					GRenderer->getSnapshot(savegame_thumbnail, 160, 100);
 
 					arxtime.pause();
-					ARXTimeMenu=ARXOldTimeMenu=arxtime.get_updated();
+
 					ARX_MENU_Launch(true);
 					bFadeInOut=false;	//fade out
 					bFade=true;			//active le fade
@@ -407,20 +407,7 @@ bool ARX_Menu_Render() {
 	//-------------------------------------------------------------------------
 
 	if(ARXmenu.currentmode == AMCM_NEWQUEST && ARXmenu.mda) {
-		if(!ITC.isInitialized) {
-			ITC.isInitialized = true;
-			ARX_Menu_Resources_Release(false);
-			ARX_Menu_Resources_Create();
-			
-			ITC.init();
-			
-			ANIM_Set(&player.bookAnimation[0], herowaitbook);
-			player.bookAnimation[0].flags |= EA_LOOP;
-			
-			ARXOldTimeMenu = ARXTimeMenu = arxtime.get_updated();
-			ARXDiffTimeMenu = 0;
-		}
-
+		
 		GRenderer->SetRenderState(Renderer::Fog, false);
 		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 

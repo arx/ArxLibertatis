@@ -182,8 +182,7 @@ extern float	InventoryX;
 extern long		DONT_WANT_PLAYER_INZONE;
 extern long		TOTPDL;
 extern long		COLLIDED_CLIMB_POLY;
-extern float ARXTimeMenu;
-extern float ARXOldTimeMenu;
+
 extern bool		PLAYER_MOUSELOOK_ON;
 extern bool bFadeInOut;
 extern 	bool bFade;			//active le fade
