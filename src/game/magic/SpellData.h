@@ -17,8 +17,8 @@
  * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ARX_GAME_MAGIC_SPELLGUI_H
-#define ARX_GAME_MAGIC_SPELLGUI_H
+#ifndef ARX_GAME_MAGIC_SPELLDATA_H
+#define ARX_GAME_MAGIC_SPELLDATA_H
 
 #include <string>
 
@@ -43,4 +43,4 @@ extern SPELL_ICON spellicons[SPELL_TYPES_COUNT];
 
 void spellDataInit();
 
-#endif
+#endif // ARX_GAME_MAGIC_SPELLDATA_H

@@ -17,8 +17,8 @@
  * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ARX_GAME_GUI_CINEMATICBORDER_H
-#define ARX_GAME_GUI_CINEMATICBORDER_H
+#ifndef ARX_GUI_CINEMATICBORDER_H
+#define ARX_GUI_CINEMATICBORDER_H
 
 extern float CINEMA_DECAL;
 
@@ -45,4 +45,4 @@ private:
 
 extern CinematicBorder cinematicBorder;
 
-#endif // ARX_GAME_GUI_CINEMATICBORDER_H
+#endif // ARX_GUI_CINEMATICBORDER_H
