@@ -79,7 +79,14 @@ public:
 	bool IsValid() const { return mData != NULL; }
 	bool IsCompressed() const { return Image::IsCompressed( mFormat ); }
 	bool IsVolume() const { return mDepth > 1;  }
-	bool HasAlpha() const { return mFormat == Format_A8 || mFormat == Format_L8A8 || mFormat == Format_R8G8B8A8 || mFormat == Format_B8G8R8A8 || mFormat == Format_DXT3 || mFormat == Format_DXT5; }
+	bool HasAlpha() const {
+		return mFormat == Format_A8
+		    || mFormat == Format_L8A8
+		    || mFormat == Format_R8G8B8A8
+		    || mFormat == Format_B8G8R8A8
+		    || mFormat == Format_DXT3
+		    || mFormat == Format_DXT5;
+	}
 	
 	//! Access to internal data.
 	inline const unsigned char * GetData() const { return mData; }
