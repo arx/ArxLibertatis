@@ -2790,7 +2790,8 @@ void ComputePortalVertexBuffer() {
 		// Count vertices / indices for each texture and blend types
 		int vertexCount = 0, indexCount = 0, ignored = 0, hidden = 0, notex = 0;
 		for(int j = 0; j < room->nb_polys; j++) {
-			int x = room->epdata[j].p.x, y = room->epdata[j].p.y;
+			int x = room->epdata[j].p.x;
+			int y = room->epdata[j].p.y;
 			EERIE_BKG_INFO & cell = ACTIVEBKG->Backg[x + y * ACTIVEBKG->Xsize];
 			EERIEPOLY & poly = cell.polydata[room->epdata[j].idx];
 			
@@ -2896,7 +2897,8 @@ void ComputePortalVertexBuffer() {
 			
 			// Upload all vertices for this texture and remember the indices
 			for(int j = 0; j < room->nb_polys; j++) {
-				int x = room->epdata[j].p.x, y = room->epdata[j].p.y;
+				int x = room->epdata[j].p.x;
+				int y = room->epdata[j].p.y;
 				EERIE_BKG_INFO & cell = ACTIVEBKG->Backg[x + y * ACTIVEBKG->Xsize];
 				EERIEPOLY & poly = cell.polydata[room->epdata[j].idx];
 				
