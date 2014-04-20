@@ -700,27 +700,20 @@ void CreatePlane(EERIE_FRUSTRUM & frustrum, long numplane, const Vec3f & orgn, c
 {
 	EERIE_FRUSTRUM_PLANE & plane = frustrum.plane[numplane];
 	
-	float epnlen;
-	
 	Vec3f A = pt1 - orgn;
 	Vec3f B = pt2 - orgn;
 	
-	plane.a=A.y*B.z-A.z*B.y;
-	plane.b=A.z*B.x-A.x*B.z;
-	plane.c=A.x*B.y-A.y*B.x;
-
-	epnlen = (float)sqrt(	plane.a * plane.a
-						+	plane.b * plane.b
-						+	plane.c * plane.c	);
-	epnlen=1.f/epnlen;
-	plane.a*=epnlen;
-	plane.b*=epnlen;
-	plane.c*=epnlen;
-	plane.d=-(	orgn.x * plane.a +
-									orgn.y * plane.b +
-									orgn.z * plane.c		);
-
+	plane.a = A.y * B.z - A.z * B.y;
+	plane.b = A.z * B.x - A.x * B.z;
+	plane.c = A.x * B.y - A.y * B.x;
 	
+	float epnlen = (float)sqrt(plane.a * plane.a + plane.b * plane.b + plane.c * plane.c);
+	epnlen = 1.f / epnlen;
+	
+	plane.a *= epnlen;
+	plane.b *= epnlen;
+	plane.c *= epnlen;
+	plane.d = -(orgn.x * plane.a + orgn.y * plane.b + orgn.z * plane.c);
 }
 
 void CreateFrustrum(EERIE_FRUSTRUM & frustrum, const Vec3f & pos, const EERIEPOLY & ep, bool cull) {
