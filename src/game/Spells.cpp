@@ -4625,7 +4625,7 @@ void ARX_SPELLS_Update_Update(size_t i, unsigned long tim) {
 					el->extras=0;
 				}
 				
-				if(VisibleSphere(pf->pos.x, pf->pos.y - 120.f, pf->pos.z, 350.f)) {
+				if(VisibleSphere(pf->pos - Vec3f(0.f, 120.f, 0.f), 350.f)) {
 					
 					pCSpellFX->Render();
 					float fDiff = framedelay / 8.f;

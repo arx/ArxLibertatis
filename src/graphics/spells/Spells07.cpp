@@ -981,11 +981,11 @@ void CIceField::Update(unsigned long _ulTime)
 	ulCurrentTime += _ulTime;
 }
 
-extern bool VisibleSphere(float x, float y, float z, float radius);
+extern bool VisibleSphere(const Vec3f & pos, float radius);
 
 void CIceField::Render()
 {
-	if(!VisibleSphere(eSrc.x, eSrc.y - 120.f, eSrc.z, 350.f))
+	if(!VisibleSphere(eSrc - Vec3f(0.f, 120.f, 0.f), 350.f))
 		return;
 
 	int i = 0;

@@ -273,9 +273,8 @@ bool FrustrumsClipSphere(const EERIE_FRUSTRUM_DATA & frustrums, const EERIE_SPHE
 	return true;
 }
 
-bool VisibleSphere(float x, float y, float z, float radius) {
+bool VisibleSphere(const Vec3f & pos, float radius) {
 	
-	Vec3f pos(x, y, z);
 	if(fartherThan(pos, ACTIVECAM->orgTrans.pos, ACTIVECAM->cdepth*0.5f + radius))
 		return false;
 
