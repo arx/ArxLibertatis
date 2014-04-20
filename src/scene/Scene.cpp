@@ -698,18 +698,21 @@ void Frustrum_Set(EERIE_FRUSTRUM * fr,long plane,float a,float b,float c,float d
 
 void CreatePlane(EERIE_FRUSTRUM & frustrum, long numplane, const Vec3f & orgn, const Vec3f & pt1, const Vec3f & pt2)
 {
-	float Ax, Ay, Az, Bx, By, Bz, epnlen;
-	Ax=pt1.x-orgn.x;
-	Ay=pt1.y-orgn.y;
-	Az=pt1.z-orgn.z;
+	Vec3f A;
+	Vec3f B;
+	float epnlen;
+	
+	A.x=pt1.x-orgn.x;
+	A.y=pt1.y-orgn.y;
+	A.z=pt1.z-orgn.z;
 
-	Bx=pt2.x-orgn.x;
-	By=pt2.y-orgn.y;
-	Bz=pt2.z-orgn.z;
+	B.x=pt2.x-orgn.x;
+	B.y=pt2.y-orgn.y;
+	B.z=pt2.z-orgn.z;
 
-	frustrum.plane[numplane].a=Ay*Bz-Az*By;
-	frustrum.plane[numplane].b=Az*Bx-Ax*Bz;
-	frustrum.plane[numplane].c=Ax*By-Ay*Bx;
+	frustrum.plane[numplane].a=A.y*B.z-A.z*B.y;
+	frustrum.plane[numplane].b=A.z*B.x-A.x*B.z;
+	frustrum.plane[numplane].c=A.x*B.y-A.y*B.x;
 
 	epnlen = (float)sqrt(	frustrum.plane[numplane].a * frustrum.plane[numplane].a
 						+	frustrum.plane[numplane].b * frustrum.plane[numplane].b
