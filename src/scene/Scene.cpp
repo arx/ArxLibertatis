@@ -698,25 +698,27 @@ void Frustrum_Set(EERIE_FRUSTRUM * fr,long plane,float a,float b,float c,float d
 
 void CreatePlane(EERIE_FRUSTRUM & frustrum, long numplane, const Vec3f & orgn, const Vec3f & pt1, const Vec3f & pt2)
 {
+	EERIE_FRUSTRUM_PLANE & plane = frustrum.plane[numplane];
+	
 	float epnlen;
 	
 	Vec3f A = pt1 - orgn;
 	Vec3f B = pt2 - orgn;
 	
-	frustrum.plane[numplane].a=A.y*B.z-A.z*B.y;
-	frustrum.plane[numplane].b=A.z*B.x-A.x*B.z;
-	frustrum.plane[numplane].c=A.x*B.y-A.y*B.x;
+	plane.a=A.y*B.z-A.z*B.y;
+	plane.b=A.z*B.x-A.x*B.z;
+	plane.c=A.x*B.y-A.y*B.x;
 
-	epnlen = (float)sqrt(	frustrum.plane[numplane].a * frustrum.plane[numplane].a
-						+	frustrum.plane[numplane].b * frustrum.plane[numplane].b
-						+	frustrum.plane[numplane].c * frustrum.plane[numplane].c	);
+	epnlen = (float)sqrt(	plane.a * plane.a
+						+	plane.b * plane.b
+						+	plane.c * plane.c	);
 	epnlen=1.f/epnlen;
-	frustrum.plane[numplane].a*=epnlen;
-	frustrum.plane[numplane].b*=epnlen;
-	frustrum.plane[numplane].c*=epnlen;
-	frustrum.plane[numplane].d=-(	orgn.x * frustrum.plane[numplane].a +
-									orgn.y * frustrum.plane[numplane].b +
-									orgn.z * frustrum.plane[numplane].c		);
+	plane.a*=epnlen;
+	plane.b*=epnlen;
+	plane.c*=epnlen;
+	plane.d=-(	orgn.x * plane.a +
+									orgn.y * plane.b +
+									orgn.z * plane.c		);
 
 	
 }
