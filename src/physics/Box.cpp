@@ -590,7 +590,7 @@ void EERIE_PHYSICS_BOX_Release(EERIE_3DOBJ * obj) {
 	free(obj->pbox->vert);
 	obj->pbox->vert = NULL;
 
-	free(obj->pbox);
+	delete obj->pbox;
 	obj->pbox = NULL;
 }
 
@@ -604,9 +604,8 @@ void EERIE_PHYSICS_BOX_Create(EERIE_3DOBJ * obj)
 
 	if (obj->vertexlist.empty()) return;
 
-	obj->pbox =	(PHYSICS_BOX_DATA *) malloc(sizeof(PHYSICS_BOX_DATA));
-	memset(obj->pbox, 0, sizeof(PHYSICS_BOX_DATA));
-
+	obj->pbox = new PHYSICS_BOX_DATA();
+	
 	obj->pbox->nb_physvert = 15;
 	obj->pbox->stopcount = 0;
 

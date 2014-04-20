@@ -1100,8 +1100,9 @@ Entity * CloneIOItem(Entity * src) {
 	dest->locname = src->locname;
 	
 	if(dest->obj->pbox == NULL && src->obj->pbox != NULL) {
-		dest->obj->pbox = (PHYSICS_BOX_DATA *)malloc(sizeof(PHYSICS_BOX_DATA));
-		memcpy(dest->obj->pbox, src->obj->pbox, sizeof(PHYSICS_BOX_DATA));
+		dest->obj->pbox = new PHYSICS_BOX_DATA();
+		*dest->obj->pbox = *src->obj->pbox;
+		
 		dest->obj->pbox->vert = (PHYSVERT *)malloc(sizeof(PHYSVERT)
 		                                           * src->obj->pbox->nb_physvert);
 		memcpy(dest->obj->pbox->vert, src->obj->pbox->vert,

@@ -241,6 +241,15 @@ struct PHYSICS_BOX_DATA
 	short	stopcount;
 	float	radius; //radius around vert[0].pos for spherical collision
 	float	storedtiming;
+	
+	PHYSICS_BOX_DATA()
+		: vert(NULL)
+		, nb_physvert(0)
+		, active(0)
+		, stopcount(0)
+		, radius(0.f)
+		, storedtiming(0.f)
+	{}
 };
 
 struct EERIE_ACTIONLIST {
