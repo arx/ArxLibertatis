@@ -1158,7 +1158,7 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num, const EERIE_FRUSTRU
 				}
 			} else {
 				if(!(ep->type & POLY_TRANS)) {
-					ApplyTileLights(ep, pEPDATA->p.x, pEPDATA->p.y);
+					ApplyTileLights(ep, pEPDATA->p);
 
 					pMyVertexCurr[ep->uslInd[0]].color = ep->tv[0].color;
 					pMyVertexCurr[ep->uslInd[1]].color = ep->tv[1].color;
@@ -1184,7 +1184,7 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num, const EERIE_FRUSTRU
 					continue;
 				}
 
-				ApplyTileLights(ep, pEPDATA->p.x, pEPDATA->p.y);
+				ApplyTileLights(ep, pEPDATA->p);
 
 				for(int k = 0; k < to; k++) {
 					long lr=(ep->tv[k].color>>16) & 255;

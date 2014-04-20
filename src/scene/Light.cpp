@@ -597,7 +597,7 @@ float GetColorz(const Vec3f &pos) {
 		float div = (1.0f / to);
 
 		EP_DATA & epdata = portals->room[ep->room].epdata[0];
-		ApplyTileLights(ep, epdata.p.x, epdata.p.y);
+		ApplyTileLights(ep, epdata.p);
 
 		for(long i = 0; i < to; i++) {
 			Color col = Color::fromBGR(ep->tv[i].color);
@@ -670,7 +670,7 @@ ColorBGRA ApplyLight(const glm::quat * quat, const Vec3f & position, const Vec3f
 	return (0xFF000000L | (ir << 16) | (ig << 8) | (ib));
 }
 
-void ApplyTileLights(EERIEPOLY * ep, short x, short y)
+void ApplyTileLights(EERIEPOLY * ep, const Vec2s & pos)
 {
 
 	Color3f lightInfraFactor = Color3f::white;
@@ -678,7 +678,7 @@ void ApplyTileLights(EERIEPOLY * ep, short x, short y)
 		lightInfraFactor.r = 4.f;
 	}
 
-	TILE_LIGHTS * tls = &tilelights[x][y];
+	TILE_LIGHTS * tls = &tilelights[pos.x][pos.y];
 	size_t nbvert = (ep->type & POLY_QUAD) ? 4 : 3;
 
 	for(size_t j = 0; j < nbvert; j++) {

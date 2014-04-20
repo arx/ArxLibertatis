@@ -164,7 +164,7 @@ void ClearTileLights();
 
 float GetColorz(const Vec3f &pos);
 ColorBGRA ApplyLight(const glm::quat * quat, const Vec3f & position, const Vec3f & normal, const ColorMod & colorMod, float materialDiffuse = 1.f);
-void ApplyTileLights(EERIEPOLY * ep, short x, short y);
+void ApplyTileLights(EERIEPOLY * ep, const Vec2s & pos);
 
 void EERIERemovePrecalcLights();
 
