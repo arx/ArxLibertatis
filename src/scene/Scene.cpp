@@ -696,46 +696,46 @@ void Frustrum_Set(EERIE_FRUSTRUM * fr,long plane,float a,float b,float c,float d
 	fr->plane[plane].d=d;
 }
 
-void CreatePlane(EERIE_FRUSTRUM * frustrum,long numplane,Vec3f * orgn,Vec3f * pt1,Vec3f * pt2)
+void CreatePlane(EERIE_FRUSTRUM & frustrum, long numplane, const Vec3f & orgn, const Vec3f & pt1, const Vec3f & pt2)
 {
 	float Ax, Ay, Az, Bx, By, Bz, epnlen;
-	Ax=pt1->x-orgn->x;
-	Ay=pt1->y-orgn->y;
-	Az=pt1->z-orgn->z;
+	Ax=pt1.x-orgn.x;
+	Ay=pt1.y-orgn.y;
+	Az=pt1.z-orgn.z;
 
-	Bx=pt2->x-orgn->x;
-	By=pt2->y-orgn->y;
-	Bz=pt2->z-orgn->z;
+	Bx=pt2.x-orgn.x;
+	By=pt2.y-orgn.y;
+	Bz=pt2.z-orgn.z;
 
-	frustrum->plane[numplane].a=Ay*Bz-Az*By;
-	frustrum->plane[numplane].b=Az*Bx-Ax*Bz;
-	frustrum->plane[numplane].c=Ax*By-Ay*Bx;
+	frustrum.plane[numplane].a=Ay*Bz-Az*By;
+	frustrum.plane[numplane].b=Az*Bx-Ax*Bz;
+	frustrum.plane[numplane].c=Ax*By-Ay*Bx;
 
-	epnlen = (float)sqrt(	frustrum->plane[numplane].a * frustrum->plane[numplane].a
-						+	frustrum->plane[numplane].b * frustrum->plane[numplane].b
-						+	frustrum->plane[numplane].c * frustrum->plane[numplane].c	);
+	epnlen = (float)sqrt(	frustrum.plane[numplane].a * frustrum.plane[numplane].a
+						+	frustrum.plane[numplane].b * frustrum.plane[numplane].b
+						+	frustrum.plane[numplane].c * frustrum.plane[numplane].c	);
 	epnlen=1.f/epnlen;
-	frustrum->plane[numplane].a*=epnlen;
-	frustrum->plane[numplane].b*=epnlen;
-	frustrum->plane[numplane].c*=epnlen;
-	frustrum->plane[numplane].d=-(	orgn->x * frustrum->plane[numplane].a +
-									orgn->y * frustrum->plane[numplane].b +
-									orgn->z * frustrum->plane[numplane].c		);
+	frustrum.plane[numplane].a*=epnlen;
+	frustrum.plane[numplane].b*=epnlen;
+	frustrum.plane[numplane].c*=epnlen;
+	frustrum.plane[numplane].d=-(	orgn.x * frustrum.plane[numplane].a +
+									orgn.y * frustrum.plane[numplane].b +
+									orgn.z * frustrum.plane[numplane].c		);
 
 	
 }
 
-void CreateFrustrum(EERIE_FRUSTRUM *frustrum, Vec3f * pos, EERIEPOLY *ep, bool cull) {
+void CreateFrustrum(EERIE_FRUSTRUM & frustrum, const Vec3f & pos, const EERIEPOLY & ep, bool cull) {
 	if(cull) {
-		CreatePlane(frustrum, 0, pos, &ep->v[0].p, &ep->v[1].p);
-		CreatePlane(frustrum, 1, pos, &ep->v[3].p, &ep->v[2].p);
-		CreatePlane(frustrum, 2, pos, &ep->v[1].p, &ep->v[3].p);
-		CreatePlane(frustrum, 3, pos, &ep->v[2].p, &ep->v[0].p);
+		CreatePlane(frustrum, 0, pos, ep.v[0].p, ep.v[1].p);
+		CreatePlane(frustrum, 1, pos, ep.v[3].p, ep.v[2].p);
+		CreatePlane(frustrum, 2, pos, ep.v[1].p, ep.v[3].p);
+		CreatePlane(frustrum, 3, pos, ep.v[2].p, ep.v[0].p);
 	} else {
-		CreatePlane(frustrum, 0, pos, &ep->v[1].p, &ep->v[0].p);
-		CreatePlane(frustrum, 1, pos, &ep->v[2].p, &ep->v[3].p);
-		CreatePlane(frustrum, 2, pos, &ep->v[3].p, &ep->v[1].p);
-		CreatePlane(frustrum, 3, pos, &ep->v[0].p, &ep->v[2].p);
+		CreatePlane(frustrum, 0, pos, ep.v[1].p, ep.v[0].p);
+		CreatePlane(frustrum, 1, pos, ep.v[2].p, ep.v[3].p);
+		CreatePlane(frustrum, 2, pos, ep.v[3].p, ep.v[1].p);
+		CreatePlane(frustrum, 3, pos, ep.v[0].p, ep.v[2].p);
 	}
 }
 
@@ -1394,7 +1394,7 @@ void ARX_PORTALS_Frustrum_ComputeRoom(long room_num, const EERIE_FRUSTRUM & frus
 		bool Cull = !(fRes<0.f);
 		
 		EERIE_FRUSTRUM fd;
-		CreateFrustrum(&fd, &ACTIVECAM->orgTrans.pos, epp, Cull);
+		CreateFrustrum(fd, ACTIVECAM->orgTrans.pos, *epp, Cull);
 
 		long roomToCompute = 0;
 		bool computeRoom = false;
