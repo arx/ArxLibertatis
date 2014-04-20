@@ -597,7 +597,7 @@ float GetColorz(const Vec3f &pos) {
 		float div = (1.0f / to);
 
 		EP_DATA & epdata = portals->room[ep->room].epdata[0];
-		ApplyTileLights(ep, epdata.px, epdata.py);
+		ApplyTileLights(ep, epdata.p.x, epdata.p.y);
 
 		for(long i = 0; i < to; i++) {
 			Color col = Color::fromBGR(ep->tv[i].color);

@@ -163,16 +163,16 @@ struct FAST_EP_DATA {
 	
 	operator EP_DATA() const {
 		EP_DATA b;
-		b.px = px;
-		b.py = py;
+		b.p.x = px;
+		b.p.y = py;
 		b.idx = idx;
 		b.padd = padd;
 		return b;
 	}
 	
 	FAST_EP_DATA & operator=(const EP_DATA & a) {
-		px = a.px;
-		py = a.py;
+		px = a.p.x;
+		py = a.p.y;
 		idx = a.idx;
 		padd = a.padd;
 		return *this;

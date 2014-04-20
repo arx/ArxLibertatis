@@ -1066,13 +1066,13 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num, const EERIE_FRUSTRU
 	EP_DATA *pEPDATA = &room.epdata[0];
 
 	for(long lll=0; lll<room.nb_polys; lll++, pEPDATA++) {
-		FAST_BKG_DATA *feg = &ACTIVEBKG->fastdata[pEPDATA->px][pEPDATA->py];
+		FAST_BKG_DATA *feg = &ACTIVEBKG->fastdata[pEPDATA->p.x][pEPDATA->p.y];
 
 		if(!feg->treat) {
-			short ix = std::max(pEPDATA->px - 1, 0);
-			short ax = std::min(pEPDATA->px + 1, ACTIVEBKG->Xsize - 1);
-			short iz = std::max(pEPDATA->py - 1, 0);
-			short az = std::min(pEPDATA->py + 1, ACTIVEBKG->Zsize - 1);
+			short ix = std::max(pEPDATA->p.x - 1, 0);
+			short ax = std::min(pEPDATA->p.x + 1, ACTIVEBKG->Xsize - 1);
+			short iz = std::max(pEPDATA->p.y - 1, 0);
+			short az = std::min(pEPDATA->p.y + 1, ACTIVEBKG->Zsize - 1);
 
 			for(short nz=iz; nz<=az; nz++)
 			for(short nx=ix; nx<=ax; nx++) {
@@ -1158,7 +1158,7 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num, const EERIE_FRUSTRU
 				}
 			} else {
 				if(!(ep->type & POLY_TRANS)) {
-					ApplyTileLights(ep, pEPDATA->px, pEPDATA->py);
+					ApplyTileLights(ep, pEPDATA->p.x, pEPDATA->p.y);
 
 					pMyVertexCurr[ep->uslInd[0]].color = ep->tv[0].color;
 					pMyVertexCurr[ep->uslInd[1]].color = ep->tv[1].color;
@@ -1184,7 +1184,7 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num, const EERIE_FRUSTRU
 					continue;
 				}
 
-				ApplyTileLights(ep, pEPDATA->px, pEPDATA->py);
+				ApplyTileLights(ep, pEPDATA->p.x, pEPDATA->p.y);
 
 				for(int k = 0; k < to; k++) {
 					long lr=(ep->tv[k].color>>16) & 255;
