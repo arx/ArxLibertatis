@@ -3367,23 +3367,25 @@ void ARX_NPC_SpawnAudibleSound(const Vec3f & pos, Entity * source, const float f
 
 
 	for(size_t i = 0; i < entities.size(); i++) {
-		if ((entities[i])
-		        &&	(entities[i]->ioflags & IO_NPC)
-		        &&	(entities[i]->gameFlags & GFLAG_ISINTREATZONE)
-		        &&	(entities[i] != source)
-		        &&	((entities[i]->show == SHOW_FLAG_IN_SCENE)
-		             ||	(entities[i]->show == SHOW_FLAG_HIDDEN))
-		        &&	(entities[i]->_npcdata->life > 0.f)
+		Entity * entity = entities[i];
+		
+		if ((entity)
+		        &&	(entity->ioflags & IO_NPC)
+		        &&	(entity->gameFlags & GFLAG_ISINTREATZONE)
+		        &&	(entity != source)
+		        &&	((entity->show == SHOW_FLAG_IN_SCENE)
+		             ||	(entity->show == SHOW_FLAG_HIDDEN))
+		        &&	(entity->_npcdata->life > 0.f)
 		   )
 		{
-			float distance = fdist(pos, entities[i]->pos);
+			float distance = fdist(pos, entity->pos);
 
 			if(distance < max_distance) {
-				if(entities[i]->room_flags & 1)
-					UpdateIORoom(entities[i]);
+				if(entity->room_flags & 1)
+					UpdateIORoom(entity);
 
-				if(Source_Room > -1 && entities[i]->room > -1) {
-					float fdist = SP_GetRoomDist(pos, entities[i]->pos, Source_Room, entities[i]->room);
+				if(Source_Room > -1 && entity->room > -1) {
+					float fdist = SP_GetRoomDist(pos, entity->pos, Source_Room, entity->room);
 
 					if(fdist < max_distance * 1.5f) {
 						long ldistance = fdist;
@@ -3391,7 +3393,7 @@ void ARX_NPC_SpawnAudibleSound(const Vec3f & pos, Entity * source, const float f
 
 						sprintf(temp, "%ld", ldistance);
 
-						SendIOScriptEvent(entities[i], SM_HEAR, temp);
+						SendIOScriptEvent(entity, SM_HEAR, temp);
 					}
 				} else {
 					long ldistance = distance;
@@ -3399,7 +3401,7 @@ void ARX_NPC_SpawnAudibleSound(const Vec3f & pos, Entity * source, const float f
 
 					sprintf(temp, "%ld", ldistance);
 
-					SendIOScriptEvent(entities[i], SM_HEAR, temp);
+					SendIOScriptEvent(entity, SM_HEAR, temp);
 				}
 			}
 		}
