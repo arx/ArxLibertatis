@@ -3351,33 +3351,31 @@ void ARX_NPC_SpawnAudibleSound(const Vec3f & pos, Entity * source, const float f
 {
 	float max_distance;
 
-	if (source == entities.player())
+	if(source == entities.player()) {
 		max_distance = ARX_NPC_ON_HEAR_MAX_DISTANCE_STEP;
-	else if (source && source->ioflags & IO_ITEM)
+	} else if(source && source->ioflags & IO_ITEM) {
 		max_distance = ARX_NPC_ON_HEAR_MAX_DISTANCE_ITEM;
-	else return;
-
+	} else {
+		return;
+	}
+	
 	max_distance *= presence;
 	max_distance /= factor;
-
+	
 	EVENT_SENDER = source;
-
-
+	
 	long Source_Room = ARX_PORTALS_GetRoomNumForPosition(pos, 1);
-
-
+	
 	for(size_t i = 0; i < entities.size(); i++) {
 		Entity * entity = entities[i];
 		
-		if ((entity)
-		        &&	(entity->ioflags & IO_NPC)
-		        &&	(entity->gameFlags & GFLAG_ISINTREATZONE)
-		        &&	(entity != source)
-		        &&	((entity->show == SHOW_FLAG_IN_SCENE)
-		             ||	(entity->show == SHOW_FLAG_HIDDEN))
-		        &&	(entity->_npcdata->life > 0.f)
-		   )
-		{
+		if(   entity
+		   && (entity->ioflags & IO_NPC)
+		   && (entity->gameFlags & GFLAG_ISINTREATZONE)
+		   && (entity != source)
+		   && (entity->show == SHOW_FLAG_IN_SCENE || entity->show == SHOW_FLAG_HIDDEN)
+		   && (entity->_npcdata->life > 0.f)
+		) {
 			float distance = fdist(pos, entity->pos);
 
 			if(distance < max_distance) {
