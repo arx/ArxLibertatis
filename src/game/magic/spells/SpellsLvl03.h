@@ -20,4 +20,10 @@
 #ifndef ARX_GAME_MAGIC_SPELLS_SPELLSLVL03_H
 #define ARX_GAME_MAGIC_SPELLS_SPELLSLVL03_H
 
+void SpeedSpellLaunch(long i, long duration);
+void DispellIllusionSpellLaunch(long i);
+void FireballSpellLaunch(long i);
+void CreateFoodSpellLaunch(long duration, long i);
+void IceProjectileSpellLaunch(long i);
+
 #endif // ARX_GAME_MAGIC_SPELLS_SPELLSLVL03_H
