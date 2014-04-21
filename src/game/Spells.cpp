@@ -3021,6 +3021,104 @@ bool IncinerateSpellLaunch(long i)
 	return true;
 }
 
+void MassParalyseSpellLaunch(long i, long duration)
+{
+	ARX_SOUND_PlaySFX(SND_SPELL_MASS_PARALYSE);
+	
+	spells[i].exist = true;
+	spells[i].tolive = (duration > -1) ? duration : 10000;
+	spells[i].longinfo2_entity = 0;
+	
+	for(size_t ii = 0; ii < entities.size(); ii++) {
+		
+		Entity * tio = entities[ii];
+		if(long(ii) == spells[i].caster || !tio || !(tio->ioflags & IO_NPC)) {
+			continue;
+		}
+		
+		if(tio->show != SHOW_FLAG_IN_SCENE) {
+			continue;
+		}
+		
+		if(tio->ioflags & IO_FREEZESCRIPT) {
+			continue;
+		}
+		
+		if(fartherThan(tio->pos, entities[spells[i].caster]->pos, 500.f)) {
+			continue;
+		}
+		
+		tio->ioflags |= IO_FREEZESCRIPT;
+		
+		ARX_NPC_Kill_Spell_Launch(tio);
+		ARX_SPELLS_AddSpellOn(ii, i);
+		
+		spells[i].longinfo2_entity ++;
+		spells[i].misc = realloc(spells[i].misc,
+		                         sizeof(long) * spells[i].longinfo2_entity);
+		long * ptr = (long *)spells[i].misc;
+		ptr[spells[i].longinfo2_entity - 1] = ii;
+	}
+}
+
+void MassLightningStrikeSpellLaunch(long i, SpellType typ)
+{
+	for(size_t ii = 0; ii < MAX_SPELLS; ii++) {
+		if(spells[ii].exist && spells[ii].type == typ) {
+			lightHandleDestroy(spells[ii].longinfo_light);
+			spells[ii].tolive = 0;
+		}
+	}
+	
+	spells[i].exist = true;
+	spells[i].lastupdate = spells[i].timcreation = (unsigned long)(arxtime);
+	spells[i].tolive = 5000; // TODO probably never read
+	spells[i].siz = 0;
+	
+	spells[i].longinfo_light = GetFreeDynLight();
+	if(lightHandleIsValid(spells[i].longinfo_light)) {
+		EERIE_LIGHT * light = lightHandleGet(spells[i].longinfo_light);
+		
+		light->intensity = 1.8f;
+		light->fallend = 450.f;
+		light->fallstart = 380.f;
+		light->rgb = Color3f(1.f, 0.75f, 0.75f);
+		light->pos = spells[i].vsource;
+	}
+	
+	long count = std::max(long(spells[i].caster_level), 1l);
+	CMassLightning * effect = new CMassLightning(count);
+	effect->spellinstance=i;
+	
+	Vec3f target;
+	float beta;
+	if(spells[i].caster == 0) {
+		target = player.pos + Vec3f(0.f, 150.f, 0.f);
+		beta = player.angle.getPitch();
+	} else {
+		Entity * io = entities[spells[i].caster];
+		target = io->pos + Vec3f(0.f, -20.f, 0.f);
+		beta = io->angle.getPitch();
+	}
+	target.x -= std::sin(radians(MAKEANGLE(beta))) * 500.f;
+	target.z += std::cos(radians(MAKEANGLE(beta))) * 500.f;
+	
+	effect->SetDuration(long(500 * spells[i].caster_level));
+	effect->Create(target, MAKEANGLE(player.angle.getPitch()));
+	spells[i].pSpellFx = effect;
+	spells[i].tolive = effect->GetDuration();
+	
+	ARX_SOUND_PlaySFX(SND_SPELL_LIGHTNING_START);
+	spells[i].snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_LIGHTNING_LOOP, &target,
+	                                       1.f, ARX_SOUND_PLAY_LOOPED);
+	
+	// Draws White Flash on Screen
+	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+	EERIEDrawBitmap(Rectf(g_size), 0.00009f, NULL, Color::white);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+}
+
 bool ARX_SPELLS_Launch(SpellType typ, long source, SpellcastFlags flagss, long levell, long target, long duration) {
 	
 	SpellcastFlags flags = flagss;
@@ -3528,103 +3626,13 @@ bool ARX_SPELLS_Launch(SpellType typ, long source, SpellcastFlags flagss, long l
 			break;
 		}
 		case SPELL_MASS_PARALYSE: {
-			ARX_SOUND_PlaySFX(SND_SPELL_MASS_PARALYSE);
-			
-			spells[i].exist = true;
-			spells[i].tolive = (duration > -1) ? duration : 10000;
-			spells[i].longinfo2_entity = 0;
-			
-			for(size_t ii = 0; ii < entities.size(); ii++) {
-				
-				Entity * tio = entities[ii];
-				if(long(ii) == spells[i].caster || !tio || !(tio->ioflags & IO_NPC)) {
-					continue;
-				}
-				
-				if(tio->show != SHOW_FLAG_IN_SCENE) {
-					continue;
-				}
-				
-				if(tio->ioflags & IO_FREEZESCRIPT) {
-					continue;
-				}
-				
-				if(fartherThan(tio->pos, entities[spells[i].caster]->pos, 500.f)) {
-					continue;
-				}
-				
-				tio->ioflags |= IO_FREEZESCRIPT;
-				
-				ARX_NPC_Kill_Spell_Launch(tio);
-				ARX_SPELLS_AddSpellOn(ii, i);
-				
-				spells[i].longinfo2_entity ++;
-				spells[i].misc = realloc(spells[i].misc,
-				                         sizeof(long) * spells[i].longinfo2_entity);
-				long * ptr = (long *)spells[i].misc;
-				ptr[spells[i].longinfo2_entity - 1] = ii;
-			}
-			
+			MassParalyseSpellLaunch(i, duration);
 			break;
 		}
 		//****************************************************************************
 		// LEVEL 10
 		case SPELL_MASS_LIGHTNING_STRIKE: {
-			for(size_t ii = 0; ii < MAX_SPELLS; ii++) {
-				if(spells[ii].exist && spells[ii].type == typ) {
-					lightHandleDestroy(spells[ii].longinfo_light);
-					spells[ii].tolive = 0;
-				}
-			}
-			
-			spells[i].exist = true;
-			spells[i].lastupdate = spells[i].timcreation = (unsigned long)(arxtime);
-			spells[i].tolive = 5000; // TODO probably never read
-			spells[i].siz = 0;
-			
-			spells[i].longinfo_light = GetFreeDynLight();
-			if(lightHandleIsValid(spells[i].longinfo_light)) {
-				EERIE_LIGHT * light = lightHandleGet(spells[i].longinfo_light);
-				
-				light->intensity = 1.8f;
-				light->fallend = 450.f;
-				light->fallstart = 380.f;
-				light->rgb = Color3f(1.f, 0.75f, 0.75f);
-				light->pos = spells[i].vsource;
-			}
-			
-			long count = std::max(long(spells[i].caster_level), 1l);
-			CMassLightning * effect = new CMassLightning(count);
-			effect->spellinstance=i;
-			
-			Vec3f target;
-			float beta;
-			if(spells[i].caster == 0) {
-				target = player.pos + Vec3f(0.f, 150.f, 0.f);
-				beta = player.angle.getPitch();
-			} else {
-				Entity * io = entities[spells[i].caster];
-				target = io->pos + Vec3f(0.f, -20.f, 0.f);
-				beta = io->angle.getPitch();
-			}
-			target.x -= std::sin(radians(MAKEANGLE(beta))) * 500.f;
-			target.z += std::cos(radians(MAKEANGLE(beta))) * 500.f;
-			
-			effect->SetDuration(long(500 * spells[i].caster_level));
-			effect->Create(target, MAKEANGLE(player.angle.getPitch()));
-			spells[i].pSpellFx = effect;
-			spells[i].tolive = effect->GetDuration();
-			
-			ARX_SOUND_PlaySFX(SND_SPELL_LIGHTNING_START);
-			spells[i].snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_LIGHTNING_LOOP, &target,
-			                                       1.f, ARX_SOUND_PLAY_LOOPED);
-			
-			// Draws White Flash on Screen
-			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-			GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-			EERIEDrawBitmap(Rectf(g_size), 0.00009f, NULL, Color::white);
-			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-			
+			MassLightningStrikeSpellLaunch(i, typ);
 			break;
 		}
 		case SPELL_CONTROL_TARGET: {
