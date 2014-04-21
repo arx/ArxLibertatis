@@ -2692,10 +2692,13 @@ MENUSTATE CWindowMenu::Render() {
 
 CWindowMenuConsole::CWindowMenuConsole(int _iPosX, int _iPosY, int _iWidth, int _iHeight, MENUSTATE _eMenuState)
 	: bMouseListen(true)
+	, iSavePosY(0)
 	, iInterligne(10)
+	, pZoneClick(NULL)
 	, bEdit(false)
 	, lData(0)
 	, pData(NULL)
+	, bMouseAttack(false)
 {
 	iOX=(int)RATIO_X(_iPosX);
 	iOY=(int)RATIO_Y(_iPosY);
