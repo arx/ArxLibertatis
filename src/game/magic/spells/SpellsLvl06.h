@@ -20,4 +20,12 @@
 #ifndef ARX_GAME_MAGIC_SPELLS_SPELLSLVL06_H
 #define ARX_GAME_MAGIC_SPELLS_SPELLSLVL06_H
 
+#include "game/Spells.h"
+
+bool RiseDeadSpellLaunch(SpellType typ, long i, long duration);
+void ParalyseSpellLaunch(long i, long duration);
+void CreateFieldSpellLaunch(SpellcastFlags flags, long i, long duration);
+void DisarmTrapSpellLaunch(long i);
+bool SlowDownSpellLaunch(long duration, long i);
+
 #endif // ARX_GAME_MAGIC_SPELLS_SPELLSLVL06_H
