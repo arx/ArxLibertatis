@@ -20,4 +20,10 @@
 #ifndef ARX_GAME_MAGIC_SPELLS_SPELLSLVL01_H
 #define ARX_GAME_MAGIC_SPELLS_SPELLSLVL01_H
 
+void MagicSightSpellLaunch(long duration, long i);
+void MagicMissileSpellLaunch(long i);
+void IgnitSpellLaunch(long i);
+void DouseSpellLaunch(long i);
+void ActivatePortalSpellLaunch(long i);
+
 #endif // ARX_GAME_MAGIC_SPELLS_SPELLSLVL01_H
