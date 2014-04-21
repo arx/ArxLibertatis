@@ -43,7 +43,11 @@ struct SaveGame {
 	
 	std::string time;
 	
-	SaveGame() : level(0) { }
+	SaveGame()
+		: quicksave(false)
+		, level(0)
+		, stime(0)
+	{}
 };
 
 //! Central management of the list of savegames.
