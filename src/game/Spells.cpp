@@ -3119,6 +3119,55 @@ void MassLightningStrikeSpellLaunch(long i, SpellType typ)
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 }
 
+bool ControlTargetSpellLaunch(long i)
+{
+	if(!ValidIONum(spells[i].target)) {
+		return false;
+	}
+	
+	long tcount = 0;
+	for(size_t ii = 1; ii < entities.size(); ii++) {
+		
+		Entity * ioo = entities[ii];
+		if(!ioo || !(ioo->ioflags & IO_NPC)) {
+			continue;
+		}
+		
+		if(ioo->_npcdata->life <= 0.f || ioo->show != SHOW_FLAG_IN_SCENE) {
+			continue;
+		}
+		
+		if(ioo->groups.find("demon") == ioo->groups.end()) {
+			continue;
+		}
+		
+		if(closerThan(ioo->pos, spells[i].caster_pos, 900.f)) {
+			tcount++;
+			std::ostringstream oss;
+			oss << entities[spells[i].target]->idString();
+			oss << ' ' << long(spells[i].caster_level);
+			SendIOScriptEvent(ioo, SM_NULL, oss.str(), "npc_control");
+		}
+	}
+	if(tcount == 0) {
+		return false;
+	}
+	
+	ARX_SOUND_PlaySFX(SND_SPELL_CONTROL_TARGET);
+	
+	spells[i].exist = true;
+	spells[i].lastupdate = spells[i].timcreation = (unsigned long)(arxtime);
+	spells[i].tolive = 1000;
+	
+	CControlTarget * effect = new CControlTarget();
+	effect->spellinstance = i;
+	effect->Create(player.pos, MAKEANGLE(player.angle.getPitch()));
+	effect->SetDuration(spells[i].tolive);
+	spells[i].pSpellFx = effect;
+	
+	return true;
+}
+
 bool ARX_SPELLS_Launch(SpellType typ, long source, SpellcastFlags flagss, long levell, long target, long duration) {
 	
 	SpellcastFlags flags = flagss;
@@ -3636,49 +3685,9 @@ bool ARX_SPELLS_Launch(SpellType typ, long source, SpellcastFlags flagss, long l
 			break;
 		}
 		case SPELL_CONTROL_TARGET: {
-			if(!ValidIONum(spells[i].target)) {
+			bool result = ControlTargetSpellLaunch(i);
+			if(!result)
 				return false;
-			}
-			
-			long tcount = 0;
-			for(size_t ii = 1; ii < entities.size(); ii++) {
-				
-				Entity * ioo = entities[ii];
-				if(!ioo || !(ioo->ioflags & IO_NPC)) {
-					continue;
-				}
-				
-				if(ioo->_npcdata->life <= 0.f || ioo->show != SHOW_FLAG_IN_SCENE) {
-					continue;
-				}
-				
-				if(ioo->groups.find("demon") == ioo->groups.end()) {
-					continue;
-				}
-				
-				if(closerThan(ioo->pos, spells[i].caster_pos, 900.f)) {
-					tcount++;
-					std::ostringstream oss;
-					oss << entities[spells[i].target]->idString();
-					oss << ' ' << long(spells[i].caster_level);
-					SendIOScriptEvent(ioo, SM_NULL, oss.str(), "npc_control");
-				}
-			}
-			if(tcount == 0) {
-				return false;
-			}
-			
-			ARX_SOUND_PlaySFX(SND_SPELL_CONTROL_TARGET);
-			
-			spells[i].exist = true;
-			spells[i].lastupdate = spells[i].timcreation = (unsigned long)(arxtime);
-			spells[i].tolive = 1000;
-			
-			CControlTarget * effect = new CControlTarget();
-			effect->spellinstance = i;
-			effect->Create(player.pos, MAKEANGLE(player.angle.getPitch()));
-			effect->SetDuration(spells[i].tolive);
-			spells[i].pSpellFx = effect;
 			
 			break;
 		}
