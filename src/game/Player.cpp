@@ -1852,7 +1852,7 @@ void ARX_PLAYER_InitPlayer() {
 	player.physics.cyl.radius = player.baseRadius();
 	player.life = player.maxlife = player.Full_maxlife = 100.f;
 	player.mana = player.maxmana = player.Full_maxmana = 100.f;
-	player.falling = 0;
+	player.falling = false;
 	player.rightIO = NULL;
 	player.leftIO = NULL;
 	player.equipsecondaryIO = NULL;
@@ -2222,7 +2222,7 @@ void PlayerMovementIterate(float DeltaTime) {
 		  && anything > 80.f) {
 			player.jumpphase = JumpDescending;
 			if(!player.falling) {
-				player.falling = 1;
+				player.falling = true;
 				ARX_PLAYER_StartFall();
 			}
 		} else if(!player.falling) {
@@ -2231,7 +2231,7 @@ void PlayerMovementIterate(float DeltaTime) {
 		
 		if(player.jumpphase != NotJumping && player.levitate) {
 			player.jumpphase = NotJumping;
-			player.falling = 0;
+			player.falling = false;
 			Falling_Height = player.pos.y;
 			FALLING_TIME = 0;
 		}
@@ -2243,7 +2243,7 @@ void PlayerMovementIterate(float DeltaTime) {
 				player.physics.velocity.z = 0.f;
 				player.physics.forces.x = 0.f;
 				player.physics.forces.z = 0.f;
-				player.falling = 0;
+				player.falling = false;
 				float fh = player.pos.y - Falling_Height;
 				if(fh > 400.f) {
 					float dmg = (fh - 400.f) * (1.0f / 15);
@@ -2509,7 +2509,7 @@ void PlayerMovementIterate(float DeltaTime) {
 				
 				if(player.climbing) {
 					player.jumpphase = NotJumping;
-					player.falling = 0;
+					player.falling = false;
 					FALLING_TIME = 0;
 					Falling_Height = player.pos.y;
 				}
@@ -2644,7 +2644,7 @@ void ARX_PLAYER_PutPlayerInNormalStance(long val) {
 		AttemptValidCylinderPos(&phys.cyl, entities.player(), CFLAG_RETURN_HEIGHT);
 		player.pos.y = phys.cyl.origin.y + player.baseHeight();
 		player.jumpphase = NotJumping;
-		player.falling = 0;
+		player.falling = false;
 	}
 	
 	if(player.Interface & INTER_COMBATMODE) {
@@ -2975,6 +2975,6 @@ void ARX_PLAYER_Reset_Fall()
 {
 	FALLING_TIME = 0;
 	Falling_Height = 50.f;
-	player.falling = 0;
+	player.falling = false;
 }
 

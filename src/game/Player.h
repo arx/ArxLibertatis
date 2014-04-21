@@ -150,7 +150,7 @@ struct ARXCHARACTER {
 	Vec3f size;
 	ARX_PATH * inzone;
 	
-	long falling;
+	bool falling;
 	short doingmagic;
 	short Interface;
 	
