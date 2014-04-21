@@ -3168,6 +3168,72 @@ bool ControlTargetSpellLaunch(long i)
 	return true;
 }
 
+void FreezeTimeSpellLaunch(long duration, long i)
+{
+	ARX_SOUND_PlaySFX(SND_SPELL_FREEZETIME);
+	
+	float max_slowdown = std::max(0.f, GLOBAL_SLOWDOWN - 0.01f);
+	spells[i].siz = clamp(spells[i].caster_level * 0.08f, 0.f, max_slowdown);
+	GLOBAL_SLOWDOWN -= spells[i].siz;
+	
+	spells[i].exist = true;
+	spells[i].tolive = (duration > -1) ? duration : 200000;
+	spells[i].bDuration = true;
+	spells[i].fManaCostPerSecond = 30.f * spells[i].siz;
+	spells[i].longinfo_time = (long)arxtime.get_updated();
+}
+
+void MassIncinerateSpellLaunch(long i)
+{
+	ARX_SOUND_PlaySFX(SND_SPELL_MASS_INCINERATE);
+	
+	spells[i].exist = true;
+	spells[i].lastupdate = spells[i].timcreation = (unsigned long)(arxtime);
+	spells[i].tolive = 20000;
+	
+	long nb_targets=0;
+	for(size_t ii = 0; ii < entities.size(); ii++) {
+		
+		Entity * tio = entities[ii];
+		if(long(ii) == spells[i].caster || !tio || !(tio->ioflags & IO_NPC)) {
+			continue;
+		}
+		
+		if(tio->_npcdata->life <= 0.f || tio->show != SHOW_FLAG_IN_SCENE) {
+			continue;
+		}
+		
+		if(fartherThan(tio->pos, entities[spells[i].caster]->pos, 500.f)) {
+			continue;
+		}
+		
+		tio->sfx_flag |= SFX_TYPE_YLSIDE_DEATH | SFX_TYPE_INCINERATE;
+		tio->sfx_time = (unsigned long)(arxtime);
+		nb_targets++;
+		ARX_SPELLS_AddSpellOn(ii, i);
+	}
+	
+	if(nb_targets) {
+		spells[i].snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_INCINERATE_LOOP, 
+		                                       &spells[i].caster_pos, 1.f, 
+		                                       ARX_SOUND_PLAY_LOOPED);
+	} else {
+		spells[i].snd_loop = -1;
+	}
+}
+
+void TeleportSpellLaunch(long i)
+{
+	spells[i].exist = true;
+	spells[i].tolive = 7000;
+	
+	ARX_SOUND_PlaySFX(SND_SPELL_TELEPORT, &spells[i].caster_pos);
+	
+	if(spells[i].caster == 0) {
+		LASTTELEPORT = 0.f;
+	}
+}
+
 bool ARX_SPELLS_Launch(SpellType typ, long source, SpellcastFlags flagss, long levell, long target, long duration) {
 	
 	SpellcastFlags flags = flagss;
@@ -3692,69 +3758,15 @@ bool ARX_SPELLS_Launch(SpellType typ, long source, SpellcastFlags flagss, long l
 			break;
 		}
 		case SPELL_FREEZE_TIME: {
-			ARX_SOUND_PlaySFX(SND_SPELL_FREEZETIME);
-			
-			float max_slowdown = std::max(0.f, GLOBAL_SLOWDOWN - 0.01f);
-			spells[i].siz = clamp(spells[i].caster_level * 0.08f, 0.f, max_slowdown);
-			GLOBAL_SLOWDOWN -= spells[i].siz;
-			
-			spells[i].exist = true;
-			spells[i].tolive = (duration > -1) ? duration : 200000;
-			spells[i].bDuration = true;
-			spells[i].fManaCostPerSecond = 30.f * spells[i].siz;
-			spells[i].longinfo_time = (long)arxtime.get_updated();
-			
+			FreezeTimeSpellLaunch(duration, i);
 			break;
 		}
 		case SPELL_MASS_INCINERATE: {
-			ARX_SOUND_PlaySFX(SND_SPELL_MASS_INCINERATE);
-			
-			spells[i].exist = true;
-			spells[i].lastupdate = spells[i].timcreation = (unsigned long)(arxtime);
-			spells[i].tolive = 20000;
-			
-			long nb_targets=0;
-			for(size_t ii = 0; ii < entities.size(); ii++) {
-				
-				Entity * tio = entities[ii];
-				if(long(ii) == spells[i].caster || !tio || !(tio->ioflags & IO_NPC)) {
-					continue;
-				}
-				
-				if(tio->_npcdata->life <= 0.f || tio->show != SHOW_FLAG_IN_SCENE) {
-					continue;
-				}
-				
-				if(fartherThan(tio->pos, entities[spells[i].caster]->pos, 500.f)) {
-					continue;
-				}
-				
-				tio->sfx_flag |= SFX_TYPE_YLSIDE_DEATH | SFX_TYPE_INCINERATE;
-				tio->sfx_time = (unsigned long)(arxtime);
-				nb_targets++;
-				ARX_SPELLS_AddSpellOn(ii, i);
-			}
-			
-			if(nb_targets) {
-				spells[i].snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_INCINERATE_LOOP, 
-				                                       &spells[i].caster_pos, 1.f, 
-				                                       ARX_SOUND_PLAY_LOOPED);
-			} else {
-				spells[i].snd_loop = -1;
-			}
-			
+			MassIncinerateSpellLaunch(i);
 			break;
 		}
 		case SPELL_TELEPORT: {
-			spells[i].exist = true;
-			spells[i].tolive = 7000;
-			
-			ARX_SOUND_PlaySFX(SND_SPELL_TELEPORT, &spells[i].caster_pos);
-			
-			if(spells[i].caster == 0) {
-				LASTTELEPORT = 0.f;
-			}
-			
+			TeleportSpellLaunch(i);
 			break;
 		}
 	}
