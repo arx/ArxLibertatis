@@ -3456,10 +3456,6 @@ void ManageIgnition(Entity * io)
 				notok = -1;
 			}
 			
-			if(notok >= 0) {
-				continue;
-			}
-
 			particlesToCreate = 1;
 			particleDelayFactor = 1;
 			pos = io->obj->vertexlist3[io->obj->facelist[num].vid[0]].v;
@@ -3502,10 +3498,6 @@ void ManageIgnition(Entity * io)
 					continue;
 				}
 				notok = -1;
-			}
-			
-			if(notok >= 0) {
-				continue;
 			}
 			
 			particlesToCreate = 6;
