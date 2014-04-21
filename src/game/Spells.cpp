@@ -2996,6 +2996,31 @@ void NegateMagicSpellLaunch(long duration, long i)
 	}
 }
 
+bool IncinerateSpellLaunch(long i)
+{
+	Entity * tio = entities[spells[i].target];
+	if((tio->ioflags & IO_NPC) && tio->_npcdata->life <= 0.f) {
+		return false;
+	}
+	
+	ARX_SOUND_PlaySFX(SND_SPELL_INCINERATE, &entities[spells[i].target]->pos);
+	
+	spells[i].snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_INCINERATE_LOOP, 
+	                                       &entities[spells[i].target]->pos, 1.f, 
+	                                       ARX_SOUND_PLAY_LOOPED);
+	
+	spells[i].exist = true;
+	spells[i].lastupdate = spells[i].timcreation = (unsigned long)(arxtime);
+	spells[i].tolive = 20000;
+	
+	tio->sfx_flag |= SFX_TYPE_YLSIDE_DEATH | SFX_TYPE_INCINERATE;
+	tio->sfx_time = (unsigned long)(arxtime);
+	
+	ARX_SPELLS_AddSpellOn(spells[i].target, i);
+	
+	return true;
+}
+
 bool ARX_SPELLS_Launch(SpellType typ, long source, SpellcastFlags flagss, long levell, long target, long duration) {
 	
 	SpellcastFlags flags = flagss;
@@ -3496,25 +3521,9 @@ bool ARX_SPELLS_Launch(SpellType typ, long source, SpellcastFlags flagss, long l
 			break;
 		}
 		case SPELL_INCINERATE: {
-			Entity * tio = entities[spells[i].target];
-			if((tio->ioflags & IO_NPC) && tio->_npcdata->life <= 0.f) {
+			bool result = IncinerateSpellLaunch(i);
+			if(!result)
 				return false;
-			}
-			
-			ARX_SOUND_PlaySFX(SND_SPELL_INCINERATE, &entities[spells[i].target]->pos);
-			
-			spells[i].snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_INCINERATE_LOOP, 
-			                                       &entities[spells[i].target]->pos, 1.f, 
-			                                       ARX_SOUND_PLAY_LOOPED);
-			
-			spells[i].exist = true;
-			spells[i].lastupdate = spells[i].timcreation = (unsigned long)(arxtime);
-			spells[i].tolive = 20000;
-			
-			tio->sfx_flag |= SFX_TYPE_YLSIDE_DEATH | SFX_TYPE_INCINERATE;
-			tio->sfx_time = (unsigned long)(arxtime);
-			
-			ARX_SPELLS_AddSpellOn(spells[i].target, i);
 			
 			break;
 		}
