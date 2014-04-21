@@ -1075,6 +1075,19 @@ EERIE_3DOBJ * stone0 = NULL;
 long stone0_count = 0;
 
 CLevitate::CLevitate()
+	: key(0)
+	, def(16)
+	, pos(Vec3f_ZERO)
+	, rbase(50.f)
+	, rhaut(100.f)
+	, hauteur(80.f)
+	, scale(0.f)
+	, ang(0.f)
+	, currdurationang(0)
+	, currframetime(0)
+	, tsouffle(NULL)
+	, timestone(0)
+	, nbstone(0)
 {
 	int nb = 2;
 
