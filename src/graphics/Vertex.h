@@ -57,7 +57,12 @@ struct TexturedVertex {
 	
 	Vec2f uv;
 	
-	TexturedVertex() {}
+	TexturedVertex()
+		: p(Vec3f_ZERO)
+		, rhw(1.f)
+		, color(0x00000000)
+		, uv(0.f, 0.f)
+	{}
 
 	TexturedVertex(const TexturedVertex & o)
 		: p(o.p)
