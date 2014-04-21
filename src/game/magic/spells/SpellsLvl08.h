@@ -20,4 +20,10 @@
 #ifndef ARX_GAME_MAGIC_SPELLS_SPELLSLVL08_H
 #define ARX_GAME_MAGIC_SPELLS_SPELLSLVL08_H
 
+void InvisibilitySpellLaunch(long i, long duration);
+void ManaDrainSpellLaunch(long i, long duration);
+void ExplosionSpellLaunch(long i);
+void EnchantWeaponSpellLaunch(bool & notifyAll, long i);
+void LifeDrainSpellLaunch(long duration, long i);
+
 #endif // ARX_GAME_MAGIC_SPELLS_SPELLSLVL08_H
