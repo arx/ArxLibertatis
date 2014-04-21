@@ -47,10 +47,17 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/effects/SpellEffects.h"
 
 Particle::Particle()
-	: p3Pos(frand2() * 5, frand2() * 5, frand2() * 5),
-	  p3Velocity(frand2() * 10, frand2() * 10, frand2() * 10),
-	  ulTime(0), fSize(1.f), fSizeStart(1.f), fSizeEnd(1.f),
-	  iTexTime(0), iTexNum(0) {
+	: p3Pos(frand2() * 5, frand2() * 5, frand2() * 5)
+	, p3Velocity(frand2() * 10, frand2() * 10, frand2() * 10)
+	, ulTime(0)
+	, fSize(1.f)
+	, fSizeStart(1.f)
+	, fSizeEnd(1.f)
+	, iRot(1)
+	, fRotStart(0.f)
+	, iTexTime(0)
+	, iTexNum(0)
+{
 	
 	ulTTL = checked_range_cast<long>(2000 + rnd() * 3000);
 	fOneOnTTL = 1.0f / float(ulTTL);

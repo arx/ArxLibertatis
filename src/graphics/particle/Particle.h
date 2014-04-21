@@ -72,7 +72,6 @@ public:
 	// rotation
 	int iRot;
 	float fRotStart;
-	float fRotation;
 	
 	// tex infos
 	int iTexTime;
