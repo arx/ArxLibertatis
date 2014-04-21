@@ -192,7 +192,8 @@ Vec2s MemoMouse;
 INVENTORY_DATA *	TSecondaryInventory;
 Entity * FlyingOverIO=NULL;
 Entity *	STARTED_ACTION_ON_IO=NULL;
-INTERFACE_TC		ITC;
+
+INTERFACE_TC ITC = INTERFACE_TC();
 
 static gui::Note openNote;
 static gui::Note questBook;
