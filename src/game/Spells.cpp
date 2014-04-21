@@ -2927,6 +2927,49 @@ bool SummonCreatureSpellLaunch(long i, long duration)
 	return true;
 }
 
+bool FakeSummonSpellLaunch(long i)
+{
+	if(spells[i].caster <= 0 || !ValidIONum(spells[i].target)) {
+		return false;
+	}
+	
+	spells[i].exist = true;
+	spells[i].lastupdate = spells[i].timcreation = (unsigned long)(arxtime);
+	spells[i].bDuration = true;
+	spells[i].fManaCostPerSecond = 1.9f;
+	spells[i].tolive = 4000;
+	
+	Vec3f target = entities[spells[i].target]->pos;
+	if(spells[i].target != 0) {
+		target.y += player.baseHeight();
+	}
+	spells[i].target_pos = target;
+	ARX_SOUND_PlaySFX(SND_SPELL_SUMMON_CREATURE, &spells[i].target_pos);
+	CSummonCreature * effect = new CSummonCreature();
+	effect->spellinstance = i;
+	effect->Create(target, MAKEANGLE(player.angle.getPitch()));
+	effect->SetDuration(2000, 500, 1500);
+	effect->SetColorBorder(Color3f::red);
+	effect->SetColorRays1(Color3f::red);
+	effect->SetColorRays2(Color3f::yellow * .5f);
+	
+	effect->lLightId = GetFreeDynLight();
+	
+	if(lightHandleIsValid(effect->lLightId)) {
+		EERIE_LIGHT * light = lightHandleGet(effect->lLightId);
+		
+		light->intensity = 0.3f;
+		light->fallend = 500.f;
+		light->fallstart = 400.f;
+		light->rgb = Color3f::red;
+		light->pos = effect->eSrc;
+	}
+	
+	spells[i].pSpellFx = effect;
+	
+	return true;
+}
+
 bool ARX_SPELLS_Launch(SpellType typ, long source, SpellcastFlags flagss, long levell, long target, long duration) {
 	
 	SpellcastFlags flags = flagss;
@@ -3416,43 +3459,9 @@ bool ARX_SPELLS_Launch(SpellType typ, long source, SpellcastFlags flagss, long l
 			break;
 		}
 		case SPELL_FAKE_SUMMON: {
-			if(spells[i].caster <= 0 || !ValidIONum(spells[i].target)) {
+			bool result = FakeSummonSpellLaunch(i);
+			if(!result)
 				return false;
-			}
-			
-			spells[i].exist = true;
-			spells[i].lastupdate = spells[i].timcreation = (unsigned long)(arxtime);
-			spells[i].bDuration = true;
-			spells[i].fManaCostPerSecond = 1.9f;
-			spells[i].tolive = 4000;
-			
-			Vec3f target = entities[spells[i].target]->pos;
-			if(spells[i].target != 0) {
-				target.y += player.baseHeight();
-			}
-			spells[i].target_pos = target;
-			ARX_SOUND_PlaySFX(SND_SPELL_SUMMON_CREATURE, &spells[i].target_pos);
-			CSummonCreature * effect = new CSummonCreature();
-			effect->spellinstance = i;
-			effect->Create(target, MAKEANGLE(player.angle.getPitch()));
-			effect->SetDuration(2000, 500, 1500);
-			effect->SetColorBorder(Color3f::red);
-			effect->SetColorRays1(Color3f::red);
-			effect->SetColorRays2(Color3f::yellow * .5f);
-			
-			effect->lLightId = GetFreeDynLight();
-			
-			if(lightHandleIsValid(effect->lLightId)) {
-				EERIE_LIGHT * light = lightHandleGet(effect->lLightId);
-				
-				light->intensity = 0.3f;
-				light->fallend = 500.f;
-				light->fallstart = 400.f;
-				light->rgb = Color3f::red;
-				light->pos = effect->eSrc;
-			}
-			
-			spells[i].pSpellFx = effect;
 			
 			break;
 		}
