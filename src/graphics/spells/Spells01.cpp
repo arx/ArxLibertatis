@@ -670,8 +670,16 @@ void CMultiMagicMissile::Render()
 // IGNIT
 //-----------------------------------------------------------------------------
 CIgnit::CIgnit()
-{
-}
+	: pos(Vec3f_ZERO)
+	, perimetre(0.f)
+	, key(0)
+	, duration(0)
+	, currduration(0)
+	, interp(0.f)
+	, tp(NULL)
+	, rgb(0.f, 0.f, 0.f)
+	, mask(0)
+{}
 
 CIgnit::~CIgnit()
 {
