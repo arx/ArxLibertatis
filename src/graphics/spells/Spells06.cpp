@@ -411,14 +411,26 @@ CRiseDead::~CRiseDead()
 	}
 }
 
-CRiseDead::CRiseDead() {
-	
-	eSrc = Vec3f_ZERO;
-	
+CRiseDead::CRiseDead()
+	: eSrc(Vec3f_ZERO)
+	, tex_light(NULL)
+	, end(40 - 1)
+	, iSize(100)
+	, bIntro(true)
+	, sizeF(0)
+	, fSizeIntro(0.f)
+	, fRand(0.f)
+	, fTexWrap(0)
+	, ulDurationIntro(1000)
+	, ulDurationRender(1000)
+	, ulDurationOuttro(1000)
+	, currframetime(0)
+	, timestone(0)
+	, nbstone(0)
+{
 	SetDuration(1000);
 	ulCurrentTime = ulDurationIntro + ulDurationRender + ulDurationOuttro + 1;
 	
-	iSize = 100;
 	fOneOniSize = 1.0f / ((float) iSize);
 	
 	fColorBorder[0] = 1;
@@ -433,6 +445,9 @@ CRiseDead::CRiseDead() {
 	fColorRays2[1] = 0;
 	fColorRays2[2] = 0;
 	
+	stone[0] = NULL;
+	stone[1] = NULL;
+	
 	if(!stone0) {
 		stone0 = loadObject("graph/obj3d/interactive/fix_inter/fx_raise_dead/stone01.teo");
 	}
@@ -444,6 +459,8 @@ CRiseDead::CRiseDead() {
 	stone1_count++;
 	
 	tex_light = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu4");
+	
+
 }
 
 void CRiseDead::SetDuration(const unsigned long alDuration)
