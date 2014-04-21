@@ -173,7 +173,6 @@ void AddFlare(const Vec2s & pos, float sm, short typ, Entity * io, bool bookDraw
 	fl->x = float(pos.x) - rnd() * 4.f;
 	fl->y = float(pos.y) - rnd() * 4.f - 50.f;
 	fl->tv.rhw = fl->v.rhw = 1.f;
-	fl->tv.specular = fl->v.specular = 1;
 
 	if(!bookDraw) {
 		EERIE_CAMERA ka = *Kam;

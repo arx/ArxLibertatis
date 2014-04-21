@@ -1692,7 +1692,6 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 				for(size_t kk = 0; kk < 4; kk++) {
 					ep2->v[kk].color = 0xFFFFFFFF;
 					ep2->v[kk].rhw = 1;
-					ep2->v[kk].specular = 1;
 					ep2->v[kk].p.x = ep->v[kk].ssx;
 					ep2->v[kk].p.y = ep->v[kk].sy;
 					ep2->v[kk].p.z = ep->v[kk].ssz;

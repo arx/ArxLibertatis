@@ -107,10 +107,10 @@ bool EERIECreateSprite(TexturedQuad& sprite, const TexturedVertex & in, float si
 		
 		ColorBGRA col = color.toBGRA();
 		
-		sprite.v[0] = TexturedVertex(Vec3f(), out.rhw, col, out.specular, Vec2f_ZERO);
-		sprite.v[1] = TexturedVertex(Vec3f(), out.rhw, col, out.specular, Vec2f_X_AXIS);
-		sprite.v[2] = TexturedVertex(Vec3f(), out.rhw, col, out.specular, Vec2f(1.f, 1.f));
-		sprite.v[3] = TexturedVertex(Vec3f(), out.rhw, col, out.specular, Vec2f_Y_AXIS);
+		sprite.v[0] = TexturedVertex(Vec3f(), out.rhw, col, Vec2f_ZERO);
+		sprite.v[1] = TexturedVertex(Vec3f(), out.rhw, col, Vec2f_X_AXIS);
+		sprite.v[2] = TexturedVertex(Vec3f(), out.rhw, col, Vec2f(1.f, 1.f));
+		sprite.v[3] = TexturedVertex(Vec3f(), out.rhw, col, Vec2f_Y_AXIS);
 		
 		if(rot == 0) {
 			Vec3f maxs = out.p + t;
@@ -169,10 +169,10 @@ void CreateBitmap(TexturedQuad& s, Rectf rect, float z, TextureContainer * tex, 
 		val -= z;
 	}
 	
-	s.v[0] = TexturedVertex(Vec3f(rect.topLeft(), z), val, col, 0xFF000000, Vec2f(0.f, 0.f));
-	s.v[1] = TexturedVertex(Vec3f(rect.topRight(), z), val, col, 0xFF000000, Vec2f(uv.x, 0.f));
-	s.v[2] = TexturedVertex(Vec3f(rect.bottomRight(), z), val, col, 0xFF000000, Vec2f(uv.x, uv.y));
-	s.v[3] = TexturedVertex(Vec3f(rect.bottomLeft(), z), val, col, 0xFF000000, Vec2f(0.f, uv.y));
+	s.v[0] = TexturedVertex(Vec3f(rect.topLeft(), z), val, col, Vec2f(0.f, 0.f));
+	s.v[1] = TexturedVertex(Vec3f(rect.topRight(), z), val, col, Vec2f(uv.x, 0.f));
+	s.v[2] = TexturedVertex(Vec3f(rect.bottomRight(), z), val, col, Vec2f(uv.x, uv.y));
+	s.v[3] = TexturedVertex(Vec3f(rect.bottomLeft(), z), val, col, Vec2f(0.f, uv.y));
 }
 
 void DrawBitmap(const Rectf & rect, float z, TextureContainer * tex, Color color, bool isRhw) {
@@ -215,10 +215,10 @@ void EERIEDrawBitmap_uv(Rectf rect, float z, TextureContainer * tex,
 
 	ColorBGRA col = color.toBGRA();
 	TexturedVertex v[4];
-	v[0] = TexturedVertex(Vec3f(rect.topLeft(),     z), 1.f, col, 0xff000000, Vec2f(u0, v0));
-	v[1] = TexturedVertex(Vec3f(rect.topRight(),    z), 1.f, col, 0xff000000, Vec2f(u1, v0));
-	v[2] = TexturedVertex(Vec3f(rect.bottomRight(), z), 1.f, col, 0xff000000, Vec2f(u1, v1));
-	v[3] = TexturedVertex(Vec3f(rect.bottomLeft(),  z), 1.f, col, 0xff000000, Vec2f(u0, v1));
+	v[0] = TexturedVertex(Vec3f(rect.topLeft(),     z), 1.f, col, Vec2f(u0, v0));
+	v[1] = TexturedVertex(Vec3f(rect.topRight(),    z), 1.f, col, Vec2f(u1, v0));
+	v[2] = TexturedVertex(Vec3f(rect.bottomRight(), z), 1.f, col, Vec2f(u1, v1));
+	v[3] = TexturedVertex(Vec3f(rect.bottomLeft(),  z), 1.f, col, Vec2f(u0, v1));
 	SetTextureDrawPrim(tex, v, Renderer::TriangleFan);
 }
 
@@ -230,10 +230,10 @@ void EERIEDrawBitmapUVs(float x, float y, float sx, float sy, float z, TextureCo
 	
 	ColorBGRA col = color.toBGRA();
 	TexturedVertex v[4];
-	v[0] = TexturedVertex(Vec3f(x,      y,      z), 1.f, col, 0xff000000, Vec2f(u0, v0));
-	v[1] = TexturedVertex(Vec3f(x + sx, y,      z), 1.f, col, 0xff000000, Vec2f(u1, v1));
-	v[2] = TexturedVertex(Vec3f(x,      y + sy, z), 1.f, col, 0xff000000, Vec2f(u2, v2));
-	v[3] = TexturedVertex(Vec3f(x + sx, y + sy, z), 1.f, col, 0xff000000, Vec2f(u3, v3));	
+	v[0] = TexturedVertex(Vec3f(x,      y,      z), 1.f, col, Vec2f(u0, v0));
+	v[1] = TexturedVertex(Vec3f(x + sx, y,      z), 1.f, col, Vec2f(u1, v1));
+	v[2] = TexturedVertex(Vec3f(x,      y + sy, z), 1.f, col, Vec2f(u2, v2));
+	v[3] = TexturedVertex(Vec3f(x + sx, y + sy, z), 1.f, col, Vec2f(u3, v3));
 	SetTextureDrawPrim(tex, v, Renderer::TriangleStrip);
 }
 
@@ -260,9 +260,9 @@ void EERIEDrawBitmap2DecalY(float x, float y, float sx, float sy, float z, Textu
 		uv4.x = uv.x;
 	}	
 
-	v[0] = TexturedVertex(Vec3f(x,      y + fDy, z), 1.f, col, 0xFF000000, uv1);
-	v[1] = TexturedVertex(Vec3f(x + sx, y + fDy, z), 1.f, col, 0xFF000000, uv2);
-	v[2] = TexturedVertex(Vec3f(x + sx, y + sy,  z), 1.f, col, 0xFF000000, uv3);
-	v[3] = TexturedVertex(Vec3f(x,      y + sy,  z), 1.f, col, 0xFF000000, uv4);
+	v[0] = TexturedVertex(Vec3f(x,      y + fDy, z), 1.f, col, uv1);
+	v[1] = TexturedVertex(Vec3f(x + sx, y + fDy, z), 1.f, col, uv2);
+	v[2] = TexturedVertex(Vec3f(x + sx, y + sy,  z), 1.f, col, uv3);
+	v[3] = TexturedVertex(Vec3f(x,      y + sy,  z), 1.f, col, uv4);
 	SetTextureDrawPrim(tex, v, Renderer::TriangleFan);
 }

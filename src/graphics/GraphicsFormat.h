@@ -95,7 +95,6 @@ struct SavedTextureVertex {
 		a.p.x = pos.x, a.p.y = pos.y, a.p.z = pos.z;
 		a.rhw = rhw;
 		a.color = color;
-		a.specular = specular;
 		a.uv.x = tu;
 		a.uv.y = tv;
 		return a;
@@ -105,7 +104,7 @@ struct SavedTextureVertex {
 		pos.x = b.p.x, pos.y = b.p.y, pos.z = b.p.z;
 		rhw = b.rhw;
 		color = b.color;
-		specular = b.specular;
+		specular = 0xFF000000; // TODO unused
 		tu = b.uv.x;
 		tv = b.uv.y;
 		return *this;

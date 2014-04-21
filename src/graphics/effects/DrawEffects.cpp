@@ -85,13 +85,10 @@ void AddToShadowBatch(TexturedVertex * _pVertex1, TexturedVertex * _pVertex2, Te
 	EE_P(&_pVertex2->p, &pPointAdd[1]);
 	EE_P(&_pVertex3->p, &pPointAdd[2]);
 	pPointAdd[0].color = _pVertex1->color;
-	pPointAdd[0].specular = _pVertex1->specular;
 	pPointAdd[0].uv = _pVertex1->uv;
 	pPointAdd[1].color = _pVertex2->color;
-	pPointAdd[1].specular = _pVertex2->specular;
 	pPointAdd[1].uv = _pVertex2->uv;
 	pPointAdd[2].color = _pVertex3->color;
-	pPointAdd[2].specular = _pVertex3->specular;
 	pPointAdd[2].uv = _pVertex3->uv;
 
 	g_shadowBatch.push_back(pPointAdd[0]);
@@ -125,10 +122,10 @@ void ARXDRAW_DrawInterShadows()
 			TexturedVertex in;
 
 			TexturedVertex ltv[4];
-			ltv[0] = TexturedVertex(Vec3f(0, 0, 0.001f), 1.f, 0, 1, Vec2f(0.3f, 0.3f));
-			ltv[1] = TexturedVertex(Vec3f(0, 0, 0.001f), 1.f, 0, 1, Vec2f(0.7f, 0.3f));
-			ltv[2] = TexturedVertex(Vec3f(0, 0, 0.001f), 1.f, 0, 1, Vec2f(0.7f, 0.7f));
-			ltv[3] = TexturedVertex(Vec3f(0, 0, 0.001f), 1.f, 0, 1, Vec2f(0.3f, 0.7f));
+			ltv[0] = TexturedVertex(Vec3f(0, 0, 0.001f), 1.f, 0, Vec2f(0.3f, 0.3f));
+			ltv[1] = TexturedVertex(Vec3f(0, 0, 0.001f), 1.f, 0, Vec2f(0.7f, 0.3f));
+			ltv[2] = TexturedVertex(Vec3f(0, 0, 0.001f), 1.f, 0, Vec2f(0.7f, 0.7f));
+			ltv[3] = TexturedVertex(Vec3f(0, 0, 0.001f), 1.f, 0, Vec2f(0.3f, 0.7f));
 
 			if(io->obj->nbgroups <= 1) {
 				for(size_t k=0; k < io->obj->vertexlist.size(); k += 9) {
@@ -288,7 +285,6 @@ void ARXDRAW_DrawPolyBoom()
 				ltv[k].uv.x=pb->u[k];
 				ltv[k].uv.y=pb->v[k];
 				ltv[k].color = (Project.improve ? (Color3f::red * (tt*.5f)) : Color3f::gray(tt)).toBGR();
-				ltv[k].specular = Color::black.toBGR();
 			}
 			
 			if(Project.improve) {
@@ -320,7 +316,6 @@ void ARXDRAW_DrawPolyBoom()
 				ltv[k].uv.x=(pb->u[k]-0.5f)*(tr)+0.5f;
 				ltv[k].uv.y=(pb->v[k]-0.5f)*(tr)+0.5f;
 				ltv[k].color = col;
-				ltv[k].specular = Color::black.toBGR();
 			}
 			
 			mat.setWrapMode(TextureStage::WrapClamp);
@@ -350,7 +345,6 @@ void ARXDRAW_DrawPolyBoom()
 				ltv[k].uv.x=(pb->u[k]-0.5f)*(tr)+0.5f;
 				ltv[k].uv.y=(pb->v[k]-0.5f)*(tr)+0.5f;
 				ltv[k].color=col;
-				ltv[k].specular=0xFF000000;
 			}
 
 			if (	(ltv[0].uv.x<0.f)

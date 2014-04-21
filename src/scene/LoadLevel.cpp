@@ -1082,7 +1082,6 @@ void RestoreLastLoadedLightning()
 					pos++;
 					dc = dc | 0xFF000000;
 					ep->tv[k].color = ep->v[k].color = dc;
-					ep->tv[k].specular = ep->v[k].specular = 0xFF000000;
 					bcount--;
 
 					if(bcount <= 0)

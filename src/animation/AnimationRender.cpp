@@ -482,13 +482,10 @@ void drawTriangle(const RenderMaterial & mat, const TexturedVertex * vertices) {
 	EE_P(&vertices[1].p, &projected[1]);
 	EE_P(&vertices[2].p, &projected[2]);
 	projected[0].color = vertices[0].color;
-	projected[0].specular = vertices[0].specular;
 	projected[0].uv = vertices[0].uv;
 	projected[1].color = vertices[1].color;
-	projected[1].specular = vertices[1].specular;
 	projected[1].uv = vertices[1].uv;
 	projected[2].color = vertices[2].color;
-	projected[2].specular = vertices[2].specular;
 	projected[2].uv = vertices[2].uv;
 	
 	RenderBatcher::getInstance().add(mat, projected);
