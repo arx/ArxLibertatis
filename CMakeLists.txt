@@ -619,6 +619,16 @@ set(GAME_SOURCES
 	src/game/magic/Spell.cpp
 	src/game/magic/SpellData.cpp
 	src/game/magic/SpellRecognition.cpp
+	src/game/magic/spells/SpellsLvl01.cpp
+	src/game/magic/spells/SpellsLvl02.cpp
+	src/game/magic/spells/SpellsLvl03.cpp
+	src/game/magic/spells/SpellsLvl04.cpp
+	src/game/magic/spells/SpellsLvl05.cpp
+	src/game/magic/spells/SpellsLvl06.cpp
+	src/game/magic/spells/SpellsLvl07.cpp
+	src/game/magic/spells/SpellsLvl08.cpp
+	src/game/magic/spells/SpellsLvl09.cpp
+	src/game/magic/spells/SpellsLvl10.cpp
 	src/game/spell/FlyingEye.cpp
 	src/game/spell/Cheat.cpp
 )
