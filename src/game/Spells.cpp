@@ -2867,6 +2867,66 @@ void LifeDrainSpellLaunch(long duration, long i)
 	}
 }
 
+bool SummonCreatureSpellLaunch(long i, long duration)
+{
+	spells[i].exist = true;
+	spells[i].lastupdate = spells[i].timcreation = (unsigned long)(arxtime);
+	spells[i].bDuration = true;
+	spells[i].fManaCostPerSecond = 1.9f;
+	spells[i].longinfo_summon_creature = 0;
+	spells[i].longinfo2_entity = 0;
+	spells[i].tolive = (duration > -1) ? duration : 2000000;
+	
+	Vec3f target;
+	float beta;
+	bool displace = false;
+	if(spells[i].caster == 0) {
+		target = player.basePosition();
+		beta = player.angle.getPitch();
+		displace = true;
+	} else {
+		target = entities[spells[i].caster]->pos;
+		beta = entities[spells[i].caster]->angle.getPitch();
+		displace = (entities[spells[i].caster]->ioflags & IO_NPC) == IO_NPC;
+	}
+	if(displace) {
+		target.x -= std::sin(radians(MAKEANGLE(beta))) * 300.f;
+		target.z += std::cos(radians(MAKEANGLE(beta))) * 300.f;
+	}
+	
+	if(!ARX_INTERACTIVE_ConvertToValidPosForIO(NULL, &target)) {
+		spells[i].exist = false;
+		ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE);
+		return false;
+	}
+	
+	spells[i].fdata = (spells[i].caster == 0 && cur_mega == 10) ? 1.f : 0.f;
+	spells[i].target_pos = target;
+	ARX_SOUND_PlaySFX(SND_SPELL_SUMMON_CREATURE, &spells[i].target_pos);
+	CSummonCreature * effect = new CSummonCreature();
+	effect->spellinstance = i;
+	effect->Create(target, MAKEANGLE(player.angle.getPitch()));
+	effect->SetDuration(2000, 500, 1500);
+	effect->SetColorBorder(Color3f::red);
+	effect->SetColorRays1(Color3f::red);
+	effect->SetColorRays2(Color3f::yellow * .5f);
+	
+	effect->lLightId = GetFreeDynLight();
+	if(lightHandleIsValid(effect->lLightId)) {
+		EERIE_LIGHT * light = lightHandleGet(effect->lLightId);
+		
+		light->intensity = 0.3f;
+		light->fallend = 500.f;
+		light->fallstart = 400.f;
+		light->rgb = Color3f::red;
+		light->pos = effect->eSrc;
+	}
+	
+	spells[i].pSpellFx = effect;
+	
+	return true;
+}
+
 bool ARX_SPELLS_Launch(SpellType typ, long source, SpellcastFlags flagss, long levell, long target, long duration) {
 	
 	SpellcastFlags flags = flagss;
@@ -3349,61 +3409,9 @@ bool ARX_SPELLS_Launch(SpellType typ, long source, SpellcastFlags flagss, long l
 		//****************************************************************************
 		// LEVEL 9
 		case SPELL_SUMMON_CREATURE: {
-			
-			spells[i].exist = true;
-			spells[i].lastupdate = spells[i].timcreation = (unsigned long)(arxtime);
-			spells[i].bDuration = true;
-			spells[i].fManaCostPerSecond = 1.9f;
-			spells[i].longinfo_summon_creature = 0;
-			spells[i].longinfo2_entity = 0;
-			spells[i].tolive = (duration > -1) ? duration : 2000000;
-			
-			Vec3f target;
-			float beta;
-			bool displace = false;
-			if(spells[i].caster == 0) {
-				target = player.basePosition();
-				beta = player.angle.getPitch();
-				displace = true;
-			} else {
-				target = entities[spells[i].caster]->pos;
-				beta = entities[spells[i].caster]->angle.getPitch();
-				displace = (entities[spells[i].caster]->ioflags & IO_NPC) == IO_NPC;
-			}
-			if(displace) {
-				target.x -= std::sin(radians(MAKEANGLE(beta))) * 300.f;
-				target.z += std::cos(radians(MAKEANGLE(beta))) * 300.f;
-			}
-			
-			if(!ARX_INTERACTIVE_ConvertToValidPosForIO(NULL, &target)) {
-				spells[i].exist = false;
-				ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE);
+			bool result = SummonCreatureSpellLaunch(i, duration);
+			if(!result)
 				return false;
-			}
-			
-			spells[i].fdata = (spells[i].caster == 0 && cur_mega == 10) ? 1.f : 0.f;
-			spells[i].target_pos = target;
-			ARX_SOUND_PlaySFX(SND_SPELL_SUMMON_CREATURE, &spells[i].target_pos);
-			CSummonCreature * effect = new CSummonCreature();
-			effect->spellinstance = i;
-			effect->Create(target, MAKEANGLE(player.angle.getPitch()));
-			effect->SetDuration(2000, 500, 1500);
-			effect->SetColorBorder(Color3f::red);
-			effect->SetColorRays1(Color3f::red);
-			effect->SetColorRays2(Color3f::yellow * .5f);
-			
-			effect->lLightId = GetFreeDynLight();
-			if(lightHandleIsValid(effect->lLightId)) {
-				EERIE_LIGHT * light = lightHandleGet(effect->lLightId);
-				
-				light->intensity = 0.3f;
-				light->fallend = 500.f;
-				light->fallstart = 400.f;
-				light->rgb = Color3f::red;
-				light->pos = effect->eSrc;
-			}
-			
-			spells[i].pSpellFx = effect;
 			
 			break;
 		}
