@@ -196,7 +196,10 @@ void ARX_INPUT_Release() {
 	GInput = NULL;
 }
 
-Input::Input() : backend(NULL) {
+Input::Input()
+	: backend(NULL)
+	, mouseInWindow(false)
+{
 	setMouseSensitivity(2);
 	reset();
 }
