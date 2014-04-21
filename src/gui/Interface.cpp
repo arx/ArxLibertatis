@@ -6082,6 +6082,11 @@ private:
 	}
 	
 public:
+	ActiveSpellsGui()
+		: m_texUnknown(NULL)
+		, currpos(0.f)
+	{}
+	
 	void init() {
 		m_texUnknown = TextureContainer::Load("graph/interface/icons/spell_unknown");
 		arx_assert(m_texUnknown);
@@ -6133,7 +6138,7 @@ public:
 		update();
 	}
 };
-ActiveSpellsGui activeSpellsGui;
+ActiveSpellsGui activeSpellsGui = ActiveSpellsGui();
 
 /*!
  * \brief Damaged Equipment Drawing
