@@ -804,16 +804,18 @@ void ARX_SPELLS_ManageMagic() {
 
 	snip++;
 
-	if (!(player.Current_Movement & PLAYER_CROUCH) && (!BLOCK_PLAYER_CONTROLS &&
-		(GInput->actionPressed(CONTROLS_CUST_MAGICMODE))) && !PLAYER_PARALYSED)
-	{
+	if(   !(player.Current_Movement & PLAYER_CROUCH)
+	   && !BLOCK_PLAYER_CONTROLS
+	   && GInput->actionPressed(CONTROLS_CUST_MAGICMODE)
+	   && !PLAYER_PARALYSED
+	) {
 		if(player.Interface & INTER_COMBATMODE) {
 			WILLRETURNTOCOMBATMODE = true;
 
 			ARX_INTERFACE_Combat_Mode(0);
 
 			ResetAnim(&io->animlayer[1]);
-			io->animlayer[1].flags&=~EA_LOOP;
+			io->animlayer[1].flags &= ~EA_LOOP;
 		}
 
 		if(TRUE_PLAYER_MOUSELOOK_ON) {
@@ -831,7 +833,7 @@ void ARX_SPELLS_ManageMagic() {
 		
 		if(snip >= 2) {
 			if(!(EERIEMouseButton & 1) && ARX_FLARES_broken == 0) {
-				ARX_FLARES_broken=2;
+				ARX_FLARES_broken = 2;
 				PIPOrgb++;
 
 				if(PIPOrgb > 2)
@@ -849,7 +851,7 @@ void ARX_SPELLS_ManageMagic() {
 				if(!ARX_FLARES_broken)
 					FlareLine(pos2, pos);
 
-				if(rnd()>0.6)
+				if(rnd() > 0.6)
 					AddFlare(pos, 1.f, -1);
 				else
 					AddFlare(pos, 1.f, 3);
@@ -869,10 +871,10 @@ void ARX_SPELLS_ManageMagic() {
 				ARX_SOUND_Stop(SND_MAGIC_DRAW);				
 			}
 			
-			snip=0;
+			snip = 0;
 		}
 	} else {
-		ARX_FLARES_broken=1;
+		ARX_FLARES_broken = 1;
 		PIPOrgb++;
 
 		if(PIPOrgb > 2)
@@ -887,7 +889,6 @@ void ARX_SPELLS_ManageMagic() {
 		}
 	}
 	
-
 	if(ARX_FLARES_broken == 3) {
 		cur_arm=0;
 		cur_mega=0;
@@ -922,18 +923,18 @@ void ARX_SPELLS_ManageMagic() {
 			}
 		}
 
-		ARX_FLARES_broken=1;
+		ARX_FLARES_broken = 1;
 
 		if(WILLRETURNTOCOMBATMODE) {
-			player.Interface|=INTER_COMBATMODE;
-			player.Interface|=INTER_NO_STRIKE;
+			player.Interface |= INTER_COMBATMODE;
+			player.Interface |= INTER_NO_STRIKE;
 
 			ARX_EQUIPMENT_LaunchPlayerReadyWeapon();
-			player.doingmagic=0;
+			player.doingmagic = 0;
 			WILLRETURNTOCOMBATMODE = false;
 
 			TRUE_PLAYER_MOUSELOOK_ON = true;
-			bRenderInCursorMode=false;
+			bRenderInCursorMode = false;
 		}
 
 		if(WILLRETURNTOFREELOOK) {
