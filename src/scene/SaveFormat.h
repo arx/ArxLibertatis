@@ -1001,6 +1001,8 @@ struct SavedTransform {
 		EERIE_TRANSFORM a;
 		a.pos = pos.toVec3();
 		a.ycos = ycos, a.ysin = ysin, a.xsin = xsin, a.xcos = xcos;
+		a.zcos = .1f;
+		a.zsin = 0.f;
 		a.mod.x = xmod, a.mod.y = ymod;
 		return a;
 	}
