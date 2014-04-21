@@ -2394,6 +2394,48 @@ void DisarmTrapSpellLaunch(long i)
 	}
 }
 
+bool SlowDownSpellLaunch(long duration, long i)
+{
+	long target = spells[i].target;
+	
+	Entity * io = entities[target];
+	
+	boost::container::flat_set<long>::const_iterator it;
+	for(it = io->spellsOn.begin(); it != io->spellsOn.end(); ++it) {
+		long spellHandle = *it;
+		if(spellHandleIsValid(spellHandle)) {
+			SPELL * spell = &spells[spellHandle];
+			
+			if(spell->type == SPELL_SLOW_DOWN) {
+				spell->exist = false;
+				return false;
+			}
+		}
+	}
+	
+	ARX_SOUND_PlaySFX(SND_SPELL_SLOW_DOWN, &entities[spells[i].target]->pos);
+	
+	spells[i].exist = true;
+	spells[i].tolive = (spells[i].caster == 0) ? 10000000 : 10000;
+	if(duration > -1) {
+		spells[i].tolive=duration;
+	}
+	spells[i].pSpellFx = NULL;
+	spells[i].bDuration = true;
+	spells[i].fManaCostPerSecond = 1.2f;
+	
+	CSlowDown * effect = new CSlowDown();
+	effect->spellinstance = i;
+	effect->Create(spells[i].target_pos, MAKEANGLE(player.angle.getPitch()));
+	effect->SetDuration(spells[i].tolive);
+	spells[i].pSpellFx = effect;
+	spells[i].tolive = effect->GetDuration();
+	
+	ARX_SPELLS_AddSpellOn(target, i);
+	
+	return true;
+}
+
 bool ARX_SPELLS_Launch(SpellType typ, long source, SpellcastFlags flagss, long levell, long target, long duration) {
 	
 	SpellcastFlags flags = flagss;
@@ -2820,42 +2862,9 @@ bool ARX_SPELLS_Launch(SpellType typ, long source, SpellcastFlags flagss, long l
 			break;
 		}
 		case SPELL_SLOW_DOWN: {
-			long target = spells[i].target;
-			
-			Entity * io = entities[target];
-			
-			boost::container::flat_set<long>::const_iterator it;
-			for(it = io->spellsOn.begin(); it != io->spellsOn.end(); ++it) {
-				long spellHandle = *it;
-				if(spellHandleIsValid(spellHandle)) {
-					SPELL * spell = &spells[spellHandle];
-					
-					if(spell->type == SPELL_SLOW_DOWN) {
-						spell->exist = false;
-						return false;
-					}
-				}
-			}
-			
-			ARX_SOUND_PlaySFX(SND_SPELL_SLOW_DOWN, &entities[spells[i].target]->pos);
-			
-			spells[i].exist = true;
-			spells[i].tolive = (spells[i].caster == 0) ? 10000000 : 10000;
-			if(duration > -1) {
-				spells[i].tolive=duration;
-			}
-			spells[i].pSpellFx = NULL;
-			spells[i].bDuration = true;
-			spells[i].fManaCostPerSecond = 1.2f;
-			
-			CSlowDown * effect = new CSlowDown();
-			effect->spellinstance = i;
-			effect->Create(spells[i].target_pos, MAKEANGLE(player.angle.getPitch()));
-			effect->SetDuration(spells[i].tolive);
-			spells[i].pSpellFx = effect;
-			spells[i].tolive = effect->GetDuration();
-			
-			ARX_SPELLS_AddSpellOn(target, i);
+			bool result = SlowDownSpellLaunch(duration, i);
+			if(!result)
+				return false;
 			
 			break;
 		}
