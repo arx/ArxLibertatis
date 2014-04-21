@@ -1954,15 +1954,11 @@ Entity * ARX_SCRIPT_Get_IO_Max_Events() {
 		}
 	}
 	
-	if(max <= 0) {
-		return NULL;
-	}
-	
 	if(ionum > -1) {
 		return entities[ionum];
+	} else {
+		return NULL;
 	}
-	
-	return NULL;
 }
 
 Entity * ARX_SCRIPT_Get_IO_Max_Events_Sent() {
@@ -1976,15 +1972,11 @@ Entity * ARX_SCRIPT_Get_IO_Max_Events_Sent() {
 		}
 	}
 	
-	if(max <= 0) {
-		return NULL;
-	}
-	
 	if(ionum > -1) {
 		return entities[ionum];
+	} else {
+		return NULL;
 	}
-	
-	return NULL;
 }
 
 void ManageCasseDArme(Entity * io)
