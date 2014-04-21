@@ -4187,7 +4187,10 @@ private:
 	
 public:
 	HitStrengthGauge()
-		: m_intensity(0.f)
+		: m_emptyTex(NULL)
+		, m_fullTex(NULL)
+		, m_hitTex(NULL)
+		, m_intensity(0.f)
 		, bHitFlash(false)
 		, ulHitFlash(0)
 		, m_flashIntensity(0.f)
