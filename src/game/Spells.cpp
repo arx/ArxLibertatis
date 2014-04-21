@@ -2436,6 +2436,57 @@ bool SlowDownSpellLaunch(long duration, long i)
 	return true;
 }
 
+bool FlyingEyeSpellLaunch(long i, TextureContainer * tc4)
+{
+	if(spells[i].caster == 0) {
+		spells[i].target = 0;
+	}
+	
+	if(spells[i].target != 0) {
+		return false;
+	}
+	
+	ARX_SOUND_PlaySFX(SND_SPELL_EYEBALL_IN);
+	
+	spells[i].exist = true;
+	spells[i].lastupdate = spells[i].timcreation = (unsigned long)(arxtime);
+	spells[i].tolive = 1000000;
+	spells[i].bDuration = true;
+	spells[i].fManaCostPerSecond = 3.2f;
+	eyeball.exist = 1;
+	float angleb = MAKEANGLE(player.angle.getPitch());
+	eyeball.pos.x = player.pos.x - std::sin(radians(angleb)) * 200.f;
+	eyeball.pos.y = player.pos.y + 50.f;
+	eyeball.pos.z = player.pos.z + std::cos(radians(angleb)) * 200.f;
+	eyeball.angle = player.angle;
+	
+	for(long n = 0; n < 12; n++) {
+		
+		PARTICLE_DEF * pd = createParticle();
+		if(!pd) {
+			continue;
+		}
+		
+		pd->ov = eyeball.pos + randomVec(-5.f, 5.f);
+		pd->move = randomVec(-2.f, 2.f);
+		pd->siz = 28.f;
+		pd->tolive = Random::get(2000, 6000);
+		pd->scale = Vec3f(12.f);
+		pd->tc = tc4;
+		pd->special = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION
+		              | DISSIPATING;
+		pd->fparam = 0.0000001f;
+		pd->rgb = Color3f(0.7f, 0.7f, 1.f);
+	}
+	
+	TRUE_PLAYER_MOUSELOOK_ON = true;
+	SLID_START = float(arxtime);
+	bOldLookToggle = config.input.mouseLookToggle;
+	config.input.mouseLookToggle = true;
+	
+	return true;
+}
+
 bool ARX_SPELLS_Launch(SpellType typ, long source, SpellcastFlags flagss, long levell, long target, long duration) {
 	
 	SpellcastFlags flags = flagss;
@@ -2871,52 +2922,9 @@ bool ARX_SPELLS_Launch(SpellType typ, long source, SpellcastFlags flagss, long l
 		//****************************************************************************
 		// LEVEL 7
 		case SPELL_FLYING_EYE: {
-			
-			if(spells[i].caster == 0) {
-				spells[i].target = 0;
-			}
-			
-			if(spells[i].target != 0) {
+			bool result = FlyingEyeSpellLaunch(i, tc4);
+			if(!result)
 				return false;
-			}
-			
-			ARX_SOUND_PlaySFX(SND_SPELL_EYEBALL_IN);
-			
-			spells[i].exist = true;
-			spells[i].lastupdate = spells[i].timcreation = (unsigned long)(arxtime);
-			spells[i].tolive = 1000000;
-			spells[i].bDuration = true;
-			spells[i].fManaCostPerSecond = 3.2f;
-			eyeball.exist = 1;
-			float angleb = MAKEANGLE(player.angle.getPitch());
-			eyeball.pos.x = player.pos.x - std::sin(radians(angleb)) * 200.f;
-			eyeball.pos.y = player.pos.y + 50.f;
-			eyeball.pos.z = player.pos.z + std::cos(radians(angleb)) * 200.f;
-			eyeball.angle = player.angle;
-			
-			for(long n = 0; n < 12; n++) {
-				
-				PARTICLE_DEF * pd = createParticle();
-				if(!pd) {
-					continue;
-				}
-				
-				pd->ov = eyeball.pos + randomVec(-5.f, 5.f);
-				pd->move = randomVec(-2.f, 2.f);
-				pd->siz = 28.f;
-				pd->tolive = Random::get(2000, 6000);
-				pd->scale = Vec3f(12.f);
-				pd->tc = tc4;
-				pd->special = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION
-				              | DISSIPATING;
-				pd->fparam = 0.0000001f;
-				pd->rgb = Color3f(0.7f, 0.7f, 1.f);
-			}
-			
-			TRUE_PLAYER_MOUSELOOK_ON = true;
-			SLID_START = float(arxtime);
-			bOldLookToggle = config.input.mouseLookToggle;
-			config.input.mouseLookToggle = true;
 			
 			break;
 		}
