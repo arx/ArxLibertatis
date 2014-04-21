@@ -20,4 +20,12 @@
 #ifndef ARX_GAME_MAGIC_SPELLS_SPELLSLVL07_H
 #define ARX_GAME_MAGIC_SPELLS_SPELLSLVL07_H
 
+#include "game/Spells.h"
+
+bool FlyingEyeSpellLaunch(long i, TextureContainer * tc4);
+void FireFieldSpellLaunch(long i, SpellType typ, long duration);
+void IceFieldSpellLaunch(long i, long duration, SpellType typ);
+void LightningStrikeSpellLaunch(long i);
+void ConfuseSpellLaunch(long i, bool & notifyAll, long duration);
+
 #endif // ARX_GAME_MAGIC_SPELLS_SPELLSLVL07_H
