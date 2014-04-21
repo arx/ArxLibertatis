@@ -129,7 +129,7 @@ void ARX_PARTICLES_Spawn_Lava_Burn(Vec3f * poss, Entity * io) {
 	if(io && io->obj && !io->obj->facelist.empty()) {
 		size_t num = 0;
 		long notok = 10;
-		while(notok--) {
+		while(notok-- > 0) {
 			num = Random::get(0, io->obj->facelist.size() - 1);
 			if(io->obj->facelist[num].facetype & POLY_HIDE) {
 				continue;
@@ -137,12 +137,10 @@ void ARX_PARTICLES_Spawn_Lava_Burn(Vec3f * poss, Entity * io) {
 			if(EEfabs(pos.y-io->obj->vertexlist3[io->obj->facelist[num].vid[0]].v.y) > 50.f) {
 				continue;
 			}
-			notok = 0;
+			notok = -1;
 		}
-		// TODO notok is always -1 here!
-		if(notok >= 0) {
-			pos = io->obj->vertexlist3[io->obj->facelist[num].vid[0]].v;
-		}
+		
+		pos = io->obj->vertexlist3[io->obj->facelist[num].vid[0]].v;
 	}
 	
 	PARTICLE_DEF * pd = createParticle();
