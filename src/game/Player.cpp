@@ -2797,7 +2797,7 @@ void ARX_GAME_Reset(long type) {
 
 	ARX_PLAYER_Reset_Fall();
 
-	player.levitate = 0;
+	player.levitate = false;
 	Project.telekinesis = 0;
 	player.onfirmground = false;
 	TRUE_FIRM_GROUND = 0;

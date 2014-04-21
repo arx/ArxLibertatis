@@ -2407,7 +2407,7 @@ bool ARX_SPELLS_Launch(SpellType typ, long source, SpellcastFlags flagss, long l
 			if(spells[i].target == 0) {
 				target = player.pos + Vec3f(0.f, 150.f, 0.f);
 				spells[i].tolive = 200000000;
-				player.levitate = 1;
+				player.levitate = true;
 			} else {
 				target = entities[spells[i].target]->pos;
 			}
@@ -3898,7 +3898,7 @@ void ARX_SPELLS_Update_End(size_t i) {
 			ARX_SPELLS_RemoveSpellOn(spells[i].target, i);
 			
 			if(spells[i].target == 0)
-				player.levitate = 0;
+				player.levitate = false;
 			
 			break;
 		}
@@ -4440,7 +4440,7 @@ void ARX_SPELLS_Update_Update(size_t i, unsigned long tim) {
 				target.x=player.pos.x;
 				target.y=player.pos.y+150.f;
 				target.z=player.pos.z;
-				player.levitate=1;
+				player.levitate = true;
 			} else {
 				target.x = entities[spells[i].caster]->pos.x;
 				target.y = entities[spells[i].caster]->pos.y;

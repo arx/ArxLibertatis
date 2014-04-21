@@ -144,7 +144,7 @@ struct ARXCHARACTER {
 	JumpPhase jumpphase;
 	
 	short climbing;
-	short levitate;
+	bool levitate;
 	
 	Anglef desiredangle;
 	Vec3f size;
