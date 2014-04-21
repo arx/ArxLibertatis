@@ -1863,10 +1863,6 @@ bool ARX_SPELLS_Launch(SpellType typ, long source, SpellcastFlags flagss, long l
 				spells[idx].tolive = 0;
 			}
 			
-			if(spells[i].target < 0) {
-				return false;
-			}
-			
 			long iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_ARMOR,
 			                                                   spells[i].caster);
 			if(iCancel > -1) {
