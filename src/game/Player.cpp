@@ -2217,9 +2217,14 @@ void PlayerMovementIterate(float DeltaTime) {
 		cyl.height = player.physics.cyl.height;
 		float anything2 = CheckAnythingInCylinder(&cyl, entities.player(), CFLAG_JUST_TEST | CFLAG_PLAYER); //-cyl->origin.y;
 		
-		if(anything2 > -5 && player.physics.velocity.y > (15.f/TARGET_DT) && !LAST_ON_PLATFORM
-		  && !TRUE_FIRM_GROUND && player.jumpphase == NotJumping && !player.levitate
-		  && anything > 80.f) {
+		if(   anything2 > -5
+		   && player.physics.velocity.y > (15.f/TARGET_DT)
+		   && !LAST_ON_PLATFORM
+		   && !TRUE_FIRM_GROUND
+		   && player.jumpphase == NotJumping
+		   && !player.levitate
+		   && anything > 80.f
+		) {
 			player.jumpphase = JumpDescending;
 			if(!player.falling) {
 				player.falling = true;
