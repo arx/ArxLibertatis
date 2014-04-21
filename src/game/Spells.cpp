@@ -2970,6 +2970,32 @@ bool FakeSummonSpellLaunch(long i)
 	return true;
 }
 
+void NegateMagicSpellLaunch(long duration, long i)
+{
+	if(spells[i].caster == 0) {
+		spells[i].target = 0;
+	}
+	
+	ARX_SOUND_PlaySFX(SND_SPELL_NEGATE_MAGIC, &entities[spells[i].target]->pos);
+	
+	spells[i].exist = true;
+	spells[i].lastupdate = spells[i].timcreation = (unsigned long)(arxtime);
+	spells[i].bDuration = true;
+	spells[i].fManaCostPerSecond = 2.f;
+	spells[i].tolive = (duration > -1) ? duration : 1000000;
+	
+	CNegateMagic * effect = new CNegateMagic();
+	effect->spellinstance = i;
+	effect->Create(spells[i].target_pos, MAKEANGLE(entities[spells[i].target]->angle.getPitch()));
+	effect->SetDuration(spells[i].tolive);
+	spells[i].pSpellFx = effect;
+	spells[i].tolive = effect->GetDuration();
+	
+	if(ValidIONum(spells[i].target)) {
+		LaunchAntiMagicField(i);
+	}
+}
+
 bool ARX_SPELLS_Launch(SpellType typ, long source, SpellcastFlags flagss, long levell, long target, long duration) {
 	
 	SpellcastFlags flags = flagss;
@@ -3466,29 +3492,7 @@ bool ARX_SPELLS_Launch(SpellType typ, long source, SpellcastFlags flagss, long l
 			break;
 		}
 		case SPELL_NEGATE_MAGIC: {
-			if(spells[i].caster == 0) {
-				spells[i].target = 0;
-			}
-			
-			ARX_SOUND_PlaySFX(SND_SPELL_NEGATE_MAGIC, &entities[spells[i].target]->pos);
-			
-			spells[i].exist = true;
-			spells[i].lastupdate = spells[i].timcreation = (unsigned long)(arxtime);
-			spells[i].bDuration = true;
-			spells[i].fManaCostPerSecond = 2.f;
-			spells[i].tolive = (duration > -1) ? duration : 1000000;
-			
-			CNegateMagic * effect = new CNegateMagic();
-			effect->spellinstance = i;
-			effect->Create(spells[i].target_pos, MAKEANGLE(entities[spells[i].target]->angle.getPitch()));
-			effect->SetDuration(spells[i].tolive);
-			spells[i].pSpellFx = effect;
-			spells[i].tolive = effect->GetDuration();
-			
-			if(ValidIONum(spells[i].target)) {
-				LaunchAntiMagicField(i);
-			}
-			
+			NegateMagicSpellLaunch(duration, i);
 			break;
 		}
 		case SPELL_INCINERATE: {
