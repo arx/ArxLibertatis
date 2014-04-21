@@ -20,4 +20,13 @@
 #ifndef ARX_GAME_MAGIC_SPELLS_SPELLSLVL04_H
 #define ARX_GAME_MAGIC_SPELLS_SPELLSLVL04_H
 
+#include "game/Spells.h"
+
+void BlessSpellLaunch(long i, long duration, SpellType typ);
+void DispellFieldSpellLaunch(long i);
+void FireProtectionSpellLaunch(long i, SpellType typ, long duration);
+void ColdProtectionSpellLaunch(long i, long duration, SpellType typ);
+void TelekinesisSpellLaunch(long i, long duration);
+void CurseSpellLaunch(long duration, SpellType typ, long i);
+
 #endif // ARX_GAME_MAGIC_SPELLS_SPELLSLVL04_H
