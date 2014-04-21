@@ -177,10 +177,21 @@ void LaunchMagicMissileExplosion(const Vec3f & _ePos, int t = 0, long spellinsta
 	ARX_SOUND_PlaySFX(SND_SPELL_MM_HIT, &_ePos);
 }
 
-CMagicMissile::CMagicMissile() :
-	CSpellFx(),
-	eSrc(Vec3f_ZERO),
-	fColor(Color3f::white)
+CMagicMissile::CMagicMissile()
+	: CSpellFx()
+	, bExplo(false)
+	, bMove(true)
+	, eSrc(Vec3f_ZERO)
+	, eCurPos()
+	, lightIntensityFactor()
+	, iLength()
+	, iBezierPrecision()
+	, fColor(Color3f::white)
+	, fTrail()
+	, fOneOnBezierPrecision()
+	, angles()
+	, tex_mm()
+	, snd_loop()
 {
 	SetDuration(2000);
 	ulCurrentTime = ulDuration + 1;
@@ -191,9 +202,6 @@ CMagicMissile::CMagicMissile() :
 		smissile = LoadTheObj("graph/obj3d/interactive/fix_inter/fx_magic_missile/fx_magic_missile.teo");
 
 	smissile_count++;
-
-	bExplo = false;
-	bMove = true;
 }
 
 CMagicMissile::~CMagicMissile()
