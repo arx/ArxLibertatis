@@ -4907,7 +4907,7 @@ void ARX_SPELLS_Update_Update(size_t i, unsigned long tim) {
 			break;
 		}
 		case SPELL_INCINERATE: {
-			if(ValidIONum(spells[i].caster)) {
+			if(ValidIONum(spells[i].target)) {
 				ARX_SOUND_RefreshPosition(spells[i].snd_loop, entities[spells[i].target]->pos);
 			}
 			break;
