@@ -156,7 +156,7 @@ struct ARXCHARACTER {
 	
 	PlayerMovement Current_Movement;
 	PlayerMovement Last_Movement;
-	long onfirmground;
+	bool onfirmground;
 	
 	Entity * rightIO;
 	Entity * leftIO;

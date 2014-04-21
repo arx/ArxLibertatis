@@ -231,7 +231,7 @@ void ShowInfoText() {
 	
 	ss << boost::format("Jump %f %s\n")
 	% player.jumplastposition
-	% (player.onfirmground == 0 ? "OFFGRND" : "");
+	% (!player.onfirmground ? "OFFGRND" : "");
 	
 	ss << boost::format("Life %4.0f/%4.0f Mana %4.0f/%4.0f Poisoned %3.1f Hunger %4.1f\n")
 	% player.life

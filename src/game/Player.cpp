@@ -1377,7 +1377,7 @@ void ARX_PLAYER_Manage_Visual() {
 			float t;
 			EERIEPOLY * ep = CheckInPoly(player.pos.x, player.pos.y, player.pos.z, &t);
 			if(ep && io->pos.y > t - 30.f && io->pos.y < t) {
-				player.onfirmground = 1;
+				player.onfirmground = true;
 			}
 		}
 		
@@ -2132,7 +2132,7 @@ void PlayerMovementIterate(float DeltaTime) {
 				REQUEST_JUMP = 0;
 				ARX_NPC_SpawnAudibleSound(player.pos, entities.player());
 				ARX_SPEECH_Launch_No_Unicode_Seek("player_jump", entities.player());
-				player.onfirmground = 0;
+				player.onfirmground = false;
 				player.jumpphase = JumpStart;
 			}
 		}
@@ -2399,7 +2399,7 @@ void PlayerMovementIterate(float DeltaTime) {
 		}
 		
 		// Removes y velocity if on firm ground...
-		if(player.onfirmground == 1 && !player.climbing) {
+		if(player.onfirmground && !player.climbing) {
 			player.physics.velocity.y = 0.f;
 		}
 		
@@ -2417,7 +2417,9 @@ void PlayerMovementIterate(float DeltaTime) {
 		// Check if player is already on firm ground AND not moving
 		if(EEfabs(player.physics.velocity.x) < 0.001f
 		   && EEfabs(player.physics.velocity.z) < 0.001f
-		   && player.onfirmground == 1 && player.jumpphase == NotJumping) {
+		   && player.onfirmground
+		   && player.jumpphase == NotJumping
+		) {
 			moveto = player.pos;
 			goto lasuite;
 		} else {
@@ -2537,7 +2539,7 @@ void PlayerMovementIterate(float DeltaTime) {
 			moveto = player.pos + vect;
 		}
 		
-		player.onfirmground = 0;
+		player.onfirmground = false;
 	}
 	
 	if(player.pos == moveto) {
@@ -2797,7 +2799,7 @@ void ARX_GAME_Reset(long type) {
 
 	player.levitate = 0;
 	Project.telekinesis = 0;
-	player.onfirmground = 0;
+	player.onfirmground = false;
 	TRUE_FIRM_GROUND = 0;
 
 	lastposy = -99999999999.f;
