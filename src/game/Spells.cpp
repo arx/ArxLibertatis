@@ -2194,6 +2194,71 @@ void PoisonProjectileSpellLaunch(long i)
 	spells[i].tolive = effect->GetDuration();
 }
 
+bool RiseDeadSpellLaunch(SpellType typ, long i, long duration)
+{
+	long iCancel = ARX_SPELLS_GetInstanceForThisCaster(typ, spells[i].caster);
+	if(iCancel > -1) {
+		spells[iCancel].tolive = 0;
+	}
+	
+	float beta;
+	Vec3f target;
+	bool displace = true;
+	if(spells[i].caster == 0) {
+		target = player.basePosition();
+		beta = MAKEANGLE(player.angle.getPitch());
+	} else {
+		target = entities[spells[i].caster]->pos;
+		beta = MAKEANGLE(entities[spells[i].caster]->angle.getPitch());
+		displace = (entities[spells[i].caster]->ioflags & IO_NPC) == IO_NPC;
+	}
+	if(displace) {
+		target.x -= std::sin(radians(beta)) * 300.f;
+		target.z += std::cos(radians(beta)) * 300.f;
+	}
+	if(!ARX_INTERACTIVE_ConvertToValidPosForIO(NULL, &target)) {
+		ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE);
+		return false;
+	}
+	
+	spells[i].target_pos = target;
+	ARX_SOUND_PlaySFX(SND_SPELL_RAISE_DEAD, &spells[i].target_pos);
+	spells[i].exist = true;
+	// TODO this tolive value is probably never read
+	spells[i].tolive = (duration > -1) ? duration : 2000000;
+	spells[i].bDuration = true;
+	spells[i].fManaCostPerSecond = 1.2f;
+	spells[i].longinfo_entity = -1;
+	
+	CRiseDead * effect = new CRiseDead();
+	effect->spellinstance = i;
+	effect->Create(target, beta);
+	effect->SetDuration(2000, 500, 1800);
+	effect->SetColorBorder(0.5, 0.5, 0.5);
+	effect->SetColorRays1(0.5, 0.5, 0.5);
+	effect->SetColorRays2(1, 0, 0);
+	
+	if(!lightHandleIsValid(effect->lLightId)) {
+		effect->lLightId = GetFreeDynLight();
+	}
+	if(lightHandleIsValid(effect->lLightId)) {
+		EERIE_LIGHT * light = lightHandleGet(effect->lLightId);
+		
+		light->intensity = 1.3f;
+		light->fallend = 450.f;
+		light->fallstart = 380.f;
+		light->rgb = Color3f::black;
+		light->pos = target - Vec3f(0.f, 100.f, 0.f);
+		light->duration = 200;
+		light->time_creation = (unsigned long)(arxtime);
+	}
+	
+	spells[i].pSpellFx = effect;
+	spells[i].tolive = effect->GetDuration();
+	
+	return true;
+}
+
 bool ARX_SPELLS_Launch(SpellType typ, long source, SpellcastFlags flagss, long levell, long target, long duration) {
 	
 	SpellcastFlags flags = flagss;
@@ -2601,66 +2666,9 @@ bool ARX_SPELLS_Launch(SpellType typ, long source, SpellcastFlags flagss, long l
 		//****************************************************************************
 		// LEVEL 6
 		case SPELL_RISE_DEAD: {
-			
-			long iCancel = ARX_SPELLS_GetInstanceForThisCaster(typ, spells[i].caster);
-			if(iCancel > -1) {
-				spells[iCancel].tolive = 0;
-			}
-			
-			float beta;
-			Vec3f target;
-			bool displace = true;
-			if(spells[i].caster == 0) {
-				target = player.basePosition();
-				beta = MAKEANGLE(player.angle.getPitch());
-			} else {
-				target = entities[spells[i].caster]->pos;
-				beta = MAKEANGLE(entities[spells[i].caster]->angle.getPitch());
-				displace = (entities[spells[i].caster]->ioflags & IO_NPC) == IO_NPC;
-			}
-			if(displace) {
-				target.x -= std::sin(radians(beta)) * 300.f;
-				target.z += std::cos(radians(beta)) * 300.f;
-			}
-			if(!ARX_INTERACTIVE_ConvertToValidPosForIO(NULL, &target)) {
-				ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE);
+			bool result = RiseDeadSpellLaunch(typ, i, duration);
+			if(!result)
 				return false;
-			}
-			
-			spells[i].target_pos = target;
-			ARX_SOUND_PlaySFX(SND_SPELL_RAISE_DEAD, &spells[i].target_pos);
-			spells[i].exist = true;
-			// TODO this tolive value is probably never read
-			spells[i].tolive = (duration > -1) ? duration : 2000000;
-			spells[i].bDuration = true;
-			spells[i].fManaCostPerSecond = 1.2f;
-			spells[i].longinfo_entity = -1;
-			
-			CRiseDead * effect = new CRiseDead();
-			effect->spellinstance = i;
-			effect->Create(target, beta);
-			effect->SetDuration(2000, 500, 1800);
-			effect->SetColorBorder(0.5, 0.5, 0.5);
-			effect->SetColorRays1(0.5, 0.5, 0.5);
-			effect->SetColorRays2(1, 0, 0);
-			
-			if(!lightHandleIsValid(effect->lLightId)) {
-				effect->lLightId = GetFreeDynLight();
-			}
-			if(lightHandleIsValid(effect->lLightId)) {
-				EERIE_LIGHT * light = lightHandleGet(effect->lLightId);
-				
-				light->intensity = 1.3f;
-				light->fallend = 450.f;
-				light->fallstart = 380.f;
-				light->rgb = Color3f::black;
-				light->pos = target - Vec3f(0.f, 100.f, 0.f);
-				light->duration = 200;
-				light->time_creation = (unsigned long)(arxtime);
-			}
-			
-			spells[i].pSpellFx = effect;
-			spells[i].tolive = effect->GetDuration();
 			
 			break;
 		}
