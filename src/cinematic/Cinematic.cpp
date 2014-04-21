@@ -92,22 +92,44 @@ float ADJUSTY(float a) {
 	return (((((a)-(HEIGHTS>>1))*((float)HauteurRender/(float)HEIGHTS))+(HEIGHTS>>1)))*(480.f/(float)HauteurRender);  //*((float)HAUTEURS/(float)HauteurRender)
 }
 
-Cinematic::Cinematic(int _w, int _h) {
-	
+Cinematic::Cinematic(int _w, int _h)
+	: pos()
+	, angz()
+	, possuiv()
+	, angzsuiv()
+	, numbitmap(-1)
+	, numbitmapsuiv(-1)
+	, a()
+	, fx(-1)
+	, fxsuiv()
+	, changekey(true)
+	, key(NULL)
+	, projectload(false)
+	, ti(INTERP_BEZIER)
+	, tichoose(INTERP_BEZIER)
+	, force()
+	, color()
+	, colord()
+	, colorflash()
+	, speed()
+	, colorchoose()
+	, colorchoosed()
+	, colorflashchoose()
+	, speedchoose(1.f)
+	, idsound(-1)
+	, light()
+	, lightchoose()
+	, lightd()
+	, posgrille()
+	, angzgrille()
+	, posgrillesuiv()
+	, angzgrillesuiv()
+	, speedtrack()
+	, flTime()
+	, m_flIntensityRND(0.f)
+{
 	LargeurRender = _w;
 	HauteurRender = _h;
-	
-	numbitmap = -1;
-	numbitmapsuiv = -1;
-	fx = -1;
-	changekey = true;
-	idsound = -1;
-	key = NULL;
-	projectload = false; 
-	ti = tichoose = INTERP_BEZIER;
-	speedchoose = 1.f;
-	
-	m_flIntensityRND = 0.f;
 }
 
 Cinematic::~Cinematic() {
