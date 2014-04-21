@@ -2315,7 +2315,7 @@ static void SceneAddObjToBackground(EERIE_3DOBJ * eobj) {
 				}
 
 				if(i == 0) {
-					memcpy(&epp, &ep, sizeof(EERIEPOLY));
+					epp = ep;
 					epp.type = 0;
 				}
 				else if(i == 1)
