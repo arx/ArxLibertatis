@@ -143,7 +143,7 @@ struct ARXCHARACTER {
 	float jumplastposition;
 	JumpPhase jumpphase;
 	
-	short climbing;
+	bool climbing;
 	bool levitate;
 	
 	Anglef desiredangle;

@@ -2049,7 +2049,7 @@ bool Valid_Jump_Pos() {
 	}
 	
 	if(COLLIDED_CLIMB_POLY) {
-		player.climbing = 1;
+		player.climbing = true;
 		return true;
 	}
 	
@@ -2170,7 +2170,7 @@ void PlayerMovementIterate(float DeltaTime) {
 			
 			if(player.physics.cyl.height == player.levitateHeight()) {
 				levitate = CFLAG_LEVITATE;
-				player.climbing = 0;
+				player.climbing = false;
 				bGCroucheToggle = false;
 				player.Current_Movement &= ~PLAYER_CROUCH;
 			}
@@ -2457,7 +2457,7 @@ void PlayerMovementIterate(float DeltaTime) {
 												   CFLAG_EASY_SLIDING | CFLAG_CLIMBING | CFLAG_PLAYER);
 				
 				if(!COLLIDED_CLIMB_POLY) {
-					player.climbing = 0;
+					player.climbing = false;
 				}
 			} else {
 				test = ARX_COLLISION_Move_Cylinder(&player.physics, entities.player(),
@@ -2498,7 +2498,7 @@ void PlayerMovementIterate(float DeltaTime) {
 			}
 			
 			if(COLLIDED_CLIMB_POLY) {
-				player.climbing = 1;
+				player.climbing = true;
 			}
 			
 			if(player.climbing) {
@@ -2507,11 +2507,11 @@ void PlayerMovementIterate(float DeltaTime) {
 				   && !(player.Current_Movement & PLAYER_MOVE_WALK_FORWARD)
 				   && !(player.Current_Movement & PLAYER_MOVE_WALK_BACKWARD)
 				) {
-					player.climbing = 0;
+					player.climbing = false;
 				}
 				
 				if((player.Current_Movement & PLAYER_MOVE_WALK_BACKWARD) && !test) {
-					player.climbing = 0;
+					player.climbing = false;
 				}
 				
 				if(player.climbing) {
@@ -2523,7 +2523,7 @@ void PlayerMovementIterate(float DeltaTime) {
 			}
 			
 			if(player.jumpphase == JumpAscending) {
-				player.climbing = 0;
+				player.climbing = false;
 			}
 			
 			moveto = player.physics.cyl.origin + player.baseOffset();
