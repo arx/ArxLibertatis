@@ -138,7 +138,9 @@ TextureContainer::TextureContainer(const res::path & strName, TCFlags flags) : m
 	userflags = 0;
 	TextureRefinement = NULL;
 	TextureHalo = NULL;
-
+	
+	m_pNext = NULL;
+	
 	// Add the texture to the head of the global texture list
 	if(!(flags & NoInsert)) {
 		m_pNext = g_ptcTextureList;
