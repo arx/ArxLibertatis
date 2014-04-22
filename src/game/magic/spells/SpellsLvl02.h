@@ -26,6 +26,8 @@ void HealSpellLaunch(long i, long duration);
 void DetectTrapSpellLaunch(long i, SpellType typ);
 void ArmorSpellLaunch(SpellType typ, long duration, long i);
 void LowerArmorSpellLaunch(SpellType typ, long duration, long i);
+
 void HarmSpellLaunch(long duration, long i);
+void HarmSpellKill(long i);
 
 #endif // ARX_GAME_MAGIC_SPELLS_SPELLSLVL02_H

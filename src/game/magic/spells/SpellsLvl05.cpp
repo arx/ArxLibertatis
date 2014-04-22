@@ -152,6 +152,19 @@ void RepelUndeadSpellLaunch(long duration, long i)
 	spells[i].tolive = effect->GetDuration();
 }
 
+void RepelUndeadSpellKill(long i)
+{
+	if(lightHandleIsValid(spells[i].longinfo_light)) {
+		EERIE_LIGHT * light = lightHandleGet(spells[i].longinfo_light);
+		
+		light->duration = 200;
+		light->time_creation = (unsigned long)(arxtime);
+	}
+	spells[i].longinfo_light = -1;
+	
+	ARX_SOUND_Stop(spells[i].snd_loop);
+}
+
 void PoisonProjectileSpellLaunch(long i)
 {
 	ARX_SOUND_PlaySFX(SND_SPELL_POISON_PROJECTILE_LAUNCH,

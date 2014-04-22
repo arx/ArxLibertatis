@@ -152,6 +152,17 @@ void FireballSpellLaunch(long i)
 	                                       ARX_SOUND_PLAY_LOOPED);
 }
 
+void FireballSpellKill(long i)
+{
+	if(lightHandleIsValid(spells[i].longinfo_light)) {
+		EERIE_LIGHT * light = lightHandleGet(spells[i].longinfo_light);
+		
+		light->duration = 500;
+		light->time_creation = (unsigned long)(arxtime);
+	}
+	spells[i].longinfo_light = -1;
+}
+
 void CreateFoodSpellLaunch(long duration, long i)
 {
 	ARX_SOUND_PlaySFX(SND_SPELL_CREATE_FOOD, &spells[i].caster_pos);

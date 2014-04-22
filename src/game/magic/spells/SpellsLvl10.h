@@ -23,6 +23,8 @@
 #include "game/Spells.h"
 
 void MassLightningStrikeSpellLaunch(long i, SpellType typ);
+void MassLightningStrikeSpellKill(long i);
+
 bool ControlTargetSpellLaunch(long i);
 void FreezeTimeSpellLaunch(long duration, long i);
 void MassIncinerateSpellLaunch(long i);

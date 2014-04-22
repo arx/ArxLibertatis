@@ -22,7 +22,10 @@
 
 void SpeedSpellLaunch(long i, long duration);
 void DispellIllusionSpellLaunch(long i);
+
 void FireballSpellLaunch(long i);
+void FireballSpellKill(long i);
+
 void CreateFoodSpellLaunch(long duration, long i);
 void IceProjectileSpellLaunch(long i);
 

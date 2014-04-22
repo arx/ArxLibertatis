@@ -123,6 +123,11 @@ void ParalyseSpellLaunch(long i, long duration)
 	ARX_NPC_Kill_Spell_Launch(entities[spells[i].target]);
 }
 
+void ParalyseSpellKill()
+{
+	ARX_SOUND_PlaySFX(SND_SPELL_PARALYSE_END);
+}
+
 void CreateFieldSpellLaunch(SpellcastFlags flags, long i, long duration)
 {
 	spells[i].exist = true;

@@ -238,3 +238,19 @@ void HarmSpellLaunch(long duration, long i)
 		light->pos = spells[i].caster_pos;
 	}
 }
+
+void HarmSpellKill(long i)
+{
+	if(spells[i].longinfo_damage != -1) {
+		damages[spells[i].longinfo_damage].exist = false;
+	}
+	
+	if(lightHandleIsValid(spells[i].longinfo2_light)) {
+		EERIE_LIGHT * light = lightHandleGet(spells[i].longinfo2_light);
+		
+		light->time_creation = (unsigned long)(arxtime);
+		light->duration = 600; 
+	}
+	
+	ARX_SOUND_Stop(spells[i].snd_loop);
+}

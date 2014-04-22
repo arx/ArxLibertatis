@@ -98,6 +98,39 @@ bool SummonCreatureSpellLaunch(long i, long duration)
 	return true;
 }
 
+void SummonCreatureSpellKill(long i)
+{
+	lightHandleDestroy(spells[i].pSpellFx->lLightId);
+	
+	if(ValidIONum(spells[i].longinfo2_entity) && spells[i].longinfo2_entity != 0) {
+		
+		if(entities[spells[i].longinfo2_entity]->scriptload
+		   && (entities[spells[i].longinfo2_entity]->ioflags & IO_NOSAVE)) {
+			
+			AddRandomSmoke(entities[spells[i].longinfo2_entity], 100);
+			Vec3f posi = entities[spells[i].longinfo2_entity]->pos;
+			posi.y -= 100.f;
+			MakeCoolFx(posi);
+		
+			LightHandle nn = GetFreeDynLight();
+			if(lightHandleIsValid(nn)) {
+				EERIE_LIGHT * light = lightHandleGet(nn);
+				
+				light->intensity = 0.7f + 2.f * rnd();
+				light->fallend = 600.f;
+				light->fallstart = 400.f;
+				light->rgb = Color3f(1.0f, 0.8f, 0.0f);
+				light->pos = posi;
+				light->duration = 600;
+			}
+			
+			entities[spells[i].longinfo2_entity]->destroyOne();
+		}
+	}
+	
+	spells[i].longinfo2_entity = 0;
+}
+
 bool FakeSummonSpellLaunch(long i)
 {
 	if(spells[i].caster <= 0 || !ValidIONum(spells[i].target)) {
@@ -139,6 +172,11 @@ bool FakeSummonSpellLaunch(long i)
 	spells[i].pSpellFx = effect;
 	
 	return true;
+}
+
+void FakeSummonSpellKill(long i)
+{
+	lightHandleDestroy(spells[i].pSpellFx->lLightId);
 }
 
 void LaunchAntiMagicField(size_t ident) {
@@ -253,3 +291,9 @@ void MassParalyseSpellLaunch(long i, long duration)
 		ptr[spells[i].longinfo2_entity - 1] = ii;
 	}
 }
+
+void MassParalyseSpellKill()
+{
+	ARX_SOUND_PlaySFX(SND_SPELL_PARALYSE_END);
+}
+

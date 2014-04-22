@@ -23,9 +23,17 @@
 #include "game/Spells.h"
 
 bool FlyingEyeSpellLaunch(long i, TextureContainer * tc4);
+void FlyingEyeSpellKill(TextureContainer* tc4, long i);
+
 void FireFieldSpellLaunch(long i, SpellType typ, long duration);
+void FireFieldSpellKill(long i);
+
 void IceFieldSpellLaunch(long i, long duration, SpellType typ);
+void IceFieldSpellKill(long i);
+
 void LightningStrikeSpellLaunch(long i);
+void LightningStrikeKill(long i);
+
 void ConfuseSpellLaunch(long i, bool & notifyAll, long duration);
 
 #endif // ARX_GAME_MAGIC_SPELLS_SPELLSLVL07_H

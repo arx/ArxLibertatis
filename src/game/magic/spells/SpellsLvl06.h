@@ -23,7 +23,10 @@
 #include "game/Spells.h"
 
 bool RiseDeadSpellLaunch(SpellType typ, long i, long duration);
+
 void ParalyseSpellLaunch(long i, long duration);
+void ParalyseSpellKill();
+
 void CreateFieldSpellLaunch(SpellcastFlags flags, long i, long duration);
 void DisarmTrapSpellLaunch(long i);
 bool SlowDownSpellLaunch(long duration, long i);

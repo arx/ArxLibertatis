@@ -91,6 +91,33 @@ bool FlyingEyeSpellLaunch(long i, TextureContainer * tc4)
 	return true;
 }
 
+void FlyingEyeSpellKill(TextureContainer* tc4, long i)
+{
+	ARX_SOUND_PlaySFX(SND_SPELL_EYEBALL_OUT);
+	eyeball.exist = -100;
+	
+	for(long n = 0; n < 12; n++) {
+		
+		PARTICLE_DEF * pd = createParticle();
+		if(!pd) {
+			break;
+		}
+		
+		pd->ov = eyeball.pos + randomVec(-5.f, 5.f);
+		pd->move = randomVec(-2.f, 2.f);
+		pd->siz = 28.f;
+		pd->tolive = Random::get(2000, 6000);
+		pd->scale = Vec3f(12.f);
+		pd->timcreation = spells[i].lastupdate;
+		pd->tc = tc4;
+		pd->special = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
+		pd->fparam = 0.0000001f;
+		pd->rgb = Color3f(0.7f, 0.7f, 1.f);
+	}
+	
+	config.input.mouseLookToggle = bOldLookToggle;
+}
+
 void FireFieldSpellLaunch(long i, SpellType typ, long duration)
 {
 	long iCancel = ARX_SPELLS_GetInstanceForThisCaster(typ, spells[i].caster);
@@ -155,6 +182,12 @@ void FireFieldSpellLaunch(long i, SpellType typ, long duration)
 	spells[i].snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_FIRE_FIELD_LOOP,
 	                                       &target, 1.f,
 	                                       ARX_SOUND_PLAY_LOOPED);
+}
+
+void FireFieldSpellKill(long i)
+{
+	ARX_SOUND_Stop(spells[i].snd_loop);
+	ARX_SOUND_PlaySFX(SND_SPELL_FIRE_FIELD_END);
 }
 
 void IceFieldSpellLaunch(long i, long duration, SpellType typ)
@@ -225,6 +258,12 @@ void IceFieldSpellLaunch(long i, long duration, SpellType typ)
 	                                       ARX_SOUND_PLAY_LOOPED );
 }
 
+void IceFieldSpellKill(long i)
+{
+	ARX_SOUND_Stop(spells[i].snd_loop); 
+	ARX_SOUND_PlaySFX(SND_SPELL_ICE_FIELD_END);
+}
+
 void LightningStrikeSpellLaunch(long i)
 {
 	spells[i].exist = true;
@@ -243,6 +282,20 @@ void LightningStrikeSpellLaunch(long i)
 	spells[i].snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_LIGHTNING_LOOP,
 	                                       &spells[i].caster_pos, 1.f,
 	                                       ARX_SOUND_PLAY_LOOPED);
+}
+
+void LightningStrikeKill(long i)
+{
+	if(lightHandleIsValid(spells[i].longinfo_light)) {
+		EERIE_LIGHT * light = lightHandleGet(spells[i].longinfo_light);
+		
+		light->duration = 200;
+		light->time_creation = (unsigned long)(arxtime);
+	}
+	spells[i].longinfo_light = -1;
+	
+	ARX_SOUND_Stop(spells[i].snd_loop);
+	ARX_SOUND_PlaySFX(SND_SPELL_LIGHTNING_END, &entities[spells[i].caster]->pos);
 }
 
 void ConfuseSpellLaunch(long i, bool & notifyAll, long duration)

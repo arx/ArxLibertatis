@@ -25,7 +25,10 @@
 void RuneOfGuardingSpellLaunch(long i, SpellType typ, long duration);
 void LevitateSpellLaunch(long duration, long i, SpellType typ);
 void CurePoisonSpellLaunch(long i);
+
 void RepelUndeadSpellLaunch(long duration, long i);
+void RepelUndeadSpellKill(long i);
+
 void PoisonProjectileSpellLaunch(long i);
 
 #endif // ARX_GAME_MAGIC_SPELLS_SPELLSLVL05_H
