@@ -91,6 +91,11 @@ bool FlyingEyeSpellLaunch(long i, TextureContainer * tc4)
 	return true;
 }
 
+void FlyingEyeSpellEnd(size_t i)
+{
+	ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE, &entities[spells[i].caster]->pos);
+}
+
 void FlyingEyeSpellKill(TextureContainer* tc4, long i)
 {
 	ARX_SOUND_PlaySFX(SND_SPELL_EYEBALL_OUT);
@@ -184,6 +189,12 @@ void FireFieldSpellLaunch(long i, SpellType typ, long duration)
 	                                       ARX_SOUND_PLAY_LOOPED);
 }
 
+void FireFieldSpellEnd(size_t i)
+{
+	if(spells[i].longinfo_damage != -1)
+		damages[spells[i].longinfo_damage].exist = false;
+}
+
 void FireFieldSpellKill(long i)
 {
 	ARX_SOUND_Stop(spells[i].snd_loop);
@@ -258,6 +269,12 @@ void IceFieldSpellLaunch(long i, long duration, SpellType typ)
 	                                       ARX_SOUND_PLAY_LOOPED );
 }
 
+void IceFieldSpellEnd(size_t i)
+{
+	if(spells[i].longinfo_damage != -1)
+		damages[spells[i].longinfo_damage].exist = false;
+}
+
 void IceFieldSpellKill(long i)
 {
 	ARX_SOUND_Stop(spells[i].snd_loop); 
@@ -282,6 +299,11 @@ void LightningStrikeSpellLaunch(long i)
 	spells[i].snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_LIGHTNING_LOOP,
 	                                       &spells[i].caster_pos, 1.f,
 	                                       ARX_SOUND_PLAY_LOOPED);
+}
+
+void LightningStrikeSpellEnd(size_t i)
+{
+	ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &entities[spells[i].caster]->pos);
 }
 
 void LightningStrikeKill(long i)
@@ -322,4 +344,9 @@ void ConfuseSpellLaunch(long i, bool & notifyAll, long duration)
 	ARX_SPELLS_AddSpellOn(spells[i].target, i);
 	
 	notifyAll = false;
+}
+
+void ConfuseSpellEnd(size_t i)
+{
+	ARX_SPELLS_RemoveSpellOn(spells[i].target, i);
 }

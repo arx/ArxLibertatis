@@ -27,6 +27,7 @@
 #include "game/NPC.h"
 #include "game/Player.h"
 #include "game/Spells.h"
+#include "graphics/particle/ParticleEffects.h"
 
 #include "graphics/spells/Spells05.h"
 #include "graphics/spells/Spells06.h"
@@ -99,6 +100,38 @@ bool RiseDeadSpellLaunch(SpellType typ, long i, long duration)
 	return true;
 }
 
+void RiseDeadSpellEnd(size_t i)
+{
+	if(ValidIONum(spells[i].longinfo_entity) && spells[i].longinfo_entity != 0) {
+		
+		ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &entities[spells[i].longinfo_entity]->pos);
+		
+		Entity *entity = entities[spells[i].longinfo_entity];
+
+		if(entity->scriptload && (entity->ioflags & IO_NOSAVE)) {
+			AddRandomSmoke(entity,100);
+			Vec3f posi = entity->pos;
+			posi.y-=100.f;
+			MakeCoolFx(posi);
+			
+			LightHandle nn = GetFreeDynLight();
+
+			if(lightHandleIsValid(nn)) {
+				EERIE_LIGHT * light = lightHandleGet(nn);
+				
+				light->intensity = 0.7f + 2.f*rnd();
+				light->fallend = 600.f;
+				light->fallstart = 400.f;
+				light->rgb = Color3f(1.0f, 0.8f, 0.f);
+				light->pos = posi;
+				light->duration = 600;
+			}
+
+			entity->destroyOne();
+		}
+	}
+}
+
 void ParalyseSpellLaunch(long i, long duration)
 {
 	ARX_SOUND_PlaySFX(SND_SPELL_PARALYSE, &entities[spells[i].target]->pos);
@@ -121,6 +154,12 @@ void ParalyseSpellLaunch(long i, long duration)
 	
 	ARX_SPELLS_AddSpellOn(spells[i].target, i);
 	ARX_NPC_Kill_Spell_Launch(entities[spells[i].target]);
+}
+
+void ParalyseSpellEnd(size_t i)
+{
+	ARX_SPELLS_RemoveSpellOn(spells[i].target,i);
+	entities[spells[i].target]->ioflags &= ~IO_FREEZESCRIPT;
 }
 
 void ParalyseSpellKill()
@@ -207,6 +246,19 @@ void CreateFieldSpellLaunch(SpellcastFlags flags, long i, long duration)
 	}
 }
 
+void CreateFieldSpellEnd(size_t i)
+{
+	CCreateField *pCreateField = (CCreateField *) spells[i].pSpellFx;
+
+	if(pCreateField && lightHandleIsValid(pCreateField->lLightId)) {
+		lightHandleGet(pCreateField->lLightId)->duration = 800;
+	}
+
+	if(ValidIONum(spells[i].longinfo_entity)) {
+		delete entities[spells[i].longinfo_entity];
+	}
+}
+
 void DisarmTrapSpellLaunch(long i)
 {
 	ARX_SOUND_PlaySFX(SND_SPELL_DISARM_TRAP);
@@ -279,4 +331,10 @@ bool SlowDownSpellLaunch(long duration, long i)
 	ARX_SPELLS_AddSpellOn(target, i);
 	
 	return true;
+}
+
+void SlowDownSpellEnd(size_t i)
+{
+	ARX_SOUND_PlaySFX(SND_SPELL_SLOW_DOWN_END);
+	ARX_SPELLS_RemoveSpellOn(spells[i].target, i);
 }

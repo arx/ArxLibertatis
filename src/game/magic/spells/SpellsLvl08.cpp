@@ -53,6 +53,15 @@ void InvisibilitySpellLaunch(long i, long duration)
 	ARX_SPELLS_AddSpellOn(spells[i].target, i);
 }
 
+void InvisibilitySpellEnd(long i)
+{
+	if(ValidIONum(spells[i].target)) {
+		entities[spells[i].target]->gameFlags &= ~GFLAG_INVISIBILITY;
+		ARX_SOUND_PlaySFX(SND_SPELL_INVISIBILITY_END, &entities[spells[i].target]->pos);
+		ARX_SPELLS_RemoveSpellOn(spells[i].target, i);
+	}
+}
+
 void ManaDrainSpellLaunch(long i, long duration)
 {
 	long iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_LIFE_DRAIN,

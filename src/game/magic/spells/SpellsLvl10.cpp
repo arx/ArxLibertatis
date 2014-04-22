@@ -181,6 +181,12 @@ void FreezeTimeSpellLaunch(long duration, long i)
 	spells[i].longinfo_time = (long)arxtime.get_updated();
 }
 
+void FreezeTimeSpellEnd(size_t i)
+{
+	GLOBAL_SLOWDOWN += spells[i].siz;
+	ARX_SOUND_PlaySFX(SND_SPELL_TELEKINESIS_END, &entities[spells[i].caster]->pos);
+}
+
 void MassIncinerateSpellLaunch(long i)
 {
 	ARX_SOUND_PlaySFX(SND_SPELL_MASS_INCINERATE);
@@ -220,6 +226,19 @@ void MassIncinerateSpellLaunch(long i)
 	}
 }
 
+void ARX_SPELLS_RemoveMultiSpellOn(long spell_id) {
+	for(size_t i = 0; i < entities.size(); i++) {
+		ARX_SPELLS_RemoveSpellOn(i, spells[spell_id].type);
+	}
+}
+
+void MassIncinerateSpellEnd(size_t i)
+{
+	ARX_SPELLS_RemoveMultiSpellOn(i);
+	ARX_SOUND_Stop(spells[i].snd_loop);
+	ARX_SOUND_PlaySFX(SND_SPELL_INCINERATE_END);
+}
+
 extern float LASTTELEPORT;
 
 void TeleportSpellLaunch(long i)
@@ -232,4 +251,9 @@ void TeleportSpellLaunch(long i)
 	if(spells[i].caster == 0) {
 		LASTTELEPORT = 0.f;
 	}
+}
+
+void TeleportSpellEnd(size_t i)
+{
+	ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE, &spells[i].caster_pos);
 }

@@ -23,9 +23,15 @@
 #include "game/Spells.h"
 
 void HealSpellLaunch(long i, long duration);
+
 void DetectTrapSpellLaunch(long i, SpellType typ);
+void DetectTrapSpellEnd(size_t i);
+
 void ArmorSpellLaunch(SpellType typ, long duration, long i);
+void ArmorSpellEnd(size_t i);
+
 void LowerArmorSpellLaunch(SpellType typ, long duration, long i);
+void LowerArmorSpellEnd(long i);
 
 void HarmSpellLaunch(long duration, long i);
 void HarmSpellKill(long i);

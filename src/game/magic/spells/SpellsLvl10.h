@@ -26,8 +26,14 @@ void MassLightningStrikeSpellLaunch(long i, SpellType typ);
 void MassLightningStrikeSpellKill(long i);
 
 bool ControlTargetSpellLaunch(long i);
+
 void FreezeTimeSpellLaunch(long duration, long i);
+void FreezeTimeSpellEnd(size_t i);
+
 void MassIncinerateSpellLaunch(long i);
+void MassIncinerateSpellEnd(size_t i);
+
 void TeleportSpellLaunch(long i);
+void TeleportSpellEnd(size_t i);
 
 #endif // ARX_GAME_MAGIC_SPELLS_SPELLSLVL10_H

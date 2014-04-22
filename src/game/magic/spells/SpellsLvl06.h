@@ -23,12 +23,18 @@
 #include "game/Spells.h"
 
 bool RiseDeadSpellLaunch(SpellType typ, long i, long duration);
+void RiseDeadSpellEnd(size_t i);
 
 void ParalyseSpellLaunch(long i, long duration);
+void ParalyseSpellEnd(size_t i);
 void ParalyseSpellKill();
 
 void CreateFieldSpellLaunch(SpellcastFlags flags, long i, long duration);
+void CreateFieldSpellEnd(size_t i);
+
 void DisarmTrapSpellLaunch(long i);
+
 bool SlowDownSpellLaunch(long duration, long i);
+void SlowDownSpellEnd(size_t i);
 
 #endif // ARX_GAME_MAGIC_SPELLS_SPELLSLVL06_H

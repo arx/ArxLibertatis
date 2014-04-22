@@ -21,6 +21,8 @@
 
 #include "core/Application.h"
 #include "game/Damage.h"
+#include "game/Entity.h"
+#include "game/EntityManager.h"
 #include "game/Player.h"
 #include "game/Spells.h"
 #include "game/spell/Cheat.h"
@@ -47,6 +49,15 @@ void MagicSightSpellLaunch(long duration, long i)
 	}
 }
 
+void MagicSightSpellEnd(long i)
+{
+	if(spells[i].caster == 0) {
+		Project.improve = 0;
+		ARX_SOUND_Stop(spells[i].snd_loop);
+	}
+	ARX_SOUND_PlaySFX(SND_SPELL_VISION_START, &entities[spells[i].caster]->pos);
+}
+
 void MagicMissileSpellLaunch(long i)
 {
 	spells[i].exist = true;
@@ -65,6 +76,11 @@ void MagicMissileSpellLaunch(long i)
 	effect->Create();
 	spells[i].pSpellFx = effect;
 	spells[i].tolive = effect->GetDuration();
+}
+
+void MagicMissileSpellEnd(long i)
+{
+	lightHandleDestroy(spells[i].longinfo_light);
 }
 
 void IgnitSpellLaunch(/*long target, */long i)
@@ -143,6 +159,12 @@ void IgnitSpellLaunch(/*long target, */long i)
 	
 	spells[i].pSpellFx = effect;
 	spells[i].tolive = effect->GetDuration();
+}
+
+void IgnitSpellEnd(long i)
+{
+	CIgnit *pIgnit = (CIgnit *)spells[i].pSpellFx;
+	pIgnit->Action(1);
 }
 
 void DouseSpellLaunch(long i)
@@ -233,6 +255,12 @@ void DouseSpellLaunch(long i)
 	
 	spells[i].pSpellFx = effect;
 	spells[i].tolive = effect->GetDuration();
+}
+
+void DouseSpellEnd(long i)
+{
+	CDoze *pDoze = (CDoze *)spells[i].pSpellFx;
+	pDoze->Action(0);
 }
 
 void ActivatePortalSpellLaunch(long i)

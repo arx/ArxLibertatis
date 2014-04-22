@@ -23,7 +23,10 @@
 #include "game/Spells.h"
 
 void RuneOfGuardingSpellLaunch(long i, SpellType typ, long duration);
+
 void LevitateSpellLaunch(long duration, long i, SpellType typ);
+void LevitateSpellEnd(size_t i);
+
 void CurePoisonSpellLaunch(long i);
 
 void RepelUndeadSpellLaunch(long duration, long i);

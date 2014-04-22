@@ -98,6 +98,16 @@ bool SummonCreatureSpellLaunch(long i, long duration)
 	return true;
 }
 
+void SummonCreatureSpellEnd(size_t i)
+{
+	if(ValidIONum(spells[i].longinfo2_entity) && spells[i].longinfo2_entity != 0) {
+		ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &entities[spells[i].longinfo2_entity]->pos);
+	}
+
+	lightHandleDestroy(spells[i].pSpellFx->lLightId);
+	// need to killio
+}
+
 void SummonCreatureSpellKill(long i)
 {
 	lightHandleDestroy(spells[i].pSpellFx->lLightId);
@@ -172,6 +182,13 @@ bool FakeSummonSpellLaunch(long i)
 	spells[i].pSpellFx = effect;
 	
 	return true;
+}
+
+void FakeSummonSpellEnd(size_t i)
+{
+	ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &spells[i].target_pos);
+	
+	lightHandleDestroy(spells[i].pSpellFx->lLightId);
 }
 
 void FakeSummonSpellKill(long i)
@@ -252,6 +269,13 @@ bool IncinerateSpellLaunch(long i)
 	return true;
 }
 
+void IncinerateSpellEnd(size_t i)
+{
+	ARX_SPELLS_RemoveSpellOn(spells[i].target, i);
+	ARX_SOUND_Stop(spells[i].snd_loop);
+	ARX_SOUND_PlaySFX(SND_SPELL_INCINERATE_END);
+}
+
 void MassParalyseSpellLaunch(long i, long duration)
 {
 	ARX_SOUND_PlaySFX(SND_SPELL_MASS_PARALYSE);
@@ -290,6 +314,23 @@ void MassParalyseSpellLaunch(long i, long duration)
 		long * ptr = (long *)spells[i].misc;
 		ptr[spells[i].longinfo2_entity - 1] = ii;
 	}
+}
+
+void MassParalyseSpellEnd(size_t i)
+{
+	long *ptr = (long *) spells[i].misc;
+
+	for(long in = 0; in < spells[i].longinfo2_entity; in++) {
+		if(ValidIONum(ptr[in])) {
+			ARX_SPELLS_RemoveSpellOn(ptr[in], i);
+			entities[ptr[in]]->ioflags &= ~IO_FREEZESCRIPT;
+		}
+	}
+
+	if(ptr)
+		free(spells[i].misc);
+
+	spells[i].misc=NULL;
 }
 
 void MassParalyseSpellKill()

@@ -21,9 +21,12 @@
 #define ARX_GAME_MAGIC_SPELLS_SPELLSLVL03_H
 
 void SpeedSpellLaunch(long i, long duration);
+void SpeedSpellEnd(long i);
+
 void DispellIllusionSpellLaunch(long i);
 
 void FireballSpellLaunch(long i);
+void FireballSpellEnd(long i);
 void FireballSpellKill(long i);
 
 void CreateFoodSpellLaunch(long duration, long i);

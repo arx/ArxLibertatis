@@ -21,9 +21,17 @@
 #define ARX_GAME_MAGIC_SPELLS_SPELLSLVL01_H
 
 void MagicSightSpellLaunch(long duration, long i);
+void MagicSightSpellEnd(long i);
+
 void MagicMissileSpellLaunch(long i);
+void MagicMissileSpellEnd(long i);
+
 void IgnitSpellLaunch(long i);
+void IgnitSpellEnd(long i);
+
 void DouseSpellLaunch(long i);
+void DouseSpellEnd(long i);
+
 void ActivatePortalSpellLaunch(long i);
 
 #endif // ARX_GAME_MAGIC_SPELLS_SPELLSLVL01_H

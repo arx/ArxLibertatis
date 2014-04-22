@@ -23,10 +23,20 @@
 #include "game/Spells.h"
 
 void BlessSpellLaunch(long i, long duration, SpellType typ);
+void BlessSpellEnd(size_t i);
+
 void DispellFieldSpellLaunch(long i);
+
 void FireProtectionSpellLaunch(long i, SpellType typ, long duration);
+void FireProtectionSpellEnd(size_t i);
+
 void ColdProtectionSpellLaunch(long i, long duration, SpellType typ);
+void ColdProtectionSpellEnd(size_t i);
+
 void TelekinesisSpellLaunch(long i, long duration);
+void TelekinesisSpellEnd(size_t i);
+
 void CurseSpellLaunch(long duration, SpellType typ, long i);
+void CurseSpellEnd(size_t i);
 
 #endif // ARX_GAME_MAGIC_SPELLS_SPELLSLVL04_H

@@ -23,17 +23,21 @@
 #include "math/Types.h"
 
 bool SummonCreatureSpellLaunch(long i, long duration);
+void SummonCreatureSpellEnd(size_t i);
 void SummonCreatureSpellKill(long i);
 
 bool FakeSummonSpellLaunch(long i);
+void FakeSummonSpellEnd(size_t i);
 void FakeSummonSpellKill(long i);
 
 void LaunchAntiMagicField(size_t ident);
 void NegateMagicSpellLaunch(long duration, long i);
 
 bool IncinerateSpellLaunch(long i);
+void IncinerateSpellEnd(size_t i);
 
 void MassParalyseSpellLaunch(long i, long duration);
+void MassParalyseSpellEnd(size_t i);
 void MassParalyseSpellKill();
 
 #endif // ARX_GAME_MAGIC_SPELLS_SPELLSLVL09_H

@@ -21,6 +21,7 @@
 #define ARX_GAME_MAGIC_SPELLS_SPELLSLVL08_H
 
 void InvisibilitySpellLaunch(long i, long duration);
+void InvisibilitySpellEnd(long i);
 
 void ManaDrainSpellLaunch(long i, long duration);
 void ManaDrainSpellKill(long i);

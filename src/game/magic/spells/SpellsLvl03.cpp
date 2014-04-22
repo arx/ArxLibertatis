@@ -63,6 +63,16 @@ void SpeedSpellLaunch(long i, long duration)
 	ARX_SPELLS_AddSpellOn(spells[i].target, i);
 }
 
+void SpeedSpellEnd(long i)
+{
+	ARX_SPELLS_RemoveSpellOn(spells[i].target,i);
+	
+	if(spells[i].caster == 0)
+		ARX_SOUND_Stop(spells[i].snd_loop);
+	
+	ARX_SOUND_PlaySFX(SND_SPELL_SPEED_END, &entities[spells[i].target]->pos);
+}
+
 void DispellIllusionSpellLaunch(long i)
 {
 	ARX_SOUND_PlaySFX(SND_SPELL_DISPELL_ILLUSION);
@@ -150,6 +160,11 @@ void FireballSpellLaunch(long i)
 	spells[i].snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_FIRE_WIND,
 	                                       &spells[i].caster_pos, 1.f,
 	                                       ARX_SOUND_PLAY_LOOPED);
+}
+
+void FireballSpellEnd(long i)
+{
+	ARX_SOUND_Stop(spells[i].snd_loop);
 }
 
 void FireballSpellKill(long i)

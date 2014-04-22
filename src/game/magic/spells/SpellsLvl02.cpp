@@ -26,6 +26,7 @@
 #include "game/Spells.h"
 #include "graphics/spells/Spells02.h"
 #include "scene/GameSound.h"
+#include "scene/Interactive.h"
 
 
 void HealSpellLaunch(long i, long duration)
@@ -75,6 +76,14 @@ void DetectTrapSpellLaunch(long i, SpellType typ)
 	spells[i].bDuration = true;
 	
 	ARX_SPELLS_AddSpellOn(spells[i].target, i);
+}
+
+void DetectTrapSpellEnd(size_t i)
+{
+	if(spells[i].caster == 0) {
+		ARX_SOUND_Stop(spells[i].snd_loop);
+	}
+	ARX_SPELLS_RemoveSpellOn(spells[i].target, i);
 }
 
 void ArmorSpellLaunch(SpellType typ, long duration, long i)
@@ -134,6 +143,18 @@ void ArmorSpellLaunch(SpellType typ, long duration, long i)
 	ARX_SPELLS_AddSpellOn(spells[i].target, i);
 }
 
+void ArmorSpellEnd(size_t i)
+{
+	ARX_SOUND_Stop(spells[i].snd_loop);
+	ARX_SOUND_PlaySFX(SND_SPELL_ARMOR_END, &entities[spells[i].target]->pos);
+	
+	if(ValidIONum(spells[i].target)) {
+		ARX_HALO_SetToNative(entities[spells[i].target]);
+	}
+	
+	ARX_SPELLS_RemoveSpellOn(spells[i].target, i);
+}
+
 void LowerArmorSpellLaunch(SpellType typ, long duration, long i)
 {
 	long idx = ARX_SPELLS_GetSpellOn(entities[spells[i].target], typ);
@@ -181,6 +202,19 @@ void LowerArmorSpellLaunch(SpellType typ, long duration, long i)
 	spells[i].tolive = effect->GetDuration();
 	
 	ARX_SPELLS_AddSpellOn(spells[i].target, i);
+}
+
+void LowerArmorSpellEnd(long i)
+{
+	ARX_SOUND_PlaySFX(SND_SPELL_LOWER_ARMOR_END);
+	Entity *io = entities[spells[i].target];
+	
+	if(spells[i].longinfo_lower_armor) {
+		io->halo.flags &= ~HALO_ACTIVE;
+		ARX_HALO_SetToNative(io);
+	}
+	
+	ARX_SPELLS_RemoveSpellOn(spells[i].target, i);
 }
 
 void HarmSpellLaunch(long duration, long i)

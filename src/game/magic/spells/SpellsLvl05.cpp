@@ -91,6 +91,16 @@ void LevitateSpellLaunch(long duration, long i, SpellType typ)
 	ARX_SPELLS_AddSpellOn(spells[i].target, i);
 }
 
+void LevitateSpellEnd(size_t i)
+{
+	ARX_SOUND_Stop(spells[i].snd_loop);
+	ARX_SOUND_PlaySFX(SND_SPELL_LEVITATE_END, &entities[spells[i].target]->pos);
+	ARX_SPELLS_RemoveSpellOn(spells[i].target, i);
+	
+	if(spells[i].target == 0)
+		player.levitate = false;
+}
+
 void CurePoisonSpellLaunch(long i)
 {
 	if(spells[i].caster == 0) {

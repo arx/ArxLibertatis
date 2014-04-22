@@ -63,6 +63,11 @@ void BlessSpellLaunch(long i, long duration, SpellType typ)
 	ARX_SPELLS_AddSpellOn(spells[i].target, i);
 }
 
+void BlessSpellEnd(size_t i)
+{
+	ARX_SPELLS_RemoveSpellOn(spells[i].target,i);
+}
+
 void DispellFieldSpellLaunch(long i)
 {
 	spells[i].tolive = 10;
@@ -181,6 +186,16 @@ void FireProtectionSpellLaunch(long i, SpellType typ, long duration)
 	                                       ARX_SOUND_PLAY_LOOPED);
 }
 
+void FireProtectionSpellEnd(size_t i)
+{
+	ARX_SOUND_Stop(spells[i].snd_loop);
+	ARX_SOUND_PlaySFX(SND_SPELL_FIRE_PROTECTION_END, &entities[spells[i].target]->pos);
+	ARX_SPELLS_RemoveSpellOn(spells[i].target, i);
+	
+	if(ValidIONum(spells[i].target))
+		ARX_HALO_SetToNative(entities[spells[i].target]);
+}
+
 void ColdProtectionSpellLaunch(long i, long duration, SpellType typ)
 {
 	long idx = ARX_SPELLS_GetSpellOn(entities[spells[i].target], typ);
@@ -236,6 +251,16 @@ void ColdProtectionSpellLaunch(long i, long duration, SpellType typ)
 	ARX_SPELLS_AddSpellOn(spells[i].target, i);
 }
 
+void ColdProtectionSpellEnd(size_t i)
+{
+	ARX_SOUND_Stop(spells[i].snd_loop);
+	ARX_SOUND_PlaySFX(SND_SPELL_COLD_PROTECTION_END, &entities[spells[i].target]->pos);
+	ARX_SPELLS_RemoveSpellOn(spells[i].target, i);
+	
+	if(ValidIONum(spells[i].target))
+		ARX_HALO_SetToNative(entities[spells[i].target]);
+}
+
 void TelekinesisSpellLaunch(long i, long duration)
 {
 	spells[i].exist = true;
@@ -248,6 +273,14 @@ void TelekinesisSpellLaunch(long i, long duration)
 	}
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_TELEKINESIS_START, &spells[i].caster_pos);
+}
+
+void TelekinesisSpellEnd(size_t i)
+{
+	if(spells[i].caster == 0)
+		Project.telekinesis = 0;
+	
+	ARX_SOUND_PlaySFX(SND_SPELL_TELEKINESIS_END, &entities[spells[i].caster]->pos);
 }
 
 void CurseSpellLaunch(long duration, SpellType typ, long i)
@@ -280,4 +313,9 @@ void CurseSpellLaunch(long duration, SpellType typ, long i)
 	spells[i].tolive = effect->GetDuration();
 	
 	ARX_SPELLS_AddSpellOn(spells[i].target, i);
+}
+
+void CurseSpellEnd(size_t i)
+{
+	ARX_SPELLS_RemoveSpellOn(spells[i].target,i);
 }
