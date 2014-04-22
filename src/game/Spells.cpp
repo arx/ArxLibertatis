@@ -1986,6 +1986,163 @@ void ColdProtectionSpellEnd(size_t i)
 		ARX_HALO_SetToNative(entities[spells[i].target]);
 }
 
+void LevitateSpellEnd(size_t i)
+{
+	ARX_SOUND_Stop(spells[i].snd_loop);
+	ARX_SOUND_PlaySFX(SND_SPELL_LEVITATE_END, &entities[spells[i].target]->pos);
+	ARX_SPELLS_RemoveSpellOn(spells[i].target, i);
+	
+	if(spells[i].target == 0)
+		player.levitate = false;
+}
+
+void ParalyseSpellEnd(size_t i)
+{
+	ARX_SPELLS_RemoveSpellOn(spells[i].target,i);
+	entities[spells[i].target]->ioflags &= ~IO_FREEZESCRIPT;
+}
+
+void RiseDeadSpellEnd(size_t i)
+{
+	if(ValidIONum(spells[i].longinfo_entity) && spells[i].longinfo_entity != 0) {
+		
+		ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &entities[spells[i].longinfo_entity]->pos);
+		
+		Entity *entity = entities[spells[i].longinfo_entity];
+
+		if(entity->scriptload && (entity->ioflags & IO_NOSAVE)) {
+			AddRandomSmoke(entity,100);
+			Vec3f posi = entity->pos;
+			posi.y-=100.f;
+			MakeCoolFx(posi);
+			
+			LightHandle nn = GetFreeDynLight();
+
+			if(lightHandleIsValid(nn)) {
+				EERIE_LIGHT * light = lightHandleGet(nn);
+				
+				light->intensity = 0.7f + 2.f*rnd();
+				light->fallend = 600.f;
+				light->fallstart = 400.f;
+				light->rgb = Color3f(1.0f, 0.8f, 0.f);
+				light->pos = posi;
+				light->duration = 600;
+			}
+
+			entity->destroyOne();
+		}
+	}
+}
+
+void CreateFieldSpellEnd(size_t i)
+{
+	CCreateField *pCreateField = (CCreateField *) spells[i].pSpellFx;
+
+	if(pCreateField && lightHandleIsValid(pCreateField->lLightId)) {
+		lightHandleGet(pCreateField->lLightId)->duration = 800;
+	}
+
+	if(ValidIONum(spells[i].longinfo_entity)) {
+		delete entities[spells[i].longinfo_entity];
+	}
+}
+
+void SlowDownSpellEnd(size_t i)
+{
+	ARX_SOUND_PlaySFX(SND_SPELL_SLOW_DOWN_END);
+	ARX_SPELLS_RemoveSpellOn(spells[i].target, i);
+}
+
+void IceFieldSpellEnd(size_t i)
+{
+	if(spells[i].longinfo_damage != -1)
+		damages[spells[i].longinfo_damage].exist = false;
+}
+
+void FireFieldSpellEnd(size_t i)
+{
+	if(spells[i].longinfo_damage != -1)
+		damages[spells[i].longinfo_damage].exist = false;
+}
+
+void LightningStrikeSpellEnd(size_t i)
+{
+	ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &entities[spells[i].caster]->pos);
+}
+
+void FlyingEyeSpellEnd(size_t i)
+{
+	ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE, &entities[spells[i].caster]->pos);
+}
+
+void ConfuseSpellEnd(size_t i)
+{
+	ARX_SPELLS_RemoveSpellOn(spells[i].target, i);
+}
+
+void InvisibilitySpellEnd(size_t i)
+{
+	if(ValidIONum(spells[i].target)) {
+		entities[spells[i].target]->gameFlags &= ~GFLAG_INVISIBILITY;
+		ARX_SOUND_PlaySFX(SND_SPELL_INVISIBILITY_END, &entities[spells[i].target]->pos);
+		ARX_SPELLS_RemoveSpellOn(spells[i].target, i);
+	}
+}
+
+void MassParalyseSpellEnd(size_t i)
+{
+	long *ptr = (long *) spells[i].misc;
+
+	for(long in = 0; in < spells[i].longinfo2_entity; in++) {
+		if(ValidIONum(ptr[in])) {
+			ARX_SPELLS_RemoveSpellOn(ptr[in], i);
+			entities[ptr[in]]->ioflags &= ~IO_FREEZESCRIPT;
+		}
+	}
+
+	if(ptr)
+		free(spells[i].misc);
+
+	spells[i].misc=NULL;
+}
+
+void SummonCreatureSpellEnd(size_t i)
+{
+	if(ValidIONum(spells[i].longinfo2_entity) && spells[i].longinfo2_entity != 0) {
+		ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &entities[spells[i].longinfo2_entity]->pos);
+	}
+
+	lightHandleDestroy(spells[i].pSpellFx->lLightId);
+	// need to killio
+}
+
+void FakeSummonSpellEnd(size_t i)
+{
+	ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &spells[i].target_pos);
+	
+	lightHandleDestroy(spells[i].pSpellFx->lLightId);
+}
+
+void IncinerateSpellEnd(size_t i)
+{
+	ARX_SPELLS_RemoveSpellOn(spells[i].target, i);
+	ARX_SOUND_Stop(spells[i].snd_loop);
+	ARX_SOUND_PlaySFX(SND_SPELL_INCINERATE_END);
+}
+
+void FreezeTimeSpellEnd(size_t i)
+{
+	GLOBAL_SLOWDOWN += spells[i].siz;
+	ARX_SOUND_PlaySFX(SND_SPELL_TELEKINESIS_END, &entities[spells[i].caster]->pos);
+}
+
+void MassIncinerateSpellEnd(size_t i)
+{
+	ARX_SPELLS_RemoveMultiSpellOn(i);
+	ARX_SOUND_Stop(spells[i].snd_loop);
+	ARX_SOUND_PlaySFX(SND_SPELL_INCINERATE_END);
+}
+
 void ARX_SPELLS_Update_End(size_t i) {
 	switch(spells[i].type) {
 		case SPELL_TELEPORT: {
@@ -2059,94 +2216,47 @@ void ARX_SPELLS_Update_End(size_t i) {
 		//****************************************************************************
 		// LEVEL 5
 		case SPELL_LEVITATE: {
-			ARX_SOUND_Stop(spells[i].snd_loop);
-			ARX_SOUND_PlaySFX(SND_SPELL_LEVITATE_END, &entities[spells[i].target]->pos);
-			ARX_SPELLS_RemoveSpellOn(spells[i].target, i);
-			
-			if(spells[i].target == 0)
-				player.levitate = false;
-			
+			LevitateSpellEnd(i);
 			break;
 		}
 		//****************************************************************************
 		// LEVEL 6 SPELLS
 		case SPELL_PARALYSE: {
-			ARX_SPELLS_RemoveSpellOn(spells[i].target,i);
-			entities[spells[i].target]->ioflags &= ~IO_FREEZESCRIPT;
+			ParalyseSpellEnd(i);
 			break;
 		}
 		case SPELL_RISE_DEAD: {
-			if(ValidIONum(spells[i].longinfo_entity) && spells[i].longinfo_entity != 0) {
-				
-				ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &entities[spells[i].longinfo_entity]->pos);
-				
-				Entity *entity = entities[spells[i].longinfo_entity];
-
-				if(entity->scriptload && (entity->ioflags & IO_NOSAVE)) {
-					AddRandomSmoke(entity,100);
-					Vec3f posi = entity->pos;
-					posi.y-=100.f;
-					MakeCoolFx(posi);
-					
-					LightHandle nn = GetFreeDynLight();
-
-					if(lightHandleIsValid(nn)) {
-						EERIE_LIGHT * light = lightHandleGet(nn);
-						
-						light->intensity = 0.7f + 2.f*rnd();
-						light->fallend = 600.f;
-						light->fallstart = 400.f;
-						light->rgb = Color3f(1.0f, 0.8f, 0.f);
-						light->pos = posi;
-						light->duration = 600;
-					}
-
-					entity->destroyOne();
-				}
-			}
+			RiseDeadSpellEnd(i);
 			break;
 		}
 		case SPELL_CREATE_FIELD: {
-			CCreateField *pCreateField = (CCreateField *) spells[i].pSpellFx;
-
-			if(pCreateField && lightHandleIsValid(pCreateField->lLightId)) {
-				lightHandleGet(pCreateField->lLightId)->duration = 800;
-			}
-
-			if(ValidIONum(spells[i].longinfo_entity)) {
-				delete entities[spells[i].longinfo_entity];
-			}
+			CreateFieldSpellEnd(i);
 			break;
 		}
 		case SPELL_SLOW_DOWN: {
-			ARX_SOUND_PlaySFX(SND_SPELL_SLOW_DOWN_END);
-			ARX_SPELLS_RemoveSpellOn(spells[i].target, i);
+			SlowDownSpellEnd(i);
 			break;
 		}
 		//****************************************************************************
 		// LEVEL 7
 		case SPELL_ICE_FIELD: {
-			if(spells[i].longinfo_damage != -1)
-				damages[spells[i].longinfo_damage].exist = false;
-			
+			IceFieldSpellEnd(i);
 			break;
 		}
 		case SPELL_FIRE_FIELD: {
-			if(spells[i].longinfo_damage != -1)
-				damages[spells[i].longinfo_damage].exist = false;
-			
+			FireFieldSpellEnd(i);
 			break;
 		}
 		case SPELL_LIGHTNING_STRIKE: {
-			ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &entities[spells[i].caster]->pos);					
+			LightningStrikeSpellEnd(i);
 			break;
 		}
 		case SPELL_FLYING_EYE: {
-			ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE, &entities[spells[i].caster]->pos);
+			FlyingEyeSpellEnd(i);
 			break;
 		}
 		case SPELL_CONFUSE: {
-			ARX_SPELLS_RemoveSpellOn(spells[i].target, i);
+			ConfuseSpellEnd(i);
 			break;
 		}
 		//****************************************************************************
@@ -2155,63 +2265,35 @@ void ARX_SPELLS_Update_End(size_t i) {
 			break;
 		}
 		case SPELL_INVISIBILITY: {
-			if(ValidIONum(spells[i].target)) {
-				entities[spells[i].target]->gameFlags &= ~GFLAG_INVISIBILITY;
-				ARX_SOUND_PlaySFX(SND_SPELL_INVISIBILITY_END, &entities[spells[i].target]->pos);
-				ARX_SPELLS_RemoveSpellOn(spells[i].target, i);
-			}
+			InvisibilitySpellEnd(i);
 			break;
 		}
 		//****************************************************************************
 		// LEVEL 9
 		case SPELL_MASS_PARALYSE: {
-			long *ptr = (long *) spells[i].misc;
-
-			for(long in = 0; in < spells[i].longinfo2_entity; in++) {
-				if(ValidIONum(ptr[in])) {
-					ARX_SPELLS_RemoveSpellOn(ptr[in], i);
-					entities[ptr[in]]->ioflags &= ~IO_FREEZESCRIPT;
-				}
-			}
-
-			if(ptr)
-				free(spells[i].misc);
-
-			spells[i].misc=NULL;
+			MassParalyseSpellEnd(i);
 			break;
 		}
 		case SPELL_SUMMON_CREATURE : {
-			if(ValidIONum(spells[i].longinfo2_entity) && spells[i].longinfo2_entity != 0) {
-				ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &entities[spells[i].longinfo2_entity]->pos);
-			}
-
-			lightHandleDestroy(spells[i].pSpellFx->lLightId);
-			// need to killio
+			SummonCreatureSpellEnd(i);
 			break;
 		}
 		case SPELL_FAKE_SUMMON: {
-			ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &spells[i].target_pos);						
-			
-			lightHandleDestroy(spells[i].pSpellFx->lLightId);
+			FakeSummonSpellEnd(i);
 			break;
 		}
 		case SPELL_INCINERATE: {
-			ARX_SPELLS_RemoveSpellOn(spells[i].target, i);
-			ARX_SOUND_Stop(spells[i].snd_loop);
-			ARX_SOUND_PlaySFX(SND_SPELL_INCINERATE_END);
+			IncinerateSpellEnd(i);
 			break;
 		}
 		//****************************************************************************
 		// LEVEL 10
 		case SPELL_FREEZE_TIME: {
-			GLOBAL_SLOWDOWN += spells[i].siz;
-			ARX_SOUND_PlaySFX(SND_SPELL_TELEKINESIS_END, &entities[spells[i].caster]->pos);
+			FreezeTimeSpellEnd(i);
 			break;
 		}
 		case SPELL_MASS_INCINERATE: {
-			ARX_SPELLS_RemoveMultiSpellOn(i);
-			ARX_SOUND_Stop(spells[i].snd_loop);
-			ARX_SOUND_PlaySFX(SND_SPELL_INCINERATE_END);
+			MassIncinerateSpellEnd(i);
 			break;
 		}
 		default:
