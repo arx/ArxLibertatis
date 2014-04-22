@@ -1848,6 +1848,93 @@ void ManaDrainSpellKill(long i)
 	ARX_SOUND_Stop(spells[i].snd_loop);
 }
 
+void FlyingEyeSpellKill(TextureContainer* tc4, long i)
+{
+	ARX_SOUND_PlaySFX(SND_SPELL_EYEBALL_OUT);
+	eyeball.exist = -100;
+	
+	for(long n = 0; n < 12; n++) {
+		
+		PARTICLE_DEF * pd = createParticle();
+		if(!pd) {
+			break;
+		}
+		
+		pd->ov = eyeball.pos + randomVec(-5.f, 5.f);
+		pd->move = randomVec(-2.f, 2.f);
+		pd->siz = 28.f;
+		pd->tolive = Random::get(2000, 6000);
+		pd->scale = Vec3f(12.f);
+		pd->timcreation = spells[i].lastupdate;
+		pd->tc = tc4;
+		pd->special = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
+		pd->fparam = 0.0000001f;
+		pd->rgb = Color3f(0.7f, 0.7f, 1.f);
+	}
+	
+	config.input.mouseLookToggle = bOldLookToggle;
+}
+
+void ParalyseSpellKill()
+{
+	ARX_SOUND_PlaySFX(SND_SPELL_PARALYSE_END);
+}
+
+void FireFieldSpellKill(long i)
+{
+	ARX_SOUND_Stop(spells[i].snd_loop);
+	ARX_SOUND_PlaySFX(SND_SPELL_FIRE_FIELD_END);
+}
+
+void IceFieldSpellKill(long i)
+{
+	ARX_SOUND_Stop(spells[i].snd_loop); 
+	ARX_SOUND_PlaySFX(SND_SPELL_ICE_FIELD_END);
+}
+
+void MassParalyseSpellKill()
+{
+	ARX_SOUND_PlaySFX(SND_SPELL_PARALYSE_END);
+}
+
+void SummonCreatureSpellKill(long i)
+{
+	lightHandleDestroy(spells[i].pSpellFx->lLightId);
+	
+	if(ValidIONum(spells[i].longinfo2_entity) && spells[i].longinfo2_entity != 0) {
+		
+		if(entities[spells[i].longinfo2_entity]->scriptload
+		   && (entities[spells[i].longinfo2_entity]->ioflags & IO_NOSAVE)) {
+			
+			AddRandomSmoke(entities[spells[i].longinfo2_entity], 100);
+			Vec3f posi = entities[spells[i].longinfo2_entity]->pos;
+			posi.y -= 100.f;
+			MakeCoolFx(posi);
+		
+			LightHandle nn = GetFreeDynLight();
+			if(lightHandleIsValid(nn)) {
+				EERIE_LIGHT * light = lightHandleGet(nn);
+				
+				light->intensity = 0.7f + 2.f * rnd();
+				light->fallend = 600.f;
+				light->fallstart = 400.f;
+				light->rgb = Color3f(1.0f, 0.8f, 0.0f);
+				light->pos = posi;
+				light->duration = 600;
+			}
+			
+			entities[spells[i].longinfo2_entity]->destroyOne();
+		}
+	}
+	
+	spells[i].longinfo2_entity = 0;
+}
+
+void FakeSummonSpellKill(long i)
+{
+	lightHandleDestroy(spells[i].pSpellFx->lLightId);
+}
+
 void ARX_SPELLS_Kill(long i) {
 	
 	static TextureContainer * tc4=TextureContainer::Load("graph/particles/smoke");
@@ -1894,87 +1981,33 @@ void ARX_SPELLS_Kill(long i) {
 			break;
 		}
 		case SPELL_FLYING_EYE : {
-			ARX_SOUND_PlaySFX(SND_SPELL_EYEBALL_OUT);
-			eyeball.exist = -100;
-			
-			for(long n = 0; n < 12; n++) {
-				
-				PARTICLE_DEF * pd = createParticle();
-				if(!pd) {
-					break;
-				}
-				
-				pd->ov = eyeball.pos + randomVec(-5.f, 5.f);
-				pd->move = randomVec(-2.f, 2.f);
-				pd->siz = 28.f;
-				pd->tolive = Random::get(2000, 6000);
-				pd->scale = Vec3f(12.f);
-				pd->timcreation = spells[i].lastupdate;
-				pd->tc = tc4;
-				pd->special = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
-				pd->fparam = 0.0000001f;
-				pd->rgb = Color3f(0.7f, 0.7f, 1.f);
-			}
-			
-			config.input.mouseLookToggle = bOldLookToggle; 
-			
+			FlyingEyeSpellKill(tc4, i);
 			break;
 		}
 		// Level 06
 		case SPELL_PARALYSE: {
-			ARX_SOUND_PlaySFX(SND_SPELL_PARALYSE_END);
+			ParalyseSpellKill();
 			break;
 		}
 		// Level 7
 		case SPELL_FIRE_FIELD: {
-			ARX_SOUND_Stop(spells[i].snd_loop);
-			ARX_SOUND_PlaySFX(SND_SPELL_FIRE_FIELD_END);
+			FireFieldSpellKill(i);
 			break;
 		}
 		case SPELL_ICE_FIELD: {
-			ARX_SOUND_Stop(spells[i].snd_loop); 
-			ARX_SOUND_PlaySFX(SND_SPELL_ICE_FIELD_END); 
+			IceFieldSpellKill(i); 
 			break; 
 		}
 		case SPELL_MASS_PARALYSE: {
-			ARX_SOUND_PlaySFX(SND_SPELL_PARALYSE_END);
+			MassParalyseSpellKill();
 			break;
 		}
 		case SPELL_SUMMON_CREATURE: {
-			lightHandleDestroy(spells[i].pSpellFx->lLightId);
-			
-			if(ValidIONum(spells[i].longinfo2_entity) && spells[i].longinfo2_entity != 0) {
-				
-				if(entities[spells[i].longinfo2_entity]->scriptload
-				   && (entities[spells[i].longinfo2_entity]->ioflags & IO_NOSAVE)) {
-					
-					AddRandomSmoke(entities[spells[i].longinfo2_entity], 100);
-					Vec3f posi = entities[spells[i].longinfo2_entity]->pos;
-					posi.y -= 100.f;
-					MakeCoolFx(posi);
-				
-					LightHandle nn = GetFreeDynLight();
-					if(lightHandleIsValid(nn)) {
-						EERIE_LIGHT * light = lightHandleGet(nn);
-						
-						light->intensity = 0.7f + 2.f * rnd();
-						light->fallend = 600.f;
-						light->fallstart = 400.f;
-						light->rgb = Color3f(1.0f, 0.8f, 0.0f);
-						light->pos = posi;
-						light->duration = 600;
-					}
-					
-					entities[spells[i].longinfo2_entity]->destroyOne();
-				}
-			}
-			
-			spells[i].longinfo2_entity = 0;
+			SummonCreatureSpellKill(i);
 			break;
 		}
 		case SPELL_FAKE_SUMMON: {
-			lightHandleDestroy(spells[i].pSpellFx->lLightId);
-			
+			FakeSummonSpellKill(i);
 			break;
 		}
 		
