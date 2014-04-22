@@ -1800,6 +1800,54 @@ void RepelUndeadSpellKill(long i)
 	ARX_SOUND_Stop(spells[i].snd_loop);
 }
 
+void HarmSpellKill(long i)
+{
+	if(spells[i].longinfo_damage != -1) {
+		damages[spells[i].longinfo_damage].exist = false;
+	}
+	
+	if(lightHandleIsValid(spells[i].longinfo2_light)) {
+		EERIE_LIGHT * light = lightHandleGet(spells[i].longinfo2_light);
+		
+		light->time_creation = (unsigned long)(arxtime);
+		light->duration = 600; 
+	}
+	
+	ARX_SOUND_Stop(spells[i].snd_loop);
+}
+
+void LifeDrainSpellKill(long i)
+{
+	if(spells[i].longinfo_damage != -1) {
+		damages[spells[i].longinfo_damage].exist = false;
+	}
+	
+	if(lightHandleIsValid(spells[i].longinfo2_light)) {
+		EERIE_LIGHT * light = lightHandleGet(spells[i].longinfo2_light);
+		
+		light->time_creation = (unsigned long)(arxtime);
+		light->duration = 600; 
+	}
+	
+	ARX_SOUND_Stop(spells[i].snd_loop);
+}
+
+void ManaDrainSpellKill(long i)
+{
+	if(spells[i].longinfo_damage != -1) {
+		damages[spells[i].longinfo_damage].exist = false;
+	}
+	
+	if(lightHandleIsValid(spells[i].longinfo2_light)) {
+		EERIE_LIGHT * light = lightHandleGet(spells[i].longinfo2_light);
+		
+		light->time_creation = (unsigned long)(arxtime);
+		light->duration = 600; 
+	}
+	
+	ARX_SOUND_Stop(spells[i].snd_loop);
+}
+
 void ARX_SPELLS_Kill(long i) {
 	
 	static TextureContainer * tc4=TextureContainer::Load("graph/particles/smoke");
@@ -1833,21 +1881,16 @@ void ARX_SPELLS_Kill(long i) {
 			RepelUndeadSpellKill(i);
 			break;
 		}
-		case SPELL_HARM:
-		case SPELL_LIFE_DRAIN:
+		case SPELL_HARM: {
+			HarmSpellKill(i);
+			break;
+		}
+		case SPELL_LIFE_DRAIN: {
+			LifeDrainSpellKill(i);
+			break;
+		}
 		case SPELL_MANA_DRAIN: {
-			if(spells[i].longinfo_damage != -1) {
-				damages[spells[i].longinfo_damage].exist = false;
-			}
-			
-			if(lightHandleIsValid(spells[i].longinfo2_light)) {
-				EERIE_LIGHT * light = lightHandleGet(spells[i].longinfo2_light);
-				
-				light->time_creation = (unsigned long)(arxtime);
-				light->duration = 600; 
-			}
-			
-			ARX_SOUND_Stop(spells[i].snd_loop);
+			ManaDrainSpellKill(i);
 			break;
 		}
 		case SPELL_FLYING_EYE : {
