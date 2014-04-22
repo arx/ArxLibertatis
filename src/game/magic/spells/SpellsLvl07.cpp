@@ -488,11 +488,7 @@ void ConfuseSpell::Launch(long i, bool & notifyAll, long duration)
 	m_timcreation = (unsigned long)(arxtime);
 	m_bDuration = true;
 	m_fManaCostPerSecond = 1.5f;
-	if(duration > -1) {
-		m_tolive = duration;
-	} else {
-		// TODO what then?
-	}
+	m_tolive = (duration > -1) ? duration : 5000;
 	
 	CConfuse * effect = new CConfuse();
 	effect->spellinstance = i;
