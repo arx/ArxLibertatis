@@ -1748,6 +1748,58 @@ bool ARX_SPELLS_Launch(SpellType typ, long source, SpellcastFlags flagss, long l
 }
 
 // Used for specific Spell-End FX
+void FireballSpellKill(long i)
+{
+	if(lightHandleIsValid(spells[i].longinfo_light)) {
+		EERIE_LIGHT * light = lightHandleGet(spells[i].longinfo_light);
+		
+		light->duration = 500;
+		light->time_creation = (unsigned long)(arxtime);
+	}
+	spells[i].longinfo_light = -1;
+}
+
+void LightningStrikeKill(long i)
+{
+	if(lightHandleIsValid(spells[i].longinfo_light)) {
+		EERIE_LIGHT * light = lightHandleGet(spells[i].longinfo_light);
+		
+		light->duration = 200;
+		light->time_creation = (unsigned long)(arxtime);
+	}
+	spells[i].longinfo_light = -1;
+	
+	ARX_SOUND_Stop(spells[i].snd_loop);
+	ARX_SOUND_PlaySFX(SND_SPELL_LIGHTNING_END, &entities[spells[i].caster]->pos);
+}
+
+void MassLightningStrikeSpellKill(long i)
+{
+	if(lightHandleIsValid(spells[i].longinfo_light)) {
+		EERIE_LIGHT * light = lightHandleGet(spells[i].longinfo_light);
+		
+		light->duration = 200;
+		light->time_creation = (unsigned long)(arxtime);
+	}
+	spells[i].longinfo_light = -1;
+	
+	ARX_SOUND_Stop(spells[i].snd_loop);
+	ARX_SOUND_PlaySFX(SND_SPELL_LIGHTNING_END);
+}
+
+void RepelUndeadSpellKill(long i)
+{
+	if(lightHandleIsValid(spells[i].longinfo_light)) {
+		EERIE_LIGHT * light = lightHandleGet(spells[i].longinfo_light);
+		
+		light->duration = 200;
+		light->time_creation = (unsigned long)(arxtime);
+	}
+	spells[i].longinfo_light = -1;
+	
+	ARX_SOUND_Stop(spells[i].snd_loop);
+}
+
 void ARX_SPELLS_Kill(long i) {
 	
 	static TextureContainer * tc4=TextureContainer::Load("graph/particles/smoke");
@@ -1766,55 +1818,19 @@ void ARX_SPELLS_Kill(long i) {
 
 	switch(spells[i].type) {
 		case SPELL_FIREBALL: {
-			if(lightHandleIsValid(spells[i].longinfo_light)) {
-				EERIE_LIGHT * light = lightHandleGet(spells[i].longinfo_light);
-				
-				light->duration = 500;
-				light->time_creation = (unsigned long)(arxtime);
-			}
-			spells[i].longinfo_light = -1;
-			
+			FireballSpellKill(i);
 			break;
 		}
 		case SPELL_LIGHTNING_STRIKE: {
-			if(lightHandleIsValid(spells[i].longinfo_light)) {
-				EERIE_LIGHT * light = lightHandleGet(spells[i].longinfo_light);
-				
-				light->duration = 200;
-				light->time_creation = (unsigned long)(arxtime);
-			}
-			spells[i].longinfo_light = -1;
-			
-			ARX_SOUND_Stop(spells[i].snd_loop);
-			ARX_SOUND_PlaySFX(SND_SPELL_LIGHTNING_END, &entities[spells[i].caster]->pos);
-			
+			LightningStrikeKill(i);
 			break;
 		}
 		case SPELL_MASS_LIGHTNING_STRIKE: {
-			if(lightHandleIsValid(spells[i].longinfo_light)) {
-				EERIE_LIGHT * light = lightHandleGet(spells[i].longinfo_light);
-				
-				light->duration = 200;
-				light->time_creation = (unsigned long)(arxtime);
-			}
-			spells[i].longinfo_light = -1;
-			
-			ARX_SOUND_Stop(spells[i].snd_loop);
-			ARX_SOUND_PlaySFX(SND_SPELL_LIGHTNING_END);
-			
+			MassLightningStrikeSpellKill(i);
 			break;
 		}
 		case SPELL_REPEL_UNDEAD: {
-			if(lightHandleIsValid(spells[i].longinfo_light)) {
-				EERIE_LIGHT * light = lightHandleGet(spells[i].longinfo_light);
-				
-				light->duration = 200;
-				light->time_creation = (unsigned long)(arxtime);
-			}
-			spells[i].longinfo_light = -1;
-			
-			ARX_SOUND_Stop(spells[i].snd_loop);
-			
+			RepelUndeadSpellKill(i);
 			break;
 		}
 		case SPELL_HARM:
