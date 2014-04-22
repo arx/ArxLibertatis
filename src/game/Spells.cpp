@@ -1869,118 +1869,191 @@ float ARX_SPELLS_ApplyColdProtection(Entity * io,float damages)
 	return damages;
 }
 
+void TeleportSpellEnd(size_t i)
+{
+	ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE, &spells[i].caster_pos);
+}
+
+void MagicSightSpellEnd(size_t i)
+{
+	if(spells[i].caster == 0) {
+		Project.improve = 0;
+		ARX_SOUND_Stop(spells[i].snd_loop);
+	}
+	ARX_SOUND_PlaySFX(SND_SPELL_VISION_START, &entities[spells[i].caster]->pos);
+}
+
+void MagicMissileSpellEnd(size_t i)
+{
+	lightHandleDestroy(spells[i].longinfo_light);
+}
+
+void IgnitSpellEnd(size_t i)
+{
+	CIgnit *pIgnit = (CIgnit *)spells[i].pSpellFx;
+	pIgnit->Action(1);
+}
+
+void DouseSpellEnd(size_t i)
+{
+	CDoze *pDoze = (CDoze *)spells[i].pSpellFx;
+	pDoze->Action(0);
+}
+
+void DetectTrapSpellEnd(size_t i)
+{
+	if(spells[i].caster == 0) {
+		ARX_SOUND_Stop(spells[i].snd_loop);
+	}
+	ARX_SPELLS_RemoveSpellOn(spells[i].target, i);
+}
+
+void ArmorSpellEnd(size_t i)
+{
+	ARX_SOUND_Stop(spells[i].snd_loop);
+	ARX_SOUND_PlaySFX(SND_SPELL_ARMOR_END, &entities[spells[i].target]->pos);
+	
+	if(ValidIONum(spells[i].target)) {
+		ARX_HALO_SetToNative(entities[spells[i].target]);
+	}
+	
+	ARX_SPELLS_RemoveSpellOn(spells[i].target, i);
+}
+
+void LowerArmorSpellEnd(size_t i)
+{
+	ARX_SOUND_PlaySFX(SND_SPELL_LOWER_ARMOR_END);
+	Entity *io = entities[spells[i].target];
+	
+	if(spells[i].longinfo_lower_armor) {
+		io->halo.flags &= ~HALO_ACTIVE;
+		ARX_HALO_SetToNative(io);
+	}
+	
+	ARX_SPELLS_RemoveSpellOn(spells[i].target, i);
+}
+
+void SpeedSpellEnd(size_t i)
+{
+	ARX_SPELLS_RemoveSpellOn(spells[i].target,i);
+	
+	if(spells[i].caster == 0)
+		ARX_SOUND_Stop(spells[i].snd_loop);
+	
+	ARX_SOUND_PlaySFX(SND_SPELL_SPEED_END, &entities[spells[i].target]->pos);
+}
+
+void FireballSpellEnd(size_t i)
+{
+	ARX_SOUND_Stop(spells[i].snd_loop);
+}
+
+void BlessSpellEnd(size_t i)
+{
+	ARX_SPELLS_RemoveSpellOn(spells[i].target,i);
+}
+
+void CurseSpellEnd(size_t i)
+{
+	ARX_SPELLS_RemoveSpellOn(spells[i].target,i);
+}
+
+void TelekinesisSpellEnd(size_t i)
+{
+	if(spells[i].caster == 0)
+		Project.telekinesis = 0;
+	
+	ARX_SOUND_PlaySFX(SND_SPELL_TELEKINESIS_END, &entities[spells[i].caster]->pos);
+}
+
+void FireProtectionSpellEnd(size_t i)
+{
+	ARX_SOUND_Stop(spells[i].snd_loop);
+	ARX_SOUND_PlaySFX(SND_SPELL_FIRE_PROTECTION_END, &entities[spells[i].target]->pos);
+	ARX_SPELLS_RemoveSpellOn(spells[i].target, i);
+	
+	if(ValidIONum(spells[i].target))
+		ARX_HALO_SetToNative(entities[spells[i].target]);
+}
+
+void ColdProtectionSpellEnd(size_t i)
+{
+	ARX_SOUND_Stop(spells[i].snd_loop);
+	ARX_SOUND_PlaySFX(SND_SPELL_COLD_PROTECTION_END, &entities[spells[i].target]->pos);
+	ARX_SPELLS_RemoveSpellOn(spells[i].target, i);
+	
+	if(ValidIONum(spells[i].target))
+		ARX_HALO_SetToNative(entities[spells[i].target]);
+}
+
 void ARX_SPELLS_Update_End(size_t i) {
 	switch(spells[i].type) {
 		case SPELL_TELEPORT: {
-			ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE, &spells[i].caster_pos);
+			TeleportSpellEnd(i);
 			break;
 		}
 		//****************************************************************************
 		// LEVEL 1 SPELLS
 		case SPELL_MAGIC_SIGHT: {
-			if(spells[i].caster == 0) {
-				Project.improve = 0;
-				ARX_SOUND_Stop(spells[i].snd_loop);
-			}
-			ARX_SOUND_PlaySFX(SND_SPELL_VISION_START, &entities[spells[i].caster]->pos);
+			MagicSightSpellEnd(i);
 			break;
 		}
 		case SPELL_MAGIC_MISSILE: {
-			lightHandleDestroy(spells[i].longinfo_light);
+			MagicMissileSpellEnd(i);
 			break;
 		}
 		case SPELL_IGNIT: {
-			CIgnit *pIgnit = (CIgnit *)spells[i].pSpellFx;
-			pIgnit->Action(1);
+			IgnitSpellEnd(i);
 			break;
 		}
 		case SPELL_DOUSE: {
-			CDoze *pDoze = (CDoze *)spells[i].pSpellFx;
-			pDoze->Action(0);
+			DouseSpellEnd(i);
 			break;
 		}
 		//****************************************************************************
 		// LEVEL 2
 		case SPELL_DETECT_TRAP: {
-			if(spells[i].caster == 0) {
-				ARX_SOUND_Stop(spells[i].snd_loop);
-			}
-			ARX_SPELLS_RemoveSpellOn(spells[i].target, i);
+			DetectTrapSpellEnd(i);
 			break;
 		}
 		case SPELL_ARMOR: {
-			ARX_SOUND_Stop(spells[i].snd_loop);
-			ARX_SOUND_PlaySFX(SND_SPELL_ARMOR_END, &entities[spells[i].target]->pos);					
-			
-			if(ValidIONum(spells[i].target)) {
-				ARX_HALO_SetToNative(entities[spells[i].target]);
-			}
-			
-			ARX_SPELLS_RemoveSpellOn(spells[i].target, i);
+			ArmorSpellEnd(i);
 			break;
 		}
 		case SPELL_LOWER_ARMOR: {
-			ARX_SOUND_PlaySFX(SND_SPELL_LOWER_ARMOR_END);
-			Entity *io = entities[spells[i].target];
-			
-			if(spells[i].longinfo_lower_armor) {
-				io->halo.flags &= ~HALO_ACTIVE;
-				ARX_HALO_SetToNative(io);
-			}
-			
-			ARX_SPELLS_RemoveSpellOn(spells[i].target, i);
+			LowerArmorSpellEnd(i);
 			break;
 		}
 		//****************************************************************************
 		// LEVEL 3
 		case SPELL_SPEED: {
-			ARX_SPELLS_RemoveSpellOn(spells[i].target,i);
-			
-			if(spells[i].caster == 0)
-				ARX_SOUND_Stop(spells[i].snd_loop);
-			
-			ARX_SOUND_PlaySFX(SND_SPELL_SPEED_END, &entities[spells[i].target]->pos);
+			SpeedSpellEnd(i);
 			break;
 		}
 		case SPELL_FIREBALL: {
-			ARX_SOUND_Stop(spells[i].snd_loop);					
+			FireballSpellEnd(i);
 			break;
 		}
 		//****************************************************************************
 		// LEVEL 4
 		case SPELL_BLESS: {
-			ARX_SPELLS_RemoveSpellOn(spells[i].target,i);
+			BlessSpellEnd(i);
 			break;
 		}
 		case SPELL_CURSE: {
-			ARX_SPELLS_RemoveSpellOn(spells[i].target,i);
+			CurseSpellEnd(i);
 			break;
 		}
 		case SPELL_TELEKINESIS: {
-			if(spells[i].caster == 0)
-				Project.telekinesis = 0;
-			
-			ARX_SOUND_PlaySFX(SND_SPELL_TELEKINESIS_END, &entities[spells[i].caster]->pos);					
+			TelekinesisSpellEnd(i);
 			break;
 		}
 		case SPELL_FIRE_PROTECTION: {
-			ARX_SOUND_Stop(spells[i].snd_loop);
-			ARX_SOUND_PlaySFX(SND_SPELL_FIRE_PROTECTION_END, &entities[spells[i].target]->pos);
-			ARX_SPELLS_RemoveSpellOn(spells[i].target, i);
-			
-			if(ValidIONum(spells[i].target))
-				ARX_HALO_SetToNative(entities[spells[i].target]);
-			
+			FireProtectionSpellEnd(i);
 			break;
 		}
 		case SPELL_COLD_PROTECTION: {
-			ARX_SOUND_Stop(spells[i].snd_loop);
-			ARX_SOUND_PlaySFX(SND_SPELL_COLD_PROTECTION_END, &entities[spells[i].target]->pos);
-			ARX_SPELLS_RemoveSpellOn(spells[i].target, i);
-			
-			if(ValidIONum(spells[i].target))
-				ARX_HALO_SetToNative(entities[spells[i].target]);
-			
+			ColdProtectionSpellEnd(i);
 			break;
 		}
 		//****************************************************************************
