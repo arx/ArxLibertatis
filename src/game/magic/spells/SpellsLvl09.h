@@ -20,4 +20,15 @@
 #ifndef ARX_GAME_MAGIC_SPELLS_SPELLSLVL09_H
 #define ARX_GAME_MAGIC_SPELLS_SPELLSLVL09_H
 
+#include "math/Types.h"
+
+bool SummonCreatureSpellLaunch(long i, long duration);
+bool FakeSummonSpellLaunch(long i);
+
+void LaunchAntiMagicField(size_t ident);
+void NegateMagicSpellLaunch(long duration, long i);
+
+bool IncinerateSpellLaunch(long i);
+void MassParalyseSpellLaunch(long i, long duration);
+
 #endif // ARX_GAME_MAGIC_SPELLS_SPELLSLVL09_H
