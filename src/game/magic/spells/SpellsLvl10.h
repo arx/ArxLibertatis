@@ -20,4 +20,12 @@
 #ifndef ARX_GAME_MAGIC_SPELLS_SPELLSLVL10_H
 #define ARX_GAME_MAGIC_SPELLS_SPELLSLVL10_H
 
+#include "game/Spells.h"
+
+void MassLightningStrikeSpellLaunch(long i, SpellType typ);
+bool ControlTargetSpellLaunch(long i);
+void FreezeTimeSpellLaunch(long duration, long i);
+void MassIncinerateSpellLaunch(long i);
+void TeleportSpellLaunch(long i);
+
 #endif // ARX_GAME_MAGIC_SPELLS_SPELLSLVL10_H
