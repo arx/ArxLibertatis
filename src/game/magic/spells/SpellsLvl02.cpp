@@ -32,7 +32,7 @@
 #include "scene/Interactive.h"
 
 
-void HealSpellLaunch(long i, long duration)
+void HealSpell::Launch(long i, long duration)
 {
 	if(!(spells[i].flags & SPELLCAST_FLAG_NOSOUND)) {
 		ARX_SOUND_PlaySFX(SND_SPELL_HEALING, &spells[i].caster_pos);
@@ -52,7 +52,7 @@ void HealSpellLaunch(long i, long duration)
 	spells[i].tolive = effect->GetDuration();
 }
 
-void HealSpellUpdate(size_t i, float framedelay)
+void HealSpell::Update(size_t i, float framedelay)
 {
 	CSpellFx *pCSpellFX = spells[i].pSpellFx;
 
@@ -93,7 +93,7 @@ void HealSpellUpdate(size_t i, float framedelay)
 	}	
 }
 
-void DetectTrapSpellLaunch(long i, SpellType typ)
+void DetectTrapSpell::Launch(long i, SpellType typ)
 {
 	long iCancel = ARX_SPELLS_GetInstanceForThisCaster(typ, spells[i].caster);
 	if(iCancel > -1) {
@@ -122,7 +122,7 @@ void DetectTrapSpellLaunch(long i, SpellType typ)
 	ARX_SPELLS_AddSpellOn(spells[i].target, i);
 }
 
-void DetectTrapSpellEnd(size_t i)
+void DetectTrapSpell::End(size_t i)
 {
 	if(spells[i].caster == 0) {
 		ARX_SOUND_Stop(spells[i].snd_loop);
@@ -130,7 +130,7 @@ void DetectTrapSpellEnd(size_t i)
 	ARX_SPELLS_RemoveSpellOn(spells[i].target, i);
 }
 
-void DetectTrapSpellUpdate(size_t i, float timeDelta)
+void DetectTrapSpell::Update(size_t i, float timeDelta)
 {
 	if(spells[i].caster == 0) {
 		Vec3f pos;
@@ -146,7 +146,7 @@ void DetectTrapSpellUpdate(size_t i, float timeDelta)
 	}	
 }
 
-void ArmorSpellLaunch(SpellType typ, long duration, long i)
+void ArmorSpell::Launch(SpellType typ, long duration, long i)
 {
 	long idx = ARX_SPELLS_GetSpellOn(entities[spells[i].target], typ);
 	if(idx >= 0) {
@@ -203,7 +203,7 @@ void ArmorSpellLaunch(SpellType typ, long duration, long i)
 	ARX_SPELLS_AddSpellOn(spells[i].target, i);
 }
 
-void ArmorSpellEnd(size_t i)
+void ArmorSpell::End(size_t i)
 {
 	ARX_SOUND_Stop(spells[i].snd_loop);
 	ARX_SOUND_PlaySFX(SND_SPELL_ARMOR_END, &entities[spells[i].target]->pos);
@@ -215,7 +215,7 @@ void ArmorSpellEnd(size_t i)
 	ARX_SPELLS_RemoveSpellOn(spells[i].target, i);
 }
 
-void ArmorSpellUpdate(size_t i, float timeDelta)
+void ArmorSpell::Update(size_t i, float timeDelta)
 {
 	CSpellFx *pCSpellFX = spells[i].pSpellFx;
 	
@@ -227,7 +227,7 @@ void ArmorSpellUpdate(size_t i, float timeDelta)
 	ARX_SOUND_RefreshPosition(spells[i].snd_loop, entities[spells[i].target]->pos);
 }
 
-void LowerArmorSpellLaunch(SpellType typ, long duration, long i)
+void LowerArmorSpell::Launch(SpellType typ, long duration, long i)
 {
 	long idx = ARX_SPELLS_GetSpellOn(entities[spells[i].target], typ);
 	if(idx >= 0) {
@@ -276,7 +276,7 @@ void LowerArmorSpellLaunch(SpellType typ, long duration, long i)
 	ARX_SPELLS_AddSpellOn(spells[i].target, i);
 }
 
-void LowerArmorSpellEnd(long i)
+void LowerArmorSpell::End(long i)
 {
 	ARX_SOUND_PlaySFX(SND_SPELL_LOWER_ARMOR_END);
 	Entity *io = entities[spells[i].target];
@@ -289,7 +289,7 @@ void LowerArmorSpellEnd(long i)
 	ARX_SPELLS_RemoveSpellOn(spells[i].target, i);
 }
 
-void LowerArmorSpellUpdate(size_t i, float timeDelta)
+void LowerArmorSpell::Update(size_t i, float timeDelta)
 {
 	CSpellFx *pCSpellFX = spells[i].pSpellFx;
 	
@@ -301,7 +301,7 @@ void LowerArmorSpellUpdate(size_t i, float timeDelta)
 	ARX_SOUND_RefreshPosition(spells[i].snd_loop, entities[spells[i].target]->pos);
 }
 
-void HarmSpellLaunch(long duration, long i)
+void HarmSpell::Launch(long duration, long i)
 {
 	if(!(spells[i].flags & SPELLCAST_FLAG_NOSOUND)) {
 		ARX_SOUND_PlaySFX(SND_SPELL_HARM, &spells[i].caster_pos);
@@ -357,7 +357,7 @@ void HarmSpellLaunch(long duration, long i)
 	}
 }
 
-void HarmSpellKill(long i)
+void HarmSpell::Kill(long i)
 {
 	if(spells[i].longinfo_damage != -1) {
 		damages[spells[i].longinfo_damage].exist = false;
@@ -375,7 +375,7 @@ void HarmSpellKill(long i)
 
 extern EERIE_3DOBJ * cabal;
 
-void HarmSpellUpdate(size_t i, float timeDelta)
+void HarmSpell::Update(size_t i, float timeDelta)
 {
 	if(cabal) {
 		float refpos;

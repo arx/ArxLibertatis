@@ -22,22 +22,37 @@
 
 #include "game/magic/Spell.h"
 
-void MagicSightSpellLaunch(long duration, long i);
-void MagicSightSpellEnd(long i);
-void MagicSightSpellUpdate(size_t i);
+class MagicSightSpell {
+public:
+	static void Launch(long duration, long i);
+	static void End(long i);
+	static void Update(size_t i);
+};
 
-void MagicMissileSpellLaunch(long i);
-void MagicMissileSpellEnd(long i);
-void MagicMissileSpellUpdate(long i, float timeDelta);
+class MagicMissileSpell {
+public:
+	static void Launch(long i);
+	static void End(long i);
+	static void Update(long i, float timeDelta);
+};
 
-void IgnitSpellLaunch(long i);
-void IgnitSpellEnd(long i);
-void IgnitSpellUpdate(long i, float timeDelta);
+class IgnitSpell {
+public:
+	static void Launch(long i);
+	static void End(long i);
+	static void Update(long i, float timeDelta);
+};
 
-void DouseSpellLaunch(long i);
-void DouseSpellEnd(long i);
-void DouseSpellUpdate(long i, float timeDelta);
+class DouseSpell {
+public:
+	static void Launch(long i);
+	static void End(long i);
+	static void Update(long i, float timeDelta);
+};
 
-void ActivatePortalSpellLaunch(long i);
+class ActivatePortalSpell {
+public:
+	static void Launch(long i);
+};
 
 #endif // ARX_GAME_MAGIC_SPELLS_SPELLSLVL01_H

@@ -1485,45 +1485,45 @@ bool ARX_SPELLS_Launch(SpellType typ, long source, SpellcastFlags flagss, long l
 		//****************************************************************************
 		// LEVEL 1
 		case SPELL_MAGIC_SIGHT: {
-			MagicSightSpellLaunch(duration, i);
+			MagicSightSpell::Launch(duration, i);
 			break;
 		}
 		case SPELL_MAGIC_MISSILE: {
-			MagicMissileSpellLaunch(i);
+			MagicMissileSpell::Launch(i);
 			break;
 		}
 		case SPELL_IGNIT: {
-			IgnitSpellLaunch(i);
+			IgnitSpell::Launch(i);
 			break;
 		}
 		case SPELL_DOUSE: {
-			DouseSpellLaunch(i);
+			DouseSpell::Launch(i);
 			break;
 		}
 		case SPELL_ACTIVATE_PORTAL: {
-			ActivatePortalSpellLaunch(i);
+			ActivatePortalSpell::Launch(i);
 			break;
 		}
 		//****************************************************************************
 		// LEVEL 2
 		case SPELL_HEAL: {
-			HealSpellLaunch(i, duration);
+			HealSpell::Launch(i, duration);
 			break;
 		}
 		case SPELL_DETECT_TRAP: {
-			DetectTrapSpellLaunch(i, typ);
+			DetectTrapSpell::Launch(i, typ);
 			break;
 		}
 		case SPELL_ARMOR: {
-			ArmorSpellLaunch(typ, duration, i);
+			ArmorSpell::Launch(typ, duration, i);
 			break;
 		}
 		case SPELL_LOWER_ARMOR: {
-			LowerArmorSpellLaunch(typ, duration, i);
+			LowerArmorSpell::Launch(typ, duration, i);
 			break;
 		}
 		case SPELL_HARM: {
-			HarmSpellLaunch(duration, i);
+			HarmSpell::Launch(duration, i);
 			break;
 		}
 		//****************************************************************************
@@ -1773,7 +1773,7 @@ void ARX_SPELLS_Kill(long i) {
 			break;
 		}
 		case SPELL_HARM: {
-			HarmSpellKill(i);
+			HarmSpell::Kill(i);
 			break;
 		}
 		case SPELL_LIFE_DRAIN: {
@@ -1869,33 +1869,33 @@ void ARX_SPELLS_Update_End(size_t i) {
 		//****************************************************************************
 		// LEVEL 1 SPELLS
 		case SPELL_MAGIC_SIGHT: {
-			MagicSightSpellEnd(i);
+			MagicSightSpell::End(i);
 			break;
 		}
 		case SPELL_MAGIC_MISSILE: {
-			MagicMissileSpellEnd(i);
+			MagicMissileSpell::End(i);
 			break;
 		}
 		case SPELL_IGNIT: {
-			IgnitSpellEnd(i);
+			IgnitSpell::End(i);
 			break;
 		}
 		case SPELL_DOUSE: {
-			DouseSpellEnd(i);
+			DouseSpell::End(i);
 			break;
 		}
 		//****************************************************************************
 		// LEVEL 2
 		case SPELL_DETECT_TRAP: {
-			DetectTrapSpellEnd(i);
+			DetectTrapSpell::End(i);
 			break;
 		}
 		case SPELL_ARMOR: {
-			ArmorSpellEnd(i);
+			ArmorSpell::End(i);
 			break;
 		}
 		case SPELL_LOWER_ARMOR: {
-			LowerArmorSpellEnd(i);
+			LowerArmorSpell::End(i);
 			break;
 		}
 		//****************************************************************************
@@ -2032,15 +2032,15 @@ void ARX_SPELLS_Update_Update(size_t i, unsigned long tim) {
 		//****************************************************************************
 		// LEVEL 1
 		case SPELL_MAGIC_MISSILE: {
-			MagicMissileSpellUpdate(i, framedelay);
+			MagicMissileSpell::Update(i, framedelay);
 			break;
 		}
 		case SPELL_IGNIT: {
-			IgnitSpellUpdate(i, framedelay);
+			IgnitSpell::Update(i, framedelay);
 			break;
 		}
 		case SPELL_DOUSE: {
-			DouseSpellUpdate(i, framedelay);
+			DouseSpell::Update(i, framedelay);
 			break;
 		} 
 		case SPELL_ACTIVATE_PORTAL: {
@@ -2049,23 +2049,23 @@ void ARX_SPELLS_Update_Update(size_t i, unsigned long tim) {
 		//****************************************************************************
 		// LEVEL 2
 		case SPELL_HEAL: {
-			HealSpellUpdate(i, framedelay);
+			HealSpell::Update(i, framedelay);
 			break;
 		}
 		case SPELL_DETECT_TRAP: {
-			DetectTrapSpellUpdate(i, framedelay);
+			DetectTrapSpell::Update(i, framedelay);
 			break;
 		}
 		case SPELL_ARMOR: {
-			ArmorSpellUpdate(i, framedelay);
+			ArmorSpell::Update(i, framedelay);
 			break;
 		}
 		case SPELL_LOWER_ARMOR: {
-			LowerArmorSpellUpdate(i, framedelay);
+			LowerArmorSpell::Update(i, framedelay);
 			break;
 		} 
 		case SPELL_HARM: {
-			HarmSpellUpdate(i, framedelay);
+			HarmSpell::Update(i, framedelay);
 			break;
 		}
 		//****************************************************************************
@@ -2222,7 +2222,7 @@ void ARX_SPELLS_Update_Update(size_t i, unsigned long tim) {
 			break;
 		}
 		case SPELL_MAGIC_SIGHT: {
-			MagicSightSpellUpdate(i);
+			MagicSightSpell::Update(i);
 			break;
 		}
 		case SPELL_TELEKINESIS: {

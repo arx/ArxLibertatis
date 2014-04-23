@@ -32,7 +32,7 @@
 
 #include "scene/GameSound.h"
 
-void MagicSightSpellLaunch(long duration, long i)
+void MagicSightSpell::Launch(long duration, long i)
 {
 	spells[i].exist = true;
 	spells[i].fManaCostPerSecond = 0.36f;
@@ -49,7 +49,7 @@ void MagicSightSpellLaunch(long duration, long i)
 	}
 }
 
-void MagicSightSpellEnd(long i)
+void MagicSightSpell::End(long i)
 {
 	if(spells[i].caster == 0) {
 		Project.improve = 0;
@@ -63,7 +63,7 @@ static const float IMPROVED_FOCAL = 320.0f;
 
 extern EERIE_CAMERA subj;
 
-void MagicSightSpellUpdate(size_t i)
+void MagicSightSpell::Update(size_t i)
 {
 	if(spells[i].caster == 0) {
 		Vec3f pos;
@@ -75,7 +75,7 @@ void MagicSightSpellUpdate(size_t i)
 	}	
 }
 
-void MagicMissileSpellLaunch(long i)
+void MagicMissileSpell::Launch(long i)
 {
 	spells[i].exist = true;
 	spells[i].tolive = 20000; // TODO probably never read
@@ -95,12 +95,12 @@ void MagicMissileSpellLaunch(long i)
 	spells[i].tolive = effect->GetDuration();
 }
 
-void MagicMissileSpellEnd(long i)
+void MagicMissileSpell::End(long i)
 {
 	lightHandleDestroy(spells[i].longinfo_light);
 }
 
-void MagicMissileSpellUpdate(long i, float timeDelta)
+void MagicMissileSpell::Update(long i, float timeDelta)
 {
 	CSpellFx *pCSpellFX = spells[i].pSpellFx;
 
@@ -118,7 +118,7 @@ void MagicMissileSpellUpdate(long i, float timeDelta)
 	}
 }
 
-void IgnitSpellLaunch(/*long target, */long i)
+void IgnitSpell::Launch(long i)
 {
 	spells[i].exist = true;
 	spells[i].tolive = 20000; // TODO probably never read
@@ -196,20 +196,20 @@ void IgnitSpellLaunch(/*long target, */long i)
 	spells[i].tolive = effect->GetDuration();
 }
 
-void IgnitSpellEnd(long i)
+void IgnitSpell::End(long i)
 {
 	CIgnit *pIgnit = (CIgnit *)spells[i].pSpellFx;
 	pIgnit->Action(1);
 }
 
-void IgnitSpellUpdate(long i, float timeDelta)
+void IgnitSpell::Update(long i, float timeDelta)
 {
 	CSpellFx *pCSpellFX = spells[i].pSpellFx;
 	if(pCSpellFX)
 		pCSpellFX->Update(timeDelta);
 }
 
-void DouseSpellLaunch(long i)
+void DouseSpell::Launch(long i)
 {
 	spells[i].exist = true;
 	spells[i].tolive = 20000;
@@ -299,20 +299,20 @@ void DouseSpellLaunch(long i)
 	spells[i].tolive = effect->GetDuration();
 }
 
-void DouseSpellEnd(long i)
+void DouseSpell::End(long i)
 {
 	CDoze *pDoze = (CDoze *)spells[i].pSpellFx;
 	pDoze->Action(0);
 }
 
-void DouseSpellUpdate(long i, float timeDelta)
+void DouseSpell::Update(long i, float timeDelta)
 {
 	CSpellFx *pCSpellFX = spells[i].pSpellFx;
 	if(pCSpellFX)
 		pCSpellFX->Update(timeDelta);
 }
 
-void ActivatePortalSpellLaunch(long i)
+void ActivatePortalSpell::Launch(long i)
 {
 	ARX_SOUND_PlayInterface(SND_SPELL_ACTIVATE_PORTAL);
 	spells[i].exist = true;
