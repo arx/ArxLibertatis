@@ -23,15 +23,20 @@
 #include "game/Spells.h"
 
 void RuneOfGuardingSpellLaunch(long i, SpellType typ, long duration);
+void RuneOfGuardingSpellUpdate(size_t i, float timeDelta);
 
 void LevitateSpellLaunch(long duration, long i, SpellType typ);
 void LevitateSpellEnd(size_t i);
+void LevitateSpellUpdate(size_t i, float timeDelta);
 
 void CurePoisonSpellLaunch(long i);
+void CurePoisonSpellUpdate(size_t i, float timeDelta);
 
 void RepelUndeadSpellLaunch(long duration, long i);
 void RepelUndeadSpellKill(long i);
+void RepelUndeadSpellUpdate(size_t i, float timeDelta);
 
 void PoisonProjectileSpellLaunch(long i);
+void PoisonProjectileSpellUpdate(size_t i, float timeDelta);
 
 #endif // ARX_GAME_MAGIC_SPELLS_SPELLSLVL05_H

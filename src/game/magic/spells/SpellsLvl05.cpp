@@ -27,8 +27,9 @@
 #include "game/NPC.h"
 #include "game/Player.h"
 #include "game/Spells.h"
+#include "graphics/particle/ParticleEffects.h"
 #include "graphics/spells/Spells05.h"
-
+#include "physics/Collisions.h"
 #include "scene/GameSound.h"
 #include "scene/Interactive.h"
 
@@ -49,6 +50,31 @@ void RuneOfGuardingSpellLaunch(long i, SpellType typ, long duration)
 	effect->SetDuration(spells[i].tolive);
 	spells[i].pSpellFx = effect;
 	spells[i].tolive = effect->GetDuration();
+}
+
+void RuneOfGuardingSpellUpdate(size_t i, float timeDelta)
+{
+	if(spells[i].pSpellFx) {
+		spells[i].pSpellFx->Update(timeDelta);
+		spells[i].pSpellFx->Render();
+		CRuneOfGuarding * pCRG=(CRuneOfGuarding *)spells[i].pSpellFx;
+
+		if (pCRG)
+		{
+			EERIE_SPHERE sphere;
+			sphere.origin = pCRG->eSrc;
+			sphere.radius=std::max(spells[i].caster_level*15.f,50.f);
+
+			if (CheckAnythingInSphere(&sphere,spells[i].caster,CAS_NO_SAME_GROUP | CAS_NO_BACKGROUND_COL | CAS_NO_ITEM_COL| CAS_NO_FIX_COL | CAS_NO_DEAD_COL))
+			{
+				ARX_BOOMS_Add(pCRG->eSrc);
+				LaunchFireballBoom(&pCRG->eSrc,(float)spells[i].caster_level);
+				DoSphericDamage(&pCRG->eSrc,4.f*spells[i].caster_level,30.f*spells[i].caster_level,DAMAGE_AREA,DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL,spells[i].caster);
+				spells[i].tolive=0;
+				ARX_SOUND_PlaySFX(SND_SPELL_RUNE_OF_GUARDING_END, &sphere.origin);
+			}
+		}
+	}
 }
 
 void LevitateSpellLaunch(long duration, long i, SpellType typ)
@@ -101,6 +127,33 @@ void LevitateSpellEnd(size_t i)
 		player.levitate = false;
 }
 
+void LevitateSpellUpdate(size_t i, float timeDelta)
+{
+	CLevitate *pLevitate=(CLevitate *)spells[i].pSpellFx;
+	Vec3f target;
+
+	if(spells[i].target == 0) {
+		target.x=player.pos.x;
+		target.y=player.pos.y+150.f;
+		target.z=player.pos.z;
+		player.levitate = true;
+	} else {
+		target.x = entities[spells[i].caster]->pos.x;
+		target.y = entities[spells[i].caster]->pos.y;
+		target.z = entities[spells[i].caster]->pos.z;
+	}
+
+	pLevitate->ChangePos(&target);
+		
+	CSpellFx *pCSpellFX = spells[i].pSpellFx;
+
+	if(pCSpellFX) {
+		pCSpellFX->Update(timeDelta);
+		pCSpellFX->Render();
+	}
+	ARX_SOUND_RefreshPosition(spells[i].snd_loop, entities[spells[i].target]->pos);
+}
+
 void CurePoisonSpellLaunch(long i)
 {
 	if(spells[i].caster == 0) {
@@ -129,6 +182,14 @@ void CurePoisonSpellLaunch(long i)
 	effect->SetDuration(spells[i].tolive);
 	spells[i].pSpellFx = effect;
 	spells[i].tolive = effect->GetDuration();
+}
+
+void CurePoisonSpellUpdate(size_t i, float timeDelta)
+{
+	if(spells[i].pSpellFx) {
+		spells[i].pSpellFx->Update(timeDelta);
+		spells[i].pSpellFx->Render();
+	}
 }
 
 void RepelUndeadSpellLaunch(long duration, long i)
@@ -175,6 +236,17 @@ void RepelUndeadSpellKill(long i)
 	ARX_SOUND_Stop(spells[i].snd_loop);
 }
 
+void RepelUndeadSpellUpdate(size_t i, float timeDelta)
+{
+	if(spells[i].pSpellFx) {
+		spells[i].pSpellFx->Update(timeDelta);
+		spells[i].pSpellFx->Render();
+
+		if (spells[i].target == 0)
+			ARX_SOUND_RefreshPosition(spells[i].snd_loop, entities[spells[i].target]->pos);
+	}
+}
+
 void PoisonProjectileSpellLaunch(long i)
 {
 	ARX_SOUND_PlaySFX(SND_SPELL_POISON_PROJECTILE_LAUNCH,
@@ -196,4 +268,12 @@ void PoisonProjectileSpellLaunch(long i)
 	effect->Create(Vec3f_ZERO, MAKEANGLE(ang));
 	spells[i].pSpellFx = effect;
 	spells[i].tolive = effect->GetDuration();
+}
+
+void PoisonProjectileSpellUpdate(size_t i, float timeDelta)
+{
+	if(spells[i].pSpellFx) {
+		spells[i].pSpellFx->Update(timeDelta);
+		spells[i].pSpellFx->Render();
+	}
 }

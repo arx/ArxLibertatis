@@ -2023,102 +2023,6 @@ void ARX_SPELLS_Update_End(size_t i) {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-void CurePoisonSpellUpdate(size_t i)
-{
-	if(spells[i].pSpellFx) {
-		spells[i].pSpellFx->Update(framedelay);
-		spells[i].pSpellFx->Render();
-	}
-}
-
-void RuneOfGuardingSpellUpdate(size_t i)
-{
-	if(spells[i].pSpellFx) {
-		spells[i].pSpellFx->Update(framedelay);
-		spells[i].pSpellFx->Render();
-		CRuneOfGuarding * pCRG=(CRuneOfGuarding *)spells[i].pSpellFx;
-
-		if (pCRG)
-		{
-			EERIE_SPHERE sphere;
-			sphere.origin = pCRG->eSrc;
-			sphere.radius=std::max(spells[i].caster_level*15.f,50.f);
-
-			if (CheckAnythingInSphere(&sphere,spells[i].caster,CAS_NO_SAME_GROUP | CAS_NO_BACKGROUND_COL | CAS_NO_ITEM_COL| CAS_NO_FIX_COL | CAS_NO_DEAD_COL))
-			{
-				ARX_BOOMS_Add(pCRG->eSrc);
-				LaunchFireballBoom(&pCRG->eSrc,(float)spells[i].caster_level);
-				DoSphericDamage(&pCRG->eSrc,4.f*spells[i].caster_level,30.f*spells[i].caster_level,DAMAGE_AREA,DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL,spells[i].caster);
-				spells[i].tolive=0;
-				ARX_SOUND_PlaySFX(SND_SPELL_RUNE_OF_GUARDING_END, &sphere.origin);
-			}
-		}
-	}
-}
-
-void RepelUndeadSpellUpdate(size_t i)
-{
-	if(spells[i].pSpellFx) {
-		spells[i].pSpellFx->Update(framedelay);
-		spells[i].pSpellFx->Render();
-
-		if (spells[i].target == 0)
-			ARX_SOUND_RefreshPosition(spells[i].snd_loop, entities[spells[i].target]->pos);
-	}
-}
-
-void PoisonProjectileSpellUpdate(size_t i)
-{
-	if(spells[i].pSpellFx) {
-		spells[i].pSpellFx->Update(framedelay);
-		spells[i].pSpellFx->Render();
-	}
-}
-
-void LevitateSpellUpdate(size_t i)
-{
-	CLevitate *pLevitate=(CLevitate *)spells[i].pSpellFx;
-	Vec3f target;
-
-	if(spells[i].target == 0) {
-		target.x=player.pos.x;
-		target.y=player.pos.y+150.f;
-		target.z=player.pos.z;
-		player.levitate = true;
-	} else {
-		target.x = entities[spells[i].caster]->pos.x;
-		target.y = entities[spells[i].caster]->pos.y;
-		target.z = entities[spells[i].caster]->pos.z;
-	}
-
-	pLevitate->ChangePos(&target);
-		
-	CSpellFx *pCSpellFX = spells[i].pSpellFx;
-
-	if(pCSpellFX) {
-		pCSpellFX->Update(framedelay);
-		pCSpellFX->Render();
-	}
-	ARX_SOUND_RefreshPosition(spells[i].snd_loop, entities[spells[i].target]->pos);
-}
-
 void RiseDeadSpellUpdate(size_t i)
 {
 	CSpellFx *pCSpellFX = spells[i].pSpellFx;
@@ -2992,23 +2896,23 @@ void ARX_SPELLS_Update_Update(size_t i, unsigned long tim) {
 		//****************************************************************************
 		// LEVEL 5 SPELLS
 		case SPELL_CURE_POISON: {
-			CurePoisonSpellUpdate(i);
+			CurePoisonSpellUpdate(i, framedelay);
 			break;
 		}
 		case SPELL_RUNE_OF_GUARDING: {
-			RuneOfGuardingSpellUpdate(i);
+			RuneOfGuardingSpellUpdate(i, framedelay);
 			break;
 		}
 		case SPELL_REPEL_UNDEAD: {
-			RepelUndeadSpellUpdate(i);
+			RepelUndeadSpellUpdate(i, framedelay);
 			break;
 		}
 		case SPELL_POISON_PROJECTILE: {
-			PoisonProjectileSpellUpdate(i);
+			PoisonProjectileSpellUpdate(i, framedelay);
 			break;
 		}
 		case SPELL_LEVITATE: {
-			LevitateSpellUpdate(i);
+			LevitateSpellUpdate(i, framedelay);
 			break;
 		}
 		//****************************************************************************
