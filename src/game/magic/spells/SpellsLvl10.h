@@ -26,12 +26,14 @@ void MassLightningStrikeSpellLaunch(long i, SpellType typ);
 void MassLightningStrikeSpellKill(long i);
 
 bool ControlTargetSpellLaunch(long i);
+void ControlTargetSpellUpdate(size_t i, float timeDelta);
 
 void FreezeTimeSpellLaunch(long duration, long i);
 void FreezeTimeSpellEnd(size_t i);
 
 void MassIncinerateSpellLaunch(long i);
 void MassIncinerateSpellEnd(size_t i);
+void MassIncinerateSpellUpdate(size_t i);
 
 void TeleportSpellLaunch(long i);
 void TeleportSpellEnd(size_t i);

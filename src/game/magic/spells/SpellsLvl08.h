@@ -20,6 +20,8 @@
 #ifndef ARX_GAME_MAGIC_SPELLS_SPELLSLVL08_H
 #define ARX_GAME_MAGIC_SPELLS_SPELLSLVL08_H
 
+#include "game/magic/Spell.h"
+
 void InvisibilitySpellLaunch(long i, long duration);
 void InvisibilitySpellEnd(long i);
 
@@ -27,7 +29,10 @@ void ManaDrainSpellLaunch(long i, long duration);
 void ManaDrainSpellKill(long i);
 
 void ExplosionSpellLaunch(long i);
+void ExplosionSpellUpdate(size_t i);
+
 void EnchantWeaponSpellLaunch(bool & notifyAll, long i);
+void EnchantWeaponSpellUpdate(size_t i, float timeDelta);
 
 void LifeDrainSpellLaunch(long duration, long i);
 void LifeDrainSpellKill(long i);

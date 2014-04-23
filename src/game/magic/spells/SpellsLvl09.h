@@ -25,16 +25,21 @@
 bool SummonCreatureSpellLaunch(long i, long duration);
 void SummonCreatureSpellEnd(size_t i);
 void SummonCreatureSpellKill(long i);
+void SummonCreatureSpellUpdate(size_t i, float timeDelta);
 
 bool FakeSummonSpellLaunch(long i);
 void FakeSummonSpellEnd(size_t i);
 void FakeSummonSpellKill(long i);
+void FakeSummonSpellUpdate(size_t i, float timeDelta);
 
 void LaunchAntiMagicField(size_t ident);
+
 void NegateMagicSpellLaunch(long duration, long i);
+void NegateMagicSpellUpdate(size_t i, float timeDelta);
 
 bool IncinerateSpellLaunch(long i);
 void IncinerateSpellEnd(size_t i);
+void IncinerateSpellUpdate(size_t i);
 
 void MassParalyseSpellLaunch(long i, long duration);
 void MassParalyseSpellEnd(size_t i);

@@ -34,7 +34,7 @@
 #include "graphics/particle/ParticleEffects.h"
 
 #include "graphics/spells/Spells09.h"
-
+#include "physics/Collisions.h"
 #include "scene/GameSound.h"
 #include "scene/Interactive.h"
 
@@ -141,6 +141,133 @@ void SummonCreatureSpellKill(long i)
 	spells[i].longinfo2_entity = 0;
 }
 
+void SummonCreatureSpellUpdate(size_t i, float timeDelta)
+{
+	if(!arxtime.is_paused()) {
+		if(float(arxtime) - (float)spells[i].timcreation <= 4000) {
+			if(rnd() > 0.7f) {
+				CSummonCreature * pSummon = (CSummonCreature *)spells[i].pSpellFx;
+				if(pSummon) {
+					Vec3f pos = pSummon->eSrc;
+					MakeCoolFx(pos);
+				}
+			}
+
+			CSpellFx *pCSpellFX = spells[i].pSpellFx;
+
+			if(pCSpellFX) {
+				pCSpellFX->Update(timeDelta);
+				pCSpellFX->Render();
+			}	
+
+			spells[i].longinfo_summon_creature = 1;
+			spells[i].longinfo2_entity = -1;
+
+		} else if(spells[i].longinfo_summon_creature) {
+			lightHandleDestroy(spells[i].pSpellFx->lLightId);
+
+			spells[i].longinfo_summon_creature = 0;
+			ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &spells[i].target_pos);
+			CSummonCreature *pSummon;
+			pSummon= (CSummonCreature *)spells[i].pSpellFx;
+
+			if(pSummon) {
+				EERIE_CYLINDER phys;
+				phys.height=-200;
+				phys.radius=50;
+				phys.origin=spells[i].target_pos;
+				float anything = CheckAnythingInCylinder(&phys, NULL, CFLAG_JUST_TEST);
+
+				if(EEfabs(anything) < 30) {
+				
+				long tokeep;
+				res::path cls;
+				if(spells[i].fdata == 1.f) {
+					if(rnd() > 0.5) {
+						tokeep = -1;
+						cls = "graph/obj3d/interactive/npc/wrat_base/wrat_base";
+					} else {
+						tokeep = 0;
+						cls = "graph/obj3d/interactive/npc/y_mx/y_mx";
+					}
+				} else if(rnd() > 0.997f || (sp_max && rnd() > 0.8f)
+				   || (cur_mr >= 3 && rnd() > 0.3f)) {
+					tokeep = 0;
+					cls = "graph/obj3d/interactive/npc/y_mx/y_mx";
+				} else if(rnd() > 0.997f || (cur_rf >= 3 && rnd() > 0.8f)
+				   || (cur_mr >= 3 && rnd() > 0.3f)) {
+					tokeep = -1;
+					cls = "graph/obj3d/interactive/npc/wrat_base/wrat_base";
+				} else if(spells[i].caster_level >= 9) {
+					tokeep = 1;
+					cls = "graph/obj3d/interactive/npc/demon/demon";
+				} else if(rnd() > 0.98f) {
+					tokeep = -1;
+					cls = "graph/obj3d/interactive/npc/wrat_base/wrat_base";
+				} else {
+					tokeep = 0;
+					cls = "graph/obj3d/interactive/npc/chicken_base/chicken_base";
+				}
+				
+				Entity * io = AddNPC(cls, -1, IO_IMMEDIATELOAD);
+				if(!io) {
+					cls = "graph/obj3d/interactive/npc/chicken_base/chicken_base";
+					tokeep = 0;
+					io = AddNPC(cls, -1, IO_IMMEDIATELOAD);
+				}
+				
+				if(io) {
+					RestoreInitialIOStatusOfIO(io);
+					
+					long lSpellsCaster = spells[i].caster ; 
+					io->summoner = checked_range_cast<short>(lSpellsCaster);
+
+					io->scriptload = 1;
+					
+					if(tokeep == 1) {
+						io->ioflags |= IO_NOSAVE;
+					}
+					
+					io->pos = phys.origin;
+					SendInitScriptEvent(io);
+
+					if(tokeep < 0) {
+						io->scale=1.65f;
+						io->physics.cyl.radius=25;
+						io->physics.cyl.height=-43;
+						io->speed_modif=1.f;
+					}
+
+					if(ValidIONum(spells[i].caster)) {
+						EVENT_SENDER = entities[spells[i].caster];
+					} else {
+						EVENT_SENDER = NULL;
+					}
+
+					SendIOScriptEvent(io,SM_SUMMONED);
+					
+					Vec3f pos;
+					
+					for(long j = 0; j < 3; j++) {
+						pos.x=pSummon->eSrc.x+rnd()*100.f-50.f;
+						pos.y=pSummon->eSrc.y+100+rnd()*100.f-50.f;
+						pos.z=pSummon->eSrc.z+rnd()*100.f-50.f;
+						MakeCoolFx(pos);
+					}
+
+					if(tokeep==1)
+						spells[i].longinfo2_entity = io->index();
+					else
+						spells[i].longinfo2_entity = -1;
+				}
+				}
+			}
+		} else if(spells[i].longinfo2_entity <= 0) {
+			spells[i].tolive = 0;
+		}
+	}	
+}
+
 bool FakeSummonSpellLaunch(long i)
 {
 	if(spells[i].caster <= 0 || !ValidIONum(spells[i].target)) {
@@ -196,6 +323,26 @@ void FakeSummonSpellKill(long i)
 	lightHandleDestroy(spells[i].pSpellFx->lLightId);
 }
 
+void FakeSummonSpellUpdate(size_t i, float timeDelta)
+{
+	if(!arxtime.is_paused()) {
+		if(rnd() > 0.7f) {
+			CSummonCreature * pSummon = (CSummonCreature *)spells[i].pSpellFx;
+			if(pSummon) {
+				Vec3f pos = pSummon->eSrc;
+				MakeCoolFx(pos);
+			}
+		}
+	}
+	CSpellFx *pCSpellFX = spells[i].pSpellFx;
+	
+	if(pCSpellFX) {
+		pCSpellFX->Update(timeDelta);
+		pCSpellFX->Render();
+	}	
+}
+
+
 void LaunchAntiMagicField(size_t ident) {
 	
 	for(size_t n = 0; n < MAX_SPELLS; n++) {
@@ -244,6 +391,19 @@ void NegateMagicSpellLaunch(long duration, long i)
 	}
 }
 
+void NegateMagicSpellUpdate(size_t i, float timeDelta)
+{
+	if(ValidIONum(spells[i].target))
+		LaunchAntiMagicField(i);
+
+	CSpellFx *pCSpellFX = spells[i].pSpellFx;
+
+	if(pCSpellFX) {
+		pCSpellFX->Update(timeDelta);
+		pCSpellFX->Render();
+	}	
+}
+
 bool IncinerateSpellLaunch(long i)
 {
 	Entity * tio = entities[spells[i].target];
@@ -274,6 +434,13 @@ void IncinerateSpellEnd(size_t i)
 	ARX_SPELLS_RemoveSpellOn(spells[i].target, i);
 	ARX_SOUND_Stop(spells[i].snd_loop);
 	ARX_SOUND_PlaySFX(SND_SPELL_INCINERATE_END);
+}
+
+void IncinerateSpellUpdate(size_t i)
+{
+	if(ValidIONum(spells[i].target)) {
+		ARX_SOUND_RefreshPosition(spells[i].snd_loop, entities[spells[i].target]->pos);
+	}	
 }
 
 void MassParalyseSpellLaunch(long i, long duration)

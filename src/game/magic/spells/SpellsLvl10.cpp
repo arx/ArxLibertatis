@@ -164,6 +164,16 @@ bool ControlTargetSpellLaunch(long i)
 	return true;
 }
 
+void ControlTargetSpellUpdate(size_t i, float timeDelta)
+{
+	CSpellFx *pCSpellFX = spells[i].pSpellFx;
+	
+	if(pCSpellFX) {
+		pCSpellFX->Update(timeDelta);
+		pCSpellFX->Render();
+	}	
+}
+
 extern float GLOBAL_SLOWDOWN;
 
 void FreezeTimeSpellLaunch(long duration, long i)
@@ -237,6 +247,13 @@ void MassIncinerateSpellEnd(size_t i)
 	ARX_SPELLS_RemoveMultiSpellOn(i);
 	ARX_SOUND_Stop(spells[i].snd_loop);
 	ARX_SOUND_PlaySFX(SND_SPELL_INCINERATE_END);
+}
+
+void MassIncinerateSpellUpdate(size_t i)
+{
+	if(ValidIONum(spells[i].caster)) {
+		ARX_SOUND_RefreshPosition(spells[i].snd_loop, entities[spells[i].caster]->pos);
+	}	
 }
 
 extern float LASTTELEPORT;

@@ -2021,259 +2021,6 @@ void ARX_SPELLS_Update_End(size_t i) {
 	}				
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-void EnchantWeaponSpellUpdate(size_t i)
-{
-	CSpellFx *pCSpellFX = spells[i].pSpellFx;
-	
-	if(pCSpellFX) {
-		pCSpellFX->Update(framedelay);
-		pCSpellFX->Render();
-	}	
-}
-
-void ExplosionSpellUpdate(size_t i)
-{
-	if(!lightHandleIsValid(spells[i].longinfo2_light))
-		spells[i].longinfo2_light = GetFreeDynLight();
-
-	if(lightHandleIsValid(spells[i].longinfo2_light)) {
-		EERIE_LIGHT * light = lightHandleGet(spells[i].longinfo2_light);
-		
-		light->rgb.r = 0.1f+rnd()*( 1.0f / 3 );;
-		light->rgb.g = 0.1f+rnd()*( 1.0f / 3 );;
-		light->rgb.b = 0.8f+rnd()*( 1.0f / 5 );;
-		light->duration=200;
-	
-		float rr,r2;
-		Vec3f pos;
-		
-		float choice = rnd();
-		if(choice > .8f) {
-			long lvl = Random::get(9, 13);
-			rr=radians(rnd()*360.f);
-			r2=radians(rnd()*360.f);
-			pos.x=light->pos.x-std::sin(rr)*260;
-			pos.y=light->pos.y-std::sin(r2)*260;
-			pos.z=light->pos.z+std::cos(rr)*260;
-			Color3f rgb(0.1f + rnd()*(1.f/3), 0.1f + rnd()*(1.0f/3), 0.8f + rnd()*(1.0f/5));
-			LaunchFireballBoom(&pos, static_cast<float>(lvl), NULL, &rgb);
-		} else if(choice > .6f) {
-			rr=radians(rnd()*360.f);
-			r2=radians(rnd()*360.f);
-			pos.x=light->pos.x-std::sin(rr)*260;
-			pos.y=light->pos.y-std::sin(r2)*260;
-			pos.z=light->pos.z+std::cos(rr)*260;
-			MakeCoolFx(pos);
-		} else if(choice > 0.4f) {
-			rr=radians(rnd()*360.f);
-			r2=radians(rnd()*360.f);
-			pos.x=light->pos.x-std::sin(rr)*160;
-			pos.y=light->pos.y-std::sin(r2)*160;
-			pos.z=light->pos.z+std::cos(rr)*160;
-			ARX_PARTICLES_Add_Smoke(&pos, 2, 20); // flag 1 = randomize pos
-		}
-	}	
-}
-
-void SummonCreatureSpellUpdate(size_t i)
-{
-	if(!arxtime.is_paused()) {
-		if(float(arxtime) - (float)spells[i].timcreation <= 4000) {
-			if(rnd() > 0.7f) {
-				CSummonCreature * pSummon = (CSummonCreature *)spells[i].pSpellFx;
-				if(pSummon) {
-					Vec3f pos = pSummon->eSrc;
-					MakeCoolFx(pos);
-				}
-			}
-
-			CSpellFx *pCSpellFX = spells[i].pSpellFx;
-
-			if(pCSpellFX) {
-				pCSpellFX->Update(framedelay);
-				pCSpellFX->Render();
-			}	
-
-			spells[i].longinfo_summon_creature = 1;
-			spells[i].longinfo2_entity = -1;
-
-		} else if(spells[i].longinfo_summon_creature) {
-			lightHandleDestroy(spells[i].pSpellFx->lLightId);
-
-			spells[i].longinfo_summon_creature = 0;
-			ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &spells[i].target_pos);
-			CSummonCreature *pSummon;
-			pSummon= (CSummonCreature *)spells[i].pSpellFx;
-
-			if(pSummon) {
-				EERIE_CYLINDER phys;
-				phys.height=-200;
-				phys.radius=50;
-				phys.origin=spells[i].target_pos;
-				float anything = CheckAnythingInCylinder(&phys, NULL, CFLAG_JUST_TEST);
-
-				if(EEfabs(anything) < 30) {
-				
-				long tokeep;
-				res::path cls;
-				if(spells[i].fdata == 1.f) {
-					if(rnd() > 0.5) {
-						tokeep = -1;
-						cls = "graph/obj3d/interactive/npc/wrat_base/wrat_base";
-					} else {
-						tokeep = 0;
-						cls = "graph/obj3d/interactive/npc/y_mx/y_mx";
-					}
-				} else if(rnd() > 0.997f || (sp_max && rnd() > 0.8f)
-				   || (cur_mr >= 3 && rnd() > 0.3f)) {
-					tokeep = 0;
-					cls = "graph/obj3d/interactive/npc/y_mx/y_mx";
-				} else if(rnd() > 0.997f || (cur_rf >= 3 && rnd() > 0.8f)
-				   || (cur_mr >= 3 && rnd() > 0.3f)) {
-					tokeep = -1;
-					cls = "graph/obj3d/interactive/npc/wrat_base/wrat_base";
-				} else if(spells[i].caster_level >= 9) {
-					tokeep = 1;
-					cls = "graph/obj3d/interactive/npc/demon/demon";
-				} else if(rnd() > 0.98f) {
-					tokeep = -1;
-					cls = "graph/obj3d/interactive/npc/wrat_base/wrat_base";
-				} else {
-					tokeep = 0;
-					cls = "graph/obj3d/interactive/npc/chicken_base/chicken_base";
-				}
-				
-				Entity * io = AddNPC(cls, -1, IO_IMMEDIATELOAD);
-				if(!io) {
-					cls = "graph/obj3d/interactive/npc/chicken_base/chicken_base";
-					tokeep = 0;
-					io = AddNPC(cls, -1, IO_IMMEDIATELOAD);
-				}
-				
-				if(io) {
-					RestoreInitialIOStatusOfIO(io);
-					
-					long lSpellsCaster = spells[i].caster ; 
-					io->summoner = checked_range_cast<short>(lSpellsCaster);
-
-					io->scriptload = 1;
-					
-					if(tokeep == 1) {
-						io->ioflags |= IO_NOSAVE;
-					}
-					
-					io->pos = phys.origin;
-					SendInitScriptEvent(io);
-
-					if(tokeep < 0) {
-						io->scale=1.65f;
-						io->physics.cyl.radius=25;
-						io->physics.cyl.height=-43;
-						io->speed_modif=1.f;
-					}
-
-					if(ValidIONum(spells[i].caster)) {
-						EVENT_SENDER = entities[spells[i].caster];
-					} else {
-						EVENT_SENDER = NULL;
-					}
-
-					SendIOScriptEvent(io,SM_SUMMONED);
-					
-					Vec3f pos;
-					
-					for(long j = 0; j < 3; j++) {
-						pos.x=pSummon->eSrc.x+rnd()*100.f-50.f;
-						pos.y=pSummon->eSrc.y+100+rnd()*100.f-50.f;
-						pos.z=pSummon->eSrc.z+rnd()*100.f-50.f;
-						MakeCoolFx(pos);
-					}
-
-					if(tokeep==1)
-						spells[i].longinfo2_entity = io->index();
-					else
-						spells[i].longinfo2_entity = -1;
-				}
-				}
-			}
-		} else if(spells[i].longinfo2_entity <= 0) {
-			spells[i].tolive = 0;
-		}
-	}	
-}
-
-void FakeSummonSpellUpdate(size_t i)
-{
-	if(!arxtime.is_paused()) {
-		if(rnd() > 0.7f) {
-			CSummonCreature * pSummon = (CSummonCreature *)spells[i].pSpellFx;
-			if(pSummon) {
-				Vec3f pos = pSummon->eSrc;
-				MakeCoolFx(pos);
-			}
-		}
-	}
-	CSpellFx *pCSpellFX = spells[i].pSpellFx;
-	
-	if(pCSpellFX) {
-		pCSpellFX->Update(framedelay);
-		pCSpellFX->Render();
-	}	
-}
-
-void IncinerateSpellUpdate(size_t i)
-{
-	if(ValidIONum(spells[i].target)) {
-		ARX_SOUND_RefreshPosition(spells[i].snd_loop, entities[spells[i].target]->pos);
-	}	
-}
-
-void NegateMagicSpellUpdate(size_t i)
-{
-	if(ValidIONum(spells[i].target))
-		LaunchAntiMagicField(i);
-
-	CSpellFx *pCSpellFX = spells[i].pSpellFx;
-
-	if(pCSpellFX) {
-		pCSpellFX->Update(framedelay);
-		pCSpellFX->Render();
-	}	
-}
-
-void ControlTargetSpellUpdate(size_t i)
-{
-	CSpellFx *pCSpellFX = spells[i].pSpellFx;
-	
-	if(pCSpellFX) {
-		pCSpellFX->Update(framedelay);
-		pCSpellFX->Render();
-	}	
-}
-
-void MassIncinerateSpellUpdate(size_t i)
-{
-	if(ValidIONum(spells[i].caster)) {
-		ARX_SOUND_RefreshPosition(spells[i].snd_loop, entities[spells[i].caster]->pos);
-	}	
-}
-
 void MassLightningStrikeSpellUpdate(unsigned long tim, size_t i)
 {
 	CSpellFx *pCSpellFX = spells[i].pSpellFx;
@@ -2712,7 +2459,7 @@ void ARX_SPELLS_Update_Update(size_t i, unsigned long tim) {
 		//****************************************************************************
 		// LEVEL 8 SPELLS
 		case SPELL_ENCHANT_WEAPON: {
-			EnchantWeaponSpellUpdate(i);
+			EnchantWeaponSpellUpdate(i, framedelay);
 			break;
 		}
 		case SPELL_EXPLOSION: {
@@ -2722,11 +2469,11 @@ void ARX_SPELLS_Update_Update(size_t i, unsigned long tim) {
 		//****************************************************************************
 		// LEVEL 9 SPELLS
 		case SPELL_SUMMON_CREATURE: {
-			SummonCreatureSpellUpdate(i);
+			SummonCreatureSpellUpdate(i, framedelay);
 			break;
 		}
 		case SPELL_FAKE_SUMMON: {
-			FakeSummonSpellUpdate(i);
+			FakeSummonSpellUpdate(i, framedelay);
 			break;
 		}
 		case SPELL_INCINERATE: {
@@ -2734,7 +2481,7 @@ void ARX_SPELLS_Update_Update(size_t i, unsigned long tim) {
 			break;
 		}
 		case SPELL_NEGATE_MAGIC: {
-			NegateMagicSpellUpdate(i);
+			NegateMagicSpellUpdate(i, framedelay);
 			break;
 		}
 		case SPELL_MASS_PARALYSE: {
@@ -2746,7 +2493,7 @@ void ARX_SPELLS_Update_Update(size_t i, unsigned long tim) {
 			break;
 		}
 		case SPELL_CONTROL_TARGET: {
-			ControlTargetSpellUpdate(i);
+			ControlTargetSpellUpdate(i, framedelay);
 			break;
 		}
 		case SPELL_MASS_INCINERATE: {

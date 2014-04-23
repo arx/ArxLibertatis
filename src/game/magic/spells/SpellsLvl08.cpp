@@ -199,12 +199,66 @@ void ExplosionSpellLaunch(long i)
 	ARX_SOUND_PlaySFX(SND_SPELL_FIRE_WIND);
 }
 
+void ExplosionSpellUpdate(size_t i)
+{
+	if(!lightHandleIsValid(spells[i].longinfo2_light))
+		spells[i].longinfo2_light = GetFreeDynLight();
+
+	if(lightHandleIsValid(spells[i].longinfo2_light)) {
+		EERIE_LIGHT * light = lightHandleGet(spells[i].longinfo2_light);
+		
+		light->rgb.r = 0.1f+rnd()*( 1.0f / 3 );;
+		light->rgb.g = 0.1f+rnd()*( 1.0f / 3 );;
+		light->rgb.b = 0.8f+rnd()*( 1.0f / 5 );;
+		light->duration=200;
+	
+		float rr,r2;
+		Vec3f pos;
+		
+		float choice = rnd();
+		if(choice > .8f) {
+			long lvl = Random::get(9, 13);
+			rr=radians(rnd()*360.f);
+			r2=radians(rnd()*360.f);
+			pos.x=light->pos.x-std::sin(rr)*260;
+			pos.y=light->pos.y-std::sin(r2)*260;
+			pos.z=light->pos.z+std::cos(rr)*260;
+			Color3f rgb(0.1f + rnd()*(1.f/3), 0.1f + rnd()*(1.0f/3), 0.8f + rnd()*(1.0f/5));
+			LaunchFireballBoom(&pos, static_cast<float>(lvl), NULL, &rgb);
+		} else if(choice > .6f) {
+			rr=radians(rnd()*360.f);
+			r2=radians(rnd()*360.f);
+			pos.x=light->pos.x-std::sin(rr)*260;
+			pos.y=light->pos.y-std::sin(r2)*260;
+			pos.z=light->pos.z+std::cos(rr)*260;
+			MakeCoolFx(pos);
+		} else if(choice > 0.4f) {
+			rr=radians(rnd()*360.f);
+			r2=radians(rnd()*360.f);
+			pos.x=light->pos.x-std::sin(rr)*160;
+			pos.y=light->pos.y-std::sin(r2)*160;
+			pos.z=light->pos.z+std::cos(rr)*160;
+			ARX_PARTICLES_Add_Smoke(&pos, 2, 20); // flag 1 = randomize pos
+		}
+	}	
+}
+
 void EnchantWeaponSpellLaunch(bool & notifyAll, long i)
 {
 	spells[i].exist = true;
 	spells[i].tolive = 20;
 	
 	notifyAll = false;
+}
+
+void EnchantWeaponSpellUpdate(size_t i, float timeDelta)
+{
+	CSpellFx *pCSpellFX = spells[i].pSpellFx;
+	
+	if(pCSpellFX) {
+		pCSpellFX->Update(timeDelta);
+		pCSpellFX->Render();
+	}	
 }
 
 void LifeDrainSpellLaunch(long duration, long i)
