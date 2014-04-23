@@ -1683,19 +1683,19 @@ void ARX_SPELLS_Update_End(size_t i) {
 		//****************************************************************************
 		// LEVEL 1 SPELLS
 		case SPELL_MAGIC_SIGHT: {
-			static_cast<MagicSightSpell &>(spell).End(i);
+			static_cast<MagicSightSpell &>(spell).End();
 			break;
 		}
 		case SPELL_MAGIC_MISSILE: {
-			static_cast<MagicMissileSpell &>(spell).End(i);
+			static_cast<MagicMissileSpell &>(spell).End();
 			break;
 		}
 		case SPELL_IGNIT: {
-			static_cast<IgnitSpell &>(spell).End(i);
+			static_cast<IgnitSpell &>(spell).End();
 			break;
 		}
 		case SPELL_DOUSE: {
-			static_cast<DouseSpell &>(spell).End(i);
+			static_cast<DouseSpell &>(spell).End();
 			break;
 		}
 		//****************************************************************************
@@ -1929,15 +1929,15 @@ void ARX_SPELLS_Update_Update(size_t i, unsigned long tim) {
 		//****************************************************************************
 		// LEVEL 1
 		case SPELL_MAGIC_MISSILE: {
-			static_cast<MagicMissileSpell &>(spell).Update(i, framedelay);
+			static_cast<MagicMissileSpell &>(spell).Update(framedelay);
 			break;
 		}
 		case SPELL_IGNIT: {
-			static_cast<IgnitSpell &>(spell).Update(i, framedelay);
+			static_cast<IgnitSpell &>(spell).Update(framedelay);
 			break;
 		}
 		case SPELL_DOUSE: {
-			static_cast<DouseSpell &>(spell).Update(i, framedelay);
+			static_cast<DouseSpell &>(spell).Update(framedelay);
 			break;
 		} 
 		case SPELL_ACTIVATE_PORTAL: {
@@ -2119,7 +2119,7 @@ void ARX_SPELLS_Update_Update(size_t i, unsigned long tim) {
 			break;
 		}
 		case SPELL_MAGIC_SIGHT: {
-			static_cast<MagicSightSpell &>(spell).Update(i);
+			static_cast<MagicSightSpell &>(spell).Update();
 			break;
 		}
 		case SPELL_TELEKINESIS: {

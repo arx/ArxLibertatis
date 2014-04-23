@@ -48,13 +48,13 @@ void MagicSightSpell::Launch(long duration)
 	}
 }
 
-void MagicSightSpell::End(long i)
+void MagicSightSpell::End()
 {
-	if(spells[i].caster == 0) {
+	if(caster == 0) {
 		Project.improve = 0;
-		ARX_SOUND_Stop(spells[i].snd_loop);
+		ARX_SOUND_Stop(snd_loop);
 	}
-	ARX_SOUND_PlaySFX(SND_SPELL_VISION_START, &entities[spells[i].caster]->pos);
+	ARX_SOUND_PlaySFX(SND_SPELL_VISION_START, &entities[caster]->pos);
 }
 
 static const float DEC_FOCAL = 50.0f;
@@ -62,12 +62,12 @@ static const float IMPROVED_FOCAL = 320.0f;
 
 extern EERIE_CAMERA subj;
 
-void MagicSightSpell::Update(size_t i)
+void MagicSightSpell::Update()
 {
-	if(spells[i].caster == 0) {
+	if(caster == 0) {
 		Vec3f pos;
 		ARX_PLAYER_FrontPos(&pos);
-		ARX_SOUND_RefreshPosition(spells[i].snd_loop, pos);
+		ARX_SOUND_RefreshPosition(snd_loop, pos);
 		
 		if(subj.focal > IMPROVED_FOCAL)
 			subj.focal -= DEC_FOCAL;
@@ -94,14 +94,14 @@ void MagicMissileSpell::Launch(long i)
 	tolive = effect->GetDuration();
 }
 
-void MagicMissileSpell::End(long i)
+void MagicMissileSpell::End()
 {
-	lightHandleDestroy(spells[i].longinfo_light);
+	lightHandleDestroy(longinfo_light);
 }
 
-void MagicMissileSpell::Update(long i, float timeDelta)
+void MagicMissileSpell::Update(float timeDelta)
 {
-	CSpellFx *pCSpellFX = spells[i].pSpellFx;
+	CSpellFx *pCSpellFX = pSpellFx;
 
 	if(pCSpellFX) {
 		CMultiMagicMissile *pMMM = (CMultiMagicMissile *) pCSpellFX;
@@ -111,7 +111,7 @@ void MagicMissileSpell::Update(long i, float timeDelta)
 		pCSpellFX->Update(timeDelta);
 
 		if(pMMM->CheckAllDestroyed())
-			spells[i].tolive = 0;
+			tolive = 0;
 
 		pCSpellFX->Render();
 	}
@@ -195,15 +195,15 @@ void IgnitSpell::Launch(long i)
 	tolive = effect->GetDuration();
 }
 
-void IgnitSpell::End(long i)
+void IgnitSpell::End()
 {
-	CIgnit *pIgnit = (CIgnit *)spells[i].pSpellFx;
+	CIgnit *pIgnit = (CIgnit *)pSpellFx;
 	pIgnit->Action(1);
 }
 
-void IgnitSpell::Update(long i, float timeDelta)
+void IgnitSpell::Update(float timeDelta)
 {
-	CSpellFx *pCSpellFX = spells[i].pSpellFx;
+	CSpellFx *pCSpellFX = pSpellFx;
 	if(pCSpellFX)
 		pCSpellFX->Update(timeDelta);
 }
@@ -298,15 +298,15 @@ void DouseSpell::Launch(long i)
 	tolive = effect->GetDuration();
 }
 
-void DouseSpell::End(long i)
+void DouseSpell::End()
 {
-	CDoze *pDoze = (CDoze *)spells[i].pSpellFx;
+	CDoze *pDoze = (CDoze *)pSpellFx;
 	pDoze->Action(0);
 }
 
-void DouseSpell::Update(long i, float timeDelta)
+void DouseSpell::Update(float timeDelta)
 {
-	CSpellFx *pCSpellFX = spells[i].pSpellFx;
+	CSpellFx *pCSpellFX = pSpellFx;
 	if(pCSpellFX)
 		pCSpellFX->Update(timeDelta);
 }
