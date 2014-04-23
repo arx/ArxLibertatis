@@ -41,8 +41,10 @@ extern bool TRUE_PLAYER_MOUSELOOK_ON;
 extern float SLID_START;
 extern bool bOldLookToggle;
 
-bool FlyingEyeSpell::Launch(long i, TextureContainer * tc4)
+bool FlyingEyeSpell::Launch(long i)
 {
+	static TextureContainer * tc4 = TextureContainer::Load("graph/particles/smoke");
+	
 	if(spells[i].caster == 0) {
 		spells[i].target = 0;
 	}

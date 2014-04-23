@@ -1253,8 +1253,6 @@ bool ARX_SPELLS_Launch(SpellType typ, long source, SpellcastFlags flagss, long l
 		return true;
 	}
 	
-	static TextureContainer * tc4 = TextureContainer::Load("graph/particles/smoke");
-
 	if(target < 0 && source == 0)
 	switch(typ) {
 		case SPELL_LOWER_ARMOR:
@@ -1627,7 +1625,7 @@ bool ARX_SPELLS_Launch(SpellType typ, long source, SpellcastFlags flagss, long l
 		//****************************************************************************
 		// LEVEL 7
 		case SPELL_FLYING_EYE: {
-			bool result = FlyingEyeSpell::Launch(i, tc4);
+			bool result = FlyingEyeSpell::Launch(i);
 			if(!result)
 				return false;
 			

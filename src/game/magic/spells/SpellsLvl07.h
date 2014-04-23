@@ -24,7 +24,7 @@
 
 class FlyingEyeSpell {
 public:
-	static bool Launch(long i, TextureContainer * tc4);
+	static bool Launch(long i);
 	static void End(size_t i);
 	static void Kill(long i);
 	static void Update(size_t i, unsigned long tim);
