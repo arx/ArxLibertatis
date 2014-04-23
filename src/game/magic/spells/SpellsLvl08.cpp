@@ -36,29 +36,29 @@
 
 void InvisibilitySpell::Launch(long i, long duration)
 {
-	spells[i].m_exist = true;
-	spells[i].m_tolive = (duration > -1) ? duration : 6000000;
-	spells[i].m_bDuration = true;
-	spells[i].m_fManaCostPerSecond = 3.f;
+	m_exist = true;
+	m_tolive = (duration > -1) ? duration : 6000000;
+	m_bDuration = true;
+	m_fManaCostPerSecond = 3.f;
 	
-	if(spells[i].m_caster == 0) {
-		spells[i].m_target = 0;
+	if(m_caster == 0) {
+		m_target = 0;
 	}
 
-	entities[spells[i].m_target]->gameFlags |= GFLAG_INVISIBILITY;
-	entities[spells[i].m_target]->invisibility = 0.f;
+	entities[m_target]->gameFlags |= GFLAG_INVISIBILITY;
+	entities[m_target]->invisibility = 0.f;
 	
-	ARX_SOUND_PlaySFX(SND_SPELL_INVISIBILITY_START, &spells[i].m_caster_pos);
+	ARX_SOUND_PlaySFX(SND_SPELL_INVISIBILITY_START, &m_caster_pos);
 	
-	ARX_SPELLS_AddSpellOn(spells[i].m_target, i);
+	ARX_SPELLS_AddSpellOn(m_target, i);
 }
 
 void InvisibilitySpell::End(long i)
 {
-	if(ValidIONum(spells[i].m_target)) {
-		entities[spells[i].m_target]->gameFlags &= ~GFLAG_INVISIBILITY;
-		ARX_SOUND_PlaySFX(SND_SPELL_INVISIBILITY_END, &entities[spells[i].m_target]->pos);
-		ARX_SPELLS_RemoveSpellOn(spells[i].m_target, i);
+	if(ValidIONum(m_target)) {
+		entities[m_target]->gameFlags &= ~GFLAG_INVISIBILITY;
+		ARX_SOUND_PlaySFX(SND_SPELL_INVISIBILITY_END, &entities[m_target]->pos);
+		ARX_SPELLS_RemoveSpellOn(m_target, i);
 	}
 }
 
@@ -66,44 +66,44 @@ extern void ARX_SPELLS_Fizzle(long num);
 
 void InvisibilitySpell::Update(size_t i)
 {
-	if(spells[i].m_target != 0) {
-		if(!(entities[spells[i].m_target]->gameFlags & GFLAG_INVISIBILITY)) {
-			ARX_SPELLS_RemoveSpellOn(spells[i].m_target,i);
+	if(m_target != 0) {
+		if(!(entities[m_target]->gameFlags & GFLAG_INVISIBILITY)) {
+			ARX_SPELLS_RemoveSpellOn(m_target,i);
 			ARX_SPELLS_Fizzle(i);
 		}
 	}	
 }
 
-void ManaDrainSpell::Launch(long i, long duration)
+void ManaDrainSpell::Launch(long duration)
 {
-	long iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_LIFE_DRAIN, spells[i].m_caster);
+	long iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_LIFE_DRAIN, m_caster);
 	if(iCancel > -1) {
 		spells[iCancel].m_tolive = 0;
 	}
 	
-	iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_HARM, spells[i].m_caster);
+	iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_HARM, m_caster);
 	if(iCancel > -1) {
 		spells[iCancel].m_tolive = 0;
 	}
 	
-	spells[i].m_exist = true;
-	spells[i].m_tolive = (duration > -1) ? duration : 6000000;
-	spells[i].m_bDuration = true;
-	spells[i].m_fManaCostPerSecond = 2.f;
+	m_exist = true;
+	m_tolive = (duration > -1) ? duration : 6000000;
+	m_bDuration = true;
+	m_fManaCostPerSecond = 2.f;
 	
-	spells[i].m_snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_MAGICAL_SHIELD,
-	                                       &spells[i].m_caster_pos, 1.2f,
+	m_snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_MAGICAL_SHIELD,
+	                                       &m_caster_pos, 1.2f,
 	                                       ARX_SOUND_PLAY_LOOPED);
 	
-	spells[i].m_longinfo_damage = ARX_DAMAGES_GetFree();
-	if(spells[i].m_longinfo_damage != -1) {
-		DAMAGE_INFO * damage = &damages[spells[i].m_longinfo_damage];
+	m_longinfo_damage = ARX_DAMAGES_GetFree();
+	if(m_longinfo_damage != -1) {
+		DAMAGE_INFO * damage = &damages[m_longinfo_damage];
 		
 		damage->radius = 150.f;
 		damage->damages = 8.f;
 		damage->area = DAMAGE_FULL;
 		damage->duration = 100000000;
-		damage->source = spells[i].m_caster;
+		damage->source = m_caster;
 		damage->flags = DAMAGE_FLAG_DONT_HURT_SOURCE
 		              | DAMAGE_FLAG_FOLLOW_SOURCE
 		              | DAMAGE_FLAG_ADD_VISUAL_FX;
@@ -113,67 +113,67 @@ void ManaDrainSpell::Launch(long i, long duration)
 		damage->exist = true;
 	}
 	
-	spells[i].m_longinfo2_light = GetFreeDynLight();
-	if(lightHandleIsValid(spells[i].m_longinfo2_light)) {
-		EERIE_LIGHT * light = lightHandleGet(spells[i].m_longinfo2_light);
+	m_longinfo2_light = GetFreeDynLight();
+	if(lightHandleIsValid(m_longinfo2_light)) {
+		EERIE_LIGHT * light = lightHandleGet(m_longinfo2_light);
 		
 		light->intensity = 2.3f;
 		light->fallend = 700.f;
 		light->fallstart = 500.f;
 		light->rgb = Color3f::blue;
-		light->pos = spells[i].m_caster_pos;
+		light->pos = m_caster_pos;
 		light->duration=900;
 	}
 }
 
-void ManaDrainSpell::Kill(long i)
+void ManaDrainSpell::Kill()
 {
-	if(spells[i].m_longinfo_damage != -1) {
-		damages[spells[i].m_longinfo_damage].exist = false;
+	if(m_longinfo_damage != -1) {
+		damages[m_longinfo_damage].exist = false;
 	}
 	
-	if(lightHandleIsValid(spells[i].m_longinfo2_light)) {
-		EERIE_LIGHT * light = lightHandleGet(spells[i].m_longinfo2_light);
+	if(lightHandleIsValid(m_longinfo2_light)) {
+		EERIE_LIGHT * light = lightHandleGet(m_longinfo2_light);
 		
 		light->time_creation = (unsigned long)(arxtime);
 		light->duration = 600; 
 	}
 	
-	ARX_SOUND_Stop(spells[i].m_snd_loop);
+	ARX_SOUND_Stop(m_snd_loop);
 }
 
 extern EERIE_3DOBJ * cabal;
 
-void ManaDrainSpell::Update(size_t i, float timeDelta)
+void ManaDrainSpell::Update(float timeDelta)
 {
 	if(cabal) {
 		float refpos;
 		float scaley;
 
-		if(spells[i].m_caster==0)
+		if(m_caster==0)
 			scaley=90.f;
 		else
-			scaley=EEfabs(entities[spells[i].m_caster]->physics.cyl.height*( 1.0f / 2 ))+30.f;
+			scaley=EEfabs(entities[m_caster]->physics.cyl.height*( 1.0f / 2 ))+30.f;
 
 		float mov=std::sin((float)arxtime.get_frame_time()*( 1.0f / 800 ))*scaley;
 
 		Vec3f cabalpos;
-		if(spells[i].m_caster == 0) {
+		if(m_caster == 0) {
 			cabalpos.x = player.pos.x;
 			cabalpos.y = player.pos.y + 60.f - mov;
 			cabalpos.z = player.pos.z;
 			refpos=player.pos.y+60.f;
 		} else {
-			cabalpos.x = entities[spells[i].m_caster]->pos.x;
-			cabalpos.y = entities[spells[i].m_caster]->pos.y - scaley - mov;
-			cabalpos.z = entities[spells[i].m_caster]->pos.z;
-			refpos=entities[spells[i].m_caster]->pos.y-scaley;
+			cabalpos.x = entities[m_caster]->pos.x;
+			cabalpos.y = entities[m_caster]->pos.y - scaley - mov;
+			cabalpos.z = entities[m_caster]->pos.z;
+			refpos=entities[m_caster]->pos.y-scaley;
 		}
 
 		float Es=std::sin((float)arxtime.get_frame_time()*( 1.0f / 800 ) + radians(scaley));
 
-		if(lightHandleIsValid(spells[i].m_longinfo2_light)) {
-			EERIE_LIGHT * light = lightHandleGet(spells[i].m_longinfo2_light);
+		if(lightHandleIsValid(m_longinfo2_light)) {
+			EERIE_LIGHT * light = lightHandleGet(m_longinfo2_light);
 			
 			light->pos.x = cabalpos.x;
 			light->pos.y = refpos;
@@ -187,8 +187,8 @@ void ManaDrainSpell::Update(size_t i, float timeDelta)
 		GRenderer->SetRenderState(Renderer::DepthWrite, false);
 
 		Anglef cabalangle(0.f, 0.f, 0.f);
-		cabalangle.setPitch(spells[i].m_fdata + (float)timeDelta*0.1f);
-		spells[i].m_fdata = cabalangle.getPitch();
+		cabalangle.setPitch(m_fdata + (float)timeDelta*0.1f);
+		m_fdata = cabalangle.getPitch();
 								
 		Vec3f cabalscale = Vec3f(Es);
 		Color3f cabalcolor = Color3f(0.4f, 0.4f, 0.8f);
@@ -234,34 +234,34 @@ void ManaDrainSpell::Update(size_t i, float timeDelta)
 		GRenderer->SetRenderState(Renderer::AlphaBlending, false);		
 		GRenderer->SetRenderState(Renderer::DepthWrite, true);	
 
-		ARX_SOUND_RefreshPosition(spells[i].m_snd_loop, cabalpos);
+		ARX_SOUND_RefreshPosition(m_snd_loop, cabalpos);
 	}	
 }
 
-void ExplosionSpell::Launch(long i)
+void ExplosionSpell::Launch()
 {
 	ARX_SOUND_PlaySFX(SND_SPELL_EXPLOSION);
 	
-	spells[i].m_exist = true;
-	spells[i].m_lastupdate = spells[i].m_timcreation = (unsigned long)(arxtime);
-	spells[i].m_tolive = 2000;
+	m_exist = true;
+	m_lastupdate = m_timcreation = (unsigned long)(arxtime);
+	m_tolive = 2000;
 	
-	Vec3f target = entities[spells[i].m_caster]->pos;
-	if(spells[i].m_caster == 0) {
+	Vec3f target = entities[m_caster]->pos;
+	if(m_caster == 0) {
 		target.y += 60.f;
 	} else {
 		target.y -= 60.f;
 	}
 	
-	spells[i].m_longinfo_damage = ARX_DAMAGES_GetFree();
-	if(spells[i].m_longinfo_damage != -1) {
-		DAMAGE_INFO * damage = &damages[spells[i].m_longinfo_damage];
+	m_longinfo_damage = ARX_DAMAGES_GetFree();
+	if(m_longinfo_damage != -1) {
+		DAMAGE_INFO * damage = &damages[m_longinfo_damage];
 		
 		damage->radius = 350.f;
 		damage->damages = 10.f;
 		damage->area = DAMAGE_AREA; 
-		damage->duration = spells[i].m_tolive;
-		damage->source = spells[i].m_caster;
+		damage->duration = m_tolive;
+		damage->source = m_caster;
 		damage->flags = DAMAGE_FLAG_DONT_HURT_SOURCE
 		              | DAMAGE_FLAG_FOLLOW_SOURCE
 		              | DAMAGE_FLAG_ADD_VISUAL_FX;
@@ -271,9 +271,9 @@ void ExplosionSpell::Launch(long i)
 		damage->pos = target;
 	}
 	
-	spells[i].m_longinfo2_light = GetFreeDynLight();
-	if(lightHandleIsValid(spells[i].m_longinfo2_light)) {
-		EERIE_LIGHT * light = lightHandleGet(spells[i].m_longinfo2_light);
+	m_longinfo2_light = GetFreeDynLight();
+	if(lightHandleIsValid(m_longinfo2_light)) {
+		EERIE_LIGHT * light = lightHandleGet(m_longinfo2_light);
 		
 		light->intensity = 2.3f;
 		light->fallend = 700.f;
@@ -305,13 +305,13 @@ void ExplosionSpell::Launch(long i)
 	ARX_SOUND_PlaySFX(SND_SPELL_FIRE_WIND);
 }
 
-void ExplosionSpell::Update(size_t i)
+void ExplosionSpell::Update()
 {
-	if(!lightHandleIsValid(spells[i].m_longinfo2_light))
-		spells[i].m_longinfo2_light = GetFreeDynLight();
+	if(!lightHandleIsValid(m_longinfo2_light))
+		m_longinfo2_light = GetFreeDynLight();
 
-	if(lightHandleIsValid(spells[i].m_longinfo2_light)) {
-		EERIE_LIGHT * light = lightHandleGet(spells[i].m_longinfo2_light);
+	if(lightHandleIsValid(m_longinfo2_light)) {
+		EERIE_LIGHT * light = lightHandleGet(m_longinfo2_light);
 		
 		light->rgb.r = 0.1f+rnd()*( 1.0f / 3 );;
 		light->rgb.g = 0.1f+rnd()*( 1.0f / 3 );;
@@ -349,17 +349,17 @@ void ExplosionSpell::Update(size_t i)
 	}	
 }
 
-void EnchantWeaponSpell::Launch(bool & notifyAll, long i)
+void EnchantWeaponSpell::Launch(bool & notifyAll)
 {
-	spells[i].m_exist = true;
-	spells[i].m_tolive = 20;
+	m_exist = true;
+	m_tolive = 20;
 	
 	notifyAll = false;
 }
 
-void EnchantWeaponSpell::Update(size_t i, float timeDelta)
+void EnchantWeaponSpell::Update(float timeDelta)
 {
-	CSpellFx *pCSpellFX = spells[i].m_pSpellFx;
+	CSpellFx *pCSpellFX = m_pSpellFx;
 	
 	if(pCSpellFX) {
 		pCSpellFX->Update(timeDelta);
@@ -367,35 +367,35 @@ void EnchantWeaponSpell::Update(size_t i, float timeDelta)
 	}	
 }
 
-void LifeDrainSpell::Launch(long duration, long i)
+void LifeDrainSpell::Launch(long duration)
 {
-	long iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_HARM, spells[i].m_caster);
+	long iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_HARM, m_caster);
 	if(iCancel > -1) {
 		spells[iCancel].m_tolive = 0;
 	}
 	
-	iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_MANA_DRAIN, spells[i].m_caster);
+	iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_MANA_DRAIN, m_caster);
 	if(iCancel > -1) {
 		spells[iCancel].m_tolive = 0;
 	}
 	
-	spells[i].m_exist = true;
-	spells[i].m_tolive = (duration > -1) ? duration : 6000000;
-	spells[i].m_bDuration = true;
-	spells[i].m_fManaCostPerSecond = 12.f;
+	m_exist = true;
+	m_tolive = (duration > -1) ? duration : 6000000;
+	m_bDuration = true;
+	m_fManaCostPerSecond = 12.f;
 	
-	spells[i].m_snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_MAGICAL_SHIELD,
-	                                       &spells[i].m_caster_pos, 0.8f,
+	m_snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_MAGICAL_SHIELD,
+	                                       &m_caster_pos, 0.8f,
 	                                       ARX_SOUND_PLAY_LOOPED);
 	
-	spells[i].m_longinfo_damage = ARX_DAMAGES_GetFree();
-	if(spells[i].m_longinfo_damage != -1) {
-		long id = spells[i].m_longinfo_damage;
+	m_longinfo_damage = ARX_DAMAGES_GetFree();
+	if(m_longinfo_damage != -1) {
+		long id = m_longinfo_damage;
 		damages[id].radius = 150.f;
-		damages[id].damages = spells[i].m_caster_level * 0.08f;
+		damages[id].damages = m_caster_level * 0.08f;
 		damages[id].area = DAMAGE_AREA;
 		damages[id].duration = 100000000;
-		damages[id].source = spells[i].m_caster;
+		damages[id].source = m_caster;
 		damages[id].flags = DAMAGE_FLAG_DONT_HURT_SOURCE
 		                    | DAMAGE_FLAG_FOLLOW_SOURCE
 		                    | DAMAGE_FLAG_ADD_VISUAL_FX;
@@ -404,65 +404,65 @@ void LifeDrainSpell::Launch(long duration, long i)
 		damages[id].exist = true;
 	}
 	
-	spells[i].m_longinfo2_light = GetFreeDynLight();
-	if(lightHandleIsValid(spells[i].m_longinfo2_light)) {
-		EERIE_LIGHT * light = lightHandleGet(spells[i].m_longinfo2_light);
+	m_longinfo2_light = GetFreeDynLight();
+	if(lightHandleIsValid(m_longinfo2_light)) {
+		EERIE_LIGHT * light = lightHandleGet(m_longinfo2_light);
 		
 		light->intensity = 2.3f;
 		light->fallend = 700.f;
 		light->fallstart = 500.f;
 		light->rgb = Color3f::red;
-		light->pos = spells[i].m_caster_pos;
+		light->pos = m_caster_pos;
 		light->duration = 900;
 	}
 }
 
-void LifeDrainSpell::Kill(long i)
+void LifeDrainSpell::Kill()
 {
-	if(spells[i].m_longinfo_damage != -1) {
-		damages[spells[i].m_longinfo_damage].exist = false;
+	if(m_longinfo_damage != -1) {
+		damages[m_longinfo_damage].exist = false;
 	}
 	
-	if(lightHandleIsValid(spells[i].m_longinfo2_light)) {
-		EERIE_LIGHT * light = lightHandleGet(spells[i].m_longinfo2_light);
+	if(lightHandleIsValid(m_longinfo2_light)) {
+		EERIE_LIGHT * light = lightHandleGet(m_longinfo2_light);
 		
 		light->time_creation = (unsigned long)(arxtime);
 		light->duration = 600; 
 	}
 	
-	ARX_SOUND_Stop(spells[i].m_snd_loop);
+	ARX_SOUND_Stop(m_snd_loop);
 }
 
-void LifeDrainSpell::Update(size_t i, float timeDelta)
+void LifeDrainSpell::Update(float timeDelta)
 {
 	if(cabal) {
 		float refpos;
 		float scaley;
 
-		if(spells[i].m_caster==0)
+		if(m_caster==0)
 			scaley=90.f;
 		else
-			scaley=EEfabs(entities[spells[i].m_caster]->physics.cyl.height*( 1.0f / 2 ))+30.f;
+			scaley=EEfabs(entities[m_caster]->physics.cyl.height*( 1.0f / 2 ))+30.f;
 
 		float mov=std::sin((float)arxtime.get_frame_time()*( 1.0f / 800 ))*scaley;
 
 		Vec3f cabalpos;
-		if(spells[i].m_caster == 0) {
+		if(m_caster == 0) {
 			cabalpos.x = player.pos.x;
 			cabalpos.y = player.pos.y + 60.f - mov;
 			cabalpos.z = player.pos.z;
 			refpos=player.pos.y+60.f;							
 		} else {
-			cabalpos.x = entities[spells[i].m_caster]->pos.x;
-			cabalpos.y = entities[spells[i].m_caster]->pos.y - scaley-mov;
-			cabalpos.z = entities[spells[i].m_caster]->pos.z;
-			refpos=entities[spells[i].m_caster]->pos.y-scaley;							
+			cabalpos.x = entities[m_caster]->pos.x;
+			cabalpos.y = entities[m_caster]->pos.y - scaley-mov;
+			cabalpos.z = entities[m_caster]->pos.z;
+			refpos=entities[m_caster]->pos.y-scaley;							
 		}
 
 		float Es=std::sin((float)arxtime.get_frame_time()*( 1.0f / 800 ) + radians(scaley));
 
-		if(lightHandleIsValid(spells[i].m_longinfo2_light)) {
-			EERIE_LIGHT * light = lightHandleGet(spells[i].m_longinfo2_light);
+		if(lightHandleIsValid(m_longinfo2_light)) {
+			EERIE_LIGHT * light = lightHandleGet(m_longinfo2_light);
 			
 			light->pos.x = cabalpos.x;
 			light->pos.y = refpos;
@@ -477,8 +477,8 @@ void LifeDrainSpell::Update(size_t i, float timeDelta)
 		GRenderer->SetRenderState(Renderer::DepthWrite, false);
 
 		Anglef cabalangle(0.f, 0.f, 0.f);
-		cabalangle.setPitch(spells[i].m_fdata+(float)timeDelta*0.1f);
-		spells[i].m_fdata=cabalangle.getPitch();
+		cabalangle.setPitch(m_fdata+(float)timeDelta*0.1f);
+		m_fdata=cabalangle.getPitch();
 
 		Vec3f cabalscale = Vec3f(Es);
 		Color3f cabalcolor = Color3f(0.8f, 0.f, 0.f);
@@ -524,6 +524,6 @@ void LifeDrainSpell::Update(size_t i, float timeDelta)
 		GRenderer->SetRenderState(Renderer::AlphaBlending, false);		
 		GRenderer->SetRenderState(Renderer::DepthWrite, true);	
 
-		ARX_SOUND_RefreshPosition(spells[i].m_snd_loop, cabalpos);
+		ARX_SOUND_RefreshPosition(m_snd_loop, cabalpos);
 	}	
 }

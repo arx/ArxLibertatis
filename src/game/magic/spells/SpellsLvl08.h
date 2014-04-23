@@ -31,28 +31,28 @@ public:
 
 class ManaDrainSpell : public SpellBase {
 public:
-	void Launch(long i, long duration);
-	void Kill(long i);
-	void Update(size_t i, float timeDelta);
+	void Launch(long duration);
+	void Kill();
+	void Update(float timeDelta);
 };
 
 class ExplosionSpell : public SpellBase {
 public:
-	void Launch(long i);
-	void Update(size_t i);
+	void Launch();
+	void Update();
 };
 
 class EnchantWeaponSpell : public SpellBase {
 public:
-	void Launch(bool & notifyAll, long i);
-	void Update(size_t i, float timeDelta);
+	void Launch(bool & notifyAll);
+	void Update(float timeDelta);
 };
 
 class LifeDrainSpell : public SpellBase {
 public:
-	void Launch(long duration, long i);
-	void Kill(long i);
-	void Update(size_t i, float timeDelta);
+	void Launch(long duration);
+	void Kill();
+	void Update(float timeDelta);
 };
 
 #endif // ARX_GAME_MAGIC_SPELLS_SPELLSLVL08_H

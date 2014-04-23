@@ -1589,19 +1589,19 @@ bool ARX_SPELLS_Launch(SpellType typ, long source, SpellcastFlags flagss, long l
 			break;
 		}
 		case SPELL_MANA_DRAIN: {
-			static_cast<ManaDrainSpell &>(spell).Launch(i, duration);
+			static_cast<ManaDrainSpell &>(spell).Launch(duration);
 			break;
 		}
 		case SPELL_EXPLOSION: {
-			static_cast<ExplosionSpell &>(spell).Launch(i);
+			static_cast<ExplosionSpell &>(spell).Launch();
 			break;
 		}
 		case SPELL_ENCHANT_WEAPON: {
-			static_cast<EnchantWeaponSpell &>(spell).Launch(notifyAll, i); // TODO inconsistent use of the SM_SPELLCAST event
+			static_cast<EnchantWeaponSpell &>(spell).Launch(notifyAll); // TODO inconsistent use of the SM_SPELLCAST event
 			break;
 		}
 		case SPELL_LIFE_DRAIN: {
-			static_cast<LifeDrainSpell &>(spell).Launch(duration, i);
+			static_cast<LifeDrainSpell &>(spell).Launch(duration);
 			break;
 		}
 		//****************************************************************************
@@ -1871,11 +1871,11 @@ void ARX_SPELLS_Kill(long i) {
 			break;
 		}
 		case SPELL_LIFE_DRAIN: {
-			static_cast<LifeDrainSpell &>(spell).Kill(i);
+			static_cast<LifeDrainSpell &>(spell).Kill();
 			break;
 		}
 		case SPELL_MANA_DRAIN: {
-			static_cast<ManaDrainSpell &>(spell).Kill(i);
+			static_cast<ManaDrainSpell &>(spell).Kill();
 			break;
 		}
 		case SPELL_FLYING_EYE : {
@@ -2069,11 +2069,11 @@ void ARX_SPELLS_Update_Update(size_t i, unsigned long tim) {
 		//****************************************************************************
 		// LEVEL 8 SPELLS
 		case SPELL_ENCHANT_WEAPON: {
-			static_cast<EnchantWeaponSpell &>(spell).Update(i, framedelay);
+			static_cast<EnchantWeaponSpell &>(spell).Update(framedelay);
 			break;
 		}
 		case SPELL_EXPLOSION: {
-			static_cast<ExplosionSpell &>(spell).Update(i);
+			static_cast<ExplosionSpell &>(spell).Update();
 			break;
 		}
 		//****************************************************************************
@@ -2130,11 +2130,11 @@ void ARX_SPELLS_Update_Update(size_t i, unsigned long tim) {
 			break;
 		}
 		case SPELL_MANA_DRAIN: {
-			static_cast<ManaDrainSpell &>(spell).Update(i, framedelay);
+			static_cast<ManaDrainSpell &>(spell).Update(framedelay);
 			break;
 		}
 		case SPELL_LIFE_DRAIN: {
-			static_cast<LifeDrainSpell &>(spell).Update(i, framedelay);
+			static_cast<LifeDrainSpell &>(spell).Update(framedelay);
 			break;
 		}
 		case SPELL_FLYING_EYE: {
