@@ -1649,7 +1649,7 @@ bool ARX_SPELLS_Launch(SpellType typ, long source, SpellcastFlags flagss, long l
 			break;
 		}
 		case SPELL_FREEZE_TIME: {
-			static_cast<FreezeTimeSpell &>(spell).Launch(duration, i);
+			static_cast<FreezeTimeSpell &>(spell).Launch(duration);
 			break;
 		}
 		case SPELL_MASS_INCINERATE: {
@@ -1657,7 +1657,7 @@ bool ARX_SPELLS_Launch(SpellType typ, long source, SpellcastFlags flagss, long l
 			break;
 		}
 		case SPELL_TELEPORT: {
-			static_cast<TeleportSpell &>(spell).Launch(i);
+			static_cast<TeleportSpell &>(spell).Launch();
 			break;
 		}
 	}
@@ -1677,7 +1677,7 @@ void ARX_SPELLS_Update_End(size_t i) {
 	
 	switch(spells[i].m_type) {
 		case SPELL_TELEPORT: {
-			static_cast<TeleportSpell &>(spell).End(i);
+			static_cast<TeleportSpell &>(spell).End();
 			break;
 		}
 		//****************************************************************************
@@ -1820,7 +1820,7 @@ void ARX_SPELLS_Update_End(size_t i) {
 		//****************************************************************************
 		// LEVEL 10
 		case SPELL_FREEZE_TIME: {
-			static_cast<FreezeTimeSpell &>(spell).End(i);
+			static_cast<FreezeTimeSpell &>(spell).End();
 			break;
 		}
 		case SPELL_MASS_INCINERATE: {
@@ -1859,7 +1859,7 @@ void ARX_SPELLS_Kill(long i) {
 			break;
 		}
 		case SPELL_MASS_LIGHTNING_STRIKE: {
-			static_cast<MassLightningStrikeSpell &>(spell).Kill(i);
+			static_cast<MassLightningStrikeSpell &>(spell).Kill();
 			break;
 		}
 		case SPELL_REPEL_UNDEAD: {
@@ -2103,19 +2103,19 @@ void ARX_SPELLS_Update_Update(size_t i, unsigned long tim) {
 			break;
 		}
 		case SPELL_CONTROL_TARGET: {
-			static_cast<ControlTargetSpell &>(spell).Update(i, framedelay);
+			static_cast<ControlTargetSpell &>(spell).Update(framedelay);
 			break;
 		}
 		case SPELL_MASS_INCINERATE: {
-			static_cast<MassIncinerateSpell &>(spell).Update(i);
+			static_cast<MassIncinerateSpell &>(spell).Update();
 			break;
 		}
 		case SPELL_MASS_LIGHTNING_STRIKE: {
-			static_cast<MassLightningStrikeSpell &>(spell).Update(tim, i, framedelay);
+			static_cast<MassLightningStrikeSpell &>(spell).Update(tim, framedelay);
 			break;
 		}
 		case SPELL_TELEPORT: {
-			static_cast<TeleportSpell &>(spell).Update(tim, i);
+			static_cast<TeleportSpell &>(spell).Update(tim);
 			break;
 		}
 		case SPELL_MAGIC_SIGHT: {

@@ -25,34 +25,34 @@
 class MassLightningStrikeSpell : public SpellBase {
 public:
 	void Launch(long i);
-	void Kill(long i);
-	void Update(unsigned long tim, size_t i, float timeDelta);
+	void Kill();
+	void Update(unsigned long tim, float timeDelta);
 };
 
 class ControlTargetSpell : public SpellBase {
 public:
 	bool Launch(long i);
-	void Update(size_t i, float timeDelta);
+	void Update(float timeDelta);
 };
 
 class FreezeTimeSpell : public SpellBase {
 public:
-	void Launch(long duration, long i);
-	void End(size_t i);
+	void Launch(long duration);
+	void End();
 };
 
 class MassIncinerateSpell : public SpellBase {
 public:
 	void Launch(long i);
 	void End(size_t i);
-	void Update(size_t i);
+	void Update();
 };
 
 class TeleportSpell : public SpellBase {
 public:
-	void Launch(long i);
-	void End(size_t i);
-	void Update(unsigned long tim, size_t i);
+	void Launch();
+	void End();
+	void Update(unsigned long tim);
 };
 
 #endif // ARX_GAME_MAGIC_SPELLS_SPELLSLVL10_H
