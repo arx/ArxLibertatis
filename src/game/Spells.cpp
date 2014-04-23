@@ -1867,7 +1867,7 @@ void ARX_SPELLS_Kill(long i) {
 			break;
 		}
 		case SPELL_HARM: {
-			static_cast<HarmSpell &>(spell).Kill(i);
+			static_cast<HarmSpell &>(spell).Kill();
 			break;
 		}
 		case SPELL_LIFE_DRAIN: {
@@ -1946,23 +1946,23 @@ void ARX_SPELLS_Update_Update(size_t i, unsigned long tim) {
 		//****************************************************************************
 		// LEVEL 2
 		case SPELL_HEAL: {
-			static_cast<HealSpell &>(spell).Update(i, framedelay);
+			static_cast<HealSpell &>(spell).Update(framedelay);
 			break;
 		}
 		case SPELL_DETECT_TRAP: {
-			static_cast<DetectTrapSpell &>(spell).Update(i, framedelay);
+			static_cast<DetectTrapSpell &>(spell).Update(framedelay);
 			break;
 		}
 		case SPELL_ARMOR: {
-			static_cast<ArmorSpell &>(spell).Update(i, framedelay);
+			static_cast<ArmorSpell &>(spell).Update(framedelay);
 			break;
 		}
 		case SPELL_LOWER_ARMOR: {
-			static_cast<LowerArmorSpell &>(spell).Update(i, framedelay);
+			static_cast<LowerArmorSpell &>(spell).Update(framedelay);
 			break;
 		} 
 		case SPELL_HARM: {
-			static_cast<HarmSpell &>(spell).Update(i, framedelay);
+			static_cast<HarmSpell &>(spell).Update(framedelay);
 			break;
 		}
 		//****************************************************************************

@@ -52,9 +52,9 @@ void HealSpell::Launch(long i, long duration)
 	tolive = effect->GetDuration();
 }
 
-void HealSpell::Update(size_t i, float framedelay)
+void HealSpell::Update(float framedelay)
 {
-	CSpellFx *pCSpellFX = spells[i].pSpellFx;
+	CSpellFx *pCSpellFX = pSpellFx;
 
 	if(pCSpellFX) {
 		pCSpellFX->Update(framedelay);
@@ -74,13 +74,13 @@ void HealSpell::Update(size_t i, float framedelay)
 		{
 			float dist;
 
-			if(long(ii) == spells[i].caster)
+			if(long(ii) == caster)
 				dist=0;
 			else
 				dist=fdist(ch->eSrc, entities[ii]->pos);
 
 			if(dist<300.f) {
-				float gain=((rnd()*1.6f+0.8f)*spells[i].caster_level)*(300.f-dist)*( 1.0f / 300 )*framedelay*( 1.0f / 1000 );
+				float gain=((rnd()*1.6f+0.8f)*caster_level)*(300.f-dist)*( 1.0f / 300 )*framedelay*( 1.0f / 1000 );
 
 				if(ii==0) {
 					if (!BLOCK_PLAYER_CONTROLS)
@@ -124,21 +124,21 @@ void DetectTrapSpell::Launch(long i)
 
 void DetectTrapSpell::End(size_t i)
 {
-	if(spells[i].caster == 0) {
-		ARX_SOUND_Stop(spells[i].snd_loop);
+	if(caster == 0) {
+		ARX_SOUND_Stop(snd_loop);
 	}
-	ARX_SPELLS_RemoveSpellOn(spells[i].target, i);
+	ARX_SPELLS_RemoveSpellOn(target, i);
 }
 
-void DetectTrapSpell::Update(size_t i, float timeDelta)
+void DetectTrapSpell::Update(float timeDelta)
 {
-	if(spells[i].caster == 0) {
+	if(caster == 0) {
 		Vec3f pos;
 		ARX_PLAYER_FrontPos(&pos);
-		ARX_SOUND_RefreshPosition(spells[i].snd_loop, pos);
+		ARX_SOUND_RefreshPosition(snd_loop, pos);
 	}
 
-	CSpellFx *pCSpellFX = spells[i].pSpellFx;
+	CSpellFx *pCSpellFX = pSpellFx;
 
 	if(pCSpellFX) {
 		pCSpellFX->Update(timeDelta);
@@ -202,26 +202,26 @@ void ArmorSpell::Launch(long duration, long i)
 
 void ArmorSpell::End(size_t i)
 {
-	ARX_SOUND_Stop(spells[i].snd_loop);
-	ARX_SOUND_PlaySFX(SND_SPELL_ARMOR_END, &entities[spells[i].target]->pos);
+	ARX_SOUND_Stop(snd_loop);
+	ARX_SOUND_PlaySFX(SND_SPELL_ARMOR_END, &entities[target]->pos);
 	
-	if(ValidIONum(spells[i].target)) {
-		ARX_HALO_SetToNative(entities[spells[i].target]);
+	if(ValidIONum(target)) {
+		ARX_HALO_SetToNative(entities[target]);
 	}
 	
-	ARX_SPELLS_RemoveSpellOn(spells[i].target, i);
+	ARX_SPELLS_RemoveSpellOn(target, i);
 }
 
-void ArmorSpell::Update(size_t i, float timeDelta)
+void ArmorSpell::Update(float timeDelta)
 {
-	CSpellFx *pCSpellFX = spells[i].pSpellFx;
+	CSpellFx *pCSpellFX = pSpellFx;
 	
 	if(pCSpellFX) {
 		pCSpellFX->Update(timeDelta);
 		pCSpellFX->Render();
 	}
 	
-	ARX_SOUND_RefreshPosition(spells[i].snd_loop, entities[spells[i].target]->pos);
+	ARX_SOUND_RefreshPosition(snd_loop, entities[target]->pos);
 }
 
 void LowerArmorSpell::Launch(long duration, long i)
@@ -273,26 +273,26 @@ void LowerArmorSpell::Launch(long duration, long i)
 void LowerArmorSpell::End(long i)
 {
 	ARX_SOUND_PlaySFX(SND_SPELL_LOWER_ARMOR_END);
-	Entity *io = entities[spells[i].target];
+	Entity *io = entities[target];
 	
-	if(spells[i].longinfo_lower_armor) {
+	if(longinfo_lower_armor) {
 		io->halo.flags &= ~HALO_ACTIVE;
 		ARX_HALO_SetToNative(io);
 	}
 	
-	ARX_SPELLS_RemoveSpellOn(spells[i].target, i);
+	ARX_SPELLS_RemoveSpellOn(target, i);
 }
 
-void LowerArmorSpell::Update(size_t i, float timeDelta)
+void LowerArmorSpell::Update(float timeDelta)
 {
-	CSpellFx *pCSpellFX = spells[i].pSpellFx;
+	CSpellFx *pCSpellFX = pSpellFx;
 	
 	if(pCSpellFX) {
 		pCSpellFX->Update(timeDelta);
 		pCSpellFX->Render();
 	}
 	
-	ARX_SOUND_RefreshPosition(spells[i].snd_loop, entities[spells[i].target]->pos);
+	ARX_SOUND_RefreshPosition(snd_loop, entities[target]->pos);
 }
 
 void HarmSpell::Launch(long duration)
@@ -349,55 +349,55 @@ void HarmSpell::Launch(long duration)
 	}
 }
 
-void HarmSpell::Kill(long i)
+void HarmSpell::Kill()
 {
-	if(spells[i].longinfo_damage != -1) {
-		damages[spells[i].longinfo_damage].exist = false;
+	if(longinfo_damage != -1) {
+		damages[longinfo_damage].exist = false;
 	}
 	
-	if(lightHandleIsValid(spells[i].longinfo2_light)) {
-		EERIE_LIGHT * light = lightHandleGet(spells[i].longinfo2_light);
+	if(lightHandleIsValid(longinfo2_light)) {
+		EERIE_LIGHT * light = lightHandleGet(longinfo2_light);
 		
 		light->time_creation = (unsigned long)(arxtime);
 		light->duration = 600; 
 	}
 	
-	ARX_SOUND_Stop(spells[i].snd_loop);
+	ARX_SOUND_Stop(snd_loop);
 }
 
 extern EERIE_3DOBJ * cabal;
 
-void HarmSpell::Update(size_t i, float timeDelta)
+void HarmSpell::Update(float timeDelta)
 {
 	if(cabal) {
 		float refpos;
 		float scaley;
 
-		if(spells[i].caster==0)
+		if(caster==0)
 			scaley=90.f;
 		else
-			scaley = EEfabs(entities[spells[i].caster]->physics.cyl.height*( 1.0f / 2 ))+30.f;
+			scaley = EEfabs(entities[caster]->physics.cyl.height*( 1.0f / 2 ))+30.f;
 
 
 		float mov=std::sin((float)arxtime.get_frame_time()*( 1.0f / 800 ))*scaley;
 
 		Vec3f cabalpos;
-		if(spells[i].caster==0) {
+		if(caster==0) {
 			cabalpos.x = player.pos.x;
 			cabalpos.y = player.pos.y + 60.f - mov;
 			cabalpos.z = player.pos.z;
 			refpos=player.pos.y+60.f;
 		} else {
-			cabalpos.x = entities[spells[i].caster]->pos.x;
-			cabalpos.y = entities[spells[i].caster]->pos.y - scaley - mov;
-			cabalpos.z = entities[spells[i].caster]->pos.z;
-			refpos=entities[spells[i].caster]->pos.y-scaley;							
+			cabalpos.x = entities[caster]->pos.x;
+			cabalpos.y = entities[caster]->pos.y - scaley - mov;
+			cabalpos.z = entities[caster]->pos.z;
+			refpos=entities[caster]->pos.y-scaley;							
 		}
 
 		float Es=std::sin((float)arxtime.get_frame_time()*( 1.0f / 800 ) + radians(scaley));
 
-		if(lightHandleIsValid(spells[i].longinfo2_light)) {
-			EERIE_LIGHT * light = lightHandleGet(spells[i].longinfo2_light);
+		if(lightHandleIsValid(longinfo2_light)) {
+			EERIE_LIGHT * light = lightHandleGet(longinfo2_light);
 			
 			light->pos.x = cabalpos.x;
 			light->pos.y = refpos;
@@ -412,8 +412,8 @@ void HarmSpell::Update(size_t i, float timeDelta)
 		GRenderer->SetRenderState(Renderer::DepthWrite, false);
 
 		Anglef cabalangle(0.f, 0.f, 0.f);
-		cabalangle.setPitch(spells[i].fdata+(float)timeDelta*0.1f);
-		spells[i].fdata = cabalangle.getPitch();
+		cabalangle.setPitch(fdata+(float)timeDelta*0.1f);
+		fdata = cabalangle.getPitch();
 
 		Vec3f cabalscale = Vec3f(Es);
 		Color3f cabalcolor = Color3f(0.8f, 0.4f, 0.f);
@@ -437,6 +437,6 @@ void HarmSpell::Update(size_t i, float timeDelta)
 		GRenderer->SetRenderState(Renderer::AlphaBlending, false);		
 		GRenderer->SetRenderState(Renderer::DepthWrite, true);	
 		
-		ARX_SOUND_RefreshPosition(spells[i].snd_loop, cabalpos);
+		ARX_SOUND_RefreshPosition(snd_loop, cabalpos);
 	}
 }

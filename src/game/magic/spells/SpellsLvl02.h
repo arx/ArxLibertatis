@@ -25,35 +25,35 @@
 class HealSpell : public SpellBase {
 public:
 	void Launch(long i, long duration);
-	void Update(size_t i, float framedelay);
+	void Update(float framedelay);
 };
 
 class DetectTrapSpell : public SpellBase {
 public:
 	void Launch(long i);
 	void End(size_t i);
-	void Update(size_t i, float timeDelta);
+	void Update(float timeDelta);
 };
 
 class ArmorSpell : public SpellBase {
 public:
 	void Launch(long duration, long i);
 	void End(size_t i);
-	void Update(size_t i, float timeDelta);
+	void Update(float timeDelta);
 };
 
 class LowerArmorSpell : public SpellBase {
 public:
 	void Launch(long duration, long i);
 	void End(long i);
-	void Update(size_t i, float timeDelta);
+	void Update(float timeDelta);
 };
 
 class HarmSpell : public SpellBase {
 public:
 	void Launch(long duration);
-	void Kill(long i);
-	void Update(size_t i, float timeDelta);
+	void Kill();
+	void Update(float timeDelta);
 };
 
 #endif // ARX_GAME_MAGIC_SPELLS_SPELLSLVL02_H
