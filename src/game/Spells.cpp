@@ -1806,11 +1806,11 @@ void ARX_SPELLS_Update_End(size_t i) {
 			break;
 		}
 		case SPELL_SUMMON_CREATURE : {
-			static_cast<SummonCreatureSpell &>(spell).End(i);
+			static_cast<SummonCreatureSpell &>(spell).End();
 			break;
 		}
 		case SPELL_FAKE_SUMMON: {
-			static_cast<FakeSummonSpell &>(spell).End(i);
+			static_cast<FakeSummonSpell &>(spell).End();
 			break;
 		}
 		case SPELL_INCINERATE: {
@@ -1901,11 +1901,11 @@ void ARX_SPELLS_Kill(long i) {
 			break;
 		}
 		case SPELL_SUMMON_CREATURE: {
-			static_cast<SummonCreatureSpell &>(spell).Kill(i);
+			static_cast<SummonCreatureSpell &>(spell).Kill();
 			break;
 		}
 		case SPELL_FAKE_SUMMON: {
-			static_cast<FakeSummonSpell &>(spell).Kill(i);
+			static_cast<FakeSummonSpell &>(spell).Kill();
 			break;
 		}
 		
@@ -2079,15 +2079,15 @@ void ARX_SPELLS_Update_Update(size_t i, unsigned long tim) {
 		//****************************************************************************
 		// LEVEL 9 SPELLS
 		case SPELL_SUMMON_CREATURE: {
-			static_cast<SummonCreatureSpell &>(spell).Update(i, framedelay);
+			static_cast<SummonCreatureSpell &>(spell).Update(framedelay);
 			break;
 		}
 		case SPELL_FAKE_SUMMON: {
-			static_cast<FakeSummonSpell &>(spell).Update(i, framedelay);
+			static_cast<FakeSummonSpell &>(spell).Update(framedelay);
 			break;
 		}
 		case SPELL_INCINERATE: {
-			static_cast<IncinerateSpell &>(spell).Update(i);
+			static_cast<IncinerateSpell &>(spell).Update();
 			break;
 		}
 		case SPELL_NEGATE_MAGIC: {
