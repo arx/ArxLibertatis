@@ -68,6 +68,30 @@ void BlessSpellEnd(size_t i)
 	ARX_SPELLS_RemoveSpellOn(spells[i].target,i);
 }
 
+void BlessSpellUpdate(size_t i, float timeDelta)
+{
+	if(spells[i].pSpellFx) {
+		CBless * pBless=(CBless *)spells[i].pSpellFx;
+
+		if(pBless) {
+			if(ValidIONum(spells[i].target)) {
+				pBless->eSrc = entities[spells[i].target]->pos;
+				Anglef angle = Anglef::ZERO;
+
+				if(spells[i].target == 0)
+					angle.setPitch(player.angle.getPitch());
+				else 
+					angle.setPitch(entities[spells[i].target]->angle.getPitch());
+
+				pBless->Set_Angle(angle);
+			}
+		}
+
+		spells[i].pSpellFx->Update(timeDelta);
+		spells[i].pSpellFx->Render();
+	}
+}
+
 void DispellFieldSpellLaunch(long i)
 {
 	spells[i].tolive = 10;
@@ -196,6 +220,13 @@ void FireProtectionSpellEnd(size_t i)
 		ARX_HALO_SetToNative(entities[spells[i].target]);
 }
 
+void FireProtectionSpellUpdate(size_t i, float timeDelta)
+{
+	spells[i].pSpellFx->Update(timeDelta);
+	spells[i].pSpellFx->Render();
+	ARX_SOUND_RefreshPosition(spells[i].snd_loop, entities[spells[i].target]->pos);
+}
+
 void ColdProtectionSpellLaunch(long i, long duration, SpellType typ)
 {
 	long idx = ARX_SPELLS_GetSpellOn(entities[spells[i].target], typ);
@@ -261,6 +292,13 @@ void ColdProtectionSpellEnd(size_t i)
 		ARX_HALO_SetToNative(entities[spells[i].target]);
 }
 
+void ColdProtectionSpellUpdate(size_t i, float timeDelta)
+{
+	spells[i].pSpellFx->Update(timeDelta);
+	spells[i].pSpellFx->Render();
+	ARX_SOUND_RefreshPosition(spells[i].snd_loop, entities[spells[i].target]->pos);
+}
+
 void TelekinesisSpellLaunch(long i, long duration)
 {
 	spells[i].exist = true;
@@ -318,4 +356,26 @@ void CurseSpellLaunch(long duration, SpellType typ, long i)
 void CurseSpellEnd(size_t i)
 {
 	ARX_SPELLS_RemoveSpellOn(spells[i].target,i);
+}
+
+void CurseSpellUpdate(size_t i, float timeDelta)
+{
+	if(spells[i].pSpellFx) {
+		CCurse * curse=(CCurse *)spells[i].pSpellFx;
+		Vec3f target = Vec3f_ZERO;
+			
+		if(spells[i].target >= 0 && entities[spells[i].target]) {
+			target = entities[spells[i].target]->pos;
+
+			if(spells[i].target == 0)
+				target.y -= 200.f;
+			else
+				target.y += entities[spells[i].target]->physics.cyl.height - 30.f;
+		}
+		
+		curse->Update(checked_range_cast<unsigned long>(timeDelta));
+		
+		curse->eTarget = target;
+		curse->Render();
+	}
 }

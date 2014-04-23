@@ -2032,65 +2032,13 @@ void ARX_SPELLS_Update_End(size_t i) {
 
 
 
-void BlessSpellUpdate(size_t i)
-{
-	if(spells[i].pSpellFx) {
-		CBless * pBless=(CBless *)spells[i].pSpellFx;
 
-		if(pBless) {
-			if(ValidIONum(spells[i].target)) {
-				pBless->eSrc = entities[spells[i].target]->pos;
-				Anglef angle = Anglef::ZERO;
 
-				if(spells[i].target == 0)
-					angle.setPitch(player.angle.getPitch());
-				else 
-					angle.setPitch(entities[spells[i].target]->angle.getPitch());
 
-				pBless->Set_Angle(angle);
-			}
-		}
 
-		spells[i].pSpellFx->Update(framedelay);
-		spells[i].pSpellFx->Render();
-	}
-}
 
-void CurseSpellUpdate(size_t i)
-{
-	if(spells[i].pSpellFx) {
-		CCurse * curse=(CCurse *)spells[i].pSpellFx;
-		Vec3f target = Vec3f_ZERO;
-			
-		if(spells[i].target >= 0 && entities[spells[i].target]) {
-			target = entities[spells[i].target]->pos;
 
-			if(spells[i].target == 0)
-				target.y -= 200.f;
-			else
-				target.y += entities[spells[i].target]->physics.cyl.height - 30.f;
-		}
-		
-		curse->Update(checked_range_cast<unsigned long>(framedelay));
-		
-		curse->eTarget = target;
-		curse->Render();
-	}
-}
 
-void FireProtectionSpellUpdate(size_t i)
-{
-	spells[i].pSpellFx->Update(framedelay);
-	spells[i].pSpellFx->Render();
-	ARX_SOUND_RefreshPosition(spells[i].snd_loop, entities[spells[i].target]->pos);
-}
-
-void ColdProtectionSpellUpdate(size_t i)
-{
-	spells[i].pSpellFx->Update(framedelay);
-	spells[i].pSpellFx->Render();
-	ARX_SOUND_RefreshPosition(spells[i].snd_loop, entities[spells[i].target]->pos);
-}
 
 void CurePoisonSpellUpdate(size_t i)
 {
@@ -3026,19 +2974,19 @@ void ARX_SPELLS_Update_Update(size_t i, unsigned long tim) {
 		//****************************************************************************
 		// LEVEL 4 SPELLS
 		case SPELL_BLESS: {
-			BlessSpellUpdate(i);
+			BlessSpellUpdate(i, framedelay);
 			break;
 		}
 		case SPELL_CURSE: {
-			CurseSpellUpdate(i);
+			CurseSpellUpdate(i, framedelay);
 			break;
 		}
 		case SPELL_FIRE_PROTECTION: {
-			FireProtectionSpellUpdate(i);
+			FireProtectionSpellUpdate(i, framedelay);
 			break;
 		}
 		case SPELL_COLD_PROTECTION: {
-			ColdProtectionSpellUpdate(i);
+			ColdProtectionSpellUpdate(i, framedelay);
 			break;
 		}
 		//****************************************************************************

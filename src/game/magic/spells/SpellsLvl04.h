@@ -24,19 +24,23 @@
 
 void BlessSpellLaunch(long i, long duration, SpellType typ);
 void BlessSpellEnd(size_t i);
+void BlessSpellUpdate(size_t i, float timeDelta);
 
 void DispellFieldSpellLaunch(long i);
 
 void FireProtectionSpellLaunch(long i, SpellType typ, long duration);
 void FireProtectionSpellEnd(size_t i);
+void FireProtectionSpellUpdate(size_t i, float timeDelta);
 
 void ColdProtectionSpellLaunch(long i, long duration, SpellType typ);
 void ColdProtectionSpellEnd(size_t i);
+void ColdProtectionSpellUpdate(size_t i, float timeDelta);
 
 void TelekinesisSpellLaunch(long i, long duration);
 void TelekinesisSpellEnd(size_t i);
 
 void CurseSpellLaunch(long duration, SpellType typ, long i);
 void CurseSpellEnd(size_t i);
+void CurseSpellUpdate(size_t i, float timeDelta);
 
 #endif // ARX_GAME_MAGIC_SPELLS_SPELLSLVL04_H
