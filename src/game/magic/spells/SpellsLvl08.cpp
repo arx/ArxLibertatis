@@ -34,7 +34,7 @@
 #include "scene/GameSound.h"
 #include "scene/Interactive.h"
 
-void InvisibilitySpellLaunch(long i, long duration)
+void InvisibilitySpell::Launch(long i, long duration)
 {
 	spells[i].exist = true;
 	spells[i].tolive = (duration > -1) ? duration : 6000000;
@@ -53,7 +53,7 @@ void InvisibilitySpellLaunch(long i, long duration)
 	ARX_SPELLS_AddSpellOn(spells[i].target, i);
 }
 
-void InvisibilitySpellEnd(long i)
+void InvisibilitySpell::End(long i)
 {
 	if(ValidIONum(spells[i].target)) {
 		entities[spells[i].target]->gameFlags &= ~GFLAG_INVISIBILITY;
@@ -64,7 +64,7 @@ void InvisibilitySpellEnd(long i)
 
 extern void ARX_SPELLS_Fizzle(long num);
 
-void InvisibilitySpellUpdate(size_t i)
+void InvisibilitySpell::Update(size_t i)
 {
 	if(spells[i].target != 0) {
 		if(!(entities[spells[i].target]->gameFlags & GFLAG_INVISIBILITY)) {
@@ -74,7 +74,7 @@ void InvisibilitySpellUpdate(size_t i)
 	}	
 }
 
-void ManaDrainSpellLaunch(long i, long duration)
+void ManaDrainSpell::Launch(long i, long duration)
 {
 	long iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_LIFE_DRAIN,
 	                                                   spells[i].caster);
@@ -128,7 +128,7 @@ void ManaDrainSpellLaunch(long i, long duration)
 	}
 }
 
-void ManaDrainSpellKill(long i)
+void ManaDrainSpell::Kill(long i)
 {
 	if(spells[i].longinfo_damage != -1) {
 		damages[spells[i].longinfo_damage].exist = false;
@@ -146,7 +146,7 @@ void ManaDrainSpellKill(long i)
 
 extern EERIE_3DOBJ * cabal;
 
-void ManaDrainSpellUpdate(size_t i, float timeDelta)
+void ManaDrainSpell::Update(size_t i, float timeDelta)
 {
 	if(cabal) {
 		float refpos;
@@ -240,7 +240,7 @@ void ManaDrainSpellUpdate(size_t i, float timeDelta)
 	}	
 }
 
-void ExplosionSpellLaunch(long i)
+void ExplosionSpell::Launch(long i)
 {
 	ARX_SOUND_PlaySFX(SND_SPELL_EXPLOSION);
 	
@@ -307,7 +307,7 @@ void ExplosionSpellLaunch(long i)
 	ARX_SOUND_PlaySFX(SND_SPELL_FIRE_WIND);
 }
 
-void ExplosionSpellUpdate(size_t i)
+void ExplosionSpell::Update(size_t i)
 {
 	if(!lightHandleIsValid(spells[i].longinfo2_light))
 		spells[i].longinfo2_light = GetFreeDynLight();
@@ -351,7 +351,7 @@ void ExplosionSpellUpdate(size_t i)
 	}	
 }
 
-void EnchantWeaponSpellLaunch(bool & notifyAll, long i)
+void EnchantWeaponSpell::Launch(bool & notifyAll, long i)
 {
 	spells[i].exist = true;
 	spells[i].tolive = 20;
@@ -359,7 +359,7 @@ void EnchantWeaponSpellLaunch(bool & notifyAll, long i)
 	notifyAll = false;
 }
 
-void EnchantWeaponSpellUpdate(size_t i, float timeDelta)
+void EnchantWeaponSpell::Update(size_t i, float timeDelta)
 {
 	CSpellFx *pCSpellFX = spells[i].pSpellFx;
 	
@@ -369,7 +369,7 @@ void EnchantWeaponSpellUpdate(size_t i, float timeDelta)
 	}	
 }
 
-void LifeDrainSpellLaunch(long duration, long i)
+void LifeDrainSpell::Launch(long duration, long i)
 {
 	long iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_HARM,
 	                                                   spells[i].caster);
@@ -421,7 +421,7 @@ void LifeDrainSpellLaunch(long duration, long i)
 	}
 }
 
-void LifeDrainSpellKill(long i)
+void LifeDrainSpell::Kill(long i)
 {
 	if(spells[i].longinfo_damage != -1) {
 		damages[spells[i].longinfo_damage].exist = false;
@@ -437,7 +437,7 @@ void LifeDrainSpellKill(long i)
 	ARX_SOUND_Stop(spells[i].snd_loop);
 }
 
-void LifeDrainSpellUpdate(size_t i, float timeDelta)
+void LifeDrainSpell::Update(size_t i, float timeDelta)
 {
 	if(cabal) {
 		float refpos;

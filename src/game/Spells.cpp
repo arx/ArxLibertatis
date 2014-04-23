@@ -1652,23 +1652,23 @@ bool ARX_SPELLS_Launch(SpellType typ, long source, SpellcastFlags flagss, long l
 		//****************************************************************************
 		// LEVEL 8
 		case SPELL_INVISIBILITY: {
-			InvisibilitySpellLaunch(i, duration);
+			InvisibilitySpell::Launch(i, duration);
 			break;
 		}
 		case SPELL_MANA_DRAIN: {
-			ManaDrainSpellLaunch(i, duration);
+			ManaDrainSpell::Launch(i, duration);
 			break;
 		}
 		case SPELL_EXPLOSION: {
-			ExplosionSpellLaunch(i);
+			ExplosionSpell::Launch(i);
 			break;
 		}
 		case SPELL_ENCHANT_WEAPON: {
-			EnchantWeaponSpellLaunch(notifyAll, i); // TODO inconsistent use of the SM_SPELLCAST event
+			EnchantWeaponSpell::Launch(notifyAll, i); // TODO inconsistent use of the SM_SPELLCAST event
 			break;
 		}
 		case SPELL_LIFE_DRAIN: {
-			LifeDrainSpellLaunch(duration, i);
+			LifeDrainSpell::Launch(duration, i);
 			break;
 		}
 		//****************************************************************************
@@ -1777,11 +1777,11 @@ void ARX_SPELLS_Kill(long i) {
 			break;
 		}
 		case SPELL_LIFE_DRAIN: {
-			LifeDrainSpellKill(i);
+			LifeDrainSpell::Kill(i);
 			break;
 		}
 		case SPELL_MANA_DRAIN: {
-			ManaDrainSpellKill(i);
+			ManaDrainSpell::Kill(i);
 			break;
 		}
 		case SPELL_FLYING_EYE : {
@@ -1982,7 +1982,7 @@ void ARX_SPELLS_Update_End(size_t i) {
 			break;
 		}
 		case SPELL_INVISIBILITY: {
-			InvisibilitySpellEnd(i);
+			InvisibilitySpell::End(i);
 			break;
 		}
 		//****************************************************************************
@@ -2172,11 +2172,11 @@ void ARX_SPELLS_Update_Update(size_t i, unsigned long tim) {
 		//****************************************************************************
 		// LEVEL 8 SPELLS
 		case SPELL_ENCHANT_WEAPON: {
-			EnchantWeaponSpellUpdate(i, framedelay);
+			EnchantWeaponSpell::Update(i, framedelay);
 			break;
 		}
 		case SPELL_EXPLOSION: {
-			ExplosionSpellUpdate(i);
+			ExplosionSpell::Update(i);
 			break;
 		}
 		//****************************************************************************
@@ -2229,15 +2229,15 @@ void ARX_SPELLS_Update_Update(size_t i, unsigned long tim) {
 			break;
 		}
 		case SPELL_INVISIBILITY: {
-			InvisibilitySpellUpdate(i);
+			InvisibilitySpell::Update(i);
 			break;
 		}
 		case SPELL_MANA_DRAIN: {
-			ManaDrainSpellUpdate(i, framedelay);
+			ManaDrainSpell::Update(i, framedelay);
 			break;
 		}
 		case SPELL_LIFE_DRAIN: {
-			LifeDrainSpellUpdate(i, framedelay);
+			LifeDrainSpell::Update(i, framedelay);
 			break;
 		}
 		case SPELL_FLYING_EYE: {

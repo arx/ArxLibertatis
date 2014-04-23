@@ -22,22 +22,37 @@
 
 #include "game/magic/Spell.h"
 
-void InvisibilitySpellLaunch(long i, long duration);
-void InvisibilitySpellEnd(long i);
-void InvisibilitySpellUpdate(size_t i);
+class InvisibilitySpell {
+public:
+	static void Launch(long i, long duration);
+	static void End(long i);
+	static void Update(size_t i);
+};
 
-void ManaDrainSpellLaunch(long i, long duration);
-void ManaDrainSpellKill(long i);
-void ManaDrainSpellUpdate(size_t i, float timeDelta);
+class ManaDrainSpell {
+public:
+	static void Launch(long i, long duration);
+	static void Kill(long i);
+	static void Update(size_t i, float timeDelta);
+};
 
-void ExplosionSpellLaunch(long i);
-void ExplosionSpellUpdate(size_t i);
+class ExplosionSpell {
+public:
+	static void Launch(long i);
+	static void Update(size_t i);
+};
 
-void EnchantWeaponSpellLaunch(bool & notifyAll, long i);
-void EnchantWeaponSpellUpdate(size_t i, float timeDelta);
+class EnchantWeaponSpell {
+public:
+	static void Launch(bool & notifyAll, long i);
+	static void Update(size_t i, float timeDelta);
+};
 
-void LifeDrainSpellLaunch(long duration, long i);
-void LifeDrainSpellKill(long i);
-void LifeDrainSpellUpdate(size_t i, float timeDelta);
+class LifeDrainSpell {
+public:
+	static void Launch(long duration, long i);
+	static void Kill(long i);
+	static void Update(size_t i, float timeDelta);
+};
 
 #endif // ARX_GAME_MAGIC_SPELLS_SPELLSLVL08_H
