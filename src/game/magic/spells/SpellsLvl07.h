@@ -22,28 +22,43 @@
 
 #include "game/Spells.h"
 
-bool FlyingEyeSpellLaunch(long i, TextureContainer * tc4);
-void FlyingEyeSpellEnd(size_t i);
-void FlyingEyeSpellKill(TextureContainer* tc4, long i);
-void FlyingEyeSpellUpdate(size_t i, unsigned long tim, const long framediff3);
+class FlyingEyeSpell {
+public:
+	static bool Launch(long i, TextureContainer * tc4);
+	static void End(size_t i);
+	static void Kill(TextureContainer* tc4, long i);
+	static void Update(size_t i, unsigned long tim, const long framediff3);
+};
 
-void FireFieldSpellLaunch(long i, SpellType typ, long duration);
-void FireFieldSpellEnd(size_t i);
-void FireFieldSpellKill(long i);
-void FireFieldSpellUpdate(size_t i, float timeDelta);
+class FireFieldSpell {
+public:
+	static void Launch(long i, SpellType typ, long duration);
+	static void End(size_t i);
+	static void Kill(long i);
+	static void Update(size_t i, float timeDelta);
+};
 
-void IceFieldSpellLaunch(long i, long duration, SpellType typ);
-void IceFieldSpellEnd(size_t i);
-void IceFieldSpellKill(long i);
-void IceFieldSpellUpdate(size_t i, float timeDelta);
+class IceFieldSpell {
+public:
+	static void Launch(long i, long duration, SpellType typ);
+	static void End(size_t i);
+	static void Kill(long i);
+	static void Update(size_t i, float timeDelta);
+};
 
-void LightningStrikeSpellLaunch(long i);
-void LightningStrikeSpellEnd(size_t i);
-void LightningStrikeKill(long i);
-void LightningStrinkeSpellUpdate(size_t i, float timeDelta);
+class LightningStrikeSpell {
+public:
+	static void Launch(long i);
+	static void End(size_t i);
+	static void Kill(long i);
+	static void Update(size_t i, float timeDelta);
+};
 
-void ConfuseSpellLaunch(long i, bool & notifyAll, long duration);
-void ConfuseSpellEnd(size_t i);
-void ConfuseSpellUpdate(size_t i, float timeDelta);
+class ConfuseSpell {
+public:
+	static void Launch(long i, bool & notifyAll, long duration);
+	static void End(size_t i);
+	static void Update(size_t i, float timeDelta);
+};
 
 #endif // ARX_GAME_MAGIC_SPELLS_SPELLSLVL07_H

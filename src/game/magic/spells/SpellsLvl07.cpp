@@ -41,7 +41,7 @@ extern bool TRUE_PLAYER_MOUSELOOK_ON;
 extern float SLID_START;
 extern bool bOldLookToggle;
 
-bool FlyingEyeSpellLaunch(long i, TextureContainer * tc4)
+bool FlyingEyeSpell::Launch(long i, TextureContainer * tc4)
 {
 	if(spells[i].caster == 0) {
 		spells[i].target = 0;
@@ -92,12 +92,12 @@ bool FlyingEyeSpellLaunch(long i, TextureContainer * tc4)
 	return true;
 }
 
-void FlyingEyeSpellEnd(size_t i)
+void FlyingEyeSpell::End(size_t i)
 {
 	ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE, &entities[spells[i].caster]->pos);
 }
 
-void FlyingEyeSpellKill(TextureContainer* tc4, long i)
+void FlyingEyeSpell::Kill(TextureContainer* tc4, long i)
 {
 	ARX_SOUND_PlaySFX(SND_SPELL_EYEBALL_OUT);
 	eyeball.exist = -100;
@@ -124,7 +124,7 @@ void FlyingEyeSpellKill(TextureContainer* tc4, long i)
 	config.input.mouseLookToggle = bOldLookToggle;
 }
 
-void FlyingEyeSpellUpdate(size_t i, unsigned long tim, const long framediff3)
+void FlyingEyeSpell::Update(size_t i, unsigned long tim, const long framediff3)
 {
 	eyeball.floating = std::sin(spells[i].lastupdate-spells[i].timcreation * 0.001f);
 	eyeball.floating *= 10.f;
@@ -140,7 +140,7 @@ void FlyingEyeSpellUpdate(size_t i, unsigned long tim, const long framediff3)
 	spells[i].lastupdate=tim;	
 }
 
-void FireFieldSpellLaunch(long i, SpellType typ, long duration)
+void FireFieldSpell::Launch(long i, SpellType typ, long duration)
 {
 	long iCancel = ARX_SPELLS_GetInstanceForThisCaster(typ, spells[i].caster);
 	if(iCancel > -1) {
@@ -206,19 +206,19 @@ void FireFieldSpellLaunch(long i, SpellType typ, long duration)
 	                                       ARX_SOUND_PLAY_LOOPED);
 }
 
-void FireFieldSpellEnd(size_t i)
+void FireFieldSpell::End(size_t i)
 {
 	if(spells[i].longinfo_damage != -1)
 		damages[spells[i].longinfo_damage].exist = false;
 }
 
-void FireFieldSpellKill(long i)
+void FireFieldSpell::Kill(long i)
 {
 	ARX_SOUND_Stop(spells[i].snd_loop);
 	ARX_SOUND_PlaySFX(SND_SPELL_FIRE_FIELD_END);
 }
 
-void FireFieldSpellUpdate(size_t i, float timeDelta)
+void FireFieldSpell::Update(size_t i, float timeDelta)
 {
 	CSpellFx *pCSpellFX = spells[i].pSpellFx;
 	
@@ -283,7 +283,7 @@ void FireFieldSpellUpdate(size_t i, float timeDelta)
 	}
 }
 
-void IceFieldSpellLaunch(long i, long duration, SpellType typ)
+void IceFieldSpell::Launch(long i, long duration, SpellType typ)
 {
 	long iCancel = ARX_SPELLS_GetInstanceForThisCaster(typ, spells[i].caster);
 	if(iCancel > -1) {
@@ -351,19 +351,19 @@ void IceFieldSpellLaunch(long i, long duration, SpellType typ)
 	                                       ARX_SOUND_PLAY_LOOPED );
 }
 
-void IceFieldSpellEnd(size_t i)
+void IceFieldSpell::End(size_t i)
 {
 	if(spells[i].longinfo_damage != -1)
 		damages[spells[i].longinfo_damage].exist = false;
 }
 
-void IceFieldSpellKill(long i)
+void IceFieldSpell::Kill(long i)
 {
 	ARX_SOUND_Stop(spells[i].snd_loop); 
 	ARX_SOUND_PlaySFX(SND_SPELL_ICE_FIELD_END);
 }
 
-void IceFieldSpellUpdate(size_t i, float timeDelta)
+void IceFieldSpell::Update(size_t i, float timeDelta)
 {
 	CSpellFx *pCSpellFX = spells[i].pSpellFx;
 	
@@ -395,7 +395,7 @@ void IceFieldSpellUpdate(size_t i, float timeDelta)
 	}
 }
 
-void LightningStrikeSpellLaunch(long i)
+void LightningStrikeSpell::Launch(long i)
 {
 	spells[i].exist = true;
 	
@@ -415,12 +415,12 @@ void LightningStrikeSpellLaunch(long i)
 	                                       ARX_SOUND_PLAY_LOOPED);
 }
 
-void LightningStrikeSpellEnd(size_t i)
+void LightningStrikeSpell::End(size_t i)
 {
 	ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &entities[spells[i].caster]->pos);
 }
 
-void LightningStrikeKill(long i)
+void LightningStrikeSpell::Kill(long i)
 {
 	if(lightHandleIsValid(spells[i].longinfo_light)) {
 		EERIE_LIGHT * light = lightHandleGet(spells[i].longinfo_light);
@@ -434,7 +434,7 @@ void LightningStrikeKill(long i)
 	ARX_SOUND_PlaySFX(SND_SPELL_LIGHTNING_END, &entities[spells[i].caster]->pos);
 }
 
-void LightningStrinkeSpellUpdate(size_t i, float timeDelta)
+void LightningStrikeSpell::Update(size_t i, float timeDelta)
 {
 	CSpellFx *pCSpellFX = spells[i].pSpellFx;
 
@@ -446,7 +446,7 @@ void LightningStrinkeSpellUpdate(size_t i, float timeDelta)
 	ARX_SOUND_RefreshPosition(spells[i].snd_loop, entities[spells[i].caster]->pos);
 }
 
-void ConfuseSpellLaunch(long i, bool & notifyAll, long duration)
+void ConfuseSpell::Launch(long i, bool & notifyAll, long duration)
 {
 	ARX_SOUND_PlaySFX(SND_SPELL_CONFUSE, &entities[spells[i].target]->pos);
 	
@@ -472,12 +472,12 @@ void ConfuseSpellLaunch(long i, bool & notifyAll, long duration)
 	notifyAll = false;
 }
 
-void ConfuseSpellEnd(size_t i)
+void ConfuseSpell::End(size_t i)
 {
 	ARX_SPELLS_RemoveSpellOn(spells[i].target, i);
 }
 
-void ConfuseSpellUpdate(size_t i, float timeDelta)
+void ConfuseSpell::Update(size_t i, float timeDelta)
 {
 	CSpellFx *pCSpellFX = spells[i].pSpellFx;
 	

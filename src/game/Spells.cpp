@@ -1627,26 +1627,26 @@ bool ARX_SPELLS_Launch(SpellType typ, long source, SpellcastFlags flagss, long l
 		//****************************************************************************
 		// LEVEL 7
 		case SPELL_FLYING_EYE: {
-			bool result = FlyingEyeSpellLaunch(i, tc4);
+			bool result = FlyingEyeSpell::Launch(i, tc4);
 			if(!result)
 				return false;
 			
 			break;
 		}
 		case SPELL_FIRE_FIELD: {
-			FireFieldSpellLaunch(i, typ, duration);
+			FireFieldSpell::Launch(i, typ, duration);
 			break;
 		}
 		case SPELL_ICE_FIELD: {
-			IceFieldSpellLaunch(i, duration, typ);
+			IceFieldSpell::Launch(i, duration, typ);
 			break;
 		}
 		case SPELL_LIGHTNING_STRIKE: {
-			LightningStrikeSpellLaunch(i);
+			LightningStrikeSpell::Launch(i);
 			break;
 		}
 		case SPELL_CONFUSE: {
-			ConfuseSpellLaunch(i, notifyAll, duration); // TODO inconsistent use of the SM_SPELLCAST event
+			ConfuseSpell::Launch(i, notifyAll, duration); // TODO inconsistent use of the SM_SPELLCAST event
 			break;
 		}
 		//****************************************************************************
@@ -1761,7 +1761,7 @@ void ARX_SPELLS_Kill(long i) {
 			break;
 		}
 		case SPELL_LIGHTNING_STRIKE: {
-			LightningStrikeKill(i);
+			LightningStrikeSpell::Kill(i);
 			break;
 		}
 		case SPELL_MASS_LIGHTNING_STRIKE: {
@@ -1785,7 +1785,7 @@ void ARX_SPELLS_Kill(long i) {
 			break;
 		}
 		case SPELL_FLYING_EYE : {
-			FlyingEyeSpellKill(tc4, i);
+			FlyingEyeSpell::Kill(tc4, i);
 			break;
 		}
 		// Level 06
@@ -1795,11 +1795,11 @@ void ARX_SPELLS_Kill(long i) {
 		}
 		// Level 7
 		case SPELL_FIRE_FIELD: {
-			FireFieldSpellKill(i);
+			FireFieldSpell::Kill(i);
 			break;
 		}
 		case SPELL_ICE_FIELD: {
-			IceFieldSpellKill(i); 
+			IceFieldSpell::Kill(i); 
 			break; 
 		}
 		case SPELL_MASS_PARALYSE: {
@@ -1957,23 +1957,23 @@ void ARX_SPELLS_Update_End(size_t i) {
 		//****************************************************************************
 		// LEVEL 7
 		case SPELL_ICE_FIELD: {
-			IceFieldSpellEnd(i);
+			IceFieldSpell::End(i);
 			break;
 		}
 		case SPELL_FIRE_FIELD: {
-			FireFieldSpellEnd(i);
+			FireFieldSpell::End(i);
 			break;
 		}
 		case SPELL_LIGHTNING_STRIKE: {
-			LightningStrikeSpellEnd(i);
+			LightningStrikeSpell::End(i);
 			break;
 		}
 		case SPELL_FLYING_EYE: {
-			FlyingEyeSpellEnd(i);
+			FlyingEyeSpell::End(i);
 			break;
 		}
 		case SPELL_CONFUSE: {
-			ConfuseSpellEnd(i);
+			ConfuseSpell::End(i);
 			break;
 		}
 		//****************************************************************************
@@ -2153,20 +2153,20 @@ void ARX_SPELLS_Update_Update(size_t i, unsigned long tim) {
 		//****************************************************************************
 		// LEVEL 7 SPELLS
 		case SPELL_CONFUSE: {
-			ConfuseSpellUpdate(i, framedelay);
+			ConfuseSpell::Update(i, framedelay);
 			break;
 		}
 		case SPELL_FIRE_FIELD: {
-			FireFieldSpellUpdate(i, framedelay);
+			FireFieldSpell::Update(i, framedelay);
 			break;
 		}
 		case SPELL_ICE_FIELD: {
-			IceFieldSpellUpdate(i, framedelay);
+			IceFieldSpell::Update(i, framedelay);
 			break;
 		}
 		//-----------------------------------------------------------------------------------------
 		case SPELL_LIGHTNING_STRIKE: {
-			LightningStrinkeSpellUpdate(i, framedelay);
+			LightningStrikeSpell::Update(i, framedelay);
 			break;
 		}
 		//****************************************************************************
@@ -2241,7 +2241,7 @@ void ARX_SPELLS_Update_Update(size_t i, unsigned long tim) {
 			break;
 		}
 		case SPELL_FLYING_EYE: {
-			FlyingEyeSpellUpdate(i, tim, framediff3);
+			FlyingEyeSpell::Update(i, tim, framediff3);
 			break;
 		}
 	}
