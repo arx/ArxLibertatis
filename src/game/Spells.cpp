@@ -1488,7 +1488,7 @@ bool ARX_SPELLS_Launch(SpellType typ, long source, SpellcastFlags flagss, long l
 			break;
 		}
 		case SPELL_DISPELL_FIELD: {
-			static_cast<DispellFieldSpell &>(spell).Launch(i);
+			static_cast<DispellFieldSpell &>(spell).Launch();
 			break;
 		}
 		case SPELL_FIRE_PROTECTION: {
@@ -1500,7 +1500,7 @@ bool ARX_SPELLS_Launch(SpellType typ, long source, SpellcastFlags flagss, long l
 			break;
 		}
 		case SPELL_TELEKINESIS: {
-			static_cast<TelekinesisSpell &>(spell).Launch(i, duration);
+			static_cast<TelekinesisSpell &>(spell).Launch(duration);
 			break;
 		}
 		case SPELL_CURSE: {
@@ -1733,7 +1733,7 @@ void ARX_SPELLS_Update_End(size_t i) {
 			break;
 		}
 		case SPELL_TELEKINESIS: {
-			static_cast<TelekinesisSpell &>(spell).End(i);
+			static_cast<TelekinesisSpell &>(spell).End();
 			break;
 		}
 		case SPELL_FIRE_PROTECTION: {
@@ -1990,19 +1990,19 @@ void ARX_SPELLS_Update_Update(size_t i, unsigned long tim) {
 		//****************************************************************************
 		// LEVEL 4 SPELLS
 		case SPELL_BLESS: {
-			static_cast<BlessSpell &>(spell).Update(i, framedelay);
+			static_cast<BlessSpell &>(spell).Update(framedelay);
 			break;
 		}
 		case SPELL_CURSE: {
-			static_cast<CurseSpell &>(spell).Update(i, framedelay);
+			static_cast<CurseSpell &>(spell).Update(framedelay);
 			break;
 		}
 		case SPELL_FIRE_PROTECTION: {
-			static_cast<FireProtectionSpell &>(spell).Update(i, framedelay);
+			static_cast<FireProtectionSpell &>(spell).Update(framedelay);
 			break;
 		}
 		case SPELL_COLD_PROTECTION: {
-			static_cast<ColdProtectionSpell &>(spell).Update(i, framedelay);
+			static_cast<ColdProtectionSpell &>(spell).Update(framedelay);
 			break;
 		}
 		//****************************************************************************
