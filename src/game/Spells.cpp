@@ -2208,6 +2208,109 @@ void HarmSpellUpdate(size_t i)
 	}
 }
 
+void FireballSpellUpdate(size_t i)
+{
+	CSpellFx *pCSpellFX = spells[i].pSpellFx;
+
+	if(pCSpellFX) {
+		CFireBall *pCF = (CFireBall*) pCSpellFX;
+			
+		if(!lightHandleIsValid(spells[i].longinfo_light))
+			spells[i].longinfo_light = GetFreeDynLight();
+
+		if(lightHandleIsValid(spells[i].longinfo_light)) {
+			EERIE_LIGHT * light = lightHandleGet(spells[i].longinfo_light);
+			
+			light->pos = pCF->eCurPos;
+			light->intensity = 2.2f;
+			light->fallend = 500.f;
+			light->fallstart = 400.f;
+			light->rgb.r = 1.0f-rnd()*0.3f;
+			light->rgb.g = 0.6f-rnd()*0.1f;
+			light->rgb.b = 0.3f-rnd()*0.1f;
+		}
+
+		EERIE_SPHERE sphere;
+		sphere.origin = pCF->eCurPos;
+		sphere.radius=std::max(spells[i].caster_level*2.f,12.f);
+		#define MIN_TIME_FIREBALL 2000 
+
+		if(pCF->pPSFire.iParticleNbMax) {
+			if(pCF->ulCurrentTime > MIN_TIME_FIREBALL) {
+				SpawnFireballTail(&pCF->eCurPos,&pCF->eMove,(float)spells[i].caster_level,0);
+			} else {
+				if(rnd()<0.9f) {
+					Vec3f move = Vec3f_ZERO;
+					float dd=(float)pCF->ulCurrentTime / (float)MIN_TIME_FIREBALL*10;
+
+					if(dd > spells[i].caster_level)
+						dd = spells[i].caster_level;
+
+					if(dd < 1)
+						dd = 1;
+
+					SpawnFireballTail(&pCF->eCurPos,&move,(float)dd,1);
+				}
+			}
+		}
+
+		if(!pCF->bExplo)
+		if(CheckAnythingInSphere(&sphere, spells[i].caster, CAS_NO_SAME_GROUP)) {
+			ARX_BOOMS_Add(pCF->eCurPos);
+			LaunchFireballBoom(&pCF->eCurPos,(float)spells[i].caster_level);
+			pCF->pPSFire.iParticleNbMax = 0;
+			pCF->pPSFire2.iParticleNbMax = 0;
+			pCF->eMove *= 0.5f;
+			pCF->pPSSmoke.iParticleNbMax = 0;
+			pCF->SetTTL(1500);
+			pCF->bExplo = true;
+			
+			DoSphericDamage(&pCF->eCurPos,3.f*spells[i].caster_level,30.f*spells[i].caster_level,DAMAGE_AREA,DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL,spells[i].caster);
+			spells[i].tolive=0;
+			ARX_SOUND_PlaySFX(SND_SPELL_FIRE_HIT, &sphere.origin);
+			ARX_NPC_SpawnAudibleSound(sphere.origin, entities[spells[i].caster]);
+		}
+
+		pCSpellFX->Update(framedelay);
+		ARX_SOUND_RefreshPosition(spells[i].snd_loop, pCF->eCurPos);
+	}	
+}
+
+void SpeedSpellUpdate(size_t i)
+{
+	if(spells[i].pSpellFx) {
+		if(spells[i].caster == 0)
+			ARX_SOUND_RefreshPosition(spells[i].snd_loop, entities[spells[i].target]->pos);
+		
+		spells[i].pSpellFx->Update(framedelay);
+		spells[i].pSpellFx->Render();
+	}	
+}
+
+void CreateFoodSpellUpdate(size_t i)
+{
+	if(spells[i].pSpellFx) {
+		spells[i].pSpellFx->Update(framedelay);
+		spells[i].pSpellFx->Render();
+	}	
+}
+
+void IceProjectileUpdate(size_t i)
+{
+	if(spells[i].pSpellFx) {
+		spells[i].pSpellFx->Update(framedelay);
+		spells[i].pSpellFx->Render();
+	}	
+}
+
+void DispellIllusionSpellUpdate(size_t i)
+{
+	if(spells[i].pSpellFx) {
+		spells[i].pSpellFx->Update(framedelay);
+		spells[i].pSpellFx->Render();
+	}	
+}
+
 void ARX_SPELLS_Update_Update(size_t i, unsigned long tim) {
 	
 	const long framediff3 = tim - spells[i].lastupdate;
@@ -2261,89 +2364,23 @@ void ARX_SPELLS_Update_Update(size_t i, unsigned long tim) {
 		//****************************************************************************
 		// LEVEL 3 SPELLS
 		case SPELL_FIREBALL: {
-			CSpellFx *pCSpellFX = spells[i].pSpellFx;
-
-			if(pCSpellFX) {
-				CFireBall *pCF = (CFireBall*) pCSpellFX;
-					
-				if(!lightHandleIsValid(spells[i].longinfo_light))
-					spells[i].longinfo_light = GetFreeDynLight();
-
-				if(lightHandleIsValid(spells[i].longinfo_light)) {
-					EERIE_LIGHT * light = lightHandleGet(spells[i].longinfo_light);
-					
-					light->pos = pCF->eCurPos;
-					light->intensity = 2.2f;
-					light->fallend = 500.f;
-					light->fallstart = 400.f;
-					light->rgb.r = 1.0f-rnd()*0.3f;
-					light->rgb.g = 0.6f-rnd()*0.1f;
-					light->rgb.b = 0.3f-rnd()*0.1f;
-				}
-
-				EERIE_SPHERE sphere;
-				sphere.origin = pCF->eCurPos;
-				sphere.radius=std::max(spells[i].caster_level*2.f,12.f);
-				#define MIN_TIME_FIREBALL 2000 
-
-				if(pCF->pPSFire.iParticleNbMax) {
-					if(pCF->ulCurrentTime > MIN_TIME_FIREBALL) {
-						SpawnFireballTail(&pCF->eCurPos,&pCF->eMove,(float)spells[i].caster_level,0);
-					} else {
-						if(rnd()<0.9f) {
-							Vec3f move = Vec3f_ZERO;
-							float dd=(float)pCF->ulCurrentTime / (float)MIN_TIME_FIREBALL*10;
-
-							if(dd > spells[i].caster_level)
-								dd = spells[i].caster_level;
-
-							if(dd < 1)
-								dd = 1;
-
-							SpawnFireballTail(&pCF->eCurPos,&move,(float)dd,1);
-						}
-					}
-				}
-
-				if(!pCF->bExplo)
-				if(CheckAnythingInSphere(&sphere, spells[i].caster, CAS_NO_SAME_GROUP)) {
-					ARX_BOOMS_Add(pCF->eCurPos);
-					LaunchFireballBoom(&pCF->eCurPos,(float)spells[i].caster_level);
-					pCF->pPSFire.iParticleNbMax = 0;
-					pCF->pPSFire2.iParticleNbMax = 0;
-					pCF->eMove *= 0.5f;
-					pCF->pPSSmoke.iParticleNbMax = 0;
-					pCF->SetTTL(1500);
-					pCF->bExplo = true;
-					
-					DoSphericDamage(&pCF->eCurPos,3.f*spells[i].caster_level,30.f*spells[i].caster_level,DAMAGE_AREA,DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL,spells[i].caster);
-					spells[i].tolive=0;
-					ARX_SOUND_PlaySFX(SND_SPELL_FIRE_HIT, &sphere.origin);
-					ARX_NPC_SpawnAudibleSound(sphere.origin, entities[spells[i].caster]);
-				}
-
-				pCSpellFX->Update(framedelay);
-				ARX_SOUND_RefreshPosition(spells[i].snd_loop, pCF->eCurPos);
-			}
+			FireballSpellUpdate(i);
 			break;
 		}
 		case SPELL_SPEED: {
-			if(spells[i].pSpellFx) {
-				if(spells[i].caster == 0)
-					ARX_SOUND_RefreshPosition(spells[i].snd_loop, entities[spells[i].target]->pos);
-				
-				spells[i].pSpellFx->Update(framedelay);
-				spells[i].pSpellFx->Render();
-			}
+			SpeedSpellUpdate(i);
 			break;
 		}
-		case SPELL_CREATE_FOOD:
-		case SPELL_ICE_PROJECTILE:
+		case SPELL_CREATE_FOOD: {
+			CreateFoodSpellUpdate(i);
+			break;
+		}
+		case SPELL_ICE_PROJECTILE: {
+			IceProjectileUpdate(i);
+			break;
+		}
 		case SPELL_DISPELL_ILLUSION: {
-			if(spells[i].pSpellFx) {
-				spells[i].pSpellFx->Update(framedelay);
-				spells[i].pSpellFx->Render();
-			}
+			DispellIllusionSpellUpdate(i);
 			break;
 		}
 		//****************************************************************************
