@@ -25,20 +25,25 @@
 bool FlyingEyeSpellLaunch(long i, TextureContainer * tc4);
 void FlyingEyeSpellEnd(size_t i);
 void FlyingEyeSpellKill(TextureContainer* tc4, long i);
+void FlyingEyeSpellUpdate(size_t i, unsigned long tim, const long framediff3);
 
 void FireFieldSpellLaunch(long i, SpellType typ, long duration);
 void FireFieldSpellEnd(size_t i);
 void FireFieldSpellKill(long i);
+void FireFieldSpellUpdate(size_t i, float timeDelta);
 
 void IceFieldSpellLaunch(long i, long duration, SpellType typ);
 void IceFieldSpellEnd(size_t i);
 void IceFieldSpellKill(long i);
+void IceFieldSpellUpdate(size_t i, float timeDelta);
 
 void LightningStrikeSpellLaunch(long i);
 void LightningStrikeSpellEnd(size_t i);
 void LightningStrikeKill(long i);
+void LightningStrinkeSpellUpdate(size_t i, float timeDelta);
 
 void ConfuseSpellLaunch(long i, bool & notifyAll, long duration);
 void ConfuseSpellEnd(size_t i);
+void ConfuseSpellUpdate(size_t i, float timeDelta);
 
 #endif // ARX_GAME_MAGIC_SPELLS_SPELLSLVL07_H

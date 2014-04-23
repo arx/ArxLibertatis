@@ -35,6 +35,7 @@
 
 #include "scene/GameSound.h"
 #include "scene/Interactive.h"
+#include "scene/Scene.h"
 
 extern bool TRUE_PLAYER_MOUSELOOK_ON;
 extern float SLID_START;
@@ -123,6 +124,22 @@ void FlyingEyeSpellKill(TextureContainer* tc4, long i)
 	config.input.mouseLookToggle = bOldLookToggle;
 }
 
+void FlyingEyeSpellUpdate(size_t i, unsigned long tim, const long framediff3)
+{
+	eyeball.floating = std::sin(spells[i].lastupdate-spells[i].timcreation * 0.001f);
+	eyeball.floating *= 10.f;
+	
+	if(spells[i].lastupdate-spells[i].timcreation <= 3000) {
+		eyeball.exist = spells[i].lastupdate - spells[i].timcreation * (1.0f / 30);
+		eyeball.size = Vec3f(1.f - float(eyeball.exist) * 0.01f);
+		eyeball.angle.setPitch(eyeball.angle.getPitch() + framediff3 * 0.6f);
+	} else {
+		eyeball.exist = 2;
+	}
+	
+	spells[i].lastupdate=tim;	
+}
+
 void FireFieldSpellLaunch(long i, SpellType typ, long duration)
 {
 	long iCancel = ARX_SPELLS_GetInstanceForThisCaster(typ, spells[i].caster);
@@ -199,6 +216,71 @@ void FireFieldSpellKill(long i)
 {
 	ARX_SOUND_Stop(spells[i].snd_loop);
 	ARX_SOUND_PlaySFX(SND_SPELL_FIRE_FIELD_END);
+}
+
+void FireFieldSpellUpdate(size_t i, float timeDelta)
+{
+	CSpellFx *pCSpellFX = spells[i].pSpellFx;
+	
+	if(pCSpellFX) {
+		CFireField *pf = (CFireField *) pCSpellFX;
+		pCSpellFX->Update(timeDelta);
+		
+		if(!lightHandleIsValid(spells[i].longinfo2_light))
+			spells[i].longinfo2_light = GetFreeDynLight();
+
+		if(lightHandleIsValid(spells[i].longinfo2_light)) {
+			EERIE_LIGHT * el = lightHandleGet(spells[i].longinfo2_light);
+			
+			el->pos.x = pf->pos.x;
+			el->pos.y = pf->pos.y-120.f;
+			el->pos.z = pf->pos.z;
+			el->intensity = 4.6f;
+			el->fallstart = 150.f+rnd()*30.f;
+			el->fallend   = 290.f+rnd()*30.f;
+			el->rgb.r = 1.f-rnd()*( 1.0f / 10 );
+			el->rgb.g = 0.8f;
+			el->rgb.b = 0.6f;
+			el->duration = 600;
+			el->extras=0;
+		}
+		
+		if(VisibleSphere(pf->pos - Vec3f(0.f, 120.f, 0.f), 350.f)) {
+			
+			pCSpellFX->Render();
+			float fDiff = timeDelta / 8.f;
+			int nTime = checked_range_cast<int>(fDiff);
+			
+			for(long nn=0;nn<=nTime+1;nn++) {
+				
+				PARTICLE_DEF * pd = createParticle();
+				if(!pd) {
+					break;
+				}
+				
+				float t = rnd() * (PI * 2.f) - PI;
+				float ts = std::sin(t);
+				float tc = std::cos(t);
+				pd->ov = pf->pos + Vec3f(120.f * ts, 15.f * ts, 120.f * tc) * randomVec();
+				pd->move = Vec3f(2.f - 4.f * rnd(), 1.f - 8.f * rnd(), 2.f - 4.f * rnd());
+				pd->siz = 7.f;
+				pd->tolive = Random::get(500, 1500);
+				pd->tc = fire2;
+				pd->special = ROTATING | MODULATE_ROTATION | FIRE_TO_SMOKE;
+				pd->fparam = 0.1f - rnd() * 0.2f;
+				pd->scale = Vec3f(-8.f);
+				
+				PARTICLE_DEF * pd2 = createParticle();
+				if(!pd2) {
+					break;
+				}
+				
+				*pd2 = *pd;
+				pd2->delay = Random::get(60, 210);
+			}
+			
+		}
+	}
 }
 
 void IceFieldSpellLaunch(long i, long duration, SpellType typ)
@@ -281,6 +363,38 @@ void IceFieldSpellKill(long i)
 	ARX_SOUND_PlaySFX(SND_SPELL_ICE_FIELD_END);
 }
 
+void IceFieldSpellUpdate(size_t i, float timeDelta)
+{
+	CSpellFx *pCSpellFX = spells[i].pSpellFx;
+	
+	if(pCSpellFX) {
+		pCSpellFX->Update(timeDelta);
+		
+		CIceField *pf = (CIceField *) pCSpellFX;
+
+		if(!lightHandleIsValid(spells[i].longinfo2_light))
+			spells[i].longinfo2_light = GetFreeDynLight();
+
+		if(lightHandleIsValid(spells[i].longinfo2_light)) {
+			EERIE_LIGHT * el = lightHandleGet(spells[i].longinfo2_light);
+			
+			el->pos.x = pf->eSrc.x;
+			el->pos.y = pf->eSrc.y-120.f;
+			el->pos.z = pf->eSrc.z;
+			el->intensity = 4.6f;
+			el->fallstart = 150.f+rnd()*30.f;
+			el->fallend   = 290.f+rnd()*30.f;
+			el->rgb.r = 0.76f;
+			el->rgb.g = 0.76f;
+			el->rgb.b = 1.0f-rnd()*( 1.0f / 10 );
+			el->duration = 600;
+			el->extras=0;
+		}
+
+		pCSpellFX->Render();
+	}
+}
+
 void LightningStrikeSpellLaunch(long i)
 {
 	spells[i].exist = true;
@@ -320,6 +434,18 @@ void LightningStrikeKill(long i)
 	ARX_SOUND_PlaySFX(SND_SPELL_LIGHTNING_END, &entities[spells[i].caster]->pos);
 }
 
+void LightningStrinkeSpellUpdate(size_t i, float timeDelta)
+{
+	CSpellFx *pCSpellFX = spells[i].pSpellFx;
+
+	if(pCSpellFX) {
+		pCSpellFX->Update(timeDelta);
+		pCSpellFX->Render();
+	}
+	
+	ARX_SOUND_RefreshPosition(spells[i].snd_loop, entities[spells[i].caster]->pos);
+}
+
 void ConfuseSpellLaunch(long i, bool & notifyAll, long duration)
 {
 	ARX_SOUND_PlaySFX(SND_SPELL_CONFUSE, &entities[spells[i].target]->pos);
@@ -349,4 +475,14 @@ void ConfuseSpellLaunch(long i, bool & notifyAll, long duration)
 void ConfuseSpellEnd(size_t i)
 {
 	ARX_SPELLS_RemoveSpellOn(spells[i].target, i);
+}
+
+void ConfuseSpellUpdate(size_t i, float timeDelta)
+{
+	CSpellFx *pCSpellFX = spells[i].pSpellFx;
+	
+	if(pCSpellFX) {
+		pCSpellFX->Update(timeDelta);
+		pCSpellFX->Render();
+	}
 }

@@ -31,7 +31,7 @@
 
 #include "graphics/spells/Spells05.h"
 #include "graphics/spells/Spells06.h"
-
+#include "physics/Collisions.h"
 #include "scene/GameSound.h"
 #include "scene/Interactive.h"
 
@@ -129,6 +129,100 @@ void RiseDeadSpellEnd(size_t i)
 
 			entity->destroyOne();
 		}
+	}
+}
+
+void RiseDeadSpellUpdate(size_t i, float timeDelta)
+{
+	CSpellFx *pCSpellFX = spells[i].pSpellFx;
+
+	if(pCSpellFX) {
+		if(spells[i].longinfo_entity == -2) {
+			pCSpellFX->lLightId=-1;
+			return;
+		}
+
+		spells[i].tolive+=200;
+	
+		pCSpellFX->Update(timeDelta);
+		pCSpellFX->Render();
+
+		if(lightHandleIsValid(pCSpellFX->lLightId)) {
+			EERIE_LIGHT * light = lightHandleGet(pCSpellFX->lLightId);
+			
+			light->intensity = 0.7f + 2.3f;
+			light->fallend = 500.f;
+			light->fallstart = 400.f;
+			light->rgb.r = 0.8f;
+			light->rgb.g = 0.2f;
+			light->rgb.b = 0.2f;
+			light->duration=800;
+			light->time_creation = (unsigned long)(arxtime);
+		}
+
+		unsigned long tim=pCSpellFX->getCurrentTime();
+
+		if(tim > 3000 && spells[i].longinfo_entity == -1) {
+			ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &spells[i].target_pos);
+			CRiseDead *prise = (CRiseDead *)spells[i].pSpellFx;
+
+			if(prise) {
+				EERIE_CYLINDER phys;
+				phys.height=-200;
+				phys.radius=50;
+				phys.origin=spells[i].target_pos;
+
+				float anything = CheckAnythingInCylinder(&phys, NULL, CFLAG_JUST_TEST);
+
+				if(EEfabs(anything) < 30) {
+					
+					const char * cls = "graph/obj3d/interactive/npc/undead_base/undead_base";
+					Entity * io = AddNPC(cls, -1, IO_IMMEDIATELOAD);
+					
+					if(io) {
+						ARX_INTERACTIVE_HideGore(io);
+						RestoreInitialIOStatusOfIO(io);
+						
+						long lSpellsCaster = spells[i].caster;
+						io->summoner = checked_range_cast<short>(lSpellsCaster);
+						
+						io->ioflags|=IO_NOSAVE;
+						spells[i].longinfo_entity = io->index();
+						io->scriptload=1;
+						
+						ARX_INTERACTIVE_Teleport(io, phys.origin);
+						SendInitScriptEvent(io);
+
+						if(ValidIONum(spells[i].caster)) {
+							EVENT_SENDER = entities[spells[i].caster];
+						} else {
+							EVENT_SENDER = NULL;
+						}
+
+						SendIOScriptEvent(io,SM_SUMMONED);
+							
+						Vec3f pos;
+						pos.x=prise->eSrc.x+rnd()*100.f-50.f;
+						pos.y=prise->eSrc.y+100+rnd()*100.f-50.f;
+						pos.z=prise->eSrc.z+rnd()*100.f-50.f;
+						MakeCoolFx(pos);
+					}
+
+					pCSpellFX->lLightId=-1;
+				} else {
+					ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE);
+					spells[i].longinfo_entity = -2;
+					spells[i].tolive=0;
+				}
+			}
+		} else if(!arxtime.is_paused() && tim < 4000) {
+		  if(rnd() > 0.95f) {
+				CRiseDead *pRD = (CRiseDead*)pCSpellFX;
+				Vec3f pos = pRD->eSrc;
+				MakeCoolFx(pos);
+			}
+		}
+
 	}
 }
 
@@ -259,6 +353,28 @@ void CreateFieldSpellEnd(size_t i)
 	}
 }
 
+void CreateFieldSpellUpdate(size_t i, float timeDelta)
+{
+	CSpellFx *pCSpellFX = spells[i].pSpellFx;
+	
+	if(pCSpellFX) {
+		if(ValidIONum(spells[i].longinfo_entity)) {
+			Entity * io = entities[spells[i].longinfo_entity];
+			
+			CCreateField * ccf=(CCreateField *)pCSpellFX;
+			io->pos = ccf->eSrc;
+
+			if (IsAnyNPCInPlatform(io))
+			{
+				spells[i].tolive=0;
+			}
+		
+			pCSpellFX->Update(timeDelta);			
+			pCSpellFX->Render();
+		}
+	}
+}
+
 void DisarmTrapSpellLaunch(long i)
 {
 	ARX_SOUND_PlaySFX(SND_SPELL_DISARM_TRAP);
@@ -337,4 +453,14 @@ void SlowDownSpellEnd(size_t i)
 {
 	ARX_SOUND_PlaySFX(SND_SPELL_SLOW_DOWN_END);
 	ARX_SPELLS_RemoveSpellOn(spells[i].target, i);
+}
+
+void SlowDownSpellUpdate(size_t i, float timeDelta)
+{
+	CSpellFx *pCSpellFX = spells[i].pSpellFx;
+
+	if(pCSpellFX) {
+		pCSpellFX->Update(timeDelta);
+		pCSpellFX->Render();
+	}
 }

@@ -2023,250 +2023,19 @@ void ARX_SPELLS_Update_End(size_t i) {
 
 
 
-void RiseDeadSpellUpdate(size_t i)
-{
-	CSpellFx *pCSpellFX = spells[i].pSpellFx;
 
-	if(pCSpellFX) {
-		if(spells[i].longinfo_entity == -2) {
-			pCSpellFX->lLightId=-1;
-			return;
-		}
 
-		spells[i].tolive+=200;
-	
-		pCSpellFX->Update(framedelay);
-		pCSpellFX->Render();
 
-		if(lightHandleIsValid(pCSpellFX->lLightId)) {
-			EERIE_LIGHT * light = lightHandleGet(pCSpellFX->lLightId);
-			
-			light->intensity = 0.7f + 2.3f;
-			light->fallend = 500.f;
-			light->fallstart = 400.f;
-			light->rgb.r = 0.8f;
-			light->rgb.g = 0.2f;
-			light->rgb.b = 0.2f;
-			light->duration=800;
-			light->time_creation = (unsigned long)(arxtime);
-		}
 
-		unsigned long tim=pCSpellFX->getCurrentTime();
 
-		if(tim > 3000 && spells[i].longinfo_entity == -1) {
-			ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &spells[i].target_pos);
-			CRiseDead *prise = (CRiseDead *)spells[i].pSpellFx;
 
-			if(prise) {
-				EERIE_CYLINDER phys;
-				phys.height=-200;
-				phys.radius=50;
-				phys.origin=spells[i].target_pos;
 
-				float anything = CheckAnythingInCylinder(&phys, NULL, CFLAG_JUST_TEST);
 
-				if(EEfabs(anything) < 30) {
-					
-					const char * cls = "graph/obj3d/interactive/npc/undead_base/undead_base";
-					Entity * io = AddNPC(cls, -1, IO_IMMEDIATELOAD);
-					
-					if(io) {
-						ARX_INTERACTIVE_HideGore(io);
-						RestoreInitialIOStatusOfIO(io);
-						
-						long lSpellsCaster = spells[i].caster;
-						io->summoner = checked_range_cast<short>(lSpellsCaster);
-						
-						io->ioflags|=IO_NOSAVE;
-						spells[i].longinfo_entity = io->index();
-						io->scriptload=1;
-						
-						ARX_INTERACTIVE_Teleport(io, phys.origin);
-						SendInitScriptEvent(io);
 
-						if(ValidIONum(spells[i].caster)) {
-							EVENT_SENDER = entities[spells[i].caster];
-						} else {
-							EVENT_SENDER = NULL;
-						}
 
-						SendIOScriptEvent(io,SM_SUMMONED);
-							
-						Vec3f pos;
-						pos.x=prise->eSrc.x+rnd()*100.f-50.f;
-						pos.y=prise->eSrc.y+100+rnd()*100.f-50.f;
-						pos.z=prise->eSrc.z+rnd()*100.f-50.f;
-						MakeCoolFx(pos);
-					}
 
-					pCSpellFX->lLightId=-1;
-				} else {
-					ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE);
-					spells[i].longinfo_entity = -2;
-					spells[i].tolive=0;
-				}
-			}
-		} else if(!arxtime.is_paused() && tim < 4000) {
-		  if(rnd() > 0.95f) {
-				CRiseDead *pRD = (CRiseDead*)pCSpellFX;
-				Vec3f pos = pRD->eSrc;
-				MakeCoolFx(pos);
-			}
-		}
 
-	}
-}
 
-void SlowDownSpellUpdate(size_t i)
-{
-	CSpellFx *pCSpellFX = spells[i].pSpellFx;
-
-	if(pCSpellFX) {
-		pCSpellFX->Update(framedelay);
-		pCSpellFX->Render();
-	}
-}
-
-void CreateFieldSpellUpdate(size_t i)
-{
-	CSpellFx *pCSpellFX = spells[i].pSpellFx;
-	
-	if(pCSpellFX) {
-		if(ValidIONum(spells[i].longinfo_entity)) {
-			Entity * io = entities[spells[i].longinfo_entity];
-			
-			CCreateField * ccf=(CCreateField *)pCSpellFX;
-			io->pos = ccf->eSrc;
-
-			if (IsAnyNPCInPlatform(io))
-			{
-				spells[i].tolive=0;
-			}
-		
-			pCSpellFX->Update(framedelay);			
-			pCSpellFX->Render();
-		}
-	}
-}
-
-void ConfuseSpellUpdate(size_t i)
-{
-	CSpellFx *pCSpellFX = spells[i].pSpellFx;
-	
-	if(pCSpellFX) {
-		pCSpellFX->Update(framedelay);
-		pCSpellFX->Render();
-	}
-}
-
-void FireFieldSpellUpdate(size_t i)
-{
-	CSpellFx *pCSpellFX = spells[i].pSpellFx;
-	
-	if(pCSpellFX) {
-		CFireField *pf = (CFireField *) pCSpellFX;
-		pCSpellFX->Update(framedelay);
-		
-		if(!lightHandleIsValid(spells[i].longinfo2_light))
-			spells[i].longinfo2_light = GetFreeDynLight();
-
-		if(lightHandleIsValid(spells[i].longinfo2_light)) {
-			EERIE_LIGHT * el = lightHandleGet(spells[i].longinfo2_light);
-			
-			el->pos.x = pf->pos.x;
-			el->pos.y = pf->pos.y-120.f;
-			el->pos.z = pf->pos.z;
-			el->intensity = 4.6f;
-			el->fallstart = 150.f+rnd()*30.f;
-			el->fallend   = 290.f+rnd()*30.f;
-			el->rgb.r = 1.f-rnd()*( 1.0f / 10 );
-			el->rgb.g = 0.8f;
-			el->rgb.b = 0.6f;
-			el->duration = 600;
-			el->extras=0;
-		}
-		
-		if(VisibleSphere(pf->pos - Vec3f(0.f, 120.f, 0.f), 350.f)) {
-			
-			pCSpellFX->Render();
-			float fDiff = framedelay / 8.f;
-			int nTime = checked_range_cast<int>(fDiff);
-			
-			for(long nn=0;nn<=nTime+1;nn++) {
-				
-				PARTICLE_DEF * pd = createParticle();
-				if(!pd) {
-					break;
-				}
-				
-				float t = rnd() * (PI * 2.f) - PI;
-				float ts = std::sin(t);
-				float tc = std::cos(t);
-				pd->ov = pf->pos + Vec3f(120.f * ts, 15.f * ts, 120.f * tc) * randomVec();
-				pd->move = Vec3f(2.f - 4.f * rnd(), 1.f - 8.f * rnd(), 2.f - 4.f * rnd());
-				pd->siz = 7.f;
-				pd->tolive = Random::get(500, 1500);
-				pd->tc = fire2;
-				pd->special = ROTATING | MODULATE_ROTATION | FIRE_TO_SMOKE;
-				pd->fparam = 0.1f - rnd() * 0.2f;
-				pd->scale = Vec3f(-8.f);
-				
-				PARTICLE_DEF * pd2 = createParticle();
-				if(!pd2) {
-					break;
-				}
-				
-				*pd2 = *pd;
-				pd2->delay = Random::get(60, 210);
-			}
-			
-		}
-	}
-}
-
-void IceFieldSpellUpdate(size_t i)
-{
-	CSpellFx *pCSpellFX = spells[i].pSpellFx;
-	
-	if(pCSpellFX) {
-		pCSpellFX->Update(framedelay);
-		
-		CIceField *pf = (CIceField *) pCSpellFX;
-
-		if(!lightHandleIsValid(spells[i].longinfo2_light))
-			spells[i].longinfo2_light = GetFreeDynLight();
-
-		if(lightHandleIsValid(spells[i].longinfo2_light)) {
-			EERIE_LIGHT * el = lightHandleGet(spells[i].longinfo2_light);
-			
-			el->pos.x = pf->eSrc.x;
-			el->pos.y = pf->eSrc.y-120.f;
-			el->pos.z = pf->eSrc.z;
-			el->intensity = 4.6f;
-			el->fallstart = 150.f+rnd()*30.f;
-			el->fallend   = 290.f+rnd()*30.f;
-			el->rgb.r = 0.76f;
-			el->rgb.g = 0.76f;
-			el->rgb.b = 1.0f-rnd()*( 1.0f / 10 );
-			el->duration = 600;
-			el->extras=0;
-		}
-
-		pCSpellFX->Render();
-	}
-}
-
-void LightningStrinkeSpellUpdate(size_t i)
-{
-	CSpellFx *pCSpellFX = spells[i].pSpellFx;
-
-	if(pCSpellFX) {
-		pCSpellFX->Update(framedelay);
-		pCSpellFX->Render();
-	}
-	
-	ARX_SOUND_RefreshPosition(spells[i].snd_loop, entities[spells[i].caster]->pos);
-}
 
 void EnchantWeaponSpellUpdate(size_t i)
 {
@@ -2787,21 +2556,7 @@ void LifeDrainSpellUpdate(size_t i)
 	}	
 }
 
-void FlyingEyeSpellUpdate(size_t i, unsigned long tim, const long framediff3)
-{
-	eyeball.floating = std::sin(spells[i].lastupdate-spells[i].timcreation * 0.001f);
-	eyeball.floating *= 10.f;
-	
-	if(spells[i].lastupdate-spells[i].timcreation <= 3000) {
-		eyeball.exist = spells[i].lastupdate - spells[i].timcreation * (1.0f / 30);
-		eyeball.size = Vec3f(1.f - float(eyeball.exist) * 0.01f);
-		eyeball.angle.setPitch(eyeball.angle.getPitch() + framediff3 * 0.6f);
-	} else {
-		eyeball.exist = 2;
-	}
-	
-	spells[i].lastupdate=tim;	
-}
+
 
 void ARX_SPELLS_Update_Update(size_t i, unsigned long tim) {
 	
@@ -2918,11 +2673,11 @@ void ARX_SPELLS_Update_Update(size_t i, unsigned long tim) {
 		//****************************************************************************
 		// LEVEL 6 SPELLS
 		case SPELL_RISE_DEAD: {
-			RiseDeadSpellUpdate(i);
+			RiseDeadSpellUpdate(i, framedelay);
 			break;
 		}
 		case SPELL_SLOW_DOWN: {
-			SlowDownSpellUpdate(i);
+			SlowDownSpellUpdate(i, framedelay);
 			break;
 		}
 		case SPELL_DISARM_TRAP: {
@@ -2932,26 +2687,26 @@ void ARX_SPELLS_Update_Update(size_t i, unsigned long tim) {
 			break;
 		}
 		case SPELL_CREATE_FIELD: {
-			CreateFieldSpellUpdate(i);
+			CreateFieldSpellUpdate(i, framedelay);
 			break;
 		}
 		//****************************************************************************
 		// LEVEL 7 SPELLS
 		case SPELL_CONFUSE: {
-			ConfuseSpellUpdate(i);
+			ConfuseSpellUpdate(i, framedelay);
 			break;
 		}
 		case SPELL_FIRE_FIELD: {
-			FireFieldSpellUpdate(i);
+			FireFieldSpellUpdate(i, framedelay);
 			break;
 		}
 		case SPELL_ICE_FIELD: {
-			IceFieldSpellUpdate(i);
+			IceFieldSpellUpdate(i, framedelay);
 			break;
 		}
 		//-----------------------------------------------------------------------------------------
 		case SPELL_LIGHTNING_STRIKE: {
-			LightningStrinkeSpellUpdate(i);
+			LightningStrinkeSpellUpdate(i, framedelay);
 			break;
 		}
 		//****************************************************************************
