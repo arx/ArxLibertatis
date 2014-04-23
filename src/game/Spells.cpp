@@ -1560,7 +1560,7 @@ bool ARX_SPELLS_Launch(SpellType typ, long source, SpellcastFlags flagss, long l
 		//****************************************************************************
 		// LEVEL 7
 		case SPELL_FLYING_EYE: {
-			bool result = static_cast<FlyingEyeSpell &>(spell).Launch(i);
+			bool result = static_cast<FlyingEyeSpell &>(spell).Launch();
 			if(!result)
 				return false;
 			
@@ -1771,19 +1771,19 @@ void ARX_SPELLS_Update_End(size_t i) {
 		//****************************************************************************
 		// LEVEL 7
 		case SPELL_ICE_FIELD: {
-			static_cast<IceFieldSpell &>(spell).End(i);
+			static_cast<IceFieldSpell &>(spell).End();
 			break;
 		}
 		case SPELL_FIRE_FIELD: {
-			static_cast<FireFieldSpell &>(spell).End(i);
+			static_cast<FireFieldSpell &>(spell).End();
 			break;
 		}
 		case SPELL_LIGHTNING_STRIKE: {
-			static_cast<LightningStrikeSpell &>(spell).End(i);
+			static_cast<LightningStrikeSpell &>(spell).End();
 			break;
 		}
 		case SPELL_FLYING_EYE: {
-			static_cast<FlyingEyeSpell &>(spell).End(i);
+			static_cast<FlyingEyeSpell &>(spell).End();
 			break;
 		}
 		case SPELL_CONFUSE: {
@@ -1855,7 +1855,7 @@ void ARX_SPELLS_Kill(long i) {
 			break;
 		}
 		case SPELL_LIGHTNING_STRIKE: {
-			static_cast<LightningStrikeSpell &>(spell).Kill(i);
+			static_cast<LightningStrikeSpell &>(spell).Kill();
 			break;
 		}
 		case SPELL_MASS_LIGHTNING_STRIKE: {
@@ -1879,7 +1879,7 @@ void ARX_SPELLS_Kill(long i) {
 			break;
 		}
 		case SPELL_FLYING_EYE : {
-			static_cast<FlyingEyeSpell &>(spell).Kill(i);
+			static_cast<FlyingEyeSpell &>(spell).Kill();
 			break;
 		}
 		// Level 06
@@ -1889,11 +1889,11 @@ void ARX_SPELLS_Kill(long i) {
 		}
 		// Level 7
 		case SPELL_FIRE_FIELD: {
-			static_cast<FireFieldSpell &>(spell).Kill(i);
+			static_cast<FireFieldSpell &>(spell).Kill();
 			break;
 		}
 		case SPELL_ICE_FIELD: {
-			static_cast<IceFieldSpell &>(spell).Kill(i); 
+			static_cast<IceFieldSpell &>(spell).Kill(); 
 			break; 
 		}
 		case SPELL_MASS_PARALYSE: {
@@ -2050,20 +2050,20 @@ void ARX_SPELLS_Update_Update(size_t i, unsigned long tim) {
 		//****************************************************************************
 		// LEVEL 7 SPELLS
 		case SPELL_CONFUSE: {
-			static_cast<ConfuseSpell &>(spell).Update(i, framedelay);
+			static_cast<ConfuseSpell &>(spell).Update(framedelay);
 			break;
 		}
 		case SPELL_FIRE_FIELD: {
-			static_cast<FireFieldSpell &>(spell).Update(i, framedelay);
+			static_cast<FireFieldSpell &>(spell).Update(framedelay);
 			break;
 		}
 		case SPELL_ICE_FIELD: {
-			static_cast<IceFieldSpell &>(spell).Update(i, framedelay);
+			static_cast<IceFieldSpell &>(spell).Update(framedelay);
 			break;
 		}
 		//-----------------------------------------------------------------------------------------
 		case SPELL_LIGHTNING_STRIKE: {
-			static_cast<LightningStrikeSpell &>(spell).Update(i, framedelay);
+			static_cast<LightningStrikeSpell &>(spell).Update(framedelay);
 			break;
 		}
 		//****************************************************************************
@@ -2138,7 +2138,7 @@ void ARX_SPELLS_Update_Update(size_t i, unsigned long tim) {
 			break;
 		}
 		case SPELL_FLYING_EYE: {
-			static_cast<FlyingEyeSpell &>(spell).Update(i, tim);
+			static_cast<FlyingEyeSpell &>(spell).Update(tim);
 			break;
 		}
 	}
