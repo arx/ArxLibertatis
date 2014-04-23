@@ -2020,8 +2020,6 @@ void ARX_SPELLS_Update_End(size_t i) {
 
 void ARX_SPELLS_Update_Update(size_t i, unsigned long tim) {
 	
-	const long framediff3 = tim - spells[i].lastupdate;
-	
 	switch(spells[i].type) {
 		case SPELL_DISPELL_FIELD: {
 			break;
@@ -2241,7 +2239,7 @@ void ARX_SPELLS_Update_Update(size_t i, unsigned long tim) {
 			break;
 		}
 		case SPELL_FLYING_EYE: {
-			FlyingEyeSpell::Update(i, tim, framediff3);
+			FlyingEyeSpell::Update(i, tim);
 			break;
 		}
 	}

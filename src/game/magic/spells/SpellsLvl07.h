@@ -27,7 +27,7 @@ public:
 	static bool Launch(long i, TextureContainer * tc4);
 	static void End(size_t i);
 	static void Kill(TextureContainer* tc4, long i);
-	static void Update(size_t i, unsigned long tim, const long framediff3);
+	static void Update(size_t i, unsigned long tim);
 };
 
 class FireFieldSpell {

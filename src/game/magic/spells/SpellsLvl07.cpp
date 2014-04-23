@@ -124,8 +124,10 @@ void FlyingEyeSpell::Kill(TextureContainer* tc4, long i)
 	config.input.mouseLookToggle = bOldLookToggle;
 }
 
-void FlyingEyeSpell::Update(size_t i, unsigned long tim, const long framediff3)
+void FlyingEyeSpell::Update(size_t i, unsigned long tim)
 {
+	const long framediff3 = tim - spells[i].lastupdate;
+	
 	eyeball.floating = std::sin(spells[i].lastupdate-spells[i].timcreation * 0.001f);
 	eyeball.floating *= 10.f;
 	
