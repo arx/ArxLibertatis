@@ -115,6 +115,62 @@ void MassLightningStrikeSpellKill(long i)
 	ARX_SOUND_PlaySFX(SND_SPELL_LIGHTNING_END);
 }
 
+void MassLightningStrikeSpellUpdate(unsigned long tim, size_t i, float timeDelta)
+{
+	CSpellFx *pCSpellFX = spells[i].pSpellFx;
+
+	if(pCSpellFX) {
+		pCSpellFX->Update(timeDelta);
+		pCSpellFX->Render();
+	}
+	
+	Vec3f _source = spells[i].vsource;
+	float _fx;
+	_fx = 0.5f;
+	unsigned long _gct;
+	_gct = 0;
+
+	Vec3f position;
+
+	spells[i].lastupdate=tim;
+
+	position = _source + randomVec(-250.f, 250.f);
+	ARX_SOUND_RefreshPosition(spells[i].snd_loop, position);
+	ARX_SOUND_RefreshVolume(spells[i].snd_loop, _fx + 0.5F);
+	ARX_SOUND_RefreshPitch(spells[i].snd_loop, 0.8F + 0.4F * rnd());
+	
+	if(rnd() > 0.62f) {
+		position = _source  + randomVec(-250.f, 250.f);
+		ARX_SOUND_PlaySFX(SND_SPELL_SPARK, &position, 0.8F + 0.4F * rnd());
+	}
+	
+	if(rnd() > 0.82f) {
+		position = _source + randomVec(-250.f, 250.f);
+		ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &position, 0.8F + 0.4F * rnd());
+	}
+	
+	if((_gct > spells[i].tolive - 1800) && (spells[i].siz == 0)) {
+		spells[i].siz = 1;
+		ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, NULL, 0.8F + 0.4F * rnd());
+	}
+
+	if(lightHandleIsValid(spells[i].longinfo_light)) {
+		EERIE_LIGHT * light = lightHandleGet(spells[i].longinfo_light);
+		
+		float fxx;
+
+		if(_fx > 0.2f)
+			fxx = 1.f;
+		else
+			fxx = _fx * 5.f;
+
+		light->intensity = 1.3f + rnd() * 1.f;
+		light->fallend = 850.f;
+		light->fallstart = 500.f;
+		light->rgb = Color3f::red * fxx;
+	}	
+}
+
 bool ControlTargetSpellLaunch(long i)
 {
 	if(!ValidIONum(spells[i].target)) {
@@ -273,4 +329,21 @@ void TeleportSpellLaunch(long i)
 void TeleportSpellEnd(size_t i)
 {
 	ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE, &spells[i].caster_pos);
+}
+
+extern Vec3f lastteleport;
+
+void TeleportSpellUpdate(unsigned long tim, size_t i)
+{
+	float TELEPORT = (float)(((float)tim-(float)spells[i].timcreation)/(float)spells[i].tolive);
+
+	if(LASTTELEPORT < 0.5f && TELEPORT >= 0.5f) {
+		Vec3f pos = lastteleport;
+		lastteleport = player.pos;
+		player.pos = pos;
+		LASTTELEPORT = 32.f;
+		ARX_SOUND_PlaySFX(SND_SPELL_TELEPORTED, &player.pos);
+	} else {
+		LASTTELEPORT = TELEPORT;
+	}	
 }

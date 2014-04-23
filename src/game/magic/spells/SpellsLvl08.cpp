@@ -28,7 +28,7 @@
 #include "game/Player.h"
 #include "game/Spells.h"
 #include "game/effect/Quake.h"
-
+#include "graphics/Renderer.h"
 #include "graphics/particle/ParticleEffects.h"
 
 #include "scene/GameSound.h"
@@ -60,6 +60,18 @@ void InvisibilitySpellEnd(long i)
 		ARX_SOUND_PlaySFX(SND_SPELL_INVISIBILITY_END, &entities[spells[i].target]->pos);
 		ARX_SPELLS_RemoveSpellOn(spells[i].target, i);
 	}
+}
+
+extern void ARX_SPELLS_Fizzle(long num);
+
+void InvisibilitySpellUpdate(size_t i)
+{
+	if(spells[i].target != 0) {
+		if(!(entities[spells[i].target]->gameFlags & GFLAG_INVISIBILITY)) {
+			ARX_SPELLS_RemoveSpellOn(spells[i].target,i);
+			ARX_SPELLS_Fizzle(i);
+		}
+	}	
 }
 
 void ManaDrainSpellLaunch(long i, long duration)
@@ -130,6 +142,102 @@ void ManaDrainSpellKill(long i)
 	}
 	
 	ARX_SOUND_Stop(spells[i].snd_loop);
+}
+
+extern EERIE_3DOBJ * cabal;
+
+void ManaDrainSpellUpdate(size_t i, float timeDelta)
+{
+	if(cabal) {
+		float refpos;
+		float scaley;
+
+		if(spells[i].caster==0)
+			scaley=90.f;
+		else
+			scaley=EEfabs(entities[spells[i].caster]->physics.cyl.height*( 1.0f / 2 ))+30.f;
+
+		float mov=std::sin((float)arxtime.get_frame_time()*( 1.0f / 800 ))*scaley;
+
+		Vec3f cabalpos;
+		if(spells[i].caster == 0) {
+			cabalpos.x = player.pos.x;
+			cabalpos.y = player.pos.y + 60.f - mov;
+			cabalpos.z = player.pos.z;
+			refpos=player.pos.y+60.f;
+		} else {
+			cabalpos.x = entities[spells[i].caster]->pos.x;
+			cabalpos.y = entities[spells[i].caster]->pos.y - scaley - mov;
+			cabalpos.z = entities[spells[i].caster]->pos.z;
+			refpos=entities[spells[i].caster]->pos.y-scaley;
+		}
+
+		float Es=std::sin((float)arxtime.get_frame_time()*( 1.0f / 800 ) + radians(scaley));
+
+		if(lightHandleIsValid(spells[i].longinfo2_light)) {
+			EERIE_LIGHT * light = lightHandleGet(spells[i].longinfo2_light);
+			
+			light->pos.x = cabalpos.x;
+			light->pos.y = refpos;
+			light->pos.z = cabalpos.z;
+			light->rgb.b=rnd()*0.2f+0.8f;
+			light->fallstart=Es*1.5f;
+		}
+
+		GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+		GRenderer->SetRenderState(Renderer::DepthWrite, false);
+
+		Anglef cabalangle(0.f, 0.f, 0.f);
+		cabalangle.setPitch(spells[i].fdata + (float)timeDelta*0.1f);
+		spells[i].fdata = cabalangle.getPitch();
+								
+		Vec3f cabalscale = Vec3f(Es);
+		Color3f cabalcolor = Color3f(0.4f, 0.4f, 0.8f);
+		DrawEERIEObjEx(cabal, cabalangle, cabalpos, cabalscale, cabalcolor);
+
+		mov=std::sin((float)(arxtime.get_frame_time()-30.f)*( 1.0f / 800 ))*scaley;
+		cabalpos.y = refpos - mov;
+		cabalcolor = Color3f(0.2f, 0.2f, 0.5f);
+		DrawEERIEObjEx(cabal, cabalangle, cabalpos, cabalscale, cabalcolor);
+
+		mov=std::sin((float)(arxtime.get_frame_time()-60.f)*( 1.0f / 800 ))*scaley;
+		cabalpos.y=refpos-mov;
+		cabalcolor = Color3f(0.1f, 0.1f, 0.25f);
+		DrawEERIEObjEx(cabal, cabalangle, cabalpos, cabalscale, cabalcolor);
+
+		mov=std::sin((float)(arxtime.get_frame_time()-120.f)*( 1.0f / 800 ))*scaley;
+		cabalpos.y=refpos-mov;
+		cabalcolor = Color3f(0.f, 0.f, 0.15f);
+		DrawEERIEObjEx(cabal, cabalangle, cabalpos, cabalscale, cabalcolor);
+
+		cabalangle.setPitch(-cabalangle.getPitch());
+		cabalpos.y=refpos-mov;
+		cabalscale = Vec3f(Es);
+		cabalcolor = Color3f(0.f, 0.f, 0.15f);
+		DrawEERIEObjEx(cabal, cabalangle, cabalpos, cabalscale, cabalcolor);
+
+		mov=std::sin((float)(arxtime.get_frame_time()+30.f)*( 1.0f / 800 ))*scaley;
+		cabalpos.y=refpos+mov;
+		cabalcolor = Color3f(0.1f, 0.1f, 0.25f);
+		DrawEERIEObjEx(cabal, cabalangle, cabalpos, cabalscale, cabalcolor);
+
+		mov=std::sin((float)(arxtime.get_frame_time()+60.f)*( 1.0f / 800 ))*scaley;
+		cabalpos.y=refpos+mov;
+		cabalcolor = Color3f(0.2f, 0.2f, 0.5f);
+		DrawEERIEObjEx(cabal, cabalangle, cabalpos, cabalscale, cabalcolor);
+
+		mov=std::sin((float)(arxtime.get_frame_time()+120.f)*( 1.0f / 800 ))*scaley;
+		cabalpos.y=refpos+mov;
+		cabalcolor = Color3f(0.4f, 0.4f, 0.8f);
+		DrawEERIEObjEx(cabal, cabalangle, cabalpos, cabalscale, cabalcolor);
+
+		cabalangle.setPitch(-cabalangle.getPitch());
+		GRenderer->SetRenderState(Renderer::AlphaBlending, false);		
+		GRenderer->SetRenderState(Renderer::DepthWrite, true);	
+
+		ARX_SOUND_RefreshPosition(spells[i].snd_loop, cabalpos);
+	}	
 }
 
 void ExplosionSpellLaunch(long i)
@@ -327,4 +435,99 @@ void LifeDrainSpellKill(long i)
 	}
 	
 	ARX_SOUND_Stop(spells[i].snd_loop);
+}
+
+void LifeDrainSpellUpdate(size_t i, float timeDelta)
+{
+	if(cabal) {
+		float refpos;
+		float scaley;
+
+		if(spells[i].caster==0)
+			scaley=90.f;
+		else
+			scaley=EEfabs(entities[spells[i].caster]->physics.cyl.height*( 1.0f / 2 ))+30.f;
+
+		float mov=std::sin((float)arxtime.get_frame_time()*( 1.0f / 800 ))*scaley;
+
+		Vec3f cabalpos;
+		if(spells[i].caster == 0) {
+			cabalpos.x = player.pos.x;
+			cabalpos.y = player.pos.y + 60.f - mov;
+			cabalpos.z = player.pos.z;
+			refpos=player.pos.y+60.f;							
+		} else {
+			cabalpos.x = entities[spells[i].caster]->pos.x;
+			cabalpos.y = entities[spells[i].caster]->pos.y - scaley-mov;
+			cabalpos.z = entities[spells[i].caster]->pos.z;
+			refpos=entities[spells[i].caster]->pos.y-scaley;							
+		}
+
+		float Es=std::sin((float)arxtime.get_frame_time()*( 1.0f / 800 ) + radians(scaley));
+
+		if(lightHandleIsValid(spells[i].longinfo2_light)) {
+			EERIE_LIGHT * light = lightHandleGet(spells[i].longinfo2_light);
+			
+			light->pos.x = cabalpos.x;
+			light->pos.y = refpos;
+			light->pos.z = cabalpos.z;
+			light->rgb.r = rnd() * 0.2f + 0.8f;
+			light->fallstart = Es * 1.5f;
+		}
+
+		GRenderer->SetCulling(Renderer::CullNone);
+		GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+		GRenderer->SetRenderState(Renderer::DepthWrite, false);
+
+		Anglef cabalangle(0.f, 0.f, 0.f);
+		cabalangle.setPitch(spells[i].fdata+(float)timeDelta*0.1f);
+		spells[i].fdata=cabalangle.getPitch();
+
+		Vec3f cabalscale = Vec3f(Es);
+		Color3f cabalcolor = Color3f(0.8f, 0.f, 0.f);
+		DrawEERIEObjEx(cabal, cabalangle, cabalpos, cabalscale, cabalcolor);
+
+		mov=std::sin((float)(arxtime.get_frame_time()-30.f)*( 1.0f / 800 ))*scaley;
+		cabalpos.y=refpos-mov;
+		cabalcolor = Color3f(0.5f, 0.f, 0.f);
+		DrawEERIEObjEx(cabal, cabalangle, cabalpos, cabalscale, cabalcolor);
+
+		mov=std::sin((float)(arxtime.get_frame_time()-60.f)*( 1.0f / 800 ))*scaley;
+		cabalpos.y=refpos-mov;
+		cabalcolor = Color3f(0.25f, 0.f, 0.f);
+		DrawEERIEObjEx(cabal, cabalangle, cabalpos, cabalscale, cabalcolor);
+
+		mov=std::sin((float)(arxtime.get_frame_time()-120.f)*( 1.0f / 800 ))*scaley;
+		cabalpos.y=refpos-mov;
+		cabalcolor = Color3f(0.15f, 0.f, 0.f);
+		DrawEERIEObjEx(cabal, cabalangle, cabalpos, cabalscale, cabalcolor);
+
+		cabalangle.setPitch(-cabalangle.getPitch());
+		cabalpos.y=refpos-mov;
+		cabalscale = Vec3f(Es);
+		cabalcolor = Color3f(0.15f, 0.f, 0.f);
+		DrawEERIEObjEx(cabal, cabalangle, cabalpos, cabalscale, cabalcolor);
+
+		mov=std::sin((float)(arxtime.get_frame_time()+30.f)*( 1.0f / 800 ))*scaley;
+		cabalpos.y=refpos+mov;
+		cabalcolor = Color3f(0.25f, 0.f, 0.f);
+		DrawEERIEObjEx(cabal, cabalangle, cabalpos, cabalscale, cabalcolor);
+
+		mov=std::sin((float)(arxtime.get_frame_time()+60.f)*( 1.0f / 800 ))*scaley;
+		cabalpos.y=refpos+mov;
+		cabalcolor = Color3f(0.5f, 0.f, 0.f);
+		DrawEERIEObjEx(cabal, cabalangle, cabalpos, cabalscale, cabalcolor);
+
+		mov=std::sin((float)(arxtime.get_frame_time()+120.f)*( 1.0f / 800 ))*scaley;
+		cabalpos.y=refpos+mov;
+		cabalcolor = Color3f(0.8f, 0.f, 0.f);
+		DrawEERIEObjEx(cabal, cabalangle, cabalpos, cabalscale, cabalcolor);
+
+		cabalangle.setPitch(-cabalangle.getPitch());
+		GRenderer->SetRenderState(Renderer::AlphaBlending, false);		
+		GRenderer->SetRenderState(Renderer::DepthWrite, true);	
+
+		ARX_SOUND_RefreshPosition(spells[i].snd_loop, cabalpos);
+	}	
 }

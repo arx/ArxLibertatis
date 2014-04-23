@@ -20,8 +20,11 @@
 #ifndef ARX_GAME_MAGIC_SPELLS_SPELLSLVL01_H
 #define ARX_GAME_MAGIC_SPELLS_SPELLSLVL01_H
 
+#include "game/magic/Spell.h"
+
 void MagicSightSpellLaunch(long duration, long i);
 void MagicSightSpellEnd(long i);
+void MagicSightSpellUpdate(size_t i);
 
 void MagicMissileSpellLaunch(long i);
 void MagicMissileSpellEnd(long i);

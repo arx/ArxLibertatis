@@ -58,6 +58,23 @@ void MagicSightSpellEnd(long i)
 	ARX_SOUND_PlaySFX(SND_SPELL_VISION_START, &entities[spells[i].caster]->pos);
 }
 
+static const float DEC_FOCAL = 50.0f;
+static const float IMPROVED_FOCAL = 320.0f;
+
+extern EERIE_CAMERA subj;
+
+void MagicSightSpellUpdate(size_t i)
+{
+	if(spells[i].caster == 0) {
+		Vec3f pos;
+		ARX_PLAYER_FrontPos(&pos);
+		ARX_SOUND_RefreshPosition(spells[i].snd_loop, pos);
+		
+		if(subj.focal > IMPROVED_FOCAL)
+			subj.focal -= DEC_FOCAL;
+	}	
+}
+
 void MagicMissileSpellLaunch(long i)
 {
 	spells[i].exist = true;
