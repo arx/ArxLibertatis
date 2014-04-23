@@ -24,33 +24,33 @@
 
 class RuneOfGuardingSpell : public SpellBase {
 public:
-	static void Launch(long i, long duration);
+	void Launch(long i, long duration);
 	static void Update(size_t i, float timeDelta);
 };
 
 class LevitateSpell : public SpellBase {
 public:
-	static void Launch(long duration, long i);
+	void Launch(long duration, long i);
 	static void End(size_t i);
 	static void Update(size_t i, float timeDelta);
 };
 
 class CurePoisonSpell : public SpellBase {
 public:
-	static void Launch(long i);
+	void Launch(long i);
 	static void Update(size_t i, float timeDelta);
 };
 
 class RepelUndeadSpell : public SpellBase {
 public:
-	static void Launch(long duration, long i);
+	void Launch(long duration, long i);
 	static void Kill(long i);
 	static void Update(size_t i, float timeDelta);
 };
 
 class PoisonProjectileSpell : public SpellBase {
 public:
-	static void Launch(long i);
+	void Launch(long i);
 	static void Update(size_t i, float timeDelta);
 };
 

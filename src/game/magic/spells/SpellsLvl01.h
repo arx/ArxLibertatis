@@ -24,35 +24,35 @@
 
 class MagicSightSpell : public SpellBase {
 public:
-	static void Launch(long duration, long i);
+	void Launch(long duration, long i);
 	static void End(long i);
 	static void Update(size_t i);
 };
 
 class MagicMissileSpell : public SpellBase {
 public:
-	static void Launch(long i);
+	void Launch(long i);
 	static void End(long i);
 	static void Update(long i, float timeDelta);
 };
 
 class IgnitSpell : public SpellBase {
 public:
-	static void Launch(long i);
+	void Launch(long i);
 	static void End(long i);
 	static void Update(long i, float timeDelta);
 };
 
 class DouseSpell : public SpellBase {
 public:
-	static void Launch(long i);
+	void Launch(long i);
 	static void End(long i);
 	static void Update(long i, float timeDelta);
 };
 
 class ActivatePortalSpell : public SpellBase {
 public:
-	static void Launch(long i);
+	void Launch(long i);
 };
 
 #endif // ARX_GAME_MAGIC_SPELLS_SPELLSLVL01_H

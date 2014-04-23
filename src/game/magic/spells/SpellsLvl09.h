@@ -24,7 +24,7 @@
 
 class SummonCreatureSpell : public SpellBase {
 public:
-	static bool Launch(long i, long duration);
+	bool Launch(long i, long duration);
 	static void End(size_t i);
 	static void Kill(long i);
 	static void Update(size_t i, float timeDelta);
@@ -32,7 +32,7 @@ public:
 
 class FakeSummonSpell : public SpellBase {
 public:
-	static bool Launch(long i);
+	bool Launch(long i);
 	static void End(size_t i);
 	static void Kill(long i);
 	static void Update(size_t i, float timeDelta);
@@ -40,20 +40,20 @@ public:
 
 class NegateMagicSpell : public SpellBase {
 public:
-	static void Launch(long duration, long i);
+	void Launch(long duration, long i);
 	static void Update(size_t i, float timeDelta);
 };
 
 class IncinerateSpell : public SpellBase {
 public:
-	static bool Launch(long i);
+	bool Launch(long i);
 	static void End(size_t i);
 	static void Update(size_t i);
 };
 
 class MassParalyseSpell : public SpellBase {
 public:
-	static void Launch(long i, long duration);
+	void Launch(long i, long duration);
 	static void End(size_t i);
 	static void Kill();
 };

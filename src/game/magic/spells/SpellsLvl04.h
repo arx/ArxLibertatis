@@ -24,39 +24,39 @@
 
 class BlessSpell : public SpellBase {
 public:
-	static void Launch(long i, long duration);
+	void Launch(long i, long duration);
 	static void End(size_t i);
 	static void Update(size_t i, float timeDelta);
 };
 
 class DispellFieldSpell : public SpellBase {
 public:
-	static void Launch(long i);
+	void Launch(long i);
 };
 
 class FireProtectionSpell : public SpellBase {
 public:
-	static void Launch(long i, long duration);
+	void Launch(long i, long duration);
 	static void End(size_t i);
 	static void Update(size_t i, float timeDelta);
 };
 
 class ColdProtectionSpell : public SpellBase {
 public:
-	static void Launch(long i, long duration);
+	void Launch(long i, long duration);
 	static void End(size_t i);
 	static void Update(size_t i, float timeDelta);
 };
 
 class TelekinesisSpell : public SpellBase {
 public:
-	static void Launch(long i, long duration);
+	void Launch(long i, long duration);
 	static void End(size_t i);
 };
 
 class CurseSpell : public SpellBase {
 public:
-	static void Launch(long duration, long i);
+	void Launch(long duration, long i);
 	static void End(size_t i);
 	static void Update(size_t i, float timeDelta);
 };

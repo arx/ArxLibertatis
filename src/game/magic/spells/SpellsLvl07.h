@@ -24,7 +24,7 @@
 
 class FlyingEyeSpell : public SpellBase {
 public:
-	static bool Launch(long i);
+	bool Launch(long i);
 	static void End(size_t i);
 	static void Kill(long i);
 	static void Update(size_t i, unsigned long tim);
@@ -32,7 +32,7 @@ public:
 
 class FireFieldSpell : public SpellBase {
 public:
-	static void Launch(long i, long duration);
+	void Launch(long i, long duration);
 	static void End(size_t i);
 	static void Kill(long i);
 	static void Update(size_t i, float timeDelta);
@@ -40,7 +40,7 @@ public:
 
 class IceFieldSpell : public SpellBase {
 public:
-	static void Launch(long i, long duration);
+	void Launch(long i, long duration);
 	static void End(size_t i);
 	static void Kill(long i);
 	static void Update(size_t i, float timeDelta);
@@ -48,7 +48,7 @@ public:
 
 class LightningStrikeSpell : public SpellBase {
 public:
-	static void Launch(long i);
+	void Launch(long i);
 	static void End(size_t i);
 	static void Kill(long i);
 	static void Update(size_t i, float timeDelta);
@@ -56,7 +56,7 @@ public:
 
 class ConfuseSpell : public SpellBase {
 public:
-	static void Launch(long i, bool & notifyAll, long duration);
+	void Launch(long i, bool & notifyAll, long duration);
 	static void End(size_t i);
 	static void Update(size_t i, float timeDelta);
 };

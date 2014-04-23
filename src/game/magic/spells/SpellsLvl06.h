@@ -24,33 +24,33 @@
 
 class RiseDeadSpell : public SpellBase {
 public:
-	static bool Launch(long i, long duration);
+	bool Launch(long i, long duration);
 	static void End(size_t i);
 	static void Update(size_t i, float timeDelta);
 };
 
 class ParalyseSpell : public SpellBase {
 public:
-	static void Launch(long i, long duration);
+	void Launch(long i, long duration);
 	static void End(size_t i);
 	static void Kill();
 };
 
 class CreateFieldSpell : public SpellBase {
 public:
-	static void Launch(SpellcastFlags flags, long i, long duration);
+	void Launch(SpellcastFlags flags, long i, long duration);
 	static void End(size_t i);
 	static void Update(size_t i, float timeDelta);
 };
 
 class DisarmTrapSpell : public SpellBase {
 public:
-	static void Launch(long i);
+	void Launch(long i);
 };
 
 class SlowDownSpell : public SpellBase {
 public:
-	static bool Launch(long duration, long i);
+	bool Launch(long duration, long i);
 	static void End(size_t i);
 	static void Update(size_t i, float timeDelta);
 };

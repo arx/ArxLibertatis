@@ -24,34 +24,34 @@
 
 class HealSpell : public SpellBase {
 public:
-	static void Launch(long i, long duration);
+	void Launch(long i, long duration);
 	static void Update(size_t i, float framedelay);
 };
 
 class DetectTrapSpell : public SpellBase {
 public:
-	static void Launch(long i);
+	void Launch(long i);
 	static void End(size_t i);
 	static void Update(size_t i, float timeDelta);
 };
 
 class ArmorSpell : public SpellBase {
 public:
-	static void Launch(long duration, long i);
+	void Launch(long duration, long i);
 	static void End(size_t i);
 	static void Update(size_t i, float timeDelta);
 };
 
 class LowerArmorSpell : public SpellBase {
 public:
-	static void Launch(long duration, long i);
+	void Launch(long duration, long i);
 	static void End(long i);
 	static void Update(size_t i, float timeDelta);
 };
 
 class HarmSpell : public SpellBase {
 public:
-	static void Launch(long duration, long i);
+	void Launch(long duration, long i);
 	static void Kill(long i);
 	static void Update(size_t i, float timeDelta);
 };

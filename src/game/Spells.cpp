@@ -1371,146 +1371,148 @@ bool ARX_SPELLS_Launch(SpellType typ, long source, SpellcastFlags flagss, long l
 	
 	bool notifyAll = true;
 	
+	SpellBase & spell = spells[i];
+	
 	switch(typ) {
 		case SPELL_NONE:
 		return true;
 		//****************************************************************************
 		// LEVEL 1
 		case SPELL_MAGIC_SIGHT: {
-			MagicSightSpell::Launch(duration, i);
+			static_cast<MagicSightSpell &>(spell).Launch(duration, i);
 			break;
 		}
 		case SPELL_MAGIC_MISSILE: {
-			MagicMissileSpell::Launch(i);
+			static_cast<MagicMissileSpell &>(spell).Launch(i);
 			break;
 		}
 		case SPELL_IGNIT: {
-			IgnitSpell::Launch(i);
+			static_cast<IgnitSpell &>(spell).Launch(i);
 			break;
 		}
 		case SPELL_DOUSE: {
-			DouseSpell::Launch(i);
+			static_cast<DouseSpell &>(spell).Launch(i);
 			break;
 		}
 		case SPELL_ACTIVATE_PORTAL: {
-			ActivatePortalSpell::Launch(i);
+			static_cast<ActivatePortalSpell &>(spell).Launch(i);
 			break;
 		}
 		//****************************************************************************
 		// LEVEL 2
 		case SPELL_HEAL: {
-			HealSpell::Launch(i, duration);
+			static_cast<HealSpell &>(spell).Launch(i, duration);
 			break;
 		}
 		case SPELL_DETECT_TRAP: {
-			DetectTrapSpell::Launch(i);
+			static_cast<DetectTrapSpell &>(spell).Launch(i);
 			break;
 		}
 		case SPELL_ARMOR: {
-			ArmorSpell::Launch(duration, i);
+			static_cast<ArmorSpell &>(spell).Launch(duration, i);
 			break;
 		}
 		case SPELL_LOWER_ARMOR: {
-			LowerArmorSpell::Launch(duration, i);
+			static_cast<LowerArmorSpell &>(spell).Launch(duration, i);
 			break;
 		}
 		case SPELL_HARM: {
-			HarmSpell::Launch(duration, i);
+			static_cast<HarmSpell &>(spell).Launch(duration, i);
 			break;
 		}
 		//****************************************************************************
 		// LEVEL 3
 		case SPELL_SPEED: {
-			SpeedSpell::Launch(i, duration);
+			static_cast<SpeedSpell &>(spell).Launch(i, duration);
 			break;
 		}
 		case SPELL_DISPELL_ILLUSION: {
-			DispellIllusionSpell::Launch(i);
+			static_cast<DispellIllusionSpell &>(spell).Launch(i);
 			break;
 		}
 		case SPELL_FIREBALL: {
-			FireballSpell::Launch(i);
+			static_cast<FireballSpell &>(spell).Launch(i);
 			break;
 		}
 		case SPELL_CREATE_FOOD: {
-			CreateFoodSpell::Launch(duration, i);
+			static_cast<CreateFoodSpell &>(spell).Launch(duration, i);
 			break;
 		}
 		case SPELL_ICE_PROJECTILE: {
-			IceProjectileSpell::Launch(i);
+			static_cast<IceProjectileSpell &>(spell).Launch(i);
 			break;
 		}
 		//****************************************************************************
 		// LEVEL 4
 		case SPELL_BLESS: {
-			BlessSpell::Launch(i, duration);
+			static_cast<BlessSpell &>(spell).Launch(i, duration);
 			break;
 		}
 		case SPELL_DISPELL_FIELD: {
-			DispellFieldSpell::Launch(i);
+			static_cast<DispellFieldSpell &>(spell).Launch(i);
 			break;
 		}
 		case SPELL_FIRE_PROTECTION: {
-			FireProtectionSpell::Launch(i, duration);
+			static_cast<FireProtectionSpell &>(spell).Launch(i, duration);
 			break;
 		}
 		case SPELL_COLD_PROTECTION: {
-			ColdProtectionSpell::Launch(i, duration);
+			static_cast<ColdProtectionSpell &>(spell).Launch(i, duration);
 			break;
 		}
 		case SPELL_TELEKINESIS: {
-			TelekinesisSpell::Launch(i, duration);
+			static_cast<TelekinesisSpell &>(spell).Launch(i, duration);
 			break;
 		}
 		case SPELL_CURSE: {
-			CurseSpell::Launch(duration, i);
+			static_cast<CurseSpell &>(spell).Launch(duration, i);
 			break;
 		}
 		//****************************************************************************
 		// LEVEL 5
 		case SPELL_RUNE_OF_GUARDING: {
-			RuneOfGuardingSpell::Launch(i, duration);
+			static_cast<RuneOfGuardingSpell &>(spell).Launch(i, duration);
 			break;
 		}
 		case SPELL_LEVITATE: {
-			LevitateSpell::Launch(duration, i);
+			static_cast<LevitateSpell &>(spell).Launch(duration, i);
 			break;
 		}
 		case SPELL_CURE_POISON: {
-			CurePoisonSpell::Launch(i);
+			static_cast<CurePoisonSpell &>(spell).Launch(i);
 			break;
 		}
 		case SPELL_REPEL_UNDEAD: {
-			RepelUndeadSpell::Launch(duration, i);
+			static_cast<RepelUndeadSpell &>(spell).Launch(duration, i);
 			break;
 		}
 		case SPELL_POISON_PROJECTILE: {
-			PoisonProjectileSpell::Launch(i);
+			static_cast<PoisonProjectileSpell &>(spell).Launch(i);
 			break;
 		}
 		//****************************************************************************
 		// LEVEL 6
 		case SPELL_RISE_DEAD: {
-			bool result = RiseDeadSpell::Launch(i, duration);
+			bool result = static_cast<RiseDeadSpell &>(spell).Launch(i, duration);
 			if(!result)
 				return false;
 			
 			break;
 		}
 		case SPELL_PARALYSE: {
-			ParalyseSpell::Launch(i, duration);
+			static_cast<ParalyseSpell &>(spell).Launch(i, duration);
 			break;
 		}
 		case SPELL_CREATE_FIELD: {
-			CreateFieldSpell::Launch(flags, i, duration);
+			static_cast<CreateFieldSpell &>(spell).Launch(flags, i, duration);
 			break;
 		}
 		case SPELL_DISARM_TRAP: {
-			DisarmTrapSpell::Launch(i);
+			static_cast<DisarmTrapSpell &>(spell).Launch(i);
 			break;
 		}
 		case SPELL_SLOW_DOWN: {
-			bool result = SlowDownSpell::Launch(duration, i);
+			bool result = static_cast<SlowDownSpell &>(spell).Launch(duration, i);
 			if(!result)
 				return false;
 			
@@ -1519,104 +1521,104 @@ bool ARX_SPELLS_Launch(SpellType typ, long source, SpellcastFlags flagss, long l
 		//****************************************************************************
 		// LEVEL 7
 		case SPELL_FLYING_EYE: {
-			bool result = FlyingEyeSpell::Launch(i);
+			bool result = static_cast<FlyingEyeSpell &>(spell).Launch(i);
 			if(!result)
 				return false;
 			
 			break;
 		}
 		case SPELL_FIRE_FIELD: {
-			FireFieldSpell::Launch(i, duration);
+			static_cast<FireFieldSpell &>(spell).Launch(i, duration);
 			break;
 		}
 		case SPELL_ICE_FIELD: {
-			IceFieldSpell::Launch(i, duration);
+			static_cast<IceFieldSpell &>(spell).Launch(i, duration);
 			break;
 		}
 		case SPELL_LIGHTNING_STRIKE: {
-			LightningStrikeSpell::Launch(i);
+			static_cast<LightningStrikeSpell &>(spell).Launch(i);
 			break;
 		}
 		case SPELL_CONFUSE: {
-			ConfuseSpell::Launch(i, notifyAll, duration); // TODO inconsistent use of the SM_SPELLCAST event
+			static_cast<ConfuseSpell &>(spell).Launch(i, notifyAll, duration); // TODO inconsistent use of the SM_SPELLCAST event
 			break;
 		}
 		//****************************************************************************
 		// LEVEL 8
 		case SPELL_INVISIBILITY: {
-			InvisibilitySpell::Launch(i, duration);
+			static_cast<InvisibilitySpell &>(spell).Launch(i, duration);
 			break;
 		}
 		case SPELL_MANA_DRAIN: {
-			ManaDrainSpell::Launch(i, duration);
+			static_cast<ManaDrainSpell &>(spell).Launch(i, duration);
 			break;
 		}
 		case SPELL_EXPLOSION: {
-			ExplosionSpell::Launch(i);
+			static_cast<ExplosionSpell &>(spell).Launch(i);
 			break;
 		}
 		case SPELL_ENCHANT_WEAPON: {
-			EnchantWeaponSpell::Launch(notifyAll, i); // TODO inconsistent use of the SM_SPELLCAST event
+			static_cast<EnchantWeaponSpell &>(spell).Launch(notifyAll, i); // TODO inconsistent use of the SM_SPELLCAST event
 			break;
 		}
 		case SPELL_LIFE_DRAIN: {
-			LifeDrainSpell::Launch(duration, i);
+			static_cast<LifeDrainSpell &>(spell).Launch(duration, i);
 			break;
 		}
 		//****************************************************************************
 		// LEVEL 9
 		case SPELL_SUMMON_CREATURE: {
-			bool result = SummonCreatureSpell::Launch(i, duration);
+			bool result = static_cast<SummonCreatureSpell &>(spell).Launch(i, duration);
 			if(!result)
 				return false;
 			
 			break;
 		}
 		case SPELL_FAKE_SUMMON: {
-			bool result = FakeSummonSpell::Launch(i);
+			bool result = static_cast<FakeSummonSpell &>(spell).Launch(i);
 			if(!result)
 				return false;
 			
 			break;
 		}
 		case SPELL_NEGATE_MAGIC: {
-			NegateMagicSpell::Launch(duration, i);
+			static_cast<NegateMagicSpell &>(spell).Launch(duration, i);
 			break;
 		}
 		case SPELL_INCINERATE: {
-			bool result = IncinerateSpell::Launch(i);
+			bool result = static_cast<IncinerateSpell &>(spell).Launch(i);
 			if(!result)
 				return false;
 			
 			break;
 		}
 		case SPELL_MASS_PARALYSE: {
-			MassParalyseSpell::Launch(i, duration);
+			static_cast<MassParalyseSpell &>(spell).Launch(i, duration);
 			break;
 		}
 		//****************************************************************************
 		// LEVEL 10
 		case SPELL_MASS_LIGHTNING_STRIKE: {
-			MassLightningStrikeSpell::Launch(i);
+			static_cast<MassLightningStrikeSpell &>(spell).Launch(i);
 			break;
 		}
 		case SPELL_CONTROL_TARGET: {
-			bool result = ControlTargetSpell::Launch(i);
+			bool result = static_cast<ControlTargetSpell &>(spell).Launch(i);
 			if(!result)
 				return false;
 			
 			break;
 		}
 		case SPELL_FREEZE_TIME: {
-			FreezeTimeSpell::Launch(duration, i);
+			static_cast<FreezeTimeSpell &>(spell).Launch(duration, i);
 			break;
 		}
 		case SPELL_MASS_INCINERATE: {
-			MassIncinerateSpell::Launch(i);
+			static_cast<MassIncinerateSpell &>(spell).Launch(i);
 			break;
 		}
 		case SPELL_TELEPORT: {
-			TeleportSpell::Launch(i);
+			static_cast<TeleportSpell &>(spell).Launch(i);
 			break;
 		}
 	}

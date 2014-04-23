@@ -24,33 +24,33 @@
 
 class MassLightningStrikeSpell : public SpellBase {
 public:
-	static void Launch(long i);
+	void Launch(long i);
 	static void Kill(long i);
 	static void Update(unsigned long tim, size_t i, float timeDelta);
 };
 
 class ControlTargetSpell : public SpellBase {
 public:
-	static bool Launch(long i);
+	bool Launch(long i);
 	static void Update(size_t i, float timeDelta);
 };
 
 class FreezeTimeSpell : public SpellBase {
 public:
-	static void Launch(long duration, long i);
+	void Launch(long duration, long i);
 	static void End(size_t i);
 };
 
 class MassIncinerateSpell : public SpellBase {
 public:
-	static void Launch(long i);
+	void Launch(long i);
 	static void End(size_t i);
 	static void Update(size_t i);
 };
 
 class TeleportSpell : public SpellBase {
 public:
-	static void Launch(long i);
+	void Launch(long i);
 	static void End(size_t i);
 	static void Update(unsigned long tim, size_t i);
 };

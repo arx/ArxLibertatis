@@ -24,20 +24,20 @@
 
 class SpeedSpell : public SpellBase {
 public:
-	static void Launch(long i, long duration);
+	void Launch(long i, long duration);
 	static void End(long i);
 	static void Update(size_t i, float timeDelta);
 };
 
 class DispellIllusionSpell : public SpellBase {
 public:
-	static void Launch(long i);
+	void Launch(long i);
 	static void Update(size_t i, float timeDelta);
 };
 
 class FireballSpell : public SpellBase {
 public:
-	static void Launch(long i);
+	void Launch(long i);
 	static void End(long i);
 	static void Kill(long i);
 	static void Update(size_t i, float timeDelta);
@@ -45,13 +45,13 @@ public:
 
 class CreateFoodSpell : public SpellBase {
 public:
-	static void Launch(long duration, long i);
+	void Launch(long duration, long i);
 	static void Update(size_t i, float timeDelta);
 };
 
 class IceProjectileSpell : public SpellBase {
 public:
-	static void Launch(long i);
+	void Launch(long i);
 	static void Update(size_t i, float timeDelta);
 };
 
