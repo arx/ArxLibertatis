@@ -2915,6 +2915,321 @@ void NegateMagicSpellUpdate(size_t i)
 	}	
 }
 
+void ControlTargetSpellUpdate(size_t i)
+{
+	CSpellFx *pCSpellFX = spells[i].pSpellFx;
+	
+	if(pCSpellFX) {
+		pCSpellFX->Update(framedelay);
+		pCSpellFX->Render();
+	}	
+}
+
+void MassIncinerateSpellUpdate(size_t i)
+{
+	if(ValidIONum(spells[i].caster)) {
+		ARX_SOUND_RefreshPosition(spells[i].snd_loop, entities[spells[i].caster]->pos);
+	}	
+}
+
+void MassLightningStrikeSpellUpdate(unsigned long tim, size_t i)
+{
+	CSpellFx *pCSpellFX = spells[i].pSpellFx;
+
+	if(pCSpellFX) {
+		pCSpellFX->Update(framedelay);
+		pCSpellFX->Render();
+	}
+	
+	Vec3f _source = spells[i].vsource;
+	float _fx;
+	_fx = 0.5f;
+	unsigned long _gct;
+	_gct = 0;
+
+	Vec3f position;
+
+	spells[i].lastupdate=tim;
+
+	position = _source + randomVec(-250.f, 250.f);
+	ARX_SOUND_RefreshPosition(spells[i].snd_loop, position);
+	ARX_SOUND_RefreshVolume(spells[i].snd_loop, _fx + 0.5F);
+	ARX_SOUND_RefreshPitch(spells[i].snd_loop, 0.8F + 0.4F * rnd());
+	
+	if(rnd() > 0.62f) {
+		position = _source  + randomVec(-250.f, 250.f);
+		ARX_SOUND_PlaySFX(SND_SPELL_SPARK, &position, 0.8F + 0.4F * rnd());
+	}
+	
+	if(rnd() > 0.82f) {
+		position = _source + randomVec(-250.f, 250.f);
+		ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &position, 0.8F + 0.4F * rnd());
+	}
+	
+	if((_gct > spells[i].tolive - 1800) && (spells[i].siz == 0)) {
+		spells[i].siz = 1;
+		ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, NULL, 0.8F + 0.4F * rnd());
+	}
+
+	if(lightHandleIsValid(spells[i].longinfo_light)) {
+		EERIE_LIGHT * light = lightHandleGet(spells[i].longinfo_light);
+		
+		float fxx;
+
+		if(_fx > 0.2f)
+			fxx = 1.f;
+		else
+			fxx = _fx * 5.f;
+
+		light->intensity = 1.3f + rnd() * 1.f;
+		light->fallend = 850.f;
+		light->fallstart = 500.f;
+		light->rgb = Color3f::red * fxx;
+	}	
+}
+
+void TeleportSpellUpdate(unsigned long tim, size_t i)
+{
+	float TELEPORT = (float)(((float)tim-(float)spells[i].timcreation)/(float)spells[i].tolive);
+
+	if(LASTTELEPORT < 0.5f && TELEPORT >= 0.5f) {
+		Vec3f pos = lastteleport;
+		lastteleport = player.pos;
+		player.pos = pos;
+		LASTTELEPORT = 32.f;
+		ARX_SOUND_PlaySFX(SND_SPELL_TELEPORTED, &player.pos);
+	} else {
+		LASTTELEPORT = TELEPORT;
+	}	
+}
+
+void MagicSightSpellUpdate(size_t i)
+{
+	if(spells[i].caster == 0) {
+		Vec3f pos;
+		ARX_PLAYER_FrontPos(&pos);
+		ARX_SOUND_RefreshPosition(spells[i].snd_loop, pos);
+		
+		if(subj.focal > IMPROVED_FOCAL)
+			subj.focal -= DEC_FOCAL;
+	}	
+}
+
+void InvisibilitySpellUpdate(size_t i)
+{
+	if(spells[i].target != 0) {
+		if(!(entities[spells[i].target]->gameFlags & GFLAG_INVISIBILITY)) {
+			ARX_SPELLS_RemoveSpellOn(spells[i].target,i);
+			ARX_SPELLS_Fizzle(i);
+		}
+	}	
+}
+
+void ManaDrainSpellUpdate(size_t i)
+{
+	if(cabal) {
+		float refpos;
+		float scaley;
+
+		if(spells[i].caster==0)
+			scaley=90.f;
+		else
+			scaley=EEfabs(entities[spells[i].caster]->physics.cyl.height*( 1.0f / 2 ))+30.f;
+
+		float mov=std::sin((float)arxtime.get_frame_time()*( 1.0f / 800 ))*scaley;
+
+		Vec3f cabalpos;
+		if(spells[i].caster == 0) {
+			cabalpos.x = player.pos.x;
+			cabalpos.y = player.pos.y + 60.f - mov;
+			cabalpos.z = player.pos.z;
+			refpos=player.pos.y+60.f;
+		} else {
+			cabalpos.x = entities[spells[i].caster]->pos.x;
+			cabalpos.y = entities[spells[i].caster]->pos.y - scaley - mov;
+			cabalpos.z = entities[spells[i].caster]->pos.z;
+			refpos=entities[spells[i].caster]->pos.y-scaley;
+		}
+
+		float Es=std::sin((float)arxtime.get_frame_time()*( 1.0f / 800 ) + radians(scaley));
+
+		if(lightHandleIsValid(spells[i].longinfo2_light)) {
+			EERIE_LIGHT * light = lightHandleGet(spells[i].longinfo2_light);
+			
+			light->pos.x = cabalpos.x;
+			light->pos.y = refpos;
+			light->pos.z = cabalpos.z;
+			light->rgb.b=rnd()*0.2f+0.8f;
+			light->fallstart=Es*1.5f;
+		}
+
+		GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+		GRenderer->SetRenderState(Renderer::DepthWrite, false);
+
+		Anglef cabalangle(0.f, 0.f, 0.f);
+		cabalangle.setPitch(spells[i].fdata + (float)framedelay*0.1f);
+		spells[i].fdata = cabalangle.getPitch();
+								
+		Vec3f cabalscale = Vec3f(Es);
+		Color3f cabalcolor = Color3f(0.4f, 0.4f, 0.8f);
+		DrawEERIEObjEx(cabal, cabalangle, cabalpos, cabalscale, cabalcolor);
+
+		mov=std::sin((float)(arxtime.get_frame_time()-30.f)*( 1.0f / 800 ))*scaley;
+		cabalpos.y = refpos - mov;
+		cabalcolor = Color3f(0.2f, 0.2f, 0.5f);
+		DrawEERIEObjEx(cabal, cabalangle, cabalpos, cabalscale, cabalcolor);
+
+		mov=std::sin((float)(arxtime.get_frame_time()-60.f)*( 1.0f / 800 ))*scaley;
+		cabalpos.y=refpos-mov;
+		cabalcolor = Color3f(0.1f, 0.1f, 0.25f);
+		DrawEERIEObjEx(cabal, cabalangle, cabalpos, cabalscale, cabalcolor);
+
+		mov=std::sin((float)(arxtime.get_frame_time()-120.f)*( 1.0f / 800 ))*scaley;
+		cabalpos.y=refpos-mov;
+		cabalcolor = Color3f(0.f, 0.f, 0.15f);
+		DrawEERIEObjEx(cabal, cabalangle, cabalpos, cabalscale, cabalcolor);
+
+		cabalangle.setPitch(-cabalangle.getPitch());
+		cabalpos.y=refpos-mov;
+		cabalscale = Vec3f(Es);
+		cabalcolor = Color3f(0.f, 0.f, 0.15f);
+		DrawEERIEObjEx(cabal, cabalangle, cabalpos, cabalscale, cabalcolor);
+
+		mov=std::sin((float)(arxtime.get_frame_time()+30.f)*( 1.0f / 800 ))*scaley;
+		cabalpos.y=refpos+mov;
+		cabalcolor = Color3f(0.1f, 0.1f, 0.25f);
+		DrawEERIEObjEx(cabal, cabalangle, cabalpos, cabalscale, cabalcolor);
+
+		mov=std::sin((float)(arxtime.get_frame_time()+60.f)*( 1.0f / 800 ))*scaley;
+		cabalpos.y=refpos+mov;
+		cabalcolor = Color3f(0.2f, 0.2f, 0.5f);
+		DrawEERIEObjEx(cabal, cabalangle, cabalpos, cabalscale, cabalcolor);
+
+		mov=std::sin((float)(arxtime.get_frame_time()+120.f)*( 1.0f / 800 ))*scaley;
+		cabalpos.y=refpos+mov;
+		cabalcolor = Color3f(0.4f, 0.4f, 0.8f);
+		DrawEERIEObjEx(cabal, cabalangle, cabalpos, cabalscale, cabalcolor);
+
+		cabalangle.setPitch(-cabalangle.getPitch());
+		GRenderer->SetRenderState(Renderer::AlphaBlending, false);		
+		GRenderer->SetRenderState(Renderer::DepthWrite, true);	
+
+		ARX_SOUND_RefreshPosition(spells[i].snd_loop, cabalpos);
+	}	
+}
+
+void LifeDrainSpellUpdate(size_t i)
+{
+	if(cabal) {
+		float refpos;
+		float scaley;
+
+		if(spells[i].caster==0)
+			scaley=90.f;
+		else
+			scaley=EEfabs(entities[spells[i].caster]->physics.cyl.height*( 1.0f / 2 ))+30.f;
+
+		float mov=std::sin((float)arxtime.get_frame_time()*( 1.0f / 800 ))*scaley;
+
+		Vec3f cabalpos;
+		if(spells[i].caster == 0) {
+			cabalpos.x = player.pos.x;
+			cabalpos.y = player.pos.y + 60.f - mov;
+			cabalpos.z = player.pos.z;
+			refpos=player.pos.y+60.f;							
+		} else {
+			cabalpos.x = entities[spells[i].caster]->pos.x;
+			cabalpos.y = entities[spells[i].caster]->pos.y - scaley-mov;
+			cabalpos.z = entities[spells[i].caster]->pos.z;
+			refpos=entities[spells[i].caster]->pos.y-scaley;							
+		}
+
+		float Es=std::sin((float)arxtime.get_frame_time()*( 1.0f / 800 ) + radians(scaley));
+
+		if(lightHandleIsValid(spells[i].longinfo2_light)) {
+			EERIE_LIGHT * light = lightHandleGet(spells[i].longinfo2_light);
+			
+			light->pos.x = cabalpos.x;
+			light->pos.y = refpos;
+			light->pos.z = cabalpos.z;
+			light->rgb.r = rnd() * 0.2f + 0.8f;
+			light->fallstart = Es * 1.5f;
+		}
+
+		GRenderer->SetCulling(Renderer::CullNone);
+		GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+		GRenderer->SetRenderState(Renderer::DepthWrite, false);
+
+		Anglef cabalangle(0.f, 0.f, 0.f);
+		cabalangle.setPitch(spells[i].fdata+(float)framedelay*0.1f);
+		spells[i].fdata=cabalangle.getPitch();
+
+		Vec3f cabalscale = Vec3f(Es);
+		Color3f cabalcolor = Color3f(0.8f, 0.f, 0.f);
+		DrawEERIEObjEx(cabal, cabalangle, cabalpos, cabalscale, cabalcolor);
+
+		mov=std::sin((float)(arxtime.get_frame_time()-30.f)*( 1.0f / 800 ))*scaley;
+		cabalpos.y=refpos-mov;
+		cabalcolor = Color3f(0.5f, 0.f, 0.f);
+		DrawEERIEObjEx(cabal, cabalangle, cabalpos, cabalscale, cabalcolor);
+
+		mov=std::sin((float)(arxtime.get_frame_time()-60.f)*( 1.0f / 800 ))*scaley;
+		cabalpos.y=refpos-mov;
+		cabalcolor = Color3f(0.25f, 0.f, 0.f);
+		DrawEERIEObjEx(cabal, cabalangle, cabalpos, cabalscale, cabalcolor);
+
+		mov=std::sin((float)(arxtime.get_frame_time()-120.f)*( 1.0f / 800 ))*scaley;
+		cabalpos.y=refpos-mov;
+		cabalcolor = Color3f(0.15f, 0.f, 0.f);
+		DrawEERIEObjEx(cabal, cabalangle, cabalpos, cabalscale, cabalcolor);
+
+		cabalangle.setPitch(-cabalangle.getPitch());
+		cabalpos.y=refpos-mov;
+		cabalscale = Vec3f(Es);
+		cabalcolor = Color3f(0.15f, 0.f, 0.f);
+		DrawEERIEObjEx(cabal, cabalangle, cabalpos, cabalscale, cabalcolor);
+
+		mov=std::sin((float)(arxtime.get_frame_time()+30.f)*( 1.0f / 800 ))*scaley;
+		cabalpos.y=refpos+mov;
+		cabalcolor = Color3f(0.25f, 0.f, 0.f);
+		DrawEERIEObjEx(cabal, cabalangle, cabalpos, cabalscale, cabalcolor);
+
+		mov=std::sin((float)(arxtime.get_frame_time()+60.f)*( 1.0f / 800 ))*scaley;
+		cabalpos.y=refpos+mov;
+		cabalcolor = Color3f(0.5f, 0.f, 0.f);
+		DrawEERIEObjEx(cabal, cabalangle, cabalpos, cabalscale, cabalcolor);
+
+		mov=std::sin((float)(arxtime.get_frame_time()+120.f)*( 1.0f / 800 ))*scaley;
+		cabalpos.y=refpos+mov;
+		cabalcolor = Color3f(0.8f, 0.f, 0.f);
+		DrawEERIEObjEx(cabal, cabalangle, cabalpos, cabalscale, cabalcolor);
+
+		cabalangle.setPitch(-cabalangle.getPitch());
+		GRenderer->SetRenderState(Renderer::AlphaBlending, false);		
+		GRenderer->SetRenderState(Renderer::DepthWrite, true);	
+
+		ARX_SOUND_RefreshPosition(spells[i].snd_loop, cabalpos);
+	}	
+}
+
+void FlyingEyeSpellUpdate(size_t i, unsigned long tim, const long framediff3)
+{
+	eyeball.floating = std::sin(spells[i].lastupdate-spells[i].timcreation * 0.001f);
+	eyeball.floating *= 10.f;
+	
+	if(spells[i].lastupdate-spells[i].timcreation <= 3000) {
+		eyeball.exist = spells[i].lastupdate - spells[i].timcreation * (1.0f / 30);
+		eyeball.size = Vec3f(1.f - float(eyeball.exist) * 0.01f);
+		eyeball.angle.setPitch(eyeball.angle.getPitch() + framediff3 * 0.6f);
+	} else {
+		eyeball.exist = 2;
+	}
+	
+	spells[i].lastupdate=tim;	
+}
+
 void ARX_SPELLS_Update_Update(size_t i, unsigned long tim) {
 	
 	const long framediff3 = tim - spells[i].lastupdate;
@@ -3103,312 +3418,42 @@ void ARX_SPELLS_Update_Update(size_t i, unsigned long tim) {
 			break;
 		}
 		case SPELL_CONTROL_TARGET: {
-			CSpellFx *pCSpellFX = spells[i].pSpellFx;
-			
-			if(pCSpellFX) {
-				pCSpellFX->Update(framedelay);
-				pCSpellFX->Render();
-			}
+			ControlTargetSpellUpdate(i);
 			break;
 		}
 		case SPELL_MASS_INCINERATE: {
-			if(ValidIONum(spells[i].caster)) {
-				ARX_SOUND_RefreshPosition(spells[i].snd_loop, entities[spells[i].caster]->pos);
-			}
+			MassIncinerateSpellUpdate(i);
 			break;
 		}
 		case SPELL_MASS_LIGHTNING_STRIKE: {
-			CSpellFx *pCSpellFX = spells[i].pSpellFx;
-
-			if(pCSpellFX) {
-				pCSpellFX->Update(framedelay);
-				pCSpellFX->Render();
-			}
-			
-			Vec3f _source = spells[i].vsource;
-			float _fx;
-			_fx = 0.5f;
-			unsigned long _gct;
-			_gct = 0;
-
-			Vec3f position;
-
-			spells[i].lastupdate=tim;
-
-			position = _source + randomVec(-250.f, 250.f);
-			ARX_SOUND_RefreshPosition(spells[i].snd_loop, position);
-			ARX_SOUND_RefreshVolume(spells[i].snd_loop, _fx + 0.5F);
-			ARX_SOUND_RefreshPitch(spells[i].snd_loop, 0.8F + 0.4F * rnd());
-			
-			if(rnd() > 0.62f) {
-				position = _source  + randomVec(-250.f, 250.f);
-				ARX_SOUND_PlaySFX(SND_SPELL_SPARK, &position, 0.8F + 0.4F * rnd());
-			}
-			
-			if(rnd() > 0.82f) {
-				position = _source + randomVec(-250.f, 250.f);
-				ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &position, 0.8F + 0.4F * rnd());
-			}
-			
-			if((_gct > spells[i].tolive - 1800) && (spells[i].siz == 0)) {
-				spells[i].siz = 1;
-				ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, NULL, 0.8F + 0.4F * rnd());
-			}
-
-			if(lightHandleIsValid(spells[i].longinfo_light)) {
-				EERIE_LIGHT * light = lightHandleGet(spells[i].longinfo_light);
-				
-				float fxx;
-
-				if(_fx > 0.2f)
-					fxx = 1.f;
-				else
-					fxx = _fx * 5.f;
-
-				light->intensity = 1.3f + rnd() * 1.f;
-				light->fallend = 850.f;
-				light->fallstart = 500.f;
-				light->rgb = Color3f::red * fxx;
-			}
+			MassLightningStrikeSpellUpdate(tim, i);
 			break;
 		}
 		case SPELL_TELEPORT: {
-			float TELEPORT = (float)(((float)tim-(float)spells[i].timcreation)/(float)spells[i].tolive);
-
-			if(LASTTELEPORT < 0.5f && TELEPORT >= 0.5f) {
-				Vec3f pos = lastteleport;
-				lastteleport = player.pos;
-				player.pos = pos;
-				LASTTELEPORT = 32.f;
-				ARX_SOUND_PlaySFX(SND_SPELL_TELEPORTED, &player.pos);
-			} else {
-				LASTTELEPORT = TELEPORT;
-			}
+			TeleportSpellUpdate(tim, i);
 			break;
 		}
 		case SPELL_MAGIC_SIGHT: {
-			if(spells[i].caster == 0) {
-				Vec3f pos;
-				ARX_PLAYER_FrontPos(&pos);
-				ARX_SOUND_RefreshPosition(spells[i].snd_loop, pos);
-				
-				if(subj.focal > IMPROVED_FOCAL)
-					subj.focal -= DEC_FOCAL;
-			}
+			MagicSightSpellUpdate(i);
 			break;
 		}
 		case SPELL_TELEKINESIS: {
 			break;
 		}
 		case SPELL_INVISIBILITY: {
-			if(spells[i].target != 0) {
-				if(!(entities[spells[i].target]->gameFlags & GFLAG_INVISIBILITY)) {
-					ARX_SPELLS_RemoveSpellOn(spells[i].target,i);
-					ARX_SPELLS_Fizzle(i);
-				}
-			}
+			InvisibilitySpellUpdate(i);
 			break;
 		}
 		case SPELL_MANA_DRAIN: {
-			if(cabal) {
-				float refpos;
-				float scaley;
-
-				if(spells[i].caster==0)
-					scaley=90.f;
-				else
-					scaley=EEfabs(entities[spells[i].caster]->physics.cyl.height*( 1.0f / 2 ))+30.f;
-
-				float mov=std::sin((float)arxtime.get_frame_time()*( 1.0f / 800 ))*scaley;
-
-				Vec3f cabalpos;
-				if(spells[i].caster == 0) {
-					cabalpos.x = player.pos.x;
-					cabalpos.y = player.pos.y + 60.f - mov;
-					cabalpos.z = player.pos.z;
-					refpos=player.pos.y+60.f;
-				} else {
-					cabalpos.x = entities[spells[i].caster]->pos.x;
-					cabalpos.y = entities[spells[i].caster]->pos.y - scaley - mov;
-					cabalpos.z = entities[spells[i].caster]->pos.z;
-					refpos=entities[spells[i].caster]->pos.y-scaley;
-				}
-
-				float Es=std::sin((float)arxtime.get_frame_time()*( 1.0f / 800 ) + radians(scaley));
-
-				if(lightHandleIsValid(spells[i].longinfo2_light)) {
-					EERIE_LIGHT * light = lightHandleGet(spells[i].longinfo2_light);
-					
-					light->pos.x = cabalpos.x;
-					light->pos.y = refpos;
-					light->pos.z = cabalpos.z;
-					light->rgb.b=rnd()*0.2f+0.8f;
-					light->fallstart=Es*1.5f;
-				}
-
-				GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-				GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-				GRenderer->SetRenderState(Renderer::DepthWrite, false);
-
-				Anglef cabalangle(0.f, 0.f, 0.f);
-				cabalangle.setPitch(spells[i].fdata + (float)framedelay*0.1f);
-				spells[i].fdata = cabalangle.getPitch();
-										
-				Vec3f cabalscale = Vec3f(Es);
-				Color3f cabalcolor = Color3f(0.4f, 0.4f, 0.8f);
-				DrawEERIEObjEx(cabal, cabalangle, cabalpos, cabalscale, cabalcolor);
-
-				mov=std::sin((float)(arxtime.get_frame_time()-30.f)*( 1.0f / 800 ))*scaley;
-				cabalpos.y = refpos - mov;
-				cabalcolor = Color3f(0.2f, 0.2f, 0.5f);
-				DrawEERIEObjEx(cabal, cabalangle, cabalpos, cabalscale, cabalcolor);
-
-				mov=std::sin((float)(arxtime.get_frame_time()-60.f)*( 1.0f / 800 ))*scaley;
-				cabalpos.y=refpos-mov;
-				cabalcolor = Color3f(0.1f, 0.1f, 0.25f);
-				DrawEERIEObjEx(cabal, cabalangle, cabalpos, cabalscale, cabalcolor);
-
-				mov=std::sin((float)(arxtime.get_frame_time()-120.f)*( 1.0f / 800 ))*scaley;
-				cabalpos.y=refpos-mov;
-				cabalcolor = Color3f(0.f, 0.f, 0.15f);
-				DrawEERIEObjEx(cabal, cabalangle, cabalpos, cabalscale, cabalcolor);
-
-				cabalangle.setPitch(-cabalangle.getPitch());
-				cabalpos.y=refpos-mov;
-				cabalscale = Vec3f(Es);
-				cabalcolor = Color3f(0.f, 0.f, 0.15f);
-				DrawEERIEObjEx(cabal, cabalangle, cabalpos, cabalscale, cabalcolor);
-
-				mov=std::sin((float)(arxtime.get_frame_time()+30.f)*( 1.0f / 800 ))*scaley;
-				cabalpos.y=refpos+mov;
-				cabalcolor = Color3f(0.1f, 0.1f, 0.25f);
-				DrawEERIEObjEx(cabal, cabalangle, cabalpos, cabalscale, cabalcolor);
-
-				mov=std::sin((float)(arxtime.get_frame_time()+60.f)*( 1.0f / 800 ))*scaley;
-				cabalpos.y=refpos+mov;
-				cabalcolor = Color3f(0.2f, 0.2f, 0.5f);
-				DrawEERIEObjEx(cabal, cabalangle, cabalpos, cabalscale, cabalcolor);
-
-				mov=std::sin((float)(arxtime.get_frame_time()+120.f)*( 1.0f / 800 ))*scaley;
-				cabalpos.y=refpos+mov;
-				cabalcolor = Color3f(0.4f, 0.4f, 0.8f);
-				DrawEERIEObjEx(cabal, cabalangle, cabalpos, cabalscale, cabalcolor);
-
-				cabalangle.setPitch(-cabalangle.getPitch());
-				GRenderer->SetRenderState(Renderer::AlphaBlending, false);		
-				GRenderer->SetRenderState(Renderer::DepthWrite, true);	
-
-				ARX_SOUND_RefreshPosition(spells[i].snd_loop, cabalpos);
-			}
+			ManaDrainSpellUpdate(i);
 			break;
 		}
 		case SPELL_LIFE_DRAIN: {
-			if(cabal) {
-				float refpos;
-				float scaley;
-
-				if(spells[i].caster==0)
-					scaley=90.f;
-				else
-					scaley=EEfabs(entities[spells[i].caster]->physics.cyl.height*( 1.0f / 2 ))+30.f;
-
-				float mov=std::sin((float)arxtime.get_frame_time()*( 1.0f / 800 ))*scaley;
-
-				Vec3f cabalpos;
-				if(spells[i].caster == 0) {
-					cabalpos.x = player.pos.x;
-					cabalpos.y = player.pos.y + 60.f - mov;
-					cabalpos.z = player.pos.z;
-					refpos=player.pos.y+60.f;							
-				} else {
-					cabalpos.x = entities[spells[i].caster]->pos.x;
-					cabalpos.y = entities[spells[i].caster]->pos.y - scaley-mov;
-					cabalpos.z = entities[spells[i].caster]->pos.z;
-					refpos=entities[spells[i].caster]->pos.y-scaley;							
-				}
-
-				float Es=std::sin((float)arxtime.get_frame_time()*( 1.0f / 800 ) + radians(scaley));
-
-				if(lightHandleIsValid(spells[i].longinfo2_light)) {
-					EERIE_LIGHT * light = lightHandleGet(spells[i].longinfo2_light);
-					
-					light->pos.x = cabalpos.x;
-					light->pos.y = refpos;
-					light->pos.z = cabalpos.z;
-					light->rgb.r = rnd() * 0.2f + 0.8f;
-					light->fallstart = Es * 1.5f;
-				}
-
-				GRenderer->SetCulling(Renderer::CullNone);
-				GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-				GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-				GRenderer->SetRenderState(Renderer::DepthWrite, false);
-
-				Anglef cabalangle(0.f, 0.f, 0.f);
-				cabalangle.setPitch(spells[i].fdata+(float)framedelay*0.1f);
-				spells[i].fdata=cabalangle.getPitch();
-
-				Vec3f cabalscale = Vec3f(Es);
-				Color3f cabalcolor = Color3f(0.8f, 0.f, 0.f);
-				DrawEERIEObjEx(cabal, cabalangle, cabalpos, cabalscale, cabalcolor);
-
-				mov=std::sin((float)(arxtime.get_frame_time()-30.f)*( 1.0f / 800 ))*scaley;
-				cabalpos.y=refpos-mov;
-				cabalcolor = Color3f(0.5f, 0.f, 0.f);
-				DrawEERIEObjEx(cabal, cabalangle, cabalpos, cabalscale, cabalcolor);
-
-				mov=std::sin((float)(arxtime.get_frame_time()-60.f)*( 1.0f / 800 ))*scaley;
-				cabalpos.y=refpos-mov;
-				cabalcolor = Color3f(0.25f, 0.f, 0.f);
-				DrawEERIEObjEx(cabal, cabalangle, cabalpos, cabalscale, cabalcolor);
-
-				mov=std::sin((float)(arxtime.get_frame_time()-120.f)*( 1.0f / 800 ))*scaley;
-				cabalpos.y=refpos-mov;
-				cabalcolor = Color3f(0.15f, 0.f, 0.f);
-				DrawEERIEObjEx(cabal, cabalangle, cabalpos, cabalscale, cabalcolor);
-
-				cabalangle.setPitch(-cabalangle.getPitch());
-				cabalpos.y=refpos-mov;
-				cabalscale = Vec3f(Es);
-				cabalcolor = Color3f(0.15f, 0.f, 0.f);
-				DrawEERIEObjEx(cabal, cabalangle, cabalpos, cabalscale, cabalcolor);
-
-				mov=std::sin((float)(arxtime.get_frame_time()+30.f)*( 1.0f / 800 ))*scaley;
-				cabalpos.y=refpos+mov;
-				cabalcolor = Color3f(0.25f, 0.f, 0.f);
-				DrawEERIEObjEx(cabal, cabalangle, cabalpos, cabalscale, cabalcolor);
-
-				mov=std::sin((float)(arxtime.get_frame_time()+60.f)*( 1.0f / 800 ))*scaley;
-				cabalpos.y=refpos+mov;
-				cabalcolor = Color3f(0.5f, 0.f, 0.f);
-				DrawEERIEObjEx(cabal, cabalangle, cabalpos, cabalscale, cabalcolor);
-
-				mov=std::sin((float)(arxtime.get_frame_time()+120.f)*( 1.0f / 800 ))*scaley;
-				cabalpos.y=refpos+mov;
-				cabalcolor = Color3f(0.8f, 0.f, 0.f);
-				DrawEERIEObjEx(cabal, cabalangle, cabalpos, cabalscale, cabalcolor);
-
-				cabalangle.setPitch(-cabalangle.getPitch());
-				GRenderer->SetRenderState(Renderer::AlphaBlending, false);		
-				GRenderer->SetRenderState(Renderer::DepthWrite, true);	
-
-				ARX_SOUND_RefreshPosition(spells[i].snd_loop, cabalpos);
-			}
+			LifeDrainSpellUpdate(i);
 			break;
 		}
 		case SPELL_FLYING_EYE: {
-			eyeball.floating = std::sin(spells[i].lastupdate-spells[i].timcreation * 0.001f);
-			eyeball.floating *= 10.f;
-			
-			if(spells[i].lastupdate-spells[i].timcreation <= 3000) {
-				eyeball.exist = spells[i].lastupdate - spells[i].timcreation * (1.0f / 30);
-				eyeball.size = Vec3f(1.f - float(eyeball.exist) * 0.01f);
-				eyeball.angle.setPitch(eyeball.angle.getPitch() + framediff3 * 0.6f);
-			} else {
-				eyeball.exist = 2;
-			}
-			
-			spells[i].lastupdate=tim;
+			FlyingEyeSpellUpdate(i, tim, framediff3);
 			break;
 		}
 	}
