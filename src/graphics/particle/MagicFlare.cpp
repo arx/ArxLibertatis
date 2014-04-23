@@ -284,7 +284,7 @@ void AddFlare(const Vec2s & pos, float sm, short typ, Entity * io, bool bookDraw
 		pd->fparam = 1.2f;
 
 		if(bookDraw)
-			pd->type = PARTICLE_2D;
+			pd->is2D = true;
 	}
 }
 

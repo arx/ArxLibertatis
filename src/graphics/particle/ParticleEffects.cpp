@@ -858,7 +858,7 @@ PARTICLE_DEF * createParticle(bool allocateWhilePaused) {
 		pd->exist = true;
 		pd->timcreation = long(arxtime);
 		
-		pd->type = 0;
+		pd->is2D = false;
 		pd->rgb = Color3f::white;
 		pd->tc = NULL;
 		pd->special = 0;
@@ -888,7 +888,7 @@ void MagFX(const Vec3f & pos) {
 	pd->tc = healing;
 	pd->rgb = Color3f::magenta;
 	pd->siz = 56.f;
-	pd->type = PARTICLE_2D;
+	pd->is2D = true;
 }
 
 void createSphericalSparks(const Vec3f & pos, float r, TextureContainer * tc,
@@ -1081,7 +1081,7 @@ void ARX_PARTICLES_Update(EERIE_CAMERA * cam)  {
 			continue;
 		}
 		
-		if(!(part->type & PARTICLE_2D)) {
+		if(!part->is2D) {
 
 			FAST_BKG_DATA * bkgData = getFastBackgroundData(part->ov.x, part->ov.z);
 
@@ -1181,7 +1181,7 @@ void ARX_PARTICLES_Update(EERIE_CAMERA * cam)  {
 			}
 		}
 		
-		if(!(part->type & PARTICLE_2D)) {
+		if(!part->is2D) {
 			
 			EERIE_SPHERE sp;
 			sp.origin = in.p;
@@ -1302,7 +1302,7 @@ void ARX_PARTICLES_Update(EERIE_CAMERA * cam)  {
 		}
 		
 		if(part->special & ROTATING) {
-			if(!(part->type & PARTICLE_2D)) {
+			if(!part->is2D) {
 				
 				float rott;
 				if(part->special & MODULATE_ROTATION) {
@@ -1316,7 +1316,7 @@ void ARX_PARTICLES_Update(EERIE_CAMERA * cam)  {
 				EERIEAddSprite(mat, in, size, color, temp, rott);
 				
 			}
-		} else if(part->type & PARTICLE_2D) {
+		} else if(part->is2D) {
 			
 			float siz2 = part->siz + part->scale.y * fd;
 			EERIEAddBitmap(mat, in.p.x, in.p.y, siz, siz2, in.p.z, tc, color);

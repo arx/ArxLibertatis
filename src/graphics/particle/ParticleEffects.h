@@ -80,7 +80,7 @@ struct POLYBOOM {
 
 struct PARTICLE_DEF {
 	bool exist;
-	long type;
+	bool is2D;
 	Vec3f ov;
 	Vec3f move;
 	Vec3f scale;
@@ -124,7 +124,6 @@ struct FOG_DEF
 #define MAX_FOG 100
 #define FOG_DIRECTIONAL 1
 #define MAX_POLYBOOM 4000
-#define PARTICLE_2D	256
 
 #define MAX_FLARELIFE 4000
 #define FLARE_MUL 2.f

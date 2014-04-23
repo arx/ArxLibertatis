@@ -4830,7 +4830,7 @@ private:
 			pd->tc = healing;
 			pd->rgb = Color3f::magenta;
 			pd->siz = 56.f;
-			pd->type = PARTICLE_2D;
+			pd->is2D = true;
 		}
 		
 		for(int i = 0; i < 5; i++) {
@@ -4847,7 +4847,7 @@ private:
 			pd->tc = m_tex;
 			pd->rgb = Color3f(1.f - float(i) * 0.1f, float(i) * 0.1f, 0.5f - float(i) * 0.1f);
 			pd->siz = 32.f + float(i * 4);
-			pd->type = PARTICLE_2D;
+			pd->is2D = true;
 		}
 		
 		NewSpell = 1;
@@ -5449,7 +5449,7 @@ public:
 		pd->tc = fire2;
 		pd->rgb = Color3f(1.f, .6f, .5f);
 		pd->siz = INTERFACE_RATIO(14.f);
-		pd->type = PARTICLE_2D;
+		pd->is2D = true;
 	}
 	
 	void draw() {
