@@ -26,7 +26,7 @@ class SummonCreatureSpell : public SpellBase {
 public:
 	bool Launch(long i, long duration);
 	void End(size_t i);
-	static void Kill(long i);
+	void Kill(long i);
 	static void Update(size_t i, float timeDelta);
 };
 
@@ -34,7 +34,7 @@ class FakeSummonSpell : public SpellBase {
 public:
 	bool Launch(long i);
 	void End(size_t i);
-	static void Kill(long i);
+	void Kill(long i);
 	static void Update(size_t i, float timeDelta);
 };
 
@@ -55,7 +55,7 @@ class MassParalyseSpell : public SpellBase {
 public:
 	void Launch(long i, long duration);
 	void End(size_t i);
-	static void Kill();
+	void Kill();
 };
 
 #endif // ARX_GAME_MAGIC_SPELLS_SPELLSLVL09_H

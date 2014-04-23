@@ -44,7 +44,7 @@ public:
 class RepelUndeadSpell : public SpellBase {
 public:
 	void Launch(long duration, long i);
-	static void Kill(long i);
+	void Kill(long i);
 	static void Update(size_t i, float timeDelta);
 };
 

@@ -1846,64 +1846,66 @@ void ARX_SPELLS_Kill(long i) {
 		light->duration = 500; 
 		light->time_creation = (unsigned long)(arxtime);
 	}
-
+	
+	SpellBase & spell = spells[i];
+	
 	switch(spells[i].type) {
 		case SPELL_FIREBALL: {
-			FireballSpell::Kill(i);
+			static_cast<FireballSpell &>(spell).Kill(i);
 			break;
 		}
 		case SPELL_LIGHTNING_STRIKE: {
-			LightningStrikeSpell::Kill(i);
+			static_cast<LightningStrikeSpell &>(spell).Kill(i);
 			break;
 		}
 		case SPELL_MASS_LIGHTNING_STRIKE: {
-			MassLightningStrikeSpell::Kill(i);
+			static_cast<MassLightningStrikeSpell &>(spell).Kill(i);
 			break;
 		}
 		case SPELL_REPEL_UNDEAD: {
-			RepelUndeadSpell::Kill(i);
+			static_cast<RepelUndeadSpell &>(spell).Kill(i);
 			break;
 		}
 		case SPELL_HARM: {
-			HarmSpell::Kill(i);
+			static_cast<HarmSpell &>(spell).Kill(i);
 			break;
 		}
 		case SPELL_LIFE_DRAIN: {
-			LifeDrainSpell::Kill(i);
+			static_cast<LifeDrainSpell &>(spell).Kill(i);
 			break;
 		}
 		case SPELL_MANA_DRAIN: {
-			ManaDrainSpell::Kill(i);
+			static_cast<ManaDrainSpell &>(spell).Kill(i);
 			break;
 		}
 		case SPELL_FLYING_EYE : {
-			FlyingEyeSpell::Kill(i);
+			static_cast<FlyingEyeSpell &>(spell).Kill(i);
 			break;
 		}
 		// Level 06
 		case SPELL_PARALYSE: {
-			ParalyseSpell::Kill();
+			static_cast<ParalyseSpell &>(spell).Kill();
 			break;
 		}
 		// Level 7
 		case SPELL_FIRE_FIELD: {
-			FireFieldSpell::Kill(i);
+			static_cast<FireFieldSpell &>(spell).Kill(i);
 			break;
 		}
 		case SPELL_ICE_FIELD: {
-			IceFieldSpell::Kill(i); 
+			static_cast<IceFieldSpell &>(spell).Kill(i); 
 			break; 
 		}
 		case SPELL_MASS_PARALYSE: {
-			MassParalyseSpell::Kill();
+			static_cast<MassParalyseSpell &>(spell).Kill();
 			break;
 		}
 		case SPELL_SUMMON_CREATURE: {
-			SummonCreatureSpell::Kill(i);
+			static_cast<SummonCreatureSpell &>(spell).Kill(i);
 			break;
 		}
 		case SPELL_FAKE_SUMMON: {
-			FakeSummonSpell::Kill(i);
+			static_cast<FakeSummonSpell &>(spell).Kill(i);
 			break;
 		}
 		

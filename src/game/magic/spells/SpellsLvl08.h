@@ -32,7 +32,7 @@ public:
 class ManaDrainSpell : public SpellBase {
 public:
 	void Launch(long i, long duration);
-	static void Kill(long i);
+	void Kill(long i);
 	static void Update(size_t i, float timeDelta);
 };
 
@@ -51,7 +51,7 @@ public:
 class LifeDrainSpell : public SpellBase {
 public:
 	void Launch(long duration, long i);
-	static void Kill(long i);
+	void Kill(long i);
 	static void Update(size_t i, float timeDelta);
 };
 
