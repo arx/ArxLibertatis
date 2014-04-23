@@ -23,10 +23,12 @@
 #include "game/Damage.h"
 #include "game/Entity.h"
 #include "game/EntityManager.h"
+#include "game/NPC.h"
 #include "game/Player.h"
 #include "game/Spells.h"
+#include "graphics/particle/ParticleEffects.h"
 #include "graphics/spells/Spells03.h"
-
+#include "physics/Collisions.h"
 #include "scene/GameSound.h"
 #include "scene/Interactive.h"
 
@@ -73,6 +75,17 @@ void SpeedSpellEnd(long i)
 	ARX_SOUND_PlaySFX(SND_SPELL_SPEED_END, &entities[spells[i].target]->pos);
 }
 
+void SpeedSpellUpdate(size_t i, float timeDelta)
+{
+	if(spells[i].pSpellFx) {
+		if(spells[i].caster == 0)
+			ARX_SOUND_RefreshPosition(spells[i].snd_loop, entities[spells[i].target]->pos);
+		
+		spells[i].pSpellFx->Update(timeDelta);
+		spells[i].pSpellFx->Render();
+	}
+}
+
 void DispellIllusionSpellLaunch(long i)
 {
 	ARX_SOUND_PlaySFX(SND_SPELL_DISPELL_ILLUSION);
@@ -97,6 +110,14 @@ void DispellIllusionSpellLaunch(long i)
 				}
 			}
 		}
+	}
+}
+
+void DispellIllusionSpellUpdate(size_t i, float timeDelta)
+{
+	if(spells[i].pSpellFx) {
+		spells[i].pSpellFx->Update(timeDelta);
+		spells[i].pSpellFx->Render();
 	}
 }
 
@@ -178,6 +199,74 @@ void FireballSpellKill(long i)
 	spells[i].longinfo_light = -1;
 }
 
+void FireballSpellUpdate(size_t i, float timeDelta)
+{
+	CSpellFx *pCSpellFX = spells[i].pSpellFx;
+
+	if(pCSpellFX) {
+		CFireBall *pCF = (CFireBall*) pCSpellFX;
+			
+		if(!lightHandleIsValid(spells[i].longinfo_light))
+			spells[i].longinfo_light = GetFreeDynLight();
+
+		if(lightHandleIsValid(spells[i].longinfo_light)) {
+			EERIE_LIGHT * light = lightHandleGet(spells[i].longinfo_light);
+			
+			light->pos = pCF->eCurPos;
+			light->intensity = 2.2f;
+			light->fallend = 500.f;
+			light->fallstart = 400.f;
+			light->rgb.r = 1.0f-rnd()*0.3f;
+			light->rgb.g = 0.6f-rnd()*0.1f;
+			light->rgb.b = 0.3f-rnd()*0.1f;
+		}
+
+		EERIE_SPHERE sphere;
+		sphere.origin = pCF->eCurPos;
+		sphere.radius=std::max(spells[i].caster_level*2.f,12.f);
+		#define MIN_TIME_FIREBALL 2000 
+
+		if(pCF->pPSFire.iParticleNbMax) {
+			if(pCF->ulCurrentTime > MIN_TIME_FIREBALL) {
+				SpawnFireballTail(&pCF->eCurPos,&pCF->eMove,(float)spells[i].caster_level,0);
+			} else {
+				if(rnd()<0.9f) {
+					Vec3f move = Vec3f_ZERO;
+					float dd=(float)pCF->ulCurrentTime / (float)MIN_TIME_FIREBALL*10;
+
+					if(dd > spells[i].caster_level)
+						dd = spells[i].caster_level;
+
+					if(dd < 1)
+						dd = 1;
+
+					SpawnFireballTail(&pCF->eCurPos,&move,(float)dd,1);
+				}
+			}
+		}
+
+		if(!pCF->bExplo)
+		if(CheckAnythingInSphere(&sphere, spells[i].caster, CAS_NO_SAME_GROUP)) {
+			ARX_BOOMS_Add(pCF->eCurPos);
+			LaunchFireballBoom(&pCF->eCurPos,(float)spells[i].caster_level);
+			pCF->pPSFire.iParticleNbMax = 0;
+			pCF->pPSFire2.iParticleNbMax = 0;
+			pCF->eMove *= 0.5f;
+			pCF->pPSSmoke.iParticleNbMax = 0;
+			pCF->SetTTL(1500);
+			pCF->bExplo = true;
+			
+			DoSphericDamage(&pCF->eCurPos,3.f*spells[i].caster_level,30.f*spells[i].caster_level,DAMAGE_AREA,DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL,spells[i].caster);
+			spells[i].tolive=0;
+			ARX_SOUND_PlaySFX(SND_SPELL_FIRE_HIT, &sphere.origin);
+			ARX_NPC_SpawnAudibleSound(sphere.origin, entities[spells[i].caster]);
+		}
+
+		pCSpellFX->Update(timeDelta);
+		ARX_SOUND_RefreshPosition(spells[i].snd_loop, pCF->eCurPos);
+	}
+}
+
 void CreateFoodSpellLaunch(long duration, long i)
 {
 	ARX_SOUND_PlaySFX(SND_SPELL_CREATE_FOOD, &spells[i].caster_pos);
@@ -194,6 +283,14 @@ void CreateFoodSpellLaunch(long duration, long i)
 	effect->SetDuration(spells[i].tolive);
 	spells[i].pSpellFx = effect;
 	spells[i].tolive = effect->GetDuration();
+}
+
+void CreateFoodSpellUpdate(size_t i, float timeDelta)
+{
+	if(spells[i].pSpellFx) {
+		spells[i].pSpellFx->Update(timeDelta);
+		spells[i].pSpellFx->Render();
+	}	
 }
 
 void IceProjectileSpellLaunch(long i)
@@ -222,4 +319,12 @@ void IceProjectileSpellLaunch(long i)
 	effect->SetDuration(spells[i].tolive);
 	spells[i].pSpellFx = effect;
 	spells[i].tolive = effect->GetDuration();
+}
+
+void IceProjectileUpdate(size_t i, float timeDelta)
+{
+	if(spells[i].pSpellFx) {
+		spells[i].pSpellFx->Update(timeDelta);
+		spells[i].pSpellFx->Render();
+	}
 }

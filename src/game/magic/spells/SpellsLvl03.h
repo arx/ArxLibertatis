@@ -20,16 +20,24 @@
 #ifndef ARX_GAME_MAGIC_SPELLS_SPELLSLVL03_H
 #define ARX_GAME_MAGIC_SPELLS_SPELLSLVL03_H
 
+#include "game/magic/Spell.h"
+
 void SpeedSpellLaunch(long i, long duration);
 void SpeedSpellEnd(long i);
+void SpeedSpellUpdate(size_t i, float timeDelta);
 
 void DispellIllusionSpellLaunch(long i);
+void DispellIllusionSpellUpdate(size_t i, float timeDelta);
 
 void FireballSpellLaunch(long i);
 void FireballSpellEnd(long i);
 void FireballSpellKill(long i);
+void FireballSpellUpdate(size_t i, float timeDelta);
 
 void CreateFoodSpellLaunch(long duration, long i);
+void CreateFoodSpellUpdate(size_t i, float timeDelta);
+
 void IceProjectileSpellLaunch(long i);
+void IceProjectileUpdate(size_t i, float timeDelta);
 
 #endif // ARX_GAME_MAGIC_SPELLS_SPELLSLVL03_H
