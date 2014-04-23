@@ -2855,8 +2855,8 @@ void ARX_SPELLS_Update_Update(size_t i, unsigned long tim) {
 				pCSpellFX->Update(framedelay);
 				pCSpellFX->Render();
 			}
+			break;
 		}
-		//TODO Missing break ?
 		case SPELL_EXPLOSION: {
 			if(!lightHandleIsValid(spells[i].longinfo2_light))
 				spells[i].longinfo2_light = GetFreeDynLight();
