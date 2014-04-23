@@ -83,6 +83,24 @@ void MagicMissileSpellEnd(long i)
 	lightHandleDestroy(spells[i].longinfo_light);
 }
 
+void MagicMissileSpellUpdate(long i, float timeDelta)
+{
+	CSpellFx *pCSpellFX = spells[i].pSpellFx;
+
+	if(pCSpellFX) {
+		CMultiMagicMissile *pMMM = (CMultiMagicMissile *) pCSpellFX;
+		pMMM->CheckCollision();
+
+		// Update
+		pCSpellFX->Update(timeDelta);
+
+		if(pMMM->CheckAllDestroyed())
+			spells[i].tolive = 0;
+
+		pCSpellFX->Render();
+	}
+}
+
 void IgnitSpellLaunch(/*long target, */long i)
 {
 	spells[i].exist = true;
@@ -165,6 +183,13 @@ void IgnitSpellEnd(long i)
 {
 	CIgnit *pIgnit = (CIgnit *)spells[i].pSpellFx;
 	pIgnit->Action(1);
+}
+
+void IgnitSpellUpdate(long i, float timeDelta)
+{
+	CSpellFx *pCSpellFX = spells[i].pSpellFx;
+	if(pCSpellFX)
+		pCSpellFX->Update(timeDelta);
 }
 
 void DouseSpellLaunch(long i)
@@ -261,6 +286,13 @@ void DouseSpellEnd(long i)
 {
 	CDoze *pDoze = (CDoze *)spells[i].pSpellFx;
 	pDoze->Action(0);
+}
+
+void DouseSpellUpdate(long i, float timeDelta)
+{
+	CSpellFx *pCSpellFX = spells[i].pSpellFx;
+	if(pCSpellFX)
+		pCSpellFX->Update(timeDelta);
 }
 
 void ActivatePortalSpellLaunch(long i)

@@ -23,17 +23,22 @@
 #include "game/Spells.h"
 
 void HealSpellLaunch(long i, long duration);
+void HealSpellUpdate(size_t i, float framedelay);
 
 void DetectTrapSpellLaunch(long i, SpellType typ);
 void DetectTrapSpellEnd(size_t i);
+void DetectTrapSpellUpdate(size_t i, float timeDelta);
 
 void ArmorSpellLaunch(SpellType typ, long duration, long i);
 void ArmorSpellEnd(size_t i);
+void ArmorSpellUpdate(size_t i, float timeDelta);
 
 void LowerArmorSpellLaunch(SpellType typ, long duration, long i);
 void LowerArmorSpellEnd(long i);
+void LowerArmorSpellUpdate(size_t i, float timeDelta);
 
 void HarmSpellLaunch(long duration, long i);
 void HarmSpellKill(long i);
+void HarmSpellUpdate(size_t i, float timeDelta);
 
 #endif // ARX_GAME_MAGIC_SPELLS_SPELLSLVL02_H

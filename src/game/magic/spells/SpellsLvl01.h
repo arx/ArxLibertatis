@@ -25,12 +25,15 @@ void MagicSightSpellEnd(long i);
 
 void MagicMissileSpellLaunch(long i);
 void MagicMissileSpellEnd(long i);
+void MagicMissileSpellUpdate(long i, float timeDelta);
 
 void IgnitSpellLaunch(long i);
 void IgnitSpellEnd(long i);
+void IgnitSpellUpdate(long i, float timeDelta);
 
 void DouseSpellLaunch(long i);
 void DouseSpellEnd(long i);
+void DouseSpellUpdate(long i, float timeDelta);
 
 void ActivatePortalSpellLaunch(long i);
 

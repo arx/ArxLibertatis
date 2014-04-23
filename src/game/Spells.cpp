@@ -2021,192 +2021,6 @@ void ARX_SPELLS_Update_End(size_t i) {
 	}				
 }
 
-void MagicMissileSpellUpdate(size_t i)
-{
-	CSpellFx *pCSpellFX = spells[i].pSpellFx;
-
-	if(pCSpellFX) {
-		CMultiMagicMissile *pMMM = (CMultiMagicMissile *) pCSpellFX;
-		pMMM->CheckCollision();
-
-		// Update
-		pCSpellFX->Update(framedelay);
-
-		if(pMMM->CheckAllDestroyed())
-			spells[i].tolive = 0;
-
-		pCSpellFX->Render();
-	}
-}
-
-void IgnitSpellUpdate(size_t i)
-{
-	CSpellFx *pCSpellFX = spells[i].pSpellFx;
-	if(pCSpellFX)
-		pCSpellFX->Update(framedelay);
-}
-
-void DouseSpellUpdate(size_t i)
-{
-	CSpellFx *pCSpellFX = spells[i].pSpellFx;
-	if(pCSpellFX)
-		pCSpellFX->Update(framedelay);
-}
-
-void HealSpellUpdate(size_t i)
-{
-	CSpellFx *pCSpellFX = spells[i].pSpellFx;
-
-	if(pCSpellFX) {
-		pCSpellFX->Update(framedelay);
-		pCSpellFX->Render();
-	}
-
-	CHeal * ch=(CHeal *)pCSpellFX;
-
-	if (ch)
-	for(size_t ii = 0; ii < entities.size(); ii++) {
-		if ((entities[ii])
-			&& (entities[ii]->show==SHOW_FLAG_IN_SCENE) 
-			&& (entities[ii]->gameFlags & GFLAG_ISINTREATZONE)
-			&& (entities[ii]->ioflags & IO_NPC)
-			&& (entities[ii]->_npcdata->life>0.f)
-			)
-		{
-			float dist;
-
-			if(long(ii) == spells[i].caster)
-				dist=0;
-			else
-				dist=fdist(ch->eSrc, entities[ii]->pos);
-
-			if(dist<300.f) {
-				float gain=((rnd()*1.6f+0.8f)*spells[i].caster_level)*(300.f-dist)*( 1.0f / 300 )*framedelay*( 1.0f / 1000 );
-
-				if(ii==0) {
-					if (!BLOCK_PLAYER_CONTROLS)
-						player.life=std::min(player.life+gain,player.Full_maxlife);									
-				}
-				else
-					entities[ii]->_npcdata->life = std::min(entities[ii]->_npcdata->life+gain, entities[ii]->_npcdata->maxlife);
-			}
-		}
-	}	
-}
-
-void DetectTrapSpellUpdate(size_t i)
-{
-	if(spells[i].caster == 0) {
-		Vec3f pos;
-		ARX_PLAYER_FrontPos(&pos);
-		ARX_SOUND_RefreshPosition(spells[i].snd_loop, pos);
-	}
-
-	CSpellFx *pCSpellFX = spells[i].pSpellFx;
-
-	if(pCSpellFX) {
-		pCSpellFX->Update(framedelay);
-		pCSpellFX->Render();
-	}	
-}
-
-void ArmorSpellUpdate(size_t i)
-{
-	CSpellFx *pCSpellFX = spells[i].pSpellFx;
-	
-	if(pCSpellFX) {
-		pCSpellFX->Update(framedelay);
-		pCSpellFX->Render();
-	}
-	
-	ARX_SOUND_RefreshPosition(spells[i].snd_loop, entities[spells[i].target]->pos);
-}
-
-void LowerArmorSpellUpdate(size_t i)
-{
-	CSpellFx *pCSpellFX = spells[i].pSpellFx;
-	
-	if(pCSpellFX) {
-		pCSpellFX->Update(framedelay);
-		pCSpellFX->Render();
-	}
-	
-	ARX_SOUND_RefreshPosition(spells[i].snd_loop, entities[spells[i].target]->pos);
-}
-
-void HarmSpellUpdate(size_t i)
-{
-	if(cabal) {
-		float refpos;
-		float scaley;
-
-		if(spells[i].caster==0)
-			scaley=90.f;
-		else
-			scaley = EEfabs(entities[spells[i].caster]->physics.cyl.height*( 1.0f / 2 ))+30.f;
-
-
-		float mov=std::sin((float)arxtime.get_frame_time()*( 1.0f / 800 ))*scaley;
-
-		Vec3f cabalpos;
-		if(spells[i].caster==0) {
-			cabalpos.x = player.pos.x;
-			cabalpos.y = player.pos.y + 60.f - mov;
-			cabalpos.z = player.pos.z;
-			refpos=player.pos.y+60.f;
-		} else {
-			cabalpos.x = entities[spells[i].caster]->pos.x;
-			cabalpos.y = entities[spells[i].caster]->pos.y - scaley - mov;
-			cabalpos.z = entities[spells[i].caster]->pos.z;
-			refpos=entities[spells[i].caster]->pos.y-scaley;							
-		}
-
-		float Es=std::sin((float)arxtime.get_frame_time()*( 1.0f / 800 ) + radians(scaley));
-
-		if(lightHandleIsValid(spells[i].longinfo2_light)) {
-			EERIE_LIGHT * light = lightHandleGet(spells[i].longinfo2_light);
-			
-			light->pos.x = cabalpos.x;
-			light->pos.y = refpos;
-			light->pos.z = cabalpos.z; 
-			light->rgb.r=rnd()*0.2f+0.8f;
-			light->rgb.g=rnd()*0.2f+0.6f;
-			light->fallstart=Es*1.5f;
-		}
-
-		GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-		GRenderer->SetRenderState(Renderer::DepthWrite, false);
-
-		Anglef cabalangle(0.f, 0.f, 0.f);
-		cabalangle.setPitch(spells[i].fdata+(float)framedelay*0.1f);
-		spells[i].fdata = cabalangle.getPitch();
-
-		Vec3f cabalscale = Vec3f(Es);
-		Color3f cabalcolor = Color3f(0.8f, 0.4f, 0.f);
-		DrawEERIEObjEx(cabal, cabalangle, cabalpos, cabalscale, cabalcolor);
-
-		mov=std::sin((float)(arxtime.get_frame_time()-30.f)*( 1.0f / 800 ))*scaley;
-		cabalpos.y = refpos - mov;
-		cabalcolor = Color3f(0.5f, 3.f, 0.f);
-		DrawEERIEObjEx(cabal, cabalangle, cabalpos, cabalscale, cabalcolor);
-
-		mov=std::sin((float)(arxtime.get_frame_time()-60.f)*( 1.0f / 800 ))*scaley;
-		cabalpos.y=refpos-mov;
-		cabalcolor = Color3f(0.25f, 0.1f, 0.f);
-		DrawEERIEObjEx(cabal, cabalangle, cabalpos, cabalscale, cabalcolor);
-
-		mov=std::sin((float)(arxtime.get_frame_time()-120.f)*( 1.0f / 800 ))*scaley;
-		cabalpos.y=refpos-mov;
-		cabalcolor = Color3f(0.15f, 0.1f, 0.f);
-		DrawEERIEObjEx(cabal, cabalangle, cabalpos, cabalscale, cabalcolor);
-
-		GRenderer->SetRenderState(Renderer::AlphaBlending, false);		
-		GRenderer->SetRenderState(Renderer::DepthWrite, true);	
-		
-		ARX_SOUND_RefreshPosition(spells[i].snd_loop, cabalpos);
-	}
-}
 
 void FireballSpellUpdate(size_t i)
 {
@@ -3244,15 +3058,15 @@ void ARX_SPELLS_Update_Update(size_t i, unsigned long tim) {
 		//****************************************************************************
 		// LEVEL 1
 		case SPELL_MAGIC_MISSILE: {
-			MagicMissileSpellUpdate(i);
+			MagicMissileSpellUpdate(i, framedelay);
 			break;
 		}
 		case SPELL_IGNIT: {
-			IgnitSpellUpdate(i);
+			IgnitSpellUpdate(i, framedelay);
 			break;
 		}
 		case SPELL_DOUSE: {
-			DouseSpellUpdate(i);
+			DouseSpellUpdate(i, framedelay);
 			break;
 		} 
 		case SPELL_ACTIVATE_PORTAL: {
@@ -3261,23 +3075,23 @@ void ARX_SPELLS_Update_Update(size_t i, unsigned long tim) {
 		//****************************************************************************
 		// LEVEL 2
 		case SPELL_HEAL: {
-			HealSpellUpdate(i);
+			HealSpellUpdate(i, framedelay);
 			break;
 		}
 		case SPELL_DETECT_TRAP: {
-			DetectTrapSpellUpdate(i);
+			DetectTrapSpellUpdate(i, framedelay);
 			break;
 		}
 		case SPELL_ARMOR: {
-			ArmorSpellUpdate(i);
+			ArmorSpellUpdate(i, framedelay);
 			break;
 		}
 		case SPELL_LOWER_ARMOR: {
-			LowerArmorSpellUpdate(i);
+			LowerArmorSpellUpdate(i, framedelay);
 			break;
 		} 
 		case SPELL_HARM: {
-			HarmSpellUpdate(i);
+			HarmSpellUpdate(i, framedelay);
 			break;
 		}
 		//****************************************************************************

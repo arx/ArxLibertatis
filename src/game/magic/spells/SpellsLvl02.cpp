@@ -23,8 +23,11 @@
 #include "game/Damage.h"
 #include "game/Entity.h"
 #include "game/EntityManager.h"
+#include "game/NPC.h"
+#include "game/Player.h"
 #include "game/Spells.h"
 #include "graphics/spells/Spells02.h"
+#include "graphics/Renderer.h"
 #include "scene/GameSound.h"
 #include "scene/Interactive.h"
 
@@ -47,6 +50,47 @@ void HealSpellLaunch(long i, long duration)
 	
 	spells[i].pSpellFx = effect;
 	spells[i].tolive = effect->GetDuration();
+}
+
+void HealSpellUpdate(size_t i, float framedelay)
+{
+	CSpellFx *pCSpellFX = spells[i].pSpellFx;
+
+	if(pCSpellFX) {
+		pCSpellFX->Update(framedelay);
+		pCSpellFX->Render();
+	}
+
+	CHeal * ch=(CHeal *)pCSpellFX;
+
+	if (ch)
+	for(size_t ii = 0; ii < entities.size(); ii++) {
+		if ((entities[ii])
+			&& (entities[ii]->show==SHOW_FLAG_IN_SCENE) 
+			&& (entities[ii]->gameFlags & GFLAG_ISINTREATZONE)
+			&& (entities[ii]->ioflags & IO_NPC)
+			&& (entities[ii]->_npcdata->life>0.f)
+			)
+		{
+			float dist;
+
+			if(long(ii) == spells[i].caster)
+				dist=0;
+			else
+				dist=fdist(ch->eSrc, entities[ii]->pos);
+
+			if(dist<300.f) {
+				float gain=((rnd()*1.6f+0.8f)*spells[i].caster_level)*(300.f-dist)*( 1.0f / 300 )*framedelay*( 1.0f / 1000 );
+
+				if(ii==0) {
+					if (!BLOCK_PLAYER_CONTROLS)
+						player.life=std::min(player.life+gain,player.Full_maxlife);									
+				}
+				else
+					entities[ii]->_npcdata->life = std::min(entities[ii]->_npcdata->life+gain, entities[ii]->_npcdata->maxlife);
+			}
+		}
+	}	
 }
 
 void DetectTrapSpellLaunch(long i, SpellType typ)
@@ -84,6 +128,22 @@ void DetectTrapSpellEnd(size_t i)
 		ARX_SOUND_Stop(spells[i].snd_loop);
 	}
 	ARX_SPELLS_RemoveSpellOn(spells[i].target, i);
+}
+
+void DetectTrapSpellUpdate(size_t i, float timeDelta)
+{
+	if(spells[i].caster == 0) {
+		Vec3f pos;
+		ARX_PLAYER_FrontPos(&pos);
+		ARX_SOUND_RefreshPosition(spells[i].snd_loop, pos);
+	}
+
+	CSpellFx *pCSpellFX = spells[i].pSpellFx;
+
+	if(pCSpellFX) {
+		pCSpellFX->Update(timeDelta);
+		pCSpellFX->Render();
+	}	
 }
 
 void ArmorSpellLaunch(SpellType typ, long duration, long i)
@@ -155,6 +215,18 @@ void ArmorSpellEnd(size_t i)
 	ARX_SPELLS_RemoveSpellOn(spells[i].target, i);
 }
 
+void ArmorSpellUpdate(size_t i, float timeDelta)
+{
+	CSpellFx *pCSpellFX = spells[i].pSpellFx;
+	
+	if(pCSpellFX) {
+		pCSpellFX->Update(timeDelta);
+		pCSpellFX->Render();
+	}
+	
+	ARX_SOUND_RefreshPosition(spells[i].snd_loop, entities[spells[i].target]->pos);
+}
+
 void LowerArmorSpellLaunch(SpellType typ, long duration, long i)
 {
 	long idx = ARX_SPELLS_GetSpellOn(entities[spells[i].target], typ);
@@ -215,6 +287,18 @@ void LowerArmorSpellEnd(long i)
 	}
 	
 	ARX_SPELLS_RemoveSpellOn(spells[i].target, i);
+}
+
+void LowerArmorSpellUpdate(size_t i, float timeDelta)
+{
+	CSpellFx *pCSpellFX = spells[i].pSpellFx;
+	
+	if(pCSpellFX) {
+		pCSpellFX->Update(timeDelta);
+		pCSpellFX->Render();
+	}
+	
+	ARX_SOUND_RefreshPosition(spells[i].snd_loop, entities[spells[i].target]->pos);
 }
 
 void HarmSpellLaunch(long duration, long i)
@@ -287,4 +371,80 @@ void HarmSpellKill(long i)
 	}
 	
 	ARX_SOUND_Stop(spells[i].snd_loop);
+}
+
+extern EERIE_3DOBJ * cabal;
+
+void HarmSpellUpdate(size_t i, float timeDelta)
+{
+	if(cabal) {
+		float refpos;
+		float scaley;
+
+		if(spells[i].caster==0)
+			scaley=90.f;
+		else
+			scaley = EEfabs(entities[spells[i].caster]->physics.cyl.height*( 1.0f / 2 ))+30.f;
+
+
+		float mov=std::sin((float)arxtime.get_frame_time()*( 1.0f / 800 ))*scaley;
+
+		Vec3f cabalpos;
+		if(spells[i].caster==0) {
+			cabalpos.x = player.pos.x;
+			cabalpos.y = player.pos.y + 60.f - mov;
+			cabalpos.z = player.pos.z;
+			refpos=player.pos.y+60.f;
+		} else {
+			cabalpos.x = entities[spells[i].caster]->pos.x;
+			cabalpos.y = entities[spells[i].caster]->pos.y - scaley - mov;
+			cabalpos.z = entities[spells[i].caster]->pos.z;
+			refpos=entities[spells[i].caster]->pos.y-scaley;							
+		}
+
+		float Es=std::sin((float)arxtime.get_frame_time()*( 1.0f / 800 ) + radians(scaley));
+
+		if(lightHandleIsValid(spells[i].longinfo2_light)) {
+			EERIE_LIGHT * light = lightHandleGet(spells[i].longinfo2_light);
+			
+			light->pos.x = cabalpos.x;
+			light->pos.y = refpos;
+			light->pos.z = cabalpos.z; 
+			light->rgb.r=rnd()*0.2f+0.8f;
+			light->rgb.g=rnd()*0.2f+0.6f;
+			light->fallstart=Es*1.5f;
+		}
+
+		GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+		GRenderer->SetRenderState(Renderer::DepthWrite, false);
+
+		Anglef cabalangle(0.f, 0.f, 0.f);
+		cabalangle.setPitch(spells[i].fdata+(float)timeDelta*0.1f);
+		spells[i].fdata = cabalangle.getPitch();
+
+		Vec3f cabalscale = Vec3f(Es);
+		Color3f cabalcolor = Color3f(0.8f, 0.4f, 0.f);
+		DrawEERIEObjEx(cabal, cabalangle, cabalpos, cabalscale, cabalcolor);
+
+		mov=std::sin((float)(arxtime.get_frame_time()-30.f)*( 1.0f / 800 ))*scaley;
+		cabalpos.y = refpos - mov;
+		cabalcolor = Color3f(0.5f, 3.f, 0.f);
+		DrawEERIEObjEx(cabal, cabalangle, cabalpos, cabalscale, cabalcolor);
+
+		mov=std::sin((float)(arxtime.get_frame_time()-60.f)*( 1.0f / 800 ))*scaley;
+		cabalpos.y=refpos-mov;
+		cabalcolor = Color3f(0.25f, 0.1f, 0.f);
+		DrawEERIEObjEx(cabal, cabalangle, cabalpos, cabalscale, cabalcolor);
+
+		mov=std::sin((float)(arxtime.get_frame_time()-120.f)*( 1.0f / 800 ))*scaley;
+		cabalpos.y=refpos-mov;
+		cabalcolor = Color3f(0.15f, 0.1f, 0.f);
+		DrawEERIEObjEx(cabal, cabalangle, cabalpos, cabalscale, cabalcolor);
+
+		GRenderer->SetRenderState(Renderer::AlphaBlending, false);		
+		GRenderer->SetRenderState(Renderer::DepthWrite, true);	
+		
+		ARX_SOUND_RefreshPosition(spells[i].snd_loop, cabalpos);
+	}
 }
