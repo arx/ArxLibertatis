@@ -1740,8 +1740,6 @@ bool ARX_SPELLS_Launch(SpellType typ, long source, SpellcastFlags flagss, long l
 
 // Used for specific Spell-End FX
 void ARX_SPELLS_Kill(long i) {
-	
-	static TextureContainer * tc4=TextureContainer::Load("graph/particles/smoke");
 
 	if (!spells[i].exist) return;
 
@@ -1785,7 +1783,7 @@ void ARX_SPELLS_Kill(long i) {
 			break;
 		}
 		case SPELL_FLYING_EYE : {
-			FlyingEyeSpell::Kill(tc4, i);
+			FlyingEyeSpell::Kill(i);
 			break;
 		}
 		// Level 06

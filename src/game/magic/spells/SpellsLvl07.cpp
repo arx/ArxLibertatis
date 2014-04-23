@@ -97,8 +97,10 @@ void FlyingEyeSpell::End(size_t i)
 	ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE, &entities[spells[i].caster]->pos);
 }
 
-void FlyingEyeSpell::Kill(TextureContainer* tc4, long i)
+void FlyingEyeSpell::Kill(long i)
 {
+	static TextureContainer * tc4=TextureContainer::Load("graph/particles/smoke");
+	
 	ARX_SOUND_PlaySFX(SND_SPELL_EYEBALL_OUT);
 	eyeball.exist = -100;
 	
