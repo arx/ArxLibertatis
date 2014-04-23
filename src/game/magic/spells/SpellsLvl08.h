@@ -25,7 +25,7 @@
 class InvisibilitySpell : public SpellBase {
 public:
 	void Launch(long i, long duration);
-	static void End(long i);
+	void End(long i);
 	static void Update(size_t i);
 };
 

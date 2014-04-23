@@ -38,20 +38,20 @@ public:
 class FreezeTimeSpell : public SpellBase {
 public:
 	void Launch(long duration, long i);
-	static void End(size_t i);
+	void End(size_t i);
 };
 
 class MassIncinerateSpell : public SpellBase {
 public:
 	void Launch(long i);
-	static void End(size_t i);
+	void End(size_t i);
 	static void Update(size_t i);
 };
 
 class TeleportSpell : public SpellBase {
 public:
 	void Launch(long i);
-	static void End(size_t i);
+	void End(size_t i);
 	static void Update(unsigned long tim, size_t i);
 };
 

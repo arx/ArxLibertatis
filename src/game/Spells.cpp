@@ -1672,119 +1672,122 @@ bool ARX_SPELLS_Launch(SpellType typ, long source, SpellcastFlags flagss, long l
 }
 
 void ARX_SPELLS_Update_End(size_t i) {
+	
+	SpellBase & spell = spells[i];
+	
 	switch(spells[i].type) {
 		case SPELL_TELEPORT: {
-			TeleportSpell::End(i);
+			static_cast<TeleportSpell &>(spell).End(i);
 			break;
 		}
 		//****************************************************************************
 		// LEVEL 1 SPELLS
 		case SPELL_MAGIC_SIGHT: {
-			MagicSightSpell::End(i);
+			static_cast<MagicSightSpell &>(spell).End(i);
 			break;
 		}
 		case SPELL_MAGIC_MISSILE: {
-			MagicMissileSpell::End(i);
+			static_cast<MagicMissileSpell &>(spell).End(i);
 			break;
 		}
 		case SPELL_IGNIT: {
-			IgnitSpell::End(i);
+			static_cast<IgnitSpell &>(spell).End(i);
 			break;
 		}
 		case SPELL_DOUSE: {
-			DouseSpell::End(i);
+			static_cast<DouseSpell &>(spell).End(i);
 			break;
 		}
 		//****************************************************************************
 		// LEVEL 2
 		case SPELL_DETECT_TRAP: {
-			DetectTrapSpell::End(i);
+			static_cast<DetectTrapSpell &>(spell).End(i);
 			break;
 		}
 		case SPELL_ARMOR: {
-			ArmorSpell::End(i);
+			static_cast<ArmorSpell &>(spell).End(i);
 			break;
 		}
 		case SPELL_LOWER_ARMOR: {
-			LowerArmorSpell::End(i);
+			static_cast<LowerArmorSpell &>(spell).End(i);
 			break;
 		}
 		//****************************************************************************
 		// LEVEL 3
 		case SPELL_SPEED: {
-			SpeedSpell::End(i);
+			static_cast<SpeedSpell &>(spell).End(i);
 			break;
 		}
 		case SPELL_FIREBALL: {
-			FireballSpell::End(i);
+			static_cast<FireballSpell &>(spell).End(i);
 			break;
 		}
 		//****************************************************************************
 		// LEVEL 4
 		case SPELL_BLESS: {
-			BlessSpell::End(i);
+			static_cast<BlessSpell &>(spell).End(i);
 			break;
 		}
 		case SPELL_CURSE: {
-			CurseSpell::End(i);
+			static_cast<CurseSpell &>(spell).End(i);
 			break;
 		}
 		case SPELL_TELEKINESIS: {
-			TelekinesisSpell::End(i);
+			static_cast<TelekinesisSpell &>(spell).End(i);
 			break;
 		}
 		case SPELL_FIRE_PROTECTION: {
-			FireProtectionSpell::End(i);
+			static_cast<FireProtectionSpell &>(spell).End(i);
 			break;
 		}
 		case SPELL_COLD_PROTECTION: {
-			ColdProtectionSpell::End(i);
+			static_cast<ColdProtectionSpell &>(spell).End(i);
 			break;
 		}
 		//****************************************************************************
 		// LEVEL 5
 		case SPELL_LEVITATE: {
-			LevitateSpell::End(i);
+			static_cast<LevitateSpell &>(spell).End(i);
 			break;
 		}
 		//****************************************************************************
 		// LEVEL 6 SPELLS
 		case SPELL_PARALYSE: {
-			ParalyseSpell::End(i);
+			static_cast<ParalyseSpell &>(spell).End(i);
 			break;
 		}
 		case SPELL_RISE_DEAD: {
-			RiseDeadSpell::End(i);
+			static_cast<RiseDeadSpell &>(spell).End(i);
 			break;
 		}
 		case SPELL_CREATE_FIELD: {
-			CreateFieldSpell::End(i);
+			static_cast<CreateFieldSpell &>(spell).End(i);
 			break;
 		}
 		case SPELL_SLOW_DOWN: {
-			SlowDownSpell::End(i);
+			static_cast<SlowDownSpell &>(spell).End(i);
 			break;
 		}
 		//****************************************************************************
 		// LEVEL 7
 		case SPELL_ICE_FIELD: {
-			IceFieldSpell::End(i);
+			static_cast<IceFieldSpell &>(spell).End(i);
 			break;
 		}
 		case SPELL_FIRE_FIELD: {
-			FireFieldSpell::End(i);
+			static_cast<FireFieldSpell &>(spell).End(i);
 			break;
 		}
 		case SPELL_LIGHTNING_STRIKE: {
-			LightningStrikeSpell::End(i);
+			static_cast<LightningStrikeSpell &>(spell).End(i);
 			break;
 		}
 		case SPELL_FLYING_EYE: {
-			FlyingEyeSpell::End(i);
+			static_cast<FlyingEyeSpell &>(spell).End(i);
 			break;
 		}
 		case SPELL_CONFUSE: {
-			ConfuseSpell::End(i);
+			static_cast<ConfuseSpell &>(spell).End(i);
 			break;
 		}
 		//****************************************************************************
@@ -1793,35 +1796,35 @@ void ARX_SPELLS_Update_End(size_t i) {
 			break;
 		}
 		case SPELL_INVISIBILITY: {
-			InvisibilitySpell::End(i);
+			static_cast<InvisibilitySpell &>(spell).End(i);
 			break;
 		}
 		//****************************************************************************
 		// LEVEL 9
 		case SPELL_MASS_PARALYSE: {
-			MassParalyseSpell::End(i);
+			static_cast<MassParalyseSpell &>(spell).End(i);
 			break;
 		}
 		case SPELL_SUMMON_CREATURE : {
-			SummonCreatureSpell::End(i);
+			static_cast<SummonCreatureSpell &>(spell).End(i);
 			break;
 		}
 		case SPELL_FAKE_SUMMON: {
-			FakeSummonSpell::End(i);
+			static_cast<FakeSummonSpell &>(spell).End(i);
 			break;
 		}
 		case SPELL_INCINERATE: {
-			IncinerateSpell::End(i);
+			static_cast<IncinerateSpell &>(spell).End(i);
 			break;
 		}
 		//****************************************************************************
 		// LEVEL 10
 		case SPELL_FREEZE_TIME: {
-			FreezeTimeSpell::End(i);
+			static_cast<FreezeTimeSpell &>(spell).End(i);
 			break;
 		}
 		case SPELL_MASS_INCINERATE: {
-			MassIncinerateSpell::End(i);
+			static_cast<MassIncinerateSpell &>(spell).End(i);
 			break;
 		}
 		default:

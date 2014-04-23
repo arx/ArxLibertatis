@@ -25,28 +25,28 @@
 class MagicSightSpell : public SpellBase {
 public:
 	void Launch(long duration);
-	static void End(long i);
+	void End(long i);
 	static void Update(size_t i);
 };
 
 class MagicMissileSpell : public SpellBase {
 public:
 	void Launch(long i);
-	static void End(long i);
+	void End(long i);
 	static void Update(long i, float timeDelta);
 };
 
 class IgnitSpell : public SpellBase {
 public:
 	void Launch(long i);
-	static void End(long i);
+	void End(long i);
 	static void Update(long i, float timeDelta);
 };
 
 class DouseSpell : public SpellBase {
 public:
 	void Launch(long i);
-	static void End(long i);
+	void End(long i);
 	static void Update(long i, float timeDelta);
 };
 

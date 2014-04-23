@@ -25,21 +25,21 @@
 class RiseDeadSpell : public SpellBase {
 public:
 	bool Launch(long i, long duration);
-	static void End(size_t i);
+	void End(size_t i);
 	static void Update(size_t i, float timeDelta);
 };
 
 class ParalyseSpell : public SpellBase {
 public:
 	void Launch(long i, long duration);
-	static void End(size_t i);
+	void End(size_t i);
 	static void Kill();
 };
 
 class CreateFieldSpell : public SpellBase {
 public:
 	void Launch(SpellcastFlags flags, long i, long duration);
-	static void End(size_t i);
+	void End(size_t i);
 	static void Update(size_t i, float timeDelta);
 };
 
@@ -51,7 +51,7 @@ public:
 class SlowDownSpell : public SpellBase {
 public:
 	bool Launch(long duration, long i);
-	static void End(size_t i);
+	void End(size_t i);
 	static void Update(size_t i, float timeDelta);
 };
 

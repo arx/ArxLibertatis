@@ -31,7 +31,7 @@ public:
 class LevitateSpell : public SpellBase {
 public:
 	void Launch(long duration, long i);
-	static void End(size_t i);
+	void End(size_t i);
 	static void Update(size_t i, float timeDelta);
 };
 

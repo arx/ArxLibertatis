@@ -25,7 +25,7 @@
 class SpeedSpell : public SpellBase {
 public:
 	void Launch(long i, long duration);
-	static void End(long i);
+	void End(long i);
 	static void Update(size_t i, float timeDelta);
 };
 
@@ -38,7 +38,7 @@ public:
 class FireballSpell : public SpellBase {
 public:
 	void Launch(long i);
-	static void End(long i);
+	void End(long i);
 	static void Kill(long i);
 	static void Update(size_t i, float timeDelta);
 };

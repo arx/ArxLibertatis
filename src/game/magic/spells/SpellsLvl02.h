@@ -31,21 +31,21 @@ public:
 class DetectTrapSpell : public SpellBase {
 public:
 	void Launch(long i);
-	static void End(size_t i);
+	void End(size_t i);
 	static void Update(size_t i, float timeDelta);
 };
 
 class ArmorSpell : public SpellBase {
 public:
 	void Launch(long duration, long i);
-	static void End(size_t i);
+	void End(size_t i);
 	static void Update(size_t i, float timeDelta);
 };
 
 class LowerArmorSpell : public SpellBase {
 public:
 	void Launch(long duration, long i);
-	static void End(long i);
+	void End(long i);
 	static void Update(size_t i, float timeDelta);
 };
 

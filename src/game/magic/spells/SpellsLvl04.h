@@ -25,7 +25,7 @@
 class BlessSpell : public SpellBase {
 public:
 	void Launch(long i, long duration);
-	static void End(size_t i);
+	void End(size_t i);
 	static void Update(size_t i, float timeDelta);
 };
 
@@ -37,27 +37,27 @@ public:
 class FireProtectionSpell : public SpellBase {
 public:
 	void Launch(long i, long duration);
-	static void End(size_t i);
+	void End(size_t i);
 	static void Update(size_t i, float timeDelta);
 };
 
 class ColdProtectionSpell : public SpellBase {
 public:
 	void Launch(long i, long duration);
-	static void End(size_t i);
+	void End(size_t i);
 	static void Update(size_t i, float timeDelta);
 };
 
 class TelekinesisSpell : public SpellBase {
 public:
 	void Launch(long i, long duration);
-	static void End(size_t i);
+	void End(size_t i);
 };
 
 class CurseSpell : public SpellBase {
 public:
 	void Launch(long duration, long i);
-	static void End(size_t i);
+	void End(size_t i);
 	static void Update(size_t i, float timeDelta);
 };
 
