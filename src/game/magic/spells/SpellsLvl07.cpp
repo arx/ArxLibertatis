@@ -39,7 +39,7 @@
 
 extern bool TRUE_PLAYER_MOUSELOOK_ON;
 extern float SLID_START;
-extern bool bOldLookToggle;
+bool bOldLookToggle;
 
 bool FlyingEyeSpell::Launch(long i)
 {

@@ -312,7 +312,7 @@ void MassIncinerateSpell::Update(size_t i)
 	}	
 }
 
-extern float LASTTELEPORT;
+float LASTTELEPORT = 0.0F;
 
 void TeleportSpell::Launch(long i)
 {

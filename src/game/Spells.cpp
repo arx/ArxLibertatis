@@ -146,12 +146,8 @@ bool WILLRETURNTOFREELOOK = false;
 bool GLOBAL_MAGIC_MODE = true;
 
 extern long MAGICMODE;
-extern float GLOBAL_SLOWDOWN;
 
 extern bool bRenderInCursorMode;
-
-bool bOldLookToggle;
-extern float SLID_START;
 
 extern bool FrustrumsClipSphere(EERIE_FRUSTRUM_DATA * frustrums,EERIE_SPHERE * sphere);
 
@@ -163,7 +159,6 @@ void ARX_INTERFACE_Combat_Mode(long i);
 SPELL spells[MAX_SPELLS];
 short ARX_FLARES_broken(1);
 
-float LASTTELEPORT = 0.0F;
 long snip=0;
 static Vec2s Lm;
 
