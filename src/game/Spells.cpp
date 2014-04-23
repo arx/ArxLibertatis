@@ -1529,49 +1529,49 @@ bool ARX_SPELLS_Launch(SpellType typ, long source, SpellcastFlags flagss, long l
 		//****************************************************************************
 		// LEVEL 3
 		case SPELL_SPEED: {
-			SpeedSpellLaunch(i, duration);
+			SpeedSpell::Launch(i, duration);
 			break;
 		}
 		case SPELL_DISPELL_ILLUSION: {
-			DispellIllusionSpellLaunch(i);
+			DispellIllusionSpell::Launch(i);
 			break;
 		}
 		case SPELL_FIREBALL: {
-			FireballSpellLaunch(i);
+			FireballSpell::Launch(i);
 			break;
 		}
 		case SPELL_CREATE_FOOD: {
-			CreateFoodSpellLaunch(duration, i);
+			CreateFoodSpell::Launch(duration, i);
 			break;
 		}
 		case SPELL_ICE_PROJECTILE: {
-			IceProjectileSpellLaunch(i);
+			IceProjectileSpell::Launch(i);
 			break;
 		}
 		//****************************************************************************
 		// LEVEL 4
 		case SPELL_BLESS: {
-			BlessSpellLaunch(i, duration, typ);
+			BlessSpell::Launch(i, duration, typ);
 			break;
 		}
 		case SPELL_DISPELL_FIELD: {
-			DispellFieldSpellLaunch(i);
+			DispellFieldSpell::Launch(i);
 			break;
 		}
 		case SPELL_FIRE_PROTECTION: {
-			FireProtectionSpellLaunch(i, typ, duration);
+			FireProtectionSpell::Launch(i, typ, duration);
 			break;
 		}
 		case SPELL_COLD_PROTECTION: {
-			ColdProtectionSpellLaunch(i, duration, typ);
+			ColdProtectionSpell::Launch(i, duration, typ);
 			break;
 		}
 		case SPELL_TELEKINESIS: {
-			TelekinesisSpellLaunch(i, duration);
+			TelekinesisSpell::Launch(i, duration);
 			break;
 		}
 		case SPELL_CURSE: {
-			CurseSpellLaunch(duration, typ, i);
+			CurseSpell::Launch(duration, typ, i);
 			break;
 		}
 		//****************************************************************************
@@ -1757,7 +1757,7 @@ void ARX_SPELLS_Kill(long i) {
 
 	switch(spells[i].type) {
 		case SPELL_FIREBALL: {
-			FireballSpellKill(i);
+			FireballSpell::Kill(i);
 			break;
 		}
 		case SPELL_LIGHTNING_STRIKE: {
@@ -1901,33 +1901,33 @@ void ARX_SPELLS_Update_End(size_t i) {
 		//****************************************************************************
 		// LEVEL 3
 		case SPELL_SPEED: {
-			SpeedSpellEnd(i);
+			SpeedSpell::End(i);
 			break;
 		}
 		case SPELL_FIREBALL: {
-			FireballSpellEnd(i);
+			FireballSpell::End(i);
 			break;
 		}
 		//****************************************************************************
 		// LEVEL 4
 		case SPELL_BLESS: {
-			BlessSpellEnd(i);
+			BlessSpell::End(i);
 			break;
 		}
 		case SPELL_CURSE: {
-			CurseSpellEnd(i);
+			CurseSpell::End(i);
 			break;
 		}
 		case SPELL_TELEKINESIS: {
-			TelekinesisSpellEnd(i);
+			TelekinesisSpell::End(i);
 			break;
 		}
 		case SPELL_FIRE_PROTECTION: {
-			FireProtectionSpellEnd(i);
+			FireProtectionSpell::End(i);
 			break;
 		}
 		case SPELL_COLD_PROTECTION: {
-			ColdProtectionSpellEnd(i);
+			ColdProtectionSpell::End(i);
 			break;
 		}
 		//****************************************************************************
@@ -2071,41 +2071,41 @@ void ARX_SPELLS_Update_Update(size_t i, unsigned long tim) {
 		//****************************************************************************
 		// LEVEL 3 SPELLS
 		case SPELL_FIREBALL: {
-			FireballSpellUpdate(i, framedelay);
+			FireballSpell::Update(i, framedelay);
 			break;
 		}
 		case SPELL_SPEED: {
-			SpeedSpellUpdate(i, framedelay);
+			SpeedSpell::Update(i, framedelay);
 			break;
 		}
 		case SPELL_CREATE_FOOD: {
-			CreateFoodSpellUpdate(i, framedelay);
+			CreateFoodSpell::Update(i, framedelay);
 			break;
 		}
 		case SPELL_ICE_PROJECTILE: {
-			IceProjectileUpdate(i, framedelay);
+			IceProjectileSpell::Update(i, framedelay);
 			break;
 		}
 		case SPELL_DISPELL_ILLUSION: {
-			DispellIllusionSpellUpdate(i, framedelay);
+			DispellIllusionSpell::Update(i, framedelay);
 			break;
 		}
 		//****************************************************************************
 		// LEVEL 4 SPELLS
 		case SPELL_BLESS: {
-			BlessSpellUpdate(i, framedelay);
+			BlessSpell::Update(i, framedelay);
 			break;
 		}
 		case SPELL_CURSE: {
-			CurseSpellUpdate(i, framedelay);
+			CurseSpell::Update(i, framedelay);
 			break;
 		}
 		case SPELL_FIRE_PROTECTION: {
-			FireProtectionSpellUpdate(i, framedelay);
+			FireProtectionSpell::Update(i, framedelay);
 			break;
 		}
 		case SPELL_COLD_PROTECTION: {
-			ColdProtectionSpellUpdate(i, framedelay);
+			ColdProtectionSpell::Update(i, framedelay);
 			break;
 		}
 		//****************************************************************************

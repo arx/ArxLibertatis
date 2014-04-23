@@ -32,7 +32,7 @@
 #include "scene/GameSound.h"
 #include "scene/Interactive.h"
 
-void SpeedSpellLaunch(long i, long duration)
+void SpeedSpell::Launch(long i, long duration)
 {
 	spells[i].bDuration = true;
 	spells[i].fManaCostPerSecond = 2.f;
@@ -65,7 +65,7 @@ void SpeedSpellLaunch(long i, long duration)
 	ARX_SPELLS_AddSpellOn(spells[i].target, i);
 }
 
-void SpeedSpellEnd(long i)
+void SpeedSpell::End(long i)
 {
 	ARX_SPELLS_RemoveSpellOn(spells[i].target,i);
 	
@@ -75,7 +75,7 @@ void SpeedSpellEnd(long i)
 	ARX_SOUND_PlaySFX(SND_SPELL_SPEED_END, &entities[spells[i].target]->pos);
 }
 
-void SpeedSpellUpdate(size_t i, float timeDelta)
+void SpeedSpell::Update(size_t i, float timeDelta)
 {
 	if(spells[i].pSpellFx) {
 		if(spells[i].caster == 0)
@@ -86,7 +86,7 @@ void SpeedSpellUpdate(size_t i, float timeDelta)
 	}
 }
 
-void DispellIllusionSpellLaunch(long i)
+void DispellIllusionSpell::Launch(long i)
 {
 	ARX_SOUND_PlaySFX(SND_SPELL_DISPELL_ILLUSION);
 	spells[i].exist = true;
@@ -113,7 +113,7 @@ void DispellIllusionSpellLaunch(long i)
 	}
 }
 
-void DispellIllusionSpellUpdate(size_t i, float timeDelta)
+void DispellIllusionSpell::Update(size_t i, float timeDelta)
 {
 	if(spells[i].pSpellFx) {
 		spells[i].pSpellFx->Update(timeDelta);
@@ -121,7 +121,7 @@ void DispellIllusionSpellUpdate(size_t i, float timeDelta)
 	}
 }
 
-void FireballSpellLaunch(long i)
+void FireballSpell::Launch(long i)
 {
 	spells[i].exist = true;
 	spells[i].lastupdate = spells[i].timcreation = (unsigned long)(arxtime);
@@ -183,12 +183,12 @@ void FireballSpellLaunch(long i)
 	                                       ARX_SOUND_PLAY_LOOPED);
 }
 
-void FireballSpellEnd(long i)
+void FireballSpell::End(long i)
 {
 	ARX_SOUND_Stop(spells[i].snd_loop);
 }
 
-void FireballSpellKill(long i)
+void FireballSpell::Kill(long i)
 {
 	if(lightHandleIsValid(spells[i].longinfo_light)) {
 		EERIE_LIGHT * light = lightHandleGet(spells[i].longinfo_light);
@@ -199,7 +199,7 @@ void FireballSpellKill(long i)
 	spells[i].longinfo_light = -1;
 }
 
-void FireballSpellUpdate(size_t i, float timeDelta)
+void FireballSpell::Update(size_t i, float timeDelta)
 {
 	CSpellFx *pCSpellFX = spells[i].pSpellFx;
 
@@ -267,7 +267,7 @@ void FireballSpellUpdate(size_t i, float timeDelta)
 	}
 }
 
-void CreateFoodSpellLaunch(long duration, long i)
+void CreateFoodSpell::Launch(long duration, long i)
 {
 	ARX_SOUND_PlaySFX(SND_SPELL_CREATE_FOOD, &spells[i].caster_pos);
 	spells[i].exist = true;
@@ -285,7 +285,7 @@ void CreateFoodSpellLaunch(long duration, long i)
 	spells[i].tolive = effect->GetDuration();
 }
 
-void CreateFoodSpellUpdate(size_t i, float timeDelta)
+void CreateFoodSpell::Update(size_t i, float timeDelta)
 {
 	if(spells[i].pSpellFx) {
 		spells[i].pSpellFx->Update(timeDelta);
@@ -293,7 +293,7 @@ void CreateFoodSpellUpdate(size_t i, float timeDelta)
 	}	
 }
 
-void IceProjectileSpellLaunch(long i)
+void IceProjectileSpell::Launch(long i)
 {
 	ARX_SOUND_PlaySFX(SND_SPELL_ICE_PROJECTILE_LAUNCH, &spells[i].caster_pos);
 	spells[i].exist = true;
@@ -321,7 +321,7 @@ void IceProjectileSpellLaunch(long i)
 	spells[i].tolive = effect->GetDuration();
 }
 
-void IceProjectileUpdate(size_t i, float timeDelta)
+void IceProjectileSpell::Update(size_t i, float timeDelta)
 {
 	if(spells[i].pSpellFx) {
 		spells[i].pSpellFx->Update(timeDelta);

@@ -22,22 +22,37 @@
 
 #include "game/magic/Spell.h"
 
-void SpeedSpellLaunch(long i, long duration);
-void SpeedSpellEnd(long i);
-void SpeedSpellUpdate(size_t i, float timeDelta);
+class SpeedSpell {
+public:
+	static void Launch(long i, long duration);
+	static void End(long i);
+	static void Update(size_t i, float timeDelta);
+};
 
-void DispellIllusionSpellLaunch(long i);
-void DispellIllusionSpellUpdate(size_t i, float timeDelta);
+class DispellIllusionSpell {
+public:
+	static void Launch(long i);
+	static void Update(size_t i, float timeDelta);
+};
 
-void FireballSpellLaunch(long i);
-void FireballSpellEnd(long i);
-void FireballSpellKill(long i);
-void FireballSpellUpdate(size_t i, float timeDelta);
+class FireballSpell {
+public:
+	static void Launch(long i);
+	static void End(long i);
+	static void Kill(long i);
+	static void Update(size_t i, float timeDelta);
+};
 
-void CreateFoodSpellLaunch(long duration, long i);
-void CreateFoodSpellUpdate(size_t i, float timeDelta);
+class CreateFoodSpell {
+public:
+	static void Launch(long duration, long i);
+	static void Update(size_t i, float timeDelta);
+};
 
-void IceProjectileSpellLaunch(long i);
-void IceProjectileUpdate(size_t i, float timeDelta);
+class IceProjectileSpell {
+public:
+	static void Launch(long i);
+	static void Update(size_t i, float timeDelta);
+};
 
 #endif // ARX_GAME_MAGIC_SPELLS_SPELLSLVL03_H

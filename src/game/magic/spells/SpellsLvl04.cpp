@@ -34,7 +34,7 @@
 #include "scene/GameSound.h"
 #include "scene/Interactive.h"
 
-void BlessSpellLaunch(long i, long duration, SpellType typ)
+void BlessSpell::Launch(long i, long duration, SpellType typ)
 {
 	if(spells[i].caster == 0) {
 		spells[i].target = 0;
@@ -63,12 +63,12 @@ void BlessSpellLaunch(long i, long duration, SpellType typ)
 	ARX_SPELLS_AddSpellOn(spells[i].target, i);
 }
 
-void BlessSpellEnd(size_t i)
+void BlessSpell::End(size_t i)
 {
 	ARX_SPELLS_RemoveSpellOn(spells[i].target,i);
 }
 
-void BlessSpellUpdate(size_t i, float timeDelta)
+void BlessSpell::Update(size_t i, float timeDelta)
 {
 	if(spells[i].pSpellFx) {
 		CBless * pBless=(CBless *)spells[i].pSpellFx;
@@ -92,7 +92,7 @@ void BlessSpellUpdate(size_t i, float timeDelta)
 	}
 }
 
-void DispellFieldSpellLaunch(long i)
+void DispellFieldSpell::Launch(long i)
 {
 	spells[i].tolive = 10;
 	
@@ -155,7 +155,7 @@ void DispellFieldSpellLaunch(long i)
 	}
 }
 
-void FireProtectionSpellLaunch(long i, SpellType typ, long duration)
+void FireProtectionSpell::Launch(long i, SpellType typ, long duration)
 {
 	long idx = ARX_SPELLS_GetSpellOn(entities[spells[i].target], typ);
 	if(idx >= 0) {
@@ -210,7 +210,7 @@ void FireProtectionSpellLaunch(long i, SpellType typ, long duration)
 	                                       ARX_SOUND_PLAY_LOOPED);
 }
 
-void FireProtectionSpellEnd(size_t i)
+void FireProtectionSpell::End(size_t i)
 {
 	ARX_SOUND_Stop(spells[i].snd_loop);
 	ARX_SOUND_PlaySFX(SND_SPELL_FIRE_PROTECTION_END, &entities[spells[i].target]->pos);
@@ -220,14 +220,14 @@ void FireProtectionSpellEnd(size_t i)
 		ARX_HALO_SetToNative(entities[spells[i].target]);
 }
 
-void FireProtectionSpellUpdate(size_t i, float timeDelta)
+void FireProtectionSpell::Update(size_t i, float timeDelta)
 {
 	spells[i].pSpellFx->Update(timeDelta);
 	spells[i].pSpellFx->Render();
 	ARX_SOUND_RefreshPosition(spells[i].snd_loop, entities[spells[i].target]->pos);
 }
 
-void ColdProtectionSpellLaunch(long i, long duration, SpellType typ)
+void ColdProtectionSpell::Launch(long i, long duration, SpellType typ)
 {
 	long idx = ARX_SPELLS_GetSpellOn(entities[spells[i].target], typ);
 	if(idx >= 0) {
@@ -282,7 +282,7 @@ void ColdProtectionSpellLaunch(long i, long duration, SpellType typ)
 	ARX_SPELLS_AddSpellOn(spells[i].target, i);
 }
 
-void ColdProtectionSpellEnd(size_t i)
+void ColdProtectionSpell::End(size_t i)
 {
 	ARX_SOUND_Stop(spells[i].snd_loop);
 	ARX_SOUND_PlaySFX(SND_SPELL_COLD_PROTECTION_END, &entities[spells[i].target]->pos);
@@ -292,14 +292,14 @@ void ColdProtectionSpellEnd(size_t i)
 		ARX_HALO_SetToNative(entities[spells[i].target]);
 }
 
-void ColdProtectionSpellUpdate(size_t i, float timeDelta)
+void ColdProtectionSpell::Update(size_t i, float timeDelta)
 {
 	spells[i].pSpellFx->Update(timeDelta);
 	spells[i].pSpellFx->Render();
 	ARX_SOUND_RefreshPosition(spells[i].snd_loop, entities[spells[i].target]->pos);
 }
 
-void TelekinesisSpellLaunch(long i, long duration)
+void TelekinesisSpell::Launch(long i, long duration)
 {
 	spells[i].exist = true;
 	spells[i].tolive = (duration > -1) ? duration : 6000000;
@@ -313,7 +313,7 @@ void TelekinesisSpellLaunch(long i, long duration)
 	ARX_SOUND_PlaySFX(SND_SPELL_TELEKINESIS_START, &spells[i].caster_pos);
 }
 
-void TelekinesisSpellEnd(size_t i)
+void TelekinesisSpell::End(size_t i)
 {
 	if(spells[i].caster == 0)
 		Project.telekinesis = 0;
@@ -321,7 +321,7 @@ void TelekinesisSpellEnd(size_t i)
 	ARX_SOUND_PlaySFX(SND_SPELL_TELEKINESIS_END, &entities[spells[i].caster]->pos);
 }
 
-void CurseSpellLaunch(long duration, SpellType typ, long i)
+void CurseSpell::Launch(long duration, SpellType typ, long i)
 {
 	long iCancel = ARX_SPELLS_GetInstanceForThisCaster(typ, spells[i].target);
 	if(iCancel > -1) {
@@ -353,12 +353,12 @@ void CurseSpellLaunch(long duration, SpellType typ, long i)
 	ARX_SPELLS_AddSpellOn(spells[i].target, i);
 }
 
-void CurseSpellEnd(size_t i)
+void CurseSpell::End(size_t i)
 {
 	ARX_SPELLS_RemoveSpellOn(spells[i].target,i);
 }
 
-void CurseSpellUpdate(size_t i, float timeDelta)
+void CurseSpell::Update(size_t i, float timeDelta)
 {
 	if(spells[i].pSpellFx) {
 		CCurse * curse=(CCurse *)spells[i].pSpellFx;

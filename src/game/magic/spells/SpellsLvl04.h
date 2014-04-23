@@ -22,25 +22,43 @@
 
 #include "game/Spells.h"
 
-void BlessSpellLaunch(long i, long duration, SpellType typ);
-void BlessSpellEnd(size_t i);
-void BlessSpellUpdate(size_t i, float timeDelta);
+class BlessSpell {
+public:
+	static void Launch(long i, long duration, SpellType typ);
+	static void End(size_t i);
+	static void Update(size_t i, float timeDelta);
+};
 
-void DispellFieldSpellLaunch(long i);
+class DispellFieldSpell {
+public:
+	static void Launch(long i);
+};
 
-void FireProtectionSpellLaunch(long i, SpellType typ, long duration);
-void FireProtectionSpellEnd(size_t i);
-void FireProtectionSpellUpdate(size_t i, float timeDelta);
+class FireProtectionSpell {
+public:
+	static void Launch(long i, SpellType typ, long duration);
+	static void End(size_t i);
+	static void Update(size_t i, float timeDelta);
+};
 
-void ColdProtectionSpellLaunch(long i, long duration, SpellType typ);
-void ColdProtectionSpellEnd(size_t i);
-void ColdProtectionSpellUpdate(size_t i, float timeDelta);
+class ColdProtectionSpell {
+public:
+	static void Launch(long i, long duration, SpellType typ);
+	static void End(size_t i);
+	static void Update(size_t i, float timeDelta);
+};
 
-void TelekinesisSpellLaunch(long i, long duration);
-void TelekinesisSpellEnd(size_t i);
+class TelekinesisSpell {
+public:
+	static void Launch(long i, long duration);
+	static void End(size_t i);
+};
 
-void CurseSpellLaunch(long duration, SpellType typ, long i);
-void CurseSpellEnd(size_t i);
-void CurseSpellUpdate(size_t i, float timeDelta);
+class CurseSpell {
+public:
+	static void Launch(long duration, SpellType typ, long i);
+	static void End(size_t i);
+	static void Update(size_t i, float timeDelta);
+};
 
 #endif // ARX_GAME_MAGIC_SPELLS_SPELLSLVL04_H
