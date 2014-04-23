@@ -55,6 +55,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "math/Types.h"
 #include "math/Vector.h"
 #include "math/Angle.h"
+#include "platform/Flags.h"
 
 struct EERIEPOLY;
 struct EERIE_CAMERA;
@@ -62,7 +63,31 @@ struct EERIE_SPHERE;
 class TextureContainer;
 class Entity;
 
+enum ParticlesTypeFlag {
+	FIRE_TO_SMOKE       = 0x00000001,
+	ROTATING            = 0x00000002,
+	FADE_IN_AND_OUT     = 0x00000004,
+	MODULATE_ROTATION   = 0x00000008,
+	DISSIPATING         = 0x00000010,
+	GRAVITY             = 0x00000020,
+	SUBSTRACT           = 0x00000040,
+	FIRE_TO_SMOKE2      = 0x00000080,
+	PARTICLE_SPARK2     = 0x00000100,
+	FOLLOW_SOURCE       = 0x00000200,
+	FOLLOW_SOURCE2      = 0x00000400,
+	DELAY_FOLLOW_SOURCE = 0x00000800,
+	NO_TRANS            = 0x00001000,
+	PARTICLE_ANIMATED   = 0x00002000,
+	PARTICLE_SPARK      = 0x00004000,
+	SPLAT_GROUND        = 0x00008000,
+	SPLAT_WATER         = 0x00010000,
+	PARTICLE_SUB2       = 0x00020000,
+	PARTICLE_GOLDRAIN   = 0x00040000,
+	PARTICLE_NOZBUFFER  = 0x80000000
+};
 
+DECLARE_FLAGS(ParticlesTypeFlag, ParticlesTypeFlags)
+DECLARE_FLAGS_OPERATORS(ParticlesTypeFlags)
 
 struct POLYBOOM {
 	short tx;
@@ -92,7 +117,7 @@ struct PARTICLE_DEF {
 	unsigned long delay;
 	TextureContainer * tc;
 	Color3f rgb;
-	long special; // TODO ARX_PARTICLES_TYPE_FLAG
+	ParticlesTypeFlags special;
 	float fparam;
 	long mask;
 	Vec3f * source;
@@ -128,28 +153,6 @@ struct FOG_DEF
 #define MAX_FLARELIFE 4000
 #define FLARE_MUL 2.f
 
-enum ARX_PARTICLES_TYPE_FLAG {
-	FIRE_TO_SMOKE       = 0x00000001,
-	ROTATING            = 0x00000002,
-	FADE_IN_AND_OUT     = 0x00000004,
-	MODULATE_ROTATION   = 0x00000008,
-	DISSIPATING         = 0x00000010,
-	GRAVITY             = 0x00000020,
-	SUBSTRACT           = 0x00000040,
-	FIRE_TO_SMOKE2      = 0x00000080,
-	PARTICLE_SPARK2     = 0x00000100,
-	FOLLOW_SOURCE       = 0x00000200,
-	FOLLOW_SOURCE2      = 0x00000400,
-	DELAY_FOLLOW_SOURCE = 0x00000800,
-	NO_TRANS            = 0x00001000,
-	PARTICLE_ANIMATED   = 0x00002000,
-	PARTICLE_SPARK      = 0x00004000,
-	SPLAT_GROUND        = 0x00008000,
-	SPLAT_WATER         = 0x00010000,
-	PARTICLE_SUB2       = 0x00020000,
-	PARTICLE_GOLDRAIN   = 0x00040000,
-	PARTICLE_NOZBUFFER  = 0x80000000
-};
 
 //-----------------------------------------------------------------------------
 #define BOOM_RADIUS 420.f

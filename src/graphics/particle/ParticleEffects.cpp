@@ -182,7 +182,7 @@ static void ARX_PARTICLES_Spawn_Rogue_Blood(const Vec3f & pos, float dmgs, Color
 }
 
 static void ARX_PARTICLES_Spawn_Blood3(const Vec3f & pos, float dmgs, Color col,
-                                       long flags = 0) {
+                                       ParticlesTypeFlags flags = 0) {
 	
 	PARTICLE_DEF * pd = createParticle();
 	if(pd) {
