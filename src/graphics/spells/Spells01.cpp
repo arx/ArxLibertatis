@@ -683,38 +683,38 @@ CIgnit::CIgnit()
 
 CIgnit::~CIgnit()
 {
-	this->Kill();
+	Kill();
 }
 
 void CIgnit::Kill(void)
 {
-	int nb = this->nblight;
+	int nb = nblight;
 
 	while(nb--) {
 		lightHandleDestroy(tablight[nb].idl);
 	}
 
-	this->nblight = 0;
+	nblight = 0;
 }
 
 void CIgnit::Create(Vec3f * posc, float perim, int speed)
 {
-	this->pos = *posc;
-	this->perimetre = perim;
-	this->nblight = 0;
-	this->duration = speed;
-	this->currduration = 0;
-	this->key = 0;
+	pos = *posc;
+	perimetre = perim;
+	nblight = 0;
+	duration = speed;
+	currduration = 0;
+	key = 0;
 
 	int	nb = 256;
 
 	while(nb--) {
-		this->tablight[nb].actif = 0;
-		this->tablight[nb].idl = -1;
+		tablight[nb].actif = 0;
+		tablight[nb].idl = -1;
 	}
 
-	this->ChangeTexture(TextureContainer::Load("graph/particles/fire_hit"));
-	this->ChangeRGBMask(1.f, 1.f, 1.f, Color(255, 200, 0).toBGRA());
+	ChangeTexture(TextureContainer::Load("graph/particles/fire_hit"));
+	ChangeRGBMask(1.f, 1.f, 1.f, Color(255, 200, 0).toBGRA());
 }
 
 void CIgnit::Action(int aiMode)
@@ -737,23 +737,23 @@ void CIgnit::AddLight(int aiLight)
 	if(arxtime.is_paused())
 		return;
 
-	this->tablight[this->nblight].actif = 1;
-	this->tablight[this->nblight].iLightNum = aiLight;
-	this->tablight[this->nblight].poslight = GLight[aiLight]->pos;
+	tablight[nblight].actif = 1;
+	tablight[nblight].iLightNum = aiLight;
+	tablight[nblight].poslight = GLight[aiLight]->pos;
 
-	this->tablight[this->nblight].idl = GetFreeDynLight();
+	tablight[nblight].idl = GetFreeDynLight();
 
-	if(lightHandleIsValid(tablight[this->nblight].idl)) {
-		EERIE_LIGHT * light = lightHandleGet(this->tablight[this->nblight].idl);
+	if(lightHandleIsValid(tablight[nblight].idl)) {
+		EERIE_LIGHT * light = lightHandleGet(tablight[nblight].idl);
 		
 		light->intensity = 0.7f + 2.f * rnd();
 		light->fallend = 400.f;
 		light->fallstart = 300.f;
 		light->rgb = rgb;
-		light->pos = this->tablight[this->nblight].poslight;
+		light->pos = tablight[nblight].poslight;
 	}
 
-	this->nblight++;
+	nblight++;
 }
 
 void CIgnit::Update(unsigned long _ulTime) 
@@ -761,46 +761,46 @@ void CIgnit::Update(unsigned long _ulTime)
 	float	a;
 	int		nb;
 
-	if(this->currduration >= this->duration) {
-		this->key++;
+	if(currduration >= duration) {
+		key++;
 	}
 
-	switch(this->key) {
+	switch(key) {
 		case 0:
-			a = (((float)this->currduration)) / ((float)this->duration);
+			a = (((float)currduration)) / ((float)duration);
 
 			if(a >= 1.f)
 				a = 1.f;
 
-			nb = this->nblight;
+			nb = nblight;
 
 			while(nb--) {
-				if(this->tablight[nb].actif) {
-					this->tablight[nb].posfx = this->pos + (this->tablight[nb].poslight - this->pos) * a;
+				if(tablight[nb].actif) {
+					tablight[nb].posfx = pos + (tablight[nb].poslight - pos) * a;
 
-					LightHandle id = this->tablight[nb].idl;
+					LightHandle id = tablight[nb].idl;
 
 					if(lightHandleIsValid(id)) {
 						EERIE_LIGHT * light = lightHandleGet(id);
 						
 						light->intensity = 0.7f + 2.f * rnd();
-						light->pos = this->tablight[nb].posfx;
+						light->pos = tablight[nb].posfx;
 					}
 				}
 			}
 
-			this->interp = a;
+			interp = a;
 			break;
 	}
 
 	if(!arxtime.is_paused())
-		this->currduration += _ulTime;
+		currduration += _ulTime;
 }
 
 void CDoze::CreateDoze(Vec3f * posc, float perim, int speed) {
-	this->Create(posc, perim, speed);
-	this->ChangeTexture(TextureContainer::Load("graph/particles/doze_hit"));
-	this->ChangeRGBMask(0.f, .7f, 1.f, 0xFF0000FF);
+	Create(posc, perim, speed);
+	ChangeTexture(TextureContainer::Load("graph/particles/doze_hit"));
+	ChangeRGBMask(0.f, .7f, 1.f, 0xFF0000FF);
 }
 
 void CDoze::AddLightDoze(int aiLight)
@@ -808,28 +808,28 @@ void CDoze::AddLightDoze(int aiLight)
 	if(arxtime.is_paused())
 		return;
 
-	this->tablight[this->nblight].actif = 1;
-	this->tablight[this->nblight].iLightNum = aiLight;
-	this->tablight[this->nblight].poslight = GLight[aiLight]->pos;
-	this->tablight[this->nblight].idl = -1;
+	tablight[nblight].actif = 1;
+	tablight[nblight].iLightNum = aiLight;
+	tablight[nblight].poslight = GLight[aiLight]->pos;
+	tablight[nblight].idl = -1;
 
-	this->nblight++;
+	nblight++;
 }
 
 void CIgnit::Render() {
 	
-	switch(this->key) {
+	switch(key) {
 		case 0:
 
-			if(this->currduration > this->duration)
-				this->key++;
+			if(currduration > duration)
+				key++;
 
 			if(!arxtime.is_paused()) {
-				float unsuri = (1.f - this->interp);
-				int nb = this->nblight;
+				float unsuri = (1.f - interp);
+				int nb = nblight;
 
 				while(nb--) {
-					if(this->tablight[nb].actif && rnd() > .5f) {
+					if(tablight[nb].actif && rnd() > .5f) {
 						createSphericalSparks(tablight[nb].posfx, rnd() * 20.f * unsuri, tp, rgb, mask);
 					}
 				}
