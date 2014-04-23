@@ -57,7 +57,7 @@ struct FLARES {
 	bool bDrawBitmap;
 };
 
-#define MAX_FLARES 300
+static const size_t MAX_FLARES = 300;
 FLARES magicFlares[MAX_FLARES];
 
 struct FLARETC
@@ -93,7 +93,7 @@ void MagicFlareSetCamera(EERIE_CAMERA * camera) {
 }
 
 void MagicFlareReleaseEntity(Entity * io) {
-	for(long i = 0; i < MAX_FLARES; i++) {
+	for(size_t i = 0; i < MAX_FLARES; i++) {
 		if(magicFlares[i].exist && magicFlares[i].io == io)
 			magicFlares[i].io = NULL;
 	}
@@ -101,7 +101,7 @@ void MagicFlareReleaseEntity(Entity * io) {
 
 long MagicFlareCountNonFlagged() {
 	long count = 0;
-	for(long i = 0; i < MAX_FLARES; i++) {
+	for(size_t i = 0; i < MAX_FLARES; i++) {
 		if(magicFlares[i].exist && magicFlares[i].flags == 0) {
 			count++;
 		}
@@ -112,15 +112,14 @@ long MagicFlareCountNonFlagged() {
 
 void ARX_MAGICAL_FLARES_FirstInit() {
 	flarenum = 0;
-	for(long i = 0; i < MAX_FLARES; i++) {
+	for(size_t i = 0; i < MAX_FLARES; i++) {
 		magicFlares[i].exist = 0;
 	}
 }
 
 void ARX_MAGICAL_FLARES_KillAll()
 {
-	for (long i=0;i<MAX_FLARES;i++)
-	{
+	for(size_t i = 0; i < MAX_FLARES; i++) {
 		FLARES & flare = magicFlares[i];
 
 		if (flare.exist)
@@ -143,7 +142,7 @@ void ARX_MAGICAL_FLARES_KillAll()
 
 void AddFlare(const Vec2s & pos, float sm, short typ, Entity * io, bool bookDraw) {
 
-	long i;
+	size_t i;
 	for(i = 0; i < MAX_FLARES; i++) {
 		if(!magicFlares[i].exist) {
 			break;
@@ -294,8 +293,8 @@ void AddLFlare(const Vec2s & pos, Entity * io)
 	AddFlare(pos, 0.45f, 1, io);
 }
 
-#define FLARELINESTEP		7
-#define FLARELINERND		6
+static const int FLARELINESTEP = 7;
+static const int FLARELINERND = 6;
 
 void FlareLine(const Vec2s & pos0, const Vec2s & pos1, Entity * io)
 {
@@ -417,7 +416,7 @@ void ARX_MAGICAL_FLARES_Update() {
 
 		mat.setTexture(surf);
 
-		for(long i = 0; i < MAX_FLARES; i++) {
+		for(size_t i = 0; i < MAX_FLARES; i++) {
 
 			FLARES & flare = magicFlares[i];
 
