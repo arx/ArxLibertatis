@@ -139,14 +139,10 @@ public:
 	SpellType m_type;
 	Vec3f m_vsource; // TODO this is used but never set
 	
-	Vec3f m_move;
-	Vec3f m_scale;
 	float m_siz;
 	unsigned long m_timcreation;
 	unsigned long m_lastupdate;
 	unsigned long m_tolive;
-	
-	TextureContainer * m_tc;
 	
 	long m_longinfo_entity;
 	long m_longinfo_damage;
