@@ -1427,7 +1427,7 @@ bool ARX_SPELLS_Launch(SpellType typ, long source, SpellcastFlags flagss, long l
 			break;
 		}
 		case SPELL_DISPELL_ILLUSION: {
-			static_cast<DispellIllusionSpell &>(spell).Launch(i);
+			static_cast<DispellIllusionSpell &>(spell).Launch();
 			break;
 		}
 		case SPELL_FIREBALL: {

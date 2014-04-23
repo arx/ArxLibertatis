@@ -31,7 +31,7 @@ public:
 
 class DispellIllusionSpell : public SpellBase {
 public:
-	void Launch(long i);
+	void Launch();
 	static void Update(size_t i, float timeDelta);
 };
 
