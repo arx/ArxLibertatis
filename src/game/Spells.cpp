@@ -1547,7 +1547,7 @@ bool ARX_SPELLS_Launch(SpellType typ, long source, SpellcastFlags flagss, long l
 			break;
 		}
 		case SPELL_DISARM_TRAP: {
-			static_cast<DisarmTrapSpell &>(spell).Launch(i);
+			static_cast<DisarmTrapSpell &>(spell).Launch();
 			break;
 		}
 		case SPELL_SLOW_DOWN: {
@@ -1757,11 +1757,11 @@ void ARX_SPELLS_Update_End(size_t i) {
 			break;
 		}
 		case SPELL_RISE_DEAD: {
-			static_cast<RiseDeadSpell &>(spell).End(i);
+			static_cast<RiseDeadSpell &>(spell).End();
 			break;
 		}
 		case SPELL_CREATE_FIELD: {
-			static_cast<CreateFieldSpell &>(spell).End(i);
+			static_cast<CreateFieldSpell &>(spell).End();
 			break;
 		}
 		case SPELL_SLOW_DOWN: {
@@ -2030,11 +2030,11 @@ void ARX_SPELLS_Update_Update(size_t i, unsigned long tim) {
 		//****************************************************************************
 		// LEVEL 6 SPELLS
 		case SPELL_RISE_DEAD: {
-			static_cast<RiseDeadSpell &>(spell).Update(i, framedelay);
+			static_cast<RiseDeadSpell &>(spell).Update(framedelay);
 			break;
 		}
 		case SPELL_SLOW_DOWN: {
-			static_cast<SlowDownSpell &>(spell).Update(i, framedelay);
+			static_cast<SlowDownSpell &>(spell).Update(framedelay);
 			break;
 		}
 		case SPELL_DISARM_TRAP: {
@@ -2044,7 +2044,7 @@ void ARX_SPELLS_Update_Update(size_t i, unsigned long tim) {
 			break;
 		}
 		case SPELL_CREATE_FIELD: {
-			static_cast<CreateFieldSpell &>(spell).Update(i, framedelay);
+			static_cast<CreateFieldSpell &>(spell).Update(framedelay);
 			break;
 		}
 		//****************************************************************************
