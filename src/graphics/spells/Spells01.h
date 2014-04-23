@@ -105,7 +105,7 @@ class CIgnit : public CSpellFx {
 private:
 	Vec3f pos;
 	float perimetre;
-	short key;
+	bool m_active;
 	int duration;
 	int currduration;
 	float interp;

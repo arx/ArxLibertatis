@@ -672,7 +672,7 @@ void CMultiMagicMissile::Render()
 CIgnit::CIgnit()
 	: pos(Vec3f_ZERO)
 	, perimetre(0.f)
-	, key(0)
+	, m_active(false)
 	, duration(0)
 	, currduration(0)
 	, interp(0.f)
@@ -704,7 +704,7 @@ void CIgnit::Create(Vec3f * posc, float perim, int speed)
 	nblight = 0;
 	duration = speed;
 	currduration = 0;
-	key = 0;
+	m_active = true;
 
 	int	nb = 256;
 
@@ -760,11 +760,10 @@ void CIgnit::Update(unsigned long _ulTime)
 	int		nb;
 
 	if(currduration >= duration) {
-		key++;
+		m_active = false;
 	}
 
-	switch(key) {
-		case 0:
+	if(m_active) {
 			a = (((float)currduration)) / ((float)duration);
 
 			if(a >= 1.f)
@@ -788,7 +787,6 @@ void CIgnit::Update(unsigned long _ulTime)
 			}
 
 			interp = a;
-			break;
 	}
 
 	if(!arxtime.is_paused())
@@ -816,13 +814,7 @@ void CDoze::AddLightDoze(int aiLight)
 
 void CIgnit::Render() {
 	
-	switch(key) {
-		case 0:
-
-			if(currduration > duration)
-				key++;
-
-			if(!arxtime.is_paused()) {
+	if(m_active) {
 				float unsuri = (1.f - interp);
 				int nb = nblight;
 
@@ -831,11 +823,6 @@ void CIgnit::Render() {
 						createSphericalSparks(tablight[nb].posfx, rnd() * 20.f * unsuri, tp, rgb, mask);
 					}
 				}
-			}
-
-			break;
-		default:
-			break;
 	}
 }
 
