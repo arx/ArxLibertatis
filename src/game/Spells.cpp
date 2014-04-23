@@ -156,7 +156,7 @@ void ARX_INTERFACE_Combat_Mode(long i);
 
 
 ///////////////Spell Interpretation
-SPELL spells[MAX_SPELLS];
+SpellBase spells[MAX_SPELLS];
 short ARX_FLARES_broken(1);
 
 long snip=0;
@@ -438,7 +438,7 @@ long ARX_SPELLS_GetSpellOn(const Entity * io, SpellType spellid)
 	for(it = io->spellsOn.begin(); it != io->spellsOn.end(); ++it) {
 		long spellHandle = *it;
 		if(spellHandleIsValid(spellHandle)) {
-			SPELL * spell = &spells[spellHandle];
+			SpellBase * spell = &spells[spellHandle];
 			
 			if(spell->type == spellid) {
 				return spellHandle;
@@ -697,7 +697,7 @@ void SPELLCAST_NotifyOnlyTarget(long num)
 	}	
 }
 
-void SPELLEND_Notify(SPELL & spell) {
+void SPELLEND_Notify(SpellBase & spell) {
 	
 	char spellName[128];
 	long source = spell.caster;
@@ -2247,7 +2247,7 @@ void ARX_SPELLS_Update() {
 	const unsigned long tim = (unsigned long)(arxtime);
 	
 	for(size_t i = 0; i < MAX_SPELLS; i++) {
-		SPELL & spell = spells[i];
+		SpellBase & spell = spells[i];
 		
 		if(!GLOBAL_MAGIC_MODE) {
 			spell.tolive = 0;

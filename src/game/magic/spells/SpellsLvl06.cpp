@@ -417,7 +417,7 @@ bool SlowDownSpell::Launch(long duration, long i)
 	for(it = io->spellsOn.begin(); it != io->spellsOn.end(); ++it) {
 		long spellHandle = *it;
 		if(spellHandleIsValid(spellHandle)) {
-			SPELL * spell = &spells[spellHandle];
+			SpellBase * spell = &spells[spellHandle];
 			
 			if(spell->type == SPELL_SLOW_DOWN) {
 				spell->exist = false;

@@ -2714,7 +2714,7 @@ float ARX_INTERACTIVE_GetArmorClass(Entity * io) {
 	for(it = io->spellsOn.begin(); it != io->spellsOn.end(); ++it) {
 		long spellHandle = *it;
 		if(spellHandleIsValid(spellHandle)) {
-			SPELL * spell = &spells[spellHandle];
+			SpellBase * spell = &spells[spellHandle];
 			
 			switch(spell->type) {
 				case SPELL_ARMOR:

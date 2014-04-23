@@ -122,8 +122,8 @@ DECLARE_FLAGS(SpellcastFlag, SpellcastFlags)
 DECLARE_FLAGS_OPERATORS(SpellcastFlags)
 
 
-struct SPELL {
-	
+class SpellBase {
+public:
 	bool exist;
 	long caster; //!< Number of the source interactive obj (0==player)
 	long target; //!< Number of the target interactive obj if any

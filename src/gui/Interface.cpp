@@ -6115,7 +6115,7 @@ public:
 			for(it = playerEntity->spellsOn.begin(); it != playerEntity->spellsOn.end(); ++it) {
 				long spellHandle = *it;
 				if(spellHandleIsValid(spellHandle)) {
-					SPELL * spell = &spells[spellHandle];
+					SpellBase * spell = &spells[spellHandle];
 					
 					if(spell->caster != 0 && spellicons[spell->type].bDuration) {
 						ManageSpellIcon(spellHandle, intensity, true);
