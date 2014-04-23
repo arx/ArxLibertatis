@@ -1863,7 +1863,7 @@ void ARX_SPELLS_Kill(long i) {
 			break;
 		}
 		case SPELL_REPEL_UNDEAD: {
-			static_cast<RepelUndeadSpell &>(spell).Kill(i);
+			static_cast<RepelUndeadSpell &>(spell).Kill();
 			break;
 		}
 		case SPELL_HARM: {
@@ -2008,23 +2008,23 @@ void ARX_SPELLS_Update_Update(size_t i, unsigned long tim) {
 		//****************************************************************************
 		// LEVEL 5 SPELLS
 		case SPELL_CURE_POISON: {
-			static_cast<CurePoisonSpell &>(spell).Update(i, framedelay);
+			static_cast<CurePoisonSpell &>(spell).Update(framedelay);
 			break;
 		}
 		case SPELL_RUNE_OF_GUARDING: {
-			static_cast<RuneOfGuardingSpell &>(spell).Update(i, framedelay);
+			static_cast<RuneOfGuardingSpell &>(spell).Update(framedelay);
 			break;
 		}
 		case SPELL_REPEL_UNDEAD: {
-			static_cast<RepelUndeadSpell &>(spell).Update(i, framedelay);
+			static_cast<RepelUndeadSpell &>(spell).Update(framedelay);
 			break;
 		}
 		case SPELL_POISON_PROJECTILE: {
-			static_cast<PoisonProjectileSpell &>(spell).Update(i, framedelay);
+			static_cast<PoisonProjectileSpell &>(spell).Update(framedelay);
 			break;
 		}
 		case SPELL_LEVITATE: {
-			static_cast<LevitateSpell &>(spell).Update(i, framedelay);
+			static_cast<LevitateSpell &>(spell).Update(framedelay);
 			break;
 		}
 		//****************************************************************************

@@ -25,33 +25,33 @@
 class RuneOfGuardingSpell : public SpellBase {
 public:
 	void Launch(long i, long duration);
-	void Update(size_t i, float timeDelta);
+	void Update(float timeDelta);
 };
 
 class LevitateSpell : public SpellBase {
 public:
 	void Launch(long duration, long i);
 	void End(size_t i);
-	void Update(size_t i, float timeDelta);
+	void Update(float timeDelta);
 };
 
 class CurePoisonSpell : public SpellBase {
 public:
 	void Launch(long i);
-	void Update(size_t i, float timeDelta);
+	void Update(float timeDelta);
 };
 
 class RepelUndeadSpell : public SpellBase {
 public:
 	void Launch(long duration, long i);
-	void Kill(long i);
-	void Update(size_t i, float timeDelta);
+	void Kill();
+	void Update(float timeDelta);
 };
 
 class PoisonProjectileSpell : public SpellBase {
 public:
 	void Launch(long i);
-	void Update(size_t i, float timeDelta);
+	void Update(float timeDelta);
 };
 
 #endif // ARX_GAME_MAGIC_SPELLS_SPELLSLVL05_H
