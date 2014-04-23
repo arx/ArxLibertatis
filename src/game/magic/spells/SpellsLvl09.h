@@ -22,27 +22,40 @@
 
 #include "math/Types.h"
 
-bool SummonCreatureSpellLaunch(long i, long duration);
-void SummonCreatureSpellEnd(size_t i);
-void SummonCreatureSpellKill(long i);
-void SummonCreatureSpellUpdate(size_t i, float timeDelta);
+class SummonCreatureSpell {
+public:
+	static bool Launch(long i, long duration);
+	static void End(size_t i);
+	static void Kill(long i);
+	static void Update(size_t i, float timeDelta);
+};
 
-bool FakeSummonSpellLaunch(long i);
-void FakeSummonSpellEnd(size_t i);
-void FakeSummonSpellKill(long i);
-void FakeSummonSpellUpdate(size_t i, float timeDelta);
+class FakeSummonSpell {
+public:
+	static bool Launch(long i);
+	static void End(size_t i);
+	static void Kill(long i);
+	static void Update(size_t i, float timeDelta);
+};
 
-void LaunchAntiMagicField(size_t ident);
+class NegateMagicSpell {
+public:
+	static void Launch(long duration, long i);
+	static void Update(size_t i, float timeDelta);
+};
 
-void NegateMagicSpellLaunch(long duration, long i);
-void NegateMagicSpellUpdate(size_t i, float timeDelta);
+class IncinerateSpell {
+public:
+	static bool Launch(long i);
+	static void End(size_t i);
+	static void Update(size_t i);
+};
 
-bool IncinerateSpellLaunch(long i);
-void IncinerateSpellEnd(size_t i);
-void IncinerateSpellUpdate(size_t i);
-
-void MassParalyseSpellLaunch(long i, long duration);
-void MassParalyseSpellEnd(size_t i);
-void MassParalyseSpellKill();
+class MassParalyseSpell {
+public:
+	static void Launch(long i, long duration);
+	static void End(size_t i);
+	static void Kill();
+};
 
 #endif // ARX_GAME_MAGIC_SPELLS_SPELLSLVL09_H

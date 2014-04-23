@@ -43,7 +43,7 @@
 
 extern Rect g_size;
 
-void MassLightningStrikeSpellLaunch(long i, SpellType typ)
+void MassLightningStrikeSpell::Launch(long i, SpellType typ)
 {
 	for(size_t ii = 0; ii < MAX_SPELLS; ii++) {
 		if(spells[ii].exist && spells[ii].type == typ) {
@@ -101,7 +101,7 @@ void MassLightningStrikeSpellLaunch(long i, SpellType typ)
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 }
 
-void MassLightningStrikeSpellKill(long i)
+void MassLightningStrikeSpell::Kill(long i)
 {
 	if(lightHandleIsValid(spells[i].longinfo_light)) {
 		EERIE_LIGHT * light = lightHandleGet(spells[i].longinfo_light);
@@ -115,7 +115,7 @@ void MassLightningStrikeSpellKill(long i)
 	ARX_SOUND_PlaySFX(SND_SPELL_LIGHTNING_END);
 }
 
-void MassLightningStrikeSpellUpdate(unsigned long tim, size_t i, float timeDelta)
+void MassLightningStrikeSpell::Update(unsigned long tim, size_t i, float timeDelta)
 {
 	CSpellFx *pCSpellFX = spells[i].pSpellFx;
 
@@ -171,7 +171,7 @@ void MassLightningStrikeSpellUpdate(unsigned long tim, size_t i, float timeDelta
 	}	
 }
 
-bool ControlTargetSpellLaunch(long i)
+bool ControlTargetSpell::Launch(long i)
 {
 	if(!ValidIONum(spells[i].target)) {
 		return false;
@@ -220,7 +220,7 @@ bool ControlTargetSpellLaunch(long i)
 	return true;
 }
 
-void ControlTargetSpellUpdate(size_t i, float timeDelta)
+void ControlTargetSpell::Update(size_t i, float timeDelta)
 {
 	CSpellFx *pCSpellFX = spells[i].pSpellFx;
 	
@@ -232,7 +232,7 @@ void ControlTargetSpellUpdate(size_t i, float timeDelta)
 
 extern float GLOBAL_SLOWDOWN;
 
-void FreezeTimeSpellLaunch(long duration, long i)
+void FreezeTimeSpell::Launch(long duration, long i)
 {
 	ARX_SOUND_PlaySFX(SND_SPELL_FREEZETIME);
 	
@@ -247,13 +247,13 @@ void FreezeTimeSpellLaunch(long duration, long i)
 	spells[i].longinfo_time = (long)arxtime.get_updated();
 }
 
-void FreezeTimeSpellEnd(size_t i)
+void FreezeTimeSpell::End(size_t i)
 {
 	GLOBAL_SLOWDOWN += spells[i].siz;
 	ARX_SOUND_PlaySFX(SND_SPELL_TELEKINESIS_END, &entities[spells[i].caster]->pos);
 }
 
-void MassIncinerateSpellLaunch(long i)
+void MassIncinerateSpell::Launch(long i)
 {
 	ARX_SOUND_PlaySFX(SND_SPELL_MASS_INCINERATE);
 	
@@ -298,14 +298,14 @@ void ARX_SPELLS_RemoveMultiSpellOn(long spell_id) {
 	}
 }
 
-void MassIncinerateSpellEnd(size_t i)
+void MassIncinerateSpell::End(size_t i)
 {
 	ARX_SPELLS_RemoveMultiSpellOn(i);
 	ARX_SOUND_Stop(spells[i].snd_loop);
 	ARX_SOUND_PlaySFX(SND_SPELL_INCINERATE_END);
 }
 
-void MassIncinerateSpellUpdate(size_t i)
+void MassIncinerateSpell::Update(size_t i)
 {
 	if(ValidIONum(spells[i].caster)) {
 		ARX_SOUND_RefreshPosition(spells[i].snd_loop, entities[spells[i].caster]->pos);
@@ -314,7 +314,7 @@ void MassIncinerateSpellUpdate(size_t i)
 
 extern float LASTTELEPORT;
 
-void TeleportSpellLaunch(long i)
+void TeleportSpell::Launch(long i)
 {
 	spells[i].exist = true;
 	spells[i].tolive = 7000;
@@ -326,14 +326,14 @@ void TeleportSpellLaunch(long i)
 	}
 }
 
-void TeleportSpellEnd(size_t i)
+void TeleportSpell::End(size_t i)
 {
 	ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE, &spells[i].caster_pos);
 }
 
 extern Vec3f lastteleport;
 
-void TeleportSpellUpdate(unsigned long tim, size_t i)
+void TeleportSpell::Update(unsigned long tim, size_t i)
 {
 	float TELEPORT = (float)(((float)tim-(float)spells[i].timcreation)/(float)spells[i].tolive);
 

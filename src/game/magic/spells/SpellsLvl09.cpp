@@ -38,7 +38,7 @@
 #include "scene/GameSound.h"
 #include "scene/Interactive.h"
 
-bool SummonCreatureSpellLaunch(long i, long duration)
+bool SummonCreatureSpell::Launch(long i, long duration)
 {
 	spells[i].exist = true;
 	spells[i].lastupdate = spells[i].timcreation = (unsigned long)(arxtime);
@@ -98,7 +98,7 @@ bool SummonCreatureSpellLaunch(long i, long duration)
 	return true;
 }
 
-void SummonCreatureSpellEnd(size_t i)
+void SummonCreatureSpell::End(size_t i)
 {
 	if(ValidIONum(spells[i].longinfo2_entity) && spells[i].longinfo2_entity != 0) {
 		ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &entities[spells[i].longinfo2_entity]->pos);
@@ -108,7 +108,7 @@ void SummonCreatureSpellEnd(size_t i)
 	// need to killio
 }
 
-void SummonCreatureSpellKill(long i)
+void SummonCreatureSpell::Kill(long i)
 {
 	lightHandleDestroy(spells[i].pSpellFx->lLightId);
 	
@@ -141,7 +141,7 @@ void SummonCreatureSpellKill(long i)
 	spells[i].longinfo2_entity = 0;
 }
 
-void SummonCreatureSpellUpdate(size_t i, float timeDelta)
+void SummonCreatureSpell::Update(size_t i, float timeDelta)
 {
 	if(!arxtime.is_paused()) {
 		if(float(arxtime) - (float)spells[i].timcreation <= 4000) {
@@ -268,7 +268,7 @@ void SummonCreatureSpellUpdate(size_t i, float timeDelta)
 	}	
 }
 
-bool FakeSummonSpellLaunch(long i)
+bool FakeSummonSpell::Launch(long i)
 {
 	if(spells[i].caster <= 0 || !ValidIONum(spells[i].target)) {
 		return false;
@@ -311,19 +311,19 @@ bool FakeSummonSpellLaunch(long i)
 	return true;
 }
 
-void FakeSummonSpellEnd(size_t i)
+void FakeSummonSpell::End(size_t i)
 {
 	ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &spells[i].target_pos);
 	
 	lightHandleDestroy(spells[i].pSpellFx->lLightId);
 }
 
-void FakeSummonSpellKill(long i)
+void FakeSummonSpell::Kill(long i)
 {
 	lightHandleDestroy(spells[i].pSpellFx->lLightId);
 }
 
-void FakeSummonSpellUpdate(size_t i, float timeDelta)
+void FakeSummonSpell::Update(size_t i, float timeDelta)
 {
 	if(!arxtime.is_paused()) {
 		if(rnd() > 0.7f) {
@@ -365,7 +365,7 @@ void LaunchAntiMagicField(size_t ident) {
 	}
 }
 
-void NegateMagicSpellLaunch(long duration, long i)
+void NegateMagicSpell::Launch(long duration, long i)
 {
 	if(spells[i].caster == 0) {
 		spells[i].target = 0;
@@ -391,7 +391,7 @@ void NegateMagicSpellLaunch(long duration, long i)
 	}
 }
 
-void NegateMagicSpellUpdate(size_t i, float timeDelta)
+void NegateMagicSpell::Update(size_t i, float timeDelta)
 {
 	if(ValidIONum(spells[i].target))
 		LaunchAntiMagicField(i);
@@ -404,7 +404,7 @@ void NegateMagicSpellUpdate(size_t i, float timeDelta)
 	}	
 }
 
-bool IncinerateSpellLaunch(long i)
+bool IncinerateSpell::Launch(long i)
 {
 	Entity * tio = entities[spells[i].target];
 	if((tio->ioflags & IO_NPC) && tio->_npcdata->life <= 0.f) {
@@ -429,21 +429,21 @@ bool IncinerateSpellLaunch(long i)
 	return true;
 }
 
-void IncinerateSpellEnd(size_t i)
+void IncinerateSpell::End(size_t i)
 {
 	ARX_SPELLS_RemoveSpellOn(spells[i].target, i);
 	ARX_SOUND_Stop(spells[i].snd_loop);
 	ARX_SOUND_PlaySFX(SND_SPELL_INCINERATE_END);
 }
 
-void IncinerateSpellUpdate(size_t i)
+void IncinerateSpell::Update(size_t i)
 {
 	if(ValidIONum(spells[i].target)) {
 		ARX_SOUND_RefreshPosition(spells[i].snd_loop, entities[spells[i].target]->pos);
 	}	
 }
 
-void MassParalyseSpellLaunch(long i, long duration)
+void MassParalyseSpell::Launch(long i, long duration)
 {
 	ARX_SOUND_PlaySFX(SND_SPELL_MASS_PARALYSE);
 	
@@ -483,7 +483,7 @@ void MassParalyseSpellLaunch(long i, long duration)
 	}
 }
 
-void MassParalyseSpellEnd(size_t i)
+void MassParalyseSpell::End(size_t i)
 {
 	long *ptr = (long *) spells[i].misc;
 
@@ -500,7 +500,7 @@ void MassParalyseSpellEnd(size_t i)
 	spells[i].misc=NULL;
 }
 
-void MassParalyseSpellKill()
+void MassParalyseSpell::Kill()
 {
 	ARX_SOUND_PlaySFX(SND_SPELL_PARALYSE_END);
 }

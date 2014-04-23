@@ -22,22 +22,37 @@
 
 #include "game/Spells.h"
 
-void MassLightningStrikeSpellLaunch(long i, SpellType typ);
-void MassLightningStrikeSpellKill(long i);
-void MassLightningStrikeSpellUpdate(unsigned long tim, size_t i, float timeDelta);
+class MassLightningStrikeSpell {
+public:
+	static void Launch(long i, SpellType typ);
+	static void Kill(long i);
+	static void Update(unsigned long tim, size_t i, float timeDelta);
+};
 
-bool ControlTargetSpellLaunch(long i);
-void ControlTargetSpellUpdate(size_t i, float timeDelta);
+class ControlTargetSpell {
+public:
+	static bool Launch(long i);
+	static void Update(size_t i, float timeDelta);
+};
 
-void FreezeTimeSpellLaunch(long duration, long i);
-void FreezeTimeSpellEnd(size_t i);
+class FreezeTimeSpell {
+public:
+	static void Launch(long duration, long i);
+	static void End(size_t i);
+};
 
-void MassIncinerateSpellLaunch(long i);
-void MassIncinerateSpellEnd(size_t i);
-void MassIncinerateSpellUpdate(size_t i);
+class MassIncinerateSpell {
+public:
+	static void Launch(long i);
+	static void End(size_t i);
+	static void Update(size_t i);
+};
 
-void TeleportSpellLaunch(long i);
-void TeleportSpellEnd(size_t i);
-void TeleportSpellUpdate(unsigned long tim, size_t i);
+class TeleportSpell {
+public:
+	static void Launch(long i);
+	static void End(size_t i);
+	static void Update(unsigned long tim, size_t i);
+};
 
 #endif // ARX_GAME_MAGIC_SPELLS_SPELLSLVL10_H

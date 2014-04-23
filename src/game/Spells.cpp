@@ -1674,57 +1674,57 @@ bool ARX_SPELLS_Launch(SpellType typ, long source, SpellcastFlags flagss, long l
 		//****************************************************************************
 		// LEVEL 9
 		case SPELL_SUMMON_CREATURE: {
-			bool result = SummonCreatureSpellLaunch(i, duration);
+			bool result = SummonCreatureSpell::Launch(i, duration);
 			if(!result)
 				return false;
 			
 			break;
 		}
 		case SPELL_FAKE_SUMMON: {
-			bool result = FakeSummonSpellLaunch(i);
+			bool result = FakeSummonSpell::Launch(i);
 			if(!result)
 				return false;
 			
 			break;
 		}
 		case SPELL_NEGATE_MAGIC: {
-			NegateMagicSpellLaunch(duration, i);
+			NegateMagicSpell::Launch(duration, i);
 			break;
 		}
 		case SPELL_INCINERATE: {
-			bool result = IncinerateSpellLaunch(i);
+			bool result = IncinerateSpell::Launch(i);
 			if(!result)
 				return false;
 			
 			break;
 		}
 		case SPELL_MASS_PARALYSE: {
-			MassParalyseSpellLaunch(i, duration);
+			MassParalyseSpell::Launch(i, duration);
 			break;
 		}
 		//****************************************************************************
 		// LEVEL 10
 		case SPELL_MASS_LIGHTNING_STRIKE: {
-			MassLightningStrikeSpellLaunch(i, typ);
+			MassLightningStrikeSpell::Launch(i, typ);
 			break;
 		}
 		case SPELL_CONTROL_TARGET: {
-			bool result = ControlTargetSpellLaunch(i);
+			bool result = ControlTargetSpell::Launch(i);
 			if(!result)
 				return false;
 			
 			break;
 		}
 		case SPELL_FREEZE_TIME: {
-			FreezeTimeSpellLaunch(duration, i);
+			FreezeTimeSpell::Launch(duration, i);
 			break;
 		}
 		case SPELL_MASS_INCINERATE: {
-			MassIncinerateSpellLaunch(i);
+			MassIncinerateSpell::Launch(i);
 			break;
 		}
 		case SPELL_TELEPORT: {
-			TeleportSpellLaunch(i);
+			TeleportSpell::Launch(i);
 			break;
 		}
 	}
@@ -1765,7 +1765,7 @@ void ARX_SPELLS_Kill(long i) {
 			break;
 		}
 		case SPELL_MASS_LIGHTNING_STRIKE: {
-			MassLightningStrikeSpellKill(i);
+			MassLightningStrikeSpell::Kill(i);
 			break;
 		}
 		case SPELL_REPEL_UNDEAD: {
@@ -1803,15 +1803,15 @@ void ARX_SPELLS_Kill(long i) {
 			break; 
 		}
 		case SPELL_MASS_PARALYSE: {
-			MassParalyseSpellKill();
+			MassParalyseSpell::Kill();
 			break;
 		}
 		case SPELL_SUMMON_CREATURE: {
-			SummonCreatureSpellKill(i);
+			SummonCreatureSpell::Kill(i);
 			break;
 		}
 		case SPELL_FAKE_SUMMON: {
-			FakeSummonSpellKill(i);
+			FakeSummonSpell::Kill(i);
 			break;
 		}
 		
@@ -1863,7 +1863,7 @@ float ARX_SPELLS_ApplyColdProtection(Entity * io,float damages)
 void ARX_SPELLS_Update_End(size_t i) {
 	switch(spells[i].type) {
 		case SPELL_TELEPORT: {
-			TeleportSpellEnd(i);
+			TeleportSpell::End(i);
 			break;
 		}
 		//****************************************************************************
@@ -1988,29 +1988,29 @@ void ARX_SPELLS_Update_End(size_t i) {
 		//****************************************************************************
 		// LEVEL 9
 		case SPELL_MASS_PARALYSE: {
-			MassParalyseSpellEnd(i);
+			MassParalyseSpell::End(i);
 			break;
 		}
 		case SPELL_SUMMON_CREATURE : {
-			SummonCreatureSpellEnd(i);
+			SummonCreatureSpell::End(i);
 			break;
 		}
 		case SPELL_FAKE_SUMMON: {
-			FakeSummonSpellEnd(i);
+			FakeSummonSpell::End(i);
 			break;
 		}
 		case SPELL_INCINERATE: {
-			IncinerateSpellEnd(i);
+			IncinerateSpell::End(i);
 			break;
 		}
 		//****************************************************************************
 		// LEVEL 10
 		case SPELL_FREEZE_TIME: {
-			FreezeTimeSpellEnd(i);
+			FreezeTimeSpell::End(i);
 			break;
 		}
 		case SPELL_MASS_INCINERATE: {
-			MassIncinerateSpellEnd(i);
+			MassIncinerateSpell::End(i);
 			break;
 		}
 		default:
@@ -2182,19 +2182,19 @@ void ARX_SPELLS_Update_Update(size_t i, unsigned long tim) {
 		//****************************************************************************
 		// LEVEL 9 SPELLS
 		case SPELL_SUMMON_CREATURE: {
-			SummonCreatureSpellUpdate(i, framedelay);
+			SummonCreatureSpell::Update(i, framedelay);
 			break;
 		}
 		case SPELL_FAKE_SUMMON: {
-			FakeSummonSpellUpdate(i, framedelay);
+			FakeSummonSpell::Update(i, framedelay);
 			break;
 		}
 		case SPELL_INCINERATE: {
-			IncinerateSpellUpdate(i);
+			IncinerateSpell::Update(i);
 			break;
 		}
 		case SPELL_NEGATE_MAGIC: {
-			NegateMagicSpellUpdate(i, framedelay);
+			NegateMagicSpell::Update(i, framedelay);
 			break;
 		}
 		case SPELL_MASS_PARALYSE: {
@@ -2206,19 +2206,19 @@ void ARX_SPELLS_Update_Update(size_t i, unsigned long tim) {
 			break;
 		}
 		case SPELL_CONTROL_TARGET: {
-			ControlTargetSpellUpdate(i, framedelay);
+			ControlTargetSpell::Update(i, framedelay);
 			break;
 		}
 		case SPELL_MASS_INCINERATE: {
-			MassIncinerateSpellUpdate(i);
+			MassIncinerateSpell::Update(i);
 			break;
 		}
 		case SPELL_MASS_LIGHTNING_STRIKE: {
-			MassLightningStrikeSpellUpdate(tim, i, framedelay);
+			MassLightningStrikeSpell::Update(tim, i, framedelay);
 			break;
 		}
 		case SPELL_TELEPORT: {
-			TeleportSpellUpdate(tim, i);
+			TeleportSpell::Update(tim, i);
 			break;
 		}
 		case SPELL_MAGIC_SIGHT: {
