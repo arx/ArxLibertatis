@@ -204,8 +204,10 @@ void IgnitSpell::End()
 void IgnitSpell::Update(float timeDelta)
 {
 	CSpellFx *pCSpellFX = m_pSpellFx;
-	if(pCSpellFX)
+	if(pCSpellFX) {
 		pCSpellFX->Update(timeDelta);
+		pCSpellFX->Render();
+	}
 }
 
 void DouseSpell::Launch(long i)
@@ -307,8 +309,10 @@ void DouseSpell::End()
 void DouseSpell::Update(float timeDelta)
 {
 	CSpellFx *pCSpellFX = m_pSpellFx;
-	if(pCSpellFX)
+	if(pCSpellFX) {
 		pCSpellFX->Update(timeDelta);
+		pCSpellFX->Render();
+	}
 }
 
 void ActivatePortalSpell::Launch()
