@@ -37,21 +37,21 @@
 
 bool RiseDeadSpell::Launch(long i, long duration)
 {
-	long iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_RISE_DEAD, spells[i].caster);
+	long iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_RISE_DEAD, spells[i].m_caster);
 	if(iCancel > -1) {
-		spells[iCancel].tolive = 0;
+		spells[iCancel].m_tolive = 0;
 	}
 	
 	float beta;
 	Vec3f target;
 	bool displace = true;
-	if(spells[i].caster == 0) {
+	if(spells[i].m_caster == 0) {
 		target = player.basePosition();
 		beta = MAKEANGLE(player.angle.getPitch());
 	} else {
-		target = entities[spells[i].caster]->pos;
-		beta = MAKEANGLE(entities[spells[i].caster]->angle.getPitch());
-		displace = (entities[spells[i].caster]->ioflags & IO_NPC) == IO_NPC;
+		target = entities[spells[i].m_caster]->pos;
+		beta = MAKEANGLE(entities[spells[i].m_caster]->angle.getPitch());
+		displace = (entities[spells[i].m_caster]->ioflags & IO_NPC) == IO_NPC;
 	}
 	if(displace) {
 		target.x -= std::sin(radians(beta)) * 300.f;
@@ -62,14 +62,14 @@ bool RiseDeadSpell::Launch(long i, long duration)
 		return false;
 	}
 	
-	spells[i].target_pos = target;
-	ARX_SOUND_PlaySFX(SND_SPELL_RAISE_DEAD, &spells[i].target_pos);
-	spells[i].exist = true;
+	spells[i].m_target_pos = target;
+	ARX_SOUND_PlaySFX(SND_SPELL_RAISE_DEAD, &spells[i].m_target_pos);
+	spells[i].m_exist = true;
 	// TODO this tolive value is probably never read
-	spells[i].tolive = (duration > -1) ? duration : 2000000;
-	spells[i].bDuration = true;
-	spells[i].fManaCostPerSecond = 1.2f;
-	spells[i].longinfo_entity = -1;
+	spells[i].m_tolive = (duration > -1) ? duration : 2000000;
+	spells[i].m_bDuration = true;
+	spells[i].m_fManaCostPerSecond = 1.2f;
+	spells[i].m_longinfo_entity = -1;
 	
 	CRiseDead * effect = new CRiseDead();
 	effect->spellinstance = i;
@@ -94,19 +94,19 @@ bool RiseDeadSpell::Launch(long i, long duration)
 		light->time_creation = (unsigned long)(arxtime);
 	}
 	
-	spells[i].pSpellFx = effect;
-	spells[i].tolive = effect->GetDuration();
+	spells[i].m_pSpellFx = effect;
+	spells[i].m_tolive = effect->GetDuration();
 	
 	return true;
 }
 
 void RiseDeadSpell::End(size_t i)
 {
-	if(ValidIONum(spells[i].longinfo_entity) && spells[i].longinfo_entity != 0) {
+	if(ValidIONum(spells[i].m_longinfo_entity) && spells[i].m_longinfo_entity != 0) {
 		
-		ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &entities[spells[i].longinfo_entity]->pos);
+		ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &entities[spells[i].m_longinfo_entity]->pos);
 		
-		Entity *entity = entities[spells[i].longinfo_entity];
+		Entity *entity = entities[spells[i].m_longinfo_entity];
 
 		if(entity->scriptload && (entity->ioflags & IO_NOSAVE)) {
 			AddRandomSmoke(entity,100);
@@ -134,15 +134,15 @@ void RiseDeadSpell::End(size_t i)
 
 void RiseDeadSpell::Update(size_t i, float timeDelta)
 {
-	CSpellFx *pCSpellFX = spells[i].pSpellFx;
+	CSpellFx *pCSpellFX = spells[i].m_pSpellFx;
 
 	if(pCSpellFX) {
-		if(spells[i].longinfo_entity == -2) {
+		if(spells[i].m_longinfo_entity == -2) {
 			pCSpellFX->lLightId=-1;
 			return;
 		}
 
-		spells[i].tolive+=200;
+		spells[i].m_tolive+=200;
 	
 		pCSpellFX->Update(timeDelta);
 		pCSpellFX->Render();
@@ -162,15 +162,15 @@ void RiseDeadSpell::Update(size_t i, float timeDelta)
 
 		unsigned long tim=pCSpellFX->getCurrentTime();
 
-		if(tim > 3000 && spells[i].longinfo_entity == -1) {
-			ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &spells[i].target_pos);
-			CRiseDead *prise = (CRiseDead *)spells[i].pSpellFx;
+		if(tim > 3000 && spells[i].m_longinfo_entity == -1) {
+			ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &spells[i].m_target_pos);
+			CRiseDead *prise = (CRiseDead *)spells[i].m_pSpellFx;
 
 			if(prise) {
 				EERIE_CYLINDER phys;
 				phys.height=-200;
 				phys.radius=50;
-				phys.origin=spells[i].target_pos;
+				phys.origin=spells[i].m_target_pos;
 
 				float anything = CheckAnythingInCylinder(&phys, NULL, CFLAG_JUST_TEST);
 
@@ -183,18 +183,18 @@ void RiseDeadSpell::Update(size_t i, float timeDelta)
 						ARX_INTERACTIVE_HideGore(io);
 						RestoreInitialIOStatusOfIO(io);
 						
-						long lSpellsCaster = spells[i].caster;
+						long lSpellsCaster = spells[i].m_caster;
 						io->summoner = checked_range_cast<short>(lSpellsCaster);
 						
 						io->ioflags|=IO_NOSAVE;
-						spells[i].longinfo_entity = io->index();
+						spells[i].m_longinfo_entity = io->index();
 						io->scriptload=1;
 						
 						ARX_INTERACTIVE_Teleport(io, phys.origin);
 						SendInitScriptEvent(io);
 
-						if(ValidIONum(spells[i].caster)) {
-							EVENT_SENDER = entities[spells[i].caster];
+						if(ValidIONum(spells[i].m_caster)) {
+							EVENT_SENDER = entities[spells[i].m_caster];
 						} else {
 							EVENT_SENDER = NULL;
 						}
@@ -211,8 +211,8 @@ void RiseDeadSpell::Update(size_t i, float timeDelta)
 					pCSpellFX->lLightId=-1;
 				} else {
 					ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE);
-					spells[i].longinfo_entity = -2;
-					spells[i].tolive=0;
+					spells[i].m_longinfo_entity = -2;
+					spells[i].m_tolive=0;
 				}
 			}
 		} else if(!arxtime.is_paused() && tim < 4000) {
@@ -228,32 +228,32 @@ void RiseDeadSpell::Update(size_t i, float timeDelta)
 
 void ParalyseSpell::Launch(long i, long duration)
 {
-	ARX_SOUND_PlaySFX(SND_SPELL_PARALYSE, &entities[spells[i].target]->pos);
+	ARX_SOUND_PlaySFX(SND_SPELL_PARALYSE, &entities[spells[i].m_target]->pos);
 	
-	spells[i].exist = true;
-	spells[i].tolive = (duration > -1) ? duration : 5000;
+	spells[i].m_exist = true;
+	spells[i].m_tolive = (duration > -1) ? duration : 5000;
 	
 	float resist_magic = 0.f;
-	if(spells[i].target == 0 && spells[i].caster_level <= player.level) {
+	if(spells[i].m_target == 0 && spells[i].m_caster_level <= player.level) {
 		resist_magic = player.resist_magic;
-	} else if(entities[spells[i].target]->ioflags & IO_NPC) {
-		resist_magic = entities[spells[i].target]->_npcdata->resist_magic;
+	} else if(entities[spells[i].m_target]->ioflags & IO_NPC) {
+		resist_magic = entities[spells[i].m_target]->_npcdata->resist_magic;
 	}
 	if(rnd() * 100.f < resist_magic) {
 		float mul = max(0.5f, 1.f - (resist_magic * 0.005f));
-		spells[i].tolive = long(spells[i].tolive * mul);
+		spells[i].m_tolive = long(spells[i].m_tolive * mul);
 	}
 	
-	entities[spells[i].target]->ioflags |= IO_FREEZESCRIPT;
+	entities[spells[i].m_target]->ioflags |= IO_FREEZESCRIPT;
 	
-	ARX_SPELLS_AddSpellOn(spells[i].target, i);
-	ARX_NPC_Kill_Spell_Launch(entities[spells[i].target]);
+	ARX_SPELLS_AddSpellOn(spells[i].m_target, i);
+	ARX_NPC_Kill_Spell_Launch(entities[spells[i].m_target]);
 }
 
 void ParalyseSpell::End(size_t i)
 {
-	ARX_SPELLS_RemoveSpellOn(spells[i].target,i);
-	entities[spells[i].target]->ioflags &= ~IO_FREEZESCRIPT;
+	ARX_SPELLS_RemoveSpellOn(spells[i].m_target,i);
+	entities[spells[i].m_target]->ioflags &= ~IO_FREEZESCRIPT;
 }
 
 void ParalyseSpell::Kill()
@@ -263,28 +263,28 @@ void ParalyseSpell::Kill()
 
 void CreateFieldSpell::Launch(SpellcastFlags flags, long i, long duration)
 {
-	spells[i].exist = true;
+	spells[i].m_exist = true;
 	
 	unsigned long start = (unsigned long)(arxtime);
 	if(flags & SPELLCAST_FLAG_RESTORE) {
 		start -= std::min(start, 4000ul);
 	}
-	spells[i].lastupdate = spells[i].timcreation = start;
+	spells[i].m_lastupdate = spells[i].m_timcreation = start;
 	
-	spells[i].tolive = (duration > -1) ? duration : 800000;
-	spells[i].bDuration = true;
-	spells[i].fManaCostPerSecond = 1.2f;
+	spells[i].m_tolive = (duration > -1) ? duration : 800000;
+	spells[i].m_bDuration = true;
+	spells[i].m_fManaCostPerSecond = 1.2f;
 	
 	Vec3f target;
 	float beta;
 	bool displace = false;
-	if(spells[i].caster == 0) {
+	if(spells[i].m_caster == 0) {
 		target = entities.player()->pos;
 		beta = player.angle.getPitch();
 		displace = true;
 	} else {
-		if(ValidIONum(spells[i].caster)) {
-			Entity * io = entities[spells[i].caster];
+		if(ValidIONum(spells[i].m_caster)) {
+			Entity * io = entities[spells[i].m_caster];
 			target = io->pos;
 			beta = io->angle.getPitch();
 			displace = (io->ioflags & IO_NPC) == IO_NPC;
@@ -308,14 +308,14 @@ void CreateFieldSpell::Launch(SpellcastFlags flags, long i, long duration)
 		
 		ARX_INTERACTIVE_HideGore(io);
 		RestoreInitialIOStatusOfIO(io);
-		spells[i].longinfo_entity = io->index();
+		spells[i].m_longinfo_entity = io->index();
 		io->scriptload = 1;
 		io->ioflags |= IO_NOSAVE | IO_FIELD;
 		io->initpos = io->pos = target;
 		SendInitScriptEvent(io);
 		
 		effect->Create(target);
-		effect->SetDuration(spells[i].tolive);
+		effect->SetDuration(spells[i].m_tolive);
 		effect->lLightId = GetFreeDynLight();
 		
 		if(lightHandleIsValid(effect->lLightId)) {
@@ -328,45 +328,45 @@ void CreateFieldSpell::Launch(SpellcastFlags flags, long i, long duration)
 			light->pos = effect->eSrc - Vec3f(0.f, 150.f, 0.f);
 		}
 		
-		spells[i].pSpellFx = effect;
-		spells[i].tolive = effect->GetDuration();
+		spells[i].m_pSpellFx = effect;
+		spells[i].m_tolive = effect->GetDuration();
 		
 		if(flags & SPELLCAST_FLAG_RESTORE) {
 			effect->Update(4000);
 		}
 		
 	} else {
-		spells[i].tolive = 0;
+		spells[i].m_tolive = 0;
 	}
 }
 
 void CreateFieldSpell::End(size_t i)
 {
-	CCreateField *pCreateField = (CCreateField *) spells[i].pSpellFx;
+	CCreateField *pCreateField = (CCreateField *) spells[i].m_pSpellFx;
 
 	if(pCreateField && lightHandleIsValid(pCreateField->lLightId)) {
 		lightHandleGet(pCreateField->lLightId)->duration = 800;
 	}
 
-	if(ValidIONum(spells[i].longinfo_entity)) {
-		delete entities[spells[i].longinfo_entity];
+	if(ValidIONum(spells[i].m_longinfo_entity)) {
+		delete entities[spells[i].m_longinfo_entity];
 	}
 }
 
 void CreateFieldSpell::Update(size_t i, float timeDelta)
 {
-	CSpellFx *pCSpellFX = spells[i].pSpellFx;
+	CSpellFx *pCSpellFX = spells[i].m_pSpellFx;
 	
 	if(pCSpellFX) {
-		if(ValidIONum(spells[i].longinfo_entity)) {
-			Entity * io = entities[spells[i].longinfo_entity];
+		if(ValidIONum(spells[i].m_longinfo_entity)) {
+			Entity * io = entities[spells[i].m_longinfo_entity];
 			
 			CCreateField * ccf=(CCreateField *)pCSpellFX;
 			io->pos = ccf->eSrc;
 
 			if (IsAnyNPCInPlatform(io))
 			{
-				spells[i].tolive=0;
+				spells[i].m_tolive=0;
 			}
 		
 			pCSpellFX->Update(timeDelta);			
@@ -379,9 +379,9 @@ void DisarmTrapSpell::Launch(long i)
 {
 	ARX_SOUND_PlaySFX(SND_SPELL_DISARM_TRAP);
 	
-	spells[i].exist = true;
-	spells[i].lastupdate = spells[i].timcreation = (unsigned long)(arxtime);
-	spells[i].tolive = 1;
+	spells[i].m_exist = true;
+	spells[i].m_lastupdate = spells[i].m_timcreation = (unsigned long)(arxtime);
+	spells[i].m_tolive = 1;
 	
 	EERIE_SPHERE sphere;
 	sphere.origin = player.pos;
@@ -389,19 +389,19 @@ void DisarmTrapSpell::Launch(long i)
 	
 	for(size_t n = 0; n < MAX_SPELLS; n++) {
 		
-		if(!spells[n].exist || spells[n].type != SPELL_RUNE_OF_GUARDING) {
+		if(!spells[n].m_exist || spells[n].m_type != SPELL_RUNE_OF_GUARDING) {
 			continue;
 		}
 		
-		if(!spells[n].pSpellFx) {
+		if(!spells[n].m_pSpellFx) {
 			continue;
 		}
 		
-		CSpellFx * effect = spells[n].pSpellFx;
+		CSpellFx * effect = spells[n].m_pSpellFx;
 		if(sphere.contains(static_cast<CRuneOfGuarding *>(effect)->eSrc)) {
-			spells[n].caster_level -= spells[i].caster_level;
-			if(spells[n].caster_level <= 0) {
-				spells[n].tolive = 0;
+			spells[n].m_caster_level -= spells[i].m_caster_level;
+			if(spells[n].m_caster_level <= 0) {
+				spells[n].m_tolive = 0;
 			}
 		}
 	}
@@ -409,7 +409,7 @@ void DisarmTrapSpell::Launch(long i)
 
 bool SlowDownSpell::Launch(long duration, long i)
 {
-	long target = spells[i].target;
+	long target = spells[i].m_target;
 	
 	Entity * io = entities[target];
 	
@@ -419,30 +419,30 @@ bool SlowDownSpell::Launch(long duration, long i)
 		if(spellHandleIsValid(spellHandle)) {
 			SpellBase * spell = &spells[spellHandle];
 			
-			if(spell->type == SPELL_SLOW_DOWN) {
-				spell->exist = false;
+			if(spell->m_type == SPELL_SLOW_DOWN) {
+				spell->m_exist = false;
 				return false;
 			}
 		}
 	}
 	
-	ARX_SOUND_PlaySFX(SND_SPELL_SLOW_DOWN, &entities[spells[i].target]->pos);
+	ARX_SOUND_PlaySFX(SND_SPELL_SLOW_DOWN, &entities[spells[i].m_target]->pos);
 	
-	spells[i].exist = true;
-	spells[i].tolive = (spells[i].caster == 0) ? 10000000 : 10000;
+	spells[i].m_exist = true;
+	spells[i].m_tolive = (spells[i].m_caster == 0) ? 10000000 : 10000;
 	if(duration > -1) {
-		spells[i].tolive=duration;
+		spells[i].m_tolive=duration;
 	}
-	spells[i].pSpellFx = NULL;
-	spells[i].bDuration = true;
-	spells[i].fManaCostPerSecond = 1.2f;
+	spells[i].m_pSpellFx = NULL;
+	spells[i].m_bDuration = true;
+	spells[i].m_fManaCostPerSecond = 1.2f;
 	
 	CSlowDown * effect = new CSlowDown();
 	effect->spellinstance = i;
-	effect->Create(spells[i].target_pos, MAKEANGLE(player.angle.getPitch()));
-	effect->SetDuration(spells[i].tolive);
-	spells[i].pSpellFx = effect;
-	spells[i].tolive = effect->GetDuration();
+	effect->Create(spells[i].m_target_pos, MAKEANGLE(player.angle.getPitch()));
+	effect->SetDuration(spells[i].m_tolive);
+	spells[i].m_pSpellFx = effect;
+	spells[i].m_tolive = effect->GetDuration();
 	
 	ARX_SPELLS_AddSpellOn(target, i);
 	
@@ -452,12 +452,12 @@ bool SlowDownSpell::Launch(long duration, long i)
 void SlowDownSpell::End(size_t i)
 {
 	ARX_SOUND_PlaySFX(SND_SPELL_SLOW_DOWN_END);
-	ARX_SPELLS_RemoveSpellOn(spells[i].target, i);
+	ARX_SPELLS_RemoveSpellOn(spells[i].m_target, i);
 }
 
 void SlowDownSpell::Update(size_t i, float timeDelta)
 {
-	CSpellFx *pCSpellFX = spells[i].pSpellFx;
+	CSpellFx *pCSpellFX = spells[i].m_pSpellFx;
 
 	if(pCSpellFX) {
 		pCSpellFX->Update(timeDelta);

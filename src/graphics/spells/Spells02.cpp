@@ -75,10 +75,10 @@ void CHeal::Create() {
 	
 	SetAngle(MAKEANGLE(player.angle.getPitch()));
 	
-	if(spells[spellinstance].caster == 0) {
+	if(spells[spellinstance].m_caster == 0) {
 		eSrc = player.pos;
 	} else {
-		eSrc = entities[spells[spellinstance].caster]->pos;
+		eSrc = entities[spells[spellinstance].m_caster]->pos;
 	}
 	
 	pPS->lLightId = GetFreeDynLight();
@@ -156,10 +156,10 @@ void CHeal::Update(unsigned long aulTime)
 	if(ulCurrentTime >= ulDuration)
 		return;
 	
-	if(spells[spellinstance].caster == 0) {
+	if(spells[spellinstance].m_caster == 0) {
 		eSrc = player.pos;
-	} else if(ValidIONum(spells[spellinstance].target)) {
-		eSrc = entities[spells[spellinstance].target]->pos;
+	} else if(ValidIONum(spells[spellinstance].m_target)) {
+		eSrc = entities[spells[spellinstance].m_target]->pos;
 	}
 	
 	if(!lightHandleIsValid(pPS->lLightId))
@@ -230,7 +230,7 @@ void CArmor::Create(long _ulDuration) {
 	
 	SetDuration(_ulDuration);
 
-	long iNpc = spells[spellinstance].target;
+	long iNpc = spells[spellinstance].m_target;
 
 	if(ValidIONum(iNpc)) {
 		Entity *io = entities[iNpc];
@@ -248,7 +248,7 @@ void CArmor::Update(unsigned long _ulTime)
 	if(!arxtime.is_paused())
 		ulCurrentTime += _ulTime;
 	
-	long iNpc = spells[spellinstance].target;
+	long iNpc = spells[spellinstance].m_target;
 
 	if(ValidIONum(iNpc)) {
 		Entity *io = entities[iNpc];
@@ -281,7 +281,7 @@ void CLowerArmor::Create(long _ulDuration) {
 	SetDuration(_ulDuration);
 
 	if(spellinstance != -1) {
-		Entity * io = entities[spells[spellinstance].target];
+		Entity * io = entities[spells[spellinstance].m_target];
 
 		if(io && !(io->halo.flags & HALO_ACTIVE)) {
 			io->halo.flags |= HALO_ACTIVE;
@@ -290,10 +290,10 @@ void CLowerArmor::Create(long _ulDuration) {
 			io->halo.color.b = 0.0f;
 			io->halo.radius = 45.f;
 			io->halo.dynlight = -1;
-			spells[spellinstance].longinfo_lower_armor = 1;
+			spells[spellinstance].m_longinfo_lower_armor = 1;
 		}
 		else
-			spells[spellinstance].longinfo_lower_armor = 0;
+			spells[spellinstance].m_longinfo_lower_armor = 0;
 	}
 }
 
@@ -303,7 +303,7 @@ void CLowerArmor::Update(unsigned long _ulTime)
 		ulCurrentTime += _ulTime;
 	
 	if(spellinstance != -1) {
-		Entity * io = entities[spells[spellinstance].target];
+		Entity * io = entities[spells[spellinstance].m_target];
 
 		if(io && !(io->halo.flags & HALO_ACTIVE)) {
 			io->halo.flags |= HALO_ACTIVE;
@@ -312,7 +312,7 @@ void CLowerArmor::Update(unsigned long _ulTime)
 			io->halo.color.b = 0.0f;
 			io->halo.radius = 45.f;
 			io->halo.dynlight = -1;
-			spells[spellinstance].longinfo_lower_armor = 1;
+			spells[spellinstance].m_longinfo_lower_armor = 1;
 		}
 	}
 }

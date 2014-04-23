@@ -38,7 +38,7 @@ public:
 
 class CreateFieldSpell : public SpellBase {
 public:
-	void Launch(SpellcastFlags flags, long i, long duration);
+	void Launch(SpellcastFlags m_flags, long i, long duration);
 	void End(size_t i);
 	void Update(size_t i, float timeDelta);
 };

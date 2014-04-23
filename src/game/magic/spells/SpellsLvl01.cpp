@@ -34,27 +34,27 @@
 
 void MagicSightSpell::Launch(long duration)
 {
-	exist = true;
-	fManaCostPerSecond = 0.36f;
-	bDuration = true;
-	tolive = (duration > -1) ? duration : 6000000l;
+	m_exist = true;
+	m_fManaCostPerSecond = 0.36f;
+	m_bDuration = true;
+	m_tolive = (duration > -1) ? duration : 6000000l;
 	
-	ARX_SOUND_PlaySFX(SND_SPELL_VISION_START, &caster_pos);
+	ARX_SOUND_PlaySFX(SND_SPELL_VISION_START, &m_caster_pos);
 	
-	if(caster == 0) {
+	if(m_caster == 0) {
 		Project.improve = 1;
-		snd_loop = SND_SPELL_VISION_LOOP;
-		ARX_SOUND_PlaySFX(snd_loop, &caster_pos, 1.f, ARX_SOUND_PLAY_LOOPED);
+		m_snd_loop = SND_SPELL_VISION_LOOP;
+		ARX_SOUND_PlaySFX(m_snd_loop, &m_caster_pos, 1.f, ARX_SOUND_PLAY_LOOPED);
 	}
 }
 
 void MagicSightSpell::End()
 {
-	if(caster == 0) {
+	if(m_caster == 0) {
 		Project.improve = 0;
-		ARX_SOUND_Stop(snd_loop);
+		ARX_SOUND_Stop(m_snd_loop);
 	}
-	ARX_SOUND_PlaySFX(SND_SPELL_VISION_START, &entities[caster]->pos);
+	ARX_SOUND_PlaySFX(SND_SPELL_VISION_START, &entities[m_caster]->pos);
 }
 
 static const float DEC_FOCAL = 50.0f;
@@ -64,10 +64,10 @@ extern EERIE_CAMERA subj;
 
 void MagicSightSpell::Update()
 {
-	if(caster == 0) {
+	if(m_caster == 0) {
 		Vec3f pos;
 		ARX_PLAYER_FrontPos(&pos);
-		ARX_SOUND_RefreshPosition(snd_loop, pos);
+		ARX_SOUND_RefreshPosition(m_snd_loop, pos);
 		
 		if(subj.focal > IMPROVED_FOCAL)
 			subj.focal -= DEC_FOCAL;
@@ -76,32 +76,32 @@ void MagicSightSpell::Update()
 
 void MagicMissileSpell::Launch(long i)
 {
-	exist = true;
-	tolive = 20000; // TODO probably never read
+	m_exist = true;
+	m_tolive = 20000; // TODO probably never read
 	
 	long number;
 	if(sp_max || cur_rf == 3) {
-		number = long(caster_level);
+		number = long(m_caster_level);
 	} else {
-		number = clamp(long(caster_level + 1) / 2, 1l, 5l);
+		number = clamp(long(m_caster_level + 1) / 2, 1l, 5l);
 	}
 	
 	CMultiMagicMissile * effect = new CMultiMagicMissile(number);
 	effect->spellinstance = i;
 	effect->SetDuration(6000ul);
 	effect->Create();
-	pSpellFx = effect;
-	tolive = effect->GetDuration();
+	m_pSpellFx = effect;
+	m_tolive = effect->GetDuration();
 }
 
 void MagicMissileSpell::End()
 {
-	lightHandleDestroy(longinfo_light);
+	lightHandleDestroy(m_longinfo_light);
 }
 
 void MagicMissileSpell::Update(float timeDelta)
 {
-	CSpellFx *pCSpellFX = pSpellFx;
+	CSpellFx *pCSpellFX = m_pSpellFx;
 
 	if(pCSpellFX) {
 		CMultiMagicMissile *pMMM = (CMultiMagicMissile *) pCSpellFX;
@@ -111,7 +111,7 @@ void MagicMissileSpell::Update(float timeDelta)
 		pCSpellFX->Update(timeDelta);
 
 		if(pMMM->CheckAllDestroyed())
-			tolive = 0;
+			m_tolive = 0;
 
 		pCSpellFX->Render();
 	}
@@ -119,17 +119,17 @@ void MagicMissileSpell::Update(float timeDelta)
 
 void IgnitSpell::Launch(long i)
 {
-	exist = true;
-	tolive = 20000; // TODO probably never read
+	m_exist = true;
+	m_tolive = 20000; // TODO probably never read
 	
 	CIgnit * effect = new CIgnit();
 	effect->spellinstance = i;
 	
 	Vec3f target;
-	if(hand_group != -1) {
-		target = hand_pos;
+	if(m_hand_group != -1) {
+		target = m_hand_pos;
 	} else {
-		target = caster_pos - Vec3f(0.f, 50.f, 0.f);
+		target = m_caster_pos - Vec3f(0.f, 50.f, 0.f);
 	}
 	
 	LightHandle id = GetFreeDynLight();
@@ -144,7 +144,7 @@ void IgnitSpell::Launch(long i)
 		light->duration  = 300;
 	}
 	
-	float fPerimeter = 400.f + caster_level * 30.f;
+	float fPerimeter = 400.f + m_caster_level * 30.f;
 	
 	effect->Create(&target, fPerimeter, 500);
 	CheckForIgnition(&target, fPerimeter, 1, 1);
@@ -155,7 +155,7 @@ void IgnitSpell::Launch(long i)
 			continue;
 		}
 		
-		if(caster == 0 && (GLight[ii]->extras & EXTRAS_NO_IGNIT)) {
+		if(m_caster == 0 && (GLight[ii]->extras & EXTRAS_NO_IGNIT)) {
 			continue;
 		}
 		
@@ -175,56 +175,56 @@ void IgnitSpell::Launch(long i)
 	}
 	
 	for(size_t n = 0; n < MAX_SPELLS; n++) {
-		if(!spells[n].exist) {
+		if(!spells[n].m_exist) {
 			continue;
 		}
-		if(spells[n].type == SPELL_FIREBALL) {
-			CSpellFx * pCSpellFX = spells[n].pSpellFx;
+		if(spells[n].m_type == SPELL_FIREBALL) {
+			CSpellFx * pCSpellFX = spells[n].m_pSpellFx;
 			if(pCSpellFX) {
 				CFireBall * pCF = (CFireBall *)pCSpellFX;
-				float radius = std::max(caster_level * 2.f, 12.f);
+				float radius = std::max(m_caster_level * 2.f, 12.f);
 				if(closerThan(target, pCF->eCurPos,
 				              effect->GetPerimetre() + radius)) {
-					spells[n].caster_level += 1; 
+					spells[n].m_caster_level += 1; 
 				}
 			}
 		}
 	}
 	
-	pSpellFx = effect;
-	tolive = effect->GetDuration();
+	m_pSpellFx = effect;
+	m_tolive = effect->GetDuration();
 }
 
 void IgnitSpell::End()
 {
-	CIgnit *pIgnit = (CIgnit *)pSpellFx;
+	CIgnit *pIgnit = (CIgnit *)m_pSpellFx;
 	pIgnit->Action(1);
 }
 
 void IgnitSpell::Update(float timeDelta)
 {
-	CSpellFx *pCSpellFX = pSpellFx;
+	CSpellFx *pCSpellFX = m_pSpellFx;
 	if(pCSpellFX)
 		pCSpellFX->Update(timeDelta);
 }
 
 void DouseSpell::Launch(long i)
 {
-	exist = true;
-	tolive = 20000;
+	m_exist = true;
+	m_tolive = 20000;
 	
 	CDoze * effect = new CDoze();
 	effect->spellinstance = i;
 	
 	Vec3f target;
-	if(hand_group >= 0) {
-		target = hand_pos;
+	if(m_hand_group >= 0) {
+		target = m_hand_pos;
 	} else {
-		target = caster_pos;
+		target = m_caster_pos;
 		target.y -= 50.f;
 	}
 	
-	float fPerimeter = 400.f + caster_level * 30.f;
+	float fPerimeter = 400.f + m_caster_level * 30.f;
 	effect->CreateDoze(&target, fPerimeter, 500);
 	CheckForIgnition(&target, fPerimeter, 0, 1);
 	
@@ -255,22 +255,22 @@ void DouseSpell::Launch(long i)
 	
 	for(size_t n = 0; n < MAX_SPELLS; n++) {
 		
-		if(!spells[n].exist) {
+		if(!spells[n].m_exist) {
 			continue;
 		}
 		
-		switch(spells[n].type) {
+		switch(spells[n].m_type) {
 			
 			case SPELL_FIREBALL: {
-				CSpellFx * pCSpellFX = spells[n].pSpellFx;
+				CSpellFx * pCSpellFX = spells[n].m_pSpellFx;
 				if(pCSpellFX) {
 					CFireBall * pCF = (CFireBall *)pCSpellFX;
-					float radius = std::max(caster_level * 2.f, 12.f);
+					float radius = std::max(m_caster_level * 2.f, 12.f);
 					if(closerThan(target, pCF->eCurPos,
 					              effect->GetPerimetre() + radius)) {
-						spells[n].caster_level -= caster_level;
-						if(spells[n].caster_level < 1) {
-							spells[n].tolive = 0;
+						spells[n].m_caster_level -= m_caster_level;
+						if(spells[n].m_caster_level < 1) {
+							spells[n].m_tolive = 0;
 						}
 					}
 				}
@@ -281,9 +281,9 @@ void DouseSpell::Launch(long i)
 				Vec3f pos;
 				if(GetSpellPosition(&pos, n)) {
 					if(closerThan(target, pos, effect->GetPerimetre() + 200)) {
-						spells[n].caster_level -= caster_level;
-						if(spells[n].caster_level < 1) {
-							spells[n].tolive=0;
+						spells[n].m_caster_level -= m_caster_level;
+						if(spells[n].m_caster_level < 1) {
+							spells[n].m_tolive=0;
 						}
 					}
 				}
@@ -294,19 +294,19 @@ void DouseSpell::Launch(long i)
 		}
 	}
 	
-	pSpellFx = effect;
-	tolive = effect->GetDuration();
+	m_pSpellFx = effect;
+	m_tolive = effect->GetDuration();
 }
 
 void DouseSpell::End()
 {
-	CDoze *pDoze = (CDoze *)pSpellFx;
+	CDoze *pDoze = (CDoze *)m_pSpellFx;
 	pDoze->Action(0);
 }
 
 void DouseSpell::Update(float timeDelta)
 {
-	CSpellFx *pCSpellFX = pSpellFx;
+	CSpellFx *pCSpellFX = m_pSpellFx;
 	if(pCSpellFX)
 		pCSpellFX->Update(timeDelta);
 }
@@ -314,6 +314,6 @@ void DouseSpell::Update(float timeDelta)
 void ActivatePortalSpell::Launch()
 {
 	ARX_SOUND_PlayInterface(SND_SPELL_ACTIVATE_PORTAL);
-	exist = true;
-	tolive = 20;
+	m_exist = true;
+	m_tolive = 20;
 }

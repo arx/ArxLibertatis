@@ -34,79 +34,79 @@
 
 void SpeedSpell::Launch(long i, long duration)
 {
-	bDuration = true;
-	fManaCostPerSecond = 2.f;
+	m_bDuration = true;
+	m_fManaCostPerSecond = 2.f;
 	
-	if(caster == 0) {
-		target = caster;
+	if(m_caster == 0) {
+		m_target = m_caster;
 	}
 	
-	ARX_SOUND_PlaySFX(SND_SPELL_SPEED_START, &entities[target]->pos);
+	ARX_SOUND_PlaySFX(SND_SPELL_SPEED_START, &entities[m_target]->pos);
 	
-	if(target == 0) {
-		snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_SPEED_LOOP,
-		                                       &entities[target]->pos, 1.f,
+	if(m_target == 0) {
+		m_snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_SPEED_LOOP,
+		                                       &entities[m_target]->pos, 1.f,
 		                                       ARX_SOUND_PLAY_LOOPED);
 	}
 	
-	exist = true;
-	tolive = (caster == 0) ? 200000000 : 20000;
+	m_exist = true;
+	m_tolive = (m_caster == 0) ? 200000000 : 20000;
 	if(duration > -1) {
-		tolive = duration;
+		m_tolive = duration;
 	}
 	
 	CSpeed * effect = new CSpeed();
 	effect->spellinstance = i;
-	effect->Create(target, tolive);
+	effect->Create(m_target, m_tolive);
 	
-	pSpellFx = effect;
-	tolive = effect->GetDuration();
+	m_pSpellFx = effect;
+	m_tolive = effect->GetDuration();
 	
-	ARX_SPELLS_AddSpellOn(target, i);
+	ARX_SPELLS_AddSpellOn(m_target, i);
 }
 
 void SpeedSpell::End(long i)
 {
-	ARX_SPELLS_RemoveSpellOn(target,i);
+	ARX_SPELLS_RemoveSpellOn(m_target,i);
 	
-	if(caster == 0)
-		ARX_SOUND_Stop(snd_loop);
+	if(m_caster == 0)
+		ARX_SOUND_Stop(m_snd_loop);
 	
-	ARX_SOUND_PlaySFX(SND_SPELL_SPEED_END, &entities[target]->pos);
+	ARX_SOUND_PlaySFX(SND_SPELL_SPEED_END, &entities[m_target]->pos);
 }
 
 void SpeedSpell::Update(float timeDelta)
 {
-	if(pSpellFx) {
-		if(caster == 0)
-			ARX_SOUND_RefreshPosition(snd_loop, entities[target]->pos);
+	if(m_pSpellFx) {
+		if(m_caster == 0)
+			ARX_SOUND_RefreshPosition(m_snd_loop, entities[m_target]->pos);
 		
-		pSpellFx->Update(timeDelta);
-		pSpellFx->Render();
+		m_pSpellFx->Update(timeDelta);
+		m_pSpellFx->Render();
 	}
 }
 
 void DispellIllusionSpell::Launch()
 {
 	ARX_SOUND_PlaySFX(SND_SPELL_DISPELL_ILLUSION);
-	exist = true;
-	tolive = 1000;
+	m_exist = true;
+	m_tolive = 1000;
 	
 	for(size_t n = 0; n < MAX_SPELLS; n++) {
 		
-		if(!spells[n].exist || spells[n].target == caster) {
+		if(!spells[n].m_exist || spells[n].m_target == m_caster) {
 			continue;
 		}
 		
-		if(spells[n].caster_level > caster_level) {
+		if(spells[n].m_caster_level > m_caster_level) {
 			continue;
 		}
 		
-		if(spells[n].type == SPELL_INVISIBILITY) {
-			if(ValidIONum(spells[n].target) && ValidIONum(caster)) {
-				if(closerThan(entities[spells[n].target]->pos,
-				   entities[caster]->pos, 1000.f)) {
-					spells[n].tolive = 0;
+		if(spells[n].m_type == SPELL_INVISIBILITY) {
+			if(ValidIONum(spells[n].m_target) && ValidIONum(m_caster)) {
+				if(closerThan(entities[spells[n].m_target]->pos,
+				   entities[m_caster]->pos, 1000.f)) {
+					spells[n].m_tolive = 0;
 				}
 			}
 		}
@@ -115,32 +115,32 @@ void DispellIllusionSpell::Launch()
 
 void DispellIllusionSpell::Update(float timeDelta)
 {
-	if(pSpellFx) {
-		pSpellFx->Update(timeDelta);
-		pSpellFx->Render();
+	if(m_pSpellFx) {
+		m_pSpellFx->Update(timeDelta);
+		m_pSpellFx->Render();
 	}
 }
 
 void FireballSpell::Launch(long i)
 {
-	exist = true;
-	lastupdate = timcreation = (unsigned long)(arxtime);
-	tolive = 20000; // TODO probably never read
+	m_exist = true;
+	m_lastupdate = m_timcreation = (unsigned long)(arxtime);
+	m_tolive = 20000; // TODO probably never read
 	
 	CFireBall * effect = new CFireBall();
 	effect->spellinstance = i;
 	
-	if(caster != 0) {
-		hand_group = -1;
+	if(m_caster != 0) {
+		m_hand_group = -1;
 	}
 	
 	Vec3f target;
-	if(hand_group >= 0) {
-		target = hand_pos;
+	if(m_hand_group >= 0) {
+		target = m_hand_pos;
 	} else {
-		target = caster_pos;
-		if(ValidIONum(caster)) {
-			Entity * c = entities[caster];
+		target = m_caster_pos;
+		if(ValidIONum(m_caster)) {
+			Entity * c = entities[m_caster];
 			if(c->ioflags & IO_NPC) {
 				target.x -= std::sin(radians(c->angle.getPitch())) * 30.f;
 				target.y -= 80.f;
@@ -152,65 +152,65 @@ void FireballSpell::Launch(long i)
 	effect->SetDuration(6000ul);
 	
 	float anglea = 0, angleb;
-	if(caster == 0) {
+	if(m_caster == 0) {
 		anglea = player.angle.getYaw(), angleb = player.angle.getPitch();
 	} else {
 		
-		Vec3f start = entities[caster]->pos;
-		if(ValidIONum(caster)
-		   && (entities[caster]->ioflags & IO_NPC)) {
+		Vec3f start = entities[m_caster]->pos;
+		if(ValidIONum(m_caster)
+		   && (entities[m_caster]->ioflags & IO_NPC)) {
 			start.y -= 80.f;
 		}
 		
-		Entity * _io = entities[caster];
+		Entity * _io = entities[m_caster];
 		if(ValidIONum(_io->targetinfo)) {
 			const Vec3f & end = entities[_io->targetinfo]->pos;
 			float d = glm::distance(Vec2f(end.x, end.z), Vec2f(start.x, start.z));
 			anglea = degrees(getAngle(start.y, start.z, end.y, end.z + d));
 		}
 		
-		angleb = entities[caster]->angle.getPitch();
+		angleb = entities[m_caster]->angle.getPitch();
 	}
 	
-	effect->Create(target, MAKEANGLE(angleb), anglea, caster_level);
+	effect->Create(target, MAKEANGLE(angleb), anglea, m_caster_level);
 	
-	pSpellFx = effect;
-	tolive = effect->GetDuration();
+	m_pSpellFx = effect;
+	m_tolive = effect->GetDuration();
 	
-	ARX_SOUND_PlaySFX(SND_SPELL_FIRE_LAUNCH, &caster_pos);
-	snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_FIRE_WIND,
-	                                       &caster_pos, 1.f,
+	ARX_SOUND_PlaySFX(SND_SPELL_FIRE_LAUNCH, &m_caster_pos);
+	m_snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_FIRE_WIND,
+	                                       &m_caster_pos, 1.f,
 	                                       ARX_SOUND_PLAY_LOOPED);
 }
 
 void FireballSpell::End()
 {
-	ARX_SOUND_Stop(snd_loop);
+	ARX_SOUND_Stop(m_snd_loop);
 }
 
 void FireballSpell::Kill()
 {
-	if(lightHandleIsValid(longinfo_light)) {
-		EERIE_LIGHT * light = lightHandleGet(longinfo_light);
+	if(lightHandleIsValid(m_longinfo_light)) {
+		EERIE_LIGHT * light = lightHandleGet(m_longinfo_light);
 		
 		light->duration = 500;
 		light->time_creation = (unsigned long)(arxtime);
 	}
-	longinfo_light = -1;
+	m_longinfo_light = -1;
 }
 
 void FireballSpell::Update(float timeDelta)
 {
-	CSpellFx *pCSpellFX = pSpellFx;
+	CSpellFx *pCSpellFX = m_pSpellFx;
 
 	if(pCSpellFX) {
 		CFireBall *pCF = (CFireBall*) pCSpellFX;
 			
-		if(!lightHandleIsValid(longinfo_light))
-			longinfo_light = GetFreeDynLight();
+		if(!lightHandleIsValid(m_longinfo_light))
+			m_longinfo_light = GetFreeDynLight();
 
-		if(lightHandleIsValid(longinfo_light)) {
-			EERIE_LIGHT * light = lightHandleGet(longinfo_light);
+		if(lightHandleIsValid(m_longinfo_light)) {
+			EERIE_LIGHT * light = lightHandleGet(m_longinfo_light);
 			
 			light->pos = pCF->eCurPos;
 			light->intensity = 2.2f;
@@ -223,19 +223,19 @@ void FireballSpell::Update(float timeDelta)
 
 		EERIE_SPHERE sphere;
 		sphere.origin = pCF->eCurPos;
-		sphere.radius=std::max(caster_level*2.f,12.f);
+		sphere.radius=std::max(m_caster_level*2.f,12.f);
 		#define MIN_TIME_FIREBALL 2000 
 
 		if(pCF->pPSFire.iParticleNbMax) {
 			if(pCF->ulCurrentTime > MIN_TIME_FIREBALL) {
-				SpawnFireballTail(&pCF->eCurPos,&pCF->eMove,(float)caster_level,0);
+				SpawnFireballTail(&pCF->eCurPos,&pCF->eMove,(float)m_caster_level,0);
 			} else {
 				if(rnd()<0.9f) {
 					Vec3f move = Vec3f_ZERO;
 					float dd=(float)pCF->ulCurrentTime / (float)MIN_TIME_FIREBALL*10;
 
-					if(dd > caster_level)
-						dd = caster_level;
+					if(dd > m_caster_level)
+						dd = m_caster_level;
 
 					if(dd < 1)
 						dd = 1;
@@ -246,9 +246,9 @@ void FireballSpell::Update(float timeDelta)
 		}
 
 		if(!pCF->bExplo)
-		if(CheckAnythingInSphere(&sphere, caster, CAS_NO_SAME_GROUP)) {
+		if(CheckAnythingInSphere(&sphere, m_caster, CAS_NO_SAME_GROUP)) {
 			ARX_BOOMS_Add(pCF->eCurPos);
-			LaunchFireballBoom(&pCF->eCurPos,(float)caster_level);
+			LaunchFireballBoom(&pCF->eCurPos,(float)m_caster_level);
 			pCF->pPSFire.iParticleNbMax = 0;
 			pCF->pPSFire2.iParticleNbMax = 0;
 			pCF->eMove *= 0.5f;
@@ -256,75 +256,75 @@ void FireballSpell::Update(float timeDelta)
 			pCF->SetTTL(1500);
 			pCF->bExplo = true;
 			
-			DoSphericDamage(&pCF->eCurPos,3.f*caster_level,30.f*caster_level,DAMAGE_AREA,DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL,caster);
-			tolive=0;
+			DoSphericDamage(&pCF->eCurPos,3.f*m_caster_level,30.f*m_caster_level,DAMAGE_AREA,DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL,m_caster);
+			m_tolive=0;
 			ARX_SOUND_PlaySFX(SND_SPELL_FIRE_HIT, &sphere.origin);
-			ARX_NPC_SpawnAudibleSound(sphere.origin, entities[caster]);
+			ARX_NPC_SpawnAudibleSound(sphere.origin, entities[m_caster]);
 		}
 
 		pCSpellFX->Update(timeDelta);
-		ARX_SOUND_RefreshPosition(snd_loop, pCF->eCurPos);
+		ARX_SOUND_RefreshPosition(m_snd_loop, pCF->eCurPos);
 	}
 }
 
 void CreateFoodSpell::Launch(long duration, long i)
 {
-	ARX_SOUND_PlaySFX(SND_SPELL_CREATE_FOOD, &caster_pos);
-	exist = true;
-	tolive = (duration > -1) ? duration : 3500;
+	ARX_SOUND_PlaySFX(SND_SPELL_CREATE_FOOD, &m_caster_pos);
+	m_exist = true;
+	m_tolive = (duration > -1) ? duration : 3500;
 	
-	if(caster == 0 || target == 0) {
+	if(m_caster == 0 || m_target == 0) {
 		player.hunger = 100;
 	}
 	
 	CCreateFood * effect = new CCreateFood();
 	effect->spellinstance = i;
 	effect->Create();
-	effect->SetDuration(tolive);
-	pSpellFx = effect;
-	tolive = effect->GetDuration();
+	effect->SetDuration(m_tolive);
+	m_pSpellFx = effect;
+	m_tolive = effect->GetDuration();
 }
 
 void CreateFoodSpell::Update(float timeDelta)
 {
-	if(pSpellFx) {
-		pSpellFx->Update(timeDelta);
-		pSpellFx->Render();
+	if(m_pSpellFx) {
+		m_pSpellFx->Update(timeDelta);
+		m_pSpellFx->Render();
 	}	
 }
 
 void IceProjectileSpell::Launch(long i)
 {
-	ARX_SOUND_PlaySFX(SND_SPELL_ICE_PROJECTILE_LAUNCH, &caster_pos);
-	exist = true;
-	tolive = 4200;
+	ARX_SOUND_PlaySFX(SND_SPELL_ICE_PROJECTILE_LAUNCH, &m_caster_pos);
+	m_exist = true;
+	m_tolive = 4200;
 	
 	CIceProjectile * effect = new CIceProjectile();
 	effect->spellinstance = i;
 	
 	Vec3f target;
 	float angleb;
-	if(caster == 0) {
+	if(m_caster == 0) {
 		target = player.pos + Vec3f(0.f, 160.f, 0.f);
 		angleb = player.angle.getPitch();
 	} else {
-		target = entities[caster]->pos;
-		angleb = entities[caster]->angle.getPitch();
+		target = entities[m_caster]->pos;
+		angleb = entities[m_caster]->angle.getPitch();
 	}
 	angleb = MAKEANGLE(angleb);
 	target.x -= std::sin(radians(angleb)) * 150.0f;
 	target.z += std::cos(radians(angleb)) * 150.0f;
-	effect->Create(target, angleb, caster_level);
+	effect->Create(target, angleb, m_caster_level);
 	
-	effect->SetDuration(tolive);
-	pSpellFx = effect;
-	tolive = effect->GetDuration();
+	effect->SetDuration(m_tolive);
+	m_pSpellFx = effect;
+	m_tolive = effect->GetDuration();
 }
 
 void IceProjectileSpell::Update(float timeDelta)
 {
-	if(pSpellFx) {
-		pSpellFx->Update(timeDelta);
-		pSpellFx->Render();
+	if(m_pSpellFx) {
+		m_pSpellFx->Update(timeDelta);
+		m_pSpellFx->Render();
 	}
 }

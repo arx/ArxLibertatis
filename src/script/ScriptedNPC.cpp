@@ -188,7 +188,7 @@ public:
 				if(ValidIONum(from)) {
 					long sp = ARX_SPELLS_GetInstanceForThisCaster(spellid, from);
 					if(sp >= 0) {
-						spells[sp].tolive = 0;
+						spells[sp].m_tolive = 0;
 					}
 				}
 				

@@ -108,13 +108,13 @@ void CCurePoison::Create()
 {
 	SetAngle(0);
 
-	eSrc.x = entities[spells[spellinstance].target]->pos.x;
-	eSrc.y = entities[spells[spellinstance].target]->pos.y;
+	eSrc.x = entities[spells[spellinstance].m_target]->pos.x;
+	eSrc.y = entities[spells[spellinstance].m_target]->pos.y;
 
-	if(spells[spellinstance].target == 0)
+	if(spells[spellinstance].m_target == 0)
 		eSrc.y += 200;
 
-	eSrc.z = entities[spells[spellinstance].target]->pos.z;
+	eSrc.z = entities[spells[spellinstance].m_target]->pos.z;
 
 	pPS->SetPos(eSrc);
 	ParticleParams cp;
@@ -192,13 +192,13 @@ void CCurePoison::Update(unsigned long aulTime)
 	if(ulCurrentTime >= ulDuration)
 		return;
 
-	eSrc.x = entities[spells[spellinstance].target]->pos.x;
-	eSrc.y = entities[spells[spellinstance].target]->pos.y;
+	eSrc.x = entities[spells[spellinstance].m_target]->pos.x;
+	eSrc.y = entities[spells[spellinstance].m_target]->pos.y;
 
-	if(spells[spellinstance].target == 0)
+	if(spells[spellinstance].m_target == 0)
 		eSrc.y += 200;
 
-	eSrc.z = entities[spells[spellinstance].target]->pos.z;
+	eSrc.z = entities[spells[spellinstance].m_target]->pos.z;
 
 	unsigned long ulCalc = ulDuration - ulCurrentTime ;
 	arx_assert(ulCalc <= LONG_MAX);
@@ -804,38 +804,38 @@ void CMultiPoisonProjectile::Create(Vec3f _eSrc, float _afBeta = 0) {
 
 	float afBeta = 0.f;
 	
-	Entity * caster = entities[spells[spellinstance].caster];
-	spells[spellinstance].hand_group = caster->obj->fastaccess.primary_attach;
+	Entity * caster = entities[spells[spellinstance].m_caster];
+	spells[spellinstance].m_hand_group = caster->obj->fastaccess.primary_attach;
 
-	if(spells[spellinstance].hand_group != -1) {
-		long group = spells[spellinstance].hand_group;
-		spells[spellinstance].hand_pos = caster->obj->vertexlist3[group].v;
+	if(spells[spellinstance].m_hand_group != -1) {
+		long group = spells[spellinstance].m_hand_group;
+		spells[spellinstance].m_hand_pos = caster->obj->vertexlist3[group].v;
 	}
 	
-	if(spells[spellinstance].caster == 0) { // player
+	if(spells[spellinstance].m_caster == 0) { // player
 
 		afBeta = player.angle.getPitch();
 
-		if(spells[spellinstance].hand_group != -1) {
-			_eSrc.x = spells[spellinstance].hand_pos.x - std::sin(radians(afBeta)) * 90;
-			_eSrc.y = spells[spellinstance].hand_pos.y;
-			_eSrc.z = spells[spellinstance].hand_pos.z + std::cos(radians(afBeta)) * 90;
+		if(spells[spellinstance].m_hand_group != -1) {
+			_eSrc.x = spells[spellinstance].m_hand_pos.x - std::sin(radians(afBeta)) * 90;
+			_eSrc.y = spells[spellinstance].m_hand_pos.y;
+			_eSrc.z = spells[spellinstance].m_hand_pos.z + std::cos(radians(afBeta)) * 90;
 		} else {
 			_eSrc.x = player.pos.x - std::sin(radians(afBeta)) * 90;
 			_eSrc.y = player.pos.y;
 			_eSrc.z = player.pos.z + std::cos(radians(afBeta)) * 90;
 		}
 	} else {
-		afBeta = entities[spells[spellinstance].caster]->angle.getPitch();
+		afBeta = entities[spells[spellinstance].m_caster]->angle.getPitch();
 
-		if(spells[spellinstance].hand_group != -1) {
-			_eSrc.x = spells[spellinstance].hand_pos.x - std::sin(radians(afBeta)) * 90;
-			_eSrc.y = spells[spellinstance].hand_pos.y;
-			_eSrc.z = spells[spellinstance].hand_pos.z + std::cos(radians(afBeta)) * 90;
+		if(spells[spellinstance].m_hand_group != -1) {
+			_eSrc.x = spells[spellinstance].m_hand_pos.x - std::sin(radians(afBeta)) * 90;
+			_eSrc.y = spells[spellinstance].m_hand_pos.y;
+			_eSrc.z = spells[spellinstance].m_hand_pos.z + std::cos(radians(afBeta)) * 90;
 		} else {
-			_eSrc.x = entities[spells[spellinstance].caster]->pos.x - std::sin(radians(afBeta)) * 90;
-			_eSrc.y = entities[spells[spellinstance].caster]->pos.y;
-			_eSrc.z = entities[spells[spellinstance].caster]->pos.z + std::cos(radians(afBeta)) * 90;
+			_eSrc.x = entities[spells[spellinstance].m_caster]->pos.x - std::sin(radians(afBeta)) * 90;
+			_eSrc.y = entities[spells[spellinstance].m_caster]->pos.y;
+			_eSrc.z = entities[spells[spellinstance].m_caster]->pos.z + std::cos(radians(afBeta)) * 90;
 		}
 	}
 
@@ -897,18 +897,18 @@ void CMultiPoisonProjectile::Render()
 		}
 
 		long t = ARX_DAMAGES_GetFree();
-		AddPoisonFog(&pPoisonProjectile->eCurPos, spells[spellinstance].caster_level + 7);
+		AddPoisonFog(&pPoisonProjectile->eCurPos, spells[spellinstance].m_caster_level + 7);
 
-		if((t != -1) && (spells[pTab[i]->spellinstance].timcreation + 1600 < (unsigned long)(arxtime)))
+		if((t != -1) && (spells[pTab[i]->spellinstance].m_timcreation + 1600 < (unsigned long)(arxtime)))
 		{
 			damages[t].pos = pPoisonProjectile->eCurPos;
 			damages[t].radius = 120.f;
-			float v = spells[spellinstance].caster_level;
+			float v = spells[spellinstance].m_caster_level;
 			v = 4.f + v * ( 1.0f / 10 ) * 6.f ;
 			damages[t].damages	= v * ( 1.0f / 1000 ) * framedelay;
 			damages[t].area		= DAMAGE_FULL;
 			damages[t].duration	= static_cast<long>(framedelay);
-			damages[t].source	= spells[spellinstance].caster;
+			damages[t].source	= spells[spellinstance].m_caster;
 			damages[t].flags	= 0;
 			damages[t].type		= DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_POISON;
 			damages[t].exist	= true;
@@ -985,12 +985,12 @@ void CRepelUndead::Update(unsigned long _ulTime) {
 		return;
 	}
 	
-	eSrc = entities[spells[spellinstance].target]->pos;
+	eSrc = entities[spells[spellinstance].m_target]->pos;
 	
-	if(spells[spellinstance].target == 0) {
+	if(spells[spellinstance].m_target == 0) {
 		fBeta = player.angle.getPitch();
 	} else {
-		fBeta = entities[spells[spellinstance].target]->angle.getPitch();
+		fBeta = entities[spells[spellinstance].m_target]->angle.getPitch();
 	}
 }
 

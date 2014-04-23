@@ -280,36 +280,36 @@ void CFireBall::Update(unsigned long aulTime)
 	} else {
 		float afAlpha = 0.f;
 	
-		if(spells[spellinstance].caster == 0) {
+		if(spells[spellinstance].m_caster == 0) {
 			SetAngle(player.angle.getPitch());
 			afAlpha = player.angle.getYaw();
-			long idx = GetGroupOriginByName(entities[spells[spellinstance].caster]->obj, "chest");
+			long idx = GetGroupOriginByName(entities[spells[spellinstance].m_caster]->obj, "chest");
 
 			if(idx) {
-				eCurPos.x = entities[spells[spellinstance].caster]->obj->vertexlist3[idx].v.x - fBetaRadSin * 60;
-				eCurPos.y = entities[spells[spellinstance].caster]->obj->vertexlist3[idx].v.y;
-				eCurPos.z = entities[spells[spellinstance].caster]->obj->vertexlist3[idx].v.z + fBetaRadCos * 60;
+				eCurPos.x = entities[spells[spellinstance].m_caster]->obj->vertexlist3[idx].v.x - fBetaRadSin * 60;
+				eCurPos.y = entities[spells[spellinstance].m_caster]->obj->vertexlist3[idx].v.y;
+				eCurPos.z = entities[spells[spellinstance].m_caster]->obj->vertexlist3[idx].v.z + fBetaRadCos * 60;
 			} else {
 				eCurPos.x = player.pos.x - fBetaRadSin * 60;
 				eCurPos.y = player.pos.y;
 				eCurPos.z = player.pos.z + fBetaRadCos * 60;
 			}
 		} else {
-			SetAngle(entities[spells[spellinstance].caster]->angle.getPitch());
+			SetAngle(entities[spells[spellinstance].m_caster]->angle.getPitch());
 
-			eCurPos.x = entities[spells[spellinstance].caster]->pos.x - fBetaRadSin * 60;
-			eCurPos.y = entities[spells[spellinstance].caster]->pos.y;
-			eCurPos.z = entities[spells[spellinstance].caster]->pos.z + fBetaRadCos * 60;
+			eCurPos.x = entities[spells[spellinstance].m_caster]->pos.x - fBetaRadSin * 60;
+			eCurPos.y = entities[spells[spellinstance].m_caster]->pos.y;
+			eCurPos.z = entities[spells[spellinstance].m_caster]->pos.z + fBetaRadCos * 60;
 
-			if ((ValidIONum(spells[spellinstance].caster))
-			        && (entities[spells[spellinstance].caster]->ioflags & IO_NPC))
+			if ((ValidIONum(spells[spellinstance].m_caster))
+			        && (entities[spells[spellinstance].m_caster]->ioflags & IO_NPC))
 			{
-				eCurPos.x -= std::sin(radians(entities[spells[spellinstance].caster]->angle.getPitch())) * 30.f;
+				eCurPos.x -= std::sin(radians(entities[spells[spellinstance].m_caster]->angle.getPitch())) * 30.f;
 				eCurPos.y -= 80.f;
-				eCurPos.z += std::cos(radians(entities[spells[spellinstance].caster]->angle.getPitch())) * 30.f;
+				eCurPos.z += std::cos(radians(entities[spells[spellinstance].m_caster]->angle.getPitch())) * 30.f;
 			}
 			
-			Entity * io = entities[spells[spellinstance].caster];
+			Entity * io = entities[spells[spellinstance].m_caster];
 
 			if(ValidIONum(io->targetinfo)) {
 				Vec3f * p1 = &eCurPos;
@@ -499,10 +499,10 @@ void CIceProjectile::Create(Vec3f aeSrc, float afBeta)
 		if(ttt != -1) {
 			damages[ttt].pos = tPos[i];
 			damages[ttt].radius = 60.f;
-			damages[ttt].damages = 0.1f * spells[spellinstance].caster_level;
+			damages[ttt].damages = 0.1f * spells[spellinstance].m_caster_level;
 			damages[ttt].area = DAMAGE_FULL;
 			damages[ttt].duration = ulDuration;
-			damages[ttt].source = spells[spellinstance].caster;
+			damages[ttt].source = spells[spellinstance].m_caster;
 			damages[ttt].flags = DAMAGE_FLAG_DONT_HURT_SOURCE;
 			damages[ttt].type = DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_COLD;
 			damages[ttt].exist = true;

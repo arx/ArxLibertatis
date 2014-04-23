@@ -809,9 +809,9 @@ ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const string & 
 				SpellType id = GetSpellId(name.substr(9));
 				if(id != SPELL_NONE) {
 					for(size_t i = 0; i < MAX_SPELLS; i++) {
-						if(spells[i].exist && spells[i].type == id && spells[i].caster >= 0
-						   && spells[i].caster < long(entities.size())
-							 && entity == entities[spells[i].caster]) {
+						if(spells[i].m_exist && spells[i].m_type == id && spells[i].m_caster >= 0
+						   && spells[i].m_caster < long(entities.size())
+							 && entity == entities[spells[i].m_caster]) {
 							*lcontent = 1;
 							return TYPE_LONG;
 						}
@@ -1028,13 +1028,13 @@ ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const string & 
 			
 			if(boost::starts_with(name, "^playercasting")) {
 				for(size_t i = 0; i < MAX_SPELLS; i++) {
-					if(spells[i].exist && spells[i].caster == 0) {
-						if(spells[i].type == SPELL_LIFE_DRAIN
-						   || spells[i].type == SPELL_HARM
-						   || spells[i].type == SPELL_FIRE_FIELD
-						   || spells[i].type == SPELL_ICE_FIELD
-						   || spells[i].type == SPELL_LIGHTNING_STRIKE
-						   || spells[i].type == SPELL_MASS_LIGHTNING_STRIKE) {
+					if(spells[i].m_exist && spells[i].m_caster == 0) {
+						if(spells[i].m_type == SPELL_LIFE_DRAIN
+						   || spells[i].m_type == SPELL_HARM
+						   || spells[i].m_type == SPELL_FIRE_FIELD
+						   || spells[i].m_type == SPELL_ICE_FIELD
+						   || spells[i].m_type == SPELL_LIGHTNING_STRIKE
+						   || spells[i].m_type == SPELL_MASS_LIGHTNING_STRIKE) {
 							*lcontent = 1;
 							return TYPE_LONG;
 						}
@@ -1050,7 +1050,7 @@ ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const string & 
 				SpellType id = GetSpellId(temp);
 				if(id != SPELL_NONE) {
 					for(size_t i = 0; i < MAX_SPELLS; i++) {
-						if(spells[i].exist && spells[i].type == id && spells[i].caster == 0) {
+						if(spells[i].m_exist && spells[i].m_type == id && spells[i].m_caster == 0) {
 							*lcontent = 1;
 							return TYPE_LONG;
 						}

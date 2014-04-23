@@ -114,7 +114,7 @@ void CBless::Render()
 	TexturedVertex v[4];
 	TexturedVertex v3[4];
 
-	float ff = ((float)spells[spellinstance].caster_level + 10) * 6.f;
+	float ff = ((float)spells[spellinstance].m_caster_level + 10) * 6.f;
 	float fBetaRadCos = (float) cos(radians(MAKEANGLE(player.angle.getPitch()))) * ff;
 	float fBetaRadSin = (float) sin(radians(MAKEANGLE(player.angle.getPitch()))) * ff;
 
@@ -267,7 +267,7 @@ CFireProtection::CFireProtection()
 
 CFireProtection::~CFireProtection()
 {
-	long iNpc = spells[spellinstance].target;
+	long iNpc = spells[spellinstance].m_target;
 
 	if(ValidIONum(iNpc)) {
 		Entity *io = entities[iNpc];
@@ -284,7 +284,7 @@ void CFireProtection::Create(long _ulDuration)
 {
 	SetDuration(_ulDuration);
 
-	long iNpc = spells[spellinstance].target;
+	long iNpc = spells[spellinstance].m_target;
 
 	if(ValidIONum(iNpc)) {
 		Entity *io = entities[iNpc];
@@ -302,7 +302,7 @@ void CFireProtection::Update(unsigned long _ulTime)
 	if(!arxtime.is_paused())
 		ulCurrentTime += _ulTime;
 
-	long iNpc = spells[spellinstance].target;
+	long iNpc = spells[spellinstance].m_target;
 
 	if(ValidIONum(iNpc)) {
 		Entity *io = entities[iNpc];
@@ -328,7 +328,7 @@ CColdProtection::CColdProtection()
 
 CColdProtection::~CColdProtection()
 {
-	long iNpc = spells[spellinstance].target;
+	long iNpc = spells[spellinstance].m_target;
 
 	if(ValidIONum(iNpc)) {
 		Entity *io = entities[iNpc];
@@ -363,7 +363,7 @@ void CColdProtection::Update(unsigned long _ulTime)
 	if(!arxtime.is_paused())
 		ulCurrentTime += _ulTime;
 
-	long iNpc = spells[spellinstance].target;
+	long iNpc = spells[spellinstance].m_target;
 
 	if(ValidIONum(iNpc)) {
 		Entity *io = entities[iNpc];

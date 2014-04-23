@@ -97,7 +97,7 @@ void LaunchMagicMissileExplosion(const Vec3f & _ePos, int t = 0, long spellinsta
 	cp.fEndSize = 0;
 	cp.fEndSizeRandom = 2;
 
-	if(spellinstance >= 0 && spells[spellinstance].caster == 0 && cur_mr == 3) {
+	if(spellinstance >= 0 && spells[spellinstance].m_caster == 0 && cur_mr == 3) {
 		cp.fStartSize = 20;
 		cp.fSpeed = 13;
 		cp.fSpeedRandom = 10;
@@ -157,7 +157,7 @@ void LaunchMagicMissileExplosion(const Vec3f & _ePos, int t = 0, long spellinsta
 		light->fallstart = 250.f;
 		light->fallend   = 420.f;
 
-		if(spellinstance >= 0 && spells[spellinstance].caster == 0 && cur_mr == 3) {
+		if(spellinstance >= 0 && spells[spellinstance].m_caster == 0 && cur_mr == 3) {
 			light->rgb.r = 1.f;
 			light->rgb.g = 0.3f;
 			light->rgb.b = .8f;
@@ -299,7 +299,7 @@ void CMagicMissile::Render()
 
 	// Set Texture
 	if(tex_mm) {
-		if(spells[spellinstance].caster == 0 && cur_mr == 3)
+		if(spells[spellinstance].m_caster == 0 && cur_mr == 3)
 			GRenderer->ResetTexture(0);
 		else
 			GRenderer->SetTexture(0, tex_mm);
@@ -407,7 +407,7 @@ void CMagicMissile::Render()
 		stiteangle.setRoll(stiteangle.getRoll() + 360.0f);
 
 	Color3f stitecolor;
-	if(spells[spellinstance].caster == 0 && cur_mr == 3) {
+	if(spells[spellinstance].m_caster == 0 && cur_mr == 3) {
 		stitecolor.r = 1.f;
 		stitecolor.g = 0.f;
 		stitecolor.b = 0.2f;
@@ -463,17 +463,17 @@ void CMultiMagicMissile::Create()
 	long lMax = 0;
 
 	if(pTab) {
-		spells[spellinstance].hand_group = GetActionPointIdx(entities[spells[spellinstance].caster]->obj, "primary_attach");
+		spells[spellinstance].m_hand_group = GetActionPointIdx(entities[spells[spellinstance].m_caster]->obj, "primary_attach");
 		
-		if(spells[spellinstance].hand_group != -1) {
-			Entity * caster = entities[spells[spellinstance].caster];
-			long group = spells[spellinstance].hand_group;
-			spells[spellinstance].hand_pos = caster->obj->vertexlist3[group].v;
+		if(spells[spellinstance].m_hand_group != -1) {
+			Entity * caster = entities[spells[spellinstance].m_caster];
+			long group = spells[spellinstance].m_hand_group;
+			spells[spellinstance].m_hand_pos = caster->obj->vertexlist3[group].v;
 		}
 		
 		Vec3f aePos;
 		float afAlpha, afBeta;
-		if(spells[spellinstance].caster == 0) { // player
+		if(spells[spellinstance].m_caster == 0) { // player
 			afBeta = player.angle.getPitch();
 			afAlpha = player.angle.getYaw();
 			Vec3f vector;
@@ -481,8 +481,8 @@ void CMultiMagicMissile::Create()
 			vector.y = std::sin(radians(afAlpha)) * 60.f;
 			vector.z = std::cos(radians(afBeta)) * std::cos(radians(afAlpha)) * 60.f;
 
-			if(spells[spellinstance].hand_group != -1) {
-				aePos = spells[spellinstance].hand_pos + vector;
+			if(spells[spellinstance].m_hand_group != -1) {
+				aePos = spells[spellinstance].m_hand_pos + vector;
 			} else {
 				aePos.x = player.pos.x - std::sin(radians(afBeta)) + vector.x; 
 				aePos.y = player.pos.y + vector.y; //;
@@ -490,27 +490,27 @@ void CMultiMagicMissile::Create()
 			}
 		} else {
 			afAlpha = 0;
-			afBeta = entities[spells[spellinstance].caster]->angle.getPitch();
+			afBeta = entities[spells[spellinstance].m_caster]->angle.getPitch();
 			Vec3f vector;
 			vector.x = -std::sin(radians(afBeta)) * std::cos(radians(afAlpha)) * 60;
 			vector.y =  std::sin(radians(afAlpha)) * 60;
 			vector.z =  std::cos(radians(afBeta)) * std::cos(radians(afAlpha)) * 60;
 
-			if(spells[spellinstance].hand_group != -1) {
-				aePos = spells[spellinstance].hand_pos + vector;
+			if(spells[spellinstance].m_hand_group != -1) {
+				aePos = spells[spellinstance].m_hand_pos + vector;
 			} else {
-				aePos = entities[spells[spellinstance].caster]->pos + vector;
+				aePos = entities[spells[spellinstance].m_caster]->pos + vector;
 			}
 
-			Entity * io = entities[spells[spellinstance].caster];
+			Entity * io = entities[spells[spellinstance].m_caster];
 
 			if(ValidIONum(io->targetinfo)) {
-				Vec3f * p1 = &spells[spellinstance].caster_pos;
+				Vec3f * p1 = &spells[spellinstance].m_caster_pos;
 				Vec3f * p2 = &entities[io->targetinfo]->pos;
 				afAlpha = -(degrees(getAngle(p1->y, p1->z, p2->y, p2->z + glm::distance(Vec2f(p2->x, p2->z), Vec2f(p1->x, p1->z))))); //alpha entre orgn et dest;
-			} else if (ValidIONum(spells[spellinstance].target)) {
-				Vec3f * p1 = &spells[spellinstance].caster_pos;
-				Vec3f * p2 = &entities[spells[spellinstance].target]->pos;
+			} else if (ValidIONum(spells[spellinstance].m_target)) {
+				Vec3f * p1 = &spells[spellinstance].m_caster_pos;
+				Vec3f * p2 = &entities[spells[spellinstance].m_target]->pos;
 				afAlpha = -(degrees(getAngle(p1->y, p1->z, p2->y, p2->z + glm::distance(Vec2f(p2->x, p2->z), Vec2f(p1->x, p1->z))))); //alpha entre orgn et dest;
 			}
 		}
@@ -536,7 +536,7 @@ void CMultiMagicMissile::Create()
 
 				pMM->SetDuration(lTime);
 
-				if(spells[spellinstance].caster == 0 && cur_mr == 3) {
+				if(spells[spellinstance].m_caster == 0 && cur_mr == 3) {
 					pMM->SetColor(Color3f(0.9f, 0.2f, 0.5f));
 				} else {
 					pMM->SetColor(Color3f(0.9f + rnd() * 0.1f, 0.9f + rnd() * 0.1f, 0.7f + rnd() * 0.3f));
@@ -551,7 +551,7 @@ void CMultiMagicMissile::Create()
 					el->fallend		= 190.f;
 					el->fallstart	= 80.f;
 
-					if(spells[spellinstance].caster == 0 && cur_mr == 3) {
+					if(spells[spellinstance].m_caster == 0 && cur_mr == 3) {
 						el->rgb.r = 1;
 						el->rgb.g = 0.3f;
 						el->rgb.b = 0.8f;
@@ -586,10 +586,10 @@ void CMultiMagicMissile::CheckCollision()
 					sphere.origin = pMM->eCurPos;
 					sphere.radius	= 10.f;
 
-					if(spellinstance != -1 && (CheckAnythingInSphere(&sphere, spells[spellinstance].caster, CAS_NO_SAME_GROUP)))
+					if(spellinstance != -1 && (CheckAnythingInSphere(&sphere, spells[spellinstance].m_caster, CAS_NO_SAME_GROUP)))
 					{
 						LaunchMagicMissileExplosion(pMM->eCurPos, 0, spellinstance);
-						ARX_NPC_SpawnAudibleSound(pMM->eCurPos, entities[spells[spellinstance].caster]);
+						ARX_NPC_SpawnAudibleSound(pMM->eCurPos, entities[spells[spellinstance].m_caster]);
 
 						pMM->SetTTL(1000);
 						pMM->bExplo = true;
@@ -602,10 +602,10 @@ void CMultiMagicMissile::CheckCollision()
 						if(ttt != -1) {
 							damages[ttt].pos = pMM->eCurPos;
 							damages[ttt].radius	= 80.f;
-							damages[ttt].damages = (4 + spells[spellinstance].caster_level * ( 1.0f / 5 )) * .8f; 
+							damages[ttt].damages = (4 + spells[spellinstance].m_caster_level * ( 1.0f / 5 )) * .8f; 
 							damages[ttt].area	= DAMAGE_FULL;
 							damages[ttt].duration = -1;
-							damages[ttt].source	= spells[spellinstance].caster;
+							damages[ttt].source	= spells[spellinstance].m_caster;
 							damages[ttt].flags	= DAMAGE_FLAG_DONT_HURT_SOURCE;
 							damages[ttt].type	= DAMAGE_TYPE_MAGICAL;
 							damages[ttt].exist	= true;
@@ -725,9 +725,9 @@ void CIgnit::Action(int aiMode)
 		GLight[tablight[i].iLightNum]->status = sMode;
 
 		if(aiMode == 1) {
-			ARX_SOUND_PlaySFX(SND_SPELL_IGNITE, &spells[spellinstance].caster_pos);
+			ARX_SOUND_PlaySFX(SND_SPELL_IGNITE, &spells[spellinstance].m_caster_pos);
 		} else if(aiMode == 0) {
-			ARX_SOUND_PlaySFX(SND_SPELL_DOUSE, &spells[spellinstance].caster_pos);
+			ARX_SOUND_PlaySFX(SND_SPELL_DOUSE, &spells[spellinstance].m_caster_pos);
 		}
 	}
 }

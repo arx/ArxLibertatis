@@ -80,10 +80,10 @@ static bool IsPointInField(const Vec3f & pos) {
 
 	for(size_t i = 0; i < MAX_SPELLS; i++) {
 
-		if(spells[i].exist && spells[i].type == SPELL_CREATE_FIELD) {
+		if(spells[i].m_exist && spells[i].m_type == SPELL_CREATE_FIELD) {
 
-			if(ValidIONum(spells[i].longinfo_entity)) {
-				Entity * pfrm = entities[spells[i].longinfo_entity];
+			if(ValidIONum(spells[i].m_longinfo_entity)) {
+				Entity * pfrm = entities[spells[i].m_longinfo_entity];
 				
 				EERIE_CYLINDER cyl;
 				cyl.height = -35.f;

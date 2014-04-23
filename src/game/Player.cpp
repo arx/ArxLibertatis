@@ -423,8 +423,8 @@ void ARX_PLAYER_Quest_Add(const std::string & quest, bool _bLoad) {
  */
 void ARX_PLAYER_Remove_Invisibility() {
 	for(size_t i = 0; i < MAX_SPELLS; i++) {
-		if(spells[i].exist && spells[i].type == SPELL_INVISIBILITY && spells[i].caster == 0) {
-			spells[i].tolive = 0;
+		if(spells[i].m_exist && spells[i].m_type == SPELL_INVISIBILITY && spells[i].m_caster == 0) {
+			spells[i].m_tolive = 0;
 		}
 	}
 }
@@ -549,24 +549,24 @@ void ARX_PLAYER_ComputePlayerFullStats() {
 			}
 			
 			long n = spellHandle;
-			switch (spells[n].type) {
+			switch (spells[n].m_type) {
 				case SPELL_ARMOR:
-					player.Mod_armor_class += spells[n].caster_level;
+					player.Mod_armor_class += spells[n].m_caster_level;
 					break;
 				case SPELL_LOWER_ARMOR:
-					player.Mod_armor_class -= spells[n].caster_level;
+					player.Mod_armor_class -= spells[n].m_caster_level;
 					break;
 				case SPELL_CURSE:
-					player.Mod_Attribute_Strength -= spells[n].caster_level;
-					player.Mod_Attribute_Constitution -= spells[n].caster_level;
-					player.Mod_Attribute_Dexterity -= spells[n].caster_level;
-					player.Mod_Attribute_Mind -= spells[n].caster_level;
+					player.Mod_Attribute_Strength -= spells[n].m_caster_level;
+					player.Mod_Attribute_Constitution -= spells[n].m_caster_level;
+					player.Mod_Attribute_Dexterity -= spells[n].m_caster_level;
+					player.Mod_Attribute_Mind -= spells[n].m_caster_level;
 					break;
 				case SPELL_BLESS:
-					player.Mod_Attribute_Strength += spells[n].caster_level;
-					player.Mod_Attribute_Dexterity += spells[n].caster_level;
-					player.Mod_Attribute_Constitution += spells[n].caster_level;
-					player.Mod_Attribute_Mind += spells[n].caster_level;
+					player.Mod_Attribute_Strength += spells[n].m_caster_level;
+					player.Mod_Attribute_Dexterity += spells[n].m_caster_level;
+					player.Mod_Attribute_Constitution += spells[n].m_caster_level;
+					player.Mod_Attribute_Mind += spells[n].m_caster_level;
 					break;
 				default: break;
 			}
@@ -1317,8 +1317,8 @@ void ARX_PLAYER_BecomesDead() {
 	}
 
 	for(size_t i = 0; i < MAX_SPELLS; i++) {
-		if(spells[i].exist && spells[i].caster == 0) {
-			spells[i].tolive = 0;
+		if(spells[i].m_exist && spells[i].m_caster == 0) {
+			spells[i].m_tolive = 0;
 		}
 	}
 }
@@ -2163,7 +2163,7 @@ void PlayerMovementIterate(float DeltaTime) {
 					player.physics.cyl.height = old;
 					long num = ARX_SPELLS_GetSpellOn(entities.player(), SPELL_LEVITATE);
 					if(num != -1) {
-						spells[num].tolive = 0;
+						spells[num].m_tolive = 0;
 					}
 				}
 			}
@@ -2663,13 +2663,13 @@ void ARX_PLAYER_PutPlayerInNormalStance(long val) {
 	
 	if(!val) {
 		for(size_t i = 0; i < MAX_SPELLS; i++) {
-			if(spells[i].exist && (spells[i].caster == 0 || spells[i].target == 0)) {
-				switch(spells[i].type) {
+			if(spells[i].m_exist && (spells[i].m_caster == 0 || spells[i].m_target == 0)) {
+				switch(spells[i].m_type) {
 					case SPELL_MAGIC_SIGHT:
 					case SPELL_LEVITATE:
 					case SPELL_SPEED:
 					case SPELL_FLYING_EYE:
-						spells[i].tolive = 0;
+						spells[i].m_tolive = 0;
 						break;
 					default: break;
 				}

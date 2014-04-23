@@ -1284,12 +1284,12 @@ void ArxGame::updateLevel() {
 
 		long speedSpellIndex = ARX_SPELLS_GetSpellOn(entity, SPELL_SPEED);
 		if(speedSpellIndex > -1) {
-			speedModifier += spells[speedSpellIndex].caster_level * 0.1f;
+			speedModifier += spells[speedSpellIndex].m_caster_level * 0.1f;
 		}
 
 		long slowSpellIndex = ARX_SPELLS_GetSpellOn(entity, SPELL_SLOW_DOWN);
 		if(slowSpellIndex > -1) {
-			speedModifier -= spells[slowSpellIndex].caster_level * 0.05f;
+			speedModifier -= spells[slowSpellIndex].m_caster_level * 0.05f;
 		}
 
 		entity->speed_modif = speedModifier;

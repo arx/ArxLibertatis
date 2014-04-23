@@ -40,25 +40,25 @@
 
 bool SummonCreatureSpell::Launch(long i, long duration)
 {
-	spells[i].exist = true;
-	spells[i].lastupdate = spells[i].timcreation = (unsigned long)(arxtime);
-	spells[i].bDuration = true;
-	spells[i].fManaCostPerSecond = 1.9f;
-	spells[i].longinfo_summon_creature = 0;
-	spells[i].longinfo2_entity = 0;
-	spells[i].tolive = (duration > -1) ? duration : 2000000;
+	spells[i].m_exist = true;
+	spells[i].m_lastupdate = spells[i].m_timcreation = (unsigned long)(arxtime);
+	spells[i].m_bDuration = true;
+	spells[i].m_fManaCostPerSecond = 1.9f;
+	spells[i].m_longinfo_summon_creature = 0;
+	spells[i].m_longinfo2_entity = 0;
+	spells[i].m_tolive = (duration > -1) ? duration : 2000000;
 	
 	Vec3f target;
 	float beta;
 	bool displace = false;
-	if(spells[i].caster == 0) {
+	if(spells[i].m_caster == 0) {
 		target = player.basePosition();
 		beta = player.angle.getPitch();
 		displace = true;
 	} else {
-		target = entities[spells[i].caster]->pos;
-		beta = entities[spells[i].caster]->angle.getPitch();
-		displace = (entities[spells[i].caster]->ioflags & IO_NPC) == IO_NPC;
+		target = entities[spells[i].m_caster]->pos;
+		beta = entities[spells[i].m_caster]->angle.getPitch();
+		displace = (entities[spells[i].m_caster]->ioflags & IO_NPC) == IO_NPC;
 	}
 	if(displace) {
 		target.x -= std::sin(radians(MAKEANGLE(beta))) * 300.f;
@@ -66,14 +66,14 @@ bool SummonCreatureSpell::Launch(long i, long duration)
 	}
 	
 	if(!ARX_INTERACTIVE_ConvertToValidPosForIO(NULL, &target)) {
-		spells[i].exist = false;
+		spells[i].m_exist = false;
 		ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE);
 		return false;
 	}
 	
-	spells[i].fdata = (spells[i].caster == 0 && cur_mega == 10) ? 1.f : 0.f;
-	spells[i].target_pos = target;
-	ARX_SOUND_PlaySFX(SND_SPELL_SUMMON_CREATURE, &spells[i].target_pos);
+	spells[i].m_fdata = (spells[i].m_caster == 0 && cur_mega == 10) ? 1.f : 0.f;
+	spells[i].m_target_pos = target;
+	ARX_SOUND_PlaySFX(SND_SPELL_SUMMON_CREATURE, &spells[i].m_target_pos);
 	CSummonCreature * effect = new CSummonCreature();
 	effect->spellinstance = i;
 	effect->Create(target, MAKEANGLE(player.angle.getPitch()));
@@ -93,32 +93,32 @@ bool SummonCreatureSpell::Launch(long i, long duration)
 		light->pos = effect->eSrc;
 	}
 	
-	spells[i].pSpellFx = effect;
+	spells[i].m_pSpellFx = effect;
 	
 	return true;
 }
 
 void SummonCreatureSpell::End(size_t i)
 {
-	if(ValidIONum(spells[i].longinfo2_entity) && spells[i].longinfo2_entity != 0) {
-		ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &entities[spells[i].longinfo2_entity]->pos);
+	if(ValidIONum(spells[i].m_longinfo2_entity) && spells[i].m_longinfo2_entity != 0) {
+		ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &entities[spells[i].m_longinfo2_entity]->pos);
 	}
 
-	lightHandleDestroy(spells[i].pSpellFx->lLightId);
+	lightHandleDestroy(spells[i].m_pSpellFx->lLightId);
 	// need to killio
 }
 
 void SummonCreatureSpell::Kill(long i)
 {
-	lightHandleDestroy(spells[i].pSpellFx->lLightId);
+	lightHandleDestroy(spells[i].m_pSpellFx->lLightId);
 	
-	if(ValidIONum(spells[i].longinfo2_entity) && spells[i].longinfo2_entity != 0) {
+	if(ValidIONum(spells[i].m_longinfo2_entity) && spells[i].m_longinfo2_entity != 0) {
 		
-		if(entities[spells[i].longinfo2_entity]->scriptload
-		   && (entities[spells[i].longinfo2_entity]->ioflags & IO_NOSAVE)) {
+		if(entities[spells[i].m_longinfo2_entity]->scriptload
+		   && (entities[spells[i].m_longinfo2_entity]->ioflags & IO_NOSAVE)) {
 			
-			AddRandomSmoke(entities[spells[i].longinfo2_entity], 100);
-			Vec3f posi = entities[spells[i].longinfo2_entity]->pos;
+			AddRandomSmoke(entities[spells[i].m_longinfo2_entity], 100);
+			Vec3f posi = entities[spells[i].m_longinfo2_entity]->pos;
 			posi.y -= 100.f;
 			MakeCoolFx(posi);
 		
@@ -134,55 +134,55 @@ void SummonCreatureSpell::Kill(long i)
 				light->duration = 600;
 			}
 			
-			entities[spells[i].longinfo2_entity]->destroyOne();
+			entities[spells[i].m_longinfo2_entity]->destroyOne();
 		}
 	}
 	
-	spells[i].longinfo2_entity = 0;
+	spells[i].m_longinfo2_entity = 0;
 }
 
 void SummonCreatureSpell::Update(size_t i, float timeDelta)
 {
 	if(!arxtime.is_paused()) {
-		if(float(arxtime) - (float)spells[i].timcreation <= 4000) {
+		if(float(arxtime) - (float)spells[i].m_timcreation <= 4000) {
 			if(rnd() > 0.7f) {
-				CSummonCreature * pSummon = (CSummonCreature *)spells[i].pSpellFx;
+				CSummonCreature * pSummon = (CSummonCreature *)spells[i].m_pSpellFx;
 				if(pSummon) {
 					Vec3f pos = pSummon->eSrc;
 					MakeCoolFx(pos);
 				}
 			}
 
-			CSpellFx *pCSpellFX = spells[i].pSpellFx;
+			CSpellFx *pCSpellFX = spells[i].m_pSpellFx;
 
 			if(pCSpellFX) {
 				pCSpellFX->Update(timeDelta);
 				pCSpellFX->Render();
 			}	
 
-			spells[i].longinfo_summon_creature = 1;
-			spells[i].longinfo2_entity = -1;
+			spells[i].m_longinfo_summon_creature = 1;
+			spells[i].m_longinfo2_entity = -1;
 
-		} else if(spells[i].longinfo_summon_creature) {
-			lightHandleDestroy(spells[i].pSpellFx->lLightId);
+		} else if(spells[i].m_longinfo_summon_creature) {
+			lightHandleDestroy(spells[i].m_pSpellFx->lLightId);
 
-			spells[i].longinfo_summon_creature = 0;
-			ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &spells[i].target_pos);
+			spells[i].m_longinfo_summon_creature = 0;
+			ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &spells[i].m_target_pos);
 			CSummonCreature *pSummon;
-			pSummon= (CSummonCreature *)spells[i].pSpellFx;
+			pSummon= (CSummonCreature *)spells[i].m_pSpellFx;
 
 			if(pSummon) {
 				EERIE_CYLINDER phys;
 				phys.height=-200;
 				phys.radius=50;
-				phys.origin=spells[i].target_pos;
+				phys.origin=spells[i].m_target_pos;
 				float anything = CheckAnythingInCylinder(&phys, NULL, CFLAG_JUST_TEST);
 
 				if(EEfabs(anything) < 30) {
 				
 				long tokeep;
 				res::path cls;
-				if(spells[i].fdata == 1.f) {
+				if(spells[i].m_fdata == 1.f) {
 					if(rnd() > 0.5) {
 						tokeep = -1;
 						cls = "graph/obj3d/interactive/npc/wrat_base/wrat_base";
@@ -198,7 +198,7 @@ void SummonCreatureSpell::Update(size_t i, float timeDelta)
 				   || (cur_mr >= 3 && rnd() > 0.3f)) {
 					tokeep = -1;
 					cls = "graph/obj3d/interactive/npc/wrat_base/wrat_base";
-				} else if(spells[i].caster_level >= 9) {
+				} else if(spells[i].m_caster_level >= 9) {
 					tokeep = 1;
 					cls = "graph/obj3d/interactive/npc/demon/demon";
 				} else if(rnd() > 0.98f) {
@@ -219,7 +219,7 @@ void SummonCreatureSpell::Update(size_t i, float timeDelta)
 				if(io) {
 					RestoreInitialIOStatusOfIO(io);
 					
-					long lSpellsCaster = spells[i].caster ; 
+					long lSpellsCaster = spells[i].m_caster ; 
 					io->summoner = checked_range_cast<short>(lSpellsCaster);
 
 					io->scriptload = 1;
@@ -238,8 +238,8 @@ void SummonCreatureSpell::Update(size_t i, float timeDelta)
 						io->speed_modif=1.f;
 					}
 
-					if(ValidIONum(spells[i].caster)) {
-						EVENT_SENDER = entities[spells[i].caster];
+					if(ValidIONum(spells[i].m_caster)) {
+						EVENT_SENDER = entities[spells[i].m_caster];
 					} else {
 						EVENT_SENDER = NULL;
 					}
@@ -256,36 +256,36 @@ void SummonCreatureSpell::Update(size_t i, float timeDelta)
 					}
 
 					if(tokeep==1)
-						spells[i].longinfo2_entity = io->index();
+						spells[i].m_longinfo2_entity = io->index();
 					else
-						spells[i].longinfo2_entity = -1;
+						spells[i].m_longinfo2_entity = -1;
 				}
 				}
 			}
-		} else if(spells[i].longinfo2_entity <= 0) {
-			spells[i].tolive = 0;
+		} else if(spells[i].m_longinfo2_entity <= 0) {
+			spells[i].m_tolive = 0;
 		}
 	}	
 }
 
 bool FakeSummonSpell::Launch(long i)
 {
-	if(spells[i].caster <= 0 || !ValidIONum(spells[i].target)) {
+	if(spells[i].m_caster <= 0 || !ValidIONum(spells[i].m_target)) {
 		return false;
 	}
 	
-	spells[i].exist = true;
-	spells[i].lastupdate = spells[i].timcreation = (unsigned long)(arxtime);
-	spells[i].bDuration = true;
-	spells[i].fManaCostPerSecond = 1.9f;
-	spells[i].tolive = 4000;
+	spells[i].m_exist = true;
+	spells[i].m_lastupdate = spells[i].m_timcreation = (unsigned long)(arxtime);
+	spells[i].m_bDuration = true;
+	spells[i].m_fManaCostPerSecond = 1.9f;
+	spells[i].m_tolive = 4000;
 	
-	Vec3f target = entities[spells[i].target]->pos;
-	if(spells[i].target != 0) {
+	Vec3f target = entities[spells[i].m_target]->pos;
+	if(spells[i].m_target != 0) {
 		target.y += player.baseHeight();
 	}
-	spells[i].target_pos = target;
-	ARX_SOUND_PlaySFX(SND_SPELL_SUMMON_CREATURE, &spells[i].target_pos);
+	spells[i].m_target_pos = target;
+	ARX_SOUND_PlaySFX(SND_SPELL_SUMMON_CREATURE, &spells[i].m_target_pos);
 	CSummonCreature * effect = new CSummonCreature();
 	effect->spellinstance = i;
 	effect->Create(target, MAKEANGLE(player.angle.getPitch()));
@@ -306,35 +306,35 @@ bool FakeSummonSpell::Launch(long i)
 		light->pos = effect->eSrc;
 	}
 	
-	spells[i].pSpellFx = effect;
+	spells[i].m_pSpellFx = effect;
 	
 	return true;
 }
 
 void FakeSummonSpell::End(size_t i)
 {
-	ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &spells[i].target_pos);
+	ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &spells[i].m_target_pos);
 	
-	lightHandleDestroy(spells[i].pSpellFx->lLightId);
+	lightHandleDestroy(spells[i].m_pSpellFx->lLightId);
 }
 
 void FakeSummonSpell::Kill(long i)
 {
-	lightHandleDestroy(spells[i].pSpellFx->lLightId);
+	lightHandleDestroy(spells[i].m_pSpellFx->lLightId);
 }
 
 void FakeSummonSpell::Update(size_t i, float timeDelta)
 {
 	if(!arxtime.is_paused()) {
 		if(rnd() > 0.7f) {
-			CSummonCreature * pSummon = (CSummonCreature *)spells[i].pSpellFx;
+			CSummonCreature * pSummon = (CSummonCreature *)spells[i].m_pSpellFx;
 			if(pSummon) {
 				Vec3f pos = pSummon->eSrc;
 				MakeCoolFx(pos);
 			}
 		}
 	}
-	CSpellFx *pCSpellFX = spells[i].pSpellFx;
+	CSpellFx *pCSpellFX = spells[i].m_pSpellFx;
 	
 	if(pCSpellFX) {
 		pCSpellFX->Update(timeDelta);
@@ -347,19 +347,19 @@ void LaunchAntiMagicField(size_t ident) {
 	
 	for(size_t n = 0; n < MAX_SPELLS; n++) {
 		
-		if(!spells[n].exist || n == ident)
+		if(!spells[n].m_exist || n == ident)
 			continue;
 		
-		if(spells[ident].caster_level < spells[n].caster_level)
+		if(spells[ident].m_caster_level < spells[n].m_caster_level)
 			continue;
 		
 		Vec3f pos;
 		GetSpellPosition(&pos,n);
-		if(closerThan(pos, entities[spells[ident].target]->pos, 600.f)) {
-			if(spells[n].type != SPELL_CREATE_FIELD) {
-				spells[n].tolive = 0;
-			} else if(spells[ident].target == 0 && spells[n].caster == 0) {
-				spells[n].tolive = 0;
+		if(closerThan(pos, entities[spells[ident].m_target]->pos, 600.f)) {
+			if(spells[n].m_type != SPELL_CREATE_FIELD) {
+				spells[n].m_tolive = 0;
+			} else if(spells[ident].m_target == 0 && spells[n].m_caster == 0) {
+				spells[n].m_tolive = 0;
 			}
 		}
 	}
@@ -367,36 +367,36 @@ void LaunchAntiMagicField(size_t ident) {
 
 void NegateMagicSpell::Launch(long duration, long i)
 {
-	if(spells[i].caster == 0) {
-		spells[i].target = 0;
+	if(spells[i].m_caster == 0) {
+		spells[i].m_target = 0;
 	}
 	
-	ARX_SOUND_PlaySFX(SND_SPELL_NEGATE_MAGIC, &entities[spells[i].target]->pos);
+	ARX_SOUND_PlaySFX(SND_SPELL_NEGATE_MAGIC, &entities[spells[i].m_target]->pos);
 	
-	spells[i].exist = true;
-	spells[i].lastupdate = spells[i].timcreation = (unsigned long)(arxtime);
-	spells[i].bDuration = true;
-	spells[i].fManaCostPerSecond = 2.f;
-	spells[i].tolive = (duration > -1) ? duration : 1000000;
+	spells[i].m_exist = true;
+	spells[i].m_lastupdate = spells[i].m_timcreation = (unsigned long)(arxtime);
+	spells[i].m_bDuration = true;
+	spells[i].m_fManaCostPerSecond = 2.f;
+	spells[i].m_tolive = (duration > -1) ? duration : 1000000;
 	
 	CNegateMagic * effect = new CNegateMagic();
 	effect->spellinstance = i;
-	effect->Create(spells[i].target_pos, MAKEANGLE(entities[spells[i].target]->angle.getPitch()));
-	effect->SetDuration(spells[i].tolive);
-	spells[i].pSpellFx = effect;
-	spells[i].tolive = effect->GetDuration();
+	effect->Create(spells[i].m_target_pos, MAKEANGLE(entities[spells[i].m_target]->angle.getPitch()));
+	effect->SetDuration(spells[i].m_tolive);
+	spells[i].m_pSpellFx = effect;
+	spells[i].m_tolive = effect->GetDuration();
 	
-	if(ValidIONum(spells[i].target)) {
+	if(ValidIONum(spells[i].m_target)) {
 		LaunchAntiMagicField(i);
 	}
 }
 
 void NegateMagicSpell::Update(size_t i, float timeDelta)
 {
-	if(ValidIONum(spells[i].target))
+	if(ValidIONum(spells[i].m_target))
 		LaunchAntiMagicField(i);
 
-	CSpellFx *pCSpellFX = spells[i].pSpellFx;
+	CSpellFx *pCSpellFX = spells[i].m_pSpellFx;
 
 	if(pCSpellFX) {
 		pCSpellFX->Update(timeDelta);
@@ -406,40 +406,40 @@ void NegateMagicSpell::Update(size_t i, float timeDelta)
 
 bool IncinerateSpell::Launch(long i)
 {
-	Entity * tio = entities[spells[i].target];
+	Entity * tio = entities[spells[i].m_target];
 	if((tio->ioflags & IO_NPC) && tio->_npcdata->life <= 0.f) {
 		return false;
 	}
 	
-	ARX_SOUND_PlaySFX(SND_SPELL_INCINERATE, &entities[spells[i].target]->pos);
+	ARX_SOUND_PlaySFX(SND_SPELL_INCINERATE, &entities[spells[i].m_target]->pos);
 	
-	spells[i].snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_INCINERATE_LOOP, 
-	                                       &entities[spells[i].target]->pos, 1.f, 
+	spells[i].m_snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_INCINERATE_LOOP, 
+	                                       &entities[spells[i].m_target]->pos, 1.f, 
 	                                       ARX_SOUND_PLAY_LOOPED);
 	
-	spells[i].exist = true;
-	spells[i].lastupdate = spells[i].timcreation = (unsigned long)(arxtime);
-	spells[i].tolive = 20000;
+	spells[i].m_exist = true;
+	spells[i].m_lastupdate = spells[i].m_timcreation = (unsigned long)(arxtime);
+	spells[i].m_tolive = 20000;
 	
 	tio->sfx_flag |= SFX_TYPE_YLSIDE_DEATH | SFX_TYPE_INCINERATE;
 	tio->sfx_time = (unsigned long)(arxtime);
 	
-	ARX_SPELLS_AddSpellOn(spells[i].target, i);
+	ARX_SPELLS_AddSpellOn(spells[i].m_target, i);
 	
 	return true;
 }
 
 void IncinerateSpell::End(size_t i)
 {
-	ARX_SPELLS_RemoveSpellOn(spells[i].target, i);
-	ARX_SOUND_Stop(spells[i].snd_loop);
+	ARX_SPELLS_RemoveSpellOn(spells[i].m_target, i);
+	ARX_SOUND_Stop(spells[i].m_snd_loop);
 	ARX_SOUND_PlaySFX(SND_SPELL_INCINERATE_END);
 }
 
 void IncinerateSpell::Update(size_t i)
 {
-	if(ValidIONum(spells[i].target)) {
-		ARX_SOUND_RefreshPosition(spells[i].snd_loop, entities[spells[i].target]->pos);
+	if(ValidIONum(spells[i].m_target)) {
+		ARX_SOUND_RefreshPosition(spells[i].m_snd_loop, entities[spells[i].m_target]->pos);
 	}	
 }
 
@@ -447,14 +447,14 @@ void MassParalyseSpell::Launch(long i, long duration)
 {
 	ARX_SOUND_PlaySFX(SND_SPELL_MASS_PARALYSE);
 	
-	spells[i].exist = true;
-	spells[i].tolive = (duration > -1) ? duration : 10000;
-	spells[i].longinfo2_entity = 0;
+	spells[i].m_exist = true;
+	spells[i].m_tolive = (duration > -1) ? duration : 10000;
+	spells[i].m_longinfo2_entity = 0;
 	
 	for(size_t ii = 0; ii < entities.size(); ii++) {
 		
 		Entity * tio = entities[ii];
-		if(long(ii) == spells[i].caster || !tio || !(tio->ioflags & IO_NPC)) {
+		if(long(ii) == spells[i].m_caster || !tio || !(tio->ioflags & IO_NPC)) {
 			continue;
 		}
 		
@@ -466,7 +466,7 @@ void MassParalyseSpell::Launch(long i, long duration)
 			continue;
 		}
 		
-		if(fartherThan(tio->pos, entities[spells[i].caster]->pos, 500.f)) {
+		if(fartherThan(tio->pos, entities[spells[i].m_caster]->pos, 500.f)) {
 			continue;
 		}
 		
@@ -475,19 +475,19 @@ void MassParalyseSpell::Launch(long i, long duration)
 		ARX_NPC_Kill_Spell_Launch(tio);
 		ARX_SPELLS_AddSpellOn(ii, i);
 		
-		spells[i].longinfo2_entity ++;
-		spells[i].misc = realloc(spells[i].misc,
-		                         sizeof(long) * spells[i].longinfo2_entity);
-		long * ptr = (long *)spells[i].misc;
-		ptr[spells[i].longinfo2_entity - 1] = ii;
+		spells[i].m_longinfo2_entity ++;
+		spells[i].m_misc = realloc(spells[i].m_misc,
+		                         sizeof(long) * spells[i].m_longinfo2_entity);
+		long * ptr = (long *)spells[i].m_misc;
+		ptr[spells[i].m_longinfo2_entity - 1] = ii;
 	}
 }
 
 void MassParalyseSpell::End(size_t i)
 {
-	long *ptr = (long *) spells[i].misc;
+	long *ptr = (long *) spells[i].m_misc;
 
-	for(long in = 0; in < spells[i].longinfo2_entity; in++) {
+	for(long in = 0; in < spells[i].m_longinfo2_entity; in++) {
 		if(ValidIONum(ptr[in])) {
 			ARX_SPELLS_RemoveSpellOn(ptr[in], i);
 			entities[ptr[in]]->ioflags &= ~IO_FREEZESCRIPT;
@@ -495,9 +495,9 @@ void MassParalyseSpell::End(size_t i)
 	}
 
 	if(ptr)
-		free(spells[i].misc);
+		free(spells[i].m_misc);
 
-	spells[i].misc=NULL;
+	spells[i].m_misc=NULL;
 }
 
 void MassParalyseSpell::Kill()

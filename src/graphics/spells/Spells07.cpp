@@ -399,42 +399,42 @@ void CLightning::Render()
 	// Create hand position if a hand is defined
 	//	spells[spellinstance].hand_group=entities[spells[spellinstance].caster]->obj->fastaccess.primary_attach;//GetActionPointIdx(entities[spells[spellinstance].caster]->obj,"primary_attach");
 	// Player source
-	if(spells[spellinstance].type == SPELL_MASS_LIGHTNING_STRIKE) {
+	if(spells[spellinstance].m_type == SPELL_MASS_LIGHTNING_STRIKE) {
 		arx_assert(lSrc == -1);	//ARX: jycorbel (2010-07-19) - We really need ePos when lSrc!=-1 ; in that case lSrc should be equal to -1 !
 		ePos = Vec3f_ZERO;
 	} else {
 		
-		Entity * caster = entities[spells[spellinstance].caster];
+		Entity * caster = entities[spells[spellinstance].m_caster];
 		long idx = GetGroupOriginByName(caster->obj, "chest");
 		if(idx >= 0) {
-			spells[spellinstance].caster_pos = caster->obj->vertexlist3[idx].v;
+			spells[spellinstance].m_caster_pos = caster->obj->vertexlist3[idx].v;
 		} else {
-			spells[spellinstance].caster_pos = caster->pos;
+			spells[spellinstance].m_caster_pos = caster->pos;
 		}
 		
-		if(spells[spellinstance].caster == 0) {
+		if(spells[spellinstance].m_caster == 0) {
 			falpha = -player.angle.getYaw();
 			fBeta = player.angle.getPitch();
 		} else {
 			// IO source
 			fBeta = caster->angle.getPitch();
 			if(ValidIONum(caster->targetinfo)
-			   && caster->targetinfo != spells[spellinstance].caster) {
-				Vec3f * p1 = &spells[spellinstance].caster_pos;
+			   && caster->targetinfo != spells[spellinstance].m_caster) {
+				Vec3f * p1 = &spells[spellinstance].m_caster_pos;
 				Vec3f p2;
 				GetChestPos(caster->targetinfo, &p2); 
 				falpha = MAKEANGLE(degrees(getAngle(p1->y, p1->z, p2.y, p2.z + glm::distance(Vec2f(p2.x, p2.z), Vec2f(p1->x, p1->z))))); //alpha entre orgn et dest;
 			}
-			else if (ValidIONum(spells[spellinstance].target))
+			else if (ValidIONum(spells[spellinstance].m_target))
 			{
-				Vec3f * p1 = &spells[spellinstance].caster_pos;
+				Vec3f * p1 = &spells[spellinstance].m_caster_pos;
 				Vec3f p2;
-				GetChestPos(spells[spellinstance].target, &p2); //
+				GetChestPos(spells[spellinstance].m_target, &p2); //
 				falpha = MAKEANGLE(degrees(getAngle(p1->y, p1->z, p2.y, p2.z + glm::distance(Vec2f(p2.x, p2.z), Vec2f(p1->x, p1->z))))); //alpha entre orgn et dest;
 			}
 		}
 		
-		ePos = spells[spellinstance].caster_pos;
+		ePos = spells[spellinstance].m_caster_pos;
 	}
 
 	//-------------------------------------------------------------------------
@@ -485,16 +485,16 @@ void CLightning::Render()
 			sphere.origin = a;
 			sphere.radius = std::min(cnodetab[i].size, 50.f);
 
-			if(CheckAnythingInSphere(&sphere, spells[spellinstance].caster, CAS_NO_SAME_GROUP)) {
+			if(CheckAnythingInSphere(&sphere, spells[spellinstance].m_caster, CAS_NO_SAME_GROUP)) {
 				long si = ARX_DAMAGES_GetFree();
 
 				if(si != -1) {
 					damages[si].pos = sphere.origin;
 					damages[si].radius = sphere.radius;
-					damages[si].damages = fDamage * spells[spellinstance].caster_level * ( 1.0f / 3 ); 
+					damages[si].damages = fDamage * spells[spellinstance].m_caster_level * ( 1.0f / 3 ); 
 					damages[si].area = DAMAGE_FULL;
 					damages[si].duration = 1; 
-					damages[si].source = spells[spellinstance].caster;
+					damages[si].source = spells[spellinstance].m_caster;
 					damages[si].flags = DAMAGE_FLAG_DONT_HURT_SOURCE | DAMAGE_FLAG_ADD_VISUAL_FX;
 					damages[si].type = DAMAGE_TYPE_FAKEFIRE | DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_LIGHTNING;
 					damages[si].exist = true;
@@ -610,7 +610,7 @@ void CConfuse::Create(Vec3f aeSrc, float afBeta) {
 	SetDuration(ulDuration);
 	eSrc = aeSrc;
 	SetAngle(afBeta);
-	eTarget = entities[spells[spellinstance].target]->pos;
+	eTarget = entities[spells[spellinstance].m_target]->pos;
 }
 
 void CConfuse::Update(unsigned long _ulTime) {
@@ -621,7 +621,7 @@ void CConfuse::Render() {
 	
 	int i = 0;
 	
-	eTarget = entities[spells[spellinstance].target]->pos;
+	eTarget = entities[spells[spellinstance].m_target]->pos;
 	
 	if(ulCurrentTime >= ulDuration)
 		return;
@@ -631,14 +631,14 @@ void CConfuse::Render() {
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->SetTexture(0, tex_trail);
 	
-	eCurPos = entities[spells[spellinstance].target]->pos;
-	if(spells[spellinstance].target != 0) {
-		eCurPos.y += entities[spells[spellinstance].target]->physics.cyl.height - 30.f;
+	eCurPos = entities[spells[spellinstance].m_target]->pos;
+	if(spells[spellinstance].m_target != 0) {
+		eCurPos.y += entities[spells[spellinstance].m_target]->physics.cyl.height - 30.f;
 	}
 	
-	long idx = entities[spells[spellinstance].target]->obj->fastaccess.head_group_origin;
+	long idx = entities[spells[spellinstance].m_target]->obj->fastaccess.head_group_origin;
 	if(idx >= 0) {
-		eCurPos = entities[spells[spellinstance].target]->obj->vertexlist3[idx].v;
+		eCurPos = entities[spells[spellinstance].m_target]->obj->vertexlist3[idx].v;
 		eCurPos.y -= 50.f;
 	}
 	

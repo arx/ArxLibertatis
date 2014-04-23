@@ -124,47 +124,47 @@ DECLARE_FLAGS_OPERATORS(SpellcastFlags)
 
 class SpellBase {
 public:
-	bool exist;
-	long caster; //!< Number of the source interactive obj (0==player)
-	long target; //!< Number of the target interactive obj if any
-	float caster_level; //!< Level of Magic 1-10
+	bool m_exist;
+	long m_caster; //!< Number of the source interactive obj (0==player)
+	long m_target; //!< Number of the target interactive obj if any
+	float m_caster_level; //!< Level of Magic 1-10
 	
-	long hand_group;
-	Vec3f hand_pos; //!< Only valid if hand_group>=0
-	Vec3f caster_pos;
-	Vec3f target_pos;
+	long m_hand_group;
+	Vec3f m_hand_pos; //!< Only valid if hand_group>=0
+	Vec3f m_caster_pos;
+	Vec3f m_target_pos;
 	
-	float fdata; //!< Specific use for each spell
+	float m_fdata; //!< Specific use for each spell
 	
-	SpellType type;
-	Vec3f vsource; // TODO this is used but never set
+	SpellType m_type;
+	Vec3f m_vsource; // TODO this is used but never set
 	
-	Vec3f move;
-	Vec3f scale;
-	float siz;
-	unsigned long timcreation;
-	unsigned long lastupdate;
-	unsigned long tolive;
+	Vec3f m_move;
+	Vec3f m_scale;
+	float m_siz;
+	unsigned long m_timcreation;
+	unsigned long m_lastupdate;
+	unsigned long m_tolive;
 	
-	TextureContainer * tc;
+	TextureContainer * m_tc;
 	
-	long longinfo_entity;
-	long longinfo_damage;
-	long longinfo_time;
-	long longinfo_summon_creature;
-	long longinfo_lower_armor;
-	LightHandle longinfo_light;
+	long m_longinfo_entity;
+	long m_longinfo_damage;
+	long m_longinfo_time;
+	long m_longinfo_summon_creature;
+	long m_longinfo_lower_armor;
+	LightHandle m_longinfo_light;
 	
-	long longinfo2_entity;
-	LightHandle longinfo2_light;
+	long m_longinfo2_entity;
+	LightHandle m_longinfo2_light;
 	
-	bool bDuration;
-	float fManaCostPerSecond;
+	bool m_bDuration;
+	float m_fManaCostPerSecond;
 	
-	SpellcastFlags flags;
-	audio::SourceId snd_loop;
-	CSpellFx * pSpellFx;
-	void * misc;
+	SpellcastFlags m_flags;
+	audio::SourceId m_snd_loop;
+	CSpellFx * m_pSpellFx;
+	void * m_misc;
 };
 
 #endif // ARX_GAME_MAGIC_SPELL_H

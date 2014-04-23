@@ -223,8 +223,8 @@ void ARX_INTERACTIVE_DestroyDynamicInfo(Entity * io)
 	
 	if(ValidIONum(n)) {
 		for(size_t i = 0; i < MAX_SPELLS; i++) {
-			if(spells[i].exist && spells[i].caster == n) {
-				spells[i].tolive = 0;
+			if(spells[i].m_exist && spells[i].m_caster == n) {
+				spells[i].m_tolive = 0;
 			}
 		}
 	}
@@ -2716,12 +2716,12 @@ float ARX_INTERACTIVE_GetArmorClass(Entity * io) {
 		if(spellHandleIsValid(spellHandle)) {
 			SpellBase * spell = &spells[spellHandle];
 			
-			switch(spell->type) {
+			switch(spell->m_type) {
 				case SPELL_ARMOR:
-					ac += spell->caster_level;
+					ac += spell->m_caster_level;
 					break;
 				case SPELL_LOWER_ARMOR:
-					ac -= spell->caster_level;
+					ac -= spell->m_caster_level;
 					break;
 				default:
 					break;

@@ -1733,10 +1733,10 @@ void ArxGame::managePlayerControls()
 	
 	if(GInput->actionNowPressed(CONTROLS_CUST_CANCELCURSPELL)) {
 		for(long i = MAX_SPELLS - 1; i >= 0; i--) {
-			if(spells[i].exist && spells[i].caster == 0)
-				if(spellicons[spells[i].type].bDuration) {
+			if(spells[i].m_exist && spells[i].m_caster == 0)
+				if(spellicons[spells[i].m_type].bDuration) {
 					ARX_SPELLS_AbortSpellSound();
-					spells[i].tolive=0;
+					spells[i].m_tolive=0;
 					break;
 				}
 		}
@@ -6020,8 +6020,8 @@ private:
 				SpecialCursor = CURSOR_INTERACTION_ON;
 				
 				if((LastMouseClick & 1) && !(EERIEMouseButton & 1)) {
-					if(spells[spellIndex].type >= 0)
-						WILLADDSPEECH = spellicons[spells[spellIndex].type].name;
+					if(spells[spellIndex].m_type >= 0)
+						WILLADDSPEECH = spellicons[spells[spellIndex].m_type].name;
 					
 					WILLADDSPEECHTIME = (unsigned long)(arxtime);
 				}
@@ -6029,7 +6029,7 @@ private:
 				if(EERIEMouseButton & 4) {
 					ARX_SPELLS_AbortSpellSound();
 					EERIEMouseButton &= ~4;
-					spells[spellIndex].tolive = 0;
+					spells[spellIndex].m_tolive = 0;
 				}
 			}
 		}
@@ -6047,7 +6047,7 @@ private:
 		Color color;
 		float posx = POSX+lSLID_VALUE;
 		float posy = (float)currpos;
-		SpellType typ=spells[i].type;
+		SpellType typ=spells[i].m_type;
 		
 		if(flag) {
 			color = Color3f(intensity, 0, 0).to<u8>();
@@ -6057,8 +6057,8 @@ private:
 		
 		bool bOk=true;
 		
-		if(spells[i].bDuration) {
-			if(player.mana < 20 || spells[i].timcreation+spells[i].tolive - float(arxtime) < 2000) {
+		if(spells[i].m_bDuration) {
+			if(player.mana < 20 || spells[i].m_timcreation+spells[i].m_tolive - float(arxtime) < 2000) {
 				if(ucFlick&1)
 					bOk=false;
 			}
@@ -6098,9 +6098,9 @@ public:
 	
 	void spellsByPlayerUpdate(float intensity) {
 		for(size_t i = 0; i < MAX_SPELLS; i++) {
-			if(   spells[i].exist
-			   && spells[i].caster == 0
-			   && spellicons[spells[i].type].bDuration
+			if(   spells[i].m_exist
+			   && spells[i].m_caster == 0
+			   && spellicons[spells[i].m_type].bDuration
 			) {
 				ManageSpellIcon(i, intensity, false);
 			}
@@ -6117,7 +6117,7 @@ public:
 				if(spellHandleIsValid(spellHandle)) {
 					SpellBase * spell = &spells[spellHandle];
 					
-					if(spell->caster != 0 && spellicons[spell->type].bDuration) {
+					if(spell->m_caster != 0 && spellicons[spell->m_type].bDuration) {
 						ManageSpellIcon(spellHandle, intensity, true);
 					}
 				}

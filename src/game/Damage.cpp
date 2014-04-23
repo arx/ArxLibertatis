@@ -732,7 +732,7 @@ float ARX_DAMAGES_DamageNPC(Entity * io, float dmg, long source, long flags, Vec
 		long n = ARX_SPELLS_GetSpellOn(io, SPELL_CONFUSE);
 
 		if(n >= 0)
-			spells[n].tolive = 0;
+			spells[n].m_tolive = 0;
 	}
 
 	if(dmg >= 0.f) {
