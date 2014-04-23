@@ -24,7 +24,7 @@
 
 class MagicSightSpell : public SpellBase {
 public:
-	void Launch(long duration, long i);
+	void Launch(long duration);
 	static void End(long i);
 	static void Update(size_t i);
 };
@@ -52,7 +52,7 @@ public:
 
 class ActivatePortalSpell : public SpellBase {
 public:
-	void Launch(long i);
+	void Launch();
 };
 
 #endif // ARX_GAME_MAGIC_SPELLS_SPELLSLVL01_H

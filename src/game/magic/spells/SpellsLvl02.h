@@ -51,7 +51,7 @@ public:
 
 class HarmSpell : public SpellBase {
 public:
-	void Launch(long duration, long i);
+	void Launch(long duration);
 	static void Kill(long i);
 	static void Update(size_t i, float timeDelta);
 };

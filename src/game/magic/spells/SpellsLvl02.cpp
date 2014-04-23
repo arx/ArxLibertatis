@@ -34,22 +34,22 @@
 
 void HealSpell::Launch(long i, long duration)
 {
-	if(!(spells[i].flags & SPELLCAST_FLAG_NOSOUND)) {
-		ARX_SOUND_PlaySFX(SND_SPELL_HEALING, &spells[i].caster_pos);
+	if(!(flags & SPELLCAST_FLAG_NOSOUND)) {
+		ARX_SOUND_PlaySFX(SND_SPELL_HEALING, &caster_pos);
 	}
 	
-	spells[i].exist = true;
-	spells[i].bDuration = true;
-	spells[i].fManaCostPerSecond = 0.4f * spells[i].caster_level;
-	spells[i].tolive = (duration > -1) ? duration : 3500;
+	exist = true;
+	bDuration = true;
+	fManaCostPerSecond = 0.4f * caster_level;
+	tolive = (duration > -1) ? duration : 3500;
 	
 	CHeal * effect = new CHeal();
 	effect->spellinstance = i;
 	effect->Create();
-	effect->SetDuration(spells[i].tolive);
+	effect->SetDuration(tolive);
 	
-	spells[i].pSpellFx = effect;
-	spells[i].tolive = effect->GetDuration();
+	pSpellFx = effect;
+	tolive = effect->GetDuration();
 }
 
 void HealSpell::Update(size_t i, float framedelay)
@@ -95,31 +95,31 @@ void HealSpell::Update(size_t i, float framedelay)
 
 void DetectTrapSpell::Launch(long i)
 {
-	long iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_DETECT_TRAP, spells[i].caster);
+	long iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_DETECT_TRAP, caster);
 	if(iCancel > -1) {
 		spells[iCancel].tolive = 0;
 	}
 	
-	if(spells[i].caster == 0) {
-		spells[i].target = spells[i].caster;
-		if(!(spells[i].flags & SPELLCAST_FLAG_NOSOUND)) {
+	if(caster == 0) {
+		target = caster;
+		if(!(flags & SPELLCAST_FLAG_NOSOUND)) {
 			ARX_SOUND_PlayInterface(SND_SPELL_DETECT_TRAP);
 		}
 	}
 	
-	spells[i].snd_loop = SND_SPELL_DETECT_TRAP_LOOP;
-	if(spells[i].caster == 0 && !(spells[i].flags & SPELLCAST_FLAG_NOSOUND)) {
-		ARX_SOUND_PlaySFX(spells[i].snd_loop, &spells[i].caster_pos, 1.f,
+	snd_loop = SND_SPELL_DETECT_TRAP_LOOP;
+	if(caster == 0 && !(flags & SPELLCAST_FLAG_NOSOUND)) {
+		ARX_SOUND_PlaySFX(snd_loop, &caster_pos, 1.f,
 		                  ARX_SOUND_PLAY_LOOPED);
 	}
 	
-	spells[i].exist = true;
-	spells[i].lastupdate = spells[i].timcreation = (unsigned long)(arxtime);
-	spells[i].tolive = 60000;
-	spells[i].fManaCostPerSecond = 0.4f;
-	spells[i].bDuration = true;
+	exist = true;
+	lastupdate = timcreation = (unsigned long)(arxtime);
+	tolive = 60000;
+	fManaCostPerSecond = 0.4f;
+	bDuration = true;
 	
-	ARX_SPELLS_AddSpellOn(spells[i].target, i);
+	ARX_SPELLS_AddSpellOn(target, i);
 }
 
 void DetectTrapSpell::End(size_t i)
@@ -148,56 +148,56 @@ void DetectTrapSpell::Update(size_t i, float timeDelta)
 
 void ArmorSpell::Launch(long duration, long i)
 {
-	long idx = ARX_SPELLS_GetSpellOn(entities[spells[i].target], SPELL_ARMOR);
+	long idx = ARX_SPELLS_GetSpellOn(entities[target], SPELL_ARMOR);
 	if(idx >= 0) {
 		spells[idx].tolive = 0;
 	}
 	
-	long iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_LOWER_ARMOR, spells[i].caster);
+	long iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_LOWER_ARMOR, caster);
 	if(iCancel > -1) {
 		spells[iCancel].tolive = 0;
 	}
 	
-	iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_FIRE_PROTECTION, spells[i].caster);
+	iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_FIRE_PROTECTION, caster);
 	if(iCancel > -1) {
 		spells[iCancel].tolive = 0;
 	}
 	
-	iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_COLD_PROTECTION, spells[i].caster);
+	iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_COLD_PROTECTION, caster);
 	if(iCancel > -1) {
 		spells[iCancel].tolive = 0;
 	}
 	
-	if(spells[i].caster == 0) {
-		spells[i].target = spells[i].caster;
+	if(caster == 0) {
+		target = caster;
 	}
 	
-	if(!(spells[i].flags & SPELLCAST_FLAG_NOSOUND)) {
-		ARX_SOUND_PlaySFX(SND_SPELL_ARMOR_START, &entities[spells[i].target]->pos);
+	if(!(flags & SPELLCAST_FLAG_NOSOUND)) {
+		ARX_SOUND_PlaySFX(SND_SPELL_ARMOR_START, &entities[target]->pos);
 	}
 	
-	spells[i].snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_ARMOR_LOOP,
-	                                       &entities[spells[i].target]->pos, 1.f,
+	snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_ARMOR_LOOP,
+	                                       &entities[target]->pos, 1.f,
 	                                       ARX_SOUND_PLAY_LOOPED);
 	
-	spells[i].exist = true;
+	exist = true;
 	if(duration > -1) {
-		spells[i].tolive = duration;
+		tolive = duration;
 	} else {
-		spells[i].tolive = (spells[i].caster == 0) ? 20000000 : 20000;
+		tolive = (caster == 0) ? 20000000 : 20000;
 	}
 	
-	spells[i].bDuration = true;
-	spells[i].fManaCostPerSecond = 0.2f * spells[i].caster_level;
+	bDuration = true;
+	fManaCostPerSecond = 0.2f * caster_level;
 		
 	CArmor * effect = new CArmor();
 	effect->spellinstance = i;
-	effect->Create(spells[i].tolive);
+	effect->Create(tolive);
 	
-	spells[i].pSpellFx = effect;
-	spells[i].tolive = effect->GetDuration();
+	pSpellFx = effect;
+	tolive = effect->GetDuration();
 	
-	ARX_SPELLS_AddSpellOn(spells[i].target, i);
+	ARX_SPELLS_AddSpellOn(target, i);
 }
 
 void ArmorSpell::End(size_t i)
@@ -226,48 +226,48 @@ void ArmorSpell::Update(size_t i, float timeDelta)
 
 void LowerArmorSpell::Launch(long duration, long i)
 {
-	long idx = ARX_SPELLS_GetSpellOn(entities[spells[i].target], SPELL_LOWER_ARMOR);
+	long idx = ARX_SPELLS_GetSpellOn(entities[target], SPELL_LOWER_ARMOR);
 	if(idx >= 0) {
 		spells[idx].tolive = 0;
 	}
 	
-	long iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_ARMOR, spells[i].caster);
+	long iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_ARMOR, caster);
 	if(iCancel > -1) {
 		spells[iCancel].tolive = 0;
 	}
 	
-	iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_FIRE_PROTECTION, spells[i].caster);
+	iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_FIRE_PROTECTION, caster);
 	if(iCancel > -1) {
 		spells[iCancel].tolive = 0;
 	}
 	
-	iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_COLD_PROTECTION, spells[i].caster);
+	iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_COLD_PROTECTION, caster);
 	if(iCancel > -1) {
 		spells[iCancel].tolive = 0;
 	}
 	
-	if(!(spells[i].flags & SPELLCAST_FLAG_NOSOUND)) {
-		ARX_SOUND_PlaySFX(SND_SPELL_LOWER_ARMOR, &entities[spells[i].target]->pos);
+	if(!(flags & SPELLCAST_FLAG_NOSOUND)) {
+		ARX_SOUND_PlaySFX(SND_SPELL_LOWER_ARMOR, &entities[target]->pos);
 	}
 	
-	spells[i].exist = true;
+	exist = true;
 	if(duration > -1) {
-		spells[i].tolive = duration;
+		tolive = duration;
 	} else {
-		spells[i].tolive = (spells[i].caster == 0) ? 20000000 : 20000;
+		tolive = (caster == 0) ? 20000000 : 20000;
 	}
 	
-	spells[i].bDuration = true;
-	spells[i].fManaCostPerSecond = 0.2f * spells[i].caster_level;
+	bDuration = true;
+	fManaCostPerSecond = 0.2f * caster_level;
 	
 	CLowerArmor * effect = new CLowerArmor();
 	effect->spellinstance = i;
-	effect->Create(spells[i].tolive);
+	effect->Create(tolive);
 	
-	spells[i].pSpellFx = effect;
-	spells[i].tolive = effect->GetDuration();
+	pSpellFx = effect;
+	tolive = effect->GetDuration();
 	
-	ARX_SPELLS_AddSpellOn(spells[i].target, i);
+	ARX_SPELLS_AddSpellOn(target, i);
 }
 
 void LowerArmorSpell::End(long i)
@@ -295,40 +295,40 @@ void LowerArmorSpell::Update(size_t i, float timeDelta)
 	ARX_SOUND_RefreshPosition(spells[i].snd_loop, entities[spells[i].target]->pos);
 }
 
-void HarmSpell::Launch(long duration, long i)
+void HarmSpell::Launch(long duration)
 {
-	if(!(spells[i].flags & SPELLCAST_FLAG_NOSOUND)) {
-		ARX_SOUND_PlaySFX(SND_SPELL_HARM, &spells[i].caster_pos);
+	if(!(flags & SPELLCAST_FLAG_NOSOUND)) {
+		ARX_SOUND_PlaySFX(SND_SPELL_HARM, &caster_pos);
 	}
 	
-	spells[i].snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_MAGICAL_SHIELD,
-	                                       &spells[i].caster_pos, 1.f,
+	snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_MAGICAL_SHIELD,
+	                                       &caster_pos, 1.f,
 	                                       ARX_SOUND_PLAY_LOOPED);
 	
-	long iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_LIFE_DRAIN, spells[i].caster);
+	long iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_LIFE_DRAIN, caster);
 	if(iCancel > -1) {
 		spells[iCancel].tolive = 0;
 	}
 	
-	iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_MANA_DRAIN, spells[i].caster);
+	iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_MANA_DRAIN, caster);
 	if(iCancel > -1) {
 		spells[iCancel].tolive = 0;
 	}
 	
-	spells[i].exist = true;
-	spells[i].tolive = (duration >-1) ? duration : 6000000;
-	spells[i].bDuration = true;
-	spells[i].fManaCostPerSecond = 0.4f;
+	exist = true;
+	tolive = (duration >-1) ? duration : 6000000;
+	bDuration = true;
+	fManaCostPerSecond = 0.4f;
 
-	spells[i].longinfo_damage = ARX_DAMAGES_GetFree();
-	if(spells[i].longinfo_damage != -1) {
-		DAMAGE_INFO * damage = &damages[spells[i].longinfo_damage];
+	longinfo_damage = ARX_DAMAGES_GetFree();
+	if(longinfo_damage != -1) {
+		DAMAGE_INFO * damage = &damages[longinfo_damage];
 		
 		damage->radius = 150.f;
 		damage->damages = 4.f;
 		damage->area = DAMAGE_FULL;
 		damage->duration = 100000000;
-		damage->source = spells[i].caster;
+		damage->source = caster;
 		damage->flags = DAMAGE_FLAG_DONT_HURT_SOURCE
 		              | DAMAGE_FLAG_FOLLOW_SOURCE
 		              | DAMAGE_FLAG_ADD_VISUAL_FX;
@@ -337,15 +337,15 @@ void HarmSpell::Launch(long duration, long i)
 		damage->exist = true;
 	}
 	
-	spells[i].longinfo2_light = GetFreeDynLight();
-	if(lightHandleIsValid(spells[i].longinfo2_light)) {
-		EERIE_LIGHT * light = lightHandleGet(spells[i].longinfo2_light);
+	longinfo2_light = GetFreeDynLight();
+	if(lightHandleIsValid(longinfo2_light)) {
+		EERIE_LIGHT * light = lightHandleGet(longinfo2_light);
 		
 		light->intensity = 2.3f;
 		light->fallend = 700.f;
 		light->fallstart = 500.f;
 		light->rgb = Color3f::red;
-		light->pos = spells[i].caster_pos;
+		light->pos = caster_pos;
 	}
 }
 

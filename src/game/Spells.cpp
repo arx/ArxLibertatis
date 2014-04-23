@@ -1379,7 +1379,7 @@ bool ARX_SPELLS_Launch(SpellType typ, long source, SpellcastFlags flagss, long l
 		//****************************************************************************
 		// LEVEL 1
 		case SPELL_MAGIC_SIGHT: {
-			static_cast<MagicSightSpell &>(spell).Launch(duration, i);
+			static_cast<MagicSightSpell &>(spell).Launch(duration);
 			break;
 		}
 		case SPELL_MAGIC_MISSILE: {
@@ -1395,7 +1395,7 @@ bool ARX_SPELLS_Launch(SpellType typ, long source, SpellcastFlags flagss, long l
 			break;
 		}
 		case SPELL_ACTIVATE_PORTAL: {
-			static_cast<ActivatePortalSpell &>(spell).Launch(i);
+			static_cast<ActivatePortalSpell &>(spell).Launch();
 			break;
 		}
 		//****************************************************************************
@@ -1417,7 +1417,7 @@ bool ARX_SPELLS_Launch(SpellType typ, long source, SpellcastFlags flagss, long l
 			break;
 		}
 		case SPELL_HARM: {
-			static_cast<HarmSpell &>(spell).Launch(duration, i);
+			static_cast<HarmSpell &>(spell).Launch(duration);
 			break;
 		}
 		//****************************************************************************
