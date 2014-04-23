@@ -198,7 +198,7 @@ void IgnitSpell::Launch(long i)
 void IgnitSpell::End()
 {
 	CIgnit *pIgnit = (CIgnit *)m_pSpellFx;
-	pIgnit->Action(1);
+	pIgnit->Action(true);
 }
 
 void IgnitSpell::Update(float timeDelta)
@@ -301,7 +301,7 @@ void DouseSpell::Launch(long i)
 void DouseSpell::End()
 {
 	CDoze *pDoze = (CDoze *)m_pSpellFx;
-	pDoze->Action(0);
+	pDoze->Action(false);
 }
 
 void DouseSpell::Update(float timeDelta)

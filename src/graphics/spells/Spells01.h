@@ -138,7 +138,7 @@ public:
 	void Render();
 	void Kill();
 	void AddLight(int iLight);
-	void Action(int mode);
+	void Action(bool enable);
 	
 	void ChangeRGBMask(float r, float g, float b, int mask) {
 		rgb = Color3f(r, g, b);

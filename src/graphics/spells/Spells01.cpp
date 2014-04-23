@@ -717,16 +717,14 @@ void CIgnit::Create(Vec3f * posc, float perim, int speed)
 	ChangeRGBMask(1.f, 1.f, 1.f, Color(255, 200, 0).toBGRA());
 }
 
-void CIgnit::Action(int aiMode)
+void CIgnit::Action(bool enable)
 {
-	short sMode = checked_range_cast<short>(aiMode);
-
 	for(int i = 0; i < nblight; i++) {
-		GLight[tablight[i].iLightNum]->status = sMode;
+		GLight[tablight[i].iLightNum]->status = enable;
 
-		if(aiMode == 1) {
+		if(enable) {
 			ARX_SOUND_PlaySFX(SND_SPELL_IGNITE, &spells[spellinstance].m_caster_pos);
-		} else if(aiMode == 0) {
+		} else {
 			ARX_SOUND_PlaySFX(SND_SPELL_DOUSE, &spells[spellinstance].m_caster_pos);
 		}
 	}
