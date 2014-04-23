@@ -140,9 +140,9 @@ void FlyingEyeSpell::Update(size_t i, unsigned long tim, const long framediff3)
 	spells[i].lastupdate=tim;	
 }
 
-void FireFieldSpell::Launch(long i, SpellType typ, long duration)
+void FireFieldSpell::Launch(long i, long duration)
 {
-	long iCancel = ARX_SPELLS_GetInstanceForThisCaster(typ, spells[i].caster);
+	long iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_FIRE_FIELD, spells[i].caster);
 	if(iCancel > -1) {
 		spells[iCancel].tolive = 0;
 	}
@@ -283,9 +283,9 @@ void FireFieldSpell::Update(size_t i, float timeDelta)
 	}
 }
 
-void IceFieldSpell::Launch(long i, long duration, SpellType typ)
+void IceFieldSpell::Launch(long i, long duration)
 {
-	long iCancel = ARX_SPELLS_GetInstanceForThisCaster(typ, spells[i].caster);
+	long iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_ICE_FIELD, spells[i].caster);
 	if(iCancel > -1) {
 		spells[iCancel].tolive = 0;
 	}

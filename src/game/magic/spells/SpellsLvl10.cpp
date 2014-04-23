@@ -43,10 +43,10 @@
 
 extern Rect g_size;
 
-void MassLightningStrikeSpell::Launch(long i, SpellType typ)
+void MassLightningStrikeSpell::Launch(long i)
 {
 	for(size_t ii = 0; ii < MAX_SPELLS; ii++) {
-		if(spells[ii].exist && spells[ii].type == typ) {
+		if(spells[ii].exist && spells[ii].type == SPELL_MASS_LIGHTNING_STRIKE) {
 			lightHandleDestroy(spells[ii].longinfo_light);
 			spells[ii].tolive = 0;
 		}

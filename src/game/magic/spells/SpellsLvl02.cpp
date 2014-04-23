@@ -93,9 +93,9 @@ void HealSpell::Update(size_t i, float framedelay)
 	}	
 }
 
-void DetectTrapSpell::Launch(long i, SpellType typ)
+void DetectTrapSpell::Launch(long i)
 {
-	long iCancel = ARX_SPELLS_GetInstanceForThisCaster(typ, spells[i].caster);
+	long iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_DETECT_TRAP, spells[i].caster);
 	if(iCancel > -1) {
 		spells[iCancel].tolive = 0;
 	}
@@ -146,9 +146,9 @@ void DetectTrapSpell::Update(size_t i, float timeDelta)
 	}	
 }
 
-void ArmorSpell::Launch(SpellType typ, long duration, long i)
+void ArmorSpell::Launch(long duration, long i)
 {
-	long idx = ARX_SPELLS_GetSpellOn(entities[spells[i].target], typ);
+	long idx = ARX_SPELLS_GetSpellOn(entities[spells[i].target], SPELL_ARMOR);
 	if(idx >= 0) {
 		spells[idx].tolive = 0;
 	}
@@ -227,9 +227,9 @@ void ArmorSpell::Update(size_t i, float timeDelta)
 	ARX_SOUND_RefreshPosition(spells[i].snd_loop, entities[spells[i].target]->pos);
 }
 
-void LowerArmorSpell::Launch(SpellType typ, long duration, long i)
+void LowerArmorSpell::Launch(long duration, long i)
 {
-	long idx = ARX_SPELLS_GetSpellOn(entities[spells[i].target], typ);
+	long idx = ARX_SPELLS_GetSpellOn(entities[spells[i].target], SPELL_LOWER_ARMOR);
 	if(idx >= 0) {
 		spells[idx].tolive = 0;
 	}

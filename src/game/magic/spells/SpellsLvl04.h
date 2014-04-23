@@ -24,7 +24,7 @@
 
 class BlessSpell {
 public:
-	static void Launch(long i, long duration, SpellType typ);
+	static void Launch(long i, long duration);
 	static void End(size_t i);
 	static void Update(size_t i, float timeDelta);
 };
@@ -36,14 +36,14 @@ public:
 
 class FireProtectionSpell {
 public:
-	static void Launch(long i, SpellType typ, long duration);
+	static void Launch(long i, long duration);
 	static void End(size_t i);
 	static void Update(size_t i, float timeDelta);
 };
 
 class ColdProtectionSpell {
 public:
-	static void Launch(long i, long duration, SpellType typ);
+	static void Launch(long i, long duration);
 	static void End(size_t i);
 	static void Update(size_t i, float timeDelta);
 };
@@ -56,7 +56,7 @@ public:
 
 class CurseSpell {
 public:
-	static void Launch(long duration, SpellType typ, long i);
+	static void Launch(long duration, long i);
 	static void End(size_t i);
 	static void Update(size_t i, float timeDelta);
 };

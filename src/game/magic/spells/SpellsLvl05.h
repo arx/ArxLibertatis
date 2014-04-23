@@ -24,13 +24,13 @@
 
 class RuneOfGuardingSpell {
 public:
-	static void Launch(long i, SpellType typ, long duration);
+	static void Launch(long i, long duration);
 	static void Update(size_t i, float timeDelta);
 };
 
 class LevitateSpell {
 public:
-	static void Launch(long duration, long i, SpellType typ);
+	static void Launch(long duration, long i);
 	static void End(size_t i);
 	static void Update(size_t i, float timeDelta);
 };

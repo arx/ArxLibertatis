@@ -1511,15 +1511,15 @@ bool ARX_SPELLS_Launch(SpellType typ, long source, SpellcastFlags flagss, long l
 			break;
 		}
 		case SPELL_DETECT_TRAP: {
-			DetectTrapSpell::Launch(i, typ);
+			DetectTrapSpell::Launch(i);
 			break;
 		}
 		case SPELL_ARMOR: {
-			ArmorSpell::Launch(typ, duration, i);
+			ArmorSpell::Launch(duration, i);
 			break;
 		}
 		case SPELL_LOWER_ARMOR: {
-			LowerArmorSpell::Launch(typ, duration, i);
+			LowerArmorSpell::Launch(duration, i);
 			break;
 		}
 		case SPELL_HARM: {
@@ -1551,7 +1551,7 @@ bool ARX_SPELLS_Launch(SpellType typ, long source, SpellcastFlags flagss, long l
 		//****************************************************************************
 		// LEVEL 4
 		case SPELL_BLESS: {
-			BlessSpell::Launch(i, duration, typ);
+			BlessSpell::Launch(i, duration);
 			break;
 		}
 		case SPELL_DISPELL_FIELD: {
@@ -1559,11 +1559,11 @@ bool ARX_SPELLS_Launch(SpellType typ, long source, SpellcastFlags flagss, long l
 			break;
 		}
 		case SPELL_FIRE_PROTECTION: {
-			FireProtectionSpell::Launch(i, typ, duration);
+			FireProtectionSpell::Launch(i, duration);
 			break;
 		}
 		case SPELL_COLD_PROTECTION: {
-			ColdProtectionSpell::Launch(i, duration, typ);
+			ColdProtectionSpell::Launch(i, duration);
 			break;
 		}
 		case SPELL_TELEKINESIS: {
@@ -1571,17 +1571,17 @@ bool ARX_SPELLS_Launch(SpellType typ, long source, SpellcastFlags flagss, long l
 			break;
 		}
 		case SPELL_CURSE: {
-			CurseSpell::Launch(duration, typ, i);
+			CurseSpell::Launch(duration, i);
 			break;
 		}
 		//****************************************************************************
 		// LEVEL 5
 		case SPELL_RUNE_OF_GUARDING: {
-			RuneOfGuardingSpell::Launch(i, typ, duration);
+			RuneOfGuardingSpell::Launch(i, duration);
 			break;
 		}
 		case SPELL_LEVITATE: {
-			LevitateSpell::Launch(duration, i, typ);
+			LevitateSpell::Launch(duration, i);
 			break;
 		}
 		case SPELL_CURE_POISON: {
@@ -1599,7 +1599,7 @@ bool ARX_SPELLS_Launch(SpellType typ, long source, SpellcastFlags flagss, long l
 		//****************************************************************************
 		// LEVEL 6
 		case SPELL_RISE_DEAD: {
-			bool result = RiseDeadSpell::Launch(typ, i, duration);
+			bool result = RiseDeadSpell::Launch(i, duration);
 			if(!result)
 				return false;
 			
@@ -1634,11 +1634,11 @@ bool ARX_SPELLS_Launch(SpellType typ, long source, SpellcastFlags flagss, long l
 			break;
 		}
 		case SPELL_FIRE_FIELD: {
-			FireFieldSpell::Launch(i, typ, duration);
+			FireFieldSpell::Launch(i, duration);
 			break;
 		}
 		case SPELL_ICE_FIELD: {
-			IceFieldSpell::Launch(i, duration, typ);
+			IceFieldSpell::Launch(i, duration);
 			break;
 		}
 		case SPELL_LIGHTNING_STRIKE: {
@@ -1705,7 +1705,7 @@ bool ARX_SPELLS_Launch(SpellType typ, long source, SpellcastFlags flagss, long l
 		//****************************************************************************
 		// LEVEL 10
 		case SPELL_MASS_LIGHTNING_STRIKE: {
-			MassLightningStrikeSpell::Launch(i, typ);
+			MassLightningStrikeSpell::Launch(i);
 			break;
 		}
 		case SPELL_CONTROL_TARGET: {

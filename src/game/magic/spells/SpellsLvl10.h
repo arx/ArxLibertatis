@@ -24,7 +24,7 @@
 
 class MassLightningStrikeSpell {
 public:
-	static void Launch(long i, SpellType typ);
+	static void Launch(long i);
 	static void Kill(long i);
 	static void Update(unsigned long tim, size_t i, float timeDelta);
 };

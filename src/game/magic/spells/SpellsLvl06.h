@@ -24,7 +24,7 @@
 
 class RiseDeadSpell {
 public:
-	static bool Launch(SpellType typ, long i, long duration);
+	static bool Launch(long i, long duration);
 	static void End(size_t i);
 	static void Update(size_t i, float timeDelta);
 };

@@ -32,7 +32,7 @@ public:
 
 class FireFieldSpell {
 public:
-	static void Launch(long i, SpellType typ, long duration);
+	static void Launch(long i, long duration);
 	static void End(size_t i);
 	static void Kill(long i);
 	static void Update(size_t i, float timeDelta);
@@ -40,7 +40,7 @@ public:
 
 class IceFieldSpell {
 public:
-	static void Launch(long i, long duration, SpellType typ);
+	static void Launch(long i, long duration);
 	static void End(size_t i);
 	static void Kill(long i);
 	static void Update(size_t i, float timeDelta);

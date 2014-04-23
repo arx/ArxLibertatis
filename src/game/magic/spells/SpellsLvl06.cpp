@@ -35,9 +35,9 @@
 #include "scene/GameSound.h"
 #include "scene/Interactive.h"
 
-bool RiseDeadSpell::Launch(SpellType typ, long i, long duration)
+bool RiseDeadSpell::Launch(long i, long duration)
 {
-	long iCancel = ARX_SPELLS_GetInstanceForThisCaster(typ, spells[i].caster);
+	long iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_RISE_DEAD, spells[i].caster);
 	if(iCancel > -1) {
 		spells[iCancel].tolive = 0;
 	}

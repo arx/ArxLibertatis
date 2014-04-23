@@ -34,13 +34,13 @@
 #include "scene/GameSound.h"
 #include "scene/Interactive.h"
 
-void BlessSpell::Launch(long i, long duration, SpellType typ)
+void BlessSpell::Launch(long i, long duration)
 {
 	if(spells[i].caster == 0) {
 		spells[i].target = 0;
 	}
 	
-	long iCancel = ARX_SPELLS_GetInstanceForThisCaster(typ, spells[i].target);
+	long iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_BLESS, spells[i].target);
 	if(iCancel > -1) {
 		spells[iCancel].tolive = 0;
 	}
@@ -155,9 +155,9 @@ void DispellFieldSpell::Launch(long i)
 	}
 }
 
-void FireProtectionSpell::Launch(long i, SpellType typ, long duration)
+void FireProtectionSpell::Launch(long i, long duration)
 {
-	long idx = ARX_SPELLS_GetSpellOn(entities[spells[i].target], typ);
+	long idx = ARX_SPELLS_GetSpellOn(entities[spells[i].target], SPELL_FIRE_PROTECTION);
 	if(idx >= 0) {
 		spells[idx].tolive = 0;
 	}
@@ -227,9 +227,9 @@ void FireProtectionSpell::Update(size_t i, float timeDelta)
 	ARX_SOUND_RefreshPosition(spells[i].snd_loop, entities[spells[i].target]->pos);
 }
 
-void ColdProtectionSpell::Launch(long i, long duration, SpellType typ)
+void ColdProtectionSpell::Launch(long i, long duration)
 {
-	long idx = ARX_SPELLS_GetSpellOn(entities[spells[i].target], typ);
+	long idx = ARX_SPELLS_GetSpellOn(entities[spells[i].target], SPELL_COLD_PROTECTION);
 	if(idx >= 0) {
 		spells[idx].tolive = 0;
 	}
@@ -321,9 +321,9 @@ void TelekinesisSpell::End(size_t i)
 	ARX_SOUND_PlaySFX(SND_SPELL_TELEKINESIS_END, &entities[spells[i].caster]->pos);
 }
 
-void CurseSpell::Launch(long duration, SpellType typ, long i)
+void CurseSpell::Launch(long duration, long i)
 {
-	long iCancel = ARX_SPELLS_GetInstanceForThisCaster(typ, spells[i].target);
+	long iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_CURSE, spells[i].target);
 	if(iCancel > -1) {
 		spells[iCancel].tolive = 0;
 	}

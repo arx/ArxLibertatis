@@ -30,21 +30,21 @@ public:
 
 class DetectTrapSpell {
 public:
-	static void Launch(long i, SpellType typ);
+	static void Launch(long i);
 	static void End(size_t i);
 	static void Update(size_t i, float timeDelta);
 };
 
 class ArmorSpell {
 public:
-	static void Launch(SpellType typ, long duration, long i);
+	static void Launch(long duration, long i);
 	static void End(size_t i);
 	static void Update(size_t i, float timeDelta);
 };
 
 class LowerArmorSpell {
 public:
-	static void Launch(SpellType typ, long duration, long i);
+	static void Launch(long duration, long i);
 	static void End(long i);
 	static void Update(size_t i, float timeDelta);
 };

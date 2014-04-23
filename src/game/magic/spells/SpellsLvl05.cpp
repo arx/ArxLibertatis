@@ -33,9 +33,9 @@
 #include "scene/GameSound.h"
 #include "scene/Interactive.h"
 
-void RuneOfGuardingSpell::Launch(long i, SpellType typ, long duration)
+void RuneOfGuardingSpell::Launch(long i, long duration)
 {
-	long iCancel = ARX_SPELLS_GetInstanceForThisCaster(typ, spells[i].caster);
+	long iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_RUNE_OF_GUARDING, spells[i].caster);
 	if(iCancel > -1) {
 		spells[iCancel].tolive = 0;
 	}
@@ -77,9 +77,9 @@ void RuneOfGuardingSpell::Update(size_t i, float timeDelta)
 	}
 }
 
-void LevitateSpell::Launch(long duration, long i, SpellType typ)
+void LevitateSpell::Launch(long duration, long i)
 {
-	long iCancel = ARX_SPELLS_GetInstanceForThisCaster(typ, spells[i].caster);
+	long iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_LEVITATE, spells[i].caster);
 	if(iCancel > -1) {
 		spells[iCancel].tolive = 0;
 	}
