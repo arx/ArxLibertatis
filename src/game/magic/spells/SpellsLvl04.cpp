@@ -162,20 +162,17 @@ void FireProtectionSpell::Launch(long i, long duration)
 		spells[idx].tolive = 0;
 	}
 	
-	long iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_ARMOR,
-	                                                   spells[i].caster);
+	long iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_ARMOR, spells[i].caster);
 	if(iCancel > -1) {
 		spells[iCancel].tolive = 0;
 	}
 	
-	iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_LOWER_ARMOR,
-	                                              spells[i].caster);
+	iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_LOWER_ARMOR, spells[i].caster);
 	if(iCancel > -1) {
 		spells[iCancel].tolive = 0;
 	}
 	
-	iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_COLD_PROTECTION,
-	                                              spells[i].caster);
+	iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_COLD_PROTECTION, spells[i].caster);
 	if(iCancel > -1) {
 		spells[iCancel].tolive = 0;
 	}
@@ -234,20 +231,17 @@ void ColdProtectionSpell::Launch(long i, long duration)
 		spells[idx].tolive = 0;
 	}
 	
-	long iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_ARMOR,
-	                                                   spells[i].caster);
+	long iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_ARMOR, spells[i].caster);
 	if(iCancel > -1) {
 		spells[iCancel].tolive = 0;
 	}
 	
-	iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_LOWER_ARMOR,
-	                                              spells[i].caster);
+	iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_LOWER_ARMOR, spells[i].caster);
 	if(iCancel > -1) {
 		spells[iCancel].tolive = 0;
 	}
 	
-	iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_FIRE_PROTECTION,
-	                                              spells[i].caster);
+	iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_FIRE_PROTECTION, spells[i].caster);
 	if(iCancel > -1) {
 		spells[iCancel].tolive = 0;
 	}
