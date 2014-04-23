@@ -1259,9 +1259,9 @@ void CheckForIgnition(Vec3f * pos, float radius, bool mode, long flag) {
 				if(!fartherThan(*pos, el->pos, radius)) {
 					if(mode) {
 						if (!(el->extras & EXTRAS_NO_IGNIT))
-							el->status = 1;
+							el->status = true;
 					} else {
-						el->status = 0;
+						el->status = false;
 					}
 				}
 

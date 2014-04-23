@@ -100,7 +100,7 @@ struct EERIE_LIGHT {
 	char type;
 	char treat;
 	ExtrasType extras;
-	short status; // on/off 1/0
+	bool status; // on/off
 	Vec3f pos;
 	float fallstart;
 	float fallend;

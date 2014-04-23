@@ -238,7 +238,7 @@ void TreatBackgroundDynlights()
 				ComputeLight2DPos(light);
 			}
 
-			if(light->status == 0) {
+			if(!light->status) {
 				// just extinguished
 				if(lightHandleIsValid(light->tl)) {
 					lightHandleGet(light->tl)->exist = 0;

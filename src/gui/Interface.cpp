@@ -6715,15 +6715,15 @@ void ArxGame::manageEditorControls() {
 						   && (COMBINE->ioflags & IO_ITEM)
 						) {
 								if((COMBINE == player.torch) || (COMBINE->_itemdata->LightValue == 1)) {
-									if(GLight[i]->status != 1) {
-										GLight[i]->status = 1;
+									if(!GLight[i]->status) {
+										GLight[i]->status = true;
 										ARX_SOUND_PlaySFX(SND_TORCH_START, &GLight[i]->pos);
 									}
 								}
 	
 								if(COMBINE->_itemdata->LightValue == 0) {
-									if(GLight[i]->status != 0) {
-										GLight[i]->status = 0;
+									if(GLight[i]->status) {
+										GLight[i]->status = false;
 										ARX_SOUND_PlaySFX(SND_TORCH_END, &GLight[i]->pos);
 										SendIOScriptEvent(COMBINE, SM_CUSTOM, "douse");
 									}

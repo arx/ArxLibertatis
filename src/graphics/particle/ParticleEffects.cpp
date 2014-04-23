@@ -1348,8 +1348,8 @@ void ARX_PARTICLES_Update(EERIE_CAMERA * cam)  {
 void RestoreAllLightsInitialStatus() {
 	for(size_t i = 0; i < MAX_LIGHTS; i++) {
 		if(GLight[i]) {
-			GLight[i]->status = (GLight[i]->extras & EXTRAS_STARTEXTINGUISHED) ? 0 : 1;
-			if(GLight[i]->status == 0) {
+			GLight[i]->status = !(GLight[i]->extras & EXTRAS_STARTEXTINGUISHED);
+			if(!GLight[i]->status) {
 				lightHandleDestroy(GLight[i]->tl);
 			}
 		}

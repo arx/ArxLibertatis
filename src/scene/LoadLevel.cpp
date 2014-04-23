@@ -921,7 +921,7 @@ bool DanaeLoadLevel(const res::path & file, bool loadEntities) {
 			el->ex_speed = dlight->ex_speed;
 			el->ex_flaresize = dlight->ex_flaresize;
 			
-			el->status = (el->extras & EXTRAS_STARTEXTINGUISHED) ? 0 : 1;
+			el->status = !(el->extras & EXTRAS_STARTEXTINGUISHED);
 			
 			if((el->extras & EXTRAS_SPAWNFIRE) && (!(el->extras & EXTRAS_FLARE))) {
 				el->extras |= EXTRAS_FLARE;
