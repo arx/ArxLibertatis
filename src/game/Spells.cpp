@@ -1015,6 +1015,45 @@ void ARX_SPELLS_LaunchSpellTarget(Entity * io) {
 	}
 }
 
+float ARX_SPELLS_ApplyFireProtection(Entity * io,float damages)
+{
+	if(io) {
+		long idx=ARX_SPELLS_GetSpellOn(io,SPELL_FIRE_PROTECTION);
+
+		if(idx >= 0) {
+			float modif = 1.f-((float)spells[idx].caster_level*( 1.0f / 10 ));
+
+			modif = clamp(modif, 0.f, 1.f);
+
+			damages *= modif;
+		}
+
+		if(io->ioflags & IO_NPC) {
+			damages -= io->_npcdata->resist_fire*( 1.0f / 100 )*damages;
+
+			if(damages < 0.f)
+				damages=0.f;
+		}
+	}
+
+	return damages;
+}
+
+float ARX_SPELLS_ApplyColdProtection(Entity * io,float damages)
+{
+	long idx=ARX_SPELLS_GetSpellOn(io,SPELL_COLD_PROTECTION);
+
+	if(idx >= 0) {
+		float modif=1.f-((float)spells[idx].caster_level*( 1.0f / 10 ));
+
+		modif = clamp(modif, 0.f, 1.f);
+
+		damages *= modif;
+	}
+
+	return damages;
+}
+
 float ARX_SPELLS_GetManaCost(SpellType spell, long index) {
 	
 	// Calculate the player's magic level
@@ -1632,126 +1671,6 @@ bool ARX_SPELLS_Launch(SpellType typ, long source, SpellcastFlags flagss, long l
 	return true;
 }
 
-// Used for specific Spell-End FX
-void ARX_SPELLS_Kill(long i) {
-
-	if (!spells[i].exist) return;
-
-	spells[i].exist=false;
-
-	// All Levels - Kill Light
-	if(spells[i].pSpellFx && lightHandleIsValid(spells[i].pSpellFx->lLightId)) {
-		EERIE_LIGHT * light = lightHandleGet(spells[i].pSpellFx->lLightId);
-		
-		light->duration = 500; 
-		light->time_creation = (unsigned long)(arxtime);
-	}
-
-	switch(spells[i].type) {
-		case SPELL_FIREBALL: {
-			FireballSpell::Kill(i);
-			break;
-		}
-		case SPELL_LIGHTNING_STRIKE: {
-			LightningStrikeSpell::Kill(i);
-			break;
-		}
-		case SPELL_MASS_LIGHTNING_STRIKE: {
-			MassLightningStrikeSpell::Kill(i);
-			break;
-		}
-		case SPELL_REPEL_UNDEAD: {
-			RepelUndeadSpell::Kill(i);
-			break;
-		}
-		case SPELL_HARM: {
-			HarmSpell::Kill(i);
-			break;
-		}
-		case SPELL_LIFE_DRAIN: {
-			LifeDrainSpell::Kill(i);
-			break;
-		}
-		case SPELL_MANA_DRAIN: {
-			ManaDrainSpell::Kill(i);
-			break;
-		}
-		case SPELL_FLYING_EYE : {
-			FlyingEyeSpell::Kill(i);
-			break;
-		}
-		// Level 06
-		case SPELL_PARALYSE: {
-			ParalyseSpell::Kill();
-			break;
-		}
-		// Level 7
-		case SPELL_FIRE_FIELD: {
-			FireFieldSpell::Kill(i);
-			break;
-		}
-		case SPELL_ICE_FIELD: {
-			IceFieldSpell::Kill(i); 
-			break; 
-		}
-		case SPELL_MASS_PARALYSE: {
-			MassParalyseSpell::Kill();
-			break;
-		}
-		case SPELL_SUMMON_CREATURE: {
-			SummonCreatureSpell::Kill(i);
-			break;
-		}
-		case SPELL_FAKE_SUMMON: {
-			FakeSummonSpell::Kill(i);
-			break;
-		}
-		
-		default: break;
-	}
-	
-	delete spells[i].pSpellFx, spells[i].pSpellFx = NULL;
-}
-
-float ARX_SPELLS_ApplyFireProtection(Entity * io,float damages)
-{
-	if(io) {
-		long idx=ARX_SPELLS_GetSpellOn(io,SPELL_FIRE_PROTECTION);
-
-		if(idx >= 0) {
-			float modif = 1.f-((float)spells[idx].caster_level*( 1.0f / 10 ));
-
-			modif = clamp(modif, 0.f, 1.f);
-
-			damages *= modif;
-		}
-
-		if(io->ioflags & IO_NPC) {
-			damages -= io->_npcdata->resist_fire*( 1.0f / 100 )*damages;
-
-			if(damages < 0.f)
-				damages=0.f;
-		}
-	}
-
-	return damages;
-}
-
-float ARX_SPELLS_ApplyColdProtection(Entity * io,float damages)
-{
-	long idx=ARX_SPELLS_GetSpellOn(io,SPELL_COLD_PROTECTION);
-
-	if(idx >= 0) {
-		float modif=1.f-((float)spells[idx].caster_level*( 1.0f / 10 ));
-
-		modif = clamp(modif, 0.f, 1.f);
-
-		damages *= modif;
-	}
-
-	return damages;
-}
-
 void ARX_SPELLS_Update_End(size_t i) {
 	switch(spells[i].type) {
 		case SPELL_TELEPORT: {
@@ -1908,6 +1827,87 @@ void ARX_SPELLS_Update_End(size_t i) {
 		default:
 			break;
 	}				
+}
+
+// Used for specific Spell-End FX
+void ARX_SPELLS_Kill(long i) {
+
+	if (!spells[i].exist) return;
+
+	spells[i].exist=false;
+
+	// All Levels - Kill Light
+	if(spells[i].pSpellFx && lightHandleIsValid(spells[i].pSpellFx->lLightId)) {
+		EERIE_LIGHT * light = lightHandleGet(spells[i].pSpellFx->lLightId);
+		
+		light->duration = 500; 
+		light->time_creation = (unsigned long)(arxtime);
+	}
+
+	switch(spells[i].type) {
+		case SPELL_FIREBALL: {
+			FireballSpell::Kill(i);
+			break;
+		}
+		case SPELL_LIGHTNING_STRIKE: {
+			LightningStrikeSpell::Kill(i);
+			break;
+		}
+		case SPELL_MASS_LIGHTNING_STRIKE: {
+			MassLightningStrikeSpell::Kill(i);
+			break;
+		}
+		case SPELL_REPEL_UNDEAD: {
+			RepelUndeadSpell::Kill(i);
+			break;
+		}
+		case SPELL_HARM: {
+			HarmSpell::Kill(i);
+			break;
+		}
+		case SPELL_LIFE_DRAIN: {
+			LifeDrainSpell::Kill(i);
+			break;
+		}
+		case SPELL_MANA_DRAIN: {
+			ManaDrainSpell::Kill(i);
+			break;
+		}
+		case SPELL_FLYING_EYE : {
+			FlyingEyeSpell::Kill(i);
+			break;
+		}
+		// Level 06
+		case SPELL_PARALYSE: {
+			ParalyseSpell::Kill();
+			break;
+		}
+		// Level 7
+		case SPELL_FIRE_FIELD: {
+			FireFieldSpell::Kill(i);
+			break;
+		}
+		case SPELL_ICE_FIELD: {
+			IceFieldSpell::Kill(i); 
+			break; 
+		}
+		case SPELL_MASS_PARALYSE: {
+			MassParalyseSpell::Kill();
+			break;
+		}
+		case SPELL_SUMMON_CREATURE: {
+			SummonCreatureSpell::Kill(i);
+			break;
+		}
+		case SPELL_FAKE_SUMMON: {
+			FakeSummonSpell::Kill(i);
+			break;
+		}
+		
+		default: break;
+	}
+	
+	delete spells[i].pSpellFx, spells[i].pSpellFx = NULL;
 }
 
 void ARX_SPELLS_Update_Update(size_t i, unsigned long tim) {
