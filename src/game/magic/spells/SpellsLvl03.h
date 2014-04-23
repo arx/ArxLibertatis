@@ -26,33 +26,33 @@ class SpeedSpell : public SpellBase {
 public:
 	void Launch(long i, long duration);
 	void End(long i);
-	void Update(size_t i, float timeDelta);
+	void Update(float timeDelta);
 };
 
 class DispellIllusionSpell : public SpellBase {
 public:
 	void Launch();
-	void Update(size_t i, float timeDelta);
+	void Update(float timeDelta);
 };
 
 class FireballSpell : public SpellBase {
 public:
 	void Launch(long i);
-	void End(long i);
-	void Kill(long i);
-	void Update(size_t i, float timeDelta);
+	void End();
+	void Kill();
+	void Update(float timeDelta);
 };
 
 class CreateFoodSpell : public SpellBase {
 public:
 	void Launch(long duration, long i);
-	void Update(size_t i, float timeDelta);
+	void Update(float timeDelta);
 };
 
 class IceProjectileSpell : public SpellBase {
 public:
 	void Launch(long i);
-	void Update(size_t i, float timeDelta);
+	void Update(float timeDelta);
 };
 
 #endif // ARX_GAME_MAGIC_SPELLS_SPELLSLVL03_H

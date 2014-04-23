@@ -67,22 +67,22 @@ void SpeedSpell::Launch(long i, long duration)
 
 void SpeedSpell::End(long i)
 {
-	ARX_SPELLS_RemoveSpellOn(spells[i].target,i);
+	ARX_SPELLS_RemoveSpellOn(target,i);
 	
-	if(spells[i].caster == 0)
-		ARX_SOUND_Stop(spells[i].snd_loop);
+	if(caster == 0)
+		ARX_SOUND_Stop(snd_loop);
 	
-	ARX_SOUND_PlaySFX(SND_SPELL_SPEED_END, &entities[spells[i].target]->pos);
+	ARX_SOUND_PlaySFX(SND_SPELL_SPEED_END, &entities[target]->pos);
 }
 
-void SpeedSpell::Update(size_t i, float timeDelta)
+void SpeedSpell::Update(float timeDelta)
 {
-	if(spells[i].pSpellFx) {
-		if(spells[i].caster == 0)
-			ARX_SOUND_RefreshPosition(spells[i].snd_loop, entities[spells[i].target]->pos);
+	if(pSpellFx) {
+		if(caster == 0)
+			ARX_SOUND_RefreshPosition(snd_loop, entities[target]->pos);
 		
-		spells[i].pSpellFx->Update(timeDelta);
-		spells[i].pSpellFx->Render();
+		pSpellFx->Update(timeDelta);
+		pSpellFx->Render();
 	}
 }
 
@@ -113,11 +113,11 @@ void DispellIllusionSpell::Launch()
 	}
 }
 
-void DispellIllusionSpell::Update(size_t i, float timeDelta)
+void DispellIllusionSpell::Update(float timeDelta)
 {
-	if(spells[i].pSpellFx) {
-		spells[i].pSpellFx->Update(timeDelta);
-		spells[i].pSpellFx->Render();
+	if(pSpellFx) {
+		pSpellFx->Update(timeDelta);
+		pSpellFx->Render();
 	}
 }
 
@@ -183,34 +183,34 @@ void FireballSpell::Launch(long i)
 	                                       ARX_SOUND_PLAY_LOOPED);
 }
 
-void FireballSpell::End(long i)
+void FireballSpell::End()
 {
-	ARX_SOUND_Stop(spells[i].snd_loop);
+	ARX_SOUND_Stop(snd_loop);
 }
 
-void FireballSpell::Kill(long i)
+void FireballSpell::Kill()
 {
-	if(lightHandleIsValid(spells[i].longinfo_light)) {
-		EERIE_LIGHT * light = lightHandleGet(spells[i].longinfo_light);
+	if(lightHandleIsValid(longinfo_light)) {
+		EERIE_LIGHT * light = lightHandleGet(longinfo_light);
 		
 		light->duration = 500;
 		light->time_creation = (unsigned long)(arxtime);
 	}
-	spells[i].longinfo_light = -1;
+	longinfo_light = -1;
 }
 
-void FireballSpell::Update(size_t i, float timeDelta)
+void FireballSpell::Update(float timeDelta)
 {
-	CSpellFx *pCSpellFX = spells[i].pSpellFx;
+	CSpellFx *pCSpellFX = pSpellFx;
 
 	if(pCSpellFX) {
 		CFireBall *pCF = (CFireBall*) pCSpellFX;
 			
-		if(!lightHandleIsValid(spells[i].longinfo_light))
-			spells[i].longinfo_light = GetFreeDynLight();
+		if(!lightHandleIsValid(longinfo_light))
+			longinfo_light = GetFreeDynLight();
 
-		if(lightHandleIsValid(spells[i].longinfo_light)) {
-			EERIE_LIGHT * light = lightHandleGet(spells[i].longinfo_light);
+		if(lightHandleIsValid(longinfo_light)) {
+			EERIE_LIGHT * light = lightHandleGet(longinfo_light);
 			
 			light->pos = pCF->eCurPos;
 			light->intensity = 2.2f;
@@ -223,19 +223,19 @@ void FireballSpell::Update(size_t i, float timeDelta)
 
 		EERIE_SPHERE sphere;
 		sphere.origin = pCF->eCurPos;
-		sphere.radius=std::max(spells[i].caster_level*2.f,12.f);
+		sphere.radius=std::max(caster_level*2.f,12.f);
 		#define MIN_TIME_FIREBALL 2000 
 
 		if(pCF->pPSFire.iParticleNbMax) {
 			if(pCF->ulCurrentTime > MIN_TIME_FIREBALL) {
-				SpawnFireballTail(&pCF->eCurPos,&pCF->eMove,(float)spells[i].caster_level,0);
+				SpawnFireballTail(&pCF->eCurPos,&pCF->eMove,(float)caster_level,0);
 			} else {
 				if(rnd()<0.9f) {
 					Vec3f move = Vec3f_ZERO;
 					float dd=(float)pCF->ulCurrentTime / (float)MIN_TIME_FIREBALL*10;
 
-					if(dd > spells[i].caster_level)
-						dd = spells[i].caster_level;
+					if(dd > caster_level)
+						dd = caster_level;
 
 					if(dd < 1)
 						dd = 1;
@@ -246,9 +246,9 @@ void FireballSpell::Update(size_t i, float timeDelta)
 		}
 
 		if(!pCF->bExplo)
-		if(CheckAnythingInSphere(&sphere, spells[i].caster, CAS_NO_SAME_GROUP)) {
+		if(CheckAnythingInSphere(&sphere, caster, CAS_NO_SAME_GROUP)) {
 			ARX_BOOMS_Add(pCF->eCurPos);
-			LaunchFireballBoom(&pCF->eCurPos,(float)spells[i].caster_level);
+			LaunchFireballBoom(&pCF->eCurPos,(float)caster_level);
 			pCF->pPSFire.iParticleNbMax = 0;
 			pCF->pPSFire2.iParticleNbMax = 0;
 			pCF->eMove *= 0.5f;
@@ -256,14 +256,14 @@ void FireballSpell::Update(size_t i, float timeDelta)
 			pCF->SetTTL(1500);
 			pCF->bExplo = true;
 			
-			DoSphericDamage(&pCF->eCurPos,3.f*spells[i].caster_level,30.f*spells[i].caster_level,DAMAGE_AREA,DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL,spells[i].caster);
-			spells[i].tolive=0;
+			DoSphericDamage(&pCF->eCurPos,3.f*caster_level,30.f*caster_level,DAMAGE_AREA,DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL,caster);
+			tolive=0;
 			ARX_SOUND_PlaySFX(SND_SPELL_FIRE_HIT, &sphere.origin);
-			ARX_NPC_SpawnAudibleSound(sphere.origin, entities[spells[i].caster]);
+			ARX_NPC_SpawnAudibleSound(sphere.origin, entities[caster]);
 		}
 
 		pCSpellFX->Update(timeDelta);
-		ARX_SOUND_RefreshPosition(spells[i].snd_loop, pCF->eCurPos);
+		ARX_SOUND_RefreshPosition(snd_loop, pCF->eCurPos);
 	}
 }
 
@@ -285,11 +285,11 @@ void CreateFoodSpell::Launch(long duration, long i)
 	tolive = effect->GetDuration();
 }
 
-void CreateFoodSpell::Update(size_t i, float timeDelta)
+void CreateFoodSpell::Update(float timeDelta)
 {
-	if(spells[i].pSpellFx) {
-		spells[i].pSpellFx->Update(timeDelta);
-		spells[i].pSpellFx->Render();
+	if(pSpellFx) {
+		pSpellFx->Update(timeDelta);
+		pSpellFx->Render();
 	}	
 }
 
@@ -321,10 +321,10 @@ void IceProjectileSpell::Launch(long i)
 	tolive = effect->GetDuration();
 }
 
-void IceProjectileSpell::Update(size_t i, float timeDelta)
+void IceProjectileSpell::Update(float timeDelta)
 {
-	if(spells[i].pSpellFx) {
-		spells[i].pSpellFx->Update(timeDelta);
-		spells[i].pSpellFx->Render();
+	if(pSpellFx) {
+		pSpellFx->Update(timeDelta);
+		pSpellFx->Render();
 	}
 }

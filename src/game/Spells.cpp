@@ -1719,7 +1719,7 @@ void ARX_SPELLS_Update_End(size_t i) {
 			break;
 		}
 		case SPELL_FIREBALL: {
-			static_cast<FireballSpell &>(spell).End(i);
+			static_cast<FireballSpell &>(spell).End();
 			break;
 		}
 		//****************************************************************************
@@ -1851,7 +1851,7 @@ void ARX_SPELLS_Kill(long i) {
 	
 	switch(spells[i].type) {
 		case SPELL_FIREBALL: {
-			static_cast<FireballSpell &>(spell).Kill(i);
+			static_cast<FireballSpell &>(spell).Kill();
 			break;
 		}
 		case SPELL_LIGHTNING_STRIKE: {
@@ -1968,23 +1968,23 @@ void ARX_SPELLS_Update_Update(size_t i, unsigned long tim) {
 		//****************************************************************************
 		// LEVEL 3 SPELLS
 		case SPELL_FIREBALL: {
-			static_cast<FireballSpell &>(spell).Update(i, framedelay);
+			static_cast<FireballSpell &>(spell).Update(framedelay);
 			break;
 		}
 		case SPELL_SPEED: {
-			static_cast<SpeedSpell &>(spell).Update(i, framedelay);
+			static_cast<SpeedSpell &>(spell).Update(framedelay);
 			break;
 		}
 		case SPELL_CREATE_FOOD: {
-			static_cast<CreateFoodSpell &>(spell).Update(i, framedelay);
+			static_cast<CreateFoodSpell &>(spell).Update(framedelay);
 			break;
 		}
 		case SPELL_ICE_PROJECTILE: {
-			static_cast<IceProjectileSpell &>(spell).Update(i, framedelay);
+			static_cast<IceProjectileSpell &>(spell).Update(framedelay);
 			break;
 		}
 		case SPELL_DISPELL_ILLUSION: {
-			static_cast<DispellIllusionSpell &>(spell).Update(i, framedelay);
+			static_cast<DispellIllusionSpell &>(spell).Update(framedelay);
 			break;
 		}
 		//****************************************************************************
