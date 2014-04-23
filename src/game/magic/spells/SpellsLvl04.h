@@ -26,7 +26,7 @@ class BlessSpell : public SpellBase {
 public:
 	void Launch(long i, long duration);
 	void End(size_t i);
-	static void Update(size_t i, float timeDelta);
+	void Update(size_t i, float timeDelta);
 };
 
 class DispellFieldSpell : public SpellBase {
@@ -38,14 +38,14 @@ class FireProtectionSpell : public SpellBase {
 public:
 	void Launch(long i, long duration);
 	void End(size_t i);
-	static void Update(size_t i, float timeDelta);
+	void Update(size_t i, float timeDelta);
 };
 
 class ColdProtectionSpell : public SpellBase {
 public:
 	void Launch(long i, long duration);
 	void End(size_t i);
-	static void Update(size_t i, float timeDelta);
+	void Update(size_t i, float timeDelta);
 };
 
 class TelekinesisSpell : public SpellBase {
@@ -58,7 +58,7 @@ class CurseSpell : public SpellBase {
 public:
 	void Launch(long duration, long i);
 	void End(size_t i);
-	static void Update(size_t i, float timeDelta);
+	void Update(size_t i, float timeDelta);
 };
 
 #endif // ARX_GAME_MAGIC_SPELLS_SPELLSLVL04_H

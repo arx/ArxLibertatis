@@ -26,21 +26,21 @@ class RiseDeadSpell : public SpellBase {
 public:
 	bool Launch(long i, long duration);
 	void End(size_t i);
-	static void Update(size_t i, float timeDelta);
+	void Update(size_t i, float timeDelta);
 };
 
 class ParalyseSpell : public SpellBase {
 public:
 	void Launch(long i, long duration);
 	void End(size_t i);
-	static void Kill();
+	void Kill();
 };
 
 class CreateFieldSpell : public SpellBase {
 public:
 	void Launch(SpellcastFlags flags, long i, long duration);
 	void End(size_t i);
-	static void Update(size_t i, float timeDelta);
+	void Update(size_t i, float timeDelta);
 };
 
 class DisarmTrapSpell : public SpellBase {
@@ -52,7 +52,7 @@ class SlowDownSpell : public SpellBase {
 public:
 	bool Launch(long duration, long i);
 	void End(size_t i);
-	static void Update(size_t i, float timeDelta);
+	void Update(size_t i, float timeDelta);
 };
 
 #endif // ARX_GAME_MAGIC_SPELLS_SPELLSLVL06_H

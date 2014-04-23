@@ -27,7 +27,7 @@ public:
 	bool Launch(long i);
 	void End(size_t i);
 	void Kill(long i);
-	static void Update(size_t i, unsigned long tim);
+	void Update(size_t i, unsigned long tim);
 };
 
 class FireFieldSpell : public SpellBase {
@@ -35,7 +35,7 @@ public:
 	void Launch(long i, long duration);
 	void End(size_t i);
 	void Kill(long i);
-	static void Update(size_t i, float timeDelta);
+	void Update(size_t i, float timeDelta);
 };
 
 class IceFieldSpell : public SpellBase {
@@ -43,7 +43,7 @@ public:
 	void Launch(long i, long duration);
 	void End(size_t i);
 	void Kill(long i);
-	static void Update(size_t i, float timeDelta);
+	void Update(size_t i, float timeDelta);
 };
 
 class LightningStrikeSpell : public SpellBase {
@@ -51,14 +51,14 @@ public:
 	void Launch(long i);
 	void End(size_t i);
 	void Kill(long i);
-	static void Update(size_t i, float timeDelta);
+	void Update(size_t i, float timeDelta);
 };
 
 class ConfuseSpell : public SpellBase {
 public:
 	void Launch(long i, bool & notifyAll, long duration);
 	void End(size_t i);
-	static void Update(size_t i, float timeDelta);
+	void Update(size_t i, float timeDelta);
 };
 
 #endif // ARX_GAME_MAGIC_SPELLS_SPELLSLVL07_H

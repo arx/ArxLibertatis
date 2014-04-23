@@ -1917,6 +1917,8 @@ void ARX_SPELLS_Kill(long i) {
 
 void ARX_SPELLS_Update_Update(size_t i, unsigned long tim) {
 	
+	SpellBase & spell = spells[i];
+	
 	switch(spells[i].type) {
 		case SPELL_DISPELL_FIELD: {
 			break;
@@ -1927,15 +1929,15 @@ void ARX_SPELLS_Update_Update(size_t i, unsigned long tim) {
 		//****************************************************************************
 		// LEVEL 1
 		case SPELL_MAGIC_MISSILE: {
-			MagicMissileSpell::Update(i, framedelay);
+			static_cast<MagicMissileSpell &>(spell).Update(i, framedelay);
 			break;
 		}
 		case SPELL_IGNIT: {
-			IgnitSpell::Update(i, framedelay);
+			static_cast<IgnitSpell &>(spell).Update(i, framedelay);
 			break;
 		}
 		case SPELL_DOUSE: {
-			DouseSpell::Update(i, framedelay);
+			static_cast<DouseSpell &>(spell).Update(i, framedelay);
 			break;
 		} 
 		case SPELL_ACTIVATE_PORTAL: {
@@ -1944,95 +1946,95 @@ void ARX_SPELLS_Update_Update(size_t i, unsigned long tim) {
 		//****************************************************************************
 		// LEVEL 2
 		case SPELL_HEAL: {
-			HealSpell::Update(i, framedelay);
+			static_cast<HealSpell &>(spell).Update(i, framedelay);
 			break;
 		}
 		case SPELL_DETECT_TRAP: {
-			DetectTrapSpell::Update(i, framedelay);
+			static_cast<DetectTrapSpell &>(spell).Update(i, framedelay);
 			break;
 		}
 		case SPELL_ARMOR: {
-			ArmorSpell::Update(i, framedelay);
+			static_cast<ArmorSpell &>(spell).Update(i, framedelay);
 			break;
 		}
 		case SPELL_LOWER_ARMOR: {
-			LowerArmorSpell::Update(i, framedelay);
+			static_cast<LowerArmorSpell &>(spell).Update(i, framedelay);
 			break;
 		} 
 		case SPELL_HARM: {
-			HarmSpell::Update(i, framedelay);
+			static_cast<HarmSpell &>(spell).Update(i, framedelay);
 			break;
 		}
 		//****************************************************************************
 		// LEVEL 3 SPELLS
 		case SPELL_FIREBALL: {
-			FireballSpell::Update(i, framedelay);
+			static_cast<FireballSpell &>(spell).Update(i, framedelay);
 			break;
 		}
 		case SPELL_SPEED: {
-			SpeedSpell::Update(i, framedelay);
+			static_cast<SpeedSpell &>(spell).Update(i, framedelay);
 			break;
 		}
 		case SPELL_CREATE_FOOD: {
-			CreateFoodSpell::Update(i, framedelay);
+			static_cast<CreateFoodSpell &>(spell).Update(i, framedelay);
 			break;
 		}
 		case SPELL_ICE_PROJECTILE: {
-			IceProjectileSpell::Update(i, framedelay);
+			static_cast<IceProjectileSpell &>(spell).Update(i, framedelay);
 			break;
 		}
 		case SPELL_DISPELL_ILLUSION: {
-			DispellIllusionSpell::Update(i, framedelay);
+			static_cast<DispellIllusionSpell &>(spell).Update(i, framedelay);
 			break;
 		}
 		//****************************************************************************
 		// LEVEL 4 SPELLS
 		case SPELL_BLESS: {
-			BlessSpell::Update(i, framedelay);
+			static_cast<BlessSpell &>(spell).Update(i, framedelay);
 			break;
 		}
 		case SPELL_CURSE: {
-			CurseSpell::Update(i, framedelay);
+			static_cast<CurseSpell &>(spell).Update(i, framedelay);
 			break;
 		}
 		case SPELL_FIRE_PROTECTION: {
-			FireProtectionSpell::Update(i, framedelay);
+			static_cast<FireProtectionSpell &>(spell).Update(i, framedelay);
 			break;
 		}
 		case SPELL_COLD_PROTECTION: {
-			ColdProtectionSpell::Update(i, framedelay);
+			static_cast<ColdProtectionSpell &>(spell).Update(i, framedelay);
 			break;
 		}
 		//****************************************************************************
 		// LEVEL 5 SPELLS
 		case SPELL_CURE_POISON: {
-			CurePoisonSpell::Update(i, framedelay);
+			static_cast<CurePoisonSpell &>(spell).Update(i, framedelay);
 			break;
 		}
 		case SPELL_RUNE_OF_GUARDING: {
-			RuneOfGuardingSpell::Update(i, framedelay);
+			static_cast<RuneOfGuardingSpell &>(spell).Update(i, framedelay);
 			break;
 		}
 		case SPELL_REPEL_UNDEAD: {
-			RepelUndeadSpell::Update(i, framedelay);
+			static_cast<RepelUndeadSpell &>(spell).Update(i, framedelay);
 			break;
 		}
 		case SPELL_POISON_PROJECTILE: {
-			PoisonProjectileSpell::Update(i, framedelay);
+			static_cast<PoisonProjectileSpell &>(spell).Update(i, framedelay);
 			break;
 		}
 		case SPELL_LEVITATE: {
-			LevitateSpell::Update(i, framedelay);
+			static_cast<LevitateSpell &>(spell).Update(i, framedelay);
 			break;
 		}
 		//****************************************************************************
 		// LEVEL 6 SPELLS
 		case SPELL_RISE_DEAD: {
-			RiseDeadSpell::Update(i, framedelay);
+			static_cast<RiseDeadSpell &>(spell).Update(i, framedelay);
 			break;
 		}
 		case SPELL_SLOW_DOWN: {
-			SlowDownSpell::Update(i, framedelay);
+			static_cast<SlowDownSpell &>(spell).Update(i, framedelay);
 			break;
 		}
 		case SPELL_DISARM_TRAP: {
@@ -2042,54 +2044,54 @@ void ARX_SPELLS_Update_Update(size_t i, unsigned long tim) {
 			break;
 		}
 		case SPELL_CREATE_FIELD: {
-			CreateFieldSpell::Update(i, framedelay);
+			static_cast<CreateFieldSpell &>(spell).Update(i, framedelay);
 			break;
 		}
 		//****************************************************************************
 		// LEVEL 7 SPELLS
 		case SPELL_CONFUSE: {
-			ConfuseSpell::Update(i, framedelay);
+			static_cast<ConfuseSpell &>(spell).Update(i, framedelay);
 			break;
 		}
 		case SPELL_FIRE_FIELD: {
-			FireFieldSpell::Update(i, framedelay);
+			static_cast<FireFieldSpell &>(spell).Update(i, framedelay);
 			break;
 		}
 		case SPELL_ICE_FIELD: {
-			IceFieldSpell::Update(i, framedelay);
+			static_cast<IceFieldSpell &>(spell).Update(i, framedelay);
 			break;
 		}
 		//-----------------------------------------------------------------------------------------
 		case SPELL_LIGHTNING_STRIKE: {
-			LightningStrikeSpell::Update(i, framedelay);
+			static_cast<LightningStrikeSpell &>(spell).Update(i, framedelay);
 			break;
 		}
 		//****************************************************************************
 		// LEVEL 8 SPELLS
 		case SPELL_ENCHANT_WEAPON: {
-			EnchantWeaponSpell::Update(i, framedelay);
+			static_cast<EnchantWeaponSpell &>(spell).Update(i, framedelay);
 			break;
 		}
 		case SPELL_EXPLOSION: {
-			ExplosionSpell::Update(i);
+			static_cast<ExplosionSpell &>(spell).Update(i);
 			break;
 		}
 		//****************************************************************************
 		// LEVEL 9 SPELLS
 		case SPELL_SUMMON_CREATURE: {
-			SummonCreatureSpell::Update(i, framedelay);
+			static_cast<SummonCreatureSpell &>(spell).Update(i, framedelay);
 			break;
 		}
 		case SPELL_FAKE_SUMMON: {
-			FakeSummonSpell::Update(i, framedelay);
+			static_cast<FakeSummonSpell &>(spell).Update(i, framedelay);
 			break;
 		}
 		case SPELL_INCINERATE: {
-			IncinerateSpell::Update(i);
+			static_cast<IncinerateSpell &>(spell).Update(i);
 			break;
 		}
 		case SPELL_NEGATE_MAGIC: {
-			NegateMagicSpell::Update(i, framedelay);
+			static_cast<NegateMagicSpell &>(spell).Update(i, framedelay);
 			break;
 		}
 		case SPELL_MASS_PARALYSE: {
@@ -2101,42 +2103,42 @@ void ARX_SPELLS_Update_Update(size_t i, unsigned long tim) {
 			break;
 		}
 		case SPELL_CONTROL_TARGET: {
-			ControlTargetSpell::Update(i, framedelay);
+			static_cast<ControlTargetSpell &>(spell).Update(i, framedelay);
 			break;
 		}
 		case SPELL_MASS_INCINERATE: {
-			MassIncinerateSpell::Update(i);
+			static_cast<MassIncinerateSpell &>(spell).Update(i);
 			break;
 		}
 		case SPELL_MASS_LIGHTNING_STRIKE: {
-			MassLightningStrikeSpell::Update(tim, i, framedelay);
+			static_cast<MassLightningStrikeSpell &>(spell).Update(tim, i, framedelay);
 			break;
 		}
 		case SPELL_TELEPORT: {
-			TeleportSpell::Update(tim, i);
+			static_cast<TeleportSpell &>(spell).Update(tim, i);
 			break;
 		}
 		case SPELL_MAGIC_SIGHT: {
-			MagicSightSpell::Update(i);
+			static_cast<MagicSightSpell &>(spell).Update(i);
 			break;
 		}
 		case SPELL_TELEKINESIS: {
 			break;
 		}
 		case SPELL_INVISIBILITY: {
-			InvisibilitySpell::Update(i);
+			static_cast<InvisibilitySpell &>(spell).Update(i);
 			break;
 		}
 		case SPELL_MANA_DRAIN: {
-			ManaDrainSpell::Update(i, framedelay);
+			static_cast<ManaDrainSpell &>(spell).Update(i, framedelay);
 			break;
 		}
 		case SPELL_LIFE_DRAIN: {
-			LifeDrainSpell::Update(i, framedelay);
+			static_cast<LifeDrainSpell &>(spell).Update(i, framedelay);
 			break;
 		}
 		case SPELL_FLYING_EYE: {
-			FlyingEyeSpell::Update(i, tim);
+			static_cast<FlyingEyeSpell &>(spell).Update(i, tim);
 			break;
 		}
 	}

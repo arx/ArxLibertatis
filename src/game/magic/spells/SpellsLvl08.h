@@ -26,33 +26,33 @@ class InvisibilitySpell : public SpellBase {
 public:
 	void Launch(long i, long duration);
 	void End(long i);
-	static void Update(size_t i);
+	void Update(size_t i);
 };
 
 class ManaDrainSpell : public SpellBase {
 public:
 	void Launch(long i, long duration);
 	void Kill(long i);
-	static void Update(size_t i, float timeDelta);
+	void Update(size_t i, float timeDelta);
 };
 
 class ExplosionSpell : public SpellBase {
 public:
 	void Launch(long i);
-	static void Update(size_t i);
+	void Update(size_t i);
 };
 
 class EnchantWeaponSpell : public SpellBase {
 public:
 	void Launch(bool & notifyAll, long i);
-	static void Update(size_t i, float timeDelta);
+	void Update(size_t i, float timeDelta);
 };
 
 class LifeDrainSpell : public SpellBase {
 public:
 	void Launch(long duration, long i);
 	void Kill(long i);
-	static void Update(size_t i, float timeDelta);
+	void Update(size_t i, float timeDelta);
 };
 
 #endif // ARX_GAME_MAGIC_SPELLS_SPELLSLVL08_H
