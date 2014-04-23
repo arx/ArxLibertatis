@@ -20,36 +20,36 @@
 #ifndef ARX_GAME_MAGIC_SPELLS_SPELLSLVL02_H
 #define ARX_GAME_MAGIC_SPELLS_SPELLSLVL02_H
 
-#include "game/Spells.h"
+#include "game/magic/Spell.h"
 
-class HealSpell {
+class HealSpell : public SpellBase {
 public:
 	static void Launch(long i, long duration);
 	static void Update(size_t i, float framedelay);
 };
 
-class DetectTrapSpell {
+class DetectTrapSpell : public SpellBase {
 public:
 	static void Launch(long i);
 	static void End(size_t i);
 	static void Update(size_t i, float timeDelta);
 };
 
-class ArmorSpell {
+class ArmorSpell : public SpellBase {
 public:
 	static void Launch(long duration, long i);
 	static void End(size_t i);
 	static void Update(size_t i, float timeDelta);
 };
 
-class LowerArmorSpell {
+class LowerArmorSpell : public SpellBase {
 public:
 	static void Launch(long duration, long i);
 	static void End(long i);
 	static void Update(size_t i, float timeDelta);
 };
 
-class HarmSpell {
+class HarmSpell : public SpellBase {
 public:
 	static void Launch(long duration, long i);
 	static void Kill(long i);

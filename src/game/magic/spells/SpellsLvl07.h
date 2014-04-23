@@ -20,9 +20,9 @@
 #ifndef ARX_GAME_MAGIC_SPELLS_SPELLSLVL07_H
 #define ARX_GAME_MAGIC_SPELLS_SPELLSLVL07_H
 
-#include "game/Spells.h"
+#include "game/magic/Spell.h"
 
-class FlyingEyeSpell {
+class FlyingEyeSpell : public SpellBase {
 public:
 	static bool Launch(long i);
 	static void End(size_t i);
@@ -30,7 +30,7 @@ public:
 	static void Update(size_t i, unsigned long tim);
 };
 
-class FireFieldSpell {
+class FireFieldSpell : public SpellBase {
 public:
 	static void Launch(long i, long duration);
 	static void End(size_t i);
@@ -38,7 +38,7 @@ public:
 	static void Update(size_t i, float timeDelta);
 };
 
-class IceFieldSpell {
+class IceFieldSpell : public SpellBase {
 public:
 	static void Launch(long i, long duration);
 	static void End(size_t i);
@@ -46,7 +46,7 @@ public:
 	static void Update(size_t i, float timeDelta);
 };
 
-class LightningStrikeSpell {
+class LightningStrikeSpell : public SpellBase {
 public:
 	static void Launch(long i);
 	static void End(size_t i);
@@ -54,7 +54,7 @@ public:
 	static void Update(size_t i, float timeDelta);
 };
 
-class ConfuseSpell {
+class ConfuseSpell : public SpellBase {
 public:
 	static void Launch(long i, bool & notifyAll, long duration);
 	static void End(size_t i);

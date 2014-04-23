@@ -20,9 +20,9 @@
 #ifndef ARX_GAME_MAGIC_SPELLS_SPELLSLVL09_H
 #define ARX_GAME_MAGIC_SPELLS_SPELLSLVL09_H
 
-#include "math/Types.h"
+#include "game/magic/Spell.h"
 
-class SummonCreatureSpell {
+class SummonCreatureSpell : public SpellBase {
 public:
 	static bool Launch(long i, long duration);
 	static void End(size_t i);
@@ -30,7 +30,7 @@ public:
 	static void Update(size_t i, float timeDelta);
 };
 
-class FakeSummonSpell {
+class FakeSummonSpell : public SpellBase {
 public:
 	static bool Launch(long i);
 	static void End(size_t i);
@@ -38,20 +38,20 @@ public:
 	static void Update(size_t i, float timeDelta);
 };
 
-class NegateMagicSpell {
+class NegateMagicSpell : public SpellBase {
 public:
 	static void Launch(long duration, long i);
 	static void Update(size_t i, float timeDelta);
 };
 
-class IncinerateSpell {
+class IncinerateSpell : public SpellBase {
 public:
 	static bool Launch(long i);
 	static void End(size_t i);
 	static void Update(size_t i);
 };
 
-class MassParalyseSpell {
+class MassParalyseSpell : public SpellBase {
 public:
 	static void Launch(long i, long duration);
 	static void End(size_t i);

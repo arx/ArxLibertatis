@@ -22,35 +22,35 @@
 
 #include "game/magic/Spell.h"
 
-class MagicSightSpell {
+class MagicSightSpell : public SpellBase {
 public:
 	static void Launch(long duration, long i);
 	static void End(long i);
 	static void Update(size_t i);
 };
 
-class MagicMissileSpell {
+class MagicMissileSpell : public SpellBase {
 public:
 	static void Launch(long i);
 	static void End(long i);
 	static void Update(long i, float timeDelta);
 };
 
-class IgnitSpell {
+class IgnitSpell : public SpellBase {
 public:
 	static void Launch(long i);
 	static void End(long i);
 	static void Update(long i, float timeDelta);
 };
 
-class DouseSpell {
+class DouseSpell : public SpellBase {
 public:
 	static void Launch(long i);
 	static void End(long i);
 	static void Update(long i, float timeDelta);
 };
 
-class ActivatePortalSpell {
+class ActivatePortalSpell : public SpellBase {
 public:
 	static void Launch(long i);
 };

@@ -20,41 +20,41 @@
 #ifndef ARX_GAME_MAGIC_SPELLS_SPELLSLVL04_H
 #define ARX_GAME_MAGIC_SPELLS_SPELLSLVL04_H
 
-#include "game/Spells.h"
+#include "game/magic/Spell.h"
 
-class BlessSpell {
+class BlessSpell : public SpellBase {
 public:
 	static void Launch(long i, long duration);
 	static void End(size_t i);
 	static void Update(size_t i, float timeDelta);
 };
 
-class DispellFieldSpell {
+class DispellFieldSpell : public SpellBase {
 public:
 	static void Launch(long i);
 };
 
-class FireProtectionSpell {
+class FireProtectionSpell : public SpellBase {
 public:
 	static void Launch(long i, long duration);
 	static void End(size_t i);
 	static void Update(size_t i, float timeDelta);
 };
 
-class ColdProtectionSpell {
+class ColdProtectionSpell : public SpellBase {
 public:
 	static void Launch(long i, long duration);
 	static void End(size_t i);
 	static void Update(size_t i, float timeDelta);
 };
 
-class TelekinesisSpell {
+class TelekinesisSpell : public SpellBase {
 public:
 	static void Launch(long i, long duration);
 	static void End(size_t i);
 };
 
-class CurseSpell {
+class CurseSpell : public SpellBase {
 public:
 	static void Launch(long duration, long i);
 	static void End(size_t i);

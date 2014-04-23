@@ -22,20 +22,20 @@
 
 #include "game/magic/Spell.h"
 
-class SpeedSpell {
+class SpeedSpell : public SpellBase {
 public:
 	static void Launch(long i, long duration);
 	static void End(long i);
 	static void Update(size_t i, float timeDelta);
 };
 
-class DispellIllusionSpell {
+class DispellIllusionSpell : public SpellBase {
 public:
 	static void Launch(long i);
 	static void Update(size_t i, float timeDelta);
 };
 
-class FireballSpell {
+class FireballSpell : public SpellBase {
 public:
 	static void Launch(long i);
 	static void End(long i);
@@ -43,13 +43,13 @@ public:
 	static void Update(size_t i, float timeDelta);
 };
 
-class CreateFoodSpell {
+class CreateFoodSpell : public SpellBase {
 public:
 	static void Launch(long duration, long i);
 	static void Update(size_t i, float timeDelta);
 };
 
-class IceProjectileSpell {
+class IceProjectileSpell : public SpellBase {
 public:
 	static void Launch(long i);
 	static void Update(size_t i, float timeDelta);

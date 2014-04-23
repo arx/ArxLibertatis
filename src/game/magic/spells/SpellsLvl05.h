@@ -20,35 +20,35 @@
 #ifndef ARX_GAME_MAGIC_SPELLS_SPELLSLVL05_H
 #define ARX_GAME_MAGIC_SPELLS_SPELLSLVL05_H
 
-#include "game/Spells.h"
+#include "game/magic/Spell.h"
 
-class RuneOfGuardingSpell {
+class RuneOfGuardingSpell : public SpellBase {
 public:
 	static void Launch(long i, long duration);
 	static void Update(size_t i, float timeDelta);
 };
 
-class LevitateSpell {
+class LevitateSpell : public SpellBase {
 public:
 	static void Launch(long duration, long i);
 	static void End(size_t i);
 	static void Update(size_t i, float timeDelta);
 };
 
-class CurePoisonSpell {
+class CurePoisonSpell : public SpellBase {
 public:
 	static void Launch(long i);
 	static void Update(size_t i, float timeDelta);
 };
 
-class RepelUndeadSpell {
+class RepelUndeadSpell : public SpellBase {
 public:
 	static void Launch(long duration, long i);
 	static void Kill(long i);
 	static void Update(size_t i, float timeDelta);
 };
 
-class PoisonProjectileSpell {
+class PoisonProjectileSpell : public SpellBase {
 public:
 	static void Launch(long i);
 	static void Update(size_t i, float timeDelta);

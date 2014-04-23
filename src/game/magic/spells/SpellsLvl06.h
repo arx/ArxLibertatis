@@ -20,35 +20,35 @@
 #ifndef ARX_GAME_MAGIC_SPELLS_SPELLSLVL06_H
 #define ARX_GAME_MAGIC_SPELLS_SPELLSLVL06_H
 
-#include "game/Spells.h"
+#include "game/magic/Spell.h"
 
-class RiseDeadSpell {
+class RiseDeadSpell : public SpellBase {
 public:
 	static bool Launch(long i, long duration);
 	static void End(size_t i);
 	static void Update(size_t i, float timeDelta);
 };
 
-class ParalyseSpell {
+class ParalyseSpell : public SpellBase {
 public:
 	static void Launch(long i, long duration);
 	static void End(size_t i);
 	static void Kill();
 };
 
-class CreateFieldSpell {
+class CreateFieldSpell : public SpellBase {
 public:
 	static void Launch(SpellcastFlags flags, long i, long duration);
 	static void End(size_t i);
 	static void Update(size_t i, float timeDelta);
 };
 
-class DisarmTrapSpell {
+class DisarmTrapSpell : public SpellBase {
 public:
 	static void Launch(long i);
 };
 
-class SlowDownSpell {
+class SlowDownSpell : public SpellBase {
 public:
 	static bool Launch(long duration, long i);
 	static void End(size_t i);

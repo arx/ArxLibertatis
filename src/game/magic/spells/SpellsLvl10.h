@@ -20,35 +20,35 @@
 #ifndef ARX_GAME_MAGIC_SPELLS_SPELLSLVL10_H
 #define ARX_GAME_MAGIC_SPELLS_SPELLSLVL10_H
 
-#include "game/Spells.h"
+#include "game/magic/Spell.h"
 
-class MassLightningStrikeSpell {
+class MassLightningStrikeSpell : public SpellBase {
 public:
 	static void Launch(long i);
 	static void Kill(long i);
 	static void Update(unsigned long tim, size_t i, float timeDelta);
 };
 
-class ControlTargetSpell {
+class ControlTargetSpell : public SpellBase {
 public:
 	static bool Launch(long i);
 	static void Update(size_t i, float timeDelta);
 };
 
-class FreezeTimeSpell {
+class FreezeTimeSpell : public SpellBase {
 public:
 	static void Launch(long duration, long i);
 	static void End(size_t i);
 };
 
-class MassIncinerateSpell {
+class MassIncinerateSpell : public SpellBase {
 public:
 	static void Launch(long i);
 	static void End(size_t i);
 	static void Update(size_t i);
 };
 
-class TeleportSpell {
+class TeleportSpell : public SpellBase {
 public:
 	static void Launch(long i);
 	static void End(size_t i);
