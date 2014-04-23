@@ -35,7 +35,7 @@
 #include "scene/GameSound.h"
 #include "scene/Interactive.h"
 
-bool RiseDeadSpellLaunch(SpellType typ, long i, long duration)
+bool RiseDeadSpell::Launch(SpellType typ, long i, long duration)
 {
 	long iCancel = ARX_SPELLS_GetInstanceForThisCaster(typ, spells[i].caster);
 	if(iCancel > -1) {
@@ -100,7 +100,7 @@ bool RiseDeadSpellLaunch(SpellType typ, long i, long duration)
 	return true;
 }
 
-void RiseDeadSpellEnd(size_t i)
+void RiseDeadSpell::End(size_t i)
 {
 	if(ValidIONum(spells[i].longinfo_entity) && spells[i].longinfo_entity != 0) {
 		
@@ -132,7 +132,7 @@ void RiseDeadSpellEnd(size_t i)
 	}
 }
 
-void RiseDeadSpellUpdate(size_t i, float timeDelta)
+void RiseDeadSpell::Update(size_t i, float timeDelta)
 {
 	CSpellFx *pCSpellFX = spells[i].pSpellFx;
 
@@ -226,7 +226,7 @@ void RiseDeadSpellUpdate(size_t i, float timeDelta)
 	}
 }
 
-void ParalyseSpellLaunch(long i, long duration)
+void ParalyseSpell::Launch(long i, long duration)
 {
 	ARX_SOUND_PlaySFX(SND_SPELL_PARALYSE, &entities[spells[i].target]->pos);
 	
@@ -250,18 +250,18 @@ void ParalyseSpellLaunch(long i, long duration)
 	ARX_NPC_Kill_Spell_Launch(entities[spells[i].target]);
 }
 
-void ParalyseSpellEnd(size_t i)
+void ParalyseSpell::End(size_t i)
 {
 	ARX_SPELLS_RemoveSpellOn(spells[i].target,i);
 	entities[spells[i].target]->ioflags &= ~IO_FREEZESCRIPT;
 }
 
-void ParalyseSpellKill()
+void ParalyseSpell::Kill()
 {
 	ARX_SOUND_PlaySFX(SND_SPELL_PARALYSE_END);
 }
 
-void CreateFieldSpellLaunch(SpellcastFlags flags, long i, long duration)
+void CreateFieldSpell::Launch(SpellcastFlags flags, long i, long duration)
 {
 	spells[i].exist = true;
 	
@@ -340,7 +340,7 @@ void CreateFieldSpellLaunch(SpellcastFlags flags, long i, long duration)
 	}
 }
 
-void CreateFieldSpellEnd(size_t i)
+void CreateFieldSpell::End(size_t i)
 {
 	CCreateField *pCreateField = (CCreateField *) spells[i].pSpellFx;
 
@@ -353,7 +353,7 @@ void CreateFieldSpellEnd(size_t i)
 	}
 }
 
-void CreateFieldSpellUpdate(size_t i, float timeDelta)
+void CreateFieldSpell::Update(size_t i, float timeDelta)
 {
 	CSpellFx *pCSpellFX = spells[i].pSpellFx;
 	
@@ -375,7 +375,7 @@ void CreateFieldSpellUpdate(size_t i, float timeDelta)
 	}
 }
 
-void DisarmTrapSpellLaunch(long i)
+void DisarmTrapSpell::Launch(long i)
 {
 	ARX_SOUND_PlaySFX(SND_SPELL_DISARM_TRAP);
 	
@@ -407,7 +407,7 @@ void DisarmTrapSpellLaunch(long i)
 	}
 }
 
-bool SlowDownSpellLaunch(long duration, long i)
+bool SlowDownSpell::Launch(long duration, long i)
 {
 	long target = spells[i].target;
 	
@@ -449,13 +449,13 @@ bool SlowDownSpellLaunch(long duration, long i)
 	return true;
 }
 
-void SlowDownSpellEnd(size_t i)
+void SlowDownSpell::End(size_t i)
 {
 	ARX_SOUND_PlaySFX(SND_SPELL_SLOW_DOWN_END);
 	ARX_SPELLS_RemoveSpellOn(spells[i].target, i);
 }
 
-void SlowDownSpellUpdate(size_t i, float timeDelta)
+void SlowDownSpell::Update(size_t i, float timeDelta)
 {
 	CSpellFx *pCSpellFX = spells[i].pSpellFx;
 

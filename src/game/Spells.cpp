@@ -1577,48 +1577,48 @@ bool ARX_SPELLS_Launch(SpellType typ, long source, SpellcastFlags flagss, long l
 		//****************************************************************************
 		// LEVEL 5
 		case SPELL_RUNE_OF_GUARDING: {
-			RuneOfGuardingSpellLaunch(i, typ, duration);
+			RuneOfGuardingSpell::Launch(i, typ, duration);
 			break;
 		}
 		case SPELL_LEVITATE: {
-			LevitateSpellLaunch(duration, i, typ);
+			LevitateSpell::Launch(duration, i, typ);
 			break;
 		}
 		case SPELL_CURE_POISON: {
-			CurePoisonSpellLaunch(i);
+			CurePoisonSpell::Launch(i);
 			break;
 		}
 		case SPELL_REPEL_UNDEAD: {
-			RepelUndeadSpellLaunch(duration, i);
+			RepelUndeadSpell::Launch(duration, i);
 			break;
 		}
 		case SPELL_POISON_PROJECTILE: {
-			PoisonProjectileSpellLaunch(i);
+			PoisonProjectileSpell::Launch(i);
 			break;
 		}
 		//****************************************************************************
 		// LEVEL 6
 		case SPELL_RISE_DEAD: {
-			bool result = RiseDeadSpellLaunch(typ, i, duration);
+			bool result = RiseDeadSpell::Launch(typ, i, duration);
 			if(!result)
 				return false;
 			
 			break;
 		}
 		case SPELL_PARALYSE: {
-			ParalyseSpellLaunch(i, duration);
+			ParalyseSpell::Launch(i, duration);
 			break;
 		}
 		case SPELL_CREATE_FIELD: {
-			CreateFieldSpellLaunch(flags, i, duration);
+			CreateFieldSpell::Launch(flags, i, duration);
 			break;
 		}
 		case SPELL_DISARM_TRAP: {
-			DisarmTrapSpellLaunch(i);
+			DisarmTrapSpell::Launch(i);
 			break;
 		}
 		case SPELL_SLOW_DOWN: {
-			bool result = SlowDownSpellLaunch(duration, i);
+			bool result = SlowDownSpell::Launch(duration, i);
 			if(!result)
 				return false;
 			
@@ -1769,7 +1769,7 @@ void ARX_SPELLS_Kill(long i) {
 			break;
 		}
 		case SPELL_REPEL_UNDEAD: {
-			RepelUndeadSpellKill(i);
+			RepelUndeadSpell::Kill(i);
 			break;
 		}
 		case SPELL_HARM: {
@@ -1790,7 +1790,7 @@ void ARX_SPELLS_Kill(long i) {
 		}
 		// Level 06
 		case SPELL_PARALYSE: {
-			ParalyseSpellKill();
+			ParalyseSpell::Kill();
 			break;
 		}
 		// Level 7
@@ -1933,25 +1933,25 @@ void ARX_SPELLS_Update_End(size_t i) {
 		//****************************************************************************
 		// LEVEL 5
 		case SPELL_LEVITATE: {
-			LevitateSpellEnd(i);
+			LevitateSpell::End(i);
 			break;
 		}
 		//****************************************************************************
 		// LEVEL 6 SPELLS
 		case SPELL_PARALYSE: {
-			ParalyseSpellEnd(i);
+			ParalyseSpell::End(i);
 			break;
 		}
 		case SPELL_RISE_DEAD: {
-			RiseDeadSpellEnd(i);
+			RiseDeadSpell::End(i);
 			break;
 		}
 		case SPELL_CREATE_FIELD: {
-			CreateFieldSpellEnd(i);
+			CreateFieldSpell::End(i);
 			break;
 		}
 		case SPELL_SLOW_DOWN: {
-			SlowDownSpellEnd(i);
+			SlowDownSpell::End(i);
 			break;
 		}
 		//****************************************************************************
@@ -2111,33 +2111,33 @@ void ARX_SPELLS_Update_Update(size_t i, unsigned long tim) {
 		//****************************************************************************
 		// LEVEL 5 SPELLS
 		case SPELL_CURE_POISON: {
-			CurePoisonSpellUpdate(i, framedelay);
+			CurePoisonSpell::Update(i, framedelay);
 			break;
 		}
 		case SPELL_RUNE_OF_GUARDING: {
-			RuneOfGuardingSpellUpdate(i, framedelay);
+			RuneOfGuardingSpell::Update(i, framedelay);
 			break;
 		}
 		case SPELL_REPEL_UNDEAD: {
-			RepelUndeadSpellUpdate(i, framedelay);
+			RepelUndeadSpell::Update(i, framedelay);
 			break;
 		}
 		case SPELL_POISON_PROJECTILE: {
-			PoisonProjectileSpellUpdate(i, framedelay);
+			PoisonProjectileSpell::Update(i, framedelay);
 			break;
 		}
 		case SPELL_LEVITATE: {
-			LevitateSpellUpdate(i, framedelay);
+			LevitateSpell::Update(i, framedelay);
 			break;
 		}
 		//****************************************************************************
 		// LEVEL 6 SPELLS
 		case SPELL_RISE_DEAD: {
-			RiseDeadSpellUpdate(i, framedelay);
+			RiseDeadSpell::Update(i, framedelay);
 			break;
 		}
 		case SPELL_SLOW_DOWN: {
-			SlowDownSpellUpdate(i, framedelay);
+			SlowDownSpell::Update(i, framedelay);
 			break;
 		}
 		case SPELL_DISARM_TRAP: {
@@ -2147,7 +2147,7 @@ void ARX_SPELLS_Update_Update(size_t i, unsigned long tim) {
 			break;
 		}
 		case SPELL_CREATE_FIELD: {
-			CreateFieldSpellUpdate(i, framedelay);
+			CreateFieldSpell::Update(i, framedelay);
 			break;
 		}
 		//****************************************************************************

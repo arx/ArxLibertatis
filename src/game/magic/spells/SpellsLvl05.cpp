@@ -33,7 +33,7 @@
 #include "scene/GameSound.h"
 #include "scene/Interactive.h"
 
-void RuneOfGuardingSpellLaunch(long i, SpellType typ, long duration)
+void RuneOfGuardingSpell::Launch(long i, SpellType typ, long duration)
 {
 	long iCancel = ARX_SPELLS_GetInstanceForThisCaster(typ, spells[i].caster);
 	if(iCancel > -1) {
@@ -52,7 +52,7 @@ void RuneOfGuardingSpellLaunch(long i, SpellType typ, long duration)
 	spells[i].tolive = effect->GetDuration();
 }
 
-void RuneOfGuardingSpellUpdate(size_t i, float timeDelta)
+void RuneOfGuardingSpell::Update(size_t i, float timeDelta)
 {
 	if(spells[i].pSpellFx) {
 		spells[i].pSpellFx->Update(timeDelta);
@@ -77,7 +77,7 @@ void RuneOfGuardingSpellUpdate(size_t i, float timeDelta)
 	}
 }
 
-void LevitateSpellLaunch(long duration, long i, SpellType typ)
+void LevitateSpell::Launch(long duration, long i, SpellType typ)
 {
 	long iCancel = ARX_SPELLS_GetInstanceForThisCaster(typ, spells[i].caster);
 	if(iCancel > -1) {
@@ -117,7 +117,7 @@ void LevitateSpellLaunch(long duration, long i, SpellType typ)
 	ARX_SPELLS_AddSpellOn(spells[i].target, i);
 }
 
-void LevitateSpellEnd(size_t i)
+void LevitateSpell::End(size_t i)
 {
 	ARX_SOUND_Stop(spells[i].snd_loop);
 	ARX_SOUND_PlaySFX(SND_SPELL_LEVITATE_END, &entities[spells[i].target]->pos);
@@ -127,7 +127,7 @@ void LevitateSpellEnd(size_t i)
 		player.levitate = false;
 }
 
-void LevitateSpellUpdate(size_t i, float timeDelta)
+void LevitateSpell::Update(size_t i, float timeDelta)
 {
 	CLevitate *pLevitate=(CLevitate *)spells[i].pSpellFx;
 	Vec3f target;
@@ -154,7 +154,7 @@ void LevitateSpellUpdate(size_t i, float timeDelta)
 	ARX_SOUND_RefreshPosition(spells[i].snd_loop, entities[spells[i].target]->pos);
 }
 
-void CurePoisonSpellLaunch(long i)
+void CurePoisonSpell::Launch(long i)
 {
 	if(spells[i].caster == 0) {
 		spells[i].target = 0;
@@ -184,7 +184,7 @@ void CurePoisonSpellLaunch(long i)
 	spells[i].tolive = effect->GetDuration();
 }
 
-void CurePoisonSpellUpdate(size_t i, float timeDelta)
+void CurePoisonSpell::Update(size_t i, float timeDelta)
 {
 	if(spells[i].pSpellFx) {
 		spells[i].pSpellFx->Update(timeDelta);
@@ -192,7 +192,7 @@ void CurePoisonSpellUpdate(size_t i, float timeDelta)
 	}
 }
 
-void RepelUndeadSpellLaunch(long duration, long i)
+void RepelUndeadSpell::Launch(long duration, long i)
 {
 	long iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_REPEL_UNDEAD, spells[i].caster);
 	if(iCancel > -1) {
@@ -223,7 +223,7 @@ void RepelUndeadSpellLaunch(long duration, long i)
 	spells[i].tolive = effect->GetDuration();
 }
 
-void RepelUndeadSpellKill(long i)
+void RepelUndeadSpell::Kill(long i)
 {
 	if(lightHandleIsValid(spells[i].longinfo_light)) {
 		EERIE_LIGHT * light = lightHandleGet(spells[i].longinfo_light);
@@ -236,7 +236,7 @@ void RepelUndeadSpellKill(long i)
 	ARX_SOUND_Stop(spells[i].snd_loop);
 }
 
-void RepelUndeadSpellUpdate(size_t i, float timeDelta)
+void RepelUndeadSpell::Update(size_t i, float timeDelta)
 {
 	if(spells[i].pSpellFx) {
 		spells[i].pSpellFx->Update(timeDelta);
@@ -247,7 +247,7 @@ void RepelUndeadSpellUpdate(size_t i, float timeDelta)
 	}
 }
 
-void PoisonProjectileSpellLaunch(long i)
+void PoisonProjectileSpell::Launch(long i)
 {
 	ARX_SOUND_PlaySFX(SND_SPELL_POISON_PROJECTILE_LAUNCH,
 	                  &spells[i].caster_pos);
@@ -270,7 +270,7 @@ void PoisonProjectileSpellLaunch(long i)
 	spells[i].tolive = effect->GetDuration();
 }
 
-void PoisonProjectileSpellUpdate(size_t i, float timeDelta)
+void PoisonProjectileSpell::Update(size_t i, float timeDelta)
 {
 	if(spells[i].pSpellFx) {
 		spells[i].pSpellFx->Update(timeDelta);

@@ -22,22 +22,37 @@
 
 #include "game/Spells.h"
 
-bool RiseDeadSpellLaunch(SpellType typ, long i, long duration);
-void RiseDeadSpellEnd(size_t i);
-void RiseDeadSpellUpdate(size_t i, float timeDelta);
+class RiseDeadSpell {
+public:
+	static bool Launch(SpellType typ, long i, long duration);
+	static void End(size_t i);
+	static void Update(size_t i, float timeDelta);
+};
 
-void ParalyseSpellLaunch(long i, long duration);
-void ParalyseSpellEnd(size_t i);
-void ParalyseSpellKill();
+class ParalyseSpell {
+public:
+	static void Launch(long i, long duration);
+	static void End(size_t i);
+	static void Kill();
+};
 
-void CreateFieldSpellLaunch(SpellcastFlags flags, long i, long duration);
-void CreateFieldSpellEnd(size_t i);
-void CreateFieldSpellUpdate(size_t i, float timeDelta);
+class CreateFieldSpell {
+public:
+	static void Launch(SpellcastFlags flags, long i, long duration);
+	static void End(size_t i);
+	static void Update(size_t i, float timeDelta);
+};
 
-void DisarmTrapSpellLaunch(long i);
+class DisarmTrapSpell {
+public:
+	static void Launch(long i);
+};
 
-bool SlowDownSpellLaunch(long duration, long i);
-void SlowDownSpellEnd(size_t i);
-void SlowDownSpellUpdate(size_t i, float timeDelta);
+class SlowDownSpell {
+public:
+	static bool Launch(long duration, long i);
+	static void End(size_t i);
+	static void Update(size_t i, float timeDelta);
+};
 
 #endif // ARX_GAME_MAGIC_SPELLS_SPELLSLVL06_H

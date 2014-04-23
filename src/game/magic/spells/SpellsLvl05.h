@@ -22,21 +22,36 @@
 
 #include "game/Spells.h"
 
-void RuneOfGuardingSpellLaunch(long i, SpellType typ, long duration);
-void RuneOfGuardingSpellUpdate(size_t i, float timeDelta);
+class RuneOfGuardingSpell {
+public:
+	static void Launch(long i, SpellType typ, long duration);
+	static void Update(size_t i, float timeDelta);
+};
 
-void LevitateSpellLaunch(long duration, long i, SpellType typ);
-void LevitateSpellEnd(size_t i);
-void LevitateSpellUpdate(size_t i, float timeDelta);
+class LevitateSpell {
+public:
+	static void Launch(long duration, long i, SpellType typ);
+	static void End(size_t i);
+	static void Update(size_t i, float timeDelta);
+};
 
-void CurePoisonSpellLaunch(long i);
-void CurePoisonSpellUpdate(size_t i, float timeDelta);
+class CurePoisonSpell {
+public:
+	static void Launch(long i);
+	static void Update(size_t i, float timeDelta);
+};
 
-void RepelUndeadSpellLaunch(long duration, long i);
-void RepelUndeadSpellKill(long i);
-void RepelUndeadSpellUpdate(size_t i, float timeDelta);
+class RepelUndeadSpell {
+public:
+	static void Launch(long duration, long i);
+	static void Kill(long i);
+	static void Update(size_t i, float timeDelta);
+};
 
-void PoisonProjectileSpellLaunch(long i);
-void PoisonProjectileSpellUpdate(size_t i, float timeDelta);
+class PoisonProjectileSpell {
+public:
+	static void Launch(long i);
+	static void Update(size_t i, float timeDelta);
+};
 
 #endif // ARX_GAME_MAGIC_SPELLS_SPELLSLVL05_H
