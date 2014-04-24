@@ -1330,72 +1330,7 @@ bool ARX_SPELLS_Launch(SpellType typ, long source, SpellcastFlags flagss, long l
 	spells[i].m_type = typ;
 	spells[i].m_lastupdate = spells[i].m_timcreation = (unsigned long)(arxtime);
 	spells[i].m_fManaCostPerSecond = 0.f;
-	
-	
-	// Check spell-specific preconditions
-	switch(typ) {
-		case SPELL_MAGIC_SIGHT:
-			if(ARX_SPELLS_ExistAnyInstanceForThisCaster(typ, spells[i].m_caster))
-				return false;
 
-			break;
-		case SPELL_HEAL:
-			if(ARX_SPELLS_ExistAnyInstanceForThisCaster(typ, spells[i].m_caster))
-				return false;
-
-			break;
-		case SPELL_BLESS:
-			if(ARX_SPELLS_ExistAnyInstance(typ))
-				return false;
-
-			break;
-		case SPELL_TELEKINESIS:
-			if(ARX_SPELLS_ExistAnyInstanceForThisCaster(typ, spells[i].m_caster))
-				return false;
-
-			break;
-		case SPELL_FLYING_EYE:
-			if(eyeball.exist)
-				return false;
-
-			if(ARX_SPELLS_ExistAnyInstanceForThisCaster(typ,spells[i].m_caster))
-				return false;
-
-			break;		
-		case SPELL_INVISIBILITY:
-			if(ARX_SPELLS_ExistAnyInstanceForThisCaster(typ, spells[i].m_caster))
-				return false;
-
-			break;		
-		case SPELL_MANA_DRAIN:
-			if(ARX_SPELLS_ExistAnyInstanceForThisCaster(typ, spells[i].m_caster))
-				return false;
-
-			break;
-		case SPELL_LIFE_DRAIN:
-			if(ARX_SPELLS_ExistAnyInstanceForThisCaster(typ, spells[i].m_caster))
-				return false;
-
-			break;		
-		case SPELL_CONTROL_TARGET:
-			if(ARX_SPELLS_ExistAnyInstanceForThisCaster(typ, spells[i].m_caster))
-				return false;
-
-			break;		
-		case SPELL_FREEZE_TIME:
-			if(ARX_SPELLS_ExistAnyInstanceForThisCaster(typ, spells[i].m_caster))
-				return false;
-
-			break;
-		case SPELL_TELEPORT:
-			if(ARX_SPELLS_ExistAnyInstanceForThisCaster(typ, spells[i].m_caster))
-				return false;
-
-			break;		
-	default:
-		break; // no preconditions to check
-	}
-	
 	if(!CanPayMana(i, ARX_SPELLS_GetManaCost(typ, i))) {
 		return false;
 	}
@@ -1414,6 +1349,9 @@ bool ARX_SPELLS_Launch(SpellType typ, long source, SpellcastFlags flagss, long l
 		//****************************************************************************
 		// LEVEL 1
 		case SPELL_MAGIC_SIGHT: {
+			if(ARX_SPELLS_ExistAnyInstanceForThisCaster(typ, spells[i].m_caster))
+				return false;
+			
 			static_cast<MagicSightSpell &>(spell).Launch(duration);
 			break;
 		}
@@ -1436,6 +1374,9 @@ bool ARX_SPELLS_Launch(SpellType typ, long source, SpellcastFlags flagss, long l
 		//****************************************************************************
 		// LEVEL 2
 		case SPELL_HEAL: {
+			if(ARX_SPELLS_ExistAnyInstanceForThisCaster(typ, spells[i].m_caster))
+				return false;
+			
 			static_cast<HealSpell &>(spell).Launch(i, duration);
 			break;
 		}
@@ -1480,6 +1421,9 @@ bool ARX_SPELLS_Launch(SpellType typ, long source, SpellcastFlags flagss, long l
 		//****************************************************************************
 		// LEVEL 4
 		case SPELL_BLESS: {
+			if(ARX_SPELLS_ExistAnyInstance(typ))
+				return false;
+			
 			static_cast<BlessSpell &>(spell).Launch(i, duration);
 			break;
 		}
@@ -1496,6 +1440,9 @@ bool ARX_SPELLS_Launch(SpellType typ, long source, SpellcastFlags flagss, long l
 			break;
 		}
 		case SPELL_TELEKINESIS: {
+			if(ARX_SPELLS_ExistAnyInstanceForThisCaster(typ, spells[i].m_caster))
+				return false;
+			
 			static_cast<TelekinesisSpell &>(spell).Launch(duration);
 			break;
 		}
@@ -1556,6 +1503,12 @@ bool ARX_SPELLS_Launch(SpellType typ, long source, SpellcastFlags flagss, long l
 		//****************************************************************************
 		// LEVEL 7
 		case SPELL_FLYING_EYE: {
+			if(eyeball.exist)
+				return false;
+
+			if(ARX_SPELLS_ExistAnyInstanceForThisCaster(typ,spells[i].m_caster))
+				return false;
+			
 			bool result = static_cast<FlyingEyeSpell &>(spell).Launch();
 			if(!result)
 				return false;
@@ -1581,10 +1534,16 @@ bool ARX_SPELLS_Launch(SpellType typ, long source, SpellcastFlags flagss, long l
 		//****************************************************************************
 		// LEVEL 8
 		case SPELL_INVISIBILITY: {
+			if(ARX_SPELLS_ExistAnyInstanceForThisCaster(typ, spells[i].m_caster))
+				return false;
+			
 			static_cast<InvisibilitySpell &>(spell).Launch(i, duration);
 			break;
 		}
 		case SPELL_MANA_DRAIN: {
+			if(ARX_SPELLS_ExistAnyInstanceForThisCaster(typ, spells[i].m_caster))
+				return false;
+			
 			static_cast<ManaDrainSpell &>(spell).Launch(duration);
 			break;
 		}
@@ -1597,6 +1556,9 @@ bool ARX_SPELLS_Launch(SpellType typ, long source, SpellcastFlags flagss, long l
 			break;
 		}
 		case SPELL_LIFE_DRAIN: {
+			if(ARX_SPELLS_ExistAnyInstanceForThisCaster(typ, spells[i].m_caster))
+				return false;
+			
 			static_cast<LifeDrainSpell &>(spell).Launch(duration);
 			break;
 		}
@@ -1638,6 +1600,9 @@ bool ARX_SPELLS_Launch(SpellType typ, long source, SpellcastFlags flagss, long l
 			break;
 		}
 		case SPELL_CONTROL_TARGET: {
+			if(ARX_SPELLS_ExistAnyInstanceForThisCaster(typ, spells[i].m_caster))
+				return false;
+			
 			bool result = static_cast<ControlTargetSpell &>(spell).Launch(i);
 			if(!result)
 				return false;
@@ -1645,6 +1610,9 @@ bool ARX_SPELLS_Launch(SpellType typ, long source, SpellcastFlags flagss, long l
 			break;
 		}
 		case SPELL_FREEZE_TIME: {
+			if(ARX_SPELLS_ExistAnyInstanceForThisCaster(typ, spells[i].m_caster))
+				return false;
+			
 			static_cast<FreezeTimeSpell &>(spell).Launch(duration);
 			break;
 		}
@@ -1653,6 +1621,9 @@ bool ARX_SPELLS_Launch(SpellType typ, long source, SpellcastFlags flagss, long l
 			break;
 		}
 		case SPELL_TELEPORT: {
+			if(ARX_SPELLS_ExistAnyInstanceForThisCaster(typ, spells[i].m_caster))
+				return false;
+			
 			static_cast<TeleportSpell &>(spell).Launch();
 			break;
 		}
