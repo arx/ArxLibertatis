@@ -259,67 +259,6 @@ void CCurse::Render() {
 }
 
 //-----------------------------------------------------------------------------
-//	FIRE PROTECTION
-//-----------------------------------------------------------------------------
-CFireProtection::CFireProtection()
-{
-}
-
-CFireProtection::~CFireProtection()
-{
-	long iNpc = spells[spellinstance].m_target;
-
-	if(ValidIONum(iNpc)) {
-		Entity *io = entities[iNpc];
-		io->halo.flags = 0;
-		io->halo.color.r = 0.8f;
-		io->halo.color.g = 0.8f;
-		io->halo.color.b = 0.9f;
-		io->halo.radius = 45.f;
-		io->halo.dynlight = -1;
-	}
-}
-
-void CFireProtection::Create(long _ulDuration)
-{
-	SetDuration(_ulDuration);
-
-	long iNpc = spells[spellinstance].m_target;
-
-	if(ValidIONum(iNpc)) {
-		Entity *io = entities[iNpc];
-		io->halo.flags = HALO_ACTIVE;
-		io->halo.color.r = 0.5f;
-		io->halo.color.g = 0.3f;
-		io->halo.color.b = 0.f;
-		io->halo.radius = 45.f;
-		io->halo.dynlight = -1;
-	}
-}
-
-void CFireProtection::Update(unsigned long _ulTime)
-{
-	if(!arxtime.is_paused())
-		ulCurrentTime += _ulTime;
-
-	long iNpc = spells[spellinstance].m_target;
-
-	if(ValidIONum(iNpc)) {
-		Entity *io = entities[iNpc];
-		io->halo.flags = HALO_ACTIVE;
-		io->halo.color.r = 0.5f;
-		io->halo.color.g = 0.3f;
-		io->halo.color.b = 0.f;
-		io->halo.radius = 45.f;
-		io->halo.dynlight = -1;
-	}
-}
-
-void CFireProtection::Render() {
-	
-}
-
-//-----------------------------------------------------------------------------
 //	COLD PROTECTION
 //-----------------------------------------------------------------------------
 CColdProtection::CColdProtection()

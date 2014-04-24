@@ -72,19 +72,6 @@ class CBless: public CSpellFx
 		void	Kill();
 };
 
-class CFireProtection: public CSpellFx {
-	
-public:
-	
-	CFireProtection();
-	~CFireProtection();
-	
-	void Create(long);
-	void Update(unsigned long);
-	void Render();
-	
-};
-
 class CColdProtection: public CSpellFx
 {
 	private:
