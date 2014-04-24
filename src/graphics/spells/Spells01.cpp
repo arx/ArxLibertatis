@@ -713,7 +713,7 @@ void CIgnit::Create(Vec3f * posc, float perim, int speed)
 		tablight[nb].idl = -1;
 	}
 
-	ChangeTexture(TextureContainer::Load("graph/particles/fire_hit"));
+	tp = TextureContainer::Load("graph/particles/fire_hit");
 	ChangeRGBMask(1.f, 1.f, 1.f, Color(255, 200, 0).toBGRA());
 }
 
@@ -795,7 +795,7 @@ void CIgnit::Update(unsigned long _ulTime)
 
 void CDoze::CreateDoze(Vec3f * posc, float perim, int speed) {
 	Create(posc, perim, speed);
-	ChangeTexture(TextureContainer::Load("graph/particles/doze_hit"));
+	tp = TextureContainer::Load("graph/particles/doze_hit");
 	ChangeRGBMask(0.f, .7f, 1.f, 0xFF0000FF);
 }
 

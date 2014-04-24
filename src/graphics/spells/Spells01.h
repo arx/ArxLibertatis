@@ -102,7 +102,7 @@ public:
 // Done By : Sébastien Scieux
 class CIgnit : public CSpellFx {
 	
-private:
+protected:
 	Vec3f pos;
 	float perimetre;
 	bool m_active;
@@ -143,10 +143,6 @@ public:
 	void ChangeRGBMask(float r, float g, float b, int mask) {
 		rgb = Color3f(r, g, b);
 		this->mask = mask;
-	}
-	
-	void ChangeTexture(TextureContainer * tc) {
-		this->tp = tc;
 	}
 	
 	float GetPerimetre(void) {
