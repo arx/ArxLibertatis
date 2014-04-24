@@ -1983,7 +1983,7 @@ void ArxGame::managePlayerControls()
 				long lNumSpell=ARX_SPELLS_GetInstance(SPELL_FLYING_EYE);
 
 				if(lNumSpell >= 0) {
-					ARX_SPELLS_Kill(lNumSpell);
+					spells[lNumSpell].m_tolive = 0;
 				}
 			}
 		}

@@ -82,7 +82,6 @@ void ARX_SPELLS_Init();
 void ARX_SPELLS_ClearAll();
 void ARX_SPELLS_Update();
 
-void ARX_SPELLS_Kill(long i);
 long ARX_SPELLS_GetInstance(SpellType typ);
 void ARX_SPELLS_ManageMagic();
 
