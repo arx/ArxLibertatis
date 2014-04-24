@@ -164,7 +164,6 @@ class CFireField: public CSpellFx
 class CIceField: public CSpellFx
 {
 	public:
-		int iNumber;
 		Vec3f eSrc;
 		Vec3f eTarget;
 		TextureContainer * tex_p1;

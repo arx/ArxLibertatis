@@ -891,8 +891,6 @@ CIceField::CIceField()
 	SetDuration(1000);
 	ulCurrentTime = ulDuration + 1;
 	
-	iNumber = 50;
-	
 	tex_p1 = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu_blueting");
 	tex_p2 = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu_bluepouf");
 	
@@ -919,11 +917,10 @@ void CIceField::Create(Vec3f aeSrc, float afBeta) {
 	fBetaRadSin = (float) sin(fBetaRad);
 	
 	eTarget = eSrc;
-	iNumber = 50;
 	
 	float	xmin, ymin, zmin;
 	
-	for(int i = 0; i < iNumber; i++) {
+	for(int i = 0; i < iMax; i++) {
 		float t = rnd();
 
 		if (t < 0.5f)
@@ -965,15 +962,6 @@ void CIceField::Create(Vec3f aeSrc, float afBeta) {
 			tPos[i].z = eSrc.z + frand2() * 120;
 		}
 	}
-
-	int j = 0;
-	iMax  = iNumber;
-	
-	j = 50;
-
-	iMax = j;
-
-	iNumber = j;
 }
 
 void CIceField::Update(unsigned long _ulTime)
@@ -994,12 +982,7 @@ void CIceField::Render()
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-
-	iMax = (int)(iNumber); 
-
-	if(iMax > iNumber)
-		iMax = iNumber;
-
+	
 	for(i = 0; i < iMax; i++) {
 		if(tSize[i].x < tSizeMax[i].x)
 			tSize[i].x += 0.1f;
