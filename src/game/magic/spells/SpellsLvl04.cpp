@@ -277,11 +277,15 @@ void ColdProtectionSpell::Launch(long i, long duration)
 	m_bDuration = true;
 	m_fManaCostPerSecond = 1.f;
 	
-	CColdProtection * effect = new CColdProtection();
-	effect->spellinstance=i;
-	effect->Create(m_tolive, m_target);
-	m_pSpellFx = effect;
-	m_tolive = effect->GetDuration();
+	if(ValidIONum(m_target)) {
+		Entity *io = entities[m_target];
+		io->halo.flags = HALO_ACTIVE;
+		io->halo.color.r = 0.2f;
+		io->halo.color.g = 0.2f;
+		io->halo.color.b = 0.45f;
+		io->halo.radius = 45.f;
+		io->halo.dynlight = -1;
+	}
 	
 	m_snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_COLD_PROTECTION_LOOP,
 	                                       &entities[m_target]->pos, 1.f,
@@ -302,8 +306,18 @@ void ColdProtectionSpell::End(size_t i)
 
 void ColdProtectionSpell::Update(float timeDelta)
 {
-	m_pSpellFx->Update(timeDelta);
-	m_pSpellFx->Render();
+	ARX_UNUSED(timeDelta);
+	
+	if(ValidIONum(m_target)) {
+		Entity *io = entities[m_target];
+		io->halo.flags = HALO_ACTIVE;
+		io->halo.color.r = 0.2f;
+		io->halo.color.g = 0.2f;
+		io->halo.color.b = 0.45f;
+		io->halo.radius = 45.f;
+		io->halo.dynlight = -1;
+	}
+	
 	ARX_SOUND_RefreshPosition(m_snd_loop, entities[m_target]->pos);
 }
 

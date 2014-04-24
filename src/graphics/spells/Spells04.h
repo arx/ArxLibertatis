@@ -72,22 +72,6 @@ class CBless: public CSpellFx
 		void	Kill();
 };
 
-class CColdProtection: public CSpellFx
-{
-	private:
-		int			iNpc;
-
-	public:
-		CColdProtection();
-		~CColdProtection();
-
-		// surcharge
-		void	Create(long, int);
-		void	Update(unsigned long);
-		void Render();
- 
-};
-
 class CCurse: public CSpellFx
 {
 	public:
