@@ -140,11 +140,6 @@ public:
 	void AddLight(int iLight);
 	void Action(bool enable);
 	
-	void ChangeRGBMask(float r, float g, float b, int mask) {
-		rgb = Color3f(r, g, b);
-		this->mask = mask;
-	}
-	
 	float GetPerimetre(void) {
 		return this->perimetre;
 	}

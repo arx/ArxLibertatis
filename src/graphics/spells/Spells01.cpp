@@ -714,7 +714,9 @@ void CIgnit::Create(Vec3f * posc, float perim, int speed)
 	}
 
 	tp = TextureContainer::Load("graph/particles/fire_hit");
-	ChangeRGBMask(1.f, 1.f, 1.f, Color(255, 200, 0).toBGRA());
+	
+	rgb = Color3f(1.f, 1.f, 1.f);
+	mask = Color(255, 200, 0).toBGRA();
 }
 
 void CIgnit::Action(bool enable)
@@ -796,7 +798,9 @@ void CIgnit::Update(unsigned long _ulTime)
 void CDoze::CreateDoze(Vec3f * posc, float perim, int speed) {
 	Create(posc, perim, speed);
 	tp = TextureContainer::Load("graph/particles/doze_hit");
-	ChangeRGBMask(0.f, .7f, 1.f, 0xFF0000FF);
+	
+	rgb = Color3f(0.f, .7f, 1.f);
+	mask = 0xFF0000FF;
 }
 
 void CDoze::AddLightDoze(int aiLight)
