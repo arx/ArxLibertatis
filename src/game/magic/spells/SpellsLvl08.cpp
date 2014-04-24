@@ -126,7 +126,7 @@ void ManaDrainSpell::Launch(long duration)
 	}
 }
 
-void ManaDrainSpell::Kill()
+void ManaDrainSpell::End()
 {
 	if(m_longinfo_damage != -1) {
 		damages[m_longinfo_damage].exist = false;
@@ -417,7 +417,7 @@ void LifeDrainSpell::Launch(long duration)
 	}
 }
 
-void LifeDrainSpell::Kill()
+void LifeDrainSpell::End()
 {
 	if(m_longinfo_damage != -1) {
 		damages[m_longinfo_damage].exist = false;

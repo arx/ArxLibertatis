@@ -101,7 +101,7 @@ void MassLightningStrikeSpell::Launch(long i)
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 }
 
-void MassLightningStrikeSpell::Kill()
+void MassLightningStrikeSpell::End()
 {
 	if(lightHandleIsValid(m_longinfo_light)) {
 		EERIE_LIGHT * light = lightHandleGet(m_longinfo_light);

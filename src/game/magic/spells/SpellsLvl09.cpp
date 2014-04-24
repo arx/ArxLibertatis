@@ -106,10 +106,7 @@ void SummonCreatureSpell::End()
 
 	lightHandleDestroy(m_pSpellFx->lLightId);
 	// need to killio
-}
-
-void SummonCreatureSpell::Kill()
-{
+	
 	lightHandleDestroy(m_pSpellFx->lLightId);
 	
 	if(ValidIONum(m_longinfo2_entity) && m_longinfo2_entity != 0) {
@@ -316,10 +313,7 @@ void FakeSummonSpell::End()
 	ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &m_target_pos);
 	
 	lightHandleDestroy(m_pSpellFx->lLightId);
-}
-
-void FakeSummonSpell::Kill()
-{
+	
 	lightHandleDestroy(m_pSpellFx->lLightId);
 }
 
@@ -498,10 +492,7 @@ void MassParalyseSpell::End(size_t i)
 		free(m_misc);
 
 	m_misc=NULL;
-}
 
-void MassParalyseSpell::Kill()
-{
 	ARX_SOUND_PlaySFX(SND_SPELL_PARALYSE_END);
 }
 

@@ -26,7 +26,6 @@ class FlyingEyeSpell : public SpellBase {
 public:
 	bool Launch();
 	void End();
-	void Kill();
 	void Update(unsigned long tim);
 };
 
@@ -34,7 +33,6 @@ class FireFieldSpell : public SpellBase {
 public:
 	void Launch(long i, long duration);
 	void End();
-	void Kill();
 	void Update(float timeDelta);
 };
 
@@ -42,7 +40,6 @@ class IceFieldSpell : public SpellBase {
 public:
 	void Launch(long i, long duration);
 	void End();
-	void Kill();
 	void Update(float timeDelta);
 };
 
@@ -50,7 +47,6 @@ class LightningStrikeSpell : public SpellBase {
 public:
 	void Launch(long i);
 	void End();
-	void Kill();
 	void Update(float timeDelta);
 };
 

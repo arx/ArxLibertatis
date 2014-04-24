@@ -254,10 +254,7 @@ void ParalyseSpell::End(size_t i)
 {
 	ARX_SPELLS_RemoveSpellOn(m_target,i);
 	entities[m_target]->ioflags &= ~IO_FREEZESCRIPT;
-}
-
-void ParalyseSpell::Kill()
-{
+	
 	ARX_SOUND_PlaySFX(SND_SPELL_PARALYSE_END);
 }
 

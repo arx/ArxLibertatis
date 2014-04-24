@@ -349,7 +349,7 @@ void HarmSpell::Launch(long duration)
 	}
 }
 
-void HarmSpell::Kill()
+void HarmSpell::End()
 {
 	if(m_longinfo_damage != -1) {
 		damages[m_longinfo_damage].exist = false;

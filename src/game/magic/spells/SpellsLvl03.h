@@ -39,7 +39,6 @@ class FireballSpell : public SpellBase {
 public:
 	void Launch(long i);
 	void End();
-	void Kill();
 	void Update(float timeDelta);
 };
 

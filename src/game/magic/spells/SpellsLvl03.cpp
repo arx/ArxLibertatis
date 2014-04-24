@@ -186,10 +186,7 @@ void FireballSpell::Launch(long i)
 void FireballSpell::End()
 {
 	ARX_SOUND_Stop(m_snd_loop);
-}
-
-void FireballSpell::Kill()
-{
+	
 	if(lightHandleIsValid(m_longinfo_light)) {
 		EERIE_LIGHT * light = lightHandleGet(m_longinfo_light);
 		

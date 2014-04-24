@@ -101,10 +101,7 @@ bool FlyingEyeSpell::Launch()
 void FlyingEyeSpell::End()
 {
 	ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE, &entities[m_caster]->pos);
-}
-
-void FlyingEyeSpell::Kill()
-{
+	
 	static TextureContainer * tc4=TextureContainer::Load("graph/particles/smoke");
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_EYEBALL_OUT);
@@ -272,10 +269,7 @@ void FireFieldSpell::End()
 {
 	if(m_longinfo_damage != -1)
 		damages[m_longinfo_damage].exist = false;
-}
-
-void FireFieldSpell::Kill()
-{
+	
 	ARX_SOUND_Stop(m_snd_loop);
 	ARX_SOUND_PlaySFX(SND_SPELL_FIRE_FIELD_END);
 }
@@ -417,10 +411,7 @@ void IceFieldSpell::End()
 {
 	if(m_longinfo_damage != -1)
 		damages[m_longinfo_damage].exist = false;
-}
-
-void IceFieldSpell::Kill()
-{
+	
 	ARX_SOUND_Stop(m_snd_loop); 
 	ARX_SOUND_PlaySFX(SND_SPELL_ICE_FIELD_END);
 }
@@ -480,10 +471,7 @@ void LightningStrikeSpell::Launch(long i)
 void LightningStrikeSpell::End()
 {
 	ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &entities[m_caster]->pos);
-}
-
-void LightningStrikeSpell::Kill()
-{
+	
 	if(lightHandleIsValid(m_longinfo_light)) {
 		EERIE_LIGHT * light = lightHandleGet(m_longinfo_light);
 		

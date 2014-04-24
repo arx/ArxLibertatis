@@ -18,3 +18,21 @@
  */
 
 #include "game/magic/Spell.h"
+
+#include "core/GameTime.h"
+
+void SpellBase::BaseEnd() {
+	
+	m_exist = false;
+
+	// All Levels - Kill Light
+	if(m_pSpellFx && lightHandleIsValid(m_pSpellFx->lLightId)) {
+		EERIE_LIGHT * light = lightHandleGet(m_pSpellFx->lLightId);
+		
+		light->duration = 500; 
+		light->time_creation = (unsigned long)(arxtime);
+	}
+	
+	delete m_pSpellFx;
+	m_pSpellFx = NULL;
+}

@@ -33,7 +33,6 @@ class ParalyseSpell : public SpellBase {
 public:
 	void Launch(long i, long duration);
 	void End(size_t i);
-	void Kill();
 };
 
 class CreateFieldSpell : public SpellBase {

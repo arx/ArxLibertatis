@@ -1700,6 +1700,10 @@ void ARX_SPELLS_Update_End(size_t i) {
 		}
 		//****************************************************************************
 		// LEVEL 2
+		case SPELL_HARM: {
+			static_cast<HarmSpell &>(spell).End();
+			break;
+		}
 		case SPELL_DETECT_TRAP: {
 			static_cast<DetectTrapSpell &>(spell).End(i);
 			break;
@@ -1748,6 +1752,10 @@ void ARX_SPELLS_Update_End(size_t i) {
 		// LEVEL 5
 		case SPELL_LEVITATE: {
 			static_cast<LevitateSpell &>(spell).End(i);
+			break;
+		}
+		case SPELL_REPEL_UNDEAD: {
+			static_cast<RepelUndeadSpell &>(spell).End();
 			break;
 		}
 		//****************************************************************************
@@ -1799,6 +1807,14 @@ void ARX_SPELLS_Update_End(size_t i) {
 			static_cast<InvisibilitySpell &>(spell).End(i);
 			break;
 		}
+		case SPELL_MANA_DRAIN: {
+			static_cast<ManaDrainSpell &>(spell).End();
+			break;
+		}
+		case SPELL_LIFE_DRAIN: {
+			static_cast<LifeDrainSpell &>(spell).End();
+			break;
+		}
 		//****************************************************************************
 		// LEVEL 9
 		case SPELL_MASS_PARALYSE: {
@@ -1819,6 +1835,10 @@ void ARX_SPELLS_Update_End(size_t i) {
 		}
 		//****************************************************************************
 		// LEVEL 10
+		case SPELL_MASS_LIGHTNING_STRIKE: {
+			static_cast<MassLightningStrikeSpell &>(spell).End();
+			break;
+		}
 		case SPELL_FREEZE_TIME: {
 			static_cast<FreezeTimeSpell &>(spell).End();
 			break;
@@ -1829,90 +1849,9 @@ void ARX_SPELLS_Update_End(size_t i) {
 		}
 		default:
 			break;
-	}				
-}
-
-// Used for specific Spell-End FX
-void ARX_SPELLS_Kill(long i) {
-
-	if (!spells[i].m_exist) return;
-
-	spells[i].m_exist=false;
-
-	// All Levels - Kill Light
-	if(spells[i].m_pSpellFx && lightHandleIsValid(spells[i].m_pSpellFx->lLightId)) {
-		EERIE_LIGHT * light = lightHandleGet(spells[i].m_pSpellFx->lLightId);
-		
-		light->duration = 500; 
-		light->time_creation = (unsigned long)(arxtime);
 	}
 	
-	SpellBase & spell = spells[i];
-	
-	switch(spells[i].m_type) {
-		case SPELL_FIREBALL: {
-			static_cast<FireballSpell &>(spell).Kill();
-			break;
-		}
-		case SPELL_LIGHTNING_STRIKE: {
-			static_cast<LightningStrikeSpell &>(spell).Kill();
-			break;
-		}
-		case SPELL_MASS_LIGHTNING_STRIKE: {
-			static_cast<MassLightningStrikeSpell &>(spell).Kill();
-			break;
-		}
-		case SPELL_REPEL_UNDEAD: {
-			static_cast<RepelUndeadSpell &>(spell).Kill();
-			break;
-		}
-		case SPELL_HARM: {
-			static_cast<HarmSpell &>(spell).Kill();
-			break;
-		}
-		case SPELL_LIFE_DRAIN: {
-			static_cast<LifeDrainSpell &>(spell).Kill();
-			break;
-		}
-		case SPELL_MANA_DRAIN: {
-			static_cast<ManaDrainSpell &>(spell).Kill();
-			break;
-		}
-		case SPELL_FLYING_EYE : {
-			static_cast<FlyingEyeSpell &>(spell).Kill();
-			break;
-		}
-		// Level 06
-		case SPELL_PARALYSE: {
-			static_cast<ParalyseSpell &>(spell).Kill();
-			break;
-		}
-		// Level 7
-		case SPELL_FIRE_FIELD: {
-			static_cast<FireFieldSpell &>(spell).Kill();
-			break;
-		}
-		case SPELL_ICE_FIELD: {
-			static_cast<IceFieldSpell &>(spell).Kill(); 
-			break; 
-		}
-		case SPELL_MASS_PARALYSE: {
-			static_cast<MassParalyseSpell &>(spell).Kill();
-			break;
-		}
-		case SPELL_SUMMON_CREATURE: {
-			static_cast<SummonCreatureSpell &>(spell).Kill();
-			break;
-		}
-		case SPELL_FAKE_SUMMON: {
-			static_cast<FakeSummonSpell &>(spell).Kill();
-			break;
-		}
-		
-		default: break;
-	}
-	
-	delete spells[i].m_pSpellFx, spells[i].m_pSpellFx = NULL;
+	spell.BaseEnd();
 }
 
 void ARX_SPELLS_Update_Update(size_t i, unsigned long tim) {
@@ -2173,7 +2112,6 @@ void ARX_SPELLS_Update() {
 		if(framediff < 0) {
 			SPELLEND_Notify(spell);
 			ARX_SPELLS_Update_End(i);
-			ARX_SPELLS_Kill(i);
 			
 			continue;
 		}

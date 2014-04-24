@@ -52,7 +52,7 @@ public:
 class HarmSpell : public SpellBase {
 public:
 	void Launch(long duration);
-	void Kill();
+	void End();
 	void Update(float timeDelta);
 };
 

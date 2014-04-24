@@ -223,7 +223,7 @@ void RepelUndeadSpell::Launch(long duration, long i)
 	m_tolive = effect->GetDuration();
 }
 
-void RepelUndeadSpell::Kill()
+void RepelUndeadSpell::End()
 {
 	if(lightHandleIsValid(m_longinfo_light)) {
 		EERIE_LIGHT * light = lightHandleGet(m_longinfo_light);
