@@ -149,11 +149,7 @@ extern long MAGICMODE;
 
 extern bool bRenderInCursorMode;
 
-extern bool FrustrumsClipSphere(EERIE_FRUSTRUM_DATA * frustrums,EERIE_SPHERE * sphere);
-
 void ARX_INTERFACE_Combat_Mode(long i);
-
-
 
 ///////////////Spell Interpretation
 SpellBase spells[MAX_SPELLS];
