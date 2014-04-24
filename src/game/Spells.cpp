@@ -836,13 +836,13 @@ void ARX_SPELLS_FizzleNoMana(long num) {
 	}
 }
 
-long CanPayMana(long num, float cost, bool _bSound = true) {
+bool CanPayMana(long num, float cost, bool _bSound = true) {
 	
 	if(num < 0)
-		return 0;
+		return false;
 
 	if(spells[num].m_flags & SPELLCAST_FLAG_NOMANA)
-		return 1;
+		return true;
 
 	if(spells[num].m_caster == 0) {
 		if(player.mana < cost) {
@@ -852,23 +852,23 @@ long CanPayMana(long num, float cost, bool _bSound = true) {
 				ARX_SPEECH_Add(getLocalised("player_cantcast"));
 				ARX_SPEECH_AddSpeech(entities.player(), "player_cantcast", ANIM_TALK_NEUTRAL);
 			}
-			return 0;
+			return false;
 		}
 
 		player.mana -= cost;
-		return 1;
+		return true;
 	} else if(ValidIONum(spells[num].m_caster)) {
 		if(entities[spells[num].m_caster]->ioflags & IO_NPC) {
 			if(entities[spells[num].m_caster]->_npcdata->mana < cost) {
 				ARX_SPELLS_FizzleNoMana(num);
-				return 0;
+				return false;
 			}
 			entities[spells[num].m_caster]->_npcdata->mana -= cost;
-			return 1;
+			return true;
 		}
 	}
 
-	return 0;
+	return false;
 }
 
 long TemporaryGetSpellTarget(const Vec3f * from) {
