@@ -577,10 +577,13 @@ void CMultiMagicMissile::CheckCollision()
 		return;
 
 		for(unsigned int i = 0; i < uiNumber; i++) {
-			if(pTab[i]) {
+			if(!pTab[i])
+				continue;
+			
 				CMagicMissile * missile = (CMagicMissile *) pTab[i];
 
-				if(!missile->bExplo) {
+				if(missile->bExplo)
+					continue;
 					
 					EERIE_SPHERE sphere;
 					sphere.origin = missile->eCurPos;
@@ -614,8 +617,6 @@ void CMultiMagicMissile::CheckCollision()
 						Color3f rgb(.3f, .3f, .45f);
 						ARX_PARTICLES_Add_Smoke(&missile->eCurPos, 0, 6, &rgb);
 					}
-				}
-			}
 		}
 }
 
