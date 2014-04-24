@@ -671,7 +671,6 @@ void CMultiMagicMissile::Render()
 //-----------------------------------------------------------------------------
 CIgnit::CIgnit()
 	: pos(Vec3f_ZERO)
-	, perimetre(0.f)
 	, m_active(false)
 	, duration(0)
 	, currduration(0)
@@ -697,10 +696,9 @@ void CIgnit::Kill(void)
 	nblight = 0;
 }
 
-void CIgnit::Create(Vec3f * posc, float perim, int speed)
+void CIgnit::Create(Vec3f * posc, int speed)
 {
 	pos = *posc;
-	perimetre = perim;
 	nblight = 0;
 	duration = speed;
 	currduration = 0;
@@ -795,8 +793,8 @@ void CIgnit::Update(unsigned long _ulTime)
 		currduration += _ulTime;
 }
 
-void CDoze::CreateDoze(Vec3f * posc, float perim, int speed) {
-	Create(posc, perim, speed);
+void CDoze::CreateDoze(Vec3f * posc, int speed) {
+	Create(posc, speed);
 	tp = TextureContainer::Load("graph/particles/doze_hit");
 	
 	rgb = Color3f(0.f, .7f, 1.f);

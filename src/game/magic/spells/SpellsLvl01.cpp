@@ -146,7 +146,7 @@ void IgnitSpell::Launch(long i)
 	
 	float fPerimeter = 400.f + m_caster_level * 30.f;
 	
-	effect->Create(&target, fPerimeter, 500);
+	effect->Create(&target, 500);
 	CheckForIgnition(&target, fPerimeter, 1, 1);
 	
 	for(size_t ii = 0; ii < MAX_LIGHTS; ii++) {
@@ -169,7 +169,7 @@ void IgnitSpell::Launch(long i)
 			continue;
 		}
 		
-		if(!fartherThan(target, GLight[ii]->pos, effect->GetPerimetre())) {
+		if(!fartherThan(target, GLight[ii]->pos, fPerimeter)) {
 			effect->AddLight(ii);
 		}
 	}
@@ -184,7 +184,7 @@ void IgnitSpell::Launch(long i)
 				CFireBall * pCF = (CFireBall *)pCSpellFX;
 				float radius = std::max(m_caster_level * 2.f, 12.f);
 				if(closerThan(target, pCF->eCurPos,
-				              effect->GetPerimetre() + radius)) {
+				              fPerimeter + radius)) {
 					spells[n].m_caster_level += 1; 
 				}
 			}
@@ -227,7 +227,7 @@ void DouseSpell::Launch(long i)
 	}
 	
 	float fPerimeter = 400.f + m_caster_level * 30.f;
-	effect->CreateDoze(&target, fPerimeter, 500);
+	effect->CreateDoze(&target, 500);
 	CheckForIgnition(&target, fPerimeter, 0, 1);
 	
 	for(size_t ii = 0; ii < MAX_LIGHTS; ii++) {
@@ -246,12 +246,12 @@ void DouseSpell::Launch(long i)
 			continue;
 		}
 		
-		if(!fartherThan(target, GLight[ii]->pos, effect->GetPerimetre())) {
+		if(!fartherThan(target, GLight[ii]->pos, fPerimeter)) {
 			effect->AddLightDoze(ii);	
 		}
 	}
 	
-	if(player.torch && closerThan(target, player.pos, effect->GetPerimetre())) {
+	if(player.torch && closerThan(target, player.pos, fPerimeter)) {
 		ARX_PLAYER_ClickedOnTorch(player.torch);
 	}
 	
@@ -269,7 +269,7 @@ void DouseSpell::Launch(long i)
 					CFireBall * pCF = (CFireBall *)pCSpellFX;
 					float radius = std::max(m_caster_level * 2.f, 12.f);
 					if(closerThan(target, pCF->eCurPos,
-					              effect->GetPerimetre() + radius)) {
+					              fPerimeter + radius)) {
 						spells[n].m_caster_level -= m_caster_level;
 						if(spells[n].m_caster_level < 1) {
 							spells[n].m_tolive = 0;
@@ -282,7 +282,7 @@ void DouseSpell::Launch(long i)
 			case SPELL_FIRE_FIELD: {
 				Vec3f pos;
 				if(GetSpellPosition(&pos, n)) {
-					if(closerThan(target, pos, effect->GetPerimetre() + 200)) {
+					if(closerThan(target, pos, fPerimeter + 200)) {
 						spells[n].m_caster_level -= m_caster_level;
 						if(spells[n].m_caster_level < 1) {
 							spells[n].m_tolive=0;

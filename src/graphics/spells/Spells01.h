@@ -104,7 +104,6 @@ class CIgnit : public CSpellFx {
 	
 protected:
 	Vec3f pos;
-	float perimetre;
 	bool m_active;
 	int duration;
 	int currduration;
@@ -133,16 +132,12 @@ public:
 		return this->duration;
 	}
 	
-	void Create(Vec3f * posc, float perim, int speed);
+	void Create(Vec3f * posc, int speed);
 	void Update(unsigned long time);
 	void Render();
 	void Kill();
 	void AddLight(int iLight);
 	void Action(bool enable);
-	
-	float GetPerimetre(void) {
-		return this->perimetre;
-	}
 };
 
 // Done By : Sébastien Scieux
@@ -150,7 +145,7 @@ class CDoze: public CIgnit {
 	
 public:
 	
-	void CreateDoze(Vec3f * posc, float perim, int speed);
+	void CreateDoze(Vec3f * posc, int speed);
 	
 	void AddLightDoze(int iLight);
 	
