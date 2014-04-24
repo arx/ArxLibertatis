@@ -431,27 +431,21 @@ CMultiMagicMissile::CMultiMagicMissile(long nbmissiles) : CSpellFx()
 {
 	SetDuration(2000);
 	uiNumber = nbmissiles;
-	pTab = NULL;
 	pTab = new CMagicMissile*[uiNumber]();
 
-	if(pTab) {
 		for(unsigned int i = 0; i < uiNumber; i++) {
-			pTab[i] = NULL;
 			pTab[i] = new CMagicMissile();
 			pTab[i]->spellinstance = this->spellinstance;
 		}
-	}
 }
 
 CMultiMagicMissile::~CMultiMagicMissile()
 {
 	for(unsigned int i = 0; i < uiNumber; i++) {
-		if(pTab[i]) {
 			// no need to kill it because it's a duration light !
 			pTab[i]->lLightId = -1;
 
 			delete pTab[i];
-		}
 	}
 
 	delete [] pTab;
@@ -462,7 +456,6 @@ void CMultiMagicMissile::Create()
 	
 	long lMax = 0;
 
-	if(pTab) {
 		spells[spellinstance].m_hand_group = GetActionPointIdx(entities[spells[spellinstance].m_caster]->obj, "primary_attach");
 		
 		if(spells[spellinstance].m_hand_group != -1) {
@@ -516,7 +509,6 @@ void CMultiMagicMissile::Create()
 		}
 
 		for(unsigned int i = 0; i < uiNumber; i++) {
-			if(pTab[i]) {
 				Anglef angles(afAlpha, afBeta, 0.f);
 
 				if(i > 0) {
@@ -564,22 +556,14 @@ void CMultiMagicMissile::Create()
 					el->pos	 = pMM->eSrc;
 					el->duration = 300;
 				}
-			}
 		}
-	}
 
 	SetDuration(lMax + 1000);
 }
 
 void CMultiMagicMissile::CheckCollision()
 {
-	if(!pTab)
-		return;
-	
 	for(unsigned int i = 0; i < uiNumber; i++) {
-		if(!pTab[i])
-			continue;
-		
 		CMagicMissile * missile = (CMagicMissile *) pTab[i];
 		
 		if(missile->bExplo)
@@ -622,14 +606,11 @@ void CMultiMagicMissile::CheckCollision()
 
 bool CMultiMagicMissile::CheckAllDestroyed()
 {
-	if(!pTab)
-		return true;
-
 	long nbmissiles	= 0;
 
 	for(unsigned int i = 0; i < uiNumber; i++) {
 		CMagicMissile *pMM = pTab[i];
-		if(pMM && pMM->bMove)
+		if(pMM->bMove)
 			nbmissiles++;
 	}
 
@@ -638,20 +619,14 @@ bool CMultiMagicMissile::CheckAllDestroyed()
 
 void CMultiMagicMissile::Update(unsigned long _ulTime)
 {
-	if(pTab) {
 		for(unsigned int i = 0 ; i < uiNumber ; i++) {
-			if(pTab[i]) {
 				pTab[i]->Update(_ulTime);
-			}
 		}
-	}
 }
 
 void CMultiMagicMissile::Render()
 { 
-	if(pTab) {
 		for(unsigned int i = 0; i < uiNumber; i++) {
-			if(pTab[i]) {
 				pTab[i]->Render();
 
 				CMagicMissile * pMM = (CMagicMissile *) pTab[i];
@@ -662,9 +637,7 @@ void CMultiMagicMissile::Render()
 					el->pos = pMM->eCurPos;
 					el->time_creation	= (unsigned long)(arxtime);
 				}
-			}
 		}
-	}
 }
 
 //-----------------------------------------------------------------------------
