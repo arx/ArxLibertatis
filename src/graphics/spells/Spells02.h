@@ -64,19 +64,6 @@ public:
 	ParticleSystem * pPS;
 };
 
-class CLowerArmor : public CSpellFx {
-	
-public:
-	CLowerArmor();
-	~CLowerArmor();
-	
-	void Create(long);
-	void Kill();
-
-	void Update(unsigned long);
-	void Render();
-};
-
 class CArmor : public CSpellFx {
 	
 public:

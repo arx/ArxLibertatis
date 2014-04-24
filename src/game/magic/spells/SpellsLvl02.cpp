@@ -260,12 +260,22 @@ void LowerArmorSpell::Launch(long duration, long i)
 	m_bDuration = true;
 	m_fManaCostPerSecond = 0.2f * m_caster_level;
 	
-	CLowerArmor * effect = new CLowerArmor();
-	effect->spellinstance = i;
-	effect->Create(m_tolive);
-	
-	m_pSpellFx = effect;
-	m_tolive = effect->GetDuration();
+	if(ValidIONum(m_target)) {
+		Entity *io = entities[m_target];
+		
+		if(io && !(io->halo.flags & HALO_ACTIVE)) {
+			io->halo.flags |= HALO_ACTIVE;
+			io->halo.color.r = 1.f;
+			io->halo.color.g = 0.05f;
+			io->halo.color.b = 0.0f;
+			io->halo.radius = 45.f;
+			io->halo.dynlight = -1;
+			
+			m_longinfo_lower_armor = 1;
+		} else {
+			m_longinfo_lower_armor = 0;
+		}
+	}
 	
 	ARX_SPELLS_AddSpellOn(m_target, i);
 }
@@ -285,11 +295,21 @@ void LowerArmorSpell::End(long i)
 
 void LowerArmorSpell::Update(float timeDelta)
 {
-	CSpellFx *pCSpellFX = m_pSpellFx;
+	ARX_UNUSED(timeDelta);
 	
-	if(pCSpellFX) {
-		pCSpellFX->Update(timeDelta);
-		pCSpellFX->Render();
+	if(ValidIONum(m_target)) {
+		Entity *io = entities[m_target];
+		
+		if(io && !(io->halo.flags & HALO_ACTIVE)) {
+			io->halo.flags |= HALO_ACTIVE;
+			io->halo.color.r = 1.f;
+			io->halo.color.g = 0.05f;
+			io->halo.color.b = 0.0f;
+			io->halo.radius = 45.f;
+			io->halo.dynlight = -1;
+			
+			m_longinfo_lower_armor = 1;
+		}
 	}
 	
 	ARX_SOUND_RefreshPosition(m_snd_loop, entities[m_target]->pos);
