@@ -190,12 +190,15 @@ void ArmorSpell::Launch(long duration, long i)
 	m_bDuration = true;
 	m_fManaCostPerSecond = 0.2f * m_caster_level;
 		
-	CArmor * effect = new CArmor();
-	effect->spellinstance = i;
-	effect->Create(m_tolive);
-	
-	m_pSpellFx = effect;
-	m_tolive = effect->GetDuration();
+	if(ValidIONum(m_target)) {
+		Entity *io = entities[m_target];
+		io->halo.flags = HALO_ACTIVE;
+		io->halo.color.r = 0.5f;
+		io->halo.color.g = 0.5f;
+		io->halo.color.b = 0.25f;
+		io->halo.radius = 45.f;
+		io->halo.dynlight = -1;
+	}
 	
 	ARX_SPELLS_AddSpellOn(m_target, i);
 }
@@ -214,11 +217,16 @@ void ArmorSpell::End(size_t i)
 
 void ArmorSpell::Update(float timeDelta)
 {
-	CSpellFx *pCSpellFX = m_pSpellFx;
+	ARX_UNUSED(timeDelta);
 	
-	if(pCSpellFX) {
-		pCSpellFX->Update(timeDelta);
-		pCSpellFX->Render();
+	if(ValidIONum(m_target)) {
+		Entity *io = entities[m_target];
+		io->halo.flags = HALO_ACTIVE;
+		io->halo.color.r = 0.5f;
+		io->halo.color.g = 0.5f;
+		io->halo.color.b = 0.25f;
+		io->halo.radius = 45.f;
+		io->halo.dynlight = -1;
 	}
 	
 	ARX_SOUND_RefreshPosition(m_snd_loop, entities[m_target]->pos);

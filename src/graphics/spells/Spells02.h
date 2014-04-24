@@ -64,16 +64,4 @@ public:
 	ParticleSystem * pPS;
 };
 
-class CArmor : public CSpellFx {
-	
-public:
-	CArmor();
-	~CArmor();
-	
-	void Create(long);
-
-	void Update(unsigned long);
-	void Render();
-};
-
 #endif // ARX_GRAPHICS_SPELLS_SPELLS02_H
