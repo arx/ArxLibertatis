@@ -1347,9 +1347,6 @@ void ARX_PLAYER_Manage_Visual() {
 		}
 	}
 	
-	static LightHandle special[3];
-	long light = 0;
-	
 	if(entities.player()) {
 		
 		Entity * io = entities.player();
@@ -1663,61 +1660,8 @@ void ARX_PLAYER_Manage_Visual() {
 		;
 
 		if(ARX_SPELLS_ExistAnyInstance(SPELL_FLYING_EYE)) {
-			light = 1;
-
 			ChangeMoveAnim = alist[ANIM_MEDITATION];
 			ChangeMA_Loop = true;
-
-			EERIE_3DOBJ * eobj = io->obj;
-			long pouet = 2;
-
-			while(pouet) {
-				long id;
-
-				if(pouet == 2)
-					id = io->obj->fastaccess.primary_attach;
-				else
-					id = GetActionPointIdx(io->obj, "left_attach");
-
-				pouet--;
-
-				if(id != -1) {
-					if(!lightHandleIsValid(special[pouet])) {
-						special[pouet] = GetFreeDynLight();
-					}
-					if(lightHandleIsValid(special[pouet])) {
-						EERIE_LIGHT * el = lightHandleGet(special[pouet]);
-						el->intensity = 1.3f;
-						el->fallend = 180.f;
-						el->fallstart = 50.f;
-						el->rgb = Color3f(0.7f, 0.3f, 1.f);
-						el->pos = eobj->vertexlist3[id].v;
-					} else {
-						LogWarning << "Maximum number of dynamic lights exceeded.";
-					}
-					
-					for(long kk = 0; kk < 2; kk++) {
-						
-						PARTICLE_DEF * pd = createParticle();
-						if(!pd) {
-							break;
-						}
-						
-						pd->ov = eobj->vertexlist3[id].v + randomVec(-1.f, 1.f);
-						pd->move = Vec3f(0.1f - 0.2f * rnd(), -2.2f * rnd(), 0.1f - 0.2f * rnd());
-						pd->siz = 5.f;
-						pd->tolive = Random::get(1500, 3500);
-						pd->scale = Vec3f(0.2f);
-						pd->tc = TC_smoke;
-						pd->special = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
-						pd->sourceionum = 0;
-						pd->source = &eobj->vertexlist3[id].v;
-						pd->fparam = 0.0000001f;
-						pd->rgb = Color3f(.7f - rnd() * .1f, .3f - rnd() * .1f, 1.f - rnd() * .1f);
-					}
-				}
-			}
-
 			goto makechanges;
 		} else if(ARX_SPELLS_GetSpellOn(io, SPELL_LEVITATE) >= 0) {
 			ChangeMoveAnim = alist[ANIM_LEVITATE];
@@ -1836,11 +1780,6 @@ void ARX_PLAYER_Manage_Visual() {
 nochanges:
 	;
 	player.Last_Movement = player.Current_Movement;
-
-	if(!light) {
-		lightHandleDestroy(special[2]);
-		lightHandleDestroy(special[1]);
-	}
 }
 
 /*!

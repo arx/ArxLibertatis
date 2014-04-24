@@ -21,6 +21,7 @@
 
 #include "core/Application.h"
 #include "core/Config.h"
+#include "core/Core.h"
 #include "core/GameTime.h"
 #include "game/Damage.h"
 #include "game/Entity.h"
@@ -35,11 +36,14 @@
 
 #include "scene/GameSound.h"
 #include "scene/Interactive.h"
+#include "scene/Object.h"
 #include "scene/Scene.h"
 
 extern bool TRUE_PLAYER_MOUSELOOK_ON;
 extern float SLID_START;
 bool bOldLookToggle;
+
+static LightHandle special[3];
 
 bool FlyingEyeSpell::Launch()
 {
@@ -126,6 +130,9 @@ void FlyingEyeSpell::Kill()
 	}
 	
 	config.input.mouseLookToggle = bOldLookToggle;
+	
+	lightHandleDestroy(special[2]);
+	lightHandleDestroy(special[1]);
 }
 
 void FlyingEyeSpell::Update(unsigned long tim)
@@ -143,7 +150,56 @@ void FlyingEyeSpell::Update(unsigned long tim)
 		eyeball.exist = 2;
 	}
 	
-	m_lastupdate=tim;	
+	m_lastupdate=tim;
+	
+	Entity * io = entities.player();
+	EERIE_3DOBJ * eobj = io->obj;
+	long pouet = 2;
+
+	while(pouet) {
+		long id;
+
+		if(pouet == 2)
+			id = io->obj->fastaccess.primary_attach;
+		else
+			id = GetActionPointIdx(io->obj, "left_attach");
+
+		pouet--;
+
+		if(id != -1) {
+			if(!lightHandleIsValid(special[pouet])) {
+				special[pouet] = GetFreeDynLight();
+			}
+			if(lightHandleIsValid(special[pouet])) {
+				EERIE_LIGHT * el = lightHandleGet(special[pouet]);
+				el->intensity = 1.3f;
+				el->fallend = 180.f;
+				el->fallstart = 50.f;
+				el->rgb = Color3f(0.7f, 0.3f, 1.f);
+				el->pos = eobj->vertexlist3[id].v;
+			}
+			
+			for(long kk = 0; kk < 2; kk++) {
+				
+				PARTICLE_DEF * pd = createParticle();
+				if(!pd) {
+					break;
+				}
+				
+				pd->ov = eobj->vertexlist3[id].v + randomVec(-1.f, 1.f);
+				pd->move = Vec3f(0.1f - 0.2f * rnd(), -2.2f * rnd(), 0.1f - 0.2f * rnd());
+				pd->siz = 5.f;
+				pd->tolive = Random::get(1500, 3500);
+				pd->scale = Vec3f(0.2f);
+				pd->tc = TC_smoke;
+				pd->special = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
+				pd->sourceionum = 0;
+				pd->source = &eobj->vertexlist3[id].v;
+				pd->fparam = 0.0000001f;
+				pd->rgb = Color3f(.7f - rnd() * .1f, .3f - rnd() * .1f, 1.f - rnd() * .1f);
+			}
+		}
+	}
 }
 
 void FireFieldSpell::Launch(long i, long duration)
