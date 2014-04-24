@@ -1028,19 +1028,10 @@ void CIceField::Render()
 		stitepos.x = tPos[i].x;
 		stitepos.y = eSrc.y;
 		stitepos.z = tPos[i].z;
-
-		float fcol = 1;
-
-		if(abs(iMax - i) < 60) {
-			fcol = 1;
-		}
-		else
-		{
-		}
-
-		stitecolor.r = tSizeMax[i].y * fcol * 0.7f; 
-		stitecolor.g = tSizeMax[i].y * fcol * 0.7f; 
-		stitecolor.b = tSizeMax[i].y * fcol * 0.9f;
+		
+		stitecolor.r = tSizeMax[i].y * 0.7f;
+		stitecolor.g = tSizeMax[i].y * 0.7f;
+		stitecolor.b = tSizeMax[i].y * 0.9f;
 
 		if(stitecolor.r > 1)
 			stitecolor.r = 1;
