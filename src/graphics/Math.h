@@ -81,13 +81,13 @@ inline Vec3f randomVec(float min = 0.f, float max = 1.f) {
 //Approximative Methods
 #define EEfabs(val) (float)fabs(val)
 
-inline bool In3DBBoxTolerance(const Vec3f * pos, const EERIE_3D_BBOX * bbox, const float tolerance) {
-	return ((pos->x >= bbox->min.x - tolerance)
-	        && (pos->x <= bbox->max.x + tolerance)
-	        && (pos->y >= bbox->min.y - tolerance)
-	        && (pos->y <= bbox->max.y + tolerance)
-	        && (pos->z >= bbox->min.z - tolerance)
-	        && (pos->z <= bbox->max.z + tolerance));
+inline bool In3DBBoxTolerance(const Vec3f & pos, const EERIE_3D_BBOX & bbox, const float tolerance) {
+	return ((pos.x >= bbox.min.x - tolerance)
+	        && (pos.x <= bbox.max.x + tolerance)
+	        && (pos.y >= bbox.min.y - tolerance)
+	        && (pos.y <= bbox.max.y + tolerance)
+	        && (pos.z >= bbox.min.z - tolerance)
+	        && (pos.z <= bbox.max.z + tolerance));
 }
 
 //! Clamp a positive value to the range [0, 255]

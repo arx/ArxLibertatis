@@ -423,7 +423,7 @@ float CylinderPlatformCollide(EERIE_CYLINDER * cyl, Entity * io) {
 		return 0.f;
 	}
 	
-	if(In3DBBoxTolerance(&cyl->origin,&io->bbox3D,cyl->radius)) {
+	if(In3DBBoxTolerance(cyl->origin, io->bbox3D, cyl->radius)) {
 		return 1.f;
 	}
 	
@@ -601,10 +601,10 @@ float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,Entity * ioo,long flags) {
 					)
 				{
 					if(closerThan(Vec2f(io->pos.x, io->pos.z), Vec2f(cyl->origin.x, cyl->origin.z), 440.f + cyl->radius))
-					if(In3DBBoxTolerance(&cyl->origin, &io->bbox3D, cyl->radius+80))
+					if(In3DBBoxTolerance(cyl->origin, io->bbox3D, cyl->radius+80))
 					{
 						if(io->ioflags & IO_FIELD) {
-							if(In3DBBoxTolerance(&cyl->origin, &io->bbox3D, cyl->radius + 10))
+							if(In3DBBoxTolerance(cyl->origin, io->bbox3D, cyl->radius + 10))
 								anything = -99999.f;
 						} else {
 						for(size_t ii = 0; ii < io->obj->vertexlist3.size(); ii++) {
@@ -715,7 +715,7 @@ float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,Entity * ioo,long flags) {
 					if(miny >= cyl->origin.y)
 						goto suivant;
 
-					if(In3DBBoxTolerance(&cyl->origin, &io->bbox3D, cyl->radius + 30.f)) {
+					if(In3DBBoxTolerance(cyl->origin, io->bbox3D, cyl->radius + 30.f)) {
 						vector<EERIE_VERTEX> & vlist = io->obj->vertexlist3;
 						size_t nbv = io->obj->vertexlist.size();
 
@@ -902,7 +902,7 @@ bool CheckEverythingInSphere(const EERIE_SPHERE & sphere, long source, long targ
 			float maxy = io->bbox3D.max.y;
 
 			if(maxy <= sphere.origin.y + sphere.radius || miny >= sphere.origin.y)
-			if(In3DBBoxTolerance(&sphere.origin, &io->bbox3D, sphere.radius))
+			if(In3DBBoxTolerance(sphere.origin, io->bbox3D, sphere.radius))
 			{
 				if(closerThan(Vec2f(io->pos.x, io->pos.z), Vec2f(sphere.origin.x, sphere.origin.z), 440.f + sphere.radius)) {
 
@@ -1095,7 +1095,7 @@ bool CheckAnythingInSphere(EERIE_SPHERE * sphere, long source, CASFlags flags, l
 			float maxy = io->bbox3D.max.y;
 
 			if(maxy > sphere->origin.y - sphere->radius || miny < sphere->origin.y + sphere->radius)
-			if(In3DBBoxTolerance(&sphere->origin, &io->bbox3D, sphere->radius))
+			if(In3DBBoxTolerance(sphere->origin, io->bbox3D, sphere->radius))
 			{
 				if(closerThan(Vec2f(io->pos.x, io->pos.z), Vec2f(sphere->origin.x, sphere->origin.z), 440.f + sphere->radius)) {
 

@@ -2212,7 +2212,7 @@ bool ARX_INTERACTIVE_CheckFULLCollision(EERIE_3DOBJ * obj, long source)
 		   || io->usepath
 		   || ((io->ioflags & IO_NPC) && io_source && (io_source->ioflags & IO_NO_NPC_COLLIDE))
 		   || !closerThan(io->pos, obj->pbox->vert[0].pos, 600.f)
-		   || !In3DBBoxTolerance(&obj->pbox->vert[0].pos, &io->bbox3D, obj->pbox->radius)
+		   || !In3DBBoxTolerance(obj->pbox->vert[0].pos, io->bbox3D, obj->pbox->radius)
 		) {
 			continue;
 		}
@@ -2250,7 +2250,7 @@ bool ARX_INTERACTIVE_CheckFULLCollision(EERIE_3DOBJ * obj, long source)
 					maxy = io->bbox3D.max.y;
 
 					if(maxy <= sphere.origin.y + sphere.radius || miny >= sphere.origin.y) {
-						if(In3DBBoxTolerance(&sphere.origin, &io->bbox3D, sphere.radius)) {
+						if(In3DBBoxTolerance(sphere.origin, io->bbox3D, sphere.radius)) {
 							// TODO why ignore the z components?
 							if(closerThan(Vec2f(io->pos.x, io->pos.z), Vec2f(sphere.origin.x, sphere.origin.z), 440.f + sphere.radius)) {
 
