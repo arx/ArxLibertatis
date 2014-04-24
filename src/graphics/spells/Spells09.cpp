@@ -559,9 +559,9 @@ void CNegateMagic::Render() {
 	Color3f stitecolor = Color3f::gray(.4f);
 	float scalediff = std::sin(ulCurrentTime * 0.004f);
 	Vec3f stitescale = Vec3f(3.f + 0.5f * scalediff);
-	DrawEERIEObjEx(ssol, stiteangle, stitepos, stitescale, stitecolor);
+	Draw3DObject(ssol, stiteangle, stitepos, stitescale, stitecolor);
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	stitecolor = Color3f(.5f, 0.f, .5f);
 	stitescale = Vec3f(3.1f + 0.2f * scalediff);
-	DrawEERIEObjEx(ssol, stiteangle, stitepos, stitescale, stitecolor);
+	Draw3DObject(ssol, stiteangle, stitepos, stitescale, stitecolor);
 }

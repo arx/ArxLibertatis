@@ -159,14 +159,8 @@ void EE_RTP(const TexturedVertex *in,TexturedVertex *out);
 // FAST SAVE LOAD
 bool FastSceneLoad(const res::path & path);
 
-//****************************************************************************
-// DRAWING FUNCTIONS START
 
-void DrawEERIEObjEx(EERIE_3DOBJ * eobj, const Anglef & angle, const Vec3f & pos, const Vec3f & scale, const Color3f & col);
-void DrawEERIEObjExEx(EERIE_3DOBJ * eobj, const Anglef & angle, const Vec3f & pos, const Vec3f & scale, int coll);
-// DRAWING FUNCTIONS END
-//****************************************************************************
-
+void Draw3DObject(EERIE_3DOBJ * eobj, const Anglef & angle, const Vec3f & pos, const Vec3f & scale, const Color4f & coll);
 
 //****************************************************************************
 // BACKGROUND MANAGEMENT FUNCTIONS START

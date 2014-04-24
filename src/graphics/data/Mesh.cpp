@@ -1408,17 +1408,7 @@ long CountBkgVertex() {
 	return count;
 }
 
-void DrawEERIEObjEx(EERIE_3DOBJ *eobj, const Anglef & angle, const Vec3f & pos, const Vec3f & scale, const Color3f & col) {
-	if(!eobj)
-		return;
-
-	ColorBGRA coll = col.toBGR(255);
-	DrawEERIEObjExEx(eobj, angle, pos, scale, coll);
-}
-//*************************************************************************************
-//routine qui gere l'alpha au vertex SEB
-//*************************************************************************************
-void DrawEERIEObjExEx(EERIE_3DOBJ *eobj, const Anglef & angle, const Vec3f & pos, const Vec3f & scale, int coll)
+void Draw3DObject(EERIE_3DOBJ *eobj, const Anglef & angle, const Vec3f & pos, const Vec3f & scale, const Color4f & coll)
 {
 	if(!eobj)
 		return;
@@ -1457,7 +1447,7 @@ void DrawEERIEObjExEx(EERIE_3DOBJ *eobj, const Anglef & angle, const Vec3f & pos
 		vert_list[1].uv.y = face.v[1];
 		vert_list[2].uv.x = face.u[2];
 		vert_list[2].uv.y = face.v[2];
-		vert_list[0].color = vert_list[1].color = vert_list[2].color = coll;
+		vert_list[0].color = vert_list[1].color = vert_list[2].color = coll.toBGRA();
 
 		if(face.facetype == 0 || eobj->texturecontainer[face.texid] == NULL)
 			mat.resetTexture();

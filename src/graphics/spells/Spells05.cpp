@@ -379,7 +379,7 @@ void CRuneOfGuarding::Render()
 	Vec3f stitescale = Vec3f(1.f, -0.1f, 1.f);
 	
 	if(slight) {
-		DrawEERIEObjEx(slight, stiteangle, stitepos, stitescale, stitecolor);
+		Draw3DObject(slight, stiteangle, stitepos, stitescale, stitecolor);
 	}
 	
 	stiteangle.setPitch(stiteangleb);
@@ -389,7 +389,7 @@ void CRuneOfGuarding::Render()
 	stitescale = Vec3f(2.f) * (1.f + 0.01f * scale);
 	
 	if(ssol) {
-		DrawEERIEObjEx(ssol, stiteangle, stitepos, stitescale, stitecolor);
+		Draw3DObject(ssol, stiteangle, stitepos, stitescale, stitecolor);
 	}
 	
 	stitecolor.r = 0.6f;
@@ -398,7 +398,7 @@ void CRuneOfGuarding::Render()
 	stitescale = Vec3f(1.8f) * (1.f + 0.02f * scale);
 	
 	if(srune) {
-		DrawEERIEObjEx(srune, stiteangle, stitepos, stitescale, stitecolor);
+		Draw3DObject(srune, stiteangle, stitepos, stitescale, stitecolor);
 	}
 	
 	for(int n = 0; n < 4; n++) {
@@ -1026,7 +1026,7 @@ void CRepelUndead::Render() {
 	eObjScale.x = vv;
 	
 	if(ssol) {
-		DrawEERIEObjEx(ssol, eObjAngle, eObjPos, eObjScale, rgbObjColor);
+		Draw3DObject(ssol, eObjAngle, eObjPos, eObjScale, rgbObjColor);
 	}
 	
 	vv *= 100.f;
@@ -1235,10 +1235,10 @@ void CLevitate::DrawStone()
 				this->tstone[nb].actif = 0;
 			}
 
-			int col = Color4f(Color3f::white, 1.f - a).toBGRA();
+			Color4f col = Color4f(Color3f::white, 1.f - a);
 
 			if(this->stone[this->tstone[nb].numstone])
-				DrawEERIEObjExEx(this->stone[this->tstone[nb].numstone], this->tstone[nb].ang, this->tstone[nb].pos, this->tstone[nb].scale, col);
+				Draw3DObject(stone[tstone[nb].numstone], tstone[nb].ang, tstone[nb].pos, tstone[nb].scale, Color4f(col));
 			
 			PARTICLE_DEF * pd = createParticle();
 			if(pd) {

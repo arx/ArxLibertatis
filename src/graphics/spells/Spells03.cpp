@@ -591,9 +591,9 @@ void CIceProjectile::Render()
 		stitescale = tSize[i];
 
 		if(tType[i] == 0)
-			DrawEERIEObjEx(smotte, stiteangle, stitepos, stitescale, stitecolor);
+			Draw3DObject(smotte, stiteangle, stitepos, stitescale, stitecolor);
 		else
-			DrawEERIEObjEx(stite, stiteangle, stitepos, stitescale, stitecolor);
+			Draw3DObject(stite, stiteangle, stitepos, stitescale, stitecolor);
 	}
 	
 	for(i = 0; i < min(iNumber, iMax + 1); i++) {
