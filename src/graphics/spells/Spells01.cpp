@@ -575,49 +575,49 @@ void CMultiMagicMissile::CheckCollision()
 {
 	if(!pTab)
 		return;
-
-		for(unsigned int i = 0; i < uiNumber; i++) {
-			if(!pTab[i])
-				continue;
+	
+	for(unsigned int i = 0; i < uiNumber; i++) {
+		if(!pTab[i])
+			continue;
+		
+		CMagicMissile * missile = (CMagicMissile *) pTab[i];
+		
+		if(missile->bExplo)
+			continue;
 			
-				CMagicMissile * missile = (CMagicMissile *) pTab[i];
-
-				if(missile->bExplo)
-					continue;
-					
-					EERIE_SPHERE sphere;
-					sphere.origin = missile->eCurPos;
-					sphere.radius	= 10.f;
-
-					if(spellinstance != -1 && (CheckAnythingInSphere(&sphere, spells[spellinstance].m_caster, CAS_NO_SAME_GROUP)))
-					{
-						LaunchMagicMissileExplosion(missile->eCurPos, 0, spellinstance);
-						ARX_NPC_SpawnAudibleSound(missile->eCurPos, entities[spells[spellinstance].m_caster]);
-
-						missile->SetTTL(1000);
-						missile->bExplo = true;
-						missile->bMove  = false;
-
-						missile->lLightId = -1;
-
-						long ttt = ARX_DAMAGES_GetFree();
-
-						if(ttt != -1) {
-							damages[ttt].pos = missile->eCurPos;
-							damages[ttt].radius	= 80.f;
-							damages[ttt].damages = (4 + spells[spellinstance].m_caster_level * ( 1.0f / 5 )) * .8f; 
-							damages[ttt].area	= DAMAGE_FULL;
-							damages[ttt].duration = -1;
-							damages[ttt].source	= spells[spellinstance].m_caster;
-							damages[ttt].flags	= DAMAGE_FLAG_DONT_HURT_SOURCE;
-							damages[ttt].type	= DAMAGE_TYPE_MAGICAL;
-							damages[ttt].exist	= true;
-						}
-
-						Color3f rgb(.3f, .3f, .45f);
-						ARX_PARTICLES_Add_Smoke(&missile->eCurPos, 0, 6, &rgb);
-					}
+		EERIE_SPHERE sphere;
+		sphere.origin = missile->eCurPos;
+		sphere.radius	= 10.f;
+		
+		if(spellinstance != -1 && (CheckAnythingInSphere(&sphere, spells[spellinstance].m_caster, CAS_NO_SAME_GROUP)))
+		{
+			LaunchMagicMissileExplosion(missile->eCurPos, 0, spellinstance);
+			ARX_NPC_SpawnAudibleSound(missile->eCurPos, entities[spells[spellinstance].m_caster]);
+			
+			missile->SetTTL(1000);
+			missile->bExplo = true;
+			missile->bMove  = false;
+			
+			missile->lLightId = -1;
+			
+			long ttt = ARX_DAMAGES_GetFree();
+			
+			if(ttt != -1) {
+				damages[ttt].pos = missile->eCurPos;
+				damages[ttt].radius	= 80.f;
+				damages[ttt].damages = (4 + spells[spellinstance].m_caster_level * ( 1.0f / 5 )) * .8f; 
+				damages[ttt].area	= DAMAGE_FULL;
+				damages[ttt].duration = -1;
+				damages[ttt].source	= spells[spellinstance].m_caster;
+				damages[ttt].flags	= DAMAGE_FLAG_DONT_HURT_SOURCE;
+				damages[ttt].type	= DAMAGE_TYPE_MAGICAL;
+				damages[ttt].exist	= true;
+			}
+			
+			Color3f rgb(.3f, .3f, .45f);
+			ARX_PARTICLES_Add_Smoke(&missile->eCurPos, 0, 6, &rgb);
 		}
+	}
 }
 
 bool CMultiMagicMissile::CheckAllDestroyed()
