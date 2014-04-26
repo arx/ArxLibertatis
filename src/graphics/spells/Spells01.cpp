@@ -738,31 +738,31 @@ void CIgnit::Update(unsigned long _ulTime)
 	}
 
 	if(m_active) {
-			a = (((float)currduration)) / ((float)duration);
-
-			if(a >= 1.f)
-				a = 1.f;
-
-			nb = nblight;
-
-			while(nb--) {
-				if(tablight[nb].actif) {
-					tablight[nb].posfx = pos + (tablight[nb].poslight - pos) * a;
-
-					LightHandle id = tablight[nb].idl;
-
-					if(lightHandleIsValid(id)) {
-						EERIE_LIGHT * light = lightHandleGet(id);
-						
-						light->intensity = 0.7f + 2.f * rnd();
-						light->pos = tablight[nb].posfx;
-					}
+		a = (((float)currduration)) / ((float)duration);
+		
+		if(a >= 1.f)
+			a = 1.f;
+		
+		nb = nblight;
+		
+		while(nb--) {
+			if(tablight[nb].actif) {
+				tablight[nb].posfx = pos + (tablight[nb].poslight - pos) * a;
+				
+				LightHandle id = tablight[nb].idl;
+				
+				if(lightHandleIsValid(id)) {
+					EERIE_LIGHT * light = lightHandleGet(id);
+					
+					light->intensity = 0.7f + 2.f * rnd();
+					light->pos = tablight[nb].posfx;
 				}
 			}
-
-			interp = a;
+		}
+		
+		interp = a;
 	}
-
+	
 	if(!arxtime.is_paused())
 		currduration += _ulTime;
 }
@@ -791,14 +791,14 @@ void CDoze::AddLightDoze(int aiLight)
 void CIgnit::Render() {
 	
 	if(m_active) {
-				float unsuri = (1.f - interp);
-				int nb = nblight;
-
-				while(nb--) {
-					if(tablight[nb].actif && rnd() > .5f) {
-						createSphericalSparks(tablight[nb].posfx, rnd() * 20.f * unsuri, tp, rgb, mask);
-					}
-				}
+		float unsuri = (1.f - interp);
+		int nb = nblight;
+		
+		while(nb--) {
+			if(tablight[nb].actif && rnd() > .5f) {
+				createSphericalSparks(tablight[nb].posfx, rnd() * 20.f * unsuri, tp, rgb, mask);
+			}
+		}
 	}
 }
 
