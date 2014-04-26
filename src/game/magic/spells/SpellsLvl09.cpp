@@ -107,8 +107,6 @@ void SummonCreatureSpell::End()
 	lightHandleDestroy(m_pSpellFx->lLightId);
 	// need to killio
 	
-	lightHandleDestroy(m_pSpellFx->lLightId);
-	
 	if(ValidIONum(m_longinfo2_entity) && m_longinfo2_entity != 0) {
 		
 		if(entities[m_longinfo2_entity]->scriptload
