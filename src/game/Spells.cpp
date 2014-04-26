@@ -934,7 +934,8 @@ static long ARX_SPELLS_GetFree() {
 			spells[i].m_longinfo_light = -1;
 			
 			spells[i].m_longinfo2_light = -1;
-			spells[i].m_misc = NULL;
+			
+			spells[i].m_targetHandles.clear();
 			return i;
 		}
 	}

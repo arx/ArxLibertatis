@@ -443,7 +443,6 @@ void MassParalyseSpell::Launch(long i, long duration)
 	
 	m_exist = true;
 	m_tolive = (duration > -1) ? duration : 10000;
-	m_longinfo2_entity = 0;
 	
 	for(size_t ii = 0; ii < entities.size(); ii++) {
 		
@@ -469,30 +468,25 @@ void MassParalyseSpell::Launch(long i, long duration)
 		ARX_NPC_Kill_Spell_Launch(tio);
 		ARX_SPELLS_AddSpellOn(ii, i);
 		
-		m_longinfo2_entity ++;
-		m_misc = realloc(m_misc,
-		                         sizeof(long) * m_longinfo2_entity);
-		long * ptr = (long *)m_misc;
-		ptr[m_longinfo2_entity - 1] = ii;
+		m_targetHandles.push_back(ii);
 	}
 }
 
 void MassParalyseSpell::End(size_t i)
 {
-	long *ptr = (long *) m_misc;
-
-	for(long in = 0; in < m_longinfo2_entity; in++) {
-		if(ValidIONum(ptr[in])) {
-			ARX_SPELLS_RemoveSpellOn(ptr[in], i);
-			entities[ptr[in]]->ioflags &= ~IO_FREEZESCRIPT;
+	
+	std::vector<long>::const_iterator itr;
+	for(itr = m_targetHandles.begin(); itr != m_targetHandles.end(); ++itr) {
+		long handle = *itr;
+		
+		if(ValidIONum(handle)) {
+			ARX_SPELLS_RemoveSpellOn(handle, i);
+			entities[handle]->ioflags &= ~IO_FREEZESCRIPT;
 		}
 	}
-
-	if(ptr)
-		free(m_misc);
-
-	m_misc=NULL;
-
+	
+	m_targetHandles.clear();
+	
 	ARX_SOUND_PlaySFX(SND_SPELL_PARALYSE_END);
 }
 

@@ -162,7 +162,9 @@ public:
 	SpellcastFlags m_flags;
 	audio::SourceId m_snd_loop;
 	CSpellFx * m_pSpellFx;
-	void * m_misc;
+	
+	// Used by: MassParalyseSpell
+	std::vector<long> m_targetHandles;
 };
 
 #endif // ARX_GAME_MAGIC_SPELL_H
