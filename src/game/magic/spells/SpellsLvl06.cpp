@@ -266,7 +266,7 @@ void CreateFieldSpell::Launch(SpellcastFlags flags, long i, long duration)
 	if(flags & SPELLCAST_FLAG_RESTORE) {
 		start -= std::min(start, 4000ul);
 	}
-	m_lastupdate = m_timcreation = start;
+	m_timcreation = start;
 	
 	m_tolive = (duration > -1) ? duration : 800000;
 	m_bDuration = true;
@@ -377,7 +377,7 @@ void DisarmTrapSpell::Launch()
 	ARX_SOUND_PlaySFX(SND_SPELL_DISARM_TRAP);
 	
 	m_exist = true;
-	m_lastupdate = m_timcreation = (unsigned long)(arxtime);
+	m_timcreation = (unsigned long)(arxtime);
 	m_tolive = 1;
 	
 	EERIE_SPHERE sphere;

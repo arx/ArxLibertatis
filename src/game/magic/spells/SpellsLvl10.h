@@ -26,7 +26,7 @@ class MassLightningStrikeSpell : public SpellBase {
 public:
 	void Launch(long i);
 	void End();
-	void Update(unsigned long tim, float timeDelta);
+	void Update(float timeDelta);
 };
 
 class ControlTargetSpell : public SpellBase {

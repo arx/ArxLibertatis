@@ -178,7 +178,7 @@ void FireProtectionSpell::Launch(long i, long duration)
 	}
 	
 	m_exist = true;
-	m_lastupdate = m_timcreation = (unsigned long)(arxtime);
+	m_timcreation = (unsigned long)(arxtime);
 	if(duration > -1) {
 		m_tolive = duration;
 	} else {
@@ -267,7 +267,7 @@ void ColdProtectionSpell::Launch(long i, long duration)
 	ARX_SOUND_PlaySFX(SND_SPELL_COLD_PROTECTION_START, &entities[m_target]->pos);
 	
 	m_exist = true;
-	m_lastupdate = m_timcreation = (unsigned long)(arxtime);
+	m_timcreation = (unsigned long)(arxtime);
 	if(duration > -1) {
 		m_tolive = duration;
 	} else {

@@ -173,7 +173,7 @@ void CurePoisonSpell::Launch(long i)
 	}
 	
 	m_exist = true;
-	m_lastupdate = m_timcreation = (unsigned long)(arxtime);
+	m_timcreation = (unsigned long)(arxtime);
 	m_tolive = 3500;
 	
 	CCurePoison * effect = new CCurePoison();

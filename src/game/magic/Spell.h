@@ -143,7 +143,7 @@ public:
 	
 	float m_siz;
 	unsigned long m_timcreation;
-	unsigned long m_lastupdate;
+	
 	unsigned long m_tolive;
 	
 	long m_longinfo_entity;
@@ -162,6 +162,9 @@ public:
 	SpellcastFlags m_flags;
 	audio::SourceId m_snd_loop;
 	CSpellFx * m_pSpellFx;
+	
+	// Used by: FlyingEyeSpell
+	unsigned long m_lastupdate;
 	
 	// Used by: MassParalyseSpell
 	std::vector<long> m_targetHandles;

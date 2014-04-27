@@ -114,7 +114,7 @@ void DetectTrapSpell::Launch(long i)
 	}
 	
 	m_exist = true;
-	m_lastupdate = m_timcreation = (unsigned long)(arxtime);
+	m_timcreation = (unsigned long)(arxtime);
 	m_tolive = 60000;
 	m_fManaCostPerSecond = 0.4f;
 	m_bDuration = true;

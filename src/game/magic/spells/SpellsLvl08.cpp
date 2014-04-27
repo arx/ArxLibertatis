@@ -243,7 +243,7 @@ void ExplosionSpell::Launch()
 	ARX_SOUND_PlaySFX(SND_SPELL_EXPLOSION);
 	
 	m_exist = true;
-	m_lastupdate = m_timcreation = (unsigned long)(arxtime);
+	m_timcreation = (unsigned long)(arxtime);
 	m_tolive = 2000;
 	
 	Vec3f target = entities[m_caster]->pos;

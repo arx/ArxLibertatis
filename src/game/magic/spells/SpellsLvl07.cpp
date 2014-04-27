@@ -349,7 +349,7 @@ void IceFieldSpell::Launch(long i, long duration)
 	ARX_SOUND_PlaySFX(SND_SPELL_ICE_FIELD);
 	
 	m_exist = true;
-	m_lastupdate = m_timcreation = (unsigned long)(arxtime);
+	m_timcreation = (unsigned long)(arxtime);
 	m_tolive = (duration > -1) ? duration : 100000;
 	m_bDuration = true;
 	m_fManaCostPerSecond = 2.8f;
@@ -501,7 +501,7 @@ void ConfuseSpell::Launch(long i, bool & notifyAll, long duration)
 	ARX_SOUND_PlaySFX(SND_SPELL_CONFUSE, &entities[m_target]->pos);
 	
 	m_exist = true;
-	m_lastupdate = m_timcreation = (unsigned long)(arxtime);
+	m_timcreation = (unsigned long)(arxtime);
 	m_bDuration = true;
 	m_fManaCostPerSecond = 1.5f;
 	if(duration > -1) {

@@ -124,7 +124,7 @@ void DispellIllusionSpell::Update(float timeDelta)
 void FireballSpell::Launch(long i)
 {
 	m_exist = true;
-	m_lastupdate = m_timcreation = (unsigned long)(arxtime);
+	m_timcreation = (unsigned long)(arxtime);
 	m_tolive = 20000; // TODO probably never read
 	
 	CFireBall * effect = new CFireBall();

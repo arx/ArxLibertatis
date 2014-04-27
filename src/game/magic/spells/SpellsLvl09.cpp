@@ -41,7 +41,7 @@
 bool SummonCreatureSpell::Launch(long i, long duration)
 {
 	m_exist = true;
-	m_lastupdate = m_timcreation = (unsigned long)(arxtime);
+	m_timcreation = (unsigned long)(arxtime);
 	m_bDuration = true;
 	m_fManaCostPerSecond = 1.9f;
 	m_longinfo_summon_creature = 0;
@@ -270,7 +270,7 @@ bool FakeSummonSpell::Launch(long i)
 	}
 	
 	m_exist = true;
-	m_lastupdate = m_timcreation = (unsigned long)(arxtime);
+	m_timcreation = (unsigned long)(arxtime);
 	m_bDuration = true;
 	m_fManaCostPerSecond = 1.9f;
 	m_tolive = 4000;
@@ -366,7 +366,7 @@ void NegateMagicSpell::Launch(long duration, long i)
 	ARX_SOUND_PlaySFX(SND_SPELL_NEGATE_MAGIC, &entities[m_target]->pos);
 	
 	m_exist = true;
-	m_lastupdate = m_timcreation = (unsigned long)(arxtime);
+	m_timcreation = (unsigned long)(arxtime);
 	m_bDuration = true;
 	m_fManaCostPerSecond = 2.f;
 	m_tolive = (duration > -1) ? duration : 1000000;
@@ -410,7 +410,7 @@ bool IncinerateSpell::Launch(long i)
 	                                       ARX_SOUND_PLAY_LOOPED);
 	
 	m_exist = true;
-	m_lastupdate = m_timcreation = (unsigned long)(arxtime);
+	m_timcreation = (unsigned long)(arxtime);
 	m_tolive = 20000;
 	
 	tio->sfx_flag |= SFX_TYPE_YLSIDE_DEATH | SFX_TYPE_INCINERATE;

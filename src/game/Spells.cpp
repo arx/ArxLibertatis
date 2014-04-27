@@ -1329,7 +1329,7 @@ bool ARX_SPELLS_Launch(SpellType typ, long source, SpellcastFlags flagss, long l
 	spells[i].m_flags=flags;
 	spells[i].m_pSpellFx=NULL;
 	spells[i].m_type = typ;
-	spells[i].m_lastupdate = spells[i].m_timcreation = (unsigned long)(arxtime);
+	spells[i].m_timcreation = (unsigned long)(arxtime);
 	spells[i].m_fManaCostPerSecond = 0.f;
 
 	if(!CanPayMana(i, ARX_SPELLS_GetManaCost(typ, i))) {
@@ -2018,7 +2018,7 @@ void ARX_SPELLS_Update_Update(size_t i, unsigned long tim) {
 			break;
 		}
 		case SPELL_MASS_LIGHTNING_STRIKE: {
-			static_cast<MassLightningStrikeSpell &>(spell).Update(tim, framedelay);
+			static_cast<MassLightningStrikeSpell &>(spell).Update(framedelay);
 			break;
 		}
 		case SPELL_TELEPORT: {

@@ -53,7 +53,7 @@ void MassLightningStrikeSpell::Launch(long i)
 	}
 	
 	m_exist = true;
-	m_lastupdate = m_timcreation = (unsigned long)(arxtime);
+	m_timcreation = (unsigned long)(arxtime);
 	m_tolive = 5000; // TODO probably never read
 	m_siz = 0;
 	
@@ -115,7 +115,7 @@ void MassLightningStrikeSpell::End()
 	ARX_SOUND_PlaySFX(SND_SPELL_LIGHTNING_END);
 }
 
-void MassLightningStrikeSpell::Update(unsigned long tim, float timeDelta)
+void MassLightningStrikeSpell::Update(float timeDelta)
 {
 	CSpellFx *pCSpellFX = m_pSpellFx;
 
@@ -131,8 +131,6 @@ void MassLightningStrikeSpell::Update(unsigned long tim, float timeDelta)
 	_gct = 0;
 
 	Vec3f position;
-
-	m_lastupdate=tim;
 
 	position = _source + randomVec(-250.f, 250.f);
 	ARX_SOUND_RefreshPosition(m_snd_loop, position);
@@ -208,7 +206,7 @@ bool ControlTargetSpell::Launch(long i)
 	ARX_SOUND_PlaySFX(SND_SPELL_CONTROL_TARGET);
 	
 	m_exist = true;
-	m_lastupdate = m_timcreation = (unsigned long)(arxtime);
+	m_timcreation = (unsigned long)(arxtime);
 	m_tolive = 1000;
 	
 	CControlTarget * effect = new CControlTarget();
@@ -258,7 +256,7 @@ void MassIncinerateSpell::Launch(long i)
 	ARX_SOUND_PlaySFX(SND_SPELL_MASS_INCINERATE);
 	
 	m_exist = true;
-	m_lastupdate = m_timcreation = (unsigned long)(arxtime);
+	m_timcreation = (unsigned long)(arxtime);
 	m_tolive = 20000;
 	
 	long nb_targets=0;
