@@ -137,9 +137,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "script/Script.h"
 
-using std::abs;
-using std::string;
-
 extern bool TRUE_PLAYER_MOUSELOOK_ON;
 
 bool WILLRETURNTOFREELOOK = false;
