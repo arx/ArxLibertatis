@@ -91,12 +91,6 @@ void CSpellFx::Update(float _fParam) {
 	Update(checked_range_cast<unsigned long>(_fParam));
 }
 
-//-----------------------------------------------------------------------------
-void Draw3DLineTex(Vec3f s, Vec3f e, Color color, float fStartSize, float fEndSize) {
-	
-	Draw3DLineTexNew(s, e, color, color, fStartSize, fEndSize);
-}
-
 void Draw3DLineTex2(Vec3f s, Vec3f e, float fSize, Color color, Color color2) {
 
 	Draw3DLineTexNew(s, e, color, color2, fSize, fSize);
