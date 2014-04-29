@@ -62,14 +62,14 @@ FOG_DEF fogs[MAX_FOG];
 
 void ARX_FOGS_Clear()
 {
-	for(long i = 0; i < MAX_FOG; i++) {
+	for(size_t i = 0; i < MAX_FOG; i++) {
 		memset(&fogs[i], 0, sizeof(FOG_DEF));
 	}
 }
 
 long ARX_FOGS_GetFree()
 {
-	for(long i = 0; i < MAX_FOG; i++) {
+	for(size_t i = 0; i < MAX_FOG; i++) {
 		if(!fogs[i].exist)
 			return i;
 	}
@@ -81,7 +81,7 @@ long ARX_FOGS_Count()
 {
 	long count = 0;
 
-	for(long i = 0; i < MAX_FOG; i++) {
+	for(size_t i = 0; i < MAX_FOG; i++) {
 		if(fogs[i].exist)
 			count++;
 	}
@@ -134,7 +134,7 @@ void ARX_FOGS_Render() {
 	
 	float flDiv = static_cast<float>(1 << iDiv);
 	
-	for(long i = 0; i < MAX_FOG; i++) {
+	for(size_t i = 0; i < MAX_FOG; i++) {
 		FOG_DEF *fog = &fogs[i];
 		
 		if(!fog->exist)

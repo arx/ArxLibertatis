@@ -146,20 +146,16 @@ struct FOG_DEF
 	unsigned long lastupdate;
 };
 
-#define MAX_FOG 100
 #define FOG_DIRECTIONAL 1
-#define MAX_POLYBOOM 4000
 
-#define MAX_FLARELIFE 4000
-#define FLARE_MUL 2.f
+static const size_t MAX_FOG = 100;
+static const int MAX_POLYBOOM = 4000;
+static const float FLARE_MUL = 2.f;
 
+static const float BOOM_RADIUS = 420.f;
+static const float BOOM_RADIUS2 = 250.f;
 
-//-----------------------------------------------------------------------------
-#define BOOM_RADIUS 420.f
-#define BOOM_RADIUS2 250.f
-#define MAX_EXPLO			24 
-
-//-----------------------------------------------------------------------------
+static const size_t MAX_EXPLO = 24;
 extern TextureContainer * explo[MAX_EXPLO];
 
 extern short OPIPOrgb;

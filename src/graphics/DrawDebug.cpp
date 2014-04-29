@@ -337,7 +337,7 @@ static void drawDebugPathFinding() {
 
 static void drawDebugFogs() {
 	
-	for(long i = 0; i < MAX_FOG; i++) {
+	for(size_t i = 0; i < MAX_FOG; i++) {
 		
 		FOG_DEF * fog = &fogs[i];
 		if(!fog->exist) {
