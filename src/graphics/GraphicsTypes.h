@@ -258,7 +258,12 @@ struct EERIE_ACTIONLIST {
 	long act; //action
 	long sfx; //sfx
 	
-	EERIE_ACTIONLIST() : name(), idx(0), act(0), sfx(0) { }
+	EERIE_ACTIONLIST()
+		: name()
+		, idx(0)
+		, act(0)
+		, sfx(0)
+	{}
 };
 
 struct CUB3D
