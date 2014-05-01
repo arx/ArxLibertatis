@@ -95,20 +95,6 @@ static long EERIE_LINKEDOBJ_Create(EERIE_3DOBJ * obj)
 	return (obj->linked.size() - 1);
 }
 
-/*!
- * \brief Removes a linked object Data field from an object
- * \param obj
- * \param num
- */
-static void EERIE_LINKEDOBJ_Remove(EERIE_3DOBJ * obj, long num)
-{
-	if(!obj || num < 0 || num >= obj->linked.size())
-		return;
-
-	obj->linked.erase(obj->linked.begin() + num);
-}
-
-
 void EERIE_LINKEDOBJ_UnLinkObjectFromObject(EERIE_3DOBJ * obj, EERIE_3DOBJ * tounlink) {
 	
 	if(!obj || !tounlink)
@@ -119,7 +105,8 @@ void EERIE_LINKEDOBJ_UnLinkObjectFromObject(EERIE_3DOBJ * obj, EERIE_3DOBJ * tou
 			for(size_t i = 0; i < tounlink->vertexlist.size(); i++) {
 				tounlink->vertexlist[i].vert.p = tounlink->vertexlist[i].v;
 			}
-			EERIE_LINKEDOBJ_Remove(obj, k);
+			
+			obj->linked.erase(obj->linked.begin() + k);
 			return;
 		}
 	}
