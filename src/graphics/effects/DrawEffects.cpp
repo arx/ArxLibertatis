@@ -127,7 +127,7 @@ void ARXDRAW_DrawInterShadows()
 			ltv[2] = TexturedVertex(Vec3f(0, 0, 0.001f), 1.f, 0, Vec2f(0.7f, 0.7f));
 			ltv[3] = TexturedVertex(Vec3f(0, 0, 0.001f), 1.f, 0, Vec2f(0.3f, 0.7f));
 
-			if(io->obj->nbgroups <= 1) {
+			if(io->obj->grouplist.size() <= 1) {
 				for(size_t k=0; k < io->obj->vertexlist.size(); k += 9) {
 					EERIEPOLY *ep = EECheckInPoly(&io->obj->vertexlist3[k].v);
 
@@ -164,7 +164,7 @@ void ARXDRAW_DrawInterShadows()
 					}
 				}
 			} else {
-				for(long k = 0; k < io->obj->nbgroups; k++) {
+				for(size_t k = 0; k < io->obj->grouplist.size(); k++) {
 					long origin=io->obj->grouplist[k].origin;
 					EERIEPOLY *ep = EECheckInPoly(&io->obj->vertexlist3[origin].v);
 

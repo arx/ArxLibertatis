@@ -96,7 +96,7 @@ long GetGroupOriginByName(const EERIE_3DOBJ * eobj, const string & text) {
 	if(!eobj)
 		return -1;
 	
-	for(long i = 0; i < eobj->nbgroups; i++) {
+	for(size_t i = 0; i < eobj->grouplist.size(); i++) {
 		if(eobj->grouplist[i].name == text) {
 			return eobj->grouplist[i].origin;
 		}
@@ -125,7 +125,7 @@ long GetActionPointGroup(const EERIE_3DOBJ * eobj, long idx) {
 	if(!eobj)
 		return -1;
 	
-	for(long i = eobj->nbgroups - 1; i >= 0; i--) {
+	for(long i = eobj->grouplist.size() - 1; i >= 0; i--) {
 		const vector<long> & indices = eobj->grouplist[i].indexes;
 		for(size_t j = 0; j < indices.size(); j++){
 			if(indices[j] == idx) {
@@ -278,19 +278,13 @@ static void loadObjectData(EERIE_3DOBJ * eerie, const char * adr, size_t * poss,
 	eerie->vertexlist3.resize(tn->nb_vertex);
 	
 	eerie->facelist.resize(tn->nb_faces);
-	eerie->nbgroups = tn->nb_groups;
+	eerie->grouplist.resize(tn->nb_groups);
 	eerie->actionlist.resize(tn->nb_action_point);
 	
 	eerie->ndata = NULL;
 	eerie->pdata = NULL;
 	eerie->cdata = NULL;
 	eerie->sdata = NULL;
-	
-	if(tn->nb_groups == 0) {
-		eerie->grouplist = NULL;
-	} else {
-		eerie->grouplist = new VertexGroup[tn->nb_groups]; 
-	}
 	
 	// read vertices
 	
@@ -891,14 +885,13 @@ void EERIE_3DOBJ::clear() {
 
 		origin = 0;
 		ident = 0;
-		nbgroups = 0;
 
 		vertexlocal = NULL;
 		vertexlist.clear();
 		vertexlist3.clear();
 
 		facelist.clear();
-		grouplist = NULL;
+		grouplist.clear();
 		texturecontainer.clear();
 
 		originaltextures = NULL;
@@ -970,7 +963,7 @@ EERIE_3DOBJ::~EERIE_3DOBJ() {
 	EERIE_PHYSICS_BOX_Release(this);
 	EERIE_COLLISION_SPHERES_Release(this);
 	
-	delete[] grouplist;
+	grouplist.clear();
 	free(linked);
 }
 
@@ -1019,13 +1012,7 @@ EERIE_3DOBJ * Eerie_Copy(const EERIE_3DOBJ * obj) {
 		nouvo->ndata = NULL;
 
 	nouvo->facelist = obj->facelist;
-
-	if(obj->nbgroups) {
-		nouvo->nbgroups = obj->nbgroups;
-		nouvo->grouplist = new VertexGroup[obj->nbgroups];
-		std::copy(obj->grouplist, obj->grouplist + obj->nbgroups, nouvo->grouplist);
-	}
-
+	nouvo->grouplist = obj->grouplist;
 	nouvo->actionlist = obj->actionlist;
 
 	nouvo->selections = obj->selections;
@@ -1069,7 +1056,7 @@ long EERIE_OBJECT_GetGroup(const EERIE_3DOBJ * obj, const string & groupname) {
 	if(!obj)
 		return -1;
 	
-	for(long i = 0; i < obj->nbgroups; i++) {
+	for(size_t i = 0; i < obj->grouplist.size(); i++) {
 		if(obj->grouplist[i].name == groupname) {
 			return i;
 		}
@@ -1121,7 +1108,7 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 	eobj->m_skeleton = new Skeleton();
 	memset(eobj->m_skeleton, 0, sizeof(Skeleton));
 
-	if(eobj->nbgroups <= 0) {
+	if(eobj->grouplist.size() <= 0) {
 		// If no groups were specified
 
 		// Make one bone
@@ -1148,7 +1135,7 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 		// Groups were specified
 
 		// Alloc the bones
-		eobj->m_skeleton->nb_bones = eobj->nbgroups;
+		eobj->m_skeleton->nb_bones = eobj->grouplist.size();
 		eobj->m_skeleton->bones = new Bone[eobj->m_skeleton->nb_bones];
 		// TODO memset -> use constructor instead
 		memset(eobj->m_skeleton->bones, 0, sizeof(Bone)*eobj->m_skeleton->nb_bones);
@@ -1156,7 +1143,7 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 		bool * temp = new bool[eobj->vertexlist.size()];
 		memset(temp, 0, eobj->vertexlist.size());
 
-		for(long i = eobj->nbgroups - 1; i >= 0; i--) {
+		for(long i = eobj->grouplist.size() - 1; i >= 0; i--) {
 			VertexGroup & group = eobj->grouplist[i];
 			Bone & bone = eobj->m_skeleton->bones[i];
 
@@ -1185,7 +1172,7 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 		for(size_t i = 0; i < eobj->vertexlist.size(); i++) {
 			long ok = 0;
 
-			for(long j = 0; j < eobj->nbgroups; j++) {
+			for(size_t j = 0; j < eobj->grouplist.size(); j++) {
 				for(size_t k = 0; k < eobj->grouplist[j].indexes.size(); k++) {
 					if((size_t)eobj->grouplist[j].indexes[k] == i) {
 						ok = 1;
@@ -1202,7 +1189,7 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 			}
 		}
 		
-		for(long i = eobj->nbgroups - 1; i >= 0; i--) {
+		for(long i = eobj->grouplist.size() - 1; i >= 0; i--) {
 			Bone & bone = eobj->m_skeleton->bones[i];
 
 			if(bone.father >= 0) {

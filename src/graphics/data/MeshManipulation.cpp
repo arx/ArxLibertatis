@@ -515,10 +515,9 @@ static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERI
 	}
 
 	// Recreate Groups
-	work->nbgroups = max(obj1->nbgroups, obj2->nbgroups);
-	work->grouplist = new VertexGroup[work->nbgroups];
+	work->grouplist.resize(std::max(obj1->grouplist.size(), obj2->grouplist.size()));
 
-	for(long k = 0; k < obj1->nbgroups; k++) {
+	for(size_t k = 0; k < obj1->grouplist.size(); k++) {
 		work->grouplist[k].name = obj1->grouplist[k].name;
 		long v = GetEquivalentVertex(work, &obj1vertexlist2[obj1->grouplist[k].origin]);
 
@@ -531,8 +530,8 @@ static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERI
 		}
 	}
 
-	for(int k = 0; k < obj2->nbgroups; k++) {
-		if(k >= obj1->nbgroups) {
+	for(size_t k = 0; k < obj2->grouplist.size(); k++) {
+		if(k >= obj1->grouplist.size()) {
 			work->grouplist[k].name = obj2->grouplist[k].name;
 		}
 
@@ -675,13 +674,13 @@ static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERI
 	}
 
 	// Recreate Animation-groups vertex
-	for(long i = 0; i < obj1->nbgroups; i++) {
+	for(size_t i = 0; i < obj1->grouplist.size(); i++) {
 		for(size_t j = 0; j < obj1->grouplist[i].indexes.size(); j++) {
 			AddVertexToGroup(work, i, &obj1vertexlist2[obj1->grouplist[i].indexes[j]]);
 		}
 	}
 
-	for(long i = 0; i < obj2->nbgroups; i++) {
+	for(size_t i = 0; i < obj2->grouplist.size(); i++) {
 		for(size_t j = 0; j < obj2->grouplist[i].indexes.size(); j++) {
 			AddVertexToGroup(work, i, &obj2vertexlist2[obj2->grouplist[i].indexes[j]]);
 		}

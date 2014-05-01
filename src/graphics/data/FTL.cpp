@@ -106,9 +106,9 @@ bool ARX_FTL_Save(const fs::path & file, const EERIE_3DOBJ * obj) {
 	                   + sizeof(EERIE_ACTIONLIST_FTL) * obj->actionlist.size()
 	                   + 128000; // TODO just in case...
 	
-	if(obj->nbgroups > 0) {
-		allocsize += sizeof(EERIE_GROUPLIST_FTL) * obj->nbgroups;
-		for(long i = 0; i < obj->nbgroups; i++) {
+	if(obj->grouplist.size() > 0) {
+		allocsize += sizeof(EERIE_GROUPLIST_FTL) * obj->grouplist.size();
+		for(size_t i = 0; i < obj->grouplist.size(); i++) {
 			 allocsize += sizeof(long) * obj->grouplist[i].indexes.size();
 		}
 	}
@@ -173,7 +173,7 @@ bool ARX_FTL_Save(const fs::path & file, const EERIE_3DOBJ * obj) {
 	af3Ddh->nb_vertex = obj->vertexlist.size();
 	af3Ddh->nb_faces = obj->facelist.size();
 	af3Ddh->nb_maps = obj->texturecontainer.size();
-	af3Ddh->nb_groups = obj->nbgroups;
+	af3Ddh->nb_groups = obj->grouplist.size();
 	af3Ddh->nb_action = obj->actionlist.size();
 	af3Ddh->nb_selections = obj->selections.size();
 	af3Ddh->origin = obj->origin;
@@ -232,7 +232,7 @@ bool ARX_FTL_Save(const fs::path & file, const EERIE_3DOBJ * obj) {
 	// groups
 	if (af3Ddh->nb_groups > 0)
 	{
-		std::copy(obj->grouplist, obj->grouplist + obj->nbgroups, (EERIE_GROUPLIST_FTL*)(dat + pos));
+		std::copy(obj->grouplist.begin(), obj->grouplist.end(), (EERIE_GROUPLIST_FTL*)(dat + pos));
 		pos += sizeof(EERIE_GROUPLIST_FTL) * af3Ddh->nb_groups;
 
 		if (pos > allocsize) LogError << ("Invalid Allocsize in ARX_FTL_Save");
@@ -510,7 +510,7 @@ EERIE_3DOBJ * ARX_FTL_Load(const res::path & file) {
 	obj->vertexlist.resize(af3Ddh->nb_vertex);
 	obj->facelist.resize(af3Ddh->nb_faces);
 	obj->texturecontainer.resize(af3Ddh->nb_maps);
-	obj->nbgroups = af3Ddh->nb_groups;
+	obj->grouplist.resize(af3Ddh->nb_groups);
 	obj->actionlist.resize(af3Ddh->nb_action);
 	obj->selections.resize(af3Ddh->nb_selections);
 	obj->origin = af3Ddh->origin;
@@ -587,13 +587,13 @@ EERIE_3DOBJ * ARX_FTL_Load(const res::path & file) {
 	}
 	
 	// Alloc'n'Copy groups
-	if(obj->nbgroups > 0) {
+	if(obj->grouplist.size() > 0) {
 		
 		// Alloc the grouplists
-		obj->grouplist = new VertexGroup[obj->nbgroups];
+		obj->grouplist.resize(obj->grouplist.size());
 		
 		// Copy in the grouplist data
-		for(long i = 0 ; i < obj->nbgroups ; i++) {
+		for(size_t i = 0 ; i < obj->grouplist.size() ; i++) {
 			
 			const EERIE_GROUPLIST_FTL* group = reinterpret_cast<const EERIE_GROUPLIST_FTL *>(dat + pos);
 			pos += sizeof(EERIE_GROUPLIST_FTL);
@@ -606,7 +606,7 @@ EERIE_3DOBJ * ARX_FTL_Load(const res::path & file) {
 		}
 		
 		// Copy in the group index data
-		for(long i = 0; i < obj->nbgroups; i++) {
+		for(size_t i = 0; i < obj->grouplist.size(); i++) {
 			if(!obj->grouplist[i].indexes.empty()) {
 				size_t oldpos = pos;
 				pos += sizeof(s32) * obj->grouplist[i].indexes.size(); // Advance to the next index block

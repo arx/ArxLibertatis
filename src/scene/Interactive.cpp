@@ -2158,8 +2158,8 @@ static bool IsCollidingInter(Entity * io, const Vec3f & pos) {
 		
 		vector<EERIE_VERTEX> & vlist = io->obj->vertexlist3;
 
-		if(io->obj->nbgroups > 4) {
-			for(long i = 0; i < io->obj->nbgroups; i++) {
+		if(io->obj->grouplist.size() > 4) {
+			for(long i = 0; i < io->obj->grouplist.size(); i++) {
 				long idx = io->obj->grouplist[i].origin;
 
 				if(!fartherThan(pos, vlist[idx].v, 50.f)) {

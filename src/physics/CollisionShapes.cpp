@@ -144,10 +144,10 @@ void AddCollisionSphere(EERIE_3DOBJ * obj, long idx, float radius) {
 
 long GetFirstChildGroup(EERIE_3DOBJ * obj, long group) {
 
-	if(obj->nbgroups < group + 2)
+	if(obj->grouplist.size() < group + 2)
 		return -1;
 
-	for(long k = group + 1; k < obj->nbgroups; k++) {
+	for(size_t k = group + 1; k < obj->grouplist.size(); k++) {
 		for(size_t i = 0; i < obj->grouplist[group].indexes.size(); i++) {
 			if(obj->grouplist[group].indexes[i] == obj->grouplist[k].origin) {
 				return k;
@@ -160,7 +160,7 @@ long GetFirstChildGroup(EERIE_3DOBJ * obj, long group) {
  
 bool IsExclusiveGroupMember(EERIE_3DOBJ * obj, long idx, long group) {
 
-	for(long i = group + 1; i < obj->nbgroups; i++) {
+	for(size_t i = group + 1; i < obj->grouplist.size(); i++) {
 		for(size_t j = 0; j < obj->grouplist[i].indexes.size(); j++) {
 			if(idx == obj->grouplist[i].indexes[j]) {
 				return false;
@@ -278,7 +278,7 @@ void EERIE_COLLISION_SPHERES_Create(EERIE_3DOBJ * obj) {
 	EERIE_COLLISION_SPHERES_Release(obj);
 	obj->sdata = new COLLISION_SPHERES_DATA();
 
-	for(long k = 1; k < obj->nbgroups; k++) {
+	for(size_t k = 1; k < obj->grouplist.size(); k++) {
 		long workon = GetFirstChildGroup(obj, k);
 
 		if(workon != -1) {

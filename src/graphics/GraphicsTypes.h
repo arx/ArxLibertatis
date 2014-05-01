@@ -330,11 +330,9 @@ struct EERIE_3DOBJ
 
 		origin = 0;
 		ident = 0;
-		nbgroups = 0;
+		grouplist.clear();
 
 		vertexlocal = NULL;
-
-		grouplist = NULL;
 
 		originaltextures = NULL;
 		linked = NULL;
@@ -390,13 +388,12 @@ struct EERIE_3DOBJ
 	Anglef angle;
 	long origin;
 	long ident;
-	long nbgroups;
 	Vec3f * vertexlocal;
 	std::vector<EERIE_VERTEX> vertexlist;
 	std::vector<EERIE_VERTEX> vertexlist3;
 
 	std::vector<EERIE_FACE> facelist;
-	VertexGroup * grouplist;
+	std::vector<VertexGroup> grouplist;
 	std::vector<EERIE_ACTIONLIST> actionlist;
 	std::vector<EERIE_SELECTIONS> selections;
 	std::vector<TextureContainer*> texturecontainer;

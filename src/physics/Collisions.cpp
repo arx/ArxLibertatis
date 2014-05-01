@@ -719,8 +719,8 @@ float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,Entity * ioo,long flags) {
 						vector<EERIE_VERTEX> & vlist = io->obj->vertexlist3;
 						size_t nbv = io->obj->vertexlist.size();
 
-						if(io->obj->nbgroups > 10) {
-							for(long ii = 0; ii < io->obj->nbgroups; ii++) {
+						if(io->obj->grouplist.size() > 10) {
+							for(size_t ii = 0; ii < io->obj->grouplist.size(); ii++) {
 								long idx = io->obj->grouplist[ii].origin;
 								sp.origin = vlist[idx].v;
 
@@ -944,8 +944,8 @@ bool CheckEverythingInSphere(const EERIE_SPHERE & sphere, long source, long targ
 			long amount = 1;
 			std::vector<EERIE_VERTEX> & vlist = io->obj->vertexlist3;
 
-			if(io->obj->nbgroups > 4) {
-				for(long ii = 0; ii < io->obj->nbgroups; ii++) {
+			if(io->obj->grouplist.size() > 4) {
+				for(size_t ii = 0; ii < io->obj->grouplist.size(); ii++) {
 					if(closerThan(vlist[io->obj->grouplist[ii].origin].v, sphere.origin, sr40)) {
 
 						sphereContent.push_back(ret_idx);
@@ -1136,8 +1136,8 @@ bool CheckAnythingInSphere(EERIE_SPHERE * sphere, long source, CASFlags flags, l
 			long amount = 1;
 			std::vector<EERIE_VERTEX> & vlist = io->obj->vertexlist3;
 
-			if(io->obj->nbgroups > 4) {
-				for(long ii = 0; ii < io->obj->nbgroups; ii++) {
+			if(io->obj->grouplist.size() > 4) {
+				for(size_t ii = 0; ii < io->obj->grouplist.size(); ii++) {
 					if(closerThan(vlist[io->obj->grouplist[ii].origin].v, sphere->origin, sr40)) {
 						if(num)
 							*num = treatio[i].num;
@@ -1187,9 +1187,9 @@ bool CheckIOInSphere(EERIE_SPHERE * sphere, long target, bool ignoreNoCollisionF
 		if(closerThan(io->pos, sphere->origin, sr180)) {
 			vector<EERIE_VERTEX> & vlist = io->obj->vertexlist3;
 
-			if(io->obj->nbgroups>10) {
+			if(io->obj->grouplist.size()>10) {
 				long count=0;
-				long ii=io->obj->nbgroups-1;
+				long ii=io->obj->grouplist.size()-1;
 
 				while(ii) {
 					if(closerThan(vlist[io->obj->grouplist[ii].origin].v, sphere->origin, sr40)) {

@@ -468,7 +468,7 @@ void ARX_PARTICLES_Spawn_Blood(Vec3f * pos, float dmgs, long source) {
 	
 	float nearest_dist = std::numeric_limits<float>::max();
 	long nearest = -1;
-	long count = entities[source]->obj->nbgroups;
+	long count = entities[source]->obj->grouplist.size();
 	for(long i = 0; i < count; i += 2) {
 		long vertex = entities[source]->obj->grouplist[i].origin;
 		float dist = glm::distance2(*pos, entities[source]->obj->vertexlist3[vertex].v);

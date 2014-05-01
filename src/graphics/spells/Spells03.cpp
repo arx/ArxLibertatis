@@ -653,22 +653,29 @@ void CSpeed::Create(int numinteractive, int duration)
 		this->truban[nb].actif = 0;
 	}
 
-	nb = (entities[this->num]->obj)->nbgroups;
+	nb = (entities[this->num]->obj)->grouplist.size();
 
 	if(nb > 256)
 		nb = 256;
 
-	VertexGroup * grouplist = entities[this->num]->obj->grouplist;
+	std::vector<VertexGroup> & grouplist = entities[this->num]->obj->grouplist;
 	nb >>= 1;
-
-	while(nb--) {
+	
+	bool skip = true;
+	std::vector<VertexGroup>::const_iterator itr;
+	for(itr = grouplist.begin(); itr != grouplist.end(); ++itr) {
+		skip = !skip;
+		
+		if(skip) {
+			continue;
+		}
+		
 		float col = 0.05f + (rnd() * 0.05f);
 		float size = 4.f + (4.f * rnd());
 		int taille = Random::get(8, 16);
-		this->AddRubanDef(grouplist->origin, size, taille, col, col, col, 0.f, 0.f, 0.f);
-		grouplist += 2;
+		this->AddRubanDef(itr->origin, size, taille, col, col, col, 0.f, 0.f, 0.f);
 	}
-
+	
 	this->tp = TextureContainer::Load("graph/particles/fire");
 }
 
