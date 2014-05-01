@@ -39,7 +39,10 @@ public:
 class NegateMagicSpell : public SpellBase {
 public:
 	void Launch(long duration, long i);
-	void Update(size_t i, float timeDelta);
+	void Update(float timeDelta);
+	
+private:
+	void LaunchAntiMagicField();
 };
 
 class IncinerateSpell : public SpellBase {

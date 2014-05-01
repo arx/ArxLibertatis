@@ -334,29 +334,6 @@ void FakeSummonSpell::Update(float timeDelta)
 	}	
 }
 
-
-void LaunchAntiMagicField(size_t ident) {
-	
-	for(size_t n = 0; n < MAX_SPELLS; n++) {
-		
-		if(!spells[n].m_exist || n == ident)
-			continue;
-		
-		if(spells[ident].m_caster_level < spells[n].m_caster_level)
-			continue;
-		
-		Vec3f pos;
-		GetSpellPosition(&pos,n);
-		if(closerThan(pos, entities[spells[ident].m_target]->pos, 600.f)) {
-			if(spells[n].m_type != SPELL_CREATE_FIELD) {
-				spells[n].m_tolive = 0;
-			} else if(spells[ident].m_target == 0 && spells[n].m_caster == 0) {
-				spells[n].m_tolive = 0;
-			}
-		}
-	}
-}
-
 void NegateMagicSpell::Launch(long duration, long i)
 {
 	if(m_caster == 0) {
@@ -378,15 +355,12 @@ void NegateMagicSpell::Launch(long duration, long i)
 	m_pSpellFx = effect;
 	m_tolive = effect->GetDuration();
 	
-	if(ValidIONum(m_target)) {
-		LaunchAntiMagicField(i);
-	}
+	LaunchAntiMagicField();
 }
 
-void NegateMagicSpell::Update(size_t i, float timeDelta)
+void NegateMagicSpell::Update(float timeDelta)
 {
-	if(ValidIONum(m_target))
-		LaunchAntiMagicField(i);
+	LaunchAntiMagicField();
 
 	CSpellFx *pCSpellFX = m_pSpellFx;
 
@@ -394,6 +368,34 @@ void NegateMagicSpell::Update(size_t i, float timeDelta)
 		pCSpellFX->Update(timeDelta);
 		pCSpellFX->Render();
 	}	
+}
+
+void NegateMagicSpell::LaunchAntiMagicField() {
+	
+	if(!ValidIONum(m_target))
+		return;
+	
+	for(size_t n = 0; n < MAX_SPELLS; n++) {
+		
+		if(!spells[n].m_exist)
+			continue;
+		
+		if(this == &spells[n])
+			continue;
+		
+		if(m_caster_level < spells[n].m_caster_level)
+			continue;
+		
+		Vec3f pos;
+		GetSpellPosition(&pos,n);
+		if(closerThan(pos, entities[m_target]->pos, 600.f)) {
+			if(spells[n].m_type != SPELL_CREATE_FIELD) {
+				spells[n].m_tolive = 0;
+			} else if(m_target == 0 && spells[n].m_caster == 0) {
+				spells[n].m_tolive = 0;
+			}
+		}
+	}
 }
 
 bool IncinerateSpell::Launch(long i)

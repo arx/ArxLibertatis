@@ -1995,7 +1995,7 @@ void ARX_SPELLS_Update_Update(size_t i, unsigned long tim) {
 			break;
 		}
 		case SPELL_NEGATE_MAGIC: {
-			static_cast<NegateMagicSpell &>(spell).Update(i, framedelay);
+			static_cast<NegateMagicSpell &>(spell).Update(framedelay);
 			break;
 		}
 		case SPELL_MASS_PARALYSE: {
