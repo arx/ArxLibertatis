@@ -63,26 +63,6 @@ void EERIE_LINKEDOBJ_ReleaseData(EERIE_3DOBJ * obj) {
 	obj->linked.clear();
 }
 
-/*!
- * \brief Add New Data field for a linked object to an object
- * \param obj
- * \return
- */
-static long EERIE_LINKEDOBJ_Create(EERIE_3DOBJ * obj)
-{
-	if(!obj)
-		return -1;
-	
-	EERIE_LINKED link;
-	link.lgroup = -1;
-	link.lidx = -1;
-	link.obj = NULL;
-	link.io = NULL;
-	obj->linked.push_back(link);
-
-	return (obj->linked.size() - 1);
-}
-
 void EERIE_LINKEDOBJ_UnLinkObjectFromObject(EERIE_3DOBJ * obj, EERIE_3DOBJ * tounlink) {
 	
 	if(!obj || !tounlink)
@@ -107,12 +87,8 @@ bool EERIE_LINKEDOBJ_LinkObjectToObject(EERIE_3DOBJ * obj, EERIE_3DOBJ * tolink,
 	
 	long ni = GetActionPointIdx(obj, actiontext);
 	if(ni < 0)
-		return false; 
-
-	long n = EERIE_LINKEDOBJ_Create(obj);
-	if(n == -1)
 		return false;
-
+	
 	long group = GetActionPointGroup(obj, ni);
 	if(group < 0)
 		return false;
@@ -121,11 +97,14 @@ bool EERIE_LINKEDOBJ_LinkObjectToObject(EERIE_3DOBJ * obj, EERIE_3DOBJ * tolink,
 	if(ni2 < 0)
 		return false;
 
-	obj->linked[n].lidx2 = ni2;
-	obj->linked[n].lidx = ni;
-	obj->linked[n].lgroup = group;
-	obj->linked[n].obj = tolink;
-	obj->linked[n].io = io;
-
+	EERIE_LINKED link;
+	link.lidx2 = ni2;
+	link.lidx = ni;
+	link.lgroup = group;
+	link.obj = tolink;
+	link.io = io;
+	
+	obj->linked.push_back(link);
+	
 	return true;
 }
