@@ -45,6 +45,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define ARX_GRAPHICS_SPELLS_SPELLS03_H
 
 #include "graphics/effects/SpellEffects.h"
+#include "graphics/effects/Trail.h"
 #include "graphics/particle/ParticleSystem.h"
 #include "graphics/particle/ParticleParams.h"
 
@@ -78,52 +79,29 @@ private:
 	ParticleParams smoke;
 };
 
-class CSpeed: public CSpellFx
-{
-	private:
-		short		key;
-		int			duration;
-		int			currduration;
-		int			num;
+class CSpeed: public CSpellFx {
+private:
+	int duration;
+	int num;
+	
+	struct SpeedTrail {
+		short vertexIndex;
+		Trail * trail;
+	};
+	
+	std::vector<SpeedTrail> m_trails;
+	
+public:
+	~CSpeed();
 
-		TextureContainer * tp;
+	unsigned long GetDuration(void)
+	{
+		return this->duration;
+	}
 
-		struct T_RUBAN
-		{
-			int				actif;
-			Vec3f		pos;
-			int				next;
-		};
-		T_RUBAN truban[2048];
-
-		struct T_RUBAN_DEF
-		{
-			int		first;
-			int		origin;
-			float	size;
-			int		dec;
-			float	r, g, b;
-			float	r2, g2, b2;
-		};
-
-		int			nbrubandef;
-		T_RUBAN_DEF trubandef[256];
-
-		int GetFreeRuban(void);
-		void AddRuban(int * f, int id, int dec);
-		void DrawRuban(int num, float size, int dec, float r, float g, float b, float r2, float g2, float b2);
-	public:
-
-		unsigned long GetDuration(void)
-		{
-			return this->duration;
-		}
-
-		void	AddRubanDef(int origin, float size, int dec, float r, float g, float b, float r2, float g2, float b2);
-		void	Create(int numinteractive, int duration);
-		void	Update(unsigned long);
-		void Render();
- 
+	void Create(int numinteractive, int duration);
+	void Update(unsigned long);
+	void Render();
 };
 
 #define MAX_ICE 150

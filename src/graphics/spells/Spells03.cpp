@@ -638,28 +638,19 @@ void CIceProjectile::Render()
 //-----------------------------------------------------------------------------
 // SPEED
 //-----------------------------------------------------------------------------
+CSpeed::~CSpeed()
+{
+	for(size_t i = 0; i < m_trails.size(); i++) {
+		delete m_trails[i].trail;
+	}
+}
+
 void CSpeed::Create(int numinteractive, int duration)
 {
-	this->key = 1;
 	this->duration = duration;
-	this->currduration = 0;
 	this->num = numinteractive;
-
-	this->nbrubandef = 0;
-
-	int nb = 2048;
-
-	while(nb--) {
-		this->truban[nb].actif = 0;
-	}
-
-	nb = (entities[this->num]->obj)->grouplist.size();
-
-	if(nb > 256)
-		nb = 256;
-
+	
 	std::vector<VertexGroup> & grouplist = entities[this->num]->obj->grouplist;
-	nb >>= 1;
 	
 	bool skip = true;
 	std::vector<VertexGroup>::const_iterator itr;
@@ -673,164 +664,32 @@ void CSpeed::Create(int numinteractive, int duration)
 		float col = 0.05f + (rnd() * 0.05f);
 		float size = 4.f + (4.f * rnd());
 		int taille = Random::get(8, 16);
-		this->AddRubanDef(itr->origin, size, taille, col, col, col, 0.f, 0.f, 0.f);
-	}
-	
-	this->tp = TextureContainer::Load("graph/particles/fire");
-}
-
-void CSpeed::AddRubanDef(int origin, float size, int dec, float r, float g, float b, float r2, float g2, float b2)
-{
-	if (this->nbrubandef > 255) return;
-
-	this->trubandef[this->nbrubandef].first = -1;
-	this->trubandef[this->nbrubandef].origin = origin;
-	this->trubandef[this->nbrubandef].size = size;
-	this->trubandef[this->nbrubandef].dec = dec;
-	this->trubandef[this->nbrubandef].r = r;
-	this->trubandef[this->nbrubandef].g = g;
-	this->trubandef[this->nbrubandef].b = b;
-	this->trubandef[this->nbrubandef].r2 = r2;
-	this->trubandef[this->nbrubandef].g2 = g2;
-	this->trubandef[this->nbrubandef].b2 = b2;
-	this->nbrubandef++;
-}
-
-int CSpeed::GetFreeRuban()
-{
-	int nb = 2048;
-
-	while(nb--) {
-		if(!this->truban[nb].actif)
-			return nb;
-	}
-
-	return -1;
-}
-
-void CSpeed::AddRuban(int * f, int id, int dec)
-{
-	int	num;
-
-	num = this->GetFreeRuban();
-
-	if(num >= 0) {
-		truban[num].actif = 1;
-		truban[num].pos = entities[this->num]->obj->vertexlist3[id].v;
-
-		if(*f < 0) {
-			*f = num;
-			this->truban[num].next = -1;
-		} else {
-			this->truban[num].next = *f;
-			*f = num;
-		}
-
-		int nb = 0, oldnum = num;
-
-		while(num != -1) {
-			nb++;
-			oldnum = num;
-			num = this->truban[num].next;
-		}
-
-		if(oldnum < 0)
-			ARX_DEAD_CODE();
-
-		if(nb > dec) {
-			this->truban[oldnum].actif = 0;
-			num = *f;
-			nb -= 2;
-
-			while(nb--) {
-				num = this->truban[num].next;
-			}
-
-			this->truban[num].next = -1;
-		}
+		
+		SpeedTrail trail;
+		trail.vertexIndex = itr->origin;	
+		trail.trail = new Trail(taille, Color4f::gray(col), Color4f::white, size, 0.f);
+		
+		m_trails.push_back(trail);
 	}
 }
 
 void CSpeed::Update(unsigned long _ulTime)
 {
-	int	nb, num;
-
-	switch(this->key) {
-		case 0:
-			break;
-		case 1:
-			if(arxtime.is_paused())
-				break;
-
-			if(this->currduration > this->duration) {
-				this->key++;
-			}
-
-			num = 0;
-			nb = this->nbrubandef;
-
-			while(nb--) {
-				this->AddRuban(&this->trubandef[num].first, this->trubandef[num].origin, this->trubandef[num].dec);
-				num++;
-			}
-
-			break;
-	}
-
-	if(!arxtime.is_paused())
-		this->currduration += _ulTime;
-}
-
-void CSpeed::DrawRuban(int num, float size, int dec, float r, float g, float b, float r2, float g2, float b2)
-{
-	int numsuiv;
-
-	float	dsize = 0.f;
-	int		r1 = ((int)(r * 255.f)) << 16;
-	int		g1 = ((int)(g * 255.f)) << 16;
-	int		b1 = ((int)(b * 255.f)) << 16;
-	int		rr2 = ((int)(r2 * 255.f)) << 16;
-	int		gg2 = ((int)(g2 * 255.f)) << 16;
-	int		bb2 = ((int)(b2 * 255.f)) << 16;
-	int		dr = (rr2 - r1) / dec;
-	int		dg = (gg2 - g1) / dec;
-	int		db = (bb2 - b1) / dec;
-
-	for(;;) {
-		numsuiv = this->truban[num].next;
-
-		if(num >= 0 && numsuiv >= 0) {
-			Draw3DLineTex2(this->truban[num].pos, this->truban[numsuiv].pos, size, Color(r1 >> 16, g1 >> 16, b1 >> 16, 0), Color((r1 + dr) >> 16, (g1 + dg) >> 16, (b1 + db) >> 16, 0));
-			r1 += dr;
-			g1 += dg;
-			b1 += db;
-			size -= dsize;
-		} else {
-			break;
-		}
-
-		num = numsuiv;
+	ARX_UNUSED(_ulTime);
+	
+	for(size_t i = 0; i < m_trails.size(); i++) {
+		Vec3f pos = entities[this->num]->obj->vertexlist3[m_trails[i].vertexIndex].v;
+		
+		m_trails[i].trail->SetNextPosition(pos);
+		m_trails[i].trail->Update();
 	}
 }
 
 void CSpeed::Render()
 {
-	GRenderer->SetCulling(Renderer::CullNone);
-	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-
-	GRenderer->ResetTexture(0);
-	
-	for(int i = 0; i < nbrubandef; i++) {
-		this->DrawRuban(trubandef[i].first,
-		                trubandef[i].size,
-		                trubandef[i].dec,
-		                trubandef[i].r, trubandef[i].g, trubandef[i].b,
-		                trubandef[i].r2, trubandef[i].g2, trubandef[i].b2) ;
+	for(size_t i = 0; i < m_trails.size(); i++) {
+		m_trails[i].trail->Render();
 	}
-
-	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendZero);
 }
 
 CCreateFood::CCreateFood() {
