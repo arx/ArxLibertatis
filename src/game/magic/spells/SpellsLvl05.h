@@ -24,7 +24,7 @@
 
 class RuneOfGuardingSpell : public SpellBase {
 public:
-	void Launch(long i, long duration);
+	void Launch(long duration);
 	void Update(float timeDelta);
 };
 

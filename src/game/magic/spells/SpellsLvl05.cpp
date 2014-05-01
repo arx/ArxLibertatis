@@ -33,7 +33,7 @@
 #include "scene/GameSound.h"
 #include "scene/Interactive.h"
 
-void RuneOfGuardingSpell::Launch(long i, long duration)
+void RuneOfGuardingSpell::Launch(long duration)
 {
 	long iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_RUNE_OF_GUARDING, m_caster);
 	if(iCancel > -1) {
@@ -45,7 +45,6 @@ void RuneOfGuardingSpell::Launch(long i, long duration)
 	m_tolive = (duration > -1) ? duration : 99999999;
 	
 	CRuneOfGuarding * effect = new CRuneOfGuarding();
-	effect->spellinstance = i;
 	effect->Create(entities[m_caster]->pos, 0);
 	effect->SetDuration(m_tolive);
 	m_pSpellFx = effect;
@@ -95,7 +94,6 @@ void LevitateSpell::Launch(long duration, long i)
 	m_fManaCostPerSecond = 1.f;
 	
 	CLevitate * effect = new CLevitate();
-	effect->spellinstance = i;
 	
 	Vec3f target;
 	if(m_target == 0) {

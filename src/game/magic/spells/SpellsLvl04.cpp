@@ -358,7 +358,6 @@ void CurseSpell::Launch(long duration, long i)
 	m_fManaCostPerSecond = 0.5f * m_caster_level;
 	
 	CCurse * effect = new CCurse();
-	effect->spellinstance = i;
 	
 	Vec3f target = m_target_pos;
 	if(m_target == 0) {

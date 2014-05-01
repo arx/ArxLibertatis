@@ -24,7 +24,7 @@
 
 class RiseDeadSpell : public SpellBase {
 public:
-	bool Launch(long i, long duration);
+	bool Launch(long duration);
 	void End();
 	void Update(float timeDelta);
 };
@@ -37,7 +37,7 @@ public:
 
 class CreateFieldSpell : public SpellBase {
 public:
-	void Launch(SpellcastFlags m_flags, long i, long duration);
+	void Launch(SpellcastFlags m_flags, long duration);
 	void End();
 	void Update(float timeDelta);
 };

@@ -105,8 +105,6 @@ class CSummonCreature: public CSpellFx
 		void	Kill();
 		void	Update(unsigned long);
 		void Render();
-		
-		long spellinstance;
 };
 
 // Done By : Didier Pedreno

@@ -262,7 +262,7 @@ void FireballSpell::Update(float timeDelta)
 	}
 }
 
-void CreateFoodSpell::Launch(long duration, long i)
+void CreateFoodSpell::Launch(long duration)
 {
 	ARX_SOUND_PlaySFX(SND_SPELL_CREATE_FOOD, &m_caster_pos);
 	m_exist = true;
@@ -273,7 +273,6 @@ void CreateFoodSpell::Launch(long duration, long i)
 	}
 	
 	CCreateFood * effect = new CCreateFood();
-	effect->spellinstance = i;
 	effect->Create();
 	effect->SetDuration(m_tolive);
 	m_pSpellFx = effect;

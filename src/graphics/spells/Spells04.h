@@ -93,8 +93,6 @@ class CCurse: public CSpellFx
 		void	Kill();
 		void	Update(unsigned long);
 		void Render();
-		
-		long spellinstance;
 };
 
 #endif // ARX_GRAPHICS_SPELLS_SPELLS04_H

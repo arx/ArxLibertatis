@@ -31,14 +31,14 @@ public:
 
 class FireFieldSpell : public SpellBase {
 public:
-	void Launch(long i, long duration);
+	void Launch(long duration);
 	void End();
 	void Update(float timeDelta);
 };
 
 class IceFieldSpell : public SpellBase {
 public:
-	void Launch(long i, long duration);
+	void Launch(long duration);
 	void End();
 	void Update(float timeDelta);
 };

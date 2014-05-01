@@ -78,8 +78,6 @@ class CCreateField: public CSpellFx
 		void	Kill();
 		void	Update(unsigned long);
 		void Render();
-		
-		long spellinstance;
 };
 
 class CSlowDown: public CSpellFx
@@ -103,8 +101,6 @@ class CSlowDown: public CSpellFx
 		void	Kill();
 		void	Update(unsigned long);
 		void Render();
-		
-		long spellinstance;
 };
 
 // Done By : Didier Pedreno
@@ -187,8 +183,6 @@ class CRiseDead: public CSpellFx
 		void	Kill();
 		void	Update(unsigned long);
 		void Render();
-		
-		long spellinstance;
 };
 
 #endif // ARX_GRAPHICS_SPELLS_SPELLS06_H

@@ -44,7 +44,7 @@ public:
 
 class CreateFoodSpell : public SpellBase {
 public:
-	void Launch(long duration, long i);
+	void Launch(long duration);
 	void Update(float timeDelta);
 };
 

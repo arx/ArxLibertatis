@@ -90,8 +90,6 @@ class CRuneOfGuarding: public CSpellFx
 		void	Kill();
 		void	Update(unsigned long);
 		void Render();
-		
-		long spellinstance;
 };
 
 // Done By : Sébastien Scieux
@@ -153,8 +151,6 @@ class CLevitate: public CSpellFx
 		void	Create(int def, float rout, float rhaut, float hauteur, Vec3f * pos, unsigned long);
 		void	Update(unsigned long);
 		void Render();
-		
-		long spellinstance;
 };
 
 // Done By : Didier Pédreno

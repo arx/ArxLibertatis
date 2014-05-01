@@ -199,7 +199,7 @@ void FlyingEyeSpell::Update(unsigned long tim)
 	}
 }
 
-void FireFieldSpell::Launch(long i, long duration)
+void FireFieldSpell::Launch(long duration)
 {
 	long iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_FIRE_FIELD, m_caster);
 	if(iCancel > -1) {
@@ -215,7 +215,6 @@ void FireFieldSpell::Launch(long i, long duration)
 	m_longinfo2_light = -1;
 	
 	CFireField * effect = new CFireField();
-	effect->spellinstance = i;
 	
 	Vec3f target;
 	float beta;
@@ -339,7 +338,7 @@ void FireFieldSpell::Update(float timeDelta)
 	}
 }
 
-void IceFieldSpell::Launch(long i, long duration)
+void IceFieldSpell::Launch(long duration)
 {
 	long iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_ICE_FIELD, m_caster);
 	if(iCancel > -1) {
@@ -356,7 +355,6 @@ void IceFieldSpell::Launch(long i, long duration)
 	m_longinfo2_light = -1;
 	
 	CIceField * effect = new CIceField();
-	effect->spellinstance = i;
 	
 	Vec3f target;
 	float beta;

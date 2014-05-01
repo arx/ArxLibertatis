@@ -169,7 +169,7 @@ void MassLightningStrikeSpell::Update(float timeDelta)
 	}	
 }
 
-bool ControlTargetSpell::Launch(long i)
+bool ControlTargetSpell::Launch()
 {
 	if(!ValidIONum(m_target)) {
 		return false;
@@ -210,7 +210,6 @@ bool ControlTargetSpell::Launch(long i)
 	m_tolive = 1000;
 	
 	CControlTarget * effect = new CControlTarget();
-	effect->spellinstance = i;
 	effect->Create(player.pos, MAKEANGLE(player.angle.getPitch()));
 	effect->SetDuration(m_tolive);
 	m_pSpellFx = effect;

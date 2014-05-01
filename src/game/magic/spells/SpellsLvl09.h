@@ -24,14 +24,14 @@
 
 class SummonCreatureSpell : public SpellBase {
 public:
-	bool Launch(long i, long duration);
+	bool Launch(long duration);
 	void End();
 	void Update(float timeDelta);
 };
 
 class FakeSummonSpell : public SpellBase {
 public:
-	bool Launch(long i);
+	bool Launch();
 	void End();
 	void Update(float timeDelta);
 };

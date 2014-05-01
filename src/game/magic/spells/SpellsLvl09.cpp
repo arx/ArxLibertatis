@@ -38,7 +38,7 @@
 #include "scene/GameSound.h"
 #include "scene/Interactive.h"
 
-bool SummonCreatureSpell::Launch(long i, long duration)
+bool SummonCreatureSpell::Launch(long duration)
 {
 	m_exist = true;
 	m_timcreation = (unsigned long)(arxtime);
@@ -75,7 +75,6 @@ bool SummonCreatureSpell::Launch(long i, long duration)
 	m_target_pos = target;
 	ARX_SOUND_PlaySFX(SND_SPELL_SUMMON_CREATURE, &m_target_pos);
 	CSummonCreature * effect = new CSummonCreature();
-	effect->spellinstance = i;
 	effect->Create(target, MAKEANGLE(player.angle.getPitch()));
 	effect->SetDuration(2000, 500, 1500);
 	effect->SetColorBorder(Color3f::red);
@@ -263,7 +262,7 @@ void SummonCreatureSpell::Update(float timeDelta)
 	}	
 }
 
-bool FakeSummonSpell::Launch(long i)
+bool FakeSummonSpell::Launch()
 {
 	if(m_caster <= 0 || !ValidIONum(m_target)) {
 		return false;
@@ -282,7 +281,6 @@ bool FakeSummonSpell::Launch(long i)
 	m_target_pos = target;
 	ARX_SOUND_PlaySFX(SND_SPELL_SUMMON_CREATURE, &m_target_pos);
 	CSummonCreature * effect = new CSummonCreature();
-	effect->spellinstance = i;
 	effect->Create(target, MAKEANGLE(player.angle.getPitch()));
 	effect->SetDuration(2000, 500, 1500);
 	effect->SetColorBorder(Color3f::red);

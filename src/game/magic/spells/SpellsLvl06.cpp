@@ -35,7 +35,7 @@
 #include "scene/GameSound.h"
 #include "scene/Interactive.h"
 
-bool RiseDeadSpell::Launch(long i, long duration)
+bool RiseDeadSpell::Launch(long duration)
 {
 	long iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_RISE_DEAD, m_caster);
 	if(iCancel > -1) {
@@ -72,7 +72,6 @@ bool RiseDeadSpell::Launch(long i, long duration)
 	m_longinfo_entity = -1;
 	
 	CRiseDead * effect = new CRiseDead();
-	effect->spellinstance = i;
 	effect->Create(target, beta);
 	effect->SetDuration(2000, 500, 1800);
 	effect->SetColorBorder(0.5, 0.5, 0.5);
@@ -258,7 +257,7 @@ void ParalyseSpell::End(size_t i)
 	ARX_SOUND_PlaySFX(SND_SPELL_PARALYSE_END);
 }
 
-void CreateFieldSpell::Launch(SpellcastFlags flags, long i, long duration)
+void CreateFieldSpell::Launch(SpellcastFlags flags, long duration)
 {
 	m_exist = true;
 	
@@ -297,7 +296,6 @@ void CreateFieldSpell::Launch(SpellcastFlags flags, long i, long duration)
 	ARX_SOUND_PlaySFX(SND_SPELL_CREATE_FIELD, &target);
 	
 	CCreateField * effect  = new CCreateField();
-	effect->spellinstance = i;
 	
 	res::path cls = "graph/obj3d/interactive/fix_inter/blue_cube/blue_cube";
 	Entity * io = AddFix(cls, -1, IO_IMMEDIATELOAD);
@@ -435,7 +433,6 @@ bool SlowDownSpell::Launch(long duration, long i)
 	m_fManaCostPerSecond = 1.2f;
 	
 	CSlowDown * effect = new CSlowDown();
-	effect->spellinstance = i;
 	effect->Create(m_target_pos, MAKEANGLE(player.angle.getPitch()));
 	effect->SetDuration(m_tolive);
 	m_pSpellFx = effect;

@@ -151,8 +151,6 @@ class CCreateFood: public CSpellFx
 		void	Create();
 		void	Update(unsigned long);
 		void Render();
-		
-		long spellinstance;
 };
 
 void LaunchFireballExplosion(Vec3f *, float);

@@ -1409,7 +1409,7 @@ bool ARX_SPELLS_Launch(SpellType typ, long source, SpellcastFlags flagss, long l
 			break;
 		}
 		case SPELL_CREATE_FOOD: {
-			static_cast<CreateFoodSpell &>(spell).Launch(duration, i);
+			static_cast<CreateFoodSpell &>(spell).Launch(duration);
 			break;
 		}
 		case SPELL_ICE_PROJECTILE: {
@@ -1451,7 +1451,7 @@ bool ARX_SPELLS_Launch(SpellType typ, long source, SpellcastFlags flagss, long l
 		//****************************************************************************
 		// LEVEL 5
 		case SPELL_RUNE_OF_GUARDING: {
-			static_cast<RuneOfGuardingSpell &>(spell).Launch(i, duration);
+			static_cast<RuneOfGuardingSpell &>(spell).Launch(duration);
 			break;
 		}
 		case SPELL_LEVITATE: {
@@ -1473,7 +1473,7 @@ bool ARX_SPELLS_Launch(SpellType typ, long source, SpellcastFlags flagss, long l
 		//****************************************************************************
 		// LEVEL 6
 		case SPELL_RISE_DEAD: {
-			bool result = static_cast<RiseDeadSpell &>(spell).Launch(i, duration);
+			bool result = static_cast<RiseDeadSpell &>(spell).Launch(duration);
 			if(!result)
 				return false;
 			
@@ -1484,7 +1484,7 @@ bool ARX_SPELLS_Launch(SpellType typ, long source, SpellcastFlags flagss, long l
 			break;
 		}
 		case SPELL_CREATE_FIELD: {
-			static_cast<CreateFieldSpell &>(spell).Launch(flags, i, duration);
+			static_cast<CreateFieldSpell &>(spell).Launch(flags, duration);
 			break;
 		}
 		case SPELL_DISARM_TRAP: {
@@ -1514,11 +1514,11 @@ bool ARX_SPELLS_Launch(SpellType typ, long source, SpellcastFlags flagss, long l
 			break;
 		}
 		case SPELL_FIRE_FIELD: {
-			static_cast<FireFieldSpell &>(spell).Launch(i, duration);
+			static_cast<FireFieldSpell &>(spell).Launch(duration);
 			break;
 		}
 		case SPELL_ICE_FIELD: {
-			static_cast<IceFieldSpell &>(spell).Launch(i, duration);
+			static_cast<IceFieldSpell &>(spell).Launch(duration);
 			break;
 		}
 		case SPELL_LIGHTNING_STRIKE: {
@@ -1563,14 +1563,14 @@ bool ARX_SPELLS_Launch(SpellType typ, long source, SpellcastFlags flagss, long l
 		//****************************************************************************
 		// LEVEL 9
 		case SPELL_SUMMON_CREATURE: {
-			bool result = static_cast<SummonCreatureSpell &>(spell).Launch(i, duration);
+			bool result = static_cast<SummonCreatureSpell &>(spell).Launch(duration);
 			if(!result)
 				return false;
 			
 			break;
 		}
 		case SPELL_FAKE_SUMMON: {
-			bool result = static_cast<FakeSummonSpell &>(spell).Launch(i);
+			bool result = static_cast<FakeSummonSpell &>(spell).Launch();
 			if(!result)
 				return false;
 			
@@ -1601,7 +1601,7 @@ bool ARX_SPELLS_Launch(SpellType typ, long source, SpellcastFlags flagss, long l
 			if(ARX_SPELLS_ExistAnyInstanceForThisCaster(typ, spells[i].m_caster))
 				return false;
 			
-			bool result = static_cast<ControlTargetSpell &>(spell).Launch(i);
+			bool result = static_cast<ControlTargetSpell &>(spell).Launch();
 			if(!result)
 				return false;
 			

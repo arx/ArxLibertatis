@@ -161,9 +161,6 @@ class CFireField: public CSpellFx
 		void	Create(float largeur, Vec3f * pos, int duration);
 		void	Update(unsigned long);
 		void Render();
-		
-		long spellinstance;
- 
 };
 
 // Done By : did
@@ -195,8 +192,6 @@ class CIceField: public CSpellFx
 		void	Kill();
 		void	Update(unsigned long);
 		void Render();
-		
-		long spellinstance;
 };
 
 #endif // ARX_GRAPHICS_SPELLS_SPELLS07_H
