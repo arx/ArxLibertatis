@@ -645,9 +645,8 @@ CSpeed::~CSpeed()
 	}
 }
 
-void CSpeed::Create(int numinteractive, int duration)
+void CSpeed::Create(int numinteractive)
 {
-	this->duration = duration;
 	this->num = numinteractive;
 	
 	std::vector<VertexGroup> & grouplist = entities[this->num]->obj->grouplist;

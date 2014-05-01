@@ -81,7 +81,6 @@ private:
 
 class CSpeed: public CSpellFx {
 private:
-	int duration;
 	int num;
 	
 	struct SpeedTrail {
@@ -94,12 +93,7 @@ private:
 public:
 	~CSpeed();
 
-	unsigned long GetDuration(void)
-	{
-		return this->duration;
-	}
-
-	void Create(int numinteractive, int duration);
+	void Create(int numinteractive);
 	void Update(unsigned long);
 	void Render();
 };

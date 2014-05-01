@@ -56,11 +56,9 @@ void SpeedSpell::Launch(long i, long duration)
 	}
 	
 	CSpeed * effect = new CSpeed();
-	effect->spellinstance = i;
-	effect->Create(m_target, m_tolive);
+	effect->Create(m_target);
 	
 	m_pSpellFx = effect;
-	m_tolive = effect->GetDuration();
 	
 	ARX_SPELLS_AddSpellOn(m_target, i);
 }
