@@ -1386,20 +1386,22 @@ static EERIE_3DOBJ * TheoToEerie(const char * adr, long size, const res::path & 
 	long head_idx = EERIE_OBJECT_GetGroup(eerie, "head");
 
 	if(head_idx >= 0 && neck_orgn >= 0) {
+		VertexGroup & headGroup = eerie->grouplist[head_idx];
+		
 		Vec3f center = Vec3f_ZERO;
 		Vec3f origin = eerie->vertexlist[neck_orgn].v;
-		float count = (float)eerie->grouplist[head_idx].indexes.size();
+		float count = (float)headGroup.indexes.size();
 
 		if(count > 0.f) {
-			for(size_t idx = 0 ; idx < eerie->grouplist[head_idx].indexes.size(); idx++) {
-				center += eerie->vertexlist[ eerie->grouplist[head_idx].indexes[idx] ].v;
+			for(size_t idx = 0 ; idx < headGroup.indexes.size(); idx++) {
+				center += eerie->vertexlist[ headGroup.indexes[idx] ].v;
 			}
 			
 			center = (center * (1.f / count) + origin + origin) * (1.0f / 3);
 			float max_threshold = glm::distance(origin, center);
 			
-			for(size_t i = 0; i < eerie->grouplist[head_idx].indexes.size(); i++) {
-				EERIE_VERTEX * ev = &eerie->vertexlist[eerie->grouplist[head_idx].indexes[i]];
+			for(size_t i = 0; i < headGroup.indexes.size(); i++) {
+				EERIE_VERTEX * ev = &eerie->vertexlist[headGroup.indexes[i]];
 				float d = glm::distance(ev->v, origin);
 				float factor = 1.f;
 
