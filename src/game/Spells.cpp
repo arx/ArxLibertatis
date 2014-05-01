@@ -1260,43 +1260,45 @@ bool ARX_SPELLS_Launch(SpellType typ, long source, SpellcastFlags flagss, long l
 		return false;
 	}
 	
+	SpellBase & spell = spells[i];
+	
 	if(ValidIONum(source) && spellicons[typ].bAudibleAtStart) {
 		ARX_NPC_SpawnAudibleSound(entities[source]->pos, entities[source]);
 	}
 	
-	spells[i].m_caster = source;	// Caster...
-	spells[i].m_target = target;	// No target if <0
+	spell.m_caster = source;	// Caster...
+	spell.m_target = target;	// No target if <0
 
 	if(target < 0)
-		spells[i].m_target = TemporaryGetSpellTarget( &entities[spells[i].m_caster]->pos );
+		spell.m_target = TemporaryGetSpellTarget( &entities[spell.m_caster]->pos );
 
 	// Create hand position if a hand is defined
-	if(spells[i].m_caster == 0) {
-		spells[i].m_hand_group = entities[spells[i].m_caster]->obj->fastaccess.primary_attach;
+	if(spell.m_caster == 0) {
+		spell.m_hand_group = entities[spell.m_caster]->obj->fastaccess.primary_attach;
 	} else {
-		spells[i].m_hand_group = entities[spells[i].m_caster]->obj->fastaccess.left_attach;
+		spell.m_hand_group = entities[spell.m_caster]->obj->fastaccess.left_attach;
 	}
 
-	if(spells[i].m_hand_group != -1) {
-		spells[i].m_hand_pos = entities[spells[i].m_caster]->obj->vertexlist3[spells[i].m_hand_group].v;
+	if(spell.m_hand_group != -1) {
+		spell.m_hand_pos = entities[spell.m_caster]->obj->vertexlist3[spell.m_hand_group].v;
 	}
 	
 	if(source == 0) {
 		// Player source
-		spells[i].m_caster_level = Player_Magic_Level; // Level of caster
-		spells[i].m_caster_pos = player.pos;
+		spell.m_caster_level = Player_Magic_Level; // Level of caster
+		spell.m_caster_pos = player.pos;
 	} else {
 		// IO source
-		spells[i].m_caster_level = (float)clamp(level, 1l, 10l);
-		spells[i].m_caster_pos = entities[source]->pos;
+		spell.m_caster_level = (float)clamp(level, 1l, 10l);
+		spell.m_caster_pos = entities[source]->pos;
 	}
 
 	if(flags & SPELLCAST_FLAG_LAUNCHPRECAST) {
-		spells[i].m_caster_level = static_cast<float>(level);
+		spell.m_caster_level = static_cast<float>(level);
 	}
 	
 	if(cur_rf == 3) {
-		spells[i].m_caster_level += 2;
+		spell.m_caster_level += 2;
 	}
 
 	// Checks target TODO if ( target < 0 ) is already handled above!
@@ -1304,30 +1306,30 @@ bool ARX_SPELLS_Launch(SpellType typ, long source, SpellcastFlags flagss, long l
 	{
 		if (source==0) // no target... player spell targeted by sight
 		{
-			spells[i].m_target_pos.x = player.pos.x - std::sin(radians(player.angle.getPitch()))*60.f;
-			spells[i].m_target_pos.y = player.pos.y + std::sin(radians(player.angle.getYaw()))*60.f;
-			spells[i].m_target_pos.z = player.pos.z + std::cos(radians(player.angle.getPitch()))*60.f;
+			spell.m_target_pos.x = player.pos.x - std::sin(radians(player.angle.getPitch()))*60.f;
+			spell.m_target_pos.y = player.pos.y + std::sin(radians(player.angle.getYaw()))*60.f;
+			spell.m_target_pos.z = player.pos.z + std::cos(radians(player.angle.getPitch()))*60.f;
 		}
 		else
 		{
 			// TODO entities[target] with target < 0 ??? - uh oh!
-			spells[i].m_target_pos.x = entities[target]->pos.x - std::sin(radians(entities[target]->angle.getPitch()))*60.f;
-			spells[i].m_target_pos.y=entities[target]->pos.y-120.f;
-			spells[i].m_target_pos.z = entities[target]->pos.z + std::cos(radians(entities[target]->angle.getPitch()))*60.f;
+			spell.m_target_pos.x = entities[target]->pos.x - std::sin(radians(entities[target]->angle.getPitch()))*60.f;
+			spell.m_target_pos.y = entities[target]->pos.y - 120.f;
+			spell.m_target_pos.z = entities[target]->pos.z + std::cos(radians(entities[target]->angle.getPitch()))*60.f;
 		}
 	} else if (target==0) {
 		// player target
-		spells[i].m_target_pos = player.pos;
+		spell.m_target_pos = player.pos;
 	} else {
 		// IO target
-		spells[i].m_target_pos = entities[target]->pos;
+		spell.m_target_pos = entities[target]->pos;
 	}
 	
-	spells[i].m_flags=flags;
-	spells[i].m_pSpellFx=NULL;
-	spells[i].m_type = typ;
-	spells[i].m_timcreation = (unsigned long)(arxtime);
-	spells[i].m_fManaCostPerSecond = 0.f;
+	spell.m_flags=flags;
+	spell.m_pSpellFx=NULL;
+	spell.m_type = typ;
+	spell.m_timcreation = (unsigned long)(arxtime);
+	spell.m_fManaCostPerSecond = 0.f;
 
 	if(!CanPayMana(i, ARX_SPELLS_GetManaCost(typ, i))) {
 		return false;
@@ -1338,8 +1340,6 @@ bool ARX_SPELLS_Launch(SpellType typ, long source, SpellcastFlags flagss, long l
 	}
 	
 	bool notifyAll = true;
-	
-	SpellBase & spell = spells[i];
 	
 	switch(typ) {
 		case SPELL_NONE:
