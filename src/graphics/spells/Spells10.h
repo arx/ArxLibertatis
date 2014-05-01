@@ -67,6 +67,8 @@ class CMassLightning: public CSpellFx
 		void	Create(Vec3f, float);
 		void	Update(unsigned long);
 		void Render();
+		
+		long spellinstance;
  
 };
 
@@ -96,6 +98,8 @@ class CControlTarget: public CSpellFx
 		void	Kill();
 		void	Update(unsigned long);
 		void Render();
+		
+		long spellinstance;
 };
 
 #endif // ARX_GRAPHICS_SPELLS_SPELLS10_H

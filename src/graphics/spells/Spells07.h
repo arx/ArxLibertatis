@@ -112,6 +112,8 @@ class CLightning: public CSpellFx
 		void	Update(unsigned long);
 		void Render();
 		void	Kill();
+		
+		long spellinstance;
 };
 
 // Done By : Didier Pedreno
@@ -139,6 +141,8 @@ class CConfuse: public CSpellFx
 		void	Kill();
 		void	Update(unsigned long);
 		void Render();
+		
+		long spellinstance;
 };
 
 class CFireField: public CSpellFx
@@ -157,6 +161,8 @@ class CFireField: public CSpellFx
 		void	Create(float largeur, Vec3f * pos, int duration);
 		void	Update(unsigned long);
 		void Render();
+		
+		long spellinstance;
  
 };
 
@@ -189,6 +195,8 @@ class CIceField: public CSpellFx
 		void	Kill();
 		void	Update(unsigned long);
 		void Render();
+		
+		long spellinstance;
 };
 
 #endif // ARX_GRAPHICS_SPELLS_SPELLS07_H

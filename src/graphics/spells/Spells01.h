@@ -68,6 +68,7 @@ public:
 	Vec3f eCurPos;
 
 	float lightIntensityFactor;
+	long spellinstance;
 
 private:
 	int iLength;
@@ -97,6 +98,8 @@ public:
 	void Create();
 	void Update(unsigned long);
 	void Render();
+	
+	long spellinstance;
 };
 
 // Done By : Sébastien Scieux
@@ -138,6 +141,8 @@ public:
 	void Kill();
 	void AddLight(int iLight);
 	void Action(bool enable);
+	
+	long spellinstance;
 };
 
 // Done By : Sébastien Scieux

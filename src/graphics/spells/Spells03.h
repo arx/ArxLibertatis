@@ -72,6 +72,8 @@ public:
 	ParticleSystem pPSFire;
 	ParticleSystem pPSFire2;
 	ParticleSystem pPSSmoke;
+	
+	long spellinstance;
 
 private:
 	ParticleParams fire_1;
@@ -130,6 +132,8 @@ class CIceProjectile: public CSpellFx
 		void	Kill();
 		void	Update(unsigned long);
 		void Render();
+		
+		long spellinstance;
 };
 
 // Done By : did
@@ -147,7 +151,8 @@ class CCreateFood: public CSpellFx
 		void	Create();
 		void	Update(unsigned long);
 		void Render();
- 
+		
+		long spellinstance;
 };
 
 void LaunchFireballExplosion(Vec3f *, float);

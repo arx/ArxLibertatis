@@ -54,8 +54,7 @@ CSpellFx::CSpellFx() :
 	fManaCostToLaunch(10),
 	fManaCostPerSecond(10),
 	lLightId(-1),
-	lSrc(-1),
-	spellinstance(-1)
+	lSrc(-1)
 {
 	SetDuration(1000);
 	SetAngle(fBeta);

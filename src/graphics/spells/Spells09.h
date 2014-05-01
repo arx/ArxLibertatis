@@ -105,6 +105,8 @@ class CSummonCreature: public CSpellFx
 		void	Kill();
 		void	Update(unsigned long);
 		void Render();
+		
+		long spellinstance;
 };
 
 // Done By : Didier Pedreno
@@ -130,6 +132,8 @@ class CNegateMagic: public CSpellFx
 		void	Kill();
 		void	Update(unsigned long);
 		void Render();
+		
+		long spellinstance;
 };
 
 #endif // ARX_GRAPHICS_SPELLS_SPELLS09_H

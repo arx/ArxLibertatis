@@ -70,6 +70,8 @@ class CBless: public CSpellFx
 		void	Update(unsigned long);
 		void Render();
 		void	Kill();
+		
+		long spellinstance;
 };
 
 class CCurse: public CSpellFx
@@ -91,6 +93,8 @@ class CCurse: public CSpellFx
 		void	Kill();
 		void	Update(unsigned long);
 		void Render();
+		
+		long spellinstance;
 };
 
 #endif // ARX_GRAPHICS_SPELLS_SPELLS04_H

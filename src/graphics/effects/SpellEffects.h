@@ -91,7 +91,6 @@ class CSpellFx
 
 		// surcharge
 	public:
-		long			spellinstance;
 		virtual void	Update(unsigned long) { }
 		void			Update(float time);
 		virtual void	Render() {}
