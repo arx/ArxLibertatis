@@ -86,8 +86,7 @@ void MagicMissileSpell::Launch(long i)
 		number = clamp(long(m_caster_level + 1) / 2, 1l, 5l);
 	}
 	
-	CMultiMagicMissile * effect = new CMultiMagicMissile(number);
-	effect->spellinstance = i;
+	CMultiMagicMissile * effect = new CMultiMagicMissile(number, i);
 	effect->SetDuration(6000ul);
 	effect->Create();
 	m_pSpellFx = effect;

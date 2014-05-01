@@ -427,7 +427,9 @@ void CMagicMissile::Render()
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
-CMultiMagicMissile::CMultiMagicMissile(long nbmissiles) : CSpellFx()
+CMultiMagicMissile::CMultiMagicMissile(long nbmissiles, long spellHandle)
+	: CSpellFx()
+	, spellinstance(spellHandle)
 {
 	SetDuration(2000);
 	uiNumber = nbmissiles;

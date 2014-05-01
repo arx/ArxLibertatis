@@ -89,7 +89,7 @@ private:
 	unsigned int uiNumber;
 	
 public:
-	explicit CMultiMagicMissile(long nb);
+	explicit CMultiMagicMissile(long nb, long spellHandle);
 	~CMultiMagicMissile();
 	
 	void CheckCollision();
