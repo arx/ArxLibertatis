@@ -343,7 +343,7 @@ void Entity::destroy() {
 	}
 	
 	if(obj) {
-		while(obj->nblinked) {
+		while(obj->linked.size()) {
 			if(obj->linked[0].lgroup != -1 && obj->linked[0].obj) {
 				Entity * linked = obj->linked[0].io;
 				if(linked && ValidIOAddress(linked)) {

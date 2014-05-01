@@ -1018,7 +1018,7 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 	{
 		ais.nb_linked = 0;
 
-		for (long n = 0; n < io->obj->nblinked; n++)
+		for (size_t n = 0; n < io->obj->linked.size(); n++)
 		{
 			if (GetObjIOSource((EERIE_3DOBJ *)io->obj->linked[n].obj))
 				ais.nb_linked++;
@@ -1028,7 +1028,7 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 
 		long count = 0;
 
-		for (int n = 0; n < io->obj->nblinked; n++)
+		for (size_t n = 0; n < io->obj->linked.size(); n++)
 		{
 			if (GetObjIOSource((EERIE_3DOBJ *)io->obj->linked[n].obj))
 			{
@@ -2351,13 +2351,9 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) {
 		
 		if(io->obj) {
 			
-			io->obj->nblinked = ais->nb_linked;
+			io->obj->linked.resize(ais->nb_linked);
 			
-			if(io->obj->nblinked) {
-				
-				free(io->obj->linked);
-				io->obj->linked = (EERIE_LINKED *)malloc(sizeof(EERIE_LINKED) * io->obj->nblinked);
-				
+			if(io->obj->linked.size()) {
 				for(long n = 0; n < ais->nb_linked; n++) {
 					io->obj->linked[n].lgroup = ais->linked_data[n].lgroup;
 					io->obj->linked[n].lidx = ais->linked_data[n].lidx;
@@ -2455,8 +2451,8 @@ static void ARX_CHANGELEVEL_PopAllIO_FINISH(bool reloadflag, bool firstTime) {
 				}
 			}
 			
-			if(io->obj && io->obj->nblinked) {
-				for(long n = 0; n < io->obj->nblinked; n++) {
+			if(io->obj && io->obj->linked.size()) {
+				for(size_t n = 0; n < io->obj->linked.size(); n++) {
 					Entity * iooo = ConvertToValidIO(aids->linked_id[n]);
 					if(iooo) {
 						io->obj->linked[n].io = iooo;

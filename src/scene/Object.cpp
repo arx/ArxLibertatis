@@ -895,11 +895,10 @@ void EERIE_3DOBJ::clear() {
 		texturecontainer.clear();
 
 		originaltextures = NULL;
-		linked = NULL;
-
+		
 		// TODO Default constructor
 		quat.x = quat.y = quat.z = quat.w = 0;
-		nblinked = 0;
+		linked.clear();
 
 		pbox = 0;
 		pdata = 0;
@@ -964,7 +963,7 @@ EERIE_3DOBJ::~EERIE_3DOBJ() {
 	EERIE_COLLISION_SPHERES_Release(this);
 	
 	grouplist.clear();
-	free(linked);
+	linked.clear();
 }
 
 EERIE_3DOBJ * Eerie_Copy(const EERIE_3DOBJ * obj) {
@@ -975,7 +974,6 @@ EERIE_3DOBJ * Eerie_Copy(const EERIE_3DOBJ * obj) {
 	
 	nouvo->vertexlist3 = obj->vertexlist3;
 	
-	nouvo->linked = NULL;
 	nouvo->ndata = NULL;
 	nouvo->pbox = NULL;
 	nouvo->pdata = NULL;
@@ -1030,9 +1028,8 @@ EERIE_3DOBJ * Eerie_Copy(const EERIE_3DOBJ * obj) {
 		
 		nouvo->pbox->vert = copyStruct(obj->pbox->vert, obj->pbox->nb_physvert);
 	}
-
-	nouvo->linked = NULL;
-	nouvo->nblinked = 0;
+	
+	nouvo->linked.clear();
 	nouvo->originaltextures = NULL;
 	return nouvo;
 }

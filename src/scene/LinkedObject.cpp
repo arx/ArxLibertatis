@@ -60,9 +60,7 @@ void EERIE_LINKEDOBJ_ReleaseData(EERIE_3DOBJ * obj) {
 	if(!obj)
 		return;
 	
-	std::free(obj->linked);
-	obj->linked = NULL;
-	obj->nblinked = 0;
+	obj->linked.clear();
 }
 
 /*!
@@ -74,8 +72,7 @@ void EERIE_LINKEDOBJ_InitData(EERIE_3DOBJ * obj)
 	if(!obj)
 		return;
 
-	obj->nblinked = 0;
-	obj->linked = NULL;
+	obj->linked.clear();
 }
 
 /*!
@@ -87,15 +84,15 @@ static long EERIE_LINKEDOBJ_Create(EERIE_3DOBJ * obj)
 {
 	if(!obj)
 		return -1;
+	
+	EERIE_LINKED link;
+	link.lgroup = -1;
+	link.lidx = -1;
+	link.obj = NULL;
+	link.io = NULL;
+	obj->linked.push_back(link);
 
-	obj->linked = (EERIE_LINKED *)std::realloc(obj->linked, sizeof(EERIE_LINKED) * (obj->nblinked + 1));
-	obj->linked[obj->nblinked].lgroup = -1;
-	obj->linked[obj->nblinked].lidx = -1;
-	obj->linked[obj->nblinked].obj = NULL;
-	obj->linked[obj->nblinked].io = NULL;
-	obj->nblinked++;
-
-	return (obj->nblinked - 1);
+	return (obj->linked.size() - 1);
 }
 
 /*!
@@ -105,19 +102,10 @@ static long EERIE_LINKEDOBJ_Create(EERIE_3DOBJ * obj)
  */
 static void EERIE_LINKEDOBJ_Remove(EERIE_3DOBJ * obj, long num)
 {
-	if(!obj || !obj->linked || num < 0 || num >= obj->nblinked)
+	if(!obj || num < 0 || num >= obj->linked.size())
 		return;
 
-	if(obj->nblinked == 1) {
-		free(obj->linked);
-		obj->linked = NULL;
-		obj->nblinked = 0;
-		return;
-	}
-
-	std::memcpy(&obj->linked[num], &obj->linked[num+1], sizeof(EERIE_LINKED)*(obj->nblinked - num - 1));
-	obj->linked = (EERIE_LINKED *)std::realloc(obj->linked, sizeof(EERIE_LINKED) * (obj->nblinked - 1));
-	obj->nblinked--;
+	obj->linked.erase(obj->linked.begin() + num);
 }
 
 
@@ -126,7 +114,7 @@ void EERIE_LINKEDOBJ_UnLinkObjectFromObject(EERIE_3DOBJ * obj, EERIE_3DOBJ * tou
 	if(!obj || !tounlink)
 		return;
 	
-	for(long k = 0; k < obj->nblinked; k++) {
+	for(size_t k = 0; k < obj->linked.size(); k++) {
 		if(obj->linked[k].lgroup != -1 && obj->linked[k].obj == tounlink) {
 			for(size_t i = 0; i < tounlink->vertexlist.size(); i++) {
 				tounlink->vertexlist[i].vert.p = tounlink->vertexlist[i].v;

@@ -1157,7 +1157,7 @@ void Cedric_AnimateDrawEntityRender(EERIE_3DOBJ *eobj, const Vec3f & pos, Entity
 	Cedric_RenderObject(eobj, obj, io, pos, invisibility);
 
 	// Now we can render Linked Objects
-	for(long k = 0; k < eobj->nblinked; k++) {
+	for(size_t k = 0; k < eobj->linked.size(); k++) {
 		const EERIE_LINKED & link = eobj->linked[k];
 
 		if(link.lgroup == -1 || !link.obj)

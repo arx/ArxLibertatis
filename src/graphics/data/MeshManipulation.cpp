@@ -405,17 +405,12 @@ static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERI
 	work->quat = obj1->quat;
 
 	// Linked objects are linked to this object.
-	if(obj1->nblinked > obj2->nblinked) {
-		work->linked = (EERIE_LINKED *)malloc(obj1->nblinked * sizeof(EERIE_LINKED));
-		memcpy(work->linked, obj1->linked, obj1->nblinked * sizeof(EERIE_LINKED));
-		work->nblinked = obj1->nblinked;
-	} else if(obj2->nblinked > 0) {
-		work->linked = (EERIE_LINKED *)malloc(obj2->nblinked * sizeof(EERIE_LINKED));
-		memcpy(work->linked, obj2->linked, obj2->nblinked * sizeof(EERIE_LINKED));
-		work->nblinked = obj2->nblinked;
+	if(obj1->linked.size() > obj2->linked.size()) {
+		work->linked = obj1->linked;
+	} else if(obj2->linked.size() > 0) {
+		work->linked = obj2->linked;
 	} else {
-		work->linked = NULL;
-		work->nblinked = 0;
+		work->linked.clear();
 	}
 
 	// Is the origin of object in obj1 or obj2 ? Retreives it for work object

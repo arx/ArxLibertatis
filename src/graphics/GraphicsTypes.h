@@ -335,7 +335,6 @@ struct EERIE_3DOBJ
 		vertexlocal = NULL;
 
 		originaltextures = NULL;
-		linked = NULL;
 
 		// TODO Make default constructor possible
 		cub.xmin = 0;
@@ -347,7 +346,7 @@ struct EERIE_3DOBJ
 
 		// TODO Default constructor
 		quat.x = quat.y = quat.z = quat.w = 0;
-		nblinked = 0;
+		linked.clear();
 
 		pbox = NULL;
 		pdata = NULL;
@@ -401,10 +400,8 @@ struct EERIE_3DOBJ
 	char * originaltextures;
 	CUB3D cub;
 	glm::quat quat;
-	EERIE_LINKED * linked;
-	long nblinked;
-
-
+	std::vector<EERIE_LINKED> linked;
+	
 	PHYSICS_BOX_DATA * pbox;
 	PROGRESSIVE_DATA * pdata;
 	NEIGHBOURS_DATA * ndata;

@@ -1455,8 +1455,7 @@ void ARX_NPC_SpawnMember(Entity * ioo, long num) {
 	free(equival);
 	nouvo->texturecontainer = from->texturecontainer;
 	
-	nouvo->linked = NULL;
-	nouvo->nblinked = 0;
+	nouvo->linked.clear();
 	nouvo->originaltextures = NULL;
 	
 	Entity * io = new Entity("noname");

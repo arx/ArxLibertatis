@@ -473,7 +473,7 @@ static void drawDebugEntities() {
 			}
 			
 			if(entity->obj) {
-				for(long j = 0; j < entity->obj->nblinked; j++) {
+				for(size_t j = 0; j < entity->obj->linked.size(); j++) {
 					Vec3f pos = entity->obj->vertexlist3[entity->obj->linked[j].lidx].v;
 					Entity * other = entity->obj->linked[j].io;
 					drawTextAt(hFontDebug, pos, other->idString(), Color::cyan);

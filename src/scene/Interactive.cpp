@@ -379,7 +379,7 @@ void IO_UnlinkAllLinkedObjects(Entity * io) {
 		return;
 	}
 	
-	for(long k = 0; k < io->obj->nblinked; k++) {
+	for(size_t k = 0; k < io->obj->linked.size(); k++) {
 		
 		Entity * linked = io->obj->linked[k].io;
 		if(!ValidIOAddress(linked)) {
@@ -2159,7 +2159,7 @@ static bool IsCollidingInter(Entity * io, const Vec3f & pos) {
 		vector<EERIE_VERTEX> & vlist = io->obj->vertexlist3;
 
 		if(io->obj->grouplist.size() > 4) {
-			for(long i = 0; i < io->obj->grouplist.size(); i++) {
+			for(size_t i = 0; i < io->obj->grouplist.size(); i++) {
 				long idx = io->obj->grouplist[i].origin;
 
 				if(!fartherThan(pos, vlist[idx].v, 50.f)) {
