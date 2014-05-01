@@ -329,7 +329,6 @@ struct EERIE_3DOBJ
 		angle = Anglef::ZERO;
 
 		origin = 0;
-		ident = 0;
 		grouplist.clear();
 
 		vertexlocal = NULL;
@@ -386,7 +385,6 @@ struct EERIE_3DOBJ
 	Vec3f point0;
 	Anglef angle;
 	long origin;
-	long ident;
 	Vec3f * vertexlocal;
 	std::vector<EERIE_VERTEX> vertexlist;
 	std::vector<EERIE_VERTEX> vertexlist3;

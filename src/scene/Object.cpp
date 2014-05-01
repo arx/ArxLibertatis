@@ -884,7 +884,6 @@ void EERIE_3DOBJ::clear() {
 		angle = Anglef::ZERO;
 
 		origin = 0;
-		ident = 0;
 
 		vertexlocal = NULL;
 		vertexlist.clear();
@@ -994,8 +993,6 @@ EERIE_3DOBJ * Eerie_Copy(const EERIE_3DOBJ * obj) {
 	if(!obj->file.empty())
 		nouvo->file = obj->file;
 	
-	nouvo->ident = obj->ident;
-
 	if(!obj->name.empty())
 		nouvo->name = obj->name;
 
