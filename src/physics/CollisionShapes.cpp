@@ -142,7 +142,7 @@ void AddCollisionSphere(EERIE_3DOBJ * obj, long idx, float radius) {
 	obj->sdata->spheres.push_back(newSphere);
 }
 
-long GetFirstChildGroup(EERIE_3DOBJ * obj, long group) {
+long GetFirstChildGroup(EERIE_3DOBJ * obj, size_t group) {
 
 	if(obj->grouplist.size() < group + 2)
 		return -1;
