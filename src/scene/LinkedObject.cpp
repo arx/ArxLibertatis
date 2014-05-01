@@ -64,18 +64,6 @@ void EERIE_LINKEDOBJ_ReleaseData(EERIE_3DOBJ * obj) {
 }
 
 /*!
- * \brief Init Data for linked objects
- * \param obj
- */
-void EERIE_LINKEDOBJ_InitData(EERIE_3DOBJ * obj)
-{
-	if(!obj)
-		return;
-
-	obj->linked.clear();
-}
-
-/*!
  * \brief Add New Data field for a linked object to an object
  * \param obj
  * \return

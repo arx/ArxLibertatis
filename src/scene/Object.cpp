@@ -1402,8 +1402,7 @@ static EERIE_3DOBJ * TheoToEerie(const char * adr, long size, const res::path & 
 
 	// NORMALS CALCULATIONS END
 	//***********************************************************
-
-	EERIE_LINKEDOBJ_InitData(eerie);
+	
 	eerie->m_skeleton = NULL;
 	EERIE_CreateCedricData(eerie);
 	return eerie;

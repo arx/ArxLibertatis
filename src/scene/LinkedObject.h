@@ -52,7 +52,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 struct EERIE_3DOBJ;
 class Entity;
 
-void EERIE_LINKEDOBJ_InitData(EERIE_3DOBJ * obj);
 void EERIE_LINKEDOBJ_ReleaseData(EERIE_3DOBJ * obj);
 void EERIE_LINKEDOBJ_UnLinkObjectFromObject(EERIE_3DOBJ * obj, EERIE_3DOBJ * tounlink);
 bool EERIE_LINKEDOBJ_LinkObjectToObject(EERIE_3DOBJ * obj, EERIE_3DOBJ * tolink, const std::string & actiontext, const std::string & actiontext2, Entity * io = NULL);
