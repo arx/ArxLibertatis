@@ -661,12 +661,12 @@ void CSpeed::Create(int numinteractive)
 		}
 		
 		float col = 0.05f + (rnd() * 0.05f);
-		float size = 4.f + (4.f * rnd());
+		float size = 1.f + (0.5f * rnd());
 		int taille = Random::get(8, 16);
 		
 		SpeedTrail trail;
 		trail.vertexIndex = itr->origin;	
-		trail.trail = new Trail(taille, Color4f::gray(col), Color4f::white, size, 0.f);
+		trail.trail = new Trail(taille, Color4f::gray(col), Color4f::black, size, 0.f);
 		
 		m_trails.push_back(trail);
 	}
