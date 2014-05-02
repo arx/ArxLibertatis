@@ -420,7 +420,7 @@ void Cedric_PrepareHalo(EERIE_3DOBJ * eobj, Skeleton * obj) {
 	Vec3f cam_vector = angleToVecForCedricHalo(ACTIVECAM->angle);
 	
 	// Apply light on all vertices
-	for(long i = 0; i != obj->nb_bones; i++) {
+	for(size_t i = 0; i != obj->bones.size(); i++) {
 		const Bone & bone = obj->bones[i];
 		
 		glm::quat qt1 = bone.anim.quat;
@@ -520,7 +520,7 @@ bool Cedric_IO_Visible(const Vec3f & pos) {
 static void Cedric_ApplyLighting(EERIE_3DOBJ * eobj, Skeleton * obj, const ColorMod & colorMod) {
 
 	/* Apply light on all vertices */
-	for(int i = 0; i != obj->nb_bones; i++) {
+	for(size_t i = 0; i != obj->bones.size(); i++) {
 
 		glm::quat *quat = &obj->bones[i].anim.quat;
 
@@ -1255,7 +1255,7 @@ static void StoreEntityMovement(Entity * io, Vec3f & ftr, float scale) {
  */
 static void Cedric_AnimateObject(Skeleton * obj, ANIM_USE * animlayer)
 {
-	std::vector<unsigned char> grps(obj->nb_bones);
+	std::vector<unsigned char> grps(obj->bones.size());
 
 	for(long count = MAX_ANIM_LAYERS - 1; count >= 0; count--) {
 
@@ -1278,7 +1278,7 @@ static void Cedric_AnimateObject(Skeleton * obj, ANIM_USE * animlayer)
 		animuse->pour = clamp(animuse->pour, 0.f, 1.f);
 
 		// Now go for groups rotation/translation/scaling, And transform Linked objects by the way
-		int l = std::min(obj->nb_bones - 1, eanim->nb_groups - 1);
+		int l = std::min(long(obj->bones.size() - 1), eanim->nb_groups - 1);
 
 		for(int j = l; j >= 0; j--) {
 			if(grps[j])
@@ -1325,7 +1325,7 @@ void Cedric_BlendAnimation(Skeleton & rig, AnimationBlendStatus * animBlend) {
 			return;
 	}
 
-	for(long i = 0; i < rig.nb_bones; i++) {
+	for(size_t i = 0; i < rig.bones.size(); i++) {
 		Bone * bone = &rig.bones[i];
 
 		bone->init.quat = Quat_Slerp(bone->last.quat, bone->init.quat, timm);
@@ -1340,7 +1340,7 @@ void Cedric_BlendAnimation(Skeleton & rig, AnimationBlendStatus * animBlend) {
  */
 static void Cedric_ConcatenateTM(Skeleton & rig, const TransformInfo & t) {
 
-	for(int i = 0; i != rig.nb_bones; i++) {
+	for(size_t i = 0; i != rig.bones.size(); i++) {
 		Bone * bone = &rig.bones[i];
 
 		if(bone->father >= 0) { // Child Bones
@@ -1379,7 +1379,7 @@ void Cedric_TransformVerts(EERIE_3DOBJ *eobj, const Vec3f & pos) {
 	Skeleton & rig = *eobj->m_skeleton;
 
 	// Transform & project all vertices
-	for(long i = 0; i != rig.nb_bones; i++) {
+	for(size_t i = 0; i != rig.bones.size(); i++) {
 		Bone & bone = rig.bones[i];
 
 		glm::mat4x4 matrix = glm::toMat4(bone.anim.quat);
@@ -1454,7 +1454,7 @@ void Cedric_UpdateBbox2d(const EERIE_3DOBJ & eobj, EERIE_2D_BBOX & box2D) {
 void Cedric_AnimateDrawEntity(Skeleton & skeleton, ANIM_USE * animlayer, EERIE_EXTRA_ROTATE * extraRotation, AnimationBlendStatus * animBlend, EERIE_EXTRA_SCALE & extraScale) {
 
 	// Initialize the rig
-	for(long i = 0; i != skeleton.nb_bones; i++) {
+	for(size_t i = 0; i != skeleton.bones.size(); i++) {
 		Bone & bone = skeleton.bones[i];
 
 		bone.init.quat = glm::quat();
@@ -1486,7 +1486,7 @@ void Cedric_AnimateDrawEntity(Skeleton & skeleton, ANIM_USE * animlayer, EERIE_E
 		// Is There any Between-Animations Interpolation to make ?
 		Cedric_BlendAnimation(skeleton, animBlend);
 
-		for(long i = 0; i < skeleton.nb_bones; i++) {
+		for(size_t i = 0; i < skeleton.bones.size(); i++) {
 			skeleton.bones[i].last = skeleton.bones[i].init;
 		}
 	}

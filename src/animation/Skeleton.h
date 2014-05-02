@@ -61,8 +61,7 @@ struct Bone {
 };
 
 struct Skeleton {
-	Bone * bones;
-	long   nb_bones;
+	std::vector<Bone> bones;
 };
 
 #endif // ARX_ANIMATION_SKELETON_H

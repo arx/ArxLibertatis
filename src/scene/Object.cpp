@@ -1087,12 +1087,11 @@ void EERIE_RemoveCedricData(EERIE_3DOBJ * eobj) {
 	if(!eobj || !eobj->m_skeleton)
 		return;
 	
-	for(long i = 0; i < eobj->m_skeleton->nb_bones; i++) {
+	for(size_t i = 0; i < eobj->m_skeleton->bones.size(); i++) {
 		free(eobj->m_skeleton->bones[i].idxvertices);
 		eobj->m_skeleton->bones[i].idxvertices = NULL;
 	}
 	
-	delete[] eobj->m_skeleton->bones, eobj->m_skeleton->bones = NULL;
 	delete eobj->m_skeleton, eobj->m_skeleton = NULL;
 	delete[] eobj->vertexlocal, eobj->vertexlocal = NULL;
 }
@@ -1100,16 +1099,13 @@ void EERIE_RemoveCedricData(EERIE_3DOBJ * eobj) {
 void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 	
 	eobj->m_skeleton = new Skeleton();
-	memset(eobj->m_skeleton, 0, sizeof(Skeleton));
 
 	if(eobj->grouplist.size() <= 0) {
 		// If no groups were specified
 
 		// Make one bone
-		eobj->m_skeleton->nb_bones = 1;
-		eobj->m_skeleton->bones = new Bone[eobj->m_skeleton->nb_bones];
-		memset(eobj->m_skeleton->bones, 0, sizeof(Bone)*eobj->m_skeleton->nb_bones);
-
+		eobj->m_skeleton->bones.resize(1);
+		
 		Bone & bone = eobj->m_skeleton->bones[0];
 
 		// Add all vertices to the bone
@@ -1129,11 +1125,8 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 		// Groups were specified
 
 		// Alloc the bones
-		eobj->m_skeleton->nb_bones = eobj->grouplist.size();
-		eobj->m_skeleton->bones = new Bone[eobj->m_skeleton->nb_bones];
-		// TODO memset -> use constructor instead
-		memset(eobj->m_skeleton->bones, 0, sizeof(Bone)*eobj->m_skeleton->nb_bones);
-
+		eobj->m_skeleton->bones.resize(eobj->grouplist.size());
+		
 		bool * temp = new bool[eobj->vertexlist.size()];
 		memset(temp, 0, eobj->vertexlist.size());
 
@@ -1199,7 +1192,7 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 	{
 		Skeleton* obj = eobj->m_skeleton;
 
-		for(long i = 0; i != obj->nb_bones; i++) {
+		for(size_t i = 0; i != obj->bones.size(); i++) {
 			Bone & bone = obj->bones[i];
 
 			if(bone.father >= 0) {
@@ -1221,7 +1214,7 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 		// TODO constructor is better than memset
 		memset(eobj->vertexlocal, 0, sizeof(Vec3f)*eobj->vertexlist.size());
 
-		for(long i = 0; i != obj->nb_bones; i++) {
+		for(size_t i = 0; i != obj->bones.size(); i++) {
 			Vec3f vector = obj->bones[i].anim.trans;
 			
 			for(int v = 0; v != obj->bones[i].nb_idxvertices; v++) {
