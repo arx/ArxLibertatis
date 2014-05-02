@@ -2079,7 +2079,7 @@ void ARX_SPELLS_Update() {
 	}
 }
 
-void TryToCastSpell(Entity * io, SpellType spellid, long level, long target, SpellcastFlags flags, long duration)
+void TryToCastSpell(Entity * io, SpellType spellType, long level, long target, SpellcastFlags flags, long duration)
 {
 	if(!io || io->spellcast_data.castingspell != SPELL_NONE)
 		return;
@@ -2090,7 +2090,7 @@ void TryToCastSpell(Entity * io, SpellType spellid, long level, long target, Spe
 	unsigned long i(0);
 
 	for(; i < SPELL_TYPES_COUNT; i++)
-		if(spellicons[i].spellid == spellid)
+		if(spellicons[i].spellid == spellType)
 			break;
 
 	if(i >= SPELL_TYPES_COUNT)
@@ -2107,7 +2107,7 @@ void TryToCastSpell(Entity * io, SpellType spellid, long level, long target, Spe
 		}
 	}
 
-	io->spellcast_data.castingspell = spellid;
+	io->spellcast_data.castingspell = spellType;
 
 	io->spellcast_data.spell_flags = flags;
 	io->spellcast_data.spell_level = checked_range_cast<short>(level);
