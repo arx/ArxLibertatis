@@ -48,6 +48,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "animation/AnimationRender.h"
 
+#include "core/Config.h"
 #include "core/Core.h"
 #include "core/GameTime.h"
 
@@ -913,6 +914,41 @@ void CMultiPoisonProjectile::Render()
 			damages[t].type		= DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_POISON;
 			damages[t].exist	= true;
 		}
+	}
+}
+
+void CMultiPoisonProjectile::AddPoisonFog(Vec3f * pos, float power) {
+	
+	int iDiv = 4 - config.video.levelOfDetail;
+	
+	float flDiv = static_cast<float>(1 << iDiv);
+	
+	arxtime.update();
+	
+	long count = std::max(1l, checked_range_cast<long>(framedelay / flDiv));
+	while(count--) {
+		
+		if(rnd() * 2000.f >= power) {
+			continue;
+		}
+		
+		PARTICLE_DEF * pd = createParticle();
+		if(!pd) {
+			return;
+		}
+		
+		float speed = 1.f;
+		float fval = speed * 0.2f;
+		pd->special = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
+		pd->ov = *pos + randomVec(-100.f, 100.f);
+		pd->scale = Vec3f(8.f, 8.f, 10.f);
+		pd->move = Vec3f((speed - rnd()) * fval, (speed - speed * rnd()) * (1.f / 15),
+		                 (speed - rnd()) * fval);
+		pd->tolive = Random::get(4500, 9000);
+		pd->tc = TC_smoke;
+		pd->siz = (80.f + rnd() * 160.f) * (1.f / 3);
+		pd->rgb = Color3f(rnd() * (1.f / 3), 1.f, rnd() * 0.1f);
+		pd->fparam = 0.001f;
 	}
 }
 

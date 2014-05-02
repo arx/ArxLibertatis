@@ -207,6 +207,7 @@ class CMultiPoisonProjectile: public CSpellFx
 
 	private:
 		CPoisonProjectile ** pTab;
+		void AddPoisonFog(Vec3f * pos, float power);
 
 	public:
 		explicit CMultiPoisonProjectile(long nb);
