@@ -427,7 +427,7 @@ void Cedric_PrepareHalo(EERIE_3DOBJ * eobj, Skeleton * obj) {
 		Vec3f t_vector = glm::inverse(qt1) * cam_vector;
 
 		// Get light value for each vertex
-		for(long v = 0; v != bone.nb_idxvertices; v++) {
+		for(size_t v = 0; v != bone.idxvertices.size(); v++) {
 			long vertIndex = bone.idxvertices[v];
 			const Vec3f & inVert = eobj->vertexlist[vertIndex].norm;
 
@@ -525,7 +525,7 @@ static void Cedric_ApplyLighting(EERIE_3DOBJ * eobj, Skeleton * obj, const Color
 		glm::quat *quat = &obj->bones[i].anim.quat;
 
 		/* Get light value for each vertex */
-		for(int v = 0; v != obj->bones[i].nb_idxvertices; v++) {
+		for(size_t v = 0; v != obj->bones[i].idxvertices.size(); v++) {
 			size_t vertexIndex = obj->bones[i].idxvertices[v];
 
 			Vec3f & position = eobj->vertexlist3[vertexIndex].v;
@@ -1399,7 +1399,7 @@ void Cedric_TransformVerts(EERIE_3DOBJ *eobj, const Vec3f & pos) {
 
 		Vec3f vector = bone.anim.trans;
 
-		for(int v = 0; v != bone.nb_idxvertices; v++) {
+		for(size_t v = 0; v != bone.idxvertices.size(); v++) {
 			long index = bone.idxvertices[v];
 
 			Vec3f & inVert = eobj->vertexlocal[index];

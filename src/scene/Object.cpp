@@ -1061,12 +1061,7 @@ long EERIE_OBJECT_GetGroup(const EERIE_3DOBJ * obj, const string & groupname) {
 
 void AddIdxToBone(Bone * bone, long idx)
 {
-	bone->idxvertices = (long *)realloc(bone->idxvertices, sizeof(long) * (bone->nb_idxvertices + 1));
-
-	if(bone->idxvertices) {
-		bone->idxvertices[bone->nb_idxvertices] = idx;
-		bone->nb_idxvertices++;
-	}
+	bone->idxvertices.push_back(idx);
 }
 
 long GetFather(EERIE_3DOBJ * eobj, long origin, long startgroup)
@@ -1086,11 +1081,6 @@ void EERIE_RemoveCedricData(EERIE_3DOBJ * eobj) {
 	
 	if(!eobj || !eobj->m_skeleton)
 		return;
-	
-	for(size_t i = 0; i < eobj->m_skeleton->bones.size(); i++) {
-		free(eobj->m_skeleton->bones[i].idxvertices);
-		eobj->m_skeleton->bones[i].idxvertices = NULL;
-	}
 	
 	delete eobj->m_skeleton, eobj->m_skeleton = NULL;
 	delete[] eobj->vertexlocal, eobj->vertexlocal = NULL;
@@ -1215,7 +1205,7 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 		for(size_t i = 0; i != obj->bones.size(); i++) {
 			Vec3f vector = obj->bones[i].anim.trans;
 			
-			for(int v = 0; v != obj->bones[i].nb_idxvertices; v++) {
+			for(size_t v = 0; v != obj->bones[i].idxvertices.size(); v++) {
 				
 				long idx = obj->bones[i].idxvertices[v];
 				const EERIE_VERTEX & inVert = eobj->vertexlist[idx];

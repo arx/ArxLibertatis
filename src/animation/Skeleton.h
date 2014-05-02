@@ -48,8 +48,7 @@ struct BoneTransform {
 };
 
 struct Bone {
-	long              nb_idxvertices;
-	long            * idxvertices;
+	std::vector<long> idxvertices;
 	long              father;
 	
 	BoneTransform     anim;
