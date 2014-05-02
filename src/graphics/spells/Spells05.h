@@ -70,113 +70,102 @@ extern EERIE_3DOBJ * svoodoo;
 extern long svoodoo_count;
 
 // Done By : did
-class CRuneOfGuarding: public CSpellFx
-{
-	public:
-		Vec3f eSrc;
-		Vec3f eTarget;
-		TextureContainer * tex_p2;
-
-	public:
-		CRuneOfGuarding();
-		~CRuneOfGuarding();
-		// accesseurs
-	public:
-		void	SetPos(Vec3f);
-
-		// surcharge
-	public:
-		void	Create(Vec3f, float afBeta = 0);
-		void	Kill();
-		void	Update(unsigned long);
-		void Render();
+class CRuneOfGuarding : public CSpellFx {
+public:
+	Vec3f eSrc;
+	Vec3f eTarget;
+	TextureContainer * tex_p2;
+	
+	CRuneOfGuarding();
+	~CRuneOfGuarding();
+	
+	void SetPos(Vec3f);
+	
+	void Create(Vec3f, float afBeta = 0);
+	void Kill();
+	void Update(unsigned long);
+	void Render();
 };
 
 // Done By : Sébastien Scieux
-class CLevitate: public CSpellFx
-{
-	private:
-		short		key;
-		short		def;
-		Vec3f	pos;
-		float		rbase, rhaut, hauteur, scale;
-		float		ang;
-		int			currdurationang;
-		int			currframetime;
-		TextureContainer * tsouffle;
-
-		struct T_CONE
-		{
-			int				conenbvertex;
-			int				conenbfaces;
-			Vec3f	*	conevertex;
-			TexturedVertex	*	coned3d;
-			unsigned short	* coneind;
-		};
-
-		T_CONE		cone[2];
-
-		EERIE_3DOBJ	*	stone[2];
-
-		struct T_STONE
-		{
-			short		actif;
-			short		numstone;
-			Vec3f	pos;
-			float		yvel;
-			Anglef	ang;
-			Anglef	angvel;
-			Vec3f	scale;
-			int			time;
-			int			currtime;
-		};
-
-		int				timestone;
-		int				nbstone;
-		T_STONE			tstone[256];
-
-		void AddStone(Vec3f * pos);
-		void DrawStone();
-
-		void CreateConeStrip(float rout, float rhaut, float hauteur, int def, int numcone);
-	public:
-		CLevitate();
-		~CLevitate();
-
-		void ChangePos(Vec3f * pos)
-		{
-			this->pos = *pos;
-		};
-
-		void	Create(int def, float rout, float rhaut, float hauteur, Vec3f * pos, unsigned long);
-		void	Update(unsigned long);
-		void Render();
+class CLevitate : public CSpellFx {
+private:
+	short key;
+	short def;
+	Vec3f pos;
+	float rbase, rhaut, hauteur, scale;
+	float ang;
+	int currdurationang;
+	int currframetime;
+	TextureContainer * tsouffle;
+	
+	struct T_CONE {
+		int conenbvertex;
+		int conenbfaces;
+		Vec3f * conevertex;
+		TexturedVertex * coned3d;
+		unsigned short * coneind;
+	};
+	
+	T_CONE cone[2];
+	
+	EERIE_3DOBJ * stone[2];
+	
+	struct T_STONE {
+		short actif;
+		short numstone;
+		Vec3f pos;
+		float yvel;
+		Anglef ang;
+		Anglef angvel;
+		Vec3f scale;
+		int time;
+		int currtime;
+	};
+	
+	int timestone;
+	int nbstone;
+	T_STONE tstone[256];
+	
+	void AddStone(Vec3f * pos);
+	void DrawStone();
+	
+	void CreateConeStrip(float rout, float rhaut, float hauteur, int def, int numcone);
+	
+public:
+	CLevitate();
+	~CLevitate();
+	
+	void ChangePos(Vec3f * pos)
+	{
+		this->pos = *pos;
+	};
+	
+	void Create(int def, float rout, float rhaut, float hauteur, Vec3f * pos, unsigned long);
+	void Update(unsigned long);
+	void Render();
 };
 
 // Done By : Didier Pédreno
-class CCurePoison: public CSpellFx
-{
-	public:
-		Vec3f eSrc;
-		ParticleSystem * pPS;
+class CCurePoison : public CSpellFx {
+public:
+	Vec3f eSrc;
+	ParticleSystem * pPS;
 
-	public:
-		CCurePoison();
-		~CCurePoison();
+	CCurePoison();
+	~CCurePoison();
 
-	public:
-		void	Create();
-		void	Update(unsigned long);
-		void Render();
-		
-		long spellinstance;
+	void Create();
+	void Update(unsigned long);
+	void Render();
+	
+	long spellinstance;
 };
 
 // Done By : Didier Pédreno
 class CPoisonProjectile: public CSpellFx {
 	
 public:
-	
 	float fTrail;
 	bool  bOk;
 	
@@ -197,54 +186,45 @@ public:
 	void Render();
 	
 	long spellinstance;
-	
 };
 
-class CMultiPoisonProjectile: public CSpellFx
-{
-	public:
-		unsigned int uiNumber;
+class CMultiPoisonProjectile : public CSpellFx {
 
-	private:
-		CPoisonProjectile ** pTab;
-		void AddPoisonFog(Vec3f * pos, float power);
-
-	public:
-		explicit CMultiPoisonProjectile(long nb);
-		~CMultiPoisonProjectile();
-
-		// surcharge
-	public:
-		void	Create(Vec3f, float);
-		void	Kill();
-		void	Update(unsigned long);
-		void Render();
-		
-		long spellinstance;
+private:
+	unsigned int uiNumber;
+	CPoisonProjectile ** pTab;
+	void AddPoisonFog(Vec3f * pos, float power);
+	
+public:
+	explicit CMultiPoisonProjectile(long nb);
+	~CMultiPoisonProjectile();
+	
+	void Create(Vec3f, float);
+	void Kill();
+	void Update(unsigned long);
+	void Render();
+	
+	long spellinstance;
 };
 
 // Done By : did
-class CRepelUndead: public CSpellFx
-{
-	public:
-		Vec3f eSrc;
-		Vec3f eTarget;
-		TextureContainer * tex_p2;
-
-	public:
-		CRepelUndead();
-		~CRepelUndead();
-
-	public:
-		void SetPos(Vec3f);
-
-	public:
-		void	Create(Vec3f, float afBeta = 0);
-		void	Kill();
-		void	Update(unsigned long);
-		void Render();
-		
-		long spellinstance;
+class CRepelUndead : public CSpellFx {
+public:
+	Vec3f eSrc;
+	Vec3f eTarget;
+	TextureContainer * tex_p2;
+	
+	CRepelUndead();
+	~CRepelUndead();
+	
+	void SetPos(Vec3f);
+	
+	void Create(Vec3f, float afBeta = 0);
+	void Kill();
+	void Update(unsigned long);
+	void Render();
+	
+	long spellinstance;
 };
 
 #endif // ARX_GRAPHICS_SPELLS_SPELLS05_H
