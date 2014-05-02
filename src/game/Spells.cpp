@@ -1123,7 +1123,7 @@ bool ARX_SPELLS_Launch(SpellType typ, long source, SpellcastFlags flagss, long l
 	}
 
 	if(sp_max) {
-		level = std::max( level, 15L );
+		level = std::max(level, 15L);
 	}
 	
 	if(source == 0 && !(flags & SPELLCAST_FLAG_NOCHECKCANCAST)) {
@@ -1145,21 +1145,21 @@ bool ARX_SPELLS_Launch(SpellType typ, long source, SpellcastFlags flagss, long l
 		ARX_SPELLS_ResetRecognition();
 
 		if(player.SpellToMemorize.bSpell) {
-			CurrSpellSymbol					= 0;
-			player.SpellToMemorize.bSpell	= false;
+			CurrSpellSymbol = 0;
+			player.SpellToMemorize.bSpell = false;
 		}
 
 		ARX_PLAYER_ComputePlayerFullStats();
 
 		if(level == -1) {
-			Player_Magic_Level = (float) player.Full_Skill_Casting + player.Full_Attribute_Mind;
+			Player_Magic_Level = player.Full_Skill_Casting + player.Full_Attribute_Mind;
 			Player_Magic_Level = clamp(Player_Magic_Level * 0.1f, 1.0f, 10.0f);
 		} else {
 			Player_Magic_Level = static_cast<float>(level);
 		}
 	}
 
-	arx_assert( !( source && (flags & SPELLCAST_FLAG_PRECAST) ) );
+	arx_assert(!(source && (flags & SPELLCAST_FLAG_PRECAST)));
 
 	if(flags & SPELLCAST_FLAG_PRECAST) {
 		int l = level;
@@ -1168,9 +1168,9 @@ bool ARX_SPELLS_Launch(SpellType typ, long source, SpellcastFlags flagss, long l
 			l = checked_range_cast<int>(Player_Magic_Level);
 		}
 
-		SpellcastFlags flgs=flags;
-		flgs&=~SPELLCAST_FLAG_PRECAST;
-		ARX_SPELLS_Precast_Add( typ, l, flgs, duration);
+		SpellcastFlags flgs = flags;
+		flgs &= ~SPELLCAST_FLAG_PRECAST;
+		ARX_SPELLS_Precast_Add(typ, l, flgs, duration);
 		return true;
 	}
 	
@@ -1178,8 +1178,8 @@ bool ARX_SPELLS_Launch(SpellType typ, long source, SpellcastFlags flagss, long l
 	switch(typ) {
 		case SPELL_LOWER_ARMOR:
 		case SPELL_CURSE:
-		case SPELL_PARALYSE:				
-		case SPELL_INCINERATE:			
+		case SPELL_PARALYSE:
+		case SPELL_INCINERATE:
 		case SPELL_SLOW_DOWN:
 		case SPELL_CONFUSE:
 		{
@@ -1260,11 +1260,11 @@ bool ARX_SPELLS_Launch(SpellType typ, long source, SpellcastFlags flagss, long l
 		ARX_NPC_SpawnAudibleSound(entities[source]->pos, entities[source]);
 	}
 	
-	spell.m_caster = source;	// Caster...
-	spell.m_target = target;	// No target if <0
+	spell.m_caster = source; // Caster...
+	spell.m_target = target; // No target if <0
 
 	if(target < 0)
-		spell.m_target = TemporaryGetSpellTarget( &entities[spell.m_caster]->pos );
+		spell.m_target = TemporaryGetSpellTarget(&entities[spell.m_caster]->pos);
 
 	// Create hand position if a hand is defined
 	if(spell.m_caster == 0) {
@@ -1296,16 +1296,14 @@ bool ARX_SPELLS_Launch(SpellType typ, long source, SpellcastFlags flagss, long l
 	}
 
 	// Checks target TODO if ( target < 0 ) is already handled above!
-	if (target<0) // no target... targeted by sight
-	{
-		if (source==0) // no target... player spell targeted by sight
-		{
+	if(target < 0) {
+		// no target... targeted by sight
+		if(source == 0) {
+			// no target... player spell targeted by sight
 			spell.m_target_pos.x = player.pos.x - std::sin(radians(player.angle.getPitch()))*60.f;
 			spell.m_target_pos.y = player.pos.y + std::sin(radians(player.angle.getYaw()))*60.f;
 			spell.m_target_pos.z = player.pos.z + std::cos(radians(player.angle.getPitch()))*60.f;
-		}
-		else
-		{
+		} else {
 			// TODO entities[target] with target < 0 ??? - uh oh!
 			spell.m_target_pos.x = entities[target]->pos.x - std::sin(radians(entities[target]->angle.getPitch()))*60.f;
 			spell.m_target_pos.y = entities[target]->pos.y - 120.f;
@@ -1319,8 +1317,8 @@ bool ARX_SPELLS_Launch(SpellType typ, long source, SpellcastFlags flagss, long l
 		spell.m_target_pos = entities[target]->pos;
 	}
 	
-	spell.m_flags=flags;
-	spell.m_pSpellFx=NULL;
+	spell.m_flags = flags;
+	spell.m_pSpellFx = NULL;
 	spell.m_type = typ;
 	spell.m_timcreation = (unsigned long)(arxtime);
 	spell.m_fManaCostPerSecond = 0.f;
@@ -1960,7 +1958,6 @@ void ARX_SPELLS_Update_Update(size_t i, unsigned long tim) {
 			static_cast<IceFieldSpell &>(spell).Update(framedelay);
 			break;
 		}
-		//-----------------------------------------------------------------------------------------
 		case SPELL_LIGHTNING_STRIKE: {
 			static_cast<LightningStrikeSpell &>(spell).Update(framedelay);
 			break;
