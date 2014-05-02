@@ -50,7 +50,6 @@ struct BoneTransform {
 struct Bone {
 	long              nb_idxvertices;
 	long            * idxvertices;
-	VertexGroup     * original_group;
 	long              father;
 	
 	BoneTransform     anim;

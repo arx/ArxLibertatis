@@ -1119,7 +1119,6 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 		bone.anim.scale = Vec3f_ZERO;
 		bone.init.trans = Vec3f_ZERO;
 		bone.transinit_global = bone.init.trans;
-		bone.original_group = NULL;
 		bone.father = -1;
 	} else {
 		// Groups were specified
@@ -1149,7 +1148,6 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 			bone.anim.scale = Vec3f_ZERO;
 			bone.init.trans = Vec3f(v_origin->v.x, v_origin->v.y, v_origin->v.z);
 			bone.transinit_global = bone.init.trans;
-			bone.original_group = &group;
 			bone.father = GetFather(eobj, group.origin, i - 1);
 		}
 
