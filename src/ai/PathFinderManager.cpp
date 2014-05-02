@@ -59,9 +59,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "physics/Anchors.h"
 #include "scene/Light.h"
 
-using std::memcpy;
-
-
 static const float PATHFINDER_HEURISTIC_MIN = 0.2f;
 static const float PATHFINDER_HEURISTIC_MAX = PathFinder::HEURISTIC_MAX;
 static const float PATHFINDER_HEURISTIC_RANGE = PATHFINDER_HEURISTIC_MAX
@@ -128,7 +125,7 @@ bool EERIE_PATHFINDER_Add_To_Queue(PATHFINDER_REQUEST * req) {
 
 	if(temp && temp->valid && temp != pathfinder_queue_start) {
 		temp->valid = 0;
-		memcpy(&temp->req, req, sizeof(PATHFINDER_REQUEST));
+		temp->req = *req;
 		temp->valid = 1;
 		return true;
 	}
@@ -141,7 +138,7 @@ bool EERIE_PATHFINDER_Add_To_Queue(PATHFINDER_REQUEST * req) {
 	}
 
 	// Fill this New element with new request
-	memcpy(&temp->req, req, sizeof(PATHFINDER_REQUEST));
+	temp->req = *req;
 	temp->valid = 1;
 
 	// No queue start ? then this element becomes the queue start
@@ -234,7 +231,7 @@ static bool EERIE_PATHFINDER_Get_Next_Request(PATHFINDER_REQUEST * request) {
 		return false;
 	}
 
-	memcpy(request, &cur->req, sizeof(PATHFINDER_REQUEST));
+	*request = cur->req;
 	pathfinder_queue_start = cur->next;
 	free(cur);
 
@@ -256,9 +253,7 @@ void PathFinderThread::run() {
 
 		if (EERIE_PATHFINDER_Get_Next_Request(&pr) && pr.isvalid)
 		{
-
-			PATHFINDER_REQUEST curpr;
-			memcpy(&curpr, &pr, sizeof(PATHFINDER_REQUEST));
+			PATHFINDER_REQUEST curpr = pr;
 			PATHFINDER_WORKING = 2;
 
 			if (curpr.ioid && curpr.ioid->_npcdata)
