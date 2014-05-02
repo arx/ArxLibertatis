@@ -92,12 +92,14 @@ static PATHFINDER_QUEUE_ELEMENT * pathfinder_queue_start = NULL;
 // A new pathfinder request from the same IO will overwrite the precedent.
 static PATHFINDER_QUEUE_ELEMENT * PATHFINDER_Find_ioid(Entity * io) {
 	
-	if (!pathfinder_queue_start) return NULL;
+	if(!pathfinder_queue_start)
+		return NULL;
 
 	PATHFINDER_QUEUE_ELEMENT * cur = pathfinder_queue_start;
 
 	while(cur) {
-		if (cur->req.ioid == io) return cur->valid ? cur : NULL;
+		if(cur->req.ioid == io)
+			return cur->valid ? cur : NULL;
 		
 		cur = cur->next;
 	}
