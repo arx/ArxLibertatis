@@ -86,9 +86,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Scene.h"
 #include "scene/Interactive.h"
 
-
 extern Color ulBKGColor;
-static TexturedVertex tTexturedVertexTab2[4000];
 
 // List of TO-TREAT vertex for MIPMESHING
 
