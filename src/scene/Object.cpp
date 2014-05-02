@@ -1059,11 +1059,6 @@ long EERIE_OBJECT_GetGroup(const EERIE_3DOBJ * obj, const string & groupname) {
 	return -1;
 }
 
-void AddIdxToBone(Bone * bone, long idx)
-{
-	bone->idxvertices.push_back(idx);
-}
-
 long GetFather(EERIE_3DOBJ * eobj, long origin, long startgroup)
 {
 	for(long i = startgroup; i >= 0; i--) {
@@ -1099,8 +1094,9 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 		Bone & bone = eobj->m_skeleton->bones[0];
 
 		// Add all vertices to the bone
-		for(size_t i = 0; i < eobj->vertexlist.size(); i++)
-			AddIdxToBone(&bone, i);
+		for(size_t i = 0; i < eobj->vertexlist.size(); i++) {
+			bone.idxvertices.push_back(i);
+		}
 
 		// Initialize the bone
 		bone.init.quat = glm::quat();
@@ -1128,7 +1124,7 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 			for(size_t j = 0; j < group.indexes.size(); j++) {
 				if(!temp[group.indexes[j]]) {
 					temp[group.indexes[j]] = true;
-					AddIdxToBone(&bone, group.indexes[j]);
+					bone.idxvertices.push_back(group.indexes[j]);
 				}
 			}
 
@@ -1160,7 +1156,7 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
 			}
 
 			if(!ok) {
-				AddIdxToBone(&eobj->m_skeleton->bones[0], i);
+				eobj->m_skeleton->bones[0].idxvertices.push_back(i);
 			}
 		}
 		
