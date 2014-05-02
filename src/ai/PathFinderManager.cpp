@@ -215,9 +215,9 @@ void EERIE_PATHFINDER_Clear() {
 }
 
 // Retrieves & Removes next Pathfind request from queue
-static bool EERIE_PATHFINDER_Get_Next_Request(PATHFINDER_REQUEST * request) {
+static bool EERIE_PATHFINDER_Get_Next_Request(PATHFINDER_REQUEST & request) {
 	
-	if(!request || !pathfinder_queue_start || !pathfinder_queue_start->valid) {
+	if(!pathfinder_queue_start || !pathfinder_queue_start->valid) {
 		return false;
 	}
 	
@@ -231,7 +231,7 @@ static bool EERIE_PATHFINDER_Get_Next_Request(PATHFINDER_REQUEST * request) {
 		return false;
 	}
 
-	*request = cur->req;
+	request = cur->req;
 	pathfinder_queue_start = cur->next;
 	free(cur);
 
@@ -251,7 +251,7 @@ void PathFinderThread::run() {
 
 		PATHFINDER_WORKING = 1;
 
-		if (EERIE_PATHFINDER_Get_Next_Request(&pr) && pr.isvalid)
+		if (EERIE_PATHFINDER_Get_Next_Request(pr) && pr.isvalid)
 		{
 			PATHFINDER_REQUEST curpr = pr;
 			PATHFINDER_WORKING = 2;
