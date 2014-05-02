@@ -1009,12 +1009,10 @@ EERIE_3DOBJ * Eerie_Copy(const EERIE_3DOBJ * obj) {
 	nouvo->facelist = obj->facelist;
 	nouvo->grouplist = obj->grouplist;
 	nouvo->actionlist = obj->actionlist;
-
 	nouvo->selections = obj->selections;
-
 	nouvo->texturecontainer = obj->texturecontainer;
+	nouvo->fastaccess = obj->fastaccess;
 	
-	memcpy(&nouvo->fastaccess, &obj->fastaccess, sizeof(EERIE_FASTACCESS));
 	EERIE_CreateCedricData(nouvo);
 
 	if(obj->pbox) {
