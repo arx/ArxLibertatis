@@ -639,12 +639,6 @@ void ARX_SPELLS_Fizzle(long num) {
 	}
 }
 
-
-bool No_MagicAllowed()
-{
-	ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE);
-	return false;
-}
 extern long PLAYER_PARALYSED;
 
 extern long passwall;
@@ -1336,7 +1330,8 @@ bool ARX_SPELLS_Launch(SpellType typ, long source, SpellcastFlags flagss, long l
 	}
 	
 	if(!GLOBAL_MAGIC_MODE) {
-		return No_MagicAllowed();
+		ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE);
+		return false;
 	}
 	
 	bool notifyAll = true;
