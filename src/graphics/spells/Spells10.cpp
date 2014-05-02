@@ -163,7 +163,7 @@ void CControlTarget::Create(Vec3f aeSrc, float afBeta) {
 	Vec3f s = eSrc;
 	Vec3f e = eSrc;
 	int i = 0;
-	while(Visible(&s, &e, NULL, &h) && i < 20) {
+	while(Visible(s, e, NULL, &h) && i < 20) {
 		e.x -= fBetaRadSin * 50;
 		e.z += fBetaRadCos * 50;
 		i++;

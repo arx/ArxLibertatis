@@ -104,7 +104,7 @@ void ComputeFastBkgData(EERIE_BACKGROUND * eb);
 
 static void EERIE_PORTAL_Release();
 
-static bool RayIn3DPolyNoCull(Vec3f * orgn, Vec3f * dest, EERIEPOLY * epp);
+static bool RayIn3DPolyNoCull(const Vec3f & orgn, const Vec3f & dest, EERIEPOLY * epp);
 
 extern TextureContainer * sphere_particle;
 
@@ -126,9 +126,9 @@ static bool IntersectLinePlane(const Vec3f & l1, const Vec3f & l2, const EERIEPO
 	return false;
 }
 
-bool RayCollidingPoly(Vec3f * orgn, Vec3f * dest, EERIEPOLY * ep, Vec3f * hit)
+bool RayCollidingPoly(const Vec3f & orgn, const Vec3f & dest, EERIEPOLY * ep, Vec3f * hit)
 {
-	if(IntersectLinePlane(*orgn, *dest, ep, hit)) {
+	if(IntersectLinePlane(orgn, dest, ep, hit)) {
 		if(RayIn3DPolyNoCull(orgn, dest, ep))
 			return true;
 	}
@@ -642,12 +642,12 @@ int PointIn2DPolyXZ(const EERIEPOLY * ep, float x, float z) {
 
 extern EERIE_CAMERA raycam;
 
-static bool RayIn3DPolyNoCull(Vec3f * orgn, Vec3f * dest, EERIEPOLY * epp) {
+static bool RayIn3DPolyNoCull(const Vec3f & orgn, const Vec3f & dest, EERIEPOLY * epp) {
 
 	EERIEPOLY ep;
 	memcpy(&ep, epp, sizeof(EERIEPOLY));
-	raycam.orgTrans.pos = *orgn;
-	raycam.setTargetCamera(*dest);
+	raycam.orgTrans.pos = orgn;
+	raycam.setTargetCamera(dest);
 	SP_PrepareCamera(&raycam);
 	EERIERTPPolyCam(&ep, &raycam);
 
@@ -657,7 +657,7 @@ static bool RayIn3DPolyNoCull(Vec3f * orgn, Vec3f * dest, EERIEPOLY * epp) {
 	return false;
 }
 
-int EERIELaunchRay3(Vec3f * orgn, Vec3f * dest,  Vec3f * hit, EERIEPOLY * epp, long flag) {
+int EERIELaunchRay3(const Vec3f & orgn, const Vec3f & dest,  Vec3f * hit, EERIEPOLY * epp, long flag) {
 	
 	Vec3f p; //current ray pos
 	Vec3f d; // ray incs
@@ -670,15 +670,15 @@ int EERIELaunchRay3(Vec3f * orgn, Vec3f * dest,  Vec3f * hit, EERIEPOLY * epp, l
 	
 	long iii = 0;
 	float maxstepp = 20000.f / pas;
-	*hit = p = *orgn;
+	*hit = p = orgn;
 	
 	voidlast = 0;
 	lpx = lpz = -1;
-	d.x = (dest->x - orgn->x);
+	d.x = (dest.x - orgn.x);
 	ad.x = EEfabs(d.x);
-	d.y = (dest->y - orgn->y);
+	d.y = (dest.y - orgn.y);
 	ad.y = EEfabs(d.y);
-	d.z = (dest->z - orgn->z);
+	d.z = (dest.z - orgn.z);
 	ad.z = EEfabs(d.z);
 	
 	if(ad.x >= ad.y && ad.x >= ad.z) {
@@ -699,32 +699,32 @@ int EERIELaunchRay3(Vec3f * orgn, Vec3f * dest,  Vec3f * hit, EERIEPOLY * epp, l
 		
 		p += i;
 		
-		if(i.x == -1.f * pas && p.x <= dest->x) {
+		if(i.x == -1.f * pas && p.x <= dest.x) {
 			*hit = p;
 			return 0;
 		}
 		
-		if(i.x == 1.f * pas && p.x >= dest->x) {
+		if(i.x == 1.f * pas && p.x >= dest.x) {
 			*hit = p;
 			return 0;
 		}
 		
-		if(i.y == -1.f * pas && p.y <= dest->y) {
+		if(i.y == -1.f * pas && p.y <= dest.y) {
 			*hit = p;
 			return 0;
 		}
 		
-		if(i.y == 1.f * pas && p.y >= dest->y) {
+		if(i.y == 1.f * pas && p.y >= dest.y) {
 			*hit = p;
 			return 0;
 		}
 		
-		if(i.z == -1.f * pas && p.z <= dest->z) {
+		if(i.z == -1.f * pas && p.z <= dest.z) {
 			*hit = p;
 			return 0;
 		}
 		
-		if(i.z == 1.f * pas && p.z >= dest->z) {
+		if(i.z == 1.f * pas && p.z >= dest.z) {
 			*hit = p;
 			return 0;
 		}
@@ -785,7 +785,7 @@ int EERIELaunchRay3(Vec3f * orgn, Vec3f * dest,  Vec3f * hit, EERIEPOLY * epp, l
 }
 
 // Computes the visibility from a point to another... (sort of...)
-bool Visible(Vec3f * orgn, Vec3f * dest, EERIEPOLY * epp, Vec3f * hit)
+bool Visible(const Vec3f & orgn, const Vec3f & dest, EERIEPOLY * epp, Vec3f * hit)
 {
 	float ix,iy,iz;
 	long px,pz;
@@ -799,20 +799,20 @@ bool Visible(Vec3f * orgn, Vec3f * dest, EERIEPOLY * epp, Vec3f * hit)
 	float iter,t;
 	
 	//current ray pos
-	float x = orgn->x;
-	float y = orgn->y;
-	float z = orgn->z;
+	float x = orgn.x;
+	float y = orgn.y;
+	float z = orgn.z;
 
 	float distance;
-	float nearest = distance = fdist(*orgn, *dest);
+	float nearest = distance = fdist(orgn, dest);
 
 	if(distance < pas)
 		pas = distance * .5f;
 
 	// ray incs
-	float dx = (dest->x - orgn->x);
-	float dy = (dest->y - orgn->y);
-	float dz = (dest->z - orgn->z);
+	float dx = (dest.x - orgn.x);
+	float dy = (dest.y - orgn.y);
+	float dz = (dest.z - orgn.z);
 
 	// absolute ray incs
 	float adx = EEfabs(dx);
@@ -878,7 +878,7 @@ bool Visible(Vec3f * orgn, Vec3f * dest, EERIEPOLY * epp, Vec3f * hit)
 			if ((ep->min.x - pas < x) && (ep->max.x + pas > x))
 			if ((ep->min.z - pas < z) && (ep->max.z + pas > z))
 			if (RayCollidingPoly(orgn, dest, ep, hit)) {
-				dd = fdist(*orgn, *hit);
+				dd = fdist(orgn, *hit);
 
 				if(dd < nearest) {
 					nearest = dd;

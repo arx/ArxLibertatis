@@ -526,7 +526,7 @@ void CPoisonProjectile::Create(Vec3f _eSrc, float _fBeta)
 
 	i = 0;
 
-	while(Visible(&s, &e, NULL, &h) && i < 20) {
+	while(Visible(s, e, NULL, &h) && i < 20) {
 		e.x -= fBetaRadSin * 50;
 		e.z += fBetaRadCos * 50;
 

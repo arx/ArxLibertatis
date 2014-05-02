@@ -3193,7 +3193,7 @@ Entity * ARX_NPC_GetFirstNPCInSight(Entity * ioo)
 				Vec3f ppos;
 				EERIEPOLY * epp = NULL;
 
-				if(IO_Visible(&orgn, &dest, epp, &ppos)) {
+				if(IO_Visible(orgn, dest, epp, &ppos)) {
 					if(found_dist > dist_io) {
 						found_io = io;
 						found_dist = dist_io;
@@ -3287,7 +3287,7 @@ void CheckNPCEx(Entity * io) {
 				   || ds < square(200.f)) {
 					Vec3f ppos;
 					// Check for Geometrical Visibility
-					if(IO_Visible(&orgn, &dest, NULL, &ppos)
+					if(IO_Visible(orgn, dest, NULL, &ppos)
 					   || closerThan(ppos, dest, 25.f)) {
 						Visible = 1;
 					}

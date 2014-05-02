@@ -1577,7 +1577,7 @@ bool ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, Entity * io, float MOVE_CYLIND
 }
 
 //TODO copy-paste
-bool IO_Visible(Vec3f * orgn, Vec3f * dest, EERIEPOLY * epp, Vec3f * hit)
+bool IO_Visible(const Vec3f & orgn, const Vec3f & dest, EERIEPOLY * epp, Vec3f * hit)
 {
 	float ix,iy,iz;
 	long px,pz;
@@ -1591,20 +1591,20 @@ bool IO_Visible(Vec3f * orgn, Vec3f * dest, EERIEPOLY * epp, Vec3f * hit)
 	float iter,t;
 
 	//current ray pos
-	float x = orgn->x;
-	float y = orgn->y;
-	float z = orgn->z;
+	float x = orgn.x;
+	float y = orgn.y;
+	float z = orgn.z;
 
 	float distance;
-	float nearest = distance = fdist(*orgn, *dest);
+	float nearest = distance = fdist(orgn, dest);
 
 	if(distance < pas)
 		pas = distance * .5f;
 
 	// ray incs
-	float dx = (dest->x - orgn->x);
-	float dy = (dest->y - orgn->y);
-	float dz = (dest->z - orgn->z);
+	float dx = (dest.x - orgn.x);
+	float dy = (dest.y - orgn.y);
+	float dz = (dest.z - orgn.z);
 
 	// absolute ray incs
 	float adx = EEfabs(dx);
@@ -1665,7 +1665,7 @@ bool IO_Visible(Vec3f * orgn, Vec3f * dest, EERIEPOLY * epp, Vec3f * hit)
 
 			if(io && (io->gameFlags & GFLAG_VIEW_BLOCKER)) {
 				if(CheckIOInSphere(&sphere, num)) {
-					dd = fdist(*orgn, sphere.origin);
+					dd = fdist(orgn, sphere.origin);
 
 					if(dd < nearest) {
 						hit->x=x;
@@ -1694,7 +1694,7 @@ bool IO_Visible(Vec3f * orgn, Vec3f * dest, EERIEPOLY * epp, Vec3f * hit)
 				if((ep->min.z - pas < z) && (ep->max.z + pas > z))
 				{
 					if(RayCollidingPoly(orgn, dest, ep, hit)) {
-						dd = fdist(*orgn, *hit);
+						dd = fdist(orgn, *hit);
 						if(dd < nearest) {
 							nearest = dd;
 							found_ep = ep;

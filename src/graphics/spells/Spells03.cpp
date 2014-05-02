@@ -432,7 +432,7 @@ void CIceProjectile::Create(Vec3f aeSrc, float afBeta)
 
 	float fd;
 
-	if(!Visible(&s, &e, NULL, &h)) {
+	if(!Visible(s, e, NULL, &h)) {
 		e.x = h.x + fBetaRadSin * 20;
 		e.y = h.y;
 		e.z = h.z - fBetaRadCos * 20;

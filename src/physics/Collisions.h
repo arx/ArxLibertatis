@@ -113,7 +113,7 @@ bool IsCollidingIO(Entity * io, Entity * ioo);
 bool CheckIOInSphere(EERIE_SPHERE * sphere, long target, bool ignoreNoCollisionFlag = false);
 
 bool AttemptValidCylinderPos(EERIE_CYLINDER * cyl, Entity * io, CollisionFlags flags);
-bool IO_Visible(Vec3f * orgn, Vec3f * dest, EERIEPOLY * epp, Vec3f * hit);
+bool IO_Visible(const Vec3f & orgn, const Vec3f & dest, EERIEPOLY * epp, Vec3f * hit);
 
 void ANCHOR_BLOCK_By_IO(Entity * io, long status);
 void ANCHOR_BLOCK_Clear();
