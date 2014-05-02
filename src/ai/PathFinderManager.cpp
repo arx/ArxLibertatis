@@ -106,7 +106,7 @@ static PATHFINDER_QUEUE_ELEMENT * PATHFINDER_Find_ioid(Entity * io) {
 }
 
 // Adds a Pathfinder Search Element to the pathfinder queue.
-bool EERIE_PATHFINDER_Add_To_Queue(PATHFINDER_REQUEST * req) {
+bool EERIE_PATHFINDER_Add_To_Queue(const PATHFINDER_REQUEST & req) {
 	
 	if(!pathfinder) {
 		return false;
@@ -121,11 +121,11 @@ bool EERIE_PATHFINDER_Add_To_Queue(PATHFINDER_REQUEST * req) {
 	// If this NPC is already requesting a Pathfinding then either
 	// try to Override it or add it to queue if it is currently being
 	// processed.
-	temp = PATHFINDER_Find_ioid(req->ioid);
+	temp = PATHFINDER_Find_ioid(req.ioid);
 
 	if(temp && temp->valid && temp != pathfinder_queue_start) {
 		temp->valid = 0;
-		temp->req = *req;
+		temp->req = req;
 		temp->valid = 1;
 		return true;
 	}
@@ -138,7 +138,7 @@ bool EERIE_PATHFINDER_Add_To_Queue(PATHFINDER_REQUEST * req) {
 	}
 
 	// Fill this New element with new request
-	temp->req = *req;
+	temp->req = req;
 	temp->valid = 1;
 
 	// No queue start ? then this element becomes the queue start
@@ -146,7 +146,7 @@ bool EERIE_PATHFINDER_Add_To_Queue(PATHFINDER_REQUEST * req) {
 		temp->next = NULL;
 		pathfinder_queue_start = temp;
 		
-	} else if((req->ioid->_npcdata->behavior & (BEHAVIOUR_MOVE_TO | BEHAVIOUR_FLEE
+	} else if((req.ioid->_npcdata->behavior & (BEHAVIOUR_MOVE_TO | BEHAVIOUR_FLEE
 	                                            | BEHAVIOUR_LOOK_FOR)) && cur->next) {
 		// priority: insert as second element of queue
 		temp->next = cur->next;

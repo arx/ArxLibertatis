@@ -723,7 +723,7 @@ wander:
 			tpr.ioid = io;
 			tpr.isvalid = true;
 
-			if(EERIE_PATHFINDER_Add_To_Queue(&tpr))
+			if(EERIE_PATHFINDER_Add_To_Queue(tpr))
 				return true;
 		}
 	}

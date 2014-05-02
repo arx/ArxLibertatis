@@ -63,7 +63,7 @@ struct PATHFINDER_REQUEST {
 extern long PATHFINDER_WORKING;
 extern PATHFINDER_REQUEST pr;
 
-bool EERIE_PATHFINDER_Add_To_Queue(PATHFINDER_REQUEST * request);
+bool EERIE_PATHFINDER_Add_To_Queue(const PATHFINDER_REQUEST & request);
 long EERIE_PATHFINDER_Get_Queued_Number();
 void EERIE_PATHFINDER_Clear();
 void EERIE_PATHFINDER_Create();
