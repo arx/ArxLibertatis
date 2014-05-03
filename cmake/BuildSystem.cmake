@@ -69,7 +69,7 @@ function(enable_unity_build UB_SUFFIX SOURCE_VARIABLE_NAME)
 	
 	# Put ub file at the root of the project
 	source_group("" FILES ${unit_build_file})
-endfunction(enable_unity_build)
+endfunction()
 
 
 unset(SHARED_BUILD_BINARIES CACHE)
@@ -83,7 +83,7 @@ function(_add_binary_shared BIN TYPE SRC LIBS EXTRA INSTALL)
 	set(SHARED_BUILD_${BIN}_EXTRA "${EXTRA}" CACHE INTERNAL "")
 	set(SHARED_BUILD_${BIN}_INSTALL "${INSTALL}" CACHE INTERNAL "")
 	set(SHARED_BUILD_BINARIES ${SHARED_BUILD_BINARIES} ${BIN} CACHE INTERNAL "")
-endfunction(_add_binary_shared)
+endfunction()
 
 # Add an executable to be build by either separate_build(), shared_build() or unity_build()
 #  EXE   Name of the executable to add.
@@ -113,7 +113,7 @@ endfunction()
 # Add a library to be build by either separate_build(), shared_build() or unity_build()
 #  LIB   Name of the library to add.
 #  SRC   The librarie's source files.
-#  LIBS  Libraries to link the executable against.
+#  LIBS  Libraries to link the library against.
 #  EXTRA Additional arguments to pass to add_library() but not shared with
 #        orther binaries or included in unity builds.
 #  INSTALL Install directory. Default: "${CMAKE_INSTALL_LIBDIR}"
@@ -149,7 +149,7 @@ function(intersect DEST SRC1 SRC2)
 	
 	set(${DEST} "${dest}" PARENT_SCOPE)
 	
-endfunction(intersect)
+endfunction()
 
 
 function(_shared_build_helper LIB LIST BINARIES FIRST)
@@ -158,28 +158,28 @@ function(_shared_build_helper LIB LIST BINARIES FIRST)
 	set(first ${FIRST})
 	
 	# Find common sources and extract static libraries.
-	foreach(exe IN LISTS LIST)
+	foreach(bin IN LISTS LIST)
 		
-		list(REMOVE_ITEM list ${exe})
+		list(REMOVE_ITEM list ${bin})
 		
-		set(binaries ${BINARIES} ${exe})
+		set(binaries ${BINARIES} ${bin})
 		
-		_shared_build_helper(${LIB}_${exe} "${list}" "${binaries}" ${first})
+		_shared_build_helper(${LIB}_${bin} "${list}" "${binaries}" ${first})
 		
 		set(first 0)
 		
-	endforeach(exe)
+	endforeach()
 	
-	# Find sources common to all executables in the current set.
+	# Find sources common to all binaries in the current set.
 	set(first 1)
-	foreach(exe IN LISTS BINARIES)
+	foreach(bin IN LISTS BINARIES)
 		if(first)
 			set(first 0)
-			set(common_src "${SHARED_BUILD_${exe}_SOURCES}")
+			set(common_src "${SHARED_BUILD_${bin}_SOURCES}")
 		else()
-			intersect(common_src "${common_src}" "${SHARED_BUILD_${exe}_SOURCES}")
+			intersect(common_src "${common_src}" "${SHARED_BUILD_${bin}_SOURCES}")
 		endif()
-	endforeach(exe)
+	endforeach()
 	
 	# We found common sources!
 	if(NOT "${common_src}" STREQUAL "")
@@ -197,21 +197,21 @@ function(_shared_build_helper LIB LIST BINARIES FIRST)
 		set(is_shared_lib 0)
 		
 		# Remove sources from executables and link the library instead.
-		foreach(exe IN LISTS BINARIES)
+		foreach(bin IN LISTS BINARIES)
 			
-			if("${SHARED_BUILD_${exe}_TYPE}" STREQUAL "SHARED")
+			if("${SHARED_BUILD_${bin}_TYPE}" STREQUAL "SHARED")
 				set(is_shared_lib 1)
 			endif()
 			
-			set(uncommon_src "${SHARED_BUILD_${exe}_SOURCES}")
+			set(uncommon_src "${SHARED_BUILD_${bin}_SOURCES}")
 			foreach(src IN LISTS common_src)
 				list(REMOVE_ITEM uncommon_src ${src})
-			endforeach(src)
-			set(SHARED_BUILD_${exe}_SOURCES "${uncommon_src}" CACHE INTERNAL "")
+			endforeach()
+			set(SHARED_BUILD_${bin}_SOURCES "${uncommon_src}" CACHE INTERNAL "")
 			
-			set(SHARED_BUILD_${exe}_LIBS ${lib} "${SHARED_BUILD_${exe}_LIBS}" CACHE INTERNAL "")
+			set(SHARED_BUILD_${bin}_LIBS ${lib} "${SHARED_BUILD_${bin}_LIBS}" CACHE INTERNAL "")
 			
-		endforeach(exe)
+		endforeach()
 		
 		if(is_shared_lib)
 			if(CMAKE_VERSION LESS 2.8.9)
@@ -224,51 +224,51 @@ function(_shared_build_helper LIB LIST BINARIES FIRST)
 		
 	endif()
 	
-endfunction(_shared_build_helper)
+endfunction()
 
 
 function(_shared_build_cleanup)
 	
-	foreach(exe IN LISTS SHARED_BUILD_BINARIES)
-		unset(SHARED_BUILD_${exe}_TYPE CACHE)
-		unset(SHARED_BUILD_${exe}_SOURCES CACHE)
-		unset(SHARED_BUILD_${exe}_LIBS CACHE)
-		unset(SHARED_BUILD_${exe}_EXTRA CACHE)
-		unset(SHARED_BUILD_${exe}_INSTALL CACHE)
-	endforeach(exe)
+	foreach(bin IN LISTS SHARED_BUILD_BINARIES)
+		unset(SHARED_BUILD_${bin}_TYPE CACHE)
+		unset(SHARED_BUILD_${bin}_SOURCES CACHE)
+		unset(SHARED_BUILD_${bin}_LIBS CACHE)
+		unset(SHARED_BUILD_${bin}_EXTRA CACHE)
+		unset(SHARED_BUILD_${bin}_INSTALL CACHE)
+	endforeach()
 	
 	unset(SHARED_BUILD_BINARIES CACHE)
 	
-endfunction(_shared_build_cleanup)
+endfunction()
 
-function(_shared_build_add_executable exe)
-	if("${SHARED_BUILD_${exe}_TYPE}" STREQUAL "SHARED")
+function(_shared_build_add_executable bin)
+	if("${SHARED_BUILD_${bin}_TYPE}" STREQUAL "SHARED")
 		add_library(
-			${exe} ${SHARED_BUILD_${exe}_TYPE}
-			${SHARED_BUILD_${exe}_SOURCES}
-			${SHARED_BUILD_${exe}_EXTRA}
+			${bin} ${SHARED_BUILD_${bin}_TYPE}
+			${SHARED_BUILD_${bin}_SOURCES}
+			${SHARED_BUILD_${bin}_EXTRA}
 		)
 	else()
 		add_executable(
-			${exe} ${SHARED_BUILD_${exe}_TYPE}
-			${SHARED_BUILD_${exe}_SOURCES}
-			${SHARED_BUILD_${exe}_EXTRA}
+			${bin} ${SHARED_BUILD_${bin}_TYPE}
+			${SHARED_BUILD_${bin}_SOURCES}
+			${SHARED_BUILD_${bin}_EXTRA}
 		)
 	endif()
-	target_link_libraries(${exe} ${SHARED_BUILD_${exe}_LIBS})
-	install(TARGETS ${exe} ${SHARED_BUILD_${exe}_INSTALL})
-endfunction(_shared_build_add_executable)
+	target_link_libraries(${bin} ${SHARED_BUILD_${bin}_LIBS})
+	install(TARGETS ${bin} ${SHARED_BUILD_${bin}_INSTALL})
+endfunction()
 
-# Build each executable separately.
+# Build each binary separately.
 function(separate_build)
 	
-	foreach(exe IN LISTS SHARED_BUILD_BINARIES)
-		_shared_build_add_executable(${exe})
-	endforeach(exe)
+	foreach(bin IN LISTS SHARED_BUILD_BINARIES)
+		_shared_build_add_executable(${bin})
+	endforeach()
 	
 	_shared_build_cleanup()
 	
-endfunction(separate_build)
+endfunction()
 
 
 # Build each source file separately and extract common source files into static libraries.
@@ -279,34 +279,35 @@ function(shared_build)
 	set(first 1)
 	
 	# Find common sources and extract static libraries.
-	foreach(exe1 IN LISTS SHARED_BUILD_BINARIES)
-		list(REMOVE_ITEM list1 ${exe1})
+	foreach(bin1 IN LISTS SHARED_BUILD_BINARIES)
+		list(REMOVE_ITEM list1 ${bin1})
 		set(list2 ${list1})
-		# Require two source sets before calling _shared_build_helper so we don't create static libraries for individual executables!
-		foreach(exe2 IN LISTS list1)
-			list(REMOVE_ITEM list2 ${exe2})
-			set(binaries ${exe1} ${exe2})
-			_shared_build_helper(${exe1}_${exe2} "${list2}" "${binaries}" ${first})
+		# Require two source sets before calling _shared_build_helper so we don't
+		# create static libraries for individual binaries!
+		foreach(bin2 IN LISTS list1)
+			list(REMOVE_ITEM list2 ${bin2})
+			set(binaries ${bin1} ${bin2})
+			_shared_build_helper(${bin1}_${bin2} "${list2}" "${binaries}" ${first})
 			set(first 0)
-		endforeach(exe2)
-	endforeach(exe1)
+		endforeach()
+	endforeach()
 	
 	separate_build()
 	
-endfunction(shared_build)
+endfunction()
 
 
 # Build each executable by including all the source files into one big master file.
 function(unity_build)
 	
-	add_custom_target(ub_notice COMMENT "Note: The unity build executables may take a long time to compile, without any indication of progress. Be patient.")
+	add_custom_target(ub_notice COMMENT "Note: The unity build binaries may take a long time to compile, without any indication of progress. Be patient.")
 	
-	foreach(exe IN LISTS SHARED_BUILD_BINARIES)
-		enable_unity_build(${exe} SHARED_BUILD_${exe}_SOURCES)
-		_shared_build_add_executable(${exe})
-		add_dependencies(${exe} ub_notice)
-	endforeach(exe)
+	foreach(bin IN LISTS SHARED_BUILD_BINARIES)
+		enable_unity_build(${bin} SHARED_BUILD_${bin}_SOURCES)
+		_shared_build_add_executable(${bin})
+		add_dependencies(${bin} ub_notice)
+	endforeach()
 	
 	_shared_build_cleanup()
 	
-endfunction(unity_build)
+endfunction()
