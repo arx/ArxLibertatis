@@ -241,7 +241,7 @@ void FireballSpell::Update(float timeDelta)
 		}
 
 		if(!pCF->bExplo)
-		if(CheckAnythingInSphere(&sphere, m_caster, CAS_NO_SAME_GROUP)) {
+		if(CheckAnythingInSphere(sphere, m_caster, CAS_NO_SAME_GROUP)) {
 			ARX_BOOMS_Add(pCF->eCurPos);
 			LaunchFireballBoom(&pCF->eCurPos,(float)m_caster_level);
 			pCF->pPSFire.iParticleNbMax = 0;

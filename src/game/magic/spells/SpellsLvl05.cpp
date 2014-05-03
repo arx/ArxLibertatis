@@ -64,7 +64,7 @@ void RuneOfGuardingSpell::Update(float timeDelta)
 			sphere.origin = pCRG->eSrc;
 			sphere.radius=std::max(m_caster_level*15.f,50.f);
 
-			if (CheckAnythingInSphere(&sphere,m_caster,CAS_NO_SAME_GROUP | CAS_NO_BACKGROUND_COL | CAS_NO_ITEM_COL| CAS_NO_FIX_COL | CAS_NO_DEAD_COL))
+			if (CheckAnythingInSphere(sphere,m_caster,CAS_NO_SAME_GROUP | CAS_NO_BACKGROUND_COL | CAS_NO_ITEM_COL| CAS_NO_FIX_COL | CAS_NO_DEAD_COL))
 			{
 				ARX_BOOMS_Add(pCRG->eSrc);
 				LaunchFireballBoom(&pCRG->eSrc,(float)m_caster_level);

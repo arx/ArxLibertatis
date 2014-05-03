@@ -485,7 +485,7 @@ void CLightning::Render()
 			sphere.origin = a;
 			sphere.radius = std::min(cnodetab[i].size, 50.f);
 
-			if(CheckAnythingInSphere(&sphere, spells[spellinstance].m_caster, CAS_NO_SAME_GROUP)) {
+			if(CheckAnythingInSphere(sphere, spells[spellinstance].m_caster, CAS_NO_SAME_GROUP)) {
 				long si = ARX_DAMAGES_GetFree();
 
 				if(si != -1) {

@@ -97,13 +97,13 @@ DECLARE_FLAGS(CheckAnythingInSphereFlag, CASFlags)
 DECLARE_FLAGS_OPERATORS(CASFlags)
 
 //except source...
-bool CheckAnythingInSphere(EERIE_SPHERE * sphere, long source, CASFlags flags = 0, long * num = NULL);
+bool CheckAnythingInSphere(const EERIE_SPHERE & sphere, long source, CASFlags flags = 0, long * num = NULL);
 
 //except source...
 bool CheckEverythingInSphere(const EERIE_SPHERE & sphere, long source, long targ, std::vector<long> & sphereContent);
 
 //except source...
-EERIEPOLY * CheckBackgroundInSphere(EERIE_SPHERE * sphere);
+EERIEPOLY * CheckBackgroundInSphere(const EERIE_SPHERE & sphere);
  
 bool IsCollidingIO(Entity * io, Entity * ioo);
 

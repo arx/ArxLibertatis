@@ -806,7 +806,7 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 								sp.origin.z = target->obj->vertexlist3[hitpoint].v.z + vect.z * 30.f;
 								sp.radius = 3.5f * power * 20;
 
-								if(CheckAnythingInSphere(&sp, 0, CAS_NO_NPC_COL)) {
+								if(CheckAnythingInSphere(sp, 0, CAS_NO_NPC_COL)) {
 									Color3f rgb = color.to<float>();
 									SpawnGroundSplat(&sp, &rgb, 30, 1);
 								}
@@ -889,7 +889,7 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 			}
 		}
 
-		EERIEPOLY * ep = CheckBackgroundInSphere(&sphere);
+		EERIEPOLY * ep = CheckBackgroundInSphere(sphere);
 		if(ep) {
 			if(io_source == entities.player()) {
 				if(!io_source->isHit) {

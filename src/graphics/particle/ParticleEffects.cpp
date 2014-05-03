@@ -1220,7 +1220,7 @@ void ARX_PARTICLES_Update(EERIE_CAMERA * cam)  {
 			if(part->special & SPLAT_GROUND) {
 				float siz = part->siz + part->scale.x * fd;
 				sp.radius = siz * 10.f;
-				if(CheckAnythingInSphere(&sp, 0, CAS_NO_NPC_COL)) {
+				if(CheckAnythingInSphere(sp, 0, CAS_NO_NPC_COL)) {
 					if(rnd() < 0.9f) {
 						Color3f rgb = part->rgb;
 						SpawnGroundSplat(&sp, &rgb, sp.radius, 0);
@@ -1234,7 +1234,7 @@ void ARX_PARTICLES_Update(EERIE_CAMERA * cam)  {
 			if(part->special & SPLAT_WATER) {
 				float siz = part->siz + part->scale.x * fd;
 				sp.radius = siz * (10.f + rnd() * 20.f);
-				if(CheckAnythingInSphere(&sp, 0, CAS_NO_NPC_COL)) {
+				if(CheckAnythingInSphere(sp, 0, CAS_NO_NPC_COL)) {
 					if(rnd() < 0.9f) {
 						Color3f rgb = part->rgb * 0.5f;
 						SpawnGroundSplat(&sp, &rgb, sp.radius, 2);
