@@ -427,30 +427,32 @@ void CMagicMissile::Render()
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
-CMultiMagicMissile::CMultiMagicMissile(long nbmissiles, long spellHandle)
+CMultiMagicMissile::CMultiMagicMissile(size_t nbmissiles, long spellHandle)
 	: CSpellFx()
 	, spellinstance(spellHandle)
 {
 	SetDuration(2000);
-	uiNumber = nbmissiles;
-	pTab = new CMagicMissile*[uiNumber]();
 	
-	for(unsigned int i = 0; i < uiNumber; i++) {
-		pTab[i] = new CMagicMissile();
-		pTab[i]->spellinstance = this->spellinstance;
+	pTab.reserve(nbmissiles);
+	
+	for(size_t i = 0; i < nbmissiles; i++) {
+		CMagicMissile * missile = new CMagicMissile();
+		missile->spellinstance = spellinstance;
+		
+		pTab.push_back(missile);
 	}
 }
 
 CMultiMagicMissile::~CMultiMagicMissile()
 {
-	for(unsigned int i = 0; i < uiNumber; i++) {
+	for(size_t i = 0; i < pTab.size(); i++) {
 		// no need to kill it because it's a duration light !
 		pTab[i]->lLightId = -1;
 
 		delete pTab[i];
 	}
 
-	delete [] pTab;
+	pTab.clear();
 }
 
 void CMultiMagicMissile::Create()
@@ -510,7 +512,7 @@ void CMultiMagicMissile::Create()
 		}
 	}
 	
-	for(unsigned int i = 0; i < uiNumber; i++) {
+	for(size_t i = 0; i < pTab.size(); i++) {
 		Anglef angles(afAlpha, afBeta, 0.f);
 		
 		if(i > 0) {
@@ -565,7 +567,7 @@ void CMultiMagicMissile::Create()
 
 void CMultiMagicMissile::CheckCollision()
 {
-	for(unsigned int i = 0; i < uiNumber; i++) {
+	for(size_t i = 0; i < pTab.size(); i++) {
 		CMagicMissile * missile = (CMagicMissile *) pTab[i];
 		
 		if(missile->bExplo)
@@ -610,7 +612,7 @@ bool CMultiMagicMissile::CheckAllDestroyed()
 {
 	long nbmissiles	= 0;
 	
-	for(unsigned int i = 0; i < uiNumber; i++) {
+	for(size_t i = 0; i < pTab.size(); i++) {
 		CMagicMissile *pMM = pTab[i];
 		if(pMM->bMove)
 			nbmissiles++;
@@ -621,14 +623,14 @@ bool CMultiMagicMissile::CheckAllDestroyed()
 
 void CMultiMagicMissile::Update(unsigned long _ulTime)
 {
-	for(unsigned int i = 0 ; i < uiNumber ; i++) {
+	for(size_t i = 0 ; i < pTab.size() ; i++) {
 		pTab[i]->Update(_ulTime);
 	}
 }
 
 void CMultiMagicMissile::Render()
 { 
-	for(unsigned int i = 0; i < uiNumber; i++) {
+	for(size_t i = 0; i < pTab.size(); i++) {
 		pTab[i]->Render();
 		
 		CMagicMissile * pMM = (CMagicMissile *) pTab[i];

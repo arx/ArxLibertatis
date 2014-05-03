@@ -85,11 +85,10 @@ private:
 class CMultiMagicMissile : public CSpellFx {
 	
 private:
-	CMagicMissile ** pTab;
-	unsigned int uiNumber;
+	std::vector<CMagicMissile *> pTab;
 	
 public:
-	explicit CMultiMagicMissile(long nb, long spellHandle);
+	explicit CMultiMagicMissile(size_t nb, long spellHandle);
 	~CMultiMagicMissile();
 	
 	void CheckCollision();
