@@ -1188,7 +1188,9 @@ if(BUILD_IO_LIBRARY)
 
 	set(arxiolibrary_LIBRARIES ${BASE_LIBRARIES} ${ZLIB_LIBRARIES})
 
-	add_library(ArxIO SHARED "" ${arxiolibrary_SOURCES} ${arxiolibrary_LIBRARIES})
+	add_library(ArxIO SHARED "" ${arxiolibrary_SOURCES})
+	
+	target_link_libraries(ArxIO ${arxiolibrary_LIBRARIES})
 
 endif()
 
