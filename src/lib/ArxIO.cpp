@@ -29,12 +29,12 @@
 #include "io/log/Logger.h"
 #include "io/log/ConsoleLogger.h"
 
-namespace logger {
+namespace {
 
-class MemoryLogger : public Backend {
+class MemoryLogger : public logger::Backend {
 
 public:
-	void log(const Source & file, int line, Logger::LogLevel level, const std::string & str) {
+	void log(const logger::Source & file, int line, Logger::LogLevel level, const std::string & str) {
 
 		ARX_UNUSED(file);
 		ARX_UNUSED(line);
@@ -62,9 +62,9 @@ public:
 	std::deque<std::string> m_Lines;
 };
 
-}
+} // anonymous namespace
 
-static logger::MemoryLogger memLogger;
+static MemoryLogger memLogger;
 
 void ArxIO_init() {
 	Logger::add(&memLogger);
