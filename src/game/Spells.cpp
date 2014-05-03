@@ -142,7 +142,7 @@ extern bool TRUE_PLAYER_MOUSELOOK_ON;
 bool WILLRETURNTOFREELOOK = false;
 bool GLOBAL_MAGIC_MODE = true;
 
-extern long MAGICMODE;
+extern bool MAGICMODE;
 
 extern bool bRenderInCursorMode;
 
@@ -688,7 +688,7 @@ void ARX_SPELLS_ManageMagic() {
 			player.doingmagic = 2;
 			if(io->anims[ANIM_CAST_START]) {
 				changeAnimation(io, 1, io->anims[ANIM_CAST_START]);
-				MAGICMODE = 1;
+				MAGICMODE = true;
 			}
 		}
 		
