@@ -1225,6 +1225,7 @@ set(STYLE_CHECKED_SOURCES
 	${arxsavetool_SOURCES}
 	${arxunpak_SOURCES}
 	${arxcrashreporter_MANUAL_SOURCES}
+	${arxiolibrary_SOURCES}
 )
 
 add_style_check_target(style "${STYLE_CHECKED_SOURCES}" ARX)
