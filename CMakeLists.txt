@@ -85,11 +85,13 @@ if(CMAKE_VERSION VERSION_LESS 2.8.5)
 	    STRING "read-only architecture-independent data root (share) (relative to prefix).")
 	set(CMAKE_INSTALL_BINDIR "bin" CACHE
 	    STRING "user executables (bin) (relative to prefix).")
+	set(CMAKE_INSTALL_LIBDIR "lib" CACHE
+	    STRING "libraries (lib) (relative to prefix).")
 	set(CMAKE_INSTALL_LIBEXECDIR "libexec" CACHE
 	    STRING "program executables (libexec) (relative to prefix).")
 	set(CMAKE_INSTALL_MANDIR "${CMAKE_INSTALL_DATAROOTDIR}/man" CACHE
 	    STRING "man documentation (DATAROOTDIR/man) (relative to prefix).")
-	foreach(dir BINDIR LIBEXECDIR DATAROOTDIR MANDIR)
+	foreach(dir BINDIR LIBDIR LIBEXECDIR DATAROOTDIR MANDIR)
 		if(NOT IS_ABSOLUTE ${CMAKE_INSTALL_${dir}})
 			set(CMAKE_INSTALL_FULL_${dir} "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_${dir}}")
 		else()
@@ -1181,7 +1183,7 @@ if(BUILD_TOOLS)
 endif()
 
 if(BUILD_IO_LIBRARY)
-
+	
 	set(ArxIO_SOURCES
 		${IO_FILESYSTEM_SOURCES}
 		${IO_LOGGER_SOURCES}
@@ -1193,13 +1195,11 @@ if(BUILD_IO_LIBRARY)
 		src/platform/Environment.cpp
 		src/lib/ArxIO.cpp
 	)
-
-	set(ArxIO_LIBRARIES ${BASE_LIBRARIES} ${ZLIB_LIBRARIES})
-
-	add_library(ArxIO SHARED "" ${ArxIO_SOURCES})
 	
-	target_link_libraries(ArxIO ${ArxIO_LIBRARIES})
-
+	set(ArxIO_LIBRARIES ${BASE_LIBRARIES} ${ZLIB_LIBRARIES})
+	
+	add_library_shared(ArxIO "${ArxIO_SOURCES}" "${ArxIO_LIBRARIES}")
+	
 endif()
 
 

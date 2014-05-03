@@ -74,33 +74,65 @@ endfunction(enable_unity_build)
 
 unset(SHARED_BUILD_EXECUTABLES CACHE)
 
+function(_add_binary_shared BIN TYPE SRC LIBS EXTRA INSTALL)
+	list(REMOVE_DUPLICATES SRC)
+	list(REMOVE_DUPLICATES LIBS)
+	set(SHARED_BUILD_${BIN}_TYPE "${TYPE}" CACHE INTERNAL "")
+	set(SHARED_BUILD_${BIN}_SOURCES "${SRC}" CACHE INTERNAL "")
+	set(SHARED_BUILD_${BIN}_LIBS "${LIBS}" CACHE INTERNAL "")
+	set(SHARED_BUILD_${BIN}_EXTRA "${EXTRA}" CACHE INTERNAL "")
+	set(SHARED_BUILD_${BIN}_INSTALL "${INSTALL}" CACHE INTERNAL "")
+	set(SHARED_BUILD_EXECUTABLES ${SHARED_BUILD_EXECUTABLES} ${BIN} CACHE INTERNAL "")
+endfunction(_add_binary_shared)
+
 # Add an executable to be build by either separate_build(), shared_build() or unity_build()
 #  EXE   Name of the executable to add.
 #  TYPE	 Type of exe (ex: WIN32)
-#  SRC   The executables source files.
+#  SRC   The executable's source files.
 #  LIBS  Libraries to link the executable against.
-#  EXTRA Additional arguments to pass to add_executable() but not shared amongs executables or included in unity builds.
-#  INSTALL Additional arguments to install. Default: "DESTINATION ${CMAKE_INSTALL_BINDIR}"
+#  EXTRA Additional arguments to pass to add_executable() but not shared with
+#        other binaries or included in unity builds.
+#  INSTALL Install directory. Default: "${CMAKE_INSTALL_BINDIR}"
 function(add_executable_shared EXE TYPE SRC LIBS)
-	list(REMOVE_DUPLICATES SRC)
-	list(REMOVE_DUPLICATES LIBS)
-	set(SHARED_BUILD_${EXE}_TYPE "${TYPE}" CACHE INTERNAL "")
-	set(SHARED_BUILD_${EXE}_SOURCES "${SRC}" CACHE INTERNAL "")
-	set(SHARED_BUILD_${EXE}_LIBS "${LIBS}" CACHE INTERNAL "")
 	if(ARGC GREATER 4)
-		set(SHARED_BUILD_${EXE}_EXTRA "${ARGV4}" CACHE INTERNAL "")
+		set(extra "${ARGV4}")
 	else()
-		set(SHARED_BUILD_${EXE}_EXTRA "" CACHE INTERNAL "")
+		set(extra "")
 	endif()
 	if(ARGC GREATER 5)
-		set(SHARED_BUILD_${EXE}_INSTALL DESTINATION ${ARGV5} CACHE INTERNAL "")
+		set(installdir ${ARGV5})
 	elseif(DEFINED CMAKE_INSTALL_BINDIR)
-		set(SHARED_BUILD_${EXE}_INSTALL DESTINATION "${CMAKE_INSTALL_BINDIR}" CACHE INTERNAL "")
+		set(installdir "${CMAKE_INSTALL_BINDIR}")
 	else()
-		set(SHARED_BUILD_${EXE}_INSTALL DESTINATION bin CACHE INTERNAL "")
+		set(installdir bin)
 	endif()
-	set(SHARED_BUILD_EXECUTABLES ${SHARED_BUILD_EXECUTABLES} ${EXE} CACHE INTERNAL "")
-endfunction(add_executable_shared)
+	set(install RUNTIME DESTINATION "${installdir}")
+	_add_binary_shared("${EXE}" "${TYPE}" "${SRC}" "${LIBS}" "${extra}" "${install}")
+endfunction()
+
+# Add a library to be build by either separate_build(), shared_build() or unity_build()
+#  LIB   Name of the library to add.
+#  SRC   The librarie's source files.
+#  LIBS  Libraries to link the executable against.
+#  EXTRA Additional arguments to pass to add_library() but not shared with
+#        orther binaries or included in unity builds.
+#  INSTALL Install directory. Default: "${CMAKE_INSTALL_LIBDIR}"
+function(add_library_shared LIB SRC LIBS)
+	if(ARGC GREATER 4)
+		set(extra "${ARGV4}")
+	else()
+		set(extra "")
+	endif()
+	if(ARGC GREATER 5)
+		set(installdir ${ARGV5})
+	elseif(DEFINED CMAKE_INSTALL_LIBDIR)
+		set(installdir "${CMAKE_INSTALL_LIBDIR}")
+	else()
+		set(installdir lib)
+	endif()
+	set(install LIBRARY DESTINATION "${installdir}" ARCHIVE DESTINATION "${installdir}")
+	_add_binary_shared("${LIB}" SHARED "${SRC}" "${LIBS}" "${extra}" "${install}")
+endfunction()
 
 
 # Calculate the intersection of the lists SRC1 and SRC2 and store the result in the variable named by DEST.
@@ -162,8 +194,14 @@ function(_shared_build_helper LIB LIST EXESET FIRST)
 		# Add a new library for the common sources
 		add_library(${lib} STATIC ${common_src})
 		
+		set(is_shared_lib 0)
+		
 		# Remove sources from executables and link the library instead.
 		foreach(exe IN LISTS EXESET)
+			
+			if("${SHARED_BUILD_${exe}_TYPE}" STREQUAL "SHARED")
+				set(is_shared_lib 1)
+			endif()
 			
 			set(uncommon_src "${SHARED_BUILD_${exe}_SOURCES}")
 			foreach(src IN LISTS common_src)
@@ -174,6 +212,15 @@ function(_shared_build_helper LIB LIST EXESET FIRST)
 			set(SHARED_BUILD_${exe}_LIBS ${lib} "${SHARED_BUILD_${exe}_LIBS}" CACHE INTERNAL "")
 			
 		endforeach(exe)
+		
+		if(is_shared_lib)
+			if(CMAKE_VERSION LESS 2.8.9)
+				set(pic_flags "${CMAKE_SHARED_LIBRARY_CXX_FLAGS}")
+				set_target_properties(${lib} PROPERTIES COMPILE_FLAGS "${pic_flags}")
+			else()
+				set_target_properties(${lib} PROPERTIES POSITION_INDEPENDENT_CODE ON)
+			endif()
+		endif()
 		
 	endif()
 	
@@ -195,9 +242,21 @@ function(_shared_build_cleanup)
 endfunction(_shared_build_cleanup)
 
 function(_shared_build_add_executable exe)
-	add_executable(${exe} ${SHARED_BUILD_${exe}_TYPE} ${SHARED_BUILD_${exe}_SOURCES} ${SHARED_BUILD_${exe}_EXTRA})
+	if("${SHARED_BUILD_${exe}_TYPE}" STREQUAL "SHARED")
+		add_library(
+			${exe} ${SHARED_BUILD_${exe}_TYPE}
+			${SHARED_BUILD_${exe}_SOURCES}
+			${SHARED_BUILD_${exe}_EXTRA}
+		)
+	else()
+		add_executable(
+			${exe} ${SHARED_BUILD_${exe}_TYPE}
+			${SHARED_BUILD_${exe}_SOURCES}
+			${SHARED_BUILD_${exe}_EXTRA}
+		)
+	endif()
 	target_link_libraries(${exe} ${SHARED_BUILD_${exe}_LIBS})
-	install(TARGETS ${exe} RUNTIME ${SHARED_BUILD_${exe}_INSTALL})
+	install(TARGETS ${exe} ${SHARED_BUILD_${exe}_INSTALL})
 endfunction(_shared_build_add_executable)
 
 # Build each executable separately.

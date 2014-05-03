@@ -64,6 +64,7 @@ The following options can be used to customize where `make install` puts the var
 * `CMAKE_INSTALL_MANDIR` (default: `${DATAROOTDIR}/man`): Where to install man pages
 * `CMAKE_INSTALL_BINDIR` (default: `bin`): Where to install user executables
 * `GAMESBINDIR` (default: `${BINDIR}`): Where to install game executables
+* `CMAKE_INSTALL_LIBDIR` (default: `lib`): Where to install libraries
 * `CMAKE_INSTALL_LIBEXECDIR` (default: `libexec`): Where to install non-user executables
 * `SCRIPTDIR` (default: `${BINDIR}`): Where to install the data install script
 * `INSTALL_DATADIR` (default: `${DATAROOTDIR}/games/arx`): Where to install Arx Libertatis data files. This should be one of the directories found from DATA_DIR_PREFIXES + DATA_DIR combinations at runtime.
