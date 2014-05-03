@@ -1183,15 +1183,15 @@ endif()
 if(BUILD_IO_LIBRARY)
 
 	set(ArxIO_SOURCES
-		src/lib/ArxIO.cpp
+		${IO_FILESYSTEM_SOURCES}
+		${IO_LOGGER_SOURCES}
+		${UTIL_SOURCES}
 		src/io/Blast.cpp
 		src/platform/Lock.cpp
 		src/platform/Platform.cpp
 		src/platform/ProgramOptions.cpp
 		src/platform/Environment.cpp
-		${IO_FILESYSTEM_SOURCES}
-		${IO_LOGGER_SOURCES}
-		${UTIL_SOURCES}
+		src/lib/ArxIO.cpp
 	)
 
 	set(ArxIO_LIBRARIES ${BASE_LIBRARIES} ${ZLIB_LIBRARIES})
