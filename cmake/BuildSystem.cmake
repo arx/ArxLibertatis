@@ -244,7 +244,7 @@ function(_shared_build_cleanup)
 	
 endfunction()
 
-function(_shared_build_add_executable bin)
+function(_shared_build_add_binary bin)
 	if("${SHARED_BUILD_${bin}_TYPE}" STREQUAL "SHARED")
 		add_library(
 			${bin} ${SHARED_BUILD_${bin}_TYPE}
@@ -266,7 +266,7 @@ endfunction()
 function(separate_build)
 	
 	foreach(bin IN LISTS SHARED_BUILD_BINARIES)
-		_shared_build_add_executable(${bin})
+		_shared_build_add_binary(${bin})
 	endforeach()
 	
 	_shared_build_cleanup()
@@ -307,7 +307,7 @@ function(unity_build)
 	
 	foreach(bin IN LISTS SHARED_BUILD_BINARIES)
 		enable_unity_build(${bin} SHARED_BUILD_${bin}_SOURCES)
-		_shared_build_add_executable(${bin})
+		_shared_build_add_binary(${bin})
 		add_dependencies(${bin} ub_notice)
 	endforeach()
 	
