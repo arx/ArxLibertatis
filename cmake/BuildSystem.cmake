@@ -152,7 +152,7 @@ function(intersect DEST SRC1 SRC2)
 endfunction(intersect)
 
 
-function(_shared_build_helper LIB LIST EXESET FIRST)
+function(_shared_build_helper LIB LIST BINARIES FIRST)
 	
 	set(list ${LIST})
 	set(first ${FIRST})
@@ -162,7 +162,7 @@ function(_shared_build_helper LIB LIST EXESET FIRST)
 		
 		list(REMOVE_ITEM list ${exe})
 		
-		set(exeset ${EXESET} ${exe})
+		set(exeset ${BINARIES} ${exe})
 		
 		_shared_build_helper(${LIB}_${exe} "${list}" "${exeset}" ${first})
 		
@@ -172,7 +172,7 @@ function(_shared_build_helper LIB LIST EXESET FIRST)
 	
 	# Find sources common to all executables in the current set.
 	set(first 1)
-	foreach(exe IN LISTS EXESET)
+	foreach(exe IN LISTS BINARIES)
 		if(first)
 			set(first 0)
 			set(common_src "${SHARED_BUILD_${exe}_SOURCES}")
@@ -197,7 +197,7 @@ function(_shared_build_helper LIB LIST EXESET FIRST)
 		set(is_shared_lib 0)
 		
 		# Remove sources from executables and link the library instead.
-		foreach(exe IN LISTS EXESET)
+		foreach(exe IN LISTS BINARIES)
 			
 			if("${SHARED_BUILD_${exe}_TYPE}" STREQUAL "SHARED")
 				set(is_shared_lib 1)
