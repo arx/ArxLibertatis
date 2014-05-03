@@ -1174,7 +1174,7 @@ endif()
 
 if(BUILD_IO_LIBRARY)
 
-	set(arxiolibrary_SOURCES
+	set(ArxIO_SOURCES
 		src/lib/ArxIO.cpp
 		src/io/Blast.cpp
 		src/platform/Lock.cpp
@@ -1186,11 +1186,11 @@ if(BUILD_IO_LIBRARY)
 		${UTIL_SOURCES}
 	)
 
-	set(arxiolibrary_LIBRARIES ${BASE_LIBRARIES} ${ZLIB_LIBRARIES})
+	set(ArxIO_LIBRARIES ${BASE_LIBRARIES} ${ZLIB_LIBRARIES})
 
-	add_library(ArxIO SHARED "" ${arxiolibrary_SOURCES})
+	add_library(ArxIO SHARED "" ${ArxIO_SOURCES})
 	
-	target_link_libraries(ArxIO ${arxiolibrary_LIBRARIES})
+	target_link_libraries(ArxIO ${ArxIO_LIBRARIES})
 
 endif()
 
@@ -1225,7 +1225,7 @@ set(STYLE_CHECKED_SOURCES
 	${arxsavetool_SOURCES}
 	${arxunpak_SOURCES}
 	${arxcrashreporter_MANUAL_SOURCES}
-	${arxiolibrary_SOURCES}
+	${ArxIO_SOURCES}
 )
 
 add_style_check_target(style "${STYLE_CHECKED_SOURCES}" ARX)
