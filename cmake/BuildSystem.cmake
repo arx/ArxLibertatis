@@ -1,13 +1,15 @@
 
-# Meta build system for unity build and builds with shared sources between different executables.
+# Meta build system for unity build and builds with shared sources between different binaries.
 #
-# Add executables using add_executable_shared(EXE TYPE SRC LIBS EXTRA).
+# Add executables using add_executable_shared(EXE TYPE SRC LIBS [EXTRA [INSTALL]]).
+# Add libraries using add_library_shared(LIB SRC LIBS [EXTRA [INSTALL]]).
 #
-# Build the executables using either separate_build(), shared_build() or unity_build().
+# Build the binaries using either separate_build(), shared_build() or unity_build().
 #
 
-# create a unity build file for the executable UB_SUFFIX with the sources stored in the variable named by SOURCE_VARIABLE_NAME
-# the name of the resulting unity build file will be stored in the variable named by SOURCE_VARIABLE_NAME
+# Create a unity build file for the binary UB_SUFFIX with the sources stored in the
+# variable named by SOURCE_VARIABLE_NAME. The name of the resulting unity build file
+# will be stored in the variable named by SOURCE_VARIABLE_NAME.
 function(enable_unity_build UB_SUFFIX SOURCE_VARIABLE_NAME)
 	set(files ${${SOURCE_VARIABLE_NAME}})
 	
@@ -69,6 +71,7 @@ function(enable_unity_build UB_SUFFIX SOURCE_VARIABLE_NAME)
 	
 	# Put ub file at the root of the project
 	source_group("" FILES ${unit_build_file})
+	
 endfunction()
 
 
@@ -196,7 +199,7 @@ function(_shared_build_helper LIB LIST BINARIES FIRST)
 		
 		set(is_shared_lib 0)
 		
-		# Remove sources from executables and link the library instead.
+		# Remove sources from binaries and link the library instead.
 		foreach(bin IN LISTS BINARIES)
 			
 			if("${SHARED_BUILD_${bin}_TYPE}" STREQUAL "SHARED")
@@ -297,7 +300,7 @@ function(shared_build)
 endfunction()
 
 
-# Build each executable by including all the source files into one big master file.
+# Build each binary by including all the source files into one big master file.
 function(unity_build)
 	
 	add_custom_target(ub_notice COMMENT "Note: The unity build binaries may take a long time to compile, without any indication of progress. Be patient.")
