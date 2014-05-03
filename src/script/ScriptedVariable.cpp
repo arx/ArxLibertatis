@@ -65,12 +65,6 @@ public:
 	
 	Result execute(Context & context) {
 		
-		HandleFlags("a") {
-			if(flg & flag('a')) {
-				ScriptWarning << "broken 'set -a' script command used";
-			}
-		}
-		
 		string var = context.getWord();
 		string val = context.getWord();
 		
