@@ -1211,15 +1211,6 @@ else()
 	shared_build()
 endif()
 
-if(ARX_HAVE_CRASHREPORTER)
-	# Make sure -fPIE is also used in unity build
-	# TODO properly track this in BuildSystem.cmake
-	set_property(
-		TARGET arxcrashreporter
-		APPEND PROPERTY COMPILE_FLAGS " ${Qt5Core_EXECUTABLE_COMPILE_FLAGS}"
-	)
-endif()
-
 
 # Custom make targets
 
