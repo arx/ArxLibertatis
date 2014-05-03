@@ -72,7 +72,7 @@ function(enable_unity_build UB_SUFFIX SOURCE_VARIABLE_NAME)
 endfunction(enable_unity_build)
 
 
-unset(SHARED_BUILD_EXECUTABLES CACHE)
+unset(SHARED_BUILD_BINARIES CACHE)
 
 function(_add_binary_shared BIN TYPE SRC LIBS EXTRA INSTALL)
 	list(REMOVE_DUPLICATES SRC)
@@ -82,7 +82,7 @@ function(_add_binary_shared BIN TYPE SRC LIBS EXTRA INSTALL)
 	set(SHARED_BUILD_${BIN}_LIBS "${LIBS}" CACHE INTERNAL "")
 	set(SHARED_BUILD_${BIN}_EXTRA "${EXTRA}" CACHE INTERNAL "")
 	set(SHARED_BUILD_${BIN}_INSTALL "${INSTALL}" CACHE INTERNAL "")
-	set(SHARED_BUILD_EXECUTABLES ${SHARED_BUILD_EXECUTABLES} ${BIN} CACHE INTERNAL "")
+	set(SHARED_BUILD_BINARIES ${SHARED_BUILD_BINARIES} ${BIN} CACHE INTERNAL "")
 endfunction(_add_binary_shared)
 
 # Add an executable to be build by either separate_build(), shared_build() or unity_build()
@@ -229,7 +229,7 @@ endfunction(_shared_build_helper)
 
 function(_shared_build_cleanup)
 	
-	foreach(exe IN LISTS SHARED_BUILD_EXECUTABLES)
+	foreach(exe IN LISTS SHARED_BUILD_BINARIES)
 		unset(SHARED_BUILD_${exe}_TYPE CACHE)
 		unset(SHARED_BUILD_${exe}_SOURCES CACHE)
 		unset(SHARED_BUILD_${exe}_LIBS CACHE)
@@ -237,7 +237,7 @@ function(_shared_build_cleanup)
 		unset(SHARED_BUILD_${exe}_INSTALL CACHE)
 	endforeach(exe)
 	
-	unset(SHARED_BUILD_EXECUTABLES CACHE)
+	unset(SHARED_BUILD_BINARIES CACHE)
 	
 endfunction(_shared_build_cleanup)
 
@@ -262,7 +262,7 @@ endfunction(_shared_build_add_executable)
 # Build each executable separately.
 function(separate_build)
 	
-	foreach(exe IN LISTS SHARED_BUILD_EXECUTABLES)
+	foreach(exe IN LISTS SHARED_BUILD_BINARIES)
 		_shared_build_add_executable(${exe})
 	endforeach(exe)
 	
@@ -274,12 +274,12 @@ endfunction(separate_build)
 # Build each source file separately and extract common source files into static libraries.
 function(shared_build)
 	
-	set(list1 ${SHARED_BUILD_EXECUTABLES})
+	set(list1 ${SHARED_BUILD_BINARIES})
 	
 	set(first 1)
 	
 	# Find common sources and extract static libraries.
-	foreach(exe1 IN LISTS SHARED_BUILD_EXECUTABLES)
+	foreach(exe1 IN LISTS SHARED_BUILD_BINARIES)
 		list(REMOVE_ITEM list1 ${exe1})
 		set(list2 ${list1})
 		# Require two source sets before calling _shared_build_helper so we don't create static libraries for individual executables!
@@ -301,7 +301,7 @@ function(unity_build)
 	
 	add_custom_target(ub_notice COMMENT "Note: The unity build executables may take a long time to compile, without any indication of progress. Be patient.")
 	
-	foreach(exe IN LISTS SHARED_BUILD_EXECUTABLES)
+	foreach(exe IN LISTS SHARED_BUILD_BINARIES)
 		enable_unity_build(${exe} SHARED_BUILD_${exe}_SOURCES)
 		_shared_build_add_executable(${exe})
 		add_dependencies(${exe} ub_notice)
