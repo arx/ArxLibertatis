@@ -663,30 +663,23 @@ CIgnit::~CIgnit()
 
 void CIgnit::Kill(void)
 {
-	int nb = nblight;
-
-	while(nb--) {
-		lightHandleDestroy(tablight[nb].idl);
+	
+	std::vector<T_LINKLIGHTTOFX>::iterator itr;
+	for(itr = tablight.begin(); itr != tablight.end(); ++itr) {
+		lightHandleDestroy(itr->idl);
 	}
-
-	nblight = 0;
+	
+	tablight.clear();
 }
 
 void CIgnit::Create(Vec3f * posc, int speed)
 {
 	pos = *posc;
-	nblight = 0;
+	tablight.clear();
 	duration = speed;
 	currduration = 0;
 	m_active = true;
-
-	int	nb = 256;
-
-	while(nb--) {
-		tablight[nb].actif = 0;
-		tablight[nb].idl = -1;
-	}
-
+	
 	tp = TextureContainer::Load("graph/particles/fire_hit");
 	
 	rgb = Color3f(1.f, 1.f, 1.f);
@@ -695,8 +688,9 @@ void CIgnit::Create(Vec3f * posc, int speed)
 
 void CIgnit::Action(bool enable)
 {
-	for(int i = 0; i < nblight; i++) {
-		GLight[tablight[i].iLightNum]->status = enable;
+	std::vector<T_LINKLIGHTTOFX>::const_iterator itr;
+	for(itr = tablight.begin(); itr != tablight.end(); ++itr) {
+		GLight[itr->iLightNum]->status = enable;
 
 		if(enable) {
 			ARX_SOUND_PlaySFX(SND_SPELL_IGNITE, &spells[spellinstance].m_caster_pos);
@@ -710,30 +704,30 @@ void CIgnit::AddLight(int aiLight)
 {
 	if(arxtime.is_paused())
 		return;
+	
+	T_LINKLIGHTTOFX entry;
+	
+	entry.iLightNum = aiLight;
+	entry.poslight = GLight[aiLight]->pos;
 
-	tablight[nblight].actif = 1;
-	tablight[nblight].iLightNum = aiLight;
-	tablight[nblight].poslight = GLight[aiLight]->pos;
+	entry.idl = GetFreeDynLight();
 
-	tablight[nblight].idl = GetFreeDynLight();
-
-	if(lightHandleIsValid(tablight[nblight].idl)) {
-		EERIE_LIGHT * light = lightHandleGet(tablight[nblight].idl);
+	if(lightHandleIsValid(entry.idl)) {
+		EERIE_LIGHT * light = lightHandleGet(entry.idl);
 		
 		light->intensity = 0.7f + 2.f * rnd();
 		light->fallend = 400.f;
 		light->fallstart = 300.f;
 		light->rgb = rgb;
-		light->pos = tablight[nblight].poslight;
+		light->pos = entry.poslight;
 	}
 
-	nblight++;
+	tablight.push_back(entry);
 }
 
 void CIgnit::Update(unsigned long _ulTime) 
 {
 	float	a;
-	int		nb;
 
 	if(currduration >= duration) {
 		m_active = false;
@@ -745,21 +739,19 @@ void CIgnit::Update(unsigned long _ulTime)
 		if(a >= 1.f)
 			a = 1.f;
 		
-		nb = nblight;
+		std::vector<T_LINKLIGHTTOFX>::iterator itr;
+		for(itr = tablight.begin(); itr != tablight.end(); ++itr) {
 		
-		while(nb--) {
-			if(tablight[nb].actif) {
-				tablight[nb].posfx = pos + (tablight[nb].poslight - pos) * a;
+				itr->posfx = pos + (itr->poslight - pos) * a;
 				
-				LightHandle id = tablight[nb].idl;
+				LightHandle id = itr->idl;
 				
 				if(lightHandleIsValid(id)) {
 					EERIE_LIGHT * light = lightHandleGet(id);
 					
 					light->intensity = 0.7f + 2.f * rnd();
-					light->pos = tablight[nb].posfx;
+					light->pos = itr->posfx;
 				}
-			}
 		}
 		
 		interp = a;
@@ -781,24 +773,25 @@ void CDoze::AddLightDoze(int aiLight)
 {
 	if(arxtime.is_paused())
 		return;
+	
+	T_LINKLIGHTTOFX entry;
+	
+	entry.iLightNum = aiLight;
+	entry.poslight = GLight[aiLight]->pos;
+	entry.idl = -1;
 
-	tablight[nblight].actif = 1;
-	tablight[nblight].iLightNum = aiLight;
-	tablight[nblight].poslight = GLight[aiLight]->pos;
-	tablight[nblight].idl = -1;
-
-	nblight++;
+	tablight.push_back(entry);
 }
 
 void CIgnit::Render() {
 	
 	if(m_active) {
 		float unsuri = (1.f - interp);
-		int nb = nblight;
 		
-		while(nb--) {
-			if(tablight[nb].actif && rnd() > .5f) {
-				createSphericalSparks(tablight[nb].posfx, rnd() * 20.f * unsuri, tp, rgb, mask);
+		std::vector<T_LINKLIGHTTOFX>::const_iterator itr;
+		for(itr = tablight.begin(); itr != tablight.end(); ++itr) {
+			if(rnd() > .5f) {
+				createSphericalSparks(itr->posfx, rnd() * 20.f * unsuri, tp, rgb, mask);
 			}
 		}
 	}

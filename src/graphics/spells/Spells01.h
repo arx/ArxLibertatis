@@ -119,14 +119,12 @@ protected:
 	struct T_LINKLIGHTTOFX {
 		Vec3f poslight;
 		Vec3f posfx;
-		int actif;
 		LightHandle idl;
 		int iLightNum;
 	};
 	
 public:
-	unsigned char nblight;
-	T_LINKLIGHTTOFX tablight[256];
+	std::vector<T_LINKLIGHTTOFX> tablight;
 	
 	CIgnit();
 	~CIgnit();
