@@ -1010,41 +1010,7 @@ add_executable_shared(arx WIN32 "${ARX_SOURCES}" "${ARX_LIBRARIES}"
 
 if(ARX_HAVE_CRASHREPORTER)
 	
-	if(HAVE_QT5)
-		
-		add_definitions(
-			${Qt5Core_DEFINITIONS}
-			${Qt5Gui_DEFINITIONS}
-			${Qt5Widgets_DEFINITIONS}
-			${Qt5Network_DEFINITIONS}
-			-DQT_NO_DEBUG
-		)
-		
-		include_directories(SYSTEM
-			${Qt5Core_INCLUDE_DIRS}
-			${Qt5Gui_INCLUDE_DIRS}
-			${Qt5Widgets_INCLUDE_DIRS}
-			${Qt5Network_INCLUDE_DIRS}
-		)
-		
-	elseif(HAVE_QT4)
-		
-		add_definitions(${QT_DEFINITIONS} -DQT_NO_DEBUG)
-		
-		include_directories(SYSTEM
-			${QT_INCLUDE_DIR}
-			${QT_QTCORE_INCLUDE_DIR}
-			${QT_QTGUI_INCLUDE_DIR}
-			${QT_QTNETWORK_INCLUDE_DIR}
-		)
-		
-	endif()
-	
-	set(arxcrashreporter_SOURCES
-		${PLATFORM_SOURCES}
-		${IO_FILESYSTEM_SOURCES}
-		${IO_LOGGER_SOURCES}
-		${UTIL_SOURCES}
+	set(arxcrashreporter_Qt_SOURCES
 		tools/crashreporter/CrashReporter.cpp
 		tools/crashreporter/ErrorReport.h
 		tools/crashreporter/ErrorReport.cpp
@@ -1060,6 +1026,13 @@ if(ARX_HAVE_CRASHREPORTER)
 		tools/crashreporter/tbg/TBG.cpp
 		tools/crashreporter/ui/ErrorReportDialog.h
 		tools/crashreporter/ui/ErrorReportDialog.cpp
+	)
+	
+	set(arxcrashreporter_SOURCES
+		${PLATFORM_SOURCES}
+		${IO_FILESYSTEM_SOURCES}
+		${IO_LOGGER_SOURCES}
+		${UTIL_SOURCES}
 		"${VERSION_FILE}"
 	)
 	
@@ -1084,7 +1057,10 @@ if(ARX_HAVE_CRASHREPORTER)
 		tools/crashreporter/resources/CrashReporter.qrc
 	)
 	
-	set(arxcrashreporter_MANUAL_SOURCES "${arxcrashreporter_SOURCES}")
+	set(arxcrashreporter_MANUAL_SOURCES
+		${arxcrashreporter_SOURCES}
+		${arxcrashreporter_Qt_SOURCES}
+	)
 	
 	set(SRC_DIR tools/crashreporter/)
 	
@@ -1097,27 +1073,57 @@ if(ARX_HAVE_CRASHREPORTER)
 	
 	if(HAVE_QT5)
 		
-		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${Qt5Core_EXECUTABLE_COMPILE_FLAGS}")
+		set_property(
+			SOURCE ${arxcrashreporter_Qt_SOURCES}
+			APPEND PROPERTY COMPILE_FLAGS " ${Qt5Core_EXECUTABLE_COMPILE_FLAGS}"
+		)
 		
-		qt5_wrap_ui(arxcrashreporter_SOURCES ${arxcrashreporter_UIs})
-		qt5_wrap_cpp(arxcrashreporter_SOURCES ${arxcrashreporter_MOC_HEADERS})
-		qt5_add_resources(arxcrashreporter_SOURCES ${arxcrashreporter_RESOURCES})
+		qt5_wrap_ui(arxcrashreporter_Qt_SOURCES ${arxcrashreporter_UIs})
+		qt5_wrap_cpp(arxcrashreporter_Qt_SOURCES ${arxcrashreporter_MOC_HEADERS})
+		qt5_add_resources(arxcrashreporter_Qt_SOURCES ${arxcrashreporter_RESOURCES})
 		
 		list(APPEND arxcrashreporter_LIBRARIES
 			${Qt5Widgets_LIBRARIES}
 			${Qt5Network_LIBRARIES}
 		)
 		
+		add_definitions(
+			${Qt5Core_DEFINITIONS}
+			${Qt5Gui_DEFINITIONS}
+			${Qt5Widgets_DEFINITIONS}
+			${Qt5Network_DEFINITIONS}
+			-DQT_NO_DEBUG
+		)
+		
+		include_directories(SYSTEM
+			${Qt5Core_INCLUDE_DIRS}
+			${Qt5Gui_INCLUDE_DIRS}
+			${Qt5Widgets_INCLUDE_DIRS}
+			${Qt5Network_INCLUDE_DIRS}
+		)
+		
 	elseif(HAVE_QT4)
 		
-		qt4_wrap_ui(arxcrashreporter_SOURCES ${arxcrashreporter_UIs})
-		qt4_wrap_cpp(arxcrashreporter_SOURCES ${arxcrashreporter_MOC_HEADERS})
-		qt4_add_resources(arxcrashreporter_SOURCES ${arxcrashreporter_RESOURCES})
+		qt4_wrap_ui(arxcrashreporter_Qt_SOURCES ${arxcrashreporter_UIs})
+		qt4_wrap_cpp(arxcrashreporter_Qt_SOURCES ${arxcrashreporter_MOC_HEADERS})
+		qt4_add_resources(arxcrashreporter_Qt_SOURCES ${arxcrashreporter_RESOURCES})
 		
 		list(APPEND arxcrashreporter_LIBRARIES
 			${QT_QTCORE_LIBRARY_RELEASE}
 			${QT_QTGUI_LIBRARY_RELEASE}
 			${QT_QTNETWORK_LIBRARY_RELEASE}
+		)
+		
+		add_definitions(
+			${QT_DEFINITIONS}
+			-DQT_NO_DEBUG
+		)
+		
+		include_directories(SYSTEM
+			${QT_INCLUDE_DIR}
+			${QT_QTCORE_INCLUDE_DIR}
+			${QT_QTGUI_INCLUDE_DIR}
+			${QT_QTNETWORK_INCLUDE_DIR}
 		)
 		
 	endif()
@@ -1127,6 +1133,8 @@ if(ARX_HAVE_CRASHREPORTER)
 		list(APPEND arxcrashreporter_LIBRARIES ${DBGHELP_LIBRARIES})
 		include_directories(SYSTEM ${DBGHELP_INCLUDE_DIR})
 	endif()
+	
+	list(APPEND arxcrashreporter_SOURCES ${arxcrashreporter_Qt_SOURCES})
 	
 	add_executable_shared(arxcrashreporter WIN32 "${arxcrashreporter_SOURCES}"
 	                      "${arxcrashreporter_LIBRARIES}" "" "${CMAKE_INSTALL_LIBEXECDIR}")
@@ -1202,6 +1210,13 @@ if(UNITY_BUILD)
 else()
 	shared_build()
 endif()
+
+# Make sure -fPIE is also used in unity build
+# TODO properly track this in BuildSystem.cmake
+set_property(
+	TARGET arxcrashreporter
+	APPEND PROPERTY COMPILE_FLAGS " ${Qt5Core_EXECUTABLE_COMPILE_FLAGS}"
+)
 
 
 # Custom make targets
