@@ -434,6 +434,7 @@ datadir=''        # Output data directory
 batch=0           # Never wait for user input
 gui=0             # Display a graphical user interface (command-line interface otherwise)
 install=1         # Install new non-patch files
+selected_stuff=0  # Has the user made a selection
 installed_stuff=0 # Have we already installed anything?
 patch=1           # Install patch files if needed
 probe_patch=1     # Look for patch files in standard locations and download if needed
@@ -1443,7 +1444,10 @@ handle_cancel() {
 
 Already installed files will not be removed!"
 	fi
-	dialog_ask "$_handle_cancel_message" && print 'Aborted by user' && die
+	if [ $installed_stuff = 1 ] || [ $selected_stuff = 1 ] ; then
+		dialog_ask "$_handle_cancel_message" || return $true
+	fi
+	print 'Aborted by user' && die
 }
 
 # Update the status.
@@ -1614,6 +1618,7 @@ user_select_entry() {
 			
 			# User selected an entry -- return that
 			eval "$_user_select_entry_var=\"\$_user_select_entry_$_user_select_entry_num\""
+			selected_stuff=1
 			return $true
 			
 		fi
@@ -1648,7 +1653,7 @@ user_select_entry() {
 			
 			_user_select_entry_path="$(abspath "$_user_select_entry_path")"
 			
-			# The user selected a path, now check if it exists our criteria.
+			# The user selected a path, now check if it meets our criteria.
 			case "$_user_select_entry_access" in
 				--existing)
 				if [ ! -e "$_user_select_entry_path" ]  ; then
@@ -1677,6 +1682,7 @@ user_select_entry() {
 			
 			# Everything went better than expected - save the result
 			eval "$_user_select_entry_var=\"\$_user_select_entry_path\""
+			selected_stuff=1
 			return $true
 			
 		done
@@ -2364,6 +2370,7 @@ cleanup_workdir() {
 # Usage: create_workdir
 create_workdir() {
 	[ -z "$workdir" ] || return $true
+	selected_stuff=1
 	workdir="$datadir/$command-temp"
 	cleanup_workdir
 	on_exit cleanup_workdir
