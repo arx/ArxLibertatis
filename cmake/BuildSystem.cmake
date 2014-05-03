@@ -184,8 +184,8 @@ function(_shared_build_helper LIB LIST BINARIES FIRST)
 	# We found common sources!
 	if(NOT "${common_src}" STREQUAL "")
 		
-		list(LENGTH LIST all_execs)
-		if(FIRST AND all_execs EQUAL 0)
+		list(LENGTH LIST binaries_remaining)
+		if(FIRST AND binaries_remaining EQUAL 0)
 			set(lib common)
 		else()
 			set(lib _${LIB}_common)
