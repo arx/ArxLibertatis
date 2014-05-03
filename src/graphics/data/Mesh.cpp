@@ -1372,8 +1372,7 @@ static void EERIE_PORTAL_Release() {
 				free(portals->room[nn].portals), portals->room[nn].portals = NULL;
 				delete portals->room[nn].pVertexBuffer, portals->room[nn].pVertexBuffer = NULL;
 				free(portals->room[nn].pussIndice), portals->room[nn].pussIndice = NULL;
-				free(portals->room[nn].ppTextureContainer);
-				portals->room[nn].ppTextureContainer = NULL;
+				portals->room[nn].ppTextureContainer.clear();
 			}
 		}
 		free(portals->room), portals->room = NULL;
@@ -2718,10 +2717,9 @@ void EERIE_PORTAL_ReleaseOnlyVertexBuffer() {
 	LogDebug("Destroying scene VBOs");
 	
 	for(long i = 0; i < portals->roomsize(); i++) {
-		portals->room[i].usNbTextures = 0;
 		delete portals->room[i].pVertexBuffer, portals->room[i].pVertexBuffer = NULL;
 		free(portals->room[i].pussIndice), portals->room[i].pussIndice = NULL;
-		free(portals->room[i].ppTextureContainer), portals->room[i].ppTextureContainer = NULL;
+		portals->room[i].ppTextureContainer.clear();
 	}
 }
 
@@ -2870,11 +2868,7 @@ void ComputePortalVertexBuffer() {
 		         << vertexCount << " vertices, " << indexCount << " indices");
 		
 		// Allocate space to list all textures for this room
-		// TODO use std::vector
-		room->ppTextureContainer = (TextureContainer **)realloc(
-			room->ppTextureContainer,
-			sizeof(*room->ppTextureContainer) * (room->usNbTextures + ntextures)
-		);
+		room->ppTextureContainer.reserve(room->ppTextureContainer.size() + ntextures);
 		
 		TextureMap::const_iterator it;
 		for(it = infos.begin(); it != infos.end(); ++it) {
@@ -2935,7 +2929,7 @@ void ComputePortalVertexBuffer() {
 			}
 			
 			// Record that the texture is used for this room
-			room->ppTextureContainer[room->usNbTextures++] = texture;
+			room->ppTextureContainer.push_back(texture);
 			
 			// Save the 
 			

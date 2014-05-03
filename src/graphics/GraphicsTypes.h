@@ -462,8 +462,7 @@ struct EERIE_ROOM_DATA {
 	float radius;
 	unsigned short * pussIndice;
 	VertexBuffer<SMY_VERTEX> * pVertexBuffer;
-	unsigned long usNbTextures;
-	TextureContainer ** ppTextureContainer;
+	std::vector<TextureContainer *> ppTextureContainer;
 };
 
 struct EERIE_PORTAL_DATA

@@ -607,13 +607,11 @@ long ARX_PORTALS_GetRoomNumForPosition(const Vec3f & pos,long flag)
 void ARX_PORTALS_Frustrum_ClearIndexCount(long room_num) {
 
 	EERIE_ROOM_DATA & room = portals->room[room_num];
+	
+	std::vector<TextureContainer *>::const_iterator itr;
+	for(itr = room.ppTextureContainer.begin(); itr != room.ppTextureContainer.end(); ++itr) {
 
-	int iNbTex = room.usNbTextures;
-	TextureContainer **ppTexCurr = room.ppTextureContainer;
-
-	while(iNbTex--) {
-
-		TextureContainer * pTexCurr = *ppTexCurr;
+		TextureContainer * pTexCurr = *itr;
 		GRenderer->SetTexture(0, pTexCurr);
 
 		SMY_ARXMAT & roomMat = pTexCurr->tMatRoom[room_num];
@@ -623,8 +621,6 @@ void ARX_PORTALS_Frustrum_ClearIndexCount(long room_num) {
 		roomMat.count[SMY_ARXMAT::Multiplicative] = 0;
 		roomMat.count[SMY_ARXMAT::Additive] = 0;
 		roomMat.count[SMY_ARXMAT::Subtractive] = 0;
-
-		ppTexCurr++;
 	}
 }
 
@@ -1226,14 +1222,12 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoftRender(long room_num) {
 	//render opaque
 	GRenderer->SetCulling(Renderer::CullNone);
 	GRenderer->SetAlphaFunc(Renderer::CmpGreater, .5f);
-
-	int iNbTex = room.usNbTextures;
-	TextureContainer **ppTexCurr = room.ppTextureContainer;
-
-	while(iNbTex--) {
-		TextureContainer *pTexCurr = *ppTexCurr;
-
-		SMY_ARXMAT & roomMat = pTexCurr->tMatRoom[room_num];
+	
+	std::vector<TextureContainer *>::const_iterator itr;
+	for(itr = room.ppTextureContainer.begin(); itr != room.ppTextureContainer.end(); ++itr) {
+		
+		TextureContainer *pTexCurr = *itr;
+		const SMY_ARXMAT & roomMat = pTexCurr->tMatRoom[room_num];
 
 		GRenderer->SetTexture(0, pTexCurr);
 
@@ -1254,8 +1248,6 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoftRender(long room_num) {
 
 			EERIEDrawnPolys += roomMat.count[SMY_ARXMAT::Opaque];
 		}
-
-		ppTexCurr++;
 	}
 	
 	GRenderer->GetTextureStage(0)->setColorOp(TextureStage::OpModulate);
@@ -1277,13 +1269,11 @@ void ARX_PORTALS_Frustrum_RenderRoom_TransparencyTSoftCull(long room_num)
 {
 	//render transparency
 	EERIE_ROOM_DATA & room = portals->room[room_num];
+	
+	std::vector<TextureContainer *>::const_iterator itr;
+	for(itr = room.ppTextureContainer.begin(); itr != room.ppTextureContainer.end(); ++itr) {
 
-	int iNbTex = room.usNbTextures;
-	TextureContainer **ppTexCurr = room.ppTextureContainer;
-
-	while(iNbTex--) {
-
-		TextureContainer * pTexCurr = *ppTexCurr;
+		TextureContainer * pTexCurr = *itr;
 		GRenderer->SetTexture(0, pTexCurr);
 
 		SMY_ARXMAT & roomMat = pTexCurr->tMatRoom[room_num];
@@ -1331,8 +1321,6 @@ void ARX_PORTALS_Frustrum_RenderRoom_TransparencyTSoftCull(long room_num)
 
 			EERIEDrawnPolys += roomMat.count[transType];
 		}
-
-		ppTexCurr++;
 	}
 }
 
