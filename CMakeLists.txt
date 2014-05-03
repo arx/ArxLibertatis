@@ -761,7 +761,6 @@ set(PHYSICS_SOURCES
 
 # Basic platform abstraction sources
 set(PLATFORM_SOURCES
-	src/platform/Dialog.cpp
 	src/platform/Environment.cpp
 	src/platform/Lock.cpp
 	src/platform/OS.cpp
@@ -770,14 +769,15 @@ set(PLATFORM_SOURCES
 	src/platform/ProgramOptions.cpp
 	src/platform/Time.cpp
 )
-if(MACOSX)
-	list(APPEND PLATFORM_SOURCES src/platform/Dialog.mm)
-endif()
 
-# Extra platform abstraction - depends on the crash handler
+# Extra platform abstraction - depends on the crash handler or SDL
 set(PLATFORM_EXTRA_SOURCES
+	src/platform/Dialog.cpp
 	src/platform/Thread.cpp
 )
+if(MACOSX)
+	list(APPEND PLATFORM_EXTRA_SOURCES src/platform/Dialog.mm)
+endif()
 
 # Crash handler sources
 set(PLATFORM_CRASHHANDLER_SOURCES src/platform/CrashHandler.cpp)
