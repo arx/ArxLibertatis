@@ -77,41 +77,62 @@ endfunction()
 
 unset(SHARED_BUILD_BINARIES CACHE)
 
-function(_add_binary_shared BIN TYPE SRC LIBS EXTRA INSTALL)
+
+# Change the type of a binary.
+#  BIN   Name of the binary to change the type of.
+#  TYPE  The type to change the binary to.
+# Valid types:
+#  WIN32  Create a GUI executable.
+function(set_binary_type BIN TYPE)
+	set(SHARED_BUILD_${BIN}_TYPE "${TYPE}" CACHE INTERNAL "")
+endfunction()
+
+
+# Change the install directory of a binary.
+#  BIN  Name of the binary to change the type of.
+#  DIR  Where to install the binary.
+function(set_binary_installdir BIN DIR)
+	if("${SHARED_BUILD_${BIN}_TYPE}" STREQUAL "SHARED")
+		set(install LIBRARY DESTINATION "${DIR}" ARCHIVE DESTINATION "${DIR}")
+	else()
+		set(install RUNTIME DESTINATION "${DIR}")
+	endif()
+	set(SHARED_BUILD_${BIN}_INSTALL "${install}" CACHE INTERNAL "")
+endfunction()
+
+
+function(_add_binary_shared BIN TYPE SRC LIBS EXTRA INSTALLDIR)
 	list(REMOVE_DUPLICATES SRC)
 	list(REMOVE_DUPLICATES LIBS)
-	set(SHARED_BUILD_${BIN}_TYPE "${TYPE}" CACHE INTERNAL "")
+	set_binary_type("${BIN}" "${TYPE}")
 	set(SHARED_BUILD_${BIN}_SOURCES "${SRC}" CACHE INTERNAL "")
 	set(SHARED_BUILD_${BIN}_LIBS "${LIBS}" CACHE INTERNAL "")
 	set(SHARED_BUILD_${BIN}_EXTRA "${EXTRA}" CACHE INTERNAL "")
-	set(SHARED_BUILD_${BIN}_INSTALL "${INSTALL}" CACHE INTERNAL "")
+	set_binary_installdir("${BIN}" "${INSTALLDIR}")
 	set(SHARED_BUILD_BINARIES ${SHARED_BUILD_BINARIES} ${BIN} CACHE INTERNAL "")
 endfunction()
 
+
 # Add an executable to be build by either separate_build(), shared_build() or unity_build()
 #  EXE   Name of the executable to add.
-#  TYPE	 Type of exe (ex: WIN32)
 #  SRC   The executable's source files.
 #  LIBS  Libraries to link the executable against.
 #  EXTRA Additional arguments to pass to add_executable() but not shared with
 #        other binaries or included in unity builds.
-#  INSTALL Install directory. Default: "${CMAKE_INSTALL_BINDIR}"
-function(add_executable_shared EXE TYPE SRC LIBS)
-	if(ARGC GREATER 4)
-		set(extra "${ARGV4}")
+function(add_executable_shared EXE SRC LIBS)
+	if(ARGC GREATER 3)
+		set(extra "${ARGV3}")
 	else()
 		set(extra "")
 	endif()
-	if(ARGC GREATER 5)
-		set(installdir ${ARGV5})
-	elseif(DEFINED CMAKE_INSTALL_BINDIR)
+	if(DEFINED CMAKE_INSTALL_BINDIR)
 		set(installdir "${CMAKE_INSTALL_BINDIR}")
 	else()
 		set(installdir bin)
 	endif()
-	set(install RUNTIME DESTINATION "${installdir}")
-	_add_binary_shared("${EXE}" "${TYPE}" "${SRC}" "${LIBS}" "${extra}" "${install}")
+	_add_binary_shared("${EXE}" "" "${SRC}" "${LIBS}" "${extra}" "${installdir}")
 endfunction()
+
 
 # Add a library to be build by either separate_build(), shared_build() or unity_build()
 #  LIB   Name of the library to add.
@@ -119,22 +140,18 @@ endfunction()
 #  LIBS  Libraries to link the library against.
 #  EXTRA Additional arguments to pass to add_library() but not shared with
 #        orther binaries or included in unity builds.
-#  INSTALL Install directory. Default: "${CMAKE_INSTALL_LIBDIR}"
 function(add_library_shared LIB SRC LIBS)
-	if(ARGC GREATER 4)
-		set(extra "${ARGV4}")
+	if(ARGC GREATER 3)
+		set(extra "${ARGV3}")
 	else()
 		set(extra "")
 	endif()
-	if(ARGC GREATER 5)
-		set(installdir ${ARGV5})
-	elseif(DEFINED CMAKE_INSTALL_LIBDIR)
+	if(DEFINED CMAKE_INSTALL_LIBDIR)
 		set(installdir "${CMAKE_INSTALL_LIBDIR}")
 	else()
 		set(installdir lib)
 	endif()
-	set(install LIBRARY DESTINATION "${installdir}" ARCHIVE DESTINATION "${installdir}")
-	_add_binary_shared("${LIB}" SHARED "${SRC}" "${LIBS}" "${extra}" "${install}")
+	_add_binary_shared("${LIB}" SHARED "${SRC}" "${LIBS}" "${extra}" "${installdir}")
 endfunction()
 
 

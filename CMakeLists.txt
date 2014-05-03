@@ -1007,8 +1007,9 @@ list(APPEND ARX_SOURCES "${VERSION_FILE}")
 
 # Add executables
 
-add_executable_shared(arx WIN32 "${ARX_SOURCES}" "${ARX_LIBRARIES}"
-                      "${ALL_INCLUDES}" "${GAMESBINDIR}")
+add_executable_shared(arx "${ARX_SOURCES}" "${ARX_LIBRARIES}" "${ALL_INCLUDES}")
+set_binary_type(arx WIN32)
+set_binary_installdir(arx "${GAMESBINDIR}")
 
 if(ARX_HAVE_CRASHREPORTER)
 	
@@ -1138,8 +1139,10 @@ if(ARX_HAVE_CRASHREPORTER)
 	
 	list(APPEND arxcrashreporter_SOURCES ${arxcrashreporter_Qt_SOURCES})
 	
-	add_executable_shared(arxcrashreporter WIN32 "${arxcrashreporter_SOURCES}"
-	                      "${arxcrashreporter_LIBRARIES}" "" "${CMAKE_INSTALL_LIBEXECDIR}")
+	add_executable_shared(arxcrashreporter
+	                      "${arxcrashreporter_SOURCES}" "${arxcrashreporter_LIBRARIES}")
+	set_binary_type(arxcrashreporter WIN32)
+	set_binary_installdir(arxcrashreporter "${CMAKE_INSTALL_LIBEXECDIR}")
 	
 endif()
 
@@ -1165,7 +1168,7 @@ if(BUILD_TOOLS)
 	
 	set(arxsavetool_LIBRARIES ${BASE_LIBRARIES} ${ZLIB_LIBRARIES})
 	
-	add_executable_shared(arxsavetool "" "${arxsavetool_SOURCES}" "${arxsavetool_LIBRARIES}" "")
+	add_executable_shared(arxsavetool "${arxsavetool_SOURCES}" "${arxsavetool_LIBRARIES}")
 	
 	set(arxunpak_SOURCES
 		${PLATFORM_SOURCES}
@@ -1178,7 +1181,7 @@ if(BUILD_TOOLS)
 	
 	set(arxunpak_LIBRARIES ${BASE_LIBRARIES})
 	
-	add_executable_shared(arxunpak "" "${arxunpak_SOURCES}" "${arxunpak_LIBRARIES}" "")
+	add_executable_shared(arxunpak "${arxunpak_SOURCES}" "${arxunpak_LIBRARIES}")
 	
 endif()
 
