@@ -119,7 +119,7 @@ void MagicMissileSpell::Update(float timeDelta)
 void IgnitSpell::Launch(long i)
 {
 	m_exist = true;
-	m_tolive = 20000; // TODO probably never read
+	m_tolive = 500;
 	
 	CIgnit * effect = new CIgnit();
 	effect->spellinstance = i;
@@ -145,7 +145,7 @@ void IgnitSpell::Launch(long i)
 	
 	float fPerimeter = 400.f + m_caster_level * 30.f;
 	
-	effect->Create(&target, 500);
+	effect->Create(&target, m_tolive);
 	CheckForIgnition(&target, fPerimeter, 1, 1);
 	
 	for(size_t ii = 0; ii < MAX_LIGHTS; ii++) {
@@ -191,7 +191,6 @@ void IgnitSpell::Launch(long i)
 	}
 	
 	m_pSpellFx = effect;
-	m_tolive = effect->GetDuration();
 }
 
 void IgnitSpell::End()
@@ -212,7 +211,7 @@ void IgnitSpell::Update(float timeDelta)
 void DouseSpell::Launch(long i)
 {
 	m_exist = true;
-	m_tolive = 20000;
+	m_tolive = 500;
 	
 	CDoze * effect = new CDoze();
 	effect->spellinstance = i;
@@ -226,7 +225,7 @@ void DouseSpell::Launch(long i)
 	}
 	
 	float fPerimeter = 400.f + m_caster_level * 30.f;
-	effect->CreateDoze(&target, 500);
+	effect->CreateDoze(&target, m_tolive);
 	CheckForIgnition(&target, fPerimeter, 0, 1);
 	
 	for(size_t ii = 0; ii < MAX_LIGHTS; ii++) {
@@ -296,7 +295,6 @@ void DouseSpell::Launch(long i)
 	}
 	
 	m_pSpellFx = effect;
-	m_tolive = effect->GetDuration();
 }
 
 void DouseSpell::End()

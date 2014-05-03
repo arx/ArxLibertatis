@@ -129,10 +129,6 @@ public:
 	CIgnit();
 	~CIgnit();
 	
-	unsigned long GetDuration(void) {
-		return this->duration;
-	}
-	
 	void Create(Vec3f * posc, int speed);
 	void Update(unsigned long time);
 	void Render();
