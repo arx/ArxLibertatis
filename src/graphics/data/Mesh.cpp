@@ -1368,14 +1368,20 @@ static void EERIE_PORTAL_Release() {
 	if(portals->room) {
 		if(portals->nb_rooms > 0) {
 			for(long nn = 0; nn < portals->roomsize(); nn++) {
-				free(portals->room[nn].epdata), portals->room[nn].epdata = NULL;
-				free(portals->room[nn].portals), portals->room[nn].portals = NULL;
-				delete portals->room[nn].pVertexBuffer, portals->room[nn].pVertexBuffer = NULL;
-				free(portals->room[nn].pussIndice), portals->room[nn].pussIndice = NULL;
+				free(portals->room[nn].epdata);
+				portals->room[nn].epdata = NULL;
+				free(portals->room[nn].portals);
+				portals->room[nn].portals = NULL;
+				delete portals->room[nn].pVertexBuffer;
+				portals->room[nn].pVertexBuffer = NULL;
+				free(portals->room[nn].pussIndice);
+				portals->room[nn].pussIndice = NULL;
+				
 				portals->room[nn].ppTextureContainer.clear();
 			}
 		}
-		free(portals->room), portals->room = NULL;
+		free(portals->room);
+		portals->room = NULL;
 	}
 	
 	delete portals;
@@ -2717,8 +2723,10 @@ void EERIE_PORTAL_ReleaseOnlyVertexBuffer() {
 	LogDebug("Destroying scene VBOs");
 	
 	for(long i = 0; i < portals->roomsize(); i++) {
-		delete portals->room[i].pVertexBuffer, portals->room[i].pVertexBuffer = NULL;
-		free(portals->room[i].pussIndice), portals->room[i].pussIndice = NULL;
+		delete portals->room[i].pVertexBuffer;
+		portals->room[i].pVertexBuffer = NULL;
+		free(portals->room[i].pussIndice);
+		portals->room[i].pussIndice = NULL;
 		portals->room[i].ppTextureContainer.clear();
 	}
 }
