@@ -162,9 +162,9 @@ function(_shared_build_helper LIB LIST BINARIES FIRST)
 		
 		list(REMOVE_ITEM list ${exe})
 		
-		set(exeset ${BINARIES} ${exe})
+		set(binaries ${BINARIES} ${exe})
 		
-		_shared_build_helper(${LIB}_${exe} "${list}" "${exeset}" ${first})
+		_shared_build_helper(${LIB}_${exe} "${list}" "${binaries}" ${first})
 		
 		set(first 0)
 		
@@ -285,8 +285,8 @@ function(shared_build)
 		# Require two source sets before calling _shared_build_helper so we don't create static libraries for individual executables!
 		foreach(exe2 IN LISTS list1)
 			list(REMOVE_ITEM list2 ${exe2})
-			set(exeset ${exe1} ${exe2})
-			_shared_build_helper(${exe1}_${exe2} "${list2}" "${exeset}" ${first})
+			set(binaries ${exe1} ${exe2})
+			_shared_build_helper(${exe1}_${exe2} "${list2}" "${binaries}" ${first})
 			set(first 0)
 		endforeach(exe2)
 	endforeach(exe1)
