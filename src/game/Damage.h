@@ -135,7 +135,7 @@ long ARX_DAMAGES_GetFree();
  
 void ARX_DAMAGES_UpdateAll();
 float ARX_DAMAGES_DamagePlayer(float dmg, DamageType type, long source = -1); 
-void ARX_DAMAGES_DamageFIX(Entity * io, float dmg, long source = -1, long flags = 0);
+void ARX_DAMAGES_DamageFIX(Entity * io, float dmg, long source, long flags);
 float ARX_DAMAGES_DamageNPC(Entity * io, float dmg, long source, long flags, const Vec3f * pos);
 bool ARX_DAMAGES_TryToDoDamage(Vec3f * pos, float dmg, float radius, long source); 
 void ARX_DAMAGES_ForceDeath(Entity * io_dead, Entity * io_killer);
