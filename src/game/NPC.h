@@ -218,7 +218,7 @@ const float ARX_NPC_AUDIBLE_PRESENCE_DEFAULT(1.0F);
 
 void ARX_NPC_Revive(Entity * io, long flag);
 bool ARX_NPC_SetStat(Entity & io, const std::string & statname, float value);
-void ARX_NPC_TryToCutSomething(Entity * target, Vec3f * pos);
+void ARX_NPC_TryToCutSomething(Entity * target, const Vec3f * pos);
 bool ARX_NPC_LaunchPathfind(Entity * io, long target);
 bool IsDeadNPC(Entity * io);
 

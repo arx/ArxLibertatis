@@ -146,7 +146,7 @@ void IgnitSpell::Launch(long i)
 	float fPerimeter = 400.f + m_caster_level * 30.f;
 	
 	effect->Create(&target, m_tolive);
-	CheckForIgnition(&target, fPerimeter, 1, 1);
+	CheckForIgnition(target, fPerimeter, 1, 1);
 	
 	for(size_t ii = 0; ii < MAX_LIGHTS; ii++) {
 		
@@ -226,7 +226,7 @@ void DouseSpell::Launch(long i)
 	
 	float fPerimeter = 400.f + m_caster_level * 30.f;
 	effect->CreateDoze(&target, m_tolive);
-	CheckForIgnition(&target, fPerimeter, 0, 1);
+	CheckForIgnition(target, fPerimeter, 0, 1);
 	
 	for(size_t ii = 0; ii < MAX_LIGHTS; ii++) {
 		

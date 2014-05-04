@@ -251,7 +251,7 @@ void FireballSpell::Update(float timeDelta)
 			pCF->SetTTL(1500);
 			pCF->bExplo = true;
 			
-			DoSphericDamage(&pCF->eCurPos,3.f*m_caster_level,30.f*m_caster_level,DAMAGE_AREA,DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL,m_caster);
+			DoSphericDamage(pCF->eCurPos, 3.f * m_caster_level, 30.f * m_caster_level, DAMAGE_AREA, DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL, m_caster);
 			m_tolive=0;
 			ARX_SOUND_PlaySFX(SND_SPELL_FIRE_HIT, &sphere.origin);
 			ARX_NPC_SpawnAudibleSound(sphere.origin, entities[m_caster]);

@@ -691,7 +691,7 @@ float ARX_DAMAGES_DealDamages(long target, float dmg, long source, DamageType fl
 //*************************************************************************************
 // flags & 1 == spell damage
 //*************************************************************************************
-float ARX_DAMAGES_DamageNPC(Entity * io, float dmg, long source, long flags, Vec3f * pos) {
+float ARX_DAMAGES_DamageNPC(Entity * io, float dmg, long source, long flags, const Vec3f * pos) {
 	
 	if(!io || !io->show || (io->ioflags & IO_INVULNERABILITY) || !(io->ioflags & IO_NPC))
 		return 0.f;
@@ -1242,7 +1242,7 @@ bool ARX_DAMAGES_TryToDoDamage(Vec3f * pos, float dmg, float radius, long source
 	return ret;
 }
 
-void CheckForIgnition(Vec3f * pos, float radius, bool mode, long flag) {
+void CheckForIgnition(const Vec3f & pos, float radius, bool mode, long flag) {
 	
 	if(!(flag & 1))
 		for(size_t i = 0; i < MAX_LIGHTS; i++) {
@@ -1256,7 +1256,7 @@ void CheckForIgnition(Vec3f * pos, float radius, bool mode, long flag) {
 				if((el->extras & EXTRAS_FIREPLACE) && (flag & 2))
 					continue;
 
-				if(!fartherThan(*pos, el->pos, radius)) {
+				if(!fartherThan(pos, el->pos, radius)) {
 					if(mode) {
 						if (!(el->extras & EXTRAS_NO_IGNIT))
 							el->status = true;
@@ -1273,7 +1273,7 @@ void CheckForIgnition(Vec3f * pos, float radius, bool mode, long flag) {
 
 		if(io && io->show == 1 && io->obj && !(io->ioflags & IO_UNDERWATER) && io->obj->fastaccess.fire >= 0) {
 			
-			if(closerThan(*pos, io->obj->vertexlist3[io->obj->fastaccess.fire].v, radius)) {
+			if(closerThan(pos, io->obj->vertexlist3[io->obj->fastaccess.fire].v, radius)) {
 
 				if(mode && io->ignition <= 0 && io->obj->fastaccess.fire >= 0) {
 					io->ignition = 1;
@@ -1295,7 +1295,7 @@ void CheckForIgnition(Vec3f * pos, float radius, bool mode, long flag) {
 	}
 }
 
-bool DoSphericDamage(Vec3f * pos, float dmg, float radius, DamageArea flags, DamageType typ, long numsource)
+bool DoSphericDamage(const Vec3f & pos, float dmg, float radius, DamageArea flags, DamageType typ, long numsource)
 {
 	bool damagesdone = false;
 	Vec3f sub;
@@ -1330,7 +1330,7 @@ bool DoSphericDamage(Vec3f * pos, float dmg, float radius, DamageArea flags, Dam
 						if(kk != k) {
 							Vec3f posi = (entities[i]->obj->vertexlist3[k].v
 							              + entities[i]->obj->vertexlist3[kk].v) * 0.5f;
-							float dist = fdist(*pos, posi);
+							float dist = fdist(pos, posi);
 							if(dist <= radius) {
 								count2++;
 								if(dist < mindist)
@@ -1341,7 +1341,7 @@ bool DoSphericDamage(Vec3f * pos, float dmg, float radius, DamageArea flags, Dam
 				}
 
 				{
-					float dist = fdist(*pos, entities[i]->obj->vertexlist3[k].v);
+					float dist = fdist(pos, entities[i]->obj->vertexlist3[k].v);
 
 					if(dist <= radius) {
 						count++;
@@ -1394,7 +1394,7 @@ bool DoSphericDamage(Vec3f * pos, float dmg, float radius, DamageArea flags, Dam
 							dmg = ARX_SPELLS_ApplyColdProtection(ioo, dmg * ratio);
 						}
 
-						ARX_DAMAGES_DamageNPC(ioo, dmg * ratio, numsource, 1, pos);
+						ARX_DAMAGES_DamageNPC(ioo, dmg * ratio, numsource, 1, &pos);
 					}
 
 					if(dmg > 1)

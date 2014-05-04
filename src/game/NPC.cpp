@@ -1671,7 +1671,7 @@ long ARX_NPC_ApplyCuts(Entity * io)
  * \param target
  * \param pos
  */
-void ARX_NPC_TryToCutSomething(Entity * target, Vec3f * pos)
+void ARX_NPC_TryToCutSomething(Entity * target, const Vec3f * pos)
 {
 	//return;
 	if(!target || !(target->ioflags & IO_NPC))
@@ -3583,7 +3583,7 @@ void ManageIgnition_2(Entity * io) {
 		}
 
 		if(rnd() > 0.9f)
-			CheckForIgnition(&position, io->ignition, 1);
+			CheckForIgnition(position, io->ignition, 1);
 	} else {
 		lightHandleDestroy(io->ignit_light);
 		
