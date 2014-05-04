@@ -137,7 +137,9 @@ void ARXDRAW_DrawInterShadows()
 			for(size_t k=0; k < io->obj->vertexlist.size(); k += 9) {
 				EERIEPOLY *ep = CheckInPoly(io->obj->vertexlist3[k].v);
 				
-				if(ep) {
+				if(!ep)
+					continue;
+				
 					in.p.y=ep->min.y-3.f;
 					float r=0.5f-((float)EEfabs(io->obj->vertexlist3[k].v.y-in.p.y))*( 1.0f / 500 );
 					r-=io->invisibility;
@@ -167,14 +169,15 @@ void ARXDRAW_DrawInterShadows()
 						AddToShadowBatch(&ltv[0], &ltv[1], &ltv[2]);
 						AddToShadowBatch(&ltv[0], &ltv[2], &ltv[3]);
 					}
-				}
 			}
 		} else {
 			for(size_t k = 0; k < io->obj->grouplist.size(); k++) {
 				long origin=io->obj->grouplist[k].origin;
 				EERIEPOLY *ep = CheckInPoly(io->obj->vertexlist3[origin].v);
 				
-				if(ep) {
+				if(!ep)
+					continue;
+				
 					in.p.y=ep->min.y-3.f;
 					float r=0.8f-((float)EEfabs(io->obj->vertexlist3[origin].v.y-in.p.y))*( 1.0f / 500 );
 					r*=io->obj->grouplist[k].siz;
@@ -202,7 +205,6 @@ void ARXDRAW_DrawInterShadows()
 					
 					AddToShadowBatch(&ltv[0], &ltv[1], &ltv[2]);
 					AddToShadowBatch(&ltv[0], &ltv[2], &ltv[3]);
-				}
 			}
 		}
 		}
