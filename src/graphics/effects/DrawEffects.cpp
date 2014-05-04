@@ -109,16 +109,22 @@ void ARXDRAW_DrawInterShadows()
 
 		Entity *io = treatio[i].io;
 
-		if(!io->obj || (io->ioflags & IO_JUST_COLLIDE))
+		if(   !io->obj
+		   || (io->ioflags & IO_JUST_COLLIDE)
+		   || (io->ioflags & IO_NOSHADOW)
+		   || (io->ioflags & IO_GOLD)
+		   || !(io->show == SHOW_FLAG_IN_SCENE)
+		) {
 			continue;
+		}
 
 
 		FAST_BKG_DATA * bkgData = getFastBackgroundData(io->pos.x, io->pos.z);
 		if(bkgData && !bkgData->treat) { //TODO is that correct ?
 			continue;
 		}
-
-		if(!(io->ioflags & IO_NOSHADOW) && io->show==SHOW_FLAG_IN_SCENE && !(io->ioflags & IO_GOLD)) {
+		
+		{
 			TexturedVertex in;
 
 			TexturedVertex ltv[4];
