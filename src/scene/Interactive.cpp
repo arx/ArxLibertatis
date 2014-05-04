@@ -1135,7 +1135,7 @@ bool ARX_INTERACTIVE_ConvertToValidPosForIO(Entity * io, Vec3f * target) {
 
 		if(EEfabs(anything) < 150.f) {
 			EERIEPOLY * ep = CheckInPoly(phys.origin + Vec3f(0.f, -20.f, 0.f));
-			EERIEPOLY * ep2 = CheckTopPoly(phys.origin.x, phys.origin.y + anything, phys.origin.z);
+			EERIEPOLY * ep2 = CheckTopPoly(phys.origin + Vec3f(0.f, anything, 0.f));
 
 			if(ep && ep2 && EEfabs((phys.origin.y + anything) - ep->center.y) < 20.f) {
 				target->x = phys.origin.x;

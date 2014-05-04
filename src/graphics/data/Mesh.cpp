@@ -283,9 +283,9 @@ FAST_BKG_DATA * getFastBackgroundData(float x, float z) {
 	return &ACTIVEBKG->fastdata[px][pz];
 }
 
-EERIEPOLY * CheckTopPoly(float x, float y, float z) {
+EERIEPOLY * CheckTopPoly(const Vec3f & pos) {
 	
-	FAST_BKG_DATA * feg = getFastBackgroundData(x, z);
+	FAST_BKG_DATA * feg = getFastBackgroundData(pos.x, pos.z);
 	if(!feg) {
 		return NULL;
 	}
@@ -296,12 +296,12 @@ EERIEPOLY * CheckTopPoly(float x, float y, float z) {
 		EERIEPOLY * ep = feg->polyin[k];
 		
 		if((!(ep->type & (POLY_WATER | POLY_TRANS | POLY_NOCOL)))
-		   && (ep->min.y < y)
-		   && (x >= ep->min.x) && (x <= ep->max.x)
-		   && (z >= ep->min.z) && (z <= ep->max.z)
-		   && (PointIn2DPolyXZ(ep, x, z))) {
+		   && (ep->min.y < pos.y)
+		   && (pos.x >= ep->min.x) && (pos.x <= ep->max.x)
+		   && (pos.z >= ep->min.z) && (pos.z <= ep->max.z)
+		   && (PointIn2DPolyXZ(ep, pos.x, pos.z))) {
 			
-			if((EEfabs(ep->max.y - ep->min.y) > 50.f) && (y - ep->center.y < 60.f)) {
+			if((EEfabs(ep->max.y - ep->min.y) > 50.f) && (pos.y - ep->center.y < 60.f)) {
 				continue;
 			}
 			
