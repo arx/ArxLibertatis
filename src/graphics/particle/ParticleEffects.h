@@ -59,7 +59,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 struct EERIEPOLY;
 struct EERIE_CAMERA;
-struct EERIE_SPHERE;
+struct Sphere;
 class TextureContainer;
 class Entity;
 
@@ -180,7 +180,7 @@ void createSphericalSparks(const Vec3f & pos, float r, TextureContainer * tc,
                            const Color3f & color, int mask);
 void MakePlayerAppearsFX(Entity * io);
 void MakeCoolFx(const Vec3f & pos);
-void SpawnGroundSplat(const EERIE_SPHERE & sp, const Color3f & col, long flags);
+void SpawnGroundSplat(const Sphere & sp, const Color3f & col, long flags);
 
 PARTICLE_DEF * createParticle(bool allocateWhilePaused = false);
 long getParticleCount();

@@ -481,7 +481,7 @@ void CLightning::Render()
 		}
 		
 		if(i % 4 == 0) {
-			EERIE_SPHERE sphere;
+			Sphere sphere;
 			sphere.origin = a;
 			sphere.radius = std::min(cnodetab[i].size, 50.f);
 

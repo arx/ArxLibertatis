@@ -573,7 +573,7 @@ void CMultiMagicMissile::CheckCollision()
 		if(missile->bExplo)
 			continue;
 			
-		EERIE_SPHERE sphere;
+		Sphere sphere;
 		sphere.origin = missile->eCurPos;
 		sphere.radius	= 10.f;
 		

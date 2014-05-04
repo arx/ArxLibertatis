@@ -114,7 +114,7 @@ inline long F2L_RoundUp(float val) {
 }
 
 bool CylinderInCylinder(const EERIE_CYLINDER & cyl1, const EERIE_CYLINDER & cyl2);
-bool SphereInCylinder(const EERIE_CYLINDER & cyl1, const EERIE_SPHERE & s);
+bool SphereInCylinder(const EERIE_CYLINDER & cyl1, const Sphere & s);
 
 template <class T, class O>
 inline T reinterpret(O v) {

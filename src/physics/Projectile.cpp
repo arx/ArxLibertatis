@@ -551,7 +551,7 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 					need_kill = 1;
 				} else {
 					for(float precision = 0.5f; precision <= 6.f; precision += 0.5f) {
-						EERIE_SPHERE sphere;
+						Sphere sphere;
 						sphere.origin = v0 + thrownObj->vector * precision * 4.5f;
 						sphere.radius = rad + 3.f;
 

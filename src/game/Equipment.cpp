@@ -682,7 +682,7 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 	bool ret = false;
 	long source = (io_source == NULL) ? -1 : io_source->index();
 	long weapon = io_weapon->index();
-	EERIE_SPHERE sphere;
+	Sphere sphere;
 
 	Vec3f * v0;
 	EXCEPTIONS_LIST_Pos = 0;
@@ -793,7 +793,7 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 							if(!(flags & 1)) {
 								ARX_PARTICLES_Spawn_Splat(pos, dmgs, color);
 
-								EERIE_SPHERE sp;
+								Sphere sp;
 								float power;
 								power = (dmgs * ( 1.0f / 40 )) + 0.7f;
 								Vec3f vect;
@@ -809,7 +809,7 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 								if(CheckAnythingInSphere(sp, 0, CAS_NO_NPC_COL)) {
 									Color3f rgb = color.to<float>();
 									
-									EERIE_SPHERE splatSphere;
+									Sphere splatSphere;
 									splatSphere.origin = sp.origin;
 									splatSphere.radius = 30.f;
 									SpawnGroundSplat(splatSphere, rgb, 1);

@@ -494,7 +494,7 @@ bool CylinderInCylinder(const EERIE_CYLINDER & cyl1, const EERIE_CYLINDER & cyl2
 }
 
 // Sort of...
-bool SphereInCylinder(const EERIE_CYLINDER & cyl1, const EERIE_SPHERE & s)
+bool SphereInCylinder(const EERIE_CYLINDER & cyl1, const Sphere & s)
 {
 	float m1 = max(cyl1.origin.y, cyl1.origin.y + cyl1.height);
 	float m2 = s.origin.y - s.radius;

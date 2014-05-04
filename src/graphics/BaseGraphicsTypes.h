@@ -52,7 +52,7 @@ struct EERIE_CYLINDER {
 	float height;
 };
 
-struct EERIE_SPHERE {
+struct Sphere {
 	
 	Vec3f origin;
 	float radius;

@@ -227,7 +227,7 @@ inline float IsPolyInCylinder(EERIEPOLY * ep, const EERIE_CYLINDER & cyl, long f
 	return anything;
 }
 
-inline bool IsPolyInSphere(EERIEPOLY *ep, const EERIE_SPHERE & sph) {
+inline bool IsPolyInSphere(EERIEPOLY *ep, const Sphere & sph) {
 
 	if(!ep)
 		return false;
@@ -704,7 +704,7 @@ float CheckAnythingInCylinder(const EERIE_CYLINDER & cyl, Entity * ioo, long fla
 						}
 					}
 				} else if(io->ioflags & IO_FIX) {
-					EERIE_SPHERE sp;
+					Sphere sp;
 
 					float miny = io->bbox3D.min.y;
 					float maxy = io->bbox3D.max.y;
@@ -851,7 +851,7 @@ static bool InExceptionList(long val) {
 	return false;
 }
 
-bool CheckEverythingInSphere(const EERIE_SPHERE & sphere, long source, long targ, std::vector<long> & sphereContent) //except source...
+bool CheckEverythingInSphere(const Sphere & sphere, long source, long targ, std::vector<long> & sphereContent) //except source...
 {
 	bool vreturn = false;
 	
@@ -988,7 +988,7 @@ bool CheckEverythingInSphere(const EERIE_SPHERE & sphere, long source, long targ
 	return vreturn;	
 }
 
-EERIEPOLY * CheckBackgroundInSphere(const EERIE_SPHERE & sphere) //except source...
+EERIEPOLY * CheckBackgroundInSphere(const Sphere & sphere) //except source...
 {
 	long rad = sphere.radius*ACTIVEBKG->Xmul;
 	rad += 2;
@@ -1020,7 +1020,7 @@ EERIEPOLY * CheckBackgroundInSphere(const EERIE_SPHERE & sphere) //except source
 	return NULL;	
 }
 
-bool CheckAnythingInSphere(const EERIE_SPHERE & sphere, long source, CASFlags flags, long * num) //except source...
+bool CheckAnythingInSphere(const Sphere & sphere, long source, CASFlags flags, long * num) //except source...
 {
 	if(num)
 		*num = -1;
@@ -1169,7 +1169,7 @@ bool CheckAnythingInSphere(const EERIE_SPHERE & sphere, long source, CASFlags fl
 }
 
 
-bool CheckIOInSphere(EERIE_SPHERE * sphere, long target, bool ignoreNoCollisionFlag) {
+bool CheckIOInSphere(Sphere * sphere, long target, bool ignoreNoCollisionFlag) {
 	
 	if(!ValidIONum(target))
 		return false;
@@ -1654,7 +1654,7 @@ bool IO_Visible(const Vec3f & orgn, const Vec3f & dest, EERIEPOLY * epp, Vec3f *
 		y += iy;
 		z += iz;
 
-		EERIE_SPHERE sphere;
+		Sphere sphere;
 		sphere.origin.x=x;
 		sphere.origin.y=y;
 		sphere.origin.z=z;

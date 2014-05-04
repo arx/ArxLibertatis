@@ -2224,7 +2224,7 @@ bool ARX_INTERACTIVE_CheckFULLCollision(EERIE_3DOBJ * obj, long source)
 		} else if(io->ioflags & IO_FIX) {
 			long step;
 			long nbv = io->obj->vertexlist.size();
-			EERIE_SPHERE sp;
+			Sphere sp;
 			sp.radius = 28.f;
 
 			if(nbv < 500) {
@@ -2242,7 +2242,7 @@ bool ARX_INTERACTIVE_CheckFULLCollision(EERIE_3DOBJ * obj, long source)
 
 			if(io->gameFlags & GFLAG_PLATFORM) {
 				for(long kk = 0; kk < obj->pbox->nb_physvert; kk++) {
-					EERIE_SPHERE sphere;
+					Sphere sphere;
 					sphere.origin = obj->pbox->vert[kk].pos;
 					sphere.radius = 30.f;
 					float miny, maxy;

@@ -60,7 +60,7 @@ void RuneOfGuardingSpell::Update(float timeDelta)
 
 		if (pCRG)
 		{
-			EERIE_SPHERE sphere;
+			Sphere sphere;
 			sphere.origin = pCRG->eSrc;
 			sphere.radius=std::max(m_caster_level*15.f,50.f);
 

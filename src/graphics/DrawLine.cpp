@@ -79,7 +79,7 @@ void EERIEDrawFill2DRectDegrad(float x0, float y0, float x1, float y1, float z, 
 	EERIEDRAWPRIM(Renderer::TriangleStrip, v, 4);
 }
 
-void DrawLineSphere(const EERIE_SPHERE & sphere, Color color) {
+void DrawLineSphere(const Sphere & sphere, Color color) {
 
 	if(sphere.radius <= 0)
 		return;

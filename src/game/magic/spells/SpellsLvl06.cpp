@@ -378,7 +378,7 @@ void DisarmTrapSpell::Launch()
 	m_timcreation = (unsigned long)(arxtime);
 	m_tolive = 1;
 	
-	EERIE_SPHERE sphere;
+	Sphere sphere;
 	sphere.origin = player.pos;
 	sphere.radius = 400.f;
 	

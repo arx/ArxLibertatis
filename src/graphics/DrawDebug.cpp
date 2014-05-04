@@ -127,11 +127,11 @@ static void drawDebugLights() {
 		
 		if(mouseTestRect.contains(Vec2i(DANAEMouse))) {
 			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-			EERIE_SPHERE fallstart;
+			Sphere fallstart;
 			fallstart.origin = light->pos;
 			fallstart.radius = light->fallstart;
 			DrawLineSphere(fallstart, Color(Color3<u8>::green, 200));
-			EERIE_SPHERE fallend;
+			Sphere fallend;
 			fallend.origin = light->pos;
 			fallend.radius = light->fallend;
 			DrawLineSphere(fallend, Color(Color3<u8>::red, 200));
@@ -354,7 +354,7 @@ static void drawDebugFogs() {
 			EERIEDraw3DLine(fog->pos, fog->pos + fog->move * 50.f, Color::white);
 		}
 		
-		EERIE_SPHERE fogsize;
+		Sphere fogsize;
 		fogsize.origin = fog->pos;
 		fogsize.radius = fog->size;
 		DrawLineSphere(fogsize, Color(Color3<u8>::blue, 200));
@@ -370,7 +370,7 @@ static void drawDebugCollisionShape(EERIE_3DOBJ * obj) {
 		return;
 	}
 	
-	EERIE_SPHERE sphere;
+	Sphere sphere;
 	sphere.origin = obj->pbox->vert[0].pos;
 	sphere.radius = obj->pbox->radius;
 	DrawLineSphere(sphere, Color::white);

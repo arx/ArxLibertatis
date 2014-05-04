@@ -216,7 +216,7 @@ void FireballSpell::Update(float timeDelta)
 			light->rgb.b = 0.3f-rnd()*0.1f;
 		}
 
-		EERIE_SPHERE sphere;
+		Sphere sphere;
 		sphere.origin = pCF->eCurPos;
 		sphere.radius=std::max(m_caster_level*2.f,12.f);
 		#define MIN_TIME_FIREBALL 2000 

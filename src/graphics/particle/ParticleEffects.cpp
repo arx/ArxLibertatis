@@ -206,7 +206,7 @@ static void ARX_PARTICLES_Spawn_Blood3(const Vec3f & pos, float dmgs, Color col,
 	
 }
 
-void SpawnGroundSplat(const EERIE_SPHERE & sp, const Color3f & col, long flags) {
+void SpawnGroundSplat(const Sphere & sp, const Color3f & col, long flags) {
 	
 	Vec3f poss = sp.origin;
 	float size = sp.radius;
@@ -1182,7 +1182,7 @@ void ARX_PARTICLES_Update(EERIE_CAMERA * cam)  {
 		
 		if(!part->is2D) {
 			
-			EERIE_SPHERE sp;
+			Sphere sp;
 			sp.origin = in.p;
 			EE_RTP(&inn, &out);
 			if(out.rhw < 0 || out.p.z > cam->cdepth * fZFogEnd) {

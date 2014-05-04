@@ -994,7 +994,7 @@ void ARX_DAMAGES_UpdateDamage(long j, float tim) {
 					        && validsource && (HaveCommonGroup(io, entities[damages[j].source])))
 						continue;
 
-					EERIE_SPHERE sphere;
+					Sphere sphere;
 					sphere.origin = damages[j].pos;
 					sphere.radius = damages[j].radius - 10.f;
 
@@ -1153,7 +1153,7 @@ void ARX_DAMAGES_UpdateDamage(long j, float tim) {
 						}
 					}
 				} else if((io->ioflags & IO_FIX) && !(damages[j].type & DAMAGE_TYPE_NO_FIX)) {
-					EERIE_SPHERE sphere;
+					Sphere sphere;
 					sphere.origin = damages[j].pos;
 					sphere.radius = damages[j].radius + 15.f;
 

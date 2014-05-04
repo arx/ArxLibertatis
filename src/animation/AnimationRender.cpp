@@ -341,13 +341,13 @@ void Cedric_ApplyLightingFirstPartRefactor(Entity *io) {
 						MakePlayerAppearsFX(io);
 						AddRandomSmoke(io, 50);
 						Color3f rgb = io->_npcdata->blood_color.to<float>();
-						EERIE_SPHERE sp;
+						Sphere sp;
 						sp.origin = io->pos;
 						sp.radius = 200.f;
 						long count = 6;
 
 						while(count--) {
-							EERIE_SPHERE splatSphere;
+							Sphere splatSphere;
 							splatSphere.origin = sp.origin;
 							splatSphere.radius = rnd() * 30.f + 30.f;
 							SpawnGroundSplat(splatSphere, rgb, 1);

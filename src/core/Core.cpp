@@ -1262,7 +1262,7 @@ void ManageCombatModeAnimations()
 						}
 						
 						if(id != -1) {
-							EERIE_SPHERE sphere;
+							Sphere sphere;
 							sphere.origin = io->obj->vertexlist3[id].v;
 							sphere.radius = 25.f;
 							

@@ -392,7 +392,7 @@ static bool ARX_EERIE_PHYSICS_BOX_Compute(EERIE_3DOBJ * obj, float framediff, lo
 
 	RK4Integrate(obj, framediff);
 
-	EERIE_SPHERE sphere;
+	Sphere sphere;
 	PHYSVERT *pv = &obj->pbox->vert[0];
 	sphere.origin = pv->pos;
 	sphere.radius = obj->pbox->radius;

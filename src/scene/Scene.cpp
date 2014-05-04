@@ -259,7 +259,7 @@ void EERIERTPPoly2(EERIEPOLY *ep)
 }
 
 bool IsSphereInFrustrum(const Vec3f & point, const EERIE_FRUSTRUM & frustrum, float radius = 0.f);
-bool FrustrumsClipSphere(const EERIE_FRUSTRUM_DATA & frustrums, const EERIE_SPHERE & sphere)
+bool FrustrumsClipSphere(const EERIE_FRUSTRUM_DATA & frustrums, const Sphere & sphere)
 {
 	float dists = efpPlaneNear.getDist(sphere.origin);
 
@@ -282,7 +282,7 @@ bool VisibleSphere(const Vec3f & pos, float radius) {
 
 	if (room_num>=0)
 	{
-		EERIE_SPHERE sphere;
+		Sphere sphere;
 		sphere.origin = pos;
 		sphere.radius = radius;
 							
@@ -398,7 +398,7 @@ bool ARX_SCENE_PORTAL_ClipIO(Entity * io, const Vec3f & position) {
 			}
 
 			if(io) {
-				EERIE_SPHERE sphere;
+				Sphere sphere;
 				sphere.origin = (io->bbox3D.min + io->bbox3D.max) * .5f;
 				sphere.radius = glm::distance(sphere.origin, io->bbox3D.min) + 10.f;
 
