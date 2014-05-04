@@ -1308,7 +1308,9 @@ bool DoSphericDamage(const Vec3f & pos, float dmg, float radius, DamageArea flag
 	for(size_t i = 0; i < entities.size(); i++) {
 		Entity * ioo = entities[i];
 
-		if((ioo) && (long(i) != numsource) && (ioo->obj)) {
+		if(!ioo || long(i) == numsource || !ioo->obj)
+			continue;
+			
 			if ((i != 0) && (numsource != 0)
 			        && validsource && (HaveCommonGroup(ioo, entities[numsource])))
 				continue;
@@ -1414,7 +1416,6 @@ bool DoSphericDamage(const Vec3f & pos, float dmg, float radius, DamageArea flag
 						damagesdone = true;
 				}
 			}
-		}
 	}
 
 	if (typ & DAMAGE_TYPE_FIRE)
