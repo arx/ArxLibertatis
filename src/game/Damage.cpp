@@ -1298,11 +1298,7 @@ void CheckForIgnition(const Vec3f & pos, float radius, bool mode, long flag) {
 bool DoSphericDamage(const Vec3f & pos, float dmg, float radius, DamageArea flags, DamageType typ, long numsource)
 {
 	bool damagesdone = false;
-	Vec3f sub;
-	sub.x = player.pos.x;
-	sub.y = player.pos.y + 90.f;
-	sub.z = player.pos.z;
-
+	
 	if(radius <= 0.f)
 		return damagesdone;
 
