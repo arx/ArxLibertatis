@@ -113,7 +113,7 @@ inline long F2L_RoundUp(float val) {
 	return static_cast<long>(ceil(val));
 }
 
-bool CylinderInCylinder(const EERIE_CYLINDER & cyl1, const EERIE_CYLINDER * cyl2);
+bool CylinderInCylinder(const EERIE_CYLINDER & cyl1, const EERIE_CYLINDER & cyl2);
 bool SphereInCylinder(const EERIE_CYLINDER & cyl1, const EERIE_SPHERE & s);
 
 template <class T, class O>

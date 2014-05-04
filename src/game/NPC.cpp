@@ -448,7 +448,7 @@ void ARX_NPC_Behaviour_UnStack(Entity * io)
 	}
 }
 
-extern void GetIOCyl(Entity * io, EERIE_CYLINDER * cyl);
+extern void GetIOCyl(Entity * io, EERIE_CYLINDER & cyl);
 
 /*!
  * \brief Checks for any direct shortcut between NPC and future anchors...
@@ -501,7 +501,7 @@ long ARX_NPC_GetNextAttainableNodeIncrement(Entity * io)
 
 		io->physics.targetpos.y += 60.f; // FAKE Gravity !
 		IO_PHYSICS phys = io->physics;
-		GetIOCyl(io, &phys.cyl);
+		GetIOCyl(io, phys.cyl);
 
 		// Now we try the physical move for real
 		if(io->physics.startpos == io->physics.targetpos
@@ -645,7 +645,7 @@ bool ARX_NPC_LaunchPathfind(Entity * io, long target)
 		io->physics.startpos = pos1;
 		io->physics.targetpos = pos2;
 		IO_PHYSICS phys = io->physics;
-		GetIOCyl(io, &phys.cyl);
+		GetIOCyl(io, phys.cyl);
 
 		// Now we try the physical move for real
 		if(io->physics.startpos == io->physics.targetpos
@@ -1996,7 +1996,7 @@ bool TryIOAnimMove(Entity * io, long animnum)
 	trans2 = VRotateY(trans, MAKEANGLE(180.f - io->angle.getPitch()));
 	
 	IO_PHYSICS phys = io->physics;
-	GetIOCyl(io, &phys.cyl);
+	GetIOCyl(io, phys.cyl);
 
 	phys.startpos = io->pos;
 	phys.targetpos = io->pos + trans2;
@@ -2331,10 +2331,10 @@ float GetIORadius(Entity * io) {
 	return clamp(io->original_radius * io->scale, 25.f, 60.f);
 }
 
-void GetIOCyl(Entity * io, EERIE_CYLINDER * cyl) {
-	cyl->height = GetIOHeight(io);
-	cyl->radius = GetIORadius(io);
-	cyl->origin = io->pos;
+void GetIOCyl(Entity * io, EERIE_CYLINDER & cyl) {
+	cyl.height = GetIOHeight(io);
+	cyl.radius = GetIORadius(io);
+	cyl.origin = io->pos;
 }
 
 /*!
@@ -2805,7 +2805,7 @@ static void ManageNPCMovement(Entity * io)
 	io->physics.targetpos.z = io->pos.z + io->move.z + ForcedMove.z;
 	// IO_PHYSICS phys;	// XS : Moved to func beginning
 	phys = io->physics;
-	GetIOCyl(io, &phys.cyl);
+	GetIOCyl(io, phys.cyl);
 
 	CollisionFlags levitate = 0;
 
@@ -2825,7 +2825,7 @@ static void ManageNPCMovement(Entity * io)
 	}
 
 	phys = io->physics;
-	GetIOCyl(io, &phys.cyl);
+	GetIOCyl(io, phys.cyl);
 	
 	io->forcedmove -= ForcedMove;
 		

@@ -302,7 +302,7 @@ bool IsCollidingIO(Entity * io,Entity * ioo) {
 }
 
 // TODO include header?
-extern void GetIOCyl(Entity * io,EERIE_CYLINDER * cyl);
+extern void GetIOCyl(Entity * io, EERIE_CYLINDER & cyl);
 void PushIO_ON_Top(Entity * ioo, float ydec) {
 	
 	if(ydec != 0.f)
@@ -376,7 +376,7 @@ void PushIO_ON_Top(Entity * ioo, float ydec) {
 									io->pos.y += ydec;
 								} else {
 									EERIE_CYLINDER cyl;
-									GetIOCyl(io, &cyl);
+									GetIOCyl(io, cyl);
 									cyl.origin.y += ydec;
 									if(CheckAnythingInCylinder(cyl, io ,0) >= 0) {
 										io->pos.y += ydec;
@@ -404,7 +404,7 @@ bool IsAnyNPCInPlatform(Entity * pfrm) {
 		   && io->show == SHOW_FLAG_IN_SCENE
 		) {
 			EERIE_CYLINDER cyl;
-			GetIOCyl(io, &cyl);
+			GetIOCyl(io, cyl);
 
 			if(CylinderPlatformCollide(&cyl, pfrm) != 0.f)
 				return true;
@@ -432,7 +432,7 @@ float CylinderPlatformCollide(EERIE_CYLINDER * cyl, Entity * io) {
 
 static long NPC_IN_CYLINDER = 0;
 
-extern void GetIOCyl(Entity * io,EERIE_CYLINDER * cyl);
+extern void GetIOCyl(Entity * io, EERIE_CYLINDER & cyl);
 
 inline void EE_RotateY(TexturedVertex *in,TexturedVertex *out,float c, float s)
 {
@@ -592,7 +592,7 @@ float CheckAnythingInCylinder(const EERIE_CYLINDER & cyl, Entity * ioo, long fla
 				|| fartherThan(io->pos, cyl.origin, 1000.f)) continue;
 	
 			{
-				EERIE_CYLINDER * io_cyl = &io->physics.cyl;
+				EERIE_CYLINDER & io_cyl = io->physics.cyl;
 				GetIOCyl(io, io_cyl);
 				float dealt = 0;
 
@@ -655,7 +655,7 @@ float CheckAnythingInCylinder(const EERIE_CYLINDER & cyl, Entity * ioo, long fla
 					
 					if(CylinderInCylinder(cyl, io_cyl)) {
  						NPC_IN_CYLINDER = 1;
-						anything = min(anything, io_cyl->origin.y + io_cyl->height); 
+						anything = min(anything, io_cyl.origin.y + io_cyl.height);
 
 						if(!(flags & CFLAG_JUST_TEST) && ioo) {
 							if(float(arxtime) > io->collide_door_time + 500) {

@@ -2400,7 +2400,7 @@ static void ARX_CHANGELEVEL_PopAllIO(ARX_CHANGELEVEL_INDEX * asi) {
 	}
 }
 
-extern void GetIOCyl(Entity * io, EERIE_CYLINDER * cyl);
+extern void GetIOCyl(Entity * io, EERIE_CYLINDER & cyl);
 
 static void ARX_CHANGELEVEL_PopAllIO_FINISH(bool reloadflag, bool firstTime) {
 	
@@ -2505,7 +2505,7 @@ static void ARX_CHANGELEVEL_PopAllIO_FINISH(bool reloadflag, bool firstTime) {
 			
 			if(entities[i] && (entities[i]->ioflags & IO_NPC) && ValidIONum(entities[i]->targetinfo)) {
 				if(entities[i]->_npcdata->behavior != BEHAVIOUR_NONE) {
-					GetIOCyl(entities[i], &entities[i]->physics.cyl);
+					GetIOCyl(entities[i], entities[i]->physics.cyl);
 					GetTargetPos(entities[i]);
 					ARX_NPC_LaunchPathfind(entities[i], entities[i]->targetinfo);
 				}
@@ -2547,7 +2547,7 @@ static void ARX_CHANGELEVEL_PopAllIO_FINISH(bool reloadflag, bool firstTime) {
 			
 			if(entities[i] && (entities[i]->ioflags & IO_NPC) && ValidIONum(entities[i]->targetinfo)) {
 				if(entities[i]->_npcdata->behavior != BEHAVIOUR_NONE) {
-					GetIOCyl(entities[i], &entities[i]->physics.cyl);
+					GetIOCyl(entities[i], entities[i]->physics.cyl);
 					GetTargetPos(entities[i]);
 					ARX_NPC_LaunchPathfind(entities[i], entities[i]->targetinfo);
 				}
