@@ -944,8 +944,6 @@ void ARX_DAMAGES_AddVisual(DAMAGE_INFO * di, Vec3f * pos, float dmg, Entity * io
 // source > 0  IO
 void ARX_DAMAGES_UpdateDamage(long j, float tim) {
 	
-	Vec3f sub;
-
 	if(damages[j].exist) {
 		if(!damages[j].active)
 			return;
@@ -999,9 +997,8 @@ void ARX_DAMAGES_UpdateDamage(long j, float tim) {
 					sphere.radius = damages[j].radius - 10.f;
 
 					if(CheckIOInSphere(sphere, i, true)) {
-						sub.x = io->pos.x;
-						sub.y = io->pos.y - 60.f;
-						sub.z = io->pos.z;
+						Vec3f sub = io->pos + Vec3f(0.f, -60.f, 0.f);
+						
 						float dist = fdist(damages[j].pos, sub);
 
 						if(damages[j].type & DAMAGE_TYPE_FIELD) {
