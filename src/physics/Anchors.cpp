@@ -99,10 +99,10 @@ static EERIEPOLY * ANCHOR_CheckInPolyPrecis(float x, float y, float z) {
 	return found;
 }
 
-static EERIEPOLY * ANCHOR_CheckInPoly(float x, float y, float z) {
+static EERIEPOLY * ANCHOR_CheckInPoly(const Vec3f & pos) {
 	
-	long px = x * ACTIVEBKG->Xmul;
-	long pz = z * ACTIVEBKG->Zmul;
+	long px = pos.x * ACTIVEBKG->Xmul;
+	long pz = pos.z * ACTIVEBKG->Zmul;
 
 	if(px < 0 || px >= ACTIVEBKG->Xsize || pz < 0 || pz >= ACTIVEBKG->Zsize)
 		return NULL;
@@ -115,10 +115,10 @@ static EERIEPOLY * ANCHOR_CheckInPoly(float x, float y, float z) {
 		EERIEPOLY *ep = feg->polyin[k];
 
 		if (!(ep->type & (POLY_WATER | POLY_TRANS | POLY_NOCOL))
-		        &&	(ep->max.y >= y)
+		        &&	(ep->max.y >= pos.y)
 		        &&	(ep != found)
 		        &&	((ep->norm.y < 0.f) || ((ep->type & POLY_QUAD) && (ep->norm2.y < 0.f)))
-		        &&	(PointIn2DPolyXZ(ep, x, z)))
+		        &&	(PointIn2DPolyXZ(ep, pos.x, pos.z)))
 		{
 			if(!found || (found && ep->min.y < found->min.y))
 				found = ep;
@@ -126,7 +126,7 @@ static EERIEPOLY * ANCHOR_CheckInPoly(float x, float y, float z) {
 	}
 
 	if(!found)
-		return CheckInPoly(Vec3f(x, y, z));
+		return CheckInPoly(pos);
 
 	return found;
 }
@@ -585,7 +585,7 @@ bool CylinderAboveInvalidZone(EERIE_CYLINDER * cyl) {
 			pos.x = cyl->origin.x - std::sin(radians(ang)) * rad;
 			pos.y = cyl->origin.y - 20.f;
 			pos.z = cyl->origin.z + std::cos(radians(ang)) * rad;
-			EERIEPOLY * ep = ANCHOR_CheckInPoly(pos.x, pos.y, pos.z);
+			EERIEPOLY * ep = ANCHOR_CheckInPoly(pos);
 
 			if(!ep)
 				continue;
