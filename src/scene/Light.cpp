@@ -586,7 +586,7 @@ float GetColorz(const Vec3f &pos) {
 
 	EERIEPOLY * ep;
 	float needy;
-	ep = EECheckInPoly(&pos, &needy);
+	ep = CheckInPoly(pos, &needy);
 
 	if(ep != NULL) {
 		float _ffr = 0;

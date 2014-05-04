@@ -134,7 +134,6 @@ FAST_BKG_DATA * getFastBackgroundData(float x, float z);
 
 EERIEPOLY * CheckTopPoly(float x,float y,float z);
 EERIEPOLY * CheckInPoly(const Vec3f & poss, float * needY = NULL);
-EERIEPOLY * EECheckInPoly(const Vec3f * pos,float * needY = NULL);
 
 /*!
  * Check if the given condition is under water.

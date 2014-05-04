@@ -980,7 +980,7 @@ void ARX_PHYSICS_Apply() {
 			continue;
 		}
 
-		EERIEPOLY * ep = EECheckInPoly(&io->pos);
+		EERIEPOLY * ep = CheckInPoly(io->pos);
 
 		if(ep && (ep->type & POLY_LAVA) && EEfabs(ep->center.y - io->pos.y) < 40) {
 			ARX_PARTICLES_Spawn_Lava_Burn(&io->pos, io);

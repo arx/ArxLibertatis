@@ -245,7 +245,7 @@ void ARX_MISSILES_Update()
 					break;
 				}
 
-				if(!EECheckInPoly(&dest) || EEIsUnderWater(dest)) {
+				if(!CheckInPoly(dest) || EEIsUnderWater(dest)) {
 					ARX_MISSILES_Kill(i);
 					ARX_BOOMS_Add(dest);
 					Add3DBoom(dest);

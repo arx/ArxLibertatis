@@ -777,7 +777,7 @@ void ArxGame::updateFirstPersonCamera() {
 			tt.x += std::sin(t)*(float)l;
 			tt.y -= 50.f;
 			tt.z -= std::cos(t)*(float)l;
-			EERIEPOLY * ep = EECheckInPoly(&tt);
+			EERIEPOLY * ep = CheckInPoly(tt);
 			if(ep) {
 				subj.d_pos = tt;
 			}

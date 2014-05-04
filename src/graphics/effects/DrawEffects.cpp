@@ -129,7 +129,7 @@ void ARXDRAW_DrawInterShadows()
 
 			if(io->obj->grouplist.size() <= 1) {
 				for(size_t k=0; k < io->obj->vertexlist.size(); k += 9) {
-					EERIEPOLY *ep = EECheckInPoly(&io->obj->vertexlist3[k].v);
+					EERIEPOLY *ep = CheckInPoly(io->obj->vertexlist3[k].v);
 
 					if(ep) {
 						in.p.y=ep->min.y-3.f;
@@ -166,7 +166,7 @@ void ARXDRAW_DrawInterShadows()
 			} else {
 				for(size_t k = 0; k < io->obj->grouplist.size(); k++) {
 					long origin=io->obj->grouplist[k].origin;
-					EERIEPOLY *ep = EECheckInPoly(&io->obj->vertexlist3[origin].v);
+					EERIEPOLY *ep = CheckInPoly(io->obj->vertexlist3[origin].v);
 
 					if(ep) {
 						in.p.y=ep->min.y-3.f;

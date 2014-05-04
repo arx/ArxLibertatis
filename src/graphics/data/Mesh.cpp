@@ -272,10 +272,6 @@ EERIEPOLY * CheckInPoly(const Vec3f & poss, float * needY)
 	return found;
 }
 
-EERIEPOLY * EECheckInPoly(const Vec3f * pos, float * needY) {
-	return CheckInPoly(*pos, needY);
-}
-
 FAST_BKG_DATA * getFastBackgroundData(float x, float z) {
 	
 	long px = x * ACTIVEBKG->Xmul;
