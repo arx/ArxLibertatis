@@ -355,7 +355,7 @@ bool ForceNPC_Above_Ground(Entity * io) {
 	
 	if(io && (io->ioflags & IO_NPC) && !(io->ioflags & IO_PHYSICAL_OFF)) {
 		io->physics.cyl.origin = io->pos;
-		AttemptValidCylinderPos(&io->physics.cyl, io, CFLAG_NO_INTERCOL);
+		AttemptValidCylinderPos(io->physics.cyl, io, CFLAG_NO_INTERCOL);
 		if(EEfabs(io->pos.y - io->physics.cyl.origin.y) < 45.f) {
 			io->pos.y = io->physics.cyl.origin.y;
 			return true;
@@ -1131,7 +1131,7 @@ bool ARX_INTERACTIVE_ConvertToValidPosForIO(Entity * io, Vec3f * target) {
 		float modz =  std::cos(count) * (float)count * ( 1.0f / 3 );
 		phys.origin.x = target->x + modx;
 		phys.origin.z = target->z + modz;
-		float anything = CheckAnythingInCylinder(&phys, io, CFLAG_JUST_TEST);
+		float anything = CheckAnythingInCylinder(phys, io, CFLAG_JUST_TEST);
 
 		if(EEfabs(anything) < 150.f) {
 			EERIEPOLY * ep = CheckInPoly(phys.origin.x, phys.origin.y + anything - 20.f, phys.origin.z);
@@ -2219,7 +2219,7 @@ bool ARX_INTERACTIVE_CheckFULLCollision(EERIE_3DOBJ * obj, long source)
 
 		if((io->ioflags & IO_NPC) && io->_npcdata->life > 0.f) {
 			for(long kk = 0; kk < obj->pbox->nb_physvert; kk++)
-				if(PointInCylinder(&io->physics.cyl, &obj->pbox->vert[kk].pos))
+				if(PointInCylinder(io->physics.cyl, &obj->pbox->vert[kk].pos))
 					return true;
 		} else if(io->ioflags & IO_FIX) {
 			long step;

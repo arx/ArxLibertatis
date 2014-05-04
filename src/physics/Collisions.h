@@ -83,7 +83,7 @@ extern short EXCEPTIONS_LIST[MAX_IN_SPHERE + 1];
 extern bool DIRECT_PATH;
 
 bool ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, Entity * io, float MOVE_CYLINDER_STEP, CollisionFlags flags = 0);
-float CheckAnythingInCylinder(EERIE_CYLINDER * cyl, Entity * ioo, long flags = 0);
+float CheckAnythingInCylinder(const EERIE_CYLINDER & cyl, Entity * ioo, long flags = 0);
 
 enum CheckAnythingInSphereFlag {
 	 CAS_NO_NPC_COL        = (1<<0),
@@ -112,7 +112,7 @@ bool IsCollidingIO(Entity * io, Entity * ioo);
  */
 bool CheckIOInSphere(EERIE_SPHERE * sphere, long target, bool ignoreNoCollisionFlag = false);
 
-bool AttemptValidCylinderPos(EERIE_CYLINDER * cyl, Entity * io, CollisionFlags flags);
+bool AttemptValidCylinderPos(EERIE_CYLINDER & cyl, Entity * io, CollisionFlags flags);
 bool IO_Visible(const Vec3f & orgn, const Vec3f & dest, EERIEPOLY * epp, Vec3f * hit);
 
 void ANCHOR_BLOCK_By_IO(Entity * io, long status);

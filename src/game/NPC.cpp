@@ -2814,7 +2814,7 @@ static void ManageNPCMovement(Entity * io)
 		io->physics.targetpos.y = io->pos.y + io->move.y + ForcedMove.y;
 	} else { // Gravity 'simulation'
 		phys.cyl.origin.y += 10.f;
-		float anything = CheckAnythingInCylinder(&phys.cyl, io, CFLAG_JUST_TEST | CFLAG_NPC);
+		float anything = CheckAnythingInCylinder(phys.cyl, io, CFLAG_JUST_TEST | CFLAG_NPC);
 
 		if(anything >= 0)
 			io->physics.targetpos.y = io->pos.y + (float)framedelay * 1.5f + ForcedMove.y;

@@ -256,7 +256,7 @@ long Manage3DCursor(bool simulate) {
 		cyl2.origin.y = pos.y + movev.y * inc + maxy;
 		cyl2.origin.z = pos.z + movev.z * inc;
 
-		float anything = CheckAnythingInCylinder(&cyl2, io, CFLAG_JUST_TEST | CFLAG_COLLIDE_NOCOL | CFLAG_NO_NPC_COLLIDE);
+		float anything = CheckAnythingInCylinder(cyl2, io, CFLAG_JUST_TEST | CFLAG_COLLIDE_NOCOL | CFLAG_NO_NPC_COLLIDE);
 
 		if(anything < 0.f) {
 			if(iterating == 40) {

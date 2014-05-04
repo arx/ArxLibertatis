@@ -1385,7 +1385,7 @@ void ARX_PLAYER_Manage_Visual() {
 			float old = player.physics.cyl.height;
 			player.physics.cyl.height = player.baseHeight();
 			player.physics.cyl.origin = player.basePosition();
-			float anything = CheckAnythingInCylinder(&player.physics.cyl, entities.player());
+			float anything = CheckAnythingInCylinder(player.physics.cyl, entities.player());
 			if(anything < 0.f) {
 				player.Current_Movement |= PLAYER_CROUCH;
 				player.physics.cyl.height = old;
@@ -1966,7 +1966,7 @@ bool Valid_Jump_Pos() {
 	tmpp.height = player.physics.cyl.height;
 	tmpp.origin = player.basePosition();
 	tmpp.radius = player.physics.cyl.radius * 0.85f;
-	float tmp = CheckAnythingInCylinder(&tmpp, entities.player(),
+	float tmp = CheckAnythingInCylinder(tmpp, entities.player(),
 	                                    CFLAG_PLAYER | CFLAG_JUST_TEST);
 	if(tmp <= 20.f) {
 		return true;
@@ -1977,7 +1977,7 @@ bool Valid_Jump_Pos() {
 		tmpp.origin = player.basePosition();
 		tmpp.origin += Vec3f(-std::sin(radians(vv)) * 20.f, 0.f, std::cos(radians(vv)) * 20.f);
 		tmpp.radius = player.physics.cyl.radius;
-		float anything = CheckAnythingInCylinder(&tmpp, entities.player(), CFLAG_JUST_TEST);
+		float anything = CheckAnythingInCylinder(tmpp, entities.player(), CFLAG_JUST_TEST);
 		if(anything > 10) {
 			hum = 1;
 			break;
@@ -2048,7 +2048,7 @@ void PlayerMovementIterate(float DeltaTime) {
 			float old = player.physics.cyl.height;
 			player.physics.cyl.height = player.baseHeight();
 			player.physics.cyl.origin = player.basePosition();
-			float anything = CheckAnythingInCylinder(&player.physics.cyl, entities.player(),
+			float anything = CheckAnythingInCylinder(player.physics.cyl, entities.player(),
 			                                         CFLAG_JUST_TEST);
 			if(anything < 0.f) {
 				player.Current_Movement |= PLAYER_CROUCH;
@@ -2097,7 +2097,7 @@ void PlayerMovementIterate(float DeltaTime) {
 				float old = player.physics.cyl.height;
 				player.physics.cyl.height = player.levitateHeight();
 				player.physics.cyl.origin = player.basePosition();
-				float anything = CheckAnythingInCylinder(&player.physics.cyl, entities.player());
+				float anything = CheckAnythingInCylinder(player.physics.cyl, entities.player());
 				if(anything < 0.f) {
 					player.physics.cyl.height = old;
 					long num = ARX_SPELLS_GetSpellOn(entities.player(), SPELL_LEVITATE);
@@ -2133,7 +2133,7 @@ void PlayerMovementIterate(float DeltaTime) {
 		EERIE_CYLINDER testcyl = player.physics.cyl;
 		testcyl.origin.y += 3.f;
 		ON_PLATFORM = 0;
-		anything = CheckAnythingInCylinder(&testcyl, entities.player(), 0);
+		anything = CheckAnythingInCylinder(testcyl, entities.player(), 0);
 		LAST_ON_PLATFORM = ON_PLATFORM;
 	
 		if(player.jumpphase != JumpAscending) {
@@ -2143,7 +2143,7 @@ void PlayerMovementIterate(float DeltaTime) {
 				TRUE_FIRM_GROUND = 1;
 				testcyl.radius -= 30.f;
 				testcyl.origin.y -= 10.f;
-				anything = CheckAnythingInCylinder(&testcyl, entities.player(), 0);
+				anything = CheckAnythingInCylinder(testcyl, entities.player(), 0);
 			}
 		} else {
 			TRUE_FIRM_GROUND = 0;
@@ -2154,7 +2154,7 @@ void PlayerMovementIterate(float DeltaTime) {
 		cyl.origin = player.basePosition() + Vec3f(0.f, 1.f, 0.f);
 		cyl.radius = player.physics.cyl.radius;
 		cyl.height = player.physics.cyl.height;
-		float anything2 = CheckAnythingInCylinder(&cyl, entities.player(), CFLAG_JUST_TEST | CFLAG_PLAYER); //-cyl->origin.y;
+		float anything2 = CheckAnythingInCylinder(cyl, entities.player(), CFLAG_JUST_TEST | CFLAG_PLAYER); //-cyl->origin.y;
 		
 		if(   anything2 > -5
 		   && player.physics.velocity.y > (15.f/TARGET_DT)
@@ -2587,7 +2587,7 @@ void ARX_PLAYER_PutPlayerInNormalStance(long val) {
 	if(player.jumpphase != NotJumping || player.falling) {
 		player.physics.cyl.origin = player.basePosition();
 		IO_PHYSICS phys = player.physics;
-		AttemptValidCylinderPos(&phys.cyl, entities.player(), CFLAG_RETURN_HEIGHT);
+		AttemptValidCylinderPos(phys.cyl, entities.player(), CFLAG_RETURN_HEIGHT);
 		player.pos.y = phys.cyl.origin.y + player.baseHeight();
 		player.jumpphase = NotJumping;
 		player.falling = false;

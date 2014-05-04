@@ -407,7 +407,7 @@ static void drawDebugEntityPhysicsCylinder(Entity * io) {
 	cyll.origin = io->physics.startpos;
 	EERIEDraw3DCylinder(cyll, Color::green);
 	
-	if(!(AttemptValidCylinderPos(&cyll, io, levitate | CFLAG_NPC))) {
+	if(!(AttemptValidCylinderPos(cyll, io, levitate | CFLAG_NPC))) {
 		cyll.height = -40.f;
 		EERIEDraw3DCylinder(cyll, Color::blue);
 		cyll.height = GetIOHeight(io);

@@ -133,7 +133,7 @@ static EERIEPOLY * ANCHOR_CheckInPoly(float x, float y, float z) {
 
 extern Vec3f vector2D;
 
-float ANCHOR_IsPolyInCylinder(EERIEPOLY * ep, EERIE_CYLINDER * cyl,
+float ANCHOR_IsPolyInCylinder(EERIEPOLY * ep, const EERIE_CYLINDER & cyl,
                               CollisionFlags flags) {
 	
 	if (!(flags & CFLAG_EXTRA_PRECISION))
@@ -149,8 +149,8 @@ float ANCHOR_IsPolyInCylinder(EERIEPOLY * ep, EERIE_CYLINDER * cyl,
 		return ep->center.y;
 	}
 
-	float minf = std::min(cyl->origin.y, cyl->origin.y + cyl->height);
-	float maxf = std::max(cyl->origin.y, cyl->origin.y + cyl->height);
+	float minf = std::min(cyl.origin.y, cyl.origin.y + cyl.height);
+	float maxf = std::max(cyl.origin.y, cyl.origin.y + cyl.height);
 
 	if (minf > ep->max.y) return 999999.f;
 
@@ -231,12 +231,12 @@ float ANCHOR_IsPolyInCylinder(EERIEPOLY * ep, EERIE_CYLINDER * cyl,
  * \param flags collision flags
  * \return 0 if nothing in cyl else returns Y Offset to put cylinder in a proper place
  */
-static float ANCHOR_CheckAnythingInCylinder(EERIE_CYLINDER *cyl, CollisionFlags flags) {
+static float ANCHOR_CheckAnythingInCylinder(const EERIE_CYLINDER & cyl, CollisionFlags flags) {
 	
-	long rad = (cyl->radius + 230) * ACTIVEBKG->Xmul;
+	long rad = (cyl.radius + 230) * ACTIVEBKG->Xmul;
 
-	long px = cyl->origin.x * ACTIVEBKG->Xmul;
-	long pz = cyl->origin.z * ACTIVEBKG->Zmul;
+	long px = cyl.origin.x * ACTIVEBKG->Xmul;
+	long pz = cyl.origin.z * ACTIVEBKG->Zmul;
 
 	if(px > ACTIVEBKG->Xsize - 2 - rad)
 		return 0.f;
@@ -251,9 +251,9 @@ static float ANCHOR_CheckAnythingInCylinder(EERIE_CYLINDER *cyl, CollisionFlags 
 
 	/* TO KEEP...
 		EERIE_BKG_INFO * eg=&ACTIVEBKG->Backg[px+pz*ACTIVEBKG->Xsize];
-		if (	(cyl->origin.y+cyl->height < eg->tile_miny)
-				&& (cyl->origin.y > eg->tile_miny)
-			//||	(cyl->origin.y > eg->tile_maxy)
+		if (	(cyl.origin.y+cyl.height < eg->tile_miny)
+				&& (cyl.origin.y > eg->tile_miny)
+			//||	(cyl.origin.y > eg->tile_maxy)
 			)
 		{
 			return 999999.f;
@@ -280,22 +280,22 @@ static float ANCHOR_CheckAnythingInCylinder(EERIE_CYLINDER *cyl, CollisionFlags 
 		}
 	}
 
-	EERIEPOLY *ep = ANCHOR_CheckInPolyPrecis(cyl->origin.x, cyl->origin.y + cyl->height, cyl->origin.z);
+	EERIEPOLY *ep = ANCHOR_CheckInPolyPrecis(cyl.origin.x, cyl.origin.y + cyl.height, cyl.origin.z);
 
 	if(ep)
 		anything = std::min(anything, ep->min.y);
 
 	float tempo;
 
-	if(ep && GetTruePolyY(ep, cyl->origin, &tempo))
+	if(ep && GetTruePolyY(ep, cyl.origin, &tempo))
 		anything = std::min(anything, tempo);
 
-	anything = anything - cyl->origin.y;
+	anything = anything - cyl.origin.y;
 	return anything;
 }
 
 extern long MOVING_CYLINDER;
-static bool ANCHOR_AttemptValidCylinderPos(EERIE_CYLINDER * cyl, Entity * io,
+static bool ANCHOR_AttemptValidCylinderPos(EERIE_CYLINDER & cyl, Entity * io,
 	                                         CollisionFlags flags) {
 	
 	float anything = ANCHOR_CheckAnythingInCylinder(cyl, flags);
@@ -305,7 +305,7 @@ static bool ANCHOR_AttemptValidCylinderPos(EERIE_CYLINDER * cyl, Entity * io,
 	if (anything >= 0.f) // Falling Cylinder but valid pos !
 	{
 		if (flags & CFLAG_RETURN_HEIGHT)
-			cyl->origin.y += anything;
+			cyl.origin.y += anything;
 
 		return true;
 	}
@@ -314,14 +314,14 @@ static bool ANCHOR_AttemptValidCylinderPos(EERIE_CYLINDER * cyl, Entity * io,
 
 	if(!(flags & CFLAG_ANCHOR_GENERATION)) {
 
-		tmp = *cyl;
+		tmp = cyl;
 
 		while(anything < 0.f) {
 			tmp.origin.y += anything;
-			anything = ANCHOR_CheckAnythingInCylinder(&tmp, flags);
+			anything = ANCHOR_CheckAnythingInCylinder(tmp, flags);
 		}
 
-		anything = tmp.origin.y - cyl->origin.y;
+		anything = tmp.origin.y - cyl.origin.y;
 	}
 
 	if(MOVING_CYLINDER) {
@@ -371,29 +371,29 @@ static bool ANCHOR_AttemptValidCylinderPos(EERIE_CYLINDER * cyl, Entity * io,
 
 	if((flags & CFLAG_SPECIAL) && anything < -40) {
 		if(flags & CFLAG_RETURN_HEIGHT)
-			cyl->origin.y += anything;
+			cyl.origin.y += anything;
 
 		return false;
 	}
 
-	tmp = *cyl;
+	tmp = cyl;
 	tmp.origin.y += anything;
-	anything = ANCHOR_CheckAnythingInCylinder(&tmp, flags); 
+	anything = ANCHOR_CheckAnythingInCylinder(tmp, flags);
 
 	if(anything < 0.f) {
 		if(flags & CFLAG_RETURN_HEIGHT) {
 			while(anything < 0.f) {
 				tmp.origin.y += anything;
-				anything = ANCHOR_CheckAnythingInCylinder(&tmp, flags);
+				anything = ANCHOR_CheckAnythingInCylinder(tmp, flags);
 			}
 
-			cyl->origin.y = tmp.origin.y; 
+			cyl.origin.y = tmp.origin.y;
 		}
 
 		return false;
 	}
 
-	cyl->origin.y = tmp.origin.y;
+	cyl.origin.y = tmp.origin.y;
 	return true;
 }
 
@@ -440,7 +440,7 @@ static bool ANCHOR_ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, Entity * io,
 		        && (CylinderAboveInvalidZone(&test.cyl)))
 			return false;
 
-		if(ANCHOR_AttemptValidCylinderPos(&test.cyl, io, flags)) {
+		if(ANCHOR_AttemptValidCylinderPos(test.cyl, io, flags)) {
 			*ip = test;
 
 		} else {
@@ -448,7 +448,7 @@ static bool ANCHOR_ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, Entity * io,
 				test.cyl = ip->cyl;
 				test.cyl.origin.y += mvector.y * curmovedist;
 
-				if(ANCHOR_AttemptValidCylinderPos(&test.cyl, io, flags)) {
+				if(ANCHOR_AttemptValidCylinderPos(test.cyl, io, flags)) {
 					*ip = test;
 					goto oki;
 				}
@@ -482,7 +482,7 @@ static bool ANCHOR_ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, Entity * io,
 				vecatt = VRotateY(mvector, t);
 				test.cyl.origin += vecatt * curmovedist;
 
-				if(ANCHOR_AttemptValidCylinderPos(&test.cyl, io, flags)) {
+				if(ANCHOR_AttemptValidCylinderPos(test.cyl, io, flags)) {
 					rpos = test.cyl.origin;
 					RFOUND = 1;
 				}
@@ -494,7 +494,7 @@ static bool ANCHOR_ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, Entity * io,
 				vecatt = VRotateY(mvector, t);
 				test.cyl.origin += vecatt * curmovedist;
 
-				if(ANCHOR_AttemptValidCylinderPos(&test.cyl, io, flags)) {
+				if(ANCHOR_AttemptValidCylinderPos(test.cyl, io, flags)) {
 					lpos = test.cyl.origin;
 					LFOUND = 1;
 				}
@@ -637,7 +637,7 @@ static bool DirectAddAnchor_Original_Method(EERIE_BACKGROUND * eb, EERIE_BKG_INF
 		testcyl = currcyl;
 		testcyl.radius += INC_RADIUS;
 
-		if (ANCHOR_AttemptValidCylinderPos(&testcyl, NULL, CFLAG_NO_INTERCOL | CFLAG_EXTRA_PRECISION | CFLAG_ANCHOR_GENERATION))
+		if (ANCHOR_AttemptValidCylinderPos(testcyl, NULL, CFLAG_NO_INTERCOL | CFLAG_EXTRA_PRECISION | CFLAG_ANCHOR_GENERATION))
 		{
 			currcyl = testcyl;
 			found = 1;
@@ -742,7 +742,7 @@ static bool AddAnchor_Original_Method(EERIE_BACKGROUND * eb, EERIE_BKG_INFO * eg
 				testcyl = currcyl;
 				testcyl.radius += INC_RADIUS;
 
-				if (ANCHOR_AttemptValidCylinderPos(&testcyl, NULL, CFLAG_NO_INTERCOL | CFLAG_EXTRA_PRECISION | CFLAG_ANCHOR_GENERATION))
+				if (ANCHOR_AttemptValidCylinderPos(testcyl, NULL, CFLAG_NO_INTERCOL | CFLAG_EXTRA_PRECISION | CFLAG_ANCHOR_GENERATION))
 				{
 					currcyl = testcyl;
 					found = 1;
@@ -1068,7 +1068,7 @@ static void AnchorData_Create_Phase_II_Original_Method(EERIE_BACKGROUND * eb) {
 							if (ep2->type & POLY_NOPATH)
 								continue;
 
-							if (ANCHOR_AttemptValidCylinderPos(&currcyl, NULL, CFLAG_NO_INTERCOL | CFLAG_EXTRA_PRECISION | CFLAG_RETURN_HEIGHT | CFLAG_ANCHOR_GENERATION))
+							if (ANCHOR_AttemptValidCylinderPos(currcyl, NULL, CFLAG_NO_INTERCOL | CFLAG_EXTRA_PRECISION | CFLAG_RETURN_HEIGHT | CFLAG_ANCHOR_GENERATION))
 							{
 								EERIEPOLY * ep2 = ANCHOR_CheckInPolyPrecis(currcyl.origin.x, currcyl.origin.y - 10.f, currcyl.origin.z);
 
@@ -1205,7 +1205,7 @@ void AnchorData_Create(EERIE_BACKGROUND * eb) {
 
 						if ((ep2) && !(ep2->type & POLY_NOPATH))
 						{
-							bool bval = ANCHOR_AttemptValidCylinderPos(&currcyl, NULL, CFLAG_NO_INTERCOL | CFLAG_EXTRA_PRECISION | CFLAG_RETURN_HEIGHT | CFLAG_ANCHOR_GENERATION);
+							bool bval = ANCHOR_AttemptValidCylinderPos(currcyl, NULL, CFLAG_NO_INTERCOL | CFLAG_EXTRA_PRECISION | CFLAG_RETURN_HEIGHT | CFLAG_ANCHOR_GENERATION);
 
 							if ((bval)
 							        && (currcyl.origin.y - 10.f <= current_y))

@@ -171,7 +171,7 @@ void RiseDeadSpell::Update(float timeDelta)
 				phys.radius=50;
 				phys.origin=m_target_pos;
 
-				float anything = CheckAnythingInCylinder(&phys, NULL, CFLAG_JUST_TEST);
+				float anything = CheckAnythingInCylinder(phys, NULL, CFLAG_JUST_TEST);
 
 				if(EEfabs(anything) < 30) {
 					

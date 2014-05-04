@@ -75,12 +75,12 @@ bool DIRECT_PATH=true;
 
 //-----------------------------------------------------------------------------
 // Added immediate return (return anything;)
-inline float IsPolyInCylinder(EERIEPOLY * ep, EERIE_CYLINDER * cyl, long flag) {
+inline float IsPolyInCylinder(EERIEPOLY * ep, const EERIE_CYLINDER & cyl, long flag) {
 
 	long flags = flag;
 	POLYIN = 0;
-	float minf = cyl->origin.y + cyl->height;
-	float maxf = cyl->origin.y;
+	float minf = cyl.origin.y + cyl.height;
+	float maxf = cyl.origin.y;
 
 	if(minf > ep->max.y || maxf < ep->min.y)
 		return 999999.f;
@@ -90,18 +90,18 @@ inline float IsPolyInCylinder(EERIEPOLY * ep, EERIE_CYLINDER * cyl, long flag) {
 	float nearest = 99999999.f;
 
 	for(long num = 0; num < to; num++) {
-		float dd = fdist(Vec2f(ep->v[num].p.x, ep->v[num].p.z), Vec2f(cyl->origin.x, cyl->origin.z));
+		float dd = fdist(Vec2f(ep->v[num].p.x, ep->v[num].p.z), Vec2f(cyl.origin.x, cyl.origin.z));
 
 		if(dd < nearest) {
 			nearest = dd;
 		}		
 	}
 
-	if(nearest > max(82.f, cyl->radius))
+	if(nearest > max(82.f, cyl.radius))
 		return 999999.f;
 
-	if(cyl->radius < 30.f
-	   || cyl->height > -80.f
+	if(cyl.radius < 30.f
+	   || cyl.height > -80.f
 	   || ep->area > 5000.f
 	) {
 		flags |= CFLAG_EXTRA_PRECISION;
@@ -203,12 +203,12 @@ inline float IsPolyInCylinder(EERIEPOLY * ep, EERIE_CYLINDER * cyl, long flag) {
 
 	for (long j=0;j<360;j+=90)
 	{
-		float xx=-std::sin(radians((float)j))*cyl->radius;
-		float yy=std::cos(radians((float)j))*cyl->radius;
+		float xx=-std::sin(radians((float)j))*cyl.radius;
+		float yy=std::cos(radians((float)j))*cyl.radius;
 		EERIE_3D pos;
-		pos.x=cyl->origin.x+xx;
+		pos.x=cyl.origin.x+xx;
 
-		pos.z=cyl->origin.z+yy;
+		pos.z=cyl.origin.z+yy;
 		//EERIEPOLY * epp;
 
 		if (PointIn2DPolyXZ(ep, pos.x, pos.z)) 
@@ -288,7 +288,7 @@ bool IsCollidingIO(Entity * io,Entity * ioo) {
 			ioo->physics.cyl.radius += 25.f;
 
 			for(size_t j = 0; j < io->obj->vertexlist3.size(); j++) {
-				if(PointInCylinder(&ioo->physics.cyl, &io->obj->vertexlist3[j].v)) {
+				if(PointInCylinder(ioo->physics.cyl, &io->obj->vertexlist3[j].v)) {
 					ioo->physics.cyl.radius = old;
 					return true;
 				}
@@ -359,14 +359,14 @@ void PushIO_ON_Top(Entity * ioo, float ydec) {
 									moveto.y += ydec;
 									EERIE_CYLINDER cyl = player.baseCylinder();
 									cyl.origin.y += ydec;
-									float vv = CheckAnythingInCylinder(&cyl, entities.player(), 0);
+									float vv = CheckAnythingInCylinder(cyl, entities.player(), 0);
 									if(vv < 0) {
 										player.pos.y += ydec + vv;
 									}
 								} else {
 									EERIE_CYLINDER cyl = player.baseCylinder();
 									cyl.origin.y += ydec;
-									if(CheckAnythingInCylinder(&cyl, entities.player(), 0) >= 0) {
+									if(CheckAnythingInCylinder(cyl, entities.player(), 0) >= 0) {
 										player.pos.y += ydec;
 										moveto.y += ydec;
 									}
@@ -378,7 +378,7 @@ void PushIO_ON_Top(Entity * ioo, float ydec) {
 									EERIE_CYLINDER cyl;
 									GetIOCyl(io, &cyl);
 									cyl.origin.y += ydec;
-									if(CheckAnythingInCylinder(&cyl, io ,0) >= 0) {
+									if(CheckAnythingInCylinder(cyl, io ,0) >= 0) {
 										io->pos.y += ydec;
 									}
 								}
@@ -485,14 +485,14 @@ bool CollidedFromBack(Entity * io,Entity * ioo)
 
 // Returns 0 if nothing in cyl
 // Else returns Y Offset to put cylinder in a proper place
-float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,Entity * ioo,long flags) {
+float CheckAnythingInCylinder(const EERIE_CYLINDER & cyl, Entity * ioo, long flags) {
 	
 	NPC_IN_CYLINDER = 0;
 	
-	long rad = (cyl->radius + 100) * ACTIVEBKG->Xmul;
+	long rad = (cyl.radius + 100) * ACTIVEBKG->Xmul;
 
-	long px = cyl->origin.x*ACTIVEBKG->Xmul;
-	long pz = cyl->origin.z*ACTIVEBKG->Zmul;
+	long px = cyl.origin.x*ACTIVEBKG->Xmul;
+	long pz = cyl.origin.z*ACTIVEBKG->Zmul;
 
 	if(px > ACTIVEBKG->Xsize-2-rad)
 		return 0.f;
@@ -526,14 +526,14 @@ float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,Entity * ioo,long flags) {
 			if(num == 2 || num == 3)
 				nearz += 100;
 
-			float dd = fdist(Vec2f(nearx, nearz), Vec2f(cyl->origin.x, cyl->origin.z));
+			float dd = fdist(Vec2f(nearx, nearz), Vec2f(cyl.origin.x, cyl.origin.z));
 
 			if(dd < nearest) {
 				nearest = dd;
 			}
 		}
 
-		if(nearest > max(82.f, cyl->radius))
+		if(nearest > max(82.f, cyl.radius))
 			continue;
 
 
@@ -557,7 +557,7 @@ float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,Entity * ioo,long flags) {
 
 	float tempo;
 	
-	ep = CheckInPoly(cyl->origin.x, cyl->origin.y + cyl->height, cyl->origin.z, &tempo);
+	ep = CheckInPoly(cyl.origin.x, cyl.origin.y + cyl.height, cyl.origin.z, &tempo);
 	
 	if(ep) {
 		anything = min(anything, tempo);
@@ -589,7 +589,7 @@ float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,Entity * ioo,long flags) {
 				||	(	(io->show!=SHOW_FLAG_IN_SCENE)
 					||	((io->ioflags & IO_NO_COLLISIONS)  && !(flags & CFLAG_COLLIDE_NOCOL))
 					) 
-				|| fartherThan(io->pos, cyl->origin, 1000.f)) continue;
+				|| fartherThan(io->pos, cyl.origin, 1000.f)) continue;
 	
 			{
 				EERIE_CYLINDER * io_cyl = &io->physics.cyl;
@@ -600,11 +600,11 @@ float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,Entity * ioo,long flags) {
 					||	((flags & CFLAG_COLLIDE_NOCOL) && (io->ioflags & IO_NPC) &&  (io->ioflags & IO_NO_COLLISIONS))
 					)
 				{
-					if(closerThan(Vec2f(io->pos.x, io->pos.z), Vec2f(cyl->origin.x, cyl->origin.z), 440.f + cyl->radius))
-					if(In3DBBoxTolerance(cyl->origin, io->bbox3D, cyl->radius+80))
+					if(closerThan(Vec2f(io->pos.x, io->pos.z), Vec2f(cyl.origin.x, cyl.origin.z), 440.f + cyl.radius))
+					if(In3DBBoxTolerance(cyl.origin, io->bbox3D, cyl.radius+80))
 					{
 						if(io->ioflags & IO_FIELD) {
-							if(In3DBBoxTolerance(cyl->origin, io->bbox3D, cyl->radius + 10))
+							if(In3DBBoxTolerance(cyl.origin, io->bbox3D, cyl.radius + 10))
 								anything = -99999.f;
 						} else {
 						for(size_t ii = 0; ii < io->obj->vertexlist3.size(); ii++) {
@@ -709,13 +709,13 @@ float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,Entity * ioo,long flags) {
 					float miny = io->bbox3D.min.y;
 					float maxy = io->bbox3D.max.y;
 
-					if(maxy <= cyl->origin.y + cyl->height)
+					if(maxy <= cyl.origin.y + cyl.height)
 						goto suivant;
 
-					if(miny >= cyl->origin.y)
+					if(miny >= cyl.origin.y)
 						goto suivant;
 
-					if(In3DBBoxTolerance(cyl->origin, io->bbox3D, cyl->radius + 30.f)) {
+					if(In3DBBoxTolerance(cyl.origin, io->bbox3D, cyl.radius + 30.f)) {
 						vector<EERIE_VERTEX> & vlist = io->obj->vertexlist3;
 						size_t nbv = io->obj->vertexlist.size();
 
@@ -732,7 +732,7 @@ float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,Entity * ioo,long flags) {
 									sp.radius = 22.f;
 								}
 
-								if(SphereInCylinder(cyl, &sp)) {
+								if(SphereInCylinder(cyl, sp)) {
 									if(!(flags & CFLAG_JUST_TEST) && ioo) {
 										if(io->gameFlags & GFLAG_DOOR) {
 											if(float(arxtime) > io->collide_door_time + 500) {
@@ -789,7 +789,7 @@ float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,Entity * ioo,long flags) {
 								if(ii != (size_t)io->obj->origin) {
 									sp.origin = vlist[ii].v;
 									
-									if(SphereInCylinder(cyl, &sp)) {
+									if(SphereInCylinder(cyl, sp)) {
 										if(!(flags & CFLAG_JUST_TEST) && ioo) {
 											if(io->gameFlags & GFLAG_DOOR) {
 												if(float(arxtime) > io->collide_door_time + 500) {
@@ -835,7 +835,7 @@ float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,Entity * ioo,long flags) {
 	if(anything == 999999.f)
 		return 0.f;
 
-	anything = anything - cyl->origin.y;
+	anything = anything - cyl.origin.y;
 
 	return anything;	
 }
@@ -1262,7 +1262,7 @@ float MAX_ALLOWED_PER_SECOND=12.f;
 // Checks if a position is valid, Modify it for height if necessary
 // Returns true or false
 
-bool AttemptValidCylinderPos(EERIE_CYLINDER * cyl, Entity * io, CollisionFlags flags) {
+bool AttemptValidCylinderPos(EERIE_CYLINDER & cyl, Entity * io, CollisionFlags flags) {
 	
 	float anything = CheckAnythingInCylinder(cyl, io, flags); 
 
@@ -1272,7 +1272,7 @@ bool AttemptValidCylinderPos(EERIE_CYLINDER * cyl, Entity * io, CollisionFlags f
 	// Falling Cylinder but valid pos !
 	if(anything >= 0.f) {
 		if(flags & CFLAG_RETURN_HEIGHT)
-			cyl->origin.y += anything;
+			cyl.origin.y += anything;
 
 		return true;
 	}
@@ -1281,14 +1281,14 @@ bool AttemptValidCylinderPos(EERIE_CYLINDER * cyl, Entity * io, CollisionFlags f
 
 	if(!(flags & CFLAG_ANCHOR_GENERATION)) {
 		
-		tmp = *cyl;
+		tmp = cyl;
 
 		while(anything < 0.f) {
 			tmp.origin.y += anything;
-			anything = CheckAnythingInCylinder(&tmp, io, flags);
+			anything = CheckAnythingInCylinder(tmp, io, flags);
 		}
 
-		anything = tmp.origin.y - cyl->origin.y;
+		anything = tmp.origin.y - cyl.origin.y;
 	}
 
 	if(MOVING_CYLINDER) {
@@ -1312,7 +1312,7 @@ bool AttemptValidCylinderPos(EERIE_CYLINDER * cyl, Entity * io, CollisionFlags f
 			}
 			
 			if(NPC_IN_CYLINDER) {
-				tolerate = cyl->height * 0.5f;
+				tolerate = cyl.height * 0.5f;
 			}
 			
 			if(anything < tolerate) {
@@ -1321,15 +1321,15 @@ bool AttemptValidCylinderPos(EERIE_CYLINDER * cyl, Entity * io, CollisionFlags f
 		}
 		
 		if(io && (flags & CFLAG_PLAYER) && anything < 0.f && (flags & CFLAG_JUST_TEST)) {
-			EERIE_CYLINDER tmpp = *cyl;
+			EERIE_CYLINDER tmpp = cyl;
 			tmpp.radius *= 0.7f;
 
-			float tmp = CheckAnythingInCylinder(&tmpp, io, flags | CFLAG_JUST_TEST);
+			float tmp = CheckAnythingInCylinder(tmpp, io, flags | CFLAG_JUST_TEST);
 
 			if(tmp > 50.f) {
-				tmpp.radius = cyl->radius * 1.4f;
+				tmpp.radius = cyl.radius * 1.4f;
 				tmpp.origin.y -= 30.f;
-				float tmp = CheckAnythingInCylinder(&tmpp, io, flags | CFLAG_JUST_TEST);
+				float tmp = CheckAnythingInCylinder(tmpp, io, flags | CFLAG_JUST_TEST);
 
 				if(tmp < 0)
 					return false;
@@ -1357,14 +1357,14 @@ bool AttemptValidCylinderPos(EERIE_CYLINDER * cyl, Entity * io, CollisionFlags f
 					return false;
 				}
 
-				EERIE_CYLINDER tmpp = *cyl;
+				EERIE_CYLINDER tmpp = cyl;
 				tmpp.radius *= 0.65f; 
-				float tmp = CheckAnythingInCylinder(&tmpp, io, flags | CFLAG_JUST_TEST);
+				float tmp = CheckAnythingInCylinder(tmpp, io, flags | CFLAG_JUST_TEST);
 
 				if(tmp > 50.f) {
-					tmpp.radius = cyl->radius * 1.45f;
+					tmpp.radius = cyl.radius * 1.45f;
 					tmpp.origin.y -= 30.f;
-					float tmp = CheckAnythingInCylinder(&tmpp, io, flags | CFLAG_JUST_TEST);
+					float tmp = CheckAnythingInCylinder(tmpp, io, flags | CFLAG_JUST_TEST);
 
 					if(tmp < 0)
 						return false;
@@ -1377,29 +1377,29 @@ bool AttemptValidCylinderPos(EERIE_CYLINDER * cyl, Entity * io, CollisionFlags f
 
 	if((flags & CFLAG_SPECIAL) && anything < -40) {
 		if(flags & CFLAG_RETURN_HEIGHT)
-			cyl->origin.y += anything;
+			cyl.origin.y += anything;
 
 		return false;
 	}
 
-	tmp = *cyl;
+	tmp = cyl;
 	tmp.origin.y += anything;
-	anything = CheckAnythingInCylinder(&tmp, io, flags);
+	anything = CheckAnythingInCylinder(tmp, io, flags);
 
 	if(anything < 0.f) {
 		if(flags & CFLAG_RETURN_HEIGHT) {
 			while(anything < 0.f) {
 				tmp.origin.y += anything;
-				anything = CheckAnythingInCylinder(&tmp, io, flags);
+				anything = CheckAnythingInCylinder(tmp, io, flags);
 			}
 
-			cyl->origin.y = tmp.origin.y; 
+			cyl.origin.y = tmp.origin.y;
 		}
 
 		return false;
 	}
 
-	cyl->origin.y = tmp.origin.y;
+	cyl.origin.y = tmp.origin.y;
 	return true;
 }
 
@@ -1465,7 +1465,7 @@ bool ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, Entity * io, float MOVE_CYLIND
 		if((flags & CFLAG_CHECK_VALID_POS) && CylinderAboveInvalidZone(&test.cyl))
 				return false;
 
-		if(AttemptValidCylinderPos(&test.cyl,io,flags)) {
+		if(AttemptValidCylinderPos(test.cyl,io,flags)) {
 			// Found without complication
 			*ip = test;
 		} else {
@@ -1477,7 +1477,7 @@ bool ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, Entity * io, float MOVE_CYLIND
 				test.cyl = ip->cyl;
 				test.cyl.origin.y += mvector.y * curmovedist;
 
-				if(AttemptValidCylinderPos(&test.cyl, io, flags)) {
+				if(AttemptValidCylinderPos(test.cyl, io, flags)) {
 					*ip = test;
 					goto oki;
 				}
@@ -1511,7 +1511,7 @@ bool ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, Entity * io, float MOVE_CYLIND
 				test.cyl.origin += vecatt * curmovedist;
 				float cc = io->_npcdata->climb_count;
 
-				if(AttemptValidCylinderPos(&test.cyl, io, flags)) {
+				if(AttemptValidCylinderPos(test.cyl, io, flags)) {
 					rpos = test.cyl.origin;
 					RFOUND = 1;
 				} else {
@@ -1526,7 +1526,7 @@ bool ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, Entity * io, float MOVE_CYLIND
 				test.cyl.origin += vecatt * curmovedist;
 				cc = io->_npcdata->climb_count;
 
-				if(AttemptValidCylinderPos(&test.cyl, io, flags)) {
+				if(AttemptValidCylinderPos(test.cyl, io, flags)) {
 					lpos = test.cyl.origin;
 					LFOUND = 1;
 				} else {

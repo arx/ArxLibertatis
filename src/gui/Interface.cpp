@@ -1458,8 +1458,8 @@ void ArxGame::managePlayerControls()
 
 			EERIE_CYLINDER test;
 			memcpy(&test,&phys.cyl,sizeof(EERIE_CYLINDER));
-			bool npc = AttemptValidCylinderPos(&test, NULL, CFLAG_JUST_TEST | CFLAG_NPC);
-			float val=CheckAnythingInCylinder(&phys.cyl,entities.player(),CFLAG_NO_NPC_COLLIDE | CFLAG_JUST_TEST);
+			bool npc = AttemptValidCylinderPos(test, NULL, CFLAG_JUST_TEST | CFLAG_NPC);
+			float val=CheckAnythingInCylinder(phys.cyl,entities.player(),CFLAG_NO_NPC_COLLIDE | CFLAG_JUST_TEST);
 
 			if(val > -40.f) {
 				if(val <= 70.f) {

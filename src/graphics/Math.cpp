@@ -472,23 +472,24 @@ bool Triangles_Intersect(const EERIE_TRI * v, const EERIE_TRI * u)
 
 // Cylinder y origin must be min Y of cylinder
 // Cylinder height MUST be negative FROM origin (inverted Theo XYZ system Legacy)
-bool CylinderInCylinder(const EERIE_CYLINDER * cyl1, const EERIE_CYLINDER * cyl2)
+bool CylinderInCylinder(const EERIE_CYLINDER & cyl1, const EERIE_CYLINDER * cyl2)
 {
-	if (cyl1 == cyl2) return false;
+	// TODO
+	//if (cyl1 == cyl2) return false;
 
-	float m1 = cyl1->origin.y;					//tokeep: max(cyl1->origin.y,cyl1->origin.y+cyl1->height);
+	float m1 = cyl1.origin.y;					//tokeep: max(cyl1.origin.y,cyl1.origin.y+cyl1.height);
 	float m2 = cyl2->origin.y + cyl2->height;	//tokeep: min(cyl2->origin.y,cyl2->origin.y+cyl2->height);
 
 	if (m2 > m1) return false;
 
-	m1 = cyl1->origin.y + cyl1->height;			//tokeep: min(cyl1->origin.y,cyl1->origin.y+cyl1->height);
+	m1 = cyl1.origin.y + cyl1.height;			//tokeep: min(cyl1.origin.y,cyl1.origin.y+cyl1.height);
 	m2 = cyl2->origin.y;						//tokeep: max(cyl2->origin.y,cyl2->origin.y+cyl2->height);
 
 	if (m1 > m2) return false;
 
-	m1 = cyl1->radius + cyl2->radius;
+	m1 = cyl1.radius + cyl2->radius;
 
-	if(!fartherThan(Vec2f(cyl1->origin.x, cyl1->origin.z), Vec2f(cyl2->origin.x, cyl2->origin.z), m1)) {
+	if(!fartherThan(Vec2f(cyl1.origin.x, cyl1.origin.z), Vec2f(cyl2->origin.x, cyl2->origin.z), m1)) {
 		return true;
 	}
 
@@ -496,19 +497,19 @@ bool CylinderInCylinder(const EERIE_CYLINDER * cyl1, const EERIE_CYLINDER * cyl2
 }
 
 // Sort of...
-bool SphereInCylinder(const EERIE_CYLINDER * cyl1, const EERIE_SPHERE * s)
+bool SphereInCylinder(const EERIE_CYLINDER & cyl1, const EERIE_SPHERE & s)
 {
-	float m1 = max(cyl1->origin.y, cyl1->origin.y + cyl1->height);
-	float m2 = s->origin.y - s->radius;
+	float m1 = max(cyl1.origin.y, cyl1.origin.y + cyl1.height);
+	float m2 = s.origin.y - s.radius;
 
 	if (m2 > m1) return false;
 
-	m1 = min(cyl1->origin.y, cyl1->origin.y + cyl1->height);
-	m2 = s->origin.y + s->radius;
+	m1 = min(cyl1.origin.y, cyl1.origin.y + cyl1.height);
+	m2 = s.origin.y + s.radius;
 
 	if (m1 > m2) return false;
 
-	if(!fartherThan(Vec2f(cyl1->origin.x, cyl1->origin.z), Vec2f(s->origin.x, s->origin.z), cyl1->radius + s->radius)) {
+	if(!fartherThan(Vec2f(cyl1.origin.x, cyl1.origin.z), Vec2f(s.origin.x, s.origin.z), cyl1.radius + s.radius)) {
 		return true;
 	}
 	

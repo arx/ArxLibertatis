@@ -170,7 +170,7 @@ void SummonCreatureSpell::Update(float timeDelta)
 				phys.height=-200;
 				phys.radius=50;
 				phys.origin=m_target_pos;
-				float anything = CheckAnythingInCylinder(&phys, NULL, CFLAG_JUST_TEST);
+				float anything = CheckAnythingInCylinder(phys, NULL, CFLAG_JUST_TEST);
 
 				if(EEfabs(anything) < 30) {
 				

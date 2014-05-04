@@ -113,8 +113,8 @@ inline long F2L_RoundUp(float val) {
 	return static_cast<long>(ceil(val));
 }
 
-bool CylinderInCylinder(const EERIE_CYLINDER * cyl1, const EERIE_CYLINDER * cyl2);
-bool SphereInCylinder(const EERIE_CYLINDER * cyl1, const EERIE_SPHERE * s);
+bool CylinderInCylinder(const EERIE_CYLINDER & cyl1, const EERIE_CYLINDER * cyl2);
+bool SphereInCylinder(const EERIE_CYLINDER & cyl1, const EERIE_SPHERE & s);
 
 template <class T, class O>
 inline T reinterpret(O v) {
@@ -221,35 +221,35 @@ inline float fdist(const Vec2f & from, const Vec2f & to) {
 	return ffsqrt(glm::distance2(from, to));
 }
 
-inline bool PointInCylinder(const EERIE_CYLINDER * cyl, const Vec3f * pt) {
+inline bool PointInCylinder(const EERIE_CYLINDER & cyl, const Vec3f * pt) {
 	
-	float pos1 = cyl->origin.y + cyl->height;
+	float pos1 = cyl.origin.y + cyl.height;
 	
-	if(pt->y < min(cyl->origin.y, pos1)) {
+	if(pt->y < min(cyl.origin.y, pos1)) {
 		return false;
 	}
 	
-	if(pt->y > max(cyl->origin.y, pos1)) {
+	if(pt->y > max(cyl.origin.y, pos1)) {
 		return false;
 	}
 	
-	if(!fartherThan(Vec2f(cyl->origin.x, cyl->origin.z), Vec2f(pt->x, pt->z), cyl->radius)) {
+	if(!fartherThan(Vec2f(cyl.origin.x, cyl.origin.z), Vec2f(pt->x, pt->z), cyl.radius)) {
 		return true;
 	}
 	
 	return false;
 }
 
-inline long PointInUnderCylinder(const EERIE_CYLINDER * cyl, const Vec3f * pt) {
+inline long PointInUnderCylinder(const EERIE_CYLINDER & cyl, const Vec3f * pt) {
 	
-	float pos1 = cyl->origin.y + cyl->height;
+	float pos1 = cyl.origin.y + cyl.height;
 	
-	if(pt->y < min(cyl->origin.y, pos1)) {
+	if(pt->y < min(cyl.origin.y, pos1)) {
 		return 0;
 	}
 	
-	if(!fartherThan(Vec2f(cyl->origin.x, cyl->origin.z), Vec2f(pt->x, pt->z), cyl->radius)) {
-		return (pt->y > max(cyl->origin.y, pos1)) ? 1 : 2;
+	if(!fartherThan(Vec2f(cyl.origin.x, cyl.origin.z), Vec2f(pt->x, pt->z), cyl.radius)) {
+		return (pt->y > max(cyl.origin.y, pos1)) ? 1 : 2;
 	}
 	
 	return 0;
