@@ -1301,126 +1301,126 @@ bool DoSphericDamage(const Vec3f & pos, float dmg, float radius, DamageArea flag
 	
 	if(radius <= 0.f)
 		return damagesdone;
-
+	
 	float rad = 1.f / radius;
 	bool validsource = ValidIONum(numsource);
-
+	
 	for(size_t i = 0; i < entities.size(); i++) {
 		Entity * ioo = entities[i];
-
+		
 		if(!ioo || long(i) == numsource || !ioo->obj)
 			continue;
 			
-			if ((i != 0) && (numsource != 0)
-			        && validsource && (HaveCommonGroup(ioo, entities[numsource])))
-				continue;
-
-			if((ioo->ioflags & IO_CAMERA) || (ioo->ioflags & IO_MARKER))
-				continue;
-
-			long count = 0;
-			long count2 = 0;
-			float mindist = std::numeric_limits<float>::max();
-
-			for(size_t k = 0; k < ioo->obj->vertexlist.size(); k += 1) {
-				if(ioo->obj->vertexlist.size() < 120) {
-					for(size_t kk = 0; kk < ioo->obj->vertexlist.size(); kk += 1) {
-						if(kk != k) {
-							Vec3f posi = (entities[i]->obj->vertexlist3[k].v
-							              + entities[i]->obj->vertexlist3[kk].v) * 0.5f;
-							float dist = fdist(pos, posi);
-							if(dist <= radius) {
-								count2++;
-								if(dist < mindist)
-									mindist = dist;
-							}
+		if ((i != 0) && (numsource != 0)
+				&& validsource && (HaveCommonGroup(ioo, entities[numsource])))
+			continue;
+		
+		if((ioo->ioflags & IO_CAMERA) || (ioo->ioflags & IO_MARKER))
+			continue;
+		
+		long count = 0;
+		long count2 = 0;
+		float mindist = std::numeric_limits<float>::max();
+		
+		for(size_t k = 0; k < ioo->obj->vertexlist.size(); k += 1) {
+			if(ioo->obj->vertexlist.size() < 120) {
+				for(size_t kk = 0; kk < ioo->obj->vertexlist.size(); kk += 1) {
+					if(kk != k) {
+						Vec3f posi = (entities[i]->obj->vertexlist3[k].v
+									  + entities[i]->obj->vertexlist3[kk].v) * 0.5f;
+						float dist = fdist(pos, posi);
+						if(dist <= radius) {
+							count2++;
+							if(dist < mindist)
+								mindist = dist;
 						}
-					}
-				}
-
-				{
-					float dist = fdist(pos, entities[i]->obj->vertexlist3[k].v);
-
-					if(dist <= radius) {
-						count++;
-
-						if(dist < mindist)
-							mindist = dist;
 					}
 				}
 			}
-
-			float ratio = ((float)count / ((float)ioo->obj->vertexlist.size() * ( 1.0f / 2 )));
-
-			if(count2 > count)
-				ratio = ((float)count2 / ((float)ioo->obj->vertexlist.size() * ( 1.0f / 2 )));
-
-			if(ratio > 2.f)
-				ratio = 2.f;
-
-			if(ioo->ioflags & IO_NPC) {
-				if(mindist <= radius + 30.f) {
-					switch (flags) {
-						case DAMAGE_AREA:
-							dmg = dmg * (radius + 30 - mindist) * rad;
-							break;
-						case DAMAGE_AREAHALF:
-							dmg = dmg * (radius + 30 - mindist * ( 1.0f / 2 )) * rad;
-							break;
-						case DAMAGE_FULL: break;
-					}
-
-					if(i == 0) {
-						if(typ & DAMAGE_TYPE_FIRE) {
-							dmg = ARX_SPELLS_ApplyFireProtection(ioo, dmg);
-							ARX_DAMAGES_IgnitIO(entities.player(), dmg);
-						}
-
-						if(typ & DAMAGE_TYPE_COLD) {
-							dmg = ARX_SPELLS_ApplyColdProtection(ioo, dmg);
-						}
-
-						ARX_DAMAGES_DamagePlayer(dmg, typ, numsource);
-						ARX_DAMAGES_DamagePlayerEquipment(dmg);
-					} else {
-						if(typ & DAMAGE_TYPE_FIRE) {
-							dmg = ARX_SPELLS_ApplyFireProtection(ioo, dmg * ratio);
-							ARX_DAMAGES_IgnitIO(ioo, dmg);
-						}
-
-						if(typ & DAMAGE_TYPE_COLD) {
-							dmg = ARX_SPELLS_ApplyColdProtection(ioo, dmg * ratio);
-						}
-
-						ARX_DAMAGES_DamageNPC(ioo, dmg * ratio, numsource, 1, &pos);
-					}
-
-					if(dmg > 1)
-						damagesdone = true;
+			
+			{
+			float dist = fdist(pos, entities[i]->obj->vertexlist3[k].v);
+			
+			if(dist <= radius) {
+				count++;
+				
+				if(dist < mindist)
+					mindist = dist;
+			}
+			}
+		}
+		
+		float ratio = ((float)count / ((float)ioo->obj->vertexlist.size() * ( 1.0f / 2 )));
+		
+		if(count2 > count)
+			ratio = ((float)count2 / ((float)ioo->obj->vertexlist.size() * ( 1.0f / 2 )));
+		
+		if(ratio > 2.f)
+			ratio = 2.f;
+		
+		if(ioo->ioflags & IO_NPC) {
+			if(mindist <= radius + 30.f) {
+				switch (flags) {
+					case DAMAGE_AREA:
+						dmg = dmg * (radius + 30 - mindist) * rad;
+						break;
+					case DAMAGE_AREAHALF:
+						dmg = dmg * (radius + 30 - mindist * ( 1.0f / 2 )) * rad;
+						break;
+					case DAMAGE_FULL: break;
 				}
-			} else {
-				if(mindist <= radius + 30.f) {
+				
+				if(i == 0) {
+					if(typ & DAMAGE_TYPE_FIRE) {
+						dmg = ARX_SPELLS_ApplyFireProtection(ioo, dmg);
+						ARX_DAMAGES_IgnitIO(entities.player(), dmg);
+					}
+					
+					if(typ & DAMAGE_TYPE_COLD) {
+						dmg = ARX_SPELLS_ApplyColdProtection(ioo, dmg);
+					}
+					
+					ARX_DAMAGES_DamagePlayer(dmg, typ, numsource);
+					ARX_DAMAGES_DamagePlayerEquipment(dmg);
+				} else {
 					if(typ & DAMAGE_TYPE_FIRE) {
 						dmg = ARX_SPELLS_ApplyFireProtection(ioo, dmg * ratio);
-						ARX_DAMAGES_IgnitIO(entities[i], dmg);
+						ARX_DAMAGES_IgnitIO(ioo, dmg);
 					}
-
+					
 					if(typ & DAMAGE_TYPE_COLD) {
 						dmg = ARX_SPELLS_ApplyColdProtection(ioo, dmg * ratio);
 					}
-
-					if(entities[i]->ioflags & IO_FIX)
-						ARX_DAMAGES_DamageFIX(entities[i], dmg * ratio, numsource, 1);
-
-					if(dmg > 0.2f)
-						damagesdone = true;
+					
+					ARX_DAMAGES_DamageNPC(ioo, dmg * ratio, numsource, 1, &pos);
 				}
+				
+				if(dmg > 1)
+					damagesdone = true;
 			}
+		} else {
+			if(mindist <= radius + 30.f) {
+				if(typ & DAMAGE_TYPE_FIRE) {
+					dmg = ARX_SPELLS_ApplyFireProtection(ioo, dmg * ratio);
+					ARX_DAMAGES_IgnitIO(entities[i], dmg);
+				}
+				
+				if(typ & DAMAGE_TYPE_COLD) {
+					dmg = ARX_SPELLS_ApplyColdProtection(ioo, dmg * ratio);
+				}
+				
+				if(entities[i]->ioflags & IO_FIX)
+					ARX_DAMAGES_DamageFIX(entities[i], dmg * ratio, numsource, 1);
+				
+				if(dmg > 0.2f)
+					damagesdone = true;
+			}
+		}
 	}
-
+	
 	if (typ & DAMAGE_TYPE_FIRE)
 		CheckForIgnition(pos, radius, 1);
-
+	
 	return damagesdone;
 }
 
