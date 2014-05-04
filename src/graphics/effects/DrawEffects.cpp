@@ -98,7 +98,7 @@ void AddToShadowBatch(TexturedVertex * _pVertex1, TexturedVertex * _pVertex2, Te
 
 void ARXDRAW_DrawInterShadows()
 {	
-	g_shadowBatch.resize(0);
+	g_shadowBatch.clear();
 
 	GRenderer->SetFogColor(Color::none);
 	GRenderer->SetDepthBias(1);
