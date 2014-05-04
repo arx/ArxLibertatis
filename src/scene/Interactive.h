@@ -132,7 +132,7 @@ void MakeIOIdent(Entity * io);
 long GetNumberInterWithOutScriptLoad();
 
 void UnlinkAllLinkedObjects();
-long IsCollidingAnyInter(float x, float y, float z, Vec3f * size);
+long IsCollidingAnyInter(const Vec3f & pos, Vec3f * size);
 Entity * GetFirstInterAtPos(const Vec2s & pos, long flag = 0, Vec3f * _pRef = NULL, Entity ** _pTable = NULL, int * _pnNbInTable = NULL);
 
 /*!

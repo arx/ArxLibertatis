@@ -2107,7 +2107,7 @@ Entity * InterClick(const Vec2s & pos) {
 }
 
 // Need To upgrade to a more precise collision.
-long IsCollidingAnyInter(float x, float y, float z, Vec3f * size) {
+long IsCollidingAnyInter(const Vec3f & pos, Vec3f * size) {
 	
 	for(size_t i = 0; i < entities.size(); i++) {
 		Entity * io = entities[i];
@@ -2125,11 +2125,8 @@ long IsCollidingAnyInter(float x, float y, float z, Vec3f * size) {
 					goto suitet;
 			}
 			{
-			Vec3f tempPos;
-			tempPos.x = x;
-			tempPos.y = y;
-			tempPos.z = z;
-
+			Vec3f tempPos = pos;
+			
 			if(IsCollidingInter(io, tempPos))
 				return i;
 

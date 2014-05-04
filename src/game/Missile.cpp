@@ -253,7 +253,7 @@ void ARX_MISSILES_Update()
 					break;
 				}
 
-				long ici = IsCollidingAnyInter(dest.x, dest.y, dest.z, &tro);
+				long ici = IsCollidingAnyInter(dest, &tro);
 
 				if(ici != -1 && ici != missiles[i].owner) {
 					ARX_MISSILES_Kill(i);
