@@ -1271,7 +1271,7 @@ void ManageCombatModeAnimations()
 							if(CheckAnythingInSphere(sphere, 0, 0, &num)) {
 								float dmgs = (player.Full_damages + 1) * STRIKE_AIMTIME;
 								
-								if(ARX_DAMAGES_TryToDoDamage(&io->obj->vertexlist3[id].v, dmgs, 40, 0)) {
+								if(ARX_DAMAGES_TryToDoDamage(io->obj->vertexlist3[id].v, dmgs, 40, 0)) {
 									PlayerWeaponBlocked = useanim->ctime;
 								}
 								

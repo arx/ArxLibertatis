@@ -137,7 +137,7 @@ void ARX_DAMAGES_UpdateAll();
 float ARX_DAMAGES_DamagePlayer(float dmg, DamageType type, long source = -1); 
 void ARX_DAMAGES_DamageFIX(Entity * io, float dmg, long source, long flags);
 float ARX_DAMAGES_DamageNPC(Entity * io, float dmg, long source, long flags, const Vec3f * pos);
-bool ARX_DAMAGES_TryToDoDamage(Vec3f * pos, float dmg, float radius, long source); 
+bool ARX_DAMAGES_TryToDoDamage(const Vec3f & pos, float dmg, float radius, long source);
 void ARX_DAMAGES_ForceDeath(Entity * io_dead, Entity * io_killer);
 void ARX_DAMAGES_UpdateDamage(long j, float tim);
 float ARX_DAMAGES_DealDamages(long target, float dmg, long source, DamageType flags, Vec3f * pos);
