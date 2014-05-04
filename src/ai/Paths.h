@@ -147,7 +147,7 @@ extern ARX_PATH ** ARXpaths;
 extern long	nbARXpaths;
 
 void ARX_PATH_UpdateAllZoneInOutInside();
-long ARX_PATH_IsPosInZone(ARX_PATH * ap, float x, float y, float z);
+long ARX_PATH_IsPosInZone(ARX_PATH * ap, Vec3f pos);
 void ARX_PATH_ClearAllUsePath();
 void ARX_PATH_ReleaseAllPath();
 ARX_PATH * ARX_PATH_GetAddressByName(const std::string & name);

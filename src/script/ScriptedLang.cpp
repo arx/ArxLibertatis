@@ -363,7 +363,7 @@ public:
 					Vec3f _pos;
 					GetItemWorldPosition(entities[l], &_pos);
 					
-					if(ARX_PATH_IsPosInZone(ap, _pos.x, _pos.y, _pos.z)) {
+					if(ARX_PATH_IsPosInZone(ap, _pos)) {
 						io->stat_sent++;
 						Stack_SendIOScriptEvent(entities[l], SM_NULL, params, event);
 					}

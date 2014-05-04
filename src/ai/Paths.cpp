@@ -111,22 +111,22 @@ void ARX_PATH_ComputeAllBoundingBoxes()
 	}
 }
 
-long ARX_PATH_IsPosInZone(ARX_PATH * ap, float x, float y, float z)
+long ARX_PATH_IsPosInZone(ARX_PATH * ap, Vec3f pos)
 {
-	if(x < ap->bbmin.x
-	   || x > ap->bbmax.x
-	   || z < ap->bbmin.z
-	   || z > ap->bbmax.z
-	   || y < ap->bbmin.y
-	   || y > ap->bbmax.y
+	if(pos.x < ap->bbmin.x
+	   || pos.x > ap->bbmax.x
+	   || pos.z < ap->bbmin.z
+	   || pos.z > ap->bbmax.z
+	   || pos.y < ap->bbmin.y
+	   || pos.y > ap->bbmax.y
 	) {
 		return 0;
 	}
 
 	int i, j, c = 0;
 
-	x -= ap->pos.x;
-	z -= ap->pos.z;
+	pos.x -= ap->pos.x;
+	pos.z -= ap->pos.z;
 
 	ARX_PATHWAY * app = ap->pathways;
 
@@ -134,8 +134,8 @@ long ARX_PATH_IsPosInZone(ARX_PATH * ap, float x, float y, float z)
 		Vec3f * pi = &app[i].rpos;
 		Vec3f * pj = &app[j].rpos;
 
-		if(((pi->z <= z && z < pj->z) || (pj->z <= z && z < pi->z))
-		   && (x < (pj->x - pi->x) *(z - pi->z) / (pj->z - pi->z) + pi->x)
+		if(((pi->z <= pos.z && pos.z < pj->z) || (pj->z <= pos.z && pos.z < pi->z))
+		   && (pos.x < (pj->x - pi->x) *(pos.z - pi->z) / (pj->z - pi->z) + pi->x)
 		) {
 			c = !c;
 		}
@@ -151,7 +151,7 @@ ARX_PATH * ARX_PATH_CheckInZone(Entity * io) {
 
 		for(long i = 0; i < nbARXpaths; i++) {
 			if(ARXpaths[i] && ARXpaths[i]->height != 0) {
-				if(ARX_PATH_IsPosInZone(ARXpaths[i], curpos.x, curpos.y, curpos.z))
+				if(ARX_PATH_IsPosInZone(ARXpaths[i], curpos))
 					return ARXpaths[i];
 			}
 		}
@@ -165,7 +165,7 @@ ARX_PATH * ARX_PATH_CheckPlayerInZone()
 	if(ARXpaths) {
 		for(long i = 0; i < nbARXpaths; i++) {
 			if(ARXpaths[i] && ARXpaths[i]->height != 0) {
-				if(ARX_PATH_IsPosInZone(ARXpaths[i], player.pos.x, player.pos.y + 160.f, player.pos.z))
+				if(ARX_PATH_IsPosInZone(ARXpaths[i], player.pos + Vec3f(0.f, 160.f, 0.f)))
 					return ARXpaths[i];
 			}
 		}

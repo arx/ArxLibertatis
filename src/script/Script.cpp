@@ -653,7 +653,7 @@ ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const string & 
 				ARX_PATH * ap = ARX_PATH_GetAddressByName(zone);
 				*lcontent = 0;
 				if(entity && ap) {
-					if(ARX_PATH_IsPosInZone(ap, entity->pos.x, entity->pos.y, entity->pos.z)) {
+					if(ARX_PATH_IsPosInZone(ap, entity->pos)) {
 						*lcontent = 1;
 					}
 				}
