@@ -287,15 +287,15 @@ float ARX_THROWN_ComputeDamages(long thrownum, long source, long target)
 	return 0.f;
 }
 
-EERIEPOLY * CheckArrowPolyCollision(Vec3f * start, Vec3f * end) {
+EERIEPOLY * CheckArrowPolyCollision(const Vec3f & start, const Vec3f & end) {
 
 	EERIE_TRI pol;
-	pol.v[0] = *start;
-	pol.v[2] = *end - Vec3f(2.f, 15.f, 2.f);
-	pol.v[1] = *end;
+	pol.v[0] = start;
+	pol.v[2] = end - Vec3f(2.f, 15.f, 2.f);
+	pol.v[1] = end;
 
-	long px = end->x * ACTIVEBKG->Xmul;
-	long pz = end->z * ACTIVEBKG->Zmul;
+	long px = end.x * ACTIVEBKG->Xmul;
+	long pz = end.z * ACTIVEBKG->Zmul;
 
 	long ix = std::max(px - 2, 0L);
 	long ax = std::min(px + 2, ACTIVEBKG->Xsize - 1L);
@@ -507,7 +507,7 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 				const Vec3f v0 = thrownObj->obj->vertexlist3[thrownObj->obj->actionlist[j].idx].v;
 				Vec3f dest = original_pos + thrownObj->vector * 95.f;
 				Vec3f orgn = original_pos - thrownObj->vector * 25.f;
-				EERIEPOLY * ep = CheckArrowPolyCollision(&orgn, &dest);
+				EERIEPOLY * ep = CheckArrowPolyCollision(orgn, dest);
 
 				if(ep) {
 					ARX_PARTICLES_Spawn_Spark(v0, 14, 0);
