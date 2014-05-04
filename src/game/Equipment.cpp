@@ -808,7 +808,11 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 
 								if(CheckAnythingInSphere(sp, 0, CAS_NO_NPC_COL)) {
 									Color3f rgb = color.to<float>();
-									SpawnGroundSplat(&sp, &rgb, 30, 1);
+									
+									EERIE_SPHERE splatSphere;
+									splatSphere.origin = sp.origin;
+									splatSphere.radius = 30.f;
+									SpawnGroundSplat(splatSphere, rgb, 1);
 								}
 							}
 

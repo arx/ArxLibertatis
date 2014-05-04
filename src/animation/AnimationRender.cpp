@@ -347,7 +347,10 @@ void Cedric_ApplyLightingFirstPartRefactor(Entity *io) {
 						long count = 6;
 
 						while(count--) {
-							SpawnGroundSplat(&sp, &rgb, rnd() * 30.f + 30.f, 1);
+							EERIE_SPHERE splatSphere;
+							splatSphere.origin = sp.origin;
+							splatSphere.radius = rnd() * 30.f + 30.f;
+							SpawnGroundSplat(splatSphere, rgb, 1);
 							sp.origin.y -= rnd() * 150.f;
 
 							ARX_PARTICLES_Spawn_Splat(sp.origin, 200.f, io->_npcdata->blood_color);

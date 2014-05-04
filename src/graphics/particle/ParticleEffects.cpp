@@ -206,7 +206,10 @@ static void ARX_PARTICLES_Spawn_Blood3(const Vec3f & pos, float dmgs, Color col,
 	
 }
 
-void ARX_POLYSPLAT_Add(Vec3f * poss, Color3f * col, float size, long flags) {
+void SpawnGroundSplat(const EERIE_SPHERE & sp, const Color3f & col, long flags) {
+	
+	Vec3f poss = sp.origin;
+	float size = sp.radius;
 	
 	if(polyboom.size() > (MAX_POLYBOOM >> 2) - 30)
 		return;
@@ -247,13 +250,13 @@ void ARX_POLYSPLAT_Add(Vec3f * poss, Color3f * col, float size, long flags) {
 
 
 	float py;
-	EERIEPOLY *ep = CheckInPoly(*poss + Vec3f(0.f, -40, 0.f), &py);
+	EERIEPOLY *ep = CheckInPoly(poss + Vec3f(0.f, -40, 0.f), &py);
 
 	if(!ep)
 		return;
 	
 	if(flags & 1)
-		py=poss->y;
+		py = poss.y;
 
 	EERIEPOLY TheoricalSplat; // clockwise
 	TheoricalSplat.v[0].p.x=-splatsize;
@@ -275,20 +278,20 @@ void ARX_POLYSPLAT_Add(Vec3f * poss, Color3f * col, float size, long flags) {
 
 	Vec3f RealSplatStart(-size, py, -size);
 
-	TheoricalSplat.v[0].p.x+=poss->x;
-	TheoricalSplat.v[0].p.z+=poss->z;
+	TheoricalSplat.v[0].p.x += poss.x;
+	TheoricalSplat.v[0].p.z += poss.z;
 
-	TheoricalSplat.v[1].p.x+=poss->x;
-	TheoricalSplat.v[1].p.z+=poss->z;
+	TheoricalSplat.v[1].p.x += poss.x;
+	TheoricalSplat.v[1].p.z += poss.z;
 
-	TheoricalSplat.v[2].p.x+=poss->x;
-	TheoricalSplat.v[2].p.z+=poss->z;
+	TheoricalSplat.v[2].p.x += poss.x;
+	TheoricalSplat.v[2].p.z += poss.z;
 
-	TheoricalSplat.v[3].p.x+=poss->x;
-	TheoricalSplat.v[3].p.z+=poss->z;
+	TheoricalSplat.v[3].p.x += poss.x;
+	TheoricalSplat.v[3].p.z += poss.z;
 	
-	RealSplatStart.x+=poss->x;
-	RealSplatStart.z+=poss->z;
+	RealSplatStart.x += poss.x;
+	RealSplatStart.z += poss.z;
 
 	float hdiv,vdiv;
 	hdiv=vdiv=1.f/(size*2);
@@ -303,8 +306,8 @@ void ARX_POLYSPLAT_Add(Vec3f * poss, Color3f * col, float size, long flags) {
 		++ pb;
 	}
 
-	long px = poss->x * ACTIVEBKG->Xmul;
-	long pz = poss->z * ACTIVEBKG->Zmul;
+	long px = poss.x * ACTIVEBKG->Xmul;
+	long pz = poss.z * ACTIVEBKG->Zmul;
 
 	long x0 = clamp(px - 3, 0, ACTIVEBKG->Xsize - 1);
 	long x1 = clamp(px + 3, 0, ACTIVEBKG->Xsize - 1);
@@ -375,7 +378,7 @@ void ARX_POLYSPLAT_Add(Vec3f * poss, Color3f * col, float size, long flags) {
 					pb.tx = static_cast<short>(i);
 					pb.tz = static_cast<short>(j);
 
-					pb.rgb = *col;
+					pb.rgb = col;
 
 					for(int k = 0; k < nbvert; k++) {
 						float vdiff=EEfabs(ep->v[k].p.y-RealSplatStart.y);
@@ -401,10 +404,6 @@ void ARX_POLYSPLAT_Add(Vec3f * poss, Color3f * col, float size, long flags) {
 			}
 		}			
 	}	
-}
-
-void SpawnGroundSplat(EERIE_SPHERE * sp, Color3f * rgb, float size, long flags) {
-	ARX_POLYSPLAT_Add(&sp->origin, rgb, size, flags);
 }
 
 void ARX_PARTICLES_Spawn_Blood2(const Vec3f & pos, float dmgs, Color col, Entity * io) {
@@ -1223,7 +1222,7 @@ void ARX_PARTICLES_Update(EERIE_CAMERA * cam)  {
 				if(CheckAnythingInSphere(sp, 0, CAS_NO_NPC_COL)) {
 					if(rnd() < 0.9f) {
 						Color3f rgb = part->rgb;
-						SpawnGroundSplat(&sp, &rgb, sp.radius, 0);
+						SpawnGroundSplat(sp, rgb, 0);
 					}
 					part->exist = false;
 					ParticleCount--;
@@ -1237,7 +1236,7 @@ void ARX_PARTICLES_Update(EERIE_CAMERA * cam)  {
 				if(CheckAnythingInSphere(sp, 0, CAS_NO_NPC_COL)) {
 					if(rnd() < 0.9f) {
 						Color3f rgb = part->rgb * 0.5f;
-						SpawnGroundSplat(&sp, &rgb, sp.radius, 2);
+						SpawnGroundSplat(sp, rgb, 2);
 					}
 					part->exist = false;
 					ParticleCount--;

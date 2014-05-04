@@ -180,7 +180,7 @@ void createSphericalSparks(const Vec3f & pos, float r, TextureContainer * tc,
                            const Color3f & color, int mask);
 void MakePlayerAppearsFX(Entity * io);
 void MakeCoolFx(const Vec3f & pos);
-void SpawnGroundSplat(EERIE_SPHERE * sp, Color3f * rgb, float size, long flags);
+void SpawnGroundSplat(const EERIE_SPHERE & sp, const Color3f & col, long flags);
 
 PARTICLE_DEF * createParticle(bool allocateWhilePaused = false);
 long getParticleCount();
