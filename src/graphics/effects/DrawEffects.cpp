@@ -140,35 +140,35 @@ void ARXDRAW_DrawInterShadows()
 				if(!ep)
 					continue;
 				
-					in.p.y=ep->min.y-3.f;
-					float r=0.5f-((float)EEfabs(io->obj->vertexlist3[k].v.y-in.p.y))*( 1.0f / 500 );
-					r-=io->invisibility;
-					r*=io->scale;
-					
-					if(r<=0.f)
-						continue;
-					
-					float s1=16.f*io->scale;
-					float s2=s1*( 1.0f / 2 );
-					in.p.x=io->obj->vertexlist3[k].v.x-s2;
-					in.p.z=io->obj->vertexlist3[k].v.z-s2;
-					
-					r*=255.f;
-					long lv = r;
-					ltv[0].color=ltv[1].color=ltv[2].color=ltv[3].color=0xFF000000 | lv<<16 | lv<<8 | lv;
-					
-					EE_RT2(&in,&ltv[0]);
-					in.p.x+=s1;
-					EE_RT2(&in,&ltv[1]);
-					in.p.z+=s1;
-					EE_RT2(&in,&ltv[2]);
-					in.p.x-=s1;
-					EE_RT2(&in,&ltv[3]);
-					
-					if(ltv[0].p.z > 0.f && ltv[1].p.z > 0.f && ltv[2].p.z > 0.f) {
-						AddToShadowBatch(&ltv[0], &ltv[1], &ltv[2]);
-						AddToShadowBatch(&ltv[0], &ltv[2], &ltv[3]);
-					}
+				in.p.y=ep->min.y-3.f;
+				float r=0.5f-((float)EEfabs(io->obj->vertexlist3[k].v.y-in.p.y))*( 1.0f / 500 );
+				r-=io->invisibility;
+				r*=io->scale;
+				
+				if(r<=0.f)
+					continue;
+				
+				float s1=16.f*io->scale;
+				float s2=s1*( 1.0f / 2 );
+				in.p.x=io->obj->vertexlist3[k].v.x-s2;
+				in.p.z=io->obj->vertexlist3[k].v.z-s2;
+				
+				r*=255.f;
+				long lv = r;
+				ltv[0].color=ltv[1].color=ltv[2].color=ltv[3].color=0xFF000000 | lv<<16 | lv<<8 | lv;
+				
+				EE_RT2(&in,&ltv[0]);
+				in.p.x+=s1;
+				EE_RT2(&in,&ltv[1]);
+				in.p.z+=s1;
+				EE_RT2(&in,&ltv[2]);
+				in.p.x-=s1;
+				EE_RT2(&in,&ltv[3]);
+				
+				if(ltv[0].p.z > 0.f && ltv[1].p.z > 0.f && ltv[2].p.z > 0.f) {
+					AddToShadowBatch(&ltv[0], &ltv[1], &ltv[2]);
+					AddToShadowBatch(&ltv[0], &ltv[2], &ltv[3]);
+				}
 			}
 		} else {
 			for(size_t k = 0; k < io->obj->grouplist.size(); k++) {
@@ -178,33 +178,33 @@ void ARXDRAW_DrawInterShadows()
 				if(!ep)
 					continue;
 				
-					in.p.y=ep->min.y-3.f;
-					float r=0.8f-((float)EEfabs(io->obj->vertexlist3[origin].v.y-in.p.y))*( 1.0f / 500 );
-					r*=io->obj->grouplist[k].siz;
-					r-=io->invisibility;
-					
-					if(r<=0.f)
-						continue;
-					
-					float s1=io->obj->grouplist[k].siz*44.f;
-					float s2=s1*( 1.0f / 2 );
-					in.p.x=io->obj->vertexlist3[origin].v.x-s2;
-					in.p.z=io->obj->vertexlist3[origin].v.z-s2;
-					
-					r*=255.f;
-					long lv = r;
-					ltv[0].color=ltv[1].color=ltv[2].color=ltv[3].color=0xFF000000 | lv<<16 | lv<<8 | lv;
-					
-					EE_RT2(&in,&ltv[0]);
-					in.p.x+=s1;
-					EE_RT2(&in,&ltv[1]);
-					in.p.z+=s1;
-					EE_RT2(&in,&ltv[2]);
-					in.p.x-=s1;
-					EE_RT2(&in,&ltv[3]);
-					
-					AddToShadowBatch(&ltv[0], &ltv[1], &ltv[2]);
-					AddToShadowBatch(&ltv[0], &ltv[2], &ltv[3]);
+				in.p.y=ep->min.y-3.f;
+				float r=0.8f-((float)EEfabs(io->obj->vertexlist3[origin].v.y-in.p.y))*( 1.0f / 500 );
+				r*=io->obj->grouplist[k].siz;
+				r-=io->invisibility;
+				
+				if(r<=0.f)
+					continue;
+				
+				float s1=io->obj->grouplist[k].siz*44.f;
+				float s2=s1*( 1.0f / 2 );
+				in.p.x=io->obj->vertexlist3[origin].v.x-s2;
+				in.p.z=io->obj->vertexlist3[origin].v.z-s2;
+				
+				r*=255.f;
+				long lv = r;
+				ltv[0].color=ltv[1].color=ltv[2].color=ltv[3].color=0xFF000000 | lv<<16 | lv<<8 | lv;
+				
+				EE_RT2(&in,&ltv[0]);
+				in.p.x+=s1;
+				EE_RT2(&in,&ltv[1]);
+				in.p.z+=s1;
+				EE_RT2(&in,&ltv[2]);
+				in.p.x-=s1;
+				EE_RT2(&in,&ltv[3]);
+				
+				AddToShadowBatch(&ltv[0], &ltv[1], &ltv[2]);
+				AddToShadowBatch(&ltv[0], &ltv[2], &ltv[3]);
 			}
 		}
 		}
