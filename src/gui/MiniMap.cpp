@@ -838,23 +838,23 @@ int MiniMap::mapMarkerGetID(const std::string &name) {
 	return -1;
 }
 
-void MiniMap::mapMarkerAdd(float x, float y, int lvl, const std::string &name) {
+void MiniMap::mapMarkerAdd(const Vec2f & pos, int lvl, const std::string &name) {
 	
 	int num = mapMarkerGetID(name);
 	
 	if(num >= 0) {
 		// Already exists, update it
 		m_mapMarkers[num].m_lvl = lvl;
-		m_mapMarkers[num].m_pos.x = x;
-		m_mapMarkers[num].m_pos.y = y;
+		m_mapMarkers[num].m_pos.x = pos.x;
+		m_mapMarkers[num].m_pos.y = pos.y;
 		return;
 	}
 	
 	// Else, create one
 	MapMarkerData newMMD;
 	newMMD.m_lvl = lvl;
-	newMMD.m_pos.x = x;
-	newMMD.m_pos.y = y;
+	newMMD.m_pos.x = pos.x;
+	newMMD.m_pos.y = pos.y;
 	newMMD.m_name = name;
 	newMMD.m_text = getLocalised(name);
 	m_mapMarkers.push_back(newMMD);

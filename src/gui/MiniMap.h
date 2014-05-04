@@ -99,7 +99,7 @@ public:
 	};
 	
 	void mapMarkerRemove(const std::string &name);
-	void mapMarkerAdd(float x, float y, int lvl, const std::string &name);
+	void mapMarkerAdd(const Vec2f & pos, int lvl, const std::string &name);
 	void mapMarkerInit(size_t reserveSize = 0);
 	size_t mapMarkerCount();
 	MapMarkerData mapMarkerGet(size_t id);

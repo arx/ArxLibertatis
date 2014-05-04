@@ -339,7 +339,7 @@ public:
 			
 			DebugScript(' ' << options << ' ' << x << ' ' << y << ' ' << level << ' ' << marker);
 			
-			g_miniMap.mapMarkerAdd(x, y, level, marker);
+			g_miniMap.mapMarkerAdd(Vec2f(x, y), level, marker);
 			
 		}
 		
