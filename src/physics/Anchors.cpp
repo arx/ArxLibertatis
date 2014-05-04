@@ -62,10 +62,10 @@ using std::sprintf;
 extern float MAX_ALLOWED_PER_SECOND;
 extern bool DIRECT_PATH;
 
-static EERIEPOLY * ANCHOR_CheckInPolyPrecis(float x, float y, float z) {
+static EERIEPOLY * ANCHOR_CheckInPolyPrecis(const Vec3f & pos) {
 	
-	long px = x * ACTIVEBKG->Xmul;
-	long pz = z * ACTIVEBKG->Zmul;
+	long px = pos.x * ACTIVEBKG->Xmul;
+	long pz = pos.z * ACTIVEBKG->Zmul;
 
 	if(px <= 0 || px >= ACTIVEBKG->Xsize - 1 || pz <= 0 || pz >= ACTIVEBKG->Zsize - 1)
 		return NULL;
@@ -80,14 +80,11 @@ static EERIEPOLY * ANCHOR_CheckInPolyPrecis(float x, float y, float z) {
 			for(long k = 0; k < feg->nbpolyin; k++) {
 				EERIEPOLY *ep = feg->polyin[k];
 
-				if(!(ep->type & (POLY_WATER | POLY_TRANS | POLY_NOCOL)) && PointIn2DPolyXZ(ep, x, z)) {
-					Vec3f poss;
-					poss.x = x;
-					poss.y = y;
-					poss.z = z;
+				if(!(ep->type & (POLY_WATER | POLY_TRANS | POLY_NOCOL)) && PointIn2DPolyXZ(ep, pos.x, pos.z)) {
+					Vec3f poss = pos;
 					float yy;
 
-					if(GetTruePolyY(ep, poss, &yy) && yy >= y && (!found || (found && (yy <= foundY)))) {
+					if(GetTruePolyY(ep, poss, &yy) && yy >= pos.y && (!found || (found && (yy <= foundY)))) {
 						found = ep;
 						foundY = yy;
 					}
@@ -280,7 +277,7 @@ static float ANCHOR_CheckAnythingInCylinder(const EERIE_CYLINDER & cyl, Collisio
 		}
 	}
 
-	EERIEPOLY *ep = ANCHOR_CheckInPolyPrecis(cyl.origin.x, cyl.origin.y + cyl.height, cyl.origin.z);
+	EERIEPOLY *ep = ANCHOR_CheckInPolyPrecis(cyl.origin + Vec3f(0.f, cyl.height, 0.f));
 
 	if(ep)
 		anything = std::min(anything, ep->min.y);
@@ -681,8 +678,8 @@ static bool DirectAddAnchor_Original_Method(EERIE_BACKGROUND * eb, EERIE_BKG_INF
 			
 			if (EEfabs(ad->pos.y - bestcyl.origin.y) < 90.f) return false;
 
-			EERIEPOLY * ep = ANCHOR_CheckInPolyPrecis(ad->pos.x, ad->pos.y, ad->pos.z);
-			EERIEPOLY * ep2 = ANCHOR_CheckInPolyPrecis(ad->pos.x, bestcyl.origin.y, ad->pos.z);
+			EERIEPOLY * ep = ANCHOR_CheckInPolyPrecis(ad->pos);
+			EERIEPOLY * ep2 = ANCHOR_CheckInPolyPrecis(Vec3f(ad->pos.x, bestcyl.origin.y, ad->pos.z));
 
 			if (ep2 == ep) return false;
 		}
@@ -1057,7 +1054,7 @@ static void AnchorData_Create_Phase_II_Original_Method(EERIE_BACKGROUND * eb) {
 							currcyl.origin.z = pos.z + pposz * eb->Zdiv;
 							currcyl.origin.y = current_y;
 
-							EERIEPOLY * ep2 = ANCHOR_CheckInPolyPrecis(currcyl.origin.x, currcyl.origin.y - 10.f, currcyl.origin.z);
+							EERIEPOLY * ep2 = ANCHOR_CheckInPolyPrecis(currcyl.origin + Vec3f(0.f, -10.f, 0.f));
 
 							if (!ep2)
 								continue;
@@ -1070,7 +1067,7 @@ static void AnchorData_Create_Phase_II_Original_Method(EERIE_BACKGROUND * eb) {
 
 							if (ANCHOR_AttemptValidCylinderPos(currcyl, NULL, CFLAG_NO_INTERCOL | CFLAG_EXTRA_PRECISION | CFLAG_RETURN_HEIGHT | CFLAG_ANCHOR_GENERATION))
 							{
-								EERIEPOLY * ep2 = ANCHOR_CheckInPolyPrecis(currcyl.origin.x, currcyl.origin.y - 10.f, currcyl.origin.z);
+								EERIEPOLY * ep2 = ANCHOR_CheckInPolyPrecis(currcyl.origin + Vec3f(0.f, -10.f, 0.f));
 
 								if (!ep2)
 									continue;
@@ -1198,7 +1195,7 @@ void AnchorData_Create(EERIE_BACKGROUND * eb) {
 					while (current_y > roof)
 					{
 						currcyl.origin.y = current_y;
-						EERIEPOLY * ep2 = ANCHOR_CheckInPolyPrecis(currcyl.origin.x, currcyl.origin.y - 30.f, currcyl.origin.z);
+						EERIEPOLY * ep2 = ANCHOR_CheckInPolyPrecis(currcyl.origin + Vec3f(0.f, -30.f, 0.f));
 
 						if (ep2 && !(ep2->type & POLY_DOUBLESIDED) && (ep2->norm.y > 0.f))
 							ep2 = NULL;
@@ -1210,7 +1207,7 @@ void AnchorData_Create(EERIE_BACKGROUND * eb) {
 							if ((bval)
 							        && (currcyl.origin.y - 10.f <= current_y))
 							{
-								EERIEPOLY * ep2 = ANCHOR_CheckInPolyPrecis(currcyl.origin.x, currcyl.origin.y - 38.f, currcyl.origin.z);
+								EERIEPOLY * ep2 = ANCHOR_CheckInPolyPrecis(currcyl.origin + Vec3f(0.f, -38.f, 0.f));
 
 								if (ep2 && !(ep2->type & POLY_DOUBLESIDED) && (ep2->norm.y > 0.f))
 								{
