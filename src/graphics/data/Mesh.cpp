@@ -335,14 +335,12 @@ bool IsAnyPolyThere(float x, float z) {
 	return false;
 }
 
-EERIEPOLY * GetMinPoly(float x, float y, float z) {
+EERIEPOLY * GetMinPoly(const Vec3f & pos) {
 	
-	FAST_BKG_DATA * feg = getFastBackgroundData(x, z);
+	FAST_BKG_DATA * feg = getFastBackgroundData(pos.x, pos.z);
 	if(!feg) {
 		return NULL;
 	}
-	
-	Vec3f pos(x, y, z);
 	
 	EERIEPOLY * found = NULL;
 	float foundy = 0.0f;
@@ -353,7 +351,7 @@ EERIEPOLY * GetMinPoly(float x, float y, float z) {
 		if(ep->type & (POLY_WATER | POLY_TRANS | POLY_NOCOL))
 			continue;
 		
-		if(PointIn2DPolyXZ(ep, x, z)) {
+		if(PointIn2DPolyXZ(ep, pos.x, pos.z)) {
 			float ret;
 			if(GetTruePolyY(ep, pos, &ret)) {
 				if(!found || ret > foundy) {
@@ -367,14 +365,12 @@ EERIEPOLY * GetMinPoly(float x, float y, float z) {
 	return found;
 }
 
-EERIEPOLY * GetMaxPoly(float x, float y, float z) {
+EERIEPOLY * GetMaxPoly(const Vec3f & pos) {
 	
-	FAST_BKG_DATA * feg = getFastBackgroundData(x, z);
+	FAST_BKG_DATA * feg = getFastBackgroundData(pos.x, pos.z);
 	if(!feg) {
 		return NULL;
 	}
-	
-	Vec3f pos(x, y, z);
 	
 	EERIEPOLY * found = NULL;
 	float foundy = 0.0f;
@@ -385,7 +381,7 @@ EERIEPOLY * GetMaxPoly(float x, float y, float z) {
 		if(ep->type & (POLY_WATER | POLY_TRANS | POLY_NOCOL))
 			continue;
 		
-		if(PointIn2DPolyXZ(ep, x, z)) {
+		if(PointIn2DPolyXZ(ep, pos.x, pos.z)) {
 			float ret;
 			if(GetTruePolyY(ep, pos, &ret)) {
 				if(!found || ret < foundy) {

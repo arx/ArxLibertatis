@@ -208,8 +208,8 @@ void ARX_MISSILES_Update()
 				
 				Vec3f tro = Vec3f(70.f);
 				
-				EERIEPOLY *ep = GetMinPoly(dest.x, dest.y, dest.z);
-				EERIEPOLY *epp = GetMaxPoly(dest.x, dest.y, dest.z);
+				EERIEPOLY *ep = GetMinPoly(dest);
+				EERIEPOLY *epp = GetMaxPoly(dest);
 
 				if(closerThan(player.pos, pos, 200.f)) {
 					ARX_MISSILES_Kill(i);

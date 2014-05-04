@@ -439,7 +439,7 @@ long ARX_PORTALS_GetRoomNumForPosition2(const Vec3f & pos, long flag, float * he
 	}
 
 	// Security... ?
-	ep=GetMinPoly(pos.x,pos.y,pos.z);
+	ep = GetMinPoly(pos);
 
 	if(ep && ep->room > -1) {
 		if(height)
@@ -528,7 +528,7 @@ long ARX_PORTALS_GetRoomNumForCamera(float * height)
 		return ep->room;
 	}
 
-	ep = GetMinPoly(ACTIVECAM->orgTrans.pos.x,ACTIVECAM->orgTrans.pos.y,ACTIVECAM->orgTrans.pos.z);
+	ep = GetMinPoly(ACTIVECAM->orgTrans.pos);
 
 	if(ep && ep->room > -1) {
 		if(height)

@@ -1176,7 +1176,7 @@ void AnchorData_Create(EERIE_BACKGROUND * eb) {
 				pos.x = (float)((float)((float)i + 0.33f * (float)divvx) * (float)eb->Xdiv);
 				pos.y = 0.f;
 				pos.z = (float)((float)((float)j + 0.33f * (float)divvy) * (float)eb->Zdiv);
-				ep = GetMinPoly(pos.x, pos.y, pos.z);
+				ep = GetMinPoly(pos);
 				EERIE_CYLINDER currcyl;
 				currcyl.radius = 20 - (4.f * divv);
 				currcyl.height = -120.f;
@@ -1186,7 +1186,7 @@ void AnchorData_Create(EERIE_BACKGROUND * eb) {
 				{
 
 					EERIEPOLY * epmax;
-					epmax = GetMaxPoly(pos.x, pos.y, pos.z);
+					epmax = GetMaxPoly(pos);
 					float roof = 9999999.f;
 
 					if (ep) roof = ep->min.y - 300;
