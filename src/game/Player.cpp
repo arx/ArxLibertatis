@@ -1296,7 +1296,7 @@ void ARX_PLAYER_StartFall()
 {
 	FALLING_TIME = 1;
 	Falling_Height = 50.f;
-	EERIEPOLY * ep = CheckInPoly(player.pos.x, player.pos.y, player.pos.z);
+	EERIEPOLY * ep = CheckInPoly(player.pos);
 
 	if(ep) {
 		Falling_Height = player.pos.y;
@@ -1372,7 +1372,7 @@ void ARX_PLAYER_Manage_Visual() {
 		
 		if(player.jumpphase == NotJumping && !LAST_ON_PLATFORM) {
 			float t;
-			EERIEPOLY * ep = CheckInPoly(player.pos.x, player.pos.y, player.pos.z, &t);
+			EERIEPOLY * ep = CheckInPoly(player.pos, &t);
 			if(ep && io->pos.y > t - 30.f && io->pos.y < t) {
 				player.onfirmground = true;
 			}
@@ -2285,7 +2285,7 @@ void PlayerMovementIterate(float DeltaTime) {
 			
 			// Check for LAVA Damage !!!
 			float epcentery;
-			EERIEPOLY *ep = CheckInPoly(player.pos.x, player.pos.y + 150.f, player.pos.z, &epcentery);
+			EERIEPOLY *ep = CheckInPoly(player.pos + Vec3f(0.f, 150.f, 0.f), &epcentery);
 			if(ep) {
 				if((ep->type & POLY_LAVA) && EEfabs(epcentery - (player.pos.y - player.baseHeight())) < 30) {
 					float mul = 1.f - (EEfabs(epcentery - (player.pos.y - player.baseHeight())) * (1.0f / 30));
@@ -2343,7 +2343,7 @@ void PlayerMovementIterate(float DeltaTime) {
 		}
 		
 		float posy;
-		EERIEPOLY * ep = CheckInPoly(player.pos.x, player.pos.y, player.pos.z, &posy);
+		EERIEPOLY * ep = CheckInPoly(player.pos, &posy);
 		if(ep == NULL) {
 			player.physics.velocity.y = 0;
 		} else if(!player.climbing && player.pos.y >= posy) {

@@ -1659,7 +1659,7 @@ void ArxGame::render() {
 	}
 	}
 
-	if(CheckInPoly(player.pos.x, player.pos.y, player.pos.z)) {
+	if(CheckInPoly(player.pos)) {
 		LastValidPlayerPos = player.pos;
 	}
 

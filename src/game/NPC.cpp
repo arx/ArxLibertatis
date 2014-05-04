@@ -3320,7 +3320,7 @@ void ARX_NPC_NeedStepSound(Entity * io, const Vec3f & pos, const float volume, c
 	if(EEIsUnderWater(pos)) {
 		floor_material = "water";
 	} else {
-		EERIEPOLY *ep = CheckInPoly(pos.x, pos.y - 100.0F, pos.z);
+		EERIEPOLY *ep = CheckInPoly(pos + Vec3f(0.f, -100.0F, 0.f));
 
 		if(ep && ep->tex && !ep->tex->m_texName.empty())
 			floor_material = GetMaterialString(ep->tex->m_texName);

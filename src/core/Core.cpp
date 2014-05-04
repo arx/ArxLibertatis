@@ -1075,7 +1075,7 @@ void FirstFrameHandling() {
 	LoadLevelScreen();
 	LoadLevelScreen(-2);
 	
-	if (	(!CheckInPoly(player.pos.x,player.pos.y,player.pos.z))
+	if (	(!CheckInPoly(player.pos))
 		&&	(LastValidPlayerPos.x!=0.f)
 		&&	(LastValidPlayerPos.y!=0.f)
 		&&	(LastValidPlayerPos.z!=0.f)) {

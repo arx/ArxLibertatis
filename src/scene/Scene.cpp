@@ -423,12 +423,12 @@ long ARX_PORTALS_GetRoomNumForPosition2(const Vec3f & pos, long flag, float * he
 	EERIEPOLY * ep; 
 
 	if(flag & 1) {
-		ep=CheckInPoly(pos.x,pos.y-150.f,pos.z);
+		ep=CheckInPoly(pos + Vec3f(0.f, -150.f, 0.f));
 
 		if (!ep)
-			ep=CheckInPoly(pos.x,pos.y-1.f,pos.z);
+			ep=CheckInPoly(pos + Vec3f(0.f, -1.f, 0.f));
 	} else {
-		ep=CheckInPoly(pos.x,pos.y,pos.z);
+		ep=CheckInPoly(pos);
 	}
 
 	if(ep && ep->room>-1) {
@@ -447,7 +447,7 @@ long ARX_PORTALS_GetRoomNumForPosition2(const Vec3f & pos, long flag, float * he
 
 		return ep->room;
 	} else if( !(flag & 1) ) {
-		ep=CheckInPoly(pos.x,pos.y,pos.z);
+		ep=CheckInPoly(pos);
 
 		if(ep && ep->room > -1) {
 			if(height)
@@ -459,7 +459,7 @@ long ARX_PORTALS_GetRoomNumForPosition2(const Vec3f & pos, long flag, float * he
 
 	if(flag & 2) {
 		float off=20.f;
-		ep=CheckInPoly(pos.x-off,pos.y-off,pos.z);
+		ep=CheckInPoly(pos + Vec3f(-off, -off, 0.f));
 
 		if(ep && ep->room > -1) {
 			if(height)
@@ -468,7 +468,7 @@ long ARX_PORTALS_GetRoomNumForPosition2(const Vec3f & pos, long flag, float * he
 			return ep->room;
 		}
 
-		ep=CheckInPoly(pos.x-off,pos.y-20,pos.z-off);
+		ep=CheckInPoly(pos + Vec3f(-off, -20, -off));
 
 		if(ep && ep->room > -1) {
 			if(height)
@@ -477,7 +477,7 @@ long ARX_PORTALS_GetRoomNumForPosition2(const Vec3f & pos, long flag, float * he
 			return ep->room;
 		}
 
-		ep=CheckInPoly(pos.x-off,pos.y-20,pos.z+off);
+		ep=CheckInPoly(pos + Vec3f(-off, -20, off));
 
 		if(ep && ep->room > -1) {
 			if(height)
@@ -486,7 +486,7 @@ long ARX_PORTALS_GetRoomNumForPosition2(const Vec3f & pos, long flag, float * he
 			return ep->room;
 		}
 
-		ep=CheckInPoly(pos.x+off,pos.y-20,pos.z);
+		ep=CheckInPoly(pos + Vec3f(off, -20, 0.f));
 
 		if(ep && ep->room>-1) {
 			if(height)
@@ -495,7 +495,7 @@ long ARX_PORTALS_GetRoomNumForPosition2(const Vec3f & pos, long flag, float * he
 			return ep->room;
 		}
 
-		ep=CheckInPoly(pos.x+off,pos.y-20,pos.z+off);
+		ep=CheckInPoly(pos + Vec3f(off, -20, off));
 
 		if(ep && ep->room > -1) {
 			if(height)
@@ -504,7 +504,7 @@ long ARX_PORTALS_GetRoomNumForPosition2(const Vec3f & pos, long flag, float * he
 			return ep->room;
 		}
 
-		ep=CheckInPoly(pos.x+off,pos.y-20,pos.z-off);
+		ep=CheckInPoly(pos + Vec3f(off, -20, -off));
 
 		if(ep && ep->room > -1) {
 			if(height)
@@ -519,7 +519,7 @@ long ARX_PORTALS_GetRoomNumForPosition2(const Vec3f & pos, long flag, float * he
 long ARX_PORTALS_GetRoomNumForCamera(float * height)
 {
 	EERIEPOLY * ep; 
-	ep = CheckInPoly(ACTIVECAM->orgTrans.pos.x,ACTIVECAM->orgTrans.pos.y,ACTIVECAM->orgTrans.pos.z);
+	ep = CheckInPoly(ACTIVECAM->orgTrans.pos);
 
 	if(ep && ep->room > -1) {
 		if(height)
@@ -541,9 +541,7 @@ long ARX_PORTALS_GetRoomNumForCamera(float * height)
 
 	while(dist<=20.f) {
 		float vvv=radians(ACTIVECAM->angle.getPitch());
-		ep=CheckInPoly(ACTIVECAM->orgTrans.pos.x + std::sin(vvv) * dist,
-								ACTIVECAM->orgTrans.pos.y,
-								ACTIVECAM->orgTrans.pos.z - std::cos(vvv) * dist);
+		ep=CheckInPoly(ACTIVECAM->orgTrans.pos + Vec3f(std::sin(vvv) * dist, 0.f, -std::cos(vvv) * dist));
 
 		if(ep && ep->room > -1) {
 			if(height)

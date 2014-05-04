@@ -1134,7 +1134,7 @@ bool ARX_INTERACTIVE_ConvertToValidPosForIO(Entity * io, Vec3f * target) {
 		float anything = CheckAnythingInCylinder(phys, io, CFLAG_JUST_TEST);
 
 		if(EEfabs(anything) < 150.f) {
-			EERIEPOLY * ep = CheckInPoly(phys.origin.x, phys.origin.y + anything - 20.f, phys.origin.z);
+			EERIEPOLY * ep = CheckInPoly(phys.origin + Vec3f(0.f, -20.f, 0.f));
 			EERIEPOLY * ep2 = CheckTopPoly(phys.origin.x, phys.origin.y + anything, phys.origin.z);
 
 			if(ep && ep2 && EEfabs((phys.origin.y + anything) - ep->center.y) < 20.f) {
@@ -1475,12 +1475,12 @@ Entity * AddFix(const res::path & classPath, EntityInstance instance, AddInterac
 	io->lastpos.z = io->initpos.z = EEfabs(io->initpos.z / 20) * 20.f;
 	
 	float tempo;
-	EERIEPOLY * ep = CheckInPoly(io->pos.x, io->pos.y + player.baseHeight(), io->pos.z);
+	EERIEPOLY * ep = CheckInPoly(io->pos + Vec3f(0.f, player.baseHeight(), 0.f));
 	if(ep && GetTruePolyY(ep, io->pos, &tempo)) {
 		io->lastpos.y = io->initpos.y = io->pos.y = tempo;
 	}
 	
-	ep = CheckInPoly(io->pos.x, player.pos.y, io->pos.z);
+	ep = CheckInPoly(io->pos);
 	if(ep) {
 		io->pos.y = min(ep->v[0].p.y, ep->v[1].p.y);
 		io->lastpos.y = io->initpos.y = io->pos.y = min(io->pos.y, ep->v[2].p.y);
@@ -1536,12 +1536,12 @@ static Entity * AddCamera(const res::path & classPath, EntityInstance instance) 
 	
 	float tempo;
 	EERIEPOLY * ep;
-	ep = CheckInPoly(io->pos.x, io->pos.y + player.baseHeight(), io->pos.z, &tempo);
+	ep = CheckInPoly(io->pos + Vec3f(0.f, player.baseHeight(), 0.f), &tempo);
 	if(ep) {
 		io->lastpos.y = io->initpos.y = io->pos.y = tempo;
 	}
 	
-	ep = CheckInPoly(io->pos.x, player.pos.y, io->pos.z);
+	ep = CheckInPoly(io->pos);
 	if(ep) {
 		io->pos.y = min(ep->v[0].p.y, ep->v[1].p.y);
 		io->lastpos.y = io->initpos.y = io->pos.y = min(io->pos.y, ep->v[2].p.y);
@@ -1590,12 +1590,12 @@ static Entity * AddMarker(const res::path & classPath, EntityInstance instance) 
 	
 	float tempo;
 	EERIEPOLY * ep;
-	ep = CheckInPoly(io->pos.x, io->pos.y + player.baseHeight(), io->pos.z);
+	ep = CheckInPoly(io->pos + Vec3f(0.f, player.baseHeight(), 0.f));
 	if(ep && GetTruePolyY(ep, io->pos, &tempo)) {
 		io->lastpos.y = io->initpos.y = io->pos.y = tempo;
 	}
 	
-	ep = CheckInPoly(io->pos.x, player.pos.y, io->pos.z);
+	ep = CheckInPoly(io->pos);
 	if(ep) {
 		io->pos.y = min(ep->v[0].p.y, ep->v[1].p.y);
 		io->lastpos.y = io->initpos.y = io->pos.y = min(io->pos.y, ep->v[2].p.y);
@@ -1724,12 +1724,12 @@ Entity * AddNPC(const res::path & classPath, EntityInstance instance, AddInterac
 	io->lastpos.z = io->initpos.z = EEfabs(io->initpos.z / 20) * 20.f;
 	
 	float tempo;
-	EERIEPOLY * ep = CheckInPoly(io->pos.x, io->pos.y + player.baseHeight(), io->pos.z);
+	EERIEPOLY * ep = CheckInPoly(io->pos + Vec3f(0.f, player.baseHeight(), 0.f));
 	if(ep && GetTruePolyY(ep, io->pos, &tempo)) {
 		io->lastpos.y = io->initpos.y = io->pos.y = tempo; 
 	}
 	
-	ep = CheckInPoly(io->pos.x, player.pos.y, io->pos.z);
+	ep = CheckInPoly(io->pos);
 	if(ep) {
 		io->pos.y = min(ep->v[0].p.y, ep->v[1].p.y);
 		io->lastpos.y = io->initpos.y = io->pos.y = min(io->pos.y, ep->v[2].p.y);
@@ -1853,7 +1853,7 @@ Entity * AddItem(const res::path & classPath_, EntityInstance instance, AddInter
 	io->lastpos.z = io->initpos.z = (float)((long)(io->initpos.z / 20)) * 20.f;
 
 	EERIEPOLY * ep;
-	ep = CheckInPoly(io->pos.x, io->pos.y - 60.f, io->pos.z);
+	ep = CheckInPoly(io->pos + Vec3f(0.f, -60.f, 0.f));
 
 	if(ep) {
 		float tempo;
@@ -1862,7 +1862,7 @@ Entity * AddItem(const res::path & classPath_, EntityInstance instance, AddInter
 			io->lastpos.y = io->initpos.y = io->pos.y = tempo; 
 	}
 
-	ep = CheckInPoly(io->pos.x, player.pos.y, io->pos.z);
+	ep = CheckInPoly(io->pos);
 
 	if(ep) {
 		io->pos.y = min(ep->v[0].p.y, ep->v[1].p.y);
@@ -2744,7 +2744,7 @@ void ARX_INTERACTIVE_ActivatePhysics(long t)
 			return;
 
 		float yy;
-		EERIEPOLY * ep = CheckInPoly(io->pos.x, io->pos.y, io->pos.z, &yy);
+		EERIEPOLY * ep = CheckInPoly(io->pos, &yy);
 
 		if(ep && (yy - io->pos.y < 10.f))
 			return;

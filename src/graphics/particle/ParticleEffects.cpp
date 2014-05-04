@@ -247,7 +247,7 @@ void ARX_POLYSPLAT_Add(Vec3f * poss, Color3f * col, float size, long flags) {
 
 
 	float py;
-	EERIEPOLY *ep = CheckInPoly(poss->x, poss->y-40, poss->z, &py);
+	EERIEPOLY *ep = CheckInPoly(*poss + Vec3f(0.f, -40, 0.f), &py);
 
 	if(!ep)
 		return;

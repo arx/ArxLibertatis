@@ -557,7 +557,7 @@ float CheckAnythingInCylinder(const EERIE_CYLINDER & cyl, Entity * ioo, long fla
 
 	float tempo;
 	
-	ep = CheckInPoly(cyl.origin.x, cyl.origin.y + cyl.height, cyl.origin.z, &tempo);
+	ep = CheckInPoly(cyl.origin + Vec3f(0.f, cyl.height, 0.f), &tempo);
 	
 	if(ep) {
 		anything = min(anything, tempo);

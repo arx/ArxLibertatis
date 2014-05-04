@@ -126,7 +126,7 @@ static EERIEPOLY * ANCHOR_CheckInPoly(float x, float y, float z) {
 	}
 
 	if(!found)
-		return CheckInPoly(x, y, z);
+		return CheckInPoly(Vec3f(x, y, z));
 
 	return found;
 }

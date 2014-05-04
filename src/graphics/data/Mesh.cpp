@@ -187,10 +187,8 @@ long MakeTopObjString(Entity * io,  string & dest) {
 }
 
 
-EERIEPOLY * CheckInPoly(float x, float y, float z, float * needY)
+EERIEPOLY * CheckInPoly(const Vec3f & poss, float * needY)
 {
-	Vec3f poss(x, y, z);
-
 	long px = poss.x * ACTIVEBKG->Xmul;
 	long pz = poss.z * ACTIVEBKG->Zmul;
 
@@ -275,7 +273,7 @@ EERIEPOLY * CheckInPoly(float x, float y, float z, float * needY)
 }
 
 EERIEPOLY * EECheckInPoly(const Vec3f * pos, float * needY) {
-	return CheckInPoly(pos->x, pos->y, pos->z, needY);
+	return CheckInPoly(*pos, needY);
 }
 
 FAST_BKG_DATA * getFastBackgroundData(float x, float z) {

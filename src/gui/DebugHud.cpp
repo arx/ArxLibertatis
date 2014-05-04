@@ -203,7 +203,7 @@ void ShowInfoText() {
 	
 	ss << " ├─ Ground\n";
 	
-	EERIEPOLY * ep = CheckInPoly(player.pos.x, player.pos.y, player.pos.z);
+	EERIEPOLY * ep = CheckInPoly(player.pos);
 
 	float truePolyY = -666.66f;
 	if(ep) {
@@ -213,7 +213,7 @@ void ShowInfoText() {
 		}
 	}
 	
-	ep = CheckInPoly(player.pos.x, player.pos.y - 10.f, player.pos.z);
+	ep = CheckInPoly(player.pos + Vec3f(0.f, -10.f, 0.f));
 	float slope = 0.f;
 	if(ep)
 		slope = ep->norm.y;
