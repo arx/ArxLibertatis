@@ -1174,7 +1174,7 @@ void ARX_DAMAGES_UpdateAll()
 		ARX_DAMAGES_UpdateDamage(j, arxtime);
 }
 
-bool SphereInIO(Entity * io, const Vec3f & pos, float radius)
+bool SphereInIO(Entity * io, const Sphere & sphere)
 {
 	if(!io || !io->obj)
 		return false;
@@ -1188,7 +1188,7 @@ bool SphereInIO(Entity * io, const Vec3f & pos, float radius)
 	else step = 7;
 
 	for(size_t i = 0; i < io->obj->vertexlist.size(); i += step) {
-		if(!fartherThan(pos, io->obj->vertexlist3[i].v, radius)) {
+		if(!fartherThan(sphere.origin, io->obj->vertexlist3[i].v, sphere.radius)) {
 			return true;
 		}
 	}
@@ -1220,7 +1220,7 @@ bool ARX_DAMAGES_TryToDoDamage(const Vec3f & pos, float dmg, float radius, long 
 				threshold = 350;
 			}
 
-			if(closerThan(pos, io->pos, threshold) && SphereInIO(io, pos, rad)) {
+			if(closerThan(pos, io->pos, threshold) && SphereInIO(io, Sphere(pos, rad))) {
 				if(io->ioflags & IO_NPC) {
 					if(ValidIONum(source))
 						ARX_EQUIPMENT_ComputeDamages(entities[source], io, 1.f);

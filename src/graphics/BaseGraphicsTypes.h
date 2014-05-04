@@ -57,6 +57,16 @@ struct Sphere {
 	Vec3f origin;
 	float radius;
 	
+	Sphere()
+		: origin(Vec3f_ZERO)
+		, radius(0.f)
+	{}
+	
+	Sphere(const Vec3f & origin, float radius)
+		: origin(origin)
+		, radius(radius)
+	{}
+	
 	bool contains(const Vec3f & pos) const {
 		return closerThan(pos, origin, radius);
 	}
