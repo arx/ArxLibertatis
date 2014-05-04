@@ -110,7 +110,7 @@ bool IsCollidingIO(Entity * io, Entity * ioo);
 /*!
  * @param ignoreNoCollisionFlag true if the IO_NO_COLLISIONS on the interactive object should be ignored
  */
-bool CheckIOInSphere(Sphere * sphere, long target, bool ignoreNoCollisionFlag = false);
+bool CheckIOInSphere(const Sphere & sphere, long target, bool ignoreNoCollisionFlag = false);
 
 bool AttemptValidCylinderPos(EERIE_CYLINDER & cyl, Entity * io, CollisionFlags flags);
 bool IO_Visible(const Vec3f & orgn, const Vec3f & dest, EERIEPOLY * epp, Vec3f * hit);

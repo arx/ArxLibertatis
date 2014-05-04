@@ -1169,22 +1169,22 @@ bool CheckAnythingInSphere(const Sphere & sphere, long source, CASFlags flags, l
 }
 
 
-bool CheckIOInSphere(Sphere * sphere, long target, bool ignoreNoCollisionFlag) {
+bool CheckIOInSphere(const Sphere & sphere, long target, bool ignoreNoCollisionFlag) {
 	
 	if(!ValidIONum(target))
 		return false;
 
 	Entity * io=entities[target];
-	float sr30 = sphere->radius + 22.f;
-	float sr40 = sphere->radius + 27.f; 
-	float sr180 = sphere->radius + 500.f;
+	float sr30 = sphere.radius + 22.f;
+	float sr40 = sphere.radius + 27.f;
+	float sr180 = sphere.radius + 500.f;
 
 	if((ignoreNoCollisionFlag || !(io->ioflags & IO_NO_COLLISIONS))
 	   && (io->show == SHOW_FLAG_IN_SCENE)
 	   && (io->gameFlags & GFLAG_ISINTREATZONE)
 	   && (io->obj)
 	) {
-		if(closerThan(io->pos, sphere->origin, sr180)) {
+		if(closerThan(io->pos, sphere.origin, sr180)) {
 			vector<EERIE_VERTEX> & vlist = io->obj->vertexlist3;
 
 			if(io->obj->grouplist.size()>10) {
@@ -1192,7 +1192,7 @@ bool CheckIOInSphere(Sphere * sphere, long target, bool ignoreNoCollisionFlag) {
 				long ii=io->obj->grouplist.size()-1;
 
 				while(ii) {
-					if(closerThan(vlist[io->obj->grouplist[ii].origin].v, sphere->origin, sr40)) {
+					if(closerThan(vlist[io->obj->grouplist[ii].origin].v, sphere.origin, sr40)) {
 						count++;
 
 						if(count>3)
@@ -1219,7 +1219,7 @@ bool CheckIOInSphere(Sphere * sphere, long target, bool ignoreNoCollisionFlag) {
 				step = 7;
 
 			for(size_t ii = 0; ii < vlist.size(); ii += step) {
-				if(closerThan(vlist[ii].v, sphere->origin, sr30)) {
+				if(closerThan(vlist[ii].v, sphere.origin, sr30)) {
 					count++;
 
 					if(count > 6)
@@ -1231,7 +1231,7 @@ bool CheckIOInSphere(Sphere * sphere, long target, bool ignoreNoCollisionFlag) {
 						if(kk != ii) {
 							for(float nn = 0.2f; nn < 1.f; nn += 0.2f) {
 								Vec3f posi = vlist[ii].v * nn + vlist[kk].v * (1.f - nn);
-								if(!fartherThan(sphere->origin, posi, sr30 + 20)) {
+								if(!fartherThan(sphere.origin, posi, sr30 + 20)) {
 									count++;
 
 									if(count > 3) {
@@ -1664,7 +1664,7 @@ bool IO_Visible(const Vec3f & orgn, const Vec3f & dest, EERIEPOLY * epp, Vec3f *
 			Entity * io = entities[num];
 
 			if(io && (io->gameFlags & GFLAG_VIEW_BLOCKER)) {
-				if(CheckIOInSphere(&sphere, num)) {
+				if(CheckIOInSphere(sphere, num)) {
 					dd = fdist(orgn, sphere.origin);
 
 					if(dd < nearest) {

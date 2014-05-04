@@ -998,7 +998,7 @@ void ARX_DAMAGES_UpdateDamage(long j, float tim) {
 					sphere.origin = damages[j].pos;
 					sphere.radius = damages[j].radius - 10.f;
 
-					if(CheckIOInSphere(&sphere, i, true)) {
+					if(CheckIOInSphere(sphere, i, true)) {
 						sub.x = io->pos.x;
 						sub.y = io->pos.y - 60.f;
 						sub.z = io->pos.z;
@@ -1157,7 +1157,7 @@ void ARX_DAMAGES_UpdateDamage(long j, float tim) {
 					sphere.origin = damages[j].pos;
 					sphere.radius = damages[j].radius + 15.f;
 
-					if(CheckIOInSphere(&sphere, i)) {
+					if(CheckIOInSphere(sphere, i)) {
 						ARX_DAMAGES_DamageFIX(io, dmg, damages[j].source, 1);
 					}
 				}
