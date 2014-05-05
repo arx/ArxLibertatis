@@ -391,28 +391,28 @@ void ARX_INTERFACE_DrawNumber(const Vec2f & pos, const long num, const int _iNb,
 		float divideY = 1.f/((float) inventory_font->m_dwHeight);
 		
 		sprintf(tx, "%*ld", _iNb, num); // TODO use a safe string function.
-		long removezero=1;
+		long removezero = 1;
 
 		for(long i = 0; i < 6 && tx[i] != '\0'; i++) {
 
-			tt=tx[i]-'0';
+			tt = tx[i] - '0';
 
-			if ((tt==0) && removezero) continue;
+			if(tt == 0 && removezero)
+				continue;
 
-			if (tt>=0)
-			{
-				removezero=0;
-				v[0].p.x=v[3].p.x=pos.x + i*INTERFACE_RATIO(10);
+			if(tt >= 0) {
+				removezero = 0;
+				v[0].p.x = v[3].p.x = pos.x + i * INTERFACE_RATIO(10);
 				v[1].p.x = v[2].p.x = v[0].p.x + INTERFACE_RATIO(10);
-				v[0].p.y=v[1].p.y=pos.y;
-				v[2].p.y=v[3].p.y=pos.y + INTERFACE_RATIO(10);
-				v[0].color=v[1].color=v[2].color=v[3].color=col;
+				v[0].p.y = v[1].p.y = pos.y;
+				v[2].p.y = v[3].p.y = pos.y + INTERFACE_RATIO(10);
+				v[0].color = v[1].color = v[2].color = v[3].color = col;
 
-				ttx = (float)((float)tt * (float)11.f) + 1.5f;
-				v[3].uv.x=v[0].uv.x=ttx*divideX;
-				v[1].uv.x=v[2].uv.x=(ttx+10.f)*divideX;
+				ttx = ((float)tt * (float)11.f) + 1.5f;
+				v[3].uv.x = v[0].uv.x = ttx * divideX;
+				v[1].uv.x = v[2].uv.x = (ttx + 10.f) * divideX;
 
-				ttx=0.5f*divideY;
+				ttx = 0.5f * divideY;
 				v[1].uv.y = v[0].uv.y = divideY + ttx;
 				v[2].uv.y = v[3].uv.y = divideY * 12;
 				GRenderer->SetTexture(0, inventory_font);
