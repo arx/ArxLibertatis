@@ -1551,7 +1551,7 @@ static Entity * AddCamera(const res::path & classPath, EntityInstance instance) 
 	
 	io->obj = cameraobj;
 	
-	io->_camdata = (IO_CAMDATA *)malloc(sizeof(IO_CAMDATA));
+	io->_camdata = new IO_CAMDATA();
 	memcpy(&io->_camdata->cam, &subj, sizeof(EERIE_CAMERA));
 	io->_camdata->cam.focal = 350.f;
 	io->ioflags = IO_CAMERA;

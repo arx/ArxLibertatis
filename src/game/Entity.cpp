@@ -261,7 +261,7 @@ Entity::~Entity() {
 		if(ACTIVECAM == &_camdata->cam) {
 			ACTIVECAM = &subj;
 		}
-		free(_camdata);
+		delete _camdata;
 	}
 	
 	if(TSecondaryInventory && TSecondaryInventory->io == this) {
