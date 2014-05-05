@@ -2949,7 +2949,8 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 				FLYING_OVER = -1;
 			}
 
-			memcpy(light, &tl, sizeof(EERIE_LIGHT));
+			*light = tl;
+			
 			SetActiveCamera(oldcam);
 			PrepareCamera(oldcam, g_size);
 		}
