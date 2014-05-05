@@ -2635,8 +2635,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 
 			EERIE_LIGHT * light = lightHandleGet(torchLightHandle);
 			
-			EERIE_LIGHT tl;
-			memcpy(&tl, light, sizeof(EERIE_LIGHT));
+			EERIE_LIGHT tl = *light;
 
 			light->pos = Vec3f(500.f, -1960.f, 1590.f);
 			light->exist = 1;
