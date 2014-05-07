@@ -5939,7 +5939,9 @@ public:
 		
 		for(size_t i = 0; i < MAX_PRECAST; i++) {
 			
-			if(Precast[i].typ == -1) {
+			PRECAST_STRUCT & precastSlot = Precast[i];
+			
+			if(precastSlot.typ == -1) {
 				continue;
 			}
 			
@@ -5947,8 +5949,8 @@ public:
 			
 			float val = intensity;
 			
-			if(Precast[i].launch_time > 0 && (float(arxtime) >= Precast[i].launch_time)) {
-				float tt = (float(arxtime) - Precast[i].launch_time) * (1.0f/1000);
+			if(precastSlot.launch_time > 0 && (float(arxtime) >= precastSlot.launch_time)) {
+				float tt = (float(arxtime) - precastSlot.launch_time) * (1.0f/1000);
 				
 				if(tt > 1.f)
 					tt = 1.f;
@@ -5969,7 +5971,7 @@ public:
 			pos.x += (33 + 33 + 33);
 			pos.x += PRECAST_NUM * 33;
 			
-			SpellType typ = Precast[i].typ;
+			SpellType typ = precastSlot.typ;
 			
 			TextureContainer * tc = spellicons[typ].tc;
 			arx_assert(tc);
