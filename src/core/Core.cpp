@@ -1491,10 +1491,7 @@ void ManageCombatModeAnimations()
 				if(sp_max && poisonous < 3.f)
 					poisonous = 3.f;
 
-				Vec3f orgPos;
-				orgPos.x=player.pos.x;
-				orgPos.y=player.pos.y+40.f;
-				orgPos.z=player.pos.z;
+				Vec3f orgPos = player.pos + Vec3f(0.f, 40.f, 0.f);
 
 				if(io->obj->fastaccess.left_attach >= 0) {
 					orgPos = io->obj->vertexlist3[io->obj->fastaccess.left_attach].v;
@@ -1506,10 +1503,8 @@ void ManageCombatModeAnimations()
 
 				if(sp_max) {
 					Anglef angle;
-					Vec3f pos;
-					pos.x = player.pos.x;
-					pos.y = player.pos.y + 40.f;
-					pos.z = player.pos.z;
+					Vec3f pos = player.pos + Vec3f(0.f, 40.f, 0.f);
+					
 					angle.setYaw(player.angle.getYaw());
 					angle.setPitch(player.angle.getPitch() + 8);
 					angle.setRoll(player.angle.getRoll());
