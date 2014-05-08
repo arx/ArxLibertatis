@@ -1453,8 +1453,8 @@ void ArxGame::managePlayerControls()
 			phys.cyl.origin = eyeball.pos + Vec3f(0.f, 70.f, 0.f);
 			phys.cyl.radius = 45.f;
 
-			EERIE_CYLINDER test;
-			memcpy(&test,&phys.cyl,sizeof(EERIE_CYLINDER));
+			EERIE_CYLINDER test = phys.cyl;
+			
 			bool npc = AttemptValidCylinderPos(test, NULL, CFLAG_JUST_TEST | CFLAG_NPC);
 			float val=CheckAnythingInCylinder(phys.cyl,entities.player(),CFLAG_NO_NPC_COLLIDE | CFLAG_JUST_TEST);
 
