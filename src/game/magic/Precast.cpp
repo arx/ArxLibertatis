@@ -30,41 +30,33 @@
 #include "gui/Speech.h"
 #include "scene/GameSound.h"
 
+const size_t MAX_PRECAST = 3;
 
 extern void ARX_SPELLS_FizzleNoMana(long num);
 
-PRECAST_STRUCT Precast[MAX_PRECAST];
+std::vector<PRECAST_STRUCT> Precast;
 
 void ARX_SPELLS_Precast_Reset() {
-	for(size_t i = 0; i < MAX_PRECAST; i++) {
-		Precast[i].typ = SPELL_NONE;
-	}
+	Precast.clear();
 }
 
 void ARX_SPELLS_Precast_Add(SpellType typ, long _level, SpellcastFlags flags, long duration) {
 	
-	long found = -1;
-	
-	for(size_t i = 0; i < MAX_PRECAST; i++) {
-		if(Precast[i].typ == SPELL_NONE) {
-			found = i;
-			break;
-		}
+	if(Precast.size() >= MAX_PRECAST) {
+		Precast.erase(Precast.begin());
 	}
 	
-	if(found == -1) {
-		for(size_t i = 1; i < MAX_PRECAST; i++) {
-			memcpy(&Precast[i - 1], &Precast[i], sizeof(PRECAST_STRUCT));
-		}
-		
-		found = MAX_PRECAST - 1;
-	}
+	if(typ == SPELL_NONE)
+		return;
 	
-	Precast[found].typ = typ;
-	Precast[found].level = _level;
-	Precast[found].launch_time = 0;
-	Precast[found].flags = flags;
-	Precast[found].duration = duration;
+	PRECAST_STRUCT precast;
+	precast.typ = typ;
+	precast.level = _level;
+	precast.launch_time = 0;
+	precast.flags = flags;
+	precast.duration = duration;
+	
+	Precast.push_back(precast);
 }
 
 unsigned long LAST_PRECAST_TIME = 0;
@@ -89,9 +81,9 @@ long PrecastCheckCanPayMana(long num, float cost, bool _bSound = true) {
 	return 0;
 }
 
-void ARX_SPELLS_Precast_Launch(long num) {
+void ARX_SPELLS_Precast_Launch(size_t num) {
 	
-	if(Precast[num].typ == SPELL_NONE) {
+	if(num >= Precast.size()) {
 		return;
 	}
 	
@@ -104,7 +96,7 @@ void ARX_SPELLS_Precast_Launch(long num) {
 
 		LAST_PRECAST_TIME = (unsigned long)(arxtime);
 
-		if(Precast[num].typ != SPELL_NONE && Precast[num].launch_time == 0) {
+		if(Precast[num].launch_time == 0) {
 			Precast[num].launch_time = (unsigned long)(arxtime);
 			ARX_SOUND_PlaySFX(SND_SPELL_CREATE_FIELD);
 		}
@@ -112,8 +104,8 @@ void ARX_SPELLS_Precast_Launch(long num) {
 }
 
 void ARX_SPELLS_Precast_Check() {
-	for(size_t i = 0; i < MAX_PRECAST; i++) {
-		if(Precast[i].typ != SPELL_NONE && Precast[i].launch_time > 0 && float(arxtime) >= Precast[i].launch_time) {
+	for(size_t i = 0; i < Precast.size(); i++) {
+		if(Precast[i].launch_time > 0 && float(arxtime) >= Precast[i].launch_time) {
 			ANIM_USE *ause1 = &entities.player()->animlayer[1];
 			
 			if(player.Interface & INTER_COMBATMODE) {
@@ -132,14 +124,8 @@ void ARX_SPELLS_Precast_Check() {
 										Precast[i].level, 
 										-1, 
 										Precast[i].duration);
-					Precast[i].typ = SPELL_NONE;
-
-					for(size_t li = i; li < MAX_PRECAST - 1; li++) {
-						if(Precast[li + 1].typ != SPELL_NONE) {
-							memcpy(&Precast[li], &Precast[li + 1], sizeof(PRECAST_STRUCT));
-							Precast[li + 1].typ = SPELL_NONE;
-						}
-					}
+					
+					Precast.erase(Precast.begin() + i);
 				}
 			} else {
 				changeAnimation(entities.player(), 1, entities.player()->anims[ANIM_CAST]);

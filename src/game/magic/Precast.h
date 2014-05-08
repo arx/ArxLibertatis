@@ -33,13 +33,12 @@ struct PRECAST_STRUCT {
 	long duration;
 };
 
-const size_t MAX_PRECAST = 3;
-extern PRECAST_STRUCT Precast[MAX_PRECAST];
+extern std::vector<PRECAST_STRUCT> Precast;
 
 void ARX_SPELLS_Precast_Reset();
 
 void ARX_SPELLS_Precast_Add(SpellType typ, long _level, SpellcastFlags flags, long duration);
-void ARX_SPELLS_Precast_Launch(long num);
+void ARX_SPELLS_Precast_Launch(size_t num);
 void ARX_SPELLS_Precast_Check();
 
 #endif // ARX_GAME_MAGIC_PRECAST_H

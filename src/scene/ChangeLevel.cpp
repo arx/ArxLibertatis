@@ -686,9 +686,15 @@ static long ARX_CHANGELEVEL_Push_Player(long level) {
 	FillIOIdent(asp->leftIO, player.leftIO);
 	FillIOIdent(asp->rightIO, player.rightIO);
 	FillIOIdent(asp->curtorch, player.torch);
-
-	std::copy(Precast, Precast + SAVED_MAX_PRECAST, asp->precast);
-
+	
+	for(size_t i = 0; i < SAVED_MAX_PRECAST; i++) {
+		asp->precast[i].typ = SPELL_NONE;
+		
+		if(i < Precast.size()) {
+			asp->precast[i] = Precast[i];
+		}
+	}
+	
 	//inventaires
 	for(long iNbBag = 0; iNbBag < 3; iNbBag++) {
 		for(size_t m = 0; m < INVENTORY_Y; m++) {
@@ -1686,8 +1692,16 @@ static long ARX_CHANGELEVEL_Pop_Player() {
 	TELEPORT_TO_ANGLE = asp->TELEPORT_TO_ANGLE;
 	CHANGE_LEVEL_ICON = asp->CHANGE_LEVEL_ICON;
 	player.bag = asp->bag;
-	assert(SAVED_MAX_PRECAST == MAX_PRECAST);
-	std::copy(asp->precast, asp->precast + SAVED_MAX_PRECAST, Precast);
+	
+	for(size_t i = 0; i < SAVED_MAX_PRECAST; i++) {
+		PRECAST_STRUCT precastSlot = asp->precast[i];
+		
+		if(precastSlot.typ == SPELL_NONE)
+			continue;
+		
+		Precast.push_back(precastSlot);
+	}
+	
 	player.Interface = asp->Interface;
 	player.Interface &= ~INTER_MAP;
 	player.falling = asp->falling;

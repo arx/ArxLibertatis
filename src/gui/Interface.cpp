@@ -5937,13 +5937,9 @@ public:
 		
 		PRECAST_NUM = 0;
 		
-		for(size_t i = 0; i < MAX_PRECAST; i++) {
+		for(size_t i = 0; i < Precast.size(); i++) {
 			
 			PRECAST_STRUCT & precastSlot = Precast[i];
-			
-			if(precastSlot.typ == -1) {
-				continue;
-			}
 			
 			PRECAST_NUM = i;
 			
