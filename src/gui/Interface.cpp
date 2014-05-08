@@ -1449,11 +1449,9 @@ void ArxGame::managePlayerControls()
 			}
 
 			IO_PHYSICS phys;
-			phys.cyl.height=-110.f;
-			phys.cyl.origin.x=eyeball.pos.x;
-			phys.cyl.origin.y=eyeball.pos.y+70.f;
-			phys.cyl.origin.z=eyeball.pos.z;
-			phys.cyl.radius=45.f;
+			phys.cyl.height = -110.f;
+			phys.cyl.origin = eyeball.pos + Vec3f(0.f, 70.f, 0.f);
+			phys.cyl.radius = 45.f;
 
 			EERIE_CYLINDER test;
 			memcpy(&test,&phys.cyl,sizeof(EERIE_CYLINDER));
