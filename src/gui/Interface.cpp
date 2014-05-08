@@ -235,7 +235,6 @@ long				LastRune=-1;
 long				BOOKZOOM=0;
 static long INTERFACE_HALO_NB = 0;
 static long INTERFACE_HALO_MAX_NB = 0;
-static long PRECAST_NUM = 0;
 long				LastMouseClick=0;
 
 //used to redist points - attributes and skill
@@ -5880,11 +5879,13 @@ private:
 		Rectf m_rect;
 		TextureContainer * m_tc;
 		Color m_color;
+		size_t m_precastIndex;
 		
-		void update(const Rectf & rect, TextureContainer * tc, Color color) {
+		void update(const Rectf & rect, TextureContainer * tc, Color color, size_t precastIndex) {
 			m_rect = rect;
 			m_tc = tc;
 			m_color = color;
+			m_precastIndex = precastIndex;
 		}
 		
 		void updateInput() {
@@ -5892,14 +5893,14 @@ private:
 				SpecialCursor = CURSOR_INTERACTION_ON;
 				
 				if((LastMouseClick & 1) && !(EERIEMouseButton & 1)) {
-					if(Precast[PRECAST_NUM].typ >= 0)
-						WILLADDSPEECH = spellicons[Precast[PRECAST_NUM].typ].name;
+					if(Precast[m_precastIndex].typ >= 0)
+						WILLADDSPEECH = spellicons[Precast[m_precastIndex].typ].name;
 					
 					WILLADDSPEECHTIME = (unsigned long)(arxtime);
 				}
 				
 				if(EERIEMouseButton & 4) {
-					ARX_SPELLS_Precast_Launch(PRECAST_NUM);
+					ARX_SPELLS_Precast_Launch(m_precastIndex);
 					EERIEMouseButton &= ~4;
 				}
 			}
@@ -5935,13 +5936,9 @@ public:
 		float intensity = 1.f - PULSATE * 0.5f;
 		intensity = clamp(intensity, 0.f, 1.f);
 		
-		PRECAST_NUM = 0;
-		
 		for(size_t i = 0; i < Precast.size(); i++) {
 			
 			PRECAST_STRUCT & precastSlot = Precast[i];
-			
-			PRECAST_NUM = i;
 			
 			float val = intensity;
 			
@@ -5965,7 +5962,7 @@ public:
 			}
 			
 			pos.x += (33 + 33 + 33);
-			pos.x += PRECAST_NUM * 33;
+			pos.x += i * 33;
 			
 			SpellType typ = precastSlot.typ;
 			
@@ -5974,7 +5971,7 @@ public:
 			Rectf rect(pos, tc->m_dwWidth * 0.5f, tc->m_dwHeight * 0.5f);
 			
 			PrecastSpellIconSlot icon;
-			icon.update(rect, tc, color);
+			icon.update(rect, tc, color, i);
 			
 			if(!(player.Interface & INTER_COMBATMODE))
 				icon.updateInput();
