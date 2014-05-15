@@ -91,7 +91,6 @@ public:
 	// these are used for the particles it creates
 	ParticleParams m_parameters;
 	
-	int iParticleNbMax;
 	float fParticleFreq;
 	
 	float fParticleFlash;
@@ -101,11 +100,6 @@ public:
 	
 	ParticleSpawn ulParticleSpawn;
 	
-	float fParticleLife;
-	float fParticleLifeRandom;
-	float fParticleAngle;
-	float fParticleSpeed;
-	float fParticleSpeedRandom;
 	
 	bool bParticleStartColorRandomLock;
 	float fParticleStartSize;

@@ -221,7 +221,7 @@ void FireballSpell::Update(float timeDelta)
 		sphere.radius=std::max(m_caster_level*2.f,12.f);
 		#define MIN_TIME_FIREBALL 2000 
 
-		if(pCF->pPSFire.iParticleNbMax) {
+		if(pCF->pPSFire.m_parameters.m_nbMax) {
 			if(pCF->ulCurrentTime > MIN_TIME_FIREBALL) {
 				SpawnFireballTail(&pCF->eCurPos,&pCF->eMove,(float)m_caster_level,0);
 			} else {
@@ -244,10 +244,10 @@ void FireballSpell::Update(float timeDelta)
 		if(CheckAnythingInSphere(sphere, m_caster, CAS_NO_SAME_GROUP)) {
 			ARX_BOOMS_Add(pCF->eCurPos);
 			LaunchFireballBoom(&pCF->eCurPos,(float)m_caster_level);
-			pCF->pPSFire.iParticleNbMax = 0;
-			pCF->pPSFire2.iParticleNbMax = 0;
+			pCF->pPSFire.m_parameters.m_nbMax = 0;
+			pCF->pPSFire2.m_parameters.m_nbMax = 0;
 			pCF->eMove *= 0.5f;
-			pCF->pPSSmoke.iParticleNbMax = 0;
+			pCF->pPSSmoke.m_parameters.m_nbMax = 0;
 			pCF->SetTTL(1500);
 			pCF->bExplo = true;
 			

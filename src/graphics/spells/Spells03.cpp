@@ -266,13 +266,13 @@ void CFireBall::Update(unsigned long aulTime)
 		pPSSmoke.Update(aulTime);
 		eCurPos += eMove * (aulTime * 0.0045f);
 		pPSFire.SetPos(eCurPos);
-		pPSFire.fParticleSpeed = 100;
-		pPSFire.fParticleSpeedRandom = 200;
+		pPSFire.m_parameters.m_speed = 100;
+		pPSFire.m_parameters.m_speedRandom = 200;
 		pPSFire.m_parameters.m_gravity = -eMove * 2.f;
 		pPSFire2.m_parameters.m_gravity = -eMove * 2.f;
 		pPSFire2.SetPos(eCurPos);
-		pPSFire2.fParticleSpeed = 100;
-		pPSFire2.fParticleSpeedRandom = 100;
+		pPSFire2.m_parameters.m_speed = 100;
+		pPSFire2.m_parameters.m_speedRandom = 100;
 	} else {
 		float afAlpha = 0.f;
 	

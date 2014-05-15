@@ -465,7 +465,7 @@ void LaunchPoisonExplosion(Vec3f * aePos) {
 
 	pPS->SetPos(*aePos);
 	pPS->Update(0);
-	pPS->iParticleNbMax = 0;
+	pPS->m_parameters.m_nbMax = 0;
 
 	std::list<Particle *>::iterator i;
 
@@ -609,7 +609,7 @@ void CPoisonProjectile::Update(unsigned long _ulTime)
 
 	// on passe de 5 à 100 partoches en 1.5secs
 	if(ulCurrentTime < 750) {
-		pPS.iParticleNbMax = 2;
+		pPS.m_parameters.m_nbMax = 2;
 		pPS.Update(_ulTime);
 	} else {
 		if(!bOk) {

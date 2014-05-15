@@ -146,7 +146,7 @@ void LaunchMagicMissileExplosion(const Vec3f & _ePos, int t = 0, long spellinsta
 	
 	pPS->SetPos(eP);
 	pPS->Update(0);
-	pPS->iParticleNbMax = 0;
+	pPS->m_parameters.m_nbMax = 0;
 
 	LightHandle id = GetFreeDynLight();
 

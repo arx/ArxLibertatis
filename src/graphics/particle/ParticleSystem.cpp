@@ -77,7 +77,7 @@ ParticleSystem::ParticleSystem() {
 	
 	lLightId = -1;
 	
-	iParticleNbMax = 50;
+	m_parameters.m_nbMax = 50;
 	
 	ulNbParticleGen = 10;
 	iParticleNbAlive = 0;
@@ -104,8 +104,8 @@ ParticleSystem::ParticleSystem() {
 	fParticleEndColor[1] = 0.1f;
 	fParticleEndColor[2] = 0.1f;
 	fParticleEndColor[3] = 0.1f;
-	fParticleSpeed = 10;
-	fParticleLife = 1000;
+	m_parameters.m_speed = 10;
+	m_parameters.m_life = 1000;
 	m_parameters.m_pos = Vec3f_ZERO;
 	bParticleFollow = true;
 	fParticleFlash = 0;
@@ -113,9 +113,9 @@ ParticleSystem::ParticleSystem() {
 	bParticleRotationRandomDirection = false;
 	bParticleRotationRandomStart = false;
 	m_parameters.m_gravity = Vec3f_ZERO;
-	fParticleLifeRandom = 1000;
-	fParticleAngle = 0;
-	fParticleSpeedRandom = 10;
+	m_parameters.m_lifeRandom = 1000;
+	m_parameters.m_angle = 0;
+	m_parameters.m_speedRandom = 10;
 
 	bParticleStartColorRandomLock = false;
 	fParticleStartSizeRandom = 1;
@@ -167,13 +167,13 @@ void ParticleSystem::SetParams(const ParticleParams & _pp) {
 	m_parameters.m_direction = _pp.m_direction * 0.1f;
 	m_parameters.m_gravity = _pp.m_gravity;
 	
-	iParticleNbMax		= _pp.m_nbMax;
-	fParticleLife		= _pp.m_life;
-	fParticleLifeRandom = _pp.m_lifeRandom;
+	m_parameters.m_nbMax		= _pp.m_nbMax;
+	m_parameters.m_life		= _pp.m_life;
+	m_parameters.m_lifeRandom = _pp.m_lifeRandom;
 	
-	fParticleAngle = _pp.m_angle;
-	fParticleSpeed = _pp.m_speed;
-	fParticleSpeedRandom = _pp.m_speedRandom;
+	m_parameters.m_angle = _pp.m_angle;
+	m_parameters.m_speed = _pp.m_speed;
+	m_parameters.m_speedRandom = _pp.m_speedRandom;
 	
 	fParticleFlash = _pp.m_flash * ( 1.0f / 100 );
 	
@@ -287,11 +287,11 @@ void ParticleSystem::SetParticleParams(Particle * pP) {
 
 	SpawnParticle(pP);
 
-	float fTTL = fParticleLife + rnd() * fParticleLifeRandom;
+	float fTTL = m_parameters.m_life + rnd() * m_parameters.m_lifeRandom;
 	pP->ulTTL = checked_range_cast<long>(fTTL);
 	pP->fOneOnTTL = 1.0f / (float)pP->ulTTL;
 
-	float fAngleX = rnd() * fParticleAngle; //*0.5f;
+	float fAngleX = rnd() * m_parameters.m_angle; //*0.5f;
  
 	Vec3f vv1, vvz;
 	
@@ -304,7 +304,7 @@ void ParticleSystem::SetParticleParams(Particle * pP) {
 	
 	vvz = Vec3f(eMat * Vec4f(vv1, 1.f));
 
-	float fSpeed = fParticleSpeed + rnd() * fParticleSpeedRandom;
+	float fSpeed = m_parameters.m_speed + rnd() * m_parameters.m_speedRandom;
 
 	pP->p3Velocity = vvz * fSpeed;
 	pP->fSizeStart = fParticleStartSize + rnd() * fParticleStartSizeRandom;
@@ -360,7 +360,7 @@ void ParticleSystem::SetParticleParams(Particle * pP) {
 
 bool ParticleSystem::IsAlive() {
 
-	if((iParticleNbAlive == 0) && (iParticleNbMax == 0))
+	if((iParticleNbAlive == 0) && (m_parameters.m_nbMax == 0))
 		return false;
 
 	return true;
@@ -391,7 +391,7 @@ void ParticleSystem::Update(long _lTime) {
 			pP->p3Velocity += m_parameters.m_gravity * fTimeSec;
 			iParticleNbAlive ++;
 		} else {
-			if(iParticleNbAlive >= iParticleNbMax) {
+			if(iParticleNbAlive >= m_parameters.m_nbMax) {
 				delete pP;
 				listParticle.remove(pP);
 			} else {
@@ -406,8 +406,8 @@ void ParticleSystem::Update(long _lTime) {
 	}
 
 	// création de particules en fct de la fréquence
-	if(iParticleNbAlive < iParticleNbMax) {
-		long t = iParticleNbMax - iParticleNbAlive;
+	if(iParticleNbAlive < m_parameters.m_nbMax) {
+		long t = m_parameters.m_nbMax - iParticleNbAlive;
 		
 		if(fParticleFreq != -1.f) {
 			t = std::min(long(m_storedTime.update(fTimeSec * fParticleFreq)), t);
