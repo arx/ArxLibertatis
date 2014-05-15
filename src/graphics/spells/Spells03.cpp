@@ -142,9 +142,7 @@ CFireBall::CFireBall() : CSpellFx() {
 	smoke.fAngle = radians(9);
 	smoke.fSpeed = 150; 
 	smoke.fSpeedRandom = 150; 
-	smoke.m_gravity.x = 0;
-	smoke.m_gravity.y = -10;
-	smoke.m_gravity.z = 0;
+	smoke.m_gravity = Vec3f(0, -10, 0);
 	smoke.fFlash = 0;
 	smoke.fRotation = 90;
 	smoke.fStartSize = 0;
@@ -714,9 +712,7 @@ void CCreateFood::Create() {
 	cp.fAngle = radians(5);
 	cp.fSpeed = 120; 
 	cp.fSpeedRandom = 84; 
-	cp.m_gravity.x = 0;
-	cp.m_gravity.y = -10;
-	cp.m_gravity.z = 0;
+	cp.m_gravity = Vec3f(0, -10, 0);
 	cp.fFlash = 0;
 	cp.fRotation = 80;
 
