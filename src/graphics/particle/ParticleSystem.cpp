@@ -95,15 +95,15 @@ ParticleSystem::ParticleSystem() {
 	GenerateMatrixUsingVector(eMat, eVect, 0);
 	
 	m_parameters.m_startSize = 1;
-	fParticleEndSize = 1;
-	fParticleStartColor[0] = 0.1f;
-	fParticleStartColor[1] = 0.1f;
-	fParticleStartColor[2] = 0.1f;
-	fParticleStartColor[3] = 0.1f;
-	fParticleEndColor[0] = 0.1f;
-	fParticleEndColor[1] = 0.1f;
-	fParticleEndColor[2] = 0.1f;
-	fParticleEndColor[3] = 0.1f;
+	m_parameters.m_endSize = 1;
+	m_parameters.m_startColor[0] = 0.1f;
+	m_parameters.m_startColor[1] = 0.1f;
+	m_parameters.m_startColor[2] = 0.1f;
+	m_parameters.m_startColor[3] = 0.1f;
+	m_parameters.m_endColor[0] = 0.1f;
+	m_parameters.m_endColor[1] = 0.1f;
+	m_parameters.m_endColor[2] = 0.1f;
+	m_parameters.m_endColor[3] = 0.1f;
 	m_parameters.m_speed = 10;
 	m_parameters.m_life = 1000;
 	m_parameters.m_pos = Vec3f_ZERO;
@@ -117,21 +117,21 @@ ParticleSystem::ParticleSystem() {
 	m_parameters.m_angle = 0;
 	m_parameters.m_speedRandom = 10;
 
-	bParticleStartColorRandomLock = false;
+	m_parameters.m_startLock = false;
 	m_parameters.m_startSizeRandom = 1;
-	fParticleStartColorRandom[0] = 0.1f;
-	fParticleStartColorRandom[1] = 0.1f;
-	fParticleStartColorRandom[2] = 0.1f;
-	fParticleStartColorRandom[3] = 0.1f;
+	m_parameters.m_startColorRandom[0] = 0.1f;
+	m_parameters.m_startColorRandom[1] = 0.1f;
+	m_parameters.m_startColorRandom[2] = 0.1f;
+	m_parameters.m_startColorRandom[3] = 0.1f;
 
-	bParticleEndColorRandomLock = false;
-	fParticleEndSizeRandom = 1;
-	fParticleEndColorRandom[0] = 0.1f;
-	fParticleEndColorRandom[1] = 0.1f;
-	fParticleEndColorRandom[2] = 0.1f;
-	fParticleEndColorRandom[3] = 0.1f;
+	m_parameters.m_endLock = false;
+	m_parameters.m_endSizeRandom = 1;
+	m_parameters.m_endColorRandom[0] = 0.1f;
+	m_parameters.m_endColorRandom[1] = 0.1f;
+	m_parameters.m_endColorRandom[2] = 0.1f;
+	m_parameters.m_endColorRandom[3] = 0.1f;
 
-	blendMode = RenderMaterial::Additive;
+	m_parameters.m_blendMode = RenderMaterial::Additive;
 }
 
 ParticleSystem::~ParticleSystem() {
@@ -190,32 +190,32 @@ void ParticleSystem::SetParams(const ParticleParams & _pp) {
 	m_parameters.m_startSizeRandom = _pp.m_startSizeRandom;
 
 	for(int i = 0; i < 4; i++) {
-		fParticleStartColor[i] = _pp.m_startColor[i] / 255.0f;
-		fParticleStartColorRandom[i] = _pp.m_startColorRandom[i] / 255.0f;
+		m_parameters.m_startColor[i] = _pp.m_startColor[i] / 255.0f;
+		m_parameters.m_startColorRandom[i] = _pp.m_startColorRandom[i] / 255.0f;
 	}
 
-	bParticleStartColorRandomLock = _pp.m_startLock;
+	m_parameters.m_startLock = _pp.m_startLock;
 
-	fParticleEndSize = _pp.m_endSize;
-	fParticleEndSizeRandom = _pp.m_endSizeRandom;
+	m_parameters.m_endSize = _pp.m_endSize;
+	m_parameters.m_endSizeRandom = _pp.m_endSizeRandom;
 
 	for(int i = 0; i < 4; i++) {
-		fParticleEndColor[i] = _pp.m_endColor[i] / 255.0f;
-		fParticleEndColorRandom[i] = _pp.m_endColorRandom[i] / 255.0f;
+		m_parameters.m_endColor[i] = _pp.m_endColor[i] / 255.0f;
+		m_parameters.m_endColorRandom[i] = _pp.m_endColorRandom[i] / 255.0f;
 	}
 
-	bParticleEndColorRandomLock = _pp.m_endLock;
+	m_parameters.m_endLock = _pp.m_endLock;
 
 	m_parameters.m_direction = glm::normalize(m_parameters.m_direction);
 	Vec3f eVect(m_parameters.m_direction.x, -m_parameters.m_direction.y, m_parameters.m_direction.z);
 	GenerateMatrixUsingVector(eMat, eVect, 0);
 
-	float r = (fParticleStartColor[0]  + fParticleEndColor[0] ) * 0.5f;
-	float g = (fParticleStartColor[1]  + fParticleEndColor[1] ) * 0.5f;
-	float b = (fParticleStartColor[2]  + fParticleEndColor[2] ) * 0.5f;
+	float r = (m_parameters.m_startColor[0]  + m_parameters.m_endColor[0] ) * 0.5f;
+	float g = (m_parameters.m_startColor[1]  + m_parameters.m_endColor[1] ) * 0.5f;
+	float b = (m_parameters.m_startColor[2]  + m_parameters.m_endColor[2] ) * 0.5f;
 	SetColor(r, g, b);
 
-	blendMode = _pp.m_blendMode;
+	m_parameters.m_blendMode = _pp.m_blendMode;
 
 	if(_pp.m_texInfo) {
 		SetTexture(_pp.m_texName, _pp.m_texNb, _pp.m_texTime, _pp.m_texLoop);
@@ -309,33 +309,33 @@ void ParticleSystem::SetParticleParams(Particle * pP) {
 	pP->p3Velocity = vvz * fSpeed;
 	pP->fSizeStart = m_parameters.m_startSize + rnd() * m_parameters.m_startSizeRandom;
 
-	if(bParticleStartColorRandomLock) {
-		float t = rnd() * fParticleStartColorRandom[0];
-		pP->fColorStart[0] = fParticleStartColor[0] + t;
-		pP->fColorStart[1] = fParticleStartColor[1] + t;
-		pP->fColorStart[2] = fParticleStartColor[2] + t;
+	if(m_parameters.m_startLock) {
+		float t = rnd() * m_parameters.m_startColorRandom[0];
+		pP->fColorStart[0] = m_parameters.m_startColor[0] + t;
+		pP->fColorStart[1] = m_parameters.m_startColor[1] + t;
+		pP->fColorStart[2] = m_parameters.m_startColor[2] + t;
 	} else {
-		pP->fColorStart[0] = fParticleStartColor[0] + rnd() * fParticleStartColorRandom[0];
-		pP->fColorStart[1] = fParticleStartColor[1] + rnd() * fParticleStartColorRandom[1];
-		pP->fColorStart[2] = fParticleStartColor[2] + rnd() * fParticleStartColorRandom[2];
+		pP->fColorStart[0] = m_parameters.m_startColor[0] + rnd() * m_parameters.m_startColorRandom[0];
+		pP->fColorStart[1] = m_parameters.m_startColor[1] + rnd() * m_parameters.m_startColorRandom[1];
+		pP->fColorStart[2] = m_parameters.m_startColor[2] + rnd() * m_parameters.m_startColorRandom[2];
 	}
 
-	pP->fColorStart[3] = fParticleStartColor[3] + rnd() * fParticleStartColorRandom[3];
+	pP->fColorStart[3] = m_parameters.m_startColor[3] + rnd() * m_parameters.m_startColorRandom[3];
 
-	pP->fSizeEnd = fParticleEndSize + rnd() * fParticleEndSizeRandom;
+	pP->fSizeEnd = m_parameters.m_endSize + rnd() * m_parameters.m_endSizeRandom;
 
-	if(bParticleEndColorRandomLock) {
-		float t = rnd() * fParticleEndColorRandom[0];
-		pP->fColorEnd[0] = fParticleEndColor[0] + t;
-		pP->fColorEnd[1] = fParticleEndColor[1] + t;
-		pP->fColorEnd[2] = fParticleEndColor[2] + t;
+	if(m_parameters.m_endLock) {
+		float t = rnd() * m_parameters.m_endColorRandom[0];
+		pP->fColorEnd[0] = m_parameters.m_endColor[0] + t;
+		pP->fColorEnd[1] = m_parameters.m_endColor[1] + t;
+		pP->fColorEnd[2] = m_parameters.m_endColor[2] + t;
 	} else {
-		pP->fColorEnd[0] = fParticleEndColor[0] + rnd() * fParticleEndColorRandom[0];
-		pP->fColorEnd[1] = fParticleEndColor[1] + rnd() * fParticleEndColorRandom[1];
-		pP->fColorEnd[2] = fParticleEndColor[2] + rnd() * fParticleEndColorRandom[2];
+		pP->fColorEnd[0] = m_parameters.m_endColor[0] + rnd() * m_parameters.m_endColorRandom[0];
+		pP->fColorEnd[1] = m_parameters.m_endColor[1] + rnd() * m_parameters.m_endColorRandom[1];
+		pP->fColorEnd[2] = m_parameters.m_endColor[2] + rnd() * m_parameters.m_endColorRandom[2];
 	}
 
-	pP->fColorEnd[3] = fParticleEndColor[3] + rnd() * fParticleEndColorRandom[3];
+	pP->fColorEnd[3] = m_parameters.m_endColor[3] + rnd() * m_parameters.m_endColorRandom[3];
 
 	if(m_parameters.m_rotationRandomDirection) {
 		float fRandom	= frand2();
@@ -428,7 +428,7 @@ void ParticleSystem::Update(long _lTime) {
 void ParticleSystem::Render() {
 	
 	RenderMaterial mat;
-	mat.setBlendType(blendMode);
+	mat.setBlendType(m_parameters.m_blendMode);
 	mat.setDepthTest(true);
 
 	int inumtex = 0;

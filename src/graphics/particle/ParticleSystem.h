@@ -96,19 +96,6 @@ public:
 	
 	ParticleSpawn ulParticleSpawn;
 	
-	
-	bool bParticleStartColorRandomLock;
-	float fParticleStartColor[4];
-	float fParticleStartColorRandom[4];
-	
-	bool bParticleEndColorRandomLock;
-	float fParticleEndSize;
-	float fParticleEndSizeRandom;
-	float fParticleEndColor[4];
-	float fParticleEndColorRandom[4];
-	
-	RenderMaterial::BlendType blendMode;
-		
 	bool bParticleFollow;
 	
 	LightHandle lLightId;
