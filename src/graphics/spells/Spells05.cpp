@@ -124,9 +124,7 @@ void CCurePoison::Create()
 	cp.fLife = 800;
 	cp.fLifeRandom = 2000;
 	cp.m_pos = Vec3f(100, 0, 100);
-	cp.m_direction.x = 0;
-	cp.m_direction.y = -10;
-	cp.m_direction.z = 0;
+	cp.m_direction = Vec3f(0, -10, 0);
 	cp.fAngle = radians(5);
 	cp.fSpeed = 120; 
 	cp.fSpeedRandom = 84; 
@@ -426,9 +424,7 @@ void LaunchPoisonExplosion(Vec3f * aePos) {
 	cp.fLife = 1500;
 	cp.fLifeRandom = 500;
 	cp.m_pos = Vec3f(5);
-	cp.m_direction.x = 0;
-	cp.m_direction.y = 4;
-	cp.m_direction.z = 0;
+	cp.m_direction = Vec3f(0, 4, 0);
 	cp.fAngle = radians(360);
 	cp.fSpeed = 200;
 	cp.fSpeedRandom = 0;
