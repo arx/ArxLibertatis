@@ -85,8 +85,10 @@ public:
 	Color4f m_endColor;
 	Color4f m_endColorRandom;
 	
-	ParticleParams() : m_texInfo(false) { }
-	
+	ParticleParams()
+		: m_freq(-1)
+		, m_texInfo(false)
+	{}
 };
 
 #endif // ARX_GRAPHICS_PARTICLE_PARTICLEPARAMS_H

@@ -177,9 +177,9 @@ void CFireBall::Create(Vec3f aeSrc, float afBeta, float afAlpha, float _fLevel)
 	fire_1.m_direction = -eMove * 0.1f;
 	fire_1.m_startSize = 1 * _fLevel;
 	fire_1.m_startSizeRandom = 2 * _fLevel;
+	fire_1.m_freq = 100.0f;
 
 	pPSFire.SetParams(fire_1);
-	pPSFire.m_parameters.m_freq = 100.0f;
 	pPSFire.ulParticleSpawn = 0;
 	pPSFire.SetTexture("graph/particles/fire", 0, 200);
 
@@ -191,9 +191,9 @@ void CFireBall::Create(Vec3f aeSrc, float afBeta, float afAlpha, float _fLevel)
 	fire_2.m_startSizeRandom = 2 * _fLevel;
 	fire_2.m_endSize = 3 * _fLevel;
 	fire_2.m_endSizeRandom = 2 * _fLevel;
-
+	fire_2.m_freq = 20.0f;
+	
 	pPSFire2.SetParams(fire_2);
-	pPSFire2.m_parameters.m_freq = 20.0f;
 	pPSFire2.ulParticleSpawn = 0;
 	pPSFire2.SetTexture("graph/particles/fire", 0, 200);
 	pPSFire2.Update(0);
@@ -202,10 +202,10 @@ void CFireBall::Create(Vec3f aeSrc, float afBeta, float afAlpha, float _fLevel)
 	smoke.m_direction = -eMove * 0.1f;
 	smoke.m_endSize = 7 * _fLevel;
 	smoke.m_endSizeRandom = 2 * _fLevel; 
-
+	smoke.m_freq = 20.0f;
+	
 	pPSSmoke.SetParams(smoke);
 	pPSSmoke.ulParticleSpawn = 0;
-	pPSSmoke.m_parameters.m_freq = 20.0f;
 
 	pPSSmoke.SetTexture("graph/particles/big_greypouf", 0, 0);
 	pPSSmoke.Update(0);

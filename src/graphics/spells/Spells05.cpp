@@ -551,13 +551,12 @@ void CPoisonProjectile::Create(Vec3f _eSrc, float _fBeta)
 	cp.m_endLock = false;
 
 	cp.m_blendMode = RenderMaterial::Screen;
-
+	cp.m_freq = -1;
+	
 	pPS.SetParams(cp);
 	pPS.ulParticleSpawn = 0;
 
 	pPS.SetTexture("graph/particles/big_greypouf", 0, 200);
-
-	pPS.m_parameters.m_freq = -1;
 
 	pPS.bParticleFollow = true;
 
@@ -611,12 +610,13 @@ void CPoisonProjectile::Update(unsigned long _ulTime)
 
 			cp.m_blendMode = RenderMaterial::Screen;
 			cp.m_texInfo = false;
+			cp.m_freq = 80;
+			
 			pPSStream.SetParams(cp);
 			pPSStream.ulParticleSpawn = 0;
 
 			pPSStream.SetTexture("graph/particles/big_greypouf", 0, 200);
 
-			pPSStream.m_parameters.m_freq = 80;
 			pPSStream.bParticleFollow = true;
 		}
 
