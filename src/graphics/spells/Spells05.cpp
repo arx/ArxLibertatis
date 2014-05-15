@@ -130,7 +130,7 @@ void CCurePoison::Create()
 	cp.m_speedRandom = 84;
 	cp.m_gravity = Vec3f(0, -10, 0);
 	cp.m_flash = 0;
-	cp.m_rotation = 80;
+	cp.m_rotation = 1.0f / (101 - 80);
 
 	cp.m_startSize = 8;//6;
 	cp.m_startSizeRandom = 8;
@@ -428,7 +428,7 @@ void LaunchPoisonExplosion(Vec3f * aePos) {
 	cp.m_speedRandom = 0;
 	cp.m_gravity = Vec3f(0, 17, 0);
 	cp.m_flash = 0;
-	cp.m_rotation = 80;
+	cp.m_rotation = 1.0f / (101 - 80);
 	cp.m_rotationRandomDirection = true;
 	cp.m_rotationRandomStart = true;
 
@@ -558,7 +558,7 @@ void CPoisonProjectile::Create(Vec3f _eSrc, float _fBeta)
 	cp.m_speedRandom = 10;
 	cp.m_gravity = Vec3f_ZERO;
 	cp.m_flash = 21 * (1.f/100);
-	cp.m_rotation = 80;
+	cp.m_rotation = 1.0f / (101 - 80);
 	cp.m_rotationRandomDirection = true;
 	cp.m_rotationRandomStart = true;
 
@@ -629,7 +629,7 @@ void CPoisonProjectile::Update(unsigned long _ulTime)
 			cp.m_speedRandom = 50;//15;
 			cp.m_gravity = Vec3f(0, 10, 0);
 			cp.m_flash = 0;
-			cp.m_rotation = 80;
+			cp.m_rotation = 1.0f / (101 - 80);
 			cp.m_rotationRandomDirection = true;
 			cp.m_rotationRandomStart = true;
 

@@ -177,12 +177,8 @@ void ParticleSystem::SetParams(const ParticleParams & _pp) {
 	
 	m_parameters.m_flash = _pp.m_flash;
 	
-	if(_pp.m_rotation >= 2) {
-		m_parameters.m_rotation = 1.0f / (101 - _pp.m_rotation);
-	} else {
-		m_parameters.m_rotation = 0.0f;
-	}
-
+	m_parameters.m_rotation = _pp.m_rotation;
+	
 	m_parameters.m_rotationRandomDirection = _pp.m_rotationRandomDirection;
 	m_parameters.m_rotationRandomStart = _pp.m_rotationRandomStart;
 

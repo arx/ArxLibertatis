@@ -84,7 +84,7 @@ CFireBall::CFireBall() : CSpellFx() {
 	fire_1.m_speedRandom = 0;
 	fire_1.m_gravity = Vec3f_ZERO;
 	fire_1.m_flash = 0;
-	fire_1.m_rotation = 50;
+	fire_1.m_rotation = 1.0f / (101 - 50);
 	fire_1.m_startColor[0] = 22;
 	fire_1.m_startColor[1] = 30;
 	fire_1.m_startColor[2] = 30;
@@ -115,7 +115,7 @@ CFireBall::CFireBall() : CSpellFx() {
 	fire_2.m_speedRandom = 0;
 	fire_2.m_gravity = Vec3f_ZERO;
 	fire_2.m_flash = 0;
-	fire_2.m_rotation = 50;
+	fire_2.m_rotation = 1.0f / (101 - 50);
 	fire_2.m_startColor[0] = 22;
 	fire_2.m_startColor[1] = 30;
 	fire_2.m_startColor[2] = 30;
@@ -144,7 +144,7 @@ CFireBall::CFireBall() : CSpellFx() {
 	smoke.m_speedRandom = 150;
 	smoke.m_gravity = Vec3f(0, -10, 0);
 	smoke.m_flash = 0;
-	smoke.m_rotation = 90;
+	smoke.m_rotation = 1.0f / (101 - 90);
 	smoke.m_startSize = 0;
 	smoke.m_startSizeRandom = 2;
 	smoke.m_startColor[0] = 70;
@@ -714,7 +714,7 @@ void CCreateFood::Create() {
 	cp.m_speedRandom = 84;
 	cp.m_gravity = Vec3f(0, -10, 0);
 	cp.m_flash = 0;
-	cp.m_rotation = 80;
+	cp.m_rotation = 1.0f / (101 - 80);
 
 	cp.m_startSize = 8;
 	cp.m_startSizeRandom = 8;

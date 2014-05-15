@@ -112,7 +112,7 @@ void CHeal::Create() {
 	cp.m_speedRandom = 84;
 	cp.m_gravity = Vec3f(0, -10, 0);
 	cp.m_flash = 0;
-	cp.m_rotation = 80;
+	cp.m_rotation = 1.0f / (101 - 80);
 
 	cp.m_startSize = 8;
 	cp.m_startSizeRandom = 8;

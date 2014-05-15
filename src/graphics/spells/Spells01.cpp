@@ -88,7 +88,7 @@ void LaunchMagicMissileExplosion(const Vec3f & _ePos, int t = 0, long spellinsta
 	cp.m_speedRandom = 100;
 	cp.m_gravity = Vec3f(0.f, 10.f, 0.f);
 	cp.m_flash = 0;
-	cp.m_rotation = 16;
+	cp.m_rotation = 1.0f / (101 - 16);
 
 	cp.m_startSize = 5;
 	cp.m_startSizeRandom = 10;
