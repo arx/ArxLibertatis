@@ -93,17 +93,11 @@ public:
 	
 	float fParticleFreq;
 	
-	float fParticleFlash;
-	float fParticleRotation;
-	bool bParticleRotationRandomDirection;
-	bool bParticleRotationRandomStart;
 	
 	ParticleSpawn ulParticleSpawn;
 	
 	
 	bool bParticleStartColorRandomLock;
-	float fParticleStartSize;
-	float fParticleStartSizeRandom;
 	float fParticleStartColor[4];
 	float fParticleStartColorRandom[4];
 	

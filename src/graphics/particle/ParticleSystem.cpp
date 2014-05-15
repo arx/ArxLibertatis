@@ -84,7 +84,7 @@ ParticleSystem::ParticleSystem() {
 	iNbTex = 0;
 	iTexTime = 500;
 	bTexLoop = true;
-	fParticleRotation = 0;
+	m_parameters.m_rotation = 0;
 	
 	fParticleFreq = -1;
 	ulParticleSpawn = 0;
@@ -94,7 +94,7 @@ ParticleSystem::ParticleSystem() {
 	eVect.y = -eVect.y;
 	GenerateMatrixUsingVector(eMat, eVect, 0);
 	
-	fParticleStartSize = 1;
+	m_parameters.m_startSize = 1;
 	fParticleEndSize = 1;
 	fParticleStartColor[0] = 0.1f;
 	fParticleStartColor[1] = 0.1f;
@@ -108,17 +108,17 @@ ParticleSystem::ParticleSystem() {
 	m_parameters.m_life = 1000;
 	m_parameters.m_pos = Vec3f_ZERO;
 	bParticleFollow = true;
-	fParticleFlash = 0;
-	fParticleRotation = 0;
-	bParticleRotationRandomDirection = false;
-	bParticleRotationRandomStart = false;
+	m_parameters.m_flash = 0;
+	m_parameters.m_rotation = 0;
+	m_parameters.m_rotationRandomDirection = false;
+	m_parameters.m_rotationRandomStart = false;
 	m_parameters.m_gravity = Vec3f_ZERO;
 	m_parameters.m_lifeRandom = 1000;
 	m_parameters.m_angle = 0;
 	m_parameters.m_speedRandom = 10;
 
 	bParticleStartColorRandomLock = false;
-	fParticleStartSizeRandom = 1;
+	m_parameters.m_startSizeRandom = 1;
 	fParticleStartColorRandom[0] = 0.1f;
 	fParticleStartColorRandom[1] = 0.1f;
 	fParticleStartColorRandom[2] = 0.1f;
@@ -175,19 +175,19 @@ void ParticleSystem::SetParams(const ParticleParams & _pp) {
 	m_parameters.m_speed = _pp.m_speed;
 	m_parameters.m_speedRandom = _pp.m_speedRandom;
 	
-	fParticleFlash = _pp.m_flash * ( 1.0f / 100 );
+	m_parameters.m_flash = _pp.m_flash * ( 1.0f / 100 );
 	
 	if(_pp.m_rotation >= 2) {
-		fParticleRotation = 1.0f / (101 - _pp.m_rotation);
+		m_parameters.m_rotation = 1.0f / (101 - _pp.m_rotation);
 	} else {
-		fParticleRotation = 0.0f;
+		m_parameters.m_rotation = 0.0f;
 	}
 
-	bParticleRotationRandomDirection = _pp.m_rotationRandomDirection;
-	bParticleRotationRandomStart = _pp.m_rotationRandomStart;
+	m_parameters.m_rotationRandomDirection = _pp.m_rotationRandomDirection;
+	m_parameters.m_rotationRandomStart = _pp.m_rotationRandomStart;
 
-	fParticleStartSize = _pp.m_startSize;
-	fParticleStartSizeRandom = _pp.m_startSizeRandom;
+	m_parameters.m_startSize = _pp.m_startSize;
+	m_parameters.m_startSizeRandom = _pp.m_startSizeRandom;
 
 	for(int i = 0; i < 4; i++) {
 		fParticleStartColor[i] = _pp.m_startColor[i] / 255.0f;
@@ -307,7 +307,7 @@ void ParticleSystem::SetParticleParams(Particle * pP) {
 	float fSpeed = m_parameters.m_speed + rnd() * m_parameters.m_speedRandom;
 
 	pP->p3Velocity = vvz * fSpeed;
-	pP->fSizeStart = fParticleStartSize + rnd() * fParticleStartSizeRandom;
+	pP->fSizeStart = m_parameters.m_startSize + rnd() * m_parameters.m_startSizeRandom;
 
 	if(bParticleStartColorRandomLock) {
 		float t = rnd() * fParticleStartColorRandom[0];
@@ -337,7 +337,7 @@ void ParticleSystem::SetParticleParams(Particle * pP) {
 
 	pP->fColorEnd[3] = fParticleEndColor[3] + rnd() * fParticleEndColorRandom[3];
 
-	if(bParticleRotationRandomDirection) {
+	if(m_parameters.m_rotationRandomDirection) {
 		float fRandom	= frand2();
 
 		pP->iRot = checked_range_cast<int>(fRandom);
@@ -351,7 +351,7 @@ void ParticleSystem::SetParticleParams(Particle * pP) {
 		pP->iRot = 1;
 	}
 
-	if(bParticleRotationRandomStart) {
+	if(m_parameters.m_rotationRandomStart) {
 		pP->fRotStart = rnd() * 360.0f;
 	} else {
 		pP->fRotStart = 0;
@@ -439,8 +439,8 @@ void ParticleSystem::Render() {
 		Particle * p = *i;
 
 		if(p->isAlive()) {
-			if(fParticleFlash > 0) {
-				if(rnd() < fParticleFlash)
+			if(m_parameters.m_flash > 0) {
+				if(rnd() < m_parameters.m_flash)
 					continue;
 			}
 
@@ -480,12 +480,12 @@ void ParticleSystem::Render() {
             
 			mat.setTexture(tex_tab[inumtex]);
 			
-			if(fParticleRotation != 0) {
+			if(m_parameters.m_rotation != 0) {
 				float fRot;
 				if(p->iRot == 1)
-					fRot = (fParticleRotation) * p->ulTime + p->fRotStart;
+					fRot = (m_parameters.m_rotation) * p->ulTime + p->fRotStart;
 				else
-					fRot = (-fParticleRotation) * p->ulTime + p->fRotStart;
+					fRot = (-m_parameters.m_rotation) * p->ulTime + p->fRotStart;
 
 				float size = std::max(p->fSize, 0.f);
 				
