@@ -114,29 +114,29 @@ void CHeal::Create() {
 	cp.m_flash = 0;
 	cp.m_rotation = 80;
 
-	cp.fStartSize = 8;
-	cp.fStartSizeRandom = 8;
-	cp.fStartColor[0] = 205;
-	cp.fStartColor[1] = 205;
-	cp.fStartColor[2] = 255;
-	cp.fStartColor[3] = 245;
-	cp.fStartColorRandom[0] = 50;
-	cp.fStartColorRandom[1] = 50;
-	cp.fStartColorRandom[2] = 0;
-	cp.fStartColorRandom[3] = 10;
+	cp.m_startSize = 8;
+	cp.m_startSizeRandom = 8;
+	cp.m_startColor[0] = 205;
+	cp.m_startColor[1] = 205;
+	cp.m_startColor[2] = 255;
+	cp.m_startColor[3] = 245;
+	cp.m_startColorRandom[0] = 50;
+	cp.m_startColorRandom[1] = 50;
+	cp.m_startColorRandom[2] = 0;
+	cp.m_startColorRandom[3] = 10;
 
-	cp.fEndSize = 6;
-	cp.fEndSizeRandom = 4;
-	cp.fEndColor[0] = 20;
-	cp.fEndColor[1] = 20;
-	cp.fEndColor[2] = 30;
-	cp.fEndColor[3] = 0;
-	cp.fEndColorRandom[0] = 0;
-	cp.fEndColorRandom[1] = 0;
-	cp.fEndColorRandom[2] = 40;
-	cp.fEndColorRandom[3] = 0;
+	cp.m_endSize = 6;
+	cp.m_endSizeRandom = 4;
+	cp.m_endColor[0] = 20;
+	cp.m_endColor[1] = 20;
+	cp.m_endColor[2] = 30;
+	cp.m_endColor[3] = 0;
+	cp.m_endColorRandom[0] = 0;
+	cp.m_endColorRandom[1] = 0;
+	cp.m_endColorRandom[2] = 40;
+	cp.m_endColorRandom[3] = 0;
 	
-	cp.blendMode = RenderMaterial::Additive;
+	cp.m_blendMode = RenderMaterial::Additive;
 
 	pPS->SetParams(cp);
 	pPS->ulParticleSpawn = PARTICLE_CIRCULAR | PARTICLE_BORDER;

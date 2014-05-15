@@ -185,25 +185,25 @@ void ParticleSystem::SetParams(const ParticleParams & _pp) {
 	bParticleRotationRandomDirection = _pp.m_rotationRandomDirection;
 	bParticleRotationRandomStart = _pp.m_rotationRandomStart;
 
-	fParticleStartSize = _pp.fStartSize;
-	fParticleStartSizeRandom = _pp.fStartSizeRandom;
+	fParticleStartSize = _pp.m_startSize;
+	fParticleStartSizeRandom = _pp.m_startSizeRandom;
 
 	for(int i = 0; i < 4; i++) {
-		fParticleStartColor[i] = _pp.fStartColor[i] / 255.0f;
-		fParticleStartColorRandom[i] = _pp.fStartColorRandom[i] / 255.0f;
+		fParticleStartColor[i] = _pp.m_startColor[i] / 255.0f;
+		fParticleStartColorRandom[i] = _pp.m_startColorRandom[i] / 255.0f;
 	}
 
-	bParticleStartColorRandomLock = _pp.bStartLock;
+	bParticleStartColorRandomLock = _pp.m_startLock;
 
-	fParticleEndSize = _pp.fEndSize;
-	fParticleEndSizeRandom = _pp.fEndSizeRandom;
+	fParticleEndSize = _pp.m_endSize;
+	fParticleEndSizeRandom = _pp.m_endSizeRandom;
 
 	for(int i = 0; i < 4; i++) {
-		fParticleEndColor[i] = _pp.fEndColor[i] / 255.0f;
-		fParticleEndColorRandom[i] = _pp.fEndColorRandom[i] / 255.0f;
+		fParticleEndColor[i] = _pp.m_endColor[i] / 255.0f;
+		fParticleEndColorRandom[i] = _pp.m_endColorRandom[i] / 255.0f;
 	}
 
-	bParticleEndColorRandomLock = _pp.bEndLock;
+	bParticleEndColorRandomLock = _pp.m_endLock;
 
 	p3ParticleDirection = glm::normalize(p3ParticleDirection);
 	Vec3f eVect(p3ParticleDirection.x, -p3ParticleDirection.y, p3ParticleDirection.z);
@@ -214,10 +214,10 @@ void ParticleSystem::SetParams(const ParticleParams & _pp) {
 	float b = (fParticleStartColor[2]  + fParticleEndColor[2] ) * 0.5f;
 	SetColor(r, g, b);
 
-	blendMode = _pp.blendMode;
+	blendMode = _pp.m_blendMode;
 
-	if(_pp.bTexInfo) {
-		SetTexture(_pp.lpszTexName, _pp.iTexNb, _pp.iTexTime, _pp.bTexLoop);
+	if(_pp.m_texInfo) {
+		SetTexture(_pp.m_texName, _pp.m_texNb, _pp.m_texTime, _pp.m_texLoop);
 	}
 }
 

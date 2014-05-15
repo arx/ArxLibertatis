@@ -66,26 +66,26 @@ public:
 	float m_flash;
 	float m_rotation;
 	
-	bool bTexInfo;
-	bool bTexLoop;
-	int iTexNb;
-	int iTexTime;
-	RenderMaterial::BlendType blendMode;
-	char * lpszTexName;
+	bool  m_texInfo;
+	bool  m_texLoop;
+	int   m_texNb;
+	int   m_texTime;
+	RenderMaterial::BlendType m_blendMode;
+	char * m_texName;
 	
-	bool bStartLock;
-	float fStartSize;
-	float fStartSizeRandom;
-	float fStartColor[4];
-	float fStartColorRandom[4];
+	bool  m_startLock;
+	float m_startSize;
+	float m_startSizeRandom;
+	float m_startColor[4];
+	float m_startColorRandom[4];
 	
-	bool bEndLock;
-	float fEndSize;
-	float fEndSizeRandom;
-	float fEndColor[4];
-	float fEndColorRandom[4];
+	bool  m_endLock;
+	float m_endSize;
+	float m_endSizeRandom;
+	float m_endColor[4];
+	float m_endColorRandom[4];
 	
-	ParticleParams() : bTexInfo(false) { }
+	ParticleParams() : m_texInfo(false) { }
 	
 };
 

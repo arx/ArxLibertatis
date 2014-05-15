@@ -85,25 +85,25 @@ CFireBall::CFireBall() : CSpellFx() {
 	fire_1.m_gravity = Vec3f_ZERO;
 	fire_1.m_flash = 0;
 	fire_1.m_rotation = 50;
-	fire_1.fStartColor[0] = 22;
-	fire_1.fStartColor[1] = 30;
-	fire_1.fStartColor[2] = 30;
-	fire_1.fStartColor[3] = 0;
-	fire_1.fStartColorRandom[0] = 22;
-	fire_1.fStartColorRandom[1] = 0;
-	fire_1.fStartColorRandom[2] = 0;
-	fire_1.fStartColorRandom[3] = 2;
-	fire_1.fEndSize = 0;
-	fire_1.fEndSizeRandom = 2;
-	fire_1.fEndColor[0] = 25;
-	fire_1.fEndColor[1] = 25;
-	fire_1.fEndColor[2] = 0;
-	fire_1.fEndColor[3] = 50;
-	fire_1.fEndColorRandom[0] = 50; 
-	fire_1.fEndColorRandom[1] = 0;
-	fire_1.fEndColorRandom[2] = 0;
-	fire_1.fEndColorRandom[3] = 120; 
-	fire_1.blendMode = RenderMaterial::Additive;
+	fire_1.m_startColor[0] = 22;
+	fire_1.m_startColor[1] = 30;
+	fire_1.m_startColor[2] = 30;
+	fire_1.m_startColor[3] = 0;
+	fire_1.m_startColorRandom[0] = 22;
+	fire_1.m_startColorRandom[1] = 0;
+	fire_1.m_startColorRandom[2] = 0;
+	fire_1.m_startColorRandom[3] = 2;
+	fire_1.m_endSize = 0;
+	fire_1.m_endSizeRandom = 2;
+	fire_1.m_endColor[0] = 25;
+	fire_1.m_endColor[1] = 25;
+	fire_1.m_endColor[2] = 0;
+	fire_1.m_endColor[3] = 50;
+	fire_1.m_endColorRandom[0] = 50;
+	fire_1.m_endColorRandom[1] = 0;
+	fire_1.m_endColorRandom[2] = 0;
+	fire_1.m_endColorRandom[3] = 120;
+	fire_1.m_blendMode = RenderMaterial::Additive;
 
 	memset(&fire_2, 0, sizeof(fire_2));
 	fire_2.m_nbMax = 20;
@@ -116,23 +116,23 @@ CFireBall::CFireBall() : CSpellFx() {
 	fire_2.m_gravity = Vec3f_ZERO;
 	fire_2.m_flash = 0;
 	fire_2.m_rotation = 50;
-	fire_2.fStartColor[0] = 22;
-	fire_2.fStartColor[1] = 30;
-	fire_2.fStartColor[2] = 30;
-	fire_2.fStartColor[3] = 0;
-	fire_2.fStartColorRandom[0] = 22;
-	fire_2.fStartColorRandom[1] = 0;
-	fire_2.fStartColorRandom[2] = 0;
-	fire_2.fStartColorRandom[3] = 2;
-	fire_2.fEndColor[0] = 25;
-	fire_2.fEndColor[1] = 25;
-	fire_2.fEndColor[2] = 0;
-	fire_2.fEndColor[3] = 0;
-	fire_2.fEndColorRandom[0] = 50; 
-	fire_2.fEndColorRandom[1] = 0;
-	fire_2.fEndColorRandom[2] = 0;
-	fire_2.fEndColorRandom[3] = 120;
-	fire_2.blendMode = RenderMaterial::Additive;
+	fire_2.m_startColor[0] = 22;
+	fire_2.m_startColor[1] = 30;
+	fire_2.m_startColor[2] = 30;
+	fire_2.m_startColor[3] = 0;
+	fire_2.m_startColorRandom[0] = 22;
+	fire_2.m_startColorRandom[1] = 0;
+	fire_2.m_startColorRandom[2] = 0;
+	fire_2.m_startColorRandom[3] = 2;
+	fire_2.m_endColor[0] = 25;
+	fire_2.m_endColor[1] = 25;
+	fire_2.m_endColor[2] = 0;
+	fire_2.m_endColor[3] = 0;
+	fire_2.m_endColorRandom[0] = 50;
+	fire_2.m_endColorRandom[1] = 0;
+	fire_2.m_endColorRandom[2] = 0;
+	fire_2.m_endColorRandom[3] = 120;
+	fire_2.m_blendMode = RenderMaterial::Additive;
 
 	memset(&smoke, 0, sizeof(smoke));
 	smoke.m_nbMax = 30;
@@ -145,25 +145,25 @@ CFireBall::CFireBall() : CSpellFx() {
 	smoke.m_gravity = Vec3f(0, -10, 0);
 	smoke.m_flash = 0;
 	smoke.m_rotation = 90;
-	smoke.fStartSize = 0;
-	smoke.fStartSizeRandom = 2;
-	smoke.fStartColor[0] = 70;
-	smoke.fStartColor[1] = 70;
-	smoke.fStartColor[2] = 51;
-	smoke.fStartColor[3] = 50;
-	smoke.fStartColorRandom[0] = 0;
-	smoke.fStartColorRandom[1] = 0;
-	smoke.fStartColorRandom[2] = 0;
-	smoke.fStartColorRandom[3] = 0;
-	smoke.fEndColor[0] = 0;
-	smoke.fEndColor[1] = 0;
-	smoke.fEndColor[2] = 0;
-	smoke.fEndColor[3] = 27; 
-	smoke.fEndColorRandom[0] = 0;
-	smoke.fEndColorRandom[1] = 0;
-	smoke.fEndColorRandom[2] = 0;
-	smoke.fEndColorRandom[3] = 20;
-	smoke.blendMode = RenderMaterial::Additive;
+	smoke.m_startSize = 0;
+	smoke.m_startSizeRandom = 2;
+	smoke.m_startColor[0] = 70;
+	smoke.m_startColor[1] = 70;
+	smoke.m_startColor[2] = 51;
+	smoke.m_startColor[3] = 50;
+	smoke.m_startColorRandom[0] = 0;
+	smoke.m_startColorRandom[1] = 0;
+	smoke.m_startColorRandom[2] = 0;
+	smoke.m_startColorRandom[3] = 0;
+	smoke.m_endColor[0] = 0;
+	smoke.m_endColor[1] = 0;
+	smoke.m_endColor[2] = 0;
+	smoke.m_endColor[3] = 27; 
+	smoke.m_endColorRandom[0] = 0;
+	smoke.m_endColorRandom[1] = 0;
+	smoke.m_endColorRandom[2] = 0;
+	smoke.m_endColorRandom[3] = 20;
+	smoke.m_blendMode = RenderMaterial::Additive;
 }
 
 CFireBall::~CFireBall()
@@ -211,8 +211,8 @@ void CFireBall::Create(Vec3f aeSrc, float afBeta, float afAlpha, float _fLevel)
 	
 	//FIRE
 	fire_1.m_direction = -eMove;
-	fire_1.fStartSize = 1 * _fLevel; 
-	fire_1.fStartSizeRandom = 2 * _fLevel; 
+	fire_1.m_startSize = 1 * _fLevel;
+	fire_1.m_startSizeRandom = 2 * _fLevel;
 
 	pPSFire.SetParams(fire_1);
 	pPSFire.fParticleFreq = 100.0f;
@@ -223,10 +223,10 @@ void CFireBall::Create(Vec3f aeSrc, float afBeta, float afAlpha, float _fLevel)
 
 	//FIRE
 	fire_2.m_direction = -eMove;
-	fire_2.fStartSize = 1 * _fLevel; 
-	fire_2.fStartSizeRandom = 2 * _fLevel; 
-	fire_2.fEndSize = 3 * _fLevel; 
-	fire_2.fEndSizeRandom = 2 * _fLevel; 
+	fire_2.m_startSize = 1 * _fLevel;
+	fire_2.m_startSizeRandom = 2 * _fLevel;
+	fire_2.m_endSize = 3 * _fLevel;
+	fire_2.m_endSizeRandom = 2 * _fLevel;
 
 	pPSFire2.SetParams(fire_2);
 	pPSFire2.fParticleFreq = 20.0f;
@@ -236,8 +236,8 @@ void CFireBall::Create(Vec3f aeSrc, float afBeta, float afAlpha, float _fLevel)
 
 	// Smoke
 	smoke.m_direction = -eMove;
-	smoke.fEndSize = 7 * _fLevel;
-	smoke.fEndSizeRandom = 2 * _fLevel; 
+	smoke.m_endSize = 7 * _fLevel;
+	smoke.m_endSizeRandom = 2 * _fLevel; 
 
 	pPSSmoke.SetParams(smoke);
 	pPSSmoke.ulParticleSpawn = 0;
@@ -716,29 +716,29 @@ void CCreateFood::Create() {
 	cp.m_flash = 0;
 	cp.m_rotation = 80;
 
-	cp.fStartSize = 8;
-	cp.fStartSizeRandom = 8;
-	cp.fStartColor[0] = 105; 
-	cp.fStartColor[1] = 105; 
-	cp.fStartColor[2] = 20;
-	cp.fStartColor[3] = 145; 
-	cp.fStartColorRandom[0] = 50;
-	cp.fStartColorRandom[1] = 50;
-	cp.fStartColorRandom[2] = 0;
-	cp.fStartColorRandom[3] = 10;
+	cp.m_startSize = 8;
+	cp.m_startSizeRandom = 8;
+	cp.m_startColor[0] = 105; 
+	cp.m_startColor[1] = 105; 
+	cp.m_startColor[2] = 20;
+	cp.m_startColor[3] = 145; 
+	cp.m_startColorRandom[0] = 50;
+	cp.m_startColorRandom[1] = 50;
+	cp.m_startColorRandom[2] = 0;
+	cp.m_startColorRandom[3] = 10;
 
-	cp.fEndSize = 6;
-	cp.fEndSizeRandom = 4;
-	cp.fEndColor[0] = 20;
-	cp.fEndColor[1] = 20;
-	cp.fEndColor[2] = 5;
-	cp.fEndColor[3] = 0;
-	cp.fEndColorRandom[0] = 40;
-	cp.fEndColorRandom[1] = 40;
-	cp.fEndColorRandom[2] = 0;
-	cp.fEndColorRandom[3] = 0;
+	cp.m_endSize = 6;
+	cp.m_endSizeRandom = 4;
+	cp.m_endColor[0] = 20;
+	cp.m_endColor[1] = 20;
+	cp.m_endColor[2] = 5;
+	cp.m_endColor[3] = 0;
+	cp.m_endColorRandom[0] = 40;
+	cp.m_endColorRandom[1] = 40;
+	cp.m_endColorRandom[2] = 0;
+	cp.m_endColorRandom[3] = 0;
 
-	cp.blendMode = RenderMaterial::Additive;
+	cp.m_blendMode = RenderMaterial::Additive;
 
 	pPS->SetParams(cp);
 	pPS->ulParticleSpawn = PARTICLE_CIRCULAR | PARTICLE_BORDER;
