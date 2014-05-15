@@ -557,7 +557,7 @@ void CPoisonProjectile::Create(Vec3f _eSrc, float _fBeta)
 	cp.m_speed = 10;
 	cp.m_speedRandom = 10;
 	cp.m_gravity = Vec3f_ZERO;
-	cp.m_flash = 21;
+	cp.m_flash = 21 * (1.f/100);
 	cp.m_rotation = 80;
 	cp.m_rotationRandomDirection = true;
 	cp.m_rotationRandomStart = true;

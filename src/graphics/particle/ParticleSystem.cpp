@@ -175,7 +175,7 @@ void ParticleSystem::SetParams(const ParticleParams & _pp) {
 	m_parameters.m_speed = _pp.m_speed;
 	m_parameters.m_speedRandom = _pp.m_speedRandom;
 	
-	m_parameters.m_flash = _pp.m_flash * ( 1.0f / 100 );
+	m_parameters.m_flash = _pp.m_flash;
 	
 	if(_pp.m_rotation >= 2) {
 		m_parameters.m_rotation = 1.0f / (101 - _pp.m_rotation);
