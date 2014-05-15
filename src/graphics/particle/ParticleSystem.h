@@ -70,23 +70,7 @@ DECLARE_FLAGS_OPERATORS(ParticleSpawn)
 class ParticleSystem {
 	
 public:
-	
 	std::list<Particle *> listParticle;
-	
-	Vec3f p3Pos;
-		
-	int iParticleNbAlive;
-	
-	TextureContainer * tex_tab[20];
-	int iNbTex;
-	int iTexTime;
-	bool bTexLoop;
-	
-	glm::mat4x4 eMat;
-	
-	unsigned long ulNbParticleGen;
-	
-	math::Quantizer m_storedTime;
 	
 	// these are used for the particles it creates
 	ParticleParams m_parameters;
@@ -100,20 +84,35 @@ public:
 	ParticleSystem();
 	~ParticleSystem();
 	
-	void SpawnParticle(Particle * particle);
-	void SetParticleParams(Particle * particle);
-	
 	void SetParams(const ParticleParams & app);
 	
 	void SetTexture(const char *, int, int, bool _bLoop = true);
 	void SetPos(const Vec3f & ap3);
-	void SetColor(float, float, float);
 	
 	void Render();
 	bool IsAlive();
 	void Update(long);
 	void RecomputeDirection();
 	
+private:
+	Vec3f p3Pos;
+	int iParticleNbAlive;
+	
+	TextureContainer * tex_tab[20];
+	int iNbTex;
+	int iTexTime;
+	bool bTexLoop;
+	
+	glm::mat4x4 eMat;
+	
+	unsigned long ulNbParticleGen;
+	
+	math::Quantizer m_storedTime;
+	
+	void SpawnParticle(Particle * particle);
+	void SetParticleParams(Particle * particle);
+	
+	void SetColor(float, float, float);
 };
 
 #endif // ARX_GRAPHICS_PARTICLE_PARTICLESYSTEM_H
