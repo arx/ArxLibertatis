@@ -86,7 +86,7 @@ public:
 	
 	void SetParams(const ParticleParams & app);
 	
-	void SetTexture(const char *, int, int, bool _bLoop = true);
+	void SetTexture(const char *, int, int);
 	void SetPos(const Vec3f & ap3);
 	
 	void Render();

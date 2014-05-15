@@ -193,7 +193,7 @@ void ParticleSystem::SetParams(const ParticleParams & _pp) {
 	m_parameters.m_blendMode = _pp.m_blendMode;
 }
 
-void ParticleSystem::SetTexture(const char * _pszTex, int _iNbTex, int _iTime, bool _bLoop) {
+void ParticleSystem::SetTexture(const char * _pszTex, int _iNbTex, int _iTime) {
 
 	if(_iNbTex == 0) {
 		tex_tab[0] = TextureContainer::Load(_pszTex);
@@ -210,7 +210,7 @@ void ParticleSystem::SetTexture(const char * _pszTex, int _iNbTex, int _iTime, b
 
 		iNbTex = _iNbTex;
 		iTexTime = _iTime;
-		bTexLoop = _bLoop;
+		bTexLoop = true;
 	}
 }
 
