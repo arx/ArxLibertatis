@@ -77,7 +77,7 @@ public:
 	float m_startSize;
 	float m_startSizeRandom;
 	Color4f m_startColor;
-	float m_startColorRandom[4];
+	Color4f m_startColorRandom;
 	
 	bool  m_endLock;
 	float m_endSize;

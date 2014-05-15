@@ -116,10 +116,7 @@ ParticleSystem::ParticleSystem() {
 
 	m_parameters.m_startLock = false;
 	m_parameters.m_startSizeRandom = 1;
-	m_parameters.m_startColorRandom[0] = 0.1f;
-	m_parameters.m_startColorRandom[1] = 0.1f;
-	m_parameters.m_startColorRandom[2] = 0.1f;
-	m_parameters.m_startColorRandom[3] = 0.1f;
+	m_parameters.m_startColorRandom = Color4f(0.1f, 0.1f, 0.1f, 0.1f);
 
 	m_parameters.m_endLock = false;
 	m_parameters.m_endSizeRandom = 1;
@@ -183,11 +180,8 @@ void ParticleSystem::SetParams(const ParticleParams & _pp) {
 	m_parameters.m_startSizeRandom = _pp.m_startSizeRandom;
 	
 	m_parameters.m_startColor = _pp.m_startColor * (1.f/255.0f);
+	m_parameters.m_startColorRandom = _pp.m_startColorRandom * (1.f/255.0f);
 	
-	for(int i = 0; i < 4; i++) {
-		m_parameters.m_startColorRandom[i] = _pp.m_startColorRandom[i] / 255.0f;
-	}
-
 	m_parameters.m_startLock = _pp.m_startLock;
 
 	m_parameters.m_endSize = _pp.m_endSize;
@@ -304,17 +298,17 @@ void ParticleSystem::SetParticleParams(Particle * pP) {
 	pP->fSizeStart = m_parameters.m_startSize + rnd() * m_parameters.m_startSizeRandom;
 
 	if(m_parameters.m_startLock) {
-		float t = rnd() * m_parameters.m_startColorRandom[0];
+		float t = rnd() * m_parameters.m_startColorRandom.r;
 		pP->fColorStart[0] = m_parameters.m_startColor.r + t;
 		pP->fColorStart[1] = m_parameters.m_startColor.g + t;
 		pP->fColorStart[2] = m_parameters.m_startColor.b + t;
 	} else {
-		pP->fColorStart[0] = m_parameters.m_startColor.r + rnd() * m_parameters.m_startColorRandom[0];
-		pP->fColorStart[1] = m_parameters.m_startColor.g + rnd() * m_parameters.m_startColorRandom[1];
-		pP->fColorStart[2] = m_parameters.m_startColor.b + rnd() * m_parameters.m_startColorRandom[2];
+		pP->fColorStart[0] = m_parameters.m_startColor.r + rnd() * m_parameters.m_startColorRandom.r;
+		pP->fColorStart[1] = m_parameters.m_startColor.g + rnd() * m_parameters.m_startColorRandom.g;
+		pP->fColorStart[2] = m_parameters.m_startColor.b + rnd() * m_parameters.m_startColorRandom.b;
 	}
 
-	pP->fColorStart[3] = m_parameters.m_startColor.a + rnd() * m_parameters.m_startColorRandom[3];
+	pP->fColorStart[3] = m_parameters.m_startColor.a + rnd() * m_parameters.m_startColorRandom.a;
 
 	pP->fSizeEnd = m_parameters.m_endSize + rnd() * m_parameters.m_endSizeRandom;
 
