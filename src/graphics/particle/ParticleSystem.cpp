@@ -97,10 +97,7 @@ ParticleSystem::ParticleSystem() {
 	m_parameters.m_startSize = 1;
 	m_parameters.m_endSize = 1;
 	m_parameters.m_startColor = Color4f(0.1f, 0.1f, 0.1f, 0.1f);
-	m_parameters.m_endColor[0] = 0.1f;
-	m_parameters.m_endColor[1] = 0.1f;
-	m_parameters.m_endColor[2] = 0.1f;
-	m_parameters.m_endColor[3] = 0.1f;
+	m_parameters.m_endColor = Color4f(0.1f, 0.1f, 0.1f, 0.1f);
 	m_parameters.m_speed = 10;
 	m_parameters.m_life = 1000;
 	m_parameters.m_pos = Vec3f_ZERO;
@@ -187,8 +184,9 @@ void ParticleSystem::SetParams(const ParticleParams & _pp) {
 	m_parameters.m_endSize = _pp.m_endSize;
 	m_parameters.m_endSizeRandom = _pp.m_endSizeRandom;
 
+	m_parameters.m_endColor = _pp.m_endColor * (1.f/255.0f);
+	
 	for(int i = 0; i < 4; i++) {
-		m_parameters.m_endColor[i] = _pp.m_endColor[i] / 255.0f;
 		m_parameters.m_endColorRandom[i] = _pp.m_endColorRandom[i] / 255.0f;
 	}
 
@@ -198,9 +196,9 @@ void ParticleSystem::SetParams(const ParticleParams & _pp) {
 	Vec3f eVect(m_parameters.m_direction.x, -m_parameters.m_direction.y, m_parameters.m_direction.z);
 	GenerateMatrixUsingVector(eMat, eVect, 0);
 
-	float r = (m_parameters.m_startColor.r  + m_parameters.m_endColor[0] ) * 0.5f;
-	float g = (m_parameters.m_startColor.g  + m_parameters.m_endColor[1] ) * 0.5f;
-	float b = (m_parameters.m_startColor.b  + m_parameters.m_endColor[2] ) * 0.5f;
+	float r = (m_parameters.m_startColor.r  + m_parameters.m_endColor.r ) * 0.5f;
+	float g = (m_parameters.m_startColor.g  + m_parameters.m_endColor.g ) * 0.5f;
+	float b = (m_parameters.m_startColor.b  + m_parameters.m_endColor.b ) * 0.5f;
 	SetColor(r, g, b);
 
 	m_parameters.m_blendMode = _pp.m_blendMode;
@@ -314,16 +312,16 @@ void ParticleSystem::SetParticleParams(Particle * pP) {
 
 	if(m_parameters.m_endLock) {
 		float t = rnd() * m_parameters.m_endColorRandom[0];
-		pP->fColorEnd[0] = m_parameters.m_endColor[0] + t;
-		pP->fColorEnd[1] = m_parameters.m_endColor[1] + t;
-		pP->fColorEnd[2] = m_parameters.m_endColor[2] + t;
+		pP->fColorEnd[0] = m_parameters.m_endColor.r + t;
+		pP->fColorEnd[1] = m_parameters.m_endColor.g + t;
+		pP->fColorEnd[2] = m_parameters.m_endColor.b + t;
 	} else {
-		pP->fColorEnd[0] = m_parameters.m_endColor[0] + rnd() * m_parameters.m_endColorRandom[0];
-		pP->fColorEnd[1] = m_parameters.m_endColor[1] + rnd() * m_parameters.m_endColorRandom[1];
-		pP->fColorEnd[2] = m_parameters.m_endColor[2] + rnd() * m_parameters.m_endColorRandom[2];
+		pP->fColorEnd[0] = m_parameters.m_endColor.r + rnd() * m_parameters.m_endColorRandom[0];
+		pP->fColorEnd[1] = m_parameters.m_endColor.g + rnd() * m_parameters.m_endColorRandom[1];
+		pP->fColorEnd[2] = m_parameters.m_endColor.b + rnd() * m_parameters.m_endColorRandom[2];
 	}
 
-	pP->fColorEnd[3] = m_parameters.m_endColor[3] + rnd() * m_parameters.m_endColorRandom[3];
+	pP->fColorEnd[3] = m_parameters.m_endColor.a + rnd() * m_parameters.m_endColorRandom[3];
 
 	if(m_parameters.m_rotationRandomDirection) {
 		float fRandom	= frand2();

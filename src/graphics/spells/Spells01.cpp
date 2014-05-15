@@ -104,18 +104,12 @@ void LaunchMagicMissileExplosion(const Vec3f & _ePos, int t = 0, long spellinsta
 		cp.m_startColorRandom = Color4f(0, 0, 0, 0);
 
 		cp.m_startColor = Color4f(0, 0, 0, 0);
-		cp.m_endColor[0] = 255;
-		cp.m_endColor[1] = 40;
-		cp.m_endColor[2] = 120;
-		cp.m_endColor[3] = 10;//55;
+		cp.m_endColor = Color4f(255, 40, 120, 10);
 		pPS->SetTexture("graph/particles/(fx)_mr", 0, 500);
 	} else {
 		cp.m_startColorRandom = Color4f(100, 100, 100, 100);
 		cp.m_startColor = Color4f(110, 110, 110, 110);
-		cp.m_endColor[0] = 0;
-		cp.m_endColor[1] = 0;
-		cp.m_endColor[2] = 120;
-		cp.m_endColor[3] = 10;
+		cp.m_endColor = Color4f(0, 0, 120, 10);
 		pPS->SetTexture("graph/particles/magicexplosion", 0, 500);
 	}
 
