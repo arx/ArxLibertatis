@@ -164,7 +164,7 @@ void ParticleSystem::SetColor(float _fR, float _fG, float _fB) {
 void ParticleSystem::SetParams(const ParticleParams & _pp) {
 	
 	m_parameters.m_pos = _pp.m_pos;
-	m_parameters.m_direction = _pp.m_direction * 0.1f;
+	m_parameters.m_direction = _pp.m_direction;
 	m_parameters.m_gravity = _pp.m_gravity;
 	
 	m_parameters.m_nbMax		= _pp.m_nbMax;

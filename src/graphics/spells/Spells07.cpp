@@ -723,7 +723,7 @@ void CFireField::Create(float largeur, Vec3f * pos, int _ulDuration)
 	cp.m_life = 2000;
 	cp.m_lifeRandom = 1000;
 	cp.m_pos = Vec3f(80, 10, 80);
-	cp.m_direction = Vec3f(0, 2, 0);
+	cp.m_direction = Vec3f(0, 2, 0) * 0.1f;
 	cp.m_angle = 0;
 	cp.m_speed = 0;
 	cp.m_speedRandom = 0;
@@ -775,7 +775,7 @@ void CFireField::Create(float largeur, Vec3f * pos, int _ulDuration)
 	cp.m_life = 1000;
 	cp.m_lifeRandom = 500;
 	cp.m_pos = Vec3f(100, 10, 100);
-	cp.m_direction = Vec3f(0, -2, 0);
+	cp.m_direction = Vec3f(0, -2, 0) * 0.1f;
 	cp.m_angle = radians(10);
 	cp.m_speed = 0;
 	cp.m_speedRandom = 0;

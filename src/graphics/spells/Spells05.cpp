@@ -124,7 +124,7 @@ void CCurePoison::Create()
 	cp.m_life = 800;
 	cp.m_lifeRandom = 2000;
 	cp.m_pos = Vec3f(100, 0, 100);
-	cp.m_direction = Vec3f(0, -10, 0);
+	cp.m_direction = Vec3f(0, -10, 0) * 0.1f;
 	cp.m_angle = radians(5);
 	cp.m_speed = 120;
 	cp.m_speedRandom = 84;
@@ -422,7 +422,7 @@ void LaunchPoisonExplosion(Vec3f * aePos) {
 	cp.m_life = 1500;
 	cp.m_lifeRandom = 500;
 	cp.m_pos = Vec3f(5);
-	cp.m_direction = Vec3f(0, 4, 0);
+	cp.m_direction = Vec3f(0, 4, 0) * 0.1f;
 	cp.m_angle = radians(360);
 	cp.m_speed = 200;
 	cp.m_speedRandom = 0;
@@ -552,7 +552,7 @@ void CPoisonProjectile::Create(Vec3f _eSrc, float _fBeta)
 	cp.m_life = 2000;
 	cp.m_lifeRandom = 1000;
 	cp.m_pos = Vec3f_ZERO;
-	cp.m_direction = -eMove;
+	cp.m_direction = -eMove * 0.1f;
 	cp.m_angle = 0;
 	cp.m_speed = 10;
 	cp.m_speedRandom = 10;
@@ -622,7 +622,7 @@ void CPoisonProjectile::Update(unsigned long _ulTime)
 			cp.m_lifeRandom = 300;
 			cp.m_pos = Vec3f(fBetaRadSin * 20, 0.f, fBetaRadCos * 20);
 
-			cp.m_direction = -eMove;
+			cp.m_direction = -eMove * 0.1f;
 
 			cp.m_angle = radians(4);
 			cp.m_speed = 150;

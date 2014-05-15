@@ -210,7 +210,7 @@ void CFireBall::Create(Vec3f aeSrc, float afBeta, float afAlpha, float _fLevel)
 	eMove.z = + fBetaRadCos * 80 * cos(radians(MAKEANGLE(afAlpha)));
 	
 	//FIRE
-	fire_1.m_direction = -eMove;
+	fire_1.m_direction = -eMove * 0.1f;
 	fire_1.m_startSize = 1 * _fLevel;
 	fire_1.m_startSizeRandom = 2 * _fLevel;
 
@@ -222,7 +222,7 @@ void CFireBall::Create(Vec3f aeSrc, float afBeta, float afAlpha, float _fLevel)
 	pPSFire.Update(0);
 
 	//FIRE
-	fire_2.m_direction = -eMove;
+	fire_2.m_direction = -eMove * 0.1f;
 	fire_2.m_startSize = 1 * _fLevel;
 	fire_2.m_startSizeRandom = 2 * _fLevel;
 	fire_2.m_endSize = 3 * _fLevel;
@@ -235,7 +235,7 @@ void CFireBall::Create(Vec3f aeSrc, float afBeta, float afAlpha, float _fLevel)
 	pPSFire2.Update(0);
 
 	// Smoke
-	smoke.m_direction = -eMove;
+	smoke.m_direction = -eMove * 0.1f;
 	smoke.m_endSize = 7 * _fLevel;
 	smoke.m_endSizeRandom = 2 * _fLevel; 
 
@@ -708,7 +708,7 @@ void CCreateFood::Create() {
 	cp.m_life = 800;
 	cp.m_lifeRandom = 2000;
 	cp.m_pos = Vec3f(100, 200, 100);
-	cp.m_direction = Vec3f(0, -10, 0);
+	cp.m_direction = Vec3f(0, -10, 0) * 0.1f;
 	cp.m_angle = radians(5);
 	cp.m_speed = 120;
 	cp.m_speedRandom = 84;
