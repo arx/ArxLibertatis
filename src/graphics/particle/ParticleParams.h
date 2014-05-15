@@ -83,7 +83,7 @@ public:
 	float m_endSize;
 	float m_endSizeRandom;
 	Color4f m_endColor;
-	float m_endColorRandom[4];
+	Color4f m_endColorRandom;
 	
 	ParticleParams() : m_texInfo(false) { }
 	

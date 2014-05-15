@@ -117,10 +117,7 @@ ParticleSystem::ParticleSystem() {
 
 	m_parameters.m_endLock = false;
 	m_parameters.m_endSizeRandom = 1;
-	m_parameters.m_endColorRandom[0] = 0.1f;
-	m_parameters.m_endColorRandom[1] = 0.1f;
-	m_parameters.m_endColorRandom[2] = 0.1f;
-	m_parameters.m_endColorRandom[3] = 0.1f;
+	m_parameters.m_endColorRandom = Color4f(0.1f, 0.1f, 0.1f, 0.1f);
 
 	m_parameters.m_blendMode = RenderMaterial::Additive;
 }
@@ -185,11 +182,8 @@ void ParticleSystem::SetParams(const ParticleParams & _pp) {
 	m_parameters.m_endSizeRandom = _pp.m_endSizeRandom;
 
 	m_parameters.m_endColor = _pp.m_endColor * (1.f/255.0f);
+	m_parameters.m_endColorRandom = _pp.m_endColorRandom * (1.f/255.0f);
 	
-	for(int i = 0; i < 4; i++) {
-		m_parameters.m_endColorRandom[i] = _pp.m_endColorRandom[i] / 255.0f;
-	}
-
 	m_parameters.m_endLock = _pp.m_endLock;
 
 	m_parameters.m_direction = glm::normalize(m_parameters.m_direction);
@@ -311,17 +305,17 @@ void ParticleSystem::SetParticleParams(Particle * pP) {
 	pP->fSizeEnd = m_parameters.m_endSize + rnd() * m_parameters.m_endSizeRandom;
 
 	if(m_parameters.m_endLock) {
-		float t = rnd() * m_parameters.m_endColorRandom[0];
+		float t = rnd() * m_parameters.m_endColorRandom.r;
 		pP->fColorEnd[0] = m_parameters.m_endColor.r + t;
 		pP->fColorEnd[1] = m_parameters.m_endColor.g + t;
 		pP->fColorEnd[2] = m_parameters.m_endColor.b + t;
 	} else {
-		pP->fColorEnd[0] = m_parameters.m_endColor.r + rnd() * m_parameters.m_endColorRandom[0];
-		pP->fColorEnd[1] = m_parameters.m_endColor.g + rnd() * m_parameters.m_endColorRandom[1];
-		pP->fColorEnd[2] = m_parameters.m_endColor.b + rnd() * m_parameters.m_endColorRandom[2];
+		pP->fColorEnd[0] = m_parameters.m_endColor.r + rnd() * m_parameters.m_endColorRandom.r;
+		pP->fColorEnd[1] = m_parameters.m_endColor.g + rnd() * m_parameters.m_endColorRandom.g;
+		pP->fColorEnd[2] = m_parameters.m_endColor.b + rnd() * m_parameters.m_endColorRandom.b;
 	}
 
-	pP->fColorEnd[3] = m_parameters.m_endColor.a + rnd() * m_parameters.m_endColorRandom[3];
+	pP->fColorEnd[3] = m_parameters.m_endColor.a + rnd() * m_parameters.m_endColorRandom.a;
 
 	if(m_parameters.m_rotationRandomDirection) {
 		float fRandom	= frand2();

@@ -122,10 +122,7 @@ void CHeal::Create() {
 	cp.m_endSize = 6;
 	cp.m_endSizeRandom = 4;
 	cp.m_endColor = Color4f(20, 20, 30, 0);
-	cp.m_endColorRandom[0] = 0;
-	cp.m_endColorRandom[1] = 0;
-	cp.m_endColorRandom[2] = 40;
-	cp.m_endColorRandom[3] = 0;
+	cp.m_endColorRandom = Color4f(0, 0, 40, 0);
 	
 	cp.m_blendMode = RenderMaterial::Additive;
 

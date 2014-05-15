@@ -113,10 +113,7 @@ void LaunchMagicMissileExplosion(const Vec3f & _ePos, int t = 0, long spellinsta
 		pPS->SetTexture("graph/particles/magicexplosion", 0, 500);
 	}
 
-	cp.m_endColorRandom[0] = 50;
-	cp.m_endColorRandom[1] = 50;
-	cp.m_endColorRandom[2] = 50;
-	cp.m_endColorRandom[3] = 50;
+	cp.m_endColorRandom = Color4f(50, 50, 50, 50);
 
 	cp.m_blendMode = RenderMaterial::Additive;
 

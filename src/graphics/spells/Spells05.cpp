@@ -140,10 +140,7 @@ void CCurePoison::Create()
 	cp.m_endSize = 6;
 	cp.m_endSizeRandom = 4;
 	cp.m_endColor = Color4f(5, 20, 5, 0);
-	cp.m_endColorRandom[0] = 0;
-	cp.m_endColorRandom[1] = 40;
-	cp.m_endColorRandom[2] = 0;
-	cp.m_endColorRandom[3] = 0;
+	cp.m_endColorRandom = Color4f(0, 40, 0, 0);
 	cp.m_texInfo = false;
 	cp.m_blendMode = RenderMaterial::Additive;
 
@@ -432,10 +429,7 @@ void LaunchPoisonExplosion(Vec3f * aePos) {
 	cp.m_endSize = 30;
 	cp.m_endSizeRandom = 5;
 	cp.m_endColor = Color4f(0, 0, 0, 0);
-	cp.m_endColorRandom[0] = 0;
-	cp.m_endColorRandom[1] = 25;
-	cp.m_endColorRandom[2] = 0;
-	cp.m_endColorRandom[3] = 20;
+	cp.m_endColorRandom = Color4f(0, 25, 0, 20);
 	cp.m_endLock = false;
 
 	cp.m_blendMode = RenderMaterial::AlphaAdditive;
@@ -553,10 +547,7 @@ void CPoisonProjectile::Create(Vec3f _eSrc, float _fBeta)
 	cp.m_endSize = 8;
 	cp.m_endSizeRandom = 13;
 	cp.m_endColor = Color4f(0, 60, 0, 40);
-	cp.m_endColorRandom[0] = 0;
-	cp.m_endColorRandom[1] = 100;
-	cp.m_endColorRandom[2] = 0;
-	cp.m_endColorRandom[3] = 50;
+	cp.m_endColorRandom = Color4f(0, 100, 0, 50);
 	cp.m_endLock = false;
 
 	cp.m_blendMode = RenderMaterial::Screen;
@@ -615,10 +606,7 @@ void CPoisonProjectile::Update(unsigned long _ulTime)
 			cp.m_endSize = 7;
 			cp.m_endSizeRandom = 5;
 			cp.m_endColor = Color4f(0, 25, 0, 100);
-			cp.m_endColorRandom[0] = 50;
-			cp.m_endColorRandom[1] = 20;
-			cp.m_endColorRandom[2] = 0;
-			cp.m_endColorRandom[3] = 0;
+			cp.m_endColorRandom = Color4f(50, 20, 0, 0);
 			cp.m_endLock = false;
 
 			cp.m_blendMode = RenderMaterial::Screen;
