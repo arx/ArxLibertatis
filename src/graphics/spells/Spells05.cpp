@@ -141,7 +141,6 @@ void CCurePoison::Create()
 	cp.m_endSizeRandom = 4;
 	cp.m_endColor = Color4f(5, 20, 5, 0);
 	cp.m_endColorRandom = Color4f(0, 40, 0, 0);
-	cp.m_texInfo = false;
 	cp.m_blendMode = RenderMaterial::Additive;
 
 	pPS->SetParams(cp);
@@ -432,7 +431,6 @@ void LaunchPoisonExplosion(Vec3f * aePos) {
 
 	cp.m_blendMode = RenderMaterial::AlphaAdditive;
 	cp.m_freq = -1;
-	cp.m_texInfo = false;
 	pPS->SetParams(cp);
 	pPS->ulParticleSpawn = 0;
 	pPS->SetTexture("graph/particles/big_greypouf", 0, 200);
@@ -603,7 +601,6 @@ void CPoisonProjectile::Update(unsigned long _ulTime)
 			cp.m_endColorRandom = Color4f(50, 20, 0, 0);
 
 			cp.m_blendMode = RenderMaterial::Screen;
-			cp.m_texInfo = false;
 			cp.m_freq = 80;
 			
 			pPSStream.SetParams(cp);

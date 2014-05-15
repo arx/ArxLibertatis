@@ -66,7 +66,6 @@ public:
 	float m_flash;
 	float m_rotation;
 	
-	bool  m_texInfo;
 	bool  m_texLoop;
 	int   m_texNb;
 	int   m_texTime;
@@ -85,7 +84,6 @@ public:
 	
 	ParticleParams()
 		: m_freq(-1)
-		, m_texInfo(false)
 	{}
 };
 

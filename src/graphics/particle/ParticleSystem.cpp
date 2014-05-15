@@ -191,10 +191,6 @@ void ParticleSystem::SetParams(const ParticleParams & _pp) {
 	SetColor(r, g, b);
 
 	m_parameters.m_blendMode = _pp.m_blendMode;
-
-	if(_pp.m_texInfo) {
-		SetTexture(_pp.m_texName, _pp.m_texNb, _pp.m_texTime, _pp.m_texLoop);
-	}
 }
 
 void ParticleSystem::SetTexture(const char * _pszTex, int _iNbTex, int _iTime, bool _bLoop) {
