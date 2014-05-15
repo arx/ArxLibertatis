@@ -105,9 +105,7 @@ void CHeal::Create() {
 	cp.m_nbMax = 350;
 	cp.fLife = 800;
 	cp.fLifeRandom = 2000;
-	cp.m_pos.x = 100;
-	cp.m_pos.y = 200;
-	cp.m_pos.z = 100;
+	cp.m_pos = Vec3f(100, 200, 100);
 	cp.m_direction.x = 0;
 	cp.m_direction.y = -10;
 	cp.m_direction.z = 0;

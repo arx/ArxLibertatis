@@ -123,9 +123,7 @@ void CCurePoison::Create()
 	cp.m_nbMax = 350;
 	cp.fLife = 800;
 	cp.fLifeRandom = 2000;
-	cp.m_pos.x = 100;
-	cp.m_pos.y = 0;
-	cp.m_pos.z = 100;
+	cp.m_pos = Vec3f(100, 0, 100);
 	cp.m_direction.x = 0;
 	cp.m_direction.y = -10;
 	cp.m_direction.z = 0;
@@ -630,9 +628,7 @@ void CPoisonProjectile::Update(unsigned long _ulTime)
 			cp.m_nbMax = 100;
 			cp.fLife = 500;
 			cp.fLifeRandom = 300;
-			cp.m_pos.x = fBetaRadSin * 20;
-			cp.m_pos.y = 0.f;
-			cp.m_pos.z = fBetaRadCos * 20;
+			cp.m_pos = Vec3f(fBetaRadSin * 20, 0.f, fBetaRadCos * 20);
 
 			cp.m_direction = -eMove;
 
