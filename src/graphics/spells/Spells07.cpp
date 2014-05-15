@@ -753,7 +753,7 @@ void CFireField::Create(float largeur, Vec3f * pos, int _ulDuration)
 
 	pPSStream.SetTexture("graph/particles/firebase", 4, 100);
 
-	pPSStream.fParticleFreq = 150.0f;
+	pPSStream.m_parameters.m_freq = 150.0f;
 	pPSStream.SetPos(*pos);
 	pPSStream.Update(0);
 
@@ -793,7 +793,7 @@ void CFireField::Create(float largeur, Vec3f * pos, int _ulDuration)
 
 	pPSStream1.SetTexture("graph/particles/fire", 0, 500);
 
-	pPSStream1.fParticleFreq = 150.0f;
+	pPSStream1.m_parameters.m_freq = 150.0f;
 	Vec3f ea;
 	ea.x = pos->x;
 	ea.z = pos->y + 10; 

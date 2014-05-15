@@ -86,7 +86,7 @@ ParticleSystem::ParticleSystem() {
 	bTexLoop = true;
 	m_parameters.m_rotation = 0;
 	
-	fParticleFreq = -1;
+	m_parameters.m_freq = -1;
 	ulParticleSpawn = 0;
 	
 	// default settings for EDITOR MODE only
@@ -156,6 +156,7 @@ void ParticleSystem::SetParams(const ParticleParams & _pp) {
 	m_parameters.m_gravity = _pp.m_gravity;
 	
 	m_parameters.m_nbMax		= _pp.m_nbMax;
+	m_parameters.m_freq = _pp.m_freq;
 	m_parameters.m_life		= _pp.m_life;
 	m_parameters.m_lifeRandom = _pp.m_lifeRandom;
 	
@@ -389,8 +390,8 @@ void ParticleSystem::Update(long _lTime) {
 	if(iParticleNbAlive < m_parameters.m_nbMax) {
 		long t = m_parameters.m_nbMax - iParticleNbAlive;
 		
-		if(fParticleFreq != -1.f) {
-			t = std::min(long(m_storedTime.update(fTimeSec * fParticleFreq)), t);
+		if(m_parameters.m_freq != -1.f) {
+			t = std::min(long(m_storedTime.update(fTimeSec * m_parameters.m_freq)), t);
 		}
 		
 		for(iNb = 0; iNb < t; iNb++) {

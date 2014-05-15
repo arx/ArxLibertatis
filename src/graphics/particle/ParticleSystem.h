@@ -91,9 +91,6 @@ public:
 	// these are used for the particles it creates
 	ParticleParams m_parameters;
 	
-	float fParticleFreq;
-	
-	
 	ParticleSpawn ulParticleSpawn;
 	
 	bool bParticleFollow;

@@ -557,7 +557,7 @@ void CPoisonProjectile::Create(Vec3f _eSrc, float _fBeta)
 
 	pPS.SetTexture("graph/particles/big_greypouf", 0, 200);
 
-	pPS.fParticleFreq = -1;
+	pPS.m_parameters.m_freq = -1;
 
 	pPS.bParticleFollow = true;
 
@@ -616,7 +616,7 @@ void CPoisonProjectile::Update(unsigned long _ulTime)
 
 			pPSStream.SetTexture("graph/particles/big_greypouf", 0, 200);
 
-			pPSStream.fParticleFreq = 80;
+			pPSStream.m_parameters.m_freq = 80;
 			pPSStream.bParticleFollow = true;
 		}
 
