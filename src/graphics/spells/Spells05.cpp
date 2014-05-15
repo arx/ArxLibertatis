@@ -134,10 +134,7 @@ void CCurePoison::Create()
 
 	cp.m_startSize = 8;//6;
 	cp.m_startSizeRandom = 8;
-	cp.m_startColor[0] = 20;
-	cp.m_startColor[1] = 205;
-	cp.m_startColor[2] = 20;
-	cp.m_startColor[3] = 245;
+	cp.m_startColor = Color4f(20, 205, 20, 245);
 	cp.m_startColorRandom[0] = 50;
 	cp.m_startColorRandom[1] = 50;
 	cp.m_startColorRandom[2] = 50;
@@ -434,10 +431,7 @@ void LaunchPoisonExplosion(Vec3f * aePos) {
 
 	cp.m_startSize = 5;
 	cp.m_startSizeRandom = 3;
-	cp.m_startColor[0] = 0;
-	cp.m_startColor[1] = 76;
-	cp.m_startColor[2] = 0;
-	cp.m_startColor[3] = 0;
+	cp.m_startColor = Color4f(0, 76, 0, 0);
 	cp.m_startColorRandom[0] = 0;
 	cp.m_startColorRandom[1] = 0;
 	cp.m_startColorRandom[2] = 0;
@@ -564,10 +558,7 @@ void CPoisonProjectile::Create(Vec3f _eSrc, float _fBeta)
 
 	cp.m_startSize = 5; 
 	cp.m_startSizeRandom = 3;
-	cp.m_startColor[0] = 0;
-	cp.m_startColor[1] = 50;
-	cp.m_startColor[2] = 0;
-	cp.m_startColor[3] = 40; 
+	cp.m_startColor = Color4f(0, 50, 0, 40);
 	cp.m_startColorRandom[0] = 0;
 	cp.m_startColorRandom[1] = 100;
 	cp.m_startColorRandom[2] = 0;
@@ -635,10 +626,7 @@ void CPoisonProjectile::Update(unsigned long _ulTime)
 
 			cp.m_startSize = 2;
 			cp.m_startSizeRandom = 2;
-			cp.m_startColor[0] = 0;
-			cp.m_startColor[1] = 39;
-			cp.m_startColor[2] = 0;
-			cp.m_startColor[3] = 100;
+			cp.m_startColor = Color4f(0, 39, 0, 100);
 			cp.m_startColorRandom[0] = 50;
 			cp.m_startColorRandom[1] = 21;
 			cp.m_startColorRandom[2] = 0;

@@ -85,10 +85,7 @@ CFireBall::CFireBall() : CSpellFx() {
 	fire_1.m_gravity = Vec3f_ZERO;
 	fire_1.m_flash = 0;
 	fire_1.m_rotation = 1.0f / (101 - 50);
-	fire_1.m_startColor[0] = 22;
-	fire_1.m_startColor[1] = 30;
-	fire_1.m_startColor[2] = 30;
-	fire_1.m_startColor[3] = 0;
+	fire_1.m_startColor = Color4f(22, 30, 30, 0);
 	fire_1.m_startColorRandom[0] = 22;
 	fire_1.m_startColorRandom[1] = 0;
 	fire_1.m_startColorRandom[2] = 0;
@@ -116,10 +113,7 @@ CFireBall::CFireBall() : CSpellFx() {
 	fire_2.m_gravity = Vec3f_ZERO;
 	fire_2.m_flash = 0;
 	fire_2.m_rotation = 1.0f / (101 - 50);
-	fire_2.m_startColor[0] = 22;
-	fire_2.m_startColor[1] = 30;
-	fire_2.m_startColor[2] = 30;
-	fire_2.m_startColor[3] = 0;
+	fire_2.m_startColor = Color4f(22, 30, 30, 0);
 	fire_2.m_startColorRandom[0] = 22;
 	fire_2.m_startColorRandom[1] = 0;
 	fire_2.m_startColorRandom[2] = 0;
@@ -147,10 +141,7 @@ CFireBall::CFireBall() : CSpellFx() {
 	smoke.m_rotation = 1.0f / (101 - 90);
 	smoke.m_startSize = 0;
 	smoke.m_startSizeRandom = 2;
-	smoke.m_startColor[0] = 70;
-	smoke.m_startColor[1] = 70;
-	smoke.m_startColor[2] = 51;
-	smoke.m_startColor[3] = 50;
+	smoke.m_startColor = Color4f(70, 70, 51, 50);
 	smoke.m_startColorRandom[0] = 0;
 	smoke.m_startColorRandom[1] = 0;
 	smoke.m_startColorRandom[2] = 0;
@@ -718,10 +709,7 @@ void CCreateFood::Create() {
 
 	cp.m_startSize = 8;
 	cp.m_startSizeRandom = 8;
-	cp.m_startColor[0] = 105; 
-	cp.m_startColor[1] = 105; 
-	cp.m_startColor[2] = 20;
-	cp.m_startColor[3] = 145; 
+	cp.m_startColor = Color4f(105, 105, 20, 145);
 	cp.m_startColorRandom[0] = 50;
 	cp.m_startColorRandom[1] = 50;
 	cp.m_startColorRandom[2] = 0;

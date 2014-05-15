@@ -116,10 +116,7 @@ void CHeal::Create() {
 
 	cp.m_startSize = 8;
 	cp.m_startSizeRandom = 8;
-	cp.m_startColor[0] = 205;
-	cp.m_startColor[1] = 205;
-	cp.m_startColor[2] = 255;
-	cp.m_startColor[3] = 245;
+	cp.m_startColor = Color4f(205, 205, 255, 245);
 	cp.m_startColorRandom[0] = 50;
 	cp.m_startColorRandom[1] = 50;
 	cp.m_startColorRandom[2] = 0;

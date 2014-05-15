@@ -735,10 +735,7 @@ void CFireField::Create(float largeur, Vec3f * pos, int _ulDuration)
 
 	cp.m_startSize = 10;
 	cp.m_startSizeRandom = 3;
-	cp.m_startColor[0] = 25;
-	cp.m_startColor[1] = 25;
-	cp.m_startColor[2] = 25;
-	cp.m_startColor[3] = 50;
+	cp.m_startColor = Color4f(25, 25, 25, 50);
 	cp.m_startColorRandom[0] = 51;
 	cp.m_startColorRandom[1] = 51;
 	cp.m_startColorRandom[2] = 51;
@@ -787,10 +784,7 @@ void CFireField::Create(float largeur, Vec3f * pos, int _ulDuration)
 
 	cp.m_startSize = 10;
 	cp.m_startSizeRandom = 10;
-	cp.m_startColor[0] = 40;
-	cp.m_startColor[1] = 40;
-	cp.m_startColor[2] = 40;
-	cp.m_startColor[3] = 50; 
+	cp.m_startColor = Color4f(40, 40, 40, 50);
 	cp.m_startColorRandom[0] = 51;
 	cp.m_startColorRandom[1] = 51;
 	cp.m_startColorRandom[2] = 51;

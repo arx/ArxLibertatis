@@ -106,10 +106,7 @@ void LaunchMagicMissileExplosion(const Vec3f & _ePos, int t = 0, long spellinsta
 		cp.m_startColorRandom[2] = 0;
 		cp.m_startColorRandom[3] = 0;
 
-		cp.m_startColor[0] = 0;
-		cp.m_startColor[1] = 0;
-		cp.m_startColor[2] = 0;
-		cp.m_startColor[3] = 0;
+		cp.m_startColor = Color4f(0, 0, 0, 0);
 		cp.m_endColor[0] = 255;
 		cp.m_endColor[1] = 40;
 		cp.m_endColor[2] = 120;
@@ -121,10 +118,7 @@ void LaunchMagicMissileExplosion(const Vec3f & _ePos, int t = 0, long spellinsta
 		cp.m_startColorRandom[2] = 100;
 		cp.m_startColorRandom[3] = 100;
 
-		cp.m_startColor[0] = 110;
-		cp.m_startColor[1] = 110;
-		cp.m_startColor[2] = 110;
-		cp.m_startColor[3] = 110;
+		cp.m_startColor = Color4f(110, 110, 110, 110);
 		cp.m_endColor[0] = 0;
 		cp.m_endColor[1] = 0;
 		cp.m_endColor[2] = 120;
