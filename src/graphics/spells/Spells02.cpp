@@ -119,10 +119,10 @@ void CHeal::Create() {
 	cp.m_startSegment.m_color = Color4f(205, 205, 255, 245);
 	cp.m_startSegment.m_colorRandom = Color4f(50, 50, 0, 10);
 
-	cp.m_endSize = 6;
-	cp.m_endSizeRandom = 4;
-	cp.m_endColor = Color4f(20, 20, 30, 0);
-	cp.m_endColorRandom = Color4f(0, 0, 40, 0);
+	cp.m_endSegment.m_size = 6;
+	cp.m_endSegment.m_sizeRandom = 4;
+	cp.m_endSegment.m_color = Color4f(20, 20, 30, 0);
+	cp.m_endSegment.m_colorRandom = Color4f(0, 0, 40, 0);
 	
 	cp.m_blendMode = RenderMaterial::Additive;
 

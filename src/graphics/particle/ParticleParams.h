@@ -80,11 +80,7 @@ public:
 	};
 	
 	SegmentParams m_startSegment;
-	
-	float m_endSize;
-	float m_endSizeRandom;
-	Color4f m_endColor;
-	Color4f m_endColorRandom;
+	SegmentParams m_endSegment;
 	
 	ParticleParams()
 		: m_freq(-1)

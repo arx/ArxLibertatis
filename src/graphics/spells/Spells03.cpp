@@ -87,10 +87,10 @@ CFireBall::CFireBall() : CSpellFx() {
 	fire_1.m_rotation = 1.0f / (101 - 50);
 	fire_1.m_startSegment.m_color = Color4f(22, 30, 30, 0);
 	fire_1.m_startSegment.m_colorRandom = Color4f(22, 0, 0, 2);
-	fire_1.m_endSize = 0;
-	fire_1.m_endSizeRandom = 2;
-	fire_1.m_endColor = Color4f(25, 25, 0, 50);
-	fire_1.m_endColorRandom = Color4f(50, 0, 0, 120);
+	fire_1.m_endSegment.m_size = 0;
+	fire_1.m_endSegment.m_sizeRandom = 2;
+	fire_1.m_endSegment.m_color = Color4f(25, 25, 0, 50);
+	fire_1.m_endSegment.m_colorRandom = Color4f(50, 0, 0, 120);
 	fire_1.m_blendMode = RenderMaterial::Additive;
 
 	memset(&fire_2, 0, sizeof(fire_2));
@@ -106,8 +106,8 @@ CFireBall::CFireBall() : CSpellFx() {
 	fire_2.m_rotation = 1.0f / (101 - 50);
 	fire_2.m_startSegment.m_color = Color4f(22, 30, 30, 0);
 	fire_2.m_startSegment.m_colorRandom = Color4f(22, 0, 0, 2);
-	fire_2.m_endColor = Color4f(25, 25, 0, 0);
-	fire_2.m_endColorRandom = Color4f(50, 0, 0, 120);
+	fire_2.m_endSegment.m_color = Color4f(25, 25, 0, 0);
+	fire_2.m_endSegment.m_colorRandom = Color4f(50, 0, 0, 120);
 	fire_2.m_blendMode = RenderMaterial::Additive;
 
 	memset(&smoke, 0, sizeof(smoke));
@@ -125,8 +125,8 @@ CFireBall::CFireBall() : CSpellFx() {
 	smoke.m_startSegment.m_sizeRandom = 2;
 	smoke.m_startSegment.m_color = Color4f(70, 70, 51, 50);
 	smoke.m_startSegment.m_colorRandom = Color4f(0, 0, 0, 0);
-	smoke.m_endColor = Color4f(0, 0, 0, 27);
-	smoke.m_endColorRandom = Color4f(0, 0, 0, 20);
+	smoke.m_endSegment.m_color = Color4f(0, 0, 0, 27);
+	smoke.m_endSegment.m_colorRandom = Color4f(0, 0, 0, 20);
 	smoke.m_blendMode = RenderMaterial::Additive;
 }
 
@@ -189,8 +189,8 @@ void CFireBall::Create(Vec3f aeSrc, float afBeta, float afAlpha, float _fLevel)
 	fire_2.m_direction = -eMove * 0.1f;
 	fire_2.m_startSegment.m_size = 1 * _fLevel;
 	fire_2.m_startSegment.m_sizeRandom = 2 * _fLevel;
-	fire_2.m_endSize = 3 * _fLevel;
-	fire_2.m_endSizeRandom = 2 * _fLevel;
+	fire_2.m_endSegment.m_size = 3 * _fLevel;
+	fire_2.m_endSegment.m_sizeRandom = 2 * _fLevel;
 	fire_2.m_freq = 20.0f;
 	
 	pPSFire2.SetParams(fire_2);
@@ -200,8 +200,8 @@ void CFireBall::Create(Vec3f aeSrc, float afBeta, float afAlpha, float _fLevel)
 
 	// Smoke
 	smoke.m_direction = -eMove * 0.1f;
-	smoke.m_endSize = 7 * _fLevel;
-	smoke.m_endSizeRandom = 2 * _fLevel; 
+	smoke.m_endSegment.m_size = 7 * _fLevel;
+	smoke.m_endSegment.m_sizeRandom = 2 * _fLevel;
 	smoke.m_freq = 20.0f;
 	
 	pPSSmoke.SetParams(smoke);
@@ -685,10 +685,10 @@ void CCreateFood::Create() {
 	cp.m_startSegment.m_color = Color4f(105, 105, 20, 145);
 	cp.m_startSegment.m_colorRandom = Color4f(50, 50, 0, 10);
 
-	cp.m_endSize = 6;
-	cp.m_endSizeRandom = 4;
-	cp.m_endColor = Color4f(20, 20, 5, 0);
-	cp.m_endColorRandom = Color4f(40, 40, 0, 0);
+	cp.m_endSegment.m_size = 6;
+	cp.m_endSegment.m_sizeRandom = 4;
+	cp.m_endSegment.m_color = Color4f(20, 20, 5, 0);
+	cp.m_endSegment.m_colorRandom = Color4f(40, 40, 0, 0);
 
 	cp.m_blendMode = RenderMaterial::Additive;
 
