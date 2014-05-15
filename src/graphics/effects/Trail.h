@@ -29,11 +29,11 @@
 class Trail {
 
 public:
-	Trail(size_t segments, Color4f startColor, Color4f endColor, float startSize, float endSize);
+	Trail(long duration, Color4f startColor, Color4f endColor, float startSize, float endSize);
 
 	void SetNextPosition(Vec3f & nextPosition);
 
-	void Update();
+	void Update(float timeDelta);
 	void Render();
 
 private:
@@ -48,6 +48,8 @@ private:
 		float m_size;
 	};
 
+	float m_timePerSegment;
+	float m_timeOfLastSegment;
 	std::vector<TrailSegment> m_segments;
 
 	Vec3f m_nextPosition;

@@ -162,7 +162,7 @@ void ARX_THROWN_OBJECT_Throw(long source, const Vec3f & position, const Vec3f & 
 	
 	thrownObj->pRuban = new ArrowTrail();
 	thrownObj->pRuban->SetNextPosition(thrownObj->position);
-	thrownObj->pRuban->Update();
+	thrownObj->pRuban->Update(framedelay);
 	
 	thrownObj->creation_time = (unsigned long)(arxtime);
 	thrownObj->flags |= ATO_EXIST | ATO_MOVING;
@@ -460,7 +460,7 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 
 		if(thrownObj->pRuban) {
 			thrownObj->pRuban->SetNextPosition(thrownObj->position);
-			thrownObj->pRuban->Update();
+			thrownObj->pRuban->Update(time_offset);
 		}
 
 		Vec3f original_pos;

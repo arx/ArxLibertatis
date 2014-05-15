@@ -662,7 +662,7 @@ void CSpeed::Create(int numinteractive)
 		
 		float col = 0.05f + (rnd() * 0.05f);
 		float size = 1.f + (0.5f * rnd());
-		int taille = Random::get(8, 16);
+		int taille = Random::get(130, 260);
 		
 		SpeedTrail trail;
 		trail.vertexIndex = itr->origin;	
@@ -680,7 +680,7 @@ void CSpeed::Update(unsigned long _ulTime)
 		Vec3f pos = entities[this->num]->obj->vertexlist3[m_trails[i].vertexIndex].v;
 		
 		m_trails[i].trail->SetNextPosition(pos);
-		m_trails[i].trail->Update();
+		m_trails[i].trail->Update(_ulTime);
 	}
 }
 

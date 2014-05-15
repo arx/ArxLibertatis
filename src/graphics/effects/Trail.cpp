@@ -25,9 +25,16 @@
 #include "graphics/effects/SpellEffects.h"
 
 
-Trail::Trail(size_t segments, Color4f startColor, Color4f endColor, float startSize, float endSize)
-	: m_positions(segments)
+Trail::Trail(long duration, Color4f startColor, Color4f endColor, float startSize, float endSize)
 {
+	size_t segments = size_t(duration / 20);
+	
+	segments = std::max(segments, size_t(4));
+	
+	m_timePerSegment = float(duration) / float(segments);
+	m_timeOfLastSegment = 0;
+	
+	m_positions.set_capacity(segments);
 	m_segments.reserve(segments);
 
 	Color4f colorDelta = endColor - startColor;
@@ -48,10 +55,19 @@ void Trail::SetNextPosition(Vec3f & nextPosition)
 	m_nextPosition = nextPosition;
 }
 
-void Trail::Update() {
+void Trail::Update(float timeDelta) {
 	if(arxtime.is_paused())
 		return;
-
+	
+	m_timeOfLastSegment += timeDelta;
+	
+	if(m_timeOfLastSegment < m_timePerSegment) {
+		if(!m_positions.empty())
+			m_positions.pop_front();
+	} else {
+		m_timeOfLastSegment = 0;
+	}
+	
 	m_positions.push_front(m_nextPosition);
 }
 
@@ -77,7 +93,7 @@ void Trail::Render()
 
 
 ArrowTrail::ArrowTrail()
-	: Trail(Random::get(8, 16),
+	: Trail(Random::get(130, 260),
 			Color4f::gray(Random::getf(0.1f, 0.2f)),
 			Color4f::black,
 			Random::getf(2.f, 4.f),
@@ -85,7 +101,7 @@ ArrowTrail::ArrowTrail()
 {}
 
 DebugTrail::DebugTrail()
-	: Trail(25,
+	: Trail(500,
 			Color4f::red,
 			Color4f::green,
 			1.f,
