@@ -284,18 +284,16 @@ void ParticleSystem::SetParticleParams(Particle * pP) {
 	pP->p3Velocity = vvz * fSpeed;
 	pP->fSizeStart = m_parameters.m_startSize + rnd() * m_parameters.m_startSizeRandom;
 
-		pP->fColorStart[0] = m_parameters.m_startColor.r + rnd() * m_parameters.m_startColorRandom.r;
-		pP->fColorStart[1] = m_parameters.m_startColor.g + rnd() * m_parameters.m_startColorRandom.g;
-		pP->fColorStart[2] = m_parameters.m_startColor.b + rnd() * m_parameters.m_startColorRandom.b;
-
+	pP->fColorStart[0] = m_parameters.m_startColor.r + rnd() * m_parameters.m_startColorRandom.r;
+	pP->fColorStart[1] = m_parameters.m_startColor.g + rnd() * m_parameters.m_startColorRandom.g;
+	pP->fColorStart[2] = m_parameters.m_startColor.b + rnd() * m_parameters.m_startColorRandom.b;
 	pP->fColorStart[3] = m_parameters.m_startColor.a + rnd() * m_parameters.m_startColorRandom.a;
 
 	pP->fSizeEnd = m_parameters.m_endSize + rnd() * m_parameters.m_endSizeRandom;
 
-		pP->fColorEnd[0] = m_parameters.m_endColor.r + rnd() * m_parameters.m_endColorRandom.r;
-		pP->fColorEnd[1] = m_parameters.m_endColor.g + rnd() * m_parameters.m_endColorRandom.g;
-		pP->fColorEnd[2] = m_parameters.m_endColor.b + rnd() * m_parameters.m_endColorRandom.b;
-
+	pP->fColorEnd[0] = m_parameters.m_endColor.r + rnd() * m_parameters.m_endColorRandom.r;
+	pP->fColorEnd[1] = m_parameters.m_endColor.g + rnd() * m_parameters.m_endColorRandom.g;
+	pP->fColorEnd[2] = m_parameters.m_endColor.b + rnd() * m_parameters.m_endColorRandom.b;
 	pP->fColorEnd[3] = m_parameters.m_endColor.a + rnd() * m_parameters.m_endColorRandom.a;
 
 	if(m_parameters.m_rotationRandomDirection) {
