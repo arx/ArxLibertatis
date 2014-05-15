@@ -164,26 +164,26 @@ void ParticleSystem::SetColor(float _fR, float _fG, float _fB) {
 void ParticleSystem::SetParams(const ParticleParams & _pp) {
 	
 	iParticleNbMax		= _pp.m_nbMax;
-	fParticleLife		= _pp.fLife;
-	fParticleLifeRandom = _pp.fLifeRandom;
+	fParticleLife		= _pp.m_life;
+	fParticleLifeRandom = _pp.m_lifeRandom;
 	
 	p3ParticlePos = _pp.m_pos;
 	p3ParticleDirection = _pp.m_direction * 0.1f;
-	fParticleAngle = _pp.fAngle;
-	fParticleSpeed = _pp.fSpeed;
-	fParticleSpeedRandom = _pp.fSpeedRandom;
+	fParticleAngle = _pp.m_angle;
+	fParticleSpeed = _pp.m_speed;
+	fParticleSpeedRandom = _pp.m_speedRandom;
 	p3ParticleGravity = _pp.m_gravity;
 	
-	fParticleFlash = _pp.fFlash * ( 1.0f / 100 );
+	fParticleFlash = _pp.m_flash * ( 1.0f / 100 );
 	
-	if(_pp.fRotation >= 2) {
-		fParticleRotation = 1.0f / (101 - _pp.fRotation);
+	if(_pp.m_rotation >= 2) {
+		fParticleRotation = 1.0f / (101 - _pp.m_rotation);
 	} else {
 		fParticleRotation = 0.0f;
 	}
 
-	bParticleRotationRandomDirection = _pp.bRotationRandomDirection;
-	bParticleRotationRandomStart = _pp.bRotationRandomStart;
+	bParticleRotationRandomDirection = _pp.m_rotationRandomDirection;
+	bParticleRotationRandomStart = _pp.m_rotationRandomStart;
 
 	fParticleStartSize = _pp.fStartSize;
 	fParticleStartSizeRandom = _pp.fStartSizeRandom;

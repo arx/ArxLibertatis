@@ -720,18 +720,18 @@ void CFireField::Create(float largeur, Vec3f * pos, int _ulDuration)
 
 	ParticleParams cp;
 	cp.m_nbMax = 100;
-	cp.fLife = 2000;
-	cp.fLifeRandom = 1000;
+	cp.m_life = 2000;
+	cp.m_lifeRandom = 1000;
 	cp.m_pos = Vec3f(80, 10, 80);
 	cp.m_direction = Vec3f(0, 2, 0);
-	cp.fAngle = 0;
-	cp.fSpeed = 0;
-	cp.fSpeedRandom = 0;
+	cp.m_angle = 0;
+	cp.m_speed = 0;
+	cp.m_speedRandom = 0;
 	cp.m_gravity = Vec3f_ZERO;
-	cp.fFlash = 0;
-	cp.fRotation = 0;
-	cp.bRotationRandomDirection = false;
-	cp.bRotationRandomStart = false;
+	cp.m_flash = 0;
+	cp.m_rotation = 0;
+	cp.m_rotationRandomDirection = false;
+	cp.m_rotationRandomStart = false;
 
 	cp.fStartSize = 10;
 	cp.fStartSizeRandom = 3;
@@ -772,18 +772,18 @@ void CFireField::Create(float largeur, Vec3f * pos, int _ulDuration)
 	//-------------------------------------------------------------------------
 
 	cp.m_nbMax = 50;
-	cp.fLife = 1000;
-	cp.fLifeRandom = 500;
+	cp.m_life = 1000;
+	cp.m_lifeRandom = 500;
 	cp.m_pos = Vec3f(100, 10, 100);
 	cp.m_direction = Vec3f(0, -2, 0);
-	cp.fAngle = radians(10);
-	cp.fSpeed = 0;
-	cp.fSpeedRandom = 0;
+	cp.m_angle = radians(10);
+	cp.m_speed = 0;
+	cp.m_speedRandom = 0;
 	cp.m_gravity = Vec3f_ZERO;
-	cp.fFlash = 0;
-	cp.fRotation = 0;
-	cp.bRotationRandomDirection = false;
-	cp.bRotationRandomStart = false;
+	cp.m_flash = 0;
+	cp.m_rotation = 0;
+	cp.m_rotationRandomDirection = false;
+	cp.m_rotationRandomStart = false;
 
 	cp.fStartSize = 10;
 	cp.fStartSizeRandom = 10;

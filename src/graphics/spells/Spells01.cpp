@@ -79,16 +79,16 @@ void LaunchMagicMissileExplosion(const Vec3f & _ePos, int t = 0, long spellinsta
 	ParticleParams cp;
 	memset(&cp, 0, sizeof(cp));
 	cp.m_nbMax = 100 + t * 50;
-	cp.fLife = 1500;
-	cp.fLifeRandom = 0;
+	cp.m_life = 1500;
+	cp.m_lifeRandom = 0;
 	cp.m_pos = Vec3f(10.f);
 	cp.m_direction = Vec3f(0.f, -10.f, 0.f);
-	cp.fAngle = radians(360);
-	cp.fSpeed = 130;
-	cp.fSpeedRandom = 100;
+	cp.m_angle = radians(360);
+	cp.m_speed = 130;
+	cp.m_speedRandom = 100;
 	cp.m_gravity = Vec3f(0.f, 10.f, 0.f);
-	cp.fFlash = 0;
-	cp.fRotation = 16;
+	cp.m_flash = 0;
+	cp.m_rotation = 16;
 
 	cp.fStartSize = 5;
 	cp.fStartSizeRandom = 10;
@@ -99,8 +99,8 @@ void LaunchMagicMissileExplosion(const Vec3f & _ePos, int t = 0, long spellinsta
 
 	if(spellinstance >= 0 && spells[spellinstance].m_caster == 0 && cur_mr == 3) {
 		cp.fStartSize = 20;
-		cp.fSpeed = 13;
-		cp.fSpeedRandom = 10;
+		cp.m_speed = 13;
+		cp.m_speedRandom = 10;
 		cp.fStartColorRandom[0] = 0;
 		cp.fStartColorRandom[1] = 0;
 		cp.fStartColorRandom[2] = 0;

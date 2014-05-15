@@ -103,16 +103,16 @@ void CHeal::Create() {
 	ParticleParams cp;
 	memset(&cp, 0, sizeof(cp));
 	cp.m_nbMax = 350;
-	cp.fLife = 800;
-	cp.fLifeRandom = 2000;
+	cp.m_life = 800;
+	cp.m_lifeRandom = 2000;
 	cp.m_pos = Vec3f(100, 200, 100);
 	cp.m_direction = Vec3f(0, -10, 0);
-	cp.fAngle = radians(5);
-	cp.fSpeed = 120; 
-	cp.fSpeedRandom = 84; 
+	cp.m_angle = radians(5);
+	cp.m_speed = 120;
+	cp.m_speedRandom = 84;
 	cp.m_gravity = Vec3f(0, -10, 0);
-	cp.fFlash = 0;
-	cp.fRotation = 80;
+	cp.m_flash = 0;
+	cp.m_rotation = 80;
 
 	cp.fStartSize = 8;
 	cp.fStartSizeRandom = 8;

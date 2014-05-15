@@ -55,16 +55,16 @@ public:
 	Vec3f m_direction;
 	Vec3f m_gravity;
 	int   m_nbMax;
-	int iFreq;
-	bool bRotationRandomDirection;
-	bool bRotationRandomStart;
-	float fLife;
-	float fLifeRandom;
-	float fAngle;
-	float fSpeed;
-	float fSpeedRandom;
-	float fFlash;
-	float fRotation;
+	int   m_freq;
+	bool  m_rotationRandomDirection;
+	bool  m_rotationRandomStart;
+	float m_life;
+	float m_lifeRandom;
+	float m_angle;
+	float m_speed;
+	float m_speedRandom;
+	float m_flash;
+	float m_rotation;
 	
 	bool bTexInfo;
 	bool bTexLoop;

@@ -121,16 +121,16 @@ void CCurePoison::Create()
 	ParticleParams cp;
 	memset(&cp, 0, sizeof(cp));
 	cp.m_nbMax = 350;
-	cp.fLife = 800;
-	cp.fLifeRandom = 2000;
+	cp.m_life = 800;
+	cp.m_lifeRandom = 2000;
 	cp.m_pos = Vec3f(100, 0, 100);
 	cp.m_direction = Vec3f(0, -10, 0);
-	cp.fAngle = radians(5);
-	cp.fSpeed = 120; 
-	cp.fSpeedRandom = 84; 
+	cp.m_angle = radians(5);
+	cp.m_speed = 120;
+	cp.m_speedRandom = 84;
 	cp.m_gravity = Vec3f(0, -10, 0);
-	cp.fFlash = 0;
-	cp.fRotation = 80;
+	cp.m_flash = 0;
+	cp.m_rotation = 80;
 
 	cp.fStartSize = 8;//6;
 	cp.fStartSizeRandom = 8;
@@ -419,18 +419,18 @@ void LaunchPoisonExplosion(Vec3f * aePos) {
 	ParticleSystem * pPS = new ParticleSystem();
 	ParticleParams cp;
 	cp.m_nbMax = 80; 
-	cp.fLife = 1500;
-	cp.fLifeRandom = 500;
+	cp.m_life = 1500;
+	cp.m_lifeRandom = 500;
 	cp.m_pos = Vec3f(5);
 	cp.m_direction = Vec3f(0, 4, 0);
-	cp.fAngle = radians(360);
-	cp.fSpeed = 200;
-	cp.fSpeedRandom = 0;
+	cp.m_angle = radians(360);
+	cp.m_speed = 200;
+	cp.m_speedRandom = 0;
 	cp.m_gravity = Vec3f(0, 17, 0);
-	cp.fFlash = 0;
-	cp.fRotation = 80;
-	cp.bRotationRandomDirection = true;
-	cp.bRotationRandomStart = true;
+	cp.m_flash = 0;
+	cp.m_rotation = 80;
+	cp.m_rotationRandomDirection = true;
+	cp.m_rotationRandomStart = true;
 
 	cp.fStartSize = 5;
 	cp.fStartSizeRandom = 3;
@@ -457,7 +457,7 @@ void LaunchPoisonExplosion(Vec3f * aePos) {
 	cp.bEndLock = false;
 
 	cp.blendMode = RenderMaterial::AlphaAdditive;
-	cp.iFreq = -1;
+	cp.m_freq = -1;
 	cp.bTexInfo = false;
 	pPS->SetParams(cp);
 	pPS->ulParticleSpawn = 0;
@@ -549,18 +549,18 @@ void CPoisonProjectile::Create(Vec3f _eSrc, float _fBeta)
 	// système de partoches
 	ParticleParams cp;
 	cp.m_nbMax = 5;
-	cp.fLife = 2000;
-	cp.fLifeRandom = 1000;
+	cp.m_life = 2000;
+	cp.m_lifeRandom = 1000;
 	cp.m_pos = Vec3f_ZERO;
 	cp.m_direction = -eMove;
-	cp.fAngle = 0;
-	cp.fSpeed = 10;
-	cp.fSpeedRandom = 10;
+	cp.m_angle = 0;
+	cp.m_speed = 10;
+	cp.m_speedRandom = 10;
 	cp.m_gravity = Vec3f_ZERO;
-	cp.fFlash = 21;
-	cp.fRotation = 80;
-	cp.bRotationRandomDirection = true;
-	cp.bRotationRandomStart = true;
+	cp.m_flash = 21;
+	cp.m_rotation = 80;
+	cp.m_rotationRandomDirection = true;
+	cp.m_rotationRandomStart = true;
 
 	cp.fStartSize = 5; 
 	cp.fStartSizeRandom = 3;
@@ -618,20 +618,20 @@ void CPoisonProjectile::Update(unsigned long _ulTime)
 			// go
 			ParticleParams cp;
 			cp.m_nbMax = 100;
-			cp.fLife = 500;
-			cp.fLifeRandom = 300;
+			cp.m_life = 500;
+			cp.m_lifeRandom = 300;
 			cp.m_pos = Vec3f(fBetaRadSin * 20, 0.f, fBetaRadCos * 20);
 
 			cp.m_direction = -eMove;
 
-			cp.fAngle = radians(4);
-			cp.fSpeed = 150;
-			cp.fSpeedRandom = 50;//15;
+			cp.m_angle = radians(4);
+			cp.m_speed = 150;
+			cp.m_speedRandom = 50;//15;
 			cp.m_gravity = Vec3f(0, 10, 0);
-			cp.fFlash = 0;
-			cp.fRotation = 80;
-			cp.bRotationRandomDirection = true;
-			cp.bRotationRandomStart = true;
+			cp.m_flash = 0;
+			cp.m_rotation = 80;
+			cp.m_rotationRandomDirection = true;
+			cp.m_rotationRandomStart = true;
 
 			cp.fStartSize = 2;
 			cp.fStartSizeRandom = 2;
