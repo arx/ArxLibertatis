@@ -78,15 +78,15 @@ void LaunchMagicMissileExplosion(const Vec3f & _ePos, int t = 0, long spellinsta
 	ParticleSystem * pPS = new ParticleSystem();
 	ParticleParams cp;
 	memset(&cp, 0, sizeof(cp));
-	cp.iNbMax = 100 + t * 50;
+	cp.m_nbMax = 100 + t * 50;
 	cp.fLife = 1500;
 	cp.fLifeRandom = 0;
-	cp.p3Pos = Vec3f(10.f);
-	cp.p3Direction = Vec3f(0.f, -10.f, 0.f);
+	cp.m_pos = Vec3f(10.f);
+	cp.m_direction = Vec3f(0.f, -10.f, 0.f);
 	cp.fAngle = radians(360);
 	cp.fSpeed = 130;
 	cp.fSpeedRandom = 100;
-	cp.p3Gravity = Vec3f(0.f, 10.f, 0.f);
+	cp.m_gravity = Vec3f(0.f, 10.f, 0.f);
 	cp.fFlash = 0;
 	cp.fRotation = 16;
 

@@ -51,10 +51,10 @@ class ParticleParams {
 	
 public:
 	
-	Vec3f p3Pos;
-	Vec3f p3Direction;
-	Vec3f p3Gravity;
-	int iNbMax;
+	Vec3f m_pos;
+	Vec3f m_direction;
+	Vec3f m_gravity;
+	int   m_nbMax;
 	int iFreq;
 	bool bRotationRandomDirection;
 	bool bRotationRandomStart;

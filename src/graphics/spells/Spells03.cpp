@@ -75,14 +75,14 @@ CFireBall::CFireBall() : CSpellFx() {
 	// TODO using memset on a class is naughty
 	
 	memset(&fire_1, 0, sizeof(fire_1));
-	fire_1.iNbMax = 200;
+	fire_1.m_nbMax = 200;
 	fire_1.fLife = 550;
 	fire_1.fLifeRandom = 500;
-	fire_1.p3Pos = Vec3f_ZERO;
+	fire_1.m_pos = Vec3f_ZERO;
 	fire_1.fAngle = radians(3);
 	fire_1.fSpeed = 0;
 	fire_1.fSpeedRandom = 0;
-	fire_1.p3Gravity = Vec3f_ZERO;
+	fire_1.m_gravity = Vec3f_ZERO;
 	fire_1.fFlash = 0;
 	fire_1.fRotation = 50;
 	fire_1.fStartColor[0] = 22;
@@ -106,14 +106,14 @@ CFireBall::CFireBall() : CSpellFx() {
 	fire_1.blendMode = RenderMaterial::Additive;
 
 	memset(&fire_2, 0, sizeof(fire_2));
-	fire_2.iNbMax = 20;
+	fire_2.m_nbMax = 20;
 	fire_2.fLife = 550;
 	fire_2.fLifeRandom = 500;
-	fire_2.p3Pos = Vec3f_ZERO; 
+	fire_2.m_pos = Vec3f_ZERO;
 	fire_2.fAngle = radians(3);
 	fire_2.fSpeed = 0;
 	fire_2.fSpeedRandom = 0;
-	fire_2.p3Gravity = Vec3f_ZERO;
+	fire_2.m_gravity = Vec3f_ZERO;
 	fire_2.fFlash = 0;
 	fire_2.fRotation = 50;
 	fire_2.fStartColor[0] = 22;
@@ -135,18 +135,18 @@ CFireBall::CFireBall() : CSpellFx() {
 	fire_2.blendMode = RenderMaterial::Additive;
 
 	memset(&smoke, 0, sizeof(smoke));
-	smoke.iNbMax = 30;
+	smoke.m_nbMax = 30;
 	smoke.fLife = 2000;
 	smoke.fLifeRandom = 3000;
-	smoke.p3Pos.x = 0;
-	smoke.p3Pos.y = 10;
-	smoke.p3Pos.z = 10;
+	smoke.m_pos.x = 0;
+	smoke.m_pos.y = 10;
+	smoke.m_pos.z = 10;
 	smoke.fAngle = radians(9);
 	smoke.fSpeed = 150; 
 	smoke.fSpeedRandom = 150; 
-	smoke.p3Gravity.x = 0;
-	smoke.p3Gravity.y = -10;
-	smoke.p3Gravity.z = 0;
+	smoke.m_gravity.x = 0;
+	smoke.m_gravity.y = -10;
+	smoke.m_gravity.z = 0;
 	smoke.fFlash = 0;
 	smoke.fRotation = 90;
 	smoke.fStartSize = 0;
@@ -214,7 +214,7 @@ void CFireBall::Create(Vec3f aeSrc, float afBeta, float afAlpha, float _fLevel)
 	eMove.z = + fBetaRadCos * 80 * cos(radians(MAKEANGLE(afAlpha)));
 	
 	//FIRE
-	fire_1.p3Direction = -eMove;
+	fire_1.m_direction = -eMove;
 	fire_1.fStartSize = 1 * _fLevel; 
 	fire_1.fStartSizeRandom = 2 * _fLevel; 
 
@@ -226,7 +226,7 @@ void CFireBall::Create(Vec3f aeSrc, float afBeta, float afAlpha, float _fLevel)
 	pPSFire.Update(0);
 
 	//FIRE
-	fire_2.p3Direction = -eMove;
+	fire_2.m_direction = -eMove;
 	fire_2.fStartSize = 1 * _fLevel; 
 	fire_2.fStartSizeRandom = 2 * _fLevel; 
 	fire_2.fEndSize = 3 * _fLevel; 
@@ -239,7 +239,7 @@ void CFireBall::Create(Vec3f aeSrc, float afBeta, float afAlpha, float _fLevel)
 	pPSFire2.Update(0);
 
 	// Smoke
-	smoke.p3Direction = -eMove;
+	smoke.m_direction = -eMove;
 	smoke.fEndSize = 7 * _fLevel;
 	smoke.fEndSizeRandom = 2 * _fLevel; 
 
@@ -708,21 +708,21 @@ void CCreateFood::Create() {
 	pPS->SetPos(eSrc);
 	ParticleParams cp;
 	memset(&cp, 0, sizeof(cp));
-	cp.iNbMax = 350;
+	cp.m_nbMax = 350;
 	cp.fLife = 800;
 	cp.fLifeRandom = 2000;
-	cp.p3Pos.x = 100;
-	cp.p3Pos.y = 200;
-	cp.p3Pos.z = 100;
-	cp.p3Direction.x = 0;
-	cp.p3Direction.y = -10;
-	cp.p3Direction.z = 0;
+	cp.m_pos.x = 100;
+	cp.m_pos.y = 200;
+	cp.m_pos.z = 100;
+	cp.m_direction.x = 0;
+	cp.m_direction.y = -10;
+	cp.m_direction.z = 0;
 	cp.fAngle = radians(5);
 	cp.fSpeed = 120; 
 	cp.fSpeedRandom = 84; 
-	cp.p3Gravity.x = 0;
-	cp.p3Gravity.y = -10;
-	cp.p3Gravity.z = 0;
+	cp.m_gravity.x = 0;
+	cp.m_gravity.y = -10;
+	cp.m_gravity.z = 0;
 	cp.fFlash = 0;
 	cp.fRotation = 80;
 

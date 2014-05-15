@@ -120,21 +120,21 @@ void CCurePoison::Create()
 	pPS->SetPos(eSrc);
 	ParticleParams cp;
 	memset(&cp, 0, sizeof(cp));
-	cp.iNbMax = 350;
+	cp.m_nbMax = 350;
 	cp.fLife = 800;
 	cp.fLifeRandom = 2000;
-	cp.p3Pos.x = 100;
-	cp.p3Pos.y = 0;
-	cp.p3Pos.z = 100;
-	cp.p3Direction.x = 0;
-	cp.p3Direction.y = -10;
-	cp.p3Direction.z = 0;
+	cp.m_pos.x = 100;
+	cp.m_pos.y = 0;
+	cp.m_pos.z = 100;
+	cp.m_direction.x = 0;
+	cp.m_direction.y = -10;
+	cp.m_direction.z = 0;
 	cp.fAngle = radians(5);
 	cp.fSpeed = 120; 
 	cp.fSpeedRandom = 84; 
-	cp.p3Gravity.x = 0;
-	cp.p3Gravity.y = -10;
-	cp.p3Gravity.z = 0;
+	cp.m_gravity.x = 0;
+	cp.m_gravity.y = -10;
+	cp.m_gravity.z = 0;
 	cp.fFlash = 0;
 	cp.fRotation = 80;
 
@@ -424,19 +424,19 @@ void LaunchPoisonExplosion(Vec3f * aePos) {
 	// système de partoches pour l'explosion
 	ParticleSystem * pPS = new ParticleSystem();
 	ParticleParams cp;
-	cp.iNbMax = 80; 
+	cp.m_nbMax = 80; 
 	cp.fLife = 1500;
 	cp.fLifeRandom = 500;
-	cp.p3Pos = Vec3f(5);
-	cp.p3Direction.x = 0;
-	cp.p3Direction.y = 4;
-	cp.p3Direction.z = 0;
+	cp.m_pos = Vec3f(5);
+	cp.m_direction.x = 0;
+	cp.m_direction.y = 4;
+	cp.m_direction.z = 0;
 	cp.fAngle = radians(360);
 	cp.fSpeed = 200;
 	cp.fSpeedRandom = 0;
-	cp.p3Gravity.x = 0;
-	cp.p3Gravity.y = 17;
-	cp.p3Gravity.z = 0;
+	cp.m_gravity.x = 0;
+	cp.m_gravity.y = 17;
+	cp.m_gravity.z = 0;
 	cp.fFlash = 0;
 	cp.fRotation = 80;
 	cp.bRotationRandomDirection = true;
@@ -558,15 +558,15 @@ void CPoisonProjectile::Create(Vec3f _eSrc, float _fBeta)
 	//-------------------------------------------------------------------------
 	// système de partoches
 	ParticleParams cp;
-	cp.iNbMax = 5;
+	cp.m_nbMax = 5;
 	cp.fLife = 2000;
 	cp.fLifeRandom = 1000;
-	cp.p3Pos = Vec3f_ZERO;
-	cp.p3Direction = -eMove;
+	cp.m_pos = Vec3f_ZERO;
+	cp.m_direction = -eMove;
 	cp.fAngle = 0;
 	cp.fSpeed = 10;
 	cp.fSpeedRandom = 10;
-	cp.p3Gravity = Vec3f_ZERO;
+	cp.m_gravity = Vec3f_ZERO;
 	cp.fFlash = 21;
 	cp.fRotation = 80;
 	cp.bRotationRandomDirection = true;
@@ -627,21 +627,21 @@ void CPoisonProjectile::Update(unsigned long _ulTime)
 
 			// go
 			ParticleParams cp;
-			cp.iNbMax = 100;
+			cp.m_nbMax = 100;
 			cp.fLife = 500;
 			cp.fLifeRandom = 300;
-			cp.p3Pos.x = fBetaRadSin * 20;
-			cp.p3Pos.y = 0.f;
-			cp.p3Pos.z = fBetaRadCos * 20;
+			cp.m_pos.x = fBetaRadSin * 20;
+			cp.m_pos.y = 0.f;
+			cp.m_pos.z = fBetaRadCos * 20;
 
-			cp.p3Direction = -eMove;
+			cp.m_direction = -eMove;
 
 			cp.fAngle = radians(4);
 			cp.fSpeed = 150;
 			cp.fSpeedRandom = 50;//15;
-			cp.p3Gravity.x = 0;
-			cp.p3Gravity.y = 10;
-			cp.p3Gravity.z = 0;
+			cp.m_gravity.x = 0;
+			cp.m_gravity.y = 10;
+			cp.m_gravity.z = 0;
 			cp.fFlash = 0;
 			cp.fRotation = 80;
 			cp.bRotationRandomDirection = true;
