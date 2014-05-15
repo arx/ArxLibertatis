@@ -201,7 +201,7 @@ void CCurePoison::Update(unsigned long aulTime)
 
 	if(ff < 1500) {
 		pPS->ulParticleSpawn = PARTICLE_CIRCULAR;
-		pPS->p3ParticleGravity = Vec3f_ZERO;
+		pPS->m_parameters.m_gravity = Vec3f_ZERO;
 
 		std::list<Particle *>::iterator i;
 

@@ -268,8 +268,8 @@ void CFireBall::Update(unsigned long aulTime)
 		pPSFire.SetPos(eCurPos);
 		pPSFire.fParticleSpeed = 100;
 		pPSFire.fParticleSpeedRandom = 200;
-		pPSFire.p3ParticleGravity = -eMove * 2.f;
-		pPSFire2.p3ParticleGravity = -eMove * 2.f;
+		pPSFire.m_parameters.m_gravity = -eMove * 2.f;
+		pPSFire2.m_parameters.m_gravity = -eMove * 2.f;
 		pPSFire2.SetPos(eCurPos);
 		pPSFire2.fParticleSpeed = 100;
 		pPSFire2.fParticleSpeedRandom = 100;
@@ -322,16 +322,16 @@ void CFireBall::Update(unsigned long aulTime)
 		Vec3f vMove = glm::normalize(eMove);
 
 		// smoke en retard
-		pPSSmoke.p3ParticleDirection = -vMove;
+		pPSSmoke.m_parameters.m_direction = -vMove;
 		pPSSmoke.SetPos(eCurPos);
 		pPSSmoke.RecomputeDirection();
 		eCurPos = eCurPos + eMove * (aulTime * 0.0045f);
-		pPSFire.p3ParticleDirection = -vMove;
+		pPSFire.m_parameters.m_direction = -vMove;
 		pPSFire.RecomputeDirection();
 		pPSFire.SetPos(eCurPos);
-		pPSFire.p3ParticleGravity = -eMove * 2.f;
-		pPSFire2.p3ParticleDirection = -vMove;
-		pPSFire2.p3ParticleGravity = -eMove * 2.f;
+		pPSFire.m_parameters.m_gravity = -eMove * 2.f;
+		pPSFire2.m_parameters.m_direction = -vMove;
+		pPSFire2.m_parameters.m_gravity = -eMove * 2.f;
 		pPSFire2.RecomputeDirection();
 		pPSFire2.SetPos(eCurPos);
 	}
@@ -768,7 +768,7 @@ if (ulCurrentTime >= ulDuration)
 
 		if(ff < 1500) {
 			pPS->ulParticleSpawn = PARTICLE_CIRCULAR;
-			pPS->p3ParticleGravity = Vec3f_ZERO;
+			pPS->m_parameters.m_gravity = Vec3f_ZERO;
 
 		std::list<Particle *>::iterator i;
 

@@ -49,6 +49,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/BaseGraphicsTypes.h"
 #include "graphics/Renderer.h"
 #include "graphics/Draw.h"
+#include "graphics/particle/ParticleParams.h"
 #include "math/Types.h"
 #include "math/Vector.h"
 #include "math/Quantizer.h"
@@ -88,7 +89,8 @@ public:
 	math::Quantizer m_storedTime;
 	
 	// these are used for the particles it creates
-	Vec3f p3ParticlePos;
+	ParticleParams m_parameters;
+	
 	int iParticleNbMax;
 	float fParticleFreq;
 	
@@ -99,8 +101,6 @@ public:
 	
 	ParticleSpawn ulParticleSpawn;
 	
-	Vec3f p3ParticleDirection;
-	Vec3f p3ParticleGravity;
 	float fParticleLife;
 	float fParticleLifeRandom;
 	float fParticleAngle;

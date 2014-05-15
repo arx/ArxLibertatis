@@ -63,7 +63,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 using std::list;
 
 void ParticleSystem::RecomputeDirection() {
-	Vec3f eVect = p3ParticleDirection;
+	Vec3f eVect = m_parameters.m_direction;
 	eVect.y = -eVect.y;
 	GenerateMatrixUsingVector(eMat, eVect, 0);
 }
@@ -90,7 +90,7 @@ ParticleSystem::ParticleSystem() {
 	ulParticleSpawn = 0;
 	
 	// default settings for EDITOR MODE only
-	Vec3f eVect = p3ParticleDirection = -Vec3f_Y_AXIS;
+	Vec3f eVect = m_parameters.m_direction = -Vec3f_Y_AXIS;
 	eVect.y = -eVect.y;
 	GenerateMatrixUsingVector(eMat, eVect, 0);
 	
@@ -106,13 +106,13 @@ ParticleSystem::ParticleSystem() {
 	fParticleEndColor[3] = 0.1f;
 	fParticleSpeed = 10;
 	fParticleLife = 1000;
-	p3ParticlePos = Vec3f_ZERO;
+	m_parameters.m_pos = Vec3f_ZERO;
 	bParticleFollow = true;
 	fParticleFlash = 0;
 	fParticleRotation = 0;
 	bParticleRotationRandomDirection = false;
 	bParticleRotationRandomStart = false;
-	p3ParticleGravity = Vec3f_ZERO;
+	m_parameters.m_gravity = Vec3f_ZERO;
 	fParticleLifeRandom = 1000;
 	fParticleAngle = 0;
 	fParticleSpeedRandom = 10;
@@ -163,16 +163,17 @@ void ParticleSystem::SetColor(float _fR, float _fG, float _fB) {
 
 void ParticleSystem::SetParams(const ParticleParams & _pp) {
 	
+	m_parameters.m_pos = _pp.m_pos;
+	m_parameters.m_direction = _pp.m_direction * 0.1f;
+	m_parameters.m_gravity = _pp.m_gravity;
+	
 	iParticleNbMax		= _pp.m_nbMax;
 	fParticleLife		= _pp.m_life;
 	fParticleLifeRandom = _pp.m_lifeRandom;
 	
-	p3ParticlePos = _pp.m_pos;
-	p3ParticleDirection = _pp.m_direction * 0.1f;
 	fParticleAngle = _pp.m_angle;
 	fParticleSpeed = _pp.m_speed;
 	fParticleSpeedRandom = _pp.m_speedRandom;
-	p3ParticleGravity = _pp.m_gravity;
 	
 	fParticleFlash = _pp.m_flash * ( 1.0f / 100 );
 	
@@ -205,8 +206,8 @@ void ParticleSystem::SetParams(const ParticleParams & _pp) {
 
 	bParticleEndColorRandomLock = _pp.m_endLock;
 
-	p3ParticleDirection = glm::normalize(p3ParticleDirection);
-	Vec3f eVect(p3ParticleDirection.x, -p3ParticleDirection.y, p3ParticleDirection.z);
+	m_parameters.m_direction = glm::normalize(m_parameters.m_direction);
+	Vec3f eVect(m_parameters.m_direction.x, -m_parameters.m_direction.y, m_parameters.m_direction.z);
 	GenerateMatrixUsingVector(eMat, eVect, 0);
 
 	float r = (fParticleStartColor[0]  + fParticleEndColor[0] ) * 0.5f;
@@ -249,16 +250,16 @@ void ParticleSystem::SpawnParticle(Particle * pP) {
 	if((ulParticleSpawn & PARTICLE_CIRCULAR) == PARTICLE_CIRCULAR
 	   && (ulParticleSpawn & PARTICLE_BORDER) == PARTICLE_BORDER) {
 		float randd = rnd() * 360.f;
-		pP->p3Pos.x = std::sin(randd) * p3ParticlePos.x;
-		pP->p3Pos.y = rnd() * p3ParticlePos.y;
-		pP->p3Pos.z = std::cos(randd) * p3ParticlePos.z;
+		pP->p3Pos.x = std::sin(randd) * m_parameters.m_pos.x;
+		pP->p3Pos.y = rnd() * m_parameters.m_pos.y;
+		pP->p3Pos.z = std::cos(randd) * m_parameters.m_pos.z;
 	} else if((ulParticleSpawn & PARTICLE_CIRCULAR) == PARTICLE_CIRCULAR) {
 		float randd = rnd() * 360.f;
-		pP->p3Pos.x = std::sin(randd) * rnd() * p3ParticlePos.x;
-		pP->p3Pos.y = rnd() * p3ParticlePos.y;
-		pP->p3Pos.z = std::cos(randd) * rnd() * p3ParticlePos.z;
+		pP->p3Pos.x = std::sin(randd) * rnd() * m_parameters.m_pos.x;
+		pP->p3Pos.y = rnd() * m_parameters.m_pos.y;
+		pP->p3Pos.z = std::cos(randd) * rnd() * m_parameters.m_pos.z;
 	} else {
-		pP->p3Pos = p3ParticlePos * randomVec(-1.f, 1.f);
+		pP->p3Pos = m_parameters.m_pos * randomVec(-1.f, 1.f);
 	}
 	
 	if(bParticleFollow == false) {
@@ -387,7 +388,7 @@ void ParticleSystem::Update(long _lTime) {
 
 		if(pP->isAlive()) {
 			pP->Update(_lTime);
-			pP->p3Velocity += p3ParticleGravity * fTimeSec;
+			pP->p3Velocity += m_parameters.m_gravity * fTimeSec;
 			iParticleNbAlive ++;
 		} else {
 			if(iParticleNbAlive >= iParticleNbMax) {
