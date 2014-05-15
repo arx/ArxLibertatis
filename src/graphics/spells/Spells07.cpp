@@ -737,13 +737,11 @@ void CFireField::Create(float largeur, Vec3f * pos, int _ulDuration)
 	cp.m_startSizeRandom = 3;
 	cp.m_startColor = Color4f(25, 25, 25, 50);
 	cp.m_startColorRandom = Color4f(51, 51, 51, 101);
-	cp.m_startLock = false;
 
 	cp.m_endSize = 10;
 	cp.m_endSizeRandom = 3;
 	cp.m_endColor = Color4f(25, 25, 25, 50);
 	cp.m_endColorRandom = Color4f(0, 0, 0, 100);
-	cp.m_endLock = false;
 	cp.m_texLoop = true;
 
 	cp.m_blendMode = RenderMaterial::AlphaAdditive;
@@ -777,13 +775,11 @@ void CFireField::Create(float largeur, Vec3f * pos, int _ulDuration)
 	cp.m_startSizeRandom = 10;
 	cp.m_startColor = Color4f(40, 40, 40, 50);
 	cp.m_startColorRandom = Color4f(51, 51, 51, 100);
-	cp.m_startLock = false;
 
 	cp.m_endSize = 10;
 	cp.m_endSizeRandom = 10;
 	cp.m_endColor = Color4f(0, 0, 0, 50);
 	cp.m_endColorRandom = Color4f(0, 0, 0, 100);
-	cp.m_endLock = false;
 	cp.m_texLoop = false;
 
 	cp.m_blendMode = RenderMaterial::Additive;

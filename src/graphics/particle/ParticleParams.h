@@ -73,13 +73,11 @@ public:
 	RenderMaterial::BlendType m_blendMode;
 	char * m_texName;
 	
-	bool  m_startLock;
 	float m_startSize;
 	float m_startSizeRandom;
 	Color4f m_startColor;
 	Color4f m_startColorRandom;
 	
-	bool  m_endLock;
 	float m_endSize;
 	float m_endSizeRandom;
 	Color4f m_endColor;
