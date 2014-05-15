@@ -94,9 +94,9 @@ ParticleSystem::ParticleSystem() {
 	eVect.y = -eVect.y;
 	GenerateMatrixUsingVector(eMat, eVect, 0);
 	
-	m_parameters.m_startSize = 1;
+	m_parameters.m_startSegment.m_size = 1;
 	m_parameters.m_endSize = 1;
-	m_parameters.m_startColor = Color4f(0.1f, 0.1f, 0.1f, 0.1f);
+	m_parameters.m_startSegment.m_color = Color4f(0.1f, 0.1f, 0.1f, 0.1f);
 	m_parameters.m_endColor = Color4f(0.1f, 0.1f, 0.1f, 0.1f);
 	m_parameters.m_speed = 10;
 	m_parameters.m_life = 1000;
@@ -111,8 +111,8 @@ ParticleSystem::ParticleSystem() {
 	m_parameters.m_angle = 0;
 	m_parameters.m_speedRandom = 10;
 
-	m_parameters.m_startSizeRandom = 1;
-	m_parameters.m_startColorRandom = Color4f(0.1f, 0.1f, 0.1f, 0.1f);
+	m_parameters.m_startSegment.m_sizeRandom = 1;
+	m_parameters.m_startSegment.m_colorRandom = Color4f(0.1f, 0.1f, 0.1f, 0.1f);
 
 	m_parameters.m_endSizeRandom = 1;
 	m_parameters.m_endColorRandom = Color4f(0.1f, 0.1f, 0.1f, 0.1f);
@@ -169,11 +169,11 @@ void ParticleSystem::SetParams(const ParticleParams & _pp) {
 	m_parameters.m_rotationRandomDirection = _pp.m_rotationRandomDirection;
 	m_parameters.m_rotationRandomStart = _pp.m_rotationRandomStart;
 
-	m_parameters.m_startSize = _pp.m_startSize;
-	m_parameters.m_startSizeRandom = _pp.m_startSizeRandom;
+	m_parameters.m_startSegment.m_size = _pp.m_startSegment.m_size;
+	m_parameters.m_startSegment.m_sizeRandom = _pp.m_startSegment.m_sizeRandom;
 	
-	m_parameters.m_startColor = _pp.m_startColor * (1.f/255.0f);
-	m_parameters.m_startColorRandom = _pp.m_startColorRandom * (1.f/255.0f);
+	m_parameters.m_startSegment.m_color = _pp.m_startSegment.m_color * (1.f/255.0f);
+	m_parameters.m_startSegment.m_colorRandom = _pp.m_startSegment.m_colorRandom * (1.f/255.0f);
 	
 	m_parameters.m_endSize = _pp.m_endSize;
 	m_parameters.m_endSizeRandom = _pp.m_endSizeRandom;
@@ -185,9 +185,9 @@ void ParticleSystem::SetParams(const ParticleParams & _pp) {
 	Vec3f eVect(m_parameters.m_direction.x, -m_parameters.m_direction.y, m_parameters.m_direction.z);
 	GenerateMatrixUsingVector(eMat, eVect, 0);
 
-	float r = (m_parameters.m_startColor.r  + m_parameters.m_endColor.r ) * 0.5f;
-	float g = (m_parameters.m_startColor.g  + m_parameters.m_endColor.g ) * 0.5f;
-	float b = (m_parameters.m_startColor.b  + m_parameters.m_endColor.b ) * 0.5f;
+	float r = (m_parameters.m_startSegment.m_color.r  + m_parameters.m_endColor.r ) * 0.5f;
+	float g = (m_parameters.m_startSegment.m_color.g  + m_parameters.m_endColor.g ) * 0.5f;
+	float b = (m_parameters.m_startSegment.m_color.b  + m_parameters.m_endColor.b ) * 0.5f;
 	SetColor(r, g, b);
 
 	m_parameters.m_blendMode = _pp.m_blendMode;
@@ -278,12 +278,12 @@ void ParticleSystem::SetParticleParams(Particle * pP) {
 	float fSpeed = m_parameters.m_speed + rnd() * m_parameters.m_speedRandom;
 
 	pP->p3Velocity = vvz * fSpeed;
-	pP->fSizeStart = m_parameters.m_startSize + rnd() * m_parameters.m_startSizeRandom;
+	pP->fSizeStart = m_parameters.m_startSegment.m_size + rnd() * m_parameters.m_startSegment.m_sizeRandom;
 
-	pP->fColorStart[0] = m_parameters.m_startColor.r + rnd() * m_parameters.m_startColorRandom.r;
-	pP->fColorStart[1] = m_parameters.m_startColor.g + rnd() * m_parameters.m_startColorRandom.g;
-	pP->fColorStart[2] = m_parameters.m_startColor.b + rnd() * m_parameters.m_startColorRandom.b;
-	pP->fColorStart[3] = m_parameters.m_startColor.a + rnd() * m_parameters.m_startColorRandom.a;
+	pP->fColorStart[0] = m_parameters.m_startSegment.m_color.r + rnd() * m_parameters.m_startSegment.m_colorRandom.r;
+	pP->fColorStart[1] = m_parameters.m_startSegment.m_color.g + rnd() * m_parameters.m_startSegment.m_colorRandom.g;
+	pP->fColorStart[2] = m_parameters.m_startSegment.m_color.b + rnd() * m_parameters.m_startSegment.m_colorRandom.b;
+	pP->fColorStart[3] = m_parameters.m_startSegment.m_color.a + rnd() * m_parameters.m_startSegment.m_colorRandom.a;
 
 	pP->fSizeEnd = m_parameters.m_endSize + rnd() * m_parameters.m_endSizeRandom;
 

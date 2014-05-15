@@ -132,10 +132,10 @@ void CCurePoison::Create()
 	cp.m_flash = 0;
 	cp.m_rotation = 1.0f / (101 - 80);
 
-	cp.m_startSize = 8;//6;
-	cp.m_startSizeRandom = 8;
-	cp.m_startColor = Color4f(20, 205, 20, 245);
-	cp.m_startColorRandom = Color4f(50, 50, 50, 10);
+	cp.m_startSegment.m_size = 8;//6;
+	cp.m_startSegment.m_sizeRandom = 8;
+	cp.m_startSegment.m_color = Color4f(20, 205, 20, 245);
+	cp.m_startSegment.m_colorRandom = Color4f(50, 50, 50, 10);
 
 	cp.m_endSize = 6;
 	cp.m_endSizeRandom = 4;
@@ -419,10 +419,10 @@ void LaunchPoisonExplosion(Vec3f * aePos) {
 	cp.m_rotationRandomDirection = true;
 	cp.m_rotationRandomStart = true;
 
-	cp.m_startSize = 5;
-	cp.m_startSizeRandom = 3;
-	cp.m_startColor = Color4f(0, 76, 0, 0);
-	cp.m_startColorRandom = Color4f(0, 0, 0, 150);
+	cp.m_startSegment.m_size = 5;
+	cp.m_startSegment.m_sizeRandom = 3;
+	cp.m_startSegment.m_color = Color4f(0, 76, 0, 0);
+	cp.m_startSegment.m_colorRandom = Color4f(0, 0, 0, 150);
 
 	cp.m_endSize = 30;
 	cp.m_endSizeRandom = 5;
@@ -534,10 +534,10 @@ void CPoisonProjectile::Create(Vec3f _eSrc, float _fBeta)
 	cp.m_rotationRandomDirection = true;
 	cp.m_rotationRandomStart = true;
 
-	cp.m_startSize = 5; 
-	cp.m_startSizeRandom = 3;
-	cp.m_startColor = Color4f(0, 50, 0, 40);
-	cp.m_startColorRandom = Color4f(0, 100, 0, 50);
+	cp.m_startSegment.m_size = 5;
+	cp.m_startSegment.m_sizeRandom = 3;
+	cp.m_startSegment.m_color = Color4f(0, 50, 0, 40);
+	cp.m_startSegment.m_colorRandom = Color4f(0, 100, 0, 50);
 
 	cp.m_endSize = 8;
 	cp.m_endSizeRandom = 13;
@@ -590,10 +590,10 @@ void CPoisonProjectile::Update(unsigned long _ulTime)
 			cp.m_rotationRandomDirection = true;
 			cp.m_rotationRandomStart = true;
 
-			cp.m_startSize = 2;
-			cp.m_startSizeRandom = 2;
-			cp.m_startColor = Color4f(0, 39, 0, 100);
-			cp.m_startColorRandom = Color4f(50, 21, 0, 0);
+			cp.m_startSegment.m_size = 2;
+			cp.m_startSegment.m_sizeRandom = 2;
+			cp.m_startSegment.m_color = Color4f(0, 39, 0, 100);
+			cp.m_startSegment.m_colorRandom = Color4f(50, 21, 0, 0);
 
 			cp.m_endSize = 7;
 			cp.m_endSizeRandom = 5;

@@ -90,25 +90,25 @@ void LaunchMagicMissileExplosion(const Vec3f & _ePos, int t = 0, long spellinsta
 	cp.m_flash = 0;
 	cp.m_rotation = 1.0f / (101 - 16);
 
-	cp.m_startSize = 5;
-	cp.m_startSizeRandom = 10;
+	cp.m_startSegment.m_size = 5;
+	cp.m_startSegment.m_sizeRandom = 10;
 
 
 	cp.m_endSize = 0;
 	cp.m_endSizeRandom = 2;
 
 	if(spellinstance >= 0 && spells[spellinstance].m_caster == 0 && cur_mr == 3) {
-		cp.m_startSize = 20;
+		cp.m_startSegment.m_size = 20;
 		cp.m_speed = 13;
 		cp.m_speedRandom = 10;
-		cp.m_startColorRandom = Color4f(0, 0, 0, 0);
+		cp.m_startSegment.m_colorRandom = Color4f(0, 0, 0, 0);
 
-		cp.m_startColor = Color4f(0, 0, 0, 0);
+		cp.m_startSegment.m_color = Color4f(0, 0, 0, 0);
 		cp.m_endColor = Color4f(255, 40, 120, 10);
 		pPS->SetTexture("graph/particles/(fx)_mr", 0, 500);
 	} else {
-		cp.m_startColorRandom = Color4f(100, 100, 100, 100);
-		cp.m_startColor = Color4f(110, 110, 110, 110);
+		cp.m_startSegment.m_colorRandom = Color4f(100, 100, 100, 100);
+		cp.m_startSegment.m_color = Color4f(110, 110, 110, 110);
 		cp.m_endColor = Color4f(0, 0, 120, 10);
 		pPS->SetTexture("graph/particles/magicexplosion", 0, 500);
 	}

@@ -85,8 +85,8 @@ CFireBall::CFireBall() : CSpellFx() {
 	fire_1.m_gravity = Vec3f_ZERO;
 	fire_1.m_flash = 0;
 	fire_1.m_rotation = 1.0f / (101 - 50);
-	fire_1.m_startColor = Color4f(22, 30, 30, 0);
-	fire_1.m_startColorRandom = Color4f(22, 0, 0, 2);
+	fire_1.m_startSegment.m_color = Color4f(22, 30, 30, 0);
+	fire_1.m_startSegment.m_colorRandom = Color4f(22, 0, 0, 2);
 	fire_1.m_endSize = 0;
 	fire_1.m_endSizeRandom = 2;
 	fire_1.m_endColor = Color4f(25, 25, 0, 50);
@@ -104,8 +104,8 @@ CFireBall::CFireBall() : CSpellFx() {
 	fire_2.m_gravity = Vec3f_ZERO;
 	fire_2.m_flash = 0;
 	fire_2.m_rotation = 1.0f / (101 - 50);
-	fire_2.m_startColor = Color4f(22, 30, 30, 0);
-	fire_2.m_startColorRandom = Color4f(22, 0, 0, 2);
+	fire_2.m_startSegment.m_color = Color4f(22, 30, 30, 0);
+	fire_2.m_startSegment.m_colorRandom = Color4f(22, 0, 0, 2);
 	fire_2.m_endColor = Color4f(25, 25, 0, 0);
 	fire_2.m_endColorRandom = Color4f(50, 0, 0, 120);
 	fire_2.m_blendMode = RenderMaterial::Additive;
@@ -121,10 +121,10 @@ CFireBall::CFireBall() : CSpellFx() {
 	smoke.m_gravity = Vec3f(0, -10, 0);
 	smoke.m_flash = 0;
 	smoke.m_rotation = 1.0f / (101 - 90);
-	smoke.m_startSize = 0;
-	smoke.m_startSizeRandom = 2;
-	smoke.m_startColor = Color4f(70, 70, 51, 50);
-	smoke.m_startColorRandom = Color4f(0, 0, 0, 0);
+	smoke.m_startSegment.m_size = 0;
+	smoke.m_startSegment.m_sizeRandom = 2;
+	smoke.m_startSegment.m_color = Color4f(70, 70, 51, 50);
+	smoke.m_startSegment.m_colorRandom = Color4f(0, 0, 0, 0);
 	smoke.m_endColor = Color4f(0, 0, 0, 27);
 	smoke.m_endColorRandom = Color4f(0, 0, 0, 20);
 	smoke.m_blendMode = RenderMaterial::Additive;
@@ -175,8 +175,8 @@ void CFireBall::Create(Vec3f aeSrc, float afBeta, float afAlpha, float _fLevel)
 	
 	//FIRE
 	fire_1.m_direction = -eMove * 0.1f;
-	fire_1.m_startSize = 1 * _fLevel;
-	fire_1.m_startSizeRandom = 2 * _fLevel;
+	fire_1.m_startSegment.m_size = 1 * _fLevel;
+	fire_1.m_startSegment.m_sizeRandom = 2 * _fLevel;
 	fire_1.m_freq = 100.0f;
 
 	pPSFire.SetParams(fire_1);
@@ -187,8 +187,8 @@ void CFireBall::Create(Vec3f aeSrc, float afBeta, float afAlpha, float _fLevel)
 
 	//FIRE
 	fire_2.m_direction = -eMove * 0.1f;
-	fire_2.m_startSize = 1 * _fLevel;
-	fire_2.m_startSizeRandom = 2 * _fLevel;
+	fire_2.m_startSegment.m_size = 1 * _fLevel;
+	fire_2.m_startSegment.m_sizeRandom = 2 * _fLevel;
 	fire_2.m_endSize = 3 * _fLevel;
 	fire_2.m_endSizeRandom = 2 * _fLevel;
 	fire_2.m_freq = 20.0f;
@@ -680,10 +680,10 @@ void CCreateFood::Create() {
 	cp.m_flash = 0;
 	cp.m_rotation = 1.0f / (101 - 80);
 
-	cp.m_startSize = 8;
-	cp.m_startSizeRandom = 8;
-	cp.m_startColor = Color4f(105, 105, 20, 145);
-	cp.m_startColorRandom = Color4f(50, 50, 0, 10);
+	cp.m_startSegment.m_size = 8;
+	cp.m_startSegment.m_sizeRandom = 8;
+	cp.m_startSegment.m_color = Color4f(105, 105, 20, 145);
+	cp.m_startSegment.m_colorRandom = Color4f(50, 50, 0, 10);
 
 	cp.m_endSize = 6;
 	cp.m_endSizeRandom = 4;

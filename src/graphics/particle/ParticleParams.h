@@ -72,10 +72,14 @@ public:
 	RenderMaterial::BlendType m_blendMode;
 	char * m_texName;
 	
-	float m_startSize;
-	float m_startSizeRandom;
-	Color4f m_startColor;
-	Color4f m_startColorRandom;
+	struct SegmentParams {
+		float m_size;
+		float m_sizeRandom;
+		Color4f m_color;
+		Color4f m_colorRandom;
+	};
+	
+	SegmentParams m_startSegment;
 	
 	float m_endSize;
 	float m_endSizeRandom;

@@ -733,10 +733,10 @@ void CFireField::Create(float largeur, Vec3f * pos, int _ulDuration)
 	cp.m_rotationRandomDirection = false;
 	cp.m_rotationRandomStart = false;
 
-	cp.m_startSize = 10;
-	cp.m_startSizeRandom = 3;
-	cp.m_startColor = Color4f(25, 25, 25, 50);
-	cp.m_startColorRandom = Color4f(51, 51, 51, 101);
+	cp.m_startSegment.m_size = 10;
+	cp.m_startSegment.m_sizeRandom = 3;
+	cp.m_startSegment.m_color = Color4f(25, 25, 25, 50);
+	cp.m_startSegment.m_colorRandom = Color4f(51, 51, 51, 101);
 
 	cp.m_endSize = 10;
 	cp.m_endSizeRandom = 3;
@@ -771,10 +771,10 @@ void CFireField::Create(float largeur, Vec3f * pos, int _ulDuration)
 	cp.m_rotationRandomDirection = false;
 	cp.m_rotationRandomStart = false;
 
-	cp.m_startSize = 10;
-	cp.m_startSizeRandom = 10;
-	cp.m_startColor = Color4f(40, 40, 40, 50);
-	cp.m_startColorRandom = Color4f(51, 51, 51, 100);
+	cp.m_startSegment.m_size = 10;
+	cp.m_startSegment.m_sizeRandom = 10;
+	cp.m_startSegment.m_color = Color4f(40, 40, 40, 50);
+	cp.m_startSegment.m_colorRandom = Color4f(51, 51, 51, 100);
 
 	cp.m_endSize = 10;
 	cp.m_endSizeRandom = 10;

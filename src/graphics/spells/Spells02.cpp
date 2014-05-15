@@ -114,10 +114,10 @@ void CHeal::Create() {
 	cp.m_flash = 0;
 	cp.m_rotation = 1.0f / (101 - 80);
 
-	cp.m_startSize = 8;
-	cp.m_startSizeRandom = 8;
-	cp.m_startColor = Color4f(205, 205, 255, 245);
-	cp.m_startColorRandom = Color4f(50, 50, 0, 10);
+	cp.m_startSegment.m_size = 8;
+	cp.m_startSegment.m_sizeRandom = 8;
+	cp.m_startSegment.m_color = Color4f(205, 205, 255, 245);
+	cp.m_startSegment.m_colorRandom = Color4f(50, 50, 0, 10);
 
 	cp.m_endSize = 6;
 	cp.m_endSizeRandom = 4;
