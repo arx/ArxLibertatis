@@ -101,7 +101,6 @@ ParticleSystem::ParticleSystem() {
 	m_parameters.m_speed = 10;
 	m_parameters.m_life = 1000;
 	m_parameters.m_pos = Vec3f_ZERO;
-	bParticleFollow = true;
 	m_parameters.m_flash = 0;
 	m_parameters.m_rotation = 0;
 	m_parameters.m_rotationRandomDirection = false;
@@ -204,10 +203,6 @@ void ParticleSystem::SpawnParticle(Particle * pP) {
 		pP->p3Pos.z = std::cos(randd) * rnd() * m_parameters.m_pos.z;
 	} else {
 		pP->p3Pos = m_parameters.m_pos * randomVec(-1.f, 1.f);
-	}
-	
-	if(bParticleFollow == false) {
-		pP->p3Pos = p3Pos;
 	}
 }
 
@@ -402,9 +397,7 @@ void ParticleSystem::Render() {
 			
 			TexturedVertex p3pos;
 			p3pos.p = p->p3Pos;
-			if(bParticleFollow) {
-				p3pos.p += p3Pos;
-			}
+			p3pos.p += p3Pos;
             
 			mat.setTexture(tex_tab[inumtex]);
 			

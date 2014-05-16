@@ -549,9 +549,6 @@ void CPoisonProjectile::Create(Vec3f _eSrc, float _fBeta)
 	cp.m_spawnFlags = 0;
 	
 	pPS.SetParams(cp);
-
-	pPS.bParticleFollow = true;
-
 	pPS.SetPos(eSrc);
 	pPS.Update(0);
 }
@@ -604,8 +601,6 @@ void CPoisonProjectile::Update(unsigned long _ulTime)
 			cp.m_spawnFlags = 0;
 			
 			pPSStream.SetParams(cp);
-
-			pPSStream.bParticleFollow = true;
 		}
 
 		pPSStream.Update(_ulTime);

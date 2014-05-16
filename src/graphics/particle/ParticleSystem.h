@@ -70,8 +70,6 @@ public:
 	// these are used for the particles it creates
 	ParticleParams m_parameters;
 	
-	bool bParticleFollow;
-	
 	LightHandle lLightId;
 	
 	ParticleSystem();
