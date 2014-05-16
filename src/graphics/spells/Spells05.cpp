@@ -441,11 +441,7 @@ void LaunchPoisonExplosion(const Vec3f & aePos) {
 		Particle * pP = *i;
 
 		if(pP->isAlive()) {
-			if(pP->p3Velocity.y >= 0.5f * 200)
-				pP->p3Velocity.y = 0.5f * 200;
-
-			if(pP->p3Velocity.y <= -0.5f * 200)
-				pP->p3Velocity.y = -0.5f * 200;
+			pP->p3Velocity = glm::clamp(pP->p3Velocity, Vec3f(0, -100, 0), Vec3f(0, 100, 0));
 		}
 	}
 
