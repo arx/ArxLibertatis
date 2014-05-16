@@ -242,18 +242,18 @@ void ParticleSystem::SetParticleParams(Particle * pP) {
 	pP->p3Velocity = vvz * fSpeed;
 	pP->fSizeStart = m_parameters.m_startSegment.m_size + rnd() * m_parameters.m_startSegment.m_sizeRandom;
 
-	pP->fColorStart.r = m_parameters.m_startSegment.m_color.r + rnd() * m_parameters.m_startSegment.m_colorRandom.r;
-	pP->fColorStart.g = m_parameters.m_startSegment.m_color.g + rnd() * m_parameters.m_startSegment.m_colorRandom.g;
-	pP->fColorStart.b = m_parameters.m_startSegment.m_color.b + rnd() * m_parameters.m_startSegment.m_colorRandom.b;
-	pP->fColorStart.a = m_parameters.m_startSegment.m_color.a + rnd() * m_parameters.m_startSegment.m_colorRandom.a;
+	{
+	Color4f rndColor = Color4f(rnd(), rnd(), rnd(), rnd());
+	pP->fColorStart = m_parameters.m_startSegment.m_color + rndColor * m_parameters.m_startSegment.m_colorRandom;
+	}
 
 	pP->fSizeEnd = m_parameters.m_endSegment.m_size + rnd() * m_parameters.m_endSegment.m_sizeRandom;
 
-	pP->fColorEnd.r = m_parameters.m_endSegment.m_color.r + rnd() * m_parameters.m_endSegment.m_colorRandom.r;
-	pP->fColorEnd.g = m_parameters.m_endSegment.m_color.g + rnd() * m_parameters.m_endSegment.m_colorRandom.g;
-	pP->fColorEnd.b = m_parameters.m_endSegment.m_color.b + rnd() * m_parameters.m_endSegment.m_colorRandom.b;
-	pP->fColorEnd.a = m_parameters.m_endSegment.m_color.a + rnd() * m_parameters.m_endSegment.m_colorRandom.a;
-
+	{
+	Color4f rndColor = Color4f(rnd(), rnd(), rnd(), rnd());
+	pP->fColorEnd = m_parameters.m_endSegment.m_color + rndColor * m_parameters.m_endSegment.m_colorRandom;
+	}
+	
 	if(m_parameters.m_rotationRandomDirection) {
 		float fRandom	= frand2();
 

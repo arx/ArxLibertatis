@@ -113,11 +113,7 @@ void Particle::Update(long _lTime) {
 		
 		fSize = fSizeStart + (fSizeEnd - fSizeStart) * ft;
 		
-		Color4f fColor;
-		fColor.r = fColorStart.r + (fColorEnd.r - fColorStart.r) * ft;
-		fColor.g = fColorStart.g + (fColorEnd.g - fColorStart.g) * ft;
-		fColor.b = fColorStart.b + (fColorEnd.b - fColorStart.b) * ft;
-		fColor.a = fColorStart.a + (fColorEnd.a - fColorStart.a) * ft;
+		Color4f fColor = fColorStart + (fColorEnd - fColorStart) * ft;
 		ulColor = fColor.to<u8>();
 	}
 }
