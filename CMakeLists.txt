@@ -1335,8 +1335,8 @@ print_configuration("Audio backend"
 	ARX_HAVE_OPENAL "OpenAL"
 )
 print_configuration("Windowing"
-	ARX_HAVE_SDL2     "SDL 2"
-	ARX_HAVE_SDL1     "SDL 1.2"
+	ARX_HAVE_SDL2 "SDL 2"
+	ARX_HAVE_SDL1 "SDL 1.2"
 )
 print_configuration("Crash handler"
 	ARX_HAVE_CRASHHANDLER_POSIX   "POSIX"
