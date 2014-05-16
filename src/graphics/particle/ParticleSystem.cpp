@@ -289,16 +289,13 @@ void ParticleSystem::Update(long _lTime) {
 		return;
 
 	float fTimeSec = _lTime * ( 1.0f / 1000 );
-
-	list<Particle *>::iterator i;
+	
 	iParticleNbAlive = 0;
-
-	i = listParticle.begin();
-
-	while(i != listParticle.end()) {
+	
+	list<Particle *>::iterator i;
+	for(i = listParticle.begin(); i != listParticle.end(); ++i) {
 		Particle * pP = *i;
-		++i;
-
+		
 		if(pP->isAlive()) {
 			pP->Update(_lTime);
 			pP->p3Velocity += m_parameters.m_gravity * fTimeSec;
