@@ -289,7 +289,6 @@ void ParticleSystem::Update(long _lTime) {
 	if(arxtime.is_paused())
 		return;
 
-	int nbtotal = 0;
 	int iNb;
 	float fTimeSec = _lTime * ( 1.0f / 1000 );
 	Particle * pP;
@@ -302,7 +301,6 @@ void ParticleSystem::Update(long _lTime) {
 	while(i != listParticle.end()) {
 		pP = *i;
 		++i;
-		nbtotal++;
 
 		if(pP->isAlive()) {
 			pP->Update(_lTime);
