@@ -158,7 +158,7 @@ class CFireField: public CSpellFx
 		~CFireField();
 
 	public:
-		void	Create(float largeur, Vec3f * pos, int duration);
+		void	Create(float largeur, const Vec3f & pos, int duration);
 		void	Update(unsigned long);
 		void Render();
 };

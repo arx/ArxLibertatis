@@ -255,7 +255,7 @@ void FireFieldSpell::Launch(long duration)
 		damage->pos = target;
 	}
 	
-	effect->Create(200.f, &target, m_tolive);
+	effect->Create(200.f, target + Vec3f(0, -10, 0), m_tolive);
 	m_pSpellFx = effect;
 	m_tolive = effect->GetDuration();
 	

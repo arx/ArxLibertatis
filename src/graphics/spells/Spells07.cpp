@@ -706,7 +706,7 @@ CFireField::~CFireField()
 {
 }
 
-void CFireField::Create(float largeur, Vec3f * pos, int _ulDuration)
+void CFireField::Create(float largeur, const Vec3f & pos, int _ulDuration)
 {
 	ARX_UNUSED(largeur);
 	
@@ -714,9 +714,7 @@ void CFireField::Create(float largeur, Vec3f * pos, int _ulDuration)
 
 	SetDuration(_ulDuration);
 
-	pos->y -= 50;
-
-	this->pos = *pos;
+	this->pos = pos;
 	
 	ParticleParams cp = ParticleParams();
 	cp.m_nbMax = 100;
@@ -750,7 +748,7 @@ void CFireField::Create(float largeur, Vec3f * pos, int _ulDuration)
 	cp.m_spawnFlags = 0;
 	
 	pPSStream.SetParams(cp);
-	pPSStream.SetPos(*pos);
+	pPSStream.SetPos(pos);
 	pPSStream.Update(0);
 
 	//-------------------------------------------------------------------------
@@ -786,7 +784,7 @@ void CFireField::Create(float largeur, Vec3f * pos, int _ulDuration)
 	cp.m_spawnFlags = 0;
 	
 	pPSStream1.SetParams(cp);
-	pPSStream1.SetPos(*pos + Vec3f(0, 10, 0));
+	pPSStream1.SetPos(pos + Vec3f(0, 10, 0));
 	pPSStream1.Update(0);
 }
 
