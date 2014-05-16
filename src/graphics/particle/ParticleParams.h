@@ -66,11 +66,16 @@ public:
 	float m_flash;
 	float m_rotation;
 	
-	bool  m_texLoop;
-	int   m_texNb;
-	int   m_texTime;
+	struct TextureInfo {
+		bool  m_texLoop;
+		int   m_texNb;
+		int   m_texTime;
+		char * m_texName;
+	};
+	
+	TextureInfo m_texture;
+	
 	RenderMaterial::BlendType m_blendMode;
-	char * m_texName;
 	
 	struct SegmentParams {
 		float m_size;
@@ -97,11 +102,8 @@ public:
 		, m_speedRandom(0)
 		, m_flash(0)
 		, m_rotation(0)
-		, m_texLoop(0)
-		, m_texNb(0)
-		, m_texTime(0)
+		, m_texture()
 		, m_blendMode(RenderMaterial::Additive)
-		, m_texName(NULL)
 		, m_startSegment()
 		, m_endSegment()
 	{}
