@@ -926,24 +926,10 @@ void CIceField::Render()
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	
 	for(i = 0; i < iMax; i++) {
-		if(tSize[i].x < tSizeMax[i].x)
-			tSize[i].x += 0.1f;
-
-		if(tSize[i].x > tSizeMax[i].x)
-			tSize[i].x = tSizeMax[i].x;
-
-		if(tSize[i].y < tSizeMax[i].y)
-			tSize[i].y += 0.1f;
-
-		if(tSize[i].y > tSizeMax[i].y)
-			tSize[i].y = tSizeMax[i].y;
-
-		if(tSize[i].z < tSizeMax[i].z)
-			tSize[i].z += 0.1f;
-
-		if(tSize[i].z > tSizeMax[i].z)
-			tSize[i].z = tSizeMax[i].z;
-
+		
+		tSize[i] += Vec3f(0.1f);
+		tSize[i] = glm::min(tSize[i], tSizeMax[i]);
+		
 		Anglef stiteangle = Anglef::ZERO;
 		Vec3f stitepos;
 		Vec3f stitescale;
