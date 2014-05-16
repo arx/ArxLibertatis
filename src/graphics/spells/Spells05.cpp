@@ -172,15 +172,12 @@ void CCurePoison::Update(unsigned long aulTime)
 
 	if(ulCurrentTime >= ulDuration)
 		return;
-
-	eSrc.x = entities[spells[spellinstance].m_target]->pos.x;
-	eSrc.y = entities[spells[spellinstance].m_target]->pos.y;
-
+	
+	eSrc = entities[spells[spellinstance].m_target]->pos;
+	
 	if(spells[spellinstance].m_target == 0)
 		eSrc.y += 200;
-
-	eSrc.z = entities[spells[spellinstance].m_target]->pos.z;
-
+	
 	unsigned long ulCalc = ulDuration - ulCurrentTime ;
 	arx_assert(ulCalc <= LONG_MAX);
 	long ff = 	static_cast<long>(ulCalc);
