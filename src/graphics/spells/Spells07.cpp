@@ -786,12 +786,7 @@ void CFireField::Create(float largeur, Vec3f * pos, int _ulDuration)
 	cp.m_spawnFlags = 0;
 	
 	pPSStream1.SetParams(cp);
-	
-	Vec3f ea;
-	ea.x = pos->x;
-	ea.z = pos->y + 10; 
-	ea.y = pos->z;
-	pPSStream1.SetPos(ea);
+	pPSStream1.SetPos(*pos + Vec3f(0, 10, 0));
 	pPSStream1.Update(0);
 }
 
