@@ -399,7 +399,7 @@ void CRuneOfGuarding::Render()
 	}
 }
 
-void LaunchPoisonExplosion(Vec3f * aePos) {
+void LaunchPoisonExplosion(const Vec3f & aePos) {
 	
 	// système de partoches pour l'explosion
 	ParticleSystem * pPS = new ParticleSystem();
@@ -434,7 +434,7 @@ void LaunchPoisonExplosion(Vec3f * aePos) {
 	cp.m_spawnFlags = 0;
 	
 	pPS->SetParams(cp);
-	pPS->SetPos(*aePos);
+	pPS->SetPos(aePos);
 	pPS->Update(0);
 	pPS->m_parameters.m_nbMax = 0;
 
@@ -681,7 +681,7 @@ void CPoisonProjectile::Render() {
 	eCurPos = lastpos;
 	
 	if(fTrail >= (i * n)) {
-		LaunchPoisonExplosion(&lastpos);
+		LaunchPoisonExplosion(lastpos);
 	}
 	
 	GRenderer->SetCulling(Renderer::CullNone);
