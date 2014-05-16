@@ -695,36 +695,26 @@ void CCreateFood::Create() {
 void CCreateFood::Update(unsigned long aulTime)
 {
 	ulCurrentTime += aulTime;
-
-//ARX_BEGIN: jycorbel (2010-07-20) - @TBE : dead code
-/*
-if (ulCurrentTime >= ulDuration)
-*/
-//ARX_END: jycorbel (2010-07-20)
-
+	
 	eSrc = entities.player()->pos;
-
-
-//ARX_BEGIN: jycorbel (2010-07-20) - Correct bug when this spell is cast, the function update particule after-life
-	if( ulCurrentTime <= ulDuration ) //ulCalc (time before end spell) must be positive !
-//ARX_END: jycorbel (2010-07-20)
-	{
-	unsigned long ulCalc = ulDuration - ulCurrentTime ;
-	arx_assert(ulCalc <= LONG_MAX);
-	long ff =  static_cast<long>(ulCalc);
-
+	
+	if(ulCurrentTime <= ulDuration) {
+		unsigned long ulCalc = ulDuration - ulCurrentTime ;
+		arx_assert(ulCalc <= LONG_MAX);
+		long ff =  static_cast<long>(ulCalc);
+		
 		if(ff < 1500) {
 			pPS->m_parameters.m_spawnFlags = PARTICLE_CIRCULAR;
 			pPS->m_parameters.m_gravity = Vec3f_ZERO;
-
-		std::list<Particle *>::iterator i;
-
-		for(i = pPS->listParticle.begin(); i != pPS->listParticle.end(); ++i) {
-			Particle * pP = *i;
-
-			if(pP->isAlive()) {
-				pP->fColorEnd.a = 0;
-
+			
+			std::list<Particle *>::iterator i;
+			
+			for(i = pPS->listParticle.begin(); i != pPS->listParticle.end(); ++i) {
+				Particle * pP = *i;
+				
+				if(pP->isAlive()) {
+					pP->fColorEnd.a = 0;
+						
 					if(pP->ulTime + ff < pP->ulTTL) {
 						pP->ulTime = pP->ulTTL - ff;
 					}
