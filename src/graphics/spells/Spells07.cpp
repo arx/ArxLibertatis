@@ -872,8 +872,6 @@ void CIceField::Create(Vec3f aeSrc, float afBeta) {
 	
 	eTarget = eSrc;
 	
-	float	xmin, ymin, zmin;
-	
 	for(int i = 0; i < iMax; i++) {
 		float t = rnd();
 
@@ -887,25 +885,15 @@ void CIceField::Create(Vec3f aeSrc, float afBeta) {
 		tSizeMax[i].y = rnd() + 0.2f;
 		tSizeMax[i].z = rnd();
 		
+		Vec3f minPos;
 		if(tType[i] == 0) {
-			xmin = 1.2f;
-			ymin = 1;
-			zmin = 1.2f;
+			minPos = Vec3f(1.2f, 1, 1.2f);
 		} else {
-			xmin = 0.4f;
-			ymin = 0.3f;
-			zmin = 0.4f;
+			minPos = Vec3f(0.4f, 0.3f, 0.4f);
 		}
-
-		if(tSizeMax[i].x < xmin)
-			tSizeMax[i].x = xmin;
-
-		if(tSizeMax[i].y < ymin)
-			tSizeMax[i].y = ymin;
-
-		if(tSizeMax[i].z < zmin)
-			tSizeMax[i].z = zmin;
-
+		
+		tSizeMax[i] = glm::max(tSizeMax[i], minPos);
+		
 		if(tType[i] == 0) {
 			tPos[i].x = eSrc.x + frand2() * 80;
 			tPos[i].y = eSrc.y;
