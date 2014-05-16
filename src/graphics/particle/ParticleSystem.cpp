@@ -289,9 +289,7 @@ void ParticleSystem::Update(long _lTime) {
 	if(arxtime.is_paused())
 		return;
 
-	int iNb;
 	float fTimeSec = _lTime * ( 1.0f / 1000 );
-	Particle * pP;
 
 	list<Particle *>::iterator i;
 	iParticleNbAlive = 0;
@@ -299,7 +297,7 @@ void ParticleSystem::Update(long _lTime) {
 	i = listParticle.begin();
 
 	while(i != listParticle.end()) {
-		pP = *i;
+		Particle * pP = *i;
 		++i;
 
 		if(pP->isAlive()) {
@@ -323,13 +321,13 @@ void ParticleSystem::Update(long _lTime) {
 
 	// création de particules en fct de la fréquence
 	if(iParticleNbAlive < m_parameters.m_nbMax) {
-		long t = m_parameters.m_nbMax - iParticleNbAlive;
+		size_t t = m_parameters.m_nbMax - iParticleNbAlive;
 		
 		if(m_parameters.m_freq != -1.f) {
-			t = std::min(long(m_storedTime.update(fTimeSec * m_parameters.m_freq)), t);
+			t = std::min(size_t(m_storedTime.update(fTimeSec * m_parameters.m_freq)), t);
 		}
 		
-		for(iNb = 0; iNb < t; iNb++) {
+		for(size_t iNb = 0; iNb < t; iNb++) {
 			Particle * pP  = new Particle();
 			SetParticleParams(pP);
 			pP->Validate();
