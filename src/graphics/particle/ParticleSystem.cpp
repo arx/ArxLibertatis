@@ -149,37 +149,7 @@ void ParticleSystem::SetColor(float _fR, float _fG, float _fB) {
 
 void ParticleSystem::SetParams(const ParticleParams & _pp) {
 	
-	m_parameters.m_pos = _pp.m_pos;
-	m_parameters.m_direction = _pp.m_direction;
-	m_parameters.m_gravity = _pp.m_gravity;
-	
-	m_parameters.m_nbMax		= _pp.m_nbMax;
-	m_parameters.m_freq = _pp.m_freq;
-	m_parameters.m_life		= _pp.m_life;
-	m_parameters.m_lifeRandom = _pp.m_lifeRandom;
-	
-	m_parameters.m_angle = _pp.m_angle;
-	m_parameters.m_speed = _pp.m_speed;
-	m_parameters.m_speedRandom = _pp.m_speedRandom;
-	
-	m_parameters.m_flash = _pp.m_flash;
-	
-	m_parameters.m_rotation = _pp.m_rotation;
-	
-	m_parameters.m_rotationRandomDirection = _pp.m_rotationRandomDirection;
-	m_parameters.m_rotationRandomStart = _pp.m_rotationRandomStart;
-
-	m_parameters.m_startSegment.m_size = _pp.m_startSegment.m_size;
-	m_parameters.m_startSegment.m_sizeRandom = _pp.m_startSegment.m_sizeRandom;
-	
-	m_parameters.m_startSegment.m_color = _pp.m_startSegment.m_color;
-	m_parameters.m_startSegment.m_colorRandom = _pp.m_startSegment.m_colorRandom;
-	
-	m_parameters.m_endSegment.m_size = _pp.m_endSegment.m_size;
-	m_parameters.m_endSegment.m_sizeRandom = _pp.m_endSegment.m_sizeRandom;
-
-	m_parameters.m_endSegment.m_color = _pp.m_endSegment.m_color;
-	m_parameters.m_endSegment.m_colorRandom = _pp.m_endSegment.m_colorRandom;
+	m_parameters = _pp;
 	
 	m_parameters.m_direction = glm::normalize(m_parameters.m_direction);
 	Vec3f eVect(m_parameters.m_direction.x, -m_parameters.m_direction.y, m_parameters.m_direction.z);
@@ -189,8 +159,11 @@ void ParticleSystem::SetParams(const ParticleParams & _pp) {
 	float g = (m_parameters.m_startSegment.m_color.g  + m_parameters.m_endSegment.m_color.g ) * 0.5f;
 	float b = (m_parameters.m_startSegment.m_color.b  + m_parameters.m_endSegment.m_color.b ) * 0.5f;
 	SetColor(r, g, b);
-
-	m_parameters.m_blendMode = _pp.m_blendMode;
+	
+	{
+		ParticleParams::TextureInfo & texInfo = m_parameters.m_texture;
+		SetTexture(texInfo.m_texName, texInfo.m_texNb, texInfo.m_texTime);
+	}
 }
 
 void ParticleSystem::SetTexture(const char * _pszTex, int _iNbTex, int _iTime) {

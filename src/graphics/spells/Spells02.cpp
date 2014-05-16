@@ -124,10 +124,10 @@ void CHeal::Create() {
 	cp.m_endSegment.m_colorRandom = Color(0, 0, 40, 0).to<float>();
 	
 	cp.m_blendMode = RenderMaterial::Additive;
+	cp.m_texture.set("graph/particles/heal_0005", 0, 100);
 
 	pPS->SetParams(cp);
 	pPS->ulParticleSpawn = PARTICLE_CIRCULAR | PARTICLE_BORDER;
-	pPS->SetTexture("graph/particles/heal_0005", 0, 100);
 }
 
 void CHeal::Update(unsigned long aulTime)

@@ -86,7 +86,6 @@ public:
 	
 	void SetParams(const ParticleParams & app);
 	
-	void SetTexture(const char *, int, int);
 	void SetPos(const Vec3f & ap3);
 	
 	void Render();
@@ -112,6 +111,7 @@ private:
 	void SpawnParticle(Particle * particle);
 	void SetParticleParams(Particle * particle);
 	
+	void SetTexture(const char *, int, int);
 	void SetColor(float, float, float);
 };
 

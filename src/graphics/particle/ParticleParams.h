@@ -70,7 +70,14 @@ public:
 		bool  m_texLoop;
 		int   m_texNb;
 		int   m_texTime;
-		char * m_texName;
+		const char * m_texName;
+		
+		void set(const char * _pszTex, int _iNbTex, int _iTime) {
+			m_texLoop = true;
+			m_texName = _pszTex;
+			m_texNb = _iNbTex;
+			m_texTime = _iTime;
+		}
 	};
 	
 	TextureInfo m_texture;

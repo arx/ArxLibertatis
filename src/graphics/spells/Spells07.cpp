@@ -746,11 +746,10 @@ void CFireField::Create(float largeur, Vec3f * pos, int _ulDuration)
 
 	cp.m_blendMode = RenderMaterial::AlphaAdditive;
 	cp.m_freq = 150.0f;
+	cp.m_texture.set("graph/particles/firebase", 4, 100);
 	
 	pPSStream.SetParams(cp);
 	pPSStream.ulParticleSpawn = 0;
-
-	pPSStream.SetTexture("graph/particles/firebase", 4, 100);
 
 	pPSStream.SetPos(*pos);
 	pPSStream.Update(0);
@@ -784,11 +783,10 @@ void CFireField::Create(float largeur, Vec3f * pos, int _ulDuration)
 
 	cp.m_blendMode = RenderMaterial::Additive;
 	cp.m_freq = 150.0f;
+	cp.m_texture.set("graph/particles/fire", 0, 500);
 	
 	pPSStream1.SetParams(cp);
 	pPSStream1.ulParticleSpawn = 0;
-
-	pPSStream1.SetTexture("graph/particles/fire", 0, 500);
 	
 	Vec3f ea;
 	ea.x = pos->x;

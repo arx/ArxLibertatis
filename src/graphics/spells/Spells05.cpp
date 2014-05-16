@@ -141,11 +141,11 @@ void CCurePoison::Create()
 	cp.m_endSegment.m_color = Color(5, 20, 5, 0).to<float>();
 	cp.m_endSegment.m_colorRandom = Color(0, 40, 0, 0).to<float>();
 	cp.m_blendMode = RenderMaterial::Additive;
+	cp.m_texture.set("graph/particles/cure_poison", 0, 100); //5
 
 	pPS->SetParams(cp);
 	pPS->ulParticleSpawn = PARTICLE_CIRCULAR | PARTICLE_BORDER;
-	pPS->SetTexture("graph/particles/cure_poison", 0, 100); //5
-
+	
 	pPS->lLightId = GetFreeDynLight();
 
 	if(lightHandleIsValid(pPS->lLightId)) {
@@ -430,10 +430,10 @@ void LaunchPoisonExplosion(Vec3f * aePos) {
 
 	cp.m_blendMode = RenderMaterial::AlphaAdditive;
 	cp.m_freq = -1;
+	cp.m_texture.set("graph/particles/big_greypouf", 0, 200);
+	
 	pPS->SetParams(cp);
 	pPS->ulParticleSpawn = 0;
-	pPS->SetTexture("graph/particles/big_greypouf", 0, 200);
-
 	pPS->SetPos(*aePos);
 	pPS->Update(0);
 	pPS->m_parameters.m_nbMax = 0;
@@ -545,11 +545,10 @@ void CPoisonProjectile::Create(Vec3f _eSrc, float _fBeta)
 
 	cp.m_blendMode = RenderMaterial::Screen;
 	cp.m_freq = -1;
+	cp.m_texture.set("graph/particles/big_greypouf", 0, 200);
 	
 	pPS.SetParams(cp);
 	pPS.ulParticleSpawn = 0;
-
-	pPS.SetTexture("graph/particles/big_greypouf", 0, 200);
 
 	pPS.bParticleFollow = true;
 
@@ -601,11 +600,10 @@ void CPoisonProjectile::Update(unsigned long _ulTime)
 
 			cp.m_blendMode = RenderMaterial::Screen;
 			cp.m_freq = 80;
+			cp.m_texture.set("graph/particles/big_greypouf", 0, 200);
 			
 			pPSStream.SetParams(cp);
 			pPSStream.ulParticleSpawn = 0;
-
-			pPSStream.SetTexture("graph/particles/big_greypouf", 0, 200);
 
 			pPSStream.bParticleFollow = true;
 		}
