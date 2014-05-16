@@ -179,7 +179,7 @@ void CFireBall::Create(Vec3f aeSrc, float afBeta, float afAlpha, float _fLevel)
 	fire_1.m_texture.set("graph/particles/fire", 0, 200);
 	
 	pPSFire.SetParams(fire_1);
-	pPSFire.ulParticleSpawn = 0;
+	pPSFire.m_spawnFlags = 0;
 	pPSFire.Update(0);
 
 	//FIRE
@@ -192,7 +192,7 @@ void CFireBall::Create(Vec3f aeSrc, float afBeta, float afAlpha, float _fLevel)
 	fire_2.m_texture.set("graph/particles/fire", 0, 200);
 	
 	pPSFire2.SetParams(fire_2);
-	pPSFire2.ulParticleSpawn = 0;
+	pPSFire2.m_spawnFlags = 0;
 	pPSFire2.Update(0);
 
 	// Smoke
@@ -203,7 +203,7 @@ void CFireBall::Create(Vec3f aeSrc, float afBeta, float afAlpha, float _fLevel)
 	smoke.m_texture.set("graph/particles/big_greypouf", 0, 0);
 	
 	pPSSmoke.SetParams(smoke);
-	pPSSmoke.ulParticleSpawn = 0;
+	pPSSmoke.m_spawnFlags = 0;
 	
 	pPSSmoke.Update(0);
 
@@ -690,7 +690,7 @@ void CCreateFood::Create() {
 	cp.m_texture.set("graph/particles/create_food", 0, 100); //5
 	
 	pPS->SetParams(cp);
-	pPS->ulParticleSpawn = PARTICLE_CIRCULAR | PARTICLE_BORDER;
+	pPS->m_spawnFlags = PARTICLE_CIRCULAR | PARTICLE_BORDER;
 	
 }
 
@@ -716,7 +716,7 @@ if (ulCurrentTime >= ulDuration)
 	long ff =  static_cast<long>(ulCalc);
 
 		if(ff < 1500) {
-			pPS->ulParticleSpawn = PARTICLE_CIRCULAR;
+			pPS->m_spawnFlags = PARTICLE_CIRCULAR;
 			pPS->m_parameters.m_gravity = Vec3f_ZERO;
 
 		std::list<Particle *>::iterator i;

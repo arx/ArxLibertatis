@@ -117,7 +117,7 @@ void LaunchMagicMissileExplosion(const Vec3f & _ePos, int t = 0, long spellinsta
 	cp.m_blendMode = RenderMaterial::Additive;
 
 	pPS->SetParams(cp);
-	pPS->ulParticleSpawn = 0;
+	pPS->m_spawnFlags = 0;
 	
 	Vec3f eP = _ePos;
 	

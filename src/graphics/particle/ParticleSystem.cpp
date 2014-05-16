@@ -87,7 +87,7 @@ ParticleSystem::ParticleSystem() {
 	m_parameters.m_rotation = 0;
 	
 	m_parameters.m_freq = -1;
-	ulParticleSpawn = 0;
+	m_spawnFlags = 0;
 	
 	// default settings for EDITOR MODE only
 	Vec3f eVect = m_parameters.m_direction = -Vec3f_Y_AXIS;
@@ -191,13 +191,13 @@ void ParticleSystem::SpawnParticle(Particle * pP) {
 	
 	pP->p3Pos = Vec3f_ZERO;
 	
-	if((ulParticleSpawn & PARTICLE_CIRCULAR) == PARTICLE_CIRCULAR
-	   && (ulParticleSpawn & PARTICLE_BORDER) == PARTICLE_BORDER) {
+	if((m_spawnFlags & PARTICLE_CIRCULAR) == PARTICLE_CIRCULAR
+	   && (m_spawnFlags & PARTICLE_BORDER) == PARTICLE_BORDER) {
 		float randd = rnd() * 360.f;
 		pP->p3Pos.x = std::sin(randd) * m_parameters.m_pos.x;
 		pP->p3Pos.y = rnd() * m_parameters.m_pos.y;
 		pP->p3Pos.z = std::cos(randd) * m_parameters.m_pos.z;
-	} else if((ulParticleSpawn & PARTICLE_CIRCULAR) == PARTICLE_CIRCULAR) {
+	} else if((m_spawnFlags & PARTICLE_CIRCULAR) == PARTICLE_CIRCULAR) {
 		float randd = rnd() * 360.f;
 		pP->p3Pos.x = std::sin(randd) * rnd() * m_parameters.m_pos.x;
 		pP->p3Pos.y = rnd() * m_parameters.m_pos.y;

@@ -127,7 +127,7 @@ void CHeal::Create() {
 	cp.m_texture.set("graph/particles/heal_0005", 0, 100);
 
 	pPS->SetParams(cp);
-	pPS->ulParticleSpawn = PARTICLE_CIRCULAR | PARTICLE_BORDER;
+	pPS->m_spawnFlags = PARTICLE_CIRCULAR | PARTICLE_BORDER;
 }
 
 void CHeal::Update(unsigned long aulTime)
@@ -167,7 +167,7 @@ void CHeal::Update(unsigned long aulTime)
 	long ff = static_cast<long>(ulCalc);
 
 	if(ff < 1500) {
-		pPS->ulParticleSpawn = PARTICLE_CIRCULAR;
+		pPS->m_spawnFlags = PARTICLE_CIRCULAR;
 		pPS->m_parameters.m_gravity = Vec3f_ZERO;
 
 		std::list<Particle *>::iterator i;

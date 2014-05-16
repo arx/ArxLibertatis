@@ -75,7 +75,7 @@ public:
 	// these are used for the particles it creates
 	ParticleParams m_parameters;
 	
-	ParticleSpawn ulParticleSpawn;
+	ParticleSpawn m_spawnFlags;
 	
 	bool bParticleFollow;
 	

@@ -144,7 +144,7 @@ void CCurePoison::Create()
 	cp.m_texture.set("graph/particles/cure_poison", 0, 100); //5
 
 	pPS->SetParams(cp);
-	pPS->ulParticleSpawn = PARTICLE_CIRCULAR | PARTICLE_BORDER;
+	pPS->m_spawnFlags = PARTICLE_CIRCULAR | PARTICLE_BORDER;
 	
 	pPS->lLightId = GetFreeDynLight();
 
@@ -186,7 +186,7 @@ void CCurePoison::Update(unsigned long aulTime)
 	long ff = 	static_cast<long>(ulCalc);
 
 	if(ff < 1500) {
-		pPS->ulParticleSpawn = PARTICLE_CIRCULAR;
+		pPS->m_spawnFlags = PARTICLE_CIRCULAR;
 		pPS->m_parameters.m_gravity = Vec3f_ZERO;
 
 		std::list<Particle *>::iterator i;
@@ -433,7 +433,7 @@ void LaunchPoisonExplosion(Vec3f * aePos) {
 	cp.m_texture.set("graph/particles/big_greypouf", 0, 200);
 	
 	pPS->SetParams(cp);
-	pPS->ulParticleSpawn = 0;
+	pPS->m_spawnFlags = 0;
 	pPS->SetPos(*aePos);
 	pPS->Update(0);
 	pPS->m_parameters.m_nbMax = 0;
@@ -548,7 +548,7 @@ void CPoisonProjectile::Create(Vec3f _eSrc, float _fBeta)
 	cp.m_texture.set("graph/particles/big_greypouf", 0, 200);
 	
 	pPS.SetParams(cp);
-	pPS.ulParticleSpawn = 0;
+	pPS.m_spawnFlags = 0;
 
 	pPS.bParticleFollow = true;
 
@@ -603,7 +603,7 @@ void CPoisonProjectile::Update(unsigned long _ulTime)
 			cp.m_texture.set("graph/particles/big_greypouf", 0, 200);
 			
 			pPSStream.SetParams(cp);
-			pPSStream.ulParticleSpawn = 0;
+			pPSStream.m_spawnFlags = 0;
 
 			pPSStream.bParticleFollow = true;
 		}
