@@ -95,8 +95,6 @@ private:
 	
 	glm::mat4x4 eMat;
 	
-	unsigned long ulNbParticleGen;
-	
 	math::Quantizer m_storedTime;
 	
 	void SetParticleParams(Particle * particle);

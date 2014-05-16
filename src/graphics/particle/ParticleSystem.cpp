@@ -79,7 +79,6 @@ ParticleSystem::ParticleSystem() {
 	
 	m_parameters.m_nbMax = 50;
 	
-	ulNbParticleGen = 10;
 	iParticleNbAlive = 0;
 	iNbTex = 0;
 	iTexTime = 500;
@@ -313,7 +312,6 @@ void ParticleSystem::Update(long _lTime) {
 				SetParticleParams(pP);
 				pP->Validate();
 				pP->Update(0);
-				ulNbParticleGen++;
 				iParticleNbAlive++;
 			}
 		}
@@ -333,7 +331,6 @@ void ParticleSystem::Update(long _lTime) {
 			pP->Validate();
 			pP->Update(0);
 			listParticle.insert(listParticle.end(), pP);
-			ulNbParticleGen ++;
 			iParticleNbAlive++;
 		}
 	}
