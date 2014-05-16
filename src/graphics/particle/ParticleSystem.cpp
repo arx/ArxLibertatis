@@ -293,23 +293,25 @@ void ParticleSystem::Update(long _lTime) {
 	iParticleNbAlive = 0;
 	
 	list<Particle *>::iterator i;
-	for(i = listParticle.begin(); i != listParticle.end(); ++i) {
+	for(i = listParticle.begin(); i != listParticle.end(); ) {
 		Particle * pP = *i;
 		
 		if(pP->isAlive()) {
 			pP->Update(_lTime);
 			pP->p3Velocity += m_parameters.m_gravity * fTimeSec;
 			iParticleNbAlive ++;
+			++i;
 		} else {
 			if(iParticleNbAlive >= m_parameters.m_nbMax) {
 				delete pP;
-				listParticle.remove(pP);
+				i = listParticle.erase(i);
 			} else {
 				pP->Regen();
 				SetParticleParams(pP);
 				pP->Validate();
 				pP->Update(0);
 				iParticleNbAlive++;
+				++i;
 			}
 		}
 	}
