@@ -115,9 +115,9 @@ void LaunchMagicMissileExplosion(const Vec3f & _ePos, int t = 0, long spellinsta
 	cp.m_endSegment.m_colorRandom = Color(50, 50, 50, 50).to<float>();
 
 	cp.m_blendMode = RenderMaterial::Additive;
-
+	cp.m_spawnFlags = 0;
+	
 	pPS->SetParams(cp);
-	pPS->m_spawnFlags = 0;
 	
 	Vec3f eP = _ePos;
 	

@@ -47,6 +47,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/Draw.h"
 #include "math/Vector.h"
 
+enum ParticleSpawnFlag {
+	PARTICLE_CIRCULAR = (1<<0),
+	PARTICLE_BORDER   = (1<<1)
+};
+DECLARE_FLAGS(ParticleSpawnFlag, ParticleSpawn)
+DECLARE_FLAGS_OPERATORS(ParticleSpawn)
+
 class ParticleParams {
 	
 public:
@@ -94,6 +101,8 @@ public:
 	SegmentParams m_startSegment;
 	SegmentParams m_endSegment;
 	
+	ParticleSpawn m_spawnFlags;
+	
 	ParticleParams()
 		: m_pos(Vec3f_ZERO)
 		, m_direction(Vec3f_ZERO)
@@ -113,6 +122,7 @@ public:
 		, m_blendMode(RenderMaterial::Additive)
 		, m_startSegment()
 		, m_endSegment()
+		, m_spawnFlags()
 	{}
 };
 

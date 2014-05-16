@@ -60,12 +60,7 @@ class Particle;
 class ParticleParams;
 class TextureContainer;
 
-enum ParticleSpawnFlag {
-	PARTICLE_CIRCULAR = (1<<0),
-	PARTICLE_BORDER   = (1<<1)
-};
-DECLARE_FLAGS(ParticleSpawnFlag, ParticleSpawn)
-DECLARE_FLAGS_OPERATORS(ParticleSpawn)
+
 
 class ParticleSystem {
 	
@@ -74,8 +69,6 @@ public:
 	
 	// these are used for the particles it creates
 	ParticleParams m_parameters;
-	
-	ParticleSpawn m_spawnFlags;
 	
 	bool bParticleFollow;
 	
