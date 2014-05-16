@@ -186,26 +186,6 @@ void ParticleSystem::SetTexture(const char * _pszTex, int _iNbTex, int _iTime) {
 	}
 }
 
-void ParticleSystem::SpawnParticle(Particle * pP) {
-	
-	pP->p3Pos = Vec3f_ZERO;
-	
-	if((m_parameters.m_spawnFlags & PARTICLE_CIRCULAR) == PARTICLE_CIRCULAR
-	   && (m_parameters.m_spawnFlags & PARTICLE_BORDER) == PARTICLE_BORDER) {
-		float randd = rnd() * 360.f;
-		pP->p3Pos.x = std::sin(randd) * m_parameters.m_pos.x;
-		pP->p3Pos.y = rnd() * m_parameters.m_pos.y;
-		pP->p3Pos.z = std::cos(randd) * m_parameters.m_pos.z;
-	} else if((m_parameters.m_spawnFlags & PARTICLE_CIRCULAR) == PARTICLE_CIRCULAR) {
-		float randd = rnd() * 360.f;
-		pP->p3Pos.x = std::sin(randd) * rnd() * m_parameters.m_pos.x;
-		pP->p3Pos.y = rnd() * m_parameters.m_pos.y;
-		pP->p3Pos.z = std::cos(randd) * rnd() * m_parameters.m_pos.z;
-	} else {
-		pP->p3Pos = m_parameters.m_pos * randomVec(-1.f, 1.f);
-	}
-}
-
 void VectorRotateY(Vec3f & _eIn, Vec3f & _eOut, float _fAngle) {
 	float c = std::cos(_fAngle);
 	float s = std::sin(_fAngle);
@@ -224,7 +204,22 @@ void VectorRotateZ(Vec3f & _eIn, Vec3f & _eOut, float _fAngle) {
 
 void ParticleSystem::SetParticleParams(Particle * pP) {
 
-	SpawnParticle(pP);
+	pP->p3Pos = Vec3f_ZERO;
+	
+	if((m_parameters.m_spawnFlags & PARTICLE_CIRCULAR) == PARTICLE_CIRCULAR
+	   && (m_parameters.m_spawnFlags & PARTICLE_BORDER) == PARTICLE_BORDER) {
+		float randd = rnd() * 360.f;
+		pP->p3Pos.x = std::sin(randd) * m_parameters.m_pos.x;
+		pP->p3Pos.y = rnd() * m_parameters.m_pos.y;
+		pP->p3Pos.z = std::cos(randd) * m_parameters.m_pos.z;
+	} else if((m_parameters.m_spawnFlags & PARTICLE_CIRCULAR) == PARTICLE_CIRCULAR) {
+		float randd = rnd() * 360.f;
+		pP->p3Pos.x = std::sin(randd) * rnd() * m_parameters.m_pos.x;
+		pP->p3Pos.y = rnd() * m_parameters.m_pos.y;
+		pP->p3Pos.z = std::cos(randd) * rnd() * m_parameters.m_pos.z;
+	} else {
+		pP->p3Pos = m_parameters.m_pos * randomVec(-1.f, 1.f);
+	}
 
 	float fTTL = m_parameters.m_life + rnd() * m_parameters.m_lifeRandom;
 	pP->ulTTL = checked_range_cast<long>(fTTL);

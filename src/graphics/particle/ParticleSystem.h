@@ -99,7 +99,6 @@ private:
 	
 	math::Quantizer m_storedTime;
 	
-	void SpawnParticle(Particle * particle);
 	void SetParticleParams(Particle * particle);
 	
 	void SetTexture(const char *, int, int);
