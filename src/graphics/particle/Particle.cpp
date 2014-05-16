@@ -62,14 +62,8 @@ Particle::Particle()
 	ulTTL = checked_range_cast<long>(2000 + rnd() * 3000);
 	fOneOnTTL = 1.0f / float(ulTTL);
 	
-	fColorStart[0] = 1;
-	fColorStart[1] = 1;
-	fColorStart[2] = 1;
-	fColorStart[3] = 0.5f;
-	fColorEnd[0] = 1;
-	fColorEnd[1] = 1;
-	fColorEnd[2] = 1;
-	fColorEnd[3] = 0.1f;
+	fColorStart = Color4f(1, 1, 1, 0.5f);
+	fColorEnd = Color4f(1, 1, 1, 0.1f);
 }
 
 Particle::~Particle() { }
@@ -88,10 +82,15 @@ void Particle::Validate() {
 	fSizeStart = std::max(fSizeStart, 1.f);
 	fSizeEnd = std::max(fSizeEnd, 1.f);
 	
-	for(int i = 0; i < 4; i++) {
-		fColorStart[i] = clamp(fColorStart[i], 0.f, 1.f);
-		fColorEnd[i] = clamp(fColorEnd[i], 0.f, 1.f);
-	}
+	fColorStart.r = clamp(fColorStart.r, 0.f, 1.f);
+	fColorStart.g = clamp(fColorStart.g, 0.f, 1.f);
+	fColorStart.b = clamp(fColorStart.b, 0.f, 1.f);
+	fColorStart.a = clamp(fColorStart.a, 0.f, 1.f);
+	
+	fColorEnd.r = clamp(fColorEnd.r, 0.f, 1.f);
+	fColorEnd.g = clamp(fColorEnd.g, 0.f, 1.f);
+	fColorEnd.b = clamp(fColorEnd.b, 0.f, 1.f);
+	fColorEnd.a = clamp(fColorEnd.a, 0.f, 1.f);
 	
 	if(ulTTL < 100) {
 		ulTTL = 100;
@@ -115,10 +114,10 @@ void Particle::Update(long _lTime) {
 		fSize = fSizeStart + (fSizeEnd - fSizeStart) * ft;
 		
 		Color4f fColor;
-		fColor.r = fColorStart[0] + (fColorEnd[0] - fColorStart[0]) * ft;
-		fColor.g = fColorStart[1] + (fColorEnd[1] - fColorStart[1]) * ft;
-		fColor.b = fColorStart[2] + (fColorEnd[2] - fColorStart[2]) * ft;
-		fColor.a = fColorStart[3] + (fColorEnd[3] - fColorStart[3]) * ft;
+		fColor.r = fColorStart.r + (fColorEnd.r - fColorStart.r) * ft;
+		fColor.g = fColorStart.g + (fColorEnd.g - fColorStart.g) * ft;
+		fColor.b = fColorStart.b + (fColorEnd.b - fColorStart.b) * ft;
+		fColor.a = fColorStart.a + (fColorEnd.a - fColorStart.a) * ft;
 		ulColor = fColor.to<u8>();
 	}
 }

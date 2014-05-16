@@ -242,17 +242,17 @@ void ParticleSystem::SetParticleParams(Particle * pP) {
 	pP->p3Velocity = vvz * fSpeed;
 	pP->fSizeStart = m_parameters.m_startSegment.m_size + rnd() * m_parameters.m_startSegment.m_sizeRandom;
 
-	pP->fColorStart[0] = m_parameters.m_startSegment.m_color.r + rnd() * m_parameters.m_startSegment.m_colorRandom.r;
-	pP->fColorStart[1] = m_parameters.m_startSegment.m_color.g + rnd() * m_parameters.m_startSegment.m_colorRandom.g;
-	pP->fColorStart[2] = m_parameters.m_startSegment.m_color.b + rnd() * m_parameters.m_startSegment.m_colorRandom.b;
-	pP->fColorStart[3] = m_parameters.m_startSegment.m_color.a + rnd() * m_parameters.m_startSegment.m_colorRandom.a;
+	pP->fColorStart.r = m_parameters.m_startSegment.m_color.r + rnd() * m_parameters.m_startSegment.m_colorRandom.r;
+	pP->fColorStart.g = m_parameters.m_startSegment.m_color.g + rnd() * m_parameters.m_startSegment.m_colorRandom.g;
+	pP->fColorStart.b = m_parameters.m_startSegment.m_color.b + rnd() * m_parameters.m_startSegment.m_colorRandom.b;
+	pP->fColorStart.a = m_parameters.m_startSegment.m_color.a + rnd() * m_parameters.m_startSegment.m_colorRandom.a;
 
 	pP->fSizeEnd = m_parameters.m_endSegment.m_size + rnd() * m_parameters.m_endSegment.m_sizeRandom;
 
-	pP->fColorEnd[0] = m_parameters.m_endSegment.m_color.r + rnd() * m_parameters.m_endSegment.m_colorRandom.r;
-	pP->fColorEnd[1] = m_parameters.m_endSegment.m_color.g + rnd() * m_parameters.m_endSegment.m_colorRandom.g;
-	pP->fColorEnd[2] = m_parameters.m_endSegment.m_color.b + rnd() * m_parameters.m_endSegment.m_colorRandom.b;
-	pP->fColorEnd[3] = m_parameters.m_endSegment.m_color.a + rnd() * m_parameters.m_endSegment.m_colorRandom.a;
+	pP->fColorEnd.r = m_parameters.m_endSegment.m_color.r + rnd() * m_parameters.m_endSegment.m_colorRandom.r;
+	pP->fColorEnd.g = m_parameters.m_endSegment.m_color.g + rnd() * m_parameters.m_endSegment.m_colorRandom.g;
+	pP->fColorEnd.b = m_parameters.m_endSegment.m_color.b + rnd() * m_parameters.m_endSegment.m_colorRandom.b;
+	pP->fColorEnd.a = m_parameters.m_endSegment.m_color.a + rnd() * m_parameters.m_endSegment.m_colorRandom.a;
 
 	if(m_parameters.m_rotationRandomDirection) {
 		float fRandom	= frand2();

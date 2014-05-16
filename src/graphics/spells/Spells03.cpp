@@ -723,7 +723,7 @@ if (ulCurrentTime >= ulDuration)
 			Particle * pP = *i;
 
 			if(pP->isAlive()) {
-				pP->fColorEnd[3] = 0;
+				pP->fColorEnd.a = 0;
 
 					if(pP->ulTime + ff < pP->ulTTL) {
 						pP->ulTime = pP->ulTTL - ff;

@@ -65,8 +65,8 @@ public:
 	float fSizeEnd;
 	
 	// color
-	float fColorStart[4];
-	float fColorEnd[4];
+	Color4f fColorStart;
+	Color4f fColorEnd;
 	Color ulColor;
 	
 	// rotation
