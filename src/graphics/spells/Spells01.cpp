@@ -118,10 +118,7 @@ void LaunchMagicMissileExplosion(const Vec3f & _ePos, int t = 0, long spellinsta
 	cp.m_spawnFlags = 0;
 	
 	pPS->SetParams(cp);
-	
-	Vec3f eP = _ePos;
-	
-	pPS->SetPos(eP);
+	pPS->SetPos(_ePos);
 	pPS->Update(0);
 	pPS->m_parameters.m_nbMax = 0;
 
@@ -144,7 +141,7 @@ void LaunchMagicMissileExplosion(const Vec3f & _ePos, int t = 0, long spellinsta
 			light->rgb.b = .8f;
 		}
 
-		light->pos = eP;
+		light->pos = _ePos;
 		light->duration = 1500;
 	}
 
