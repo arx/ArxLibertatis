@@ -77,7 +77,7 @@ public:
 	
 	void SetParams(const ParticleParams & app);
 	
-	void SetPos(const Vec3f & ap3);
+	void SetPos(const Vec3f & pos);
 	
 	void Render();
 	bool IsAlive();
@@ -85,7 +85,7 @@ public:
 	void RecomputeDirection();
 	
 private:
-	Vec3f p3Pos;
+	Vec3f m_nextPosition;
 	int iParticleNbAlive;
 	
 	TextureContainer * tex_tab[20];

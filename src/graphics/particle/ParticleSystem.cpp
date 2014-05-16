@@ -128,13 +128,13 @@ ParticleSystem::~ParticleSystem() {
 	listParticle.clear();
 }
 
-void ParticleSystem::SetPos(const Vec3f & _p3) {
+void ParticleSystem::SetPos(const Vec3f & pos) {
 	
-	p3Pos = _p3;
+	m_nextPosition = pos;
 	if(lightHandleIsValid(lLightId)) {
 		EERIE_LIGHT * light = lightHandleGet(lLightId);
 		
-		light->pos = p3Pos;
+		light->pos = m_nextPosition;
 	}
 }
 
@@ -397,7 +397,7 @@ void ParticleSystem::Render() {
 			
 			TexturedVertex p3pos;
 			p3pos.p = p->p3Pos;
-			p3pos.p += p3Pos;
+			p3pos.p += m_nextPosition;
             
 			mat.setTexture(tex_tab[inumtex]);
 			
