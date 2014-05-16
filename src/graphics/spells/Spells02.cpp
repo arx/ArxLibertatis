@@ -100,8 +100,7 @@ void CHeal::Create() {
 	}
 
 	pPS->SetPos(eSrc);
-	ParticleParams cp;
-	memset(&cp, 0, sizeof(cp));
+	ParticleParams cp = ParticleParams();
 	cp.m_nbMax = 350;
 	cp.m_life = 800;
 	cp.m_lifeRandom = 2000;

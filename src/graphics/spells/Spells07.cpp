@@ -717,8 +717,8 @@ void CFireField::Create(float largeur, Vec3f * pos, int _ulDuration)
 	pos->y -= 50;
 
 	this->pos = *pos;
-
-	ParticleParams cp;
+	
+	ParticleParams cp = ParticleParams();
 	cp.m_nbMax = 100;
 	cp.m_life = 2000;
 	cp.m_lifeRandom = 1000;

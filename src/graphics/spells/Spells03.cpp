@@ -72,9 +72,7 @@ CFireBall::CFireBall() : CSpellFx() {
 	
 	bExplo = false;
 	
-	// TODO using memset on a class is naughty
-	
-	memset(&fire_1, 0, sizeof(fire_1));
+	fire_1 = ParticleParams();
 	fire_1.m_nbMax = 200;
 	fire_1.m_life = 550;
 	fire_1.m_lifeRandom = 500;
@@ -92,8 +90,8 @@ CFireBall::CFireBall() : CSpellFx() {
 	fire_1.m_endSegment.m_color = Color(25, 25, 0, 50).to<float>();
 	fire_1.m_endSegment.m_colorRandom = Color(50, 0, 0, 120).to<float>();
 	fire_1.m_blendMode = RenderMaterial::Additive;
-
-	memset(&fire_2, 0, sizeof(fire_2));
+	
+	fire_2 = ParticleParams();
 	fire_2.m_nbMax = 20;
 	fire_2.m_life = 550;
 	fire_2.m_lifeRandom = 500;
@@ -109,8 +107,8 @@ CFireBall::CFireBall() : CSpellFx() {
 	fire_2.m_endSegment.m_color = Color(25, 25, 0, 0).to<float>();
 	fire_2.m_endSegment.m_colorRandom = Color(50, 0, 0, 120).to<float>();
 	fire_2.m_blendMode = RenderMaterial::Additive;
-
-	memset(&smoke, 0, sizeof(smoke));
+	
+	smoke = ParticleParams();
 	smoke.m_nbMax = 30;
 	smoke.m_life = 2000;
 	smoke.m_lifeRandom = 3000;
@@ -666,8 +664,7 @@ void CCreateFood::Create() {
 	eSrc = player.pos;
 	
 	pPS->SetPos(eSrc);
-	ParticleParams cp;
-	memset(&cp, 0, sizeof(cp));
+	ParticleParams cp = ParticleParams();
 	cp.m_nbMax = 350;
 	cp.m_life = 800;
 	cp.m_lifeRandom = 2000;

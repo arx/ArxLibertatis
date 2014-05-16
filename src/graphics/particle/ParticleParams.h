@@ -83,7 +83,27 @@ public:
 	SegmentParams m_endSegment;
 	
 	ParticleParams()
-		: m_freq(-1)
+		: m_pos(Vec3f_ZERO)
+		, m_direction(Vec3f_ZERO)
+		, m_gravity(Vec3f_ZERO)
+		, m_nbMax(0)
+		, m_freq(-1)
+		, m_rotationRandomDirection(0)
+		, m_rotationRandomStart(0)
+		, m_life(0)
+		, m_lifeRandom(0)
+		, m_angle(0)
+		, m_speed(0)
+		, m_speedRandom(0)
+		, m_flash(0)
+		, m_rotation(0)
+		, m_texLoop(0)
+		, m_texNb(0)
+		, m_texTime(0)
+		, m_blendMode(RenderMaterial::Additive)
+		, m_texName(NULL)
+		, m_startSegment()
+		, m_endSegment()
 	{}
 };
 

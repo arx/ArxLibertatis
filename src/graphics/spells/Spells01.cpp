@@ -76,8 +76,7 @@ void LaunchMagicMissileExplosion(const Vec3f & _ePos, int t = 0, long spellinsta
 {
 	// système de partoches pour l'explosion
 	ParticleSystem * pPS = new ParticleSystem();
-	ParticleParams cp;
-	memset(&cp, 0, sizeof(cp));
+	ParticleParams cp = ParticleParams();
 	cp.m_nbMax = 100 + t * 50;
 	cp.m_life = 1500;
 	cp.m_lifeRandom = 0;

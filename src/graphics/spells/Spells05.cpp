@@ -118,8 +118,7 @@ void CCurePoison::Create()
 	eSrc.z = entities[spells[spellinstance].m_target]->pos.z;
 
 	pPS->SetPos(eSrc);
-	ParticleParams cp;
-	memset(&cp, 0, sizeof(cp));
+	ParticleParams cp = ParticleParams();
 	cp.m_nbMax = 350;
 	cp.m_life = 800;
 	cp.m_lifeRandom = 2000;
@@ -404,7 +403,7 @@ void LaunchPoisonExplosion(Vec3f * aePos) {
 	
 	// système de partoches pour l'explosion
 	ParticleSystem * pPS = new ParticleSystem();
-	ParticleParams cp;
+	ParticleParams cp = ParticleParams();
 	cp.m_nbMax = 80; 
 	cp.m_life = 1500;
 	cp.m_lifeRandom = 500;
@@ -519,7 +518,7 @@ void CPoisonProjectile::Create(Vec3f _eSrc, float _fBeta)
 
 	//-------------------------------------------------------------------------
 	// système de partoches
-	ParticleParams cp;
+	ParticleParams cp = ParticleParams();
 	cp.m_nbMax = 5;
 	cp.m_life = 2000;
 	cp.m_lifeRandom = 1000;
@@ -573,7 +572,7 @@ void CPoisonProjectile::Update(unsigned long _ulTime)
 			bOk = true;
 
 			// go
-			ParticleParams cp;
+			ParticleParams cp = ParticleParams();
 			cp.m_nbMax = 100;
 			cp.m_life = 500;
 			cp.m_lifeRandom = 300;
