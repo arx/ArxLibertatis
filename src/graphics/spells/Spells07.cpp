@@ -735,13 +735,13 @@ void CFireField::Create(float largeur, Vec3f * pos, int _ulDuration)
 
 	cp.m_startSegment.m_size = 10;
 	cp.m_startSegment.m_sizeRandom = 3;
-	cp.m_startSegment.m_color = Color4f(25, 25, 25, 50);
-	cp.m_startSegment.m_colorRandom = Color4f(51, 51, 51, 101);
+	cp.m_startSegment.m_color = Color(25, 25, 25, 50).to<float>();
+	cp.m_startSegment.m_colorRandom = Color(51, 51, 51, 101).to<float>();
 
 	cp.m_endSegment.m_size = 10;
 	cp.m_endSegment.m_sizeRandom = 3;
-	cp.m_endSegment.m_color = Color4f(25, 25, 25, 50);
-	cp.m_endSegment.m_colorRandom = Color4f(0, 0, 0, 100);
+	cp.m_endSegment.m_color = Color(25, 25, 25, 50).to<float>();
+	cp.m_endSegment.m_colorRandom = Color(0, 0, 0, 100).to<float>();
 	cp.m_texLoop = true;
 
 	cp.m_blendMode = RenderMaterial::AlphaAdditive;
@@ -773,13 +773,13 @@ void CFireField::Create(float largeur, Vec3f * pos, int _ulDuration)
 
 	cp.m_startSegment.m_size = 10;
 	cp.m_startSegment.m_sizeRandom = 10;
-	cp.m_startSegment.m_color = Color4f(40, 40, 40, 50);
-	cp.m_startSegment.m_colorRandom = Color4f(51, 51, 51, 100);
+	cp.m_startSegment.m_color = Color(40, 40, 40, 50).to<float>();
+	cp.m_startSegment.m_colorRandom = Color(51, 51, 51, 100).to<float>();
 
 	cp.m_endSegment.m_size = 10;
 	cp.m_endSegment.m_sizeRandom = 10;
-	cp.m_endSegment.m_color = Color4f(0, 0, 0, 50);
-	cp.m_endSegment.m_colorRandom = Color4f(0, 0, 0, 100);
+	cp.m_endSegment.m_color = Color(0, 0, 0, 50).to<float>();
+	cp.m_endSegment.m_colorRandom = Color(0, 0, 0, 100).to<float>();
 	cp.m_texLoop = false;
 
 	cp.m_blendMode = RenderMaterial::Additive;

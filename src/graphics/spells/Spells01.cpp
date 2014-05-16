@@ -101,19 +101,19 @@ void LaunchMagicMissileExplosion(const Vec3f & _ePos, int t = 0, long spellinsta
 		cp.m_startSegment.m_size = 20;
 		cp.m_speed = 13;
 		cp.m_speedRandom = 10;
-		cp.m_startSegment.m_colorRandom = Color4f(0, 0, 0, 0);
+		cp.m_startSegment.m_colorRandom = Color(0, 0, 0, 0).to<float>();
 
-		cp.m_startSegment.m_color = Color4f(0, 0, 0, 0);
-		cp.m_endSegment.m_color = Color4f(255, 40, 120, 10);
+		cp.m_startSegment.m_color = Color(0, 0, 0, 0).to<float>();
+		cp.m_endSegment.m_color = Color(255, 40, 120, 10).to<float>();
 		pPS->SetTexture("graph/particles/(fx)_mr", 0, 500);
 	} else {
-		cp.m_startSegment.m_colorRandom = Color4f(100, 100, 100, 100);
-		cp.m_startSegment.m_color = Color4f(110, 110, 110, 110);
-		cp.m_endSegment.m_color = Color4f(0, 0, 120, 10);
+		cp.m_startSegment.m_colorRandom = Color(100, 100, 100, 100).to<float>();
+		cp.m_startSegment.m_color = Color(110, 110, 110, 110).to<float>();
+		cp.m_endSegment.m_color = Color(0, 0, 120, 10).to<float>();
 		pPS->SetTexture("graph/particles/magicexplosion", 0, 500);
 	}
 
-	cp.m_endSegment.m_colorRandom = Color4f(50, 50, 50, 50);
+	cp.m_endSegment.m_colorRandom = Color(50, 50, 50, 50).to<float>();
 
 	cp.m_blendMode = RenderMaterial::Additive;
 

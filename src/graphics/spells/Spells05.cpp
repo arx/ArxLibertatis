@@ -134,13 +134,13 @@ void CCurePoison::Create()
 
 	cp.m_startSegment.m_size = 8;//6;
 	cp.m_startSegment.m_sizeRandom = 8;
-	cp.m_startSegment.m_color = Color4f(20, 205, 20, 245);
-	cp.m_startSegment.m_colorRandom = Color4f(50, 50, 50, 10);
+	cp.m_startSegment.m_color = Color(20, 205, 20, 245).to<float>();
+	cp.m_startSegment.m_colorRandom = Color(50, 50, 50, 10).to<float>();
 
 	cp.m_endSegment.m_size = 6;
 	cp.m_endSegment.m_sizeRandom = 4;
-	cp.m_endSegment.m_color = Color4f(5, 20, 5, 0);
-	cp.m_endSegment.m_colorRandom = Color4f(0, 40, 0, 0);
+	cp.m_endSegment.m_color = Color(5, 20, 5, 0).to<float>();
+	cp.m_endSegment.m_colorRandom = Color(0, 40, 0, 0).to<float>();
 	cp.m_blendMode = RenderMaterial::Additive;
 
 	pPS->SetParams(cp);
@@ -421,13 +421,13 @@ void LaunchPoisonExplosion(Vec3f * aePos) {
 
 	cp.m_startSegment.m_size = 5;
 	cp.m_startSegment.m_sizeRandom = 3;
-	cp.m_startSegment.m_color = Color4f(0, 76, 0, 0);
-	cp.m_startSegment.m_colorRandom = Color4f(0, 0, 0, 150);
+	cp.m_startSegment.m_color = Color(0, 76, 0, 0).to<float>();
+	cp.m_startSegment.m_colorRandom = Color(0, 0, 0, 150).to<float>();
 
 	cp.m_endSegment.m_size = 30;
 	cp.m_endSegment.m_sizeRandom = 5;
-	cp.m_endSegment.m_color = Color4f(0, 0, 0, 0);
-	cp.m_endSegment.m_colorRandom = Color4f(0, 25, 0, 20);
+	cp.m_endSegment.m_color = Color(0, 0, 0, 0).to<float>();
+	cp.m_endSegment.m_colorRandom = Color(0, 25, 0, 20).to<float>();
 
 	cp.m_blendMode = RenderMaterial::AlphaAdditive;
 	cp.m_freq = -1;
@@ -536,13 +536,13 @@ void CPoisonProjectile::Create(Vec3f _eSrc, float _fBeta)
 
 	cp.m_startSegment.m_size = 5;
 	cp.m_startSegment.m_sizeRandom = 3;
-	cp.m_startSegment.m_color = Color4f(0, 50, 0, 40);
-	cp.m_startSegment.m_colorRandom = Color4f(0, 100, 0, 50);
+	cp.m_startSegment.m_color = Color(0, 50, 0, 40).to<float>();
+	cp.m_startSegment.m_colorRandom = Color(0, 100, 0, 50).to<float>();
 
 	cp.m_endSegment.m_size = 8;
 	cp.m_endSegment.m_sizeRandom = 13;
-	cp.m_endSegment.m_color = Color4f(0, 60, 0, 40);
-	cp.m_endSegment.m_colorRandom = Color4f(0, 100, 0, 50);
+	cp.m_endSegment.m_color = Color(0, 60, 0, 40).to<float>();
+	cp.m_endSegment.m_colorRandom = Color(0, 100, 0, 50).to<float>();
 
 	cp.m_blendMode = RenderMaterial::Screen;
 	cp.m_freq = -1;
@@ -592,13 +592,13 @@ void CPoisonProjectile::Update(unsigned long _ulTime)
 
 			cp.m_startSegment.m_size = 2;
 			cp.m_startSegment.m_sizeRandom = 2;
-			cp.m_startSegment.m_color = Color4f(0, 39, 0, 100);
-			cp.m_startSegment.m_colorRandom = Color4f(50, 21, 0, 0);
+			cp.m_startSegment.m_color = Color(0, 39, 0, 100).to<float>();
+			cp.m_startSegment.m_colorRandom = Color(50, 21, 0, 0).to<float>();
 
 			cp.m_endSegment.m_size = 7;
 			cp.m_endSegment.m_sizeRandom = 5;
-			cp.m_endSegment.m_color = Color4f(0, 25, 0, 100);
-			cp.m_endSegment.m_colorRandom = Color4f(50, 20, 0, 0);
+			cp.m_endSegment.m_color = Color(0, 25, 0, 100).to<float>();
+			cp.m_endSegment.m_colorRandom = Color(50, 20, 0, 0).to<float>();
 
 			cp.m_blendMode = RenderMaterial::Screen;
 			cp.m_freq = 80;

@@ -172,14 +172,14 @@ void ParticleSystem::SetParams(const ParticleParams & _pp) {
 	m_parameters.m_startSegment.m_size = _pp.m_startSegment.m_size;
 	m_parameters.m_startSegment.m_sizeRandom = _pp.m_startSegment.m_sizeRandom;
 	
-	m_parameters.m_startSegment.m_color = _pp.m_startSegment.m_color * (1.f/255.0f);
-	m_parameters.m_startSegment.m_colorRandom = _pp.m_startSegment.m_colorRandom * (1.f/255.0f);
+	m_parameters.m_startSegment.m_color = _pp.m_startSegment.m_color;
+	m_parameters.m_startSegment.m_colorRandom = _pp.m_startSegment.m_colorRandom;
 	
 	m_parameters.m_endSegment.m_size = _pp.m_endSegment.m_size;
 	m_parameters.m_endSegment.m_sizeRandom = _pp.m_endSegment.m_sizeRandom;
 
-	m_parameters.m_endSegment.m_color = _pp.m_endSegment.m_color * (1.f/255.0f);
-	m_parameters.m_endSegment.m_colorRandom = _pp.m_endSegment.m_colorRandom * (1.f/255.0f);
+	m_parameters.m_endSegment.m_color = _pp.m_endSegment.m_color;
+	m_parameters.m_endSegment.m_colorRandom = _pp.m_endSegment.m_colorRandom;
 	
 	m_parameters.m_direction = glm::normalize(m_parameters.m_direction);
 	Vec3f eVect(m_parameters.m_direction.x, -m_parameters.m_direction.y, m_parameters.m_direction.z);

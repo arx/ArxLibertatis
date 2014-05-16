@@ -85,12 +85,12 @@ CFireBall::CFireBall() : CSpellFx() {
 	fire_1.m_gravity = Vec3f_ZERO;
 	fire_1.m_flash = 0;
 	fire_1.m_rotation = 1.0f / (101 - 50);
-	fire_1.m_startSegment.m_color = Color4f(22, 30, 30, 0);
-	fire_1.m_startSegment.m_colorRandom = Color4f(22, 0, 0, 2);
+	fire_1.m_startSegment.m_color = Color(22, 30, 30, 0).to<float>();
+	fire_1.m_startSegment.m_colorRandom = Color(22, 0, 0, 2).to<float>();
 	fire_1.m_endSegment.m_size = 0;
 	fire_1.m_endSegment.m_sizeRandom = 2;
-	fire_1.m_endSegment.m_color = Color4f(25, 25, 0, 50);
-	fire_1.m_endSegment.m_colorRandom = Color4f(50, 0, 0, 120);
+	fire_1.m_endSegment.m_color = Color(25, 25, 0, 50).to<float>();
+	fire_1.m_endSegment.m_colorRandom = Color(50, 0, 0, 120).to<float>();
 	fire_1.m_blendMode = RenderMaterial::Additive;
 
 	memset(&fire_2, 0, sizeof(fire_2));
@@ -104,10 +104,10 @@ CFireBall::CFireBall() : CSpellFx() {
 	fire_2.m_gravity = Vec3f_ZERO;
 	fire_2.m_flash = 0;
 	fire_2.m_rotation = 1.0f / (101 - 50);
-	fire_2.m_startSegment.m_color = Color4f(22, 30, 30, 0);
-	fire_2.m_startSegment.m_colorRandom = Color4f(22, 0, 0, 2);
-	fire_2.m_endSegment.m_color = Color4f(25, 25, 0, 0);
-	fire_2.m_endSegment.m_colorRandom = Color4f(50, 0, 0, 120);
+	fire_2.m_startSegment.m_color = Color(22, 30, 30, 0).to<float>();
+	fire_2.m_startSegment.m_colorRandom = Color(22, 0, 0, 2).to<float>();
+	fire_2.m_endSegment.m_color = Color(25, 25, 0, 0).to<float>();
+	fire_2.m_endSegment.m_colorRandom = Color(50, 0, 0, 120).to<float>();
 	fire_2.m_blendMode = RenderMaterial::Additive;
 
 	memset(&smoke, 0, sizeof(smoke));
@@ -123,10 +123,10 @@ CFireBall::CFireBall() : CSpellFx() {
 	smoke.m_rotation = 1.0f / (101 - 90);
 	smoke.m_startSegment.m_size = 0;
 	smoke.m_startSegment.m_sizeRandom = 2;
-	smoke.m_startSegment.m_color = Color4f(70, 70, 51, 50);
-	smoke.m_startSegment.m_colorRandom = Color4f(0, 0, 0, 0);
-	smoke.m_endSegment.m_color = Color4f(0, 0, 0, 27);
-	smoke.m_endSegment.m_colorRandom = Color4f(0, 0, 0, 20);
+	smoke.m_startSegment.m_color = Color(70, 70, 51, 50).to<float>();
+	smoke.m_startSegment.m_colorRandom = Color(0, 0, 0, 0).to<float>();
+	smoke.m_endSegment.m_color = Color(0, 0, 0, 27).to<float>();
+	smoke.m_endSegment.m_colorRandom = Color(0, 0, 0, 20).to<float>();
 	smoke.m_blendMode = RenderMaterial::Additive;
 }
 
@@ -682,13 +682,13 @@ void CCreateFood::Create() {
 
 	cp.m_startSegment.m_size = 8;
 	cp.m_startSegment.m_sizeRandom = 8;
-	cp.m_startSegment.m_color = Color4f(105, 105, 20, 145);
-	cp.m_startSegment.m_colorRandom = Color4f(50, 50, 0, 10);
+	cp.m_startSegment.m_color = Color(105, 105, 20, 145).to<float>();
+	cp.m_startSegment.m_colorRandom = Color(50, 50, 0, 10).to<float>();
 
 	cp.m_endSegment.m_size = 6;
 	cp.m_endSegment.m_sizeRandom = 4;
-	cp.m_endSegment.m_color = Color4f(20, 20, 5, 0);
-	cp.m_endSegment.m_colorRandom = Color4f(40, 40, 0, 0);
+	cp.m_endSegment.m_color = Color(20, 20, 5, 0).to<float>();
+	cp.m_endSegment.m_colorRandom = Color(40, 40, 0, 0).to<float>();
 
 	cp.m_blendMode = RenderMaterial::Additive;
 
