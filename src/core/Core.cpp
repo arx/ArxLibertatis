@@ -1975,9 +1975,11 @@ void shutdownGame() {
 	//Scripts
 	if(svar) {
 		for(long i = 0; i < NB_GLOBALS; i++) {
-			free(svar[i].text), svar[i].text = NULL;
+			free(svar[i].text);
+			svar[i].text = NULL;
 		}
-		free(svar), svar = NULL;
+		free(svar);
+		svar = NULL;
 	}
 	
 	ARX_SCRIPT_Timer_ClearAll();
