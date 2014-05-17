@@ -75,7 +75,7 @@ ParticleSystem::ParticleSystem() {
 		tex_tab[i] = NULL;
 	}
 	
-	lLightId = -1;
+	m_lightHandle = -1;
 	
 	m_parameters.m_nbMax = 50;
 	
@@ -130,16 +130,16 @@ ParticleSystem::~ParticleSystem() {
 void ParticleSystem::SetPos(const Vec3f & pos) {
 	
 	m_nextPosition = pos;
-	if(lightHandleIsValid(lLightId)) {
-		EERIE_LIGHT * light = lightHandleGet(lLightId);
+	if(lightHandleIsValid(m_lightHandle)) {
+		EERIE_LIGHT * light = lightHandleGet(m_lightHandle);
 		
 		light->pos = m_nextPosition;
 	}
 }
 
 void ParticleSystem::SetColor(float _fR, float _fG, float _fB) {
-	if(lightHandleIsValid(lLightId)) {
-		EERIE_LIGHT * light = lightHandleGet(lLightId);
+	if(lightHandleIsValid(m_lightHandle)) {
+		EERIE_LIGHT * light = lightHandleGet(m_lightHandle);
 		
 		light->rgb = Color3f(_fR, _fG, _fB);
 	}

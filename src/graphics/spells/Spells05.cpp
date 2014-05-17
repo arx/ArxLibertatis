@@ -143,10 +143,10 @@ void CCurePoison::Create()
 	
 	pPS->SetParams(cp);
 	
-	pPS->lLightId = GetFreeDynLight();
+	pPS->m_lightHandle = GetFreeDynLight();
 
-	if(lightHandleIsValid(pPS->lLightId)) {
-		EERIE_LIGHT * light = lightHandleGet(pPS->lLightId);
+	if(lightHandleIsValid(pPS->m_lightHandle)) {
+		EERIE_LIGHT * light = lightHandleGet(pPS->m_lightHandle);
 		
 		light->intensity = 1.5f;
 		light->fallstart = 200.f;
@@ -197,11 +197,11 @@ void CCurePoison::Update(unsigned long aulTime)
 	pPS->SetPos(eSrc);
 	pPS->Update(aulTime);
 
-	if(!lightHandleIsValid(pPS->lLightId))
-		pPS->lLightId = GetFreeDynLight();
+	if(!lightHandleIsValid(pPS->m_lightHandle))
+		pPS->m_lightHandle = GetFreeDynLight();
 
-	if(lightHandleIsValid(pPS->lLightId)) {
-		EERIE_LIGHT * light = lightHandleGet(pPS->lLightId);
+	if(lightHandleIsValid(pPS->m_lightHandle)) {
+		EERIE_LIGHT * light = lightHandleGet(pPS->m_lightHandle);
 		
 		light->intensity = 2.3f;
 		light->fallstart = 200.f;

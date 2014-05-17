@@ -70,7 +70,7 @@ public:
 	// these are used for the particles it creates
 	ParticleParams m_parameters;
 	
-	LightHandle lLightId;
+	LightHandle m_lightHandle;
 	
 	ParticleSystem();
 	~ParticleSystem();
