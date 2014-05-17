@@ -72,12 +72,12 @@ extern ParticleManager * pParticleManager;
  
 extern long cur_mr;
 
-void LaunchMagicMissileExplosion(const Vec3f & _ePos, int t = 0, long spellinstance = -1)
+void LaunchMagicMissileExplosion(const Vec3f & _ePos, long spellinstance = -1)
 {
 	// système de partoches pour l'explosion
 	ParticleSystem * pPS = new ParticleSystem();
 	ParticleParams cp = ParticleParams();
-	cp.m_nbMax = 100 + t * 50;
+	cp.m_nbMax = 100;
 	cp.m_life = 1500;
 	cp.m_lifeRandom = 0;
 	cp.m_pos = Vec3f(10.f);
@@ -560,7 +560,7 @@ void CMultiMagicMissile::CheckCollision()
 		
 		if(spellinstance != -1 && (CheckAnythingInSphere(sphere, spells[spellinstance].m_caster, CAS_NO_SAME_GROUP)))
 		{
-			LaunchMagicMissileExplosion(missile->eCurPos, 0, spellinstance);
+			LaunchMagicMissileExplosion(missile->eCurPos, spellinstance);
 			ARX_NPC_SpawnAudibleSound(missile->eCurPos, entities[spells[spellinstance].m_caster]);
 			
 			missile->SetTTL(1000);
