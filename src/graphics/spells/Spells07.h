@@ -148,7 +148,6 @@ class CConfuse: public CSpellFx
 class CFireField: public CSpellFx
 {
 	public:
-		short		key;
 		Vec3f	pos;
 		ParticleSystem pPSStream;
 		ParticleSystem pPSStream1;

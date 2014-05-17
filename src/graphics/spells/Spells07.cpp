@@ -698,7 +698,6 @@ void CConfuse::Render() {
 //	FIRE FIELD
 //-----------------------------------------------------------------------------
 CFireField::CFireField()
-	: key(0)
 {
 }
 
@@ -710,8 +709,6 @@ void CFireField::Create(float largeur, const Vec3f & pos, int _ulDuration)
 {
 	ARX_UNUSED(largeur);
 	
-	this->key = 0;
-
 	SetDuration(_ulDuration);
 
 	this->pos = pos;
@@ -798,9 +795,6 @@ void CFireField::Update(unsigned long _ulTime)
 
 void CFireField::Render()
 {
-	if(this->key > 1)
-		return;
-
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
