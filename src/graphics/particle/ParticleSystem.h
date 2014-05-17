@@ -80,7 +80,10 @@ public:
 	void SetPos(const Vec3f & pos);
 	
 	void Render();
+	
+	void StopEmission();
 	bool IsAlive();
+	
 	void Update(long);
 	void RecomputeDirection();
 	

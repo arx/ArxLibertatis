@@ -244,10 +244,12 @@ void FireballSpell::Update(float timeDelta)
 		if(CheckAnythingInSphere(sphere, m_caster, CAS_NO_SAME_GROUP)) {
 			ARX_BOOMS_Add(pCF->eCurPos);
 			LaunchFireballBoom(&pCF->eCurPos,(float)m_caster_level);
-			pCF->pPSFire.m_parameters.m_nbMax = 0;
-			pCF->pPSFire2.m_parameters.m_nbMax = 0;
+			
+			pCF->pPSFire.StopEmission();
+			pCF->pPSFire2.StopEmission();
+			pCF->pPSSmoke.StopEmission();
+			
 			pCF->eMove *= 0.5f;
-			pCF->pPSSmoke.m_parameters.m_nbMax = 0;
 			pCF->SetTTL(1500);
 			pCF->bExplo = true;
 			

@@ -275,6 +275,11 @@ void ParticleSystem::SetParticleParams(Particle * pP) {
 	}
 }
 
+
+void ParticleSystem::StopEmission() {
+	m_parameters.m_nbMax = 0;
+}
+
 bool ParticleSystem::IsAlive() {
 
 	if((iParticleNbAlive == 0) && (m_parameters.m_nbMax == 0))
@@ -335,7 +340,7 @@ void ParticleSystem::Update(long _lTime) {
 	}
 	
 	if(!m_parameters.m_looping) {
-		m_parameters.m_nbMax = 0;
+		StopEmission();
 	}
 }
 
