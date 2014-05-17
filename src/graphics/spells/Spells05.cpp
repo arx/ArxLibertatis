@@ -933,14 +933,10 @@ void CRepelUndead::Render() {
 	
 	Anglef  eObjAngle;
 	Vec3f  eObjScale;
-	Color3f rgbObjColor;
 
 	eObjAngle.setPitch(fBeta);
 	eObjAngle.setYaw(0);
 	eObjAngle.setRoll(0);
-	rgbObjColor.r = 0.6f;
-	rgbObjColor.g = 0.6f;
-	rgbObjColor.b = 0.8f;
 
 	float vv = 1.f + (std::sin(arxtime.get_updated() * ( 1.0f / 1000 ))); 
 	vv *= ( 1.0f / 2 );
@@ -950,7 +946,7 @@ void CRepelUndead::Render() {
 	eObjScale.x = vv;
 	
 	if(ssol) {
-		Draw3DObject(ssol, eObjAngle, eSrc + Vec3f(0.f, -5.f, 0.f), eObjScale, rgbObjColor);
+		Draw3DObject(ssol, eObjAngle, eSrc + Vec3f(0.f, -5.f, 0.f), eObjScale, Color3f(0.6f, 0.6f, 0.8f));
 	}
 	
 	vv *= 100.f;
