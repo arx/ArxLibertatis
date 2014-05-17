@@ -932,16 +932,12 @@ void CRepelUndead::Render() {
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	
 	Anglef  eObjAngle;
-	Vec3f  eObjPos;
 	Vec3f  eObjScale;
 	Color3f rgbObjColor;
 
 	eObjAngle.setPitch(fBeta);
 	eObjAngle.setYaw(0);
 	eObjAngle.setRoll(0);
-	eObjPos.x = eSrc.x;
-	eObjPos.y = eSrc.y - 5.f;
-	eObjPos.z = eSrc.z;
 	rgbObjColor.r = 0.6f;
 	rgbObjColor.g = 0.6f;
 	rgbObjColor.b = 0.8f;
@@ -954,7 +950,7 @@ void CRepelUndead::Render() {
 	eObjScale.x = vv;
 	
 	if(ssol) {
-		Draw3DObject(ssol, eObjAngle, eObjPos, eObjScale, rgbObjColor);
+		Draw3DObject(ssol, eObjAngle, eSrc + Vec3f(0.f, -5.f, 0.f), eObjScale, rgbObjColor);
 	}
 	
 	vv *= 100.f;
