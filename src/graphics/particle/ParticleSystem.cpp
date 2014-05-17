@@ -333,6 +333,10 @@ void ParticleSystem::Update(long _lTime) {
 			iParticleNbAlive++;
 		}
 	}
+	
+	if(!m_parameters.m_looping) {
+		m_parameters.m_nbMax = 0;
+	}
 }
 
 void ParticleSystem::Render() {

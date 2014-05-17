@@ -61,6 +61,7 @@ public:
 	Vec3f m_pos;
 	Vec3f m_direction;
 	Vec3f m_gravity;
+	bool  m_looping;
 	int   m_nbMax;
 	int   m_freq;
 	bool  m_rotationRandomDirection;
@@ -107,6 +108,7 @@ public:
 		: m_pos(Vec3f_ZERO)
 		, m_direction(Vec3f_ZERO)
 		, m_gravity(Vec3f_ZERO)
+		, m_looping(true)
 		, m_nbMax(0)
 		, m_freq(-1)
 		, m_rotationRandomDirection(0)

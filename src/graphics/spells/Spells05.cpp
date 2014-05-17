@@ -429,11 +429,11 @@ void LaunchPoisonExplosion(const Vec3f & aePos) {
 	cp.m_freq = -1;
 	cp.m_texture.set("graph/particles/big_greypouf", 0, 200);
 	cp.m_spawnFlags = 0;
+	cp.m_looping = false;
 	
 	pPS->SetParams(cp);
 	pPS->SetPos(aePos);
 	pPS->Update(0);
-	pPS->m_parameters.m_nbMax = 0;
 
 	std::list<Particle *>::iterator i;
 

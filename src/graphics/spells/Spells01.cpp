@@ -116,11 +116,11 @@ void LaunchMagicMissileExplosion(const Vec3f & _ePos, int t = 0, long spellinsta
 
 	cp.m_blendMode = RenderMaterial::Additive;
 	cp.m_spawnFlags = 0;
+	cp.m_looping = false;
 	
 	pPS->SetParams(cp);
 	pPS->SetPos(_ePos);
 	pPS->Update(0);
-	pPS->m_parameters.m_nbMax = 0;
 
 	LightHandle id = GetFreeDynLight();
 
