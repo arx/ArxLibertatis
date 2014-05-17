@@ -320,10 +320,8 @@ void CRuneOfGuarding::Update(unsigned long _ulTime) {
 
 void CRuneOfGuarding::Render()
 {
-	float x = eSrc.x;
-	float y = eSrc.y - 20;
-	float z = eSrc.z;
-
+	Vec3f pos = eSrc + Vec3f(0.f, -20.f, 0.f);
+	
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
@@ -334,7 +332,7 @@ void CRuneOfGuarding::Render()
 	float stiteangleb = float(ulCurrentTime) * 0.01f;
 	stiteangle.setYaw(0);
 	stiteangle.setRoll(0);
-	Vec3f stitepos = Vec3f(x, y, z);
+	Vec3f stitepos = Vec3f(pos.x, pos.y, pos.z);
 
 	float gtc = arxtime.get_updated();
 	float v = std::sin(gtc * ( 1.0f / 1000 )) * ( 1.0f / 10 );
@@ -375,7 +373,7 @@ void CRuneOfGuarding::Render()
 			break;
 		}
 		
-		pd->ov = Vec3f(x + frand2() * 40.f, y, z + frand2() * 40.f);
+		pd->ov = Vec3f(pos.x + frand2() * 40.f, pos.y, pos.z + frand2() * 40.f);
 		pd->move = Vec3f(0.8f * frand2(), -4.f * rnd(), 0.8f * frand2());
 		pd->scale = Vec3f(-0.1f);
 		pd->tolive = Random::get(2600, 3200);
