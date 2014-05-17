@@ -967,10 +967,6 @@ void CRepelUndead::Render() {
 //-----------------------------------------------------------------------------
 //	LEVITATION
 //-----------------------------------------------------------------------------
-EERIE_3DOBJ * stone1 = NULL;
-long stone1_count = 0;
-EERIE_3DOBJ * stone0 = NULL;
-long stone0_count = 0;
 
 CLevitate::CLevitate()
 	: key(0)

@@ -215,6 +215,10 @@ EERIE_3DOBJ * spapi = NULL;
 long spapi_count = 0;
 EERIE_3DOBJ * svoodoo = NULL;
 long svoodoo_count = 0;
+EERIE_3DOBJ * stone1 = NULL;
+long stone1_count = 0;
+EERIE_3DOBJ * stone0 = NULL;
+long stone0_count = 0;
 
 void DANAE_ReleaseAllDatasDynamic() {
 	delete ssol, ssol = NULL, ssol_count = 0;
@@ -225,5 +229,7 @@ void DANAE_ReleaseAllDatasDynamic() {
 	delete smissile, smissile = NULL, smissile_count = 0;
 	delete spapi, spapi = NULL, spapi_count = 0;
 	delete svoodoo, svoodoo = NULL, svoodoo_count = 0;
+	delete stone0, stone0 = NULL, stone0_count = 0;
+	delete stone1, stone1 = NULL, stone1_count = 0;
 }
 

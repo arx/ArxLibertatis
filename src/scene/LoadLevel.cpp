@@ -987,11 +987,6 @@ long FAST_RELEASE = 0;
 extern Entity * FlyingOverIO;
 extern unsigned long LAST_JUMP_ENDTIME;
 
-extern EERIE_3DOBJ * stone0;
-extern long stone0_count;
-extern EERIE_3DOBJ * stone1;
-extern long stone1_count;
-
 extern long JUST_RELOADED;
 
 void DanaeClearLevel(long flag)
@@ -1026,8 +1021,6 @@ void DanaeClearLevel(long flag)
 	entities.clear();
 	
 	DANAE_ReleaseAllDatasDynamic();
-	delete stone0, stone0 = NULL, stone0_count = 0;
-	delete stone1, stone1 = NULL, stone1_count = 0;
 	
 	TextureContainer::DeleteAll(TextureContainer::Level);
 	g_miniMap.clearMarkerTexCont();

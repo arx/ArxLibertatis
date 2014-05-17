@@ -389,12 +389,6 @@ void CSlowDown::Render() {
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 }
 
-
-extern EERIE_3DOBJ * stone1;
-extern long stone1_count;
-extern EERIE_3DOBJ * stone0;
-extern long stone0_count;
-
 //-----------------------------------------------------------------------------
 // RISE DEAD
 //-----------------------------------------------------------------------------

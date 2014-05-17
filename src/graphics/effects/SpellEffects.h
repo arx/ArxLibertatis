@@ -120,6 +120,10 @@ extern EERIE_3DOBJ * spapi;
 extern long spapi_count;
 extern EERIE_3DOBJ * svoodoo;
 extern long svoodoo_count;
+extern EERIE_3DOBJ * stone0;
+extern long stone0_count;
+extern EERIE_3DOBJ * stone1;
+extern long stone1_count;
 
 void DANAE_ReleaseAllDatasDynamic();
 
