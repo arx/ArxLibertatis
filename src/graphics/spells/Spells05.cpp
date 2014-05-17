@@ -332,11 +332,9 @@ void CRuneOfGuarding::Render()
 	float stiteangleb = float(ulCurrentTime) * 0.01f;
 	stiteangle.setYaw(0);
 	stiteangle.setRoll(0);
-
-	float gtc = arxtime.get_updated();
-	float v = std::sin(gtc * ( 1.0f / 1000 )) * ( 1.0f / 10 );
-	stiteangle.setPitch(MAKEANGLE(gtc * ( 1.0f / 1000 )));
-	stitecolor = Color3f(0.4f, 0.4f, 0.6f) + Color3f::gray(-v);
+	
+	stiteangle.setPitch(stiteangleb * 0.1f);
+	stitecolor = Color3f(0.4f, 0.4f, 0.6f);
 	float scale = std::sin(ulCurrentTime * 0.015f);
 	Vec3f stitescale = Vec3f(1.f, -0.1f, 1.f);
 	
