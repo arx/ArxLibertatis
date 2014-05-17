@@ -89,12 +89,8 @@ void CHeal::Create() {
 		light->intensity = 2.3f;
 		light->fallstart = 200.f;
 		light->fallend   = 350.f;
-		light->rgb.r = 0.4f;
-		light->rgb.g = 0.4f;
-		light->rgb.b = 1.0f;
-		light->pos.x = eSrc.x;
-		light->pos.y = eSrc.y - 50.f;
-		light->pos.z = eSrc.z;
+		light->rgb = Color3f(0.4f, 0.4f, 1.0f);
+		light->pos = eSrc + Vec3f(0.f, -50.f, 0.f);
 		light->duration = 200;
 		light->extras = 0;
 	}
@@ -152,12 +148,8 @@ void CHeal::Update(unsigned long aulTime)
 		light->intensity = 2.3f;
 		light->fallstart = 200.f;
 		light->fallend   = 350.f;
-		light->rgb.r = 0.4f;
-		light->rgb.g = 0.4f;
-		light->rgb.b = 1.0f;
-		light->pos.x = eSrc.x;
-		light->pos.y = eSrc.y - 50.f;
-		light->pos.z = eSrc.z;
+		light->rgb = Color3f(0.4f, 0.4f, 1.0f);
+		light->pos = eSrc + Vec3f(0.f, -50.f, 0.f);
 		light->duration = 200;
 		light->extras = 0;
 	}
