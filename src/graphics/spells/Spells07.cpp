@@ -713,6 +713,7 @@ void CFireField::Create(float largeur, const Vec3f & pos, int _ulDuration)
 
 	this->pos = pos;
 	
+	{
 	ParticleParams cp = ParticleParams();
 	cp.m_nbMax = 100;
 	cp.m_life = 2000;
@@ -745,11 +746,14 @@ void CFireField::Create(float largeur, const Vec3f & pos, int _ulDuration)
 	cp.m_spawnFlags = 0;
 	
 	pPSStream.SetParams(cp);
+	}
 	pPSStream.SetPos(pos);
 	pPSStream.Update(0);
 
 	//-------------------------------------------------------------------------
 
+	{
+	ParticleParams cp = ParticleParams();
 	cp.m_nbMax = 50;
 	cp.m_life = 1000;
 	cp.m_lifeRandom = 500;
@@ -781,6 +785,7 @@ void CFireField::Create(float largeur, const Vec3f & pos, int _ulDuration)
 	cp.m_spawnFlags = 0;
 	
 	pPSStream1.SetParams(cp);
+	}
 	pPSStream1.SetPos(pos + Vec3f(0, 10, 0));
 	pPSStream1.Update(0);
 }
