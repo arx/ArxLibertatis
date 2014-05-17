@@ -136,6 +136,5 @@ Entity * FlyingOverObject(const Vec2s & pos);
 
 void runGame();
 
-void DANAE_ReleaseAllDatasDynamic();
 
 #endif // ARX_CORE_CORE_H

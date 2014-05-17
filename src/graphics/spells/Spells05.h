@@ -47,28 +47,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/effects/SpellEffects.h"
 #include "graphics/particle/ParticleSystem.h"
 
-// Cyril = Global Resources
-extern EERIE_3DOBJ * ssol;
-extern long ssol_count;
-extern EERIE_3DOBJ * slight;
-extern long slight_count;
-extern EERIE_3DOBJ * srune;
-extern long srune_count;
-extern EERIE_3DOBJ * smotte;
-extern long smotte_count;
-extern EERIE_3DOBJ * stone1;
-extern long stone1_count;
-extern EERIE_3DOBJ * stone0;
-extern long stone0_count;
-extern EERIE_3DOBJ * stite;
-extern long stite_count;
-extern EERIE_3DOBJ * smissile;
-extern long smissile_count;
-extern EERIE_3DOBJ * spapi;
-extern long spapi_count;
-extern EERIE_3DOBJ * svoodoo;
-extern long svoodoo_count;
-
 // Done By : did
 class CRuneOfGuarding : public CSpellFx {
 public:

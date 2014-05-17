@@ -198,3 +198,32 @@ void Split(TexturedVertex * v, int a, int b, float yo, float fMul)
 	}
 }
 
+
+EERIE_3DOBJ * ssol = NULL;
+long ssol_count = 0;
+EERIE_3DOBJ * slight = NULL;
+long slight_count = 0;
+EERIE_3DOBJ * srune = NULL;
+long srune_count = 0;
+EERIE_3DOBJ * smotte = NULL;
+long smotte_count = 0;
+EERIE_3DOBJ * stite = NULL;
+long stite_count = 0;
+EERIE_3DOBJ * smissile = NULL;
+long smissile_count = 0;
+EERIE_3DOBJ * spapi = NULL;
+long spapi_count = 0;
+EERIE_3DOBJ * svoodoo = NULL;
+long svoodoo_count = 0;
+
+void DANAE_ReleaseAllDatasDynamic() {
+	delete ssol, ssol = NULL, ssol_count = 0;
+	delete slight, slight = NULL, slight_count = 0;
+	delete srune, srune = NULL, srune_count = 0;
+	delete smotte, smotte = NULL, smotte_count = 0;
+	delete stite, stite = NULL, stite_count = 0;
+	delete smissile, smissile = NULL, smissile_count = 0;
+	delete spapi, spapi = NULL, spapi_count = 0;
+	delete svoodoo, svoodoo = NULL, svoodoo_count = 0;
+}
+

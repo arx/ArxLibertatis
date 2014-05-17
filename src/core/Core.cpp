@@ -187,22 +187,7 @@ extern bool		PLAYER_MOUSELOOK_ON;
 extern bool bFadeInOut;
 extern 	bool bFade;			//active le fade
 
-extern EERIE_3DOBJ * ssol;
-extern long ssol_count;
-extern EERIE_3DOBJ * slight;
-extern long slight_count;
-extern EERIE_3DOBJ * srune;
-extern long srune_count;
-extern EERIE_3DOBJ * smotte;
-extern long smotte_count;
-extern EERIE_3DOBJ * stite;
-extern long stite_count;
-extern EERIE_3DOBJ * smissile;
-extern long smissile_count;
-extern EERIE_3DOBJ * spapi;
-extern long spapi_count;
-extern EERIE_3DOBJ * svoodoo;
-extern long svoodoo_count;
+
 
 //-----------------------------------------------------------------------------
 // Our Main Danae Application.& Instance and Project
@@ -814,16 +799,7 @@ void SetEditMode(long ed, const bool stop_sound) {
 	
 }
 
-void DANAE_ReleaseAllDatasDynamic() {
-	delete ssol, ssol = NULL, ssol_count = 0;
-	delete slight, slight = NULL, slight_count = 0;
-	delete srune, srune = NULL, srune_count = 0;
-	delete smotte, smotte = NULL, smotte_count = 0;
-	delete stite, stite = NULL, stite_count = 0;
-	delete smissile, smissile = NULL, smissile_count = 0;
-	delete spapi, spapi = NULL, spapi_count = 0;
-	delete svoodoo, svoodoo = NULL, svoodoo_count = 0;
-}
+
 
 long NO_GMOD_RESET=0;
 

@@ -104,4 +104,23 @@ void Draw3DLineTexNew(Vec3f startPos, Vec3f endPos, Color startColor, Color endC
 void Split(TexturedVertex * v, int a, int b, float fX, float fMulX, float fY, float fMulY, float fZ, float fMulZ);
 void Split(TexturedVertex * v, int a, int b, float yo, float fMul = 0.5f);
 
+extern EERIE_3DOBJ * ssol;
+extern long ssol_count;
+extern EERIE_3DOBJ * slight;
+extern long slight_count;
+extern EERIE_3DOBJ * srune;
+extern long srune_count;
+extern EERIE_3DOBJ * smotte;
+extern long smotte_count;
+extern EERIE_3DOBJ * stite;
+extern long stite_count;
+extern EERIE_3DOBJ * smissile;
+extern long smissile_count;
+extern EERIE_3DOBJ * spapi;
+extern long spapi_count;
+extern EERIE_3DOBJ * svoodoo;
+extern long svoodoo_count;
+
+void DANAE_ReleaseAllDatasDynamic();
+
 #endif // ARX_GRAPHICS_EFFECTS_SPELLEFFECTS_H

@@ -75,24 +75,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 extern ParticleManager * pParticleManager;
 
-
-EERIE_3DOBJ * ssol = NULL;
-long ssol_count = 0;
-EERIE_3DOBJ * slight = NULL;
-long slight_count = 0;
-EERIE_3DOBJ * srune = NULL;
-long srune_count = 0;
-EERIE_3DOBJ * smotte = NULL;
-long smotte_count = 0;
-EERIE_3DOBJ * stite = NULL;
-long stite_count = 0;
-EERIE_3DOBJ * smissile = NULL;
-long smissile_count = 0;
-EERIE_3DOBJ * spapi = NULL;
-long spapi_count = 0;
-EERIE_3DOBJ * svoodoo = NULL;
-long svoodoo_count = 0;
-
 CCurePoison::CCurePoison()
 {
 	SetDuration(1000);
