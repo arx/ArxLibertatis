@@ -337,9 +337,7 @@ void CRuneOfGuarding::Render()
 	float gtc = arxtime.get_updated();
 	float v = std::sin(gtc * ( 1.0f / 1000 )) * ( 1.0f / 10 );
 	stiteangle.setPitch(MAKEANGLE(gtc * ( 1.0f / 1000 )));
-	stitecolor.r = 0.4f - v;
-	stitecolor.g = 0.4f - v;
-	stitecolor.b = 0.6f - v;
+	stitecolor = Color3f(0.4f, 0.4f, 0.6f) + Color3f::gray(-v);
 	float scale = std::sin(ulCurrentTime * 0.015f);
 	Vec3f stitescale = Vec3f(1.f, -0.1f, 1.f);
 	
@@ -348,18 +346,14 @@ void CRuneOfGuarding::Render()
 	}
 	
 	stiteangle.setPitch(stiteangleb);
-	stitecolor.r = 0.6f;
-	stitecolor.g = 0.f;
-	stitecolor.b = 0.f;
+	stitecolor = Color3f(0.6f, 0.f, 0.f);
 	stitescale = Vec3f(2.f) * (1.f + 0.01f * scale);
 	
 	if(ssol) {
 		Draw3DObject(ssol, stiteangle, stitepos, stitescale, stitecolor);
 	}
 	
-	stitecolor.r = 0.6f;
-	stitecolor.g = 0.3f;
-	stitecolor.b = 0.45f;
+	stitecolor = Color3f(0.6f, 0.3f, 0.45f);
 	stitescale = Vec3f(1.8f) * (1.f + 0.02f * scale);
 	
 	if(srune) {
@@ -373,8 +367,8 @@ void CRuneOfGuarding::Render()
 			break;
 		}
 		
-		pd->ov = Vec3f(pos.x + frand2() * 40.f, pos.y, pos.z + frand2() * 40.f);
-		pd->move = Vec3f(0.8f * frand2(), -4.f * rnd(), 0.8f * frand2());
+		pd->ov = pos + (Vec3f(40.f, 0.f, 40.f) * Vec3f(frand2(), 0.f, frand2()));
+		pd->move = Vec3f(0.8f, -4.f, 0.8f) * Vec3f(frand2(), rnd(), frand2());
 		pd->scale = Vec3f(-0.1f);
 		pd->tolive = Random::get(2600, 3200);
 		pd->tc = tex_p2;
