@@ -332,7 +332,6 @@ void CRuneOfGuarding::Render()
 	float stiteangleb = float(ulCurrentTime) * 0.01f;
 	stiteangle.setYaw(0);
 	stiteangle.setRoll(0);
-	Vec3f stitepos = Vec3f(pos.x, pos.y, pos.z);
 
 	float gtc = arxtime.get_updated();
 	float v = std::sin(gtc * ( 1.0f / 1000 )) * ( 1.0f / 10 );
@@ -342,7 +341,7 @@ void CRuneOfGuarding::Render()
 	Vec3f stitescale = Vec3f(1.f, -0.1f, 1.f);
 	
 	if(slight) {
-		Draw3DObject(slight, stiteangle, stitepos, stitescale, stitecolor);
+		Draw3DObject(slight, stiteangle, pos, stitescale, stitecolor);
 	}
 	
 	stiteangle.setPitch(stiteangleb);
@@ -350,14 +349,14 @@ void CRuneOfGuarding::Render()
 	stitescale = Vec3f(2.f) * (1.f + 0.01f * scale);
 	
 	if(ssol) {
-		Draw3DObject(ssol, stiteangle, stitepos, stitescale, stitecolor);
+		Draw3DObject(ssol, stiteangle, pos, stitescale, stitecolor);
 	}
 	
 	stitecolor = Color3f(0.6f, 0.3f, 0.45f);
 	stitescale = Vec3f(1.8f) * (1.f + 0.02f * scale);
 	
 	if(srune) {
-		Draw3DObject(srune, stiteangle, stitepos, stitescale, stitecolor);
+		Draw3DObject(srune, stiteangle, pos, stitescale, stitecolor);
 	}
 	
 	for(int n = 0; n < 4; n++) {
