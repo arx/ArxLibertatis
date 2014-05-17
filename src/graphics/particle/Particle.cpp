@@ -49,7 +49,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 Particle::Particle()
 	: p3Pos(frand2() * 5, frand2() * 5, frand2() * 5)
 	, p3Velocity(frand2() * 10, frand2() * 10, frand2() * 10)
-	, ulTime(0)
+	, m_age(0)
 	, fSize(1.f)
 	, fSizeStart(1.f)
 	, fSizeEnd(1.f)
@@ -59,8 +59,8 @@ Particle::Particle()
 	, iTexNum(0)
 {
 	
-	ulTTL = checked_range_cast<long>(2000 + rnd() * 3000);
-	fOneOnTTL = 1.0f / float(ulTTL);
+	m_timeToLive = checked_range_cast<long>(2000 + rnd() * 3000);
+	fOneOnTTL = 1.0f / float(m_timeToLive);
 	
 	fColorStart = Color4f(1, 1, 1, 0.5f);
 	fColorEnd = Color4f(1, 1, 1, 0.1f);
@@ -70,7 +70,7 @@ Particle::~Particle() { }
 
 void Particle::Regen() {
 	p3Pos = Vec3f_ZERO;
-	ulTime = 0;
+	m_age = 0;
 	fSize = 1;
 	iTexTime = 0;
 	iTexNum = 0;
@@ -92,21 +92,21 @@ void Particle::Validate() {
 	fColorEnd.b = clamp(fColorEnd.b, 0.f, 1.f);
 	fColorEnd.a = clamp(fColorEnd.a, 0.f, 1.f);
 	
-	if(ulTTL < 100) {
-		ulTTL = 100;
-		fOneOnTTL = 1.0f / float(ulTTL);
+	if(m_timeToLive < 100) {
+		m_timeToLive = 100;
+		fOneOnTTL = 1.0f / float(m_timeToLive);
 	}
 }
 
 void Particle::Update(long _lTime) {
 	
-	ulTime += _lTime;
+	m_age += _lTime;
 	iTexTime += _lTime;
 	float fTimeSec = _lTime * (1.f / 1000);
 	
-	if(ulTime < ulTTL) {
+	if(m_age < m_timeToLive) {
 		
-		float ft = fOneOnTTL * ulTime;
+		float ft = fOneOnTTL * m_age;
 		
 		// update new pos
 		p3Pos += p3Velocity * fTimeSec;

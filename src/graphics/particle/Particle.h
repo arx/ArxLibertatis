@@ -56,8 +56,8 @@ public:
 	
 	// time
 	float fOneOnTTL;
-	long ulTime; //!< Age
-	long ulTTL; //!< Time to Live
+	long m_age;
+	long m_timeToLive;
 	
 	// size
 	float fSize;
@@ -86,7 +86,7 @@ public:
 	void Update(long);
 	
 	bool isAlive() {
-		return (ulTime < ulTTL);
+		return (m_age < m_timeToLive);
 	};
 	void Validate();
 	

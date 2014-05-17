@@ -194,8 +194,8 @@ void CCurePoison::Update(unsigned long aulTime)
 			if(pP->isAlive()) {
 				pP->fColorEnd.a = 0;
 
-				if(pP->ulTime + ff < pP->ulTTL) {
-					pP->ulTime = pP->ulTTL - ff;
+				if(pP->m_age + ff < pP->m_timeToLive) {
+					pP->m_age = pP->m_timeToLive - ff;
 				}
 			}
 		}
