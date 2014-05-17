@@ -94,18 +94,15 @@ public:
 	
 		m_startSegment.m_size = 5;
 		m_startSegment.m_sizeRandom = 10;
-	
-	
+		m_startSegment.m_color = Color(110, 110, 110, 110).to<float>();
+		m_startSegment.m_colorRandom = Color(100, 100, 100, 100).to<float>();
 		m_endSegment.m_size = 0;
 		m_endSegment.m_sizeRandom = 2;
-	
-		m_startSegment.m_colorRandom = Color(100, 100, 100, 100).to<float>();
-		m_startSegment.m_color = Color(110, 110, 110, 110).to<float>();
 		m_endSegment.m_color = Color(0, 0, 120, 10).to<float>();
-		m_texture.set("graph/particles/magicexplosion", 0, 500);
-	
 		m_endSegment.m_colorRandom = Color(50, 50, 50, 50).to<float>();
-	
+		
+		m_texture.set("graph/particles/magicexplosion", 0, 500);
+		
 		m_blendMode = RenderMaterial::Additive;
 		m_spawnFlags = 0;
 		m_looping = false;
@@ -121,12 +118,11 @@ public:
 	void load() {
 		MagicMissileExplosionParticle::load();
 		
-		m_startSegment.m_size = 20;
 		m_speed = 13;
 		m_speedRandom = 10;
-		m_startSegment.m_colorRandom = Color(0, 0, 0, 0).to<float>();
-	
+		m_startSegment.m_size = 20;
 		m_startSegment.m_color = Color(0, 0, 0, 0).to<float>();
+		m_startSegment.m_colorRandom = Color(0, 0, 0, 0).to<float>();
 		m_endSegment.m_color = Color(255, 40, 120, 10).to<float>();
 		m_texture.set("graph/particles/(fx)_mr", 0, 500);
 	}
@@ -134,15 +130,13 @@ public:
 
 void LaunchMagicMissileExplosion(const Vec3f & _ePos, long spellinstance = -1)
 {
-	// système de partoches pour l'explosion
-	ParticleSystem * pPS = new ParticleSystem();
-	
 	ParticleParams cp = MagicMissileExplosionParticle();
 	
 	if(spellinstance >= 0 && spells[spellinstance].m_caster == 0 && cur_mr == 3) {
 		cp = MagicMissileExplosionMrCheatParticle();
 	}
 	
+	ParticleSystem * pPS = new ParticleSystem();
 	pPS->SetParams(cp);
 	pPS->SetPos(_ePos);
 	pPS->Update(0);
