@@ -108,15 +108,12 @@ CCurePoison::~CCurePoison() {
 void CCurePoison::Create()
 {
 	SetAngle(0);
-
-	eSrc.x = entities[spells[spellinstance].m_target]->pos.x;
-	eSrc.y = entities[spells[spellinstance].m_target]->pos.y;
-
+	
+	eSrc = entities[spells[spellinstance].m_target]->pos;
+	
 	if(spells[spellinstance].m_target == 0)
 		eSrc.y += 200;
-
-	eSrc.z = entities[spells[spellinstance].m_target]->pos.z;
-
+	
 	pPS->SetPos(eSrc);
 	ParticleParams cp = ParticleParams();
 	cp.m_nbMax = 350;
@@ -154,12 +151,8 @@ void CCurePoison::Create()
 		light->intensity = 1.5f;
 		light->fallstart = 200.f;
 		light->fallend   = 350.f;
-		light->rgb.r = 0.f;
-		light->rgb.g = 1.f;
-		light->rgb.b = 0.0f;
-		light->pos.x = eSrc.x;
-		light->pos.y = eSrc.y - 50.f;
-		light->pos.z = eSrc.z;
+		light->rgb = Color3f(0.f, 1.f, 0.0f);
+		light->pos = eSrc + Vec3f(0.f, -50.f, 0.f);
 		light->time_creation = (unsigned long)(arxtime);
 		light->duration = 200;
 		light->extras = 0;
