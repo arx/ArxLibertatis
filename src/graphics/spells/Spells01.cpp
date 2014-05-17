@@ -96,21 +96,10 @@ void LaunchMagicMissileExplosion(const Vec3f & _ePos, int t = 0, long spellinsta
 	cp.m_endSegment.m_size = 0;
 	cp.m_endSegment.m_sizeRandom = 2;
 
-	if(spellinstance >= 0 && spells[spellinstance].m_caster == 0 && cur_mr == 3) {
-		cp.m_startSegment.m_size = 20;
-		cp.m_speed = 13;
-		cp.m_speedRandom = 10;
-		cp.m_startSegment.m_colorRandom = Color(0, 0, 0, 0).to<float>();
-
-		cp.m_startSegment.m_color = Color(0, 0, 0, 0).to<float>();
-		cp.m_endSegment.m_color = Color(255, 40, 120, 10).to<float>();
-		cp.m_texture.set("graph/particles/(fx)_mr", 0, 500);
-	} else {
-		cp.m_startSegment.m_colorRandom = Color(100, 100, 100, 100).to<float>();
-		cp.m_startSegment.m_color = Color(110, 110, 110, 110).to<float>();
-		cp.m_endSegment.m_color = Color(0, 0, 120, 10).to<float>();
-		cp.m_texture.set("graph/particles/magicexplosion", 0, 500);
-	}
+	cp.m_startSegment.m_colorRandom = Color(100, 100, 100, 100).to<float>();
+	cp.m_startSegment.m_color = Color(110, 110, 110, 110).to<float>();
+	cp.m_endSegment.m_color = Color(0, 0, 120, 10).to<float>();
+	cp.m_texture.set("graph/particles/magicexplosion", 0, 500);
 
 	cp.m_endSegment.m_colorRandom = Color(50, 50, 50, 50).to<float>();
 
@@ -118,7 +107,25 @@ void LaunchMagicMissileExplosion(const Vec3f & _ePos, int t = 0, long spellinsta
 	cp.m_spawnFlags = 0;
 	cp.m_looping = false;
 	
-	pPS->SetParams(cp);
+	ParticleParams mrCheat = cp;
+	{
+	mrCheat.m_startSegment.m_size = 20;
+	mrCheat.m_speed = 13;
+	mrCheat.m_speedRandom = 10;
+	mrCheat.m_startSegment.m_colorRandom = Color(0, 0, 0, 0).to<float>();
+
+	mrCheat.m_startSegment.m_color = Color(0, 0, 0, 0).to<float>();
+	mrCheat.m_endSegment.m_color = Color(255, 40, 120, 10).to<float>();
+	mrCheat.m_texture.set("graph/particles/(fx)_mr", 0, 500);
+	}
+	
+	ParticleParams & resultParams = cp;
+	
+	if(spellinstance >= 0 && spells[spellinstance].m_caster == 0 && cur_mr == 3) {
+		resultParams = mrCheat;
+	}
+	
+	pPS->SetParams(resultParams);
 	pPS->SetPos(_ePos);
 	pPS->Update(0);
 
