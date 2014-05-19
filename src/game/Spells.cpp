@@ -365,8 +365,6 @@ void ARX_SPELLS_RemoveAllSpellsOn(Entity *io) {
 
 static bool MakeSpellName(char * spell, SpellType num) {
 	
-	// TODO(spells) use map
-	
 	switch (num)
 	{
 		// Level 1
