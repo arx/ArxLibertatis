@@ -957,71 +957,71 @@ void ARX_DAMAGES_UpdateDamage(long j, float tim) {
 		}
 		
 		float dmg;
-		if (damages[j].flags & DAMAGE_NOT_FRAME_DEPENDANT)
+		if(damages[j].flags & DAMAGE_NOT_FRAME_DEPENDANT) {
 			dmg = damages[j].damages;
-		else if(damages[j].duration == -1)
+		} else if(damages[j].duration == -1) {
 			dmg = damages[j].damages;
-		else
-		{
+		} else {
 			float FD = (float)framedelay;
-
-			if(tim > damages[j].start_time + damages[j].duration)
+			
+			if(tim > damages[j].start_time + damages[j].duration) {
 				FD -= damages[j].start_time + damages[j].duration - tim;
-
+			}
+			
 			dmg = damages[j].damages * FD * ( 1.0f / 1000 );
 		}
-
+		
 		bool validsource = ValidIONum(damages[j].source);
 		float divradius = 1.f / damages[j].radius;
-
+		
 		// checking for IO damages
 		for(size_t i = 0; i < entities.size(); i++) {
 			Entity * io = entities[i];
-
-			if ((io)
-			        &&	(io->gameFlags & GFLAG_ISINTREATZONE)
-			        &&	(io->show == SHOW_FLAG_IN_SCENE)
-			        &&	(!InExceptList(j, i))
-			        && ( (damages[j].source != long(i))
-			            || ((damages[j].source == long(i))
-			                && (!(damages[j].flags & DAMAGE_FLAG_DONT_HURT_SOURCE))))
-			   )
-			{
+			
+			if(io
+			   && (io->gameFlags & GFLAG_ISINTREATZONE)
+			   && (io->show == SHOW_FLAG_IN_SCENE)
+			   && (!InExceptList(j, i))
+			   && (damages[j].source != long(i)
+			   || (damages[j].source == long(i) && !(damages[j].flags & DAMAGE_FLAG_DONT_HURT_SOURCE)))
+			){
 				if(io->ioflags & IO_NPC) {
-					if ((i != 0) && (damages[j].source != 0)
-					        && validsource && (HaveCommonGroup(io, entities[damages[j].source])))
+					if(   i != 0
+					   && damages[j].source != 0
+					   && validsource
+					   && HaveCommonGroup(io, entities[damages[j].source])
+					) {
 						continue;
-
+					}
+					
 					Sphere sphere;
 					sphere.origin = damages[j].pos;
 					sphere.radius = damages[j].radius - 10.f;
-
+					
 					if(CheckIOInSphere(sphere, i, true)) {
 						Vec3f sub = io->pos + Vec3f(0.f, -60.f, 0.f);
 						
 						float dist = fdist(damages[j].pos, sub);
-
+						
 						if(damages[j].type & DAMAGE_TYPE_FIELD) {
 							if(float(arxtime) > io->collide_door_time + 500) {
 								EVENT_SENDER = NULL;
 								io->collide_door_time = (unsigned long)(arxtime); 
 								char param[64];
 								param[0] = 0;
-
-								if (damages[j].type & DAMAGE_TYPE_FIRE)
+								
+								if(damages[j].type & DAMAGE_TYPE_FIRE)
 									strcpy(param, "fire");
-
-								if (damages[j].type & DAMAGE_TYPE_COLD)
+								
+								if(damages[j].type & DAMAGE_TYPE_COLD)
 									strcpy(param, "cold");
-
+								
 								SendIOScriptEvent(io, SM_COLLIDE_FIELD, param);
-
 							}
 						}
 
 						switch(damages[j].area) {
-							case DAMAGE_AREA:
-							{
+							case DAMAGE_AREA: {
 								float ratio = (damages[j].radius - dist) * divradius;
 
 								ratio = clamp(ratio, 0.f, 1.f);
@@ -1029,8 +1029,7 @@ void ARX_DAMAGES_UpdateDamage(long j, float tim) {
 								dmg = dmg * ratio + 1.f;
 							}
 							break;
-							case DAMAGE_AREAHALF:
-							{
+							case DAMAGE_AREAHALF: {
 								float ratio = (damages[j].radius - (dist * ( 1.0f / 2 ))) * divradius;
 
 								ratio = clamp(ratio, 0.f, 1.f);
@@ -1038,33 +1037,35 @@ void ARX_DAMAGES_UpdateDamage(long j, float tim) {
 								dmg = dmg * ratio + 1.f;
 							}
 							break;
-							case DAMAGE_FULL: break;
+							case DAMAGE_FULL:
+							break;
 						}
 
 						if(dmg <= 0.f)
 							continue;
 
-						if(damages[j].flags & DAMAGE_FLAG_ADD_VISUAL_FX) {
-							if ((entities[i]->ioflags & IO_NPC)
-							        &&	(entities[i]->_npcdata->life > 0.f))
-								ARX_DAMAGES_AddVisual(&damages[j], &sub, dmg, entities[i]);
+						if(   (damages[j].flags & DAMAGE_FLAG_ADD_VISUAL_FX)
+						   && (entities[i]->ioflags & IO_NPC)
+						   && (entities[i]->_npcdata->life > 0.f)
+						) {
+							ARX_DAMAGES_AddVisual(&damages[j], &sub, dmg, entities[i]);
 						}
-
+						
 						if(damages[j].type & DAMAGE_TYPE_DRAIN_MANA) {
 							float manadrained;
-
+							
 							if(i == 0) {
 								manadrained = min(dmg, player.mana);
 								player.mana -= manadrained;
 							} else {
 								manadrained = dmg;
-
+								
 								if(io && io->_npcdata) {
 									manadrained = min(dmg, io->_npcdata->mana);
 									io->_npcdata->mana -= manadrained;
 								}
 							}
-
+							
 							if (damages[j].source == 0) {
 								player.mana = min(player.mana + manadrained, player.Full_maxmana);
 							} else {
@@ -1074,23 +1075,21 @@ void ARX_DAMAGES_UpdateDamage(long j, float tim) {
 							}
 						} else {
 							float damagesdone;
-
+							
 							if(i == 0) {
 								if(damages[j].type & DAMAGE_TYPE_POISON) {
 									if(rnd() * 100.f > player.resist_poison) {
 										// Failed Saving Throw
 										damagesdone = dmg; 
 										player.poison += damagesdone;
-
-									}
-									else
+									} else {
 										damagesdone = 0;
+									}
 								} else {
-									if ((damages[j].type & DAMAGE_TYPE_MAGICAL)
-									        &&	(!(damages[j].type & DAMAGE_TYPE_FIRE))
-									        &&	(!(damages[j].type & DAMAGE_TYPE_COLD))
-									   )
-									{
+									if(   (damages[j].type & DAMAGE_TYPE_MAGICAL)
+									   && !(damages[j].type & DAMAGE_TYPE_FIRE)
+									   && !(damages[j].type & DAMAGE_TYPE_COLD)
+									) {
 										dmg -= player.Full_resist_magic * ( 1.0f / 100 ) * dmg;
 										dmg = max(0.0f, dmg);
 									}
@@ -1107,26 +1106,26 @@ void ARX_DAMAGES_UpdateDamage(long j, float tim) {
 									damagesdone = ARX_DAMAGES_DamagePlayer(dmg, damages[j].type, damages[j].source);
 								}
 							} else {
-								if ((entities[i]->ioflags & IO_NPC)
-								        && (damages[j].type & DAMAGE_TYPE_POISON))
-								{
+								if(   (entities[i]->ioflags & IO_NPC)
+								   && (damages[j].type & DAMAGE_TYPE_POISON)
+								) {
 									if(rnd() * 100.f > entities[i]->_npcdata->resist_poison) {
 										// Failed Saving Throw
 										damagesdone = dmg; 
 										entities[i]->_npcdata->poisonned += damagesdone;
+									} else {
+										damagesdone = 0;
 									}
-									else damagesdone = 0;
 								} else {
 									if(damages[j].type & DAMAGE_TYPE_FIRE) {
 										dmg = ARX_SPELLS_ApplyFireProtection(entities[i], dmg);
 										ARX_DAMAGES_IgnitIO(entities[i], dmg);
 									}
 
-									if ((damages[j].type & DAMAGE_TYPE_MAGICAL)
-									        && (!(damages[j].type & DAMAGE_TYPE_FIRE))
-									        && (!(damages[j].type & DAMAGE_TYPE_COLD))
-									   )
-									{
+									if(   (damages[j].type & DAMAGE_TYPE_MAGICAL)
+									   && !(damages[j].type & DAMAGE_TYPE_FIRE)
+									   && !(damages[j].type & DAMAGE_TYPE_COLD)
+									) {
 										dmg -= entities[i]->_npcdata->resist_magic * ( 1.0f / 100 ) * dmg;
 										dmg = max(0.0f, dmg);
 									}
