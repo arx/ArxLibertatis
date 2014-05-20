@@ -450,20 +450,17 @@ void CIceProjectile::Create(Vec3f aeSrc, float afBeta)
 			tPos[i].y = tv1a[iNum].p.y;
 			tPos[i].z = tv1a[iNum].p.z + frand2() * 40;
 		}
-
-		long ttt = ARX_DAMAGES_GetFree();
-		if(ttt != -1) {
-			DAMAGE_INFO & damage = damages[ttt];
-			damage.params.pos = tPos[i];
-			damage.params.radius = 60.f;
-			damage.params.damages = 0.1f * spells[spellinstance].m_caster_level;
-			damage.params.area = DAMAGE_FULL;
-			damage.params.duration = ulDuration;
-			damage.params.source = spells[spellinstance].m_caster;
-			damage.params.flags = DAMAGE_FLAG_DONT_HURT_SOURCE;
-			damage.params.type = DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_COLD;
-			damage.exist = true;
-		}
+		
+		DamageParameters damage;
+		damage.pos = tPos[i];
+		damage.radius = 60.f;
+		damage.damages = 0.1f * spells[spellinstance].m_caster_level;
+		damage.area = DAMAGE_FULL;
+		damage.duration = ulDuration;
+		damage.source = spells[spellinstance].m_caster;
+		damage.flags = DAMAGE_FLAG_DONT_HURT_SOURCE;
+		damage.type = DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_COLD;
+		DamageCreate(damage);
 	}
 
 	fColor = 1;

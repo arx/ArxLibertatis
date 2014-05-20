@@ -1375,19 +1375,16 @@ void TreatBackgroundActions() {
 		}
 		
 		if((gl->extras & EXTRAS_SPAWNFIRE) && gl->status) {
-			long id = ARX_DAMAGES_GetFree();
-			if(id !=-1) {
-				DAMAGE_INFO & damage = damages[id];
-				damage.params.radius = gl->ex_radius; 
-				damage.params.damages = gl->ex_radius * (1.0f / 7);
-				damage.params.area = DAMAGE_FULL;
-				damage.params.duration = 1;
-				damage.params.source = -5;
-				damage.params.flags = 0; 
-				damage.params.type = DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_FIRE | DAMAGE_TYPE_NO_FIX;
-				damage.exist = true;
-				damage.params.pos = gl->pos;
-			}
+			DamageParameters damage;
+			damage.radius = gl->ex_radius;
+			damage.damages = gl->ex_radius * (1.0f / 7);
+			damage.area = DAMAGE_FULL;
+			damage.duration = 1;
+			damage.source = -5;
+			damage.flags = 0;
+			damage.type = DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_FIRE | DAMAGE_TYPE_NO_FIX;
+			damage.pos = gl->pos;
+			DamageCreate(damage);
 		}
 		
 		if(!(gl->extras & (EXTRAS_SPAWNFIRE | EXTRAS_SPAWNSMOKE)) || !gl->status) {

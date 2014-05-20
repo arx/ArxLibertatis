@@ -486,20 +486,17 @@ void CLightning::Render()
 			sphere.radius = std::min(cnodetab[i].size, 50.f);
 
 			if(CheckAnythingInSphere(sphere, spells[spellinstance].m_caster, CAS_NO_SAME_GROUP)) {
-				long si = ARX_DAMAGES_GetFree();
 
-				if(si != -1) {
-					DAMAGE_INFO & damage = damages[si];
-					damage.params.pos = sphere.origin;
-					damage.params.radius = sphere.radius;
-					damage.params.damages = fDamage * spells[spellinstance].m_caster_level * ( 1.0f / 3 ); 
-					damage.params.area = DAMAGE_FULL;
-					damage.params.duration = 1; 
-					damage.params.source = spells[spellinstance].m_caster;
-					damage.params.flags = DAMAGE_FLAG_DONT_HURT_SOURCE | DAMAGE_FLAG_ADD_VISUAL_FX;
-					damage.params.type = DAMAGE_TYPE_FAKEFIRE | DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_LIGHTNING;
-					damage.exist = true;
-				}
+				DamageParameters damage;
+				damage.pos = sphere.origin;
+				damage.radius = sphere.radius;
+				damage.damages = fDamage * spells[spellinstance].m_caster_level * ( 1.0f / 3 );
+				damage.area = DAMAGE_FULL;
+				damage.duration = 1;
+				damage.source = spells[spellinstance].m_caster;
+				damage.flags = DAMAGE_FLAG_DONT_HURT_SOURCE | DAMAGE_FLAG_ADD_VISUAL_FX;
+				damage.type = DAMAGE_TYPE_FAKEFIRE | DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_LIGHTNING;
+				DamageCreate(damage);
 			}
 		}
 		

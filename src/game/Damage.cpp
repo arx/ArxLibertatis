@@ -99,8 +99,31 @@ using std::max;
 
 extern long REFUSE_GAME_RETURN;
 
+struct DAMAGE_INFO {
+	short exist;
+	unsigned long start_time;
+	unsigned long lastupd;
+	
+	DamageParameters params;
+};
+
+const size_t MAX_DAMAGES = 200;
 DAMAGE_INFO	damages[MAX_DAMAGES];
 
+long DamageCreate(const DamageParameters & params) {
+	for(size_t i = 0; i < MAX_DAMAGES; i++) {
+		if(!damages[i].exist) {
+			DAMAGE_INFO & damage = damages[i];
+			damage.params = params;
+			damage.start_time = (unsigned long)(arxtime);
+			damage.lastupd = 0;
+			damage.exist = true;
+			return i;
+		}
+	}
+
+	return -1;
+}
 
 void DamageRequestEnd(long handle) {
 	if(handle >= 0) {
@@ -866,21 +889,6 @@ void ARX_DAMAGES_Reset()
 	memset(damages, 0, sizeof(DAMAGE_INFO)*MAX_DAMAGES);
 }
 
-long ARX_DAMAGES_GetFree()
-{
-	for(size_t i = 0; i < MAX_DAMAGES; i++) {
-		if(!damages[i].exist) {
-			DAMAGE_INFO & damage = damages[i];
-			damage.params = DamageParameters();
-			damage.start_time = (unsigned long)(arxtime);
-			damage.lastupd = 0;
-			return i;
-		}
-	}
-
-	return -1;
-}
-
 void ARX_DAMAGES_AddVisual(DAMAGE_INFO * di, Vec3f * pos, float dmg, Entity * io) {
 	
 	if(!(di->params.type & DAMAGE_TYPE_FAKEFIRE)) {
@@ -1507,3 +1515,4 @@ float ARX_DAMAGES_ComputeRepairPrice(Entity * torepair, Entity * blacksmith)
 
 	return price;
 }
+

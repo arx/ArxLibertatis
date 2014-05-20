@@ -115,18 +115,7 @@ struct DamageParameters {
 	}
 };
 
-struct DAMAGE_INFO {
-	short exist;
-	unsigned long start_time;
-	unsigned long lastupd;
-	
-	DamageParameters params;
-};
-
-const size_t MAX_DAMAGES = 200;
-
-extern DAMAGE_INFO damages[MAX_DAMAGES];
-
+long DamageCreate(const DamageParameters & params);
 void DamageRequestEnd(long handle);
 
 /*!
@@ -141,7 +130,6 @@ bool DoSphericDamage(const Vec3f & pos, float dmg, float radius, DamageArea flag
 void ARX_DAMAGE_Reset_Blood_Info();
 void ARX_DAMAGE_Show_Hit_Blood();
 void ARX_DAMAGES_Reset();
-long ARX_DAMAGES_GetFree();
  
 void ARX_DAMAGES_UpdateAll();
 float ARX_DAMAGES_DamagePlayer(float dmg, DamageType type, long source = -1); 

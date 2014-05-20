@@ -757,23 +757,22 @@ void CMultiPoisonProjectile::Render()
 			light->duration	= 200;
 		}
 
-		long t = ARX_DAMAGES_GetFree();
 		AddPoisonFog(&pPoisonProjectile->eCurPos, spells[spellinstance].m_caster_level + 7);
 
-		if((t != -1) && (spells[pTab[i]->spellinstance].m_timcreation + 1600 < (unsigned long)(arxtime)))
-		{
-			DAMAGE_INFO & damage = damages[t];
-			damage.params.pos = pPoisonProjectile->eCurPos;
-			damage.params.radius = 120.f;
+		if(spells[pTab[i]->spellinstance].m_timcreation + 1600 < (unsigned long)(arxtime)) {
+			
+			DamageParameters damage;
+			damage.pos = pPoisonProjectile->eCurPos;
+			damage.radius = 120.f;
 			float v = spells[spellinstance].m_caster_level;
 			v = 4.f + v * ( 1.0f / 10 ) * 6.f ;
-			damage.params.damages = v * ( 1.0f / 1000 ) * framedelay;
-			damage.params.area = DAMAGE_FULL;
-			damage.params.duration = static_cast<long>(framedelay);
-			damage.params.source = spells[spellinstance].m_caster;
-			damage.params.flags = 0;
-			damage.params.type = DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_POISON;
-			damage.exist = true;
+			damage.damages = v * ( 1.0f / 1000 ) * framedelay;
+			damage.area = DAMAGE_FULL;
+			damage.duration = static_cast<long>(framedelay);
+			damage.source = spells[spellinstance].m_caster;
+			damage.flags = 0;
+			damage.type = DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_POISON;
+			DamageCreate(damage);
 		}
 	}
 }

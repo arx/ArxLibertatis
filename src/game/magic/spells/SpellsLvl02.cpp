@@ -348,19 +348,15 @@ void HarmSpell::Launch(long duration)
 	m_bDuration = true;
 	m_fManaCostPerSecond = 0.4f;
 
-	m_longinfo_damage = ARX_DAMAGES_GetFree();
-	if(m_longinfo_damage != -1) {
-		DAMAGE_INFO & damage = damages[m_longinfo_damage];
-		
-		damage.params.radius = 150.f;
-		damage.params.damages = 4.f;
-		damage.params.area = DAMAGE_FULL;
-		damage.params.duration = 100000000;
-		damage.params.source = m_caster;
-		damage.params.flags = DAMAGE_FLAG_DONT_HURT_SOURCE | DAMAGE_FLAG_FOLLOW_SOURCE | DAMAGE_FLAG_ADD_VISUAL_FX;
-		damage.params.type = DAMAGE_TYPE_FAKEFIRE | DAMAGE_TYPE_MAGICAL;
-		damage.exist = true;
-	}
+	DamageParameters damage;
+	damage.radius = 150.f;
+	damage.damages = 4.f;
+	damage.area = DAMAGE_FULL;
+	damage.duration = 100000000;
+	damage.source = m_caster;
+	damage.flags = DAMAGE_FLAG_DONT_HURT_SOURCE | DAMAGE_FLAG_FOLLOW_SOURCE | DAMAGE_FLAG_ADD_VISUAL_FX;
+	damage.type = DAMAGE_TYPE_FAKEFIRE | DAMAGE_TYPE_MAGICAL;
+	m_longinfo_damage = DamageCreate(damage);
 	
 	m_longinfo2_light = GetFreeDynLight();
 	if(lightHandleIsValid(m_longinfo2_light)) {

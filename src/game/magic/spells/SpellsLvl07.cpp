@@ -238,20 +238,16 @@ void FireFieldSpell::Launch(long duration)
 		target.z += std::cos(radians(MAKEANGLE(beta))) * 250.f;
 	}
 	
-	m_longinfo_damage = ARX_DAMAGES_GetFree();
-	if(m_longinfo_damage != -1) {
-		DAMAGE_INFO & damage = damages[m_longinfo_damage];
-		
-		damage.params.radius = 150.f;
-		damage.params.damages = 10.f;
-		damage.params.area = DAMAGE_FULL;
-		damage.params.duration = 100000000;
-		damage.params.source = m_caster;
-		damage.params.flags = 0;
-		damage.params.type = DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_FIRE | DAMAGE_TYPE_FIELD;
-		damage.exist = true;
-		damage.params.pos = target;
-	}
+	DamageParameters damage;
+	damage.radius = 150.f;
+	damage.damages = 10.f;
+	damage.area = DAMAGE_FULL;
+	damage.duration = 100000000;
+	damage.source = m_caster;
+	damage.flags = 0;
+	damage.type = DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_FIRE | DAMAGE_TYPE_FIELD;
+	damage.pos = target;
+	m_longinfo_damage = DamageCreate(damage);
 	
 	effect->Create(200.f, target + Vec3f(0, -10, 0), m_tolive);
 	m_pSpellFx = effect;
@@ -375,20 +371,16 @@ void IceFieldSpell::Launch(long duration)
 		target.z += std::cos(radians(MAKEANGLE(beta))) * 250.f;
 	}
 	
-	m_longinfo_damage = ARX_DAMAGES_GetFree();
-	if(m_longinfo_damage != -1) {
-		DAMAGE_INFO & damage = damages[m_longinfo_damage];
-		
-		damage.params.radius = 150.f;
-		damage.params.damages = 10.f;
-		damage.params.area = DAMAGE_FULL;
-		damage.params.duration = 100000000;
-		damage.params.source = m_caster;
-		damage.params.flags = 0;
-		damage.params.type = DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_COLD | DAMAGE_TYPE_FIELD;
-		damage.exist = true;
-		damage.params.pos = target;
-	}
+	DamageParameters damage;
+	damage.radius = 150.f;
+	damage.damages = 10.f;
+	damage.area = DAMAGE_FULL;
+	damage.duration = 100000000;
+	damage.source = m_caster;
+	damage.flags = 0;
+	damage.type = DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_COLD | DAMAGE_TYPE_FIELD;
+	damage.pos = target;
+	m_longinfo_damage = DamageCreate(damage);
 	
 	effect->Create(target, MAKEANGLE(player.angle.getPitch()));
 	effect->SetDuration(m_tolive);
