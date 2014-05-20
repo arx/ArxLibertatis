@@ -397,7 +397,6 @@ extern EERIE_3DOBJ * cabal;
 
 void HarmSpell::Update(float timeDelta)
 {
-	if(cabal) {
 		float refpos;
 		float scaley;
 
@@ -466,5 +465,4 @@ void HarmSpell::Update(float timeDelta)
 		GRenderer->SetRenderState(Renderer::DepthWrite, true);	
 		
 		ARX_SOUND_RefreshPosition(m_snd_loop, cabalpos);
-	}
 }

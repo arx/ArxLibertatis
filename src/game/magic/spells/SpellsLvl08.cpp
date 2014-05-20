@@ -146,7 +146,6 @@ extern EERIE_3DOBJ * cabal;
 
 void ManaDrainSpell::Update(float timeDelta)
 {
-	if(cabal) {
 		float refpos;
 		float scaley;
 
@@ -235,7 +234,6 @@ void ManaDrainSpell::Update(float timeDelta)
 		GRenderer->SetRenderState(Renderer::DepthWrite, true);	
 
 		ARX_SOUND_RefreshPosition(m_snd_loop, cabalpos);
-	}	
 }
 
 void ExplosionSpell::Launch()
@@ -435,7 +433,6 @@ void LifeDrainSpell::End()
 
 void LifeDrainSpell::Update(float timeDelta)
 {
-	if(cabal) {
 		float refpos;
 		float scaley;
 
@@ -525,5 +522,4 @@ void LifeDrainSpell::Update(float timeDelta)
 		GRenderer->SetRenderState(Renderer::DepthWrite, true);	
 
 		ARX_SOUND_RefreshPosition(m_snd_loop, cabalpos);
-	}	
 }
