@@ -102,7 +102,6 @@ struct DAMAGE_INFO {
 	float damages;
 	float radius;
 	unsigned long start_time;
-	short except[10];
 	long duration;	// in milliseconds
 	// -1 for apply once
 	// else damage *=framediff

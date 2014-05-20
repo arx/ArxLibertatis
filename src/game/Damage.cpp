@@ -870,24 +870,11 @@ long ARX_DAMAGES_GetFree()
 			damages[i].special_ID = 0;
 			damages[i].lastupd = 0;
 			damages[i].active = 1;
-
-			for(long j = 0; j < 10; j++)
-				damages[i].except[j] = -1;
-
 			return i;
 		}
 	}
 
 	return -1;
-}
-
-long InExceptList(long dmg, long num)
-{
-	for(long j = 0; j < 10; j++)
-		if(damages[dmg].except[j] == num)
-			return 1;
-
-	return 0;
 }
 
 void ARX_DAMAGES_AddVisual(DAMAGE_INFO * di, Vec3f * pos, float dmg, Entity * io) {
@@ -983,7 +970,6 @@ void ARX_DAMAGES_UpdateDamage(long j, float tim) {
 		if(io
 		   && (io->gameFlags & GFLAG_ISINTREATZONE)
 		   && (io->show == SHOW_FLAG_IN_SCENE)
-		   && (!InExceptList(j, i))
 		   && (damage.source != long(i)
 		   || (damage.source == long(i) && !(damage.flags & DAMAGE_FLAG_DONT_HURT_SOURCE)))
 		){
