@@ -97,16 +97,16 @@ void ManaDrainSpell::Launch(long duration)
 	
 	m_longinfo_damage = ARX_DAMAGES_GetFree();
 	if(m_longinfo_damage != -1) {
-		DAMAGE_INFO * damage = &damages[m_longinfo_damage];
+		DAMAGE_INFO & damage = damages[m_longinfo_damage];
 		
-		damage->radius = 150.f;
-		damage->damages = 8.f;
-		damage->area = DAMAGE_FULL;
-		damage->duration = 100000000;
-		damage->source = m_caster;
-		damage->flags = DAMAGE_FLAG_DONT_HURT_SOURCE | DAMAGE_FLAG_FOLLOW_SOURCE | DAMAGE_FLAG_ADD_VISUAL_FX;
-		damage->type = DAMAGE_TYPE_FAKEFIRE | DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_DRAIN_MANA;
-		damage->exist = true;
+		damage.radius = 150.f;
+		damage.damages = 8.f;
+		damage.area = DAMAGE_FULL;
+		damage.duration = 100000000;
+		damage.source = m_caster;
+		damage.flags = DAMAGE_FLAG_DONT_HURT_SOURCE | DAMAGE_FLAG_FOLLOW_SOURCE | DAMAGE_FLAG_ADD_VISUAL_FX;
+		damage.type = DAMAGE_TYPE_FAKEFIRE | DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_DRAIN_MANA;
+		damage.exist = true;
 	}
 	
 	m_longinfo2_light = GetFreeDynLight();
@@ -249,17 +249,17 @@ void ExplosionSpell::Launch()
 	
 	m_longinfo_damage = ARX_DAMAGES_GetFree();
 	if(m_longinfo_damage != -1) {
-		DAMAGE_INFO * damage = &damages[m_longinfo_damage];
+		DAMAGE_INFO & damage = damages[m_longinfo_damage];
 		
-		damage->radius = 350.f;
-		damage->damages = 10.f;
-		damage->area = DAMAGE_AREA; 
-		damage->duration = m_tolive;
-		damage->source = m_caster;
-		damage->flags = DAMAGE_FLAG_DONT_HURT_SOURCE | DAMAGE_FLAG_FOLLOW_SOURCE | DAMAGE_FLAG_ADD_VISUAL_FX;
-		damage->type = DAMAGE_TYPE_FAKEFIRE | DAMAGE_TYPE_MAGICAL;
-		damage->exist = true;
-		damage->pos = target;
+		damage.radius = 350.f;
+		damage.damages = 10.f;
+		damage.area = DAMAGE_AREA; 
+		damage.duration = m_tolive;
+		damage.source = m_caster;
+		damage.flags = DAMAGE_FLAG_DONT_HURT_SOURCE | DAMAGE_FLAG_FOLLOW_SOURCE | DAMAGE_FLAG_ADD_VISUAL_FX;
+		damage.type = DAMAGE_TYPE_FAKEFIRE | DAMAGE_TYPE_MAGICAL;
+		damage.exist = true;
+		damage.pos = target;
 	}
 	
 	m_longinfo2_light = GetFreeDynLight();
