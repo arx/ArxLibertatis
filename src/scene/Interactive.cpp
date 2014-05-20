@@ -934,9 +934,6 @@ void RestoreInitialIOStatusOfIO(Entity * io)
 		io->animBlend.lastanimtime = 1;
 		io->secretvalue = -1;
 		
-		DamageRequestEnd(io->damagedata);
-		
-		io->damagedata = -1;
 		io->poisonous = 0;
 		io->poisonous_count = 0;
 

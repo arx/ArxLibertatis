@@ -172,7 +172,6 @@ Entity::Entity(const res::path & classPath)
 	
 	speed_modif = 0.f;
 	spellsOn.clear();
-	damagedata = -1;
 	
 	rubber = BASE_RUBBER;
 	max_durability = durability = 100.f;
@@ -236,7 +235,6 @@ Entity::~Entity() {
 			anims[n] = NULL;
 		}
 	}
-	DamageRequestEnd(damagedata);
 	
 	lightHandleDestroy(dynlight);
 	lightHandleDestroy(halo.dynlight);

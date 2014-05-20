@@ -327,7 +327,6 @@ public:
 	
 	float speed_modif;
 	boost::container::flat_set<long> spellsOn;
-	long damagedata;
 	
 	float rubber;
 	float max_durability;

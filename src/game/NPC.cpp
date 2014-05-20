@@ -999,14 +999,7 @@ void ARX_PHYSICS_Apply() {
 			if(io->obj->pbox->active == 1) {
 				PHYSICS_CURIO = io;
 
-				if(ARX_PHYSICS_BOX_ApplyModel(io->obj, (float)framedelay, io->rubber, treatio[i].num)) {
-					if(io->damagedata >= 0) {
-						damages[io->damagedata].active = 1;
-						ARX_DAMAGES_UpdateDamage(io->damagedata, float(arxtime));
-						DamageRequestEnd(io->damagedata);
-						io->damagedata = -1;
-					}
-				}
+				ARX_PHYSICS_BOX_ApplyModel(io->obj, (float)framedelay, io->rubber, treatio[i].num);
 				
 				if(io->soundcount > 12) {
 					io->soundtime = 0;
