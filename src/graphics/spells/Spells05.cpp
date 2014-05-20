@@ -692,27 +692,23 @@ void CMultiPoisonProjectile::Create(Vec3f _eSrc, float _afBeta = 0) {
 		afBeta = player.angle.getPitch();
 
 		if(spells[spellinstance].m_hand_group != -1) {
-			_eSrc.x = spells[spellinstance].m_hand_pos.x - std::sin(radians(afBeta)) * 90;
-			_eSrc.y = spells[spellinstance].m_hand_pos.y;
-			_eSrc.z = spells[spellinstance].m_hand_pos.z + std::cos(radians(afBeta)) * 90;
+			_eSrc = spells[spellinstance].m_hand_pos;
 		} else {
-			_eSrc.x = player.pos.x - std::sin(radians(afBeta)) * 90;
-			_eSrc.y = player.pos.y;
-			_eSrc.z = player.pos.z + std::cos(radians(afBeta)) * 90;
+			_eSrc = player.pos;
 		}
 	} else {
 		afBeta = entities[spells[spellinstance].m_caster]->angle.getPitch();
 
 		if(spells[spellinstance].m_hand_group != -1) {
-			_eSrc.x = spells[spellinstance].m_hand_pos.x - std::sin(radians(afBeta)) * 90;
-			_eSrc.y = spells[spellinstance].m_hand_pos.y;
-			_eSrc.z = spells[spellinstance].m_hand_pos.z + std::cos(radians(afBeta)) * 90;
+			_eSrc = spells[spellinstance].m_hand_pos;
 		} else {
-			_eSrc.x = entities[spells[spellinstance].m_caster]->pos.x - std::sin(radians(afBeta)) * 90;
-			_eSrc.y = entities[spells[spellinstance].m_caster]->pos.y;
-			_eSrc.z = entities[spells[spellinstance].m_caster]->pos.z + std::cos(radians(afBeta)) * 90;
+			_eSrc = entities[spells[spellinstance].m_caster]->pos;
 		}
 	}
+	
+	_eSrc.x -= std::sin(radians(afBeta)) * 90;
+	_eSrc.z += std::cos(radians(afBeta)) * 90;
+	
 
 	long lMax = 0;
 
