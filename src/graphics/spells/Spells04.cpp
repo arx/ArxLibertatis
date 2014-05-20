@@ -225,13 +225,11 @@ void CCurse::Render() {
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	
-	if(svoodoo) {
 		Anglef stiteangle = Anglef(0, fRot, 0);
 		Vec3f stitepos = eTarget;
 		Vec3f stitescale = Vec3f_ONE;
 		Color3f stitecolor = Color3f::white;
 		Draw3DObject(svoodoo, stiteangle, stitepos, stitescale, stitecolor);
-	}
 	
 	for(int i = 0; i < 4; i++) {
 		

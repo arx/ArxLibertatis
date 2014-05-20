@@ -412,8 +412,7 @@ void CMagicMissile::Render()
 
 	Vec3f stitescale = Vec3f_ONE;
 
-	if(smissile)
-		Draw3DObject(smissile, stiteangle, stitepos, stitescale, stitecolor);
+	Draw3DObject(smissile, stiteangle, stitepos, stitescale, stitecolor);
 
 	eCurPos = lastpos;
 }

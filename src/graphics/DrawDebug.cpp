@@ -344,11 +344,9 @@ static void drawDebugFogs() {
 			continue;
 		}
 		
-		if(g_fogObject) {
 			Anglef angle(0.f, 0.f, 0.f);
 			Vec3f scale(1.f);
 			Draw3DObject(g_fogObject, angle, fog->pos, scale, Color3f::white);
-		}
 		
 		if(fog->special & FOG_DIRECTIONAL) {
 			EERIEDraw3DLine(fog->pos, fog->pos + fog->move * 50.f, Color::white);
