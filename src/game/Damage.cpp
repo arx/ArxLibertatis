@@ -946,9 +946,9 @@ void ARX_DAMAGES_UpdateDamage(long j, float tim) {
 	
 	DAMAGE_INFO & damage = damages[j];
 	
-	if(damage.exist) {
-		if(!damage.active)
-			return;
+	if(!damage.exist || !damage.active) {
+		return;
+	}
 		
 		if(damage.flags & DAMAGE_FLAG_FOLLOW_SOURCE) {
 			if(damage.source == 0) {
@@ -1166,7 +1166,6 @@ void ARX_DAMAGES_UpdateDamage(long j, float tim) {
 			damage.exist = false;
 		else if(tim > damage.start_time + damage.duration)
 			damage.exist = false;
-	}
 }
 
 void ARX_DAMAGES_UpdateAll()
