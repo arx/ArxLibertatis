@@ -124,9 +124,7 @@ void ManaDrainSpell::Launch(long duration)
 
 void ManaDrainSpell::End()
 {
-	if(m_longinfo_damage != -1) {
-		damages[m_longinfo_damage].exist = false;
-	}
+	DamageRequestEnd(m_longinfo_damage);
 	
 	if(lightHandleIsValid(m_longinfo2_light)) {
 		EERIE_LIGHT * light = lightHandleGet(m_longinfo2_light);
@@ -408,9 +406,7 @@ void LifeDrainSpell::Launch(long duration)
 
 void LifeDrainSpell::End()
 {
-	if(m_longinfo_damage != -1) {
-		damages[m_longinfo_damage].exist = false;
-	}
+	DamageRequestEnd(m_longinfo_damage);
 	
 	if(lightHandleIsValid(m_longinfo2_light)) {
 		EERIE_LIGHT * light = lightHandleGet(m_longinfo2_light);

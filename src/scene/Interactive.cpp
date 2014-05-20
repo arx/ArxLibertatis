@@ -933,10 +933,9 @@ void RestoreInitialIOStatusOfIO(Entity * io)
 		ARX_INTERACTIVE_Teleport(io, io->initpos);
 		io->animBlend.lastanimtime = 1;
 		io->secretvalue = -1;
-
-		if(io->damagedata >= 0)
-			damages[io->damagedata].exist = 0;
-
+		
+		DamageRequestEnd(io->damagedata);
+		
 		io->damagedata = -1;
 		io->poisonous = 0;
 		io->poisonous_count = 0;

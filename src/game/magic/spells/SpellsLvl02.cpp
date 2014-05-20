@@ -376,9 +376,7 @@ void HarmSpell::Launch(long duration)
 
 void HarmSpell::End()
 {
-	if(m_longinfo_damage != -1) {
-		damages[m_longinfo_damage].exist = false;
-	}
+	DamageRequestEnd(m_longinfo_damage);
 	
 	if(lightHandleIsValid(m_longinfo2_light)) {
 		EERIE_LIGHT * light = lightHandleGet(m_longinfo2_light);

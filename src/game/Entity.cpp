@@ -236,10 +236,7 @@ Entity::~Entity() {
 			anims[n] = NULL;
 		}
 	}
-	
-	if(damagedata >= 0) {
-		damages[damagedata].exist = 0;
-	}
+	DamageRequestEnd(damagedata);
 	
 	lightHandleDestroy(dynlight);
 	lightHandleDestroy(halo.dynlight);

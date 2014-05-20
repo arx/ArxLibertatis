@@ -264,8 +264,7 @@ void FireFieldSpell::Launch(long duration)
 
 void FireFieldSpell::End()
 {
-	if(m_longinfo_damage != -1)
-		damages[m_longinfo_damage].exist = false;
+	DamageRequestEnd(m_longinfo_damage);
 	
 	ARX_SOUND_Stop(m_snd_loop);
 	ARX_SOUND_PlaySFX(SND_SPELL_FIRE_FIELD_END);
@@ -403,8 +402,7 @@ void IceFieldSpell::Launch(long duration)
 
 void IceFieldSpell::End()
 {
-	if(m_longinfo_damage != -1)
-		damages[m_longinfo_damage].exist = false;
+	DamageRequestEnd(m_longinfo_damage);
 	
 	ARX_SOUND_Stop(m_snd_loop); 
 	ARX_SOUND_PlaySFX(SND_SPELL_ICE_FIELD_END);

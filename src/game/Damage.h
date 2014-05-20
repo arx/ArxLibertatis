@@ -128,6 +128,8 @@ const size_t MAX_DAMAGES = 200;
 
 extern DAMAGE_INFO damages[MAX_DAMAGES];
 
+void DamageRequestEnd(long handle);
+
 /*!
  * mode=true ON mode=false  OFF
  * flag & 1 no lights;

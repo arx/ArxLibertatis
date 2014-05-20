@@ -1003,7 +1003,7 @@ void ARX_PHYSICS_Apply() {
 					if(io->damagedata >= 0) {
 						damages[io->damagedata].active = 1;
 						ARX_DAMAGES_UpdateDamage(io->damagedata, float(arxtime));
-						damages[io->damagedata].exist = 0;
+						DamageRequestEnd(io->damagedata);
 						io->damagedata = -1;
 					}
 				}
