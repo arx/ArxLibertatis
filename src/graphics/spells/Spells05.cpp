@@ -673,7 +673,7 @@ CMultiPoisonProjectile::~CMultiPoisonProjectile()
 	delete [] pTab;
 }
 
-void CMultiPoisonProjectile::Create(Vec3f _eSrc, float _afBeta = 0) {
+void CMultiPoisonProjectile::Create(Vec3f srcPos, float _afBeta = 0) {
 	
 	(void)_afBeta;
 
@@ -692,28 +692,28 @@ void CMultiPoisonProjectile::Create(Vec3f _eSrc, float _afBeta = 0) {
 		afBeta = player.angle.getPitch();
 
 		if(spells[spellinstance].m_hand_group != -1) {
-			_eSrc = spells[spellinstance].m_hand_pos;
+			srcPos = spells[spellinstance].m_hand_pos;
 		} else {
-			_eSrc = player.pos;
+			srcPos = player.pos;
 		}
 	} else {
 		afBeta = entities[spells[spellinstance].m_caster]->angle.getPitch();
 
 		if(spells[spellinstance].m_hand_group != -1) {
-			_eSrc = spells[spellinstance].m_hand_pos;
+			srcPos = spells[spellinstance].m_hand_pos;
 		} else {
-			_eSrc = entities[spells[spellinstance].m_caster]->pos;
+			srcPos = entities[spells[spellinstance].m_caster]->pos;
 		}
 	}
 	
-	_eSrc.x -= std::sin(radians(afBeta)) * 90;
-	_eSrc.z += std::cos(radians(afBeta)) * 90;
+	srcPos.x -= std::sin(radians(afBeta)) * 90;
+	srcPos.z += std::cos(radians(afBeta)) * 90;
 	
 
 	long lMax = 0;
 
 	for(unsigned int i = 0; i < uiNumber; i++) {
-		pTab[i]->Create(_eSrc, afBeta + frand2() * 10.0f);
+		pTab[i]->Create(srcPos, afBeta + frand2() * 10.0f);
 		long lTime = ulDuration + Random::get(0, 5000);
 		pTab[i]->SetDuration(lTime);
 		lMax = max(lMax, lTime);
