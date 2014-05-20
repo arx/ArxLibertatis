@@ -109,8 +109,6 @@ struct DAMAGE_INFO {
 	DamageArea area; // damage area type
 	DamageFlags flags; // damages flags
 	DamageType type; // damages type
-	long special; // slowdown, paralysis...
-	long special_ID; // for io localised immunities or any other customization
 	unsigned long lastupd;
 };
 

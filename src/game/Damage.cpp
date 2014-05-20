@@ -866,8 +866,6 @@ long ARX_DAMAGES_GetFree()
 			damages[i].area = DAMAGE_AREA;
 			damages[i].flags = 0;
 			damages[i].type = 0;
-			damages[i].special = 0;
-			damages[i].special_ID = 0;
 			damages[i].lastupd = 0;
 			damages[i].active = 1;
 			return i;
