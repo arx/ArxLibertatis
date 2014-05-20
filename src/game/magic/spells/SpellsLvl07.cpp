@@ -242,15 +242,15 @@ void FireFieldSpell::Launch(long duration)
 	if(m_longinfo_damage != -1) {
 		DAMAGE_INFO & damage = damages[m_longinfo_damage];
 		
-		damage.radius = 150.f;
-		damage.damages = 10.f;
-		damage.area = DAMAGE_FULL;
-		damage.duration = 100000000;
-		damage.source = m_caster;
-		damage.flags = 0;
-		damage.type = DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_FIRE | DAMAGE_TYPE_FIELD;
+		damage.params.radius = 150.f;
+		damage.params.damages = 10.f;
+		damage.params.area = DAMAGE_FULL;
+		damage.params.duration = 100000000;
+		damage.params.source = m_caster;
+		damage.params.flags = 0;
+		damage.params.type = DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_FIRE | DAMAGE_TYPE_FIELD;
 		damage.exist = true;
-		damage.pos = target;
+		damage.params.pos = target;
 	}
 	
 	effect->Create(200.f, target + Vec3f(0, -10, 0), m_tolive);
@@ -380,15 +380,15 @@ void IceFieldSpell::Launch(long duration)
 	if(m_longinfo_damage != -1) {
 		DAMAGE_INFO & damage = damages[m_longinfo_damage];
 		
-		damage.radius = 150.f;
-		damage.damages = 10.f;
-		damage.area = DAMAGE_FULL;
-		damage.duration = 100000000;
-		damage.source = m_caster;
-		damage.flags = 0;
-		damage.type = DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_COLD | DAMAGE_TYPE_FIELD;
+		damage.params.radius = 150.f;
+		damage.params.damages = 10.f;
+		damage.params.area = DAMAGE_FULL;
+		damage.params.duration = 100000000;
+		damage.params.source = m_caster;
+		damage.params.flags = 0;
+		damage.params.type = DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_COLD | DAMAGE_TYPE_FIELD;
 		damage.exist = true;
-		damage.pos = target;
+		damage.params.pos = target;
 	}
 	
 	effect->Create(target, MAKEANGLE(player.angle.getPitch()));

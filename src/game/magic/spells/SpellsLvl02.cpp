@@ -352,13 +352,13 @@ void HarmSpell::Launch(long duration)
 	if(m_longinfo_damage != -1) {
 		DAMAGE_INFO & damage = damages[m_longinfo_damage];
 		
-		damage.radius = 150.f;
-		damage.damages = 4.f;
-		damage.area = DAMAGE_FULL;
-		damage.duration = 100000000;
-		damage.source = m_caster;
-		damage.flags = DAMAGE_FLAG_DONT_HURT_SOURCE | DAMAGE_FLAG_FOLLOW_SOURCE | DAMAGE_FLAG_ADD_VISUAL_FX;
-		damage.type = DAMAGE_TYPE_FAKEFIRE | DAMAGE_TYPE_MAGICAL;
+		damage.params.radius = 150.f;
+		damage.params.damages = 4.f;
+		damage.params.area = DAMAGE_FULL;
+		damage.params.duration = 100000000;
+		damage.params.source = m_caster;
+		damage.params.flags = DAMAGE_FLAG_DONT_HURT_SOURCE | DAMAGE_FLAG_FOLLOW_SOURCE | DAMAGE_FLAG_ADD_VISUAL_FX;
+		damage.params.type = DAMAGE_TYPE_FAKEFIRE | DAMAGE_TYPE_MAGICAL;
 		damage.exist = true;
 	}
 	

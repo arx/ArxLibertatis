@@ -95,21 +95,33 @@ enum DamageFlag {
 DECLARE_FLAGS(DamageFlag, DamageFlags)
 DECLARE_FLAGS_OPERATORS(DamageFlags)
 
-struct DAMAGE_INFO {
-	short exist;
-	short active;
+struct DamageParameters {
+	
 	Vec3f pos;
 	float damages;
 	float radius;
-	unsigned long start_time;
-	long duration;	// in milliseconds
-	// -1 for apply once
-	// else damage *=framediff
-	long source; // io index or -1 for player
+	long duration;	// in milliseconds -1 for apply once else damage *=framediff
 	DamageArea area; // damage area type
 	DamageFlags flags; // damages flags
 	DamageType type; // damages type
+	long source; // io index or -1 for player
+	
+	DamageParameters() {
+		radius = 100.f;
+		duration = 1000;
+		area = DAMAGE_AREA;
+		flags = 0;
+		type = 0;
+	}
+};
+
+struct DAMAGE_INFO {
+	short exist;
+	short active;
+	unsigned long start_time;
 	unsigned long lastupd;
+	
+	DamageParameters params;
 };
 
 const size_t MAX_DAMAGES = 200;

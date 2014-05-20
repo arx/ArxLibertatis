@@ -99,13 +99,13 @@ void ManaDrainSpell::Launch(long duration)
 	if(m_longinfo_damage != -1) {
 		DAMAGE_INFO & damage = damages[m_longinfo_damage];
 		
-		damage.radius = 150.f;
-		damage.damages = 8.f;
-		damage.area = DAMAGE_FULL;
-		damage.duration = 100000000;
-		damage.source = m_caster;
-		damage.flags = DAMAGE_FLAG_DONT_HURT_SOURCE | DAMAGE_FLAG_FOLLOW_SOURCE | DAMAGE_FLAG_ADD_VISUAL_FX;
-		damage.type = DAMAGE_TYPE_FAKEFIRE | DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_DRAIN_MANA;
+		damage.params.radius = 150.f;
+		damage.params.damages = 8.f;
+		damage.params.area = DAMAGE_FULL;
+		damage.params.duration = 100000000;
+		damage.params.source = m_caster;
+		damage.params.flags = DAMAGE_FLAG_DONT_HURT_SOURCE | DAMAGE_FLAG_FOLLOW_SOURCE | DAMAGE_FLAG_ADD_VISUAL_FX;
+		damage.params.type = DAMAGE_TYPE_FAKEFIRE | DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_DRAIN_MANA;
 		damage.exist = true;
 	}
 	
@@ -251,15 +251,15 @@ void ExplosionSpell::Launch()
 	if(m_longinfo_damage != -1) {
 		DAMAGE_INFO & damage = damages[m_longinfo_damage];
 		
-		damage.radius = 350.f;
-		damage.damages = 10.f;
-		damage.area = DAMAGE_AREA; 
-		damage.duration = m_tolive;
-		damage.source = m_caster;
-		damage.flags = DAMAGE_FLAG_DONT_HURT_SOURCE | DAMAGE_FLAG_FOLLOW_SOURCE | DAMAGE_FLAG_ADD_VISUAL_FX;
-		damage.type = DAMAGE_TYPE_FAKEFIRE | DAMAGE_TYPE_MAGICAL;
+		damage.params.radius = 350.f;
+		damage.params.damages = 10.f;
+		damage.params.area = DAMAGE_AREA; 
+		damage.params.duration = m_tolive;
+		damage.params.source = m_caster;
+		damage.params.flags = DAMAGE_FLAG_DONT_HURT_SOURCE | DAMAGE_FLAG_FOLLOW_SOURCE | DAMAGE_FLAG_ADD_VISUAL_FX;
+		damage.params.type = DAMAGE_TYPE_FAKEFIRE | DAMAGE_TYPE_MAGICAL;
 		damage.exist = true;
-		damage.pos = target;
+		damage.params.pos = target;
 	}
 	
 	m_longinfo2_light = GetFreeDynLight();
@@ -383,13 +383,13 @@ void LifeDrainSpell::Launch(long duration)
 	if(m_longinfo_damage != -1) {
 		long id = m_longinfo_damage;
 		DAMAGE_INFO & damage = damages[id];
-		damage.radius = 150.f;
-		damage.damages = m_caster_level * 0.08f;
-		damage.area = DAMAGE_AREA;
-		damage.duration = 100000000;
-		damage.source = m_caster;
-		damage.flags = DAMAGE_FLAG_DONT_HURT_SOURCE | DAMAGE_FLAG_FOLLOW_SOURCE | DAMAGE_FLAG_ADD_VISUAL_FX;
-		damage.type = DAMAGE_TYPE_FAKEFIRE | DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_DRAIN_LIFE;
+		damage.params.radius = 150.f;
+		damage.params.damages = m_caster_level * 0.08f;
+		damage.params.area = DAMAGE_AREA;
+		damage.params.duration = 100000000;
+		damage.params.source = m_caster;
+		damage.params.flags = DAMAGE_FLAG_DONT_HURT_SOURCE | DAMAGE_FLAG_FOLLOW_SOURCE | DAMAGE_FLAG_ADD_VISUAL_FX;
+		damage.params.type = DAMAGE_TYPE_FAKEFIRE | DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_DRAIN_LIFE;
 		damage.exist = true;
 	}
 	

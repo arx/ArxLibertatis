@@ -584,14 +584,14 @@ void CMultiMagicMissile::CheckCollision()
 			
 			if(ttt != -1) {
 				DAMAGE_INFO & damage = damages[ttt];
-				damage.pos = missile->eCurPos;
-				damage.radius = 80.f;
-				damage.damages = (4 + spells[spellinstance].m_caster_level * ( 1.0f / 5 )) * .8f; 
-				damage.area	= DAMAGE_FULL;
-				damage.duration = -1;
-				damage.source = spells[spellinstance].m_caster;
-				damage.flags = DAMAGE_FLAG_DONT_HURT_SOURCE;
-				damage.type = DAMAGE_TYPE_MAGICAL;
+				damage.params.pos = missile->eCurPos;
+				damage.params.radius = 80.f;
+				damage.params.damages = (4 + spells[spellinstance].m_caster_level * ( 1.0f / 5 )) * .8f; 
+				damage.params.area	= DAMAGE_FULL;
+				damage.params.duration = -1;
+				damage.params.source = spells[spellinstance].m_caster;
+				damage.params.flags = DAMAGE_FLAG_DONT_HURT_SOURCE;
+				damage.params.type = DAMAGE_TYPE_MAGICAL;
 				damage.exist = true;
 			}
 			
