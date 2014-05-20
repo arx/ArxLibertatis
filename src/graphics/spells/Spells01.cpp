@@ -583,15 +583,16 @@ void CMultiMagicMissile::CheckCollision()
 			long ttt = ARX_DAMAGES_GetFree();
 			
 			if(ttt != -1) {
-				damages[ttt].pos = missile->eCurPos;
-				damages[ttt].radius	= 80.f;
-				damages[ttt].damages = (4 + spells[spellinstance].m_caster_level * ( 1.0f / 5 )) * .8f; 
-				damages[ttt].area	= DAMAGE_FULL;
-				damages[ttt].duration = -1;
-				damages[ttt].source	= spells[spellinstance].m_caster;
-				damages[ttt].flags	= DAMAGE_FLAG_DONT_HURT_SOURCE;
-				damages[ttt].type	= DAMAGE_TYPE_MAGICAL;
-				damages[ttt].exist	= true;
+				DAMAGE_INFO & damage = damages[ttt];
+				damage.pos = missile->eCurPos;
+				damage.radius	= 80.f;
+				damage.damages = (4 + spells[spellinstance].m_caster_level * ( 1.0f / 5 )) * .8f; 
+				damage.area	= DAMAGE_FULL;
+				damage.duration = -1;
+				damage.source	= spells[spellinstance].m_caster;
+				damage.flags	= DAMAGE_FLAG_DONT_HURT_SOURCE;
+				damage.type	= DAMAGE_TYPE_MAGICAL;
+				damage.exist	= true;
 			}
 			
 			Color3f rgb(.3f, .3f, .45f);

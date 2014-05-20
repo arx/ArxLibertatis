@@ -489,15 +489,16 @@ void CLightning::Render()
 				long si = ARX_DAMAGES_GetFree();
 
 				if(si != -1) {
-					damages[si].pos = sphere.origin;
-					damages[si].radius = sphere.radius;
-					damages[si].damages = fDamage * spells[spellinstance].m_caster_level * ( 1.0f / 3 ); 
-					damages[si].area = DAMAGE_FULL;
-					damages[si].duration = 1; 
-					damages[si].source = spells[spellinstance].m_caster;
-					damages[si].flags = DAMAGE_FLAG_DONT_HURT_SOURCE | DAMAGE_FLAG_ADD_VISUAL_FX;
-					damages[si].type = DAMAGE_TYPE_FAKEFIRE | DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_LIGHTNING;
-					damages[si].exist = true;
+					DAMAGE_INFO & damage = damages[si];
+					damage.pos = sphere.origin;
+					damage.radius = sphere.radius;
+					damage.damages = fDamage * spells[spellinstance].m_caster_level * ( 1.0f / 3 ); 
+					damage.area = DAMAGE_FULL;
+					damage.duration = 1; 
+					damage.source = spells[spellinstance].m_caster;
+					damage.flags = DAMAGE_FLAG_DONT_HURT_SOURCE | DAMAGE_FLAG_ADD_VISUAL_FX;
+					damage.type = DAMAGE_TYPE_FAKEFIRE | DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_LIGHTNING;
+					damage.exist = true;
 				}
 			}
 		}

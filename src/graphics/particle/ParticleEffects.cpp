@@ -1377,15 +1377,16 @@ void TreatBackgroundActions() {
 		if((gl->extras & EXTRAS_SPAWNFIRE) && gl->status) {
 			long id = ARX_DAMAGES_GetFree();
 			if(id !=-1) {
-				damages[id].radius = gl->ex_radius; 
-				damages[id].damages = gl->ex_radius * (1.0f / 7);
-				damages[id].area = DAMAGE_FULL;
-				damages[id].duration = 1;
-				damages[id].source = -5;
-				damages[id].flags = 0; 
-				damages[id].type = DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_FIRE | DAMAGE_TYPE_NO_FIX;
-				damages[id].exist = true;
-				damages[id].pos = gl->pos;
+				DAMAGE_INFO & damage = damages[id];
+				damage.radius = gl->ex_radius; 
+				damage.damages = gl->ex_radius * (1.0f / 7);
+				damage.area = DAMAGE_FULL;
+				damage.duration = 1;
+				damage.source = -5;
+				damage.flags = 0; 
+				damage.type = DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_FIRE | DAMAGE_TYPE_NO_FIX;
+				damage.exist = true;
+				damage.pos = gl->pos;
 			}
 		}
 		

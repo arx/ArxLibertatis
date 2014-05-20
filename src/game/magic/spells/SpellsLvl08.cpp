@@ -389,17 +389,18 @@ void LifeDrainSpell::Launch(long duration)
 	m_longinfo_damage = ARX_DAMAGES_GetFree();
 	if(m_longinfo_damage != -1) {
 		long id = m_longinfo_damage;
-		damages[id].radius = 150.f;
-		damages[id].damages = m_caster_level * 0.08f;
-		damages[id].area = DAMAGE_AREA;
-		damages[id].duration = 100000000;
-		damages[id].source = m_caster;
-		damages[id].flags = DAMAGE_FLAG_DONT_HURT_SOURCE
+		DAMAGE_INFO & damage = damages[id];
+		damage.radius = 150.f;
+		damage.damages = m_caster_level * 0.08f;
+		damage.area = DAMAGE_AREA;
+		damage.duration = 100000000;
+		damage.source = m_caster;
+		damage.flags = DAMAGE_FLAG_DONT_HURT_SOURCE
 		                    | DAMAGE_FLAG_FOLLOW_SOURCE
 		                    | DAMAGE_FLAG_ADD_VISUAL_FX;
-		damages[id].type = DAMAGE_TYPE_FAKEFIRE | DAMAGE_TYPE_MAGICAL
+		damage.type = DAMAGE_TYPE_FAKEFIRE | DAMAGE_TYPE_MAGICAL
 		                   | DAMAGE_TYPE_DRAIN_LIFE;
-		damages[id].exist = true;
+		damage.exist = true;
 	}
 	
 	m_longinfo2_light = GetFreeDynLight();

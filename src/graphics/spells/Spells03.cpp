@@ -453,15 +453,16 @@ void CIceProjectile::Create(Vec3f aeSrc, float afBeta)
 
 		long ttt = ARX_DAMAGES_GetFree();
 		if(ttt != -1) {
-			damages[ttt].pos = tPos[i];
-			damages[ttt].radius = 60.f;
-			damages[ttt].damages = 0.1f * spells[spellinstance].m_caster_level;
-			damages[ttt].area = DAMAGE_FULL;
-			damages[ttt].duration = ulDuration;
-			damages[ttt].source = spells[spellinstance].m_caster;
-			damages[ttt].flags = DAMAGE_FLAG_DONT_HURT_SOURCE;
-			damages[ttt].type = DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_COLD;
-			damages[ttt].exist = true;
+			DAMAGE_INFO & damage = damages[ttt];
+			damage.pos = tPos[i];
+			damage.radius = 60.f;
+			damage.damages = 0.1f * spells[spellinstance].m_caster_level;
+			damage.area = DAMAGE_FULL;
+			damage.duration = ulDuration;
+			damage.source = spells[spellinstance].m_caster;
+			damage.flags = DAMAGE_FLAG_DONT_HURT_SOURCE;
+			damage.type = DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_COLD;
+			damage.exist = true;
 		}
 	}
 

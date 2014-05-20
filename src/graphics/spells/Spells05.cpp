@@ -762,17 +762,18 @@ void CMultiPoisonProjectile::Render()
 
 		if((t != -1) && (spells[pTab[i]->spellinstance].m_timcreation + 1600 < (unsigned long)(arxtime)))
 		{
-			damages[t].pos = pPoisonProjectile->eCurPos;
-			damages[t].radius = 120.f;
+			DAMAGE_INFO & damage = damages[t];
+			damage.pos = pPoisonProjectile->eCurPos;
+			damage.radius = 120.f;
 			float v = spells[spellinstance].m_caster_level;
 			v = 4.f + v * ( 1.0f / 10 ) * 6.f ;
-			damages[t].damages	= v * ( 1.0f / 1000 ) * framedelay;
-			damages[t].area		= DAMAGE_FULL;
-			damages[t].duration	= static_cast<long>(framedelay);
-			damages[t].source	= spells[spellinstance].m_caster;
-			damages[t].flags	= 0;
-			damages[t].type		= DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_POISON;
-			damages[t].exist	= true;
+			damage.damages	= v * ( 1.0f / 1000 ) * framedelay;
+			damage.area		= DAMAGE_FULL;
+			damage.duration	= static_cast<long>(framedelay);
+			damage.source	= spells[spellinstance].m_caster;
+			damage.flags	= 0;
+			damage.type		= DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_POISON;
+			damage.exist	= true;
 		}
 	}
 }

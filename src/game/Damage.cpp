@@ -860,14 +860,15 @@ long ARX_DAMAGES_GetFree()
 {
 	for(size_t i = 0; i < MAX_DAMAGES; i++) {
 		if(!damages[i].exist) {
-			damages[i].radius = 100.f;
-			damages[i].start_time = (unsigned long)(arxtime); 
-			damages[i].duration = 1000;
-			damages[i].area = DAMAGE_AREA;
-			damages[i].flags = 0;
-			damages[i].type = 0;
-			damages[i].lastupd = 0;
-			damages[i].active = 1;
+			DAMAGE_INFO & damage = damages[i];
+			damage.radius = 100.f;
+			damage.start_time = (unsigned long)(arxtime); 
+			damage.duration = 1000;
+			damage.area = DAMAGE_AREA;
+			damage.flags = 0;
+			damage.type = 0;
+			damage.lastupd = 0;
+			damage.active = 1;
 			return i;
 		}
 	}
