@@ -397,72 +397,72 @@ extern EERIE_3DOBJ * cabal;
 
 void HarmSpell::Update(float timeDelta)
 {
-		float refpos;
-		float scaley;
-
-		if(m_caster==0)
-			scaley=90.f;
-		else
-			scaley = EEfabs(entities[m_caster]->physics.cyl.height*( 1.0f / 2 ))+30.f;
-
-
-		float mov=std::sin((float)arxtime.get_frame_time()*( 1.0f / 800 ))*scaley;
-
-		Vec3f cabalpos;
-		if(m_caster==0) {
-			cabalpos.x = player.pos.x;
-			cabalpos.y = player.pos.y + 60.f - mov;
-			cabalpos.z = player.pos.z;
-			refpos=player.pos.y+60.f;
-		} else {
-			cabalpos.x = entities[m_caster]->pos.x;
-			cabalpos.y = entities[m_caster]->pos.y - scaley - mov;
-			cabalpos.z = entities[m_caster]->pos.z;
-			refpos=entities[m_caster]->pos.y-scaley;							
-		}
-
-		float Es=std::sin((float)arxtime.get_frame_time()*( 1.0f / 800 ) + radians(scaley));
-
-		if(lightHandleIsValid(m_longinfo2_light)) {
-			EERIE_LIGHT * light = lightHandleGet(m_longinfo2_light);
-			
-			light->pos.x = cabalpos.x;
-			light->pos.y = refpos;
-			light->pos.z = cabalpos.z; 
-			light->rgb.r=rnd()*0.2f+0.8f;
-			light->rgb.g=rnd()*0.2f+0.6f;
-			light->fallstart=Es*1.5f;
-		}
-
-		GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-		GRenderer->SetRenderState(Renderer::DepthWrite, false);
-
-		Anglef cabalangle(0.f, 0.f, 0.f);
-		cabalangle.setPitch(m_fdata+(float)timeDelta*0.1f);
-		m_fdata = cabalangle.getPitch();
-
-		Vec3f cabalscale = Vec3f(Es);
-		Color3f cabalcolor = Color3f(0.8f, 0.4f, 0.f);
-		Draw3DObject(cabal, cabalangle, cabalpos, cabalscale, cabalcolor);
-
-		mov=std::sin((float)(arxtime.get_frame_time()-30.f)*( 1.0f / 800 ))*scaley;
-		cabalpos.y = refpos - mov;
-		cabalcolor = Color3f(0.5f, 3.f, 0.f);
-		Draw3DObject(cabal, cabalangle, cabalpos, cabalscale, cabalcolor);
-
-		mov=std::sin((float)(arxtime.get_frame_time()-60.f)*( 1.0f / 800 ))*scaley;
-		cabalpos.y=refpos-mov;
-		cabalcolor = Color3f(0.25f, 0.1f, 0.f);
-		Draw3DObject(cabal, cabalangle, cabalpos, cabalscale, cabalcolor);
-
-		mov=std::sin((float)(arxtime.get_frame_time()-120.f)*( 1.0f / 800 ))*scaley;
-		cabalpos.y=refpos-mov;
-		cabalcolor = Color3f(0.15f, 0.1f, 0.f);
-		Draw3DObject(cabal, cabalangle, cabalpos, cabalscale, cabalcolor);
-
-		GRenderer->SetRenderState(Renderer::AlphaBlending, false);		
-		GRenderer->SetRenderState(Renderer::DepthWrite, true);	
+	float refpos;
+	float scaley;
+	
+	if(m_caster==0)
+		scaley=90.f;
+	else
+		scaley = EEfabs(entities[m_caster]->physics.cyl.height*( 1.0f / 2 ))+30.f;
+	
+	
+	float mov=std::sin((float)arxtime.get_frame_time()*( 1.0f / 800 ))*scaley;
+	
+	Vec3f cabalpos;
+	if(m_caster==0) {
+		cabalpos.x = player.pos.x;
+		cabalpos.y = player.pos.y + 60.f - mov;
+		cabalpos.z = player.pos.z;
+		refpos=player.pos.y+60.f;
+	} else {
+		cabalpos.x = entities[m_caster]->pos.x;
+		cabalpos.y = entities[m_caster]->pos.y - scaley - mov;
+		cabalpos.z = entities[m_caster]->pos.z;
+		refpos=entities[m_caster]->pos.y-scaley;
+	}
+	
+	float Es=std::sin((float)arxtime.get_frame_time()*( 1.0f / 800 ) + radians(scaley));
+	
+	if(lightHandleIsValid(m_longinfo2_light)) {
+		EERIE_LIGHT * light = lightHandleGet(m_longinfo2_light);
 		
-		ARX_SOUND_RefreshPosition(m_snd_loop, cabalpos);
+		light->pos.x = cabalpos.x;
+		light->pos.y = refpos;
+		light->pos.z = cabalpos.z;
+		light->rgb.r=rnd()*0.2f+0.8f;
+		light->rgb.g=rnd()*0.2f+0.6f;
+		light->fallstart=Es*1.5f;
+	}
+	
+	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+	GRenderer->SetRenderState(Renderer::DepthWrite, false);
+	
+	Anglef cabalangle(0.f, 0.f, 0.f);
+	cabalangle.setPitch(m_fdata+(float)timeDelta*0.1f);
+	m_fdata = cabalangle.getPitch();
+	
+	Vec3f cabalscale = Vec3f(Es);
+	Color3f cabalcolor = Color3f(0.8f, 0.4f, 0.f);
+	Draw3DObject(cabal, cabalangle, cabalpos, cabalscale, cabalcolor);
+	
+	mov=std::sin((float)(arxtime.get_frame_time()-30.f)*( 1.0f / 800 ))*scaley;
+	cabalpos.y = refpos - mov;
+	cabalcolor = Color3f(0.5f, 3.f, 0.f);
+	Draw3DObject(cabal, cabalangle, cabalpos, cabalscale, cabalcolor);
+	
+	mov=std::sin((float)(arxtime.get_frame_time()-60.f)*( 1.0f / 800 ))*scaley;
+	cabalpos.y=refpos-mov;
+	cabalcolor = Color3f(0.25f, 0.1f, 0.f);
+	Draw3DObject(cabal, cabalangle, cabalpos, cabalscale, cabalcolor);
+	
+	mov=std::sin((float)(arxtime.get_frame_time()-120.f)*( 1.0f / 800 ))*scaley;
+	cabalpos.y=refpos-mov;
+	cabalcolor = Color3f(0.15f, 0.1f, 0.f);
+	Draw3DObject(cabal, cabalangle, cabalpos, cabalscale, cabalcolor);
+	
+	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+	GRenderer->SetRenderState(Renderer::DepthWrite, true);
+	
+	ARX_SOUND_RefreshPosition(m_snd_loop, cabalpos);
 }
