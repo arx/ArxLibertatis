@@ -104,12 +104,8 @@ void ManaDrainSpell::Launch(long duration)
 		damage->area = DAMAGE_FULL;
 		damage->duration = 100000000;
 		damage->source = m_caster;
-		damage->flags = DAMAGE_FLAG_DONT_HURT_SOURCE
-		              | DAMAGE_FLAG_FOLLOW_SOURCE
-		              | DAMAGE_FLAG_ADD_VISUAL_FX;
-		damage->type = DAMAGE_TYPE_FAKEFIRE
-		             | DAMAGE_TYPE_MAGICAL
-		             | DAMAGE_TYPE_DRAIN_MANA;
+		damage->flags = DAMAGE_FLAG_DONT_HURT_SOURCE | DAMAGE_FLAG_FOLLOW_SOURCE | DAMAGE_FLAG_ADD_VISUAL_FX;
+		damage->type = DAMAGE_TYPE_FAKEFIRE | DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_DRAIN_MANA;
 		damage->exist = true;
 	}
 	
@@ -260,11 +256,8 @@ void ExplosionSpell::Launch()
 		damage->area = DAMAGE_AREA; 
 		damage->duration = m_tolive;
 		damage->source = m_caster;
-		damage->flags = DAMAGE_FLAG_DONT_HURT_SOURCE
-		              | DAMAGE_FLAG_FOLLOW_SOURCE
-		              | DAMAGE_FLAG_ADD_VISUAL_FX;
-		damage->type = DAMAGE_TYPE_FAKEFIRE
-		             | DAMAGE_TYPE_MAGICAL;
+		damage->flags = DAMAGE_FLAG_DONT_HURT_SOURCE | DAMAGE_FLAG_FOLLOW_SOURCE | DAMAGE_FLAG_ADD_VISUAL_FX;
+		damage->type = DAMAGE_TYPE_FAKEFIRE | DAMAGE_TYPE_MAGICAL;
 		damage->exist = true;
 		damage->pos = target;
 	}
@@ -395,11 +388,8 @@ void LifeDrainSpell::Launch(long duration)
 		damage.area = DAMAGE_AREA;
 		damage.duration = 100000000;
 		damage.source = m_caster;
-		damage.flags = DAMAGE_FLAG_DONT_HURT_SOURCE
-		                    | DAMAGE_FLAG_FOLLOW_SOURCE
-		                    | DAMAGE_FLAG_ADD_VISUAL_FX;
-		damage.type = DAMAGE_TYPE_FAKEFIRE | DAMAGE_TYPE_MAGICAL
-		                   | DAMAGE_TYPE_DRAIN_LIFE;
+		damage.flags = DAMAGE_FLAG_DONT_HURT_SOURCE | DAMAGE_FLAG_FOLLOW_SOURCE | DAMAGE_FLAG_ADD_VISUAL_FX;
+		damage.type = DAMAGE_TYPE_FAKEFIRE | DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_DRAIN_LIFE;
 		damage.exist = true;
 	}
 	

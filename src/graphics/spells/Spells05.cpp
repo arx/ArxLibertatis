@@ -767,13 +767,13 @@ void CMultiPoisonProjectile::Render()
 			damage.radius = 120.f;
 			float v = spells[spellinstance].m_caster_level;
 			v = 4.f + v * ( 1.0f / 10 ) * 6.f ;
-			damage.damages	= v * ( 1.0f / 1000 ) * framedelay;
-			damage.area		= DAMAGE_FULL;
-			damage.duration	= static_cast<long>(framedelay);
-			damage.source	= spells[spellinstance].m_caster;
-			damage.flags	= 0;
-			damage.type		= DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_POISON;
-			damage.exist	= true;
+			damage.damages = v * ( 1.0f / 1000 ) * framedelay;
+			damage.area = DAMAGE_FULL;
+			damage.duration = static_cast<long>(framedelay);
+			damage.source = spells[spellinstance].m_caster;
+			damage.flags = 0;
+			damage.type = DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_POISON;
+			damage.exist = true;
 		}
 	}
 }

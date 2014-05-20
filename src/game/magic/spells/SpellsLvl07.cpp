@@ -248,9 +248,7 @@ void FireFieldSpell::Launch(long duration)
 		damage->duration = 100000000;
 		damage->source = m_caster;
 		damage->flags = 0;
-		damage->type = DAMAGE_TYPE_MAGICAL
-		             | DAMAGE_TYPE_FIRE
-		             | DAMAGE_TYPE_FIELD;
+		damage->type = DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_FIRE | DAMAGE_TYPE_FIELD;
 		damage->exist = true;
 		damage->pos = target;
 	}
@@ -388,9 +386,7 @@ void IceFieldSpell::Launch(long duration)
 		damage->duration = 100000000;
 		damage->source = m_caster;
 		damage->flags = 0;
-		damage->type = DAMAGE_TYPE_MAGICAL
-		             | DAMAGE_TYPE_COLD
-		             | DAMAGE_TYPE_FIELD;
+		damage->type = DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_COLD | DAMAGE_TYPE_FIELD;
 		damage->exist = true;
 		damage->pos = target;
 	}
