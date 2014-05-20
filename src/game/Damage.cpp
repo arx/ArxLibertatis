@@ -874,7 +874,6 @@ long ARX_DAMAGES_GetFree()
 			damage.params = DamageParameters();
 			damage.start_time = (unsigned long)(arxtime);
 			damage.lastupd = 0;
-			damage.active = 1;
 			return i;
 		}
 	}
@@ -938,7 +937,7 @@ void ARX_DAMAGES_UpdateDamage(long j, float tim) {
 	
 	DAMAGE_INFO & damage = damages[j];
 	
-	if(!damage.exist || !damage.active) {
+	if(!damage.exist) {
 		return;
 	}
 		

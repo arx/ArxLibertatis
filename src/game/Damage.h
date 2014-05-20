@@ -117,7 +117,6 @@ struct DamageParameters {
 
 struct DAMAGE_INFO {
 	short exist;
-	short active;
 	unsigned long start_time;
 	unsigned long lastupd;
 	
