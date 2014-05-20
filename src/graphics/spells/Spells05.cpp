@@ -673,10 +673,8 @@ CMultiPoisonProjectile::~CMultiPoisonProjectile()
 	delete [] pTab;
 }
 
-void CMultiPoisonProjectile::Create(Vec3f srcPos, float _afBeta = 0) {
+void CMultiPoisonProjectile::Create(Vec3f srcPos) {
 	
-	(void)_afBeta;
-
 	float afBeta = 0.f;
 	
 	Entity * caster = entities[spells[spellinstance].m_caster];

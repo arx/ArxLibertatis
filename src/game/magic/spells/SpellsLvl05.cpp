@@ -257,13 +257,7 @@ void PoisonProjectileSpell::Launch(long i)
 	CMultiPoisonProjectile * effect = new CMultiPoisonProjectile(level);
 	effect->spellinstance = i;
 	effect->SetDuration(8000ul);
-	float ang;
-	if(m_caster == 0) {
-		ang = player.angle.getPitch();
-	} else {
-		ang = entities[m_caster]->angle.getPitch();
-	}
-	effect->Create(Vec3f_ZERO, MAKEANGLE(ang));
+	effect->Create(Vec3f_ZERO);
 	m_pSpellFx = effect;
 	m_tolive = effect->GetDuration();
 }
