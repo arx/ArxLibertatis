@@ -510,7 +510,7 @@ void ConfuseSpell::Launch(long i, bool & notifyAll, long duration)
 	
 	CConfuse * effect = new CConfuse();
 	effect->spellinstance = i;
-	effect->Create(player.pos, MAKEANGLE(player.angle.getPitch()));
+	effect->Create(MAKEANGLE(player.angle.getPitch()));
 	effect->SetDuration(m_tolive);
 	m_pSpellFx = effect;
 	m_tolive = effect->GetDuration();

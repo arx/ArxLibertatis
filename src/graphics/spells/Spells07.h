@@ -120,12 +120,9 @@ class CLightning: public CSpellFx
 class CConfuse: public CSpellFx
 {
 	public:
-		Vec3f eSrc;
-		Vec3f eTarget;
 		TextureContainer * tex_p1;
 		TextureContainer * tex_trail;
 		ANIM_USE au;
-		float fColor[3];
 		Vec3f eCurPos;
 
 	public:
@@ -137,7 +134,7 @@ class CConfuse: public CSpellFx
 
 		// surcharge
 	public:
-		void	Create(Vec3f, float afBeta = 0);
+		void	Create(float afBeta = 0);
 		void	Kill();
 		void	Update(unsigned long);
 		void Render();

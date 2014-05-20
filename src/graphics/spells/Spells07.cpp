@@ -571,9 +571,6 @@ CConfuse::~CConfuse()
 
 CConfuse::CConfuse() {
 	
-	eSrc = Vec3f_ZERO;
-	eTarget = Vec3f_ZERO;
-	
 	SetDuration(5000);
 	ulCurrentTime = ulDuration + 1;
 	
@@ -588,10 +585,6 @@ CConfuse::CConfuse() {
 	const char tex[] = "graph/obj3d/interactive/fix_inter/fx_papivolle/fx_papivolle.tea";
 	ANIM_HANDLE * anim_papii = EERIE_ANIMMANAGER_Load(tex);
 	
-	fColor[0] = 0.3f;
-	fColor[1] = 0.3f;
-	fColor[2] = 0.8f;
-	
 	ANIM_Set(&au, anim_papii);
 	au.next_anim = NULL;
 	au.cur_anim = anim_papii;
@@ -605,12 +598,10 @@ CConfuse::CConfuse() {
 	au.altidx_next = 0;
 }
 
-void CConfuse::Create(Vec3f aeSrc, float afBeta) {
+void CConfuse::Create(float afBeta) {
 	
 	SetDuration(ulDuration);
-	eSrc = aeSrc;
 	SetAngle(afBeta);
-	eTarget = entities[spells[spellinstance].m_target]->pos;
 }
 
 void CConfuse::Update(unsigned long _ulTime) {
@@ -620,8 +611,6 @@ void CConfuse::Update(unsigned long _ulTime) {
 void CConfuse::Render() {
 	
 	int i = 0;
-	
-	eTarget = entities[spells[spellinstance].m_target]->pos;
 	
 	if(ulCurrentTime >= ulDuration)
 		return;
