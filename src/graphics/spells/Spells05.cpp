@@ -425,9 +425,7 @@ void CPoisonProjectile::Create(Vec3f _eSrc, float _fBeta)
 	int i;
 
 	SetDuration(ulDuration);
-
 	SetAngle(_fBeta);
-
 	eSrc = _eSrc;
 
 	bOk = false;
@@ -876,10 +874,7 @@ void CRepelUndead::Create(Vec3f aeSrc, float afBeta) {
 	
 	SetDuration(ulDuration);
 	eTarget = eSrc = aeSrc;
-	fBeta = afBeta;
-	fBetaRad = radians(fBeta);
-	fBetaRadCos = (float)cos(fBetaRad);
-	fBetaRadSin = (float)sin(fBetaRad);
+	SetAngle(afBeta);
 }
 
 void CRepelUndead::Update(unsigned long _ulTime) {

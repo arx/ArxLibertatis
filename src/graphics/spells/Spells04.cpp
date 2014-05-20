@@ -77,7 +77,6 @@ void CBless::Create(Vec3f _eSrc, float _fBeta) {
 	
 	SetDuration(ulDuration);
 	SetAngle(_fBeta);
-	
 	eSrc = _eSrc;
 	eTarget = eSrc;
 	fRot = 0;
@@ -208,12 +207,7 @@ void CCurse::Create(Vec3f aeSrc, float afBeta) {
 	SetDuration(ulDuration);
 	
 	eSrc = aeSrc;
-	
-	fBeta = afBeta;
-	fBetaRad = radians(fBeta);
-	fBetaRadCos = (float) cos(fBetaRad);
-	fBetaRadSin = (float) sin(fBetaRad);
-	
+	SetAngle(afBeta);
 	eTarget = eSrc;
 	fRot = 0;
 	fRotPerMSec = 0.25f;

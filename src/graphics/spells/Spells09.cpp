@@ -164,11 +164,7 @@ void CSummonCreature::Create(Vec3f aeSrc, float afBeta)
 	eSrc.x = aeSrc.x;
 	eSrc.y = aeSrc.y - 50;
 	eSrc.z = aeSrc.z;
-
-	fBeta = afBeta;
-	fBetaRad = radians(fBeta);
-	fBetaRadCos = (float) cos(fBetaRad);
-	fBetaRadSin = (float) sin(fBetaRad);
+	SetAngle(afBeta);
 	sizeF = 0;
 	fSizeIntro = 0.0f;
 	fTexWrap = 0;
@@ -498,12 +494,7 @@ void CNegateMagic::Create(Vec3f aeSrc, float afBeta) {
 	SetDuration(ulDuration);
 	
 	eSrc = aeSrc;
-	
-	fBeta = afBeta;
-	fBetaRad = radians(fBeta);
-	fBetaRadCos = (float) cos(fBetaRad);
-	fBetaRadSin = (float) sin(fBetaRad);
-	
+	SetAngle(afBeta);
 	eTarget = eSrc;
 }
 

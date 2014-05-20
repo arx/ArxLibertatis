@@ -141,12 +141,7 @@ void CControlTarget::Create(Vec3f aeSrc, float afBeta) {
 	SetDuration(ulDuration);
 	
 	eSrc = aeSrc;
-	
-	fBeta = afBeta;
-	fBetaRad = radians(fBeta);
-	fBetaRadCos = (float) cos(fBetaRad);
-	fBetaRadSin = (float) sin(fBetaRad);
-
+	SetAngle(afBeta);
 	eTarget = eSrc + Vec3f(-fBetaRadSin * 1000.f, 100.f, fBetaRadCos * 1000.f);
 	
 	for(size_t i = 1; i < entities.size(); i++) {

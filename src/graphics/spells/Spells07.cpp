@@ -852,12 +852,7 @@ void CIceField::Create(Vec3f aeSrc, float afBeta) {
 	SetDuration(ulDuration);
 	
 	eSrc = aeSrc;
-	
-	fBeta = afBeta;
-	fBetaRad = radians(fBeta);
-	fBetaRadCos = (float) cos(fBetaRad);
-	fBetaRadSin = (float) sin(fBetaRad);
-	
+	SetAngle(afBeta);
 	eTarget = eSrc;
 	
 	for(int i = 0; i < iMax; i++) {
