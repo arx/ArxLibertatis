@@ -2114,9 +2114,8 @@ long IsCollidingAnyInter(const Vec3f & pos, Vec3f * size) {
 		   && (io->gameFlags & GFLAG_ISINTREATZONE)
 		   && ((io->ioflags & IO_NPC) || (io->ioflags & IO_FIX))
 		   && (io->show == SHOW_FLAG_IN_SCENE)
+		   && !((io->ioflags & IO_NPC) && io->_npcdata->lifePool.current <= 0.f)
 		) {
-			if(!((io->ioflags & IO_NPC) && io->_npcdata->lifePool.current <= 0.f)) {
-
 			Vec3f tempPos = pos;
 			
 			if(IsCollidingInter(io, tempPos))
@@ -2126,7 +2125,6 @@ long IsCollidingAnyInter(const Vec3f & pos, Vec3f * size) {
 
 			if(IsCollidingInter(io, tempPos))
 				return i;
-			}
 		}
 	}
 
