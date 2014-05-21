@@ -2108,14 +2108,13 @@ long IsCollidingAnyInter(const Vec3f & pos, Vec3f * size) {
 	for(size_t i = 0; i < entities.size(); i++) {
 		Entity * io = entities[i];
 
-		if ((io)
-		        && (!(io->ioflags & IO_NO_COLLISIONS))
-		        && (io->collision)
-		        && (io->gameFlags & GFLAG_ISINTREATZONE)
-		        && ((io->ioflags & IO_NPC) || (io->ioflags & IO_FIX))
-		        && (io->show == SHOW_FLAG_IN_SCENE)
-		   )
-		{
+		if(   io
+		   && !(io->ioflags & IO_NO_COLLISIONS)
+		   && (io->collision)
+		   && (io->gameFlags & GFLAG_ISINTREATZONE)
+		   && ((io->ioflags & IO_NPC) || (io->ioflags & IO_FIX))
+		   && (io->show == SHOW_FLAG_IN_SCENE)
+		) {
 			if(!((io->ioflags & IO_NPC) && io->_npcdata->lifePool.current <= 0.f)) {
 
 			Vec3f tempPos = pos;
