@@ -2116,11 +2116,8 @@ long IsCollidingAnyInter(const Vec3f & pos, Vec3f * size) {
 		        && (io->show == SHOW_FLAG_IN_SCENE)
 		   )
 		{
-			if(io->ioflags & IO_NPC) {
-				if(io->_npcdata->lifePool.current <= 0.f)
-					goto suitet;
-			}
-			{
+			if(!((io->ioflags & IO_NPC) && io->_npcdata->lifePool.current <= 0.f)) {
+
 			Vec3f tempPos = pos;
 			
 			if(IsCollidingInter(io, tempPos))
@@ -2131,8 +2128,6 @@ long IsCollidingAnyInter(const Vec3f & pos, Vec3f * size) {
 			if(IsCollidingInter(io, tempPos))
 				return i;
 			}
-		suitet:
-			;
 		}
 	}
 
