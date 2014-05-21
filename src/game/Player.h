@@ -52,6 +52,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "game/Entity.h"
 #include "game/Spells.h"
+#include "game/GameTypes.h"
 #include "math/Types.h"
 #include "platform/Flags.h"
 
@@ -128,11 +129,6 @@ enum JumpPhase {
 	JumpAscending = 2,
 	JumpDescending = 4,
 	JumpEnd = 5
-};
-
-struct ResourcePool {
-	float current;
-	float max;
 };
 
 struct ARXCHARACTER {
