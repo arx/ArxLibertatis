@@ -399,7 +399,7 @@ void NegateMagicSpell::LaunchAntiMagicField() {
 bool IncinerateSpell::Launch(long i)
 {
 	Entity * tio = entities[m_target];
-	if((tio->ioflags & IO_NPC) && tio->_npcdata->life <= 0.f) {
+	if((tio->ioflags & IO_NPC) && tio->_npcdata->lifePool.current <= 0.f) {
 		return false;
 	}
 	

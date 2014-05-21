@@ -649,7 +649,7 @@ float CheckAnythingInCylinder(const EERIE_CYLINDER & cyl, Entity * ioo, long fla
 				else if (	(io->ioflags & IO_NPC)
 						&&	(!(flags & CFLAG_NO_NPC_COLLIDE)) // MUST be checked here only (not before...)
 						&&	(!(ioo && (ioo->ioflags & IO_NO_COLLISIONS)))	
-						&&	(io->_npcdata->life>0.f)
+						&&	(io->_npcdata->lifePool.current>0.f)
 						)
 				{
 					

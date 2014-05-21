@@ -183,7 +183,7 @@ bool ControlTargetSpell::Launch()
 			continue;
 		}
 		
-		if(ioo->_npcdata->life <= 0.f || ioo->show != SHOW_FLAG_IN_SCENE) {
+		if(ioo->_npcdata->lifePool.current <= 0.f || ioo->show != SHOW_FLAG_IN_SCENE) {
 			continue;
 		}
 		
@@ -266,7 +266,7 @@ void MassIncinerateSpell::Launch(long i)
 			continue;
 		}
 		
-		if(tio->_npcdata->life <= 0.f || tio->show != SHOW_FLAG_IN_SCENE) {
+		if(tio->_npcdata->lifePool.current <= 0.f || tio->show != SHOW_FLAG_IN_SCENE) {
 			continue;
 		}
 		

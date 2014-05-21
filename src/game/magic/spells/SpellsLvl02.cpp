@@ -69,7 +69,7 @@ void HealSpell::Update(float framedelay)
 			&& (entities[ii]->show==SHOW_FLAG_IN_SCENE) 
 			&& (entities[ii]->gameFlags & GFLAG_ISINTREATZONE)
 			&& (entities[ii]->ioflags & IO_NPC)
-			&& (entities[ii]->_npcdata->life>0.f)
+			&& (entities[ii]->_npcdata->lifePool.current>0.f)
 			)
 		{
 			float dist;
@@ -87,7 +87,7 @@ void HealSpell::Update(float framedelay)
 						player.lifePool.current=std::min(player.lifePool.current+gain,player.Full_maxlife);									
 				}
 				else
-					entities[ii]->_npcdata->life = std::min(entities[ii]->_npcdata->life+gain, entities[ii]->_npcdata->maxlife);
+					entities[ii]->_npcdata->lifePool.current = std::min(entities[ii]->_npcdata->lifePool.current+gain, entities[ii]->_npcdata->lifePool.max);
 			}
 		}
 	}	

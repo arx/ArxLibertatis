@@ -1261,7 +1261,7 @@ void ARX_PLAYER_LoadHeroAnimsAndMesh(){
 	io->_npcdata = new IO_NPCDATA;
 	
 	io->ioflags = IO_NPC;
-	io->_npcdata->maxlife = io->_npcdata->life = 10.f;
+	io->_npcdata->lifePool.max = io->_npcdata->lifePool.current = 10.f;
 	io->_npcdata->vvpos = -99999.f;
 
 	//todo free

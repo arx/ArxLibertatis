@@ -770,7 +770,7 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 
 							if(drain_life > 0.f) {
 								float life_gain = min(dmgs, drain_life);
-								life_gain = min(life_gain, target->_npcdata->life);
+								life_gain = min(life_gain, target->_npcdata->lifePool.current);
 								life_gain = max(life_gain, 0.f);
 								ARX_DAMAGES_HealInter(io_source, life_gain);
 							}

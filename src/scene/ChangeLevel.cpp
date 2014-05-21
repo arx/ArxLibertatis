@@ -1324,18 +1324,18 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 			as->detect = io->_npcdata->detect;
 			as->fightdecision = io->_npcdata->fightdecision;
 
-			if(io->_npcdata->life > 0.f) {
+			if(io->_npcdata->lifePool.current > 0.f) {
 				FillIOIdent(as->id_weapon, io->_npcdata->weapon);
 			} else {
 				as->id_weapon[0] = 0;
 			}
 
 			as->lastmouth = io->_npcdata->lastmouth;
-			as->life = io->_npcdata->life;
+			as->life = io->_npcdata->lifePool.current;
 			as->look_around_inc = io->_npcdata->look_around_inc;
-			as->mana = io->_npcdata->mana;
-			as->maxlife = io->_npcdata->maxlife;
-			as->maxmana = io->_npcdata->maxmana;
+			as->mana = io->_npcdata->manaPool.current;
+			as->maxlife = io->_npcdata->lifePool.max;
+			as->maxmana = io->_npcdata->manaPool.max;
 			as->movemode = io->_npcdata->movemode;
 			as->moveproblem = io->_npcdata->moveproblem;
 			as->reachedtarget = io->_npcdata->reachedtarget;
@@ -2219,11 +2219,11 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) {
 				memcpy(Gaids[Gaids_Number]->weapon, as->id_weapon, SIZE_ID);
 				
 				io->_npcdata->lastmouth = as->lastmouth;
-				io->_npcdata->life = as->life;
+				io->_npcdata->lifePool.current = as->life;
 				io->_npcdata->look_around_inc = as->look_around_inc;
-				io->_npcdata->mana = as->mana;
-				io->_npcdata->maxlife = as->maxlife;
-				io->_npcdata->maxmana = as->maxmana;
+				io->_npcdata->manaPool.current = as->mana;
+				io->_npcdata->lifePool.max = as->maxlife;
+				io->_npcdata->manaPool.max = as->maxmana;
 				io->_npcdata->movemode = (MoveMode)as->movemode; // TODO save/load enum
 				io->_npcdata->moveproblem = as->moveproblem;
 				io->_npcdata->reachedtarget = as->reachedtarget;
@@ -2379,7 +2379,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) {
 			}
 		}
 		
-		long hidegore = ((io->ioflags & IO_NPC) && io->_npcdata->life > 0.f) ? 1 : 0;
+		long hidegore = ((io->ioflags & IO_NPC) && io->_npcdata->lifePool.current > 0.f) ? 1 : 0;
 		ARX_INTERACTIVE_HideGore(io, hidegore);
 		
 	}

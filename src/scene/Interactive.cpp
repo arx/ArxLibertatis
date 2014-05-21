@@ -980,10 +980,10 @@ void RestoreInitialIOStatusOfIO(Entity * io)
 			io->_npcdata->walk_start_time = 0;
 
 			io->_npcdata->reachedtarget = 0;
-			io->_npcdata->maxlife = 20.f;
-			io->_npcdata->life = io->_npcdata->maxlife;
-			io->_npcdata->maxmana = 10.f;
-			io->_npcdata->mana = io->_npcdata->maxmana;
+			io->_npcdata->lifePool.max = 20.f;
+			io->_npcdata->lifePool.current = io->_npcdata->lifePool.max;
+			io->_npcdata->manaPool.max = 10.f;
+			io->_npcdata->manaPool.current = io->_npcdata->manaPool.max;
 			io->_npcdata->critical = 5.f;
 			io->infracolor.r = 1.f;
 			io->infracolor.g = 0.f;
@@ -1608,8 +1608,8 @@ static Entity * AddMarker(const res::path & classPath, EntityInstance instance) 
 
 IO_NPCDATA::IO_NPCDATA() {
 	
-	life = maxlife = 20.f;
-	mana = maxmana = 0.f;
+	lifePool.current = lifePool.max = 20.f;
+	manaPool.current = manaPool.max = 0.f;
 	
 	reachedtime = 0ul;
 	reachedtarget = 0l;
@@ -1703,7 +1703,7 @@ Entity * AddNPC(const res::path & classPath, EntityInstance instance, AddInterac
 	GetIOScript(io, script);
 	
 	io->spellcast_data.castingspell = SPELL_NONE;
-	io->_npcdata->mana = io->_npcdata->maxmana = 10.f;
+	io->_npcdata->manaPool.current = io->_npcdata->manaPool.max = 10.f;
 	io->_npcdata->critical = 5.f;
 	io->_npcdata->reach = 20.f;
 	io->_npcdata->stare_factor = 1.f;
@@ -2117,7 +2117,7 @@ long IsCollidingAnyInter(const Vec3f & pos, Vec3f * size) {
 		   )
 		{
 			if(io->ioflags & IO_NPC) {
-				if(io->_npcdata->life <= 0.f)
+				if(io->_npcdata->lifePool.current <= 0.f)
 					goto suitet;
 			}
 			{
@@ -2210,7 +2210,7 @@ bool ARX_INTERACTIVE_CheckFULLCollision(EERIE_3DOBJ * obj, long source)
 			continue;
 		}
 
-		if((io->ioflags & IO_NPC) && io->_npcdata->life > 0.f) {
+		if((io->ioflags & IO_NPC) && io->_npcdata->lifePool.current > 0.f) {
 			for(long kk = 0; kk < obj->pbox->nb_physvert; kk++)
 				if(PointInCylinder(io->physics.cyl, &obj->pbox->vert[kk].pos))
 					return true;

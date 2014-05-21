@@ -423,7 +423,7 @@ public:
 		
 		DebugScript(' ' << life);
 		
-		context.getEntity()->_npcdata->maxlife = context.getEntity()->_npcdata->life = life;
+		context.getEntity()->_npcdata->lifePool.max = context.getEntity()->_npcdata->lifePool.current = life;
 		
 		return Success;
 	}

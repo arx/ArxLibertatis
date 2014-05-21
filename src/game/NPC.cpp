@@ -296,9 +296,9 @@ void ARX_NPC_Revive(Entity * io, long flags)
 
 	if(io->ioflags & IO_NPC) {
 		io->ioflags &= ~IO_NO_COLLISIONS;
-		io->_npcdata->life = io->_npcdata->maxlife;
+		io->_npcdata->lifePool.current = io->_npcdata->lifePool.max;
 		ARX_SCRIPT_ResetObject(io, 1);
-		io->_npcdata->life = io->_npcdata->maxlife;
+		io->_npcdata->lifePool.current = io->_npcdata->lifePool.max;
 	}
 
 	if(flags & 1) {
@@ -768,9 +768,9 @@ bool ARX_NPC_SetStat(Entity& io, const string & statname, float value) {
 	} else if(statname == "aimtime") {
 		io._npcdata->aimtime = value < 0 ? 0 : value;
 	} else if(statname == "life") {
-		io._npcdata->maxlife = io._npcdata->life = value < 0 ? 0.0000001f : value;
+		io._npcdata->lifePool.max = io._npcdata->lifePool.current = value < 0 ? 0.0000001f : value;
 	} else if(statname == "mana") {
-		io._npcdata->maxmana = io._npcdata->mana = value < 0 ? 0 : value;
+		io._npcdata->manaPool.max = io._npcdata->manaPool.current = value < 0 ? 0 : value;
 	} else if(statname == "resistfire") {
 		io._npcdata->resist_fire = (unsigned char)clamp(value, 0.f, 100.f);
 	} else if(statname == "resistpoison") {
@@ -873,13 +873,13 @@ void ARX_NPC_ManagePoison(Entity * io)
 	if(rnd() * 100.f > io->_npcdata->resist_poison + faster) {
 		float dmg = cp * ( 1.0f / 3 );
 
-		if(io->_npcdata->life > 0 && io->_npcdata->life - dmg <= 0.f) {
+		if(io->_npcdata->lifePool.current > 0 && io->_npcdata->lifePool.current - dmg <= 0.f) {
 			long xp = io->_npcdata->xpvalue;
 			ARX_DAMAGES_DamageNPC(io, dmg, -1, 0, NULL);
 			ARX_PLAYER_Modify_XP(xp);
 		}
 		else
-			io->_npcdata->life -= dmg;
+			io->_npcdata->lifePool.current -= dmg;
 
 		io->_npcdata->poisonned -= cp * ( 1.0f / 10 );
 	}
@@ -1086,7 +1086,7 @@ void FaceTarget2(Entity * io)
 		return;
 
 	if(io->ioflags & IO_NPC) {
-		if(io->_npcdata->life <= 0.f)
+		if(io->_npcdata->lifePool.current <= 0.f)
 			return;
 
 		if(io->_npcdata->behavior & BEHAVIOUR_NONE)
@@ -1145,7 +1145,7 @@ void StareAtTarget(Entity * io)
 		return;
 
 	if(io->ioflags & IO_NPC) {
-		if(io->_npcdata->life <= 0.f)
+		if(io->_npcdata->lifePool.current <= 0.f)
 			return;
 
 		if(io->_npcdata->pathfind.listnb <= 0 && (io->_npcdata->behavior & BEHAVIOUR_FLEE))
@@ -1251,7 +1251,7 @@ bool IsDeadNPC(Entity * io) {
 	if(!io || !(io->ioflags & IO_NPC))
 		return false;
 	
-	return (io->_npcdata->life <= 0 || io->mainevent == "dead");
+	return (io->_npcdata->lifePool.current <= 0 || io->mainevent == "dead");
 }
 
 long IsNearSelection(EERIE_3DOBJ * obj, long vert, long tw) {
@@ -3366,7 +3366,7 @@ void ARX_NPC_SpawnAudibleSound(const Vec3f & pos, Entity * source, const float f
 		   && (entity->gameFlags & GFLAG_ISINTREATZONE)
 		   && (entity != source)
 		   && (entity->show == SHOW_FLAG_IN_SCENE || entity->show == SHOW_FLAG_HIDDEN)
-		   && (entity->_npcdata->life > 0.f)
+		   && (entity->_npcdata->lifePool.current > 0.f)
 		) {
 			float distance = fdist(pos, entity->pos);
 

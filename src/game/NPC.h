@@ -50,6 +50,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <string>
 
 #include "game/Entity.h"
+#include "game/GameTypes.h"
 #include "math/Types.h"
 #include "platform/Flags.h"
 
@@ -143,10 +144,9 @@ struct IO_NPCDATA {
 	IO_NPCDATA();
 	~IO_NPCDATA();
 	
-	float maxlife;
-	float life;
-	float maxmana;
-	float mana;
+	ResourcePool lifePool;
+	ResourcePool manaPool;
+	
 	unsigned long reachedtime;
 	long reachedtarget;	//Is target in REACHZONE ?
 	Entity * weapon; // Linked Weapon (r-hand)

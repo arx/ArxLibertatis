@@ -848,11 +848,11 @@ bool CanPayMana(long num, float cost, bool _bSound = true) {
 		return true;
 	} else if(ValidIONum(spells[num].m_caster)) {
 		if(entities[spells[num].m_caster]->ioflags & IO_NPC) {
-			if(entities[spells[num].m_caster]->_npcdata->mana < cost) {
+			if(entities[spells[num].m_caster]->_npcdata->manaPool.current < cost) {
 				ARX_SPELLS_FizzleNoMana(num);
 				return false;
 			}
-			entities[spells[num].m_caster]->_npcdata->mana -= cost;
+			entities[spells[num].m_caster]->_npcdata->manaPool.current -= cost;
 			return true;
 		}
 	}
@@ -1213,7 +1213,7 @@ bool ARX_SPELLS_Launch(SpellType typ, long source, SpellcastFlags flagss, long l
 
 			for(size_t ii = 1 ; ii < entities.size(); ii++) {
 				Entity * ioo = entities[ii];
-				if(ioo && (ioo->ioflags & IO_NPC) && ioo->_npcdata->life > 0.f
+				if(ioo && (ioo->ioflags & IO_NPC) && ioo->_npcdata->lifePool.current > 0.f
 				   && ioo->show == SHOW_FLAG_IN_SCENE
 				   && ioo->groups.find("demon") != ioo->groups.end()
 				   && closerThan(ioo->pos, cpos, 900.f)) {
@@ -2082,7 +2082,7 @@ void TryToCastSpell(Entity * io, SpellType spellType, long level, long target, S
 	if(!io || io->spellcast_data.castingspell != SPELL_NONE)
 		return;
 
-	if(!(flags & SPELLCAST_FLAG_NOMANA) && (io->ioflags & IO_NPC) && (io->_npcdata->mana<=0.f))
+	if(!(flags & SPELLCAST_FLAG_NOMANA) && (io->ioflags & IO_NPC) && (io->_npcdata->manaPool.current<=0.f))
 		return;
 
 	unsigned long i(0);

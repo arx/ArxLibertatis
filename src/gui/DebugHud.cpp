@@ -291,12 +291,12 @@ void ShowInfoText() {
 				IO_NPCDATA * npcData = io->_npcdata;
 				
 				ss << boost::format("Life %4.0f/%4.0f\n")
-				% npcData->life
-				% npcData->maxlife;
+				% npcData->lifePool.current
+				% npcData->lifePool.max;
 				
 				ss << boost::format("Mana %4.0f/%4.0f\n")
-				% npcData->mana
-				% npcData->maxmana;
+				% npcData->manaPool.current
+				% npcData->manaPool.max;
 				
 				ss << boost::format("Poisoned %3.1f\n")
 				% npcData->poisonned;

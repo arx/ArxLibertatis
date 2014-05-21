@@ -761,7 +761,7 @@ void MiniMap::drawDetectedEntities(int showLevel, float startX, float startY, fl
 			continue; // only NPCs can be detected
 		}
 		
-		if(npc->_npcdata->life < 0.f) {
+		if(npc->_npcdata->lifePool.current < 0.f) {
 			continue; // don't show dead NPCs
 		}
 		

@@ -188,7 +188,7 @@ static bool checkInteractiveObject(Entity * io, ScriptMessage msg, ScriptResult 
 	}
 	
 	if(io->ioflags & IO_NPC
-	  && io->_npcdata->life <= 0.f
+	  && io->_npcdata->lifePool.current <= 0.f
 	  && msg != SM_DEAD
 	  && msg != SM_DIE
 	  && msg != SM_EXECUTELINE

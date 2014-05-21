@@ -784,7 +784,7 @@ ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const string & 
 			if(boost::starts_with(name, "^maxlife")) {
 				*fcontent = 0;
 				if(entity && (entity->ioflags & IO_NPC)) {
-					*fcontent = entity->_npcdata->maxlife;
+					*fcontent = entity->_npcdata->lifePool.max;
 				}
 				return TYPE_FLOAT;
 			}
@@ -792,7 +792,7 @@ ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const string & 
 			if(boost::starts_with(name, "^mana")) {
 				*fcontent = 0;
 				if(entity && (entity->ioflags & IO_NPC)) {
-					*fcontent = entity->_npcdata->mana;
+					*fcontent = entity->_npcdata->manaPool.current;
 				}
 				return TYPE_FLOAT;
 			}
@@ -800,7 +800,7 @@ ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const string & 
 			if(boost::starts_with(name, "^maxmana")) {
 				*fcontent = 0;
 				if(entity && (entity->ioflags & IO_NPC)) {
-					*fcontent = entity->_npcdata->maxmana;
+					*fcontent = entity->_npcdata->manaPool.max;
 				}
 				return TYPE_FLOAT;
 			}
@@ -837,7 +837,7 @@ ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const string & 
 			if(boost::starts_with(name, "^life")) {
 				*fcontent = 0;
 				if(entity && (entity->ioflags & IO_NPC)) {
-					*fcontent = entity->_npcdata->life;
+					*fcontent = entity->_npcdata->lifePool.current;
 				}
 				return TYPE_FLOAT;
 			}

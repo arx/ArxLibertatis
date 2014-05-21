@@ -1336,7 +1336,7 @@ void ArxGame::managePlayerControls()
 		if(t) {
 			if(t->ioflags & IO_NPC) {
 				if(t->script.data) {
-					if(t->_npcdata->life>0.f) {
+					if(t->_npcdata->lifePool.current>0.f) {
 						SendIOScriptEvent(t,SM_CHAT);
 						EERIEMouseButton&=~4;
 						DRAGGING = false;

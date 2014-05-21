@@ -497,7 +497,7 @@ public:
 			}
 		} else if(t->show == SHOW_FLAG_MEGAHIDE || t->show == SHOW_FLAG_HIDDEN) {
 			t->show = SHOW_FLAG_IN_SCENE;
-			if((t->ioflags & IO_NPC) && t->_npcdata->life <= 0.f) {
+			if((t->ioflags & IO_NPC) && t->_npcdata->lifePool.current <= 0.f) {
 				t->animlayer[0].cur_anim = t->anims[ANIM_DIE];
 				t->animlayer[1].cur_anim = NULL;
 				t->animlayer[2].cur_anim = NULL;
@@ -600,7 +600,7 @@ public:
 				return Success;
 			}
 			
-			if(!(io->ioflags & IO_NPC) || io->_npcdata->life > 0) {
+			if(!(io->ioflags & IO_NPC) || io->_npcdata->lifePool.current > 0) {
 				if(io->show != SHOW_FLAG_HIDDEN && io->show != SHOW_FLAG_MEGAHIDE) {
 					io->show = SHOW_FLAG_IN_SCENE;
 				}
@@ -619,7 +619,7 @@ public:
 				if(GetItemWorldPosition(io, &pos)) {
 					ARX_INTERACTIVE_Teleport(entities.player(), pos);
 				}
-			} else if(!(io->ioflags & IO_NPC) || io->_npcdata->life > 0) {
+			} else if(!(io->ioflags & IO_NPC) || io->_npcdata->lifePool.current > 0) {
 				if(io->show != SHOW_FLAG_HIDDEN && io->show != SHOW_FLAG_MEGAHIDE) {
 					io->show = SHOW_FLAG_IN_SCENE;
 				}

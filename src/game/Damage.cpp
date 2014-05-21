@@ -356,17 +356,17 @@ void ARX_DAMAGES_HealInter(Entity * io, float dmg)
 	if(!io || !(io->ioflags & IO_NPC))
 		return;
 
-	if(io->_npcdata->life <= 0.f)
+	if(io->_npcdata->lifePool.current <= 0.f)
 		return;
 
 	if(io == entities.player())
 		ARX_DAMAGES_HealPlayer(dmg);
 
 	if(dmg > 0.f) {
-		io->_npcdata->life += dmg;
+		io->_npcdata->lifePool.current += dmg;
 
-		if(io->_npcdata->life > io->_npcdata->maxlife)
-			io->_npcdata->life = io->_npcdata->maxlife;
+		if(io->_npcdata->lifePool.current > io->_npcdata->lifePool.max)
+			io->_npcdata->lifePool.current = io->_npcdata->lifePool.max;
 	}
 }
 
@@ -391,14 +391,14 @@ void ARX_DAMAGES_HealManaInter(Entity * io, float dmg)
 	if(io == entities.player())
 		ARX_DAMAGES_HealManaPlayer(dmg);
 
-	if(io->_npcdata->life <= 0.f)
+	if(io->_npcdata->lifePool.current <= 0.f)
 		return;
 
 	if(dmg > 0.f) {
-		io->_npcdata->mana += dmg;
+		io->_npcdata->manaPool.current += dmg;
 
-		if(io->_npcdata->mana > io->_npcdata->maxmana)
-			io->_npcdata->mana = io->_npcdata->maxmana;
+		if(io->_npcdata->manaPool.current > io->_npcdata->manaPool.max)
+			io->_npcdata->manaPool.current = io->_npcdata->manaPool.max;
 	}
 }
 
@@ -421,13 +421,13 @@ float ARX_DAMAGES_DrainMana(Entity * io, float dmg)
 		return d;
 	}
 
-	if(io->_npcdata->mana >= dmg) {
-		io->_npcdata->mana -= dmg;
+	if(io->_npcdata->manaPool.current >= dmg) {
+		io->_npcdata->manaPool.current -= dmg;
 		return dmg;
 	}
 
-	float d = io->_npcdata->mana;
-	io->_npcdata->mana = 0;
+	float d = io->_npcdata->manaPool.current;
+	io->_npcdata->manaPool.current = 0;
 	return d;
 }
 
@@ -595,7 +595,7 @@ void ARX_DAMAGES_ForceDeath(Entity * io_dead, Entity * io_killer) {
 	io_dead->animlayer[3].cur_anim = NULL;
 
 	if(io_dead->ioflags & IO_NPC) {
-		io_dead->_npcdata->life = 0;
+		io_dead->_npcdata->lifePool.current = 0;
 
 		if(io_dead->_npcdata->weapon) {
 			Entity * ioo = io_dead->_npcdata->weapon;
@@ -731,9 +731,9 @@ float ARX_DAMAGES_DamageNPC(Entity * io, float dmg, long source, long flags, con
 
 	float damagesdone = 0.f;
 
-	if(io->_npcdata->life <= 0.f) {
+	if(io->_npcdata->lifePool.current <= 0.f) {
 		if(source != 0 || (source == 0 && player.equiped[EQUIP_SLOT_WEAPON] > 0)) {
-			if(dmg >= io->_npcdata->maxlife * 0.4f && pos)
+			if(dmg >= io->_npcdata->lifePool.max * 0.4f && pos)
 				ARX_NPC_TryToCutSomething(io, pos);
 
 			return damagesdone;
@@ -850,23 +850,23 @@ float ARX_DAMAGES_DamageNPC(Entity * io, float dmg, long source, long flags, con
 			}
 		}
 
-		damagesdone = min(dmg, io->_npcdata->life);
-		io->_npcdata->life -= dmg;
+		damagesdone = min(dmg, io->_npcdata->lifePool.current);
+		io->_npcdata->lifePool.current -= dmg;
 		
 		float fHitFlash = 0;
-		if(io->_npcdata->life <= 0) {
+		if(io->_npcdata->lifePool.current <= 0) {
 			fHitFlash = 0;
 		} else {
-			fHitFlash = io->_npcdata->life / io->_npcdata->maxlife;
+			fHitFlash = io->_npcdata->lifePool.current / io->_npcdata->lifePool.max;
 		}
 		hitStrengthGaugeRequestFlash(fHitFlash);
 		
 		
-		if(io->_npcdata->life <= 0.f) {
-			io->_npcdata->life = 0.f;
+		if(io->_npcdata->lifePool.current <= 0.f) {
+			io->_npcdata->lifePool.current = 0.f;
 
 			if(source != 0 || (source == 0 && player.equiped[EQUIP_SLOT_WEAPON] > 0)) {
-				if((dmg >= io->_npcdata->maxlife * ( 1.0f / 2 )) && pos)
+				if((dmg >= io->_npcdata->lifePool.max * ( 1.0f / 2 )) && pos)
 					ARX_NPC_TryToCutSomething(io, pos);
 			}
 
@@ -1042,7 +1042,7 @@ void ARX_DAMAGES_UpdateDamage(DamageHandle j, float tim) {
 					
 					if(   (damage.params.flags & DAMAGE_FLAG_ADD_VISUAL_FX)
 					   && (entities[i]->ioflags & IO_NPC)
-					   && (entities[i]->_npcdata->life > 0.f)
+					   && (entities[i]->_npcdata->lifePool.current > 0.f)
 					) {
 						ARX_DAMAGES_AddVisual(&damage, &sub, dmg, entities[i]);
 					}
@@ -1057,8 +1057,8 @@ void ARX_DAMAGES_UpdateDamage(DamageHandle j, float tim) {
 							manadrained = dmg;
 							
 							if(io && io->_npcdata) {
-								manadrained = min(dmg, io->_npcdata->mana);
-								io->_npcdata->mana -= manadrained;
+								manadrained = min(dmg, io->_npcdata->manaPool.current);
+								io->_npcdata->manaPool.current -= manadrained;
 							}
 						}
 						
@@ -1066,7 +1066,7 @@ void ARX_DAMAGES_UpdateDamage(DamageHandle j, float tim) {
 							player.manaPool.current = min(player.manaPool.current + manadrained, player.Full_maxmana);
 						} else {
 							if(ValidIONum(damage.params.source) && (entities[damage.params.source]->_npcdata)) {
-								entities[damage.params.source]->_npcdata->mana = min(entities[damage.params.source]->_npcdata->mana + manadrained, entities[damage.params.source]->_npcdata->maxmana);
+								entities[damage.params.source]->_npcdata->manaPool.current = min(entities[damage.params.source]->_npcdata->manaPool.current + manadrained, entities[damage.params.source]->_npcdata->manaPool.max);
 							}
 						}
 					} else {
