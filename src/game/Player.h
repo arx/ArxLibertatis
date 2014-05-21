@@ -130,6 +130,11 @@ enum JumpPhase {
 	JumpEnd = 5
 };
 
+struct ResourcePool {
+	float current;
+	float max;
+};
+
 struct ARXCHARACTER {
 	
 	Vec3f pos;
@@ -234,10 +239,9 @@ struct ARXCHARACTER {
 	
 	float Critical_Hit;
 	long AimTime;
-	float life;
-	float maxlife;
-	float mana;
-	float maxmana;
+	
+	ResourcePool lifePool;
+	ResourcePool manaPool;
 	
 	// Player Old Values
 	float Old_Skill_Stealth;

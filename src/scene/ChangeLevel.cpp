@@ -715,10 +715,10 @@ static long ARX_CHANGELEVEL_Push_Player(long level) {
 	asp->jumpstarttime = player.jumpstarttime;
 	asp->Last_Movement = player.Last_Movement;
 	asp->level = player.level;
-	asp->life = player.life;
-	asp->mana = player.mana;
-	asp->maxlife = player.maxlife;
-	asp->maxmana = player.maxmana;
+	asp->life = player.lifePool.current;
+	asp->mana = player.manaPool.current;
+	asp->maxlife = player.lifePool.max;
+	asp->maxmana = player.manaPool.max;
 	asp->misc_flags = 0;
 
 	if (player.onfirmground)
@@ -1714,10 +1714,10 @@ static long ARX_CHANGELEVEL_Pop_Player() {
 	
 	player.level = checked_range_cast<unsigned char>(asp->level);
 	
-	player.life = asp->life;
-	player.mana = asp->mana;
-	player.maxlife = asp->maxlife;
-	player.maxmana = asp->maxmana;
+	player.lifePool.current = asp->life;
+	player.manaPool.current = asp->mana;
+	player.lifePool.max = asp->maxlife;
+	player.manaPool.max = asp->maxmana;
 	
 	player.onfirmground = (asp->misc_flags & 1) ? 1 : 0;
 	WILLRETURNTOCOMBATMODE = (asp->misc_flags & 2) ? 1 : 0;

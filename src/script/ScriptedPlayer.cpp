@@ -397,9 +397,9 @@ public:
 			DebugScript(" heal " << val);
 			
 			if(!BLOCK_PLAYER_CONTROLS) {
-				player.life += val;
+				player.lifePool.current += val;
 			}
-			player.life = clamp(player.life, 0.f, player.Full_maxlife);
+			player.lifePool.current = clamp(player.lifePool.current, 0.f, player.Full_maxlife);
 			
 		} else if(type == "mana") {
 			
@@ -407,7 +407,7 @@ public:
 			
 			DebugScript(" mana " << val);
 			
-			player.mana = clamp(player.mana + val, 0.f, player.Full_maxmana);
+			player.manaPool.current = clamp(player.manaPool.current + val, 0.f, player.Full_maxmana);
 			
 		} else if(type == "newspell") {
 			

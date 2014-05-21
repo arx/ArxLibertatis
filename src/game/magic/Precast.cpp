@@ -68,7 +68,7 @@ long PrecastCheckCanPayMana(long num, float cost, bool _bSound = true) {
 	if(Precast[num].flags & SPELLCAST_FLAG_NOMANA)
 		return 1;
 
-	if(player.mana >= cost)
+	if(player.manaPool.current >= cost)
 		return 1;
 	
 	ARX_SPELLS_FizzleNoMana(num);

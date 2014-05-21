@@ -451,8 +451,8 @@ static const float skill_attribute_factors[max_skills][max_attributes] = {
  */
 static void ARX_PLAYER_ComputePlayerStats() {
 	
-	player.maxlife = (float)player.Attribute_Constitution * (float)(player.level + 2);
-	player.maxmana = (float)player.Attribute_Mind * (float)(player.level + 1);
+	player.lifePool.max = (float)player.Attribute_Constitution * (float)(player.level + 2);
+	player.manaPool.max = (float)player.Attribute_Mind * (float)(player.level + 1);
 	
 	float base_defense = player.Skill_Defense + player.Attribute_Constitution * 3;
 	float fCalc = base_defense * ( 1.0f / 10 ) - 1 ;
@@ -791,11 +791,11 @@ void ARX_PLAYER_ComputePlayerFullStats() {
 	
 	/////////////////////////////////////////////////////////////////////////////////////
 	
-	player.Full_life = player.life;
+	player.Full_life = player.lifePool.current;
 	player.Full_maxlife = (float)player.Full_Attribute_Constitution * (float)(player.level + 2);
-	player.life = std::min(player.life, player.Full_maxlife);
+	player.lifePool.current = std::min(player.lifePool.current, player.Full_maxlife);
 	player.Full_maxmana = (float)player.Full_Attribute_Mind * (float)(player.level + 1);
-	player.mana = std::min(player.mana, player.Full_maxmana);
+	player.manaPool.current = std::min(player.manaPool.current, player.Full_maxmana);
 }
 
 /*!
@@ -868,8 +868,8 @@ void ARX_PLAYER_MakeSpHero()
 	player.skin = 4;
 
 	ARX_PLAYER_ComputePlayerStats();
-	player.life = player.maxlife;
-	player.mana = player.maxmana;
+	player.lifePool.current = player.lifePool.max;
+	player.manaPool.current = player.manaPool.max;
 
 	player.rune_flags = RuneFlags::all();
 	player.SpellToMemorize.bSpell = false;
@@ -1020,8 +1020,8 @@ void ARX_PLAYER_LEVEL_UP()
 	player.Skill_Redistribute += 15;
 	player.Attribute_Redistribute++;
 	ARX_PLAYER_ComputePlayerStats();
-	player.life = player.maxlife;
-	player.mana = player.maxmana;
+	player.lifePool.current = player.lifePool.max;
+	player.manaPool.current = player.manaPool.max;
 	player.Old_Skill_Stealth			=	player.Skill_Stealth;
 	player.Old_Skill_Mecanism			=	player.Skill_Mecanism;
 	player.Old_Skill_Intuition			=	player.Skill_Intuition;
@@ -1077,7 +1077,7 @@ void ARX_PLAYER_FrameCheck(float Framedelay)
 		// Natural LIFE recovery
 		float inc = 0.00008f * Framedelay * (player.Full_Attribute_Constitution + player.Full_Attribute_Strength * ( 1.0f / 2 ) + player.Full_Skill_Defense) * ( 1.0f / 50 );
 
-		if(player.life > 0.f) {
+		if(player.lifePool.current > 0.f) {
 			float inc_hunger = 0.00008f * Framedelay * (player.Full_Attribute_Constitution + player.Full_Attribute_Strength * ( 1.0f / 2 )) * ( 1.0f / 50 );
 
 			// Check for player hungry sample playing
@@ -1107,21 +1107,21 @@ void ARX_PLAYER_FrameCheck(float Framedelay)
 
 			if(!BLOCK_PLAYER_CONTROLS) {
 				if(player.hunger < 0.f)
-					player.life -= inc * ( 1.0f / 2 );
+					player.lifePool.current -= inc * ( 1.0f / 2 );
 				else
-					player.life += inc;
+					player.lifePool.current += inc;
 			}
 
 			// Natural MANA recovery
-			player.mana += 0.00008f * Framedelay * ((player.Full_Attribute_Mind + player.Full_Skill_Etheral_Link) * 10) * ( 1.0f / 100 ); //framedelay*( 1.0f / 1000 );
+			player.manaPool.current += 0.00008f * Framedelay * ((player.Full_Attribute_Mind + player.Full_Skill_Etheral_Link) * 10) * ( 1.0f / 100 ); //framedelay*( 1.0f / 1000 );
 
-			if(player.mana > player.Full_maxmana)
-				player.mana = player.Full_maxmana;
+			if(player.manaPool.current > player.Full_maxmana)
+				player.manaPool.current = player.Full_maxmana;
 		}
 
 		//float pmaxlife=(float)player.Full_Attribute_Constitution*(float)(player.level+2);
-		if(player.life > player.Full_maxlife)
-			player.life = player.Full_maxlife;
+		if(player.lifePool.current > player.Full_maxlife)
+			player.lifePool.current = player.Full_maxlife;
 
 		// Now Checks Poison Progression
 		if(!BLOCK_PLAYER_CONTROLS)
@@ -1136,10 +1136,10 @@ void ARX_PLAYER_FrameCheck(float Framedelay)
 				if(rnd() * 100.f > player.resist_poison + faster) {
 					float dmg = cp * ( 1.0f / 3 );
 
-					if(player.life - dmg <= 0.f)
+					if(player.lifePool.current - dmg <= 0.f)
 						ARX_DAMAGES_DamagePlayer(dmg, DAMAGE_TYPE_POISON, -1);
 					else
-						player.life -= dmg;
+						player.lifePool.current -= dmg;
 
 					player.poison -= cp * ( 1.0f / 10 );
 				} else {
@@ -1355,17 +1355,17 @@ void ARX_PLAYER_Manage_Visual() {
 			io->halo.color = Color3f::red;
 			io->halo.flags |= HALO_ACTIVE | HALO_DYNLIGHT;
 			io->halo.radius = 20.f;
-			player.life += float(framedelay) * 0.1f;
-			player.life = std::min(player.life, player.Full_maxlife);
-			player.mana += float(framedelay) * 0.1f;
-			player.mana = std::min(player.mana, player.Full_maxmana);
+			player.lifePool.current += float(framedelay) * 0.1f;
+			player.lifePool.current = std::min(player.lifePool.current, player.Full_maxlife);
+			player.manaPool.current += float(framedelay) * 0.1f;
+			player.manaPool.current = std::min(player.manaPool.current, player.Full_maxmana);
 		}
 		
 		if(cur_mr == 3) {
-			player.life += float(framedelay) * 0.05f;
-			player.life = std::min(player.life, player.Full_maxlife);
-			player.mana += float(framedelay) * 0.05f;
-			player.mana = std::min(player.mana, player.Full_maxmana);
+			player.lifePool.current += float(framedelay) * 0.05f;
+			player.lifePool.current = std::min(player.lifePool.current, player.Full_maxlife);
+			player.manaPool.current += float(framedelay) * 0.05f;
+			player.manaPool.current = std::min(player.manaPool.current, player.Full_maxmana);
 		}
 		
 		io->pos = player.basePosition();
@@ -1392,7 +1392,7 @@ void ARX_PLAYER_Manage_Visual() {
 			}
 		}
 		
-		if(player.life > 0) {
+		if(player.lifePool.current > 0) {
 			io->angle = Anglef(0.f, 180.f - player.angle.getPitch(), 0.f);
 		}
 		
@@ -1430,7 +1430,7 @@ void ARX_PLAYER_Manage_Visual() {
 			goto nochanges;
 		}
 		
-		if(player.life <= 0) {
+		if(player.lifePool.current <= 0) {
 			HERO_SHOW_1ST = -1;
 			io->animlayer[1].cur_anim = NULL;
 			ChangeMoveAnim = alist[ANIM_DIE];
@@ -1789,8 +1789,8 @@ void ARX_PLAYER_InitPlayer() {
 	player.Interface = INTER_MINIBOOK | INTER_MINIBACK | INTER_LIFE_MANA;
 	player.physics.cyl.height = player.baseHeight();
 	player.physics.cyl.radius = player.baseRadius();
-	player.life = player.maxlife = player.Full_maxlife = 100.f;
-	player.mana = player.maxmana = player.Full_maxmana = 100.f;
+	player.lifePool.current = player.lifePool.max = player.Full_maxlife = 100.f;
+	player.manaPool.current = player.manaPool.max = player.Full_maxmana = 100.f;
 	player.falling = false;
 	player.rightIO = NULL;
 	player.leftIO = NULL;

@@ -222,13 +222,13 @@ float ARX_DAMAGES_DamagePlayer(float dmg, DamageType type, long source) {
 
 	float damagesdone = 0.f;
 
-	if(player.life == 0.f)
+	if(player.lifePool.current == 0.f)
 		return damagesdone;
 
-	if(dmg > player.life)
+	if(dmg > player.lifePool.current)
 		damagesdone = dmg;
 	else
-		damagesdone = player.life;
+		damagesdone = player.lifePool.current;
 
 	entities.player()->dmg_sum += dmg;
 
@@ -245,7 +245,7 @@ float ARX_DAMAGES_DamagePlayer(float dmg, DamageType type, long source) {
 		sprintf(tex, "%5.2f", entities.player()->dmg_sum);
 		SendIOScriptEvent( entities.player(), SM_OUCH, tex );
 		EVENT_SENDER = oes;
-		float power = entities.player()->dmg_sum / player.maxlife * 220.f;
+		float power = entities.player()->dmg_sum / player.lifePool.max * 220.f;
 		AddQuakeFX(power * 3.5f, 500 + power * 3, rnd() * 100.f + power + 200, 0);
 		entities.player()->dmg_sum = 0.f;
 	}
@@ -276,16 +276,16 @@ float ARX_DAMAGES_DamagePlayer(float dmg, DamageType type, long source) {
 
 		long alive;
 
-		if(player.life > 0)
+		if(player.lifePool.current > 0)
 			alive = 1;
 		else
 			alive = 0;
 
 		if(!BLOCK_PLAYER_CONTROLS)
-			player.life -= dmg;
+			player.lifePool.current -= dmg;
 
-		if(player.life <= 0.f) {
-			player.life = 0.f;
+		if(player.lifePool.current <= 0.f) {
+			player.lifePool.current = 0.f;
 
 			if(alive) {
 				//REFUSE_GAME_RETURN = 1;
@@ -317,10 +317,10 @@ float ARX_DAMAGES_DamagePlayer(float dmg, DamageType type, long source) {
 			}
 		}
 
-		if(player.maxlife <= 0.f)
+		if(player.lifePool.max <= 0.f)
 			return damagesdone;
 
-		float t = dmg / player.maxlife;
+		float t = dmg / player.lifePool.max;
 
 		if(Blood_Pos == 0.f) {
 			Blood_Pos = 0.000001f;
@@ -339,15 +339,15 @@ float ARX_DAMAGES_DamagePlayer(float dmg, DamageType type, long source) {
 
 void ARX_DAMAGES_HealPlayer(float dmg)
 {
-	if(player.life == 0.f)
+	if(player.lifePool.current == 0.f)
 		return;
 
 	if(dmg > 0.f) {
 		if(!BLOCK_PLAYER_CONTROLS)
-			player.life += dmg;
+			player.lifePool.current += dmg;
 
-		if(player.life > player.Full_maxlife)
-			player.life = player.Full_maxlife;
+		if(player.lifePool.current > player.Full_maxlife)
+			player.lifePool.current = player.Full_maxlife;
 	}
 }
 
@@ -372,14 +372,14 @@ void ARX_DAMAGES_HealInter(Entity * io, float dmg)
 
 void ARX_DAMAGES_HealManaPlayer(float dmg)
 {
-	if(player.life == 0.f)
+	if(player.lifePool.current == 0.f)
 		return;
 
 	if(dmg > 0.f) {
-		player.mana += dmg;
+		player.manaPool.current += dmg;
 
-		if(player.mana > player.Full_maxmana)
-			player.mana = player.Full_maxmana;
+		if(player.manaPool.current > player.Full_maxmana)
+			player.manaPool.current = player.Full_maxmana;
 	}
 }
 
@@ -411,13 +411,13 @@ float ARX_DAMAGES_DrainMana(Entity * io, float dmg)
 		if(player.playerflags & PLAYERFLAGS_NO_MANA_DRAIN)
 			return 0;
 
-		if(player.mana >= dmg) {
-			player.mana -= dmg;
+		if(player.manaPool.current >= dmg) {
+			player.manaPool.current -= dmg;
 			return dmg;
 		}
 
-		float d = player.mana;
-		player.mana = 0;
+		float d = player.manaPool.current;
+		player.manaPool.current = 0;
 		return d;
 	}
 
@@ -1051,8 +1051,8 @@ void ARX_DAMAGES_UpdateDamage(DamageHandle j, float tim) {
 						float manadrained;
 						
 						if(i == 0) {
-							manadrained = min(dmg, player.mana);
-							player.mana -= manadrained;
+							manadrained = min(dmg, player.manaPool.current);
+							player.manaPool.current -= manadrained;
 						} else {
 							manadrained = dmg;
 							
@@ -1063,7 +1063,7 @@ void ARX_DAMAGES_UpdateDamage(DamageHandle j, float tim) {
 						}
 						
 						if (damage.params.source == 0) {
-							player.mana = min(player.mana + manadrained, player.Full_maxmana);
+							player.manaPool.current = min(player.manaPool.current + manadrained, player.Full_maxmana);
 						} else {
 							if(ValidIONum(damage.params.source) && (entities[damage.params.source]->_npcdata)) {
 								entities[damage.params.source]->_npcdata->mana = min(entities[damage.params.source]->_npcdata->mana + manadrained, entities[damage.params.source]->_npcdata->maxmana);

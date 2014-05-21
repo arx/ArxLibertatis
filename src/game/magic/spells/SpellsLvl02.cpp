@@ -84,7 +84,7 @@ void HealSpell::Update(float framedelay)
 
 				if(ii==0) {
 					if (!BLOCK_PLAYER_CONTROLS)
-						player.life=std::min(player.life+gain,player.Full_maxlife);									
+						player.lifePool.current=std::min(player.lifePool.current+gain,player.Full_maxlife);									
 				}
 				else
 					entities[ii]->_npcdata->life = std::min(entities[ii]->_npcdata->life+gain, entities[ii]->_npcdata->maxlife);

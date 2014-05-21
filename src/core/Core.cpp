@@ -772,7 +772,7 @@ void SetEditMode(long ed, const bool stop_sound) {
 	LAST_JUMP_ENDTIME = 0;
 	
 	if(!DONT_ERASE_PLAYER) {
-		player.life = 0.1f;
+		player.lifePool.current = 0.1f;
 	}
 	
 	RestoreAllLightsInitialStatus();
@@ -864,8 +864,8 @@ void FirstFrameProc() {
 
 		SLID_VALUE=0.f;
 
-		player.life = player.maxlife;
-		player.mana = player.maxmana;
+		player.lifePool.current = player.lifePool.max;
+		player.manaPool.current = player.manaPool.max;
 		if(!DONT_ERASE_PLAYER) {
 			ARX_PLAYER_MakeFreshHero();
 		}

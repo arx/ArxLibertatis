@@ -1054,7 +1054,7 @@ void ArxGame::speechControlledCinematic() {
 }
 
 void ArxGame::handlePlayerDeath() {
-	if(player.life <= 0) {
+	if(player.lifePool.current <= 0) {
 		DeadTime += static_cast<long>(framedelay);
 		float mdist = EEfabs(player.physics.cyl.height)-60;
 
@@ -1342,7 +1342,7 @@ void ArxGame::updateLevel() {
 	}
 
 	// Check For Hiding/unHiding Player Gore
-	if(EXTERNALVIEW || player.life <= 0) {
+	if(EXTERNALVIEW || player.lifePool.current <= 0) {
 		ARX_INTERACTIVE_Show_Hide_1st(entities.player(), 0);
 	}
 

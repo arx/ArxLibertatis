@@ -3245,7 +3245,7 @@ void CheckNPCEx(Entity * io) {
 	long Visible = 0;
 	
 	// Check visibility only if player is visible, not too far and not dead
-	if(entities.player()->invisibility <= 0.f && ds < square(2000.f) && player.life > 0.f) {
+	if(entities.player()->invisibility <= 0.f && ds < square(2000.f) && player.lifePool.current > 0.f) {
 		
 		// checks for near contact +/- 15 cm --> force visibility
 		if(io->room_flags & 1) {

@@ -834,7 +834,7 @@ bool CanPayMana(long num, float cost, bool _bSound = true) {
 		return true;
 
 	if(spells[num].m_caster == 0) {
-		if(player.mana < cost) {
+		if(player.manaPool.current < cost) {
 			ARX_SPELLS_FizzleNoMana(num);
 
 			if(_bSound) {
@@ -844,7 +844,7 @@ bool CanPayMana(long num, float cost, bool _bSound = true) {
 			return false;
 		}
 
-		player.mana -= cost;
+		player.manaPool.current -= cost;
 		return true;
 	} else if(ValidIONum(spells[num].m_caster)) {
 		if(entities[spells[num].m_caster]->ioflags & IO_NPC) {

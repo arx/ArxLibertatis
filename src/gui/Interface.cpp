@@ -3797,9 +3797,9 @@ void ARX_INTERFACE_ManageOpenedBook()
 		ss4 << F2L_RoundUp(player.Full_maxlife);
 		tex = ss4.str();
 		
-		if(player.Full_maxlife < player.maxlife) {
+		if(player.Full_maxlife < player.lifePool.max) {
 			color = Color::red;
-		} else if(player.Full_maxlife > player.maxlife) {
+		} else if(player.Full_maxlife > player.lifePool.max) {
 			color = Color::blue;
 		} else {
 			color = Color::black;
@@ -3811,9 +3811,9 @@ void ARX_INTERFACE_ManageOpenedBook()
 		ss4 << F2L_RoundUp(player.Full_maxmana);
 		tex = ss4.str();
 
-		if(player.Full_maxmana < player.maxmana) {
+		if(player.Full_maxmana < player.manaPool.max) {
 			color = Color::red;
-		} else if(player.Full_maxmana > player.maxmana) {
+		} else if(player.Full_maxmana > player.manaPool.max) {
 			color = Color::blue;
 		} else {
 			color = Color::black;
@@ -5684,7 +5684,7 @@ public:
 	
 	void update() {
 		
-		m_amount = (float)player.life/(float)player.Full_maxlife;
+		m_amount = (float)player.lifePool.current/(float)player.Full_maxlife;
 	}
 	
 	void draw() {
@@ -5720,7 +5720,7 @@ public:
 			if(redGaugeMouseTestRect.contains(Vec2i(DANAEMouse))) {
 				if((EERIEMouseButton & 1) && !(LastMouseClick & 1)) {
 					std::stringstream ss;
-					ss << checked_range_cast<int>(player.life);
+					ss << checked_range_cast<int>(player.lifePool.current);
 					ARX_SPEECH_Add(ss.str());
 				}
 			}
@@ -5744,7 +5744,7 @@ public:
 	
 	void update() {
 		
-		m_amount = player.mana / player.Full_maxmana;
+		m_amount = player.manaPool.current / player.Full_maxmana;
 	}
 	
 	void draw() {
@@ -5771,7 +5771,7 @@ public:
 			if(blueGaugeMouseTestRect.contains(Vec2i(DANAEMouse))) {
 				if((EERIEMouseButton & 1) && !(LastMouseClick & 1)) {
 					std::stringstream ss;
-					ss << checked_range_cast<int>(player.mana);
+					ss << checked_range_cast<int>(player.manaPool.current);
 					ARX_SPEECH_Add(ss.str());
 				}
 			}
@@ -6051,12 +6051,12 @@ private:
 		bool bOk=true;
 		
 		if(spells[i].m_bDuration) {
-			if(player.mana < 20 || spells[i].m_timcreation+spells[i].m_tolive - float(arxtime) < 2000) {
+			if(player.manaPool.current < 20 || spells[i].m_timcreation+spells[i].m_tolive - float(arxtime) < 2000) {
 				if(ucFlick&1)
 					bOk=false;
 			}
 		} else {
-			if(player.mana<20) {
+			if(player.manaPool.current<20) {
 				if(ucFlick&1)
 					bOk=false;
 			}
