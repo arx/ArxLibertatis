@@ -368,12 +368,8 @@ void Cedric_ApplyLightingFirstPartRefactor(Entity *io) {
 							light->intensity = 0.7f + 2.f * rnd();
 							light->fallend = 600.f;
 							light->fallstart = 400.f;
-							light->rgb.r = 1.0f;
-							light->rgb.g = 0.8f;
-							light->rgb.b = .0f;
-							light->pos.x = io->pos.x;
-							light->pos.y = io->pos.y - 80.f;
-							light->pos.z = io->pos.z;
+							light->rgb = Color3f(1.0f, 0.8f, 0.f);
+							light->pos = io->pos + Vec3f(0.f, -80.f, 0.f);
 							light->duration = 600;
 						}
 
