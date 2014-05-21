@@ -715,10 +715,12 @@ static long ARX_CHANGELEVEL_Push_Player(long level) {
 	asp->jumpstarttime = player.jumpstarttime;
 	asp->Last_Movement = player.Last_Movement;
 	asp->level = player.level;
+	
 	asp->life = player.lifePool.current;
 	asp->mana = player.manaPool.current;
 	asp->maxlife = player.lifePool.max;
 	asp->maxmana = player.manaPool.max;
+	
 	asp->misc_flags = 0;
 
 	if (player.onfirmground)
@@ -1331,11 +1333,13 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 			}
 
 			as->lastmouth = io->_npcdata->lastmouth;
-			as->life = io->_npcdata->lifePool.current;
 			as->look_around_inc = io->_npcdata->look_around_inc;
+			
+			as->life = io->_npcdata->lifePool.current;
 			as->mana = io->_npcdata->manaPool.current;
 			as->maxlife = io->_npcdata->lifePool.max;
 			as->maxmana = io->_npcdata->manaPool.max;
+			
 			as->movemode = io->_npcdata->movemode;
 			as->moveproblem = io->_npcdata->moveproblem;
 			as->reachedtarget = io->_npcdata->reachedtarget;
@@ -2219,11 +2223,13 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) {
 				memcpy(Gaids[Gaids_Number]->weapon, as->id_weapon, SIZE_ID);
 				
 				io->_npcdata->lastmouth = as->lastmouth;
-				io->_npcdata->lifePool.current = as->life;
 				io->_npcdata->look_around_inc = as->look_around_inc;
+				
+				io->_npcdata->lifePool.current = as->life;
 				io->_npcdata->manaPool.current = as->mana;
 				io->_npcdata->lifePool.max = as->maxlife;
 				io->_npcdata->manaPool.max = as->maxmana;
+				
 				io->_npcdata->movemode = (MoveMode)as->movemode; // TODO save/load enum
 				io->_npcdata->moveproblem = as->moveproblem;
 				io->_npcdata->reachedtarget = as->reachedtarget;
