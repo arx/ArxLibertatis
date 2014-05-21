@@ -20,6 +20,8 @@
 #ifndef ARX_GAME_MAGIC_SPELL_H
 #define ARX_GAME_MAGIC_SPELL_H
 
+#include "game/Damage.h"
+
 #include "graphics/effects/SpellEffects.h"
 #include "platform/Flags.h"
 #include "scene/Light.h"
@@ -147,7 +149,7 @@ public:
 	unsigned long m_tolive;
 	
 	long m_longinfo_entity;
-	long m_longinfo_damage;
+	DamageHandle m_longinfo_damage;
 	long m_longinfo_time;
 	long m_longinfo_summon_creature;
 	long m_longinfo_lower_armor;

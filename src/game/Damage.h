@@ -49,11 +49,15 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <stddef.h>
 
+#include <boost/strong_typedef.hpp>
+
 #include "math/Types.h"
 #include "math/Vector.h"
 #include "platform/Flags.h"
 
 class Entity;
+
+BOOST_STRONG_TYPEDEF(long, DamageHandle)
 
 enum DamageTypeFlag {
 	DAMAGE_TYPE_GENERIC    = 0,
@@ -115,8 +119,8 @@ struct DamageParameters {
 	}
 };
 
-long DamageCreate(const DamageParameters & params);
-void DamageRequestEnd(long handle);
+DamageHandle DamageCreate(const DamageParameters & params);
+void DamageRequestEnd(DamageHandle handle);
 
 /*!
  * mode=true ON mode=false  OFF
@@ -137,7 +141,7 @@ void ARX_DAMAGES_DamageFIX(Entity * io, float dmg, long source, long flags);
 float ARX_DAMAGES_DamageNPC(Entity * io, float dmg, long source, long flags, const Vec3f * pos);
 bool ARX_DAMAGES_TryToDoDamage(const Vec3f & pos, float dmg, float radius, long source);
 void ARX_DAMAGES_ForceDeath(Entity * io_dead, Entity * io_killer);
-void ARX_DAMAGES_UpdateDamage(long j, float tim);
+void ARX_DAMAGES_UpdateDamage(DamageHandle j, float tim);
 float ARX_DAMAGES_DealDamages(long target, float dmg, long source, DamageType flags, Vec3f * pos);
 
 void ARX_DAMAGES_HealInter(Entity * io, float dmg);

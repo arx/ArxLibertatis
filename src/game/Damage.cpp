@@ -110,7 +110,7 @@ struct DAMAGE_INFO {
 const size_t MAX_DAMAGES = 200;
 DAMAGE_INFO	damages[MAX_DAMAGES];
 
-long DamageCreate(const DamageParameters & params) {
+DamageHandle DamageCreate(const DamageParameters & params) {
 	for(size_t i = 0; i < MAX_DAMAGES; i++) {
 		if(!damages[i].exist) {
 			DAMAGE_INFO & damage = damages[i];
@@ -118,15 +118,15 @@ long DamageCreate(const DamageParameters & params) {
 			damage.start_time = (unsigned long)(arxtime);
 			damage.lastupd = 0;
 			damage.exist = true;
-			return i;
+			return DamageHandle(i);
 		}
 	}
 
-	return -1;
+	return DamageHandle(-1);
 }
 
-void DamageRequestEnd(long handle) {
-	if(handle >= 0) {
+void DamageRequestEnd(DamageHandle handle) {
+	if(long(handle) >= 0) {
 		damages[handle].exist = 0;
 	}
 }
@@ -941,7 +941,7 @@ void ARX_DAMAGES_AddVisual(DAMAGE_INFO * di, Vec3f * pos, float dmg, Entity * io
 // source = -1 no source but valid pos
 // source = 0  player
 // source > 0  IO
-void ARX_DAMAGES_UpdateDamage(long j, float tim) {
+void ARX_DAMAGES_UpdateDamage(DamageHandle j, float tim) {
 	
 	DAMAGE_INFO & damage = damages[j];
 	
@@ -1158,7 +1158,7 @@ void ARX_DAMAGES_UpdateDamage(long j, float tim) {
 void ARX_DAMAGES_UpdateAll()
 {
 	for (size_t j = 0; j < MAX_DAMAGES; j++)
-		ARX_DAMAGES_UpdateDamage(j, arxtime);
+		ARX_DAMAGES_UpdateDamage(DamageHandle(j), arxtime);
 }
 
 bool SphereInIO(Entity * io, const Sphere & sphere)
