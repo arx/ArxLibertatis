@@ -764,15 +764,15 @@ static long ARX_CHANGELEVEL_Push_Player(long level) {
 	asp->Skill_Redistribute = player.Skill_Redistribute;
 	asp->rune_flags = player.rune_flags;
 	asp->size = player.size;
-	asp->Skill_Stealth = player.Skill_Stealth;
-	asp->Skill_Mecanism = player.Skill_Mecanism;
-	asp->Skill_Intuition = player.Skill_Intuition;
-	asp->Skill_Etheral_Link = player.Skill_Etheral_Link;
-	asp->Skill_Object_Knowledge = player.Skill_Object_Knowledge;
-	asp->Skill_Casting = player.Skill_Casting;
-	asp->Skill_Projectile = player.Skill_Projectile;
-	asp->Skill_Close_Combat = player.Skill_Close_Combat;
-	asp->Skill_Defense = player.Skill_Defense;
+	asp->Skill_Stealth = player.m_skill.stealth;
+	asp->Skill_Mecanism = player.m_skill.mecanism;
+	asp->Skill_Intuition = player.m_skill.intuition;
+	asp->Skill_Etheral_Link = player.m_skill.etheralLink;
+	asp->Skill_Object_Knowledge = player.m_skill.objectKnowledge;
+	asp->Skill_Casting = player.m_skill.casting;
+	asp->Skill_Projectile = player.m_skill.projectile;
+	asp->Skill_Close_Combat = player.m_skill.closeCombat;
+	asp->Skill_Defense = player.m_skill.defense;
 	asp->skin = player.skin;
 	
 	asp->xp = player.xp;
@@ -1775,15 +1775,15 @@ static long ARX_CHANGELEVEL_Pop_Player() {
 	
 	player.rune_flags = RuneFlags::load(asp->rune_flags); // TODO save/load flags
 	player.size = asp->size.toVec3();
-	player.Skill_Stealth = asp->Skill_Stealth;
-	player.Skill_Mecanism = asp->Skill_Mecanism;
-	player.Skill_Intuition = asp->Skill_Intuition;
-	player.Skill_Etheral_Link = asp->Skill_Etheral_Link;
-	player.Skill_Object_Knowledge = asp->Skill_Object_Knowledge;
-	player.Skill_Casting = asp->Skill_Casting;
-	player.Skill_Projectile = asp->Skill_Projectile;
-	player.Skill_Close_Combat = asp->Skill_Close_Combat;
-	player.Skill_Defense = asp->Skill_Defense;
+	player.m_skill.stealth = asp->Skill_Stealth;
+	player.m_skill.mecanism = asp->Skill_Mecanism;
+	player.m_skill.intuition = asp->Skill_Intuition;
+	player.m_skill.etheralLink = asp->Skill_Etheral_Link;
+	player.m_skill.objectKnowledge = asp->Skill_Object_Knowledge;
+	player.m_skill.casting = asp->Skill_Casting;
+	player.m_skill.projectile = asp->Skill_Projectile;
+	player.m_skill.closeCombat = asp->Skill_Close_Combat;
+	player.m_skill.defense = asp->Skill_Defense;
 	
 	player.skin = checked_range_cast<char>(asp->skin);
 	

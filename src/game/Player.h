@@ -222,20 +222,23 @@ struct ARXCHARACTER {
 		float mind;
 	};
 	
+	struct PlayerSkill {
+		float stealth;
+		float mecanism;
+		float intuition;
+		
+		float etheralLink;
+		float objectKnowledge;
+		float casting;
+		
+		float projectile;
+		float closeCombat;
+		float defense;
+	};
+	
 	// true (naked) Player Values
 	PlayerAttribute m_attribute;
-	
-	float Skill_Stealth;
-	float Skill_Mecanism;
-	float Skill_Intuition;
-	
-	float Skill_Etheral_Link;
-	float Skill_Object_Knowledge;
-	float Skill_Casting;
-	
-	float Skill_Projectile;
-	float Skill_Close_Combat;
-	float Skill_Defense;
+	PlayerSkill m_skill;
 	
 	float Critical_Hit;
 	long AimTime;

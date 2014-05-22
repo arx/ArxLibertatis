@@ -3426,31 +3426,31 @@ void ARX_INTERFACE_ManageOpenedBook()
 		}
 
 		if(!((player.Skill_Redistribute == 0) && (ARXmenu.currentmode != AMCM_NEWQUEST))) {
-			if (CheckSkillClick(389, 177, &player.Skill_Stealth, ITC.ic_stealth, &player.Old_Skill_Stealth)) {
+			if (CheckSkillClick(389, 177, &player.m_skill.stealth, ITC.ic_stealth, &player.Old_Skill_Stealth)) {
 				FLYING_OVER = BOOK_STEALTH;
 				SpecialCursor = CURSOR_REDIST;
 				lCursorRedistValue = player.Skill_Redistribute;
 			}
 
-			if(CheckSkillClick(453, 177, &player.Skill_Mecanism, ITC.ic_mecanism, &player.Old_Skill_Mecanism)) {
+			if(CheckSkillClick(453, 177, &player.m_skill.mecanism, ITC.ic_mecanism, &player.Old_Skill_Mecanism)) {
 				FLYING_OVER = BOOK_MECANISM;
 				SpecialCursor = CURSOR_REDIST;
 				lCursorRedistValue = player.Skill_Redistribute;
 			}
 
-			if(CheckSkillClick(516, 177, &player.Skill_Intuition, ITC.ic_intuition, &player.Old_Skill_Intuition)) {
+			if(CheckSkillClick(516, 177, &player.m_skill.intuition, ITC.ic_intuition, &player.Old_Skill_Intuition)) {
 				FLYING_OVER = BOOK_INTUITION;
 				SpecialCursor = CURSOR_REDIST;
 				lCursorRedistValue = player.Skill_Redistribute;
 			}
 
-			if(CheckSkillClick(389, 230, &player.Skill_Etheral_Link, ITC.ic_etheral_link, &player.Old_Skill_Etheral_Link)) {
+			if(CheckSkillClick(389, 230, &player.m_skill.etheralLink, ITC.ic_etheral_link, &player.Old_Skill_Etheral_Link)) {
 				FLYING_OVER = BOOK_ETHERAL_LINK;
 				SpecialCursor = CURSOR_REDIST;
 				lCursorRedistValue = player.Skill_Redistribute;
 			}
 
-			if(CheckSkillClick(453, 230, &player.Skill_Object_Knowledge, ITC.ic_object_knowledge, &player.Old_Skill_Object_Knowledge)) {
+			if(CheckSkillClick(453, 230, &player.m_skill.objectKnowledge, ITC.ic_object_knowledge, &player.Old_Skill_Object_Knowledge)) {
 				FLYING_OVER = BOOK_OBJECT_KNOWLEDGE;
 				SpecialCursor = CURSOR_REDIST;
 				lCursorRedistValue = player.Skill_Redistribute;
@@ -3463,25 +3463,25 @@ void ARX_INTERFACE_ManageOpenedBook()
 				ARX_PLAYER_ComputePlayerFullStats();
 			}
 
-			if(CheckSkillClick(516, 230, &player.Skill_Casting, ITC.ic_casting, &player.Old_Skill_Casting)) {
+			if(CheckSkillClick(516, 230, &player.m_skill.casting, ITC.ic_casting, &player.Old_Skill_Casting)) {
 				FLYING_OVER = BOOK_CASTING;
 				SpecialCursor = CURSOR_REDIST;
 				lCursorRedistValue = player.Skill_Redistribute;
 			}
 
-			if(CheckSkillClick(389, 284, &player.Skill_Close_Combat, ITC.ic_close_combat, &player.Old_Skill_Close_Combat)) {
+			if(CheckSkillClick(389, 284, &player.m_skill.closeCombat, ITC.ic_close_combat, &player.Old_Skill_Close_Combat)) {
 				FLYING_OVER = BOOK_CLOSE_COMBAT;
 				SpecialCursor = CURSOR_REDIST;
 				lCursorRedistValue = player.Skill_Redistribute;
 			}
 
-			if(CheckSkillClick(453, 284, &player.Skill_Projectile, ITC.ic_projectile, &player.Old_Skill_Projectile)) {
+			if(CheckSkillClick(453, 284, &player.m_skill.projectile, ITC.ic_projectile, &player.Old_Skill_Projectile)) {
 				FLYING_OVER = BOOK_PROJECTILE;
 				SpecialCursor = CURSOR_REDIST;
 				lCursorRedistValue = player.Skill_Redistribute;
 			}
 
-			if(CheckSkillClick(516, 284, &player.Skill_Defense, ITC.ic_defense, &player.Old_Skill_Defense)) {
+			if(CheckSkillClick(516, 284, &player.m_skill.defense, ITC.ic_defense, &player.Old_Skill_Defense)) {
 				FLYING_OVER = BOOK_DEFENSE;
 				SpecialCursor = CURSOR_REDIST;
 				lCursorRedistValue = player.Skill_Redistribute;
@@ -3640,7 +3640,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 			color = Color::black;
 		
 		if(ARXmenu.currentmode == AMCM_NEWQUEST) {
-			if(player.Skill_Stealth == 0)
+			if(player.m_skill.stealth == 0)
 				color = Color::red;
 		}
 		
@@ -3658,7 +3658,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 			color = Color::black;
 		
 		if(ARXmenu.currentmode == AMCM_NEWQUEST) {
-			if(player.Skill_Mecanism == 0)
+			if(player.m_skill.mecanism == 0)
 				color = Color::red;
 		}
 		
@@ -3676,7 +3676,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 			color = Color::black;
 		
 		if(ARXmenu.currentmode == AMCM_NEWQUEST) {
-			if(player.Skill_Intuition == 0)
+			if(player.m_skill.intuition == 0)
 				color = Color::red;
 		}
 
@@ -3694,7 +3694,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 			color = Color::black;
 		
 		if(ARXmenu.currentmode == AMCM_NEWQUEST) {
-			if(player.Skill_Etheral_Link == 0)
+			if(player.m_skill.etheralLink == 0)
 				color = Color::red;
 		}
 
@@ -3712,7 +3712,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 			color = Color::black;
 		
 		if(ARXmenu.currentmode == AMCM_NEWQUEST) {
-			if(player.Skill_Object_Knowledge == 0)
+			if(player.m_skill.objectKnowledge == 0)
 				color = Color::red;
 		}
 		
@@ -3730,7 +3730,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 			color = Color::black;
 		
 		if(ARXmenu.currentmode == AMCM_NEWQUEST) {
-			if(player.Skill_Casting == 0)
+			if(player.m_skill.casting == 0)
 				color = Color::red;
 		}
 
@@ -3748,7 +3748,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 			color = Color::black;
 		
 		if(ARXmenu.currentmode == AMCM_NEWQUEST) {
-			if(player.Skill_Close_Combat == 0)
+			if(player.m_skill.closeCombat == 0)
 				color = Color::red;
 		}
 
@@ -3767,7 +3767,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 			color = Color::black;
 		
 		if(ARXmenu.currentmode == AMCM_NEWQUEST) {
-			if(player.Skill_Projectile == 0)
+			if(player.m_skill.projectile == 0)
 				color = Color::red;
 		}
 
@@ -3785,7 +3785,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 			color = Color::black;
 		
 		if(ARXmenu.currentmode == AMCM_NEWQUEST) {
-			if(player.Skill_Defense == 0)
+			if(player.m_skill.defense == 0)
 				color = Color::red;
 		}
 		

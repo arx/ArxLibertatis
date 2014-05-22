@@ -454,14 +454,14 @@ static void ARX_PLAYER_ComputePlayerStats() {
 	player.lifePool.max = (float)player.m_attribute.constitution * (float)(player.level + 2);
 	player.manaPool.max = (float)player.m_attribute.mind * (float)(player.level + 1);
 	
-	float base_defense = player.Skill_Defense + player.m_attribute.constitution * 3;
+	float base_defense = player.m_skill.defense + player.m_attribute.constitution * 3;
 	float fCalc = base_defense * ( 1.0f / 10 ) - 1 ;
 	player.armor_class = checked_range_cast<unsigned char>(fCalc);
 
 
 	if (player.armor_class < 1) player.armor_class = 1;
 
-	float base_casting = player.Skill_Casting + player.m_attribute.mind * 2.f;
+	float base_casting = player.m_skill.casting + player.m_attribute.mind * 2.f;
 	player.resist_magic = (unsigned char)(float)(player.m_attribute.mind * 2.f
 	                      * (1.f + base_casting * ( 1.0f / 200 )));
 
@@ -475,7 +475,7 @@ static void ARX_PLAYER_ComputePlayerStats() {
 
 	player.AimTime = 1500;
 	
-	float base_close_combat = player.Skill_Close_Combat
+	float base_close_combat = player.m_skill.closeCombat
 	                          + player.m_attribute.dexterity + player.m_attribute.strength * 2.f;
 	player.Critical_Hit = (float)(player.m_attribute.dexterity - 9) * 2.f
 	                      + base_close_combat * ( 1.0f / 5 );
@@ -682,28 +682,28 @@ void ARX_PLAYER_ComputePlayerFullStats() {
 	// Skills
 	
 	// Calculate base skills
-	float base_stealth          = player.Skill_Stealth
+	float base_stealth          = player.m_skill.stealth
 	                              + player.Full_Attribute_Dexterity * 2.f;
-	float base_mecanism         = player.Skill_Mecanism
+	float base_mecanism         = player.m_skill.mecanism
 	                              + player.Full_Attribute_Dexterity
 	                              + player.Full_Attribute_Mind;
-	float base_intuition        = player.Skill_Intuition
+	float base_intuition        = player.m_skill.intuition
 	                              + player.Full_Attribute_Mind * 2.f;
-	float base_ethereal_link    = player.Skill_Etheral_Link
+	float base_ethereal_link    = player.m_skill.etheralLink
 	                              + player.Full_Attribute_Mind * 2.f;
-	float base_object_knowledge = player.Skill_Object_Knowledge
+	float base_object_knowledge = player.m_skill.objectKnowledge
 	                              + player.Full_Attribute_Mind * 1.5f
 	                              + player.Full_Attribute_Dexterity * 0.5f
 	                              + player.Full_Attribute_Strength * 0.5f;
-	float base_casting          = player.Skill_Casting
+	float base_casting          = player.m_skill.casting
 	                              + player.Full_Attribute_Mind * 2.f;
-	float base_projectile       = player.Skill_Projectile
+	float base_projectile       = player.m_skill.projectile
 	                              + player.Full_Attribute_Dexterity * 2.f
 	                              + player.Full_Attribute_Strength;
-	float base_close_combat     = player.Skill_Close_Combat
+	float base_close_combat     = player.m_skill.closeCombat
 	                              + player.Full_Attribute_Dexterity
 	                              + player.Full_Attribute_Strength * 2.f;
-	float base_defense          = player.Skill_Defense
+	float base_defense          = player.m_skill.defense
 	                              + player.Full_Attribute_Constitution * 3;
 	
 	// Calculate equipment modifiers for skills
@@ -808,15 +808,15 @@ void ARX_PLAYER_MakeFreshHero()
 	player.m_attribute.dexterity = 6;
 	player.m_attribute.constitution = 6;
 
-	player.Old_Skill_Stealth			=	player.Skill_Stealth			= 0;
-	player.Old_Skill_Mecanism			=	player.Skill_Mecanism			= 0;
-	player.Old_Skill_Intuition			=	player.Skill_Intuition			= 0;
-	player.Old_Skill_Etheral_Link		=	player.Skill_Etheral_Link		= 0;
-	player.Old_Skill_Object_Knowledge	=	player.Skill_Object_Knowledge	= 0;
-	player.Old_Skill_Casting			=	player.Skill_Casting			= 0;
-	player.Old_Skill_Projectile			=	player.Skill_Projectile			= 0;
-	player.Old_Skill_Close_Combat		=	player.Skill_Close_Combat		= 0;
-	player.Old_Skill_Defense			=	player.Skill_Defense			= 0;
+	player.Old_Skill_Stealth			=	player.m_skill.stealth			= 0;
+	player.Old_Skill_Mecanism			=	player.m_skill.mecanism			= 0;
+	player.Old_Skill_Intuition			=	player.m_skill.intuition			= 0;
+	player.Old_Skill_Etheral_Link		=	player.m_skill.etheralLink		= 0;
+	player.Old_Skill_Object_Knowledge	=	player.m_skill.objectKnowledge	= 0;
+	player.Old_Skill_Casting			=	player.m_skill.casting			= 0;
+	player.Old_Skill_Projectile			=	player.m_skill.projectile			= 0;
+	player.Old_Skill_Close_Combat		=	player.m_skill.closeCombat		= 0;
+	player.Old_Skill_Defense			=	player.m_skill.defense			= 0;
 
 	player.Attribute_Redistribute = 16;
 	player.Skill_Redistribute = 18;
@@ -848,15 +848,15 @@ void ARX_PLAYER_MakeSpHero()
 	player.m_attribute.dexterity = 12;
 	player.m_attribute.constitution = 12;
 
-	player.Old_Skill_Stealth			=	player.Skill_Stealth			= 5;
-	player.Old_Skill_Mecanism			=	player.Skill_Mecanism			= 5;
-	player.Old_Skill_Intuition			=	player.Skill_Intuition			= 5;
-	player.Old_Skill_Etheral_Link		=	player.Skill_Etheral_Link		= 5;
-	player.Old_Skill_Object_Knowledge	=	player.Skill_Object_Knowledge	= 5;
-	player.Old_Skill_Casting			=	player.Skill_Casting			= 5;
-	player.Old_Skill_Projectile			=	player.Skill_Projectile			= 5;
-	player.Old_Skill_Close_Combat		=	player.Skill_Close_Combat		= 5;
-	player.Old_Skill_Defense			=	player.Skill_Defense			= 5;
+	player.Old_Skill_Stealth			=	player.m_skill.stealth			= 5;
+	player.Old_Skill_Mecanism			=	player.m_skill.mecanism			= 5;
+	player.Old_Skill_Intuition			=	player.m_skill.intuition			= 5;
+	player.Old_Skill_Etheral_Link		=	player.m_skill.etheralLink		= 5;
+	player.Old_Skill_Object_Knowledge	=	player.m_skill.objectKnowledge	= 5;
+	player.Old_Skill_Casting			=	player.m_skill.casting			= 5;
+	player.Old_Skill_Projectile			=	player.m_skill.projectile			= 5;
+	player.Old_Skill_Close_Combat		=	player.m_skill.closeCombat		= 5;
+	player.Old_Skill_Defense			=	player.m_skill.defense			= 5;
 
 	player.Attribute_Redistribute = 6;
 	player.Skill_Redistribute = 10;
@@ -890,15 +890,15 @@ void ARX_PLAYER_MakeAverageHero()
 	player.m_attribute.dexterity		+= 4;
 	player.m_attribute.constitution	+= 4;
 
-	player.Skill_Stealth			+= 2;
-	player.Skill_Mecanism			+= 2;
-	player.Skill_Intuition			+= 2;
-	player.Skill_Etheral_Link		+= 2;
-	player.Skill_Object_Knowledge	+= 2;
-	player.Skill_Casting			+= 2;
-	player.Skill_Projectile			+= 2;
-	player.Skill_Close_Combat		+= 2;
-	player.Skill_Defense			+= 2;
+	player.m_skill.stealth			+= 2;
+	player.m_skill.mecanism			+= 2;
+	player.m_skill.intuition			+= 2;
+	player.m_skill.etheralLink		+= 2;
+	player.m_skill.objectKnowledge	+= 2;
+	player.m_skill.casting			+= 2;
+	player.m_skill.projectile			+= 2;
+	player.m_skill.closeCombat		+= 2;
+	player.m_skill.defense			+= 2;
 
 	player.Attribute_Redistribute = 0;
 	player.Skill_Redistribute = 0;
@@ -940,32 +940,32 @@ void ARX_PLAYER_QuickGeneration() {
 	while(player.Skill_Redistribute) {
 		float rn = rnd();
 
-		if(rn < 0.1f && player.Skill_Stealth < 18) {
-			player.Skill_Stealth++;
+		if(rn < 0.1f && player.m_skill.stealth < 18) {
+			player.m_skill.stealth++;
 			player.Skill_Redistribute--;
-		} else if(rn < 0.2f && player.Skill_Mecanism < 18) {
-			player.Skill_Mecanism++;
+		} else if(rn < 0.2f && player.m_skill.mecanism < 18) {
+			player.m_skill.mecanism++;
 			player.Skill_Redistribute--;
-		} else if(rn < 0.3f && player.Skill_Intuition < 18) {
-			player.Skill_Intuition++;
+		} else if(rn < 0.3f && player.m_skill.intuition < 18) {
+			player.m_skill.intuition++;
 			player.Skill_Redistribute--;
-		} else if(rn < 0.4f && player.Skill_Etheral_Link < 18) {
-			player.Skill_Etheral_Link++;
+		} else if(rn < 0.4f && player.m_skill.etheralLink < 18) {
+			player.m_skill.etheralLink++;
 			player.Skill_Redistribute--;
-		} else if(rn < 0.5f && player.Skill_Object_Knowledge < 18) {
-			player.Skill_Object_Knowledge++;
+		} else if(rn < 0.5f && player.m_skill.objectKnowledge < 18) {
+			player.m_skill.objectKnowledge++;
 			player.Skill_Redistribute--;
-		} else if(rn < 0.6f && player.Skill_Casting < 18) {
-			player.Skill_Casting++;
+		} else if(rn < 0.6f && player.m_skill.casting < 18) {
+			player.m_skill.casting++;
 			player.Skill_Redistribute--;
-		} else if(rn < 0.7f && player.Skill_Projectile < 18) {
-			player.Skill_Projectile++;
+		} else if(rn < 0.7f && player.m_skill.projectile < 18) {
+			player.m_skill.projectile++;
 			player.Skill_Redistribute--;
-		} else if(rn < 0.8f && player.Skill_Close_Combat < 18) {
-			player.Skill_Close_Combat++;
+		} else if(rn < 0.8f && player.m_skill.closeCombat < 18) {
+			player.m_skill.closeCombat++;
 			player.Skill_Redistribute--;
-		} else if(rn < 0.9f && player.Skill_Defense < 18) {
-			player.Skill_Defense++;
+		} else if(rn < 0.9f && player.m_skill.defense < 18) {
+			player.m_skill.defense++;
 			player.Skill_Redistribute--;
 		}
 	}
@@ -1022,15 +1022,15 @@ void ARX_PLAYER_LEVEL_UP()
 	ARX_PLAYER_ComputePlayerStats();
 	player.lifePool.current = player.lifePool.max;
 	player.manaPool.current = player.manaPool.max;
-	player.Old_Skill_Stealth			=	player.Skill_Stealth;
-	player.Old_Skill_Mecanism			=	player.Skill_Mecanism;
-	player.Old_Skill_Intuition			=	player.Skill_Intuition;
-	player.Old_Skill_Etheral_Link		=	player.Skill_Etheral_Link;
-	player.Old_Skill_Object_Knowledge	=	player.Skill_Object_Knowledge;
-	player.Old_Skill_Casting			=	player.Skill_Casting;
-	player.Old_Skill_Projectile			=	player.Skill_Projectile;
-	player.Old_Skill_Close_Combat		=	player.Skill_Close_Combat;
-	player.Old_Skill_Defense			=	player.Skill_Defense;
+	player.Old_Skill_Stealth			=	player.m_skill.stealth;
+	player.Old_Skill_Mecanism			=	player.m_skill.mecanism;
+	player.Old_Skill_Intuition			=	player.m_skill.intuition;
+	player.Old_Skill_Etheral_Link		=	player.m_skill.etheralLink;
+	player.Old_Skill_Object_Knowledge	=	player.m_skill.objectKnowledge;
+	player.Old_Skill_Casting			=	player.m_skill.casting;
+	player.Old_Skill_Projectile			=	player.m_skill.projectile;
+	player.Old_Skill_Close_Combat		=	player.m_skill.closeCombat;
+	player.Old_Skill_Defense			=	player.m_skill.defense;
 	SendIOScriptEvent(entities.player(), SM_NULL, "", "level_up");
 }
 
