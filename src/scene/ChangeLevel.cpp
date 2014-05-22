@@ -1573,7 +1573,7 @@ long ARX_CHANGELEVEL_Pop_Zones_n_Lights(ARX_CHANGELEVEL_INDEX * asi, long num) {
 			EERIE_LIGHT * el = GLight[j];
 			if(el && !(el->type & TYP_SPECIAL1)) {
 				if(count == i) {
-					el->status = acl->status;
+					el->status = (acl->status != 0);
 					break;
 				}
 				count++;
@@ -1704,7 +1704,7 @@ static long ARX_CHANGELEVEL_Pop_Player() {
 	
 	player.Interface = asp->Interface;
 	player.Interface &= ~INTER_MAP;
-	player.falling = asp->falling;
+	player.falling = (asp->falling != 0);
 	player.gold = asp->gold;
 	entities.player()->invisibility = asp->invisibility;
 	player.inzone = ARX_PATH_GetAddressByName(boost::to_lower_copy(util::loadString(asp->inzone)));
@@ -1784,7 +1784,7 @@ static long ARX_CHANGELEVEL_Pop_Player() {
 	player.skin = checked_range_cast<char>(asp->skin);
 	
 	player.xp = asp->xp;
-	GLOBAL_MAGIC_MODE = asp->Global_Magic_Mode;
+	GLOBAL_MAGIC_MODE = (asp->Global_Magic_Mode != 0);
 	
 	g_miniMap.purgeTexContainer();
 	assert(SAVED_MAX_MINIMAPS == MAX_MINIMAP_LEVELS);
