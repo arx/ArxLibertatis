@@ -38,7 +38,6 @@
 #include <boost/interprocess/shared_memory_object.hpp>
 #include <boost/lexical_cast.hpp>
 
-#include "io/log/Logger.h"
 #include "io/fs/FilePath.h"
 #include "platform/CrashHandler.h"
 #include "platform/crashhandler/CrashInfo.h"

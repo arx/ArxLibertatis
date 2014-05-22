@@ -25,6 +25,7 @@
 
 #include "io/fs/Filesystem.h"
 #include "io/fs/FilePath.h"
+#include "io/log/Logger.h"
 
 #include "math/Random.h"
 

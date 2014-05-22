@@ -24,6 +24,8 @@
 #include <intrin.h>  // _ReturnAddress()
 #include <csignal>
 
+#include "io/log/Logger.h"
+
 typedef void (*signal_handler)(int);
 
 struct ThreadExceptionHandlers {
