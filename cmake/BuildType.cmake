@@ -32,8 +32,6 @@ if(MSVC)
 		add_definitions(/wd4250) # harasses you when inheriting from std::basic_{i,o}stream
 		# warning C4503: 'xxx' : decorated name length exceeded, name was truncated
 		add_definitions(/wd4503)
-		# warning C4995: 'func' : name was marked as #pragma deprecated
-		add_definitions(/wd4995)
 		
 	endif(SET_WARNING_FLAGS)
 	
