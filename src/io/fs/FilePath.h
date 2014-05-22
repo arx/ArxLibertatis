@@ -89,7 +89,7 @@ public:
 			}
 		} else if(empty() || is_dot()) {
 			return create("..");
-		} else if(pathstr[pathstr.length() - 1] == '/') {
+		} else if(pathstr[pathstr.length() - 1] == dir_sep) {
 			return create(pathstr + "..");
 		} else {
 			return create(pathstr + dir_sep + "..");
@@ -203,16 +203,23 @@ public:
 		return (!pathstr.empty() && !(l == 2 && pathstr[0] == '.' && pathstr[1] == '.')
 		        && !(l >= 3 && pathstr[l - 1] == '.' && pathstr[l - 2] == '.'
 		                    && pathstr[l - 3] == dir_sep)
-		        && !(pathstr[l - 1] == '/')
+		        && !(pathstr[l - 1] == dir_sep)
 		        && !is_dot());
 	}
 	
 	bool is_dot() const { return pathstr.length() == 1 && pathstr[0] == '.'; }
-	bool is_root() const { return pathstr.length() == 1 && pathstr[0] == '/'; }
+	
+	bool is_root() const {
+		return (pathstr.length() == 1 && pathstr[0] == dir_sep)
+		#if ARX_PLATFORM == ARX_PLATFORM_WIN32
+			|| (pathstr.length() <= 3 && pathstr.length() >= 2 && pathstr[1] == ':')
+		#endif
+		;
+	}
 	
 	//! Is this a relative path. An empty path is neither relative nor absolute.
 	bool is_relative() const {
-		return !empty() && !(pathstr[0] == '/'
+		return !empty() && !(pathstr[0] == dir_sep
 			#if ARX_PLATFORM == ARX_PLATFORM_WIN32
 			|| (pathstr.length() >= 2 && pathstr[1] == ':')
 			#endif
@@ -221,7 +228,7 @@ public:
 	
 	//! Is this an absolute path. An empty path is neither relative nor absolute.
 	bool is_absolute() const {
-		return !empty() && (pathstr[0] == '/'
+		return !empty() && (pathstr[0] == dir_sep
 			#if ARX_PLATFORM == ARX_PLATFORM_WIN32
 			|| (pathstr.length() >= 2 && pathstr[1] == ':')
 			#endif

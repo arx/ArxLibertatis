@@ -375,7 +375,16 @@ std::string path::load(const std::string & str) {
 		}
 	}
 	
-	copy.resize(ostart);
+#if ARX_PLATFORM == ARX_PLATFORM_WIN32
+	if(ostart == 2 && copy[1] == ':') {
+		copy.resize(3);
+		copy[2] = dir_sep;
+	}
+	else
+#endif
+	{
+		copy.resize(ostart);
+	}
 	
 	return copy;
 }
