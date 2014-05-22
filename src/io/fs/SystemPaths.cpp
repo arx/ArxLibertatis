@@ -25,6 +25,7 @@
 #include <iterator>
 #include <iostream>
 
+#include <boost/algorithm/string/case_conv.hpp>
 #include <boost/tokenizer.hpp>
 #include <boost/foreach.hpp>
 
@@ -152,6 +153,14 @@ static bool addSearchPath(std::vector<path> & result, const path & dir,
 	return true;
 }
 
+static std::string getSearchPathVar(const path & exepath) {
+	#if ARX_PLATFORM == ARX_PLATFORM_WIN32
+	return "%" + boost::to_upper_copy(exepath.basename()) + "_PATH%";
+	#else
+	return "${" + exepath.basename() + "_PATH}";
+	#endif
+}
+
 std::vector<path> SystemPaths::getSearchPaths(bool filter) const {
 	
 	std::vector<path> result;
@@ -174,18 +183,6 @@ std::vector<path> SystemPaths::getSearchPaths(bool filter) const {
 		return result;
 	}
 	
-	// Check paths specified in environment variables
-	path exepath = platform::getExecutablePath();
-	#if ARX_PLATFORM != ARX_PLATFORM_WIN32
-	if(!exepath.empty()) {
-		std::string var = "${" + exepath.basename() + "_PATH}";
-		std::vector<path> paths = fs::getSearchPaths(var.c_str());
-		BOOST_FOREACH(const path & p, paths) {
-			addSearchPath(result, p, filter);
-		}
-	}
-	#endif
-	
 	// Check system settings (windows registry)
 	std::string temp;
 	if(platform::getSystemConfiguration("DataDir", temp)) {
@@ -194,6 +191,16 @@ std::vector<path> SystemPaths::getSearchPaths(bool filter) const {
 			LogDebug("got data dir from registry: \"" << temp << "\" = " << dir);
 		} else {
 			LogDebug("ignoring data dir from registry: \"" << temp << "\" = " << dir);
+		}
+	}
+	
+	// Check paths specified in environment variables
+	path exepath = platform::getExecutablePath();
+	if(!exepath.empty()) {
+		std::string var = getSearchPathVar(exepath);
+		std::vector<path> paths = fs::getSearchPaths(var.c_str());
+		BOOST_FOREACH(const path & p, paths) {
+			addSearchPath(result, p, filter);
 		}
 	}
 	
@@ -370,7 +377,7 @@ void SystemPaths::list(std::ostream & os, const std::string & forceUser,
 		os << forceData;
 	}
 	path exepath = platform::getExecutablePath();
-	os << " - Paths specifed in ${" << exepath.basename() << "_PATH}\n";
+	os << " - Paths specifed in " << getSearchPathVar(exepath) << "\n";
 	os << " - The directory containing the game executable\n";
 	listDirectoriesFor(os, "DataDir", data_dir_prefixes, data_dir);
 	os << "selected:";
