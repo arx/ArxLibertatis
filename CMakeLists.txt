@@ -13,6 +13,14 @@ else()
 	cmake_minimum_required(VERSION 2.8)
 endif()
 
+# Eliminate a warning on Windows with CMake 2.8.11
+# CMP0020: Automatically link Qt executables to qtmain
+# CMake version 2.8.11.2 warns when the policy is not set
+# and uses OLD behavior.
+if(POLICY CMP0020)
+	cmake_policy(SET CMP0020 NEW)
+endif()
+
 
 # Define configuration options
 
@@ -330,7 +338,7 @@ if(BUILD_CRASHREPORTER)
 	# Try to find Qt 5 modules
 	if(NOT HAVE_QT AND (NOT WITH_QT OR WITH_QT EQUAL 5))
 		if(NOT WITH_QT)
-			# Missing Qt5*Config.cmake files are not errors, reuduce log spam
+			# Missing Qt5*Config.cmake files are not errors, reduce log spam
 			set(Qt_OPTIONAL_DEPENDENCY QUIET)
 		else()
 			set(Qt_OPTIONAL_DEPENDENCY ${OPTIONAL_DEPENDENCY})
