@@ -200,6 +200,11 @@ std::vector<path> SystemPaths::getSearchPaths(bool filter) const {
 		std::string var = getSearchPathVar(exepath);
 		std::vector<path> paths = fs::getSearchPaths(var.c_str());
 		BOOST_FOREACH(const path & p, paths) {
+			#if ARX_PLATFORM == ARX_PLATFORM_WIN32
+			if(p.string() == var) {
+				continue; // not defined
+			}
+			#endif
 			addSearchPath(result, p, filter);
 		}
 	}
