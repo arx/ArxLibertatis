@@ -13,14 +13,12 @@ if(MSVC)
 		add_definitions(-D_CRT_SECURE_NO_WARNINGS)
 		add_definitions(-D_CRT_NONSTDC_NO_DEPRECATE)
 		add_definitions(-D_SCL_SECURE_NO_WARNINGS)
-		# 'func': name was marked as #pragma deprecated
-		add_definitions(/wd4995)
 		
-		# TEMP - disable warning caused by the F2L removal
+		# TODO TEMP - disable warning caused by the F2L removal
 		# Conversion from 'float' to 'long', possible loss of data
 		add_definitions(/wd4244)
 		
-		# TEMP - disable warning caused by conversion from a 64-bit type to a 32-bit one...
+		# TODO TEMP - disable warning caused by conversion from a 64-bit type to a 32-bit one...
 		if(CMAKE_CL_64)
 			# Conversion from 'size_t' to 'xxx', possible loss of data
 			add_definitions(/wd4267)
@@ -30,8 +28,12 @@ if(MSVC)
 		add_definitions(/wd4127)
 		# warning C4201: nonstandard extension used : nameless struct/union
 		add_definitions(/wd4201)
+		# warning C4250: 'xxx' : inherits 'std::basic_{i,o}stream::...' via dominance
+		add_definitions(/wd4250) # harasses you when inheriting from std::basic_{i,o}stream
 		# warning C4503: 'xxx' : decorated name length exceeded, name was truncated
 		add_definitions(/wd4503)
+		# warning C4995: 'func' : name was marked as #pragma deprecated
+		add_definitions(/wd4995)
 		
 	endif(SET_WARNING_FLAGS)
 	
