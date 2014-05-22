@@ -2942,9 +2942,12 @@ void ComputePortalVertexBuffer() {
 			m.count[SMY_ARXMAT::Additive] = 0;
 			m.count[SMY_ARXMAT::Subtractive] = 0;
 			
-			if(info.opaque > 65535 || info.multiplicative > 65535
-			   || info.additive > 65535 || info.blended > 65535
-			   || info.subtractive > 65535) {
+			if(   info.opaque > 65535
+			   || info.blended > 65535
+			   || info.multiplicative > 65535
+			   || info.additive > 65535
+			   || info.subtractive > 65535
+			) {
 				LogWarning << "Too many indices for texture " << texture->m_texName
 				           << " in room " << i;
 			}
