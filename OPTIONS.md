@@ -66,6 +66,7 @@ The following options can be used to customize where `make install` puts the var
 * `GAMESBINDIR` (default: `${BINDIR}`): Where to install game executables
 * `CMAKE_INSTALL_LIBDIR` (default: `lib`): Where to install libraries
 * `CMAKE_INSTALL_LIBEXECDIR` (default: `libexec`): Where to install non-user executables
+* `RUNTIME_LIBEXECDIR` (default: `${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBEXECDIR}`): Runtime search location for arxcrashreporter, relative to arx binary
 * `SCRIPTDIR` (default: `${BINDIR}`): Where to install the data install script
 * `INSTALL_DATADIR` (default: `${DATAROOTDIR}/games/arx`): Where to install Arx Libertatis data files. This should be one of the directories found from DATA_DIR_PREFIXES + DATA_DIR combinations at runtime.
 

@@ -366,6 +366,9 @@ fs::path getHelperExecutable(const std::string & name) {
 	
 	if(fs::libexec_dir) {
 		fs::path helper = fs::path(fs::libexec_dir) / name;
+		if(helper.is_relative()) {
+			helper = exe.parent() / helper;
+		}
 		if(fs::is_regular_file(helper)) {
 			return helper;
 		}
