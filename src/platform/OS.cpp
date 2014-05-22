@@ -64,9 +64,12 @@ static std::string getWindowsVersionName() {
 	ZeroMemory(&si, sizeof(SYSTEM_INFO));
 	ZeroMemory(&osvi, sizeof(OSVERSIONINFOEX));
 	osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFOEX);
+	#pragma warning(push)
+	#pragma warning(disable:4996) // VC12+ deprecates GetVersionEx
 	if(GetVersionEx((OSVERSIONINFO *)&osvi) == 0) {
 		return "Windows";
 	}
+	#pragma warning(pop)
 	
 	// Call GetNativeSystemInfo if supported or GetSystemInfo otherwise.
 	HMODULE kernel32 = GetModuleHandle(TEXT("kernel32.dll"));
