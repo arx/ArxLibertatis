@@ -1120,11 +1120,11 @@ bool ARX_INTERACTIVE_ConvertToValidPosForIO(Entity * io, Vec3f * target) {
 	}
 	
 	phys.origin = *target;
-	long count = 0;
+	float count = 0;
 	
 	while(count < 600) {
-		float modx = -std::sin(count) * (float)count * ( 1.0f / 3 );
-		float modz =  std::cos(count) * (float)count * ( 1.0f / 3 );
+		float modx = -std::sin(count) * count * (1.f / 3);
+		float modz =  std::cos(count) * count * (1.f / 3);
 		phys.origin.x = target->x + modx;
 		phys.origin.z = target->z + modz;
 		float anything = CheckAnythingInCylinder(phys, io, CFLAG_JUST_TEST);
@@ -1141,7 +1141,7 @@ bool ARX_INTERACTIVE_ConvertToValidPosForIO(Entity * io, Vec3f * target) {
 			}
 		}
 
-		count += 5;
+		count += 5.f;
 	}
 
 	return false;
