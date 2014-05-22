@@ -299,8 +299,6 @@ float Original_framedelay=0.f;
 float PULSATE;
 long EXITING=0;
 
-bool USE_PORTALS = false;
-
 extern EERIE_CAMERA * ACTIVECAM;
 
 

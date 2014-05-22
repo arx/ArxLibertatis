@@ -1770,12 +1770,9 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 	progressBarAdvance();
 	LoadLevelScreen();
 	
+	arx_assert(fsh->nb_rooms > 0);
 	
 	// Load rooms and portals
-	if(fsh->nb_rooms <= 0) {
-		USE_PORTALS = false;
-	} else {
-		
 		EERIE_PORTAL_Release();
 		
 		portals = new EERIE_PORTAL_DATA;
@@ -1851,9 +1848,6 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 			}
 			
 		}
-		
-		USE_PORTALS = true;
-	}
 	
 	
 	// Load distances between rooms
@@ -2105,7 +2099,6 @@ static void EERIE_PORTAL_Poly_Add(EERIEPOLY * ep, const std::string& name, long 
 
 		portals->nb_rooms = 0;
 		portals->room = NULL;
-		USE_PORTALS = true;
 	}
 
 	if(type == TYPE_PORTAL) {

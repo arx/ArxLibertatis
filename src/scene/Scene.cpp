@@ -367,7 +367,7 @@ bool ARX_SCENE_PORTAL_ClipIO(Entity * io, const Vec3f & position) {
 	if(io && (io->ioflags & IO_FORCEDRAW))
 		return false;
 
-	if(USE_PORTALS && portals) {
+	if(portals) {
 		Vec3f posi;
 		posi.x=position.x;
 		posi.y=position.y-60; //20
@@ -1392,7 +1392,7 @@ void ARX_PORTALS_Frustrum_ComputeRoom(long room_num, const EERIE_FRUSTRUM & frus
 }
 
 void ARX_SCENE_Update() {
-	arx_assert(USE_PORTALS && portals);
+	arx_assert(portals);
 
 	unsigned long tim = (unsigned long)(arxtime);
 
