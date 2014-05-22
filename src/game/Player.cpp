@@ -492,10 +492,10 @@ void ARX_PLAYER_ComputePlayerFullStats() {
 	ARX_PLAYER_ComputePlayerStats();
 	
 	// Reset modifier values
-	player.Mod_Attribute_Strength = 0;
-	player.Mod_Attribute_Dexterity = 0;
-	player.Mod_Attribute_Constitution = 0;
-	player.Mod_Attribute_Mind = 0;
+	player.m_attributeMod.strength = 0;
+	player.m_attributeMod.dexterity = 0;
+	player.m_attributeMod.constitution = 0;
+	player.m_attributeMod.mind = 0;
 	player.Mod_Skill_Stealth = 0;
 	player.Mod_Skill_Mecanism = 0;
 	player.Mod_Skill_Intuition = 0;
@@ -557,16 +557,16 @@ void ARX_PLAYER_ComputePlayerFullStats() {
 					player.Mod_armor_class -= spells[n].m_caster_level;
 					break;
 				case SPELL_CURSE:
-					player.Mod_Attribute_Strength -= spells[n].m_caster_level;
-					player.Mod_Attribute_Constitution -= spells[n].m_caster_level;
-					player.Mod_Attribute_Dexterity -= spells[n].m_caster_level;
-					player.Mod_Attribute_Mind -= spells[n].m_caster_level;
+					player.m_attributeMod.strength -= spells[n].m_caster_level;
+					player.m_attributeMod.constitution -= spells[n].m_caster_level;
+					player.m_attributeMod.dexterity -= spells[n].m_caster_level;
+					player.m_attributeMod.mind -= spells[n].m_caster_level;
 					break;
 				case SPELL_BLESS:
-					player.Mod_Attribute_Strength += spells[n].m_caster_level;
-					player.Mod_Attribute_Dexterity += spells[n].m_caster_level;
-					player.Mod_Attribute_Constitution += spells[n].m_caster_level;
-					player.Mod_Attribute_Mind += spells[n].m_caster_level;
+					player.m_attributeMod.strength += spells[n].m_caster_level;
+					player.m_attributeMod.dexterity += spells[n].m_caster_level;
+					player.m_attributeMod.constitution += spells[n].m_caster_level;
+					player.m_attributeMod.mind += spells[n].m_caster_level;
 					break;
 				default: break;
 			}
@@ -575,10 +575,10 @@ void ARX_PLAYER_ComputePlayerFullStats() {
 	
 	// Calculate for modifiers from cheats
 	if(cur_mr == 3) {
-		player.Mod_Attribute_Strength += 1;
-		player.Mod_Attribute_Mind += 10;
-		player.Mod_Attribute_Constitution += 1;
-		player.Mod_Attribute_Dexterity += 10;
+		player.m_attributeMod.strength += 1;
+		player.m_attributeMod.mind += 10;
+		player.m_attributeMod.constitution += 1;
+		player.m_attributeMod.dexterity += 10;
 		player.Mod_Skill_Stealth += 5;
 		player.Mod_Skill_Mecanism += 5;
 		player.Mod_Skill_Intuition += 100;
@@ -596,10 +596,10 @@ void ARX_PLAYER_ComputePlayerFullStats() {
 		player.Full_AimTime = 100;
 	}
 	if(sp_max) {
-		player.Mod_Attribute_Strength += 5;
-		player.Mod_Attribute_Mind += 5;
-		player.Mod_Attribute_Constitution += 5;
-		player.Mod_Attribute_Dexterity += 5;
+		player.m_attributeMod.strength += 5;
+		player.m_attributeMod.mind += 5;
+		player.m_attributeMod.constitution += 5;
+		player.m_attributeMod.dexterity += 5;
 		player.Mod_Skill_Stealth += 50;
 		player.Mod_Skill_Mecanism += 50;
 		player.Mod_Skill_Intuition += 50;
@@ -617,10 +617,10 @@ void ARX_PLAYER_ComputePlayerFullStats() {
 		player.Full_AimTime = 100;
 	}
 	if(SPECIAL_PNUX) {
-		player.Mod_Attribute_Strength += Random::get(0, 5);
-		player.Mod_Attribute_Mind += Random::get(0, 5);
-		player.Mod_Attribute_Constitution += Random::get(0, 5);
-		player.Mod_Attribute_Dexterity += Random::get(0, 5);
+		player.m_attributeMod.strength += Random::get(0, 5);
+		player.m_attributeMod.mind += Random::get(0, 5);
+		player.m_attributeMod.constitution += Random::get(0, 5);
+		player.m_attributeMod.dexterity += Random::get(0, 5);
 		player.Mod_Skill_Stealth += Random::get(0, 20);
 		player.Mod_Skill_Mecanism += Random::get(0, 20);
 		player.Mod_Skill_Intuition += Random::get(0, 20);
@@ -637,7 +637,7 @@ void ARX_PLAYER_ComputePlayerFullStats() {
 		player.Mod_armor_class += Random::get(0, 20);
 	}
 	if(cur_rf == 3) {
-		player.Mod_Attribute_Mind += 10;
+		player.m_attributeMod.mind += 10;
 		player.Mod_Skill_Casting += 100;
 		player.Mod_Skill_Etheral_Link += 100;
 		player.Mod_Skill_Object_Knowledge += 100;
@@ -658,24 +658,24 @@ void ARX_PLAYER_ComputePlayerFullStats() {
 	float base_mind         = player.m_attribute.mind;
 	
 	// Calculate equipment modifiers for attributes
-	player.Mod_Attribute_Strength += getEquipmentModifier(
+	player.m_attributeMod.strength += getEquipmentModifier(
 		IO_EQUIPITEM_ELEMENT_STRENGTH, base_strength
 	);
-	player.Mod_Attribute_Dexterity += getEquipmentModifier(
+	player.m_attributeMod.dexterity += getEquipmentModifier(
 		IO_EQUIPITEM_ELEMENT_DEXTERITY, base_dexterity
 	);
-	player.Mod_Attribute_Constitution += getEquipmentModifier(
+	player.m_attributeMod.constitution += getEquipmentModifier(
 		IO_EQUIPITEM_ELEMENT_CONSTITUTION, base_constitution
 	);
-	player.Mod_Attribute_Mind += getEquipmentModifier(
+	player.m_attributeMod.mind += getEquipmentModifier(
 		IO_EQUIPITEM_ELEMENT_MIND, base_mind
 	);
 	
 	// Calculate full alltributes
-	player.Full_Attribute_Strength = std::max(0.f, base_strength + player.Mod_Attribute_Strength);
-	player.Full_Attribute_Dexterity = std::max(0.f, base_dexterity + player.Mod_Attribute_Dexterity);
-	player.Full_Attribute_Constitution = std::max(0.f, base_constitution + player.Mod_Attribute_Constitution);
-	player.Full_Attribute_Mind = std::max(0.f, base_mind + player.Mod_Attribute_Mind);
+	player.Full_Attribute_Strength = std::max(0.f, base_strength + player.m_attributeMod.strength);
+	player.Full_Attribute_Dexterity = std::max(0.f, base_dexterity + player.m_attributeMod.dexterity);
+	player.Full_Attribute_Constitution = std::max(0.f, base_constitution + player.m_attributeMod.constitution);
+	player.Full_Attribute_Mind = std::max(0.f, base_mind + player.m_attributeMod.mind);
 	
 	
 	/////////////////////////////////////////////////////////////////////////////////////

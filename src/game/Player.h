@@ -167,11 +167,29 @@ struct ARXCHARACTER {
 	
 	short equiped[MAX_EQUIPED]; 
 	
+	struct PlayerAttribute {
+		float strength;
+		float dexterity;
+		float constitution;
+		float mind;
+	};
+	
+	struct PlayerSkill {
+		float stealth;
+		float mecanism;
+		float intuition;
+		
+		float etheralLink;
+		float objectKnowledge;
+		float casting;
+		
+		float projectile;
+		float closeCombat;
+		float defense;
+	};
+	
 	// Modifier Values (Items, curses, etc...)
-	float Mod_Attribute_Strength;
-	float Mod_Attribute_Dexterity;
-	float Mod_Attribute_Constitution;
-	float Mod_Attribute_Mind;
+	PlayerAttribute m_attributeMod;
 	float Mod_Skill_Stealth;
 	float Mod_Skill_Mecanism;
 	float Mod_Skill_Intuition;
@@ -215,26 +233,7 @@ struct ARXCHARACTER {
 	float Full_maxlife;
 	float Full_maxmana;
 	
-	struct PlayerAttribute {
-		float strength;
-		float dexterity;
-		float constitution;
-		float mind;
-	};
-	
-	struct PlayerSkill {
-		float stealth;
-		float mecanism;
-		float intuition;
-		
-		float etheralLink;
-		float objectKnowledge;
-		float casting;
-		
-		float projectile;
-		float closeCombat;
-		float defense;
-	};
+
 	
 	// true (naked) Player Values
 	PlayerAttribute m_attribute;

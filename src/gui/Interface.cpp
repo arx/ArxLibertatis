@@ -3560,9 +3560,9 @@ void ARX_INTERFACE_ManageOpenedBook()
 		ss3 << std::setw(3) << std::setprecision(0) << std::fixed << player.Full_Attribute_Strength;
 		tex = ss3.str();
 		
-		if(player.Mod_Attribute_Strength < 0.f)
+		if(player.m_attributeMod.strength < 0.f)
 			color = Color::red;
-		else if(player.Mod_Attribute_Strength > 0.f)
+		else if(player.m_attributeMod.strength > 0.f)
 			color = Color::blue;
 		else
 			color = Color::black;
@@ -3578,9 +3578,9 @@ void ARX_INTERFACE_ManageOpenedBook()
 		ss3 << player.Full_Attribute_Mind;
 		tex = ss3.str();
 		
-		if(player.Mod_Attribute_Mind < 0.f)
+		if(player.m_attributeMod.mind < 0.f)
 			color = Color::red;
-		else if(player.Mod_Attribute_Mind > 0.f)
+		else if(player.m_attributeMod.mind > 0.f)
 			color = Color::blue;
 		else
 			color = Color::black;
@@ -3596,9 +3596,9 @@ void ARX_INTERFACE_ManageOpenedBook()
 		ss3 << player.Full_Attribute_Dexterity;
 		tex = ss3.str();
 
-		if(player.Mod_Attribute_Dexterity < 0.f)
+		if(player.m_attributeMod.dexterity < 0.f)
 			color = Color::red;
-		else if(player.Mod_Attribute_Dexterity > 0.f)
+		else if(player.m_attributeMod.dexterity > 0.f)
 			color = Color::blue;
 		else
 			color = Color::black;
@@ -3613,9 +3613,9 @@ void ARX_INTERFACE_ManageOpenedBook()
 		ss3 << player.Full_Attribute_Constitution;
 		tex = ss3.str();
 		
-		if(player.Mod_Attribute_Constitution < 0.f)
+		if(player.m_attributeMod.constitution < 0.f)
 			color = Color::red;
-		else if(player.Mod_Attribute_Constitution > 0.f)
+		else if(player.m_attributeMod.constitution > 0.f)
 			color = Color::blue;
 		else
 			color = Color::black;
