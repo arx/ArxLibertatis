@@ -240,7 +240,7 @@ public:
 
 } // namespace script
 
-#define ScriptEventWarning Logger(__FILE__,__LINE__, isSuppressed(context, word) ? Logger::Debug : Logger::Warning) << ScriptContextPrefix(context) << getName(msg, evname) << ": "
+#define ScriptEventWarning ARX_LOG(isSuppressed(context, word) ? Logger::Debug : Logger::Warning) << ScriptContextPrefix(context) << getName(msg, evname) << ": "
 
 #ifdef ARX_DEBUG
 static const char * toString(ScriptResult ret) {

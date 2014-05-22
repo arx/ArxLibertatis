@@ -49,7 +49,7 @@ string Context::getStringVar(const string & var) const {
 	return GetVarValueInterpretedAsText(var, getMaster(), entity);
 }
 
-#define ScriptParserWarning Logger(__FILE__,__LINE__, isSuppressed(*this, "?") ? Logger::Debug : Logger::Warning) << ScriptContextPrefix(*this) << ": "
+#define ScriptParserWarning ARX_LOG(isSuppressed(*this, "?") ? Logger::Debug : Logger::Warning) << ScriptContextPrefix(*this) << ": "
 
 std::string Context::getCommand(bool skipNewlines) {
 	

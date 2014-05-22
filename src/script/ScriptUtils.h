@@ -172,8 +172,8 @@ size_t initSuppressions();
 #define ScriptPrefix ScriptContextPrefix(context) << getName() <<
 #define DebugScript(args) LogDebug(ScriptPrefix args)
 #define ScriptInfo(args) LogInfo << ScriptPrefix args
-#define ScriptWarning Logger(__FILE__,__LINE__, isSuppressed(context, getName()) ? Logger::Debug : Logger::Warning) << ScriptPrefix ": "
-#define ScriptError Logger(__FILE__,__LINE__, isSuppressed(context, getName()) ? Logger::Debug : Logger::Error) << ScriptPrefix ": "
+#define ScriptWarning ARX_LOG(isSuppressed(context, getName()) ? Logger::Debug : Logger::Warning) << ScriptPrefix ": "
+#define ScriptError   ARX_LOG(isSuppressed(context, getName()) ? Logger::Debug : Logger::Error) << ScriptPrefix ": "
 
 #define HandleFlags(expected) string options = context.getFlags(); \
 	for(u64 run = !options.empty(), flg = 0; run && ((flg = flags(options), (flg && !(flg & ~flags(expected)))) || (ScriptWarning << "unexpected flags: " << options, true)); run = 0)
