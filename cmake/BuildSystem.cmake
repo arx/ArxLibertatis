@@ -7,6 +7,18 @@
 # Build the binaries using either separate_build(), shared_build() or unity_build().
 #
 
+function(get_short_filename variable file)
+	get_filename_component(file "${file}" ABSOLUTE)
+	get_source_file_property(is_generated "${file}" GENERATED)
+	if(is_generated)
+		file(RELATIVE_PATH file "${CMAKE_BINARY_DIR}" "${file}")
+		set(file "build/${file}")
+	else()
+		file(RELATIVE_PATH file "${CMAKE_SOURCE_DIR}" "${file}")
+	endif()
+	set(${variable} "${file}" PARENT_SCOPE)
+endfunction()
+
 # Create a unity build file for the binary UB_SUFFIX with the sources stored in the
 # variable named by SOURCE_VARIABLE_NAME. The name of the resulting unity build file
 # will be stored in the variable named by SOURCE_VARIABLE_NAME.
@@ -56,6 +68,12 @@ function(enable_unity_build UB_SUFFIX SOURCE_VARIABLE_NAME)
 				# call stack for #pragma message.
 				# This makes actual warnings much harder to notice, so we only enable
 				# the message for whitelisted compilers.
+			endif()
+			
+			if(NOT DEBUG)
+				get_short_filename(relative_file "${source_file}")
+				file(APPEND ${unit_build_file} "#undef ARX_FILE\n")
+				file(APPEND ${unit_build_file} "#define ARX_FILE \"${relative_file}\"\n")
 			endif()
 			
 			file(APPEND ${unit_build_file} "#include \"${source_file}\"\n\n")
@@ -211,6 +229,14 @@ function(_shared_build_helper LIB LIST BINARIES FIRST)
 			set(lib _${LIB}_common)
 		endif()
 		
+		if(NOT DEBUG)
+			foreach(source_file IN LISTS common_src)
+				get_short_filename(relative_file "${source_file}")
+				set_property(SOURCE "${source_file}" APPEND PROPERTY COMPILE_DEFINITIONS
+				             "ARX_FILE=\"${relative_file}\"")
+			endforeach()
+		endif()
+		
 		# Add a new library for the common sources
 		add_library(${lib} STATIC ${common_src})
 		
@@ -262,6 +288,15 @@ function(_shared_build_cleanup)
 endfunction()
 
 function(_shared_build_add_binary bin)
+	
+	if(NOT DEBUG)
+		foreach(source_file IN LISTS SHARED_BUILD_${bin}_SOURCES)
+			get_short_filename(relative_file "${source_file}")
+			set_property(SOURCE "${source_file}" APPEND PROPERTY COMPILE_DEFINITIONS
+			             "ARX_FILE=\"${relative_file}\"")
+		endforeach()
+	endif()
+	
 	if("${SHARED_BUILD_${bin}_TYPE}" STREQUAL "SHARED")
 		add_library(
 			${bin} ${SHARED_BUILD_${bin}_TYPE}
@@ -275,8 +310,11 @@ function(_shared_build_add_binary bin)
 			${SHARED_BUILD_${bin}_EXTRA}
 		)
 	endif()
+	
 	target_link_libraries(${bin} ${SHARED_BUILD_${bin}_LIBS})
+	
 	install(TARGETS ${bin} ${SHARED_BUILD_${bin}_INSTALL})
+	
 endfunction()
 
 # Build each binary separately.
