@@ -25,38 +25,42 @@
 
 #include "platform/Platform.h"
 
+#define ARX_LOG(Level)         ::Logger(ARX_FILE, __LINE__, Level)
+#define ARX_LOG_FORCED(Level)  ::Logger(ARX_FILE, __LINE__, Level, true)
+#define ARX_LOG_ENABLED(Level) ::Logger::isEnabled(ARX_FILE, Level)
+
 #ifdef ARX_DEBUG
 //! Log a Debug message. Arguments are only evaluated if their results will be used.
 #define LogDebug(...)    \
-	if(::Logger::isEnabled(__FILE__, ::Logger::Debug)) \
-		::Logger(__FILE__, __LINE__, ::Logger::Debug, true) << __VA_ARGS__
+	if(ARX_LOG_ENABLED(::Logger::Debug)) \
+		ARX_LOG_FORCED(::Logger::Debug) << __VA_ARGS__
 #else
 #define LogDebug(...)    ARX_DISCARD(__VA_ARGS__)
 #endif
 
 //! Log an Info message. Arguments are always evaluated.
-#define LogInfo     ::Logger(__FILE__, __LINE__, ::Logger::Info)
+#define LogInfo     ARX_LOG(::Logger::Info)
 
 //! Log a Warning message. Arguments are always evaluated.
-#define LogWarning  ::Logger(__FILE__, __LINE__, ::Logger::Warning)
+#define LogWarning  ARX_LOG(::Logger::Warning)
 
 //! Log an Error message. Arguments are always evaluated.
-#define LogError    ::Logger(__FILE__, __LINE__, ::Logger::Error)
+#define LogError    ARX_LOG(::Logger::Error)
 
 //! Log a Critical message - will cause the application to exit with a dialog. Arguments are always evaluated.
-#define LogCritical ::Logger(__FILE__, __LINE__, ::Logger::Critical)
+#define LogCritical ARX_LOG(::Logger::Critical)
 
 //! Test if the Debug log level is enabled for the current file.
-#define LogDebugEnabled   ::Logger::isEnabled(__FILE__, ::Logger::Debug)
+#define LogDebugEnabled   ARX_LOG_ENABLED(::Logger::Debug)
 
 //! Test if the Info log level is enabled for the current file.
-#define LogInfoEnabled    ::Logger::isEnabled(__FILE__, ::Logger::Info)
+#define LogInfoEnabled    ARX_LOG_ENABLED(::Logger::Info)
 
 //! Test if the Warning log level is enabled for the current file.
-#define LogWarningEnabled ::Logger::isEnabled(__FILE__, ::Logger::Warning)
+#define LogWarningEnabled ARX_LOG_ENABLED(::Logger::Warning)
 
 //! Test if the Error log level is enabled for the current file.
-#define LogErrorEnabled   ::Logger::isEnabled(__FILE__, ::Logger::Error)
+#define LogErrorEnabled   ARX_LOG_ENABLED(::Logger::Error)
 
 namespace logger { class Backend; }
 
