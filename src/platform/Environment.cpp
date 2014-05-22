@@ -183,9 +183,6 @@ std::string ws2s(const std::basic_string<WCHAR> & s) {
 	return r;
 }
 
-// Those two values are from ShlObj.h, but requires _WIN32_WINNT >= _WIN32_WINNT_VISTA
-static const int kfFlagCreate  = 0x00008000; // KF_FLAG_CREATE
-static const int kfFlagNoAlias = 0x00001000; // KF_FLAG_NO_ALIAS
 
 // Obtain the right savegame paths for the platform
 // XP is "%USERPROFILE%\My Documents\My Games"
@@ -195,44 +192,59 @@ void defineSystemDirectories(const char * argv0) {
 	ARX_UNUSED(argv0);
 	
 	std::string strPath;
-	DWORD winver = GetVersion();
 	
 	// Vista and up
-	if((DWORD)(LOBYTE(LOWORD(winver))) >= 6) {
+	{
 		// Don't hardlink with SHGetKnownFolderPath to allow the game to start on XP too!
-		typedef HRESULT (WINAPI * PSHGetKnownFolderPath)(const GUID &rfid, DWORD dwFlags,
-		                                                 HANDLE hToken, PWSTR* ppszPath); 
+		typedef HRESULT (WINAPI * PSHGetKnownFolderPath)(const GUID & rfid, DWORD dwFlags,
+		                                                 HANDLE hToken, PWSTR * ppszPath);
+		
+		const int kfFlagCreate  = 0x00008000; // KF_FLAG_CREATE
+		const int kfFlagNoAlias = 0x00001000; // KF_FLAG_NO_ALIAS
+		const GUID FOLDERID_SavedGames = {
+			0x4C5C32FF, 0xBB9D, 0x43b0, { 0xB5, 0xB4, 0x2D, 0x72, 0xE5, 0x4E, 0xAA, 0xA4 }
+		};
 		
 		CoInitializeEx(NULL, COINIT_APARTMENTTHREADED);
 		
-		PSHGetKnownFolderPath GetKnownFolderPath = (PSHGetKnownFolderPath)GetProcAddress(GetModuleHandleA("shell32.dll"), "SHGetKnownFolderPath");
-		const GUID FOLDERID_SavedGames = {0x4C5C32FF, 0xBB9D, 0x43b0, {0xB5, 0xB4, 0x2D, 0x72, 0xE5, 0x4E, 0xAA, 0xA4}};
-		
-		LPWSTR wszPath = NULL;
-		HRESULT hr = GetKnownFolderPath(FOLDERID_SavedGames, kfFlagCreate | kfFlagNoAlias, NULL, &wszPath);
-		
-		if(SUCCEEDED(hr)) {
-			strPath = ws2s(wszPath);
+		HMODULE dll = GetModuleHandleW(L"shell32.dll");
+		if(dll) {
+			
+			FARPROC proc = GetProcAddress(dll, "SHGetKnownFolderPath");
+			if(proc) {
+				PSHGetKnownFolderPath GetKnownFolderPath = (PSHGetKnownFolderPath)proc;
+				
+				LPWSTR wszPath = NULL;
+				HRESULT hr = GetKnownFolderPath(FOLDERID_SavedGames, kfFlagCreate | kfFlagNoAlias,
+				                                NULL, &wszPath);
+				if(SUCCEEDED(hr)) {
+					strPath = ws2s(wszPath);
+				}
+				
+				CoTaskMemFree(wszPath);
+				
+			}
+			
 		}
 		
-		CoTaskMemFree(wszPath);
 		CoUninitialize();
-	} else if((DWORD)(LOBYTE(LOWORD(winver))) == 5) { // XP
+	}
+	
+	// XP
+	if(strPath.empty()) {
 		CHAR szPath[MAX_PATH];
 		HRESULT hr = SHGetFolderPathA(NULL, CSIDL_PERSONAL | CSIDL_FLAG_CREATE, NULL,
 		                              SHGFP_TYPE_CURRENT, szPath);
-		
 		if(SUCCEEDED(hr)) {
 			strPath = szPath; 
 			strPath += "\\My Games";
 		}
-	} else {
-		arx_assert(false, "Unsupported windows version (below WinXP)");
 	}
 	
 	if(!strPath.empty()) {
 		SetEnvironmentVariable("FOLDERID_SavedGames", strPath.c_str());
 	}
+	
 }
 
 #else
