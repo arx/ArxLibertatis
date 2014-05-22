@@ -71,9 +71,6 @@ struct EERIE_TRI {
 	Vec3f v[3];
 };
 
-
-#define TYP_SPECIAL1 1
-
 enum PolyTypeFlag {
 	POLY_NO_SHADOW    = (1<<0),
 	POLY_DOUBLESIDED  = (1<<1),

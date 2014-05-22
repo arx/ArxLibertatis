@@ -161,7 +161,7 @@ long EERIE_LIGHT_Count() {
 	
 	long count = 0;
 	for(size_t i = 0; i < MAX_LIGHTS; i++) {
-		if(GLight[i] && !(GLight[i]->type & TYP_SPECIAL1)) {
+		if(GLight[i] && !GLight[i]->specialType) {
 			count++;
 		}
 	}
@@ -277,7 +277,7 @@ void TreatBackgroundDynlights()
 					dynamicLight->pos = light->pos;
 					dynamicLight->fallstart	=	light->fallstart;
 					dynamicLight->fallend		=	light->fallend;
-					dynamicLight->type		=	TYP_SPECIAL1;
+					dynamicLight->specialType		=	true;
 					dynamicLight->intensity	=	light->intensity;
 					dynamicLight->ex_flaresize =	light->ex_flaresize;
 					dynamicLight->extras		=	light->extras;
@@ -401,7 +401,7 @@ LightHandle GetFreeDynLight() {
 	for(size_t i = 1; i < MAX_DYNLIGHTS; i++) {
 		if(!(DynLight[i].exist)) {
 			DynLight[i].exist = 1;
-			DynLight[i].type = 0;
+			DynLight[i].specialType = false;
 			DynLight[i].intensity = 1.3f;
 			DynLight[i].treat = 1;
 			DynLight[i].time_creation = (unsigned long)(arxtime);

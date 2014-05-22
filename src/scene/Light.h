@@ -97,7 +97,7 @@ DECLARE_FLAGS_OPERATORS(ExtrasType)
 
 struct EERIE_LIGHT {
 	char exist;
-	char type;
+	bool specialType; // TODO refactor special case
 	char treat;
 	ExtrasType extras;
 	bool status; // on/off

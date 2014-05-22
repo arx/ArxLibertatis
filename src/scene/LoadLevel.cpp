@@ -357,7 +357,7 @@ long DanaeSaveLevel(const fs::path & _fic) {
 		
 		EERIE_LIGHT * el = GLight[i];
 		
-		if(!el || (el->type & TYP_SPECIAL1)) {
+		if(!el || el->specialType) {
 			continue;
 		}
 		
