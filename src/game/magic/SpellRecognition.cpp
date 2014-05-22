@@ -252,8 +252,8 @@ void ARX_SPELLS_Analyse() {
 		
 		if(glm::length2(d) > 100) {
 			
-			float a = (float)abs(d.x);
-			float b = (float)abs(d.y);
+			float a = std::abs(d.x);
+			float b = std::abs(d.y);
 			
 			if(b != 0.f && a / b > 0.4f && a / b < 2.5f) {
 				// Diagonal movemement.
