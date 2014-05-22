@@ -2023,7 +2023,7 @@ Entity * ARX_INVENTORY_GetTorchLowestDurability() {
 
 void ARX_INVENTORY_IdentifyIO(Entity * _pIO) {
 	if(_pIO && (_pIO->ioflags & IO_ITEM) && _pIO->_itemdata->equipitem) {
-		if(player.Full_Skill_Object_Knowledge + player.Full_Attribute_Mind
+		if(player.Full_Skill_Object_Knowledge + player.m_attributeFull.mind
 		   >= _pIO->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Identify_Value].value) {
 			SendIOScriptEvent(_pIO, SM_IDENTIFY);
 		}
@@ -2038,7 +2038,7 @@ void ARX_INVENTORY_IdentifyAll() {
 				for(size_t i = 0; i < INVENTORY_X; i++) {
 					Entity * io = inventory[iNbBag][i][j].io;
 					if(io && (io->ioflags & IO_ITEM) && io->_itemdata->equipitem) {
-						if(player.Full_Skill_Object_Knowledge + player.Full_Attribute_Mind
+						if(player.Full_Skill_Object_Knowledge + player.m_attributeFull.mind
 						   >= io->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Identify_Value].value) {
 							SendIOScriptEvent(io, SM_IDENTIFY);
 						}

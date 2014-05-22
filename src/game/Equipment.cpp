@@ -1239,7 +1239,7 @@ void ARX_EQUIPMENT_IdentifyAll()
 
 			if ((toequip) && (toequip->ioflags & IO_ITEM) && (toequip->_itemdata->equipitem))
 			{
-				if (player.Full_Skill_Object_Knowledge + player.Full_Attribute_Mind
+				if (player.Full_Skill_Object_Knowledge + player.m_attributeFull.mind
 				        >= toequip->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Identify_Value].value)
 				{
 					SendIOScriptEvent(toequip, SM_IDENTIFY);

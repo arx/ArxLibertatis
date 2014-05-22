@@ -2454,7 +2454,7 @@ void ArxGame::manageKeyMouse() {
 				if(temp && !temp->locname.empty()) {
 
 					if (((FlyingOverIO->ioflags & IO_ITEM) && FlyingOverIO->_itemdata->equipitem)
-						&& (player.Full_Skill_Object_Knowledge + player.Full_Attribute_Mind
+						&& (player.Full_Skill_Object_Knowledge + player.m_attributeFull.mind
 						>= FlyingOverIO->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Identify_Value].value) )
 					{
 						SendIOScriptEvent(FlyingOverIO,SM_IDENTIFY);
@@ -3557,7 +3557,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 		//------------------------------
 		
 		std::stringstream ss3;
-		ss3 << std::setw(3) << std::setprecision(0) << std::fixed << player.Full_Attribute_Strength;
+		ss3 << std::setw(3) << std::setprecision(0) << std::fixed << player.m_attributeFull.strength;
 		tex = ss3.str();
 		
 		if(player.m_attributeMod.strength < 0.f)
@@ -3568,14 +3568,14 @@ void ARX_INTERFACE_ManageOpenedBook()
 			color = Color::black;
 		
 		if(ARXmenu.currentmode == AMCM_NEWQUEST) {
-			if(player.Full_Attribute_Strength == 6)
+			if(player.m_attributeFull.strength == 6)
 				color = Color::red;
 		}
 		
 		DrawBookTextCenter(hFontInBook, Vec2f(391, 129), tex, color);
 		
 		ss3.str(""); // clear the stream
-		ss3 << player.Full_Attribute_Mind;
+		ss3 << player.m_attributeFull.mind;
 		tex = ss3.str();
 		
 		if(player.m_attributeMod.mind < 0.f)
@@ -3586,14 +3586,14 @@ void ARX_INTERFACE_ManageOpenedBook()
 			color = Color::black;
 		
 		if(ARXmenu.currentmode == AMCM_NEWQUEST) {
-			if(player.Full_Attribute_Mind == 6)
+			if(player.m_attributeFull.mind == 6)
 				color = Color::red;
 		}
 		
 		DrawBookTextCenter(hFontInBook, Vec2f(440, 129), tex, color);
 		
 		ss3.str("");
-		ss3 << player.Full_Attribute_Dexterity;
+		ss3 << player.m_attributeFull.dexterity;
 		tex = ss3.str();
 
 		if(player.m_attributeMod.dexterity < 0.f)
@@ -3604,13 +3604,13 @@ void ARX_INTERFACE_ManageOpenedBook()
 			color = Color::black;
 		
 		if(ARXmenu.currentmode == AMCM_NEWQUEST) {
-			if(player.Full_Attribute_Dexterity == 6)
+			if(player.m_attributeFull.dexterity == 6)
 				color = Color::red;
 		}
 		
 		DrawBookTextCenter(hFontInBook, Vec2f(490, 129), tex, color);
 		ss3.str("");
-		ss3 << player.Full_Attribute_Constitution;
+		ss3 << player.m_attributeFull.constitution;
 		tex = ss3.str();
 		
 		if(player.m_attributeMod.constitution < 0.f)
@@ -3621,7 +3621,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 			color = Color::black;
 		
 		if(ARXmenu.currentmode == AMCM_NEWQUEST) {
-			if(player.Full_Attribute_Constitution == 6)
+			if(player.m_attributeFull.constitution == 6)
 				color = Color::red;
 		}
 		
@@ -5349,7 +5349,7 @@ public:
 
 					if(temp && !temp->locname.empty()) {
 						if(((player.torch->ioflags & IO_ITEM) && player.torch->_itemdata->equipitem)
-							&& (player.Full_Skill_Object_Knowledge + player.Full_Attribute_Mind
+							&& (player.Full_Skill_Object_Knowledge + player.m_attributeFull.mind
 								>= player.torch->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Identify_Value].value) )
 						{
 							SendIOScriptEvent(FlyingOverIO,SM_IDENTIFY);

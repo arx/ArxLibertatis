@@ -206,7 +206,7 @@ float ARX_THROWN_ComputeDamages(long thrownum, long source, long target)
 	if(source == 0) {
 		attack = Thrown[thrownum].damages;
 
-		if(rnd() * 100 <= float(player.Full_Attribute_Dexterity - 9) * 2.f
+		if(rnd() * 100 <= float(player.m_attributeFull.dexterity - 9) * 2.f
 						   + float(player.Full_Skill_Projectile * 0.2f)) {
 			if(SendIOScriptEvent(io_source, SM_CRITICAL, "bow") != REFUSE)
 				critical = true;

@@ -955,22 +955,22 @@ ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const string & 
 			}
 			
 			if(boost::starts_with(name, "^player_attribute_strength")) {
-				*fcontent = player.Full_Attribute_Strength;
+				*fcontent = player.m_attributeFull.strength;
 				return TYPE_FLOAT;
 			}
 			
 			if(boost::starts_with(name, "^player_attribute_dexterity")) {
-				*fcontent = player.Full_Attribute_Dexterity;
+				*fcontent = player.m_attributeFull.dexterity;
 				return TYPE_FLOAT;
 			}
 			
 			if(boost::starts_with(name, "^player_attribute_constitution")) {
-				*fcontent = player.Full_Attribute_Constitution;
+				*fcontent = player.m_attributeFull.constitution;
 				return TYPE_FLOAT;
 			}
 			
 			if(boost::starts_with(name, "^player_attribute_mind")) {
-				*fcontent = player.Full_Attribute_Mind;
+				*fcontent = player.m_attributeFull.mind;
 				return TYPE_FLOAT;
 			}
 			

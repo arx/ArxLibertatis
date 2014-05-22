@@ -199,10 +199,7 @@ struct ARXCHARACTER {
 	float Mod_damages;
 	
 	// Full Frame values (including items)
-	float Full_Attribute_Strength;
-	float Full_Attribute_Dexterity;
-	float Full_Attribute_Constitution;
-	float Full_Attribute_Mind;
+	PlayerAttribute m_attributeFull;
 	
 	float Full_Skill_Stealth;
 	float Full_Skill_Mecanism;
