@@ -75,9 +75,10 @@ set(default_USE_STATIC_LIBS OFF)
 if(WIN32)
 	set(default_USE_STATIC_LIBS ON)
 endif()
-option(USE_STATIC_LIBS       "Statically link libraries" ${default_USE_STATIC_LIBS})
-option(GLEW_USE_STATIC_LIBS  "Statically link GLEW"      ${USE_STATIC_LIBS})
-option(Boost_USE_STATIC_LIBS "Statically link Boost"     ${USE_STATIC_LIBS})
+option(USE_STATIC_LIBS          "Statically link libraries" ${default_USE_STATIC_LIBS})
+option(GLEW_USE_STATIC_LIBS     "Statically link GLEW"      ${USE_STATIC_LIBS})
+option(Boost_USE_STATIC_LIBS    "Statically link Boost"     ${USE_STATIC_LIBS})
+option(Freetype_USE_STATIC_LIBS "Statically link Freetype"  ${USE_STATIC_LIBS})
 
 # Make optional dependencies required
 option(STRICT_USE "Abort if there are missing optional dependencies"  OFF)
@@ -199,6 +200,7 @@ include(CompileCheck)
 include(CreateSourceGroups)
 include(PrintConfiguration)
 include(StyleCheck)
+include(UseStaticLibs)
 include(VersionString)
 
 
@@ -251,7 +253,9 @@ endif()
 list(APPEND ARX_LIBRARIES ${CMAKE_THREAD_LIBS_INIT})
 
 # FreeType
+use_static_libs(Freetype)
 find_package(Freetype REQUIRED)
+use_static_libs_restore()
 if(NOT MSVC)
 	check_link_library(Freetype FREETYPE_LIBRARIES)
 endif()
