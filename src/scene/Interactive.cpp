@@ -2461,15 +2461,11 @@ void UpdateIOInvisibility(Entity * io)
 	if(io && io->invisibility <= 1.f) {
 		if((io->gameFlags & GFLAG_INVISIBILITY) && io->invisibility < 1.f) {
 			io->invisibility += framedelay * ( 1.0f / 1000 );
-
-			if(io->invisibility > 1.f)
-				io->invisibility = 1.f;
 		} else if(!(io->gameFlags & GFLAG_INVISIBILITY) && io->invisibility != 0.f) {
 			io->invisibility -= framedelay * ( 1.0f / 1000 );
-
-			if(io->invisibility < 0.f)
-				io->invisibility = 0.f;
 		}
+		
+		io->invisibility = clamp(io->invisibility, 0.f, 1.f);
 	}
 }
 
