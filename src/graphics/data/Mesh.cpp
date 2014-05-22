@@ -1773,81 +1773,81 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 	arx_assert(fsh->nb_rooms > 0);
 	
 	// Load rooms and portals
-		EERIE_PORTAL_Release();
+	EERIE_PORTAL_Release();
+	
+	portals = new EERIE_PORTAL_DATA;
+	portals->nb_rooms = fsh->nb_rooms;
+	portals->room = (EERIE_ROOM_DATA *)malloc(sizeof(EERIE_ROOM_DATA)
+											  * (portals->roomsize()));
+	
+	portals->portals.resize(fsh->nb_portals);
+	
+	LogDebug("FTS: loading " << portals->portals.size() << " portals ...");
+	const EERIE_SAVE_PORTALS * epos;
+	epos = fts_read<EERIE_SAVE_PORTALS>(data, end, portals->portals.size());
+	for(size_t i = 0; i < portals->portals.size(); i++) {
 		
-		portals = new EERIE_PORTAL_DATA;
-		portals->nb_rooms = fsh->nb_rooms;
-		portals->room = (EERIE_ROOM_DATA *)malloc(sizeof(EERIE_ROOM_DATA)
-												  * (portals->roomsize()));
-
-		portals->portals.resize(fsh->nb_portals);
+		const EERIE_SAVE_PORTALS * epo = &epos[i];
+		EERIE_PORTALS & portal = portals->portals[i];
 		
-		LogDebug("FTS: loading " << portals->portals.size() << " portals ...");
-		const EERIE_SAVE_PORTALS * epos;
-		epos = fts_read<EERIE_SAVE_PORTALS>(data, end, portals->portals.size());
-		for(size_t i = 0; i < portals->portals.size(); i++) {
-			
-			const EERIE_SAVE_PORTALS * epo = &epos[i];
-			EERIE_PORTALS & portal = portals->portals[i];
-			
-			memset(&portal, 0, sizeof(EERIE_PORTALS));
-			
-			portal.room_1 = epo->room_1;
-			portal.room_2 = epo->room_2;
-			portal.useportal = epo->useportal;
-			portal.paddy = epo->paddy;
-			portal.poly.area = epo->poly.area;
-			portal.poly.type = PolyType::load(epo->poly.type);
-			portal.poly.transval = epo->poly.transval;
-			portal.poly.room = epo->poly.room;
-			portal.poly.misc = epo->poly.misc;
-			portal.poly.center = epo->poly.center.toVec3();
-			portal.poly.max = epo->poly.max.toVec3();
-			portal.poly.min = epo->poly.min.toVec3();
-			portal.poly.norm = epo->poly.norm.toVec3();
-			portal.poly.norm2 = epo->poly.norm2.toVec3();
-			
-			for(int i = 0; i < 4; i++)
-				portal.poly.nrml[i] = epo->poly.nrml[i].toVec3();
-
-			std::copy(epo->poly.v, epo->poly.v + 4, portal.poly.v);
-			std::copy(epo->poly.tv, epo->poly.tv + 4, portal.poly.tv);
+		memset(&portal, 0, sizeof(EERIE_PORTALS));
+		
+		portal.room_1 = epo->room_1;
+		portal.room_2 = epo->room_2;
+		portal.useportal = epo->useportal;
+		portal.paddy = epo->paddy;
+		portal.poly.area = epo->poly.area;
+		portal.poly.type = PolyType::load(epo->poly.type);
+		portal.poly.transval = epo->poly.transval;
+		portal.poly.room = epo->poly.room;
+		portal.poly.misc = epo->poly.misc;
+		portal.poly.center = epo->poly.center.toVec3();
+		portal.poly.max = epo->poly.max.toVec3();
+		portal.poly.min = epo->poly.min.toVec3();
+		portal.poly.norm = epo->poly.norm.toVec3();
+		portal.poly.norm2 = epo->poly.norm2.toVec3();
+		
+		for(int i = 0; i < 4; i++)
+			portal.poly.nrml[i] = epo->poly.nrml[i].toVec3();
+		
+		std::copy(epo->poly.v, epo->poly.v + 4, portal.poly.v);
+		std::copy(epo->poly.tv, epo->poly.tv + 4, portal.poly.tv);
+	}
+	
+	
+	LogDebug("FTS: loading " << portals->roomsize() << " rooms ...");
+	for(long i = 0; i < portals->roomsize(); i++) {
+		
+		const EERIE_SAVE_ROOM_DATA * erd;
+		erd = fts_read<EERIE_SAVE_ROOM_DATA>(data, end);
+		
+		EERIE_ROOM_DATA & room = portals->room[i];
+		
+		memset(&room, 0, sizeof(EERIE_ROOM_DATA));
+		room.nb_portals = erd->nb_portals;
+		room.nb_polys = erd->nb_polys;
+		
+		LogDebug(" - room " << i << ": " << room.nb_portals << " portals, "
+				 << room.nb_polys << " polygons");
+		
+		if(room.nb_portals) {
+			room.portals = (long *)malloc(sizeof(long) * room.nb_portals);
+			const s32 * start = fts_read<s32>(data, end, room.nb_portals);
+			std::copy(start, start + room.nb_portals, room.portals);
+		} else {
+			room.portals = NULL;
 		}
 		
-		
-		LogDebug("FTS: loading " << portals->roomsize() << " rooms ...");
-		for(long i = 0; i < portals->roomsize(); i++) {
-			
-			const EERIE_SAVE_ROOM_DATA * erd;
-			erd = fts_read<EERIE_SAVE_ROOM_DATA>(data, end);
-			
-			EERIE_ROOM_DATA & room = portals->room[i];
-			
-			memset(&room, 0, sizeof(EERIE_ROOM_DATA));
-			room.nb_portals = erd->nb_portals;
-			room.nb_polys = erd->nb_polys;
-			
-			LogDebug(" - room " << i << ": " << room.nb_portals << " portals, "
-			         << room.nb_polys << " polygons");
-			
-			if(room.nb_portals) {
-				room.portals = (long *)malloc(sizeof(long) * room.nb_portals);
-				const s32 * start = fts_read<s32>(data, end, room.nb_portals);
-				std::copy(start, start + room.nb_portals, room.portals);
-			} else {
-				room.portals = NULL;
-			}
-			
-			if(room.nb_polys) {
-				room.epdata = (EP_DATA *)malloc(sizeof(EP_DATA) * room.nb_polys);
-				const FAST_EP_DATA * ed;
-				ed = fts_read<FAST_EP_DATA>(data, end, room.nb_polys);
-				std::copy(ed, ed + room.nb_polys, room.epdata);
-			} else {
-				portals->room[i].epdata = NULL;
-			}
-			
+		if(room.nb_polys) {
+			room.epdata = (EP_DATA *)malloc(sizeof(EP_DATA) * room.nb_polys);
+			const FAST_EP_DATA * ed;
+			ed = fts_read<FAST_EP_DATA>(data, end, room.nb_polys);
+			std::copy(ed, ed + room.nb_polys, room.epdata);
+		} else {
+			portals->room[i].epdata = NULL;
 		}
+		
+	}
 	
 	
 	// Load distances between rooms
