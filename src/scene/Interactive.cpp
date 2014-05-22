@@ -2494,17 +2494,16 @@ void UpdateInter() {
 	for(size_t i = 1; i < entities.size(); i++) {
 		Entity * io = entities[i];
 
-		if(!io || io == DRAGINTER || !(io->gameFlags & GFLAG_ISINTREATZONE))
-			continue;
-
-		if(io->show != SHOW_FLAG_IN_SCENE) {
+		if(   !io
+		   || io == DRAGINTER
+		   || !(io->gameFlags & GFLAG_ISINTREATZONE)
+		   || io->show != SHOW_FLAG_IN_SCENE
+		   || (io->ioflags & IO_CAMERA)
+		   || (io->ioflags & IO_MARKER)
+		) {
 			continue;
 		}
-
-		if((io->ioflags & IO_CAMERA) || (io->ioflags & IO_MARKER)) {
-			continue;
-		}
-
+		
 		UpdateIOInvisibility(io);
 
 		Anglef temp = io->angle;
