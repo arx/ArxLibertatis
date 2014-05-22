@@ -657,10 +657,10 @@ static long ARX_CHANGELEVEL_Push_Player(long level) {
 	asp->AimTime = player.AimTime;
 	asp->angle = player.angle;
 	asp->armor_class = player.armor_class;
-	asp->Attribute_Constitution = player.Attribute_Constitution;
-	asp->Attribute_Dexterity = player.Attribute_Dexterity;
-	asp->Attribute_Mind = player.Attribute_Mind;
-	asp->Attribute_Strength = player.Attribute_Strength;
+	asp->Attribute_Constitution = player.m_attribute.constitution;
+	asp->Attribute_Dexterity = player.m_attribute.dexterity;
+	asp->Attribute_Mind = player.m_attribute.mind;
+	asp->Attribute_Strength = player.m_attribute.strength;
 	asp->Critical_Hit = player.Critical_Hit;
 	asp->Current_Movement = player.Current_Movement;
 	asp->damages = player.damages;
@@ -1671,10 +1671,10 @@ static long ARX_CHANGELEVEL_Pop_Player() {
 	
 	player.armor_class = checked_range_cast<unsigned char>(asp->armor_class);
 	
-	player.Attribute_Constitution = asp->Attribute_Constitution;
-	player.Attribute_Dexterity = asp->Attribute_Dexterity;
-	player.Attribute_Mind = asp->Attribute_Mind;
-	player.Attribute_Strength = asp->Attribute_Strength;
+	player.m_attribute.constitution = asp->Attribute_Constitution;
+	player.m_attribute.dexterity = asp->Attribute_Dexterity;
+	player.m_attribute.mind = asp->Attribute_Mind;
+	player.m_attribute.strength = asp->Attribute_Strength;
 	player.Critical_Hit = asp->Critical_Hit;
 	player.Current_Movement = PlayerMovement::load(asp->Current_Movement); // TODO save/load flags
 	player.damages = asp->damages;

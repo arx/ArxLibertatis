@@ -451,33 +451,33 @@ static const float skill_attribute_factors[max_skills][max_attributes] = {
  */
 static void ARX_PLAYER_ComputePlayerStats() {
 	
-	player.lifePool.max = (float)player.Attribute_Constitution * (float)(player.level + 2);
-	player.manaPool.max = (float)player.Attribute_Mind * (float)(player.level + 1);
+	player.lifePool.max = (float)player.m_attribute.constitution * (float)(player.level + 2);
+	player.manaPool.max = (float)player.m_attribute.mind * (float)(player.level + 1);
 	
-	float base_defense = player.Skill_Defense + player.Attribute_Constitution * 3;
+	float base_defense = player.Skill_Defense + player.m_attribute.constitution * 3;
 	float fCalc = base_defense * ( 1.0f / 10 ) - 1 ;
 	player.armor_class = checked_range_cast<unsigned char>(fCalc);
 
 
 	if (player.armor_class < 1) player.armor_class = 1;
 
-	float base_casting = player.Skill_Casting + player.Attribute_Mind * 2.f;
-	player.resist_magic = (unsigned char)(float)(player.Attribute_Mind * 2.f
+	float base_casting = player.Skill_Casting + player.m_attribute.mind * 2.f;
+	player.resist_magic = (unsigned char)(float)(player.m_attribute.mind * 2.f
 	                      * (1.f + base_casting * ( 1.0f / 200 )));
 
-	fCalc = player.Attribute_Constitution * 2 + (base_defense * ( 1.0f / 4 ));
+	fCalc = player.m_attribute.constitution * 2 + (base_defense * ( 1.0f / 4 ));
 	player.resist_poison = checked_range_cast<unsigned char>(fCalc);
 
 
-	player.damages = (player.Attribute_Strength - 10) * ( 1.0f / 2 );
+	player.damages = (player.m_attribute.strength - 10) * ( 1.0f / 2 );
 
 	if (player.damages < 1.f) player.damages = 1.f;
 
 	player.AimTime = 1500;
 	
 	float base_close_combat = player.Skill_Close_Combat
-	                          + player.Attribute_Dexterity + player.Attribute_Strength * 2.f;
-	player.Critical_Hit = (float)(player.Attribute_Dexterity - 9) * 2.f
+	                          + player.m_attribute.dexterity + player.m_attribute.strength * 2.f;
+	player.Critical_Hit = (float)(player.m_attribute.dexterity - 9) * 2.f
 	                      + base_close_combat * ( 1.0f / 5 );
 }
 
@@ -652,10 +652,10 @@ void ARX_PLAYER_ComputePlayerFullStats() {
 	// Attributes
 	
 	// Calculate base attributes
-	float base_strength     = player.Attribute_Strength;
-	float base_dexterity    = player.Attribute_Dexterity;
-	float base_constitution = player.Attribute_Constitution;
-	float base_mind         = player.Attribute_Mind;
+	float base_strength     = player.m_attribute.strength;
+	float base_dexterity    = player.m_attribute.dexterity;
+	float base_constitution = player.m_attribute.constitution;
+	float base_mind         = player.m_attribute.mind;
 	
 	// Calculate equipment modifiers for attributes
 	player.Mod_Attribute_Strength += getEquipmentModifier(
@@ -803,10 +803,10 @@ void ARX_PLAYER_ComputePlayerFullStats() {
  */
 void ARX_PLAYER_MakeFreshHero()
 {
-	player.Attribute_Strength = 6;
-	player.Attribute_Mind = 6;
-	player.Attribute_Dexterity = 6;
-	player.Attribute_Constitution = 6;
+	player.m_attribute.strength = 6;
+	player.m_attribute.mind = 6;
+	player.m_attribute.dexterity = 6;
+	player.m_attribute.constitution = 6;
 
 	player.Old_Skill_Stealth			=	player.Skill_Stealth			= 0;
 	player.Old_Skill_Mecanism			=	player.Skill_Mecanism			= 0;
@@ -843,10 +843,10 @@ void ARX_SPSound() {
 void ARX_PLAYER_MakeSpHero()
 {
 	ARX_SPSound();
-	player.Attribute_Strength = 12;
-	player.Attribute_Mind = 12;
-	player.Attribute_Dexterity = 12;
-	player.Attribute_Constitution = 12;
+	player.m_attribute.strength = 12;
+	player.m_attribute.mind = 12;
+	player.m_attribute.dexterity = 12;
+	player.m_attribute.constitution = 12;
 
 	player.Old_Skill_Stealth			=	player.Skill_Stealth			= 5;
 	player.Old_Skill_Mecanism			=	player.Skill_Mecanism			= 5;
@@ -885,10 +885,10 @@ void ARX_PLAYER_MakeAverageHero()
 {
 	ARX_PLAYER_MakeFreshHero();
 
-	player.Attribute_Strength		+= 4;
-	player.Attribute_Mind			+= 4;
-	player.Attribute_Dexterity		+= 4;
-	player.Attribute_Constitution	+= 4;
+	player.m_attribute.strength		+= 4;
+	player.m_attribute.mind			+= 4;
+	player.m_attribute.dexterity		+= 4;
+	player.m_attribute.constitution	+= 4;
 
 	player.Skill_Stealth			+= 2;
 	player.Skill_Mecanism			+= 2;
@@ -922,17 +922,17 @@ void ARX_PLAYER_QuickGeneration() {
 	while(player.Attribute_Redistribute) {
 		float rn = rnd();
 
-		if(rn < 0.25f && player.Attribute_Strength < 18) {
-			player.Attribute_Strength++;
+		if(rn < 0.25f && player.m_attribute.strength < 18) {
+			player.m_attribute.strength++;
 			player.Attribute_Redistribute--;
-		} else if(rn < 0.5f && player.Attribute_Mind < 18) {
-			player.Attribute_Mind++;
+		} else if(rn < 0.5f && player.m_attribute.mind < 18) {
+			player.m_attribute.mind++;
 			player.Attribute_Redistribute--;
-		} else if(rn < 0.75f && player.Attribute_Dexterity < 18) {
-			player.Attribute_Dexterity++;
+		} else if(rn < 0.75f && player.m_attribute.dexterity < 18) {
+			player.m_attribute.dexterity++;
 			player.Attribute_Redistribute--;
-		} else if(player.Attribute_Constitution < 18) {
-			player.Attribute_Constitution++;
+		} else if(player.m_attribute.constitution < 18) {
+			player.m_attribute.constitution++;
 			player.Attribute_Redistribute--;
 		}
 	}

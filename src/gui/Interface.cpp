@@ -3400,25 +3400,25 @@ void ARX_INTERFACE_ManageOpenedBook()
 
 		if(!((player.Attribute_Redistribute == 0) && (ARXmenu.currentmode != AMCM_NEWQUEST))) {
 			// Main Player Attributes
-			if(CheckAttributeClick(379, 95, &player.Attribute_Strength, ITC.ic_strength)) {
+			if(CheckAttributeClick(379, 95, &player.m_attribute.strength, ITC.ic_strength)) {
 				FLYING_OVER = BOOK_STRENGTH;
 				SpecialCursor = CURSOR_REDIST;
 				lCursorRedistValue = player.Attribute_Redistribute;
 			}
 
-			if(CheckAttributeClick(428, 95, &player.Attribute_Mind, ITC.ic_mind)) {
+			if(CheckAttributeClick(428, 95, &player.m_attribute.mind, ITC.ic_mind)) {
 				FLYING_OVER = BOOK_MIND;
 				SpecialCursor = CURSOR_REDIST;
 				lCursorRedistValue = player.Attribute_Redistribute;
 			}
 
-			if(CheckAttributeClick(477, 95, &player.Attribute_Dexterity, ITC.ic_dexterity)) {
+			if(CheckAttributeClick(477, 95, &player.m_attribute.dexterity, ITC.ic_dexterity)) {
 				FLYING_OVER = BOOK_DEXTERITY;
 				SpecialCursor = CURSOR_REDIST;
 				lCursorRedistValue = player.Attribute_Redistribute;
 			}
 
-			if(CheckAttributeClick(526, 95, &player.Attribute_Constitution, ITC.ic_constitution)) {
+			if(CheckAttributeClick(526, 95, &player.m_attribute.constitution, ITC.ic_constitution)) {
 				FLYING_OVER = BOOK_CONSTITUTION;
 				SpecialCursor = CURSOR_REDIST;
 				lCursorRedistValue = player.Attribute_Redistribute;

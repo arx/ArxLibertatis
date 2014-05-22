@@ -215,11 +215,15 @@ struct ARXCHARACTER {
 	float Full_maxlife;
 	float Full_maxmana;
 	
+	struct PlayerAttribute {
+		float strength;
+		float dexterity;
+		float constitution;
+		float mind;
+	};
+	
 	// true (naked) Player Values
-	float Attribute_Strength;
-	float Attribute_Dexterity;
-	float Attribute_Constitution;
-	float Attribute_Mind;
+	PlayerAttribute m_attribute;
 	
 	float Skill_Stealth;
 	float Skill_Mecanism;
