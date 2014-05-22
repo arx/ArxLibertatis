@@ -25,6 +25,10 @@
 
 #include "platform/Platform.h"
 
+#if ARX_PLATFORM == ARX_PLATFORM_WIN32
+#include <boost/algorithm/string/predicate.hpp>
+#endif
+
 namespace fs {
 
 class path {
@@ -44,11 +48,11 @@ public:
 	static const char dir_or_ext_sep[];
 	static const char any_dir_sep[];
 	
-#if ARX_PLATFORM == ARX_PLATFORM_WIN32
+	#if ARX_PLATFORM == ARX_PLATFORM_WIN32
 	static const char dir_sep = '\\';
-#else
+	#else
 	static const char dir_sep = '/';
-#endif
+	#endif
 	
 	static const char ext_sep = '.';
 	
@@ -126,12 +130,20 @@ public:
 	
 	//! @return pathstr == other.pathstr
 	bool operator==(const path & other) const {
+		#if ARX_PLATFORM == ARX_PLATFORM_WIN32
+		return boost::iequals(pathstr, other.pathstr);
+		#else
 		return (pathstr == other.pathstr);
+		#endif
 	}
 	
 	//! @return pathstr != other.pathstr
 	bool operator!=(const path & other) const {
+		#if ARX_PLATFORM == ARX_PLATFORM_WIN32
+		return !boost::iequals(pathstr, other.pathstr);
+		#else
 		return (pathstr != other.pathstr);
+		#endif
 	}
 	
 	/*!
@@ -139,7 +151,11 @@ public:
 	 * @return pathstr < other.pathstr
 	 */
 	bool operator<(const path & other) const {
+		#if ARX_PLATFORM == ARX_PLATFORM_WIN32
+		return boost::ilexicographical_compare(pathstr, other.pathstr);
+		#else
 		return (pathstr < other.pathstr);
+		#endif
 	}
 	
 	/*!
@@ -197,18 +213,18 @@ public:
 	//! Is this a relative path. An empty path is neither relative nor absolute.
 	bool is_relative() const {
 		return !empty() && !(pathstr[0] == '/'
-#if ARX_PLATFORM == ARX_PLATFORM_WIN32
+			#if ARX_PLATFORM == ARX_PLATFORM_WIN32
 			|| (pathstr.length() >= 2 && pathstr[1] == ':')
-#endif
+			#endif
 		);
 	}
 	
 	//! Is this an absolute path. An empty path is neither relative nor absolute.
 	bool is_absolute() const {
 		return !empty() && (pathstr[0] == '/'
-#if ARX_PLATFORM == ARX_PLATFORM_WIN32
+			#if ARX_PLATFORM == ARX_PLATFORM_WIN32
 			|| (pathstr.length() >= 2 && pathstr[1] == ':')
-#endif
+			#endif
 		);
 	}
 	
