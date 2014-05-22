@@ -35,14 +35,14 @@ void assertionFailed(const char * expr, const char * file, unsigned int line,
 		file = "<unknown>";
 	}
 	
-	Logger(file, line, Logger::Error) << "Assertion Failed: " << expr;
+	Logger(file, line, Logger::Critical) << "Assertion Failed: " << expr;
 	if(msg) {
 		char formattedmsgbuf[4096];
 		va_list args;
 		va_start(args, msg);
 		vsnprintf(formattedmsgbuf, sizeof(formattedmsgbuf) - 1, msg, args);
 		va_end(args);
-		Logger(file, line, Logger::Error) << "Message: " << formattedmsgbuf;
+		Logger(file, line, Logger::Critical) << "Message: " << formattedmsgbuf;
 	}
 	
 }
