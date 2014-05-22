@@ -1099,8 +1099,11 @@ if(ARX_HAVE_CRASHREPORTER)
 		qt5_add_resources(arxcrashreporter_Qt_SOURCES ${arxcrashreporter_RESOURCES})
 		
 		list(APPEND arxcrashreporter_LIBRARIES
+			${Qt5Core_LIBRARIES}
+			${Qt5Gui_LIBRARIES}
 			${Qt5Widgets_LIBRARIES}
 			${Qt5Network_LIBRARIES}
+			${Qt5Core_QTMAIN_LIBRARIES}
 		)
 		
 		add_definitions(
@@ -1128,6 +1131,7 @@ if(ARX_HAVE_CRASHREPORTER)
 			${QT_QTCORE_LIBRARY_RELEASE}
 			${QT_QTGUI_LIBRARY_RELEASE}
 			${QT_QTNETWORK_LIBRARY_RELEASE}
+			${QT_QTMAIN_LIBRARY_RELEASE}
 		)
 		
 		add_definitions(

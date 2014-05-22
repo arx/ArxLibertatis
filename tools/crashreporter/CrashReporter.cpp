@@ -28,23 +28,11 @@
 #include "io/log/Logger.h"
 #include "io/log/FileLogger.h"
 
-#if defined(_WIN32) || defined(_WIN64)
-
-INT WINAPI WinMain(HINSTANCE, HINSTANCE, PSTR, INT) {
-	
-	Q_INIT_RESOURCE(CrashReporter);
-	
-	QApplication app(__argc, __argv);
-	
-#else
-
-int main(int argc, char **argv) {
+int main(int argc, char * argv[]) {
 	
 	Q_INIT_RESOURCE(CrashReporter);
 	
 	QApplication app(argc, argv);
-	
-#endif
 	
 	Logger::initialize();
 	
