@@ -164,6 +164,11 @@ typedef double f64; // 64 bits double float
                      Macro for assertion
 ------------------------------------------------------------*/
 
+// Avoid compiling the full source path into release executables
+#if !defined(ARX_FILE)
+#define ARX_FILE __FILE__
+#endif
+
 /*!
  * Log that an assertion has failed.
  * This is a low-level implementation, use arx_assert() instead!
@@ -174,7 +179,7 @@ void assertionFailed(const char * expression, const char * file, unsigned line,
 #ifdef ARX_DEBUG
 	#define arx_assert(Expression, ...) { \
 			if(!(Expression)) { \
-				assertionFailed(#Expression, (__FILE__), __LINE__, ##__VA_ARGS__); \
+				assertionFailed(#Expression, (ARX_FILE), __LINE__, ##__VA_ARGS__); \
 				ARX_DEBUG_BREAK(); \
 			} \
 		}
