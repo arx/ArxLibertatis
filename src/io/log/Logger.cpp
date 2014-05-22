@@ -81,10 +81,10 @@ logger::Source * LogManager::getSource(const char * file) {
 	
 	const char * end = file + strlen(file);
 	bool first = true;
-	for(const char * p = end; p != file; p--) {
-		if(*p == '/' || *p == '\\') {
+	for(const char * p = end; ; p--) {
+		if(p == file || *(p - 1) == '/' || *(p - 1) == '\\') {
 			
-			string component(p + 1, end);
+			string component(p, end);
 			
 			if(first) {
 				size_t pos = component.find_last_of('.');
@@ -101,11 +101,11 @@ logger::Source * LogManager::getSource(const char * file) {
 				break;
 			}
 			
-			if(component == "src" || component == "tools") {
+			if(p == file || component == "src" || component == "tools") {
 				break;
 			}
 			
-			end = p;
+			end = p - 1;
 		}
 	}
 	
