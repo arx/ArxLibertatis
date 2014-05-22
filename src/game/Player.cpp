@@ -2202,7 +2202,7 @@ void PlayerMovementIterate(float DeltaTime) {
 		}
 		
 		LAST_FIRM_GROUND = TRUE_FIRM_GROUND;
-		player.onfirmground = TRUE_FIRM_GROUND;
+		player.onfirmground = (TRUE_FIRM_GROUND != 0);
 		if(player.onfirmground && !player.falling) {
 			FALLING_TIME = 0;
 		}
