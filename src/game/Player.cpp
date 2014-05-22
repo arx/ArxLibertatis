@@ -496,15 +496,15 @@ void ARX_PLAYER_ComputePlayerFullStats() {
 	player.m_attributeMod.dexterity = 0;
 	player.m_attributeMod.constitution = 0;
 	player.m_attributeMod.mind = 0;
-	player.Mod_Skill_Stealth = 0;
-	player.Mod_Skill_Mecanism = 0;
-	player.Mod_Skill_Intuition = 0;
-	player.Mod_Skill_Etheral_Link = 0;
-	player.Mod_Skill_Object_Knowledge = 0;
-	player.Mod_Skill_Casting = 0;
-	player.Mod_Skill_Projectile = 0;
-	player.Mod_Skill_Close_Combat = 0;
-	player.Mod_Skill_Defense = 0;
+	player.m_skillMod.stealth = 0;
+	player.m_skillMod.mecanism = 0;
+	player.m_skillMod.intuition = 0;
+	player.m_skillMod.etheralLink = 0;
+	player.m_skillMod.objectKnowledge = 0;
+	player.m_skillMod.casting = 0;
+	player.m_skillMod.projectile = 0;
+	player.m_skillMod.closeCombat = 0;
+	player.m_skillMod.defense = 0;
 	player.Mod_armor_class = 0;
 	player.Mod_resist_magic = 0;
 	player.Mod_resist_poison = 0;
@@ -579,15 +579,15 @@ void ARX_PLAYER_ComputePlayerFullStats() {
 		player.m_attributeMod.mind += 10;
 		player.m_attributeMod.constitution += 1;
 		player.m_attributeMod.dexterity += 10;
-		player.Mod_Skill_Stealth += 5;
-		player.Mod_Skill_Mecanism += 5;
-		player.Mod_Skill_Intuition += 100;
-		player.Mod_Skill_Etheral_Link += 100;
-		player.Mod_Skill_Object_Knowledge += 100;
-		player.Mod_Skill_Casting += 5;
-		player.Mod_Skill_Projectile += 5;
-		player.Mod_Skill_Close_Combat += 5;
-		player.Mod_Skill_Defense += 100;
+		player.m_skillMod.stealth += 5;
+		player.m_skillMod.mecanism += 5;
+		player.m_skillMod.intuition += 100;
+		player.m_skillMod.etheralLink += 100;
+		player.m_skillMod.objectKnowledge += 100;
+		player.m_skillMod.casting += 5;
+		player.m_skillMod.projectile += 5;
+		player.m_skillMod.closeCombat += 5;
+		player.m_skillMod.defense += 100;
 		player.Mod_resist_magic += 100;
 		player.Mod_resist_poison += 100;
 		player.Mod_Critical_Hit += 5;
@@ -600,15 +600,15 @@ void ARX_PLAYER_ComputePlayerFullStats() {
 		player.m_attributeMod.mind += 5;
 		player.m_attributeMod.constitution += 5;
 		player.m_attributeMod.dexterity += 5;
-		player.Mod_Skill_Stealth += 50;
-		player.Mod_Skill_Mecanism += 50;
-		player.Mod_Skill_Intuition += 50;
-		player.Mod_Skill_Etheral_Link += 50;
-		player.Mod_Skill_Object_Knowledge += 50;
-		player.Mod_Skill_Casting += 50;
-		player.Mod_Skill_Projectile += 50;
-		player.Mod_Skill_Close_Combat += 50;
-		player.Mod_Skill_Defense += 50;
+		player.m_skillMod.stealth += 50;
+		player.m_skillMod.mecanism += 50;
+		player.m_skillMod.intuition += 50;
+		player.m_skillMod.etheralLink += 50;
+		player.m_skillMod.objectKnowledge += 50;
+		player.m_skillMod.casting += 50;
+		player.m_skillMod.projectile += 50;
+		player.m_skillMod.closeCombat += 50;
+		player.m_skillMod.defense += 50;
 		player.Mod_resist_magic += 10;
 		player.Mod_resist_poison += 10;
 		player.Mod_Critical_Hit += 50;
@@ -621,15 +621,15 @@ void ARX_PLAYER_ComputePlayerFullStats() {
 		player.m_attributeMod.mind += Random::get(0, 5);
 		player.m_attributeMod.constitution += Random::get(0, 5);
 		player.m_attributeMod.dexterity += Random::get(0, 5);
-		player.Mod_Skill_Stealth += Random::get(0, 20);
-		player.Mod_Skill_Mecanism += Random::get(0, 20);
-		player.Mod_Skill_Intuition += Random::get(0, 20);
-		player.Mod_Skill_Etheral_Link += Random::get(0, 20);
-		player.Mod_Skill_Object_Knowledge += Random::get(0, 20);
-		player.Mod_Skill_Casting += Random::get(0, 20);
-		player.Mod_Skill_Projectile += Random::get(0, 20);
-		player.Mod_Skill_Close_Combat += Random::get(0, 20);
-		player.Mod_Skill_Defense += Random::get(0, 30);
+		player.m_skillMod.stealth += Random::get(0, 20);
+		player.m_skillMod.mecanism += Random::get(0, 20);
+		player.m_skillMod.intuition += Random::get(0, 20);
+		player.m_skillMod.etheralLink += Random::get(0, 20);
+		player.m_skillMod.objectKnowledge += Random::get(0, 20);
+		player.m_skillMod.casting += Random::get(0, 20);
+		player.m_skillMod.projectile += Random::get(0, 20);
+		player.m_skillMod.closeCombat += Random::get(0, 20);
+		player.m_skillMod.defense += Random::get(0, 30);
 		player.Mod_resist_magic += Random::get(0, 20);
 		player.Mod_resist_poison += Random::get(0, 20);
 		player.Mod_Critical_Hit += Random::get(0, 20);
@@ -638,9 +638,9 @@ void ARX_PLAYER_ComputePlayerFullStats() {
 	}
 	if(cur_rf == 3) {
 		player.m_attributeMod.mind += 10;
-		player.Mod_Skill_Casting += 100;
-		player.Mod_Skill_Etheral_Link += 100;
-		player.Mod_Skill_Object_Knowledge += 100;
+		player.m_skillMod.casting += 100;
+		player.m_skillMod.etheralLink += 100;
+		player.m_skillMod.objectKnowledge += 100;
 		player.Mod_resist_magic += 20;
 		player.Mod_resist_poison += 20;
 		player.Mod_damages += 1;
@@ -707,44 +707,44 @@ void ARX_PLAYER_ComputePlayerFullStats() {
 	                              + player.Full_Attribute_Constitution * 3;
 	
 	// Calculate equipment modifiers for skills
-	player.Mod_Skill_Stealth += getEquipmentModifier(
+	player.m_skillMod.stealth += getEquipmentModifier(
 		IO_EQUIPITEM_ELEMENT_Stealth, base_stealth
 	);
-	player.Mod_Skill_Mecanism += getEquipmentModifier(
+	player.m_skillMod.mecanism += getEquipmentModifier(
 		IO_EQUIPITEM_ELEMENT_Mecanism, base_mecanism
 	);
-	player.Mod_Skill_Intuition += getEquipmentModifier(
+	player.m_skillMod.intuition += getEquipmentModifier(
 		IO_EQUIPITEM_ELEMENT_Intuition, base_intuition
 	);
-	player.Mod_Skill_Etheral_Link += getEquipmentModifier(
+	player.m_skillMod.etheralLink += getEquipmentModifier(
 		IO_EQUIPITEM_ELEMENT_Etheral_Link, base_ethereal_link
 	);
-	player.Mod_Skill_Object_Knowledge += getEquipmentModifier(
+	player.m_skillMod.objectKnowledge += getEquipmentModifier(
 		IO_EQUIPITEM_ELEMENT_Object_Knowledge, base_object_knowledge
 	);
-	player.Mod_Skill_Casting += getEquipmentModifier(
+	player.m_skillMod.casting += getEquipmentModifier(
 		IO_EQUIPITEM_ELEMENT_Casting, base_casting
 	);
-	player.Mod_Skill_Projectile += getEquipmentModifier(
+	player.m_skillMod.projectile += getEquipmentModifier(
 		IO_EQUIPITEM_ELEMENT_Projectile, base_projectile
 	);
-	player.Mod_Skill_Close_Combat += getEquipmentModifier(
+	player.m_skillMod.closeCombat += getEquipmentModifier(
 		IO_EQUIPITEM_ELEMENT_Close_Combat, base_close_combat
 	);
-	player.Mod_Skill_Defense += getEquipmentModifier(
+	player.m_skillMod.defense += getEquipmentModifier(
 		IO_EQUIPITEM_ELEMENT_Defense, base_defense
 	);
 	
 	// Calculate full skills
-	player.Full_Skill_Stealth = base_stealth + player.Mod_Skill_Stealth;
-	player.Full_Skill_Mecanism = base_mecanism + player.Mod_Skill_Mecanism;
-	player.Full_Skill_Intuition = base_intuition + player.Mod_Skill_Intuition;
-	player.Full_Skill_Etheral_Link = base_ethereal_link + player.Mod_Skill_Etheral_Link;
-	player.Full_Skill_Object_Knowledge = base_object_knowledge + player.Mod_Skill_Object_Knowledge;
-	player.Full_Skill_Casting = base_casting + player.Mod_Skill_Casting;
-	player.Full_Skill_Projectile = base_projectile + player.Mod_Skill_Projectile;
-	player.Full_Skill_Close_Combat = base_close_combat + player.Mod_Skill_Close_Combat;
-	player.Full_Skill_Defense = base_defense + player.Mod_Skill_Defense;
+	player.Full_Skill_Stealth = base_stealth + player.m_skillMod.stealth;
+	player.Full_Skill_Mecanism = base_mecanism + player.m_skillMod.mecanism;
+	player.Full_Skill_Intuition = base_intuition + player.m_skillMod.intuition;
+	player.Full_Skill_Etheral_Link = base_ethereal_link + player.m_skillMod.etheralLink;
+	player.Full_Skill_Object_Knowledge = base_object_knowledge + player.m_skillMod.objectKnowledge;
+	player.Full_Skill_Casting = base_casting + player.m_skillMod.casting;
+	player.Full_Skill_Projectile = base_projectile + player.m_skillMod.projectile;
+	player.Full_Skill_Close_Combat = base_close_combat + player.m_skillMod.closeCombat;
+	player.Full_Skill_Defense = base_defense + player.m_skillMod.defense;
 	
 	
 	/////////////////////////////////////////////////////////////////////////////////////

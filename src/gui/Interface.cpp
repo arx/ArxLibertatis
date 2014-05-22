@@ -3632,9 +3632,9 @@ void ARX_INTERFACE_ManageOpenedBook()
 		ss3 << player.Full_Skill_Stealth;
 		tex = ss3.str();
 		
-		if (player.Mod_Skill_Stealth < 0.f)
+		if (player.m_skillMod.stealth < 0.f)
 			color = Color::red;
-		else if (player.Mod_Skill_Stealth > 0.f)
+		else if (player.m_skillMod.stealth > 0.f)
 			color = Color::blue;
 		else
 			color = Color::black;
@@ -3650,9 +3650,9 @@ void ARX_INTERFACE_ManageOpenedBook()
 		ss3 << player.Full_Skill_Mecanism;
 		tex = ss3.str();
 		
-		if (player.Mod_Skill_Mecanism < 0.f)
+		if (player.m_skillMod.mecanism < 0.f)
 			color = Color::red;
-		else if (player.Mod_Skill_Mecanism > 0.f)
+		else if (player.m_skillMod.mecanism > 0.f)
 			color = Color::blue;
 		else
 			color = Color::black;
@@ -3668,9 +3668,9 @@ void ARX_INTERFACE_ManageOpenedBook()
 		ss3 << player.Full_Skill_Intuition;
 		tex = ss3.str();
 		
-		if (player.Mod_Skill_Intuition < 0.f)
+		if (player.m_skillMod.intuition < 0.f)
 			color = Color::red;
-		else if (player.Mod_Skill_Intuition > 0.f)
+		else if (player.m_skillMod.intuition > 0.f)
 			color = Color::blue;
 		else
 			color = Color::black;
@@ -3686,9 +3686,9 @@ void ARX_INTERFACE_ManageOpenedBook()
 		ss3 << player.Full_Skill_Etheral_Link;
 		tex = ss3.str();
 
-		if(player.Mod_Skill_Etheral_Link < 0.f)
+		if(player.m_skillMod.etheralLink < 0.f)
 			color = Color::red;
-		else if(player.Mod_Skill_Etheral_Link > 0.f)
+		else if(player.m_skillMod.etheralLink > 0.f)
 			color = Color::blue;
 		else
 			color = Color::black;
@@ -3704,9 +3704,9 @@ void ARX_INTERFACE_ManageOpenedBook()
 		ss3 << player.Full_Skill_Object_Knowledge;
 		tex = ss3.str();
 
-		if(player.Mod_Skill_Object_Knowledge < 0.f)
+		if(player.m_skillMod.objectKnowledge < 0.f)
 			color = Color::red;
-		else if(player.Mod_Skill_Object_Knowledge > 0.f)
+		else if(player.m_skillMod.objectKnowledge > 0.f)
 			color = Color::blue;
 		else
 			color = Color::black;
@@ -3722,9 +3722,9 @@ void ARX_INTERFACE_ManageOpenedBook()
 		ss3 << player.Full_Skill_Casting;
 		tex = ss3.str();
 		
-		if (player.Mod_Skill_Casting < 0.f)
+		if (player.m_skillMod.casting < 0.f)
 			color = Color::red;
-		else if (player.Mod_Skill_Casting > 0.f)
+		else if (player.m_skillMod.casting > 0.f)
 			color = Color::blue;
 		else
 			color = Color::black;
@@ -3740,9 +3740,9 @@ void ARX_INTERFACE_ManageOpenedBook()
 		ss3 << player.Full_Skill_Close_Combat;
 		tex = ss3.str();
 
-		if (player.Mod_Skill_Close_Combat < 0.f)
+		if (player.m_skillMod.closeCombat < 0.f)
 			color = Color::red;
-		else if (player.Mod_Skill_Close_Combat > 0.f)
+		else if (player.m_skillMod.closeCombat > 0.f)
 			color = Color::blue;
 		else
 			color = Color::black;
@@ -3759,9 +3759,9 @@ void ARX_INTERFACE_ManageOpenedBook()
 		ss3 << player.Full_Skill_Projectile;
 		tex = ss3.str();
 
-		if(player.Mod_Skill_Projectile < 0.f)
+		if(player.m_skillMod.projectile < 0.f)
 			color = Color::red;
-		else if(player.Mod_Skill_Projectile > 0.f)
+		else if(player.m_skillMod.projectile > 0.f)
 			color = Color::blue;
 		else
 			color = Color::black;
@@ -3777,9 +3777,9 @@ void ARX_INTERFACE_ManageOpenedBook()
 		ss3 << player.Full_Skill_Defense;
 		tex = ss3.str();
 
-		if (player.Mod_Skill_Defense < 0.f)
+		if (player.m_skillMod.defense < 0.f)
 			color = Color::red;
-		else if (player.Mod_Skill_Defense > 0.f)
+		else if (player.m_skillMod.defense > 0.f)
 			color = Color::blue;
 		else
 			color = Color::black;

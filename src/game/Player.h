@@ -190,15 +190,8 @@ struct ARXCHARACTER {
 	
 	// Modifier Values (Items, curses, etc...)
 	PlayerAttribute m_attributeMod;
-	float Mod_Skill_Stealth;
-	float Mod_Skill_Mecanism;
-	float Mod_Skill_Intuition;
-	float Mod_Skill_Etheral_Link;
-	float Mod_Skill_Object_Knowledge;
-	float Mod_Skill_Casting;
-	float Mod_Skill_Projectile;
-	float Mod_Skill_Close_Combat;
-	float Mod_Skill_Defense;
+	PlayerSkill m_skillMod;
+	
 	float Mod_armor_class;
 	float Mod_resist_magic;
 	float Mod_resist_poison;
