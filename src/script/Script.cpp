@@ -975,47 +975,47 @@ ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const string & 
 			}
 			
 			if(boost::starts_with(name, "^player_skill_stealth")) {
-				*fcontent = player.Full_Skill_Stealth;
+				*fcontent = player.m_skillFull.stealth;
 				return TYPE_FLOAT;
 			}
 			
 			if(boost::starts_with(name, "^player_skill_mecanism")) {
-				*fcontent = player.Full_Skill_Mecanism;
+				*fcontent = player.m_skillFull.mecanism;
 				return TYPE_FLOAT;
 			}
 			
 			if(boost::starts_with(name, "^player_skill_intuition")) {
-				*fcontent = player.Full_Skill_Intuition;
+				*fcontent = player.m_skillFull.intuition;
 				return TYPE_FLOAT;
 			}
 			
 			if(boost::starts_with(name, "^player_skill_etheral_link")) {
-				*fcontent = player.Full_Skill_Etheral_Link;
+				*fcontent = player.m_skillFull.etheralLink;
 				return TYPE_FLOAT;
 			}
 			
 			if(boost::starts_with(name, "^player_skill_object_knowledge")) {
-				*fcontent = player.Full_Skill_Object_Knowledge;
+				*fcontent = player.m_skillFull.objectKnowledge;
 				return TYPE_FLOAT;
 			}
 			
 			if(boost::starts_with(name, "^player_skill_casting")) {
-				*fcontent = player.Full_Skill_Casting;
+				*fcontent = player.m_skillFull.casting;
 				return TYPE_FLOAT;
 			}
 			
 			if(boost::starts_with(name, "^player_skill_projectile")) {
-				*fcontent = player.Full_Skill_Projectile;
+				*fcontent = player.m_skillFull.projectile;
 				return TYPE_FLOAT;
 			}
 			
 			if(boost::starts_with(name, "^player_skill_close_combat")) {
-				*fcontent = player.Full_Skill_Close_Combat;
+				*fcontent = player.m_skillFull.closeCombat;
 				return TYPE_FLOAT;
 			}
 			
 			if(boost::starts_with(name, "^player_skill_defense")) {
-				*fcontent = player.Full_Skill_Defense;
+				*fcontent = player.m_skillFull.defense;
 				return TYPE_FLOAT;
 			}
 			

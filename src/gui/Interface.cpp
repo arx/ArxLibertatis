@@ -2454,7 +2454,7 @@ void ArxGame::manageKeyMouse() {
 				if(temp && !temp->locname.empty()) {
 
 					if (((FlyingOverIO->ioflags & IO_ITEM) && FlyingOverIO->_itemdata->equipitem)
-						&& (player.Full_Skill_Object_Knowledge + player.m_attributeFull.mind
+						&& (player.m_skillFull.objectKnowledge + player.m_attributeFull.mind
 						>= FlyingOverIO->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Identify_Value].value) )
 					{
 						SendIOScriptEvent(FlyingOverIO,SM_IDENTIFY);
@@ -3629,7 +3629,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 		
 		// Player Skills
 		ss3.str("");
-		ss3 << player.Full_Skill_Stealth;
+		ss3 << player.m_skillFull.stealth;
 		tex = ss3.str();
 		
 		if (player.m_skillMod.stealth < 0.f)
@@ -3647,7 +3647,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 		DrawBookTextCenter(hFontInBook, Vec2f(405, 210), tex, color);
 		
 		ss3.str("");
-		ss3 << player.Full_Skill_Mecanism;
+		ss3 << player.m_skillFull.mecanism;
 		tex = ss3.str();
 		
 		if (player.m_skillMod.mecanism < 0.f)
@@ -3665,7 +3665,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 		DrawBookTextCenter(hFontInBook, Vec2f(469, 210), tex, color);
 		
 		ss3.str("");
-		ss3 << player.Full_Skill_Intuition;
+		ss3 << player.m_skillFull.intuition;
 		tex = ss3.str();
 		
 		if (player.m_skillMod.intuition < 0.f)
@@ -3683,7 +3683,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 		DrawBookTextCenter(hFontInBook, Vec2f(533, 210), tex, color);
 		
 		ss3.str("");
-		ss3 << player.Full_Skill_Etheral_Link;
+		ss3 << player.m_skillFull.etheralLink;
 		tex = ss3.str();
 
 		if(player.m_skillMod.etheralLink < 0.f)
@@ -3701,7 +3701,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 		DrawBookTextCenter(hFontInBook, Vec2f(405, 265), tex, color);
 		
 		ss3.str("");
-		ss3 << player.Full_Skill_Object_Knowledge;
+		ss3 << player.m_skillFull.objectKnowledge;
 		tex = ss3.str();
 
 		if(player.m_skillMod.objectKnowledge < 0.f)
@@ -3719,7 +3719,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 		DrawBookTextCenter(hFontInBook, Vec2f(469, 265), tex, color);
 		
 		ss3.str("");
-		ss3 << player.Full_Skill_Casting;
+		ss3 << player.m_skillFull.casting;
 		tex = ss3.str();
 		
 		if (player.m_skillMod.casting < 0.f)
@@ -3737,7 +3737,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 		DrawBookTextCenter(hFontInBook, Vec2f(533, 265), tex, color);
 		
 		ss3.str("");
-		ss3 << player.Full_Skill_Close_Combat;
+		ss3 << player.m_skillFull.closeCombat;
 		tex = ss3.str();
 
 		if (player.m_skillMod.closeCombat < 0.f)
@@ -3756,7 +3756,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 
 		
 		ss3.str("");
-		ss3 << player.Full_Skill_Projectile;
+		ss3 << player.m_skillFull.projectile;
 		tex = ss3.str();
 
 		if(player.m_skillMod.projectile < 0.f)
@@ -3774,7 +3774,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 		DrawBookTextCenter(hFontInBook, Vec2f(469, 319), tex, color);
 		
 		ss3.str("");
-		ss3 << player.Full_Skill_Defense;
+		ss3 << player.m_skillFull.defense;
 		tex = ss3.str();
 
 		if (player.m_skillMod.defense < 0.f)
@@ -4251,7 +4251,7 @@ public:
 		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 		ARX_INTERFACE_DrawItem(m_emptyTex, pos.x, pos.y, 0.0001f, Color::white);
 		
-		if(bHitFlash && player.Full_Skill_Etheral_Link >= 40) {
+		if(bHitFlash && player.m_skillFull.etheralLink >= 40) {
 			Vec2f flashPos = pos;
 			flashPos += Vec2f(-25, -30);
 			
@@ -4754,7 +4754,7 @@ void DrawItemPrice() {
 		if(InSecondaryInventoryPos(DANAEMouse)) {
 			long amount=ARX_INTERACTIVE_GetPrice(FlyingOverIO,temp);
 			// achat
-			float famount = amount - amount * player.Full_Skill_Intuition * 0.005f;
+			float famount = amount - amount * player.m_skillFull.intuition * 0.005f;
 			// check should always be OK because amount is supposed positive
 			amount = checked_range_cast<long>(famount);
 
@@ -4764,7 +4764,7 @@ void DrawItemPrice() {
 		} else if(InPlayerInventoryPos(DANAEMouse)) {
 			long amount = static_cast<long>( ARX_INTERACTIVE_GetPrice( FlyingOverIO, temp ) / 3.0f );
 			// achat
-			float famount = amount + amount * player.Full_Skill_Intuition * 0.005f;
+			float famount = amount + amount * player.m_skillFull.intuition * 0.005f;
 			// check should always be OK because amount is supposed positive
 			amount = checked_range_cast<long>( famount );
 
@@ -5349,7 +5349,7 @@ public:
 
 					if(temp && !temp->locname.empty()) {
 						if(((player.torch->ioflags & IO_ITEM) && player.torch->_itemdata->equipitem)
-							&& (player.Full_Skill_Object_Knowledge + player.m_attributeFull.mind
+							&& (player.m_skillFull.objectKnowledge + player.m_attributeFull.mind
 								>= player.torch->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Identify_Value].value) )
 						{
 							SendIOScriptEvent(FlyingOverIO,SM_IDENTIFY);

@@ -773,7 +773,7 @@ void MiniMap::drawDetectedEntities(int showLevel, float startX, float startY, fl
 			continue; // don't show undetectable NPCs
 		}
 		
-		if(player.Full_Skill_Etheral_Link < npc->_npcdata->fDetect) {
+		if(player.m_skillFull.etheralLink < npc->_npcdata->fDetect) {
 			continue; // the player doesn't have enough skill to detect this NPC
 		}
 		

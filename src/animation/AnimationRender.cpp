@@ -245,8 +245,8 @@ float Cedric_GetInvisibility(Entity *io) {
 			long num = ARX_SPELLS_GetSpellOn(io, SPELL_INVISIBILITY);
 
 			if(num >= 0) {
-				if(player.Full_Skill_Intuition > spells[num].m_caster_level * 10) {
-					invisibility -= (float)player.Full_Skill_Intuition * (1.0f / 100)
+				if(player.m_skillFull.intuition > spells[num].m_caster_level * 10) {
+					invisibility -= (float)player.m_skillFull.intuition * (1.0f / 100)
 									+ (float)spells[num].m_caster_level * (1.0f / 10);
 
 					invisibility = clamp(invisibility, 0.1f, 1.f);

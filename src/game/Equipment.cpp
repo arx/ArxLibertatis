@@ -533,7 +533,7 @@ float ARX_EQUIPMENT_ComputeDamages(Entity * io_source, Entity * io_target, float
 		damages = attack * ratioaim; 
 
 		if(io_target->_npcdata->npcflags & NPCFLAG_BACKSTAB) {
-			if(rnd() * 100.f <= player.Full_Skill_Stealth * ( 1.0f / 2 )) {
+			if(rnd() * 100.f <= player.m_skillFull.stealth * ( 1.0f / 2 )) {
 				if(SendIOScriptEvent(io_source, SM_BACKSTAB) != REFUSE)
 					backstab = 1.5f; 
 			}
@@ -580,7 +580,7 @@ float ARX_EQUIPMENT_ComputeDamages(Entity * io_source, Entity * io_target, float
 
 	if(io_target == entities.player()) {
 		ac = player.Full_armor_class;
-		absorb = player.Full_Skill_Defense * ( 1.0f / 2 );
+		absorb = player.m_skillFull.defense * ( 1.0f / 2 );
 	} else {
 		ac = ARX_INTERACTIVE_GetArmorClass(io_target);
 		absorb = io_target->_npcdata->absorb;
@@ -1239,7 +1239,7 @@ void ARX_EQUIPMENT_IdentifyAll()
 
 			if ((toequip) && (toequip->ioflags & IO_ITEM) && (toequip->_itemdata->equipitem))
 			{
-				if (player.Full_Skill_Object_Knowledge + player.m_attributeFull.mind
+				if (player.m_skillFull.objectKnowledge + player.m_attributeFull.mind
 				        >= toequip->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Identify_Value].value)
 				{
 					SendIOScriptEvent(toequip, SM_IDENTIFY);

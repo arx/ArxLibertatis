@@ -736,32 +736,32 @@ void ARX_PLAYER_ComputePlayerFullStats() {
 	);
 	
 	// Calculate full skills
-	player.Full_Skill_Stealth = base_stealth + player.m_skillMod.stealth;
-	player.Full_Skill_Mecanism = base_mecanism + player.m_skillMod.mecanism;
-	player.Full_Skill_Intuition = base_intuition + player.m_skillMod.intuition;
-	player.Full_Skill_Etheral_Link = base_ethereal_link + player.m_skillMod.etheralLink;
-	player.Full_Skill_Object_Knowledge = base_object_knowledge + player.m_skillMod.objectKnowledge;
-	player.Full_Skill_Casting = base_casting + player.m_skillMod.casting;
-	player.Full_Skill_Projectile = base_projectile + player.m_skillMod.projectile;
-	player.Full_Skill_Close_Combat = base_close_combat + player.m_skillMod.closeCombat;
-	player.Full_Skill_Defense = base_defense + player.m_skillMod.defense;
+	player.m_skillFull.stealth = base_stealth + player.m_skillMod.stealth;
+	player.m_skillFull.mecanism = base_mecanism + player.m_skillMod.mecanism;
+	player.m_skillFull.intuition = base_intuition + player.m_skillMod.intuition;
+	player.m_skillFull.etheralLink = base_ethereal_link + player.m_skillMod.etheralLink;
+	player.m_skillFull.objectKnowledge = base_object_knowledge + player.m_skillMod.objectKnowledge;
+	player.m_skillFull.casting = base_casting + player.m_skillMod.casting;
+	player.m_skillFull.projectile = base_projectile + player.m_skillMod.projectile;
+	player.m_skillFull.closeCombat = base_close_combat + player.m_skillMod.closeCombat;
+	player.m_skillFull.defense = base_defense + player.m_skillMod.defense;
 	
 	
 	/////////////////////////////////////////////////////////////////////////////////////
 	// Other stats
 	
 	// Calculate base stats
-	float base_armor_class   = std::max(1.f, player.Full_Skill_Defense * 0.1f
+	float base_armor_class   = std::max(1.f, player.m_skillFull.defense * 0.1f
 	                           + -1.0f);
 	float base_resist_magic  = player.m_attributeFull.mind * 2.f
-	                           * (1.f + player.Full_Skill_Casting * 0.005f); // TODO why *?
+	                           * (1.f + player.m_skillFull.casting * 0.005f); // TODO why *?
 	float base_resist_poison = player.m_attributeFull.constitution * 2.f
-	                           + player.Full_Skill_Defense * 0.25f;
+	                           + player.m_skillFull.defense * 0.25f;
 	float base_critical_hit  = player.m_attributeFull.dexterity * 2.f
-	                           + player.Full_Skill_Close_Combat * 0.2f
+	                           + player.m_skillFull.closeCombat * 0.2f
 	                           + -18.f;
 	float base_damages       = std::max(1.f, player.m_attributeFull.strength * 0.5f
-	                           + player.Full_Skill_Close_Combat * 0.1f
+	                           + player.m_skillFull.closeCombat * 0.1f
 	                           + -5.f);
 	
 	// Calculate equipment modifiers for stats
@@ -1075,7 +1075,7 @@ void ARX_PLAYER_FrameCheck(float Framedelay)
 	if(Framedelay > 0) {
 		UpdateIOInvisibility(entities.player());
 		// Natural LIFE recovery
-		float inc = 0.00008f * Framedelay * (player.m_attributeFull.constitution + player.m_attributeFull.strength * ( 1.0f / 2 ) + player.Full_Skill_Defense) * ( 1.0f / 50 );
+		float inc = 0.00008f * Framedelay * (player.m_attributeFull.constitution + player.m_attributeFull.strength * ( 1.0f / 2 ) + player.m_skillFull.defense) * ( 1.0f / 50 );
 
 		if(player.lifePool.current > 0.f) {
 			float inc_hunger = 0.00008f * Framedelay * (player.m_attributeFull.constitution + player.m_attributeFull.strength * ( 1.0f / 2 )) * ( 1.0f / 50 );
@@ -1113,7 +1113,7 @@ void ARX_PLAYER_FrameCheck(float Framedelay)
 			}
 
 			// Natural MANA recovery
-			player.manaPool.current += 0.00008f * Framedelay * ((player.m_attributeFull.mind + player.Full_Skill_Etheral_Link) * 10) * ( 1.0f / 100 ); //framedelay*( 1.0f / 1000 );
+			player.manaPool.current += 0.00008f * Framedelay * ((player.m_attributeFull.mind + player.m_skillFull.etheralLink) * 10) * ( 1.0f / 100 ); //framedelay*( 1.0f / 1000 );
 
 			if(player.manaPool.current > player.Full_maxmana)
 				player.manaPool.current = player.Full_maxmana;
@@ -1905,8 +1905,8 @@ void ARX_PLAYER_Frame_Update()
 
 	ARX_PLAYER_ComputePlayerFullStats();
 
-	player.TRAP_DETECT = player.Full_Skill_Mecanism;
-	player.TRAP_SECRET = player.Full_Skill_Intuition;
+	player.TRAP_DETECT = player.m_skillFull.mecanism;
+	player.TRAP_SECRET = player.m_skillFull.intuition;
 
 	if(ARX_SPELLS_GetSpellOn(entities.player(), SPELL_DETECT_TRAP) >= 0)
 		player.TRAP_DETECT = 100.f;
@@ -1930,7 +1930,7 @@ static void ARX_PLAYER_MakeStepNoise() {
 		float factor = ARX_NPC_AUDIBLE_FACTOR_DEFAULT;
 		
 		if(player.Current_Movement & PLAYER_MOVE_STEALTH) {
-			float skill_stealth = player.Full_Skill_Stealth / ARX_PLAYER_SKILL_STEALTH_MAX;
+			float skill_stealth = player.m_skillFull.stealth / ARX_PLAYER_SKILL_STEALTH_MAX;
 			volume -= ARX_NPC_AUDIBLE_VOLUME_RANGE * skill_stealth;
 			factor += ARX_NPC_AUDIBLE_FACTOR_RANGE * skill_stealth;
 		}
@@ -2568,7 +2568,7 @@ void ARX_PLAYER_Manage_Death() {
  * \return
  */
 float GetPlayerStealth() {
-	return 15 + player.Full_Skill_Stealth * ( 1.0f / 10 );
+	return 15 + player.m_skillFull.stealth * ( 1.0f / 10 );
 }
 
 /*!
@@ -2668,7 +2668,7 @@ void ARX_PLAYER_AddBag() {
 bool ARX_PLAYER_CanStealItem(Entity * _io) {
 
 	if(_io->_itemdata->stealvalue > 0
-	   && player.Full_Skill_Stealth >= _io->_itemdata->stealvalue
+	   && player.m_skillFull.stealth >= _io->_itemdata->stealvalue
 	   && _io->_itemdata->stealvalue < 100.f
 	) {
 		return true;

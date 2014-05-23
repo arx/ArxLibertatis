@@ -200,18 +200,8 @@ struct ARXCHARACTER {
 	
 	// Full Frame values (including items)
 	PlayerAttribute m_attributeFull;
+	PlayerSkill m_skillFull;
 	
-	float Full_Skill_Stealth;
-	float Full_Skill_Mecanism;
-	float Full_Skill_Intuition;
-	
-	float Full_Skill_Etheral_Link;
-	float Full_Skill_Object_Knowledge;
-	float Full_Skill_Casting;
-	
-	float Full_Skill_Projectile;
-	float Full_Skill_Close_Combat;
-	float Full_Skill_Defense;
 	float Full_armor_class;
 	float Full_resist_magic;
 	float Full_resist_poison;
