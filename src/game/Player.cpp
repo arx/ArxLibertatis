@@ -808,16 +808,19 @@ void ARX_PLAYER_MakeFreshHero()
 	player.m_attribute.dexterity = 6;
 	player.m_attribute.constitution = 6;
 
-	player.m_skillOld.stealth			=	player.m_skill.stealth			= 0;
-	player.m_skillOld.mecanism			=	player.m_skill.mecanism			= 0;
-	player.m_skillOld.intuition			=	player.m_skill.intuition			= 0;
-	player.m_skillOld.etheralLink		=	player.m_skill.etheralLink		= 0;
-	player.m_skillOld.objectKnowledge	=	player.m_skill.objectKnowledge	= 0;
-	player.m_skillOld.casting			=	player.m_skill.casting			= 0;
-	player.m_skillOld.projectile			=	player.m_skill.projectile			= 0;
-	player.m_skillOld.closeCombat		=	player.m_skill.closeCombat		= 0;
-	player.m_skillOld.defense			=	player.m_skill.defense			= 0;
-
+	ARXCHARACTER::PlayerSkill skill;
+	skill.stealth = 0;
+	skill.mecanism = 0;
+	skill.intuition = 0;
+	skill.etheralLink = 0;
+	skill.objectKnowledge = 0;
+	skill.casting = 0;
+	skill.projectile = 0;
+	skill.closeCombat = 0;
+	skill.defense = 0;
+	
+	player.m_skillOld = player.m_skill = skill;
+	
 	player.Attribute_Redistribute = 16;
 	player.Skill_Redistribute = 18;
 
@@ -848,15 +851,18 @@ void ARX_PLAYER_MakeSpHero()
 	player.m_attribute.dexterity = 12;
 	player.m_attribute.constitution = 12;
 
-	player.m_skillOld.stealth			=	player.m_skill.stealth			= 5;
-	player.m_skillOld.mecanism			=	player.m_skill.mecanism			= 5;
-	player.m_skillOld.intuition			=	player.m_skill.intuition			= 5;
-	player.m_skillOld.etheralLink		=	player.m_skill.etheralLink		= 5;
-	player.m_skillOld.objectKnowledge	=	player.m_skill.objectKnowledge	= 5;
-	player.m_skillOld.casting			=	player.m_skill.casting			= 5;
-	player.m_skillOld.projectile			=	player.m_skill.projectile			= 5;
-	player.m_skillOld.closeCombat		=	player.m_skill.closeCombat		= 5;
-	player.m_skillOld.defense			=	player.m_skill.defense			= 5;
+	ARXCHARACTER::PlayerSkill skill;
+	skill.stealth = 5;
+	skill.mecanism = 5;
+	skill.intuition = 5;
+	skill.etheralLink = 5;
+	skill.objectKnowledge = 5;
+	skill.casting = 5;
+	skill.projectile = 5;
+	skill.closeCombat = 5;
+	skill.defense = 5;
+	
+	player.m_skillOld = player.m_skill = skill;
 
 	player.Attribute_Redistribute = 6;
 	player.Skill_Redistribute = 10;
