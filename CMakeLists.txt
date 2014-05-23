@@ -79,6 +79,7 @@ option(USE_STATIC_LIBS          "Statically link libraries" ${default_USE_STATIC
 option(GLEW_USE_STATIC_LIBS     "Statically link GLEW"      ${USE_STATIC_LIBS})
 option(Boost_USE_STATIC_LIBS    "Statically link Boost"     ${USE_STATIC_LIBS})
 option(Freetype_USE_STATIC_LIBS "Statically link Freetype"  ${USE_STATIC_LIBS})
+option(ZLIB_USE_STATIC_LIBS     "Statically link ZLIB"      ${USE_STATIC_LIBS})
 
 # Make optional dependencies required
 option(STRICT_USE "Abort if there are missing optional dependencies"  OFF)
@@ -263,7 +264,9 @@ include_directories(SYSTEM ${FREETYPE_INCLUDE_DIRS})
 list(APPEND ARX_LIBRARIES ${FREETYPE_LIBRARIES})
 
 # zlib
+use_static_libs(ZLIB)
 find_package(ZLIB REQUIRED)
+use_static_libs_restore()
 if(MSVC)
 	add_definitions(-DZLIB_WINAPI)
 else()
