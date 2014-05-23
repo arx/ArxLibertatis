@@ -1022,15 +1022,7 @@ void ARX_PLAYER_LEVEL_UP()
 	ARX_PLAYER_ComputePlayerStats();
 	player.lifePool.current = player.lifePool.max;
 	player.manaPool.current = player.manaPool.max;
-	player.m_skillOld.stealth			=	player.m_skill.stealth;
-	player.m_skillOld.mecanism			=	player.m_skill.mecanism;
-	player.m_skillOld.intuition			=	player.m_skill.intuition;
-	player.m_skillOld.etheralLink		=	player.m_skill.etheralLink;
-	player.m_skillOld.objectKnowledge	=	player.m_skill.objectKnowledge;
-	player.m_skillOld.casting			=	player.m_skill.casting;
-	player.m_skillOld.projectile			=	player.m_skill.projectile;
-	player.m_skillOld.closeCombat		=	player.m_skill.closeCombat;
-	player.m_skillOld.defense			=	player.m_skill.defense;
+	player.m_skillOld = player.m_skill;
 	SendIOScriptEvent(entities.player(), SM_NULL, "", "level_up");
 }
 
