@@ -226,17 +226,7 @@ struct ARXCHARACTER {
 	ResourcePool manaPool;
 	
 	// Player Old Values
-	float Old_Skill_Stealth;
-	float Old_Skill_Mecanism;
-	float Old_Skill_Intuition;
-	
-	float Old_Skill_Etheral_Link;
-	float Old_Skill_Object_Knowledge;
-	float Old_Skill_Casting;
-	
-	float Old_Skill_Projectile;
-	float Old_Skill_Close_Combat;
-	float Old_Skill_Defense;
+	PlayerSkill m_skillOld;
 	
 	unsigned char Attribute_Redistribute;
 	unsigned char Skill_Redistribute;

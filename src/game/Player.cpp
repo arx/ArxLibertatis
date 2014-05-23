@@ -808,15 +808,15 @@ void ARX_PLAYER_MakeFreshHero()
 	player.m_attribute.dexterity = 6;
 	player.m_attribute.constitution = 6;
 
-	player.Old_Skill_Stealth			=	player.m_skill.stealth			= 0;
-	player.Old_Skill_Mecanism			=	player.m_skill.mecanism			= 0;
-	player.Old_Skill_Intuition			=	player.m_skill.intuition			= 0;
-	player.Old_Skill_Etheral_Link		=	player.m_skill.etheralLink		= 0;
-	player.Old_Skill_Object_Knowledge	=	player.m_skill.objectKnowledge	= 0;
-	player.Old_Skill_Casting			=	player.m_skill.casting			= 0;
-	player.Old_Skill_Projectile			=	player.m_skill.projectile			= 0;
-	player.Old_Skill_Close_Combat		=	player.m_skill.closeCombat		= 0;
-	player.Old_Skill_Defense			=	player.m_skill.defense			= 0;
+	player.m_skillOld.stealth			=	player.m_skill.stealth			= 0;
+	player.m_skillOld.mecanism			=	player.m_skill.mecanism			= 0;
+	player.m_skillOld.intuition			=	player.m_skill.intuition			= 0;
+	player.m_skillOld.etheralLink		=	player.m_skill.etheralLink		= 0;
+	player.m_skillOld.objectKnowledge	=	player.m_skill.objectKnowledge	= 0;
+	player.m_skillOld.casting			=	player.m_skill.casting			= 0;
+	player.m_skillOld.projectile			=	player.m_skill.projectile			= 0;
+	player.m_skillOld.closeCombat		=	player.m_skill.closeCombat		= 0;
+	player.m_skillOld.defense			=	player.m_skill.defense			= 0;
 
 	player.Attribute_Redistribute = 16;
 	player.Skill_Redistribute = 18;
@@ -848,15 +848,15 @@ void ARX_PLAYER_MakeSpHero()
 	player.m_attribute.dexterity = 12;
 	player.m_attribute.constitution = 12;
 
-	player.Old_Skill_Stealth			=	player.m_skill.stealth			= 5;
-	player.Old_Skill_Mecanism			=	player.m_skill.mecanism			= 5;
-	player.Old_Skill_Intuition			=	player.m_skill.intuition			= 5;
-	player.Old_Skill_Etheral_Link		=	player.m_skill.etheralLink		= 5;
-	player.Old_Skill_Object_Knowledge	=	player.m_skill.objectKnowledge	= 5;
-	player.Old_Skill_Casting			=	player.m_skill.casting			= 5;
-	player.Old_Skill_Projectile			=	player.m_skill.projectile			= 5;
-	player.Old_Skill_Close_Combat		=	player.m_skill.closeCombat		= 5;
-	player.Old_Skill_Defense			=	player.m_skill.defense			= 5;
+	player.m_skillOld.stealth			=	player.m_skill.stealth			= 5;
+	player.m_skillOld.mecanism			=	player.m_skill.mecanism			= 5;
+	player.m_skillOld.intuition			=	player.m_skill.intuition			= 5;
+	player.m_skillOld.etheralLink		=	player.m_skill.etheralLink		= 5;
+	player.m_skillOld.objectKnowledge	=	player.m_skill.objectKnowledge	= 5;
+	player.m_skillOld.casting			=	player.m_skill.casting			= 5;
+	player.m_skillOld.projectile			=	player.m_skill.projectile			= 5;
+	player.m_skillOld.closeCombat		=	player.m_skill.closeCombat		= 5;
+	player.m_skillOld.defense			=	player.m_skill.defense			= 5;
 
 	player.Attribute_Redistribute = 6;
 	player.Skill_Redistribute = 10;
@@ -1022,15 +1022,15 @@ void ARX_PLAYER_LEVEL_UP()
 	ARX_PLAYER_ComputePlayerStats();
 	player.lifePool.current = player.lifePool.max;
 	player.manaPool.current = player.manaPool.max;
-	player.Old_Skill_Stealth			=	player.m_skill.stealth;
-	player.Old_Skill_Mecanism			=	player.m_skill.mecanism;
-	player.Old_Skill_Intuition			=	player.m_skill.intuition;
-	player.Old_Skill_Etheral_Link		=	player.m_skill.etheralLink;
-	player.Old_Skill_Object_Knowledge	=	player.m_skill.objectKnowledge;
-	player.Old_Skill_Casting			=	player.m_skill.casting;
-	player.Old_Skill_Projectile			=	player.m_skill.projectile;
-	player.Old_Skill_Close_Combat		=	player.m_skill.closeCombat;
-	player.Old_Skill_Defense			=	player.m_skill.defense;
+	player.m_skillOld.stealth			=	player.m_skill.stealth;
+	player.m_skillOld.mecanism			=	player.m_skill.mecanism;
+	player.m_skillOld.intuition			=	player.m_skill.intuition;
+	player.m_skillOld.etheralLink		=	player.m_skill.etheralLink;
+	player.m_skillOld.objectKnowledge	=	player.m_skill.objectKnowledge;
+	player.m_skillOld.casting			=	player.m_skill.casting;
+	player.m_skillOld.projectile			=	player.m_skill.projectile;
+	player.m_skillOld.closeCombat		=	player.m_skill.closeCombat;
+	player.m_skillOld.defense			=	player.m_skill.defense;
 	SendIOScriptEvent(entities.player(), SM_NULL, "", "level_up");
 }
 
