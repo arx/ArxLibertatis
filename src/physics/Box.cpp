@@ -114,7 +114,7 @@ bool IsValidPos3(Vec3f * pos)
 }
 
 // Checks is a triangle of a physical object is colliding a triangle
-bool IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, Vec3f * verts, long k, long * validd)
+bool IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, Vec3f * verts)
 {
 	EERIE_TRI t1, t2;
 	bool ret = false;
@@ -125,7 +125,6 @@ bool IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, Vec3f * verts, long k, l
 	Vec3f center = (verts[0] + verts[1] + verts[2]) * ( 1.0f / 3 );
 	float rad = fdist(center, verts[0]);
 
-	if (k == -1)
 	{
 		long nn = 0;
 
@@ -139,211 +138,95 @@ bool IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, Vec3f * verts, long k, l
 		if (nn < 1000)
 			return false;
 	}
-	else
-	{
-		if(fartherThan(center, vert[k].pos, rad + 25)) {
-			return false;
-		}
-	}
-
+	
 	//TOP
-	if ((k == -1) || (k == 1) || (k == 2) || (k == 3))
-	{
-		t1.v[0] = vert[1].pos;
-		t1.v[1] = vert[2].pos;
-		t1.v[2] = vert[3].pos;
-
-		if (Triangles_Intersect(&t1, &t2))
-		{
-			if (validd)
-			{
-				validd[1] = 0;
-				validd[2] = 0;
-				validd[3] = 0;
-				ret = true;
-			}
-			else return true;
-		}
+	t1.v[0] = vert[1].pos;
+	t1.v[1] = vert[2].pos;
+	t1.v[2] = vert[3].pos;
+	
+	if(Triangles_Intersect(&t1, &t2)) {
+		return true;
 	}
-
+	
 	//BOTTOM
-	if ((k == -1) || (k == 9) || (k == 10) || (k == 12))
-	{
-		t1.v[0] = vert[10].pos;
-		t1.v[1] = vert[9].pos;
-		t1.v[2] = vert[11].pos;
-
-		if (Triangles_Intersect(&t1, &t2))
-		{
-			if (validd)
-			{
-				validd[0] = 0;
-				validd[10] = 0;
-				validd[12] = 0;
-				ret = true;
-			}
-			else return true;
-		}
+	t1.v[0] = vert[10].pos;
+	t1.v[1] = vert[9].pos;
+	t1.v[2] = vert[11].pos;
+	
+	if(Triangles_Intersect(&t1, &t2)) {
+		return true;
 	}
-
+	
 	//UP/FRONT
-	if ((k == -1) || (k == 1) || (k == 4) || (k == 5))
-	{
-		t1.v[0] = vert[1].pos;
-		t1.v[1] = vert[4].pos;
-		t1.v[2] = vert[5].pos;
-
-		if (Triangles_Intersect(&t1, &t2))
-		{
-			if (validd)
-			{
-				validd[1] = 0;
-				validd[4] = 0;
-				validd[5] = 0;
-				ret = true;
-			}
-			else return true;
-		}
+	t1.v[0] = vert[1].pos;
+	t1.v[1] = vert[4].pos;
+	t1.v[2] = vert[5].pos;
+	
+	if(Triangles_Intersect(&t1, &t2)) {
+		return true;
 	}
-
+	
 	//DOWN/FRONT
-	if ((k == -1) || (k == 5) || (k == 8) || (k == 9))
-	{
-		t1.v[0] = vert[5].pos;
-		t1.v[1] = vert[8].pos;
-		t1.v[2] = vert[9].pos;
-
-		if (Triangles_Intersect(&t1, &t2))
-		{
-			if (validd)
-			{
-				validd[5] = 0;
-				validd[8] = 0;
-				validd[9] = 0;
-				ret = true;
-			}
-			else return true;
-		}
+	t1.v[0] = vert[5].pos;
+	t1.v[1] = vert[8].pos;
+	t1.v[2] = vert[9].pos;
+	
+	if(Triangles_Intersect(&t1, &t2)) {
+		return true;
 	}
-
+	
 	//UP/BACK
-	if ((k == -1) || (k == 3) || (k == 2) || (k == 7))
-	{
-		t1.v[0] = vert[3].pos;
-		t1.v[1] = vert[2].pos;
-		t1.v[2] = vert[7].pos;
-
-		if (Triangles_Intersect(&t1, &t2))
-		{
-			if (validd)
-			{
-				validd[3] = 0;
-				validd[2] = 0;
-				validd[7] = 0;
-				ret = true;
-			}
-			else return true;
-		}
+	t1.v[0] = vert[3].pos;
+	t1.v[1] = vert[2].pos;
+	t1.v[2] = vert[7].pos;
+	
+	if(Triangles_Intersect(&t1, &t2)) {
+		return true;
 	}
-
+	
 	//DOWN/BACK
-	if ((k == -1) || (k == 7) || (k == 6) || (k == 11))
-	{
-		t1.v[0] = vert[7].pos;
-		t1.v[1] = vert[6].pos;
-		t1.v[2] = vert[11].pos;
-
-		if (Triangles_Intersect(&t1, &t2))
-		{
-			if (validd)
-			{
-				validd[6] = 0;
-				validd[7] = 0;
-				validd[11] = 0;
-				ret = true;
-			}
-			else return true;
-		}
+	t1.v[0] = vert[7].pos;
+	t1.v[1] = vert[6].pos;
+	t1.v[2] = vert[11].pos;
+	
+	if(Triangles_Intersect(&t1, &t2)) {
+		return true;
 	}
 
 	//UP/LEFT
-	if ((k == -1) || (k == 1) || (k == 2) || (k == 6))
-	{
-		t1.v[0] = vert[6].pos;
-		t1.v[1] = vert[2].pos;
-		t1.v[2] = vert[1].pos;
+	t1.v[0] = vert[6].pos;
+	t1.v[1] = vert[2].pos;
+	t1.v[2] = vert[1].pos;
 
-		if (Triangles_Intersect(&t1, &t2))
-		{
-			if (validd)
-			{
-				validd[1] = 0;
-				validd[2] = 0;
-				validd[6] = 0;
-				ret = true;
-			}
-			else return true;
-		}
+	if(Triangles_Intersect(&t1, &t2)) {
+		return true;
 	}
 
 	//DOWN/LEFT
-	if ((k == -1) || (k == 10) || (k == 6) || (k == 5))
-	{
-		t1.v[0] = vert[10].pos;
-		t1.v[1] = vert[6].pos;
-		t1.v[2] = vert[5].pos;
+	t1.v[0] = vert[10].pos;
+	t1.v[1] = vert[6].pos;
+	t1.v[2] = vert[5].pos;
 
-		if (Triangles_Intersect(&t1, &t2))
-		{
-			if (validd)
-			{
-				validd[10] = 0;
-				validd[6] = 0;
-				validd[5] = 0;
-				ret = true;
-			}
-			else return true;
-		}
+	if(Triangles_Intersect(&t1, &t2)) {
+		return true;
 	}
 
 	//UP/RIGHT
-	if ((k == -1) || (k == 4) || (k == 3) || (k == 7))
-	{
-		t1.v[0] = vert[4].pos;
-		t1.v[1] = vert[3].pos;
-		t1.v[2] = vert[7].pos;
+	t1.v[0] = vert[4].pos;
+	t1.v[1] = vert[3].pos;
+	t1.v[2] = vert[7].pos;
 
-		if (Triangles_Intersect(&t1, &t2))
-		{
-			if (validd)
-			{
-				validd[3] = 0;
-				validd[4] = 0;
-				validd[7] = 0;
-				ret = true;
-			}
-			else return true;
-		}
+	if(Triangles_Intersect(&t1, &t2)) {
+		return true;
 	}
 
 	//DOWN/RIGHT
-	if ((k == -1) || (k == 8) || (k == 7) || (k == 11))
-	{
-		t1.v[0] = vert[8].pos;
-		t1.v[1] = vert[7].pos;
-		t1.v[2] = vert[11].pos;
+	t1.v[0] = vert[8].pos;
+	t1.v[1] = vert[7].pos;
+	t1.v[2] = vert[11].pos;
 
-		if (Triangles_Intersect(&t1, &t2))
-		{
-			if (validd)
-			{
-				validd[7] = 0;
-				validd[8] = 0;
-				validd[11] = 0;
-				ret = true;
-			}
-			else return true;
-		}
+	if(Triangles_Intersect(&t1, &t2)) {
+		return true;
 	}
 
 	return ret;

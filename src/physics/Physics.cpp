@@ -227,8 +227,7 @@ static bool IsObjectInField(EERIE_3DOBJ * obj) {
 	return false;
 }
 
-static bool IsObjectVertexCollidingPoly(EERIE_3DOBJ * obj, EERIEPOLY * ep,
-										long k, long * validd) {
+static bool IsObjectVertexCollidingPoly(EERIE_3DOBJ * obj, EERIEPOLY * ep) {
 
 	Vec3f pol[3];
 	pol[0] = ep->v[0].p;
@@ -237,21 +236,21 @@ static bool IsObjectVertexCollidingPoly(EERIE_3DOBJ * obj, EERIEPOLY * ep,
 
 	if(ep->type & POLY_QUAD) {
 
-		if(IsObjectVertexCollidingTriangle(obj, pol, k, validd)) {
+		if(IsObjectVertexCollidingTriangle(obj, pol)) {
 			return true;
 		}
 
 		pol[1] = ep->v[2].p;
 		pol[2] = ep->v[3].p;
 
-		if(IsObjectVertexCollidingTriangle(obj, pol, k, validd)) {
+		if(IsObjectVertexCollidingTriangle(obj, pol)) {
 			return true;
 		}
 
 		return false;
 	}
 
-	if(IsObjectVertexCollidingTriangle(obj, pol, k, validd)) {
+	if(IsObjectVertexCollidingTriangle(obj, pol)) {
 		return true;
 	}
 
@@ -351,7 +350,7 @@ static bool IsFULLObjectVertexInValidPosition(EERIE_3DOBJ * obj) {
 					}
 
 
-					if(IsObjectVertexCollidingPoly(obj, ep, -1, NULL)) {
+					if(IsObjectVertexCollidingPoly(obj, ep)) {
 
 						LAST_COLLISION_POLY = ep;
 

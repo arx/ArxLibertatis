@@ -56,6 +56,6 @@ struct EERIE_3DOBJ;
 void EERIE_PHYSICS_BOX_Create(EERIE_3DOBJ * obj);
 void EERIE_PHYSICS_BOX_Release(EERIE_3DOBJ * obj);
 void EERIE_PHYSICS_BOX_Launch(EERIE_3DOBJ * obj, const Vec3f & pos, const Anglef & angle, const Vec3f & vect);
-bool IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, Vec3f * verts, long k, long * validd);
+bool IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, Vec3f * verts);
 
 #endif // ARX_PHYSICS_BOX_H
