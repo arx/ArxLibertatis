@@ -40,7 +40,7 @@ if(MSVC)
 		add_definitions(-D_SECURE_SCL=0)
 		add_definitions(-D_SECURE_SCL_THROWS=0)
 		add_definitions(-D_ITERATOR_DEBUG_LEVEL=0)
-	endif(NOT DEBUG_EXTRA)
+	endif()
 	
 	if(SET_OPTIMIZATION_FLAGS)
 		
@@ -58,10 +58,14 @@ if(MSVC)
 	foreach(flag_var CMAKE_CXX_FLAGS CMAKE_CXX_FLAGS_DEBUG CMAKE_CXX_FLAGS_RELEASE)
 		
 		# Disable Run time checks
-		string(REGEX REPLACE "/RTC1" "" ${flag_var} "${${flag_var}}")
+		if(NOT DEBUG_EXTRA)
+			string(REGEX REPLACE "/RTC1" "" ${flag_var} "${${flag_var}}")
+		endif()
 		
 		# Change runtime library from "Multi-threaded Debug DLL" to "Multi-threaded DLL"
-		string(REGEX REPLACE "/MDd" "/MD" ${flag_var} "${${flag_var}}")
+		if(NOT DEBUG_EXTRA)
+			string(REGEX REPLACE "/MDd" "/MD" ${flag_var} "${${flag_var}}")
+		endif()
 		
 		# Remove definition of _DEBUG as it might conflict with libs we're linking with
 		string(REGEX REPLACE "/D_DEBUG" "/DNDEBUG" ${flag_var} "${${flag_var}}")

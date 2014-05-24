@@ -1096,16 +1096,16 @@ if(ARX_HAVE_CRASHREPORTER)
 	
 	if(HAVE_QT5)
 		
+		qt5_wrap_ui(arxcrashreporter_Qt_SOURCES ${arxcrashreporter_UIs})
+		qt5_wrap_cpp(arxcrashreporter_Qt_SOURCES ${arxcrashreporter_MOC_HEADERS})
+		qt5_add_resources(arxcrashreporter_Qt_SOURCES ${arxcrashreporter_RESOURCES})
+		
 		set_property(
 			SOURCE ${arxcrashreporter_Qt_SOURCES}
 			APPEND PROPERTY COMPILE_FLAGS " ${Qt5Core_EXECUTABLE_COMPILE_FLAGS}"
 		)
 		
-		qt5_wrap_ui(arxcrashreporter_Qt_SOURCES ${arxcrashreporter_UIs})
-		qt5_wrap_cpp(arxcrashreporter_Qt_SOURCES ${arxcrashreporter_MOC_HEADERS})
-		qt5_add_resources(arxcrashreporter_Qt_SOURCES ${arxcrashreporter_RESOURCES})
-		
-		list(APPEND arxcrashreporter_LIBRARIES
+		set(arxcrashreporter_qt_LIBRARIES
 			${Qt5Core_LIBRARIES}
 			${Qt5Gui_LIBRARIES}
 			${Qt5Widgets_LIBRARIES}
@@ -1134,7 +1134,7 @@ if(ARX_HAVE_CRASHREPORTER)
 		qt4_wrap_cpp(arxcrashreporter_Qt_SOURCES ${arxcrashreporter_MOC_HEADERS})
 		qt4_add_resources(arxcrashreporter_Qt_SOURCES ${arxcrashreporter_RESOURCES})
 		
-		list(APPEND arxcrashreporter_LIBRARIES
+		set(arxcrashreporter_qt_LIBRARIES
 			${QT_QTCORE_LIBRARY_RELEASE}
 			${QT_QTGUI_LIBRARY_RELEASE}
 			${QT_QTNETWORK_LIBRARY_RELEASE}
@@ -1154,6 +1154,19 @@ if(ARX_HAVE_CRASHREPORTER)
 		)
 		
 	endif()
+	
+	# Always link agains release versions of the Qt libraries
+	# This is important on windows where we would otherwise end up
+	# with inconsistencies in the stdlib configuration.
+	if(MSVC AND NOT DEBUG_EXTRA)
+		foreach(lib IN LISTS arxcrashreporter_qt_LIBRARIES)
+			if(TARGET ${lib})
+				set_target_properties(${lib} PROPERTIES MAP_IMPORTED_CONFIG_DEBUG "Release")
+			endif()
+		endforeach()
+	endif()
+	
+	list(APPEND arxcrashreporter_LIBRARIES ${arxcrashreporter_qt_LIBRARIES})
 	
 	if(MSVC)
 		list(APPEND arxcrashreporter_LIBRARIES winmm psapi imm32)
