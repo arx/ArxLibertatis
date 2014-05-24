@@ -51,8 +51,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 using std::min;
 using std::max;
 
-#define FULLTESTS 0
-
 long CUR_COLLISION_MATERIAL = 0;
 
 // Used to launch an object into the physical world...
@@ -168,29 +166,6 @@ bool IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, Vec3f * verts, long k, l
 		}
 	}
 
-#if FULLTESTS
-
-	if ((k == -1) || (k == 1) || (k == 4) || (k == 3))
-	{
-		t1.v[0] = vert[3].pos;
-		t1.v[1] = vert[4].pos;
-		t1.v[2] = vert[1].pos;
-
-		if (Triangles_Intersect(&t1, &t2))
-		{
-			if (validd)
-			{
-				validd[1] = 0;
-				validd[3] = 0;
-				validd[4] = 0;
-				ret = true;
-			}
-			else return true;
-		}
-	}
-
-#endif
-
 	//BOTTOM
 	if ((k == -1) || (k == 9) || (k == 10) || (k == 12))
 	{
@@ -210,29 +185,6 @@ bool IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, Vec3f * verts, long k, l
 			else return true;
 		}
 	}
-
-#if FULLTESTS
-
-	if ((k == -1) || (k == 10) || (k == 11) || (k == 12))
-	{
-		t1.v[0] = vert[9].pos;
-		t1.v[1] = vert[12].pos;
-		t1.v[2] = vert[11].pos;
-
-		if (Triangles_Intersect(&t1, &t2))
-		{
-			if (validd)
-			{
-				validd[10] = 0;
-				validd[11] = 0;
-				validd[12] = 0;
-				ret = true;
-			}
-			else return true;
-		}
-	}
-
-#endif
 
 	//UP/FRONT
 	if ((k == -1) || (k == 1) || (k == 4) || (k == 5))
@@ -254,29 +206,6 @@ bool IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, Vec3f * verts, long k, l
 		}
 	}
 
-#if FULLTESTS
-
-	if ((k == -1) || (k == 4) || (k == 5) || (k == 8))
-	{
-		t1.v[0] = vert[4].pos;
-		t1.v[1] = vert[8].pos;
-		t1.v[2] = vert[5].pos;
-
-		if (Triangles_Intersect(&t1, &t2))
-		{
-			if (validd)
-			{
-				validd[4] = 0;
-				validd[5] = 0;
-				validd[8] = 0;
-				ret = true;
-			}
-			else return true;
-		}
-	}
-
-#endif
-
 	//DOWN/FRONT
 	if ((k == -1) || (k == 5) || (k == 8) || (k == 9))
 	{
@@ -296,29 +225,6 @@ bool IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, Vec3f * verts, long k, l
 			else return true;
 		}
 	}
-
-#if FULLTESTS
-
-	if ((k == -1) || (k == 8) || (k == 12) || (k == 9))
-	{
-		t1.v[0] = vert[8].pos;
-		t1.v[1] = vert[12].pos;
-		t1.v[2] = vert[9].pos;
-
-		if (Triangles_Intersect(&t1, &t2))
-		{
-			if (validd)
-			{
-				validd[8] = 0;
-				validd[12] = 0;
-				validd[9] = 0;
-				ret = true;
-			}
-			else return true;
-		}
-	}
-
-#endif
 
 	//UP/BACK
 	if ((k == -1) || (k == 3) || (k == 2) || (k == 7))
@@ -340,29 +246,6 @@ bool IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, Vec3f * verts, long k, l
 		}
 	}
 
-#if FULLTESTS
-
-	if ((k == -1) || (k == 2) || (k == 6) || (k == 7))
-	{
-		t1.v[0] = vert[2].pos;
-		t1.v[1] = vert[6].pos;
-		t1.v[2] = vert[7].pos;
-
-		if (Triangles_Intersect(&t1, &t2))
-		{
-			if (validd)
-			{
-				validd[2] = 0;
-				validd[6] = 0;
-				validd[7] = 0;
-				ret = true;
-			}
-			else return true;
-		}
-	}
-
-#endif
-
 	//DOWN/BACK
 	if ((k == -1) || (k == 7) || (k == 6) || (k == 11))
 	{
@@ -382,29 +265,6 @@ bool IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, Vec3f * verts, long k, l
 			else return true;
 		}
 	}
-
-#if FULLTESTS
-
-	if ((k == -1) || (k == 6) || (k == 10) || (k == 11))
-	{
-		t1.v[0] = vert[6].pos;
-		t1.v[1] = vert[10].pos;
-		t1.v[2] = vert[11].pos;
-
-		if (Triangles_Intersect(&t1, &t2))
-		{
-			if (validd)
-			{
-				validd[6] = 0;
-				validd[10] = 0;
-				validd[11] = 0;
-				ret = true;
-			}
-			else return true;
-		}
-	}
-
-#endif
 
 	//UP/LEFT
 	if ((k == -1) || (k == 1) || (k == 2) || (k == 6))
@@ -426,29 +286,6 @@ bool IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, Vec3f * verts, long k, l
 		}
 	}
 
-#if FULLTESTS
-
-	if ((k == -1) || (k == 1) || (k == 5) || (k == 6))
-	{
-		t1.v[0] = vert[1].pos;
-		t1.v[1] = vert[5].pos;
-		t1.v[2] = vert[6].pos;
-
-		if (Triangles_Intersect(&t1, &t2))
-		{
-			if (validd)
-			{
-				validd[1] = 0;
-				validd[5] = 0;
-				validd[6] = 0;
-				ret = true;
-			}
-			else return true;
-		}
-	}
-
-#endif
-
 	//DOWN/LEFT
 	if ((k == -1) || (k == 10) || (k == 6) || (k == 5))
 	{
@@ -468,29 +305,6 @@ bool IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, Vec3f * verts, long k, l
 			else return true;
 		}
 	}
-
-#if FULLTESTS
-
-	if ((k == -1) || (k == 5) || (k == 9) || (k == 10))
-	{
-		t1.v[0] = vert[5].pos;
-		t1.v[1] = vert[9].pos;
-		t1.v[2] = vert[10].pos;
-
-		if (Triangles_Intersect(&t1, &t2))
-		{
-			if (validd)
-			{
-				validd[5] = 0;
-				validd[9] = 0;
-				validd[10] = 0;
-				ret = true;
-			}
-			else return true;
-		}
-	}
-
-#endif
 
 	//UP/RIGHT
 	if ((k == -1) || (k == 4) || (k == 3) || (k == 7))
@@ -512,29 +326,6 @@ bool IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, Vec3f * verts, long k, l
 		}
 	}
 
-#if FULLTESTS
-
-	if ((k == -1) || (k == 7) || (k == 8) || (k == 4))
-	{
-		t1.v[0] = vert[7].pos;
-		t1.v[1] = vert[8].pos;
-		t1.v[2] = vert[4].pos;
-
-		if (Triangles_Intersect(&t1, &t2))
-		{
-			if (validd)
-			{
-				validd[4] = 0;
-				validd[7] = 0;
-				validd[8] = 0;
-				ret = true;
-			}
-			else return true;
-		}
-	}
-
-#endif
-
 	//DOWN/RIGHT
 	if ((k == -1) || (k == 8) || (k == 7) || (k == 11))
 	{
@@ -555,28 +346,6 @@ bool IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, Vec3f * verts, long k, l
 		}
 	}
 
-#if FULLTESTS
-
-	if ((k == -1) || (k == 11) || (k == 12) || (k == 8))
-	{
-		t1.v[0] = vert[11].pos;
-		t1.v[1] = vert[12].pos;
-		t1.v[2] = vert[8].pos;
-
-		if (Triangles_Intersect(&t1, &t2))
-		{
-			if (validd)
-			{
-				validd[8] = 0;
-				validd[11] = 0;
-				validd[12] = 0;
-				ret = true;
-			}
-			else return true;
-		}
-	}
-
-#endif
 	return ret;
 }
 
