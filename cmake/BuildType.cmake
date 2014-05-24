@@ -86,7 +86,10 @@ if(MSVC)
 	
 	# Enable compiler optimization in release
 	set(CMAKE_CXX_FLAGS_RELEASE
-	    "${CMAKE_CXX_FLAGS_RELEASE} /Ox /Oi /Ot /GL /arch:SSE2 /GS- /fp:fast")
+	    "${CMAKE_CXX_FLAGS_RELEASE} /Ox /Oi /Ot /GL /GS- /fp:fast")
+	if(CMAKE_SIZEOF_VOID_P EQUAL 4)
+		set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /arch:SSE2")
+	endif()
 	
 	# Always build with debug information
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Zi")
