@@ -594,11 +594,14 @@ void ARX_PLAYER_ComputePlayerFullStats() {
 		skillMod.defense = 100;
 		player.m_skillMod.add(skillMod);
 		
-		player.m_miscMod.resistMagic += 100;
-		player.m_miscMod.resistPoison += 100;
-		player.m_miscMod.criticalHit += 5;
-		player.m_miscMod.damages += 2;
-		player.m_miscMod.armorClass += 100;
+		ARXCHARACTER::PlayerMisc miscMod;
+		miscMod.resistMagic = 100;
+		miscMod.resistPoison = 100;
+		miscMod.criticalHit = 5;
+		miscMod.damages = 2;
+		miscMod.armorClass = 100;
+		player.m_miscMod.add(miscMod);
+		
 		player.Full_AimTime = 100;
 	}
 	if(sp_max) {

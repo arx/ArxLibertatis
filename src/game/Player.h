@@ -215,6 +215,14 @@ struct ARXCHARACTER {
 		float resistPoison;
 		float criticalHit;
 		float damages;
+		
+		void add(const PlayerMisc & other) {
+			armorClass += other.armorClass;
+			resistMagic += other.resistMagic;
+			resistPoison += other.resistPoison;
+			criticalHit += other.criticalHit;
+			damages += other.damages;
+		}
 	};
 	
 	// Modifier Values (Items, curses, etc...)
