@@ -492,24 +492,9 @@ void ARX_PLAYER_ComputePlayerFullStats() {
 	ARX_PLAYER_ComputePlayerStats();
 	
 	// Reset modifier values
-	player.m_attributeMod.strength = 0;
-	player.m_attributeMod.dexterity = 0;
-	player.m_attributeMod.constitution = 0;
-	player.m_attributeMod.mind = 0;
-	player.m_skillMod.stealth = 0;
-	player.m_skillMod.mecanism = 0;
-	player.m_skillMod.intuition = 0;
-	player.m_skillMod.etheralLink = 0;
-	player.m_skillMod.objectKnowledge = 0;
-	player.m_skillMod.casting = 0;
-	player.m_skillMod.projectile = 0;
-	player.m_skillMod.closeCombat = 0;
-	player.m_skillMod.defense = 0;
-	player.m_miscMod.armorClass = 0;
-	player.m_miscMod.resistMagic = 0;
-	player.m_miscMod.resistPoison = 0;
-	player.m_miscMod.criticalHit = 0;
-	player.m_miscMod.damages = 0;
+	player.m_attributeMod = ARXCHARACTER::PlayerAttribute();
+	player.m_skillMod = ARXCHARACTER::PlayerSkill();
+	player.m_miscMod = ARXCHARACTER::PlayerMisc();
 	
 	// TODO why do this now and not after skills/stats have been calculated?
 	ARX_EQUIPMENT_IdentifyAll();

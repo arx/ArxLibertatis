@@ -173,6 +173,13 @@ struct ARXCHARACTER {
 		float constitution;
 		float mind;
 		
+		PlayerAttribute()
+			: strength(0)
+			, dexterity(0)
+			, constitution(0)
+			, mind(0)
+		{}
+		
 		void add(const PlayerAttribute & other) {
 			strength += other.strength;
 			dexterity += other.dexterity;
@@ -193,6 +200,18 @@ struct ARXCHARACTER {
 		float projectile;
 		float closeCombat;
 		float defense;
+		
+		PlayerSkill()
+			: stealth(0)
+			, mecanism(0)
+			, intuition(0)
+			, etheralLink(0)
+			, objectKnowledge(0)
+			, casting(0)
+			, projectile(0)
+			, closeCombat(0)
+			, defense(0)
+		{}
 		
 		void add(const PlayerSkill & other) {
 			stealth += other.stealth;
@@ -215,6 +234,14 @@ struct ARXCHARACTER {
 		float resistPoison;
 		float criticalHit;
 		float damages;
+		
+		PlayerMisc()
+			: armorClass(0)
+			, resistMagic(0)
+			, resistPoison(0)
+			, criticalHit(0)
+			, damages(0)
+		{}
 		
 		void add(const PlayerMisc & other) {
 			armorClass += other.armorClass;
