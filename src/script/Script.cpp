@@ -2009,92 +2009,62 @@ void ManageCasseDArme(Entity * io)
 
 							if ((io->ioflags & IO_ITEM) &&
 									(inventory[iNbBag][i][j].io->ioflags & IO_ITEM) &&
-									(inventory[iNbBag][i][j].io->_itemdata->equipitem))
-							{
-								if (inventory[iNbBag][i][j].io->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Damages].value == io->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Damages].value)
-								{
+									(inventory[iNbBag][i][j].io->_itemdata->equipitem)
+							) {
+								if(inventory[iNbBag][i][j].io->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Damages].value == io->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Damages].value) {
 									pIOChangeWeapon = inventory[iNbBag][i][j].io;
 									lChangeWeapon = 2;
 									bStop = true;
-								}
-								else
-								{
-									if (inventory[iNbBag][i][j].io->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Damages].value > io->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Damages].value)
-									{
-										if (pObjMin)
-										{
-											if (inventory[iNbBag][i][j].io->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Damages].value < pObjMin->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Damages].value)
-											{
+								} else {
+									if (inventory[iNbBag][i][j].io->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Damages].value > io->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Damages].value) {
+										if(pObjMin) {
+											if(inventory[iNbBag][i][j].io->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Damages].value < pObjMin->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Damages].value) {
 												pObjMin = inventory[iNbBag][i][j].io;
 											}
-										}
-										else
-										{
+										} else {
 											pObjMin = inventory[iNbBag][i][j].io;
 										}
-									}
-									else
-									{
-										if (inventory[iNbBag][i][j].io->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Damages].value < io->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Damages].value)
-										{
-											if (pObjMax)
-											{
-												if (inventory[iNbBag][i][j].io->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Damages].value > pObjMax->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Damages].value)
-												{
+									} else {
+										if(inventory[iNbBag][i][j].io->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Damages].value < io->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Damages].value) {
+											if(pObjMax) {
+												if(inventory[iNbBag][i][j].io->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Damages].value > pObjMax->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Damages].value) {
 													pObjMax = inventory[iNbBag][i][j].io;
 												}
-											}
-											else
-											{
+											} else {
 												pObjMax = inventory[iNbBag][i][j].io;
 											}
 										}
 									}
 								}
-							}
-							else
-							{
-								if (!pObjFIX)
-								{
+							} else {
+								if(!pObjFIX) {
 									pObjFIX = inventory[iNbBag][i][j].io;
 								}
 							}
 						}
 
-						if (bStop)
-						{
+						if(bStop) {
 							break;
 						}
 					}
 
-					if (bStop)
-					{
+					if(bStop) {
 						break;
 					}
 				}
 
-				if (bStop)
-				{
+				if(bStop) {
 					break;
-				}
-				else
-				{
-					if (pObjMax)
-					{
+				} else {
+					if(pObjMax) {
 						pIOChangeWeapon = pObjMax;
 						lChangeWeapon = 2;
-					}
-					else
-					{
-						if (pObjMin)
-						{
+					} else {
+						if(pObjMin) {
 							pIOChangeWeapon = pObjMin;
 							lChangeWeapon = 2;
-						}
-						else
-						{
-							if (pObjFIX)
-							{
+						} else {
+							if(pObjFIX) {
 								pIOChangeWeapon = pObjFIX;
 								lChangeWeapon = 2;
 							}
