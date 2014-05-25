@@ -231,7 +231,7 @@ float ARX_THROWN_ComputeDamages(long thrownum, long source, long target)
 	float absorb;
 
 	if(target == 0) {
-		ac = player.Full_armor_class;
+		ac = player.m_miscFull.armorClass;
 		absorb = player.m_skillFull.defense * .5f;
 	} else {
 		ac = ARX_INTERACTIVE_GetArmorClass(io_target);

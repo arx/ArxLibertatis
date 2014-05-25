@@ -3822,7 +3822,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 		DrawBookTextCenter(hFontInBook, Vec2f(324, 218), tex, color);
 		
 		ss4.str("");
-		ss4 << F2L_RoundUp(player.Full_damages);
+		ss4 << F2L_RoundUp(player.m_miscFull.damages);
 		tex = ss4.str();
 		
 		if (player.m_miscMod.damages < 0.f)
@@ -3834,7 +3834,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 		
 		DrawBookTextCenter(hFontInBook, Vec2f(324, 278), tex, color);
 		
-		float ac = player.Full_armor_class;
+		float ac = player.m_miscFull.armorClass;
 		ss4.str("");
 		ss4 << F2L_RoundUp(ac);
 		tex = ss4.str();
@@ -3849,7 +3849,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 		DrawBookTextCenter(hFontInBook, Vec2f(153, 158), tex, color);
 		
 		ss4.str("");
-		ss4 << std::setw(3) << std::setprecision(0) << F2L_RoundUp( player.Full_resist_magic );
+		ss4 << std::setw(3) << std::setprecision(0) << F2L_RoundUp( player.m_miscFull.resistMagic );
 		tex = ss4.str();
 		
 		if (player.m_miscMod.resistMagic < 0.f)
@@ -3862,7 +3862,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 		DrawBookTextCenter(hFontInBook, Vec2f(153, 218), tex, color);
 		
 		ss4.str("");
-		ss4 << F2L_RoundUp( player.Full_resist_poison );
+		ss4 << F2L_RoundUp( player.m_miscFull.resistPoison );
 		tex = ss4.str();
 
 		if (player.m_miscMod.resistPoison<0.f)

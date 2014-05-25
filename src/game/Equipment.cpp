@@ -490,7 +490,7 @@ float ARX_EQUIPMENT_ComputeDamages(Entity * io_source, Entity * io_target, float
 	if(!(io_target->ioflags & IO_NPC)) {
 		if(io_target->ioflags & IO_FIX) {
 			if (io_source == entities.player())
-				ARX_DAMAGES_DamageFIX(io_target, player.Full_damages, 0, 0);
+				ARX_DAMAGES_DamageFIX(io_target, player.m_miscFull.damages, 0, 0);
 			else if (io_source->ioflags & IO_NPC)
 				ARX_DAMAGES_DamageFIX(io_target, io_source->_npcdata->damages, io_source->index(), 0);
 			else
@@ -520,9 +520,9 @@ float ARX_EQUIPMENT_ComputeDamages(Entity * io_source, Entity * io_target, float
 			}
 		}
 
-		attack = player.Full_damages;
+		attack = player.m_miscFull.damages;
 
-		if(rnd() * 100 <= player.Full_Critical_Hit)
+		if(rnd() * 100 <= player.m_miscFull.criticalHit)
 		{
 			if(SendIOScriptEvent(io_source, SM_CRITICAL) != REFUSE)
 				critical = true;
@@ -579,7 +579,7 @@ float ARX_EQUIPMENT_ComputeDamages(Entity * io_source, Entity * io_target, float
 	float absorb;
 
 	if(io_target == entities.player()) {
-		ac = player.Full_armor_class;
+		ac = player.m_miscFull.armorClass;
 		absorb = player.m_skillFull.defense * ( 1.0f / 2 );
 	} else {
 		ac = ARX_INTERACTIVE_GetArmorClass(io_target);

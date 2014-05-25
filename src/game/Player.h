@@ -225,19 +225,13 @@ struct ARXCHARACTER {
 	// Full Frame values (including items)
 	PlayerAttribute m_attributeFull;
 	PlayerSkill m_skillFull;
+	PlayerMisc m_miscFull;
 	
-	float Full_armor_class;
-	float Full_resist_magic;
-	float Full_resist_poison;
-	float Full_Critical_Hit;
-	float Full_damages;
 	long Full_AimTime;
 	long Full_Weapon_Type;
 	float Full_life;
 	float Full_maxlife;
 	float Full_maxmana;
-	
-
 	
 	// true (naked) Player Values
 	PlayerAttribute m_attribute;

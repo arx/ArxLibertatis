@@ -671,7 +671,7 @@ float ARX_DAMAGES_DealDamages(long target, float dmg, long source, DamageType fl
 			ARX_DAMAGES_PushIO(io_target, source, damagesdone * ( 1.0f / 2 ));
 
 		if((flags & DAMAGE_TYPE_MAGICAL) && !(flags & (DAMAGE_TYPE_FIRE | DAMAGE_TYPE_COLD))) {
-			damagesdone -= player.Full_resist_magic * ( 1.0f / 100 ) * damagesdone;
+			damagesdone -= player.m_miscFull.resistMagic * ( 1.0f / 100 ) * damagesdone;
 			damagesdone = max(0.0f, damagesdone);
 		}
 
@@ -1087,7 +1087,7 @@ void ARX_DAMAGES_UpdateDamage(DamageHandle j, float tim) {
 								   && !(damage.params.type & DAMAGE_TYPE_FIRE)
 								   && !(damage.params.type & DAMAGE_TYPE_COLD)
 								) {
-									dmg -= player.Full_resist_magic * ( 1.0f / 100 ) * dmg;
+									dmg -= player.m_miscFull.resistMagic * ( 1.0f / 100 ) * dmg;
 									dmg = max(0.0f, dmg);
 								}
 								if(damage.params.type & DAMAGE_TYPE_FIRE) {
