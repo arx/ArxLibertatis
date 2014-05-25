@@ -575,19 +575,25 @@ void ARX_PLAYER_ComputePlayerFullStats() {
 	
 	// Calculate for modifiers from cheats
 	if(cur_mr == 3) {
-		player.m_attributeMod.strength += 1;
-		player.m_attributeMod.mind += 10;
-		player.m_attributeMod.constitution += 1;
-		player.m_attributeMod.dexterity += 10;
-		player.m_skillMod.stealth += 5;
-		player.m_skillMod.mecanism += 5;
-		player.m_skillMod.intuition += 100;
-		player.m_skillMod.etheralLink += 100;
-		player.m_skillMod.objectKnowledge += 100;
-		player.m_skillMod.casting += 5;
-		player.m_skillMod.projectile += 5;
-		player.m_skillMod.closeCombat += 5;
-		player.m_skillMod.defense += 100;
+		ARXCHARACTER::PlayerAttribute attributeMod;
+		attributeMod.strength = 1;
+		attributeMod.mind = 10;
+		attributeMod.constitution = 1;
+		attributeMod.dexterity = 10;
+		player.m_attributeMod.add(attributeMod);
+		
+		ARXCHARACTER::PlayerSkill skillMod;
+		skillMod.stealth = 5;
+		skillMod.mecanism = 5;
+		skillMod.intuition = 100;
+		skillMod.etheralLink = 100;
+		skillMod.objectKnowledge = 100;
+		skillMod.casting = 5;
+		skillMod.projectile = 5;
+		skillMod.closeCombat = 5;
+		skillMod.defense = 100;
+		player.m_skillMod.add(skillMod);
+		
 		player.Mod_resist_magic += 100;
 		player.Mod_resist_poison += 100;
 		player.Mod_Critical_Hit += 5;

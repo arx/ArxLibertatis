@@ -172,6 +172,13 @@ struct ARXCHARACTER {
 		float dexterity;
 		float constitution;
 		float mind;
+		
+		void add(const PlayerAttribute & other) {
+			strength += other.strength;
+			dexterity += other.dexterity;
+			constitution += other.constitution;
+			mind += other.mind;
+		}
 	};
 	
 	struct PlayerSkill {
@@ -186,6 +193,20 @@ struct ARXCHARACTER {
 		float projectile;
 		float closeCombat;
 		float defense;
+		
+		void add(const PlayerSkill & other) {
+			stealth += other.stealth;
+			mecanism += other.mecanism;
+			intuition += other.intuition;
+			
+			etheralLink += other.etheralLink;
+			objectKnowledge += other.objectKnowledge;
+			casting += other.casting;
+			
+			projectile += other.projectile;
+			closeCombat += other.closeCombat;
+			defense += other.defense;
+		}
 	};
 	
 	// Modifier Values (Items, curses, etc...)
