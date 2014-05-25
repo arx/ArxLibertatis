@@ -686,30 +686,31 @@ void ARX_PLAYER_ComputePlayerFullStats() {
 	// Attributes
 	
 	// Calculate base attributes
-	float base_strength     = player.m_attribute.strength;
-	float base_dexterity    = player.m_attribute.dexterity;
-	float base_constitution = player.m_attribute.constitution;
-	float base_mind         = player.m_attribute.mind;
+	ARXCHARACTER::PlayerAttribute attributeBase;
+	attributeBase.strength     = player.m_attribute.strength;
+	attributeBase.dexterity    = player.m_attribute.dexterity;
+	attributeBase.constitution = player.m_attribute.constitution;
+	attributeBase.mind         = player.m_attribute.mind;
 	
 	// Calculate equipment modifiers for attributes
 	player.m_attributeMod.strength += getEquipmentModifier(
-		IO_EQUIPITEM_ELEMENT_STRENGTH, base_strength
+		IO_EQUIPITEM_ELEMENT_STRENGTH, attributeBase.strength
 	);
 	player.m_attributeMod.dexterity += getEquipmentModifier(
-		IO_EQUIPITEM_ELEMENT_DEXTERITY, base_dexterity
+		IO_EQUIPITEM_ELEMENT_DEXTERITY, attributeBase.dexterity
 	);
 	player.m_attributeMod.constitution += getEquipmentModifier(
-		IO_EQUIPITEM_ELEMENT_CONSTITUTION, base_constitution
+		IO_EQUIPITEM_ELEMENT_CONSTITUTION, attributeBase.constitution
 	);
 	player.m_attributeMod.mind += getEquipmentModifier(
-		IO_EQUIPITEM_ELEMENT_MIND, base_mind
+		IO_EQUIPITEM_ELEMENT_MIND, attributeBase.mind
 	);
 	
 	// Calculate full alltributes
-	player.m_attributeFull.strength = std::max(0.f, base_strength + player.m_attributeMod.strength);
-	player.m_attributeFull.dexterity = std::max(0.f, base_dexterity + player.m_attributeMod.dexterity);
-	player.m_attributeFull.constitution = std::max(0.f, base_constitution + player.m_attributeMod.constitution);
-	player.m_attributeFull.mind = std::max(0.f, base_mind + player.m_attributeMod.mind);
+	player.m_attributeFull.strength = std::max(0.f, attributeBase.strength + player.m_attributeMod.strength);
+	player.m_attributeFull.dexterity = std::max(0.f, attributeBase.dexterity + player.m_attributeMod.dexterity);
+	player.m_attributeFull.constitution = std::max(0.f, attributeBase.constitution + player.m_attributeMod.constitution);
+	player.m_attributeFull.mind = std::max(0.f, attributeBase.mind + player.m_attributeMod.mind);
 	
 	
 	/////////////////////////////////////////////////////////////////////////////////////
