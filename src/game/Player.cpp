@@ -505,11 +505,11 @@ void ARX_PLAYER_ComputePlayerFullStats() {
 	player.m_skillMod.projectile = 0;
 	player.m_skillMod.closeCombat = 0;
 	player.m_skillMod.defense = 0;
-	player.Mod_armor_class = 0;
-	player.Mod_resist_magic = 0;
-	player.Mod_resist_poison = 0;
-	player.Mod_Critical_Hit = 0;
-	player.Mod_damages = 0;
+	player.m_miscMod.armorClass = 0;
+	player.m_miscMod.resistMagic = 0;
+	player.m_miscMod.resistPoison = 0;
+	player.m_miscMod.criticalHit = 0;
+	player.m_miscMod.damages = 0;
 	
 	// TODO why do this now and not after skills/stats have been calculated?
 	ARX_EQUIPMENT_IdentifyAll();
@@ -551,10 +551,10 @@ void ARX_PLAYER_ComputePlayerFullStats() {
 			long n = spellHandle;
 			switch (spells[n].m_type) {
 				case SPELL_ARMOR:
-					player.Mod_armor_class += spells[n].m_caster_level;
+					player.m_miscMod.armorClass += spells[n].m_caster_level;
 					break;
 				case SPELL_LOWER_ARMOR:
-					player.Mod_armor_class -= spells[n].m_caster_level;
+					player.m_miscMod.armorClass -= spells[n].m_caster_level;
 					break;
 				case SPELL_CURSE:
 					player.m_attributeMod.strength -= spells[n].m_caster_level;
@@ -594,11 +594,11 @@ void ARX_PLAYER_ComputePlayerFullStats() {
 		skillMod.defense = 100;
 		player.m_skillMod.add(skillMod);
 		
-		player.Mod_resist_magic += 100;
-		player.Mod_resist_poison += 100;
-		player.Mod_Critical_Hit += 5;
-		player.Mod_damages += 2;
-		player.Mod_armor_class += 100;
+		player.m_miscMod.resistMagic += 100;
+		player.m_miscMod.resistPoison += 100;
+		player.m_miscMod.criticalHit += 5;
+		player.m_miscMod.damages += 2;
+		player.m_miscMod.armorClass += 100;
 		player.Full_AimTime = 100;
 	}
 	if(sp_max) {
@@ -615,11 +615,11 @@ void ARX_PLAYER_ComputePlayerFullStats() {
 		player.m_skillMod.projectile += 50;
 		player.m_skillMod.closeCombat += 50;
 		player.m_skillMod.defense += 50;
-		player.Mod_resist_magic += 10;
-		player.Mod_resist_poison += 10;
-		player.Mod_Critical_Hit += 50;
-		player.Mod_damages += 10;
-		player.Mod_armor_class += 20;
+		player.m_miscMod.resistMagic += 10;
+		player.m_miscMod.resistPoison += 10;
+		player.m_miscMod.criticalHit += 50;
+		player.m_miscMod.damages += 10;
+		player.m_miscMod.armorClass += 20;
 		player.Full_AimTime = 100;
 	}
 	if(SPECIAL_PNUX) {
@@ -636,21 +636,21 @@ void ARX_PLAYER_ComputePlayerFullStats() {
 		player.m_skillMod.projectile += Random::get(0, 20);
 		player.m_skillMod.closeCombat += Random::get(0, 20);
 		player.m_skillMod.defense += Random::get(0, 30);
-		player.Mod_resist_magic += Random::get(0, 20);
-		player.Mod_resist_poison += Random::get(0, 20);
-		player.Mod_Critical_Hit += Random::get(0, 20);
-		player.Mod_damages += Random::get(0, 20);
-		player.Mod_armor_class += Random::get(0, 20);
+		player.m_miscMod.resistMagic += Random::get(0, 20);
+		player.m_miscMod.resistPoison += Random::get(0, 20);
+		player.m_miscMod.criticalHit += Random::get(0, 20);
+		player.m_miscMod.damages += Random::get(0, 20);
+		player.m_miscMod.armorClass += Random::get(0, 20);
 	}
 	if(cur_rf == 3) {
 		player.m_attributeMod.mind += 10;
 		player.m_skillMod.casting += 100;
 		player.m_skillMod.etheralLink += 100;
 		player.m_skillMod.objectKnowledge += 100;
-		player.Mod_resist_magic += 20;
-		player.Mod_resist_poison += 20;
-		player.Mod_damages += 1;
-		player.Mod_armor_class += 5;
+		player.m_miscMod.resistMagic += 20;
+		player.m_miscMod.resistPoison += 20;
+		player.m_miscMod.damages += 1;
+		player.m_miscMod.armorClass += 5;
 	}
 	
 	
@@ -771,28 +771,28 @@ void ARX_PLAYER_ComputePlayerFullStats() {
 	                           + -5.f);
 	
 	// Calculate equipment modifiers for stats
-	player.Mod_armor_class += getEquipmentModifier(
+	player.m_miscMod.armorClass += getEquipmentModifier(
 		IO_EQUIPITEM_ELEMENT_Armor_Class, base_armor_class
 	);
-	player.Mod_resist_magic += getEquipmentModifier(
+	player.m_miscMod.resistMagic += getEquipmentModifier(
 		IO_EQUIPITEM_ELEMENT_Resist_Magic, base_resist_magic
 	);
-	player.Mod_resist_poison += getEquipmentModifier(
+	player.m_miscMod.resistPoison += getEquipmentModifier(
 		IO_EQUIPITEM_ELEMENT_Resist_Poison, base_resist_poison
 	);
-	player.Mod_Critical_Hit += getEquipmentModifier(
+	player.m_miscMod.criticalHit += getEquipmentModifier(
 		IO_EQUIPITEM_ELEMENT_Critical_Hit, base_critical_hit
 	);
-	player.Mod_damages += getEquipmentModifier(
+	player.m_miscMod.damages += getEquipmentModifier(
 		IO_EQUIPITEM_ELEMENT_Damages, base_damages
 	);
 	
 	// Calculate full stats
-	player.Full_armor_class = (int)std::max(0.f, base_armor_class + player.Mod_armor_class);
-	player.Full_resist_magic = (int)std::max(0.f, base_resist_magic + player.Mod_resist_magic);
-	player.Full_resist_poison = (int)std::max(0.f, base_resist_poison + player.Mod_resist_poison);
-	player.Full_Critical_Hit = std::max(0.f, base_critical_hit + player.Mod_Critical_Hit);
-	player.Full_damages = std::max(0.f, base_damages + player.Mod_damages);
+	player.Full_armor_class = (int)std::max(0.f, base_armor_class + player.m_miscMod.armorClass);
+	player.Full_resist_magic = (int)std::max(0.f, base_resist_magic + player.m_miscMod.resistMagic);
+	player.Full_resist_poison = (int)std::max(0.f, base_resist_poison + player.m_miscMod.resistPoison);
+	player.Full_Critical_Hit = std::max(0.f, base_critical_hit + player.m_miscMod.criticalHit);
+	player.Full_damages = std::max(0.f, base_damages + player.m_miscMod.damages);
 	
 	
 	/////////////////////////////////////////////////////////////////////////////////////

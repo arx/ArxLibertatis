@@ -209,15 +209,18 @@ struct ARXCHARACTER {
 		}
 	};
 	
+	struct PlayerMisc {
+		float armorClass;
+		float resistMagic;
+		float resistPoison;
+		float criticalHit;
+		float damages;
+	};
+	
 	// Modifier Values (Items, curses, etc...)
 	PlayerAttribute m_attributeMod;
 	PlayerSkill m_skillMod;
-	
-	float Mod_armor_class;
-	float Mod_resist_magic;
-	float Mod_resist_poison;
-	float Mod_Critical_Hit;
-	float Mod_damages;
+	PlayerMisc m_miscMod;
 	
 	// Full Frame values (including items)
 	PlayerAttribute m_attributeFull;

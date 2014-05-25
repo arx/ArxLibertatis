@@ -3825,9 +3825,9 @@ void ARX_INTERFACE_ManageOpenedBook()
 		ss4 << F2L_RoundUp(player.Full_damages);
 		tex = ss4.str();
 		
-		if (player.Mod_damages < 0.f)
+		if (player.m_miscMod.damages < 0.f)
 			color = Color::red;
-		else if (player.Mod_damages > 0.f)
+		else if (player.m_miscMod.damages > 0.f)
 			color = Color::blue;
 		else
 			color = Color::black;
@@ -3839,9 +3839,9 @@ void ARX_INTERFACE_ManageOpenedBook()
 		ss4 << F2L_RoundUp(ac);
 		tex = ss4.str();
 		
-		if (player.Mod_armor_class < 0.f)
+		if (player.m_miscMod.armorClass < 0.f)
 			color = Color::red;
-		else if (player.Mod_armor_class > 0.f)
+		else if (player.m_miscMod.armorClass > 0.f)
 			color = Color::blue;
 		else
 			color = Color::black;
@@ -3852,9 +3852,9 @@ void ARX_INTERFACE_ManageOpenedBook()
 		ss4 << std::setw(3) << std::setprecision(0) << F2L_RoundUp( player.Full_resist_magic );
 		tex = ss4.str();
 		
-		if (player.Mod_resist_magic < 0.f)
+		if (player.m_miscMod.resistMagic < 0.f)
 			color = Color::red;
-		else if (player.Mod_resist_magic > 0.f)
+		else if (player.m_miscMod.resistMagic > 0.f)
 			color = Color::blue;
 		else
 			color = Color::black;
@@ -3865,9 +3865,9 @@ void ARX_INTERFACE_ManageOpenedBook()
 		ss4 << F2L_RoundUp( player.Full_resist_poison );
 		tex = ss4.str();
 
-		if (player.Mod_resist_poison<0.f)
+		if (player.m_miscMod.resistPoison<0.f)
 			color = Color::red;
-		else if (player.Mod_resist_poison>0.f)
+		else if (player.m_miscMod.resistPoison>0.f)
 			color = Color::blue;
 		else
 			color = Color::black;
