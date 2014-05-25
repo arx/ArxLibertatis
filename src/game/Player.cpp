@@ -605,55 +605,80 @@ void ARX_PLAYER_ComputePlayerFullStats() {
 		player.Full_AimTime = 100;
 	}
 	if(sp_max) {
-		player.m_attributeMod.strength += 5;
-		player.m_attributeMod.mind += 5;
-		player.m_attributeMod.constitution += 5;
-		player.m_attributeMod.dexterity += 5;
-		player.m_skillMod.stealth += 50;
-		player.m_skillMod.mecanism += 50;
-		player.m_skillMod.intuition += 50;
-		player.m_skillMod.etheralLink += 50;
-		player.m_skillMod.objectKnowledge += 50;
-		player.m_skillMod.casting += 50;
-		player.m_skillMod.projectile += 50;
-		player.m_skillMod.closeCombat += 50;
-		player.m_skillMod.defense += 50;
-		player.m_miscMod.resistMagic += 10;
-		player.m_miscMod.resistPoison += 10;
-		player.m_miscMod.criticalHit += 50;
-		player.m_miscMod.damages += 10;
-		player.m_miscMod.armorClass += 20;
+		ARXCHARACTER::PlayerAttribute attributeMod;
+		attributeMod.strength = 5;
+		attributeMod.mind = 5;
+		attributeMod.constitution = 5;
+		attributeMod.dexterity = 5;
+		player.m_attributeMod.add(attributeMod);
+		
+		ARXCHARACTER::PlayerSkill skillMod;
+		skillMod.stealth = 50;
+		skillMod.mecanism = 50;
+		skillMod.intuition = 50;
+		skillMod.etheralLink = 50;
+		skillMod.objectKnowledge = 50;
+		skillMod.casting = 50;
+		skillMod.projectile = 50;
+		skillMod.closeCombat = 50;
+		skillMod.defense = 50;
+		player.m_skillMod.add(skillMod);
+		
+		ARXCHARACTER::PlayerMisc miscMod;
+		miscMod.resistMagic = 10;
+		miscMod.resistPoison = 10;
+		miscMod.criticalHit = 50;
+		miscMod.damages = 10;
+		miscMod.armorClass = 20;
+		player.m_miscMod.add(miscMod);
+		
 		player.Full_AimTime = 100;
 	}
 	if(SPECIAL_PNUX) {
-		player.m_attributeMod.strength += Random::get(0, 5);
-		player.m_attributeMod.mind += Random::get(0, 5);
-		player.m_attributeMod.constitution += Random::get(0, 5);
-		player.m_attributeMod.dexterity += Random::get(0, 5);
-		player.m_skillMod.stealth += Random::get(0, 20);
-		player.m_skillMod.mecanism += Random::get(0, 20);
-		player.m_skillMod.intuition += Random::get(0, 20);
-		player.m_skillMod.etheralLink += Random::get(0, 20);
-		player.m_skillMod.objectKnowledge += Random::get(0, 20);
-		player.m_skillMod.casting += Random::get(0, 20);
-		player.m_skillMod.projectile += Random::get(0, 20);
-		player.m_skillMod.closeCombat += Random::get(0, 20);
-		player.m_skillMod.defense += Random::get(0, 30);
-		player.m_miscMod.resistMagic += Random::get(0, 20);
-		player.m_miscMod.resistPoison += Random::get(0, 20);
-		player.m_miscMod.criticalHit += Random::get(0, 20);
-		player.m_miscMod.damages += Random::get(0, 20);
-		player.m_miscMod.armorClass += Random::get(0, 20);
+		ARXCHARACTER::PlayerAttribute attributeMod;
+		attributeMod.strength = Random::get(0, 5);
+		attributeMod.mind = Random::get(0, 5);
+		attributeMod.constitution = Random::get(0, 5);
+		attributeMod.dexterity = Random::get(0, 5);
+		player.m_attributeMod.add(attributeMod);
+		
+		ARXCHARACTER::PlayerSkill skillMod;
+		skillMod.stealth = Random::get(0, 20);
+		skillMod.mecanism = Random::get(0, 20);
+		skillMod.intuition = Random::get(0, 20);
+		skillMod.etheralLink = Random::get(0, 20);
+		skillMod.objectKnowledge = Random::get(0, 20);
+		skillMod.casting = Random::get(0, 20);
+		skillMod.projectile = Random::get(0, 20);
+		skillMod.closeCombat = Random::get(0, 20);
+		skillMod.defense = Random::get(0, 30);
+		player.m_skillMod.add(skillMod);
+		
+		ARXCHARACTER::PlayerMisc miscMod;
+		miscMod.resistMagic = Random::get(0, 20);
+		miscMod.resistPoison = Random::get(0, 20);
+		miscMod.criticalHit = Random::get(0, 20);
+		miscMod.damages = Random::get(0, 20);
+		miscMod.armorClass = Random::get(0, 20);
+		player.m_miscMod.add(miscMod);
 	}
 	if(cur_rf == 3) {
-		player.m_attributeMod.mind += 10;
-		player.m_skillMod.casting += 100;
-		player.m_skillMod.etheralLink += 100;
-		player.m_skillMod.objectKnowledge += 100;
-		player.m_miscMod.resistMagic += 20;
-		player.m_miscMod.resistPoison += 20;
-		player.m_miscMod.damages += 1;
-		player.m_miscMod.armorClass += 5;
+		ARXCHARACTER::PlayerAttribute attributeMod;
+		attributeMod.mind = 10;
+		player.m_attributeMod.add(attributeMod);
+		
+		ARXCHARACTER::PlayerSkill skillMod;
+		skillMod.casting = 100;
+		skillMod.etheralLink = 100;
+		skillMod.objectKnowledge = 100;
+		player.m_skillMod.add(skillMod);
+		
+		ARXCHARACTER::PlayerMisc miscMod;
+		miscMod.resistMagic = 20;
+		miscMod.resistPoison = 20;
+		miscMod.damages = 1;
+		miscMod.armorClass = 5;
+		player.m_miscMod.add(miscMod);
 	}
 	
 	
