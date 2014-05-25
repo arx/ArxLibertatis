@@ -498,11 +498,7 @@ void ARX_PLAYER_ComputePlayerFullStats() {
 	
 	// TODO why do this now and not after skills/stats have been calculated?
 	ARX_EQUIPMENT_IdentifyAll();
-
-	player.Full_Weapon_Type = ARX_EQUIPMENT_GetPlayerWeaponType();
-
-
-
+	
 	//CHECK OVERFLOW
 	// TODO why not use relative modfiers?
 	float fFullAimTime	= getEquipmentBaseModifier(IO_EQUIPITEM_ELEMENT_AimTime);

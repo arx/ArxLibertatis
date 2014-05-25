@@ -263,7 +263,6 @@ struct ARXCHARACTER {
 	PlayerMisc m_miscFull;
 	
 	long Full_AimTime;
-	long Full_Weapon_Type;
 	float Full_life;
 	float Full_maxlife;
 	float Full_maxmana;
