@@ -717,69 +717,70 @@ void ARX_PLAYER_ComputePlayerFullStats() {
 	// Skills
 	
 	// Calculate base skills
-	float base_stealth          = player.m_skill.stealth
+	ARXCHARACTER::PlayerSkill skillBase;
+	skillBase.stealth          = player.m_skill.stealth
 	                              + player.m_attributeFull.dexterity * 2.f;
-	float base_mecanism         = player.m_skill.mecanism
+	skillBase.mecanism         = player.m_skill.mecanism
 	                              + player.m_attributeFull.dexterity
 	                              + player.m_attributeFull.mind;
-	float base_intuition        = player.m_skill.intuition
+	skillBase.intuition        = player.m_skill.intuition
 	                              + player.m_attributeFull.mind * 2.f;
-	float base_ethereal_link    = player.m_skill.etheralLink
+	skillBase.etheralLink    = player.m_skill.etheralLink
 	                              + player.m_attributeFull.mind * 2.f;
-	float base_object_knowledge = player.m_skill.objectKnowledge
+	skillBase.objectKnowledge = player.m_skill.objectKnowledge
 	                              + player.m_attributeFull.mind * 1.5f
 	                              + player.m_attributeFull.dexterity * 0.5f
 	                              + player.m_attributeFull.strength * 0.5f;
-	float base_casting          = player.m_skill.casting
+	skillBase.casting          = player.m_skill.casting
 	                              + player.m_attributeFull.mind * 2.f;
-	float base_projectile       = player.m_skill.projectile
+	skillBase.projectile       = player.m_skill.projectile
 	                              + player.m_attributeFull.dexterity * 2.f
 	                              + player.m_attributeFull.strength;
-	float base_close_combat     = player.m_skill.closeCombat
+	skillBase.closeCombat     = player.m_skill.closeCombat
 	                              + player.m_attributeFull.dexterity
 	                              + player.m_attributeFull.strength * 2.f;
-	float base_defense          = player.m_skill.defense
+	skillBase.defense          = player.m_skill.defense
 	                              + player.m_attributeFull.constitution * 3;
 	
 	// Calculate equipment modifiers for skills
 	player.m_skillMod.stealth += getEquipmentModifier(
-		IO_EQUIPITEM_ELEMENT_Stealth, base_stealth
+		IO_EQUIPITEM_ELEMENT_Stealth, skillBase.stealth
 	);
 	player.m_skillMod.mecanism += getEquipmentModifier(
-		IO_EQUIPITEM_ELEMENT_Mecanism, base_mecanism
+		IO_EQUIPITEM_ELEMENT_Mecanism, skillBase.mecanism
 	);
 	player.m_skillMod.intuition += getEquipmentModifier(
-		IO_EQUIPITEM_ELEMENT_Intuition, base_intuition
+		IO_EQUIPITEM_ELEMENT_Intuition, skillBase.intuition
 	);
 	player.m_skillMod.etheralLink += getEquipmentModifier(
-		IO_EQUIPITEM_ELEMENT_Etheral_Link, base_ethereal_link
+		IO_EQUIPITEM_ELEMENT_Etheral_Link, skillBase.etheralLink
 	);
 	player.m_skillMod.objectKnowledge += getEquipmentModifier(
-		IO_EQUIPITEM_ELEMENT_Object_Knowledge, base_object_knowledge
+		IO_EQUIPITEM_ELEMENT_Object_Knowledge, skillBase.objectKnowledge
 	);
 	player.m_skillMod.casting += getEquipmentModifier(
-		IO_EQUIPITEM_ELEMENT_Casting, base_casting
+		IO_EQUIPITEM_ELEMENT_Casting, skillBase.casting
 	);
 	player.m_skillMod.projectile += getEquipmentModifier(
-		IO_EQUIPITEM_ELEMENT_Projectile, base_projectile
+		IO_EQUIPITEM_ELEMENT_Projectile, skillBase.projectile
 	);
 	player.m_skillMod.closeCombat += getEquipmentModifier(
-		IO_EQUIPITEM_ELEMENT_Close_Combat, base_close_combat
+		IO_EQUIPITEM_ELEMENT_Close_Combat, skillBase.closeCombat
 	);
 	player.m_skillMod.defense += getEquipmentModifier(
-		IO_EQUIPITEM_ELEMENT_Defense, base_defense
+		IO_EQUIPITEM_ELEMENT_Defense, skillBase.defense
 	);
 	
 	// Calculate full skills
-	player.m_skillFull.stealth = base_stealth + player.m_skillMod.stealth;
-	player.m_skillFull.mecanism = base_mecanism + player.m_skillMod.mecanism;
-	player.m_skillFull.intuition = base_intuition + player.m_skillMod.intuition;
-	player.m_skillFull.etheralLink = base_ethereal_link + player.m_skillMod.etheralLink;
-	player.m_skillFull.objectKnowledge = base_object_knowledge + player.m_skillMod.objectKnowledge;
-	player.m_skillFull.casting = base_casting + player.m_skillMod.casting;
-	player.m_skillFull.projectile = base_projectile + player.m_skillMod.projectile;
-	player.m_skillFull.closeCombat = base_close_combat + player.m_skillMod.closeCombat;
-	player.m_skillFull.defense = base_defense + player.m_skillMod.defense;
+	player.m_skillFull.stealth = skillBase.stealth + player.m_skillMod.stealth;
+	player.m_skillFull.mecanism = skillBase.mecanism + player.m_skillMod.mecanism;
+	player.m_skillFull.intuition = skillBase.intuition + player.m_skillMod.intuition;
+	player.m_skillFull.etheralLink = skillBase.etheralLink + player.m_skillMod.etheralLink;
+	player.m_skillFull.objectKnowledge = skillBase.objectKnowledge + player.m_skillMod.objectKnowledge;
+	player.m_skillFull.casting = skillBase.casting + player.m_skillMod.casting;
+	player.m_skillFull.projectile = skillBase.projectile + player.m_skillMod.projectile;
+	player.m_skillFull.closeCombat = skillBase.closeCombat + player.m_skillMod.closeCombat;
+	player.m_skillFull.defense = skillBase.defense + player.m_skillMod.defense;
 	
 	
 	/////////////////////////////////////////////////////////////////////////////////////
