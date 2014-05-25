@@ -265,7 +265,7 @@ float ARX_DAMAGES_DamagePlayer(float dmg, DamageType type, long source) {
 				pio = entities[source];
 
 			if(pio && pio->poisonous && pio->poisonous_count != 0) {
-				if(rnd() * 100.f > player.resist_poison) {
+				if(rnd() * 100.f > player.m_misc.resistPoison) {
 					player.poison += pio->poisonous;
 				}
 
@@ -643,7 +643,7 @@ float ARX_DAMAGES_DealDamages(long target, float dmg, long source, DamageType fl
 
 	if(target == 0) {
 		if(flags & DAMAGE_TYPE_POISON) {
-			if(rnd() * 100.f > player.resist_poison) {
+			if(rnd() * 100.f > player.m_misc.resistPoison) {
 				damagesdone = dmg;
 				player.poison += damagesdone;
 			} else {
@@ -1075,7 +1075,7 @@ void ARX_DAMAGES_UpdateDamage(DamageHandle j, float tim) {
 						// TODO copy-paste
 						if(i == 0) {
 							if(damage.params.type & DAMAGE_TYPE_POISON) {
-								if(rnd() * 100.f > player.resist_poison) {
+								if(rnd() * 100.f > player.m_misc.resistPoison) {
 									// Failed Saving Throw
 									damagesdone = dmg; 
 									player.poison += damagesdone;

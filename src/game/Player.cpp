@@ -456,28 +456,28 @@ static void ARX_PLAYER_ComputePlayerStats() {
 	
 	float base_defense = player.m_skill.defense + player.m_attribute.constitution * 3;
 	float fCalc = base_defense * ( 1.0f / 10 ) - 1 ;
-	player.armor_class = checked_range_cast<unsigned char>(fCalc);
+	player.m_misc.armorClass = checked_range_cast<unsigned char>(fCalc);
 
 
-	if (player.armor_class < 1) player.armor_class = 1;
+	if (player.m_misc.armorClass < 1) player.m_misc.armorClass = 1;
 
 	float base_casting = player.m_skill.casting + player.m_attribute.mind * 2.f;
-	player.resist_magic = (unsigned char)(float)(player.m_attribute.mind * 2.f
+	player.m_misc.resistMagic = (unsigned char)(float)(player.m_attribute.mind * 2.f
 	                      * (1.f + base_casting * ( 1.0f / 200 )));
 
 	fCalc = player.m_attribute.constitution * 2 + (base_defense * ( 1.0f / 4 ));
-	player.resist_poison = checked_range_cast<unsigned char>(fCalc);
+	player.m_misc.resistPoison = checked_range_cast<unsigned char>(fCalc);
 
 
-	player.damages = (player.m_attribute.strength - 10) * ( 1.0f / 2 );
+	player.m_misc.damages = (player.m_attribute.strength - 10) * ( 1.0f / 2 );
 
-	if (player.damages < 1.f) player.damages = 1.f;
+	if (player.m_misc.damages < 1.f) player.m_misc.damages = 1.f;
 
 	player.AimTime = 1500;
 	
 	float base_close_combat = player.m_skill.closeCombat
 	                          + player.m_attribute.dexterity + player.m_attribute.strength * 2.f;
-	player.Critical_Hit = (float)(player.m_attribute.dexterity - 9) * 2.f
+	player.m_misc.criticalHit = (float)(player.m_attribute.dexterity - 9) * 2.f
 	                      + base_close_combat * ( 1.0f / 5 );
 }
 
@@ -1059,7 +1059,7 @@ void ARX_PLAYER_Modify_XP(long val) {
  */
 void ARX_PLAYER_Poison(float val) {
 	// Make a poison saving throw to see if player is affected
-	if(rnd() * 100.f > player.resist_poison) {
+	if(rnd() * 100.f > player.m_misc.resistPoison) {
 		player.poison += val;
 		ARX_SOUND_PlayInterface(SND_PLAYER_POISONED);
 	}
@@ -1137,7 +1137,7 @@ void ARX_PLAYER_FrameCheck(float Framedelay)
 				if(faster < 0.f)
 					faster = 0.f;
 
-				if(rnd() * 100.f > player.resist_poison + faster) {
+				if(rnd() * 100.f > player.m_misc.resistPoison + faster) {
 					float dmg = cp * ( 1.0f / 3 );
 
 					if(player.lifePool.current - dmg <= 0.f)

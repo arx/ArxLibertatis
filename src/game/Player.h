@@ -236,8 +236,8 @@ struct ARXCHARACTER {
 	// true (naked) Player Values
 	PlayerAttribute m_attribute;
 	PlayerSkill m_skill;
+	PlayerMisc m_misc;
 	
-	float Critical_Hit;
 	long AimTime;
 	
 	ResourcePool lifePool;
@@ -251,15 +251,11 @@ struct ARXCHARACTER {
 	
 	unsigned char level;
 	
-	unsigned char armor_class;
-	unsigned char resist_magic;
-	unsigned char resist_poison;
 	long xp;
 	char skin;
 	
 	RuneFlags rune_flags;
 	TextureContainer * heads[5];
-	float damages;
 	float poison;
 	float hunger;
 	PlayerFlags playerflags;
