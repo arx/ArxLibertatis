@@ -1999,46 +1999,48 @@ void ManageCasseDArme(Entity * io)
 				for (size_t j = 0; j < INVENTORY_Y; j++) {
 					for (size_t i = 0; i < INVENTORY_X; i++) {
 						
-						if ((inventory[iNbBag][i][j].io) &&
-								(inventory[iNbBag][i][j].io != io) &&
-								((inventory[iNbBag][i][j].io->type_flags & OBJECT_TYPE_DAGGER) ||
-								 (inventory[iNbBag][i][j].io->type_flags & OBJECT_TYPE_1H) ||
-								 (inventory[iNbBag][i][j].io->type_flags & OBJECT_TYPE_2H) ||
-								 (inventory[iNbBag][i][j].io->type_flags & OBJECT_TYPE_BOW)))
+						Entity * bagEntity = inventory[iNbBag][i][j].io;
+						
+						if ((bagEntity) &&
+								(bagEntity != io) &&
+								((bagEntity->type_flags & OBJECT_TYPE_DAGGER) ||
+								 (bagEntity->type_flags & OBJECT_TYPE_1H) ||
+								 (bagEntity->type_flags & OBJECT_TYPE_2H) ||
+								 (bagEntity->type_flags & OBJECT_TYPE_BOW)))
 						{
 
 							if ((io->ioflags & IO_ITEM) &&
-									(inventory[iNbBag][i][j].io->ioflags & IO_ITEM) &&
-									(inventory[iNbBag][i][j].io->_itemdata->equipitem)
+									(bagEntity->ioflags & IO_ITEM) &&
+									(bagEntity->_itemdata->equipitem)
 							) {
-								if(inventory[iNbBag][i][j].io->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Damages].value == io->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Damages].value) {
-									pIOChangeWeapon = inventory[iNbBag][i][j].io;
+								if(bagEntity->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Damages].value == io->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Damages].value) {
+									pIOChangeWeapon = bagEntity;
 									lChangeWeapon = 2;
 									bStop = true;
 								} else {
-									if (inventory[iNbBag][i][j].io->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Damages].value > io->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Damages].value) {
+									if (bagEntity->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Damages].value > io->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Damages].value) {
 										if(pObjMin) {
-											if(inventory[iNbBag][i][j].io->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Damages].value < pObjMin->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Damages].value) {
-												pObjMin = inventory[iNbBag][i][j].io;
+											if(bagEntity->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Damages].value < pObjMin->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Damages].value) {
+												pObjMin = bagEntity;
 											}
 										} else {
-											pObjMin = inventory[iNbBag][i][j].io;
+											pObjMin = bagEntity;
 										}
 									} else {
-										if(inventory[iNbBag][i][j].io->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Damages].value < io->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Damages].value) {
+										if(bagEntity->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Damages].value < io->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Damages].value) {
 											if(pObjMax) {
-												if(inventory[iNbBag][i][j].io->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Damages].value > pObjMax->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Damages].value) {
-													pObjMax = inventory[iNbBag][i][j].io;
+												if(bagEntity->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Damages].value > pObjMax->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Damages].value) {
+													pObjMax = bagEntity;
 												}
 											} else {
-												pObjMax = inventory[iNbBag][i][j].io;
+												pObjMax = bagEntity;
 											}
 										}
 									}
 								}
 							} else {
 								if(!pObjFIX) {
-									pObjFIX = inventory[iNbBag][i][j].io;
+									pObjFIX = bagEntity;
 								}
 							}
 						}
