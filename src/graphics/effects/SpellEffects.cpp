@@ -65,9 +65,7 @@ void CSpellFx::SetDuration(const unsigned long ulaDuration) {
 
 	if(ulDuration <= 0)
 		ulDuration = 100;
-
-	fOneOnDuration = 1.f / (float)(ulDuration);
-
+	
 	ulCurrentTime = 0;
 }
 

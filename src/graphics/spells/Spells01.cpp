@@ -298,8 +298,10 @@ void CMagicMissile::Render()
 			GRenderer->SetTexture(0, tex_mm);
 	}
 
-	if(bMove)
+	if(bMove) {
+		float fOneOnDuration = 1.f / (float)(ulDuration);
 		fTrail = (ulCurrentTime * fOneOnDuration) * (iBezierPrecision + 2) * 5;
+	}
 	
 	newpos = lastpos = pathways[0].p;
 	

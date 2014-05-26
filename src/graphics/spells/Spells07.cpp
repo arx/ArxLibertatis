@@ -376,6 +376,7 @@ void CLightning::Render()
 	if(ulCurrentTime >= ulDuration)
 		return;
 
+	float fOneOnDuration = 1.f / (float)(ulDuration);
 	falpha = 1.f - (((float)(ulCurrentTime)) * fOneOnDuration); 
 
 	if(falpha > 1.f)

@@ -69,9 +69,6 @@ class CSpellFx
 		float	fManaCostToLaunch;
 		float	fManaCostPerSecond;
 
-		float	fOneOnDuration;
-
-
 	public:
 		unsigned long ulDuration;
 		unsigned long ulCurrentTime;

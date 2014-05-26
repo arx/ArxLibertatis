@@ -199,6 +199,7 @@ void CControlTarget::Render()
 	int n = BEZIERPrecision;
 	float delta = 1.0f / n;
 
+	float fOneOnDuration = 1.f / (float)(ulDuration);
 	fTrail = (ulCurrentTime * fOneOnDuration) * 9 * (n + 2);
 
 	Vec3f v;

@@ -491,6 +491,7 @@ void CIceProjectile::Render()
 	GRenderer->SetBlendFunc(Renderer::BlendInvDstColor, Renderer::BlendOne);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
+	float fOneOnDuration = 1.f / (float)(ulDuration);
 	iMax = (int)((iNumber * 2) * fOneOnDuration * ulCurrentTime);
 
 	if(iMax > iNumber)
