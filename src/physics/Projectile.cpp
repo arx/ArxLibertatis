@@ -518,15 +518,17 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 
 					thrownObj->flags &= ~ATO_MOVING;
 					thrownObj->velocity = 0.f;
-					char weapon_material[64] = "dagger";
+					
 					string bkg_material = "earth";
 
 					if(ep && ep->tex && !ep->tex->m_texName.empty())
 						bkg_material = GetMaterialString(ep->tex->m_texName);
 
-					if(ValidIONum(thrownObj->source))
-						ARX_SOUND_PlayCollision(weapon_material, bkg_material, 1.f, 1.f, v0,
-												entities[thrownObj->source]);
+					if(ValidIONum(thrownObj->source)) {
+						char weapon_material[64] = "dagger";
+						
+						ARX_SOUND_PlayCollision(weapon_material, bkg_material, 1.f, 1.f, v0, entities[thrownObj->source]);
+					}
 
 					thrownObj->position = original_pos;
 					j = 200;
@@ -539,12 +541,13 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 
 					thrownObj->flags &= ~ATO_MOVING;
 					thrownObj->velocity = 0.f;
-					char weapon_material[64] = "dagger";
-					char bkg_material[64] = "earth";
-
-					if (ValidIONum(thrownObj->source))
-						ARX_SOUND_PlayCollision(weapon_material, bkg_material, 1.f, 1.f, v0,
-												entities[thrownObj->source]);
+					
+					if(ValidIONum(thrownObj->source)) {
+						char weapon_material[64] = "dagger";
+						char bkg_material[64] = "earth";
+						
+						ARX_SOUND_PlayCollision(weapon_material, bkg_material, 1.f, 1.f, v0, entities[thrownObj->source]);
+					}
 
 					thrownObj->position = original_pos;
 					j = 200;
