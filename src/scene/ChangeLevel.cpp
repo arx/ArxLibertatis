@@ -1171,7 +1171,6 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 	{
 		ARX_CHANGELEVEL_VARIABLE_SAVE * avs = (ARX_CHANGELEVEL_VARIABLE_SAVE *)(dat + pos);
 		memset(avs, 0, sizeof(ARX_CHANGELEVEL_VARIABLE_SAVE));
-		long count;
 
 		switch (io->script.lvar[i].type)
 		{
@@ -1180,7 +1179,8 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 				if ((io->script.lvar[i].name[0] == '$') || (io->script.lvar[i].name[0] == '\xA3'))
 				{
 					strcpy(avs->name, io->script.lvar[i].name);
-
+					
+					long count;
 					if (io->script.lvar[i].text)
 						count = strlen(io->script.lvar[i].text);
 					else
