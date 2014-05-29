@@ -84,7 +84,7 @@ public:
 	 *
 	 * @note This should be called BEFORE starting the thread.
 	 *
-	 * @param threadName The thread name.
+	 * \param threadName The thread name.
 	 */
 	void setThreadName(const std::string & threadName);
 

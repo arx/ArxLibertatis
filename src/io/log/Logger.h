@@ -128,12 +128,12 @@ public:
 	
 	/*!
 	 * Set the log level for a file or group of files.
-	 * @param component Path component of all files to set the log level for.
+	 * \param component Path component of all files to set the log level for.
 	 *               This must be either 'src', 'tools' or a subdirectory,
 	 *               or the basename of a contained file (excluding the extension).
 	 *               The order in which log levels are set is ignored,
 	 *               but more specific prefixes overwrite more general ones.
-	 * @param level The log level to set. Use log level none to disable logging completely.
+	 * \param level The log level to set. Use log level none to disable logging completely.
 	 */
 	static void set(const std::string & component, LogLevel level);
 	

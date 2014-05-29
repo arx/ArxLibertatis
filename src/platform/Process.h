@@ -31,8 +31,8 @@ namespace platform {
  *
  * The executable's standard output/error is discarded.
  *
- * @param exe  the program to run, either an absolute path or a program name in the PATH.
- * @param args program arguments. The first argument should be the program name/path and
+ * \param exe  the program to run, either an absolute path or a program name in the PATH.
+ * \param args program arguments. The first argument should be the program name/path and
  *             the last argument must be NULL.
  *
  * @return the programs exit code or a negative value on error.
@@ -44,7 +44,7 @@ int run(const char * exe, const char * const args[]);
  *
  * The executable's standard output/error is discarded.
  *
- * @param args program arguments. The first argument is the program to run, either an
+ * \param args program arguments. The first argument is the program to run, either an
  *             absolute path or a program name in the PATH. The last argument must be NULL.
  *
  * @return the programs exit code or a negative value on error.
@@ -58,8 +58,8 @@ inline int run(const char * const args[]) {
  *
  * The executable's standard output/error is discarded.
  *
- * @param exe  the program to run, either an absolute path or a program name in the PATH.
- * @param args program arguments. The first argument should be the program name/path and
+ * \param exe  the program to run, either an absolute path or a program name in the PATH.
+ * \param args program arguments. The first argument should be the program name/path and
  *             the last argument must be NULL.
  *
  * @return the programs exit code or a negative value on error.
@@ -73,8 +73,8 @@ inline int run(const std::string & exe, const char * const args[]) {
  *
  * The program's standard output/error is discarded.
  *
- * @param exe  the program to run, either an absolute path or a program name in the PATH.
- * @param args program arguments. The first argument should be the program name/path and
+ * \param exe  the program to run, either an absolute path or a program name in the PATH.
+ * \param args program arguments. The first argument should be the program name/path and
  *             the last argument must be NULL.
  */
 void runAsync(const char * exe, const char * const args[]);
@@ -84,7 +84,7 @@ void runAsync(const char * exe, const char * const args[]);
  *
  * The program's standard output/error is discarded.
  *
- * @param args program arguments. The first argument is the program to run, either an
+ * \param args program arguments. The first argument is the program to run, either an
  *             absolute path or a program name in the PATH. The last argument must be NULL.
  */
 inline void runAsync(const char * const args[]) {
@@ -96,8 +96,8 @@ inline void runAsync(const char * const args[]) {
  *
  * The program's standard output/error is discarded.
  *
- * @param exe  the program to run, either an absolute path or a program name in the PATH.
- * @param args program arguments. The first argument should be the program name/path and
+ * \param exe  the program to run, either an absolute path or a program name in the PATH.
+ * \param args program arguments. The first argument should be the program name/path and
  *             the last argument must be NULL.
  */
 inline void runAsync(const std::string & exe, const char * const args[]) {
@@ -111,10 +111,10 @@ inline void runAsync(const std::string & exe, const char * const args[]) {
  *
  * The program's standard standard error is discarded.
  *
- * @param exe  the program to run, either an absolute path or a program name in the PATH.
- * @param args program arguments. The first argument should be the program name/path and
+ * \param exe  the program to run, either an absolute path or a program name in the PATH.
+ * \param args program arguments. The first argument should be the program name/path and
  *             the last argument must be NULL.
- * @param unlocalized true if localization environment varuables should be reset.
+ * \param unlocalized true if localization environment varuables should be reset.
  *
  * @return the program's standard output, or an empty string if there was an error.
  */
@@ -126,9 +126,9 @@ std::string getOutputOf(const char * exe, const char * const args[],
  *
  * The program's standard standard error is discarded.
  *
- * @param args program arguments. The first argument is the program to run, either an
+ * \param args program arguments. The first argument is the program to run, either an
  *             absolute path or a program name in the PATH. The last argument must be NULL.
- * @param unlocalized true if localization environment varuables should be reset.
+ * \param unlocalized true if localization environment varuables should be reset.
  *
  * @return the program's standard output, or an empty string if there was an error.
  */
@@ -141,10 +141,10 @@ inline std::string getOutputOf(const char * const args[], bool unlocalized = fal
  *
  * The program's standard standard error is discarded.
  *
- * @param exe  the program to run, either an absolute path or a program name in the PATH.
- * @param args program arguments. The first argument should be the program name/path and
+ * \param exe  the program to run, either an absolute path or a program name in the PATH.
+ * \param args program arguments. The first argument should be the program name/path and
  *             the last argument must be NULL.
- * @param unlocalized true if localization environment varuables should be reset.
+ * \param unlocalized true if localization environment varuables should be reset.
  *
  * @return the program's standard output, or an empty string if there was an error.
  */

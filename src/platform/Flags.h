@@ -176,8 +176,8 @@ public:
  * Declare a flag type using values from a given enum.
  * This should always be used instead of using Flags&lt;Enum&gt; directly.
  * 
- * @param Enum should be an enum with values that have exactly one bit set.
- * @param Flagname is the name for the flag type to be defined.
+ * \param Enum should be an enum with values that have exactly one bit set.
+ * \param Flagname is the name for the flag type to be defined.
  */
 #define DECLARE_FLAGS(Enum, Flagname) typedef Flags<Enum> Flagname;
 

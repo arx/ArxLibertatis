@@ -203,7 +203,7 @@ void ARX_SPEECH_ClearAll();
 
 /*!
  * Add an entry to the conversation view.
- * @param data is a sample name / localised string id
+ * \param data is a sample name / localised string id
  */
 long ARX_SPEECH_AddSpeech(Entity * io, const std::string & data, long mood, SpeechFlags flags = 0);
 void ARX_SPEECH_ReleaseIOSpeech(Entity * io);

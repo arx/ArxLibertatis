@@ -39,7 +39,7 @@ namespace util { namespace cmdline {
 /*!
  * This class is a kind of pointer storage.
  * It is used to indicate that option parameter isn't required.
- * @param T Type of the elements.
+ * \param T Type of the elements.
  */
 template<typename T>
 struct optional {
@@ -72,7 +72,7 @@ struct optional {
 	 * This function exchanges the content of the optional by the content
 	 * of optional, which is another optional of the same type.
 	 *
-	 * @param rh
+	 * \param rh
 	 */
 	void swap(optional & rh) { // never throws
 		T * tmp(m_ptr);

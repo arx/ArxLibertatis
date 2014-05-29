@@ -45,7 +45,7 @@ u64 getTimeUs();
  *
  * Handles wrap around correctly.
  *
- * @param startMs Start time in milliseconds.
+ * \param startMs Start time in milliseconds.
  *
  * @return The number of milliseconds elapsed between now and startMs.
  */
@@ -56,8 +56,8 @@ inline u32 getElapsedMs(u32 startMs);
  *
  * Handles wrap around correctly.
  *
- * @param startMs Start time in milliseconds.
- * @param endMs End time in milliseconds.
+ * \param startMs Start time in milliseconds.
+ * \param endMs End time in milliseconds.
  *
  * @return The number of milliseconds elapsed between the specified time range.
  */
@@ -68,7 +68,7 @@ inline u32 getElapsedMs(u32 startMs, u32 endMs);
  *
  * Handles wrap around correctly.
  *
- * @param startUs Start time in microseconds.
+ * \param startUs Start time in microseconds.
  *
  * @return The number of microseconds elapsed between now and startUs.
  */
@@ -79,8 +79,8 @@ inline u64 getElapsedUs(u64 startUs);
  *
  * Handles wrap around correctly.
  *
- * @param startUs Start time in microseconds.
- * @param endUs End time in microseconds.
+ * \param startUs Start time in microseconds.
+ * \param endUs End time in microseconds.
  *
  * @return The number of microseconds elapsed between the specified time range.
  */

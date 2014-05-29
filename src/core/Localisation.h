@@ -29,7 +29,7 @@ bool initLocalisation();
 
 /*!
  * Returns the localized string for the given key name
- * @param name The string to be looked up
+ * \param name The string to be looked up
  * @return The localized string based on the currently loaded locale file
  */
 std::string getLocalised( const std::string& name, const std::string& default_value = "" );

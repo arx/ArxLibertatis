@@ -123,7 +123,7 @@ public:
 	
 	/*!
 	 * Open a save block.
-	 * @param writable must be true if the block is going to be changed
+	 * \param writable must be true if the block is going to be changed
 	 */
 	bool open(bool writable = false);
 	
@@ -161,9 +161,9 @@ public:
 	 * 
 	 * This is optimized for loading the file named in flush().
 	 * 
-	 * @param savefile the save block to load from
-	 * @param name the file to load
-	 * @param size will be set to the loaded size
+	 * \param savefile the save block to load from
+	 * \param name the file to load
+	 * \param size will be set to the loaded size
 	 * @return a new, malloc-allocated buffer or NULL if eiether the saveblock could not be opened or doesn't contain a file with the given name.
 	 */
 	static char * load(const fs::path & savefile, const std::string & name, size_t & size);

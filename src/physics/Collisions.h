@@ -108,7 +108,7 @@ EERIEPOLY * CheckBackgroundInSphere(const Sphere & sphere);
 bool IsCollidingIO(Entity * io, Entity * ioo);
 
 /*!
- * @param ignoreNoCollisionFlag true if the IO_NO_COLLISIONS on the interactive object should be ignored
+ * \param ignoreNoCollisionFlag true if the IO_NO_COLLISIONS on the interactive object should be ignored
  */
 bool CheckIOInSphere(const Sphere & sphere, long target, bool ignoreNoCollisionFlag = false);
 

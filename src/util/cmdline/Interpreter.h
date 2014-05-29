@@ -55,9 +55,9 @@ struct type_cast;
  * This provides convenient interface for adding new option (the add) method,
  * and executing option handlers by name.
  *
- * @param StringType type of string
+ * \param StringType type of string
  *
- * @param TypeCast type of class that is used to convertation StringType to
+ * \param TypeCast type of class that is used to convertation StringType to
  *   expected type by option handler.
  */
 template<typename StringType, typename TypeCast = type_cast>
@@ -76,10 +76,10 @@ public:
 	 * The option parameters count and their types will be obtained
 	 * automatically from the handler signature.
 	 *
-	 * @param handler This one can either be a pointer to a function or an
+	 * \param handler This one can either be a pointer to a function or an
 	 *                object whose class contains only one operator().
 	 *
-	 * @param option_name "Name" of this option.
+	 * \param option_name "Name" of this option.
 	 *
 	 * @returns none.
 	 *
@@ -107,10 +107,10 @@ public:
 	 *
 	 * This function registrates command options.
 	 *
-	 * @param handler This one can either be a pointer to a function or an
+	 * \param handler This one can either be a pointer to a function or an
 	 *                object whose class contains only one operator().
 	 *
-	 * @param option_name "Name" of this option.
+	 * \param option_name "Name" of this option.
 	 *
 	 * @returns none.
 	 *
@@ -131,7 +131,7 @@ public:
 	 * Removes an option in an interpreter with name.
 	 *
 	 * This function removes an option by name.
-	 * @param option_name Name of the option.
+	 * \param option_name Name of the option.
 	 */
 	void erase(const string_type & option_name) {
 		super_t::erase(option_name);
@@ -140,7 +140,7 @@ public:
 	/*!
 	 * Visits all options.
 	 *
-	 * @param visitor An object or pointer to a function.
+	 * \param visitor An object or pointer to a function.
 	 * @note The visitor has to support call semantic : operator(const op_name_t &).
 	 */
 	template<typename Visitor>
@@ -151,11 +151,11 @@ public:
 	/*!
 	 * Invokes handler by option name with parameters [args_begin, args_end).
 	 *
-	 * @param option_name Name of an option
+	 * \param option_name Name of an option
 	 *
-	 * @param args_begin  Iterator referring to the first argument for the option.
-	 * @param args_optend Iterator referring to the end of arguments to be consumed by \ref optional.
-	 * @param args_end    Iterator referring to the past-the-end argument for the option.
+	 * \param args_begin  Iterator referring to the first argument for the option.
+	 * \param args_optend Iterator referring to the end of arguments to be consumed by \ref optional.
+	 * \param args_end    Iterator referring to the past-the-end argument for the option.
 	 *
 	 * @throws If option isn't found or the handler of this options takes more
 	 *            than required arguments or they can't be converted, an exception
@@ -170,10 +170,10 @@ public:
 	/*!
 	 * Invokes handler by option name with parameters [args_begin, args_end).
 	 *
-	 * @param option_name Name of an option
+	 * \param option_name Name of an option
 	 *
-	 * @param args_begin Iterator referring to the first argument for the option.
-	 * @param args_end   Iterator referring to the past-the-end argument for the option.
+	 * \param args_begin Iterator referring to the first argument for the option.
+	 * \param args_end   Iterator referring to the past-the-end argument for the option.
 	 *
 	 * @throws If option isn't found or the handler of this options takes more
 	 *            than required arguments or they can't be converted, an exception

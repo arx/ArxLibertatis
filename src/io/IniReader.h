@@ -43,7 +43,7 @@ public:
 	/*!
 	 * Parses an input stream for configuration section and respective keys.
 	 * Stores them all in a section map as IniSection objects.
-	 * @param is The input stream with the ini data.
+	 * \param is The input stream with the ini data.
 	 * @return false if there were problems (some data may have been read)
 	 */
 	bool read(std::istream & input);
@@ -52,9 +52,9 @@ public:
 	
 	/*!
 	 * Gets the specified configuration value from the map of ConfigSections
-	 * @param section The section to search in
-	 * @param key The key to look for in the section. Retuns the value of the first key if this is empty.
-	 * @param defaultValue The default value to return if anything doesn't match
+	 * \param section The section to search in
+	 * \param key The key to look for in the section. Retuns the value of the first key if this is empty.
+	 * \param defaultValue The default value to return if anything doesn't match
 	 * @return The value of the key found or the default value otherwise
 	 */
 	const std::string & getKey(const std::string & section, const std::string & key, const std::string & defaultValue) const;
@@ -62,27 +62,27 @@ public:
 	/*!
 	 * Reads an int from the ini and returns its converted int value,
 	 * return the default value if an empty string is found.
-	 * @param section The section to read from
-	 * @param key The key in the section to return
-	 * @param defaultValue The default value to return in the case of an empty string
+	 * \param section The section to read from
+	 * \param key The key in the section to return
+	 * \param defaultValue The default value to return in the case of an empty string
 	 */
 	int getKey(const std::string & section, const std::string & key, int defaultValue) const;
 	
 	/*!
 	 * Reads a float from the ini and returns its converted int value,
 	 * return the default value if an empty string is found.
-	 * @param section The section to read from
-	 * @param key The key in the section to return
-	 * @param default_value The default value to return in the case of an empty string
+	 * \param section The section to read from
+	 * \param key The key in the section to return
+	 * \param default_value The default value to return in the case of an empty string
 	 */
 	float getKey(const std::string & section, const std::string & key, float defaultValue) const;
 	
 	/*!
 	 * Reads a bool from the ini and returns its converted bool value,
 	 * return the default value if an empty string is found.
-	 * @param section The section to read from
-	 * @param key The key in the section to return
-	 * @param default_value The default value to return in the case of an empty string
+	 * \param section The section to read from
+	 * \param key The key in the section to return
+	 * \param default_value The default value to return in the case of an empty string
 	 */
 	bool getKey(const std::string & section, const std::string & key, bool defaultValue) const;
 	

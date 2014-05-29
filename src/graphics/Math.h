@@ -70,8 +70,8 @@ inline float rnd() {
 /*!
  * Generate a random vertor with independently unform distributed components.
  *
- * @param min minimum value for all components (default: 0.f)
- * @param max maximum value for all components (default: 1.f)
+ * \param min minimum value for all components (default: 0.f)
+ * \param max maximum value for all components (default: 1.f)
  */
 inline Vec3f randomVec(float min = 0.f, float max = 1.f) {
 	float range = max - min;
@@ -132,7 +132,7 @@ inline float ffsqrt(float f) {
  * Obtain the approximated inverse of the square root of a float.
  * @brief  This code compute a fast 1 / sqrtf(v) approximation.
  * @note   Originaly from Matthew Jones (Infogrames).
- * @param  pValue  a float, the number we want the square root.
+ * \param  pValue  a float, the number we want the square root.
  * @return The square root of \a fValue, as a float.
  */
 inline float FastRSqrt(float value) {

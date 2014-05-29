@@ -142,11 +142,11 @@ struct ANIM_USE {
 /*!
  * Cancel any existing animation and then start a new one.
  * This will reset the current annimation even if it is the same as the given animation.
- * @param entity           the entity being animated
- * @param layer            the animation layer to change
- * @param animation        the new animation to set
- * @param flags            animation use flags to set after changing the animation
- * @param startAtBeginning force the animation to start at the first keyframe
+ * \param entity           the entity being animated
+ * \param layer            the animation layer to change
+ * \param animation        the new animation to set
+ * \param flags            animation use flags to set after changing the animation
+ * \param startAtBeginning force the animation to start at the first keyframe
  *                         - otherwise it may start at a randomly chosen one
  */
 void changeAnimation(Entity * entity, size_t layer, ANIM_HANDLE * animation,
@@ -154,10 +154,10 @@ void changeAnimation(Entity * entity, size_t layer, ANIM_HANDLE * animation,
 /*!
  * Cancel any existing primary animation and then start a new one.
  * This will reset the current annimation even if it is the same as the given animation.
- * @param entity           the entity being animated
- * @param animation        the new animation to set
- * @param flags            animation use flags to set after changing the animation
- * @param startAtBeginning force the animation to start at the first keyframe
+ * \param entity           the entity being animated
+ * \param animation        the new animation to set
+ * \param flags            animation use flags to set after changing the animation
+ * \param startAtBeginning force the animation to start at the first keyframe
  *                         - otherwise it may start at a randomly chosen one
  */
 void changeAnimation(Entity * entity, ANIM_HANDLE * animation,
@@ -167,17 +167,17 @@ void changeAnimation(Entity * entity, ANIM_HANDLE * animation,
  * Change the animation of an entity if it isn't already set to the same one.
  * Unlike @ref changeAnimation(), this will not reset the current animation unless it
  * differs from the current one.
- * @param entity    the entity being animated
- * @param animation the new animation to set
- * @param flags     animation use flags to set if the animation has been changed
+ * \param entity    the entity being animated
+ * \param animation the new animation to set
+ * \param flags     animation use flags to set if the animation has been changed
  */
 void setAnimation(Entity * entity, ANIM_HANDLE * animation,
                   AnimUseType flags = 0, bool startAtBeginning = false);
 
 /*!
  * Stop the current animation.
- * @param entity           the entity being animated
- * @param layer            the animation layer to change
+ * \param entity           the entity being animated
+ * \param layer            the animation layer to change
  */
 void stopAnimation(Entity * entity, size_t layer = 0);
 

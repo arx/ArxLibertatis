@@ -146,8 +146,8 @@ typedef double f64; // 64 bits double float
  *
  * Usage: T function(args, message, ...) ARX_FORMAT_PRINTF(message_arg, param_vararg)
  *
- * @param message_arg index of the format string arg (1 for the first)
- * @param param_vararg index of the vararg for the parameters
+ * \param message_arg index of the format string arg (1 for the first)
+ * \param param_vararg index of the vararg for the parameters
  *
  * This is useful to
  *  a) Let the compiler check the format string and parameters when calling the function

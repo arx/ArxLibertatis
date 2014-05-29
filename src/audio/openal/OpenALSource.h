@@ -79,7 +79,7 @@ private:
 	/*!
 	 * Fills the given buffer with the next size bytes of audio data from the current stream.
 	 * Adjusts written and loadCount and closes the stream once loadCount reaches 0.
-	 * @param i The index of the buffer to fill.
+	 * \param i The index of the buffer to fill.
 	 */
 	aalError fillBuffer(size_t i, size_t size);
 	

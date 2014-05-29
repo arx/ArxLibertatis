@@ -44,9 +44,9 @@ namespace util { namespace cmdline {
  * You can use this class just likes as std::vector.
  * It is used to indicate option with variable amount of parameters.
  *
- * @param T Type of the elements.
+ * \param T Type of the elements.
  *
- * @param Alloc Type of the allocator object used to define the storage
+ * \param Alloc Type of the allocator object used to define the storage
  * allocation model. By default, the allocator class template for type T
  * is equal to the default allocator class for std::vector<T>
  */

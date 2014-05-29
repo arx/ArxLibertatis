@@ -113,7 +113,7 @@ public:
 	 * Find a TextureContainer by its name.
 	 * Searches the internal list of textures for a texture specified by
 	 * its name. Returns the structure associated with that texture.
-	 * @param strTextureName Name of the texture to find.
+	 * \param strTextureName Name of the texture to find.
 	 * @return a pointer to a TextureContainer if this texture was already loaded, NULL otherwise.
 	 */
 	static TextureContainer * Find(const res::path & strTextureName);

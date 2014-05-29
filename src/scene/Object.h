@@ -81,12 +81,12 @@ long GetActionPointGroup(const EERIE_3DOBJ * eobj, long idx);
 /*!
  * Load a possibly cached 3D object using the default texture path.
  * 
- * @param pbox true if the object should have a physics box.
+ * \param pbox true if the object should have a physics box.
  */
 EERIE_3DOBJ * loadObject(const res::path & file, bool pbox = true);
 
 /*!
- * @param texpath texture path relative to file
+ * \param texpath texture path relative to file
  */
 EERIE_3DOBJ * LoadTheObj(const res::path & file, const res::path & texpath = res::path());
 

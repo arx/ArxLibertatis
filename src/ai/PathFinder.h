@@ -92,42 +92,42 @@ public:
 	
 	/*!
 	 * Find a path between two nodes.
-	 * @param from The index of the start node into the provided map_data.
-	 * @param to The index of the destination node into the provided map_data.
-	 * @param rlist A list to append the path to.
-	 * @param stealth True if the path should avoid light sources.
+	 * \param from The index of the start node into the provided map_data.
+	 * \param to The index of the destination node into the provided map_data.
+	 * \param rlist A list to append the path to.
+	 * \param stealth True if the path should avoid light sources.
 	 * @return true if a path was found.
 	 */
 	bool move(NodeId from, NodeId to, Result & rlist, bool stealth = false) const;
 	
 	/*!
 	 * Find a path away from a position.
-	 * @param from The index of the start node into the provided map_data.
-	 * @param danger The position to get away from.
-	 * @param safeDistance How far to get away from danger.
-	 * @param rlist A list to append the path to.
-	 * @param stealth True if the path should avoid light sources.
+	 * \param from The index of the start node into the provided map_data.
+	 * \param danger The position to get away from.
+	 * \param safeDistance How far to get away from danger.
+	 * \param rlist A list to append the path to.
+	 * \param stealth True if the path should avoid light sources.
 	 * @return true if a path was found.
 	 */
 	bool flee(NodeId from, const Vec3f & danger, float safeDistance, Result & rlist, bool stealth = false) const;
 	
 	/*!
 	 * Wander around and then return to the start node.
-	 * @param from The index of the start node into the provided map_data.
-	 * @param aroundRadius How far to wander.
-	 * @param rlist A list to append the path to.
-	 * @param stealth True if the path should avoid light sources.
+	 * \param from The index of the start node into the provided map_data.
+	 * \param aroundRadius How far to wander.
+	 * \param rlist A list to append the path to.
+	 * \param stealth True if the path should avoid light sources.
 	 * @return true if a path was found.
 	 */
 	bool wanderAround(NodeId from, float aroundRadius, Result & rlist, bool stealth = false) const;
 	
 	/*!
 	 * Walk to and then to random offsets around the given position
-	 * @param from The index of the start node into the provided map_data.
-	 * @param danger The position to walk to.
-	 * @param radius How far to walk around the given position.
-	 * @param rlist A list to append the path to.
-	 * @param stealth True if the path should avoid light sources.
+	 * \param from The index of the start node into the provided map_data.
+	 * \param danger The position to walk to.
+	 * \param radius How far to walk around the given position.
+	 * \param rlist A list to append the path to.
+	 * \param stealth True if the path should avoid light sources.
 	 * @return true if a path was found.
 	 */
 	bool lookFor(NodeId from, const Vec3f & pos, float radius, Result & rlist, bool stealth = false) const;

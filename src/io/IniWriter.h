@@ -38,7 +38,7 @@ public:
 	
 	/*!
 	 * Initialize this ini writer.
-	 * @param _output Reference to an ostream that mus remain valid while the writer is used.
+	 * \param _output Reference to an ostream that mus remain valid while the writer is used.
 	 */
 	explicit IniWriter(std::ostream & _output) : output(_output) { }
 	
@@ -52,7 +52,7 @@ public:
 	
 	/*!
 	 * Write a section header to the output stream.
-	 * @param section The section to start.
+	 * \param section The section to start.
 	 */
 	void beginSection(const std::string & section);
 	

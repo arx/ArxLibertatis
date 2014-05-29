@@ -106,15 +106,15 @@ bool rename(const path & old_p, const path & new_p, bool overwrite = false);
 
 /*!
  * Read a file into memory.
- * @param p The file to load.
- * @param size Will receive the size of the loaded file.
+ * \param p The file to load.
+ * \param size Will receive the size of the loaded file.
  * @return a new[]-allocated buffer containing the file data or NULL on error.
  */
 char * read_file(const path & p, size_t & size);
 
 /*!
  * Read a file into an std::string
- * @param p The file to load.
+ * \param p The file to load.
  * @return a string containing the file's contents
  */
 std::string read(const path & p);

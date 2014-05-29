@@ -91,7 +91,7 @@ struct SystemPaths {
 	 * (ordered by decreasing priority) and return the first full path that
 	 * exists.
 	 *
-	 * @param resource the relative resource name to look for.
+	 * \param resource the relative resource name to look for.
 	 *
 	 * @return an empty path or an existing file.
 	 */

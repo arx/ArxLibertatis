@@ -111,30 +111,30 @@ public:
 	/*! 
 	* Calls revealPlayerPos if the player moved, also sets m_currentLevel and m_playerPos
 	*
-	* @param int currentLevel
-	* @param long blockPlayerControls
-	* @param ARX_INTERFACE_BOOK_MODE bookMode
+	* \param int currentLevel
+	* \param long blockPlayerControls
+	* \param ARX_INTERFACE_BOOK_MODE bookMode
 	*/
 	void validatePlayerPos(int currentLevel, long blockPlayerControls, ARX_INTERFACE_BOOK_MODE bookMode);
 	
 	/*! 
 	* Shows the top right minimap
 	*
-	* @param int showLevel
+	* \param int showLevel
 	*/
 	void showPlayerMiniMap(int showLevel);
 	
 	/*! 
 	* Shows the zoomed-in minimap in the book
 	*
-	* @param int showLevel
+	* \param int showLevel
 	*/
 	void showBookMiniMap(int showLevel);
 	
 	/*!
 	* Shows the entire map in the book
 	*
-	* @param int showLevel
+	* \param int showLevel
 	*/
 	void showBookEntireMap(int showLevel);
 	
@@ -179,14 +179,14 @@ private:
 	/*!
 	* Reveals the direct surroundings of the player
 	*
-	* @param int showLevel
+	* \param int showLevel
 	*/
 	void revealPlayerPos(int showLevel);
 	
 	/*!
 	* Gets the id from the MapMarker's name. Returns -1 when not found.
 	*
-	* @param std::string name
+	* \param std::string name
 	* @return MapMarker's id (int).
 	*/
 	int mapMarkerGetID(const std::string &name);

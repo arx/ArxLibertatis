@@ -75,14 +75,14 @@ namespace util { namespace cmdline {
  *
  *   Positional arguments are everything else: tokens that don't start with a dash
  *   \b and are not consumed as arguments to any options. They are passed to the \c --
- *   option in @param cli.
+ *   option in \param cli.
  *
  *   The special \code--\endcode token can be used to force all following command-line
  *   tokens to be treated as positional arguments, even if they start with a dash.
  *
- * @param cli  An @ref interpreter<std::string> specifying which options are available
- * @param argc Number of entries in argv
- * @param argv Array of command-line tokens - first one will be ignored
+ * \param cli  An @ref interpreter<std::string> specifying which options are available
+ * \param argc Number of entries in argv
+ * \param argv Array of command-line tokens - first one will be ignored
  *
  * @throws error If there was a syntax error or unknown options in the command-line.
  *               @ref error::what will contain a user-friendly error message.

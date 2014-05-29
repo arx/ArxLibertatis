@@ -83,7 +83,7 @@ public:
 	 * Upon a crash, if this file is not found, it will simply be ignored.
 	 * You can attach up to CrashInfo::MaxNbFiles files to the report.
 	 *
-	 * @param file Path to the file (relative to this executable).
+	 * \param file Path to the file (relative to this executable).
 	 *
 	 * @return True if the file could be attached, false otherwise.
 	 */
@@ -95,8 +95,8 @@ public:
 	 * You can set up to CrashInfo::MaxNbVariables variables.
 	 * If called multiple times with the same name, only the last value will be kept.
 	 *
-	 * @param name Name of the variable
-	 * @param value Value of the variable, which will be converted to string.
+	 * \param name Name of the variable
+	 * \param value Value of the variable, which will be converted to string.
 	 *
 	 * @return True if the variable could be set, false otherwise.
 	 */
@@ -112,7 +112,7 @@ public:
 	/*!
 	 * \brief Specify the location where crash reports will be written
 	 *
-	 * @param location Location where the crash report will be stored.
+	 * \param location Location where the crash report will be stored.
 	 *
 	 * @return True if the report location could be set, false otherwise.
 	 */
@@ -121,7 +121,7 @@ public:
 	/*!
 	 * \brief Remove old reports from the report location specified with setReportLocation().
 	 *
-	 * @param nbReportsToKeep Number of reports to keep (the most recent ones).
+	 * \param nbReportsToKeep Number of reports to keep (the most recent ones).
 	 *
 	 * @return True if operation was successful.
 	 */

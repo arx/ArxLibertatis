@@ -58,7 +58,7 @@ static const char * const env_list_seperators = ";";
 /*!
  * \brief Check if a file descriptor has been closed or redirected to /dev/null
  *
- * @param fd the file descriptor to test - 0 for stdin, 1 for stdout and 2 for stderr.
+ * \param fd the file descriptor to test - 0 for stdin, 1 for stdout and 2 for stderr.
  */
 bool isFileDescriptorDisabled(int fd);
 

@@ -70,7 +70,7 @@ public:
 	 * Enebly or disable vsync.
 	 * May not have any effect when called after @ref initialize().
 	 *
-	 * @param vsync 1 to enable vsync, 0 to disable or -1 to allow late swaps to
+	 * \param vsync 1 to enable vsync, 0 to disable or -1 to allow late swaps to
 	 *              happen immediately if supported.
 	 *
 	 * @return true if the vsync setting was successfully changed.

@@ -118,7 +118,7 @@ public:
 	 *
 	 * Does not check if the item is already in the inventory!
 	 *
-	 * @param item the item to insert
+	 * \param item the item to insert
 	 *
 	 * @return true if the item was inserted, false otherwise
 	 */
@@ -132,7 +132,7 @@ public:
 	 *
 	 * Does not check if the item is already in the inventory!
 	 *
-	 * @param item the item to insert
+	 * \param item the item to insert
 	 *
 	 * @return true if the item was inserted, false otherwise
 	 */
@@ -170,7 +170,7 @@ extern PlayerInventory playerInventory;
  * Otherwise a the first empty slot will be used.
  * If no slot was available, the item is dropped in front of the player
  *
- * @param item the item to insert
+ * \param item the item to insert
  *
  * @return true if the item was added to the inventory, false if it was dropped
  */
@@ -183,7 +183,7 @@ bool giveToPlayer(Entity * item);
  * If that fails, a the first empty slot will be used.
  * If no slot was available, the item is dropped in front of the player
  *
- * @param item the item to insert
+ * \param item the item to insert
  *
  * @return true if the item was added to the inventory, false if it was dropped
  */
@@ -197,7 +197,7 @@ bool giveToPlayer(Entity * item, const InventoryPos & pos);
  *
  * Does not check if the item is already in the inventory!
  *
- * @param item the item to insert
+ * \param item the item to insert
  *
  * @return true if the item was inserted, false otherwise
  */
@@ -225,7 +225,7 @@ InventoryPos removeFromInventories(Entity * item);
  * If that fails, a the first empty slot will be used.
  * If no slot was available, the item is dropped in front of the player
  *
- * @param item the item to insert
+ * \param item the item to insert
  *
  * @return true if the item was added to the inventory, false if it was dropped
  */

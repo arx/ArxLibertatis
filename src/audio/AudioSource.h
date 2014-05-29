@@ -59,19 +59,19 @@ public:
 	
 	/*!
 	 * Set the volume of this source and update the volume calculated from the sources mixers.
-	 * @param volume The new source volume. The volume will be clamped to the range [0,1].
+	 * \param volume The new source volume. The volume will be clamped to the range [0,1].
 	 */
 	aalError setVolume(float volume);
 	
 	/*!
 	 * Set the pitch of this source and update the pitch calculated from the sources mixers.
-	 * @param pitch The new source pitch. The pitch will be clamped to the range [0,1].
+	 * \param pitch The new source pitch. The pitch will be clamped to the range [0,1].
 	 */
 	virtual aalError setPitch(float pitch) = 0;
 	
 	/*!
 	 * Set the panning of this source.
-	 * @param pitch The new source panning. The pan will be clamped to the range [-1,1].
+	 * \param pitch The new source panning. The pan will be clamped to the range [-1,1].
 	 */
 	virtual aalError setPan(float pan) = 0;
 	
@@ -90,7 +90,7 @@ public:
 	
 	/*!
 	 * Play the source. A source that is already playing is not stopped / rewinded, but the playCount increased by the provided amount.
-	 * @param playCount How often to play the sample. 0 means loop forever.
+	 * \param playCount How often to play the sample. 0 means loop forever.
 	 */
 	virtual aalError play(unsigned playCount = 1) = 0;
 	
