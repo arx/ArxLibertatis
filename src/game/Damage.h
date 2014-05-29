@@ -108,14 +108,16 @@ struct DamageParameters {
 	DamageArea area; // damage area type
 	DamageFlags flags; // damages flags
 	DamageType type; // damages type
-	long source; // io index or -1 for player
+	long source;
 	
 	DamageParameters() {
+		damages = 0.f;
 		radius = 100.f;
 		duration = 1000;
 		area = DAMAGE_AREA;
 		flags = 0;
 		type = 0;
+		source = -1;
 	}
 };
 
