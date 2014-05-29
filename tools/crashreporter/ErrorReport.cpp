@@ -386,7 +386,7 @@ bool ErrorReport::getCrashDescription() {
 		"-ex", "thread apply all bt full",
 		pid_buf, NULL
 	};
-	std::string gdbstdout = platform::getOutputOf("gdb", args, /*unlocalized=*/ true);
+	std::string gdbstdout = platform::getOutputOf(args, /*unlocalized=*/ true);
 	if(gdbstdout.empty()) {
 		m_DetailedError = "GDB is probably not installed on your machine."
 		                  " Please install it in order to obtain valuable crash reports in the future.";

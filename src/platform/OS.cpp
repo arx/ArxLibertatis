@@ -327,7 +327,7 @@ std::string getOSDistribution() {
 	#if ARX_HAVE_POPEN && ARX_HAVE_PCLOSE
 	{
 		const char * args[] = { "lsb_release", "-a", NULL };
-		std::istringstream iss(getOutputOf("lsb_release", args));
+		std::istringstream iss(getOutputOf(args));
 		const char * keys[] = { "Description", "Distributor ID", "Release", "(Codename" };
 		std::string distro = parseDistributionName(iss, ':', keys, ARRAY_SIZE(keys));
 		if(!distro.empty()) {
