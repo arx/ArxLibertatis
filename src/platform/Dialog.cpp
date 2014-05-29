@@ -317,11 +317,15 @@ static bool showDialog(DialogType type, const std::string & message,
 	};
 	
 	BOOST_FOREACH(dialogCommand_t command, commands) {
-		int exitCode = command(type, message, title);
-		if(WIFEXITED(exitCode) && WEXITSTATUS(exitCode) >= 0
-		   && WEXITSTATUS(exitCode) < 127) {
-			return WEXITSTATUS(exitCode) == 0;
+		int code = command(type, message, title);
+		if(WIFEXITED(code) && WEXITSTATUS(code) >= 0 && WEXITSTATUS(code) < 127) {
+			return WEXITSTATUS(code) == 0;
 		}
+		#ifdef SIGINT
+		if(WIFSIGNALED(code) && WTERMSIG(code) == SIGINT) {
+			return false;
+		}
+		#endif
 	}
 	
 	/*
