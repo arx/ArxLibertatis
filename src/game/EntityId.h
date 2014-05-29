@@ -28,7 +28,7 @@
 typedef s32 EntityInstance;
 
 /*!
- * An ID that can be used to identify @class Entity instances
+ * An ID that can be used to identify \class Entity instances
  */
 struct EntityId {
 	
@@ -51,7 +51,7 @@ struct EntityId {
 	 * "me" and "self" and "player" will have the \ref instance() number @c 0
 	 * All other valid IDs should have \ref instance() numbers greater than zero.
 	 *
-	 * To convert a @class EntityId back to such a string use the
+	 * To convert a \class EntityId back to such a string use the
 	 * \ref string() member or operator<< overload.
 	 */
 	explicit EntityId(const std::string & idString);
