@@ -76,7 +76,7 @@ void TryToCastSpell(Entity * io, SpellType spellid, long level, long target, Spe
 const size_t MAX_SPELLS = 20;
 extern SpellBase spells[MAX_SPELLS];
 
-bool ARX_SPELLS_Launch(SpellType typ, long source, SpellcastFlags flags = 0, long level = -1, long target = -1, long duration = -1);
+bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flags = 0, long level = -1, long target = -1, long duration = -1);
 void ARX_SPELLS_AbortSpellSound();
 void ARX_SPELLS_Init();
 void ARX_SPELLS_ClearAll();

@@ -99,14 +99,14 @@ bool SummonCreatureSpell::Launch(long duration)
 
 void SummonCreatureSpell::End()
 {
-	if(ValidIONum(m_longinfo2_entity) && m_longinfo2_entity != 0) {
+	if(ValidIONum(m_longinfo2_entity) && m_longinfo2_entity != EntityHandle(0)) {
 		ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &entities[m_longinfo2_entity]->pos);
 	}
 
 	lightHandleDestroy(m_pSpellFx->lLightId);
 	// need to killio
 	
-	if(ValidIONum(m_longinfo2_entity) && m_longinfo2_entity != 0) {
+	if(ValidIONum(m_longinfo2_entity) && m_longinfo2_entity != EntityHandle(0)) {
 		
 		if(entities[m_longinfo2_entity]->scriptload
 		   && (entities[m_longinfo2_entity]->ioflags & IO_NOSAVE)) {
@@ -256,7 +256,7 @@ void SummonCreatureSpell::Update(float timeDelta)
 				}
 				}
 			}
-		} else if(m_longinfo2_entity <= 0) {
+		} else if(m_longinfo2_entity <= EntityHandle(0)) {
 			m_tolive = 0;
 		}
 	}	
@@ -466,16 +466,16 @@ void MassParalyseSpell::Launch(long i, long duration)
 		ARX_NPC_Kill_Spell_Launch(tio);
 		ARX_SPELLS_AddSpellOn(ii, i);
 		
-		m_targetHandles.push_back(ii);
+		m_targetHandles.push_back(EntityHandle(ii));
 	}
 }
 
 void MassParalyseSpell::End(size_t i)
 {
 	
-	std::vector<long>::const_iterator itr;
+	std::vector<EntityHandle>::const_iterator itr;
 	for(itr = m_targetHandles.begin(); itr != m_targetHandles.end(); ++itr) {
-		long handle = *itr;
+		EntityHandle handle = *itr;
 		
 		if(ValidIONum(handle)) {
 			ARX_SPELLS_RemoveSpellOn(handle, i);

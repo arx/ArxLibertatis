@@ -540,7 +540,7 @@ ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const string & 
 						return TYPE_FLOAT;
 					}
 					
-					long t = entities.getById(obj);
+					EntityHandle t = entities.getById(obj);
 					if(ValidIONum(t)) {
 						if((entity->show == SHOW_FLAG_IN_SCENE
 						    || entity->show == SHOW_FLAG_IN_INVENTORY)
@@ -574,7 +574,7 @@ ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const string & 
 			}
 			
 			if(boost::starts_with(name, "^repairprice_")) {
-				long t = entities.getById(name.substr(13));
+				EntityHandle t = entities.getById(name.substr(13));
 				if(ValidIONum(t)) {
 					*fcontent = ARX_DAMAGES_ComputeRepairPrice(entities[t], entity);
 				} else {
@@ -861,7 +861,7 @@ ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const string & 
 						return TYPE_FLOAT;
 					}
 					
-					long t = entities.getById(obj);
+					EntityHandle t = entities.getById(obj);
 					if(ValidIONum(t)) {
 						if((entity->show == SHOW_FLAG_IN_SCENE
 						    || entity->show == SHOW_FLAG_IN_INVENTORY)
@@ -927,7 +927,7 @@ ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const string & 
 			}
 			
 			if(boost::starts_with(name, "^possess_")) {
-				long t = entities.getById(name.substr(9));
+				EntityHandle t = entities.getById(name.substr(9));
 				if(ValidIONum(t)) {
 					if(IsInPlayerInventory(entities[t])) {
 						*lcontent = 1;

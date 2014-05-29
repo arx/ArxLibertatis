@@ -47,6 +47,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_AI_PATHFINDERMANAGER_H
 #define ARX_AI_PATHFINDERMANAGER_H
 
+#include "game/GameTypes.h"
+
 class Entity;
 
 struct PATHFINDER_REQUEST {
@@ -57,7 +59,7 @@ struct PATHFINDER_REQUEST {
 	// As soon as returnnumber is no more -1
 	// Pathfinding is considered finished
 	Entity * ioid;
-	unsigned short ** returnlist;	//must be NULL
+	EntityHandle ** returnlist;	//must be NULL
 };
 
 extern long PATHFINDER_WORKING;

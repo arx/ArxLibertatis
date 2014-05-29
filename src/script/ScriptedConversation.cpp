@@ -265,7 +265,7 @@ public:
 
 class SpeakCommand : public Command {
 	
-	static void computeACSPos(CinematicSpeech & acs, Entity * io, long ionum) {
+	static void computeACSPos(CinematicSpeech & acs, Entity * io, EntityHandle ionum) {
 		
 		if(io) {
 			long id = io->obj->fastaccess.view_attach;
@@ -356,7 +356,7 @@ public:
 					if(player) {
 						computeACSPos(acs, entities.player(), acs.ionum);
 					} else {
-						computeACSPos(acs, io, -1);
+						computeACSPos(acs, io, EntityHandle(-1));
 					}
 					
 				} else if(command == "ccctalker_l" || command == "ccctalker_r") {

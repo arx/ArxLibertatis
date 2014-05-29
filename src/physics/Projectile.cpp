@@ -168,7 +168,7 @@ void ARX_THROWN_OBJECT_Throw(long source, const Vec3f & position, const Vec3f & 
 	thrownObj->flags |= ATO_EXIST | ATO_MOVING;
 	
 	if(source == 0
-	   && player.equiped[EQUIP_SLOT_WEAPON] != 0
+	   && player.equiped[EQUIP_SLOT_WEAPON] != EntityHandle(0)
 	   && ValidIONum(player.equiped[EQUIP_SLOT_WEAPON])
 	) {
 		Entity * tio = entities[player.equiped[EQUIP_SLOT_WEAPON]];
@@ -558,7 +558,7 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 						sphere.origin = v0 + thrownObj->vector * precision * 4.5f;
 						sphere.radius = rad + 3.f;
 
-						std::vector<long> sphereContent;
+						std::vector<EntityHandle> sphereContent;
 
 						if(CheckEverythingInSphere(sphere, thrownObj->source, -1, sphereContent)) {
 							for(size_t jj = 0; jj < sphereContent.size(); jj++) {

@@ -82,26 +82,26 @@ void EntityManager::clear() {
 	minfree = 0;
 }
 
-long EntityManager::getById(const std::string & name) const {
+EntityHandle EntityManager::getById(const std::string & name) const {
 	
 	if(name.empty() || name == "none") {
-		return -1;
+		return EntityHandle(-1);
 	} else if(name == "self" || name == "me") {
-		return -2;
+		return EntityHandle(-2);
 	} else if(name == "player") {
-		return 0; // player is an IO with index 0
+		return EntityHandle(0); // player is an IO with index 0
 	}
 	
 	for(size_t i = 0 ; i < size() ; i++) {
 		if(entries[i] != NULL && entries[i]->ident > -1) {
 			// TODO this check is inefficient!
 			if(name == entries[i]->idString()) {
-				return i;
+				return EntityHandle(i);
 			}
 		}
 	}
 	
-	return -1;
+	return EntityHandle(-1);
 }
 
 Entity * EntityManager::getById(const std::string & name, Entity * self) const {

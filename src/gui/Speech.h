@@ -49,6 +49,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <string>
 
+#include "game/GameTypes.h"
 #include "audio/AudioTypes.h"
 #include "math/Angle.h"
 
@@ -80,7 +81,7 @@ struct CinematicSpeech {
 	float f0;
 	float f1;
 	float f2;
-	long ionum;
+	EntityHandle ionum;
 	Vec3f pos1;
 	Vec3f pos2;
 	

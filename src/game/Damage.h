@@ -139,12 +139,12 @@ void ARX_DAMAGE_Show_Hit_Blood();
 void ARX_DAMAGES_Reset();
  
 void ARX_DAMAGES_UpdateAll();
-float ARX_DAMAGES_DamagePlayer(float dmg, DamageType type, long source = -1); 
+float ARX_DAMAGES_DamagePlayer(float dmg, DamageType type, EntityHandle source = -1); 
 void ARX_DAMAGES_DamageFIX(Entity * io, float dmg, EntityHandle source, long flags);
-float ARX_DAMAGES_DamageNPC(Entity * io, float dmg, long source, long flags, const Vec3f * pos);
+float ARX_DAMAGES_DamageNPC(Entity * io, float dmg, EntityHandle source, long flags, const Vec3f * pos);
 bool ARX_DAMAGES_TryToDoDamage(const Vec3f & pos, float dmg, float radius, EntityHandle source);
 void ARX_DAMAGES_ForceDeath(Entity * io_dead, Entity * io_killer);
-float ARX_DAMAGES_DealDamages(long target, float dmg, long source, DamageType flags, Vec3f * pos);
+float ARX_DAMAGES_DealDamages(EntityHandle target, float dmg, EntityHandle source, DamageType flags, Vec3f * pos);
 
 void ARX_DAMAGES_HealInter(Entity * io, float dmg);
 

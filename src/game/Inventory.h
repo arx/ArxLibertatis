@@ -48,6 +48,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <string>
 #include <ostream>
 
+#include "game/GameTypes.h"
 #include "math/Types.h"
 #include "script/Script.h"
 
@@ -81,7 +82,7 @@ struct InventoryPos {
 	
 	typedef unsigned short index_type;
 	
-	long io;
+	EntityHandle io;
 	index_type bag;
 	index_type x;
 	index_type y;
@@ -98,7 +99,7 @@ struct InventoryPos {
 	
 	//! \return true if this is a valid position
 	operator bool() const {
-		return (io != -1);
+		return (io != EntityHandle(-1));
 	}
 	
 };

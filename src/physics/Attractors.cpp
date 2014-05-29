@@ -52,7 +52,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Interactive.h"
 
 struct ARX_SPECIAL_ATTRACTOR {
-	long	ionum;  // -1 == not defined
+	EntityHandle	ionum;  // -1 == not defined
 	float	power;
 	float	radius;
 };
@@ -114,7 +114,7 @@ void ARX_SPECIAL_ATTRACTORS_ComputeForIO(const Entity & ioo, Vec3f & force) {
 	
 	for(size_t i = 0; i < MAX_ATTRACTORS; i++) {
 		
-		if(attractors[i].ionum == -1 || !ValidIONum(attractors[i].ionum)) {
+		if(attractors[i].ionum == EntityHandle(-1) || !ValidIONum(attractors[i].ionum)) {
 			continue;
 		}
 		

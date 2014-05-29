@@ -263,7 +263,7 @@ public:
 	ItemType type_flags; // object type (weapon,goblin...)
 	long scriptload; // Is This object Loaded by Script ?
 	Vec3f target; // Target position
-	long targetinfo; // Target Type/Ident
+	EntityHandle targetinfo; // Target Type/Ident
 	
 	// TODO remove and use inheritance instead
 	union {

@@ -142,7 +142,7 @@ void Set_DragInter(Entity * io)
 }
 
 // Checks if an IO index number is valid
-bool ValidIONum(long num) {
+bool ValidIONum(EntityHandle num) {
 	
 	return !(num < 0 || num >= long(entities.size()) || !entities[num]);
 }
@@ -206,7 +206,7 @@ void ARX_INTERACTIVE_DestroyDynamicInfo(Entity * io)
 	if(!io)
 		return;
 
-	long n = io->index();
+	EntityHandle n = io->index();
 
 	ARX_INTERACTIVE_ForceIOLeaveZone(io, 0);
 
@@ -249,7 +249,7 @@ void ARX_INTERACTIVE_DestroyDynamicInfo(Entity * io)
 }
 
 
-bool ARX_INTERACTIVE_Attach(long n_source, long n_target, const std::string& ap_source, const std::string& ap_target)
+bool ARX_INTERACTIVE_Attach(EntityHandle n_source, EntityHandle n_target, const std::string& ap_source, const std::string& ap_target)
 {
 	if(!ValidIONum(n_source) || !ValidIONum(n_target))
 		return false;
@@ -260,7 +260,7 @@ bool ARX_INTERACTIVE_Attach(long n_source, long n_target, const std::string& ap_
 	        entities[n_source]->obj, ap_target, ap_source, entities[n_source]);
 }
 
-void ARX_INTERACTIVE_Detach(long n_source, long n_target)
+void ARX_INTERACTIVE_Detach(EntityHandle n_source, EntityHandle n_target)
 {
 	if(!ValidIONum(n_source) || !ValidIONum(n_target))
 		return;
@@ -498,7 +498,7 @@ void PrepareIOTreatZone(long flag)
 	short sGlobalPlayerRoom = checked_range_cast<short>(PlayerRoom);
 
 	for(long i = 0; i < MAX_EQUIPED; i++) {
-		if(player.equiped[i] != 0 && ValidIONum(player.equiped[i])) {
+		if(player.equiped[i] != EntityHandle(0) && ValidIONum(player.equiped[i])) {
 			Entity *toequip = entities[player.equiped[i]];
 
 			if(toequip) {
@@ -2065,10 +2065,10 @@ bool IsEquipedByPlayer(const Entity * io)
 	if((io->ioflags & IO_ICONIC) && (io->show == SHOW_FLAG_ON_PLAYER))
 		return true;
 
-	long num = io->index();
+	EntityHandle num = io->index();
 
 	for(long i = 0; i < MAX_EQUIPED; i++) {
-		if(player.equiped[i] != 0 && player.equiped[i] == num)
+		if(player.equiped[i] != EntityHandle(0) && player.equiped[i] == num)
 			return true;
 	}
 
@@ -2174,7 +2174,7 @@ void SetYlsideDeath(Entity * io) {
 	io->sfx_time = (unsigned long)(arxtime);
 }
 
-bool ARX_INTERACTIVE_CheckFULLCollision(EERIE_3DOBJ * obj, long source)
+bool ARX_INTERACTIVE_CheckFULLCollision(EERIE_3DOBJ * obj, EntityHandle source)
 {
 	bool col = false;
 	long avoid = -1;
@@ -2400,7 +2400,7 @@ void UpdateCameras() {
 						}
 
 						if(Touched)
-							ARX_DAMAGES_DealDamages(ii, io->damager_damages, i, io->damager_type, &ioo->pos);
+							ARX_DAMAGES_DealDamages(EntityHandle(ii), io->damager_damages, EntityHandle(i), io->damager_type, &ioo->pos);
 					}
 				}
 			}
@@ -2410,7 +2410,7 @@ void UpdateCameras() {
 
 			io->_camdata->cam.orgTrans.pos = io->pos;
 
-			if(io->targetinfo != TARGET_NONE) {
+			if(io->targetinfo != EntityHandle(TARGET_NONE)) {
 				// Follows target
 				GetTargetPos(io, (unsigned long)io->_camdata->cam.smoothing);
 				io->target += io->_camdata->cam.translatetarget;
@@ -2719,7 +2719,7 @@ float ARX_INTERACTIVE_GetArmorClass(Entity * io) {
 	return ac;
 }
 
-void ARX_INTERACTIVE_ActivatePhysics(long t)
+void ARX_INTERACTIVE_ActivatePhysics(EntityHandle t)
 {
 	if(ValidIONum(t)) {
 		Entity * io = entities[t];

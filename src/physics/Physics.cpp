@@ -138,7 +138,7 @@ void ComputeForces(PHYSVERT * phys, long nb) {
 	}
 }
 
-bool ARX_INTERACTIVE_CheckFULLCollision(EERIE_3DOBJ * obj, long source);
+bool ARX_INTERACTIVE_CheckFULLCollision(EERIE_3DOBJ * obj, EntityHandle source);
 
 //! Calculate new Positions and Velocities given a deltatime
 //! \param DeltaTime that has passed since last iteration
@@ -371,7 +371,7 @@ static bool IsFULLObjectVertexInValidPosition(EERIE_3DOBJ * obj) {
 	return ret;
 }
 
-static bool ARX_EERIE_PHYSICS_BOX_Compute(EERIE_3DOBJ * obj, float framediff, long source) {
+static bool ARX_EERIE_PHYSICS_BOX_Compute(EERIE_3DOBJ * obj, float framediff, EntityHandle source) {
 
 	Vec3f oldpos[32];
 	long COUNT = 0;
@@ -458,7 +458,7 @@ static bool ARX_EERIE_PHYSICS_BOX_Compute(EERIE_3DOBJ * obj, float framediff, lo
 	return true;
 }
 
-long ARX_PHYSICS_BOX_ApplyModel(EERIE_3DOBJ * obj, float framediff, float rubber, long source) {
+long ARX_PHYSICS_BOX_ApplyModel(EERIE_3DOBJ * obj, float framediff, float rubber, EntityHandle source) {
 
 	VELOCITY_THRESHOLD = 400.f;
 	long ret = 0;

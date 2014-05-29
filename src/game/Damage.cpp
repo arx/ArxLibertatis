@@ -216,7 +216,7 @@ void ARX_DAMAGE_Show_Hit_Blood()
 	Last_Blood_Pos = Blood_Pos;
 }
 
-float ARX_DAMAGES_DamagePlayer(float dmg, DamageType type, long source) {
+float ARX_DAMAGES_DamagePlayer(float dmg, DamageType type, EntityHandle source) {
 	if (player.playerflags & PLAYERFLAGS_INVULNERABILITY)
 		return 0;
 
@@ -305,7 +305,7 @@ float ARX_DAMAGES_DamagePlayer(float dmg, DamageType type, long source) {
 							std::string killer;
 							if(source == 0) {
 								killer = "player";
-							} else if(source <= -1) {
+							} else if(source <= EntityHandle(-1)) {
 								killer = "none";
 							} else if(ValidIONum(source)) {
 								killer = entities[source]->idString();
@@ -612,7 +612,7 @@ void ARX_DAMAGES_ForceDeath(Entity * io_dead, Entity * io_killer) {
 	EVENT_SENDER = old_sender;
 }
 
-void ARX_DAMAGES_PushIO(Entity * io_target, long source, float power)
+void ARX_DAMAGES_PushIO(Entity * io_target, EntityHandle source, float power)
 {
 	if(power > 0.f && ValidIONum(source)) {
 		power *= ( 1.0f / 20 );
@@ -628,7 +628,7 @@ void ARX_DAMAGES_PushIO(Entity * io_target, long source, float power)
 	}
 }
 
-float ARX_DAMAGES_DealDamages(long target, float dmg, long source, DamageType flags, Vec3f * pos)
+float ARX_DAMAGES_DealDamages(EntityHandle target, float dmg, EntityHandle source, DamageType flags, Vec3f * pos)
 {
 	if(!ValidIONum(target) || !ValidIONum(source))
 		return 0;
@@ -724,7 +724,7 @@ float ARX_DAMAGES_DealDamages(long target, float dmg, long source, DamageType fl
 //*************************************************************************************
 // flags & 1 == spell damage
 //*************************************************************************************
-float ARX_DAMAGES_DamageNPC(Entity * io, float dmg, long source, long flags, const Vec3f * pos) {
+float ARX_DAMAGES_DamageNPC(Entity * io, float dmg, EntityHandle source, long flags, const Vec3f * pos) {
 	
 	if(!io || !io->show || (io->ioflags & IO_INVULNERABILITY) || !(io->ioflags & IO_NPC))
 		return 0.f;
@@ -732,7 +732,7 @@ float ARX_DAMAGES_DamageNPC(Entity * io, float dmg, long source, long flags, con
 	float damagesdone = 0.f;
 
 	if(io->_npcdata->lifePool.current <= 0.f) {
-		if(source != 0 || (source == 0 && player.equiped[EQUIP_SLOT_WEAPON] > 0)) {
+		if(source != EntityHandle(0) || (source == EntityHandle(0) && player.equiped[EQUIP_SLOT_WEAPON] > 0)) {
 			if(dmg >= io->_npcdata->lifePool.max * 0.4f && pos)
 				ARX_NPC_TryToCutSomething(io, pos);
 
@@ -773,7 +773,7 @@ float ARX_DAMAGES_DamageNPC(Entity * io, float dmg, long source, long flags, con
 			Entity * pio = NULL;
 
 			if(source == 0) {
-				if(player.equiped[EQUIP_SLOT_WEAPON] != 0 && ValidIONum(player.equiped[EQUIP_SLOT_WEAPON])) {
+				if(player.equiped[EQUIP_SLOT_WEAPON] != EntityHandle(0) && ValidIONum(player.equiped[EQUIP_SLOT_WEAPON])) {
 					pio = entities[player.equiped[EQUIP_SLOT_WEAPON]];
 
 					if((pio && (pio->poisonous == 0 || pio->poisonous_count == 0)) || (flags & 1)) {
@@ -803,7 +803,7 @@ float ARX_DAMAGES_DamageNPC(Entity * io, float dmg, long source, long flags, con
 		}
 
 		if(io->script.data != NULL) {
-			if(source >= 0) {
+			if(source >= EntityHandle(0)) {
 				if(ValidIONum(source))
 					EVENT_SENDER = entities[source]; 
 				else
@@ -865,7 +865,7 @@ float ARX_DAMAGES_DamageNPC(Entity * io, float dmg, long source, long flags, con
 		if(io->_npcdata->lifePool.current <= 0.f) {
 			io->_npcdata->lifePool.current = 0.f;
 
-			if(source != 0 || (source == 0 && player.equiped[EQUIP_SLOT_WEAPON] > 0)) {
+			if(source != EntityHandle(0) || (source == EntityHandle(0) && player.equiped[EQUIP_SLOT_WEAPON] > 0)) {
 				if((dmg >= io->_npcdata->lifePool.max * ( 1.0f / 2 )) && pos)
 					ARX_NPC_TryToCutSomething(io, pos);
 			}
@@ -998,7 +998,7 @@ void ARX_DAMAGES_UpdateDamage(DamageHandle j, float tim) {
 				sphere.origin = damage.params.pos;
 				sphere.radius = damage.params.radius - 10.f;
 				
-				if(CheckIOInSphere(sphere, i, true)) {
+				if(CheckIOInSphere(sphere, EntityHandle(i), true)) {
 					Vec3f sub = io->pos + Vec3f(0.f, -60.f, 0.f);
 					
 					float dist = fdist(damage.params.pos, sub);
@@ -1142,7 +1142,7 @@ void ARX_DAMAGES_UpdateDamage(DamageHandle j, float tim) {
 				sphere.origin = damage.params.pos;
 				sphere.radius = damage.params.radius + 15.f;
 				
-				if(CheckIOInSphere(sphere, i)) {
+				if(CheckIOInSphere(sphere, EntityHandle(i))) {
 					ARX_DAMAGES_DamageFIX(io, dmg, damage.params.source, 1);
 				}
 			}
@@ -1487,7 +1487,7 @@ void ARX_DAMAGES_DamagePlayerEquipment(float damages)
 		ratio = 1.f;
 
 	for(long i = 0; i < MAX_EQUIPED; i++) {
-		if(player.equiped[i] != 0) {
+		if(player.equiped[i] != EntityHandle(0)) {
 			Entity * todamage = entities[player.equiped[i]];
 			ARX_DAMAGES_DurabilityCheck(todamage, ratio);
 		}

@@ -319,7 +319,7 @@ void PathFinderThread::run() {
 				}
 				
 				if(!result.empty()) {
-					unsigned short * list = (unsigned short*)malloc(result.size() * sizeof(unsigned short));
+					EntityHandle * list = (EntityHandle*)malloc(result.size() * sizeof(EntityHandle));
 					std::copy(result.begin(), result.end(), list);
 					*(curpr.returnlist) = list;
 				}

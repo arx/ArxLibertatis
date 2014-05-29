@@ -47,10 +47,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_PHYSICS_PHYSICS_H
 #define ARX_PHYSICS_PHYSICS_H
 
+#include "game/GameTypes.h"
 #include "graphics/GraphicsTypes.h"
 
 struct EERIEPOLY;
 
-long ARX_PHYSICS_BOX_ApplyModel(EERIE_3DOBJ * obj, float framediff, float rubber, long source);
+long ARX_PHYSICS_BOX_ApplyModel(EERIE_3DOBJ * obj, float framediff, float rubber, EntityHandle source);
 
 #endif // ARX_PHYSICS_PHYSICS_H

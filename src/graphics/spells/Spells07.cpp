@@ -346,7 +346,7 @@ void CLightning::Update(unsigned long _ulTime)
 		fMySize -= 0.1f;
 }
 
-void GetChestPos(long num, Vec3f * p)
+void GetChestPos(EntityHandle num, Vec3f * p)
 {
 	if(num == 0) {
 		p->x = player.pos.x;

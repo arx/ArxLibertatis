@@ -468,7 +468,7 @@ public:
 		
 		DebugScript(' ' << options << ' ' << target);
 		
-		long t = entities.getById(target);
+		EntityHandle t = entities.getById(target);
 		if(!ValidIONum(t)) {
 			ScriptWarning << "unknown target: " << target;
 			return Failed;

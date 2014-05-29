@@ -1017,7 +1017,7 @@ void FirstFrameHandling() {
 		arxtime.resume();
 	}
 
-	long t = entities.getById("seat_stool1_0012");
+	EntityHandle t = entities.getById("seat_stool1_0012");
 	if(ValidIONum(t)) {
 		entities[t]->ioflags |= IO_FORCEDRAW;
 	}
@@ -1070,7 +1070,7 @@ void ManageNONCombatModeAnimations()
 	if(player.Current_Movement & (PLAYER_LEAN_LEFT | PLAYER_LEAN_RIGHT))
 		return;
 
-	if(player.equiped[EQUIP_SLOT_SHIELD] != 0 && !BLOCK_PLAYER_CONTROLS) {
+	if(player.equiped[EQUIP_SLOT_SHIELD] != EntityHandle(0) && !BLOCK_PLAYER_CONTROLS) {
 		if ( (useanim3->cur_anim==NULL)  ||
 			( (useanim3->cur_anim!=alist[ANIM_SHIELD_CYCLE])
 			&& (useanim3->cur_anim!=alist[ANIM_SHIELD_HIT])
@@ -1236,9 +1236,9 @@ void ManageCombatModeAnimations()
 							sphere.origin = io->obj->vertexlist3[id].v;
 							sphere.radius = 25.f;
 							
-							long num;
+							EntityHandle num;
 							
-							if(CheckAnythingInSphere(sphere, 0, 0, &num)) {
+							if(CheckAnythingInSphere(sphere, EntityHandle(0), 0, &num)) {
 								float dmgs = (player.m_miscFull.damages + 1) * STRIKE_AIMTIME;
 								
 								if(ARX_DAMAGES_TryToDoDamage(io->obj->vertexlist3[id].v, dmgs, 40, EntityHandle(0))) {

@@ -590,7 +590,7 @@ void SPELLCAST_NotifyOnlyTarget(long num)
 void SPELLEND_Notify(SpellBase & spell) {
 	
 	char spellName[128];
-	long source = spell.m_caster;
+	EntityHandle source = spell.m_caster;
 
 	if(spell.m_type == SPELL_CONFUSE) {
 		EVENT_SENDER = ValidIONum(source) ? entities[source] : NULL;
@@ -996,7 +996,7 @@ void ARX_SPELLS_CancelSpellTarget() {
 
 void ARX_SPELLS_LaunchSpellTarget(Entity * io) {
 	if(io) {
-		ARX_SPELLS_Launch(t_spell.typ, 0 /* player */, t_spell.flags, t_spell.level,
+		ARX_SPELLS_Launch(t_spell.typ, EntityHandle(0) /* player */, t_spell.flags, t_spell.level,
 		                  io->index(), t_spell.duration);
 	}
 }
@@ -1111,7 +1111,7 @@ float ARX_SPELLS_GetManaCost(SpellType spell, long index) {
 	}
 }
 
-bool ARX_SPELLS_Launch(SpellType typ, long source, SpellcastFlags flagss, long levell, long target, long duration) {
+bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flagss, long levell, long target, long duration) {
 	
 	SpellcastFlags flags = flagss;
 	long level = levell;

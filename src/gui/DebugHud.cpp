@@ -145,7 +145,7 @@ void ShowTestText() {
 }
 
 extern float CURRENT_PLAYER_COLOR;
-long LastSelectedIONum = -1;
+EntityHandle LastSelectedIONum = EntityHandle(-1);
 
 void ShowInfoText() {
 

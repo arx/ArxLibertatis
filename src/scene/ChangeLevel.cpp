@@ -871,7 +871,7 @@ static Entity * GetObjIOSource(const EERIE_3DOBJ * obj) {
 }
 
 template <size_t N>
-void FillTargetInfo(char (&info)[N], long numtarget) {
+void FillTargetInfo(char (&info)[N], EntityHandle numtarget) {
 	BOOST_STATIC_ASSERT(N >= 6);
 	if(numtarget == -2) {
 		strcpy(info, "self");
@@ -1083,7 +1083,7 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 	}
 
 	// Save Target Infos
-	long numtarget = io->targetinfo;
+	EntityHandle numtarget = io->targetinfo;
 
 	if ((io->ioflags & IO_NPC) && (io->_npcdata->pathfind.listnb > 0) && ValidIONum(io->_npcdata->pathfind.truetarget))
 	{

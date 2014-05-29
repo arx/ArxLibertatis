@@ -143,7 +143,7 @@ public:
 				reInsert = false;
 			}
 			for(int i = 0; i < MAX_EQUIPED; i++) {
-				if(player.equiped[i] != 0 && ValidIONum(player.equiped[i])) {
+				if(player.equiped[i] != EntityHandle(0) && ValidIONum(player.equiped[i])) {
 					if(entities[player.equiped[i]] == ioo) {
 						// the init script was sneaky and equiped the item
 						reInsert = false;
@@ -156,7 +156,7 @@ public:
 					insertIntoInventory(ioo, oldPos);
 				} else {
 					for(int i = 0; i < MAX_EQUIPED; i++) {
-						if(player.equiped[i] != 0 && ValidIONum(player.equiped[i])) {
+						if(player.equiped[i] != EntityHandle(0) && ValidIONum(player.equiped[i])) {
 							if(entities[player.equiped[i]] == io) {
 								ARX_EQUIPMENT_UnEquip(entities.player(), io, 1);
 								ARX_EQUIPMENT_Equip(entities.player(), ioo);
@@ -386,7 +386,7 @@ public:
 		
 		DebugScript(' ' << name << ' ' << attach);
 		
-		long t = entities.getById(name);
+		EntityHandle t = entities.getById(name);
 		if(!ValidIONum(t)) {
 			ScriptWarning << "unknown target: " << name;
 			return Failed;
@@ -452,7 +452,7 @@ public:
 		
 		DebugScript(' ' << target);
 		
-		long t = entities.getById(target);
+		EntityHandle t = entities.getById(target);
 		
 		if(!ValidIONum(t) || !hasVisibility(context.getEntity(), entities[t])) {
 			context.skipStatement();
@@ -735,7 +735,7 @@ public:
 			return Failed;
 		}
 		
-		long self = (context.getEntity() == NULL) ? -1 : context.getEntity()->index();
+		EntityHandle self = (context.getEntity() == NULL) ? EntityHandle(-1) : context.getEntity()->index();
 		ARX_DAMAGES_DealDamages(t->index(), damage, self, type, &t->pos);
 		
 		return Success;

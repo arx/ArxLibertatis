@@ -148,14 +148,14 @@ public:
 	
 	unsigned long m_tolive;
 	
-	long m_longinfo_entity;
+	EntityHandle m_longinfo_entity;
 	DamageHandle m_longinfo_damage;
 	long m_longinfo_time;
 	long m_longinfo_summon_creature;
 	long m_longinfo_lower_armor;
 	LightHandle m_longinfo_light;
 	
-	long m_longinfo2_entity;
+	EntityHandle m_longinfo2_entity;
 	LightHandle m_longinfo2_light;
 	
 	bool m_bDuration;
@@ -169,7 +169,7 @@ public:
 	unsigned long m_lastupdate;
 	
 	// Used by: MassParalyseSpell
-	std::vector<long> m_targetHandles;
+	std::vector<EntityHandle> m_targetHandles;
 };
 
 #endif // ARX_GAME_MAGIC_SPELL_H

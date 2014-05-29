@@ -24,6 +24,8 @@
 #include <string>
 #include <vector>
 
+#include "game/GameTypes.h"
+
 class Entity;
 
 class EntityManager {
@@ -42,7 +44,7 @@ public:
 	//! Free all entities except for the player
 	void clear();
 	
-	long getById(const std::string & name) const;
+	EntityHandle getById(const std::string & name) const;
 	Entity * getById(const std::string & name, Entity * self) const;
 	
 	Entity * operator[](size_t index) const {

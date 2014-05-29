@@ -87,8 +87,8 @@ DECLARE_FLAGS_OPERATORS(DeleteByIndexFlags)
 void ARX_INTERACTIVE_TWEAK_Icon(Entity * io, const res::path & s1);
 void ARX_INTERACTIVE_DestroyDynamicInfo(Entity * io);
 void ARX_INTERACTIVE_HideGore(Entity * io, long flag = 0);
-bool ARX_INTERACTIVE_Attach(long n_source, long n_target, const std::string & ap_source, const std::string & ap_target);
-void ARX_INTERACTIVE_Detach(long n_source, long n_target);
+bool ARX_INTERACTIVE_Attach(EntityHandle n_source, EntityHandle n_target, const std::string & ap_source, const std::string & ap_target);
+void ARX_INTERACTIVE_Detach(EntityHandle n_source, EntityHandle n_target);
 void ARX_INTERACTIVE_Show_Hide_1st(Entity * io, long state);
 
 void ARX_INTERACTIVE_RemoveGoreOnIO(Entity * io);
@@ -114,7 +114,7 @@ void ARX_INTERACTIVE_DestroyIOdelayedExecute();
  *
  * We should instead use a proper weak pointer!
  */
-bool ValidIONum(long num);
+bool ValidIONum(EntityHandle num);
 long ValidIOAddress(const Entity * io);
 
 void RestoreInitialIOStatusOfIO(Entity * io);
@@ -165,7 +165,7 @@ long  ARX_INTERACTIVE_GetPrice(Entity * io, Entity * shop);
 void IO_UnlinkAllLinkedObjects(Entity * io);
 
 struct TREATZONE_IO {
-	long num;
+	EntityHandle num;
 	Entity * io;
 	EntityFlags ioflags;
 	long show;
@@ -184,7 +184,7 @@ bool HaveCommonGroup(Entity * io, Entity * ioo);
 void UpdateIOInvisibility(Entity * io);
 void CheckSetAnimOutOfTreatZone(Entity * io, long num);
 void ARX_HALO_SetToNative(Entity * io);
-void ARX_INTERACTIVE_ActivatePhysics(long t);
+void ARX_INTERACTIVE_ActivatePhysics(EntityHandle t);
 void ResetVVPos(Entity * io);
 
 void UpdateGoldObject(Entity * io);

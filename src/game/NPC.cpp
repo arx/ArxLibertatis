@@ -173,7 +173,7 @@ static void CheckHit(Entity * io, float ratioaim) {
 	else
 		dmg = 40.f;
 
-	long i = io->targetinfo;
+	EntityHandle i = io->targetinfo;
 
 	if(!ValidIONum(i))
 		return;
@@ -551,7 +551,7 @@ static long AnchorData_GetNearest_2(float beta, Vec3f * pos, EERIE_CYLINDER * cy
 	return AnchorData_GetNearest(&posi, cyl);
 }
 
-bool ARX_NPC_LaunchPathfind(Entity * io, long target)
+bool ARX_NPC_LaunchPathfind(Entity * io, EntityHandle target)
 {
 	if(!io || !(io->ioflags & IO_NPC))
 		return false;
@@ -869,7 +869,7 @@ void ARX_NPC_ManagePoison(Entity * io)
 
 		if(io->_npcdata->lifePool.current > 0 && io->_npcdata->lifePool.current - dmg <= 0.f) {
 			long xp = io->_npcdata->xpvalue;
-			ARX_DAMAGES_DamageNPC(io, dmg, -1, 0, NULL);
+			ARX_DAMAGES_DamageNPC(io, dmg, EntityHandle(-1), 0, NULL);
 			ARX_PLAYER_Modify_XP(xp);
 		}
 		else
@@ -981,7 +981,7 @@ void ARX_PHYSICS_Apply() {
 
 			if(io->ioflags & IO_NPC) {
 				const float LAVA_DAMAGE = 10.f;
-				ARX_DAMAGES_DamageNPC(io, LAVA_DAMAGE * framedelay * ( 1.0f / 100 ), -1, 0, NULL);
+				ARX_DAMAGES_DamageNPC(io, LAVA_DAMAGE * framedelay * ( 1.0f / 100 ), EntityHandle(-1), 0, NULL);
 			}
 		}
 
@@ -1216,7 +1216,7 @@ void StareAtTarget(Entity * io)
 
 float GetTRUETargetDist(Entity * io) {
 	
-	long t;
+	EntityHandle t;
 	if(io->ioflags & IO_NPC) {
 		t = io->_npcdata->pathfind.truetarget;
 	} else {
@@ -2330,7 +2330,7 @@ void GetIOCyl(Entity * io, EERIE_CYLINDER & cyl) {
  * \param targ
  * \param dst
  */
-void ComputeTolerance(Entity * io, long targ, float * dst) {
+void ComputeTolerance(Entity * io, EntityHandle targ, float * dst) {
 	
 	float TOLERANCE = 30.f;
 	
@@ -2653,7 +2653,7 @@ static void ManageNPCMovement(Entity * io)
 		} else if(!io->_npcdata->reachedtarget) {
 			// Walking/running towards target
 			
-			if((io->targetinfo != -2
+			if((io->targetinfo != EntityHandle(-2)
 			     || (io->_npcdata->behavior & BEHAVIOUR_WANDER_AROUND)
 			     || (io->_npcdata->behavior & BEHAVIOUR_FLEE)
 			     || (io->_npcdata->behavior & BEHAVIOUR_GO_HOME))
@@ -2852,7 +2852,7 @@ static void ManageNPCMovement(Entity * io)
 	// Tries to solve Moveproblems... sort of...
 	if(io->_npcdata->moveproblem > 11) {
 		if(_dist > TOLERANCE && !io->_npcdata->pathfind.pathwait) {
-			long targ;
+			EntityHandle targ;
 
 			if(io->_npcdata->pathfind.listnb > 0)
 				targ = io->_npcdata->pathfind.truetarget;

@@ -165,7 +165,7 @@ struct ARXCHARACTER {
 	Entity * equipshieldIO;
 	Entity * torch;
 	
-	short equiped[MAX_EQUIPED]; 
+	EntityHandle equiped[MAX_EQUIPED]; 
 	
 	struct PlayerAttribute {
 		float strength;

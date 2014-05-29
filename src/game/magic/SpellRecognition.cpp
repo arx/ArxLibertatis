@@ -991,6 +991,6 @@ bool ARX_SPELLS_AnalyseSPELL() {
 		return false;
 	}
 	
-	return ARX_SPELLS_Launch(spell, 0 /* player */, flags);
+	return ARX_SPELLS_Launch(spell, EntityHandle(0) /* player */, flags);
 	
 }

@@ -272,7 +272,7 @@ void ARX_EQUIPMENT_RecreatePlayerMesh() {
 						EERIE_LINKEDOBJ_LinkObjectToObject(target->obj, toequip->obj, "weapon_attach", "primary_attach", toequip);
 					}
 				} else if(toequip->type_flags & OBJECT_TYPE_SHIELD) {
-					if(player.equiped[EQUIP_SLOT_SHIELD] != 0) {
+					if(player.equiped[EQUIP_SLOT_SHIELD] != EntityHandle(0)) {
 						EERIE_LINKEDOBJ_LinkObjectToObject(target->obj, toequip->obj, "shield_attach", "shield_attach", toequip);
 					}
 				}
@@ -513,7 +513,7 @@ float ARX_EQUIPMENT_ComputeDamages(Entity * io_source, Entity * io_target, float
 
 	if(io_source == entities.player()) {
 		
-		if(player.equiped[EQUIP_SLOT_WEAPON] != 0 && ValidIONum(player.equiped[EQUIP_SLOT_WEAPON])) {
+		if(player.equiped[EQUIP_SLOT_WEAPON] != EntityHandle(0) && ValidIONum(player.equiped[EQUIP_SLOT_WEAPON])) {
 			Entity * io = entities[player.equiped[EQUIP_SLOT_WEAPON]];
 			if(io && !io->weaponmaterial.empty()) {
 				wmat = &io->weaponmaterial;
@@ -681,7 +681,7 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 	
 	bool ret = false;
 	long source = (io_source == NULL) ? -1 : io_source->index();
-	long weapon = io_weapon->index();
+	EntityHandle weapon = io_weapon->index();
 	Sphere sphere;
 
 	Vec3f * v0;
@@ -710,7 +710,7 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 		if(source != 0)
 			sphere.radius += 15.f;
 
-		std::vector<long> sphereContent;
+		std::vector<EntityHandle> sphereContent;
 
 		if(CheckEverythingInSphere(sphere, source, targ, sphereContent)) {
 			for(size_t jj = 0; jj < sphereContent.size(); jj++) {
@@ -806,7 +806,7 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 								sp.origin.z = target->obj->vertexlist3[hitpoint].v.z + vect.z * 30.f;
 								sp.radius = 3.5f * power * 20;
 
-								if(CheckAnythingInSphere(sp, 0, CAS_NO_NPC_COL)) {
+								if(CheckAnythingInSphere(sp, EntityHandle(0), CAS_NO_NPC_COL)) {
 									Color3f rgb = color.to<float>();
 									
 									Sphere splatSphere;
@@ -1232,7 +1232,7 @@ void ARX_EQUIPMENT_IdentifyAll()
 
 	for (long i = 0; i < MAX_EQUIPED; i++)
 	{
-		if ((player.equiped[i] != 0)
+		if ((player.equiped[i] != EntityHandle(0))
 		        &&	ValidIONum(player.equiped[i]))
 		{
 			Entity * toequip = entities[player.equiped[i]];

@@ -184,7 +184,7 @@ public:
 				
 				DebugScript(' ' << options << ' ' << spellname);
 				
-				long from = context.getEntity()->index();
+				EntityHandle from = context.getEntity()->index();
 				if(ValidIONum(from)) {
 					long sp = ARX_SPELLS_GetInstanceForThisCaster(spellid, from);
 					if(sp >= 0) {
@@ -480,7 +480,7 @@ public:
 			io->_camdata->cam.translatetarget = Vec3f_ZERO;
 		}
 		
-		long i = -1;
+		EntityHandle i = EntityHandle(-1);
 		if(t != NULL) {
 			i = io->targetinfo = t->index();
 			GetTargetPos(io);
@@ -542,7 +542,7 @@ public:
 		
 		DebugScript(' ' << target);
 		
-		long t = entities.getById(target);
+		EntityHandle t = entities.getById(target);
 		ARX_NPC_LaunchPathfind(context.getEntity(), t);
 		
 		return Success;

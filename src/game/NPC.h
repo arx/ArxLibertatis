@@ -89,7 +89,7 @@ struct IO_BEHAVIOR_DATA {
 	Behaviour behavior;
 	float behavior_param;
 	long tactics; // 0=none ; 1=side ; 2=side+back
-	long target;
+	EntityHandle target;
 	MoveMode movemode;
 	ANIM_USE animlayer[MAX_ANIM_LAYERS];
 };
@@ -105,10 +105,10 @@ DECLARE_FLAGS_OPERATORS(PathfindFlags)
 struct IO_PATHFIND {
 	PathfindFlags flags;
 	long listnb;
-	unsigned short * list;
+	EntityHandle * list;
 	unsigned short listpos;
 	short pathwait;
-	long truetarget;
+	EntityHandle truetarget;
 };
 
 enum ExtraRotateFlag {
@@ -219,7 +219,7 @@ const float ARX_NPC_AUDIBLE_PRESENCE_DEFAULT(1.0F);
 void ARX_NPC_Revive(Entity * io, long flag);
 bool ARX_NPC_SetStat(Entity & io, const std::string & statname, float value);
 void ARX_NPC_TryToCutSomething(Entity * target, const Vec3f * pos);
-bool ARX_NPC_LaunchPathfind(Entity * io, long target);
+bool ARX_NPC_LaunchPathfind(Entity * io, EntityHandle target);
 bool IsDeadNPC(Entity * io);
 
 void FaceTarget2(Entity * io);

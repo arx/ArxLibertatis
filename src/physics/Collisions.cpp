@@ -679,7 +679,7 @@ float CheckAnythingInCylinder(const EERIE_CYLINDER & cyl, Entity * ioo, long fla
 							if(!dealt && (ioo->damager_damages > 0 || io->damager_damages > 0)) {
 
 								if(ioo->damager_damages > 0)
-									ARX_DAMAGES_DealDamages(i, ioo->damager_damages, ioo->index(), ioo->damager_type, &io->pos);
+									ARX_DAMAGES_DealDamages(EntityHandle(i), ioo->damager_damages, ioo->index(), ioo->damager_type, &io->pos);
 
 								if(io->damager_damages > 0)
 									ARX_DAMAGES_DealDamages(ioo->index(), io->damager_damages, io->index(), io->damager_type, &ioo->pos);
@@ -756,7 +756,7 @@ float CheckAnythingInCylinder(const EERIE_CYLINDER & cyl, Entity * ioo, long fla
 											dealt = 1;
 
 											if(ioo->damager_damages > 0)
-												ARX_DAMAGES_DealDamages(i, ioo->damager_damages, ioo->index(), ioo->damager_type, &io->pos);
+												ARX_DAMAGES_DealDamages(EntityHandle(i), ioo->damager_damages, ioo->index(), ioo->damager_type, &io->pos);
 
 											if(io->damager_damages > 0)
 												ARX_DAMAGES_DealDamages(ioo->index(), io->damager_damages, io->index(), io->damager_type, &ioo->pos);
@@ -813,7 +813,7 @@ float CheckAnythingInCylinder(const EERIE_CYLINDER & cyl, Entity * ioo, long fla
 											dealt = 1;
 											
 											if(ioo->damager_damages > 0)
-												ARX_DAMAGES_DealDamages(i, ioo->damager_damages, ioo->index(), ioo->damager_type, &io->pos);
+												ARX_DAMAGES_DealDamages(EntityHandle(i), ioo->damager_damages, ioo->index(), ioo->damager_type, &io->pos);
 									
 											if(io->damager_damages > 0)
 												ARX_DAMAGES_DealDamages(ioo->index(), io->damager_damages, io->index(), io->damager_type, &ioo->pos);
@@ -851,12 +851,12 @@ static bool InExceptionList(long val) {
 	return false;
 }
 
-bool CheckEverythingInSphere(const Sphere & sphere, long source, long targ, std::vector<long> & sphereContent) //except source...
+bool CheckEverythingInSphere(const Sphere & sphere, long source, long targ, std::vector<EntityHandle> & sphereContent) //except source...
 {
 	bool vreturn = false;
 	
 	Entity * io;
-	long ret_idx = -1;
+	EntityHandle ret_idx = EntityHandle(-1);
 	
 	float sr30 = sphere.radius + 20.f;
 	float sr40 = sphere.radius + 30.f;
@@ -1020,7 +1020,7 @@ EERIEPOLY * CheckBackgroundInSphere(const Sphere & sphere) //except source...
 	return NULL;	
 }
 
-bool CheckAnythingInSphere(const Sphere & sphere, long source, CASFlags flags, long * num) //except source...
+bool CheckAnythingInSphere(const Sphere & sphere, EntityHandle source, CASFlags flags, EntityHandle * num) //except source...
 {
 	if(num)
 		*num = -1;
@@ -1087,7 +1087,7 @@ bool CheckAnythingInSphere(const Sphere & sphere, long source, CASFlags flags, l
 		if((io->ioflags & IO_ITEM) && (flags & CAS_NO_ITEM_COL))
 			continue;
 
-		if(treatio[i].num != 0 && source != 0 && validsource && HaveCommonGroup(io,entities[source]))
+		if(treatio[i].num != EntityHandle(0) && source != EntityHandle(0) && validsource && HaveCommonGroup(io,entities[source]))
 			continue;
 
 		if(io->gameFlags & GFLAG_PLATFORM) {
@@ -1169,7 +1169,7 @@ bool CheckAnythingInSphere(const Sphere & sphere, long source, CASFlags flags, l
 }
 
 
-bool CheckIOInSphere(const Sphere & sphere, long target, bool ignoreNoCollisionFlag) {
+bool CheckIOInSphere(const Sphere & sphere, EntityHandle target, bool ignoreNoCollisionFlag) {
 	
 	if(!ValidIONum(target))
 		return false;
@@ -1664,7 +1664,7 @@ bool IO_Visible(const Vec3f & orgn, const Vec3f & dest, EERIEPOLY * epp, Vec3f *
 			Entity * io = entities[num];
 
 			if(io && (io->gameFlags & GFLAG_VIEW_BLOCKER)) {
-				if(CheckIOInSphere(sphere, num)) {
+				if(CheckIOInSphere(sphere, EntityHandle(num))) {
 					dd = fdist(orgn, sphere.origin);
 
 					if(dd < nearest) {

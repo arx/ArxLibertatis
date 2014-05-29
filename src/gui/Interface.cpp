@@ -2131,7 +2131,7 @@ void ArxGame::manageKeyMouse() {
 
 		if(pIO && g_cursorOverBook) {
 			for(long i = 0; i < MAX_EQUIPED; i++) {
-				if(player.equiped[i] != 0
+				if(player.equiped[i] != EntityHandle(0)
 				   && ValidIONum(player.equiped[i])
 				   && entities[player.equiped[i]] == pIO
 				) {

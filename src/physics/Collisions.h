@@ -97,10 +97,10 @@ DECLARE_FLAGS(CheckAnythingInSphereFlag, CASFlags)
 DECLARE_FLAGS_OPERATORS(CASFlags)
 
 //except source...
-bool CheckAnythingInSphere(const Sphere & sphere, long source, CASFlags flags = 0, long * num = NULL);
+bool CheckAnythingInSphere(const Sphere & sphere, EntityHandle source, CASFlags flags = 0, EntityHandle * num = NULL);
 
 //except source...
-bool CheckEverythingInSphere(const Sphere & sphere, long source, long targ, std::vector<long> & sphereContent);
+bool CheckEverythingInSphere(const Sphere & sphere, long source, long targ, std::vector<EntityHandle> & sphereContent);
 
 //except source...
 EERIEPOLY * CheckBackgroundInSphere(const Sphere & sphere);
@@ -110,7 +110,7 @@ bool IsCollidingIO(Entity * io, Entity * ioo);
 /*!
  * \param ignoreNoCollisionFlag true if the IO_NO_COLLISIONS on the interactive object should be ignored
  */
-bool CheckIOInSphere(const Sphere & sphere, long target, bool ignoreNoCollisionFlag = false);
+bool CheckIOInSphere(const Sphere & sphere, EntityHandle target, bool ignoreNoCollisionFlag = false);
 
 bool AttemptValidCylinderPos(EERIE_CYLINDER & cyl, Entity * io, CollisionFlags flags);
 bool IO_Visible(const Vec3f & orgn, const Vec3f & dest, EERIEPOLY * epp, Vec3f * hit);
