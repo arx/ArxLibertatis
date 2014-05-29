@@ -84,7 +84,7 @@ namespace util { namespace cmdline {
  * \param argc Number of entries in argv
  * \param argv Array of command-line tokens - first one will be ignored
  *
- * @throws error If there was a syntax error or unknown options in the command-line.
+ * \throws error If there was a syntax error or unknown options in the command-line.
  *               \ref error::what will contain a user-friendly error message.
  */
 void parse(interpreter<std::string> & cli, int argc, char ** argv);
