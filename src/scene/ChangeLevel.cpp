@@ -172,19 +172,19 @@ static Entity * ConvertToValidIO(const char (&str)[N]) {
 }
 
 template <size_t N>
-static long ReadTargetInfo(const char (&str)[N]) {
+static EntityHandle ReadTargetInfo(const char (&str)[N]) {
 	
 	string ident = boost::to_lower_copy(util::loadString(str));
 	
 	if(ident == "none") {
-		return -1;
+		return EntityHandle(-1);
 	} else if(ident == "self") {
-		return -2;
+		return EntityHandle(-2);
 	} else if(ident == "player") {
-		return 0;
+		return EntityHandle(0);
 	} else {
 		Entity * e = convertToValidIO(ident);
-		return (e == NULL) ? -1 : e->index();
+		return (e == NULL) ? EntityHandle(-1) : e->index();
 	}
 }
 
@@ -417,7 +417,7 @@ bool IsPlayerEquipedWith(Entity * io) {
 		return false;
 	}
 	
-	long num = io->index();
+	EntityHandle num = io->index();
 	
 	if(io == player.torch) {
 		return true;
@@ -2011,7 +2011,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) {
 		LogError << "CHANGELEVEL Error: Unable to load " << ident;
 	} else {
 		
-		long Gaids_Number = io->index();
+		EntityHandle Gaids_Number = io->index();
 		Gaids[Gaids_Number] = new ARX_CHANGELEVEL_INVENTORY_DATA_SAVE;
 		
 		memset(Gaids[Gaids_Number], 0, sizeof(ARX_CHANGELEVEL_INVENTORY_DATA_SAVE));

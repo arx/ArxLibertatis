@@ -79,7 +79,7 @@ struct ARX_MISSILE
 	unsigned long lastupdate;
 	unsigned long tolive;
 	LightHandle	longinfo;
-	long		owner;
+	EntityHandle owner;
 };
 
 static const size_t MAX_MISSILES = 100;

@@ -680,7 +680,7 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 {
 	
 	bool ret = false;
-	long source = (io_source == NULL) ? -1 : io_source->index();
+	EntityHandle source = (io_source == NULL) ? EntityHandle(-1) : io_source->index();
 	EntityHandle weapon = io_weapon->index();
 	Sphere sphere;
 
@@ -707,7 +707,7 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 		
 		sphere.radius = rad; 
 
-		if(source != 0)
+		if(source != EntityHandle(0))
 			sphere.radius += 15.f;
 
 		std::vector<EntityHandle> sphereContent;

@@ -109,8 +109,8 @@ public:
 			Set_DragInter(ioo);
 		}
 		
-		long neww = ioo->index();
-		long oldd = io->index();
+		EntityHandle neww = ioo->index();
+		EntityHandle oldd = io->index();
 		
 		if((io->ioflags & IO_ITEM) && io->_itemdata->count > 1) {
 			io->_itemdata->count--;

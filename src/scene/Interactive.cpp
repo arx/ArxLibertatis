@@ -1160,7 +1160,7 @@ void ARX_INTERACTIVE_TeleportBehindTarget(Entity * io)
 		long num = ARX_SCRIPT_Timer_GetFree();
 
 		if(num != -1) {
-			long t = io->index();
+			EntityHandle t = io->index();
 			ActiveTimers++;
 			scr_timer[num].es = NULL;
 			scr_timer[num].exist = 1;

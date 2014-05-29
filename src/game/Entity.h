@@ -139,7 +139,7 @@ struct IO_SPELLCAST_DATA {
 	Rune symb[4]; // symbols to draw before casting...
 	SpellcastFlags spell_flags;
 	short spell_level;
-	long target;
+	EntityHandle target;
 	long duration;
 };
 

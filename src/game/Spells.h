@@ -71,7 +71,7 @@ void ARX_SPELLS_AddSpellOn(const long &caster, const long &spell);
 void ARX_SPELLS_RemoveSpellOn(const long & entityHandle, const long & spellHandle);
 
 SpellType GetSpellId(const std::string & spell);
-void TryToCastSpell(Entity * io, SpellType spellid, long level, long target, SpellcastFlags flags, long duration);
+void TryToCastSpell(Entity * io, SpellType spellid, long level, EntityHandle target, SpellcastFlags flags, long duration);
 
 const size_t MAX_SPELLS = 20;
 extern SpellBase spells[MAX_SPELLS];

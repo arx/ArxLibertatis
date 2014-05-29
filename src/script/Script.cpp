@@ -171,7 +171,7 @@ void ARX_SCRIPT_ResetObject(Entity * io, long flags)
 	// Now go for Script INIT/RESET depending on Mode
 	if(io) {
 		
-		long num = io->index();
+		EntityHandle num = io->index();
 		
 		if (entities[num] && entities[num]->script.data)
 		{
@@ -1601,7 +1601,7 @@ static ScriptResult SendIOScriptEventReverse(Entity * io, ScriptMessage msg, con
 	// checks invalid IO
 	if (!io) return REFUSE;
 
-	long num = io->index();
+	EntityHandle num = io->index();
 	
 	// if this IO only has a Local script, send event to it
 	if (entities[num] && !entities[num]->over_script.data)
@@ -1631,7 +1631,7 @@ ScriptResult SendIOScriptEvent(Entity * io, ScriptMessage msg, const std::string
 		return REFUSE;
 	}
 	
-	long num = io->index();
+	EntityHandle num = io->index();
 	
 	Entity * oes = EVENT_SENDER;
 
@@ -1677,7 +1677,7 @@ ScriptResult SendInitScriptEvent(Entity * io) {
 
 	Entity * oes = EVENT_SENDER;
 	EVENT_SENDER = NULL;
-	long num = io->index();
+	EntityHandle num = io->index();
 
 	if (entities[num] && entities[num]->script.data)
 	{

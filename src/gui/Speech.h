@@ -117,7 +117,7 @@ struct CinematicSpeech {
 const size_t MAX_ACTORS = 10;
 struct ARX_CONVERSATION_STRUCT {
 	long actors_nb;
-	long actors[MAX_ACTORS];
+	EntityHandle actors[MAX_ACTORS];
 	long current;
 };
 

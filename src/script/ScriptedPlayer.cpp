@@ -558,7 +558,7 @@ public:
 			spflags |= SPELLCAST_FLAG_NOCHECKCANCAST;
 		}
 		
-		TryToCastSpell(entities.player(), spellid, level, -1, spflags, duration);
+		TryToCastSpell(entities.player(), spellid, level, EntityHandle(-1), spflags, duration);
 		
 		return Success;
 	}

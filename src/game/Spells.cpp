@@ -2077,7 +2077,7 @@ void ARX_SPELLS_Update() {
 	}
 }
 
-void TryToCastSpell(Entity * io, SpellType spellType, long level, long target, SpellcastFlags flags, long duration)
+void TryToCastSpell(Entity * io, SpellType spellType, long level, EntityHandle target, SpellcastFlags flags, long duration)
 {
 	if(!io || io->spellcast_data.castingspell != SPELL_NONE)
 		return;
