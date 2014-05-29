@@ -4170,7 +4170,7 @@ extern float GLOBAL_SLOWDOWN;
 /** EXTRACTION BEGINS HERE **/
 
 /*!
- * @brief the hit strength diamond shown at the bottom of the UI.
+ * \brief the hit strength diamond shown at the bottom of the UI.
  */
 class HitStrengthGauge {
 private:

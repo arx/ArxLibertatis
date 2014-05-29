@@ -803,7 +803,7 @@ bool insertIntoInventory(Entity * item, const InventoryPos & pos) {
 
 // TODO replace remaining uses of this with playerInventory.insert()
 /**
- * @brief tries to put an object in player inventory
+ * \brief tries to put an object in player inventory
  */
 bool CanBePutInInventory(Entity * io)
 {
@@ -980,7 +980,7 @@ bool CanBePutInInventory(Entity * io)
 }
 
 /**
- * @brief Tries to put an object in secondary inventory
+ * \brief Tries to put an object in secondary inventory
  */
 bool CanBePutInSecondaryInventory(INVENTORY_DATA * id, Entity * io, long * xx, long * yy)
 {
@@ -1148,7 +1148,7 @@ bool CanBePutInSecondaryInventory(INVENTORY_DATA * id, Entity * io, long * xx, l
 }
 
 /**
- * @brief Try to put DRAGINTER object in an inventory
+ * \brief Try to put DRAGINTER object in an inventory
  * @return
  */
 bool PutInInventory() {
@@ -1423,7 +1423,7 @@ bool PutInInventory() {
 }
 
 /**
- * @brief Returns true if xx,yy is a position in secondary inventory
+ * \brief Returns true if xx,yy is a position in secondary inventory
  */
 bool InSecondaryInventoryPos(const Vec2s & pos)
 {
@@ -1448,7 +1448,7 @@ bool InSecondaryInventoryPos(const Vec2s & pos)
 }
 
 /**
- * @brief Returns true if xx,yy is a position in player inventory
+ * \brief Returns true if xx,yy is a position in player inventory
  */
 bool InPlayerInventoryPos(const Vec2s & pos)
 {
@@ -1514,7 +1514,7 @@ bool InPlayerInventoryPos(const Vec2s & pos)
 }
 
 /**
- * @brief Returns true if "pos" is a position in player inventory or in SECONDARY inventory
+ * \brief Returns true if "pos" is a position in player inventory or in SECONDARY inventory
  */
 bool InInventoryPos(const Vec2s & pos)
 {
@@ -1525,7 +1525,7 @@ bool InInventoryPos(const Vec2s & pos)
 }
 
 /**
- * @brief returns true if cursor is flying over any inventory
+ * \brief returns true if cursor is flying over any inventory
  */
 bool IsFlyingOverInventory(const Vec2s & pos)
 {
@@ -1548,7 +1548,7 @@ bool IsFlyingOverInventory(const Vec2s & pos)
 }
 
 /**
- * @brief Returns IO under position xx,yy in any INVENTORY or NULL if no IO was found
+ * \brief Returns IO under position xx,yy in any INVENTORY or NULL if no IO was found
  */
 Entity * GetFromInventory(const Vec2s & pos)
 {
@@ -1591,7 +1591,7 @@ Entity * GetFromInventory(const Vec2s & pos)
 }
 
 /**
- * @brief Gets real world position for an IO (can be used for non items)
+ * \brief Gets real world position for an IO (can be used for non items)
  * (even in an inventory or being dragged)
  *
  * Put the position in "pos". returns true if position was found
@@ -1662,7 +1662,7 @@ bool GetItemWorldPosition(Entity * io, Vec3f * pos)
 }
 
 /**
- * @brief Gets real world position for an IO to spawn a sound
+ * \brief Gets real world position for an IO to spawn a sound
  */
 bool GetItemWorldPositionSound(const Entity * io, Vec3f * pos) {
 	
@@ -1718,7 +1718,7 @@ bool GetItemWorldPositionSound(const Entity * io, Vec3f * pos) {
 }
 
 /**
- * @brief Seeks an IO in all Inventories to remove it
+ * \brief Seeks an IO in all Inventories to remove it
  */
 void RemoveFromAllInventories(const Entity * io) {
 	
@@ -1748,7 +1748,7 @@ void RemoveFromAllInventories(const Entity * io) {
 }
 
 /**
- * @brief Seeks an IO in all Inventories to replace it by another IO
+ * \brief Seeks an IO in all Inventories to replace it by another IO
  */
 void CheckForInventoryReplaceMe(Entity * io, Entity * old) {
 	
@@ -1775,7 +1775,7 @@ void CheckForInventoryReplaceMe(Entity * io, Entity * old) {
 }
 
 /**
- * @brief Takes an object from an inventory (be it player's or secondary inventory)
+ * \brief Takes an object from an inventory (be it player's or secondary inventory)
  * at screen position "xx,yy" and Puts that object in player's "hand" (cursor)
  *
  * @return true if an object was taken

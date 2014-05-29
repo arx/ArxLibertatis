@@ -198,7 +198,7 @@ bool TryToQuadify(EERIEPOLY * ep,EERIE_3DOBJ * eobj)
 }
 
 /**
- * @brief Checks for angular difference between normals
+ * \brief Checks for angular difference between normals
  * @param norm
  * @param norm2
  * @return
