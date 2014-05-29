@@ -19,6 +19,7 @@
 
 #include "io/log/ConsoleLogger.h"
 
+#include <cstdlib>
 #include <cstring>
 #include <iostream>
 
@@ -56,7 +57,10 @@ Backend * Console::get() {
 	
 	#if ARX_HAVE_ISATTY
 	if((!hasStdout || isatty(1)) && (!hasStdErr || isatty(2))) {
-		return new ColorConsole;
+		char * term = std::getenv("TERM");
+		if(term && std::strcmp(term, "dumb")) {
+			return new ColorConsole;
+		}
 	}
 	#endif
 	
