@@ -38,7 +38,7 @@ void defineSystemDirectories(const char * argv0);
 fs::path getExecutablePath();
 
 /*!
- * Get the full path to a helper executable
+ * \brief Get the full path to a helper executable
  *
  * Tries to find a helper executable in the same directory as the current program, in the
  * parent directory, or in the libexec directory in the prefix where arx is installed.
@@ -56,13 +56,19 @@ static const char * const env_list_seperators = ";";
 #endif
 
 /*!
- * Check if a file descriptor has been closed or redirected to /dev/null
+ * \brief Check if a file descriptor has been closed or redirected to /dev/null
  *
  * @param fd the file descriptor to test - 0 for stdin, 1 for stdout and 2 for stderr.
  */
 bool isFileDescriptorDisabled(int fd);
+
+//! Check if standard input is open and doesn't point to /dev/null
 inline bool hasStdIn() { return !isFileDescriptorDisabled(0); }
+
+//! Check if standard output is open and doesn't point to /dev/null
 inline bool hasStdOut() { return !isFileDescriptorDisabled(1); }
+
+//! Check if standard error is open and doesn't point to /dev/null
 inline bool hasStdErr() { return !isFileDescriptorDisabled(2); }
 
 } // namespace platform
