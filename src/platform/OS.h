@@ -34,7 +34,7 @@ std::string getOSName();
 std::string getOSArchitecture();
 
 /*!
- * Get the distribution name and version of the runtime host operating system.
+ * \brief Get the distribution name and version of the runtime host operating system
  *
  * @return the distribution name and version or an empty string if not applicable.
  */
