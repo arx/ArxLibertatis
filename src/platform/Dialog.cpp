@@ -230,8 +230,7 @@ static int kdialogCommand(DialogType type, const std::string & message,
 		case DialogOkCancel: options = "--warningcontinuecancel"; break;
 	}
 	
-	boost::format command("kdialog %1% \"%2%\" --title \"%3%\""
-	                      " --icon arx-libertatis");
+	boost::format command("kdialog %1% \"%2%\" --title \"%3%\" --icon arx-libertatis");
 	command = command % options;
 	command = command % escape(formatAsHtml(message, false));
 	command = command % escape(title);
@@ -249,7 +248,7 @@ static int gxmessageCommand(DialogType type, const std::string & message,
 		case DialogOkCancel: options = "-buttons OK:0,Cancel:1"; break;
 	}
 	
-	boost::format command("gxmessage -center %1% -title \"%2%\" \"%3%\"");
+	boost::format command("gxmessage -geometry 550x300 -center %1% -title \"%2%\" \"%3%\"");
 	command = command % options;
 	command = command % escape(title);
 	command = command % escape(message);
@@ -267,8 +266,7 @@ static int xdialogCommand(DialogType type, const std::string & message,
 		case DialogOkCancel: options = "--ok-label OK --cancel-label Cancel --yesno"; break;
 	}
 	
-	boost::format command("Xdialog --left --title \"%3%\""
-	                      " %1% \"%2%\" 0 0");
+	boost::format command("Xdialog --left --title \"%3%\" %1% \"%2%\" 0 0");
 	command = command % options;
 	command = command % escape(message);
 	command = command % escape(title);
