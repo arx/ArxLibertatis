@@ -553,7 +553,7 @@ public:
 	 *
 	 * @param item the item to insert
 	 *
-	 * @return true if the item was inserted, false otherwise
+	 * \return true if the item was inserted, false otherwise
 	 */
 	bool insert(Entity * item) {
 		if(item && (item->ioflags & IO_ITEM)) {
@@ -575,7 +575,7 @@ public:
 	 *
 	 * @param item the item to insert
 	 *
-	 * @return true if the item was inserted, false otherwise
+	 * \return true if the item was inserted, false otherwise
 	 */
 	bool insert(Entity * item, const Pos & pos) {
 		if(item && (item->ioflags & IO_ITEM)) {
@@ -636,7 +636,7 @@ public:
 	/*!
 	 * Get the position of an item in the inventory.
 	 *
-	 * @return the position of the item
+	 * \return the position of the item
 	 */
 	Pos locate(const Entity * item) const {
 		for(size_t bag = 0; bag < bags; bag++) {
@@ -655,7 +655,7 @@ public:
 	 * Remove an item from the inventory.
 	 * The item is not deleted.
 	 *
-	 * @return the old position of the item
+	 * \return the old position of the item
 	 */
 	Pos remove(const Entity * item) {
 		Pos pos = locate(item);
@@ -1149,7 +1149,7 @@ bool CanBePutInSecondaryInventory(INVENTORY_DATA * id, Entity * io, long * xx, l
 
 /**
  * \brief Try to put DRAGINTER object in an inventory
- * @return
+ * \return
  */
 bool PutInInventory() {
 	// Check Validity
@@ -1778,7 +1778,7 @@ void CheckForInventoryReplaceMe(Entity * io, Entity * old) {
  * \brief Takes an object from an inventory (be it player's or secondary inventory)
  * at screen position "xx,yy" and Puts that object in player's "hand" (cursor)
  *
- * @return true if an object was taken
+ * \return true if an object was taken
  */
 bool TakeFromInventory(const Vec2s & pos)
 {

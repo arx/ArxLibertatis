@@ -280,7 +280,7 @@ namespace {
 
 /*!
  * Manage forward and backward buttons on notes and the quest book.
- * @return true if the note was clicked
+ * \return true if the note was clicked
  */
 bool manageNoteActions(Note & note) {
 	

@@ -279,7 +279,7 @@ aalError OpenALSource::fillAllBuffers() {
 /*!
  * Convert a stereo buffer to mono in-place.
  * @param T The type of one (mono) sound sample.
- * @return the size of the converted buffer
+ * \return the size of the converted buffer
  */
 template <class T>
 static size_t stereoToMono(char * data, size_t size) {

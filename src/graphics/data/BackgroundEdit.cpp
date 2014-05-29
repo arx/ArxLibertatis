@@ -201,7 +201,7 @@ bool TryToQuadify(EERIEPOLY * ep,EERIE_3DOBJ * eobj)
  * \brief Checks for angular difference between normals
  * @param norm
  * @param norm2
- * @return
+ * \return
  */
 bool LittleAngularDiff(Vec3f * norm, Vec3f * norm2) {
     return closerThan(*norm, *norm2, 1.41421f);
