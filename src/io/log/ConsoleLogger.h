@@ -38,7 +38,7 @@ public:
 	void flush();
 	
 	/*!
-	 * @return a ColorLogger instance if colors are supported or a ConsoleLogger otherwise.
+	 * \return a ColorLogger instance if colors are supported or a ConsoleLogger otherwise.
 	 *         May return null if standard output / error is discarded.
 	 */
 	static Backend * get();

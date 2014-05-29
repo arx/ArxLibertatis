@@ -35,7 +35,7 @@ namespace platform {
  * \param args program arguments. The first argument should be the program name/path and
  *             the last argument must be NULL.
  *
- * @return the programs exit code or a negative value on error.
+ * \return the programs exit code or a negative value on error.
  */
 int run(const char * exe, const char * const args[]);
 
@@ -47,7 +47,7 @@ int run(const char * exe, const char * const args[]);
  * \param args program arguments. The first argument is the program to run, either an
  *             absolute path or a program name in the PATH. The last argument must be NULL.
  *
- * @return the programs exit code or a negative value on error.
+ * \return the programs exit code or a negative value on error.
  */
 inline int run(const char * const args[]) {
 	return run(args[0], args);
@@ -62,7 +62,7 @@ inline int run(const char * const args[]) {
  * \param args program arguments. The first argument should be the program name/path and
  *             the last argument must be NULL.
  *
- * @return the programs exit code or a negative value on error.
+ * \return the programs exit code or a negative value on error.
  */
 inline int run(const std::string & exe, const char * const args[]) {
 	return run(exe.c_str(), args);
@@ -116,7 +116,7 @@ inline void runAsync(const std::string & exe, const char * const args[]) {
  *             the last argument must be NULL.
  * \param unlocalized true if localization environment varuables should be reset.
  *
- * @return the program's standard output, or an empty string if there was an error.
+ * \return the program's standard output, or an empty string if there was an error.
  */
 std::string getOutputOf(const char * exe, const char * const args[],
                         bool unlocalized = false);
@@ -130,7 +130,7 @@ std::string getOutputOf(const char * exe, const char * const args[],
  *             absolute path or a program name in the PATH. The last argument must be NULL.
  * \param unlocalized true if localization environment varuables should be reset.
  *
- * @return the program's standard output, or an empty string if there was an error.
+ * \return the program's standard output, or an empty string if there was an error.
  */
 inline std::string getOutputOf(const char * const args[], bool unlocalized = false) {
 	return getOutputOf(args[0], args, unlocalized);
@@ -146,7 +146,7 @@ inline std::string getOutputOf(const char * const args[], bool unlocalized = fal
  *             the last argument must be NULL.
  * \param unlocalized true if localization environment varuables should be reset.
  *
- * @return the program's standard output, or an empty string if there was an error.
+ * \return the program's standard output, or an empty string if there was an error.
  */
 inline std::string getOutputOf(const std::string & exe, const char * const args[],
                                bool unlocalized = false) {

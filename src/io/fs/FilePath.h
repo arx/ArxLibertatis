@@ -128,7 +128,7 @@ public:
 		return pathstr.empty();
 	}
 	
-	//! @return pathstr == other.pathstr
+	//! \return pathstr == other.pathstr
 	bool operator==(const path & other) const {
 		#if ARX_PLATFORM == ARX_PLATFORM_WIN32
 		return boost::iequals(pathstr, other.pathstr);
@@ -137,7 +137,7 @@ public:
 		#endif
 	}
 	
-	//! @return pathstr != other.pathstr
+	//! \return pathstr != other.pathstr
 	bool operator!=(const path & other) const {
 		#if ARX_PLATFORM == ARX_PLATFORM_WIN32
 		return !boost::iequals(pathstr, other.pathstr);
@@ -148,7 +148,7 @@ public:
 	
 	/*!
 	 * To allow path being used in std::map, etc
-	 * @return pathstr < other.pathstr
+	 * \return pathstr < other.pathstr
 	 */
 	bool operator<(const path & other) const {
 		#if ARX_PLATFORM == ARX_PLATFORM_WIN32
@@ -166,7 +166,7 @@ public:
 	
 	/*!
 	 * If pathstr constains a dot after the last slash, return everything preceeding the last dot
-	 * @return *this
+	 * \return *this
 	 */
 	path & remove_ext();
 	
@@ -175,7 +175,7 @@ public:
 	
 	path & set_basename(const std::string & basename);
 	
-	//! @return set_basename(get_basename() + basename_part)
+	//! \return set_basename(get_basename() + basename_part)
 	path & append_basename(const std::string & basename_part);
 	
 	void swap(path & other) {
@@ -187,7 +187,7 @@ public:
 	 *
 	 * Comparison is is done case-insensitively.
 	 *
-	 * @return str.empty() ? !ext().empty() : ext() == str || ext.substr(1) == str();
+	 * \return str.empty() ? !ext().empty() : ext() == str || ext.substr(1) == str();
 	 */
 	bool has_ext(const std::string & str = std::string()) const;
 	
@@ -197,7 +197,7 @@ public:
 		       || (pathstr.length() >= 3 && pathstr[0] == '.' && pathstr[1] == '.' && pathstr[2] == dir_sep);
 	}
 	
-	//! @return true if not empty, not "/", not "." not ".." and doesn't end in "/.."
+	//! \return true if not empty, not "/", not "." not ".." and doesn't end in "/.."
 	bool has_info() const {
 		size_t l = pathstr.length();
 		return (!pathstr.empty() && !(l == 2 && pathstr[0] == '.' && pathstr[1] == '.')

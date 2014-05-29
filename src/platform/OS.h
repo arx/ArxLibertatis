@@ -27,16 +27,16 @@
 
 namespace platform {
 
-//! @return the name and version of the runtime host operating system
+//! \return the name and version of the runtime host operating system
 std::string getOSName();
 
-//! @return a string identifying the runtime host operating system's architecture
+//! \return a string identifying the runtime host operating system's architecture
 std::string getOSArchitecture();
 
 /*!
  * \brief Get the distribution name and version of the runtime host operating system
  *
- * @return the distribution name and version or an empty string if not applicable.
+ * \return the distribution name and version or an empty string if not applicable.
  */
 std::string getOSDistribution();
 

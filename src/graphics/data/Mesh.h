@@ -138,7 +138,7 @@ EERIEPOLY * CheckInPoly(const Vec3f & poss, float * needY = NULL);
 /*!
  * Check if the given condition is under water.
  * 
- * @return the lowest water polygon pos is under, or NULL if pos is not under water.
+ * \return the lowest water polygon pos is under, or NULL if pos is not under water.
  */
 EERIEPOLY * EEIsUnderWater(const Vec3f & pos);
 

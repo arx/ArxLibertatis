@@ -120,36 +120,36 @@ public:
 		return pathstr.empty();
 	}
 	
-	//! @return pathstr == other.pathstr
+	//! \return pathstr == other.pathstr
 	inline bool operator==(const path & other) const {
 		return (pathstr == other.pathstr);
 	}
 	
-	//! @return pathstr == str
+	//! \return pathstr == str
 	inline bool operator==(const std::string & str) const {
 		return (pathstr == str);
 	}
 	
 	/*!
-	 * @return pathstr == str
+	 * \return pathstr == str
 	 * This overload is neccessary so comparing with string constants isn't ambigous
 	 */
 	inline bool operator==(const char * str) const {
 		return !pathstr.compare(0, pathstr.length(), str);
 	}
 	
-	//! @return pathstr != other.pathstr
+	//! \return pathstr != other.pathstr
 	inline bool operator!=(const path & other) const {
 		return (pathstr != other.pathstr);
 	}
 	
-	//! @return pathstr != str
+	//! \return pathstr != str
 	inline bool operator!=(const std::string & str) const {
 		return (pathstr != str);
 	}
 	
 	/*!
-	 * @return pathstr != str
+	 * \return pathstr != str
 	 * This overload is neccessary so comparing with string constants isn't ambigous
 	 */
 	inline bool operator!=(const char * str) const {
@@ -158,7 +158,7 @@ public:
 	
 	/*!
 	 * To allow path being used in std::map, etc
-	 * @return pathstr < other.pathstr
+	 * \return pathstr < other.pathstr
 	 */
 	inline bool operator<(const path & other) const {
 		return (pathstr < other.pathstr);
@@ -172,7 +172,7 @@ public:
 	
 	/*!
 	 * If pathstr constains a dot after the last slash, return everything preceeding the last dot
-	 * @return *this
+	 * \return *this
 	 */
 	path & remove_ext();
 	
@@ -181,7 +181,7 @@ public:
 	
 	path & set_basename(const std::string & basename);
 	
-	//! @return set_basename(get_basename() + basename_part)
+	//! \return set_basename(get_basename() + basename_part)
 	path & append_basename(const std::string & basename_part);
 	
 	inline void swap(path & other) {
@@ -211,10 +211,10 @@ public:
 	 */
 	path & append(const std::string & str);
 	
-	//! @return append(str)
+	//! \return append(str)
 	path & operator+=(const std::string & str) { append(str); return *this; }
 	
-	//! @return path(*this).append(str)
+	//! \return path(*this).append(str)
 	path operator+(const std::string & str) const {
 		return path(*this) += str;
 	}

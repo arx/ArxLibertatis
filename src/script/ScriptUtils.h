@@ -114,7 +114,7 @@ public:
 	
 	/*!
 	 * Skip input until the end of the current line.
-	 * @return the current position or (size_t)-1 if we are already at the line end
+	 * \return the current position or (size_t)-1 if we are already at the line end
 	 */
 	size_t skipCommand();
 	

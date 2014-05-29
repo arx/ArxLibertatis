@@ -92,7 +92,7 @@ public:
 	 * Set this angle to the content of another angle.
 	 * @brief Assignment operator.
 	 * \param other An euler angle to be copied.
-	 * @return Reference to this object.
+	 * \return Reference to this object.
 	 */
 	Angle & operator=(const Angle & other) {
 		m_yaw = other.m_yaw, m_pitch = other.m_pitch, m_roll = other.m_roll;
@@ -103,7 +103,7 @@ public:
 	 * Test if this angle is equal to another angle.
 	 * @brief Equal operator.
 	 * \param other An euler angle to be compared to.
-	 * @return A boolean, \b true if the two angles are equal(all members are equals), or \b false otherwise.
+	 * \return A boolean, \b true if the two angles are equal(all members are equals), or \b false otherwise.
 	 */
 	bool operator==(const Angle & other) const {
 		return m_yaw == other.m_yaw && m_pitch == other.m_pitch && m_roll == other.m_roll;
@@ -113,7 +113,7 @@ public:
 	 * Test if this angle is not equal to another angle.
 	 * @brief Not equal operator.
 	 * \param other An angle to be compared to.
-	 * @return A boolean, \b true if the two angles are not equal(some members are not equal), or \b false otherwise.
+	 * \return A boolean, \b true if the two angles are not equal(some members are not equal), or \b false otherwise.
 	 */
 	bool operator!=(const Angle & other) const {
 		return !((*this) == other);
@@ -122,7 +122,7 @@ public:
 	/*!
 	 * Invert the sign of the angle.
 	 * @brief Unary minus operator.
-	 * @return A new angle, same as this one but with the signs of all the elements inverted.
+	 * \return A new angle, same as this one but with the signs of all the elements inverted.
 	 */
 	Angle operator-() const {
 		return Angle(-m_yaw, -m_pitch, -m_roll);
@@ -132,7 +132,7 @@ public:
 	 * Add an angle to this angle.
 	 * @brief Addition operator.
 	 * \param other an angle, to be added to this angle.
-	 * @return A new angle, the result of the addition of the two angles.
+	 * \return A new angle, the result of the addition of the two angles.
 	 */
 	Angle operator+(const Angle & other) const {
 		return Angle(m_yaw + other.m_yaw, m_pitch + other.m_pitch, m_roll + other.m_roll);
@@ -142,7 +142,7 @@ public:
 	 * Subtract an angle to this angle.
 	 * @brief Subtraction operator.
 	 * \param other an angle, to be subtracted to this angle.
-	 * @return A new angle, the result of the subtraction of the two angles.
+	 * \return A new angle, the result of the subtraction of the two angles.
 	 */
 	Angle operator-(const Angle & other) const {
 		return Angle(m_yaw - other.m_yaw, m_pitch - other.m_pitch, m_roll - other.m_roll);

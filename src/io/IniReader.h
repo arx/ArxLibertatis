@@ -44,7 +44,7 @@ public:
 	 * Parses an input stream for configuration section and respective keys.
 	 * Stores them all in a section map as IniSection objects.
 	 * \param is The input stream with the ini data.
-	 * @return false if there were problems (some data may have been read)
+	 * \return false if there were problems (some data may have been read)
 	 */
 	bool read(std::istream & input);
 	
@@ -55,7 +55,7 @@ public:
 	 * \param section The section to search in
 	 * \param key The key to look for in the section. Retuns the value of the first key if this is empty.
 	 * \param defaultValue The default value to return if anything doesn't match
-	 * @return The value of the key found or the default value otherwise
+	 * \return The value of the key found or the default value otherwise
 	 */
 	const std::string & getKey(const std::string & section, const std::string & key, const std::string & defaultValue) const;
 	
@@ -88,7 +88,7 @@ public:
 	
 	/*!
 	 * Get the value at the specified key in the specified section.
-	 * @return the value string or NULL if no such value is set.
+	 * \return the value string or NULL if no such value is set.
 	 */
 	const IniKey * getKey(const std::string & section, const std::string & key) const;
 	

@@ -70,7 +70,7 @@ public:
 	/*!
 	 * Remove an empty directory.
 	 * If the given directory is not empty, no action is taken.
-	 * @return true if the directory was removed.
+	 * \return true if the directory was removed.
 	 */
 	bool removeDirectory(const res::path & name);
 	
@@ -83,7 +83,7 @@ public:
 	 *
 	 * \param path Directory on the filesystem that will be imported in this PakDirectory
 	 * \param mount Mount point in this PakDirectory (case-sensitive)
-	 * @return false if there were problems (some data may have been read)
+	 * \return false if there were problems (some data may have been read)
 	 */
 	bool addFiles(const fs::path & path, const res::path & mount = res::path());
 	

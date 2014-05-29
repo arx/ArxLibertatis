@@ -96,7 +96,7 @@ public:
 	 * \param to The index of the destination node into the provided map_data.
 	 * \param rlist A list to append the path to.
 	 * \param stealth True if the path should avoid light sources.
-	 * @return true if a path was found.
+	 * \return true if a path was found.
 	 */
 	bool move(NodeId from, NodeId to, Result & rlist, bool stealth = false) const;
 	
@@ -107,7 +107,7 @@ public:
 	 * \param safeDistance How far to get away from danger.
 	 * \param rlist A list to append the path to.
 	 * \param stealth True if the path should avoid light sources.
-	 * @return true if a path was found.
+	 * \return true if a path was found.
 	 */
 	bool flee(NodeId from, const Vec3f & danger, float safeDistance, Result & rlist, bool stealth = false) const;
 	
@@ -117,7 +117,7 @@ public:
 	 * \param aroundRadius How far to wander.
 	 * \param rlist A list to append the path to.
 	 * \param stealth True if the path should avoid light sources.
-	 * @return true if a path was found.
+	 * \return true if a path was found.
 	 */
 	bool wanderAround(NodeId from, float aroundRadius, Result & rlist, bool stealth = false) const;
 	
@@ -128,7 +128,7 @@ public:
 	 * \param radius How far to walk around the given position.
 	 * \param rlist A list to append the path to.
 	 * \param stealth True if the path should avoid light sources.
-	 * @return true if a path was found.
+	 * \return true if a path was found.
 	 */
 	bool lookFor(NodeId from, const Vec3f & pos, float radius, Result & rlist, bool stealth = false) const;
 	
@@ -139,7 +139,7 @@ private:
 	class ClosedNodeList;
 	
 	/*!
-	 * @return the best node (lowest cost) from open list or NULL if the list is empty
+	 * \return the best node (lowest cost) from open list or NULL if the list is empty
 	 */
 	static void buildPath(const Node & node, Result & rlist);
 	float getIlluminationCost(const Vec3f & pos) const;

@@ -81,7 +81,7 @@ public:
 	 *
 	 * \param option_name "Name" of this option.
 	 *
-	 * @returns none.
+	 * \returns none.
 	 *
 	 * @throws If an option with one of the names that are contained in op_name_t
 	 *            already exists an exception will be thrown.
@@ -112,7 +112,7 @@ public:
 	 *
 	 * \param option_name "Name" of this option.
 	 *
-	 * @returns none.
+	 * \returns none.
 	 *
 	 * @throws If an option with one of the names that are contained in op_name_t
 	 *            already exists an exception will be thrown.

@@ -64,7 +64,7 @@ static const Unicode BYTE_ORDER_MARK = 0xfeff; //!< Unicode byte order mark - fo
 //! Functions to read and write UTF-8 encoded data
 struct UTF8 {
 	
-	//! @return true c is not the first byte of an UTF-8 character
+	//! \return true c is not the first byte of an UTF-8 character
 	static bool isContinuationByte(u8 chr) {
 		return (chr & 0xc0) == 0x80;
 	}
@@ -75,7 +75,7 @@ struct UTF8 {
 	* \param  it          Start of the input string - will be advanced by the bytes read
 	* \param  end         End of the inputstring
 	* \param  replacement Replacement code point for invalid data
-	* @return one Unicode code point or INVALID_CHAR if we are at the end of the range
+	* \return one Unicode code point or INVALID_CHAR if we are at the end of the range
 	*/
 	template <typename In>
 	static Unicode read(In & it, In end, Unicode replacement = REPLACEMENT_CHAR);
@@ -87,7 +87,7 @@ struct UTF8 {
 	* Encode one character to an UTF8 string
 	* @tparam Out  An OutputIterator type for the input string
 	* \param  it  Output iterator to write the encoded caracter to
-	* @return new output iterator after the written bytes
+	* \return new output iterator after the written bytes
 	*/
 	template <typename Out>
 	static Out write(Out it, Unicode chr);
@@ -97,12 +97,12 @@ struct UTF8 {
 //! Functions to read UTF-16 little-endian encoded data
 struct UTF16LE {
 	
-	//! @return true c is is the first part of an UTF-16 surrogate pair
+	//! \return true c is is the first part of an UTF-16 surrogate pair
 	static bool isHighSurrogate(u16 chr) {
 		return chr >= 0xd800 && chr <= 0xdbff;
 	}
 
-	//! @return true c is is the first part of an UTF-16 surrogate pair
+	//! \return true c is is the first part of an UTF-16 surrogate pair
 	static bool isLowSurrogate(u16 chr) {
 		return chr >= 0xdc00 && chr <= 0xdfff;
 	}
@@ -113,7 +113,7 @@ struct UTF16LE {
 	* \param  it          Start of the input string - will be advanced by the bytes read
 	* \param  end         End of the inputstring
 	* \param  replacement Replacement code point for invalid data
-	* @return one Unicode code point or INVALID_CHAR if we are at the end of the range
+	* \return one Unicode code point or INVALID_CHAR if we are at the end of the range
 	*/
 	template <typename In>
 	static Unicode read(In & it, In end, Unicode replacement = REPLACEMENT_CHAR);
@@ -131,7 +131,7 @@ struct ISO_8859_1 {
 	* \param  it          Start of the input string - will be advanced by the bytes read
 	* \param  end         End of the inputstring
 	* \param  replacement Replacement code point for invalid data
-	* @return one Unicode code point or INVALID_CHAR if we are at the end of the range
+	* \return one Unicode code point or INVALID_CHAR if we are at the end of the range
 	*/
 	template <typename In>
 	static Unicode read(In & it, In end, Unicode replacement = REPLACEMENT_CHAR);
@@ -150,7 +150,7 @@ struct ISO_8859_1 {
  * \param  end         End of the string in the source encoding
  * \param  output      Output iterator to write the result to
  * \param  replacement Replacement code point for invalid data
- * @return new output iterator position after the written bytes
+ * \return new output iterator position after the written bytes
  */
 template <typename InEnc, typename OutEnc, typename In, typename Out>
 Out convert(In begin, In end, Out output, Unicode replacement = REPLACEMENT_CHAR) {
@@ -175,7 +175,7 @@ Out convert(In begin, In end, Out output, Unicode replacement = REPLACEMENT_CHAR
  * \param  begin       Start of the string in the source endocing
  * \param  end         End of the string in the source encoding
  * \param  replacement Replacement code point for invalid data
- * @return the number of bytes required to represent the input string in the output
+ * \return the number of bytes required to represent the input string in the output
  *         encoding
  */
 template <typename InEnc, typename OutEnc, typename In>
@@ -202,7 +202,7 @@ size_t getConvertedLength(In begin, In end, Unicode replacement = REPLACEMENT_CH
  * @tparam In     A ForwardIterator type for the input string
  * \param  begin  Start of the string in the source endocing
  * \param  end    End of the string in the source encoding
- * @return an \ref std::string with the string in the destination encoding
+ * \return an \ref std::string with the string in the destination encoding
  */
 template <typename InEnc, typename OutEnc, typename In>
 std::string convert(In begin, In end) {
@@ -218,7 +218,7 @@ std::string convert(In begin, In end) {
  * @tparam InEnc  The encoding of the input string
  * @tparam OutEnc The output encoding to return
  * \param  str    The input string
- * @return an \ref std::string with the string in the destination encoding
+ * \return an \ref std::string with the string in the destination encoding
  */
 template <typename InEnc, typename OutEnc>
 std::string convert(const std::string & str) {
@@ -230,7 +230,7 @@ std::string convert(const std::string & str) {
  * This is a small convenience wrapper around \ref OutEnc::write()
  * @tparam OutEnc    The encoding to use
  * \param  character The Unicode code point to encode
- * @return an \ref std::string containing the encoded caracter
+ * \return an \ref std::string containing the encoded caracter
  */
 template <typename OutEnc>
 std::string encode(Unicode character) {

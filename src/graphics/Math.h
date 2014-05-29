@@ -133,7 +133,7 @@ inline float ffsqrt(float f) {
  * @brief  This code compute a fast 1 / sqrtf(v) approximation.
  * @note   Originaly from Matthew Jones (Infogrames).
  * \param  pValue  a float, the number we want the square root.
- * @return The square root of \a fValue, as a float.
+ * \return The square root of \a fValue, as a float.
  */
 inline float FastRSqrt(float value) {
 	

@@ -103,7 +103,7 @@ WeaponType ARX_EQUIPMENT_GetPlayerWeaponType();
  * \param relative \c true to sum up relative modifiers,
  *                 \c false to sum up absolute modifiers.
  *
- * @return an absolute modifier value to add to the base stat (for absolute modifiers),
+ * \return an absolute modifier value to add to the base stat (for absolute modifiers),
  *         or a relative modifier value to be moltiplied by the base and then added to
  *         the base (for relative modifiers).
  */
@@ -117,7 +117,7 @@ float getEquipmentBaseModifier(EquipmentModifierType modifier, bool relative = f
  * \param modifier The modifier type to calculate the value for.
  * \param baseval  The base value to apply to relative modifiers.
  *
- * @return an absolute modifier value to add to the base stat.
+ * \return an absolute modifier value to add to the base stat.
  */
 float getEquipmentModifier(EquipmentModifierType modifier, float baseval);
 

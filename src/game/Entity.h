@@ -364,7 +364,7 @@ public:
 	/*!
 	 * Return the short name for this Object where only the name
 	 * of the file is returned
-	 * @return The name of the file at the end of the filename path
+	 * \return The name of the file at the end of the filename path
 	 */
 	std::string className() const;
 	
@@ -372,7 +372,7 @@ public:
 	 *  Returns the long name for this Object where the short name
 	 * is combined with the identifying number
 	 * in the form of "%s_%04ld"
-	 * @return The short name combined with a 4 digit ident, padded with 0
+	 * \return The short name combined with a 4 digit ident, padded with 0
 	 */
 	std::string idString() const;
 	
@@ -380,11 +380,11 @@ public:
 	 *  Returns the full name for this Object where the
 	 * directory portion of the filename member is combined
 	 * with the the result of idString()
-	 * @return The directory of filename + idString()
+	 * \return The directory of filename + idString()
 	 */
 	res::path instancePath() const;
 	
-	//! @return the index of this Entity in the EntityManager
+	//! \return the index of this Entity in the EntityManager
 	size_t index() const { return m_index; }
 	
 	/*!
@@ -404,7 +404,7 @@ public:
 	/*!
 	 * Get the class path for this entity.
 	 *
-	 * @return the full path to this entity's class
+	 * \return the full path to this entity's class
 	 */
 	const res::path & classPath() const { return m_classPath; }
 	

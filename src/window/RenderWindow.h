@@ -73,7 +73,7 @@ public:
 	 * \param vsync 1 to enable vsync, 0 to disable or -1 to allow late swaps to
 	 *              happen immediately if supported.
 	 *
-	 * @return true if the vsync setting was successfully changed.
+	 * \return true if the vsync setting was successfully changed.
 	 */
 	virtual bool setVSync(int vsync) = 0;
 	

@@ -142,7 +142,7 @@ public:
 	 */
 	virtual void initialize() = 0;
 	
-	//! * @return true if the renderer has been fully initialized and is ready for use.
+	//! * \return true if the renderer has been fully initialized and is ready for use.
 	bool isInitialized() { return m_initialized; }
 	
 	/*!

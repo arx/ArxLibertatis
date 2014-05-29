@@ -158,7 +158,7 @@ public:
 	static void configure(const std::string config);
 	
 	/*!
-	 * @return true if the given log level is currently enabled for the current level.
+	 * \return true if the given log level is currently enabled for the current level.
 	 *         Log levels inherit their enabled state: e.g. if Info is enabled,
 	 *         Warning and Error are also enabled.
 	 */

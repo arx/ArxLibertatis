@@ -187,7 +187,7 @@ private:
 	* Gets the id from the MapMarker's name. Returns -1 when not found.
 	*
 	* \param std::string name
-	* @return MapMarker's id (int).
+	* \return MapMarker's id (int).
 	*/
 	int mapMarkerGetID(const std::string &name);
 	

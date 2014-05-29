@@ -473,7 +473,7 @@ void Stack_SendIOScriptEvent(Entity * io, ScriptMessage msg, const std::string &
  * Finds the first occurence of str in the script that is followed
  * by a separator (a character of value less then or equal 32)
  * 
- * @return The position of str in the script or -1 if str was not found.
+ * \return The position of str in the script or -1 if str was not found.
  */
 long FindScriptPos(const EERIE_SCRIPT * es, const std::string & str);
 

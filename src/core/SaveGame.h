@@ -63,14 +63,14 @@ public:
 	/*! Save the current game state
 	 * \param name The name of the new savegame.
 	 * \param overwrite A savegame to overwrite with this save or end()
-	 * @return true if the game was successfully saved.
+	 * \return true if the game was successfully saved.
 	 */
 	bool save(const std::string & name, iterator overwrite, const Image & thumbnail = Image());
 	
 	/*! Save the current game state
 	 * \param name The name of the new savegame.
 	 * \param overwrite A savegame to overwrite with this save or end()
-	 * @return true if the game was successfully saved.
+	 * \return true if the game was successfully saved.
 	 */
 	bool save(const std::string & name, size_t overwrite = size_t(-1), const Image & th = Image()) {
 		return save(name, (overwrite == size_t(-1)) ? end() : begin() + overwrite, th);

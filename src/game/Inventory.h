@@ -96,7 +96,7 @@ struct InventoryPos {
 	InventoryPos(long io, index_type bag, index_type x, index_type y)
 		: io(io), bag(bag), x(x), y(y) { }
 	
-	//! @return true if this is a valid position
+	//! \return true if this is a valid position
 	operator bool() const {
 		return (io != -1);
 	}
@@ -120,7 +120,7 @@ public:
 	 *
 	 * \param item the item to insert
 	 *
-	 * @return true if the item was inserted, false otherwise
+	 * \return true if the item was inserted, false otherwise
 	 */
 	static bool insert(Entity * item);
 	
@@ -134,7 +134,7 @@ public:
 	 *
 	 * \param item the item to insert
 	 *
-	 * @return true if the item was inserted, false otherwise
+	 * \return true if the item was inserted, false otherwise
 	 */
 	static bool insert(Entity * item, const Pos & pos);
 	
@@ -144,7 +144,7 @@ public:
 	/*!
 	 * Get the position of an item in the inventory.
 	 *
-	 * @return the position of the item
+	 * \return the position of the item
 	 */
 	static Pos locate(const Entity * item);
 	
@@ -152,7 +152,7 @@ public:
 	 * Remove an item from the inventory.
 	 * The item is not deleted.
 	 *
-	 * @return the old position of the item
+	 * \return the old position of the item
 	 */
 	static Pos remove(const Entity * item);
 	
@@ -172,7 +172,7 @@ extern PlayerInventory playerInventory;
  *
  * \param item the item to insert
  *
- * @return true if the item was added to the inventory, false if it was dropped
+ * \return true if the item was added to the inventory, false if it was dropped
  */
 bool giveToPlayer(Entity * item);
 
@@ -185,7 +185,7 @@ bool giveToPlayer(Entity * item);
  *
  * \param item the item to insert
  *
- * @return true if the item was added to the inventory, false if it was dropped
+ * \return true if the item was added to the inventory, false if it was dropped
  */
 bool giveToPlayer(Entity * item, const InventoryPos & pos);
 
@@ -199,14 +199,14 @@ bool giveToPlayer(Entity * item, const InventoryPos & pos);
  *
  * \param item the item to insert
  *
- * @return true if the item was inserted, false otherwise
+ * \return true if the item was inserted, false otherwise
  */
 bool insertIntoInventory(Entity * item, const InventoryPos & pos);
 
 /*!
  * Get the position of an item in the inventory.
  *
- * @return the position of the item
+ * \return the position of the item
  */
 InventoryPos locateInInventories(const Entity * item);
 
@@ -214,7 +214,7 @@ InventoryPos locateInInventories(const Entity * item);
  * Remove an item from all inventories.
  * The item is not deleted.
  *
- * @return the old position of the item
+ * \return the old position of the item
  */
 InventoryPos removeFromInventories(Entity * item);
 
@@ -227,7 +227,7 @@ InventoryPos removeFromInventories(Entity * item);
  *
  * \param item the item to insert
  *
- * @return true if the item was added to the inventory, false if it was dropped
+ * \return true if the item was added to the inventory, false if it was dropped
  */
 bool putInInventory(Entity * item, const InventoryPos & pos);
 

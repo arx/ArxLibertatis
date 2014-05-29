@@ -93,7 +93,7 @@ struct SystemPaths {
 	 *
 	 * \param resource the relative resource name to look for.
 	 *
-	 * @return an empty path or an existing file.
+	 * \return an empty path or an existing file.
 	 */
 	path find(const path & resource) const;
 	

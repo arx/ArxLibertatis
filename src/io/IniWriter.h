@@ -44,7 +44,7 @@ public:
 	
 	/*!
 	 * Flush the output stream.
-	 * @return true if there were no errors during writing.
+	 * \return true if there were no errors during writing.
 	 */
 	bool flush() {
 		return !output.flush().bad();

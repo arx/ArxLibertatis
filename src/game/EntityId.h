@@ -65,7 +65,7 @@ private:
 	
 public:
 	
-	//! @return true if this id is valid
+	//! \return true if this id is valid
 	operator unspecified_bool() {
 		return unspecified_bool(instance_ >= 0);
 	}
@@ -73,12 +73,12 @@ public:
 	//! Static instance of the "self" id
 	static const EntityId self;
 	
-	//! @return true if this id doesn't have an instance number (self, player)
+	//! \return true if this id doesn't have an instance number (self, player)
 	bool isSpecial() {
 		return instance_ == 0;
 	}
 	
-	//! @return a string representation of this id
+	//! \return a string representation of this id
 	std::string string();
 	
 private:

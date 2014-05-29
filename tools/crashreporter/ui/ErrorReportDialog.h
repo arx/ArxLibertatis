@@ -48,7 +48,7 @@ public:
 
 	/*!
 	 * Get the error string (available in case of a failure)
-	 * @return A string detailling the error that occured in case of a failure.
+	 * \return A string detailling the error that occured in case of a failure.
 	 * @sa succeeded()
 	 */
 	const QString& getErrorString() const { return m_strErrorDescription; }

@@ -181,7 +181,7 @@ public:
 	
 	/*!
 	 * Saves all config entries to a file.
-	 * @return true if the config was saved successfully.
+	 * \return true if the config was saved successfully.
 	 */
 	bool save();
 	

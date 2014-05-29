@@ -61,7 +61,7 @@ namespace fs { class path; }
  * \param scheck The destination buffer to which the hash is written.
  * \param size The size of the destination buffer scheck.
  * \param id An ID that contributes to the hash.
- * @return false if the hash was created, true if the file could not be read
+ * \return false if the hash was created, true if the file could not be read
  */
 void HERMES_CreateFileCheck(const fs::path & name, char * scheck, size_t size, float id);
 

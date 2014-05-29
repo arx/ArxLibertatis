@@ -86,7 +86,7 @@ private:
 	bool markAsLoaded();
 	
 	/*!
-	 * @return true if we need to convert a stereo sample to mono before passing it to OpenAL
+	 * \return true if we need to convert a stereo sample to mono before passing it to OpenAL
 	 */
 	bool convertStereoToMono();
 	

@@ -45,7 +45,7 @@ fs::path getExecutablePath();
  * If found, returns a full path to the executable.
  * Otherwise, returns a relative path containing only the executable name.
  *
- * @return a path or name suitable for CreateProcess(), exec*p() or system() calls.
+ * \return a path or name suitable for CreateProcess(), exec*p() or system() calls.
  */
 fs::path getHelperExecutable(const std::string & name);
 

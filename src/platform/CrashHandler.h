@@ -61,7 +61,7 @@ public:
 	 * This method can fail for a variety of reasons... See the log for more information.
 	 * This method should be called by the main thread of the process.
 	 *
-	 * @return True if initialized correctly, false otherwise.
+	 * \return True if initialized correctly, false otherwise.
 	 */
 	static bool initialize();
 
@@ -73,7 +73,7 @@ public:
 	/*!
 	 * \brief Return the status of the crash handler
 	 *
-	 * @return True if the crash handler is initialized, false otherwise.
+	 * \return True if the crash handler is initialized, false otherwise.
 	 */
 	static bool isInitialized();
 
@@ -85,7 +85,7 @@ public:
 	 *
 	 * \param file Path to the file (relative to this executable).
 	 *
-	 * @return True if the file could be attached, false otherwise.
+	 * \return True if the file could be attached, false otherwise.
 	 */
 	static bool addAttachedFile(const fs::path& file);
 	
@@ -98,7 +98,7 @@ public:
 	 * \param name Name of the variable
 	 * \param value Value of the variable, which will be converted to string.
 	 *
-	 * @return True if the variable could be set, false otherwise.
+	 * \return True if the variable could be set, false otherwise.
 	 */
 	template <class T>
 	static bool setVariable(const std::string & name, const T & value) {
@@ -114,7 +114,7 @@ public:
 	 *
 	 * \param location Location where the crash report will be stored.
 	 *
-	 * @return True if the report location could be set, false otherwise.
+	 * \return True if the report location could be set, false otherwise.
 	 */
 	static bool setReportLocation(const fs::path& location);
 
@@ -123,7 +123,7 @@ public:
 	 *
 	 * \param nbReportsToKeep Number of reports to keep (the most recent ones).
 	 *
-	 * @return True if operation was successful.
+	 * \return True if operation was successful.
 	 */
 	static bool deleteOldReports(size_t nbReportsToKeep);
 
@@ -133,7 +133,7 @@ public:
 	 * Depending on the platform, this call might not be needed.
 	 * It's not necessary to call this method for the main thread.
 	 *
-	 * @return True if the crash handlers could be registered, or false otherwise.
+	 * \return True if the crash handlers could be registered, or false otherwise.
 	 */
 	static bool registerThreadCrashHandlers();
 
