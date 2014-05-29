@@ -94,9 +94,6 @@ extern float BASE_FOCAL;
 
 extern bool FirstFrame;
 
-#ifdef BUILD_EDITOR
-extern long DEBUGNPCMOVE;
-#endif
 extern long CURRENTLEVEL;
 extern long TELEPORT_TO_ANGLE;
 

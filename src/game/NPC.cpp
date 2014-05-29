@@ -166,12 +166,6 @@ static void CheckHit(Entity * io, float ratioaim) {
 	ppos.z = io->pos.z;
 	pos.z = ppos.z + to.z;
 
-#ifdef BUILD_EDITOR
-	if(DEBUGNPCMOVE) {
-		EERIEDrawTrue3DLine(ppos, pos, Color::red);
-	}
-#endif
-
 	float dmg;
 
 	if(io->ioflags & IO_NPC)

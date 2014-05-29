@@ -275,10 +275,6 @@ long FASTmse			= 0;
 // Flag used to Launch Moulinex
 long LOADEDD = 0; // Is a Level Loaded ?
 
-#ifdef BUILD_EDITOR
-long DEBUGNPCMOVE = 0; // Debug NPC Movements
-#endif
-
 long CHANGE_LEVEL_ICON=-1;
 
 bool g_cursorOverBook = false;
