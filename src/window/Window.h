@@ -51,20 +51,20 @@ public:
 	
 	/*!
 	 * Set the window titlebar caption.
-	 * May be called before or after @ref initialize()
+	 * May be called before or after \ref initialize()
 	 */
 	virtual void setTitle(const std::string & title) = 0;
 	
 	/*!
 	 * Enter fullscreen and set the given video mode.
 	 * If all parameters are zero, the desktop mode is used.
-	 * May be called before or after @ref initialize()
+	 * May be called before or after \ref initialize()
 	 */
 	virtual void setFullscreenMode(const DisplayMode & mode) = 0;
 	
 	/*!
 	 * Exits fullscreen mode and sets the window size.
-	 * May be called before or after @ref initialize()
+	 * May be called before or after \ref initialize()
 	 */
 	virtual void setWindowSize(const Vec2i & size) = 0;
 	

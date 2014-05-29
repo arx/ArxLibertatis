@@ -137,7 +137,7 @@ public:
 	
 	/*!
 	 * Basic renderer initialization.
-	 * Renderer will not be fully initialized until calling @ref afterResize().
+	 * Renderer will not be fully initialized until calling \ref afterResize().
 	 * Does *not* notify any listeners.
 	 */
 	virtual void initialize() = 0;

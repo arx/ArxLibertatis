@@ -50,14 +50,14 @@ public:
 	
 	/*!
 	 * Set the minimum number of texture units required.
-	 * Must be set before calling @ref initialize().
+	 * Must be set before calling \ref initialize().
 	 */
 	void setMinTextureUnits(int units) { m_minTextureUnits = units; }
 	
 	/*!
 	 * Set the maximum MSAA level to use.
 	 * Actual level may be lower if the requested one is not supported by the HW.
-	 * Must be set before calling @ref initialize().
+	 * Must be set before calling \ref initialize().
 	 */
 	void setMaxMSAALevel(int msaa) { m_maxMSAALevel = std::max(1, msaa); }
 	
@@ -68,7 +68,7 @@ public:
 	
 	/*!
 	 * Enebly or disable vsync.
-	 * May not have any effect when called after @ref initialize().
+	 * May not have any effect when called after \ref initialize().
 	 *
 	 * \param vsync 1 to enable vsync, 0 to disable or -1 to allow late swaps to
 	 *              happen immediately if supported.

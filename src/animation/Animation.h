@@ -165,7 +165,7 @@ void changeAnimation(Entity * entity, ANIM_HANDLE * animation,
 
 /*!
  * Change the animation of an entity if it isn't already set to the same one.
- * Unlike @ref changeAnimation(), this will not reset the current animation unless it
+ * Unlike \ref changeAnimation(), this will not reset the current animation unless it
  * differs from the current one.
  * \param entity    the entity being animated
  * \param animation the new animation to set

@@ -46,13 +46,13 @@ struct EntityId {
 	 * instance number (padded with leading zeros).
 	 *
 	 * "" and "none" are interpreted as an <i>invalid</i> id ad will result
-	 * in an empty @ref className() with @ref instance() equaling @c -1
+	 * in an empty \ref className() with \ref instance() equaling @c -1
 	 *
-	 * "me" and "self" and "player" will have the @ref instance() number @c 0
-	 * All other valid IDs should have @ref instance() numbers greater than zero.
+	 * "me" and "self" and "player" will have the \ref instance() number @c 0
+	 * All other valid IDs should have \ref instance() numbers greater than zero.
 	 *
 	 * To convert a @class EntityId back to such a string use the
-	 * @ref string() member or operator<< overload.
+	 * \ref string() member or operator<< overload.
 	 */
 	explicit EntityId(const std::string & idString);
 	
