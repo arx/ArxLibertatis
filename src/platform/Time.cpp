@@ -29,7 +29,7 @@ namespace platform {
 
 #include <time.h>
 
-static clock_t clock_id = CLOCK_REALTIME;
+static clock_t g_clockId = CLOCK_REALTIME;
 
 void initializeTime() {
 	
@@ -37,7 +37,7 @@ void initializeTime() {
 	struct timespec ts;
 	if(!clock_gettime(CLOCK_MONOTONIC, &ts)) {
 		LogDebug("using CLOCK_MONOTONIC");
-		clock_id = CLOCK_MONOTONIC;
+		g_clockId = CLOCK_MONOTONIC;
 		return;
 	}
 #endif
@@ -47,13 +47,13 @@ void initializeTime() {
 
 u32 getTimeMs() {
 	struct timespec ts;
-	clock_gettime(clock_id, &ts);
+	clock_gettime(g_clockId, &ts);
 	return ts.tv_sec * 1000 + ts.tv_nsec / 1000000;
 }
 
 u64 getTimeUs() {
 	struct timespec ts;
-	clock_gettime(clock_id, &ts);
+	clock_gettime(g_clockId, &ts);
 	return (ts.tv_sec * 1000000ull) + (ts.tv_nsec / 1000);
 }
 
@@ -62,19 +62,19 @@ u64 getTimeUs() {
 #include <windows.h>
 
 // Avoid costly calls to QueryPerformanceFrequency... cache its result
-static u64 frequency_hz;
+static u64 g_clockFrequency;
 
 void initializeTime() {
 	LARGE_INTEGER frequency;
 	QueryPerformanceFrequency(&frequency);
-	frequency_hz = frequency.QuadPart;
+	g_clockFrequency = frequency.QuadPart;
 }
 
 u32 getTimeMs() {
 	LARGE_INTEGER counter;
 	QueryPerformanceCounter(&counter);
 	// Ugly trick to avoid losing precision...
-	u32 valMs = (counter.QuadPart * 10) / (frequency_hz / 100);
+	u32 valMs = (counter.QuadPart * 10) / (g_clockFrequency / 100);
 	return valMs;
 }
 
@@ -82,7 +82,7 @@ u64 getTimeUs() {
 	LARGE_INTEGER counter;
 	QueryPerformanceCounter(&counter);
 	// Ugly trick to avoid losing precision...
-	u64 valUs = (counter.QuadPart * 1000) / (frequency_hz / 1000);
+	u64 valUs = (counter.QuadPart * 1000) / (g_clockFrequency / 1000);
 	return valUs;
 }
 
@@ -92,23 +92,23 @@ u64 getTimeUs() {
 #include <mach/clock_types.h>
 #include <mach/mach_host.h>
 
-static clock_serv_t clock_ref;
+static clock_serv_t g_clockRef;
 
 void initializeTime() {
-	if(host_get_clock_service(mach_host_self(), SYSTEM_CLOCK, &clock_ref) != KERN_SUCCESS) {
+	if(host_get_clock_service(mach_host_self(), SYSTEM_CLOCK, &g_clockRef) != KERN_SUCCESS) {
 		LogWarning << "Error getting system clock";
 	}
 }
 
 u32 getTimeMs() {
 	mach_timespec_t ts;
-	clock_get_time(clock_ref, &ts);
+	clock_get_time(g_clockRef, &ts);
 	return ts.tv_sec * 1000 + ts.tv_nsec / 1000000;
 }
 
 u64 getTimeUs() {
 	mach_timespec_t ts;
-	clock_get_time(clock_ref, &ts);
+	clock_get_time(g_clockRef, &ts);
 	return (ts.tv_sec * 1000000ull) + (ts.tv_nsec / 1000);
 }
 
