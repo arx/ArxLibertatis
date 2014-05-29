@@ -267,7 +267,7 @@
          </property>
          <property name="font">
           <font>
-           <family>Courier New</family>
+           <family>Monospace</family>
           </font>
          </property>
          <property name="lineWrapMode">
@@ -336,6 +336,11 @@
               <widget class="QTextEdit" name="fileViewText">
                <property name="frameShape">
                 <enum>QFrame::StyledPanel</enum>
+               </property>
+               <property name="font">
+                 <font>
+                   <family>Monospace</family>
+                 </font>
                </property>
                <property name="lineWrapMode">
                 <enum>QTextEdit::NoWrap</enum>
