@@ -6110,7 +6110,7 @@ public:
 				if(spellHandleIsValid(spellHandle)) {
 					SpellBase * spell = &spells[spellHandle];
 					
-					if(spell->m_caster != 0 && spellicons[spell->m_type].bDuration) {
+					if(spell->m_caster != EntityHandle(0) && spellicons[spell->m_type].bDuration) {
 						ManageSpellIcon(spellHandle, intensity, true);
 					}
 				}

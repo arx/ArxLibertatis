@@ -20,6 +20,11 @@
 #ifndef ARX_GAME_GAMETYPES_H
 #define ARX_GAME_GAMETYPES_H
 
+#include <boost/strong_typedef.hpp>
+
+BOOST_STRONG_TYPEDEF(long, EntityHandle)
+static const EntityHandle InvalidEntityHandle = EntityHandle(-1);
+
 struct ResourcePool {
 	float current;
 	float max;

@@ -987,7 +987,7 @@ void ARX_DAMAGES_UpdateDamage(DamageHandle j, float tim) {
 		){
 			if(io->ioflags & IO_NPC) {
 				if(   i != 0
-				   && damage.params.source != 0
+				   && damage.params.source != EntityHandle(0)
 				   && validsource
 				   && HaveCommonGroup(io, entities[damage.params.source])
 				) {

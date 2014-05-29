@@ -264,7 +264,7 @@ void SummonCreatureSpell::Update(float timeDelta)
 
 bool FakeSummonSpell::Launch()
 {
-	if(m_caster <= 0 || !ValidIONum(m_target)) {
+	if(m_caster <= EntityHandle(0) || !ValidIONum(m_target)) {
 		return false;
 	}
 	
@@ -275,7 +275,7 @@ bool FakeSummonSpell::Launch()
 	m_tolive = 4000;
 	
 	Vec3f target = entities[m_target]->pos;
-	if(m_target != 0) {
+	if(m_target != EntityHandle(0)) {
 		target.y += player.baseHeight();
 	}
 	m_target_pos = target;

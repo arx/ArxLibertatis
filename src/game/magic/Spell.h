@@ -129,8 +129,8 @@ public:
 	void BaseEnd();
 	
 	bool m_exist;
-	long m_caster; //!< Number of the source interactive obj (0==player)
-	long m_target; //!< Number of the target interactive obj if any
+	EntityHandle m_caster; //!< Number of the source interactive obj (0==player)
+	EntityHandle m_target; //!< Number of the target interactive obj if any
 	float m_caster_level; //!< Level of Magic 1-10
 	
 	long m_hand_group;

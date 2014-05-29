@@ -66,7 +66,7 @@ extern void ARX_SPELLS_Fizzle(long num);
 
 void InvisibilitySpell::Update(size_t i)
 {
-	if(m_target != 0) {
+	if(m_target != EntityHandle(0)) {
 		if(!(entities[m_target]->gameFlags & GFLAG_INVISIBILITY)) {
 			ARX_SPELLS_RemoveSpellOn(m_target,i);
 			ARX_SPELLS_Fizzle(i);
