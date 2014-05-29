@@ -157,7 +157,7 @@ public:
 	//! Gives back a formatted image of the selected content of QHexEdit
 	QString selectionToReadableString();
 	
-	//! @cond docNever
+	//! \cond docNever
 	void setAddressOffset(int offset);
 	int addressOffset();
 	void setData(QByteArray const & data);
