@@ -79,10 +79,11 @@ The following options can be used to customize where `make install` puts the var
 By default, optional components will be automatically disabled if their dependencies could not be found. This might be undesirable in some situations, so the following option can be used to change this behavior:
 
 * `STRICT_USE` (default: OFF): Abort the configure step if one of the dependencies enabled with a `USE_*` configuration variable could not be found or if one of the components enabled with a `BUILD_*`configuration variable has missing dependencies. As most dependencies are enabled by default, you may need to explicitly disable some of them. Windows-specifc dependencies are still automatically disabled on non-Windows systems.
-* `USE_OPENGL` (default=ON): Build the OpenGL renderer backend^1
-* `USE_OPENAL` (default=ON): Build the OpenAL audio backend^2
-* `WITH_SDL` (default=*not set*): Select the SDL version to use: 1 or 2. If not set, we will try to use either version, preferring SDL 2. ^3
-* `WITH_QT` (default=*not set*): Select the Qt version to use: 4 or 5. If not set, we will try to use either version, preferring Qt 5. Ignored if `BUILD_CRASHREPORTER` is disabled. ^3
+* `USE_OPENGL` (default: ON): Build the OpenGL renderer backend^1
+* `USE_OPENAL` (default: ON): Build the OpenAL audio backend^2
+* `WITH_SDL` (default: *not set*): Select the SDL version to use: 1 or 2. If not set, we will try to use either version, preferring SDL 2. ^3
+* `WITH_QT` (default: *not set*): Select the Qt version to use: 4 or 5. If not set, we will try to use either version, preferring Qt 5. Ignored if `BUILD_CRASHREPORTER` is disabled. ^3
+* `USE_NATIVE_FS` (default: ON): Use the native filesystem backend (POSIX / Win32) if available and not boost::filesystem.
 
 1. There is currently no other rendering backend, disabling this will make the build fail.
 2. There is currently no other audo backend, there will be no audio when disabling this. Additionally, builds without audio are not well tested and there may be other problems.

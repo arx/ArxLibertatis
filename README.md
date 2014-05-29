@@ -79,7 +79,6 @@ Getting all the dependencies set up for Windows is more tricky. Pre-build depend
 * `CMAKE_BUILD_TYPE` (default=Release): Set to `Debug` for debug binaries
 * `DEBUG` (default=OFF^1): Enable debug output and runtime checks
 * `DEBUG_EXTRA` (default=OFF): Expensive debug options
-* `USE_NATIVE_FS` (default=ON): Use the native filesystem backend (POSIX / Win32) if available and not boost::filesystem.
 
 1. Enabled automatically if `CMAKE_BUILD_TYPE` is set to `Debug`.
 
