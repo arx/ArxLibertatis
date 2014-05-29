@@ -551,7 +551,7 @@ public:
 	 *
 	 * Does not check if the item is already in the inventory!
 	 *
-	 * @param item the item to insert
+	 * \param item the item to insert
 	 *
 	 * \return true if the item was inserted, false otherwise
 	 */
@@ -573,7 +573,7 @@ public:
 	 *
 	 * Does not check if the item is already in the inventory!
 	 *
-	 * @param item the item to insert
+	 * \param item the item to insert
 	 *
 	 * \return true if the item was inserted, false otherwise
 	 */

@@ -2339,7 +2339,7 @@ static void SceneAddObjToBackground(EERIE_3DOBJ * eobj) {
 
 /*!
  * Save the currently loaded scene.
- * @param partal_path Where to save the scene to.
+ * \param partal_path Where to save the scene to.
  */
 static bool FastSceneSave(const fs::path & partial_path) {
 	

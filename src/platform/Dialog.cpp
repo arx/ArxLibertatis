@@ -111,8 +111,8 @@ static void closeLink(std::stringstream & oss, size_t start) {
  * 'http://' / 'https://' => link
  * "..." => "<b>...</b>"
  *
- * @param newline Keep don't convert newlines to &lt;br&gr; tags.
- * @param ul      Use HTML lists.
+ * \param newline Keep don't convert newlines to &lt;br&gr; tags.
+ * \param ul      Use HTML lists.
  */
 static std::string formatAsHtml(const std::string & text, bool newline, bool ul = false) {
 	

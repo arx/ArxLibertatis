@@ -141,7 +141,7 @@ void ComputeForces(PHYSVERT * phys, long nb) {
 bool ARX_INTERACTIVE_CheckFULLCollision(EERIE_3DOBJ * obj, long source);
 
 //! Calculate new Positions and Velocities given a deltatime
-//! @param DeltaTime that has passed since last iteration
+//! \param DeltaTime that has passed since last iteration
 void RK4Integrate(EERIE_3DOBJ * obj, float DeltaTime) {
 
 	PHYSVERT * source, * target, * accum1, * accum2, * accum3, * accum4;

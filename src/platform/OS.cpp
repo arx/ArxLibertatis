@@ -214,14 +214,14 @@ std::string getOSArchitecture() {
  * Parse key-value pairs from /etc/os-release or `lsb_release -a` to form a
  * pretty distribution name.
  *
- * @param is        Input stream for the text to parse.
- * @param separator Character used to separate keys and values.
- * @param keys      Keys that should be used in the final name.
+ * \param is        Input stream for the text to parse.
+ * \param separator Character used to separate keys and values.
+ * \param keys      Keys that should be used in the final name.
  *                  Values are added to the name in order of the keys listed here
  *                  unless the name so far already contains the value.
  *                  Prepend a a '(' character to surround in parentheses before adding it
  *                  to the name (unless the name so far is empty).
- * @param keyCount  Number of entries in the @c keys array.
+ * \param keyCount  Number of entries in the @c keys array.
  */
 static std::string parseDistributionName(std::istream & is, const char separator,
                                          const char * keys[], size_t keyCount) {
