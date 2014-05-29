@@ -303,23 +303,6 @@ fs::path getExecutablePath() {
 	
 #else
 	
-	// Try to get the path from OS-specific procfs entries
-	#if ARX_HAVE_READLINK
-	std::vector<char> buffer(1024);
-	// Linux
-	if(try_readlink(buffer, "/proc/self/exe")) {
-		return fs::path(&*buffer.begin(), &*buffer.end());
-	}
-	// BSD
-	if(try_readlink(buffer, "/proc/curproc/file")) {
-		return fs::path(&*buffer.begin(), &*buffer.end());
-	}
-	// Solaris
-	if(try_readlink(buffer, "/proc/self/path/a.out")) {
-		return fs::path(&*buffer.begin(), &*buffer.end());
-	}
-	#endif
-	
 	// FreeBSD
 	#if ARX_HAVE_SYSCTL && defined(CTL_KERN) && defined(KERN_PROC) \
 	    && defined(KERN_PROC_PATHNAME) && ARX_PLATFORM == ARX_PLATFORM_BSD \
@@ -342,6 +325,23 @@ fs::path getExecutablePath() {
 	const char * execname = getexecname();
 	if(execname != NULL) {
 		return execname;
+	}
+	#endif
+	
+	// Try to get the path from OS-specific procfs entries
+	#if ARX_HAVE_READLINK
+	std::vector<char> buffer(1024);
+	// Linux
+	if(try_readlink(buffer, "/proc/self/exe")) {
+		return fs::path(&*buffer.begin(), &*buffer.end());
+	}
+	// BSD
+	if(try_readlink(buffer, "/proc/curproc/file")) {
+		return fs::path(&*buffer.begin(), &*buffer.end());
+	}
+	// Solaris
+	if(try_readlink(buffer, "/proc/self/path/a.out")) {
+		return fs::path(&*buffer.begin(), &*buffer.end());
 	}
 	#endif
 	
