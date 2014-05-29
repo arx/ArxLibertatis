@@ -150,7 +150,8 @@ public:
 	 *
 	 * The main use is probably to close opened files that needs to be
 	 * attached to the report.
-	 * @note In these callbacks, you must make sure to keep processing and 
+	 *
+	 * \note In these callbacks, you must make sure to keep processing and
 	 * memory accesses to a minimum as the process is in an unstable state.
 	 */
 	static void registerCrashCallback(CrashCallback crashCallback);

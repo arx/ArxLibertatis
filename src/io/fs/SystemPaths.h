@@ -75,7 +75,7 @@ struct SystemPaths {
 	
 	/*!
 	 * Initialize the system resource paths using the specified parameters.
-	 * @note This version of init() will ignore arguments provided on the
+	 * \note This version of init() will ignore arguments provided on the
 	 * command line.
 	 */
 	ExitStatus init(const InitParams& initParams);

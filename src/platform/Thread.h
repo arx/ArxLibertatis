@@ -82,7 +82,7 @@ public:
 	/*!
 	 * \brief Set the thread name (for easier debugging)
 	 *
-	 * @note This should be called BEFORE starting the thread.
+	 * \note This should be called BEFORE starting the thread.
 	 *
 	 * \param threadName The thread name.
 	 */

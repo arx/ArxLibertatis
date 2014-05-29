@@ -141,7 +141,7 @@ public:
 	 * Visits all options.
 	 *
 	 * \param visitor An object or pointer to a function.
-	 * @note The visitor has to support call semantic : operator(const op_name_t &).
+	 * \note The visitor has to support call semantic : operator(const op_name_t &).
 	 */
 	template<typename Visitor>
 	void visit(Visitor & visitor) const {
