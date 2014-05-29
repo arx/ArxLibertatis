@@ -159,7 +159,7 @@ inline std::string getOutputOf(const std::string & exe, const char * const args[
  * \brief Run a helper executable
  *
  * Equivalent to
- * @code
+ * \code
  *  fs::path exe = getHelperExecutable(name);
  *  const char * args[] = { exe.string().c_str(), ... };
  *  platform::runAsync(args);

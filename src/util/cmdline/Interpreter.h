@@ -86,7 +86,7 @@ public:
 	 * @throws If an option with one of the names that are contained in op_name_t
 	 *            already exists an exception will be thrown.
 	 *
-	 * @code
+	 * \code
 	 *  interpreter<> l;
 	 *
 	 *  l.add(&some_fn, op_name_t("option_name").description("some info"));
@@ -117,7 +117,7 @@ public:
 	 * @throws If an option with one of the names that are contained in op_name_t
 	 *            already exists an exception will be thrown.
 	 *
-	 * @code
+	 * \code
 	 *  interpreter<> l;
 	 *  l.add<void (A1,...,An)> (object, op_name_t("option_name").description("some info"));
 	 * @endcode
