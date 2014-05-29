@@ -168,7 +168,7 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
 			CrashHandler::addAttachedFile(logFile);
 		}
 		
-		Time::init();
+		platform::initializeTime();
 		
 		// 14: Start the game already!
 		LogInfo << "Starting " << arx_version;

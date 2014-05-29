@@ -52,7 +52,7 @@ arx::time arxtime;
 
 arx::time::time() {
 
-	// TODO can't call init from constructor Time::getUs() requires init
+	// TODO can't call init from constructor platform::getTimeUs() requires init
 	// potential out-of-order construction resulting in a divide-by-zero
 	start_time         = 0;
 	pause_time         = 0;
@@ -65,7 +65,7 @@ arx::time::time() {
 
 void arx::time::init() {
 	
-	start_time         = Time::getUs();
+	start_time         = platform::getTimeUs();
 	pause_time         = 0;
 	paused             = false;
 	delta_time_us      = 0;
@@ -76,14 +76,14 @@ void arx::time::init() {
 
 void arx::time::pause() {
 	if(!is_paused()) {
-		pause_time = Time::getUs();
+		pause_time = platform::getTimeUs();
 		paused     = true;
 	}
 }
 
 void arx::time::resume() {
 	if(is_paused()) {
-		start_time += Time::getElapsedUs(pause_time);
+		start_time += platform::getElapsedUs(pause_time);
 		pause_time = 0;
 		paused     = false;
 	}
@@ -93,7 +93,7 @@ void arx::time::force_time_restore(const float &time) {
 	
 	u64 requested_time = u64(time * 1000.0f);
 	
-	start_time = Time::getElapsedUs(requested_time);
+	start_time = platform::getElapsedUs(requested_time);
 	delta_time_us = requested_time;
 	
 	pause_time = 0;

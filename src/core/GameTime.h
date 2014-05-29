@@ -97,9 +97,9 @@ namespace arx
 		inline void update(const bool & use_pause = true) {
 
 			if (is_paused() && use_pause) {
-				delta_time_us = Time::getElapsedUs(start_time, pause_time);
+				delta_time_us = platform::getElapsedUs(start_time, pause_time);
 			} else {
-				delta_time_us = Time::getElapsedUs(start_time);
+				delta_time_us = platform::getElapsedUs(start_time);
 			}
 		}
 

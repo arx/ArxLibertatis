@@ -23,7 +23,7 @@
 
 #include "io/log/Logger.h"
 
-namespace Time {
+namespace platform {
 
 #if ARX_HAVE_CLOCK_GETTIME
 
@@ -31,7 +31,7 @@ namespace Time {
 
 static clock_t clock_id = CLOCK_REALTIME;
 
-void init() {
+void initializeTime() {
 	
 #ifdef CLOCK_MONOTONIC
 	struct timespec ts;
@@ -45,13 +45,13 @@ void init() {
 	LogWarning << "Falling back to CLOCK_REALTIME, time will jump if adjusted by other processes";
 }
 
-u32 getMs() {
+u32 getTimeMs() {
 	struct timespec ts;
 	clock_gettime(clock_id, &ts);
 	return ts.tv_sec * 1000 + ts.tv_nsec / 1000000;
 }
 
-u64 getUs() {
+u64 getTimeUs() {
 	struct timespec ts;
 	clock_gettime(clock_id, &ts);
 	return (ts.tv_sec * 1000000ull) + (ts.tv_nsec / 1000);
@@ -64,13 +64,13 @@ u64 getUs() {
 // Avoid costly calls to QueryPerformanceFrequency... cache its result
 static u64 frequency_hz;
 
-void init() {
+void initializeTime() {
 	LARGE_INTEGER frequency;
 	QueryPerformanceFrequency(&frequency);
 	frequency_hz = frequency.QuadPart;
 }
 
-u32 getMs() {
+u32 getTimeMs() {
 	LARGE_INTEGER counter;
 	QueryPerformanceCounter(&counter);
 	// Ugly trick to avoid losing precision...
@@ -78,7 +78,7 @@ u32 getMs() {
 	return valMs;
 }
 
-u64 getUs() {
+u64 getTimeUs() {
 	LARGE_INTEGER counter;
 	QueryPerformanceCounter(&counter);
 	// Ugly trick to avoid losing precision...
@@ -94,19 +94,19 @@ u64 getUs() {
 
 static clock_serv_t clock_ref;
 
-void init() {
+void initializeTime() {
 	if(host_get_clock_service(mach_host_self(), SYSTEM_CLOCK, &clock_ref) != KERN_SUCCESS) {
 		LogWarning << "Error getting system clock";
 	}
 }
 
-u32 getMs() {
+u32 getTimeMs() {
 	mach_timespec_t ts;
 	clock_get_time(clock_ref, &ts);
 	return ts.tv_sec * 1000 + ts.tv_nsec / 1000000;
 }
 
-u64 getUs() {
+u64 getTimeUs() {
 	mach_timespec_t ts;
 	clock_get_time(clock_ref, &ts);
 	return (ts.tv_sec * 1000000ull) + (ts.tv_nsec / 1000);
@@ -116,4 +116,4 @@ u64 getUs() {
 #error "Time not supported: need ARX_HAVE_CLOCK_GETTIME or ARX_HAVE_MACH_CLOCK on non-Windows systems"
 #endif
 
-} // namespace Time
+} // namespace platform

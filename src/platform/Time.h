@@ -22,23 +22,23 @@
 
 #include "platform/Platform.h"
 
-namespace Time {
+namespace platform {
 
-void init();
+void initializeTime();
 
 /*!
  * \brief Get the number of milliseconds elapsed since some unspecified starting point
  *
  * @return The number of milliseconds elapsed.
  */
-u32 getMs();
+u32 getTimeMs();
 
 /*!
  * \brief Get the number of microseconds elapsed since some unspecified starting point
  *
  * @return The number of microseconds elapsed.
  */
-u64 getUs();
+u64 getTimeUs();
 
 /*!
  * \brief Get the number of milliseconds elapsed between now and the specified time
@@ -86,8 +86,10 @@ inline u64 getElapsedUs(u64 startUs);
  */
 inline u64 getElapsedUs(u64 startUs, u64 endUs);
 
+// Implementation:
+
 inline u32 getElapsedMs(u32 startMs) {
-	return getElapsedMs(startMs, getMs());
+	return getElapsedMs(startMs, getTimeMs());
 }
 
 inline u32 getElapsedMs(u32 startMs, u32 endMs) {
@@ -95,7 +97,7 @@ inline u32 getElapsedMs(u32 startMs, u32 endMs) {
 }
 
 inline u64 getElapsedUs(u64 startUs) {
-	return getElapsedUs(startUs, getUs());
+	return getElapsedUs(startUs, getTimeUs());
 }
 
 inline u64 getElapsedUs(u64 startUs, u64 endUs) {
@@ -106,6 +108,6 @@ inline u64 getElapsedUs(u64 startUs, u64 endUs) {
 	}
 }
 
-} // namespace Time
+} // namespace platform
 
 #endif // ARX_PLATFORM_TIME_H

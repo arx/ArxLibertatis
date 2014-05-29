@@ -117,7 +117,7 @@ aalError init(const string & backendName, bool enableEAX) {
 	
 	mutex = new Lock();
 	
-	session_time = Time::getMs();
+	session_time = platform::getTimeMs();
 	
 	return AAL_OK;
 }
@@ -205,7 +205,7 @@ aalError update() {
 	
 	AAL_ENTRY
 	
-	session_time = Time::getMs();
+	session_time = platform::getTimeMs();
 	
 	// Update sources
 	for(Backend::source_iterator p = backend->sourcesBegin(); p != backend->sourcesEnd();) {
