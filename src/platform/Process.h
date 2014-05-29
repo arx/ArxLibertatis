@@ -36,7 +36,13 @@ namespace platform {
  *
  * @return the programs exit code or a negative value on error.
  */
-int run(const std::string & exe, const char * const args[]);
+int run(const char * exe, const char * const args[]);
+inline int run(const char * const args[]) {
+	return run(args[0], args);
+}
+inline int run(const std::string & exe, const char * const args[]) {
+	return run(exe.c_str(), args);
+}
 
 /*!
  * Start another executable without waiting for it to finish.
@@ -46,7 +52,13 @@ int run(const std::string & exe, const char * const args[]);
  * @param args program arguments. The first arguments should be the program name/path and
  *             the last argument should be NULL.
  */
-void runAsync(const std::string & exe, const char * const args[]);
+void runAsync(const char * exe, const char * const args[]);
+inline void runAsync(const char * const args[]) {
+	return runAsync(args[0], args);
+}
+inline void runAsync(const std::string & exe, const char * const args[]) {
+	return runAsync(exe.c_str(), args);
+}
 
 #if ARX_PLATFORM != ARX_PLATFORM_WIN32
 /*!
@@ -58,16 +70,23 @@ void runAsync(const std::string & exe, const char * const args[]);
  *             the last argument should be NULL.
  * @param unlocalized true if localization environment varuables should be reset.
  */
-std::string getOutputOf(const std::string & exe, const char * const args[],
+std::string getOutputOf(const char * exe, const char * const args[],
                         bool unlocalized = false);
+inline std::string getOutputOf(const char * const args[], bool unlocalized = false) {
+	return getOutputOf(args[0], args, unlocalized);
+}
+inline std::string getOutputOf(const std::string & exe, const char * const args[],
+                               bool unlocalized = false) {
+	return getOutputOf(exe.c_str(), args, unlocalized);
+}
 #endif
 
 /*!
  * Equivalent to
  * @code
  *  fs::path exe = getHelperExecutable(name);
- *  const char * args[] = { exe.string.c_str(), ... };
- *  platform::runAsync(exe, args);
+ *  const char * args[] = { exe.string().c_str(), ... };
+ *  platform::runAsync(args);
  * @endcode
  */
 void runHelper(const char * name, ...);

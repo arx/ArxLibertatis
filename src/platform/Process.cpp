@@ -63,7 +63,7 @@ extern char ** environ;
 namespace platform {
 
 #if ARX_PLATFORM != ARX_PLATFORM_WIN32
-static int run(const std::string & exe, bool wait, const char * const args[],
+static int run(const char * exe, bool wait, const char * const args[],
                int stdout, bool unlocalized, bool detach) {
 	
 	char ** argv = const_cast<char **>(args);
@@ -105,7 +105,7 @@ static int run(const std::string & exe, bool wait, const char * const args[],
 		}
 		
 		// Run the executable in a new process
-		(void)posix_spawnp(&pid, exe.c_str(), file_actionsp, attrp, argv, environ);
+		(void)posix_spawnp(&pid, exe, file_actionsp, attrp, argv, environ);
 		
 	}
 	
@@ -151,7 +151,7 @@ static int run(const std::string & exe, bool wait, const char * const args[],
 			#endif
 			
 			// Run the executable
-			(void)execvp(exe.c_str(), argv);
+			(void)execvp(exe, argv);
 			
 			exit(128);
 		}
@@ -188,7 +188,7 @@ static int run(const std::string & exe, bool wait, const char * const args[],
 #endif // ARX_PLATFORM != ARX_PLATFORM_WIN32
 
 
-static int run(const std::string & exe, bool wait, const char * const args[]) {
+static int run(const char * exe, bool wait, const char * const args[]) {
 	
 #if ARX_PLATFORM == ARX_PLATFORM_WIN32
 	
@@ -211,7 +211,7 @@ static int run(const std::string & exe, bool wait, const char * const args[]) {
 	PROCESS_INFORMATION pi;
 	memset(&pi, 0, sizeof(PROCESS_INFORMATION));
 	
-	bool success = (CreateProcess(exe.c_str(), cmdline, 0, 0, 0, 0, 0, 0, &si, &pi) != 0);
+	bool success = (CreateProcess(exe, cmdline, 0, 0, 0, 0, 0, 0, &si, &pi) != 0);
 	
 	free(cmdline);
 	
@@ -237,11 +237,11 @@ static int run(const std::string & exe, bool wait, const char * const args[]) {
 	
 }
 
-int run(const std::string & exe, const char * const args[]) {
+int run(const char * exe, const char * const args[]) {
 	return run(exe, true, args);
 }
 
-void runAsync(const std::string & exe, const char * const args[]) {
+void runAsync(const char * exe, const char * const args[]) {
 	(void)run(exe, false, args);
 }
 
@@ -268,7 +268,7 @@ void runHelper(const char * name, ...) {
 }
 
 #if ARX_PLATFORM != ARX_PLATFORM_WIN32
-std::string getOutputOf(const std::string & exe, const char * const args[], bool unlocalized) {
+std::string getOutputOf(const char * exe, const char * const args[], bool unlocalized) {
 	
 	#if ARX_HAVE_PIPE && ARX_HAVE_READ && ARX_HAVE_CLOSE
 	
