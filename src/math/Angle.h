@@ -34,7 +34,7 @@ inline float MAKEANGLE(float a) {
 
 /*!
  * A 3-dimensional euler-angle.
- * @brief 3x1 Vector class.
+ * \brief 3x1 Vector class.
  */
 template <class T>
 class Angle {
@@ -90,7 +90,7 @@ public:
 
 	/*!
 	 * Set this angle to the content of another angle.
-	 * @brief Assignment operator.
+	 * \brief Assignment operator.
 	 * \param other An euler angle to be copied.
 	 * \return Reference to this object.
 	 */
@@ -101,7 +101,7 @@ public:
 	
 	/*!
 	 * Test if this angle is equal to another angle.
-	 * @brief Equal operator.
+	 * \brief Equal operator.
 	 * \param other An euler angle to be compared to.
 	 * \return A boolean, \b true if the two angles are equal(all members are equals), or \b false otherwise.
 	 */
@@ -111,7 +111,7 @@ public:
 	
 	/*!
 	 * Test if this angle is not equal to another angle.
-	 * @brief Not equal operator.
+	 * \brief Not equal operator.
 	 * \param other An angle to be compared to.
 	 * \return A boolean, \b true if the two angles are not equal(some members are not equal), or \b false otherwise.
 	 */
@@ -121,7 +121,7 @@ public:
 	
 	/*!
 	 * Invert the sign of the angle.
-	 * @brief Unary minus operator.
+	 * \brief Unary minus operator.
 	 * \return A new angle, same as this one but with the signs of all the elements inverted.
 	 */
 	Angle operator-() const {
@@ -130,7 +130,7 @@ public:
 	
 	/*!
 	 * Add an angle to this angle.
-	 * @brief Addition operator.
+	 * \brief Addition operator.
 	 * \param other an angle, to be added to this angle.
 	 * \return A new angle, the result of the addition of the two angles.
 	 */
@@ -140,7 +140,7 @@ public:
 	
 	/*!
 	 * Subtract an angle to this angle.
-	 * @brief Subtraction operator.
+	 * \brief Subtraction operator.
 	 * \param other an angle, to be subtracted to this angle.
 	 * \return A new angle, the result of the subtraction of the two angles.
 	 */
