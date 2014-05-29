@@ -26,9 +26,6 @@
 #include <boost/algorithm/string/case_conv.hpp>
 
 #include "Configure.h"
-#ifdef BUILD_EDITOR
-#undef BUILD_EDITOR
-#endif
 
 #include "ai/Paths.h"
 #include "core/Localisation.h"

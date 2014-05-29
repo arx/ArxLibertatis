@@ -46,11 +46,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "Configure.h"
 
-#ifdef BUILD_EDITOR
+#if 0
 
 bool NeedMapCreation();
 void DANAE_Manage_CreateMap();
 
-#endif // BUILD_EDITOR
+#endif
 
 #endif // ARX_GAME_MAP_H

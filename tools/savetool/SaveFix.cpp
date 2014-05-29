@@ -29,9 +29,6 @@
 #include <boost/algorithm/string/predicate.hpp>
 
 #include "Configure.h"
-#ifdef BUILD_EDITOR
-#undef BUILD_EDITOR
-#endif
 
 #include "io/SaveBlock.h"
 #include "io/log/Logger.h"
