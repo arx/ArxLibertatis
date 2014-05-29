@@ -38,7 +38,7 @@ CriticalErrorDialog::~CriticalErrorDialog() {
 			fullText += logfile.string();
 		}
 		
-		dialog::showError(fullText, "Critical Error - " + arx_version);
+		platform::showErrorDialog(fullText, "Critical Error - " + arx_version);
 	}
 }
 

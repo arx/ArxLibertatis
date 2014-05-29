@@ -48,7 +48,7 @@
 #include "util/String.h"
 
 
-namespace dialog {
+namespace platform {
 
 #if ARX_PLATFORM == ARX_PLATFORM_WIN32
 
@@ -351,15 +351,15 @@ static bool showDialog(DialogType type, const std::string & message,
 
 #endif
 
-void showInfo(const std::string & message, const std::string & title) {
+void showInfoDialog(const std::string & message, const std::string & title) {
 	showDialog(DialogInfo, message, title);
 }
 
-void showWarning(const std::string & message, const std::string & title) {
+void showWarningDialog(const std::string & message, const std::string & title) {
 	showDialog(DialogWarning, message, title);
 }
 
-void showError(const std::string & message, const std::string & title) {
+void showErrorDialog(const std::string & message, const std::string & title) {
 	showDialog(DialogError, message, title);
 }
 
@@ -371,4 +371,4 @@ bool askOkCancel(const std::string & question, const std::string & title) {
 	return showDialog(DialogOkCancel, question, title);
 }
 
-} // namespace dialog
+} // namespace platform

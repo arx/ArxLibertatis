@@ -22,7 +22,7 @@
 
 #include <string>
 
-namespace dialog {
+namespace platform {
 
 enum DialogType {
 	DialogInfo,
@@ -32,13 +32,13 @@ enum DialogType {
 	DialogOkCancel
 };
 
-void showInfo(const std::string & message, const std::string & title = "Information");
-void showWarning(const std::string & message, const std::string & title = "Warning");
-void showError(const std::string & message, const std::string & title = "Error");
+void showInfoDialog(const std::string & message, const std::string & title = "Information");
+void showWarningDialog(const std::string & message, const std::string & title = "Warning");
+void showErrorDialog(const std::string & message, const std::string & title = "Error");
 
 bool askYesNo(const std::string & question, const std::string & title = "Yes/No?");
 bool askOkCancel(const std::string & question, const std::string & title = "Ok/Cancel?");
 
-} // namespace dialog
+} // namespace platform
 
 #endif // ARX_PLATFORM_DIALOG_H

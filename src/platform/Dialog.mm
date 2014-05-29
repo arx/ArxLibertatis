@@ -22,7 +22,7 @@
 #import <Carbon/Carbon.h>
 #import <Cocoa/Cocoa.h>
 
-namespace dialog {
+namespace platform {
 
 bool showDialog(DialogType type, const std::string & message, const std::string & title) {
 	
@@ -76,4 +76,4 @@ bool showDialog(DialogType type, const std::string & message, const std::string 
 	return result;
 }
 
-}
+} // namespace platform
