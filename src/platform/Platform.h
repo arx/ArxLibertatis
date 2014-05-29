@@ -142,13 +142,13 @@ typedef double f64; // 64 bits double float
 #endif
 
 /*!
- * Declare that a function argument is a printf-like format string.
- * 
+ * \brief Declare that a function argument is a printf-like format string
+ *
  * Usage: T function(args, message, ...) ARX_FORMAT_PRINTF(message_arg, param_vararg)
- * 
+ *
  * @param message_arg index of the format string arg (1 for the first)
  * @param param_vararg index of the vararg for the parameters
- * 
+ *
  * This is useful to
  *  a) Let the compiler check the format string and parameters when calling the function
  *  b) Prevent warnings due to a non-literal format string in the implementation
@@ -170,7 +170,8 @@ typedef double f64; // 64 bits double float
 #endif
 
 /*!
- * Log that an assertion has failed.
+ * \brief Log that an assertion has failed
+ *
  * This is a low-level implementation, use arx_assert() instead!
  */
 void assertionFailed(const char * expression, const char * file, unsigned line,
@@ -202,7 +203,8 @@ void assertionFailed(const char * expression, const char * file, unsigned line,
 #define ARX_DEAD_CODE() arx_assert(false)
 
 /*!
- * Remove warnings about unused but necessary variable
+ * \brief Remove warnings about unused but necessary variable
+ *
  * (unused params, variables only used for asserts...)
  */
 #define ARX_UNUSED(x) ((void)&x)
