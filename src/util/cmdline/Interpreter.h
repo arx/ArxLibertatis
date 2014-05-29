@@ -95,7 +95,7 @@ public:
 	 *  l.add(object, op_name_t("op_name_2").description("some info"));
 	 *    //object whose class contains a single operator(), except for template one.
 	 *
-	 * @endcode
+	 * \endcode
 	 */
 	template<typename Handler>
 	void add(const Handler & handler, const op_name_t & option_name) {
@@ -120,7 +120,7 @@ public:
 	 * \code
 	 *  interpreter<> l;
 	 *  l.add<void (A1,...,An)> (object, op_name_t("option_name").description("some info"));
-	 * @endcode
+	 * \endcode
 	 */
 	template<typename HndlSign, typename Handler>
 	void add(const Handler & handler, const op_name_t & option_name) {
