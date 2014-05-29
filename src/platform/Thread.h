@@ -75,13 +75,15 @@ public:
 	};
 	
 	/*!
-	 * Start the thread.
+	 * \brief Start the thread
 	 */
 	void start();
 	
 	/*!
-	 * Set the thread name (for easier debugging)
+	 * \brief Set the thread name (for easier debugging)
+	 *
 	 * @note This should be called BEFORE starting the thread.
+	 *
 	 * @param threadName The thread name.
 	 */
 	void setThreadName(const std::string & threadName);
@@ -89,17 +91,17 @@ public:
 	void setPriority(Priority priority);
 	
 	/*!
-	 * Suspend the current thread for a specific amount of time.
+	 * \brief Suspend the current thread for a specific amount of time
 	 */
 	static void sleep(unsigned milliseconds);
 	
 	/*!
-	 * Exit the current thread.
+	 * \brief Exit the current thread
 	 */
 	static void exit();
 	
 	/*!
-	 * Wait until the thread exists.
+	 * \brief Wait until the thread exists
 	 */
 	void waitForCompletion();
 	
@@ -108,7 +110,7 @@ public:
 protected:
 	
 	/*!
-	 * The threads main entry point, to be implemented by subclasses.
+	 * \brief The threads main entry point, to be implemented by subclasses
 	 */
 	virtual void run() = 0;
 };
