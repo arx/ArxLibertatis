@@ -42,6 +42,11 @@
 #include <unistd.h>
 #endif
 
+#if ARX_HAVE_FCNTL
+#include <fcntl.h>
+#include <errno.h>
+#endif
+
 #if ARX_PLATFORM == ARX_PLATFORM_MACOSX
 #include <mach-o/dyld.h>
 #include <sys/param.h>
@@ -52,6 +57,8 @@
 #include <sys/sysctl.h>
 #include <fcntl.h>
 #endif
+
+#include <boost/range/size.hpp>
 
 #include "io/fs/PathConstants.h"
 #include "io/fs/FilePath.h"
@@ -387,6 +394,62 @@ fs::path getHelperExecutable(const std::string & name) {
 	}
 	
 	return fs::path(name);
+}
+
+bool isFileDescriptorDisabled(int fd) {
+	
+	ARX_UNUSED(fd);
+	
+	#if ARX_PLATFORM == ARX_PLATFORM_WIN32
+	
+	DWORD names[] = { STD_INPUT_HANDLE, STD_OUTPUT_HANDLE, STD_ERROR_HANDLE };
+	if(fd < 0 || fd >= int(boost::size(names))) {
+		return false;
+	}
+	
+	HANDLE handle = GetStdHandle(names[fd]);
+	if(handle == INVALID_HANDLE_VALUE || handle == NULL) {
+		return true; // Not a valid handle
+	}
+	
+	BY_HANDLE_FILE_INFORMATION fi;
+	if(!GetFileInformationByHandle(h, &fi) && GetLastError() == ERROR_INVALID_FUNCTION) {
+		return true; // Redirected to NUL
+	}
+	
+	#else
+	
+	#if ARX_HAVE_FCNTL && defined(F_GETFD)
+	if(fcntl(fd, F_GETFD) == -1 && errno == EBADF) {
+		return 0; // Not a valid file descriptor
+	}
+	#endif
+	
+	#if defined(MAXPATHLEN)
+	char path[MAXPATHLEN];
+	#else
+	char path[64];
+	#endif
+	
+	bool valid = false;
+	#if ARX_HAVE_FCNTL && defined(F_GETPATH) && defined(MAXPATHLEN)
+	// OS X
+	valid = (fcntl(fd, F_GETPATH, path) != -1 && path[9] == '\0');
+	#elif ARX_HAVE_READLINK
+	// Linux
+	const char * names[] = { "/proc/self/fd/0", "/proc/self/fd/1", "/proc/self/fd/2" };
+	if(fd >= 0 && fd < int(boost::size(names))) {
+		valid = (readlink(names[fd], path, boost::size(path)) == 9);
+	}
+	#endif
+	
+	if(valid && !memcmp(path, "/dev/null", 9)) {
+		return true; // Redirected to /dev/null
+	}
+	
+	#endif
+	
+	return false;
 }
 
 } // namespace platform

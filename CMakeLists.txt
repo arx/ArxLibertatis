@@ -532,6 +532,7 @@ if(NOT MSVC)
 	check_symbol_exists(wordexp "wordexp.h" ARX_HAVE_WORDEXP)
 	
 	check_symbol_exists(open "fcntl.h" ARX_HAVE_OPEN)
+	check_symbol_exists(fcntl "fcntl.h" ARX_HAVE_FCNTL)
 	
 	check_symbol_exists(fork "unistd.h" ARX_HAVE_FORK)
 	check_symbol_exists(readlink "unistd.h" ARX_HAVE_READLINK)

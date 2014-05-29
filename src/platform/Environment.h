@@ -55,6 +55,16 @@ static const char * const env_list_seperators = ":";
 static const char * const env_list_seperators = ";";
 #endif
 
+/*!
+ * Check if a file descriptor has been closed or redirected to /dev/null
+ *
+ * @param fd the file descriptor to test - 0 for stdin, 1 for stdout and 2 for stderr.
+ */
+bool isFileDescriptorDisabled(int fd);
+inline bool hasStdIn() { return !isFileDescriptorDisabled(0); }
+inline bool hasStdOut() { return !isFileDescriptorDisabled(1); }
+inline bool hasStdErr() { return !isFileDescriptorDisabled(2); }
+
 } // namespace platform
 
 #endif // ARX_PLATFORM_ENVIRONMENT_H

@@ -24,13 +24,12 @@
 
 #include "Configure.h"
 
-#if ARX_HAVE_ISATTY || ARX_HAVE_READLINK
+#if ARX_HAVE_ISATTY
 #include <unistd.h>
-#include <errno.h>
 #endif
 
 #include "io/log/ColorLogger.h"
-#include "platform/Platform.h"
+#include "platform/Environment.h"
 
 namespace logger {
 
@@ -47,36 +46,19 @@ void Console::flush() {
 	std::cout.flush(), std::cerr.flush();
 }
 
-static bool is_fd_disabled(int fd) {
-	
-	ARX_UNUSED(fd);
-	
-	// Disable the console log backend if output is redirected to /dev/null
-#if ARX_HAVE_READLINK
-	static const char * names[] = { NULL, "/proc/self/fd/1", "/proc/self/fd/2" };
-	char path[64];
-	ssize_t len = readlink(names[fd], path, ARRAY_SIZE(path));
-	if(len == 9 && !memcmp(path, "/dev/null", 9)) {
-		return true;
-	} else if(len == -1 && errno == ENOENT) {
-		return true;
-	}
-#endif
-	
-	return false;
-}
-
 Backend * Console::get() {
 	
-#if ARX_HAVE_ISATTY
-	if(isatty(1) && isatty(2)) {
-		return new ColorConsole;
-	}
-#endif
-	
-	if(is_fd_disabled(1) && is_fd_disabled(2)) {
+	bool hasStdout = platform::hasStdOut();
+	bool hasStdErr = platform::hasStdErr();
+	if(!hasStdout && !hasStdErr) {
 		return NULL;
 	}
+	
+	#if ARX_HAVE_ISATTY
+	if((!hasStdout || isatty(1)) && (!hasStdErr || isatty(2))) {
+		return new ColorConsole;
+	}
+	#endif
 	
 	return new Console;
 }
