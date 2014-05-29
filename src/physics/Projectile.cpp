@@ -66,7 +66,7 @@ struct ARX_THROWN_OBJECT {
 	Vec3f position;
 	float damages;
 	EERIE_3DOBJ * obj;
-	long source;
+	EntityHandle source;
 	unsigned long creation_time;
 	float poisonous;
 	Trail * pRuban;
@@ -346,7 +346,7 @@ void CheckExp(long i) {
 		ARX_BOOMS_Add(Thrown[i].position);
 		LaunchFireballBoom(&Thrown[i].position, 10);
 		DoSphericDamage(Thrown[i].position, 4.f * 2, 50.f,
-						DAMAGE_AREA, DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL, 0);
+						DAMAGE_AREA, DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL, EntityHandle(0));
 		ARX_SOUND_PlaySFX(SND_SPELL_FIRE_HIT, &Thrown[i].position);
 		ARX_NPC_SpawnAudibleSound(Thrown[i].position, entities.player());
 		LightHandle id = GetFreeDynLight();

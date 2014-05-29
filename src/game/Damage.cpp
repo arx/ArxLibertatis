@@ -431,7 +431,7 @@ float ARX_DAMAGES_DrainMana(Entity * io, float dmg)
 	return d;
 }
 
-void ARX_DAMAGES_DamageFIX(Entity * io, float dmg, long source, long flags)
+void ARX_DAMAGES_DamageFIX(Entity * io, float dmg, EntityHandle source, long flags)
 {
 	if ((!io)
 	        ||	(!io->show)
@@ -1183,7 +1183,7 @@ bool SphereInIO(Entity * io, const Sphere & sphere)
 	return false;
 }
 
-bool ARX_DAMAGES_TryToDoDamage(const Vec3f & pos, float dmg, float radius, long source)
+bool ARX_DAMAGES_TryToDoDamage(const Vec3f & pos, float dmg, float radius, EntityHandle source)
 {
 	bool ret = false;
 
@@ -1279,7 +1279,7 @@ void CheckForIgnition(const Vec3f & pos, float radius, bool mode, long flag) {
 	}
 }
 
-bool DoSphericDamage(const Vec3f & pos, float dmg, float radius, DamageArea flags, DamageType typ, long numsource)
+bool DoSphericDamage(const Vec3f & pos, float dmg, float radius, DamageArea flags, DamageType typ, EntityHandle numsource)
 {
 	bool damagesdone = false;
 	
@@ -1295,7 +1295,7 @@ bool DoSphericDamage(const Vec3f & pos, float dmg, float radius, DamageArea flag
 		if(!ioo || long(i) == numsource || !ioo->obj)
 			continue;
 			
-		if ((i != 0) && (numsource != 0)
+		if ((i != 0) && (numsource != EntityHandle(0))
 				&& validsource && (HaveCommonGroup(ioo, entities[numsource])))
 			continue;
 		

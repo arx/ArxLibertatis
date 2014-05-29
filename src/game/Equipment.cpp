@@ -490,7 +490,7 @@ float ARX_EQUIPMENT_ComputeDamages(Entity * io_source, Entity * io_target, float
 	if(!(io_target->ioflags & IO_NPC)) {
 		if(io_target->ioflags & IO_FIX) {
 			if (io_source == entities.player())
-				ARX_DAMAGES_DamageFIX(io_target, player.m_miscFull.damages, 0, 0);
+				ARX_DAMAGES_DamageFIX(io_target, player.m_miscFull.damages, EntityHandle(0), 0);
 			else if (io_source->ioflags & IO_NPC)
 				ARX_DAMAGES_DamageFIX(io_target, io_source->_npcdata->damages, io_source->index(), 0);
 			else

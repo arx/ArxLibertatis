@@ -385,7 +385,7 @@ public:
 	res::path instancePath() const;
 	
 	//! \return the index of this Entity in the EntityManager
-	size_t index() const { return m_index; }
+	EntityHandle index() const { return EntityHandle(m_index); }
 	
 	/*!
 	 * Marks the entity as destroyed.
