@@ -138,8 +138,9 @@ void ErrorReportDialog::onPaneChanged(int index)
 		ui->btnNext->setEnabled(true);
 		ui->btnSend->setEnabled(false);
 		QModelIndex idx = ui->listFiles->model()->index(0, 0);
-		if(idx.isValid())
-			ui->listFiles->selectionModel()->select(idx, QItemSelectionModel::Select);
+		if(idx.isValid()) {
+			ui->listFiles->selectionModel()->select(idx, QItemSelectionModel::ClearAndSelect);
+		}
 		break;
 	}
 
