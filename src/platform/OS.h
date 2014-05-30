@@ -27,10 +27,25 @@
 
 namespace platform {
 
-//! \return the name and version of the runtime host operating system
+/*!
+ * \brief Get the name and version of the runtime host operating system
+ *
+ * On POSIX systems this matches the sysname and release members of the uname output.
+ *
+ * \return the os name or an empty string if it could not be determined.
+ */
 std::string getOSName();
 
-//! \return a string identifying the runtime host operating system's architecture
+/*!
+ * \brief Get the processor architecture of the runtime host
+ *
+ * This may be different from the process architecture on multilib systems.
+ *
+ * On Windows this is either x86_64 or x86.
+ * On POSIX systems this matches the machine member of the uname output.
+ *
+ * \return the CPU architecture or an empty string if it could not be determined.
+ */
 std::string getOSArchitecture();
 
 /*!
