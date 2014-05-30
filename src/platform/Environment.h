@@ -28,13 +28,45 @@ namespace fs { class path; }
 
 namespace platform {
 
+/*!
+ * \brief Initialize envirenment functions
+ *
+ * On Windows, this sets the %FOLDERID_SavedGames% environment variable to the
+ * standard "Saved Games" directory.
+ *
+ * \param argv0 a path to use for \ref getExecutablePath if no OS-specific function is
+ *              available to determine the executable path. Will be ignored if it doesn't
+ *              contain any slashes.
+ */
+void initializeEnvironment(const char * argv0);
+
+/*!
+ * \brief Expand a string containing environment variables
+ *
+ * Expansion is done as it would be in the system's shell.
+ *
+ * \param in the string to expand.
+ */
 std::string expandEnvironmentVariables(const std::string & in);
 
+/*!
+ * \brief Get a Windows registry entry
+ *
+ * This does nothing on non-Windows systems.
+ *
+ * \param name path of the registry entry to read. This is looked up under HKCU first, and
+ *             if it doesn't exist there, under HKLM.
+ * \param result string to receive the value of the registry key.
+ *
+ * \return \c true of the requested registry key exists, \c false otherwise.
+ */
 bool getSystemConfiguration(const std::string & name, std::string & result);
 
-void defineSystemDirectories(const char * argv0);
-
-//! Get the path to the current running executable if possible or an empty string otherwise.
+/*!
+ * \brief Get the path to the current running executable
+ * 
+ * \return the executable path if possible or an empty string otherwise
+ */
 fs::path getExecutablePath();
 
 /*!

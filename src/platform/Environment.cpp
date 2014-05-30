@@ -176,7 +176,7 @@ bool getSystemConfiguration(const std::string & name, std::string & result) {
 
 #if ARX_PLATFORM == ARX_PLATFORM_MACOSX
 
-void defineSystemDirectories(const char * argv0) {
+void initializeEnvironment(const char * argv0) {
 	ARX_UNUSED(argv0);
 }
 
@@ -194,7 +194,7 @@ std::string ws2s(const std::basic_string<WCHAR> & s) {
 // Obtain the right savegame paths for the platform
 // XP is "%USERPROFILE%\My Documents\My Games"
 // Vista and up : "%USERPROFILE%\Saved Games"
-void defineSystemDirectories(const char * argv0) {
+void initializeEnvironment(const char * argv0) {
 	
 	ARX_UNUSED(argv0);
 	
@@ -258,7 +258,7 @@ void defineSystemDirectories(const char * argv0) {
 
 static const char * executablePath = NULL;
 
-void defineSystemDirectories(const char * argv0) {
+void initializeEnvironment(const char * argv0) {
 	executablePath = argv0;
 }
 
