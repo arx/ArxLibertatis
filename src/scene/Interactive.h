@@ -66,7 +66,6 @@ enum TargetInfo {
 	TARGET_PATH = -3,
 	TARGET_NONE = -2,
 	TARGET_PLAYER = 0, //-1
-	TARGET_NODE = 50000
 };
 
 enum AddInteractiveFlag {

@@ -1548,7 +1548,6 @@ int view_io(SaveBlock & save, const char * dat, size_t size) {
 				switch(as->pathfind.truetarget) {
 					case TARGET_PATH: cout << "path"; break;
 					case TARGET_PLAYER: cout << "player"; break;
-					case TARGET_NODE: cout << "node"; break;
 					default: cout << "(unknown)";
 				}
 				cout << endl;
