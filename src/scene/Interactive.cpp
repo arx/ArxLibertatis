@@ -2538,7 +2538,7 @@ void UpdateInter() {
 }
 
 
-/**
+/*!
  * \brief Render entities
  */
 void RenderInter() {

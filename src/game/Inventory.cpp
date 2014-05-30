@@ -802,7 +802,7 @@ bool insertIntoInventory(Entity * item, const InventoryPos & pos) {
 }
 
 // TODO replace remaining uses of this with playerInventory.insert()
-/**
+/*!
  * \brief tries to put an object in player inventory
  */
 bool CanBePutInInventory(Entity * io)
@@ -979,7 +979,7 @@ bool CanBePutInInventory(Entity * io)
 	return false;
 }
 
-/**
+/*!
  * \brief Tries to put an object in secondary inventory
  */
 bool CanBePutInSecondaryInventory(INVENTORY_DATA * id, Entity * io, long * xx, long * yy)
@@ -1147,7 +1147,7 @@ bool CanBePutInSecondaryInventory(INVENTORY_DATA * id, Entity * io, long * xx, l
 	return false;
 }
 
-/**
+/*!
  * \brief Try to put DRAGINTER object in an inventory
  * \return
  */
@@ -1422,7 +1422,7 @@ bool PutInInventory() {
 	return true;
 }
 
-/**
+/*!
  * \brief Returns true if xx,yy is a position in secondary inventory
  */
 bool InSecondaryInventoryPos(const Vec2s & pos)
@@ -1447,7 +1447,7 @@ bool InSecondaryInventoryPos(const Vec2s & pos)
 	return false;
 }
 
-/**
+/*!
  * \brief Returns true if xx,yy is a position in player inventory
  */
 bool InPlayerInventoryPos(const Vec2s & pos)
@@ -1513,7 +1513,7 @@ bool InPlayerInventoryPos(const Vec2s & pos)
 	return false;
 }
 
-/**
+/*!
  * \brief Returns true if "pos" is a position in player inventory or in SECONDARY inventory
  */
 bool InInventoryPos(const Vec2s & pos)
@@ -1524,7 +1524,7 @@ bool InInventoryPos(const Vec2s & pos)
 	return (InPlayerInventoryPos(pos));
 }
 
-/**
+/*!
  * \brief returns true if cursor is flying over any inventory
  */
 bool IsFlyingOverInventory(const Vec2s & pos)
@@ -1547,7 +1547,7 @@ bool IsFlyingOverInventory(const Vec2s & pos)
 	return InPlayerInventoryPos(pos);
 }
 
-/**
+/*!
  * \brief Returns IO under position xx,yy in any INVENTORY or NULL if no IO was found
  */
 Entity * GetFromInventory(const Vec2s & pos)
@@ -1590,7 +1590,7 @@ Entity * GetFromInventory(const Vec2s & pos)
 	return GetInventoryObj(pos);
 }
 
-/**
+/*!
  * \brief Gets real world position for an IO (can be used for non items)
  * (even in an inventory or being dragged)
  *
@@ -1661,7 +1661,7 @@ bool GetItemWorldPosition(Entity * io, Vec3f * pos)
 	return true;
 }
 
-/**
+/*!
  * \brief Gets real world position for an IO to spawn a sound
  */
 bool GetItemWorldPositionSound(const Entity * io, Vec3f * pos) {
@@ -1717,7 +1717,7 @@ bool GetItemWorldPositionSound(const Entity * io, Vec3f * pos) {
 	return true;
 }
 
-/**
+/*!
  * \brief Seeks an IO in all Inventories to remove it
  */
 void RemoveFromAllInventories(const Entity * io) {
@@ -1747,7 +1747,7 @@ void RemoveFromAllInventories(const Entity * io) {
 	}
 }
 
-/**
+/*!
  * \brief Seeks an IO in all Inventories to replace it by another IO
  */
 void CheckForInventoryReplaceMe(Entity * io, Entity * old) {
@@ -1774,7 +1774,7 @@ void CheckForInventoryReplaceMe(Entity * io, Entity * old) {
 	}
 }
 
-/**
+/*!
  * \brief Takes an object from an inventory (be it player's or secondary inventory)
  * at screen position "xx,yy" and Puts that object in player's "hand" (cursor)
  *
