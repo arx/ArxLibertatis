@@ -59,12 +59,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/GameSound.h"
 #include "script/ScriptUtils.h"
 
-using std::string;
-using std::free;
-using std::malloc;
-using std::memset;
-using std::strcpy;
-
 extern Entity * LASTSPAWNED;
 
 namespace script {
@@ -75,18 +69,18 @@ class InventoryCommand : public Command {
 	
 	class SubCommand : public Command {
 		
-		const string command;
+		const std::string command;
 		
 	public:
 		
 		explicit SubCommand(const std::string & name)
 			: Command("inventory " + name, AnyEntity), command(name) { }
 		
-		inline const string & getCommand() { return command; }
+		inline const std::string & getCommand() { return command; }
 		
 	};
 	
-	typedef std::map<string, SubCommand *> Commands;
+	typedef std::map<std::string, SubCommand *> Commands;
 	Commands commands;
 	
 	void addCommand(SubCommand * command) {
@@ -196,7 +190,7 @@ class InventoryCommand : public Command {
 		
 		Result execute(Context & context) {
 			
-			string target = context.getWord();
+			std::string target = context.getWord();
 			
 			DebugScript(' ' << target);
 			
@@ -221,7 +215,7 @@ class InventoryCommand : public Command {
 		
 	public:
 		
-		PlayerAddCommand(const string & name, bool _multi) : SubCommand(name), multi(_multi) { }
+		PlayerAddCommand(const std::string & name, bool _multi) : SubCommand(name), multi(_multi) { }
 		
 		Result execute(Context & context) {
 			
@@ -278,7 +272,7 @@ class InventoryCommand : public Command {
 		
 		Result execute(Context & context) {
 			
-			string target = context.getWord();
+			std::string target = context.getWord();
 			
 			DebugScript(' ' << target);
 			
@@ -313,7 +307,7 @@ class InventoryCommand : public Command {
 		
 	public:
 		
-		AddCommand(const string & name, bool _multi) : SubCommand(name), multi(_multi) { }
+		AddCommand(const std::string & name, bool _multi) : SubCommand(name), multi(_multi) { }
 		
 		Result execute(Context & context) {
 			
@@ -434,7 +428,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		string cmdname = context.getWord();
+		std::string cmdname = context.getWord();
 		
 		// Remove all underscores from the command.
 		cmdname.resize(std::remove(cmdname.begin(), cmdname.end(), '_') - cmdname.begin());
@@ -463,7 +457,7 @@ public:
 			unequip = test_flag(flg, 'r');
 		}
 		
-		string target = context.getWord();
+		std::string target = context.getWord();
 		
 		DebugScript(' ' << options << ' ' << target);
 		

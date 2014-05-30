@@ -175,7 +175,7 @@ size_t initSuppressions();
 #define ScriptWarning ARX_LOG(isSuppressed(context, getName()) ? Logger::Debug : Logger::Warning) << ScriptPrefix ": "
 #define ScriptError   ARX_LOG(isSuppressed(context, getName()) ? Logger::Debug : Logger::Error) << ScriptPrefix ": "
 
-#define HandleFlags(expected) string options = context.getFlags(); \
+#define HandleFlags(expected) std::string options = context.getFlags(); \
 	for(u64 run = !options.empty(), flg = 0; run && ((flg = flags(options), (flg && !(flg & ~flags(expected)))) || (ScriptWarning << "unexpected flags: " << options, true)); run = 0)
 
 } // namespace script
