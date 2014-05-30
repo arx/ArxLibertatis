@@ -762,8 +762,7 @@ void ARX_INTERACTIVE_ClearIODynData_II(Entity * io)
 {
 	if(!io)
 		return;
-
-	{
+	
 	ARX_INTERACTIVE_ClearIODynData(io);
 	
 	io->shop_category.clear();
@@ -782,8 +781,7 @@ void ARX_INTERACTIVE_ClearIODynData_II(Entity * io)
 	
 	io->animBlend.nb_lastanimvertex = 0;
 	
-	for (long j = 0; j < MAX_ANIMS; j++)
-	{
+	for(long j = 0; j < MAX_ANIMS; j++) {
 		EERIE_ANIMMANAGER_ReleaseHandle(io->anims[j]);
 		io->anims[j] = NULL;
 	}
@@ -800,23 +798,22 @@ void ARX_INTERACTIVE_ClearIODynData_II(Entity * io)
 		ARX_NPC_Behaviour_Reset(io);
 	}
 	
-	delete io->tweakerinfo, io->tweakerinfo = NULL;
+	delete io->tweakerinfo;
+	io->tweakerinfo = NULL;
 	
-	if (io->inventory != NULL)
-	{
+	if(io->inventory != NULL) {
 		INVENTORY_DATA * id = io->inventory;
 		
-		for (long nj = 0; nj < id->sizey; nj++) {
-			for (long ni = 0; ni < id->sizex; ni++) {
-				if (id->slot[ni][nj].io != NULL) {
+		for(long nj = 0; nj < id->sizey; nj++) {
+			for(long ni = 0; ni < id->sizex; ni++) {
+				if(id->slot[ni][nj].io != NULL) {
 					id->slot[ni][nj].io->destroy();
 					id->slot[ni][nj].io = NULL;
 				}
 			}
 		}
 		
-		if ((TSecondaryInventory) && (TSecondaryInventory->io == io))
-		{
+		if(TSecondaryInventory && TSecondaryInventory->io == io) {
 			TSecondaryInventory = NULL;
 		}
 		
@@ -831,7 +828,6 @@ void ARX_INTERACTIVE_ClearIODynData_II(Entity * io)
 		delete io->obj;
 		io->obj = io->tweaky;
 		io->tweaky = NULL;
-	}
 	}
 }
 
