@@ -472,7 +472,8 @@ public:
 		
 		Entity * io = context.getEntity();
 		if(name == "none") {
-			free(io->usepath), io->usepath = NULL;
+			free(io->usepath);
+			io->usepath = NULL;
 		} else {
 			
 			ARX_PATH * ap = ARX_PATH_GetAddressByName(name);
@@ -481,7 +482,8 @@ public:
 				return Failed;
 			}
 			
-			free(io->usepath), io->usepath = NULL;
+			free(io->usepath);
+			io->usepath = NULL;
 			
 			ARX_USE_PATH * aup = (ARX_USE_PATH *)malloc(sizeof(ARX_USE_PATH));
 			aup->_starttime = aup->_curtime = arxtime;

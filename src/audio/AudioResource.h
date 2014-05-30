@@ -184,7 +184,9 @@ inline void ResourceList<T>::clear() {
 		}
 	}
 	
-	std::free(list), list = NULL, _size = 0;
+	std::free(list);
+	list = NULL;
+	_size = 0;
 }
 
 template <class T>

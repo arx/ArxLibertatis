@@ -376,7 +376,8 @@ ARX_PATH::ARX_PATH(const std::string & _name, const Vec3f & _pos)
 void ARX_PATH_ClearAllUsePath() {
 	BOOST_FOREACH(Entity * e, entities) {
 		if(e && e->usepath) {
-			free(e->usepath), e->usepath = NULL;
+			free(e->usepath);
+			e->usepath = NULL;
 		}
 	}
 }
@@ -410,12 +411,15 @@ void ARX_PATH_ReleaseAllPath() {
 	
 	for(long i = 0; i < nbARXpaths; i++) {
 		if(ARXpaths[i]) {
-			free(ARXpaths[i]->pathways), ARXpaths[i]->pathways = NULL;
-			delete ARXpaths[i], ARXpaths[i] = NULL;
+			free(ARXpaths[i]->pathways);
+			ARXpaths[i]->pathways = NULL;
+			delete ARXpaths[i];
+			ARXpaths[i] = NULL;
 		}
 	}
 	
-	free(ARXpaths), ARXpaths = NULL;
+	free(ARXpaths);
+	ARXpaths = NULL;
 	nbARXpaths = 0;
 }
 

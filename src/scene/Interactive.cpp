@@ -415,7 +415,8 @@ void TREATZONE_Clear() {
 }
 
 void TREATZONE_Release() {
-	free(treatio), treatio = NULL;
+	free(treatio);
+	treatio = NULL;
 	TREATZONE_MAX = 0;
 	TREATZONE_CUR = 0;
 }
@@ -751,7 +752,8 @@ void ARX_INTERACTIVE_ClearIODynData(Entity * io) {
 	lightHandleDestroy(io->dynlight);
 	lightHandleDestroy(io->halo.dynlight);
 	
-	free(io->symboldraw), io->symboldraw = NULL;
+	free(io->symboldraw);
+	io->symboldraw = NULL;
 	
 	io->spellcast_data.castingspell = SPELL_NONE;
 }
@@ -790,7 +792,8 @@ void ARX_INTERACTIVE_ClearIODynData_II(Entity * io)
 		ARX_EQUIPMENT_ReleaseAll(io);
 		
 		if(io->ioflags & IO_NPC) {
-			free(io->_npcdata->pathfind.list), io->_npcdata->pathfind.list = NULL;
+			free(io->_npcdata->pathfind.list);
+			io->_npcdata->pathfind.list = NULL;
 			memset(&io->_npcdata->pathfind, 0, sizeof(IO_PATHFIND));
 			io->_npcdata->pathfind.truetarget = -1;
 			io->_npcdata->pathfind.listnb = -1;

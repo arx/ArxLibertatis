@@ -170,9 +170,12 @@ int AddMaterial(CinematicGrid * grille, Texture2D* tex)
 
 void FreeGrille(CinematicGrid * grille) {
 	
-	free(grille->vertexs), grille->vertexs = NULL;
-	free(grille->uvs), grille->uvs = NULL;
-	free(grille->inds), grille->inds = NULL;
+	free(grille->vertexs);
+	grille->vertexs = NULL;
+	free(grille->uvs);
+	grille->uvs = NULL;
+	free(grille->inds);
+	grille->inds = NULL;
 	
 	BOOST_FOREACH(C_INDEXED & mat, grille->mats) {
 		delete mat.tex;

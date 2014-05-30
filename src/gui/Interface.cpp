@@ -588,7 +588,8 @@ void ARX_INTERFACE_HALO_Draw(Entity * io, TextureContainer * tc, TextureContaine
 }
 
 void ReleaseHalo() {
-	free(aiHalo), aiHalo=NULL;
+	free(aiHalo);
+	aiHalo=NULL;
 }
 
 void ARX_INTERFACE_HALO_Flush() {

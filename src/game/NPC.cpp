@@ -243,7 +243,8 @@ void ARX_NPC_ReleasePathFindInfo(Entity * io) {
 		return;
 	
 	// Releases data & resets vars
-	free(io->_npcdata->pathfind.list), io->_npcdata->pathfind.list = NULL;
+	free(io->_npcdata->pathfind.list);
+	io->_npcdata->pathfind.list = NULL;
 	io->_npcdata->pathfind.listnb = -1;
 	io->_npcdata->pathfind.listpos = 0;
 	io->_npcdata->pathfind.pathwait = 0;
@@ -578,7 +579,8 @@ bool ARX_NPC_LaunchPathfind(Entity * io, EntityHandle target)
 		io->_npcdata->pathfind.listpos = 0;
 		io->_npcdata->pathfind.pathwait = 0;
 		io->_npcdata->pathfind.truetarget = TARGET_NONE;
-		free(io->_npcdata->pathfind.list), io->_npcdata->pathfind.list = NULL;
+		free(io->_npcdata->pathfind.list);
+		io->_npcdata->pathfind.list = NULL;
 	}
 	
 	Vec3f pos1, pos2;

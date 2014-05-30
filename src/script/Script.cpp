@@ -214,19 +214,23 @@ void ARX_SCRIPT_Reset(Entity * io, long flags) {
 	//Release Script Local Variables
 	if(io->script.lvar) {
 		for(long n = 0; n < io->script.nblvar; n++) {
-			free(io->script.lvar[n].text), io->script.lvar[n].text = NULL;
+			free(io->script.lvar[n].text);
+			io->script.lvar[n].text = NULL;
 		}
 		io->script.nblvar = 0;
-		free(io->script.lvar), io->script.lvar = NULL;
+		free(io->script.lvar);
+		io->script.lvar = NULL;
 	}
 	
 	//Release Script Over-Script Local Variables
 	if(io->over_script.lvar) {
 		for(long n = 0; n < io->over_script.nblvar; n++) {
-			free(io->over_script.lvar[n].text), io->over_script.lvar[n].text = NULL;
+			free(io->over_script.lvar[n].text);
+			io->over_script.lvar[n].text = NULL;
 		}
 		io->over_script.nblvar = 0;
-		free(io->over_script.lvar), io->over_script.lvar = NULL;
+		free(io->over_script.lvar);
+		io->over_script.lvar = NULL;
 	}
 	
 	if(!io->scriptload) {
@@ -289,7 +293,9 @@ void ARX_SCRIPT_ReleaseLabels(EERIE_SCRIPT * es) {
 	for(long i = 0; i < es->nb_labels; i++) {
 		free(es->labels[i].string);
 	}
-	free(es->labels), es->labels = NULL, es->nb_labels = 0;
+	free(es->labels);
+	es->labels = NULL;
+	es->nb_labels = 0;
 }
 
 void ReleaseScript(EERIE_SCRIPT * es) {
@@ -302,10 +308,12 @@ void ReleaseScript(EERIE_SCRIPT * es) {
 		for(long i = 0; i < es->nblvar; i++) {
 			free(es->lvar[i].text);
 		}
-		free(es->lvar), es->lvar = NULL;
+		free(es->lvar);
+		es->lvar = NULL;
 	}
 	
-	free(es->data), es->data = NULL;
+	free(es->data);
+	es->data = NULL;
 	
 	ARX_SCRIPT_ReleaseLabels(es);
 	memset(es->shortcut, 0, sizeof(long) * MAX_SHORTCUT);
@@ -1136,7 +1144,9 @@ void ARX_SCRIPT_Free_All_Global_Variables() {
 		for(long i = 0; i < NB_GLOBALS; i++) {
 			free(svar[i].text);
 		}
-		free(svar), svar = NULL, NB_GLOBALS = 0;
+		free(svar);
+		svar = NULL;
+		NB_GLOBALS = 0;
 	}
 	
 }
@@ -1151,7 +1161,9 @@ void CloneLocalVars(Entity * ioo, Entity * io) {
 		for(long n = 0; n < ioo->script.nblvar; n++) {
 			free(ioo->script.lvar[n].text);
 		}
-		free(ioo->script.lvar), ioo->script.lvar = NULL, ioo->script.nblvar = 0;
+		free(ioo->script.lvar);
+		ioo->script.lvar = NULL;
+		ioo->script.nblvar = 0;
 	}
 	
 	if (io->script.lvar)
@@ -2093,7 +2105,9 @@ void loadScript(EERIE_SCRIPT & script, PakFile * file) {
 	
 	script.allowevents = 0;
 	
-	free(script.lvar), script.lvar = NULL, script.nblvar = 0;
+	free(script.lvar);
+	script.lvar = NULL;
+	script.nblvar = 0;
 	
 	script.master = NULL;
 	

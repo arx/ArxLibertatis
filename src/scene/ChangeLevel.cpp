@@ -1943,7 +1943,9 @@ static bool loadScriptData(EERIE_SCRIPT & script, const char * dat, size_t & pos
 	script.allowevents = DisabledEvents::load(ass->allowevents); // TODO save/load flags
 	script.nblvar = ass->nblvar;
 	
-	free(script.lvar), script.lvar = NULL;
+	free(script.lvar);
+	script.lvar = NULL;
+	
 	if(ass->nblvar > 0) {
 		script.lvar = (SCRIPT_VAR *)malloc(sizeof(SCRIPT_VAR) * script.nblvar);
 		memset(script.lvar, 0, sizeof(SCRIPT_VAR)* script.nblvar);
@@ -2291,7 +2293,9 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) {
 				io->_itemdata->playerstacksize = ai->playerstacksize;
 				io->_itemdata->LightValue = ai->LightValue;
 				
-				free(io->_itemdata->equipitem), io->_itemdata->equipitem = NULL;
+				free(io->_itemdata->equipitem);
+				io->_itemdata->equipitem = NULL;
+				
 				if(ais->system_flags & SYSTEM_FLAG_EQUIPITEMDATA) {
 					io->_itemdata->equipitem = (IO_EQUIPITEM *)malloc(sizeof(IO_EQUIPITEM));
 					*io->_itemdata->equipitem = ai->equipitem;

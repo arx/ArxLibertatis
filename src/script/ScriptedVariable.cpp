@@ -294,7 +294,8 @@ class UnsetCommand : public Command {
 			return false;
 		}
 		
-		free(svf[i].text), svf[i].text = NULL;
+		free(svf[i].text);
+		svf[i].text = NULL;
 		
 		if(i + 1 < nb) {
 			memcpy(&svf[i], &svf[i + 1], sizeof(SCRIPT_VAR) * (nb - i - 1));

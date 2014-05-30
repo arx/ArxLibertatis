@@ -768,20 +768,25 @@ static EERIE_3DSCENE * ScnToEerie(const char * adr, size_t size, const res::path
 
 static void ReleaseScene(EERIE_3DSCENE * scene) {
 	
-	free(scene->texturecontainer), scene->texturecontainer = NULL;
+	free(scene->texturecontainer);
+	scene->texturecontainer = NULL;
 	
 	for(long i = 0; i < scene->nbobj; i++) {
 		delete scene->objs[i];
 	}
 	
-	free(scene->objs), scene->objs = NULL;
-	free(scene->texturecontainer), scene->texturecontainer = NULL;
+	free(scene->objs);
+	scene->objs = NULL;
+	free(scene->texturecontainer);
+	scene->texturecontainer = NULL;
 	
 	if(scene->light) {
 		for(long i = 0; i < scene->nblight; i++) {
-			free(scene->light[i]), scene->light[i] = NULL;
+			free(scene->light[i]);
+			scene->light[i] = NULL;
 		}
-		free(scene->light), scene->light = NULL;
+		free(scene->light);
+		scene->light = NULL;
 	}
 	
 	free(scene);
@@ -943,7 +948,8 @@ void Clear3DScene(EERIE_3DSCENE * eerie) {
 // TODO move to destructor?
 EERIE_3DOBJ::~EERIE_3DOBJ() {
 	
-	free(originaltextures), originaltextures = NULL;
+	free(originaltextures);
+	originaltextures = NULL;
 	
 	if(ndata) {
 		KillNeighbours(this);

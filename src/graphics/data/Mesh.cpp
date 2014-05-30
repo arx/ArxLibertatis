@@ -928,8 +928,10 @@ long BKG_CountIgnoredPolys(EERIE_BACKGROUND * eb) {
 
 // Releases BKG_INFO from a tile
 void ReleaseBKG_INFO(EERIE_BKG_INFO * eg) {
-	free(eg->polydata), eg->polydata = NULL;
-	free(eg->polyin), eg->polyin = NULL;
+	free(eg->polydata);
+	eg->polydata = NULL;
+	free(eg->polyin);
+	eg->polyin = NULL;
 	eg->nbpolyin = 0;
 	memset(eg, 0, sizeof(EERIE_BKG_INFO));
 }
@@ -1058,14 +1060,17 @@ void ClearBackground(EERIE_BACKGROUND * eb) {
 	
 	AnchorData_ClearAll(eb);
 	
-	free(eb->minmax), eb->minmax = NULL;
+	free(eb->minmax);
+	eb->minmax = NULL;
 	
 	for(long i = 0; i < eb->Xsize * eb->Zsize; i++) {
 		ReleaseBKG_INFO(&eb->Backg[i]);
 	}
-	free(eb->Backg), eb->Backg = NULL;
+	free(eb->Backg);
+	eb->Backg = NULL;
 	
-	free(RoomDistance), RoomDistance = NULL;
+	free(RoomDistance);
+	RoomDistance = NULL;
 	NbRoomDistance = 0;
 }
 
@@ -1169,7 +1174,8 @@ void EERIEPOLY_Compute_PolyIn()
 			
 			EERIE_BKG_INFO *eg = &ACTIVEBKG->Backg[i+j*ACTIVEBKG->Xsize];
 			
-			free(eg->polyin), eg->polyin = NULL;
+			free(eg->polyin);
+			eg->polyin = NULL;
 			eg->nbpolyin = 0;
 			
 			long ii = max(i - 2, 0L);
@@ -1851,7 +1857,8 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 	
 	
 	// Load distances between rooms
-	free(RoomDistance), RoomDistance = NULL;
+	free(RoomDistance);
+	RoomDistance = NULL;
 	NbRoomDistance = 0;
 	if(portals) {
 		NbRoomDistance = portals->roomsize();
@@ -1930,7 +1937,8 @@ void EERIEPOLY_FillMissingVertex(EERIEPOLY * po, EERIEPOLY * ep)
 
 void ComputeRoomDistance() {
 	
-	free(RoomDistance), RoomDistance = NULL;
+	free(RoomDistance);
+	RoomDistance = NULL;
 	NbRoomDistance = 0;
 	
 	if(!portals)

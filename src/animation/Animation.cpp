@@ -192,7 +192,8 @@ void EERIE_ANIMMANAGER_PurgeUnused() {
 				ReleaseAnim(animations[i].anims[k]);
 				animations[i].anims[k] = NULL;
 			}
-			free(animations[i].anims), animations[i].anims = NULL;
+			free(animations[i].anims);
+			animations[i].anims = NULL;
 			animations[i].path.clear();
 		}
 	}
@@ -744,10 +745,12 @@ void ResetAnim(ANIM_USE * eanim)
 void EERIE_ANIMMANAGER_Clear(long i) {
 	
 	for(long k = 0; k < animations[i].alt_nb; k++) {
-		ReleaseAnim(animations[i].anims[k]), animations[i].anims[k] = NULL;
+		ReleaseAnim(animations[i].anims[k]);
+		animations[i].anims[k] = NULL;
 	}
 	
-	free(animations[i].anims), animations[i].anims = NULL;
+	free(animations[i].anims);
+	animations[i].anims = NULL;
 	
 	animations[i].path.clear();
 }

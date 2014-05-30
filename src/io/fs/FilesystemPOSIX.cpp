@@ -255,7 +255,8 @@ static void readdir(void * _handle, void * & _buf) {
 		
 		dirent * entry;
 		if(readdir_r(handle, buf, &entry) || !entry) {
-			std::free(_buf), _buf = NULL;
+			std::free(_buf);
+			_buf = NULL;
 			return;
 		}
 		

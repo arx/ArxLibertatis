@@ -240,7 +240,8 @@ Entity::~Entity() {
 	lightHandleDestroy(halo.dynlight);
 	
 	free(usepath);
-	free(symboldraw), symboldraw = NULL;
+	free(symboldraw);
+	symboldraw = NULL;
 	
 	if(ioflags & IO_NPC) {
 		delete _npcdata;
