@@ -735,7 +735,7 @@ void ApplyTileLights(EERIEPOLY * ep, const Vec2s & pos)
 
 /**
  * \addtogroup Light Baking
- * @{
+ * \{
  */
 
 void EERIERemovePrecalcLights() {
@@ -757,4 +757,4 @@ void EERIERemovePrecalcLights() {
 	}
 }
 
-/** @}*/
+/** \} */
