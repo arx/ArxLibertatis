@@ -32,34 +32,35 @@
 class Random {
 	
 public:
-	/// Generates a random integer value in the range [intMin, intMax].
+	
+	//! Generates a random integer value in the range [intMin, intMax].
 	template <typename IntType> static inline IntType get();
 	template <typename IntType> static inline IntType get(IntType min, IntType max);
 	static inline int get(int min = 0, int max = std::numeric_limits<int>::max());
-
-	/// Generates a random floating point value in the range [realMin, realMax).
+	
+	//! Generates a random floating point value in the range [realMin, realMax).
 	template <class RealType> static inline RealType getf();
 	template <class RealType> static inline RealType getf(RealType realMin, RealType realMax);
 	static inline float getf(float realMin = 0.0f, float realMax = 1.0f);
-
-	/// Return a random iterator pointing in the range [begin, end).
+	
+	//! Return a random iterator pointing in the range [begin, end).
 	template <class Iterator>
 	static inline Iterator getIterator(Iterator begin, Iterator end);
-
-	/// Return a random iterator in the given container.
+	
+	//! Return a random iterator in the given container.
 	template <class Container>
 	static inline typename Container::iterator getIterator(Container& container);
-
-	/// Return a random const_iterator in the given container.
+	
+	//! Return a random const_iterator in the given container.
 	template <class Container>
 	static inline typename Container::const_iterator getIterator(const Container& container);
-
-	/// Seed the random number generator using the current time.
+	
+	//! Seed the random number generator using the current time.
 	static void seed();
-
-	/// Seed the random number generator with the given value.
+	
+	//! Seed the random number generator with the given value.
 	static void seed(unsigned int seedVal);
-
+	
 private:
 	
 	typedef boost::random::mt19937 Generator;
@@ -100,10 +101,10 @@ float Random::getf(float min, float max) {
 template <class Iterator>
 Iterator Random::getIterator(Iterator begin, Iterator end) {
 	typedef typename std::iterator_traits<Iterator>::difference_type diff_t;
-
+	
 	diff_t dist = std::distance(begin, end);
 	diff_t toAdvance = Random::get<diff_t>(0, dist-1);
-
+	
 	std::advance(begin, toAdvance);
 	
 	return begin;

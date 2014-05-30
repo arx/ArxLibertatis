@@ -44,7 +44,7 @@ public:
 		Format_Num,
 		Format_MAX = 0xFF
 	};
-
+	
 	Image();
 	Image(const Image & pOther);
 	virtual ~Image();
@@ -56,13 +56,13 @@ public:
 	                    const char * file = NULL);
 	
 	void Create(unsigned int width, unsigned int height, Format format, unsigned int numMipmaps = 1, unsigned int depth = 1);
-
+	
 	// Convert 
 	bool ConvertTo(Format format);
 	
 	// reset to fresh constructor state
 	void Reset();
-
+	
 	// zero image data with memset
 	void Clear();
 	
@@ -74,7 +74,7 @@ public:
 	Format GetFormat() const { return mFormat;     }
 	unsigned int GetDataSize() const { return mDataSize;   }
 	unsigned int  GetNumChannels() const { return Image::GetNumChannels( mFormat ); }  
-
+	
 	// bool accessors
 	bool IsValid() const { return mData != NULL; }
 	bool IsCompressed() const { return Image::IsCompressed( mFormat ); }
@@ -93,30 +93,33 @@ public:
 	inline unsigned char * GetData() { return mData; }
 	
 	// conversions
-
+	
 	void FlipY();
 	bool ToGrayscale(Format newFormat = Format_L8);
 	bool ToNormalMap();
-
+	
 	void ResizeFrom(const Image &source, unsigned int width, unsigned int height, bool flip_vertical = false);
-
-	/// Set the alpha of pixels matching the color key to 0. Will add an alpha channel if needed.
+	
+	//! Set the alpha of pixels matching the color key to 0. Will add an alpha channel if needed.
 	void ApplyColorKeyToAlpha(Color colorKey = Color::black);
-
-	///! Copy an image into this image's buffer.
-	///! Works only with uncompressed formats
+	
+	/*!
+	 * \brief Copy an image into this image's buffer
+	 *
+	 * Works only with uncompressed formats
+	 */
 	bool Copy(const Image & srcImage, unsigned int dstX, unsigned int dstY);
 	bool Copy(const Image & srcImage, unsigned int dstX, unsigned int dstY, unsigned int srcX, unsigned int srcY, unsigned int width, unsigned int height);
-
+	
 	bool save(const fs::path & filename) const;
-
+	
 	// processing functions
 	// destructively adjust image content
 	
-	/// blur using gaussian kernel
+	//! blur using gaussian kernel
 	void Blur(int radius);
 	
-	/// scales value and normalizes by max component value
+	//! scales value and normalizes by max component value
 	void QuakeGamma(float pGamma);
 	//! Copy the alpha of img to this image.
 	void SetAlpha(const Image& img, bool bInvertAlpha);
@@ -124,9 +127,9 @@ public:
 	void AdjustGamma(const float &v);
 	void AdjustBrightness(const float &v);
 	void AdjustContrast(const float &v);
-
+	
 	void ApplyThreshold(unsigned char threshold, int component_mask);
-
+	
 	// statics
 	static unsigned int	GetSize(Format pFormat, unsigned int pWidth = 1, unsigned int pHeight = 1, unsigned int pDepth = 1);
 	static unsigned int	GetSizeWithMipmaps(Format pFormat, unsigned int pWidth, unsigned int pHeight, unsigned int pDepth = 1, int pMipmapCount = -1);

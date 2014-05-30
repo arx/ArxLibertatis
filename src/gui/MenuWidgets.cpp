@@ -477,7 +477,6 @@ bool Menu2_Render() {
 			int iWindowConsoleOffsetY = (14-10);
 			int iWindowConsoleWidth = (iWindowMenuWidth-iWindowConsoleOffsetX);
 			int iWindowConsoleHeight = (iWindowMenuHeight-iWindowConsoleOffsetY+20);
-			///////////////////////
 
 			float fPosX1 = RATIO_X(20);
 			float fPosX2 = RATIO_X(200);
@@ -2554,8 +2553,7 @@ void CMenuCheckButton::RenderMouseOver() {
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 }
 
-// Nuky - merges common code of Render() and RenderMouseOver()
-/// Compute members fTexX, fTexY, fTexSX and fTexSY according to rZone and iTaille
+//! Compute members fTexX, fTexY, fTexSX and fTexSY according to rZone and iTaille
 void CMenuCheckButton::ComputeTexturesPosition()
 {
 	// Nuky - for now I split into 2 cases, because I don't know yet how to fix position with text

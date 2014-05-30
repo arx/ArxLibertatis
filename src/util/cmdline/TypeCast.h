@@ -38,10 +38,10 @@
 
 namespace util { namespace cmdline {
 
-/// default strategy for types convertation
+//! default strategy for types convertation
 struct type_cast {
 	
-	/// converts input parameter to value which type is Dest
+	//! converts input parameter to value which type is Dest
 	template<typename Dest, typename Source>
 	Dest cast(const Source & str) const {
 		return boost::lexical_cast<Dest>(str);

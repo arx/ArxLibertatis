@@ -420,7 +420,6 @@ struct ARX_CHANGELEVEL_INVENTORY_DATA_SAVE {
 	char slot_io[20][20][SIZE_ID];
 	s32 slot_show[20][20];
 	char initio[20][20][SIZE_ID];
-	/// limit...
 	char weapon[SIZE_ID];
 	char targetinfo[SIZE_ID];
 	char linked_id[MAX_LINKED_SAVE][SIZE_ID];
