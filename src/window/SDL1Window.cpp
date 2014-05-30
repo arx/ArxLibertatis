@@ -22,6 +22,8 @@
 #include <algorithm>
 #include <sstream>
 
+#include "boost/foreach.hpp"
+
 #include "graphics/opengl/OpenGLRenderer.h"
 #include "input/SDL1InputBackend.h"
 #include "io/log/Logger.h"
@@ -85,35 +87,43 @@ bool SDL1Window::initializeFramework() {
 		
 		// Any mode is supported, add some standard modes.
 		
-#define ADD_MODE(x, y) \
-		if(m_desktopMode.resolution != Vec2i(x, y)) { \
-			m_displayModes.push_back(Vec2i(x, y)); \
+		Vec2i standardModes[] = {
+			
+			// 4:3
+			Vec2i(640, 480), // VGA
+			Vec2i(800, 600), // SVGA
+			Vec2i(1024, 768), // XGA
+			Vec2i(1280, 960), // SXGA-
+			Vec2i(1600, 1200), // UXGA
+			
+			// 5:4
+			Vec2i(1280, 1024), // SXGA
+			
+			// 16:9
+			Vec2i(1280, 720), // 720p
+			Vec2i(1600, 900), // 900p
+			Vec2i(1920, 1080), // 1080p
+			Vec2i(2048, 1152), // 2K
+			Vec2i(4096, 2304), // 4K
+			// ~16:9
+			Vec2i(1360, 768), // "HD"
+			Vec2i(1366, 768), // "HD"
+			
+			// 16:10
+			Vec2i(1024, 640), // laptops
+			Vec2i(1280, 800), // WXGA
+			Vec2i(1440, 900), // WXGA+
+			Vec2i(1680, 1050), // WSXGA+
+			Vec2i(1920, 1200), // WUXGA
+			
+			
+		};
+		
+		BOOST_FOREACH(Vec2i mode, standardModes) {
+			if(m_desktopMode.resolution != mode) { \
+				m_displayModes.push_back(mode); \
+			}
 		}
-		
-		// 4:3
-		ADD_MODE(640, 480) // VGA
-		ADD_MODE(800, 600) // SVGA
-		ADD_MODE(1024, 768) // XGA
-		ADD_MODE(1280, 960) // SXGA-
-		ADD_MODE(1600, 1200) // UXGA
-		
-		// 5:4
-		ADD_MODE(1280, 1024) // SXGA
-		
-		// 16:9
-		ADD_MODE(1280, 720) // 720p
-		ADD_MODE(1600, 900) // 900p
-		ADD_MODE(1920, 1080) // 1080p
-		ADD_MODE(2048, 1152) // 2K
-		ADD_MODE(4096, 2304) // 4K
-		
-		// 16:10
-		ADD_MODE(1024, 640) // laptops
-		ADD_MODE(1280, 800) // WXGA
-		ADD_MODE(1440, 900) // WXGA+
-		ADD_MODE(1920, 1200) // WUXGA
-		
-#undef ADD_MODE
 		
 		m_displayModes.push_back(m_desktopMode);
 		
