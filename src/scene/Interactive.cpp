@@ -764,74 +764,74 @@ void ARX_INTERACTIVE_ClearIODynData_II(Entity * io)
 		return;
 
 	{
-		ARX_INTERACTIVE_ClearIODynData(io);
-
-		io->shop_category.clear();
-		io->inventory_skin.clear();
-
-		io->tweaks.clear();
-		io->groups.clear();
-		ARX_INTERACTIVE_HideGore(io);
-		MOLLESS_Clear(io->obj);
-		ARX_SCRIPT_Timer_Clear_For_IO(io);
+	ARX_INTERACTIVE_ClearIODynData(io);
+	
+	io->shop_category.clear();
+	io->inventory_skin.clear();
+	
+	io->tweaks.clear();
+	io->groups.clear();
+	ARX_INTERACTIVE_HideGore(io);
+	MOLLESS_Clear(io->obj);
+	ARX_SCRIPT_Timer_Clear_For_IO(io);
+	
+	io->stepmaterial.clear();
+	io->armormaterial.clear();
+	io->weaponmaterial.clear();
+	io->strikespeech.clear();
+	
+	io->animBlend.nb_lastanimvertex = 0;
+	
+	for (long j = 0; j < MAX_ANIMS; j++)
+	{
+		EERIE_ANIMMANAGER_ReleaseHandle(io->anims[j]);
+		io->anims[j] = NULL;
+	}
+	
+	ARX_SPELLS_RemoveAllSpellsOn(io);
+	ARX_EQUIPMENT_ReleaseAll(io);
+	
+	if(io->ioflags & IO_NPC) {
+		free(io->_npcdata->pathfind.list);
+		io->_npcdata->pathfind.list = NULL;
+		memset(&io->_npcdata->pathfind, 0, sizeof(IO_PATHFIND));
+		io->_npcdata->pathfind.truetarget = -1;
+		io->_npcdata->pathfind.listnb = -1;
+		ARX_NPC_Behaviour_Reset(io);
+	}
+	
+	delete io->tweakerinfo, io->tweakerinfo = NULL;
+	
+	if (io->inventory != NULL)
+	{
+		INVENTORY_DATA * id = io->inventory;
 		
-		io->stepmaterial.clear();
-		io->armormaterial.clear();
-		io->weaponmaterial.clear();
-		io->strikespeech.clear();
-		
-		io->animBlend.nb_lastanimvertex = 0;
-		
-		for (long j = 0; j < MAX_ANIMS; j++)
-		{
-			EERIE_ANIMMANAGER_ReleaseHandle(io->anims[j]);
-			io->anims[j] = NULL;
-		}
-
-		ARX_SPELLS_RemoveAllSpellsOn(io);
-		ARX_EQUIPMENT_ReleaseAll(io);
-		
-		if(io->ioflags & IO_NPC) {
-			free(io->_npcdata->pathfind.list);
-			io->_npcdata->pathfind.list = NULL;
-			memset(&io->_npcdata->pathfind, 0, sizeof(IO_PATHFIND));
-			io->_npcdata->pathfind.truetarget = -1;
-			io->_npcdata->pathfind.listnb = -1;
-			ARX_NPC_Behaviour_Reset(io);
-		}
-		
-		delete io->tweakerinfo, io->tweakerinfo = NULL;
-		
-		if (io->inventory != NULL)
-		{
-			INVENTORY_DATA * id = io->inventory;
-
-			for (long nj = 0; nj < id->sizey; nj++) {
-				for (long ni = 0; ni < id->sizex; ni++) {
-					if (id->slot[ni][nj].io != NULL) {
-						id->slot[ni][nj].io->destroy();
-						id->slot[ni][nj].io = NULL;
-					}
+		for (long nj = 0; nj < id->sizey; nj++) {
+			for (long ni = 0; ni < id->sizex; ni++) {
+				if (id->slot[ni][nj].io != NULL) {
+					id->slot[ni][nj].io->destroy();
+					id->slot[ni][nj].io = NULL;
 				}
 			}
-
-			if ((TSecondaryInventory) && (TSecondaryInventory->io == io))
-			{
-				TSecondaryInventory = NULL;
-			}
-
-			delete io->inventory;
-			io->inventory = NULL;
 		}
-
+		
+		if ((TSecondaryInventory) && (TSecondaryInventory->io == io))
+		{
+			TSecondaryInventory = NULL;
+		}
+		
+		delete io->inventory;
 		io->inventory = NULL;
-		io->gameFlags |= GFLAG_INTERACTIVITY;
-
-		if(io->tweaky) {
-			delete io->obj;
-			io->obj = io->tweaky;
-			io->tweaky = NULL;
-		}
+	}
+	
+	io->inventory = NULL;
+	io->gameFlags |= GFLAG_INTERACTIVITY;
+	
+	if(io->tweaky) {
+		delete io->obj;
+		io->obj = io->tweaky;
+		io->tweaky = NULL;
+	}
 	}
 }
 
