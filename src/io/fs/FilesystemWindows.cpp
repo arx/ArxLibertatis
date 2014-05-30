@@ -32,7 +32,7 @@ using std::string;
 
 namespace fs {
 
-std::string GetLastErrorString() {
+static std::string getLastErrorString() {
 	LPSTR lpBuffer = NULL;
 	std::string strError;
 
@@ -135,12 +135,12 @@ bool remove(const path & p) {
 	if(is_directory(p)) {
 		succeeded &= RemoveDirectoryA(p.string().c_str()) == TRUE;
 		if(!succeeded) {
-			LogWarning << "RemoveDirectoryA(" << p << ") failed! " << GetLastErrorString();
+			LogWarning << "RemoveDirectoryA(" << p << ") failed! " << getLastErrorString();
 		}
 	} else {
 		succeeded &= DeleteFileA(p.string().c_str()) == TRUE;
 		if(!succeeded) {
-			LogWarning << "DeleteFileA(" << p << ") failed! " << GetLastErrorString();
+			LogWarning << "DeleteFileA(" << p << ") failed! " << getLastErrorString();
 		}
 	}
 
@@ -180,7 +180,7 @@ bool create_directory(const path & p) {
 		ret = lastError == ERROR_ALREADY_EXISTS;
 
 		if(!ret) {
-			LogWarning << "CreateDirectoryA(" << p << ", NULL) failed! " << GetLastErrorString();
+			LogWarning << "CreateDirectoryA(" << p << ", NULL) failed! " << getLastErrorString();
 		}
 	}
 
@@ -206,7 +206,7 @@ bool create_directories(const path & p) {
 bool copy_file(const path & from_p, const path & to_p, bool overwrite) {
 	bool ret = CopyFileA(from_p.string().c_str(), to_p.string().c_str(), !overwrite) == TRUE;
 	if(!ret) {
-		LogWarning << "CopyFileA(" << from_p << ", " << to_p << ", " << !overwrite << ") failed! " << GetLastErrorString();
+		LogWarning << "CopyFileA(" << from_p << ", " << to_p << ", " << !overwrite << ") failed! " << getLastErrorString();
 	}
 	return ret;
 }
@@ -216,7 +216,7 @@ bool rename(const path & old_p, const path & new_p, bool overwrite) {
 	bool ret = MoveFileExA(old_p.string().c_str(), new_p.string().c_str(), flags) == TRUE;
 	if(!ret) {
 		LogWarning << "MoveFileExA(" << old_p << ", " << new_p << ", " << flags << ") failed! "
-		           << GetLastErrorString();
+		           << getLastErrorString();
 	}
 	return ret;
 }
