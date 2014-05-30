@@ -160,10 +160,9 @@ inline std::string getOutputOf(const std::string & exe, const char * const args[
  *
  * Equivalent to
  * \code
- *  fs::path exe = getHelperExecutable(name);
- *  const char * args[] = { exe.string().c_str(), ... };
- *  platform::runAsync(args);
- * \endcode
+fs::path exe = getHelperExecutable(name);
+const char * args[] = { exe.string().c_str(), ... };
+platform::runAsync(args); \endcode
  */
 void runHelper(const char * name, ...);
 
