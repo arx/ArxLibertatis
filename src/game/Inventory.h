@@ -57,6 +57,11 @@ class Entity;
 struct INVENTORY_SLOT {
 	Entity * io;
 	long show;
+	
+	INVENTORY_SLOT()
+		: io(NULL)
+		, show(0)
+	{}
 };
 
 struct INVENTORY_DATA {
@@ -64,6 +69,13 @@ struct INVENTORY_DATA {
 	long sizex;
 	long sizey;
 	INVENTORY_SLOT slot[20][20];
+	
+	INVENTORY_DATA()
+		: io(NULL)
+		, sizex(0)
+		, sizey(0)
+		, slot()
+	{}
 };
 
 const size_t INVENTORY_X = 16;
