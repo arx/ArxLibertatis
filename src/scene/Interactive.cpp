@@ -817,7 +817,7 @@ void ARX_INTERACTIVE_ClearIODynData_II(Entity * io)
 				TSecondaryInventory = NULL;
 			}
 
-			free(io->inventory);
+			delete io->inventory;
 			io->inventory = NULL;
 		}
 

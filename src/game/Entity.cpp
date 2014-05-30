@@ -263,7 +263,7 @@ Entity::~Entity() {
 		TSecondaryInventory = NULL;
 	}
 	
-	free(inventory);
+	delete inventory;
 	
 	if(m_index != size_t(-1)) {
 		entities.remove(m_index);

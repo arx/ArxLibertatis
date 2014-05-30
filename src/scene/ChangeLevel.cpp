@@ -2329,12 +2329,13 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) {
 			pos += sizeof(ARX_CHANGELEVEL_INVENTORY_DATA_SAVE);
 			
 			if(io->inventory == NULL) {
-				io->inventory = (INVENTORY_DATA *)malloc(sizeof(INVENTORY_DATA));
+				io->inventory = new INVENTORY_DATA();
+			} else {
+				*io->inventory = INVENTORY_DATA();
 			}
-			memset(io->inventory, 0, sizeof(INVENTORY_DATA));
-			
 		} else {
-			free(io->inventory), io->inventory = NULL;
+			delete io->inventory;
+			io->inventory = NULL;
 		}
 		
 		if(ais->system_flags & SYSTEM_FLAG_TWEAKER_INFO) {

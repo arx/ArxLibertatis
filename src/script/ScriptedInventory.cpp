@@ -130,7 +130,7 @@ class InventoryCommand : public Command {
 				}
 			}
 			
-			free(io->inventory);
+			delete io->inventory;
 			io->inventory = NULL;
 		}
 		
@@ -161,8 +161,7 @@ class InventoryCommand : public Command {
 			
 			DestroyCommand::destroyInventory(io);
 			
-			io->inventory = (INVENTORY_DATA *)malloc(sizeof(INVENTORY_DATA));
-			memset(io->inventory, 0, sizeof(INVENTORY_DATA));
+			io->inventory = new INVENTORY_DATA();
 			io->inventory->sizex = 3;
 			io->inventory->sizey = 11;
 			io->inventory->io = io;
