@@ -33,26 +33,29 @@ enum ExitStatus {
 
 namespace fs {
 
-//! Localtions where files are stored on the system
+//! Locations where files are stored on the system
 struct SystemPaths {
 	
 	struct InitParams {
 		
-		/*! An overwrite value to use for the user dir.
-		 *  If this is non-empty, standard search is skipped.
-		 *  If this does not exists, the user dir is left empty.
+		/*!
+		 * \brief An overwrite value to use for the user dir
+		 * If this is non-empty, standard search is skipped.
+		 * If this does not exists, the user dir is left empty.
 		 */
 		path forceUser;
 		
-		/*! An overwrite value to use for the config dir.
-		 *  If this is non-empty, standard search is skipped.
-		 *  If this does not exists, the config dir is left empty.
+		/*!
+		 * \brief An overwrite value to use for the config dir
+		 * If this is non-empty, standard search is skipped.
+		 * If this does not exists, the config dir is left empty.
 		 */
 		path forceConfig;
 		
-		/*! Additional values for the data search path.
-		 *  Will have higher priority than other system paths, but
-		 *  higher lower priority than the user dir. 
+		/*!
+		 * \brief Additional values for the data search path
+		 * Will have higher priority than other system paths, but
+		 * higher lower priority than the user dir. 
 		 */
 		std::vector<path> dataDirs;
 		
@@ -68,22 +71,29 @@ struct SystemPaths {
 	std::vector<path> data; //!< Directories for data files
 	
 	/*!
-	 * Initialize the system resource paths, using arguments provided on the
-	 * command line, if any.
+	 * \brief Initialize the system resource paths
+	 *
+	 * Uses arguments provided on the command line, if any.
 	 */
 	ExitStatus init();
 	
 	/*!
-	 * Initialize the system resource paths using the specified parameters.
-	 * \note This version of init() will ignore arguments provided on the
-	 * command line.
+	 * \brief Initialize the system resource paths using the specified parameters
+	 *
+	 * \note This version of \ref init() will ignore arguments provided on the
+	 *       command line.
 	 */
-	ExitStatus init(const InitParams& initParams);
+	ExitStatus init(const InitParams & initParams);
 	
+	/*!
+	 * \brief Get a list of all data search paths
+	 *
+	 * \param filterMissing exclude non-existant search directories.
+	 */
 	std::vector<path> getSearchPaths(bool filterMissing = false) const;
 	
 	/*!
-	 * Find a resource in the first data directory
+	 * \brief Find a resource in the data search path
 	 *
 	 * If resource is an absolute path, return it directoly if it exists.
 	 *
