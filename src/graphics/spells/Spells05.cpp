@@ -1059,11 +1059,7 @@ void CLevitate::Create(int def, float rbase, float rhaut, float hauteur, Vec3f *
 
 	this->timestone = 0;
 	this->nbstone = 0;
-
-
-	this->stone[0] = stone0;
-	this->stone[1] = stone1;
-
+	
 	int nb = 256;
 
 	while(nb--) {
@@ -1112,7 +1108,9 @@ void CLevitate::DrawStone()
 
 			Color4f col = Color4f(Color3f::white, 1.f - a);
 
-			Draw3DObject(stone[tstone[nb].numstone], tstone[nb].ang, tstone[nb].pos, tstone[nb].scale, Color4f(col));
+			EERIE_3DOBJ * obj = (tstone[nb].numstone == 0) ? stone0 : stone1;
+			
+			Draw3DObject(obj, tstone[nb].ang, tstone[nb].pos, tstone[nb].scale, Color4f(col));
 			
 			PARTICLE_DEF * pd = createParticle();
 			if(pd) {

@@ -87,8 +87,6 @@ private:
 	
 	T_CONE cone[2];
 	
-	EERIE_3DOBJ * stone[2];
-	
 	struct T_STONE {
 		short actif;
 		short numstone;
