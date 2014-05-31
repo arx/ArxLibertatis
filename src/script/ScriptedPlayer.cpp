@@ -298,8 +298,10 @@ class SetPlayerControlsCommand : public Command {
 	
 	static void Stack_SendMsgToAllNPC_IO(ScriptMessage msg, const char * dat) {
 		for(size_t i = 0; i < entities.size(); i++) {
-			if(entities[i] && (entities[i]->ioflags & IO_NPC)) {
-				Stack_SendIOScriptEvent(entities[i], msg, dat);
+			Entity * e = entities[i];
+			
+			if(e && (e->ioflags & IO_NPC)) {
+				Stack_SendIOScriptEvent(e, msg, dat);
 			}
 		}
 	}

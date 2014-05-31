@@ -312,27 +312,28 @@ public:
 		if(radius) { // SEND EVENT TO ALL OBJECTS IN A RADIUS
 			
 			for(size_t l = 0 ; l < entities.size() ; l++) {
+				Entity * e = entities[l];
 				
-				if(!entities[l] || entities[l] == io
-				   || (entities[l]->ioflags & (IO_CAMERA|IO_MARKER))) {
+				if(!e || e == io
+				   || (e->ioflags & (IO_CAMERA|IO_MARKER))) {
 					continue;
 				}
 				
-				if(group && entities[l]->groups.find(groupname) == entities[l]->groups.end()) {
+				if(group && e->groups.find(groupname) == e->groups.end()) {
 					continue;
 				}
 				
-				if(((sendto & SEND_NPC) && (entities[l]->ioflags & IO_NPC))
-				   || ((sendto & SEND_FIX) && (entities[l]->ioflags & IO_FIX))
-				   || ((sendto & SEND_ITEM) && (entities[l]->ioflags & IO_ITEM))) {
+				if(((sendto & SEND_NPC) && (e->ioflags & IO_NPC))
+				   || ((sendto & SEND_FIX) && (e->ioflags & IO_FIX))
+				   || ((sendto & SEND_ITEM) && (e->ioflags & IO_ITEM))) {
 					
 					Vec3f _pos, _pos2;
-					GetItemWorldPosition(entities[l], &_pos);
+					GetItemWorldPosition(e, &_pos);
 					GetItemWorldPosition(io, &_pos2);
 					
 					if(!fartherThan(_pos, _pos2, rad)) {
 						io->stat_sent++;
-						Stack_SendIOScriptEvent(entities[l], SM_NULL, params, event);
+						Stack_SendIOScriptEvent(e, SM_NULL, params, event);
 					}
 				}
 			}
@@ -347,25 +348,26 @@ public:
 			}
 			
 			for(size_t l = 0; l < entities.size(); l++) {
+				Entity * e = entities[l];
 				
-				if(!entities[l] || (entities[l]->ioflags & (IO_CAMERA|IO_MARKER))) {
+				if(!e || (e->ioflags & (IO_CAMERA|IO_MARKER))) {
 					continue;
 				}
 				
-				if(group && entities[l]->groups.find(groupname) == entities[l]->groups.end()) {
+				if(group && e->groups.find(groupname) == e->groups.end()) {
 					continue;
 				}
 				
-				if(((sendto & SEND_NPC) && (entities[l]->ioflags & IO_NPC))
-				   || ((sendto & SEND_FIX) && (entities[l]->ioflags & IO_FIX))
-				   || ((sendto & SEND_ITEM) && (entities[l]->ioflags & IO_ITEM))) {
+				if(((sendto & SEND_NPC) && (e->ioflags & IO_NPC))
+				   || ((sendto & SEND_FIX) && (e->ioflags & IO_FIX))
+				   || ((sendto & SEND_ITEM) && (e->ioflags & IO_ITEM))) {
 					
 					Vec3f _pos;
-					GetItemWorldPosition(entities[l], &_pos);
+					GetItemWorldPosition(e, &_pos);
 					
 					if(ARX_PATH_IsPosInZone(ap, _pos)) {
 						io->stat_sent++;
-						Stack_SendIOScriptEvent(entities[l], SM_NULL, params, event);
+						Stack_SendIOScriptEvent(e, SM_NULL, params, event);
 					}
 				}
 			}
@@ -373,17 +375,18 @@ public:
 		} else if(group) { // sends an event to all members of a group
 			
 			for(size_t l = 0; l < entities.size(); l++) {
+				Entity * e = entities[l];
 				
-				if(!entities[l] || entities[l] == io) {
+				if(!e || e == io) {
 					continue;
 				}
 				
-				if(entities[l]->groups.find(groupname) == entities[l]->groups.end()) {
+				if(e->groups.find(groupname) == e->groups.end()) {
 					continue;
 				}
 				
 				io->stat_sent++;
-				Stack_SendIOScriptEvent(entities[l], SM_NULL, params, event);
+				Stack_SendIOScriptEvent(e, SM_NULL, params, event);
 			}
 			
 		} else { // single object event
