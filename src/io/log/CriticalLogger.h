@@ -35,6 +35,18 @@ class CriticalErrorDialog : public Backend {
 	
 public:
 	
+	typedef void(*ExitCommand)();
+	
+	/*!
+	 * \brief Set a question to ask and command to run on shutdown
+	 *
+	 * The question will be merged with the critical error if there was any.
+	 *
+	 * \param question the question string to ask. Must be statically allocated.
+	 * \param command  the command to execute.
+	 */
+	static void setExitQuestion(const char * question, ExitCommand command);
+	
 	~CriticalErrorDialog();
 	
 	void log(const Source & file, int line, Logger::LogLevel level, const std::string & str);
