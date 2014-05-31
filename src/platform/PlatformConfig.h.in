@@ -15,4 +15,8 @@
 // Support for __builtin_trap()
 #cmakedefine01 ARX_HAVE_BUILTIN_TRAP
 
+// C++11 features
+#cmakedefine01 ARX_HAVE_CXX11_AUTO
+#cmakedefine01 ARX_HAVE_CXX11_VARIADIC_TEMPLATES
+
 #endif // ARX_PLATFORM_PLATFORMCONFIG_H

@@ -452,6 +452,16 @@ find_package(PythonInterp)
 
 # Check for optional functionality and system configuration
 
+if(USE_CXX11)
+	# TODO implement these checks for other compilers
+	if(MSVC AND NOT MSVC_VERSION LESS 1600) # MSVC 10
+		set(ARX_HAVE_CXX11_AUTO 1)
+	endif()
+	if(MSVC AND NOT MSVC_VERSION LESS 1800) # MSVC 12
+		set(ARX_HAVE_CXX11_VARIADIC_TEMPLATES 1)
+	endif()
+endif()
+
 if(NOT MSVC)
 	
 	if(USE_STATIC_LIBS)

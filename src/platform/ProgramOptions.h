@@ -93,7 +93,7 @@ private:
 
 #define UNIQUE_NAME(X) BOOST_PP_CAT(X,__LINE__)
 
-#ifdef ARX_COMPILER_HAS_CXX11_AUTO
+#if ARX_HAVE_CXX11_AUTO
 	template<typename Handler>
 	Option<Handler> make_option(const char * longName, const char * shortName,
 	                            const char * desc, const Handler & funcHandler,
