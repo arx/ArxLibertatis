@@ -122,11 +122,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/fs/SystemPaths.h"
 #include "io/resource/PakReader.h"
 #include "io/Screenshot.h"
+#include "io/log/CriticalLogger.h"
 #include "io/log/Logger.h"
 
-#include "platform/Process.h"
+#include "platform/Dialog.h"
 #include "platform/Flags.h"
 #include "platform/Platform.h"
+#include "platform/Process.h"
 
 #include "scene/ChangeLevel.h"
 #include "scene/Interactive.h"
@@ -411,6 +413,17 @@ static const char * default_paks[][2] = {
 	{ "speech.pak", "speech_default.pak" },
 };
 
+#if ARX_PLATFORM != ARX_PLATFORM_WIN32
+static void runDataFilesInstaller() {
+	static const char * const command[] = { "arx-install-data", "--gui", NULL };
+	if(platform::runHelper(command, true) < 0) {
+		std::ostringstream error;
+		error << "Could not run `" << command[0] << "`.";
+		platform::showErrorDialog(error.str(), "Critical Error - " + arx_version);
+	}
+}
+#endif
+
 bool ArxGame::addPaks() {
 	
 	arx_assert(!resources);
@@ -418,63 +431,45 @@ bool ArxGame::addPaks() {
 	resources = new PakReader;
 	
 	// Load required pak files
-	std::vector<size_t> missing;
+	bool missing = false;
 	for(size_t i = 0; i < ARRAY_SIZE(default_paks); i++) {
 		if(resources->addArchive(fs::paths.find(default_paks[i][0]))) {
 			continue;
 		}
-		if(default_paks[i][1]
-		   && resources->addArchive(fs::paths.find(default_paks[i][1]))) {
+		if(default_paks[i][1] && resources->addArchive(fs::paths.find(default_paks[i][1]))) {
 			continue;
 		}
-		missing.push_back(i);
+		std::ostringstream oss;
+		oss << "Missing required data file: \"" << default_paks[i][0] << "\"";
+		if(default_paks[i][1]) {
+			oss << " (or \"" << default_paks[i][1] << "\")";
+		}
+		LogError << oss.str();
+		missing = true;
 	}
 	
-	if(!missing.empty()) {
+	if(missing) {
 		
-		// Try to launch the data file installer on non-Windows systems
-		#if ARX_PLATFORM != ARX_PLATFORM_WIN32
-		platform::runHelper("arx-install-data", "--gui", NULL);
-		#endif
-		
-		// Construct an informative error message about missing files
+		// Print the search path to the log
 		std::ostringstream oss;
-		oss << "Could not load required ";
-		oss << (missing.size() == 1 ? "file" : "files");
-		size_t length = oss.tellp();
-		for(size_t i = 0; i < missing.size(); i++) {
-			if(i != 0) {
-				if(i + 1 == missing.size()) {
-					oss << " and", length += 4;
-				} else {
-					oss << ",", length++;
-				}
-			}
-			size_t add = 1 + strlen(default_paks[missing[i]][0]) + 1;
-			if(default_paks[missing[i]][1]) {
-				add += 6 + strlen(default_paks[missing[i]][1]) + 2;
-			}
-			if(length + add > 75) {
-				oss << "\n ", length = add + 1;
-			} else {
-				oss << ' ', length += add + 1;
-			}
-			oss << '"' << default_paks[missing[i]][0] << '"';
-			if(default_paks[missing[i]][1]) {
-				oss << " (or \"" << default_paks[missing[i]][1] << "\")";
-				length += 3 + strlen(default_paks[missing[i]][1]) + 2;
-			}
-		}
-		oss << ".\n\nSearched in these locations:\n";
+		oss << "Searched in these locations:\n";
 		std::vector<fs::path> search = fs::paths.getSearchPaths();
 		BOOST_FOREACH(const fs::path & dir, search) {
 			oss << " * " << dir.string() << fs::path::dir_sep << "\n";
 		}
-		oss << "\nSee  " << url::help_get_data;
-		oss << "  and  " << url::help_install_data << "\n";
+		oss << "See " << url::help_install_data << " or `arx --list-dirs` for details.";
+		LogError << oss.str();
+		
+		// Try to launch the data file installer on non-Windows systems
 		#if ARX_PLATFORM != ARX_PLATFORM_WIN32
-		oss << "\nWe will now try to launch the data install script for you...\n";
+		const char * question = "Install the Arx Fatalis data files now?";
+		logger::CriticalErrorDialog::setExitQuestion(question, runDataFilesInstaller);
 		#endif
+		
+		// Construct an informative error message about missing files
+		oss.str(std::string());
+		oss << "Could not load required data files.\n";
+		oss << "\nSee " << url::help_get_data << " for help.\n";
 		LogCritical << oss.str();
 		
 		return false;
