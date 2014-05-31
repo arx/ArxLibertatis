@@ -1961,37 +1961,35 @@ void ARX_SCRIPT_Init_Event_Stats() {
 Entity * ARX_SCRIPT_Get_IO_Max_Events() {
 	
 	long max = -1;
-	long ionum = -1;
+	Entity * result = NULL;
+	
 	for(size_t i = 0; i < entities.size(); i++) {
-		if(entities[i] && entities[i]->stat_count > max) {
-			ionum = i;
-			max = entities[i]->stat_count;
+		Entity * e = entities[i];
+		
+		if(e && e->stat_count > max) {
+			result = e;
+			max = e->stat_count;
 		}
 	}
 	
-	if(ionum > -1) {
-		return entities[ionum];
-	} else {
-		return NULL;
-	}
+	return result;
 }
 
 Entity * ARX_SCRIPT_Get_IO_Max_Events_Sent() {
 	
 	long max = -1;
-	long ionum = -1;
+	Entity * result = NULL;
+	
 	for(size_t i = 0; i < entities.size(); i++) {
-		if(entities[i] && entities[i]->stat_sent > max) {
-			ionum = i;
-			max = entities[i]->stat_sent;
+		Entity * e = entities[i];
+		
+		if(e && e->stat_sent > max) {
+			result = e;
+			max = e->stat_sent;
 		}
 	}
 	
-	if(ionum > -1) {
-		return entities[ionum];
-	} else {
-		return NULL;
-	}
+	return result;
 }
 
 void ManageCasseDArme(Entity * io)
