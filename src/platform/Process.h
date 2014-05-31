@@ -88,7 +88,7 @@ void runAsync(const char * exe, const char * const args[]);
  *             absolute path or a program name in the PATH. The last argument must be NULL.
  */
 inline void runAsync(const char * const args[]) {
-	return runAsync(args[0], args);
+	runAsync(args[0], args);
 }
 
 /*!
@@ -101,8 +101,40 @@ inline void runAsync(const char * const args[]) {
  *             the last argument must be NULL.
  */
 inline void runAsync(const std::string & exe, const char * const args[]) {
-	return runAsync(exe.c_str(), args);
+	runAsync(exe.c_str(), args);
 }
+
+/*!
+ * \brief Run a helper executable
+ *
+ * \param wait true if the helper should be run synchronously
+ *
+ * If \ref wait is \c false this call is equivalent to
+ * \code platform::runAsync(getHelperExecutable(args[0]).string(), args); \endcode
+ * Otherwise it is equivalent to
+ * \code platform::run(getHelperExecutable(args[0]).string(), args); \endcode
+ *
+ * \return if \ref wait is \c true, the return code of the executed program.
+ */
+int runHelper(const char * const args[], bool wait = false);
+
+/*!
+ * \brief Run a helper executable
+ *
+ * Shortcut for
+ * \code
+const char * args[] = { name, ... };
+platform::runHelper(args); \endcode
+ */
+#if ARX_HAVE_CXX11_VARIADIC_TEMPLATES
+template <typename... Args>
+inline void runHelper(const char * name, Args... args) {
+	const char * const argArray[] = { name, args... };
+	(void)runHelper(argArray);
+}
+#else
+void runHelper(const char * name, ...);
+#endif
 
 #if ARX_PLATFORM != ARX_PLATFORM_WIN32
 
@@ -154,17 +186,6 @@ inline std::string getOutputOf(const std::string & exe, const char * const args[
 }
 
 #endif
-
-/*!
- * \brief Run a helper executable
- *
- * Equivalent to
- * \code
-fs::path exe = getHelperExecutable(name);
-const char * args[] = { exe.string().c_str(), ... };
-platform::runAsync(args); \endcode
- */
-void runHelper(const char * name, ...);
 
 } // namespace platform
 

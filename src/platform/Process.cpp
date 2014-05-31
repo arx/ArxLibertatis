@@ -153,7 +153,7 @@ static int run(const char * exe, bool wait, const char * const args[],
 			// Run the executable
 			(void)execvp(exe, argv);
 			
-			exit(128);
+			exit(-1);
 		}
 		
 #endif
@@ -174,6 +174,8 @@ static int run(const char * exe, bool wait, const char * const args[],
 		(void)waitpid(pid, &status, 0);
 		if(WIFEXITED(status) && (WEXITSTATUS(status) >= 0 && WEXITSTATUS(status) < 127)) {
 			return WEXITSTATUS(status);
+		} else if(WIFSIGNALED(status)) {
+			return -WTERMSIG(status);
 		} else {
 			return -1;
 		}
@@ -245,13 +247,16 @@ void runAsync(const char * exe, const char * const args[]) {
 	(void)run(exe, false, args);
 }
 
+int runHelper(const char * const args[], bool wait) {
+	return run(getHelperExecutable(args[0]).string().c_str(), wait, args);
+}
+
+#if !ARX_HAVE_CXX11_VARIADIC_TEMPLATES
 void runHelper(const char * name, ...) {
-	
-	fs::path exe = getHelperExecutable(name);
 	
 	// Parse the argument list
 	std::vector<const char *> arglist;
-	arglist.push_back(exe.string().c_str());
+	arglist.push_back(name);
 	va_list args;
 	va_start(args, name);
 	while(true) {
@@ -264,8 +269,9 @@ void runHelper(const char * name, ...) {
 	va_end(args);
 	const char * const * argv = &arglist.front();
 	
-	runAsync(exe.string(), argv);
+	(void)runHelper(argv);
 }
+#endif
 
 #if ARX_PLATFORM != ARX_PLATFORM_WIN32
 std::string getOutputOf(const char * exe, const char * const args[], bool unlocalized) {
