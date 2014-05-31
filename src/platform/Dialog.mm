@@ -50,6 +50,10 @@ bool showDialog(DialogType type, const std::string & message, const std::string 
 			[alert runModal];
 			break;
 		
+		case DialogWarnYesNo:
+			[alert setAlertStyle: NSWarningAlertStyle];
+			/* fall-through */
+		
 		case DialogYesNo:
 			[alert addButtonWithTitle: @"Yes"];
 			[alert addButtonWithTitle: @"No"];

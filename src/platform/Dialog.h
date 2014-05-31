@@ -29,6 +29,7 @@ enum DialogType {
 	DialogWarning,
 	DialogError,
 	DialogYesNo,
+	DialogWarnYesNo,
 	DialogOkCancel
 };
 
@@ -103,6 +104,23 @@ void showErrorDialog(const std::string & message, const std::string & title = "E
  *         closed the dialog.
  */
 bool askYesNo(const std::string & question, const std::string & title = "Yes/No?");
+
+/*!
+ * \brief Show an error dialog asking a Yes/No question
+ *
+ * \param question text of the question to display.
+ * \param title    title for the dialog window.
+ *
+ * A simple markup syntax is supported on some systems. On other systems, the message is
+ * displayed as-is. \see \ref showInfoDialog for the markup syntax.
+ *
+ * \note this may not be supported on all platforms. If dialogs are not supported, the
+ *       message is printed to stdout and the function immediately returns \c true.
+ *
+ * \return \c true if the user clicked "Yes", or \c false if the user clicked "No" or
+ *         closed the dialog.
+ */
+bool askYesNoWarning(const std::string & question, const std::string & title = "Warning");
 
 /*!
  * \brief Show a dialog asking a Ok/Cancel question
