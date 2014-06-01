@@ -567,12 +567,12 @@ Usage: $command [--source] source [--patch patchfile] [[--data-dir] datadir]
  -c, --cli           Interactively ask the user to select files/directories (no GUI)
  --no-redirect-log   Don't redirect output to a log file when in GUI mode
  --disable-COMMAND   Don't use the given tool, even if it exists.
-                     Valid values are unzip, bsdtar, cabextract, isoinfo,
-                     fuseiso, fusermount, mount, umount and innoextract,
-                     wget, curl, fetch, unshield, kdialog, zenity, Xdialog,
-                     qdbus, dcop, x-terminal-emulator, urxvt, gtkterm, aterm,
-                     rxvt, gnome-terminal, konsole, xterm, gxmessage, xmessage,
-                     md5sum, md5.
+                     Valid values are 7z, 7za, aterm, bsdtar, cabextract, curl,
+                     dcop, fetch, fuseiso, fusermount, gnome-terminal, greadlink,
+                     grealpath, gtkterm, gxmessage, innoextract, isoinfo, kdialog,
+                     konsole, md5, md5sum, mount, qdbus, realpath, rxvt, umount,
+                     unace, unrar, unshield, unzip, urxvt, wget, Xdialog,
+                     xmessage, xterm, x-terminal-emulator, zenity.
 
 --gui is enabled by default if there are no arguments *and* stdin, stdout or stderr is not a terminal
 "
