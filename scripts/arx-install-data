@@ -87,7 +87,9 @@ gog_names='setup_arx_fatalis.exe'
 gog_url='http://www.gog.com/gamecard/arx_fatalis'
 
 # Store page for the Steam download
-steam_url='http://store.steampowered.com/app/1700/'
+steam_appid='1700'
+steam_url="http://store.steampowered.com/app/$steam_appid/"
+steam_install_dir="Arx Fatalis"
 
 # Name and wiki page for the demo download
 demo_names="arx_demo_english.zip arxdemoenglish.zip arx_jpn_demo.exe"
@@ -633,9 +635,10 @@ The ${green}source${reset} can be one of many things:
 If no source is specified, these files will be probed:
 1. The following files in${help_probe_file_dirs}
 $(print_help_list "   1.%d ${green}" help_probed_files)
-2. If \$WINEPREFIX is set, any installation in there
-3. Any installation in the default WINEPREFIX (${green}~/.wine${reset})
-4. Any mounted ${green}cdrom${reset} or ISO file
+2. The user's Steam library, if available
+3. If \$WINEPREFIX is set, any installation in there
+4. Any installation in the default WINEPREFIX (${green}~/.wine${reset})
+5. Any mounted ${green}cdrom${reset} or ISO file
 
 
 If no ${blue}patch${reset} file is specified, but is needed and
@@ -1720,6 +1723,131 @@ found_source_file() {
 	if [ $batch = 1 ] ; then return $true ; else return $false ; fi
 }
 
+# Get a subsection in a .vdf file
+# Usage: cat config | steam_get_section <section>
+steam_get_section() {
+	# Abuse indentation to find the section end
+	grep -Pzoi "\\n(\\s*)\"$1\"\\n\\s+\\{(\\n.*)*?\\n\\1}"
+}
+
+# Get a subsection in a .vdf file - and everything after it
+# Usage: cat config | steam_get_section_tail <section>
+steam_get_section_tail() {
+	# Abuse indentation to find the section end
+	grep -Pzoi "\\n\\s*\"$1\"\\n\\s+\\{(\\n.*)*"
+}
+
+# Remove backtick escapes
+# Usage: echo <escaped_string> | unescape
+steam_unescape() {
+	sed 's/\\\(.\)/\1/g'
+}
+
+# Get an entry in a .vdf file, or the first one if there are multiple
+# Usage: cat config | steam_get_entry <key>
+steam_get_entry() {
+	grep -Pi "^\\s*\"$1\"\s*\".*\"\\s*$" \
+	| head -1 \
+	| sed 's/^[^"]*"[^"]*"[^"]*"\(.*\)"[^"]*$/\1/' \
+	| steam_unescape
+}
+
+# Get the app information section for an appid
+# Usage: steam_get_appinfo <config_file> <appid>
+steam_get_appinfo() {
+	_steam_config="$1"
+	_steam_appid="$2"
+	
+	_steam_appinfo="$(
+		cat "$_steam_config" \
+		| steam_get_section 'Software' \
+		| steam_get_section 'Valve' \
+		| steam_get_section 'Steam' \
+		| steam_get_section 'apps' \
+		| steam_get_section "$_steam_appid"
+	)"
+	
+	# Fallback if the tree structure changed
+	[ -z "$_steam_appinfo" ] && _steam_appinfo="$(
+		cat "$_steam_config" | steam_get_section "$_steam_appid"
+	)"
+	
+	# Fallback if the indentation changed
+	[ -z "$_steam_appinfo" ] && _steam_appinfo="$(
+		cat "$_steam_config" | steam_get_section_tail "$_steam_appid"
+	)"
+	
+	print "$_steam_appinfo"
+}
+
+# Get a config entry for an appid
+# Usage: steam_get_app_config <config_file> <appid>
+steam_get_installdir() {
+	steam_get_appinfo "$1" "$2" | steam_get_entry 'installdir'
+}
+
+# Find possible source directories from a Steam library
+# Usage: probe_steam_library <steamlibrary>
+# Return: $true if more source files should be probed, $false otherwise.
+probe_steam_library() {
+	_steam_library="$1"
+	for _steam_appdir in "$_steam_library/SteamApps" "$_steam_library/steamapps" ; do
+		_steam_installdir="$_steam_appdir/common/$steam_install_dir"
+		if [ -d "$_steam_installdir" ] ; then
+			found_source_file "$_steam_installdir" "Steam" && return $true
+		fi
+	done
+	return $false
+}
+
+# Find possible source directories from a Steam installation
+# Usage: probe_steam_root <steamroot>
+# Return: $true if more source files should be probed, $false otherwise.
+probe_steam_root() {
+	_steam_root="$1"
+	
+	_steam_config="$_steam_root/config/config.vdf"
+	
+	if [ -f "$_steam_config" ] ; then
+		
+		# Strategy 1: Read install directory from Steam config file
+		_steam_installdir="$(steam_get_installdir "$_steam_config" "$steam_appid")"
+		if [ -d "$_steam_installdir" ] ; then
+			found_source_file "$_steam_installdir" "Steam" && return $true
+		fi
+		
+		# Strategy 2: Look for known install directory in steam libraries
+		_steam_libraries="$(
+			cat "$_steam_config" \
+			| sed -n '/BaseInstallFolder/s/^[^\"]*\"[^\"]*\"[^\"]*\"\([^\"]*\)\".*/\1/p' \
+			| sed 's:[^a-zA-Z0-9/_.\n]:\\&:g'
+		)"
+		_steam_library_call='probe_steam_library "$_steam_library" && return $true'
+		eval "for _steam_library in $_steam_libraries ; do $_steam_library_call ; done"
+		
+	fi
+	
+	# Strategy 3: Look for known install directory in the default library
+	probe_steam_library "$_steam_root" && return $true
+	
+	return $false
+}
+
+# Find possible source directories from Steam
+# Usage: probe_steam
+# Return: $true if more source files should be probed, $false otherwise.
+probe_steam() {
+	_steam_roots=''
+	for _steam_root in "$HOME/.steam/root" "$HOME/.steam/steam" "$data_home/Steam" ; do
+		[ -d "$_steam_root" ] || continue
+		set_append _steam_roots "$(canonicalize "$_steam_root")"
+	done
+	_steam_root_call='probe_steam_root "$_steam_root" && return $true'
+	[ -z "$_steam_roots" ] && return $false
+	eval "for _steam_root in $_steam_roots ; do $_steam_root_call ; done"
+	return $false
+}
+
 # Find a match for a case insensitive path containing arx.exe
 # Usage: probe_wine_path <baseprefix> <ipath>
 probe_wine_path() {
@@ -1742,6 +1870,7 @@ probe_wine_path() {
 	[ -z "$_wine_paths" ] && return $false
 	_wine_path_call='probe_wine_path "$_wine_path_prefix" "$_wine_path" && return $true'
 	eval "for _wine_path_prefix in $_wine_paths ; do $_wine_path_call ; done"
+	return $false
 }
 
 # Find possible source directories from a registry key.
@@ -1801,7 +1930,7 @@ probe_wineprefix() {
 	# Probe uninstall entries - combined for effiency
 	_wine_uninstall='Microsoft\Windows\CurrentVersion\Uninstall\'
 	# Steam
-	_wine_steam='Steam App 1700'
+	_wine_steam="Steam App $steam_appid"
 	# Original game
 	_wine_orig='{96443F45-13E2-11D6-AC87-00D0B7A9E540}'
 	# 1.21 patch
@@ -1871,6 +2000,8 @@ probe_source_files() {
 	# Find by filename
 	probe_files found_source_file "$gog_names" 'GOG.com setup'
 	probe_files found_source_file "$demo_names" 'Demo'
+	
+	probe_steam && return $true
 	
 	# Find an Arx Fatalis installation in $WINEPREFIX
 	[ ! -z "${WINEPREFIX-}" ] && probe_wineprefix "$WINEPREFIX" && return $true
@@ -2845,7 +2976,7 @@ probe_data_dirs
 if [ $install = 1 ] ; then
 	verb='install to' ; access=--writable
 else if [ $patch = 1 ] ; then
-	verb='patch' ; access=--existing
+	verb='patch'      ; access=--existing
 else
 	verb='verify'     ; access=--existing
 fi ; fi
