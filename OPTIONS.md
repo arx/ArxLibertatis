@@ -14,7 +14,7 @@ This file describes additional build options that are recognized by the CMakeLis
 
 | Option                | Mac default                                            |
 |---------------------- | ------------------------------------------------------ |
-| `USER_DIR_PREFIXES`   | `~/Library/Application Support`                        |
+| `USER_DIR_PREFIXES`   | `$HOME/Library/Application Support`                    |
 | `USER_DIR`            | `ArxLibertatis`                                        |
 | `CONFIG_DIR_PREFIXES` |                                                        |
 | `CONFIG_DIR`          |                                                        |

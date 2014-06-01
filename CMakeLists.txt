@@ -136,13 +136,13 @@ mark_as_advanced(
 
 # Default runtime user and data directories
 if(WIN32)
-	set(USER_DIR            "Arx Libertatis"                CACHE STRING "User dir names")
-	set(USER_DIR_PREFIXES   "%FOLDERID_SavedGames%"         CACHE STRING "User dir paths")
+	set(USER_DIR          "Arx Libertatis"                CACHE STRING "User dir names")
+	set(USER_DIR_PREFIXES "%FOLDERID_SavedGames%"         CACHE STRING "User dir paths")
 elseif(MACOSX)
-	set(DATA_DIR            "ArxLibertatis"                 CACHE STRING "Data dir names")
-	set(DATA_DIR_PREFIXES   "/Applications"                 CACHE STRING "Data dir paths")
-	set(USER_DIR            "ArxLibertatis"                 CACHE STRING "User dir names")
-	set(USER_DIR_PREFIXES   "~/Library/Application Support" CACHE STRING "User dir paths")
+	set(DATA_DIR          "ArxLibertatis"                 CACHE STRING "Data dir names")
+	set(DATA_DIR_PREFIXES "/Applications"                 CACHE STRING "Data dir paths")
+	set(USER_DIR          "ArxLibertatis"                 CACHE STRING "User dir names")
+	set(USER_DIR_PREFIXES "$HOME/Library/Application Support" CACHE STRING "User dir paths")
 else()
 	set(DATA_DIR
 		"games/arx:arx"
