@@ -23,6 +23,10 @@
 
 #include "io/log/Logger.h"
 
+#include "platform/ProgramOptions.h"
+
+#include "util/cmdline/Optional.h"
+
 namespace gldebug {
 
 #if defined(GL_ARB_debug_output)
@@ -92,6 +96,10 @@ void ARX_GLAPIENTRY callback(GLenum source,
 
 void initialize() {
 	
+	if(!isEnabled()) {
+		return;
+	}
+	
 	if(!GLEW_ARB_debug_output) {
 		LogWarning << "OpenGL debug output disabled";
 		return;
@@ -141,5 +149,21 @@ void initialize() {
 
 #endif
 
+#ifdef ARX_DEBUG
+static bool g_enable = true;
+#else
+static bool g_enable = false;
+#endif
+
+bool isEnabled() {
+	return g_enable;
 }
+
+void enable() {
+	g_enable = true;
+}
+
+ARX_PROGRAM_OPTION("debug-gl", NULL, "Enable OpenGL debug output", &enable);
+
+} // namespace gldebug
 

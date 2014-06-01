@@ -20,6 +20,7 @@ Here is a short summary of the options available in innoextract. Please refer to
 .nf
  \-h \-\-help               Show supported options
  \-g \-\-debug \fILEVELS\fP       Set debug output levels
+ --debug-gl              Enable OpenGL debug output
 .fi
 .TP
 .B Search path options:
@@ -53,6 +54,9 @@ See \fIhttp://arx.vg/Data_directories\fP and the \fB--list-dirs\fP output for mo
 .TP
 \fB-g\fP, \fB--debug\fP=\fILEVELS\fP
 This option can be used to enable debug output for debug builds of Arx Libertatis. For non-debug build, this option is not very useful but recognized for convenience.
+.TP
+\fB--debug-gl\fP
+Create and OpenGL debug context and, if available, enable enable debug output from the OpenGL driver.
 .TP
 \fB-h\fP, \fB--help\fP
 Show a list of the supported options.

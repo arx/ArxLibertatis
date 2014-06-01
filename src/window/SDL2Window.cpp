@@ -26,6 +26,7 @@
 #include <signal.h>
 #endif
 
+#include "graphics/opengl/GLDebug.h"
 #include "graphics/opengl/OpenGLRenderer.h"
 #include "input/SDL2InputBackend.h"
 #include "io/log/Logger.h"
@@ -153,9 +154,9 @@ bool SDL2Window::initialize() {
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_COMPATIBILITY);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_EGL, 0);
 	
-#ifdef ARX_DEBUG
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_DEBUG_FLAG);
-#endif
+	if(gldebug::isEnabled()) {
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_DEBUG_FLAG);
+	}
 	
 	
 	int x = SDL_WINDOWPOS_UNDEFINED, y = SDL_WINDOWPOS_UNDEFINED;

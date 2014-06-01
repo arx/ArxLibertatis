@@ -149,9 +149,7 @@ void OpenGLRenderer::initialize() {
 	LogInfo << " └─ Device: " << glGetString(GL_RENDERER);
 	CrashHandler::setVariable("OpenGL device", glGetString(GL_RENDERER));
 	
-#ifdef ARX_DEBUG
 	gldebug::initialize();
-#endif
 }
 
 void OpenGLRenderer::beforeResize(bool wasOrIsFullscreen) {

@@ -22,7 +22,11 @@
 
 namespace gldebug {
 	
+	//! Initialize OpenGL debug output.
 	void initialize();
+	
+	//! Check if debug output should be enabled.
+	bool isEnabled();
 	
 }
 
