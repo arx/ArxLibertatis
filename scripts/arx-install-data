@@ -561,7 +561,7 @@ Usage: $command [--source] source [--patch patchfile] [[--data-dir] datadir]
  -h, --help          Print this message and maybe more
  -b, --batch         Never ask the user questions
  -g, --gui           Show a GUI asking the user what to do
-                     Requires ${dim_pink}KDialog${reset}, ${dim_pink}Zenity${reset}, or ${dim_pink}Xmessage${reset}.
+                     Requires ${dim_pink}KDialog${reset}, ${dim_pink}Zenity${reset}, or ${dim_pink}Xdialog${reset}.
                      If none of them are available the script is re-launched
                      in a terminal emulator.
  -c, --cli           Interactively ask the user to select files/directories (no GUI)
@@ -852,11 +852,11 @@ $message"
 		print "Use the --cli option for an interactive command-line interface."
 	fi
 	
-else
+else if [ ! "$_arx_install_data_force_cli" = 1 ] ; then
 	
 	print "Enabling CLI mode, use the --gui option for a graphical interface."
 	
-fi
+fi ; fi
 
 #----------------------------------------------------------------------------------------#
 # Functions for controlling an asynchronous process via stdin
