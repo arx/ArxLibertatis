@@ -391,7 +391,7 @@ void IO_UnlinkAllLinkedObjects(Entity * io) {
 		linked->soundcount = 0;
 		linked->gameFlags |= GFLAG_NO_PHYS_IO_COL;
 		linked->show = SHOW_FLAG_IN_SCENE;
-		linked->no_collide = checked_range_cast<short>(io->index());
+		linked->no_collide = io->index();
 		
 		Vec3f pos = io->obj->vertexlist3[io->obj->linked[k].lidx].v;
 		Vec3f vector;
@@ -885,8 +885,7 @@ void RestoreInitialIOStatusOfIO(Entity * io)
 		io->ioflags &= ~IO_INVERTED;
 		io->lastspeechflag = 2;
 	
-		//HALO_NEGATIVE;
-		io->no_collide = -1;
+		io->no_collide = InvalidEntityHandle;
 
 		MagicFlareReleaseEntity(io);
 
@@ -2177,7 +2176,7 @@ void SetYlsideDeath(Entity * io) {
 bool ARX_INTERACTIVE_CheckFULLCollision(EERIE_3DOBJ * obj, EntityHandle source)
 {
 	bool col = false;
-	long avoid = -1;
+	EntityHandle avoid = InvalidEntityHandle;
 	Entity * io_source = NULL;
 
 	if(ValidIONum(source)) {

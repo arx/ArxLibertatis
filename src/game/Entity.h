@@ -320,7 +320,7 @@ public:
 	
 	IO_SPELLCAST_DATA spellcast_data;
 	short flarecount;
-	short no_collide;
+	EntityHandle no_collide;
 	float invisibility;
 	float frameloss;
 	float basespeed;

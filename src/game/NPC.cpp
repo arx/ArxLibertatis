@@ -1491,7 +1491,7 @@ void ARX_NPC_SpawnMember(Entity * ioo, long num) {
 	fnormalize(vector);
 	io->rubber = 0.6f;
 	
-	io->no_collide = checked_range_cast<short>(long(ioo->index()));
+	io->no_collide = ioo->index();
 	
 	io->gameFlags |= GFLAG_GOREEXPLODE;
 	io->animBlend.lastanimtime = (unsigned long)(arxtime);

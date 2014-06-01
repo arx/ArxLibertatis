@@ -165,7 +165,7 @@ Entity::Entity(const res::path & classPath)
 	
 	std::memset(&spellcast_data, 0, sizeof(IO_SPELLCAST_DATA));
 	flarecount = 0;
-	no_collide = -1;
+	no_collide = InvalidEntityHandle;
 	invisibility = 0.f;
 	frameloss = 0.f;
 	basespeed = 1.f;

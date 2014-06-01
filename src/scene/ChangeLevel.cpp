@@ -145,10 +145,10 @@ static Entity * convertToValidIO(const string & ident) {
 		"bad interactive object ident: \"%s\"", ident.c_str()
 	);
 	
-	long t = entities.getById(ident);
+	EntityHandle t = entities.getById(ident);
 	
 	if(t > 0) {
-		arx_assert(ValidIONum(t), "got invalid IO num %ld", t);
+		arx_assert(ValidIONum(t), "got invalid IO num %ld", long(t));
 		return entities[t];
 	}
 	
@@ -2018,7 +2018,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) {
 		
 		io->room_flags = 1;
 		io->room = -1;
-		io->no_collide = -1;
+		io->no_collide = InvalidEntityHandle;
 		io->ioflags = EntityFlags::load(ais->ioflags); // TODO save/load flags
 		
 		io->ioflags &= ~IO_FREEZESCRIPT;
