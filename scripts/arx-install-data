@@ -92,7 +92,8 @@ steam_url="http://store.steampowered.com/app/$steam_appid/"
 steam_install_dir="Arx Fatalis"
 
 # Name and wiki page for the demo download
-demo_names="arx_demo_english.zip arxdemoenglish.zip arx_jpn_demo.exe"
+demo_names="arx_demo_english.zip arxdemoenglish.zip arx_demo_english.exe"
+demo_names="$demo_names arx_fatalis_demo_fr.zip arx_demo_german.exe arx_jpn_demo.exe"
 demo_url='http://arx.vg/Getting_the_game_data#Demo'
 
 bug_tracker_url='http://bugs.arx-libertatis.org/'
@@ -410,6 +411,10 @@ list_append extract_ms_cab_reqs '7za'
 list_append extract_ms_cab_reqs '7z' 'p7zip'
 extract_installshield_reqs=''
 list_append extract_installshield_reqs 'unshield'
+extract_rar_reqs=''
+list_append extract_rar_reqs 'unrar'
+extract_ace_reqs=''
+list_append extract_ace_reqs 'unace'
 extract_innosetup_reqs=''
 list_append extract_innosetup_reqs 'innoextract' "$innoextract_url"
 mount_cdrom_reqs=''
@@ -577,6 +582,8 @@ Usage: $command [--source] source [--patch patchfile] [[--data-dir] datadir]
 	help_cab="$(print_help_or extract_ms_cab_reqs "$dim_pink")"
 	help_zip="$(print_help_or extract_zip_reqs "$dim_pink")"
 	help_unshield="$(print_help_or extract_installshield_reqs "$dim_pink")"
+	help_rar="$(print_help_or extract_rar_reqs "$dim_pink")"
+	help_ace="$(print_help_or extract_ace_reqs "$dim_pink")"
 	help_download="$(print_help_or download_reqs "$dim_pink")"
 	help_optpatch="may use the 1.21 patch file and require ${help_innosetup} if not already patched"
 	help_probe_file_dirs="
@@ -617,10 +624,14 @@ The ${green}source${reset} can be one of many things:
    ${help_optpatch}
    get it from ${dim_green}${steam_url}${reset}
 
- * ${white}Arx Fatalis ${green}demo${white} zip${reset} ($(print_help_or demo_names))
+ * ${white}Arx Fatalis ${green}demo${white} zip${reset} (one of the following)
+$(print_help_list "    - " demo_names)
    requires:
-    - ${help_zip}
+    - ${help_zip} [english/french .zip]
     - ${help_cab}
+    - ${help_rar} [english .exe]
+    - ${help_ace} [german .exe]
+    - ${help_unshield} [japanese .exe]
    never uses the 1.21 patch file
    get it from ${dim_green}${demo_url}${reset}
 
@@ -2352,6 +2363,34 @@ extract_installshield() {
 	die "no program to extract $1"
 }
 
+# Extract a RAR .rar or .exe file to the current directory.
+# Usage: extract_rar <rarfile>
+have_extract_rar() { have_extract rar ; }
+extract_rar() {
+	
+	if have unrar ; then
+		puts 'unrar: '
+		unrar x -y -o "$1"
+		return $?
+	fi
+	
+	die "no program to extract $1"
+}
+
+# Extract an ACE .ace or .exe file to the current directory.
+# Usage: extract_ace <acefile>
+have_extract_ace() { have_extract ace ; }
+extract_ace() {
+	
+	if have unace ; then
+		puts 'unace '
+		unace x -y -o "$1"
+		return $?
+	fi
+	
+	die "no program to extract $1"
+}
+
 # Extract an Inno Setup .exe file to the current directory.
 # Usage: extract_innosetup <exefile>
 have_extract_innosetup() { have innoextract ; }
@@ -2523,8 +2562,14 @@ extract_source_exe() {
 	
 	cd "$sourcedir_exe" || die
 	case "$(basename "$1")" in
-		arx_jpn_*.exe) extract "$1" ms_cab installshield innosetup ;; # Japanese demo
-		*)             extract "$1" innosetup ms_cab installshield ;; # GOG.com setup
+		arx_demo_english.exe)
+			extract "$1" rar ace ms_cab installshield innosetup ;; # English demo
+		arx_demo_german.exe)
+			extract "$1" ace rar ms_cab installshield innosetup ;; # German demo
+		arx_jpn_*.exe)
+			extract "$1" ms_cab installshield innosetup rar ace ;; # Japanese demo
+		*)
+			extract "$1" innosetup ms_cab installshield rar ace ;; # GOG.com setup
 	esac
 	
 	extract_source_dir "$sourcedir_exe"
@@ -3016,6 +3061,8 @@ determine_language() {
 		'677163bc319cd1e9aa1b53b5fb3e9402') data_lang='russian'       ;;
 		'235b86700fc80b3eb86731d748013a38') data_lang='japanese'      ;;
 		'62ca7b1751c0615ee131a94f0856b389') data_lang='english-demo'  ;;
+		'09038e43508232c44537c162f9e3ecde') data_lang='french-demo'   ;;
+		'a424fcfc46dd4f11b04030efac15a668') data_lang='german-demo'   ;;
 		'eeacbd9a845ecc00054934e82e9d7dd3') data_lang='japanese-demo' ;;
 	esac
 	
@@ -3028,6 +3075,8 @@ determine_language() {
 		'russian')       data_lang_desc='Russian' ;;
 		'japanese')      data_lang_desc='Japanese' ;;
 		'english-demo')  data_lang_desc='English (demo)' ;;
+		'french-demo')   data_lang_desc='French (demo)' ;;
+		'german-demo')   data_lang_desc='German (demo)' ;;
 		'japanese-demo') data_lang_desc='Japanese (demo)' ;;
 	esac
 	
@@ -3068,6 +3117,8 @@ case "$data_lang" in
 	russian)       loc_checksum='a131bf2398ee70a9c22a2bbffd9d0d99' ;;
 	japanese)      loc_checksum='9dcb0f5d7a517be4f1d9190419900892' ;;
 	english-demo)  loc_checksum='2ae16d3925c597dca70f960f175def3a' ;;
+	french-demo)   loc_checksum='4a8ac68341d4758a32d9cd04955b115e' ;;
+	german-demo)   loc_checksum='87accec0658aa109a3efa8b41aab61df' ;;
 	japanese-demo) loc_checksum='9d84cede805b13fdf7fce856ecc15b19' ;;
 	*)             loc_checksum=''
 esac
@@ -3089,6 +3140,20 @@ case "$data_lang" in
 	
 	english-demo)
 	f 0 'data2.pak'                                        958b78f8f370b06d769843137138c461
+	f 0 'data.pak'                                         5d7ba6e6c79ebf7fbb232eaced9e8ad9
+	f 0 'misc/logo.bmp'                                    aa3dfbd4bc9c863d10a0c5345ae5a4c9
+	f 0 'sfx.pak'                                          ea1b3e6d6f4906905d4a34f07e9a59ac
+	;;
+	
+	french-demo)
+	f 0 'data2.pak'                                        8dc1d1b3e85d4a41ae320aa3fa9c649a
+	f 0 'data.pak'                                         5d7ba6e6c79ebf7fbb232eaced9e8ad9
+	f 0 'misc/logo.bmp'                                    aa3dfbd4bc9c863d10a0c5345ae5a4c9
+	f 0 'sfx.pak'                                          ea1b3e6d6f4906905d4a34f07e9a59ac
+	;;
+	
+	german-demo)
+	f 0 'data2.pak'                                        143ba491a357263a2dfad9936a66eeb6
 	f 0 'data.pak'                                         5d7ba6e6c79ebf7fbb232eaced9e8ad9
 	f 0 'misc/logo.bmp'                                    aa3dfbd4bc9c863d10a0c5345ae5a4c9
 	f 0 'sfx.pak'                                          ea1b3e6d6f4906905d4a34f07e9a59ac
