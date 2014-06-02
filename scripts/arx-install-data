@@ -544,7 +544,7 @@ print_help_list() {
 print_help() {
 	[ -z "${1-}" ] || ( printf '%s\n\n' "${red}$1${reset}" )
 	print "
-${white}Simply start the script without any arguments to select paths interactively:
+${white}Start the script without any arguments to select paths interactively:
        \$ $command${reset}
 
 Usage: $command [--source] source [--patch patchfile] [[--data-dir] datadir]
@@ -588,8 +588,8 @@ Usage: $command [--source] source [--patch patchfile] [[--data-dir] datadir]
 	help_optpatch="may use the 1.21 patch file and require ${help_innosetup} if not already patched"
 	help_probe_file_dirs="
    a) the current working directory  (\$PWD):              $user_pwd
-   b) the user's downloads directory (\$HOME):             $HOME
-   c) the user's home directory      (\$XDG_DOWNLOAD_DIR): $downloads_dir
+   b) the user's downloads directory (\$XDG_DOWNLOAD_DIR): $downloads_dir
+   c) the user's home directory      (\$HOME):             $HOME
    d) the temp directory             (\$TMPDIR):           $tempdir"
   help_probe_file_dirs_patch="${help_probe_file_dirs}
    e) the directory containing the source file"
@@ -624,7 +624,7 @@ The ${green}source${reset} can be one of many things:
    ${help_optpatch}
    get it from ${dim_green}${steam_url}${reset}
 
- * ${white}Arx Fatalis ${green}demo${white} zip${reset} (one of the following)
+ * ${white}Arx Fatalis ${green}demo${reset} (one of the following)
 $(print_help_list "    - " demo_names)
    requires:
     - ${help_zip} [english/french .zip]
@@ -646,14 +646,14 @@ $(print_help_list "    - " demo_names)
 If no source is specified, these files will be probed:
 1. The following files in${help_probe_file_dirs}
 $(print_help_list "   1.%d ${green}" help_probed_files)
-2. The user's Steam library, if available
+2. The user's ${green}Steam${reset} library, if available
 3. If \$WINEPREFIX is set, any installation in there
 4. Any installation in the default WINEPREFIX (${green}~/.wine${reset})
 5. Any mounted ${green}cdrom${reset} or ISO file
 
 
 If no ${blue}patch${reset} file is specified, but is needed and
-the --no-patch option wasn't specified specified:
+the --no-patch option wasn't specified:
 1. Try to find the following files in${help_probe_file_dirs_patch}
    1.1. ${blue}${patch_name}${reset}
    1.2. $(printf "$patch_name_localized" '<LANG>')
@@ -677,10 +677,10 @@ Extracting the Japanese patch file requires:
 
 If no ${cyan}data-dir${reset} to install into is specified,
 one is automatically selected similarly to how Arx Libertatis would:
-If --verify and --no-patch (and --no-patch) are give, use the first existing
-directory of the following, otherwise, use the first existing writable directory
+If --verify and --no-patch are give, use the first existing directory
+of the following, otherwise, use the first existing writable directory
 or, if none exists, the first directory that can be created:
-1. Any path in \$${scommand}_PATH (for use in wrapper scripts)
+1. Any path in \$${scommand}_PATH or \$arx_PATH (for use in wrapper scripts)
 2. \"\${XDG_DATA_DIRS:-\"/usr/local/share/:/usr/share/\"}:/opt\" / \"$data_dir_suffixes\":"
 	i=1
 	eval "set -- $(to_list "$data_dirs")"
