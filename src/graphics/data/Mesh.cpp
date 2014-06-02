@@ -163,16 +163,18 @@ long MakeTopObjString(Entity * io,  string & dest) {
 	}
 
 	for(size_t i = 0; i < entities.size(); i++) {
-		if(entities[i] && entities[i] != io) {
-			if(entities[i]->show == SHOW_FLAG_IN_SCENE) {
-				if((entities[i]->ioflags & IO_NPC) || (entities[i]->ioflags & IO_ITEM)) {
-					if(entities[i]->pos.x > box.min.x
-							&& entities[i]->pos.x < box.max.x
-							&& entities[i]->pos.z > box.min.z
-							&& entities[i]->pos.z < box.max.z)
+		Entity * e = entities[i];
+		
+		if(e && e != io) {
+			if(e->show == SHOW_FLAG_IN_SCENE) {
+				if((e->ioflags & IO_NPC) || (e->ioflags & IO_ITEM)) {
+					if(e->pos.x > box.min.x
+							&& e->pos.x < box.max.x
+							&& e->pos.z > box.min.z
+							&& e->pos.z < box.max.z)
 					{
-						if(EEfabs(entities[i]->pos.y - box.min.y) < 40.f) {
-							dest += ' ' + entities[i]->idString();
+						if(EEfabs(e->pos.y - box.min.y) < 40.f) {
+							dest += ' ' + e->idString();
 						}
 					}
 				}

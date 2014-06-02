@@ -755,8 +755,10 @@ InventoryPos removeFromInventories(Entity * item) {
 	}
 	
 	for(size_t i = 1; i < entities.size(); i++) {
-		if(entities[i] && entities[i]->inventory) {
-			oldPos = getIoInventory(entities[i]).remove(item);
+		Entity * e = entities[i];
+		
+		if(e && e->inventory) {
+			oldPos = getIoInventory(e).remove(item);
 			if(oldPos) {
 				return oldPos;
 			}
@@ -774,8 +776,10 @@ InventoryPos locateInInventories(const Entity * item) {
 	}
 	
 	for(size_t i = 1; i < entities.size(); i++) {
-		if(entities[i] && entities[i]->inventory) {
-			pos = getIoInventory(entities[i]).locate(item);
+		Entity * e = entities[i];
+		
+		if(e && e->inventory) {
+			pos = getIoInventory(e).locate(item);
 			if(pos) {
 				return pos;
 			}
@@ -1731,9 +1735,11 @@ void RemoveFromAllInventories(const Entity * io) {
 	
 	// Seek IO in Other IO's Inventories
 	for(size_t i = 0; i < entities.size(); i++) {
-		if(entities[i] != NULL) {
-			if(entities[i]->inventory != NULL) {
-				INVENTORY_DATA * id = entities[i]->inventory;
+		Entity * e = entities[i];
+		
+		if(e != NULL) {
+			if(e->inventory != NULL) {
+				INVENTORY_DATA * id = e->inventory;
 				for(long j = 0; j < id->sizey; j++) {
 					for(long k = 0; k < id->sizex; k++) {
 						if(id->slot[k][j].io == io) {
@@ -1753,9 +1759,11 @@ void RemoveFromAllInventories(const Entity * io) {
 void CheckForInventoryReplaceMe(Entity * io, Entity * old) {
 	
 	for(size_t i = 0; i < entities.size(); i++) {
-		if(entities[i] != NULL) {
-			if(entities[i]->inventory != NULL) {
-				INVENTORY_DATA * id = entities[i]->inventory;
+		Entity * e = entities[i];
+		
+		if(e != NULL) {
+			if(e->inventory != NULL) {
+				INVENTORY_DATA * id = e->inventory;
 				
 				for(long j = 0; j < id->sizey; j++) {
 					for(long k = 0; k < id->sizex; k++) {

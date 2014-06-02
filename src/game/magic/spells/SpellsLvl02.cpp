@@ -65,11 +65,13 @@ void HealSpell::Update(float framedelay)
 
 	if (ch)
 	for(size_t ii = 0; ii < entities.size(); ii++) {
-		if ((entities[ii])
-			&& (entities[ii]->show==SHOW_FLAG_IN_SCENE) 
-			&& (entities[ii]->gameFlags & GFLAG_ISINTREATZONE)
-			&& (entities[ii]->ioflags & IO_NPC)
-			&& (entities[ii]->_npcdata->lifePool.current>0.f)
+		Entity * e = entities[ii];
+		
+		if ((e)
+			&& (e->show==SHOW_FLAG_IN_SCENE) 
+			&& (e->gameFlags & GFLAG_ISINTREATZONE)
+			&& (e->ioflags & IO_NPC)
+			&& (e->_npcdata->lifePool.current>0.f)
 			)
 		{
 			float dist;
@@ -77,7 +79,7 @@ void HealSpell::Update(float framedelay)
 			if(long(ii) == m_caster)
 				dist=0;
 			else
-				dist=fdist(ch->eSrc, entities[ii]->pos);
+				dist=fdist(ch->eSrc, e->pos);
 
 			if(dist<300.f) {
 				float gain=((rnd()*1.6f+0.8f)*m_caster_level)*(300.f-dist)*( 1.0f / 300 )*framedelay*( 1.0f / 1000 );
@@ -87,7 +89,7 @@ void HealSpell::Update(float framedelay)
 						player.lifePool.current=std::min(player.lifePool.current+gain,player.Full_maxlife);									
 				}
 				else
-					entities[ii]->_npcdata->lifePool.current = std::min(entities[ii]->_npcdata->lifePool.current+gain, entities[ii]->_npcdata->lifePool.max);
+					e->_npcdata->lifePool.current = std::min(e->_npcdata->lifePool.current+gain, e->_npcdata->lifePool.max);
 			}
 		}
 	}	

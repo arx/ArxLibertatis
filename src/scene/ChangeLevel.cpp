@@ -452,10 +452,12 @@ static bool ARX_CHANGELEVEL_Push_Index(long num) {
 	asi.gmods_current = current;
 	
 	for(size_t i = 1; i < entities.size(); i++) {
-		if(entities[i] != NULL
-		   && !(entities[i]->ioflags & IO_NOSAVE)
-		   && !IsInPlayerInventory(entities[i])
-		   && !IsPlayerEquipedWith(entities[i])) {
+		Entity * e = entities[i];
+		
+		if(e != NULL
+		   && !(e->ioflags & IO_NOSAVE)
+		   && !IsInPlayerInventory(e)
+		   && !IsPlayerEquipedWith(e)) {
 			asi.nb_inter++;
 		}
 	}
@@ -483,16 +485,18 @@ static bool ARX_CHANGELEVEL_Push_Index(long num) {
 	pos += sizeof(ARX_CHANGELEVEL_INDEX);
 	
 	for(size_t i = 1; i < entities.size(); i++) {
-		if(entities[i] != NULL
-		   && !(entities[i]->ioflags & IO_NOSAVE)
-		   && !IsInPlayerInventory(entities[i])
-		   && !IsPlayerEquipedWith(entities[i])) {
+		Entity * e = entities[i];
+		
+		if(e != NULL
+		   && !(e->ioflags & IO_NOSAVE)
+		   && !IsInPlayerInventory(e)
+		   && !IsPlayerEquipedWith(e)) {
 			ARX_CHANGELEVEL_IO_INDEX aii;
 			memset(&aii, 0, sizeof(aii));
 			strncpy(aii.filename,
-			        (entities[i]->classPath() + ".teo").string().c_str(),
+			        (e->classPath() + ".teo").string().c_str(),
 			        sizeof(aii.filename));
-			aii.ident = entities[i]->ident;
+			aii.ident = e->ident;
 			aii.level = num;
 			aii.truelevel = num;
 			aii.num = i; // !!!
@@ -828,8 +832,10 @@ static long ARX_CHANGELEVEL_Push_Player(long level) {
 	delete[] dat;
 	
 	for(size_t i = 1; i < entities.size(); i++) {
-		if(IsInPlayerInventory(entities[i]) || IsPlayerEquipedWith(entities[i])) {
-			ARX_CHANGELEVEL_Push_IO(entities[i], level);
+		Entity * e = entities[i];
+		
+		if(IsInPlayerInventory(e) || IsPlayerEquipedWith(e)) {
+			ARX_CHANGELEVEL_Push_IO(e, level);
 		}
 	}
 
@@ -839,14 +845,15 @@ static long ARX_CHANGELEVEL_Push_Player(long level) {
 static long ARX_CHANGELEVEL_Push_AllIO(long level) {
 	
 	for(size_t i = 1; i < entities.size(); i++) {
+		Entity * e = entities[i];
 		
-		if ((entities[i] != NULL)
-				&&	(!(entities[i]->ioflags & IO_NOSAVE))
-				&&	(!IsInPlayerInventory(entities[i]))
-				&&	(!IsPlayerEquipedWith(entities[i]))
+		if ((e != NULL)
+				&&	(!(e->ioflags & IO_NOSAVE))
+				&&	(!IsInPlayerInventory(e))
+				&&	(!IsPlayerEquipedWith(e))
 		   )
 		{
-			ARX_CHANGELEVEL_Push_IO(entities[i], level);
+			ARX_CHANGELEVEL_Push_IO(e, level);
 		}
 	}
 
@@ -860,9 +867,11 @@ static Entity * GetObjIOSource(const EERIE_3DOBJ * obj) {
 	}
 	
 	for(size_t i = 0; i < entities.size(); i++) {
-		if(entities[i] && entities[i]->obj) {
-			if(entities[i]->obj == obj) {
-				return entities[i];
+		Entity * e = entities[i];
+		
+		if(e && e->obj) {
+			if(e->obj == obj) {
+				return e;
 			}
 		}
 	}
@@ -1619,8 +1628,10 @@ long ARX_CHANGELEVEL_Pop_Level(ARX_CHANGELEVEL_INDEX * asi, long num, bool first
 		RestoreInitialIOStatus();
 		
 		for(size_t i = 1; i < entities.size(); i++) {
-			if(entities[i] && !entities[i]->scriptload) {
-				ARX_SCRIPT_Reset(entities[i], 1);
+			Entity * e = entities[i];
+			
+			if(e && !e->scriptload) {
+				ARX_SCRIPT_Reset(e, 1);
 			}
 		}
 		
@@ -2516,24 +2527,25 @@ static void ARX_CHANGELEVEL_PopAllIO_FINISH(bool reloadflag, bool firstTime) {
 	if(reloadflag) {
 		
 		for(size_t i = 0; i < entities.size(); i++) {
+			Entity * e = entities[i];
 			
-			if(!entities[i]) {
+			if(!e) {
 				continue;
 			}
 			
-			if(entities[i]->script.data != NULL) {
-				ScriptEvent::send(&entities[i]->script, SM_RELOAD, "change", entities[i], "");
+			if(e->script.data != NULL) {
+				ScriptEvent::send(&e->script, SM_RELOAD, "change", e, "");
 			}
 			
-			if(entities[i] && entities[i]->over_script.data) {
-				ScriptEvent::send(&entities[i]->over_script, SM_RELOAD, "change", entities[i], "");
+			if(e && e->over_script.data) {
+				ScriptEvent::send(&e->over_script, SM_RELOAD, "change", e, "");
 			}
 			
-			if(entities[i] && (entities[i]->ioflags & IO_NPC) && ValidIONum(entities[i]->targetinfo)) {
-				if(entities[i]->_npcdata->behavior != BEHAVIOUR_NONE) {
-					GetIOCyl(entities[i], entities[i]->physics.cyl);
-					GetTargetPos(entities[i]);
-					ARX_NPC_LaunchPathfind(entities[i], entities[i]->targetinfo);
+			if(e && (e->ioflags & IO_NPC) && ValidIONum(e->targetinfo)) {
+				if(e->_npcdata->behavior != BEHAVIOUR_NONE) {
+					GetIOCyl(e, e->physics.cyl);
+					GetTargetPos(e);
+					ARX_NPC_LaunchPathfind(e, e->targetinfo);
 				}
 			}
 		}
@@ -2541,41 +2553,43 @@ static void ARX_CHANGELEVEL_PopAllIO_FINISH(bool reloadflag, bool firstTime) {
 	} else if (firstTime) {
 		
 		for(size_t i = 0; i < entities.size(); i++) {
+			Entity * e = entities[i];
 			
-			if(!entities[i]) {
+			if(!e) {
 				continue;
 			}
 			
-			if(entities[i]->script.data) {
-				ScriptEvent::send(&entities[i]->script, SM_INIT, "", entities[i], "");
+			if(e->script.data) {
+				ScriptEvent::send(&e->script, SM_INIT, "", e, "");
 			}
 			
-			if(entities[i] && entities[i]->over_script.data) {
-				ScriptEvent::send(&entities[i]->over_script, SM_INIT, "", entities[i], "");
+			if(e && e->over_script.data) {
+				ScriptEvent::send(&e->over_script, SM_INIT, "", e, "");
 			}
 			
-			if(entities[i] && entities[i]->script.data) {
-				ScriptEvent::send(&entities[i]->script, SM_INITEND, "", entities[i], "");
+			if(e && e->script.data) {
+				ScriptEvent::send(&e->script, SM_INITEND, "", e, "");
 			}
 			
-			if(entities[i] && entities[i]->over_script.data) {
-				ScriptEvent::send(&entities[i]->over_script, SM_INITEND, "", entities[i], "");
+			if(e && e->over_script.data) {
+				ScriptEvent::send(&e->over_script, SM_INITEND, "", e, "");
 			}
 		}
 		
 	} else {
 		
 		for(size_t i = 0; i < entities.size(); i++) {
+			Entity * e = entities[i];
 			
-			if(!entities[i]) {
+			if(!e) {
 				continue;
 			}
 			
-			if(entities[i] && (entities[i]->ioflags & IO_NPC) && ValidIONum(entities[i]->targetinfo)) {
-				if(entities[i]->_npcdata->behavior != BEHAVIOUR_NONE) {
-					GetIOCyl(entities[i], entities[i]->physics.cyl);
-					GetTargetPos(entities[i]);
-					ARX_NPC_LaunchPathfind(entities[i], entities[i]->targetinfo);
+			if(e && (e->ioflags & IO_NPC) && ValidIONum(e->targetinfo)) {
+				if(e->_npcdata->behavior != BEHAVIOUR_NONE) {
+					GetIOCyl(e, e->physics.cyl);
+					GetTargetPos(e);
+					ARX_NPC_LaunchPathfind(e, e->targetinfo);
 				}
 			}
 		}

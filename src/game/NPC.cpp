@@ -377,8 +377,10 @@ void ARX_NPC_Behaviour_Reset(Entity * io)
  */
 void ARX_NPC_Behaviour_ResetAll() {
 	for(size_t i = 0; i < entities.size(); i++) {
-		if(entities[i]) {
-			ARX_NPC_Behaviour_Reset(entities[i]);
+		Entity * e = entities[i];
+		
+		if(e) {
+			ARX_NPC_Behaviour_Reset(e);
 		}
 	}
 }

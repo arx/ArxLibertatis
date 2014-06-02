@@ -1030,9 +1030,11 @@ void FirstFrameHandling() {
 	}
 	
 	for(size_t i = 0; i < entities.size(); i++) {
-		if(entities[i] && (entities[i]->ioflags & IO_NPC)
-		   && entities[i]->_npcdata->cuts) {
-			ARX_NPC_ApplyCuts(entities[i]);
+		Entity * e = entities[i];
+		
+		if(e && (e->ioflags & IO_NPC)
+		   && e->_npcdata->cuts) {
+			ARX_NPC_ApplyCuts(e);
 		}
 	}
 	

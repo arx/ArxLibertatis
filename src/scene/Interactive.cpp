@@ -153,7 +153,9 @@ long ValidIOAddress(const Entity * io) {
 		return 0;
 	
 	for(size_t i = 0; i < entities.size(); i++) {
-		if(entities[i] == io) {
+		Entity * e = entities[i];
+		
+		if(e == io) {
 			return 1;
 		}
 	}
@@ -367,8 +369,10 @@ bool ForceNPC_Above_Ground(Entity * io) {
 // Unlinks all linked objects from all IOs
 void UnlinkAllLinkedObjects() {
 	for(size_t i = 0; i < entities.size(); i++) {
-		if(entities[i]) {
-			EERIE_LINKEDOBJ_ReleaseData(entities[i]->obj);
+		Entity * e = entities[i];
+		
+		if(e) {
+			EERIE_LINKEDOBJ_ReleaseData(e->obj);
 		}
 	}
 }
@@ -689,7 +693,9 @@ void RestoreInitialIOStatus() {
 		entities.player()->spellcast_data.castingspell = SPELL_NONE;
 	}
 	for(size_t i = 1; i < entities.size(); i++) {
-		RestoreInitialIOStatusOfIO(entities[i]);
+		Entity * e = entities[i];
+		
+		RestoreInitialIOStatusOfIO(e);
 	}
 }
 
@@ -835,7 +841,9 @@ void ARX_INTERACTIVE_ClearAllDynData() {
 	ARX_INTERACTIVE_HideGore(entities.player());
 	ARX_NPC_Behaviour_ResetAll();
 	for(size_t i = 1; i < entities.size(); i++) {
-		ARX_INTERACTIVE_ClearIODynData(entities[i]);
+		Entity * e = entities[i];
+		
+		ARX_INTERACTIVE_ClearIODynData(e);
 	}
 }
 
@@ -1059,7 +1067,9 @@ void ARX_INTERACTIVE_TWEAK_Icon(Entity * io, const res::path & s1) {
 long GetNumberInterWithOutScriptLoad() {
 	long count = 0;
 	for(size_t i = 1; i < entities.size(); i++) {
-		if(entities[i] != NULL && !entities[i]->scriptload) {
+		Entity * e = entities[i];
+		
+		if(e != NULL && !e->scriptload) {
 			count++;
 		}
 	}
@@ -1404,8 +1414,10 @@ static void MakeTemporaryIOIdent(Entity * io) {
 		bool used = false;
 		// TODO replace this loop by an (className, instance) index
 		for(size_t i = 0; i < entities.size(); i++) {
-			if(entities[i] && entities[i]->ident == t && io != entities[i]) {
-				if(entities[i]->className() == className) {
+			Entity * e = entities[i];
+			
+			if(e && e->ident == t && io != e) {
+				if(e->className() == className) {
 					used = true;
 					break;
 				}

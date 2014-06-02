@@ -206,9 +206,11 @@ long DanaeSaveLevel(const fs::path & _fic) {
 	
 	// preparing INTER DATA, Ignoring Player Data
 	for(size_t i = 1; i < entities.size(); i++) {
-		if(entities[i] && !entities[i]->scriptload) {
+		Entity * e = entities[i];
+		
+		if(e && !e->scriptload) {
 			
-			Entity * io = entities[i];
+			Entity * io = e;
 			
 			DANAE_LS_INTER dli;
 			memset(&dli, 0, sizeof(DANAE_LS_INTER));

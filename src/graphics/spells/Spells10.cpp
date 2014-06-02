@@ -145,8 +145,10 @@ void CControlTarget::Create(Vec3f aeSrc, float afBeta) {
 	eTarget = eSrc + Vec3f(-fBetaRadSin * 1000.f, 100.f, fBetaRadCos * 1000.f);
 	
 	for(size_t i = 1; i < entities.size(); i++) {
-		if(entities[i]) {
-			eTarget = entities[i]->pos;
+		Entity * e = entities[i];
+		
+		if(e) {
+			eTarget = e->pos;
 		}
 	}
 	

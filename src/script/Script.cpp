@@ -141,8 +141,10 @@ ScriptResult SendMsgToAllIO(ScriptMessage msg, const string & params) {
 	ScriptResult ret = ACCEPT;
 	
 	for(size_t i = 0; i < entities.size(); i++) {
-		if(entities[i]) {
-			if(SendIOScriptEvent(entities[i], msg, params) == REFUSE) {
+		Entity * e = entities[i];
+		
+		if(e) {
+			if(SendIOScriptEvent(e, msg, params) == REFUSE) {
 				ret = REFUSE;
 			}
 		}
@@ -240,8 +242,10 @@ void ARX_SCRIPT_Reset(Entity * io, long flags) {
 
 void ARX_SCRIPT_ResetAll(long flags) {
 	for(size_t i = 0; i < entities.size(); i++) {
-		if(entities[i] && !entities[i]->scriptload) {
-			ARX_SCRIPT_Reset(entities[i], flags);
+		Entity * e = entities[i];
+		
+		if(e && !e->scriptload) {
+			ARX_SCRIPT_Reset(e, flags);
 		}
 	}
 }
@@ -1951,9 +1955,11 @@ void ARX_SCRIPT_Init_Event_Stats() {
 	ScriptEvent::totalCount = 0;
 	
 	for(size_t i = 0; i < entities.size(); i++) {
-		if(entities[i]) {
-			entities[i]->stat_count = 0;
-			entities[i]->stat_sent = 0;
+		Entity * e = entities[i];
+		
+		if(e) {
+			e->stat_count = 0;
+			e->stat_sent = 0;
 		}
 	}
 }

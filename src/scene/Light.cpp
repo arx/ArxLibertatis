@@ -246,10 +246,12 @@ void TreatBackgroundDynlights()
 					Vec3f _pos2;
 
 					for(size_t l = 0; l < entities.size(); l++) {
-						if(entities[l] && (entities[l]->ioflags & IO_MARKER)) {
-							GetItemWorldPosition(entities[l], &_pos2);
+						Entity * e = entities[l];
+						
+						if(e && (e->ioflags & IO_MARKER)) {
+							GetItemWorldPosition(e, &_pos2);
 							if(!fartherThan(light->pos, _pos2, 300.f)) {
-								SendIOScriptEvent(entities[l], SM_CUSTOM, "douse");
+								SendIOScriptEvent(e, SM_CUSTOM, "douse");
 							}
 						}
 					}
@@ -260,10 +262,12 @@ void TreatBackgroundDynlights()
 					Vec3f _pos2;
 
 					for(size_t l = 0; l < entities.size(); l++) {
-						if(entities[l] && (entities[l]->ioflags & IO_MARKER)) {
-							GetItemWorldPosition(entities[l], &_pos2);
+						Entity * e = entities[l];
+						
+						if(e && (e->ioflags & IO_MARKER)) {
+							GetItemWorldPosition(e, &_pos2);
 							if(!fartherThan(light->pos, _pos2, 300.f)) {
-								SendIOScriptEvent(entities[l], SM_CUSTOM, "fire");
+								SendIOScriptEvent(e, SM_CUSTOM, "fire");
 							}
 						}
 					}

@@ -865,8 +865,10 @@ long TemporaryGetSpellTarget(const Vec3f * from) {
 	float mindist = std::numeric_limits<float>::max();
 	long found = 0;
 	for(size_t i = 1; i < entities.size(); i++) {
-		if(entities[i] && entities[i]->ioflags & IO_NPC) {
-			float dist = glm::distance2(*from, entities[i]->pos);
+		Entity * e = entities[i];
+		
+		if(e && e->ioflags & IO_NPC) {
+			float dist = glm::distance2(*from, e->pos);
 			if(dist < mindist) {
 				found = i;
 				mindist = dist;
