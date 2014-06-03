@@ -42,7 +42,7 @@ namespace util { namespace cmdline {
 struct type_cast {
 	
 	//! converts input parameter to value which type is Dest
-	template<typename Dest, typename Source>
+	template <typename Dest, typename Source>
 	Dest cast(const Source & str) const {
 		return boost::lexical_cast<Dest>(str);
 	}
