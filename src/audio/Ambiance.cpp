@@ -70,15 +70,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 using std::string;
 
-#if UNITY_BUILD
-// GCC complains if a type from an anonymous namespace
-// is used in a file that isn't the main source file
-#define ANONYMOUS_NAMESPACE extern "C++"
-#else
-#define ANONYMOUS_NAMESPACE namespace
-#endif
-
-ANONYMOUS_NAMESPACE {
+namespace ARX_ANONYMOUS_NAMESPACE {
 
 static const u32 AMBIANCE_FILE_SIGNATURE = 0x424d4147; //'GAMB'
 static const u32 AMBIANCE_FILE_VERSION_1002 = 0x01000002;
@@ -213,7 +205,7 @@ struct TrackKey {
 	
 };
 
-} // anonymous namespace
+} ARX_END_ANONYMOUS_NAMESPACE
 
 namespace audio {
 

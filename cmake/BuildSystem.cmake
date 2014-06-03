@@ -70,11 +70,17 @@ function(enable_unity_build UB_SUFFIX SOURCE_VARIABLE_NAME)
 				# the message for whitelisted compilers.
 			endif()
 			
+			get_short_filename(relative_file "${source_file}")
 			if(NOT DEBUG)
-				get_short_filename(relative_file "${source_file}")
 				file(APPEND ${unit_build_file} "#undef ARX_FILE\n")
 				file(APPEND ${unit_build_file} "#define ARX_FILE \"${relative_file}\"\n")
 			endif()
+			string(REGEX REPLACE "\\.[^\\./\\\\]*$" "" file_symbol "${relative_file}")
+			string(REGEX REPLACE "^(src|build)[/\\\\]" "" file_symbol "${file_symbol}")
+			string(REGEX REPLACE "[^a-zA-Z0-9]+" "_" file_symbol "${file_symbol}")
+			string(REGEX REPLACE "^_+" "" file_symbol "${file_symbol}")
+			file(APPEND ${unit_build_file} "#undef ARX_TRANSLATION_UNIT\n")
+			file(APPEND ${unit_build_file} "#define ARX_TRANSLATION_UNIT ${file_symbol}\n")
 			
 			file(APPEND ${unit_build_file} "#include \"${source_file}\"\n\n")
 			

@@ -25,6 +25,8 @@
 
 #include "platform/PlatformConfig.h"
 
+#include <boost/preprocessor/cat.hpp>
+
 /* ---------------------------------------------------------
                           Platforms
 ------------------------------------------------------------*/
@@ -186,6 +188,37 @@ typedef double f64; // 64 bits double float
  */
 #define ARX_UNUSED(x) ((void)&x)
 
+/*!
+ * \def ARX_ANONYMOUS_SYMBOL(Name)
+ * Make a symbol name specific to the current "translation unit" that is still unique
+ * for each source file in unity builds. This should be used for anonymous namespaces
+ * or static variables / functions.
+ */
+#if defined(ARX_TRANSLATION_UNIT)
+	#define ARX_ANONYMOUS_SYMBOL(Name) \
+		BOOST_PP_CAT(BOOST_PP_CAT(Name, _), ARX_TRANSLATION_UNIT)
+#else
+	#define ARX_ANONYMOUS_SYMBOL(Name) Name
+#endif
+
+/*!
+ * \def ARX_ANONYMOUS_NAMESPACE
+ * Name for an "anonymous namespace" that is still unique for each source file in
+ * unity builds.
+ * Usage: \code
+namespace ARX_ANONYMOUS_NAMESPACE {
+	…
+} ARX_END_ANONYMOUS_NAMESPACE \endcode
+ * This is required to avoid name collision and because GCC comlains if a type from
+ * an anonymous namespace is used in a file that isn't the main source file
+ */
+#if defined(ARX_TRANSLATION_UNIT)
+	#define ARX_ANONYMOUS_NAMESPACE  ARX_ANONYMOUS_SYMBOL(arx_tu)
+	#define ARX_END_ANONYMOUS_NAMESPACE using namespace ARX_ANONYMOUS_SYMBOL(arx_tu);
+#else
+	#define ARX_ANONYMOUS_NAMESPACE
+	#define ARX_END_ANONYMOUS_NAMESPACE
+#endif
 
 /*!
  * \def ARRAY_SIZE(a)
