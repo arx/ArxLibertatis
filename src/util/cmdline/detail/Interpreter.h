@@ -40,7 +40,7 @@
 
 namespace util { namespace cmdline { namespace detail {
 
-template<typename OpName, typename TypeCast>
+template <typename OpName, typename TypeCast>
 class interpreter {
 	
 public:
@@ -49,25 +49,25 @@ public:
 	typedef typename op_name_t::value_type  string_type;
 	typedef TypeCast                        type_cast_t;
 	
-	template<typename Handler>
+	template <typename Handler>
 	void add(const Handler &, const op_name_t &);
 	
-	template<typename HndlSign, typename Handler>
+	template <typename HndlSign, typename Handler>
 	void add(const Handler &, const op_name_t &);
 	
 	void erase(const string_type & option_name);
 	
-	template<typename It>
+	template <typename It>
 	void invoke(const string_type & option_name, It & args_begin, It args_optend, It args_end,
 	            type_cast_t &) const;
 	
-	template<typename It>
+	template <typename It>
 	void invoke(const string_type & option_name, It & args_begin, It args_end,
 	            type_cast_t & type_cast) const {
 		invoke(option_name, args_begin, args_end, args_end, type_cast);
 	}
 	
-	template<typename Visitor>
+	template <typename Visitor>
 	void visit(Visitor & visitor) const {
 		do_visit(storage.begin(), storage.end(), visitor);
 	}
@@ -78,7 +78,7 @@ private:
 	
 	typedef lexical_call_t<void(string_type, string_type, type_cast_t)> function_type;
 	
-	template<typename Iter, typename Visitor>
+	template <typename Iter, typename Visitor>
 	void do_visit(Iter begin, Iter end, Visitor & visitor) const {
 		for(; begin != end; ++begin) {
 			visitor(begin->second.key);
@@ -116,7 +116,7 @@ private:
 
 ///////////////////////////////////////////////////////////////////////////////
 
-template<typename StringType, typename TypeCast>
+template <typename StringType, typename TypeCast>
 void interpreter<StringType, TypeCast>::erase(const string_type & option_name) {
 	
 	typename alt_name_t::iterator it(alt_name.find(option_name));
@@ -139,21 +139,21 @@ void interpreter<StringType, TypeCast>::erase(const string_type & option_name) {
 	storage.erase(option_name);
 }
 
-template<typename StringType, typename TypeCast>
-template<typename Handler>
+template <typename StringType, typename TypeCast>
+template <typename Handler>
 void interpreter<StringType, TypeCast>::add(const Handler & handler,
                                             const op_name_t & key) {
 	do_add(function_type::construct(handler), key);
 }
 
-template<typename StringType, typename TypeCast>
-template<typename HndlSign, typename Handler>
+template <typename StringType, typename TypeCast>
+template <typename HndlSign, typename Handler>
 void interpreter<StringType, TypeCast>::add(const Handler & handler,
                                             const op_name_t & key) {
 	do_add(function_type::template construct<HndlSign>(handler), key);
 }
 
-template<typename StringType, typename TypeCast>
+template <typename StringType, typename TypeCast>
 void interpreter<StringType, TypeCast>::do_add(const function_type & handler,
                                                const op_name_t & key) {
 	
@@ -184,8 +184,8 @@ void interpreter<StringType, TypeCast>::do_add(const function_type & handler,
 	}
 }
 
-template<typename StringType, typename TypeCast>
-template<typename It>
+template <typename StringType, typename TypeCast>
+template <typename It>
 void interpreter<StringType, TypeCast>::invoke(const string_type & key,
                                               It & args_begin, It args_optend, It args_end,
                                               type_cast_t & type_cast) const {
