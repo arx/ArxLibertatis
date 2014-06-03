@@ -25,9 +25,6 @@
 
 #include "platform/PlatformConfig.h"
 
-#define ARX_STR_HELPER(x) # x
-#define ARX_STR(x) ARX_STR_HELPER(x)
-
 /* ---------------------------------------------------------
                           Platforms
 ------------------------------------------------------------*/
@@ -60,13 +57,12 @@
 
 // This is used in many places, keep it for now
 #if defined(_MSC_VER)
-#define ARX_COMPILER_MSVC 1
+	#define ARX_COMPILER_MSVC 1
 #else
-#define ARX_COMPILER_MSVC 0
+	#define ARX_COMPILER_MSVC 0
 #endif
 
 #if ARX_COMPILER_MSVC
-	#include <direct.h>
 	#define __func__ __FUNCTION__ // MSVC doesn't know about C99 __func__
 #endif
 
@@ -88,7 +84,7 @@
 	typedef signed long long s64;   // 64 bits signed integer
 	typedef unsigned long long u64; // 64 bits unsigned integer
 	
-#else // ARX_COMPILER_MSVC
+#else
 	
 	#include <stdint.h>
 	
@@ -104,7 +100,7 @@
 	typedef int64_t s64;  // 64 bits signed integer
 	typedef uint64_t u64; // 64 bits unsigned integer
 	
-#endif // ARX_COMPILER_MSVC
+#endif
 
 typedef float f32; // 32 bits float
 typedef double f64; // 64 bits double float
@@ -115,7 +111,8 @@ typedef double f64; // 64 bits double float
 ------------------------------------------------------------*/
 
 /*!
- * ARX_DEBUG_BREAK() - halt execution and notify any attached debugger
+ * \def ARX_DEBUG_BREAK()
+ * \brief Halt execution and notify any attached debugger
  */
 #if ARX_COMPILER_MSVC
 	#define ARX_DEBUG_BREAK() __debugbreak()
@@ -129,15 +126,8 @@ typedef double f64; // 64 bits double float
                 Compiler-specific attributes
 ------------------------------------------------------------*/
 
-//! ARX_DISCARD(...) - Discard parameters from a macro
-#if ARX_COMPILER_MSVC
-	// MS compilers support noop which discards everything inside the parens
-	#define ARX_DISCARD(...) __noop
-#else
-	#define ARX_DISCARD(...) ((void)0)
-#endif
-
 /*!
+ * \def ARX_FORMAT_PRINTF(message_arg, param_vararg)
  * \brief Declare that a function argument is a printf-like format string
  *
  * Usage: T function(args, message, ...) ARX_FORMAT_PRINTF(message_arg, param_vararg)
@@ -150,20 +140,66 @@ typedef double f64; // 64 bits double float
  *  b) Prevent warnings due to a non-literal format string in the implementation
  */
 #if ARX_HAVE_ATTRIBUTE_FORMAT_PRINTF
-#define ARX_FORMAT_PRINTF(message_arg, param_vararg) \
-	__attribute__((format(printf, message_arg, param_vararg)))
+	#define ARX_FORMAT_PRINTF(message_arg, param_vararg) \
+		__attribute__((format(printf, message_arg, param_vararg)))
 #else
-#define ARX_FORMAT_PRINTF(message_arg, param_vararg)
+	#define ARX_FORMAT_PRINTF(message_arg, param_vararg)
 #endif
 
 /* ---------------------------------------------------------
-                     Macro for assertion
+                Helper macros
 ------------------------------------------------------------*/
 
-// Avoid compiling the full source path into release executables
-#if !defined(ARX_FILE)
-#define ARX_FILE __FILE__
+/*!
+ * \def ARX_DISCARD(...)
+ * \brief Discard parameters from a macro
+ */
+#if ARX_COMPILER_MSVC
+	// MS compilers support noop which discards everything inside the parens
+	#define ARX_DISCARD(...) __noop
+#else
+	#define ARX_DISCARD(...) ((void)0)
 #endif
+
+/*!
+ * \def ARX_FILE
+ * \brief Path to the current source file
+ * In release builds this will be defined to the relative path to the current
+ * translation unit to avoid compiling the full source path into release executables.
+ */
+#if !defined(ARX_FILE)
+	#define ARX_FILE __FILE__
+#endif
+
+/*!
+ * \def ARX_STR(x)
+ * \brief Turn argument into a string constant
+ */
+#define ARX_STR_HELPER(x) # x
+#define ARX_STR(x) ARX_STR_HELPER(x)
+
+/*!
+ * \def ARX_UNUSED(x)
+ * \brief Remove warnings about unused but necessary variable
+ *
+ * (unused params, variables only used for asserts...)
+ */
+#define ARX_UNUSED(x) ((void)&x)
+
+
+/*!
+ * \def ARRAY_SIZE(a)
+ * \brief Get the number of items in a static array
+ * This should only be used if the array size needs to be known as a compile-time
+ * constant. For other uses, prefer \ref boost::size()!
+ * TODO add ARX_ prefix
+ */
+#define ARRAY_SIZE(a) \
+	((sizeof(a) / sizeof(*(a))) / static_cast<size_t>(!(sizeof(a) % sizeof(*(a)))))
+
+/* ---------------------------------------------------------
+                          Assertions
+------------------------------------------------------------*/
 
 /*!
  * \brief Log that an assertion has failed
@@ -173,6 +209,13 @@ typedef double f64; // 64 bits double float
 void assertionFailed(const char * expression, const char * file, unsigned line,
                      const char * message = NULL, ...) ARX_FORMAT_PRINTF(4, 5);
 
+/*!
+ * \def arx_assert(Expression, ...)
+ * \brief Abort if \a Expression evaluates to false
+ * You may provide a failure message in printf-like syntax and arguments for it as
+ * as additional arguments after the expression.
+ * Does nothing in release builds.
+ */
 #ifdef ARX_DEBUG
 	#define arx_assert(Expression, ...) { \
 			if(!(Expression)) { \
@@ -185,25 +228,11 @@ void assertionFailed(const char * expression, const char * file, unsigned line,
 		ARX_DISCARD(Expression, ##__VA_ARGS__)
 #endif // ARX_DEBUG
 
-/* ---------------------------------------------------------
-                            Define
-------------------------------------------------------------*/
-
-//! Get the number of items in a static array
-#define ARRAY_SIZE(a) ((sizeof(a) / sizeof(*(a))) / static_cast<size_t>(!(sizeof(a) % sizeof(*(a)))))
-
-/* ---------------------------------------------------------
-                           Pragma
-------------------------------------------------------------*/
-
-#define ARX_DEAD_CODE() arx_assert(false)
-
 /*!
- * \brief Remove warnings about unused but necessary variable
- *
- * (unused params, variables only used for asserts...)
+ * \def ARX_DEAD_CODE()
+ * \brief Assert that a code branch cannot be reached.
  */
-#define ARX_UNUSED(x) ((void)&x)
+#define ARX_DEAD_CODE() arx_assert(false)
 
 /* ---------------------------------------------------------
                       String utilities
