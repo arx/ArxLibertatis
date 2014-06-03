@@ -33,7 +33,7 @@
 
 #ifdef BOOST_PP_IS_ITERATING
 
-template<typename A>
+template <typename A>
 struct arg_impl<A,N> {
 	
 	typedef A BOOST_PP_CAT(BOOST_PP_CAT(arg,N), _t);
@@ -43,7 +43,7 @@ struct arg_impl<A,N> {
 	
 	arg_impl() : BOOST_PP_CAT(arg,N) () { }
 	
-	template<typename T>
+	template <typename T>
 	explicit arg_impl(const T & t) : BOOST_PP_CAT(arg, N)(t) { }
 	
 	explicit arg_impl(const self_t & rh) : BOOST_PP_CAT(arg, N)(rh.BOOST_PP_CAT(arg, N)) { }
