@@ -191,7 +191,7 @@ private:
 	T m_roll;
 };
 
-template<class T> const Angle<T> Angle<T>::ZERO(T(0), T(0), T(0));
+template <class T> const Angle<T> Angle<T>::ZERO(T(0), T(0), T(0));
 
 float AngleDifference(float d, float e);
 
