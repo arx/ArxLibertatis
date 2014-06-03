@@ -453,17 +453,14 @@ void CLightning::Render()
 
 	v2[0].color = v2[1].color = v2[2].color = v2[3].color = Color::white.toBGR();
 
-	float xx;
-	float zz;
-
 	fbeta = fBeta + rnd() * 2 * fMySize;
 
 	for(i = 0; i < nbtotal && i <= fTotoro; i++) {
 		Vec3f astart = cnodetab[cnodetab[i].parent].pos + cnodetab[cnodetab[i].parent].f;
 		float temp = 1.5f * fMySize;
 		Vec3f z_z = cnodetab[cnodetab[i].parent].f + randomVec(-temp, temp);
-		zz = cnodetab[i].size + cnodetab[i].size * 0.3f * rnd();
-		xx = (float)(cnodetab[i].size * cos(radians(-fbeta)));
+		float zz = cnodetab[i].size + cnodetab[i].size * 0.3f * rnd();
+		float xx = (float)(cnodetab[i].size * cos(radians(-fbeta)));
 		cnodetab[i].f = z_z;
 		
 		Vec3f a = cnodetab[i].pos + z_z;

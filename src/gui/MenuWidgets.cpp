@@ -4181,8 +4181,6 @@ void CMenuSlider::Render() {
 
 	Vec2f pos(rZone.left + pLeftButton->GetWidth(), rZone.top);
 	
-	float iTexW = 0;
-
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 
@@ -4194,7 +4192,7 @@ void CMenuSlider::Render() {
 	TextureContainer *pTex = pTex1;
 
 	for(int i = 0; i < 10; i++) {
-		iTexW = 0;
+		float iTexW = 0;
 
 		if(i < iPos) {
 			if(pTex1) {

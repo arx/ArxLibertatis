@@ -381,7 +381,6 @@ void ARX_INTERFACE_DrawNumber(const Vec2f & pos, const long num, const int _iNb,
 	if(inventory_font) {
 		
 		char tx[7];
-		long tt;
 		float ttx;
 		float divideX = 1.f/((float) inventory_font->m_dwWidth);
 		float divideY = 1.f/((float) inventory_font->m_dwHeight);
@@ -391,7 +390,7 @@ void ARX_INTERFACE_DrawNumber(const Vec2f & pos, const long num, const int _iNb,
 
 		for(long i = 0; i < 6 && tx[i] != '\0'; i++) {
 
-			tt = tx[i] - '0';
+			long tt = tx[i] - '0';
 
 			if(tt == 0 && removezero)
 				continue;

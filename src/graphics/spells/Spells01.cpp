@@ -720,14 +720,12 @@ void CIgnit::AddLight(int aiLight)
 
 void CIgnit::Update(unsigned long _ulTime) 
 {
-	float	a;
-
 	if(currduration >= duration) {
 		m_active = false;
 	}
 
 	if(m_active) {
-		a = (((float)currduration)) / ((float)duration);
+		float a = (((float)currduration)) / ((float)duration);
 		
 		if(a >= 1.f)
 			a = 1.f;

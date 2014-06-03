@@ -256,7 +256,6 @@ void CSummonCreature::RenderFissure()
 
 	//-------------------------------------------------------------------------
 	// computation des sommets
-	float fTempCos, fTempSin;
 
 	for(i = 0; i <= std::min(end, int(fSizeIntro)); i++) {
 		if(i <= end * 0.5f)
@@ -264,8 +263,8 @@ void CSummonCreature::RenderFissure()
 		else
 			ff = 1.0f - ((i - (end + 1) * 0.5f) / (end * 0.5f));
 
-		fTempCos = ff * fBetaRadCos;
-		fTempSin = ff * fBetaRadSin;
+		float fTempCos = ff * fBetaRadCos;
+		float fTempSin = ff * fBetaRadSin;
 
 		va[i].p.x   = v1a[i].p.x   + sizeF * fTempCos;
 		va[i].p.y   = v1a[i].p.y;
