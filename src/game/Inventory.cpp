@@ -821,7 +821,6 @@ bool CanBePutInInventory(Entity * io)
 	}
 
 	long sx, sy;
-	long i, j, k, l;
 
 	sx = io->sizex;
 	sy = io->sizey;
@@ -833,8 +832,8 @@ bool CanBePutInInventory(Entity * io)
 	        (sInventoryY >= 0) &&
 	        ((size_t)sInventoryY <= INVENTORY_Y - sy))
 	{
-		j = sInventoryY;
-		i = sInventoryX;
+		long j = sInventoryY;
+		long i = sInventoryX;
 
 		// first try to stack -------------------------------------------------
 		if (player.bag)
@@ -882,16 +881,16 @@ bool CanBePutInInventory(Entity * io)
 
 					if ((sx == 0) || (sy == 0)) valid = false;
 
-					for (k = j; k < j + sy; k++)
-						for (l = i; l < i + sx; l++)
+					for(long k = j; k < j + sy; k++)
+						for(long l = i; l < i + sx; l++)
 						{
 							if (inventory[iNbBag][l][k].io != NULL) valid = false;
 						}
 
 					if (valid)
 					{
-						for (k = j; k < j + sy; k++)
-							for (l = i; l < i + sx; l++)
+						for(long k = j; k < j + sy; k++)
+							for(long l = i; l < i + sx; l++)
 							{
 								inventory[iNbBag][l][k].io = io;
 								inventory[iNbBag][l][k].show = 0;
@@ -1790,7 +1789,6 @@ void CheckForInventoryReplaceMe(Entity * io, Entity * old) {
  */
 bool TakeFromInventory(const Vec2s & pos)
 {
-	long i, j;
 	Entity * io = GetFromInventory(pos);
 	Entity * ioo;
 
@@ -1861,9 +1859,8 @@ bool TakeFromInventory(const Vec2s & pos)
 
 		}
 
-		for (j = 0; j < SecondaryInventory->sizey; j++)
-			for (i = 0; i < SecondaryInventory->sizex; i++)
-			{
+		for(long j = 0; j < SecondaryInventory->sizey; j++)
+			for(long i = 0; i < SecondaryInventory->sizex; i++) {
 				if (SecondaryInventory->slot[i][j].io == io)
 				{
 					SecondaryInventory->slot[i][j].io = NULL;
