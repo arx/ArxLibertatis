@@ -222,8 +222,9 @@ namespace ARX_ANONYMOUS_NAMESPACE {
  * an anonymous namespace is used in a file that isn't the main source file
  */
 #if defined(ARX_TRANSLATION_UNIT)
-	#define ARX_ANONYMOUS_NAMESPACE  ARX_ANONYMOUS_SYMBOL(arx_tu)
-	#define ARX_END_ANONYMOUS_NAMESPACE using namespace ARX_ANONYMOUS_SYMBOL(arx_tu);
+	#define ARX_ANONYMOUS_NAMESPACE ARX_ANONYMOUS_SYMBOL(arx_tu)
+	#define ARX_ANONYMOUS_NAMESPACE_DECL namespace ARX_ANONYMOUS_SYMBOL(arx_tu)
+	#define ARX_END_ANONYMOUS_NAMESPACE using ARX_ANONYMOUS_NAMESPACE_DECL;
 #else
 	#define ARX_ANONYMOUS_NAMESPACE
 	#define ARX_END_ANONYMOUS_NAMESPACE

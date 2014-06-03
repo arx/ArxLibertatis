@@ -69,7 +69,7 @@ class Option : public BaseOption {
 	
 public:
 	
-	Option(ARX_PROGRAM_OPTION_ARGS = NULL)
+	explicit Option(ARX_PROGRAM_OPTION_ARGS = NULL)
 		: BaseOption(longName, shortName, description)
 		, m_handler(handler), m_argNames(args) { }
 	
