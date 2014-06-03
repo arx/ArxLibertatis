@@ -33,7 +33,7 @@
 
 #ifdef BOOST_PP_IS_ITERATING
 
-template<
+template <
 	typename R
 	BOOST_PP_COMMA_IF(N)
 	BOOST_PP_ENUM_PARAMS(N, typename ARG)

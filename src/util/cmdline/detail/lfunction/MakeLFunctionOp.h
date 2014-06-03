@@ -33,7 +33,7 @@
 
 #ifdef BOOST_PP_IS_ITERATING
 
-template<
+template <
 	typename Function,
 	typename T,
 	typename R
