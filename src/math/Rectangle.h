@@ -25,7 +25,7 @@
 #include "math/Vector.h"
 
 // name Rectangle is used in windows headers
-template<class T>
+template <class T>
 class Rectangle_ {
 	
 public:
@@ -202,6 +202,6 @@ public:
 	
 };
 
-template<class T> const Rectangle_<T> Rectangle_<T>::ZERO(T(0), T(0), T(0), T(0));
+template <class T> const Rectangle_<T> Rectangle_<T>::ZERO(T(0), T(0), T(0), T(0));
 
 #endif // ARX_MATH_RECTANGLE_H
