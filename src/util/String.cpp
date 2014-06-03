@@ -31,7 +31,7 @@ std::string loadString(const char * data, size_t maxLength) {
 }
 
 struct character_escaper {
-	template<typename FinderT>
+	template <typename FinderT>
 	std::string operator()(const FinderT & match) const {
 		std::string s;
 		for(typename FinderT::const_iterator i = match.begin(); i != match.end(); i++) {
