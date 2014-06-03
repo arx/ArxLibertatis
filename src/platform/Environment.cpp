@@ -55,7 +55,6 @@
 #if ARX_HAVE_SYSCTL
 #include <sys/types.h>
 #include <sys/sysctl.h>
-#include <fcntl.h>
 #endif
 
 #include <boost/range/size.hpp>
