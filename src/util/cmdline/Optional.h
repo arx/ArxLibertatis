@@ -41,7 +41,7 @@ namespace util { namespace cmdline {
  * It is used to indicate that option parameter isn't required.
  * \param T Type of the elements.
  */
-template<typename T>
+template <typename T>
 struct optional {
 	
 	optional() : m_ptr(0) { }
