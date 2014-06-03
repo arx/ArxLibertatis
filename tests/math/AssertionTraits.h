@@ -30,7 +30,7 @@
 
 namespace CppUnit {
 	
-	template<>
+	template <>
 	struct assertion_traits<glm::quat> {
 		static bool equal(const glm::quat & v, const glm::quat & other) {
 			
@@ -55,7 +55,7 @@ namespace CppUnit {
 		}
 	};
 	
-	template<>
+	template <>
 	struct assertion_traits<Vec3f> {
 		static bool equal(const Vec3f & v, const Vec3f & other) {
 			return glm::all(glm::gtx::epsilon::equalEpsilon(v, other, 0.001f));
@@ -66,7 +66,7 @@ namespace CppUnit {
 		}
 	};
 	
-	template<>
+	template <>
 	struct assertion_traits<Vec4f> {
 		static bool equal(const Vec4f & v, const Vec4f & other) {
 			return glm::all(glm::gtx::epsilon::equalEpsilon(v, other, 0.001f));
@@ -77,7 +77,7 @@ namespace CppUnit {
 		}
 	};
 	
-	template<>
+	template <>
 	struct assertion_traits<glm::mat4x4> {
 		static bool equal(const glm::mat4x4 & mat, const glm::mat4x4 & other) {
 			
