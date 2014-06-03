@@ -190,9 +190,9 @@ typedef double f64; // 64 bits double float
 
 /*!
  * \def ARX_ANONYMOUS_SYMBOL(Name)
- * Make a symbol name specific to the current "translation unit" that is still unique
- * for each source file in unity builds. This should be used for anonymous namespaces
- * or static variables / functions.
+ * \brief Make a symbol name specific to the current "translation unit"
+ * The constructed symbol will still be unique for each source file in unity builds.
+ * This should be used for anonymous namespaces or static variables / functions.
  */
 #if defined(ARX_TRANSLATION_UNIT)
 	#define ARX_ANONYMOUS_SYMBOL(Name) \
@@ -202,9 +202,18 @@ typedef double f64; // 64 bits double float
 #endif
 
 /*!
+ * \def ARX_UNIQUE_SYMBOL(Name)
+ * \brief Make a symbol unique to the current translation unit.
+ * The constructed symbol will still be unique for each source file in unity builds.
+ * May only be used once on each line with the same \a Name.
+ */
+#define ARX_UNIQUE_SYMBOL(Name) \
+	BOOST_PP_CAT(BOOST_PP_CAT(ARX_ANONYMOUS_SYMBOL(Name), _), __LINE__)
+
+/*!
  * \def ARX_ANONYMOUS_NAMESPACE
- * Name for an "anonymous namespace" that is still unique for each source file in
- * unity builds.
+ * \brief Name for an "anonymous namespace"
+ * This ensures the namespace is still unique for each source file in unity builds.
  * Usage: \code
 namespace ARX_ANONYMOUS_NAMESPACE {
 	…
