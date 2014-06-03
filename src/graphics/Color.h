@@ -25,14 +25,14 @@
 
 #include "platform/Platform.h"
 
-template<class T>
+template <class T>
 class Color4;
 
-template<class T>
+template <class T>
 struct ColorLimits {
 	inline static T max() { return std::numeric_limits<T>::max(); }
 };
-template<>
+template <>
 struct ColorLimits<float> {
 	inline static float max() { return 1.f; }
 };
@@ -45,7 +45,7 @@ typedef u32 ColorBGRA;
 /*!
  * A color with red, blue and green components.
  */
-template<class T>
+template <class T>
 class Color3 {
 	
 public:
@@ -99,12 +99,12 @@ public:
 		return T(val & 0xff) * (Limits::max() / ColorLimits<u8>::max());
 	}
 	
-	template<class O>
+	template <class O>
 	inline Color4<O> to(O a = ColorLimits<O>::max()) const {
 		return Color4<O>(scale<O>(r), scale<O>(g), scale<O>(b), a);
 	}
 	
-	template<class O>
+	template <class O>
 	inline static O scale(T val) {
 		return O(val * (ColorLimits<O>::max() / Limits::max()));
 	}
@@ -139,27 +139,27 @@ public:
 	
 };
 
-template<class T>
+template <class T>
 const Color3<T> Color3<T>::black(T(0), T(0), T(0));
-template<class T>
+template <class T>
 const Color3<T> Color3<T>::white(ColorLimits<T>::max(), ColorLimits<T>::max(), ColorLimits<T>::max());
-template<class T>
+template <class T>
 const Color3<T> Color3<T>::red(ColorLimits<T>::max(), T(0), T(0));
-template<class T>
+template <class T>
 const Color3<T> Color3<T>::blue(T(0), T(0), ColorLimits<T>::max());
-template<class T>
+template <class T>
 const Color3<T> Color3<T>::green(T(0), ColorLimits<T>::max(), T(0));
-template<class T>
+template <class T>
 const Color3<T> Color3<T>::yellow(ColorLimits<T>::max(), ColorLimits<T>::max(), T(0));
-template<class T>
+template <class T>
 const Color3<T> Color3<T>::magenta(ColorLimits<T>::max(), T(0), ColorLimits<T>::max());
-template<class T>
+template <class T>
 const Color3<T> Color3<T>::cyan(T(0), ColorLimits<T>::max(), ColorLimits<T>::max());
 
 /*!
  * A color with red, blue, green and alpha components.
  */
-template<class T>
+template <class T>
 class Color4 : public Color3<T> {
 	
 	typedef Color3<T> C3;
@@ -220,12 +220,12 @@ public:
 		return fromBGR(bgra, C3::value(bgra >> 24));
 	}
 	
-	template<class O>
+	template <class O>
 	inline Color4<O> to() const {
 		return C3::to(scale<O>(a));
 	}
 	
-	template<class O>
+	template <class O>
 	inline static O scale(T val) {
 		return O(val * (ColorLimits<O>::max() / Limits::max()));
 	}
@@ -236,7 +236,7 @@ public:
 	
 };
 
-template<class T>
+template <class T>
 const Color4<T> Color4<T>::none(Color3<T>::black, T(0));
 
 
