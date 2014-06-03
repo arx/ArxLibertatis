@@ -60,7 +60,7 @@ struct type_cast;
  * \param TypeCast type of class that is used to convertation StringType to
  *   expected type by option handler.
  */
-template<typename StringType, typename TypeCast = type_cast>
+template <typename StringType, typename TypeCast = type_cast>
 class interpreter : detail::interpreter<key_type<StringType>, TypeCast> {
 	typedef detail::interpreter<key_type<StringType>, TypeCast> super_t;
 	
@@ -97,7 +97,7 @@ public:
 	 *
 	 * \endcode
 	 */
-	template<typename Handler>
+	template <typename Handler>
 	void add(const Handler & handler, const op_name_t & option_name) {
 		super_t::add(handler, option_name);
 	}
@@ -122,7 +122,7 @@ public:
 	 *  l.add<void (A1,...,An)> (object, op_name_t("option_name").description("some info"));
 	 * \endcode
 	 */
-	template<typename HndlSign, typename Handler>
+	template <typename HndlSign, typename Handler>
 	void add(const Handler & handler, const op_name_t & option_name) {
 		super_t::template add<HndlSign>(handler, option_name);
 	}
@@ -143,7 +143,7 @@ public:
 	 * \param visitor An object or pointer to a function.
 	 * \note The visitor has to support call semantic : operator(const op_name_t &).
 	 */
-	template<typename Visitor>
+	template <typename Visitor>
 	void visit(Visitor & visitor) const {
 		super_t::visit(visitor);
 	}
@@ -161,7 +161,7 @@ public:
 	 *            than required arguments or they can't be converted, an exception
 	 *            will be thrown.
 	 */
-	template<typename It>
+	template <typename It>
 	void invoke(const string_type & option_name, It & args_begin, It args_opend, It args_end,
 	            type_cast_t & type_cast) const {
 		super_t::invoke(option_name, args_begin, args_opend, args_end, type_cast);
@@ -179,7 +179,7 @@ public:
 	 *            than required arguments or they can't be converted, an exception
 	 *            will be thrown.
 	 */
-	template<typename It>
+	template <typename It>
 	void invoke(const string_type & option_name, It & args_begin, It args_end,
 	            type_cast_t & type_cast) const {
 		invoke(option_name, args_begin, args_end, args_end, type_cast);
@@ -202,7 +202,7 @@ public:
 namespace detail {
 // visitor for command_line::interpreter.
 
-template<typename Interpreter>
+template <typename Interpreter>
 struct opname_size {
 	
 	Interpreter const * interpreter;
@@ -214,7 +214,7 @@ struct opname_size {
 		, value(0)
 	{ }
 	
-	template<typename Key>
+	template <typename Key>
 	void operator()(Key & key) {
 		typename Key::const_iterator it(key.begin()) , end(key.end());
 		
@@ -240,7 +240,7 @@ struct opname_size {
 	
 };
 
-template<typename Stream, typename Interpreter>
+template <typename Stream, typename Interpreter>
 struct print_op_t {
 	
 	Stream * stream_;
@@ -254,7 +254,7 @@ struct print_op_t {
 		, offset(offset)
 	{ }
 	
-	template<typename Key>
+	template <typename Key>
 	void align(Key & key) const {
 		opname_size<Interpreter> tmp(*interpreter);
 		tmp(key);
@@ -263,7 +263,7 @@ struct print_op_t {
 			(*stream_) << " ";
 	}
 	
-	template<typename Key>
+	template <typename Key>
 	void operator()(Key & key) const {
 		typename Key::const_iterator it(key.begin()) , end(key.end());
 		
@@ -292,7 +292,7 @@ struct print_op_t {
 	}
 };
 
-template<typename OStream, typename Interpreter>
+template <typename OStream, typename Interpreter>
 void print_op(OStream & os, const Interpreter & interpreter) {
 	opname_size<Interpreter> calc_size(interpreter);
 	interpreter.visit(calc_size);
@@ -303,7 +303,7 @@ void print_op(OStream & os, const Interpreter & interpreter) {
 
 } // namespace detail
 
-template<typename CharType, typename StringType, typename TypeCast>
+template <typename CharType, typename StringType, typename TypeCast>
 std::basic_ostream<CharType> & operator<<(std::basic_ostream<CharType> & os,
                                           const interpreter<StringType,TypeCast> & l) {
 	return detail::print_op(os, l), os;
