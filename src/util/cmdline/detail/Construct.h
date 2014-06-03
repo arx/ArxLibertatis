@@ -38,13 +38,13 @@
 
 namespace util { namespace cmdline {
 
-template<typename T, typename Alloc>
+template <typename T, typename Alloc>
 class ellipsis;
 
-template<typename T>
+template <typename T>
 struct optional;
 
-template<typename SourceType, typename R>
+template <typename SourceType, typename R>
 R construct(SourceType & arg , const R * = 0) {
 	
 	if(arg.empty()) {
@@ -56,7 +56,7 @@ R construct(SourceType & arg , const R * = 0) {
 	return ret;
 }
 
-template<typename SourceType, typename P, typename Alloc>
+template <typename SourceType, typename P, typename Alloc>
 ellipsis<P, Alloc> construct(SourceType & arg, const ellipsis<P, Alloc> * = 0) {
 	
 	ellipsis<P, Alloc> ret;
@@ -68,7 +68,7 @@ ellipsis<P, Alloc> construct(SourceType & arg, const ellipsis<P, Alloc> * = 0) {
 	return ret;
 }
 
-template<typename SourceType, typename T>
+template <typename SourceType, typename T>
 optional<T> construct(SourceType & arg, const optional<T> * = 0) {
 	
 	if(arg.opt_empty()) {
