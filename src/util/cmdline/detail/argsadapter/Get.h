@@ -33,9 +33,9 @@
 
 #ifdef BOOST_PP_IS_ITERATING
 
-template<>
+template <>
 struct get_t<N> {
-	template<typename  R, typename T>
+	template <typename  R, typename T>
 	static R get(T & t) { return t.BOOST_PP_CAT(arg, N); }
 };
 
