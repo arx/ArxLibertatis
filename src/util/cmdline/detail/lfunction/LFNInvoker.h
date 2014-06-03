@@ -35,12 +35,12 @@
 
 namespace detail {
 
-template<typename R BOOST_PP_COMMA_IF(N) BOOST_PP_ENUM_PARAMS(N, typename ARG)>
+template <typename R BOOST_PP_COMMA_IF(N) BOOST_PP_ENUM_PARAMS(N, typename ARG)>
 struct lfn_invoker<R(BOOST_PP_ENUM_PARAMS(N, ARG))> {
 	typedef R result_type;
 	static const size_t argument_count = N;
 	
-	template<typename Function, typename Args>
+	template <typename Function, typename Args>
 	R operator()(Function & function, Args & args) const {
 		
 		#define BOOST_COMMAND_LINE_LFN_INVOKER(unused_1, i, unused_2) \
@@ -52,12 +52,12 @@ struct lfn_invoker<R(BOOST_PP_ENUM_PARAMS(N, ARG))> {
 	}
 };
 
-template<BOOST_PP_ENUM_PARAMS(N, typename ARG)>
+template <BOOST_PP_ENUM_PARAMS(N, typename ARG)>
 struct lfn_invoker<void(BOOST_PP_ENUM_PARAMS(N, ARG))> {
 	typedef void result_type;
 	static const size_t argument_count = N;
 	
-	template<typename Function, typename Args>
+	template <typename Function, typename Args>
 	void operator()(Function & function, Args & args) const {
 		
 		#define BOOST_COMMAND_LINE_LFN_INVOKER(unused_1, i, unused_2) \
