@@ -32,7 +32,7 @@ typedef Angle<s32> Anglei;
 typedef Angle<float> Anglef;
 typedef Angle<double> Angled;
 
-template<class T>
+template <class T>
 class Rectangle_;
 typedef Rectangle_<s32> Rect;
 typedef Rectangle_<float> Rectf;
