@@ -50,7 +50,7 @@ namespace util { namespace cmdline {
  * allocation model. By default, the allocator class template for type T
  * is equal to the default allocator class for std::vector<T>
  */
-template<typename T, typename Alloc = typename std::vector<T>::allocator_type>
+template <typename T, typename Alloc = typename std::vector<T>::allocator_type>
 class ellipsis : std::vector<T, Alloc> {
 	
 	typedef std::vector<T> super_t;
@@ -102,7 +102,7 @@ public:
 		: super_t(s,v,a) {
 	}
 	
-	template<typename Iter>
+	template <typename Iter>
 	ellipsis(Iter b, Iter e, const allocator_type & a = allocator_type())
 		: super_t(b,e,a) {
 	}
