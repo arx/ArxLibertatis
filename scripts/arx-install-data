@@ -58,7 +58,7 @@ if [ -t 1 ] && [ "$(tput colors 2> /dev/null)" != -1 ] ; then
 	  dim_cyan="$(printf '\033[0;36m')"
 	 dim_white="$(printf '\033[0;37m')"
 	
-	     reset="$(printf '\033[0m')"
+	     reset="$(printf '\033[m')"
 fi
 
 
