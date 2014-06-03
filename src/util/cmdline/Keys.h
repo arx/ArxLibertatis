@@ -44,7 +44,7 @@ namespace util { namespace cmdline {
  * This class is used as default type to store the name of an option,
  * its alternative names and description.
  */
-template<typename StringType>
+template <typename StringType>
 class key_type : std::vector<StringType> {
 	
 	typedef std::vector<StringType> super_t;
