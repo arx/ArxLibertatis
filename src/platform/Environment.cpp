@@ -406,8 +406,8 @@ bool isFileDescriptorDisabled(int fd) {
 		return false;
 	}
 	
-	HANDLE handle = GetStdHandle(names[fd]);
-	if(handle == INVALID_HANDLE_VALUE || handle == NULL) {
+	HANDLE h = GetStdHandle(names[fd]);
+	if(h == INVALID_HANDLE_VALUE || h == NULL) {
 		return true; // Not a valid handle
 	}
 	
