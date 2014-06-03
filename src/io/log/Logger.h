@@ -98,7 +98,7 @@ public:
 	inline Logger(const char * _file, int _line, LogLevel _level)
 	       : file(_file), line(_line), level(_level), enabled(isEnabled(_file, _level)) { }
 	
-	template<class T>
+	template <class T>
 	inline Logger & operator<<(const T & i) {
 		if(enabled) {
 			buffer << i;
