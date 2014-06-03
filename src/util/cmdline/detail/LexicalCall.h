@@ -41,10 +41,10 @@
 
 namespace util { namespace cmdline {
 
-template<typename FnSign>
+template <typename FnSign>
 class lexical_call_t;
 
-template<typename _Result, typename _Args>
+template <typename _Result, typename _Args>
 class lexical_call_t<_Result(_Args)> {
 	
 	typedef lexical_call_t<_Result(_Args)> self_t;
@@ -54,28 +54,28 @@ public:
 	typedef _Args argument_type;
 	typedef _Result result_type;
 	
-	template<typename FnSign, typename Function>
+	template <typename FnSign, typename Function>
 	static self_t construct(const Function & fn) {
 		self_t ret;
 		ret.set_(make_lfunction<FnSign>(fn));
 		return ret;
 	}
 	
-	template<typename Function>
+	template <typename Function>
 	static self_t construct(Function * fn) {
 		self_t ret;
 		ret.set_(make_lfunction(fn));
 		return ret;
 	}
 	
-	template<typename FnSign, typename Function>
+	template <typename FnSign, typename Function>
 	static self_t construct(Function * fn) {
 		self_t ret;
 		ret.set_(make_lfunction<FnSign>(fn));
 		return ret;
 	}
 	
-	template<typename Function>
+	template <typename Function>
 	static self_t construct(const Function & fn) {
 		self_t ret;
 		ret.set_(make_lfunction(fn, &Function::operator()));
@@ -97,7 +97,7 @@ public:
 	
 private:
 	
-	template<typename Fn>
+	template <typename Fn>
 	struct proxy_function {
 		
 		Fn fn;
@@ -113,7 +113,7 @@ private:
 		
 	};
 	
-	template<typename Function>
+	template <typename Function>
 	void set_(const Function & fn) {
 		function = proxy_function<Function>(fn);
 	}
@@ -124,7 +124,7 @@ private:
 	
 };
 
-template<typename _Result, typename _ValueType, typename _TypeCast>
+template <typename _Result, typename _ValueType, typename _TypeCast>
 class lexical_call_t<_Result(_ValueType, _ValueType, _TypeCast)> {
 	
 	typedef _TypeCast type_cast_t;
@@ -135,7 +135,7 @@ class lexical_call_t<_Result(_ValueType, _ValueType, _TypeCast)> {
 		
 		explicit Args(type_cast_t & cast) : m_cast(cast) { }
 		
-		template<typename R>
+		template <typename R>
 		R front() {
 			return m_cast.template cast<R>(v_front());
 		}
@@ -194,39 +194,39 @@ public:
 	
 	lexical_call_t() : m_impl() { }
 	
-	template<typename FnSign, typename Function>
+	template <typename FnSign, typename Function>
 	static self_t construct(const Function & fn) {
 		return self_t(impl_t::template construct<FnSign>(fn));
 	}
 	
-	template<typename Function>
+	template <typename Function>
 	static self_t construct(Function * fn) {
 		return self_t(impl_t::construct(fn));
 	}
 	
-	template<typename Function>
+	template <typename Function>
 	static self_t construct(const Function & fn) {
 		return self_t(impl_t::construct(fn));
 	}
 	
-	template<typename Iterator>
+	template <typename Iterator>
 	_Result operator()(Iterator & begin, Iterator optend, Iterator end, _TypeCast & cast) {
 		VArgs<Iterator> args(cast, begin, optend, end);
 		return m_impl(args); 
 	}
 	
-	template<typename Iterator>
+	template <typename Iterator>
 	_Result operator()(Iterator & begin, Iterator optend, Iterator end, _TypeCast & cast) const {
 		VArgs<Iterator> args(cast, begin, optend, end);
 		return m_impl(args); 
 	}
 	
-	template<typename Iterator>
+	template <typename Iterator>
 	_Result operator()(Iterator & begin, Iterator end, _TypeCast & cast) {
 		return operator()(begin, end, end, cast); 
 	}
 	
-	template<typename Iterator>
+	template <typename Iterator>
 	_Result operator()(Iterator & begin, Iterator end, _TypeCast & cast) const {
 		return operator()(begin, end, end, cast); 
 	}
