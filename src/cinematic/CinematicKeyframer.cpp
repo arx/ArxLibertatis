@@ -805,11 +805,11 @@ float GetTimeKeyFramer()
 		return 0.f;
 
 	float t = 0.f;
-	C_KEY * k = CKTrack->key, *ksuiv;
+	C_KEY * k = CKTrack->key;
 	int nb = CKTrack->nbkey - 1;
 
 	while(nb--) {
-		ksuiv = k + 1;
+		C_KEY * ksuiv = k + 1;
 		t += ((float)(ksuiv->frame - k->frame)) / (CKTrack->fps * k->speedtrack);
 		k++;
 	}

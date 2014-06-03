@@ -271,7 +271,7 @@ void AddQuadUVs(CinematicGrid * grille, int depcx, int depcy, int tcx, int tcy, 
 
 CinematicBitmap* CreateCinematicBitmap(const res::path & path, int scale) {
 
-	int nbx, nby, w, h, num;
+	int nbx, nby, h, num;
 	CinematicBitmap	* bi;
 	
 	string name = path.basename();
@@ -337,7 +337,7 @@ CinematicBitmap* CreateCinematicBitmap(const res::path & path, int scale) {
 		else
 			h2 = MaxH;
 
-		w = bi->w;
+		int w = bi->w;
 		int nbxx = nbx;
 
 		while(nbxx) {

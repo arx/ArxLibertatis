@@ -686,7 +686,6 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 
 	Vec3f * v0;
 	EXCEPTIONS_LIST_Pos = 0;
-	float rad;
 
 	long nbact = io_weapon->obj->actionlist.size();
 	float drain_life = ARX_EQUIPMENT_GetSpecialValue(io_weapon, IO_SPECIAL_ELEM_DRAIN_LIFE);
@@ -697,7 +696,7 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 		if(!ValidIONum(weapon))
 			return false;
 
-		rad = GetHitValue(io_weapon->obj->actionlist[j].name);
+		float rad = GetHitValue(io_weapon->obj->actionlist[j].name);
 
 		if(rad == -1)
 			continue;
