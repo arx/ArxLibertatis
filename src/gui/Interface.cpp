@@ -132,7 +132,7 @@ static void hideQuickSaveIcon();
 long Manage3DCursor(bool simulate);
 long IN_BOOK_DRAW=0;
 
-extern long LastSelectedIONum;
+extern EntityHandle LastSelectedIONum;
 
 //-----------------------------------------------------------------------------
 struct ARX_INTERFACE_HALO_STRUCT
@@ -6854,10 +6854,10 @@ void ArxGame::manageEditorControls() {
 			if(io) {
 				LastSelectedIONum = io->index();
 			} else {
-				if(LastSelectedIONum == -1)
-					LastSelectedIONum = 0;
+				if(LastSelectedIONum == InvalidEntityHandle)
+					LastSelectedIONum = PlayerEntityHandle;
 				else
-					LastSelectedIONum = -1;
+					LastSelectedIONum = InvalidEntityHandle;
 			}
 		}
 	}
