@@ -44,27 +44,27 @@
 
 namespace util { namespace cmdline { namespace detail {
 
-template<typename FS>
+template <typename FS>
 struct args_adapter_impl;
 
-template<typename T, int>
+template <typename T, int>
 struct type_impl;
 
-template<int>
+template <int>
 struct get_t;
 
-template<typename FS>
+template <typename FS>
 struct args_adapter {
 	
 	typedef args_adapter_impl<FS> impl_t;
 	
 public:
-	template<typename SourceType>
+	template <typename SourceType>
 	explicit args_adapter(SourceType& source)
 		: m_impl(source) {
 	}
 	
-	template<int N>
+	template <int N>
 	typename type_impl<impl_t,N>::result& get() {
 		typedef typename type_impl<impl_t,N>::result result;
 		return get_t<N>::template get<result&>(m_impl); 
@@ -74,7 +74,7 @@ private:
 	impl_t m_impl;
 };
 
-template<typename A, int>
+template <typename A, int>
 struct arg_impl;
 
 #define BOOST_PP_FILENAME_1                  "util/cmdline/detail/argsadapter/Preprocessed.h"
