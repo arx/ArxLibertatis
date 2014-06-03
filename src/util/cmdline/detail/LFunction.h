@@ -44,11 +44,11 @@
 namespace util { namespace cmdline {
 
 namespace detail {
-	template<typename FnSign>
+	template <typename FnSign>
 	struct lfn_invoker;
 } // namespace detail
 
-template<typename FnSign, typename Function>
+template <typename FnSign, typename Function>
 struct lfunction {
 	typedef FnSign                          signature;
 	typedef detail::lfn_invoker<signature>  lfn_invoker;
@@ -58,13 +58,13 @@ struct lfunction {
 	explicit lfunction(Function const & function) : function(function) {
 	}
 	
-	template<typename Args>
+	template <typename Args>
 	typename lfn_invoker::result_type operator()(Args & args) {
 		return lfn_invoker()(function, args);
 	}
 };
 
-template<typename FnSign, typename Function>
+template <typename FnSign, typename Function>
 lfunction<FnSign,Function> make_lfunction(Function const& fn) {
 	return lfunction<FnSign, Function>(fn);
 }
