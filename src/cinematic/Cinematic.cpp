@@ -80,7 +80,6 @@ static float OldSpeedFlashBlanc;
 static int OldColorFlashBlanc;
 
 extern float	FlashAlpha;
-extern float SpecialFadeDx;
 
 extern Rect g_size;
 
@@ -539,10 +538,6 @@ void Cinematic::Render(float FDIFF) {
 			}
 			OldSpeedFlashBlanc = speed;
 			OldColorFlashBlanc = colorflash;
-		}
-		
-		if(changekey) {
-			SpecialFadeDx = 0.f;
 		}
 		
 		if(changekey) {

@@ -57,7 +57,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 /*---------------------------------------------------------------------------------*/
 #define		NBOLDPOS	10
 /*---------------------------------------------------------------------------------*/
-float		SpecialFadeDx;
 float		FlashAlpha;
 int			TotOldPos;
 static Vec3f OldPos[NBOLDPOS];
