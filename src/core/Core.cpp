@@ -184,8 +184,6 @@ extern long		TOTPDL;
 extern long		COLLIDED_CLIMB_POLY;
 
 extern bool		PLAYER_MOUSELOOK_ON;
-extern bool bFadeInOut;
-extern 	bool bFade;			//active le fade
 
 
 
