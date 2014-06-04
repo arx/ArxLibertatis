@@ -98,8 +98,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 using std::max;
 using std::string;
 
-extern long DONT_ERASE_PLAYER;
-
 extern bool bGCroucheToggle;
 
 #if BUILD_EDIT_LOADSAVE
