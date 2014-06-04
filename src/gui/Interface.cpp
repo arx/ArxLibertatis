@@ -175,8 +175,6 @@ extern unsigned long WILLADDSPEECHTIME;
 
 extern unsigned char ucFlick;
 
-extern TextManager *pTextManageFlyingOver;
-
 bool IsPlayerStriking();
 
 extern bool SHOW_INGAME_MINIMAP;
