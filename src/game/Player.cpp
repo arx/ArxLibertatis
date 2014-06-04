@@ -1856,7 +1856,6 @@ void ForcePlayerLookAtIO(Entity * io) {
 	player.angle.setRoll(0);
 	player.desiredangle = player.angle;
 }
-extern long CURRENT_BASE_FOCAL;
 
 /*!
  * \brief Updates Many player infos each frame
