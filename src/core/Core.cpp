@@ -259,7 +259,6 @@ Vec2f g_sizeRatio(1.f, 1.f);
 
 long CurrFightPos=0;
 long NO_PLAYER_POSITION_RESET=0;
-long CURRENT_BASE_FOCAL=310;
 
 float BOW_FOCAL=0;
 long PlayerWeaponBlocked=-1;

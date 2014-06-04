@@ -171,7 +171,7 @@ extern long PLAYER_PARALYSED;
 extern long DeadTime;
 extern long LaunchDemo;
 
-extern long CURRENT_BASE_FOCAL;
+static const float CURRENT_BASE_FOCAL = 310.f;
 extern float BOW_FOCAL;
 
 extern float GLOBAL_SLOWDOWN;
@@ -1598,7 +1598,7 @@ void ArxGame::render() {
 	subj.orgTrans.mod = Vec2f(subj.center);
 
 	// Finally computes current focal
-	BASE_FOCAL = (float)CURRENT_BASE_FOCAL + (BOW_FOCAL * (1.f/4));
+	BASE_FOCAL = CURRENT_BASE_FOCAL + (BOW_FOCAL * (1.f/4));
 
 	// SPECIFIC code for Snapshot MODE... to insure constant capture framerate
 
