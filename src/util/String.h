@@ -46,6 +46,34 @@ std::string escapeString(const std::string & text, const char * escapeChars);
 //! Remove surrounding quotes and replace escape code with their values.
 std::string unescapeString(const std::string & text);
 
+template <class CTYPE, class STYPE>
+inline CTYPE * safeGetString(CTYPE * & pos, STYPE & size) {	
+	
+	CTYPE * begin = pos;
+	
+	for(size_t i = 0; i < size; i++) {
+		if(pos[i] == 0) {
+			size -= i + 1;
+			pos += i + 1;
+			return begin;
+		}
+	}
+	
+	return NULL;
+}
+
+template <class T, class CTYPE, class STYPE>
+inline bool safeGet(T & data, CTYPE * & pos, STYPE & size) {
+	
+	if(size < sizeof(T)) {
+		return false;
+	}
+	data = *reinterpret_cast<const T *>(pos);
+	pos += sizeof(T);
+	size -= sizeof(T);
+	return true;
+}
+
 } // namespace util
 
 #endif // ARX_UTIL_STRING_H

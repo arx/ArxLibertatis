@@ -34,6 +34,8 @@
 #include "io/fs/Filesystem.h"
 #include "io/fs/FileStream.h"
 
+#include "util/String.h"
+
 namespace {
 
 const size_t PAK_READ_BUF_SIZE = 1024;
@@ -493,7 +495,7 @@ bool PakReader::addArchive(const fs::path & pakfile) {
 	
 	while(fat_size) {
 		
-		char * dirname = safeGetString(pos, fat_size);
+		char * dirname = util::safeGetString(pos, fat_size);
 		if(!dirname) {
 			LogError << pakfile << ": error reading directory name from FAT, wrong key?";
 			goto error;
@@ -502,14 +504,14 @@ bool PakReader::addArchive(const fs::path & pakfile) {
 		PakDirectory * dir = addDirectory(res::path::load(dirname));
 		
 		u32 nfiles;
-		if(!safeGet(nfiles, pos, fat_size)) {
+		if(!util::safeGet(nfiles, pos, fat_size)) {
 			LogError << pakfile << ": error reading file count from FAT, wrong key?";
 			goto error;
 		}
 		
 		while(nfiles--) {
 			
-			char * filename =  safeGetString(pos, fat_size);
+			char * filename =  util::safeGetString(pos, fat_size);
 			if(!filename) {
 				LogError << pakfile << ": error reading file name from FAT, wrong key?";
 				goto error;
@@ -522,8 +524,9 @@ bool PakReader::addArchive(const fs::path & pakfile) {
 			u32 flags;
 			u32 uncompressedSize;
 			u32 size;
-			if(!safeGet(offset, pos, fat_size) || !safeGet(flags, pos, fat_size)
-			   || !safeGet(uncompressedSize, pos, fat_size) || !safeGet(size, pos, fat_size)) {
+			if(!util::safeGet(offset, pos, fat_size) || !util::safeGet(flags, pos, fat_size)
+			   || !util::safeGet(uncompressedSize, pos, fat_size)
+				 || !util::safeGet(size, pos, fat_size)) {
 				LogError << pakfile << ": error reading file attributes from FAT, wrong key?";
 				goto error;
 			}

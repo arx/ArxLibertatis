@@ -53,20 +53,18 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <boost/algorithm/string/predicate.hpp>
 
 #include "cinematic/Cinematic.h"
+#include "cinematic/CinematicFormat.h"
 #include "cinematic/CinematicKeyframer.h"
+#include "cinematic/CinematicTexture.h"
+#include "cinematic/CinematicSound.h"
 
 #include "core/Config.h"
-
-#include "cinematic/CinematicTexture.h"
 
 #include "io/resource/PakReader.h"
 #include "io/log/Logger.h"
 #include "io/resource/ResourcePath.h"
-#include "cinematic/CinematicFormat.h"
 
-#include "platform/Platform.h"
-
-#include "cinematic/CinematicSound.h"
+#include "util/String.h"
 
 extern C_KEY KeyTemp;
 
@@ -151,7 +149,7 @@ bool loadCinematic(Cinematic * c, const res::path & file) {
 
 bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 	
-	const char * cinematicId = safeGetString(data, size);
+	const char * cinematicId = util::safeGetString(data, size);
 	if(!cinematicId) {
 		LogError << "Error parsing file magic number";
 		return false;
@@ -163,7 +161,7 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 	}
 	
 	s32 version;
-	if(!safeGet(version, data, size)) {
+	if(!util::safeGet(version, data, size)) {
 		LogError << "Error reading file version";
 		return false;
 	}
@@ -179,11 +177,11 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 	}
 	
 	// Ignore a string.
-	safeGetString(data, size);
+	util::safeGetString(data, size);
 	
 	// Load bitmaps.
 	s32 nbitmaps;
-	if(!safeGet(nbitmaps, data, size)) {
+	if(!util::safeGet(nbitmaps, data, size)) {
 		LogError << "Error reading bitmap count";
 		return false;
 	}
@@ -194,12 +192,12 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 	for(int i = 0; i < nbitmaps; i++) {
 		
 		s32 scale = 0;
-		if(!safeGet(scale, data, size)) {
+		if(!util::safeGet(scale, data, size)) {
 			LogError << "Error reading bitmap scale";
 			return false;
 		}
 		
-		const char * str = safeGetString(data, size);
+		const char * str = util::safeGetString(data, size);
 		if(!str) {
 			LogError << "Error reading bitmap path";
 			return false;
@@ -217,7 +215,7 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 	
 	// Load sounds.
 	s32 nsounds;
-	if(!safeGet(nsounds, data, size)) {
+	if(!util::safeGet(nsounds, data, size)) {
 		LogError << "Error reading sound count";
 		return false;
 	}
@@ -227,13 +225,13 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 		
 		if(version >= CINEMATIC_VERSION_1_76) {
 			s16 ignored;
-			if(!safeGet(ignored, data, size)) {
+			if(!util::safeGet(ignored, data, size)) {
 				LogError << "Error reading sound id";
 				return false;
 			}
 		}
 		
-		const char * str = safeGetString(data, size);
+		const char * str = util::safeGetString(data, size);
 		if(!str) {
 			LogError << "Error reading sound path";
 			return false;
@@ -248,7 +246,7 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 	// Load track and keys.
 	
 	SavedCinematicTrack t;
-	if(!safeGet(t, data, size)) {
+	if(!util::safeGet(t, data, size)) {
 		LogError << "Error reading track";
 		return false;
 	}
@@ -263,7 +261,7 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 		if(version <= CINEMATIC_VERSION_1_75) {
 			
 			C_KEY_1_75 k175;
-			if(!safeGet(k175, data, size)) {
+			if(!util::safeGet(k175, data, size)) {
 				LogError << "Error reading key v1.75";
 				return false;
 			}
@@ -289,7 +287,7 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 		} else {
 			
 			C_KEY_1_76 k176;
-			if(!safeGet(k176, data, size)) {
+			if(!util::safeGet(k176, data, size)) {
 				LogError << "Error reading key v1.76";
 				return false;
 			}

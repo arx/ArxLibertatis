@@ -277,38 +277,4 @@ void assertionFailed(const char * expression, const char * file, unsigned line,
  */
 #define ARX_DEAD_CODE() arx_assert(false)
 
-/* ---------------------------------------------------------
-                      String utilities
-------------------------------------------------------------*/
-
-// TODO move into a separate header
-
-template <class CTYPE, class STYPE>
-inline CTYPE * safeGetString(CTYPE * & pos, STYPE & size) {	
-	
-	CTYPE * begin = pos;
-	
-	for(size_t i = 0; i < size; i++) {
-		if(pos[i] == 0) {
-			size -= i + 1;
-			pos += i + 1;
-			return begin;
-		}
-	}
-	
-	return NULL;
-}
-
-template <class T, class CTYPE, class STYPE>
-inline bool safeGet(T & data, CTYPE * & pos, STYPE & size) {
-	
-	if(size < sizeof(T)) {
-		return false;
-	}
-	data = *reinterpret_cast<const T *>(pos);
-	pos += sizeof(T);
-	size -= sizeof(T);
-	return true;
-}
-
 #endif // ARX_PLATFORM_PLATFORM_H
