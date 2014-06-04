@@ -68,7 +68,6 @@ static const float PATHFINDER_DISTANCE_MAX = 5000.0f;
 // Pathfinder Definitions
 static unsigned long PATHFINDER_UPDATE_INTERVAL = 10;
 
-PATHFINDER_REQUEST pr;
 long PATHFINDER_WORKING = 0;
 
 class PathFinderThread : public StoppableThread {
@@ -253,9 +252,9 @@ void PathFinderThread::run() {
 
 		PATHFINDER_WORKING = 1;
 
-		if (EERIE_PATHFINDER_Get_Next_Request(pr) && pr.isvalid)
+		PATHFINDER_REQUEST curpr;
+		if (EERIE_PATHFINDER_Get_Next_Request(curpr) && curpr.isvalid)
 		{
-			PATHFINDER_REQUEST curpr = pr;
 			PATHFINDER_WORKING = 2;
 
 			if (curpr.ioid && curpr.ioid->_npcdata)
