@@ -91,7 +91,7 @@ extern Color ulBKGColor;
 // List of TO-TREAT vertex for MIPMESHING
 
 // TODO: Convert to a RenderBatch & make TextureContainer constructor private
-TextureContainer TexSpecialColor("specialcolor_list", TextureContainer::NoInsert);
+static TextureContainer TexSpecialColor("specialcolor_list", TextureContainer::NoInsert);
 
 TexturedVertex * PushVertexInTable(TextureContainer *pTex, TextureContainer::TransparencyType type)
 {
@@ -226,8 +226,6 @@ void PopAllTriangleListTransparency() {
 
 
 extern long BH_MODE;
-
-extern TextureContainer TexSpecialColor;
 
 extern bool EXTERNALVIEW;
 
