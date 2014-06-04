@@ -68,7 +68,7 @@ EERIE_LIGHT DynLight[MAX_DYNLIGHTS];
 EERIE_LIGHT * PDL[MAX_DYNLIGHTS];
 long TOTPDL = 0;
 
-EERIE_LIGHT * IO_PDL[MAX_DYNLIGHTS];
+static EERIE_LIGHT * IO_PDL[MAX_DYNLIGHTS];
 long TOTIOPDL = 0;
 
 void ColorMod::updateFromEntity(Entity *io, bool inBook) {

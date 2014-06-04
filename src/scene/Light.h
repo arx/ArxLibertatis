@@ -71,7 +71,6 @@ extern long MAX_LLIGHTS;
 extern EERIE_LIGHT * PDL[MAX_DYNLIGHTS];
 extern EERIE_LIGHT * GLight[MAX_LIGHTS];
 extern EERIE_LIGHT DynLight[MAX_DYNLIGHTS];
-extern EERIE_LIGHT * IO_PDL[MAX_DYNLIGHTS];
 extern long TOTPDL;
 extern long TOTIOPDL;
 
