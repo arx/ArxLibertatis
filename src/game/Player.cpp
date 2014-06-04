@@ -1856,7 +1856,6 @@ void ForcePlayerLookAtIO(Entity * io) {
 	player.angle.setRoll(0);
 	player.desiredangle = player.angle;
 }
-extern float PLAYER_ARMS_FOCAL;
 extern long CURRENT_BASE_FOCAL;
 
 /*!
@@ -1915,8 +1914,6 @@ void ARX_PLAYER_Frame_Update()
 		if((player.Interface & INTER_COMBATMODE) || player.doingmagic == 2)
 			extraRotation->flags &= ~EXTRA_ROTATE_REALISTIC;
 	}
-
-	PLAYER_ARMS_FOCAL = static_cast<float>(CURRENT_BASE_FOCAL);
 
 	ARX_PLAYER_ComputePlayerFullStats();
 

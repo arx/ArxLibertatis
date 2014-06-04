@@ -206,8 +206,6 @@ long ARX_CONVERSATION_LASTIS=-1;
 static bool LAST_CONVERSATION = 0;
 bool SHOW_INGAME_MINIMAP = true;
 
-float PLAYER_ARMS_FOCAL = 350.f;
-
 bool ARX_FLARES_Block = true;
 
 Vec3f LASTCAMPOS;
