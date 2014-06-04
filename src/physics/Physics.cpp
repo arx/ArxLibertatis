@@ -68,7 +68,7 @@ extern bool IsValidPos3(Vec3f * pos);
 static EERIEPOLY * LAST_COLLISION_POLY = NULL;
 extern long CUR_COLLISION_MATERIAL;
 
-float VELOCITY_THRESHOLD = 850.f;
+static const float VELOCITY_THRESHOLD = 400.f;
 
 void ARX_ApplySpring(PHYSVERT * phys, long k, long l, float PHYSICS_constant,
 					 float PHYSICS_Damp) {
@@ -460,7 +460,6 @@ static bool ARX_EERIE_PHYSICS_BOX_Compute(EERIE_3DOBJ * obj, float framediff, En
 
 long ARX_PHYSICS_BOX_ApplyModel(EERIE_3DOBJ * obj, float framediff, float rubber, EntityHandle source) {
 
-	VELOCITY_THRESHOLD = 400.f;
 	long ret = 0;
 
 	if(!obj || !obj->pbox)
