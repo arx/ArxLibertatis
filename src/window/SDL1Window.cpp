@@ -74,7 +74,7 @@ bool SDL1Window::initializeFramework() {
 	const SDL_version * ver = SDL_Linked_Version();
 	std::ostringstream runtimeVersion;
 	runtimeVersion << int(ver->major) << '.' << int(ver->minor) << '.' << int(ver->patch);
-	CrashHandler::setVariable("SDL version", runtimeVersion.str());
+	CrashHandler::setVariable("SDL version (runtime)", runtimeVersion.str());
 	LogInfo << "Using SDL " << runtimeVersion.str();
 	
 	const SDL_VideoInfo * vid = SDL_GetVideoInfo();

@@ -96,7 +96,7 @@ bool SDL2Window::initializeFramework() {
 	SDL_GetVersion(&ver);
 	std::ostringstream runtimeVersion;
 	runtimeVersion << int(ver.major) << '.' << int(ver.minor) << '.' << int(ver.patch);
-	CrashHandler::setVariable("SDL version", runtimeVersion.str());
+	CrashHandler::setVariable("SDL version (runtime)", runtimeVersion.str());
 	LogInfo << "Using SDL " << runtimeVersion.str();
 	
 	int ndisplays = SDL_GetNumVideoDisplays();
