@@ -192,7 +192,7 @@ Fixed Bugs:
 
 Technical Changes:
 
-* Ported text rendering from Windows GDI to Freetype
+* Ported text rendering from Windows GDI to FreeType
 * Removed dependency on the proprietary PKWARE implode library
 ** This required changing the savegame format - saves produced by
    Arx Libertatis cannot be read by the original Arx Fatalis, but

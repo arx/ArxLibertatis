@@ -141,7 +141,7 @@ Font * FontCache::Impl::create(const res::path & font, FontFile & file, unsigned
 	}
 	
 	// Windows default is 96dpi
-	// Freetype default is 72dpi
+	// FreeType default is 72dpi
 	error = FT_Set_Char_Size(face, 0, size * 64, 64, 64);
 	if(error) {
 		return NULL;

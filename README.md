@@ -29,7 +29,7 @@ Reddit: [http://www.reddit.com/r/ArxFatalis/](http://www.reddit.com/r/ArxFatalis
 * **[zlib](http://zlib.net/)**
 * **[Boost](http://www.boost.org/) 1.48**+ (headers only)
 * **[GLM](http://glm.g-truc.net/) 0.9.2.7**+
-* **[Freetype](http://www.freetype.org/) 2.3.0**+
+* **[FreeType](http://www.freetype.org/) 2.3.0**+
 * **OpenAL 1.1**+ ([OpenAL Soft](http://kcat.strangesoft.net/openal.html) strongly recommended!)
 
 Systems without Win32 or POSIX filesystem support will also the `filesystem` and `system` libraries from Boost.

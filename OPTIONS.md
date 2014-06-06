@@ -53,7 +53,7 @@ Arx Libertatis adjust the compiler flags to provide an optimal configuration for
 * `USE_STATIC_LIBS` (default: `ON` on Windows, `OFF` elsewhere): Turns on static linking for all libraries, including `-static-libgcc` and `-static-libstdc++`. You can also use the individual options below:
 * `GLEW_USE_STATIC_LIBS` (default: `ON` iff `USE_STATIC_LIBS` is enabled): Statically link GLEW.
 * `Boost_USE_STATIC_LIBS` (default: `ON` iff `USE_STATIC_LIBS` is enabled): Statically link Boost. See also `FindBoost.cmake` in your CMake installation.
-* `Freetype_USE_STATIC_LIBS` (default: `ON` iff `USE_STATIC_LIBS` is enabled): Statically link Freetype.
+* `Freetype_USE_STATIC_LIBS` (default: `ON` iff `USE_STATIC_LIBS` is enabled): Statically link FreeType.
 * `ZLIB_USE_STATIC_LIBS` (default: `ON` iff `USE_STATIC_LIBS` is enabled): Statically link ZLIB.
 
 ### Install options
