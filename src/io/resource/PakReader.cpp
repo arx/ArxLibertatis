@@ -667,6 +667,12 @@ bool PakReader::addFiles(PakDirectory * dir, const fs::path & path) {
 	for(fs::directory_iterator it(path); !it.end(); ++it) {
 		
 		std::string name = it.name();
+		
+		if(name.empty() || name[0] == '.') {
+			// Ignore
+			continue;
+		}
+		
 		fs::path entry = path / name;
 		
 		boost::to_lower(name);
