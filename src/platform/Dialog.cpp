@@ -147,6 +147,13 @@ static std::string formatAsHtml(const std::string & text, bool newline, bool ul 
 		}
 		first = false;
 		
+		bool italic = false;
+		if(line.length() >= 2 && line.compare(0, 2, "> ", 2) == 0) {
+			i += 2;
+			oss << "&#187; <i>";
+			italic = true;
+		}
+		
 		bool quote = false, link = false;
 		
 		size_t link_start;
@@ -190,8 +197,13 @@ static std::string formatAsHtml(const std::string & text, bool newline, bool ul 
 		}
 		
 		if(quote) {
-			oss << "</code>";
+			oss << "</b>";
 		}
+		
+		if(italic) {
+			oss << "</i>";
+		}
+		
 	}
 	
 	return oss.str();
