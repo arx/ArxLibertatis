@@ -50,7 +50,7 @@ CriticalErrorDialog::~CriticalErrorDialog() {
 		}
 		
 		if(g_exitQuestion && g_exitCommand) {
-			message << "\n\n" << g_exitQuestion;
+			message << "\n\n> " << g_exitQuestion;
 			runExitCommand = platform::askYesNoWarning(message.str(), "Error - " + arx_version);
 		} else {
 			platform::showErrorDialog(message.str(), "Critical Error - " + arx_version);
