@@ -48,7 +48,7 @@ enum DialogType {
  *
  *  * Text surrounded by quotes is made bold.
  *
- *  * Lines starting with "> " are made italic.
+ *  * Lines starting with "-> " are made italic.
  *
  * This function does not retun until the user closes the dialog.
  *

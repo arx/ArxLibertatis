@@ -137,7 +137,7 @@ static std::string formatAsHtml(const std::string & text, bool newline, bool ul 
 				oss << (newline ? "\n" : "<br>");
 			}
 			
-			oss << (ul ? "<li>" : " &#8226; ");
+			oss << (ul ? "<li>" : " &#8226; "); // &bull;
 			
 		} else if(list) {
 			oss << "</ul>";
@@ -148,9 +148,9 @@ static std::string formatAsHtml(const std::string & text, bool newline, bool ul 
 		first = false;
 		
 		bool italic = false;
-		if(line.length() >= 2 && line.compare(0, 2, "> ", 2) == 0) {
-			i += 2;
-			oss << "&#187; <i>";
+		if(line.length() >= i + 3 && line.compare(i, 3, "-> ", 3) == 0) {
+			i += 3;
+			oss << "&#8594;&#160; <i>"; // &rarr;&nbsp;
 			italic = true;
 		}
 		
