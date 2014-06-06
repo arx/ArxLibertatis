@@ -132,8 +132,10 @@ void FlyingEyeSpell::End()
 	lightHandleDestroy(special[1]);
 }
 
-void FlyingEyeSpell::Update(unsigned long tim)
+void FlyingEyeSpell::Update()
 {
+	const unsigned long tim = (unsigned long)(arxtime);
+	
 	const long framediff3 = tim - m_lastupdate;
 	
 	eyeball.floating = std::sin(m_lastupdate-m_timcreation * 0.001f);

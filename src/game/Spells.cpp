@@ -1812,7 +1812,7 @@ void ARX_SPELLS_Update_End(size_t i) {
 	spell.BaseEnd();
 }
 
-void ARX_SPELLS_Update_Update(size_t i, unsigned long tim) {
+void ARX_SPELLS_Update_Update(size_t i) {
 	
 	SpellBase & spell = spells[i];
 	
@@ -2011,7 +2011,7 @@ void ARX_SPELLS_Update_Update(size_t i, unsigned long tim) {
 			break;
 		}
 		case SPELL_TELEPORT: {
-			static_cast<TeleportSpell &>(spell).Update(tim);
+			static_cast<TeleportSpell &>(spell).Update();
 			break;
 		}
 		case SPELL_MAGIC_SIGHT: {
@@ -2034,7 +2034,7 @@ void ARX_SPELLS_Update_Update(size_t i, unsigned long tim) {
 			break;
 		}
 		case SPELL_FLYING_EYE: {
-			static_cast<FlyingEyeSpell &>(spell).Update(tim);
+			static_cast<FlyingEyeSpell &>(spell).Update();
 			break;
 		}
 	}
@@ -2074,7 +2074,7 @@ void ARX_SPELLS_Update() {
 		}
 
 		if(spell.m_exist) {
-			ARX_SPELLS_Update_Update(i, tim);
+			ARX_SPELLS_Update_Update(i);
 		}
 	}
 }

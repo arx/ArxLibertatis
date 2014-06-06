@@ -52,7 +52,7 @@ class TeleportSpell : public SpellBase {
 public:
 	void Launch();
 	void End();
-	void Update(unsigned long tim);
+	void Update();
 };
 
 #endif // ARX_GAME_MAGIC_SPELLS_SPELLSLVL10_H

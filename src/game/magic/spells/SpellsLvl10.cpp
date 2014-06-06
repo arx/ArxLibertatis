@@ -330,8 +330,10 @@ void TeleportSpell::End()
 
 extern Vec3f lastteleport;
 
-void TeleportSpell::Update(unsigned long tim)
+void TeleportSpell::Update()
 {
+	const unsigned long tim = (unsigned long)(arxtime);
+	
 	float TELEPORT = (float)(((float)tim-(float)m_timcreation)/(float)m_tolive);
 
 	if(LASTTELEPORT < 0.5f && TELEPORT >= 0.5f) {
