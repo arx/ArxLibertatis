@@ -39,7 +39,6 @@
 
 #include "io/Blast.h"
 
-#include <csetjmp> /* for setjmp(), longjmp(), and jmp_buf */
 #include <cstring>
 #include <cstdlib>
 
@@ -48,12 +47,15 @@
 #define MAXBITS 13              /* maximum code length */
 #define MAXWIN 4096             /* maximum window size */
 
+namespace {
+
+struct blast_truncated_error { };
+
+} // anonymous namespace
+
 /* input and output state */
 struct state {
 	
-	/* input limit error return state for bits() and decode() */
-	jmp_buf env;
-
 	/* input state */
 	blast_in infun;             /* input function provided by user */
 	void * inhow;               /* opaque information passed to infun() */
@@ -91,7 +93,7 @@ static int bits(state * s, int need) {
 	while(s->bitcnt < need) {
 		if(s->left == 0) {
 			s->left = s->infun(s->inhow, &(s->in));
-			if (s->left == 0) longjmp(s->env, 1);       /* out of input */
+			if (s->left == 0) throw blast_truncated_error(); /* out of input */
 		}
 		val |= (int)(*(s->in)++) << s->bitcnt;          /* load eight bits */
 		s->left--;
@@ -175,7 +177,7 @@ static int decode(state * s, huffman * h) {
 		if(left == 0) break;
 		if(s->left == 0) {
 			s->left = s->infun(s->inhow, &(s->in));
-			if (s->left == 0) longjmp(s->env, 1);       /* out of input */
+			if (s->left == 0) throw blast_truncated_error(); /* out of input */
 		}
 		bitbuf = *(s->in)++;
 		s->left--;
@@ -413,24 +415,12 @@ BlastResult blast(blast_in infun, void *inhow, blast_out outfun, void *outhow) {
 	s.next = 0;
 	s.first = 1;
 	
-#if ARX_COMPILER_MSVC
-	// Disable warning C4611: interaction between '_setjmp' and C++ object destruction is non-portable
-	#pragma warning(push)
-	#pragma warning(disable:4611)
-#endif
-
 	BlastResult err;
-	// return if bits() or decode() tries to read past available input
-	if(setjmp(s.env) != 0) {
-		// if came back here via longjmp() then skip decomp(), return error
-		err = BLAST_TRUNCATED_INPUT;
-	} else {
+	try {
 		err = blastDecompress(&s);
+	} catch(const blast_truncated_error &) {
+		err = BLAST_TRUNCATED_INPUT;
 	}
-
-#if ARX_COMPILER_MSVC
-	#pragma warning(pop)
-#endif
 	
 	// write any leftover output and update the error code if needed
 	if(err != 1 && s.next && s.outfun(s.outhow, s.out, s.next) && err == 0) {
