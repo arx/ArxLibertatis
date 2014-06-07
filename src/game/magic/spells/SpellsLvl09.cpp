@@ -396,7 +396,7 @@ void NegateMagicSpell::LaunchAntiMagicField() {
 	}
 }
 
-bool IncinerateSpell::Launch(long i)
+bool IncinerateSpell::Launch(SpellHandle i)
 {
 	Entity * tio = entities[m_target];
 	if((tio->ioflags & IO_NPC) && tio->_npcdata->lifePool.current <= 0.f) {
@@ -421,7 +421,7 @@ bool IncinerateSpell::Launch(long i)
 	return true;
 }
 
-void IncinerateSpell::End(size_t i)
+void IncinerateSpell::End(SpellHandle i)
 {
 	ARX_SPELLS_RemoveSpellOn(m_target, i);
 	ARX_SOUND_Stop(m_snd_loop);
@@ -435,7 +435,7 @@ void IncinerateSpell::Update()
 	}	
 }
 
-void MassParalyseSpell::Launch(long i, long duration)
+void MassParalyseSpell::Launch(SpellHandle i, long duration)
 {
 	ARX_SOUND_PlaySFX(SND_SPELL_MASS_PARALYSE);
 	
@@ -470,7 +470,7 @@ void MassParalyseSpell::Launch(long i, long duration)
 	}
 }
 
-void MassParalyseSpell::End(size_t i)
+void MassParalyseSpell::End(SpellHandle i)
 {
 	
 	std::vector<EntityHandle>::const_iterator itr;

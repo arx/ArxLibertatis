@@ -161,7 +161,7 @@ public:
 	void Update(unsigned long);
 	void Render();
 	
-	long spellinstance;
+	SpellHandle spellinstance;
 };
 
 class CMultiPoisonProjectile : public CSpellFx {

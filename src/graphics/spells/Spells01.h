@@ -68,7 +68,7 @@ public:
 	Vec3f eCurPos;
 
 	float lightIntensityFactor;
-	long spellinstance;
+	SpellHandle spellinstance;
 
 private:
 	int iLength;
@@ -88,7 +88,7 @@ private:
 	std::vector<CMagicMissile *> pTab;
 	
 public:
-	explicit CMultiMagicMissile(size_t nb, long spellHandle);
+	explicit CMultiMagicMissile(size_t nb, SpellHandle spellHandle);
 	~CMultiMagicMissile();
 	
 	void CheckCollision();
@@ -98,7 +98,7 @@ public:
 	void Update(unsigned long);
 	void Render();
 	
-	long spellinstance;
+	SpellHandle spellinstance;
 };
 
 // Done By : Sébastien Scieux

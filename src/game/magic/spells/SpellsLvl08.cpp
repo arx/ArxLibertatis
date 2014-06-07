@@ -34,7 +34,7 @@
 #include "scene/GameSound.h"
 #include "scene/Interactive.h"
 
-void InvisibilitySpell::Launch(long i, long duration)
+void InvisibilitySpell::Launch(SpellHandle i, long duration)
 {
 	m_exist = true;
 	m_tolive = (duration > -1) ? duration : 6000000;
@@ -53,7 +53,7 @@ void InvisibilitySpell::Launch(long i, long duration)
 	ARX_SPELLS_AddSpellOn(m_target, i);
 }
 
-void InvisibilitySpell::End(long i)
+void InvisibilitySpell::End(SpellHandle i)
 {
 	if(ValidIONum(m_target)) {
 		entities[m_target]->gameFlags &= ~GFLAG_INVISIBILITY;
@@ -64,7 +64,7 @@ void InvisibilitySpell::End(long i)
 
 extern void ARX_SPELLS_Fizzle(long num);
 
-void InvisibilitySpell::Update(size_t i)
+void InvisibilitySpell::Update(SpellHandle i)
 {
 	if(m_target != EntityHandle(0)) {
 		if(!(entities[m_target]->gameFlags & GFLAG_INVISIBILITY)) {

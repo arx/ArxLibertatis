@@ -31,8 +31,8 @@ public:
 
 class ParalyseSpell : public SpellBase {
 public:
-	void Launch(long i, long duration);
-	void End(size_t i);
+	void Launch(SpellHandle i, long duration);
+	void End(SpellHandle i);
 };
 
 class CreateFieldSpell : public SpellBase {
@@ -49,8 +49,8 @@ public:
 
 class SlowDownSpell : public SpellBase {
 public:
-	bool Launch(long duration, long i);
-	void End(size_t i);
+	bool Launch(long duration, SpellHandle i);
+	void End(SpellHandle i);
 	void Update(float timeDelta);
 };
 

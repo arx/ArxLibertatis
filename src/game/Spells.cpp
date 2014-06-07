@@ -1629,7 +1629,7 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flagss
 	return true;
 }
 
-void ARX_SPELLS_Update_End(size_t i) {
+void ARX_SPELLS_Update_End(SpellHandle i) {
 	
 	SpellBase & spell = spells[i];
 	
@@ -1812,7 +1812,7 @@ void ARX_SPELLS_Update_End(size_t i) {
 	spell.BaseEnd();
 }
 
-void ARX_SPELLS_Update_Update(size_t i) {
+void ARX_SPELLS_Update_Update(SpellHandle i) {
 	
 	SpellBase & spell = spells[i];
 	
@@ -2050,7 +2050,9 @@ void ARX_SPELLS_Update() {
 	
 	const unsigned long tim = (unsigned long)(arxtime);
 	
-	for(size_t i = 0; i < MAX_SPELLS; i++) {
+	for(size_t u = 0; u < MAX_SPELLS; u++) {
+		
+		SpellHandle i = SpellHandle(u);
 		SpellBase & spell = spells[i];
 		
 		if(!GLOBAL_MAGIC_MODE) {

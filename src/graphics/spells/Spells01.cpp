@@ -421,7 +421,7 @@ void CMagicMissile::Render()
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
-CMultiMagicMissile::CMultiMagicMissile(size_t nbmissiles, long spellHandle)
+CMultiMagicMissile::CMultiMagicMissile(size_t nbmissiles, SpellHandle spellHandle)
 	: CSpellFx()
 	, spellinstance(spellHandle)
 {
@@ -571,7 +571,7 @@ void CMultiMagicMissile::CheckCollision()
 		sphere.origin = missile->eCurPos;
 		sphere.radius	= 10.f;
 		
-		if(spellinstance != -1 && (CheckAnythingInSphere(sphere, spells[spellinstance].m_caster, CAS_NO_SAME_GROUP)))
+		if(spellinstance != SpellHandle(-1) && (CheckAnythingInSphere(sphere, spells[spellinstance].m_caster, CAS_NO_SAME_GROUP)))
 		{
 			LaunchMagicMissileExplosion(missile->eCurPos, spellinstance);
 			ARX_NPC_SpawnAudibleSound(missile->eCurPos, entities[spells[spellinstance].m_caster]);

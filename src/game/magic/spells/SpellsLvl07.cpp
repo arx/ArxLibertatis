@@ -504,7 +504,7 @@ void ConfuseSpell::Launch(SpellHandle i, bool & notifyAll, long duration)
 	notifyAll = false;
 }
 
-void ConfuseSpell::End(size_t i)
+void ConfuseSpell::End(SpellHandle i)
 {
 	ARX_SPELLS_RemoveSpellOn(m_target, i);
 }

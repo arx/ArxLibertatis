@@ -63,7 +63,7 @@ void BlessSpell::Launch(SpellHandle i, long duration)
 	ARX_SPELLS_AddSpellOn(m_target, i);
 }
 
-void BlessSpell::End(size_t i)
+void BlessSpell::End(SpellHandle i)
 {
 	ARX_SPELLS_RemoveSpellOn(m_target,i);
 }
@@ -155,7 +155,7 @@ void DispellFieldSpell::Launch()
 	}
 }
 
-void FireProtectionSpell::Launch(long i, long duration)
+void FireProtectionSpell::Launch(SpellHandle i, long duration)
 {
 	long idx = ARX_SPELLS_GetSpellOn(entities[m_target], SPELL_FIRE_PROTECTION);
 	if(idx >= 0) {
@@ -211,7 +211,7 @@ void FireProtectionSpell::Launch(long i, long duration)
 	                                       ARX_SOUND_PLAY_LOOPED);
 }
 
-void FireProtectionSpell::End(size_t i)
+void FireProtectionSpell::End(SpellHandle i)
 {
 	ARX_SOUND_Stop(m_snd_loop);
 	ARX_SOUND_PlaySFX(SND_SPELL_FIRE_PROTECTION_END, &entities[m_target]->pos);
@@ -238,7 +238,7 @@ void FireProtectionSpell::Update(float timeDelta)
 	ARX_SOUND_RefreshPosition(m_snd_loop, entities[m_target]->pos);
 }
 
-void ColdProtectionSpell::Launch(long i, long duration)
+void ColdProtectionSpell::Launch(SpellHandle i, long duration)
 {
 	long idx = ARX_SPELLS_GetSpellOn(entities[m_target], SPELL_COLD_PROTECTION);
 	if(idx >= 0) {
@@ -294,7 +294,7 @@ void ColdProtectionSpell::Launch(long i, long duration)
 	ARX_SPELLS_AddSpellOn(m_target, i);
 }
 
-void ColdProtectionSpell::End(size_t i)
+void ColdProtectionSpell::End(SpellHandle i)
 {
 	ARX_SOUND_Stop(m_snd_loop);
 	ARX_SOUND_PlaySFX(SND_SPELL_COLD_PROTECTION_END, &entities[m_target]->pos);
@@ -343,7 +343,7 @@ void TelekinesisSpell::End()
 	ARX_SOUND_PlaySFX(SND_SPELL_TELEKINESIS_END, &entities[m_caster]->pos);
 }
 
-void CurseSpell::Launch(long duration, long i)
+void CurseSpell::Launch(long duration, SpellHandle i)
 {
 	long iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_CURSE, m_target);
 	if(iCancel > -1) {
@@ -374,7 +374,7 @@ void CurseSpell::Launch(long duration, long i)
 	ARX_SPELLS_AddSpellOn(m_target, i);
 }
 
-void CurseSpell::End(size_t i)
+void CurseSpell::End(SpellHandle i)
 {
 	ARX_SPELLS_RemoveSpellOn(m_target,i);
 }

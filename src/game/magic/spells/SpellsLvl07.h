@@ -53,7 +53,7 @@ public:
 class ConfuseSpell : public SpellBase {
 public:
 	void Launch(SpellHandle i, bool & notifyAll, long duration);
-	void End(size_t i);
+	void End(SpellHandle i);
 	void Update(float timeDelta);
 };
 

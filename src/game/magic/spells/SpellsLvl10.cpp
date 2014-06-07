@@ -250,7 +250,7 @@ void FreezeTimeSpell::End()
 	ARX_SOUND_PlaySFX(SND_SPELL_TELEKINESIS_END, &entities[m_caster]->pos);
 }
 
-void MassIncinerateSpell::Launch(long i)
+void MassIncinerateSpell::Launch(SpellHandle i)
 {
 	ARX_SOUND_PlaySFX(SND_SPELL_MASS_INCINERATE);
 	
@@ -295,7 +295,7 @@ void ARX_SPELLS_RemoveMultiSpellOn(long spell_id) {
 	}
 }
 
-void MassIncinerateSpell::End(size_t i)
+void MassIncinerateSpell::End(SpellHandle i)
 {
 	ARX_SPELLS_RemoveMultiSpellOn(i);
 	ARX_SOUND_Stop(m_snd_loop);

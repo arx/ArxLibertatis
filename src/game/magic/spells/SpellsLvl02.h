@@ -30,22 +30,22 @@ public:
 
 class DetectTrapSpell : public SpellBase {
 public:
-	void Launch(long i);
-	void End(size_t i);
+	void Launch(SpellHandle i);
+	void End(SpellHandle i);
 	void Update(float timeDelta);
 };
 
 class ArmorSpell : public SpellBase {
 public:
-	void Launch(long duration, long i);
-	void End(size_t i);
+	void Launch(long duration, SpellHandle i);
+	void End(SpellHandle i);
 	void Update(float timeDelta);
 };
 
 class LowerArmorSpell : public SpellBase {
 public:
-	void Launch(long duration, long i);
-	void End(long i);
+	void Launch(long duration, SpellHandle i);
+	void End(SpellHandle i);
 	void Update(float timeDelta);
 };
 

@@ -32,7 +32,7 @@
 #include "scene/GameSound.h"
 #include "scene/Interactive.h"
 
-void SpeedSpell::Launch(long i, long duration)
+void SpeedSpell::Launch(SpellHandle i, long duration)
 {
 	m_bDuration = true;
 	m_fManaCostPerSecond = 2.f;
@@ -63,7 +63,7 @@ void SpeedSpell::Launch(long i, long duration)
 	ARX_SPELLS_AddSpellOn(m_target, i);
 }
 
-void SpeedSpell::End(long i)
+void SpeedSpell::End(SpellHandle i)
 {
 	ARX_SPELLS_RemoveSpellOn(m_target,i);
 	

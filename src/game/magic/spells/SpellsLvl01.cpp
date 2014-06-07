@@ -74,7 +74,7 @@ void MagicSightSpell::Update()
 	}	
 }
 
-void MagicMissileSpell::Launch(long i)
+void MagicMissileSpell::Launch(SpellHandle i)
 {
 	m_exist = true;
 	m_tolive = 20000; // TODO probably never read

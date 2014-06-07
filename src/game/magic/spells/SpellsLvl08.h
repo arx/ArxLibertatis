@@ -24,9 +24,9 @@
 
 class InvisibilitySpell : public SpellBase {
 public:
-	void Launch(long i, long duration);
-	void End(long i);
-	void Update(size_t i);
+	void Launch(SpellHandle i, long duration);
+	void End(SpellHandle i);
+	void Update(SpellHandle i);
 };
 
 class ManaDrainSpell : public SpellBase {
