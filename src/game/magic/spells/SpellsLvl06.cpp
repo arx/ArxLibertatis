@@ -37,8 +37,8 @@
 
 bool RiseDeadSpell::Launch(long duration)
 {
-	long iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_RISE_DEAD, m_caster);
-	if(iCancel > -1) {
+	SpellHandle iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_RISE_DEAD, m_caster);
+	if(iCancel != InvalidSpellHandle) {
 		spells[iCancel].m_tolive = 0;
 	}
 	

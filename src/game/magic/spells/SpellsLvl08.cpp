@@ -76,13 +76,13 @@ void InvisibilitySpell::Update(SpellHandle i)
 
 void ManaDrainSpell::Launch(long duration)
 {
-	long iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_LIFE_DRAIN, m_caster);
-	if(iCancel > -1) {
+	SpellHandle iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_LIFE_DRAIN, m_caster);
+	if(iCancel != InvalidSpellHandle) {
 		spells[iCancel].m_tolive = 0;
 	}
 	
 	iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_HARM, m_caster);
-	if(iCancel > -1) {
+	if(iCancel != InvalidSpellHandle) {
 		spells[iCancel].m_tolive = 0;
 	}
 	
@@ -350,13 +350,13 @@ void EnchantWeaponSpell::Update(float timeDelta)
 
 void LifeDrainSpell::Launch(long duration)
 {
-	long iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_HARM, m_caster);
-	if(iCancel > -1) {
+	SpellHandle iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_HARM, m_caster);
+	if(iCancel != InvalidSpellHandle) {
 		spells[iCancel].m_tolive = 0;
 	}
 	
 	iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_MANA_DRAIN, m_caster);
-	if(iCancel > -1) {
+	if(iCancel != InvalidSpellHandle) {
 		spells[iCancel].m_tolive = 0;
 	}
 	

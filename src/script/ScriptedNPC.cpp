@@ -186,8 +186,8 @@ public:
 				
 				EntityHandle from = context.getEntity()->index();
 				if(ValidIONum(from)) {
-					long sp = ARX_SPELLS_GetInstanceForThisCaster(spellid, from);
-					if(sp >= 0) {
+					SpellHandle sp = ARX_SPELLS_GetInstanceForThisCaster(spellid, from);
+					if(sp != InvalidSpellHandle) {
 						spells[sp].m_tolive = 0;
 					}
 				}

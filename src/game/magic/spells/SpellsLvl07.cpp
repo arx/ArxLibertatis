@@ -203,8 +203,8 @@ void FlyingEyeSpell::Update()
 
 void FireFieldSpell::Launch(long duration)
 {
-	long iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_FIRE_FIELD, m_caster);
-	if(iCancel > -1) {
+	SpellHandle iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_FIRE_FIELD, m_caster);
+	if(iCancel != InvalidSpellHandle) {
 		spells[iCancel].m_tolive = 0;
 	}
 	
@@ -335,8 +335,8 @@ void FireFieldSpell::Update(float timeDelta)
 
 void IceFieldSpell::Launch(long duration)
 {
-	long iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_ICE_FIELD, m_caster);
-	if(iCancel > -1) {
+	SpellHandle iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_ICE_FIELD, m_caster);
+	if(iCancel != InvalidSpellHandle) {
 		spells[iCancel].m_tolive = 0;
 	}
 		

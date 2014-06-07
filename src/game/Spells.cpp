@@ -950,19 +950,19 @@ bool ARX_SPELLS_ExistAnyInstance(SpellType typ) {
 	return (ARX_SPELLS_GetInstance(typ) != -1);
 }
 
-long ARX_SPELLS_GetInstanceForThisCaster(SpellType typ, long caster) {
+SpellHandle ARX_SPELLS_GetInstanceForThisCaster(SpellType typ, long caster) {
 	
 	for(size_t i = 0; i < MAX_SPELLS; i++) {
 		if(spells[i].m_exist && spells[i].m_type == typ && spells[i].m_caster == caster) {
-			return i;
+			return SpellHandle(i);
 		}
 	}
 	
-	return -1;
+	return InvalidSpellHandle;
 }
 
 static bool ARX_SPELLS_ExistAnyInstanceForThisCaster(SpellType typ, long caster) {
-	return (ARX_SPELLS_GetInstanceForThisCaster(typ, caster) != -1);
+	return (ARX_SPELLS_GetInstanceForThisCaster(typ, caster) != InvalidSpellHandle);
 }
 
 // Plays the sound of aborted spell

@@ -92,7 +92,7 @@ bool ARX_SPELLS_ExistAnyInstance(SpellType typ);
 void ARX_SPELLS_RemoveAllSpellsOn(Entity * io);
 bool spellHandleIsValid(SpellHandle handle);
 SpellHandle ARX_SPELLS_GetSpellOn(const Entity * io, SpellType spellid);
-long ARX_SPELLS_GetInstanceForThisCaster(SpellType typ, long caster);
+SpellHandle ARX_SPELLS_GetInstanceForThisCaster(SpellType typ, long caster);
 
 void ARX_SPELLS_CancelSpellTarget();
 void ARX_SPELLS_LaunchSpellTarget(Entity * io);

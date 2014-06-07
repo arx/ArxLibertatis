@@ -35,8 +35,8 @@
 
 void RuneOfGuardingSpell::Launch(long duration)
 {
-	long iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_RUNE_OF_GUARDING, m_caster);
-	if(iCancel > -1) {
+	SpellHandle iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_RUNE_OF_GUARDING, m_caster);
+	if(iCancel != InvalidSpellHandle) {
 		spells[iCancel].m_tolive = 0;
 	}
 	
@@ -78,8 +78,8 @@ void RuneOfGuardingSpell::Update(float timeDelta)
 
 void LevitateSpell::Launch(long duration, SpellHandle i)
 {
-	long iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_LEVITATE, m_caster);
-	if(iCancel > -1) {
+	SpellHandle iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_LEVITATE, m_caster);
+	if(iCancel != InvalidSpellHandle) {
 		spells[iCancel].m_tolive = 0;
 	}
 	
@@ -192,8 +192,8 @@ void CurePoisonSpell::Update(float timeDelta)
 
 void RepelUndeadSpell::Launch(long duration, SpellHandle i)
 {
-	long iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_REPEL_UNDEAD, m_caster);
-	if(iCancel > -1) {
+	SpellHandle iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_REPEL_UNDEAD, m_caster);
+	if(iCancel != InvalidSpellHandle) {
 		spells[iCancel].m_tolive = 0;
 	}
 	

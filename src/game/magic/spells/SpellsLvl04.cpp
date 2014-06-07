@@ -40,8 +40,8 @@ void BlessSpell::Launch(SpellHandle i, long duration)
 		m_target = 0;
 	}
 	
-	long iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_BLESS, m_target);
-	if(iCancel > -1) {
+	SpellHandle iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_BLESS, m_target);
+	if(iCancel != InvalidSpellHandle) {
 		spells[iCancel].m_tolive = 0;
 	}
 	
@@ -162,18 +162,18 @@ void FireProtectionSpell::Launch(SpellHandle i, long duration)
 		spells[idx].m_tolive = 0;
 	}
 	
-	long iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_ARMOR, m_caster);
-	if(iCancel > -1) {
+	SpellHandle iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_ARMOR, m_caster);
+	if(iCancel != InvalidSpellHandle) {
 		spells[iCancel].m_tolive = 0;
 	}
 	
 	iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_LOWER_ARMOR, m_caster);
-	if(iCancel > -1) {
+	if(iCancel != InvalidSpellHandle) {
 		spells[iCancel].m_tolive = 0;
 	}
 	
 	iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_COLD_PROTECTION, m_caster);
-	if(iCancel > -1) {
+	if(iCancel != InvalidSpellHandle) {
 		spells[iCancel].m_tolive = 0;
 	}
 	
@@ -245,18 +245,18 @@ void ColdProtectionSpell::Launch(SpellHandle i, long duration)
 		spells[idx].m_tolive = 0;
 	}
 	
-	long iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_ARMOR, m_caster);
-	if(iCancel > -1) {
+	SpellHandle iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_ARMOR, m_caster);
+	if(iCancel != InvalidSpellHandle) {
 		spells[iCancel].m_tolive = 0;
 	}
 	
 	iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_LOWER_ARMOR, m_caster);
-	if(iCancel > -1) {
+	if(iCancel != InvalidSpellHandle) {
 		spells[iCancel].m_tolive = 0;
 	}
 	
 	iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_FIRE_PROTECTION, m_caster);
-	if(iCancel > -1) {
+	if(iCancel != InvalidSpellHandle) {
 		spells[iCancel].m_tolive = 0;
 	}
 	
@@ -345,8 +345,8 @@ void TelekinesisSpell::End()
 
 void CurseSpell::Launch(long duration, SpellHandle i)
 {
-	long iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_CURSE, m_target);
-	if(iCancel > -1) {
+	SpellHandle iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_CURSE, m_target);
+	if(iCancel != InvalidSpellHandle) {
 		spells[iCancel].m_tolive = 0;
 	}
 	
