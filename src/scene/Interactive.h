@@ -114,7 +114,7 @@ void ARX_INTERACTIVE_DestroyIOdelayedExecute();
  * We should instead use a proper weak pointer!
  */
 bool ValidIONum(EntityHandle num);
-long ValidIOAddress(const Entity * io);
+bool ValidIOAddress(const Entity * io);
 
 void RestoreInitialIOStatusOfIO(Entity * io);
 

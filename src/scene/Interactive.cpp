@@ -147,21 +147,21 @@ bool ValidIONum(EntityHandle num) {
 	return !(num < 0 || num >= long(entities.size()) || !entities[num]);
 }
 
-long ValidIOAddress(const Entity * io) {
+bool ValidIOAddress(const Entity * io) {
 	
 	if(!io)
-		return 0;
+		return false;
 	
 	for(size_t i = 0; i < entities.size(); i++) {
 		const EntityHandle handle = EntityHandle(i);
 		Entity * e = entities[handle];
 		
 		if(e == io) {
-			return 1;
+			return true;
 		}
 	}
 	
-	return 0;
+	return false;
 }
 
 static float ARX_INTERACTIVE_fGetPrice(Entity * io, Entity * shop) {
