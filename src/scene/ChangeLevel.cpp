@@ -941,10 +941,12 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 	ais.ident = io->ident;
 	ais.ioflags = io->ioflags;
 
-	if ((ais.ioflags & IO_FREEZESCRIPT)
-			&& ((ARX_SPELLS_GetSpellOn(io, SPELL_PARALYSE) != InvalidSpellHandle)
-				 || (ARX_SPELLS_GetSpellOn(io, SPELL_MASS_PARALYSE) != InvalidSpellHandle)))
+	if(   (ais.ioflags & IO_FREEZESCRIPT)
+	   && ((ARX_SPELLS_GetSpellOn(io, SPELL_PARALYSE) != InvalidSpellHandle)
+	    || (ARX_SPELLS_GetSpellOn(io, SPELL_MASS_PARALYSE) != InvalidSpellHandle))
+	) {
 		ais.ioflags &= ~IO_FREEZESCRIPT;
+	}
 
 	ais.pos = io->pos;
 
