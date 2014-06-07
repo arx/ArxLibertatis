@@ -83,7 +83,7 @@ private:
 
 class CSpeed: public CSpellFx {
 private:
-	int num;
+	EntityHandle num;
 	
 	struct SpeedTrail {
 		short vertexIndex;
@@ -95,7 +95,7 @@ private:
 public:
 	~CSpeed();
 
-	void Create(int numinteractive);
+	void Create(EntityHandle numinteractive);
 	void Update(unsigned long);
 	void Render();
 };

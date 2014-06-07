@@ -312,7 +312,8 @@ public:
 		if(radius) { // SEND EVENT TO ALL OBJECTS IN A RADIUS
 			
 			for(size_t l = 0 ; l < entities.size() ; l++) {
-				Entity * e = entities[l];
+				const EntityHandle handle = EntityHandle(l);
+				Entity * e = entities[handle];
 				
 				if(!e || e == io
 				   || (e->ioflags & (IO_CAMERA|IO_MARKER))) {
@@ -348,7 +349,8 @@ public:
 			}
 			
 			for(size_t l = 0; l < entities.size(); l++) {
-				Entity * e = entities[l];
+				const EntityHandle handle = EntityHandle(l);
+				Entity * e = entities[handle];
 				
 				if(!e || (e->ioflags & (IO_CAMERA|IO_MARKER))) {
 					continue;
@@ -375,7 +377,8 @@ public:
 		} else if(group) { // sends an event to all members of a group
 			
 			for(size_t l = 0; l < entities.size(); l++) {
-				Entity * e = entities[l];
+				const EntityHandle handle = EntityHandle(l);
+				Entity * e = entities[handle];
 				
 				if(!e || e == io) {
 					continue;

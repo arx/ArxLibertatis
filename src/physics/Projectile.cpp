@@ -180,7 +180,7 @@ void ARX_THROWN_OBJECT_Throw(long source, const Vec3f & position, const Vec3f & 
 	}
 }
 
-float ARX_THROWN_ComputeDamages(long thrownum, long source, long target)
+float ARX_THROWN_ComputeDamages(long thrownum, EntityHandle source, EntityHandle target)
 {
 	float distance_limit = 1000.f;
 	Entity * io_target = entities[target];
@@ -562,7 +562,7 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 
 						std::vector<EntityHandle> sphereContent;
 
-						if(CheckEverythingInSphere(sphere, thrownObj->source, -1, sphereContent)) {
+						if(CheckEverythingInSphere(sphere, thrownObj->source, InvalidEntityHandle, sphereContent)) {
 							for(size_t jj = 0; jj < sphereContent.size(); jj++) {
 
 								if(ValidIONum(sphereContent[jj])

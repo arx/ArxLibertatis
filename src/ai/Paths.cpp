@@ -187,7 +187,7 @@ void ARX_PATH_UpdateAllZoneInOutInside() {
 
 	if(entities.size() > 1)
 		for(long tt = 0; tt < f; tt++) {
-			long i = count;
+			const EntityHandle i = EntityHandle(count);
 			Entity * io = entities[i];
 			
 

@@ -246,7 +246,8 @@ void TreatBackgroundDynlights()
 					Vec3f _pos2;
 
 					for(size_t l = 0; l < entities.size(); l++) {
-						Entity * e = entities[l];
+						const EntityHandle handle = EntityHandle(l);
+						Entity * e = entities[handle];
 						
 						if(e && (e->ioflags & IO_MARKER)) {
 							GetItemWorldPosition(e, &_pos2);
@@ -262,7 +263,8 @@ void TreatBackgroundDynlights()
 					Vec3f _pos2;
 
 					for(size_t l = 0; l < entities.size(); l++) {
-						Entity * e = entities[l];
+						const EntityHandle handle = EntityHandle(l);
+						Entity * e = entities[handle];
 						
 						if(e && (e->ioflags & IO_MARKER)) {
 							GetItemWorldPosition(e, &_pos2);

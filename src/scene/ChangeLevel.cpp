@@ -312,7 +312,7 @@ void ARX_CHANGELEVEL_Change(const string & level, const string & target, long an
 	
 	// not changing level, just teleported
 	if(num == CURRENTLEVEL) {
-		long t = entities.getById(target);
+		EntityHandle t = entities.getById(target);
 		if(t > 0) {
 			Vec3f pos;
 			if(entities[t] && GetItemWorldPosition(entities[t], &pos)) {
@@ -346,7 +346,7 @@ void ARX_CHANGELEVEL_Change(const string & level, const string & target, long an
 	LogDebug("After  ARX_CHANGELEVEL_PopLevel");
 	
 	// Now restore player pos to destination
-	long t = entities.getById(target);
+	EntityHandle t = entities.getById(target);
 	if(t > 0 && entities[t]) {
 		Vec3f pos;
 		if(GetItemWorldPosition(entities[t], &pos)) {
@@ -452,7 +452,8 @@ static bool ARX_CHANGELEVEL_Push_Index(long num) {
 	asi.gmods_current = current;
 	
 	for(size_t i = 1; i < entities.size(); i++) {
-		Entity * e = entities[i];
+		const EntityHandle handle = EntityHandle(i);
+		Entity * e = entities[handle];
 		
 		if(e != NULL
 		   && !(e->ioflags & IO_NOSAVE)
@@ -485,7 +486,8 @@ static bool ARX_CHANGELEVEL_Push_Index(long num) {
 	pos += sizeof(ARX_CHANGELEVEL_INDEX);
 	
 	for(size_t i = 1; i < entities.size(); i++) {
-		Entity * e = entities[i];
+		const EntityHandle handle = EntityHandle(i);
+		Entity * e = entities[handle];
 		
 		if(e != NULL
 		   && !(e->ioflags & IO_NOSAVE)
@@ -832,7 +834,8 @@ static long ARX_CHANGELEVEL_Push_Player(long level) {
 	delete[] dat;
 	
 	for(size_t i = 1; i < entities.size(); i++) {
-		Entity * e = entities[i];
+		const EntityHandle handle = EntityHandle(i);
+		Entity * e = entities[handle];
 		
 		if(IsInPlayerInventory(e) || IsPlayerEquipedWith(e)) {
 			ARX_CHANGELEVEL_Push_IO(e, level);
@@ -845,7 +848,8 @@ static long ARX_CHANGELEVEL_Push_Player(long level) {
 static long ARX_CHANGELEVEL_Push_AllIO(long level) {
 	
 	for(size_t i = 1; i < entities.size(); i++) {
-		Entity * e = entities[i];
+		const EntityHandle handle = EntityHandle(i);
+		Entity * e = entities[handle];
 		
 		if ((e != NULL)
 				&&	(!(e->ioflags & IO_NOSAVE))
@@ -867,7 +871,8 @@ static Entity * GetObjIOSource(const EERIE_3DOBJ * obj) {
 	}
 	
 	for(size_t i = 0; i < entities.size(); i++) {
-		Entity * e = entities[i];
+		const EntityHandle handle = EntityHandle(i);
+		Entity * e = entities[handle];
 		
 		if(e && e->obj) {
 			if(e->obj == obj) {
@@ -1630,7 +1635,8 @@ long ARX_CHANGELEVEL_Pop_Level(ARX_CHANGELEVEL_INDEX * asi, long num, bool first
 		RestoreInitialIOStatus();
 		
 		for(size_t i = 1; i < entities.size(); i++) {
-			Entity * e = entities[i];
+			const EntityHandle handle = EntityHandle(i);
+			Entity * e = entities[handle];
 			
 			if(e && !e->scriptload) {
 				ARX_SCRIPT_Reset(e, 1);
@@ -2451,7 +2457,8 @@ static void ARX_CHANGELEVEL_PopAllIO_FINISH(bool reloadflag, bool firstTime) {
 		converted = 0;
 		
 		for(size_t it = 1; it < MAX_IO_SAVELOAD && it < entities.size(); it++) {
-			Entity * io = entities[it];
+			const EntityHandle handle = EntityHandle(it);
+			Entity * io = entities[handle];
 			
 			if(!io || treated[it]) {
 				continue;
@@ -2529,7 +2536,8 @@ static void ARX_CHANGELEVEL_PopAllIO_FINISH(bool reloadflag, bool firstTime) {
 	if(reloadflag) {
 		
 		for(size_t i = 0; i < entities.size(); i++) {
-			Entity * e = entities[i];
+			const EntityHandle handle = EntityHandle(i);
+			Entity * e = entities[handle];
 			
 			if(!e) {
 				continue;
@@ -2555,7 +2563,8 @@ static void ARX_CHANGELEVEL_PopAllIO_FINISH(bool reloadflag, bool firstTime) {
 	} else if (firstTime) {
 		
 		for(size_t i = 0; i < entities.size(); i++) {
-			Entity * e = entities[i];
+			const EntityHandle handle = EntityHandle(i);
+			Entity * e = entities[handle];
 			
 			if(!e) {
 				continue;
@@ -2581,7 +2590,8 @@ static void ARX_CHANGELEVEL_PopAllIO_FINISH(bool reloadflag, bool firstTime) {
 	} else {
 		
 		for(size_t i = 0; i < entities.size(); i++) {
-			Entity * e = entities[i];
+			const EntityHandle handle = EntityHandle(i);
+			Entity * e = entities[handle];
 			
 			if(!e) {
 				continue;

@@ -600,7 +600,7 @@ CSpeed::~CSpeed()
 	}
 }
 
-void CSpeed::Create(int numinteractive)
+void CSpeed::Create(EntityHandle numinteractive)
 {
 	this->num = numinteractive;
 	

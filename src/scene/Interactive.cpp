@@ -153,7 +153,8 @@ long ValidIOAddress(const Entity * io) {
 		return 0;
 	
 	for(size_t i = 0; i < entities.size(); i++) {
-		Entity * e = entities[i];
+		const EntityHandle handle = EntityHandle(i);
+		Entity * e = entities[handle];
 		
 		if(e == io) {
 			return 1;
@@ -193,9 +194,9 @@ static void ARX_INTERACTIVE_ForceIOLeaveZone(Entity * io, long flags) {
 			SendIOScriptEvent(io, SM_LEAVEZONE, temp);
 
 		if(!op->controled.empty()) {
-			long t = entities.getById(op->controled);
+			EntityHandle t = entities.getById(op->controled);
 
-			if(t >= 0) {
+			if(t != InvalidEntityHandle) {
 				std::string str = io->idString() + ' ' + temp;
 				SendIOScriptEvent( entities[t], SM_CONTROLLEDZONE_LEAVE, str ); 
 			}
@@ -372,7 +373,8 @@ bool ForceNPC_Above_Ground(Entity * io) {
 // Unlinks all linked objects from all IOs
 void UnlinkAllLinkedObjects() {
 	for(size_t i = 0; i < entities.size(); i++) {
-		Entity * e = entities[i];
+		const EntityHandle handle = EntityHandle(i);
+		Entity * e = entities[handle];
 		
 		if(e) {
 			EERIE_LINKEDOBJ_ReleaseData(e->obj);
@@ -538,7 +540,8 @@ void PrepareIOTreatZone(long flag)
 	}
 	
 	for(size_t i = 1; i < entities.size(); i++) {
-		Entity * io = entities[i];
+		const EntityHandle handle = EntityHandle(i);
+		Entity * io = entities[handle];
 
 		if ((io)
 		        &&	((io->show == SHOW_FLAG_IN_SCENE)
@@ -638,7 +641,8 @@ void PrepareIOTreatZone(long flag)
 	long M_TREAT = TREATZONE_CUR;
 
 	for(size_t i = 1; i < entities.size(); i++) {
-		Entity * io = entities[i];
+		const EntityHandle handle = EntityHandle(i);
+		Entity * io = entities[handle];
 
 		if(io && !(io->gameFlags & GFLAG_ISINTREATZONE)
 		        && ((io->show == SHOW_FLAG_IN_SCENE)
@@ -674,7 +678,9 @@ void PrepareIOTreatZone(long flag)
  */
 void CleanScriptLoadedIO() {
 	for(size_t i = 1; i < entities.size(); i++) {
-		Entity * io = entities[i];
+		const EntityHandle handle = EntityHandle(i);
+		Entity * io = entities[handle];
+		
 		if(io) {
 			if(io->scriptload) {
 				delete io;
@@ -696,7 +702,8 @@ void RestoreInitialIOStatus() {
 		entities.player()->spellcast_data.castingspell = SPELL_NONE;
 	}
 	for(size_t i = 1; i < entities.size(); i++) {
-		Entity * e = entities[i];
+		const EntityHandle handle = EntityHandle(i);
+		Entity * e = entities[handle];
 		
 		RestoreInitialIOStatusOfIO(e);
 	}
@@ -844,7 +851,8 @@ void ARX_INTERACTIVE_ClearAllDynData() {
 	ARX_INTERACTIVE_HideGore(entities.player());
 	ARX_NPC_Behaviour_ResetAll();
 	for(size_t i = 1; i < entities.size(); i++) {
-		Entity * e = entities[i];
+		const EntityHandle handle = EntityHandle(i);
+		Entity * e = entities[handle];
 		
 		ARX_INTERACTIVE_ClearIODynData(e);
 	}
@@ -1070,7 +1078,8 @@ void ARX_INTERACTIVE_TWEAK_Icon(Entity * io, const res::path & s1) {
 long GetNumberInterWithOutScriptLoad() {
 	long count = 0;
 	for(size_t i = 1; i < entities.size(); i++) {
-		Entity * e = entities[i];
+		const EntityHandle handle = EntityHandle(i);
+		Entity * e = entities[handle];
 		
 		if(e != NULL && !e->scriptload) {
 			count++;
@@ -1417,7 +1426,8 @@ static void MakeTemporaryIOIdent(Entity * io) {
 		bool used = false;
 		// TODO replace this loop by an (className, instance) index
 		for(size_t i = 0; i < entities.size(); i++) {
-			Entity * e = entities[i];
+			const EntityHandle handle = EntityHandle(i);
+			Entity * e = entities[handle];
 			
 			if(e && e->ident == t && io != e) {
 				if(e->className() == className) {
@@ -1964,6 +1974,8 @@ Entity * GetFirstInterAtPos(const Vec2s & pos, long flag, Vec3f * _pRef, Entity 
 	}
 
 	for(long i = nStart; i < nEnd; i++) {
+		const EntityHandle handle = EntityHandle(i);
+		
 		bool bPass = true;
 
 		Entity * io;
@@ -1971,7 +1983,7 @@ Entity * GetFirstInterAtPos(const Vec2s & pos, long flag, Vec3f * _pRef, Entity 
 		if(flag == 3 && _pTable && _pnNbInTable) {
 			io = _pTable[i];
 		} else {
-			io = entities[i];
+			io = entities[handle];
 		}
 
 		// Is Object Valid ??
@@ -2123,7 +2135,8 @@ Entity * InterClick(const Vec2s & pos) {
 long IsCollidingAnyInter(const Vec3f & pos, Vec3f * size) {
 	
 	for(size_t i = 0; i < entities.size(); i++) {
-		Entity * io = entities[i];
+		const EntityHandle handle = EntityHandle(i);
+		Entity * io = entities[handle];
 
 		if(   io
 		   && !(io->ioflags & IO_NO_COLLISIONS)
@@ -2320,7 +2333,8 @@ void UpdateCameras() {
 	arxtime.get_updated();
 	
 	for(size_t i = 1; i < entities.size(); i++) {
-		Entity * io = entities[i];
+		const EntityHandle handle = EntityHandle(i);
+		Entity * io = entities[handle];
 		
 		if(!io)
 			continue;
@@ -2392,7 +2406,8 @@ void UpdateCameras() {
 
 			if(io->damager_damages > 0 && io->show == SHOW_FLAG_IN_SCENE) {
 				for(size_t ii = 0; ii < entities.size(); ii++) {
-					Entity * ioo = entities[ii];
+					const EntityHandle handle = EntityHandle(ii);
+					Entity * ioo = entities[handle];
 
 					if(ioo
 					   && ii != i
@@ -2505,7 +2520,8 @@ glm::mat4x4 convertToMatrixForDrawEERIEInter(const PHYSICS_BOX_DATA &box) {
 void UpdateInter() {
 
 	for(size_t i = 1; i < entities.size(); i++) {
-		Entity * io = entities[i];
+		const EntityHandle handle = EntityHandle(i);
+		Entity * io = entities[handle];
 
 		if(   !io
 		   || io == DRAGINTER
@@ -2557,7 +2573,8 @@ void UpdateInter() {
 void RenderInter() {
 
 	for(size_t i = 1; i < entities.size(); i++) { // Player isn't rendered here...
-		Entity * io = entities[i];
+		const EntityHandle handle = EntityHandle(i);
+		Entity * io = entities[handle];
 
 		if(!io || io == DRAGINTER || !(io->gameFlags & GFLAG_ISINTREATZONE))
 			continue;

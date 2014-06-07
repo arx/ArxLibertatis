@@ -47,7 +47,7 @@ public:
 	EntityHandle getById(const std::string & name) const;
 	Entity * getById(const std::string & name, Entity * self) const;
 	
-	Entity * operator[](size_t index) const {
+	Entity * operator[](EntityHandle index) const {
 		return entries[index];
 	}
 	

@@ -206,7 +206,9 @@ public:
 			
 			bool colliding = false;
 			for(size_t k = 0; k < entities.size(); k++) {
-				Entity * ioo = entities[k];
+				const EntityHandle handle = EntityHandle(k);
+				Entity * ioo = entities[handle];
+				
 				if(ioo && IsCollidingIO(io, ioo)) {
 					Entity * oes = EVENT_SENDER;
 					EVENT_SENDER = ioo;

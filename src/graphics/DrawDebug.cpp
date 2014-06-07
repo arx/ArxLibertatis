@@ -291,8 +291,9 @@ static void drawDebugPathFinding() {
 	
 	// Highlight active paths
 	for(size_t i = 1; i < entities.size(); i++) {
+		const EntityHandle handle = EntityHandle(i);
+		const Entity * entity = entities[handle];
 		
-		const Entity * entity = entities[i];
 		if(!entity || !(entity->ioflags & IO_NPC)) {
 			continue;
 		}
@@ -418,7 +419,9 @@ static void drawDebugEntityPhysicsCylinder(Entity * io) {
 
 static void drawDebugEntityPhysicsCylinders() {
 	for(size_t i = 1; i < entities.size(); i++) {
-		Entity * entity = entities[i];
+		const EntityHandle handle = EntityHandle(i);
+		Entity * entity = entities[handle];
+		
 		if(entity) {
 			drawDebugCollisionShape(entity->obj);
 			drawDebugEntityPhysicsCylinder(entity);
@@ -429,8 +432,9 @@ static void drawDebugEntityPhysicsCylinders() {
 static void drawDebugEntities() {
 	
 	for(size_t i = 1; i < entities.size(); i++) {
+		const EntityHandle handle = EntityHandle(i);
+		Entity * entity = entities[handle];
 		
-		Entity * entity = entities[i];
 		if(!entity) {
 			continue;
 		}

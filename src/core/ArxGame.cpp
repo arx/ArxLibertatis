@@ -1248,7 +1248,8 @@ void ArxGame::updateLevel() {
 
 
 	for(size_t i = 0; i < entities.size(); i++) {
-		Entity *entity = entities[i];
+		const EntityHandle handle = EntityHandle(i);
+		Entity *entity = entities[handle];
 
 		if(!entity)
 			continue;

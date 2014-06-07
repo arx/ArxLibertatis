@@ -676,7 +676,7 @@ static float ARX_EQUIPMENT_GetSpecialValue(Entity * io, long val) {
 // flags & 1 = blood spawn only
 //-----------------------------------------------------------------------------------------------
 //***********************************************************************************************
-bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ratioaim, long flags, long targ)
+bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ratioaim, long flags, EntityHandle targ)
 {
 	
 	bool ret = false;
@@ -984,18 +984,19 @@ void ARX_EQUIPMENT_Equip(Entity * target, Entity * toequip)
 	if(!target || !toequip || target != entities.player())
 		return;
 
-	long validid = -1;
+	EntityHandle validid = InvalidEntityHandle;
 
 	for(size_t i = 0; i < entities.size(); i++) {
-		Entity * e = entities[i];
+		const EntityHandle handle = EntityHandle(i);
+		Entity * e = entities[handle];
 		
 		if(e == toequip) {
-			validid = i;
+			validid = handle;
 			break;
 		}
 	}
 
-	if(validid == -1)
+	if(validid == InvalidEntityHandle)
 		return;
 
 	RemoveFromAllInventories(toequip);

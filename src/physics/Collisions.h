@@ -100,7 +100,7 @@ DECLARE_FLAGS_OPERATORS(CASFlags)
 bool CheckAnythingInSphere(const Sphere & sphere, EntityHandle source, CASFlags flags = 0, EntityHandle * num = NULL);
 
 //except source...
-bool CheckEverythingInSphere(const Sphere & sphere, long source, long targ, std::vector<EntityHandle> & sphereContent);
+bool CheckEverythingInSphere(const Sphere & sphere, long source, EntityHandle targ, std::vector<EntityHandle> & sphereContent);
 
 //except source...
 EERIEPOLY * CheckBackgroundInSphere(const Sphere & sphere);

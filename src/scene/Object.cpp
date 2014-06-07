@@ -1392,7 +1392,8 @@ static EERIE_3DOBJ * TheoToEerie(const char * adr, long size, const res::path & 
 static EERIE_3DOBJ * GetExistingEerie(const res::path & file) {
 	
 	for(size_t i = 1; i < entities.size(); i++) {
-		Entity * e = entities[i];
+		const EntityHandle handle = EntityHandle(i);
+		Entity * e = entities[handle];
 		
 		if(e != NULL && !e->tweaky && e->obj) {
 			EERIE_3DOBJ * obj = e->obj;

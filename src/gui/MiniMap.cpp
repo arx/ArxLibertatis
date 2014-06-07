@@ -755,7 +755,8 @@ void MiniMap::drawDetectedEntities(int showLevel, float startX, float startY, fl
 	
 	const EntityManager &ents = *m_entities; // for convenience
 	for(size_t lnpc = 1; lnpc < ents.size(); lnpc++) {
-		Entity * npc = ents[lnpc];
+		const EntityHandle handle = EntityHandle(lnpc);
+		Entity * npc = ents[handle];
 		
 		if(!npc || !(npc->ioflags & IO_NPC)) {
 			continue; // only NPCs can be detected

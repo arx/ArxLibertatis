@@ -180,8 +180,9 @@ bool ControlTargetSpell::Launch()
 	
 	long tcount = 0;
 	for(size_t ii = 1; ii < entities.size(); ii++) {
+		const EntityHandle handle = EntityHandle(ii);
+		Entity * ioo = entities[handle];
 		
-		Entity * ioo = entities[ii];
 		if(!ioo || !(ioo->ioflags & IO_NPC)) {
 			continue;
 		}
@@ -263,8 +264,9 @@ void MassIncinerateSpell::Launch(SpellHandle i)
 	
 	long nb_targets=0;
 	for(size_t ii = 0; ii < entities.size(); ii++) {
+		const EntityHandle handle = EntityHandle(ii);
+		Entity * tio = entities[handle];
 		
-		Entity * tio = entities[ii];
 		if(long(ii) == m_caster || !tio || !(tio->ioflags & IO_NPC)) {
 			continue;
 		}
@@ -294,7 +296,9 @@ void MassIncinerateSpell::Launch(SpellHandle i)
 
 void ARX_SPELLS_RemoveMultiSpellOn(SpellHandle spell_id) {
 	for(size_t i = 0; i < entities.size(); i++) {
-		ARX_SPELLS_RemoveSpellOn(i, spells[spell_id].m_type);
+		const EntityHandle handle = EntityHandle(i);
+		
+		ARX_SPELLS_RemoveSpellOn(handle, spells[spell_id].m_type);
 	}
 }
 

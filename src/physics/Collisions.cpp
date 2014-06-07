@@ -307,7 +307,8 @@ void PushIO_ON_Top(Entity * ioo, float ydec) {
 	
 	if(ydec != 0.f)
 	for(size_t i = 0; i < entities.size(); i++) {
-		Entity * io = entities[i];
+		const EntityHandle handle = EntityHandle(i);
+		Entity * io = entities[handle];
 
 		if(io
 		   && io != ioo
@@ -395,7 +396,8 @@ void PushIO_ON_Top(Entity * ioo, float ydec) {
 bool IsAnyNPCInPlatform(Entity * pfrm) {
 	
 	for(size_t i = 0; i < entities.size(); i++) {
-		Entity * io = entities[i];
+		const EntityHandle handle = EntityHandle(i);
+		Entity * io = entities[handle];
 
 		if(io
 		   && io != pfrm
@@ -577,8 +579,10 @@ float CheckAnythingInCylinder(const EERIE_CYLINDER & cyl, Entity * ioo, long fla
 		}
 
 		for(long i = 0; i < AMOUNT; i++) {
+			const EntityHandle handle = EntityHandle(i);
+			
 			if(FULL_TEST) {
-				io = entities[i];
+				io = entities[handle];
 			} else {
 				io = treatio[i].io;
 			}
@@ -851,7 +855,7 @@ static bool InExceptionList(long val) {
 	return false;
 }
 
-bool CheckEverythingInSphere(const Sphere & sphere, long source, long targ, std::vector<EntityHandle> & sphereContent) //except source...
+bool CheckEverythingInSphere(const Sphere & sphere, long source, EntityHandle targ, std::vector<EntityHandle> & sphereContent) //except source...
 {
 	bool vreturn = false;
 	
@@ -1661,10 +1665,11 @@ bool IO_Visible(const Vec3f & orgn, const Vec3f & dest, EERIEPOLY * epp, Vec3f *
 		sphere.radius=65.f;
 
 		for(size_t num = 0; num < entities.size(); num++) {
-			Entity * io = entities[num];
+			const EntityHandle handle = EntityHandle(num);
+			Entity * io = entities[handle];
 
 			if(io && (io->gameFlags & GFLAG_VIEW_BLOCKER)) {
-				if(CheckIOInSphere(sphere, EntityHandle(num))) {
+				if(CheckIOInSphere(sphere, handle)) {
 					dd = fdist(orgn, sphere.origin);
 
 					if(dd < nearest) {

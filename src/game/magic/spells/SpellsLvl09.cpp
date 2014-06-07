@@ -444,8 +444,9 @@ void MassParalyseSpell::Launch(SpellHandle i, long duration)
 	m_tolive = (duration > -1) ? duration : 10000;
 	
 	for(size_t ii = 0; ii < entities.size(); ii++) {
+		const EntityHandle handle = EntityHandle(ii);
+		Entity * tio = entities[handle];
 		
-		Entity * tio = entities[ii];
 		if(long(ii) == m_caster || !tio || !(tio->ioflags & IO_NPC)) {
 			continue;
 		}

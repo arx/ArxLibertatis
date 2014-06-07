@@ -104,7 +104,8 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 	unsigned long curtime = (unsigned long)(arxtime);
 	
 	for(size_t i = 0; i < entities.size(); i++) {
-		Entity * io = entities[i];
+		const EntityHandle handle = EntityHandle(i);
+		Entity * io = entities[handle];
 		if(!io)
 			continue;
 
@@ -175,7 +176,7 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 		}
 
 		if(io->symboldraw) {
-			SYMBOL_DRAW * sd = entities[i]->symboldraw;
+			SYMBOL_DRAW * sd = entities[handle]->symboldraw;
 			long tim = curtime - sd->starttime;
 
 			if(tim > sd->duration) {
@@ -248,8 +249,8 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 					if(newtime <= ti) {
 						float ratio = float(newtime) * div_ti;
 						pos1 += Vec2s(Vec2f(vect) * ratio);
-						AddFlare(pos1, 0.1f, 1, entities[i]);
-						FlareLine(old_pos, pos1, entities[i]);
+						AddFlare(pos1, 0.1f, 1, entities[handle]);
+						FlareLine(old_pos, pos1, entities[handle]);
 						break;
 					}
 
@@ -301,7 +302,7 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 						pos.x=(short)(pos1.x*g_sizeRatio.x);
 						pos.y=(short)(pos1.y*g_sizeRatio.y);
 
-						AddFlare(pos, 0.1f, 1, entities[i], true);
+						AddFlare(pos, 0.1f, 1, entities[handle], true);
 
 						break;
 					}

@@ -459,7 +459,7 @@ void ARX_PARTICLES_Spawn_Blood2(const Vec3f & pos, float dmgs, Color col, Entity
 	}
 }
 
-void ARX_PARTICLES_Spawn_Blood(Vec3f * pos, float dmgs, long source) {
+void ARX_PARTICLES_Spawn_Blood(Vec3f * pos, float dmgs, EntityHandle source) {
 	
 	if(source < 0) {
 		return;
@@ -785,8 +785,9 @@ void Add3DBoom(const Vec3f & position) {
 	}
 	
 	for(size_t i = 0; i < entities.size(); i++) {
+		const EntityHandle handle = EntityHandle(i);
+		Entity * entity = entities[handle];
 		
-		Entity * entity = entities[i];
 		if(!entity || entity->show != 1 || !(entity->ioflags & IO_ITEM)) {
 			continue;
 		}
@@ -1068,7 +1069,7 @@ void ARX_PARTICLES_Update(EERIE_CAMERA * cam)  {
 		if(part->delay > 0) {
 			part->timcreation += part->delay;
 			part->delay=0;
-			if((part->special & DELAY_FOLLOW_SOURCE) && part->sourceionum >= 0
+			if((part->special & DELAY_FOLLOW_SOURCE) && part->sourceionum != InvalidEntityHandle
 					&& entities[part->sourceionum]) {
 				part->ov = *part->source;
 				Entity * target = entities[part->sourceionum];
@@ -1155,10 +1156,10 @@ void ARX_PARTICLES_Update(EERIE_CAMERA * cam)  {
 		
 		float val = (part->tolive - framediff) * 0.01f;
 		
-		if((part->special & FOLLOW_SOURCE) && part->sourceionum >= 0
+		if((part->special & FOLLOW_SOURCE) && part->sourceionum != InvalidEntityHandle
 				&& entities[part->sourceionum]) {
 			inn.p = in.p = *part->source;
-		} else if((part->special & FOLLOW_SOURCE2) && part->sourceionum >= 0
+		} else if((part->special & FOLLOW_SOURCE2) && part->sourceionum != InvalidEntityHandle
 							&& entities[part->sourceionum]) {
 			inn.p = in.p = *part->source + part->move * val;
 		} else {

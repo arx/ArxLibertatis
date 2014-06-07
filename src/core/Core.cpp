@@ -1030,7 +1030,8 @@ void FirstFrameHandling() {
 	}
 	
 	for(size_t i = 0; i < entities.size(); i++) {
-		Entity * e = entities[i];
+		const EntityHandle handle = EntityHandle(i);
+		Entity * e = entities[handle];
 		
 		if(e && (e->ioflags & IO_NPC)
 		   && e->_npcdata->cuts) {

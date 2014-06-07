@@ -341,7 +341,7 @@ SpellHandle ARX_SPELLS_GetSpellOn(const Entity * io, SpellType spellid)
 	return InvalidSpellHandle;
 }
 
-void ARX_SPELLS_RemoveSpellOn(const long & entityHandle, const long & spellHandle)
+void ARX_SPELLS_RemoveSpellOn(EntityHandle entityHandle, const long & spellHandle)
 {
 	if(entityHandle < 0 || spellHandle < 0)
 		return;
@@ -549,17 +549,19 @@ void SPELLCAST_Notify(SpellHandle num) {
 		return;
 		
 	char spell[128];
-	long source = spells[num].m_caster;
+	EntityHandle source = spells[num].m_caster;
 
 	if(!MakeSpellName(spell, spells[num].m_type))
 		return;
 	
 	for(size_t i = 0; i < entities.size(); i++) {
-		if(entities[i] != NULL) {
-			EVENT_SENDER = (source >= 0) ? entities[source] : NULL;
+		const EntityHandle handle = EntityHandle(i);
+		
+		if(entities[handle] != NULL) {
+			EVENT_SENDER = (source != InvalidEntityHandle) ? entities[source] : NULL;
 			char param[256];
 			sprintf(param, "%s %ld", spell, (long)spells[num].m_caster_level);
-			SendIOScriptEvent(entities[i], SM_SPELLCAST, param);
+			SendIOScriptEvent(entities[handle], SM_SPELLCAST, param);
 		}
 	}
 }
@@ -573,10 +575,10 @@ void SPELLCAST_NotifyOnlyTarget(SpellHandle num)
 		return;
 
 	char spell[128];
-	long source = spells[num].m_caster;
+	EntityHandle source = spells[num].m_caster;
 
 	if(MakeSpellName(spell, spells[num].m_type)) {
-		if(source >= 0)
+		if(source != InvalidEntityHandle)
 			EVENT_SENDER = entities[source];
 		else
 			EVENT_SENDER = NULL;
@@ -612,12 +614,14 @@ void SPELLEND_Notify(SpellBase & spell) {
 	}
 	
 	for(size_t i = 0; i < entities.size(); i++) {
-		if(entities[i]) {
+		const EntityHandle handle = EntityHandle(i);
+		
+		if(entities[handle]) {
 			EVENT_SENDER = ValidIONum(source) ? entities[source] : NULL;
 			
 			char param[128];
 			sprintf(param, "%s %ld", spellName, (long)spell.m_caster_level);
-			SendIOScriptEvent(entities[i], SM_SPELLEND, param);
+			SendIOScriptEvent(entities[handle], SM_SPELLEND, param);
 		}
 	}
 }
@@ -865,7 +869,8 @@ long TemporaryGetSpellTarget(const Vec3f * from) {
 	float mindist = std::numeric_limits<float>::max();
 	long found = 0;
 	for(size_t i = 1; i < entities.size(); i++) {
-		Entity * e = entities[i];
+		const EntityHandle handle = EntityHandle(i);
+		Entity * e = entities[handle];
 		
 		if(e && e->ioflags & IO_NPC) {
 			float dist = glm::distance2(*from, e->pos);
@@ -1234,7 +1239,9 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flagss
 			Vec3f cpos = entities[source]->pos;
 
 			for(size_t ii = 1 ; ii < entities.size(); ii++) {
-				Entity * ioo = entities[ii];
+				const EntityHandle handle = EntityHandle(ii);
+				Entity * ioo = entities[handle];
+				
 				if(ioo && (ioo->ioflags & IO_NPC) && ioo->_npcdata->lifePool.current > 0.f
 				   && ioo->show == SHOW_FLAG_IN_SCENE
 				   && ioo->groups.find("demon") != ioo->groups.end()

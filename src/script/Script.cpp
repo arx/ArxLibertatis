@@ -141,7 +141,8 @@ ScriptResult SendMsgToAllIO(ScriptMessage msg, const string & params) {
 	ScriptResult ret = ACCEPT;
 	
 	for(size_t i = 0; i < entities.size(); i++) {
-		Entity * e = entities[i];
+		const EntityHandle handle = EntityHandle(i);
+		Entity * e = entities[handle];
 		
 		if(e) {
 			if(SendIOScriptEvent(e, msg, params) == REFUSE) {
@@ -242,7 +243,8 @@ void ARX_SCRIPT_Reset(Entity * io, long flags) {
 
 void ARX_SCRIPT_ResetAll(long flags) {
 	for(size_t i = 0; i < entities.size(); i++) {
-		Entity * e = entities[i];
+		const EntityHandle handle = EntityHandle(i);
+		Entity * e = entities[handle];
 		
 		if(e && !e->scriptload) {
 			ARX_SCRIPT_Reset(e, flags);
@@ -252,6 +254,7 @@ void ARX_SCRIPT_ResetAll(long flags) {
 
 void ARX_SCRIPT_AllowInterScriptExec() {
 	
+	// FIXME static local variable
 	static long ppos = 0;
 	
 	if(arxtime.is_paused()) {
@@ -264,7 +267,7 @@ void ARX_SCRIPT_AllowInterScriptExec() {
 	
 	for(long n = 0; n < heartbeat_count; n++) {
 		
-		long i = ppos++;
+		EntityHandle i = EntityHandle(ppos++);
 		if(i >= long(entities.size())){
 			ppos = 0;
 			return;
@@ -1965,7 +1968,8 @@ void ARX_SCRIPT_Init_Event_Stats() {
 	ScriptEvent::totalCount = 0;
 	
 	for(size_t i = 0; i < entities.size(); i++) {
-		Entity * e = entities[i];
+		const EntityHandle handle = EntityHandle(i);
+		Entity * e = entities[handle];
 		
 		if(e) {
 			e->stat_count = 0;
@@ -1980,7 +1984,8 @@ Entity * ARX_SCRIPT_Get_IO_Max_Events() {
 	Entity * result = NULL;
 	
 	for(size_t i = 0; i < entities.size(); i++) {
-		Entity * e = entities[i];
+		const EntityHandle handle = EntityHandle(i);
+		Entity * e = entities[handle];
 		
 		if(e && e->stat_count > max) {
 			result = e;
@@ -1997,7 +2002,8 @@ Entity * ARX_SCRIPT_Get_IO_Max_Events_Sent() {
 	Entity * result = NULL;
 	
 	for(size_t i = 0; i < entities.size(); i++) {
-		Entity * e = entities[i];
+		const EntityHandle handle = EntityHandle(i);
+		Entity * e = entities[handle];
 		
 		if(e && e->stat_sent > max) {
 			result = e;

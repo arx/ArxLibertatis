@@ -206,7 +206,8 @@ long DanaeSaveLevel(const fs::path & _fic) {
 	
 	// preparing INTER DATA, Ignoring Player Data
 	for(size_t i = 1; i < entities.size(); i++) {
-		Entity * e = entities[i];
+		const EntityHandle handle = EntityHandle(i);
+		Entity * e = entities[handle];
 		
 		if(e && !e->scriptload) {
 			
@@ -474,8 +475,8 @@ Entity * LoadInter_Ex(const res::path & classPath, EntityInstance instance,
 	nameident << classPath.filename()
 	          << std::setfill('0') << std::setw(4) << instance;
 	
-	long t = entities.getById(nameident.str());
-	if(t >= 0) {
+	EntityHandle t = entities.getById(nameident.str());
+	if(t != InvalidEntityHandle) {
 		return entities[t];
 	}
 	

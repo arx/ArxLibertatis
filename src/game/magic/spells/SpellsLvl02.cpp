@@ -65,7 +65,8 @@ void HealSpell::Update(float framedelay)
 
 	if (ch)
 	for(size_t ii = 0; ii < entities.size(); ii++) {
-		Entity * e = entities[ii];
+		const EntityHandle handle = EntityHandle(ii);
+		Entity * e = entities[handle];
 		
 		if ((e)
 			&& (e->show==SHOW_FLAG_IN_SCENE) 

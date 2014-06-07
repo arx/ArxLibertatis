@@ -298,7 +298,9 @@ float ARX_DAMAGES_DamagePlayer(float dmg, DamageType type, EntityHandle source) 
 				SendIOScriptEvent(entities.player(), SM_DIE);
 
 				for(size_t i = 1; i < entities.size(); i++) {
-					Entity * ioo = entities[i];
+					const EntityHandle handle = EntityHandle(i);
+					Entity * ioo = entities[handle];
+					
 					if(ioo && (ioo->ioflags & IO_NPC)) {
 						if(ioo->targetinfo == TARGET_PLAYER) {
 							EVENT_SENDER = entities.player();
@@ -310,7 +312,7 @@ float ARX_DAMAGES_DamagePlayer(float dmg, DamageType type, EntityHandle source) 
 							} else if(ValidIONum(source)) {
 								killer = entities[source]->idString();
 							}
-							SendIOScriptEvent(entities[i], SM_NULL, killer, "target_death");
+							SendIOScriptEvent(entities[handle], SM_NULL, killer, "target_death");
 						}
 					}
 				}
@@ -566,7 +568,8 @@ void ARX_DAMAGES_ForceDeath(Entity * io_dead, Entity * io_killer) {
 	}
 
 	for(size_t i = 1; i < entities.size(); i++) {
-		Entity * ioo = entities[i];
+		const EntityHandle handle = EntityHandle(i);
+		Entity * ioo = entities[handle];
 
 		if(ioo == io_dead)
 			continue;
@@ -575,7 +578,7 @@ void ARX_DAMAGES_ForceDeath(Entity * io_dead, Entity * io_killer) {
 			if(ValidIONum(ioo->targetinfo))
 				if(entities[ioo->targetinfo] == io_dead) {
 					EVENT_SENDER = io_dead; 
-					Stack_SendIOScriptEvent(entities[i], SM_NULL, killer, "target_death");
+					Stack_SendIOScriptEvent(entities[handle], SM_NULL, killer, "target_death");
 					ioo->targetinfo = TARGET_NONE;
 					ioo->_npcdata->reachedtarget = 0;
 				}
@@ -583,7 +586,7 @@ void ARX_DAMAGES_ForceDeath(Entity * io_dead, Entity * io_killer) {
 			if(ValidIONum(ioo->_npcdata->pathfind.truetarget))
 				if(entities[ioo->_npcdata->pathfind.truetarget] == io_dead) {
 					EVENT_SENDER = io_dead; 
-					Stack_SendIOScriptEvent(entities[i], SM_NULL, killer, "target_death");
+					Stack_SendIOScriptEvent(entities[handle], SM_NULL, killer, "target_death");
 					ioo->_npcdata->pathfind.truetarget = TARGET_NONE;
 					ioo->_npcdata->reachedtarget = 0;
 				}
@@ -977,7 +980,8 @@ void ARX_DAMAGES_UpdateDamage(DamageHandle j, float tim) {
 	
 	// checking for IO damages
 	for(size_t i = 0; i < entities.size(); i++) {
-		Entity * io = entities[i];
+		const EntityHandle handle = EntityHandle(i);
+		Entity * io = entities[handle];
 		
 		if(io
 		   && (io->gameFlags & GFLAG_ISINTREATZONE)
@@ -1041,10 +1045,10 @@ void ARX_DAMAGES_UpdateDamage(DamageHandle j, float tim) {
 						continue;
 					
 					if(   (damage.params.flags & DAMAGE_FLAG_ADD_VISUAL_FX)
-					   && (entities[i]->ioflags & IO_NPC)
-					   && (entities[i]->_npcdata->lifePool.current > 0.f)
+					   && (entities[handle]->ioflags & IO_NPC)
+					   && (entities[handle]->_npcdata->lifePool.current > 0.f)
 					) {
-						ARX_DAMAGES_AddVisual(&damage, &sub, dmg, entities[i]);
+						ARX_DAMAGES_AddVisual(&damage, &sub, dmg, entities[handle]);
 					}
 					
 					if(damage.params.type & DAMAGE_TYPE_DRAIN_MANA) {
@@ -1100,32 +1104,32 @@ void ARX_DAMAGES_UpdateDamage(DamageHandle j, float tim) {
 								damagesdone = ARX_DAMAGES_DamagePlayer(dmg, damage.params.type, damage.params.source);
 							}
 						} else {
-							if(   (entities[i]->ioflags & IO_NPC)
+							if(   (entities[handle]->ioflags & IO_NPC)
 							   && (damage.params.type & DAMAGE_TYPE_POISON)
 							) {
-								if(rnd() * 100.f > entities[i]->_npcdata->resist_poison) {
+								if(rnd() * 100.f > entities[handle]->_npcdata->resist_poison) {
 									// Failed Saving Throw
 									damagesdone = dmg; 
-									entities[i]->_npcdata->poisonned += damagesdone;
+									entities[handle]->_npcdata->poisonned += damagesdone;
 								} else {
 									damagesdone = 0;
 								}
 							} else {
 								if(damage.params.type & DAMAGE_TYPE_FIRE) {
-									dmg = ARX_SPELLS_ApplyFireProtection(entities[i], dmg);
-									ARX_DAMAGES_IgnitIO(entities[i], dmg);
+									dmg = ARX_SPELLS_ApplyFireProtection(entities[handle], dmg);
+									ARX_DAMAGES_IgnitIO(entities[handle], dmg);
 								}
 								if(   (damage.params.type & DAMAGE_TYPE_MAGICAL)
 								   && !(damage.params.type & DAMAGE_TYPE_FIRE)
 								   && !(damage.params.type & DAMAGE_TYPE_COLD)
 								) {
-									dmg -= entities[i]->_npcdata->resist_magic * ( 1.0f / 100 ) * dmg;
+									dmg -= entities[handle]->_npcdata->resist_magic * ( 1.0f / 100 ) * dmg;
 									dmg = max(0.0f, dmg);
 								}
 								if(damage.params.type & DAMAGE_TYPE_COLD) {
-									dmg = ARX_SPELLS_ApplyColdProtection(entities[i], dmg);
+									dmg = ARX_SPELLS_ApplyColdProtection(entities[handle], dmg);
 								}
-								damagesdone = ARX_DAMAGES_DamageNPC(entities[i], dmg, damage.params.source, 1, &damage.params.pos);
+								damagesdone = ARX_DAMAGES_DamageNPC(entities[handle], dmg, damage.params.source, 1, &damage.params.pos);
 							}
 							if(damagesdone > 0 && (damage.params.flags & DAMAGE_SPAWN_BLOOD)) {
 								ARX_PARTICLES_Spawn_Blood(&damage.params.pos, damagesdone, damage.params.source);
@@ -1188,12 +1192,13 @@ bool ARX_DAMAGES_TryToDoDamage(const Vec3f & pos, float dmg, float radius, Entit
 	bool ret = false;
 
 	for(size_t i = 0; i < entities.size(); i++) {
-		Entity * io = entities[i];
+		const EntityHandle handle = EntityHandle(i);
+		Entity * io = entities[handle];
 
 		if(io != NULL
-		   && (entities[i]->gameFlags & GFLAG_ISINTREATZONE)
+		   && (entities[handle]->gameFlags & GFLAG_ISINTREATZONE)
 		   && io->show == SHOW_FLAG_IN_SCENE
-		   && source != long(i)
+		   && source != handle
 		) {
 			float threshold;
 			float rad = radius + 5.f;
@@ -1253,7 +1258,8 @@ void CheckForIgnition(const Vec3f & pos, float radius, bool mode, long flag) {
 		}
 
 	for(size_t i = 0; i < entities.size(); i++) {
-		Entity * io = entities[i];
+		const EntityHandle handle = EntityHandle(i);
+		Entity * io = entities[handle];
 
 		if(io && io->show == 1 && io->obj && !(io->ioflags & IO_UNDERWATER) && io->obj->fastaccess.fire >= 0) {
 			
@@ -1290,7 +1296,8 @@ bool DoSphericDamage(const Vec3f & pos, float dmg, float radius, DamageArea flag
 	bool validsource = ValidIONum(numsource);
 	
 	for(size_t i = 0; i < entities.size(); i++) {
-		Entity * ioo = entities[i];
+		const EntityHandle handle = EntityHandle(i);
+		Entity * ioo = entities[handle];
 		
 		if(!ioo || long(i) == numsource || !ioo->obj)
 			continue;
@@ -1310,8 +1317,8 @@ bool DoSphericDamage(const Vec3f & pos, float dmg, float radius, DamageArea flag
 			if(ioo->obj->vertexlist.size() < 120) {
 				for(size_t kk = 0; kk < ioo->obj->vertexlist.size(); kk += 1) {
 					if(kk != k) {
-						Vec3f posi = (entities[i]->obj->vertexlist3[k].v
-									  + entities[i]->obj->vertexlist3[kk].v) * 0.5f;
+						Vec3f posi = (entities[handle]->obj->vertexlist3[k].v
+									  + entities[handle]->obj->vertexlist3[kk].v) * 0.5f;
 						float dist = fdist(pos, posi);
 						if(dist <= radius) {
 							count2++;
@@ -1323,7 +1330,7 @@ bool DoSphericDamage(const Vec3f & pos, float dmg, float radius, DamageArea flag
 			}
 			
 			{
-			float dist = fdist(pos, entities[i]->obj->vertexlist3[k].v);
+			float dist = fdist(pos, entities[handle]->obj->vertexlist3[k].v);
 			
 			if(dist <= radius) {
 				count++;
@@ -1386,15 +1393,15 @@ bool DoSphericDamage(const Vec3f & pos, float dmg, float radius, DamageArea flag
 			if(mindist <= radius + 30.f) {
 				if(typ & DAMAGE_TYPE_FIRE) {
 					dmg = ARX_SPELLS_ApplyFireProtection(ioo, dmg * ratio);
-					ARX_DAMAGES_IgnitIO(entities[i], dmg);
+					ARX_DAMAGES_IgnitIO(entities[handle], dmg);
 				}
 				
 				if(typ & DAMAGE_TYPE_COLD) {
 					dmg = ARX_SPELLS_ApplyColdProtection(ioo, dmg * ratio);
 				}
 				
-				if(entities[i]->ioflags & IO_FIX)
-					ARX_DAMAGES_DamageFIX(entities[i], dmg * ratio, numsource, 1);
+				if(entities[handle]->ioflags & IO_FIX)
+					ARX_DAMAGES_DamageFIX(entities[handle], dmg * ratio, numsource, 1);
 				
 				if(dmg > 0.2f)
 					damagesdone = true;

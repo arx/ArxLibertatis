@@ -755,7 +755,8 @@ InventoryPos removeFromInventories(Entity * item) {
 	}
 	
 	for(size_t i = 1; i < entities.size(); i++) {
-		Entity * e = entities[i];
+		const EntityHandle handle = EntityHandle(i);
+		Entity * e = entities[handle];
 		
 		if(e && e->inventory) {
 			oldPos = getIoInventory(e).remove(item);
@@ -776,7 +777,8 @@ InventoryPos locateInInventories(const Entity * item) {
 	}
 	
 	for(size_t i = 1; i < entities.size(); i++) {
-		Entity * e = entities[i];
+		const EntityHandle handle = EntityHandle(i);
+		Entity * e = entities[handle];
 		
 		if(e && e->inventory) {
 			pos = getIoInventory(e).locate(item);
@@ -1644,7 +1646,9 @@ bool GetItemWorldPosition(Entity * io, Vec3f * pos)
 
 		// Is it in any other IO inventory ?
 		for(size_t i = 0; i < entities.size(); i++) {
-			Entity * ioo = entities[i];
+			const EntityHandle handle = EntityHandle(i);
+			Entity * ioo = entities[handle];
+			
 			if(ioo && ioo->inventory) {
 				INVENTORY_DATA * id = ioo->inventory;
 				for(long j = 0; j < id->sizey; j++) {
@@ -1701,7 +1705,9 @@ bool GetItemWorldPositionSound(const Entity * io, Vec3f * pos) {
 		}
 		
 		for(size_t i = 0; i < entities.size(); i++) {
-			Entity * ioo = entities[i];
+			const EntityHandle handle = EntityHandle(i);
+			Entity * ioo = entities[handle];
+			
 			if(ioo && ioo->inventory) {
 				INVENTORY_DATA * id = ioo->inventory;
 				for(long j = 0; j < id->sizey; j++) {
@@ -1734,7 +1740,8 @@ void RemoveFromAllInventories(const Entity * io) {
 	
 	// Seek IO in Other IO's Inventories
 	for(size_t i = 0; i < entities.size(); i++) {
-		Entity * e = entities[i];
+		const EntityHandle handle = EntityHandle(i);
+		Entity * e = entities[handle];
 		
 		if(e != NULL) {
 			if(e->inventory != NULL) {
@@ -1758,7 +1765,8 @@ void RemoveFromAllInventories(const Entity * io) {
 void CheckForInventoryReplaceMe(Entity * io, Entity * old) {
 	
 	for(size_t i = 0; i < entities.size(); i++) {
-		Entity * e = entities[i];
+		const EntityHandle handle = EntityHandle(i);
+		Entity * e = entities[handle];
 		
 		if(e != NULL) {
 			if(e->inventory != NULL) {
