@@ -1678,7 +1678,7 @@ void ARX_PLAYER_Manage_Visual() {
 			ChangeMoveAnim = alist[ANIM_MEDITATION];
 			ChangeMA_Loop = true;
 			goto makechanges;
-		} else if(ARX_SPELLS_GetSpellOn(io, SPELL_LEVITATE) >= 0) {
+		} else if(ARX_SPELLS_GetSpellOn(io, SPELL_LEVITATE) != InvalidSpellHandle) {
 			ChangeMoveAnim = alist[ANIM_LEVITATE];
 			ChangeMA_Loop = true;
 			goto makechanges;
@@ -1862,7 +1862,7 @@ void ForcePlayerLookAtIO(Entity * io) {
  */
 void ARX_PLAYER_Frame_Update()
 {
-	if(ARX_SPELLS_GetSpellOn(entities.player(), SPELL_PARALYSE) >= 0) {
+	if(ARX_SPELLS_GetSpellOn(entities.player(), SPELL_PARALYSE) != InvalidSpellHandle) {
 		PLAYER_PARALYSED = 1;
 	} else {
 		entities.player()->ioflags &= ~IO_FREEZESCRIPT;
@@ -1919,7 +1919,7 @@ void ARX_PLAYER_Frame_Update()
 	player.TRAP_DETECT = player.m_skillFull.mecanism;
 	player.TRAP_SECRET = player.m_skillFull.intuition;
 
-	if(ARX_SPELLS_GetSpellOn(entities.player(), SPELL_DETECT_TRAP) >= 0)
+	if(ARX_SPELLS_GetSpellOn(entities.player(), SPELL_DETECT_TRAP) != InvalidSpellHandle)
 		player.TRAP_DETECT = 100.f;
 
 	ModeLight |= MODE_DEPTHCUEING;
@@ -1932,7 +1932,7 @@ void ARX_PLAYER_Frame_Update()
  */
 static void ARX_PLAYER_MakeStepNoise() {
 	
-	if(ARX_SPELLS_GetSpellOn(entities.player(), SPELL_LEVITATE) >= 0) {
+	if(ARX_SPELLS_GetSpellOn(entities.player(), SPELL_LEVITATE) != InvalidSpellHandle) {
 		return;
 	}
 	

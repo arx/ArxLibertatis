@@ -27,6 +27,7 @@ static const EntityHandle InvalidEntityHandle = EntityHandle(-1);
 static const EntityHandle PlayerEntityHandle = EntityHandle(0);
 
 BOOST_STRONG_TYPEDEF(long, SpellHandle)
+static const SpellHandle InvalidSpellHandle = SpellHandle(-1);
 
 struct ResourcePool {
 	float current;

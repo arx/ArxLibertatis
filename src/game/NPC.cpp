@@ -2800,7 +2800,7 @@ static void ManageNPCMovement(Entity * io)
 
 	CollisionFlags levitate = 0;
 
-	if(ARX_SPELLS_GetSpellOn(io, SPELL_LEVITATE) >= 0) {
+	if(ARX_SPELLS_GetSpellOn(io, SPELL_LEVITATE) != InvalidSpellHandle) {
 		levitate = CFLAG_LEVITATE;
 		io->physics.targetpos.y = io->pos.y + io->move.y + ForcedMove.y;
 	} else { // Gravity 'simulation'
