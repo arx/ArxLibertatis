@@ -557,9 +557,9 @@ float ARX_EQUIPMENT_ComputeDamages(Entity * io_source, Entity * io_target, float
 		
 		damages = io_source->_npcdata->damages * ratioaim * (rnd() * ( 1.0f / 2 ) + 0.5f);
 
-		long value = ARX_SPELLS_GetSpellOn(io_source, SPELL_CURSE);
+		SpellHandle value = ARX_SPELLS_GetSpellOn(io_source, SPELL_CURSE);
 
-		if(value >= 0) {
+		if(value != InvalidSpellHandle) {
 			damages *= (1 - spells[value].m_caster_level * 0.05f);
 		}
 
@@ -584,9 +584,9 @@ float ARX_EQUIPMENT_ComputeDamages(Entity * io_source, Entity * io_target, float
 	} else {
 		ac = ARX_INTERACTIVE_GetArmorClass(io_target);
 		absorb = io_target->_npcdata->absorb;
-		long value = ARX_SPELLS_GetSpellOn(io_target, SPELL_CURSE);
+		SpellHandle value = ARX_SPELLS_GetSpellOn(io_target, SPELL_CURSE);
 
-		if(value >= 0) {
+		if(value != InvalidSpellHandle) {
 			float modif = (1 - spells[value].m_caster_level * 0.05f);
 			ac *= modif;
 			absorb *= modif;

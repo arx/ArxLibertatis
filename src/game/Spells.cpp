@@ -1006,9 +1006,9 @@ void ARX_SPELLS_LaunchSpellTarget(Entity * io) {
 float ARX_SPELLS_ApplyFireProtection(Entity * io,float damages)
 {
 	if(io) {
-		long idx=ARX_SPELLS_GetSpellOn(io,SPELL_FIRE_PROTECTION);
+		SpellHandle idx = ARX_SPELLS_GetSpellOn(io, SPELL_FIRE_PROTECTION);
 
-		if(idx >= 0) {
+		if(idx != InvalidSpellHandle) {
 			float modif = 1.f-((float)spells[idx].m_caster_level*( 1.0f / 10 ));
 
 			modif = clamp(modif, 0.f, 1.f);
@@ -1029,9 +1029,9 @@ float ARX_SPELLS_ApplyFireProtection(Entity * io,float damages)
 
 float ARX_SPELLS_ApplyColdProtection(Entity * io,float damages)
 {
-	long idx=ARX_SPELLS_GetSpellOn(io,SPELL_COLD_PROTECTION);
+	SpellHandle idx = ARX_SPELLS_GetSpellOn(io, SPELL_COLD_PROTECTION);
 
-	if(idx >= 0) {
+	if(idx != InvalidSpellHandle) {
 		float modif=1.f-((float)spells[idx].m_caster_level*( 1.0f / 10 ));
 
 		modif = clamp(modif, 0.f, 1.f);

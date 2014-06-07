@@ -157,8 +157,8 @@ void DispellFieldSpell::Launch()
 
 void FireProtectionSpell::Launch(SpellHandle i, long duration)
 {
-	long idx = ARX_SPELLS_GetSpellOn(entities[m_target], SPELL_FIRE_PROTECTION);
-	if(idx >= 0) {
+	SpellHandle idx = ARX_SPELLS_GetSpellOn(entities[m_target], SPELL_FIRE_PROTECTION);
+	if(idx != InvalidSpellHandle) {
 		spells[idx].m_tolive = 0;
 	}
 	
@@ -240,8 +240,8 @@ void FireProtectionSpell::Update(float timeDelta)
 
 void ColdProtectionSpell::Launch(SpellHandle i, long duration)
 {
-	long idx = ARX_SPELLS_GetSpellOn(entities[m_target], SPELL_COLD_PROTECTION);
-	if(idx >= 0) {
+	SpellHandle idx = ARX_SPELLS_GetSpellOn(entities[m_target], SPELL_COLD_PROTECTION);
+	if(idx != InvalidSpellHandle) {
 		spells[idx].m_tolive = 0;
 	}
 	

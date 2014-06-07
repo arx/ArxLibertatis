@@ -2111,8 +2111,8 @@ void PlayerMovementIterate(float DeltaTime) {
 				float anything = CheckAnythingInCylinder(player.physics.cyl, entities.player());
 				if(anything < 0.f) {
 					player.physics.cyl.height = old;
-					long num = ARX_SPELLS_GetSpellOn(entities.player(), SPELL_LEVITATE);
-					if(num != -1) {
+					SpellHandle num = ARX_SPELLS_GetSpellOn(entities.player(), SPELL_LEVITATE);
+					if(num != InvalidSpellHandle) {
 						spells[num].m_tolive = 0;
 					}
 				}

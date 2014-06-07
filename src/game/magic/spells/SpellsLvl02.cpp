@@ -150,8 +150,8 @@ void DetectTrapSpell::Update(float timeDelta)
 
 void ArmorSpell::Launch(long duration, SpellHandle i)
 {
-	long idx = ARX_SPELLS_GetSpellOn(entities[m_target], SPELL_ARMOR);
-	if(idx >= 0) {
+	SpellHandle idx = ARX_SPELLS_GetSpellOn(entities[m_target], SPELL_ARMOR);
+	if(idx != InvalidSpellHandle) {
 		spells[idx].m_tolive = 0;
 	}
 	
@@ -236,8 +236,8 @@ void ArmorSpell::Update(float timeDelta)
 
 void LowerArmorSpell::Launch(long duration, SpellHandle i)
 {
-	long idx = ARX_SPELLS_GetSpellOn(entities[m_target], SPELL_LOWER_ARMOR);
-	if(idx >= 0) {
+	SpellHandle idx = ARX_SPELLS_GetSpellOn(entities[m_target], SPELL_LOWER_ARMOR);
+	if(idx != InvalidSpellHandle) {
 		spells[idx].m_tolive = 0;
 	}
 	

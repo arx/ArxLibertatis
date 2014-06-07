@@ -240,9 +240,9 @@ float Cedric_GetInvisibility(Entity *io) {
 			invisibility -= 1.f;
 
 		if(io != entities.player() && invisibility > 0.f && !EXTERNALVIEW) {
-			long num = ARX_SPELLS_GetSpellOn(io, SPELL_INVISIBILITY);
+			SpellHandle num = ARX_SPELLS_GetSpellOn(io, SPELL_INVISIBILITY);
 
-			if(num >= 0) {
+			if(num != InvalidSpellHandle) {
 				if(player.m_skillFull.intuition > spells[num].m_caster_level * 10) {
 					invisibility -= (float)player.m_skillFull.intuition * (1.0f / 100)
 									+ (float)spells[num].m_caster_level * (1.0f / 10);
@@ -374,12 +374,12 @@ void Cedric_ApplyLightingFirstPartRefactor(Entity *io) {
 						if(io->sfx_flag & SFX_TYPE_INCINERATE) {
 							io->sfx_flag &= ~SFX_TYPE_INCINERATE;
 							io->sfx_flag &= ~SFX_TYPE_YLSIDE_DEATH;
-							long num = ARX_SPELLS_GetSpellOn(io, SPELL_INCINERATE);
+							SpellHandle num = ARX_SPELLS_GetSpellOn(io, SPELL_INCINERATE);
 
-							if(num < 0)
+							if(num == InvalidSpellHandle)
 								num = ARX_SPELLS_GetSpellOn(io, SPELL_MASS_INCINERATE);
 
-							if(num >= 0) {
+							if(num != InvalidSpellHandle) {
 								spells[num].m_tolive = 0;
 								float damages = 20 * spells[num].m_caster_level;
 								damages = ARX_SPELLS_ApplyFireProtection(io, damages);
