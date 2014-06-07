@@ -114,7 +114,7 @@ void ARX_SPECIAL_ATTRACTORS_ComputeForIO(const Entity & ioo, Vec3f & force) {
 	
 	for(size_t i = 0; i < MAX_ATTRACTORS; i++) {
 		
-		if(attractors[i].ionum == EntityHandle(-1) || !ValidIONum(attractors[i].ionum)) {
+		if(attractors[i].ionum == InvalidEntityHandle || !ValidIONum(attractors[i].ionum)) {
 			continue;
 		}
 		

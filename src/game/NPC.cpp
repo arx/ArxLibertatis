@@ -873,7 +873,7 @@ void ARX_NPC_ManagePoison(Entity * io)
 
 		if(io->_npcdata->lifePool.current > 0 && io->_npcdata->lifePool.current - dmg <= 0.f) {
 			long xp = io->_npcdata->xpvalue;
-			ARX_DAMAGES_DamageNPC(io, dmg, EntityHandle(-1), 0, NULL);
+			ARX_DAMAGES_DamageNPC(io, dmg, InvalidEntityHandle, 0, NULL);
 			ARX_PLAYER_Modify_XP(xp);
 		}
 		else
@@ -985,7 +985,7 @@ void ARX_PHYSICS_Apply() {
 
 			if(io->ioflags & IO_NPC) {
 				const float LAVA_DAMAGE = 10.f;
-				ARX_DAMAGES_DamageNPC(io, LAVA_DAMAGE * framedelay * ( 1.0f / 100 ), EntityHandle(-1), 0, NULL);
+				ARX_DAMAGES_DamageNPC(io, LAVA_DAMAGE * framedelay * ( 1.0f / 100 ), InvalidEntityHandle, 0, NULL);
 			}
 		}
 

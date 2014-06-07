@@ -111,7 +111,7 @@ struct InventoryPos {
 	
 	//! \return true if this is a valid position
 	operator bool() const {
-		return (io != EntityHandle(-1));
+		return (io != InvalidEntityHandle);
 	}
 	
 };

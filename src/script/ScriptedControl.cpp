@@ -198,8 +198,8 @@ public:
 		
 		DebugScript(' ' << sourceio << ' ' << source << ' ' << targetio << ' ' << target);
 		
-		EntityHandle i = (t == NULL) ? EntityHandle(-1) : t->index();
-		EntityHandle i2 = (t2 == NULL) ? EntityHandle(-1) : t2->index();
+		EntityHandle i = (t == NULL) ? InvalidEntityHandle : t->index();
+		EntityHandle i2 = (t2 == NULL) ? InvalidEntityHandle : t2->index();
 		
 		ARX_INTERACTIVE_Attach(i, i2, source, target);
 		

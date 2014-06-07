@@ -680,7 +680,7 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 {
 	
 	bool ret = false;
-	EntityHandle source = (io_source == NULL) ? EntityHandle(-1) : io_source->index();
+	EntityHandle source = (io_source == NULL) ? InvalidEntityHandle : io_source->index();
 	EntityHandle weapon = io_weapon->index();
 	Sphere sphere;
 

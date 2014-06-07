@@ -305,7 +305,7 @@ float ARX_DAMAGES_DamagePlayer(float dmg, DamageType type, EntityHandle source) 
 							std::string killer;
 							if(source == PlayerEntityHandle) {
 								killer = "player";
-							} else if(source <= EntityHandle(-1)) {
+							} else if(source <= InvalidEntityHandle) {
 								killer = "none";
 							} else if(ValidIONum(source)) {
 								killer = entities[source]->idString();

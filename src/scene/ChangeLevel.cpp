@@ -177,14 +177,14 @@ static EntityHandle ReadTargetInfo(const char (&str)[N]) {
 	string ident = boost::to_lower_copy(util::loadString(str));
 	
 	if(ident == "none") {
-		return EntityHandle(-1);
+		return InvalidEntityHandle;
 	} else if(ident == "self") {
 		return EntityHandle(-2);
 	} else if(ident == "player") {
 		return PlayerEntityHandle;
 	} else {
 		Entity * e = convertToValidIO(ident);
-		return (e == NULL) ? EntityHandle(-1) : e->index();
+		return (e == NULL) ? InvalidEntityHandle : e->index();
 	}
 }
 

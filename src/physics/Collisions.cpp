@@ -856,7 +856,7 @@ bool CheckEverythingInSphere(const Sphere & sphere, long source, long targ, std:
 	bool vreturn = false;
 	
 	Entity * io;
-	EntityHandle ret_idx = EntityHandle(-1);
+	EntityHandle ret_idx = InvalidEntityHandle;
 	
 	float sr30 = sphere.radius + 20.f;
 	float sr40 = sphere.radius + 30.f;

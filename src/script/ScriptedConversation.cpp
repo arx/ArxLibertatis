@@ -356,7 +356,7 @@ public:
 					if(player) {
 						computeACSPos(acs, entities.player(), acs.ionum);
 					} else {
-						computeACSPos(acs, io, EntityHandle(-1));
+						computeACSPos(acs, io, InvalidEntityHandle);
 					}
 					
 				} else if(command == "ccctalker_l" || command == "ccctalker_r") {
