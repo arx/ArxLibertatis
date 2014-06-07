@@ -465,7 +465,7 @@ void MassParalyseSpell::Launch(SpellHandle i, long duration)
 		tio->ioflags |= IO_FREEZESCRIPT;
 		
 		ARX_NPC_Kill_Spell_Launch(tio);
-		ARX_SPELLS_AddSpellOn(ii, i);
+		ARX_SPELLS_AddSpellOn(tio->index(), i);
 		
 		m_targetHandles.push_back(EntityHandle(ii));
 	}

@@ -311,7 +311,7 @@ bool spellHandleIsValid(SpellHandle handle) {
 	return (long)handle >= 0 && ((size_t)handle < MAX_SPELLS) && spells[handle].m_exist;
 }
 
-void ARX_SPELLS_AddSpellOn(const long &caster, const long &spell)
+void ARX_SPELLS_AddSpellOn(EntityHandle caster, SpellHandle spell)
 {
 	if(caster < 0 ||  spell < 0 || !entities[caster])
 		return;

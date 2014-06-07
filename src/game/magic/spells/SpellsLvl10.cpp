@@ -277,7 +277,7 @@ void MassIncinerateSpell::Launch(SpellHandle i)
 		tio->sfx_flag |= SFX_TYPE_YLSIDE_DEATH | SFX_TYPE_INCINERATE;
 		tio->sfx_time = (unsigned long)(arxtime);
 		nb_targets++;
-		ARX_SPELLS_AddSpellOn(ii, i);
+		ARX_SPELLS_AddSpellOn(tio->index(), i);
 	}
 	
 	if(nb_targets) {

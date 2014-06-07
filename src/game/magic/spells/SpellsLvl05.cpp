@@ -76,7 +76,7 @@ void RuneOfGuardingSpell::Update(float timeDelta)
 	}
 }
 
-void LevitateSpell::Launch(long duration, long i)
+void LevitateSpell::Launch(long duration, SpellHandle i)
 {
 	long iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_LEVITATE, m_caster);
 	if(iCancel > -1) {

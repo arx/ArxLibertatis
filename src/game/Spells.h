@@ -67,7 +67,7 @@ class TextureContainer;
 
 bool GetSpellPosition(Vec3f * pos, SpellHandle i);
 
-void ARX_SPELLS_AddSpellOn(const long &caster, const long &spell);
+void ARX_SPELLS_AddSpellOn(EntityHandle caster, SpellHandle spell);
 void ARX_SPELLS_RemoveSpellOn(const long & entityHandle, const long & spellHandle);
 
 SpellType GetSpellId(const std::string & spell);

@@ -404,7 +404,7 @@ void DisarmTrapSpell::Launch()
 
 bool SlowDownSpell::Launch(long duration, SpellHandle i)
 {
-	long target = m_target;
+	EntityHandle target = m_target;
 	
 	Entity * io = entities[target];
 	
