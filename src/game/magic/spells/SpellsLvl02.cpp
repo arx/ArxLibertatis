@@ -102,7 +102,7 @@ void DetectTrapSpell::Launch(SpellHandle i)
 		spells[iCancel].m_tolive = 0;
 	}
 	
-	if(m_caster == 0) {
+	if(m_caster == PlayerEntityHandle) {
 		m_target = m_caster;
 		if(!(m_flags & SPELLCAST_FLAG_NOSOUND)) {
 			ARX_SOUND_PlayInterface(SND_SPELL_DETECT_TRAP);
@@ -110,7 +110,7 @@ void DetectTrapSpell::Launch(SpellHandle i)
 	}
 	
 	m_snd_loop = SND_SPELL_DETECT_TRAP_LOOP;
-	if(m_caster == 0 && !(m_flags & SPELLCAST_FLAG_NOSOUND)) {
+	if(m_caster == PlayerEntityHandle && !(m_flags & SPELLCAST_FLAG_NOSOUND)) {
 		ARX_SOUND_PlaySFX(m_snd_loop, &m_caster_pos, 1.f,
 		                  ARX_SOUND_PLAY_LOOPED);
 	}
@@ -126,7 +126,7 @@ void DetectTrapSpell::Launch(SpellHandle i)
 
 void DetectTrapSpell::End(SpellHandle i)
 {
-	if(m_caster == 0) {
+	if(m_caster == PlayerEntityHandle) {
 		ARX_SOUND_Stop(m_snd_loop);
 	}
 	ARX_SPELLS_RemoveSpellOn(m_target, i);
@@ -134,7 +134,7 @@ void DetectTrapSpell::End(SpellHandle i)
 
 void DetectTrapSpell::Update(float timeDelta)
 {
-	if(m_caster == 0) {
+	if(m_caster == PlayerEntityHandle) {
 		Vec3f pos;
 		ARX_PLAYER_FrontPos(&pos);
 		ARX_SOUND_RefreshPosition(m_snd_loop, pos);
@@ -170,7 +170,7 @@ void ArmorSpell::Launch(long duration, SpellHandle i)
 		spells[iCancel].m_tolive = 0;
 	}
 	
-	if(m_caster == 0) {
+	if(m_caster == PlayerEntityHandle) {
 		m_target = m_caster;
 	}
 	
@@ -186,7 +186,7 @@ void ArmorSpell::Launch(long duration, SpellHandle i)
 	if(duration > -1) {
 		m_tolive = duration;
 	} else {
-		m_tolive = (m_caster == 0) ? 20000000 : 20000;
+		m_tolive = (m_caster == PlayerEntityHandle) ? 20000000 : 20000;
 	}
 	
 	m_bDuration = true;
@@ -264,7 +264,7 @@ void LowerArmorSpell::Launch(long duration, SpellHandle i)
 	if(duration > -1) {
 		m_tolive = duration;
 	} else {
-		m_tolive = (m_caster == 0) ? 20000000 : 20000;
+		m_tolive = (m_caster == PlayerEntityHandle) ? 20000000 : 20000;
 	}
 	
 	m_bDuration = true;
@@ -393,7 +393,7 @@ void HarmSpell::Update(float timeDelta)
 	float refpos;
 	float scaley;
 	
-	if(m_caster==0)
+	if(m_caster == PlayerEntityHandle)
 		scaley=90.f;
 	else
 		scaley = EEfabs(entities[m_caster]->physics.cyl.height*( 1.0f / 2 ))+30.f;
@@ -402,7 +402,7 @@ void HarmSpell::Update(float timeDelta)
 	float mov=std::sin((float)arxtime.get_frame_time()*( 1.0f / 800 ))*scaley;
 	
 	Vec3f cabalpos;
-	if(m_caster==0) {
+	if(m_caster == PlayerEntityHandle) {
 		cabalpos.x = player.pos.x;
 		cabalpos.y = player.pos.y + 60.f - mov;
 		cabalpos.z = player.pos.z;

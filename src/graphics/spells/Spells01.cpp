@@ -132,7 +132,7 @@ void LaunchMagicMissileExplosion(const Vec3f & _ePos, long spellinstance = -1)
 {
 	ParticleParams cp = MagicMissileExplosionParticle();
 	
-	if(spellinstance >= 0 && spells[spellinstance].m_caster == 0 && cur_mr == 3) {
+	if(spellinstance >= 0 && spells[spellinstance].m_caster == PlayerEntityHandle && cur_mr == 3) {
 		cp = MagicMissileExplosionMrCheatParticle();
 	}
 	
@@ -150,7 +150,7 @@ void LaunchMagicMissileExplosion(const Vec3f & _ePos, long spellinstance = -1)
 		light->fallstart = 250.f;
 		light->fallend   = 420.f;
 
-		if(spellinstance >= 0 && spells[spellinstance].m_caster == 0 && cur_mr == 3) {
+		if(spellinstance >= 0 && spells[spellinstance].m_caster == PlayerEntityHandle && cur_mr == 3) {
 			light->rgb.r = 1.f;
 			light->rgb.g = 0.3f;
 			light->rgb.b = .8f;
@@ -292,7 +292,7 @@ void CMagicMissile::Render()
 
 	// Set Texture
 	if(tex_mm) {
-		if(spells[spellinstance].m_caster == 0 && cur_mr == 3)
+		if(spells[spellinstance].m_caster == PlayerEntityHandle && cur_mr == 3)
 			GRenderer->ResetTexture(0);
 		else
 			GRenderer->SetTexture(0, tex_mm);
@@ -402,7 +402,7 @@ void CMagicMissile::Render()
 		stiteangle.setRoll(stiteangle.getRoll() + 360.0f);
 
 	Color3f stitecolor;
-	if(spells[spellinstance].m_caster == 0 && cur_mr == 3) {
+	if(spells[spellinstance].m_caster == PlayerEntityHandle && cur_mr == 3) {
 		stitecolor.r = 1.f;
 		stitecolor.g = 0.f;
 		stitecolor.b = 0.2f;
@@ -464,7 +464,7 @@ void CMultiMagicMissile::Create()
 	
 	Vec3f aePos;
 	float afAlpha, afBeta;
-	if(spells[spellinstance].m_caster == 0) { // player
+	if(spells[spellinstance].m_caster == PlayerEntityHandle) {
 		afBeta = player.angle.getPitch();
 		afAlpha = player.angle.getYaw();
 		Vec3f vector;
@@ -526,7 +526,7 @@ void CMultiMagicMissile::Create()
 		
 		pMM->SetDuration(lTime);
 		
-		if(spells[spellinstance].m_caster == 0 && cur_mr == 3) {
+		if(spells[spellinstance].m_caster == PlayerEntityHandle && cur_mr == 3) {
 			pMM->SetColor(Color3f(0.9f, 0.2f, 0.5f));
 		} else {
 			pMM->SetColor(Color3f(0.9f + rnd() * 0.1f, 0.9f + rnd() * 0.1f, 0.7f + rnd() * 0.3f));
@@ -541,7 +541,7 @@ void CMultiMagicMissile::Create()
 			el->fallend		= 190.f;
 			el->fallstart	= 80.f;
 			
-			if(spells[spellinstance].m_caster == 0 && cur_mr == 3) {
+			if(spells[spellinstance].m_caster == PlayerEntityHandle && cur_mr == 3) {
 				el->rgb.r = 1;
 				el->rgb.g = 0.3f;
 				el->rgb.b = 0.8f;

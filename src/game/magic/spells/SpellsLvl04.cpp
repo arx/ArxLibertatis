@@ -36,7 +36,7 @@
 
 void BlessSpell::Launch(SpellHandle i, long duration)
 {
-	if(m_caster == 0) {
+	if(m_caster == PlayerEntityHandle) {
 		m_target = 0;
 	}
 	
@@ -182,10 +182,10 @@ void FireProtectionSpell::Launch(SpellHandle i, long duration)
 	if(duration > -1) {
 		m_tolive = duration;
 	} else {
-		m_tolive = (m_caster == 0) ? 2000000 : 20000;
+		m_tolive = (m_caster == PlayerEntityHandle) ? 2000000 : 20000;
 	}
 	
-	if(m_caster == 0) {
+	if(m_caster == PlayerEntityHandle) {
 		m_target = 0;
 	}
 	
@@ -260,7 +260,7 @@ void ColdProtectionSpell::Launch(SpellHandle i, long duration)
 		spells[iCancel].m_tolive = 0;
 	}
 	
-	if(m_caster == 0) {
+	if(m_caster == PlayerEntityHandle) {
 		m_target = 0;
 	}
 	
@@ -271,7 +271,7 @@ void ColdProtectionSpell::Launch(SpellHandle i, long duration)
 	if(duration > -1) {
 		m_tolive = duration;
 	} else {
-		m_tolive = (m_caster == 0) ? 2000000 : 20000;
+		m_tolive = (m_caster == PlayerEntityHandle) ? 2000000 : 20000;
 	}
 	
 	m_bDuration = true;
@@ -328,7 +328,7 @@ void TelekinesisSpell::Launch(long duration)
 	m_bDuration = true;
 	m_fManaCostPerSecond = 0.9f;
 	
-	if(m_caster == 0) {
+	if(m_caster == PlayerEntityHandle) {
 		Project.telekinesis = 1;
 	}
 	
@@ -337,7 +337,7 @@ void TelekinesisSpell::Launch(long duration)
 
 void TelekinesisSpell::End()
 {
-	if(m_caster == 0)
+	if(m_caster == PlayerEntityHandle)
 		Project.telekinesis = 0;
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_TELEKINESIS_END, &entities[m_caster]->pos);

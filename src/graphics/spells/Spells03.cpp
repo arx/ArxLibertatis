@@ -236,7 +236,7 @@ void CFireBall::Update(unsigned long aulTime)
 	} else {
 		float afAlpha = 0.f;
 	
-		if(spells[spellinstance].m_caster == 0) {
+		if(spells[spellinstance].m_caster == PlayerEntityHandle) {
 			SetAngle(player.angle.getPitch());
 			afAlpha = player.angle.getYaw();
 			long idx = GetGroupOriginByName(entities[spells[spellinstance].m_caster]->obj, "chest");

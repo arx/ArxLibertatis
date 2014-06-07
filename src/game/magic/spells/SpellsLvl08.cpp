@@ -41,7 +41,7 @@ void InvisibilitySpell::Launch(SpellHandle i, long duration)
 	m_bDuration = true;
 	m_fManaCostPerSecond = 3.f;
 	
-	if(m_caster == 0) {
+	if(m_caster == PlayerEntityHandle) {
 		m_target = 0;
 	}
 
@@ -139,7 +139,7 @@ void ManaDrainSpell::Update(float timeDelta)
 	float refpos;
 	float scaley;
 	
-	if(m_caster==0)
+	if(m_caster == PlayerEntityHandle)
 		scaley=90.f;
 	else
 		scaley=EEfabs(entities[m_caster]->physics.cyl.height*( 1.0f / 2 ))+30.f;
@@ -147,7 +147,7 @@ void ManaDrainSpell::Update(float timeDelta)
 	float mov=std::sin((float)arxtime.get_frame_time()*( 1.0f / 800 ))*scaley;
 	
 	Vec3f cabalpos;
-	if(m_caster == 0) {
+	if(m_caster == PlayerEntityHandle) {
 		cabalpos.x = player.pos.x;
 		cabalpos.y = player.pos.y + 60.f - mov;
 		cabalpos.z = player.pos.z;
@@ -235,7 +235,7 @@ void ExplosionSpell::Launch()
 	m_tolive = 2000;
 	
 	Vec3f target = entities[m_caster]->pos;
-	if(m_caster == 0) {
+	if(m_caster == PlayerEntityHandle) {
 		target.y += 60.f;
 	} else {
 		target.y -= 60.f;
@@ -411,7 +411,7 @@ void LifeDrainSpell::Update(float timeDelta)
 	float refpos;
 	float scaley;
 	
-	if(m_caster==0)
+	if(m_caster == PlayerEntityHandle)
 		scaley=90.f;
 	else
 		scaley=EEfabs(entities[m_caster]->physics.cyl.height*( 1.0f / 2 ))+30.f;
@@ -419,7 +419,7 @@ void LifeDrainSpell::Update(float timeDelta)
 	float mov=std::sin((float)arxtime.get_frame_time()*( 1.0f / 800 ))*scaley;
 	
 	Vec3f cabalpos;
-	if(m_caster == 0) {
+	if(m_caster == PlayerEntityHandle) {
 		cabalpos.x = player.pos.x;
 		cabalpos.y = player.pos.y + 60.f - mov;
 		cabalpos.z = player.pos.z;

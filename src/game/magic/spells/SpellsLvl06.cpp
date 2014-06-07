@@ -45,7 +45,7 @@ bool RiseDeadSpell::Launch(long duration)
 	float beta;
 	Vec3f target;
 	bool displace = true;
-	if(m_caster == 0) {
+	if(m_caster == PlayerEntityHandle) {
 		target = player.basePosition();
 		beta = MAKEANGLE(player.angle.getPitch());
 	} else {
@@ -274,7 +274,7 @@ void CreateFieldSpell::Launch(SpellcastFlags flags, long duration)
 	Vec3f target;
 	float beta;
 	bool displace = false;
-	if(m_caster == 0) {
+	if(m_caster == PlayerEntityHandle) {
 		target = entities.player()->pos;
 		beta = player.angle.getPitch();
 		displace = true;
@@ -424,7 +424,7 @@ bool SlowDownSpell::Launch(long duration, SpellHandle i)
 	ARX_SOUND_PlaySFX(SND_SPELL_SLOW_DOWN, &entities[m_target]->pos);
 	
 	m_exist = true;
-	m_tolive = (m_caster == 0) ? 10000000 : 10000;
+	m_tolive = (m_caster == PlayerEntityHandle) ? 10000000 : 10000;
 	if(duration > -1) {
 		m_tolive=duration;
 	}

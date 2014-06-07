@@ -49,7 +49,7 @@ bool FlyingEyeSpell::Launch()
 {
 	static TextureContainer * tc4 = TextureContainer::Load("graph/particles/smoke");
 	
-	if(m_caster == 0) {
+	if(m_caster == PlayerEntityHandle) {
 		m_target = 0;
 	}
 	
@@ -221,7 +221,7 @@ void FireFieldSpell::Launch(long duration)
 	Vec3f target;
 	float beta;
 	float displace = false;
-	if(m_caster == 0) {
+	if(m_caster == PlayerEntityHandle) {
 		target = player.basePosition();
 		beta = player.angle.getPitch();
 		displace = true;
@@ -354,7 +354,7 @@ void IceFieldSpell::Launch(long duration)
 	Vec3f target;
 	float beta;
 	float displace = false;
-	if(m_caster == 0) {
+	if(m_caster == PlayerEntityHandle) {
 		target = player.basePosition();
 		beta = player.angle.getPitch();
 		displace = true;

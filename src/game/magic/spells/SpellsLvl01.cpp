@@ -41,7 +41,7 @@ void MagicSightSpell::Launch(long duration)
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_VISION_START, &m_caster_pos);
 	
-	if(m_caster == 0) {
+	if(m_caster == PlayerEntityHandle) {
 		Project.improve = 1;
 		m_snd_loop = SND_SPELL_VISION_LOOP;
 		ARX_SOUND_PlaySFX(m_snd_loop, &m_caster_pos, 1.f, ARX_SOUND_PLAY_LOOPED);
@@ -50,7 +50,7 @@ void MagicSightSpell::Launch(long duration)
 
 void MagicSightSpell::End()
 {
-	if(m_caster == 0) {
+	if(m_caster == PlayerEntityHandle) {
 		Project.improve = 0;
 		ARX_SOUND_Stop(m_snd_loop);
 	}
@@ -64,7 +64,7 @@ extern EERIE_CAMERA subj;
 
 void MagicSightSpell::Update()
 {
-	if(m_caster == 0) {
+	if(m_caster == PlayerEntityHandle) {
 		Vec3f pos;
 		ARX_PLAYER_FrontPos(&pos);
 		ARX_SOUND_RefreshPosition(m_snd_loop, pos);
@@ -154,7 +154,7 @@ void IgnitSpell::Launch(SpellHandle i)
 			continue;
 		}
 		
-		if(m_caster == 0 && (GLight[ii]->extras & EXTRAS_NO_IGNIT)) {
+		if(m_caster == PlayerEntityHandle && (GLight[ii]->extras & EXTRAS_NO_IGNIT)) {
 			continue;
 		}
 		

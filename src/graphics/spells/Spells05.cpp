@@ -677,7 +677,7 @@ void CMultiPoisonProjectile::Create(Vec3f srcPos) {
 		spells[spellinstance].m_hand_pos = caster->obj->vertexlist3[group].v;
 	}
 	
-	if(spells[spellinstance].m_caster == 0) { // player
+	if(spells[spellinstance].m_caster == PlayerEntityHandle) {
 
 		afBeta = player.angle.getPitch();
 

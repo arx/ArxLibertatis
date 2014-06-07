@@ -833,7 +833,7 @@ bool CanPayMana(long num, float cost, bool _bSound = true) {
 	if(spells[num].m_flags & SPELLCAST_FLAG_NOMANA)
 		return true;
 
-	if(spells[num].m_caster == 0) {
+	if(spells[num].m_caster == PlayerEntityHandle) {
 		if(player.manaPool.current < cost) {
 			ARX_SPELLS_FizzleNoMana(num);
 
@@ -1269,7 +1269,7 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flagss
 		spell.m_target = TemporaryGetSpellTarget(&entities[spell.m_caster]->pos);
 
 	// Create hand position if a hand is defined
-	if(spell.m_caster == 0) {
+	if(spell.m_caster == PlayerEntityHandle) {
 		spell.m_hand_group = entities[spell.m_caster]->obj->fastaccess.primary_attach;
 	} else {
 		spell.m_hand_group = entities[spell.m_caster]->obj->fastaccess.left_attach;

@@ -37,7 +37,7 @@ void SpeedSpell::Launch(SpellHandle i, long duration)
 	m_bDuration = true;
 	m_fManaCostPerSecond = 2.f;
 	
-	if(m_caster == 0) {
+	if(m_caster == PlayerEntityHandle) {
 		m_target = m_caster;
 	}
 	
@@ -50,7 +50,7 @@ void SpeedSpell::Launch(SpellHandle i, long duration)
 	}
 	
 	m_exist = true;
-	m_tolive = (m_caster == 0) ? 200000000 : 20000;
+	m_tolive = (m_caster == PlayerEntityHandle) ? 200000000 : 20000;
 	if(duration > -1) {
 		m_tolive = duration;
 	}
@@ -67,7 +67,7 @@ void SpeedSpell::End(SpellHandle i)
 {
 	ARX_SPELLS_RemoveSpellOn(m_target,i);
 	
-	if(m_caster == 0)
+	if(m_caster == PlayerEntityHandle)
 		ARX_SOUND_Stop(m_snd_loop);
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_SPEED_END, &entities[m_target]->pos);
@@ -76,7 +76,7 @@ void SpeedSpell::End(SpellHandle i)
 void SpeedSpell::Update(float timeDelta)
 {
 	if(m_pSpellFx) {
-		if(m_caster == 0)
+		if(m_caster == PlayerEntityHandle)
 			ARX_SOUND_RefreshPosition(m_snd_loop, entities[m_target]->pos);
 		
 		m_pSpellFx->Update(timeDelta);
@@ -150,7 +150,7 @@ void FireballSpell::Launch(SpellHandle i)
 	effect->SetDuration(6000ul);
 	
 	float anglea = 0, angleb;
-	if(m_caster == 0) {
+	if(m_caster == PlayerEntityHandle) {
 		anglea = player.angle.getYaw(), angleb = player.angle.getPitch();
 	} else {
 		
@@ -270,7 +270,7 @@ void CreateFoodSpell::Launch(long duration)
 	m_exist = true;
 	m_tolive = (duration > -1) ? duration : 3500;
 	
-	if(m_caster == 0 || m_target == 0) {
+	if(m_caster == PlayerEntityHandle || m_target == 0) {
 		player.hunger = 100;
 	}
 	
@@ -300,7 +300,7 @@ void IceProjectileSpell::Launch(SpellHandle i)
 	
 	Vec3f target;
 	float angleb;
-	if(m_caster == 0) {
+	if(m_caster == PlayerEntityHandle) {
 		target = player.pos + Vec3f(0.f, 160.f, 0.f);
 		angleb = player.angle.getPitch();
 	} else {

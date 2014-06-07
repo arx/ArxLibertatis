@@ -51,7 +51,7 @@ bool SummonCreatureSpell::Launch(long duration)
 	Vec3f target;
 	float beta;
 	bool displace = false;
-	if(m_caster == 0) {
+	if(m_caster == PlayerEntityHandle) {
 		target = player.basePosition();
 		beta = player.angle.getPitch();
 		displace = true;
@@ -71,7 +71,7 @@ bool SummonCreatureSpell::Launch(long duration)
 		return false;
 	}
 	
-	m_fdata = (m_caster == 0 && cur_mega == 10) ? 1.f : 0.f;
+	m_fdata = (m_caster == PlayerEntityHandle && cur_mega == 10) ? 1.f : 0.f;
 	m_target_pos = target;
 	ARX_SOUND_PlaySFX(SND_SPELL_SUMMON_CREATURE, &m_target_pos);
 	CSummonCreature * effect = new CSummonCreature();
@@ -334,7 +334,7 @@ void FakeSummonSpell::Update(float timeDelta)
 
 void NegateMagicSpell::Launch(long duration, SpellHandle i)
 {
-	if(m_caster == 0) {
+	if(m_caster == PlayerEntityHandle) {
 		m_target = 0;
 	}
 	
@@ -390,7 +390,7 @@ void NegateMagicSpell::LaunchAntiMagicField() {
 		if(closerThan(pos, entities[m_target]->pos, 600.f)) {
 			if(spells[n].m_type != SPELL_CREATE_FIELD) {
 				spells[n].m_tolive = 0;
-			} else if(m_target == 0 && spells[n].m_caster == 0) {
+			} else if(m_target == 0 && spells[n].m_caster == PlayerEntityHandle) {
 				spells[n].m_tolive = 0;
 			}
 		}

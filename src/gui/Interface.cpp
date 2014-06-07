@@ -1682,7 +1682,7 @@ void ArxGame::managePlayerControls()
 	
 	if(GInput->actionNowPressed(CONTROLS_CUST_CANCELCURSPELL)) {
 		for(long i = MAX_SPELLS - 1; i >= 0; i--) {
-			if(spells[i].m_exist && spells[i].m_caster == 0)
+			if(spells[i].m_exist && spells[i].m_caster == PlayerEntityHandle)
 				if(spellicons[spells[i].m_type].bDuration) {
 					ARX_SPELLS_AbortSpellSound();
 					spells[i].m_tolive=0;
@@ -6044,7 +6044,7 @@ public:
 	void spellsByPlayerUpdate(float intensity) {
 		for(size_t i = 0; i < MAX_SPELLS; i++) {
 			if(   spells[i].m_exist
-			   && spells[i].m_caster == 0
+			   && spells[i].m_caster == PlayerEntityHandle
 			   && spellicons[spells[i].m_type].bDuration
 			) {
 				ManageSpellIcon(i, intensity, false);

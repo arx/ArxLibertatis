@@ -75,7 +75,7 @@ void CHeal::Create() {
 	
 	SetAngle(MAKEANGLE(player.angle.getPitch()));
 	
-	if(spells[spellinstance].m_caster == 0) {
+	if(spells[spellinstance].m_caster == PlayerEntityHandle) {
 		eSrc = player.pos;
 	} else {
 		eSrc = entities[spells[spellinstance].m_caster]->pos;
@@ -133,7 +133,7 @@ void CHeal::Update(unsigned long aulTime)
 	if(ulCurrentTime >= ulDuration)
 		return;
 	
-	if(spells[spellinstance].m_caster == 0) {
+	if(spells[spellinstance].m_caster == PlayerEntityHandle) {
 		eSrc = player.pos;
 	} else if(ValidIONum(spells[spellinstance].m_target)) {
 		eSrc = entities[spells[spellinstance].m_target]->pos;

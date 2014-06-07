@@ -413,7 +413,7 @@ void CLightning::Render()
 			spells[spellinstance].m_caster_pos = caster->pos;
 		}
 		
-		if(spells[spellinstance].m_caster == 0) {
+		if(spells[spellinstance].m_caster == PlayerEntityHandle) {
 			falpha = -player.angle.getYaw();
 			fBeta = player.angle.getPitch();
 		} else {

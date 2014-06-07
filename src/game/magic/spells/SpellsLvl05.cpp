@@ -83,7 +83,7 @@ void LevitateSpell::Launch(long duration, SpellHandle i)
 		spells[iCancel].m_tolive = 0;
 	}
 	
-	if(m_caster == 0) {
+	if(m_caster == PlayerEntityHandle) {
 		m_target = 0;
 	}
 	
@@ -154,7 +154,7 @@ void LevitateSpell::Update(float timeDelta)
 
 void CurePoisonSpell::Launch(SpellHandle i)
 {
-	if(m_caster == 0) {
+	if(m_caster == PlayerEntityHandle) {
 		m_target = 0;
 	}
 	
@@ -197,7 +197,7 @@ void RepelUndeadSpell::Launch(long duration, SpellHandle i)
 		spells[iCancel].m_tolive = 0;
 	}
 	
-	if(m_caster == 0) {
+	if(m_caster == PlayerEntityHandle) {
 		m_target = 0;
 	}
 	
