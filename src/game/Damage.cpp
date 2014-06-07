@@ -303,7 +303,7 @@ float ARX_DAMAGES_DamagePlayer(float dmg, DamageType type, EntityHandle source) 
 						if(ioo->targetinfo == TARGET_PLAYER) {
 							EVENT_SENDER = entities.player();
 							std::string killer;
-							if(source == 0) {
+							if(source == PlayerEntityHandle) {
 								killer = "player";
 							} else if(source <= EntityHandle(-1)) {
 								killer = "none";

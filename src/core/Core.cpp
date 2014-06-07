@@ -1159,8 +1159,8 @@ void strikeSpeak(Entity * io) {
 	}
 	
 	const string * str;
-	long equiped = player.equiped[EQUIP_SLOT_WEAPON];
-	if(equiped != 0 && !entities[equiped]->strikespeech.empty()) {
+	EntityHandle equiped = player.equiped[EQUIP_SLOT_WEAPON];
+	if(equiped != PlayerEntityHandle && !entities[equiped]->strikespeech.empty()) {
 		str = &entities[equiped]->strikespeech;
 	} else if(!io->strikespeech.empty()) {
 		str = &io->strikespeech;
