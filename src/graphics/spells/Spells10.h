@@ -68,7 +68,7 @@ class CMassLightning: public CSpellFx
 		void	Update(unsigned long);
 		void Render();
 		
-		long spellinstance;
+		SpellHandle spellinstance;
  
 };
 

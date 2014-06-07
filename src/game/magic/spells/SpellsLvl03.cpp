@@ -119,7 +119,7 @@ void DispellIllusionSpell::Update(float timeDelta)
 	}
 }
 
-void FireballSpell::Launch(long i)
+void FireballSpell::Launch(SpellHandle i)
 {
 	m_exist = true;
 	m_timcreation = (unsigned long)(arxtime);
@@ -289,7 +289,7 @@ void CreateFoodSpell::Update(float timeDelta)
 	}	
 }
 
-void IceProjectileSpell::Launch(long i)
+void IceProjectileSpell::Launch(SpellHandle i)
 {
 	ARX_SOUND_PlaySFX(SND_SPELL_ICE_PROJECTILE_LAUNCH, &m_caster_pos);
 	m_exist = true;

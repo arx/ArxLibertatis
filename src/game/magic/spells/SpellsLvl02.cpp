@@ -32,7 +32,7 @@
 #include "scene/Interactive.h"
 
 
-void HealSpell::Launch(long i, long duration)
+void HealSpell::Launch(SpellHandle i, long duration)
 {
 	if(!(m_flags & SPELLCAST_FLAG_NOSOUND)) {
 		ARX_SOUND_PlaySFX(SND_SPELL_HEALING, &m_caster_pos);

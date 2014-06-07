@@ -332,7 +332,7 @@ void FakeSummonSpell::Update(float timeDelta)
 	}	
 }
 
-void NegateMagicSpell::Launch(long duration, long i)
+void NegateMagicSpell::Launch(long duration, SpellHandle i)
 {
 	if(m_caster == 0) {
 		m_target = 0;

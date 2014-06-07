@@ -73,7 +73,7 @@ public:
 	ParticleSystem pPSFire2;
 	ParticleSystem pPSSmoke;
 	
-	long spellinstance;
+	SpellHandle spellinstance;
 
 private:
 	ParticleParams fire_1;
@@ -133,7 +133,7 @@ class CIceProjectile: public CSpellFx
 		void	Update(unsigned long);
 		void Render();
 		
-		long spellinstance;
+		SpellHandle spellinstance;
 };
 
 // Done By : did

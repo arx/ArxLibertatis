@@ -152,7 +152,7 @@ void LevitateSpell::Update(float timeDelta)
 	ARX_SOUND_RefreshPosition(m_snd_loop, entities[m_target]->pos);
 }
 
-void CurePoisonSpell::Launch(long i)
+void CurePoisonSpell::Launch(SpellHandle i)
 {
 	if(m_caster == 0) {
 		m_target = 0;
@@ -190,7 +190,7 @@ void CurePoisonSpell::Update(float timeDelta)
 	}
 }
 
-void RepelUndeadSpell::Launch(long duration, long i)
+void RepelUndeadSpell::Launch(long duration, SpellHandle i)
 {
 	long iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_REPEL_UNDEAD, m_caster);
 	if(iCancel > -1) {
@@ -245,7 +245,7 @@ void RepelUndeadSpell::Update(float timeDelta)
 	}
 }
 
-void PoisonProjectileSpell::Launch(long i)
+void PoisonProjectileSpell::Launch(SpellHandle i)
 {
 	ARX_SOUND_PlaySFX(SND_SPELL_POISON_PROJECTILE_LAUNCH,
 	                  &m_caster_pos);

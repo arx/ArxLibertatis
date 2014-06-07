@@ -913,7 +913,7 @@ void ARX_SPELLS_ClearAll() {
 }
 
 // Obtains a Free Spell slot
-static long ARX_SPELLS_GetFree() {
+static SpellHandle ARX_SPELLS_GetFree() {
 	
 	for(size_t i = 0; i < MAX_SPELLS; i++) {
 		if(!spells[i].m_exist) {
@@ -927,11 +927,11 @@ static long ARX_SPELLS_GetFree() {
 			spells[i].m_longinfo2_light = -1;
 			
 			spells[i].m_targetHandles.clear();
-			return i;
+			return SpellHandle(i);
 		}
 	}
 	
-	return -1;
+	return SpellHandle(-1);
 }
 
 long ARX_SPELLS_GetInstance(SpellType typ) {
@@ -1248,7 +1248,7 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flagss
 	}
 
 	// Try to create a new spell instance
-	long i = ARX_SPELLS_GetFree();
+	SpellHandle i = ARX_SPELLS_GetFree();
 
 	if(i < 0) {
 		return false;

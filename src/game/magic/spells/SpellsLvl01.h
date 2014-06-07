@@ -38,14 +38,14 @@ public:
 
 class IgnitSpell : public SpellBase {
 public:
-	void Launch(long i);
+	void Launch(SpellHandle i);
 	void End();
 	void Update(float timeDelta);
 };
 
 class DouseSpell : public SpellBase {
 public:
-	void Launch(long i);
+	void Launch(SpellHandle i);
 	void End();
 	void Update(float timeDelta);
 };

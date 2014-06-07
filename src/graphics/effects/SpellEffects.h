@@ -47,6 +47,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_GRAPHICS_EFFECTS_SPELLEFFECTS_H
 #define ARX_GRAPHICS_EFFECTS_SPELLEFFECTS_H
 
+#include "game/GameTypes.h"
 #include "graphics/Color.h"
 #include "graphics/Math.h"
 #include "math/Types.h"

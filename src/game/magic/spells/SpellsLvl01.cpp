@@ -116,7 +116,7 @@ void MagicMissileSpell::Update(float timeDelta)
 	}
 }
 
-void IgnitSpell::Launch(long i)
+void IgnitSpell::Launch(SpellHandle i)
 {
 	m_exist = true;
 	m_tolive = 500;
@@ -208,7 +208,7 @@ void IgnitSpell::Update(float timeDelta)
 	}
 }
 
-void DouseSpell::Launch(long i)
+void DouseSpell::Launch(SpellHandle i)
 {
 	m_exist = true;
 	m_tolive = 500;

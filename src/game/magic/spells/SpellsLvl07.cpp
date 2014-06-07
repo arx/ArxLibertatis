@@ -434,7 +434,7 @@ void IceFieldSpell::Update(float timeDelta)
 	}
 }
 
-void LightningStrikeSpell::Launch(long i)
+void LightningStrikeSpell::Launch(SpellHandle i)
 {
 	m_exist = true;
 	
@@ -482,7 +482,7 @@ void LightningStrikeSpell::Update(float timeDelta)
 	ARX_SOUND_RefreshPosition(m_snd_loop, entities[m_caster]->pos);
 }
 
-void ConfuseSpell::Launch(long i, bool & notifyAll, long duration)
+void ConfuseSpell::Launch(SpellHandle i, bool & notifyAll, long duration)
 {
 	ARX_SOUND_PlaySFX(SND_SPELL_CONFUSE, &entities[m_target]->pos);
 	

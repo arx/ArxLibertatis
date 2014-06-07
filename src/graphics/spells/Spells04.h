@@ -71,7 +71,7 @@ class CBless: public CSpellFx
 		void Render();
 		void	Kill();
 		
-		long spellinstance;
+		SpellHandle spellinstance;
 };
 
 class CCurse: public CSpellFx

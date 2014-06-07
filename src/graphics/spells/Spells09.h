@@ -131,7 +131,7 @@ class CNegateMagic: public CSpellFx
 		void	Update(unsigned long);
 		void Render();
 		
-		long spellinstance;
+		SpellHandle spellinstance;
 };
 
 #endif // ARX_GRAPHICS_SPELLS_SPELLS09_H

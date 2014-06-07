@@ -34,7 +34,7 @@
 #include "scene/GameSound.h"
 #include "scene/Interactive.h"
 
-void BlessSpell::Launch(long i, long duration)
+void BlessSpell::Launch(SpellHandle i, long duration)
 {
 	if(m_caster == 0) {
 		m_target = 0;

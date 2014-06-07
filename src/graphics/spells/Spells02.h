@@ -63,7 +63,7 @@ public:
 	Vec3f eSrc;
 	ParticleSystem * pPS;
 	
-	long spellinstance;
+	SpellHandle spellinstance;
 };
 
 #endif // ARX_GRAPHICS_SPELLS_SPELLS02_H

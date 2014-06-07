@@ -37,20 +37,20 @@ public:
 
 class CurePoisonSpell : public SpellBase {
 public:
-	void Launch(long i);
+	void Launch(SpellHandle i);
 	void Update(float timeDelta);
 };
 
 class RepelUndeadSpell : public SpellBase {
 public:
-	void Launch(long duration, long i);
+	void Launch(long duration, SpellHandle i);
 	void End();
 	void Update(float timeDelta);
 };
 
 class PoisonProjectileSpell : public SpellBase {
 public:
-	void Launch(long i);
+	void Launch(SpellHandle i);
 	void Update(float timeDelta);
 };
 

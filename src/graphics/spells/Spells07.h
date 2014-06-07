@@ -113,7 +113,7 @@ class CLightning: public CSpellFx
 		void Render();
 		void	Kill();
 		
-		long spellinstance;
+		SpellHandle spellinstance;
 };
 
 // Done By : Didier Pedreno
@@ -139,7 +139,7 @@ class CConfuse: public CSpellFx
 		void	Update(unsigned long);
 		void Render();
 		
-		long spellinstance;
+		SpellHandle spellinstance;
 };
 
 class CFireField: public CSpellFx

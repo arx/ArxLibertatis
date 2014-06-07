@@ -135,7 +135,7 @@ public:
 	void AddLight(int iLight);
 	void Action(bool enable);
 	
-	long spellinstance;
+	SpellHandle spellinstance;
 };
 
 // Done By : Sébastien Scieux

@@ -43,7 +43,7 @@
 
 extern Rect g_size;
 
-void MassLightningStrikeSpell::Launch(long i)
+void MassLightningStrikeSpell::Launch(SpellHandle i)
 {
 	for(size_t ii = 0; ii < MAX_SPELLS; ii++) {
 		if(spells[ii].m_exist && spells[ii].m_type == SPELL_MASS_LIGHTNING_STRIKE) {
@@ -70,7 +70,7 @@ void MassLightningStrikeSpell::Launch(long i)
 	
 	long count = std::max(long(m_caster_level), 1l);
 	CMassLightning * effect = new CMassLightning(count);
-	effect->spellinstance=i;
+	effect->spellinstance = i;
 	
 	Vec3f target;
 	float beta;

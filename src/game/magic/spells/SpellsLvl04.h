@@ -24,7 +24,7 @@
 
 class BlessSpell : public SpellBase {
 public:
-	void Launch(long i, long duration);
+	void Launch(SpellHandle i, long duration);
 	void End(size_t i);
 	void Update(float timeDelta);
 };

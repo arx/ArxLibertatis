@@ -135,7 +135,7 @@ public:
 	void Update(unsigned long);
 	void Render();
 	
-	long spellinstance;
+	SpellHandle spellinstance;
 };
 
 // Done By : Didier Pédreno
@@ -180,7 +180,7 @@ public:
 	void Update(unsigned long);
 	void Render();
 	
-	long spellinstance;
+	SpellHandle spellinstance;
 };
 
 // Done By : did
@@ -200,7 +200,7 @@ public:
 	void Update(unsigned long);
 	void Render();
 	
-	long spellinstance;
+	SpellHandle spellinstance;
 };
 
 #endif // ARX_GRAPHICS_SPELLS_SPELLS05_H
