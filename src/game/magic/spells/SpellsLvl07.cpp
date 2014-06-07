@@ -50,7 +50,7 @@ bool FlyingEyeSpell::Launch()
 	static TextureContainer * tc4 = TextureContainer::Load("graph/particles/smoke");
 	
 	if(m_caster == PlayerEntityHandle) {
-		m_target = 0;
+		m_target = PlayerEntityHandle;
 	}
 	
 	if(m_target != PlayerEntityHandle) {

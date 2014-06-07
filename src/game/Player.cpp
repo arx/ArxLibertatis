@@ -2614,7 +2614,7 @@ void ARX_PLAYER_PutPlayerInNormalStance(long val) {
 	
 	if(!val) {
 		for(size_t i = 0; i < MAX_SPELLS; i++) {
-			if(spells[i].m_exist && (spells[i].m_caster == PlayerEntityHandle || spells[i].m_target == 0)) {
+			if(spells[i].m_exist && (spells[i].m_caster == PlayerEntityHandle || spells[i].m_target == PlayerEntityHandle)) {
 				switch(spells[i].m_type) {
 					case SPELL_MAGIC_SIGHT:
 					case SPELL_LEVITATE:

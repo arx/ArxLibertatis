@@ -43,7 +43,7 @@ void SpeedSpell::Launch(SpellHandle i, long duration)
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_SPEED_START, &entities[m_target]->pos);
 	
-	if(m_target == 0) {
+	if(m_target == PlayerEntityHandle) {
 		m_snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_SPEED_LOOP,
 		                                       &entities[m_target]->pos, 1.f,
 		                                       ARX_SOUND_PLAY_LOOPED);
@@ -270,7 +270,7 @@ void CreateFoodSpell::Launch(long duration)
 	m_exist = true;
 	m_tolive = (duration > -1) ? duration : 3500;
 	
-	if(m_caster == PlayerEntityHandle || m_target == 0) {
+	if(m_caster == PlayerEntityHandle || m_target == PlayerEntityHandle) {
 		player.hunger = 100;
 	}
 	

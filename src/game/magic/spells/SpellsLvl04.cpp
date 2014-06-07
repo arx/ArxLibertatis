@@ -37,7 +37,7 @@
 void BlessSpell::Launch(SpellHandle i, long duration)
 {
 	if(m_caster == PlayerEntityHandle) {
-		m_target = 0;
+		m_target = PlayerEntityHandle;
 	}
 	
 	SpellHandle iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_BLESS, m_target);
@@ -78,7 +78,7 @@ void BlessSpell::Update(float timeDelta)
 				pBless->eSrc = entities[m_target]->pos;
 				Anglef angle = Anglef::ZERO;
 
-				if(m_target == 0)
+				if(m_target == PlayerEntityHandle)
 					angle.setPitch(player.angle.getPitch());
 				else 
 					angle.setPitch(entities[m_target]->angle.getPitch());
@@ -186,7 +186,7 @@ void FireProtectionSpell::Launch(SpellHandle i, long duration)
 	}
 	
 	if(m_caster == PlayerEntityHandle) {
-		m_target = 0;
+		m_target = PlayerEntityHandle;
 	}
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_FIRE_PROTECTION, &entities[m_target]->pos);
@@ -261,7 +261,7 @@ void ColdProtectionSpell::Launch(SpellHandle i, long duration)
 	}
 	
 	if(m_caster == PlayerEntityHandle) {
-		m_target = 0;
+		m_target = PlayerEntityHandle;
 	}
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_COLD_PROTECTION_START, &entities[m_target]->pos);
@@ -360,7 +360,7 @@ void CurseSpell::Launch(long duration, SpellHandle i)
 	CCurse * effect = new CCurse();
 	
 	Vec3f target = m_target_pos;
-	if(m_target == 0) {
+	if(m_target == PlayerEntityHandle) {
 		target.y -= 200.f;
 	} else if(m_target > 0 && entities[m_target]) {
 		target.y += entities[m_target]->physics.cyl.height - 50.f;
@@ -388,7 +388,7 @@ void CurseSpell::Update(float timeDelta)
 		if(m_target >= PlayerEntityHandle && entities[m_target]) {
 			target = entities[m_target]->pos;
 
-			if(m_target == 0)
+			if(m_target == PlayerEntityHandle)
 				target.y -= 200.f;
 			else
 				target.y += entities[m_target]->physics.cyl.height - 30.f;

@@ -84,7 +84,7 @@ void LevitateSpell::Launch(long duration, SpellHandle i)
 	}
 	
 	if(m_caster == PlayerEntityHandle) {
-		m_target = 0;
+		m_target = PlayerEntityHandle;
 	}
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_LEVITATE_START, &entities[m_target]->pos);
@@ -96,7 +96,7 @@ void LevitateSpell::Launch(long duration, SpellHandle i)
 	CLevitate * effect = new CLevitate();
 	
 	Vec3f target;
-	if(m_target == 0) {
+	if(m_target == PlayerEntityHandle) {
 		target = player.pos + Vec3f(0.f, 150.f, 0.f);
 		m_tolive = 200000000;
 		player.levitate = true;
@@ -121,7 +121,7 @@ void LevitateSpell::End(size_t i)
 	ARX_SOUND_PlaySFX(SND_SPELL_LEVITATE_END, &entities[m_target]->pos);
 	ARX_SPELLS_RemoveSpellOn(m_target, i);
 	
-	if(m_target == 0)
+	if(m_target == PlayerEntityHandle)
 		player.levitate = false;
 }
 
@@ -130,7 +130,7 @@ void LevitateSpell::Update(float timeDelta)
 	CLevitate *pLevitate=(CLevitate *)m_pSpellFx;
 	Vec3f target;
 
-	if(m_target == 0) {
+	if(m_target == PlayerEntityHandle) {
 		target.x=player.pos.x;
 		target.y=player.pos.y+150.f;
 		target.z=player.pos.z;
@@ -155,11 +155,11 @@ void LevitateSpell::Update(float timeDelta)
 void CurePoisonSpell::Launch(SpellHandle i)
 {
 	if(m_caster == PlayerEntityHandle) {
-		m_target = 0;
+		m_target = PlayerEntityHandle;
 	}
 	
 	float cure = m_caster_level * 10;
-	if(m_target == 0) {
+	if(m_target == PlayerEntityHandle) {
 		player.poison -= std::min(player.poison, cure);
 		ARX_SOUND_PlaySFX(SND_SPELL_CURE_POISON);
 	} else if (ValidIONum(m_target)) {
@@ -198,11 +198,11 @@ void RepelUndeadSpell::Launch(long duration, SpellHandle i)
 	}
 	
 	if(m_caster == PlayerEntityHandle) {
-		m_target = 0;
+		m_target = PlayerEntityHandle;
 	}
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_REPEL_UNDEAD, &entities[m_target]->pos);
-	if(m_target == 0) {
+	if(m_target == PlayerEntityHandle) {
 		m_snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_REPEL_UNDEAD_LOOP,
 		                                       &entities[m_target]->pos, 1.f,
 		                                       ARX_SOUND_PLAY_LOOPED);
@@ -240,7 +240,7 @@ void RepelUndeadSpell::Update(float timeDelta)
 		m_pSpellFx->Update(timeDelta);
 		m_pSpellFx->Render();
 
-		if (m_target == 0)
+		if (m_target == PlayerEntityHandle)
 			ARX_SOUND_RefreshPosition(m_snd_loop, entities[m_target]->pos);
 	}
 }

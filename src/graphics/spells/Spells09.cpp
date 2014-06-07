@@ -505,7 +505,7 @@ void CNegateMagic::Render() {
 	
 	int i = 0;
 	
-	if(spells[spellinstance].m_target == 0) {
+	if(spells[spellinstance].m_target == PlayerEntityHandle) {
 		eSrc = player.basePosition();
 	} else {
 		eSrc = entities[spells[spellinstance].m_target]->pos;

@@ -93,7 +93,7 @@ void CCurePoison::Create()
 	
 	eSrc = entities[spells[spellinstance].m_target]->pos;
 	
-	if(spells[spellinstance].m_target == 0)
+	if(spells[spellinstance].m_target == PlayerEntityHandle)
 		eSrc.y += 200;
 	
 	pPS->SetPos(eSrc);
@@ -150,7 +150,7 @@ void CCurePoison::Update(unsigned long aulTime)
 	
 	eSrc = entities[spells[spellinstance].m_target]->pos;
 	
-	if(spells[spellinstance].m_target == 0)
+	if(spells[spellinstance].m_target == PlayerEntityHandle)
 		eSrc.y += 200;
 	
 	unsigned long ulCalc = ulDuration - ulCurrentTime ;
@@ -880,7 +880,7 @@ void CRepelUndead::Update(unsigned long _ulTime) {
 	
 	eSrc = entities[spells[spellinstance].m_target]->pos;
 	
-	if(spells[spellinstance].m_target == 0) {
+	if(spells[spellinstance].m_target == PlayerEntityHandle) {
 		fBeta = player.angle.getPitch();
 	} else {
 		fBeta = entities[spells[spellinstance].m_target]->angle.getPitch();

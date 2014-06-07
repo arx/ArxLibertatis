@@ -335,7 +335,7 @@ void FakeSummonSpell::Update(float timeDelta)
 void NegateMagicSpell::Launch(long duration, SpellHandle i)
 {
 	if(m_caster == PlayerEntityHandle) {
-		m_target = 0;
+		m_target = PlayerEntityHandle;
 	}
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_NEGATE_MAGIC, &entities[m_target]->pos);
@@ -390,7 +390,7 @@ void NegateMagicSpell::LaunchAntiMagicField() {
 		if(closerThan(pos, entities[m_target]->pos, 600.f)) {
 			if(spells[n].m_type != SPELL_CREATE_FIELD) {
 				spells[n].m_tolive = 0;
-			} else if(m_target == 0 && spells[n].m_caster == PlayerEntityHandle) {
+			} else if(m_target == PlayerEntityHandle && spells[n].m_caster == PlayerEntityHandle) {
 				spells[n].m_tolive = 0;
 			}
 		}

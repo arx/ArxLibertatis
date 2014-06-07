@@ -42,7 +42,7 @@ void InvisibilitySpell::Launch(SpellHandle i, long duration)
 	m_fManaCostPerSecond = 3.f;
 	
 	if(m_caster == PlayerEntityHandle) {
-		m_target = 0;
+		m_target = PlayerEntityHandle;
 	}
 
 	entities[m_target]->gameFlags |= GFLAG_INVISIBILITY;

@@ -233,7 +233,7 @@ void ParalyseSpell::Launch(SpellHandle i, long duration)
 	m_tolive = (duration > -1) ? duration : 5000;
 	
 	float resist_magic = 0.f;
-	if(m_target == 0 && m_caster_level <= player.level) {
+	if(m_target == PlayerEntityHandle && m_caster_level <= player.level) {
 		resist_magic = player.m_misc.resistMagic;
 	} else if(entities[m_target]->ioflags & IO_NPC) {
 		resist_magic = entities[m_target]->_npcdata->resist_magic;
