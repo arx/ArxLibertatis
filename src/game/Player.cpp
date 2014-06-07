@@ -529,25 +529,26 @@ void ARX_PLAYER_ComputePlayerFullStats() {
 				continue;
 			}
 			
-			SpellHandle n = spellHandle;
-			switch (spells[n].m_type) {
+			const SpellBase & spell = spells[spellHandle];
+			
+			switch(spell.m_type) {
 				case SPELL_ARMOR:
-					player.m_miscMod.armorClass += spells[n].m_caster_level;
+					player.m_miscMod.armorClass += spell.m_caster_level;
 					break;
 				case SPELL_LOWER_ARMOR:
-					player.m_miscMod.armorClass -= spells[n].m_caster_level;
+					player.m_miscMod.armorClass -= spell.m_caster_level;
 					break;
 				case SPELL_CURSE:
-					player.m_attributeMod.strength -= spells[n].m_caster_level;
-					player.m_attributeMod.constitution -= spells[n].m_caster_level;
-					player.m_attributeMod.dexterity -= spells[n].m_caster_level;
-					player.m_attributeMod.mind -= spells[n].m_caster_level;
+					player.m_attributeMod.strength -= spell.m_caster_level;
+					player.m_attributeMod.constitution -= spell.m_caster_level;
+					player.m_attributeMod.dexterity -= spell.m_caster_level;
+					player.m_attributeMod.mind -= spell.m_caster_level;
 					break;
 				case SPELL_BLESS:
-					player.m_attributeMod.strength += spells[n].m_caster_level;
-					player.m_attributeMod.dexterity += spells[n].m_caster_level;
-					player.m_attributeMod.constitution += spells[n].m_caster_level;
-					player.m_attributeMod.mind += spells[n].m_caster_level;
+					player.m_attributeMod.strength += spell.m_caster_level;
+					player.m_attributeMod.dexterity += spell.m_caster_level;
+					player.m_attributeMod.constitution += spell.m_caster_level;
+					player.m_attributeMod.mind += spell.m_caster_level;
 					break;
 				default: break;
 			}
