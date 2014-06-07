@@ -998,7 +998,7 @@ void ARX_SPELLS_CancelSpellTarget() {
 
 void ARX_SPELLS_LaunchSpellTarget(Entity * io) {
 	if(io) {
-		ARX_SPELLS_Launch(t_spell.typ, EntityHandle(0) /* player */, t_spell.flags, t_spell.level,
+		ARX_SPELLS_Launch(t_spell.typ, PlayerEntityHandle, t_spell.flags, t_spell.level,
 		                  io->index(), t_spell.duration);
 	}
 }
@@ -1126,7 +1126,9 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flagss
 		level = std::max(level, 15L);
 	}
 	
-	if(source == 0 && !(flags & SPELLCAST_FLAG_NOCHECKCANCAST)) {
+	if(   source == PlayerEntityHandle
+	   && !(flags & SPELLCAST_FLAG_NOCHECKCANCAST)
+	) {
 		for(size_t i = 0; i < MAX_SPELL_SYMBOLS; i++) {
 			if(SpellSymbol[i] != RUNE_NONE) {
 				if(!( player.rune_flags & (RuneFlag)(1 << SpellSymbol[i]))) {
@@ -1141,7 +1143,7 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flagss
 	
 	float Player_Magic_Level = 0;
 	
-	if(!source) {
+	if(source == PlayerEntityHandle) {
 		ARX_SPELLS_ResetRecognition();
 
 		if(player.SpellToMemorize.bSpell) {
@@ -1174,7 +1176,7 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flagss
 		return true;
 	}
 	
-	if(target < 0 && source == 0)
+	if(target == InvalidEntityHandle && source == PlayerEntityHandle)
 	switch(typ) {
 		case SPELL_LOWER_ARMOR:
 		case SPELL_CURSE:
@@ -1243,7 +1245,7 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flagss
 		default: break;
 	}
 
-	if(source == 0) {
+	if(source == PlayerEntityHandle) {
 		ARX_SPELLS_CancelSpellTarget();
 	}
 
@@ -1261,9 +1263,9 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flagss
 	}
 	
 	spell.m_caster = source; // Caster...
-	spell.m_target = target; // No target if <0
-
-	if(target < 0)
+	spell.m_target = target;
+	
+	if(target == InvalidEntityHandle)
 		spell.m_target = TemporaryGetSpellTarget(&entities[spell.m_caster]->pos);
 
 	// Create hand position if a hand is defined
@@ -1277,7 +1279,7 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flagss
 		spell.m_hand_pos = entities[spell.m_caster]->obj->vertexlist3[spell.m_hand_group].v;
 	}
 	
-	if(source == 0) {
+	if(source == PlayerEntityHandle) {
 		// Player source
 		spell.m_caster_level = Player_Magic_Level; // Level of caster
 		spell.m_caster_pos = player.pos;
@@ -1294,11 +1296,10 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flagss
 	if(cur_rf == 3) {
 		spell.m_caster_level += 2;
 	}
-
-	// Checks target TODO if ( target < 0 ) is already handled above!
-	if(target < 0) {
+	
+	if(target == InvalidEntityHandle) {
 		// no target... targeted by sight
-		if(source == 0) {
+		if(source == PlayerEntityHandle) {
 			// no target... player spell targeted by sight
 			spell.m_target_pos.x = player.pos.x - std::sin(radians(player.angle.getPitch()))*60.f;
 			spell.m_target_pos.y = player.pos.y + std::sin(radians(player.angle.getYaw()))*60.f;
@@ -1309,7 +1310,7 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flagss
 			spell.m_target_pos.y = entities[target]->pos.y - 120.f;
 			spell.m_target_pos.z = entities[target]->pos.z + std::cos(radians(entities[target]->angle.getPitch()))*60.f;
 		}
-	} else if (target==0) {
+	} else if(target == PlayerEntityHandle) {
 		// player target
 		spell.m_target_pos = player.pos;
 	} else {
