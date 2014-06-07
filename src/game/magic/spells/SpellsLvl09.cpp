@@ -373,7 +373,8 @@ void NegateMagicSpell::LaunchAntiMagicField() {
 	if(!ValidIONum(m_target))
 		return;
 	
-	for(size_t n = 0; n < MAX_SPELLS; n++) {
+	for(size_t i = 0; i < MAX_SPELLS; i++) {
+		SpellHandle n = SpellHandle(i);
 		
 		if(!spells[n].m_exist)
 			continue;

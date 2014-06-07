@@ -253,7 +253,8 @@ void DouseSpell::Launch(SpellHandle i)
 		ARX_PLAYER_ClickedOnTorch(player.torch);
 	}
 	
-	for(size_t n = 0; n < MAX_SPELLS; n++) {
+	for(size_t k = 0; k < MAX_SPELLS; k++) {
+		SpellHandle n = SpellHandle(k);
 		
 		if(!spells[n].m_exist) {
 			continue;

@@ -158,7 +158,7 @@ static Vec2s Lm;
 
 unsigned char ucFlick=0;
 
-bool GetSpellPosition(Vec3f * pos,long i)
+bool GetSpellPosition(Vec3f * pos, SpellHandle i)
 {
 	switch(spells[i].m_type) {
 		case SPELL_ARMOR:
