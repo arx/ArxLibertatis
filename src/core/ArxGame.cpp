@@ -818,7 +818,7 @@ void ArxGame::updateConversationCamera() {
 		// Decides who speaks !!
 		if(main_conversation.current < 0)
 			for(long j=0; j < main_conversation.actors_nb; j++) {
-				if(main_conversation.actors[j] >= EntityHandle(0)) {
+				if(main_conversation.actors[j] >= PlayerEntityHandle) {
 					for(size_t k = 0 ; k < MAX_ASPEECH; k++) {
 							if(aspeech[k].exist && aspeech[k].io == entities[main_conversation.actors[j]]) {
 								main_conversation.current = k;

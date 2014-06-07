@@ -101,7 +101,7 @@ bool RiseDeadSpell::Launch(long duration)
 
 void RiseDeadSpell::End()
 {
-	if(ValidIONum(m_longinfo_entity) && m_longinfo_entity != EntityHandle(0)) {
+	if(ValidIONum(m_longinfo_entity) && m_longinfo_entity != PlayerEntityHandle) {
 		
 		ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &entities[m_longinfo_entity]->pos);
 		

@@ -732,7 +732,7 @@ float ARX_DAMAGES_DamageNPC(Entity * io, float dmg, EntityHandle source, long fl
 	float damagesdone = 0.f;
 
 	if(io->_npcdata->lifePool.current <= 0.f) {
-		if(source != EntityHandle(0) || (source == EntityHandle(0) && player.equiped[EQUIP_SLOT_WEAPON] > 0)) {
+		if(source != PlayerEntityHandle || (source == PlayerEntityHandle && player.equiped[EQUIP_SLOT_WEAPON] > 0)) {
 			if(dmg >= io->_npcdata->lifePool.max * 0.4f && pos)
 				ARX_NPC_TryToCutSomething(io, pos);
 
@@ -773,7 +773,7 @@ float ARX_DAMAGES_DamageNPC(Entity * io, float dmg, EntityHandle source, long fl
 			Entity * pio = NULL;
 
 			if(source == 0) {
-				if(player.equiped[EQUIP_SLOT_WEAPON] != EntityHandle(0) && ValidIONum(player.equiped[EQUIP_SLOT_WEAPON])) {
+				if(player.equiped[EQUIP_SLOT_WEAPON] != PlayerEntityHandle && ValidIONum(player.equiped[EQUIP_SLOT_WEAPON])) {
 					pio = entities[player.equiped[EQUIP_SLOT_WEAPON]];
 
 					if((pio && (pio->poisonous == 0 || pio->poisonous_count == 0)) || (flags & 1)) {
@@ -803,7 +803,7 @@ float ARX_DAMAGES_DamageNPC(Entity * io, float dmg, EntityHandle source, long fl
 		}
 
 		if(io->script.data != NULL) {
-			if(source >= EntityHandle(0)) {
+			if(source >= PlayerEntityHandle) {
 				if(ValidIONum(source))
 					EVENT_SENDER = entities[source]; 
 				else
@@ -865,7 +865,7 @@ float ARX_DAMAGES_DamageNPC(Entity * io, float dmg, EntityHandle source, long fl
 		if(io->_npcdata->lifePool.current <= 0.f) {
 			io->_npcdata->lifePool.current = 0.f;
 
-			if(source != EntityHandle(0) || (source == EntityHandle(0) && player.equiped[EQUIP_SLOT_WEAPON] > 0)) {
+			if(source != PlayerEntityHandle || (source == PlayerEntityHandle && player.equiped[EQUIP_SLOT_WEAPON] > 0)) {
 				if((dmg >= io->_npcdata->lifePool.max * ( 1.0f / 2 )) && pos)
 					ARX_NPC_TryToCutSomething(io, pos);
 			}
@@ -987,7 +987,7 @@ void ARX_DAMAGES_UpdateDamage(DamageHandle j, float tim) {
 		){
 			if(io->ioflags & IO_NPC) {
 				if(   i != 0
-				   && damage.params.source != EntityHandle(0)
+				   && damage.params.source != PlayerEntityHandle
 				   && validsource
 				   && HaveCommonGroup(io, entities[damage.params.source])
 				) {
@@ -1295,7 +1295,7 @@ bool DoSphericDamage(const Vec3f & pos, float dmg, float radius, DamageArea flag
 		if(!ioo || long(i) == numsource || !ioo->obj)
 			continue;
 			
-		if ((i != 0) && (numsource != EntityHandle(0))
+		if ((i != 0) && (numsource != PlayerEntityHandle)
 				&& validsource && (HaveCommonGroup(ioo, entities[numsource])))
 			continue;
 		
@@ -1487,7 +1487,7 @@ void ARX_DAMAGES_DamagePlayerEquipment(float damages)
 		ratio = 1.f;
 
 	for(long i = 0; i < MAX_EQUIPED; i++) {
-		if(player.equiped[i] != EntityHandle(0)) {
+		if(player.equiped[i] != PlayerEntityHandle) {
 			Entity * todamage = entities[player.equiped[i]];
 			ARX_DAMAGES_DurabilityCheck(todamage, ratio);
 		}

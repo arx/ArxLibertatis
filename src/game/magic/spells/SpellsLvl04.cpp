@@ -110,7 +110,7 @@ void DispellFieldSpell::Launch()
 		switch(spells[n].m_type) {
 			
 			case SPELL_CREATE_FIELD: {
-				if(m_caster != EntityHandle(0) || spells[n].m_caster == EntityHandle(0)) {
+				if(m_caster != PlayerEntityHandle || spells[n].m_caster == PlayerEntityHandle) {
 					pos = static_cast<CCreateField *>(spells[n].m_pSpellFx)->eSrc;
 					cancel = true;
 				}
@@ -385,7 +385,7 @@ void CurseSpell::Update(float timeDelta)
 		CCurse * curse=(CCurse *)m_pSpellFx;
 		Vec3f target = Vec3f_ZERO;
 			
-		if(m_target >= EntityHandle(0) && entities[m_target]) {
+		if(m_target >= PlayerEntityHandle && entities[m_target]) {
 			target = entities[m_target]->pos;
 
 			if(m_target == 0)

@@ -617,7 +617,7 @@ void CConfuse::Render() {
 	GRenderer->SetTexture(0, tex_trail);
 	
 	eCurPos = entities[spells[spellinstance].m_target]->pos;
-	if(spells[spellinstance].m_target != EntityHandle(0)) {
+	if(spells[spellinstance].m_target != PlayerEntityHandle) {
 		eCurPos.y += entities[spells[spellinstance].m_target]->physics.cyl.height - 30.f;
 	}
 	

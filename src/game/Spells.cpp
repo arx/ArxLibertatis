@@ -631,7 +631,7 @@ void ARX_SPELLS_Fizzle(long num) {
 	} else {
 		spells[num].m_tolive = 0;
 		
-		if(spells[num].m_caster >= EntityHandle(0)) {
+		if(spells[num].m_caster >= PlayerEntityHandle) {
 			ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE, &spells[num].m_caster_pos);
 		}
 	}
@@ -819,7 +819,7 @@ void ARX_SPELLS_FizzleNoMana(long num) {
 	if(num < 0) {
 		return;
 	}
-	if(spells[num].m_caster >= EntityHandle(0)) {
+	if(spells[num].m_caster >= PlayerEntityHandle) {
 		spells[num].m_tolive = 0;
 		ARX_SPELLS_Fizzle(num);
 	}

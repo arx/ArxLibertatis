@@ -2303,7 +2303,7 @@ void PlayerMovementIterate(float DeltaTime) {
 					const float LAVA_DAMAGE = 10.f;
 					float damages = LAVA_DAMAGE * framedelay * 0.01f * mul;
 					damages = ARX_SPELLS_ApplyFireProtection(entities.player(), damages);
-					ARX_DAMAGES_DamagePlayer(damages, DAMAGE_TYPE_FIRE, EntityHandle(0));
+					ARX_DAMAGES_DamagePlayer(damages, DAMAGE_TYPE_FIRE, PlayerEntityHandle);
 					ARX_DAMAGES_DamagePlayerEquipment(damages);
 
 					Vec3f pos = player.basePosition();

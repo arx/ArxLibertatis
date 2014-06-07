@@ -53,7 +53,7 @@ bool FlyingEyeSpell::Launch()
 		m_target = 0;
 	}
 	
-	if(m_target != EntityHandle(0)) {
+	if(m_target != PlayerEntityHandle) {
 		return false;
 	}
 	

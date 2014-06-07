@@ -440,7 +440,7 @@ long ARX_SPEECH_AddSpeech(Entity * io, const std::string & data, long mood,
 
 	if (ARX_CONVERSATION && io)
 		for (long j = 0; j < main_conversation.actors_nb; j++)
-			if (main_conversation.actors[j] >= EntityHandle(0) && io == entities[main_conversation.actors[j]])
+			if (main_conversation.actors[j] >= PlayerEntityHandle && io == entities[main_conversation.actors[j]])
 				main_conversation.current = num;
 
 	return num;
@@ -506,7 +506,7 @@ void ARX_SPEECH_Update() {
 			long ok = 0;
 
 			for(long j = 0; j < main_conversation.actors_nb; j++) {
-				if(main_conversation.actors[j] >= EntityHandle(0))
+				if(main_conversation.actors[j] >= PlayerEntityHandle)
 					if(speech->io == entities[main_conversation.actors[j]]) {
 						ok = 1;
 					}

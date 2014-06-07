@@ -89,7 +89,7 @@ EntityHandle EntityManager::getById(const std::string & name) const {
 	} else if(name == "self" || name == "me") {
 		return EntityHandle(-2);
 	} else if(name == "player") {
-		return EntityHandle(0); // player is an IO with index 0
+		return PlayerEntityHandle;
 	}
 	
 	for(size_t i = 0 ; i < size() ; i++) {

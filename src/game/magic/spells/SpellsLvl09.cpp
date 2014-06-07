@@ -99,14 +99,14 @@ bool SummonCreatureSpell::Launch(long duration)
 
 void SummonCreatureSpell::End()
 {
-	if(ValidIONum(m_longinfo2_entity) && m_longinfo2_entity != EntityHandle(0)) {
+	if(ValidIONum(m_longinfo2_entity) && m_longinfo2_entity != PlayerEntityHandle) {
 		ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &entities[m_longinfo2_entity]->pos);
 	}
 
 	lightHandleDestroy(m_pSpellFx->lLightId);
 	// need to killio
 	
-	if(ValidIONum(m_longinfo2_entity) && m_longinfo2_entity != EntityHandle(0)) {
+	if(ValidIONum(m_longinfo2_entity) && m_longinfo2_entity != PlayerEntityHandle) {
 		
 		if(entities[m_longinfo2_entity]->scriptload
 		   && (entities[m_longinfo2_entity]->ioflags & IO_NOSAVE)) {
@@ -256,7 +256,7 @@ void SummonCreatureSpell::Update(float timeDelta)
 				}
 				}
 			}
-		} else if(m_longinfo2_entity <= EntityHandle(0)) {
+		} else if(m_longinfo2_entity <= PlayerEntityHandle) {
 			m_tolive = 0;
 		}
 	}	
@@ -264,7 +264,7 @@ void SummonCreatureSpell::Update(float timeDelta)
 
 bool FakeSummonSpell::Launch()
 {
-	if(m_caster <= EntityHandle(0) || !ValidIONum(m_target)) {
+	if(m_caster <= PlayerEntityHandle || !ValidIONum(m_target)) {
 		return false;
 	}
 	
@@ -275,7 +275,7 @@ bool FakeSummonSpell::Launch()
 	m_tolive = 4000;
 	
 	Vec3f target = entities[m_target]->pos;
-	if(m_target != EntityHandle(0)) {
+	if(m_target != PlayerEntityHandle) {
 		target.y += player.baseHeight();
 	}
 	m_target_pos = target;

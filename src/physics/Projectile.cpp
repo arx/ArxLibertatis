@@ -168,7 +168,7 @@ void ARX_THROWN_OBJECT_Throw(long source, const Vec3f & position, const Vec3f & 
 	thrownObj->flags |= ATO_EXIST | ATO_MOVING;
 	
 	if(source == 0
-	   && player.equiped[EQUIP_SLOT_WEAPON] != EntityHandle(0)
+	   && player.equiped[EQUIP_SLOT_WEAPON] != PlayerEntityHandle
 	   && ValidIONum(player.equiped[EQUIP_SLOT_WEAPON])
 	) {
 		Entity * tio = entities[player.equiped[EQUIP_SLOT_WEAPON]];
@@ -346,7 +346,7 @@ void CheckExp(long i) {
 		ARX_BOOMS_Add(Thrown[i].position);
 		LaunchFireballBoom(&Thrown[i].position, 10);
 		DoSphericDamage(Thrown[i].position, 4.f * 2, 50.f,
-						DAMAGE_AREA, DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL, EntityHandle(0));
+						DAMAGE_AREA, DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL, PlayerEntityHandle);
 		ARX_SOUND_PlaySFX(SND_SPELL_FIRE_HIT, &Thrown[i].position);
 		ARX_NPC_SpawnAudibleSound(Thrown[i].position, entities.player());
 		LightHandle id = GetFreeDynLight();

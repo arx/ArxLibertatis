@@ -1087,7 +1087,7 @@ bool CheckAnythingInSphere(const Sphere & sphere, EntityHandle source, CASFlags 
 		if((io->ioflags & IO_ITEM) && (flags & CAS_NO_ITEM_COL))
 			continue;
 
-		if(treatio[i].num != EntityHandle(0) && source != EntityHandle(0) && validsource && HaveCommonGroup(io,entities[source]))
+		if(treatio[i].num != PlayerEntityHandle && source != PlayerEntityHandle && validsource && HaveCommonGroup(io,entities[source]))
 			continue;
 
 		if(io->gameFlags & GFLAG_PLATFORM) {

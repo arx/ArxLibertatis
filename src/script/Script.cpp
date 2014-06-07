@@ -823,7 +823,7 @@ ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const string & 
 					for(size_t i = 0; i < MAX_SPELLS; i++) {
 						if(   spells[i].m_exist
 						   && spells[i].m_type == id
-						   && spells[i].m_caster >= EntityHandle(0)
+						   && spells[i].m_caster >= PlayerEntityHandle
 						   && spells[i].m_caster < long(entities.size())
 						   && entity == entities[spells[i].m_caster]
 						) {

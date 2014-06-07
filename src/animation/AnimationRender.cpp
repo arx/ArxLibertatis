@@ -861,7 +861,7 @@ struct HaloRenderInfo {
 
 void pushSlotHalo(std::vector<HaloRenderInfo> & halos, EquipmentSlot slot, short selection) {
 
-	if(player.equiped[slot] != EntityHandle(0) && ValidIONum(player.equiped[slot])) {
+	if(player.equiped[slot] != PlayerEntityHandle && ValidIONum(player.equiped[slot])) {
 		Entity * tio = entities[player.equiped[slot]];
 
 		if(tio->halo.flags & HALO_ACTIVE) {

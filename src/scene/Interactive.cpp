@@ -503,7 +503,7 @@ void PrepareIOTreatZone(long flag)
 	short sGlobalPlayerRoom = checked_range_cast<short>(PlayerRoom);
 
 	for(long i = 0; i < MAX_EQUIPED; i++) {
-		if(player.equiped[i] != EntityHandle(0) && ValidIONum(player.equiped[i])) {
+		if(player.equiped[i] != PlayerEntityHandle && ValidIONum(player.equiped[i])) {
 			Entity *toequip = entities[player.equiped[i]];
 
 			if(toequip) {
@@ -2078,7 +2078,7 @@ bool IsEquipedByPlayer(const Entity * io)
 	EntityHandle num = io->index();
 
 	for(long i = 0; i < MAX_EQUIPED; i++) {
-		if(player.equiped[i] != EntityHandle(0) && player.equiped[i] == num)
+		if(player.equiped[i] != PlayerEntityHandle && player.equiped[i] == num)
 			return true;
 	}
 

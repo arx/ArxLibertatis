@@ -181,7 +181,7 @@ static EntityHandle ReadTargetInfo(const char (&str)[N]) {
 	} else if(ident == "self") {
 		return EntityHandle(-2);
 	} else if(ident == "player") {
-		return EntityHandle(0);
+		return PlayerEntityHandle;
 	} else {
 		Entity * e = convertToValidIO(ident);
 		return (e == NULL) ? EntityHandle(-1) : e->index();

@@ -128,7 +128,7 @@ void FireballSpell::Launch(SpellHandle i)
 	CFireBall * effect = new CFireBall();
 	effect->spellinstance = i;
 	
-	if(m_caster != EntityHandle(0)) {
+	if(m_caster != PlayerEntityHandle) {
 		m_hand_group = -1;
 	}
 	

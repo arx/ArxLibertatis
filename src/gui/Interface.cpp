@@ -2083,7 +2083,7 @@ void ArxGame::manageKeyMouse() {
 
 		if(pIO && g_cursorOverBook) {
 			for(long i = 0; i < MAX_EQUIPED; i++) {
-				if(player.equiped[i] != EntityHandle(0)
+				if(player.equiped[i] != PlayerEntityHandle
 				   && ValidIONum(player.equiped[i])
 				   && entities[player.equiped[i]] == pIO
 				) {
@@ -6062,7 +6062,7 @@ public:
 				if(spellHandleIsValid(spellHandle)) {
 					SpellBase * spell = &spells[spellHandle];
 					
-					if(spell->m_caster != EntityHandle(0) && spellicons[spell->m_type].bDuration) {
+					if(spell->m_caster != PlayerEntityHandle && spellicons[spell->m_type].bDuration) {
 						ManageSpellIcon(spellHandle, intensity, true);
 					}
 				}
