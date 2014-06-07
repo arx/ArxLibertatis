@@ -119,10 +119,10 @@ void ARX_SPELLS_Precast_Check() {
 				if(ause1->ctime > ause1->cur_anim->anims[ause1->altidx_cur]->anim_time - 550)
 				{
 					ARX_SPELLS_Launch(	Precast[i].typ,
-										EntityHandle(0),
+										PlayerEntityHandle,
 										Precast[i].flags | SPELLCAST_FLAG_LAUNCHPRECAST, 
 										Precast[i].level, 
-										-1, 
+										InvalidEntityHandle,
 										Precast[i].duration);
 					
 					Precast.erase(Precast.begin() + i);

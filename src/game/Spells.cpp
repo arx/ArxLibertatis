@@ -983,7 +983,7 @@ struct TARGETING_SPELL {
 	SpellType typ;
 	SpellcastFlags flags;
 	long level;
-	long target;
+	EntityHandle target;
 	long duration;
 };
 
@@ -1113,7 +1113,7 @@ float ARX_SPELLS_GetManaCost(SpellType spell, long index) {
 	}
 }
 
-bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flagss, long levell, long target, long duration) {
+bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flagss, long levell, EntityHandle target, long duration) {
 	
 	SpellcastFlags flags = flagss;
 	long level = levell;
