@@ -328,7 +328,7 @@ public:
 			if(!BLOCK_PLAYER_CONTROLS) {
 				ARX_PLAYER_PutPlayerInNormalStance(0);
 				Stack_SendMsgToAllNPC_IO(SM_CONTROLS_OFF, "");
-				ARX_SPELLS_FizzleAllSpellsFromCaster(0);
+				ARX_SPELLS_FizzleAllSpellsFromCaster(PlayerEntityHandle);
 			}
 			BLOCK_PLAYER_CONTROLS = true;
 			player.Interface &= ~INTER_COMBATMODE;

@@ -307,7 +307,7 @@ bool GetSpellPosition(Vec3f * pos,long i)
 	return false;
 }
 
-bool spellHandleIsValid(long handle) {
+bool spellHandleIsValid(SpellHandle handle) {
 	return (long)handle >= 0 && ((size_t)handle < MAX_SPELLS) && spells[handle].m_exist;
 }
 
@@ -970,7 +970,7 @@ void ARX_SPELLS_AbortSpellSound() {
 	ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE);
 }
 
-void ARX_SPELLS_FizzleAllSpellsFromCaster(long num_caster) {
+void ARX_SPELLS_FizzleAllSpellsFromCaster(EntityHandle num_caster) {
 	
 	for(size_t i = 0; i < MAX_SPELLS; i++) {
 		if(spells[i].m_exist && spells[i].m_caster == num_caster) {

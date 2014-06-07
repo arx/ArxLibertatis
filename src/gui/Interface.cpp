@@ -6058,7 +6058,7 @@ public:
 			
 			boost::container::flat_set<long>::const_iterator it;
 			for(it = playerEntity->spellsOn.begin(); it != playerEntity->spellsOn.end(); ++it) {
-				long spellHandle = *it;
+				SpellHandle spellHandle = SpellHandle(*it);
 				if(spellHandleIsValid(spellHandle)) {
 					SpellBase * spell = &spells[spellHandle];
 					

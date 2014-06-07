@@ -410,7 +410,7 @@ bool SlowDownSpell::Launch(long duration, SpellHandle i)
 	
 	boost::container::flat_set<long>::const_iterator it;
 	for(it = io->spellsOn.begin(); it != io->spellsOn.end(); ++it) {
-		long spellHandle = *it;
+		SpellHandle spellHandle = SpellHandle(*it);
 		if(spellHandleIsValid(spellHandle)) {
 			SpellBase * spell = &spells[spellHandle];
 			

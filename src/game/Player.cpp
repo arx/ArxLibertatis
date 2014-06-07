@@ -524,12 +524,12 @@ void ARX_PLAYER_ComputePlayerFullStats() {
 		boost::container::flat_set<long>::const_iterator it;
 		for(it = entities.player()->spellsOn.begin(); it != entities.player()->spellsOn.end(); ++it) {
 			
-			long spellHandle = *it;
+			SpellHandle spellHandle = SpellHandle(*it);
 			if(!spellHandleIsValid(spellHandle)) {
 				continue;
 			}
 			
-			long n = spellHandle;
+			SpellHandle n = spellHandle;
 			switch (spells[n].m_type) {
 				case SPELL_ARMOR:
 					player.m_miscMod.armorClass += spells[n].m_caster_level;

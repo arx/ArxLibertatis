@@ -90,7 +90,7 @@ void ARX_SPELLS_ClearAllSymbolDraw();
 
 bool ARX_SPELLS_ExistAnyInstance(SpellType typ);
 void ARX_SPELLS_RemoveAllSpellsOn(Entity * io);
-bool spellHandleIsValid(long handle);
+bool spellHandleIsValid(SpellHandle handle);
 SpellHandle ARX_SPELLS_GetSpellOn(const Entity * io, SpellType spellid);
 long ARX_SPELLS_GetInstanceForThisCaster(SpellType typ, long caster);
 
@@ -99,6 +99,6 @@ void ARX_SPELLS_LaunchSpellTarget(Entity * io);
 float ARX_SPELLS_GetManaCost(SpellType _lNumSpell,long _lNumSpellTab);
 float ARX_SPELLS_ApplyFireProtection(Entity * io, float damages);
 float ARX_SPELLS_ApplyColdProtection(Entity * io, float damages);
-void ARX_SPELLS_FizzleAllSpellsFromCaster(long num);
+void ARX_SPELLS_FizzleAllSpellsFromCaster(EntityHandle num);
 
 #endif // ARX_GAME_SPELLS_H
