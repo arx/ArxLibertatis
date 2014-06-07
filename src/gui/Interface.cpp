@@ -1682,10 +1682,13 @@ void ArxGame::managePlayerControls()
 	
 	if(GInput->actionNowPressed(CONTROLS_CUST_CANCELCURSPELL)) {
 		for(long i = MAX_SPELLS - 1; i >= 0; i--) {
-			if(spells[i].m_exist && spells[i].m_caster == PlayerEntityHandle)
-				if(spellicons[spells[i].m_type].bDuration) {
+			const SpellHandle handle = SpellHandle(i);
+			SpellBase & spell = spells[handle];
+			
+			if(spell.m_exist && spell.m_caster == PlayerEntityHandle)
+				if(spellicons[spell.m_type].bDuration) {
 					ARX_SPELLS_AbortSpellSound();
-					spells[i].m_tolive=0;
+					spell.m_tolive = 0;
 					break;
 				}
 		}
@@ -1693,15 +1696,15 @@ void ArxGame::managePlayerControls()
 
 	if(((player.Interface & INTER_COMBATMODE) && !bIsAiming) || !player.doingmagic) {
 		if(GInput->actionNowPressed(CONTROLS_CUST_PRECAST1)) {
-			ARX_SPELLS_Precast_Launch(0);
+			ARX_SPELLS_Precast_Launch(PrecastHandle(0));
 		}
 	
 		if(GInput->actionNowPressed(CONTROLS_CUST_PRECAST2)) {
-			ARX_SPELLS_Precast_Launch(1);
+			ARX_SPELLS_Precast_Launch(PrecastHandle(1));
 		}
 	
 		if(GInput->actionNowPressed(CONTROLS_CUST_PRECAST3)) {
-			ARX_SPELLS_Precast_Launch(2);
+			ARX_SPELLS_Precast_Launch(PrecastHandle(2));
 		}
 	}
 
@@ -1929,9 +1932,9 @@ void ArxGame::managePlayerControls()
 
 		if(bRenderInCursorMode) {
 			if(eyeball.exist != 0) {
-				long lNumSpell=ARX_SPELLS_GetInstance(SPELL_FLYING_EYE);
+				SpellHandle lNumSpell = ARX_SPELLS_GetInstance(SPELL_FLYING_EYE);
 
-				if(lNumSpell >= 0) {
+				if(lNumSpell != InvalidSpellHandle) {
 					spells[lNumSpell].m_tolive = 0;
 				}
 			}
@@ -5829,7 +5832,7 @@ private:
 		Rectf m_rect;
 		TextureContainer * m_tc;
 		Color m_color;
-		size_t m_precastIndex;
+		PrecastHandle m_precastIndex;
 		
 		void update(const Rectf & rect, TextureContainer * tc, Color color, size_t precastIndex) {
 			m_rect = rect;
@@ -5952,7 +5955,7 @@ private:
 		Rectf m_rect;
 		TextureContainer * m_tc;
 		Color m_color;
-		size_t spellIndex;
+		SpellHandle spellIndex;
 		
 		void update(const Rectf & rect, TextureContainer * tc, Color color) {
 			m_rect = rect;
@@ -5986,7 +5989,7 @@ private:
 	ActiveSpellIconSlot activeSpellIconSlot;
 	
 	
-	void ManageSpellIcon(long i, float intensity, bool flag)
+	void ManageSpellIcon(SpellHandle i, float intensity, bool flag)
 	{
 		float POSX = g_size.width()-INTERFACE_RATIO(35);
 		Color color;
@@ -6043,11 +6046,14 @@ public:
 	
 	void spellsByPlayerUpdate(float intensity) {
 		for(size_t i = 0; i < MAX_SPELLS; i++) {
-			if(   spells[i].m_exist
-			   && spells[i].m_caster == PlayerEntityHandle
-			   && spellicons[spells[i].m_type].bDuration
+			const SpellHandle handle = SpellHandle(i);
+			SpellBase & spell = spells[handle];
+			
+			if(   spell.m_exist
+			   && spell.m_caster == PlayerEntityHandle
+			   && spellicons[spell.m_type].bDuration
 			) {
-				ManageSpellIcon(i, intensity, false);
+				ManageSpellIcon(handle, intensity, false);
 			}
 		}
 	}

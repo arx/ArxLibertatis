@@ -32,7 +32,7 @@
 
 const size_t MAX_PRECAST = 3;
 
-extern void ARX_SPELLS_FizzleNoMana(long num);
+extern void ARX_SPELLS_FizzleNoMana(SpellHandle num);
 
 std::vector<PRECAST_STRUCT> Precast;
 
@@ -61,7 +61,7 @@ void ARX_SPELLS_Precast_Add(SpellType typ, long _level, SpellcastFlags flags, lo
 
 unsigned long LAST_PRECAST_TIME = 0;
 
-long PrecastCheckCanPayMana(long num, float cost, bool _bSound = true) {
+long PrecastCheckCanPayMana(PrecastHandle num, float cost, bool _bSound = true) {
 	if(num < 0)
 		return 0;
 
@@ -71,7 +71,8 @@ long PrecastCheckCanPayMana(long num, float cost, bool _bSound = true) {
 	if(player.manaPool.current >= cost)
 		return 1;
 	
-	ARX_SPELLS_FizzleNoMana(num);
+	// FIXME casting Precast to Spell Handle
+	ARX_SPELLS_FizzleNoMana(SpellHandle(num));
 
 	if(_bSound) {
 		ARX_SPEECH_Add(getLocalised("player_cantcast"));
@@ -81,15 +82,15 @@ long PrecastCheckCanPayMana(long num, float cost, bool _bSound = true) {
 	return 0;
 }
 
-void ARX_SPELLS_Precast_Launch(size_t num) {
+void ARX_SPELLS_Precast_Launch(PrecastHandle num) {
 	
-	if(num >= Precast.size()) {
+	if(size_t(num) >= Precast.size()) {
 		return;
 	}
 	
 	if(float(arxtime) >= LAST_PRECAST_TIME + 1000) {
 		SpellType type = Precast[num].typ;
-		float cost=ARX_SPELLS_GetManaCost(type,  -1);
+		float cost = ARX_SPELLS_GetManaCost(type, InvalidSpellHandle);
 
 		if(type != SPELL_NONE && !PrecastCheckCanPayMana(num,cost))
 			return;

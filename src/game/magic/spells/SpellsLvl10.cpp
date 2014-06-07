@@ -46,9 +46,12 @@ extern Rect g_size;
 void MassLightningStrikeSpell::Launch(SpellHandle i)
 {
 	for(size_t ii = 0; ii < MAX_SPELLS; ii++) {
-		if(spells[ii].m_exist && spells[ii].m_type == SPELL_MASS_LIGHTNING_STRIKE) {
-			lightHandleDestroy(spells[ii].m_longinfo_light);
-			spells[ii].m_tolive = 0;
+		const SpellHandle handle = SpellHandle(ii);
+		SpellBase & spell = spells[handle];
+		
+		if(spell.m_exist && spell.m_type == SPELL_MASS_LIGHTNING_STRIKE) {
+			lightHandleDestroy(spell.m_longinfo_light);
+			spell.m_tolive = 0;
 		}
 	}
 	
@@ -289,7 +292,7 @@ void MassIncinerateSpell::Launch(SpellHandle i)
 	}
 }
 
-void ARX_SPELLS_RemoveMultiSpellOn(long spell_id) {
+void ARX_SPELLS_RemoveMultiSpellOn(SpellHandle spell_id) {
 	for(size_t i = 0; i < entities.size(); i++) {
 		ARX_SPELLS_RemoveSpellOn(i, spells[spell_id].m_type);
 	}

@@ -225,8 +225,11 @@ void ARX_INTERACTIVE_DestroyDynamicInfo(Entity * io)
 	
 	if(ValidIONum(n)) {
 		for(size_t i = 0; i < MAX_SPELLS; i++) {
-			if(spells[i].m_exist && spells[i].m_caster == n) {
-				spells[i].m_tolive = 0;
+			const SpellHandle handle = SpellHandle(i);
+			SpellBase & spell = spells[handle];
+			
+			if(spell.m_exist && spell.m_caster == n) {
+				spell.m_tolive = 0;
 			}
 		}
 	}

@@ -128,11 +128,11 @@ public:
 	}
 };
 
-void LaunchMagicMissileExplosion(const Vec3f & _ePos, long spellinstance = -1)
+void LaunchMagicMissileExplosion(const Vec3f & _ePos, SpellHandle spellinstance = InvalidSpellHandle)
 {
 	ParticleParams cp = MagicMissileExplosionParticle();
 	
-	if(spellinstance >= 0 && spells[spellinstance].m_caster == PlayerEntityHandle && cur_mr == 3) {
+	if(spellinstance != InvalidSpellHandle && spells[spellinstance].m_caster == PlayerEntityHandle && cur_mr == 3) {
 		cp = MagicMissileExplosionMrCheatParticle();
 	}
 	
@@ -150,7 +150,7 @@ void LaunchMagicMissileExplosion(const Vec3f & _ePos, long spellinstance = -1)
 		light->fallstart = 250.f;
 		light->fallend   = 420.f;
 
-		if(spellinstance >= 0 && spells[spellinstance].m_caster == PlayerEntityHandle && cur_mr == 3) {
+		if(spellinstance != InvalidSpellHandle && spells[spellinstance].m_caster == PlayerEntityHandle && cur_mr == 3) {
 			light->rgb.r = 1.f;
 			light->rgb.g = 0.3f;
 			light->rgb.b = .8f;

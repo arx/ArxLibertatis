@@ -124,8 +124,11 @@ public:
 		} else {
 			
 			for(size_t i = 0; i < MAX_SPELLS; i++) {
-				if(spells[i].m_exist && spells[i].m_caster == oldd) {
-					spells[i].m_caster = neww;
+				const SpellHandle handle = SpellHandle(i);
+				SpellBase & spell = spells[handle];
+				
+				if(spell.m_exist && spell.m_caster == oldd) {
+					spell.m_caster = neww;
 				}
 			}
 			

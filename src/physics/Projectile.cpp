@@ -79,11 +79,13 @@ ARX_THROWN_OBJECT Thrown[MAX_THROWN_OBJECTS];
 static bool IsPointInField(const Vec3f & pos) {
 
 	for(size_t i = 0; i < MAX_SPELLS; i++) {
+		const SpellHandle handle = SpellHandle(i);
+		const SpellBase & spell = spells[handle];
 
-		if(spells[i].m_exist && spells[i].m_type == SPELL_CREATE_FIELD) {
+		if(spell.m_exist && spell.m_type == SPELL_CREATE_FIELD) {
 
-			if(ValidIONum(spells[i].m_longinfo_entity)) {
-				Entity * pfrm = entities[spells[i].m_longinfo_entity];
+			if(ValidIONum(spell.m_longinfo_entity)) {
+				Entity * pfrm = entities[spell.m_longinfo_entity];
 				
 				EERIE_CYLINDER cyl;
 				cyl.height = -35.f;

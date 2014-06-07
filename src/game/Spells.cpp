@@ -148,15 +148,15 @@ extern bool bRenderInCursorMode;
 
 void ARX_INTERFACE_Combat_Mode(long i);
 
-///////////////Spell Interpretation
-SpellBase spells[MAX_SPELLS];
 short ARX_FLARES_broken(1);
 
 long snip=0;
 static Vec2s Lm;
 
-
 unsigned char ucFlick=0;
+
+SpellManager spells;
+
 
 bool GetSpellPosition(Vec3f * pos, SpellHandle i)
 {
@@ -543,7 +543,7 @@ static bool MakeSpellName(char * spell, SpellType num) {
 	return true;
 }
 
-void SPELLCAST_Notify(long num) {
+void SPELLCAST_Notify(SpellHandle num) {
 	
 	if(num < 0 || size_t(num) >= MAX_SPELLS)
 		return;
@@ -564,7 +564,7 @@ void SPELLCAST_Notify(long num) {
 	}
 }
 
-void SPELLCAST_NotifyOnlyTarget(long num)
+void SPELLCAST_NotifyOnlyTarget(SpellHandle num)
 {
 	if(num < 0 || size_t(num) >= MAX_SPELLS)
 		return;
@@ -625,7 +625,7 @@ void SPELLEND_Notify(SpellBase & spell) {
 
 
 //! Plays the sound of Fizzling spell
-void ARX_SPELLS_Fizzle(long num) {
+void ARX_SPELLS_Fizzle(SpellHandle num) {
 	if(num < 0) {
 		ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE); // player fizzle
 	} else {
@@ -815,7 +815,7 @@ void ARX_SPELLS_ManageMagic() {
 /*!
  * Plays the sound of Fizzling spell plus "NO MANA" speech
  */
-void ARX_SPELLS_FizzleNoMana(long num) {
+void ARX_SPELLS_FizzleNoMana(SpellHandle num) {
 	if(num < 0) {
 		return;
 	}
@@ -825,7 +825,7 @@ void ARX_SPELLS_FizzleNoMana(long num) {
 	}
 }
 
-bool CanPayMana(long num, float cost, bool _bSound = true) {
+bool CanPayMana(SpellHandle num, float cost, bool _bSound = true) {
 	
 	if(num < 0)
 		return false;
@@ -883,9 +883,12 @@ long TemporaryGetSpellTarget(const Vec3f * from) {
 void ARX_SPELLS_Init() {
 	
 	for(size_t i = 0; i < MAX_SPELLS; i++) {
-		spells[i].m_tolive = 0;
-		spells[i].m_exist = false;
-		spells[i].m_pSpellFx = NULL;
+		const SpellHandle handle = SpellHandle(i);
+		SpellBase & spell = spells[handle];
+		
+		spell.m_tolive = 0;
+		spell.m_exist = false;
+		spell.m_pSpellFx = NULL;
 	}
 	
 	spellRecognitionInit();
@@ -898,10 +901,15 @@ void ARX_SPELLS_Init() {
 void ARX_SPELLS_ClearAll() {
 	
 	for(size_t i = 0; i < MAX_SPELLS; i++) {
-		if(spells[i].m_exist) {
-			spells[i].m_tolive = 0;
-			spells[i].m_exist = false;
-			delete spells[i].m_pSpellFx, spells[i].m_pSpellFx = NULL;
+		const SpellHandle handle = SpellHandle(i);
+		SpellBase & spell = spells[handle];
+		
+		if(spell.m_exist) {
+			spell.m_tolive = 0;
+			spell.m_exist = false;
+			
+			delete spell.m_pSpellFx;
+			spell.m_pSpellFx = NULL;
 		}
 	}
 	
@@ -916,45 +924,54 @@ void ARX_SPELLS_ClearAll() {
 static SpellHandle ARX_SPELLS_GetFree() {
 	
 	for(size_t i = 0; i < MAX_SPELLS; i++) {
-		if(!spells[i].m_exist) {
-			spells[i].m_longinfo_entity = -1;
-			spells[i].m_longinfo_damage = -1;
-			spells[i].m_longinfo_time = -1;
-			spells[i].m_longinfo_summon_creature = -1;
-			spells[i].m_longinfo_lower_armor = -1;
-			spells[i].m_longinfo_light = -1;
+		const SpellHandle handle = SpellHandle(i);
+		SpellBase & spell = spells[handle];
+		
+		if(!spell.m_exist) {
+			spell.m_longinfo_entity = -1;
+			spell.m_longinfo_damage = -1;
+			spell.m_longinfo_time = -1;
+			spell.m_longinfo_summon_creature = -1;
+			spell.m_longinfo_lower_armor = -1;
+			spell.m_longinfo_light = -1;
 			
-			spells[i].m_longinfo2_light = -1;
+			spell.m_longinfo2_light = -1;
 			
-			spells[i].m_targetHandles.clear();
-			return SpellHandle(i);
+			spell.m_targetHandles.clear();
+			return handle;
 		}
 	}
 	
-	return SpellHandle(-1);
+	return InvalidSpellHandle;
 }
 
-long ARX_SPELLS_GetInstance(SpellType typ) {
+SpellHandle ARX_SPELLS_GetInstance(SpellType typ) {
 	
 	for(size_t i = 0; i < MAX_SPELLS; i++) {
-		if(spells[i].m_exist && spells[i].m_type == typ) {
-			return i;
+		const SpellHandle handle = SpellHandle(i);
+		const SpellBase & spell = spells[handle];
+		
+		if(spell.m_exist && spell.m_type == typ) {
+			return handle;
 		}
 	}
 	
-	return -1;
+	return InvalidSpellHandle;
 }
 
 // Checks for an existing instance of this spelltype
 bool ARX_SPELLS_ExistAnyInstance(SpellType typ) {
-	return (ARX_SPELLS_GetInstance(typ) != -1);
+	return (ARX_SPELLS_GetInstance(typ) != InvalidSpellHandle);
 }
 
 SpellHandle ARX_SPELLS_GetInstanceForThisCaster(SpellType typ, EntityHandle caster) {
 	
 	for(size_t i = 0; i < MAX_SPELLS; i++) {
-		if(spells[i].m_exist && spells[i].m_type == typ && spells[i].m_caster == caster) {
-			return SpellHandle(i);
+		SpellHandle handle = SpellHandle(i);
+		const SpellBase & spell = spells[handle];
+		
+		if(spell.m_exist && spell.m_type == typ && spell.m_caster == caster) {
+			return handle;
 		}
 	}
 	
@@ -973,8 +990,9 @@ void ARX_SPELLS_AbortSpellSound() {
 void ARX_SPELLS_FizzleAllSpellsFromCaster(EntityHandle num_caster) {
 	
 	for(size_t i = 0; i < MAX_SPELLS; i++) {
-		if(spells[i].m_exist && spells[i].m_caster == num_caster) {
-			spells[i].m_tolive = 0;
+		SpellBase & spell = spells[SpellHandle(i)];
+		if(spell.m_exist && spell.m_caster == num_caster) {
+			spell.m_tolive = 0;
 		}
 	}
 }
@@ -1042,7 +1060,7 @@ float ARX_SPELLS_ApplyColdProtection(Entity * io,float damages)
 	return damages;
 }
 
-float ARX_SPELLS_GetManaCost(SpellType spell, long index) {
+float ARX_SPELLS_GetManaCost(SpellType spell, SpellHandle index) {
 	
 	// Calculate the player's magic level
 	float playerCasterLevel = player.m_skillFull.casting + player.m_attributeFull.mind;

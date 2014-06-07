@@ -99,32 +99,34 @@ void DispellFieldSpell::Launch()
 	long valid = 0, dispelled = 0;
 
 	for(size_t n = 0; n < MAX_SPELLS; n++) {
+		const SpellHandle handle = SpellHandle(n);
+		SpellBase & spell = spells[handle];
 		
-		if(!spells[n].m_exist || !spells[n].m_pSpellFx) {
+		if(!spell.m_exist || !spell.m_pSpellFx) {
 			continue;
 		}
 		
 		bool cancel = false;
 		Vec3f pos;
 		
-		switch(spells[n].m_type) {
+		switch(spell.m_type) {
 			
 			case SPELL_CREATE_FIELD: {
-				if(m_caster != PlayerEntityHandle || spells[n].m_caster == PlayerEntityHandle) {
-					pos = static_cast<CCreateField *>(spells[n].m_pSpellFx)->eSrc;
+				if(m_caster != PlayerEntityHandle || spell.m_caster == PlayerEntityHandle) {
+					pos = static_cast<CCreateField *>(spell.m_pSpellFx)->eSrc;
 					cancel = true;
 				}
 				break;
 			}
 			
 			case SPELL_FIRE_FIELD: {
-				pos = static_cast<CFireField *>(spells[n].m_pSpellFx)->pos;
+				pos = static_cast<CFireField *>(spell.m_pSpellFx)->pos;
 				cancel = true;
 				break;
 			}
 			
 			case SPELL_ICE_FIELD: {
-				pos = static_cast<CIceField *>(spells[n].m_pSpellFx)->eSrc;
+				pos = static_cast<CIceField *>(spell.m_pSpellFx)->eSrc;
 				cancel = true;
 				break;
 			}
@@ -135,8 +137,8 @@ void DispellFieldSpell::Launch()
 		Entity * caster = entities[m_caster];
 		if(cancel && closerThan(pos, caster->pos, 400.f)) {
 			valid++;
-			if(spells[n].m_caster_level <= m_caster_level) {
-				spells[n].m_tolive = 0;
+			if(spell.m_caster_level <= m_caster_level) {
+				spell.m_tolive = 0;
 				dispelled++;
 			}
 		}

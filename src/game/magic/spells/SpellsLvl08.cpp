@@ -62,7 +62,7 @@ void InvisibilitySpell::End(SpellHandle i)
 	}
 }
 
-extern void ARX_SPELLS_Fizzle(long num);
+extern void ARX_SPELLS_Fizzle(SpellHandle num);
 
 void InvisibilitySpell::Update(SpellHandle i)
 {

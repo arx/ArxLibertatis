@@ -174,17 +174,20 @@ void IgnitSpell::Launch(SpellHandle i)
 	}
 	
 	for(size_t n = 0; n < MAX_SPELLS; n++) {
-		if(!spells[n].m_exist) {
+		const SpellHandle handle = SpellHandle(n);
+		SpellBase & spell = spells[handle];
+		
+		if(!spell.m_exist) {
 			continue;
 		}
-		if(spells[n].m_type == SPELL_FIREBALL) {
-			CSpellFx * pCSpellFX = spells[n].m_pSpellFx;
+		if(spell.m_type == SPELL_FIREBALL) {
+			CSpellFx * pCSpellFX = spell.m_pSpellFx;
 			if(pCSpellFX) {
 				CFireBall * pCF = (CFireBall *)pCSpellFX;
 				float radius = std::max(m_caster_level * 2.f, 12.f);
 				if(closerThan(target, pCF->eCurPos,
 				              fPerimeter + radius)) {
-					spells[n].m_caster_level += 1; 
+					spell.m_caster_level += 1;
 				}
 			}
 		}

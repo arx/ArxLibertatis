@@ -65,6 +65,21 @@ class Entity;
 class CSpellFx;
 class TextureContainer;
 
+const size_t MAX_SPELLS = 20;
+
+class SpellManager {
+	private:
+		SpellBase m_spells[MAX_SPELLS];
+		
+	public:
+		SpellBase & operator[] (const SpellHandle handle) {
+			return m_spells[handle];
+		}
+};
+
+extern SpellManager spells;
+
+
 bool GetSpellPosition(Vec3f * pos, SpellHandle i);
 
 void ARX_SPELLS_AddSpellOn(EntityHandle caster, SpellHandle spell);
@@ -73,16 +88,13 @@ void ARX_SPELLS_RemoveSpellOn(const long & entityHandle, const long & spellHandl
 SpellType GetSpellId(const std::string & spell);
 void TryToCastSpell(Entity * io, SpellType spellid, long level, EntityHandle target, SpellcastFlags flags, long duration);
 
-const size_t MAX_SPELLS = 20;
-extern SpellBase spells[MAX_SPELLS];
-
 bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flags = 0, long level = -1, EntityHandle target = InvalidEntityHandle, long duration = -1);
 void ARX_SPELLS_AbortSpellSound();
 void ARX_SPELLS_Init();
 void ARX_SPELLS_ClearAll();
 void ARX_SPELLS_Update();
 
-long ARX_SPELLS_GetInstance(SpellType typ);
+SpellHandle ARX_SPELLS_GetInstance(SpellType typ);
 void ARX_SPELLS_ManageMagic();
 
 void ARX_SPELLS_UpdateSymbolDraw();
@@ -96,7 +108,7 @@ SpellHandle ARX_SPELLS_GetInstanceForThisCaster(SpellType typ, EntityHandle cast
 
 void ARX_SPELLS_CancelSpellTarget();
 void ARX_SPELLS_LaunchSpellTarget(Entity * io);
-float ARX_SPELLS_GetManaCost(SpellType _lNumSpell,long _lNumSpellTab);
+float ARX_SPELLS_GetManaCost(SpellType _lNumSpell, SpellHandle _lNumSpellTab);
 float ARX_SPELLS_ApplyFireProtection(Entity * io, float damages);
 float ARX_SPELLS_ApplyColdProtection(Entity * io, float damages);
 void ARX_SPELLS_FizzleAllSpellsFromCaster(EntityHandle num);

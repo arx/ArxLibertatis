@@ -423,8 +423,11 @@ void ARX_PLAYER_Quest_Add(const std::string & quest, bool _bLoad) {
  */
 void ARX_PLAYER_Remove_Invisibility() {
 	for(size_t i = 0; i < MAX_SPELLS; i++) {
-		if(spells[i].m_exist && spells[i].m_type == SPELL_INVISIBILITY && spells[i].m_caster == PlayerEntityHandle) {
-			spells[i].m_tolive = 0;
+		const SpellHandle handle = SpellHandle(i);
+		SpellBase & spell = spells[handle];
+		
+		if(spell.m_exist && spell.m_type == SPELL_INVISIBILITY && spell.m_caster == PlayerEntityHandle) {
+			spell.m_tolive = 0;
 		}
 	}
 }
@@ -1333,8 +1336,11 @@ void ARX_PLAYER_BecomesDead() {
 	}
 
 	for(size_t i = 0; i < MAX_SPELLS; i++) {
-		if(spells[i].m_exist && spells[i].m_caster == PlayerEntityHandle) {
-			spells[i].m_tolive = 0;
+		const SpellHandle handle = SpellHandle(i);
+		SpellBase & spell = spells[handle];
+		
+		if(spell.m_exist && spell.m_caster == PlayerEntityHandle) {
+			spell.m_tolive = 0;
 		}
 	}
 }
@@ -2614,13 +2620,16 @@ void ARX_PLAYER_PutPlayerInNormalStance(long val) {
 	
 	if(!val) {
 		for(size_t i = 0; i < MAX_SPELLS; i++) {
-			if(spells[i].m_exist && (spells[i].m_caster == PlayerEntityHandle || spells[i].m_target == PlayerEntityHandle)) {
-				switch(spells[i].m_type) {
+			const SpellHandle handle = SpellHandle(i);
+			SpellBase & spell = spells[handle];
+			
+			if(spell.m_exist && (spell.m_caster == PlayerEntityHandle || spell.m_target == PlayerEntityHandle)) {
+				switch(spell.m_type) {
 					case SPELL_MAGIC_SIGHT:
 					case SPELL_LEVITATE:
 					case SPELL_SPEED:
 					case SPELL_FLYING_EYE:
-						spells[i].m_tolive = 0;
+						spell.m_tolive = 0;
 						break;
 					default: break;
 				}
