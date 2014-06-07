@@ -434,7 +434,7 @@ static bool ANCHOR_ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, Entity * io,
 		vector2D.z = mvector.z * curmovedist;
 
 		if ((flags & CFLAG_CHECK_VALID_POS)
-		        && (CylinderAboveInvalidZone(&test.cyl)))
+		        && (CylinderAboveInvalidZone(test.cyl)))
 			return false;
 
 		if(ANCHOR_AttemptValidCylinderPos(test.cyl, io, flags)) {
@@ -568,20 +568,20 @@ void AnchorData_ClearAll(EERIE_BACKGROUND * eb) {
 
 static const int INC_RADIUS = 10;
 
-bool CylinderAboveInvalidZone(EERIE_CYLINDER * cyl) {
+bool CylinderAboveInvalidZone(const EERIE_CYLINDER & cyl) {
 	
 	float count = 0;
 	float failcount = 0;
 
-	for(float rad = 0; rad < cyl->radius; rad += 10.f) {
+	for(float rad = 0; rad < cyl.radius; rad += 10.f) {
 		for(float ang = 0; ang < 360; ang += 45) {
 			if(rad == 0)
 				ang = 360;
 
 			Vec3f pos;
-			pos.x = cyl->origin.x - std::sin(radians(ang)) * rad;
-			pos.y = cyl->origin.y - 20.f;
-			pos.z = cyl->origin.z + std::cos(radians(ang)) * rad;
+			pos.x = cyl.origin.x - std::sin(radians(ang)) * rad;
+			pos.y = cyl.origin.y - 20.f;
+			pos.z = cyl.origin.z + std::cos(radians(ang)) * rad;
 			EERIEPOLY * ep = ANCHOR_CheckInPoly(pos);
 
 			if(!ep)
@@ -594,7 +594,7 @@ bool CylinderAboveInvalidZone(EERIE_CYLINDER * cyl) {
 			float vy;
 			GetTruePolyY(ep, pos, &vy);
 
-			if(EEfabs(vy - cyl->origin.y) > 160.f)
+			if(EEfabs(vy - cyl.origin.y) > 160.f)
 				failcount++;
 		}
 	}
@@ -664,7 +664,8 @@ static bool DirectAddAnchor_Original_Method(EERIE_BACKGROUND * eb, EERIE_BKG_INF
 		return false;
 	}
 
-	if (CylinderAboveInvalidZone(&bestcyl)) return false;
+	if(CylinderAboveInvalidZone(bestcyl))
+		return false;
 
 	for (long k = 0; k < eb->nbanchors; k++)
 	{
@@ -781,7 +782,8 @@ static bool AddAnchor_Original_Method(EERIE_BACKGROUND * eb, EERIE_BKG_INFO * eg
 
 	if (!best) return false;
 
-	if (CylinderAboveInvalidZone(&bestcyl)) return false;
+	if(CylinderAboveInvalidZone(bestcyl))
+		return false;
 
 	// avoid to recreate same anchor twice...
 	if (0)

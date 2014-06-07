@@ -72,7 +72,7 @@ struct ANCHOR_DATA {
  * Clears all Anchor data from a Background
  */
 void AnchorData_ClearAll(EERIE_BACKGROUND * eb);
-bool CylinderAboveInvalidZone(EERIE_CYLINDER * cyl);
+bool CylinderAboveInvalidZone(const EERIE_CYLINDER & cyl);
 
 void AnchorData_Create(EERIE_BACKGROUND * eb);
  

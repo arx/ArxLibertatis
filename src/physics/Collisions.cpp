@@ -1462,7 +1462,7 @@ bool ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, Entity * io, float MOVE_CYLIND
 		test.cyl.origin.y += mvector.y * curmovedist;
 		test.cyl.origin.z += vector2D.z; 
 		
-		if((flags & CFLAG_CHECK_VALID_POS) && CylinderAboveInvalidZone(&test.cyl))
+		if((flags & CFLAG_CHECK_VALID_POS) && CylinderAboveInvalidZone(test.cyl))
 				return false;
 
 		if(AttemptValidCylinderPos(test.cyl,io,flags)) {
