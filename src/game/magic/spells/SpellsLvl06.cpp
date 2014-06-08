@@ -423,17 +423,11 @@ bool SlowDownSpell::CanLaunch()
 	Entity * io = entities[m_target];
 	
 	// TODO this seems to be the only spell that ends itself when cast twice
-	boost::container::flat_set<SpellHandle>::const_iterator it;
-	for(it = io->spellsOn.begin(); it != io->spellsOn.end(); ++it) {
-		SpellHandle spellHandle = SpellHandle(*it);
-		if(spellHandleIsValid(spellHandle)) {
-			SpellBase * spell = &spells[spellHandle];
-			
-			if(spell->m_type == SPELL_SLOW_DOWN) {
-				spell->m_tolive = 0;
-				return false;
-			}
-		}
+	SpellHandle oldSpell = ARX_SPELLS_GetSpellOn(io, SPELL_SLOW_DOWN);
+	if(oldSpell != InvalidSpellHandle) {
+		spells[oldSpell].m_tolive = 0;
+		
+		return false;
 	}
 	
 	return true;

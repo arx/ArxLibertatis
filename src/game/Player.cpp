@@ -523,38 +523,42 @@ void ARX_PLAYER_ComputePlayerFullStats() {
 	// External modifiers
 	
 	// Calculate for modifiers from spells
-	if(entities.player()) {	
-		boost::container::flat_set<SpellHandle>::const_iterator it;
-		for(it = entities.player()->spellsOn.begin(); it != entities.player()->spellsOn.end(); ++it) {
+	if(entities.player()) {
+		
+		SpellHandle handle;
+		
+		handle = ARX_SPELLS_GetSpellOn(entities.player(), SPELL_ARMOR);
+		if(handle != InvalidSpellHandle) {
+			const SpellBase & spell = spells[handle];
 			
-			SpellHandle spellHandle = SpellHandle(*it);
-			if(!spellHandleIsValid(spellHandle)) {
-				continue;
-			}
+			player.m_miscMod.armorClass += spell.m_caster_level;
+		}
+		
+		handle = ARX_SPELLS_GetSpellOn(entities.player(), SPELL_LOWER_ARMOR);
+		if(handle != InvalidSpellHandle) {
+			const SpellBase & spell = spells[handle];
 			
-			const SpellBase & spell = spells[spellHandle];
+			player.m_miscMod.armorClass -= spell.m_caster_level;
+		}
+		
+		handle = ARX_SPELLS_GetSpellOn(entities.player(), SPELL_CURSE);
+		if(handle != InvalidSpellHandle) {
+			const SpellBase & spell = spells[handle];
 			
-			switch(spell.m_type) {
-				case SPELL_ARMOR:
-					player.m_miscMod.armorClass += spell.m_caster_level;
-					break;
-				case SPELL_LOWER_ARMOR:
-					player.m_miscMod.armorClass -= spell.m_caster_level;
-					break;
-				case SPELL_CURSE:
-					player.m_attributeMod.strength -= spell.m_caster_level;
-					player.m_attributeMod.constitution -= spell.m_caster_level;
-					player.m_attributeMod.dexterity -= spell.m_caster_level;
-					player.m_attributeMod.mind -= spell.m_caster_level;
-					break;
-				case SPELL_BLESS:
-					player.m_attributeMod.strength += spell.m_caster_level;
-					player.m_attributeMod.dexterity += spell.m_caster_level;
-					player.m_attributeMod.constitution += spell.m_caster_level;
-					player.m_attributeMod.mind += spell.m_caster_level;
-					break;
-				default: break;
-			}
+			player.m_attributeMod.strength -= spell.m_caster_level;
+			player.m_attributeMod.constitution -= spell.m_caster_level;
+			player.m_attributeMod.dexterity -= spell.m_caster_level;
+			player.m_attributeMod.mind -= spell.m_caster_level;
+		}
+	
+		handle = ARX_SPELLS_GetSpellOn(entities.player(), SPELL_BLESS);
+		if(handle != InvalidSpellHandle) {
+			const SpellBase & spell = spells[handle];
+			
+			player.m_attributeMod.strength += spell.m_caster_level;
+			player.m_attributeMod.dexterity += spell.m_caster_level;
+			player.m_attributeMod.constitution += spell.m_caster_level;
+			player.m_attributeMod.mind += spell.m_caster_level;
 		}
 	}
 	

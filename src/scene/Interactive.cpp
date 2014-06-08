@@ -2724,23 +2724,20 @@ float ARX_INTERACTIVE_GetArmorClass(Entity * io) {
 
 	float ac = io->_npcdata->armor_class;
 
-	boost::container::flat_set<SpellHandle>::const_iterator it;
-	for(it = io->spellsOn.begin(); it != io->spellsOn.end(); ++it) {
-		SpellHandle spellHandle = SpellHandle(*it);
-		if(spellHandleIsValid(spellHandle)) {
-			SpellBase * spell = &spells[spellHandle];
-			
-			switch(spell->m_type) {
-				case SPELL_ARMOR:
-					ac += spell->m_caster_level;
-					break;
-				case SPELL_LOWER_ARMOR:
-					ac -= spell->m_caster_level;
-					break;
-				default:
-					break;
-			}
-		}
+	SpellHandle handle;
+	
+	handle = ARX_SPELLS_GetSpellOn(io, SPELL_ARMOR);
+	if(handle != InvalidSpellHandle) {
+		const SpellBase & spell = spells[handle];
+		
+		ac += spell.m_caster_level;
+	}
+	
+	handle = ARX_SPELLS_GetSpellOn(io, SPELL_LOWER_ARMOR);
+	if(handle != InvalidSpellHandle) {
+		const SpellBase & spell = spells[handle];
+		
+		ac -= spell.m_caster_level;
 	}
 	
 	if(ac < 0)
