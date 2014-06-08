@@ -46,7 +46,7 @@ public:
 class MassIncinerateSpell : public SpellBase {
 public:
 	void Launch();
-	void End(SpellHandle i);
+	void End();
 	void Update();
 };
 

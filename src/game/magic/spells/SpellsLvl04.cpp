@@ -71,9 +71,9 @@ void BlessSpell::Launch()
 	ARX_SPELLS_AddSpellOn(m_target, m_thisHandle);
 }
 
-void BlessSpell::End(SpellHandle i)
+void BlessSpell::End()
 {
-	ARX_SPELLS_RemoveSpellOn(m_target,i);
+	ARX_SPELLS_RemoveSpellOn(m_target, m_thisHandle);
 }
 
 void BlessSpell::Update(float timeDelta)
@@ -221,11 +221,11 @@ void FireProtectionSpell::Launch()
 	                                       ARX_SOUND_PLAY_LOOPED);
 }
 
-void FireProtectionSpell::End(SpellHandle i)
+void FireProtectionSpell::End()
 {
 	ARX_SOUND_Stop(m_snd_loop);
 	ARX_SOUND_PlaySFX(SND_SPELL_FIRE_PROTECTION_END, &entities[m_target]->pos);
-	ARX_SPELLS_RemoveSpellOn(m_target, i);
+	ARX_SPELLS_RemoveSpellOn(m_target, m_thisHandle);
 	
 	if(ValidIONum(m_target))
 		ARX_HALO_SetToNative(entities[m_target]);
@@ -304,11 +304,11 @@ void ColdProtectionSpell::Launch()
 	ARX_SPELLS_AddSpellOn(m_target, m_thisHandle);
 }
 
-void ColdProtectionSpell::End(SpellHandle i)
+void ColdProtectionSpell::End()
 {
 	ARX_SOUND_Stop(m_snd_loop);
 	ARX_SOUND_PlaySFX(SND_SPELL_COLD_PROTECTION_END, &entities[m_target]->pos);
-	ARX_SPELLS_RemoveSpellOn(m_target, i);
+	ARX_SPELLS_RemoveSpellOn(m_target, m_thisHandle);
 	
 	if(ValidIONum(m_target))
 		ARX_HALO_SetToNative(entities[m_target]);
@@ -392,9 +392,9 @@ void CurseSpell::Launch()
 	ARX_SPELLS_AddSpellOn(m_target, m_thisHandle);
 }
 
-void CurseSpell::End(SpellHandle i)
+void CurseSpell::End()
 {
-	ARX_SPELLS_RemoveSpellOn(m_target,i);
+	ARX_SPELLS_RemoveSpellOn(m_target, m_thisHandle);
 }
 
 void CurseSpell::Update(float timeDelta)

@@ -334,9 +334,9 @@ void ARX_SPELLS_RemoveMultiSpellOn(SpellHandle spell_id) {
 	}
 }
 
-void MassIncinerateSpell::End(SpellHandle i)
+void MassIncinerateSpell::End()
 {
-	ARX_SPELLS_RemoveMultiSpellOn(i);
+	ARX_SPELLS_RemoveMultiSpellOn(m_thisHandle);
 	ARX_SOUND_Stop(m_snd_loop);
 	ARX_SOUND_PlaySFX(SND_SPELL_INCINERATE_END);
 }

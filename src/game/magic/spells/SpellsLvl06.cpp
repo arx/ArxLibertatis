@@ -266,9 +266,9 @@ void ParalyseSpell::Launch()
 	ARX_NPC_Kill_Spell_Launch(entities[m_target]);
 }
 
-void ParalyseSpell::End(SpellHandle i)
+void ParalyseSpell::End()
 {
-	ARX_SPELLS_RemoveSpellOn(m_target,i);
+	ARX_SPELLS_RemoveSpellOn(m_target, m_thisHandle);
 	entities[m_target]->ioflags &= ~IO_FREEZESCRIPT;
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_PARALYSE_END);
@@ -463,10 +463,10 @@ void SlowDownSpell::Launch()
 	ARX_SPELLS_AddSpellOn(m_target, m_thisHandle);
 }
 
-void SlowDownSpell::End(SpellHandle i)
+void SlowDownSpell::End()
 {
 	ARX_SOUND_PlaySFX(SND_SPELL_SLOW_DOWN_END);
-	ARX_SPELLS_RemoveSpellOn(m_target, i);
+	ARX_SPELLS_RemoveSpellOn(m_target, m_thisHandle);
 }
 
 void SlowDownSpell::Update(float timeDelta)

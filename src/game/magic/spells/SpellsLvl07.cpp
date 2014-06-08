@@ -511,9 +511,9 @@ void ConfuseSpell::Launch()
 	ARX_SPELLS_AddSpellOn(m_target, m_thisHandle);
 }
 
-void ConfuseSpell::End(SpellHandle i)
+void ConfuseSpell::End()
 {
-	ARX_SPELLS_RemoveSpellOn(m_target, i);
+	ARX_SPELLS_RemoveSpellOn(m_target, m_thisHandle);
 }
 
 void ConfuseSpell::Update(float timeDelta)

@@ -54,14 +54,14 @@ class IncinerateSpell : public SpellBase {
 public:
 	bool CanLaunch();
 	void Launch();
-	void End(SpellHandle i);
+	void End();
 	void Update();
 };
 
 class MassParalyseSpell : public SpellBase {
 public:
 	void Launch();
-	void End(SpellHandle i);
+	void End();
 };
 
 #endif // ARX_GAME_MAGIC_SPELLS_SPELLSLVL09_H

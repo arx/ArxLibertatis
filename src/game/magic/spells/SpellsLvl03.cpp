@@ -63,9 +63,9 @@ void SpeedSpell::Launch()
 	ARX_SPELLS_AddSpellOn(m_target, m_thisHandle);
 }
 
-void SpeedSpell::End(SpellHandle i)
+void SpeedSpell::End()
 {
-	ARX_SPELLS_RemoveSpellOn(m_target,i);
+	ARX_SPELLS_RemoveSpellOn(m_target, m_thisHandle);
 	
 	if(m_caster == PlayerEntityHandle)
 		ARX_SOUND_Stop(m_snd_loop);

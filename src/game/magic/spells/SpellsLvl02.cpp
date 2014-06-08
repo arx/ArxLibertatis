@@ -133,12 +133,12 @@ void DetectTrapSpell::Launch()
 	ARX_SPELLS_AddSpellOn(m_target, m_thisHandle);
 }
 
-void DetectTrapSpell::End(SpellHandle i)
+void DetectTrapSpell::End()
 {
 	if(m_caster == PlayerEntityHandle) {
 		ARX_SOUND_Stop(m_snd_loop);
 	}
-	ARX_SPELLS_RemoveSpellOn(m_target, i);
+	ARX_SPELLS_RemoveSpellOn(m_target, m_thisHandle);
 }
 
 void DetectTrapSpell::Update(float timeDelta)
@@ -214,7 +214,7 @@ void ArmorSpell::Launch()
 	ARX_SPELLS_AddSpellOn(m_target, m_thisHandle);
 }
 
-void ArmorSpell::End(SpellHandle i)
+void ArmorSpell::End()
 {
 	ARX_SOUND_Stop(m_snd_loop);
 	ARX_SOUND_PlaySFX(SND_SPELL_ARMOR_END, &entities[m_target]->pos);
@@ -223,7 +223,7 @@ void ArmorSpell::End(SpellHandle i)
 		ARX_HALO_SetToNative(entities[m_target]);
 	}
 	
-	ARX_SPELLS_RemoveSpellOn(m_target, i);
+	ARX_SPELLS_RemoveSpellOn(m_target, m_thisHandle);
 }
 
 void ArmorSpell::Update(float timeDelta)
@@ -299,7 +299,7 @@ void LowerArmorSpell::Launch()
 	ARX_SPELLS_AddSpellOn(m_target, m_thisHandle);
 }
 
-void LowerArmorSpell::End(SpellHandle i)
+void LowerArmorSpell::End()
 {
 	ARX_SOUND_PlaySFX(SND_SPELL_LOWER_ARMOR_END);
 	Entity *io = entities[m_target];
@@ -309,7 +309,7 @@ void LowerArmorSpell::End(SpellHandle i)
 		ARX_HALO_SetToNative(io);
 	}
 	
-	ARX_SPELLS_RemoveSpellOn(m_target, i);
+	ARX_SPELLS_RemoveSpellOn(m_target, m_thisHandle);
 }
 
 void LowerArmorSpell::Update(float timeDelta)

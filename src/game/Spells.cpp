@@ -1681,21 +1681,21 @@ void ARX_SPELLS_Update_End(SpellHandle i) {
 			break;
 		}
 		case SPELL_DETECT_TRAP: {
-			static_cast<DetectTrapSpell &>(spell).End(i);
+			static_cast<DetectTrapSpell &>(spell).End();
 			break;
 		}
 		case SPELL_ARMOR: {
-			static_cast<ArmorSpell &>(spell).End(i);
+			static_cast<ArmorSpell &>(spell).End();
 			break;
 		}
 		case SPELL_LOWER_ARMOR: {
-			static_cast<LowerArmorSpell &>(spell).End(i);
+			static_cast<LowerArmorSpell &>(spell).End();
 			break;
 		}
 		//****************************************************************************
 		// LEVEL 3
 		case SPELL_SPEED: {
-			static_cast<SpeedSpell &>(spell).End(i);
+			static_cast<SpeedSpell &>(spell).End();
 			break;
 		}
 		case SPELL_FIREBALL: {
@@ -1705,11 +1705,11 @@ void ARX_SPELLS_Update_End(SpellHandle i) {
 		//****************************************************************************
 		// LEVEL 4
 		case SPELL_BLESS: {
-			static_cast<BlessSpell &>(spell).End(i);
+			static_cast<BlessSpell &>(spell).End();
 			break;
 		}
 		case SPELL_CURSE: {
-			static_cast<CurseSpell &>(spell).End(i);
+			static_cast<CurseSpell &>(spell).End();
 			break;
 		}
 		case SPELL_TELEKINESIS: {
@@ -1717,17 +1717,17 @@ void ARX_SPELLS_Update_End(SpellHandle i) {
 			break;
 		}
 		case SPELL_FIRE_PROTECTION: {
-			static_cast<FireProtectionSpell &>(spell).End(i);
+			static_cast<FireProtectionSpell &>(spell).End();
 			break;
 		}
 		case SPELL_COLD_PROTECTION: {
-			static_cast<ColdProtectionSpell &>(spell).End(i);
+			static_cast<ColdProtectionSpell &>(spell).End();
 			break;
 		}
 		//****************************************************************************
 		// LEVEL 5
 		case SPELL_LEVITATE: {
-			static_cast<LevitateSpell &>(spell).End(i);
+			static_cast<LevitateSpell &>(spell).End();
 			break;
 		}
 		case SPELL_REPEL_UNDEAD: {
@@ -1737,7 +1737,7 @@ void ARX_SPELLS_Update_End(SpellHandle i) {
 		//****************************************************************************
 		// LEVEL 6 SPELLS
 		case SPELL_PARALYSE: {
-			static_cast<ParalyseSpell &>(spell).End(i);
+			static_cast<ParalyseSpell &>(spell).End();
 			break;
 		}
 		case SPELL_RISE_DEAD: {
@@ -1749,7 +1749,7 @@ void ARX_SPELLS_Update_End(SpellHandle i) {
 			break;
 		}
 		case SPELL_SLOW_DOWN: {
-			static_cast<SlowDownSpell &>(spell).End(i);
+			static_cast<SlowDownSpell &>(spell).End();
 			break;
 		}
 		//****************************************************************************
@@ -1771,7 +1771,7 @@ void ARX_SPELLS_Update_End(SpellHandle i) {
 			break;
 		}
 		case SPELL_CONFUSE: {
-			static_cast<ConfuseSpell &>(spell).End(i);
+			static_cast<ConfuseSpell &>(spell).End();
 			break;
 		}
 		//****************************************************************************
@@ -1780,7 +1780,7 @@ void ARX_SPELLS_Update_End(SpellHandle i) {
 			break;
 		}
 		case SPELL_INVISIBILITY: {
-			static_cast<InvisibilitySpell &>(spell).End(i);
+			static_cast<InvisibilitySpell &>(spell).End();
 			break;
 		}
 		case SPELL_MANA_DRAIN: {
@@ -1794,7 +1794,7 @@ void ARX_SPELLS_Update_End(SpellHandle i) {
 		//****************************************************************************
 		// LEVEL 9
 		case SPELL_MASS_PARALYSE: {
-			static_cast<MassParalyseSpell &>(spell).End(i);
+			static_cast<MassParalyseSpell &>(spell).End();
 			break;
 		}
 		case SPELL_SUMMON_CREATURE : {
@@ -1806,7 +1806,7 @@ void ARX_SPELLS_Update_End(SpellHandle i) {
 			break;
 		}
 		case SPELL_INCINERATE: {
-			static_cast<IncinerateSpell &>(spell).End(i);
+			static_cast<IncinerateSpell &>(spell).End();
 			break;
 		}
 		//****************************************************************************
@@ -1820,7 +1820,7 @@ void ARX_SPELLS_Update_End(SpellHandle i) {
 			break;
 		}
 		case SPELL_MASS_INCINERATE: {
-			static_cast<MassIncinerateSpell &>(spell).End(i);
+			static_cast<MassIncinerateSpell &>(spell).End();
 			break;
 		}
 		default:

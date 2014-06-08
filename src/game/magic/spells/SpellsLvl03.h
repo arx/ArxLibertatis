@@ -25,7 +25,7 @@
 class SpeedSpell : public SpellBase {
 public:
 	void Launch();
-	void End(SpellHandle i);
+	void End();
 	void Update(float timeDelta);
 };
 

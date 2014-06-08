@@ -441,9 +441,9 @@ void IncinerateSpell::Launch()
 	ARX_SPELLS_AddSpellOn(m_target, m_thisHandle);
 }
 
-void IncinerateSpell::End(SpellHandle i)
+void IncinerateSpell::End()
 {
-	ARX_SPELLS_RemoveSpellOn(m_target, i);
+	ARX_SPELLS_RemoveSpellOn(m_target, m_thisHandle);
 	ARX_SOUND_Stop(m_snd_loop);
 	ARX_SOUND_PlaySFX(SND_SPELL_INCINERATE_END);
 }
@@ -491,7 +491,7 @@ void MassParalyseSpell::Launch()
 	}
 }
 
-void MassParalyseSpell::End(SpellHandle i)
+void MassParalyseSpell::End()
 {
 	
 	std::vector<EntityHandle>::const_iterator itr;
@@ -499,7 +499,7 @@ void MassParalyseSpell::End(SpellHandle i)
 		EntityHandle handle = *itr;
 		
 		if(ValidIONum(handle)) {
-			ARX_SPELLS_RemoveSpellOn(handle, i);
+			ARX_SPELLS_RemoveSpellOn(handle, m_thisHandle);
 			entities[handle]->ioflags &= ~IO_FREEZESCRIPT;
 		}
 	}

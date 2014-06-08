@@ -36,7 +36,7 @@ private:
 class ParalyseSpell : public SpellBase {
 public:
 	void Launch();
-	void End(SpellHandle i);
+	void End();
 };
 
 class CreateFieldSpell : public SpellBase {
@@ -55,7 +55,7 @@ class SlowDownSpell : public SpellBase {
 public:
 	bool CanLaunch();
 	void Launch();
-	void End(SpellHandle i);
+	void End();
 	void Update(float timeDelta);
 };
 

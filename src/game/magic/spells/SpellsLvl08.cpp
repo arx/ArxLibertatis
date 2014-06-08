@@ -61,12 +61,12 @@ void InvisibilitySpell::Launch()
 	ARX_SPELLS_AddSpellOn(m_target, m_thisHandle);
 }
 
-void InvisibilitySpell::End(SpellHandle i)
+void InvisibilitySpell::End()
 {
 	if(ValidIONum(m_target)) {
 		entities[m_target]->gameFlags &= ~GFLAG_INVISIBILITY;
 		ARX_SOUND_PlaySFX(SND_SPELL_INVISIBILITY_END, &entities[m_target]->pos);
-		ARX_SPELLS_RemoveSpellOn(m_target, i);
+		ARX_SPELLS_RemoveSpellOn(m_target, m_thisHandle);
 	}
 }
 

@@ -26,7 +26,7 @@ class InvisibilitySpell : public SpellBase {
 public:
 	bool CanLaunch();
 	void Launch();
-	void End(SpellHandle i);
+	void End();
 	void Update(SpellHandle i);
 };
 
