@@ -53,6 +53,7 @@ public:
 
 class SlowDownSpell : public SpellBase {
 public:
+	bool CanLaunch();
 	bool Launch(long duration, SpellHandle i);
 	void End(SpellHandle i);
 	void Update(float timeDelta);

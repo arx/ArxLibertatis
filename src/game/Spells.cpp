@@ -1509,10 +1509,10 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flagss
 			break;
 		}
 		case SPELL_SLOW_DOWN: {
-			bool result = static_cast<SlowDownSpell &>(spell).Launch(duration, i);
-			if(!result)
+			if(! static_cast<SlowDownSpell &>(spell).CanLaunch())
 				return false;
 			
+			static_cast<SlowDownSpell &>(spell).Launch(duration, i);
 			break;
 		}
 		//****************************************************************************

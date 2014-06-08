@@ -423,11 +423,9 @@ void DisarmTrapSpell::Launch()
 	}
 }
 
-bool SlowDownSpell::Launch(long duration, SpellHandle i)
+bool SlowDownSpell::CanLaunch()
 {
-	EntityHandle target = m_target;
-	
-	Entity * io = entities[target];
+	Entity * io = entities[m_target];
 	
 	boost::container::flat_set<SpellHandle>::const_iterator it;
 	for(it = io->spellsOn.begin(); it != io->spellsOn.end(); ++it) {
@@ -442,6 +440,11 @@ bool SlowDownSpell::Launch(long duration, SpellHandle i)
 		}
 	}
 	
+	return true;
+}
+
+bool SlowDownSpell::Launch(long duration, SpellHandle i)
+{
 	ARX_SOUND_PlaySFX(SND_SPELL_SLOW_DOWN, &entities[m_target]->pos);
 	
 	m_exist = true;
@@ -459,7 +462,7 @@ bool SlowDownSpell::Launch(long duration, SpellHandle i)
 	m_pSpellFx = effect;
 	m_tolive = effect->GetDuration();
 	
-	ARX_SPELLS_AddSpellOn(target, i);
+	ARX_SPELLS_AddSpellOn(m_target, i);
 	
 	return true;
 }
