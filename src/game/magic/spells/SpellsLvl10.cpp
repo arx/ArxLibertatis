@@ -172,7 +172,7 @@ void MassLightningStrikeSpell::Update(float timeDelta)
 	}	
 }
 
-bool ControlTargetSpell::Launch()
+bool ControlTargetSpell::CanLaunch()
 {
 	if(!ValidIONum(m_target)) {
 		return false;
@@ -197,14 +197,40 @@ bool ControlTargetSpell::Launch()
 		
 		if(closerThan(ioo->pos, m_caster_pos, 900.f)) {
 			tcount++;
+		}
+	}
+	if(tcount == 0) {
+		return false;
+	}
+	
+	return true;
+}
+
+void ControlTargetSpell::Launch()
+{
+	// TODO copy-paste
+	for(size_t ii = 1; ii < entities.size(); ii++) {
+		const EntityHandle handle = EntityHandle(ii);
+		Entity * ioo = entities[handle];
+		
+		if(!ioo || !(ioo->ioflags & IO_NPC)) {
+			continue;
+		}
+		
+		if(ioo->_npcdata->lifePool.current <= 0.f || ioo->show != SHOW_FLAG_IN_SCENE) {
+			continue;
+		}
+		
+		if(ioo->groups.find("demon") == ioo->groups.end()) {
+			continue;
+		}
+		
+		if(closerThan(ioo->pos, m_caster_pos, 900.f)) {
 			std::ostringstream oss;
 			oss << entities[m_target]->idString();
 			oss << ' ' << long(m_caster_level);
 			SendIOScriptEvent(ioo, SM_NULL, oss.str(), "npc_control");
 		}
-	}
-	if(tcount == 0) {
-		return false;
 	}
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_CONTROL_TARGET);
@@ -217,8 +243,6 @@ bool ControlTargetSpell::Launch()
 	effect->Create(player.pos, MAKEANGLE(player.angle.getPitch()));
 	effect->SetDuration(m_tolive);
 	m_pSpellFx = effect;
-	
-	return true;
 }
 
 void ControlTargetSpell::Update(float timeDelta)

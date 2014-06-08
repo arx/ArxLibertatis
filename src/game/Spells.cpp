@@ -1611,13 +1611,10 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flagss
 			break;
 		}
 		case SPELL_CONTROL_TARGET: {
-			if(ARX_SPELLS_ExistAnyInstanceForThisCaster(typ, spells[i].m_caster))
+			if(! static_cast<ControlTargetSpell &>(spell).CanLaunch())
 				return false;
 			
-			bool result = static_cast<ControlTargetSpell &>(spell).Launch();
-			if(!result)
-				return false;
-			
+			static_cast<ControlTargetSpell &>(spell).Launch();
 			break;
 		}
 		case SPELL_FREEZE_TIME: {

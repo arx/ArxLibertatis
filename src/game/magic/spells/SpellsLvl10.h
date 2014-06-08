@@ -31,7 +31,8 @@ public:
 
 class ControlTargetSpell : public SpellBase {
 public:
-	bool Launch();
+	bool CanLaunch();
+	void Launch();
 	void Update(float timeDelta);
 };
 
