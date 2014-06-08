@@ -35,6 +35,7 @@ private:
 
 class FakeSummonSpell : public SpellBase {
 public:
+	bool CanLaunch();
 	bool Launch();
 	void End();
 	void Update(float timeDelta);
@@ -51,6 +52,7 @@ private:
 
 class IncinerateSpell : public SpellBase {
 public:
+	bool CanLaunch();
 	bool Launch(SpellHandle i);
 	void End(SpellHandle i);
 	void Update();

@@ -275,12 +275,17 @@ void SummonCreatureSpell::Update(float timeDelta)
 	}	
 }
 
-bool FakeSummonSpell::Launch()
+bool FakeSummonSpell::CanLaunch()
 {
 	if(m_caster <= PlayerEntityHandle || !ValidIONum(m_target)) {
 		return false;
 	}
 	
+	return true;
+}
+
+bool FakeSummonSpell::Launch()
+{
 	m_exist = true;
 	m_timcreation = (unsigned long)(arxtime);
 	m_bDuration = true;
@@ -410,12 +415,19 @@ void NegateMagicSpell::LaunchAntiMagicField() {
 	}
 }
 
-bool IncinerateSpell::Launch(SpellHandle i)
+bool IncinerateSpell::CanLaunch()
 {
 	Entity * tio = entities[m_target];
 	if((tio->ioflags & IO_NPC) && tio->_npcdata->lifePool.current <= 0.f) {
 		return false;
 	}
+	
+	return true;
+}
+
+bool IncinerateSpell::Launch(SpellHandle i)
+{
+	Entity * tio = entities[m_target];
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_INCINERATE, &entities[m_target]->pos);
 	

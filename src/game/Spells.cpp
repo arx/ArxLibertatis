@@ -1581,10 +1581,10 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flagss
 			break;
 		}
 		case SPELL_FAKE_SUMMON: {
-			bool result = static_cast<FakeSummonSpell &>(spell).Launch();
-			if(!result)
+			if(! static_cast<FakeSummonSpell &>(spell).CanLaunch())
 				return false;
 			
+			static_cast<FakeSummonSpell &>(spell).Launch();
 			break;
 		}
 		case SPELL_NEGATE_MAGIC: {
@@ -1592,10 +1592,10 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flagss
 			break;
 		}
 		case SPELL_INCINERATE: {
-			bool result = static_cast<IncinerateSpell &>(spell).Launch(i);
-			if(!result)
+			if(! static_cast<IncinerateSpell &>(spell).CanLaunch())
 				return false;
 			
+			static_cast<IncinerateSpell &>(spell).Launch(i);
 			break;
 		}
 		case SPELL_MASS_PARALYSE: {
