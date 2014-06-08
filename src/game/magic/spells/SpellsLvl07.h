@@ -25,7 +25,7 @@
 class FlyingEyeSpell : public SpellBase {
 public:
 	bool CanLaunch();
-	bool Launch();
+	void Launch();
 	void End();
 	void Update();
 };

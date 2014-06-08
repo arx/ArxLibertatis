@@ -74,7 +74,7 @@ bool RiseDeadSpell::CanLaunch()
 	return true;
 }
 
-bool RiseDeadSpell::Launch()
+void RiseDeadSpell::Launch()
 {
 	float beta;
 	Vec3f target;
@@ -114,8 +114,6 @@ bool RiseDeadSpell::Launch()
 	
 	m_pSpellFx = effect;
 	m_tolive = effect->GetDuration();
-	
-	return true;
 }
 
 void RiseDeadSpell::End()
@@ -443,7 +441,7 @@ bool SlowDownSpell::CanLaunch()
 	return true;
 }
 
-bool SlowDownSpell::Launch()
+void SlowDownSpell::Launch()
 {
 	ARX_SOUND_PlaySFX(SND_SPELL_SLOW_DOWN, &entities[m_target]->pos);
 	
@@ -463,8 +461,6 @@ bool SlowDownSpell::Launch()
 	m_tolive = effect->GetDuration();
 	
 	ARX_SPELLS_AddSpellOn(m_target, m_thisHandle);
-	
-	return true;
 }
 
 void SlowDownSpell::End(SpellHandle i)

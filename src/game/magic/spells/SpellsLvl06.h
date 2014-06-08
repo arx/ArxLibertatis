@@ -25,7 +25,7 @@
 class RiseDeadSpell : public SpellBase {
 public:
 	bool CanLaunch();
-	bool Launch();
+	void Launch();
 	void End();
 	void Update(float timeDelta);
 	
@@ -54,7 +54,7 @@ public:
 class SlowDownSpell : public SpellBase {
 public:
 	bool CanLaunch();
-	bool Launch();
+	void Launch();
 	void End(SpellHandle i);
 	void Update(float timeDelta);
 };

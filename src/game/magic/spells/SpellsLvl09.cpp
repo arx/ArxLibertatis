@@ -70,7 +70,7 @@ bool SummonCreatureSpell::CanLaunch()
 	return true;
 }
 
-bool SummonCreatureSpell::Launch()
+void SummonCreatureSpell::Launch()
 {
 	m_exist = true;
 	m_timcreation = (unsigned long)(arxtime);
@@ -106,8 +106,6 @@ bool SummonCreatureSpell::Launch()
 	}
 	
 	m_pSpellFx = effect;
-	
-	return true;
 }
 
 void SummonCreatureSpell::End()
@@ -284,7 +282,7 @@ bool FakeSummonSpell::CanLaunch()
 	return true;
 }
 
-bool FakeSummonSpell::Launch()
+void FakeSummonSpell::Launch()
 {
 	m_exist = true;
 	m_timcreation = (unsigned long)(arxtime);
@@ -318,8 +316,6 @@ bool FakeSummonSpell::Launch()
 	}
 	
 	m_pSpellFx = effect;
-	
-	return true;
 }
 
 void FakeSummonSpell::End()
@@ -425,7 +421,7 @@ bool IncinerateSpell::CanLaunch()
 	return true;
 }
 
-bool IncinerateSpell::Launch()
+void IncinerateSpell::Launch()
 {
 	Entity * tio = entities[m_target];
 	
@@ -443,8 +439,6 @@ bool IncinerateSpell::Launch()
 	tio->sfx_time = (unsigned long)(arxtime);
 	
 	ARX_SPELLS_AddSpellOn(m_target, m_thisHandle);
-	
-	return true;
 }
 
 void IncinerateSpell::End(SpellHandle i)

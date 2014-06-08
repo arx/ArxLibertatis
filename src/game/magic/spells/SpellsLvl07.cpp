@@ -64,7 +64,7 @@ bool FlyingEyeSpell::CanLaunch()
 	return true;
 }
 
-bool FlyingEyeSpell::Launch()
+void FlyingEyeSpell::Launch()
 {
 	static TextureContainer * tc4 = TextureContainer::Load("graph/particles/smoke");
 	
@@ -105,8 +105,6 @@ bool FlyingEyeSpell::Launch()
 	SLID_START = float(arxtime);
 	bOldLookToggle = config.input.mouseLookToggle;
 	config.input.mouseLookToggle = true;
-	
-	return true;
 }
 
 void FlyingEyeSpell::End()

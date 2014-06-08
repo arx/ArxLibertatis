@@ -25,7 +25,7 @@
 class SummonCreatureSpell : public SpellBase {
 public:
 	bool CanLaunch();
-	bool Launch();
+	void Launch();
 	void End();
 	void Update(float timeDelta);
 	
@@ -36,7 +36,7 @@ private:
 class FakeSummonSpell : public SpellBase {
 public:
 	bool CanLaunch();
-	bool Launch();
+	void Launch();
 	void End();
 	void Update(float timeDelta);
 };
@@ -53,7 +53,7 @@ private:
 class IncinerateSpell : public SpellBase {
 public:
 	bool CanLaunch();
-	bool Launch();
+	void Launch();
 	void End(SpellHandle i);
 	void Update();
 };
