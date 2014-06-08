@@ -41,7 +41,7 @@ public:
 
 class CreateFieldSpell : public SpellBase {
 public:
-	void Launch(SpellcastFlags m_flags);
+	void Launch();
 	void End();
 	void Update(float timeDelta);
 };

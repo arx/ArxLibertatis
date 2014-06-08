@@ -1503,7 +1503,7 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flagss
 			break;
 		}
 		case SPELL_CREATE_FIELD: {
-			static_cast<CreateFieldSpell &>(spell).Launch(flags);
+			static_cast<CreateFieldSpell &>(spell).Launch();
 			break;
 		}
 		case SPELL_DISARM_TRAP: {

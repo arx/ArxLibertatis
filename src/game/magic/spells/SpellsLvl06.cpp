@@ -274,12 +274,12 @@ void ParalyseSpell::End(SpellHandle i)
 	ARX_SOUND_PlaySFX(SND_SPELL_PARALYSE_END);
 }
 
-void CreateFieldSpell::Launch(SpellcastFlags flags)
+void CreateFieldSpell::Launch()
 {
 	m_exist = true;
 	
 	unsigned long start = (unsigned long)(arxtime);
-	if(flags & SPELLCAST_FLAG_RESTORE) {
+	if(m_flags & SPELLCAST_FLAG_RESTORE) {
 		start -= std::min(start, 4000ul);
 	}
 	m_timcreation = start;
@@ -343,7 +343,7 @@ void CreateFieldSpell::Launch(SpellcastFlags flags)
 		m_pSpellFx = effect;
 		m_tolive = effect->GetDuration();
 		
-		if(flags & SPELLCAST_FLAG_RESTORE) {
+		if(m_flags & SPELLCAST_FLAG_RESTORE) {
 			effect->Update(4000);
 		}
 		
