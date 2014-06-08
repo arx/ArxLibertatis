@@ -1490,10 +1490,10 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flagss
 		//****************************************************************************
 		// LEVEL 6
 		case SPELL_RISE_DEAD: {
-			bool result = static_cast<RiseDeadSpell &>(spell).Launch(duration);
-			if(!result)
+			if(! static_cast<RiseDeadSpell &>(spell).CanLaunch())
 				return false;
 			
+			static_cast<RiseDeadSpell &>(spell).Launch(duration);
 			break;
 		}
 		case SPELL_PARALYSE: {

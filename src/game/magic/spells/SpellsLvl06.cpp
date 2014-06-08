@@ -53,8 +53,9 @@ void RiseDeadSpell::GetTargetAndBeta(Vec3f & target, float & beta)
 	}
 }
 
-bool RiseDeadSpell::Launch(long duration)
+bool RiseDeadSpell::CanLaunch()
 {
+	//TODO always cancel spell even if new one can't be launched ?
 	SpellHandle iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_RISE_DEAD, m_caster);
 	if(iCancel != InvalidSpellHandle) {
 		spells[iCancel].m_tolive = 0;
@@ -69,6 +70,16 @@ bool RiseDeadSpell::Launch(long duration)
 		ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE);
 		return false;
 	}
+
+	return true;
+}
+
+bool RiseDeadSpell::Launch(long duration)
+{
+	float beta;
+	Vec3f target;
+	
+	GetTargetAndBeta(target, beta);
 	
 	m_target_pos = target;
 	ARX_SOUND_PlaySFX(SND_SPELL_RAISE_DEAD, &m_target_pos);

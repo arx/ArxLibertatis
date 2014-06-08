@@ -24,6 +24,7 @@
 
 class RiseDeadSpell : public SpellBase {
 public:
+	bool CanLaunch();
 	bool Launch(long duration);
 	void End();
 	void Update(float timeDelta);
