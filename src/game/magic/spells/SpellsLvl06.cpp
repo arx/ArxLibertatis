@@ -35,16 +35,10 @@
 #include "scene/GameSound.h"
 #include "scene/Interactive.h"
 
-bool RiseDeadSpell::Launch(long duration)
+void RiseDeadSpell::GetTargetAndBeta(Vec3f & target, float & beta)
 {
-	SpellHandle iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_RISE_DEAD, m_caster);
-	if(iCancel != InvalidSpellHandle) {
-		spells[iCancel].m_tolive = 0;
-	}
-	
-	float beta;
-	Vec3f target;
 	bool displace = true;
+	
 	if(m_caster == PlayerEntityHandle) {
 		target = player.basePosition();
 		beta = MAKEANGLE(player.angle.getPitch());
@@ -57,6 +51,20 @@ bool RiseDeadSpell::Launch(long duration)
 		target.x -= std::sin(radians(beta)) * 300.f;
 		target.z += std::cos(radians(beta)) * 300.f;
 	}
+}
+
+bool RiseDeadSpell::Launch(long duration)
+{
+	SpellHandle iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_RISE_DEAD, m_caster);
+	if(iCancel != InvalidSpellHandle) {
+		spells[iCancel].m_tolive = 0;
+	}
+	
+	float beta;
+	Vec3f target;
+	
+	GetTargetAndBeta(target, beta);
+
 	if(!ARX_INTERACTIVE_ConvertToValidPosForIO(NULL, &target)) {
 		ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE);
 		return false;
