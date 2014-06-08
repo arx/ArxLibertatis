@@ -524,7 +524,7 @@ void ARX_PLAYER_ComputePlayerFullStats() {
 	
 	// Calculate for modifiers from spells
 	if(entities.player()) {	
-		boost::container::flat_set<long>::const_iterator it;
+		boost::container::flat_set<SpellHandle>::const_iterator it;
 		for(it = entities.player()->spellsOn.begin(); it != entities.player()->spellsOn.end(); ++it) {
 			
 			SpellHandle spellHandle = SpellHandle(*it);

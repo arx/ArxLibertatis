@@ -83,7 +83,7 @@ extern SpellManager spells;
 bool GetSpellPosition(Vec3f * pos, SpellHandle i);
 
 void ARX_SPELLS_AddSpellOn(EntityHandle caster, SpellHandle spell);
-void ARX_SPELLS_RemoveSpellOn(EntityHandle entityHandle, const long & spellHandle);
+void ARX_SPELLS_RemoveSpellOn(EntityHandle entityHandle, SpellHandle spellHandle);
 
 SpellType GetSpellId(const std::string & spell);
 void TryToCastSpell(Entity * io, SpellType spellid, long level, EntityHandle target, SpellcastFlags flags, long duration);

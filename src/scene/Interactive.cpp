@@ -2724,7 +2724,7 @@ float ARX_INTERACTIVE_GetArmorClass(Entity * io) {
 
 	float ac = io->_npcdata->armor_class;
 
-	boost::container::flat_set<long>::const_iterator it;
+	boost::container::flat_set<SpellHandle>::const_iterator it;
 	for(it = io->spellsOn.begin(); it != io->spellsOn.end(); ++it) {
 		SpellHandle spellHandle = SpellHandle(*it);
 		if(spellHandleIsValid(spellHandle)) {

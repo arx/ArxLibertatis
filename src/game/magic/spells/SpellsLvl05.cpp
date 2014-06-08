@@ -115,7 +115,7 @@ void LevitateSpell::Launch(long duration, SpellHandle i)
 	ARX_SPELLS_AddSpellOn(m_target, i);
 }
 
-void LevitateSpell::End(size_t i)
+void LevitateSpell::End(SpellHandle i)
 {
 	ARX_SOUND_Stop(m_snd_loop);
 	ARX_SOUND_PlaySFX(SND_SPELL_LEVITATE_END, &entities[m_target]->pos);

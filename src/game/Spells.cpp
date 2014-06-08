@@ -326,7 +326,7 @@ SpellHandle ARX_SPELLS_GetSpellOn(const Entity * io, SpellType spellid)
 	if(!io)
 		return InvalidSpellHandle;
 
-	boost::container::flat_set<long>::const_iterator it;
+	boost::container::flat_set<SpellHandle>::const_iterator it;
 	for(it = io->spellsOn.begin(); it != io->spellsOn.end(); ++it) {
 		SpellHandle spellHandle = SpellHandle(*it);
 		if(spellHandleIsValid(spellHandle)) {
@@ -341,7 +341,7 @@ SpellHandle ARX_SPELLS_GetSpellOn(const Entity * io, SpellType spellid)
 	return InvalidSpellHandle;
 }
 
-void ARX_SPELLS_RemoveSpellOn(EntityHandle entityHandle, const long & spellHandle)
+void ARX_SPELLS_RemoveSpellOn(EntityHandle entityHandle, SpellHandle spellHandle)
 {
 	if(entityHandle < 0 || spellHandle < 0)
 		return;

@@ -326,7 +326,7 @@ public:
 	float basespeed;
 	
 	float speed_modif;
-	boost::container::flat_set<long> spellsOn;
+	boost::container::flat_set<SpellHandle> spellsOn;
 	
 	float rubber;
 	float max_durability;

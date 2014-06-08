@@ -298,7 +298,7 @@ void ARX_SPELLS_RemoveMultiSpellOn(SpellHandle spell_id) {
 	for(size_t i = 0; i < entities.size(); i++) {
 		const EntityHandle handle = EntityHandle(i);
 		
-		ARX_SPELLS_RemoveSpellOn(handle, spells[spell_id].m_type);
+		ARX_SPELLS_RemoveSpellOn(handle, spell_id);
 	}
 }
 

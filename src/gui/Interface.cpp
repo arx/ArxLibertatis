@@ -6062,7 +6062,7 @@ public:
 		if(entities.player()) {
 			Entity * playerEntity = entities.player();
 			
-			boost::container::flat_set<long>::const_iterator it;
+			boost::container::flat_set<SpellHandle>::const_iterator it;
 			for(it = playerEntity->spellsOn.begin(); it != playerEntity->spellsOn.end(); ++it) {
 				SpellHandle spellHandle = SpellHandle(*it);
 				if(spellHandleIsValid(spellHandle)) {
