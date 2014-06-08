@@ -35,10 +35,7 @@
 
 void RuneOfGuardingSpell::Launch()
 {
-	SpellHandle iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_RUNE_OF_GUARDING, m_caster);
-	if(iCancel != InvalidSpellHandle) {
-		spells[iCancel].m_tolive = 0;
-	}
+	spells.RequestEndOfInstanceForThisCaster(SPELL_RUNE_OF_GUARDING, m_caster);
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_RUNE_OF_GUARDING);
 	m_exist = true;
@@ -78,10 +75,7 @@ void RuneOfGuardingSpell::Update(float timeDelta)
 
 void LevitateSpell::Launch()
 {
-	SpellHandle iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_LEVITATE, m_caster);
-	if(iCancel != InvalidSpellHandle) {
-		spells[iCancel].m_tolive = 0;
-	}
+	spells.RequestEndOfInstanceForThisCaster(SPELL_LEVITATE, m_caster);
 	
 	if(m_caster == PlayerEntityHandle) {
 		m_target = PlayerEntityHandle;
@@ -192,10 +186,7 @@ void CurePoisonSpell::Update(float timeDelta)
 
 void RepelUndeadSpell::Launch()
 {
-	SpellHandle iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_REPEL_UNDEAD, m_caster);
-	if(iCancel != InvalidSpellHandle) {
-		spells[iCancel].m_tolive = 0;
-	}
+	spells.RequestEndOfInstanceForThisCaster(SPELL_REPEL_UNDEAD, m_caster);
 	
 	if(m_caster == PlayerEntityHandle) {
 		m_target = PlayerEntityHandle;

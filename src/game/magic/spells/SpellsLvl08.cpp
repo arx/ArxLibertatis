@@ -94,15 +94,8 @@ bool ManaDrainSpell::CanLaunch()
 
 void ManaDrainSpell::Launch()
 {
-	SpellHandle iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_LIFE_DRAIN, m_caster);
-	if(iCancel != InvalidSpellHandle) {
-		spells[iCancel].m_tolive = 0;
-	}
-	
-	iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_HARM, m_caster);
-	if(iCancel != InvalidSpellHandle) {
-		spells[iCancel].m_tolive = 0;
-	}
+	spells.RequestEndOfInstanceForThisCaster(SPELL_LIFE_DRAIN, m_caster);
+	spells.RequestEndOfInstanceForThisCaster(SPELL_HARM, m_caster);
 	
 	m_exist = true;
 	m_tolive = (m_launchDuration > -1) ? m_launchDuration : 6000000;
@@ -376,15 +369,8 @@ bool LifeDrainSpell::CanLaunch()
 
 void LifeDrainSpell::Launch()
 {
-	SpellHandle iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_HARM, m_caster);
-	if(iCancel != InvalidSpellHandle) {
-		spells[iCancel].m_tolive = 0;
-	}
-	
-	iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_MANA_DRAIN, m_caster);
-	if(iCancel != InvalidSpellHandle) {
-		spells[iCancel].m_tolive = 0;
-	}
+	spells.RequestEndOfInstanceForThisCaster(SPELL_HARM, m_caster);
+	spells.RequestEndOfInstanceForThisCaster(SPELL_MANA_DRAIN, m_caster);
 	
 	m_exist = true;
 	m_tolive = (m_launchDuration > -1) ? m_launchDuration : 6000000;

@@ -56,10 +56,7 @@ void RiseDeadSpell::GetTargetAndBeta(Vec3f & target, float & beta)
 bool RiseDeadSpell::CanLaunch()
 {
 	//TODO always cancel spell even if new one can't be launched ?
-	SpellHandle iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_RISE_DEAD, m_caster);
-	if(iCancel != InvalidSpellHandle) {
-		spells[iCancel].m_tolive = 0;
-	}
+	spells.RequestEndOfInstanceForThisCaster(SPELL_RISE_DEAD, m_caster);
 	
 	float beta;
 	Vec3f target;

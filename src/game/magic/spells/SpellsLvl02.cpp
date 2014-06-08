@@ -106,10 +106,7 @@ void HealSpell::Update(float framedelay)
 
 void DetectTrapSpell::Launch()
 {
-	SpellHandle iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_DETECT_TRAP, m_caster);
-	if(iCancel != InvalidSpellHandle) {
-		spells[iCancel].m_tolive = 0;
-	}
+	spells.RequestEndOfInstanceForThisCaster(SPELL_DETECT_TRAP, m_caster);
 	
 	if(m_caster == PlayerEntityHandle) {
 		m_target = m_caster;
@@ -164,20 +161,9 @@ void ArmorSpell::Launch()
 		spells[idx].m_tolive = 0;
 	}
 	
-	SpellHandle iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_LOWER_ARMOR, m_caster);
-	if(iCancel != InvalidSpellHandle) {
-		spells[iCancel].m_tolive = 0;
-	}
-	
-	iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_FIRE_PROTECTION, m_caster);
-	if(iCancel != InvalidSpellHandle) {
-		spells[iCancel].m_tolive = 0;
-	}
-	
-	iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_COLD_PROTECTION, m_caster);
-	if(iCancel != InvalidSpellHandle) {
-		spells[iCancel].m_tolive = 0;
-	}
+	spells.RequestEndOfInstanceForThisCaster(SPELL_LOWER_ARMOR, m_caster);
+	spells.RequestEndOfInstanceForThisCaster(SPELL_FIRE_PROTECTION, m_caster);
+	spells.RequestEndOfInstanceForThisCaster(SPELL_COLD_PROTECTION, m_caster);
 	
 	if(m_caster == PlayerEntityHandle) {
 		m_target = m_caster;
@@ -250,20 +236,9 @@ void LowerArmorSpell::Launch()
 		spells[idx].m_tolive = 0;
 	}
 	
-	SpellHandle iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_ARMOR, m_caster);
-	if(iCancel != InvalidSpellHandle) {
-		spells[iCancel].m_tolive = 0;
-	}
-	
-	iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_FIRE_PROTECTION, m_caster);
-	if(iCancel != InvalidSpellHandle) {
-		spells[iCancel].m_tolive = 0;
-	}
-	
-	iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_COLD_PROTECTION, m_caster);
-	if(iCancel != InvalidSpellHandle) {
-		spells[iCancel].m_tolive = 0;
-	}
+	spells.RequestEndOfInstanceForThisCaster(SPELL_ARMOR, m_caster);
+	spells.RequestEndOfInstanceForThisCaster(SPELL_FIRE_PROTECTION, m_caster);
+	spells.RequestEndOfInstanceForThisCaster(SPELL_COLD_PROTECTION, m_caster);
 	
 	if(!(m_flags & SPELLCAST_FLAG_NOSOUND)) {
 		ARX_SOUND_PlaySFX(SND_SPELL_LOWER_ARMOR, &entities[m_target]->pos);
@@ -344,15 +319,8 @@ void HarmSpell::Launch()
 	                                       &m_caster_pos, 1.f,
 	                                       ARX_SOUND_PLAY_LOOPED);
 	
-	SpellHandle iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_LIFE_DRAIN, m_caster);
-	if(iCancel != InvalidSpellHandle) {
-		spells[iCancel].m_tolive = 0;
-	}
-	
-	iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_MANA_DRAIN, m_caster);
-	if(iCancel != InvalidSpellHandle) {
-		spells[iCancel].m_tolive = 0;
-	}
+	spells.RequestEndOfInstanceForThisCaster(SPELL_LIFE_DRAIN, m_caster);
+	spells.RequestEndOfInstanceForThisCaster(SPELL_MANA_DRAIN, m_caster);
 	
 	m_exist = true;
 	m_tolive = (m_launchDuration >-1) ? m_launchDuration : 6000000;

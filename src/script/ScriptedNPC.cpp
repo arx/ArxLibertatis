@@ -186,10 +186,7 @@ public:
 				
 				EntityHandle from = context.getEntity()->index();
 				if(ValidIONum(from)) {
-					SpellHandle sp = ARX_SPELLS_GetInstanceForThisCaster(spellid, from);
-					if(sp != InvalidSpellHandle) {
-						spells[sp].m_tolive = 0;
-					}
+					spells.RequestEndOfInstanceForThisCaster(spellid, from);
 				}
 				
 				return Success;

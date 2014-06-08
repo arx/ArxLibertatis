@@ -48,10 +48,7 @@ void BlessSpell::Launch()
 		m_target = PlayerEntityHandle;
 	}
 	
-	SpellHandle iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_BLESS, m_target);
-	if(iCancel != InvalidSpellHandle) {
-		spells[iCancel].m_tolive = 0;
-	}
+	spells.RequestEndOfInstanceForThisCaster(SPELL_BLESS, m_target);
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_BLESS);
 	m_exist = true;
@@ -172,20 +169,9 @@ void FireProtectionSpell::Launch()
 		spells[idx].m_tolive = 0;
 	}
 	
-	SpellHandle iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_ARMOR, m_caster);
-	if(iCancel != InvalidSpellHandle) {
-		spells[iCancel].m_tolive = 0;
-	}
-	
-	iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_LOWER_ARMOR, m_caster);
-	if(iCancel != InvalidSpellHandle) {
-		spells[iCancel].m_tolive = 0;
-	}
-	
-	iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_COLD_PROTECTION, m_caster);
-	if(iCancel != InvalidSpellHandle) {
-		spells[iCancel].m_tolive = 0;
-	}
+	spells.RequestEndOfInstanceForThisCaster(SPELL_ARMOR, m_caster);
+	spells.RequestEndOfInstanceForThisCaster(SPELL_LOWER_ARMOR, m_caster);
+	spells.RequestEndOfInstanceForThisCaster(SPELL_COLD_PROTECTION, m_caster);
 	
 	m_exist = true;
 	m_timcreation = (unsigned long)(arxtime);
@@ -255,20 +241,9 @@ void ColdProtectionSpell::Launch()
 		spells[idx].m_tolive = 0;
 	}
 	
-	SpellHandle iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_ARMOR, m_caster);
-	if(iCancel != InvalidSpellHandle) {
-		spells[iCancel].m_tolive = 0;
-	}
-	
-	iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_LOWER_ARMOR, m_caster);
-	if(iCancel != InvalidSpellHandle) {
-		spells[iCancel].m_tolive = 0;
-	}
-	
-	iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_FIRE_PROTECTION, m_caster);
-	if(iCancel != InvalidSpellHandle) {
-		spells[iCancel].m_tolive = 0;
-	}
+	spells.RequestEndOfInstanceForThisCaster(SPELL_ARMOR, m_caster);
+	spells.RequestEndOfInstanceForThisCaster(SPELL_LOWER_ARMOR, m_caster);
+	spells.RequestEndOfInstanceForThisCaster(SPELL_FIRE_PROTECTION, m_caster);
 	
 	if(m_caster == PlayerEntityHandle) {
 		m_target = PlayerEntityHandle;
@@ -363,10 +338,7 @@ void TelekinesisSpell::End()
 
 void CurseSpell::Launch()
 {
-	SpellHandle iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_CURSE, m_target);
-	if(iCancel != InvalidSpellHandle) {
-		spells[iCancel].m_tolive = 0;
-	}
+	spells.RequestEndOfInstanceForThisCaster(SPELL_CURSE, m_target);
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_CURSE, &entities[m_target]->pos);
 	
