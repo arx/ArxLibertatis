@@ -27,6 +27,9 @@ public:
 	bool Launch(long duration);
 	void End();
 	void Update(float timeDelta);
+	
+private:
+	void GetTargetAndBeta(Vec3f & target, float & beta);
 };
 
 class FakeSummonSpell : public SpellBase {

@@ -38,18 +38,8 @@
 #include "scene/GameSound.h"
 #include "scene/Interactive.h"
 
-bool SummonCreatureSpell::Launch(long duration)
+void SummonCreatureSpell::GetTargetAndBeta(Vec3f & target, float & beta)
 {
-	m_exist = true;
-	m_timcreation = (unsigned long)(arxtime);
-	m_bDuration = true;
-	m_fManaCostPerSecond = 1.9f;
-	m_longinfo_summon_creature = 0;
-	m_longinfo2_entity = 0;
-	m_tolive = (duration > -1) ? duration : 2000000;
-	
-	Vec3f target;
-	float beta;
 	bool displace = false;
 	if(m_caster == PlayerEntityHandle) {
 		target = player.basePosition();
@@ -64,6 +54,21 @@ bool SummonCreatureSpell::Launch(long duration)
 		target.x -= std::sin(radians(MAKEANGLE(beta))) * 300.f;
 		target.z += std::cos(radians(MAKEANGLE(beta))) * 300.f;
 	}
+}
+
+bool SummonCreatureSpell::Launch(long duration)
+{
+	m_exist = true;
+	m_timcreation = (unsigned long)(arxtime);
+	m_bDuration = true;
+	m_fManaCostPerSecond = 1.9f;
+	m_longinfo_summon_creature = 0;
+	m_longinfo2_entity = 0;
+	m_tolive = (duration > -1) ? duration : 2000000;
+	
+	Vec3f target;
+	float beta;
+	GetTargetAndBeta(target, beta);
 	
 	if(!ARX_INTERACTIVE_ConvertToValidPosForIO(NULL, &target)) {
 		m_exist = false;
