@@ -34,6 +34,14 @@
 #include "scene/GameSound.h"
 #include "scene/Interactive.h"
 
+bool BlessSpell::CanLaunch()
+{
+	if(ARX_SPELLS_ExistAnyInstance(m_type))
+		return false;
+	
+	return true;
+}
+
 void BlessSpell::Launch(SpellHandle i, long duration)
 {
 	if(m_caster == PlayerEntityHandle) {
@@ -321,6 +329,14 @@ void ColdProtectionSpell::Update(float timeDelta)
 	}
 	
 	ARX_SOUND_RefreshPosition(m_snd_loop, entities[m_target]->pos);
+}
+
+bool TelekinesisSpell::CanLaunch()
+{
+	if(ARX_SPELLS_ExistAnyInstanceForThisCaster(m_type, m_caster))
+		return false;
+	
+	return true;
 }
 
 void TelekinesisSpell::Launch(long duration)

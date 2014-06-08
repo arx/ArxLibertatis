@@ -24,6 +24,7 @@
 
 class BlessSpell : public SpellBase {
 public:
+	bool CanLaunch();
 	void Launch(SpellHandle i, long duration);
 	void End(SpellHandle i);
 	void Update(float timeDelta);
@@ -50,6 +51,7 @@ public:
 
 class TelekinesisSpell : public SpellBase {
 public:
+	bool CanLaunch();
 	void Launch(long duration);
 	void End();
 };

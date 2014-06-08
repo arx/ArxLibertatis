@@ -32,6 +32,14 @@
 
 #include "scene/GameSound.h"
 
+bool MagicSightSpell::CanLaunch()
+{
+	if(ARX_SPELLS_ExistAnyInstanceForThisCaster(m_type, m_caster))
+		return false;
+	
+	return true;
+}
+
 void MagicSightSpell::Launch(long duration)
 {
 	m_exist = true;

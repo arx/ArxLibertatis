@@ -106,6 +106,8 @@ bool spellHandleIsValid(SpellHandle handle);
 SpellHandle ARX_SPELLS_GetSpellOn(const Entity * io, SpellType spellid);
 SpellHandle ARX_SPELLS_GetInstanceForThisCaster(SpellType typ, EntityHandle caster);
 
+bool ARX_SPELLS_ExistAnyInstanceForThisCaster(SpellType typ, EntityHandle caster);
+
 void ARX_SPELLS_CancelSpellTarget();
 void ARX_SPELLS_LaunchSpellTarget(Entity * io);
 float ARX_SPELLS_GetManaCost(SpellType _lNumSpell, SpellHandle _lNumSpellTab);

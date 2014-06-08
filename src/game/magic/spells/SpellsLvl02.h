@@ -24,6 +24,7 @@
 
 class HealSpell : public SpellBase {
 public:
+	bool CanLaunch();
 	void Launch(SpellHandle i, long duration);
 	void Update(float framedelay);
 };

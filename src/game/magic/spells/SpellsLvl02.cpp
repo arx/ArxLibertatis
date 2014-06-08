@@ -32,6 +32,14 @@
 #include "scene/Interactive.h"
 
 
+bool HealSpell::CanLaunch() {
+	
+	if(ARX_SPELLS_ExistAnyInstanceForThisCaster(m_type, m_caster))
+		return false;
+	
+	return true;
+}
+
 void HealSpell::Launch(SpellHandle i, long duration)
 {
 	if(!(m_flags & SPELLCAST_FLAG_NOSOUND)) {

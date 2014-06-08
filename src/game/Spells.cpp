@@ -983,7 +983,7 @@ SpellHandle ARX_SPELLS_GetInstanceForThisCaster(SpellType typ, EntityHandle cast
 	return InvalidSpellHandle;
 }
 
-static bool ARX_SPELLS_ExistAnyInstanceForThisCaster(SpellType typ, EntityHandle caster) {
+bool ARX_SPELLS_ExistAnyInstanceForThisCaster(SpellType typ, EntityHandle caster) {
 	return (ARX_SPELLS_GetInstanceForThisCaster(typ, caster) != InvalidSpellHandle);
 }
 
@@ -1364,7 +1364,7 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flagss
 		//****************************************************************************
 		// LEVEL 1
 		case SPELL_MAGIC_SIGHT: {
-			if(ARX_SPELLS_ExistAnyInstanceForThisCaster(typ, spells[i].m_caster))
+			if(! static_cast<MagicSightSpell &>(spell).CanLaunch())
 				return false;
 			
 			static_cast<MagicSightSpell &>(spell).Launch(duration);
@@ -1389,7 +1389,7 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flagss
 		//****************************************************************************
 		// LEVEL 2
 		case SPELL_HEAL: {
-			if(ARX_SPELLS_ExistAnyInstanceForThisCaster(typ, spells[i].m_caster))
+			if(! static_cast<HealSpell &>(spell).CanLaunch())
 				return false;
 			
 			static_cast<HealSpell &>(spell).Launch(i, duration);
@@ -1436,7 +1436,7 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flagss
 		//****************************************************************************
 		// LEVEL 4
 		case SPELL_BLESS: {
-			if(ARX_SPELLS_ExistAnyInstance(typ))
+			if(! static_cast<BlessSpell &>(spell).CanLaunch())
 				return false;
 			
 			static_cast<BlessSpell &>(spell).Launch(i, duration);
@@ -1455,7 +1455,7 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flagss
 			break;
 		}
 		case SPELL_TELEKINESIS: {
-			if(ARX_SPELLS_ExistAnyInstanceForThisCaster(typ, spells[i].m_caster))
+			if(! static_cast<TelekinesisSpell &>(spell).CanLaunch())
 				return false;
 			
 			static_cast<TelekinesisSpell &>(spell).Launch(duration);
