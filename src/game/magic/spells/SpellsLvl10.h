@@ -47,7 +47,7 @@ class MassIncinerateSpell : public SpellBase {
 public:
 	void Launch();
 	void End();
-	void Update();
+	void Update(float timeDelta);
 };
 
 class TeleportSpell : public SpellBase {
@@ -55,7 +55,7 @@ public:
 	bool CanLaunch();
 	void Launch();
 	void End();
-	void Update();
+	void Update(float timeDelta);
 };
 
 #endif // ARX_GAME_MAGIC_SPELLS_SPELLSLVL10_H

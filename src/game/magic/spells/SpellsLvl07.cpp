@@ -141,8 +141,10 @@ void FlyingEyeSpell::End()
 	lightHandleDestroy(special[1]);
 }
 
-void FlyingEyeSpell::Update()
+void FlyingEyeSpell::Update(float timeDelta)
 {
+	ARX_UNUSED(timeDelta);
+	
 	const unsigned long tim = (unsigned long)(arxtime);
 	
 	const long framediff3 = tim - m_lastupdate;

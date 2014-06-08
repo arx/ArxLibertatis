@@ -72,12 +72,14 @@ void InvisibilitySpell::End()
 
 extern void ARX_SPELLS_Fizzle(SpellHandle num);
 
-void InvisibilitySpell::Update(SpellHandle i)
+void InvisibilitySpell::Update(float timeDelta)
 {
+	ARX_UNUSED(timeDelta);
+	
 	if(m_target != PlayerEntityHandle) {
 		if(!(entities[m_target]->gameFlags & GFLAG_INVISIBILITY)) {
-			ARX_SPELLS_RemoveSpellOn(m_target,i);
-			ARX_SPELLS_Fizzle(i);
+			ARX_SPELLS_RemoveSpellOn(m_target, m_thisHandle);
+			ARX_SPELLS_Fizzle(m_thisHandle);
 		}
 	}	
 }
@@ -302,8 +304,10 @@ void ExplosionSpell::Launch()
 	ARX_SOUND_PlaySFX(SND_SPELL_FIRE_WIND);
 }
 
-void ExplosionSpell::Update()
+void ExplosionSpell::Update(float timeDelta)
 {
+	ARX_UNUSED(timeDelta);
+	
 	if(!lightHandleIsValid(m_longinfo2_light))
 		m_longinfo2_light = GetFreeDynLight();
 

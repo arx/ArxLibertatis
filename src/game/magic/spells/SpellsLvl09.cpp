@@ -448,8 +448,10 @@ void IncinerateSpell::End()
 	ARX_SOUND_PlaySFX(SND_SPELL_INCINERATE_END);
 }
 
-void IncinerateSpell::Update()
+void IncinerateSpell::Update(float timeDelta)
 {
+	ARX_UNUSED(timeDelta);
+	
 	if(ValidIONum(m_target)) {
 		ARX_SOUND_RefreshPosition(m_snd_loop, entities[m_target]->pos);
 	}	

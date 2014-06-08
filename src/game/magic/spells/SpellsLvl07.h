@@ -27,7 +27,7 @@ public:
 	bool CanLaunch();
 	void Launch();
 	void End();
-	void Update();
+	void Update(float timeDelta);
 };
 
 class FireFieldSpell : public SpellBase {

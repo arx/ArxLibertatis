@@ -341,8 +341,10 @@ void MassIncinerateSpell::End()
 	ARX_SOUND_PlaySFX(SND_SPELL_INCINERATE_END);
 }
 
-void MassIncinerateSpell::Update()
+void MassIncinerateSpell::Update(float timeDelta)
 {
+	ARX_UNUSED(timeDelta);
+	
 	if(ValidIONum(m_caster)) {
 		ARX_SOUND_RefreshPosition(m_snd_loop, entities[m_caster]->pos);
 	}	
@@ -377,8 +379,10 @@ void TeleportSpell::End()
 
 extern Vec3f lastteleport;
 
-void TeleportSpell::Update()
+void TeleportSpell::Update(float timeDelta)
 {
+	ARX_UNUSED(timeDelta);
+	
 	const unsigned long tim = (unsigned long)(arxtime);
 	
 	float TELEPORT = (float)(((float)tim-(float)m_timcreation)/(float)m_tolive);

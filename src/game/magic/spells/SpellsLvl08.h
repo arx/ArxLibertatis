@@ -27,7 +27,7 @@ public:
 	bool CanLaunch();
 	void Launch();
 	void End();
-	void Update(SpellHandle i);
+	void Update(float timeDelta);
 };
 
 class ManaDrainSpell : public SpellBase {
@@ -41,7 +41,7 @@ public:
 class ExplosionSpell : public SpellBase {
 public:
 	void Launch();
-	void Update();
+	void Update(float timeDelta);
 };
 
 class EnchantWeaponSpell : public SpellBase {

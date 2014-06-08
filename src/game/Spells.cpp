@@ -1987,7 +1987,7 @@ void ARX_SPELLS_Update_Update(SpellHandle i) {
 			break;
 		}
 		case SPELL_EXPLOSION: {
-			static_cast<ExplosionSpell &>(spell).Update();
+			static_cast<ExplosionSpell &>(spell).Update(framedelay);
 			break;
 		}
 		//****************************************************************************
@@ -2001,7 +2001,7 @@ void ARX_SPELLS_Update_Update(SpellHandle i) {
 			break;
 		}
 		case SPELL_INCINERATE: {
-			static_cast<IncinerateSpell &>(spell).Update();
+			static_cast<IncinerateSpell &>(spell).Update(framedelay);
 			break;
 		}
 		case SPELL_NEGATE_MAGIC: {
@@ -2021,7 +2021,7 @@ void ARX_SPELLS_Update_Update(SpellHandle i) {
 			break;
 		}
 		case SPELL_MASS_INCINERATE: {
-			static_cast<MassIncinerateSpell &>(spell).Update();
+			static_cast<MassIncinerateSpell &>(spell).Update(framedelay);
 			break;
 		}
 		case SPELL_MASS_LIGHTNING_STRIKE: {
@@ -2029,18 +2029,18 @@ void ARX_SPELLS_Update_Update(SpellHandle i) {
 			break;
 		}
 		case SPELL_TELEPORT: {
-			static_cast<TeleportSpell &>(spell).Update();
+			static_cast<TeleportSpell &>(spell).Update(framedelay);
 			break;
 		}
 		case SPELL_MAGIC_SIGHT: {
-			static_cast<MagicSightSpell &>(spell).Update();
+			static_cast<MagicSightSpell &>(spell).Update(framedelay);
 			break;
 		}
 		case SPELL_TELEKINESIS: {
 			break;
 		}
 		case SPELL_INVISIBILITY: {
-			static_cast<InvisibilitySpell &>(spell).Update(i);
+			static_cast<InvisibilitySpell &>(spell).Update(framedelay);
 			break;
 		}
 		case SPELL_MANA_DRAIN: {
@@ -2052,7 +2052,7 @@ void ARX_SPELLS_Update_Update(SpellHandle i) {
 			break;
 		}
 		case SPELL_FLYING_EYE: {
-			static_cast<FlyingEyeSpell &>(spell).Update();
+			static_cast<FlyingEyeSpell &>(spell).Update(framedelay);
 			break;
 		}
 	}

@@ -70,8 +70,10 @@ static const float IMPROVED_FOCAL = 320.0f;
 
 extern EERIE_CAMERA subj;
 
-void MagicSightSpell::Update()
+void MagicSightSpell::Update(float timeDelta)
 {
+	ARX_UNUSED(timeDelta);
+	
 	if(m_caster == PlayerEntityHandle) {
 		Vec3f pos;
 		ARX_PLAYER_FrontPos(&pos);
