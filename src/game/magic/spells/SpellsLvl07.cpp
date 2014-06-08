@@ -50,7 +50,7 @@ bool FlyingEyeSpell::CanLaunch()
 	if(eyeball.exist)
 		return false;
 
-	if(ARX_SPELLS_ExistAnyInstanceForThisCaster(m_type, m_caster))
+	if(spells.ExistAnyInstanceForThisCaster(m_type, m_caster))
 		return false;
 	
 	if(m_caster == PlayerEntityHandle) {

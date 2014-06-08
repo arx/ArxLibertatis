@@ -88,6 +88,19 @@ class SpellManager {
 				}
 			}
 		}
+		
+		bool ExistAnyInstanceForThisCaster(SpellType typ, EntityHandle caster) {
+			
+			for(size_t i = 0; i < MAX_SPELLS; i++) {
+				const SpellBase & spell = m_spells[i];
+				
+				if(spell.m_exist && spell.m_type == typ && spell.m_caster == caster) {
+					return true;
+				}
+			}
+			
+			return false;
+		}
 };
 
 extern SpellManager spells;
@@ -117,9 +130,6 @@ bool ARX_SPELLS_ExistAnyInstance(SpellType typ);
 void ARX_SPELLS_RemoveAllSpellsOn(Entity * io);
 bool spellHandleIsValid(SpellHandle handle);
 SpellHandle ARX_SPELLS_GetSpellOn(const Entity * io, SpellType spellid);
-SpellHandle ARX_SPELLS_GetInstanceForThisCaster(SpellType typ, EntityHandle caster);
-
-bool ARX_SPELLS_ExistAnyInstanceForThisCaster(SpellType typ, EntityHandle caster);
 
 void ARX_SPELLS_CancelSpellTarget();
 void ARX_SPELLS_LaunchSpellTarget(Entity * io);

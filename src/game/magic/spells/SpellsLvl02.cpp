@@ -34,10 +34,7 @@
 
 bool HealSpell::CanLaunch() {
 	
-	if(ARX_SPELLS_ExistAnyInstanceForThisCaster(m_type, m_caster))
-		return false;
-	
-	return true;
+	return !spells.ExistAnyInstanceForThisCaster(m_type, m_caster);
 }
 
 void HealSpell::Launch()

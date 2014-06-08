@@ -969,23 +969,7 @@ bool ARX_SPELLS_ExistAnyInstance(SpellType typ) {
 	return (ARX_SPELLS_GetInstance(typ) != InvalidSpellHandle);
 }
 
-SpellHandle ARX_SPELLS_GetInstanceForThisCaster(SpellType typ, EntityHandle caster) {
-	
-	for(size_t i = 0; i < MAX_SPELLS; i++) {
-		SpellHandle handle = SpellHandle(i);
-		const SpellBase & spell = spells[handle];
-		
-		if(spell.m_exist && spell.m_type == typ && spell.m_caster == caster) {
-			return handle;
-		}
-	}
-	
-	return InvalidSpellHandle;
-}
 
-bool ARX_SPELLS_ExistAnyInstanceForThisCaster(SpellType typ, EntityHandle caster) {
-	return (ARX_SPELLS_GetInstanceForThisCaster(typ, caster) != InvalidSpellHandle);
-}
 
 // Plays the sound of aborted spell
 void ARX_SPELLS_AbortSpellSound() {

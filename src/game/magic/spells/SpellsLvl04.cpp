@@ -308,10 +308,7 @@ void ColdProtectionSpell::Update(float timeDelta)
 
 bool TelekinesisSpell::CanLaunch()
 {
-	if(ARX_SPELLS_ExistAnyInstanceForThisCaster(m_type, m_caster))
-		return false;
-	
-	return true;
+	return !spells.ExistAnyInstanceForThisCaster(m_type, m_caster);
 }
 
 void TelekinesisSpell::Launch()
