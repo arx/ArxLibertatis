@@ -24,13 +24,13 @@
 
 class RuneOfGuardingSpell : public SpellBase {
 public:
-	void Launch(long duration);
+	void Launch();
 	void Update(float timeDelta);
 };
 
 class LevitateSpell : public SpellBase {
 public:
-	void Launch(long duration);
+	void Launch();
 	void End(SpellHandle i);
 	void Update(float timeDelta);
 };
@@ -43,7 +43,7 @@ public:
 
 class RepelUndeadSpell : public SpellBase {
 public:
-	void Launch(long duration);
+	void Launch();
 	void End();
 	void Update(float timeDelta);
 };

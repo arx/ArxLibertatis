@@ -25,7 +25,7 @@
 class MagicSightSpell : public SpellBase {
 public:
 	bool CanLaunch();
-	void Launch(long duration);
+	void Launch();
 	void End();
 	void Update();
 };

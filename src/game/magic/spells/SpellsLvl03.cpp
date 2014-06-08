@@ -32,7 +32,7 @@
 #include "scene/GameSound.h"
 #include "scene/Interactive.h"
 
-void SpeedSpell::Launch(long duration)
+void SpeedSpell::Launch()
 {
 	m_bDuration = true;
 	m_fManaCostPerSecond = 2.f;
@@ -51,8 +51,8 @@ void SpeedSpell::Launch(long duration)
 	
 	m_exist = true;
 	m_tolive = (m_caster == PlayerEntityHandle) ? 200000000 : 20000;
-	if(duration > -1) {
-		m_tolive = duration;
+	if(m_launchDuration > -1) {
+		m_tolive = m_launchDuration;
 	}
 	
 	CSpeed * effect = new CSpeed();
@@ -266,11 +266,11 @@ void FireballSpell::Update(float timeDelta)
 	}
 }
 
-void CreateFoodSpell::Launch(long duration)
+void CreateFoodSpell::Launch()
 {
 	ARX_SOUND_PlaySFX(SND_SPELL_CREATE_FOOD, &m_caster_pos);
 	m_exist = true;
-	m_tolive = (duration > -1) ? duration : 3500;
+	m_tolive = (m_launchDuration > -1) ? m_launchDuration : 3500;
 	
 	if(m_caster == PlayerEntityHandle || m_target == PlayerEntityHandle) {
 		player.hunger = 100;

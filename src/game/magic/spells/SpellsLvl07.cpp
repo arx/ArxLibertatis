@@ -212,7 +212,7 @@ void FlyingEyeSpell::Update()
 	}
 }
 
-void FireFieldSpell::Launch(long duration)
+void FireFieldSpell::Launch()
 {
 	SpellHandle iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_FIRE_FIELD, m_caster);
 	if(iCancel != InvalidSpellHandle) {
@@ -222,7 +222,7 @@ void FireFieldSpell::Launch(long duration)
 	ARX_SOUND_PlaySFX(SND_SPELL_FIRE_FIELD_START);
 	
 	m_exist = true;
-	m_tolive = (duration > -1) ? duration : 100000;
+	m_tolive = (m_launchDuration > -1) ? m_launchDuration : 100000;
 	m_bDuration = true;
 	m_fManaCostPerSecond = 2.8f;
 	m_longinfo2_light = -1;
@@ -344,7 +344,7 @@ void FireFieldSpell::Update(float timeDelta)
 	}
 }
 
-void IceFieldSpell::Launch(long duration)
+void IceFieldSpell::Launch()
 {
 	SpellHandle iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_ICE_FIELD, m_caster);
 	if(iCancel != InvalidSpellHandle) {
@@ -355,7 +355,7 @@ void IceFieldSpell::Launch(long duration)
 	
 	m_exist = true;
 	m_timcreation = (unsigned long)(arxtime);
-	m_tolive = (duration > -1) ? duration : 100000;
+	m_tolive = (m_launchDuration > -1) ? m_launchDuration : 100000;
 	m_bDuration = true;
 	m_fManaCostPerSecond = 2.8f;
 	m_longinfo2_light = -1;
@@ -493,7 +493,7 @@ void LightningStrikeSpell::Update(float timeDelta)
 	ARX_SOUND_RefreshPosition(m_snd_loop, entities[m_caster]->pos);
 }
 
-void ConfuseSpell::Launch(long duration)
+void ConfuseSpell::Launch()
 {
 	ARX_SOUND_PlaySFX(SND_SPELL_CONFUSE, &entities[m_target]->pos);
 	
@@ -501,7 +501,7 @@ void ConfuseSpell::Launch(long duration)
 	m_timcreation = (unsigned long)(arxtime);
 	m_bDuration = true;
 	m_fManaCostPerSecond = 1.5f;
-	m_tolive = (duration > -1) ? duration : 5000;
+	m_tolive = (m_launchDuration > -1) ? m_launchDuration : 5000;
 	
 	CConfuse * effect = new CConfuse();
 	effect->spellinstance = m_thisHandle;

@@ -167,6 +167,8 @@ public:
 	audio::SourceId m_snd_loop;
 	CSpellFx * m_pSpellFx;
 	
+	long m_launchDuration;
+	
 	// Used by: FlyingEyeSpell
 	unsigned long m_lastupdate;
 	

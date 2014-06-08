@@ -24,7 +24,7 @@
 
 class SpeedSpell : public SpellBase {
 public:
-	void Launch(long duration);
+	void Launch();
 	void End(SpellHandle i);
 	void Update(float timeDelta);
 };
@@ -44,7 +44,7 @@ public:
 
 class CreateFoodSpell : public SpellBase {
 public:
-	void Launch(long duration);
+	void Launch();
 	void Update(float timeDelta);
 };
 

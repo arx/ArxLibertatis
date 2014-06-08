@@ -25,7 +25,7 @@
 class HealSpell : public SpellBase {
 public:
 	bool CanLaunch();
-	void Launch(long duration);
+	void Launch();
 	void Update(float framedelay);
 };
 
@@ -38,21 +38,21 @@ public:
 
 class ArmorSpell : public SpellBase {
 public:
-	void Launch(long duration);
+	void Launch();
 	void End(SpellHandle i);
 	void Update(float timeDelta);
 };
 
 class LowerArmorSpell : public SpellBase {
 public:
-	void Launch(long duration);
+	void Launch();
 	void End(SpellHandle i);
 	void Update(float timeDelta);
 };
 
 class HarmSpell : public SpellBase {
 public:
-	void Launch(long duration);
+	void Launch();
 	void End();
 	void Update(float timeDelta);
 };

@@ -70,7 +70,7 @@ bool SummonCreatureSpell::CanLaunch()
 	return true;
 }
 
-bool SummonCreatureSpell::Launch(long duration)
+bool SummonCreatureSpell::Launch()
 {
 	m_exist = true;
 	m_timcreation = (unsigned long)(arxtime);
@@ -78,7 +78,7 @@ bool SummonCreatureSpell::Launch(long duration)
 	m_fManaCostPerSecond = 1.9f;
 	m_longinfo_summon_creature = 0;
 	m_longinfo2_entity = 0;
-	m_tolive = (duration > -1) ? duration : 2000000;
+	m_tolive = (m_launchDuration > -1) ? m_launchDuration : 2000000;
 	
 	Vec3f target;
 	float beta;
@@ -350,7 +350,7 @@ void FakeSummonSpell::Update(float timeDelta)
 	}	
 }
 
-void NegateMagicSpell::Launch(long duration)
+void NegateMagicSpell::Launch()
 {
 	if(m_caster == PlayerEntityHandle) {
 		m_target = PlayerEntityHandle;
@@ -362,7 +362,7 @@ void NegateMagicSpell::Launch(long duration)
 	m_timcreation = (unsigned long)(arxtime);
 	m_bDuration = true;
 	m_fManaCostPerSecond = 2.f;
-	m_tolive = (duration > -1) ? duration : 1000000;
+	m_tolive = (m_launchDuration > -1) ? m_launchDuration : 1000000;
 	
 	CNegateMagic * effect = new CNegateMagic();
 	effect->spellinstance = m_thisHandle;
@@ -461,12 +461,12 @@ void IncinerateSpell::Update()
 	}	
 }
 
-void MassParalyseSpell::Launch(long duration)
+void MassParalyseSpell::Launch()
 {
 	ARX_SOUND_PlaySFX(SND_SPELL_MASS_PARALYSE);
 	
 	m_exist = true;
-	m_tolive = (duration > -1) ? duration : 10000;
+	m_tolive = (m_launchDuration > -1) ? m_launchDuration : 10000;
 	
 	for(size_t ii = 0; ii < entities.size(); ii++) {
 		const EntityHandle handle = EntityHandle(ii);

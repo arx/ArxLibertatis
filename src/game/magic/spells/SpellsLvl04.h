@@ -25,7 +25,7 @@
 class BlessSpell : public SpellBase {
 public:
 	bool CanLaunch();
-	void Launch(long duration);
+	void Launch();
 	void End(SpellHandle i);
 	void Update(float timeDelta);
 };
@@ -37,14 +37,14 @@ public:
 
 class FireProtectionSpell : public SpellBase {
 public:
-	void Launch(long duration);
+	void Launch();
 	void End(SpellHandle i);
 	void Update(float timeDelta);
 };
 
 class ColdProtectionSpell : public SpellBase {
 public:
-	void Launch(long duration);
+	void Launch();
 	void End(SpellHandle i);
 	void Update(float timeDelta);
 };
@@ -52,13 +52,13 @@ public:
 class TelekinesisSpell : public SpellBase {
 public:
 	bool CanLaunch();
-	void Launch(long duration);
+	void Launch();
 	void End();
 };
 
 class CurseSpell : public SpellBase {
 public:
-	void Launch(long duration);
+	void Launch();
 	void End(SpellHandle i);
 	void Update(float timeDelta);
 };

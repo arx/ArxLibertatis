@@ -42,10 +42,10 @@ bool InvisibilitySpell::CanLaunch()
 	return true;
 }
 
-void InvisibilitySpell::Launch(long duration)
+void InvisibilitySpell::Launch()
 {
 	m_exist = true;
-	m_tolive = (duration > -1) ? duration : 6000000;
+	m_tolive = (m_launchDuration > -1) ? m_launchDuration : 6000000;
 	m_bDuration = true;
 	m_fManaCostPerSecond = 3.f;
 	
@@ -90,7 +90,7 @@ bool ManaDrainSpell::CanLaunch()
 	return true;
 }
 
-void ManaDrainSpell::Launch(long duration)
+void ManaDrainSpell::Launch()
 {
 	SpellHandle iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_LIFE_DRAIN, m_caster);
 	if(iCancel != InvalidSpellHandle) {
@@ -103,7 +103,7 @@ void ManaDrainSpell::Launch(long duration)
 	}
 	
 	m_exist = true;
-	m_tolive = (duration > -1) ? duration : 6000000;
+	m_tolive = (m_launchDuration > -1) ? m_launchDuration : 6000000;
 	m_bDuration = true;
 	m_fManaCostPerSecond = 2.f;
 	
@@ -370,7 +370,7 @@ bool LifeDrainSpell::CanLaunch()
 	return true;
 }
 
-void LifeDrainSpell::Launch(long duration)
+void LifeDrainSpell::Launch()
 {
 	SpellHandle iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_HARM, m_caster);
 	if(iCancel != InvalidSpellHandle) {
@@ -383,7 +383,7 @@ void LifeDrainSpell::Launch(long duration)
 	}
 	
 	m_exist = true;
-	m_tolive = (duration > -1) ? duration : 6000000;
+	m_tolive = (m_launchDuration > -1) ? m_launchDuration : 6000000;
 	m_bDuration = true;
 	m_fManaCostPerSecond = 12.f;
 	

@@ -37,7 +37,7 @@ public:
 
 class FreezeTimeSpell : public SpellBase {
 public:
-	void Launch(long duration);
+	void Launch();
 	void End();
 };
 

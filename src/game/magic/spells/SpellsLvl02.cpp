@@ -40,7 +40,7 @@ bool HealSpell::CanLaunch() {
 	return true;
 }
 
-void HealSpell::Launch(long duration)
+void HealSpell::Launch()
 {
 	if(!(m_flags & SPELLCAST_FLAG_NOSOUND)) {
 		ARX_SOUND_PlaySFX(SND_SPELL_HEALING, &m_caster_pos);
@@ -49,7 +49,7 @@ void HealSpell::Launch(long duration)
 	m_exist = true;
 	m_bDuration = true;
 	m_fManaCostPerSecond = 0.4f * m_caster_level;
-	m_tolive = (duration > -1) ? duration : 3500;
+	m_tolive = (m_launchDuration > -1) ? m_launchDuration : 3500;
 	
 	CHeal * effect = new CHeal();
 	effect->spellinstance = m_thisHandle;
@@ -157,7 +157,7 @@ void DetectTrapSpell::Update(float timeDelta)
 	}	
 }
 
-void ArmorSpell::Launch(long duration)
+void ArmorSpell::Launch()
 {
 	SpellHandle idx = ARX_SPELLS_GetSpellOn(entities[m_target], SPELL_ARMOR);
 	if(idx != InvalidSpellHandle) {
@@ -192,8 +192,8 @@ void ArmorSpell::Launch(long duration)
 	                                       ARX_SOUND_PLAY_LOOPED);
 	
 	m_exist = true;
-	if(duration > -1) {
-		m_tolive = duration;
+	if(m_launchDuration > -1) {
+		m_tolive = m_launchDuration;
 	} else {
 		m_tolive = (m_caster == PlayerEntityHandle) ? 20000000 : 20000;
 	}
@@ -243,7 +243,7 @@ void ArmorSpell::Update(float timeDelta)
 	ARX_SOUND_RefreshPosition(m_snd_loop, entities[m_target]->pos);
 }
 
-void LowerArmorSpell::Launch(long duration)
+void LowerArmorSpell::Launch()
 {
 	SpellHandle idx = ARX_SPELLS_GetSpellOn(entities[m_target], SPELL_LOWER_ARMOR);
 	if(idx != InvalidSpellHandle) {
@@ -270,8 +270,8 @@ void LowerArmorSpell::Launch(long duration)
 	}
 	
 	m_exist = true;
-	if(duration > -1) {
-		m_tolive = duration;
+	if(m_launchDuration > -1) {
+		m_tolive = m_launchDuration;
 	} else {
 		m_tolive = (m_caster == PlayerEntityHandle) ? 20000000 : 20000;
 	}
@@ -334,7 +334,7 @@ void LowerArmorSpell::Update(float timeDelta)
 	ARX_SOUND_RefreshPosition(m_snd_loop, entities[m_target]->pos);
 }
 
-void HarmSpell::Launch(long duration)
+void HarmSpell::Launch()
 {
 	if(!(m_flags & SPELLCAST_FLAG_NOSOUND)) {
 		ARX_SOUND_PlaySFX(SND_SPELL_HARM, &m_caster_pos);
@@ -355,7 +355,7 @@ void HarmSpell::Launch(long duration)
 	}
 	
 	m_exist = true;
-	m_tolive = (duration >-1) ? duration : 6000000;
+	m_tolive = (m_launchDuration >-1) ? m_launchDuration : 6000000;
 	m_bDuration = true;
 	m_fManaCostPerSecond = 0.4f;
 

@@ -74,7 +74,7 @@ bool RiseDeadSpell::CanLaunch()
 	return true;
 }
 
-bool RiseDeadSpell::Launch(long duration)
+bool RiseDeadSpell::Launch()
 {
 	float beta;
 	Vec3f target;
@@ -85,7 +85,7 @@ bool RiseDeadSpell::Launch(long duration)
 	ARX_SOUND_PlaySFX(SND_SPELL_RAISE_DEAD, &m_target_pos);
 	m_exist = true;
 	// TODO this tolive value is probably never read
-	m_tolive = (duration > -1) ? duration : 2000000;
+	m_tolive = (m_launchDuration > -1) ? m_launchDuration : 2000000;
 	m_bDuration = true;
 	m_fManaCostPerSecond = 1.2f;
 	m_longinfo_entity = -1;
@@ -244,12 +244,12 @@ void RiseDeadSpell::Update(float timeDelta)
 	}
 }
 
-void ParalyseSpell::Launch(long duration)
+void ParalyseSpell::Launch()
 {
 	ARX_SOUND_PlaySFX(SND_SPELL_PARALYSE, &entities[m_target]->pos);
 	
 	m_exist = true;
-	m_tolive = (duration > -1) ? duration : 5000;
+	m_tolive = (m_launchDuration > -1) ? m_launchDuration : 5000;
 	
 	float resist_magic = 0.f;
 	if(m_target == PlayerEntityHandle && m_caster_level <= player.level) {
@@ -276,7 +276,7 @@ void ParalyseSpell::End(SpellHandle i)
 	ARX_SOUND_PlaySFX(SND_SPELL_PARALYSE_END);
 }
 
-void CreateFieldSpell::Launch(SpellcastFlags flags, long duration)
+void CreateFieldSpell::Launch(SpellcastFlags flags)
 {
 	m_exist = true;
 	
@@ -286,7 +286,7 @@ void CreateFieldSpell::Launch(SpellcastFlags flags, long duration)
 	}
 	m_timcreation = start;
 	
-	m_tolive = (duration > -1) ? duration : 800000;
+	m_tolive = (m_launchDuration > -1) ? m_launchDuration : 800000;
 	m_bDuration = true;
 	m_fManaCostPerSecond = 1.2f;
 	
@@ -443,14 +443,14 @@ bool SlowDownSpell::CanLaunch()
 	return true;
 }
 
-bool SlowDownSpell::Launch(long duration)
+bool SlowDownSpell::Launch()
 {
 	ARX_SOUND_PlaySFX(SND_SPELL_SLOW_DOWN, &entities[m_target]->pos);
 	
 	m_exist = true;
 	m_tolive = (m_caster == PlayerEntityHandle) ? 10000000 : 10000;
-	if(duration > -1) {
-		m_tolive=duration;
+	if(m_launchDuration > -1) {
+		m_tolive = m_launchDuration;
 	}
 	m_pSpellFx = NULL;
 	m_bDuration = true;

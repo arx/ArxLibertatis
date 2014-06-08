@@ -42,7 +42,7 @@ bool BlessSpell::CanLaunch()
 	return true;
 }
 
-void BlessSpell::Launch(long duration)
+void BlessSpell::Launch()
 {
 	if(m_caster == PlayerEntityHandle) {
 		m_target = PlayerEntityHandle;
@@ -56,7 +56,7 @@ void BlessSpell::Launch(long duration)
 	ARX_SOUND_PlaySFX(SND_SPELL_BLESS);
 	m_exist = true;
 	// TODO this tolive value is probably never read
-	m_tolive = (duration > -1) ? duration : 2000000;
+	m_tolive = (m_launchDuration > -1) ? m_launchDuration : 2000000;
 	m_bDuration = true;
 	m_fManaCostPerSecond = 0.5f * m_caster_level * 0.6666f;
 	
@@ -165,7 +165,7 @@ void DispellFieldSpell::Launch()
 	}
 }
 
-void FireProtectionSpell::Launch(long duration)
+void FireProtectionSpell::Launch()
 {
 	SpellHandle idx = ARX_SPELLS_GetSpellOn(entities[m_target], SPELL_FIRE_PROTECTION);
 	if(idx != InvalidSpellHandle) {
@@ -189,8 +189,8 @@ void FireProtectionSpell::Launch(long duration)
 	
 	m_exist = true;
 	m_timcreation = (unsigned long)(arxtime);
-	if(duration > -1) {
-		m_tolive = duration;
+	if(m_launchDuration > -1) {
+		m_tolive = m_launchDuration;
 	} else {
 		m_tolive = (m_caster == PlayerEntityHandle) ? 2000000 : 20000;
 	}
@@ -248,7 +248,7 @@ void FireProtectionSpell::Update(float timeDelta)
 	ARX_SOUND_RefreshPosition(m_snd_loop, entities[m_target]->pos);
 }
 
-void ColdProtectionSpell::Launch(long duration)
+void ColdProtectionSpell::Launch()
 {
 	SpellHandle idx = ARX_SPELLS_GetSpellOn(entities[m_target], SPELL_COLD_PROTECTION);
 	if(idx != InvalidSpellHandle) {
@@ -278,8 +278,8 @@ void ColdProtectionSpell::Launch(long duration)
 	
 	m_exist = true;
 	m_timcreation = (unsigned long)(arxtime);
-	if(duration > -1) {
-		m_tolive = duration;
+	if(m_launchDuration > -1) {
+		m_tolive = m_launchDuration;
 	} else {
 		m_tolive = (m_caster == PlayerEntityHandle) ? 2000000 : 20000;
 	}
@@ -339,10 +339,10 @@ bool TelekinesisSpell::CanLaunch()
 	return true;
 }
 
-void TelekinesisSpell::Launch(long duration)
+void TelekinesisSpell::Launch()
 {
 	m_exist = true;
-	m_tolive = (duration > -1) ? duration : 6000000;
+	m_tolive = (m_launchDuration > -1) ? m_launchDuration : 6000000;
 	m_bDuration = true;
 	m_fManaCostPerSecond = 0.9f;
 	
@@ -361,7 +361,7 @@ void TelekinesisSpell::End()
 	ARX_SOUND_PlaySFX(SND_SPELL_TELEKINESIS_END, &entities[m_caster]->pos);
 }
 
-void CurseSpell::Launch(long duration)
+void CurseSpell::Launch()
 {
 	SpellHandle iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_CURSE, m_target);
 	if(iCancel != InvalidSpellHandle) {
@@ -371,7 +371,7 @@ void CurseSpell::Launch(long duration)
 	ARX_SOUND_PlaySFX(SND_SPELL_CURSE, &entities[m_target]->pos);
 	
 	m_exist = true;
-	m_tolive = (duration > -1) ? duration : 2000000;
+	m_tolive = (m_launchDuration > -1) ? m_launchDuration : 2000000;
 	m_bDuration = true;
 	m_fManaCostPerSecond = 0.5f * m_caster_level;
 	

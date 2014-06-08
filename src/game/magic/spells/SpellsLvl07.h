@@ -32,14 +32,14 @@ public:
 
 class FireFieldSpell : public SpellBase {
 public:
-	void Launch(long duration);
+	void Launch();
 	void End();
 	void Update(float timeDelta);
 };
 
 class IceFieldSpell : public SpellBase {
 public:
-	void Launch(long duration);
+	void Launch();
 	void End();
 	void Update(float timeDelta);
 };
@@ -53,7 +53,7 @@ public:
 
 class ConfuseSpell : public SpellBase {
 public:
-	void Launch(long duration);
+	void Launch();
 	void End(SpellHandle i);
 	void Update(float timeDelta);
 };

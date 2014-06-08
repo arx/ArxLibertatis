@@ -40,12 +40,12 @@ bool MagicSightSpell::CanLaunch()
 	return true;
 }
 
-void MagicSightSpell::Launch(long duration)
+void MagicSightSpell::Launch()
 {
 	m_exist = true;
 	m_fManaCostPerSecond = 0.36f;
 	m_bDuration = true;
-	m_tolive = (duration > -1) ? duration : 6000000l;
+	m_tolive = (m_launchDuration > -1) ? m_launchDuration : 6000000l;
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_VISION_START, &m_caster_pos);
 	

@@ -33,7 +33,7 @@
 #include "scene/GameSound.h"
 #include "scene/Interactive.h"
 
-void RuneOfGuardingSpell::Launch(long duration)
+void RuneOfGuardingSpell::Launch()
 {
 	SpellHandle iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_RUNE_OF_GUARDING, m_caster);
 	if(iCancel != InvalidSpellHandle) {
@@ -42,7 +42,7 @@ void RuneOfGuardingSpell::Launch(long duration)
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_RUNE_OF_GUARDING);
 	m_exist = true;
-	m_tolive = (duration > -1) ? duration : 99999999;
+	m_tolive = (m_launchDuration > -1) ? m_launchDuration : 99999999;
 	
 	CRuneOfGuarding * effect = new CRuneOfGuarding();
 	effect->Create(entities[m_caster]->pos, 0);
@@ -76,7 +76,7 @@ void RuneOfGuardingSpell::Update(float timeDelta)
 	}
 }
 
-void LevitateSpell::Launch(long duration)
+void LevitateSpell::Launch()
 {
 	SpellHandle iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_LEVITATE, m_caster);
 	if(iCancel != InvalidSpellHandle) {
@@ -89,7 +89,7 @@ void LevitateSpell::Launch(long duration)
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_LEVITATE_START, &entities[m_target]->pos);
 	m_exist = true;
-	m_tolive = (duration > -1) ? duration : 2000000000;
+	m_tolive = (m_launchDuration > -1) ? m_launchDuration : 2000000000;
 	m_bDuration = true;
 	m_fManaCostPerSecond = 1.f;
 	
@@ -190,7 +190,7 @@ void CurePoisonSpell::Update(float timeDelta)
 	}
 }
 
-void RepelUndeadSpell::Launch(long duration)
+void RepelUndeadSpell::Launch()
 {
 	SpellHandle iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_REPEL_UNDEAD, m_caster);
 	if(iCancel != InvalidSpellHandle) {
@@ -209,7 +209,7 @@ void RepelUndeadSpell::Launch(long duration)
 	}
 	
 	m_exist = true;
-	m_tolive = (duration > -1) ? duration : 20000000;
+	m_tolive = (m_launchDuration > -1) ? m_launchDuration : 20000000;
 	m_bDuration = true;
 	m_fManaCostPerSecond = 1.f;
 	

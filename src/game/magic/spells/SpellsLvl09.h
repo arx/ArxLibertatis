@@ -25,7 +25,7 @@
 class SummonCreatureSpell : public SpellBase {
 public:
 	bool CanLaunch();
-	bool Launch(long duration);
+	bool Launch();
 	void End();
 	void Update(float timeDelta);
 	
@@ -43,7 +43,7 @@ public:
 
 class NegateMagicSpell : public SpellBase {
 public:
-	void Launch(long duration);
+	void Launch();
 	void Update(float timeDelta);
 	
 private:
@@ -60,7 +60,7 @@ public:
 
 class MassParalyseSpell : public SpellBase {
 public:
-	void Launch(long duration);
+	void Launch();
 	void End(SpellHandle i);
 };
 

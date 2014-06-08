@@ -233,7 +233,7 @@ void ControlTargetSpell::Update(float timeDelta)
 
 extern float GLOBAL_SLOWDOWN;
 
-void FreezeTimeSpell::Launch(long duration)
+void FreezeTimeSpell::Launch()
 {
 	ARX_SOUND_PlaySFX(SND_SPELL_FREEZETIME);
 	
@@ -242,7 +242,7 @@ void FreezeTimeSpell::Launch(long duration)
 	GLOBAL_SLOWDOWN -= m_siz;
 	
 	m_exist = true;
-	m_tolive = (duration > -1) ? duration : 200000;
+	m_tolive = (m_launchDuration > -1) ? m_launchDuration : 200000;
 	m_bDuration = true;
 	m_fManaCostPerSecond = 30.f * m_siz;
 	m_longinfo_time = (long)arxtime.get_updated();
