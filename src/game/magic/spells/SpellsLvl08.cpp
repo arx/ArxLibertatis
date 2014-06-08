@@ -34,6 +34,14 @@
 #include "scene/GameSound.h"
 #include "scene/Interactive.h"
 
+bool InvisibilitySpell::CanLaunch()
+{
+	if(ARX_SPELLS_ExistAnyInstanceForThisCaster(m_type, m_caster))
+		return false;
+	
+	return true;
+}
+
 void InvisibilitySpell::Launch(SpellHandle i, long duration)
 {
 	m_exist = true;
@@ -72,6 +80,14 @@ void InvisibilitySpell::Update(SpellHandle i)
 			ARX_SPELLS_Fizzle(i);
 		}
 	}	
+}
+
+bool ManaDrainSpell::CanLaunch()
+{
+	if(ARX_SPELLS_ExistAnyInstanceForThisCaster(m_type, m_caster))
+		return false;
+	
+	return true;
 }
 
 void ManaDrainSpell::Launch(long duration)
@@ -344,6 +360,14 @@ void EnchantWeaponSpell::Update(float timeDelta)
 		pCSpellFX->Update(timeDelta);
 		pCSpellFX->Render();
 	}	
+}
+
+bool LifeDrainSpell::CanLaunch()
+{
+	if(ARX_SPELLS_ExistAnyInstanceForThisCaster(m_type, m_caster))
+		return false;
+	
+	return true;
 }
 
 void LifeDrainSpell::Launch(long duration)

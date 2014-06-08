@@ -24,6 +24,7 @@
 
 class InvisibilitySpell : public SpellBase {
 public:
+	bool CanLaunch();
 	void Launch(SpellHandle i, long duration);
 	void End(SpellHandle i);
 	void Update(SpellHandle i);
@@ -31,6 +32,7 @@ public:
 
 class ManaDrainSpell : public SpellBase {
 public:
+	bool CanLaunch();
 	void Launch(long duration);
 	void End();
 	void Update(float timeDelta);
@@ -50,6 +52,7 @@ public:
 
 class LifeDrainSpell : public SpellBase {
 public:
+	bool CanLaunch();
 	void Launch(long duration);
 	void End();
 	void Update(float timeDelta);

@@ -1543,14 +1543,14 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flagss
 		//****************************************************************************
 		// LEVEL 8
 		case SPELL_INVISIBILITY: {
-			if(ARX_SPELLS_ExistAnyInstanceForThisCaster(typ, spells[i].m_caster))
+			if(! static_cast<InvisibilitySpell &>(spell).CanLaunch())
 				return false;
 			
 			static_cast<InvisibilitySpell &>(spell).Launch(i, duration);
 			break;
 		}
 		case SPELL_MANA_DRAIN: {
-			if(ARX_SPELLS_ExistAnyInstanceForThisCaster(typ, spells[i].m_caster))
+			if(! static_cast<ManaDrainSpell &>(spell).CanLaunch())
 				return false;
 			
 			static_cast<ManaDrainSpell &>(spell).Launch(duration);
@@ -1565,7 +1565,7 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flagss
 			break;
 		}
 		case SPELL_LIFE_DRAIN: {
-			if(ARX_SPELLS_ExistAnyInstanceForThisCaster(typ, spells[i].m_caster))
+			if(! static_cast<LifeDrainSpell &>(spell).CanLaunch())
 				return false;
 			
 			static_cast<LifeDrainSpell &>(spell).Launch(duration);
