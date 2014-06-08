@@ -525,40 +525,32 @@ void ARX_PLAYER_ComputePlayerFullStats() {
 	// Calculate for modifiers from spells
 	if(entities.player()) {
 		
-		SpellHandle handle;
+		SpellBase * spell;
 		
-		handle = ARX_SPELLS_GetSpellOn(entities.player(), SPELL_ARMOR);
-		if(handle != InvalidSpellHandle) {
-			const SpellBase & spell = spells[handle];
-			
-			player.m_miscMod.armorClass += spell.m_caster_level;
+		spell = ARX_SPELLS_GetSpellOn(entities.player(), SPELL_ARMOR);
+		if(spell) {
+			player.m_miscMod.armorClass += spell->m_caster_level;
 		}
 		
-		handle = ARX_SPELLS_GetSpellOn(entities.player(), SPELL_LOWER_ARMOR);
-		if(handle != InvalidSpellHandle) {
-			const SpellBase & spell = spells[handle];
-			
-			player.m_miscMod.armorClass -= spell.m_caster_level;
+		spell = ARX_SPELLS_GetSpellOn(entities.player(), SPELL_LOWER_ARMOR);
+		if(spell) {
+			player.m_miscMod.armorClass -= spell->m_caster_level;
 		}
 		
-		handle = ARX_SPELLS_GetSpellOn(entities.player(), SPELL_CURSE);
-		if(handle != InvalidSpellHandle) {
-			const SpellBase & spell = spells[handle];
-			
-			player.m_attributeMod.strength -= spell.m_caster_level;
-			player.m_attributeMod.constitution -= spell.m_caster_level;
-			player.m_attributeMod.dexterity -= spell.m_caster_level;
-			player.m_attributeMod.mind -= spell.m_caster_level;
+		spell = ARX_SPELLS_GetSpellOn(entities.player(), SPELL_CURSE);
+		if(spell) {
+			player.m_attributeMod.strength -= spell->m_caster_level;
+			player.m_attributeMod.constitution -= spell->m_caster_level;
+			player.m_attributeMod.dexterity -= spell->m_caster_level;
+			player.m_attributeMod.mind -= spell->m_caster_level;
 		}
 	
-		handle = ARX_SPELLS_GetSpellOn(entities.player(), SPELL_BLESS);
-		if(handle != InvalidSpellHandle) {
-			const SpellBase & spell = spells[handle];
-			
-			player.m_attributeMod.strength += spell.m_caster_level;
-			player.m_attributeMod.dexterity += spell.m_caster_level;
-			player.m_attributeMod.constitution += spell.m_caster_level;
-			player.m_attributeMod.mind += spell.m_caster_level;
+		spell = ARX_SPELLS_GetSpellOn(entities.player(), SPELL_BLESS);
+		if(spell) {
+			player.m_attributeMod.strength += spell->m_caster_level;
+			player.m_attributeMod.dexterity += spell->m_caster_level;
+			player.m_attributeMod.constitution += spell->m_caster_level;
+			player.m_attributeMod.mind += spell->m_caster_level;
 		}
 	}
 	
@@ -1689,7 +1681,7 @@ void ARX_PLAYER_Manage_Visual() {
 			ChangeMoveAnim = alist[ANIM_MEDITATION];
 			ChangeMA_Loop = true;
 			goto makechanges;
-		} else if(ARX_SPELLS_GetSpellOn(io, SPELL_LEVITATE) != InvalidSpellHandle) {
+		} else if(ARX_SPELLS_GetSpellOn(io, SPELL_LEVITATE)) {
 			ChangeMoveAnim = alist[ANIM_LEVITATE];
 			ChangeMA_Loop = true;
 			goto makechanges;
@@ -1873,7 +1865,7 @@ void ForcePlayerLookAtIO(Entity * io) {
  */
 void ARX_PLAYER_Frame_Update()
 {
-	if(ARX_SPELLS_GetSpellOn(entities.player(), SPELL_PARALYSE) != InvalidSpellHandle) {
+	if(ARX_SPELLS_GetSpellOn(entities.player(), SPELL_PARALYSE)) {
 		PLAYER_PARALYSED = 1;
 	} else {
 		entities.player()->ioflags &= ~IO_FREEZESCRIPT;
@@ -1930,7 +1922,7 @@ void ARX_PLAYER_Frame_Update()
 	player.TRAP_DETECT = player.m_skillFull.mecanism;
 	player.TRAP_SECRET = player.m_skillFull.intuition;
 
-	if(ARX_SPELLS_GetSpellOn(entities.player(), SPELL_DETECT_TRAP) != InvalidSpellHandle)
+	if(ARX_SPELLS_GetSpellOn(entities.player(), SPELL_DETECT_TRAP))
 		player.TRAP_DETECT = 100.f;
 
 	ModeLight |= MODE_DEPTHCUEING;
@@ -1943,7 +1935,7 @@ void ARX_PLAYER_Frame_Update()
  */
 static void ARX_PLAYER_MakeStepNoise() {
 	
-	if(ARX_SPELLS_GetSpellOn(entities.player(), SPELL_LEVITATE) != InvalidSpellHandle) {
+	if(ARX_SPELLS_GetSpellOn(entities.player(), SPELL_LEVITATE)) {
 		return;
 	}
 	
@@ -2122,9 +2114,10 @@ void PlayerMovementIterate(float DeltaTime) {
 				float anything = CheckAnythingInCylinder(player.physics.cyl, entities.player());
 				if(anything < 0.f) {
 					player.physics.cyl.height = old;
-					SpellHandle num = ARX_SPELLS_GetSpellOn(entities.player(), SPELL_LEVITATE);
-					if(num != InvalidSpellHandle) {
-						spells[num].m_tolive = 0;
+					
+					SpellBase * spell = ARX_SPELLS_GetSpellOn(entities.player(), SPELL_LEVITATE);
+					if(spell) {
+						spell->m_tolive = 0;
 					}
 				}
 			}

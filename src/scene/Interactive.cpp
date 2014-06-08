@@ -2724,20 +2724,16 @@ float ARX_INTERACTIVE_GetArmorClass(Entity * io) {
 
 	float ac = io->_npcdata->armor_class;
 
-	SpellHandle handle;
+	SpellBase * spell;
 	
-	handle = ARX_SPELLS_GetSpellOn(io, SPELL_ARMOR);
-	if(handle != InvalidSpellHandle) {
-		const SpellBase & spell = spells[handle];
-		
-		ac += spell.m_caster_level;
+	spell = ARX_SPELLS_GetSpellOn(io, SPELL_LOWER_ARMOR);
+	if(spell) {
+		ac += spell->m_caster_level;
 	}
 	
-	handle = ARX_SPELLS_GetSpellOn(io, SPELL_LOWER_ARMOR);
-	if(handle != InvalidSpellHandle) {
-		const SpellBase & spell = spells[handle];
-		
-		ac -= spell.m_caster_level;
+	spell = ARX_SPELLS_GetSpellOn(io, SPELL_LOWER_ARMOR);
+	if(spell) {
+		ac -= spell->m_caster_level;
 	}
 	
 	if(ac < 0)

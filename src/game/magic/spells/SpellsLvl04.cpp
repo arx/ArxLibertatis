@@ -161,9 +161,9 @@ void DispellFieldSpell::Launch()
 
 void FireProtectionSpell::Launch()
 {
-	SpellHandle idx = ARX_SPELLS_GetSpellOn(entities[m_target], SPELL_FIRE_PROTECTION);
-	if(idx != InvalidSpellHandle) {
-		spells[idx].m_tolive = 0;
+	SpellBase * spell = ARX_SPELLS_GetSpellOn(entities[m_target], SPELL_FIRE_PROTECTION);
+	if(spell) {
+		spell->m_tolive = 0;
 	}
 	
 	spells.RequestEndOfInstanceForThisCaster(SPELL_ARMOR, m_caster);
@@ -233,9 +233,9 @@ void FireProtectionSpell::Update(float timeDelta)
 
 void ColdProtectionSpell::Launch()
 {
-	SpellHandle idx = ARX_SPELLS_GetSpellOn(entities[m_target], SPELL_COLD_PROTECTION);
-	if(idx != InvalidSpellHandle) {
-		spells[idx].m_tolive = 0;
+	SpellBase * spell = ARX_SPELLS_GetSpellOn(entities[m_target], SPELL_COLD_PROTECTION);
+	if(spell) {
+		spell->m_tolive = 0;
 	}
 	
 	spells.RequestEndOfInstanceForThisCaster(SPELL_ARMOR, m_caster);

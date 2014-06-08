@@ -240,12 +240,12 @@ float Cedric_GetInvisibility(Entity *io) {
 			invisibility -= 1.f;
 
 		if(io != entities.player() && invisibility > 0.f && !EXTERNALVIEW) {
-			SpellHandle num = ARX_SPELLS_GetSpellOn(io, SPELL_INVISIBILITY);
+			SpellBase * spell = ARX_SPELLS_GetSpellOn(io, SPELL_INVISIBILITY);
 
-			if(num != InvalidSpellHandle) {
-				if(player.m_skillFull.intuition > spells[num].m_caster_level * 10) {
+			if(spell) {
+				if(player.m_skillFull.intuition > spell->m_caster_level * 10) {
 					invisibility -= (float)player.m_skillFull.intuition * (1.0f / 100)
-									+ (float)spells[num].m_caster_level * (1.0f / 10);
+									+ (float)spell->m_caster_level * (1.0f / 10);
 
 					invisibility = clamp(invisibility, 0.1f, 1.f);
 				}
@@ -374,20 +374,20 @@ void Cedric_ApplyLightingFirstPartRefactor(Entity *io) {
 						if(io->sfx_flag & SFX_TYPE_INCINERATE) {
 							io->sfx_flag &= ~SFX_TYPE_INCINERATE;
 							io->sfx_flag &= ~SFX_TYPE_YLSIDE_DEATH;
-							SpellHandle num = ARX_SPELLS_GetSpellOn(io, SPELL_INCINERATE);
+							SpellBase * spell = ARX_SPELLS_GetSpellOn(io, SPELL_INCINERATE);
 
-							if(num == InvalidSpellHandle)
-								num = ARX_SPELLS_GetSpellOn(io, SPELL_MASS_INCINERATE);
+							if(!spell)
+								spell = ARX_SPELLS_GetSpellOn(io, SPELL_MASS_INCINERATE);
 
-							if(num != InvalidSpellHandle) {
-								spells[num].m_tolive = 0;
-								float damages = 20 * spells[num].m_caster_level;
+							if(spell) {
+								spell->m_tolive = 0;
+								float damages = 20 * spell->m_caster_level;
 								damages = ARX_SPELLS_ApplyFireProtection(io, damages);
 
-								if (ValidIONum(spells[num].m_caster))
-									ARX_DAMAGES_DamageNPC(io, damages, spells[num].m_caster, 1, &entities[spells[num].m_caster]->pos);
+								if (ValidIONum(spell->m_caster))
+									ARX_DAMAGES_DamageNPC(io, damages, spell->m_caster, 1, &entities[spell->m_caster]->pos);
 								else
-									ARX_DAMAGES_DamageNPC(io, damages, spells[num].m_caster, 1, &io->pos);
+									ARX_DAMAGES_DamageNPC(io, damages, spell->m_caster, 1, &io->pos);
 
 								ARX_SOUND_PlaySFX(SND_SPELL_FIRE_HIT, &io->pos);
 							}

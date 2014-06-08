@@ -321,11 +321,13 @@ void ARX_SPELLS_AddSpellOn(EntityHandle caster, SpellHandle spell)
 	io->spellsOn.insert(spell);
 }
 
-SpellHandle ARX_SPELLS_GetSpellOn(const Entity * io, SpellType spellid)
+SpellBase * ARX_SPELLS_GetSpellOn(const Entity * io, SpellType spellid)
 {
 	if(!io)
-		return InvalidSpellHandle;
+		return NULL;
 
+	SpellHandle handle = InvalidSpellHandle;
+	
 	boost::container::flat_set<SpellHandle>::const_iterator it;
 	for(it = io->spellsOn.begin(); it != io->spellsOn.end(); ++it) {
 		SpellHandle spellHandle = SpellHandle(*it);
@@ -333,12 +335,16 @@ SpellHandle ARX_SPELLS_GetSpellOn(const Entity * io, SpellType spellid)
 			SpellBase * spell = &spells[spellHandle];
 			
 			if(spell->m_type == spellid) {
-				return spellHandle;
+				handle = spellHandle;
+				break;
 			}
 		}
 	}
 	
-	return InvalidSpellHandle;
+	if(handle == InvalidSpellHandle)
+		return NULL;
+	
+	return &spells[handle];
 }
 
 void ARX_SPELLS_RemoveSpellOn(EntityHandle entityHandle, SpellHandle spellHandle)
@@ -992,10 +998,9 @@ void ARX_SPELLS_LaunchSpellTarget(Entity * io) {
 float ARX_SPELLS_ApplyFireProtection(Entity * io,float damages)
 {
 	if(io) {
-		SpellHandle idx = ARX_SPELLS_GetSpellOn(io, SPELL_FIRE_PROTECTION);
-
-		if(idx != InvalidSpellHandle) {
-			float modif = 1.f-((float)spells[idx].m_caster_level*( 1.0f / 10 ));
+		SpellBase * spell = ARX_SPELLS_GetSpellOn(io, SPELL_FIRE_PROTECTION);
+		if(spell) {
+			float modif = 1.f - (spell->m_caster_level * ( 1.0f / 10 ));
 
 			modif = clamp(modif, 0.f, 1.f);
 
@@ -1015,10 +1020,9 @@ float ARX_SPELLS_ApplyFireProtection(Entity * io,float damages)
 
 float ARX_SPELLS_ApplyColdProtection(Entity * io,float damages)
 {
-	SpellHandle idx = ARX_SPELLS_GetSpellOn(io, SPELL_COLD_PROTECTION);
-
-	if(idx != InvalidSpellHandle) {
-		float modif=1.f-((float)spells[idx].m_caster_level*( 1.0f / 10 ));
+	SpellBase * spell = ARX_SPELLS_GetSpellOn(io, SPELL_COLD_PROTECTION);
+	if(spell) {
+		float modif = 1.f - (spell->m_caster_level * ( 1.0f / 10 ));
 
 		modif = clamp(modif, 0.f, 1.f);
 

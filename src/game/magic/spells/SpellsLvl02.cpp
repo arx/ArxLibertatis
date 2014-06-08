@@ -153,9 +153,9 @@ void DetectTrapSpell::Update(float timeDelta)
 
 void ArmorSpell::Launch()
 {
-	SpellHandle idx = ARX_SPELLS_GetSpellOn(entities[m_target], SPELL_ARMOR);
-	if(idx != InvalidSpellHandle) {
-		spells[idx].m_tolive = 0;
+	SpellBase * spell = ARX_SPELLS_GetSpellOn(entities[m_target], SPELL_ARMOR);
+	if(spell) {
+		spell->m_tolive = 0;
 	}
 	
 	spells.RequestEndOfInstanceForThisCaster(SPELL_LOWER_ARMOR, m_caster);
@@ -228,9 +228,9 @@ void ArmorSpell::Update(float timeDelta)
 
 void LowerArmorSpell::Launch()
 {
-	SpellHandle idx = ARX_SPELLS_GetSpellOn(entities[m_target], SPELL_LOWER_ARMOR);
-	if(idx != InvalidSpellHandle) {
-		spells[idx].m_tolive = 0;
+	SpellBase * spell = ARX_SPELLS_GetSpellOn(entities[m_target], SPELL_LOWER_ARMOR);
+	if(spell) {
+		spell->m_tolive = 0;
 	}
 	
 	spells.RequestEndOfInstanceForThisCaster(SPELL_ARMOR, m_caster);

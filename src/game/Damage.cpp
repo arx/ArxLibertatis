@@ -765,10 +765,10 @@ float ARX_DAMAGES_DamageNPC(Entity * io, float dmg, EntityHandle source, long fl
 
 		SendIOScriptEvent(io, SM_OUCH, tex);
 		io->dmg_sum = 0.f;
-		SpellHandle n = ARX_SPELLS_GetSpellOn(io, SPELL_CONFUSE);
-
-		if(n != InvalidSpellHandle)
-			spells[n].m_tolive = 0;
+		
+		SpellBase * spell = ARX_SPELLS_GetSpellOn(io, SPELL_CONFUSE);
+		if(spell)
+			spell->m_tolive = 0;
 	}
 
 	if(dmg >= 0.f) {

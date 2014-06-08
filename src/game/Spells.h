@@ -127,7 +127,7 @@ void ARX_SPELLS_ClearAllSymbolDraw();
 
 void ARX_SPELLS_RemoveAllSpellsOn(Entity * io);
 bool spellHandleIsValid(SpellHandle handle);
-SpellHandle ARX_SPELLS_GetSpellOn(const Entity * io, SpellType spellid);
+SpellBase * ARX_SPELLS_GetSpellOn(const Entity * io, SpellType spellid);
 
 void ARX_SPELLS_CancelSpellTarget();
 void ARX_SPELLS_LaunchSpellTarget(Entity * io);

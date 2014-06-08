@@ -557,10 +557,9 @@ float ARX_EQUIPMENT_ComputeDamages(Entity * io_source, Entity * io_target, float
 		
 		damages = io_source->_npcdata->damages * ratioaim * (rnd() * ( 1.0f / 2 ) + 0.5f);
 
-		SpellHandle value = ARX_SPELLS_GetSpellOn(io_source, SPELL_CURSE);
-
-		if(value != InvalidSpellHandle) {
-			damages *= (1 - spells[value].m_caster_level * 0.05f);
+		SpellBase * spell = ARX_SPELLS_GetSpellOn(io_source, SPELL_CURSE);
+		if(spell) {
+			damages *= (1 - spell->m_caster_level * 0.05f);
 		}
 
 		if(rnd() * 100 <= io_source->_npcdata->critical) {
@@ -584,10 +583,10 @@ float ARX_EQUIPMENT_ComputeDamages(Entity * io_source, Entity * io_target, float
 	} else {
 		ac = ARX_INTERACTIVE_GetArmorClass(io_target);
 		absorb = io_target->_npcdata->absorb;
-		SpellHandle value = ARX_SPELLS_GetSpellOn(io_target, SPELL_CURSE);
-
-		if(value != InvalidSpellHandle) {
-			float modif = (1 - spells[value].m_caster_level * 0.05f);
+		
+		SpellBase * spell = ARX_SPELLS_GetSpellOn(io_target, SPELL_CURSE);
+		if(spell) {
+			float modif = (1 - spell->m_caster_level * 0.05f);
 			ac *= modif;
 			absorb *= modif;
 		}
