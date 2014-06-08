@@ -950,27 +950,6 @@ static SpellHandle ARX_SPELLS_GetFree() {
 	return InvalidSpellHandle;
 }
 
-SpellHandle ARX_SPELLS_GetInstance(SpellType typ) {
-	
-	for(size_t i = 0; i < MAX_SPELLS; i++) {
-		const SpellHandle handle = SpellHandle(i);
-		const SpellBase & spell = spells[handle];
-		
-		if(spell.m_exist && spell.m_type == typ) {
-			return handle;
-		}
-	}
-	
-	return InvalidSpellHandle;
-}
-
-// Checks for an existing instance of this spelltype
-bool ARX_SPELLS_ExistAnyInstance(SpellType typ) {
-	return (ARX_SPELLS_GetInstance(typ) != InvalidSpellHandle);
-}
-
-
-
 // Plays the sound of aborted spell
 void ARX_SPELLS_AbortSpellSound() {
 	ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE);

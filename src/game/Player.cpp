@@ -1681,7 +1681,7 @@ void ARX_PLAYER_Manage_Visual() {
 	retry:
 		;
 
-		if(ARX_SPELLS_ExistAnyInstance(SPELL_FLYING_EYE)) {
+		if(spells.ExistAnyInstanceForThisCaster(SPELL_FLYING_EYE, PlayerEntityHandle)) {
 			ChangeMoveAnim = alist[ANIM_MEDITATION];
 			ChangeMA_Loop = true;
 			goto makechanges;

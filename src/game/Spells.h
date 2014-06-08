@@ -120,13 +120,11 @@ void ARX_SPELLS_Init();
 void ARX_SPELLS_ClearAll();
 void ARX_SPELLS_Update();
 
-SpellHandle ARX_SPELLS_GetInstance(SpellType typ);
 void ARX_SPELLS_ManageMagic();
 
 void ARX_SPELLS_UpdateSymbolDraw();
 void ARX_SPELLS_ClearAllSymbolDraw();
 
-bool ARX_SPELLS_ExistAnyInstance(SpellType typ);
 void ARX_SPELLS_RemoveAllSpellsOn(Entity * io);
 bool spellHandleIsValid(SpellHandle handle);
 SpellHandle ARX_SPELLS_GetSpellOn(const Entity * io, SpellType spellid);

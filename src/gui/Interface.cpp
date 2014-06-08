@@ -1932,11 +1932,7 @@ void ArxGame::managePlayerControls()
 
 		if(bRenderInCursorMode) {
 			if(eyeball.exist != 0) {
-				SpellHandle lNumSpell = ARX_SPELLS_GetInstance(SPELL_FLYING_EYE);
-
-				if(lNumSpell != InvalidSpellHandle) {
-					spells[lNumSpell].m_tolive = 0;
-				}
+				spells.RequestEndOfInstanceForThisCaster(SPELL_FLYING_EYE, PlayerEntityHandle);
 			}
 		}
 	}

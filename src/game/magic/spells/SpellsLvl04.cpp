@@ -36,10 +36,7 @@
 
 bool BlessSpell::CanLaunch()
 {
-	if(ARX_SPELLS_ExistAnyInstance(m_type))
-		return false;
-	
-	return true;
+	return !spells.ExistAnyInstanceForThisCaster(m_type, m_caster);
 }
 
 void BlessSpell::Launch()
