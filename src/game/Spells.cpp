@@ -1518,16 +1518,10 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flagss
 		//****************************************************************************
 		// LEVEL 7
 		case SPELL_FLYING_EYE: {
-			if(eyeball.exist)
-				return false;
-
-			if(ARX_SPELLS_ExistAnyInstanceForThisCaster(typ,spells[i].m_caster))
+			if(! static_cast<FlyingEyeSpell &>(spell).CanLaunch())
 				return false;
 			
-			bool result = static_cast<FlyingEyeSpell &>(spell).Launch();
-			if(!result)
-				return false;
-			
+			static_cast<FlyingEyeSpell &>(spell).Launch();
 			break;
 		}
 		case SPELL_FIRE_FIELD: {

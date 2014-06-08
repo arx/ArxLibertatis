@@ -45,9 +45,13 @@ bool bOldLookToggle;
 
 static LightHandle special[3];
 
-bool FlyingEyeSpell::Launch()
+bool FlyingEyeSpell::CanLaunch()
 {
-	static TextureContainer * tc4 = TextureContainer::Load("graph/particles/smoke");
+	if(eyeball.exist)
+		return false;
+
+	if(ARX_SPELLS_ExistAnyInstanceForThisCaster(m_type, m_caster))
+		return false;
 	
 	if(m_caster == PlayerEntityHandle) {
 		m_target = PlayerEntityHandle;
@@ -56,6 +60,13 @@ bool FlyingEyeSpell::Launch()
 	if(m_target != PlayerEntityHandle) {
 		return false;
 	}
+	
+	return true;
+}
+
+bool FlyingEyeSpell::Launch()
+{
+	static TextureContainer * tc4 = TextureContainer::Load("graph/particles/smoke");
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_EYEBALL_IN);
 	
