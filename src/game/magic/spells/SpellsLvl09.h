@@ -43,7 +43,7 @@ public:
 
 class NegateMagicSpell : public SpellBase {
 public:
-	void Launch(long duration, SpellHandle i);
+	void Launch(long duration);
 	void Update(float timeDelta);
 	
 private:
@@ -53,14 +53,14 @@ private:
 class IncinerateSpell : public SpellBase {
 public:
 	bool CanLaunch();
-	bool Launch(SpellHandle i);
+	bool Launch();
 	void End(SpellHandle i);
 	void Update();
 };
 
 class MassParalyseSpell : public SpellBase {
 public:
-	void Launch(SpellHandle i, long duration);
+	void Launch(long duration);
 	void End(SpellHandle i);
 };
 

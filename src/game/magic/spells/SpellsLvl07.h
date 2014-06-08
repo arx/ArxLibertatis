@@ -46,14 +46,14 @@ public:
 
 class LightningStrikeSpell : public SpellBase {
 public:
-	void Launch(SpellHandle i);
+	void Launch();
 	void End();
 	void Update(float timeDelta);
 };
 
 class ConfuseSpell : public SpellBase {
 public:
-	void Launch(SpellHandle i, long duration);
+	void Launch(long duration);
 	void End(SpellHandle i);
 	void Update(float timeDelta);
 };

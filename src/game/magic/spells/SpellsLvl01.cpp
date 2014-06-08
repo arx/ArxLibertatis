@@ -82,7 +82,7 @@ void MagicSightSpell::Update()
 	}	
 }
 
-void MagicMissileSpell::Launch(SpellHandle i)
+void MagicMissileSpell::Launch()
 {
 	m_exist = true;
 	m_tolive = 20000; // TODO probably never read
@@ -94,7 +94,7 @@ void MagicMissileSpell::Launch(SpellHandle i)
 		number = clamp(long(m_caster_level + 1) / 2, 1l, 5l);
 	}
 	
-	CMultiMagicMissile * effect = new CMultiMagicMissile(number, i);
+	CMultiMagicMissile * effect = new CMultiMagicMissile(number, m_thisHandle);
 	effect->SetDuration(6000ul);
 	effect->Create();
 	m_pSpellFx = effect;
@@ -124,13 +124,13 @@ void MagicMissileSpell::Update(float timeDelta)
 	}
 }
 
-void IgnitSpell::Launch(SpellHandle i)
+void IgnitSpell::Launch()
 {
 	m_exist = true;
 	m_tolive = 500;
 	
 	CIgnit * effect = new CIgnit();
-	effect->spellinstance = i;
+	effect->spellinstance = m_thisHandle;
 	
 	Vec3f target;
 	if(m_hand_group != -1) {
@@ -219,13 +219,13 @@ void IgnitSpell::Update(float timeDelta)
 	}
 }
 
-void DouseSpell::Launch(SpellHandle i)
+void DouseSpell::Launch()
 {
 	m_exist = true;
 	m_tolive = 500;
 	
 	CDoze * effect = new CDoze();
-	effect->spellinstance = i;
+	effect->spellinstance = m_thisHandle;
 	
 	Vec3f target;
 	if(m_hand_group >= 0) {

@@ -24,7 +24,7 @@
 
 class MassLightningStrikeSpell : public SpellBase {
 public:
-	void Launch(SpellHandle i);
+	void Launch();
 	void End();
 	void Update(float timeDelta);
 };
@@ -43,7 +43,7 @@ public:
 
 class MassIncinerateSpell : public SpellBase {
 public:
-	void Launch(SpellHandle i);
+	void Launch();
 	void End(SpellHandle i);
 	void Update();
 };

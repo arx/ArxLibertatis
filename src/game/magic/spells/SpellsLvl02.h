@@ -25,27 +25,27 @@
 class HealSpell : public SpellBase {
 public:
 	bool CanLaunch();
-	void Launch(SpellHandle i, long duration);
+	void Launch(long duration);
 	void Update(float framedelay);
 };
 
 class DetectTrapSpell : public SpellBase {
 public:
-	void Launch(SpellHandle i);
+	void Launch();
 	void End(SpellHandle i);
 	void Update(float timeDelta);
 };
 
 class ArmorSpell : public SpellBase {
 public:
-	void Launch(long duration, SpellHandle i);
+	void Launch(long duration);
 	void End(SpellHandle i);
 	void Update(float timeDelta);
 };
 
 class LowerArmorSpell : public SpellBase {
 public:
-	void Launch(long duration, SpellHandle i);
+	void Launch(long duration);
 	void End(SpellHandle i);
 	void Update(float timeDelta);
 };

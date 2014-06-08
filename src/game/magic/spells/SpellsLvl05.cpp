@@ -76,7 +76,7 @@ void RuneOfGuardingSpell::Update(float timeDelta)
 	}
 }
 
-void LevitateSpell::Launch(long duration, SpellHandle i)
+void LevitateSpell::Launch(long duration)
 {
 	SpellHandle iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_LEVITATE, m_caster);
 	if(iCancel != InvalidSpellHandle) {
@@ -112,7 +112,7 @@ void LevitateSpell::Launch(long duration, SpellHandle i)
 	                                       &entities[m_target]->pos, 0.7f,
 	                                       ARX_SOUND_PLAY_LOOPED);
 	
-	ARX_SPELLS_AddSpellOn(m_target, i);
+	ARX_SPELLS_AddSpellOn(m_target, m_thisHandle);
 }
 
 void LevitateSpell::End(SpellHandle i)
@@ -152,7 +152,7 @@ void LevitateSpell::Update(float timeDelta)
 	ARX_SOUND_RefreshPosition(m_snd_loop, entities[m_target]->pos);
 }
 
-void CurePoisonSpell::Launch(SpellHandle i)
+void CurePoisonSpell::Launch()
 {
 	if(m_caster == PlayerEntityHandle) {
 		m_target = PlayerEntityHandle;
@@ -175,7 +175,7 @@ void CurePoisonSpell::Launch(SpellHandle i)
 	m_tolive = 3500;
 	
 	CCurePoison * effect = new CCurePoison();
-	effect->spellinstance = i;
+	effect->spellinstance = m_thisHandle;
 	effect->Create();
 	effect->SetDuration(m_tolive);
 	m_pSpellFx = effect;
@@ -190,7 +190,7 @@ void CurePoisonSpell::Update(float timeDelta)
 	}
 }
 
-void RepelUndeadSpell::Launch(long duration, SpellHandle i)
+void RepelUndeadSpell::Launch(long duration)
 {
 	SpellHandle iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_REPEL_UNDEAD, m_caster);
 	if(iCancel != InvalidSpellHandle) {
@@ -214,7 +214,7 @@ void RepelUndeadSpell::Launch(long duration, SpellHandle i)
 	m_fManaCostPerSecond = 1.f;
 	
 	CRepelUndead * effect = new CRepelUndead();
-	effect->spellinstance = i;
+	effect->spellinstance = m_thisHandle;
 	effect->Create(player.pos, MAKEANGLE(player.angle.getPitch()));
 	effect->SetDuration(m_tolive);
 	m_pSpellFx = effect;
@@ -245,7 +245,7 @@ void RepelUndeadSpell::Update(float timeDelta)
 	}
 }
 
-void PoisonProjectileSpell::Launch(SpellHandle i)
+void PoisonProjectileSpell::Launch()
 {
 	ARX_SOUND_PlaySFX(SND_SPELL_POISON_PROJECTILE_LAUNCH,
 	                  &m_caster_pos);
@@ -255,7 +255,7 @@ void PoisonProjectileSpell::Launch(SpellHandle i)
 	
 	long level = std::max(long(m_caster_level), 1l);
 	CMultiPoisonProjectile * effect = new CMultiPoisonProjectile(level);
-	effect->spellinstance = i;
+	effect->spellinstance = m_thisHandle;
 	effect->SetDuration(8000ul);
 	effect->Create(Vec3f_ZERO);
 	m_pSpellFx = effect;

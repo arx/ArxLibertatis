@@ -32,21 +32,21 @@ public:
 
 class MagicMissileSpell : public SpellBase {
 public:
-	void Launch(SpellHandle i);
+	void Launch();
 	void End();
 	void Update(float timeDelta);
 };
 
 class IgnitSpell : public SpellBase {
 public:
-	void Launch(SpellHandle i);
+	void Launch();
 	void End();
 	void Update(float timeDelta);
 };
 
 class DouseSpell : public SpellBase {
 public:
-	void Launch(SpellHandle i);
+	void Launch();
 	void End();
 	void Update(float timeDelta);
 };

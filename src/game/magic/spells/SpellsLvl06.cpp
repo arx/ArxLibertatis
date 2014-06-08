@@ -244,7 +244,7 @@ void RiseDeadSpell::Update(float timeDelta)
 	}
 }
 
-void ParalyseSpell::Launch(SpellHandle i, long duration)
+void ParalyseSpell::Launch(long duration)
 {
 	ARX_SOUND_PlaySFX(SND_SPELL_PARALYSE, &entities[m_target]->pos);
 	
@@ -264,7 +264,7 @@ void ParalyseSpell::Launch(SpellHandle i, long duration)
 	
 	entities[m_target]->ioflags |= IO_FREEZESCRIPT;
 	
-	ARX_SPELLS_AddSpellOn(m_target, i);
+	ARX_SPELLS_AddSpellOn(m_target, m_thisHandle);
 	ARX_NPC_Kill_Spell_Launch(entities[m_target]);
 }
 
@@ -443,7 +443,7 @@ bool SlowDownSpell::CanLaunch()
 	return true;
 }
 
-bool SlowDownSpell::Launch(long duration, SpellHandle i)
+bool SlowDownSpell::Launch(long duration)
 {
 	ARX_SOUND_PlaySFX(SND_SPELL_SLOW_DOWN, &entities[m_target]->pos);
 	
@@ -462,7 +462,7 @@ bool SlowDownSpell::Launch(long duration, SpellHandle i)
 	m_pSpellFx = effect;
 	m_tolive = effect->GetDuration();
 	
-	ARX_SPELLS_AddSpellOn(m_target, i);
+	ARX_SPELLS_AddSpellOn(m_target, m_thisHandle);
 	
 	return true;
 }

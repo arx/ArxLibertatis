@@ -42,7 +42,7 @@ bool InvisibilitySpell::CanLaunch()
 	return true;
 }
 
-void InvisibilitySpell::Launch(SpellHandle i, long duration)
+void InvisibilitySpell::Launch(long duration)
 {
 	m_exist = true;
 	m_tolive = (duration > -1) ? duration : 6000000;
@@ -58,7 +58,7 @@ void InvisibilitySpell::Launch(SpellHandle i, long duration)
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_INVISIBILITY_START, &m_caster_pos);
 	
-	ARX_SPELLS_AddSpellOn(m_target, i);
+	ARX_SPELLS_AddSpellOn(m_target, m_thisHandle);
 }
 
 void InvisibilitySpell::End(SpellHandle i)

@@ -40,7 +40,7 @@ bool HealSpell::CanLaunch() {
 	return true;
 }
 
-void HealSpell::Launch(SpellHandle i, long duration)
+void HealSpell::Launch(long duration)
 {
 	if(!(m_flags & SPELLCAST_FLAG_NOSOUND)) {
 		ARX_SOUND_PlaySFX(SND_SPELL_HEALING, &m_caster_pos);
@@ -52,7 +52,7 @@ void HealSpell::Launch(SpellHandle i, long duration)
 	m_tolive = (duration > -1) ? duration : 3500;
 	
 	CHeal * effect = new CHeal();
-	effect->spellinstance = i;
+	effect->spellinstance = m_thisHandle;
 	effect->Create();
 	effect->SetDuration(m_tolive);
 	
@@ -104,7 +104,7 @@ void HealSpell::Update(float framedelay)
 	}	
 }
 
-void DetectTrapSpell::Launch(SpellHandle i)
+void DetectTrapSpell::Launch()
 {
 	SpellHandle iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_DETECT_TRAP, m_caster);
 	if(iCancel != InvalidSpellHandle) {
@@ -130,7 +130,7 @@ void DetectTrapSpell::Launch(SpellHandle i)
 	m_fManaCostPerSecond = 0.4f;
 	m_bDuration = true;
 	
-	ARX_SPELLS_AddSpellOn(m_target, i);
+	ARX_SPELLS_AddSpellOn(m_target, m_thisHandle);
 }
 
 void DetectTrapSpell::End(SpellHandle i)
@@ -157,7 +157,7 @@ void DetectTrapSpell::Update(float timeDelta)
 	}	
 }
 
-void ArmorSpell::Launch(long duration, SpellHandle i)
+void ArmorSpell::Launch(long duration)
 {
 	SpellHandle idx = ARX_SPELLS_GetSpellOn(entities[m_target], SPELL_ARMOR);
 	if(idx != InvalidSpellHandle) {
@@ -211,7 +211,7 @@ void ArmorSpell::Launch(long duration, SpellHandle i)
 		io->halo.dynlight = -1;
 	}
 	
-	ARX_SPELLS_AddSpellOn(m_target, i);
+	ARX_SPELLS_AddSpellOn(m_target, m_thisHandle);
 }
 
 void ArmorSpell::End(SpellHandle i)
@@ -243,7 +243,7 @@ void ArmorSpell::Update(float timeDelta)
 	ARX_SOUND_RefreshPosition(m_snd_loop, entities[m_target]->pos);
 }
 
-void LowerArmorSpell::Launch(long duration, SpellHandle i)
+void LowerArmorSpell::Launch(long duration)
 {
 	SpellHandle idx = ARX_SPELLS_GetSpellOn(entities[m_target], SPELL_LOWER_ARMOR);
 	if(idx != InvalidSpellHandle) {
@@ -296,7 +296,7 @@ void LowerArmorSpell::Launch(long duration, SpellHandle i)
 		}
 	}
 	
-	ARX_SPELLS_AddSpellOn(m_target, i);
+	ARX_SPELLS_AddSpellOn(m_target, m_thisHandle);
 }
 
 void LowerArmorSpell::End(SpellHandle i)

@@ -42,7 +42,7 @@ bool BlessSpell::CanLaunch()
 	return true;
 }
 
-void BlessSpell::Launch(SpellHandle i, long duration)
+void BlessSpell::Launch(long duration)
 {
 	if(m_caster == PlayerEntityHandle) {
 		m_target = PlayerEntityHandle;
@@ -61,14 +61,14 @@ void BlessSpell::Launch(SpellHandle i, long duration)
 	m_fManaCostPerSecond = 0.5f * m_caster_level * 0.6666f;
 	
 	CBless * effect = new CBless();
-	effect->spellinstance = i;
+	effect->spellinstance = m_thisHandle;
 	Vec3f target = entities[m_caster]->pos;
 	effect->Create(target, MAKEANGLE(player.angle.getPitch()));
 	effect->SetDuration(20000);
 	m_pSpellFx = effect;
 	m_tolive = effect->GetDuration();
 	
-	ARX_SPELLS_AddSpellOn(m_target, i);
+	ARX_SPELLS_AddSpellOn(m_target, m_thisHandle);
 }
 
 void BlessSpell::End(SpellHandle i)
@@ -165,7 +165,7 @@ void DispellFieldSpell::Launch()
 	}
 }
 
-void FireProtectionSpell::Launch(SpellHandle i, long duration)
+void FireProtectionSpell::Launch(long duration)
 {
 	SpellHandle idx = ARX_SPELLS_GetSpellOn(entities[m_target], SPELL_FIRE_PROTECTION);
 	if(idx != InvalidSpellHandle) {
@@ -214,7 +214,7 @@ void FireProtectionSpell::Launch(SpellHandle i, long duration)
 		io->halo.dynlight = -1;
 	}
 	
-	ARX_SPELLS_AddSpellOn(m_target, i);
+	ARX_SPELLS_AddSpellOn(m_target, m_thisHandle);
 	
 	m_snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_FIRE_PROTECTION_LOOP, 
 	                                       &entities[m_target]->pos, 1.f, 
@@ -248,7 +248,7 @@ void FireProtectionSpell::Update(float timeDelta)
 	ARX_SOUND_RefreshPosition(m_snd_loop, entities[m_target]->pos);
 }
 
-void ColdProtectionSpell::Launch(SpellHandle i, long duration)
+void ColdProtectionSpell::Launch(long duration)
 {
 	SpellHandle idx = ARX_SPELLS_GetSpellOn(entities[m_target], SPELL_COLD_PROTECTION);
 	if(idx != InvalidSpellHandle) {
@@ -301,7 +301,7 @@ void ColdProtectionSpell::Launch(SpellHandle i, long duration)
 	                                       &entities[m_target]->pos, 1.f,
 	                                       ARX_SOUND_PLAY_LOOPED);
 	
-	ARX_SPELLS_AddSpellOn(m_target, i);
+	ARX_SPELLS_AddSpellOn(m_target, m_thisHandle);
 }
 
 void ColdProtectionSpell::End(SpellHandle i)
@@ -361,7 +361,7 @@ void TelekinesisSpell::End()
 	ARX_SOUND_PlaySFX(SND_SPELL_TELEKINESIS_END, &entities[m_caster]->pos);
 }
 
-void CurseSpell::Launch(long duration, SpellHandle i)
+void CurseSpell::Launch(long duration)
 {
 	SpellHandle iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_CURSE, m_target);
 	if(iCancel != InvalidSpellHandle) {
@@ -389,7 +389,7 @@ void CurseSpell::Launch(long duration, SpellHandle i)
 	m_pSpellFx = effect;
 	m_tolive = effect->GetDuration();
 	
-	ARX_SPELLS_AddSpellOn(m_target, i);
+	ARX_SPELLS_AddSpellOn(m_target, m_thisHandle);
 }
 
 void CurseSpell::End(SpellHandle i)

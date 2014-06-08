@@ -24,7 +24,7 @@
 
 class SpeedSpell : public SpellBase {
 public:
-	void Launch(SpellHandle i, long duration);
+	void Launch(long duration);
 	void End(SpellHandle i);
 	void Update(float timeDelta);
 };
@@ -37,7 +37,7 @@ public:
 
 class FireballSpell : public SpellBase {
 public:
-	void Launch(SpellHandle i);
+	void Launch();
 	void End();
 	void Update(float timeDelta);
 };
@@ -50,7 +50,7 @@ public:
 
 class IceProjectileSpell : public SpellBase {
 public:
-	void Launch(SpellHandle i);
+	void Launch();
 	void Update(float timeDelta);
 };
 

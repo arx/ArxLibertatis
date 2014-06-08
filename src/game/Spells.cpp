@@ -1343,6 +1343,7 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flagss
 		spell.m_target_pos = entities[target]->pos;
 	}
 	
+	spell.m_thisHandle = i;
 	spell.m_flags = flags;
 	spell.m_pSpellFx = NULL;
 	spell.m_type = typ;
@@ -1371,15 +1372,15 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flagss
 			break;
 		}
 		case SPELL_MAGIC_MISSILE: {
-			static_cast<MagicMissileSpell &>(spell).Launch(i);
+			static_cast<MagicMissileSpell &>(spell).Launch();
 			break;
 		}
 		case SPELL_IGNIT: {
-			static_cast<IgnitSpell &>(spell).Launch(i);
+			static_cast<IgnitSpell &>(spell).Launch();
 			break;
 		}
 		case SPELL_DOUSE: {
-			static_cast<DouseSpell &>(spell).Launch(i);
+			static_cast<DouseSpell &>(spell).Launch();
 			break;
 		}
 		case SPELL_ACTIVATE_PORTAL: {
@@ -1392,19 +1393,19 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flagss
 			if(! static_cast<HealSpell &>(spell).CanLaunch())
 				return false;
 			
-			static_cast<HealSpell &>(spell).Launch(i, duration);
+			static_cast<HealSpell &>(spell).Launch(duration);
 			break;
 		}
 		case SPELL_DETECT_TRAP: {
-			static_cast<DetectTrapSpell &>(spell).Launch(i);
+			static_cast<DetectTrapSpell &>(spell).Launch();
 			break;
 		}
 		case SPELL_ARMOR: {
-			static_cast<ArmorSpell &>(spell).Launch(duration, i);
+			static_cast<ArmorSpell &>(spell).Launch(duration);
 			break;
 		}
 		case SPELL_LOWER_ARMOR: {
-			static_cast<LowerArmorSpell &>(spell).Launch(duration, i);
+			static_cast<LowerArmorSpell &>(spell).Launch(duration);
 			break;
 		}
 		case SPELL_HARM: {
@@ -1414,7 +1415,7 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flagss
 		//****************************************************************************
 		// LEVEL 3
 		case SPELL_SPEED: {
-			static_cast<SpeedSpell &>(spell).Launch(i, duration);
+			static_cast<SpeedSpell &>(spell).Launch(duration);
 			break;
 		}
 		case SPELL_DISPELL_ILLUSION: {
@@ -1422,7 +1423,7 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flagss
 			break;
 		}
 		case SPELL_FIREBALL: {
-			static_cast<FireballSpell &>(spell).Launch(i);
+			static_cast<FireballSpell &>(spell).Launch();
 			break;
 		}
 		case SPELL_CREATE_FOOD: {
@@ -1430,7 +1431,7 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flagss
 			break;
 		}
 		case SPELL_ICE_PROJECTILE: {
-			static_cast<IceProjectileSpell &>(spell).Launch(i);
+			static_cast<IceProjectileSpell &>(spell).Launch();
 			break;
 		}
 		//****************************************************************************
@@ -1439,7 +1440,7 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flagss
 			if(! static_cast<BlessSpell &>(spell).CanLaunch())
 				return false;
 			
-			static_cast<BlessSpell &>(spell).Launch(i, duration);
+			static_cast<BlessSpell &>(spell).Launch(duration);
 			break;
 		}
 		case SPELL_DISPELL_FIELD: {
@@ -1447,11 +1448,11 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flagss
 			break;
 		}
 		case SPELL_FIRE_PROTECTION: {
-			static_cast<FireProtectionSpell &>(spell).Launch(i, duration);
+			static_cast<FireProtectionSpell &>(spell).Launch(duration);
 			break;
 		}
 		case SPELL_COLD_PROTECTION: {
-			static_cast<ColdProtectionSpell &>(spell).Launch(i, duration);
+			static_cast<ColdProtectionSpell &>(spell).Launch(duration);
 			break;
 		}
 		case SPELL_TELEKINESIS: {
@@ -1462,7 +1463,7 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flagss
 			break;
 		}
 		case SPELL_CURSE: {
-			static_cast<CurseSpell &>(spell).Launch(duration, i);
+			static_cast<CurseSpell &>(spell).Launch(duration);
 			break;
 		}
 		//****************************************************************************
@@ -1472,19 +1473,19 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flagss
 			break;
 		}
 		case SPELL_LEVITATE: {
-			static_cast<LevitateSpell &>(spell).Launch(duration, i);
+			static_cast<LevitateSpell &>(spell).Launch(duration);
 			break;
 		}
 		case SPELL_CURE_POISON: {
-			static_cast<CurePoisonSpell &>(spell).Launch(i);
+			static_cast<CurePoisonSpell &>(spell).Launch();
 			break;
 		}
 		case SPELL_REPEL_UNDEAD: {
-			static_cast<RepelUndeadSpell &>(spell).Launch(duration, i);
+			static_cast<RepelUndeadSpell &>(spell).Launch(duration);
 			break;
 		}
 		case SPELL_POISON_PROJECTILE: {
-			static_cast<PoisonProjectileSpell &>(spell).Launch(i);
+			static_cast<PoisonProjectileSpell &>(spell).Launch();
 			break;
 		}
 		//****************************************************************************
@@ -1497,7 +1498,7 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flagss
 			break;
 		}
 		case SPELL_PARALYSE: {
-			static_cast<ParalyseSpell &>(spell).Launch(i, duration);
+			static_cast<ParalyseSpell &>(spell).Launch(duration);
 			break;
 		}
 		case SPELL_CREATE_FIELD: {
@@ -1512,7 +1513,7 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flagss
 			if(! static_cast<SlowDownSpell &>(spell).CanLaunch())
 				return false;
 			
-			static_cast<SlowDownSpell &>(spell).Launch(duration, i);
+			static_cast<SlowDownSpell &>(spell).Launch(duration);
 			break;
 		}
 		//****************************************************************************
@@ -1533,11 +1534,11 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flagss
 			break;
 		}
 		case SPELL_LIGHTNING_STRIKE: {
-			static_cast<LightningStrikeSpell &>(spell).Launch(i);
+			static_cast<LightningStrikeSpell &>(spell).Launch();
 			break;
 		}
 		case SPELL_CONFUSE: {
-			static_cast<ConfuseSpell &>(spell).Launch(i, duration);
+			static_cast<ConfuseSpell &>(spell).Launch(duration);
 			break;
 		}
 		//****************************************************************************
@@ -1546,7 +1547,7 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flagss
 			if(! static_cast<InvisibilitySpell &>(spell).CanLaunch())
 				return false;
 			
-			static_cast<InvisibilitySpell &>(spell).Launch(i, duration);
+			static_cast<InvisibilitySpell &>(spell).Launch(duration);
 			break;
 		}
 		case SPELL_MANA_DRAIN: {
@@ -1588,24 +1589,24 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flagss
 			break;
 		}
 		case SPELL_NEGATE_MAGIC: {
-			static_cast<NegateMagicSpell &>(spell).Launch(duration, i);
+			static_cast<NegateMagicSpell &>(spell).Launch(duration);
 			break;
 		}
 		case SPELL_INCINERATE: {
 			if(! static_cast<IncinerateSpell &>(spell).CanLaunch())
 				return false;
 			
-			static_cast<IncinerateSpell &>(spell).Launch(i);
+			static_cast<IncinerateSpell &>(spell).Launch();
 			break;
 		}
 		case SPELL_MASS_PARALYSE: {
-			static_cast<MassParalyseSpell &>(spell).Launch(i, duration);
+			static_cast<MassParalyseSpell &>(spell).Launch(duration);
 			break;
 		}
 		//****************************************************************************
 		// LEVEL 10
 		case SPELL_MASS_LIGHTNING_STRIKE: {
-			static_cast<MassLightningStrikeSpell &>(spell).Launch(i);
+			static_cast<MassLightningStrikeSpell &>(spell).Launch();
 			break;
 		}
 		case SPELL_CONTROL_TARGET: {
@@ -1626,7 +1627,7 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flagss
 			break;
 		}
 		case SPELL_MASS_INCINERATE: {
-			static_cast<MassIncinerateSpell &>(spell).Launch(i);
+			static_cast<MassIncinerateSpell &>(spell).Launch();
 			break;
 		}
 		case SPELL_TELEPORT: {

@@ -43,7 +43,7 @@
 
 extern Rect g_size;
 
-void MassLightningStrikeSpell::Launch(SpellHandle i)
+void MassLightningStrikeSpell::Launch()
 {
 	for(size_t ii = 0; ii < MAX_SPELLS; ii++) {
 		const SpellHandle handle = SpellHandle(ii);
@@ -73,7 +73,7 @@ void MassLightningStrikeSpell::Launch(SpellHandle i)
 	
 	long count = std::max(long(m_caster_level), 1l);
 	CMassLightning * effect = new CMassLightning(count);
-	effect->spellinstance = i;
+	effect->spellinstance = m_thisHandle;
 	
 	Vec3f target;
 	float beta;
@@ -254,7 +254,7 @@ void FreezeTimeSpell::End()
 	ARX_SOUND_PlaySFX(SND_SPELL_TELEKINESIS_END, &entities[m_caster]->pos);
 }
 
-void MassIncinerateSpell::Launch(SpellHandle i)
+void MassIncinerateSpell::Launch()
 {
 	ARX_SOUND_PlaySFX(SND_SPELL_MASS_INCINERATE);
 	
@@ -282,7 +282,7 @@ void MassIncinerateSpell::Launch(SpellHandle i)
 		tio->sfx_flag |= SFX_TYPE_YLSIDE_DEATH | SFX_TYPE_INCINERATE;
 		tio->sfx_time = (unsigned long)(arxtime);
 		nb_targets++;
-		ARX_SPELLS_AddSpellOn(tio->index(), i);
+		ARX_SPELLS_AddSpellOn(tio->index(), m_thisHandle);
 	}
 	
 	if(nb_targets) {

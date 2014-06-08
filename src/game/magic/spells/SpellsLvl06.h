@@ -35,7 +35,7 @@ private:
 
 class ParalyseSpell : public SpellBase {
 public:
-	void Launch(SpellHandle i, long duration);
+	void Launch(long duration);
 	void End(SpellHandle i);
 };
 
@@ -54,7 +54,7 @@ public:
 class SlowDownSpell : public SpellBase {
 public:
 	bool CanLaunch();
-	bool Launch(long duration, SpellHandle i);
+	bool Launch(long duration);
 	void End(SpellHandle i);
 	void Update(float timeDelta);
 };

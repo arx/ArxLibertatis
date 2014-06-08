@@ -445,12 +445,12 @@ void IceFieldSpell::Update(float timeDelta)
 	}
 }
 
-void LightningStrikeSpell::Launch(SpellHandle i)
+void LightningStrikeSpell::Launch()
 {
 	m_exist = true;
 	
 	CLightning * effect = new CLightning();
-	effect->spellinstance = i;
+	effect->spellinstance = m_thisHandle;
 	Vec3f target(0.f, 0.f, -500.f);
 	effect->Create(Vec3f_ZERO, target, MAKEANGLE(player.angle.getPitch()));
 	effect->SetDuration(long(500 * m_caster_level));
@@ -493,7 +493,7 @@ void LightningStrikeSpell::Update(float timeDelta)
 	ARX_SOUND_RefreshPosition(m_snd_loop, entities[m_caster]->pos);
 }
 
-void ConfuseSpell::Launch(SpellHandle i, long duration)
+void ConfuseSpell::Launch(long duration)
 {
 	ARX_SOUND_PlaySFX(SND_SPELL_CONFUSE, &entities[m_target]->pos);
 	
@@ -504,13 +504,13 @@ void ConfuseSpell::Launch(SpellHandle i, long duration)
 	m_tolive = (duration > -1) ? duration : 5000;
 	
 	CConfuse * effect = new CConfuse();
-	effect->spellinstance = i;
+	effect->spellinstance = m_thisHandle;
 	effect->Create(MAKEANGLE(player.angle.getPitch()));
 	effect->SetDuration(m_tolive);
 	m_pSpellFx = effect;
 	m_tolive = effect->GetDuration();
 	
-	ARX_SPELLS_AddSpellOn(m_target, i);
+	ARX_SPELLS_AddSpellOn(m_target, m_thisHandle);
 }
 
 void ConfuseSpell::End(SpellHandle i)

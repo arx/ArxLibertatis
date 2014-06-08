@@ -32,7 +32,7 @@
 #include "scene/GameSound.h"
 #include "scene/Interactive.h"
 
-void SpeedSpell::Launch(SpellHandle i, long duration)
+void SpeedSpell::Launch(long duration)
 {
 	m_bDuration = true;
 	m_fManaCostPerSecond = 2.f;
@@ -60,7 +60,7 @@ void SpeedSpell::Launch(SpellHandle i, long duration)
 	
 	m_pSpellFx = effect;
 	
-	ARX_SPELLS_AddSpellOn(m_target, i);
+	ARX_SPELLS_AddSpellOn(m_target, m_thisHandle);
 }
 
 void SpeedSpell::End(SpellHandle i)
@@ -121,14 +121,14 @@ void DispellIllusionSpell::Update(float timeDelta)
 	}
 }
 
-void FireballSpell::Launch(SpellHandle i)
+void FireballSpell::Launch()
 {
 	m_exist = true;
 	m_timcreation = (unsigned long)(arxtime);
 	m_tolive = 20000; // TODO probably never read
 	
 	CFireBall * effect = new CFireBall();
-	effect->spellinstance = i;
+	effect->spellinstance = m_thisHandle;
 	
 	if(m_caster != PlayerEntityHandle) {
 		m_hand_group = -1;
@@ -291,14 +291,14 @@ void CreateFoodSpell::Update(float timeDelta)
 	}	
 }
 
-void IceProjectileSpell::Launch(SpellHandle i)
+void IceProjectileSpell::Launch()
 {
 	ARX_SOUND_PlaySFX(SND_SPELL_ICE_PROJECTILE_LAUNCH, &m_caster_pos);
 	m_exist = true;
 	m_tolive = 4200;
 	
 	CIceProjectile * effect = new CIceProjectile();
-	effect->spellinstance = i;
+	effect->spellinstance = m_thisHandle;
 	
 	Vec3f target;
 	float angleb;
