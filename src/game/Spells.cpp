@@ -1574,10 +1574,10 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flagss
 		//****************************************************************************
 		// LEVEL 9
 		case SPELL_SUMMON_CREATURE: {
-			bool result = static_cast<SummonCreatureSpell &>(spell).Launch(duration);
-			if(!result)
+			if(! static_cast<SummonCreatureSpell &>(spell).CanLaunch())
 				return false;
 			
+			static_cast<SummonCreatureSpell &>(spell).Launch(duration);
 			break;
 		}
 		case SPELL_FAKE_SUMMON: {

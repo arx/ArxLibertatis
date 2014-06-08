@@ -56,6 +56,20 @@ void SummonCreatureSpell::GetTargetAndBeta(Vec3f & target, float & beta)
 	}
 }
 
+bool SummonCreatureSpell::CanLaunch()
+{
+	Vec3f target;
+	float beta;
+	GetTargetAndBeta(target, beta);
+	
+	if(!ARX_INTERACTIVE_ConvertToValidPosForIO(NULL, &target)) {
+		ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE);
+		return false;
+	}
+	
+	return true;
+}
+
 bool SummonCreatureSpell::Launch(long duration)
 {
 	m_exist = true;
@@ -69,12 +83,6 @@ bool SummonCreatureSpell::Launch(long duration)
 	Vec3f target;
 	float beta;
 	GetTargetAndBeta(target, beta);
-	
-	if(!ARX_INTERACTIVE_ConvertToValidPosForIO(NULL, &target)) {
-		m_exist = false;
-		ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE);
-		return false;
-	}
 	
 	m_fdata = (m_caster == PlayerEntityHandle && cur_mega == 10) ? 1.f : 0.f;
 	m_target_pos = target;
