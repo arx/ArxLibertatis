@@ -233,6 +233,14 @@ void ControlTargetSpell::Update(float timeDelta)
 
 extern float GLOBAL_SLOWDOWN;
 
+bool FreezeTimeSpell::CanLaunch()
+{
+	if(ARX_SPELLS_ExistAnyInstanceForThisCaster(m_type, m_caster))
+		return false;
+	
+	return true;
+}
+
 void FreezeTimeSpell::Launch()
 {
 	ARX_SOUND_PlaySFX(SND_SPELL_FREEZETIME);
@@ -317,6 +325,14 @@ void MassIncinerateSpell::Update()
 }
 
 float LASTTELEPORT = 0.0F;
+
+bool TeleportSpell::CanLaunch()
+{
+	if(ARX_SPELLS_ExistAnyInstanceForThisCaster(m_type, m_caster))
+		return false;
+	
+	return true;
+}
 
 void TeleportSpell::Launch()
 {

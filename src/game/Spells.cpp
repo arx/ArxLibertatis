@@ -1621,7 +1621,7 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flagss
 			break;
 		}
 		case SPELL_FREEZE_TIME: {
-			if(ARX_SPELLS_ExistAnyInstanceForThisCaster(typ, spells[i].m_caster))
+			if(! static_cast<FreezeTimeSpell &>(spell).CanLaunch())
 				return false;
 			
 			static_cast<FreezeTimeSpell &>(spell).Launch();
@@ -1632,7 +1632,7 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flagss
 			break;
 		}
 		case SPELL_TELEPORT: {
-			if(ARX_SPELLS_ExistAnyInstanceForThisCaster(typ, spells[i].m_caster))
+			if(! static_cast<TeleportSpell &>(spell).CanLaunch())
 				return false;
 			
 			static_cast<TeleportSpell &>(spell).Launch();

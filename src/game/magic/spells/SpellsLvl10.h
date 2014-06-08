@@ -37,6 +37,7 @@ public:
 
 class FreezeTimeSpell : public SpellBase {
 public:
+	bool CanLaunch();
 	void Launch();
 	void End();
 };
@@ -50,6 +51,7 @@ public:
 
 class TeleportSpell : public SpellBase {
 public:
+	bool CanLaunch();
 	void Launch();
 	void End();
 	void Update();
