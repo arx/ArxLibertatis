@@ -330,12 +330,10 @@ void ExplosionSpell::Update()
 	}	
 }
 
-void EnchantWeaponSpell::Launch(bool & notifyAll)
+void EnchantWeaponSpell::Launch()
 {
 	m_exist = true;
 	m_tolive = 20;
-	
-	notifyAll = false;
 }
 
 void EnchantWeaponSpell::Update(float timeDelta)

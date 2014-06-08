@@ -52,7 +52,7 @@ public:
 
 class ConfuseSpell : public SpellBase {
 public:
-	void Launch(SpellHandle i, bool & notifyAll, long duration);
+	void Launch(SpellHandle i, long duration);
 	void End(SpellHandle i);
 	void Update(float timeDelta);
 };

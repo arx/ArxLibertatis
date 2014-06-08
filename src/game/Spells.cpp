@@ -1358,8 +1358,6 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flagss
 		return false;
 	}
 	
-	bool notifyAll = true;
-	
 	switch(typ) {
 		case SPELL_NONE:
 		return true;
@@ -1545,7 +1543,7 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flagss
 			break;
 		}
 		case SPELL_CONFUSE: {
-			static_cast<ConfuseSpell &>(spell).Launch(i, notifyAll, duration); // TODO inconsistent use of the SM_SPELLCAST event
+			static_cast<ConfuseSpell &>(spell).Launch(i, duration);
 			break;
 		}
 		//****************************************************************************
@@ -1569,7 +1567,7 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flagss
 			break;
 		}
 		case SPELL_ENCHANT_WEAPON: {
-			static_cast<EnchantWeaponSpell &>(spell).Launch(notifyAll); // TODO inconsistent use of the SM_SPELLCAST event
+			static_cast<EnchantWeaponSpell &>(spell).Launch();
 			break;
 		}
 		case SPELL_LIFE_DRAIN: {
@@ -1646,10 +1644,11 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flagss
 		}
 	}
 	
-	if(notifyAll) {
-		SPELLCAST_Notify(i);
-	} else {
+	// TODO inconsistent use of the SM_SPELLCAST event
+	if(typ == SPELL_CONFUSE || typ == SPELL_ENCHANT_WEAPON) {
 		SPELLCAST_NotifyOnlyTarget(i);
+	} else {
+		SPELLCAST_Notify(i);
 	}
 	
 	return true;

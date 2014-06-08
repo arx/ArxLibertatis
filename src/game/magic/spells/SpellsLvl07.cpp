@@ -482,7 +482,7 @@ void LightningStrikeSpell::Update(float timeDelta)
 	ARX_SOUND_RefreshPosition(m_snd_loop, entities[m_caster]->pos);
 }
 
-void ConfuseSpell::Launch(SpellHandle i, bool & notifyAll, long duration)
+void ConfuseSpell::Launch(SpellHandle i, long duration)
 {
 	ARX_SOUND_PlaySFX(SND_SPELL_CONFUSE, &entities[m_target]->pos);
 	
@@ -500,8 +500,6 @@ void ConfuseSpell::Launch(SpellHandle i, bool & notifyAll, long duration)
 	m_tolive = effect->GetDuration();
 	
 	ARX_SPELLS_AddSpellOn(m_target, i);
-	
-	notifyAll = false;
 }
 
 void ConfuseSpell::End(SpellHandle i)

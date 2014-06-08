@@ -44,7 +44,7 @@ public:
 
 class EnchantWeaponSpell : public SpellBase {
 public:
-	void Launch(bool & notifyAll);
+	void Launch();
 	void Update(float timeDelta);
 };
 
