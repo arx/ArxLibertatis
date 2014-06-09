@@ -6645,32 +6645,34 @@ void ArxGame::manageEditorControls() {
 					fMaxdist = 850;
 	
 				for(size_t i = 0; i < MAX_LIGHTS; i++) {
-					if(   GLight[i]
-					   && GLight[i]->exist
-					   && !fartherThan(GLight[i]->pos, player.pos, fMaxdist)
-					   && !(GLight[i]->extras & EXTRAS_NO_IGNIT)
+					EERIE_LIGHT * light = GLight[i];
+					
+					if(   light
+					   && light->exist
+					   && !fartherThan(light->pos, player.pos, fMaxdist)
+					   && !(light->extras & EXTRAS_NO_IGNIT)
 					) {
 						const Rect mouseTestRect(
-						GLight[i]->m_screenRect.min.x,
-						GLight[i]->m_screenRect.min.y,
-						GLight[i]->m_screenRect.max.x,
-						GLight[i]->m_screenRect.max.y
+						light->m_screenRect.min.x,
+						light->m_screenRect.min.y,
+						light->m_screenRect.max.x,
+						light->m_screenRect.max.y
 						);
 						
 						if(   mouseTestRect.contains(Vec2i(DANAEMouse))
 						   && (COMBINE->ioflags & IO_ITEM)
 						) {
 								if((COMBINE == player.torch) || (COMBINE->_itemdata->LightValue == 1)) {
-									if(!GLight[i]->status) {
-										GLight[i]->status = true;
-										ARX_SOUND_PlaySFX(SND_TORCH_START, &GLight[i]->pos);
+									if(!light->status) {
+										light->status = true;
+										ARX_SOUND_PlaySFX(SND_TORCH_START, &light->pos);
 									}
 								}
 	
 								if(COMBINE->_itemdata->LightValue == 0) {
-									if(GLight[i]->status) {
-										GLight[i]->status = false;
-										ARX_SOUND_PlaySFX(SND_TORCH_END, &GLight[i]->pos);
+									if(light->status) {
+										light->status = false;
+										ARX_SOUND_PlaySFX(SND_TORCH_END, &light->pos);
 										SendIOScriptEvent(COMBINE, SM_CUSTOM, "douse");
 									}
 								}
@@ -6702,16 +6704,18 @@ void ArxGame::manageEditorControls() {
 				fMaxdist = 850;
 			
 			for(size_t i = 0; i < MAX_LIGHTS; i++) {
-				if ((GLight[i]!=NULL) &&
-					(GLight[i]->exist) &&
-					!fartherThan(GLight[i]->pos, player.pos, fMaxdist) &&
-					!(GLight[i]->extras & EXTRAS_NO_IGNIT))
-				{
+				EERIE_LIGHT * light = GLight[i];
+				
+				if(   light
+				   && light->exist
+				   && !fartherThan(light->pos, player.pos, fMaxdist)
+				   && !(light->extras & EXTRAS_NO_IGNIT)
+				) {
 					const Rect mouseTestRect(
-					GLight[i]->m_screenRect.min.x,
-					GLight[i]->m_screenRect.min.y,
-					GLight[i]->m_screenRect.max.x,
-					GLight[i]->m_screenRect.max.y
+					light->m_screenRect.min.x,
+					light->m_screenRect.min.y,
+					light->m_screenRect.max.x,
+					light->m_screenRect.max.y
 					);
 					
 					if(mouseTestRect.contains(Vec2i(DANAEMouse))) {
