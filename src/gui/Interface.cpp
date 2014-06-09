@@ -2061,11 +2061,8 @@ void ArxGame::manageKeyMouse() {
 
 				// mode systemshock
 				if(config.input.mouseLookToggle && config.input.autoReadyWeapon == false) {
-
-					float fX =  g_size.width() * 0.5f;
-					float fY =	g_size.height() * 0.5f;
-					DANAEMouse.x = checked_range_cast<short>(fX);
-					DANAEMouse.y = checked_range_cast<short>(fY);
+					
+					DANAEMouse = g_size.center();
 					
 					pIO = FlyingOverObject(DANAEMouse);
 					if(pIO) {
