@@ -124,18 +124,20 @@ public:
 
 // Done By : Didier Pédreno
 class CCurePoison : public CSpellFx {
+	
 public:
-	Vec3f eSrc;
-	ParticleSystem * pPS;
-
 	CCurePoison();
 	~CCurePoison();
-
+	
 	void Create();
+	void SetPosition(const Vec3f & pos);
+	
 	void Update(unsigned long);
 	void Render();
 	
-	SpellHandle spellinstance;
+private:
+	Vec3f eSrc;
+	ParticleSystem * pPS;
 };
 
 // Done By : Didier Pédreno

@@ -169,7 +169,6 @@ void CurePoisonSpell::Launch()
 	m_tolive = 3500;
 	
 	CCurePoison * effect = new CCurePoison();
-	effect->spellinstance = m_thisHandle;
 	effect->Create();
 	effect->SetDuration(m_tolive);
 	m_pSpellFx = effect;
@@ -178,9 +177,17 @@ void CurePoisonSpell::Launch()
 
 void CurePoisonSpell::Update(float timeDelta)
 {
-	if(m_pSpellFx) {
-		m_pSpellFx->Update(timeDelta);
-		m_pSpellFx->Render();
+	CCurePoison * effect = static_cast<CCurePoison *>(m_pSpellFx);
+	
+	if(effect) {
+		Vec3f pos = entities[m_target]->pos;
+		
+		if(m_target == PlayerEntityHandle)
+			pos.y += 200;
+		
+		effect->SetPosition(pos);
+		effect->Update(timeDelta);
+		effect->Render();
 	}
 }
 

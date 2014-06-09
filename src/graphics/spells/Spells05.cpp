@@ -91,12 +91,6 @@ void CCurePoison::Create()
 {
 	SetAngle(0);
 	
-	eSrc = entities[spells[spellinstance]->m_target]->pos;
-	
-	if(spells[spellinstance]->m_target == PlayerEntityHandle)
-		eSrc.y += 200;
-	
-	pPS->SetPos(eSrc);
 	ParticleParams cp = ParticleParams();
 	cp.m_nbMax = 350;
 	cp.m_life = 800;
@@ -141,17 +135,17 @@ void CCurePoison::Create()
 	}
 }
 
+void CCurePoison::SetPosition(const Vec3f & pos)
+{
+	eSrc = pos;
+}
+
 void CCurePoison::Update(unsigned long aulTime)
 {
 	ulCurrentTime += aulTime;
 
 	if(ulCurrentTime >= ulDuration)
 		return;
-	
-	eSrc = entities[spells[spellinstance]->m_target]->pos;
-	
-	if(spells[spellinstance]->m_target == PlayerEntityHandle)
-		eSrc.y += 200;
 	
 	unsigned long ulCalc = ulDuration - ulCurrentTime ;
 	arx_assert(ulCalc <= LONG_MAX);
