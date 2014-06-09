@@ -212,7 +212,6 @@ void RepelUndeadSpell::Launch()
 	m_fManaCostPerSecond = 1.f;
 	
 	CRepelUndead * effect = new CRepelUndead();
-	effect->spellinstance = m_thisHandle;
 	effect->Create(player.pos, MAKEANGLE(player.angle.getPitch()));
 	effect->SetDuration(m_tolive);
 	m_pSpellFx = effect;
@@ -234,9 +233,22 @@ void RepelUndeadSpell::End()
 
 void RepelUndeadSpell::Update(float timeDelta)
 {
-	if(m_pSpellFx) {
-		m_pSpellFx->Update(timeDelta);
-		m_pSpellFx->Render();
+	CRepelUndead * effect = static_cast<CRepelUndead *>(m_pSpellFx);
+	
+	if(effect) {
+		Vec3f pos = entities[m_target]->pos;
+		
+		float rot;
+		if(m_target == PlayerEntityHandle) {
+			rot = player.angle.getPitch();
+		} else {
+			rot = entities[m_target]->angle.getPitch();
+		}
+		
+		effect->SetPos(pos);
+		effect->SetRotation(rot);
+		effect->Update(timeDelta);
+		effect->Render();
 
 		if (m_target == PlayerEntityHandle)
 			ARX_SOUND_RefreshPosition(m_snd_loop, entities[m_target]->pos);

@@ -199,7 +199,6 @@ public:
 	void Update(unsigned long);
 	void Render();
 	
-	SpellHandle spellinstance;
 private:
 	Vec3f eSrc;
 	TextureContainer * tex_p2;

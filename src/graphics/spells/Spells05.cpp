@@ -865,30 +865,17 @@ void CRepelUndead::Create(Vec3f aeSrc, float afBeta) {
 	SetAngle(afBeta);
 }
 
-void CRepelUndead::SetPos(const Vec3f & pos)
-{
-	
+void CRepelUndead::SetPos(const Vec3f & pos) {
+	eSrc = pos;
 }
 
-void CRepelUndead::SetRotation(float rotation)
-{
-	
+void CRepelUndead::SetRotation(float rotation) {
+	fBeta = rotation;
 }
 
 void CRepelUndead::Update(unsigned long _ulTime) {
 	
 	ulCurrentTime += _ulTime;
-	if(spellinstance < 0) {
-		return;
-	}
-	
-	eSrc = entities[spells[spellinstance]->m_target]->pos;
-	
-	if(spells[spellinstance]->m_target == PlayerEntityHandle) {
-		fBeta = player.angle.getPitch();
-	} else {
-		fBeta = entities[spells[spellinstance]->m_target]->angle.getPitch();
-	}
 }
 
 void CRepelUndead::Render() {
