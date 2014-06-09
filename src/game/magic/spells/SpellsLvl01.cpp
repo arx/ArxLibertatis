@@ -264,24 +264,24 @@ void DouseSpell::Launch()
 	}
 	
 	for(size_t k = 0; k < MAX_SPELLS; k++) {
-		SpellHandle n = SpellHandle(k);
+		SpellBase * spell = &spells[SpellHandle(k)];
 		
-		if(!spells[n].m_exist) {
+		if(!spell->m_exist) {
 			continue;
 		}
 		
-		switch(spells[n].m_type) {
+		switch(spell->m_type) {
 			
 			case SPELL_FIREBALL: {
-				CSpellFx * pCSpellFX = spells[n].m_pSpellFx;
+				CSpellFx * pCSpellFX = spell->m_pSpellFx;
 				if(pCSpellFX) {
 					CFireBall * pCF = (CFireBall *)pCSpellFX;
 					float radius = std::max(m_caster_level * 2.f, 12.f);
 					if(closerThan(target, pCF->eCurPos,
 					              fPerimeter + radius)) {
-						spells[n].m_caster_level -= m_caster_level;
-						if(spells[n].m_caster_level < 1) {
-							spells[n].m_tolive = 0;
+						spell->m_caster_level -= m_caster_level;
+						if(spell->m_caster_level < 1) {
+							spell->m_tolive = 0;
 						}
 					}
 				}
@@ -290,11 +290,11 @@ void DouseSpell::Launch()
 			
 			case SPELL_FIRE_FIELD: {
 				Vec3f pos;
-				if(GetSpellPosition(&pos, n)) {
+				if(GetSpellPosition(&pos, spell)) {
 					if(closerThan(target, pos, fPerimeter + 200)) {
-						spells[n].m_caster_level -= m_caster_level;
-						if(spells[n].m_caster_level < 1) {
-							spells[n].m_tolive=0;
+						spell->m_caster_level -= m_caster_level;
+						if(spell->m_caster_level < 1) {
+							spell->m_tolive=0;
 						}
 					}
 				}

@@ -106,7 +106,7 @@ class SpellManager {
 extern SpellManager spells;
 
 
-bool GetSpellPosition(Vec3f * pos, SpellHandle i);
+bool GetSpellPosition(Vec3f * pos, SpellBase * spell);
 
 void ARX_SPELLS_AddSpellOn(EntityHandle caster, SpellHandle spell);
 void ARX_SPELLS_RemoveSpellOn(EntityHandle entityHandle, SpellHandle spellHandle);

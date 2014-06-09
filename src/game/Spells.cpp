@@ -158,53 +158,53 @@ unsigned char ucFlick=0;
 SpellManager spells;
 
 
-bool GetSpellPosition(Vec3f * pos, SpellHandle i)
+bool GetSpellPosition(Vec3f * pos, SpellBase * spell)
 {
-	switch(spells[i].m_type) {
+	switch(spell->m_type) {
 		case SPELL_ARMOR:
-			if(ValidIONum(spells[i].m_target)) {
-				*pos = entities[spells[i].m_target]->pos;
+			if(ValidIONum(spell->m_target)) {
+				*pos = entities[spell->m_target]->pos;
 				return true;
 			}
 		break;
 		case SPELL_LOWER_ARMOR:
-			if(ValidIONum(spells[i].m_target)) {
-				*pos = entities[spells[i].m_target]->pos;
+			if(ValidIONum(spell->m_target)) {
+				*pos = entities[spell->m_target]->pos;
 				return true;
 			}
 		break;
 		case SPELL_SPEED:
-			if(ValidIONum(spells[i].m_target)) {
-				*pos = entities[spells[i].m_target]->pos;
+			if(ValidIONum(spell->m_target)) {
+				*pos = entities[spell->m_target]->pos;
 				return true;
 			}
 		break;
 		case SPELL_BLESS:
-			if(ValidIONum(spells[i].m_target)) {
-				*pos = entities[spells[i].m_target]->pos;
+			if(ValidIONum(spell->m_target)) {
+				*pos = entities[spell->m_target]->pos;
 				return true;
 			}
 		break;
 		case SPELL_FIRE_PROTECTION:
-			if(ValidIONum(spells[i].m_target)) {
-				*pos = entities[spells[i].m_target]->pos;
+			if(ValidIONum(spell->m_target)) {
+				*pos = entities[spell->m_target]->pos;
 				return true;
 			}
 		break;
 		case SPELL_COLD_PROTECTION:
-			if(ValidIONum(spells[i].m_target)) {
-				*pos = entities[spells[i].m_target]->pos;
+			if(ValidIONum(spell->m_target)) {
+				*pos = entities[spell->m_target]->pos;
 				return true;
 			}
 		break;
 		case SPELL_CURSE:
-			if(ValidIONum(spells[i].m_target)) {
-				*pos = entities[spells[i].m_target]->pos;
+			if(ValidIONum(spell->m_target)) {
+				*pos = entities[spell->m_target]->pos;
 				return true;
 			}
 		break;
 		case SPELL_RUNE_OF_GUARDING: {
-			CSpellFx *pCSpellFX = spells[i].m_pSpellFx;
+			CSpellFx *pCSpellFX = spell->m_pSpellFx;
 
 			if(pCSpellFX) {
 				CRuneOfGuarding *pCRG = (CRuneOfGuarding *) pCSpellFX;
@@ -215,13 +215,13 @@ bool GetSpellPosition(Vec3f * pos, SpellHandle i)
 		}
 		break;
 		case SPELL_PARALYSE:
-			if(ValidIONum(spells[i].m_target)) {
-				*pos = entities[spells[i].m_target]->pos;
+			if(ValidIONum(spell->m_target)) {
+				*pos = entities[spell->m_target]->pos;
 				return true;
 			}
 		break;
 		case SPELL_CREATE_FIELD: {
-			CSpellFx *pCSpellFX = spells[i].m_pSpellFx;
+			CSpellFx *pCSpellFX = spell->m_pSpellFx;
 
 			if(pCSpellFX) {
 				CCreateField *pCreateField = (CCreateField *) pCSpellFX;
@@ -232,8 +232,8 @@ bool GetSpellPosition(Vec3f * pos, SpellHandle i)
 		}
 		break;
 		case SPELL_SLOW_DOWN:
-			if(ValidIONum(spells[i].m_target)) {
-				*pos = entities[spells[i].m_target]->pos;
+			if(ValidIONum(spell->m_target)) {
+				*pos = entities[spell->m_target]->pos;
 				return true;
 			}
 		break;
@@ -244,7 +244,7 @@ bool GetSpellPosition(Vec3f * pos, SpellHandle i)
 		}	
 		break;
 		case SPELL_FIRE_FIELD: {
-			CSpellFx *pCSpellFX = spells[i].m_pSpellFx;
+			CSpellFx *pCSpellFX = spell->m_pSpellFx;
 
 			if(pCSpellFX) {
 				CFireField *pFireField = (CFireField *) pCSpellFX;
@@ -255,7 +255,7 @@ bool GetSpellPosition(Vec3f * pos, SpellHandle i)
 		}
 		break;
 		case SPELL_ICE_FIELD: {
-			CSpellFx *pCSpellFX = spells[i].m_pSpellFx;
+			CSpellFx *pCSpellFX = spell->m_pSpellFx;
 
 			if(pCSpellFX) {
 				CIceField *pIceField = (CIceField *) pCSpellFX;
@@ -266,32 +266,32 @@ bool GetSpellPosition(Vec3f * pos, SpellHandle i)
 		}
 		break;
 		case SPELL_CONFUSE:
-			if(ValidIONum(spells[i].m_target)) {
-				*pos = entities[spells[i].m_target]->pos;
+			if(ValidIONum(spell->m_target)) {
+				*pos = entities[spell->m_target]->pos;
 				return true;
 			}
 		break;
 		case SPELL_INVISIBILITY:
-			if(ValidIONum(spells[i].m_target)) {
-				*pos = entities[spells[i].m_target]->pos;
+			if(ValidIONum(spell->m_target)) {
+				*pos = entities[spell->m_target]->pos;
 				return true;
 			}
 		break;
 		case SPELL_MANA_DRAIN:				
-			if(ValidIONum(spells[i].m_target)) {
-				*pos = entities[spells[i].m_target]->pos;
+			if(ValidIONum(spell->m_target)) {
+				*pos = entities[spell->m_target]->pos;
 				return true;
 			}
 		break;
 		case SPELL_LIFE_DRAIN:
-			if(ValidIONum(spells[i].m_target)) {
-				*pos = entities[spells[i].m_target]->pos;
+			if(ValidIONum(spell->m_target)) {
+				*pos = entities[spell->m_target]->pos;
 				return true;
 			}
 		break;
 		case SPELL_INCINERATE:
-			if(ValidIONum(spells[i].m_target)) {
-				*pos = entities[spells[i].m_target]->pos;
+			if(ValidIONum(spell->m_target)) {
+				*pos = entities[spell->m_target]->pos;
 				return true;
 			}
 		break;
@@ -299,8 +299,8 @@ bool GetSpellPosition(Vec3f * pos, SpellHandle i)
 		break;
 	}
 
-	if(ValidIONum(spells[i].m_caster)) {
-		*pos = entities[spells[i].m_caster]->pos;
+	if(ValidIONum(spell->m_caster)) {
+		*pos = entities[spell->m_caster]->pos;
 		return true;
 	}
 
