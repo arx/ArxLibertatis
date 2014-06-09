@@ -1614,11 +1614,9 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flagss
 	return true;
 }
 
-void ARX_SPELLS_Update_End(SpellHandle i) {
+void ARX_SPELLS_Update_End(SpellBase & spell) {
 	
-	SpellBase & spell = spells[i];
-	
-	switch(spells[i].m_type) {
+	switch(spell.m_type) {
 		case SPELL_TELEPORT: {
 			static_cast<TeleportSpell &>(spell).End();
 			break;
@@ -1797,11 +1795,9 @@ void ARX_SPELLS_Update_End(SpellHandle i) {
 	spell.BaseEnd();
 }
 
-void ARX_SPELLS_Update_Update(SpellHandle i) {
+void ARX_SPELLS_Update_Update(SpellBase & spell) {
 	
-	SpellBase & spell = spells[i];
-	
-	switch(spells[i].m_type) {
+	switch(spell.m_type) {
 		case SPELL_DISPELL_FIELD: {
 			break;
 		}
@@ -2055,13 +2051,13 @@ void ARX_SPELLS_Update() {
 		
 		if(framediff < 0) {
 			SPELLEND_Notify(spell);
-			ARX_SPELLS_Update_End(i);
+			ARX_SPELLS_Update_End(spell);
 			
 			continue;
 		}
 
 		if(spell.m_exist) {
-			ARX_SPELLS_Update_Update(i);
+			ARX_SPELLS_Update_Update(spell);
 		}
 	}
 }
