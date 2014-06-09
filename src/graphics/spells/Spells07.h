@@ -117,29 +117,24 @@ class CLightning: public CSpellFx
 };
 
 // Done By : Didier Pedreno
-class CConfuse: public CSpellFx
-{
-	public:
-		TextureContainer * tex_p1;
-		TextureContainer * tex_trail;
-		ANIM_USE au;
-		Vec3f eCurPos;
-
-	public:
-		CConfuse();
-		~CConfuse();
-		// accesseurs
-	public:
-		void SetPos(Vec3f);
-
-		// surcharge
-	public:
-		void	Create(float afBeta = 0);
-		void	Kill();
-		void	Update(unsigned long);
-		void Render();
-		
-		SpellHandle spellinstance;
+class CConfuse: public CSpellFx {
+	
+public:
+	CConfuse();
+	~CConfuse();
+	
+	void Create(float afBeta = 0);
+	void SetPos(const Vec3f & pos);
+	
+	void Update(unsigned long);
+	void Render();
+	
+	SpellHandle spellinstance;
+public:
+	TextureContainer * tex_p1;
+	TextureContainer * tex_trail;
+	ANIM_USE au;
+	Vec3f eCurPos;
 };
 
 class CFireField: public CSpellFx

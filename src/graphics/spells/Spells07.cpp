@@ -600,6 +600,11 @@ void CConfuse::Create(float afBeta) {
 	SetAngle(afBeta);
 }
 
+void CConfuse::SetPos(const Vec3f & pos)
+{
+	
+}
+
 void CConfuse::Update(unsigned long _ulTime) {
 	ulCurrentTime += _ulTime;
 }
