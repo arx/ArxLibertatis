@@ -44,6 +44,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_GRAPHICS_BASEGRAPHICSTYPES_H
 #define ARX_GRAPHICS_BASEGRAPHICSTYPES_H
 
+#include "math/Rectangle.h"
 #include "math/Vector.h"
 
 struct EERIE_CYLINDER {
@@ -90,6 +91,10 @@ struct EERIE_2D_BBOX {
 	
 	bool valid() const {
 		return (min.x <= max.x && min.y <= max.y);
+	}
+	
+	Rect toRect() {
+		return Rect(min.x, min.y, max.x, max.y);
 	}
 	
 };

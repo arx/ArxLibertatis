@@ -6652,14 +6652,7 @@ void ArxGame::manageEditorControls() {
 					   && !fartherThan(light->pos, player.pos, fMaxdist)
 					   && !(light->extras & EXTRAS_NO_IGNIT)
 					) {
-						const Rect mouseTestRect(
-						light->m_screenRect.min.x,
-						light->m_screenRect.min.y,
-						light->m_screenRect.max.x,
-						light->m_screenRect.max.y
-						);
-						
-						if(   mouseTestRect.contains(Vec2i(DANAEMouse))
+						if(   light->m_screenRect.toRect().contains(Vec2i(DANAEMouse))
 						   && (COMBINE->ioflags & IO_ITEM)
 						) {
 								if((COMBINE == player.torch) || (COMBINE->_itemdata->LightValue == 1)) {
@@ -6711,14 +6704,7 @@ void ArxGame::manageEditorControls() {
 				   && !fartherThan(light->pos, player.pos, fMaxdist)
 				   && !(light->extras & EXTRAS_NO_IGNIT)
 				) {
-					const Rect mouseTestRect(
-					light->m_screenRect.min.x,
-					light->m_screenRect.min.y,
-					light->m_screenRect.max.x,
-					light->m_screenRect.max.y
-					);
-					
-					if(mouseTestRect.contains(Vec2i(DANAEMouse))) {
+					if(light->m_screenRect.toRect().contains(Vec2i(DANAEMouse))) {
 						SpecialCursor = CURSOR_INTERACTION_ON;
 					}
 				}
