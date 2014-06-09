@@ -6651,10 +6651,9 @@ void ArxGame::manageEditorControls() {
 					   && light->exist
 					   && !fartherThan(light->pos, player.pos, fMaxdist)
 					   && !(light->extras & EXTRAS_NO_IGNIT)
+					   && light->m_screenRect.toRect().contains(Vec2i(DANAEMouse))
+					   && (COMBINE->ioflags & IO_ITEM)
 					) {
-						if(   light->m_screenRect.toRect().contains(Vec2i(DANAEMouse))
-						   && (COMBINE->ioflags & IO_ITEM)
-						) {
 								if((COMBINE == player.torch) || (COMBINE->_itemdata->LightValue == 1)) {
 									if(!light->status) {
 										light->status = true;
@@ -6669,7 +6668,6 @@ void ArxGame::manageEditorControls() {
 										SendIOScriptEvent(COMBINE, SM_CUSTOM, "douse");
 									}
 								}
-						}
 					}
 				}
 			}
@@ -6703,10 +6701,9 @@ void ArxGame::manageEditorControls() {
 				   && light->exist
 				   && !fartherThan(light->pos, player.pos, fMaxdist)
 				   && !(light->extras & EXTRAS_NO_IGNIT)
+				   && light->m_screenRect.toRect().contains(Vec2i(DANAEMouse))
 				) {
-					if(light->m_screenRect.toRect().contains(Vec2i(DANAEMouse))) {
-						SpecialCursor = CURSOR_INTERACTION_ON;
-					}
+					SpecialCursor = CURSOR_INTERACTION_ON;
 				}
 			}
 		}
