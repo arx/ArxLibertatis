@@ -36,6 +36,7 @@
 #include "math/Angle.h"
 #include "math/Rectangle.h"
 
+#include "graphics/BaseGraphicsTypes.h"
 #include "graphics/Math.h"
 #include "graphics/Draw.h"
 #include "graphics/data/TextureContainer.h"
@@ -135,16 +136,10 @@ bool Manage3DCursor(bool simulate) {
 	}
 	
 	float maxdist = 0.f;
-	float miny = 99999999.f;
-	float maxy = -99999999.f;
-	Vec3f minoff;
-	Vec3f maxoff;
-	maxoff = minoff = io->obj->vertexlist[0].v;
+	
+	EERIE_3D_BBOX bbox;
 	for(size_t i = 0; i < io->obj->vertexlist.size(); i++) {
-		maxoff = glm::max(maxoff, io->obj->vertexlist[i].v);
-		minoff = glm::min(minoff, io->obj->vertexlist[i].v);
-		miny = std::min(miny, io->obj->vertexlist[i].v.y);
-		maxy = std::max(maxy, io->obj->vertexlist[i].v.y);
+		bbox.add(io->obj->vertexlist[i].v);
 	}
 	
 	Vec3f mvectx;
@@ -172,15 +167,15 @@ bool Manage3DCursor(bool simulate) {
 	Vec3f movev = glm::normalize(dest - orgn);
 
 	float lastanything = 0.f;
-	float height = -(maxy - miny);
+	float height = -(bbox.max.y - bbox.min.y);
 
 	if(height > -30.f)
 		height = -30.f;
 	
 	Vec3f objcenter = Vec3f_ZERO;
-	objcenter.x = minoff.x + (maxoff.x - minoff.x) * 0.5f;
+	objcenter.x = bbox.min.x + (bbox.max.x - bbox.min.x) * 0.5f;
 	objcenter.y = 0;
-	objcenter.z = minoff.z + (maxoff.z - minoff.z) * 0.5f;
+	objcenter.z = bbox.min.z + (bbox.max.z - bbox.min.z) * 0.5f;
 
 	for(size_t i = 0; i < io->obj->vertexlist.size(); i++) {
 		const EERIE_VERTEX & vert = io->obj->vertexlist[i];
@@ -216,7 +211,7 @@ bool Manage3DCursor(bool simulate) {
 
 	while(iterating > 0) {
 		cyl2.origin.x = pos.x + movev.x * inc;
-		cyl2.origin.y = pos.y + movev.y * inc + maxy;
+		cyl2.origin.y = pos.y + movev.y * inc + bbox.max.y;
 		cyl2.origin.z = pos.z + movev.z * inc;
 
 		float anything = CheckAnythingInCylinder(cyl2, io, CFLAG_JUST_TEST | CFLAG_COLLIDE_NOCOL | CFLAG_NO_NPC_COLLIDE);
