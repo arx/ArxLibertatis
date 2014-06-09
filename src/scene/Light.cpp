@@ -209,17 +209,6 @@ void ComputeLight2DPos(EERIE_LIGHT * _pL) {
 		_pL->mins.x = out.p.x - t;
 		_pL->maxs.y = out.p.y + t;
 		_pL->mins.y = out.p.y - t;
-
-		if (0)
-			if ((_pL->mins.x >= -200.f) && (_pL->mins.x <= 1000.f))
-				if ((_pL->mins.y >= -200.f) && (_pL->mins.y <= 1000.f))
-				{
-
-					EERIEDraw2DLine(_pL->mins.x, _pL->mins.y, _pL->maxs.x, _pL->mins.y, 0.00001f, Color::white);
-					EERIEDraw2DLine(_pL->maxs.x, _pL->mins.y, _pL->maxs.x, _pL->maxs.y, 0.00001f, Color::white);
-					EERIEDraw2DLine(_pL->maxs.x, _pL->maxs.y, _pL->mins.x, _pL->maxs.y, 0.00001f, Color::white);
-					EERIEDraw2DLine(_pL->mins.x, _pL->maxs.y, _pL->mins.x, _pL->mins.y, 0.00001f, Color::white);
-				}
 	}
 }
 
