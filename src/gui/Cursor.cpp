@@ -516,15 +516,18 @@ void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 			}
 		}
 
-		if ((SpecialCursor) || !PLAYER_MOUSELOOK_ON || (DRAGINTER!=NULL)
-				|| ((FlyingOverIO) && PLAYER_MOUSELOOK_ON && !g_cursorOverBook
-			&& (eMouseState != MOUSE_IN_NOTE)
-			&& (FlyingOverIO->ioflags & IO_ITEM)
-			&& (FlyingOverIO->gameFlags & GFLAG_INTERACTIVITY)
-			&& (config.input.autoReadyWeapon == false))
-			|| (MAGICMODE && PLAYER_MOUSELOOK_ON))
-		{
-
+		if(   SpecialCursor
+		   || !PLAYER_MOUSELOOK_ON
+		   || DRAGINTER
+		   ||  (FlyingOverIO
+		     && PLAYER_MOUSELOOK_ON
+		     && !g_cursorOverBook
+		     && (eMouseState != MOUSE_IN_NOTE)
+		     && (FlyingOverIO->ioflags & IO_ITEM)
+		     && (FlyingOverIO->gameFlags & GFLAG_INTERACTIVITY)
+		     && (config.input.autoReadyWeapon == false))
+		   || (MAGICMODE && PLAYER_MOUSELOOK_ON)
+		) {
 			CANNOT_PUT_IT_HERE=0;
 			float ag=player.angle.getYaw();
 
