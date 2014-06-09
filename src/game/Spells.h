@@ -68,39 +68,15 @@ class TextureContainer;
 const size_t MAX_SPELLS = 20;
 
 class SpellManager {
-	private:
-		SpellBase m_spells[MAX_SPELLS];
+	
+public:
+	SpellBase * operator[] (const SpellHandle handle);
+	
+	void RequestEndOfInstanceForThisCaster(SpellType typ, EntityHandle caster);
+	bool ExistAnyInstanceForThisCaster(SpellType typ, EntityHandle caster);
 		
-	public:
-		SpellBase * operator[] (const SpellHandle handle) {
-			return &m_spells[handle];
-		}
-		
-		
-		void RequestEndOfInstanceForThisCaster(SpellType typ, EntityHandle caster) {
-			
-			for(size_t i = 0; i < MAX_SPELLS; i++) {
-				SpellBase & spell = m_spells[i];
-				
-				if(spell.m_exist && spell.m_type == typ && spell.m_caster == caster) {
-					spell.m_tolive = 0;
-					return;
-				}
-			}
-		}
-		
-		bool ExistAnyInstanceForThisCaster(SpellType typ, EntityHandle caster) {
-			
-			for(size_t i = 0; i < MAX_SPELLS; i++) {
-				const SpellBase & spell = m_spells[i];
-				
-				if(spell.m_exist && spell.m_type == typ && spell.m_caster == caster) {
-					return true;
-				}
-			}
-			
-			return false;
-		}
+private:
+	SpellBase m_spells[MAX_SPELLS];
 };
 
 extern SpellManager spells;

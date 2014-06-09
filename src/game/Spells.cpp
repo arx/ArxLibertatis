@@ -157,6 +157,35 @@ unsigned char ucFlick=0;
 
 SpellManager spells;
 
+SpellBase *SpellManager::operator[](const SpellHandle handle) {
+	return &m_spells[handle];
+}
+
+void SpellManager::RequestEndOfInstanceForThisCaster(SpellType typ, EntityHandle caster) {
+	
+	for(size_t i = 0; i < MAX_SPELLS; i++) {
+		SpellBase & spell = m_spells[i];
+		
+		if(spell.m_exist && spell.m_type == typ && spell.m_caster == caster) {
+			spell.m_tolive = 0;
+			return;
+		}
+	}
+}
+
+bool SpellManager::ExistAnyInstanceForThisCaster(SpellType typ, EntityHandle caster) {
+	
+	for(size_t i = 0; i < MAX_SPELLS; i++) {
+		const SpellBase & spell = m_spells[i];
+		
+		if(spell.m_exist && spell.m_type == typ && spell.m_caster == caster) {
+			return true;
+		}
+	}
+	
+	return false;
+}
+
 
 bool GetSpellPosition(Vec3f * pos, SpellBase * spell)
 {
@@ -2106,4 +2135,3 @@ void TryToCastSpell(Entity * io, SpellType spellType, long level, EntityHandle t
 
 	io->spellcast_data.spell_flags &=~SPELLCAST_FLAG_NODRAW; // temporary, removes colored flares
 }
-
