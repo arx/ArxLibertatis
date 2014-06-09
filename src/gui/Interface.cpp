@@ -5985,13 +5985,12 @@ private:
 	ActiveSpellIconSlot activeSpellIconSlot;
 	
 	
-	void ManageSpellIcon(SpellHandle i, float intensity, bool flag)
+	void ManageSpellIcon(SpellBase & spell, float intensity, bool flag)
 	{
 		float POSX = g_size.width()-INTERFACE_RATIO(35);
 		Color color;
 		float posx = POSX+lSLID_VALUE;
 		float posy = (float)currpos;
-		SpellType typ=spells[i].m_type;
 		
 		if(flag) {
 			color = Color3f(intensity, 0, 0).to<u8>();
@@ -6001,8 +6000,8 @@ private:
 		
 		bool bOk=true;
 		
-		if(spells[i].m_bDuration) {
-			if(player.manaPool.current < 20 || spells[i].m_timcreation+spells[i].m_tolive - float(arxtime) < 2000) {
+		if(spell.m_bDuration) {
+			if(player.manaPool.current < 20 || spell.m_timcreation + spell.m_tolive - float(arxtime) < 2000) {
 				if(ucFlick&1)
 					bOk=false;
 			}
@@ -6013,13 +6012,13 @@ private:
 			}
 		}
 		
-		if(bOk && typ >= 0 && (size_t)typ < SPELL_TYPES_COUNT) {
-			TextureContainer * tc = spellicons[typ].tc;
+		if(bOk && spell.m_type >= 0 && (size_t)spell.m_type < SPELL_TYPES_COUNT) {
+			TextureContainer * tc = spellicons[spell.m_type].tc;
 			arx_assert(tc);
 			Rectf rect(Vec2f(posx, posy), tc->m_dwWidth * 0.5f, tc->m_dwHeight * 0.5f);
 			
 			activeSpellIconSlot.update(rect, tc, color);
-			activeSpellIconSlot.spellIndex = i;
+			activeSpellIconSlot.spellIndex = spell.m_thisHandle;
 			if(!flag && !(player.Interface & INTER_COMBATMODE)) {
 				activeSpellIconSlot.updateInput();
 			}
@@ -6049,7 +6048,7 @@ public:
 			   && spell.m_caster == PlayerEntityHandle
 			   && spellicons[spell.m_type].bDuration
 			) {
-				ManageSpellIcon(handle, intensity, false);
+				ManageSpellIcon(spell, intensity, false);
 			}
 		}
 	}
@@ -6065,7 +6064,7 @@ public:
 					SpellBase * spell = &spells[spellHandle];
 					
 					if(spell->m_caster != PlayerEntityHandle && spellicons[spell->m_type].bDuration) {
-						ManageSpellIcon(spellHandle, intensity, true);
+						ManageSpellIcon(*spell, intensity, true);
 					}
 				}
 			}
