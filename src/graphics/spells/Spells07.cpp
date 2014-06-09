@@ -616,14 +616,16 @@ void CConfuse::Render() {
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->SetTexture(0, tex_trail);
 	
-	eCurPos = entities[spells[spellinstance].m_target]->pos;
-	if(spells[spellinstance].m_target != PlayerEntityHandle) {
-		eCurPos.y += entities[spells[spellinstance].m_target]->physics.cyl.height - 30.f;
+	EntityHandle target = spells[spellinstance].m_target;
+	
+	eCurPos = entities[target]->pos;
+	if(target != PlayerEntityHandle) {
+		eCurPos.y += entities[target]->physics.cyl.height - 30.f;
 	}
 	
-	long idx = entities[spells[spellinstance].m_target]->obj->fastaccess.head_group_origin;
+	long idx = entities[target]->obj->fastaccess.head_group_origin;
 	if(idx >= 0) {
-		eCurPos = entities[spells[spellinstance].m_target]->obj->vertexlist3[idx].v;
+		eCurPos = entities[target]->obj->vertexlist3[idx].v;
 		eCurPos.y -= 50.f;
 	}
 	
