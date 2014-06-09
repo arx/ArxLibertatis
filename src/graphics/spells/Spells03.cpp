@@ -236,36 +236,38 @@ void CFireBall::Update(unsigned long aulTime)
 	} else {
 		float afAlpha = 0.f;
 	
-		if(spells[spellinstance].m_caster == PlayerEntityHandle) {
+		SpellBase * spell = &spells[spellinstance];
+		
+		if(spell->m_caster == PlayerEntityHandle) {
 			SetAngle(player.angle.getPitch());
 			afAlpha = player.angle.getYaw();
-			long idx = GetGroupOriginByName(entities[spells[spellinstance].m_caster]->obj, "chest");
+			long idx = GetGroupOriginByName(entities[spell->m_caster]->obj, "chest");
 
 			if(idx) {
-				eCurPos.x = entities[spells[spellinstance].m_caster]->obj->vertexlist3[idx].v.x - fBetaRadSin * 60;
-				eCurPos.y = entities[spells[spellinstance].m_caster]->obj->vertexlist3[idx].v.y;
-				eCurPos.z = entities[spells[spellinstance].m_caster]->obj->vertexlist3[idx].v.z + fBetaRadCos * 60;
+				eCurPos.x = entities[spell->m_caster]->obj->vertexlist3[idx].v.x - fBetaRadSin * 60;
+				eCurPos.y = entities[spell->m_caster]->obj->vertexlist3[idx].v.y;
+				eCurPos.z = entities[spell->m_caster]->obj->vertexlist3[idx].v.z + fBetaRadCos * 60;
 			} else {
 				eCurPos.x = player.pos.x - fBetaRadSin * 60;
 				eCurPos.y = player.pos.y;
 				eCurPos.z = player.pos.z + fBetaRadCos * 60;
 			}
 		} else {
-			SetAngle(entities[spells[spellinstance].m_caster]->angle.getPitch());
+			SetAngle(entities[spell->m_caster]->angle.getPitch());
 
-			eCurPos.x = entities[spells[spellinstance].m_caster]->pos.x - fBetaRadSin * 60;
-			eCurPos.y = entities[spells[spellinstance].m_caster]->pos.y;
-			eCurPos.z = entities[spells[spellinstance].m_caster]->pos.z + fBetaRadCos * 60;
+			eCurPos.x = entities[spell->m_caster]->pos.x - fBetaRadSin * 60;
+			eCurPos.y = entities[spell->m_caster]->pos.y;
+			eCurPos.z = entities[spell->m_caster]->pos.z + fBetaRadCos * 60;
 
-			if ((ValidIONum(spells[spellinstance].m_caster))
-			        && (entities[spells[spellinstance].m_caster]->ioflags & IO_NPC))
+			if ((ValidIONum(spell->m_caster))
+			        && (entities[spell->m_caster]->ioflags & IO_NPC))
 			{
-				eCurPos.x -= std::sin(radians(entities[spells[spellinstance].m_caster]->angle.getPitch())) * 30.f;
+				eCurPos.x -= std::sin(radians(entities[spell->m_caster]->angle.getPitch())) * 30.f;
 				eCurPos.y -= 80.f;
-				eCurPos.z += std::cos(radians(entities[spells[spellinstance].m_caster]->angle.getPitch())) * 30.f;
+				eCurPos.z += std::cos(radians(entities[spell->m_caster]->angle.getPitch())) * 30.f;
 			}
 			
-			Entity * io = entities[spells[spellinstance].m_caster];
+			Entity * io = entities[spell->m_caster];
 
 			if(ValidIONum(io->targetinfo)) {
 				Vec3f * p1 = &eCurPos;
