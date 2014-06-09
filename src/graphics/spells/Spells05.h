@@ -187,22 +187,22 @@ public:
 
 // Done By : did
 class CRepelUndead : public CSpellFx {
-public:
-	Vec3f eSrc;
-	Vec3f eTarget;
-	TextureContainer * tex_p2;
 	
+public:
 	CRepelUndead();
 	~CRepelUndead();
 	
-	void SetPos(Vec3f);
-	
 	void Create(Vec3f, float afBeta = 0);
-	void Kill();
+	void SetPos(const Vec3f & pos);
+	void SetRotation(float rotation);
+	
 	void Update(unsigned long);
 	void Render();
 	
 	SpellHandle spellinstance;
+private:
+	Vec3f eSrc;
+	TextureContainer * tex_p2;
 };
 
 #endif // ARX_GRAPHICS_SPELLS_SPELLS05_H

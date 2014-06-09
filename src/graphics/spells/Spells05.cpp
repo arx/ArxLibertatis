@@ -810,7 +810,6 @@ void CMultiPoisonProjectile::AddPoisonFog(Vec3f * pos, float power) {
 CRepelUndead::CRepelUndead() {
 	
 	eSrc = Vec3f_ZERO;
-	eTarget = Vec3f_ZERO;
 	
 	ulCurrentTime = ulDuration + 1;
 	
@@ -862,8 +861,18 @@ CRepelUndead::~CRepelUndead() {
 void CRepelUndead::Create(Vec3f aeSrc, float afBeta) {
 	
 	SetDuration(ulDuration);
-	eTarget = eSrc = aeSrc;
+	eSrc = aeSrc;
 	SetAngle(afBeta);
+}
+
+void CRepelUndead::SetPos(const Vec3f & pos)
+{
+	
+}
+
+void CRepelUndead::SetRotation(float rotation)
+{
+	
 }
 
 void CRepelUndead::Update(unsigned long _ulTime) {
