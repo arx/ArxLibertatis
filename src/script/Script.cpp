@@ -824,14 +824,13 @@ ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const string & 
 				SpellType id = GetSpellId(name.substr(9));
 				if(id != SPELL_NONE) {
 					for(size_t i = 0; i < MAX_SPELLS; i++) {
-						const SpellHandle handle = SpellHandle(i);
-						const SpellBase & spell = spells[handle];
+						const SpellBase * spell = spells[SpellHandle(i)];
 						
-						if(   spell.m_exist
-						   && spell.m_type == id
-						   && spell.m_caster >= PlayerEntityHandle
-						   && spell.m_caster < long(entities.size())
-						   && entity == entities[spell.m_caster]
+						if(   spell->m_exist
+						   && spell->m_type == id
+						   && spell->m_caster >= PlayerEntityHandle
+						   && spell->m_caster < long(entities.size())
+						   && entity == entities[spell->m_caster]
 						) {
 							*lcontent = 1;
 							return TYPE_LONG;
@@ -1049,16 +1048,15 @@ ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const string & 
 			
 			if(boost::starts_with(name, "^playercasting")) {
 				for(size_t i = 0; i < MAX_SPELLS; i++) {
-					const SpellHandle handle = SpellHandle(i);
-					const SpellBase & spell = spells[handle];
+					const SpellBase * spell = spells[SpellHandle(i)];
 					
-					if(spell.m_exist && spell.m_caster == PlayerEntityHandle) {
-						if(   spell.m_type == SPELL_LIFE_DRAIN
-						   || spell.m_type == SPELL_HARM
-						   || spell.m_type == SPELL_FIRE_FIELD
-						   || spell.m_type == SPELL_ICE_FIELD
-						   || spell.m_type == SPELL_LIGHTNING_STRIKE
-						   || spell.m_type == SPELL_MASS_LIGHTNING_STRIKE
+					if(spell->m_exist && spell->m_caster == PlayerEntityHandle) {
+						if(   spell->m_type == SPELL_LIFE_DRAIN
+						   || spell->m_type == SPELL_HARM
+						   || spell->m_type == SPELL_FIRE_FIELD
+						   || spell->m_type == SPELL_ICE_FIELD
+						   || spell->m_type == SPELL_LIGHTNING_STRIKE
+						   || spell->m_type == SPELL_MASS_LIGHTNING_STRIKE
 						) {
 							*lcontent = 1;
 							return TYPE_LONG;
@@ -1075,10 +1073,9 @@ ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const string & 
 				SpellType id = GetSpellId(temp);
 				if(id != SPELL_NONE) {
 					for(size_t i = 0; i < MAX_SPELLS; i++) {
-						const SpellHandle handle = SpellHandle(i);
-						const SpellBase & spell = spells[handle];
+						const SpellBase * spell = spells[SpellHandle(i)];
 						
-						if(spell.m_exist && spell.m_type == id && spell.m_caster == PlayerEntityHandle) {
+						if(spell->m_exist && spell->m_type == id && spell->m_caster == PlayerEntityHandle) {
 							*lcontent = 1;
 							return TYPE_LONG;
 						}

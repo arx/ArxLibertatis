@@ -91,9 +91,9 @@ void CCurePoison::Create()
 {
 	SetAngle(0);
 	
-	eSrc = entities[spells[spellinstance].m_target]->pos;
+	eSrc = entities[spells[spellinstance]->m_target]->pos;
 	
-	if(spells[spellinstance].m_target == PlayerEntityHandle)
+	if(spells[spellinstance]->m_target == PlayerEntityHandle)
 		eSrc.y += 200;
 	
 	pPS->SetPos(eSrc);
@@ -148,9 +148,9 @@ void CCurePoison::Update(unsigned long aulTime)
 	if(ulCurrentTime >= ulDuration)
 		return;
 	
-	eSrc = entities[spells[spellinstance].m_target]->pos;
+	eSrc = entities[spells[spellinstance]->m_target]->pos;
 	
-	if(spells[spellinstance].m_target == PlayerEntityHandle)
+	if(spells[spellinstance]->m_target == PlayerEntityHandle)
 		eSrc.y += 200;
 	
 	unsigned long ulCalc = ulDuration - ulCurrentTime ;
@@ -669,7 +669,7 @@ void CMultiPoisonProjectile::Create(Vec3f srcPos) {
 	
 	float afBeta = 0.f;
 	
-	SpellBase * spell = &spells[spellinstance];
+	SpellBase * spell = spells[spellinstance];
 	Entity * caster = entities[spell->m_caster];
 	spell->m_hand_group = caster->obj->fastaccess.primary_attach;
 
@@ -758,19 +758,19 @@ void CMultiPoisonProjectile::Render()
 			light->duration	= 200;
 		}
 
-		AddPoisonFog(&pPoisonProjectile->eCurPos, spells[spellinstance].m_caster_level + 7);
+		AddPoisonFog(&pPoisonProjectile->eCurPos, spells[spellinstance]->m_caster_level + 7);
 
-		if(spells[pTab[i]->spellinstance].m_timcreation + 1600 < (unsigned long)(arxtime)) {
+		if(spells[pTab[i]->spellinstance]->m_timcreation + 1600 < (unsigned long)(arxtime)) {
 			
 			DamageParameters damage;
 			damage.pos = pPoisonProjectile->eCurPos;
 			damage.radius = 120.f;
-			float v = spells[spellinstance].m_caster_level;
+			float v = spells[spellinstance]->m_caster_level;
 			v = 4.f + v * ( 1.0f / 10 ) * 6.f ;
 			damage.damages = v * ( 1.0f / 1000 ) * framedelay;
 			damage.area = DAMAGE_FULL;
 			damage.duration = static_cast<long>(framedelay);
-			damage.source = spells[spellinstance].m_caster;
+			damage.source = spells[spellinstance]->m_caster;
 			damage.flags = 0;
 			damage.type = DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_POISON;
 			DamageCreate(damage);
@@ -879,12 +879,12 @@ void CRepelUndead::Update(unsigned long _ulTime) {
 		return;
 	}
 	
-	eSrc = entities[spells[spellinstance].m_target]->pos;
+	eSrc = entities[spells[spellinstance]->m_target]->pos;
 	
-	if(spells[spellinstance].m_target == PlayerEntityHandle) {
+	if(spells[spellinstance]->m_target == PlayerEntityHandle) {
 		fBeta = player.angle.getPitch();
 	} else {
-		fBeta = entities[spells[spellinstance].m_target]->angle.getPitch();
+		fBeta = entities[spells[spellinstance]->m_target]->angle.getPitch();
 	}
 }
 

@@ -203,13 +203,12 @@ void RK4Integrate(EERIE_3DOBJ * obj, float DeltaTime) {
 static bool IsObjectInField(EERIE_3DOBJ * obj) {
 
 	for(size_t i = 0; i < MAX_SPELLS; i++) {
-		const SpellHandle handle = SpellHandle(i);
-		const SpellBase & spell = spells[handle];
+		const SpellBase * spell = spells[SpellHandle(i)];
 
-		if(spell.m_exist && spell.m_type == SPELL_CREATE_FIELD) {
+		if(spell->m_exist && spell->m_type == SPELL_CREATE_FIELD) {
 
-			if(ValidIONum(spell.m_longinfo_entity)) {
-				Entity * pfrm = entities[spell.m_longinfo_entity];
+			if(ValidIONum(spell->m_longinfo_entity)) {
+				Entity * pfrm = entities[spell->m_longinfo_entity];
 				
 				EERIE_CYLINDER cyl;
 				cyl.height = -35.f;

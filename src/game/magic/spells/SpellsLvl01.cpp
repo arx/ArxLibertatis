@@ -181,20 +181,19 @@ void IgnitSpell::Launch()
 	}
 	
 	for(size_t n = 0; n < MAX_SPELLS; n++) {
-		const SpellHandle handle = SpellHandle(n);
-		SpellBase & spell = spells[handle];
+		SpellBase * spell = spells[SpellHandle(n)];
 		
-		if(!spell.m_exist) {
+		if(!spell->m_exist) {
 			continue;
 		}
-		if(spell.m_type == SPELL_FIREBALL) {
-			CSpellFx * pCSpellFX = spell.m_pSpellFx;
+		if(spell->m_type == SPELL_FIREBALL) {
+			CSpellFx * pCSpellFX = spell->m_pSpellFx;
 			if(pCSpellFX) {
 				CFireBall * pCF = (CFireBall *)pCSpellFX;
 				float radius = std::max(m_caster_level * 2.f, 12.f);
 				if(closerThan(target, pCF->eCurPos,
 				              fPerimeter + radius)) {
-					spell.m_caster_level += 1;
+					spell->m_caster_level += 1;
 				}
 			}
 		}
@@ -264,7 +263,7 @@ void DouseSpell::Launch()
 	}
 	
 	for(size_t k = 0; k < MAX_SPELLS; k++) {
-		SpellBase * spell = &spells[SpellHandle(k)];
+		SpellBase * spell = spells[SpellHandle(k)];
 		
 		if(!spell->m_exist) {
 			continue;

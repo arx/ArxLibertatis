@@ -505,10 +505,10 @@ void CNegateMagic::Render() {
 	
 	int i = 0;
 	
-	if(spells[spellinstance].m_target == PlayerEntityHandle) {
+	if(spells[spellinstance]->m_target == PlayerEntityHandle) {
 		eSrc = player.basePosition();
 	} else {
-		eSrc = entities[spells[spellinstance].m_target]->pos;
+		eSrc = entities[spells[spellinstance]->m_target]->pos;
 	}
 	
 	Vec3f stitepos = eSrc - Vec3f(0.f, 10.f, 0.f);

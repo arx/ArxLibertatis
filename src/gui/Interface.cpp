@@ -1682,13 +1682,12 @@ void ArxGame::managePlayerControls()
 	
 	if(GInput->actionNowPressed(CONTROLS_CUST_CANCELCURSPELL)) {
 		for(long i = MAX_SPELLS - 1; i >= 0; i--) {
-			const SpellHandle handle = SpellHandle(i);
-			SpellBase & spell = spells[handle];
+			SpellBase * spell = spells[SpellHandle(i)];
 			
-			if(spell.m_exist && spell.m_caster == PlayerEntityHandle)
-				if(spellicons[spell.m_type].bDuration) {
+			if(spell->m_exist && spell->m_caster == PlayerEntityHandle)
+				if(spellicons[spell->m_type].bDuration) {
 					ARX_SPELLS_AbortSpellSound();
-					spell.m_tolive = 0;
+					spell->m_tolive = 0;
 					break;
 				}
 		}
@@ -5961,8 +5960,8 @@ private:
 				SpecialCursor = CURSOR_INTERACTION_ON;
 				
 				if((LastMouseClick & 1) && !(EERIEMouseButton & 1)) {
-					if(spells[spellIndex].m_type >= 0)
-						WILLADDSPEECH = spellicons[spells[spellIndex].m_type].name;
+					if(spells[spellIndex]->m_type >= 0)
+						WILLADDSPEECH = spellicons[spells[spellIndex]->m_type].name;
 					
 					WILLADDSPEECHTIME = (unsigned long)(arxtime);
 				}
@@ -5970,7 +5969,7 @@ private:
 				if(EERIEMouseButton & 4) {
 					ARX_SPELLS_AbortSpellSound();
 					EERIEMouseButton &= ~4;
-					spells[spellIndex].m_tolive = 0;
+					spells[spellIndex]->m_tolive = 0;
 				}
 			}
 		}
@@ -6038,14 +6037,13 @@ public:
 	
 	void spellsByPlayerUpdate(float intensity) {
 		for(size_t i = 0; i < MAX_SPELLS; i++) {
-			const SpellHandle handle = SpellHandle(i);
-			SpellBase & spell = spells[handle];
+			SpellBase * spell = spells[SpellHandle(i)];
 			
-			if(   spell.m_exist
-			   && spell.m_caster == PlayerEntityHandle
-			   && spellicons[spell.m_type].bDuration
+			if(   spell->m_exist
+			   && spell->m_caster == PlayerEntityHandle
+			   && spellicons[spell->m_type].bDuration
 			) {
-				ManageSpellIcon(spell, intensity, false);
+				ManageSpellIcon(*spell, intensity, false);
 			}
 		}
 	}
@@ -6058,7 +6056,7 @@ public:
 			for(it = playerEntity->spellsOn.begin(); it != playerEntity->spellsOn.end(); ++it) {
 				SpellHandle spellHandle = SpellHandle(*it);
 				if(spellHandleIsValid(spellHandle)) {
-					SpellBase * spell = &spells[spellHandle];
+					SpellBase * spell = spells[spellHandle];
 					
 					if(spell->m_caster != PlayerEntityHandle && spellicons[spell->m_type].bDuration) {
 						ManageSpellIcon(*spell, intensity, true);

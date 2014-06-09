@@ -308,7 +308,7 @@ bool GetSpellPosition(Vec3f * pos, SpellBase * spell)
 }
 
 bool spellHandleIsValid(SpellHandle handle) {
-	return (long)handle >= 0 && ((size_t)handle < MAX_SPELLS) && spells[handle].m_exist;
+	return (long)handle >= 0 && ((size_t)handle < MAX_SPELLS) && spells[handle]->m_exist;
 }
 
 void ARX_SPELLS_AddSpellOn(EntityHandle caster, SpellHandle spell)
@@ -332,7 +332,7 @@ SpellBase * ARX_SPELLS_GetSpellOn(const Entity * io, SpellType spellid)
 	for(it = io->spellsOn.begin(); it != io->spellsOn.end(); ++it) {
 		SpellHandle spellHandle = SpellHandle(*it);
 		if(spellHandleIsValid(spellHandle)) {
-			SpellBase * spell = &spells[spellHandle];
+			SpellBase * spell = spells[spellHandle];
 			
 			if(spell->m_type == spellid) {
 				handle = spellHandle;
@@ -344,7 +344,7 @@ SpellBase * ARX_SPELLS_GetSpellOn(const Entity * io, SpellType spellid)
 	if(handle == InvalidSpellHandle)
 		return NULL;
 	
-	return &spells[handle];
+	return spells[handle];
 }
 
 void ARX_SPELLS_RemoveSpellOn(EntityHandle entityHandle, SpellHandle spellHandle)
@@ -555,9 +555,9 @@ void SPELLCAST_Notify(SpellHandle num) {
 		return;
 		
 	char spell[128];
-	EntityHandle source = spells[num].m_caster;
+	EntityHandle source = spells[num]->m_caster;
 
-	if(!MakeSpellName(spell, spells[num].m_type))
+	if(!MakeSpellName(spell, spells[num]->m_type))
 		return;
 	
 	for(size_t i = 0; i < entities.size(); i++) {
@@ -566,7 +566,7 @@ void SPELLCAST_Notify(SpellHandle num) {
 		if(entities[handle] != NULL) {
 			EVENT_SENDER = (source != InvalidEntityHandle) ? entities[source] : NULL;
 			char param[256];
-			sprintf(param, "%s %ld", spell, (long)spells[num].m_caster_level);
+			sprintf(param, "%s %ld", spell, (long)spells[num]->m_caster_level);
 			SendIOScriptEvent(entities[handle], SM_SPELLCAST, param);
 		}
 	}
@@ -577,21 +577,21 @@ void SPELLCAST_NotifyOnlyTarget(SpellHandle num)
 	if(num < 0 || size_t(num) >= MAX_SPELLS)
 		return;
 
-	if(spells[num].m_target<0)
+	if(spells[num]->m_target<0)
 		return;
 
 	char spell[128];
-	EntityHandle source = spells[num].m_caster;
+	EntityHandle source = spells[num]->m_caster;
 
-	if(MakeSpellName(spell, spells[num].m_type)) {
+	if(MakeSpellName(spell, spells[num]->m_type)) {
 		if(source != InvalidEntityHandle)
 			EVENT_SENDER = entities[source];
 		else
 			EVENT_SENDER = NULL;
 
 		char param[256];
-		sprintf(param,"%s %ld",spell,(long)spells[num].m_caster_level);
-		SendIOScriptEvent(entities[spells[num].m_target], SM_SPELLCAST, param);
+		sprintf(param,"%s %ld",spell,(long)spells[num]->m_caster_level);
+		SendIOScriptEvent(entities[spells[num]->m_target], SM_SPELLCAST, param);
 	}	
 }
 
@@ -639,10 +639,10 @@ void ARX_SPELLS_Fizzle(SpellHandle num) {
 	if(num < 0) {
 		ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE); // player fizzle
 	} else {
-		spells[num].m_tolive = 0;
+		spells[num]->m_tolive = 0;
 		
-		if(spells[num].m_caster >= PlayerEntityHandle) {
-			ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE, &spells[num].m_caster_pos);
+		if(spells[num]->m_caster >= PlayerEntityHandle) {
+			ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE, &spells[num]->m_caster_pos);
 		}
 	}
 }
@@ -829,8 +829,8 @@ void ARX_SPELLS_FizzleNoMana(SpellHandle num) {
 	if(num < 0) {
 		return;
 	}
-	if(spells[num].m_caster >= PlayerEntityHandle) {
-		spells[num].m_tolive = 0;
+	if(spells[num]->m_caster >= PlayerEntityHandle) {
+		spells[num]->m_tolive = 0;
 		ARX_SPELLS_Fizzle(num);
 	}
 }
@@ -840,10 +840,10 @@ bool CanPayMana(SpellHandle num, float cost, bool _bSound = true) {
 	if(num < 0)
 		return false;
 
-	if(spells[num].m_flags & SPELLCAST_FLAG_NOMANA)
+	if(spells[num]->m_flags & SPELLCAST_FLAG_NOMANA)
 		return true;
 
-	if(spells[num].m_caster == PlayerEntityHandle) {
+	if(spells[num]->m_caster == PlayerEntityHandle) {
 		if(player.manaPool.current < cost) {
 			ARX_SPELLS_FizzleNoMana(num);
 
@@ -856,13 +856,13 @@ bool CanPayMana(SpellHandle num, float cost, bool _bSound = true) {
 
 		player.manaPool.current -= cost;
 		return true;
-	} else if(ValidIONum(spells[num].m_caster)) {
-		if(entities[spells[num].m_caster]->ioflags & IO_NPC) {
-			if(entities[spells[num].m_caster]->_npcdata->manaPool.current < cost) {
+	} else if(ValidIONum(spells[num]->m_caster)) {
+		if(entities[spells[num]->m_caster]->ioflags & IO_NPC) {
+			if(entities[spells[num]->m_caster]->_npcdata->manaPool.current < cost) {
 				ARX_SPELLS_FizzleNoMana(num);
 				return false;
 			}
-			entities[spells[num].m_caster]->_npcdata->manaPool.current -= cost;
+			entities[spells[num]->m_caster]->_npcdata->manaPool.current -= cost;
 			return true;
 		}
 	}
@@ -894,12 +894,11 @@ long TemporaryGetSpellTarget(const Vec3f * from) {
 void ARX_SPELLS_Init() {
 	
 	for(size_t i = 0; i < MAX_SPELLS; i++) {
-		const SpellHandle handle = SpellHandle(i);
-		SpellBase & spell = spells[handle];
+		SpellBase * spell = spells[SpellHandle(i)];
 		
-		spell.m_tolive = 0;
-		spell.m_exist = false;
-		spell.m_pSpellFx = NULL;
+		spell->m_tolive = 0;
+		spell->m_exist = false;
+		spell->m_pSpellFx = NULL;
 	}
 	
 	spellRecognitionInit();
@@ -912,15 +911,14 @@ void ARX_SPELLS_Init() {
 void ARX_SPELLS_ClearAll() {
 	
 	for(size_t i = 0; i < MAX_SPELLS; i++) {
-		const SpellHandle handle = SpellHandle(i);
-		SpellBase & spell = spells[handle];
+		SpellBase * spell = spells[SpellHandle(i)];
 		
-		if(spell.m_exist) {
-			spell.m_tolive = 0;
-			spell.m_exist = false;
+		if(spell->m_exist) {
+			spell->m_tolive = 0;
+			spell->m_exist = false;
 			
-			delete spell.m_pSpellFx;
-			spell.m_pSpellFx = NULL;
+			delete spell->m_pSpellFx;
+			spell->m_pSpellFx = NULL;
 		}
 	}
 	
@@ -935,21 +933,20 @@ void ARX_SPELLS_ClearAll() {
 static SpellHandle ARX_SPELLS_GetFree() {
 	
 	for(size_t i = 0; i < MAX_SPELLS; i++) {
-		const SpellHandle handle = SpellHandle(i);
-		SpellBase & spell = spells[handle];
+		SpellBase * spell = spells[SpellHandle(i)];
 		
-		if(!spell.m_exist) {
-			spell.m_longinfo_entity = -1;
-			spell.m_longinfo_damage = -1;
-			spell.m_longinfo_time = -1;
-			spell.m_longinfo_summon_creature = -1;
-			spell.m_longinfo_lower_armor = -1;
-			spell.m_longinfo_light = -1;
+		if(!spell->m_exist) {
+			spell->m_longinfo_entity = -1;
+			spell->m_longinfo_damage = -1;
+			spell->m_longinfo_time = -1;
+			spell->m_longinfo_summon_creature = -1;
+			spell->m_longinfo_lower_armor = -1;
+			spell->m_longinfo_light = -1;
 			
-			spell.m_longinfo2_light = -1;
+			spell->m_longinfo2_light = -1;
 			
-			spell.m_targetHandles.clear();
-			return handle;
+			spell->m_targetHandles.clear();
+			return SpellHandle(i);
 		}
 	}
 	
@@ -964,9 +961,9 @@ void ARX_SPELLS_AbortSpellSound() {
 void ARX_SPELLS_FizzleAllSpellsFromCaster(EntityHandle num_caster) {
 	
 	for(size_t i = 0; i < MAX_SPELLS; i++) {
-		SpellBase & spell = spells[SpellHandle(i)];
-		if(spell.m_exist && spell.m_caster == num_caster) {
-			spell.m_tolive = 0;
+		SpellBase * spell = spells[SpellHandle(i)];
+		if(spell->m_exist && spell->m_caster == num_caster) {
+			spell->m_tolive = 0;
 		}
 	}
 }
@@ -1038,7 +1035,7 @@ float ARX_SPELLS_GetManaCost(SpellType spell, SpellHandle index) {
 	float playerCasterLevel = player.m_skillFull.casting + player.m_attributeFull.mind;
 	playerCasterLevel = clamp(playerCasterLevel * 0.1f, 1.f, 10.f);
 	
-	float casterLevel = ((index < 0) ? playerCasterLevel : spells[index].m_caster_level);
+	float casterLevel = ((index < 0) ? playerCasterLevel : spells[index]->m_caster_level);
 	
 	// TODO this data should not be hardcoded
 	
@@ -1248,7 +1245,7 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flagss
 		return false;
 	}
 	
-	SpellBase & spell = spells[i];
+	SpellBase & spell = *spells[i];
 	
 	if(ValidIONum(source) && spellicons[typ].bAudibleAtStart) {
 		ARX_NPC_SpawnAudibleSound(entities[source]->pos, entities[source]);
@@ -2032,32 +2029,30 @@ void ARX_SPELLS_Update() {
 	const unsigned long tim = (unsigned long)(arxtime);
 	
 	for(size_t u = 0; u < MAX_SPELLS; u++) {
-		
-		SpellHandle i = SpellHandle(u);
-		SpellBase & spell = spells[i];
+		SpellBase * spell = spells[SpellHandle(u)];
 		
 		if(!GLOBAL_MAGIC_MODE) {
-			spell.m_tolive = 0;
+			spell->m_tolive = 0;
 		}
 
-		if(!spell.m_exist) {
+		if(!spell->m_exist) {
 			continue;
 		}
 		
-		if(spell.m_bDuration && !CanPayMana(i, spell.m_fManaCostPerSecond * (float)framedelay * (1.0f/1000), false))
-			ARX_SPELLS_Fizzle(i);
+		if(spell->m_bDuration && !CanPayMana(spell->m_thisHandle, spell->m_fManaCostPerSecond * (float)framedelay * (1.0f/1000), false))
+			ARX_SPELLS_Fizzle(spell->m_thisHandle);
 		
-		const long framediff = spell.m_timcreation + spell.m_tolive - tim;
+		const long framediff = spell->m_timcreation + spell->m_tolive - tim;
 		
 		if(framediff < 0) {
-			SPELLEND_Notify(spell);
-			ARX_SPELLS_Update_End(spell);
+			SPELLEND_Notify(*spell);
+			ARX_SPELLS_Update_End(*spell);
 			
 			continue;
 		}
 
-		if(spell.m_exist) {
-			ARX_SPELLS_Update_Update(spell);
+		if(spell->m_exist) {
+			ARX_SPELLS_Update_Update(*spell);
 		}
 	}
 }

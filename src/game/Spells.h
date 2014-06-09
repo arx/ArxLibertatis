@@ -72,8 +72,8 @@ class SpellManager {
 		SpellBase m_spells[MAX_SPELLS];
 		
 	public:
-		SpellBase & operator[] (const SpellHandle handle) {
-			return m_spells[handle];
+		SpellBase * operator[] (const SpellHandle handle) {
+			return &m_spells[handle];
 		}
 		
 		

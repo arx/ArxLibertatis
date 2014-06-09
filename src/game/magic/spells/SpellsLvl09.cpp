@@ -388,7 +388,7 @@ void NegateMagicSpell::LaunchAntiMagicField() {
 		return;
 	
 	for(size_t i = 0; i < MAX_SPELLS; i++) {
-		SpellBase * spell = &spells[SpellHandle(i)];
+		SpellBase * spell = spells[SpellHandle(i)];
 		
 		if(!spell->m_exist)
 			continue;

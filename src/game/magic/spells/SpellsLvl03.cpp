@@ -91,22 +91,21 @@ void DispellIllusionSpell::Launch()
 	m_tolive = 1000;
 	
 	for(size_t n = 0; n < MAX_SPELLS; n++) {
-		const SpellHandle handle = SpellHandle(n);
-		SpellBase & spell = spells[handle];
+		SpellBase * spell = spells[SpellHandle(n)];
 		
-		if(!spell.m_exist || spell.m_target == m_caster) {
+		if(!spell->m_exist || spell->m_target == m_caster) {
 			continue;
 		}
 		
-		if(spell.m_caster_level > m_caster_level) {
+		if(spell->m_caster_level > m_caster_level) {
 			continue;
 		}
 		
-		if(spell.m_type == SPELL_INVISIBILITY) {
-			if(ValidIONum(spell.m_target) && ValidIONum(m_caster)) {
-				if(closerThan(entities[spell.m_target]->pos,
+		if(spell->m_type == SPELL_INVISIBILITY) {
+			if(ValidIONum(spell->m_target) && ValidIONum(m_caster)) {
+				if(closerThan(entities[spell->m_target]->pos,
 				   entities[m_caster]->pos, 1000.f)) {
-					spell.m_tolive = 0;
+					spell->m_tolive = 0;
 				}
 			}
 		}

@@ -132,7 +132,7 @@ void LaunchMagicMissileExplosion(const Vec3f & _ePos, SpellHandle spellinstance 
 {
 	ParticleParams cp = MagicMissileExplosionParticle();
 	
-	if(spellinstance != InvalidSpellHandle && spells[spellinstance].m_caster == PlayerEntityHandle && cur_mr == 3) {
+	if(spellinstance != InvalidSpellHandle && spells[spellinstance]->m_caster == PlayerEntityHandle && cur_mr == 3) {
 		cp = MagicMissileExplosionMrCheatParticle();
 	}
 	
@@ -150,7 +150,7 @@ void LaunchMagicMissileExplosion(const Vec3f & _ePos, SpellHandle spellinstance 
 		light->fallstart = 250.f;
 		light->fallend   = 420.f;
 
-		if(spellinstance != InvalidSpellHandle && spells[spellinstance].m_caster == PlayerEntityHandle && cur_mr == 3) {
+		if(spellinstance != InvalidSpellHandle && spells[spellinstance]->m_caster == PlayerEntityHandle && cur_mr == 3) {
 			light->rgb.r = 1.f;
 			light->rgb.g = 0.3f;
 			light->rgb.b = .8f;
@@ -292,7 +292,7 @@ void CMagicMissile::Render()
 
 	// Set Texture
 	if(tex_mm) {
-		if(spells[spellinstance].m_caster == PlayerEntityHandle && cur_mr == 3)
+		if(spells[spellinstance]->m_caster == PlayerEntityHandle && cur_mr == 3)
 			GRenderer->ResetTexture(0);
 		else
 			GRenderer->SetTexture(0, tex_mm);
@@ -402,7 +402,7 @@ void CMagicMissile::Render()
 		stiteangle.setRoll(stiteangle.getRoll() + 360.0f);
 
 	Color3f stitecolor;
-	if(spells[spellinstance].m_caster == PlayerEntityHandle && cur_mr == 3) {
+	if(spells[spellinstance]->m_caster == PlayerEntityHandle && cur_mr == 3) {
 		stitecolor.r = 1.f;
 		stitecolor.g = 0.f;
 		stitecolor.b = 0.2f;
@@ -454,7 +454,7 @@ void CMultiMagicMissile::Create()
 	
 	long lMax = 0;
 	
-	SpellBase * spell = &spells[spellinstance];
+	SpellBase * spell = spells[spellinstance];
 	
 	spell->m_hand_group = GetActionPointIdx(entities[spell->m_caster]->obj, "primary_attach");
 	
@@ -573,10 +573,10 @@ void CMultiMagicMissile::CheckCollision()
 		sphere.origin = missile->eCurPos;
 		sphere.radius	= 10.f;
 		
-		if(spellinstance != SpellHandle(-1) && (CheckAnythingInSphere(sphere, spells[spellinstance].m_caster, CAS_NO_SAME_GROUP)))
+		if(spellinstance != SpellHandle(-1) && (CheckAnythingInSphere(sphere, spells[spellinstance]->m_caster, CAS_NO_SAME_GROUP)))
 		{
 			LaunchMagicMissileExplosion(missile->eCurPos, spellinstance);
-			ARX_NPC_SpawnAudibleSound(missile->eCurPos, entities[spells[spellinstance].m_caster]);
+			ARX_NPC_SpawnAudibleSound(missile->eCurPos, entities[spells[spellinstance]->m_caster]);
 			
 			missile->SetTTL(1000);
 			missile->bExplo = true;
@@ -587,10 +587,10 @@ void CMultiMagicMissile::CheckCollision()
 			DamageParameters damage;
 			damage.pos = missile->eCurPos;
 			damage.radius = 80.f;
-			damage.damages = (4 + spells[spellinstance].m_caster_level * ( 1.0f / 5 )) * .8f;
+			damage.damages = (4 + spells[spellinstance]->m_caster_level * ( 1.0f / 5 )) * .8f;
 			damage.area	= DAMAGE_FULL;
 			damage.duration = -1;
-			damage.source = spells[spellinstance].m_caster;
+			damage.source = spells[spellinstance]->m_caster;
 			damage.flags = DAMAGE_FLAG_DONT_HURT_SOURCE;
 			damage.type = DAMAGE_TYPE_MAGICAL;
 			DamageCreate(damage);
@@ -688,9 +688,9 @@ void CIgnit::Action(bool enable)
 		GLight[itr->iLightNum]->status = enable;
 
 		if(enable) {
-			ARX_SOUND_PlaySFX(SND_SPELL_IGNITE, &spells[spellinstance].m_caster_pos);
+			ARX_SOUND_PlaySFX(SND_SPELL_IGNITE, &spells[spellinstance]->m_caster_pos);
 		} else {
-			ARX_SOUND_PlaySFX(SND_SPELL_DOUSE, &spells[spellinstance].m_caster_pos);
+			ARX_SOUND_PlaySFX(SND_SPELL_DOUSE, &spells[spellinstance]->m_caster_pos);
 		}
 	}
 }

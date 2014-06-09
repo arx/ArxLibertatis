@@ -397,22 +397,21 @@ void DisarmTrapSpell::Launch()
 	sphere.radius = 400.f;
 	
 	for(size_t n = 0; n < MAX_SPELLS; n++) {
-		const SpellHandle handle = SpellHandle(n);
-		SpellBase & spell = spells[handle];
+		SpellBase * spell = spells[SpellHandle(n)];
 		
-		if(!spell.m_exist || spell.m_type != SPELL_RUNE_OF_GUARDING) {
+		if(!spell->m_exist || spell->m_type != SPELL_RUNE_OF_GUARDING) {
 			continue;
 		}
 		
-		if(!spell.m_pSpellFx) {
+		if(!spell->m_pSpellFx) {
 			continue;
 		}
 		
-		CSpellFx * effect = spell.m_pSpellFx;
+		CSpellFx * effect = spell->m_pSpellFx;
 		if(sphere.contains(static_cast<CRuneOfGuarding *>(effect)->eSrc)) {
-			spell.m_caster_level -= m_caster_level;
-			if(spell.m_caster_level <= 0) {
-				spell.m_tolive = 0;
+			spell->m_caster_level -= m_caster_level;
+			if(spell->m_caster_level <= 0) {
+				spell->m_tolive = 0;
 			}
 		}
 	}

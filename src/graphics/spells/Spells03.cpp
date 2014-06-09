@@ -236,7 +236,7 @@ void CFireBall::Update(unsigned long aulTime)
 	} else {
 		float afAlpha = 0.f;
 	
-		SpellBase * spell = &spells[spellinstance];
+		SpellBase * spell = spells[spellinstance];
 		
 		if(spell->m_caster == PlayerEntityHandle) {
 			SetAngle(player.angle.getPitch());
@@ -456,10 +456,10 @@ void CIceProjectile::Create(Vec3f aeSrc, float afBeta)
 		DamageParameters damage;
 		damage.pos = tPos[i];
 		damage.radius = 60.f;
-		damage.damages = 0.1f * spells[spellinstance].m_caster_level;
+		damage.damages = 0.1f * spells[spellinstance]->m_caster_level;
 		damage.area = DAMAGE_FULL;
 		damage.duration = ulDuration;
-		damage.source = spells[spellinstance].m_caster;
+		damage.source = spells[spellinstance]->m_caster;
 		damage.flags = DAMAGE_FLAG_DONT_HURT_SOURCE;
 		damage.type = DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_COLD;
 		DamageCreate(damage);

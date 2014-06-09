@@ -46,12 +46,11 @@ extern Rect g_size;
 void MassLightningStrikeSpell::Launch()
 {
 	for(size_t ii = 0; ii < MAX_SPELLS; ii++) {
-		const SpellHandle handle = SpellHandle(ii);
-		SpellBase & spell = spells[handle];
+		SpellBase * spell = spells[SpellHandle(ii)];
 		
-		if(spell.m_exist && spell.m_type == SPELL_MASS_LIGHTNING_STRIKE) {
-			lightHandleDestroy(spell.m_longinfo_light);
-			spell.m_tolive = 0;
+		if(spell->m_exist && spell->m_type == SPELL_MASS_LIGHTNING_STRIKE) {
+			lightHandleDestroy(spell->m_longinfo_light);
+			spell->m_tolive = 0;
 		}
 	}
 	
