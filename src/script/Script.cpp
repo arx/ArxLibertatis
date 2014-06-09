@@ -1072,13 +1072,9 @@ ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const string & 
 				
 				SpellType id = GetSpellId(temp);
 				if(id != SPELL_NONE) {
-					for(size_t i = 0; i < MAX_SPELLS; i++) {
-						const SpellBase * spell = spells[SpellHandle(i)];
-						
-						if(spell->m_exist && spell->m_type == id && spell->m_caster == PlayerEntityHandle) {
-							*lcontent = 1;
-							return TYPE_LONG;
-						}
+					if(spells.ExistAnyInstanceForThisCaster(id, PlayerEntityHandle)) {
+						*lcontent = 1;
+						return TYPE_LONG;
 					}
 				}
 				
