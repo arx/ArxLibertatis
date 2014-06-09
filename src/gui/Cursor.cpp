@@ -106,10 +106,10 @@ void cursorTexturesInit() {
 }
 
 
-long Manage3DCursor(bool simulate) {
+bool Manage3DCursor(bool simulate) {
 
 	if(BLOCK_PLAYER_CONTROLS)
-		return 0;
+		return false;
 
 	float ag = player.angle.getYaw();
 
@@ -119,11 +119,11 @@ long Manage3DCursor(bool simulate) {
 	float drop_miny = (float)(g_size.center().y) - g_size.center().y * (ag * (1.f/70));
 
 	if(DANAEMouse.y < drop_miny)
-		return 0;
+		return false;
 
 	Entity * io = DRAGINTER;
 	if(!io)
-		return 0;
+		return false;
 
 	Anglef temp = Anglef::ZERO;
 
@@ -261,7 +261,8 @@ long Manage3DCursor(bool simulate) {
 		if(anything < 0.f) {
 			if(iterating == 40) {
 				CANNOT_PUT_IT_HERE = 1;
-				return -1;
+				// TODO is this correct ?
+				return true;
 			}
 
 			iterating = 0;
@@ -289,7 +290,7 @@ long Manage3DCursor(bool simulate) {
 
 	if(iterating != -1) {
 		CANNOT_PUT_IT_HERE = 1;
-		return 0;
+		return false;
 	}
 
 	if(iterating == -1 && closerThan(player.pos, pos, 300.f)) {
@@ -359,12 +360,12 @@ long Manage3DCursor(bool simulate) {
 		}
 
 		GRenderer->SetCulling(Renderer::CullNone);
-		return 1;
+		return true;
 	} else {
 		CANNOT_PUT_IT_HERE=-1;
 	}
 
-	return 0;
+	return false;
 }
 
 extern long LOOKING_FOR_SPELL_TARGET;
@@ -537,7 +538,7 @@ void ARX_INTERFACE_RenderCursorInternal(bool flag) {
 			   && !InInventoryPos(DANAEMouse)
 			   && !g_cursorOverBook
 			) {
-				if(Manage3DCursor(true) == 0)
+				if(!Manage3DCursor(true))
 					CANNOT_PUT_IT_HERE = -1;
 
 				if(SPECIAL_DRAGINTER_RENDER) {

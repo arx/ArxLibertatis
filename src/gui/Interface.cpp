@@ -6574,9 +6574,9 @@ void ArxGame::manageEditorControls() {
 				) {
 					//Put object in fromt of player
 					
-					long res = Manage3DCursor(false);
+					bool res = Manage3DCursor(false);
 					// Throw Object
-					if(res==0) {
+					if(!res) {
 						Entity * io=DRAGINTER;
 						ARX_PLAYER_Remove_Invisibility();
 						io->obj->pbox->active=1;
