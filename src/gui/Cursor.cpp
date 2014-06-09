@@ -198,8 +198,7 @@ bool Manage3DCursor(bool simulate) {
 	objcenter = VRotateY(objcenter, temp.getPitch());
 
 	maxdist = clamp(maxdist, 15.f, 150.f);
-
-	bool bCollidposNoInit = true;
+	
 	Vec3f collidpos = Vec3f_ZERO;
 	EERIE_CYLINDER cyl2;
 	float inc = 10.f;
@@ -226,7 +225,6 @@ bool Manage3DCursor(bool simulate) {
 			iterating = 0;
 
 			collidpos = cyl2.origin;
-			bCollidposNoInit = false;
 
 			if(lastanything < 0.f) {
 				pos.y += lastanything;
@@ -256,11 +254,7 @@ bool Manage3DCursor(bool simulate) {
 			ARX_INTERACTIVE_Teleport(io, pos, true);
 
 			io->gameFlags &= ~GFLAG_NOCOMPUTATION;
-
-			if(bCollidposNoInit) {
-				ARX_DEAD_CODE();
-			}
-
+			
 			glm::quat rotation = glm::toQuat(toRotationMatrix(temp));
 			
 			if(SPECIAL_DRAGINTER_RENDER) {
