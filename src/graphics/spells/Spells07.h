@@ -129,7 +129,6 @@ public:
 	void Update(unsigned long);
 	void Render();
 	
-	SpellHandle spellinstance;
 public:
 	TextureContainer * tex_p1;
 	TextureContainer * tex_trail;

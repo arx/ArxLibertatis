@@ -602,7 +602,7 @@ void CConfuse::Create(float afBeta) {
 
 void CConfuse::SetPos(const Vec3f & pos)
 {
-	
+	eCurPos = pos;
 }
 
 void CConfuse::Update(unsigned long _ulTime) {
@@ -620,19 +620,6 @@ void CConfuse::Render() {
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->SetTexture(0, tex_trail);
-	
-	EntityHandle target = spells[spellinstance]->m_target;
-	
-	eCurPos = entities[target]->pos;
-	if(target != PlayerEntityHandle) {
-		eCurPos.y += entities[target]->physics.cyl.height - 30.f;
-	}
-	
-	long idx = entities[target]->obj->fastaccess.head_group_origin;
-	if(idx >= 0) {
-		eCurPos = entities[target]->obj->vertexlist3[idx].v;
-		eCurPos.y -= 50.f;
-	}
 	
 	Vec3f stitepos = eCurPos;
 	Anglef stiteangle = Anglef(0.f, -degrees(arxtime.get_updated() * ( 1.0f / 500 )), 0.f);

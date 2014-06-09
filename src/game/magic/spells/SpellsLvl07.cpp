@@ -498,7 +498,6 @@ void ConfuseSpell::Launch()
 	m_tolive = (m_launchDuration > -1) ? m_launchDuration : 5000;
 	
 	CConfuse * effect = new CConfuse();
-	effect->spellinstance = m_thisHandle;
 	effect->Create(MAKEANGLE(player.angle.getPitch()));
 	effect->SetDuration(m_tolive);
 	m_pSpellFx = effect;
@@ -514,10 +513,22 @@ void ConfuseSpell::End()
 
 void ConfuseSpell::Update(float timeDelta)
 {
-	CSpellFx *pCSpellFX = m_pSpellFx;
+	CConfuse * effect = static_cast<CConfuse *>(m_pSpellFx);
 	
-	if(pCSpellFX) {
-		pCSpellFX->Update(timeDelta);
-		pCSpellFX->Render();
+	if(effect) {
+		Vec3f pos = entities[m_target]->pos;
+		if(m_target != PlayerEntityHandle) {
+			pos.y += entities[m_target]->physics.cyl.height - 30.f;
+		}
+		
+		long idx = entities[m_target]->obj->fastaccess.head_group_origin;
+		if(idx >= 0) {
+			pos = entities[m_target]->obj->vertexlist3[idx].v;
+			pos.y -= 50.f;
+		}
+		
+		effect->SetPos(pos);
+		effect->Update(timeDelta);
+		effect->Render();
 	}
 }
