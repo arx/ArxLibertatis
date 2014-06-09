@@ -173,7 +173,7 @@ bool Manage3DCursor(bool simulate) {
 	pos.z = player.pos.z - std::cos(angle2) * (g_size.center().x - mx)*0.7f*va + std::cos(angle)*(va*zrange*400.f+vd);
 	pos.y = player.pos.y;
 
-	Vec3f objcenter = Vec3f_ZERO;
+	
 	float maxdist = 0.f;
 	float miny = 99999999.f;
 	float maxy = -99999999.f;
@@ -187,7 +187,7 @@ bool Manage3DCursor(bool simulate) {
 		maxy = std::max(maxy, io->obj->vertexlist[i].v.y);
 	}
 	
-	Vec3f orgn,dest,mvectx;
+	Vec3f mvectx;
 	mvectx.x = -std::sin(radians(player.angle.getPitch() - 90.f));
 	mvectx.y = 0;
 	mvectx.z = +std::cos(radians(player.angle.getPitch() - 90.f));
@@ -198,10 +198,12 @@ bool Manage3DCursor(bool simulate) {
 	mvectx *= xmod;
 	Vec3f mvecty(0, ymod, 0);
 
+	Vec3f orgn;
 	orgn.x=player.pos.x- std::sin(radians(player.angle.getPitch())) * std::cos(radians(player.angle.getYaw()))*50.f + mvectx.x;
 	orgn.y=player.pos.y+ std::sin(radians(player.angle.getYaw()))*50.f + mvectx.y + mvecty.y;
 	orgn.z=player.pos.z+ std::cos(radians(player.angle.getPitch())) * std::cos(radians(player.angle.getYaw()))*50.f + mvectx.z;
 
+	Vec3f dest;
 	dest.x=player.pos.x- std::sin(radians(player.angle.getPitch())) * std::cos(radians(player.angle.getYaw()))*10000.f + mvectx.x;
 	dest.y=player.pos.y+ std::sin(radians(player.angle.getYaw()))*10000.f + mvectx.y + mvecty.y * 5.f;
 	dest.z=player.pos.z+ std::cos(radians(player.angle.getPitch())) * std::cos(radians(player.angle.getYaw()))*10000.f + mvectx.z;
@@ -214,7 +216,8 @@ bool Manage3DCursor(bool simulate) {
 
 	if(height > -30.f)
 		height = -30.f;
-
+	
+	Vec3f objcenter = Vec3f_ZERO;
 	objcenter.x = minoff.x + (maxoff.x - minoff.x) * 0.5f;
 	objcenter.y = 0;
 	objcenter.z = minoff.z + (maxoff.z - minoff.z) * 0.5f;
