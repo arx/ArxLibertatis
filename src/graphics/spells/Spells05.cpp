@@ -669,30 +669,31 @@ void CMultiPoisonProjectile::Create(Vec3f srcPos) {
 	
 	float afBeta = 0.f;
 	
-	Entity * caster = entities[spells[spellinstance].m_caster];
-	spells[spellinstance].m_hand_group = caster->obj->fastaccess.primary_attach;
+	SpellBase * spell = &spells[spellinstance];
+	Entity * caster = entities[spell->m_caster];
+	spell->m_hand_group = caster->obj->fastaccess.primary_attach;
 
-	if(spells[spellinstance].m_hand_group != -1) {
-		long group = spells[spellinstance].m_hand_group;
-		spells[spellinstance].m_hand_pos = caster->obj->vertexlist3[group].v;
+	if(spell->m_hand_group != -1) {
+		long group = spell->m_hand_group;
+		spell->m_hand_pos = caster->obj->vertexlist3[group].v;
 	}
 	
-	if(spells[spellinstance].m_caster == PlayerEntityHandle) {
+	if(spell->m_caster == PlayerEntityHandle) {
 
 		afBeta = player.angle.getPitch();
 
-		if(spells[spellinstance].m_hand_group != -1) {
-			srcPos = spells[spellinstance].m_hand_pos;
+		if(spell->m_hand_group != -1) {
+			srcPos = spell->m_hand_pos;
 		} else {
 			srcPos = player.pos;
 		}
 	} else {
-		afBeta = entities[spells[spellinstance].m_caster]->angle.getPitch();
+		afBeta = entities[spell->m_caster]->angle.getPitch();
 
-		if(spells[spellinstance].m_hand_group != -1) {
-			srcPos = spells[spellinstance].m_hand_pos;
+		if(spell->m_hand_group != -1) {
+			srcPos = spell->m_hand_pos;
 		} else {
-			srcPos = entities[spells[spellinstance].m_caster]->pos;
+			srcPos = entities[spell->m_caster]->pos;
 		}
 	}
 	
