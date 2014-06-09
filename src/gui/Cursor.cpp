@@ -133,46 +133,6 @@ bool Manage3DCursor(bool simulate) {
 	} else {
 		temp.setPitch(MAKEANGLE(270.f - io->angle.getPitch() - (player.angle.getPitch() - STARTED_ANGLE)));
 	}
-
-	float angle = radians(MAKEANGLE(player.angle.getPitch()));
-	float angle2 = radians(MAKEANGLE(player.angle.getPitch() - 90.f));
-
-	//between 0 (bottom) and 1 (top)
-	float zrange = (g_size.height() - DANAEMouse.y) / (g_size.height() - drop_miny);
-
-	float va = player.angle.getYaw();
-
-	if(va > 180)
-		va = 0;
-
-	float vd=(100.f-va)*( 1.0f / 90 );
-	float mod=va-50.f;
-
-	if(mod < 0)
-		mod = 0;
-
-	mod *= (1.f / 20);
-	va = vd * (1.3f + 0.3f * mod);
-
-	vd = ((1.f-zrange)*0.6f-vd)*150.f;
-
-	if(va<0)
-		va = 0;
-
-	if(vd < 0)
-		vd = 0;
-
-	float mx = DANAEMouse.x;
-
-	if(TRUE_PLAYER_MOUSELOOK_ON && config.input.autoReadyWeapon) {
-		mx = MemoMouse.x;
-	}
-
-	Vec3f pos;
-	pos.x = player.pos.x + std::sin(angle2) * (g_size.center().x - mx)*0.7f*va - std::sin(angle)*(va*zrange*400.f+vd);
-	pos.z = player.pos.z - std::cos(angle2) * (g_size.center().x - mx)*0.7f*va + std::cos(angle)*(va*zrange*400.f+vd);
-	pos.y = player.pos.y;
-
 	
 	float maxdist = 0.f;
 	float miny = 99999999.f;
@@ -207,7 +167,7 @@ bool Manage3DCursor(bool simulate) {
 	dest.x=player.pos.x- std::sin(radians(player.angle.getPitch())) * std::cos(radians(player.angle.getYaw()))*10000.f + mvectx.x;
 	dest.y=player.pos.y+ std::sin(radians(player.angle.getYaw()))*10000.f + mvectx.y + mvecty.y * 5.f;
 	dest.z=player.pos.z+ std::cos(radians(player.angle.getPitch())) * std::cos(radians(player.angle.getYaw()))*10000.f + mvectx.z;
-	pos = orgn;
+	Vec3f pos = orgn;
 
 	Vec3f movev = glm::normalize(dest - orgn);
 
