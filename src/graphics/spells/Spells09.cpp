@@ -473,7 +473,6 @@ CNegateMagic::~CNegateMagic()
 CNegateMagic::CNegateMagic() {
 	
 	eSrc = Vec3f_ZERO;
-	eTarget = Vec3f_ZERO;
 	
 	SetDuration(1000);
 	ulCurrentTime = ulDuration + 1;
@@ -494,7 +493,6 @@ void CNegateMagic::Create(Vec3f aeSrc, float afBeta) {
 	
 	eSrc = aeSrc;
 	SetAngle(afBeta);
-	eTarget = eSrc;
 }
 
 void CNegateMagic::Update(unsigned long _ulTime) {

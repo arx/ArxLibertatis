@@ -108,30 +108,25 @@ class CSummonCreature: public CSpellFx
 };
 
 // Done By : Didier Pedreno
-class CNegateMagic: public CSpellFx
-{
-	public:
-		Vec3f eSrc;
-		Vec3f eTarget;
-		TextureContainer * tex_p2;
-		TextureContainer * tex_sol;
-
-	public:
-		CNegateMagic();
-		~CNegateMagic();
-
-		// accesseurs
-	public:
-		void SetPos(Vec3f);
-
-		// surcharge
-	public:
-		void	Create(Vec3f, float afBeta = 0);
-		void	Kill();
-		void	Update(unsigned long);
-		void Render();
-		
-		SpellHandle spellinstance;
+class CNegateMagic: public CSpellFx {
+	
+public:
+	CNegateMagic();
+	~CNegateMagic();
+	
+	void Create(Vec3f, float afBeta = 0);
+	void Kill();
+	void Update(unsigned long);
+	void Render();
+	
+	void SetPos(Vec3f);
+	
+	SpellHandle spellinstance;
+	
+private:
+	Vec3f eSrc;
+	TextureContainer * tex_p2;
+	TextureContainer * tex_sol;
 };
 
 #endif // ARX_GRAPHICS_SPELLS_SPELLS09_H
