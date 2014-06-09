@@ -6651,10 +6651,10 @@ void ArxGame::manageEditorControls() {
 					   && !(GLight[i]->extras & EXTRAS_NO_IGNIT)
 					) {
 						const Rect mouseTestRect(
-						GLight[i]->mins.x,
-						GLight[i]->mins.y,
-						GLight[i]->maxs.x,
-						GLight[i]->maxs.y
+						GLight[i]->m_screenRect.min.x,
+						GLight[i]->m_screenRect.min.y,
+						GLight[i]->m_screenRect.max.x,
+						GLight[i]->m_screenRect.max.y
 						);
 						
 						if(   mouseTestRect.contains(Vec2i(DANAEMouse))
@@ -6708,10 +6708,10 @@ void ArxGame::manageEditorControls() {
 					!(GLight[i]->extras & EXTRAS_NO_IGNIT))
 				{
 					const Rect mouseTestRect(
-					GLight[i]->mins.x,
-					GLight[i]->mins.y,
-					GLight[i]->maxs.x,
-					GLight[i]->maxs.y
+					GLight[i]->m_screenRect.min.x,
+					GLight[i]->m_screenRect.min.y,
+					GLight[i]->m_screenRect.max.x,
+					GLight[i]->m_screenRect.max.y
 					);
 					
 					if(mouseTestRect.contains(Vec2i(DANAEMouse))) {

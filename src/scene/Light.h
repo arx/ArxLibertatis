@@ -53,6 +53,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <boost/serialization/strong_typedef.hpp>
 
 #include "audio/AudioTypes.h"
+#include "graphics/BaseGraphicsTypes.h"
 #include "graphics/Color.h"
 #include "math/Types.h"
 #include "math/Quantizer.h"
@@ -108,8 +109,9 @@ struct EERIE_LIGHT {
 	Color3f rgb255;
 	float intensity;
 	Color3f rgb;
-	Vec3f mins;
-	Vec3f maxs;
+	
+	EERIE_2D_BBOX m_screenRect;
+	
 	float temp;
 	Color3f ex_flicker;
 	float ex_radius;

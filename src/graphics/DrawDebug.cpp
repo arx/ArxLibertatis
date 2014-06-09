@@ -140,11 +140,7 @@ static void drawDebugLights() {
 		GRenderer->SetBlendFunc(Renderer::BlendSrcAlpha, Renderer::BlendSrcAlpha);
 		EERIEDrawSprite(in, 11.f, g_lightSourceTexture, light->rgb.to<u8>(), 2.f);
 		
-		EERIEDraw2DLine(light->mins.x, light->mins.y, light->maxs.x, light->mins.y, 0.00001f, Color::white);
-		EERIEDraw2DLine(light->maxs.x, light->mins.y, light->maxs.x, light->maxs.y, 0.00001f, Color::white);
-		EERIEDraw2DLine(light->maxs.x, light->maxs.y, light->mins.x, light->maxs.y, 0.00001f, Color::white);
-		EERIEDraw2DLine(light->mins.x, light->maxs.y, light->mins.x, light->mins.y, 0.00001f, Color::white);
-		
+		drawDebugBoundingBox(light->m_screenRect);
 	}
 	
 	GRenderer->SetCulling(Renderer::CullCCW);
