@@ -115,13 +115,10 @@ public:
 	~CNegateMagic();
 	
 	void Create(Vec3f, float afBeta = 0);
-	void Kill();
 	void Update(unsigned long);
 	void Render();
 	
-	void SetPos(Vec3f);
-	
-	SpellHandle spellinstance;
+	void SetPos(Vec3f pos);
 	
 private:
 	Vec3f eSrc;

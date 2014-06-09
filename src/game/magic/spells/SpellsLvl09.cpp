@@ -361,7 +361,6 @@ void NegateMagicSpell::Launch()
 	m_tolive = (m_launchDuration > -1) ? m_launchDuration : 1000000;
 	
 	CNegateMagic * effect = new CNegateMagic();
-	effect->spellinstance = m_thisHandle;
 	effect->Create(m_target_pos, MAKEANGLE(entities[m_target]->angle.getPitch()));
 	effect->SetDuration(m_tolive);
 	m_pSpellFx = effect;
@@ -374,11 +373,17 @@ void NegateMagicSpell::Update(float timeDelta)
 {
 	LaunchAntiMagicField();
 
-	CSpellFx *pCSpellFX = m_pSpellFx;
+	CNegateMagic * effect = static_cast<CNegateMagic *>(m_pSpellFx);
 
-	if(pCSpellFX) {
-		pCSpellFX->Update(timeDelta);
-		pCSpellFX->Render();
+	if(effect) {
+		if(m_target == PlayerEntityHandle) {
+			effect->SetPos(player.basePosition());
+		} else {
+			effect->SetPos(entities[m_target]->pos);
+		}
+		
+		effect->Update(timeDelta);
+		effect->Render();
 	}	
 }
 
