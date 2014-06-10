@@ -93,6 +93,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/texture/TextureStage.h"
 #include "graphics/texture/Texture.h"
 
+#include "gui/Cursor.h"
 #include "gui/Menu.h"
 #include "gui/Speech.h"
 #include "gui/MiniMap.h"
@@ -129,7 +130,6 @@ extern void InitTileLights();
 //! Hide the quick save indicator
 static void hideQuickSaveIcon();
 
-long Manage3DCursor(bool simulate);
 long IN_BOOK_DRAW=0;
 
 extern EntityHandle LastSelectedIONum;

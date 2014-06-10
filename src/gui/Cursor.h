@@ -22,6 +22,8 @@
 
 void cursorTexturesInit();
 
+bool Manage3DCursor(bool simulate);
+
 void ARX_INTERFACE_RenderCursor(bool flag = false);
 
 #endif // ARX_GUI_CURSOR_H
