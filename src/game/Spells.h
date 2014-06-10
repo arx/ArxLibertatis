@@ -72,6 +72,8 @@ class SpellManager {
 public:
 	SpellBase * operator[] (const SpellHandle handle);
 	
+	void endAllByCaster(EntityHandle caster);
+	
 	void RequestEndOfInstanceForThisCaster(SpellType typ, EntityHandle caster);
 	bool ExistAnyInstanceForThisCaster(SpellType typ, EntityHandle caster);
 		

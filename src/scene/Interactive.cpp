@@ -225,13 +225,7 @@ void ARX_INTERACTIVE_DestroyDynamicInfo(Entity * io)
 	ARX_SCRIPT_EventStackClearForIo(io);
 	
 	if(ValidIONum(n)) {
-		for(size_t i = 0; i < MAX_SPELLS; i++) {
-			SpellBase * spell = spells[SpellHandle(i)];
-			
-			if(spell->m_exist && spell->m_caster == n) {
-				spell->m_tolive = 0;
-			}
-		}
+		spells.endAllByCaster(n);
 	}
 
 	if(io->flarecount) {
