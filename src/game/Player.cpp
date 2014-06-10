@@ -1323,14 +1323,8 @@ void ARX_PLAYER_BecomesDead() {
 		player.Interface = 0;
 		DeadTime = 0;
 	}
-
-	for(size_t i = 0; i < MAX_SPELLS; i++) {
-		SpellBase * spell = spells[SpellHandle(i)];
-		
-		if(spell->m_exist && spell->m_caster == PlayerEntityHandle) {
-			spell->m_tolive = 0;
-		}
-	}
+	
+	spells.endAllByCaster(PlayerEntityHandle);
 }
 
 float LASTPLAYERA = 0;
