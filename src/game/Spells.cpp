@@ -1127,11 +1127,8 @@ float ARX_SPELLS_GetManaCost(SpellType spell, SpellHandle index) {
 	}
 }
 
-bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flagss, long levell, EntityHandle target, long duration) {
+bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flags, long level, EntityHandle target, long duration) {
 	
-	SpellcastFlags flags = flagss;
-	long level = levell;
-
 	if(cur_rf == 3) {
 		flags |= SPELLCAST_FLAG_NOCHECKCANCAST | SPELLCAST_FLAG_NOMANA;	
 	}
