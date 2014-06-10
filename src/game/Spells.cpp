@@ -682,17 +682,21 @@ void ARX_SPELLS_ManageMagic() {
 
 	if(!io)
 		return;
-
-	if ((io->animlayer[1].cur_anim == io->anims[ANIM_BARE_UNREADY]) ||
-		(io->animlayer[1].cur_anim == io->anims[ANIM_DAGGER_UNREADY_PART_1]) ||
-		(io->animlayer[1].cur_anim == io->anims[ANIM_1H_UNREADY_PART_1]) ||
-		(io->animlayer[1].cur_anim == io->anims[ANIM_2H_UNREADY_PART_1]) ||
-		(io->animlayer[1].cur_anim == io->anims[ANIM_MISSILE_UNREADY_PART_1]) ||
-		(io->animlayer[1].cur_anim == io->anims[ANIM_DAGGER_UNREADY_PART_2]) ||
-		(io->animlayer[1].cur_anim == io->anims[ANIM_1H_UNREADY_PART_2]) ||
-		(io->animlayer[1].cur_anim == io->anims[ANIM_2H_UNREADY_PART_2]) ||
-		(io->animlayer[1].cur_anim == io->anims[ANIM_MISSILE_UNREADY_PART_2]))
+	
+	const ANIM_HANDLE * anim = io->animlayer[1].cur_anim;
+	
+	if(   anim == io->anims[ANIM_BARE_UNREADY]
+	   || anim == io->anims[ANIM_DAGGER_UNREADY_PART_1]
+	   || anim == io->anims[ANIM_1H_UNREADY_PART_1]
+	   || anim == io->anims[ANIM_2H_UNREADY_PART_1]
+	   || anim == io->anims[ANIM_MISSILE_UNREADY_PART_1]
+	   || anim == io->anims[ANIM_DAGGER_UNREADY_PART_2]
+	   || anim == io->anims[ANIM_1H_UNREADY_PART_2]
+	   || anim == io->anims[ANIM_2H_UNREADY_PART_2]
+	   || anim == io->anims[ANIM_MISSILE_UNREADY_PART_2]
+	) {
 		return;
+	}
 
 	snip++;
 
