@@ -2716,8 +2716,6 @@ void ARX_PLAYER_Rune_Add_All() {
 	ARX_Player_Rune_Add(FLAG_YOK);
 }
 
-extern unsigned long LAST_PRECAST_TIME;
-
 void ARX_PLAYER_Invulnerability(long flag) {
 
 	if(flag)
@@ -2767,9 +2765,7 @@ void ARX_GAME_Reset(long type) {
 	if(entities.player()) {
 		entities.player()->spellcast_data.castingspell = SPELL_NONE;
 	}
-
-	LAST_PRECAST_TIME = 0;
-
+	
 	ARX_INTERFACE_NoteClear();
 	player.Interface = INTER_LIFE_MANA | INTER_MINIBACK | INTER_MINIBOOK;
 

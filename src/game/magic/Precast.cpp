@@ -34,9 +34,12 @@ const size_t MAX_PRECAST = 3;
 
 extern void ARX_SPELLS_FizzleNoMana(SpellHandle num);
 
+unsigned long LAST_PRECAST_TIME = 0;
+
 std::vector<PRECAST_STRUCT> Precast;
 
 void ARX_SPELLS_Precast_Reset() {
+	LAST_PRECAST_TIME = 0;
 	Precast.clear();
 }
 
@@ -59,7 +62,7 @@ void ARX_SPELLS_Precast_Add(SpellType typ, long _level, SpellcastFlags flags, lo
 	Precast.push_back(precast);
 }
 
-unsigned long LAST_PRECAST_TIME = 0;
+
 
 long PrecastCheckCanPayMana(PrecastHandle num, float cost, bool _bSound = true) {
 	if(num < 0)
