@@ -956,8 +956,6 @@ void ARX_SPELLS_AnalyseSYMBOL() {
 	}
 }
 
-extern void ARX_SPELLS_Fizzle(SpellHandle num);
-
 bool ARX_SPELLS_AnalyseSPELL() {
 	
 	SpellcastFlags flags = 0;
@@ -980,8 +978,7 @@ bool ARX_SPELLS_AnalyseSPELL() {
 	}
 	
 	if(spell == SPELL_NONE) {
-		
-		ARX_SPELLS_Fizzle(InvalidSpellHandle);
+		ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE);
 		
 		if(player.SpellToMemorize.bSpell) {
 			CurrSpellSymbol = 0;

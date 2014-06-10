@@ -670,14 +670,11 @@ void SPELLEND_Notify(SpellBase & spell) {
 
 //! Plays the sound of Fizzling spell
 void ARX_SPELLS_Fizzle(SpellHandle num) {
-	if(num < 0) {
-		ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE); // player fizzle
-	} else {
-		spells[num]->m_tolive = 0;
-		
-		if(spells[num]->m_caster >= PlayerEntityHandle) {
-			ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE, &spells[num]->m_caster_pos);
-		}
+	
+	spells[num]->m_tolive = 0;
+	
+	if(spells[num]->m_caster >= PlayerEntityHandle) {
+		ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE, &spells[num]->m_caster_pos);
 	}
 }
 
