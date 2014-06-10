@@ -422,13 +422,7 @@ void ARX_PLAYER_Quest_Add(const std::string & quest, bool _bLoad) {
  * \brief Removes player invisibility by killing Invisibility spells on him
  */
 void ARX_PLAYER_Remove_Invisibility() {
-	for(size_t i = 0; i < MAX_SPELLS; i++) {
-		SpellBase * spell = spells[SpellHandle(i)];
-		
-		if(spell->m_exist && spell->m_type == SPELL_INVISIBILITY && spell->m_caster == PlayerEntityHandle) {
-			spell->m_tolive = 0;
-		}
-	}
+	spells.RequestEndOfInstanceForThisCaster(SPELL_INVISIBILITY, PlayerEntityHandle);
 }
 
 /* TODO use this table instead of the copied functions below!
