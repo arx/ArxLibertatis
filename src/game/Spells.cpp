@@ -578,15 +578,12 @@ static bool MakeSpellName(char * spell, SpellType num) {
 	return true;
 }
 
-void SPELLCAST_Notify(SpellHandle num) {
+void SPELLCAST_Notify(SpellBase & spell) {
 	
-	if(num < 0 || size_t(num) >= MAX_SPELLS)
-		return;
-		
-	char spell[128];
-	EntityHandle source = spells[num]->m_caster;
+	char spellName[128];
+	EntityHandle source = spell.m_caster;
 
-	if(!MakeSpellName(spell, spells[num]->m_type))
+	if(!MakeSpellName(spellName, spell.m_type))
 		return;
 	
 	for(size_t i = 0; i < entities.size(); i++) {
@@ -595,33 +592,30 @@ void SPELLCAST_Notify(SpellHandle num) {
 		if(entities[handle] != NULL) {
 			EVENT_SENDER = (source != InvalidEntityHandle) ? entities[source] : NULL;
 			char param[256];
-			sprintf(param, "%s %ld", spell, (long)spells[num]->m_caster_level);
+			sprintf(param, "%s %ld", spellName, (long)spell.m_caster_level);
 			SendIOScriptEvent(entities[handle], SM_SPELLCAST, param);
 		}
 	}
 }
 
-void SPELLCAST_NotifyOnlyTarget(SpellHandle num)
-{
-	if(num < 0 || size_t(num) >= MAX_SPELLS)
+void SPELLCAST_NotifyOnlyTarget(SpellBase & spell) {
+	
+	if(spell.m_target < 0)
 		return;
 
-	if(spells[num]->m_target<0)
-		return;
+	char spellName[128];
+	EntityHandle source = spell.m_caster;
 
-	char spell[128];
-	EntityHandle source = spells[num]->m_caster;
-
-	if(MakeSpellName(spell, spells[num]->m_type)) {
+	if(MakeSpellName(spellName, spell.m_type)) {
 		if(source != InvalidEntityHandle)
 			EVENT_SENDER = entities[source];
 		else
 			EVENT_SENDER = NULL;
 
 		char param[256];
-		sprintf(param,"%s %ld",spell,(long)spells[num]->m_caster_level);
-		SendIOScriptEvent(entities[spells[num]->m_target], SM_SPELLCAST, param);
-	}	
+		sprintf(param,"%s %ld",spellName,(long)spell.m_caster_level);
+		SendIOScriptEvent(entities[spell.m_target], SM_SPELLCAST, param);
+	}
 }
 
 void SPELLEND_Notify(SpellBase & spell) {
@@ -1632,9 +1626,9 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flagss
 	
 	// TODO inconsistent use of the SM_SPELLCAST event
 	if(typ == SPELL_CONFUSE || typ == SPELL_ENCHANT_WEAPON) {
-		SPELLCAST_NotifyOnlyTarget(i);
+		SPELLCAST_NotifyOnlyTarget(spell);
 	} else {
-		SPELLCAST_Notify(i);
+		SPELLCAST_Notify(spell);
 	}
 	
 	return true;
