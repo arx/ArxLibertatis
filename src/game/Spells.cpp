@@ -996,16 +996,6 @@ void ARX_SPELLS_AbortSpellSound() {
 	ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE);
 }
 
-void ARX_SPELLS_FizzleAllSpellsFromCaster(EntityHandle num_caster) {
-	
-	for(size_t i = 0; i < MAX_SPELLS; i++) {
-		SpellBase * spell = spells[SpellHandle(i)];
-		if(spell->m_exist && spell->m_caster == num_caster) {
-			spell->m_tolive = 0;
-		}
-	}
-}
-
 struct TARGETING_SPELL {
 	SpellType typ;
 	SpellcastFlags flags;

@@ -109,6 +109,5 @@ void ARX_SPELLS_LaunchSpellTarget(Entity * io);
 float ARX_SPELLS_GetManaCost(SpellType _lNumSpell, SpellHandle _lNumSpellTab);
 float ARX_SPELLS_ApplyFireProtection(Entity * io, float damages);
 float ARX_SPELLS_ApplyColdProtection(Entity * io, float damages);
-void ARX_SPELLS_FizzleAllSpellsFromCaster(EntityHandle num);
 
 #endif // ARX_GAME_SPELLS_H
