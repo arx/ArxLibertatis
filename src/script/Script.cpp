@@ -823,18 +823,9 @@ ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const string & 
 			if(boost::starts_with(name, "^myspell_")) {
 				SpellType id = GetSpellId(name.substr(9));
 				if(id != SPELL_NONE) {
-					for(size_t i = 0; i < MAX_SPELLS; i++) {
-						const SpellBase * spell = spells[SpellHandle(i)];
-						
-						if(   spell->m_exist
-						   && spell->m_type == id
-						   && spell->m_caster >= PlayerEntityHandle
-						   && spell->m_caster < long(entities.size())
-						   && entity == entities[spell->m_caster]
-						) {
-							*lcontent = 1;
-							return TYPE_LONG;
-						}
+					if(spells.ExistAnyInstanceForThisCaster(id, entity->index())) {
+						*lcontent = 1;
+						return TYPE_LONG;
 					}
 				}
 				*lcontent = 0;
