@@ -1261,8 +1261,12 @@ void CheckForIgnition(const Vec3f & pos, float radius, bool mode, long flag) {
 		const EntityHandle handle = EntityHandle(i);
 		Entity * io = entities[handle];
 
-		if(io && io->show == 1 && io->obj && !(io->ioflags & IO_UNDERWATER) && io->obj->fastaccess.fire >= 0) {
-			
+		if(   io
+		   && io->show == SHOW_FLAG_IN_SCENE
+		   && io->obj
+		   && !(io->ioflags & IO_UNDERWATER)
+		   && io->obj->fastaccess.fire >= 0
+		) {
 			if(closerThan(pos, io->obj->vertexlist3[io->obj->fastaccess.fire].v, radius)) {
 
 				if(mode && io->ignition <= 0 && io->obj->fastaccess.fire >= 0) {
