@@ -114,16 +114,16 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 				long tst = 0;
 
 				if(!(io->spellcast_data.spell_flags & SPELLCAST_FLAG_NOANIM) && (io->ioflags & IO_NPC)) {
-					ANIM_USE * ause1=&io->animlayer[1];
+					ANIM_USE * ause1 = &io->animlayer[1];
 
-					if(ause1->cur_anim==io->anims[ANIM_CAST_START]  && (ause1->flags & EA_ANIMEND)) {
+					if(ause1->cur_anim == io->anims[ANIM_CAST_START]  && (ause1->flags & EA_ANIMEND)) {
 						// TODO why no AcquireLastAnim() like everywhere else?
-						FinishAnim(io,ause1->cur_anim);
-						ANIM_Set(ause1,io->anims[ANIM_CAST_CYCLE]);
+						FinishAnim(io, ause1->cur_anim);
+						ANIM_Set(ause1, io->anims[ANIM_CAST_CYCLE]);
 						tst = 1;
-					} else if(ause1->cur_anim==io->anims[ANIM_CAST_CYCLE]) {
+					} else if(ause1->cur_anim == io->anims[ANIM_CAST_CYCLE]) {
 						tst = 1;
-					} else if(ause1->cur_anim!=io->anims[ANIM_CAST_START]) {
+					} else if(ause1->cur_anim != io->anims[ANIM_CAST_START]) {
 						io->spellcast_data.castingspell = SPELL_NONE;
 					}
 				} else {
@@ -139,9 +139,9 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 
 					io->spellcast_data.symb[3] = RUNE_NONE;
 					ARX_SPELLS_RequestSymbolDraw2(io, symb, (1000-(io->spellcast_data.spell_level*60))*std::max(io->speed_modif+io->basespeed,0.01f));
-					io->gameFlags &=~GFLAG_INVISIBILITY;
+					io->gameFlags &= ~GFLAG_INVISIBILITY;
 				} else if(tst) { // cast spell !!!
-					io->gameFlags &=~GFLAG_INVISIBILITY;
+					io->gameFlags &= ~GFLAG_INVISIBILITY;
 					ARX_SPELLS_Launch(io->spellcast_data.castingspell, EntityHandle(i), io->spellcast_data.spell_flags,io->spellcast_data.spell_level,io->spellcast_data.target,io->spellcast_data.duration);
 
 					if(!(io->spellcast_data.spell_flags & SPELLCAST_FLAG_NOANIM) && (io->ioflags & IO_NPC)) {
@@ -161,7 +161,7 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 				
 				float rr = rnd();
 				light->pos.x = io->pos.x - std::sin(radians(MAKEANGLE(io->angle.getPitch() - 45.f)))*60.f;
-				light->pos.y=io->pos.y-120.f;
+				light->pos.y = io->pos.y - 120.f;
 				light->pos.z = io->pos.z + std::cos(radians(MAKEANGLE(io->angle.getPitch() - 45.f)))*60.f;
 				light->fallstart=140.f+(float)io->flarecount*0.333333f+rr*5.f;
 				light->fallend=220.f+(float)io->flarecount*0.5f+rr*5.f;
