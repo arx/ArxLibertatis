@@ -1077,15 +1077,7 @@ void ARX_PARTICLES_Update(EERIE_CAMERA * cam)  {
 				part->special &= ~FIRE_TO_SMOKE;
 				part->tc = smokeparticle;
 				part->scale *= 2.4f;
-				if(part->scale.x < 0.f) {
-					part->scale.x *= -1.f;
-				}
-				if(part->scale.y < 0.f) {
-					part->scale.y *= -1.f;
-				}
-				if(part->scale.z < 0.f) {
-					part->scale.z *= -1.f;
-				}
+				part->scale = glm::abs(part->scale);
 				part->rgb = Color3f::gray(.45f);
 				part->move *= 0.5f;
 				part->siz *= 1.f / 3;
@@ -1116,15 +1108,7 @@ void ARX_PARTICLES_Update(EERIE_CAMERA * cam)  {
 				pd->ov = part->oldpos;
 				pd->tc = tzupouf;
 				pd->scale *= 4.f;
-				if(pd->scale.x < 0.f) {
-					pd->scale.x *= -1.f;
-				}
-				if(pd->scale.y < 0.f) {
-					pd->scale.y *= -1.f;
-				}
-				if(pd->scale.z < 0.f) {
-					pd->scale.z *= -1.f;
-				}
+				part->scale = glm::abs(part->scale);
 				pd->rgb = Color3f::white;
 				pd->move *= 0.5f;
 				pd->siz *= 1.f / 3;
