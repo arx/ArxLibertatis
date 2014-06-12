@@ -891,29 +891,6 @@ void MagFX(const Vec3f & pos) {
 	pd->is2D = true;
 }
 
-void createSphericalSparks(const Vec3f & pos, float r, TextureContainer * tc,
-                           const Color3f & color, int mask) {
-	
-	int nb = Random::get(0, 31);
-	for(int i = 0; i < nb; i++) {
-		
-		PARTICLE_DEF * pd = createParticle(true);
-		if(!pd) {
-			return;
-		}
-		
-		float a = radians(rnd() * 360.f);
-		float b = radians(rnd() * 360.f);
-		pd->special = GRAVITY | PARTICLE_SPARK2;
-		pd->ov = pd->oldpos = pos;
-		pd->move = Vec3f(std::sin(a) * std::cos(b), std::sin(a) * std::sin(b), std::cos(a)) * r;
-		pd->tolive = Random::get(1000, 1500);
-		pd->rgb = color;
-		pd->tc = tc;
-		pd->mask = mask;
-	}
-}
-
 void ARX_PARTICLES_Spawn_Splat(const Vec3f & pos, float dmgs, Color col) {
 	
 	float power = (dmgs * (1.f / 60)) + .9f;
@@ -1257,7 +1234,6 @@ void ARX_PARTICLES_Update(EERIE_CAMERA * cam)  {
 			continue;
 		}
 		
-		Vec3f op = part->oldpos;
 		if(!arxtime.is_paused()) {
 			part->oldpos = in.p;
 		}
@@ -1320,15 +1296,6 @@ void ARX_PARTICLES_Update(EERIE_CAMERA * cam)  {
 			
 			float siz2 = part->siz + part->scale.y * fd;
 			EERIEAddBitmap(mat, in.p.x, in.p.y, siz, siz2, in.p.z, tc, color);
-			
-		} else if(part->special & PARTICLE_SPARK2) {
-			
-			Vec3f pos = in.p;
-			Color col = (part->rgb * r).to<u8>();
-			Vec3f end = pos - (pos - op) * 2.5f;
-			Color masked = Color::fromBGRA(col.toBGRA() & part->mask);
-			Draw3DLineTex2(end, pos, 2.f, masked, col);
-			EERIEAddSprite(mat, in, 0.7f, col, 2.f);
 			
 		} else {
 			

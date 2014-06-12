@@ -109,11 +109,8 @@ protected:
 	bool m_active;
 	int duration;
 	int currduration;
-	float interp;
 	
-	TextureContainer * tp;
 	Color3f rgb;
-	int mask;
 	
 	struct T_LINKLIGHTTOFX {
 		Vec3f poslight;

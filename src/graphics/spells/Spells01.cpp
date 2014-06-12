@@ -645,10 +645,7 @@ CIgnit::CIgnit()
 	, m_active(false)
 	, duration(0)
 	, currduration(0)
-	, interp(0.f)
-	, tp(NULL)
 	, rgb(0.f, 0.f, 0.f)
-	, mask(0)
 {}
 
 CIgnit::~CIgnit()
@@ -675,10 +672,7 @@ void CIgnit::Create(Vec3f * posc, int speed)
 	currduration = 0;
 	m_active = true;
 	
-	tp = TextureContainer::Load("graph/particles/fire_hit");
-	
 	rgb = Color3f(1.f, 1.f, 1.f);
-	mask = Color(255, 200, 0).toBGRA();
 }
 
 void CIgnit::Action(bool enable)
@@ -746,8 +740,6 @@ void CIgnit::Update(unsigned long _ulTime)
 					light->pos = itr->posfx;
 				}
 		}
-		
-		interp = a;
 	}
 	
 	if(!arxtime.is_paused())
@@ -756,10 +748,8 @@ void CIgnit::Update(unsigned long _ulTime)
 
 void CDoze::CreateDoze(Vec3f * posc, int speed) {
 	Create(posc, speed);
-	tp = TextureContainer::Load("graph/particles/doze_hit");
 	
 	rgb = Color3f(0.f, .7f, 1.f);
-	mask = 0xFF0000FF;
 }
 
 void CDoze::AddLightDoze(int aiLight)
@@ -777,17 +767,7 @@ void CDoze::AddLightDoze(int aiLight)
 }
 
 void CIgnit::Render() {
-	
-	if(m_active) {
-		float unsuri = (1.f - interp);
-		
-		std::vector<T_LINKLIGHTTOFX>::const_iterator itr;
-		for(itr = tablight.begin(); itr != tablight.end(); ++itr) {
-			if(rnd() > .5f) {
-				createSphericalSparks(itr->posfx, rnd() * 20.f * unsuri, tp, rgb, mask);
-			}
-		}
-	}
+
 }
 
 //-----------------------------------------------------------------------------

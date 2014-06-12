@@ -73,7 +73,7 @@ enum ParticlesTypeFlag {
 	GRAVITY             = 0x00000020,
 	SUBSTRACT           = 0x00000040,
 	FIRE_TO_SMOKE2      = 0x00000080,
-	PARTICLE_SPARK2     = 0x00000100,
+	PARTICLE_SPARK2     = 0x00000100, //TODO unused
 	FOLLOW_SOURCE       = 0x00000200,
 	FOLLOW_SOURCE2      = 0x00000400,
 	DELAY_FOLLOW_SOURCE = 0x00000800,
@@ -177,8 +177,6 @@ void AddRandomSmoke(Entity * io, long amount = 1);
 void LaunchDummyParticle();
 void ManageTorch();
 
-void createSphericalSparks(const Vec3f & pos, float r, TextureContainer * tc,
-                           const Color3f & color, int mask);
 void MakePlayerAppearsFX(Entity * io);
 void MakeCoolFx(const Vec3f & pos);
 void SpawnGroundSplat(const Sphere & sp, const Color3f & col, long flags);

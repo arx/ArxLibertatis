@@ -88,11 +88,6 @@ void CSpellFx::Update(float _fParam) {
 	Update(checked_range_cast<unsigned long>(_fParam));
 }
 
-void Draw3DLineTex2(Vec3f s, Vec3f e, float fSize, Color color, Color color2) {
-
-	Draw3DLineTexNew(s, e, color, color2, fSize, fSize);
-}
-
 void Draw3DLineTexNew(Vec3f startPos, Vec3f endPos, Color startColor, Color endColor, float startSize, float endSize) {
 
 	float fBeta = MAKEANGLE(player.angle.getPitch());
