@@ -945,7 +945,6 @@ static SpellHandle ARX_SPELLS_GetFree() {
 			
 			spell->m_longinfo2_light = InvalidLightHandle;
 			
-			spell->m_targetHandles.clear();
 			spell->m_targets.clear();
 			
 			return SpellHandle(i);

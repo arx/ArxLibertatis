@@ -172,9 +172,6 @@ public:
 	// Used by: FlyingEyeSpell
 	unsigned long m_lastupdate;
 	
-	// Used by: MassParalyseSpell
-	std::vector<EntityHandle> m_targetHandles;
-	
 	std::vector<EntityHandle> m_targets;
 };
 

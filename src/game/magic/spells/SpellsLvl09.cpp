@@ -493,8 +493,6 @@ void MassParalyseSpell::Launch()
 		
 		ARX_NPC_Kill_Spell_Launch(tio);
 		m_targets.push_back(tio->index());
-		
-		m_targetHandles.push_back(EntityHandle(ii));
 	}
 }
 
@@ -502,7 +500,7 @@ void MassParalyseSpell::End()
 {
 	
 	std::vector<EntityHandle>::const_iterator itr;
-	for(itr = m_targetHandles.begin(); itr != m_targetHandles.end(); ++itr) {
+	for(itr = m_targets.begin(); itr != m_targets.end(); ++itr) {
 		EntityHandle handle = *itr;
 		
 		if(ValidIONum(handle)) {
@@ -510,7 +508,6 @@ void MassParalyseSpell::End()
 		}
 	}
 	
-	m_targetHandles.clear();
 	m_targets.clear();
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_PARALYSE_END);
