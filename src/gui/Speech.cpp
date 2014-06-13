@@ -373,7 +373,7 @@ long ARX_SPEECH_AddSpeech(Entity * io, const std::string & data, long mood,
 	aspeech[num].io = io; // can be NULL
 	aspeech[num].duration = 2000; // Minimum value
 	aspeech[num].flags = flags;
-	aspeech[num].sample = -1;
+	aspeech[num].sample = audio::INVALID_ID;
 	aspeech[num].fDeltaY = 0.f;
 	aspeech[num].iTimeScroll = 0;
 	aspeech[num].fPixelScroll = 0.f;

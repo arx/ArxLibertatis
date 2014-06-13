@@ -118,7 +118,7 @@ struct DamageParameters {
 		area = DAMAGE_AREA;
 		flags = 0;
 		type = 0;
-		source = -1;
+		source = InvalidEntityHandle;
 	}
 };
 

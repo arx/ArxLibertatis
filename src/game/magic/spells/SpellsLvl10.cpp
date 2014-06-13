@@ -111,7 +111,7 @@ void MassLightningStrikeSpell::End()
 		light->duration = 200;
 		light->time_creation = (unsigned long)(arxtime);
 	}
-	m_longinfo_light = -1;
+	m_longinfo_light = InvalidLightHandle;
 	
 	ARX_SOUND_Stop(m_snd_loop);
 	ARX_SOUND_PlaySFX(SND_SPELL_LIGHTNING_END);
@@ -318,7 +318,7 @@ void MassIncinerateSpell::Launch()
 		                                       &m_caster_pos, 1.f, 
 		                                       ARX_SOUND_PLAY_LOOPED);
 	} else {
-		m_snd_loop = -1;
+		m_snd_loop = audio::INVALID_ID;
 	}
 }
 

@@ -971,14 +971,14 @@ static SpellHandle ARX_SPELLS_GetFree() {
 		SpellBase * spell = spells[SpellHandle(i)];
 		
 		if(!spell->m_exist) {
-			spell->m_longinfo_entity = -1;
+			spell->m_longinfo_entity = InvalidEntityHandle;
 			spell->m_longinfo_damage = -1;
 			spell->m_longinfo_time = -1;
 			spell->m_longinfo_summon_creature = -1;
 			spell->m_longinfo_lower_armor = -1;
-			spell->m_longinfo_light = -1;
+			spell->m_longinfo_light = InvalidLightHandle;
 			
-			spell->m_longinfo2_light = -1;
+			spell->m_longinfo2_light = InvalidLightHandle;
 			
 			spell->m_targetHandles.clear();
 			return SpellHandle(i);

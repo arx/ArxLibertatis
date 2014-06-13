@@ -166,7 +166,7 @@ void SummonCreatureSpell::Update(float timeDelta)
 			}	
 
 			m_longinfo_summon_creature = 1;
-			m_longinfo2_entity = -1;
+			m_longinfo2_entity = InvalidEntityHandle;
 
 		} else if(m_longinfo_summon_creature) {
 			lightHandleDestroy(m_pSpellFx->lLightId);
@@ -263,7 +263,7 @@ void SummonCreatureSpell::Update(float timeDelta)
 					if(tokeep==1)
 						m_longinfo2_entity = io->index();
 					else
-						m_longinfo2_entity = -1;
+						m_longinfo2_entity = InvalidEntityHandle;
 				}
 				}
 			}

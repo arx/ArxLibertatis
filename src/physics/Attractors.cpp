@@ -62,14 +62,14 @@ static ARX_SPECIAL_ATTRACTOR attractors[MAX_ATTRACTORS];
 
 void ARX_SPECIAL_ATTRACTORS_Reset() {
 	for(size_t i = 0; i < MAX_ATTRACTORS; i++) {
-		attractors[i].ionum = -1;
+		attractors[i].ionum = InvalidEntityHandle;
 	}
 }
 
 static void ARX_SPECIAL_ATTRACTORS_Remove(long ionum) {
 	for(size_t i = 0; i < MAX_ATTRACTORS; i++) {
 		if(attractors[i].ionum == ionum) {
-			attractors[i].ionum = -1;
+			attractors[i].ionum = InvalidEntityHandle;
 		}
 	}
 }
@@ -97,7 +97,7 @@ bool ARX_SPECIAL_ATTRACTORS_Add(long ionum, float power, float radius) {
 	}
 	
 	for(size_t i = 0; i < MAX_ATTRACTORS; i++) {
-		if(attractors[i].ionum == -1) {
+		if(attractors[i].ionum == InvalidEntityHandle) {
 			attractors[i].ionum = ionum;
 			attractors[i].power = power;
 			attractors[i].radius = radius;

@@ -76,6 +76,7 @@ extern long TOTPDL;
 extern long TOTIOPDL;
 
 BOOST_STRONG_TYPEDEF(long, LightHandle)
+static const LightHandle InvalidLightHandle = LightHandle(-1);
 
 enum EERIE_TYPES_EXTRAS_MODE
 {

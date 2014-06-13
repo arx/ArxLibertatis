@@ -155,7 +155,7 @@ void CFireBall::SetTTL(unsigned long aulTTL)
 		}
 	}
 	
-	lLightId = -1;
+	lLightId = InvalidLightHandle;
 }
 
 void CFireBall::Create(Vec3f aeSrc, float afBeta, float afAlpha, float _fLevel)
@@ -211,7 +211,7 @@ void CFireBall::Create(Vec3f aeSrc, float afBeta, float afAlpha, float _fLevel)
 	pPSSmoke.SetPos(eSrc);
 
 	// Light
-	lLightId = -1; 
+	lLightId = InvalidLightHandle;
 	eCurPos = eSrc;
 }
 

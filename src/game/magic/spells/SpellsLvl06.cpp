@@ -85,7 +85,7 @@ void RiseDeadSpell::Launch()
 	m_tolive = (m_launchDuration > -1) ? m_launchDuration : 2000000;
 	m_bDuration = true;
 	m_fManaCostPerSecond = 1.2f;
-	m_longinfo_entity = -1;
+	m_longinfo_entity = InvalidEntityHandle;
 	
 	CRiseDead * effect = new CRiseDead();
 	effect->Create(target, beta);
@@ -175,7 +175,7 @@ void RiseDeadSpell::Update(float timeDelta)
 
 		unsigned long tim=pCSpellFX->getCurrentTime();
 
-		if(tim > 3000 && m_longinfo_entity == -1) {
+		if(tim > 3000 && m_longinfo_entity == InvalidEntityHandle) {
 			ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &m_target_pos);
 			CRiseDead *prise = (CRiseDead *)m_pSpellFx;
 

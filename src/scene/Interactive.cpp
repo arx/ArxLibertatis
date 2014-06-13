@@ -889,7 +889,7 @@ void RestoreInitialIOStatusOfIO(Entity * io)
 		io->halo_native.flags = 0;
 
 		ARX_HALO_SetToNative(io);
-		io->halo.dynlight = -1;
+		io->halo.dynlight = InvalidLightHandle;
 
 		io->forcedmove = Vec3f_ZERO;
 		io->ioflags &= ~IO_NO_COLLISIONS;
@@ -931,7 +931,7 @@ void RestoreInitialIOStatusOfIO(Entity * io)
 		io->ouch_time = 0;
 		io->dmg_sum = 0;
 		io->ignition = 0.f;
-		io->ignit_light = -1;
+		io->ignit_light = InvalidLightHandle;
 		io->ignit_sound = audio::INVALID_ID;
 
 		if(io->obj && io->obj->pbox)

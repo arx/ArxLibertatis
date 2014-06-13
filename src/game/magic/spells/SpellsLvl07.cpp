@@ -222,7 +222,7 @@ void FireFieldSpell::Launch()
 	m_tolive = (m_launchDuration > -1) ? m_launchDuration : 100000;
 	m_bDuration = true;
 	m_fManaCostPerSecond = 2.8f;
-	m_longinfo2_light = -1;
+	m_longinfo2_light = InvalidLightHandle;
 	
 	CFireField * effect = new CFireField();
 	
@@ -352,7 +352,7 @@ void IceFieldSpell::Launch()
 	m_tolive = (m_launchDuration > -1) ? m_launchDuration : 100000;
 	m_bDuration = true;
 	m_fManaCostPerSecond = 2.8f;
-	m_longinfo2_light = -1;
+	m_longinfo2_light = InvalidLightHandle;
 	
 	CIceField * effect = new CIceField();
 	
@@ -469,7 +469,7 @@ void LightningStrikeSpell::End()
 		light->duration = 200;
 		light->time_creation = (unsigned long)(arxtime);
 	}
-	m_longinfo_light = -1;
+	m_longinfo_light = InvalidLightHandle;
 	
 	ARX_SOUND_Stop(m_snd_loop);
 	ARX_SOUND_PlaySFX(SND_SPELL_LIGHTNING_END, &entities[m_caster]->pos);

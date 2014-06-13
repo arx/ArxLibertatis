@@ -134,7 +134,7 @@ Entity::Entity(const res::path & classPath)
 	
 	usepath = NULL;
 	symboldraw = NULL;
-	dynlight = -1;
+	dynlight = InvalidLightHandle;
 	lastspeechflag = 2;
 	inzone = NULL;
 	std::memset(&halo, 0, sizeof(IO_HALO)); // TODO use constructor
@@ -142,9 +142,9 @@ Entity::Entity(const res::path & classPath)
 	halo_native.color = Color3f(0.2f, 0.5f, 1.f);
 	halo_native.radius = 45.f;
 	halo_native.flags = 0;
-	halo_native.dynlight = -1;
+	halo_native.dynlight = InvalidLightHandle;
 	ARX_HALO_SetToNative(this);
-	halo.dynlight = -1;
+	halo.dynlight = InvalidLightHandle;
 	
 	std::memset(&script, 0, sizeof(EERIE_SCRIPT)); // TODO use constructor
 	std::memset(&over_script, 0, sizeof(EERIE_SCRIPT)); // TODO use constructor
@@ -179,7 +179,7 @@ Entity::Entity(const res::path & classPath)
 	poisonous_count = 0;
 	
 	ignition = 0.f;
-	ignit_light = -1;
+	ignit_light = InvalidLightHandle;
 	ignit_sound = audio::INVALID_ID;
 	head_rot = 0.f;
 	

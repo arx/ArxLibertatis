@@ -226,7 +226,7 @@ void RepelUndeadSpell::End()
 		light->duration = 200;
 		light->time_creation = (unsigned long)(arxtime);
 	}
-	m_longinfo_light = -1;
+	m_longinfo_light = InvalidLightHandle;
 	
 	ARX_SOUND_Stop(m_snd_loop);
 }

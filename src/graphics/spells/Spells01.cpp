@@ -207,7 +207,7 @@ CMagicMissile::~CMagicMissile()
 		smissile = NULL;
 	}
 
-	lLightId = -1;
+	lLightId = InvalidLightHandle;
 
 	ARX_SOUND_Stop(snd_loop);
 }
@@ -261,7 +261,7 @@ void CMagicMissile::SetTTL(unsigned long aulTTL)
 	SetDuration(ulDuration);
 	ulCurrentTime = t;
 	
-	lLightId = -1;
+	lLightId = InvalidLightHandle;
 }
 
 void CMagicMissile::Update(unsigned long aulTime)
@@ -582,7 +582,7 @@ void CMultiMagicMissile::CheckCollision()
 			missile->bExplo = true;
 			missile->bMove  = false;
 			
-			missile->lLightId = -1;
+			missile->lLightId = InvalidLightHandle;
 			
 			DamageParameters damage;
 			damage.pos = missile->eCurPos;
@@ -761,7 +761,7 @@ void CDoze::AddLightDoze(int aiLight)
 	
 	entry.iLightNum = aiLight;
 	entry.poslight = GLight[aiLight]->pos;
-	entry.idl = -1;
+	entry.idl = InvalidLightHandle;
 
 	tablight.push_back(entry);
 }

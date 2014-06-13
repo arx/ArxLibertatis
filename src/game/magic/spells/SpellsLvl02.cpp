@@ -191,7 +191,7 @@ void ArmorSpell::Launch()
 		io->halo.color.g = 0.5f;
 		io->halo.color.b = 0.25f;
 		io->halo.radius = 45.f;
-		io->halo.dynlight = -1;
+		io->halo.dynlight = InvalidLightHandle;
 	}
 	
 	ARX_SPELLS_AddSpellOn(m_target, m_thisHandle);
@@ -220,7 +220,7 @@ void ArmorSpell::Update(float timeDelta)
 		io->halo.color.g = 0.5f;
 		io->halo.color.b = 0.25f;
 		io->halo.radius = 45.f;
-		io->halo.dynlight = -1;
+		io->halo.dynlight = InvalidLightHandle;
 	}
 	
 	ARX_SOUND_RefreshPosition(m_snd_loop, entities[m_target]->pos);
@@ -260,7 +260,7 @@ void LowerArmorSpell::Launch()
 			io->halo.color.g = 0.05f;
 			io->halo.color.b = 0.0f;
 			io->halo.radius = 45.f;
-			io->halo.dynlight = -1;
+			io->halo.dynlight = InvalidLightHandle;
 			
 			m_longinfo_lower_armor = 1;
 		} else {
@@ -297,7 +297,7 @@ void LowerArmorSpell::Update(float timeDelta)
 			io->halo.color.g = 0.05f;
 			io->halo.color.b = 0.0f;
 			io->halo.radius = 45.f;
-			io->halo.dynlight = -1;
+			io->halo.dynlight = InvalidLightHandle;
 			
 			m_longinfo_lower_armor = 1;
 		}

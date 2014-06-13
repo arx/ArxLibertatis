@@ -245,7 +245,7 @@ void AddFlare(const Vec2s & pos, float sm, short typ, Entity * io, bool bookDraw
 		fl->tolive = (1700.f + rnd() * 500.f) * FLARE_MUL;
 	}
 
-	fl->dynlight = -1;
+	fl->dynlight = InvalidLightHandle;
 	fl->move = OPIPOrgb;
 
 	for(long kk = 0; kk < 3; kk++) {

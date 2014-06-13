@@ -192,7 +192,7 @@ void FireballSpell::End()
 		light->duration = 500;
 		light->time_creation = (unsigned long)(arxtime);
 	}
-	m_longinfo_light = -1;
+	m_longinfo_light = InvalidLightHandle;
 }
 
 void FireballSpell::Update(float timeDelta)

@@ -2098,8 +2098,8 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) {
 		io->shop_category = boost::to_lower_copy(util::loadString(ais->shop_category));
 		
 		io->halo_native = ais->halo;
-		io->halo_native.dynlight = -1;
-		io->halo.dynlight = -1;
+		io->halo_native.dynlight = InvalidLightHandle;
+		io->halo.dynlight = InvalidLightHandle;
 		ARX_HALO_SetToNative(io);
 		
 		io->inventory_skin = res::path::load(util::loadString(ais->inventory_skin));
