@@ -557,7 +557,7 @@ float ARX_EQUIPMENT_ComputeDamages(Entity * io_source, Entity * io_target, float
 		
 		damages = io_source->_npcdata->damages * ratioaim * (rnd() * ( 1.0f / 2 ) + 0.5f);
 
-		SpellBase * spell = spells.getSpellOnTarget(io_source, SPELL_CURSE);
+		SpellBase * spell = spells.getSpellOnTarget(io_source->index(), SPELL_CURSE);
 		if(spell) {
 			damages *= (1 - spell->m_caster_level * 0.05f);
 		}
@@ -584,7 +584,7 @@ float ARX_EQUIPMENT_ComputeDamages(Entity * io_source, Entity * io_target, float
 		ac = ARX_INTERACTIVE_GetArmorClass(io_target);
 		absorb = io_target->_npcdata->absorb;
 		
-		SpellBase * spell = spells.getSpellOnTarget(io_target, SPELL_CURSE);
+		SpellBase * spell = spells.getSpellOnTarget(io_target->index(), SPELL_CURSE);
 		if(spell) {
 			float modif = (1 - spell->m_caster_level * 0.05f);
 			ac *= modif;

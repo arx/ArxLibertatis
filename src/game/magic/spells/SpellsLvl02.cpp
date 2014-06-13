@@ -153,7 +153,7 @@ void DetectTrapSpell::Update(float timeDelta)
 
 void ArmorSpell::Launch()
 {
-	SpellBase * spell = spells.getSpellOnTarget(entities[m_target], SPELL_ARMOR);
+	SpellBase * spell = spells.getSpellOnTarget(m_target, SPELL_ARMOR);
 	if(spell) {
 		spell->m_tolive = 0;
 	}
@@ -228,7 +228,7 @@ void ArmorSpell::Update(float timeDelta)
 
 void LowerArmorSpell::Launch()
 {
-	SpellBase * spell = spells.getSpellOnTarget(entities[m_target], SPELL_LOWER_ARMOR);
+	SpellBase * spell = spells.getSpellOnTarget(m_target, SPELL_LOWER_ARMOR);
 	if(spell) {
 		spell->m_tolive = 0;
 	}

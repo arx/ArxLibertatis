@@ -1278,12 +1278,12 @@ void ArxGame::updateLevel() {
 
 		SpellBase * spell;
 		
-		spell = spells.getSpellOnTarget(entity, SPELL_SPEED);
+		spell = spells.getSpellOnTarget(entity->index(), SPELL_SPEED);
 		if(spell) {
 			speedModifier += spell->m_caster_level * 0.1f;
 		}
 		
-		spell = spells.getSpellOnTarget(entity, SPELL_SLOW_DOWN);
+		spell = spells.getSpellOnTarget(entity->index(), SPELL_SLOW_DOWN);
 		if(spell) {
 			speedModifier -= spell->m_caster_level * 0.05f;
 		}

@@ -2801,7 +2801,7 @@ static void ManageNPCMovement(Entity * io)
 
 	CollisionFlags levitate = 0;
 
-	if(spells.getSpellOnTarget(io, SPELL_LEVITATE)) {
+	if(spells.getSpellOnTarget(io->index(), SPELL_LEVITATE)) {
 		levitate = CFLAG_LEVITATE;
 		io->physics.targetpos.y = io->pos.y + io->move.y + ForcedMove.y;
 	} else { // Gravity 'simulation'

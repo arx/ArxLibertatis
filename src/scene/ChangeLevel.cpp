@@ -947,8 +947,8 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 	ais.ioflags = io->ioflags;
 
 	if(   (ais.ioflags & IO_FREEZESCRIPT)
-	   && (spells.getSpellOnTarget(io, SPELL_PARALYSE)
-	    || spells.getSpellOnTarget(io, SPELL_MASS_PARALYSE))
+	   && (spells.getSpellOnTarget(io->index(), SPELL_PARALYSE)
+	    || spells.getSpellOnTarget(io->index(), SPELL_MASS_PARALYSE))
 	) {
 		ais.ioflags &= ~IO_FREEZESCRIPT;
 	}

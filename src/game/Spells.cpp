@@ -197,7 +197,7 @@ bool SpellManager::ExistAnyInstanceForThisCaster(SpellType typ, EntityHandle cas
 	return false;
 }
 
-SpellBase * SpellManager::getSpellOnTarget(const Entity * target, SpellType type)
+SpellBase * SpellManager::getSpellOnTarget(EntityHandle target, SpellType type)
 {
 	if(!target)
 		return NULL;
@@ -210,7 +210,7 @@ SpellBase * SpellManager::getSpellOnTarget(const Entity * target, SpellType type
 		if(spell->m_type != type)
 			continue;
 		
-		if(std::find(spell->m_targets.begin(), spell->m_targets.end(), target->index()) != spell->m_targets.end()) {
+		if(std::find(spell->m_targets.begin(), spell->m_targets.end(), target) != spell->m_targets.end()) {
 			return spell;
 		}
 	}
@@ -988,7 +988,7 @@ void ARX_SPELLS_LaunchSpellTarget(Entity * io) {
 float ARX_SPELLS_ApplyFireProtection(Entity * io,float damages)
 {
 	if(io) {
-		SpellBase * spell = spells.getSpellOnTarget(io, SPELL_FIRE_PROTECTION);
+		SpellBase * spell = spells.getSpellOnTarget(io->index(), SPELL_FIRE_PROTECTION);
 		if(spell) {
 			float modif = 1.f - (spell->m_caster_level * ( 1.0f / 10 ));
 
@@ -1010,7 +1010,7 @@ float ARX_SPELLS_ApplyFireProtection(Entity * io,float damages)
 
 float ARX_SPELLS_ApplyColdProtection(Entity * io,float damages)
 {
-	SpellBase * spell = spells.getSpellOnTarget(io, SPELL_COLD_PROTECTION);
+	SpellBase * spell = spells.getSpellOnTarget(io->index(), SPELL_COLD_PROTECTION);
 	if(spell) {
 		float modif = 1.f - (spell->m_caster_level * ( 1.0f / 10 ));
 

@@ -516,21 +516,19 @@ void ARX_PLAYER_ComputePlayerFullStats() {
 	// External modifiers
 	
 	// Calculate for modifiers from spells
-	if(entities.player()) {
-		
 		SpellBase * spell;
 		
-		spell = spells.getSpellOnTarget(entities.player(), SPELL_ARMOR);
+		spell = spells.getSpellOnTarget(PlayerEntityHandle, SPELL_ARMOR);
 		if(spell) {
 			player.m_miscMod.armorClass += spell->m_caster_level;
 		}
 		
-		spell = spells.getSpellOnTarget(entities.player(), SPELL_LOWER_ARMOR);
+		spell = spells.getSpellOnTarget(PlayerEntityHandle, SPELL_LOWER_ARMOR);
 		if(spell) {
 			player.m_miscMod.armorClass -= spell->m_caster_level;
 		}
 		
-		spell = spells.getSpellOnTarget(entities.player(), SPELL_CURSE);
+		spell = spells.getSpellOnTarget(PlayerEntityHandle, SPELL_CURSE);
 		if(spell) {
 			player.m_attributeMod.strength -= spell->m_caster_level;
 			player.m_attributeMod.constitution -= spell->m_caster_level;
@@ -538,14 +536,13 @@ void ARX_PLAYER_ComputePlayerFullStats() {
 			player.m_attributeMod.mind -= spell->m_caster_level;
 		}
 	
-		spell = spells.getSpellOnTarget(entities.player(), SPELL_BLESS);
+		spell = spells.getSpellOnTarget(PlayerEntityHandle, SPELL_BLESS);
 		if(spell) {
 			player.m_attributeMod.strength += spell->m_caster_level;
 			player.m_attributeMod.dexterity += spell->m_caster_level;
 			player.m_attributeMod.constitution += spell->m_caster_level;
 			player.m_attributeMod.mind += spell->m_caster_level;
 		}
-	}
 	
 	// Calculate for modifiers from cheats
 	if(cur_mr == 3) {
@@ -1667,7 +1664,7 @@ void ARX_PLAYER_Manage_Visual() {
 			ChangeMoveAnim = alist[ANIM_MEDITATION];
 			ChangeMA_Loop = true;
 			goto makechanges;
-		} else if(spells.getSpellOnTarget(io, SPELL_LEVITATE)) {
+		} else if(spells.getSpellOnTarget(io->index(), SPELL_LEVITATE)) {
 			ChangeMoveAnim = alist[ANIM_LEVITATE];
 			ChangeMA_Loop = true;
 			goto makechanges;
@@ -1851,7 +1848,7 @@ void ForcePlayerLookAtIO(Entity * io) {
  */
 void ARX_PLAYER_Frame_Update()
 {
-	if(spells.getSpellOnTarget(entities.player(), SPELL_PARALYSE)) {
+	if(spells.getSpellOnTarget(PlayerEntityHandle, SPELL_PARALYSE)) {
 		PLAYER_PARALYSED = 1;
 	} else {
 		entities.player()->ioflags &= ~IO_FREEZESCRIPT;
@@ -1908,7 +1905,7 @@ void ARX_PLAYER_Frame_Update()
 	player.TRAP_DETECT = player.m_skillFull.mecanism;
 	player.TRAP_SECRET = player.m_skillFull.intuition;
 
-	if(spells.getSpellOnTarget(entities.player(), SPELL_DETECT_TRAP))
+	if(spells.getSpellOnTarget(PlayerEntityHandle, SPELL_DETECT_TRAP))
 		player.TRAP_DETECT = 100.f;
 
 	ModeLight |= MODE_DEPTHCUEING;
@@ -1921,7 +1918,7 @@ void ARX_PLAYER_Frame_Update()
  */
 static void ARX_PLAYER_MakeStepNoise() {
 	
-	if(spells.getSpellOnTarget(entities.player(), SPELL_LEVITATE)) {
+	if(spells.getSpellOnTarget(PlayerEntityHandle, SPELL_LEVITATE)) {
 		return;
 	}
 	
@@ -2101,7 +2098,7 @@ void PlayerMovementIterate(float DeltaTime) {
 				if(anything < 0.f) {
 					player.physics.cyl.height = old;
 					
-					SpellBase * spell = spells.getSpellOnTarget(entities.player(), SPELL_LEVITATE);
+					SpellBase * spell = spells.getSpellOnTarget(PlayerEntityHandle, SPELL_LEVITATE);
 					if(spell) {
 						spell->m_tolive = 0;
 					}

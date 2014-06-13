@@ -2719,12 +2719,12 @@ float ARX_INTERACTIVE_GetArmorClass(Entity * io) {
 
 	SpellBase * spell;
 	
-	spell = spells.getSpellOnTarget(io, SPELL_LOWER_ARMOR);
+	spell = spells.getSpellOnTarget(io->index(), SPELL_LOWER_ARMOR);
 	if(spell) {
 		ac += spell->m_caster_level;
 	}
 	
-	spell = spells.getSpellOnTarget(io, SPELL_LOWER_ARMOR);
+	spell = spells.getSpellOnTarget(io->index(), SPELL_LOWER_ARMOR);
 	if(spell) {
 		ac -= spell->m_caster_level;
 	}

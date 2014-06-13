@@ -77,7 +77,7 @@ public:
 	void RequestEndOfInstanceForThisCaster(SpellType typ, EntityHandle caster);
 	bool ExistAnyInstanceForThisCaster(SpellType typ, EntityHandle caster);
 	
-	SpellBase * getSpellOnTarget(const Entity * target, SpellType type);
+	SpellBase * getSpellOnTarget(EntityHandle target, SpellType type);
 		
 private:
 	SpellBase m_spells[MAX_SPELLS];

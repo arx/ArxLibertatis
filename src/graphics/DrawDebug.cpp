@@ -409,7 +409,7 @@ static void drawDebugEntityPhysicsCylinder(Entity * io) {
 	
 	CollisionFlags levitate = 0;
 	
-	if(spells.getSpellOnTarget(io, SPELL_LEVITATE)) {
+	if(spells.getSpellOnTarget(io->index(), SPELL_LEVITATE)) {
 		levitate = CFLAG_LEVITATE;
 	}
 	
