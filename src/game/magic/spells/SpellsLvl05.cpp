@@ -106,14 +106,14 @@ void LevitateSpell::Launch()
 	                                       &entities[m_target]->pos, 0.7f,
 	                                       ARX_SOUND_PLAY_LOOPED);
 	
-	ARX_SPELLS_AddSpellOn(m_target, m_thisHandle);
+	m_targets.push_back(m_target);
 }
 
 void LevitateSpell::End()
 {
 	ARX_SOUND_Stop(m_snd_loop);
 	ARX_SOUND_PlaySFX(SND_SPELL_LEVITATE_END, &entities[m_target]->pos);
-	ARX_SPELLS_RemoveSpellOn(m_target, m_thisHandle);
+	m_targets.clear();
 	
 	if(m_target == PlayerEntityHandle)
 		player.levitate = false;

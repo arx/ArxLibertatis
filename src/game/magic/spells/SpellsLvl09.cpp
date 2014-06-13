@@ -443,12 +443,12 @@ void IncinerateSpell::Launch()
 	tio->sfx_flag |= SFX_TYPE_YLSIDE_DEATH | SFX_TYPE_INCINERATE;
 	tio->sfx_time = (unsigned long)(arxtime);
 	
-	ARX_SPELLS_AddSpellOn(m_target, m_thisHandle);
+	m_targets.push_back(m_target);
 }
 
 void IncinerateSpell::End()
 {
-	ARX_SPELLS_RemoveSpellOn(m_target, m_thisHandle);
+	m_targets.clear();
 	ARX_SOUND_Stop(m_snd_loop);
 	ARX_SOUND_PlaySFX(SND_SPELL_INCINERATE_END);
 }
@@ -492,7 +492,7 @@ void MassParalyseSpell::Launch()
 		tio->ioflags |= IO_FREEZESCRIPT;
 		
 		ARX_NPC_Kill_Spell_Launch(tio);
-		ARX_SPELLS_AddSpellOn(tio->index(), m_thisHandle);
+		m_targets.push_back(tio->index());
 		
 		m_targetHandles.push_back(EntityHandle(ii));
 	}
@@ -506,12 +506,12 @@ void MassParalyseSpell::End()
 		EntityHandle handle = *itr;
 		
 		if(ValidIONum(handle)) {
-			ARX_SPELLS_RemoveSpellOn(handle, m_thisHandle);
 			entities[handle]->ioflags &= ~IO_FREEZESCRIPT;
 		}
 	}
 	
 	m_targetHandles.clear();
+	m_targets.clear();
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_PARALYSE_END);
 }

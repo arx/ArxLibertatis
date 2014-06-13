@@ -174,6 +174,8 @@ public:
 	
 	// Used by: MassParalyseSpell
 	std::vector<EntityHandle> m_targetHandles;
+	
+	std::vector<EntityHandle> m_targets;
 };
 
 #endif // ARX_GAME_MAGIC_SPELL_H

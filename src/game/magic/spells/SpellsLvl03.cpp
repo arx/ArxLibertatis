@@ -60,12 +60,12 @@ void SpeedSpell::Launch()
 	
 	m_pSpellFx = effect;
 	
-	ARX_SPELLS_AddSpellOn(m_target, m_thisHandle);
+	m_targets.push_back(m_target);
 }
 
 void SpeedSpell::End()
 {
-	ARX_SPELLS_RemoveSpellOn(m_target, m_thisHandle);
+	m_targets.clear();
 	
 	if(m_caster == PlayerEntityHandle)
 		ARX_SOUND_Stop(m_snd_loop);

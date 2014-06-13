@@ -347,66 +347,36 @@ bool GetSpellPosition(Vec3f * pos, SpellBase * spell)
 	return false;
 }
 
-bool spellHandleIsValid(SpellHandle handle) {
-	return (long)handle >= 0 && ((size_t)handle < MAX_SPELLS) && spells[handle]->m_exist;
-}
-
-void ARX_SPELLS_AddSpellOn(EntityHandle caster, SpellHandle spell)
-{
-	if(caster < 0 ||  spell < 0 || !entities[caster])
-		return;
-
-	Entity *io = entities[caster];
-	
-	io->spellsOn.insert(spell);
-}
-
 SpellBase * ARX_SPELLS_GetSpellOn(const Entity * io, SpellType spellid)
 {
 	if(!io)
 		return NULL;
-
-	SpellHandle handle = InvalidSpellHandle;
 	
-	boost::container::flat_set<SpellHandle>::const_iterator it;
-	for(it = io->spellsOn.begin(); it != io->spellsOn.end(); ++it) {
-		SpellHandle spellHandle = SpellHandle(*it);
-		if(spellHandleIsValid(spellHandle)) {
-			SpellBase * spell = spells[spellHandle];
-			
-			if(spell->m_type == spellid) {
-				handle = spellHandle;
-				break;
-			}
+	for(size_t i = 0; i < MAX_SPELLS; i++) {
+		SpellBase * spell = spells[SpellHandle(i)];
+		if(!spell->m_exist)
+			continue;
+		
+		if(spell->m_type != spellid)
+			continue;
+		
+		if(std::find(spell->m_targets.begin(), spell->m_targets.end(), io->index()) != spell->m_targets.end()) {
+			return spell;
 		}
 	}
 	
-	if(handle == InvalidSpellHandle)
-		return NULL;
-	
-	return spells[handle];
-}
-
-void ARX_SPELLS_RemoveSpellOn(EntityHandle entityHandle, SpellHandle spellHandle)
-{
-	if(entityHandle < 0 || spellHandle < 0)
-		return;
-
-	Entity *io = entities[entityHandle];
-
-	if(!io || io->spellsOn.empty())
-		return;
-
-	if(io->spellsOn.size() == 1) {
-		io->spellsOn.clear();
-		return;
-	}
-	
-	io->spellsOn.erase(spellHandle);
+	return NULL;
 }
 
 void ARX_SPELLS_RemoveAllSpellsOn(Entity *io) {
-	io->spellsOn.clear();
+	
+	for(size_t i = 0; i < MAX_SPELLS; i++) {
+		SpellBase * spell = spells[SpellHandle(i)];
+		if(!spell->m_exist)
+			continue;
+		
+		spell->m_targets.erase(std::remove(spell->m_targets.begin(), spell->m_targets.end(), io->index()), spell->m_targets.end());
+	}
 }
 
 static bool MakeSpellName(char * spell, SpellType num) {
@@ -954,12 +924,7 @@ void ARX_SPELLS_ClearAll() {
 			
 			delete spell->m_pSpellFx;
 			spell->m_pSpellFx = NULL;
-		}
-	}
-	
-	BOOST_FOREACH(Entity * e, entities) {
-		if(e) {
-			ARX_SPELLS_RemoveAllSpellsOn(e);
+			spell->m_targets.clear();
 		}
 	}
 }
@@ -981,6 +946,8 @@ static SpellHandle ARX_SPELLS_GetFree() {
 			spell->m_longinfo2_light = InvalidLightHandle;
 			
 			spell->m_targetHandles.clear();
+			spell->m_targets.clear();
+			
 			return SpellHandle(i);
 		}
 	}

@@ -171,7 +171,6 @@ Entity::Entity(const res::path & classPath)
 	basespeed = 1.f;
 	
 	speed_modif = 0.f;
-	spellsOn.clear();
 	
 	rubber = BASE_RUBBER;
 	max_durability = durability = 100.f;

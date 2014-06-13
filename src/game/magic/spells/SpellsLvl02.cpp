@@ -124,7 +124,7 @@ void DetectTrapSpell::Launch()
 	m_fManaCostPerSecond = 0.4f;
 	m_bDuration = true;
 	
-	ARX_SPELLS_AddSpellOn(m_target, m_thisHandle);
+	m_targets.push_back(m_target);
 }
 
 void DetectTrapSpell::End()
@@ -132,7 +132,7 @@ void DetectTrapSpell::End()
 	if(m_caster == PlayerEntityHandle) {
 		ARX_SOUND_Stop(m_snd_loop);
 	}
-	ARX_SPELLS_RemoveSpellOn(m_target, m_thisHandle);
+	m_targets.clear();
 }
 
 void DetectTrapSpell::Update(float timeDelta)
@@ -194,7 +194,7 @@ void ArmorSpell::Launch()
 		io->halo.dynlight = InvalidLightHandle;
 	}
 	
-	ARX_SPELLS_AddSpellOn(m_target, m_thisHandle);
+	m_targets.push_back(m_target);
 }
 
 void ArmorSpell::End()
@@ -206,7 +206,7 @@ void ArmorSpell::End()
 		ARX_HALO_SetToNative(entities[m_target]);
 	}
 	
-	ARX_SPELLS_RemoveSpellOn(m_target, m_thisHandle);
+	m_targets.clear();
 }
 
 void ArmorSpell::Update(float timeDelta)
@@ -268,7 +268,7 @@ void LowerArmorSpell::Launch()
 		}
 	}
 	
-	ARX_SPELLS_AddSpellOn(m_target, m_thisHandle);
+	m_targets.push_back(m_target);
 }
 
 void LowerArmorSpell::End()
@@ -281,7 +281,7 @@ void LowerArmorSpell::End()
 		ARX_HALO_SetToNative(io);
 	}
 	
-	ARX_SPELLS_RemoveSpellOn(m_target, m_thisHandle);
+	m_targets.clear();
 }
 
 void LowerArmorSpell::Update(float timeDelta)

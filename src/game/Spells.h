@@ -86,9 +86,6 @@ extern SpellManager spells;
 
 bool GetSpellPosition(Vec3f * pos, SpellBase * spell);
 
-void ARX_SPELLS_AddSpellOn(EntityHandle caster, SpellHandle spell);
-void ARX_SPELLS_RemoveSpellOn(EntityHandle entityHandle, SpellHandle spellHandle);
-
 SpellType GetSpellId(const std::string & spell);
 void TryToCastSpell(Entity * io, SpellType spellid, long level, EntityHandle target, SpellcastFlags flags, long duration);
 
@@ -101,7 +98,6 @@ void ARX_SPELLS_Update();
 void ARX_SPELLS_ManageMagic();
 
 void ARX_SPELLS_RemoveAllSpellsOn(Entity * io);
-bool spellHandleIsValid(SpellHandle handle);
 SpellBase * ARX_SPELLS_GetSpellOn(const Entity * io, SpellType spellid);
 
 void ARX_SPELLS_CancelSpellTarget();

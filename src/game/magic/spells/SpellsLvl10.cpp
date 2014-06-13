@@ -310,7 +310,7 @@ void MassIncinerateSpell::Launch()
 		tio->sfx_flag |= SFX_TYPE_YLSIDE_DEATH | SFX_TYPE_INCINERATE;
 		tio->sfx_time = (unsigned long)(arxtime);
 		nb_targets++;
-		ARX_SPELLS_AddSpellOn(tio->index(), m_thisHandle);
+		m_targets.push_back(tio->index());
 	}
 	
 	if(nb_targets) {
@@ -322,17 +322,9 @@ void MassIncinerateSpell::Launch()
 	}
 }
 
-void ARX_SPELLS_RemoveMultiSpellOn(SpellHandle spell_id) {
-	for(size_t i = 0; i < entities.size(); i++) {
-		const EntityHandle handle = EntityHandle(i);
-		
-		ARX_SPELLS_RemoveSpellOn(handle, spell_id);
-	}
-}
-
 void MassIncinerateSpell::End()
 {
-	ARX_SPELLS_RemoveMultiSpellOn(m_thisHandle);
+	m_targets.clear();
 	ARX_SOUND_Stop(m_snd_loop);
 	ARX_SOUND_PlaySFX(SND_SPELL_INCINERATE_END);
 }

@@ -259,13 +259,13 @@ void ParalyseSpell::Launch()
 	
 	entities[m_target]->ioflags |= IO_FREEZESCRIPT;
 	
-	ARX_SPELLS_AddSpellOn(m_target, m_thisHandle);
+	m_targets.push_back(m_target);
 	ARX_NPC_Kill_Spell_Launch(entities[m_target]);
 }
 
 void ParalyseSpell::End()
 {
-	ARX_SPELLS_RemoveSpellOn(m_target, m_thisHandle);
+	m_targets.clear();
 	entities[m_target]->ioflags &= ~IO_FREEZESCRIPT;
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_PARALYSE_END);
@@ -450,13 +450,13 @@ void SlowDownSpell::Launch()
 	m_pSpellFx = effect;
 	m_tolive = effect->GetDuration();
 	
-	ARX_SPELLS_AddSpellOn(m_target, m_thisHandle);
+	m_targets.push_back(m_target);
 }
 
 void SlowDownSpell::End()
 {
 	ARX_SOUND_PlaySFX(SND_SPELL_SLOW_DOWN_END);
-	ARX_SPELLS_RemoveSpellOn(m_target, m_thisHandle);
+	m_targets.clear();
 }
 
 void SlowDownSpell::Update(float timeDelta)

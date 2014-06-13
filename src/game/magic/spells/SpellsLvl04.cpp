@@ -62,12 +62,12 @@ void BlessSpell::Launch()
 	m_pSpellFx = effect;
 	m_tolive = effect->GetDuration();
 	
-	ARX_SPELLS_AddSpellOn(m_target, m_thisHandle);
+	m_targets.push_back(m_target);
 }
 
 void BlessSpell::End()
 {
-	ARX_SPELLS_RemoveSpellOn(m_target, m_thisHandle);
+	m_targets.clear();
 }
 
 void BlessSpell::Update(float timeDelta)
@@ -196,7 +196,7 @@ void FireProtectionSpell::Launch()
 		io->halo.dynlight = InvalidLightHandle;
 	}
 	
-	ARX_SPELLS_AddSpellOn(m_target, m_thisHandle);
+	m_targets.push_back(m_target);
 	
 	m_snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_FIRE_PROTECTION_LOOP, 
 	                                       &entities[m_target]->pos, 1.f, 
@@ -207,7 +207,7 @@ void FireProtectionSpell::End()
 {
 	ARX_SOUND_Stop(m_snd_loop);
 	ARX_SOUND_PlaySFX(SND_SPELL_FIRE_PROTECTION_END, &entities[m_target]->pos);
-	ARX_SPELLS_RemoveSpellOn(m_target, m_thisHandle);
+	m_targets.clear();
 	
 	if(ValidIONum(m_target))
 		ARX_HALO_SetToNative(entities[m_target]);
@@ -272,14 +272,14 @@ void ColdProtectionSpell::Launch()
 	                                       &entities[m_target]->pos, 1.f,
 	                                       ARX_SOUND_PLAY_LOOPED);
 	
-	ARX_SPELLS_AddSpellOn(m_target, m_thisHandle);
+	m_targets.push_back(m_target);
 }
 
 void ColdProtectionSpell::End()
 {
 	ARX_SOUND_Stop(m_snd_loop);
 	ARX_SOUND_PlaySFX(SND_SPELL_COLD_PROTECTION_END, &entities[m_target]->pos);
-	ARX_SPELLS_RemoveSpellOn(m_target, m_thisHandle);
+	m_targets.clear();
 	
 	if(ValidIONum(m_target))
 		ARX_HALO_SetToNative(entities[m_target]);
@@ -354,12 +354,12 @@ void CurseSpell::Launch()
 	m_pSpellFx = effect;
 	m_tolive = effect->GetDuration();
 	
-	ARX_SPELLS_AddSpellOn(m_target, m_thisHandle);
+	m_targets.push_back(m_target);
 }
 
 void CurseSpell::End()
 {
-	ARX_SPELLS_RemoveSpellOn(m_target, m_thisHandle);
+	m_targets.clear();
 }
 
 void CurseSpell::Update(float timeDelta)

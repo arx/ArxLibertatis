@@ -503,12 +503,12 @@ void ConfuseSpell::Launch()
 	m_pSpellFx = effect;
 	m_tolive = effect->GetDuration();
 	
-	ARX_SPELLS_AddSpellOn(m_target, m_thisHandle);
+	m_targets.push_back(m_target);
 }
 
 void ConfuseSpell::End()
 {
-	ARX_SPELLS_RemoveSpellOn(m_target, m_thisHandle);
+	m_targets.clear();
 }
 
 void ConfuseSpell::Update(float timeDelta)

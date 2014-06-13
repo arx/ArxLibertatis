@@ -6049,21 +6049,19 @@ public:
 	}
 	
 	void spellsOnPlayerUpdate(float intensity) {
-		if(entities.player()) {
-			Entity * playerEntity = entities.player();
-			
-			boost::container::flat_set<SpellHandle>::const_iterator it;
-			for(it = playerEntity->spellsOn.begin(); it != playerEntity->spellsOn.end(); ++it) {
-				SpellHandle spellHandle = SpellHandle(*it);
-				if(spellHandleIsValid(spellHandle)) {
-					SpellBase * spell = spells[spellHandle];
-					
-					if(spell->m_caster != PlayerEntityHandle && spellicons[spell->m_type].bDuration) {
-						ManageSpellIcon(*spell, intensity, true);
-					}
+			for(size_t i = 0; i < MAX_SPELLS; i++) {
+				SpellBase * spell = spells[SpellHandle(i)];
+				if(!spell->m_exist)
+					continue;
+				
+				if(std::find(spell->m_targets.begin(), spell->m_targets.end(), PlayerEntityHandle) == spell->m_targets.end()) {
+					continue;
+				}
+				
+				if(spell->m_caster != PlayerEntityHandle && spellicons[spell->m_type].bDuration) {
+					ManageSpellIcon(*spell, intensity, true);
 				}
 			}
-		}
 	}
 	
 	void update() {
