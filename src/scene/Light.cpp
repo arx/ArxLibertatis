@@ -225,6 +225,9 @@ void TreatBackgroundDynlights()
 
 			if(!fartherThan(light->pos, ACTIVECAM->orgTrans.pos, fMaxdist)) {
 				ComputeLight2DPos(light);
+			} else {
+				light->m_screenRect.max.x = -1;
+				light->m_screenRect.min.x = 1;
 			}
 
 			if(!light->status) {

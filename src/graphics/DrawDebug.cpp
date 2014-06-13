@@ -107,6 +107,8 @@ static void drawDebugLights() {
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->SetCulling(Renderer::CullNone);
 	
+	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+	
 	for(size_t i = 0; i < MAX_LIGHTS; i++) {
 		
 		EERIE_LIGHT * light = GLight[i];
@@ -126,7 +128,7 @@ static void drawDebugLights() {
 		);
 		
 		if(mouseTestRect.contains(Vec2i(DANAEMouse))) {
-			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+			
 			Sphere fallstart;
 			fallstart.origin = light->pos;
 			fallstart.radius = light->fallstart;
@@ -137,10 +139,20 @@ static void drawDebugLights() {
 			DrawLineSphere(fallend, Color(Color3<u8>::red, 200));
 		}
 		
-		GRenderer->SetBlendFunc(Renderer::BlendSrcAlpha, Renderer::BlendSrcAlpha);
-		EERIEDrawSprite(in, 11.f, g_lightSourceTexture, light->rgb.to<u8>(), 2.f);
+		if(light->m_screenRect.valid())
+			drawDebugBoundingBox(light->m_screenRect);
+	}
+	
+	for(size_t i = 0; i < MAX_LIGHTS; i++) {
 		
-		drawDebugBoundingBox(light->m_screenRect);
+		EERIE_LIGHT * light = GLight[i];
+		if(!light) {
+			continue;
+		}
+		
+		TexturedVertex in;
+		in.p = light->pos;
+		EERIEDrawSprite(in, 11.f, g_lightSourceTexture, light->rgb.to<u8>(), 0.5f);
 	}
 	
 	GRenderer->SetCulling(Renderer::CullCCW);
