@@ -218,6 +218,16 @@ SpellBase * SpellManager::getSpellOnTarget(EntityHandle target, SpellType type)
 	return NULL;
 }
 
+void SpellManager::replaceCaster(EntityHandle oldCaster, EntityHandle newCaster) {
+	for(size_t i = 0; i < MAX_SPELLS; i++) {
+		SpellBase * spell = spells[SpellHandle(i)];
+		
+		if(spell->m_exist && spell->m_caster == oldCaster) {
+			spell->m_caster = newCaster;
+		}
+	}
+}
+
 
 bool GetSpellPosition(Vec3f * pos, SpellBase * spell)
 {

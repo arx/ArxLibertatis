@@ -78,7 +78,8 @@ public:
 	bool ExistAnyInstanceForThisCaster(SpellType typ, EntityHandle caster);
 	
 	SpellBase * getSpellOnTarget(EntityHandle target, SpellType type);
-		
+	
+	void replaceCaster(EntityHandle oldCaster, EntityHandle newCaster);
 private:
 	SpellBase m_spells[MAX_SPELLS];
 };

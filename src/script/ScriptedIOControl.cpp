@@ -122,14 +122,7 @@ public:
 				CheckForInventoryReplaceMe(ioo, io);
 			}
 		} else {
-			
-			for(size_t i = 0; i < MAX_SPELLS; i++) {
-				SpellBase * spell = spells[SpellHandle(i)];
-				
-				if(spell->m_exist && spell->m_caster == oldd) {
-					spell->m_caster = neww;
-				}
-			}
+			spells.replaceCaster(oldd, neww);
 			
 			InventoryPos oldPos = removeFromInventories(io);
 			
