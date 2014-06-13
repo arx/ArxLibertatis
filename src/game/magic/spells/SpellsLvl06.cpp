@@ -422,7 +422,7 @@ bool SlowDownSpell::CanLaunch()
 	Entity * io = entities[m_target];
 	
 	// TODO this seems to be the only spell that ends itself when cast twice
-	SpellBase * spell = ARX_SPELLS_GetSpellOn(io, SPELL_SLOW_DOWN);
+	SpellBase * spell = spells.getSpellOnTarget(io, SPELL_SLOW_DOWN);
 	if(spell) {
 		spell->m_tolive = 0;
 		return false;

@@ -197,6 +197,27 @@ bool SpellManager::ExistAnyInstanceForThisCaster(SpellType typ, EntityHandle cas
 	return false;
 }
 
+SpellBase * SpellManager::getSpellOnTarget(const Entity * target, SpellType type)
+{
+	if(!target)
+		return NULL;
+	
+	for(size_t i = 0; i < MAX_SPELLS; i++) {
+		SpellBase * spell = spells[SpellHandle(i)];
+		if(!spell->m_exist)
+			continue;
+		
+		if(spell->m_type != type)
+			continue;
+		
+		if(std::find(spell->m_targets.begin(), spell->m_targets.end(), target->index()) != spell->m_targets.end()) {
+			return spell;
+		}
+	}
+	
+	return NULL;
+}
+
 
 bool GetSpellPosition(Vec3f * pos, SpellBase * spell)
 {
@@ -347,26 +368,7 @@ bool GetSpellPosition(Vec3f * pos, SpellBase * spell)
 	return false;
 }
 
-SpellBase * ARX_SPELLS_GetSpellOn(const Entity * io, SpellType spellid)
-{
-	if(!io)
-		return NULL;
-	
-	for(size_t i = 0; i < MAX_SPELLS; i++) {
-		SpellBase * spell = spells[SpellHandle(i)];
-		if(!spell->m_exist)
-			continue;
-		
-		if(spell->m_type != spellid)
-			continue;
-		
-		if(std::find(spell->m_targets.begin(), spell->m_targets.end(), io->index()) != spell->m_targets.end()) {
-			return spell;
-		}
-	}
-	
-	return NULL;
-}
+
 
 void ARX_SPELLS_RemoveAllSpellsOn(Entity *io) {
 	
@@ -986,7 +988,7 @@ void ARX_SPELLS_LaunchSpellTarget(Entity * io) {
 float ARX_SPELLS_ApplyFireProtection(Entity * io,float damages)
 {
 	if(io) {
-		SpellBase * spell = ARX_SPELLS_GetSpellOn(io, SPELL_FIRE_PROTECTION);
+		SpellBase * spell = spells.getSpellOnTarget(io, SPELL_FIRE_PROTECTION);
 		if(spell) {
 			float modif = 1.f - (spell->m_caster_level * ( 1.0f / 10 ));
 
@@ -1008,7 +1010,7 @@ float ARX_SPELLS_ApplyFireProtection(Entity * io,float damages)
 
 float ARX_SPELLS_ApplyColdProtection(Entity * io,float damages)
 {
-	SpellBase * spell = ARX_SPELLS_GetSpellOn(io, SPELL_COLD_PROTECTION);
+	SpellBase * spell = spells.getSpellOnTarget(io, SPELL_COLD_PROTECTION);
 	if(spell) {
 		float modif = 1.f - (spell->m_caster_level * ( 1.0f / 10 ));
 

@@ -520,17 +520,17 @@ void ARX_PLAYER_ComputePlayerFullStats() {
 		
 		SpellBase * spell;
 		
-		spell = ARX_SPELLS_GetSpellOn(entities.player(), SPELL_ARMOR);
+		spell = spells.getSpellOnTarget(entities.player(), SPELL_ARMOR);
 		if(spell) {
 			player.m_miscMod.armorClass += spell->m_caster_level;
 		}
 		
-		spell = ARX_SPELLS_GetSpellOn(entities.player(), SPELL_LOWER_ARMOR);
+		spell = spells.getSpellOnTarget(entities.player(), SPELL_LOWER_ARMOR);
 		if(spell) {
 			player.m_miscMod.armorClass -= spell->m_caster_level;
 		}
 		
-		spell = ARX_SPELLS_GetSpellOn(entities.player(), SPELL_CURSE);
+		spell = spells.getSpellOnTarget(entities.player(), SPELL_CURSE);
 		if(spell) {
 			player.m_attributeMod.strength -= spell->m_caster_level;
 			player.m_attributeMod.constitution -= spell->m_caster_level;
@@ -538,7 +538,7 @@ void ARX_PLAYER_ComputePlayerFullStats() {
 			player.m_attributeMod.mind -= spell->m_caster_level;
 		}
 	
-		spell = ARX_SPELLS_GetSpellOn(entities.player(), SPELL_BLESS);
+		spell = spells.getSpellOnTarget(entities.player(), SPELL_BLESS);
 		if(spell) {
 			player.m_attributeMod.strength += spell->m_caster_level;
 			player.m_attributeMod.dexterity += spell->m_caster_level;
@@ -1667,7 +1667,7 @@ void ARX_PLAYER_Manage_Visual() {
 			ChangeMoveAnim = alist[ANIM_MEDITATION];
 			ChangeMA_Loop = true;
 			goto makechanges;
-		} else if(ARX_SPELLS_GetSpellOn(io, SPELL_LEVITATE)) {
+		} else if(spells.getSpellOnTarget(io, SPELL_LEVITATE)) {
 			ChangeMoveAnim = alist[ANIM_LEVITATE];
 			ChangeMA_Loop = true;
 			goto makechanges;
@@ -1851,7 +1851,7 @@ void ForcePlayerLookAtIO(Entity * io) {
  */
 void ARX_PLAYER_Frame_Update()
 {
-	if(ARX_SPELLS_GetSpellOn(entities.player(), SPELL_PARALYSE)) {
+	if(spells.getSpellOnTarget(entities.player(), SPELL_PARALYSE)) {
 		PLAYER_PARALYSED = 1;
 	} else {
 		entities.player()->ioflags &= ~IO_FREEZESCRIPT;
@@ -1908,7 +1908,7 @@ void ARX_PLAYER_Frame_Update()
 	player.TRAP_DETECT = player.m_skillFull.mecanism;
 	player.TRAP_SECRET = player.m_skillFull.intuition;
 
-	if(ARX_SPELLS_GetSpellOn(entities.player(), SPELL_DETECT_TRAP))
+	if(spells.getSpellOnTarget(entities.player(), SPELL_DETECT_TRAP))
 		player.TRAP_DETECT = 100.f;
 
 	ModeLight |= MODE_DEPTHCUEING;
@@ -1921,7 +1921,7 @@ void ARX_PLAYER_Frame_Update()
  */
 static void ARX_PLAYER_MakeStepNoise() {
 	
-	if(ARX_SPELLS_GetSpellOn(entities.player(), SPELL_LEVITATE)) {
+	if(spells.getSpellOnTarget(entities.player(), SPELL_LEVITATE)) {
 		return;
 	}
 	
@@ -2101,7 +2101,7 @@ void PlayerMovementIterate(float DeltaTime) {
 				if(anything < 0.f) {
 					player.physics.cyl.height = old;
 					
-					SpellBase * spell = ARX_SPELLS_GetSpellOn(entities.player(), SPELL_LEVITATE);
+					SpellBase * spell = spells.getSpellOnTarget(entities.player(), SPELL_LEVITATE);
 					if(spell) {
 						spell->m_tolive = 0;
 					}

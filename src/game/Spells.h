@@ -76,6 +76,8 @@ public:
 	
 	void RequestEndOfInstanceForThisCaster(SpellType typ, EntityHandle caster);
 	bool ExistAnyInstanceForThisCaster(SpellType typ, EntityHandle caster);
+	
+	SpellBase * getSpellOnTarget(const Entity * target, SpellType type);
 		
 private:
 	SpellBase m_spells[MAX_SPELLS];
@@ -98,7 +100,6 @@ void ARX_SPELLS_Update();
 void ARX_SPELLS_ManageMagic();
 
 void ARX_SPELLS_RemoveAllSpellsOn(Entity * io);
-SpellBase * ARX_SPELLS_GetSpellOn(const Entity * io, SpellType spellid);
 
 void ARX_SPELLS_CancelSpellTarget();
 void ARX_SPELLS_LaunchSpellTarget(Entity * io);
