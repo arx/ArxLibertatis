@@ -47,142 +47,127 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/effects/SpellEffects.h"
 
 // Done By : Didier Pedreno
-class CCreateField: public CSpellFx
-{
-	public:
-		Vec3f eSrc;
-
-	private:
-		TextureContainer * tex_jelly;
-		bool youp;
-		float	fColor1[3];
-		float	fColor2[3];
-		float	fwrap;
-		float ysize;
-		float size;
-		float ft;
-		float fglow ;
-		TexturedVertex b[4];
-		TexturedVertex t[4];
-
-	public:
-		float	falpha;
-		CCreateField();
-
-	private:
-		void RenderQuad(TexturedVertex p1, TexturedVertex p2, TexturedVertex p3, TexturedVertex p4,  int rec, Vec3f);
-		void RenderSubDivFace(TexturedVertex * b, TexturedVertex * t, int b1, int b2, int t1, int t2);
-
-	public:
-		void	Create(Vec3f);
-		void	Kill();
-		void Update(float timeDelta);
-		void Render();
+class CCreateField : public CSpellFx {
+	
+public:
+	CCreateField();
+	
+	void Create(Vec3f);
+	void Update(float timeDelta);
+	void Render();
+	
+	Vec3f eSrc;
+	
+private:
+	TextureContainer * tex_jelly;
+	bool youp;
+	float fColor1[3];
+	float fColor2[3];
+	float fwrap;
+	float ysize;
+	float size;
+	float ft;
+	float fglow ;
+	TexturedVertex b[4];
+	TexturedVertex t[4];
+	
+	float falpha;
+	
+	void RenderQuad(TexturedVertex p1, TexturedVertex p2, TexturedVertex p3, TexturedVertex p4,  int rec, Vec3f);
+	void RenderSubDivFace(TexturedVertex * b, TexturedVertex * t, int b1, int b2, int t1, int t2);
 };
 
-class CSlowDown: public CSpellFx
-{
-	public:
-		Vec3f eSrc;
-		Vec3f eTarget;
-		TextureContainer * tex_p2;
-
-	public:
-		CSlowDown();
-		~CSlowDown();
-
-		// accesseurs
-	public:
-		void SetPos(Vec3f);
-
-		// surcharge
-	public:
-		void	Create(Vec3f, float afBeta = 0);
-		void	Kill();
-		void Update(float timeDelta);
-		void Render();
+class CSlowDown : public CSpellFx {
+	
+public:
+	CSlowDown();
+	~CSlowDown();
+	
+	void SetPos(Vec3f);
+	
+	void Create(Vec3f, float afBeta = 0);
+	void Update(float timeDelta);
+	void Render();
+	
+private:
+	Vec3f eSrc;
+	Vec3f eTarget;
+	TextureContainer * tex_p2;
 };
 
 // Done By : Didier Pedreno
-class CRiseDead: public CSpellFx
-{
-	public:
-		Vec3f eSrc;
-		float	fColorRays1[3];
-
-	private:
-		TextureContainer * tex_light;
-		int		end;
-		int		iSize;
-		bool	bIntro;
-		float	fOneOniSize;
-		float	fOneOnDurationIntro;
-		float	fOneOnDurationRender;
-		float	fOneOnDurationOuttro;
-		float	sizeF;
-		float	fSizeIntro;
-		float	fRand;
-		float	fTexWrap;
-		float	fColorBorder[3];
-		float	fColorRays2[3];
-		float	tfRaysa[40];
-		float	tfRaysb[40];
-		unsigned long ulDurationIntro;
-		unsigned long ulDurationRender;
-		unsigned long ulDurationOuttro;
-		TexturedVertex va[40];
-		TexturedVertex vb[40];
-		TexturedVertex v1a[40];
-		TexturedVertex v1b[40];
-
-		EERIE_3DOBJ	*	stone[2];
-
-		struct T_STONE
-		{
-			short		actif;
-			short		numstone;
-			Vec3f	pos;
-			float		yvel;
-			Anglef ang;
-			Anglef angvel;
-			Vec3f	scale;
-			int			time;
-			int			currtime;
-		};
-
-		int				currframetime;
-		int				timestone;
-		int				nbstone;
-		T_STONE			tstone[256];
-
-		void AddStone(Vec3f * pos);
-		void DrawStone();
-	public:
-		CRiseDead();
-		~CRiseDead();
-
-	private:
-		void Split(TexturedVertex * v, int a, int b, float yo);
-		void RenderFissure();
-
-		// accesseurs
-	public:
-		void SetDuration(const unsigned long duration);
-		void SetDuration(unsigned long, unsigned long, unsigned long);
- 
-		void SetPos(Vec3f);
- 
-		void SetColorBorder(float, float, float);
-		void SetColorRays1(float, float, float);
-		void SetColorRays2(float, float, float);
-		unsigned long GetDuration();
-
-		// surcharge
-	public:
-		void	Create(Vec3f, float afBeta = 0);
-		void	Kill();
-		void Update(float timeDelta);
-		void Render();
+class CRiseDead : public CSpellFx {
+	
+public:
+	CRiseDead();
+	~CRiseDead();
+	
+	void SetDuration(const unsigned long duration);
+	void SetDuration(unsigned long, unsigned long, unsigned long);
+	
+	void SetPos(Vec3f);
+	
+	void SetColorBorder(float, float, float);
+	void SetColorRays1(float, float, float);
+	void SetColorRays2(float, float, float);
+	unsigned long GetDuration();
+	
+	void Create(Vec3f, float afBeta = 0);
+	void Update(float timeDelta);
+	void Render();
+	
+	Vec3f eSrc;
+	
+private:
+	void Split(TexturedVertex * v, int a, int b, float yo);
+	void RenderFissure();
+	
+	float	fColorRays1[3];
+	TextureContainer * tex_light;
+	int		end;
+	int		iSize;
+	bool	bIntro;
+	float	fOneOniSize;
+	float	fOneOnDurationIntro;
+	float	fOneOnDurationRender;
+	float	fOneOnDurationOuttro;
+	float	sizeF;
+	float	fSizeIntro;
+	float	fRand;
+	float	fTexWrap;
+	float	fColorBorder[3];
+	float	fColorRays2[3];
+	float	tfRaysa[40];
+	float	tfRaysb[40];
+	unsigned long ulDurationIntro;
+	unsigned long ulDurationRender;
+	unsigned long ulDurationOuttro;
+	TexturedVertex va[40];
+	TexturedVertex vb[40];
+	TexturedVertex v1a[40];
+	TexturedVertex v1b[40];
+	
+	EERIE_3DOBJ	*	stone[2];
+	
+	struct T_STONE {
+		short actif;
+		short numstone;
+		Vec3f pos;
+		float yvel;
+		Anglef ang;
+		Anglef angvel;
+		Vec3f scale;
+		int time;
+		int currtime;
+	};
+	
+	int currframetime;
+	int timestone;
+	int nbstone;
+	T_STONE tstone[256];
+	
+	void AddStone(Vec3f * pos);
+	void DrawStone();
 };
 
 #endif // ARX_GRAPHICS_SPELLS_SPELLS06_H

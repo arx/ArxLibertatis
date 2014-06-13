@@ -49,24 +49,41 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 // Done By : did
 class CRuneOfGuarding : public CSpellFx {
-public:
-	Vec3f eSrc;
-	Vec3f eTarget;
-	TextureContainer * tex_p2;
 	
+public:
 	CRuneOfGuarding();
 	~CRuneOfGuarding();
 	
 	void SetPos(Vec3f);
 	
 	void Create(Vec3f, float afBeta = 0);
-	void Kill();
 	void Update(float timeDelta);
 	void Render();
+	
+	Vec3f eSrc;
+	
+private:
+	
+	Vec3f eTarget;
+	TextureContainer * tex_p2;
 };
 
 // Done By : Sébastien Scieux
 class CLevitate : public CSpellFx {
+	
+public:
+	CLevitate();
+	~CLevitate();
+	
+	void ChangePos(Vec3f * pos)
+	{
+		this->pos = *pos;
+	};
+	
+	void Create(int def, float rout, float rhaut, float hauteur, Vec3f * pos, unsigned long);
+	void Update(float timeDelta);
+	void Render();
+	
 private:
 	short key;
 	short def;
@@ -107,19 +124,6 @@ private:
 	void DrawStone();
 	
 	void CreateConeStrip(float rout, float rhaut, float hauteur, int def, int numcone);
-	
-public:
-	CLevitate();
-	~CLevitate();
-	
-	void ChangePos(Vec3f * pos)
-	{
-		this->pos = *pos;
-	};
-	
-	void Create(int def, float rout, float rhaut, float hauteur, Vec3f * pos, unsigned long);
-	void Update(float timeDelta);
-	void Render();
 };
 
 // Done By : Didier Pédreno
@@ -141,37 +145,31 @@ private:
 };
 
 // Done By : Didier Pédreno
-class CPoisonProjectile: public CSpellFx {
+class CPoisonProjectile : public CSpellFx {
 	
 public:
-	float fTrail;
-	bool  bOk;
-	
-	Vec3f eSrc;
-	Vec3f eCurPos;
-	Vec3f eMove;
-	TexturedVertex pathways[40];
-	ParticleSystem pPS;
-	ParticleSystem pPSStream;
-
-	float lightIntensityFactor;
-	
 	CPoisonProjectile();
 	
-	// surcharge
 	void Create(Vec3f, float afBeta = 0);
 	void Update(float timeDelta);
 	void Render();
 	
+	Vec3f eSrc;
+	Vec3f eCurPos;
+	float lightIntensityFactor;
 	SpellHandle spellinstance;
+	
+private:
+	bool  bOk;
+	float fTrail;
+	
+	Vec3f eMove;
+	TexturedVertex pathways[40];
+	ParticleSystem pPS;
+	ParticleSystem pPSStream;
 };
 
 class CMultiPoisonProjectile : public CSpellFx {
-
-private:
-	unsigned int uiNumber;
-	CPoisonProjectile ** pTab;
-	void AddPoisonFog(Vec3f * pos, float power);
 	
 public:
 	explicit CMultiPoisonProjectile(long nb);
@@ -183,6 +181,11 @@ public:
 	void Render();
 	
 	SpellHandle spellinstance;
+	
+private:
+	unsigned int uiNumber;
+	CPoisonProjectile ** pTab;
+	void AddPoisonFog(Vec3f * pos, float power);
 };
 
 // Done By : did

@@ -48,51 +48,46 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/particle/ParticleSystem.h"
 
 // Done By : Didier Pedreno
-class CBless: public CSpellFx
-{
-	public:
-		Vec3f eSrc;
-		Vec3f eTarget;
-		TextureContainer * tex_p1;
-		TextureContainer * tex_sol;
-		float fRot;
-		float fRotPerMSec;
-
-	public:
-		CBless();
-
-		// accesseurs
-	public:
-		void Set_Angle(const Anglef &);
-		// surcharge
-	public:
-		void	Create(Vec3f, float afBeta = 0);
-		void Update(float timeDelta);
-		void Render();
-		void	Kill();
-		
-		SpellHandle spellinstance;
+class CBless : public CSpellFx {
+	
+public:
+	CBless();
+	
+	void Set_Angle(const Anglef &);
+	
+	void Create(Vec3f, float afBeta = 0);
+	void Update(float timeDelta);
+	void Render();
+	
+	Vec3f eSrc;
+	SpellHandle spellinstance;
+	
+private:
+	Vec3f eTarget;
+	TextureContainer * tex_p1;
+	TextureContainer * tex_sol;
+	float fRot;
+	float fRotPerMSec;
 };
 
-class CCurse: public CSpellFx
-{
-	public:
-		Vec3f eSrc;
-		Vec3f eTarget;
-		TextureContainer * tex_p1;
-		float fRot;
-		float fRotPerMSec;
-
-	public:
-		CCurse();
-		~CCurse();
-
-		// surcharge
-	public:
-		void	Create(Vec3f, float afBeta = 0);
-		void	Kill();
-		void Update(float timeDelta);
-		void Render();
+class CCurse : public CSpellFx {
+	
+public:
+	CCurse();
+	~CCurse();
+	
+	void Create(Vec3f, float afBeta = 0);
+	void Update(float timeDelta);
+	void Render();
+	
+	Vec3f eTarget;
+	
+private:
+	Vec3f eSrc;
+	
+	TextureContainer * tex_p1;
+	float fRot;
+	float fRotPerMSec;
 };
 
 #endif // ARX_GRAPHICS_SPELLS_SPELLS04_H

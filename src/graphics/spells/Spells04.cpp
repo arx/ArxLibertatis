@@ -185,8 +185,8 @@ CCurse::~CCurse() {
 }
 
 CCurse::CCurse()
-	: eSrc(Vec3f_ZERO)
-	, eTarget(Vec3f_ZERO)
+	: eTarget(Vec3f_ZERO)
+	, eSrc(Vec3f_ZERO)
 	, fRot(0.f)
 	, fRotPerMSec(0.25f)
 {	
