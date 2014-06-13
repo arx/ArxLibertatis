@@ -126,9 +126,9 @@ void CHeal::Create() {
 	pPS->SetParams(cp);
 }
 
-void CHeal::Update(unsigned long aulTime)
+void CHeal::Update(float timeDelta)
 {
-	ulCurrentTime += aulTime;
+	ulCurrentTime += timeDelta;
 
 	if(ulCurrentTime >= ulDuration)
 		return;
@@ -178,7 +178,7 @@ void CHeal::Update(unsigned long aulTime)
 	}
 
 	pPS->SetPos(eSrc);
-	pPS->Update(aulTime);
+	pPS->Update(timeDelta);
 }
 
 void CHeal::Render() {

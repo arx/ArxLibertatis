@@ -109,7 +109,7 @@ class CLightning: public CSpellFx
 		// surcharge
 	public:
 		void	Create(Vec3f, Vec3f, float beta = 0);
-		void	Update(unsigned long);
+		void Update(float timeDelta);
 		void Render();
 		void	Kill();
 		
@@ -126,7 +126,7 @@ public:
 	void Create(float afBeta = 0);
 	void SetPos(const Vec3f & pos);
 	
-	void Update(unsigned long);
+	void Update(float timeDelta);
 	void Render();
 	
 public:
@@ -149,7 +149,7 @@ class CFireField: public CSpellFx
 
 	public:
 		void	Create(float largeur, const Vec3f & pos, int duration);
-		void	Update(unsigned long);
+		void Update(float timeDelta);
 		void Render();
 };
 
@@ -180,7 +180,7 @@ class CIceField: public CSpellFx
 	public:
 		void	Create(Vec3f, float afBeta = 0);
 		void	Kill();
-		void	Update(unsigned long);
+		void Update(float timeDelta);
 		void Render();
 };
 

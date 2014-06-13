@@ -264,11 +264,11 @@ void CMagicMissile::SetTTL(unsigned long aulTTL)
 	lLightId = InvalidLightHandle;
 }
 
-void CMagicMissile::Update(unsigned long aulTime)
+void CMagicMissile::Update(float timeDelta)
 {
 	ARX_SOUND_RefreshPosition(snd_loop, eCurPos);
 
-	ulCurrentTime += aulTime;
+	ulCurrentTime += timeDelta;
 
 	if(ulCurrentTime >= ulDuration)
 		lightIntensityFactor = 0.f;
@@ -614,10 +614,10 @@ bool CMultiMagicMissile::CheckAllDestroyed()
 	return nbmissiles == 0;
 }
 
-void CMultiMagicMissile::Update(unsigned long _ulTime)
+void CMultiMagicMissile::Update(float timeDelta)
 {
 	for(size_t i = 0 ; i < pTab.size() ; i++) {
-		pTab[i]->Update(_ulTime);
+		pTab[i]->Update(timeDelta);
 	}
 }
 
@@ -714,7 +714,7 @@ void CIgnit::AddLight(int aiLight)
 	tablight.push_back(entry);
 }
 
-void CIgnit::Update(unsigned long _ulTime) 
+void CIgnit::Update(float timeDelta) 
 {
 	if(currduration >= duration) {
 		m_active = false;
@@ -743,7 +743,7 @@ void CIgnit::Update(unsigned long _ulTime)
 	}
 	
 	if(!arxtime.is_paused())
-		currduration += _ulTime;
+		currduration += timeDelta;
 }
 
 void CDoze::CreateDoze(Vec3f * posc, int speed) {

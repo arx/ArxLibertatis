@@ -103,10 +103,10 @@ void CMassLightning::Create(Vec3f aePos, float afBeta = 0) {
 	SetDuration(lMax + 1000);
 }
 
-void CMassLightning::Update(unsigned long _ulTime)
+void CMassLightning::Update(float timeDelta)
 {
 	for(int i = 0; i < number; i++) {
-		pTab[i]->Update(_ulTime);
+		pTab[i]->Update(timeDelta);
 	}
 }
 
@@ -180,8 +180,8 @@ void CControlTarget::Create(Vec3f aeSrc, float afBeta) {
 	fTrail = 0;
 }
 
-void CControlTarget::Update(unsigned long _ulTime) {
-	ulCurrentTime += _ulTime;
+void CControlTarget::Update(float timeDelta) {
+	ulCurrentTime += timeDelta;
 }
 
 void CControlTarget::Render()

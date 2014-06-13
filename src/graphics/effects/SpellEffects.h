@@ -79,19 +79,14 @@ class CSpellFx
 	public:
 		CSpellFx();
 		virtual ~CSpellFx() { }
-
-		// accesseurs
-	public:
+		
 		virtual void SetDuration(const unsigned long ulaDuration);
 		virtual unsigned long getCurrentTime();
 		virtual unsigned long GetDuration();
 		void SetAngle(float angle);
-
-		// surcharge
-	public:
-		virtual void	Update(unsigned long) { }
-		void			Update(float time);
-		virtual void	Render() {}
+		
+		virtual void Update(float timeDelta) = 0;
+		virtual void Render() = 0;
 };
 
 #define frand2() (1.0f - (2.0f * rnd()))

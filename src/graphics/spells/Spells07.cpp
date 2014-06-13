@@ -336,10 +336,10 @@ void CLightning::ReCreate()
 	iTTL = checked_range_cast<int>(fRandom);
 }
 
-void CLightning::Update(unsigned long _ulTime)
+void CLightning::Update(float timeDelta)
 {
-	ulCurrentTime += _ulTime;
-	iTTL -= _ulTime;
+	ulCurrentTime += timeDelta;
+	iTTL -= timeDelta;
 	fTotoro += 8;
 
 	if(fMySize > 0.3f)
@@ -605,8 +605,8 @@ void CConfuse::SetPos(const Vec3f & pos)
 	eCurPos = pos;
 }
 
-void CConfuse::Update(unsigned long _ulTime) {
-	ulCurrentTime += _ulTime;
+void CConfuse::Update(float timeDelta) {
+	ulCurrentTime += timeDelta;
 }
 
 void CConfuse::Render() {
@@ -769,12 +769,12 @@ void CFireField::Create(float largeur, const Vec3f & pos, int _ulDuration)
 	pPSStream1.Update(0);
 }
 
-void CFireField::Update(unsigned long _ulTime)
+void CFireField::Update(float timeDelta)
 {
-	ulCurrentTime += _ulTime;
+	ulCurrentTime += timeDelta;
 
-	pPSStream.Update(_ulTime);
-	pPSStream1.Update(_ulTime);
+	pPSStream.Update(timeDelta);
+	pPSStream1.Update(timeDelta);
 }
 
 void CFireField::Render()
@@ -879,9 +879,9 @@ void CIceField::Create(Vec3f aeSrc, float afBeta) {
 	}
 }
 
-void CIceField::Update(unsigned long _ulTime)
+void CIceField::Update(float timeDelta)
 {
-	ulCurrentTime += _ulTime;
+	ulCurrentTime += timeDelta;
 }
 
 extern bool VisibleSphere(const Vec3f & pos, float radius);

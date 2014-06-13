@@ -216,15 +216,15 @@ void CFireBall::Create(Vec3f aeSrc, float afBeta, float afAlpha, float _fLevel)
 }
 
 #define MIN_TIME_FIREBALL 2000  //750
-void CFireBall::Update(unsigned long aulTime)
+void CFireBall::Update(float timeDelta)
 {
-	ulCurrentTime += aulTime;
+	ulCurrentTime += timeDelta;
 
 	if(ulCurrentTime > MIN_TIME_FIREBALL) {
 		// smoke en retard
 		pPSSmoke.SetPos(eCurPos);
-		pPSSmoke.Update(aulTime);
-		eCurPos += eMove * (aulTime * 0.0045f);
+		pPSSmoke.Update(timeDelta);
+		eCurPos += eMove * (timeDelta * 0.0045f);
 		pPSFire.SetPos(eCurPos);
 		pPSFire.m_parameters.m_speed = 100;
 		pPSFire.m_parameters.m_speedRandom = 200;
@@ -287,7 +287,7 @@ void CFireBall::Update(unsigned long aulTime)
 		pPSSmoke.m_parameters.m_direction = -vMove;
 		pPSSmoke.SetPos(eCurPos);
 		pPSSmoke.RecomputeDirection();
-		eCurPos = eCurPos + eMove * (aulTime * 0.0045f);
+		eCurPos = eCurPos + eMove * (timeDelta * 0.0045f);
 		pPSFire.m_parameters.m_direction = -vMove;
 		pPSFire.RecomputeDirection();
 		pPSFire.SetPos(eCurPos);
@@ -298,8 +298,8 @@ void CFireBall::Update(unsigned long aulTime)
 		pPSFire2.SetPos(eCurPos);
 	}
 	
-	pPSFire.Update(aulTime);
-	pPSFire2.Update(aulTime);
+	pPSFire.Update(timeDelta);
+	pPSFire2.Update(timeDelta);
 }
 
 void CFireBall::Render() {
@@ -468,9 +468,9 @@ void CIceProjectile::Create(Vec3f aeSrc, float afBeta)
 	fColor = 1;
 }
 
-void CIceProjectile::Update(unsigned long aulTime)
+void CIceProjectile::Update(float timeDelta)
 {
-	ulCurrentTime += aulTime;
+	ulCurrentTime += timeDelta;
 
 	if(ulDuration - ulCurrentTime < 1000) {
 		fColor = (ulDuration - ulCurrentTime) * ( 1.0f / 1000 );
@@ -629,15 +629,15 @@ void CSpeed::Create(EntityHandle numinteractive)
 	}
 }
 
-void CSpeed::Update(unsigned long _ulTime)
+void CSpeed::Update(float timeDelta)
 {
-	ARX_UNUSED(_ulTime);
+	ARX_UNUSED(timeDelta);
 	
 	for(size_t i = 0; i < m_trails.size(); i++) {
 		Vec3f pos = entities[this->num]->obj->vertexlist3[m_trails[i].vertexIndex].v;
 		
 		m_trails[i].trail->SetNextPosition(pos);
-		m_trails[i].trail->Update(_ulTime);
+		m_trails[i].trail->Update(timeDelta);
 	}
 }
 
@@ -693,9 +693,9 @@ void CCreateFood::Create() {
 	pPS->SetParams(cp);
 }
 
-void CCreateFood::Update(unsigned long aulTime)
+void CCreateFood::Update(float timeDelta)
 {
-	ulCurrentTime += aulTime;
+	ulCurrentTime += timeDelta;
 	
 	eSrc = entities.player()->pos;
 	
@@ -725,7 +725,7 @@ void CCreateFood::Update(unsigned long aulTime)
 	}
 
 	pPS->SetPos(eSrc);
-	pPS->Update(aulTime);
+	pPS->Update(timeDelta);
 }
 
 void CCreateFood::Render()

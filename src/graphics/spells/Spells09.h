@@ -103,7 +103,7 @@ class CSummonCreature: public CSpellFx
 	public:
 		void	Create(Vec3f, float afBeta = 0);
 		void	Kill();
-		void	Update(unsigned long);
+		void Update(float timeDelta);
 		void Render();
 };
 
@@ -115,7 +115,7 @@ public:
 	~CNegateMagic();
 	
 	void Create(Vec3f, float afBeta = 0);
-	void Update(unsigned long);
+	void Update(float timeDelta);
 	void Render();
 	
 	void SetPos(Vec3f pos);

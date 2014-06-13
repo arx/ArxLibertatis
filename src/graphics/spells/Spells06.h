@@ -76,7 +76,7 @@ class CCreateField: public CSpellFx
 	public:
 		void	Create(Vec3f);
 		void	Kill();
-		void	Update(unsigned long);
+		void Update(float timeDelta);
 		void Render();
 };
 
@@ -99,7 +99,7 @@ class CSlowDown: public CSpellFx
 	public:
 		void	Create(Vec3f, float afBeta = 0);
 		void	Kill();
-		void	Update(unsigned long);
+		void Update(float timeDelta);
 		void Render();
 };
 
@@ -181,7 +181,7 @@ class CRiseDead: public CSpellFx
 	public:
 		void	Create(Vec3f, float afBeta = 0);
 		void	Kill();
-		void	Update(unsigned long);
+		void Update(float timeDelta);
 		void Render();
 };
 

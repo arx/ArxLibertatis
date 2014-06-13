@@ -140,9 +140,9 @@ void CCurePoison::SetPosition(const Vec3f & pos)
 	eSrc = pos;
 }
 
-void CCurePoison::Update(unsigned long aulTime)
+void CCurePoison::Update(float timeDelta)
 {
-	ulCurrentTime += aulTime;
+	ulCurrentTime += timeDelta;
 
 	if(ulCurrentTime >= ulDuration)
 		return;
@@ -171,7 +171,7 @@ void CCurePoison::Update(unsigned long aulTime)
 	}
 
 	pPS->SetPos(eSrc);
-	pPS->Update(aulTime);
+	pPS->Update(timeDelta);
 
 	if(!lightHandleIsValid(pPS->m_lightHandle))
 		pPS->m_lightHandle = GetFreeDynLight();
@@ -274,9 +274,9 @@ void CRuneOfGuarding::Create(Vec3f _eSrc, float _fBeta) {
 	}
 }
 
-void CRuneOfGuarding::Update(unsigned long _ulTime) {
+void CRuneOfGuarding::Update(float timeDelta) {
 	
-	ulCurrentTime += _ulTime;
+	ulCurrentTime += timeDelta;
 	
 	float fa = 1.0f - rnd() * 0.15f;
 	
@@ -492,16 +492,16 @@ void CPoisonProjectile::Create(Vec3f _eSrc, float _fBeta)
 	pPS.Update(0);
 }
 
-void CPoisonProjectile::Update(unsigned long _ulTime)
+void CPoisonProjectile::Update(float timeDelta)
 {
 	if(ulCurrentTime <= 2000) {
-		ulCurrentTime += _ulTime;
+		ulCurrentTime += timeDelta;
 	}
 
 	// on passe de 5 à 100 partoches en 1.5secs
 	if(ulCurrentTime < 750) {
 		pPS.m_parameters.m_nbMax = 2;
-		pPS.Update(_ulTime);
+		pPS.Update(timeDelta);
 	} else {
 		if(!bOk) {
 			bOk = true;
@@ -542,10 +542,10 @@ void CPoisonProjectile::Update(unsigned long _ulTime)
 			pPSStream.SetParams(cp);
 		}
 
-		pPSStream.Update(_ulTime);
+		pPSStream.Update(timeDelta);
 		pPSStream.SetPos(eCurPos);
 
-		pPS.Update(_ulTime);
+		pPS.Update(timeDelta);
 		pPS.SetPos(eCurPos);
 
 		fTrail = ((ulCurrentTime - 750) * (1.0f / (ulDuration - 750.0f))) * 9 * (BEZIERPrecision + 2);
@@ -726,10 +726,10 @@ void CMultiPoisonProjectile::Create(Vec3f srcPos) {
 	SetDuration(lMax + 1000);
 }
 
-void CMultiPoisonProjectile::Update(unsigned long _ulTime)
+void CMultiPoisonProjectile::Update(float timeDelta)
 {
 	for(unsigned int i = 0; i < uiNumber; i++) {
-		pTab[i]->Update(_ulTime);
+		pTab[i]->Update(timeDelta);
 	}
 }
 
@@ -873,9 +873,9 @@ void CRepelUndead::SetRotation(float rotation) {
 	fBeta = rotation;
 }
 
-void CRepelUndead::Update(unsigned long _ulTime) {
+void CRepelUndead::Update(float timeDelta) {
 	
-	ulCurrentTime += _ulTime;
+	ulCurrentTime += timeDelta;
 }
 
 void CRepelUndead::Render() {
@@ -1131,13 +1131,13 @@ void CLevitate::DrawStone()
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 }
 
-void CLevitate::Update(unsigned long _ulTime)
+void CLevitate::Update(float timeDelta)
 {
 	float	a;
 
 	//animation cone
 	if(!arxtime.is_paused())
-		this->currdurationang += _ulTime;
+		this->currdurationang += timeDelta;
 
 	this->ang = (float)this->currdurationang / 1000.f;
 
@@ -1146,7 +1146,7 @@ void CLevitate::Update(unsigned long _ulTime)
 		this->ang = 1.f;
 	}
 
-	if (!arxtime.is_paused()) ulCurrentTime += _ulTime;
+	if (!arxtime.is_paused()) ulCurrentTime += timeDelta;
 
 	switch(this->key) {
 		case 0:
@@ -1173,8 +1173,8 @@ void CLevitate::Update(unsigned long _ulTime)
 	}
 
 	if(!arxtime.is_paused()) {
-		this->currframetime = _ulTime;
-		this->timestone -= _ulTime;
+		this->currframetime = timeDelta;
+		this->timestone -= timeDelta;
 	}
 
 	if(this->timestone <= 0) {

@@ -61,7 +61,7 @@ public:
 	
 	void Create(Vec3f, float afBeta = 0);
 	void Kill();
-	void Update(unsigned long);
+	void Update(float timeDelta);
 	void Render();
 };
 
@@ -118,7 +118,7 @@ public:
 	};
 	
 	void Create(int def, float rout, float rhaut, float hauteur, Vec3f * pos, unsigned long);
-	void Update(unsigned long);
+	void Update(float timeDelta);
 	void Render();
 };
 
@@ -132,7 +132,7 @@ public:
 	void Create();
 	void SetPosition(const Vec3f & pos);
 	
-	void Update(unsigned long);
+	void Update(float timeDelta);
 	void Render();
 	
 private:
@@ -160,7 +160,7 @@ public:
 	
 	// surcharge
 	void Create(Vec3f, float afBeta = 0);
-	void Update(unsigned long);
+	void Update(float timeDelta);
 	void Render();
 	
 	SpellHandle spellinstance;
@@ -179,7 +179,7 @@ public:
 	
 	void Create(Vec3f srcPos);
 	void Kill();
-	void Update(unsigned long);
+	void Update(float timeDelta);
 	void Render();
 	
 	SpellHandle spellinstance;
@@ -196,7 +196,7 @@ public:
 	void SetPos(const Vec3f & pos);
 	void SetRotation(float rotation);
 	
-	void Update(unsigned long);
+	void Update(float timeDelta);
 	void Render();
 	
 private:

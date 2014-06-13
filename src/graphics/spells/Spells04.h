@@ -67,7 +67,7 @@ class CBless: public CSpellFx
 		// surcharge
 	public:
 		void	Create(Vec3f, float afBeta = 0);
-		void	Update(unsigned long);
+		void Update(float timeDelta);
 		void Render();
 		void	Kill();
 		
@@ -91,7 +91,7 @@ class CCurse: public CSpellFx
 	public:
 		void	Create(Vec3f, float afBeta = 0);
 		void	Kill();
-		void	Update(unsigned long);
+		void Update(float timeDelta);
 		void Render();
 };
 

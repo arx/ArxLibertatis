@@ -57,12 +57,12 @@ void HealSpell::Launch()
 	m_tolive = effect->GetDuration();
 }
 
-void HealSpell::Update(float framedelay)
+void HealSpell::Update(float timeDelta)
 {
 	CSpellFx *pCSpellFX = m_pSpellFx;
 
 	if(pCSpellFX) {
-		pCSpellFX->Update(framedelay);
+		pCSpellFX->Update(timeDelta);
 		pCSpellFX->Render();
 	}
 
@@ -88,7 +88,7 @@ void HealSpell::Update(float framedelay)
 				dist=fdist(ch->eSrc, e->pos);
 
 			if(dist<300.f) {
-				float gain=((rnd()*1.6f+0.8f)*m_caster_level)*(300.f-dist)*( 1.0f / 300 )*framedelay*( 1.0f / 1000 );
+				float gain=((rnd()*1.6f+0.8f)*m_caster_level)*(300.f-dist)*( 1.0f / 300 )*timeDelta*( 1.0f / 1000 );
 
 				if(ii==0) {
 					if (!BLOCK_PLAYER_CONTROLS)

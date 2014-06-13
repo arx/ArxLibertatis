@@ -84,10 +84,6 @@ void CSpellFx::SetAngle(float afAngle) {
 	fBetaRadSin = (float) sin(fBetaRad);
 }
 
-void CSpellFx::Update(float _fParam) {
-	Update(checked_range_cast<unsigned long>(_fParam));
-}
-
 void Draw3DLineTexNew(Vec3f startPos, Vec3f endPos, Color startColor, Color endColor, float startSize, float endSize) {
 
 	float fBeta = MAKEANGLE(player.angle.getPitch());

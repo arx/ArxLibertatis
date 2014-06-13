@@ -173,9 +173,9 @@ void CCreateField::RenderSubDivFace(TexturedVertex * b, TexturedVertex * t, int 
 	RenderQuad(b[b1], b[b2], t[t1], t[t2], 1, norm);
 }
 
-void CCreateField::Update(unsigned long _ulTime)
+void CCreateField::Update(float timeDelta)
 {
-	ulCurrentTime += _ulTime;
+	ulCurrentTime += timeDelta;
 }
 
 extern bool VisibleSphere(const Vec3f & pos, float radius);
@@ -374,8 +374,8 @@ void CSlowDown::Create(Vec3f aeSrc, float afBeta) {
 	eTarget = eSrc;
 }
 
-void CSlowDown::Update(unsigned long _ulTime) {
-	ulCurrentTime += _ulTime;
+void CSlowDown::Update(float timeDelta) {
+	ulCurrentTime += timeDelta;
 }
 
 void CSlowDown::Render() {
@@ -941,13 +941,13 @@ void CRiseDead::RenderFissure()
 	}
 }
 
-void CRiseDead::Update(unsigned long _ulTime)
+void CRiseDead::Update(float timeDelta)
 {
-	ulCurrentTime += _ulTime;
-	currframetime = _ulTime;
+	ulCurrentTime += timeDelta;
+	currframetime = timeDelta;
 
 	if(!arxtime.is_paused())
-		this->timestone -= _ulTime;
+		this->timestone -= timeDelta;
 }
 
 //-----------------------------------------------------------------------------

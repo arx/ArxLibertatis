@@ -61,7 +61,7 @@ public:
 	void Create(Vec3f, float afBeta, float afAlpha,  float);
 	void Kill();
 
-	void Update(unsigned long);
+	void Update(float timeDelta);
 	void Render();
 
 	Vec3f eSrc;
@@ -96,7 +96,7 @@ public:
 	~CSpeed();
 
 	void Create(EntityHandle numinteractive);
-	void Update(unsigned long);
+	void Update(float timeDelta);
 	void Render();
 };
 
@@ -130,7 +130,7 @@ class CIceProjectile: public CSpellFx
 		void	Create(Vec3f, float);
 		void	Create(Vec3f, float, float);
 		void	Kill();
-		void	Update(unsigned long);
+		void Update(float timeDelta);
 		void Render();
 		
 		SpellHandle spellinstance;
@@ -149,7 +149,7 @@ class CCreateFood: public CSpellFx
 
 	public:
 		void	Create();
-		void	Update(unsigned long);
+		void Update(float timeDelta);
 		void Render();
 };
 

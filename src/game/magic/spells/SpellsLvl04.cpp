@@ -377,7 +377,7 @@ void CurseSpell::Update(float timeDelta)
 				target.y += entities[m_target]->physics.cyl.height - 30.f;
 		}
 		
-		curse->Update(checked_range_cast<unsigned long>(timeDelta));
+		curse->Update(timeDelta);
 		
 		curse->eTarget = target;
 		curse->Render();

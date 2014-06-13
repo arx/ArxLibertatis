@@ -59,7 +59,7 @@ public:
 
 	// surcharge
 	void Create(const Vec3f &, const Anglef &);
-	void Update(unsigned long);
+	void Update(float timeDelta);
 	void Render();
 
 	bool bExplo;
@@ -95,7 +95,7 @@ public:
 	bool CheckAllDestroyed();
 	
 	void Create();
-	void Update(unsigned long);
+	void Update(float timeDelta);
 	void Render();
 	
 	SpellHandle spellinstance;
@@ -126,7 +126,7 @@ public:
 	~CIgnit();
 	
 	void Create(Vec3f * posc, int speed);
-	void Update(unsigned long time);
+	void Update(float timeDelta);
 	void Render();
 	void Kill();
 	void AddLight(int iLight);

@@ -65,7 +65,7 @@ class CMassLightning: public CSpellFx
 
 	public:
 		void	Create(Vec3f, float);
-		void	Update(unsigned long);
+		void Update(float timeDelta);
 		void Render();
 		
 		SpellHandle spellinstance;
@@ -96,7 +96,7 @@ class CControlTarget: public CSpellFx
 	public:
 		void	Create(Vec3f, float afBeta = 0);
 		void	Kill();
-		void	Update(unsigned long);
+		void Update(float timeDelta);
 		void Render();
 };
 

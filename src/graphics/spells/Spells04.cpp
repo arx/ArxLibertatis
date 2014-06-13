@@ -88,11 +88,11 @@ void CBless::Set_Angle(const Anglef & angle)
 	fBeta = angle.getPitch();
 }
 
-void CBless::Update(unsigned long _ulTime)
+void CBless::Update(float timeDelta)
 {
-	ulCurrentTime += _ulTime;
+	ulCurrentTime += timeDelta;
 
-	fRot += _ulTime * fRotPerMSec;
+	fRot += timeDelta * fRotPerMSec;
 }
 
 void CBless::Render()
@@ -213,10 +213,10 @@ void CCurse::Create(Vec3f aeSrc, float afBeta) {
 	fRotPerMSec = 0.25f;
 }
 
-void CCurse::Update(unsigned long _ulTime)
+void CCurse::Update(float timeDelta)
 {
-	ulCurrentTime += _ulTime;
-	fRot += fRotPerMSec * _ulTime;
+	ulCurrentTime += timeDelta;
+	fRot += fRotPerMSec * timeDelta;
 }
 
 void CCurse::Render() {

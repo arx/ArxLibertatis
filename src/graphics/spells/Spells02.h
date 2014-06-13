@@ -57,7 +57,7 @@ public:
 
 	void Create();
 
-	void Update(unsigned long);
+	void Update(float timeDelta);
 	void Render();
 
 	Vec3f eSrc;

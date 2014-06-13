@@ -397,9 +397,9 @@ void CSummonCreature::RenderFissure()
 	}
 }
 
-void CSummonCreature::Update(unsigned long _ulTime)
+void CSummonCreature::Update(float timeDelta)
 {
-	ulCurrentTime += _ulTime;
+	ulCurrentTime += timeDelta;
 }
 
 //-----------------------------------------------------------------------------
@@ -495,8 +495,8 @@ void CNegateMagic::Create(Vec3f aeSrc, float afBeta) {
 	SetAngle(afBeta);
 }
 
-void CNegateMagic::Update(unsigned long _ulTime) {
-	ulCurrentTime += _ulTime;
+void CNegateMagic::Update(float timeDelta) {
+	ulCurrentTime += timeDelta;
 }
 
 void CNegateMagic::Render() {
