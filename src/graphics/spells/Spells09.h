@@ -48,63 +48,56 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/particle/ParticleSystem.h"
 
 // Done By : Didier Pedreno
-class CSummonCreature: public CSpellFx
-{
-	public:
-		Vec3f eSrc;
-		Color3f fColorRays1;
+class CSummonCreature : public CSpellFx {
+public:
+	Vec3f eSrc;
+	Color3f fColorRays1;
+	
+	CSummonCreature();
+	
+	void SetDuration(const unsigned long duration);
+	void SetDuration(unsigned long, unsigned long, unsigned long);
+	void SetPos(Vec3f);
+	
+	void SetColorBorder(Color3f);
+	void SetColorRays1(Color3f);
+	void SetColorRays2(Color3f);
+	
+	unsigned long GetDuration();
+	
+	void Create(Vec3f, float afBeta = 0);
+	void Kill();
+	void Update(float timeDelta);
+	void Render();
+	
+private:
+	void Split(TexturedVertex * v, int a, int b, float yo);
+	void RenderFissure();
+	
+	TextureContainer * tex_light;
+	int		end;
+	int		iSize;
+	bool	bIntro;
+	float	fOneOniSize;
+	float	fOneOnDurationIntro;
+	float	fOneOnDurationRender;
+	float	fOneOnDurationOuttro;
 
-	private:
-		TextureContainer * tex_light;
-		int		end;
-		int		iSize;
-		bool	bIntro;
-		float	fOneOniSize;
-		float	fOneOnDurationIntro;
-		float	fOneOnDurationRender;
-		float	fOneOnDurationOuttro;
-
-		float	sizeF;
-		float	fSizeIntro;
-		float	fRand;
-		float	fTexWrap;
-		Color3f fColorBorder;
-		Color3f fColorRays2;
-		float tfRaysa[40];
-		float tfRaysb[40];
-		unsigned long ulDurationIntro;
-		unsigned long ulDurationRender;
-		unsigned long ulDurationOuttro;
-		TexturedVertex va[40];
-		TexturedVertex vb[40];
-		TexturedVertex v1a[40];
-		TexturedVertex v1b[40];
-
-	public:
-		CSummonCreature();
-
-	private:
-		void Split(TexturedVertex * v, int a, int b, float yo);
-		void RenderFissure();
-
-		// accesseurs
-	public:
-		void SetDuration(const unsigned long duration);
-		void SetDuration(unsigned long, unsigned long, unsigned long);
-		void SetPos(Vec3f);
- 
-		void SetColorBorder(Color3f);
-		void SetColorRays1(Color3f);
-		void SetColorRays2(Color3f);
- 
-		unsigned long GetDuration();
-
-		// surcharge
-	public:
-		void	Create(Vec3f, float afBeta = 0);
-		void	Kill();
-		void Update(float timeDelta);
-		void Render();
+	float	sizeF;
+	float	fSizeIntro;
+	float	fRand;
+	float	fTexWrap;
+	Color3f fColorBorder;
+	Color3f fColorRays2;
+	float tfRaysa[40];
+	float tfRaysb[40];
+	unsigned long ulDurationIntro;
+	unsigned long ulDurationRender;
+	unsigned long ulDurationOuttro;
+	TexturedVertex va[40];
+	TexturedVertex vb[40];
+	TexturedVertex v1a[40];
+	TexturedVertex v1b[40];
 };
 
 // Done By : Didier Pedreno

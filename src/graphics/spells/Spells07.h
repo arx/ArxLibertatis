@@ -53,71 +53,63 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "math/Vector.h"
 
 // Done By : Didier Pedreno
-struct CLightningNode {
-	Vec3f pos;
-	float size;
-	int parent;
-	Vec3f f;
-};
+class CLightning : public CSpellFx {
+	
+public:
+	CLightning();
+	
+	void SetColor(long, long);
+	void SetPosSrc(Vec3f);
+	void SetPosDest(Vec3f);
 
-class CLightning: public CSpellFx
-{
-	private:
-		int		nbtotal;
-		long	lNbSegments;
-		float	fColor1[3];
-		float	fColor2[3];
-		float	invNbSegments;
-		float	fSize;
-		float	fLengthMin;
-		float	fLengthMax;
-		float	fAngleXMin;
-		float	fAngleXMax;
-		float	fAngleYMin;
-		float	fAngleYMax;
-		float	fAngleZMin;
-		float	fAngleZMax;
-		Vec3f eSrc;
-		Vec3f eDest;
-		float	fbeta;
-		TextureContainer * tex_light;
-		int iTTL;
+	void SetColor1(float, float, float);
+	void SetColor2(float, float, float);
 
-		CLightningNode	cnodetab[2000];
-
-	private:
-		struct LIGHTNING;
-		void BuildS(LIGHTNING * lightingInfo);
-		void ReCreate();
-
-	public:
-		float	falpha;
-		float	fDamage;
-		CLightning();
-
-		// accesseurs
-	public:
-		void SetColor(long, long);
-		void SetPosSrc(Vec3f);
-		void SetPosDest(Vec3f);
-
- 
-
-		void SetColor1(float, float, float);
-		void SetColor2(float, float, float);
-
-		// surcharge
-	public:
-		void	Create(Vec3f, Vec3f, float beta = 0);
-		void Update(float timeDelta);
-		void Render();
-		void	Kill();
-		
-		SpellHandle spellinstance;
+	void Create(Vec3f, Vec3f, float beta = 0);
+	void Update(float timeDelta);
+	void Render();
+	
+	float	fDamage;
+	SpellHandle spellinstance;
+	
+private:
+	int		nbtotal;
+	long	lNbSegments;
+	float	fColor1[3];
+	float	fColor2[3];
+	float	invNbSegments;
+	float	fSize;
+	float	fLengthMin;
+	float	fLengthMax;
+	float	fAngleXMin;
+	float	fAngleXMax;
+	float	fAngleYMin;
+	float	fAngleYMax;
+	float	fAngleZMin;
+	float	fAngleZMax;
+	Vec3f eSrc;
+	Vec3f eDest;
+	float	fbeta;
+	TextureContainer * tex_light;
+	int iTTL;
+	float	falpha;
+	
+	struct CLightningNode {
+		Vec3f pos;
+		float size;
+		int parent;
+		Vec3f f;
+	};
+	
+	CLightningNode	cnodetab[2000];
+	
+	struct LIGHTNING;
+	void BuildS(LIGHTNING * lightingInfo);
+	void ReCreate();
 };
 
 // Done By : Didier Pedreno
-class CConfuse: public CSpellFx {
+class CConfuse : public CSpellFx {
 	
 public:
 	CConfuse();
@@ -129,59 +121,53 @@ public:
 	void Update(float timeDelta);
 	void Render();
 	
-public:
+private:
 	TextureContainer * tex_p1;
 	TextureContainer * tex_trail;
 	ANIM_USE au;
 	Vec3f eCurPos;
 };
 
-class CFireField: public CSpellFx
-{
-	public:
-		Vec3f	pos;
-		ParticleSystem pPSStream;
-		ParticleSystem pPSStream1;
+class CFireField : public CSpellFx {
+	
+public:
+	CFireField();
+	~CFireField();
 
-	public:
-		CFireField();
-		~CFireField();
-
-	public:
-		void	Create(float largeur, const Vec3f & pos, int duration);
-		void Update(float timeDelta);
-		void Render();
+	void Create(float largeur, const Vec3f & pos, int duration);
+	void Update(float timeDelta);
+	void Render();
+	
+	Vec3f pos;
+	
+private:
+	ParticleSystem pPSStream;
+	ParticleSystem pPSStream1;
 };
 
 // Done By : did
-class CIceField: public CSpellFx
-{
-	public:
-		Vec3f eSrc;
-		Vec3f eTarget;
-		TextureContainer * tex_p1;
-		TextureContainer * tex_p2;
-
-		int iMax;
-		int		 tType[50];
-		Vec3f tPos[50];
-		Vec3f tSize[50];
-		Vec3f tSizeMax[50];
-
-	public:
-		CIceField();
-		~CIceField();
-
-		// accesseurs
-	public:
-		void SetPos(Vec3f);
-
-		// surcharge
-	public:
-		void	Create(Vec3f, float afBeta = 0);
-		void	Kill();
-		void Update(float timeDelta);
-		void Render();
+class CIceField : public CSpellFx {
+	
+public:
+	CIceField();
+	~CIceField();
+	
+	void Create(Vec3f, float afBeta = 0);
+	void Update(float timeDelta);
+	void Render();
+	
+	Vec3f eSrc;
+	
+private:
+	Vec3f eTarget;
+	TextureContainer * tex_p1;
+	TextureContainer * tex_p2;
+	
+	int iMax;
+	int tType[50];
+	Vec3f tPos[50];
+	Vec3f tSize[50];
+	Vec3f tSizeMax[50];
 };
 
 #endif // ARX_GRAPHICS_SPELLS_SPELLS07_H

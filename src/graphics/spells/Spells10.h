@@ -51,53 +51,44 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 class CLightning;
 
 // Done By : Didier Pedreno
-class CMassLightning: public CSpellFx
-{
-	public:
-		long number;
+class CMassLightning : public CSpellFx {
+	
+public:
+	explicit CMassLightning(long nb);
+	~CMassLightning();
 
-	private:
-		std::vector<CLightning *> pTab;
-
-	public:
-		explicit CMassLightning(long nb);
-		~CMassLightning();
-
-	public:
-		void	Create(Vec3f, float);
-		void Update(float timeDelta);
-		void Render();
-		
-		SpellHandle spellinstance;
- 
+	void Create(Vec3f, float);
+	
+	void Update(float timeDelta);
+	void Render();
+	
+	SpellHandle spellinstance;
+	
+private:
+	long number;
+	std::vector<CLightning *> pTab;
 };
 
 // Done By : did
-class CControlTarget: public CSpellFx
-{
-	public:
-		Vec3f eSrc;
-		Vec3f eTarget;
-		TextureContainer * tex_mm;
-		TexturedVertex v1a[40];
-		TexturedVertex pathways[40];
-		float fColor[3];
-		float fColor1[3];
-		float fTrail;
-
-	public:
-		CControlTarget();
-
-		// accesseurs
-	public:
-		void SetPos(Vec3f);
-
-		// surcharge
-	public:
-		void	Create(Vec3f, float afBeta = 0);
-		void	Kill();
-		void Update(float timeDelta);
-		void Render();
+class CControlTarget : public CSpellFx {
+	
+public:
+	CControlTarget();
+	
+	void Create(Vec3f, float afBeta = 0);
+	
+	void Update(float timeDelta);
+	void Render();
+	
+private:
+	Vec3f eSrc;
+	Vec3f eTarget;
+	TextureContainer * tex_mm;
+	TexturedVertex v1a[40];
+	TexturedVertex pathways[40];
+	float fColor[3];
+	float fColor1[3];
+	float fTrail;
 };
 
 #endif // ARX_GRAPHICS_SPELLS_SPELLS10_H

@@ -82,6 +82,7 @@ struct CLightning::LIGHTNING {
 };
 
 CLightning::CLightning() :
+	fDamage(1),
 	nbtotal(0),
 	lNbSegments(40),
 	invNbSegments(1.0f / 40.0f),
@@ -97,7 +98,6 @@ CLightning::CLightning() :
 	, fbeta(0.f)
 	, iTTL(0)
 	, falpha(1.0f)
-	, fDamage(1)
 {
 	SetDuration(2000);
 	ulCurrentTime = ulDuration + 1;
