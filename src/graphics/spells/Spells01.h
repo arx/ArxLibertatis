@@ -52,24 +52,22 @@ class CMagicMissile : public CSpellFx {
 public:
 	CMagicMissile();
 	~CMagicMissile();
-
-	// accesseurs
+	
 	void SetTTL(unsigned long);
 	void SetColor(Color3f);
-
-	// surcharge
+	
 	void Create(const Vec3f &, const Anglef &);
 	void Update(float timeDelta);
 	void Render();
-
+	
 	bool bExplo;
 	bool bMove;
 	Vec3f eSrc;
 	Vec3f eCurPos;
-
+	
 	float lightIntensityFactor;
 	SpellHandle spellinstance;
-
+	
 private:
 	int iLength;
 	int	iBezierPrecision;
@@ -84,9 +82,6 @@ private:
 
 class CMultiMagicMissile : public CSpellFx {
 	
-private:
-	std::vector<CMagicMissile *> pTab;
-	
 public:
 	explicit CMultiMagicMissile(size_t nb, SpellHandle spellHandle);
 	~CMultiMagicMissile();
@@ -99,6 +94,9 @@ public:
 	void Render();
 	
 	SpellHandle spellinstance;
+	
+private:
+	std::vector<CMagicMissile *> pTab;
 };
 
 // Done By : Sébastien Scieux

@@ -49,21 +49,22 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 class ParticleSystem;
 
 // Done By : did
-class CHeal: public CSpellFx {
-
+class CHeal : public CSpellFx {
+	
 public:
 	CHeal();
 	~CHeal();
-
+	
 	void Create();
-
+	
 	void Update(float timeDelta);
 	void Render();
 
 	Vec3f eSrc;
-	ParticleSystem * pPS;
-	
 	SpellHandle spellinstance;
+	
+private:
+	ParticleSystem * pPS;
 };
 
 #endif // ARX_GRAPHICS_SPELLS_SPELLS02_H

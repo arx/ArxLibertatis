@@ -50,20 +50,20 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/particle/ParticleParams.h"
 
 // Done By : Didier Pedreno
-class CFireBall: public CSpellFx
-{
+class CFireBall : public CSpellFx {
+	
 public:
 	CFireBall();
 	~CFireBall();
-
+	
 	void SetTTL(unsigned long);
-
+	
 	void Create(Vec3f, float afBeta, float afAlpha,  float);
 	void Kill();
-
+	
 	void Update(float timeDelta);
 	void Render();
-
+	
 	Vec3f eSrc;
 	Vec3f eCurPos;
 	Vec3f eMove;
@@ -82,6 +82,14 @@ private:
 };
 
 class CSpeed: public CSpellFx {
+	
+public:
+	~CSpeed();
+	
+	void Create(EntityHandle numinteractive);
+	void Update(float timeDelta);
+	void Render();
+	
 private:
 	EntityHandle num;
 	
@@ -91,66 +99,51 @@ private:
 	};
 	
 	std::vector<SpeedTrail> m_trails;
-	
-public:
-	~CSpeed();
-
-	void Create(EntityHandle numinteractive);
-	void Update(float timeDelta);
-	void Render();
 };
 
 #define MAX_ICE 150
 // Done By : did
-class CIceProjectile: public CSpellFx
-{
-	public:
-		int iNumber;
-		int iMax;
-		int	tType[MAX_ICE];
-		float fStep;
-		float fColor;
-		Vec3f tPos[MAX_ICE];
-		Vec3f tSize[MAX_ICE];
-		Vec3f tSizeMax[MAX_ICE];
-		TextureContainer * tex_p1;
-		TextureContainer * tex_p2;
-		TexturedVertex tv1a[MAX_ICE];
-
-	public:
-		CIceProjectile();
-		~CIceProjectile();
-
-		// accesseurs
-	public:
-		void SetPos(Vec3f);
-
-		// surcharge
-	public:
-		void	Create(Vec3f, float);
-		void	Create(Vec3f, float, float);
-		void	Kill();
-		void Update(float timeDelta);
-		void Render();
-		
-		SpellHandle spellinstance;
+class CIceProjectile : public CSpellFx {
+	
+public:
+	CIceProjectile();
+	~CIceProjectile();
+	
+	void Create(Vec3f, float);
+	void Create(Vec3f, float, float);
+	void Update(float timeDelta);
+	void Render();
+	
+	SpellHandle spellinstance;
+	
+private:
+	int iNumber;
+	int iMax;
+	int	tType[MAX_ICE];
+	float fStep;
+	float fColor;
+	Vec3f tPos[MAX_ICE];
+	Vec3f tSize[MAX_ICE];
+	Vec3f tSizeMax[MAX_ICE];
+	TextureContainer * tex_p1;
+	TextureContainer * tex_p2;
+	TexturedVertex tv1a[MAX_ICE];
 };
 
 // Done By : did
-class CCreateFood: public CSpellFx
-{
-	public:
-		Vec3f eSrc;
-		ParticleSystem * pPS;
-
-	public:
-		CCreateFood();
-		~CCreateFood();
-
-	public:
-		void	Create();
-		void Update(float timeDelta);
-		void Render();
+class CCreateFood : public CSpellFx {
+	
+public:
+	CCreateFood();
+	~CCreateFood();
+	
+	void Create();
+	void Update(float timeDelta);
+	void Render();
+	
+private:
+	Vec3f eSrc;
+	ParticleSystem * pPS;
 };
 
 void LaunchFireballExplosion(Vec3f *, float);
