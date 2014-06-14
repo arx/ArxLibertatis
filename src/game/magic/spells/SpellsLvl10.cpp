@@ -54,7 +54,6 @@ void MassLightningStrikeSpell::Launch()
 		}
 	}
 	
-	m_exist = true;
 	m_tolive = 5000; // TODO probably never read
 	m_siz = 0;
 	
@@ -233,7 +232,6 @@ void ControlTargetSpell::Launch()
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_CONTROL_TARGET);
 	
-	m_exist = true;
 	m_tolive = 1000;
 	
 	CControlTarget * effect = new CControlTarget();
@@ -267,7 +265,6 @@ void FreezeTimeSpell::Launch()
 	m_siz = clamp(m_level * 0.08f, 0.f, max_slowdown);
 	GLOBAL_SLOWDOWN -= m_siz;
 	
-	m_exist = true;
 	m_tolive = (m_launchDuration > -1) ? m_launchDuration : 200000;
 	m_bDuration = true;
 	m_fManaCostPerSecond = 30.f * m_siz;
@@ -284,7 +281,6 @@ void MassIncinerateSpell::Launch()
 {
 	ARX_SOUND_PlaySFX(SND_SPELL_MASS_INCINERATE);
 	
-	m_exist = true;
 	m_tolive = 20000;
 	
 	long nb_targets=0;
@@ -344,7 +340,6 @@ bool TeleportSpell::CanLaunch()
 
 void TeleportSpell::Launch()
 {
-	m_exist = true;
 	m_tolive = 7000;
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_TELEPORT, &m_caster_pos);

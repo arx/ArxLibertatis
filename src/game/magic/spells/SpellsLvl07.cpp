@@ -70,7 +70,6 @@ void FlyingEyeSpell::Launch()
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_EYEBALL_IN);
 	
-	m_exist = true;
 	m_lastupdate = m_timcreation;
 	m_tolive = 1000000;
 	m_bDuration = true;
@@ -218,7 +217,6 @@ void FireFieldSpell::Launch()
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_FIRE_FIELD_START);
 	
-	m_exist = true;
 	m_tolive = (m_launchDuration > -1) ? m_launchDuration : 100000;
 	m_bDuration = true;
 	m_fManaCostPerSecond = 2.8f;
@@ -347,7 +345,6 @@ void IceFieldSpell::Launch()
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_ICE_FIELD);
 	
-	m_exist = true;
 	m_tolive = (m_launchDuration > -1) ? m_launchDuration : 100000;
 	m_bDuration = true;
 	m_fManaCostPerSecond = 2.8f;
@@ -440,8 +437,6 @@ void IceFieldSpell::Update(float timeDelta)
 
 void LightningStrikeSpell::Launch()
 {
-	m_exist = true;
-	
 	CLightning * effect = new CLightning();
 	effect->spellinstance = m_thisHandle;
 	Vec3f target(0.f, 0.f, -500.f);
@@ -490,7 +485,6 @@ void ConfuseSpell::Launch()
 {
 	ARX_SOUND_PlaySFX(SND_SPELL_CONFUSE, &entities[m_target]->pos);
 	
-	m_exist = true;
 	m_bDuration = true;
 	m_fManaCostPerSecond = 1.5f;
 	m_tolive = (m_launchDuration > -1) ? m_launchDuration : 5000;

@@ -43,7 +43,6 @@ void HealSpell::Launch()
 		ARX_SOUND_PlaySFX(SND_SPELL_HEALING, &m_caster_pos);
 	}
 	
-	m_exist = true;
 	m_bDuration = true;
 	m_fManaCostPerSecond = 0.4f * m_level;
 	m_tolive = (m_launchDuration > -1) ? m_launchDuration : 3500;
@@ -118,7 +117,6 @@ void DetectTrapSpell::Launch()
 		                  ARX_SOUND_PLAY_LOOPED);
 	}
 	
-	m_exist = true;
 	m_tolive = 60000;
 	m_fManaCostPerSecond = 0.4f;
 	m_bDuration = true;
@@ -169,7 +167,6 @@ void ArmorSpell::Launch()
 	                                       &entities[m_target]->pos, 1.f,
 	                                       ARX_SOUND_PLAY_LOOPED);
 	
-	m_exist = true;
 	if(m_launchDuration > -1) {
 		m_tolive = m_launchDuration;
 	} else {
@@ -232,7 +229,6 @@ void LowerArmorSpell::Launch()
 		ARX_SOUND_PlaySFX(SND_SPELL_LOWER_ARMOR, &entities[m_target]->pos);
 	}
 	
-	m_exist = true;
 	if(m_launchDuration > -1) {
 		m_tolive = m_launchDuration;
 	} else {
@@ -310,7 +306,6 @@ void HarmSpell::Launch()
 	spells.endByCaster(m_caster, SPELL_LIFE_DRAIN);
 	spells.endByCaster(m_caster, SPELL_MANA_DRAIN);
 	
-	m_exist = true;
 	m_tolive = (m_launchDuration >-1) ? m_launchDuration : 6000000;
 	m_bDuration = true;
 	m_fManaCostPerSecond = 0.4f;

@@ -39,7 +39,6 @@ bool MagicSightSpell::CanLaunch()
 
 void MagicSightSpell::Launch()
 {
-	m_exist = true;
 	m_fManaCostPerSecond = 0.36f;
 	m_bDuration = true;
 	m_tolive = (m_launchDuration > -1) ? m_launchDuration : 6000000l;
@@ -83,7 +82,6 @@ void MagicSightSpell::Update(float timeDelta)
 
 void MagicMissileSpell::Launch()
 {
-	m_exist = true;
 	m_tolive = 20000; // TODO probably never read
 	
 	long number;
@@ -125,7 +123,6 @@ void MagicMissileSpell::Update(float timeDelta)
 
 void IgnitSpell::Launch()
 {
-	m_exist = true;
 	m_tolive = 500;
 	
 	CIgnit * effect = new CIgnit();
@@ -219,7 +216,6 @@ void IgnitSpell::Update(float timeDelta)
 
 void DouseSpell::Launch()
 {
-	m_exist = true;
 	m_tolive = 500;
 	
 	CDoze * effect = new CDoze();
@@ -325,6 +321,6 @@ void DouseSpell::Update(float timeDelta)
 void ActivatePortalSpell::Launch()
 {
 	ARX_SOUND_PlayInterface(SND_SPELL_ACTIVATE_PORTAL);
-	m_exist = true;
+	
 	m_tolive = 20;
 }

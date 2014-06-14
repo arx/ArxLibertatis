@@ -72,7 +72,6 @@ bool SummonCreatureSpell::CanLaunch()
 
 void SummonCreatureSpell::Launch()
 {
-	m_exist = true;
 	m_bDuration = true;
 	m_fManaCostPerSecond = 1.9f;
 	m_longinfo_summon_creature = 0;
@@ -283,7 +282,6 @@ bool FakeSummonSpell::CanLaunch()
 
 void FakeSummonSpell::Launch()
 {
-	m_exist = true;
 	m_bDuration = true;
 	m_fManaCostPerSecond = 1.9f;
 	m_tolive = 4000;
@@ -352,7 +350,6 @@ void NegateMagicSpell::Launch()
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_NEGATE_MAGIC, &entities[m_target]->pos);
 	
-	m_exist = true;
 	m_bDuration = true;
 	m_fManaCostPerSecond = 2.f;
 	m_tolive = (m_launchDuration > -1) ? m_launchDuration : 1000000;
@@ -433,7 +430,6 @@ void IncinerateSpell::Launch()
 	                                       &entities[m_target]->pos, 1.f, 
 	                                       ARX_SOUND_PLAY_LOOPED);
 	
-	m_exist = true;
 	m_tolive = 20000;
 	
 	tio->sfx_flag |= SFX_TYPE_YLSIDE_DEATH | SFX_TYPE_INCINERATE;
@@ -462,7 +458,6 @@ void MassParalyseSpell::Launch()
 {
 	ARX_SOUND_PlaySFX(SND_SPELL_MASS_PARALYSE);
 	
-	m_exist = true;
 	m_tolive = (m_launchDuration > -1) ? m_launchDuration : 10000;
 	
 	for(size_t ii = 0; ii < entities.size(); ii++) {

@@ -38,7 +38,7 @@ void RuneOfGuardingSpell::Launch()
 	spells.endByCaster(m_caster, SPELL_RUNE_OF_GUARDING);
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_RUNE_OF_GUARDING);
-	m_exist = true;
+	
 	m_tolive = (m_launchDuration > -1) ? m_launchDuration : 99999999;
 	
 	CRuneOfGuarding * effect = new CRuneOfGuarding();
@@ -82,7 +82,7 @@ void LevitateSpell::Launch()
 	}
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_LEVITATE_START, &entities[m_target]->pos);
-	m_exist = true;
+	
 	m_tolive = (m_launchDuration > -1) ? m_launchDuration : 2000000000;
 	m_bDuration = true;
 	m_fManaCostPerSecond = 1.f;
@@ -164,7 +164,6 @@ void CurePoisonSpell::Launch()
 		ARX_SOUND_PlaySFX(SND_SPELL_CURE_POISON, &io->pos);
 	}
 	
-	m_exist = true;
 	m_tolive = 3500;
 	
 	CCurePoison * effect = new CCurePoison();
@@ -205,7 +204,6 @@ void RepelUndeadSpell::Launch()
 		                                       ARX_SOUND_PLAY_LOOPED);
 	}
 	
-	m_exist = true;
 	m_tolive = (m_launchDuration > -1) ? m_launchDuration : 20000000;
 	m_bDuration = true;
 	m_fManaCostPerSecond = 1.f;
@@ -259,7 +257,6 @@ void PoisonProjectileSpell::Launch()
 	ARX_SOUND_PlaySFX(SND_SPELL_POISON_PROJECTILE_LAUNCH,
 	                  &m_caster_pos);
 	
-	m_exist = true;
 	m_tolive = 900000000; // TODO probably never read
 	
 	long level = std::max(long(m_level), 1l);

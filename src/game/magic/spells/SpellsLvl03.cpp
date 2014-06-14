@@ -49,7 +49,6 @@ void SpeedSpell::Launch()
 		                                       ARX_SOUND_PLAY_LOOPED);
 	}
 	
-	m_exist = true;
 	m_tolive = (m_caster == PlayerEntityHandle) ? 200000000 : 20000;
 	if(m_launchDuration > -1) {
 		m_tolive = m_launchDuration;
@@ -87,7 +86,7 @@ void SpeedSpell::Update(float timeDelta)
 void DispellIllusionSpell::Launch()
 {
 	ARX_SOUND_PlaySFX(SND_SPELL_DISPELL_ILLUSION);
-	m_exist = true;
+	
 	m_tolive = 1000;
 	
 	for(size_t n = 0; n < MAX_SPELLS; n++) {
@@ -122,7 +121,6 @@ void DispellIllusionSpell::Update(float timeDelta)
 
 void FireballSpell::Launch()
 {
-	m_exist = true;
 	m_tolive = 20000; // TODO probably never read
 	
 	CFireBall * effect = new CFireBall();
@@ -267,7 +265,7 @@ void FireballSpell::Update(float timeDelta)
 void CreateFoodSpell::Launch()
 {
 	ARX_SOUND_PlaySFX(SND_SPELL_CREATE_FOOD, &m_caster_pos);
-	m_exist = true;
+	
 	m_tolive = (m_launchDuration > -1) ? m_launchDuration : 3500;
 	
 	if(m_caster == PlayerEntityHandle || m_target == PlayerEntityHandle) {
@@ -292,7 +290,7 @@ void CreateFoodSpell::Update(float timeDelta)
 void IceProjectileSpell::Launch()
 {
 	ARX_SOUND_PlaySFX(SND_SPELL_ICE_PROJECTILE_LAUNCH, &m_caster_pos);
-	m_exist = true;
+	
 	m_tolive = 4200;
 	
 	CIceProjectile * effect = new CIceProjectile();

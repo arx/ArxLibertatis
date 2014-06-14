@@ -41,7 +41,6 @@ bool InvisibilitySpell::CanLaunch()
 
 void InvisibilitySpell::Launch()
 {
-	m_exist = true;
 	m_tolive = (m_launchDuration > -1) ? m_launchDuration : 6000000;
 	m_bDuration = true;
 	m_fManaCostPerSecond = 3.f;
@@ -91,7 +90,6 @@ void ManaDrainSpell::Launch()
 	spells.endByCaster(m_caster, SPELL_LIFE_DRAIN);
 	spells.endByCaster(m_caster, SPELL_HARM);
 	
-	m_exist = true;
 	m_tolive = (m_launchDuration > -1) ? m_launchDuration : 6000000;
 	m_bDuration = true;
 	m_fManaCostPerSecond = 2.f;
@@ -235,7 +233,6 @@ void ExplosionSpell::Launch()
 {
 	ARX_SOUND_PlaySFX(SND_SPELL_EXPLOSION);
 	
-	m_exist = true;
 	m_tolive = 2000;
 	
 	Vec3f target = entities[m_caster]->pos;
@@ -338,7 +335,6 @@ void ExplosionSpell::Update(float timeDelta)
 
 void EnchantWeaponSpell::Launch()
 {
-	m_exist = true;
 	m_tolive = 20;
 }
 
@@ -362,7 +358,6 @@ void LifeDrainSpell::Launch()
 	spells.endByCaster(m_caster, SPELL_HARM);
 	spells.endByCaster(m_caster, SPELL_MANA_DRAIN);
 	
-	m_exist = true;
 	m_tolive = (m_launchDuration > -1) ? m_launchDuration : 6000000;
 	m_bDuration = true;
 	m_fManaCostPerSecond = 12.f;

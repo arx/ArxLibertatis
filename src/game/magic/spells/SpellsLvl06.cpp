@@ -80,7 +80,7 @@ void RiseDeadSpell::Launch()
 	
 	m_target_pos = target;
 	ARX_SOUND_PlaySFX(SND_SPELL_RAISE_DEAD, &m_target_pos);
-	m_exist = true;
+	
 	// TODO this tolive value is probably never read
 	m_tolive = (m_launchDuration > -1) ? m_launchDuration : 2000000;
 	m_bDuration = true;
@@ -243,7 +243,6 @@ void ParalyseSpell::Launch()
 {
 	ARX_SOUND_PlaySFX(SND_SPELL_PARALYSE, &entities[m_target]->pos);
 	
-	m_exist = true;
 	m_tolive = (m_launchDuration > -1) ? m_launchDuration : 5000;
 	
 	float resist_magic = 0.f;
@@ -273,8 +272,6 @@ void ParalyseSpell::End()
 
 void CreateFieldSpell::Launch()
 {
-	m_exist = true;
-	
 	unsigned long start = (unsigned long)(arxtime);
 	if(m_flags & SPELLCAST_FLAG_RESTORE) {
 		start -= std::min(start, 4000ul);
@@ -388,7 +385,6 @@ void DisarmTrapSpell::Launch()
 {
 	ARX_SOUND_PlaySFX(SND_SPELL_DISARM_TRAP);
 	
-	m_exist = true;
 	m_tolive = 1;
 	
 	Sphere sphere;
@@ -432,7 +428,6 @@ void SlowDownSpell::Launch()
 {
 	ARX_SOUND_PlaySFX(SND_SPELL_SLOW_DOWN, &entities[m_target]->pos);
 	
-	m_exist = true;
 	m_tolive = (m_caster == PlayerEntityHandle) ? 10000000 : 10000;
 	if(m_launchDuration > -1) {
 		m_tolive = m_launchDuration;

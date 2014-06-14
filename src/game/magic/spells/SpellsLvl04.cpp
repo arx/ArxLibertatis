@@ -48,7 +48,7 @@ void BlessSpell::Launch()
 	spells.endByCaster(m_target, SPELL_BLESS);
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_BLESS);
-	m_exist = true;
+	
 	// TODO this tolive value is probably never read
 	m_tolive = (m_launchDuration > -1) ? m_launchDuration : 2000000;
 	m_bDuration = true;
@@ -165,7 +165,6 @@ void FireProtectionSpell::Launch()
 	spells.endByCaster(m_caster, SPELL_LOWER_ARMOR);
 	spells.endByCaster(m_caster, SPELL_COLD_PROTECTION);
 	
-	m_exist = true;
 	if(m_launchDuration > -1) {
 		m_tolive = m_launchDuration;
 	} else {
@@ -238,7 +237,6 @@ void ColdProtectionSpell::Launch()
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_COLD_PROTECTION_START, &entities[m_target]->pos);
 	
-	m_exist = true;
 	if(m_launchDuration > -1) {
 		m_tolive = m_launchDuration;
 	} else {
@@ -299,7 +297,6 @@ bool TelekinesisSpell::CanLaunch()
 
 void TelekinesisSpell::Launch()
 {
-	m_exist = true;
 	m_tolive = (m_launchDuration > -1) ? m_launchDuration : 6000000;
 	m_bDuration = true;
 	m_fManaCostPerSecond = 0.9f;
@@ -325,7 +322,6 @@ void CurseSpell::Launch()
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_CURSE, &entities[m_target]->pos);
 	
-	m_exist = true;
 	m_tolive = (m_launchDuration > -1) ? m_launchDuration : 2000000;
 	m_bDuration = true;
 	m_fManaCostPerSecond = 0.5f * m_level;
