@@ -62,7 +62,7 @@ void ARX_SPELLS_Precast_Add(SpellType typ, long _level, SpellcastFlags flags, lo
 
 
 
-long PrecastCheckCanPayMana(PrecastHandle num, float cost, bool _bSound = true) {
+long PrecastCheckCanPayMana(PrecastHandle num, float cost) {
 	if(num < 0)
 		return 0;
 
@@ -74,11 +74,9 @@ long PrecastCheckCanPayMana(PrecastHandle num, float cost, bool _bSound = true) 
 	
 	ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE);
 	
-	if(_bSound) {
-		ARX_SPEECH_Add(getLocalised("player_cantcast"));
-		ARX_SPEECH_AddSpeech(entities.player(), "player_cantcast", ANIM_TALK_NEUTRAL);
-	}
-
+	ARX_SPEECH_Add(getLocalised("player_cantcast"));
+	ARX_SPEECH_AddSpeech(entities.player(), "player_cantcast", ANIM_TALK_NEUTRAL);
+	
 	return 0;
 }
 
