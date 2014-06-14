@@ -2098,10 +2098,7 @@ void PlayerMovementIterate(float DeltaTime) {
 				if(anything < 0.f) {
 					player.physics.cyl.height = old;
 					
-					SpellBase * spell = spells.getSpellOnTarget(PlayerEntityHandle, SPELL_LEVITATE);
-					if(spell) {
-						spell->m_tolive = 0;
-					}
+					spells.endByTarget(PlayerEntityHandle, SPELL_LEVITATE);
 				}
 			}
 			

@@ -153,11 +153,7 @@ void DetectTrapSpell::Update(float timeDelta)
 
 void ArmorSpell::Launch()
 {
-	SpellBase * spell = spells.getSpellOnTarget(m_target, SPELL_ARMOR);
-	if(spell) {
-		spell->m_tolive = 0;
-	}
-	
+	spells.endByTarget(m_target, SPELL_ARMOR);
 	spells.RequestEndOfInstanceForThisCaster(SPELL_LOWER_ARMOR, m_caster);
 	spells.RequestEndOfInstanceForThisCaster(SPELL_FIRE_PROTECTION, m_caster);
 	spells.RequestEndOfInstanceForThisCaster(SPELL_COLD_PROTECTION, m_caster);
@@ -228,11 +224,7 @@ void ArmorSpell::Update(float timeDelta)
 
 void LowerArmorSpell::Launch()
 {
-	SpellBase * spell = spells.getSpellOnTarget(m_target, SPELL_LOWER_ARMOR);
-	if(spell) {
-		spell->m_tolive = 0;
-	}
-	
+	spells.endByTarget(m_target, SPELL_LOWER_ARMOR);
 	spells.RequestEndOfInstanceForThisCaster(SPELL_ARMOR, m_caster);
 	spells.RequestEndOfInstanceForThisCaster(SPELL_FIRE_PROTECTION, m_caster);
 	spells.RequestEndOfInstanceForThisCaster(SPELL_COLD_PROTECTION, m_caster);

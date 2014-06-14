@@ -160,11 +160,7 @@ void DispellFieldSpell::Launch()
 
 void FireProtectionSpell::Launch()
 {
-	SpellBase * spell = spells.getSpellOnTarget(m_target, SPELL_FIRE_PROTECTION);
-	if(spell) {
-		spell->m_tolive = 0;
-	}
-	
+	spells.endByTarget(m_target, SPELL_FIRE_PROTECTION);
 	spells.RequestEndOfInstanceForThisCaster(SPELL_ARMOR, m_caster);
 	spells.RequestEndOfInstanceForThisCaster(SPELL_LOWER_ARMOR, m_caster);
 	spells.RequestEndOfInstanceForThisCaster(SPELL_COLD_PROTECTION, m_caster);
@@ -232,11 +228,7 @@ void FireProtectionSpell::Update(float timeDelta)
 
 void ColdProtectionSpell::Launch()
 {
-	SpellBase * spell = spells.getSpellOnTarget(m_target, SPELL_COLD_PROTECTION);
-	if(spell) {
-		spell->m_tolive = 0;
-	}
-	
+	spells.endByTarget(m_target, SPELL_COLD_PROTECTION);
 	spells.RequestEndOfInstanceForThisCaster(SPELL_ARMOR, m_caster);
 	spells.RequestEndOfInstanceForThisCaster(SPELL_LOWER_ARMOR, m_caster);
 	spells.RequestEndOfInstanceForThisCaster(SPELL_FIRE_PROTECTION, m_caster);

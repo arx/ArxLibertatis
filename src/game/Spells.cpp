@@ -172,6 +172,13 @@ void SpellManager::endAllByCaster(EntityHandle caster) {
 	}
 }
 
+void SpellManager::endByTarget(EntityHandle target, SpellType type) {
+	SpellBase * spell = spells.getSpellOnTarget(target, type);
+	if(spell) {
+		spell->m_tolive = 0;
+	}
+}
+
 void SpellManager::RequestEndOfInstanceForThisCaster(SpellType typ, EntityHandle caster) {
 	
 	for(size_t i = 0; i < MAX_SPELLS; i++) {
