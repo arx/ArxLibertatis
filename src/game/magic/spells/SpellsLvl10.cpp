@@ -55,7 +55,6 @@ void MassLightningStrikeSpell::Launch()
 	}
 	
 	m_exist = true;
-	m_timcreation = (unsigned long)(arxtime);
 	m_tolive = 5000; // TODO probably never read
 	m_siz = 0;
 	
@@ -235,7 +234,6 @@ void ControlTargetSpell::Launch()
 	ARX_SOUND_PlaySFX(SND_SPELL_CONTROL_TARGET);
 	
 	m_exist = true;
-	m_timcreation = (unsigned long)(arxtime);
 	m_tolive = 1000;
 	
 	CControlTarget * effect = new CControlTarget();
@@ -287,7 +285,6 @@ void MassIncinerateSpell::Launch()
 	ARX_SOUND_PlaySFX(SND_SPELL_MASS_INCINERATE);
 	
 	m_exist = true;
-	m_timcreation = (unsigned long)(arxtime);
 	m_tolive = 20000;
 	
 	long nb_targets=0;

@@ -71,7 +71,7 @@ void FlyingEyeSpell::Launch()
 	ARX_SOUND_PlaySFX(SND_SPELL_EYEBALL_IN);
 	
 	m_exist = true;
-	m_lastupdate = m_timcreation = (unsigned long)(arxtime);
+	m_lastupdate = m_timcreation;
 	m_tolive = 1000000;
 	m_bDuration = true;
 	m_fManaCostPerSecond = 3.2f;
@@ -348,7 +348,6 @@ void IceFieldSpell::Launch()
 	ARX_SOUND_PlaySFX(SND_SPELL_ICE_FIELD);
 	
 	m_exist = true;
-	m_timcreation = (unsigned long)(arxtime);
 	m_tolive = (m_launchDuration > -1) ? m_launchDuration : 100000;
 	m_bDuration = true;
 	m_fManaCostPerSecond = 2.8f;
@@ -492,7 +491,6 @@ void ConfuseSpell::Launch()
 	ARX_SOUND_PlaySFX(SND_SPELL_CONFUSE, &entities[m_target]->pos);
 	
 	m_exist = true;
-	m_timcreation = (unsigned long)(arxtime);
 	m_bDuration = true;
 	m_fManaCostPerSecond = 1.5f;
 	m_tolive = (m_launchDuration > -1) ? m_launchDuration : 5000;

@@ -389,7 +389,6 @@ void DisarmTrapSpell::Launch()
 	ARX_SOUND_PlaySFX(SND_SPELL_DISARM_TRAP);
 	
 	m_exist = true;
-	m_timcreation = (unsigned long)(arxtime);
 	m_tolive = 1;
 	
 	Sphere sphere;

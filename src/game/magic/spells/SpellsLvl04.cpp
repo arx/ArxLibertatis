@@ -166,7 +166,6 @@ void FireProtectionSpell::Launch()
 	spells.endByCaster(m_caster, SPELL_COLD_PROTECTION);
 	
 	m_exist = true;
-	m_timcreation = (unsigned long)(arxtime);
 	if(m_launchDuration > -1) {
 		m_tolive = m_launchDuration;
 	} else {
@@ -240,7 +239,6 @@ void ColdProtectionSpell::Launch()
 	ARX_SOUND_PlaySFX(SND_SPELL_COLD_PROTECTION_START, &entities[m_target]->pos);
 	
 	m_exist = true;
-	m_timcreation = (unsigned long)(arxtime);
 	if(m_launchDuration > -1) {
 		m_tolive = m_launchDuration;
 	} else {
