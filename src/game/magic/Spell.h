@@ -133,7 +133,7 @@ public:
 	
 	EntityHandle m_caster; //!< Number of the source interactive obj (0==player)
 	EntityHandle m_target; //!< Number of the target interactive obj if any
-	float m_caster_level; //!< Level of Magic 1-10
+	float m_level; //!< Level of Magic 1-10
 	
 	long m_hand_group;
 	Vec3f m_hand_pos; //!< Only valid if hand_group>=0

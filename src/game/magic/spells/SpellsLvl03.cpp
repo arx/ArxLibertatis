@@ -97,7 +97,7 @@ void DispellIllusionSpell::Launch()
 			continue;
 		}
 		
-		if(spell->m_caster_level > m_caster_level) {
+		if(spell->m_level > m_level) {
 			continue;
 		}
 		
@@ -171,7 +171,7 @@ void FireballSpell::Launch()
 		angleb = entities[m_caster]->angle.getPitch();
 	}
 	
-	effect->Create(target, MAKEANGLE(angleb), anglea, m_caster_level);
+	effect->Create(target, MAKEANGLE(angleb), anglea, m_level);
 	
 	m_pSpellFx = effect;
 	m_tolive = effect->GetDuration();
@@ -219,19 +219,19 @@ void FireballSpell::Update(float timeDelta)
 
 		Sphere sphere;
 		sphere.origin = pCF->eCurPos;
-		sphere.radius=std::max(m_caster_level*2.f,12.f);
+		sphere.radius=std::max(m_level*2.f,12.f);
 		#define MIN_TIME_FIREBALL 2000 
 
 		if(pCF->pPSFire.m_parameters.m_nbMax) {
 			if(pCF->ulCurrentTime > MIN_TIME_FIREBALL) {
-				SpawnFireballTail(&pCF->eCurPos,&pCF->eMove,(float)m_caster_level,0);
+				SpawnFireballTail(&pCF->eCurPos,&pCF->eMove,(float)m_level,0);
 			} else {
 				if(rnd()<0.9f) {
 					Vec3f move = Vec3f_ZERO;
 					float dd=(float)pCF->ulCurrentTime / (float)MIN_TIME_FIREBALL*10;
 
-					if(dd > m_caster_level)
-						dd = m_caster_level;
+					if(dd > m_level)
+						dd = m_level;
 
 					if(dd < 1)
 						dd = 1;
@@ -244,7 +244,7 @@ void FireballSpell::Update(float timeDelta)
 		if(!pCF->bExplo)
 		if(CheckAnythingInSphere(sphere, m_caster, CAS_NO_SAME_GROUP)) {
 			ARX_BOOMS_Add(pCF->eCurPos);
-			LaunchFireballBoom(&pCF->eCurPos,(float)m_caster_level);
+			LaunchFireballBoom(&pCF->eCurPos,(float)m_level);
 			
 			pCF->pPSFire.StopEmission();
 			pCF->pPSFire2.StopEmission();
@@ -254,7 +254,7 @@ void FireballSpell::Update(float timeDelta)
 			pCF->SetTTL(1500);
 			pCF->bExplo = true;
 			
-			DoSphericDamage(pCF->eCurPos, 3.f * m_caster_level, 30.f * m_caster_level, DAMAGE_AREA, DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL, m_caster);
+			DoSphericDamage(pCF->eCurPos, 3.f * m_level, 30.f * m_level, DAMAGE_AREA, DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL, m_caster);
 			m_tolive=0;
 			ARX_SOUND_PlaySFX(SND_SPELL_FIRE_HIT, &sphere.origin);
 			ARX_NPC_SpawnAudibleSound(sphere.origin, entities[m_caster]);
@@ -311,7 +311,7 @@ void IceProjectileSpell::Launch()
 	angleb = MAKEANGLE(angleb);
 	target.x -= std::sin(radians(angleb)) * 150.0f;
 	target.z += std::cos(radians(angleb)) * 150.0f;
-	effect->Create(target, angleb, m_caster_level);
+	effect->Create(target, angleb, m_level);
 	
 	effect->SetDuration(m_tolive);
 	m_pSpellFx = effect;

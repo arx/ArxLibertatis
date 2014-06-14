@@ -59,13 +59,13 @@ void RuneOfGuardingSpell::Update(float timeDelta)
 		{
 			Sphere sphere;
 			sphere.origin = pCRG->eSrc;
-			sphere.radius=std::max(m_caster_level*15.f,50.f);
+			sphere.radius=std::max(m_level*15.f,50.f);
 
 			if (CheckAnythingInSphere(sphere,m_caster,CAS_NO_SAME_GROUP | CAS_NO_BACKGROUND_COL | CAS_NO_ITEM_COL| CAS_NO_FIX_COL | CAS_NO_DEAD_COL))
 			{
 				ARX_BOOMS_Add(pCRG->eSrc);
-				LaunchFireballBoom(&pCRG->eSrc,(float)m_caster_level);
-				DoSphericDamage(pCRG->eSrc, 4.f * m_caster_level, 30.f * m_caster_level, DAMAGE_AREA, DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL, m_caster);
+				LaunchFireballBoom(&pCRG->eSrc,(float)m_level);
+				DoSphericDamage(pCRG->eSrc, 4.f * m_level, 30.f * m_level, DAMAGE_AREA, DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL, m_caster);
 				m_tolive=0;
 				ARX_SOUND_PlaySFX(SND_SPELL_RUNE_OF_GUARDING_END, &sphere.origin);
 			}
@@ -152,7 +152,7 @@ void CurePoisonSpell::Launch()
 		m_target = PlayerEntityHandle;
 	}
 	
-	float cure = m_caster_level * 10;
+	float cure = m_level * 10;
 	if(m_target == PlayerEntityHandle) {
 		player.poison -= std::min(player.poison, cure);
 		ARX_SOUND_PlaySFX(SND_SPELL_CURE_POISON);
@@ -263,7 +263,7 @@ void PoisonProjectileSpell::Launch()
 	m_exist = true;
 	m_tolive = 900000000; // TODO probably never read
 	
-	long level = std::max(long(m_caster_level), 1l);
+	long level = std::max(long(m_level), 1l);
 	CMultiPoisonProjectile * effect = new CMultiPoisonProjectile(level);
 	effect->spellinstance = m_thisHandle;
 	effect->SetDuration(8000ul);

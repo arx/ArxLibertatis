@@ -203,7 +203,7 @@ void SummonCreatureSpell::Update(float timeDelta)
 				   || (cur_mr >= 3 && rnd() > 0.3f)) {
 					tokeep = -1;
 					cls = "graph/obj3d/interactive/npc/wrat_base/wrat_base";
-				} else if(m_caster_level >= 9) {
+				} else if(m_level >= 9) {
 					tokeep = 1;
 					cls = "graph/obj3d/interactive/npc/demon/demon";
 				} else if(rnd() > 0.98f) {
@@ -401,7 +401,7 @@ void NegateMagicSpell::LaunchAntiMagicField() {
 		if(this == spell)
 			continue;
 		
-		if(m_caster_level < spell->m_caster_level)
+		if(m_level < spell->m_level)
 			continue;
 		
 		Vec3f pos;

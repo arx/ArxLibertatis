@@ -243,9 +243,9 @@ float Cedric_GetInvisibility(Entity *io) {
 			SpellBase * spell = spells.getSpellOnTarget(io->index(), SPELL_INVISIBILITY);
 
 			if(spell) {
-				if(player.m_skillFull.intuition > spell->m_caster_level * 10) {
+				if(player.m_skillFull.intuition > spell->m_level * 10) {
 					invisibility -= (float)player.m_skillFull.intuition * (1.0f / 100)
-									+ (float)spell->m_caster_level * (1.0f / 10);
+									+ (float)spell->m_level * (1.0f / 10);
 
 					invisibility = clamp(invisibility, 0.1f, 1.f);
 				}
@@ -381,7 +381,7 @@ void Cedric_ApplyLightingFirstPartRefactor(Entity *io) {
 
 							if(spell) {
 								spell->m_tolive = 0;
-								float damages = 20 * spell->m_caster_level;
+								float damages = 20 * spell->m_level;
 								damages = ARX_SPELLS_ApplyFireProtection(io, damages);
 
 								if (ValidIONum(spell->m_caster))

@@ -592,7 +592,7 @@ void SPELLCAST_Notify(SpellBase & spell) {
 		if(entities[handle] != NULL) {
 			EVENT_SENDER = (source != InvalidEntityHandle) ? entities[source] : NULL;
 			char param[256];
-			sprintf(param, "%s %ld", spellName, (long)spell.m_caster_level);
+			sprintf(param, "%s %ld", spellName, (long)spell.m_level);
 			SendIOScriptEvent(entities[handle], SM_SPELLCAST, param);
 		}
 	}
@@ -613,7 +613,7 @@ void SPELLCAST_NotifyOnlyTarget(SpellBase & spell) {
 			EVENT_SENDER = NULL;
 
 		char param[256];
-		sprintf(param,"%s %ld",spellName,(long)spell.m_caster_level);
+		sprintf(param,"%s %ld",spellName,(long)spell.m_level);
 		SendIOScriptEvent(entities[spell.m_target], SM_SPELLCAST, param);
 	}
 }
@@ -630,7 +630,7 @@ void SPELLEND_Notify(SpellBase & spell) {
 			if(MakeSpellName(spellName,spell.m_type)) {
 				Entity * targ = entities[spell.m_target];
 				char param[128];
-				sprintf(param,"%s %ld", spellName, (long)spell.m_caster_level);
+				sprintf(param,"%s %ld", spellName, (long)spell.m_level);
 				SendIOScriptEvent(targ, SM_SPELLEND, param);
 			}
 		}
@@ -649,7 +649,7 @@ void SPELLEND_Notify(SpellBase & spell) {
 			EVENT_SENDER = ValidIONum(source) ? entities[source] : NULL;
 			
 			char param[128];
-			sprintf(param, "%s %ld", spellName, (long)spell.m_caster_level);
+			sprintf(param, "%s %ld", spellName, (long)spell.m_level);
 			SendIOScriptEvent(entities[handle], SM_SPELLEND, param);
 		}
 	}
@@ -1007,7 +1007,7 @@ float ARX_SPELLS_ApplyFireProtection(Entity * io,float damages)
 	if(io) {
 		SpellBase * spell = spells.getSpellOnTarget(io->index(), SPELL_FIRE_PROTECTION);
 		if(spell) {
-			float modif = 1.f - (spell->m_caster_level * ( 1.0f / 10 ));
+			float modif = 1.f - (spell->m_level * ( 1.0f / 10 ));
 
 			modif = clamp(modif, 0.f, 1.f);
 
@@ -1029,7 +1029,7 @@ float ARX_SPELLS_ApplyColdProtection(Entity * io,float damages)
 {
 	SpellBase * spell = spells.getSpellOnTarget(io->index(), SPELL_COLD_PROTECTION);
 	if(spell) {
-		float modif = 1.f - (spell->m_caster_level * ( 1.0f / 10 ));
+		float modif = 1.f - (spell->m_level * ( 1.0f / 10 ));
 
 		modif = clamp(modif, 0.f, 1.f);
 
@@ -1045,7 +1045,7 @@ float ARX_SPELLS_GetManaCost(SpellType spell, SpellHandle index) {
 	float playerCasterLevel = player.m_skillFull.casting + player.m_attributeFull.mind;
 	playerCasterLevel = clamp(playerCasterLevel * 0.1f, 1.f, 10.f);
 	
-	float casterLevel = ((index < 0) ? playerCasterLevel : spells[index]->m_caster_level);
+	float casterLevel = ((index < 0) ? playerCasterLevel : spells[index]->m_level);
 	
 	// TODO this data should not be hardcoded
 	
@@ -1277,20 +1277,20 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flags,
 	
 	if(source == PlayerEntityHandle) {
 		// Player source
-		spell.m_caster_level = Player_Magic_Level; // Level of caster
+		spell.m_level = Player_Magic_Level; // Level of caster
 		spell.m_caster_pos = player.pos;
 	} else {
 		// IO source
-		spell.m_caster_level = (float)clamp(level, 1l, 10l);
+		spell.m_level = (float)clamp(level, 1l, 10l);
 		spell.m_caster_pos = entities[source]->pos;
 	}
 
 	if(flags & SPELLCAST_FLAG_LAUNCHPRECAST) {
-		spell.m_caster_level = static_cast<float>(level);
+		spell.m_level = static_cast<float>(level);
 	}
 	
 	if(cur_rf == 3) {
-		spell.m_caster_level += 2;
+		spell.m_level += 2;
 	}
 	
 	if(target == InvalidEntityHandle) {

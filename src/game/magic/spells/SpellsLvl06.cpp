@@ -247,7 +247,7 @@ void ParalyseSpell::Launch()
 	m_tolive = (m_launchDuration > -1) ? m_launchDuration : 5000;
 	
 	float resist_magic = 0.f;
-	if(m_target == PlayerEntityHandle && m_caster_level <= player.level) {
+	if(m_target == PlayerEntityHandle && m_level <= player.level) {
 		resist_magic = player.m_misc.resistMagic;
 	} else if(entities[m_target]->ioflags & IO_NPC) {
 		resist_magic = entities[m_target]->_npcdata->resist_magic;
@@ -409,8 +409,8 @@ void DisarmTrapSpell::Launch()
 		
 		CSpellFx * effect = spell->m_pSpellFx;
 		if(sphere.contains(static_cast<CRuneOfGuarding *>(effect)->eSrc)) {
-			spell->m_caster_level -= m_caster_level;
-			if(spell->m_caster_level <= 0) {
+			spell->m_level -= m_level;
+			if(spell->m_level <= 0) {
 				spell->m_tolive = 0;
 			}
 		}

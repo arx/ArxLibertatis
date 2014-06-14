@@ -374,7 +374,7 @@ void LifeDrainSpell::Launch()
 	
 	DamageParameters damage;
 	damage.radius = 150.f;
-	damage.damages = m_caster_level * 0.08f;
+	damage.damages = m_level * 0.08f;
 	damage.area = DAMAGE_AREA;
 	damage.duration = 100000000;
 	damage.source = m_caster;

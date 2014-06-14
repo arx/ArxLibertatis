@@ -88,9 +88,9 @@ void MagicMissileSpell::Launch()
 	
 	long number;
 	if(sp_max || cur_rf == 3) {
-		number = long(m_caster_level);
+		number = long(m_level);
 	} else {
-		number = clamp(long(m_caster_level + 1) / 2, 1l, 5l);
+		number = clamp(long(m_level + 1) / 2, 1l, 5l);
 	}
 	
 	CMultiMagicMissile * effect = new CMultiMagicMissile(number, m_thisHandle);
@@ -150,7 +150,7 @@ void IgnitSpell::Launch()
 		light->duration  = 300;
 	}
 	
-	float fPerimeter = 400.f + m_caster_level * 30.f;
+	float fPerimeter = 400.f + m_level * 30.f;
 	
 	effect->Create(&target, m_tolive);
 	CheckForIgnition(target, fPerimeter, 1, 1);
@@ -190,10 +190,10 @@ void IgnitSpell::Launch()
 			CSpellFx * pCSpellFX = spell->m_pSpellFx;
 			if(pCSpellFX) {
 				CFireBall * pCF = (CFireBall *)pCSpellFX;
-				float radius = std::max(m_caster_level * 2.f, 12.f);
+				float radius = std::max(m_level * 2.f, 12.f);
 				if(closerThan(target, pCF->eCurPos,
 				              fPerimeter + radius)) {
-					spell->m_caster_level += 1;
+					spell->m_level += 1;
 				}
 			}
 		}
@@ -233,7 +233,7 @@ void DouseSpell::Launch()
 		target.y -= 50.f;
 	}
 	
-	float fPerimeter = 400.f + m_caster_level * 30.f;
+	float fPerimeter = 400.f + m_level * 30.f;
 	effect->CreateDoze(&target, m_tolive);
 	CheckForIgnition(target, fPerimeter, 0, 1);
 	
@@ -275,11 +275,11 @@ void DouseSpell::Launch()
 				CSpellFx * pCSpellFX = spell->m_pSpellFx;
 				if(pCSpellFX) {
 					CFireBall * pCF = (CFireBall *)pCSpellFX;
-					float radius = std::max(m_caster_level * 2.f, 12.f);
+					float radius = std::max(m_level * 2.f, 12.f);
 					if(closerThan(target, pCF->eCurPos,
 					              fPerimeter + radius)) {
-						spell->m_caster_level -= m_caster_level;
-						if(spell->m_caster_level < 1) {
+						spell->m_level -= m_level;
+						if(spell->m_level < 1) {
 							spell->m_tolive = 0;
 						}
 					}
@@ -291,8 +291,8 @@ void DouseSpell::Launch()
 				Vec3f pos;
 				if(GetSpellPosition(&pos, spell)) {
 					if(closerThan(target, pos, fPerimeter + 200)) {
-						spell->m_caster_level -= m_caster_level;
-						if(spell->m_caster_level < 1) {
+						spell->m_level -= m_level;
+						if(spell->m_level < 1) {
 							spell->m_tolive=0;
 						}
 					}

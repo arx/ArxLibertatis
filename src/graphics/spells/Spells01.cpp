@@ -587,7 +587,7 @@ void CMultiMagicMissile::CheckCollision()
 			DamageParameters damage;
 			damage.pos = missile->eCurPos;
 			damage.radius = 80.f;
-			damage.damages = (4 + spells[spellinstance]->m_caster_level * ( 1.0f / 5 )) * .8f;
+			damage.damages = (4 + spells[spellinstance]->m_level * ( 1.0f / 5 )) * .8f;
 			damage.area	= DAMAGE_FULL;
 			damage.duration = -1;
 			damage.source = spells[spellinstance]->m_caster;

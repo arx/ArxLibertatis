@@ -45,7 +45,7 @@ void HealSpell::Launch()
 	
 	m_exist = true;
 	m_bDuration = true;
-	m_fManaCostPerSecond = 0.4f * m_caster_level;
+	m_fManaCostPerSecond = 0.4f * m_level;
 	m_tolive = (m_launchDuration > -1) ? m_launchDuration : 3500;
 	
 	CHeal * effect = new CHeal();
@@ -88,7 +88,7 @@ void HealSpell::Update(float timeDelta)
 				dist=fdist(ch->eSrc, e->pos);
 
 			if(dist<300.f) {
-				float gain=((rnd()*1.6f+0.8f)*m_caster_level)*(300.f-dist)*( 1.0f / 300 )*timeDelta*( 1.0f / 1000 );
+				float gain=((rnd()*1.6f+0.8f)*m_level)*(300.f-dist)*( 1.0f / 300 )*timeDelta*( 1.0f / 1000 );
 
 				if(ii==0) {
 					if (!BLOCK_PLAYER_CONTROLS)
@@ -178,7 +178,7 @@ void ArmorSpell::Launch()
 	}
 	
 	m_bDuration = true;
-	m_fManaCostPerSecond = 0.2f * m_caster_level;
+	m_fManaCostPerSecond = 0.2f * m_level;
 		
 	if(ValidIONum(m_target)) {
 		Entity *io = entities[m_target];
@@ -241,7 +241,7 @@ void LowerArmorSpell::Launch()
 	}
 	
 	m_bDuration = true;
-	m_fManaCostPerSecond = 0.2f * m_caster_level;
+	m_fManaCostPerSecond = 0.2f * m_level;
 	
 	if(ValidIONum(m_target)) {
 		Entity *io = entities[m_target];

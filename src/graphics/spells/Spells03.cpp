@@ -456,7 +456,7 @@ void CIceProjectile::Create(Vec3f aeSrc, float afBeta)
 		DamageParameters damage;
 		damage.pos = tPos[i];
 		damage.radius = 60.f;
-		damage.damages = 0.1f * spells[spellinstance]->m_caster_level;
+		damage.damages = 0.1f * spells[spellinstance]->m_level;
 		damage.area = DAMAGE_FULL;
 		damage.duration = ulDuration;
 		damage.source = spells[spellinstance]->m_caster;

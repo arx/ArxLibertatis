@@ -52,7 +52,7 @@ void BlessSpell::Launch()
 	// TODO this tolive value is probably never read
 	m_tolive = (m_launchDuration > -1) ? m_launchDuration : 2000000;
 	m_bDuration = true;
-	m_fManaCostPerSecond = 0.5f * m_caster_level * 0.6666f;
+	m_fManaCostPerSecond = 0.5f * m_level * 0.6666f;
 	
 	CBless * effect = new CBless();
 	effect->spellinstance = m_thisHandle;
@@ -138,7 +138,7 @@ void DispellFieldSpell::Launch()
 		Entity * caster = entities[m_caster];
 		if(cancel && closerThan(pos, caster->pos, 400.f)) {
 			valid++;
-			if(spell->m_caster_level <= m_caster_level) {
+			if(spell->m_level <= m_level) {
 				spell->m_tolive = 0;
 				dispelled++;
 			}
@@ -330,7 +330,7 @@ void CurseSpell::Launch()
 	m_exist = true;
 	m_tolive = (m_launchDuration > -1) ? m_launchDuration : 2000000;
 	m_bDuration = true;
-	m_fManaCostPerSecond = 0.5f * m_caster_level;
+	m_fManaCostPerSecond = 0.5f * m_level;
 	
 	CCurse * effect = new CCurse();
 	

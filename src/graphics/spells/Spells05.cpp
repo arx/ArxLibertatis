@@ -752,14 +752,14 @@ void CMultiPoisonProjectile::Render()
 			light->duration	= 200;
 		}
 
-		AddPoisonFog(&pPoisonProjectile->eCurPos, spells[spellinstance]->m_caster_level + 7);
+		AddPoisonFog(&pPoisonProjectile->eCurPos, spells[spellinstance]->m_level + 7);
 
 		if(spells[pTab[i]->spellinstance]->m_timcreation + 1600 < (unsigned long)(arxtime)) {
 			
 			DamageParameters damage;
 			damage.pos = pPoisonProjectile->eCurPos;
 			damage.radius = 120.f;
-			float v = spells[spellinstance]->m_caster_level;
+			float v = spells[spellinstance]->m_level;
 			v = 4.f + v * ( 1.0f / 10 ) * 6.f ;
 			damage.damages = v * ( 1.0f / 1000 ) * framedelay;
 			damage.area = DAMAGE_FULL;

@@ -70,7 +70,7 @@ void MassLightningStrikeSpell::Launch()
 		light->pos = m_vsource;
 	}
 	
-	long count = std::max(long(m_caster_level), 1l);
+	long count = std::max(long(m_level), 1l);
 	CMassLightning * effect = new CMassLightning(count);
 	effect->spellinstance = m_thisHandle;
 	
@@ -87,7 +87,7 @@ void MassLightningStrikeSpell::Launch()
 	target.x -= std::sin(radians(MAKEANGLE(beta))) * 500.f;
 	target.z += std::cos(radians(MAKEANGLE(beta))) * 500.f;
 	
-	effect->SetDuration(long(500 * m_caster_level));
+	effect->SetDuration(long(500 * m_level));
 	effect->Create(target, MAKEANGLE(player.angle.getPitch()));
 	m_pSpellFx = effect;
 	m_tolive = effect->GetDuration();
@@ -227,7 +227,7 @@ void ControlTargetSpell::Launch()
 		if(closerThan(ioo->pos, m_caster_pos, 900.f)) {
 			std::ostringstream oss;
 			oss << entities[m_target]->idString();
-			oss << ' ' << long(m_caster_level);
+			oss << ' ' << long(m_level);
 			SendIOScriptEvent(ioo, SM_NULL, oss.str(), "npc_control");
 		}
 	}
@@ -266,7 +266,7 @@ void FreezeTimeSpell::Launch()
 	ARX_SOUND_PlaySFX(SND_SPELL_FREEZETIME);
 	
 	float max_slowdown = std::max(0.f, GLOBAL_SLOWDOWN - 0.01f);
-	m_siz = clamp(m_caster_level * 0.08f, 0.f, max_slowdown);
+	m_siz = clamp(m_level * 0.08f, 0.f, max_slowdown);
 	GLOBAL_SLOWDOWN -= m_siz;
 	
 	m_exist = true;

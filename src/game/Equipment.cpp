@@ -559,7 +559,7 @@ float ARX_EQUIPMENT_ComputeDamages(Entity * io_source, Entity * io_target, float
 
 		SpellBase * spell = spells.getSpellOnTarget(io_source->index(), SPELL_CURSE);
 		if(spell) {
-			damages *= (1 - spell->m_caster_level * 0.05f);
+			damages *= (1 - spell->m_level * 0.05f);
 		}
 
 		if(rnd() * 100 <= io_source->_npcdata->critical) {
@@ -586,7 +586,7 @@ float ARX_EQUIPMENT_ComputeDamages(Entity * io_source, Entity * io_target, float
 		
 		SpellBase * spell = spells.getSpellOnTarget(io_target->index(), SPELL_CURSE);
 		if(spell) {
-			float modif = (1 - spell->m_caster_level * 0.05f);
+			float modif = (1 - spell->m_level * 0.05f);
 			ac *= modif;
 			absorb *= modif;
 		}
