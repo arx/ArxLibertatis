@@ -141,7 +141,7 @@ struct EERIE_GROUPLIST_FTL {
 	f32 siz;
 	
 	EERIE_GROUPLIST_FTL & operator=(const VertexGroup & b) {
-		strcpy(name, b.name.c_str());
+		util::storeString(name, b.name.c_str());
 		origin = b.origin;
 		nb_index = b.indexes.size();
 		indexes = 0;
@@ -168,7 +168,7 @@ struct EERIE_ACTIONLIST_FTL {
 	}
 	
 	inline EERIE_ACTIONLIST_FTL & operator=(const EERIE_ACTIONLIST & b) {
-		strcpy(name, b.name.c_str());
+		util::storeString(name, b.name.c_str());
 		idx = b.idx;
 		action = b.act;
 		sfx = b.sfx;
@@ -184,7 +184,7 @@ struct EERIE_SELECTIONS_FTL {
 	s32 selected;
 	
 	inline EERIE_SELECTIONS_FTL & operator=(const EERIE_SELECTIONS & b) {
-		strcpy(name, b.name.c_str());
+		util::storeString(name, b.name.c_str());
 		nb_selected = b.selected.size();
 		selected = 0;
 		return *this;

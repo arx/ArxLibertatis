@@ -57,6 +57,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/data/Mesh.h"
 #include "graphics/data/MeshManipulation.h"
 #include "platform/Platform.h"
+#include "util/String.h"
 
 const s32 SAVEFLAGS_EXTRA_ROTATE = 1;
 const float ARX_GAMESAVE_VERSION = 1.005f;
@@ -187,7 +188,7 @@ struct SavedMapMarkerData {
 		y = b.m_pos.y;
 		lvl = b.m_lvl;
 		arx_assert(STRING_SIZE > b.m_name.length());
-		strncpy(name, b.m_name.c_str(), STRING_SIZE);
+		util::storeString(name, b.m_name.c_str());
 	}
 	
 };
@@ -923,11 +924,11 @@ struct SavedTweakerInfo {
 	
 	/* implicit */ SavedTweakerInfo(const IO_TWEAKER_INFO & b) {
 		arx_assert(b.filename.string().length() <= sizeof(filename));
-		strncpy(filename, b.filename.string().c_str(), sizeof(filename));
+		util::storeString(filename, b.filename.string().c_str());
 		arx_assert(b.skintochange.length() <= sizeof(skintochange));
-		strncpy(skintochange, b.skintochange.c_str(), sizeof(skintochange));
+		util::storeString(skintochange, b.skintochange.c_str());
 		arx_assert(b.skinchangeto.filename().length() <= sizeof(skinchangeto));
-		strncpy(skinchangeto, b.skinchangeto.string().c_str(), sizeof(skinchangeto));
+		util::storeString(skinchangeto, b.skinchangeto.string().c_str());
 	}
 	
 };
@@ -951,9 +952,9 @@ struct SavedTweakInfo {
 	/* implicit */ SavedTweakInfo(const TWEAK_INFO & b) {
 		type = b.type;
 		arx_assert(b.param1.string().length() <= PARAM_SIZE);
-		strncpy(param1, b.param1.string().c_str(), sizeof(param1));
+		util::storeString(param1, b.param1.string().c_str());
 		arx_assert(b.param2.string().length() <=PARAM_SIZE);
-		strncpy(param2, b.param2.string().c_str(), sizeof(param2));
+		util::storeString(param2, b.param2.string().c_str());
 	}
 	
 };

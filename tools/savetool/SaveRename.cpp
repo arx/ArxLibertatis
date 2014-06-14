@@ -75,7 +75,7 @@ public:
 	}
 	
 	void setName(const std::string & name) {
-		strncpy(m_pld->name, name.c_str(), sizeof(m_pld->name));
+		util::storeString(m_pld->name, name.c_str());
 	}
 	
 private:

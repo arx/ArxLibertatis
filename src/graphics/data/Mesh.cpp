@@ -2399,7 +2399,7 @@ static bool FastSceneSave(const fs::path & partial_path) {
 	memset(dat, 0, allocsize);
 	UNIQUE_HEADER * uh = reinterpret_cast<UNIQUE_HEADER *>(dat);
 	pos += sizeof(UNIQUE_HEADER);
-	strncpy(uh->path, path.string().c_str(), sizeof(uh->path));
+	util::storeString(uh->path, path.string().c_str());
 	uh->version = FTS_VERSION;
 	
 	long count = 0;
@@ -2414,7 +2414,7 @@ static bool FastSceneSave(const fs::path & partial_path) {
 		
 		UNIQUE_HEADER2 * uh2 = reinterpret_cast<UNIQUE_HEADER2 *>(dat + pos);
 		pos += sizeof(UNIQUE_HEADER2);
-		strncpy(uh2->path, path.filename().c_str(), sizeof(uh2->path));
+		util::storeString(uh2->path, path.filename().c_str());
 		
 		char check[512];
 		HERMES_CreateFileCheck(path, check, 512, FTS_VERSION);
@@ -2472,7 +2472,7 @@ static bool FastSceneSave(const fs::path & partial_path) {
 						FAST_TEXTURE_CONTAINER * ftc = reinterpret_cast<FAST_TEXTURE_CONTAINER *>(dat + pos);
 						pos += sizeof(FAST_TEXTURE_CONTAINER);
 						ftc->tc = texid;
-						strncpy(ftc->fic, ep->tex->m_texName.string().c_str(), sizeof(ftc->fic));
+						util::storeString(ftc->fic, ep->tex->m_texName.string().c_str());
 						ftc->temp = 0;
 						fsh->nb_textures++;
 						

@@ -199,7 +199,7 @@ long DanaeSaveLevel(const fs::path & _fic) {
 	if(dlh.nb_scn > 0) {
 		DANAE_LS_SCENE dls;
 		memset(&dls, 0, sizeof(DANAE_LS_SCENE));
-		strncpy(dls.name, LastLoadedScene.string().c_str(), sizeof(dls.name));
+		util::storeString(dls.name, LastLoadedScene.string().c_str());
 		memcpy(dat + pos, &dls, sizeof(DANAE_LS_SCENE));
 		pos += sizeof(DANAE_LS_SCENE);
 	}
@@ -223,8 +223,7 @@ long DanaeSaveLevel(const fs::path & _fic) {
 			}
 			
 			dli.angle = io->initangle;
-			strncpy(dli.name, (io->classPath() + ".teo").string().c_str(),
-			        sizeof(dli.name));
+			util::storeString(dli.name, (io->classPath() + ".teo").string().c_str());
 			
 			if(io->ident == 0) {
 				MakeIOIdent(io);
@@ -272,10 +271,10 @@ long DanaeSaveLevel(const fs::path & _fic) {
 		dlp.idx = 0;
 		dlp.initpos = ARXpaths[i]->initpos - Mscenepos;
 		dlp.pos = ARXpaths[i]->pos - Mscenepos;
-		strncpy(dlp.name, ARXpaths[i]->name.c_str(), sizeof(dlp.name));
+		util::storeString(dlp.name, ARXpaths[i]->name.c_str());
 		dlp.nb_pathways = ARXpaths[i]->nb_pathways;
 		dlp.height = ARXpaths[i]->height;
-		strncpy(dlp.ambiance, ARXpaths[i]->ambiance.string().c_str(), sizeof(dlp.ambiance));
+		util::storeString(dlp.ambiance, ARXpaths[i]->ambiance.string().c_str());
 		dlp.amb_max_vol = ARXpaths[i]->amb_max_vol;
 		dlp.farclip = ARXpaths[i]->farclip;
 		dlp.reverb = ARXpaths[i]->reverb;

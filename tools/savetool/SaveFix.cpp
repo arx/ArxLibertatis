@@ -282,7 +282,7 @@ static bool patch_ident(char (&name)[SIZE_ID], long newIdent, const string & whe
 	
 	size_t pos = namestr.find_last_of('_');
 	
-	strncpy(name, makeIdent(namestr.substr(0, pos), newIdent).c_str(), sizeof(name));
+	util::storeString(name, makeIdent(namestr.substr(0, pos), newIdent).c_str());
 	
 	return true;
 }

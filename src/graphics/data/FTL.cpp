@@ -268,7 +268,7 @@ bool ARX_FTL_Save(const fs::path & file, const EERIE_3DOBJ * obj) {
 			if (pos > allocsize) LogError << ("Invalid Allocsize in ARX_FTL_Save");
 		}
 
-		strncpy(af3Ddh->name, obj->file.string().c_str(), sizeof(af3Ddh->name));
+		util::storeString(af3Ddh->name, obj->file.string().c_str());
 	}
 
 	// Progressive DATA
