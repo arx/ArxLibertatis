@@ -2795,7 +2795,7 @@ void ARX_GAME_Reset(long type) {
 	ARX_SPELLS_Precast_Reset();
 	ARX_SPELLS_CancelSpellTarget();
 
-	ARX_SPELLS_ClearAll();
+	spells.clearAll();
 	ARX_SPELLS_ClearAllSymbolDraw();
 	ARX_SPELLS_ResetRecognition();
 

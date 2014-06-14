@@ -70,6 +70,9 @@ const size_t MAX_SPELLS = 20;
 class SpellManager {
 	
 public:
+	void init();
+	void clearAll();
+	
 	SpellBase * operator[] (const SpellHandle handle);
 	
 	void endByCaster(EntityHandle caster);
@@ -83,6 +86,8 @@ public:
 	
 	void replaceCaster(EntityHandle oldCaster, EntityHandle newCaster);
 	void removeTarget(Entity *io);
+	
+	SpellHandle create();
 	
 private:
 	SpellBase m_spells[MAX_SPELLS];
@@ -98,8 +103,6 @@ void TryToCastSpell(Entity * io, SpellType spellid, long level, EntityHandle tar
 
 bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flags = 0, long level = -1, EntityHandle target = InvalidEntityHandle, long duration = -1);
 void ARX_SPELLS_AbortSpellSound();
-void ARX_SPELLS_Init();
-void ARX_SPELLS_ClearAll();
 void ARX_SPELLS_Update();
 
 void ARX_SPELLS_ManageMagic();

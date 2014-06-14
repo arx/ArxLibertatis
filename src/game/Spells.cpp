@@ -157,6 +157,38 @@ unsigned char ucFlick=0;
 
 SpellManager spells;
 
+void SpellManager::init() {
+	
+	for(size_t i = 0; i < MAX_SPELLS; i++) {
+		SpellBase * spell = spells[SpellHandle(i)];
+		
+		spell->m_tolive = 0;
+		spell->m_exist = false;
+		spell->m_pSpellFx = NULL;
+	}
+	
+	spellRecognitionInit();
+	
+	RuneInfosFill();
+	ARX_SPELLS_Init_Rects();
+}
+
+void SpellManager::clearAll() {
+	
+	for(size_t i = 0; i < MAX_SPELLS; i++) {
+		SpellBase * spell = spells[SpellHandle(i)];
+		
+		if(spell->m_exist) {
+			spell->m_tolive = 0;
+			spell->m_exist = false;
+			
+			delete spell->m_pSpellFx;
+			spell->m_pSpellFx = NULL;
+			spell->m_targets.clear();
+		}
+	}
+}
+
 SpellBase *SpellManager::operator[](const SpellHandle handle) {
 	return &m_spells[handle];
 }
@@ -244,6 +276,30 @@ void SpellManager::removeTarget(Entity *io) {
 		
 		spell->m_targets.erase(std::remove(spell->m_targets.begin(), spell->m_targets.end(), io->index()), spell->m_targets.end());
 	}
+}
+
+SpellHandle SpellManager::create() {
+	
+	for(size_t i = 0; i < MAX_SPELLS; i++) {
+		SpellBase * spell = spells[SpellHandle(i)];
+		
+		if(!spell->m_exist) {
+			spell->m_longinfo_entity = InvalidEntityHandle;
+			spell->m_longinfo_damage = -1;
+			spell->m_longinfo_time = -1;
+			spell->m_longinfo_summon_creature = -1;
+			spell->m_longinfo_lower_armor = -1;
+			spell->m_longinfo_light = InvalidLightHandle;
+			
+			spell->m_longinfo2_light = InvalidLightHandle;
+			
+			spell->m_targets.clear();
+			
+			return SpellHandle(i);
+		}
+	}
+	
+	return InvalidSpellHandle;
 }
 
 
@@ -395,10 +451,6 @@ bool GetSpellPosition(Vec3f * pos, SpellBase * spell)
 
 	return false;
 }
-
-
-
-
 
 static bool MakeSpellName(char * spell, SpellType num) {
 	
@@ -916,65 +968,6 @@ long TemporaryGetSpellTarget(const Vec3f * from) {
 	return found;
 }
 
-//-----------------------------------------------------------------------------
-void ARX_SPELLS_Init() {
-	
-	for(size_t i = 0; i < MAX_SPELLS; i++) {
-		SpellBase * spell = spells[SpellHandle(i)];
-		
-		spell->m_tolive = 0;
-		spell->m_exist = false;
-		spell->m_pSpellFx = NULL;
-	}
-	
-	spellRecognitionInit();
-	
-	RuneInfosFill();
-	ARX_SPELLS_Init_Rects();
-}
-
-// Clears All Spells.
-void ARX_SPELLS_ClearAll() {
-	
-	for(size_t i = 0; i < MAX_SPELLS; i++) {
-		SpellBase * spell = spells[SpellHandle(i)];
-		
-		if(spell->m_exist) {
-			spell->m_tolive = 0;
-			spell->m_exist = false;
-			
-			delete spell->m_pSpellFx;
-			spell->m_pSpellFx = NULL;
-			spell->m_targets.clear();
-		}
-	}
-}
-
-// Obtains a Free Spell slot
-static SpellHandle ARX_SPELLS_GetFree() {
-	
-	for(size_t i = 0; i < MAX_SPELLS; i++) {
-		SpellBase * spell = spells[SpellHandle(i)];
-		
-		if(!spell->m_exist) {
-			spell->m_longinfo_entity = InvalidEntityHandle;
-			spell->m_longinfo_damage = -1;
-			spell->m_longinfo_time = -1;
-			spell->m_longinfo_summon_creature = -1;
-			spell->m_longinfo_lower_armor = -1;
-			spell->m_longinfo_light = InvalidLightHandle;
-			
-			spell->m_longinfo2_light = InvalidLightHandle;
-			
-			spell->m_targets.clear();
-			
-			return SpellHandle(i);
-		}
-	}
-	
-	return InvalidSpellHandle;
-}
-
 // Plays the sound of aborted spell
 void ARX_SPELLS_AbortSpellSound() {
 	ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE);
@@ -1248,7 +1241,7 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flags,
 	}
 
 	// Try to create a new spell instance
-	SpellHandle i = ARX_SPELLS_GetFree();
+	SpellHandle i = spells.create();
 
 	if(i < 0) {
 		return false;

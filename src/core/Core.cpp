@@ -412,7 +412,7 @@ void InitializeDanae() {
 	InitTileLights();
 	
 	ARX_MISSILES_ClearAll();
-	ARX_SPELLS_Init();
+	spells.init();
 
 	ARX_SPELLS_ClearAllSymbolDraw();
 	ARX_PARTICLES_ClearAll();
@@ -814,7 +814,7 @@ void FirstFrameProc() {
 	ARX_BOOMS_ClearAllPolyBooms();
 	ARX_DAMAGES_Reset();
 	ARX_MISSILES_ClearAll();
-	ARX_SPELLS_ClearAll();
+	spells.clearAll();
 	ARX_SPELLS_ClearAllSymbolDraw();
 	ARX_PARTICLES_ClearAll();
 
