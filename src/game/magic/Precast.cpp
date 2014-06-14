@@ -93,7 +93,12 @@ void ARX_SPELLS_Precast_Launch(PrecastHandle num) {
 	
 	if(float(arxtime) >= LAST_PRECAST_TIME + 1000) {
 		SpellType type = Precast[num].typ;
-		float cost = ARX_SPELLS_GetManaCost(type, InvalidSpellHandle);
+		
+		// Calculate the player's magic level
+		float playerCasterLevel = player.m_skillFull.casting + player.m_attributeFull.mind;
+		playerCasterLevel = clamp(playerCasterLevel * 0.1f, 1.f, 10.f);
+		
+		float cost = ARX_SPELLS_GetManaCost(type, playerCasterLevel);
 
 		if(type != SPELL_NONE && !PrecastCheckCanPayMana(num,cost))
 			return;

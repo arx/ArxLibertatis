@@ -1029,13 +1029,7 @@ float ARX_SPELLS_ApplyColdProtection(Entity * io,float damages)
 	return damages;
 }
 
-float ARX_SPELLS_GetManaCost(SpellType spell, SpellHandle index) {
-	
-	// Calculate the player's magic level
-	float playerCasterLevel = player.m_skillFull.casting + player.m_attributeFull.mind;
-	playerCasterLevel = clamp(playerCasterLevel * 0.1f, 1.f, 10.f);
-	
-	float casterLevel = ((index < 0) ? playerCasterLevel : spells[index]->m_level);
+float ARX_SPELLS_GetManaCost(SpellType spell, float casterLevel) {
 	
 	// TODO this data should not be hardcoded
 	
@@ -1312,7 +1306,7 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flags,
 	spell.m_fManaCostPerSecond = 0.f;
 	spell.m_launchDuration = duration;
 
-	if(!CanPayMana(i, ARX_SPELLS_GetManaCost(typ, i))) {
+	if(!CanPayMana(i, ARX_SPELLS_GetManaCost(typ, spell.m_level))) {
 		return false;
 	}
 	
