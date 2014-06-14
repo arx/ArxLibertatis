@@ -631,32 +631,33 @@ void CPoisonProjectile::Render() {
 CMultiPoisonProjectile::CMultiPoisonProjectile(long nbmissiles)
 {
 	SetDuration(2000);
-	uiNumber = min(5L, nbmissiles);
-	pTab	 = NULL;
-	pTab	 = new CPoisonProjectile*[uiNumber]();
-
-	for(unsigned int i = 0 ; i < uiNumber ; i++) {
-		pTab[i] = new CPoisonProjectile();
-		pTab[i]->spellinstance = this->spellinstance;
+	
+	size_t uiNumber = min(5L, nbmissiles);
+	
+	for(size_t i = 0; i < uiNumber; i++) {
+		CPoisonProjectile * projectile = new CPoisonProjectile();
+		projectile->spellinstance = this->spellinstance;
+		
+		m_projectiles.push_back(projectile);
 	}
 }
 
 CMultiPoisonProjectile::~CMultiPoisonProjectile()
 {
-	for(unsigned int i = 0 ; i < uiNumber ; i++) {
-		if(lightHandleIsValid(pTab[i]->lLightId)) {
-			EERIE_LIGHT * light = lightHandleGet(pTab[i]->lLightId);
+	for(size_t i = 0; i < m_projectiles.size(); i++) {
+		CPoisonProjectile * projectile = m_projectiles[i];
+		
+		if(lightHandleIsValid(projectile->lLightId)) {
+			EERIE_LIGHT * light = lightHandleGet(projectile->lLightId);
 			
 			light->duration = 2000;
 			light->time_creation = (unsigned long)(arxtime);
 			
-			pTab[i]->lLightId = -1;
+			projectile->lLightId = -1;
 		}
 
-		delete pTab[i];
+		delete projectile;
 	}
-
-	delete [] pTab;
 }
 
 void CMultiPoisonProjectile::Create(Vec3f srcPos) {
@@ -697,30 +698,29 @@ void CMultiPoisonProjectile::Create(Vec3f srcPos) {
 
 	long lMax = 0;
 
-	for(unsigned int i = 0; i < uiNumber; i++) {
-		pTab[i]->Create(srcPos, afBeta + frand2() * 10.0f);
+	for(size_t i = 0; i < m_projectiles.size(); i++) {
+		CPoisonProjectile * projectile = m_projectiles[i];
+		
+		projectile->Create(srcPos, afBeta + frand2() * 10.0f);
 		long lTime = ulDuration + Random::get(0, 5000);
-		pTab[i]->SetDuration(lTime);
+		projectile->SetDuration(lTime);
 		lMax = max(lMax, lTime);
 
-		CPoisonProjectile * pPP = (CPoisonProjectile *) pTab[i];
+		projectile->lLightId = GetFreeDynLight();
 
-		pPP->lLightId = GetFreeDynLight();
-
-		if(lightHandleIsValid(pPP->lLightId)) {
-			EERIE_LIGHT * light = lightHandleGet(pPP->lLightId);
+		if(lightHandleIsValid(projectile->lLightId)) {
+			EERIE_LIGHT * light = lightHandleGet(projectile->lLightId);
 			
 			light->intensity		= 2.3f;
 			light->fallend		= 250.f;
 			light->fallstart		= 150.f;
 			light->rgb = Color3f::green;
-			light->pos = pPP->eSrc;
+			light->pos = projectile->eSrc;
 			light->time_creation	= (unsigned long)(arxtime);
 			light->duration		= 200;
 		}
 
-		pTab[i]->spellinstance = this->spellinstance;
-
+		projectile->spellinstance = this->spellinstance;
 	}
 
 	SetDuration(lMax + 1000);
@@ -728,36 +728,38 @@ void CMultiPoisonProjectile::Create(Vec3f srcPos) {
 
 void CMultiPoisonProjectile::Update(float timeDelta)
 {
-	for(unsigned int i = 0; i < uiNumber; i++) {
-		pTab[i]->Update(timeDelta);
+	for(size_t i = 0; i < m_projectiles.size(); i++) {
+		CPoisonProjectile * projectile = m_projectiles[i];
+		
+		projectile->Update(timeDelta);
 	}
 }
 
 void CMultiPoisonProjectile::Render()
 {
-	for(unsigned int i = 0; i < uiNumber; i++) {
-		pTab[i]->Render();
-
-		CPoisonProjectile * pPoisonProjectile = (CPoisonProjectile *) pTab[i];
-
-		if(lightHandleIsValid(pPoisonProjectile->lLightId)) {
-			EERIE_LIGHT * light = lightHandleGet(pPoisonProjectile->lLightId);
+	for(size_t i = 0; i < m_projectiles.size(); i++) {
+		CPoisonProjectile * projectile = m_projectiles[i];
+		
+		projectile->Render();
+		
+		if(lightHandleIsValid(projectile->lLightId)) {
+			EERIE_LIGHT * light = lightHandleGet(projectile->lLightId);
 			
-			light->intensity	= 2.3f * pPoisonProjectile->lightIntensityFactor;
+			light->intensity	= 2.3f * projectile->lightIntensityFactor;
 			light->fallend	= 250.f;
 			light->fallstart	= 150.f;
 			light->rgb = Color3f::green;
-			light->pos = pPoisonProjectile->eCurPos;
+			light->pos = projectile->eCurPos;
 			light->time_creation = (unsigned long)(arxtime);
 			light->duration	= 200;
 		}
 
-		AddPoisonFog(&pPoisonProjectile->eCurPos, spells[spellinstance]->m_level + 7);
+		AddPoisonFog(&projectile->eCurPos, spells[spellinstance]->m_level + 7);
 
-		if(spells[pTab[i]->spellinstance]->m_timcreation + 1600 < (unsigned long)(arxtime)) {
+		if(spells[projectile->spellinstance]->m_timcreation + 1600 < (unsigned long)(arxtime)) {
 			
 			DamageParameters damage;
-			damage.pos = pPoisonProjectile->eCurPos;
+			damage.pos = projectile->eCurPos;
 			damage.radius = 120.f;
 			float v = spells[spellinstance]->m_level;
 			v = 4.f + v * ( 1.0f / 10 ) * 6.f ;

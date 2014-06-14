@@ -183,8 +183,7 @@ public:
 	SpellHandle spellinstance;
 	
 private:
-	unsigned int uiNumber;
-	CPoisonProjectile ** pTab;
+	std::vector<CPoisonProjectile *> m_projectiles;
 	void AddPoisonFog(Vec3f * pos, float power);
 };
 
