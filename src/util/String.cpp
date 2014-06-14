@@ -30,6 +30,10 @@ std::string loadString(const char * data, size_t maxLength) {
 	return std::string(data, std::find(data, data + maxLength, '\0'));
 }
 
+void storeString(char * dst, size_t maxLength, const std::string & src) {
+	strncpy(dst, src.c_str(), maxLength);
+}
+
 struct character_escaper {
 	template <typename FinderT>
 	std::string operator()(const FinderT & match) const {

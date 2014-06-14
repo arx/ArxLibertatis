@@ -35,6 +35,13 @@ std::string loadString(const char (&data)[N]) {
 	return loadString(data, N);
 }
 
+void storeString(char * dst, size_t maxLength, const std::string & src);
+
+template <size_t N>
+void storeString(char (&dst)[N], const std::string & src) {
+	storeString(dst, N, src);
+}
+
 /*!
  * Escape a string containing the specified characters to escape
  * \param text The string to escape

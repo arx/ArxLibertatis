@@ -19,12 +19,14 @@ add_executable(arxtest
 	../src/graphics/GraphicsUtility.cpp
 	../src/graphics/Renderer.cpp
 	../src/game/Camera.cpp
+	../src/util/String.cpp
 	
 	math/AssertionTraits.h
 	math/LegacyMath.h
 	math/LegacyMathTest.cpp
 	graphics/GraphicsUtilityTest.cpp
 	graphics/ColorTest.cpp
+	util/StringTest.cpp
 )
 
 target_link_libraries(arxtest cppunit)
