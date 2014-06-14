@@ -161,7 +161,7 @@ SpellBase *SpellManager::operator[](const SpellHandle handle) {
 	return &m_spells[handle];
 }
 
-void SpellManager::endAllByCaster(EntityHandle caster) {
+void SpellManager::endByCaster(EntityHandle caster) {
 	
 	for(size_t i = 0; i < MAX_SPELLS; i++) {
 		SpellBase * spell = spells[SpellHandle(i)];

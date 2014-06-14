@@ -1321,7 +1321,7 @@ void ARX_PLAYER_BecomesDead() {
 		DeadTime = 0;
 	}
 	
-	spells.endAllByCaster(PlayerEntityHandle);
+	spells.endByCaster(PlayerEntityHandle);
 }
 
 float LASTPLAYERA = 0;

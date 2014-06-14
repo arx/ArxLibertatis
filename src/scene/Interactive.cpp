@@ -225,7 +225,7 @@ void ARX_INTERACTIVE_DestroyDynamicInfo(Entity * io)
 	ARX_SCRIPT_EventStackClearForIo(io);
 	
 	if(ValidIONum(n)) {
-		spells.endAllByCaster(n);
+		spells.endByCaster(n);
 	}
 
 	if(io->flarecount) {

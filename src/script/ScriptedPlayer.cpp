@@ -329,7 +329,7 @@ public:
 			if(!BLOCK_PLAYER_CONTROLS) {
 				ARX_PLAYER_PutPlayerInNormalStance(0);
 				Stack_SendMsgToAllNPC_IO(SM_CONTROLS_OFF, "");
-				spells.endAllByCaster(PlayerEntityHandle);
+				spells.endByCaster(PlayerEntityHandle);
 			}
 			BLOCK_PLAYER_CONTROLS = true;
 			player.Interface &= ~INTER_COMBATMODE;

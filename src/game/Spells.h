@@ -72,7 +72,7 @@ class SpellManager {
 public:
 	SpellBase * operator[] (const SpellHandle handle);
 	
-	void endAllByCaster(EntityHandle caster);
+	void endByCaster(EntityHandle caster);
 	void endByCaster(EntityHandle caster, SpellType type);
 	
 	void endByTarget(EntityHandle target, SpellType type);

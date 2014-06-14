@@ -314,7 +314,7 @@ void Entity::cleanReferences() {
 	
 	ARX_SCRIPT_Timer_Clear_For_IO(this);
 	
-	spells.endAllByCaster(index());
+	spells.endByCaster(index());
 	
 	lightHandleDestroy(ignit_light);
 	
