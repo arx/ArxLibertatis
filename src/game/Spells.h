@@ -82,6 +82,8 @@ public:
 	SpellBase * getSpellOnTarget(EntityHandle target, SpellType type);
 	
 	void replaceCaster(EntityHandle oldCaster, EntityHandle newCaster);
+	void removeTarget(Entity *io);
+	
 private:
 	SpellBase m_spells[MAX_SPELLS];
 };
@@ -101,8 +103,6 @@ void ARX_SPELLS_ClearAll();
 void ARX_SPELLS_Update();
 
 void ARX_SPELLS_ManageMagic();
-
-void ARX_SPELLS_RemoveAllSpellsOn(Entity * io);
 
 void ARX_SPELLS_CancelSpellTarget();
 void ARX_SPELLS_LaunchSpellTarget(Entity * io);

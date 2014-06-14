@@ -220,7 +220,7 @@ Entity::~Entity() {
 		delete obj, obj = NULL;
 	}
 	
-	ARX_SPELLS_RemoveAllSpellsOn(this);
+	spells.removeTarget(this);
 	
 	delete tweakerinfo;
 	delete tweaky, tweaky = NULL;

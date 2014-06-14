@@ -795,7 +795,7 @@ void ARX_INTERACTIVE_ClearIODynData_II(Entity * io)
 		io->anims[j] = NULL;
 	}
 	
-	ARX_SPELLS_RemoveAllSpellsOn(io);
+	spells.removeTarget(io);
 	ARX_EQUIPMENT_ReleaseAll(io);
 	
 	if(io->ioflags & IO_NPC) {

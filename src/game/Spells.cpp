@@ -235,6 +235,17 @@ void SpellManager::replaceCaster(EntityHandle oldCaster, EntityHandle newCaster)
 	}
 }
 
+void SpellManager::removeTarget(Entity *io) {
+	
+	for(size_t i = 0; i < MAX_SPELLS; i++) {
+		SpellBase * spell = spells[SpellHandle(i)];
+		if(!spell->m_exist)
+			continue;
+		
+		spell->m_targets.erase(std::remove(spell->m_targets.begin(), spell->m_targets.end(), io->index()), spell->m_targets.end());
+	}
+}
+
 
 bool GetSpellPosition(Vec3f * pos, SpellBase * spell)
 {
@@ -387,16 +398,7 @@ bool GetSpellPosition(Vec3f * pos, SpellBase * spell)
 
 
 
-void ARX_SPELLS_RemoveAllSpellsOn(Entity *io) {
-	
-	for(size_t i = 0; i < MAX_SPELLS; i++) {
-		SpellBase * spell = spells[SpellHandle(i)];
-		if(!spell->m_exist)
-			continue;
-		
-		spell->m_targets.erase(std::remove(spell->m_targets.begin(), spell->m_targets.end(), io->index()), spell->m_targets.end());
-	}
-}
+
 
 static bool MakeSpellName(char * spell, SpellType num) {
 	
