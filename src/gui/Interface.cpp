@@ -1686,7 +1686,7 @@ void ArxGame::managePlayerControls()
 			
 			if(spell->m_exist && spell->m_caster == PlayerEntityHandle)
 				if(spellicons[spell->m_type].bDuration) {
-					ARX_SPELLS_AbortSpellSound();
+					ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE);
 					spell->m_tolive = 0;
 					break;
 				}
@@ -5967,7 +5967,7 @@ private:
 				}
 				
 				if(EERIEMouseButton & 4) {
-					ARX_SPELLS_AbortSpellSound();
+					ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE);
 					EERIEMouseButton &= ~4;
 					spells[spellIndex]->m_tolive = 0;
 				}

@@ -968,11 +968,6 @@ long TemporaryGetSpellTarget(const Vec3f * from) {
 	return found;
 }
 
-// Plays the sound of aborted spell
-void ARX_SPELLS_AbortSpellSound() {
-	ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE);
-}
-
 struct TARGETING_SPELL {
 	SpellType typ;
 	SpellcastFlags flags;
