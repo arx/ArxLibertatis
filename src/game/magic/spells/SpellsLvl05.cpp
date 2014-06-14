@@ -263,7 +263,42 @@ void PoisonProjectileSpell::Launch()
 	CMultiPoisonProjectile * effect = new CMultiPoisonProjectile(level);
 	effect->spellinstance = m_thisHandle;
 	effect->SetDuration(8000ul);
-	effect->Create(Vec3f_ZERO);
+	
+	Vec3f srcPos = Vec3f_ZERO;
+	float afBeta = 0.f;
+	
+	Entity * caster = entities[m_caster];
+	m_hand_group = caster->obj->fastaccess.primary_attach;
+
+	if(m_hand_group != -1) {
+		long group = m_hand_group;
+		m_hand_pos = caster->obj->vertexlist3[group].v;
+	}
+	
+	if(m_caster == PlayerEntityHandle) {
+
+		afBeta = player.angle.getPitch();
+
+		if(m_hand_group != -1) {
+			srcPos = m_hand_pos;
+		} else {
+			srcPos = player.pos;
+		}
+	} else {
+		afBeta = entities[m_caster]->angle.getPitch();
+
+		if(m_hand_group != -1) {
+			srcPos = m_hand_pos;
+		} else {
+			srcPos = entities[m_caster]->pos;
+		}
+	}
+	
+	srcPos.x -= std::sin(radians(afBeta)) * 90;
+	srcPos.z += std::cos(radians(afBeta)) * 90;
+	
+	effect->Create(srcPos, afBeta);
+	
 	m_pSpellFx = effect;
 	m_tolive = effect->GetDuration();
 }

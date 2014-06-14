@@ -175,7 +175,7 @@ public:
 	explicit CMultiPoisonProjectile(long nb);
 	~CMultiPoisonProjectile();
 	
-	void Create(Vec3f srcPos);
+	void Create(Vec3f srcPos, float afBeta);
 	void Kill();
 	void Update(float timeDelta);
 	void Render();

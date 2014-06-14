@@ -654,42 +654,8 @@ CMultiPoisonProjectile::~CMultiPoisonProjectile()
 	}
 }
 
-void CMultiPoisonProjectile::Create(Vec3f srcPos) {
+void CMultiPoisonProjectile::Create(Vec3f srcPos, float afBeta) {
 	
-	float afBeta = 0.f;
-	
-	SpellBase * spell = spells[spellinstance];
-	Entity * caster = entities[spell->m_caster];
-	spell->m_hand_group = caster->obj->fastaccess.primary_attach;
-
-	if(spell->m_hand_group != -1) {
-		long group = spell->m_hand_group;
-		spell->m_hand_pos = caster->obj->vertexlist3[group].v;
-	}
-	
-	if(spell->m_caster == PlayerEntityHandle) {
-
-		afBeta = player.angle.getPitch();
-
-		if(spell->m_hand_group != -1) {
-			srcPos = spell->m_hand_pos;
-		} else {
-			srcPos = player.pos;
-		}
-	} else {
-		afBeta = entities[spell->m_caster]->angle.getPitch();
-
-		if(spell->m_hand_group != -1) {
-			srcPos = spell->m_hand_pos;
-		} else {
-			srcPos = entities[spell->m_caster]->pos;
-		}
-	}
-	
-	srcPos.x -= std::sin(radians(afBeta)) * 90;
-	srcPos.z += std::cos(radians(afBeta)) * 90;
-	
-
 	long lMax = 0;
 
 	for(size_t i = 0; i < m_projectiles.size(); i++) {
