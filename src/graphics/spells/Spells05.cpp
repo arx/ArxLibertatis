@@ -572,8 +572,6 @@ void CPoisonProjectile::Render() {
 	
 	Vec3f lastpos = pathways[0].p;
 	
-	int arx_check_init = -1;
-	
 	int i = 0;
 	for(i = 0; i < 9; i++) {
 		
@@ -610,12 +608,8 @@ void CPoisonProjectile::Render() {
 			p0 = 0.5f * (val - pathways[kpprec].p.z);
 			p1 = 0.5f * (pathways[kpsuivsuiv].p.z - pathways[i].p.z);
 			lastpos.z = f0 * pathways[i].p.z + f1 * val + f2 * p0 + f3 * p1;
-			
-			++arx_check_init;
 		}
 	}
-	
-	// arx_assert(arx_check_init >= 0); TODO why should this hold?
 	
 	eCurPos = lastpos;
 	

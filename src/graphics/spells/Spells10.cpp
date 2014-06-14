@@ -207,7 +207,6 @@ void CControlTarget::Render()
 
 	Vec3f v;
 	
-	int arx_check_init = -1;
 	Vec3f newpos = Vec3f_ZERO;
 	Vec3f lastpos = pathways[0].p;
 	
@@ -263,7 +262,6 @@ void CControlTarget::Render()
 			}
 			
 			std::swap(lastpos, newpos);
-			++arx_check_init;
 			
 			PARTICLE_DEF * pd = createParticle();
 			if(pd) {
@@ -277,6 +275,4 @@ void CControlTarget::Render()
 			}
 		}
 	}
-	
-	arx_assert(arx_check_init >= 0);
 }
