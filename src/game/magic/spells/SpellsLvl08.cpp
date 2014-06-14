@@ -66,8 +66,6 @@ void InvisibilitySpell::End()
 	}
 }
 
-extern void ARX_SPELLS_Fizzle(SpellHandle num);
-
 void InvisibilitySpell::Update(float timeDelta)
 {
 	ARX_UNUSED(timeDelta);
@@ -75,7 +73,7 @@ void InvisibilitySpell::Update(float timeDelta)
 	if(m_target != PlayerEntityHandle) {
 		if(!(entities[m_target]->gameFlags & GFLAG_INVISIBILITY)) {
 			m_targets.clear();
-			ARX_SPELLS_Fizzle(m_thisHandle);
+			ARX_SPELLS_Fizzle(this);
 		}
 	}	
 }

@@ -712,12 +712,12 @@ void SPELLEND_Notify(SpellBase & spell) {
 
 
 //! Plays the sound of Fizzling spell
-void ARX_SPELLS_Fizzle(SpellHandle num) {
+void ARX_SPELLS_Fizzle(SpellBase * spell) {
 	
-	spells[num]->m_tolive = 0;
+	spell->m_tolive = 0;
 	
-	if(spells[num]->m_caster >= PlayerEntityHandle) {
-		ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE, &spells[num]->m_caster_pos);
+	if(spell->m_caster >= PlayerEntityHandle) {
+		ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE, &spell->m_caster_pos);
 	}
 }
 
@@ -903,27 +903,22 @@ void ARX_SPELLS_ManageMagic() {
 /*!
  * Plays the sound of Fizzling spell plus "NO MANA" speech
  */
-void ARX_SPELLS_FizzleNoMana(SpellHandle num) {
-	if(num < 0) {
-		return;
-	}
-	if(spells[num]->m_caster >= PlayerEntityHandle) {
-		spells[num]->m_tolive = 0;
-		ARX_SPELLS_Fizzle(num);
+void ARX_SPELLS_FizzleNoMana(SpellBase * spell) {
+	if(spell->m_caster >= PlayerEntityHandle) {
+		spell->m_tolive = 0;
+		ARX_SPELLS_Fizzle(spell);
 	}
 }
 
-bool CanPayMana(SpellHandle num, float cost, bool _bSound = true) {
-	
-	if(num < 0)
-		return false;
+bool CanPayMana(SpellBase * spell, float cost, bool _bSound = true) {
 
-	if(spells[num]->m_flags & SPELLCAST_FLAG_NOMANA)
+
+	if(spell->m_flags & SPELLCAST_FLAG_NOMANA)
 		return true;
 
-	if(spells[num]->m_caster == PlayerEntityHandle) {
+	if(spell->m_caster == PlayerEntityHandle) {
 		if(player.manaPool.current < cost) {
-			ARX_SPELLS_FizzleNoMana(num);
+			ARX_SPELLS_FizzleNoMana(spell);
 
 			if(_bSound) {
 				ARX_SPEECH_Add(getLocalised("player_cantcast"));
@@ -934,13 +929,13 @@ bool CanPayMana(SpellHandle num, float cost, bool _bSound = true) {
 
 		player.manaPool.current -= cost;
 		return true;
-	} else if(ValidIONum(spells[num]->m_caster)) {
-		if(entities[spells[num]->m_caster]->ioflags & IO_NPC) {
-			if(entities[spells[num]->m_caster]->_npcdata->manaPool.current < cost) {
-				ARX_SPELLS_FizzleNoMana(num);
+	} else if(ValidIONum(spell->m_caster)) {
+		if(entities[spell->m_caster]->ioflags & IO_NPC) {
+			if(entities[spell->m_caster]->_npcdata->manaPool.current < cost) {
+				ARX_SPELLS_FizzleNoMana(spell);
 				return false;
 			}
-			entities[spells[num]->m_caster]->_npcdata->manaPool.current -= cost;
+			entities[spell->m_caster]->_npcdata->manaPool.current -= cost;
 			return true;
 		}
 	}
@@ -1306,7 +1301,7 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flags,
 	spell.m_fManaCostPerSecond = 0.f;
 	spell.m_launchDuration = duration;
 
-	if(!CanPayMana(i, ARX_SPELLS_GetManaCost(typ, spell.m_level))) {
+	if(!CanPayMana(&spell, ARX_SPELLS_GetManaCost(typ, spell.m_level))) {
 		return false;
 	}
 	
@@ -2032,8 +2027,8 @@ void ARX_SPELLS_Update() {
 			continue;
 		}
 		
-		if(spell->m_bDuration && !CanPayMana(spell->m_thisHandle, spell->m_fManaCostPerSecond * (float)framedelay * (1.0f/1000), false))
-			ARX_SPELLS_Fizzle(spell->m_thisHandle);
+		if(spell->m_bDuration && !CanPayMana(spell, spell->m_fManaCostPerSecond * (float)framedelay * (1.0f/1000), false))
+			ARX_SPELLS_Fizzle(spell);
 		
 		const long framediff = spell->m_timcreation + spell->m_tolive - tim;
 		

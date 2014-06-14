@@ -104,6 +104,8 @@ void TryToCastSpell(Entity * io, SpellType spellid, long level, EntityHandle tar
 bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flags = 0, long level = -1, EntityHandle target = InvalidEntityHandle, long duration = -1);
 void ARX_SPELLS_Update();
 
+void ARX_SPELLS_Fizzle(SpellBase * spell);
+
 void ARX_SPELLS_ManageMagic();
 
 void ARX_SPELLS_CancelSpellTarget();

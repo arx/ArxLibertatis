@@ -32,8 +32,6 @@
 
 const size_t MAX_PRECAST = 3;
 
-extern void ARX_SPELLS_FizzleNoMana(SpellHandle num);
-
 unsigned long LAST_PRECAST_TIME = 0;
 
 std::vector<PRECAST_STRUCT> Precast;
@@ -75,7 +73,7 @@ long PrecastCheckCanPayMana(PrecastHandle num, float cost, bool _bSound = true) 
 		return 1;
 	
 	// FIXME casting Precast to Spell Handle
-	ARX_SPELLS_FizzleNoMana(SpellHandle(num));
+	// ARX_SPELLS_FizzleNoMana(SpellHandle(num));
 
 	if(_bSound) {
 		ARX_SPEECH_Add(getLocalised("player_cantcast"));
