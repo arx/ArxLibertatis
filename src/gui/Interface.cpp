@@ -1931,7 +1931,7 @@ void ArxGame::managePlayerControls()
 
 		if(bRenderInCursorMode) {
 			if(eyeball.exist != 0) {
-				spells.RequestEndOfInstanceForThisCaster(SPELL_FLYING_EYE, PlayerEntityHandle);
+				spells.endByCaster(PlayerEntityHandle, SPELL_FLYING_EYE);
 			}
 		}
 	}

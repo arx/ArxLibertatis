@@ -103,7 +103,7 @@ void HealSpell::Update(float timeDelta)
 
 void DetectTrapSpell::Launch()
 {
-	spells.RequestEndOfInstanceForThisCaster(SPELL_DETECT_TRAP, m_caster);
+	spells.endByCaster(m_caster, SPELL_DETECT_TRAP);
 	
 	if(m_caster == PlayerEntityHandle) {
 		m_target = m_caster;
@@ -154,9 +154,9 @@ void DetectTrapSpell::Update(float timeDelta)
 void ArmorSpell::Launch()
 {
 	spells.endByTarget(m_target, SPELL_ARMOR);
-	spells.RequestEndOfInstanceForThisCaster(SPELL_LOWER_ARMOR, m_caster);
-	spells.RequestEndOfInstanceForThisCaster(SPELL_FIRE_PROTECTION, m_caster);
-	spells.RequestEndOfInstanceForThisCaster(SPELL_COLD_PROTECTION, m_caster);
+	spells.endByCaster(m_caster, SPELL_LOWER_ARMOR);
+	spells.endByCaster(m_caster, SPELL_FIRE_PROTECTION);
+	spells.endByCaster(m_caster, SPELL_COLD_PROTECTION);
 	
 	if(m_caster == PlayerEntityHandle) {
 		m_target = m_caster;
@@ -225,9 +225,9 @@ void ArmorSpell::Update(float timeDelta)
 void LowerArmorSpell::Launch()
 {
 	spells.endByTarget(m_target, SPELL_LOWER_ARMOR);
-	spells.RequestEndOfInstanceForThisCaster(SPELL_ARMOR, m_caster);
-	spells.RequestEndOfInstanceForThisCaster(SPELL_FIRE_PROTECTION, m_caster);
-	spells.RequestEndOfInstanceForThisCaster(SPELL_COLD_PROTECTION, m_caster);
+	spells.endByCaster(m_caster, SPELL_ARMOR);
+	spells.endByCaster(m_caster, SPELL_FIRE_PROTECTION);
+	spells.endByCaster(m_caster, SPELL_COLD_PROTECTION);
 	
 	if(!(m_flags & SPELLCAST_FLAG_NOSOUND)) {
 		ARX_SOUND_PlaySFX(SND_SPELL_LOWER_ARMOR, &entities[m_target]->pos);
@@ -308,8 +308,8 @@ void HarmSpell::Launch()
 	                                       &m_caster_pos, 1.f,
 	                                       ARX_SOUND_PLAY_LOOPED);
 	
-	spells.RequestEndOfInstanceForThisCaster(SPELL_LIFE_DRAIN, m_caster);
-	spells.RequestEndOfInstanceForThisCaster(SPELL_MANA_DRAIN, m_caster);
+	spells.endByCaster(m_caster, SPELL_LIFE_DRAIN);
+	spells.endByCaster(m_caster, SPELL_MANA_DRAIN);
 	
 	m_exist = true;
 	m_tolive = (m_launchDuration >-1) ? m_launchDuration : 6000000;

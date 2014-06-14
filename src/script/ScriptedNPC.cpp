@@ -186,7 +186,7 @@ public:
 				
 				EntityHandle from = context.getEntity()->index();
 				if(ValidIONum(from)) {
-					spells.RequestEndOfInstanceForThisCaster(spellid, from);
+					spells.endByCaster(from, spellid);
 				}
 				
 				return Success;

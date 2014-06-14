@@ -73,9 +73,10 @@ public:
 	SpellBase * operator[] (const SpellHandle handle);
 	
 	void endAllByCaster(EntityHandle caster);
+	void endByCaster(EntityHandle caster, SpellType type);
+	
 	void endByTarget(EntityHandle target, SpellType type);
 	
-	void RequestEndOfInstanceForThisCaster(SpellType typ, EntityHandle caster);
 	bool ExistAnyInstanceForThisCaster(SpellType typ, EntityHandle caster);
 	
 	SpellBase * getSpellOnTarget(EntityHandle target, SpellType type);

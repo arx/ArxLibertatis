@@ -35,7 +35,7 @@
 
 void RuneOfGuardingSpell::Launch()
 {
-	spells.RequestEndOfInstanceForThisCaster(SPELL_RUNE_OF_GUARDING, m_caster);
+	spells.endByCaster(m_caster, SPELL_RUNE_OF_GUARDING);
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_RUNE_OF_GUARDING);
 	m_exist = true;
@@ -75,7 +75,7 @@ void RuneOfGuardingSpell::Update(float timeDelta)
 
 void LevitateSpell::Launch()
 {
-	spells.RequestEndOfInstanceForThisCaster(SPELL_LEVITATE, m_caster);
+	spells.endByCaster(m_caster, SPELL_LEVITATE);
 	
 	if(m_caster == PlayerEntityHandle) {
 		m_target = PlayerEntityHandle;
@@ -193,7 +193,7 @@ void CurePoisonSpell::Update(float timeDelta)
 
 void RepelUndeadSpell::Launch()
 {
-	spells.RequestEndOfInstanceForThisCaster(SPELL_REPEL_UNDEAD, m_caster);
+	spells.endByCaster(m_caster, SPELL_REPEL_UNDEAD);
 	
 	if(m_caster == PlayerEntityHandle) {
 		m_target = PlayerEntityHandle;

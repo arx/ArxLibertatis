@@ -214,7 +214,7 @@ void FlyingEyeSpell::Update(float timeDelta)
 
 void FireFieldSpell::Launch()
 {
-	spells.RequestEndOfInstanceForThisCaster(SPELL_FIRE_FIELD, m_caster);
+	spells.endByCaster(m_caster, SPELL_FIRE_FIELD);
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_FIRE_FIELD_START);
 	
@@ -343,7 +343,7 @@ void FireFieldSpell::Update(float timeDelta)
 
 void IceFieldSpell::Launch()
 {
-	spells.RequestEndOfInstanceForThisCaster(SPELL_ICE_FIELD, m_caster);
+	spells.endByCaster(m_caster, SPELL_ICE_FIELD);
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_ICE_FIELD);
 	

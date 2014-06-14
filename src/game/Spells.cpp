@@ -179,12 +179,12 @@ void SpellManager::endByTarget(EntityHandle target, SpellType type) {
 	}
 }
 
-void SpellManager::RequestEndOfInstanceForThisCaster(SpellType typ, EntityHandle caster) {
+void SpellManager::endByCaster(EntityHandle caster, SpellType type) {
 	
 	for(size_t i = 0; i < MAX_SPELLS; i++) {
 		SpellBase & spell = m_spells[i];
 		
-		if(spell.m_exist && spell.m_type == typ && spell.m_caster == caster) {
+		if(spell.m_exist && spell.m_type == type && spell.m_caster == caster) {
 			spell.m_tolive = 0;
 			return;
 		}

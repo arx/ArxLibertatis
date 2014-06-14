@@ -88,8 +88,8 @@ bool ManaDrainSpell::CanLaunch()
 
 void ManaDrainSpell::Launch()
 {
-	spells.RequestEndOfInstanceForThisCaster(SPELL_LIFE_DRAIN, m_caster);
-	spells.RequestEndOfInstanceForThisCaster(SPELL_HARM, m_caster);
+	spells.endByCaster(m_caster, SPELL_LIFE_DRAIN);
+	spells.endByCaster(m_caster, SPELL_HARM);
 	
 	m_exist = true;
 	m_tolive = (m_launchDuration > -1) ? m_launchDuration : 6000000;
@@ -360,8 +360,8 @@ bool LifeDrainSpell::CanLaunch()
 
 void LifeDrainSpell::Launch()
 {
-	spells.RequestEndOfInstanceForThisCaster(SPELL_HARM, m_caster);
-	spells.RequestEndOfInstanceForThisCaster(SPELL_MANA_DRAIN, m_caster);
+	spells.endByCaster(m_caster, SPELL_HARM);
+	spells.endByCaster(m_caster, SPELL_MANA_DRAIN);
 	
 	m_exist = true;
 	m_tolive = (m_launchDuration > -1) ? m_launchDuration : 6000000;

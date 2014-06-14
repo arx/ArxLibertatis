@@ -45,7 +45,7 @@ void BlessSpell::Launch()
 		m_target = PlayerEntityHandle;
 	}
 	
-	spells.RequestEndOfInstanceForThisCaster(SPELL_BLESS, m_target);
+	spells.endByCaster(m_target, SPELL_BLESS);
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_BLESS);
 	m_exist = true;
@@ -161,9 +161,9 @@ void DispellFieldSpell::Launch()
 void FireProtectionSpell::Launch()
 {
 	spells.endByTarget(m_target, SPELL_FIRE_PROTECTION);
-	spells.RequestEndOfInstanceForThisCaster(SPELL_ARMOR, m_caster);
-	spells.RequestEndOfInstanceForThisCaster(SPELL_LOWER_ARMOR, m_caster);
-	spells.RequestEndOfInstanceForThisCaster(SPELL_COLD_PROTECTION, m_caster);
+	spells.endByCaster(m_caster, SPELL_ARMOR);
+	spells.endByCaster(m_caster, SPELL_LOWER_ARMOR);
+	spells.endByCaster(m_caster, SPELL_COLD_PROTECTION);
 	
 	m_exist = true;
 	m_timcreation = (unsigned long)(arxtime);
@@ -229,9 +229,9 @@ void FireProtectionSpell::Update(float timeDelta)
 void ColdProtectionSpell::Launch()
 {
 	spells.endByTarget(m_target, SPELL_COLD_PROTECTION);
-	spells.RequestEndOfInstanceForThisCaster(SPELL_ARMOR, m_caster);
-	spells.RequestEndOfInstanceForThisCaster(SPELL_LOWER_ARMOR, m_caster);
-	spells.RequestEndOfInstanceForThisCaster(SPELL_FIRE_PROTECTION, m_caster);
+	spells.endByCaster(m_caster, SPELL_ARMOR);
+	spells.endByCaster(m_caster, SPELL_LOWER_ARMOR);
+	spells.endByCaster(m_caster, SPELL_FIRE_PROTECTION);
 	
 	if(m_caster == PlayerEntityHandle) {
 		m_target = PlayerEntityHandle;
@@ -323,7 +323,7 @@ void TelekinesisSpell::End()
 
 void CurseSpell::Launch()
 {
-	spells.RequestEndOfInstanceForThisCaster(SPELL_CURSE, m_target);
+	spells.endByCaster(m_target, SPELL_CURSE);
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_CURSE, &entities[m_target]->pos);
 	
