@@ -709,8 +709,6 @@ void SPELLEND_Notify(SpellBase & spell) {
 	}
 }
 
-
-
 //! Plays the sound of Fizzling spell
 void ARX_SPELLS_Fizzle(SpellBase * spell) {
 	
@@ -900,16 +898,6 @@ void ARX_SPELLS_ManageMagic() {
 	}
 }
 
-/*!
- * Plays the sound of Fizzling spell plus "NO MANA" speech
- */
-void ARX_SPELLS_FizzleNoMana(SpellBase * spell) {
-	if(spell->m_caster >= PlayerEntityHandle) {
-		spell->m_tolive = 0;
-		ARX_SPELLS_Fizzle(spell);
-	}
-}
-
 bool CanPayMana(SpellBase * spell, float cost, bool _bSound = true) {
 
 
@@ -918,7 +906,7 @@ bool CanPayMana(SpellBase * spell, float cost, bool _bSound = true) {
 
 	if(spell->m_caster == PlayerEntityHandle) {
 		if(player.manaPool.current < cost) {
-			ARX_SPELLS_FizzleNoMana(spell);
+			ARX_SPELLS_Fizzle(spell);
 
 			if(_bSound) {
 				ARX_SPEECH_Add(getLocalised("player_cantcast"));
@@ -932,7 +920,7 @@ bool CanPayMana(SpellBase * spell, float cost, bool _bSound = true) {
 	} else if(ValidIONum(spell->m_caster)) {
 		if(entities[spell->m_caster]->ioflags & IO_NPC) {
 			if(entities[spell->m_caster]->_npcdata->manaPool.current < cost) {
-				ARX_SPELLS_FizzleNoMana(spell);
+				ARX_SPELLS_Fizzle(spell);
 				return false;
 			}
 			entities[spell->m_caster]->_npcdata->manaPool.current -= cost;
