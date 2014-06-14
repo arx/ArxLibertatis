@@ -57,13 +57,13 @@ public:
 	
 	void Create();
 	
+	void setPos(const Vec3f & pos);
+	
 	void Update(float timeDelta);
 	void Render();
-
-	Vec3f eSrc;
-	SpellHandle spellinstance;
 	
 private:
+	Vec3f eSrc;
 	ParticleSystem * pPS;
 };
 

@@ -73,14 +73,6 @@ CHeal::~CHeal() {
 
 void CHeal::Create() {
 	
-	SetAngle(MAKEANGLE(player.angle.getPitch()));
-	
-	if(spells[spellinstance]->m_caster == PlayerEntityHandle) {
-		eSrc = player.pos;
-	} else {
-		eSrc = entities[spells[spellinstance]->m_caster]->pos;
-	}
-	
 	pPS->m_lightHandle = GetFreeDynLight();
 
 	if(lightHandleIsValid(pPS->m_lightHandle)) {
@@ -126,18 +118,17 @@ void CHeal::Create() {
 	pPS->SetParams(cp);
 }
 
+void CHeal::setPos(const Vec3f & pos)
+{
+	eSrc = pos;
+}
+
 void CHeal::Update(float timeDelta)
 {
 	ulCurrentTime += timeDelta;
 
 	if(ulCurrentTime >= ulDuration)
 		return;
-	
-	if(spells[spellinstance]->m_caster == PlayerEntityHandle) {
-		eSrc = player.pos;
-	} else if(ValidIONum(spells[spellinstance]->m_target)) {
-		eSrc = entities[spells[spellinstance]->m_target]->pos;
-	}
 	
 	if(!lightHandleIsValid(pPS->m_lightHandle))
 		pPS->m_lightHandle = GetFreeDynLight();

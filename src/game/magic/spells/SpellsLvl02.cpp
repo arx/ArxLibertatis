@@ -48,7 +48,15 @@ void HealSpell::Launch()
 	m_tolive = (m_launchDuration > -1) ? m_launchDuration : 3500;
 	
 	CHeal * effect = new CHeal();
-	effect->spellinstance = m_thisHandle;
+	
+	effect->SetAngle(MAKEANGLE(player.angle.getPitch()));
+	
+	if(m_caster == PlayerEntityHandle) {
+		effect->setPos(player.pos);
+	} else {
+		effect->setPos(entities[m_caster]->pos);
+	}
+	
 	effect->Create();
 	effect->SetDuration(m_tolive);
 	
@@ -58,16 +66,21 @@ void HealSpell::Launch()
 
 void HealSpell::Update(float timeDelta)
 {
-	CSpellFx *pCSpellFX = m_pSpellFx;
+	CHeal * effect = static_cast<CHeal *>(m_pSpellFx);
+	if(!effect)
+		return;
 
-	if(pCSpellFX) {
-		pCSpellFX->Update(timeDelta);
-		pCSpellFX->Render();
+	Vec3f pos;
+	if(m_caster == PlayerEntityHandle) {
+		pos = player.pos;
+	} else if(ValidIONum(m_target)) {
+		pos = entities[m_target]->pos;
 	}
-
-	CHeal * ch=(CHeal *)pCSpellFX;
-
-	if (ch)
+	effect->setPos(pos);
+	
+	effect->Update(timeDelta);
+	effect->Render();
+	
 	for(size_t ii = 0; ii < entities.size(); ii++) {
 		const EntityHandle handle = EntityHandle(ii);
 		Entity * e = entities[handle];
@@ -84,7 +97,7 @@ void HealSpell::Update(float timeDelta)
 			if(long(ii) == m_caster)
 				dist=0;
 			else
-				dist=fdist(ch->eSrc, e->pos);
+				dist=fdist(pos, e->pos);
 
 			if(dist<300.f) {
 				float gain=((rnd()*1.6f+0.8f)*m_level)*(300.f-dist)*( 1.0f / 300 )*timeDelta*( 1.0f / 1000 );
