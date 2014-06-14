@@ -72,9 +72,8 @@ long PrecastCheckCanPayMana(PrecastHandle num, float cost, bool _bSound = true) 
 	if(player.manaPool.current >= cost)
 		return 1;
 	
-	// FIXME casting Precast to Spell Handle
-	// ARX_SPELLS_FizzleNoMana(SpellHandle(num));
-
+	ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE);
+	
 	if(_bSound) {
 		ARX_SPEECH_Add(getLocalised("player_cantcast"));
 		ARX_SPEECH_AddSpeech(entities.player(), "player_cantcast", ANIM_TALK_NEUTRAL);
