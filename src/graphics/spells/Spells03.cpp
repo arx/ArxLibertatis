@@ -372,8 +372,6 @@ void CIceProjectile::Create(Vec3f aeSrc, float afBeta)
 	SetDuration(ulDuration);
 	SetAngle(afBeta);
 	
-	float xmin, ymin, zmin;
-
 	Vec3f s, e, h;
 
 	s.x					= aeSrc.x;
@@ -422,25 +420,15 @@ void CIceProjectile::Create(Vec3f aeSrc, float afBeta)
 		tSize[i] = Vec3f_ZERO;
 		tSizeMax[i] = randomVec() + Vec3f(0.f, 0.2f, 0.f);
 
+		Vec3f minSize;
 		if(tType[i] == 0) {
-			xmin = 1.2f;
-			ymin = 1;
-			zmin = 1.2f;
+			minSize = Vec3f(1.2f, 1.f, 1.2f);
 		} else {
-			xmin = 0.4f;
-			ymin = 0.3f;
-			zmin = 0.4f;
+			minSize = Vec3f(0.4f, 0.3f, 0.4f);
 		}
-
-		if(tSizeMax[i].x < xmin)
-			tSizeMax[i].x = xmin;
-
-		if(tSizeMax[i].y < ymin)
-			tSizeMax[i].y = ymin;
-
-		if(tSizeMax[i].z < zmin)
-			tSizeMax[i].z = zmin;
-
+		
+		tSizeMax[i] = glm::max(tSizeMax[i], minSize);
+		
 		int iNum = static_cast<int>(i / 2);
 
 		if(tType[i] == 0) {
