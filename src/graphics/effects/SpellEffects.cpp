@@ -51,8 +51,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 CSpellFx::CSpellFx() :
 	fBeta(0),
-	lLightId(-1),
-	lSrc(-1)
+	lLightId(-1)
 {
 	SetDuration(1000);
 	SetAngle(fBeta);

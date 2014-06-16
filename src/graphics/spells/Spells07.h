@@ -70,6 +70,7 @@ public:
 	void Render();
 	
 	float	fDamage;
+	bool m_isMassLightning;
 	SpellHandle spellinstance;
 	
 private:

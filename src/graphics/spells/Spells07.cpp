@@ -400,8 +400,7 @@ void CLightning::Render()
 	// Create hand position if a hand is defined
 	//	spells[spellinstance].hand_group=entities[spells[spellinstance].caster]->obj->fastaccess.primary_attach;//GetActionPointIdx(entities[spells[spellinstance].caster]->obj,"primary_attach");
 	// Player source
-	if(spells[spellinstance]->m_type == SPELL_MASS_LIGHTNING_STRIKE) {
-		arx_assert(lSrc == -1);	//ARX: jycorbel (2010-07-19) - We really need ePos when lSrc!=-1 ; in that case lSrc should be equal to -1 !
+	if(m_isMassLightning) {
 		ePos = Vec3f_ZERO;
 	} else {
 		
@@ -464,7 +463,7 @@ void CLightning::Render()
 		cnodetab[i].f = z_z;
 		
 		Vec3f a = cnodetab[i].pos + z_z;
-		if(lSrc != -1) {
+		if(!m_isMassLightning) {
 			Vec3f vv2;
 			Vec3f vv1 = astart;
 			vv1 = VRotateX(vv1, (falpha));  
