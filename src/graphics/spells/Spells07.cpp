@@ -375,21 +375,13 @@ void CLightning::Render()
 
 	if(ulCurrentTime >= ulDuration)
 		return;
-
-	float fOneOnDuration = 1.f / (float)(ulDuration);
-	falpha = 1.f - (((float)(ulCurrentTime)) * fOneOnDuration); 
-
-	if(falpha > 1.f)
-		falpha = 1.f;
-
+	
 	if(iTTL <= 0) {
 		fTotoro = 0;
 		fMySize = 2;
 		ReCreate();
 	}
-
-	falpha = 1;
-
+	
 	long i;
 
 	Vec3f ePos;
