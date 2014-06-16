@@ -47,12 +47,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_PHYSICS_ATTRACTORS_H
 #define ARX_PHYSICS_ATTRACTORS_H
 
+#include "game/GameTypes.h"
 #include "math/Types.h"
 
 class Entity;
 
 void ARX_SPECIAL_ATTRACTORS_Reset();
-bool ARX_SPECIAL_ATTRACTORS_Add(long ionum, float power, float radius);
+bool ARX_SPECIAL_ATTRACTORS_Add(EntityHandle ionum, float power, float radius);
 void ARX_SPECIAL_ATTRACTORS_ComputeForIO(const Entity & io, Vec3f & force);
 
 #endif // ARX_PHYSICS_ATTRACTORS_H

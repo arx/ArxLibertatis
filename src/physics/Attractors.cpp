@@ -66,7 +66,7 @@ void ARX_SPECIAL_ATTRACTORS_Reset() {
 	}
 }
 
-static void ARX_SPECIAL_ATTRACTORS_Remove(long ionum) {
+static void ARX_SPECIAL_ATTRACTORS_Remove(EntityHandle ionum) {
 	for(size_t i = 0; i < MAX_ATTRACTORS; i++) {
 		if(attractors[i].ionum == ionum) {
 			attractors[i].ionum = InvalidEntityHandle;
@@ -74,7 +74,7 @@ static void ARX_SPECIAL_ATTRACTORS_Remove(long ionum) {
 	}
 }
 
-static long ARX_SPECIAL_ATTRACTORS_Exist(long ionum) {
+static long ARX_SPECIAL_ATTRACTORS_Exist(EntityHandle ionum) {
 	for(size_t i = 0; i < MAX_ATTRACTORS; i++) {
 		if(attractors[i].ionum == ionum) {
 			return i;
@@ -83,7 +83,7 @@ static long ARX_SPECIAL_ATTRACTORS_Exist(long ionum) {
 	return -1;
 }
 
-bool ARX_SPECIAL_ATTRACTORS_Add(long ionum, float power, float radius) {
+bool ARX_SPECIAL_ATTRACTORS_Add(EntityHandle ionum, float power, float radius) {
 	
 	if(power == 0.f) {
 		ARX_SPECIAL_ATTRACTORS_Remove(ionum);
