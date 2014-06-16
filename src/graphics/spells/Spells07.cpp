@@ -95,7 +95,6 @@ CLightning::CLightning() :
 	fAngleYMax(32.0f),
 	fAngleZMin(5.0f),
 	fAngleZMax(32.0f)
-	, fbeta(0.f)
 	, iTTL(0)
 	, falpha(1.0f)
 {
@@ -267,7 +266,6 @@ void CLightning::Create(Vec3f aeFrom, Vec3f aeTo, float beta) {
 	nbtotal = 0;
 
 	if(nbtotal == 0) {
-		fbeta = 0.f; 
 		falpha = 1.f; 
 
 		LIGHTNING LInfo;
@@ -444,7 +442,7 @@ void CLightning::Render()
 
 	v2[0].color = v2[1].color = v2[2].color = v2[3].color = Color::white.toBGR();
 
-	fbeta = fBeta + rnd() * 2 * fMySize;
+	float fbeta = fBeta + rnd() * 2 * fMySize;
 
 	for(i = 0; i < nbtotal && i <= fTotoro; i++) {
 		Vec3f astart = cnodetab[cnodetab[i].parent].pos + cnodetab[cnodetab[i].parent].f;

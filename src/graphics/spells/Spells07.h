@@ -90,7 +90,6 @@ private:
 	float	fAngleZMax;
 	Vec3f eSrc;
 	Vec3f eDest;
-	float	fbeta;
 	TextureContainer * tex_light;
 	int iTTL;
 	float	falpha;
