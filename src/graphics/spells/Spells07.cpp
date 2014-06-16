@@ -96,7 +96,6 @@ CLightning::CLightning() :
 	fAngleZMin(5.0f),
 	fAngleZMax(32.0f)
 	, iTTL(0)
-	, falpha(1.0f)
 {
 	SetDuration(2000);
 	ulCurrentTime = ulDuration + 1;
@@ -266,8 +265,6 @@ void CLightning::Create(Vec3f aeFrom, Vec3f aeTo, float beta) {
 	nbtotal = 0;
 
 	if(nbtotal == 0) {
-		falpha = 1.f; 
-
 		LIGHTNING LInfo;
 		memset(&LInfo, 0, sizeof(LIGHTNING));
 
@@ -303,8 +300,6 @@ void CLightning::ReCreate()
 	nbtotal = 0;
 
 	if(nbtotal == 0) {
-		falpha = 1.f;
-
 		LIGHTNING LInfo;
 		memset(&LInfo, 0, sizeof(LIGHTNING));
 
@@ -385,7 +380,7 @@ void CLightning::Render()
 	Vec3f ePos;
 	
 	float fBeta = 0.f;
-	falpha = 0.f;
+	float falpha = 0.f;
 
 	// Create hand position if a hand is defined
 	//	spells[spellinstance].hand_group=entities[spells[spellinstance].caster]->obj->fastaccess.primary_attach;//GetActionPointIdx(entities[spells[spellinstance].caster]->obj,"primary_attach");

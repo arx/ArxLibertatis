@@ -92,7 +92,6 @@ private:
 	Vec3f eDest;
 	TextureContainer * tex_light;
 	int iTTL;
-	float	falpha;
 	
 	struct CLightningNode {
 		Vec3f pos;
