@@ -89,7 +89,7 @@ class CSpellFx
 
 void Draw3DLineTexNew(Vec3f startPos, Vec3f endPos, Color startColor, Color endColor, float startSize, float endSize);
 
-void Split(TexturedVertex * v, int a, int b, float fX, float fMulX, float fY, float fMulY, float fZ, float fMulZ);
+void Split(Vec3f * v, int a, int b, float fX, float fMulX, float fY, float fMulY, float fZ, float fMulZ);
 void Split(TexturedVertex * v, int a, int b, float yo, float fMul = 0.5f);
 
 extern EERIE_3DOBJ * ssol;

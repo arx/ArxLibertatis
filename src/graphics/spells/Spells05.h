@@ -164,7 +164,7 @@ private:
 	float fTrail;
 	
 	Vec3f eMove;
-	TexturedVertex pathways[40];
+	Vec3f pathways[40];
 	ParticleSystem pPS;
 	ParticleSystem pPSStream;
 };

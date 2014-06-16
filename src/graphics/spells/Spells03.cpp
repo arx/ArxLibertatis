@@ -404,8 +404,8 @@ void CIceProjectile::Create(Vec3f aeSrc, float afBeta)
 	iNumber = checked_range_cast<int>(fDist);
 
 	int end = iNumber / 2;
-	tv1a[0].p = s + Vec3f(0.f, 100.f, 0.f);
-	tv1a[end].p = e + Vec3f(0.f, 100.f, 0.f);
+	tv1a[0] = s + Vec3f(0.f, 100.f, 0.f);
+	tv1a[end] = e + Vec3f(0.f, 100.f, 0.f);
 
 	Split(tv1a, 0, end, 80, 0.5f, 0, 1, 80, 0.5f);
 
@@ -432,13 +432,13 @@ void CIceProjectile::Create(Vec3f aeSrc, float afBeta)
 		int iNum = static_cast<int>(i / 2);
 
 		if(tType[i] == 0) {
-			tPos[i].x = tv1a[iNum].p.x + frand2() * 80;
-			tPos[i].y = tv1a[iNum].p.y;
-			tPos[i].z = tv1a[iNum].p.z + frand2() * 80;
+			tPos[i].x = tv1a[iNum].x + frand2() * 80;
+			tPos[i].y = tv1a[iNum].y;
+			tPos[i].z = tv1a[iNum].z + frand2() * 80;
 		} else {
-			tPos[i].x = tv1a[iNum].p.x + frand2() * 40;
-			tPos[i].y = tv1a[iNum].p.y;
-			tPos[i].z = tv1a[iNum].p.z + frand2() * 40;
+			tPos[i].x = tv1a[iNum].x + frand2() * 40;
+			tPos[i].y = tv1a[iNum].y;
+			tPos[i].z = tv1a[iNum].z + frand2() * 40;
 		}
 		
 		DamageParameters damage;

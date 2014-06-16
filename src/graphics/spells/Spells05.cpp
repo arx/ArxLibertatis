@@ -435,21 +435,21 @@ void CPoisonProjectile::Create(Vec3f _eSrc, float _fBeta)
 
 	e.y += 0.f;
 
-	pathways[0].p = eSrc;
-	pathways[9].p = e;
+	pathways[0] = eSrc;
+	pathways[9] = e;
 	Split(pathways, 0, 9, 10 * fBetaRadCos, 10, 10, 10, 10 * fBetaRadSin, 10);
 
 	if (0)
 		for (i = 0; i < 10; i++)
 		{
-			if (pathways[i].p.y >= eSrc.y + 150)
+			if (pathways[i].y >= eSrc.y + 150)
 			{
-				pathways[i].p.y = eSrc.y + 150;
+				pathways[i].y = eSrc.y + 150;
 			}
 
-			if (pathways[i].p.y <= eSrc.y + 50)
+			if (pathways[i].y <= eSrc.y + 50)
 			{
-				pathways[i].p.y = eSrc.y + 50;
+				pathways[i].y = eSrc.y + 50;
 			}
 		}
 
@@ -570,7 +570,7 @@ void CPoisonProjectile::Render() {
 	int n = BEZIERPrecision;
 	float delta = 1.0f / n;
 	
-	Vec3f lastpos = pathways[0].p;
+	Vec3f lastpos = pathways[0];
 	
 	int i = 0;
 	for(i = 0; i < 9; i++) {
@@ -594,20 +594,20 @@ void CPoisonProjectile::Render() {
 			float f2 = t3 - 2.f * t2 + t ;
 			float f3 = t3 - t2 ;
 			
-			float val = pathways[kpsuiv].p.x;
-			float p0 = 0.5f * (val - pathways[kpprec].p.x);
-			float p1 = 0.5f * (pathways[kpsuivsuiv].p.x - pathways[i].p.x);
-			lastpos.x = f0 * pathways[i].p.x + f1 * val + f2 * p0 + f3 * p1;
+			float val = pathways[kpsuiv].x;
+			float p0 = 0.5f * (val - pathways[kpprec].x);
+			float p1 = 0.5f * (pathways[kpsuivsuiv].x - pathways[i].x);
+			lastpos.x = f0 * pathways[i].x + f1 * val + f2 * p0 + f3 * p1;
 			
-			val = pathways[kpsuiv].p.y;
-			p0 = 0.5f * (val - pathways[kpprec].p.y);
-			p1 = 0.5f * (pathways[kpsuivsuiv].p.y - pathways[i].p.y);
-			lastpos.y = f0 * pathways[i].p.y + f1 * val + f2 * p0 + f3 * p1;
+			val = pathways[kpsuiv].y;
+			p0 = 0.5f * (val - pathways[kpprec].y);
+			p1 = 0.5f * (pathways[kpsuivsuiv].y - pathways[i].y);
+			lastpos.y = f0 * pathways[i].y + f1 * val + f2 * p0 + f3 * p1;
 			
-			val = pathways[kpsuiv].p.z;
-			p0 = 0.5f * (val - pathways[kpprec].p.z);
-			p1 = 0.5f * (pathways[kpsuivsuiv].p.z - pathways[i].p.z);
-			lastpos.z = f0 * pathways[i].p.z + f1 * val + f2 * p0 + f3 * p1;
+			val = pathways[kpsuiv].z;
+			p0 = 0.5f * (val - pathways[kpprec].z);
+			p1 = 0.5f * (pathways[kpsuivsuiv].z - pathways[i].z);
+			lastpos.z = f0 * pathways[i].z + f1 * val + f2 * p0 + f3 * p1;
 		}
 	}
 	

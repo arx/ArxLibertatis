@@ -152,7 +152,7 @@ void Draw3DLineTexNew(Vec3f startPos, Vec3f endPos, Color startColor, Color endC
 }
 
 
-void Split(TexturedVertex * v, int a, int b, float fX, float fMulX, float fY, float fMulY, float fZ, float fMulZ)
+void Split(Vec3f * v, int a, int b, float fX, float fMulX, float fY, float fMulY, float fZ, float fMulZ)
 {
 	if (a != b)
 	{
@@ -160,9 +160,9 @@ void Split(TexturedVertex * v, int a, int b, float fX, float fMulX, float fY, fl
 
 		if ((i != a) && (i != b))
 		{
-			v[i].p.x = (v[a].p.x + v[b].p.x) * 0.5f + fX * frand2();
-			v[i].p.y = (v[a].p.y + v[b].p.y) * 0.5f + fY * frand2(); 
-			v[i].p.z = (v[a].p.z + v[b].p.z) * 0.5f + fZ * frand2(); 
+			v[i].x = (v[a].x + v[b].x) * 0.5f + fX * frand2();
+			v[i].y = (v[a].y + v[b].y) * 0.5f + fY * frand2(); 
+			v[i].z = (v[a].z + v[b].z) * 0.5f + fZ * frand2(); 
 			Split(v, a, i, fX, fMulX, fY, fMulY, fZ, fMulZ);
 			Split(v, i, b, fX, fMulX, fY, fMulY, fZ, fMulZ);
 		}

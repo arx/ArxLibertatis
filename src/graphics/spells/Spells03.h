@@ -127,7 +127,7 @@ private:
 	Vec3f tSizeMax[MAX_ICE];
 	TextureContainer * tex_p1;
 	TextureContainer * tex_p2;
-	TexturedVertex tv1a[MAX_ICE];
+	Vec3f tv1a[MAX_ICE];
 };
 
 // Done By : did
