@@ -60,7 +60,7 @@ public:
 	void Render();
 	
 	Vec3f eSrc;
-	SpellHandle spellinstance;
+	float m_scale;
 	
 private:
 	Vec3f eTarget;

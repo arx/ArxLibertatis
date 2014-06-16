@@ -55,7 +55,6 @@ void BlessSpell::Launch()
 	m_fManaCostPerSecond = 0.5f * m_level * 0.6666f;
 	
 	CBless * effect = new CBless();
-	effect->spellinstance = m_thisHandle;
 	Vec3f target = entities[m_caster]->pos;
 	effect->Create(target, MAKEANGLE(player.angle.getPitch()));
 	effect->SetDuration(20000);
@@ -87,6 +86,8 @@ void BlessSpell::Update(float timeDelta)
 
 				pBless->Set_Angle(angle);
 			}
+			
+			pBless->m_scale = (m_level + 10) * 6.f;
 		}
 
 		m_pSpellFx->Update(timeDelta);

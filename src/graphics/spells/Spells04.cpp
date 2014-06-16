@@ -112,10 +112,9 @@ void CBless::Render()
 
 	TexturedVertex v[4];
 	TexturedVertex v3[4];
-
-	float ff = ((float)spells[spellinstance]->m_level + 10) * 6.f;
-	float fBetaRadCos = (float) cos(radians(MAKEANGLE(player.angle.getPitch()))) * ff;
-	float fBetaRadSin = (float) sin(radians(MAKEANGLE(player.angle.getPitch()))) * ff;
+	
+	float fBetaRadCos = (float) cos(radians(MAKEANGLE(player.angle.getPitch()))) * m_scale;
+	float fBetaRadSin = (float) sin(radians(MAKEANGLE(player.angle.getPitch()))) * m_scale;
 
 	ColorBGRA color = Color::white.toBGR();
 
