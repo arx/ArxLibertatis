@@ -262,40 +262,10 @@ void CLightning::Create(Vec3f aeFrom, Vec3f aeTo, float beta) {
 	SetPosSrc(aeFrom);
 	SetPosDest(aeTo);
 
-	nbtotal = 0;
-
-	if(nbtotal == 0) {
-		LIGHTNING LInfo;
-		memset(&LInfo, 0, sizeof(LIGHTNING));
-
-		LInfo.eStart = eSrc;
-		LInfo.eVect = eDest - eSrc;
-		LInfo.anb = lNbSegments;
-		LInfo.anbrec = 0;
-		LInfo.abFollow = true;
-		LInfo.aParent = 0;
-		LInfo.fAngleXMin = fAngleXMin;
-		LInfo.fAngleXMax = fAngleXMax;
-		LInfo.fAngleYMin = fAngleYMin;
-		LInfo.fAngleYMax = fAngleYMax;
-		LInfo.fAngleZMin = fAngleZMin;
-		LInfo.fAngleZMax = fAngleZMax;
-		
-		cnodetab[0].pos = eSrc;
-		cnodetab[0].size = 15;
-		cnodetab[0].parent = 0;
-		
-		BuildS(&LInfo);
-	}
-	
-	
-	float fRandom	= 500 + rnd() * 1000;
-	
-	iTTL = checked_range_cast<int>(fRandom);
-	
+	ReCreate(15);
 }
 
-void CLightning::ReCreate()
+void CLightning::ReCreate(float rootSize)
 {
 	nbtotal = 0;
 
@@ -317,7 +287,7 @@ void CLightning::ReCreate()
 		LInfo.fAngleZMax = fAngleZMax;
 
 		cnodetab[0].pos = eSrc;
-		cnodetab[0].size = 8;
+		cnodetab[0].size = rootSize;
 		cnodetab[0].parent = 0;
 
 		BuildS(&LInfo);
@@ -372,7 +342,7 @@ void CLightning::Render()
 	if(iTTL <= 0) {
 		fTotoro = 0;
 		fMySize = 2;
-		ReCreate();
+		ReCreate(8);
 	}
 	
 	long i;

@@ -104,7 +104,7 @@ private:
 	
 	struct LIGHTNING;
 	void BuildS(LIGHTNING * lightingInfo);
-	void ReCreate();
+	void ReCreate(float rootSize);
 };
 
 // Done By : Didier Pedreno
