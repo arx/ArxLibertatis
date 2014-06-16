@@ -67,9 +67,6 @@ class CSpellFx
 		float	fBetaRadCos;
 		float	fBetaRadSin;
 
-		float	fManaCostToLaunch;
-		float	fManaCostPerSecond;
-
 	public:
 		unsigned long ulDuration;
 		unsigned long ulCurrentTime;

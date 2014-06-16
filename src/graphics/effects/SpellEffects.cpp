@@ -51,8 +51,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 CSpellFx::CSpellFx() :
 	fBeta(0),
-	fManaCostToLaunch(10),
-	fManaCostPerSecond(10),
 	lLightId(-1),
 	lSrc(-1)
 {
