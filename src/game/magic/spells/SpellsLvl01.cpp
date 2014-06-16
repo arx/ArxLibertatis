@@ -126,7 +126,6 @@ void IgnitSpell::Launch()
 	m_tolive = 500;
 	
 	CIgnit * effect = new CIgnit();
-	effect->spellinstance = m_thisHandle;
 	
 	Vec3f target;
 	if(m_hand_group != -1) {
@@ -219,7 +218,6 @@ void DouseSpell::Launch()
 	m_tolive = 500;
 	
 	CDoze * effect = new CDoze();
-	effect->spellinstance = m_thisHandle;
 	
 	Vec3f target;
 	if(m_hand_group >= 0) {

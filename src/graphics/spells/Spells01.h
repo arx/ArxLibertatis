@@ -129,8 +129,6 @@ public:
 	void Kill();
 	void AddLight(int iLight);
 	void Action(bool enable);
-	
-	SpellHandle spellinstance;
 };
 
 // Done By : Sébastien Scieux

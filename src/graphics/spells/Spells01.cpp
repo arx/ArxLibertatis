@@ -682,9 +682,9 @@ void CIgnit::Action(bool enable)
 		GLight[itr->iLightNum]->status = enable;
 
 		if(enable) {
-			ARX_SOUND_PlaySFX(SND_SPELL_IGNITE, &spells[spellinstance]->m_caster_pos);
+			ARX_SOUND_PlaySFX(SND_SPELL_IGNITE, &itr->poslight);
 		} else {
-			ARX_SOUND_PlaySFX(SND_SPELL_DOUSE, &spells[spellinstance]->m_caster_pos);
+			ARX_SOUND_PlaySFX(SND_SPELL_DOUSE, &itr->poslight);
 		}
 	}
 }
