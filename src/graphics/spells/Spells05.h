@@ -56,7 +56,7 @@ public:
 	
 	void SetPos(Vec3f);
 	
-	void Create(Vec3f, float afBeta = 0);
+	void Create(Vec3f);
 	void Update(float timeDelta);
 	void Render();
 	
@@ -159,6 +159,14 @@ public:
 	float lightIntensityFactor;
 	SpellHandle spellinstance;
 	
+	float	fBetaRadCos;
+	float	fBetaRadSin;
+	void SetAngle(float afAngle) {
+		float fBetaRad = radians(afAngle);
+		fBetaRadCos = (float) cos(fBetaRad);
+		fBetaRadSin = (float) sin(fBetaRad);
+	}
+	
 private:
 	bool  bOk;
 	float fTrail;
@@ -194,7 +202,7 @@ public:
 	CRepelUndead();
 	~CRepelUndead();
 	
-	void Create(Vec3f, float afBeta = 0);
+	void Create(Vec3f);
 	void SetPos(const Vec3f & pos);
 	void SetRotation(float rotation);
 	

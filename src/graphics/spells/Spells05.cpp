@@ -89,8 +89,6 @@ CCurePoison::~CCurePoison() {
 
 void CCurePoison::Create()
 {
-	SetAngle(0);
-	
 	ParticleParams cp = ParticleParams();
 	cp.m_nbMax = 350;
 	cp.m_life = 800;
@@ -251,10 +249,9 @@ CRuneOfGuarding::~CRuneOfGuarding()
 	}
 }
 
-void CRuneOfGuarding::Create(Vec3f _eSrc, float _fBeta) {
+void CRuneOfGuarding::Create(Vec3f _eSrc) {
 	
 	SetDuration(ulDuration);
-	SetAngle(_fBeta);
 	eSrc = _eSrc;
 	eTarget = eSrc;
 	
@@ -820,11 +817,10 @@ CRepelUndead::~CRepelUndead() {
 	}
 }
 
-void CRepelUndead::Create(Vec3f aeSrc, float afBeta) {
+void CRepelUndead::Create(Vec3f aeSrc) {
 	
 	SetDuration(ulDuration);
 	eSrc = aeSrc;
-	SetAngle(afBeta);
 }
 
 void CRepelUndead::SetPos(const Vec3f & pos) {

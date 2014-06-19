@@ -355,7 +355,7 @@ void NegateMagicSpell::Launch()
 	m_tolive = (m_launchDuration > -1) ? m_launchDuration : 1000000;
 	
 	CNegateMagic * effect = new CNegateMagic();
-	effect->Create(m_target_pos, MAKEANGLE(entities[m_target]->angle.getPitch()));
+	effect->Create(m_target_pos);
 	effect->SetDuration(m_tolive);
 	m_pSpellFx = effect;
 	m_tolive = effect->GetDuration();

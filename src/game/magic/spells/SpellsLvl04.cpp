@@ -56,7 +56,7 @@ void BlessSpell::Launch()
 	
 	CBless * effect = new CBless();
 	Vec3f target = entities[m_caster]->pos;
-	effect->Create(target, MAKEANGLE(player.angle.getPitch()));
+	effect->Create(target);
 	effect->SetDuration(20000);
 	m_pSpellFx = effect;
 	m_tolive = effect->GetDuration();
@@ -336,7 +336,7 @@ void CurseSpell::Launch()
 		target.y += entities[m_target]->physics.cyl.height - 50.f;
 	}
 	
-	effect->Create(target, MAKEANGLE(player.angle.getPitch()));
+	effect->Create(target);
 	effect->SetDuration(m_tolive);
 	m_pSpellFx = effect;
 	m_tolive = effect->GetDuration();

@@ -548,10 +548,9 @@ CConfuse::CConfuse() {
 	au.altidx_next = 0;
 }
 
-void CConfuse::Create(float afBeta) {
+void CConfuse::Create() {
 	
 	SetDuration(ulDuration);
-	SetAngle(afBeta);
 }
 
 void CConfuse::SetPos(const Vec3f & pos)
@@ -791,12 +790,11 @@ CIceField::CIceField()
 	smotte_count++;
 }
 
-void CIceField::Create(Vec3f aeSrc, float afBeta) {
+void CIceField::Create(Vec3f aeSrc) {
 	
 	SetDuration(ulDuration);
 	
 	eSrc = aeSrc;
-	SetAngle(afBeta);
 	eTarget = eSrc;
 	
 	for(int i = 0; i < iMax; i++) {

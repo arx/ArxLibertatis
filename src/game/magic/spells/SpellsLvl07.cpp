@@ -385,7 +385,7 @@ void IceFieldSpell::Launch()
 	damage.pos = target;
 	m_longinfo_damage = DamageCreate(damage);
 	
-	effect->Create(target, MAKEANGLE(player.angle.getPitch()));
+	effect->Create(target);
 	effect->SetDuration(m_tolive);
 	m_pSpellFx = effect;
 	m_tolive = effect->GetDuration();
@@ -490,7 +490,7 @@ void ConfuseSpell::Launch()
 	m_tolive = (m_launchDuration > -1) ? m_launchDuration : 5000;
 	
 	CConfuse * effect = new CConfuse();
-	effect->Create(MAKEANGLE(player.angle.getPitch()));
+	effect->Create();
 	effect->SetDuration(m_tolive);
 	m_pSpellFx = effect;
 	m_tolive = effect->GetDuration();

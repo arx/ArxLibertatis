@@ -75,6 +75,14 @@ public:
 	
 	SpellHandle spellinstance;
 
+	float	fBetaRadCos;
+	float	fBetaRadSin;
+	void SetAngle(float afAngle) {
+		float fBetaRad = radians(afAngle);
+		fBetaRadCos = (float) cos(fBetaRad);
+		fBetaRadSin = (float) sin(fBetaRad);
+	}
+	
 private:
 	ParticleParams fire_1;
 	ParticleParams fire_2;

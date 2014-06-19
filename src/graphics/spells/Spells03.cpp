@@ -370,7 +370,10 @@ void CIceProjectile::Create(Vec3f aeSrc, float afBeta, float fLevel)
 void CIceProjectile::Create(Vec3f aeSrc, float afBeta)
 {
 	SetDuration(ulDuration);
-	SetAngle(afBeta);
+	
+	float fBetaRad = radians(afBeta);
+	float fBetaRadCos = (float) cos(fBetaRad);
+	float fBetaRadSin = (float) sin(fBetaRad);
 	
 	Vec3f s, e, h;
 

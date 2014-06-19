@@ -487,12 +487,11 @@ CNegateMagic::CNegateMagic() {
 	
 }
 
-void CNegateMagic::Create(Vec3f aeSrc, float afBeta) {
+void CNegateMagic::Create(Vec3f aeSrc) {
 	
 	SetDuration(ulDuration);
 	
 	eSrc = aeSrc;
-	SetAngle(afBeta);
 }
 
 void CNegateMagic::Update(float timeDelta) {

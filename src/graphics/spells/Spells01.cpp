@@ -215,8 +215,11 @@ CMagicMissile::~CMagicMissile()
 void CMagicMissile::Create(const Vec3f & aeSrc, const Anglef & angles)
 {
 	SetDuration(ulDuration);
-	SetAngle(angles.getPitch());
-
+	
+	float fBetaRad = radians(angles.getPitch());
+	float fBetaRadCos = (float) cos(fBetaRad);
+	float fBetaRadSin = (float) sin(fBetaRad);
+	
 	this->angles = angles;
 	eCurPos = eSrc = aeSrc;
 

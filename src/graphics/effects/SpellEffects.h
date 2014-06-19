@@ -61,10 +61,6 @@ void EE_RT2(TexturedVertex * in, TexturedVertex * out);
 
 class CSpellFx
 {
-	protected:
-		float	fBetaRadCos;
-		float	fBetaRadSin;
-
 	public:
 		unsigned long ulDuration;
 		unsigned long ulCurrentTime;
@@ -77,7 +73,6 @@ class CSpellFx
 		virtual void SetDuration(const unsigned long ulaDuration);
 		virtual unsigned long getCurrentTime();
 		virtual unsigned long GetDuration();
-		void SetAngle(float angle);
 		
 		virtual void Update(float timeDelta) = 0;
 		virtual void Render() = 0;

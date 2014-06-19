@@ -42,7 +42,7 @@ void RuneOfGuardingSpell::Launch()
 	m_tolive = (m_launchDuration > -1) ? m_launchDuration : 99999999;
 	
 	CRuneOfGuarding * effect = new CRuneOfGuarding();
-	effect->Create(entities[m_caster]->pos, 0);
+	effect->Create(entities[m_caster]->pos);
 	effect->SetDuration(m_tolive);
 	m_pSpellFx = effect;
 	m_tolive = effect->GetDuration();
@@ -209,7 +209,7 @@ void RepelUndeadSpell::Launch()
 	m_fManaCostPerSecond = 1.f;
 	
 	CRepelUndead * effect = new CRepelUndead();
-	effect->Create(player.pos, MAKEANGLE(player.angle.getPitch()));
+	effect->Create(player.pos);
 	effect->SetDuration(m_tolive);
 	m_pSpellFx = effect;
 	m_tolive = effect->GetDuration();

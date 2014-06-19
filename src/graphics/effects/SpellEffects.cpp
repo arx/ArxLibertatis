@@ -53,7 +53,6 @@ CSpellFx::CSpellFx() :
 	lLightId(-1)
 {
 	SetDuration(1000);
-	SetAngle(0);
 }
 
 void CSpellFx::SetDuration(const unsigned long ulaDuration) {
@@ -71,12 +70,6 @@ unsigned long CSpellFx::getCurrentTime() {
 
 unsigned long CSpellFx::GetDuration() {
 	return ulDuration;
-}
-
-void CSpellFx::SetAngle(float afAngle) {
-	float fBetaRad = radians(afAngle);
-	fBetaRadCos = (float) cos(fBetaRad);
-	fBetaRadSin = (float) sin(fBetaRad);
 }
 
 void Draw3DLineTexNew(Vec3f startPos, Vec3f endPos, Color startColor, Color endColor, float startSize, float endSize) {

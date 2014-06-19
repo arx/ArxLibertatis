@@ -70,6 +70,14 @@ public:
 	void Update(float timeDelta);
 	void Render();
 	
+	float	fBetaRadCos;
+	float	fBetaRadSin;
+	void SetAngle(float afAngle) {
+		float fBetaRad = radians(afAngle);
+		fBetaRadCos = (float) cos(fBetaRad);
+		fBetaRadSin = (float) sin(fBetaRad);
+	}
+	
 private:
 	void Split(TexturedVertex * v, int a, int b, float yo);
 	void RenderFissure();
@@ -107,7 +115,7 @@ public:
 	CNegateMagic();
 	~CNegateMagic();
 	
-	void Create(Vec3f, float afBeta = 0);
+	void Create(Vec3f);
 	void Update(float timeDelta);
 	void Render();
 	

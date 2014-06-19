@@ -55,7 +55,7 @@ public:
 	
 	void Set_Angle(const Anglef &);
 	
-	void Create(Vec3f, float afBeta = 0);
+	void Create(Vec3f);
 	void Update(float timeDelta);
 	void Render();
 	
@@ -77,7 +77,7 @@ public:
 	CCurse();
 	~CCurse();
 	
-	void Create(Vec3f, float afBeta = 0);
+	void Create(Vec3f);
 	void Update(float timeDelta);
 	void Render();
 	

@@ -49,8 +49,6 @@ void HealSpell::Launch()
 	
 	CHeal * effect = new CHeal();
 	
-	effect->SetAngle(MAKEANGLE(player.angle.getPitch()));
-	
 	if(m_caster == PlayerEntityHandle) {
 		effect->setPos(player.pos);
 	} else {

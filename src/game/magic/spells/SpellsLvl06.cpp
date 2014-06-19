@@ -437,7 +437,7 @@ void SlowDownSpell::Launch()
 	m_fManaCostPerSecond = 1.2f;
 	
 	CSlowDown * effect = new CSlowDown();
-	effect->Create(m_target_pos, MAKEANGLE(player.angle.getPitch()));
+	effect->Create(m_target_pos);
 	effect->SetDuration(m_tolive);
 	m_pSpellFx = effect;
 	m_tolive = effect->GetDuration();

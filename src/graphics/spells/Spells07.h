@@ -114,7 +114,7 @@ public:
 	CConfuse();
 	~CConfuse();
 	
-	void Create(float afBeta = 0);
+	void Create();
 	void SetPos(const Vec3f & pos);
 	
 	void Update(float timeDelta);
@@ -151,7 +151,7 @@ public:
 	CIceField();
 	~CIceField();
 	
-	void Create(Vec3f, float afBeta = 0);
+	void Create(Vec3f);
 	void Update(float timeDelta);
 	void Render();
 	

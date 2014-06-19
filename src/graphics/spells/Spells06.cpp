@@ -366,11 +366,10 @@ CSlowDown::~CSlowDown()
 	}
 }
 
-void CSlowDown::Create(Vec3f aeSrc, float afBeta) {
+void CSlowDown::Create(Vec3f aeSrc) {
 	
 	SetDuration(ulDuration);
 	eSrc = aeSrc;
-	SetAngle(afBeta);
 	eTarget = eSrc;
 }
 

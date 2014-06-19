@@ -73,10 +73,9 @@ CBless::CBless()
 	tex_sol = TextureContainer::Load("graph/particles/(fx)_pentagram_bless");
 }
 
-void CBless::Create(Vec3f _eSrc, float _fBeta) {
+void CBless::Create(Vec3f _eSrc) {
 	
 	SetDuration(ulDuration);
-	SetAngle(_fBeta);
 	eSrc = _eSrc;
 	eTarget = eSrc;
 	fRot = 0;
@@ -201,12 +200,11 @@ CCurse::CCurse()
 	svoodoo_count++;
 }
 
-void CCurse::Create(Vec3f aeSrc, float afBeta) {
+void CCurse::Create(Vec3f aeSrc) {
 	
 	SetDuration(ulDuration);
 	
 	eSrc = aeSrc;
-	SetAngle(afBeta);
 	eTarget = eSrc;
 	fRot = 0;
 	fRotPerMSec = 0.25f;
