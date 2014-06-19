@@ -89,16 +89,18 @@ void CMassLightning::Create(Vec3f aePos, float afBeta = 0) {
 	float ft = 360.0f / (float)number;
 
 	for(int i = 0; i < number; i++) {
+		CLightning * lightning = pTab[i];
+		
 		eTarget.x = aePos.x - std::sin(radians(i * ft)) * 500.0f;
 		eTarget.y = aePos.y;
 		eTarget.z = aePos.z + std::cos(radians(i * ft)) * 500.0f;
-		pTab[i]->Create(aePos, eTarget, 0);
+		lightning->Create(aePos, eTarget, 0);
 		long lTime = ulDuration + Random::get(0, 5000);
-		pTab[i]->SetDuration(lTime);
+		lightning->SetDuration(lTime);
 		lMax = std::max(lMax, lTime);
-		pTab[i]->spellinstance = this->spellinstance;
-		pTab[i]->SetColor1(1.f, 0.75f, 0.75f); // middle
-		pTab[i]->SetColor2(0.3f, 0.f, 0.f); // extremities
+		lightning->spellinstance = this->spellinstance;
+		lightning->SetColor1(1.f, 0.75f, 0.75f); // middle
+		lightning->SetColor2(0.3f, 0.f, 0.f); // extremities
 	}
 
 	SetDuration(lMax + 1000);
