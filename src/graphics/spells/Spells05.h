@@ -203,6 +203,7 @@ public:
 	
 private:
 	Vec3f eSrc;
+	float m_yaw;
 	TextureContainer * tex_p2;
 };
 

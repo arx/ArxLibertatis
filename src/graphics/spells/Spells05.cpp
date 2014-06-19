@@ -832,7 +832,7 @@ void CRepelUndead::SetPos(const Vec3f & pos) {
 }
 
 void CRepelUndead::SetRotation(float rotation) {
-	fBeta = rotation;
+	m_yaw = rotation;
 }
 
 void CRepelUndead::Update(float timeDelta) {
@@ -851,7 +851,7 @@ void CRepelUndead::Render() {
 	
 	Anglef  eObjAngle;
 
-	eObjAngle.setPitch(fBeta);
+	eObjAngle.setPitch(m_yaw);
 	eObjAngle.setYaw(0);
 	eObjAngle.setRoll(0);
 
