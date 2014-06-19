@@ -117,7 +117,6 @@ public:
 	CIceProjectile();
 	~CIceProjectile();
 	
-	void Create(Vec3f, float);
 	void Create(Vec3f, float, float);
 	void Update(float timeDelta);
 	void Render();
