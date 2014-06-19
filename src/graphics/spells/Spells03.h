@@ -117,11 +117,9 @@ public:
 	CIceProjectile();
 	~CIceProjectile();
 	
-	void Create(Vec3f, float, float);
+	void Create(Vec3f, float, float, EntityHandle caster);
 	void Update(float timeDelta);
 	void Render();
-	
-	SpellHandle spellinstance;
 	
 private:
 	int iNumber;

@@ -294,7 +294,6 @@ void IceProjectileSpell::Launch()
 	m_tolive = 4200;
 	
 	CIceProjectile * effect = new CIceProjectile();
-	effect->spellinstance = m_thisHandle;
 	
 	Vec3f target;
 	float angleb;
@@ -308,7 +307,7 @@ void IceProjectileSpell::Launch()
 	angleb = MAKEANGLE(angleb);
 	target.x -= std::sin(radians(angleb)) * 150.0f;
 	target.z += std::cos(radians(angleb)) * 150.0f;
-	effect->Create(target, angleb, m_level);
+	effect->Create(target, angleb, m_level, m_caster);
 	
 	effect->SetDuration(m_tolive);
 	m_pSpellFx = effect;

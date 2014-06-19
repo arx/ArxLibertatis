@@ -360,7 +360,7 @@ CIceProjectile::CIceProjectile()
 	fStep = 20;
 }
 
-void CIceProjectile::Create(Vec3f aeSrc, float afBeta, float fLevel)
+void CIceProjectile::Create(Vec3f aeSrc, float afBeta, float fLevel, EntityHandle caster)
 {
 	iMax = (int)(30 + fLevel * 5.2f);
 	
@@ -442,10 +442,10 @@ void CIceProjectile::Create(Vec3f aeSrc, float afBeta, float fLevel)
 		DamageParameters damage;
 		damage.pos = tPos[i];
 		damage.radius = 60.f;
-		damage.damages = 0.1f * spells[spellinstance]->m_level;
+		damage.damages = 0.1f * fLevel;
 		damage.area = DAMAGE_FULL;
 		damage.duration = ulDuration;
-		damage.source = spells[spellinstance]->m_caster;
+		damage.source = caster;
 		damage.flags = DAMAGE_FLAG_DONT_HURT_SOURCE;
 		damage.type = DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_COLD;
 		DamageCreate(damage);
