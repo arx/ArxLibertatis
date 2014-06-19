@@ -70,7 +70,6 @@ void MassLightningStrikeSpell::Launch()
 	
 	long count = std::max(long(m_level), 1l);
 	CMassLightning * effect = new CMassLightning(count);
-	effect->spellinstance = m_thisHandle;
 	
 	Vec3f target;
 	float beta;
@@ -117,11 +116,14 @@ void MassLightningStrikeSpell::End()
 
 void MassLightningStrikeSpell::Update(float timeDelta)
 {
-	CSpellFx *pCSpellFX = m_pSpellFx;
+	CMassLightning * effect = static_cast<CMassLightning *>(m_pSpellFx);
 
-	if(pCSpellFX) {
-		pCSpellFX->Update(timeDelta);
-		pCSpellFX->Render();
+	if(effect) {
+		effect->m_caster = m_caster;
+		effect->m_level = m_level;
+		
+		effect->Update(timeDelta);
+		effect->Render();
 	}
 	
 	Vec3f _source = m_vsource;

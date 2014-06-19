@@ -96,7 +96,6 @@ void CMassLightning::Create(Vec3f aePos) {
 		long lTime = ulDuration + Random::get(0, 5000);
 		lightning->SetDuration(lTime);
 		lMax = std::max(lMax, lTime);
-		lightning->spellinstance = this->spellinstance;
 		lightning->SetColor1(1.f, 0.75f, 0.75f); // middle
 		lightning->SetColor2(0.3f, 0.f, 0.f); // extremities
 	}
@@ -107,7 +106,12 @@ void CMassLightning::Create(Vec3f aePos) {
 void CMassLightning::Update(float timeDelta)
 {
 	for(int i = 0; i < number; i++) {
-		pTab[i]->Update(timeDelta);
+		CLightning * lightning = pTab[i];
+		
+		lightning->m_caster = m_caster;
+		lightning->m_level = m_level;
+		
+		lightning->Update(timeDelta);
 	}
 }
 

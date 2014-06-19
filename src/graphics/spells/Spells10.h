@@ -62,7 +62,8 @@ public:
 	void Update(float timeDelta);
 	void Render();
 	
-	SpellHandle spellinstance;
+	EntityHandle m_caster;
+	float m_level;
 	
 private:
 	long number;
