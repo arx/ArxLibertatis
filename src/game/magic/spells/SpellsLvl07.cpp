@@ -440,7 +440,7 @@ void LightningStrikeSpell::Launch()
 	CLightning * effect = new CLightning();
 	effect->spellinstance = m_thisHandle;
 	Vec3f target(0.f, 0.f, -500.f);
-	effect->Create(Vec3f_ZERO, target, MAKEANGLE(player.angle.getPitch()));
+	effect->Create(Vec3f_ZERO, target);
 	effect->SetDuration(long(500 * m_level));
 	effect->m_isMassLightning = false;
 	m_pSpellFx = effect;

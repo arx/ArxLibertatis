@@ -80,9 +80,7 @@ CMassLightning::~CMassLightning() {
 	pTab.clear();
 }
 
-void CMassLightning::Create(Vec3f aePos, float afBeta = 0) {
-	
-	(void)afBeta;
+void CMassLightning::Create(Vec3f aePos) {
 	
 	long lMax = 0;
 	Vec3f eTarget;
@@ -94,7 +92,7 @@ void CMassLightning::Create(Vec3f aePos, float afBeta = 0) {
 		eTarget.x = aePos.x - std::sin(radians(i * ft)) * 500.0f;
 		eTarget.y = aePos.y;
 		eTarget.z = aePos.z + std::cos(radians(i * ft)) * 500.0f;
-		lightning->Create(aePos, eTarget, 0);
+		lightning->Create(aePos, eTarget);
 		long lTime = ulDuration + Random::get(0, 5000);
 		lightning->SetDuration(lTime);
 		lMax = std::max(lMax, lTime);

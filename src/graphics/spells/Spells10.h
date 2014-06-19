@@ -57,7 +57,7 @@ public:
 	explicit CMassLightning(long nb);
 	~CMassLightning();
 
-	void Create(Vec3f, float);
+	void Create(Vec3f);
 	
 	void Update(float timeDelta);
 	void Render();
