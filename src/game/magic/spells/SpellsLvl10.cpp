@@ -86,7 +86,7 @@ void MassLightningStrikeSpell::Launch()
 	target.z += std::cos(radians(MAKEANGLE(beta))) * 500.f;
 	
 	effect->SetDuration(long(500 * m_level));
-	effect->Create(target, MAKEANGLE(player.angle.getPitch()));
+	effect->Create(target);
 	m_pSpellFx = effect;
 	m_tolive = effect->GetDuration();
 	

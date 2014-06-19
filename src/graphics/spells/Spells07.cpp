@@ -254,9 +254,7 @@ void CLightning::SetColor2(float afR, float afG, float afB) {
 float fTotoro = 0;
 float fMySize = 2;
 
-void CLightning::Create(Vec3f aeFrom, Vec3f aeTo, float beta) {
-	
-	(void)beta; // TODO removing this parameter makes the signature clash with method from superclass
+void CLightning::Create(Vec3f aeFrom, Vec3f aeTo) {
 	
 	SetDuration(ulDuration);
 	SetPosSrc(aeFrom);

@@ -65,7 +65,7 @@ public:
 	void SetColor1(float, float, float);
 	void SetColor2(float, float, float);
 
-	void Create(Vec3f, Vec3f, float beta = 0);
+	void Create(Vec3f, Vec3f);
 	void Update(float timeDelta);
 	void Render();
 	
