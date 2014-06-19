@@ -49,16 +49,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <stddef.h>
 
-#include <boost/serialization/strong_typedef.hpp>
-
 #include "game/GameTypes.h"
 #include "math/Types.h"
 #include "math/Vector.h"
 #include "platform/Flags.h"
 
 class Entity;
-
-BOOST_STRONG_TYPEDEF(long, DamageHandle)
 
 enum DamageTypeFlag {
 	DAMAGE_TYPE_GENERIC    = 0,

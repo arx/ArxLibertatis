@@ -285,7 +285,7 @@ SpellHandle SpellManager::create() {
 		
 		if(!spell->m_exist) {
 			spell->m_longinfo_entity = InvalidEntityHandle;
-			spell->m_longinfo_damage = -1;
+			spell->m_longinfo_damage = InvalidDamageHandle;
 			spell->m_longinfo_time = -1;
 			spell->m_longinfo_summon_creature = -1;
 			spell->m_longinfo_lower_armor = -1;
@@ -931,10 +931,10 @@ bool CanPayMana(SpellBase * spell, float cost, bool _bSound = true) {
 	return false;
 }
 
-long TemporaryGetSpellTarget(const Vec3f * from) {
+EntityHandle TemporaryGetSpellTarget(const Vec3f * from) {
 	
 	float mindist = std::numeric_limits<float>::max();
-	long found = 0;
+	EntityHandle found = EntityHandle(0);
 	for(size_t i = 1; i < entities.size(); i++) {
 		const EntityHandle handle = EntityHandle(i);
 		Entity * e = entities[handle];
@@ -942,7 +942,7 @@ long TemporaryGetSpellTarget(const Vec3f * from) {
 		if(e && e->ioflags & IO_NPC) {
 			float dist = glm::distance2(*from, e->pos);
 			if(dist < mindist) {
-				found = i;
+				found = EntityHandle(i);
 				mindist = dist;
 			}
 		}

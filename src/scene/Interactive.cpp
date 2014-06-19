@@ -216,7 +216,7 @@ void ARX_INTERACTIVE_DestroyDynamicInfo(Entity * io)
 	for(long i = 0; i < MAX_EQUIPED; i++) {
 		if(player.equiped[i] && player.equiped[i] == n && ValidIONum(player.equiped[i])) {
 			ARX_EQUIPMENT_UnEquip(entities.player(), entities[player.equiped[i]], 1);
-			player.equiped[i] = 0;
+			player.equiped[i] = EntityHandle(0); // TODO inband signaling
 		}
 	}
 	
@@ -802,7 +802,7 @@ void ARX_INTERACTIVE_ClearIODynData_II(Entity * io)
 		free(io->_npcdata->pathfind.list);
 		io->_npcdata->pathfind.list = NULL;
 		memset(&io->_npcdata->pathfind, 0, sizeof(IO_PATHFIND));
-		io->_npcdata->pathfind.truetarget = -1;
+		io->_npcdata->pathfind.truetarget = InvalidEntityHandle;
 		io->_npcdata->pathfind.listnb = -1;
 		ARX_NPC_Behaviour_Reset(io);
 	}
@@ -962,7 +962,7 @@ void RestoreInitialIOStatusOfIO(Entity * io)
 		io->physics.cyl.height = io->original_height;
 		io->fall = 0;
 		io->show = SHOW_FLAG_IN_SCENE;
-		io->targetinfo = TARGET_NONE;
+		io->targetinfo = EntityHandle(TARGET_NONE);
 		io->spellcast_data.castingspell = SPELL_NONE;
 		io->summoner = -1;
 		io->spark_n_blood = 0;
@@ -1757,7 +1757,7 @@ Entity * AddNPC(const res::path & classPath, EntityInstance instance, AddInterac
 	
 	io->_npcdata->pathfind.listnb = -1;
 	io->_npcdata->behavior = BEHAVIOUR_NONE;
-	io->_npcdata->pathfind.truetarget = -1;
+	io->_npcdata->pathfind.truetarget = InvalidEntityHandle;
 	
 	if(!(flags & NO_MESH) && (flags & IO_IMMEDIATELOAD)) {
 		EERIE_COLLISION_Cylinder_Create(io);

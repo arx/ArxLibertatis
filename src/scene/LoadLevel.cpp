@@ -740,7 +740,7 @@ bool DanaeLoadLevel(const res::path & file, bool loadEntities) {
 				el->ex_frequency = dlight->ex_frequency;
 				el->ex_size = dlight->ex_size;
 				el->ex_speed = dlight->ex_speed;
-				el->tl = -1;
+				el->tl = InvalidLightHandle;
 				el->sample = audio::INVALID_ID;
 				
 				if((el->extras & EXTRAS_SPAWNFIRE)) {
@@ -932,7 +932,7 @@ bool DanaeLoadLevel(const res::path & file, bool loadEntities) {
 				}
 			}
 			
-			el->tl = -1;
+			el->tl = InvalidLightHandle;
 			el->sample = audio::INVALID_ID;
 		}
 	}

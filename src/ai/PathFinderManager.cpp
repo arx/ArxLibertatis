@@ -318,7 +318,7 @@ void PathFinderThread::run() {
 				}
 				
 				if(!result.empty()) {
-					EntityHandle * list = (EntityHandle*)malloc(result.size() * sizeof(EntityHandle));
+					long * list = (long*)malloc(result.size() * sizeof(long));
 					std::copy(result.begin(), result.end(), list);
 					*(curpr.returnlist) = list;
 				}

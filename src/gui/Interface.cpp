@@ -5826,7 +5826,7 @@ private:
 		Color m_color;
 		PrecastHandle m_precastIndex;
 		
-		void update(const Rectf & rect, TextureContainer * tc, Color color, size_t precastIndex) {
+		void update(const Rectf & rect, TextureContainer * tc, Color color, PrecastHandle precastIndex) {
 			m_rect = rect;
 			m_tc = tc;
 			m_color = color;
@@ -5916,7 +5916,7 @@ public:
 			Rectf rect(pos, tc->m_dwWidth * 0.5f, tc->m_dwHeight * 0.5f);
 			
 			PrecastSpellIconSlot icon;
-			icon.update(rect, tc, color, i);
+			icon.update(rect, tc, color, PrecastHandle(i));
 			
 			if(!(player.Interface & INTER_COMBATMODE))
 				icon.updateInput();

@@ -20,9 +20,10 @@
 #ifndef ARX_PHYSICS_PROJECTILE_H
 #define ARX_PHYSICS_PROJECTILE_H
 
+#include "game/GameTypes.h"
 #include "graphics/GraphicsTypes.h"
 
-void ARX_THROWN_OBJECT_Throw(long source, const Vec3f & position, const Vec3f & vect, const glm::quat & quat, float velocity, float damages, float poisonous);
+void ARX_THROWN_OBJECT_Throw(EntityHandle source, const Vec3f & position, const Vec3f & vect, const glm::quat & quat, float velocity, float damages, float poisonous);
 
 void ARX_THROWN_OBJECT_KillAll();
 void ARX_THROWN_OBJECT_Manage(unsigned long time_offset);

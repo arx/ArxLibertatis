@@ -639,7 +639,7 @@ public:
 		
 		DebugScript("");
 		
-		context.getEntity()->targetinfo = TARGET_PLAYER;
+		context.getEntity()->targetinfo = EntityHandle(TARGET_PLAYER);
 		GetTargetPos(context.getEntity());
 		
 		return Success;

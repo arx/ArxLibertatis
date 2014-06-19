@@ -1027,7 +1027,7 @@ EERIEPOLY * CheckBackgroundInSphere(const Sphere & sphere) //except source...
 bool CheckAnythingInSphere(const Sphere & sphere, EntityHandle source, CASFlags flags, EntityHandle * num) //except source...
 {
 	if(num)
-		*num = -1;
+		*num = InvalidEntityHandle;
 
 	long rad = sphere.radius * ACTIVEBKG->Xmul;
 	rad += 2;

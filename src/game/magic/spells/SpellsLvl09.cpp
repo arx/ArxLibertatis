@@ -75,7 +75,7 @@ void SummonCreatureSpell::Launch()
 	m_bDuration = true;
 	m_fManaCostPerSecond = 1.9f;
 	m_longinfo_summon_creature = 0;
-	m_longinfo2_entity = 0;
+	m_longinfo2_entity = PlayerEntityHandle; // TODO is this correct ?
 	m_tolive = (m_launchDuration > -1) ? m_launchDuration : 2000000;
 	
 	Vec3f target;
@@ -141,7 +141,8 @@ void SummonCreatureSpell::End()
 		}
 	}
 	
-	m_longinfo2_entity = 0;
+	// TODO is this correct ?
+	m_longinfo2_entity = PlayerEntityHandle;
 }
 
 void SummonCreatureSpell::Update(float timeDelta)

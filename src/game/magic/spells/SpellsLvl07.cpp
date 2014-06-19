@@ -202,7 +202,7 @@ void FlyingEyeSpell::Update(float timeDelta)
 				pd->scale = Vec3f(0.2f);
 				pd->tc = TC_smoke;
 				pd->special = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
-				pd->sourceionum = 0;
+				pd->sourceionum = PlayerEntityHandle;
 				pd->source = &eobj->vertexlist3[id].v;
 				pd->fparam = 0.0000001f;
 				pd->rgb = Color3f(.7f - rnd() * .1f, .3f - rnd() * .1f, 1.f - rnd() * .1f);

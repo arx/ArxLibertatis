@@ -750,7 +750,7 @@ static void PlayerLaunchArrow_Test(float aimratio, float poisonous, const Vec3f 
 	
 	float damages = wd * (1.f + (player.m_skillFull.projectile + player.m_attributeFull.dexterity) * (1.f/50));
 
-	ARX_THROWN_OBJECT_Throw(/*source*/0, position, vect, quat, velocity, damages, poisonous);
+	ARX_THROWN_OBJECT_Throw(PlayerEntityHandle, position, vect, quat, velocity, damages, poisonous);
 }
 
 extern unsigned long LAST_JUMP_ENDTIME;

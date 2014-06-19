@@ -109,7 +109,7 @@ public:
 			oss << ' ' << target;
 #endif
 			
-			main_conversation.actors[j] = (t == NULL) ? -1 : t->index();
+			main_conversation.actors[j] = (t == NULL) ? InvalidEntityHandle : t->index();
 		}
 		
 #ifdef ARX_DEBUG
@@ -292,7 +292,7 @@ class SpeakCommand : public Command {
 		string target = context.getWord();
 		Entity * t = entities.getById(target, context.getEntity());
 		
-		acs.ionum = (t == NULL) ? -1 : t->index();
+		acs.ionum = (t == NULL) ? InvalidEntityHandle : t->index();
 		acs.startpos = context.getFloat();
 		acs.endpos = context.getFloat();
 		
@@ -352,7 +352,7 @@ public:
 					acs.endangle.setPitch(context.getFloat());
 					acs.startpos = context.getFloat();
 					acs.endpos = context.getFloat();
-					acs.ionum = (io == NULL) ? -1 : io->index();
+					acs.ionum = (io == NULL) ? InvalidEntityHandle : io->index();
 					if(player) {
 						computeACSPos(acs, entities.player(), acs.ionum);
 					} else {

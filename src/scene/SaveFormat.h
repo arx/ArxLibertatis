@@ -541,7 +541,7 @@ struct SavedSpellcastData {
 		a.symb[3] = (Rune)symb[3];
 		a.spell_flags = SpellcastFlags::load(spell_flags); // TODO save/load flags
 		a.spell_level = spell_level;
-		a.target = target; // TODO saved internum not valid after loading
+		a.target = EntityHandle(target); // TODO saved internum not valid after loading
 		a.duration = duration;
 		return a;
 	}
@@ -572,7 +572,7 @@ struct SavedHalo {
 		a.color = color;
 		a.radius = radius;
 		a.flags = HaloFlags::load(flags); // TODO save/load flags
-		a.dynlight = dynlight;
+		a.dynlight = LightHandle(dynlight);
 		a.offset = offset.toVec3();
 		return a;
 	}
@@ -695,7 +695,7 @@ struct SavedBehaviour {
 		a.behavior = Behaviour::load(behavior); // TODO save/load flags
 		a.behavior_param = behavior_param;
 		a.tactics = tactics;
-		a.target = target;
+		a.target = EntityHandle(target);
 		a.movemode = (MoveMode)movemode; // TODO save/load enum
 		BOOST_STATIC_ASSERT(SAVED_MAX_ANIM_LAYERS == MAX_ANIM_LAYERS);
 		std::copy(animlayer, animlayer + SAVED_MAX_ANIM_LAYERS, a.animlayer);
@@ -726,7 +726,7 @@ struct SavedPathfindTarget {
 		a.flags = 0;
 		a.listnb = a.listpos = a.pathwait = 0;
 		a.list = NULL;
-		a.truetarget = truetarget;
+		a.truetarget = EntityHandle(truetarget);
 		return a;
 	}
 	

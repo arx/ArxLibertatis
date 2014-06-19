@@ -151,7 +151,7 @@ void RiseDeadSpell::Update(float timeDelta)
 
 	if(pCSpellFX) {
 		if(m_longinfo_entity == -2) {
-			pCSpellFX->lLightId=-1;
+			pCSpellFX->lLightId = InvalidLightHandle;
 			return;
 		}
 
@@ -221,10 +221,10 @@ void RiseDeadSpell::Update(float timeDelta)
 						MakeCoolFx(pos);
 					}
 
-					pCSpellFX->lLightId=-1;
+					pCSpellFX->lLightId = InvalidLightHandle;
 				} else {
 					ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE);
-					m_longinfo_entity = -2;
+					m_longinfo_entity = EntityHandle(-2); // FIXME inband signaling
 					m_tolive=0;
 				}
 			}
