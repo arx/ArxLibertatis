@@ -363,12 +363,7 @@ CIceProjectile::CIceProjectile()
 void CIceProjectile::Create(Vec3f aeSrc, float afBeta, float fLevel)
 {
 	iMax = (int)(30 + fLevel * 5.2f);
-
-	Create(aeSrc, afBeta);
-}
-
-void CIceProjectile::Create(Vec3f aeSrc, float afBeta)
-{
+	
 	SetDuration(ulDuration);
 	
 	float fBetaRad = radians(afBeta);
