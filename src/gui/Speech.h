@@ -107,7 +107,7 @@ struct CinematicSpeech {
 		endpos = 0;
 		f0 = 0;
 		f1 = 0;
-		ionum = 0;
+		ionum = EntityHandle(0);
 		pos1 = Vec3f_ZERO;
 		pos2 = Vec3f_ZERO;
 	}

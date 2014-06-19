@@ -579,7 +579,7 @@ void ARX_DAMAGES_ForceDeath(Entity * io_dead, Entity * io_killer) {
 				if(entities[ioo->targetinfo] == io_dead) {
 					EVENT_SENDER = io_dead; 
 					Stack_SendIOScriptEvent(entities[handle], SM_NULL, killer, "target_death");
-					ioo->targetinfo = TARGET_NONE;
+					ioo->targetinfo = EntityHandle(TARGET_NONE);
 					ioo->_npcdata->reachedtarget = 0;
 				}
 
@@ -587,7 +587,7 @@ void ARX_DAMAGES_ForceDeath(Entity * io_dead, Entity * io_killer) {
 				if(entities[ioo->_npcdata->pathfind.truetarget] == io_dead) {
 					EVENT_SENDER = io_dead; 
 					Stack_SendIOScriptEvent(entities[handle], SM_NULL, killer, "target_death");
-					ioo->_npcdata->pathfind.truetarget = TARGET_NONE;
+					ioo->_npcdata->pathfind.truetarget = EntityHandle(TARGET_NONE);
 					ioo->_npcdata->reachedtarget = 0;
 				}
 		}

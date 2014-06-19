@@ -1877,9 +1877,9 @@ static long ARX_CHANGELEVEL_Pop_Player() {
 	assert(SAVED_MAX_EQUIPED == MAX_EQUIPED);
 	for(size_t i = 0; i < SAVED_MAX_EQUIPED; i++) {
 		Entity * e = ConvertToValidIO(asp->equiped[i]);
-		player.equiped[i] = (e == NULL) ? -1 : e->index();
+		player.equiped[i] = (e == NULL) ? InvalidEntityHandle : e->index();
 		if(!ValidIONum(player.equiped[i])) {
-			player.equiped[i] = 0;
+			player.equiped[i] = EntityHandle(0); // TODO inband signaling
 		}
 	}
 	
@@ -2274,7 +2274,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) {
 				
 				memset(&io->_npcdata->pathfind, 0, sizeof(IO_PATHFIND));
 				
-				io->_npcdata->pathfind.truetarget = as->pathfind.truetarget;
+				io->_npcdata->pathfind.truetarget = EntityHandle(as->pathfind.truetarget);
 				
 				if(ais->saveflags & SAVEFLAGS_EXTRA_ROTATE) {
 					if(io->_npcdata->ex_rotate == NULL) {
@@ -2509,7 +2509,7 @@ static void ARX_CHANGELEVEL_PopAllIO_FINISH(bool reloadflag, bool firstTime) {
 			
 			io->targetinfo = ReadTargetInfo(aids->targetinfo);
 			if((io->ioflags & IO_NPC) && io->_npcdata->behavior == BEHAVIOUR_NONE) {
-				io->targetinfo = -1;
+				io->targetinfo = InvalidEntityHandle;
 			}
 			
 			if(io->ioflags & IO_NPC) {

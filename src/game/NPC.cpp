@@ -581,7 +581,7 @@ bool ARX_NPC_LaunchPathfind(Entity * io, EntityHandle target)
 		io->_npcdata->pathfind.listnb = -1;
 		io->_npcdata->pathfind.listpos = 0;
 		io->_npcdata->pathfind.pathwait = 0;
-		io->_npcdata->pathfind.truetarget = TARGET_NONE;
+		io->_npcdata->pathfind.truetarget = EntityHandle(TARGET_NONE);
 		free(io->_npcdata->pathfind.list);
 		io->_npcdata->pathfind.list = NULL;
 	}
@@ -704,7 +704,7 @@ wander:
 			}
 
 			if(io->_npcdata->behavior & BEHAVIOUR_WANDER_AROUND) {
-				io->_npcdata->pathfind.truetarget = TARGET_NONE;
+				io->_npcdata->pathfind.truetarget = EntityHandle(TARGET_NONE);
 			}
 			
 			io->_npcdata->pathfind.listnb = -1;
@@ -2771,7 +2771,8 @@ static void ManageNPCMovement(Entity * io)
 	if(io->_npcdata->pathfind.listnb > 0
 	   && io->_npcdata->pathfind.listpos < io->_npcdata->pathfind.listnb
 	) {
-		ComputeTolerance(io, io->_npcdata->pathfind.list[io->_npcdata->pathfind.listpos], &TOLERANCE);
+		// TODO is this cast to EntityHandle correct ?
+		ComputeTolerance(io, EntityHandle(io->_npcdata->pathfind.list[io->_npcdata->pathfind.listpos]), &TOLERANCE);
 		ComputeTolerance(io, io->_npcdata->pathfind.truetarget, &TOLERANCE2);
 	} else {
 		ComputeTolerance(io, io->targetinfo, &TOLERANCE);
@@ -3006,7 +3007,7 @@ static void ManageNPCMovement(Entity * io)
 					   && io->_npcdata->pathfind.pathwait == 0
 					) {
 						if(!io->_npcdata->reachedtarget) {
-							long num = io->index();
+							EntityHandle num = io->index();
 							io->_npcdata->reachedtarget = 1;
 							io->_npcdata->reachedtime = (unsigned long)(arxtime);
 

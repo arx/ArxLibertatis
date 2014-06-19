@@ -111,7 +111,7 @@ Entity::Entity(const res::path & classPath)
 	type_flags = 0;
 	scriptload = 0;
 	target = Vec3f_ZERO;
-	targetinfo = TARGET_NONE;
+	targetinfo = EntityHandle(TARGET_NONE);
 	
 	_itemdata = NULL, _fixdata = NULL, _npcdata = NULL, _camdata = NULL;
 	

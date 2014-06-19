@@ -444,7 +444,7 @@ CMultiMagicMissile::~CMultiMagicMissile()
 {
 	for(size_t i = 0; i < pTab.size(); i++) {
 		// no need to kill it because it's a duration light !
-		pTab[i]->lLightId = -1;
+		pTab[i]->lLightId = InvalidLightHandle;
 
 		delete pTab[i];
 	}

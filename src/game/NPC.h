@@ -105,7 +105,7 @@ DECLARE_FLAGS_OPERATORS(PathfindFlags)
 struct IO_PATHFIND {
 	PathfindFlags flags;
 	long listnb;
-	EntityHandle * list;
+	long * list;
 	unsigned short listpos;
 	short pathwait;
 	EntityHandle truetarget;

@@ -126,7 +126,7 @@ public:
 			behavior |= BEHAVIOUR_WANDER_AROUND;
 		} else if(command == "guard") {
 			behavior |= BEHAVIOUR_GUARD;
-			io->targetinfo = -2;
+			io->targetinfo = EntityHandle(-2);
 			io->_npcdata->movemode = NOMOVEMODE;
 		} else if(command != "none") {
 			ScriptWarning << "unexpected command: " << options << " \"" << command << '"';
@@ -484,10 +484,10 @@ public:
 		}
 		
 		if(target == "path") {
-			io->targetinfo = TARGET_PATH;
+			io->targetinfo = EntityHandle(TARGET_PATH);
 			GetTargetPos(io);
 		} else if(target == "none") {
-			io->targetinfo = TARGET_NONE;
+			io->targetinfo = EntityHandle(TARGET_NONE);
 		}
 		
 		if(old_target != i) {

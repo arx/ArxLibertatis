@@ -425,7 +425,7 @@ void ClearDynLights() {
 
 	for(size_t i = 0; i < MAX_LIGHTS; i++) {
 		if(GLight[i] && GLight[i]->tl > 0) {
-			GLight[i]->tl = 0;
+			GLight[i]->tl = LightHandle(0); // TODO is this correct ?
 		}
 	}
 

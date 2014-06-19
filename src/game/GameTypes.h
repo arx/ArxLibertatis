@@ -20,16 +20,19 @@
 #ifndef ARX_GAME_GAMETYPES_H
 #define ARX_GAME_GAMETYPES_H
 
-#include <boost/serialization/strong_typedef.hpp>
+#include "util/HandleType.h"
 
-BOOST_STRONG_TYPEDEF(long, EntityHandle)
+ARX_HANDLE_TYPEDEF(long, EntityHandle)
 static const EntityHandle InvalidEntityHandle = EntityHandle(-1);
 static const EntityHandle PlayerEntityHandle = EntityHandle(0);
 
-BOOST_STRONG_TYPEDEF(long, SpellHandle)
+ARX_HANDLE_TYPEDEF(long, SpellHandle)
 static const SpellHandle InvalidSpellHandle = SpellHandle(-1);
 
-BOOST_STRONG_TYPEDEF(long, PrecastHandle)
+ARX_HANDLE_TYPEDEF(long, PrecastHandle)
+
+ARX_HANDLE_TYPEDEF(long, DamageHandle)
+static const DamageHandle InvalidDamageHandle = DamageHandle(-1);
 
 struct ResourcePool {
 	float current;

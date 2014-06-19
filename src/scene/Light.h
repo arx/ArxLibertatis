@@ -50,14 +50,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <stddef.h>
 
-#include <boost/serialization/strong_typedef.hpp>
-
 #include "audio/AudioTypes.h"
 #include "graphics/BaseGraphicsTypes.h"
 #include "graphics/Color.h"
 #include "math/Types.h"
 #include "math/Quantizer.h"
 #include "platform/Flags.h"
+#include "util/HandleType.h"
 
 struct EERIE_LIGHT;
 struct EERIEPOLY;
@@ -75,7 +74,7 @@ extern EERIE_LIGHT DynLight[MAX_DYNLIGHTS];
 extern long TOTPDL;
 extern long TOTIOPDL;
 
-BOOST_STRONG_TYPEDEF(long, LightHandle)
+ARX_HANDLE_TYPEDEF(long, LightHandle)
 static const LightHandle InvalidLightHandle = LightHandle(-1);
 
 enum EERIE_TYPES_EXTRAS_MODE

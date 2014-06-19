@@ -59,7 +59,7 @@ struct PATHFINDER_REQUEST {
 	// As soon as returnnumber is no more -1
 	// Pathfinding is considered finished
 	Entity * ioid;
-	EntityHandle ** returnlist;	//must be NULL
+	long ** returnlist;	//must be NULL
 };
 
 extern long PATHFINDER_WORKING;
