@@ -60,6 +60,7 @@ public:
 	void Render();
 	
 	Vec3f eSrc;
+	float m_yaw;
 	float m_scale;
 	
 private:

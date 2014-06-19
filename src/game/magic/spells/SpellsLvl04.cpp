@@ -75,18 +75,18 @@ void BlessSpell::Update(float timeDelta)
 		CBless * pBless=(CBless *)m_pSpellFx;
 
 		if(pBless) {
+			Anglef angle = Anglef::ZERO;
+			
 			if(ValidIONum(m_target)) {
 				pBless->eSrc = entities[m_target]->pos;
-				Anglef angle = Anglef::ZERO;
-
+				
 				if(m_target == PlayerEntityHandle)
 					angle.setPitch(player.angle.getPitch());
 				else 
 					angle.setPitch(entities[m_target]->angle.getPitch());
-
-				pBless->Set_Angle(angle);
 			}
 			
+			pBless->Set_Angle(angle);
 			pBless->m_scale = (m_level + 10) * 6.f;
 		}
 

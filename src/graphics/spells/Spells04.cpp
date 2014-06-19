@@ -85,7 +85,7 @@ void CBless::Create(Vec3f _eSrc, float _fBeta) {
 
 void CBless::Set_Angle(const Anglef & angle)
 {
-	fBeta = angle.getPitch();
+	m_yaw = angle.getPitch();
 }
 
 void CBless::Update(float timeDelta)
@@ -113,8 +113,8 @@ void CBless::Render()
 	TexturedVertex v[4];
 	TexturedVertex v3[4];
 	
-	float fBetaRadCos = (float) cos(radians(MAKEANGLE(player.angle.getPitch()))) * m_scale;
-	float fBetaRadSin = (float) sin(radians(MAKEANGLE(player.angle.getPitch()))) * m_scale;
+	float fBetaRadCos = (float) cos(radians(MAKEANGLE(m_yaw))) * m_scale;
+	float fBetaRadSin = (float) sin(radians(MAKEANGLE(m_yaw))) * m_scale;
 
 	ColorBGRA color = Color::white.toBGR();
 
