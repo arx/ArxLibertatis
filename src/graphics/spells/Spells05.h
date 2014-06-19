@@ -157,7 +157,6 @@ public:
 	Vec3f eSrc;
 	Vec3f eCurPos;
 	float lightIntensityFactor;
-	SpellHandle spellinstance;
 	
 	float	fBetaRadCos;
 	float	fBetaRadSin;
@@ -188,7 +187,9 @@ public:
 	void Update(float timeDelta);
 	void Render();
 	
-	SpellHandle spellinstance;
+	EntityHandle m_caster;
+	float m_level;
+	unsigned long m_timcreation;
 	
 private:
 	std::vector<CPoisonProjectile *> m_projectiles;

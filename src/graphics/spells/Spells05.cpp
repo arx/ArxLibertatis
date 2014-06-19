@@ -627,7 +627,6 @@ CMultiPoisonProjectile::CMultiPoisonProjectile(long nbmissiles)
 	
 	for(size_t i = 0; i < uiNumber; i++) {
 		CPoisonProjectile * projectile = new CPoisonProjectile();
-		projectile->spellinstance = this->spellinstance;
 		
 		m_projectiles.push_back(projectile);
 	}
@@ -676,8 +675,6 @@ void CMultiPoisonProjectile::Create(Vec3f srcPos, float afBeta) {
 			light->time_creation	= (unsigned long)(arxtime);
 			light->duration		= 200;
 		}
-
-		projectile->spellinstance = this->spellinstance;
 	}
 
 	SetDuration(lMax + 1000);
@@ -711,19 +708,19 @@ void CMultiPoisonProjectile::Render()
 			light->duration	= 200;
 		}
 
-		AddPoisonFog(&projectile->eCurPos, spells[spellinstance]->m_level + 7);
+		AddPoisonFog(&projectile->eCurPos, m_level + 7);
 
-		if(spells[projectile->spellinstance]->m_timcreation + 1600 < (unsigned long)(arxtime)) {
+		if(m_timcreation + 1600 < (unsigned long)(arxtime)) {
 			
 			DamageParameters damage;
 			damage.pos = projectile->eCurPos;
 			damage.radius = 120.f;
-			float v = spells[spellinstance]->m_level;
+			float v = m_level;
 			v = 4.f + v * ( 1.0f / 10 ) * 6.f ;
 			damage.damages = v * ( 1.0f / 1000 ) * framedelay;
 			damage.area = DAMAGE_FULL;
 			damage.duration = static_cast<long>(framedelay);
-			damage.source = spells[spellinstance]->m_caster;
+			damage.source = m_caster;
 			damage.flags = 0;
 			damage.type = DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_POISON;
 			DamageCreate(damage);

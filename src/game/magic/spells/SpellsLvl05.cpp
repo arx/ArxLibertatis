@@ -261,7 +261,6 @@ void PoisonProjectileSpell::Launch()
 	
 	long level = std::max(long(m_level), 1l);
 	CMultiPoisonProjectile * effect = new CMultiPoisonProjectile(level);
-	effect->spellinstance = m_thisHandle;
 	effect->SetDuration(8000ul);
 	
 	Vec3f srcPos = Vec3f_ZERO;
@@ -305,8 +304,14 @@ void PoisonProjectileSpell::Launch()
 
 void PoisonProjectileSpell::Update(float timeDelta)
 {
-	if(m_pSpellFx) {
-		m_pSpellFx->Update(timeDelta);
-		m_pSpellFx->Render();
+	CMultiPoisonProjectile * effect = static_cast<CMultiPoisonProjectile *>(m_pSpellFx);
+	
+	if(effect) {
+		effect->m_caster = m_caster;
+		effect->m_level = m_level;
+		effect->m_timcreation = m_timcreation;
+		
+		effect->Update(timeDelta);
+		effect->Render();
 	}
 }
