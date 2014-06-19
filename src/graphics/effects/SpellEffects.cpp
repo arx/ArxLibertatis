@@ -76,7 +76,7 @@ unsigned long CSpellFx::GetDuration() {
 
 void CSpellFx::SetAngle(float afAngle) {
 	fBeta = afAngle;
-	fBetaRad = radians(fBeta);
+	float fBetaRad = radians(fBeta);
 	fBetaRadCos = (float) cos(fBetaRad);
 	fBetaRadSin = (float) sin(fBetaRad);
 }

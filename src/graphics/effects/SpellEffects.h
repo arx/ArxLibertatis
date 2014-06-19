@@ -63,7 +63,6 @@ class CSpellFx
 {
 	protected:
 		float	fBeta;
-		float	fBetaRad;
 		float	fBetaRadCos;
 		float	fBetaRadSin;
 
