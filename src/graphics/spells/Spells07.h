@@ -69,9 +69,14 @@ public:
 	void Update(float timeDelta);
 	void Render();
 	
+	Vec3f m_pos;
+	float m_beta;
+	float m_alpha;
+	EntityHandle m_caster;
+	float m_level;
+	
 	float	fDamage;
 	bool m_isMassLightning;
-	SpellHandle spellinstance;
 	
 private:
 	int		nbtotal;

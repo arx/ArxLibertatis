@@ -307,28 +307,6 @@ void CLightning::Update(float timeDelta)
 		fMySize -= 0.1f;
 }
 
-void GetChestPos(EntityHandle num, Vec3f * p)
-{
-	if(num == 0) {
-		p->x = player.pos.x;
-		p->y = player.pos.y + 70.f;
-		p->z = player.pos.z;
-		return;
-	}
-
-	if(ValidIONum(num)) {
-		long idx = GetGroupOriginByName(entities[num]->obj, "chest");
-
-		if(idx >= 0) {
-			*p = entities[num]->obj->vertexlist3[idx].v;
-		} else {
-			p->x = entities[num]->pos.x;
-			p->y = entities[num]->pos.y - 120.f;
-			p->z = entities[num]->pos.z;
-		}
-	}
-}
-
 void CLightning::Render()
 {
 	TexturedVertex v[4];
@@ -356,38 +334,9 @@ void CLightning::Render()
 	if(m_isMassLightning) {
 		ePos = Vec3f_ZERO;
 	} else {
-		
-		Entity * caster = entities[spells[spellinstance]->m_caster];
-		long idx = GetGroupOriginByName(caster->obj, "chest");
-		if(idx >= 0) {
-			spells[spellinstance]->m_caster_pos = caster->obj->vertexlist3[idx].v;
-		} else {
-			spells[spellinstance]->m_caster_pos = caster->pos;
-		}
-		
-		if(spells[spellinstance]->m_caster == PlayerEntityHandle) {
-			falpha = -player.angle.getYaw();
-			fBeta = player.angle.getPitch();
-		} else {
-			// IO source
-			fBeta = caster->angle.getPitch();
-			if(ValidIONum(caster->targetinfo)
-			   && caster->targetinfo != spells[spellinstance]->m_caster) {
-				Vec3f * p1 = &spells[spellinstance]->m_caster_pos;
-				Vec3f p2;
-				GetChestPos(caster->targetinfo, &p2); 
-				falpha = MAKEANGLE(degrees(getAngle(p1->y, p1->z, p2.y, p2.z + glm::distance(Vec2f(p2.x, p2.z), Vec2f(p1->x, p1->z))))); //alpha entre orgn et dest;
-			}
-			else if (ValidIONum(spells[spellinstance]->m_target))
-			{
-				Vec3f * p1 = &spells[spellinstance]->m_caster_pos;
-				Vec3f p2;
-				GetChestPos(spells[spellinstance]->m_target, &p2); //
-				falpha = MAKEANGLE(degrees(getAngle(p1->y, p1->z, p2.y, p2.z + glm::distance(Vec2f(p2.x, p2.z), Vec2f(p1->x, p1->z))))); //alpha entre orgn et dest;
-			}
-		}
-		
-		ePos = spells[spellinstance]->m_caster_pos;
+		ePos = m_pos;
+		fBeta = m_beta;
+		falpha = m_alpha;
 	}
 
 	//-------------------------------------------------------------------------
@@ -435,15 +384,15 @@ void CLightning::Render()
 			sphere.origin = a;
 			sphere.radius = std::min(cnodetab[i].size, 50.f);
 
-			if(CheckAnythingInSphere(sphere, spells[spellinstance]->m_caster, CAS_NO_SAME_GROUP)) {
+			if(CheckAnythingInSphere(sphere, m_caster, CAS_NO_SAME_GROUP)) {
 
 				DamageParameters damage;
 				damage.pos = sphere.origin;
 				damage.radius = sphere.radius;
-				damage.damages = fDamage * spells[spellinstance]->m_level * ( 1.0f / 3 );
+				damage.damages = fDamage * m_level * ( 1.0f / 3 );
 				damage.area = DAMAGE_FULL;
 				damage.duration = 1;
-				damage.source = spells[spellinstance]->m_caster;
+				damage.source = m_caster;
 				damage.flags = DAMAGE_FLAG_DONT_HURT_SOURCE | DAMAGE_FLAG_ADD_VISUAL_FX;
 				damage.type = DAMAGE_TYPE_FAKEFIRE | DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_LIGHTNING;
 				DamageCreate(damage);

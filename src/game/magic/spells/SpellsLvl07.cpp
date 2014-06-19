@@ -438,7 +438,6 @@ void IceFieldSpell::Update(float timeDelta)
 void LightningStrikeSpell::Launch()
 {
 	CLightning * effect = new CLightning();
-	effect->spellinstance = m_thisHandle;
 	Vec3f target(0.f, 0.f, -500.f);
 	effect->Create(Vec3f_ZERO, target);
 	effect->SetDuration(long(500 * m_level));
@@ -469,13 +468,76 @@ void LightningStrikeSpell::End()
 	ARX_SOUND_PlaySFX(SND_SPELL_LIGHTNING_END, &entities[m_caster]->pos);
 }
 
+void GetChestPos(EntityHandle num, Vec3f * p)
+{
+	if(num == 0) {
+		p->x = player.pos.x;
+		p->y = player.pos.y + 70.f;
+		p->z = player.pos.z;
+		return;
+	}
+
+	if(ValidIONum(num)) {
+		long idx = GetGroupOriginByName(entities[num]->obj, "chest");
+
+		if(idx >= 0) {
+			*p = entities[num]->obj->vertexlist3[idx].v;
+		} else {
+			p->x = entities[num]->pos.x;
+			p->y = entities[num]->pos.y - 120.f;
+			p->z = entities[num]->pos.z;
+		}
+	}
+}
+
 void LightningStrikeSpell::Update(float timeDelta)
 {
-	CSpellFx *pCSpellFX = m_pSpellFx;
+	CLightning * effect = static_cast<CLightning *>(m_pSpellFx);
 
-	if(pCSpellFX) {
-		pCSpellFX->Update(timeDelta);
-		pCSpellFX->Render();
+	if(effect) {
+		
+		float fBeta = 0.f;
+		float falpha = 0.f;
+		
+		Entity * caster = entities[m_caster];
+		long idx = GetGroupOriginByName(caster->obj, "chest");
+		if(idx >= 0) {
+			m_caster_pos = caster->obj->vertexlist3[idx].v;
+		} else {
+			m_caster_pos = caster->pos;
+		}
+		
+		if(m_caster == PlayerEntityHandle) {
+			falpha = -player.angle.getYaw();
+			fBeta = player.angle.getPitch();
+		} else {
+			// IO source
+			fBeta = caster->angle.getPitch();
+			if(ValidIONum(caster->targetinfo)
+			   && caster->targetinfo != m_caster) {
+				Vec3f * p1 = &m_caster_pos;
+				Vec3f p2;
+				GetChestPos(caster->targetinfo, &p2); 
+				falpha = MAKEANGLE(degrees(getAngle(p1->y, p1->z, p2.y, p2.z + glm::distance(Vec2f(p2.x, p2.z), Vec2f(p1->x, p1->z))))); //alpha entre orgn et dest;
+			}
+			else if (ValidIONum(m_target))
+			{
+				Vec3f * p1 = &m_caster_pos;
+				Vec3f p2;
+				GetChestPos(m_target, &p2); //
+				falpha = MAKEANGLE(degrees(getAngle(p1->y, p1->z, p2.y, p2.z + glm::distance(Vec2f(p2.x, p2.z), Vec2f(p1->x, p1->z))))); //alpha entre orgn et dest;
+			}
+		}
+		
+		effect->m_pos = m_caster_pos;
+		effect->m_beta = fBeta;
+		effect->m_alpha = falpha;
+		
+		effect->m_caster = m_caster;
+		effect->m_level = m_level;
+		
+		effect->Update(timeDelta);
+		effect->Render();
 	}
 	
 	ARX_SOUND_RefreshPosition(m_snd_loop, entities[m_caster]->pos);
