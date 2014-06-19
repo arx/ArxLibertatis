@@ -50,11 +50,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 
 CSpellFx::CSpellFx() :
-	fBeta(0),
 	lLightId(-1)
 {
 	SetDuration(1000);
-	SetAngle(fBeta);
+	SetAngle(0);
 }
 
 void CSpellFx::SetDuration(const unsigned long ulaDuration) {
@@ -75,8 +74,7 @@ unsigned long CSpellFx::GetDuration() {
 }
 
 void CSpellFx::SetAngle(float afAngle) {
-	fBeta = afAngle;
-	float fBetaRad = radians(fBeta);
+	float fBetaRad = radians(afAngle);
 	fBetaRadCos = (float) cos(fBetaRad);
 	fBetaRadSin = (float) sin(fBetaRad);
 }

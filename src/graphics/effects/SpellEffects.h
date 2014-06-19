@@ -62,7 +62,6 @@ void EE_RT2(TexturedVertex * in, TexturedVertex * out);
 class CSpellFx
 {
 	protected:
-		float	fBeta;
 		float	fBetaRadCos;
 		float	fBetaRadSin;
 
