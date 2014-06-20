@@ -564,7 +564,7 @@ void CMultiMagicMissile::Create()
 	SetDuration(lMax + 1000);
 }
 
-void CMultiMagicMissile::CheckCollision()
+void CMultiMagicMissile::CheckCollision(float level, EntityHandle caster)
 {
 	for(size_t i = 0; i < pTab.size(); i++) {
 		CMagicMissile * missile = (CMagicMissile *) pTab[i];
@@ -576,12 +576,12 @@ void CMultiMagicMissile::CheckCollision()
 		sphere.origin = missile->eCurPos;
 		sphere.radius	= 10.f;
 		
-		if(spellinstance != SpellHandle(-1) && (CheckAnythingInSphere(sphere, spells[spellinstance]->m_caster, CAS_NO_SAME_GROUP)))
+		if(CheckAnythingInSphere(sphere, caster, CAS_NO_SAME_GROUP))
 		{
-			bool mrCheat = (spells[spellinstance]->m_caster == PlayerEntityHandle && cur_mr == 3);
+			bool mrCheat = (caster == PlayerEntityHandle && cur_mr == 3);
 			
 			LaunchMagicMissileExplosion(missile->eCurPos, mrCheat);
-			ARX_NPC_SpawnAudibleSound(missile->eCurPos, entities[spells[spellinstance]->m_caster]);
+			ARX_NPC_SpawnAudibleSound(missile->eCurPos, entities[caster]);
 			
 			missile->SetTTL(1000);
 			missile->bExplo = true;
@@ -592,10 +592,10 @@ void CMultiMagicMissile::CheckCollision()
 			DamageParameters damage;
 			damage.pos = missile->eCurPos;
 			damage.radius = 80.f;
-			damage.damages = (4 + spells[spellinstance]->m_level * ( 1.0f / 5 )) * .8f;
+			damage.damages = (4 + level * ( 1.0f / 5 )) * .8f;
 			damage.area	= DAMAGE_FULL;
 			damage.duration = -1;
-			damage.source = spells[spellinstance]->m_caster;
+			damage.source = caster;
 			damage.flags = DAMAGE_FLAG_DONT_HURT_SOURCE;
 			damage.type = DAMAGE_TYPE_MAGICAL;
 			DamageCreate(damage);
