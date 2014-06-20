@@ -156,8 +156,6 @@ unsigned long CSummonCreature::GetDuration() {
 
 void CSummonCreature::Create(Vec3f aeSrc, float afBeta)
 {
-	int i;
-
 	SetDuration(ulDurationIntro, ulDurationRender, ulDurationOuttro);
 
 	eSrc.x = aeSrc.x;
@@ -171,7 +169,7 @@ void CSummonCreature::Create(Vec3f aeSrc, float afBeta)
 	end = 40 - 1;
 	bIntro = true;
 
-	for(i = 0; i < 40; i++) {
+	for(int i = 0; i < 40; i++) {
 		tfRaysa[i] = 0.4f * rnd();
 		tfRaysb[i] = 0.4f * rnd(); 
 	}
@@ -192,7 +190,7 @@ void CSummonCreature::Create(Vec3f aeSrc, float afBeta)
 	// check de la conformité du split
 	// sinon recalc de l'un de l'autre ou des deux
 	// espace min
-	for(i = 0; i < 40; i++) {
+	for(int i = 0; i < 40; i++) {
 		if(v1a[i].x > v1b[i].x) {
 			float fTemp = v1a[i].x;
 			v1a[i].x = v1b[i].x;
@@ -214,7 +212,7 @@ void CSummonCreature::Create(Vec3f aeSrc, float afBeta)
 		}
 	}
 	
-	for(i = 0; i <= end; i++) {
+	for(int i = 0; i <= end; i++) {
 		vb[i] = va[i] = eSrc;
 	}
 	
