@@ -121,8 +121,6 @@ void ARXDRAW_DrawInterShadows()
 			continue;
 		}
 		
-		TexturedVertex in;
-		
 		TexturedVertex ltv[4];
 		ltv[0] = TexturedVertex(Vec3f(0, 0, 0.001f), 1.f, 0, Vec2f(0.3f, 0.3f));
 		ltv[1] = TexturedVertex(Vec3f(0, 0, 0.001f), 1.f, 0, Vec2f(0.7f, 0.3f));
@@ -136,8 +134,9 @@ void ARXDRAW_DrawInterShadows()
 				if(!ep)
 					continue;
 				
-				in.p.y = ep->min.y - 3.f;
-				float r = 0.5f - ((float)EEfabs(io->obj->vertexlist3[k].v.y - in.p.y)) * (1.f/500);
+				Vec3f in;
+				in.y = ep->min.y - 3.f;
+				float r = 0.5f - ((float)EEfabs(io->obj->vertexlist3[k].v.y - in.y)) * (1.f/500);
 				r -= io->invisibility;
 				r *= io->scale;
 				
@@ -146,20 +145,20 @@ void ARXDRAW_DrawInterShadows()
 				
 				float s1 = 16.f * io->scale;
 				float s2 = s1 * (1.f/2);
-				in.p.x = io->obj->vertexlist3[k].v.x - s2;
-				in.p.z = io->obj->vertexlist3[k].v.z - s2;
+				in.x = io->obj->vertexlist3[k].v.x - s2;
+				in.z = io->obj->vertexlist3[k].v.z - s2;
 				
 				r *= 255.f;
 				long lv = r;
 				ltv[0].color = ltv[1].color = ltv[2].color = ltv[3].color = 0xFF000000 | lv<<16 | lv<<8 | lv;
 				
-				EE_RT(in.p, ltv[0].p);
-				in.p.x += s1;
-				EE_RT(in.p, ltv[1].p);
-				in.p.z += s1;
-				EE_RT(in.p, ltv[2].p);
-				in.p.x -= s1;
-				EE_RT(in.p, ltv[3].p);
+				EE_RT(in, ltv[0].p);
+				in.x += s1;
+				EE_RT(in, ltv[1].p);
+				in.z += s1;
+				EE_RT(in, ltv[2].p);
+				in.x -= s1;
+				EE_RT(in, ltv[3].p);
 				
 				if(ltv[0].p.z > 0.f && ltv[1].p.z > 0.f && ltv[2].p.z > 0.f) {
 					AddToShadowBatch(&ltv[0], &ltv[1], &ltv[2]);
@@ -174,8 +173,9 @@ void ARXDRAW_DrawInterShadows()
 				if(!ep)
 					continue;
 				
-				in.p.y = ep->min.y - 3.f;
-				float r = 0.8f - ((float)EEfabs(io->obj->vertexlist3[origin].v.y - in.p.y)) * (1.f/500);
+				Vec3f in;
+				in.y = ep->min.y - 3.f;
+				float r = 0.8f - ((float)EEfabs(io->obj->vertexlist3[origin].v.y - in.y)) * (1.f/500);
 				r *= io->obj->grouplist[k].siz;
 				r -= io->invisibility;
 				
@@ -184,20 +184,20 @@ void ARXDRAW_DrawInterShadows()
 				
 				float s1 = io->obj->grouplist[k].siz * 44.f;
 				float s2 = s1 * (1.f/2);
-				in.p.x = io->obj->vertexlist3[origin].v.x - s2;
-				in.p.z = io->obj->vertexlist3[origin].v.z - s2;
+				in.x = io->obj->vertexlist3[origin].v.x - s2;
+				in.z = io->obj->vertexlist3[origin].v.z - s2;
 				
 				r *= 255.f;
 				long lv = r;
 				ltv[0].color = ltv[1].color = ltv[2].color = ltv[3].color = 0xFF000000 | lv<<16 | lv<<8 | lv;
 				
-				EE_RT(in.p, ltv[0].p);
-				in.p.x += s1;
-				EE_RT(in.p, ltv[1].p);
-				in.p.z += s1;
-				EE_RT(in.p, ltv[2].p);
-				in.p.x -= s1;
-				EE_RT(in.p, ltv[3].p);
+				EE_RT(in, ltv[0].p);
+				in.x += s1;
+				EE_RT(in, ltv[1].p);
+				in.z += s1;
+				EE_RT(in, ltv[2].p);
+				in.x -= s1;
+				EE_RT(in, ltv[3].p);
 				
 				AddToShadowBatch(&ltv[0], &ltv[1], &ltv[2]);
 				AddToShadowBatch(&ltv[0], &ltv[2], &ltv[3]);
