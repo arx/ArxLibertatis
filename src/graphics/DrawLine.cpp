@@ -175,16 +175,13 @@ void EERIEDrawTrue3DLine(const Vec3f & orgn, const Vec3f & dest, Color col) {
 void EERIEDraw3DLine(const Vec3f & orgn, const Vec3f & dest, Color color1, Color color2, float zbias) {
 	
 	TexturedVertex v[2];
-	TexturedVertex in;
 	
-	in.p = orgn;
-	EE_RTP(&in, &v[0]);
+	EE_RTP(orgn, &v[0]);
 	if(v[0].p.z < 0.f) {
 		return;
 	}
 	
-	in.p = dest;
-	EE_RTP(&in,&v[1]);
+	EE_RTP(dest, &v[1]);
 	if(v[1].p.z < 0.f) {
 		return;
 	}

@@ -156,7 +156,7 @@ void EE_RotateY(TexturedVertex *in,TexturedVertex *out,float c, float s);
 
 void EE_RT(const Vec3f & in, Vec3f & out);
 void EE_P(const Vec3f * in, TexturedVertex * out);
-void EE_RTP(const TexturedVertex *in,TexturedVertex *out);
+void EE_RTP(const Vec3f & in,TexturedVertex *out);
 
 
 // FAST SAVE LOAD

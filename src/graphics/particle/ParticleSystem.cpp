@@ -391,9 +391,9 @@ void ParticleSystem::Render() {
 				}
 			}
 			
-			TexturedVertex p3pos;
-			p3pos.p = p->p3Pos;
-			p3pos.p += m_nextPosition;
+			Vec3f p3pos;
+			p3pos = p->p3Pos;
+			p3pos += m_nextPosition;
             
 			mat.setTexture(tex_tab[inumtex]);
 			

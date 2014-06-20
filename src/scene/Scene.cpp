@@ -248,12 +248,12 @@ void ManageLava_VertexBuffer(EERIEPOLY * ep, const long to, const unsigned long 
 
 void EERIERTPPoly2(EERIEPOLY *ep)
 {
-	EE_RTP(&ep->v[0],&ep->tv[0]);
-	EE_RTP(&ep->v[1],&ep->tv[1]);
-	EE_RTP(&ep->v[2],&ep->tv[2]);
+	EE_RTP(ep->v[0].p, &ep->tv[0]);
+	EE_RTP(ep->v[1].p, &ep->tv[1]);
+	EE_RTP(ep->v[2].p, &ep->tv[2]);
 
 	if(ep->type & POLY_QUAD)
-		EE_RTP(&ep->v[3],&ep->tv[3]);
+		EE_RTP(ep->v[3].p, &ep->tv[3]);
 	else
 		ep->tv[3].p.z=1.f;
 }

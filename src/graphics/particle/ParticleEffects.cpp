@@ -1020,7 +1020,9 @@ void ARX_PARTICLES_Update(EERIE_CAMERA * cam)  {
 		return;
 	}
 	
-	TexturedVertex in, inn, out;
+	Vec3f in;
+	Vec3f inn;
+	TexturedVertex out;
 	
 	unsigned long tim = (unsigned long)arxtime;
 	
@@ -1119,16 +1121,16 @@ void ARX_PARTICLES_Update(EERIE_CAMERA * cam)  {
 		
 		if((part->special & FOLLOW_SOURCE) && part->sourceionum != InvalidEntityHandle
 				&& entities[part->sourceionum]) {
-			inn.p = in.p = *part->source;
+			inn = in = *part->source;
 		} else if((part->special & FOLLOW_SOURCE2) && part->sourceionum != InvalidEntityHandle
 							&& entities[part->sourceionum]) {
-			inn.p = in.p = *part->source + part->move * val;
+			inn = in = *part->source + part->move * val;
 		} else {
-			inn.p = in.p = part->ov + part->move * val;
+			inn = in = part->ov + part->move * val;
 		}
 		
 		if(part->special & GRAVITY) {
-			in.p.y = inn.p.y = inn.p.y + 1.47f * val * val;
+			in.y = inn.y = inn.y + 1.47f * val * val;
 		}
 		
 		float fd = float(framediff2) / float(part->tolive);
@@ -1145,15 +1147,15 @@ void ARX_PARTICLES_Update(EERIE_CAMERA * cam)  {
 		if(!part->is2D) {
 			
 			Sphere sp;
-			sp.origin = in.p;
-			EE_RTP(&inn, &out);
+			sp.origin = in;
+			EE_RTP(inn, &out);
 			if(out.rhw < 0 || out.p.z > cam->cdepth * fZFogEnd) {
 				continue;
 			}
 			
 			if(part->special & PARTICLE_SPARK) {
 				
-				Vec3f vect = part->oldpos - in.p;
+				Vec3f vect = part->oldpos - in;
 				fnormalize(vect);
 				TexturedVertex tv[3];
 				tv[0].color = part->rgb.toBGR();
@@ -1161,18 +1163,18 @@ void ARX_PARTICLES_Update(EERIE_CAMERA * cam)  {
 				tv[2].color = 0xFF000000;
 				tv[0].p = out.p;
 				tv[0].rhw = out.rhw;
-				TexturedVertex temp;
-				temp.p = in.p + Vec3f(rnd() * 0.5f, 0.8f, rnd() * 0.5f);
-				EE_RTP(&temp, &tv[1]);
-				temp.p = in.p + vect * part->fparam;
+				Vec3f temp;
+				temp = in + Vec3f(rnd() * 0.5f, 0.8f, rnd() * 0.5f);
+				EE_RTP(temp, &tv[1]);
+				temp = in + vect * part->fparam;
 				
-				EE_RTP(&temp, &tv[2]);
+				EE_RTP(temp, &tv[2]);
 				GRenderer->ResetTexture(0);
 
 				// TODO: This
 				EERIEDRAWPRIM(Renderer::TriangleStrip, tv);
 				if(!arxtime.is_paused()) {
-					part->oldpos = in.p;
+					part->oldpos = in;
 				}
 				
 				continue;
@@ -1219,7 +1221,7 @@ void ARX_PARTICLES_Update(EERIE_CAMERA * cam)  {
 		}
 		
 		if(!arxtime.is_paused()) {
-			part->oldpos = in.p;
+			part->oldpos = in;
 		}
 		
 		if(part->special & PARTICLE_GOLDRAIN) {
@@ -1279,7 +1281,7 @@ void ARX_PARTICLES_Update(EERIE_CAMERA * cam)  {
 		} else if(part->is2D) {
 			
 			float siz2 = part->siz + part->scale.y * fd;
-			EERIEAddBitmap(mat, in.p.x, in.p.y, siz, siz2, in.p.z, tc, color);
+			EERIEAddBitmap(mat, in.x, in.y, siz, siz2, in.z, tc, color);
 			
 		} else {
 			

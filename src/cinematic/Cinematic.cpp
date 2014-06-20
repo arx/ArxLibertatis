@@ -325,7 +325,7 @@ void DrawGrille(CinematicGrid * grille, int col, int fx, CinematicLight * light,
 			t.y = v->y + *dream++;
 			t.z = v->z;
 			TransformLocalVertex(&t, &vtemp);
-			EE_RTP(&vtemp, d3dv);
+			EE_RTP(vtemp.p, d3dv);
 			if(light) {
 				d3dv->color = CalculLight(light, d3dv->p.x, d3dv->p.y, col);
 				d3dv->p.x = ADJUSTX(d3dv->p.x);
@@ -343,7 +343,7 @@ void DrawGrille(CinematicGrid * grille, int col, int fx, CinematicLight * light,
 			while(nb--) {
 				TexturedVertex vtemp;
 				TransformLocalVertex(v, &vtemp);
-				EE_RTP(&vtemp, d3dv);
+				EE_RTP(vtemp.p, d3dv);
 				d3dv->color = CalculLight(light, d3dv->p.x, d3dv->p.y, col);
 				d3dv->p.x = ADJUSTX(d3dv->p.x);
 				d3dv->p.y = ADJUSTY(d3dv->p.y);
@@ -354,7 +354,7 @@ void DrawGrille(CinematicGrid * grille, int col, int fx, CinematicLight * light,
 			while(nb--) {
 				TexturedVertex vtemp;
 				TransformLocalVertex(v, &vtemp);
-				EE_RTP(&vtemp, d3dv);
+				EE_RTP(vtemp.p, d3dv);
 				d3dv->p.x = ADJUSTX(d3dv->p.x);
 				d3dv->p.y = ADJUSTY(d3dv->p.y);
 				d3dv->color = col;
