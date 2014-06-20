@@ -153,13 +153,13 @@ void ARXDRAW_DrawInterShadows()
 				long lv = r;
 				ltv[0].color = ltv[1].color = ltv[2].color = ltv[3].color = 0xFF000000 | lv<<16 | lv<<8 | lv;
 				
-				EE_RT2(&in, &ltv[0]);
+				EE_RT(in.p, ltv[0].p);
 				in.p.x += s1;
-				EE_RT2(&in, &ltv[1]);
+				EE_RT(in.p, ltv[1].p);
 				in.p.z += s1;
-				EE_RT2(&in, &ltv[2]);
+				EE_RT(in.p, ltv[2].p);
 				in.p.x -= s1;
-				EE_RT2(&in, &ltv[3]);
+				EE_RT(in.p, ltv[3].p);
 				
 				if(ltv[0].p.z > 0.f && ltv[1].p.z > 0.f && ltv[2].p.z > 0.f) {
 					AddToShadowBatch(&ltv[0], &ltv[1], &ltv[2]);
@@ -191,13 +191,13 @@ void ARXDRAW_DrawInterShadows()
 				long lv = r;
 				ltv[0].color = ltv[1].color = ltv[2].color = ltv[3].color = 0xFF000000 | lv<<16 | lv<<8 | lv;
 				
-				EE_RT2(&in, &ltv[0]);
+				EE_RT(in.p, ltv[0].p);
 				in.p.x += s1;
-				EE_RT2(&in, &ltv[1]);
+				EE_RT(in.p, ltv[1].p);
 				in.p.z += s1;
-				EE_RT2(&in, &ltv[2]);
+				EE_RT(in.p, ltv[2].p);
 				in.p.x -= s1;
-				EE_RT2(&in, &ltv[3]);
+				EE_RT(in.p, ltv[3].p);
 				
 				AddToShadowBatch(&ltv[0], &ltv[1], &ltv[2]);
 				AddToShadowBatch(&ltv[0], &ltv[2], &ltv[3]);
@@ -283,7 +283,7 @@ void ARXDRAW_DrawPolyBoom()
 			IncrementPolyWithNormalOutput(pb->ep,ltv);
 			
 			for(long k = 0; k < pb->nbvert; k++) {
-				EE_RT2(&ltv[k], &ltv[k]);
+				EE_RT(ltv[k].p, ltv[k].p);
 				ltv[k].uv.x=pb->u[k];
 				ltv[k].uv.y=pb->v[k];
 				ltv[k].color = (Project.improve ? (Color3f::red * (tt*.5f)) : Color3f::gray(tt)).toBGR();
@@ -314,7 +314,7 @@ void ARXDRAW_DrawPolyBoom()
 			IncrementPolyWithNormalOutput(pb->ep, ltv);
 			
 			for(long k = 0; k < pb->nbvert; k++) {
-				EE_RT2(&ltv[k], &ltv[k]);
+				EE_RT(ltv[k].p, ltv[k].p);
 				ltv[k].uv.x=(pb->u[k]-0.5f)*(tr)+0.5f;
 				ltv[k].uv.y=(pb->v[k]-0.5f)*(tr)+0.5f;
 				ltv[k].color = col;
@@ -343,7 +343,7 @@ void ARXDRAW_DrawPolyBoom()
 			IncrementPolyWithNormalOutput(pb->ep,ltv);
 			
 			for(long k = 0; k < pb->nbvert; k++) {
-				EE_RT2(&ltv[k], &ltv[k]);
+				EE_RT(ltv[k].p, ltv[k].p);
 				ltv[k].uv.x=(pb->u[k]-0.5f)*(tr)+0.5f;
 				ltv[k].uv.y=(pb->v[k]-0.5f)*(tr)+0.5f;
 				ltv[k].color=col;

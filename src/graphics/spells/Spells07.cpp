@@ -410,10 +410,10 @@ void CLightning::Render()
 		v[1].p = astart + Vec3f(0.f, zz, 0.f);
 		v[2].p = a + Vec3f(0.f, zz, 0.f);
 		v[3].p = a;
-		EE_RT2(&v[0], &v2[0]);
-		EE_RT2(&v[1], &v2[1]);
-		EE_RT2(&v[2], &v2[2]);
-		EE_RT2(&v[3], &v2[3]);
+		EE_RT(v[0].p, v2[0].p);
+		EE_RT(v[1].p, v2[1].p);
+		EE_RT(v[2].p, v2[2].p);
+		EE_RT(v[3].p, v2[3].p);
 		ARX_DrawPrimitive(&v2[0], &v2[1], &v2[2]);
 		ARX_DrawPrimitive(&v2[0], &v2[2], &v2[3]);
 		
@@ -423,8 +423,8 @@ void CLightning::Render()
 		v2[3].uv = Vec2f(0.5f, 1.f);
 		v[1].p = astart - Vec3f(0.f, zz, 0.f);
 		v[2].p = a - Vec3f(0.f, zz, 0.f);
-		EE_RT2(&v[1], &v2[1]);
-		EE_RT2(&v[2], &v2[2]);
+		EE_RT(v[1].p, v2[1].p);
+		EE_RT(v[2].p, v2[2].p);
 		ARX_DrawPrimitive(&v2[0], &v2[1], &v2[2]);
 		ARX_DrawPrimitive(&v2[0], &v2[2], &v2[3]);
 		
@@ -434,8 +434,8 @@ void CLightning::Render()
 		v2[2].uv = Vec2f_ONE;
 		v[1].p = astart + Vec3f(xx, 0.f, zz);
 		v[2].p = a + Vec3f(xx, 0.f, zz);
-		EE_RT2(&v[1], &v2[1]);
-		EE_RT2(&v[2], &v2[2]);
+		EE_RT(v[1].p, v2[1].p);
+		EE_RT(v[2].p, v2[2].p);
 		ARX_DrawPrimitive(&v2[0], &v2[1], &v2[2]);
 		ARX_DrawPrimitive(&v2[0], &v2[2], &v2[3]);
 		
@@ -443,8 +443,8 @@ void CLightning::Render()
 		v2[2].uv = Vec2f_Y_AXIS;
 		v[1].p = astart - Vec3f(xx, 0.f, zz);
 		v[2].p = a - Vec3f(xx, 0.f, zz);
-		EE_RT2(&v[1], &v2[1]);
-		EE_RT2(&v[2], &v2[2]);
+		EE_RT(v[1].p, v2[1].p);
+		EE_RT(v[2].p, v2[2].p);
 		ARX_DrawPrimitive(&v2[0], &v2[1], &v2[2]);
 		ARX_DrawPrimitive(&v2[0], &v2[2], &v2[3]);
 	}

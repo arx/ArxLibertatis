@@ -108,10 +108,10 @@ void Draw3DLineTexNew(Vec3f startPos, Vec3f endPos, Color startColor, Color endC
 	v[3].p.y = endPos.y + zze;
 	v[3].p.z = endPos.z;
 
-	EE_RT2(&v[0], &v2[0]);
-	EE_RT2(&v[1], &v2[1]);
-	EE_RT2(&v[2], &v2[2]);
-	EE_RT2(&v[3], &v2[3]);
+	EE_RT(v[0].p, v2[0].p);
+	EE_RT(v[1].p, v2[1].p);
+	EE_RT(v[2].p, v2[2].p);
+	EE_RT(v[3].p, v2[3].p);
 	ARX_DrawPrimitive(&v2[0], &v2[1], &v2[3]);
 	ARX_DrawPrimitive(&v2[1], &v2[2], &v2[3]);
 
@@ -134,10 +134,10 @@ void Draw3DLineTexNew(Vec3f startPos, Vec3f endPos, Color startColor, Color endC
 	v[3].p.y = endPos.y;
 	v[3].p.z = endPos.z + zze;
 
-	EE_RT2(&v[0], &v2[0]);
-	EE_RT2(&v[1], &v2[1]);
-	EE_RT2(&v[2], &v2[2]);
-	EE_RT2(&v[3], &v2[3]);
+	EE_RT(v[0].p, v2[0].p);
+	EE_RT(v[1].p, v2[1].p);
+	EE_RT(v[2].p, v2[2].p);
+	EE_RT(v[3].p, v2[3].p);
 	ARX_DrawPrimitive(&v2[0], &v2[1], &v2[3]);
 	ARX_DrawPrimitive(&v2[1], &v2[2], &v2[3]);
 }

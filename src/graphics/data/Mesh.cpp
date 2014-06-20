@@ -454,10 +454,6 @@ void EE_RT(const Vec3f & in, Vec3f & out) {
 	out = Vec3f(ACTIVECAM->orgTrans.worldToView * Vec4f(in, 1.0f));
 }
 
-void EE_RT2(TexturedVertex * in, TexturedVertex * out) {
-	EE_RT(in->p, out->p);
-}
-
 // TODO get rid of sw transform
 static inline float clamp_and_invert(float z) {
 	

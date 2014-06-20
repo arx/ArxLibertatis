@@ -287,19 +287,19 @@ void CSummonCreature::RenderFissure()
 
 	if(bIntro) {
 		for(i = 0; i < std::min(end, (int)fSizeIntro); i++) {
-			EE_RT2(&v1a[i], &vr[0]);
-			EE_RT2(&v1b[i], &vr[1]);
-			EE_RT2(&v1a[i+1], &vr[2]);
-			EE_RT2(&v1b[i+1], &vr[3]);
+			EE_RT(v1a[i].p, vr[0].p);
+			EE_RT(v1b[i].p, vr[1].p);
+			EE_RT(v1a[i+1].p, vr[2].p);
+			EE_RT(v1b[i+1].p, vr[3].p);
 			drawTriangle(mat, &vr[0]);
 			drawTriangle(mat, &vr[1]);
 		}
 	} else {
 		for(i = 0; i < std::min(end, (int)fSizeIntro); i++) {
-			EE_RT2(&va[i], &vr[0]);
-			EE_RT2(&vb[i], &vr[1]);
-			EE_RT2(&va[i+1], &vr[2]);
-			EE_RT2(&vb[i+1], &vr[3]);
+			EE_RT(va[i].p, vr[0].p);
+			EE_RT(vb[i].p, vr[1].p);
+			EE_RT(va[i+1].p, vr[2].p);
+			EE_RT(vb[i+1].p, vr[3].p);
 			drawTriangle(mat, &vr[0]);
 			drawTriangle(mat, &vr[1]);
 		}
@@ -315,20 +315,20 @@ void CSummonCreature::RenderFissure()
 		vt[2].p = va[i].p - (va[i].p - eSrc) * 0.2f;
 		vt[3].p = va[i + 1].p - (va[i + 1].p - eSrc) * 0.2f;
 		
-		EE_RT2(&vt[3], &vr[0]);
-		EE_RT2(&vt[2], &vr[1]);
-		EE_RT2(&va[i+1], &vr[2]);
-		EE_RT2(&va[i], &vr[3]);
+		EE_RT(vt[3].p, vr[0].p);
+		EE_RT(vt[2].p, vr[1].p);
+		EE_RT(va[i+1].p, vr[2].p);
+		EE_RT(va[i].p, vr[3].p);
 		drawTriangle(mat, &vr[0]);
 		drawTriangle(mat, &vr[1]);
 		
 		vt[2].p = vb[i].p - (vb[i].p - eSrc) * 0.2f;
 		vt[3].p = vb[i + 1].p - (vb[i + 1].p - eSrc) * 0.2f;
 		
-		EE_RT2(&vb[i], &vr[3]);
-		EE_RT2(&vb[i+1], &vr[2]);
-		EE_RT2(&vt[2], &vr[1]);
-		EE_RT2(&vt[3], &vr[0]);
+		EE_RT(vb[i].p, vr[3].p);
+		EE_RT(vb[i+1].p, vr[2].p);
+		EE_RT(vt[2].p, vr[1].p);
+		EE_RT(vt[3].p, vr[0].p);
 		drawTriangle(mat, &vr[0]);
 		drawTriangle(mat, &vr[1]);
 	}
@@ -369,10 +369,10 @@ void CSummonCreature::RenderFissure()
 			vr[1].color = (fColorRays1 * tfRaysa[i + 1]).toBGR();
 			vr[2].color = (fColorRays2 * tfRaysa[i]).toBGR();
 			vr[3].color = (fColorRays2 * tfRaysa[i + 1]).toBGR();
-			EE_RT2(&vt[0], &vr[3]);
-			EE_RT2(&vt[1], &vr[2]);
-			EE_RT2(&vt[2], &vr[1]);
-			EE_RT2(&vt[3], &vr[0]);
+			EE_RT(vt[0].p, vr[3].p);
+			EE_RT(vt[1].p, vr[2].p);
+			EE_RT(vt[2].p, vr[1].p);
+			EE_RT(vt[3].p, vr[0].p);
 			drawTriangle(mat, &vr[0]);
 			drawTriangle(mat, &vr[1]);
 		}
@@ -386,10 +386,10 @@ void CSummonCreature::RenderFissure()
 			vr[1].color = (fColorRays1 * tfRaysb[i + 1]).toBGR();
 			vr[2].color = (fColorRays2 * tfRaysb[i]).toBGR();
 			vr[3].color = (fColorRays2 * tfRaysb[i + 1]).toBGR();
-			EE_RT2(&vt[0], &vr[3]);
-			EE_RT2(&vt[1], &vr[2]);
-			EE_RT2(&vt[2], &vr[1]);
-			EE_RT2(&vt[3], &vr[0]);
+			EE_RT(vt[0].p, vr[3].p);
+			EE_RT(vt[1].p, vr[2].p);
+			EE_RT(vt[2].p, vr[1].p);
+			EE_RT(vt[3].p, vr[0].p);
 			drawTriangle(mat, &vr[0]);
 			drawTriangle(mat, &vr[1]);
 		}

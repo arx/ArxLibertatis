@@ -1173,7 +1173,7 @@ void CLevitate::Render()
 					d3dvs.p.y = this->pos.y + (vertex + 1)->y + ((vertex->y - (vertex + 1)->y) * this->scale);
 					d3dvs.p.z = this->pos.z + (vertex + 1)->z + ((vertex->z - (vertex + 1)->z) * this->scale);
 					
-					EE_RT2(&d3dvs, d3dv);
+					EE_RT(d3dvs.p, d3dv->p);
 
 					float fRandom	= rnd() * 80.f;
 
@@ -1191,7 +1191,7 @@ void CLevitate::Render()
 					d3dvs.p.y = this->pos.y;
 					d3dvs.p.z = this->pos.z + vertex->z;
 					
-					EE_RT2(&d3dvs, d3dv);
+					EE_RT(d3dvs.p, d3dv->p);
 
 					fRandom = rnd() * 80.f;
 
@@ -1246,7 +1246,7 @@ void CLevitate::Render()
 				while(nb) {
 					d3dvs.p = this->pos + *vertex;
 	
-					EE_RT2(&d3dvs, d3dv);
+					EE_RT(d3dvs.p, d3dv->p);
 					col = Random::get(0, 80);
 
 					if(!arxtime.is_paused())
@@ -1261,7 +1261,7 @@ void CLevitate::Render()
 					d3dvs.p.y = this->pos.y;
 					d3dvs.p.z = this->pos.z + vertex->z;
 
-					EE_RT2(&d3dvs, d3dv);
+					EE_RT(d3dvs.p, d3dv->p);
 					col = Random::get(0, 80);
 
 					if(!arxtime.is_paused())
