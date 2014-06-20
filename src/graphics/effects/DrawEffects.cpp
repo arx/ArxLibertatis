@@ -75,9 +75,6 @@ std::vector<TexturedVertex> g_shadowBatch;
 
 extern Color ulBKGColor;
 
-void EE_RT2(TexturedVertex*,TexturedVertex*);
-void EE_P(const Vec3f * in, TexturedVertex * out);
-
 void AddToShadowBatch(TexturedVertex * _pVertex1, TexturedVertex * _pVertex2, TexturedVertex * _pVertex3) {
 
 	TexturedVertex pPointAdd[3];
