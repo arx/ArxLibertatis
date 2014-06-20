@@ -83,17 +83,15 @@ private:
 class CMultiMagicMissile : public CSpellFx {
 	
 public:
-	explicit CMultiMagicMissile(size_t nb, SpellHandle spellHandle, bool mrCheat);
+	explicit CMultiMagicMissile(size_t nb, bool mrCheat);
 	~CMultiMagicMissile();
 	
 	void CheckCollision(float level, EntityHandle caster);
 	bool CheckAllDestroyed();
 	
-	void Create();
+	void Create(Vec3f aePos, float afAlpha, float afBeta);
 	void Update(float timeDelta);
 	void Render();
-	
-	SpellHandle spellinstance;
 	
 private:
 	bool m_mrCheat;
