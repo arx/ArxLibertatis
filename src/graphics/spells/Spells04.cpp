@@ -109,26 +109,27 @@ void CBless::Render()
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
-	TexturedVertex v[4];
-	TexturedVertex v3[4];
+	Vec3f v[4];
 	
 	float fBetaRadCos = (float) cos(radians(MAKEANGLE(m_yaw))) * m_scale;
 	float fBetaRadSin = (float) sin(radians(MAKEANGLE(m_yaw))) * m_scale;
 
 	ColorBGRA color = Color::white.toBGR();
 
-	v[0].p.x = x - fBetaRadCos - fBetaRadSin;
-	v[0].p.y = y;
-	v[0].p.z = z - fBetaRadSin + fBetaRadCos;
-	v[1].p.x = x + fBetaRadCos - fBetaRadSin;
-	v[1].p.y = y;
-	v[1].p.z = z + fBetaRadSin + fBetaRadCos;
-	v[2].p.x = x - fBetaRadCos + fBetaRadSin;
-	v[2].p.y = y;
-	v[2].p.z = z - fBetaRadSin - fBetaRadCos;
-	v[3].p.x = x + fBetaRadCos + fBetaRadSin;
-	v[3].p.y = y;
-	v[3].p.z = z + fBetaRadSin - fBetaRadCos;
+	v[0].x = x - fBetaRadCos - fBetaRadSin;
+	v[0].y = y;
+	v[0].z = z - fBetaRadSin + fBetaRadCos;
+	v[1].x = x + fBetaRadCos - fBetaRadSin;
+	v[1].y = y;
+	v[1].z = z + fBetaRadSin + fBetaRadCos;
+	v[2].x = x - fBetaRadCos + fBetaRadSin;
+	v[2].y = y;
+	v[2].z = z - fBetaRadSin - fBetaRadCos;
+	v[3].x = x + fBetaRadCos + fBetaRadSin;
+	v[3].y = y;
+	v[3].z = z + fBetaRadSin - fBetaRadCos;
+	
+	TexturedVertex v3[4];
 	
 	v3[0].color = color;
 	v3[1].color = color;
@@ -142,10 +143,10 @@ void CBless::Render()
 	v3[2].uv = Vec2f_Y_AXIS;
 	v3[3].uv = Vec2f_ONE;
 	
-	EE_RT(v[0].p, v3[0].p);
-	EE_RT(v[1].p, v3[1].p);
-	EE_RT(v[2].p, v3[2].p);
-	EE_RT(v[3].p, v3[3].p);
+	EE_RT(v[0], v3[0].p);
+	EE_RT(v[1], v3[1].p);
+	EE_RT(v[2], v3[2].p);
+	EE_RT(v[3], v3[3].p);
 	ARX_DrawPrimitive(&v3[0], &v3[1], &v3[2]);
 	ARX_DrawPrimitive(&v3[1], &v3[2], &v3[3]);
 	
