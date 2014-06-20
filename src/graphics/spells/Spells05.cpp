@@ -435,21 +435,7 @@ void CPoisonProjectile::Create(Vec3f _eSrc, float _fBeta)
 	pathways[0] = eSrc;
 	pathways[9] = e;
 	Split(pathways, 0, 9, 10 * fBetaRadCos, 10, 10, 10, 10 * fBetaRadSin, 10);
-
-	if (0)
-		for (i = 0; i < 10; i++)
-		{
-			if (pathways[i].y >= eSrc.y + 150)
-			{
-				pathways[i].y = eSrc.y + 150;
-			}
-
-			if (pathways[i].y <= eSrc.y + 50)
-			{
-				pathways[i].y = eSrc.y + 50;
-			}
-		}
-
+	
 	fTrail = -1;
 
 	//-------------------------------------------------------------------------

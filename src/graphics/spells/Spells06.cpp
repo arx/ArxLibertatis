@@ -569,37 +569,6 @@ void CRiseDead::Create(Vec3f aeSrc, float afBeta)
 	sizeF = 200;
 	Split(v1a, 0, end, 80);
 	Split(v1b, 0, end, -80);
-
-	// check de la conformité du split
-	// sinon recalc de l'un de l'autre ou des deux
-	// espace min
-	if (0)
-		for (i = 0; i < 40; i++)
-		{
-			if (v1a[i].x > v1b[i].x)
-			{
-				float fTemp = v1a[i].x;
-				v1a[i].x = v1b[i].x;
-				v1b[i].x = fTemp;
-			}
-
-			if (v1a[i].z > v1b[i].z)
-			{
-				float fTemp = v1a[i].z;
-				v1a[i].z = v1b[i].z;
-				v1b[i].z = fTemp;
-			}
-
-			if ((v1b[i].x - v1a[i].x) > 20)
-			{
-				v1b[i].x = v1a[i].x + rnd() * 20.0f;
-			}
-
-			if ((v1b[i].z - v1a[i].z) > 20)
-			{
-				v1b[i].z = v1a[i].z + rnd() * 20.0f;
-			}
-		}
 	
 	for(i = 0; i <= end; i++) {
 		vb[i] = va[i] = eSrc;
