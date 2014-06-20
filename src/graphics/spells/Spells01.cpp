@@ -425,9 +425,8 @@ void CMagicMissile::Render()
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
-CMultiMagicMissile::CMultiMagicMissile(size_t nbmissiles, SpellHandle spellHandle, bool mrCheat)
+CMultiMagicMissile::CMultiMagicMissile(size_t nbmissiles, bool mrCheat)
 	: CSpellFx()
-	, spellinstance(spellHandle)
 	, m_mrCheat(mrCheat)
 {
 	SetDuration(2000);
@@ -453,64 +452,10 @@ CMultiMagicMissile::~CMultiMagicMissile()
 	pTab.clear();
 }
 
-void CMultiMagicMissile::Create()
+void CMultiMagicMissile::Create(Vec3f aePos, float afAlpha, float afBeta)
 {
 	
 	long lMax = 0;
-	
-	SpellBase * spell = spells[spellinstance];
-	
-	spell->m_hand_group = GetActionPointIdx(entities[spell->m_caster]->obj, "primary_attach");
-	
-	if(spell->m_hand_group != -1) {
-		Entity * caster = entities[spell->m_caster];
-		long group = spell->m_hand_group;
-		spell->m_hand_pos = caster->obj->vertexlist3[group].v;
-	}
-	
-	Vec3f aePos;
-	float afAlpha, afBeta;
-	if(spell->m_caster == PlayerEntityHandle) {
-		afBeta = player.angle.getPitch();
-		afAlpha = player.angle.getYaw();
-		Vec3f vector;
-		vector.x = -std::sin(radians(afBeta)) * std::cos(radians(afAlpha)) * 60.f;
-		vector.y = std::sin(radians(afAlpha)) * 60.f;
-		vector.z = std::cos(radians(afBeta)) * std::cos(radians(afAlpha)) * 60.f;
-		
-		if(spell->m_hand_group != -1) {
-			aePos = spell->m_hand_pos + vector;
-		} else {
-			aePos.x = player.pos.x - std::sin(radians(afBeta)) + vector.x; 
-			aePos.y = player.pos.y + vector.y; //;
-			aePos.z = player.pos.z + std::cos(radians(afBeta)) + vector.z; 
-		}
-	} else {
-		afAlpha = 0;
-		afBeta = entities[spell->m_caster]->angle.getPitch();
-		Vec3f vector;
-		vector.x = -std::sin(radians(afBeta)) * std::cos(radians(afAlpha)) * 60;
-		vector.y =  std::sin(radians(afAlpha)) * 60;
-		vector.z =  std::cos(radians(afBeta)) * std::cos(radians(afAlpha)) * 60;
-		
-		if(spell->m_hand_group != -1) {
-			aePos = spell->m_hand_pos + vector;
-		} else {
-			aePos = entities[spell->m_caster]->pos + vector;
-		}
-		
-		Entity * io = entities[spell->m_caster];
-		
-		if(ValidIONum(io->targetinfo)) {
-			Vec3f * p1 = &spell->m_caster_pos;
-			Vec3f * p2 = &entities[io->targetinfo]->pos;
-			afAlpha = -(degrees(getAngle(p1->y, p1->z, p2->y, p2->z + glm::distance(Vec2f(p2->x, p2->z), Vec2f(p1->x, p1->z))))); //alpha entre orgn et dest;
-		} else if (ValidIONum(spell->m_target)) {
-			Vec3f * p1 = &spell->m_caster_pos;
-			Vec3f * p2 = &entities[spell->m_target]->pos;
-			afAlpha = -(degrees(getAngle(p1->y, p1->z, p2->y, p2->z + glm::distance(Vec2f(p2->x, p2->z), Vec2f(p1->x, p1->z))))); //alpha entre orgn et dest;
-		}
-	}
 	
 	for(size_t i = 0; i < pTab.size(); i++) {
 		Anglef angles(afAlpha, afBeta, 0.f);
@@ -532,7 +477,7 @@ void CMultiMagicMissile::Create()
 		
 		pMM->SetDuration(lTime);
 		
-		if(spell->m_caster == PlayerEntityHandle && cur_mr == 3) {
+		if(m_mrCheat) {
 			pMM->SetColor(Color3f(0.9f, 0.2f, 0.5f));
 		} else {
 			pMM->SetColor(Color3f(0.9f + rnd() * 0.1f, 0.9f + rnd() * 0.1f, 0.7f + rnd() * 0.3f));
@@ -547,7 +492,7 @@ void CMultiMagicMissile::Create()
 			el->fallend		= 190.f;
 			el->fallstart	= 80.f;
 			
-			if(spell->m_caster == PlayerEntityHandle && cur_mr == 3) {
+			if(m_mrCheat) {
 				el->rgb.r = 1;
 				el->rgb.g = 0.3f;
 				el->rgb.b = 0.8f;
