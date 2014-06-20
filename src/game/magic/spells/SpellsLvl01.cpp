@@ -109,7 +109,7 @@ void MagicMissileSpell::Update(float timeDelta)
 
 	if(pCSpellFX) {
 		CMultiMagicMissile *pMMM = (CMultiMagicMissile *) pCSpellFX;
-		pMMM->CheckCollision();
+		pMMM->CheckCollision(m_level, m_caster);
 
 		// Update
 		pCSpellFX->Update(timeDelta);

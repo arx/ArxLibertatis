@@ -86,7 +86,7 @@ public:
 	explicit CMultiMagicMissile(size_t nb, SpellHandle spellHandle);
 	~CMultiMagicMissile();
 	
-	void CheckCollision();
+	void CheckCollision(float level, EntityHandle caster);
 	bool CheckAllDestroyed();
 	
 	void Create();
