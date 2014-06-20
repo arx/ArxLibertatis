@@ -157,7 +157,6 @@ unsigned long CSummonCreature::GetDuration() {
 void CSummonCreature::Create(Vec3f aeSrc, float afBeta)
 {
 	int i;
-	TexturedVertex target;
 
 	SetDuration(ulDurationIntro, ulDurationRender, ulDurationOuttro);
 
@@ -177,7 +176,6 @@ void CSummonCreature::Create(Vec3f aeSrc, float afBeta)
 		tfRaysb[i] = 0.4f * rnd(); 
 	}
 	
-	target.p = eSrc - Vec3f(100.f, 0.f, 0.f);
 	v1a[0] = eSrc - Vec3f(0.f, 100.f, 0.f);
 	v1a[end] = eSrc + Vec3f(0.f, 100.f, 0.f);	
 	v1b[0] = v1a[0];
