@@ -1455,12 +1455,11 @@ bool Menu2_Render() {
 		}
 		
 		Vec2f pos = Vec2f(DANAEMouse) + offset;
-
-		EERIEDrawBitmap(Rectf(pos, size.x, size.y), 0.001f, pTextureLoad, Color::white);
-
-		GRenderer->ResetTexture(0);
-		EERIEDraw2DRect(pos.x, pos.y, pos.x + size.x, pos.y + size.y,
-		                0.01f, Color::white);
+		
+		Rectf rect = Rectf(pos, size.x, size.y);
+		
+		EERIEDrawBitmap(rect, 0.001f, pTextureLoad, Color::white);
+		EERIEDraw2DRect(rect, 0.01f, Color::white);
 
 		pTextureLoadRender=NULL;
 	}
