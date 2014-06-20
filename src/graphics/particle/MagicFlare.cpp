@@ -180,7 +180,7 @@ void AddFlare(const Vec2s & pos, float sm, short typ, Entity * io, bool bookDraw
 		SetActiveCamera(&ka);
 		PrepareCamera(&ka, g_size);
 		fl->v.p += ka.orgTrans.pos;
-		EE_RTP(&fl->tv, &fl->v);
+		EE_RTP(fl->tv.p, &fl->v);
 		fl->v.p += ka.orgTrans.pos;
 
 		float vx = -(fl->x - subj.center.x) * 0.2173913f;
@@ -478,7 +478,7 @@ void ARX_MAGICAL_FLARES_Update() {
 				EERIEAddBitmap(mat, flare.v.p.x, flare.v.p.y, s, s, flare.v.p.z,
 								surf, Color::fromBGRA(flare.tv.color));
 			} else {
-				EERIEAddSprite(mat, flare.v, s * 0.025f + 1.f,
+				EERIEAddSprite(mat, flare.v.p, s * 0.025f + 1.f,
 				               Color::fromBGRA(flare.tv.color), 2.f);
 			}
 

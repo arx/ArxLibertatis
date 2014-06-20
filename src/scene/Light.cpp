@@ -192,9 +192,8 @@ void EERIE_LIGHT_MoveAll(const Vec3f * trans) {
 
 void ComputeLight2DPos(EERIE_LIGHT * _pL) {
 	
-	TexturedVertex in, out;
-	in.p = _pL->pos;
-	EE_RTP(&in, &out);
+	TexturedVertex out;
+	EE_RTP(_pL->pos, &out);
 	
 	if(out.p.z > 0.f && out.p.z < 1000.f && out.rhw > 0) {
 		float siz = 50;

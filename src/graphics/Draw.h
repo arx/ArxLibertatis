@@ -61,13 +61,13 @@ void EERIEDRAWPRIM(Renderer::Primitive primitive, const TexturedVertex * vertice
 void EERIEDrawBitmap(const Rectf & rect, float z, TextureContainer * tex, Color color);
 void EERIEDrawBitmap2DecalY(float x, float y, float sx, float sy, float z, TextureContainer * tex, Color col, float _fDeltaY);
 
-void EERIEDrawSprite(const TexturedVertex & in, float siz, TextureContainer * tex, Color col, float Zpos);
+void EERIEDrawSprite(const Vec3f & in, float siz, TextureContainer * tex, Color col, float Zpos);
 
 void EERIEDrawBitmap2(const Rectf & rect, float z, TextureContainer * tex, Color color);
 void EERIEDrawBitmap_uv(Rectf rect, float z, TextureContainer * tex, Color col, float u0, float v0, float u1, float v1);
 void EERIEDrawBitmapUVs(float x, float y, float sx, float sy, float z, TextureContainer * tex, Color col, float u0, float v0, float u1, float v1, float u2, float v2, float u3, float v3);
 
 void EERIEAddBitmap(const RenderMaterial& mat, float x, float y, float sx, float sy, float z, TextureContainer * tex, Color color);
-void EERIEAddSprite(const RenderMaterial & mat, const TexturedVertex & in, float siz, Color color, float Zpos, float rot = 0);
+void EERIEAddSprite(const RenderMaterial & mat, const Vec3f & in, float siz, Color color, float Zpos, float rot = 0);
 
 #endif // ARX_GRAPHICS_DRAW_H

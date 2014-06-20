@@ -116,9 +116,8 @@ static void drawDebugLights() {
 			continue;
 		}
 		
-		TexturedVertex in, center;
-		in.p = light->pos;
-		EE_RTP(&in, &center);
+		TexturedVertex center;
+		EE_RTP(light->pos, &center);
 		
 		const Rect mouseTestRect(
 		center.p.x - 20,
@@ -150,9 +149,7 @@ static void drawDebugLights() {
 			continue;
 		}
 		
-		TexturedVertex in;
-		in.p = light->pos;
-		EERIEDrawSprite(in, 11.f, g_lightSourceTexture, light->rgb.to<u8>(), 0.5f);
+		EERIEDrawSprite(light->pos, 11.f, g_lightSourceTexture, light->rgb.to<u8>(), 0.5f);
 	}
 	
 	GRenderer->SetCulling(Renderer::CullCCW);

@@ -1746,7 +1746,7 @@ void ArxGame::update2DFX()
 
 		if(el->extras & EXTRAS_FLARE) {
 			lv.p = el->pos;
-			EE_RTP(&lv,&ltvv);
+			EE_RTP(lv.p, &ltvv);
 			el->temp -= temp_increase;
 
 			if(!(player.Interface & INTER_COMBATMODE) && (player.Interface & INTER_MAP))
@@ -1795,8 +1795,6 @@ void ArxGame::update2DFX()
 
 void ArxGame::goFor2DFX()
 {
-	TexturedVertex lv,ltvv;
-
 	GRenderer->SetRenderState(Renderer::Fog, true);
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
@@ -1813,9 +1811,8 @@ void ArxGame::goFor2DFX()
 
 		if(el->extras & EXTRAS_FLARE) {
 			if (el->temp > 0.f) {
-				lv.p = el->pos;
-				lv.rhw = 1.f;
-				EE_RT(lv.p, ltvv.p);
+				Vec3f ltvv;
+				EE_RT(el->pos, ltvv);
 				float v=el->temp;
 
 				if(FADEDIR) {
@@ -1829,7 +1826,7 @@ void ArxGame::goFor2DFX()
 				else
 					siz = -el->ex_flaresize;
 
-				EERIEDrawSprite(lv, siz, tflare, (el->rgb * v).to<u8>(), ltvv.p.z);
+				EERIEDrawSprite(el->pos, siz, tflare, (el->rgb * v).to<u8>(), ltvv.z);
 
 			}
 		}
