@@ -128,11 +128,11 @@ public:
 	}
 };
 
-void LaunchMagicMissileExplosion(const Vec3f & _ePos, SpellHandle spellinstance = InvalidSpellHandle)
+void LaunchMagicMissileExplosion(const Vec3f & _ePos, bool mrCheat)
 {
 	ParticleParams cp = MagicMissileExplosionParticle();
 	
-	if(spellinstance != InvalidSpellHandle && spells[spellinstance]->m_caster == PlayerEntityHandle && cur_mr == 3) {
+	if(mrCheat) {
 		cp = MagicMissileExplosionMrCheatParticle();
 	}
 	
@@ -150,7 +150,7 @@ void LaunchMagicMissileExplosion(const Vec3f & _ePos, SpellHandle spellinstance 
 		light->fallstart = 250.f;
 		light->fallend   = 420.f;
 
-		if(spellinstance != InvalidSpellHandle && spells[spellinstance]->m_caster == PlayerEntityHandle && cur_mr == 3) {
+		if(mrCheat) {
 			light->rgb.r = 1.f;
 			light->rgb.g = 0.3f;
 			light->rgb.b = .8f;
@@ -578,7 +578,9 @@ void CMultiMagicMissile::CheckCollision()
 		
 		if(spellinstance != SpellHandle(-1) && (CheckAnythingInSphere(sphere, spells[spellinstance]->m_caster, CAS_NO_SAME_GROUP)))
 		{
-			LaunchMagicMissileExplosion(missile->eCurPos, spellinstance);
+			bool mrCheat = (spells[spellinstance]->m_caster == PlayerEntityHandle && cur_mr == 3);
+			
+			LaunchMagicMissileExplosion(missile->eCurPos, mrCheat);
 			ARX_NPC_SpawnAudibleSound(missile->eCurPos, entities[spells[spellinstance]->m_caster]);
 			
 			missile->SetTTL(1000);
