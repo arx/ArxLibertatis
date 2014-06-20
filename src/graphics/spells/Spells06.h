@@ -68,13 +68,13 @@ private:
 	float size;
 	float ft;
 	float fglow ;
-	TexturedVertex b[4];
-	TexturedVertex t[4];
+	Vec3f b[4];
+	Vec3f t[4];
 	
 	float falpha;
 	
-	void RenderQuad(TexturedVertex p1, TexturedVertex p2, TexturedVertex p3, TexturedVertex p4,  int rec, Vec3f);
-	void RenderSubDivFace(TexturedVertex * b, TexturedVertex * t, int b1, int b2, int t1, int t2);
+	void RenderQuad(const Vec3f & p1, const Vec3f & p2, const Vec3f & p3, const Vec3f & p4, int rec, Vec3f norm);
+	void RenderSubDivFace(Vec3f * b, Vec3f * t, int b1, int b2, int t1, int t2);
 };
 
 class CSlowDown : public CSpellFx {

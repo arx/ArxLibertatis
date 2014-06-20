@@ -103,48 +103,48 @@ void CCreateField::Create(Vec3f aeSrc) {
 	youp = true;
 }
 
-void CCreateField::RenderQuad(TexturedVertex p1, TexturedVertex p2, TexturedVertex p3, TexturedVertex p4, int rec, Vec3f norm)
+void CCreateField::RenderQuad(const Vec3f & p1, const Vec3f & p2, const Vec3f & p3, const Vec3f & p4, int rec, Vec3f norm)
 {
-	TexturedVertex v[5];
-	TexturedVertex v2[5];
-
 	if(rec < 3) {
 		rec ++;
-
+		
+		Vec3f v[5];
 		// milieu
-		v[0].p = p1.p + (p3.p - p1.p) * 0.5f;
+		v[0] = p1 + (p3 - p1) * 0.5f;
 		// gauche
-		v[1].p = p1.p + (p4.p - p1.p) * 0.5f;
+		v[1] = p1 + (p4 - p1) * 0.5f;
 		// droite
-		v[2].p = p2.p + (p3.p - p2.p) * 0.5f;
+		v[2] = p2 + (p3 - p2) * 0.5f;
 		// haut
-		v[3].p = p4.p + (p3.p - p4.p) * 0.5f;
+		v[3] = p4 + (p3 - p4) * 0.5f;
 		// bas
-		v[4].p = p1.p + (p2.p - p1.p) * 0.5f;
+		v[4] = p1 + (p2 - p1) * 0.5f;
 
 		float patchsize = 0.005f;
 
-		v[0].p.x += (float) sin(radians((v[0].p.x - eSrc.x) * patchsize + fwrap)) * 5;
-		v[0].p.y += (float) sin(radians((v[0].p.y - eSrc.y) * patchsize + fwrap)) * 5;
-		v[0].p.z += (float) sin(radians((v[0].p.z - eSrc.z) * patchsize + fwrap)) * 5;
-		v[1].p.x += (float) sin(radians((v[1].p.x - eSrc.x) * patchsize + fwrap)) * 5;
-		v[1].p.y += (float) sin(radians((v[1].p.y - eSrc.y) * patchsize + fwrap)) * 5;
-		v[1].p.z += (float) sin(radians((v[1].p.z - eSrc.z) * patchsize + fwrap)) * 5;
-		v[2].p.x += (float) sin(radians((v[2].p.x - eSrc.x) * patchsize + fwrap)) * 5;
-		v[2].p.y += (float) sin(radians((v[2].p.y - eSrc.y) * patchsize + fwrap)) * 5;
-		v[2].p.z += (float) sin(radians((v[2].p.z - eSrc.z) * patchsize + fwrap)) * 5;
-		v[3].p.x += (float) sin(radians((v[3].p.x - eSrc.x) * patchsize + fwrap)) * 5;
-		v[3].p.y += (float) sin(radians((v[3].p.y - eSrc.y) * patchsize + fwrap)) * 5;
-		v[3].p.z += (float) sin(radians((v[3].p.z - eSrc.z) * patchsize + fwrap)) * 5;
-		v[4].p.x += (float) sin(radians((v[4].p.x - eSrc.x) * patchsize + fwrap)) * 5;
-		v[4].p.y += (float) sin(radians((v[4].p.y - eSrc.y) * patchsize + fwrap)) * 5;
-		v[4].p.z += (float) sin(radians((v[4].p.z - eSrc.z) * patchsize + fwrap)) * 5;
+		v[0].x += (float) sin(radians((v[0].x - eSrc.x) * patchsize + fwrap)) * 5;
+		v[0].y += (float) sin(radians((v[0].y - eSrc.y) * patchsize + fwrap)) * 5;
+		v[0].z += (float) sin(radians((v[0].z - eSrc.z) * patchsize + fwrap)) * 5;
+		v[1].x += (float) sin(radians((v[1].x - eSrc.x) * patchsize + fwrap)) * 5;
+		v[1].y += (float) sin(radians((v[1].y - eSrc.y) * patchsize + fwrap)) * 5;
+		v[1].z += (float) sin(radians((v[1].z - eSrc.z) * patchsize + fwrap)) * 5;
+		v[2].x += (float) sin(radians((v[2].x - eSrc.x) * patchsize + fwrap)) * 5;
+		v[2].y += (float) sin(radians((v[2].y - eSrc.y) * patchsize + fwrap)) * 5;
+		v[2].z += (float) sin(radians((v[2].z - eSrc.z) * patchsize + fwrap)) * 5;
+		v[3].x += (float) sin(radians((v[3].x - eSrc.x) * patchsize + fwrap)) * 5;
+		v[3].y += (float) sin(radians((v[3].y - eSrc.y) * patchsize + fwrap)) * 5;
+		v[3].z += (float) sin(radians((v[3].z - eSrc.z) * patchsize + fwrap)) * 5;
+		v[4].x += (float) sin(radians((v[4].x - eSrc.x) * patchsize + fwrap)) * 5;
+		v[4].y += (float) sin(radians((v[4].y - eSrc.y) * patchsize + fwrap)) * 5;
+		v[4].z += (float) sin(radians((v[4].z - eSrc.z) * patchsize + fwrap)) * 5;
 
 		RenderQuad(p1, v[4], v[0], v[1], rec, norm);
 		RenderQuad(v[4], p2, v[2], v[0], rec, norm);
 		RenderQuad(v[0], v[2], p3, v[3], rec, norm);
 		RenderQuad(v[1], v[0], v[3], p4, rec, norm);
 	} else if(rec == 3) {
+		TexturedVertex v2[5];
+		
 		float zab = (float) sin(radians(ft));
 		v2[0].uv.x = 0 + zab;
 		v2[0].uv.y = 0 + zab;
@@ -158,17 +158,17 @@ void CCreateField::RenderQuad(TexturedVertex p1, TexturedVertex p2, TexturedVert
 		v2[1].color = v2[2].color = Color3f(falpha * .3f + rnd() * .025f, 0.f, falpha * .5f + rnd() * .025f).toBGR();
 		v2[0].color = v2[3].color = Color3f(falpha * .3f + rnd() * .025f, 0.f, falpha * .5f + rnd() * .025f).toBGR();
 	
-		EE_RT(p1.p, v2[0].p);
-		EE_RT(p2.p, v2[1].p);
-		EE_RT(p3.p, v2[2].p);
-		EE_RT(p4.p, v2[3].p);
+		EE_RT(p1, v2[0].p);
+		EE_RT(p2, v2[1].p);
+		EE_RT(p3, v2[2].p);
+		EE_RT(p4, v2[3].p);
 		ARX_DrawPrimitive(&v2[0], &v2[1], &v2[3]);
 		ARX_DrawPrimitive(&v2[1], &v2[2], &v2[3]);
 	}
 }
 
-void CCreateField::RenderSubDivFace(TexturedVertex * b, TexturedVertex * t, int b1, int b2, int t1, int t2) {
-	Vec3f norm = (b[b1].p + b[b2].p + t[t1].p + t[t2].p) * 0.25f - eSrc;
+void CCreateField::RenderSubDivFace(Vec3f * b, Vec3f * t, int b1, int b2, int t1, int t2) {
+	Vec3f norm = (b[b1] + b[b2] + t[t1] + t[t2]) * 0.25f - eSrc;
 	fnormalize(norm);
 	RenderQuad(b[b1], b[b2], t[t1], t[t2], 1, norm);
 }
@@ -243,38 +243,38 @@ void CCreateField::Render()
 	float smul = 100 * size;
 
 	// bottom points
-	b[0].p.x = x - smul;
-	b[0].p.y = y;
-	b[0].p.z = z - smul;
+	b[0].x = x - smul;
+	b[0].y = y;
+	b[0].z = z - smul;
 
-	b[1].p.x = x + smul;
-	b[1].p.y = y;
-	b[1].p.z = z - smul;
+	b[1].x = x + smul;
+	b[1].y = y;
+	b[1].z = z - smul;
 
-	b[2].p.x = x + smul;
-	b[2].p.y = y;
-	b[2].p.z = z + smul;
+	b[2].x = x + smul;
+	b[2].y = y;
+	b[2].z = z + smul;
 
-	b[3].p.x = x - smul;
-	b[3].p.y = y;
-	b[3].p.z = z + smul;
+	b[3].x = x - smul;
+	b[3].y = y;
+	b[3].z = z + smul;
 
 	// top points
-	t[0].p.x = x - smul;
-	t[0].p.y = y - 250 * ysize;
-	t[0].p.z = z - smul;
+	t[0].x = x - smul;
+	t[0].y = y - 250 * ysize;
+	t[0].z = z - smul;
 
-	t[1].p.x = x + smul;
-	t[1].p.y = y - 250 * ysize;
-	t[1].p.z = z - smul;
+	t[1].x = x + smul;
+	t[1].y = y - 250 * ysize;
+	t[1].z = z - smul;
 
-	t[2].p.x = x + smul;
-	t[2].p.y = y - 250 * ysize;
-	t[2].p.z = z + smul;
+	t[2].x = x + smul;
+	t[2].y = y - 250 * ysize;
+	t[2].z = z + smul;
 
-	t[3].p.x = x - smul;
-	t[3].p.y = y - 250 * ysize;
-	t[3].p.z = z + smul;
+	t[3].x = x - smul;
+	t[3].y = y - 250 * ysize;
+	t[3].z = z + smul;
 
 	fwrap -= 5.0f; // TODO ignores the frame delay
 	while(fwrap < 0) {
