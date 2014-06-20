@@ -1153,7 +1153,7 @@ void CLevitate::Render()
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 
 	//calcul du cone
-	TexturedVertex d3dvs, *d3dv;
+	TexturedVertex *d3dv;
 	Vec3f	* vertex;
 	int			nb, nbc, col;
 	float		ddu = this->ang;
@@ -1169,11 +1169,12 @@ void CLevitate::Render()
 				nb = (this->cone[nbc].conenbvertex) >> 1;
 
 				while(nb) {
-					d3dvs.p.x = this->pos.x + (vertex + 1)->x + ((vertex->x - (vertex + 1)->x) * this->scale);
-					d3dvs.p.y = this->pos.y + (vertex + 1)->y + ((vertex->y - (vertex + 1)->y) * this->scale);
-					d3dvs.p.z = this->pos.z + (vertex + 1)->z + ((vertex->z - (vertex + 1)->z) * this->scale);
+					Vec3f d3dvs;
+					d3dvs.x = this->pos.x + (vertex + 1)->x + ((vertex->x - (vertex + 1)->x) * this->scale);
+					d3dvs.y = this->pos.y + (vertex + 1)->y + ((vertex->y - (vertex + 1)->y) * this->scale);
+					d3dvs.z = this->pos.z + (vertex + 1)->z + ((vertex->z - (vertex + 1)->z) * this->scale);
 					
-					EE_RT(d3dvs.p, d3dv->p);
+					EE_RT(d3dvs, d3dv->p);
 
 					float fRandom	= rnd() * 80.f;
 
@@ -1187,11 +1188,11 @@ void CLevitate::Render()
 					vertex++;
 					d3dv++;
 
-					d3dvs.p.x = this->pos.x + vertex->x;
-					d3dvs.p.y = this->pos.y;
-					d3dvs.p.z = this->pos.z + vertex->z;
+					d3dvs.x = this->pos.x + vertex->x;
+					d3dvs.y = this->pos.y;
+					d3dvs.z = this->pos.z + vertex->z;
 					
-					EE_RT(d3dvs.p, d3dv->p);
+					EE_RT(d3dvs, d3dv->p);
 
 					fRandom = rnd() * 80.f;
 
@@ -1244,9 +1245,9 @@ void CLevitate::Render()
 				nb = (this->cone[nbc].conenbvertex) >> 1;
 
 				while(nb) {
-					d3dvs.p = this->pos + *vertex;
+					Vec3f d3dvs = this->pos + *vertex;
 	
-					EE_RT(d3dvs.p, d3dv->p);
+					EE_RT(d3dvs, d3dv->p);
 					col = Random::get(0, 80);
 
 					if(!arxtime.is_paused())
@@ -1257,11 +1258,11 @@ void CLevitate::Render()
 					vertex++;
 					d3dv++;
 
-					d3dvs.p.x = this->pos.x + vertex->x;
-					d3dvs.p.y = this->pos.y;
-					d3dvs.p.z = this->pos.z + vertex->z;
+					d3dvs.x = this->pos.x + vertex->x;
+					d3dvs.y = this->pos.y;
+					d3dvs.z = this->pos.z + vertex->z;
 
-					EE_RT(d3dvs.p, d3dv->p);
+					EE_RT(d3dvs, d3dv->p);
 					col = Random::get(0, 80);
 
 					if(!arxtime.is_paused())
