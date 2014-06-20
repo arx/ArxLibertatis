@@ -309,7 +309,7 @@ void CLightning::Update(float timeDelta)
 
 void CLightning::Render()
 {
-	TexturedVertex v[4];
+	Vec3f v[4];
 	TexturedVertex v2[4];
 
 	if(ulCurrentTime >= ulDuration)
@@ -406,14 +406,14 @@ void CLightning::Render()
 		v2[1].uv = Vec2f_ZERO;
 		v2[2].uv = Vec2f_Y_AXIS;
 		v2[3].uv = Vec2f(0.5f, 1.f);
-		v[0].p = astart;
-		v[1].p = astart + Vec3f(0.f, zz, 0.f);
-		v[2].p = a + Vec3f(0.f, zz, 0.f);
-		v[3].p = a;
-		EE_RT(v[0].p, v2[0].p);
-		EE_RT(v[1].p, v2[1].p);
-		EE_RT(v[2].p, v2[2].p);
-		EE_RT(v[3].p, v2[3].p);
+		v[0] = astart;
+		v[1] = astart + Vec3f(0.f, zz, 0.f);
+		v[2] = a + Vec3f(0.f, zz, 0.f);
+		v[3] = a;
+		EE_RT(v[0], v2[0].p);
+		EE_RT(v[1], v2[1].p);
+		EE_RT(v[2], v2[2].p);
+		EE_RT(v[3], v2[3].p);
 		ARX_DrawPrimitive(&v2[0], &v2[1], &v2[2]);
 		ARX_DrawPrimitive(&v2[0], &v2[2], &v2[3]);
 		
@@ -421,10 +421,10 @@ void CLightning::Render()
 		v2[1].uv = Vec2f_X_AXIS;
 		v2[2].uv = Vec2f_ONE;
 		v2[3].uv = Vec2f(0.5f, 1.f);
-		v[1].p = astart - Vec3f(0.f, zz, 0.f);
-		v[2].p = a - Vec3f(0.f, zz, 0.f);
-		EE_RT(v[1].p, v2[1].p);
-		EE_RT(v[2].p, v2[2].p);
+		v[1] = astart - Vec3f(0.f, zz, 0.f);
+		v[2] = a - Vec3f(0.f, zz, 0.f);
+		EE_RT(v[1], v2[1].p);
+		EE_RT(v[2], v2[2].p);
 		ARX_DrawPrimitive(&v2[0], &v2[1], &v2[2]);
 		ARX_DrawPrimitive(&v2[0], &v2[2], &v2[3]);
 		
@@ -432,19 +432,19 @@ void CLightning::Render()
 		
 		v2[1].uv = Vec2f_X_AXIS;
 		v2[2].uv = Vec2f_ONE;
-		v[1].p = astart + Vec3f(xx, 0.f, zz);
-		v[2].p = a + Vec3f(xx, 0.f, zz);
-		EE_RT(v[1].p, v2[1].p);
-		EE_RT(v[2].p, v2[2].p);
+		v[1] = astart + Vec3f(xx, 0.f, zz);
+		v[2] = a + Vec3f(xx, 0.f, zz);
+		EE_RT(v[1], v2[1].p);
+		EE_RT(v[2], v2[2].p);
 		ARX_DrawPrimitive(&v2[0], &v2[1], &v2[2]);
 		ARX_DrawPrimitive(&v2[0], &v2[2], &v2[3]);
 		
 		v2[1].uv = Vec2f_ZERO;
 		v2[2].uv = Vec2f_Y_AXIS;
-		v[1].p = astart - Vec3f(xx, 0.f, zz);
-		v[2].p = a - Vec3f(xx, 0.f, zz);
-		EE_RT(v[1].p, v2[1].p);
-		EE_RT(v[2].p, v2[2].p);
+		v[1] = astart - Vec3f(xx, 0.f, zz);
+		v[2] = a - Vec3f(xx, 0.f, zz);
+		EE_RT(v[1], v2[1].p);
+		EE_RT(v[2], v2[2].p);
 		ARX_DrawPrimitive(&v2[0], &v2[1], &v2[2]);
 		ARX_DrawPrimitive(&v2[0], &v2[2], &v2[3]);
 	}
