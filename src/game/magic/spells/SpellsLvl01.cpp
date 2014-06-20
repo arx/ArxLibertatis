@@ -91,7 +91,9 @@ void MagicMissileSpell::Launch()
 		number = clamp(long(m_level + 1) / 2, 1l, 5l);
 	}
 	
-	CMultiMagicMissile * effect = new CMultiMagicMissile(number, m_thisHandle);
+	bool mrCheat = (m_caster == PlayerEntityHandle && cur_mr == 3);
+	
+	CMultiMagicMissile * effect = new CMultiMagicMissile(number, m_thisHandle, mrCheat);
 	effect->SetDuration(6000ul);
 	effect->Create();
 	m_pSpellFx = effect;

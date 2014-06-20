@@ -170,7 +170,7 @@ void LaunchMagicMissileExplosion(const Vec3f & _ePos, bool mrCheat)
 	ARX_SOUND_PlaySFX(SND_SPELL_MM_HIT, &_ePos);
 }
 
-CMagicMissile::CMagicMissile()
+CMagicMissile::CMagicMissile(bool mrCheat)
 	: CSpellFx()
 	, bExplo(false)
 	, bMove(true)
@@ -185,6 +185,7 @@ CMagicMissile::CMagicMissile()
 	, angles()
 	, tex_mm()
 	, snd_loop()
+	, m_mrCheat(mrCheat)
 {
 	SetDuration(2000);
 	ulCurrentTime = ulDuration + 1;
@@ -295,7 +296,7 @@ void CMagicMissile::Render()
 
 	// Set Texture
 	if(tex_mm) {
-		if(spells[spellinstance]->m_caster == PlayerEntityHandle && cur_mr == 3)
+		if(m_mrCheat)
 			GRenderer->ResetTexture(0);
 		else
 			GRenderer->SetTexture(0, tex_mm);
@@ -405,7 +406,7 @@ void CMagicMissile::Render()
 		stiteangle.setRoll(stiteangle.getRoll() + 360.0f);
 
 	Color3f stitecolor;
-	if(spells[spellinstance]->m_caster == PlayerEntityHandle && cur_mr == 3) {
+	if(m_mrCheat) {
 		stitecolor.r = 1.f;
 		stitecolor.g = 0.f;
 		stitecolor.b = 0.2f;
@@ -424,17 +425,17 @@ void CMagicMissile::Render()
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
-CMultiMagicMissile::CMultiMagicMissile(size_t nbmissiles, SpellHandle spellHandle)
+CMultiMagicMissile::CMultiMagicMissile(size_t nbmissiles, SpellHandle spellHandle, bool mrCheat)
 	: CSpellFx()
 	, spellinstance(spellHandle)
+	, m_mrCheat(mrCheat)
 {
 	SetDuration(2000);
 	
 	pTab.reserve(nbmissiles);
 	
 	for(size_t i = 0; i < nbmissiles; i++) {
-		CMagicMissile * missile = new CMagicMissile();
-		missile->spellinstance = spellinstance;
+		CMagicMissile * missile = new CMagicMissile(m_mrCheat);
 		
 		pTab.push_back(missile);
 	}
@@ -578,9 +579,7 @@ void CMultiMagicMissile::CheckCollision(float level, EntityHandle caster)
 		
 		if(CheckAnythingInSphere(sphere, caster, CAS_NO_SAME_GROUP))
 		{
-			bool mrCheat = (caster == PlayerEntityHandle && cur_mr == 3);
-			
-			LaunchMagicMissileExplosion(missile->eCurPos, mrCheat);
+			LaunchMagicMissileExplosion(missile->eCurPos, m_mrCheat);
 			ARX_NPC_SpawnAudibleSound(missile->eCurPos, entities[caster]);
 			
 			missile->SetTTL(1000);
