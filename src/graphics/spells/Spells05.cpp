@@ -407,8 +407,6 @@ CPoisonProjectile::CPoisonProjectile()
 
 void CPoisonProjectile::Create(Vec3f _eSrc, float _fBeta)
 {
-	int i;
-
 	SetDuration(ulDuration);
 	SetAngle(_fBeta);
 	eSrc = _eSrc;
@@ -417,23 +415,22 @@ void CPoisonProjectile::Create(Vec3f _eSrc, float _fBeta)
 
 	eMove = Vec3f(-fBetaRadSin * 2, 0.f, fBetaRadCos * 2); 
 
-	Vec3f s, e, h;
-	s = eSrc;
-	e = eSrc;
+	Vec3f tempHit;
+	Vec3f dest = eSrc;
 
-	i = 0;
-
-	while(Visible(s, e, NULL, &h) && i < 20) {
-		e.x -= fBetaRadSin * 50;
-		e.z += fBetaRadCos * 50;
+	int i = 0;
+	while(Visible(eSrc, dest, NULL, &tempHit) && i < 20) {
+		dest.x -= fBetaRadSin * 50;
+		dest.z += fBetaRadCos * 50;
 
 		i++;
 	}
 
-	e.y += 0.f;
+	dest.y += 0.f;
 
 	pathways[0] = eSrc;
-	pathways[9] = e;
+	pathways[9] = dest;
+	
 	Split(pathways, 0, 9, 10 * fBetaRadCos, 10, 10, 10, 10 * fBetaRadSin, 10);
 	
 	fTrail = -1;
