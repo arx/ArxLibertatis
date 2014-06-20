@@ -44,14 +44,15 @@ void EERIEDraw2DLine(float x0, float y0, float x1, float y1, float z, Color col)
 	EERIEDRAWPRIM(Renderer::LineList, v, 2);
 }
 
-void EERIEDraw2DRect(float x0, float y0, float x1, float y1, float z, Color col) {
+void EERIEDraw2DRect(const Rectf & rect, float z, Color col) {
 
 	TexturedVertex v[5];
-	v[4].p.x = v[3].p.x = v[0].p.x = x0;
-	v[4].p.y = v[1].p.y = v[0].p.y = y0;
-	v[2].p.x = v[1].p.x = x1;
-	v[3].p.y = v[2].p.y = y1;
-	v[4].p.z = v[3].p.z = v[2].p.z = v[1].p.z = v[0].p.z = z;
+	v[0].p = Vec3f(rect.bottomLeft(), z);
+	v[1].p = Vec3f(rect.bottomRight(), z);
+	v[2].p = Vec3f(rect.topRight(), z);
+	v[3].p = Vec3f(rect.topLeft(), z);
+	v[4].p = v[0].p;
+	
 	v[4].color = v[3].color = v[2].color = v[1].color = v[0].color = col.toBGRA();
 	v[4].rhw = v[3].rhw = v[2].rhw = v[1].rhw = v[0].rhw = 1.f;
 

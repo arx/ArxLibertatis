@@ -27,7 +27,7 @@
 
 void EERIEDraw2DLine(float x0, float y0, float x1, float y1, float z, Color col);
 
-void EERIEDraw2DRect(float x0, float y0, float x1, float y1, float z, Color col);
+void EERIEDraw2DRect(const Rectf & rect, float z, Color col);
 void EERIEDrawFill2DRectDegrad(float x0, float y0, float x1, float y1, float z, Color cold, Color cole);
 
 void DrawLineSphere(const Sphere & sphere, Color color);
