@@ -467,6 +467,15 @@ void ARX_DrawPrimitive(TexturedVertex * v0, TexturedVertex * v1, TexturedVertex 
 	drawTriangle(RenderMaterial::getCurrent(), vertices);
 }
 
+void drawQuadRTP(const RenderMaterial & mat, TexturedQuad quat) {
+	EE_RTP(quat.v[0].p, &quat.v[0]);
+	EE_RTP(quat.v[1].p, &quat.v[1]);
+	EE_RTP(quat.v[2].p, &quat.v[2]);
+	EE_RTP(quat.v[3].p, &quat.v[3]);
+	
+	RenderBatcher::getInstance().add(mat, quat);
+}
+
 void drawTriangle(const RenderMaterial & mat, const TexturedVertex * vertices) {
 	
 	TexturedVertex projected[3];

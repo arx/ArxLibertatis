@@ -309,9 +309,6 @@ void CLightning::Update(float timeDelta)
 
 void CLightning::Render()
 {
-	Vec3f v[4];
-	TexturedVertex v2[4];
-
 	if(ulCurrentTime >= ulDuration)
 		return;
 	
@@ -351,9 +348,9 @@ void CLightning::Render()
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->ResetTexture(0);
-
-	v2[0].color = v2[1].color = v2[2].color = v2[3].color = Color::white.toBGR();
-
+	
+	const RenderMaterial & mat = RenderMaterial::getCurrent();
+	
 	float fbeta = fBeta + rnd() * 2 * fMySize;
 
 	for(i = 0; i < nbtotal && i <= fTotoro; i++) {
@@ -399,54 +396,83 @@ void CLightning::Render()
 			}
 		}
 		
-		// version 4 faces
-		v2[0].color = v2[3].color = 0xFFFFFFFF;
-		v2[1].color = v2[2].color = 0xFF00005A;
-		v2[0].uv = Vec2f(0.5f, 0.f);
-		v2[1].uv = Vec2f_ZERO;
-		v2[2].uv = Vec2f_Y_AXIS;
-		v2[3].uv = Vec2f(0.5f, 1.f);
-		v[0] = astart;
-		v[1] = astart + Vec3f(0.f, zz, 0.f);
-		v[2] = a + Vec3f(0.f, zz, 0.f);
-		v[3] = a;
-		EE_RT(v[0], v2[0].p);
-		EE_RT(v[1], v2[1].p);
-		EE_RT(v[2], v2[2].p);
-		EE_RT(v[3], v2[3].p);
-		ARX_DrawPrimitive(&v2[0], &v2[1], &v2[2]);
-		ARX_DrawPrimitive(&v2[0], &v2[2], &v2[3]);
+		{
+		TexturedQuad q;
 		
-		v2[0].uv = Vec2f(0.5f, 0.f);
-		v2[1].uv = Vec2f_X_AXIS;
-		v2[2].uv = Vec2f_ONE;
-		v2[3].uv = Vec2f(0.5f, 1.f);
-		v[1] = astart - Vec3f(0.f, zz, 0.f);
-		v[2] = a - Vec3f(0.f, zz, 0.f);
-		EE_RT(v[1], v2[1].p);
-		EE_RT(v[2], v2[2].p);
-		ARX_DrawPrimitive(&v2[0], &v2[1], &v2[2]);
-		ARX_DrawPrimitive(&v2[0], &v2[2], &v2[3]);
+		q.v[0].color = 0xFFFFFFFF;
+		q.v[1].color = 0xFF00005A;
+		q.v[2].color = 0xFF00005A;
+		q.v[3].color = 0xFFFFFFFF;
+		q.v[0].uv = Vec2f(0.5f, 0.f);
+		q.v[1].uv = Vec2f_ZERO;
+		q.v[2].uv = Vec2f_Y_AXIS;
+		q.v[3].uv = Vec2f(0.5f, 1.f);
+		q.v[0].p = astart;
+		q.v[1].p = astart + Vec3f(0.f, zz, 0.f);
+		q.v[2].p = a + Vec3f(0.f, zz, 0.f);
+		q.v[3].p = a;
+		
+		drawQuadRTP(mat, q);
+		}
+		
+		{
+		TexturedQuad q;
+
+		q.v[0].color = 0xFFFFFFFF;
+		q.v[1].color = 0xFF00005A;
+		q.v[2].color = 0xFF00005A;
+		q.v[3].color = 0xFFFFFFFF;
+		q.v[0].uv = Vec2f(0.5f, 0.f);
+		q.v[1].uv = Vec2f_X_AXIS;
+		q.v[2].uv = Vec2f_ONE;
+		q.v[3].uv = Vec2f(0.5f, 1.f);
+		q.v[0].p = astart;
+		q.v[1].p = astart - Vec3f(0.f, zz, 0.f);
+		q.v[2].p = a - Vec3f(0.f, zz, 0.f);
+		q.v[3].p = a;
+		
+		drawQuadRTP(mat, q);
+		}
 		
 		zz *= (float) sin(radians(fbeta));
 		
-		v2[1].uv = Vec2f_X_AXIS;
-		v2[2].uv = Vec2f_ONE;
-		v[1] = astart + Vec3f(xx, 0.f, zz);
-		v[2] = a + Vec3f(xx, 0.f, zz);
-		EE_RT(v[1], v2[1].p);
-		EE_RT(v[2], v2[2].p);
-		ARX_DrawPrimitive(&v2[0], &v2[1], &v2[2]);
-		ARX_DrawPrimitive(&v2[0], &v2[2], &v2[3]);
+		{
+		TexturedQuad q;
 		
-		v2[1].uv = Vec2f_ZERO;
-		v2[2].uv = Vec2f_Y_AXIS;
-		v[1] = astart - Vec3f(xx, 0.f, zz);
-		v[2] = a - Vec3f(xx, 0.f, zz);
-		EE_RT(v[1], v2[1].p);
-		EE_RT(v[2], v2[2].p);
-		ARX_DrawPrimitive(&v2[0], &v2[1], &v2[2]);
-		ARX_DrawPrimitive(&v2[0], &v2[2], &v2[3]);
+		q.v[0].color = 0xFFFFFFFF;
+		q.v[1].color = 0xFF00005A;
+		q.v[2].color = 0xFF00005A;
+		q.v[3].color = 0xFFFFFFFF;
+		q.v[0].uv = Vec2f(0.5f, 0.f);
+		q.v[1].uv = Vec2f_X_AXIS;
+		q.v[2].uv = Vec2f_ONE;
+		q.v[3].uv = Vec2f(0.5f, 1.f);
+		q.v[0].p = astart;
+		q.v[1].p = astart + Vec3f(xx, 0.f, zz);
+		q.v[2].p = a + Vec3f(xx, 0.f, zz);
+		q.v[3].p = a;
+		
+		drawQuadRTP(mat, q);
+		}
+		
+		{
+		TexturedQuad q;
+		
+		q.v[0].color = 0xFFFFFFFF;
+		q.v[1].color = 0xFF00005A;
+		q.v[2].color = 0xFF00005A;
+		q.v[3].color = 0xFFFFFFFF;
+		q.v[0].uv = Vec2f(0.5f, 0.f);
+		q.v[1].uv = Vec2f_ZERO;
+		q.v[2].uv = Vec2f_Y_AXIS;
+		q.v[3].uv = Vec2f(0.5f, 1.f);
+		q.v[0].p = astart;
+		q.v[1].p = astart - Vec3f(xx, 0.f, zz);
+		q.v[2].p = a - Vec3f(xx, 0.f, zz);
+		q.v[3].p = a;
+		
+		drawQuadRTP(mat, q);
+		}
 	}
 	
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
