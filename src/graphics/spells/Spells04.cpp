@@ -142,10 +142,10 @@ void CBless::Render()
 	v3[2].uv = Vec2f_Y_AXIS;
 	v3[3].uv = Vec2f_ONE;
 	
-	EE_RT2(&v[0], &v3[0]);
-	EE_RT2(&v[1], &v3[1]);
-	EE_RT2(&v[2], &v3[2]);
-	EE_RT2(&v[3], &v3[3]);
+	EE_RT(v[0].p, v3[0].p);
+	EE_RT(v[1].p, v3[1].p);
+	EE_RT(v[2].p, v3[2].p);
+	EE_RT(v[3].p, v3[3].p);
 	ARX_DrawPrimitive(&v3[0], &v3[1], &v3[2]);
 	ARX_DrawPrimitive(&v3[1], &v3[2], &v3[3]);
 	
