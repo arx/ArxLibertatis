@@ -54,6 +54,7 @@ struct ANIM_USE;
 class Entity;
 struct TexturedVertex;
 struct RenderMaterial;
+struct TexturedQuad;
 
 float Cedric_GetInvisibility(Entity *io);
 
@@ -63,6 +64,7 @@ void PopAllTriangleList(bool clear = true);
 void PopAllTriangleListTransparency();
 
 void ARX_DrawPrimitive(TexturedVertex *, TexturedVertex *, TexturedVertex *);
+void drawQuadRTP(const RenderMaterial & mat, TexturedQuad quat);
 void drawTriangle(const RenderMaterial & mat, const TexturedVertex * vertices);
 
 struct TransformInfo {
