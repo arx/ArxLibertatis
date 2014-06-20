@@ -229,9 +229,6 @@ extern long BH_MODE;
 
 extern bool EXTERNALVIEW;
 
-void EE_RT(const Vec3f & in, Vec3f & out);
-void EE_P(const Vec3f * in, TexturedVertex * out);
-
 float Cedric_GetInvisibility(Entity *io) {
 	if(io) {
 		float invisibility = io->invisibility;

@@ -1723,8 +1723,6 @@ void ArxGame::render() {
 	LastMouseClick = EERIEMouseButton;
 }
 
-void EE_RT(const Vec3f & in, Vec3f & out);
-
 void ArxGame::update2DFX()
 {
 	TexturedVertex lv,ltvv;

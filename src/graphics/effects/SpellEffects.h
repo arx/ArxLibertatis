@@ -57,8 +57,6 @@ struct TexturedVertex;
 
 const int BEZIERPrecision = 32;
 
-void EE_RT2(TexturedVertex * in, TexturedVertex * out);
-
 class CSpellFx
 {
 	public:
