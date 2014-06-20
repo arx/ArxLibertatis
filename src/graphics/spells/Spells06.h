@@ -127,7 +127,7 @@ public:
 	}
 	
 private:
-	void Split(TexturedVertex * v, int a, int b, float yo);
+	void Split(Vec3f * v, int a, int b, float yo);
 	void RenderFissure();
 	
 	float	fColorRays1[3];
@@ -150,10 +150,10 @@ private:
 	unsigned long ulDurationIntro;
 	unsigned long ulDurationRender;
 	unsigned long ulDurationOuttro;
-	TexturedVertex va[40];
-	TexturedVertex vb[40];
-	TexturedVertex v1a[40];
-	TexturedVertex v1b[40];
+	Vec3f va[40];
+	Vec3f vb[40];
+	Vec3f v1a[40];
+	Vec3f v1b[40];
 	
 	EERIE_3DOBJ	*	stone[2];
 	

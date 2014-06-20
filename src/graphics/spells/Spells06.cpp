@@ -552,23 +552,23 @@ void CRiseDead::Create(Vec3f aeSrc, float afBeta)
 		tfRaysb[i] = 0.4f * rnd();
 	}
 
-	v1a[0].p.x = eSrc.x - fBetaRadSin * 100;
-	v1a[0].p.y = eSrc.y;
-	v1a[0].p.z = eSrc.z + fBetaRadCos * 100;
-	v1a[end].p.x = eSrc.x + fBetaRadSin * 100;
-	v1a[end].p.y = eSrc.y;
-	v1a[end].p.z = eSrc.z - fBetaRadCos * 100;
+	v1a[0].x = eSrc.x - fBetaRadSin * 100;
+	v1a[0].y = eSrc.y;
+	v1a[0].z = eSrc.z + fBetaRadCos * 100;
+	v1a[end].x = eSrc.x + fBetaRadSin * 100;
+	v1a[end].y = eSrc.y;
+	v1a[end].z = eSrc.z - fBetaRadCos * 100;
 
-	v1b[0].p = v1a[0].p;
-	v1b[end].p = v1a[end].p;
-
-	sizeF = 200;
-	this->Split(v1a, 0, end, 20);
-	this->Split(v1b, 0, end, -20);
+	v1b[0] = v1a[0];
+	v1b[end] = v1a[end];
 
 	sizeF = 200;
-	this->Split(v1a, 0, end, 80);
-	this->Split(v1b, 0, end, -80);
+	Split(v1a, 0, end, 20);
+	Split(v1b, 0, end, -20);
+
+	sizeF = 200;
+	Split(v1a, 0, end, 80);
+	Split(v1b, 0, end, -80);
 
 	// check de la conformité du split
 	// sinon recalc de l'un de l'autre ou des deux
@@ -576,33 +576,33 @@ void CRiseDead::Create(Vec3f aeSrc, float afBeta)
 	if (0)
 		for (i = 0; i < 40; i++)
 		{
-			if (v1a[i].p.x > v1b[i].p.x)
+			if (v1a[i].x > v1b[i].x)
 			{
-				float fTemp = v1a[i].p.x;
-				v1a[i].p.x = v1b[i].p.x;
-				v1b[i].p.x = fTemp;
+				float fTemp = v1a[i].x;
+				v1a[i].x = v1b[i].x;
+				v1b[i].x = fTemp;
 			}
 
-			if (v1a[i].p.z > v1b[i].p.z)
+			if (v1a[i].z > v1b[i].z)
 			{
-				float fTemp = v1a[i].p.z;
-				v1a[i].p.z = v1b[i].p.z;
-				v1b[i].p.z = fTemp;
+				float fTemp = v1a[i].z;
+				v1a[i].z = v1b[i].z;
+				v1b[i].z = fTemp;
 			}
 
-			if ((v1b[i].p.x - v1a[i].p.x) > 20)
+			if ((v1b[i].x - v1a[i].x) > 20)
 			{
-				v1b[i].p.x = v1a[i].p.x + rnd() * 20.0f;
+				v1b[i].x = v1a[i].x + rnd() * 20.0f;
 			}
 
-			if ((v1b[i].p.z - v1a[i].p.z) > 20)
+			if ((v1b[i].z - v1a[i].z) > 20)
 			{
-				v1b[i].p.z = v1a[i].p.z + rnd() * 20.0f;
+				v1b[i].z = v1a[i].z + rnd() * 20.0f;
 			}
 		}
 	
 	for(i = 0; i <= end; i++) {
-		vb[i].p = va[i].p = eSrc;
+		vb[i] = va[i] = eSrc;
 	}
 	
 	sizeF = 0;
@@ -696,15 +696,15 @@ void CRiseDead::DrawStone()
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 }
 
-void CRiseDead::Split(TexturedVertex * v, int a, int b, float yo)
+void CRiseDead::Split(Vec3f * v, int a, int b, float yo)
 {
 	if(a != b) {
 		int i = (int)((a + b) * 0.5f);
 
 		if(i != a && i != b) {
-			v[i].p.x = (v[a].p.x + v[b].p.x) * 0.5f + yo * frand2() * fBetaRadCos;
-			v[i].p.y = v[0].p.y;// + (i+1)*5;
-			v[i].p.z = (v[a].p.z + v[b].p.z) * 0.5f + yo * frand2() * fBetaRadSin;
+			v[i].x = (v[a].x + v[b].x) * 0.5f + yo * frand2() * fBetaRadCos;
+			v[i].y = v[0].y;// + (i+1)*5;
+			v[i].z = (v[a].z + v[b].z) * 0.5f + yo * frand2() * fBetaRadSin;
 			Split(v, a, i, yo * 0.8f);
 			Split(v, i, b, yo * 0.8f);
 		}
@@ -715,9 +715,9 @@ void CRiseDead::RenderFissure()
 {
 	int i;
 	float ff;
-	TexturedVertex vt[4];
+	Vec3f vt[4];
 	TexturedVertex vr[4];
-	TexturedVertex target;
+	Vec3f target;
 
 	Vec3f etarget;
 	etarget.x = fBetaRadCos;
@@ -739,18 +739,18 @@ void CRiseDead::RenderFissure()
 		float fTempCos = ff * fBetaRadCos;
 		float fTempSin = ff * fBetaRadSin;
 
-		va[i].p.x   = v1a[i].p.x   + sizeF * fTempCos;
-		va[i].p.y   = v1a[i].p.y;
-		va[i].p.z   = v1a[i].p.z   + sizeF * fTempSin;
+		va[i].x   = v1a[i].x   + sizeF * fTempCos;
+		va[i].y   = v1a[i].y;
+		va[i].z   = v1a[i].z   + sizeF * fTempSin;
 
-		vb[i].p.x   = v1b[i].p.x   - sizeF * fTempCos;
-		vb[i].p.y   = v1b[i].p.y;
-		vb[i].p.z   = v1b[i].p.z   - sizeF * fTempSin;
+		vb[i].x   = v1b[i].x   - sizeF * fTempCos;
+		vb[i].y   = v1b[i].y;
+		vb[i].z   = v1b[i].z   - sizeF * fTempSin;
 
-		va[i].p.x += rnd() * 0.5f * fTempCos;
-		va[i].p.z += rnd() * 0.5f * fTempSin;
-		vb[i].p.x -= rnd() * 0.5f * fTempCos;
-		vb[i].p.z -= rnd() * 0.5f * fTempSin;
+		va[i].x += rnd() * 0.5f * fTempCos;
+		va[i].z += rnd() * 0.5f * fTempSin;
+		vb[i].x -= rnd() * 0.5f * fTempCos;
+		vb[i].z -= rnd() * 0.5f * fTempSin;
 	}
 
 	//-------------------------------------------------------------------------
@@ -760,19 +760,19 @@ void CRiseDead::RenderFissure()
 
 	if(bIntro) {
 		for(i = 0; i < min(end, (int)fSizeIntro); i++) {
-			EE_RT(v1a[i].p, vr[0].p);
-			EE_RT(v1b[i].p, vr[1].p);
-			EE_RT(v1a[i+1].p, vr[2].p);
-			EE_RT(v1b[i+1].p, vr[3].p);
+			EE_RT(v1a[i], vr[0].p);
+			EE_RT(v1b[i], vr[1].p);
+			EE_RT(v1a[i+1], vr[2].p);
+			EE_RT(v1b[i+1], vr[3].p);
 			drawTriangle(mat, &vr[0]);
 			drawTriangle(mat, &vr[1]);
 		}
 	} else {
 		for(i = 0; i < min(end, (int)fSizeIntro); i++) {
-			EE_RT(va[i].p, vr[0].p);
-			EE_RT(vb[i].p, vr[1].p);
-			EE_RT(va[i+1].p, vr[2].p);
-			EE_RT(vb[i+1].p, vr[3].p);
+			EE_RT(va[i], vr[0].p);
+			EE_RT(vb[i], vr[1].p);
+			EE_RT(va[i+1], vr[2].p);
+			EE_RT(vb[i+1], vr[3].p);
 			drawTriangle(mat, &vr[0]);
 			drawTriangle(mat, &vr[1]);
 		}
@@ -785,23 +785,23 @@ void CRiseDead::RenderFissure()
 	vr[2].color = vr[3].color = Color3f(fColorBorder[0], fColorBorder[1], fColorBorder[2]).toBGR();
 
 	for(i = 0; i < min(end, (int)fSizeIntro); i++) {
-		vt[2].p = va[i].p - (va[i].p - eSrc) * 0.2f;
-		vt[3].p = va[i + 1].p - (va[i + 1].p - eSrc) * 0.2f;
+		vt[2] = va[i].p - (va[i].p - eSrc) * 0.2f;
+		vt[3] = va[i + 1].p - (va[i + 1].p - eSrc) * 0.2f;
 		
-		EE_RT(vt[3].p, vr[0].p);
-		EE_RT(vt[2].p, vr[1].p);
-		EE_RT(va[i+1].p, vr[2].p);
-		EE_RT(va[i].p, vr[3].p);
+		EE_RT(vt[3], vr[0].p);
+		EE_RT(vt[2], vr[1].p);
+		EE_RT(va[i+1], vr[2].p);
+		EE_RT(va[i], vr[3].p);
 		drawTriangle(mat, &vr[0]);
 		drawTriangle(mat, &vr[1]);
 		
-		vt[2].p = vb[i].p - (vb[i].p - eSrc) * 0.2f;
-		vt[3].p = vb[i + 1].p - (vb[i + 1].p - eSrc) * 0.2f;
+		vt[2] = vb[i].p - (vb[i].p - eSrc) * 0.2f;
+		vt[3] = vb[i + 1].p - (vb[i + 1].p - eSrc) * 0.2f;
 		
-		EE_RT(vb[i].p, vr[3].p);
-		EE_RT(vb[i+1].p, vr[2].p);
-		EE_RT(vt[2].p, vr[1].p);
-		EE_RT(vt[3].p, vr[0].p);
+		EE_RT(vb[i], vr[3].p);
+		EE_RT(vb[i+1], vr[2].p);
+		EE_RT(vt[2], vr[1].p);
+		EE_RT(vt[3], vr[0].p);
 		drawTriangle(mat, &vr[0]);
 		drawTriangle(mat, &vr[1]);
 	}
@@ -814,11 +814,11 @@ void CRiseDead::RenderFissure()
 	mat.setWrapMode(TextureStage::WrapMirror);
 	mat.setTexture(tex_light);
 
-	target.p.x = eSrc.x ;
-	target.p.y = eSrc.y + 1.5f * sizeF; 
-	target.p.z = eSrc.z ;
+	target.x = eSrc.x ;
+	target.y = eSrc.y + 1.5f * sizeF; 
+	target.z = eSrc.z ;
 
-	EE_RTP(vt[1].p, &vr[0]);
+	EE_RTP(vt[1], &vr[0]);
 	vr[0].color = vr[1].color = Color3f(fColorRays1[0], fColorRays1[1], fColorRays1[2]).toBGR();
 	vr[2].color = vr[3].color = Color3f(fColorRays2[0], fColorRays2[1], fColorRays2[2]).toBGR();
 
@@ -893,47 +893,47 @@ void CRiseDead::RenderFissure()
 		}
 		
 		if(i < fSizeIntro) {
-			vt[0].p = va[i].p;
-			vt[1].p = va[i + 1].p;
-			vt[2].p.x = va[i].p.x ;
-			vt[2].p.y = va[i].p.y + (va[i].p.y - target.p.y) * 2;
-			vt[2].p.z = va[i].p.z ;
-			vt[3].p.x = va[i+1].p.x ;
-			vt[3].p.y = va[i+1].p.y + (va[i+1].p.y - target.p.y) * 2;
-			vt[3].p.z = va[i+1].p.z ;
+			vt[0] = va[i];
+			vt[1] = va[i + 1];
+			vt[2].x = va[i].x ;
+			vt[2].y = va[i].y + (va[i].y - target.y) * 2;
+			vt[2].z = va[i].z ;
+			vt[3].x = va[i+1].x ;
+			vt[3].y = va[i+1].y + (va[i+1].y - target.y) * 2;
+			vt[3].z = va[i+1].z ;
 
 			vr[0].color = (Color3f(fColorRays1[0], fColorRays1[1], fColorRays1[2]) * tfRaysa[i]).toBGR();
 			vr[1].color = (Color3f(fColorRays1[0], fColorRays1[1], fColorRays1[2]) * tfRaysa[i + 1]).toBGR();
 			vr[2].color = (Color3f(fColorRays2[0], fColorRays2[1], fColorRays2[2]) * tfRaysa[i]).toBGR();
 			vr[3].color = (Color3f(fColorRays2[0], fColorRays2[1], fColorRays2[2]) * tfRaysa[i + 1]).toBGR();
 			
-			EE_RT(vt[0].p, vr[0].p);
-			EE_RT(vt[1].p, vr[1].p);
-			EE_RT(vt[2].p, vr[2].p);
-			EE_RT(vt[3].p, vr[3].p);
+			EE_RT(vt[0], vr[0].p);
+			EE_RT(vt[1], vr[1].p);
+			EE_RT(vt[2], vr[2].p);
+			EE_RT(vt[3], vr[3].p);
 			drawTriangle(mat, &vr[0]);
 			drawTriangle(mat, &vr[1]);
 		}
 		
 		if(i < fSizeIntro) {
-			vt[0].p = vb[i + 1].p;
-			vt[1].p = vb[i].p;
-			vt[2].p.x = vb[i+1].p.x ;
-			vt[2].p.y = vb[i+1].p.y + (vb[i+1].p.y - target.p.y) * 2;
-			vt[2].p.z = vb[i+1].p.z ;
-			vt[3].p.x = vb[i].p.x ;
-			vt[3].p.y = vb[i].p.y + (vb[i].p.y - target.p.y) * 2;
-			vt[3].p.z = vb[i].p.z ;
+			vt[0] = vb[i + 1];
+			vt[1] = vb[i];
+			vt[2].x = vb[i+1].x ;
+			vt[2].y = vb[i+1].y + (vb[i+1].y - target.y) * 2;
+			vt[2].z = vb[i+1].z ;
+			vt[3].x = vb[i].x ;
+			vt[3].y = vb[i].y + (vb[i].y - target.y) * 2;
+			vt[3].z = vb[i].z ;
 
 			vr[0].color = (Color3f(fColorRays1[0], fColorRays1[1], fColorRays1[2]) * tfRaysb[i]).toBGR();
 			vr[1].color = (Color3f(fColorRays1[0], fColorRays1[1], fColorRays1[2]) * tfRaysb[i + 1]).toBGR();
 			vr[2].color = (Color3f(fColorRays2[0], fColorRays2[1], fColorRays2[2]) * tfRaysb[i]).toBGR();
 			vr[3].color = (Color3f(fColorRays2[0], fColorRays2[1], fColorRays2[2]) * tfRaysb[i + 1]).toBGR();
 
-			EE_RT(vt[0].p, vr[0].p);
-			EE_RT(vt[1].p, vr[1].p);
-			EE_RT(vt[2].p, vr[2].p);
-			EE_RT(vt[3].p, vr[3].p);
+			EE_RT(vt[0], vr[0].p);
+			EE_RT(vt[1], vr[1].p);
+			EE_RT(vt[2], vr[2].p);
+			EE_RT(vt[3], vr[3].p);
 			drawTriangle(mat, &vr[0]);
 			drawTriangle(mat, &vr[1]);
 		}
