@@ -198,6 +198,8 @@ void FireballSpell::Update(float timeDelta)
 	if(!effect)
 		return;
 	
+	effect->Update(timeDelta);
+	
 	if(!lightHandleIsValid(m_longinfo_light))
 		m_longinfo_light = GetFreeDynLight();
 	
@@ -245,7 +247,6 @@ void FireballSpell::Update(float timeDelta)
 		ARX_NPC_SpawnAudibleSound(sphere.origin, entities[m_caster]);
 	}
 	
-	effect->Update(timeDelta);
 	ARX_SOUND_RefreshPosition(m_snd_loop, effect->eCurPos);
 }
 
