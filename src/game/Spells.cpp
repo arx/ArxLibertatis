@@ -1242,23 +1242,29 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flags,
 		spell.m_hand_pos = entities[spell.m_caster]->obj->vertexlist3[spell.m_hand_group].v;
 	}
 	
+	float spellLevel;
+	Vec3f casterPos;
+	
 	if(source == PlayerEntityHandle) {
 		// Player source
-		spell.m_level = Player_Magic_Level; // Level of caster
-		spell.m_caster_pos = player.pos;
+		spellLevel = Player_Magic_Level; // Level of caster
+		casterPos = player.pos;
 	} else {
 		// IO source
-		spell.m_level = (float)clamp(level, 1l, 10l);
-		spell.m_caster_pos = entities[source]->pos;
+		spellLevel = (float)clamp(level, 1l, 10l);
+		casterPos = entities[source]->pos;
 	}
 
 	if(flags & SPELLCAST_FLAG_LAUNCHPRECAST) {
-		spell.m_level = static_cast<float>(level);
+		spellLevel = static_cast<float>(level);
 	}
 	
 	if(cur_rf == 3) {
-		spell.m_level += 2;
+		spellLevel += 2;
 	}
+	
+	spell.m_level = spellLevel;
+	spell.m_caster_pos = casterPos;
 	
 	Vec3f targetPos;
 	if(target == InvalidEntityHandle) {
