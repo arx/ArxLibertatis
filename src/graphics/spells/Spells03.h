@@ -69,8 +69,6 @@ public:
 	Vec3f eMove;
 	bool bExplo;
 	
-	SpellHandle spellinstance;
-	
 	unsigned long m_createBallDuration;
 private:
 

@@ -111,58 +111,7 @@ void CFireBall::Update(float timeDelta)
 {
 	ulCurrentTime += timeDelta;
 
-	if(ulCurrentTime <= m_createBallDuration) {
-		
-		float afAlpha = 0.f;
-		float afBeta = 0.f;
-	
-		SpellBase * spell = spells[spellinstance];
-		
-		if(spell->m_caster == PlayerEntityHandle) {
-			afBeta = player.angle.getPitch();
-			afAlpha = player.angle.getYaw();
-			long idx = GetGroupOriginByName(entities[spell->m_caster]->obj, "chest");
 
-			if(idx) {
-				eCurPos.x = entities[spell->m_caster]->obj->vertexlist3[idx].v.x - std::sin(radians(afBeta)) * 60;
-				eCurPos.y = entities[spell->m_caster]->obj->vertexlist3[idx].v.y;
-				eCurPos.z = entities[spell->m_caster]->obj->vertexlist3[idx].v.z + std::cos(radians(afBeta)) * 60;
-			} else {
-				eCurPos.x = player.pos.x - std::sin(radians(afBeta)) * 60;
-				eCurPos.y = player.pos.y;
-				eCurPos.z = player.pos.z + std::cos(radians(afBeta)) * 60;
-			}
-		} else {
-			afBeta = entities[spell->m_caster]->angle.getPitch();
-
-			eCurPos.x = entities[spell->m_caster]->pos.x - std::sin(radians(afBeta)) * 60;
-			eCurPos.y = entities[spell->m_caster]->pos.y;
-			eCurPos.z = entities[spell->m_caster]->pos.z + std::cos(radians(afBeta)) * 60;
-
-			if ((ValidIONum(spell->m_caster))
-			        && (entities[spell->m_caster]->ioflags & IO_NPC))
-			{
-				eCurPos.x -= std::sin(radians(entities[spell->m_caster]->angle.getPitch())) * 30.f;
-				eCurPos.y -= 80.f;
-				eCurPos.z += std::cos(radians(entities[spell->m_caster]->angle.getPitch())) * 30.f;
-			}
-			
-			Entity * io = entities[spell->m_caster];
-
-			if(ValidIONum(io->targetinfo)) {
-				Vec3f * p1 = &eCurPos;
-				Vec3f p2 = entities[io->targetinfo]->pos;
-				p2.y -= 60.f;
-				afAlpha = 360.f - (degrees(getAngle(p1->y, p1->z, p2.y, p2.z + glm::distance(Vec2f(p2.x, p2.z), Vec2f(p1->x, p1->z))))); //alpha entre orgn et dest;
-			}
-		}
-
-		eMove.x = - std::sin(radians(afBeta)) * 100 * cos(radians(MAKEANGLE(afAlpha)));
-		eMove.y = sin(radians(MAKEANGLE(afAlpha))) * 100;
-		eMove.z = + std::cos(radians(afBeta)) * 100 * cos(radians(MAKEANGLE(afAlpha)));
-	}
-	
-	eCurPos += eMove * (timeDelta * 0.0045f);
 }
 
 void CFireBall::Render() {

@@ -31,6 +31,7 @@
 #include "physics/Collisions.h"
 #include "scene/GameSound.h"
 #include "scene/Interactive.h"
+#include "scene/Object.h"
 
 void SpeedSpell::Launch()
 {
@@ -124,7 +125,6 @@ void FireballSpell::Launch()
 	m_tolive = 20000; // TODO probably never read
 	
 	CFireBall * effect = new CFireBall();
-	effect->spellinstance = m_thisHandle;
 	
 	if(m_caster != PlayerEntityHandle) {
 		m_hand_group = -1;
@@ -199,6 +199,58 @@ void FireballSpell::Update(float timeDelta)
 		return;
 	
 	effect->Update(timeDelta);
+	
+	if(effect->ulCurrentTime <= effect->m_createBallDuration) {
+		
+		float afAlpha = 0.f;
+		float afBeta = 0.f;
+		
+		if(m_caster == PlayerEntityHandle) {
+			afBeta = player.angle.getPitch();
+			afAlpha = player.angle.getYaw();
+			long idx = GetGroupOriginByName(entities[m_caster]->obj, "chest");
+
+			if(idx) {
+				effect->eCurPos.x = entities[m_caster]->obj->vertexlist3[idx].v.x - std::sin(radians(afBeta)) * 60;
+				effect->eCurPos.y = entities[m_caster]->obj->vertexlist3[idx].v.y;
+				effect->eCurPos.z = entities[m_caster]->obj->vertexlist3[idx].v.z + std::cos(radians(afBeta)) * 60;
+			} else {
+				effect->eCurPos.x = player.pos.x - std::sin(radians(afBeta)) * 60;
+				effect->eCurPos.y = player.pos.y;
+				effect->eCurPos.z = player.pos.z + std::cos(radians(afBeta)) * 60;
+			}
+		} else {
+			afBeta = entities[m_caster]->angle.getPitch();
+
+			effect->eCurPos.x = entities[m_caster]->pos.x - std::sin(radians(afBeta)) * 60;
+			effect->eCurPos.y = entities[m_caster]->pos.y;
+			effect->eCurPos.z = entities[m_caster]->pos.z + std::cos(radians(afBeta)) * 60;
+
+			if ((ValidIONum(m_caster))
+			        && (entities[m_caster]->ioflags & IO_NPC))
+			{
+				effect->eCurPos.x -= std::sin(radians(entities[m_caster]->angle.getPitch())) * 30.f;
+				effect->eCurPos.y -= 80.f;
+				effect->eCurPos.z += std::cos(radians(entities[m_caster]->angle.getPitch())) * 30.f;
+			}
+			
+			Entity * io = entities[m_caster];
+
+			if(ValidIONum(io->targetinfo)) {
+				Vec3f * p1 = &effect->eCurPos;
+				Vec3f p2 = entities[io->targetinfo]->pos;
+				p2.y -= 60.f;
+				afAlpha = 360.f - (degrees(getAngle(p1->y, p1->z, p2.y, p2.z + glm::distance(Vec2f(p2.x, p2.z), Vec2f(p1->x, p1->z))))); //alpha entre orgn et dest;
+			}
+		}
+
+		effect->eMove.x = - std::sin(radians(afBeta)) * 100 * cos(radians(MAKEANGLE(afAlpha)));
+		effect->eMove.y = sin(radians(MAKEANGLE(afAlpha))) * 100;
+		effect->eMove.z = + std::cos(radians(afBeta)) * 100 * cos(radians(MAKEANGLE(afAlpha)));
+	}
+	
+	effect->eCurPos += effect->eMove * (timeDelta * 0.0045f);
+	
 	
 	if(!lightHandleIsValid(m_longinfo_light))
 		m_longinfo_light = GetFreeDynLight();
