@@ -153,8 +153,8 @@ Entity::Entity(const res::path & classPath)
 	tweakerinfo = NULL;
 	material = MATERIAL_NONE;
 	
-	sizex = 1;
-	sizey = 1;
+	m_inventorySize = Vec2s(1, 1);
+	
 	soundtime = 0;
 	soundcount = 0;
 	

@@ -1043,22 +1043,23 @@ void ARX_INTERACTIVE_TWEAK_Icon(Entity * io, const res::path & s1) {
 		tc = TextureContainer::LoadUI("graph/interface/misc/default[icon]");
 	}
 	
+	// TODO copy-paste inventorySize
 	if(tc) {
 		unsigned long w = tc->m_dwWidth >> 5;
 		unsigned long h = tc->m_dwHeight >> 5; 
 
 		if ((w << 5) != tc->m_dwWidth)
-			io->sizex = (char)(w + 1);
+			io->m_inventorySize.x = (char)(w + 1);
 		else
-			io->sizex = (char)(w);
+			io->m_inventorySize.x = (char)(w);
 
 		if ((h << 5) != tc->m_dwHeight)
-			io->sizey = (char)(h + 1);
+			io->m_inventorySize.y = (char)(h + 1);
 		else
-			io->sizey = (char)(h);
+			io->m_inventorySize.y = (char)(h);
 
-		io->sizex = clamp(io->sizex, 1, 3);
-		io->sizey = clamp(io->sizey, 1, 3);
+		io->m_inventorySize.x = clamp(io->m_inventorySize.x, 1, 3);
+		io->m_inventorySize.y = clamp(io->m_inventorySize.y, 1, 3);
 
 		io->inv = tc;
 	}
@@ -1091,8 +1092,7 @@ Entity * CloneIOItem(Entity * src) {
 	
 	SendInitScriptEvent(dest);
 	dest->inv = src->inv;
-	dest->sizex = src->sizex;
-	dest->sizey = src->sizey;
+	dest->m_inventorySize = src->m_inventorySize;
 	delete dest->obj;
 	dest->obj = Eerie_Copy(src->obj);
 	CloneLocalVars(dest, src);
@@ -1508,12 +1508,14 @@ Entity * AddFix(const res::path & classPath, EntityInstance instance, AddInterac
 	
 	io->infracolor = Color3f(0.6f, 0.f, 1.f);
 	
-	TextureContainer * tc = TextureContainer::LoadUI("graph/interface/misc/default[icon]"); 
+	TextureContainer * tc = TextureContainer::LoadUI("graph/interface/misc/default[icon]");
+	
+	// TODO copy-paste inventorySize
 	if(tc) {
 		unsigned long w = tc->m_dwWidth >> 5;
 		unsigned long h = tc->m_dwHeight >> 5;
-		io->sizex = char(clamp(((w << 5) != tc->m_dwWidth) ? (w + 1) : w, 1ul, 3ul));
-		io->sizey = char(clamp(((h << 5) != tc->m_dwHeight) ? (h + 1) : h, 1ul, 3ul));
+		io->m_inventorySize.x = char(clamp(((w << 5) != tc->m_dwWidth) ? (w + 1) : w, 1ul, 3ul));
+		io->m_inventorySize.y = char(clamp(((h << 5) != tc->m_dwHeight) ? (h + 1) : h, 1ul, 3ul));
 		io->inv = tc;
 	}
 	
@@ -1906,22 +1908,23 @@ Entity * AddItem(const res::path & classPath_, EntityInstance instance, AddInter
 		tc = TextureContainer::LoadUI("graph/interface/misc/default[icon]");
 	}
 	
+	// TODO copy-paste inventorySize
 	if(tc) {
 		unsigned long w = tc->m_dwWidth >> 5;
 		unsigned long h = tc->m_dwHeight >> 5;
 
 		if ((w << 5) != tc->m_dwWidth)
-			io->sizex = (char)(w + 1);
+			io->m_inventorySize.x = (char)(w + 1);
 		else
-			io->sizex = (char)(w);
+			io->m_inventorySize.x = (char)(w);
 
 		if ((h << 5) != tc->m_dwHeight)
-			io->sizey = (char)(h + 1);
+			io->m_inventorySize.y = (char)(h + 1);
 		else
-			io->sizey = (char)(h);
+			io->m_inventorySize.y = (char)(h);
 
-		io->sizex = clamp(io->sizex, 1, 3);
-		io->sizey = clamp(io->sizey, 1, 3);
+		io->m_inventorySize.x = clamp(io->m_inventorySize.x, 1, 3);
+		io->m_inventorySize.y = clamp(io->m_inventorySize.y, 1, 3);
 
 		io->inv = tc;
 	}

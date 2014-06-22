@@ -308,8 +308,7 @@ public:
 	Material material;
 	
 	std::set<std::string> groups;
-	char sizex; // Inventory Icon sizeX
-	char sizey; // Inventory Icon sizeY
+	Vec2s m_inventorySize;// Inventory Icon size
 	unsigned long soundtime;
 	unsigned long soundcount;
 	

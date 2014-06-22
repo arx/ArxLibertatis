@@ -315,8 +315,8 @@ struct InventoryArray<1, MaxWidth, MaxHeight> {
 //! Compare items by their size and name
 struct ItemSizeComaparator {
 	bool operator()(const Entity * a, const Entity * b) const {
-		int sizea = a->sizex * a->sizey * a->sizey;
-		int sizeb = b->sizex * b->sizey * b->sizey;
+		int sizea = a->m_inventorySize.x * a->m_inventorySize.y * a->m_inventorySize.y;
+		int sizeb = b->m_inventorySize.x * b->m_inventorySize.y * b->m_inventorySize.y;
 		if(sizea != sizeb) {
 			return (sizea > sizeb);
 		}
@@ -392,17 +392,17 @@ private:
 	void removeAt(const Entity * item, const Pos & pos) {
 		
 		arx_assert(item != NULL && (item->ioflags & IO_ITEM));
-		arx_assert(pos.x + item->sizex <= width);
-		arx_assert(pos.y + item->sizey <= height);
+		arx_assert(pos.x + item->m_inventorySize.x <= width);
+		arx_assert(pos.y + item->m_inventorySize.y <= height);
 		arx_assert(index(pos).io == item);
 		
 		LogDebug(" - " << pos << " remove " << item->idString()
 		         << " [" << item->_itemdata->count << '/'
 		         << item->_itemdata->playerstacksize << "]: "
-		         << int(item->sizex) << 'x' << int(item->sizey));
+		         << int(item->m_inventorySize.x) << 'x' << int(item->m_inventorySize.y));
 		
-		for(index_type j = pos.y; j < (pos.y + size_type(item->sizey)); j++) {
-			for(index_type i = pos.x; i < (pos.x + size_type(item->sizex)); i++) {
+		for(index_type j = pos.y; j < (pos.y + size_type(item->m_inventorySize.y)); j++) {
+			for(index_type i = pos.x; i < (pos.x + size_type(item->m_inventorySize.x)); i++) {
 				index(pos.bag, i, j).io = NULL;
 				index(pos.bag, i, j).show = 0;
 			}
@@ -415,15 +415,15 @@ private:
 			return false;
 		}
 		
-		if(pos.x + item->sizex > width || pos.y + item->sizey > height) {
+		if(pos.x + item->m_inventorySize.x > width || pos.y + item->m_inventorySize.y > height) {
 			return false;
 		}
 		
 		arx_assert(item != NULL && (item->ioflags & IO_ITEM));
 		
 		// Check if the whole area required by this item is empty
-		for(index_type j = pos.y; j < pos.y + item->sizey; j++) {
-			for(index_type i = pos.x; i < pos.x + item->sizex; i++) {
+		for(index_type j = pos.y; j < pos.y + item->m_inventorySize.y; j++) {
+			for(index_type i = pos.x; i < pos.x + item->m_inventorySize.x; i++) {
 				if(index(pos.bag, i, j).io != NULL) {
 					return false;
 				}
@@ -433,11 +433,11 @@ private:
 		LogDebug(" - " << pos << " := " << item->idString()
 		         << " [" << item->_itemdata->count << '/'
 		         << item->_itemdata->playerstacksize << "]: "
-		         << int(item->sizex) << 'x' << int(item->sizey));
+		         << int(item->m_inventorySize.x) << 'x' << int(item->m_inventorySize.y));
 		
 		// Insert the item at the found position
-		for(index_type j = pos.y; j < (pos.y + item->sizey); j++) {
-			for (index_type i = pos.x; i < (pos.x + item->sizex); i++) {
+		for(index_type j = pos.y; j < (pos.y + item->m_inventorySize.y); j++) {
+			for (index_type i = pos.x; i < (pos.x + item->m_inventorySize.x); i++) {
 				index(pos.bag, i, j).io = item;
 				index(pos.bag, i, j).show = 0;
 			}
@@ -452,8 +452,8 @@ private:
 		arx_assert(item != NULL && (item->ioflags & IO_ITEM));
 		
 		for(index_type bag = 0; bag < bags; bag++) {
-			for(index_type i = 0; i < width + 1 - item->sizex; i++) {
-				for(index_type j = 0; j < height + 1 - item->sizey; j++) {
+			for(index_type i = 0; i < width + 1 - item->m_inventorySize.x; i++) {
+				for(index_type j = 0; j < height + 1 - item->m_inventorySize.y; j++) {
 					
 					// Ignore already used inventory slots
 					if(index(bag, i, j).io != NULL) {
@@ -477,7 +477,7 @@ private:
 			return false;
 		}
 		
-		if(pos.x + item->sizex > width || pos.y + item->sizey > height) {
+		if(pos.x + item->m_inventorySize.x > width || pos.y + item->m_inventorySize.y > height) {
 			return false;
 		}
 		
@@ -523,8 +523,8 @@ private:
 		
 		// Try to add the items to an existing stack
 		for(index_type bag = 0; bag < bags; bag++) {
-			for(index_type i = 0; i < width + 1 - size_type(item->sizex); i++) {
-				for(index_type j = 0; j < height + 1 - size_type(item->sizey); j++) {
+			for(index_type i = 0; i < width + 1 - size_type(item->m_inventorySize.x); i++) {
+				for(index_type j = 0; j < height + 1 - size_type(item->m_inventorySize.y); j++) {
 					Pos pos(io, bag, i, j);
 					if(insertIntoStackAt(item, pos)) {
 						return pos;
@@ -615,7 +615,7 @@ public:
 	#ifdef ARX_DEBUG
 		BOOST_FOREACH(const Entity * item, items) {
 			LogDebug(" - " << item->idString() << ": "
-							<< int(item->sizex) << 'x' << int(item->sizey));
+							<< int(item->m_inventorySize.x) << 'x' << int(item->m_inventorySize.y));
 		}
 	#endif
 		
@@ -824,8 +824,8 @@ bool CanBePutInInventory(Entity * io)
 
 	long sx, sy;
 
-	sx = io->sizex;
-	sy = io->sizey;
+	sx = io->m_inventorySize.x;
+	sy = io->m_inventorySize.y;
 
 	// on essaie de le remettre à son ancienne place --------------------------
 	if (sInventory == 1 &&
@@ -1001,8 +1001,8 @@ bool CanBePutInSecondaryInventory(INVENTORY_DATA * id, Entity * io, long * xx, l
 	*xx = -1;
 	*yy = -1;
 
-	sx = io->sizex;
-	sy = io->sizey;
+	sx = io->m_inventorySize.x;
+	sy = io->m_inventorySize.y;
 
 	// on essaie de le remettre à son ancienne place
 	if (sInventory == 2 &&
@@ -1166,8 +1166,8 @@ bool PutInInventory() {
 	long sx, sy;
 	long i, j;
 	
-	sx = DRAGINTER->sizex;
-	sy = DRAGINTER->sizey;
+	sx = DRAGINTER->m_inventorySize.x;
+	sy = DRAGINTER->m_inventorySize.y;
 	
 	const Rect backpackMouseTestRect(
 	g_size.width() - 35,
@@ -2130,8 +2130,8 @@ void ARX_INVENTORY_TakeAllFromSecondaryInventory()
 			{
 				if (TSecondaryInventory->slot[i][j].io && TSecondaryInventory->slot[i][j].show)
 				{
-					long sx = TSecondaryInventory->slot[i][j].io->sizex;
-					long sy = TSecondaryInventory->slot[i][j].io->sizey;
+					long sx = TSecondaryInventory->slot[i][j].io->m_inventorySize.x;
+					long sy = TSecondaryInventory->slot[i][j].io->m_inventorySize.y;
 					Entity * io = TSecondaryInventory->slot[i][j].io;
 
 					if (!(io->ioflags & IO_GOLD))
@@ -2174,8 +2174,8 @@ void ARX_INVENTORY_ReOrder()
 			{
 				if (TSecondaryInventory->slot[i][j].io && TSecondaryInventory->slot[i][j].show)
 				{
-					long sx = TSecondaryInventory->slot[i][j].io->sizex;
-					long sy = TSecondaryInventory->slot[i][j].io->sizey;
+					long sx = TSecondaryInventory->slot[i][j].io->m_inventorySize.x;
+					long sy = TSecondaryInventory->slot[i][j].io->m_inventorySize.y;
 					Entity * io = TSecondaryInventory->slot[i][j].io;
 
 					RemoveFromAllInventories(io);
