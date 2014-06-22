@@ -194,10 +194,9 @@ void FireballSpell::End()
 
 void FireballSpell::Update(float timeDelta)
 {
-	CSpellFx *pCSpellFX = m_pSpellFx;
+	CFireBall *effect = static_cast<CFireBall *>(m_pSpellFx);
 
-	if(pCSpellFX) {
-		CFireBall *pCF = (CFireBall*) pCSpellFX;
+	if(effect) {
 			
 		if(!lightHandleIsValid(m_longinfo_light))
 			m_longinfo_light = GetFreeDynLight();
@@ -205,7 +204,7 @@ void FireballSpell::Update(float timeDelta)
 		if(lightHandleIsValid(m_longinfo_light)) {
 			EERIE_LIGHT * light = lightHandleGet(m_longinfo_light);
 			
-			light->pos = pCF->eCurPos;
+			light->pos = effect->eCurPos;
 			light->intensity = 2.2f;
 			light->fallend = 500.f;
 			light->fallstart = 400.f;
@@ -215,45 +214,45 @@ void FireballSpell::Update(float timeDelta)
 		}
 
 		Sphere sphere;
-		sphere.origin = pCF->eCurPos;
+		sphere.origin = effect->eCurPos;
 		sphere.radius=std::max(m_level*2.f,12.f);
 		
-		if(pCF->pPSFire.m_parameters.m_nbMax) {
-			if(pCF->ulCurrentTime > pCF->m_createBallDuration) {
-				SpawnFireballTail(&pCF->eCurPos,&pCF->eMove,(float)m_level,0);
+		if(effect->pPSFire.m_parameters.m_nbMax) {
+			if(effect->ulCurrentTime > effect->m_createBallDuration) {
+				SpawnFireballTail(&effect->eCurPos,&effect->eMove,(float)m_level,0);
 			} else {
 				if(rnd()<0.9f) {
 					Vec3f move = Vec3f_ZERO;
-					float dd=(float)pCF->ulCurrentTime / (float)pCF->m_createBallDuration*10;
+					float dd=(float)effect->ulCurrentTime / (float)effect->m_createBallDuration*10;
 					
 					dd = glm::clamp(dd, 1.f, m_level);
 					
-					SpawnFireballTail(&pCF->eCurPos,&move,(float)dd,1);
+					SpawnFireballTail(&effect->eCurPos,&move,(float)dd,1);
 				}
 			}
 		}
 
-		if(!pCF->bExplo)
+		if(!effect->bExplo)
 		if(CheckAnythingInSphere(sphere, m_caster, CAS_NO_SAME_GROUP)) {
-			ARX_BOOMS_Add(pCF->eCurPos);
-			LaunchFireballBoom(&pCF->eCurPos,(float)m_level);
+			ARX_BOOMS_Add(effect->eCurPos);
+			LaunchFireballBoom(&effect->eCurPos,(float)m_level);
 			
-			pCF->pPSFire.StopEmission();
-			pCF->pPSFire2.StopEmission();
-			pCF->pPSSmoke.StopEmission();
+			effect->pPSFire.StopEmission();
+			effect->pPSFire2.StopEmission();
+			effect->pPSSmoke.StopEmission();
 			
-			pCF->eMove *= 0.5f;
-			pCF->SetTTL(1500);
-			pCF->bExplo = true;
+			effect->eMove *= 0.5f;
+			effect->SetTTL(1500);
+			effect->bExplo = true;
 			
-			DoSphericDamage(pCF->eCurPos, 3.f * m_level, 30.f * m_level, DAMAGE_AREA, DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL, m_caster);
+			DoSphericDamage(effect->eCurPos, 3.f * m_level, 30.f * m_level, DAMAGE_AREA, DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL, m_caster);
 			m_tolive=0;
 			ARX_SOUND_PlaySFX(SND_SPELL_FIRE_HIT, &sphere.origin);
 			ARX_NPC_SpawnAudibleSound(sphere.origin, entities[m_caster]);
 		}
 
-		pCSpellFX->Update(timeDelta);
-		ARX_SOUND_RefreshPosition(m_snd_loop, pCF->eCurPos);
+		effect->Update(timeDelta);
+		ARX_SOUND_RefreshPosition(m_snd_loop, effect->eCurPos);
 	}
 }
 
