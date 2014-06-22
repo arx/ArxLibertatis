@@ -111,9 +111,8 @@ void CFireBall::Update(float timeDelta)
 {
 	ulCurrentTime += timeDelta;
 
-	if(ulCurrentTime > m_createBallDuration) {
-		eCurPos += eMove * (timeDelta * 0.0045f);
-	} else {
+	if(ulCurrentTime <= m_createBallDuration) {
+		
 		float afAlpha = 0.f;
 		float afBeta = 0.f;
 	
@@ -161,9 +160,9 @@ void CFireBall::Update(float timeDelta)
 		eMove.x = - std::sin(radians(afBeta)) * 100 * cos(radians(MAKEANGLE(afAlpha)));
 		eMove.y = sin(radians(MAKEANGLE(afAlpha))) * 100;
 		eMove.z = + std::cos(radians(afBeta)) * 100 * cos(radians(MAKEANGLE(afAlpha)));
-
-		eCurPos = eCurPos + eMove * (timeDelta * 0.0045f);
 	}
+	
+	eCurPos += eMove * (timeDelta * 0.0045f);
 }
 
 void CFireBall::Render() {
