@@ -81,7 +81,7 @@ static bool IsPointInField(const Vec3f & pos) {
 	for(size_t i = 0; i < MAX_SPELLS; i++) {
 		const SpellBase * spell = spells[SpellHandle(i)];
 
-		if(spell->m_exist && spell->m_type == SPELL_CREATE_FIELD) {
+		if(spell && spell->m_type == SPELL_CREATE_FIELD) {
 
 			if(ValidIONum(spell->m_longinfo_entity)) {
 				Entity * pfrm = entities[spell->m_longinfo_entity];

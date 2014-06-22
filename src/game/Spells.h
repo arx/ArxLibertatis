@@ -87,10 +87,14 @@ public:
 	void replaceCaster(EntityHandle oldCaster, EntityHandle newCaster);
 	void removeTarget(Entity *io);
 	
+	bool hasFreeSlot();
+	void addSpell(SpellBase * spell);
+	void freeSlot(SpellBase * spell);
+	
 	SpellHandle create();
 	
 private:
-	SpellBase m_spells[MAX_SPELLS];
+	SpellBase * m_spells[MAX_SPELLS];
 };
 
 extern SpellManager spells;

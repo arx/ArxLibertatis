@@ -21,10 +21,21 @@
 
 #include "core/GameTime.h"
 
+SpellBase::SpellBase() {
+	m_longinfo_entity = InvalidEntityHandle;
+	m_longinfo_damage = InvalidDamageHandle;
+	m_longinfo_time = -1;
+	m_longinfo_summon_creature = -1;
+	m_longinfo_lower_armor = -1;
+	m_longinfo_light = InvalidLightHandle;
+	
+	m_longinfo2_light = InvalidLightHandle;
+	
+	m_targets.clear();
+}
+
 void SpellBase::BaseEnd() {
 	
-	m_exist = false;
-
 	// All Levels - Kill Light
 	if(m_pSpellFx && lightHandleIsValid(m_pSpellFx->lLightId)) {
 		EERIE_LIGHT * light = lightHandleGet(m_pSpellFx->lLightId);

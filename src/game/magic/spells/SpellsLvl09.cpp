@@ -390,7 +390,7 @@ void NegateMagicSpell::LaunchAntiMagicField() {
 	for(size_t i = 0; i < MAX_SPELLS; i++) {
 		SpellBase * spell = spells[SpellHandle(i)];
 		
-		if(!spell->m_exist)
+		if(!spell)
 			continue;
 		
 		if(this == spell)

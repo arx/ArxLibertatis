@@ -1684,7 +1684,7 @@ void ArxGame::managePlayerControls()
 		for(long i = MAX_SPELLS - 1; i >= 0; i--) {
 			SpellBase * spell = spells[SpellHandle(i)];
 			
-			if(spell->m_exist && spell->m_caster == PlayerEntityHandle)
+			if(spell && spell->m_caster == PlayerEntityHandle)
 				if(spellicons[spell->m_type].bDuration) {
 					ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE);
 					spell->m_tolive = 0;
@@ -6039,7 +6039,7 @@ public:
 		for(size_t i = 0; i < MAX_SPELLS; i++) {
 			SpellBase * spell = spells[SpellHandle(i)];
 			
-			if(   spell->m_exist
+			if(   spell
 			   && spell->m_caster == PlayerEntityHandle
 			   && spellicons[spell->m_type].bDuration
 			) {
@@ -6051,7 +6051,7 @@ public:
 	void spellsOnPlayerUpdate(float intensity) {
 			for(size_t i = 0; i < MAX_SPELLS; i++) {
 				SpellBase * spell = spells[SpellHandle(i)];
-				if(!spell->m_exist)
+				if(!spell)
 					continue;
 				
 				if(std::find(spell->m_targets.begin(), spell->m_targets.end(), PlayerEntityHandle) == spell->m_targets.end()) {

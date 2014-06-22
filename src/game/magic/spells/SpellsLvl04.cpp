@@ -104,7 +104,7 @@ void DispellFieldSpell::Launch()
 	for(size_t n = 0; n < MAX_SPELLS; n++) {
 		SpellBase * spell = spells[SpellHandle(n)];
 		
-		if(!spell->m_exist || !spell->m_pSpellFx) {
+		if(!spell || !spell->m_pSpellFx) {
 			continue;
 		}
 		

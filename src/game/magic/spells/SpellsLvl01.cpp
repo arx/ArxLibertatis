@@ -239,7 +239,7 @@ void IgnitSpell::Launch()
 	for(size_t n = 0; n < MAX_SPELLS; n++) {
 		SpellBase * spell = spells[SpellHandle(n)];
 		
-		if(!spell->m_exist) {
+		if(!spell) {
 			continue;
 		}
 		if(spell->m_type == SPELL_FIREBALL) {
@@ -319,7 +319,7 @@ void DouseSpell::Launch()
 	for(size_t k = 0; k < MAX_SPELLS; k++) {
 		SpellBase * spell = spells[SpellHandle(k)];
 		
-		if(!spell->m_exist) {
+		if(!spell) {
 			continue;
 		}
 		

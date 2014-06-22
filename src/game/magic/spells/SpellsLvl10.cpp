@@ -48,7 +48,7 @@ void MassLightningStrikeSpell::Launch()
 	for(size_t ii = 0; ii < MAX_SPELLS; ii++) {
 		SpellBase * spell = spells[SpellHandle(ii)];
 		
-		if(spell->m_exist && spell->m_type == SPELL_MASS_LIGHTNING_STRIKE) {
+		if(spell && spell->m_type == SPELL_MASS_LIGHTNING_STRIKE) {
 			lightHandleDestroy(spell->m_longinfo_light);
 			spell->m_tolive = 0;
 		}

@@ -93,7 +93,7 @@ void DispellIllusionSpell::Launch()
 	for(size_t n = 0; n < MAX_SPELLS; n++) {
 		SpellBase * spell = spells[SpellHandle(n)];
 		
-		if(!spell->m_exist || spell->m_target == m_caster) {
+		if(!spell || spell->m_target == m_caster) {
 			continue;
 		}
 		

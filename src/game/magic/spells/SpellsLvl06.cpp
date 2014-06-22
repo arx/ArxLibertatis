@@ -394,7 +394,7 @@ void DisarmTrapSpell::Launch()
 	for(size_t n = 0; n < MAX_SPELLS; n++) {
 		SpellBase * spell = spells[SpellHandle(n)];
 		
-		if(!spell->m_exist || spell->m_type != SPELL_RUNE_OF_GUARDING) {
+		if(!spell || spell->m_type != SPELL_RUNE_OF_GUARDING) {
 			continue;
 		}
 		

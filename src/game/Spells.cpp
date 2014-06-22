@@ -160,11 +160,7 @@ SpellManager spells;
 void SpellManager::init() {
 	
 	for(size_t i = 0; i < MAX_SPELLS; i++) {
-		SpellBase * spell = spells[SpellHandle(i)];
-		
-		spell->m_tolive = 0;
-		spell->m_exist = false;
-		spell->m_pSpellFx = NULL;
+		m_spells[i] = NULL;
 	}
 	
 	spellRecognitionInit();
@@ -176,29 +172,27 @@ void SpellManager::init() {
 void SpellManager::clearAll() {
 	
 	for(size_t i = 0; i < MAX_SPELLS; i++) {
-		SpellBase * spell = spells[SpellHandle(i)];
+		SpellBase * spell = m_spells[i];
 		
-		if(spell->m_exist) {
-			spell->m_tolive = 0;
-			spell->m_exist = false;
-			
+		if(spell) {
 			delete spell->m_pSpellFx;
-			spell->m_pSpellFx = NULL;
-			spell->m_targets.clear();
+			delete spell;
 		}
+		
+		m_spells[i] = NULL;
 	}
 }
 
-SpellBase *SpellManager::operator[](const SpellHandle handle) {
-	return &m_spells[handle];
+SpellBase * SpellManager::operator[](const SpellHandle handle) {
+	return m_spells[handle];
 }
 
 void SpellManager::endByCaster(EntityHandle caster) {
 	
 	for(size_t i = 0; i < MAX_SPELLS; i++) {
-		SpellBase * spell = spells[SpellHandle(i)];
+		SpellBase * spell = m_spells[i];
 		
-		if(spell->m_exist && spell->m_caster == caster) {
+		if(spell && spell->m_caster == caster) {
 			spell->m_tolive = 0;
 		}
 	}
@@ -214,10 +208,10 @@ void SpellManager::endByTarget(EntityHandle target, SpellType type) {
 void SpellManager::endByCaster(EntityHandle caster, SpellType type) {
 	
 	for(size_t i = 0; i < MAX_SPELLS; i++) {
-		SpellBase & spell = m_spells[i];
+		SpellBase * spell = m_spells[i];
 		
-		if(spell.m_exist && spell.m_type == type && spell.m_caster == caster) {
-			spell.m_tolive = 0;
+		if(spell && spell->m_type == type && spell->m_caster == caster) {
+			spell->m_tolive = 0;
 			return;
 		}
 	}
@@ -226,9 +220,9 @@ void SpellManager::endByCaster(EntityHandle caster, SpellType type) {
 bool SpellManager::ExistAnyInstanceForThisCaster(SpellType typ, EntityHandle caster) {
 	
 	for(size_t i = 0; i < MAX_SPELLS; i++) {
-		const SpellBase & spell = m_spells[i];
+		const SpellBase * spell = m_spells[i];
 		
-		if(spell.m_exist && spell.m_type == typ && spell.m_caster == caster) {
+		if(spell && spell->m_type == typ && spell->m_caster == caster) {
 			return true;
 		}
 	}
@@ -242,8 +236,8 @@ SpellBase * SpellManager::getSpellOnTarget(EntityHandle target, SpellType type)
 		return NULL;
 	
 	for(size_t i = 0; i < MAX_SPELLS; i++) {
-		SpellBase * spell = spells[SpellHandle(i)];
-		if(!spell->m_exist)
+		SpellBase * spell = m_spells[i];
+		if(!spell)
 			continue;
 		
 		if(spell->m_type != type)
@@ -259,9 +253,9 @@ SpellBase * SpellManager::getSpellOnTarget(EntityHandle target, SpellType type)
 
 void SpellManager::replaceCaster(EntityHandle oldCaster, EntityHandle newCaster) {
 	for(size_t i = 0; i < MAX_SPELLS; i++) {
-		SpellBase * spell = spells[SpellHandle(i)];
+		SpellBase * spell = m_spells[i];
 		
-		if(spell->m_exist && spell->m_caster == oldCaster) {
+		if(spell && spell->m_caster == oldCaster) {
 			spell->m_caster = newCaster;
 		}
 	}
@@ -270,38 +264,46 @@ void SpellManager::replaceCaster(EntityHandle oldCaster, EntityHandle newCaster)
 void SpellManager::removeTarget(Entity *io) {
 	
 	for(size_t i = 0; i < MAX_SPELLS; i++) {
-		SpellBase * spell = spells[SpellHandle(i)];
-		if(!spell->m_exist)
+		SpellBase * spell = m_spells[i];
+		if(!spell)
 			continue;
 		
 		spell->m_targets.erase(std::remove(spell->m_targets.begin(), spell->m_targets.end(), io->index()), spell->m_targets.end());
 	}
 }
 
-SpellHandle SpellManager::create() {
-	
+bool SpellManager::hasFreeSlot()
+{
 	for(size_t i = 0; i < MAX_SPELLS; i++) {
-		SpellBase * spell = spells[SpellHandle(i)];
+		SpellBase * spell = m_spells[i];
 		
-		if(!spell->m_exist) {
-			spell->m_longinfo_entity = InvalidEntityHandle;
-			spell->m_longinfo_damage = InvalidDamageHandle;
-			spell->m_longinfo_time = -1;
-			spell->m_longinfo_summon_creature = -1;
-			spell->m_longinfo_lower_armor = -1;
-			spell->m_longinfo_light = InvalidLightHandle;
-			
-			spell->m_longinfo2_light = InvalidLightHandle;
-			
-			spell->m_targets.clear();
-			
-			return SpellHandle(i);
+		if(!spell) {
+			return true;
 		}
 	}
-	
-	return InvalidSpellHandle;
+	return false;
 }
 
+void SpellManager::addSpell(SpellBase * spell)
+{
+	for(size_t i = 0; i < MAX_SPELLS; i++) {
+		if(!m_spells[i]) {
+			m_spells[i] = spell;
+			spell->m_thisHandle = SpellHandle(i);
+			return;
+		}
+	}
+}
+
+void SpellManager::freeSlot(SpellBase * spell)
+{
+	for(size_t i = 0; i < MAX_SPELLS; i++) {
+		if(m_spells[i] == spell) {
+			delete spell;
+			m_spells[i] = NULL;
+		}
+	}
+}
 
 bool GetSpellPosition(Vec3f * pos, SpellBase * spell)
 {
@@ -1077,6 +1079,76 @@ float ARX_SPELLS_GetManaCost(SpellType spell, float casterLevel) {
 	}
 }
 
+SpellBase * createSpellInstance(SpellType type) {
+	switch(type) {
+		case SPELL_NONE: return NULL;
+		// LEVEL 1
+		case SPELL_MAGIC_SIGHT: return new MagicSightSpell();
+		case SPELL_MAGIC_MISSILE: return new MagicMissileSpell();
+		case SPELL_IGNIT: return new IgnitSpell();
+		case SPELL_DOUSE: return new DouseSpell();
+		case SPELL_ACTIVATE_PORTAL: return new ActivatePortalSpell();
+		// LEVEL 2
+		case SPELL_HEAL: return new HealSpell();
+		case SPELL_DETECT_TRAP: return new DetectTrapSpell();
+		case SPELL_ARMOR: return new ArmorSpell();
+		case SPELL_LOWER_ARMOR: return new LowerArmorSpell();
+		case SPELL_HARM: return new HarmSpell();
+		// LEVEL 3
+		case SPELL_SPEED: return new SpeedSpell();
+		case SPELL_DISPELL_ILLUSION: return new DispellIllusionSpell();
+		case SPELL_FIREBALL: return new FireballSpell();
+		case SPELL_CREATE_FOOD: return new CreateFoodSpell();
+		case SPELL_ICE_PROJECTILE: return new IceProjectileSpell();
+		// LEVEL 4
+		case SPELL_BLESS: return new BlessSpell();
+		case SPELL_DISPELL_FIELD: return new DispellFieldSpell();
+		case SPELL_FIRE_PROTECTION: return new FireProtectionSpell();
+		case SPELL_COLD_PROTECTION: return new ColdProtectionSpell();
+		case SPELL_TELEKINESIS: return new TelekinesisSpell();
+		case SPELL_CURSE: return new CurseSpell();
+		// LEVEL 5
+		case SPELL_RUNE_OF_GUARDING: return new RuneOfGuardingSpell();
+		case SPELL_LEVITATE: return new LevitateSpell();
+		case SPELL_CURE_POISON: return new CurePoisonSpell();
+		case SPELL_REPEL_UNDEAD: return new RepelUndeadSpell();
+		case SPELL_POISON_PROJECTILE: return new PoisonProjectileSpell();
+		// LEVEL 6
+		case SPELL_RISE_DEAD: return new RiseDeadSpell();
+		case SPELL_PARALYSE: return new ParalyseSpell();
+		case SPELL_CREATE_FIELD: return new CreateFieldSpell();
+		case SPELL_DISARM_TRAP: return new DisarmTrapSpell();
+		case SPELL_SLOW_DOWN: return new SlowDownSpell();
+		// LEVEL 7
+		case SPELL_FLYING_EYE: return new FlyingEyeSpell();
+		case SPELL_FIRE_FIELD: return new FireFieldSpell();
+		case SPELL_ICE_FIELD: return new IceFieldSpell();
+		case SPELL_LIGHTNING_STRIKE: return new LightningStrikeSpell();
+		case SPELL_CONFUSE: return new ConfuseSpell();
+		// LEVEL 8
+		case SPELL_INVISIBILITY: return new InvisibilitySpell();
+		case SPELL_MANA_DRAIN: return new ManaDrainSpell();
+		case SPELL_EXPLOSION: return new ExplosionSpell();
+		case SPELL_ENCHANT_WEAPON: return new EnchantWeaponSpell();
+		case SPELL_LIFE_DRAIN: return new LifeDrainSpell();
+		// LEVEL 9
+		case SPELL_SUMMON_CREATURE: return new SummonCreatureSpell();
+		case SPELL_FAKE_SUMMON: return new FakeSummonSpell();
+		case SPELL_NEGATE_MAGIC: return new NegateMagicSpell();
+		case SPELL_INCINERATE: return new IncinerateSpell();
+		case SPELL_MASS_PARALYSE: return new MassParalyseSpell();
+		// LEVEL 10
+		case SPELL_MASS_LIGHTNING_STRIKE: return new MassLightningStrikeSpell();
+		case SPELL_CONTROL_TARGET: return new ControlTargetSpell();
+		case SPELL_FREEZE_TIME: return new FreezeTimeSpell();
+		case SPELL_MASS_INCINERATE: return new MassIncinerateSpell();
+		case SPELL_TELEPORT: return new TeleportSpell();
+	}
+	
+	return NULL;
+}
+
+
 bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flags, long level, EntityHandle target, long duration) {
 	
 	if(cur_rf == 3) {
@@ -1212,14 +1284,14 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flags,
 		ARX_SPELLS_CancelSpellTarget();
 	}
 
-	// Try to create a new spell instance
-	SpellHandle i = spells.create();
-
-	if(i < 0) {
+	if(!spells.hasFreeSlot())
 		return false;
-	}
 	
-	SpellBase & spell = *spells[i];
+	SpellBase * sp = createSpellInstance(typ);
+	if(!sp)
+		return false;
+	
+	SpellBase & spell = *sp;
 	
 	if(ValidIONum(source) && spellicons[typ].bAudibleAtStart) {
 		ARX_NPC_SpawnAudibleSound(entities[source]->pos, entities[source]);
@@ -1290,7 +1362,6 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flags,
 	
 	spell.m_target_pos = targetPos;
 	
-	spell.m_thisHandle = i;
 	spell.m_flags = flags;
 	spell.m_pSpellFx = NULL;
 	spell.m_type = typ;
@@ -1299,292 +1370,24 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flags,
 	spell.m_launchDuration = duration;
 
 	if(!CanPayMana(&spell, ARX_SPELLS_GetManaCost(typ, spell.m_level))) {
+		delete &spell;
 		return false;
 	}
 	
 	if(!GLOBAL_MAGIC_MODE) {
 		ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE);
+		delete &spell;
 		return false;
 	}
 	
-	switch(typ) {
-		case SPELL_NONE:
-		return true;
-		//****************************************************************************
-		// LEVEL 1
-		case SPELL_MAGIC_SIGHT: {
-			if(! static_cast<MagicSightSpell &>(spell).CanLaunch())
-				return false;
-			
-			static_cast<MagicSightSpell &>(spell).Launch();
-			break;
-		}
-		case SPELL_MAGIC_MISSILE: {
-			static_cast<MagicMissileSpell &>(spell).Launch();
-			break;
-		}
-		case SPELL_IGNIT: {
-			static_cast<IgnitSpell &>(spell).Launch();
-			break;
-		}
-		case SPELL_DOUSE: {
-			static_cast<DouseSpell &>(spell).Launch();
-			break;
-		}
-		case SPELL_ACTIVATE_PORTAL: {
-			static_cast<ActivatePortalSpell &>(spell).Launch();
-			break;
-		}
-		//****************************************************************************
-		// LEVEL 2
-		case SPELL_HEAL: {
-			if(! static_cast<HealSpell &>(spell).CanLaunch())
-				return false;
-			
-			static_cast<HealSpell &>(spell).Launch();
-			break;
-		}
-		case SPELL_DETECT_TRAP: {
-			static_cast<DetectTrapSpell &>(spell).Launch();
-			break;
-		}
-		case SPELL_ARMOR: {
-			static_cast<ArmorSpell &>(spell).Launch();
-			break;
-		}
-		case SPELL_LOWER_ARMOR: {
-			static_cast<LowerArmorSpell &>(spell).Launch();
-			break;
-		}
-		case SPELL_HARM: {
-			static_cast<HarmSpell &>(spell).Launch();
-			break;
-		}
-		//****************************************************************************
-		// LEVEL 3
-		case SPELL_SPEED: {
-			static_cast<SpeedSpell &>(spell).Launch();
-			break;
-		}
-		case SPELL_DISPELL_ILLUSION: {
-			static_cast<DispellIllusionSpell &>(spell).Launch();
-			break;
-		}
-		case SPELL_FIREBALL: {
-			static_cast<FireballSpell &>(spell).Launch();
-			break;
-		}
-		case SPELL_CREATE_FOOD: {
-			static_cast<CreateFoodSpell &>(spell).Launch();
-			break;
-		}
-		case SPELL_ICE_PROJECTILE: {
-			static_cast<IceProjectileSpell &>(spell).Launch();
-			break;
-		}
-		//****************************************************************************
-		// LEVEL 4
-		case SPELL_BLESS: {
-			if(! static_cast<BlessSpell &>(spell).CanLaunch())
-				return false;
-			
-			static_cast<BlessSpell &>(spell).Launch();
-			break;
-		}
-		case SPELL_DISPELL_FIELD: {
-			static_cast<DispellFieldSpell &>(spell).Launch();
-			break;
-		}
-		case SPELL_FIRE_PROTECTION: {
-			static_cast<FireProtectionSpell &>(spell).Launch();
-			break;
-		}
-		case SPELL_COLD_PROTECTION: {
-			static_cast<ColdProtectionSpell &>(spell).Launch();
-			break;
-		}
-		case SPELL_TELEKINESIS: {
-			if(! static_cast<TelekinesisSpell &>(spell).CanLaunch())
-				return false;
-			
-			static_cast<TelekinesisSpell &>(spell).Launch();
-			break;
-		}
-		case SPELL_CURSE: {
-			static_cast<CurseSpell &>(spell).Launch();
-			break;
-		}
-		//****************************************************************************
-		// LEVEL 5
-		case SPELL_RUNE_OF_GUARDING: {
-			static_cast<RuneOfGuardingSpell &>(spell).Launch();
-			break;
-		}
-		case SPELL_LEVITATE: {
-			static_cast<LevitateSpell &>(spell).Launch();
-			break;
-		}
-		case SPELL_CURE_POISON: {
-			static_cast<CurePoisonSpell &>(spell).Launch();
-			break;
-		}
-		case SPELL_REPEL_UNDEAD: {
-			static_cast<RepelUndeadSpell &>(spell).Launch();
-			break;
-		}
-		case SPELL_POISON_PROJECTILE: {
-			static_cast<PoisonProjectileSpell &>(spell).Launch();
-			break;
-		}
-		//****************************************************************************
-		// LEVEL 6
-		case SPELL_RISE_DEAD: {
-			if(! static_cast<RiseDeadSpell &>(spell).CanLaunch())
-				return false;
-			
-			static_cast<RiseDeadSpell &>(spell).Launch();
-			break;
-		}
-		case SPELL_PARALYSE: {
-			static_cast<ParalyseSpell &>(spell).Launch();
-			break;
-		}
-		case SPELL_CREATE_FIELD: {
-			static_cast<CreateFieldSpell &>(spell).Launch();
-			break;
-		}
-		case SPELL_DISARM_TRAP: {
-			static_cast<DisarmTrapSpell &>(spell).Launch();
-			break;
-		}
-		case SPELL_SLOW_DOWN: {
-			if(! static_cast<SlowDownSpell &>(spell).CanLaunch())
-				return false;
-			
-			static_cast<SlowDownSpell &>(spell).Launch();
-			break;
-		}
-		//****************************************************************************
-		// LEVEL 7
-		case SPELL_FLYING_EYE: {
-			if(! static_cast<FlyingEyeSpell &>(spell).CanLaunch())
-				return false;
-			
-			static_cast<FlyingEyeSpell &>(spell).Launch();
-			break;
-		}
-		case SPELL_FIRE_FIELD: {
-			static_cast<FireFieldSpell &>(spell).Launch();
-			break;
-		}
-		case SPELL_ICE_FIELD: {
-			static_cast<IceFieldSpell &>(spell).Launch();
-			break;
-		}
-		case SPELL_LIGHTNING_STRIKE: {
-			static_cast<LightningStrikeSpell &>(spell).Launch();
-			break;
-		}
-		case SPELL_CONFUSE: {
-			static_cast<ConfuseSpell &>(spell).Launch();
-			break;
-		}
-		//****************************************************************************
-		// LEVEL 8
-		case SPELL_INVISIBILITY: {
-			if(! static_cast<InvisibilitySpell &>(spell).CanLaunch())
-				return false;
-			
-			static_cast<InvisibilitySpell &>(spell).Launch();
-			break;
-		}
-		case SPELL_MANA_DRAIN: {
-			if(! static_cast<ManaDrainSpell &>(spell).CanLaunch())
-				return false;
-			
-			static_cast<ManaDrainSpell &>(spell).Launch();
-			break;
-		}
-		case SPELL_EXPLOSION: {
-			static_cast<ExplosionSpell &>(spell).Launch();
-			break;
-		}
-		case SPELL_ENCHANT_WEAPON: {
-			static_cast<EnchantWeaponSpell &>(spell).Launch();
-			break;
-		}
-		case SPELL_LIFE_DRAIN: {
-			if(! static_cast<LifeDrainSpell &>(spell).CanLaunch())
-				return false;
-			
-			static_cast<LifeDrainSpell &>(spell).Launch();
-			break;
-		}
-		//****************************************************************************
-		// LEVEL 9
-		case SPELL_SUMMON_CREATURE: {
-			if(! static_cast<SummonCreatureSpell &>(spell).CanLaunch())
-				return false;
-			
-			static_cast<SummonCreatureSpell &>(spell).Launch();
-			break;
-		}
-		case SPELL_FAKE_SUMMON: {
-			if(! static_cast<FakeSummonSpell &>(spell).CanLaunch())
-				return false;
-			
-			static_cast<FakeSummonSpell &>(spell).Launch();
-			break;
-		}
-		case SPELL_NEGATE_MAGIC: {
-			static_cast<NegateMagicSpell &>(spell).Launch();
-			break;
-		}
-		case SPELL_INCINERATE: {
-			if(! static_cast<IncinerateSpell &>(spell).CanLaunch())
-				return false;
-			
-			static_cast<IncinerateSpell &>(spell).Launch();
-			break;
-		}
-		case SPELL_MASS_PARALYSE: {
-			static_cast<MassParalyseSpell &>(spell).Launch();
-			break;
-		}
-		//****************************************************************************
-		// LEVEL 10
-		case SPELL_MASS_LIGHTNING_STRIKE: {
-			static_cast<MassLightningStrikeSpell &>(spell).Launch();
-			break;
-		}
-		case SPELL_CONTROL_TARGET: {
-			if(! static_cast<ControlTargetSpell &>(spell).CanLaunch())
-				return false;
-			
-			static_cast<ControlTargetSpell &>(spell).Launch();
-			break;
-		}
-		case SPELL_FREEZE_TIME: {
-			if(! static_cast<FreezeTimeSpell &>(spell).CanLaunch())
-				return false;
-			
-			static_cast<FreezeTimeSpell &>(spell).Launch();
-			break;
-		}
-		case SPELL_MASS_INCINERATE: {
-			static_cast<MassIncinerateSpell &>(spell).Launch();
-			break;
-		}
-		case SPELL_TELEPORT: {
-			if(! static_cast<TeleportSpell &>(spell).CanLaunch())
-				return false;
-			
-			static_cast<TeleportSpell &>(spell).Launch();
-			break;
-		}
+	if(!spell.CanLaunch()) {
+		delete &spell;
+		return false;
 	}
 	
-	spell.m_exist = true;
+	spell.Launch();
+	
+	spells.addSpell(&spell);
 	
 	// TODO inconsistent use of the SM_SPELLCAST event
 	if(typ == SPELL_CONFUSE || typ == SPELL_ENCHANT_WEAPON) {
@@ -1594,413 +1397,6 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flags,
 	}
 	
 	return true;
-}
-
-void ARX_SPELLS_Update_End(SpellBase & spell) {
-	
-	switch(spell.m_type) {
-		case SPELL_TELEPORT: {
-			static_cast<TeleportSpell &>(spell).End();
-			break;
-		}
-		//****************************************************************************
-		// LEVEL 1 SPELLS
-		case SPELL_MAGIC_SIGHT: {
-			static_cast<MagicSightSpell &>(spell).End();
-			break;
-		}
-		case SPELL_MAGIC_MISSILE: {
-			static_cast<MagicMissileSpell &>(spell).End();
-			break;
-		}
-		case SPELL_IGNIT: {
-			static_cast<IgnitSpell &>(spell).End();
-			break;
-		}
-		case SPELL_DOUSE: {
-			static_cast<DouseSpell &>(spell).End();
-			break;
-		}
-		//****************************************************************************
-		// LEVEL 2
-		case SPELL_HARM: {
-			static_cast<HarmSpell &>(spell).End();
-			break;
-		}
-		case SPELL_DETECT_TRAP: {
-			static_cast<DetectTrapSpell &>(spell).End();
-			break;
-		}
-		case SPELL_ARMOR: {
-			static_cast<ArmorSpell &>(spell).End();
-			break;
-		}
-		case SPELL_LOWER_ARMOR: {
-			static_cast<LowerArmorSpell &>(spell).End();
-			break;
-		}
-		//****************************************************************************
-		// LEVEL 3
-		case SPELL_SPEED: {
-			static_cast<SpeedSpell &>(spell).End();
-			break;
-		}
-		case SPELL_FIREBALL: {
-			static_cast<FireballSpell &>(spell).End();
-			break;
-		}
-		//****************************************************************************
-		// LEVEL 4
-		case SPELL_BLESS: {
-			static_cast<BlessSpell &>(spell).End();
-			break;
-		}
-		case SPELL_CURSE: {
-			static_cast<CurseSpell &>(spell).End();
-			break;
-		}
-		case SPELL_TELEKINESIS: {
-			static_cast<TelekinesisSpell &>(spell).End();
-			break;
-		}
-		case SPELL_FIRE_PROTECTION: {
-			static_cast<FireProtectionSpell &>(spell).End();
-			break;
-		}
-		case SPELL_COLD_PROTECTION: {
-			static_cast<ColdProtectionSpell &>(spell).End();
-			break;
-		}
-		//****************************************************************************
-		// LEVEL 5
-		case SPELL_LEVITATE: {
-			static_cast<LevitateSpell &>(spell).End();
-			break;
-		}
-		case SPELL_REPEL_UNDEAD: {
-			static_cast<RepelUndeadSpell &>(spell).End();
-			break;
-		}
-		//****************************************************************************
-		// LEVEL 6 SPELLS
-		case SPELL_PARALYSE: {
-			static_cast<ParalyseSpell &>(spell).End();
-			break;
-		}
-		case SPELL_RISE_DEAD: {
-			static_cast<RiseDeadSpell &>(spell).End();
-			break;
-		}
-		case SPELL_CREATE_FIELD: {
-			static_cast<CreateFieldSpell &>(spell).End();
-			break;
-		}
-		case SPELL_SLOW_DOWN: {
-			static_cast<SlowDownSpell &>(spell).End();
-			break;
-		}
-		//****************************************************************************
-		// LEVEL 7
-		case SPELL_ICE_FIELD: {
-			static_cast<IceFieldSpell &>(spell).End();
-			break;
-		}
-		case SPELL_FIRE_FIELD: {
-			static_cast<FireFieldSpell &>(spell).End();
-			break;
-		}
-		case SPELL_LIGHTNING_STRIKE: {
-			static_cast<LightningStrikeSpell &>(spell).End();
-			break;
-		}
-		case SPELL_FLYING_EYE: {
-			static_cast<FlyingEyeSpell &>(spell).End();
-			break;
-		}
-		case SPELL_CONFUSE: {
-			static_cast<ConfuseSpell &>(spell).End();
-			break;
-		}
-		//****************************************************************************
-		// LEVEL 8
-		case SPELL_EXPLOSION: {
-			break;
-		}
-		case SPELL_INVISIBILITY: {
-			static_cast<InvisibilitySpell &>(spell).End();
-			break;
-		}
-		case SPELL_MANA_DRAIN: {
-			static_cast<ManaDrainSpell &>(spell).End();
-			break;
-		}
-		case SPELL_LIFE_DRAIN: {
-			static_cast<LifeDrainSpell &>(spell).End();
-			break;
-		}
-		//****************************************************************************
-		// LEVEL 9
-		case SPELL_MASS_PARALYSE: {
-			static_cast<MassParalyseSpell &>(spell).End();
-			break;
-		}
-		case SPELL_SUMMON_CREATURE : {
-			static_cast<SummonCreatureSpell &>(spell).End();
-			break;
-		}
-		case SPELL_FAKE_SUMMON: {
-			static_cast<FakeSummonSpell &>(spell).End();
-			break;
-		}
-		case SPELL_INCINERATE: {
-			static_cast<IncinerateSpell &>(spell).End();
-			break;
-		}
-		//****************************************************************************
-		// LEVEL 10
-		case SPELL_MASS_LIGHTNING_STRIKE: {
-			static_cast<MassLightningStrikeSpell &>(spell).End();
-			break;
-		}
-		case SPELL_FREEZE_TIME: {
-			static_cast<FreezeTimeSpell &>(spell).End();
-			break;
-		}
-		case SPELL_MASS_INCINERATE: {
-			static_cast<MassIncinerateSpell &>(spell).End();
-			break;
-		}
-		default:
-			break;
-	}
-	
-	spell.BaseEnd();
-}
-
-void ARX_SPELLS_Update_Update(SpellBase & spell) {
-	
-	switch(spell.m_type) {
-		case SPELL_DISPELL_FIELD: {
-			break;
-		}
-		case SPELL_NONE: {
-			break;
-		}
-		//****************************************************************************
-		// LEVEL 1
-		case SPELL_MAGIC_MISSILE: {
-			static_cast<MagicMissileSpell &>(spell).Update(framedelay);
-			break;
-		}
-		case SPELL_IGNIT: {
-			static_cast<IgnitSpell &>(spell).Update(framedelay);
-			break;
-		}
-		case SPELL_DOUSE: {
-			static_cast<DouseSpell &>(spell).Update(framedelay);
-			break;
-		} 
-		case SPELL_ACTIVATE_PORTAL: {
-			break;
-		}
-		//****************************************************************************
-		// LEVEL 2
-		case SPELL_HEAL: {
-			static_cast<HealSpell &>(spell).Update(framedelay);
-			break;
-		}
-		case SPELL_DETECT_TRAP: {
-			static_cast<DetectTrapSpell &>(spell).Update(framedelay);
-			break;
-		}
-		case SPELL_ARMOR: {
-			static_cast<ArmorSpell &>(spell).Update(framedelay);
-			break;
-		}
-		case SPELL_LOWER_ARMOR: {
-			static_cast<LowerArmorSpell &>(spell).Update(framedelay);
-			break;
-		} 
-		case SPELL_HARM: {
-			static_cast<HarmSpell &>(spell).Update(framedelay);
-			break;
-		}
-		//****************************************************************************
-		// LEVEL 3 SPELLS
-		case SPELL_FIREBALL: {
-			static_cast<FireballSpell &>(spell).Update(framedelay);
-			break;
-		}
-		case SPELL_SPEED: {
-			static_cast<SpeedSpell &>(spell).Update(framedelay);
-			break;
-		}
-		case SPELL_CREATE_FOOD: {
-			static_cast<CreateFoodSpell &>(spell).Update(framedelay);
-			break;
-		}
-		case SPELL_ICE_PROJECTILE: {
-			static_cast<IceProjectileSpell &>(spell).Update(framedelay);
-			break;
-		}
-		case SPELL_DISPELL_ILLUSION: {
-			static_cast<DispellIllusionSpell &>(spell).Update(framedelay);
-			break;
-		}
-		//****************************************************************************
-		// LEVEL 4 SPELLS
-		case SPELL_BLESS: {
-			static_cast<BlessSpell &>(spell).Update(framedelay);
-			break;
-		}
-		case SPELL_CURSE: {
-			static_cast<CurseSpell &>(spell).Update(framedelay);
-			break;
-		}
-		case SPELL_FIRE_PROTECTION: {
-			static_cast<FireProtectionSpell &>(spell).Update(framedelay);
-			break;
-		}
-		case SPELL_COLD_PROTECTION: {
-			static_cast<ColdProtectionSpell &>(spell).Update(framedelay);
-			break;
-		}
-		//****************************************************************************
-		// LEVEL 5 SPELLS
-		case SPELL_CURE_POISON: {
-			static_cast<CurePoisonSpell &>(spell).Update(framedelay);
-			break;
-		}
-		case SPELL_RUNE_OF_GUARDING: {
-			static_cast<RuneOfGuardingSpell &>(spell).Update(framedelay);
-			break;
-		}
-		case SPELL_REPEL_UNDEAD: {
-			static_cast<RepelUndeadSpell &>(spell).Update(framedelay);
-			break;
-		}
-		case SPELL_POISON_PROJECTILE: {
-			static_cast<PoisonProjectileSpell &>(spell).Update(framedelay);
-			break;
-		}
-		case SPELL_LEVITATE: {
-			static_cast<LevitateSpell &>(spell).Update(framedelay);
-			break;
-		}
-		//****************************************************************************
-		// LEVEL 6 SPELLS
-		case SPELL_RISE_DEAD: {
-			static_cast<RiseDeadSpell &>(spell).Update(framedelay);
-			break;
-		}
-		case SPELL_SLOW_DOWN: {
-			static_cast<SlowDownSpell &>(spell).Update(framedelay);
-			break;
-		}
-		case SPELL_DISARM_TRAP: {
-			break;
-		}
-		case SPELL_PARALYSE: {
-			break;
-		}
-		case SPELL_CREATE_FIELD: {
-			static_cast<CreateFieldSpell &>(spell).Update(framedelay);
-			break;
-		}
-		//****************************************************************************
-		// LEVEL 7 SPELLS
-		case SPELL_CONFUSE: {
-			static_cast<ConfuseSpell &>(spell).Update(framedelay);
-			break;
-		}
-		case SPELL_FIRE_FIELD: {
-			static_cast<FireFieldSpell &>(spell).Update(framedelay);
-			break;
-		}
-		case SPELL_ICE_FIELD: {
-			static_cast<IceFieldSpell &>(spell).Update(framedelay);
-			break;
-		}
-		case SPELL_LIGHTNING_STRIKE: {
-			static_cast<LightningStrikeSpell &>(spell).Update(framedelay);
-			break;
-		}
-		//****************************************************************************
-		// LEVEL 8 SPELLS
-		case SPELL_ENCHANT_WEAPON: {
-			static_cast<EnchantWeaponSpell &>(spell).Update(framedelay);
-			break;
-		}
-		case SPELL_EXPLOSION: {
-			static_cast<ExplosionSpell &>(spell).Update(framedelay);
-			break;
-		}
-		//****************************************************************************
-		// LEVEL 9 SPELLS
-		case SPELL_SUMMON_CREATURE: {
-			static_cast<SummonCreatureSpell &>(spell).Update(framedelay);
-			break;
-		}
-		case SPELL_FAKE_SUMMON: {
-			static_cast<FakeSummonSpell &>(spell).Update(framedelay);
-			break;
-		}
-		case SPELL_INCINERATE: {
-			static_cast<IncinerateSpell &>(spell).Update(framedelay);
-			break;
-		}
-		case SPELL_NEGATE_MAGIC: {
-			static_cast<NegateMagicSpell &>(spell).Update(framedelay);
-			break;
-		}
-		case SPELL_MASS_PARALYSE: {
-			break;
-		}
-		//****************************************************************************
-		// LEVEL 10 SPELLS
-		case SPELL_FREEZE_TIME: {
-			break;
-		}
-		case SPELL_CONTROL_TARGET: {
-			static_cast<ControlTargetSpell &>(spell).Update(framedelay);
-			break;
-		}
-		case SPELL_MASS_INCINERATE: {
-			static_cast<MassIncinerateSpell &>(spell).Update(framedelay);
-			break;
-		}
-		case SPELL_MASS_LIGHTNING_STRIKE: {
-			static_cast<MassLightningStrikeSpell &>(spell).Update(framedelay);
-			break;
-		}
-		case SPELL_TELEPORT: {
-			static_cast<TeleportSpell &>(spell).Update(framedelay);
-			break;
-		}
-		case SPELL_MAGIC_SIGHT: {
-			static_cast<MagicSightSpell &>(spell).Update(framedelay);
-			break;
-		}
-		case SPELL_TELEKINESIS: {
-			break;
-		}
-		case SPELL_INVISIBILITY: {
-			static_cast<InvisibilitySpell &>(spell).Update(framedelay);
-			break;
-		}
-		case SPELL_MANA_DRAIN: {
-			static_cast<ManaDrainSpell &>(spell).Update(framedelay);
-			break;
-		}
-		case SPELL_LIFE_DRAIN: {
-			static_cast<LifeDrainSpell &>(spell).Update(framedelay);
-			break;
-		}
-		case SPELL_FLYING_EYE: {
-			static_cast<FlyingEyeSpell &>(spell).Update(framedelay);
-			break;
-		}
-	}
 }
 
 
@@ -2015,13 +1411,11 @@ void ARX_SPELLS_Update() {
 	
 	for(size_t u = 0; u < MAX_SPELLS; u++) {
 		SpellBase * spell = spells[SpellHandle(u)];
+		if(!spell)
+			continue;
 		
 		if(!GLOBAL_MAGIC_MODE) {
 			spell->m_tolive = 0;
-		}
-
-		if(!spell->m_exist) {
-			continue;
 		}
 		
 		if(spell->m_bDuration && !CanPayMana(spell, spell->m_fManaCostPerSecond * (float)framedelay * (1.0f/1000), false))
@@ -2031,13 +1425,15 @@ void ARX_SPELLS_Update() {
 		
 		if(framediff < 0) {
 			SPELLEND_Notify(*spell);
-			ARX_SPELLS_Update_End(*spell);
 			
+			spell->End();
+			spell->BaseEnd();
+			spells.freeSlot(spell);
 			continue;
 		}
 
-		if(spell->m_exist) {
-			ARX_SPELLS_Update_Update(*spell);
+		if(spell) {
+			spell->Update(framedelay);
 		}
 	}
 }

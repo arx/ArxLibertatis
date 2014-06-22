@@ -126,9 +126,21 @@ DECLARE_FLAGS_OPERATORS(SpellcastFlags)
 
 class SpellBase {
 public:
+	SpellBase();
+	
 	void BaseEnd();
 	
-	bool m_exist;
+	virtual bool CanLaunch() {
+		return true;
+	}
+	virtual void Launch() = 0;
+	virtual void End() {
+		
+	}
+	virtual void Update(float timeDelta) {
+		ARX_UNUSED(timeDelta);
+	}
+	
 	SpellHandle m_thisHandle;
 	
 	EntityHandle m_caster; //!< Number of the source interactive obj (0==player)

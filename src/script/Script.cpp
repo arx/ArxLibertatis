@@ -1041,7 +1041,7 @@ ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const string & 
 				for(size_t i = 0; i < MAX_SPELLS; i++) {
 					const SpellBase * spell = spells[SpellHandle(i)];
 					
-					if(spell->m_exist && spell->m_caster == PlayerEntityHandle) {
+					if(spell && spell->m_caster == PlayerEntityHandle) {
 						if(   spell->m_type == SPELL_LIFE_DRAIN
 						   || spell->m_type == SPELL_HARM
 						   || spell->m_type == SPELL_FIRE_FIELD
