@@ -27,6 +27,9 @@ public:
 	void Launch();
 	void End();
 	void Update(float timeDelta);
+	
+private:
+	float m_siz;
 };
 
 class ControlTargetSpell : public SpellBase {
@@ -41,6 +44,9 @@ public:
 	bool CanLaunch();
 	void Launch();
 	void End();
+	
+private:
+	float m_siz;
 };
 
 class MassIncinerateSpell : public SpellBase {

@@ -24,6 +24,8 @@
 
 class SummonCreatureSpell : public SpellBase {
 public:
+	SummonCreatureSpell();
+	
 	bool CanLaunch();
 	void Launch();
 	void End();
@@ -31,6 +33,9 @@ public:
 	
 private:
 	void GetTargetAndBeta(Vec3f & target, float & beta);
+	
+	long m_longinfo_summon_creature;
+	EntityHandle m_longinfo2_entity;
 };
 
 class FakeSummonSpell : public SpellBase {

@@ -24,11 +24,7 @@
 SpellBase::SpellBase() {
 	m_longinfo_entity = InvalidEntityHandle;
 	m_longinfo_damage = InvalidDamageHandle;
-	m_longinfo_time = -1;
-	m_longinfo_summon_creature = -1;
-	m_longinfo_lower_armor = -1;
 	m_longinfo_light = InvalidLightHandle;
-	
 	m_longinfo2_light = InvalidLightHandle;
 	
 	m_targets.clear();

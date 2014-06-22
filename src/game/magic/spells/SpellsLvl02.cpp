@@ -229,6 +229,12 @@ void ArmorSpell::Update(float timeDelta)
 	ARX_SOUND_RefreshPosition(m_snd_loop, entities[m_target]->pos);
 }
 
+LowerArmorSpell::LowerArmorSpell()
+	: m_longinfo_lower_armor(-1) //TODO is this correct ?
+{
+	
+}
+
 void LowerArmorSpell::Launch()
 {
 	spells.endByTarget(m_target, SPELL_LOWER_ARMOR);

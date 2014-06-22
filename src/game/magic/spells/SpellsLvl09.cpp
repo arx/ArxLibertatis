@@ -56,6 +56,12 @@ void SummonCreatureSpell::GetTargetAndBeta(Vec3f & target, float & beta)
 	}
 }
 
+SummonCreatureSpell::SummonCreatureSpell()
+	: m_longinfo_summon_creature(-1) //TODO is this correct ?
+{
+	
+}
+
 bool SummonCreatureSpell::CanLaunch()
 {
 	Vec3f target;

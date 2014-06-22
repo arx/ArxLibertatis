@@ -28,6 +28,9 @@ public:
 	void Launch();
 	void End();
 	void Update(float timeDelta);
+	
+private:
+	unsigned long m_lastupdate;
 };
 
 class FireFieldSpell : public SpellBase {

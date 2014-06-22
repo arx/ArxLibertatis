@@ -45,9 +45,14 @@ public:
 
 class LowerArmorSpell : public SpellBase {
 public:
+	LowerArmorSpell();
+	
 	void Launch();
 	void End();
 	void Update(float timeDelta);
+	
+private:
+	long m_longinfo_lower_armor;
 };
 
 class HarmSpell : public SpellBase {

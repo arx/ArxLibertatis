@@ -157,19 +157,15 @@ public:
 	SpellType m_type;
 	Vec3f m_vsource; // TODO this is used but never set
 	
-	float m_siz;
 	unsigned long m_timcreation;
 	
 	unsigned long m_tolive;
 	
 	EntityHandle m_longinfo_entity;
 	DamageHandle m_longinfo_damage;
-	long m_longinfo_time;
-	long m_longinfo_summon_creature;
-	long m_longinfo_lower_armor;
+
 	LightHandle m_longinfo_light;
 	
-	EntityHandle m_longinfo2_entity;
 	LightHandle m_longinfo2_light;
 	
 	bool m_bDuration;
@@ -180,9 +176,7 @@ public:
 	CSpellFx * m_pSpellFx;
 	
 	long m_launchDuration;
-	
-	// Used by: FlyingEyeSpell
-	unsigned long m_lastupdate;
+
 	
 	std::vector<EntityHandle> m_targets;
 };

@@ -270,7 +270,6 @@ void FreezeTimeSpell::Launch()
 	m_tolive = (m_launchDuration > -1) ? m_launchDuration : 200000;
 	m_bDuration = true;
 	m_fManaCostPerSecond = 30.f * m_siz;
-	m_longinfo_time = (long)arxtime.get_updated();
 }
 
 void FreezeTimeSpell::End()
