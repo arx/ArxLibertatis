@@ -232,7 +232,7 @@ bool SpellManager::ExistAnyInstanceForThisCaster(SpellType typ, EntityHandle cas
 
 SpellBase * SpellManager::getSpellOnTarget(EntityHandle target, SpellType type)
 {
-	if(!target)
+	if(target == InvalidEntityHandle)
 		return NULL;
 	
 	for(size_t i = 0; i < MAX_SPELLS; i++) {
