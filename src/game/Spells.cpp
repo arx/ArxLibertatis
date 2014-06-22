@@ -1260,26 +1260,29 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flags,
 		spell.m_level += 2;
 	}
 	
+	Vec3f targetPos;
 	if(target == InvalidEntityHandle) {
 		// no target... targeted by sight
 		if(source == PlayerEntityHandle) {
 			// no target... player spell targeted by sight
-			spell.m_target_pos.x = player.pos.x - std::sin(radians(player.angle.getPitch()))*60.f;
-			spell.m_target_pos.y = player.pos.y + std::sin(radians(player.angle.getYaw()))*60.f;
-			spell.m_target_pos.z = player.pos.z + std::cos(radians(player.angle.getPitch()))*60.f;
+			targetPos.x = player.pos.x - std::sin(radians(player.angle.getPitch()))*60.f;
+			targetPos.y = player.pos.y + std::sin(radians(player.angle.getYaw()))*60.f;
+			targetPos.z = player.pos.z + std::cos(radians(player.angle.getPitch()))*60.f;
 		} else {
 			// TODO entities[target] with target < 0 ??? - uh oh!
-			spell.m_target_pos.x = entities[target]->pos.x - std::sin(radians(entities[target]->angle.getPitch()))*60.f;
-			spell.m_target_pos.y = entities[target]->pos.y - 120.f;
-			spell.m_target_pos.z = entities[target]->pos.z + std::cos(radians(entities[target]->angle.getPitch()))*60.f;
+			targetPos.x = entities[target]->pos.x - std::sin(radians(entities[target]->angle.getPitch()))*60.f;
+			targetPos.y = entities[target]->pos.y - 120.f;
+			targetPos.z = entities[target]->pos.z + std::cos(radians(entities[target]->angle.getPitch()))*60.f;
 		}
 	} else if(target == PlayerEntityHandle) {
 		// player target
-		spell.m_target_pos = player.pos;
+		targetPos = player.pos;
 	} else {
 		// IO target
-		spell.m_target_pos = entities[target]->pos;
+		targetPos = entities[target]->pos;
 	}
+	
+	spell.m_target_pos = targetPos;
 	
 	spell.m_thisHandle = i;
 	spell.m_flags = flags;
