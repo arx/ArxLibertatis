@@ -198,61 +198,61 @@ void FireballSpell::Update(float timeDelta)
 	if(!effect)
 		return;
 	
-		if(!lightHandleIsValid(m_longinfo_light))
-			m_longinfo_light = GetFreeDynLight();
-
-		if(lightHandleIsValid(m_longinfo_light)) {
-			EERIE_LIGHT * light = lightHandleGet(m_longinfo_light);
-			
-			light->pos = effect->eCurPos;
-			light->intensity = 2.2f;
-			light->fallend = 500.f;
-			light->fallstart = 400.f;
-			light->rgb.r = 1.0f-rnd()*0.3f;
-			light->rgb.g = 0.6f-rnd()*0.1f;
-			light->rgb.b = 0.3f-rnd()*0.1f;
-		}
-
-		Sphere sphere;
-		sphere.origin = effect->eCurPos;
-		sphere.radius=std::max(m_level*2.f,12.f);
+	if(!lightHandleIsValid(m_longinfo_light))
+		m_longinfo_light = GetFreeDynLight();
+	
+	if(lightHandleIsValid(m_longinfo_light)) {
+		EERIE_LIGHT * light = lightHandleGet(m_longinfo_light);
 		
-		if(effect->pPSFire.m_parameters.m_nbMax) {
-			if(effect->ulCurrentTime > effect->m_createBallDuration) {
-				SpawnFireballTail(&effect->eCurPos,&effect->eMove,(float)m_level,0);
-			} else {
-				if(rnd()<0.9f) {
-					Vec3f move = Vec3f_ZERO;
-					float dd=(float)effect->ulCurrentTime / (float)effect->m_createBallDuration*10;
-					
-					dd = glm::clamp(dd, 1.f, m_level);
-					
-					SpawnFireballTail(&effect->eCurPos,&move,(float)dd,1);
-				}
+		light->pos = effect->eCurPos;
+		light->intensity = 2.2f;
+		light->fallend = 500.f;
+		light->fallstart = 400.f;
+		light->rgb.r = 1.0f-rnd()*0.3f;
+		light->rgb.g = 0.6f-rnd()*0.1f;
+		light->rgb.b = 0.3f-rnd()*0.1f;
+	}
+	
+	Sphere sphere;
+	sphere.origin = effect->eCurPos;
+	sphere.radius=std::max(m_level*2.f,12.f);
+	
+	if(effect->pPSFire.m_parameters.m_nbMax) {
+		if(effect->ulCurrentTime > effect->m_createBallDuration) {
+			SpawnFireballTail(&effect->eCurPos,&effect->eMove,(float)m_level,0);
+		} else {
+			if(rnd()<0.9f) {
+				Vec3f move = Vec3f_ZERO;
+				float dd=(float)effect->ulCurrentTime / (float)effect->m_createBallDuration*10;
+				
+				dd = glm::clamp(dd, 1.f, m_level);
+				
+				SpawnFireballTail(&effect->eCurPos,&move,(float)dd,1);
 			}
 		}
-
-		if(!effect->bExplo)
-		if(CheckAnythingInSphere(sphere, m_caster, CAS_NO_SAME_GROUP)) {
-			ARX_BOOMS_Add(effect->eCurPos);
-			LaunchFireballBoom(&effect->eCurPos,(float)m_level);
-			
-			effect->pPSFire.StopEmission();
-			effect->pPSFire2.StopEmission();
-			effect->pPSSmoke.StopEmission();
-			
-			effect->eMove *= 0.5f;
-			effect->SetTTL(1500);
-			effect->bExplo = true;
-			
-			DoSphericDamage(effect->eCurPos, 3.f * m_level, 30.f * m_level, DAMAGE_AREA, DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL, m_caster);
-			m_tolive=0;
-			ARX_SOUND_PlaySFX(SND_SPELL_FIRE_HIT, &sphere.origin);
-			ARX_NPC_SpawnAudibleSound(sphere.origin, entities[m_caster]);
-		}
-
-		effect->Update(timeDelta);
-		ARX_SOUND_RefreshPosition(m_snd_loop, effect->eCurPos);
+	}
+	
+	if(!effect->bExplo)
+	if(CheckAnythingInSphere(sphere, m_caster, CAS_NO_SAME_GROUP)) {
+		ARX_BOOMS_Add(effect->eCurPos);
+		LaunchFireballBoom(&effect->eCurPos,(float)m_level);
+		
+		effect->pPSFire.StopEmission();
+		effect->pPSFire2.StopEmission();
+		effect->pPSSmoke.StopEmission();
+		
+		effect->eMove *= 0.5f;
+		effect->SetTTL(1500);
+		effect->bExplo = true;
+		
+		DoSphericDamage(effect->eCurPos, 3.f * m_level, 30.f * m_level, DAMAGE_AREA, DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL, m_caster);
+		m_tolive=0;
+		ARX_SOUND_PlaySFX(SND_SPELL_FIRE_HIT, &sphere.origin);
+		ARX_NPC_SpawnAudibleSound(sphere.origin, entities[m_caster]);
+	}
+	
+	effect->Update(timeDelta);
+	ARX_SOUND_RefreshPosition(m_snd_loop, effect->eCurPos);
 }
 
 void CreateFoodSpell::Launch()
