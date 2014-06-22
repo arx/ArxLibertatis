@@ -161,15 +161,14 @@ void CFireBall::SetTTL(unsigned long aulTTL)
 void CFireBall::Create(Vec3f aeSrc, float afBeta, float afAlpha, float _fLevel)
 {
 	SetDuration(ulDuration);
-	SetAngle(afBeta);
-
-	eSrc.x = aeSrc.x - fBetaRadSin * 60;
+	
+	eSrc.x = aeSrc.x - std::sin(radians(afBeta)) * 60;
 	eSrc.y = aeSrc.y;
-	eSrc.z = aeSrc.z + fBetaRadCos * 60;
+	eSrc.z = aeSrc.z + std::cos(radians(afBeta)) * 60;
 
-	eMove.x = - fBetaRadSin * 80 * cos(radians(MAKEANGLE(afAlpha)));
+	eMove.x = - std::sin(radians(afBeta)) * 80 * cos(radians(MAKEANGLE(afAlpha)));
 	eMove.y = sin(radians(MAKEANGLE(afAlpha))) * 80;
-	eMove.z = + fBetaRadCos * 80 * cos(radians(MAKEANGLE(afAlpha)));
+	eMove.z = + std::cos(radians(afBeta)) * 80 * cos(radians(MAKEANGLE(afAlpha)));
 	
 	//FIRE
 	fire_1.m_direction = -eMove * 0.1f;
@@ -235,29 +234,30 @@ void CFireBall::Update(float timeDelta)
 		pPSFire2.m_parameters.m_speedRandom = 100;
 	} else {
 		float afAlpha = 0.f;
+		float afBeta = 0.f;
 	
 		SpellBase * spell = spells[spellinstance];
 		
 		if(spell->m_caster == PlayerEntityHandle) {
-			SetAngle(player.angle.getPitch());
+			afBeta = player.angle.getPitch();
 			afAlpha = player.angle.getYaw();
 			long idx = GetGroupOriginByName(entities[spell->m_caster]->obj, "chest");
 
 			if(idx) {
-				eCurPos.x = entities[spell->m_caster]->obj->vertexlist3[idx].v.x - fBetaRadSin * 60;
+				eCurPos.x = entities[spell->m_caster]->obj->vertexlist3[idx].v.x - std::sin(radians(afBeta)) * 60;
 				eCurPos.y = entities[spell->m_caster]->obj->vertexlist3[idx].v.y;
-				eCurPos.z = entities[spell->m_caster]->obj->vertexlist3[idx].v.z + fBetaRadCos * 60;
+				eCurPos.z = entities[spell->m_caster]->obj->vertexlist3[idx].v.z + std::cos(radians(afBeta)) * 60;
 			} else {
-				eCurPos.x = player.pos.x - fBetaRadSin * 60;
+				eCurPos.x = player.pos.x - std::sin(radians(afBeta)) * 60;
 				eCurPos.y = player.pos.y;
-				eCurPos.z = player.pos.z + fBetaRadCos * 60;
+				eCurPos.z = player.pos.z + std::cos(radians(afBeta)) * 60;
 			}
 		} else {
-			SetAngle(entities[spell->m_caster]->angle.getPitch());
+			afBeta = entities[spell->m_caster]->angle.getPitch();
 
-			eCurPos.x = entities[spell->m_caster]->pos.x - fBetaRadSin * 60;
+			eCurPos.x = entities[spell->m_caster]->pos.x - std::sin(radians(afBeta)) * 60;
 			eCurPos.y = entities[spell->m_caster]->pos.y;
-			eCurPos.z = entities[spell->m_caster]->pos.z + fBetaRadCos * 60;
+			eCurPos.z = entities[spell->m_caster]->pos.z + std::cos(radians(afBeta)) * 60;
 
 			if ((ValidIONum(spell->m_caster))
 			        && (entities[spell->m_caster]->ioflags & IO_NPC))
@@ -277,9 +277,9 @@ void CFireBall::Update(float timeDelta)
 			}
 		}
 
-		eMove.x = - fBetaRadSin * 100 * cos(radians(MAKEANGLE(afAlpha)));
+		eMove.x = - std::sin(radians(afBeta)) * 100 * cos(radians(MAKEANGLE(afAlpha)));
 		eMove.y = sin(radians(MAKEANGLE(afAlpha))) * 100;
-		eMove.z = + fBetaRadCos * 100 * cos(radians(MAKEANGLE(afAlpha)));
+		eMove.z = + std::cos(radians(afBeta)) * 100 * cos(radians(MAKEANGLE(afAlpha)));
 
 		Vec3f vMove = glm::normalize(eMove);
 
