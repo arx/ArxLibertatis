@@ -182,7 +182,6 @@ CMagicMissile::CMagicMissile(bool mrCheat)
 	, fColor(Color3f::white)
 	, fTrail()
 	, fOneOnBezierPrecision()
-	, angles()
 	, tex_mm()
 	, snd_loop()
 	, m_mrCheat(mrCheat)
@@ -217,19 +216,14 @@ void CMagicMissile::Create(const Vec3f & aeSrc, const Anglef & angles)
 {
 	SetDuration(ulDuration);
 	
-	float fBetaRad = radians(angles.getPitch());
-	float fBetaRadCos = (float) cos(fBetaRad);
-	float fBetaRadSin = (float) sin(fBetaRad);
-	
-	this->angles = angles;
 	eCurPos = eSrc = aeSrc;
 
 	Vec3f e = eSrc;
 
 	int i = 40;
-	e.x -= fBetaRadSin * 50 * i;
-	e.y += sin(radians(MAKEANGLE(this->angles.getYaw()))) * 50 * i;
-	e.z += fBetaRadCos * 50 * i;
+	e.x -= std::sin(radians(angles.getPitch())) * 50 * i;
+	e.y += std::sin(radians(MAKEANGLE(angles.getYaw()))) * 50 * i;
+	e.z += std::cos(radians(angles.getPitch())) * 50 * i;
 
 	pathways[0].p = eSrc;
 	pathways[5].p = e;

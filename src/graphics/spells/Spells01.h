@@ -73,7 +73,6 @@ private:
 	Color3f fColor;
 	float fTrail;
 	float fOneOnBezierPrecision;
-	Anglef angles;
 	TextureContainer * tex_mm;
 	TexturedVertex pathways[6];
 	audio::SourceId snd_loop;
