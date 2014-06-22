@@ -226,13 +226,9 @@ void FireballSpell::Update(float timeDelta)
 				if(rnd()<0.9f) {
 					Vec3f move = Vec3f_ZERO;
 					float dd=(float)pCF->ulCurrentTime / (float)MIN_TIME_FIREBALL*10;
-
-					if(dd > m_level)
-						dd = m_level;
-
-					if(dd < 1)
-						dd = 1;
-
+					
+					dd = glm::clamp(dd, 1.f, m_level);
+					
 					SpawnFireballTail(&pCF->eCurPos,&move,(float)dd,1);
 				}
 			}
