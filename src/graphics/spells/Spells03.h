@@ -58,7 +58,7 @@ public:
 	
 	void SetTTL(unsigned long);
 	
-	void Create(Vec3f, float afBeta, float afAlpha,  float);
+	void Create(Vec3f, float afBeta, float afAlpha);
 	void Kill();
 	
 	void Update(float timeDelta);
@@ -69,17 +69,11 @@ public:
 	Vec3f eMove;
 	bool bExplo;
 	
-	ParticleSystem pPSFire;
-	ParticleSystem pPSFire2;
-	ParticleSystem pPSSmoke;
-	
 	SpellHandle spellinstance;
 	
 	unsigned long m_createBallDuration;
 private:
-	ParticleParams fire_1;
-	ParticleParams fire_2;
-	ParticleParams smoke;
+
 };
 
 class CSpeed: public CSpellFx {

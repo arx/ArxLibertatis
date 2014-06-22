@@ -168,7 +168,7 @@ void FireballSpell::Launch()
 		angleb = entities[m_caster]->angle.getPitch();
 	}
 	
-	effect->Create(target, MAKEANGLE(angleb), anglea, m_level);
+	effect->Create(target, MAKEANGLE(angleb), anglea);
 	
 	m_pSpellFx = effect;
 	m_tolive = effect->GetDuration();
@@ -217,7 +217,6 @@ void FireballSpell::Update(float timeDelta)
 	sphere.origin = effect->eCurPos;
 	sphere.radius=std::max(m_level*2.f,12.f);
 	
-	if(effect->pPSFire.m_parameters.m_nbMax) {
 		if(effect->ulCurrentTime > effect->m_createBallDuration) {
 			SpawnFireballTail(&effect->eCurPos,&effect->eMove,(float)m_level,0);
 		} else {
@@ -230,16 +229,11 @@ void FireballSpell::Update(float timeDelta)
 				SpawnFireballTail(&effect->eCurPos,&move,(float)dd,1);
 			}
 		}
-	}
 	
 	if(!effect->bExplo)
 	if(CheckAnythingInSphere(sphere, m_caster, CAS_NO_SAME_GROUP)) {
 		ARX_BOOMS_Add(effect->eCurPos);
 		LaunchFireballBoom(&effect->eCurPos,(float)m_level);
-		
-		effect->pPSFire.StopEmission();
-		effect->pPSFire2.StopEmission();
-		effect->pPSSmoke.StopEmission();
 		
 		effect->eMove *= 0.5f;
 		effect->SetTTL(1500);

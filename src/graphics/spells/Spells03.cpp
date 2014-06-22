@@ -74,61 +74,6 @@ CFireBall::CFireBall()
 	ulCurrentTime = ulDuration + 1;
 	
 	bExplo = false;
-	
-	fire_1 = ParticleParams();
-	fire_1.m_nbMax = 200;
-	fire_1.m_life = 550;
-	fire_1.m_lifeRandom = 500;
-	fire_1.m_pos = Vec3f_ZERO;
-	fire_1.m_angle = radians(3);
-	fire_1.m_speed = 0;
-	fire_1.m_speedRandom = 0;
-	fire_1.m_gravity = Vec3f_ZERO;
-	fire_1.m_flash = 0;
-	fire_1.m_rotation = 1.0f / (101 - 50);
-	fire_1.m_startSegment.m_color = Color(22, 30, 30, 0).to<float>();
-	fire_1.m_startSegment.m_colorRandom = Color(22, 0, 0, 2).to<float>();
-	fire_1.m_endSegment.m_size = 0;
-	fire_1.m_endSegment.m_sizeRandom = 2;
-	fire_1.m_endSegment.m_color = Color(25, 25, 0, 50).to<float>();
-	fire_1.m_endSegment.m_colorRandom = Color(50, 0, 0, 120).to<float>();
-	fire_1.m_blendMode = RenderMaterial::Additive;
-	
-	fire_2 = ParticleParams();
-	fire_2.m_nbMax = 20;
-	fire_2.m_life = 550;
-	fire_2.m_lifeRandom = 500;
-	fire_2.m_pos = Vec3f_ZERO;
-	fire_2.m_angle = radians(3);
-	fire_2.m_speed = 0;
-	fire_2.m_speedRandom = 0;
-	fire_2.m_gravity = Vec3f_ZERO;
-	fire_2.m_flash = 0;
-	fire_2.m_rotation = 1.0f / (101 - 50);
-	fire_2.m_startSegment.m_color = Color(22, 30, 30, 0).to<float>();
-	fire_2.m_startSegment.m_colorRandom = Color(22, 0, 0, 2).to<float>();
-	fire_2.m_endSegment.m_color = Color(25, 25, 0, 0).to<float>();
-	fire_2.m_endSegment.m_colorRandom = Color(50, 0, 0, 120).to<float>();
-	fire_2.m_blendMode = RenderMaterial::Additive;
-	
-	smoke = ParticleParams();
-	smoke.m_nbMax = 30;
-	smoke.m_life = 2000;
-	smoke.m_lifeRandom = 3000;
-	smoke.m_pos = Vec3f(0, 10, 10);
-	smoke.m_angle = radians(9);
-	smoke.m_speed = 150;
-	smoke.m_speedRandom = 150;
-	smoke.m_gravity = Vec3f(0, -10, 0);
-	smoke.m_flash = 0;
-	smoke.m_rotation = 1.0f / (101 - 90);
-	smoke.m_startSegment.m_size = 0;
-	smoke.m_startSegment.m_sizeRandom = 2;
-	smoke.m_startSegment.m_color = Color(70, 70, 51, 50).to<float>();
-	smoke.m_startSegment.m_colorRandom = Color(0, 0, 0, 0).to<float>();
-	smoke.m_endSegment.m_color = Color(0, 0, 0, 27).to<float>();
-	smoke.m_endSegment.m_colorRandom = Color(0, 0, 0, 20).to<float>();
-	smoke.m_blendMode = RenderMaterial::Additive;
 }
 
 CFireBall::~CFireBall()
@@ -141,27 +86,11 @@ void CFireBall::SetTTL(unsigned long aulTTL)
 	ulDuration = min(ulCurrentTime + aulTTL, ulDuration);
 	SetDuration(ulDuration);
 	ulCurrentTime = t;
-
-	std::list<Particle *>::iterator i;
-
-	unsigned long ulCalc = ulDuration - ulCurrentTime ;
-	arx_assert(ulCalc <= LONG_MAX);
-	long ff = static_cast<long>(ulCalc);
-
-	for(i = pPSSmoke.listParticle.begin(); i != pPSSmoke.listParticle.end(); ++i) {
-		Particle * pP = *i;
-
-		if(pP->isAlive()) {
-			if(pP->m_age + ff < pP->m_timeToLive) {
-				pP->m_age = pP->m_timeToLive - ff;
-			}
-		}
-	}
 	
 	lLightId = InvalidLightHandle;
 }
 
-void CFireBall::Create(Vec3f aeSrc, float afBeta, float afAlpha, float _fLevel)
+void CFireBall::Create(Vec3f aeSrc, float afBeta, float afAlpha)
 {
 	SetDuration(ulDuration);
 	
@@ -173,45 +102,6 @@ void CFireBall::Create(Vec3f aeSrc, float afBeta, float afAlpha, float _fLevel)
 	eMove.y = sin(radians(MAKEANGLE(afAlpha))) * 80;
 	eMove.z = + std::cos(radians(afBeta)) * 80 * cos(radians(MAKEANGLE(afAlpha)));
 	
-	//FIRE
-	fire_1.m_direction = -eMove * 0.1f;
-	fire_1.m_startSegment.m_size = 1 * _fLevel;
-	fire_1.m_startSegment.m_sizeRandom = 2 * _fLevel;
-	fire_1.m_freq = 100.0f;
-	fire_1.m_texture.set("graph/particles/fire", 0, 200);
-	fire_1.m_spawnFlags = 0;
-	
-	pPSFire.SetParams(fire_1);
-	pPSFire.Update(0);
-
-	//FIRE
-	fire_2.m_direction = -eMove * 0.1f;
-	fire_2.m_startSegment.m_size = 1 * _fLevel;
-	fire_2.m_startSegment.m_sizeRandom = 2 * _fLevel;
-	fire_2.m_endSegment.m_size = 3 * _fLevel;
-	fire_2.m_endSegment.m_sizeRandom = 2 * _fLevel;
-	fire_2.m_freq = 20.0f;
-	fire_2.m_texture.set("graph/particles/fire", 0, 200);
-	fire_2.m_spawnFlags = 0;
-	
-	pPSFire2.SetParams(fire_2);
-	pPSFire2.Update(0);
-
-	// Smoke
-	smoke.m_direction = -eMove * 0.1f;
-	smoke.m_endSegment.m_size = 7 * _fLevel;
-	smoke.m_endSegment.m_sizeRandom = 2 * _fLevel;
-	smoke.m_freq = 20.0f;
-	smoke.m_texture.set("graph/particles/big_greypouf", 0, 0);
-	smoke.m_spawnFlags = 0;
-	
-	pPSSmoke.SetParams(smoke);
-	pPSSmoke.Update(0);
-
-	pPSFire.SetPos(eSrc);
-	pPSFire2.SetPos(eSrc);
-	pPSSmoke.SetPos(eSrc);
-
 	// Light
 	lLightId = InvalidLightHandle;
 	eCurPos = eSrc;
@@ -222,18 +112,7 @@ void CFireBall::Update(float timeDelta)
 	ulCurrentTime += timeDelta;
 
 	if(ulCurrentTime > m_createBallDuration) {
-		// smoke en retard
-		pPSSmoke.SetPos(eCurPos);
-		pPSSmoke.Update(timeDelta);
 		eCurPos += eMove * (timeDelta * 0.0045f);
-		pPSFire.SetPos(eCurPos);
-		pPSFire.m_parameters.m_speed = 100;
-		pPSFire.m_parameters.m_speedRandom = 200;
-		pPSFire.m_parameters.m_gravity = -eMove * 2.f;
-		pPSFire2.m_parameters.m_gravity = -eMove * 2.f;
-		pPSFire2.SetPos(eCurPos);
-		pPSFire2.m_parameters.m_speed = 100;
-		pPSFire2.m_parameters.m_speedRandom = 100;
 	} else {
 		float afAlpha = 0.f;
 		float afBeta = 0.f;
@@ -283,39 +162,12 @@ void CFireBall::Update(float timeDelta)
 		eMove.y = sin(radians(MAKEANGLE(afAlpha))) * 100;
 		eMove.z = + std::cos(radians(afBeta)) * 100 * cos(radians(MAKEANGLE(afAlpha)));
 
-		Vec3f vMove = glm::normalize(eMove);
-
-		// smoke en retard
-		pPSSmoke.m_parameters.m_direction = -vMove;
-		pPSSmoke.SetPos(eCurPos);
-		pPSSmoke.RecomputeDirection();
 		eCurPos = eCurPos + eMove * (timeDelta * 0.0045f);
-		pPSFire.m_parameters.m_direction = -vMove;
-		pPSFire.RecomputeDirection();
-		pPSFire.SetPos(eCurPos);
-		pPSFire.m_parameters.m_gravity = -eMove * 2.f;
-		pPSFire2.m_parameters.m_direction = -vMove;
-		pPSFire2.m_parameters.m_gravity = -eMove * 2.f;
-		pPSFire2.RecomputeDirection();
-		pPSFire2.SetPos(eCurPos);
 	}
-	
-	pPSFire.Update(timeDelta);
-	pPSFire2.Update(timeDelta);
 }
 
 void CFireBall::Render() {
-	
-	if(ulCurrentTime >= ulDuration)
-		return;
-	
-	GRenderer->SetCulling(Renderer::CullNone);
-	GRenderer->SetRenderState(Renderer::DepthWrite, false);
-	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	
-	pPSFire.Render();
-	pPSFire2.Render();
-	pPSSmoke.Render();
+
 }
 
 CIceProjectile::~CIceProjectile()
