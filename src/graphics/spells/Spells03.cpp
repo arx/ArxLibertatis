@@ -486,27 +486,10 @@ void CIceProjectile::Render()
 		iMax = iNumber;
 
 	for(i = 0; i < iMax; i++) {
-		if(tSize[i].x < tSizeMax[i].x)
-			tSize[i].x += 0.1f;
-
-		if(tSize[i].x > tSizeMax[i].x)
-			tSize[i].x = tSizeMax[i].x;
-
-		if(tSize[i].y < tSizeMax[i].y)
-			tSize[i].y += 0.1f;
-
-		if(tSize[i].y < 0)
-			tSize[i].y = 0;
-
-		if(tSize[i].y > tSizeMax[i].y)
-			tSize[i].y = tSizeMax[i].y;
-
-		if(tSize[i].z < tSizeMax[i].z)
-			tSize[i].z += 0.1f;
-
-		if(tSize[i].z > tSizeMax[i].z)
-			tSize[i].z = tSizeMax[i].z;
-
+		
+		tSize[i] += Vec3f(0.1f);
+		tSize[i] = glm::clamp(tSize[i], Vec3f(0.f), tSizeMax[i]);
+		
 		Anglef stiteangle;
 		Vec3f stitepos;
 		Vec3f stitescale;
