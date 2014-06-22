@@ -75,6 +75,7 @@ public:
 	
 	SpellHandle spellinstance;
 	
+	unsigned long m_createBallDuration;
 private:
 	ParticleParams fire_1;
 	ParticleParams fire_2;

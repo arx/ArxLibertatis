@@ -63,7 +63,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Object.h"
 #include "scene/Interactive.h"
 
-CFireBall::CFireBall() : CSpellFx() {
+CFireBall::CFireBall()
+	: CSpellFx()
+	, m_createBallDuration(2000)
+{
 	
 	eSrc = Vec3f_ZERO;
 	
@@ -214,12 +217,11 @@ void CFireBall::Create(Vec3f aeSrc, float afBeta, float afAlpha, float _fLevel)
 	eCurPos = eSrc;
 }
 
-#define MIN_TIME_FIREBALL 2000  //750
 void CFireBall::Update(float timeDelta)
 {
 	ulCurrentTime += timeDelta;
 
-	if(ulCurrentTime > MIN_TIME_FIREBALL) {
+	if(ulCurrentTime > m_createBallDuration) {
 		// smoke en retard
 		pPSSmoke.SetPos(eCurPos);
 		pPSSmoke.Update(timeDelta);

@@ -217,15 +217,14 @@ void FireballSpell::Update(float timeDelta)
 		Sphere sphere;
 		sphere.origin = pCF->eCurPos;
 		sphere.radius=std::max(m_level*2.f,12.f);
-		#define MIN_TIME_FIREBALL 2000 
-
+		
 		if(pCF->pPSFire.m_parameters.m_nbMax) {
-			if(pCF->ulCurrentTime > MIN_TIME_FIREBALL) {
+			if(pCF->ulCurrentTime > pCF->m_createBallDuration) {
 				SpawnFireballTail(&pCF->eCurPos,&pCF->eMove,(float)m_level,0);
 			} else {
 				if(rnd()<0.9f) {
 					Vec3f move = Vec3f_ZERO;
-					float dd=(float)pCF->ulCurrentTime / (float)MIN_TIME_FIREBALL*10;
+					float dd=(float)pCF->ulCurrentTime / (float)pCF->m_createBallDuration*10;
 					
 					dd = glm::clamp(dd, 1.f, m_level);
 					
