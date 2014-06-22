@@ -195,9 +195,9 @@ void FireballSpell::End()
 void FireballSpell::Update(float timeDelta)
 {
 	CFireBall *effect = static_cast<CFireBall *>(m_pSpellFx);
-
-	if(effect) {
-			
+	if(!effect)
+		return;
+	
 		if(!lightHandleIsValid(m_longinfo_light))
 			m_longinfo_light = GetFreeDynLight();
 
@@ -253,7 +253,6 @@ void FireballSpell::Update(float timeDelta)
 
 		effect->Update(timeDelta);
 		ARX_SOUND_RefreshPosition(m_snd_loop, effect->eCurPos);
-	}
 }
 
 void CreateFoodSpell::Launch()
