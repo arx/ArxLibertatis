@@ -187,11 +187,10 @@ void IgnitSpell::Launch()
 {
 	m_duration = 500;
 	
-	Vec3f target;
 	if(m_hand_group != -1) {
-		target = m_hand_pos;
+		m_srcPos = m_hand_pos;
 	} else {
-		target = m_caster_pos - Vec3f(0.f, 50.f, 0.f);
+		m_srcPos = m_caster_pos - Vec3f(0.f, 50.f, 0.f);
 	}
 	
 	LightHandle id = GetFreeDynLight();
@@ -202,17 +201,16 @@ void IgnitSpell::Launch()
 		light->fallend   = 450.f;
 		light->fallstart = 380.f;
 		light->rgb       = Color3f(1.f, 0.75f, 0.5f);
-		light->pos       = target;
+		light->pos       = m_srcPos;
 		light->duration  = 300;
 	}
 	
 	float fPerimeter = 400.f + m_level * 30.f;
 	
-	m_srcPos = target;
 	m_lights.clear();
 	m_elapsed = 0;
 	
-	CheckForIgnition(target, fPerimeter, 1, 1);
+	CheckForIgnition(m_srcPos, fPerimeter, 1, 1);
 	
 	for(size_t ii = 0; ii < MAX_LIGHTS; ii++) {
 		
@@ -234,7 +232,7 @@ void IgnitSpell::Launch()
 			continue;
 		}
 		
-		if(!fartherThan(target, GLight[ii]->pos, fPerimeter)) {
+		if(!fartherThan(m_srcPos, GLight[ii]->pos, fPerimeter)) {
 			
 			T_LINKLIGHTTOFX entry;
 			
@@ -268,7 +266,7 @@ void IgnitSpell::Launch()
 			if(pCSpellFX) {
 				CFireBall * pCF = (CFireBall *)pCSpellFX;
 				float radius = std::max(m_level * 2.f, 12.f);
-				if(closerThan(target, pCF->eCurPos,
+				if(closerThan(m_srcPos, pCF->eCurPos,
 				              fPerimeter + radius)) {
 					spell->m_level += 1;
 				}
