@@ -213,31 +213,32 @@ void IgnitSpell::Launch()
 	CheckForIgnition(m_srcPos, fPerimeter, 1, 1);
 	
 	for(size_t ii = 0; ii < MAX_LIGHTS; ii++) {
+		EERIE_LIGHT * light = GLight[ii];
 		
-		if(!GLight[ii] || !(GLight[ii]->extras & EXTRAS_EXTINGUISHABLE)) {
+		if(!light || !(light->extras & EXTRAS_EXTINGUISHABLE)) {
 			continue;
 		}
 		
-		if(m_caster == PlayerEntityHandle && (GLight[ii]->extras & EXTRAS_NO_IGNIT)) {
+		if(m_caster == PlayerEntityHandle && (light->extras & EXTRAS_NO_IGNIT)) {
 			continue;
 		}
 		
-		if(!(GLight[ii]->extras & EXTRAS_SEMIDYNAMIC)
-		  && !(GLight[ii]->extras & EXTRAS_SPAWNFIRE)
-		  && !(GLight[ii]->extras & EXTRAS_SPAWNSMOKE)) {
+		if(!(light->extras & EXTRAS_SEMIDYNAMIC)
+		  && !(light->extras & EXTRAS_SPAWNFIRE)
+		  && !(light->extras & EXTRAS_SPAWNSMOKE)) {
 			continue;
 		}
 		
-		if(GLight[ii]->status) {
+		if(light->status) {
 			continue;
 		}
 		
-		if(!fartherThan(m_srcPos, GLight[ii]->pos, fPerimeter)) {
+		if(!fartherThan(m_srcPos, light->pos, fPerimeter)) {
 			
 			T_LINKLIGHTTOFX entry;
 			
 			entry.iLightNum = ii;
-			entry.poslight = GLight[ii]->pos;
+			entry.poslight = light->pos;
 		
 			entry.idl = GetFreeDynLight();
 		
