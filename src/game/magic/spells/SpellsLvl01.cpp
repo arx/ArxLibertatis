@@ -20,6 +20,8 @@
 #include "game/magic/spells/SpellsLvl01.h"
 
 #include "core/Application.h"
+#include "core/GameTime.h"
+
 #include "game/Damage.h"
 #include "game/Entity.h"
 #include "game/EntityManager.h"
@@ -185,8 +187,6 @@ void IgnitSpell::Launch()
 {
 	m_tolive = 500;
 	
-	CIgnit * effect = new CIgnit();
-	
 	Vec3f target;
 	if(m_hand_group != -1) {
 		target = m_hand_pos;
@@ -208,7 +208,11 @@ void IgnitSpell::Launch()
 	
 	float fPerimeter = 400.f + m_level * 30.f;
 	
-	effect->Create(&target, m_tolive);
+	m_srcPos = target;
+	m_lights.clear();
+	m_duration = m_tolive;
+	m_elapsed = 0;
+	
 	CheckForIgnition(target, fPerimeter, 1, 1);
 	
 	for(size_t ii = 0; ii < MAX_LIGHTS; ii++) {
@@ -232,7 +236,25 @@ void IgnitSpell::Launch()
 		}
 		
 		if(!fartherThan(target, GLight[ii]->pos, fPerimeter)) {
-			effect->AddLight(ii);
+			
+			T_LINKLIGHTTOFX entry;
+			
+			entry.iLightNum = ii;
+			entry.poslight = GLight[ii]->pos;
+		
+			entry.idl = GetFreeDynLight();
+		
+			if(lightHandleIsValid(entry.idl)) {
+				EERIE_LIGHT * light = lightHandleGet(entry.idl);
+				
+				light->intensity = 0.7f + 2.f * rnd();
+				light->fallend = 400.f;
+				light->fallstart = 300.f;
+				light->rgb = Color3f(1.f, 1.f, 1.f);
+				light->pos = entry.poslight;
+			}
+		
+			m_lights.push_back(entry);
 		}
 	}
 	
@@ -254,23 +276,46 @@ void IgnitSpell::Launch()
 			}
 		}
 	}
-	
-	m_pSpellFx = effect;
 }
 
-void IgnitSpell::End()
-{
-	CIgnit *pIgnit = (CIgnit *)m_pSpellFx;
-	pIgnit->Action();
+void IgnitSpell::End() {
+	
+	std::vector<T_LINKLIGHTTOFX>::iterator itr;
+	for(itr = m_lights.begin(); itr != m_lights.end(); ++itr) {
+		GLight[itr->iLightNum]->status = true;
+		ARX_SOUND_PlaySFX(SND_SPELL_IGNITE, &itr->poslight);
+		lightHandleDestroy(itr->idl);
+	}
+	
+	m_lights.clear();
 }
 
 void IgnitSpell::Update(float timeDelta)
 {
-	CSpellFx *pCSpellFX = m_pSpellFx;
-	if(pCSpellFX) {
-		pCSpellFX->Update(timeDelta);
-		pCSpellFX->Render();
+	if(m_elapsed < m_duration) {
+		float a = (((float)m_elapsed)) / ((float)m_duration);
+		
+		if(a >= 1.f)
+			a = 1.f;
+		
+		std::vector<T_LINKLIGHTTOFX>::iterator itr;
+		for(itr = m_lights.begin(); itr != m_lights.end(); ++itr) {
+		
+				itr->posfx = m_srcPos + (itr->poslight - m_srcPos) * a;
+				
+				LightHandle id = itr->idl;
+				
+				if(lightHandleIsValid(id)) {
+					EERIE_LIGHT * light = lightHandleGet(id);
+					
+					light->intensity = 0.7f + 2.f * rnd();
+					light->pos = itr->posfx;
+				}
+		}
 	}
+	
+	if(!arxtime.is_paused())
+		m_elapsed += timeDelta;
 }
 
 void DouseSpell::Launch()

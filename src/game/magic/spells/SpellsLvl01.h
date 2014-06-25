@@ -42,6 +42,19 @@ public:
 	void Launch();
 	void End();
 	void Update(float timeDelta);
+	
+private:
+	Vec3f m_srcPos;
+	int m_duration;
+	int m_elapsed;
+	
+	struct T_LINKLIGHTTOFX {
+		Vec3f poslight;
+		Vec3f posfx;
+		LightHandle idl;
+		int iLightNum;
+	};
+	std::vector<T_LINKLIGHTTOFX> m_lights;
 };
 
 class DouseSpell : public SpellBase {

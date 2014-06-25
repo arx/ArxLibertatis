@@ -97,33 +97,4 @@ private:
 	std::vector<CMagicMissile *> pTab;
 };
 
-// Done By : Sébastien Scieux
-class CIgnit : public CSpellFx {
-	
-protected:
-	Vec3f m_srcPos;
-	int m_duration;
-	int m_elapsed;
-	
-	struct T_LINKLIGHTTOFX {
-		Vec3f poslight;
-		Vec3f posfx;
-		LightHandle idl;
-		int iLightNum;
-	};
-	
-public:
-	std::vector<T_LINKLIGHTTOFX> m_lights;
-	
-	CIgnit();
-	~CIgnit();
-	
-	void Create(Vec3f * posc, int speed);
-	void Update(float timeDelta);
-	void Render(){}
-	void Kill();
-	void AddLight(int iLight);
-	void Action();
-};
-
 #endif // ARX_GRAPHICS_SPELLS_SPELLS01_H
