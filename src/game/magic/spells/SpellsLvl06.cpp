@@ -147,21 +147,22 @@ void RiseDeadSpell::End()
 
 void RiseDeadSpell::Update(float timeDelta)
 {
-	CSpellFx *pCSpellFX = m_pSpellFx;
-
-	if(pCSpellFX) {
+	CRiseDead * effect = static_cast<CRiseDead *>(m_pSpellFx);
+	if(!effect)
+		return;
+	
 		if(m_longinfo_entity == -2) {
-			pCSpellFX->lLightId = InvalidLightHandle;
+			effect->lLightId = InvalidLightHandle;
 			return;
 		}
 
 		m_duration+=200;
 	
-		pCSpellFX->Update(timeDelta);
-		pCSpellFX->Render();
+		effect->Update(timeDelta);
+		effect->Render();
 
-		if(lightHandleIsValid(pCSpellFX->lLightId)) {
-			EERIE_LIGHT * light = lightHandleGet(pCSpellFX->lLightId);
+		if(lightHandleIsValid(effect->lLightId)) {
+			EERIE_LIGHT * light = lightHandleGet(effect->lLightId);
 			
 			light->intensity = 0.7f + 2.3f;
 			light->fallend = 500.f;
@@ -173,13 +174,11 @@ void RiseDeadSpell::Update(float timeDelta)
 			light->time_creation = (unsigned long)(arxtime);
 		}
 
-		unsigned long tim=pCSpellFX->getCurrentTime();
+		unsigned long tim=effect->getCurrentTime();
 
 		if(tim > 3000 && m_longinfo_entity == InvalidEntityHandle) {
 			ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &m_target_pos);
-			CRiseDead *prise = (CRiseDead *)m_pSpellFx;
-
-			if(prise) {
+			
 				EERIE_CYLINDER phys;
 				phys.height=-200;
 				phys.radius=50;
@@ -215,28 +214,23 @@ void RiseDeadSpell::Update(float timeDelta)
 						SendIOScriptEvent(io,SM_SUMMONED);
 							
 						Vec3f pos;
-						pos.x=prise->eSrc.x+rnd()*100.f-50.f;
-						pos.y=prise->eSrc.y+100+rnd()*100.f-50.f;
-						pos.z=prise->eSrc.z+rnd()*100.f-50.f;
+						pos.x=effect->eSrc.x+rnd()*100.f-50.f;
+						pos.y=effect->eSrc.y+100+rnd()*100.f-50.f;
+						pos.z=effect->eSrc.z+rnd()*100.f-50.f;
 						MakeCoolFx(pos);
 					}
 
-					pCSpellFX->lLightId = InvalidLightHandle;
+					effect->lLightId = InvalidLightHandle;
 				} else {
 					ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE);
 					m_longinfo_entity = EntityHandle(-2); // FIXME inband signaling
 					m_duration=0;
 				}
-			}
 		} else if(!arxtime.is_paused() && tim < 4000) {
 		  if(rnd() > 0.95f) {
-				CRiseDead *pRD = (CRiseDead*)pCSpellFX;
-				Vec3f pos = pRD->eSrc;
-				MakeCoolFx(pos);
+				MakeCoolFx(effect->eSrc);
 			}
 		}
-
-	}
 }
 
 void ParalyseSpell::Launch()
