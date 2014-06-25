@@ -85,7 +85,7 @@ void FlyingEyeSpell::Launch()
 		
 		PARTICLE_DEF * pd = createParticle();
 		if(!pd) {
-			continue;
+			break;
 		}
 		
 		pd->ov = eyeball.pos + randomVec(-5.f, 5.f);
@@ -94,8 +94,7 @@ void FlyingEyeSpell::Launch()
 		pd->tolive = Random::get(2000, 6000);
 		pd->scale = Vec3f(12.f);
 		pd->tc = tc4;
-		pd->special = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION
-		              | DISSIPATING;
+		pd->special = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
 		pd->fparam = 0.0000001f;
 		pd->rgb = Color3f(0.7f, 0.7f, 1.f);
 	}
@@ -127,7 +126,6 @@ void FlyingEyeSpell::End()
 		pd->siz = 28.f;
 		pd->tolive = Random::get(2000, 6000);
 		pd->scale = Vec3f(12.f);
-		pd->timcreation = m_lastupdate;
 		pd->tc = tc4;
 		pd->special = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
 		pd->fparam = 0.0000001f;
