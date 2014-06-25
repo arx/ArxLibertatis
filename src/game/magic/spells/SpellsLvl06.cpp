@@ -151,86 +151,86 @@ void RiseDeadSpell::Update(float timeDelta)
 	if(!effect)
 		return;
 	
-		if(m_longinfo_entity == -2) {
-			effect->lLightId = InvalidLightHandle;
-			return;
-		}
-
-		m_duration+=200;
+	if(m_longinfo_entity == -2) {
+		effect->lLightId = InvalidLightHandle;
+		return;
+	}
 	
-		effect->Update(timeDelta);
-		effect->Render();
-
-		if(lightHandleIsValid(effect->lLightId)) {
-			EERIE_LIGHT * light = lightHandleGet(effect->lLightId);
+	m_duration+=200;
+	
+	effect->Update(timeDelta);
+	effect->Render();
+	
+	if(lightHandleIsValid(effect->lLightId)) {
+		EERIE_LIGHT * light = lightHandleGet(effect->lLightId);
+		
+		light->intensity = 0.7f + 2.3f;
+		light->fallend = 500.f;
+		light->fallstart = 400.f;
+		light->rgb.r = 0.8f;
+		light->rgb.g = 0.2f;
+		light->rgb.b = 0.2f;
+		light->duration=800;
+		light->time_creation = (unsigned long)(arxtime);
+	}
+	
+	unsigned long tim=effect->getCurrentTime();
+	
+	if(tim > 3000 && m_longinfo_entity == InvalidEntityHandle) {
+		ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &m_target_pos);
+		
+		EERIE_CYLINDER phys;
+		phys.height=-200;
+		phys.radius=50;
+		phys.origin=m_target_pos;
+		
+		float anything = CheckAnythingInCylinder(phys, NULL, CFLAG_JUST_TEST);
+		
+		if(EEfabs(anything) < 30) {
 			
-			light->intensity = 0.7f + 2.3f;
-			light->fallend = 500.f;
-			light->fallstart = 400.f;
-			light->rgb.r = 0.8f;
-			light->rgb.g = 0.2f;
-			light->rgb.b = 0.2f;
-			light->duration=800;
-			light->time_creation = (unsigned long)(arxtime);
-		}
-
-		unsigned long tim=effect->getCurrentTime();
-
-		if(tim > 3000 && m_longinfo_entity == InvalidEntityHandle) {
-			ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &m_target_pos);
+			const char * cls = "graph/obj3d/interactive/npc/undead_base/undead_base";
+			Entity * io = AddNPC(cls, -1, IO_IMMEDIATELOAD);
 			
-				EERIE_CYLINDER phys;
-				phys.height=-200;
-				phys.radius=50;
-				phys.origin=m_target_pos;
-
-				float anything = CheckAnythingInCylinder(phys, NULL, CFLAG_JUST_TEST);
-
-				if(EEfabs(anything) < 30) {
-					
-					const char * cls = "graph/obj3d/interactive/npc/undead_base/undead_base";
-					Entity * io = AddNPC(cls, -1, IO_IMMEDIATELOAD);
-					
-					if(io) {
-						ARX_INTERACTIVE_HideGore(io);
-						RestoreInitialIOStatusOfIO(io);
-						
-						long lSpellsCaster = m_caster;
-						io->summoner = checked_range_cast<short>(lSpellsCaster);
-						
-						io->ioflags|=IO_NOSAVE;
-						m_longinfo_entity = io->index();
-						io->scriptload=1;
-						
-						ARX_INTERACTIVE_Teleport(io, phys.origin);
-						SendInitScriptEvent(io);
-
-						if(ValidIONum(m_caster)) {
-							EVENT_SENDER = entities[m_caster];
-						} else {
-							EVENT_SENDER = NULL;
-						}
-
-						SendIOScriptEvent(io,SM_SUMMONED);
-							
-						Vec3f pos;
-						pos.x=effect->eSrc.x+rnd()*100.f-50.f;
-						pos.y=effect->eSrc.y+100+rnd()*100.f-50.f;
-						pos.z=effect->eSrc.z+rnd()*100.f-50.f;
-						MakeCoolFx(pos);
-					}
-
-					effect->lLightId = InvalidLightHandle;
+			if(io) {
+				ARX_INTERACTIVE_HideGore(io);
+				RestoreInitialIOStatusOfIO(io);
+				
+				long lSpellsCaster = m_caster;
+				io->summoner = checked_range_cast<short>(lSpellsCaster);
+				
+				io->ioflags|=IO_NOSAVE;
+				m_longinfo_entity = io->index();
+				io->scriptload=1;
+				
+				ARX_INTERACTIVE_Teleport(io, phys.origin);
+				SendInitScriptEvent(io);
+				
+				if(ValidIONum(m_caster)) {
+					EVENT_SENDER = entities[m_caster];
 				} else {
-					ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE);
-					m_longinfo_entity = EntityHandle(-2); // FIXME inband signaling
-					m_duration=0;
+					EVENT_SENDER = NULL;
 				}
-		} else if(!arxtime.is_paused() && tim < 4000) {
-		  if(rnd() > 0.95f) {
-				MakeCoolFx(effect->eSrc);
+				
+				SendIOScriptEvent(io,SM_SUMMONED);
+					
+				Vec3f pos;
+				pos.x=effect->eSrc.x+rnd()*100.f-50.f;
+				pos.y=effect->eSrc.y+100+rnd()*100.f-50.f;
+				pos.z=effect->eSrc.z+rnd()*100.f-50.f;
+				MakeCoolFx(pos);
 			}
+			
+			effect->lLightId = InvalidLightHandle;
+		} else {
+			ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE);
+			m_longinfo_entity = EntityHandle(-2); // FIXME inband signaling
+			m_duration=0;
 		}
+	} else if(!arxtime.is_paused() && tim < 4000) {
+	  if(rnd() > 0.95f) {
+			MakeCoolFx(effect->eSrc);
+		}
+	}
 }
 
 void ParalyseSpell::Launch()
