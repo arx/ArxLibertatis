@@ -49,7 +49,6 @@ private:
 	
 	struct T_LINKLIGHTTOFX {
 		Vec3f poslight;
-		Vec3f posfx;
 		LightHandle idl;
 		int iLightNum;
 	};

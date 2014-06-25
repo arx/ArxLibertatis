@@ -297,16 +297,15 @@ void IgnitSpell::Update(float timeDelta)
 		
 		std::vector<T_LINKLIGHTTOFX>::iterator itr;
 		for(itr = m_lights.begin(); itr != m_lights.end(); ++itr) {
-		
-				itr->posfx = m_srcPos + (itr->poslight - m_srcPos) * a;
-				
+			Vec3f pos = glm::mix(m_srcPos, itr->poslight, a);
+			
 				LightHandle id = itr->idl;
 				
 				if(lightHandleIsValid(id)) {
 					EERIE_LIGHT * light = lightHandleGet(id);
 					
 					light->intensity = 0.7f + 2.f * rnd();
-					light->pos = itr->posfx;
+					light->pos = pos;
 				}
 		}
 	}
