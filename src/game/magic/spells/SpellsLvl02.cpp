@@ -45,7 +45,7 @@ void HealSpell::Launch()
 	
 	m_bDuration = true;
 	m_fManaCostPerSecond = 0.4f * m_level;
-	m_tolive = (m_launchDuration > -1) ? m_launchDuration : 3500;
+	m_duration = (m_launchDuration > -1) ? m_launchDuration : 3500;
 	
 	CHeal * effect = new CHeal();
 	
@@ -56,10 +56,10 @@ void HealSpell::Launch()
 	}
 	
 	effect->Create();
-	effect->SetDuration(m_tolive);
+	effect->SetDuration(m_duration);
 	
 	m_pSpellFx = effect;
-	m_tolive = effect->GetDuration();
+	m_duration = effect->GetDuration();
 }
 
 void HealSpell::Update(float timeDelta)
@@ -128,7 +128,7 @@ void DetectTrapSpell::Launch()
 		                  ARX_SOUND_PLAY_LOOPED);
 	}
 	
-	m_tolive = 60000;
+	m_duration = 60000;
 	m_fManaCostPerSecond = 0.4f;
 	m_bDuration = true;
 	
@@ -179,9 +179,9 @@ void ArmorSpell::Launch()
 	                                       ARX_SOUND_PLAY_LOOPED);
 	
 	if(m_launchDuration > -1) {
-		m_tolive = m_launchDuration;
+		m_duration = m_launchDuration;
 	} else {
-		m_tolive = (m_caster == PlayerEntityHandle) ? 20000000 : 20000;
+		m_duration = (m_caster == PlayerEntityHandle) ? 20000000 : 20000;
 	}
 	
 	m_bDuration = true;
@@ -247,9 +247,9 @@ void LowerArmorSpell::Launch()
 	}
 	
 	if(m_launchDuration > -1) {
-		m_tolive = m_launchDuration;
+		m_duration = m_launchDuration;
 	} else {
-		m_tolive = (m_caster == PlayerEntityHandle) ? 20000000 : 20000;
+		m_duration = (m_caster == PlayerEntityHandle) ? 20000000 : 20000;
 	}
 	
 	m_bDuration = true;
@@ -323,7 +323,7 @@ void HarmSpell::Launch()
 	spells.endByCaster(m_caster, SPELL_LIFE_DRAIN);
 	spells.endByCaster(m_caster, SPELL_MANA_DRAIN);
 	
-	m_tolive = (m_launchDuration >-1) ? m_launchDuration : 6000000;
+	m_duration = (m_launchDuration >-1) ? m_launchDuration : 6000000;
 	m_bDuration = true;
 	m_fManaCostPerSecond = 0.4f;
 

@@ -1687,7 +1687,7 @@ void ArxGame::managePlayerControls()
 			if(spell && spell->m_caster == PlayerEntityHandle)
 				if(spellicons[spell->m_type].bDuration) {
 					ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE);
-					spell->m_tolive = 0;
+					spell->m_duration = 0;
 					break;
 				}
 		}
@@ -5969,7 +5969,7 @@ private:
 				if(EERIEMouseButton & 4) {
 					ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE);
 					EERIEMouseButton &= ~4;
-					spells[spellIndex]->m_tolive = 0;
+					spells[spellIndex]->m_duration = 0;
 				}
 			}
 		}
@@ -5997,7 +5997,7 @@ private:
 		bool bOk=true;
 		
 		if(spell.m_bDuration) {
-			if(player.manaPool.current < 20 || spell.m_timcreation + spell.m_tolive - float(arxtime) < 2000) {
+			if(player.manaPool.current < 20 || spell.m_timcreation + spell.m_duration - float(arxtime) < 2000) {
 				if(ucFlick&1)
 					bOk=false;
 			}

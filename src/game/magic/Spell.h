@@ -159,7 +159,7 @@ public:
 	
 	unsigned long m_timcreation;
 	
-	unsigned long m_tolive;
+	unsigned long m_duration;
 	
 	EntityHandle m_longinfo_entity;
 	DamageHandle m_longinfo_damage;

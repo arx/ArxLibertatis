@@ -50,7 +50,7 @@ void BlessSpell::Launch()
 	ARX_SOUND_PlaySFX(SND_SPELL_BLESS);
 	
 	// TODO this tolive value is probably never read
-	m_tolive = (m_launchDuration > -1) ? m_launchDuration : 2000000;
+	m_duration = (m_launchDuration > -1) ? m_launchDuration : 2000000;
 	m_bDuration = true;
 	m_fManaCostPerSecond = 0.5f * m_level * 0.6666f;
 	
@@ -59,7 +59,7 @@ void BlessSpell::Launch()
 	effect->Create(target);
 	effect->SetDuration(20000);
 	m_pSpellFx = effect;
-	m_tolive = effect->GetDuration();
+	m_duration = effect->GetDuration();
 	
 	m_targets.push_back(m_target);
 }
@@ -97,7 +97,7 @@ void BlessSpell::Update(float timeDelta)
 
 void DispellFieldSpell::Launch()
 {
-	m_tolive = 10;
+	m_duration = 10;
 	
 	long valid = 0, dispelled = 0;
 
@@ -140,7 +140,7 @@ void DispellFieldSpell::Launch()
 		if(cancel && closerThan(pos, caster->pos, 400.f)) {
 			valid++;
 			if(spell->m_level <= m_level) {
-				spell->m_tolive = 0;
+				spell->m_duration = 0;
 				dispelled++;
 			}
 		}
@@ -167,9 +167,9 @@ void FireProtectionSpell::Launch()
 	spells.endByCaster(m_caster, SPELL_COLD_PROTECTION);
 	
 	if(m_launchDuration > -1) {
-		m_tolive = m_launchDuration;
+		m_duration = m_launchDuration;
 	} else {
-		m_tolive = (m_caster == PlayerEntityHandle) ? 2000000 : 20000;
+		m_duration = (m_caster == PlayerEntityHandle) ? 2000000 : 20000;
 	}
 	
 	if(m_caster == PlayerEntityHandle) {
@@ -239,9 +239,9 @@ void ColdProtectionSpell::Launch()
 	ARX_SOUND_PlaySFX(SND_SPELL_COLD_PROTECTION_START, &entities[m_target]->pos);
 	
 	if(m_launchDuration > -1) {
-		m_tolive = m_launchDuration;
+		m_duration = m_launchDuration;
 	} else {
-		m_tolive = (m_caster == PlayerEntityHandle) ? 2000000 : 20000;
+		m_duration = (m_caster == PlayerEntityHandle) ? 2000000 : 20000;
 	}
 	
 	m_bDuration = true;
@@ -298,7 +298,7 @@ bool TelekinesisSpell::CanLaunch()
 
 void TelekinesisSpell::Launch()
 {
-	m_tolive = (m_launchDuration > -1) ? m_launchDuration : 6000000;
+	m_duration = (m_launchDuration > -1) ? m_launchDuration : 6000000;
 	m_bDuration = true;
 	m_fManaCostPerSecond = 0.9f;
 	
@@ -323,7 +323,7 @@ void CurseSpell::Launch()
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_CURSE, &entities[m_target]->pos);
 	
-	m_tolive = (m_launchDuration > -1) ? m_launchDuration : 2000000;
+	m_duration = (m_launchDuration > -1) ? m_launchDuration : 2000000;
 	m_bDuration = true;
 	m_fManaCostPerSecond = 0.5f * m_level;
 	
@@ -337,9 +337,9 @@ void CurseSpell::Launch()
 	}
 	
 	effect->Create(target);
-	effect->SetDuration(m_tolive);
+	effect->SetDuration(m_duration);
 	m_pSpellFx = effect;
-	m_tolive = effect->GetDuration();
+	m_duration = effect->GetDuration();
 	
 	m_targets.push_back(m_target);
 }

@@ -45,8 +45,7 @@ public:
 	
 private:
 	Vec3f m_srcPos;
-	int m_duration;
-	int m_elapsed;
+	unsigned int m_elapsed;
 	
 	struct T_LINKLIGHTTOFX {
 		Vec3f poslight;

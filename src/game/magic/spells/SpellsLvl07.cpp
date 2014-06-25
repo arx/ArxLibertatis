@@ -71,7 +71,7 @@ void FlyingEyeSpell::Launch()
 	ARX_SOUND_PlaySFX(SND_SPELL_EYEBALL_IN);
 	
 	m_lastupdate = m_timcreation;
-	m_tolive = 1000000;
+	m_duration = 1000000;
 	m_bDuration = true;
 	m_fManaCostPerSecond = 3.2f;
 	eyeball.exist = 1;
@@ -217,7 +217,7 @@ void FireFieldSpell::Launch()
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_FIRE_FIELD_START);
 	
-	m_tolive = (m_launchDuration > -1) ? m_launchDuration : 100000;
+	m_duration = (m_launchDuration > -1) ? m_launchDuration : 100000;
 	m_bDuration = true;
 	m_fManaCostPerSecond = 2.8f;
 	m_longinfo2_light = InvalidLightHandle;
@@ -257,9 +257,9 @@ void FireFieldSpell::Launch()
 	damage.pos = target;
 	m_longinfo_damage = DamageCreate(damage);
 	
-	effect->Create(200.f, target + Vec3f(0, -10, 0), m_tolive);
+	effect->Create(200.f, target + Vec3f(0, -10, 0), m_duration);
 	m_pSpellFx = effect;
-	m_tolive = effect->GetDuration();
+	m_duration = effect->GetDuration();
 	
 	m_snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_FIRE_FIELD_LOOP,
 	                                       &target, 1.f,
@@ -345,7 +345,7 @@ void IceFieldSpell::Launch()
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_ICE_FIELD);
 	
-	m_tolive = (m_launchDuration > -1) ? m_launchDuration : 100000;
+	m_duration = (m_launchDuration > -1) ? m_launchDuration : 100000;
 	m_bDuration = true;
 	m_fManaCostPerSecond = 2.8f;
 	m_longinfo2_light = InvalidLightHandle;
@@ -386,9 +386,9 @@ void IceFieldSpell::Launch()
 	m_longinfo_damage = DamageCreate(damage);
 	
 	effect->Create(target);
-	effect->SetDuration(m_tolive);
+	effect->SetDuration(m_duration);
 	m_pSpellFx = effect;
-	m_tolive = effect->GetDuration();
+	m_duration = effect->GetDuration();
 	
 	m_snd_loop = ARX_SOUND_PlaySFX( SND_SPELL_ICE_FIELD_LOOP, 
 	                                       &target, 1.f, 
@@ -443,7 +443,7 @@ void LightningStrikeSpell::Launch()
 	effect->SetDuration(long(500 * m_level));
 	effect->m_isMassLightning = false;
 	m_pSpellFx = effect;
-	m_tolive = effect->GetDuration();
+	m_duration = effect->GetDuration();
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_LIGHTNING_START, &m_caster_pos);
 	
@@ -549,13 +549,13 @@ void ConfuseSpell::Launch()
 	
 	m_bDuration = true;
 	m_fManaCostPerSecond = 1.5f;
-	m_tolive = (m_launchDuration > -1) ? m_launchDuration : 5000;
+	m_duration = (m_launchDuration > -1) ? m_launchDuration : 5000;
 	
 	CConfuse * effect = new CConfuse();
 	effect->Create();
-	effect->SetDuration(m_tolive);
+	effect->SetDuration(m_duration);
 	m_pSpellFx = effect;
-	m_tolive = effect->GetDuration();
+	m_duration = effect->GetDuration();
 	
 	m_targets.push_back(m_target);
 }

@@ -193,7 +193,7 @@ void SpellManager::endByCaster(EntityHandle caster) {
 		SpellBase * spell = m_spells[i];
 		
 		if(spell && spell->m_caster == caster) {
-			spell->m_tolive = 0;
+			spell->m_duration = 0;
 		}
 	}
 }
@@ -201,7 +201,7 @@ void SpellManager::endByCaster(EntityHandle caster) {
 void SpellManager::endByTarget(EntityHandle target, SpellType type) {
 	SpellBase * spell = spells.getSpellOnTarget(target, type);
 	if(spell) {
-		spell->m_tolive = 0;
+		spell->m_duration = 0;
 	}
 }
 
@@ -211,7 +211,7 @@ void SpellManager::endByCaster(EntityHandle caster, SpellType type) {
 		SpellBase * spell = m_spells[i];
 		
 		if(spell && spell->m_type == type && spell->m_caster == caster) {
-			spell->m_tolive = 0;
+			spell->m_duration = 0;
 			return;
 		}
 	}
@@ -714,7 +714,7 @@ void SPELLEND_Notify(SpellBase & spell) {
 //! Plays the sound of Fizzling spell
 void ARX_SPELLS_Fizzle(SpellBase * spell) {
 	
-	spell->m_tolive = 0;
+	spell->m_duration = 0;
 	
 	if(spell->m_caster >= PlayerEntityHandle) {
 		ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE, &spell->m_caster_pos);
@@ -1415,13 +1415,13 @@ void ARX_SPELLS_Update() {
 			continue;
 		
 		if(!GLOBAL_MAGIC_MODE) {
-			spell->m_tolive = 0;
+			spell->m_duration = 0;
 		}
 		
 		if(spell->m_bDuration && !CanPayMana(spell, spell->m_fManaCostPerSecond * (float)framedelay * (1.0f/1000), false))
 			ARX_SPELLS_Fizzle(spell);
 		
-		const long framediff = spell->m_timcreation + spell->m_tolive - tim;
+		const long framediff = spell->m_timcreation + spell->m_duration - tim;
 		
 		if(framediff < 0) {
 			SPELLEND_Notify(*spell);

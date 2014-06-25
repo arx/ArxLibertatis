@@ -45,7 +45,7 @@ void MagicSightSpell::Launch()
 {
 	m_fManaCostPerSecond = 0.36f;
 	m_bDuration = true;
-	m_tolive = (m_launchDuration > -1) ? m_launchDuration : 6000000l;
+	m_duration = (m_launchDuration > -1) ? m_launchDuration : 6000000l;
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_VISION_START, &m_caster_pos);
 	
@@ -86,7 +86,7 @@ void MagicSightSpell::Update(float timeDelta)
 
 void MagicMissileSpell::Launch()
 {
-	m_tolive = 20000; // TODO probably never read
+	m_duration = 20000; // TODO probably never read
 	
 	long number;
 	if(sp_max || cur_rf == 3) {
@@ -157,7 +157,7 @@ void MagicMissileSpell::Launch()
 	}
 	
 	m_pSpellFx = effect;
-	m_tolive = effect->GetDuration();
+	m_duration = effect->GetDuration();
 }
 
 void MagicMissileSpell::End()
@@ -177,7 +177,7 @@ void MagicMissileSpell::Update(float timeDelta)
 		pCSpellFX->Update(timeDelta);
 
 		if(pMMM->CheckAllDestroyed())
-			m_tolive = 0;
+			m_duration = 0;
 
 		pCSpellFX->Render();
 	}
@@ -185,7 +185,7 @@ void MagicMissileSpell::Update(float timeDelta)
 
 void IgnitSpell::Launch()
 {
-	m_tolive = 500;
+	m_duration = 500;
 	
 	Vec3f target;
 	if(m_hand_group != -1) {
@@ -210,7 +210,6 @@ void IgnitSpell::Launch()
 	
 	m_srcPos = target;
 	m_lights.clear();
-	m_duration = m_tolive;
 	m_elapsed = 0;
 	
 	CheckForIgnition(target, fPerimeter, 1, 1);
@@ -320,7 +319,7 @@ void IgnitSpell::Update(float timeDelta)
 
 void DouseSpell::Launch()
 {
-	m_tolive = 500;
+	m_duration = 500;
 	
 	Vec3f target;
 	if(m_hand_group >= 0) {
@@ -381,7 +380,7 @@ void DouseSpell::Launch()
 					              fPerimeter + radius)) {
 						spell->m_level -= m_level;
 						if(spell->m_level < 1) {
-							spell->m_tolive = 0;
+							spell->m_duration = 0;
 						}
 					}
 				}
@@ -394,7 +393,7 @@ void DouseSpell::Launch()
 					if(closerThan(target, pos, fPerimeter + 200)) {
 						spell->m_level -= m_level;
 						if(spell->m_level < 1) {
-							spell->m_tolive=0;
+							spell->m_duration=0;
 						}
 					}
 				}
@@ -423,5 +422,5 @@ void ActivatePortalSpell::Launch()
 {
 	ARX_SOUND_PlayInterface(SND_SPELL_ACTIVATE_PORTAL);
 	
-	m_tolive = 20;
+	m_duration = 20;
 }

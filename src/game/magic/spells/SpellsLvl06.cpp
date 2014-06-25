@@ -82,7 +82,7 @@ void RiseDeadSpell::Launch()
 	ARX_SOUND_PlaySFX(SND_SPELL_RAISE_DEAD, &m_target_pos);
 	
 	// TODO this tolive value is probably never read
-	m_tolive = (m_launchDuration > -1) ? m_launchDuration : 2000000;
+	m_duration = (m_launchDuration > -1) ? m_launchDuration : 2000000;
 	m_bDuration = true;
 	m_fManaCostPerSecond = 1.2f;
 	m_longinfo_entity = InvalidEntityHandle;
@@ -110,7 +110,7 @@ void RiseDeadSpell::Launch()
 	}
 	
 	m_pSpellFx = effect;
-	m_tolive = effect->GetDuration();
+	m_duration = effect->GetDuration();
 }
 
 void RiseDeadSpell::End()
@@ -155,7 +155,7 @@ void RiseDeadSpell::Update(float timeDelta)
 			return;
 		}
 
-		m_tolive+=200;
+		m_duration+=200;
 	
 		pCSpellFX->Update(timeDelta);
 		pCSpellFX->Render();
@@ -225,7 +225,7 @@ void RiseDeadSpell::Update(float timeDelta)
 				} else {
 					ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE);
 					m_longinfo_entity = EntityHandle(-2); // FIXME inband signaling
-					m_tolive=0;
+					m_duration=0;
 				}
 			}
 		} else if(!arxtime.is_paused() && tim < 4000) {
@@ -243,7 +243,7 @@ void ParalyseSpell::Launch()
 {
 	ARX_SOUND_PlaySFX(SND_SPELL_PARALYSE, &entities[m_target]->pos);
 	
-	m_tolive = (m_launchDuration > -1) ? m_launchDuration : 5000;
+	m_duration = (m_launchDuration > -1) ? m_launchDuration : 5000;
 	
 	float resist_magic = 0.f;
 	if(m_target == PlayerEntityHandle && m_level <= player.level) {
@@ -253,7 +253,7 @@ void ParalyseSpell::Launch()
 	}
 	if(rnd() * 100.f < resist_magic) {
 		float mul = max(0.5f, 1.f - (resist_magic * 0.005f));
-		m_tolive = long(m_tolive * mul);
+		m_duration = long(m_duration * mul);
 	}
 	
 	entities[m_target]->ioflags |= IO_FREEZESCRIPT;
@@ -278,7 +278,7 @@ void CreateFieldSpell::Launch()
 	}
 	m_timcreation = start;
 	
-	m_tolive = (m_launchDuration > -1) ? m_launchDuration : 800000;
+	m_duration = (m_launchDuration > -1) ? m_launchDuration : 800000;
 	m_bDuration = true;
 	m_fManaCostPerSecond = 1.2f;
 	
@@ -321,7 +321,7 @@ void CreateFieldSpell::Launch()
 		SendInitScriptEvent(io);
 		
 		effect->Create(target);
-		effect->SetDuration(m_tolive);
+		effect->SetDuration(m_duration);
 		effect->lLightId = GetFreeDynLight();
 		
 		if(lightHandleIsValid(effect->lLightId)) {
@@ -335,14 +335,14 @@ void CreateFieldSpell::Launch()
 		}
 		
 		m_pSpellFx = effect;
-		m_tolive = effect->GetDuration();
+		m_duration = effect->GetDuration();
 		
 		if(m_flags & SPELLCAST_FLAG_RESTORE) {
 			effect->Update(4000);
 		}
 		
 	} else {
-		m_tolive = 0;
+		m_duration = 0;
 	}
 }
 
@@ -372,7 +372,7 @@ void CreateFieldSpell::Update(float timeDelta)
 
 			if (IsAnyNPCInPlatform(io))
 			{
-				m_tolive=0;
+				m_duration=0;
 			}
 		
 			pCSpellFX->Update(timeDelta);			
@@ -385,7 +385,7 @@ void DisarmTrapSpell::Launch()
 {
 	ARX_SOUND_PlaySFX(SND_SPELL_DISARM_TRAP);
 	
-	m_tolive = 1;
+	m_duration = 1;
 	
 	Sphere sphere;
 	sphere.origin = player.pos;
@@ -406,7 +406,7 @@ void DisarmTrapSpell::Launch()
 		if(sphere.contains(static_cast<CRuneOfGuarding *>(effect)->eSrc)) {
 			spell->m_level -= m_level;
 			if(spell->m_level <= 0) {
-				spell->m_tolive = 0;
+				spell->m_duration = 0;
 			}
 		}
 	}
@@ -417,7 +417,7 @@ bool SlowDownSpell::CanLaunch()
 	// TODO this seems to be the only spell that ends itself when cast twice
 	SpellBase * spell = spells.getSpellOnTarget(m_target, SPELL_SLOW_DOWN);
 	if(spell) {
-		spell->m_tolive = 0;
+		spell->m_duration = 0;
 		return false;
 	}
 	
@@ -428,9 +428,9 @@ void SlowDownSpell::Launch()
 {
 	ARX_SOUND_PlaySFX(SND_SPELL_SLOW_DOWN, &entities[m_target]->pos);
 	
-	m_tolive = (m_caster == PlayerEntityHandle) ? 10000000 : 10000;
+	m_duration = (m_caster == PlayerEntityHandle) ? 10000000 : 10000;
 	if(m_launchDuration > -1) {
-		m_tolive = m_launchDuration;
+		m_duration = m_launchDuration;
 	}
 	m_pSpellFx = NULL;
 	m_bDuration = true;
@@ -438,9 +438,9 @@ void SlowDownSpell::Launch()
 	
 	CSlowDown * effect = new CSlowDown();
 	effect->Create(m_target_pos);
-	effect->SetDuration(m_tolive);
+	effect->SetDuration(m_duration);
 	m_pSpellFx = effect;
-	m_tolive = effect->GetDuration();
+	m_duration = effect->GetDuration();
 	
 	m_targets.push_back(m_target);
 }

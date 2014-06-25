@@ -50,11 +50,11 @@ void MassLightningStrikeSpell::Launch()
 		
 		if(spell && spell->m_type == SPELL_MASS_LIGHTNING_STRIKE) {
 			lightHandleDestroy(spell->m_longinfo_light);
-			spell->m_tolive = 0;
+			spell->m_duration = 0;
 		}
 	}
 	
-	m_tolive = 5000; // TODO probably never read
+	m_duration = 5000; // TODO probably never read
 	m_siz = 0;
 	
 	m_longinfo_light = GetFreeDynLight();
@@ -87,7 +87,7 @@ void MassLightningStrikeSpell::Launch()
 	effect->SetDuration(long(500 * m_level));
 	effect->Create(target);
 	m_pSpellFx = effect;
-	m_tolive = effect->GetDuration();
+	m_duration = effect->GetDuration();
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_LIGHTNING_START);
 	m_snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_LIGHTNING_LOOP, &target,
@@ -149,7 +149,7 @@ void MassLightningStrikeSpell::Update(float timeDelta)
 		ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &position, 0.8F + 0.4F * rnd());
 	}
 	
-	if((_gct > m_tolive - 1800) && (m_siz == 0)) {
+	if((_gct > m_duration - 1800) && (m_siz == 0)) {
 		m_siz = 1;
 		ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, NULL, 0.8F + 0.4F * rnd());
 	}
@@ -234,11 +234,11 @@ void ControlTargetSpell::Launch()
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_CONTROL_TARGET);
 	
-	m_tolive = 1000;
+	m_duration = 1000;
 	
 	CControlTarget * effect = new CControlTarget();
 	effect->Create(player.pos, MAKEANGLE(player.angle.getPitch()));
-	effect->SetDuration(m_tolive);
+	effect->SetDuration(m_duration);
 	m_pSpellFx = effect;
 }
 
@@ -267,7 +267,7 @@ void FreezeTimeSpell::Launch()
 	m_siz = clamp(m_level * 0.08f, 0.f, max_slowdown);
 	GLOBAL_SLOWDOWN -= m_siz;
 	
-	m_tolive = (m_launchDuration > -1) ? m_launchDuration : 200000;
+	m_duration = (m_launchDuration > -1) ? m_launchDuration : 200000;
 	m_bDuration = true;
 	m_fManaCostPerSecond = 30.f * m_siz;
 }
@@ -282,7 +282,7 @@ void MassIncinerateSpell::Launch()
 {
 	ARX_SOUND_PlaySFX(SND_SPELL_MASS_INCINERATE);
 	
-	m_tolive = 20000;
+	m_duration = 20000;
 	
 	long nb_targets=0;
 	for(size_t ii = 0; ii < entities.size(); ii++) {
@@ -341,7 +341,7 @@ bool TeleportSpell::CanLaunch()
 
 void TeleportSpell::Launch()
 {
-	m_tolive = 7000;
+	m_duration = 7000;
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_TELEPORT, &m_caster_pos);
 	
@@ -363,7 +363,7 @@ void TeleportSpell::Update(float timeDelta)
 	
 	const unsigned long tim = (unsigned long)(arxtime);
 	
-	float TELEPORT = (float)(((float)tim-(float)m_timcreation)/(float)m_tolive);
+	float TELEPORT = (float)(((float)tim-(float)m_timcreation)/(float)m_duration);
 
 	if(LASTTELEPORT < 0.5f && TELEPORT >= 0.5f) {
 		Vec3f pos = lastteleport;

@@ -50,9 +50,9 @@ void SpeedSpell::Launch()
 		                                       ARX_SOUND_PLAY_LOOPED);
 	}
 	
-	m_tolive = (m_caster == PlayerEntityHandle) ? 200000000 : 20000;
+	m_duration = (m_caster == PlayerEntityHandle) ? 200000000 : 20000;
 	if(m_launchDuration > -1) {
-		m_tolive = m_launchDuration;
+		m_duration = m_launchDuration;
 	}
 	
 	CSpeed * effect = new CSpeed();
@@ -88,7 +88,7 @@ void DispellIllusionSpell::Launch()
 {
 	ARX_SOUND_PlaySFX(SND_SPELL_DISPELL_ILLUSION);
 	
-	m_tolive = 1000;
+	m_duration = 1000;
 	
 	for(size_t n = 0; n < MAX_SPELLS; n++) {
 		SpellBase * spell = spells[SpellHandle(n)];
@@ -105,7 +105,7 @@ void DispellIllusionSpell::Launch()
 			if(ValidIONum(spell->m_target) && ValidIONum(m_caster)) {
 				if(closerThan(entities[spell->m_target]->pos,
 				   entities[m_caster]->pos, 1000.f)) {
-					spell->m_tolive = 0;
+					spell->m_duration = 0;
 				}
 			}
 		}
@@ -122,7 +122,7 @@ void DispellIllusionSpell::Update(float timeDelta)
 
 void FireballSpell::Launch()
 {
-	m_tolive = 20000; // TODO probably never read
+	m_duration = 20000; // TODO probably never read
 	
 	CFireBall * effect = new CFireBall();
 	
@@ -171,7 +171,7 @@ void FireballSpell::Launch()
 	effect->Create(target, MAKEANGLE(angleb), anglea);
 	
 	m_pSpellFx = effect;
-	m_tolive = effect->GetDuration();
+	m_duration = effect->GetDuration();
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_FIRE_LAUNCH, &m_caster_pos);
 	m_snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_FIRE_WIND,
@@ -294,7 +294,7 @@ void FireballSpell::Update(float timeDelta)
 		effect->bExplo = true;
 		
 		DoSphericDamage(effect->eCurPos, 3.f * m_level, 30.f * m_level, DAMAGE_AREA, DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL, m_caster);
-		m_tolive=0;
+		m_duration=0;
 		ARX_SOUND_PlaySFX(SND_SPELL_FIRE_HIT, &sphere.origin);
 		ARX_NPC_SpawnAudibleSound(sphere.origin, entities[m_caster]);
 	}
@@ -306,7 +306,7 @@ void CreateFoodSpell::Launch()
 {
 	ARX_SOUND_PlaySFX(SND_SPELL_CREATE_FOOD, &m_caster_pos);
 	
-	m_tolive = (m_launchDuration > -1) ? m_launchDuration : 3500;
+	m_duration = (m_launchDuration > -1) ? m_launchDuration : 3500;
 	
 	if(m_caster == PlayerEntityHandle || m_target == PlayerEntityHandle) {
 		player.hunger = 100;
@@ -314,9 +314,9 @@ void CreateFoodSpell::Launch()
 	
 	CCreateFood * effect = new CCreateFood();
 	effect->Create();
-	effect->SetDuration(m_tolive);
+	effect->SetDuration(m_duration);
 	m_pSpellFx = effect;
-	m_tolive = effect->GetDuration();
+	m_duration = effect->GetDuration();
 }
 
 void CreateFoodSpell::Update(float timeDelta)
@@ -331,7 +331,7 @@ void IceProjectileSpell::Launch()
 {
 	ARX_SOUND_PlaySFX(SND_SPELL_ICE_PROJECTILE_LAUNCH, &m_caster_pos);
 	
-	m_tolive = 4200;
+	m_duration = 4200;
 	
 	CIceProjectile * effect = new CIceProjectile();
 	
@@ -349,9 +349,9 @@ void IceProjectileSpell::Launch()
 	target.z += std::cos(radians(angleb)) * 150.0f;
 	effect->Create(target, angleb, m_level, m_caster);
 	
-	effect->SetDuration(m_tolive);
+	effect->SetDuration(m_duration);
 	m_pSpellFx = effect;
-	m_tolive = effect->GetDuration();
+	m_duration = effect->GetDuration();
 }
 
 void IceProjectileSpell::Update(float timeDelta)

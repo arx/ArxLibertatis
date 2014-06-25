@@ -377,7 +377,7 @@ void Cedric_ApplyLightingFirstPartRefactor(Entity *io) {
 								spell = spells.getSpellOnTarget(io->index(), SPELL_MASS_INCINERATE);
 
 							if(spell) {
-								spell->m_tolive = 0;
+								spell->m_duration = 0;
 								float damages = 20 * spell->m_level;
 								damages = ARX_SPELLS_ApplyFireProtection(io, damages);
 

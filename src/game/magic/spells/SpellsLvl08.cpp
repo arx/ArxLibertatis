@@ -41,7 +41,7 @@ bool InvisibilitySpell::CanLaunch()
 
 void InvisibilitySpell::Launch()
 {
-	m_tolive = (m_launchDuration > -1) ? m_launchDuration : 6000000;
+	m_duration = (m_launchDuration > -1) ? m_launchDuration : 6000000;
 	m_bDuration = true;
 	m_fManaCostPerSecond = 3.f;
 	
@@ -88,7 +88,7 @@ void ManaDrainSpell::Launch()
 	spells.endByCaster(m_caster, SPELL_LIFE_DRAIN);
 	spells.endByCaster(m_caster, SPELL_HARM);
 	
-	m_tolive = (m_launchDuration > -1) ? m_launchDuration : 6000000;
+	m_duration = (m_launchDuration > -1) ? m_launchDuration : 6000000;
 	m_bDuration = true;
 	m_fManaCostPerSecond = 2.f;
 	
@@ -231,7 +231,7 @@ void ExplosionSpell::Launch()
 {
 	ARX_SOUND_PlaySFX(SND_SPELL_EXPLOSION);
 	
-	m_tolive = 2000;
+	m_duration = 2000;
 	
 	Vec3f target = entities[m_caster]->pos;
 	if(m_caster == PlayerEntityHandle) {
@@ -244,7 +244,7 @@ void ExplosionSpell::Launch()
 	damage.radius = 350.f;
 	damage.damages = 10.f;
 	damage.area = DAMAGE_AREA;
-	damage.duration = m_tolive;
+	damage.duration = m_duration;
 	damage.source = m_caster;
 	damage.flags = DAMAGE_FLAG_DONT_HURT_SOURCE | DAMAGE_FLAG_FOLLOW_SOURCE | DAMAGE_FLAG_ADD_VISUAL_FX;
 	damage.type = DAMAGE_TYPE_FAKEFIRE | DAMAGE_TYPE_MAGICAL;
@@ -333,7 +333,7 @@ void ExplosionSpell::Update(float timeDelta)
 
 void EnchantWeaponSpell::Launch()
 {
-	m_tolive = 20;
+	m_duration = 20;
 }
 
 void EnchantWeaponSpell::Update(float timeDelta)
@@ -356,7 +356,7 @@ void LifeDrainSpell::Launch()
 	spells.endByCaster(m_caster, SPELL_HARM);
 	spells.endByCaster(m_caster, SPELL_MANA_DRAIN);
 	
-	m_tolive = (m_launchDuration > -1) ? m_launchDuration : 6000000;
+	m_duration = (m_launchDuration > -1) ? m_launchDuration : 6000000;
 	m_bDuration = true;
 	m_fManaCostPerSecond = 12.f;
 	

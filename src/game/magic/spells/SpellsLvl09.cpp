@@ -82,7 +82,7 @@ void SummonCreatureSpell::Launch()
 	m_fManaCostPerSecond = 1.9f;
 	m_longinfo_summon_creature = 0;
 	m_longinfo2_entity = PlayerEntityHandle; // TODO is this correct ?
-	m_tolive = (m_launchDuration > -1) ? m_launchDuration : 2000000;
+	m_duration = (m_launchDuration > -1) ? m_launchDuration : 2000000;
 	
 	Vec3f target;
 	float beta;
@@ -273,7 +273,7 @@ void SummonCreatureSpell::Update(float timeDelta)
 				}
 			}
 		} else if(m_longinfo2_entity <= PlayerEntityHandle) {
-			m_tolive = 0;
+			m_duration = 0;
 		}
 	}	
 }
@@ -291,7 +291,7 @@ void FakeSummonSpell::Launch()
 {
 	m_bDuration = true;
 	m_fManaCostPerSecond = 1.9f;
-	m_tolive = 4000;
+	m_duration = 4000;
 	
 	Vec3f target = entities[m_target]->pos;
 	if(m_target != PlayerEntityHandle) {
@@ -359,13 +359,13 @@ void NegateMagicSpell::Launch()
 	
 	m_bDuration = true;
 	m_fManaCostPerSecond = 2.f;
-	m_tolive = (m_launchDuration > -1) ? m_launchDuration : 1000000;
+	m_duration = (m_launchDuration > -1) ? m_launchDuration : 1000000;
 	
 	CNegateMagic * effect = new CNegateMagic();
 	effect->Create(m_target_pos);
-	effect->SetDuration(m_tolive);
+	effect->SetDuration(m_duration);
 	m_pSpellFx = effect;
-	m_tolive = effect->GetDuration();
+	m_duration = effect->GetDuration();
 	
 	LaunchAntiMagicField();
 }
@@ -409,9 +409,9 @@ void NegateMagicSpell::LaunchAntiMagicField() {
 		GetSpellPosition(&pos, spell);
 		if(closerThan(pos, entities[m_target]->pos, 600.f)) {
 			if(spell->m_type != SPELL_CREATE_FIELD) {
-				spell->m_tolive = 0;
+				spell->m_duration = 0;
 			} else if(m_target == PlayerEntityHandle && spell->m_caster == PlayerEntityHandle) {
-				spell->m_tolive = 0;
+				spell->m_duration = 0;
 			}
 		}
 	}
@@ -437,7 +437,7 @@ void IncinerateSpell::Launch()
 	                                       &entities[m_target]->pos, 1.f, 
 	                                       ARX_SOUND_PLAY_LOOPED);
 	
-	m_tolive = 20000;
+	m_duration = 20000;
 	
 	tio->sfx_flag |= SFX_TYPE_YLSIDE_DEATH | SFX_TYPE_INCINERATE;
 	tio->sfx_time = (unsigned long)(arxtime);
@@ -465,7 +465,7 @@ void MassParalyseSpell::Launch()
 {
 	ARX_SOUND_PlaySFX(SND_SPELL_MASS_PARALYSE);
 	
-	m_tolive = (m_launchDuration > -1) ? m_launchDuration : 10000;
+	m_duration = (m_launchDuration > -1) ? m_launchDuration : 10000;
 	
 	for(size_t ii = 0; ii < entities.size(); ii++) {
 		const EntityHandle handle = EntityHandle(ii);
