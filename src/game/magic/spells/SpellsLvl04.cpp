@@ -52,7 +52,7 @@ void BlessSpell::Launch()
 	// TODO this tolive value is probably never read
 	m_duration = (m_launchDuration > -1) ? m_launchDuration : 2000000;
 	m_bDuration = true;
-	m_fManaCostPerSecond = 0.5f * m_level * 0.6666f;
+	m_fManaCostPerSecond = 0.3333f * m_level;
 	
 	CBless * effect = new CBless();
 	Vec3f target = entities[m_caster]->pos;
