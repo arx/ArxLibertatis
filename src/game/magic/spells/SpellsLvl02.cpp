@@ -115,17 +115,14 @@ void DetectTrapSpell::Launch()
 {
 	spells.endByCaster(m_caster, SPELL_DETECT_TRAP);
 	
+	m_snd_loop = SND_SPELL_DETECT_TRAP_LOOP;
+	
 	if(m_caster == PlayerEntityHandle) {
 		m_target = m_caster;
 		if(!(m_flags & SPELLCAST_FLAG_NOSOUND)) {
 			ARX_SOUND_PlayInterface(SND_SPELL_DETECT_TRAP);
+			ARX_SOUND_PlaySFX(m_snd_loop, &m_caster_pos, 1.f, ARX_SOUND_PLAY_LOOPED);
 		}
-	}
-	
-	m_snd_loop = SND_SPELL_DETECT_TRAP_LOOP;
-	if(m_caster == PlayerEntityHandle && !(m_flags & SPELLCAST_FLAG_NOSOUND)) {
-		ARX_SOUND_PlaySFX(m_snd_loop, &m_caster_pos, 1.f,
-		                  ARX_SOUND_PLAY_LOOPED);
 	}
 	
 	m_duration = 60000;
