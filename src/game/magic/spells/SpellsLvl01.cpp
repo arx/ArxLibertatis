@@ -332,26 +332,27 @@ void DouseSpell::Launch()
 	CheckForIgnition(target, fPerimeter, 0, 1);
 	
 	for(size_t ii = 0; ii < MAX_LIGHTS; ii++) {
+		EERIE_LIGHT * light = GLight[ii];
 		
-		if(!GLight[ii] || !(GLight[ii]->extras & EXTRAS_EXTINGUISHABLE)) {
+		if(!light || !(light->extras & EXTRAS_EXTINGUISHABLE)) {
 			continue;
 		}
 		
-		if(!(GLight[ii]->extras & EXTRAS_SEMIDYNAMIC)
-		  && !(GLight[ii]->extras & EXTRAS_SPAWNFIRE)
-		  && !(GLight[ii]->extras & EXTRAS_SPAWNSMOKE)) {
+		if(!(light->extras & EXTRAS_SEMIDYNAMIC)
+		  && !(light->extras & EXTRAS_SPAWNFIRE)
+		  && !(light->extras & EXTRAS_SPAWNSMOKE)) {
 			continue;
 		}
 		
-		if(!GLight[ii]->status) {
+		if(!light->status) {
 			continue;
 		}
 		
-		if(!fartherThan(target, GLight[ii]->pos, fPerimeter)) {
+		if(!fartherThan(target, light->pos, fPerimeter)) {
 			T_LINKLIGHTTOFX entry;
 			
 			entry.iLightNum = ii;
-			entry.poslight = GLight[ii]->pos;
+			entry.poslight = light->pos;
 			m_lights.push_back(entry);
 		}
 	}
