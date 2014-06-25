@@ -120,21 +120,10 @@ public:
 	
 	void Create(Vec3f * posc, int speed);
 	void Update(float timeDelta);
-	void Render();
+	void Render(){}
 	void Kill();
 	void AddLight(int iLight);
-	void Action(bool enable);
-};
-
-// Done By : Sébastien Scieux
-class CDoze: public CIgnit {
-	
-public:
-	
-	void CreateDoze(Vec3f * posc, int speed);
-	
-	void AddLightDoze(int iLight);
-	
+	void Action();
 };
 
 #endif // ARX_GRAPHICS_SPELLS_SPELLS01_H

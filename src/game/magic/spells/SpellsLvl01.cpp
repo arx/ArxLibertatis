@@ -261,7 +261,7 @@ void IgnitSpell::Launch()
 void IgnitSpell::End()
 {
 	CIgnit *pIgnit = (CIgnit *)m_pSpellFx;
-	pIgnit->Action(true);
+	pIgnit->Action();
 }
 
 void IgnitSpell::Update(float timeDelta)
@@ -277,8 +277,6 @@ void DouseSpell::Launch()
 {
 	m_tolive = 500;
 	
-	CDoze * effect = new CDoze();
-	
 	Vec3f target;
 	if(m_hand_group >= 0) {
 		target = m_hand_pos;
@@ -288,7 +286,7 @@ void DouseSpell::Launch()
 	}
 	
 	float fPerimeter = 400.f + m_level * 30.f;
-	effect->CreateDoze(&target, m_tolive);
+	
 	CheckForIgnition(target, fPerimeter, 0, 1);
 	
 	for(size_t ii = 0; ii < MAX_LIGHTS; ii++) {
@@ -308,7 +306,11 @@ void DouseSpell::Launch()
 		}
 		
 		if(!fartherThan(target, GLight[ii]->pos, fPerimeter)) {
-			effect->AddLightDoze(ii);	
+			T_LINKLIGHTTOFX entry;
+			
+			entry.iLightNum = ii;
+			entry.poslight = GLight[ii]->pos;
+			m_lights.push_back(entry);
 		}
 	}
 	
@@ -357,23 +359,19 @@ void DouseSpell::Launch()
 			default: break;
 		}
 	}
+}
+
+void DouseSpell::End() {
 	
-	m_pSpellFx = effect;
-}
-
-void DouseSpell::End()
-{
-	CDoze *pDoze = (CDoze *)m_pSpellFx;
-	pDoze->Action(false);
-}
-
-void DouseSpell::Update(float timeDelta)
-{
-	CSpellFx *pCSpellFX = m_pSpellFx;
-	if(pCSpellFX) {
-		pCSpellFX->Update(timeDelta);
-		pCSpellFX->Render();
+	std::vector<T_LINKLIGHTTOFX>::const_iterator itr;
+	for(itr = m_lights.begin(); itr != m_lights.end(); ++itr) {
+		GLight[itr->iLightNum]->status = false;
+		ARX_SOUND_PlaySFX(SND_SPELL_DOUSE, &itr->poslight);
 	}
+}
+
+void DouseSpell::Update(float timeDelta) {
+	ARX_UNUSED(timeDelta);
 }
 
 void ActivatePortalSpell::Launch()

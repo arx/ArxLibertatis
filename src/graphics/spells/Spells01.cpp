@@ -613,17 +613,12 @@ void CIgnit::Create(Vec3f * posc, int speed)
 	m_elapsed = 0;
 }
 
-void CIgnit::Action(bool enable)
+void CIgnit::Action()
 {
 	std::vector<T_LINKLIGHTTOFX>::const_iterator itr;
 	for(itr = m_lights.begin(); itr != m_lights.end(); ++itr) {
-		GLight[itr->iLightNum]->status = enable;
-
-		if(enable) {
-			ARX_SOUND_PlaySFX(SND_SPELL_IGNITE, &itr->poslight);
-		} else {
-			ARX_SOUND_PlaySFX(SND_SPELL_DOUSE, &itr->poslight);
-		}
+		GLight[itr->iLightNum]->status = true;
+		ARX_SOUND_PlaySFX(SND_SPELL_IGNITE, &itr->poslight);
 	}
 }
 
@@ -678,28 +673,6 @@ void CIgnit::Update(float timeDelta)
 	
 	if(!arxtime.is_paused())
 		m_elapsed += timeDelta;
-}
-
-void CDoze::CreateDoze(Vec3f * posc, int speed) {
-	Create(posc, speed);
-}
-
-void CDoze::AddLightDoze(int aiLight)
-{
-	if(arxtime.is_paused())
-		return;
-	
-	T_LINKLIGHTTOFX entry;
-	
-	entry.iLightNum = aiLight;
-	entry.poslight = GLight[aiLight]->pos;
-	entry.idl = InvalidLightHandle;
-
-	m_lights.push_back(entry);
-}
-
-void CIgnit::Render() {
-
 }
 
 //-----------------------------------------------------------------------------
