@@ -101,9 +101,9 @@ private:
 class CIgnit : public CSpellFx {
 	
 protected:
-	Vec3f pos;
-	int duration;
-	int currduration;
+	Vec3f m_srcPos;
+	int m_duration;
+	int m_elapsed;
 	
 	struct T_LINKLIGHTTOFX {
 		Vec3f poslight;
@@ -113,7 +113,7 @@ protected:
 	};
 	
 public:
-	std::vector<T_LINKLIGHTTOFX> tablight;
+	std::vector<T_LINKLIGHTTOFX> m_lights;
 	
 	CIgnit();
 	~CIgnit();

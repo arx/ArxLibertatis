@@ -584,9 +584,9 @@ void CMultiMagicMissile::Render()
 // IGNIT
 //-----------------------------------------------------------------------------
 CIgnit::CIgnit()
-	: pos(Vec3f_ZERO)
-	, duration(0)
-	, currduration(0)
+	: m_srcPos(Vec3f_ZERO)
+	, m_duration(0)
+	, m_elapsed(0)
 {}
 
 CIgnit::~CIgnit()
@@ -598,25 +598,25 @@ void CIgnit::Kill(void)
 {
 	
 	std::vector<T_LINKLIGHTTOFX>::iterator itr;
-	for(itr = tablight.begin(); itr != tablight.end(); ++itr) {
+	for(itr = m_lights.begin(); itr != m_lights.end(); ++itr) {
 		lightHandleDestroy(itr->idl);
 	}
 	
-	tablight.clear();
+	m_lights.clear();
 }
 
 void CIgnit::Create(Vec3f * posc, int speed)
 {
-	pos = *posc;
-	tablight.clear();
-	duration = speed;
-	currduration = 0;
+	m_srcPos = *posc;
+	m_lights.clear();
+	m_duration = speed;
+	m_elapsed = 0;
 }
 
 void CIgnit::Action(bool enable)
 {
 	std::vector<T_LINKLIGHTTOFX>::const_iterator itr;
-	for(itr = tablight.begin(); itr != tablight.end(); ++itr) {
+	for(itr = m_lights.begin(); itr != m_lights.end(); ++itr) {
 		GLight[itr->iLightNum]->status = enable;
 
 		if(enable) {
@@ -649,21 +649,21 @@ void CIgnit::AddLight(int aiLight)
 		light->pos = entry.poslight;
 	}
 
-	tablight.push_back(entry);
+	m_lights.push_back(entry);
 }
 
 void CIgnit::Update(float timeDelta) 
 {
-	if(currduration < duration) {
-		float a = (((float)currduration)) / ((float)duration);
+	if(m_elapsed < m_duration) {
+		float a = (((float)m_elapsed)) / ((float)m_duration);
 		
 		if(a >= 1.f)
 			a = 1.f;
 		
 		std::vector<T_LINKLIGHTTOFX>::iterator itr;
-		for(itr = tablight.begin(); itr != tablight.end(); ++itr) {
+		for(itr = m_lights.begin(); itr != m_lights.end(); ++itr) {
 		
-				itr->posfx = pos + (itr->poslight - pos) * a;
+				itr->posfx = m_srcPos + (itr->poslight - m_srcPos) * a;
 				
 				LightHandle id = itr->idl;
 				
@@ -677,7 +677,7 @@ void CIgnit::Update(float timeDelta)
 	}
 	
 	if(!arxtime.is_paused())
-		currduration += timeDelta;
+		m_elapsed += timeDelta;
 }
 
 void CDoze::CreateDoze(Vec3f * posc, int speed) {
@@ -695,7 +695,7 @@ void CDoze::AddLightDoze(int aiLight)
 	entry.poslight = GLight[aiLight]->pos;
 	entry.idl = InvalidLightHandle;
 
-	tablight.push_back(entry);
+	m_lights.push_back(entry);
 }
 
 void CIgnit::Render() {
