@@ -585,10 +585,8 @@ void CMultiMagicMissile::Render()
 //-----------------------------------------------------------------------------
 CIgnit::CIgnit()
 	: pos(Vec3f_ZERO)
-	, m_active(false)
 	, duration(0)
 	, currduration(0)
-	, rgb(0.f, 0.f, 0.f)
 {}
 
 CIgnit::~CIgnit()
@@ -613,9 +611,6 @@ void CIgnit::Create(Vec3f * posc, int speed)
 	tablight.clear();
 	duration = speed;
 	currduration = 0;
-	m_active = true;
-	
-	rgb = Color3f(1.f, 1.f, 1.f);
 }
 
 void CIgnit::Action(bool enable)
@@ -650,7 +645,7 @@ void CIgnit::AddLight(int aiLight)
 		light->intensity = 0.7f + 2.f * rnd();
 		light->fallend = 400.f;
 		light->fallstart = 300.f;
-		light->rgb = rgb;
+		light->rgb = Color3f(1.f, 1.f, 1.f);
 		light->pos = entry.poslight;
 	}
 
@@ -659,11 +654,7 @@ void CIgnit::AddLight(int aiLight)
 
 void CIgnit::Update(float timeDelta) 
 {
-	if(currduration >= duration) {
-		m_active = false;
-	}
-
-	if(m_active) {
+	if(currduration < duration) {
 		float a = (((float)currduration)) / ((float)duration);
 		
 		if(a >= 1.f)
@@ -691,8 +682,6 @@ void CIgnit::Update(float timeDelta)
 
 void CDoze::CreateDoze(Vec3f * posc, int speed) {
 	Create(posc, speed);
-	
-	rgb = Color3f(0.f, .7f, 1.f);
 }
 
 void CDoze::AddLightDoze(int aiLight)

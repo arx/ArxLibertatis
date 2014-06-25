@@ -102,11 +102,8 @@ class CIgnit : public CSpellFx {
 	
 protected:
 	Vec3f pos;
-	bool m_active;
 	int duration;
 	int currduration;
-	
-	Color3f rgb;
 	
 	struct T_LINKLIGHTTOFX {
 		Vec3f poslight;
