@@ -116,7 +116,7 @@ private:
 		int currtime;
 	};
 	
-	int timestone;
+	int m_stoneDelay;
 	int nbstone;
 	T_STONE tstone[256];
 	

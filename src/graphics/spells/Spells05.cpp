@@ -890,7 +890,7 @@ CLevitate::CLevitate()
 	, currdurationang(0)
 	, currframetime(0)
 	, tsouffle(NULL)
-	, timestone(0)
+	, m_stoneDelay(0)
 	, nbstone(0)
 {
 	int nb = 2;
@@ -986,7 +986,7 @@ void CLevitate::Create(int def, float rbase, float rhaut, float hauteur, Vec3f *
 	this->def = (short)def;
 	this->tsouffle = TextureContainer::Load("graph/obj3d/textures/(fx)_sebsouffle");
 
-	this->timestone = 0;
+	m_stoneDelay = 0;
 	this->nbstone = 0;
 	
 	int nb = 256;
@@ -1112,11 +1112,11 @@ void CLevitate::Update(float timeDelta)
 
 	if(!arxtime.is_paused()) {
 		this->currframetime = timeDelta;
-		this->timestone -= timeDelta;
+		m_stoneDelay -= timeDelta;
 	}
 
-	if(this->timestone <= 0) {
-		this->timestone = Random::get(50, 150);
+	if(m_stoneDelay <= 0) {
+		m_stoneDelay = Random::get(50, 150);
 		Vec3f	pos;
 
 		float r = this->rbase * frand2();
