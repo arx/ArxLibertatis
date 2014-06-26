@@ -120,7 +120,7 @@ private:
 	int nbstone;
 	T_STONE tstone[256];
 	
-	void AddStone(Vec3f * pos);
+	void AddStone(const Vec3f & pos);
 	void DrawStone();
 	
 	void CreateConeStrip(float rout, float rhaut, float hauteur, int def, int numcone);

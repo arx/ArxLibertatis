@@ -996,7 +996,7 @@ void CLevitate::Create(int def, float rbase, float rhaut, float hauteur, Vec3f *
 	}
 }
 
-void CLevitate::AddStone(Vec3f * pos) {
+void CLevitate::AddStone(const Vec3f & pos) {
 	
 	if(arxtime.is_paused() || nbstone > 255) {
 		return;
@@ -1008,7 +1008,7 @@ void CLevitate::AddStone(Vec3f * pos) {
 			nbstone++;
 			tstone[nb].actif = 1;
 			tstone[nb].numstone = rand() & 1;
-			tstone[nb].pos = *pos;
+			tstone[nb].pos = pos;
 			tstone[nb].yvel = rnd() * -5.f;
 			tstone[nb].ang = Anglef(rnd() * 360.f, rnd() * 360.f, rnd() * 360.f);
 			tstone[nb].angvel = Anglef(5.f * rnd(), 6.f * rnd(), 3.f * rnd());
@@ -1117,13 +1117,9 @@ void CLevitate::Update(float timeDelta)
 
 	if(m_stoneDelay <= 0) {
 		m_stoneDelay = Random::get(50, 150);
-		Vec3f	pos;
-
+		
 		float r = this->rbase * frand2();
-		pos.x = m_pos.x + r;
-		pos.y = m_pos.y;
-		pos.z = m_pos.z + r;
-		this->AddStone(&pos);
+		AddStone(m_pos + Vec3f(r, 0.f, r));
 	}
 }
 
