@@ -1072,20 +1072,22 @@ void CLevitate::DrawStone()
 void CLevitate::Update(float timeDelta)
 {
 	float	a;
-
-	//animation cone
-	if(!arxtime.is_paused())
+	
+	if(!arxtime.is_paused()) {
 		this->currdurationang += timeDelta;
-
+		ulCurrentTime += timeDelta;
+		this->currframetime = timeDelta;
+		m_stoneDelay -= timeDelta;
+	}
+	
+	//animation cone
 	this->ang = (float)this->currdurationang / 1000.f;
 
 	if(this->ang > 1.f) {
 		this->currdurationang = 0;
 		this->ang = 1.f;
 	}
-
-	if (!arxtime.is_paused()) ulCurrentTime += timeDelta;
-
+	
 	switch(this->key) {
 		case 0:
 			//monté du cone
@@ -1109,12 +1111,7 @@ void CLevitate::Update(float timeDelta)
 
 			break;
 	}
-
-	if(!arxtime.is_paused()) {
-		this->currframetime = timeDelta;
-		m_stoneDelay -= timeDelta;
-	}
-
+	
 	if(m_stoneDelay <= 0) {
 		m_stoneDelay = Random::get(50, 150);
 		
