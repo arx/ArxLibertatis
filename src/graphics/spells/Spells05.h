@@ -88,7 +88,10 @@ private:
 	short key;
 	short def;
 	Vec3f m_pos;
-	float rbase, rhaut, hauteur, scale;
+	float m_baseRadius;
+	float rhaut;
+	float hauteur;
+	float scale;
 	float ang;
 	int currdurationang;
 	int currframetime;

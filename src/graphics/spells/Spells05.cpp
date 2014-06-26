@@ -882,7 +882,7 @@ CLevitate::CLevitate()
 	: key(0)
 	, def(16)
 	, m_pos(Vec3f_ZERO)
-	, rbase(50.f)
+	, m_baseRadius(50.f)
 	, rhaut(100.f)
 	, hauteur(80.f)
 	, scale(0.f)
@@ -977,7 +977,7 @@ void CLevitate::Create(int def, float rbase, float rhaut, float hauteur, Vec3f *
 
 	this->key = 0;
 	this->m_pos = *pos;
-	this->rbase = rbase;
+	m_baseRadius = rbase;
 	this->rhaut = rhaut;
 	this->hauteur = hauteur;
 	this->currdurationang = 0;
@@ -1118,7 +1118,7 @@ void CLevitate::Update(float timeDelta)
 	if(m_stoneDelay <= 0) {
 		m_stoneDelay = Random::get(50, 150);
 		
-		float r = this->rbase * frand2();
+		float r = m_baseRadius * frand2();
 		AddStone(m_pos + Vec3f(r, 0.f, r));
 	}
 }
@@ -1131,7 +1131,7 @@ void CLevitate::createDustParticle()
 	}
 	
 	float a = radians(360.f * rnd());
-	pd->ov = m_pos + Vec3f(rbase * std::cos(a), 0.f, rbase * std::sin(a));
+	pd->ov = m_pos + Vec3f(m_baseRadius * std::cos(a), 0.f, m_baseRadius * std::sin(a));
 	float t = fdist(pd->ov, m_pos);
 	pd->move = Vec3f((5.f + 5.f * rnd()) * ((pd->ov.x - m_pos.x) / t), 3.f * rnd(),
 	                 (5.f + 5.f * rnd()) * ((pd->ov.z - m_pos.z) / t));
