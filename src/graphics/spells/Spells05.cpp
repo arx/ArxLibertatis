@@ -1118,8 +1118,7 @@ void CLevitate::Update(float timeDelta)
 	if(m_stoneDelay <= 0) {
 		m_stoneDelay = Random::get(50, 150);
 		
-		float r = m_baseRadius * frand2();
-		AddStone(m_pos + Vec3f(r, 0.f, r));
+		AddStone(m_pos + randomOffsetXZ(m_baseRadius));
 	}
 }
 

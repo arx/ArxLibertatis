@@ -78,6 +78,8 @@ class CSpellFx
 
 #define frand2() (1.0f - (2.0f * rnd()))
 
+Vec3f randomOffsetXZ(float range);
+
 void Draw3DLineTexNew(Vec3f startPos, Vec3f endPos, Color startColor, Color endColor, float startSize, float endSize);
 
 void Split(Vec3f * v, int a, int b, float fX, float fMulX, float fY, float fMulY, float fZ, float fMulZ);

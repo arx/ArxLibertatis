@@ -210,3 +210,8 @@ void DANAE_ReleaseAllDatasDynamic() {
 	delete stone1, stone1 = NULL, stone1_count = 0;
 }
 
+
+
+Vec3f randomOffsetXZ(float range) {
+	return Vec3f(frand2() * range, 0.f, frand2() * range);
+}
