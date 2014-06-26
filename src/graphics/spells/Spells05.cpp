@@ -885,7 +885,7 @@ CLevitate::CLevitate()
 	, m_baseRadius(50.f)
 	, rhaut(100.f)
 	, hauteur(80.f)
-	, scale(0.f)
+	, m_coneScale(0.f)
 	, ang(0.f)
 	, currdurationang(0)
 	, currframetime(0)
@@ -981,7 +981,7 @@ void CLevitate::Create(int def, float rbase, float rhaut, float hauteur, Vec3f *
 	this->rhaut = rhaut;
 	this->hauteur = hauteur;
 	this->currdurationang = 0;
-	this->scale = 0.f;
+	m_coneScale = 0.f;
 	this->ang = 0.f;
 	this->def = (short)def;
 	this->tsouffle = TextureContainer::Load("graph/obj3d/textures/(fx)_sebsouffle");
@@ -1098,14 +1098,14 @@ void CLevitate::Update(float timeDelta)
 				this->key++;
 			}
 
-			this->scale = a;
+			m_coneScale = a;
 			break;
 		case 1:
 			//animation cone
-			this->scale = (float)ulCurrentTime / (float)ulDuration;
+			m_coneScale = (float)ulCurrentTime / (float)ulDuration;
 
 			if(ulCurrentTime >= ulDuration) {
-				this->scale = 1.f;
+				m_coneScale = 1.f;
 				this->key++;
 			}
 
@@ -1164,9 +1164,9 @@ void CLevitate::Render()
 
 				while(nb) {
 					Vec3f d3dvs;
-					d3dvs.x = m_pos.x + (vertex + 1)->x + ((vertex->x - (vertex + 1)->x) * this->scale);
-					d3dvs.y = m_pos.y + (vertex + 1)->y + ((vertex->y - (vertex + 1)->y) * this->scale);
-					d3dvs.z = m_pos.z + (vertex + 1)->z + ((vertex->z - (vertex + 1)->z) * this->scale);
+					d3dvs.x = m_pos.x + (vertex + 1)->x + ((vertex->x - (vertex + 1)->x) * m_coneScale);
+					d3dvs.y = m_pos.y + (vertex + 1)->y + ((vertex->y - (vertex + 1)->y) * m_coneScale);
+					d3dvs.z = m_pos.z + (vertex + 1)->z + ((vertex->z - (vertex + 1)->z) * m_coneScale);
 					
 					EE_RT(d3dvs, d3dv->p);
 					col = Random::get(0, 80);

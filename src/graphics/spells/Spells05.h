@@ -91,7 +91,7 @@ private:
 	float m_baseRadius;
 	float rhaut;
 	float hauteur;
-	float scale;
+	float m_coneScale;
 	float ang;
 	int currdurationang;
 	int currframetime;
