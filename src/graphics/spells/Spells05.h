@@ -124,6 +124,7 @@ private:
 	void DrawStone();
 	
 	void CreateConeStrip(float rout, float rhaut, float hauteur, int def, int numcone);
+	void createDustParticle();
 };
 
 // Done By : Didier Pédreno

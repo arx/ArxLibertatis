@@ -1127,6 +1127,25 @@ void CLevitate::Update(float timeDelta)
 	}
 }
 
+void CLevitate::createDustParticle()
+{
+	PARTICLE_DEF * pd = createParticle();
+	if(!pd) {
+		return;
+	}
+	
+	float a = radians(360.f * rnd());
+	pd->ov = pos + Vec3f(rbase * std::cos(a), 0.f, rbase * std::sin(a));
+	float t = fdist(pd->ov, pos);
+	pd->move = Vec3f((5.f + 5.f * rnd()) * ((pd->ov.x - pos.x) / t), 3.f * rnd(),
+	                 (5.f + 5.f * rnd()) * ((pd->ov.z - pos.z) / t));
+	pd->siz = 30.f + 30.f * rnd();
+	pd->tolive = 3000;
+	pd->timcreation = -(long(arxtime) + 3000l); // TODO WTF
+	pd->special = FIRE_TO_SMOKE | FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
+	pd->fparam = 0.0000001f;
+}
+
 void CLevitate::Render()
 {
 	if(this->key > 1)
@@ -1199,23 +1218,7 @@ void CLevitate::Render()
 
 			nbc = 3;
 			while(nbc--) {
-				
-				PARTICLE_DEF * pd = createParticle();
-				if(!pd) {
-					break;
-				}
-				
-				float a = radians(360.f * rnd());
-				pd->ov = pos + Vec3f(rbase * std::cos(a), 0.f, rbase * std::sin(a));
-				float t = fdist(pd->ov, pos);
-				pd->move = Vec3f((5.f + 5.f * rnd()) * ((pd->ov.x - pos.x) / t), 3.f * rnd(),
-				                 (5.f + 5.f * rnd()) * ((pd->ov.z - pos.z) / t));
-				pd->siz = 30.f + 30.f * rnd();
-				pd->tolive = 3000;
-				pd->timcreation = -(long(arxtime) + 3000l); // TODO WTF
-				pd->special = FIRE_TO_SMOKE | FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION
-				              | DISSIPATING;
-				pd->fparam = 0.0000001f;
+				createDustParticle();
 			}
 			break;
 		
@@ -1266,23 +1269,7 @@ void CLevitate::Render()
 			
 			nbc = 10;
 			while(nbc--) {
-				
-				PARTICLE_DEF * pd = createParticle();
-				if(!pd) {
-					break;
-				}
-				
-				float a = radians(360.f * rnd());
-				pd->ov = pos + Vec3f(rbase * std::cos(a), 0.f, rbase * std::sin(a));
-				float t = fdist(pd->ov, pos);
-				pd->move = Vec3f((5.f + 5.f * rnd()) * ((pd->ov.x - pos.x) / t), 3.f * rnd(),
-				                 (5.f + 5.f * rnd()) * ((pd->ov.z - pos.z) / t));
-				pd->siz = 30.f + 30.f * rnd();
-				pd->tolive = 3000;
-				pd->timcreation = -(long(arxtime) + 3000l); // TODO WTF
-				pd->special = FIRE_TO_SMOKE | FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION
-				              | DISSIPATING;
-				pd->fparam = 0.0000001f;
+				createDustParticle();
 			}
 			
 			break;
