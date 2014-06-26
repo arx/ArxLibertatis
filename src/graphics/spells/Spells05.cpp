@@ -881,7 +881,7 @@ void CRepelUndead::Render() {
 CLevitate::CLevitate()
 	: key(0)
 	, def(16)
-	, pos(Vec3f_ZERO)
+	, m_pos(Vec3f_ZERO)
 	, rbase(50.f)
 	, rhaut(100.f)
 	, hauteur(80.f)
@@ -976,7 +976,7 @@ void CLevitate::Create(int def, float rbase, float rhaut, float hauteur, Vec3f *
 	this->CreateConeStrip(rbase, rhaut * 1.5f, hauteur * 0.5f, def, 1);
 
 	this->key = 0;
-	this->pos = *pos;
+	this->m_pos = *pos;
 	this->rbase = rbase;
 	this->rhaut = rhaut;
 	this->hauteur = hauteur;
@@ -1120,9 +1120,9 @@ void CLevitate::Update(float timeDelta)
 		Vec3f	pos;
 
 		float r = this->rbase * frand2();
-		pos.x = this->pos.x + r; 
-		pos.y = this->pos.y;
-		pos.z = this->pos.z + r; 
+		pos.x = m_pos.x + r;
+		pos.y = m_pos.y;
+		pos.z = m_pos.z + r;
 		this->AddStone(&pos);
 	}
 }
@@ -1135,10 +1135,10 @@ void CLevitate::createDustParticle()
 	}
 	
 	float a = radians(360.f * rnd());
-	pd->ov = pos + Vec3f(rbase * std::cos(a), 0.f, rbase * std::sin(a));
-	float t = fdist(pd->ov, pos);
-	pd->move = Vec3f((5.f + 5.f * rnd()) * ((pd->ov.x - pos.x) / t), 3.f * rnd(),
-	                 (5.f + 5.f * rnd()) * ((pd->ov.z - pos.z) / t));
+	pd->ov = m_pos + Vec3f(rbase * std::cos(a), 0.f, rbase * std::sin(a));
+	float t = fdist(pd->ov, m_pos);
+	pd->move = Vec3f((5.f + 5.f * rnd()) * ((pd->ov.x - m_pos.x) / t), 3.f * rnd(),
+	                 (5.f + 5.f * rnd()) * ((pd->ov.z - m_pos.z) / t));
 	pd->siz = 30.f + 30.f * rnd();
 	pd->tolive = 3000;
 	pd->timcreation = -(long(arxtime) + 3000l); // TODO WTF
@@ -1172,9 +1172,9 @@ void CLevitate::Render()
 
 				while(nb) {
 					Vec3f d3dvs;
-					d3dvs.x = this->pos.x + (vertex + 1)->x + ((vertex->x - (vertex + 1)->x) * this->scale);
-					d3dvs.y = this->pos.y + (vertex + 1)->y + ((vertex->y - (vertex + 1)->y) * this->scale);
-					d3dvs.z = this->pos.z + (vertex + 1)->z + ((vertex->z - (vertex + 1)->z) * this->scale);
+					d3dvs.x = m_pos.x + (vertex + 1)->x + ((vertex->x - (vertex + 1)->x) * this->scale);
+					d3dvs.y = m_pos.y + (vertex + 1)->y + ((vertex->y - (vertex + 1)->y) * this->scale);
+					d3dvs.z = m_pos.z + (vertex + 1)->z + ((vertex->z - (vertex + 1)->z) * this->scale);
 					
 					EE_RT(d3dvs, d3dv->p);
 
@@ -1190,9 +1190,9 @@ void CLevitate::Render()
 					vertex++;
 					d3dv++;
 
-					d3dvs.x = this->pos.x + vertex->x;
-					d3dvs.y = this->pos.y;
-					d3dvs.z = this->pos.z + vertex->z;
+					d3dvs.x = m_pos.x + vertex->x;
+					d3dvs.y = m_pos.y;
+					d3dvs.z = m_pos.z + vertex->z;
 					
 					EE_RT(d3dvs, d3dv->p);
 
@@ -1231,7 +1231,7 @@ void CLevitate::Render()
 				nb = (this->cone[nbc].conenbvertex) >> 1;
 
 				while(nb) {
-					Vec3f d3dvs = this->pos + *vertex;
+					Vec3f d3dvs = m_pos + *vertex;
 	
 					EE_RT(d3dvs, d3dv->p);
 					col = Random::get(0, 80);
@@ -1244,9 +1244,9 @@ void CLevitate::Render()
 					vertex++;
 					d3dv++;
 
-					d3dvs.x = this->pos.x + vertex->x;
-					d3dvs.y = this->pos.y;
-					d3dvs.z = this->pos.z + vertex->z;
+					d3dvs.x = m_pos.x + vertex->x;
+					d3dvs.y = m_pos.y;
+					d3dvs.z = m_pos.z + vertex->z;
 
 					EE_RT(d3dvs, d3dv->p);
 					col = Random::get(0, 80);

@@ -77,17 +77,17 @@ public:
 	
 	void ChangePos(Vec3f * pos)
 	{
-		this->pos = *pos;
+		this->m_pos = *pos;
 	};
 	
-	void Create(int def, float rout, float rhaut, float hauteur, Vec3f * pos, unsigned long);
+	void Create(int def, float rout, float rhaut, float hauteur, Vec3f * m_pos, unsigned long);
 	void Update(float timeDelta);
 	void Render();
 	
 private:
 	short key;
 	short def;
-	Vec3f pos;
+	Vec3f m_pos;
 	float rbase, rhaut, hauteur, scale;
 	float ang;
 	int currdurationang;
