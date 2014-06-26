@@ -1169,10 +1169,7 @@ void CLevitate::Render()
 					d3dvs.z = m_pos.z + (vertex + 1)->z + ((vertex->z - (vertex + 1)->z) * this->scale);
 					
 					EE_RT(d3dvs, d3dv->p);
-
-					float fRandom	= rnd() * 80.f;
-
-					col = checked_range_cast<int>(fRandom);
+					col = Random::get(0, 80);
 
 					if(!arxtime.is_paused())
 						d3dv->color = Color::grayb(col).toBGR(col);
@@ -1187,16 +1184,13 @@ void CLevitate::Render()
 					d3dvs.z = m_pos.z + vertex->z;
 					
 					EE_RT(d3dvs, d3dv->p);
-
-					fRandom = rnd() * 80.f;
-
-					col = checked_range_cast<int>(fRandom);
+					col = Random::get(0, 80);
 
 					if(!arxtime.is_paused())
 						d3dv->color = Color::black.toBGR(col);
 
 					d3dv->uv.x = u;
-					d3dv->uv.y = 0.9999999f;
+					d3dv->uv.y = 1.f;
 					vertex++;
 					d3dv++;
 
@@ -1247,7 +1241,7 @@ void CLevitate::Render()
 						d3dv->color = Color::black.toBGR(col);
 
 					d3dv->uv.x = u;
-					d3dv->uv.y = 1; 
+					d3dv->uv.y = 1.f;
 					vertex++;
 					d3dv++;
 
