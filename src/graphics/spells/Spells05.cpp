@@ -1088,6 +1088,8 @@ void CLevitate::Update(float timeDelta)
 		this->ang = 1.f;
 	}
 	
+	int dustParticles = 0;
+	
 	switch(this->key) {
 		case 0:
 			//monté du cone
@@ -1099,6 +1101,8 @@ void CLevitate::Update(float timeDelta)
 			}
 
 			m_coneScale = a;
+			
+			dustParticles = 3;
 			break;
 		case 1:
 			//animation cone
@@ -1108,8 +1112,13 @@ void CLevitate::Update(float timeDelta)
 				m_coneScale = 1.f;
 				this->key++;
 			}
-
+			
+			dustParticles = 10;
 			break;
+	}
+	
+	for(int i = 0; i < dustParticles; i++) {
+		createDustParticle();
 	}
 	
 	if(m_stoneDelay <= 0) {
@@ -1201,13 +1210,7 @@ void CLevitate::Render()
 				u = ddu;
 				du = -du;
 			}
-
-			nbc = 3;
-			while(nbc--) {
-				createDustParticle();
-			}
 			break;
-		
 		case 1:
 			nbc = 2;
 
@@ -1252,12 +1255,6 @@ void CLevitate::Render()
 				u = ddu;
 				du = -du;
 			}
-			
-			nbc = 10;
-			while(nbc--) {
-				createDustParticle();
-			}
-			
 			break;
 	}
 
