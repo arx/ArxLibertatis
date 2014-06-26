@@ -125,14 +125,10 @@ void LevitateSpell::Update(float timeDelta)
 	Vec3f target;
 
 	if(m_target == PlayerEntityHandle) {
-		target.x=player.pos.x;
-		target.y=player.pos.y+150.f;
-		target.z=player.pos.z;
+		target = player.pos + Vec3f(0.f, 150.f, 0.f);
 		player.levitate = true;
 	} else {
-		target.x = entities[m_caster]->pos.x;
-		target.y = entities[m_caster]->pos.y;
-		target.z = entities[m_caster]->pos.z;
+		target = entities[m_caster]->pos;
 	}
 
 	pLevitate->ChangePos(&target);
