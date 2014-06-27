@@ -215,35 +215,26 @@ void CIceProjectile::Create(Vec3f aeSrc, float afBeta, float fLevel, EntityHandl
 		Icicle & icicle = m_icicles[i];
 		
 		float t = rnd();
-
-		if (t < 0.5f)
+		
+		Vec3f minSize;
+		int randomRange;
+		
+		if(t < 0.5f) {
 			icicle.type = 0;
-		else
+			minSize = Vec3f(1.2f, 1.f, 1.2f);
+			randomRange = 80;
+		} else {
 			icicle.type = 1;
+			minSize = Vec3f(0.4f, 0.3f, 0.4f);
+			randomRange = 40;
+		}
 
 		icicle.size = Vec3f_ZERO;
 		icicle.sizeMax = randomVec() + Vec3f(0.f, 0.2f, 0.f);
-
-		Vec3f minSize;
-		if(icicle.type == 0) {
-			minSize = Vec3f(1.2f, 1.f, 1.2f);
-		} else {
-			minSize = Vec3f(0.4f, 0.3f, 0.4f);
-		}
-		
 		icicle.sizeMax = glm::max(icicle.sizeMax, minSize);
 		
 		int iNum = static_cast<int>(i / 2);
-
-		if(icicle.type == 0) {
-			icicle.pos.x = tv1a[iNum].x + frand2() * 80;
-			icicle.pos.y = tv1a[iNum].y;
-			icicle.pos.z = tv1a[iNum].z + frand2() * 80;
-		} else {
-			icicle.pos.x = tv1a[iNum].x + frand2() * 40;
-			icicle.pos.y = tv1a[iNum].y;
-			icicle.pos.z = tv1a[iNum].z + frand2() * 40;
-		}
+		icicle.pos = tv1a[iNum] + randomOffsetXZ(randomRange);
 		
 		DamageParameters damage;
 		damage.pos = icicle.pos;
