@@ -105,52 +105,46 @@ void CBless::Render()
 	if(ulCurrentTime >= ulDuration)
 		return;
 
-	GRenderer->SetCulling(Renderer::CullNone);
-	GRenderer->SetRenderState(Renderer::DepthWrite, false);
-	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-
-	Vec3f v[4];
+	RenderMaterial mat;
+	mat.setCulling(Renderer::CullNone);
+	mat.setBlendType(RenderMaterial::Additive);
+	mat.setDepthTest(true);
+	mat.setLayer(RenderMaterial::Decal);
+	mat.setTexture(tex_sol);
 	
 	float fBetaRadCos = (float) cos(radians(MAKEANGLE(m_yaw))) * m_scale;
 	float fBetaRadSin = (float) sin(radians(MAKEANGLE(m_yaw))) * m_scale;
 
 	ColorBGRA color = Color::white.toBGR();
-
-	v[0].x = x - fBetaRadCos - fBetaRadSin;
-	v[0].y = y;
-	v[0].z = z - fBetaRadSin + fBetaRadCos;
-	v[1].x = x + fBetaRadCos - fBetaRadSin;
-	v[1].y = y;
-	v[1].z = z + fBetaRadSin + fBetaRadCos;
-	v[2].x = x - fBetaRadCos + fBetaRadSin;
-	v[2].y = y;
-	v[2].z = z - fBetaRadSin - fBetaRadCos;
-	v[3].x = x + fBetaRadCos + fBetaRadSin;
-	v[3].y = y;
-	v[3].z = z + fBetaRadSin - fBetaRadCos;
 	
-	TexturedVertex v3[4];
+	{
+	TexturedQuad q;
 	
-	v3[0].color = color;
-	v3[1].color = color;
-	v3[2].color = color;
-	v3[3].color = color;
+	q.v[0].color = color;
+	q.v[1].color = color;
+	q.v[2].color = color;
+	q.v[3].color = color;
 	
-	GRenderer->SetTexture(0, tex_sol);
+	q.v[0].uv = Vec2f_ZERO;
+	q.v[1].uv = Vec2f_X_AXIS;
+	q.v[2].uv = Vec2f_ONE;
+	q.v[3].uv = Vec2f_Y_AXIS;
 	
-	v3[0].uv = Vec2f_ZERO;
-	v3[1].uv = Vec2f_X_AXIS;
-	v3[2].uv = Vec2f_Y_AXIS;
-	v3[3].uv = Vec2f_ONE;
+	q.v[0].p.x = x + fBetaRadCos - fBetaRadSin;
+	q.v[0].p.y = y;
+	q.v[0].p.z = z + fBetaRadSin + fBetaRadCos;
+	q.v[1].p.x = x - fBetaRadCos - fBetaRadSin;
+	q.v[1].p.y = y;
+	q.v[1].p.z = z - fBetaRadSin + fBetaRadCos;
+	q.v[2].p.x = x - fBetaRadCos + fBetaRadSin;
+	q.v[2].p.y = y;
+	q.v[2].p.z = z - fBetaRadSin - fBetaRadCos;
+	q.v[3].p.x = x + fBetaRadCos + fBetaRadSin;
+	q.v[3].p.y = y;
+	q.v[3].p.z = z + fBetaRadSin - fBetaRadCos;
 	
-	EE_RT(v[0], v3[0].p);
-	EE_RT(v[1], v3[1].p);
-	EE_RT(v[2], v3[2].p);
-	EE_RT(v[3], v3[3].p);
-	ARX_DrawPrimitive(&v3[0], &v3[1], &v3[2]);
-	ARX_DrawPrimitive(&v3[1], &v3[2], &v3[3]);
-	
-	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+	drawQuadRTP(mat, q);
+	}
 	
 	for(i = 0; i < 12; i++) {
 		
@@ -168,10 +162,6 @@ void CBless::Render()
 		pd->fparam = 0.0000001f;
 		pd->rgb = Color3f(0.7f, 0.6f, 0.2f);
 	}
-	
-	GRenderer->SetCulling(Renderer::CullNone);
-	GRenderer->SetRenderState(Renderer::DepthWrite, false);
-	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 }
 
 CCurse::~CCurse() {
