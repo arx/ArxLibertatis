@@ -339,9 +339,8 @@ struct EERIE_3DOBJ
 		cub.ymax = 0;
 		cub.zmin = 0;
 		cub.zmax = 0;
-
-		// TODO Default constructor
-		quat.x = quat.y = quat.z = quat.w = 0;
+		
+		quat = glm::quat();
 		linked.clear();
 
 		pbox = NULL;

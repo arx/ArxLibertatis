@@ -900,8 +900,7 @@ void EERIE_3DOBJ::clear() {
 
 		originaltextures = NULL;
 		
-		// TODO Default constructor
-		quat.x = quat.y = quat.z = quat.w = 0;
+		quat = glm::quat();
 		linked.clear();
 
 		pbox = 0;
