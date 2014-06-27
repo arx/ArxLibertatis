@@ -460,13 +460,6 @@ TexturedVertex * GetNewVertexList(TextureContainer * container, const EERIE_FACE
 	}
 }
 
-// TODO remove this function, use drawTriangle directly!
-void ARX_DrawPrimitive(TexturedVertex * v0, TexturedVertex * v1, TexturedVertex * v2) {
-	TexturedVertex vertices[3];
-	vertices[0] = *v0, vertices[1] = *v1, vertices[2] = *v2;
-	drawTriangle(RenderMaterial::getCurrent(), vertices);
-}
-
 void drawQuadRTP(const RenderMaterial & mat, TexturedQuad quat) {
 	EE_RTP(quat.v[0].p, &quat.v[0]);
 	EE_RTP(quat.v[1].p, &quat.v[1]);

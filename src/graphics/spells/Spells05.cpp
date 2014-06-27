@@ -1262,15 +1262,16 @@ void CLevitate::Render()
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->GetTextureStage(0)->setWrapMode(TextureStage::WrapMirror);
-
 	GRenderer->SetTexture(0, tsouffle);
-
 	GRenderer->SetCulling(Renderer::CullCW);
+	
+	RenderMaterial mat = RenderMaterial::getCurrent();
+	
 	int i = cone[1].conenbfaces - 2;
 	int j = 0;
 
 	while(i--) {
-		ARX_DrawPrimitive(&cone[1].coned3d[j], &cone[1].coned3d[j+1], &cone[1].coned3d[j+2]);
+		drawTriangle(mat, &cone[1].coned3d[j]);
 		j++;
 	}
 
@@ -1278,18 +1279,18 @@ void CLevitate::Render()
 	j = 0;
 
 	while(i--) {
-		ARX_DrawPrimitive(&cone[0].coned3d[j], &cone[0].coned3d[j+1], &cone[0].coned3d[j+2]);
+		drawTriangle(mat, &cone[0].coned3d[j]);
 		j++;
 	}
 
 	//tracé du cone front
-	GRenderer->SetCulling(Renderer::CullCCW);
+	mat.setCulling(Renderer::CullCCW);
 	
 	i = cone[1].conenbfaces - 2;
 	j = 0;
 
 	while(i--) {
-		ARX_DrawPrimitive(&cone[1].coned3d[j], &cone[1].coned3d[j+1], &cone[1].coned3d[j+2]);
+		drawTriangle(mat, &cone[1].coned3d[j]);
 		j++;
 	}
 
@@ -1297,7 +1298,7 @@ void CLevitate::Render()
 	j = 0;
 
 	while(i--) {
-		ARX_DrawPrimitive(&cone[0].coned3d[j], &cone[0].coned3d[j+1], &cone[0].coned3d[j+2]);
+		drawTriangle(mat, &cone[0].coned3d[j]);
 		j++;
 	}
 
