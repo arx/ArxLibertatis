@@ -143,27 +143,30 @@ void CCreateField::RenderQuad(const Vec3f & p1, const Vec3f & p2, const Vec3f & 
 		RenderQuad(v[0], v[2], p3, v[3], rec, norm);
 		RenderQuad(v[1], v[0], v[3], p4, rec, norm);
 	} else if(rec == 3) {
-		TexturedVertex v2[5];
-		
 		float zab = (float) sin(radians(ft));
-		v2[0].uv.x = 0 + zab;
-		v2[0].uv.y = 0 + zab;
-		v2[1].uv.x = 1 + zab;
-		v2[1].uv.y = 0 + zab;
-		v2[2].uv.x = 1 + zab;
-		v2[2].uv.y = 1 + zab;
-		v2[3].uv.x = 0 + zab;
-		v2[3].uv.y = 1 + zab;
+		
+		RenderMaterial mat = RenderMaterial::getCurrent();
+		
+		TexturedQuad q;
+		
+		q.v[0].uv.x = 0 + zab;
+		q.v[0].uv.y = 0 + zab;
+		q.v[1].uv.x = 1 + zab;
+		q.v[1].uv.y = 0 + zab;
+		q.v[2].uv.x = 1 + zab;
+		q.v[2].uv.y = 1 + zab;
+		q.v[3].uv.x = 0 + zab;
+		q.v[3].uv.y = 1 + zab;
 
-		v2[1].color = v2[2].color = Color3f(falpha * .3f + rnd() * .025f, 0.f, falpha * .5f + rnd() * .025f).toBGR();
-		v2[0].color = v2[3].color = Color3f(falpha * .3f + rnd() * .025f, 0.f, falpha * .5f + rnd() * .025f).toBGR();
+		q.v[1].color = q.v[2].color = Color3f(falpha * .3f + rnd() * .025f, 0.f, falpha * .5f + rnd() * .025f).toBGR();
+		q.v[0].color = q.v[3].color = Color3f(falpha * .3f + rnd() * .025f, 0.f, falpha * .5f + rnd() * .025f).toBGR();
 	
-		EE_RT(p1, v2[0].p);
-		EE_RT(p2, v2[1].p);
-		EE_RT(p3, v2[2].p);
-		EE_RT(p4, v2[3].p);
-		ARX_DrawPrimitive(&v2[0], &v2[1], &v2[3]);
-		ARX_DrawPrimitive(&v2[1], &v2[2], &v2[3]);
+		q.v[0].p = p1;
+		q.v[1].p = p2;
+		q.v[2].p = p3;
+		q.v[3].p = p4;
+		
+		drawQuadRTP(mat, q);
 	}
 }
 
