@@ -771,11 +771,11 @@ bool ARX_NPC_SetStat(Entity& io, const string & statname, float value) {
 	} else if(statname == "mana") {
 		io._npcdata->manaPool.max = io._npcdata->manaPool.current = value < 0 ? 0 : value;
 	} else if(statname == "resistfire") {
-		io._npcdata->resist_fire = (unsigned char)clamp(value, 0.f, 100.f);
+		io._npcdata->resist_fire = (unsigned char)glm::clamp(value, 0.f, 100.f);
 	} else if(statname == "resistpoison") {
-		io._npcdata->resist_poison = (unsigned char)clamp(value, 0.f, 100.f);
+		io._npcdata->resist_poison = (unsigned char)glm::clamp(value, 0.f, 100.f);
 	} else if(statname == "resistmagic") {
-		io._npcdata->resist_magic = (unsigned char)clamp(value, 0.f, 100.f);
+		io._npcdata->resist_magic = (unsigned char)glm::clamp(value, 0.f, 100.f);
 	} else {
 		return false;
 	}
@@ -966,7 +966,7 @@ void ARX_PHYSICS_Apply() {
 			arx_assert(io->show != SHOW_FLAG_DESTROYED);
 			long cnt = (io->obj->vertexlist.size() << 12) + 1;
 
-			cnt = clamp(cnt, 2, 10);
+			cnt = glm::clamp(cnt, 2l, 10l);
 
 			for(long nn = 0; nn < cnt; nn++) {
 				std::vector<EERIE_VERTEX>::iterator it = Random::getIterator(io->obj->vertexlist);
@@ -1202,15 +1202,15 @@ void StareAtTarget(Entity * io)
 
 	io->head_rot += rot;
 
-	io->head_rot = clamp(io->head_rot, -120.f, 120.f);
+	io->head_rot = glm::clamp(io->head_rot, -120.f, 120.f);
 
 	float groupRotation[2];
 
 	groupRotation[0] = io->head_rot * 1.5f;
 	groupRotation[1] = io->head_rot * 0.5f;
 
-	groupRotation[0] = clamp(groupRotation[0], -HEAD_ANGLE_THRESHOLD, HEAD_ANGLE_THRESHOLD);
-	groupRotation[1] = clamp(groupRotation[1], -HEAD_ANGLE_THRESHOLD, HEAD_ANGLE_THRESHOLD);
+	groupRotation[0] = glm::clamp(groupRotation[0], -HEAD_ANGLE_THRESHOLD, HEAD_ANGLE_THRESHOLD);
+	groupRotation[1] = glm::clamp(groupRotation[1], -HEAD_ANGLE_THRESHOLD, HEAD_ANGLE_THRESHOLD);
 
 	io->_npcdata->ex_rotate->group_rotate[0].setPitch(groupRotation[0]);
 	io->_npcdata->ex_rotate->group_rotate[1].setPitch(groupRotation[1]);
@@ -2320,7 +2320,7 @@ float GetIORadius(Entity * io) {
 		return player.baseRadius();
 	}
 	
-	return clamp(io->original_radius * io->scale, 25.f, 60.f);
+	return glm::clamp(io->original_radius * io->scale, 25.f, 60.f);
 }
 
 void GetIOCyl(Entity * io, EERIE_CYLINDER & cyl) {

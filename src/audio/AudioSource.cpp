@@ -97,7 +97,7 @@ aalError Source::setVolume(float v) {
 		return AAL_ERROR_INIT;
 	}
 	
-	channel.volume = clamp(v, 0.f, 1.f);
+	channel.volume = glm::clamp(v, 0.f, 1.f);
 	
 	return updateVolume();
 }

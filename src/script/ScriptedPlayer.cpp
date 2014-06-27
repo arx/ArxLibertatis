@@ -402,7 +402,7 @@ public:
 			if(!BLOCK_PLAYER_CONTROLS) {
 				player.lifePool.current += val;
 			}
-			player.lifePool.current = clamp(player.lifePool.current, 0.f, player.Full_maxlife);
+			player.lifePool.current = glm::clamp(player.lifePool.current, 0.f, player.Full_maxlife);
 			
 		} else if(type == "mana") {
 			
@@ -410,7 +410,7 @@ public:
 			
 			DebugScript(" mana " << val);
 			
-			player.manaPool.current = clamp(player.manaPool.current + val, 0.f, player.Full_maxmana);
+			player.manaPool.current = glm::clamp(player.manaPool.current + val, 0.f, player.Full_maxmana);
 			
 		} else if(type == "newspell") {
 			
@@ -541,7 +541,7 @@ public:
 			}
 		}
 		
-		long level = clamp((long)context.getFloat(), 1l, 10l);
+		long level = glm::clamp((long)context.getFloat(), 1l, 10l);
 		
 		string spellname = context.getWord();
 		

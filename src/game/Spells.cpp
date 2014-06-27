@@ -984,7 +984,7 @@ float ARX_SPELLS_ApplyFireProtection(Entity * io,float damages)
 		if(spell) {
 			float modif = 1.f - (spell->m_level * ( 1.0f / 10 ));
 
-			modif = clamp(modif, 0.f, 1.f);
+			modif = glm::clamp(modif, 0.f, 1.f);
 
 			damages *= modif;
 		}
@@ -1006,7 +1006,7 @@ float ARX_SPELLS_ApplyColdProtection(Entity * io,float damages)
 	if(spell) {
 		float modif = 1.f - (spell->m_level * ( 1.0f / 10 ));
 
-		modif = clamp(modif, 0.f, 1.f);
+		modif = glm::clamp(modif, 0.f, 1.f);
 
 		damages *= modif;
 	}
@@ -1188,7 +1188,7 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flags,
 
 		if(level == -1) {
 			Player_Magic_Level = player.m_skillFull.casting + player.m_attributeFull.mind;
-			Player_Magic_Level = clamp(Player_Magic_Level * 0.1f, 1.0f, 10.0f);
+			Player_Magic_Level = glm::clamp(Player_Magic_Level * 0.1f, 1.0f, 10.0f);
 		} else {
 			Player_Magic_Level = static_cast<float>(level);
 		}
@@ -1323,7 +1323,7 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flags,
 		casterPos = player.pos;
 	} else {
 		// IO source
-		spellLevel = (float)clamp(level, 1l, 10l);
+		spellLevel = (float)glm::clamp(level, 1l, 10l);
 		casterPos = entities[source]->pos;
 	}
 

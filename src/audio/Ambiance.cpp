@@ -649,7 +649,7 @@ aalError Ambiance::setVolume(float volume) {
 		return AAL_ERROR_INIT;
 	}
 	
-	channel.volume = clamp(volume, 0.f, 1.f);
+	channel.volume = glm::clamp(volume, 0.f, 1.f);
 	
 	if(!isPlaying()) {
 		return AAL_OK;

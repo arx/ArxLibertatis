@@ -1176,7 +1176,7 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num, const EERIE_FRUSTRU
 
 					float dd = ep->tv[k].rhw;
 
-					dd = clamp(dd, 0.f, 1.f);
+					dd = glm::clamp(dd, 0.f, 1.f);
 
 					Vec3f & norm = ep->nrml[k];
 
@@ -1404,13 +1404,13 @@ void ARX_SCENE_Update() {
 
 	long camXsnap = ACTIVECAM->orgTrans.pos.x * ACTIVEBKG->Xmul;
 	long camZsnap = ACTIVECAM->orgTrans.pos.z * ACTIVEBKG->Zmul;
-	camXsnap = clamp(camXsnap, 0, ACTIVEBKG->Xsize - 1L);
-	camZsnap = clamp(camZsnap, 0, ACTIVEBKG->Zsize - 1L);
+	camXsnap = glm::clamp(camXsnap, 0l, ACTIVEBKG->Xsize - 1l);
+	camZsnap = glm::clamp(camZsnap, 0l, ACTIVEBKG->Zsize - 1l);
 
-	long x0 = std::max(camXsnap - lcval, 0L);
-	long x1 = std::min(camXsnap + lcval, ACTIVEBKG->Xsize - 1L);
-	long z0 = std::max(camZsnap - lcval, 0L);
-	long z1 = std::min(camZsnap + lcval, ACTIVEBKG->Zsize - 1L);
+	long x0 = std::max(camXsnap - lcval, 0l);
+	long x1 = std::min(camXsnap + lcval, ACTIVEBKG->Xsize - 1l);
+	long z0 = std::max(camZsnap - lcval, 0l);
+	long z1 = std::min(camZsnap + lcval, ACTIVEBKG->Zsize - 1l);
 
 	ACTIVEBKG->Backg[camXsnap + camZsnap * ACTIVEBKG->Xsize].treat = 1;
 	TreatBackgroundDynlights();

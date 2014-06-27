@@ -90,11 +90,6 @@ inline float LinearToLogVolume(float volume) {
 	return 0.2F * (float)log10(volume) + 1.0F;
 }
 
-// TODO move to global math header
-inline float clamp(float v, float min, float max) {
-	return std::min(max, std::max(min, v));
-}
-
 } // namespace audio
 
 #endif // ARX_AUDIO_AUDIOGLOBAL_H

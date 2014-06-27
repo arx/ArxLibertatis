@@ -197,7 +197,7 @@ bool Manage3DCursor(bool simulate) {
 
 	objcenter = VRotateY(objcenter, temp.getPitch());
 
-	maxdist = clamp(maxdist, 15.f, 150.f);
+	maxdist = glm::clamp(maxdist, 15.f, 150.f);
 	
 	Vec3f collidpos = Vec3f_ZERO;
 	EERIE_CYLINDER cyl2;

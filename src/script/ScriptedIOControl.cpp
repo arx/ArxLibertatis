@@ -352,10 +352,10 @@ public:
 			DebugScript(' ' << type << ' ' << fval);
 			
 			if(type == "height") {
-				io->original_height = clamp(-fval, -165.f, -30.f);
+				io->original_height = glm::clamp(-fval, -165.f, -30.f);
 				io->physics.cyl.height = io->original_height * io->scale;
 			} else if(type == "radius") {
-				io->original_radius = clamp(fval, 10.f, 40.f);
+				io->original_radius = glm::clamp(fval, 10.f, 40.f);
 				io->physics.cyl.radius = io->original_radius * io->scale;
 			} else {
 				ScriptWarning << "unknown command: " << type;

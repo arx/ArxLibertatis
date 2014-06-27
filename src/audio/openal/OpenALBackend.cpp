@@ -299,7 +299,7 @@ aalError OpenALBackend::setRoomRolloffFactor(float factor) {
 		return AAL_ERROR_INIT;
 	}
 	
-	float rolloff = clamp(factor, 0.f, 10.f);
+	float rolloff = glm::clamp(factor, 0.f, 10.f);
 	
 	return setEffect(AL_REVERB_ROOM_ROLLOFF_FACTOR, rolloff);
 }
@@ -314,12 +314,12 @@ aalError OpenALBackend::setListenerEnvironment(const Environment & env) {
 	
 	setEffect(AL_REVERB_DIFFUSION, env.diffusion);
 	setEffect(AL_REVERB_AIR_ABSORPTION_GAINHF, env.absorption * -100.f);
-	setEffect(AL_REVERB_LATE_REVERB_GAIN, clamp(env.reverb_volume, 0.f, 1.f));
-	setEffect(AL_REVERB_LATE_REVERB_DELAY, clamp(env.reverb_delay, 0.f, 100.f) * 0.001f);
-	setEffect(AL_REVERB_DECAY_TIME, clamp(env.reverb_decay, 100.f, 20000.f) * 0.001f);
-	setEffect(AL_REVERB_DECAY_HFRATIO, clamp(env.reverb_hf_decay / env.reverb_decay, 0.1f, 2.f));
-	setEffect(AL_REVERB_REFLECTIONS_GAIN, clamp(env.reflect_volume, 0.f, 1.f));
-	setEffect(AL_REVERB_REFLECTIONS_DELAY, clamp(env.reflect_delay, 0.f, 300.f) * 0.001F);
+	setEffect(AL_REVERB_LATE_REVERB_GAIN, glm::clamp(env.reverb_volume, 0.f, 1.f));
+	setEffect(AL_REVERB_LATE_REVERB_DELAY, glm::clamp(env.reverb_delay, 0.f, 100.f) * 0.001f);
+	setEffect(AL_REVERB_DECAY_TIME, glm::clamp(env.reverb_decay, 100.f, 20000.f) * 0.001f);
+	setEffect(AL_REVERB_DECAY_HFRATIO, glm::clamp(env.reverb_hf_decay / env.reverb_decay, 0.1f, 2.f));
+	setEffect(AL_REVERB_REFLECTIONS_GAIN, glm::clamp(env.reflect_volume, 0.f, 1.f));
+	setEffect(AL_REVERB_REFLECTIONS_DELAY, glm::clamp(env.reflect_delay, 0.f, 300.f) * 0.001F);
 	
 	return AAL_OK;
 }

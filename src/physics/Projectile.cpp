@@ -473,7 +473,7 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 			thrownObj->position.x += thrownObj->vector.x * mod;
 			float gmod = 1.f - thrownObj->velocity;
 
-			gmod = clamp(gmod, 0.f, 1.f);
+			gmod = glm::clamp(gmod, 0.f, 1.f);
 
 			thrownObj->position.y += thrownObj->vector.y * mod + (time_offset * gmod);
 			thrownObj->position.z += thrownObj->vector.z * mod;

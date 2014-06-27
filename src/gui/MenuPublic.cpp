@@ -124,11 +124,11 @@ void ARXMenu_Private_Options_Video_SetResolution(bool fullscreen, int _iWidth, i
 }
 
 void ARXMenu_Options_Video_SetFogDistance(int _iFog) {
-	config.video.fogDistance = clamp(_iFog, 0, 10);
+	config.video.fogDistance = glm::clamp(_iFog, 0, 10);
 }
 
 void ARXMenu_Options_Video_SetDetailsQuality(int _iQuality) {
-	config.video.levelOfDetail = clamp(_iQuality, 0, 2);
+	config.video.levelOfDetail = glm::clamp(_iQuality, 0, 2);
 	
 	switch(config.video.levelOfDetail) {
 		case 0: {
@@ -147,7 +147,7 @@ void ARXMenu_Options_Video_SetDetailsQuality(int _iQuality) {
 }
 
 void ARXMenu_Options_Audio_SetMasterVolume(int _iVolume) {
-	_iVolume = clamp(_iVolume, 0, 10);
+	_iVolume = glm::clamp(_iVolume, 0, 10);
 	
 	float fVolume = ((float)_iVolume) * 0.1f;
 	ARX_SOUND_MixerSetVolume(ARX_SOUND_MixerMenu, fVolume);
@@ -155,7 +155,7 @@ void ARXMenu_Options_Audio_SetMasterVolume(int _iVolume) {
 }
 
 void ARXMenu_Options_Audio_SetSfxVolume(int _iVolume) {
-	_iVolume = clamp(_iVolume, 0, 10);
+	_iVolume = glm::clamp(_iVolume, 0, 10);
 	
 	float fVolume = ((float)_iVolume) * 0.1f;
 	ARX_SOUND_MixerSetVolume(ARX_SOUND_MixerMenuSample, fVolume);
@@ -163,7 +163,7 @@ void ARXMenu_Options_Audio_SetSfxVolume(int _iVolume) {
 }
 
 void ARXMenu_Options_Audio_SetSpeechVolume(int _iVolume) {
-	_iVolume = clamp(_iVolume, 0, 10);
+	_iVolume = glm::clamp(_iVolume, 0, 10);
 	
 	float fVolume = ((float)_iVolume) * 0.1f;
 	ARX_SOUND_MixerSetVolume(ARX_SOUND_MixerMenuSpeech, fVolume);
@@ -171,7 +171,7 @@ void ARXMenu_Options_Audio_SetSpeechVolume(int _iVolume) {
 }
 
 void ARXMenu_Options_Audio_SetAmbianceVolume(int _iVolume) {
-	_iVolume = clamp(_iVolume, 0, 10);
+	_iVolume = glm::clamp(_iVolume, 0, 10);
 	
 	float fVolume = ((float)_iVolume) * 0.1f;
 	ARX_SOUND_MixerSetVolume(ARX_SOUND_MixerMenuAmbiance, fVolume);
@@ -225,7 +225,7 @@ void ARXMenu_Options_Control_SetInvertMouse(bool enable) {
 }
 
 void ARXMenu_Options_Control_SetMouseSensitivity(int sensitivity) {
-	config.input.mouseSensitivity = clamp(sensitivity, 0, 10);
+	config.input.mouseSensitivity = glm::clamp(sensitivity, 0, 10);
 	GInput->setMouseSensitivity(config.input.mouseSensitivity);
 }
 

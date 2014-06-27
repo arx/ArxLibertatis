@@ -71,7 +71,7 @@ public:
 		string target = context.getWord();
 		Entity * t = entities.getById(target, context.getEntity());
 		
-		float val = clamp(context.getFloat(), 0.f, 100.f);
+		float val = glm::clamp(context.getFloat(), 0.f, 100.f);
 		
 		if(t != NULL) {
 			ARX_DAMAGES_DurabilityRestore(t, val);
@@ -126,7 +126,7 @@ public:
 		if(stealvalue == "off") {
 			io->_itemdata->stealvalue = -1;
 		} else {
-			io->_itemdata->stealvalue = clamp((int)context.getFloatVar(stealvalue), -1, 100);
+			io->_itemdata->stealvalue = glm::clamp((int)context.getFloatVar(stealvalue), -1, 100);
 			if(io->_itemdata->stealvalue == 100) {
 				io->_itemdata->stealvalue = -1;
 			}
@@ -152,7 +152,7 @@ public:
 		if(lightvalue == "off") {
 			context.getEntity()->_itemdata->LightValue = -1;
 		} else {
-			context.getEntity()->_itemdata->LightValue = clamp((int)context.getFloatVar(lightvalue), -1, 1);
+			context.getEntity()->_itemdata->LightValue = glm::clamp((int)context.getFloatVar(lightvalue), -1, 1);
 		}
 		
 		return Success;
@@ -302,7 +302,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		short count = clamp((short)context.getFloat(), (short)1, context.getEntity()->_itemdata->maxcount);
+		short count = glm::clamp((short)context.getFloat(), (short)1, context.getEntity()->_itemdata->maxcount);
 		
 		DebugScript(' ' << count);
 		
@@ -340,7 +340,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		short size = (short)clamp((int)context.getFloat(), 1, 100);
+		short size = (short)glm::clamp((int)context.getFloat(), 1, 100);
 		
 		DebugScript(' ' << size);
 		

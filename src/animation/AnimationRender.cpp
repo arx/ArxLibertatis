@@ -244,7 +244,7 @@ float Cedric_GetInvisibility(Entity *io) {
 					invisibility -= (float)player.m_skillFull.intuition * (1.0f / 100)
 									+ (float)spell->m_level * (1.0f / 10);
 
-					invisibility = clamp(invisibility, 0.1f, 1.f);
+					invisibility = glm::clamp(invisibility, 0.1f, 1.f);
 				}
 			}
 		}
@@ -282,7 +282,7 @@ void Cedric_ApplyLightingFirstPartRefactor(Entity *io) {
 		trappercent = player.TRAP_DETECT - (float)io->_fixdata->trapvalue;
 		if(trappercent > 0.f) {
 			trappercent = 0.6f + trappercent * ( 1.0f / 100 );
-			trappercent = clamp(trappercent, 0.6f, 1.f);
+			trappercent = glm::clamp(trappercent, 0.6f, 1.f);
 		}
 	}
 
@@ -290,7 +290,7 @@ void Cedric_ApplyLightingFirstPartRefactor(Entity *io) {
 		secretpercent = player.TRAP_SECRET - (float)io->secretvalue;
 		if(secretpercent > 0.f) {
 			secretpercent = 0.6f + secretpercent * ( 1.0f / 100 );
-			secretpercent = clamp(secretpercent, 0.6f, 1.f);
+			secretpercent = glm::clamp(secretpercent, 0.6f, 1.f);
 		}
 	}
 
@@ -607,7 +607,7 @@ void AddFixedObjectHalo(const EERIE_FACE & face, const TransformInfo & t, const 
 	ddist = ddist/mdist;
 	ddist = std::pow(ddist, 6);
 
-	ddist = clamp(ddist, 0.25f, 0.9f);
+	ddist = glm::clamp(ddist, 0.25f, 0.9f);
 
 	float tot=0;
 	float _ffr[3];
@@ -618,7 +618,7 @@ void AddFixedObjectHalo(const EERIE_FACE & face, const TransformInfo & t, const 
 
 		float power = 255.f-(float)EEfabs(255.f*(temporary3D.z)*( 1.0f / 2 ));
 
-		power = clamp(power, 0.f, 255.f);
+		power = glm::clamp(power, 0.f, 255.f);
 
 		tot += power;
 		_ffr[o] = power;
@@ -782,7 +782,7 @@ void DrawEERIEInter_Render(EERIE_3DOBJ *eobj, const TransformInfo &t, Entity *io
 
 				float dd = tvList[n].rhw;
 
-				dd = clamp(dd, 0.f, 1.f);
+				dd = glm::clamp(dd, 0.f, 1.f);
 
 				Vec3f & norm = eobj->vertexlist[face.vid[n]].norm;
 
@@ -910,7 +910,7 @@ void PrepareAnimatedObjectHalo(HaloInfo & haloInfo, const Vec3f& pos, Skeleton* 
 		float ddist = mdist-fdist(ftrPos, ACTIVECAM->orgTrans.pos);
 		ddist = ddist/mdist;
 		ddist = std::pow(ddist, 6);
-		ddist = clamp(ddist, 0.25f, 0.9f);
+		ddist = glm::clamp(ddist, 0.25f, 0.9f);
 
 		haloInfo.ddist = ddist;
 
@@ -954,7 +954,7 @@ void AddAnimatedObjectHalo(HaloInfo & haloInfo, const unsigned short * paf, floa
 		float power = 255.f - (float)(255.f * tttz);
 		power *= (1.f - invisibility);
 
-		power = clamp(power, 0.f, 255.f);
+		power = glm::clamp(power, 0.f, 255.f);
 
 		tot += power;
 		_ffr[o] = power;
@@ -1195,7 +1195,7 @@ static Vec3f CalcTranslation(ANIM_USE * animuse) {
 		animuse->fr = eanim->nb_key_frames - 2;
 		animuse->pour = 1.f;
 	}
-	animuse->pour = clamp(animuse->pour, 0.f, 1.f);
+	animuse->pour = glm::clamp(animuse->pour, 0.f, 1.f);
 	
 	// FRAME TRANSLATE : Gives the Virtual pos of Main Object
 	if(eanim->frames[animuse->fr].f_translate && !(animuse->flags & EA_STATICANIM)) {
@@ -1269,7 +1269,7 @@ static void Cedric_AnimateObject(Skeleton * obj, ANIM_USE * animlayer)
 			animuse->fr = eanim->nb_key_frames - 2;
 			animuse->pour = 1.f;
 		}
-		animuse->pour = clamp(animuse->pour, 0.f, 1.f);
+		animuse->pour = glm::clamp(animuse->pour, 0.f, 1.f);
 
 		// Now go for groups rotation/translation/scaling, And transform Linked objects by the way
 		int l = std::min(long(obj->bones.size() - 1), eanim->nb_groups - 1);

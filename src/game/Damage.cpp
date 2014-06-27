@@ -924,7 +924,7 @@ void ARX_DAMAGES_AddVisual(DAMAGE_INFO * di, Vec3f * pos, float dmg, Entity * io
 		} else {
 			pd->ov = *pos + randomVec(-50.f, 50.f);
 		}
-		pd->siz = clamp(dmg, 5.f, 15.f);
+		pd->siz = glm::clamp(dmg, 5.f, 15.f);
 		pd->scale = Vec3f(-10.f);
 		pd->special = ROTATING | MODULATE_ROTATION | FIRE_TO_SMOKE;
 		pd->tolive = Random::get(500, 900);
@@ -1025,13 +1025,13 @@ void ARX_DAMAGES_UpdateDamage(DamageHandle j, float tim) {
 					switch(damage.params.area) {
 						case DAMAGE_AREA: {
 							float ratio = (damage.params.radius - dist) * divradius;
-							ratio = clamp(ratio, 0.f, 1.f);
+							ratio = glm::clamp(ratio, 0.f, 1.f);
 							dmg = dmg * ratio + 1.f;
 						}
 						break;
 						case DAMAGE_AREAHALF: {
 							float ratio = (damage.params.radius - (dist * ( 1.0f / 2 ))) * divradius;
-							ratio = clamp(ratio, 0.f, 1.f);
+							ratio = glm::clamp(ratio, 0.f, 1.f);
 							dmg = dmg * ratio + 1.f;
 						}
 						break;

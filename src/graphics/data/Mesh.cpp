@@ -740,10 +740,10 @@ int EERIELaunchRay3(const Vec3f & orgn, const Vec3f & dest,  Vec3f * hit, EERIEP
 		lpx = px;
 		lpz = pz;
 		voidlast = !flag;
-		long jx1 = clamp(px - 1l, 0l, ACTIVEBKG->Xsize - 1l);
-		long jx2 = clamp(px + 1l, 0l, ACTIVEBKG->Xsize - 1l);
-		long jz1 = clamp(pz - 1l, 0l, ACTIVEBKG->Zsize - 1l);
-		long jz2 = clamp(pz + 1l, 0l, ACTIVEBKG->Zsize - 1l);
+		long jx1 = glm::clamp(px - 1l, 0l, ACTIVEBKG->Xsize - 1l);
+		long jx2 = glm::clamp(px + 1l, 0l, ACTIVEBKG->Xsize - 1l);
+		long jz1 = glm::clamp(pz - 1l, 0l, ACTIVEBKG->Zsize - 1l);
+		long jz2 = glm::clamp(pz + 1l, 0l, ACTIVEBKG->Zsize - 1l);
 		
 		EERIE_BKG_INFO * eg = &ACTIVEBKG->Backg[px + pz * ACTIVEBKG->Xsize];
 		if(eg->nbpoly == 0) {

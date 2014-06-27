@@ -1058,8 +1058,8 @@ void ARX_INTERACTIVE_TWEAK_Icon(Entity * io, const res::path & s1) {
 		else
 			io->m_inventorySize.y = (char)(h);
 
-		io->m_inventorySize.x = clamp(io->m_inventorySize.x, 1, 3);
-		io->m_inventorySize.y = clamp(io->m_inventorySize.y, 1, 3);
+		io->m_inventorySize.x = glm::clamp(io->m_inventorySize.x, short(1), short(3));
+		io->m_inventorySize.y = glm::clamp(io->m_inventorySize.y, short(1), short(3));
 
 		io->inv = tc;
 	}
@@ -1514,8 +1514,8 @@ Entity * AddFix(const res::path & classPath, EntityInstance instance, AddInterac
 	if(tc) {
 		unsigned long w = tc->m_dwWidth >> 5;
 		unsigned long h = tc->m_dwHeight >> 5;
-		io->m_inventorySize.x = char(clamp(((w << 5) != tc->m_dwWidth) ? (w + 1) : w, 1ul, 3ul));
-		io->m_inventorySize.y = char(clamp(((h << 5) != tc->m_dwHeight) ? (h + 1) : h, 1ul, 3ul));
+		io->m_inventorySize.x = char(glm::clamp(((w << 5) != tc->m_dwWidth) ? (w + 1) : w, 1ul, 3ul));
+		io->m_inventorySize.y = char(glm::clamp(((h << 5) != tc->m_dwHeight) ? (h + 1) : h, 1ul, 3ul));
 		io->inv = tc;
 	}
 	
@@ -1923,8 +1923,8 @@ Entity * AddItem(const res::path & classPath_, EntityInstance instance, AddInter
 		else
 			io->m_inventorySize.y = (char)(h);
 
-		io->m_inventorySize.x = clamp(io->m_inventorySize.x, 1, 3);
-		io->m_inventorySize.y = clamp(io->m_inventorySize.y, 1, 3);
+		io->m_inventorySize.x = glm::clamp(io->m_inventorySize.x, short(1), short(3));
+		io->m_inventorySize.y = glm::clamp(io->m_inventorySize.y, short(1), short(3));
 
 		io->inv = tc;
 	}
@@ -2493,7 +2493,7 @@ void UpdateIOInvisibility(Entity * io)
 			io->invisibility -= framedelay * ( 1.0f / 1000 );
 		}
 		
-		io->invisibility = clamp(io->invisibility, 0.f, 1.f);
+		io->invisibility = glm::clamp(io->invisibility, 0.f, 1.f);
 	}
 }
 

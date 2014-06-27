@@ -925,7 +925,7 @@ void ArxGame::speechControlledCinematic() {
 		Entity * io=aspeech[valid].io;
 		float rtime=(float)(arxtime.get_updated()-aspeech[valid].time_creation)/(float)aspeech[valid].duration;
 
-		rtime = clamp(rtime, 0.f, 1.f);
+		rtime = glm::clamp(rtime, 0.f, 1.f);
 
 		float itime=1.f-rtime;
 
@@ -1788,7 +1788,7 @@ void ArxGame::update2DFX()
 				}
 			}
 
-			el->temp = clamp(el->temp, 0.f, .8f);
+			el->temp = glm::clamp(el->temp, 0.f, .8f);
 		}
 	}
 }

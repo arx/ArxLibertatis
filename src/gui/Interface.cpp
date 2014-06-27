@@ -543,9 +543,9 @@ void ARX_INTERFACE_HALO_Render(float _fR, float _fG, float _fB,
 	float power = 0.9f;
 	power -= std::sin(arxtime.get_frame_time()*0.01f) * 0.3f;
 
-	_fR = clamp(_fR * power, 0, 1);
-	_fG = clamp(_fG * power, 0, 1);
-	_fB = clamp(_fB * power, 0, 1);
+	_fR = glm::clamp(_fR * power, 0.f, 1.f);
+	_fG = glm::clamp(_fG * power, 0.f, 1.f);
+	_fB = glm::clamp(_fB * power, 0.f, 1.f);
 	Color col=Color4f(_fR,_fG,_fB).to<u8>();
 
 	if(_lHaloType & HALO_NEGATIVE) {
@@ -4174,7 +4174,7 @@ public:
 				float aim = static_cast<float>(player.Full_AimTime);
 				j=at/aim;
 			}
-			m_intensity = clamp(j, 0.2f, 1.f);
+			m_intensity = glm::clamp(j, 0.2f, 1.f);
 		}
 		
 		if(bHitFlash) {
@@ -5472,7 +5472,7 @@ public:
 		);
 
 		m_intensity = 0.9f - std::sin(arxtime.get_frame_time()*( 1.0f / 50 ))*0.5f+rnd()*( 1.0f / 10 );
-		m_intensity = clamp(m_intensity, 0.f, 1.f);
+		m_intensity = glm::clamp(m_intensity, 0.f, 1.f);
 	}
 	
 	void draw() {
@@ -5879,7 +5879,7 @@ public:
 		}
 		
 		float intensity = 1.f - PULSATE * 0.5f;
-		intensity = clamp(intensity, 0.f, 1.f);
+		intensity = glm::clamp(intensity, 0.f, 1.f);
 		
 		for(size_t i = 0; i < Precast.size(); i++) {
 			
@@ -6068,7 +6068,7 @@ public:
 		currpos = static_cast<long>(INTERFACE_RATIO(50.f));
 		
 		float intensity = 1.f - PULSATE * 0.5f;
-		intensity = clamp(intensity, 0.f, 1.f);
+		intensity = glm::clamp(intensity, 0.f, 1.f);
 		
 		GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 		GRenderer->SetRenderState(Renderer::AlphaBlending, true);

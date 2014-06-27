@@ -137,7 +137,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		float chance = clamp(context.getFloat(), 0.f, 100.f);
+		float chance = glm::clamp(context.getFloat(), 0.f, 100.f);
 		
 		DebugScript(' ' << chance);
 		

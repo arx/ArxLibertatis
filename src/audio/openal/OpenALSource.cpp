@@ -392,7 +392,7 @@ aalError OpenALSource::setPitch(float p) {
 		return AAL_ERROR_INIT;
 	}
 	
-	channel.pitch = clamp(p, 0.1f, 2.f);
+	channel.pitch = glm::clamp(p, 0.1f, 2.f);
 	
 	alSourcef(source, AL_PITCH, channel.pitch);
 	AL_CHECK_ERROR("setting source pitch")
@@ -408,7 +408,7 @@ aalError OpenALSource::setPan(float p) {
 	
 	float oldPan = channel.pan;
 	
-	channel.pan = clamp(p, -1.f, 1.f);
+	channel.pan = glm::clamp(p, -1.f, 1.f);
 	
 	if(channel.pan != 0.f && oldPan == 0.f) {
 		// TODO OpenAL doesn't have a pan feature, but it isn't used much (only in abiances?)
@@ -476,7 +476,7 @@ aalError OpenALSource::setCone(const SourceCone & cone) {
 	
 	channel.cone.inner_angle = cone.inner_angle;
 	channel.cone.outer_angle = cone.outer_angle;
-	channel.cone.outer_volume = clamp(cone.outer_volume, 0.f, 1.f);
+	channel.cone.outer_volume = glm::clamp(cone.outer_volume, 0.f, 1.f);
 	
 	alSourcef(source, AL_CONE_INNER_ANGLE, channel.cone.inner_angle);
 	alSourcef(source, AL_CONE_OUTER_ANGLE, channel.cone.outer_angle);

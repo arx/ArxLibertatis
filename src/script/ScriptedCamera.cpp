@@ -168,7 +168,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		float focal = clamp(context.getFloat(), 100.f, 800.f);
+		float focal = glm::clamp(context.getFloat(), 100.f, 800.f);
 		
 		DebugScript(' ' << focal);
 		

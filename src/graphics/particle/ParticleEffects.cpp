@@ -309,10 +309,10 @@ void SpawnGroundSplat(const Sphere & sp, const Color3f & col, long flags) {
 	long px = poss.x * ACTIVEBKG->Xmul;
 	long pz = poss.z * ACTIVEBKG->Zmul;
 
-	long x0 = clamp(px - 3, 0, ACTIVEBKG->Xsize - 1);
-	long x1 = clamp(px + 3, 0, ACTIVEBKG->Xsize - 1);
-	long z0 = clamp(pz - 3, 0, ACTIVEBKG->Zsize - 1);
-	long z1 = clamp(pz + 3, 0, ACTIVEBKG->Zsize - 1);
+	long x0 = glm::clamp(px - 3, 0l, ACTIVEBKG->Xsize - 1l);
+	long x1 = glm::clamp(px + 3, 0l, ACTIVEBKG->Xsize - 1l);
+	long z0 = glm::clamp(pz - 3, 0l, ACTIVEBKG->Zsize - 1l);
+	long z1 = glm::clamp(pz + 3, 0l, ACTIVEBKG->Zsize - 1l);
 
 	for(long j = z0; j <= z1; j++)
 	for(long i = x0; i <= x1; i++) {
@@ -481,7 +481,7 @@ void ARX_PARTICLES_Spawn_Blood(Vec3f * pos, float dmgs, EntityHandle source) {
 	}
 	
 	// Decides number of blood particles...
-	long spawn_nb = clamp(long(dmgs * 2.f), 5l, 26l);
+	long spawn_nb = glm::clamp(long(dmgs * 2.f), 5l, 26l);
 	
 	long totdelay = 0;
 	
@@ -533,7 +533,7 @@ void ARX_PARTICLES_Spawn_Spark(const Vec3f & pos, float dmgs, long flags) {
 		pd->move = randomVec(-6.f, 6.f);
 		
 		pd->special = PARTICLE_SPARK;
-		float len = clamp(spawn_nb * (1.f / 3), 3.f, 8.f);
+		float len = glm::clamp(spawn_nb * (1.f / 3), 3.f, 8.f);
 		pd->tolive = (unsigned long)(len * 90.f + float(spawn_nb));
 		
 		if(flags == 0) {
@@ -718,10 +718,10 @@ void ARX_BOOMS_Add(const Vec3f & poss,long type) {
 	long z0 = long(poss.z * ACTIVEBKG->Zmul) - 3;
 	long x1 = x0 + 6;
 	long z1 = z0 + 6;
-	x0 = clamp(x0, 0l, ACTIVEBKG->Xsize - 1l);
-	x1 = clamp(x1, 0l, ACTIVEBKG->Xsize - 1l);
-	z0 = clamp(z0, 0l, ACTIVEBKG->Zsize - 1l);
-	z1 = clamp(z1, 0l, ACTIVEBKG->Zsize - 1l);
+	x0 = glm::clamp(x0, 0l, ACTIVEBKG->Xsize - 1l);
+	x1 = glm::clamp(x1, 0l, ACTIVEBKG->Xsize - 1l);
+	z0 = glm::clamp(z0, 0l, ACTIVEBKG->Zsize - 1l);
+	z1 = glm::clamp(z1, 0l, ACTIVEBKG->Zsize - 1l);
 	
 	for(long j = z0; j <= z1; j++) for(long i = x0; i <= x1;i++) {
 		EERIE_BKG_INFO & eg = ACTIVEBKG->Backg[i + j * ACTIVEBKG->Xsize];
@@ -1242,7 +1242,7 @@ void ARX_PARTICLES_Update(EERIE_CAMERA * cam)  {
 		if(tc == explo[0] && (part->special & PARTICLE_ANIMATED)) {
 			long animrange = part->cval2 - part->cval1;
 			long num = long(float(framediff2) / float(part->tolive) * animrange);
-			num = clamp(num, part->cval1, part->cval2);
+			num = glm::clamp(num, long(part->cval1), long(part->cval2));
 			tc = explo[num];
 		}
 		

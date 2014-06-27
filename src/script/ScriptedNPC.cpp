@@ -217,7 +217,7 @@ public:
 			}
 		}
 		
-		long level = clamp(static_cast<long>(context.getFloat()), 1l, 10l);
+		long level = glm::clamp(static_cast<long>(context.getFloat()), 1l, 10l);
 		if(!haveDuration) {
 			duration = 1000 + level * 2000;
 		}
@@ -265,7 +265,7 @@ public:
 		if(detectvalue == "off") {
 			context.getEntity()->_npcdata->fDetect = -1;
 		} else {
-			context.getEntity()->_npcdata->fDetect = clamp((int)context.getFloatVar(detectvalue), -1, 100);
+			context.getEntity()->_npcdata->fDetect = glm::clamp((int)context.getFloatVar(detectvalue), -1, 100);
 		}
 		
 		return Success;
@@ -302,7 +302,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		float speed = clamp(context.getFloat(), 0.f, 10.f);
+		float speed = glm::clamp(context.getFloat(), 0.f, 10.f);
 		
 		DebugScript(' ' << speed);
 		

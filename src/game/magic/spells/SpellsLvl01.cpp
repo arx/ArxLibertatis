@@ -92,7 +92,7 @@ void MagicMissileSpell::Launch()
 	if(sp_max || cur_rf == 3) {
 		number = long(m_level);
 	} else {
-		number = clamp(long(m_level + 1) / 2, 1l, 5l);
+		number = glm::clamp(long(m_level + 1) / 2, 1l, 5l);
 	}
 	
 	bool mrCheat = (m_caster == PlayerEntityHandle && cur_mr == 3);

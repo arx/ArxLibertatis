@@ -264,7 +264,7 @@ void FreezeTimeSpell::Launch()
 	ARX_SOUND_PlaySFX(SND_SPELL_FREEZETIME);
 	
 	float max_slowdown = std::max(0.f, GLOBAL_SLOWDOWN - 0.01f);
-	m_siz = clamp(m_level * 0.08f, 0.f, max_slowdown);
+	m_siz = glm::clamp(m_level * 0.08f, 0.f, max_slowdown);
 	GLOBAL_SLOWDOWN -= m_siz;
 	
 	m_duration = (m_launchDuration > -1) ? m_launchDuration : 200000;

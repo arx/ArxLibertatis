@@ -255,11 +255,6 @@ inline long PointInUnderCylinder(const EERIE_CYLINDER & cyl, const Vec3f * pt) {
 	return 0;
 }
 
-template <class T1, class T2, class T3>
-inline T1 clamp(T1 value, T2 min, T3 max) {
-	return (value <= min) ? min : ((value >= max) ? max : value);
-}
-
 #ifdef ARX_DEBUG
 #define checked_range_cast boost::numeric_cast
 #else

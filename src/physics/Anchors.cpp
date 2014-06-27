@@ -884,10 +884,10 @@ static void AnchorData_Create_Links_Original_Method(EERIE_BACKGROUND * eb) {
 
 			for (long k = 0; k < eg->nbianchors; k++)
 			{
-				long ii = clamp(i - 2, 0, eb->Xsize - 1);
-				long ia = clamp(i + 2, 0, eb->Xsize - 1);
-				long ji = clamp(j - 2, 0, eb->Zsize - 1);
-				long ja = clamp(j + 2, 0, eb->Zsize - 1);
+				long ii = glm::clamp(i - 2, 0l, eb->Xsize - 1l);
+				long ia = glm::clamp(i + 2, 0l, eb->Xsize - 1l);
+				long ji = glm::clamp(j - 2, 0l, eb->Zsize - 1l);
+				long ja = glm::clamp(j + 2, 0l, eb->Zsize - 1l);
 
 				for (long j2 = ji; j2 <= ja; j2++)
 					for (long i2 = ii; i2 <= ia; i2++)
