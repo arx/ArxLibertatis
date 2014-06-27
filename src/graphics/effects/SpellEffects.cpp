@@ -47,6 +47,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "animation/AnimationRender.h"
 #include "game/Player.h"
 #include "graphics/Math.h"
+#include "graphics/RenderBatcher.h"
 
 
 CSpellFx::CSpellFx() :
@@ -74,72 +75,69 @@ unsigned long CSpellFx::GetDuration() {
 
 void Draw3DLineTexNew(Vec3f startPos, Vec3f endPos, Color startColor, Color endColor, float startSize, float endSize) {
 
+	RenderMaterial mat = RenderMaterial::getCurrent();
+	
 	float fBeta = MAKEANGLE(player.angle.getPitch());
 	float xxs = (float)(startSize * cos(radians(fBeta)));
 	float xxe = (float)(endSize * cos(radians(fBeta)));
 	float zzs = startSize;
 	float zze = endSize;
+	
+	{
+	TexturedQuad q1;
+	q1.v[0].color = q1.v[1].color = startColor.toBGRA();
+	q1.v[2].color = q1.v[3].color = endColor.toBGRA();
+	
+	q1.v[0].uv = Vec2f_ZERO;
+	q1.v[1].uv = Vec2f_X_AXIS;
+	q1.v[2].uv = Vec2f_ONE;
+	q1.v[3].uv = Vec2f_Y_AXIS;
+	
+	q1.v[0].p.x = startPos.x;
+	q1.v[0].p.y = startPos.y + zzs;
+	q1.v[0].p.z = startPos.z;
+	q1.v[1].p.x = startPos.x;
+	q1.v[1].p.y = startPos.y - zzs;
+	q1.v[1].p.z = startPos.z;
+	q1.v[2].p.x = endPos.x;
+	q1.v[2].p.y = endPos.y - zze;
+	q1.v[2].p.z = endPos.z;
+	q1.v[3].p.x = endPos.x;
+	q1.v[3].p.y = endPos.y + zze;
+	q1.v[3].p.z = endPos.z;
 
-	TexturedVertex v[4];
-	TexturedVertex v2[4];
-
-	v2[0].color = v2[1].color = startColor.toBGRA();
-	v2[2].color = v2[3].color = endColor.toBGRA();
-
-	// version 2 faces
-	v2[0].uv = Vec2f_ZERO;
-	v2[1].uv = Vec2f_X_AXIS;
-	v2[2].uv = Vec2f_ONE;
-	v2[3].uv = Vec2f_Y_AXIS;
-
-	v[0].p.x = startPos.x;
-	v[0].p.y = startPos.y + zzs;
-	v[0].p.z = startPos.z;
-
-	v[1].p.x = startPos.x;
-	v[1].p.y = startPos.y - zzs;
-	v[1].p.z = startPos.z;
-
-	v[2].p.x = endPos.x;
-	v[2].p.y = endPos.y - zze;
-	v[2].p.z = endPos.z;
-
-	v[3].p.x = endPos.x;
-	v[3].p.y = endPos.y + zze;
-	v[3].p.z = endPos.z;
-
-	EE_RT(v[0].p, v2[0].p);
-	EE_RT(v[1].p, v2[1].p);
-	EE_RT(v[2].p, v2[2].p);
-	EE_RT(v[3].p, v2[3].p);
-	ARX_DrawPrimitive(&v2[0], &v2[1], &v2[3]);
-	ARX_DrawPrimitive(&v2[1], &v2[2], &v2[3]);
-
+	drawQuadRTP(mat, q1);
+	}
+	
 	zzs *= (float) sin(radians(fBeta));
 	zze *= (float) sin(radians(fBeta));
-
-	v[0].p.x = startPos.x + xxs;
-	v[0].p.y = startPos.y;
-	v[0].p.z = startPos.z + zzs;
-
-	v[1].p.x = startPos.x - xxs;
-	v[1].p.y = startPos.y;
-	v[1].p.z = startPos.z - zzs;
-
-	v[2].p.x = endPos.x - xxe;
-	v[2].p.y = endPos.y;
-	v[2].p.z = endPos.z - zze;
-
-	v[3].p.x = endPos.x + xxe;
-	v[3].p.y = endPos.y;
-	v[3].p.z = endPos.z + zze;
-
-	EE_RT(v[0].p, v2[0].p);
-	EE_RT(v[1].p, v2[1].p);
-	EE_RT(v[2].p, v2[2].p);
-	EE_RT(v[3].p, v2[3].p);
-	ARX_DrawPrimitive(&v2[0], &v2[1], &v2[3]);
-	ARX_DrawPrimitive(&v2[1], &v2[2], &v2[3]);
+	
+	{
+	TexturedQuad q2;
+	
+	q2.v[0].color = q2.v[1].color = startColor.toBGRA();
+	q2.v[2].color = q2.v[3].color = endColor.toBGRA();
+	
+	q2.v[0].uv = Vec2f_ZERO;
+	q2.v[1].uv = Vec2f_X_AXIS;
+	q2.v[2].uv = Vec2f_ONE;
+	q2.v[3].uv = Vec2f_Y_AXIS;
+	
+	q2.v[0].p.x = startPos.x + xxs;
+	q2.v[0].p.y = startPos.y;
+	q2.v[0].p.z = startPos.z + zzs;
+	q2.v[1].p.x = startPos.x - xxs;
+	q2.v[1].p.y = startPos.y;
+	q2.v[1].p.z = startPos.z - zzs;
+	q2.v[2].p.x = endPos.x - xxe;
+	q2.v[2].p.y = endPos.y;
+	q2.v[2].p.z = endPos.z - zze;
+	q2.v[3].p.x = endPos.x + xxe;
+	q2.v[3].p.y = endPos.y;
+	q2.v[3].p.z = endPos.z + zze;
+	
+	drawQuadRTP(mat, q2);
+	}
 }
 
 
