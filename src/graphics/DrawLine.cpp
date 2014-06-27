@@ -131,8 +131,9 @@ void DrawLineSphere(const Sphere & sphere, Color color) {
 }
 
 void EERIEDraw3DCylinder(const Cylinder & cyl, Color col) {
-
-	#define STEPCYL 16
+	
+	const int STEPCYL = 16;
+	
 	for(long i = 0; i < 360 - STEPCYL; i += STEPCYL) {
 
 		float es = sin(radians(MAKEANGLE((float)i))) * cyl.radius;
