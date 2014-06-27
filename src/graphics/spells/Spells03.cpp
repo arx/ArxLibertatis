@@ -204,45 +204,49 @@ void CIceProjectile::Create(Vec3f aeSrc, float afBeta, float fLevel, EntityHandl
 	iNumber = checked_range_cast<int>(fDist);
 
 	int end = iNumber / 2;
+	
+	Vec3f tv1a[MAX_ICE];
 	tv1a[0] = s + Vec3f(0.f, 100.f, 0.f);
 	tv1a[end] = e + Vec3f(0.f, 100.f, 0.f);
 
 	Split(tv1a, 0, end, 80, 0.5f, 0, 1, 80, 0.5f);
 
 	for(int i = 0; i < iNumber; i++) {
+		Icicle & icicle = m_icicles[i];
+		
 		float t = rnd();
 
 		if (t < 0.5f)
-			tType[i] = 0;
+			icicle.type = 0;
 		else
-			tType[i] = 1;
+			icicle.type = 1;
 
-		tSize[i] = Vec3f_ZERO;
-		tSizeMax[i] = randomVec() + Vec3f(0.f, 0.2f, 0.f);
+		icicle.size = Vec3f_ZERO;
+		icicle.sizeMax = randomVec() + Vec3f(0.f, 0.2f, 0.f);
 
 		Vec3f minSize;
-		if(tType[i] == 0) {
+		if(icicle.type == 0) {
 			minSize = Vec3f(1.2f, 1.f, 1.2f);
 		} else {
 			minSize = Vec3f(0.4f, 0.3f, 0.4f);
 		}
 		
-		tSizeMax[i] = glm::max(tSizeMax[i], minSize);
+		icicle.sizeMax = glm::max(icicle.sizeMax, minSize);
 		
 		int iNum = static_cast<int>(i / 2);
 
-		if(tType[i] == 0) {
-			tPos[i].x = tv1a[iNum].x + frand2() * 80;
-			tPos[i].y = tv1a[iNum].y;
-			tPos[i].z = tv1a[iNum].z + frand2() * 80;
+		if(icicle.type == 0) {
+			icicle.pos.x = tv1a[iNum].x + frand2() * 80;
+			icicle.pos.y = tv1a[iNum].y;
+			icicle.pos.z = tv1a[iNum].z + frand2() * 80;
 		} else {
-			tPos[i].x = tv1a[iNum].x + frand2() * 40;
-			tPos[i].y = tv1a[iNum].y;
-			tPos[i].z = tv1a[iNum].z + frand2() * 40;
+			icicle.pos.x = tv1a[iNum].x + frand2() * 40;
+			icicle.pos.y = tv1a[iNum].y;
+			icicle.pos.z = tv1a[iNum].z + frand2() * 40;
 		}
 		
 		DamageParameters damage;
-		damage.pos = tPos[i];
+		damage.pos = icicle.pos;
 		damage.radius = 60.f;
 		damage.damages = 0.1f * fLevel;
 		damage.area = DAMAGE_FULL;
@@ -264,15 +268,13 @@ void CIceProjectile::Update(float timeDelta)
 		fColor = (ulDuration - ulCurrentTime) * ( 1.0f / 1000 );
 
 		for(int i = 0; i < iNumber; i++) {
-			tSize[i].y *= fColor;
+			m_icicles[i].size.y *= fColor;
 		}
 	}
 }
 
 void CIceProjectile::Render()
 {
-	int i = 0;
-
 	if(ulCurrentTime >= ulDuration)
 		return;
 
@@ -287,23 +289,20 @@ void CIceProjectile::Render()
 	if(iMax > iNumber)
 		iMax = iNumber;
 
-	for(i = 0; i < iMax; i++) {
+	for(int i = 0; i < iMax; i++) {
+		Icicle & icicle = m_icicles[i];
 		
-		tSize[i] += Vec3f(0.1f);
-		tSize[i] = glm::clamp(tSize[i], Vec3f(0.f), tSizeMax[i]);
+		icicle.size += Vec3f(0.1f);
+		icicle.size = glm::clamp(icicle.size, Vec3f(0.f), icicle.sizeMax);
 		
 		Anglef stiteangle;
-		Vec3f stitepos;
-		Vec3f stitescale;
 		Color3f stitecolor;
 
-		stiteangle.setPitch((float) cos(radians(tPos[i].x)) * 360);
+		stiteangle.setPitch((float) cos(radians(icicle.pos.x)) * 360);
 		stiteangle.setYaw(0);
 		stiteangle.setRoll(0);
-		stitepos = tPos[i];
-
-		float tt;
-		tt = tSizeMax[i].y * fColor;
+		
+		float tt = icicle.sizeMax.y * fColor;
 		stitecolor.g = stitecolor.r = tt * 0.7f;
 		stitecolor.b = tt * 0.9f;
 
@@ -316,22 +315,21 @@ void CIceProjectile::Render()
 		if(stitecolor.b > 1)
 			stitecolor.b = 1;
 
-		stitescale = tSize[i];
-
-		if(tType[i] == 0)
-			Draw3DObject(smotte, stiteangle, stitepos, stitescale, stitecolor);
+		if(icicle.type == 0)
+			Draw3DObject(smotte, stiteangle, icicle.pos, icicle.size, stitecolor);
 		else
-			Draw3DObject(stite, stiteangle, stitepos, stitescale, stitecolor);
+			Draw3DObject(stite, stiteangle, icicle.pos, icicle.size, stitecolor);
 	}
 	
-	for(i = 0; i < min(iNumber, iMax + 1); i++) {
+	for(int i = 0; i < min(iNumber, iMax + 1); i++) {
+		Icicle & icicle = m_icicles[i];
 		
 		float t = rnd();
 		if(t < 0.01f) {
 			
 			PARTICLE_DEF * pd = createParticle();
 			if(pd) {
-				pd->ov = tPos[i] + randomVec(-5.f, 5.f);
+				pd->ov = icicle.pos + randomVec(-5.f, 5.f);
 				pd->move = randomVec(-2.f, 2.f);
 				pd->siz = 20.f;
 				float t = min(2000.f + rnd() * 2000.f,
@@ -347,7 +345,7 @@ void CIceProjectile::Render()
 			
 			PARTICLE_DEF * pd = createParticle();
 			if(pd) {
-				pd->ov = tPos[i] + randomVec(-5.f, 5.f) - Vec3f(0.f, 50.f, 0.f);
+				pd->ov = icicle.pos + randomVec(-5.f, 5.f) - Vec3f(0.f, 50.f, 0.f);
 				pd->move = Vec3f(0.f, 2.f - 4.f * rnd(), 0.f);
 				pd->siz = 0.5f;
 				float t = min(2000.f + rnd() * 1000.f,

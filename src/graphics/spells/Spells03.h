@@ -109,15 +109,18 @@ public:
 private:
 	int iNumber;
 	int iMax;
-	int	tType[MAX_ICE];
 	float fStep;
 	float fColor;
-	Vec3f tPos[MAX_ICE];
-	Vec3f tSize[MAX_ICE];
-	Vec3f tSizeMax[MAX_ICE];
 	TextureContainer * tex_p1;
 	TextureContainer * tex_p2;
-	Vec3f tv1a[MAX_ICE];
+	
+	struct Icicle {
+		int type;
+		Vec3f pos;
+		Vec3f size;
+		Vec3f sizeMax;
+	};
+	Icicle m_icicles[MAX_ICE];
 };
 
 // Done By : did
