@@ -1127,7 +1127,7 @@ Entity * CloneIOItem(Entity * src) {
 
 bool ARX_INTERACTIVE_ConvertToValidPosForIO(Entity * io, Vec3f * target) {
 	
-	EERIE_CYLINDER phys;
+	Cylinder phys;
 	if (io && io != entities.player()) {
 		phys.height = io->original_height * io->scale;
 		phys.radius = io->original_radius * io->scale;

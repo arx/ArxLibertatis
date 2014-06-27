@@ -179,7 +179,7 @@ void RiseDeadSpell::Update(float timeDelta)
 	if(tim > 3000 && m_longinfo_entity == InvalidEntityHandle) {
 		ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &m_target_pos);
 		
-		EERIE_CYLINDER phys;
+		Cylinder phys;
 		phys.height=-200;
 		phys.radius=50;
 		phys.origin=m_target_pos;

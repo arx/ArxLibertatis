@@ -446,7 +446,7 @@ void ARX_NPC_Behaviour_UnStack(Entity * io)
 	}
 }
 
-extern void GetIOCyl(Entity * io, EERIE_CYLINDER & cyl);
+extern void GetIOCyl(Entity * io, Cylinder & cyl);
 
 /*!
  * \brief Checks for any direct shortcut between NPC and future anchors...
@@ -517,7 +517,7 @@ long ARX_NPC_GetNextAttainableNodeIncrement(Entity * io)
 /*!
  * \brief Checks for nearest VALID anchor for a cylinder from a position
  */
-static long AnchorData_GetNearest(Vec3f * pos, EERIE_CYLINDER * cyl, long except = -1) {
+static long AnchorData_GetNearest(Vec3f * pos, Cylinder * cyl, long except = -1) {
 	long returnvalue = -1;
 	float distmax = std::numeric_limits<float>::max();
 	EERIE_BACKGROUND * eb = ACTIVEBKG;
@@ -542,7 +542,7 @@ static long AnchorData_GetNearest(Vec3f * pos, EERIE_CYLINDER * cyl, long except
 	return returnvalue;
 }
 
-static long AnchorData_GetNearest_2(float beta, Vec3f * pos, EERIE_CYLINDER * cyl) {
+static long AnchorData_GetNearest_2(float beta, Vec3f * pos, Cylinder * cyl) {
 	
 	float d = radians(beta);
 	Vec3f vect(-std::sin(d), 0, std::cos(d));
@@ -2323,7 +2323,7 @@ float GetIORadius(Entity * io) {
 	return glm::clamp(io->original_radius * io->scale, 25.f, 60.f);
 }
 
-void GetIOCyl(Entity * io, EERIE_CYLINDER & cyl) {
+void GetIOCyl(Entity * io, Cylinder & cyl) {
 	cyl.height = GetIOHeight(io);
 	cyl.radius = GetIORadius(io);
 	cyl.origin = io->pos;

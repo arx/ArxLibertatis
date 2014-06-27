@@ -410,7 +410,7 @@ static void drawDebugEntityPhysicsCylinder(Entity * io) {
 		levitate = CFLAG_LEVITATE;
 	}
 	
-	EERIE_CYLINDER cyll;
+	Cylinder cyll;
 	cyll.height = GetIOHeight(io);
 	cyll.radius = GetIORadius(io);
 	cyll.origin = io->physics.startpos;

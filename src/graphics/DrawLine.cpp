@@ -130,7 +130,7 @@ void DrawLineSphere(const Sphere & sphere, Color color) {
 	EERIEDRAWPRIM(Renderer::LineStrip, &vertices[0], vertices.size());
 }
 
-void EERIEDraw3DCylinder(const EERIE_CYLINDER & cyl, Color col) {
+void EERIEDraw3DCylinder(const Cylinder & cyl, Color col) {
 
 	#define STEPCYL 16
 	for(long i = 0; i < 360 - STEPCYL; i += STEPCYL) {

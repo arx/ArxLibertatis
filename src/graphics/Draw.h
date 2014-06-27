@@ -54,7 +54,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 struct EERIEPOLY;
 struct EERIE_3DOBJ;
 struct Sphere;
-struct EERIE_CYLINDER;
+struct Cylinder;
 
 void EERIEDRAWPRIM(Renderer::Primitive primitive, const TexturedVertex * vertices, size_t count = 3, bool nocount = false);
 

@@ -75,7 +75,7 @@ bool DIRECT_PATH=true;
 
 //-----------------------------------------------------------------------------
 // Added immediate return (return anything;)
-inline float IsPolyInCylinder(EERIEPOLY * ep, const EERIE_CYLINDER & cyl, long flag) {
+inline float IsPolyInCylinder(EERIEPOLY * ep, const Cylinder & cyl, long flag) {
 
 	long flags = flag;
 	POLYIN = 0;
@@ -302,7 +302,7 @@ bool IsCollidingIO(Entity * io,Entity * ioo) {
 }
 
 // TODO include header?
-extern void GetIOCyl(Entity * io, EERIE_CYLINDER & cyl);
+extern void GetIOCyl(Entity * io, Cylinder & cyl);
 void PushIO_ON_Top(Entity * ioo, float ydec) {
 	
 	if(ydec != 0.f)
@@ -358,14 +358,14 @@ void PushIO_ON_Top(Entity * ioo, float ydec) {
 								if(ydec <= 0) {
 									player.pos.y += ydec;
 									moveto.y += ydec;
-									EERIE_CYLINDER cyl = player.baseCylinder();
+									Cylinder cyl = player.baseCylinder();
 									cyl.origin.y += ydec;
 									float vv = CheckAnythingInCylinder(cyl, entities.player(), 0);
 									if(vv < 0) {
 										player.pos.y += ydec + vv;
 									}
 								} else {
-									EERIE_CYLINDER cyl = player.baseCylinder();
+									Cylinder cyl = player.baseCylinder();
 									cyl.origin.y += ydec;
 									if(CheckAnythingInCylinder(cyl, entities.player(), 0) >= 0) {
 										player.pos.y += ydec;
@@ -376,7 +376,7 @@ void PushIO_ON_Top(Entity * ioo, float ydec) {
 								if(ydec <= 0) {
 									io->pos.y += ydec;
 								} else {
-									EERIE_CYLINDER cyl;
+									Cylinder cyl;
 									GetIOCyl(io, cyl);
 									cyl.origin.y += ydec;
 									if(CheckAnythingInCylinder(cyl, io ,0) >= 0) {
@@ -405,7 +405,7 @@ bool IsAnyNPCInPlatform(Entity * pfrm) {
 		   && !(io->ioflags & IO_NO_COLLISIONS)
 		   && io->show == SHOW_FLAG_IN_SCENE
 		) {
-			EERIE_CYLINDER cyl;
+			Cylinder cyl;
 			GetIOCyl(io, cyl);
 
 			if(CylinderPlatformCollide(&cyl, pfrm) != 0.f)
@@ -416,7 +416,7 @@ bool IsAnyNPCInPlatform(Entity * pfrm) {
 	return false;
 }
 
-float CylinderPlatformCollide(EERIE_CYLINDER * cyl, Entity * io) {
+float CylinderPlatformCollide(Cylinder * cyl, Entity * io) {
  
 	float miny = io->bbox3D.min.y;
 	float maxy = io->bbox3D.max.y;
@@ -434,7 +434,7 @@ float CylinderPlatformCollide(EERIE_CYLINDER * cyl, Entity * io) {
 
 static long NPC_IN_CYLINDER = 0;
 
-extern void GetIOCyl(Entity * io, EERIE_CYLINDER & cyl);
+extern void GetIOCyl(Entity * io, Cylinder & cyl);
 
 inline void EE_RotateY(TexturedVertex *in,TexturedVertex *out,float c, float s)
 {
@@ -487,7 +487,7 @@ bool CollidedFromBack(Entity * io,Entity * ioo)
 
 // Returns 0 if nothing in cyl
 // Else returns Y Offset to put cylinder in a proper place
-float CheckAnythingInCylinder(const EERIE_CYLINDER & cyl, Entity * ioo, long flags) {
+float CheckAnythingInCylinder(const Cylinder & cyl, Entity * ioo, long flags) {
 	
 	NPC_IN_CYLINDER = 0;
 	
@@ -596,7 +596,7 @@ float CheckAnythingInCylinder(const EERIE_CYLINDER & cyl, Entity * ioo, long fla
 				|| fartherThan(io->pos, cyl.origin, 1000.f)) continue;
 	
 			{
-				EERIE_CYLINDER & io_cyl = io->physics.cyl;
+				Cylinder & io_cyl = io->physics.cyl;
 				GetIOCyl(io, io_cyl);
 				float dealt = 0;
 
@@ -1266,7 +1266,7 @@ float MAX_ALLOWED_PER_SECOND=12.f;
 // Checks if a position is valid, Modify it for height if necessary
 // Returns true or false
 
-bool AttemptValidCylinderPos(EERIE_CYLINDER & cyl, Entity * io, CollisionFlags flags) {
+bool AttemptValidCylinderPos(Cylinder & cyl, Entity * io, CollisionFlags flags) {
 	
 	float anything = CheckAnythingInCylinder(cyl, io, flags); 
 
@@ -1281,7 +1281,7 @@ bool AttemptValidCylinderPos(EERIE_CYLINDER & cyl, Entity * io, CollisionFlags f
 		return true;
 	}
 	
-	EERIE_CYLINDER tmp;
+	Cylinder tmp;
 
 	if(!(flags & CFLAG_ANCHOR_GENERATION)) {
 		
@@ -1325,7 +1325,7 @@ bool AttemptValidCylinderPos(EERIE_CYLINDER & cyl, Entity * io, CollisionFlags f
 		}
 		
 		if(io && (flags & CFLAG_PLAYER) && anything < 0.f && (flags & CFLAG_JUST_TEST)) {
-			EERIE_CYLINDER tmpp = cyl;
+			Cylinder tmpp = cyl;
 			tmpp.radius *= 0.7f;
 
 			float tmp = CheckAnythingInCylinder(tmpp, io, flags | CFLAG_JUST_TEST);
@@ -1361,7 +1361,7 @@ bool AttemptValidCylinderPos(EERIE_CYLINDER & cyl, Entity * io, CollisionFlags f
 					return false;
 				}
 
-				EERIE_CYLINDER tmpp = cyl;
+				Cylinder tmpp = cyl;
 				tmpp.radius *= 0.65f; 
 				float tmp = CheckAnythingInCylinder(tmpp, io, flags | CFLAG_JUST_TEST);
 

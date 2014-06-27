@@ -81,7 +81,7 @@ struct TWEAK_INFO;
 #define BASE_RUBBER 1.5f
 
 struct IO_PHYSICS {
-	EERIE_CYLINDER cyl;
+	Cylinder cyl;
 	Vec3f startpos;
 	Vec3f targetpos;
 	Vec3f velocity;

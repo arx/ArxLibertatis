@@ -130,7 +130,7 @@ static EERIEPOLY * ANCHOR_CheckInPoly(const Vec3f & pos) {
 
 extern Vec3f vector2D;
 
-float ANCHOR_IsPolyInCylinder(EERIEPOLY * ep, const EERIE_CYLINDER & cyl,
+float ANCHOR_IsPolyInCylinder(EERIEPOLY * ep, const Cylinder & cyl,
                               CollisionFlags flags) {
 	
 	if (!(flags & CFLAG_EXTRA_PRECISION))
@@ -228,7 +228,7 @@ float ANCHOR_IsPolyInCylinder(EERIEPOLY * ep, const EERIE_CYLINDER & cyl,
  * \param flags collision flags
  * \return 0 if nothing in cyl else returns Y Offset to put cylinder in a proper place
  */
-static float ANCHOR_CheckAnythingInCylinder(const EERIE_CYLINDER & cyl, CollisionFlags flags) {
+static float ANCHOR_CheckAnythingInCylinder(const Cylinder & cyl, CollisionFlags flags) {
 	
 	long rad = (cyl.radius + 230) * ACTIVEBKG->Xmul;
 
@@ -292,7 +292,7 @@ static float ANCHOR_CheckAnythingInCylinder(const EERIE_CYLINDER & cyl, Collisio
 }
 
 extern long MOVING_CYLINDER;
-static bool ANCHOR_AttemptValidCylinderPos(EERIE_CYLINDER & cyl, Entity * io,
+static bool ANCHOR_AttemptValidCylinderPos(Cylinder & cyl, Entity * io,
 	                                         CollisionFlags flags) {
 	
 	float anything = ANCHOR_CheckAnythingInCylinder(cyl, flags);
@@ -307,7 +307,7 @@ static bool ANCHOR_AttemptValidCylinderPos(EERIE_CYLINDER & cyl, Entity * io,
 		return true;
 	}
 
-	EERIE_CYLINDER tmp;
+	Cylinder tmp;
 
 	if(!(flags & CFLAG_ANCHOR_GENERATION)) {
 
@@ -568,7 +568,7 @@ void AnchorData_ClearAll(EERIE_BACKGROUND * eb) {
 
 static const int INC_RADIUS = 10;
 
-bool CylinderAboveInvalidZone(const EERIE_CYLINDER & cyl) {
+bool CylinderAboveInvalidZone(const Cylinder & cyl) {
 	
 	float count = 0;
 	float failcount = 0;
@@ -615,9 +615,9 @@ static bool DirectAddAnchor_Original_Method(EERIE_BACKGROUND * eb, EERIE_BKG_INF
 	long found = 0;
 	long stop_radius = 0;
 
-	EERIE_CYLINDER testcyl;
-	EERIE_CYLINDER currcyl;
-	EERIE_CYLINDER bestcyl;
+	Cylinder testcyl;
+	Cylinder currcyl;
+	Cylinder bestcyl;
 
 	bestcyl.height = 0;
 	bestcyl.radius = 0;
@@ -712,9 +712,9 @@ static bool AddAnchor_Original_Method(EERIE_BACKGROUND * eb, EERIE_BKG_INFO * eg
 	long stop_radius = 0;
 	float best_dist = 99999999999.f;
 
-	EERIE_CYLINDER testcyl;
-	EERIE_CYLINDER currcyl;
-	EERIE_CYLINDER bestcyl;
+	Cylinder testcyl;
+	Cylinder currcyl;
+	Cylinder bestcyl;
 
 	bestcyl.height = 0;
 	bestcyl.radius = 0;
@@ -1020,7 +1020,7 @@ static void AnchorData_Create_Phase_II_Original_Method(EERIE_BACKGROUND * eb) {
 			pos.x = (float)((float)((float)i) * (float)eb->Xdiv);
 			pos.y = 0.f;
 			pos.z = (float)((float)((float)j) * (float)eb->Zdiv);
-			EERIE_CYLINDER currcyl;
+			Cylinder currcyl;
 			currcyl.radius = 30;
 			currcyl.height = -150.f;
 			currcyl.origin = pos;
@@ -1176,7 +1176,7 @@ void AnchorData_Create(EERIE_BACKGROUND * eb) {
 				pos.y = 0.f;
 				pos.z = (float)((float)((float)j + 0.33f * (float)divvy) * (float)eb->Zdiv);
 				ep = GetMinPoly(pos);
-				EERIE_CYLINDER currcyl;
+				Cylinder currcyl;
 				currcyl.radius = 20 - (4.f * divv);
 				currcyl.height = -120.f;
 				currcyl.origin = pos;

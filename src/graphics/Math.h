@@ -113,8 +113,8 @@ inline long F2L_RoundUp(float val) {
 	return static_cast<long>(ceil(val));
 }
 
-bool CylinderInCylinder(const EERIE_CYLINDER & cyl1, const EERIE_CYLINDER & cyl2);
-bool SphereInCylinder(const EERIE_CYLINDER & cyl1, const Sphere & s);
+bool CylinderInCylinder(const Cylinder & cyl1, const Cylinder & cyl2);
+bool SphereInCylinder(const Cylinder & cyl1, const Sphere & s);
 
 template <class T, class O>
 inline T reinterpret(O v) {
@@ -221,7 +221,7 @@ inline float fdist(const Vec2f & from, const Vec2f & to) {
 	return ffsqrt(glm::distance2(from, to));
 }
 
-inline bool PointInCylinder(const EERIE_CYLINDER & cyl, const Vec3f * pt) {
+inline bool PointInCylinder(const Cylinder & cyl, const Vec3f * pt) {
 	
 	float pos1 = cyl.origin.y + cyl.height;
 	
@@ -240,7 +240,7 @@ inline bool PointInCylinder(const EERIE_CYLINDER & cyl, const Vec3f * pt) {
 	return false;
 }
 
-inline long PointInUnderCylinder(const EERIE_CYLINDER & cyl, const Vec3f * pt) {
+inline long PointInUnderCylinder(const Cylinder & cyl, const Vec3f * pt) {
 	
 	float pos1 = cyl.origin.y + cyl.height;
 	

@@ -210,7 +210,7 @@ static bool IsObjectInField(EERIE_3DOBJ * obj) {
 			if(ValidIONum(spell->m_longinfo_entity)) {
 				Entity * pfrm = entities[spell->m_longinfo_entity];
 				
-				EERIE_CYLINDER cyl;
+				Cylinder cyl;
 				cyl.height = -35.f;
 				cyl.radius = 35.f;
 

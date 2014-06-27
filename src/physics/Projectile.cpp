@@ -86,7 +86,7 @@ static bool IsPointInField(const Vec3f & pos) {
 			if(ValidIONum(spell->m_longinfo_entity)) {
 				Entity * pfrm = entities[spell->m_longinfo_entity];
 				
-				EERIE_CYLINDER cyl;
+				Cylinder cyl;
 				cyl.height = -35.f;
 				cyl.radius = 35.f;
 				cyl.origin = pos + Vec3f(0.f, 17.5f, 0.f);

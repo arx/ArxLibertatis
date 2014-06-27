@@ -51,7 +51,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "platform/Flags.h"
 
 struct EERIE_BACKGROUND;
-struct EERIE_CYLINDER;
+struct Cylinder;
 
 enum AnchorFlag {
 	ANCHOR_FLAG_BLOCKED    = (1<<3)
@@ -72,7 +72,7 @@ struct ANCHOR_DATA {
  * Clears all Anchor data from a Background
  */
 void AnchorData_ClearAll(EERIE_BACKGROUND * eb);
-bool CylinderAboveInvalidZone(const EERIE_CYLINDER & cyl);
+bool CylinderAboveInvalidZone(const Cylinder & cyl);
 
 void AnchorData_Create(EERIE_BACKGROUND * eb);
  

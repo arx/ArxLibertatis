@@ -182,7 +182,7 @@ void SummonCreatureSpell::Update(float timeDelta)
 			pSummon= (CSummonCreature *)m_pSpellFx;
 
 			if(pSummon) {
-				EERIE_CYLINDER phys;
+				Cylinder phys;
 				phys.height=-200;
 				phys.radius=50;
 				phys.origin=m_target_pos;

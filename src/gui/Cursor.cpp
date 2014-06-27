@@ -200,7 +200,7 @@ bool Manage3DCursor(bool simulate) {
 	maxdist = glm::clamp(maxdist, 15.f, 150.f);
 	
 	Vec3f collidpos = Vec3f_ZERO;
-	EERIE_CYLINDER cyl2;
+	Cylinder cyl2;
 	float inc = 10.f;
 	long iterating = 40;
 

@@ -31,7 +31,7 @@ void EERIEDraw2DRect(const Rectf & rect, float z, Color col);
 void EERIEDrawFill2DRectDegrad(float x0, float y0, float x1, float y1, float z, Color cold, Color cole);
 
 void DrawLineSphere(const Sphere & sphere, Color color);
-void EERIEDraw3DCylinder(const EERIE_CYLINDER & cyl, Color col);
+void EERIEDraw3DCylinder(const Cylinder & cyl, Color col);
 void EERIEDrawTrue3DLine(const Vec3f & orgn, const Vec3f & dest, Color col);
 void EERIEDraw3DLine(const Vec3f & orgn, const Vec3f & dest, Color col, float zbias = 0.f);
 void EERIEDraw3DLine(const Vec3f & orgn, const Vec3f & dest, Color color1, Color color2, float zbias = 0.f);

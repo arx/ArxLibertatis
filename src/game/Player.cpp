@@ -1959,7 +1959,7 @@ bool Valid_Jump_Pos() {
 		return true;
 	}
 	
-	EERIE_CYLINDER tmpp;
+	Cylinder tmpp;
 	tmpp.height = player.physics.cyl.height;
 	tmpp.origin = player.basePosition();
 	tmpp.radius = player.physics.cyl.radius * 0.85f;
@@ -2125,7 +2125,7 @@ void PlayerMovementIterate(float DeltaTime) {
 		
 		lastposy = player.pos.y;
 		float anything;
-		EERIE_CYLINDER testcyl = player.physics.cyl;
+		Cylinder testcyl = player.physics.cyl;
 		testcyl.origin.y += 3.f;
 		ON_PLATFORM = 0;
 		anything = CheckAnythingInCylinder(testcyl, entities.player(), 0);
@@ -2145,7 +2145,7 @@ void PlayerMovementIterate(float DeltaTime) {
 			LAST_ON_PLATFORM = 0;
 		}
 		
-		EERIE_CYLINDER cyl;
+		Cylinder cyl;
 		cyl.origin = player.basePosition() + Vec3f(0.f, 1.f, 0.f);
 		cyl.radius = player.physics.cyl.radius;
 		cyl.height = player.physics.cyl.height;

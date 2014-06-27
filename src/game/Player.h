@@ -311,8 +311,8 @@ struct ARXCHARACTER {
 		return Vec3f(pos.x, pos.y - baseHeight(), pos.z);
 	}
 	
-	EERIE_CYLINDER baseCylinder() {
-		EERIE_CYLINDER c;
+	Cylinder baseCylinder() {
+		Cylinder c;
 		c.height = baseHeight();
 		c.radius = baseRadius();
 		c.origin = basePosition();

@@ -47,7 +47,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "math/Rectangle.h"
 #include "math/Vector.h"
 
-struct EERIE_CYLINDER {
+struct Cylinder {
 	Vec3f origin;
 	float radius;
 	float height;

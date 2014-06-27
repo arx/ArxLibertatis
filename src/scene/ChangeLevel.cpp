@@ -2435,7 +2435,7 @@ static void ARX_CHANGELEVEL_PopAllIO(ARX_CHANGELEVEL_INDEX * asi) {
 	}
 }
 
-extern void GetIOCyl(Entity * io, EERIE_CYLINDER & cyl);
+extern void GetIOCyl(Entity * io, Cylinder & cyl);
 
 static void ARX_CHANGELEVEL_PopAllIO_FINISH(bool reloadflag, bool firstTime) {
 	

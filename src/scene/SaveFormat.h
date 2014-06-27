@@ -199,13 +199,13 @@ struct SavedCylinder {
 	f32 radius;
 	f32 height;
 	
-	inline operator EERIE_CYLINDER() const {
-		EERIE_CYLINDER a;
+	inline operator Cylinder() const {
+		Cylinder a;
 		a.origin = origin.toVec3(), a.radius = radius, a.height = height;
 		return a;
 	}
 	
-	inline SavedCylinder & operator=(const EERIE_CYLINDER & b) {
+	inline SavedCylinder & operator=(const Cylinder & b) {
 		origin = b.origin, radius = b.radius, height = b.height;
 		return *this;
 	}
