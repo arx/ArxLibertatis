@@ -295,7 +295,9 @@ void CMagicMissile::Render()
 		else
 			GRenderer->SetTexture(0, tex_mm);
 	}
-
+	
+	RenderMaterial mat = RenderMaterial::getCurrent();
+	
 	if(bMove) {
 		float fOneOnDuration = 1.f / (float)(ulDuration);
 		fTrail = (ulCurrentTime * fOneOnDuration) * (iBezierPrecision + 2) * 5;
@@ -369,7 +371,7 @@ void CMagicMissile::Render()
 
 				float fs = fsize * 6 + rnd() * 0.3f;
 				float fe = fsize * 6 + rnd() * 0.3f;
-				Draw3DLineTexNew(lastpos, newpos, color, color, fs, fe);
+				Draw3DLineTexNew(mat, lastpos, newpos, color, color, fs, fe);
 			}
 
 			Vec3f temp_vector = lastpos;

@@ -22,6 +22,7 @@
 #include "core/GameTime.h"
 #include "math/Random.h"
 #include "graphics/Renderer.h"
+#include "graphics/RenderBatcher.h"
 #include "graphics/effects/SpellEffects.h"
 
 
@@ -77,9 +78,12 @@ void Trail::Render()
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	GRenderer->ResetTexture(0);
-
+	
+	RenderMaterial mat = RenderMaterial::getCurrent();
+	
 	for(size_t i = 0; i + 1 < m_positions.size() && i + 1 < m_segments.size(); i++) {
-		Draw3DLineTexNew(m_positions[i],
+		Draw3DLineTexNew(mat,
+						 m_positions[i],
 						 m_positions[i + 1],
 						 m_segments[i].m_color,
 						 m_segments[i + 1].m_color,

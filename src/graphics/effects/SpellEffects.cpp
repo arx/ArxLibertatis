@@ -73,9 +73,7 @@ unsigned long CSpellFx::GetDuration() {
 	return ulDuration;
 }
 
-void Draw3DLineTexNew(Vec3f startPos, Vec3f endPos, Color startColor, Color endColor, float startSize, float endSize) {
-
-	RenderMaterial mat = RenderMaterial::getCurrent();
+void Draw3DLineTexNew(const RenderMaterial & mat, Vec3f startPos, Vec3f endPos, Color startColor, Color endColor, float startSize, float endSize) {
 	
 	float fBeta = MAKEANGLE(player.angle.getPitch());
 	float xxs = (float)(startSize * cos(radians(fBeta)));

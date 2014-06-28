@@ -54,6 +54,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Light.h"
 
 struct TexturedVertex;
+struct RenderMaterial;
 
 const int BEZIERPrecision = 32;
 
@@ -80,7 +81,7 @@ class CSpellFx
 
 Vec3f randomOffsetXZ(float range);
 
-void Draw3DLineTexNew(Vec3f startPos, Vec3f endPos, Color startColor, Color endColor, float startSize, float endSize);
+void Draw3DLineTexNew(const RenderMaterial & mat, Vec3f startPos, Vec3f endPos, Color startColor, Color endColor, float startSize, float endSize);
 
 void Split(Vec3f * v, int a, int b, float fX, float fMulX, float fY, float fMulY, float fZ, float fMulZ);
 void Split(TexturedVertex * v, int a, int b, float yo, float fMul = 0.5f);
