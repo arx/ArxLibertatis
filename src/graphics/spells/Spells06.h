@@ -61,8 +61,6 @@ public:
 private:
 	TextureContainer * tex_jelly;
 	bool youp;
-	float fColor1[3];
-	float fColor2[3];
 	float fwrap;
 	float ysize;
 	float size;

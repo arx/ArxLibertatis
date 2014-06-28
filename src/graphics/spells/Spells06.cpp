@@ -78,13 +78,6 @@ CCreateField::CCreateField()
 	, fglow(0.f)
 	, falpha(0.f)
 {
-	fColor1[0] = 0.4f;
-	fColor1[1] = 0.0f;
-	fColor1[2] = 0.4f;
-	fColor2[0] = 0.0f;
-	fColor2[1] = 0.0f;
-	fColor2[2] = 0.6f;
-	
 	SetDuration(2000);
 	ulCurrentTime = ulDuration + 1;
 	
