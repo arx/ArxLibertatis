@@ -153,8 +153,6 @@ public:
 	Vec3f m_caster_pos;
 	Vec3f m_target_pos;
 	
-	float m_fdata; //!< Specific use for each spell
-	
 	SpellType m_type;
 	Vec3f m_vsource; // TODO this is used but never set
 	

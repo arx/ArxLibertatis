@@ -36,6 +36,9 @@ public:
 	void Launch();
 	void End();
 	void Update(float timeDelta);
+	
+private:
+	float m_fdata;
 };
 
 class ExplosionSpell : public SpellBase {
@@ -56,6 +59,9 @@ public:
 	void Launch();
 	void End();
 	void Update(float timeDelta);
+	
+private:
+	float m_fdata;
 };
 
 #endif // ARX_GAME_MAGIC_SPELLS_SPELLSLVL08_H
