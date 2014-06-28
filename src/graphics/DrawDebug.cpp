@@ -95,10 +95,10 @@ void drawDebugCycleViews() {
 
 static void drawDebugBoundingBox(const EERIE_2D_BBOX & box, Color color = Color::white) {
 	if(box.valid()) {
-		EERIEDraw2DLine(box.min.x, box.min.y, box.max.x, box.min.y, 0.01f, color);
-		EERIEDraw2DLine(box.max.x, box.min.y, box.max.x, box.max.y, 0.01f, color);
-		EERIEDraw2DLine(box.max.x, box.max.y, box.min.x, box.max.y, 0.01f, color);
-		EERIEDraw2DLine(box.min.x, box.max.y, box.min.x, box.min.y, 0.01f, color);
+		drawLine2D(box.min.x, box.min.y, box.max.x, box.min.y, 0.01f, color);
+		drawLine2D(box.max.x, box.min.y, box.max.x, box.max.y, 0.01f, color);
+		drawLine2D(box.max.x, box.max.y, box.min.x, box.max.y, 0.01f, color);
+		drawLine2D(box.min.x, box.max.y, box.min.x, box.min.y, 0.01f, color);
 	}
 }
 
@@ -131,11 +131,11 @@ static void drawDebugLights() {
 			Sphere fallstart;
 			fallstart.origin = light->pos;
 			fallstart.radius = light->fallstart;
-			DrawLineSphere(fallstart, Color(Color3<u8>::green, 200));
+			drawLineSphere(fallstart, Color(Color3<u8>::green, 200));
 			Sphere fallend;
 			fallend.origin = light->pos;
 			fallend.radius = light->fallend;
-			DrawLineSphere(fallend, Color(Color3<u8>::red, 200));
+			drawLineSphere(fallend, Color(Color3<u8>::red, 200));
 		}
 		
 		if(light->m_screenRect.valid())
@@ -173,10 +173,10 @@ static void drawDebugPortals() {
 		
 		EERIEPOLY & epp = po.poly;
 
-		EERIEDraw3DLine(epp.v[0].p, epp.v[1].p, color);
-		EERIEDraw3DLine(epp.v[1].p, epp.v[3].p, color);
-		EERIEDraw3DLine(epp.v[2].p, epp.v[3].p, color);
-		EERIEDraw3DLine(epp.v[0].p, epp.v[2].p, color);
+		drawLine(epp.v[0].p, epp.v[1].p, color);
+		drawLine(epp.v[1].p, epp.v[3].p, color);
+		drawLine(epp.v[2].p, epp.v[3].p, color);
+		drawLine(epp.v[0].p, epp.v[2].p, color);
 		
 	}
 	
@@ -232,16 +232,16 @@ static void drawDebugPaths() {
 		Color color = (path->height != 0) ? Color::green : Color::red;
 		
 		for(size_t i = 0; i + 1 < points.size(); i++) {
-			EERIEDraw3DLine(points[i], points[i + 1], color);
+			drawLine(points[i], points[i + 1], color);
 		}
 		
 		if(path->height > 0) {
 			Vec3f offset(0.f, (path->bbmax.y - path->bbmin.y), 0.f);
 			for(size_t i = 0; i + 1 < points.size(); i++) {
-				EERIEDraw3DLine(points[i] + offset, points[i + 1] + offset, color);
+				drawLine(points[i] + offset, points[i + 1] + offset, color);
 			}
 			for(size_t i = 0; i < points.size(); i++) {
-				EERIEDraw3DLine(points[i], points[i] + offset, color);
+				drawLine(points[i], points[i] + offset, color);
 			}
 		}
 		
@@ -288,13 +288,13 @@ static void drawDebugPathFinding() {
 			if(k >= 0 && k < ACTIVEBKG->nbanchors && i < k) {
 				const ANCHOR_DATA & other = ACTIVEBKG->anchors[k];
 				Color color2 = (other.flags & ANCHOR_FLAG_BLOCKED) ? Color::blue : Color::green;
-				EERIEDraw3DLine(node.pos, other.pos, color1, color2, zbias);
+				drawLine(node.pos, other.pos, color1, color2, zbias);
 			}
 		}
 		
 		if(node.height != 0.f) {
 			Vec3f toppos = node.pos + Vec3f(0.f, node.height, 0.f);
-			EERIEDraw3DLine(node.pos, toppos, Color::blue, zbias);
+			drawLine(node.pos, toppos, Color::blue, zbias);
 		}
 		
 	}
@@ -319,7 +319,7 @@ static void drawDebugPathFinding() {
 				const ANCHOR_DATA & n0 = ACTIVEBKG->anchors[k0], & n1 = ACTIVEBKG->anchors[k1];
 				Color color0 = (j     <= pathfind.listpos) ? Color::yellow : Color::red;
 				Color color1 = (j + 1 <= pathfind.listpos) ? Color::yellow : Color::red;
-				EERIEDraw3DLine(n0.pos, n1.pos, color0, color1, 2.f * zbias);
+				drawLine(n0.pos, n1.pos, color0, color1, 2.f * zbias);
 			}
 		}
 		
@@ -360,13 +360,13 @@ static void drawDebugFogs() {
 			Draw3DObject(g_fogObject, angle, fog->pos, scale, Color3f::white);
 		
 		if(fog->special & FOG_DIRECTIONAL) {
-			EERIEDraw3DLine(fog->pos, fog->pos + fog->move * 50.f, Color::white);
+			drawLine(fog->pos, fog->pos + fog->move * 50.f, Color::white);
 		}
 		
 		Sphere fogsize;
 		fogsize.origin = fog->pos;
 		fogsize.radius = fog->size;
-		DrawLineSphere(fogsize, Color(Color3<u8>::blue, 200));
+		drawLineSphere(fogsize, Color(Color3<u8>::blue, 200));
 		
 	}
 	
@@ -382,7 +382,7 @@ static void drawDebugCollisionShape(EERIE_3DOBJ * obj) {
 	Sphere sphere;
 	sphere.origin = obj->pbox->vert[0].pos;
 	sphere.radius = obj->pbox->radius;
-	DrawLineSphere(sphere, Color::white);
+	drawLineSphere(sphere, Color::white);
 	
 	GRenderer->SetRenderState(Renderer::DepthTest, false);
 	
@@ -393,7 +393,7 @@ static void drawDebugCollisionShape(EERIE_3DOBJ * obj) {
 	}
 	
 	for(long k = 0; k + 1 < obj->pbox->nb_physvert; k++) {
-		EERIEDraw3DLine(obj->pbox->vert[k].pos, obj->pbox->vert[k+1].pos, shapeColor);
+		drawLine(obj->pbox->vert[k].pos, obj->pbox->vert[k+1].pos, shapeColor);
 	}
 	
 }
@@ -414,16 +414,16 @@ static void drawDebugEntityPhysicsCylinder(Entity * io) {
 	cyll.height = GetIOHeight(io);
 	cyll.radius = GetIORadius(io);
 	cyll.origin = io->physics.startpos;
-	EERIEDraw3DCylinder(cyll, Color::green);
+	drawLineCylinder(cyll, Color::green);
 	
 	if(!(AttemptValidCylinderPos(cyll, io, levitate | CFLAG_NPC))) {
 		cyll.height = -40.f;
-		EERIEDraw3DCylinder(cyll, Color::blue);
+		drawLineCylinder(cyll, Color::blue);
 		cyll.height = GetIOHeight(io);
 	}
 	
 	cyll.origin = io->physics.targetpos;
-	EERIEDraw3DCylinder(cyll, Color::red);
+	drawLineCylinder(cyll, Color::red);
 	
 }
 

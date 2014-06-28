@@ -390,11 +390,11 @@ void ShowFpsGraph() {
 
 	Color avgColor = Color::blue * 0.5f + Color::white * 0.5f;
 	float avgPos = windowSize.y - (avg * SCALE_Y);
-	EERIEDraw2DLine(0, avgPos,  windowSize.x, avgPos, 1.0f, Color::blue);
+	drawLine2D(0, avgPos,  windowSize.x, avgPos, 1.0f, Color::blue);
 
 	Color worstColor = Color::red * 0.5f + Color::white * 0.5f;
 	float worstPos = windowSize.y - (worst * SCALE_Y);
-	EERIEDraw2DLine(0, worstPos,  windowSize.x, worstPos, 1.0f, Color::red);
+	drawLine2D(0, worstPos,  windowSize.x, worstPos, 1.0f, Color::red);
 
 	Font * font = hFontDebug;
 	float lineOffset = font->getLineHeight() + 2;

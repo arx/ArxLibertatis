@@ -29,7 +29,7 @@
 #include "graphics/Vertex.h"
 #include "graphics/data/Mesh.h"
 
-void EERIEDraw2DLine(float x0, float y0, float x1, float y1, float z, Color col) {
+void drawLine2D(float x0, float y0, float x1, float y1, float z, Color col) {
 
 	TexturedVertex v[2];
 	v[0].p.x = x0;
@@ -44,7 +44,7 @@ void EERIEDraw2DLine(float x0, float y0, float x1, float y1, float z, Color col)
 	EERIEDRAWPRIM(Renderer::LineList, v, 2);
 }
 
-void EERIEDraw2DRect(const Rectf & rect, float z, Color col) {
+void drawLineRectangle(const Rectf & rect, float z, Color col) {
 
 	TexturedVertex v[5];
 	v[0].p = Vec3f(rect.bottomLeft(), z);
@@ -76,7 +76,7 @@ void EERIEDrawFill2DRectDegrad(float x0, float y0, float x1, float y1, float z, 
 	EERIEDRAWPRIM(Renderer::TriangleStrip, v, 4);
 }
 
-void DrawLineSphere(const Sphere & sphere, Color color) {
+void drawLineSphere(const Sphere & sphere, Color color) {
 
 	if(sphere.radius <= 0)
 		return;
@@ -130,7 +130,7 @@ void DrawLineSphere(const Sphere & sphere, Color color) {
 	EERIEDRAWPRIM(Renderer::LineStrip, &vertices[0], vertices.size());
 }
 
-void EERIEDraw3DCylinder(const Cylinder & cyl, Color col) {
+void drawLineCylinder(const Cylinder & cyl, Color col) {
 	
 	const int STEPCYL = 16;
 	
@@ -142,39 +142,18 @@ void EERIEDraw3DCylinder(const Cylinder & cyl, Color col) {
 		float ec2 = cos(radians(MAKEANGLE((float)(i + STEPCYL)))) * cyl.radius;
 
 		// Draw low pos
-		EERIEDraw3DLine(cyl.origin + Vec3f(es, 0.f, ec), cyl.origin + Vec3f(es2, 0.f, ec2),  col);
+		drawLine(cyl.origin + Vec3f(es, 0.f, ec), cyl.origin + Vec3f(es2, 0.f, ec2),  col);
 		// Draw vertical
 		Vec3f from = cyl.origin + Vec3f(es, 0.f, ec);
-		EERIEDraw3DLine(from, from + Vec3f(0.f, cyl.height, 0.f),  col);
+		drawLine(from, from + Vec3f(0.f, cyl.height, 0.f),  col);
 		// Draw high pos
 		Vec3f from2 = cyl.origin + Vec3f(es, cyl.height, ec);
 		Vec3f to = cyl.origin + Vec3f(es2, cyl.height, ec2);
-		EERIEDraw3DLine(from2, to,  col);
+		drawLine(from2, to,  col);
 	}
 }
 
-void EERIEDrawTrue3DLine(const Vec3f & orgn, const Vec3f & dest, Color col) {
-
-	Vec3f vect = dest - orgn;
-	float m = ffsqrt(glm::length2(vect));
-
-	if(m <= 0)
-		return;
-
-	vect *= 1 / m;
-
-	Vec3f cpos = orgn;
-
-	while(m > 0) {
-		float dep=std::min(m,30.f);
-		Vec3f tpos = cpos + (vect * dep);
-		EERIEDraw3DLine(cpos, tpos, col);
-		cpos = tpos;
-		m -= dep;
-	}
-}
-
-void EERIEDraw3DLine(const Vec3f & orgn, const Vec3f & dest, Color color1, Color color2, float zbias) {
+void drawLine(const Vec3f & orgn, const Vec3f & dest, Color color1, Color color2, float zbias) {
 	
 	TexturedVertex v[2];
 	
@@ -197,6 +176,6 @@ void EERIEDraw3DLine(const Vec3f & orgn, const Vec3f & dest, Color color1, Color
 	EERIEDRAWPRIM(Renderer::LineList, v, 2);
 }
 
-void EERIEDraw3DLine(const Vec3f & orgn, const Vec3f & dest, Color color, float zbias) {
-	EERIEDraw3DLine(orgn, dest, color, color, zbias);
+void drawLine(const Vec3f & orgn, const Vec3f & dest, Color color, float zbias) {
+	drawLine(orgn, dest, color, color, zbias);
 }

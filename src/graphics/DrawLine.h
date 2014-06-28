@@ -25,15 +25,13 @@
 
 #include "graphics/Draw.h"
 
-void EERIEDraw2DLine(float x0, float y0, float x1, float y1, float z, Color col);
-
-void EERIEDraw2DRect(const Rectf & rect, float z, Color col);
 void EERIEDrawFill2DRectDegrad(float x0, float y0, float x1, float y1, float z, Color cold, Color cole);
 
-void DrawLineSphere(const Sphere & sphere, Color color);
-void EERIEDraw3DCylinder(const Cylinder & cyl, Color col);
-void EERIEDrawTrue3DLine(const Vec3f & orgn, const Vec3f & dest, Color col);
-void EERIEDraw3DLine(const Vec3f & orgn, const Vec3f & dest, Color col, float zbias = 0.f);
-void EERIEDraw3DLine(const Vec3f & orgn, const Vec3f & dest, Color color1, Color color2, float zbias = 0.f);
+void drawLine2D(float x0, float y0, float x1, float y1, float z, Color col);
+void drawLine(const Vec3f & orgn, const Vec3f & dest, Color col, float zbias = 0.f);
+void drawLine(const Vec3f & orgn, const Vec3f & dest, Color color1, Color color2, float zbias = 0.f);
+void drawLineRectangle(const Rectf & rect, float z, Color col);
+void drawLineSphere(const Sphere & sphere, Color color);
+void drawLineCylinder(const Cylinder & cyl, Color col);
 
 #endif // ARX_GRAPHICS_DRAWLINE_H
