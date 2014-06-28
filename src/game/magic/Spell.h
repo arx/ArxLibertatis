@@ -127,6 +127,7 @@ DECLARE_FLAGS_OPERATORS(SpellcastFlags)
 class SpellBase {
 public:
 	SpellBase();
+	virtual ~SpellBase() {}
 	
 	void BaseEnd();
 	
