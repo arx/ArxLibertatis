@@ -35,16 +35,26 @@ private:
 
 class FireFieldSpell : public SpellBase {
 public:
+	FireFieldSpell();
+	
 	void Launch();
 	void End();
 	void Update(float timeDelta);
+	
+private:
+	LightHandle m_light;
 };
 
 class IceFieldSpell : public SpellBase {
 public:
+	IceFieldSpell();
+	
 	void Launch();
 	void End();
 	void Update(float timeDelta);
+	
+private:
+	LightHandle m_light;
 };
 
 class LightningStrikeSpell : public SpellBase {

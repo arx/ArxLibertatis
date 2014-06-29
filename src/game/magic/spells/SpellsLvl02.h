@@ -58,12 +58,15 @@ private:
 
 class HarmSpell : public SpellBase {
 public:
+	HarmSpell();
+	
 	void Launch();
 	void End();
 	void Update(float timeDelta);
 	
 private:
 	float m_fdata;
+	LightHandle m_light;
 };
 
 #endif // ARX_GAME_MAGIC_SPELLS_SPELLSLVL02_H

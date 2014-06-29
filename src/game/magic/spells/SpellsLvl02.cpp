@@ -307,6 +307,12 @@ void LowerArmorSpell::Update(float timeDelta)
 	ARX_SOUND_RefreshPosition(m_snd_loop, entities[m_target]->pos);
 }
 
+HarmSpell::HarmSpell()
+	: m_light(InvalidLightHandle)
+{
+	
+}
+
 void HarmSpell::Launch()
 {
 	if(!(m_flags & SPELLCAST_FLAG_NOSOUND)) {
@@ -334,9 +340,9 @@ void HarmSpell::Launch()
 	damage.type = DAMAGE_TYPE_FAKEFIRE | DAMAGE_TYPE_MAGICAL;
 	m_longinfo_damage = DamageCreate(damage);
 	
-	m_longinfo2_light = GetFreeDynLight();
-	if(lightHandleIsValid(m_longinfo2_light)) {
-		EERIE_LIGHT * light = lightHandleGet(m_longinfo2_light);
+	m_light = GetFreeDynLight();
+	if(lightHandleIsValid(m_light)) {
+		EERIE_LIGHT * light = lightHandleGet(m_light);
 		
 		light->intensity = 2.3f;
 		light->fallend = 700.f;
@@ -350,8 +356,8 @@ void HarmSpell::End()
 {
 	DamageRequestEnd(m_longinfo_damage);
 	
-	if(lightHandleIsValid(m_longinfo2_light)) {
-		EERIE_LIGHT * light = lightHandleGet(m_longinfo2_light);
+	if(lightHandleIsValid(m_light)) {
+		EERIE_LIGHT * light = lightHandleGet(m_light);
 		
 		light->time_creation = (unsigned long)(arxtime);
 		light->duration = 600; 
@@ -390,8 +396,8 @@ void HarmSpell::Update(float timeDelta)
 	
 	float Es=std::sin((float)arxtime.get_frame_time()*( 1.0f / 800 ) + radians(scaley));
 	
-	if(lightHandleIsValid(m_longinfo2_light)) {
-		EERIE_LIGHT * light = lightHandleGet(m_longinfo2_light);
+	if(lightHandleIsValid(m_light)) {
+		EERIE_LIGHT * light = lightHandleGet(m_light);
 		
 		light->pos.x = cabalpos.x;
 		light->pos.y = refpos;

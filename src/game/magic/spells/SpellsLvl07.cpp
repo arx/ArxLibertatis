@@ -209,6 +209,11 @@ void FlyingEyeSpell::Update(float timeDelta)
 	}
 }
 
+FireFieldSpell::FireFieldSpell()
+	: m_light(InvalidLightHandle)
+{
+}
+
 void FireFieldSpell::Launch()
 {
 	spells.endByCaster(m_caster, SPELL_FIRE_FIELD);
@@ -218,7 +223,7 @@ void FireFieldSpell::Launch()
 	m_duration = (m_launchDuration > -1) ? m_launchDuration : 100000;
 	m_bDuration = true;
 	m_fManaCostPerSecond = 2.8f;
-	m_longinfo2_light = InvalidLightHandle;
+	m_light = InvalidLightHandle;
 	
 	CFireField * effect = new CFireField();
 	
@@ -280,11 +285,11 @@ void FireFieldSpell::Update(float timeDelta)
 		CFireField *pf = (CFireField *) pCSpellFX;
 		pCSpellFX->Update(timeDelta);
 		
-		if(!lightHandleIsValid(m_longinfo2_light))
-			m_longinfo2_light = GetFreeDynLight();
+		if(!lightHandleIsValid(m_light))
+			m_light = GetFreeDynLight();
 
-		if(lightHandleIsValid(m_longinfo2_light)) {
-			EERIE_LIGHT * el = lightHandleGet(m_longinfo2_light);
+		if(lightHandleIsValid(m_light)) {
+			EERIE_LIGHT * el = lightHandleGet(m_light);
 			
 			el->pos.x = pf->pos.x;
 			el->pos.y = pf->pos.y-120.f;
@@ -337,6 +342,11 @@ void FireFieldSpell::Update(float timeDelta)
 	}
 }
 
+IceFieldSpell::IceFieldSpell()
+	: m_light(InvalidLightHandle)
+{
+}
+
 void IceFieldSpell::Launch()
 {
 	spells.endByCaster(m_caster, SPELL_ICE_FIELD);
@@ -346,7 +356,7 @@ void IceFieldSpell::Launch()
 	m_duration = (m_launchDuration > -1) ? m_launchDuration : 100000;
 	m_bDuration = true;
 	m_fManaCostPerSecond = 2.8f;
-	m_longinfo2_light = InvalidLightHandle;
+	m_light = InvalidLightHandle;
 	
 	CIceField * effect = new CIceField();
 	
@@ -410,11 +420,11 @@ void IceFieldSpell::Update(float timeDelta)
 		
 		CIceField *pf = (CIceField *) pCSpellFX;
 
-		if(!lightHandleIsValid(m_longinfo2_light))
-			m_longinfo2_light = GetFreeDynLight();
+		if(!lightHandleIsValid(m_light))
+			m_light = GetFreeDynLight();
 
-		if(lightHandleIsValid(m_longinfo2_light)) {
-			EERIE_LIGHT * el = lightHandleGet(m_longinfo2_light);
+		if(lightHandleIsValid(m_light)) {
+			EERIE_LIGHT * el = lightHandleGet(m_light);
 			
 			el->pos.x = pf->eSrc.x;
 			el->pos.y = pf->eSrc.y-120.f;

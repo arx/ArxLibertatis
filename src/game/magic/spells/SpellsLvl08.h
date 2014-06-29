@@ -32,6 +32,8 @@ public:
 
 class ManaDrainSpell : public SpellBase {
 public:
+	ManaDrainSpell();
+	
 	bool CanLaunch();
 	void Launch();
 	void End();
@@ -39,12 +41,18 @@ public:
 	
 private:
 	float m_fdata;
+	LightHandle m_light;
 };
 
 class ExplosionSpell : public SpellBase {
 public:
+	ExplosionSpell();
+	
 	void Launch();
 	void Update(float timeDelta);
+	
+private:
+	LightHandle m_light;
 };
 
 class EnchantWeaponSpell : public SpellBase {
@@ -55,6 +63,8 @@ public:
 
 class LifeDrainSpell : public SpellBase {
 public:
+	LifeDrainSpell();
+	
 	bool CanLaunch();
 	void Launch();
 	void End();
@@ -62,6 +72,7 @@ public:
 	
 private:
 	float m_fdata;
+	LightHandle m_light;
 };
 
 #endif // ARX_GAME_MAGIC_SPELLS_SPELLSLVL08_H

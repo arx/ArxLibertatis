@@ -164,8 +164,6 @@ public:
 
 	LightHandle m_longinfo_light;
 	
-	LightHandle m_longinfo2_light;
-	
 	bool m_bDuration;
 	float m_fManaCostPerSecond;
 	

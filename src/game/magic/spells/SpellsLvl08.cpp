@@ -78,6 +78,12 @@ void InvisibilitySpell::Update(float timeDelta)
 	}	
 }
 
+ManaDrainSpell::ManaDrainSpell()
+	: m_light(InvalidLightHandle)
+{
+	
+}
+
 bool ManaDrainSpell::CanLaunch()
 {
 	return !spells.ExistAnyInstanceForThisCaster(m_type, m_caster);
@@ -106,9 +112,9 @@ void ManaDrainSpell::Launch()
 	damage.type = DAMAGE_TYPE_FAKEFIRE | DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_DRAIN_MANA;
 	m_longinfo_damage = DamageCreate(damage);
 	
-	m_longinfo2_light = GetFreeDynLight();
-	if(lightHandleIsValid(m_longinfo2_light)) {
-		EERIE_LIGHT * light = lightHandleGet(m_longinfo2_light);
+	m_light = GetFreeDynLight();
+	if(lightHandleIsValid(m_light)) {
+		EERIE_LIGHT * light = lightHandleGet(m_light);
 		
 		light->intensity = 2.3f;
 		light->fallend = 700.f;
@@ -123,8 +129,8 @@ void ManaDrainSpell::End()
 {
 	DamageRequestEnd(m_longinfo_damage);
 	
-	if(lightHandleIsValid(m_longinfo2_light)) {
-		EERIE_LIGHT * light = lightHandleGet(m_longinfo2_light);
+	if(lightHandleIsValid(m_light)) {
+		EERIE_LIGHT * light = lightHandleGet(m_light);
 		
 		light->time_creation = (unsigned long)(arxtime);
 		light->duration = 600; 
@@ -162,8 +168,8 @@ void ManaDrainSpell::Update(float timeDelta)
 	
 	float Es=std::sin((float)arxtime.get_frame_time()*( 1.0f / 800 ) + radians(scaley));
 	
-	if(lightHandleIsValid(m_longinfo2_light)) {
-		EERIE_LIGHT * light = lightHandleGet(m_longinfo2_light);
+	if(lightHandleIsValid(m_light)) {
+		EERIE_LIGHT * light = lightHandleGet(m_light);
 		
 		light->pos.x = cabalpos.x;
 		light->pos.y = refpos;
@@ -227,6 +233,11 @@ void ManaDrainSpell::Update(float timeDelta)
 	ARX_SOUND_RefreshPosition(m_snd_loop, cabalpos);
 }
 
+ExplosionSpell::ExplosionSpell()
+	: m_light(InvalidLightHandle)
+{
+}
+
 void ExplosionSpell::Launch()
 {
 	ARX_SOUND_PlaySFX(SND_SPELL_EXPLOSION);
@@ -251,9 +262,9 @@ void ExplosionSpell::Launch()
 	damage.pos = target;
 	m_longinfo_damage = DamageCreate(damage);
 	
-	m_longinfo2_light = GetFreeDynLight();
-	if(lightHandleIsValid(m_longinfo2_light)) {
-		EERIE_LIGHT * light = lightHandleGet(m_longinfo2_light);
+	m_light = GetFreeDynLight();
+	if(lightHandleIsValid(m_light)) {
+		EERIE_LIGHT * light = lightHandleGet(m_light);
 		
 		light->intensity = 2.3f;
 		light->fallend = 700.f;
@@ -289,11 +300,11 @@ void ExplosionSpell::Update(float timeDelta)
 {
 	ARX_UNUSED(timeDelta);
 	
-	if(!lightHandleIsValid(m_longinfo2_light))
-		m_longinfo2_light = GetFreeDynLight();
+	if(!lightHandleIsValid(m_light))
+		m_light = GetFreeDynLight();
 
-	if(lightHandleIsValid(m_longinfo2_light)) {
-		EERIE_LIGHT * light = lightHandleGet(m_longinfo2_light);
+	if(lightHandleIsValid(m_light)) {
+		EERIE_LIGHT * light = lightHandleGet(m_light);
 		
 		light->rgb.r = 0.1f+rnd()*( 1.0f / 3 );;
 		light->rgb.g = 0.1f+rnd()*( 1.0f / 3 );;
@@ -346,6 +357,11 @@ void EnchantWeaponSpell::Update(float timeDelta)
 	}	
 }
 
+LifeDrainSpell::LifeDrainSpell()
+	: m_light(InvalidLightHandle)
+{
+}
+
 bool LifeDrainSpell::CanLaunch()
 {
 	return !spells.ExistAnyInstanceForThisCaster(m_type, m_caster);
@@ -374,9 +390,9 @@ void LifeDrainSpell::Launch()
 	damage.type = DAMAGE_TYPE_FAKEFIRE | DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_DRAIN_LIFE;
 	m_longinfo_damage = DamageCreate(damage);
 	
-	m_longinfo2_light = GetFreeDynLight();
-	if(lightHandleIsValid(m_longinfo2_light)) {
-		EERIE_LIGHT * light = lightHandleGet(m_longinfo2_light);
+	m_light = GetFreeDynLight();
+	if(lightHandleIsValid(m_light)) {
+		EERIE_LIGHT * light = lightHandleGet(m_light);
 		
 		light->intensity = 2.3f;
 		light->fallend = 700.f;
@@ -391,8 +407,8 @@ void LifeDrainSpell::End()
 {
 	DamageRequestEnd(m_longinfo_damage);
 	
-	if(lightHandleIsValid(m_longinfo2_light)) {
-		EERIE_LIGHT * light = lightHandleGet(m_longinfo2_light);
+	if(lightHandleIsValid(m_light)) {
+		EERIE_LIGHT * light = lightHandleGet(m_light);
 		
 		light->time_creation = (unsigned long)(arxtime);
 		light->duration = 600; 
@@ -428,8 +444,8 @@ void LifeDrainSpell::Update(float timeDelta)
 	
 	float Es=std::sin((float)arxtime.get_frame_time()*( 1.0f / 800 ) + radians(scaley));
 	
-	if(lightHandleIsValid(m_longinfo2_light)) {
-		EERIE_LIGHT * light = lightHandleGet(m_longinfo2_light);
+	if(lightHandleIsValid(m_light)) {
+		EERIE_LIGHT * light = lightHandleGet(m_light);
 		
 		light->pos.x = cabalpos.x;
 		light->pos.y = refpos;
