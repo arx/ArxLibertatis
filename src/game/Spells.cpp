@@ -1149,6 +1149,33 @@ SpellBase * createSpellInstance(SpellType type) {
 }
 
 
+Vec3f getTargetPos(EntityHandle source, EntityHandle target)
+{
+	Vec3f targetPos;
+	if(target == InvalidEntityHandle) {
+		// no target... targeted by sight
+		if(source == PlayerEntityHandle) {
+			// no target... player spell targeted by sight
+			targetPos.x = player.pos.x - std::sin(radians(player.angle.getPitch()))*60.f;
+			targetPos.y = player.pos.y + std::sin(radians(player.angle.getYaw()))*60.f;
+			targetPos.z = player.pos.z + std::cos(radians(player.angle.getPitch()))*60.f;
+		} else {
+			// TODO entities[target] with target < 0 ??? - uh oh!
+			targetPos.x = entities[target]->pos.x - std::sin(radians(entities[target]->angle.getPitch()))*60.f;
+			targetPos.y = entities[target]->pos.y - 120.f;
+			targetPos.z = entities[target]->pos.z + std::cos(radians(entities[target]->angle.getPitch()))*60.f;
+		}
+	} else if(target == PlayerEntityHandle) {
+		// player target
+		targetPos = player.pos;
+	} else {
+		// IO target
+		targetPos = entities[target]->pos;
+	}
+	
+	return targetPos;
+}
+
 bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flags, long level, EntityHandle target, long duration) {
 	
 	if(cur_rf == 3) {
@@ -1338,27 +1365,7 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flags,
 	spell.m_level = spellLevel;
 	spell.m_caster_pos = casterPos;
 	
-	Vec3f targetPos;
-	if(target == InvalidEntityHandle) {
-		// no target... targeted by sight
-		if(source == PlayerEntityHandle) {
-			// no target... player spell targeted by sight
-			targetPos.x = player.pos.x - std::sin(radians(player.angle.getPitch()))*60.f;
-			targetPos.y = player.pos.y + std::sin(radians(player.angle.getYaw()))*60.f;
-			targetPos.z = player.pos.z + std::cos(radians(player.angle.getPitch()))*60.f;
-		} else {
-			// TODO entities[target] with target < 0 ??? - uh oh!
-			targetPos.x = entities[target]->pos.x - std::sin(radians(entities[target]->angle.getPitch()))*60.f;
-			targetPos.y = entities[target]->pos.y - 120.f;
-			targetPos.z = entities[target]->pos.z + std::cos(radians(entities[target]->angle.getPitch()))*60.f;
-		}
-	} else if(target == PlayerEntityHandle) {
-		// player target
-		targetPos = player.pos;
-	} else {
-		// IO target
-		targetPos = entities[target]->pos;
-	}
+	Vec3f targetPos = getTargetPos(source, target);
 	
 	spell.m_target_pos = targetPos;
 	
