@@ -43,13 +43,20 @@
 
 extern Rect g_size;
 
+MassLightningStrikeSpell::MassLightningStrikeSpell()
+	: m_light(InvalidLightHandle)
+{
+}
+
 void MassLightningStrikeSpell::Launch()
 {
+	// TODO don't manually end spell
 	for(size_t ii = 0; ii < MAX_SPELLS; ii++) {
 		SpellBase * spell = spells[SpellHandle(ii)];
 		
 		if(spell && spell->m_type == SPELL_MASS_LIGHTNING_STRIKE) {
-			lightHandleDestroy(spell->m_longinfo_light);
+			MassLightningStrikeSpell * sp = static_cast<MassLightningStrikeSpell *>(spell);
+			lightHandleDestroy(sp->m_light);
 			spell->m_duration = 0;
 		}
 	}
@@ -78,9 +85,9 @@ void MassLightningStrikeSpell::Launch()
 	m_pSpellFx = effect;
 	m_duration = effect->GetDuration();
 	
-	m_longinfo_light = GetFreeDynLight();
-	if(lightHandleIsValid(m_longinfo_light)) {
-		EERIE_LIGHT * light = lightHandleGet(m_longinfo_light);
+	m_light = GetFreeDynLight();
+	if(lightHandleIsValid(m_light)) {
+		EERIE_LIGHT * light = lightHandleGet(m_light);
 		
 		light->intensity = 1.8f;
 		light->fallend = 450.f;
@@ -102,13 +109,13 @@ void MassLightningStrikeSpell::Launch()
 
 void MassLightningStrikeSpell::End()
 {
-	if(lightHandleIsValid(m_longinfo_light)) {
-		EERIE_LIGHT * light = lightHandleGet(m_longinfo_light);
+	if(lightHandleIsValid(m_light)) {
+		EERIE_LIGHT * light = lightHandleGet(m_light);
 		
 		light->duration = 200;
 		light->time_creation = (unsigned long)(arxtime);
 	}
-	m_longinfo_light = InvalidLightHandle;
+	m_light = InvalidLightHandle;
 	
 	ARX_SOUND_Stop(m_snd_loop);
 	ARX_SOUND_PlaySFX(SND_SPELL_LIGHTNING_END);
@@ -153,8 +160,8 @@ void MassLightningStrikeSpell::Update(float timeDelta)
 		ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, NULL, 0.8F + 0.4F * rnd());
 	}
 
-	if(lightHandleIsValid(m_longinfo_light)) {
-		EERIE_LIGHT * light = lightHandleGet(m_longinfo_light);
+	if(lightHandleIsValid(m_light)) {
+		EERIE_LIGHT * light = lightHandleGet(m_light);
 		
 		float fxx;
 

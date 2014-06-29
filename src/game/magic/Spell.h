@@ -162,7 +162,7 @@ public:
 	EntityHandle m_longinfo_entity;
 	DamageHandle m_longinfo_damage;
 
-	LightHandle m_longinfo_light;
+
 	
 	bool m_bDuration;
 	float m_fManaCostPerSecond;

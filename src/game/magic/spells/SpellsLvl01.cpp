@@ -162,7 +162,6 @@ void MagicMissileSpell::Launch()
 
 void MagicMissileSpell::End()
 {
-	lightHandleDestroy(m_longinfo_light);
 }
 
 void MagicMissileSpell::Update(float timeDelta)

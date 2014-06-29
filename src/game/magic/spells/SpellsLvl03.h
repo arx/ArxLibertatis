@@ -37,9 +37,14 @@ public:
 
 class FireballSpell : public SpellBase {
 public:
+	FireballSpell();
+	
 	void Launch();
 	void End();
 	void Update(float timeDelta);
+	
+private:
+	LightHandle m_light;
 };
 
 class CreateFoodSpell : public SpellBase {

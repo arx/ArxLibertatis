@@ -464,14 +464,6 @@ void LightningStrikeSpell::End()
 {
 	ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &entities[m_caster]->pos);
 	
-	if(lightHandleIsValid(m_longinfo_light)) {
-		EERIE_LIGHT * light = lightHandleGet(m_longinfo_light);
-		
-		light->duration = 200;
-		light->time_creation = (unsigned long)(arxtime);
-	}
-	m_longinfo_light = InvalidLightHandle;
-	
 	ARX_SOUND_Stop(m_snd_loop);
 	ARX_SOUND_PlaySFX(SND_SPELL_LIGHTNING_END, &entities[m_caster]->pos);
 }

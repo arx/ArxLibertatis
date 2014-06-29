@@ -24,6 +24,8 @@
 
 class MassLightningStrikeSpell : public SpellBase {
 public:
+	MassLightningStrikeSpell();
+	
 	void Launch();
 	void End();
 	void Update(float timeDelta);
@@ -31,6 +33,7 @@ public:
 private:
 	Vec3f m_targetPos;
 	float m_siz;
+	LightHandle m_light;
 };
 
 class ControlTargetSpell : public SpellBase {

@@ -120,6 +120,11 @@ void DispellIllusionSpell::Update(float timeDelta)
 	}
 }
 
+FireballSpell::FireballSpell()
+	: m_light(InvalidLightHandle)
+{
+}
+
 void FireballSpell::Launch()
 {
 	m_duration = 20000; // TODO probably never read
@@ -183,13 +188,13 @@ void FireballSpell::End()
 {
 	ARX_SOUND_Stop(m_snd_loop);
 	
-	if(lightHandleIsValid(m_longinfo_light)) {
-		EERIE_LIGHT * light = lightHandleGet(m_longinfo_light);
+	if(lightHandleIsValid(m_light)) {
+		EERIE_LIGHT * light = lightHandleGet(m_light);
 		
 		light->duration = 500;
 		light->time_creation = (unsigned long)(arxtime);
 	}
-	m_longinfo_light = InvalidLightHandle;
+	m_light = InvalidLightHandle;
 }
 
 void FireballSpell::Update(float timeDelta)
@@ -252,11 +257,11 @@ void FireballSpell::Update(float timeDelta)
 	effect->eCurPos += effect->eMove * (timeDelta * 0.0045f);
 	
 	
-	if(!lightHandleIsValid(m_longinfo_light))
-		m_longinfo_light = GetFreeDynLight();
+	if(!lightHandleIsValid(m_light))
+		m_light = GetFreeDynLight();
 	
-	if(lightHandleIsValid(m_longinfo_light)) {
-		EERIE_LIGHT * light = lightHandleGet(m_longinfo_light);
+	if(lightHandleIsValid(m_light)) {
+		EERIE_LIGHT * light = lightHandleGet(m_light);
 		
 		light->pos = effect->eCurPos;
 		light->intensity = 2.2f;
