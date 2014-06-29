@@ -34,6 +34,7 @@ public:
 private:
 	void GetTargetAndBeta(Vec3f & target, float & beta);
 	
+	Vec3f m_targetPos;
 	EntityHandle m_entity;
 };
 

@@ -151,7 +151,6 @@ public:
 	long m_hand_group;
 	Vec3f m_hand_pos; //!< Only valid if hand_group>=0
 	Vec3f m_caster_pos;
-	Vec3f m_target_pos;
 	
 	SpellType m_type;
 	
@@ -170,6 +169,13 @@ public:
 
 	
 	std::vector<EntityHandle> m_targets;
+	
+protected:
+	Vec3f getTargetPos(EntityHandle source, EntityHandle target);
 };
+
+
+
+
 
 #endif // ARX_GAME_MAGIC_SPELL_H

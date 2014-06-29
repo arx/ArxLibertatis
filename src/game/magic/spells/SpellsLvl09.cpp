@@ -89,8 +89,8 @@ void SummonCreatureSpell::Launch()
 	GetTargetAndBeta(target, beta);
 	
 	m_fdata = (m_caster == PlayerEntityHandle && cur_mega == 10) ? 1.f : 0.f;
-	m_target_pos = target;
-	ARX_SOUND_PlaySFX(SND_SPELL_SUMMON_CREATURE, &m_target_pos);
+	m_targetPos = target;
+	ARX_SOUND_PlaySFX(SND_SPELL_SUMMON_CREATURE, &m_targetPos);
 	CSummonCreature * effect = new CSummonCreature();
 	effect->Create(target, MAKEANGLE(player.angle.getPitch()));
 	effect->SetDuration(2000, 500, 1500);
@@ -177,15 +177,15 @@ void SummonCreatureSpell::Update(float timeDelta)
 			lightHandleDestroy(m_pSpellFx->lLightId);
 
 			m_longinfo_summon_creature = 0;
-			ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &m_target_pos);
+			ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &m_targetPos);
 			CSummonCreature *pSummon;
 			pSummon= (CSummonCreature *)m_pSpellFx;
 
 			if(pSummon) {
 				Cylinder phys;
-				phys.height=-200;
-				phys.radius=50;
-				phys.origin=m_target_pos;
+				phys.height = -200;
+				phys.radius = 50;
+				phys.origin = m_targetPos;
 				float anything = CheckAnythingInCylinder(phys, NULL, CFLAG_JUST_TEST);
 
 				if(EEfabs(anything) < 30) {
@@ -297,8 +297,8 @@ void FakeSummonSpell::Launch()
 	if(m_target != PlayerEntityHandle) {
 		target.y += player.baseHeight();
 	}
-	m_target_pos = target;
-	ARX_SOUND_PlaySFX(SND_SPELL_SUMMON_CREATURE, &m_target_pos);
+	m_targetPos = target;
+	ARX_SOUND_PlaySFX(SND_SPELL_SUMMON_CREATURE, &m_targetPos);
 	CSummonCreature * effect = new CSummonCreature();
 	effect->Create(target, MAKEANGLE(player.angle.getPitch()));
 	effect->SetDuration(2000, 500, 1500);
@@ -323,7 +323,7 @@ void FakeSummonSpell::Launch()
 
 void FakeSummonSpell::End()
 {
-	ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &m_target_pos);
+	ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &m_targetPos);
 	
 	lightHandleDestroy(m_pSpellFx->lLightId);
 	
@@ -361,8 +361,10 @@ void NegateMagicSpell::Launch()
 	m_fManaCostPerSecond = 2.f;
 	m_duration = (m_launchDuration > -1) ? m_launchDuration : 1000000;
 	
+	Vec3f targetPos = getTargetPos(m_caster, m_target);
+	
 	CNegateMagic * effect = new CNegateMagic();
-	effect->Create(m_target_pos);
+	effect->Create(targetPos);
 	effect->SetDuration(m_duration);
 	m_pSpellFx = effect;
 	m_duration = effect->GetDuration();

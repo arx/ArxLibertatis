@@ -84,8 +84,8 @@ void RiseDeadSpell::Launch()
 	
 	GetTargetAndBeta(target, beta);
 	
-	m_target_pos = target;
-	ARX_SOUND_PlaySFX(SND_SPELL_RAISE_DEAD, &m_target_pos);
+	m_targetPos = target;
+	ARX_SOUND_PlaySFX(SND_SPELL_RAISE_DEAD, &m_targetPos);
 	
 	// TODO this tolive value is probably never read
 	m_duration = (m_launchDuration > -1) ? m_launchDuration : 2000000;
@@ -183,12 +183,12 @@ void RiseDeadSpell::Update(float timeDelta)
 	unsigned long tim=effect->getCurrentTime();
 	
 	if(tim > 3000 && m_entity == InvalidEntityHandle) {
-		ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &m_target_pos);
+		ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &m_targetPos);
 		
 		Cylinder phys;
-		phys.height=-200;
-		phys.radius=50;
-		phys.origin=m_target_pos;
+		phys.height = -200;
+		phys.radius = 50;
+		phys.origin = m_targetPos;
 		
 		float anything = CheckAnythingInCylinder(phys, NULL, CFLAG_JUST_TEST);
 		
@@ -441,8 +441,10 @@ void SlowDownSpell::Launch()
 	m_bDuration = true;
 	m_fManaCostPerSecond = 1.2f;
 	
+	Vec3f targetPos = getTargetPos(m_caster, m_target);
+	
 	CSlowDown * effect = new CSlowDown();
-	effect->Create(m_target_pos);
+	effect->Create(targetPos);
 	effect->SetDuration(m_duration);
 	m_pSpellFx = effect;
 	m_duration = effect->GetDuration();

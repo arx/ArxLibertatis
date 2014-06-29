@@ -329,7 +329,7 @@ void CurseSpell::Launch()
 	
 	CCurse * effect = new CCurse();
 	
-	Vec3f target = m_target_pos;
+	Vec3f target = getTargetPos(m_caster, m_target);
 	if(m_target == PlayerEntityHandle) {
 		target.y -= 200.f;
 	} else if(m_target > 0 && entities[m_target]) {

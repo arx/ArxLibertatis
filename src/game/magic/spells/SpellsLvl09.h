@@ -34,6 +34,7 @@ public:
 private:
 	void GetTargetAndBeta(Vec3f & target, float & beta);
 	
+	Vec3f m_targetPos;
 	float m_fdata;
 	long m_longinfo_summon_creature;
 	EntityHandle m_longinfo2_entity;
@@ -45,6 +46,9 @@ public:
 	void Launch();
 	void End();
 	void Update(float timeDelta);
+	
+private:
+	Vec3f m_targetPos;
 };
 
 class NegateMagicSpell : public SpellBase {
