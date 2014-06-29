@@ -24,6 +24,8 @@
 
 class RiseDeadSpell : public SpellBase {
 public:
+	RiseDeadSpell();
+	
 	bool CanLaunch();
 	void Launch();
 	void End();
@@ -31,6 +33,8 @@ public:
 	
 private:
 	void GetTargetAndBeta(Vec3f & target, float & beta);
+	
+	EntityHandle m_entity;
 };
 
 class ParalyseSpell : public SpellBase {
@@ -41,9 +45,14 @@ public:
 
 class CreateFieldSpell : public SpellBase {
 public:
+	CreateFieldSpell();
+	
 	void Launch();
 	void End();
 	void Update(float timeDelta);
+	
+	// TODO this is directly used in physics and projectile
+	EntityHandle m_entity;
 };
 
 class DisarmTrapSpell : public SpellBase {

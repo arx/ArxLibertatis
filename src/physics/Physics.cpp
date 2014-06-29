@@ -56,6 +56,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "game/NPC.h"
 #include "game/EntityManager.h"
+#include "game/magic/spells/SpellsLvl06.h"
 
 #include "scene/Interactive.h"
 
@@ -206,9 +207,10 @@ static bool IsObjectInField(EERIE_3DOBJ * obj) {
 		const SpellBase * spell = spells[SpellHandle(i)];
 
 		if(spell && spell->m_type == SPELL_CREATE_FIELD) {
-
-			if(ValidIONum(spell->m_longinfo_entity)) {
-				Entity * pfrm = entities[spell->m_longinfo_entity];
+			const CreateFieldSpell * sp = static_cast<const CreateFieldSpell *>(spell);
+			
+			if(ValidIONum(sp->m_entity)) {
+				Entity * pfrm = entities[sp->m_entity];
 				
 				Cylinder cyl;
 				cyl.height = -35.f;

@@ -22,7 +22,6 @@
 #include "core/GameTime.h"
 
 SpellBase::SpellBase() {
-	m_longinfo_entity = InvalidEntityHandle;
 	
 	m_targets.clear();
 }

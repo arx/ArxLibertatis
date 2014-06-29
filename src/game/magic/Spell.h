@@ -159,8 +159,6 @@ public:
 	
 	unsigned long m_duration;
 	
-	EntityHandle m_longinfo_entity;
-	
 	bool m_bDuration;
 	float m_fManaCostPerSecond;
 	

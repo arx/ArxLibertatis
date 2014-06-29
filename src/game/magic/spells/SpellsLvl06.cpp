@@ -53,6 +53,12 @@ void RiseDeadSpell::GetTargetAndBeta(Vec3f & target, float & beta)
 	}
 }
 
+RiseDeadSpell::RiseDeadSpell()
+	: m_entity(InvalidEntityHandle)
+{
+	
+}
+
 bool RiseDeadSpell::CanLaunch()
 {
 	//TODO always cancel spell even if new one can't be launched ?
@@ -85,7 +91,7 @@ void RiseDeadSpell::Launch()
 	m_duration = (m_launchDuration > -1) ? m_launchDuration : 2000000;
 	m_bDuration = true;
 	m_fManaCostPerSecond = 1.2f;
-	m_longinfo_entity = InvalidEntityHandle;
+	m_entity = InvalidEntityHandle;
 	
 	CRiseDead * effect = new CRiseDead();
 	effect->Create(target, beta);
@@ -115,11 +121,11 @@ void RiseDeadSpell::Launch()
 
 void RiseDeadSpell::End()
 {
-	if(ValidIONum(m_longinfo_entity) && m_longinfo_entity != PlayerEntityHandle) {
+	if(ValidIONum(m_entity) && m_entity != PlayerEntityHandle) {
 		
-		ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &entities[m_longinfo_entity]->pos);
+		ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &entities[m_entity]->pos);
 		
-		Entity *entity = entities[m_longinfo_entity];
+		Entity *entity = entities[m_entity];
 
 		if(entity->scriptload && (entity->ioflags & IO_NOSAVE)) {
 			AddRandomSmoke(entity,100);
@@ -151,7 +157,7 @@ void RiseDeadSpell::Update(float timeDelta)
 	if(!effect)
 		return;
 	
-	if(m_longinfo_entity == -2) {
+	if(m_entity == -2) {
 		effect->lLightId = InvalidLightHandle;
 		return;
 	}
@@ -176,7 +182,7 @@ void RiseDeadSpell::Update(float timeDelta)
 	
 	unsigned long tim=effect->getCurrentTime();
 	
-	if(tim > 3000 && m_longinfo_entity == InvalidEntityHandle) {
+	if(tim > 3000 && m_entity == InvalidEntityHandle) {
 		ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &m_target_pos);
 		
 		Cylinder phys;
@@ -199,7 +205,7 @@ void RiseDeadSpell::Update(float timeDelta)
 				io->summoner = checked_range_cast<short>(lSpellsCaster);
 				
 				io->ioflags|=IO_NOSAVE;
-				m_longinfo_entity = io->index();
+				m_entity = io->index();
 				io->scriptload=1;
 				
 				ARX_INTERACTIVE_Teleport(io, phys.origin);
@@ -223,7 +229,7 @@ void RiseDeadSpell::Update(float timeDelta)
 			effect->lLightId = InvalidLightHandle;
 		} else {
 			ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE);
-			m_longinfo_entity = EntityHandle(-2); // FIXME inband signaling
+			m_entity = EntityHandle(-2); // FIXME inband signaling
 			m_duration=0;
 		}
 	} else if(!arxtime.is_paused() && tim < 4000) {
@@ -262,6 +268,11 @@ void ParalyseSpell::End()
 	entities[m_target]->ioflags &= ~IO_FREEZESCRIPT;
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_PARALYSE_END);
+}
+
+CreateFieldSpell::CreateFieldSpell()
+	: m_entity(InvalidEntityHandle)
+{
 }
 
 void CreateFieldSpell::Launch()
@@ -308,7 +319,7 @@ void CreateFieldSpell::Launch()
 		
 		ARX_INTERACTIVE_HideGore(io);
 		RestoreInitialIOStatusOfIO(io);
-		m_longinfo_entity = io->index();
+		m_entity = io->index();
 		io->scriptload = 1;
 		io->ioflags |= IO_NOSAVE | IO_FIELD;
 		io->initpos = io->pos = target;
@@ -348,8 +359,8 @@ void CreateFieldSpell::End()
 		lightHandleGet(pCreateField->lLightId)->duration = 800;
 	}
 
-	if(ValidIONum(m_longinfo_entity)) {
-		delete entities[m_longinfo_entity];
+	if(ValidIONum(m_entity)) {
+		delete entities[m_entity];
 	}
 }
 
@@ -358,8 +369,8 @@ void CreateFieldSpell::Update(float timeDelta)
 	CSpellFx *pCSpellFX = m_pSpellFx;
 	
 	if(pCSpellFX) {
-		if(ValidIONum(m_longinfo_entity)) {
-			Entity * io = entities[m_longinfo_entity];
+		if(ValidIONum(m_entity)) {
+			Entity * io = entities[m_entity];
 			
 			CCreateField * ccf=(CCreateField *)pCSpellFX;
 			io->pos = ccf->eSrc;
