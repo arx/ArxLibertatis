@@ -57,20 +57,6 @@ void MassLightningStrikeSpell::Launch()
 	m_duration = 5000; // TODO probably never read
 	m_siz = 0;
 	
-	m_longinfo_light = GetFreeDynLight();
-	if(lightHandleIsValid(m_longinfo_light)) {
-		EERIE_LIGHT * light = lightHandleGet(m_longinfo_light);
-		
-		light->intensity = 1.8f;
-		light->fallend = 450.f;
-		light->fallstart = 380.f;
-		light->rgb = Color3f(1.f, 0.75f, 0.75f);
-		light->pos = m_vsource;
-	}
-	
-	long count = std::max(long(m_level), 1l);
-	CMassLightning * effect = new CMassLightning(count);
-	
 	Vec3f target;
 	float beta;
 	if(m_caster == PlayerEntityHandle) {
@@ -83,11 +69,25 @@ void MassLightningStrikeSpell::Launch()
 	}
 	target.x -= std::sin(radians(MAKEANGLE(beta))) * 500.f;
 	target.z += std::cos(radians(MAKEANGLE(beta))) * 500.f;
+	m_targetPos = target;
 	
+	long count = std::max(long(m_level), 1l);
+	CMassLightning * effect = new CMassLightning(count);
 	effect->SetDuration(long(500 * m_level));
 	effect->Create(target);
 	m_pSpellFx = effect;
 	m_duration = effect->GetDuration();
+	
+	m_longinfo_light = GetFreeDynLight();
+	if(lightHandleIsValid(m_longinfo_light)) {
+		EERIE_LIGHT * light = lightHandleGet(m_longinfo_light);
+		
+		light->intensity = 1.8f;
+		light->fallend = 450.f;
+		light->fallstart = 380.f;
+		light->rgb = Color3f(1.f, 0.75f, 0.75f);
+		light->pos = m_targetPos;
+	}
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_LIGHTNING_START);
 	m_snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_LIGHTNING_LOOP, &target,
@@ -126,7 +126,6 @@ void MassLightningStrikeSpell::Update(float timeDelta)
 		effect->Render();
 	}
 	
-	Vec3f _source = m_vsource;
 	float _fx;
 	_fx = 0.5f;
 	unsigned long _gct;
@@ -134,18 +133,18 @@ void MassLightningStrikeSpell::Update(float timeDelta)
 
 	Vec3f position;
 
-	position = _source + randomVec(-250.f, 250.f);
+	position = m_targetPos + randomVec(-250.f, 250.f);
 	ARX_SOUND_RefreshPosition(m_snd_loop, position);
 	ARX_SOUND_RefreshVolume(m_snd_loop, _fx + 0.5F);
 	ARX_SOUND_RefreshPitch(m_snd_loop, 0.8F + 0.4F * rnd());
 	
 	if(rnd() > 0.62f) {
-		position = _source  + randomVec(-250.f, 250.f);
+		position = m_targetPos + randomVec(-250.f, 250.f);
 		ARX_SOUND_PlaySFX(SND_SPELL_SPARK, &position, 0.8F + 0.4F * rnd());
 	}
 	
 	if(rnd() > 0.82f) {
-		position = _source + randomVec(-250.f, 250.f);
+		position = m_targetPos + randomVec(-250.f, 250.f);
 		ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &position, 0.8F + 0.4F * rnd());
 	}
 	

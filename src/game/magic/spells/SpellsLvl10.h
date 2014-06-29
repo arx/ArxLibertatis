@@ -29,6 +29,7 @@ public:
 	void Update(float timeDelta);
 	
 private:
+	Vec3f m_targetPos;
 	float m_siz;
 };
 

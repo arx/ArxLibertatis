@@ -154,7 +154,6 @@ public:
 	Vec3f m_target_pos;
 	
 	SpellType m_type;
-	Vec3f m_vsource; // TODO this is used but never set
 	
 	unsigned long m_timcreation;
 	
