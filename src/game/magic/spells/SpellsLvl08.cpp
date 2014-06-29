@@ -80,6 +80,7 @@ void InvisibilitySpell::Update(float timeDelta)
 
 ManaDrainSpell::ManaDrainSpell()
 	: m_light(InvalidLightHandle)
+	, m_damage(InvalidDamageHandle)
 {
 	
 }
@@ -110,7 +111,7 @@ void ManaDrainSpell::Launch()
 	damage.source = m_caster;
 	damage.flags = DAMAGE_FLAG_DONT_HURT_SOURCE | DAMAGE_FLAG_FOLLOW_SOURCE | DAMAGE_FLAG_ADD_VISUAL_FX;
 	damage.type = DAMAGE_TYPE_FAKEFIRE | DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_DRAIN_MANA;
-	m_longinfo_damage = DamageCreate(damage);
+	m_damage = DamageCreate(damage);
 	
 	m_light = GetFreeDynLight();
 	if(lightHandleIsValid(m_light)) {
@@ -127,7 +128,7 @@ void ManaDrainSpell::Launch()
 
 void ManaDrainSpell::End()
 {
-	DamageRequestEnd(m_longinfo_damage);
+	DamageRequestEnd(m_damage);
 	
 	if(lightHandleIsValid(m_light)) {
 		EERIE_LIGHT * light = lightHandleGet(m_light);
@@ -235,6 +236,7 @@ void ManaDrainSpell::Update(float timeDelta)
 
 ExplosionSpell::ExplosionSpell()
 	: m_light(InvalidLightHandle)
+	, m_damage(InvalidDamageHandle)
 {
 }
 
@@ -260,7 +262,7 @@ void ExplosionSpell::Launch()
 	damage.flags = DAMAGE_FLAG_DONT_HURT_SOURCE | DAMAGE_FLAG_FOLLOW_SOURCE | DAMAGE_FLAG_ADD_VISUAL_FX;
 	damage.type = DAMAGE_TYPE_FAKEFIRE | DAMAGE_TYPE_MAGICAL;
 	damage.pos = target;
-	m_longinfo_damage = DamageCreate(damage);
+	m_damage = DamageCreate(damage);
 	
 	m_light = GetFreeDynLight();
 	if(lightHandleIsValid(m_light)) {
@@ -359,6 +361,7 @@ void EnchantWeaponSpell::Update(float timeDelta)
 
 LifeDrainSpell::LifeDrainSpell()
 	: m_light(InvalidLightHandle)
+	, m_damage(InvalidDamageHandle)
 {
 }
 
@@ -388,7 +391,7 @@ void LifeDrainSpell::Launch()
 	damage.source = m_caster;
 	damage.flags = DAMAGE_FLAG_DONT_HURT_SOURCE | DAMAGE_FLAG_FOLLOW_SOURCE | DAMAGE_FLAG_ADD_VISUAL_FX;
 	damage.type = DAMAGE_TYPE_FAKEFIRE | DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_DRAIN_LIFE;
-	m_longinfo_damage = DamageCreate(damage);
+	m_damage = DamageCreate(damage);
 	
 	m_light = GetFreeDynLight();
 	if(lightHandleIsValid(m_light)) {
@@ -405,7 +408,7 @@ void LifeDrainSpell::Launch()
 
 void LifeDrainSpell::End()
 {
-	DamageRequestEnd(m_longinfo_damage);
+	DamageRequestEnd(m_damage);
 	
 	if(lightHandleIsValid(m_light)) {
 		EERIE_LIGHT * light = lightHandleGet(m_light);

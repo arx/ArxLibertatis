@@ -211,6 +211,7 @@ void FlyingEyeSpell::Update(float timeDelta)
 
 FireFieldSpell::FireFieldSpell()
 	: m_light(InvalidLightHandle)
+	, m_damage(InvalidDamageHandle)
 {
 }
 
@@ -258,7 +259,7 @@ void FireFieldSpell::Launch()
 	damage.flags = 0;
 	damage.type = DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_FIRE | DAMAGE_TYPE_FIELD;
 	damage.pos = target;
-	m_longinfo_damage = DamageCreate(damage);
+	m_damage = DamageCreate(damage);
 	
 	effect->Create(200.f, target + Vec3f(0, -10, 0), m_duration);
 	m_pSpellFx = effect;
@@ -271,7 +272,7 @@ void FireFieldSpell::Launch()
 
 void FireFieldSpell::End()
 {
-	DamageRequestEnd(m_longinfo_damage);
+	DamageRequestEnd(m_damage);
 	
 	ARX_SOUND_Stop(m_snd_loop);
 	ARX_SOUND_PlaySFX(SND_SPELL_FIRE_FIELD_END);
@@ -344,6 +345,7 @@ void FireFieldSpell::Update(float timeDelta)
 
 IceFieldSpell::IceFieldSpell()
 	: m_light(InvalidLightHandle)
+	, m_damage(InvalidDamageHandle)
 {
 }
 
@@ -391,7 +393,7 @@ void IceFieldSpell::Launch()
 	damage.flags = 0;
 	damage.type = DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_COLD | DAMAGE_TYPE_FIELD;
 	damage.pos = target;
-	m_longinfo_damage = DamageCreate(damage);
+	m_damage = DamageCreate(damage);
 	
 	effect->Create(target);
 	effect->SetDuration(m_duration);
@@ -405,7 +407,7 @@ void IceFieldSpell::Launch()
 
 void IceFieldSpell::End()
 {
-	DamageRequestEnd(m_longinfo_damage);
+	DamageRequestEnd(m_damage);
 	
 	ARX_SOUND_Stop(m_snd_loop); 
 	ARX_SOUND_PlaySFX(SND_SPELL_ICE_FIELD_END);

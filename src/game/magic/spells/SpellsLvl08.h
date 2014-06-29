@@ -42,6 +42,7 @@ public:
 private:
 	float m_fdata;
 	LightHandle m_light;
+	DamageHandle m_damage;
 };
 
 class ExplosionSpell : public SpellBase {
@@ -53,6 +54,7 @@ public:
 	
 private:
 	LightHandle m_light;
+	DamageHandle m_damage;
 };
 
 class EnchantWeaponSpell : public SpellBase {
@@ -73,6 +75,7 @@ public:
 private:
 	float m_fdata;
 	LightHandle m_light;
+	DamageHandle m_damage;
 };
 
 #endif // ARX_GAME_MAGIC_SPELLS_SPELLSLVL08_H

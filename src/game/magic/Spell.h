@@ -160,9 +160,6 @@ public:
 	unsigned long m_duration;
 	
 	EntityHandle m_longinfo_entity;
-	DamageHandle m_longinfo_damage;
-
-
 	
 	bool m_bDuration;
 	float m_fManaCostPerSecond;

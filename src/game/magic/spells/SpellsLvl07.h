@@ -43,6 +43,7 @@ public:
 	
 private:
 	LightHandle m_light;
+	DamageHandle m_damage;
 };
 
 class IceFieldSpell : public SpellBase {
@@ -55,6 +56,7 @@ public:
 	
 private:
 	LightHandle m_light;
+	DamageHandle m_damage;
 };
 
 class LightningStrikeSpell : public SpellBase {

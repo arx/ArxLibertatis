@@ -309,6 +309,7 @@ void LowerArmorSpell::Update(float timeDelta)
 
 HarmSpell::HarmSpell()
 	: m_light(InvalidLightHandle)
+	, m_damage(InvalidDamageHandle)
 {
 	
 }
@@ -338,7 +339,7 @@ void HarmSpell::Launch()
 	damage.source = m_caster;
 	damage.flags = DAMAGE_FLAG_DONT_HURT_SOURCE | DAMAGE_FLAG_FOLLOW_SOURCE | DAMAGE_FLAG_ADD_VISUAL_FX;
 	damage.type = DAMAGE_TYPE_FAKEFIRE | DAMAGE_TYPE_MAGICAL;
-	m_longinfo_damage = DamageCreate(damage);
+	m_damage = DamageCreate(damage);
 	
 	m_light = GetFreeDynLight();
 	if(lightHandleIsValid(m_light)) {
@@ -354,7 +355,7 @@ void HarmSpell::Launch()
 
 void HarmSpell::End()
 {
-	DamageRequestEnd(m_longinfo_damage);
+	DamageRequestEnd(m_damage);
 	
 	if(lightHandleIsValid(m_light)) {
 		EERIE_LIGHT * light = lightHandleGet(m_light);
