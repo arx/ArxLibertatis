@@ -326,7 +326,6 @@ extern bool PLAYER_INTERFACE_HIDE_COUNT;
 extern bool COMBINEGOLD;
 extern bool PLAYER_MOUSELOOK_ON;
 extern E_ARX_STATE_MOUSE eMouseState;
-extern bool MAGICMODE;
 extern long lCursorRedistValue;
 extern TextureContainer * Movable;
 

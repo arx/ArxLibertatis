@@ -142,8 +142,6 @@ extern bool TRUE_PLAYER_MOUSELOOK_ON;
 bool WILLRETURNTOFREELOOK = false;
 bool GLOBAL_MAGIC_MODE = true;
 
-extern bool MAGICMODE;
-
 extern bool bRenderInCursorMode;
 
 void ARX_INTERFACE_Combat_Mode(long i);
