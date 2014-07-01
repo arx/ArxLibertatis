@@ -102,6 +102,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "gui/Cursor.h"
 #include "gui/DebugHud.h"
+#include "gui/Hud.h"
 #include "gui/Interface.h"
 #include "gui/Menu.h"
 #include "gui/MenuWidgets.h"
@@ -179,7 +180,7 @@ extern float LAST_FADEVALUE;
 
 extern Cinematic* ControlCinematique;
 extern EERIE_3DOBJ * arrowobj;
-extern TextureContainer * Movable;
+
 extern TextureContainer * tflare;
 extern Entity * FlyingOverIO;
 extern E_ARX_STATE_MOUSE eMouseState;

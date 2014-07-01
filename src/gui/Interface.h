@@ -270,6 +270,23 @@ extern long SpecialCursor;
 extern long LastMouseClick;
 extern long INVERTMOUSE;
 extern long CurrFightPos;
+extern long lSLID_VALUE;
+extern bool bInventoryClosing;
+extern long lOldInterface;
+extern E_ARX_STATE_MOUSE eMouseState;
+extern bool bBookHalo;
+extern unsigned long ulBookHaloTime;
+extern bool bInverseInventory;
+extern bool lOldTruePlayerMouseLook;
+extern bool TRUE_PLAYER_MOUSELOOK_ON;
+extern bool bForceEscapeFreeLook;
+extern bool COMBINEGOLD;
+extern bool	DRAGGING;
+extern bool PLAYER_MOUSELOOK_ON;
+extern bool bRenderInCursorMode;
+extern bool MAGICMODE;
+
+extern gui::Note openNote;
 
 //-----------------------------------------------------------------------------
 float INTERFACE_RATIO(const float);
@@ -312,6 +329,7 @@ bool NeedHalo(Entity * io);
 
 void LoadScreen();
 
+void ARX_INTERFACE_HALO_Render(float _fR, float _fG, float _fB, long _lHaloType, TextureContainer * haloTexture, float POSX, float POSY, float fRatioX = 1, float fRatioY = 1);
 void ARX_INTERFACE_HALO_Draw(Entity * io, TextureContainer * tc, TextureContainer * tc2, float POSX, float POSY, float _fRatioX = 1, float _fRatioY = 1);
 void ReleaseHalo();
 void ResetPlayerInterface();
@@ -320,22 +338,10 @@ void ARX_INTERFACE_DrawNumber(const Vec2f & pos, const long num, const int _iNb,
 
 void KillInterfaceTextureContainers();
 
-void UpdateInterface();
-
 namespace gui {
 void updateQuestBook();
 } // namespace gui
 
 extern bool g_cursorOverBook;
-
-//! Show the quick save indicator for a short time
-void showQuickSaveIcon();
-
-void mecanismIconReset();
-
-void hudElementsInit();
-
-void hitStrengthGaugeRequestFlash(float flashIntensity);
-void bookIconGuiRequestFX();
 
 #endif // ARX_GUI_INTERFACE_H

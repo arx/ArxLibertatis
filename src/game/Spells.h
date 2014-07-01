@@ -99,6 +99,8 @@ private:
 
 extern SpellManager spells;
 
+extern unsigned char ucFlick;
+
 
 bool GetSpellPosition(Vec3f * pos, SpellBase * spell);
 

@@ -78,6 +78,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/spell/Cheat.h"
 #include "game/effect/Quake.h"
 
+#include "gui/Hud.h"
 #include "gui/Menu.h"
 #include "gui/Text.h"
 #include "gui/Speech.h"

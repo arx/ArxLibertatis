@@ -762,6 +762,7 @@ set(GUI_SOURCES
 	src/gui/Credits.cpp
 	src/gui/Cursor.cpp
 	src/gui/DebugHud.cpp
+	src/gui/Hud.cpp
 	src/gui/Interface.cpp
 	src/gui/LoadLevelScreen.cpp
 	src/gui/Menu.cpp

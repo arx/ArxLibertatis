@@ -97,6 +97,8 @@ extern bool FirstFrame;
 extern long CURRENTLEVEL;
 extern long TELEPORT_TO_ANGLE;
 
+extern float BOW_FOCAL;
+
 extern Rect g_size;
 extern Vec2f g_sizeRatio;
 inline float minSizeRatio() { return std::min(g_sizeRatio.x, g_sizeRatio.y); }
@@ -110,6 +112,10 @@ extern float Original_framedelay;
 extern long LOADEDD;
 
 extern bool g_debugToggles[10];
+
+extern std::string WILLADDSPEECH;
+extern unsigned long WILLADDSPEECHTIME;
+extern long		CHANGE_LEVEL_ICON;
 
 void SetEditMode(long ed, const bool stop_sound = true);
 

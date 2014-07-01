@@ -89,6 +89,7 @@ extern INVENTORY_DATA * TSecondaryInventory;
 extern Entity * DRAGINTER;
 extern Entity * ioSteal;
 extern long InventoryY;
+extern short sActiveInventory;
 
 struct InventoryPos {
 	
