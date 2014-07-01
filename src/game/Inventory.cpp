@@ -88,8 +88,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 using std::vector;
 using std::string;
 
-//------------------------------------------------------------------------------------
-extern E_ARX_STATE_MOUSE eMouseState;
 extern float InventoryX;
 extern float InventoryDir;
 
@@ -2058,8 +2056,6 @@ void ARX_INVENTORY_IdentifyAll() {
 		}
 	}
 }
-
-extern bool bInventoryClosing;
 
 //-----------------------------------------------------------------------------
 void ARX_INVENTORY_OpenClose(Entity * _io)

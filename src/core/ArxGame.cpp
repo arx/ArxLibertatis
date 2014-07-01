@@ -180,7 +180,6 @@ extern EERIE_3DOBJ * arrowobj;
 
 extern TextureContainer * tflare;
 extern Entity * FlyingOverIO;
-extern E_ARX_STATE_MOUSE eMouseState;
 extern Vec3f LastValidPlayerPos;
 extern Color ulBKGColor;
 extern EERIE_CAMERA conversationcamera;

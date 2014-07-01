@@ -321,7 +321,6 @@ bool Manage3DCursor(bool simulate) {
 extern long LOOKING_FOR_SPELL_TARGET;
 extern unsigned long LOOKING_FOR_SPELL_TARGET_TIME;
 extern bool PLAYER_INTERFACE_HIDE_COUNT;
-extern E_ARX_STATE_MOUSE eMouseState;
 extern long lCursorRedistValue;
 extern TextureContainer * Movable;
 

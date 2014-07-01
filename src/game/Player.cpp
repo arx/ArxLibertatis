@@ -143,13 +143,11 @@ static const float STEP_DISTANCE = 120.f;
 static const float TARGET_DT = 1000.f / 30.f;
 
 extern Vec3f PUSH_PLAYER_FORCE;
-extern bool bBookHalo;
 extern bool bGoldHalo;
 extern float InventoryX;
 extern float InventoryDir;
 extern long COLLIDED_CLIMB_POLY;
 extern long HERO_SHOW_1ST;
-extern unsigned long ulBookHaloTime;
 extern unsigned long ulGoldHaloTime;
 
 static const float ARX_PLAYER_SKILL_STEALTH_MAX = 100.f;
