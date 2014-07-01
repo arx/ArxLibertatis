@@ -93,8 +93,6 @@ extern E_ARX_STATE_MOUSE eMouseState;
 extern float InventoryX;
 extern float InventoryDir;
 
-extern bool TRUE_PLAYER_MOUSELOOK_ON;
-
 void ARX_INTERFACE_Combat_Mode(long i);
 void ARX_INVENTORY_ReOrder();
 void ARX_INVENTORY_IdentifyIO(Entity * _pIO);

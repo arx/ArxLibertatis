@@ -184,10 +184,6 @@ extern long		DONT_WANT_PLAYER_INZONE;
 extern long		TOTPDL;
 extern long		COLLIDED_CLIMB_POLY;
 
-extern bool		PLAYER_MOUSELOOK_ON;
-
-
-
 //-----------------------------------------------------------------------------
 // Our Main Danae Application.& Instance and Project
 PROJECT Project;

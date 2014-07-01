@@ -111,7 +111,6 @@ extern float ARXTimeMenu;
 extern float ARXOldTimeMenu;
 
 extern long	REQUEST_SPEECH_SKIP;
-extern bool TRUE_PLAYER_MOUSELOOK_ON;
 
 extern TextureContainer * pTextureLoad;
 

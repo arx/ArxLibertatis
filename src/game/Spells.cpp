@@ -137,12 +137,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "script/Script.h"
 
-extern bool TRUE_PLAYER_MOUSELOOK_ON;
-
 bool WILLRETURNTOFREELOOK = false;
 bool GLOBAL_MAGIC_MODE = true;
-
-extern bool bRenderInCursorMode;
 
 void ARX_INTERFACE_Combat_Mode(long i);
 

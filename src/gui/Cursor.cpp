@@ -56,8 +56,6 @@
 extern Rect g_size;
 extern Vec2s DANAEMouse;
 
-extern bool TRUE_PLAYER_MOUSELOOK_ON;
-
 extern float STARTED_ANGLE;
 long SPECIAL_DRAGINTER_RENDER=0;
 long CANNOT_PUT_IT_HERE=0;
@@ -323,8 +321,6 @@ bool Manage3DCursor(bool simulate) {
 extern long LOOKING_FOR_SPELL_TARGET;
 extern unsigned long LOOKING_FOR_SPELL_TARGET_TIME;
 extern bool PLAYER_INTERFACE_HIDE_COUNT;
-extern bool COMBINEGOLD;
-extern bool PLAYER_MOUSELOOK_ON;
 extern E_ARX_STATE_MOUSE eMouseState;
 extern long lCursorRedistValue;
 extern TextureContainer * Movable;

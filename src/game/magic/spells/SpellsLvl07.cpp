@@ -34,12 +34,13 @@
 
 #include "graphics/spells/Spells07.h"
 
+#include "gui/Interface.h"
+
 #include "scene/GameSound.h"
 #include "scene/Interactive.h"
 #include "scene/Object.h"
 #include "scene/Scene.h"
 
-extern bool TRUE_PLAYER_MOUSELOOK_ON;
 extern float SLID_START;
 bool bOldLookToggle;
 
