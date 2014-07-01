@@ -165,7 +165,6 @@ using std::string;
 
 extern long START_NEW_QUEST;
 long LOADQUEST_SLOT = -1; // OH NO, ANOTHER GLOBAL! - TEMP PATCH TO CLEAN CODE FLOW
-extern long CHANGE_LEVEL_ICON;
 extern bool PLAYER_MOUSELOOK_ON;
 extern bool TRUE_PLAYER_MOUSELOOK_ON;
 extern long PLAYER_PARALYSED;

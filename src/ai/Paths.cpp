@@ -75,7 +75,6 @@ using std::min;
 using std::max;
 using std::string;
 
-extern long CHANGE_LEVEL_ICON;
 extern float framedelay;
 
 ARX_PATH ** ARXpaths = NULL;

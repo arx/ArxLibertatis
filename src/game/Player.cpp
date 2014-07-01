@@ -129,7 +129,6 @@ using std::vector;
 extern bool		ARX_CONVERSATION;
 extern long		HERO_SHOW_1ST;
 extern long		REQUEST_SPEECH_SKIP;
-extern long		CHANGE_LEVEL_ICON;
 extern long		DONT_ERASE_PLAYER;
 extern bool		GLOBAL_MAGIC_MODE;
 

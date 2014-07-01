@@ -107,7 +107,6 @@ extern bool EXTERNALVIEW;
 extern long LOAD_N_DONT_ERASE;
 extern long FORBID_SCRIPT_IO_CREATION;
 extern long NO_TIME_INIT;
-extern long CHANGE_LEVEL_ICON;
 extern bool TRUE_PLAYER_MOUSELOOK_ON;
 extern Vec3f LastValidPlayerPos;
 #define MAX_IO_SAVELOAD 1500

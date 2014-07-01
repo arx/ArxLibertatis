@@ -62,7 +62,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 using std::string;
 
 extern Entity * LASTSPAWNED;
-extern long CHANGE_LEVEL_ICON;
 
 namespace script {
 

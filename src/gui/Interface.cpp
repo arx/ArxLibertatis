@@ -159,7 +159,6 @@ extern long BOOKBUTTON;
 extern long LASTBOOKBUTTON;
 long lSLID_VALUE = 0;
 
-extern long CHANGE_LEVEL_ICON;
 extern bool BLOCK_PLAYER_CONTROLS;
 extern long DeadTime;
 
