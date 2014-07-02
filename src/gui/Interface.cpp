@@ -4097,11 +4097,11 @@ void ArxGame::manageEditorControls() {
 
 	eMouseState = MOUSE_IN_WORLD;
 
-	if(TRUE_PLAYER_MOUSELOOK_ON && config.input.autoReadyWeapon == false && config.input.mouseLookToggle) {
-		float fX = g_size.width() * 0.5f;
-		float fY = g_size.height() * 0.5f;
-		DANAEMouse.x = checked_range_cast<short>(fX);
-		DANAEMouse.y = checked_range_cast<short>(fY);
+	if(   TRUE_PLAYER_MOUSELOOK_ON
+	   && config.input.autoReadyWeapon == false
+	   && config.input.mouseLookToggle
+	) {
+		DANAEMouse = g_size.center();
 	}
 	
 	playerInterfaceFader.updateFirst();
