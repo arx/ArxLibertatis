@@ -88,7 +88,7 @@ void SummonCreatureSpell::Launch()
 	float beta;
 	GetTargetAndBeta(target, beta);
 	
-	m_fdata = (m_caster == PlayerEntityHandle && cur_mega == 10) ? 1.f : 0.f;
+	m_megaCheat = (m_caster == PlayerEntityHandle && cur_mega == 10);
 	m_targetPos = target;
 	ARX_SOUND_PlaySFX(SND_SPELL_SUMMON_CREATURE, &m_targetPos);
 	CSummonCreature * effect = new CSummonCreature();
@@ -192,7 +192,7 @@ void SummonCreatureSpell::Update(float timeDelta)
 				
 				long tokeep;
 				res::path cls;
-				if(m_fdata == 1.f) {
+				if(m_megaCheat) {
 					if(rnd() > 0.5) {
 						tokeep = -1;
 						cls = "graph/obj3d/interactive/npc/wrat_base/wrat_base";

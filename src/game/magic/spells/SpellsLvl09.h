@@ -35,7 +35,7 @@ private:
 	void GetTargetAndBeta(Vec3f & target, float & beta);
 	
 	Vec3f m_targetPos;
-	float m_fdata;
+	bool m_megaCheat;
 	long m_longinfo_summon_creature;
 	EntityHandle m_longinfo2_entity;
 };
