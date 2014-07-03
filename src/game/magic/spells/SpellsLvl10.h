@@ -32,7 +32,7 @@ public:
 	
 private:
 	Vec3f m_targetPos;
-	float m_siz;
+	bool m_soundEffectPlayed;
 	LightHandle m_light;
 };
 

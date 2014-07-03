@@ -44,7 +44,9 @@
 extern Rect g_size;
 
 MassLightningStrikeSpell::MassLightningStrikeSpell()
-	: m_light(InvalidLightHandle)
+	: m_targetPos(Vec3f_ZERO)
+	, m_soundEffectPlayed(false)
+	, m_light(InvalidLightHandle)
 {
 }
 
@@ -62,7 +64,7 @@ void MassLightningStrikeSpell::Launch()
 	}
 	
 	m_duration = 5000; // TODO probably never read
-	m_siz = 0;
+	m_soundEffectPlayed = false;
 	
 	Vec3f target;
 	float beta;
@@ -155,8 +157,8 @@ void MassLightningStrikeSpell::Update(float timeDelta)
 		ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &position, 0.8F + 0.4F * rnd());
 	}
 	
-	if((_gct > m_duration - 1800) && (m_siz == 0)) {
-		m_siz = 1;
+	if((_gct > m_duration - 1800) && !m_soundEffectPlayed) {
+		m_soundEffectPlayed = true;
 		ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, NULL, 0.8F + 0.4F * rnd());
 	}
 
