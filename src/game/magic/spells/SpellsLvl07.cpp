@@ -230,7 +230,7 @@ void FireFieldSpell::Launch()
 	CFireField * effect = new CFireField();
 	
 	Vec3f target;
-	float beta;
+	float beta = 0.f;
 	bool displace = false;
 	if(m_caster == PlayerEntityHandle) {
 		target = player.basePosition();
@@ -364,7 +364,7 @@ void IceFieldSpell::Launch()
 	CIceField * effect = new CIceField();
 	
 	Vec3f target;
-	float beta;
+	float beta = 0.f;
 	bool displace = false;
 	if(m_caster == PlayerEntityHandle) {
 		target = player.basePosition();

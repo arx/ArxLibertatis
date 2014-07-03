@@ -288,7 +288,7 @@ void CreateFieldSpell::Launch()
 	m_fManaCostPerSecond = 1.2f;
 	
 	Vec3f target;
-	float beta;
+	float beta = 0.f;
 	bool displace = false;
 	if(m_caster == PlayerEntityHandle) {
 		target = entities.player()->pos;
