@@ -243,8 +243,8 @@ public:
 		
 			ARX_INTERFACE_DrawItem(ingame_inventory, INTERFACE_RATIO(InventoryX), 0.f);
 		
-			for(long j = 0; j < TSecondaryInventory->sizey; j++) {
-				for(long i = 0; i < TSecondaryInventory->sizex; i++) {
+			for(long j = 0; j < TSecondaryInventory->m_size.y; j++) {
+				for(long i = 0; i < TSecondaryInventory->m_size.x; i++) {
 					Entity *io = TSecondaryInventory->slot[i][j].io;
 		
 					if(io) {

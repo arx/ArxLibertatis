@@ -687,7 +687,7 @@ Inventory<3, INVENTORY_X, INVENTORY_Y> getPlayerInventory() {
 Inventory<1, 20, 20> getIoInventory(Entity * io) {
 	arx_assert(io != NULL && io->inventory != NULL);
 	INVENTORY_DATA * inv = io->inventory;
-	return Inventory<1, 20, 20>(io->index(), inv->slot, 1, inv->sizex, inv->sizey);
+	return Inventory<1, 20, 20>(io->index(), inv->slot, 1, inv->m_size.x, inv->m_size.y);
 }
 
 } // anonymous namespace
@@ -1002,9 +1002,9 @@ bool CanBePutInSecondaryInventory(INVENTORY_DATA * id, Entity * io, long * xx, l
 	// on essaie de le remettre à son ancienne place
 	if (sInventory == 2 &&
 	        (sInventoryX >= 0) &&
-	        (sInventoryX <= id->sizex - sx) &&
+	        (sInventoryX <= id->m_size.x - sx) &&
 	        (sInventoryY >= 0) &&
-	        (sInventoryY <= id->sizey - sy))
+	        (sInventoryY <= id->m_size.y - sy))
 	{
 		j = sInventoryY;
 		i = sInventoryX;
@@ -1074,8 +1074,8 @@ bool CanBePutInSecondaryInventory(INVENTORY_DATA * id, Entity * io, long * xx, l
 		}
 	}
 
-	for (j = 0; j <= id->sizey - sy; j++)
-		for (i = 0; i <= id->sizex - sx; i++)
+	for (j = 0; j <= id->m_size.y - sy; j++)
+		for (i = 0; i <= id->m_size.x - sx; i++)
 		{
 			Entity * ioo = id->slot[i][j].io;
 
@@ -1103,8 +1103,8 @@ bool CanBePutInSecondaryInventory(INVENTORY_DATA * id, Entity * io, long * xx, l
 				}
 		}
 
-	for (j = 0; j <= id->sizey - sy; j++)
-		for (i = 0; i <= id->sizex - sx; i++)
+	for (j = 0; j <= id->m_size.y - sy; j++)
+		for (i = 0; i <= id->m_size.x - sx; i++)
 		{
 			Entity * ioo = id->slot[i][j].io;
 
@@ -1201,8 +1201,8 @@ bool PutInInventory() {
 		// SHOP
 		if(io->ioflags & IO_SHOP) {
 			// Check shop group
-			for(j = 0; j < SecondaryInventory->sizey; j++) {
-				for(i = 0; i < SecondaryInventory->sizex; i++) {
+			for(j = 0; j < SecondaryInventory->m_size.y; j++) {
+				for(i = 0; i < SecondaryInventory->m_size.x; i++) {
 					Entity * ioo = SecondaryInventory->slot[i][j].io;
 					
 					if(ioo) {
@@ -1227,7 +1227,7 @@ bool PutInInventory() {
 		tx = tx / SHORT_INTERFACE_RATIO(32);
 		ty = ty / SHORT_INTERFACE_RATIO(32);
 		
-		if(tx <= SecondaryInventory->sizex - sx && ty <= SecondaryInventory->sizey - sy) {
+		if(tx <= SecondaryInventory->m_size.x - sx && ty <= SecondaryInventory->m_size.y - sy) {
 			
 			float fcos = ARX_INTERACTIVE_GetPrice(DRAGINTER, io) / 3.0f;
 			long cos = checked_range_cast<long>(fcos);
@@ -1437,9 +1437,9 @@ bool InSecondaryInventoryPos(const Vec2s & pos)
 		ty = ty / SHORT_INTERFACE_RATIO(32);
 
 
-		if ((tx < 0) || (tx >= SecondaryInventory->sizex)) return false;
+		if ((tx < 0) || (tx >= SecondaryInventory->m_size.x)) return false;
 
-		if ((ty < 0) || (ty >= SecondaryInventory->sizey)) return false;
+		if ((ty < 0) || (ty >= SecondaryInventory->m_size.y)) return false;
 
 		return true;
 	}
@@ -1540,7 +1540,7 @@ bool IsFlyingOverInventory(const Vec2s & pos)
 		ty /= SHORT_INTERFACE_RATIO(32);
 
 
-		if ((tx >= 0) && (tx <= SecondaryInventory->sizex) && (ty >= 0) && (ty <= SecondaryInventory->sizey))
+		if ((tx >= 0) && (tx <= SecondaryInventory->m_size.x) && (ty >= 0) && (ty <= SecondaryInventory->m_size.y))
 			return true;
 	}
 
@@ -1567,8 +1567,8 @@ Entity * GetFromInventory(const Vec2s & pos)
 			tx = tx / SHORT_INTERFACE_RATIO(32); 
 			ty = ty / SHORT_INTERFACE_RATIO(32); 
 
-			if ((tx >= 0) && (tx <= SecondaryInventory->sizex)
-			        && (ty >= 0) && (ty <= SecondaryInventory->sizey))
+			if ((tx >= 0) && (tx <= SecondaryInventory->m_size.x)
+			        && (ty >= 0) && (ty <= SecondaryInventory->m_size.y))
 			{
 				if (SecondaryInventory->slot[tx][ty].io == NULL)
 					return NULL;
@@ -1646,8 +1646,8 @@ bool GetItemWorldPosition(Entity * io, Vec3f * pos)
 			
 			if(ioo && ioo->inventory) {
 				INVENTORY_DATA * id = ioo->inventory;
-				for(long j = 0; j < id->sizey; j++) {
-					for(long k = 0; k < id->sizex; k++) {
+				for(long j = 0; j < id->m_size.y; j++) {
+					for(long k = 0; k < id->m_size.x; k++) {
 						if(id->slot[k][j].io == io) {
 							*pos = ioo->pos;
 							return true;
@@ -1705,8 +1705,8 @@ bool GetItemWorldPositionSound(const Entity * io, Vec3f * pos) {
 			
 			if(ioo && ioo->inventory) {
 				INVENTORY_DATA * id = ioo->inventory;
-				for(long j = 0; j < id->sizey; j++) {
-					for(long k = 0; k < id->sizex; k++) {
+				for(long j = 0; j < id->m_size.y; j++) {
+					for(long k = 0; k < id->m_size.x; k++) {
 						if(id->slot[k][j].io == io) {
 							*pos = ioo->pos;
 							return true;
@@ -1741,8 +1741,8 @@ void RemoveFromAllInventories(const Entity * io) {
 		if(e != NULL) {
 			if(e->inventory != NULL) {
 				INVENTORY_DATA * id = e->inventory;
-				for(long j = 0; j < id->sizey; j++) {
-					for(long k = 0; k < id->sizex; k++) {
+				for(long j = 0; j < id->m_size.y; j++) {
+					for(long k = 0; k < id->m_size.x; k++) {
 						if(id->slot[k][j].io == io) {
 							id->slot[k][j].io = NULL;
 							id->slot[k][j].show = 1;
@@ -1767,8 +1767,8 @@ void CheckForInventoryReplaceMe(Entity * io, Entity * old) {
 			if(e->inventory != NULL) {
 				INVENTORY_DATA * id = e->inventory;
 				
-				for(long j = 0; j < id->sizey; j++) {
-					for(long k = 0; k < id->sizex; k++) {
+				for(long j = 0; j < id->m_size.y; j++) {
+					for(long k = 0; k < id->m_size.x; k++) {
 						if (id->slot[k][j].io == old) {
 							long xx, yy;
 							if(CanBePutInSecondaryInventory(id, io, &xx, &yy)) {
@@ -1862,8 +1862,8 @@ bool TakeFromInventory(const Vec2s & pos)
 
 		}
 
-		for(long j = 0; j < SecondaryInventory->sizey; j++)
-			for(long i = 0; i < SecondaryInventory->sizex; i++) {
+		for(long j = 0; j < SecondaryInventory->m_size.y; j++)
+			for(long i = 0; i < SecondaryInventory->m_size.x; i++) {
 				if (SecondaryInventory->slot[i][j].io == io)
 				{
 					SecondaryInventory->slot[i][j].io = NULL;
@@ -1962,8 +1962,8 @@ bool IsInPlayerInventory(Entity * io) {
 bool IsInSecondaryInventory(Entity * io) {
 	
 	if(SecondaryInventory) {
-		for(long j = 0; j < SecondaryInventory->sizey; j++) {
-			for(long i = 0; i < SecondaryInventory->sizex; i++) {
+		for(long j = 0; j < SecondaryInventory->m_size.y; j++) {
+			for(long i = 0; i < SecondaryInventory->m_size.x; i++) {
 				if(SecondaryInventory->slot[i][j].io == io) {
 					return true;
 				}
@@ -2113,13 +2113,8 @@ void ARX_INVENTORY_TakeAllFromSecondaryInventory()
 
 	if (TSecondaryInventory)
 	{
-
-		(void)checked_range_cast<short>(TSecondaryInventory->sizey);
-		(void)checked_range_cast<short>(TSecondaryInventory->sizex);
-
-
-		for (long j = 0; j < TSecondaryInventory->sizey; j++)
-			for (long i = 0; i < TSecondaryInventory->sizex; i++)
+		for (long j = 0; j < TSecondaryInventory->m_size.y; j++)
+			for (long i = 0; i < TSecondaryInventory->m_size.x; i++)
 			{
 				if (TSecondaryInventory->slot[i][j].io && TSecondaryInventory->slot[i][j].show)
 				{
@@ -2157,13 +2152,8 @@ void ARX_INVENTORY_ReOrder()
 {
 	if (TSecondaryInventory)
 	{
-
-		(void)checked_range_cast<short>(TSecondaryInventory->sizey);
-		(void)checked_range_cast<short>(TSecondaryInventory->sizex);
-
-
-		for (long j = 0; j < TSecondaryInventory->sizey; j++)
-			for (long i = 0; i < TSecondaryInventory->sizex; i++)
+		for (long j = 0; j < TSecondaryInventory->m_size.y; j++)
+			for (long i = 0; i < TSecondaryInventory->m_size.x; i++)
 			{
 				if (TSecondaryInventory->slot[i][j].io && TSecondaryInventory->slot[i][j].show)
 				{

@@ -813,8 +813,8 @@ void ARX_INTERACTIVE_ClearIODynData_II(Entity * io)
 	if(io->inventory != NULL) {
 		INVENTORY_DATA * id = io->inventory;
 		
-		for(long nj = 0; nj < id->sizey; nj++) {
-			for(long ni = 0; ni < id->sizex; ni++) {
+		for(long nj = 0; nj < id->m_size.y; nj++) {
+			for(long ni = 0; ni < id->m_size.x; ni++) {
 				if(id->slot[ni][nj].io != NULL) {
 					id->slot[ni][nj].io->destroy();
 					id->slot[ni][nj].io = NULL;

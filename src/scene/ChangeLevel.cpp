@@ -1441,8 +1441,8 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 
 		INVENTORY_DATA * inv = io->inventory;
 		FillIOIdent(aids->io, inv->io);
-		aids->sizex = inv->sizex;
-		aids->sizey = inv->sizey;
+		aids->sizex = inv->m_size.x;
+		aids->sizey = inv->m_size.y;
 
 		for (m = 0; m < aids->sizex; m++)
 			for (n = 0; n < aids->sizey; n++)
@@ -2465,18 +2465,17 @@ static void ARX_CHANGELEVEL_PopAllIO_FINISH(bool reloadflag, bool firstTime) {
 				inv->io = ConvertToValidIO(aids->io);
 				converted += CONVERT_CREATED;
 				
-				inv->sizex = 3;
-				inv->sizey = 11;
+				inv->m_size = Vec2s(3, 11);
 				if(aids->sizex != 3 || aids->sizey != 11) {
-					for(long m = 0; m < inv->sizex; m++) {
-						for(long n = 0; n < inv->sizey; n++) {
+					for(long m = 0; m < inv->m_size.x; m++) {
+						for(long n = 0; n < inv->m_size.y; n++) {
 							inv->slot[m][n].io = NULL;
 							inv->slot[m][n].show = 0;
 						}
 					}
 				} else {
-					for(long m = 0; m < inv->sizex; m++) {
-						for(long n = 0; n < inv->sizey; n++) {
+					for(long m = 0; m < inv->m_size.x; m++) {
+						for(long n = 0; n < inv->m_size.y; n++) {
 							inv->slot[m][n].io = ConvertToValidIO(aids->slot_io[m][n]);
 							converted += CONVERT_CREATED;
 							inv->slot[m][n].show = aids->slot_show[m][n];

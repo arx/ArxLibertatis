@@ -835,8 +835,8 @@ void ReleaseInfosCombine() {
 	}
 
 	if(SecondaryInventory) {
-		for(long j=0;j<SecondaryInventory->sizey;j++) {
-			for(long i=0;i<SecondaryInventory->sizex;i++) {
+		for(long j=0;j<SecondaryInventory->m_size.y;j++) {
+			for(long i=0;i<SecondaryInventory->m_size.x;i++) {
 				io=SecondaryInventory->slot[i][j].io;
 
 				if(io)
@@ -1115,8 +1115,8 @@ void GetInfosCombine()
 	}
 
 	if(SecondaryInventory) {
-		for(long j = 0; j < SecondaryInventory->sizey; j++) {
-			for(long i = 0; i < SecondaryInventory->sizex; i++) {
+		for(long j = 0; j < SecondaryInventory->m_size.y; j++) {
+			for(long i = 0; i < SecondaryInventory->m_size.x; i++) {
 				io = SecondaryInventory->slot[i][j].io;
 				GetInfosCombineWithIO(io);
 			}
@@ -4221,8 +4221,8 @@ void ArxGame::manageEditorControls() {
 				if(SecondaryInventory) {
 					bool bfound = true;
 					
-					for(long j = 0; j < SecondaryInventory->sizey && bfound; j++) {
-						for (long i = 0; i < SecondaryInventory->sizex && bfound; i++) {
+					for(long j = 0; j < SecondaryInventory->m_size.y && bfound; j++) {
+						for (long i = 0; i < SecondaryInventory->m_size.x && bfound; i++) {
 							if(SecondaryInventory->slot[i][j].io == FlyingOverIO) {
 								sx = i;
 								sy = j;

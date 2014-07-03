@@ -107,8 +107,8 @@ class InventoryCommand : public Command {
 				return;
 			}
 			
-			for(long nj = 0; nj < id->sizey; nj++) {
-				for(long ni = 0; ni < id->sizex; ni++) {
+			for(long nj = 0; nj < id->m_size.y; nj++) {
+				for(long ni = 0; ni < id->m_size.x; ni++) {
 					Entity * item = id->slot[ni][nj].io;
 					if(item && id->slot[ni][nj].show) {
 						// Delay destruction of the object to avoid invalid references
@@ -156,8 +156,7 @@ class InventoryCommand : public Command {
 			DestroyCommand::destroyInventory(io);
 			
 			io->inventory = new INVENTORY_DATA();
-			io->inventory->sizex = 3;
-			io->inventory->sizey = 11;
+			io->inventory->m_size = Vec2s(3, 11);
 			io->inventory->io = io;
 			
 			return Success;

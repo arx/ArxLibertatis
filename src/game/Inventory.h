@@ -66,14 +66,12 @@ struct INVENTORY_SLOT {
 
 struct INVENTORY_DATA {
 	Entity * io;
-	long sizex;
-	long sizey;
+	Vec2s m_size;
 	INVENTORY_SLOT slot[20][20];
 	
 	INVENTORY_DATA()
 		: io(NULL)
-		, sizex(0)
-		, sizey(0)
+		, m_size(Vec2s(0, 0))
 		, slot()
 	{}
 };
