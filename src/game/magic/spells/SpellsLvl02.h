@@ -52,7 +52,6 @@ public:
 	void Update(float timeDelta);
 	
 private:
-	float m_fdata;
 	long m_longinfo_lower_armor;
 };
 
