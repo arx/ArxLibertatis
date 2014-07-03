@@ -231,7 +231,7 @@ void FireFieldSpell::Launch()
 	
 	Vec3f target;
 	float beta;
-	float displace = false;
+	bool displace = false;
 	if(m_caster == PlayerEntityHandle) {
 		target = player.basePosition();
 		beta = player.angle.getPitch();
@@ -241,7 +241,7 @@ void FireFieldSpell::Launch()
 			Entity * io = entities[m_caster];
 			target = io->pos;
 			beta = io->angle.getPitch();
-			displace = (io->ioflags & IO_NPC);
+			displace = (io->ioflags & IO_NPC) == IO_NPC;
 		} else {
 			ARX_DEAD_CODE();
 		}
@@ -365,7 +365,7 @@ void IceFieldSpell::Launch()
 	
 	Vec3f target;
 	float beta;
-	float displace = false;
+	bool displace = false;
 	if(m_caster == PlayerEntityHandle) {
 		target = player.basePosition();
 		beta = player.angle.getPitch();
@@ -375,7 +375,7 @@ void IceFieldSpell::Launch()
 			Entity * io = entities[m_caster];
 			target = io->pos;
 			beta = io->angle.getPitch();
-			displace = (io->ioflags & IO_NPC);
+			displace = (io->ioflags & IO_NPC) == IO_NPC;
 		} else {
 			ARX_DEAD_CODE();
 		}
