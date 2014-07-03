@@ -1846,7 +1846,7 @@ long Manage_Specific_RAT_Timer(SCR_TIMER * st)
 	Entity * io = st->io;
 	GetTargetPos(io);
 	Vec3f target = io->target - io->pos;
-	fnormalize(target);
+	target = glm::normalize(target);
 	Vec3f targ = VRotateY(target, rnd() * 60.f - 30.f);
 	target = io->target + targ * 100.f;
 

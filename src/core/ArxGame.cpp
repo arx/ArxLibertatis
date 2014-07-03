@@ -869,7 +869,7 @@ void ArxGame::updateConversationCamera() {
 		}
 		
 		Vec3f vect = targetpos - sourcepos;
-		fnormalize(vect);
+		vect = glm::normalize(vect);
 
 		float dist = 250.f - conversationcamera.size.getRoll();
 		if(dist < 0.f)

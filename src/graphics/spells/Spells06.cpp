@@ -165,7 +165,7 @@ void CCreateField::RenderQuad(const Vec3f & p1, const Vec3f & p2, const Vec3f & 
 
 void CCreateField::RenderSubDivFace(Vec3f * b, Vec3f * t, int b1, int b2, int t1, int t2) {
 	Vec3f norm = (b[b1] + b[b2] + t[t1] + t[t2]) * 0.25f - eSrc;
-	fnormalize(norm);
+	norm = glm::normalize(norm);
 	RenderQuad(b[b1], b[b2], t[t1], t[t2], 1, norm);
 }
 

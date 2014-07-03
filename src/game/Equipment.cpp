@@ -631,7 +631,7 @@ float ARX_EQUIPMENT_ComputeDamages(Entity * io_source, Entity * io_target, float
 			
 			// TODO should this be player.pos - player.baseOffset() = player.basePosition()?
 			Vec3f ppos = io_source->pos - (player.pos + player.baseOffset());
-			fnormalize(ppos);
+			ppos = glm::normalize(ppos);
 			
 			// Push the player
 			PUSH_PLAYER_FORCE += ppos * -dmgs * Vec3f(1.0f / 11, 1.0f / 30, 1.0f / 11);
@@ -644,7 +644,7 @@ float ARX_EQUIPMENT_ComputeDamages(Entity * io_source, Entity * io_target, float
 		} else {
 			
 			Vec3f ppos = io_source->pos - io_target->pos;
-			fnormalize(ppos);
+			ppos = glm::normalize(ppos);
 			
 			// Push the NPC
 			io_target->forcedmove += ppos * -dmgs;
@@ -798,7 +798,7 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 								vect.x = target->obj->vertexlist3[hitpoint].v.x - io_source->pos.x;
 								vect.y = 0;
 								vect.z = target->obj->vertexlist3[hitpoint].v.z - io_source->pos.z;
-								fnormalize(vect);
+								vect = glm::normalize(vect);
 								sp.origin.x = target->obj->vertexlist3[hitpoint].v.x + vect.x * 30.f;
 								sp.origin.y = target->obj->vertexlist3[hitpoint].v.y;
 								sp.origin.z = target->obj->vertexlist3[hitpoint].v.z + vect.z * 30.f;

@@ -622,7 +622,7 @@ void ARX_DAMAGES_PushIO(Entity * io_target, EntityHandle source, float power)
 		power *= ( 1.0f / 20 );
 		Entity * io = entities[source];
 		Vec3f vect = io_target->pos - io->pos;
-		fnormalize(vect);
+		vect = glm::normalize(vect);
 		vect *= power;
 		if(io_target == entities.player()) {
 			PUSH_PLAYER_FORCE = vect; // TODO why not +=?

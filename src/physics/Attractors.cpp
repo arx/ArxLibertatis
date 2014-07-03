@@ -135,7 +135,7 @@ void ARX_SPECIAL_ATTRACTORS_ComputeForIO(const Entity & ioo, Vec3f & force) {
 			if(dist < max_radius) {
 				float ratio_dist = 1.f - (dist / max_radius);
 				Vec3f vect = io.pos - ioo.pos;
-				fnormalize(vect);
+				vect = glm::normalize(vect);
 				power *= ratio_dist * 0.01f;
 				force = vect * power;
 			}

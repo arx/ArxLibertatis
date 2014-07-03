@@ -1489,7 +1489,7 @@ void ARX_NPC_SpawnMember(Entity * ioo, long num) {
 	vector.x = -std::sin(radians(io->angle.getPitch()));
 	vector.y = std::sin(radians(io->angle.getYaw())) * 2.f;
 	vector.z = std::cos(radians(io->angle.getPitch()));
-	fnormalize(vector);
+	vector = glm::normalize(vector);
 	io->rubber = 0.6f;
 	
 	io->no_collide = ioo->index();

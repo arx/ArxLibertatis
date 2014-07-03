@@ -1156,7 +1156,7 @@ void ARX_PARTICLES_Update(EERIE_CAMERA * cam)  {
 			if(part->special & PARTICLE_SPARK) {
 				
 				Vec3f vect = part->oldpos - in;
-				fnormalize(vect);
+				vect = glm::normalize(vect);
 				TexturedVertex tv[3];
 				tv[0].color = part->rgb.toBGR();
 				tv[1].color = 0xFF666666;

@@ -165,13 +165,6 @@ inline unsigned int GetNextPowerOf2(unsigned int n) {
 	return ++n;
 }
 
-//! Normalizes a Vector approximately. Returns its approcimate length before normalization.
-inline float fnormalize(Vec3f & v) {
-	float len = ffsqrt(glm::length2(v));
-	v *= 1 / len;
-	return len;
-}
-
 // Matrix functions
 
 void MatrixSetByVectors(glm::mat4x4 & m, const Vec3f & d, const Vec3f & u);
