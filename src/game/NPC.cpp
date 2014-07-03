@@ -156,16 +156,11 @@ static void CheckHit(Entity * io, float ratioaim) {
 
 	if(!io)
 		return;
-
-	Vec3f ppos, pos;
+	
 	Vec3f from(0.f, 0.f, -90.f);
 	Vec3f to = VRotateY(from, MAKEANGLE(180.f - io->angle.getPitch()));
-	ppos.x = io->pos.x;
-	pos.x = ppos.x + to.x;
-	ppos.y = io->pos.y - (80.f);
-	pos.y = ppos.y + to.y;
-	ppos.z = io->pos.z;
-	pos.z = ppos.z + to.z;
+	Vec3f ppos = io->pos + Vec3f(0.f, -80.f, 0.f);
+	Vec3f pos = ppos + to;
 
 	float dmg;
 
