@@ -57,7 +57,10 @@ void SummonCreatureSpell::GetTargetAndBeta(Vec3f & target, float & beta)
 }
 
 SummonCreatureSpell::SummonCreatureSpell()
-	: m_longinfo_summon_creature(-1) //TODO is this correct ?
+	: m_targetPos(Vec3f_ZERO)
+	, m_megaCheat(false)
+	, m_longinfo_summon_creature(-1) //TODO is this correct ?
+	, m_longinfo2_entity(InvalidEntityHandle)
 {
 	
 }
