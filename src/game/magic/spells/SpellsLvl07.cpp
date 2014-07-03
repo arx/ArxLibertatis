@@ -46,6 +46,12 @@ bool bOldLookToggle;
 
 static LightHandle special[3];
 
+FlyingEyeSpell::FlyingEyeSpell()
+	: m_lastupdate(0)
+{
+	
+}
+
 bool FlyingEyeSpell::CanLaunch()
 {
 	if(eyeball.exist)
