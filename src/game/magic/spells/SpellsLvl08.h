@@ -40,9 +40,9 @@ public:
 	void Update(float timeDelta);
 	
 private:
-	float m_fdata;
 	LightHandle m_light;
 	DamageHandle m_damage;
+	float m_pitch;
 };
 
 class ExplosionSpell : public SpellBase {
