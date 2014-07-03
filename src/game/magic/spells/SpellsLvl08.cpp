@@ -363,6 +363,7 @@ void EnchantWeaponSpell::Update(float timeDelta)
 LifeDrainSpell::LifeDrainSpell()
 	: m_light(InvalidLightHandle)
 	, m_damage(InvalidDamageHandle)
+	, m_pitch(0.f)
 {
 }
 
@@ -464,8 +465,8 @@ void LifeDrainSpell::Update(float timeDelta)
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	
 	Anglef cabalangle(0.f, 0.f, 0.f);
-	cabalangle.setPitch(m_fdata + (float)timeDelta*0.1f);
-	m_fdata = cabalangle.getPitch();
+	cabalangle.setPitch(m_pitch + (float)timeDelta*0.1f);
+	m_pitch = cabalangle.getPitch();
 	
 	Vec3f cabalscale = Vec3f(Es);
 	Color3f cabalcolor = Color3f(0.8f, 0.f, 0.f);
