@@ -1425,10 +1425,8 @@ bool PutInInventory() {
 /*!
  * \brief Returns true if xx,yy is a position in secondary inventory
  */
-bool InSecondaryInventoryPos(const Vec2s & pos)
-{
-	if (SecondaryInventory != NULL)
-	{
+bool InSecondaryInventoryPos(const Vec2s & pos) {
+	if(SecondaryInventory != NULL) {
 		short tx, ty;
 
 		tx = pos.x + checked_range_cast<short>(InventoryX) - SHORT_INTERFACE_RATIO(2);
@@ -1436,10 +1434,11 @@ bool InSecondaryInventoryPos(const Vec2s & pos)
 		tx = tx / SHORT_INTERFACE_RATIO(32);
 		ty = ty / SHORT_INTERFACE_RATIO(32);
 
+		if(tx < 0 || tx >= SecondaryInventory->m_size.x)
+			return false;
 
-		if ((tx < 0) || (tx >= SecondaryInventory->m_size.x)) return false;
-
-		if ((ty < 0) || (ty >= SecondaryInventory->m_size.y)) return false;
+		if(ty < 0 || ty >= SecondaryInventory->m_size.y)
+			return false;
 
 		return true;
 	}
@@ -1450,8 +1449,7 @@ bool InSecondaryInventoryPos(const Vec2s & pos)
 /*!
  * \brief Returns true if xx,yy is a position in player inventory
  */
-bool InPlayerInventoryPos(const Vec2s & pos)
-{
+bool InPlayerInventoryPos(const Vec2s & pos) {
 	float fCenterX	= g_size.center().x - INTERFACE_RATIO(320) + INTERFACE_RATIO(35);
 	float fSizY		= g_size.height() - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY);
 
@@ -1460,48 +1458,51 @@ bool InPlayerInventoryPos(const Vec2s & pos)
 
 	short tx, ty;
 
-	if (player.Interface & INTER_INVENTORY)
-	{
+	if(player.Interface & INTER_INVENTORY) {
 		tx = pos.x - iPosX;
 		ty = pos.y - iPosY;//-2;
 
-		if ((tx >= 0) && (ty >= 0))
-		{
+		if(tx >= 0 && ty >= 0) {
 			tx = tx / SHORT_INTERFACE_RATIO(32);
 			ty = ty / SHORT_INTERFACE_RATIO(32);
 
-			if ((tx >= 0) && ((size_t)tx <= INVENTORY_X) && (ty >= 0) && ((size_t)ty < INVENTORY_Y))
+			if(   tx >= 0
+			   && (size_t)tx <= INVENTORY_X
+			   && ty >= 0
+			   && (size_t)ty < INVENTORY_Y
+			)
 				return true;
 			else
 				return false;
 		}
-	}
-	
-	else if (player.Interface & INTER_INVENTORYALL)
-	{
-		float fBag	= (player.bag - 1) * INTERFACE_RATIO(-121);
+	} else if(player.Interface & INTER_INVENTORYALL) {
+		float fBag = (player.bag - 1) * INTERFACE_RATIO(-121);
 
 		short iY = checked_range_cast<short>(fBag);
 
-		if ((
-		            (pos.x >= iPosX) &&
-		            (pos.x <= iPosX + INVENTORY_X * INTERFACE_RATIO(32)) &&
-		            (pos.y >= iPosY + iY) &&
-					(pos.y <= g_size.height())))
+		if(   pos.x >= iPosX
+		   && pos.x <= iPosX + INVENTORY_X * INTERFACE_RATIO(32)
+		   && pos.y >= iPosY + iY
+		   && pos.y <= g_size.height()
+		) {
 			return true;
+		}
 
-		for (int i = 0; i < player.bag; i++)
-		{
+		for(int i = 0; i < player.bag; i++) {
 			tx = pos.x - iPosX;
 			ty = pos.y - iPosY - iY;
 
-			if ((tx >= 0) && (ty >= 0))
-			{
+			if(tx >= 0 && ty >= 0) {
 				tx = tx / SHORT_INTERFACE_RATIO(32);
 				ty = ty / SHORT_INTERFACE_RATIO(32);
 
-				if ((tx >= 0) && ((size_t)tx <= INVENTORY_X) && (ty >= 0) && ((size_t)ty < INVENTORY_Y))
+				if(   tx >= 0
+				   && (size_t)tx <= INVENTORY_X
+				   && ty >= 0
+				   && (size_t)ty < INVENTORY_Y
+				) {
 					return true;
+				}
 			}
 
 			float fRatio	= INTERFACE_RATIO(121);
@@ -1516,32 +1517,32 @@ bool InPlayerInventoryPos(const Vec2s & pos)
 /*!
  * \brief Returns true if "pos" is a position in player inventory or in SECONDARY inventory
  */
-bool InInventoryPos(const Vec2s & pos)
-{
-	if (InSecondaryInventoryPos(pos))
+bool InInventoryPos(const Vec2s & pos) {
+	if(InSecondaryInventoryPos(pos))
 		return true;
 
-	return (InPlayerInventoryPos(pos));
+	return InPlayerInventoryPos(pos);
 }
 
 /*!
  * \brief returns true if cursor is flying over any inventory
  */
-bool IsFlyingOverInventory(const Vec2s & pos)
-{
+bool IsFlyingOverInventory(const Vec2s & pos) {
 	//	if(eMouseState==MOUSE_IN_WORLD) return false;
 
-	if (SecondaryInventory != NULL)
-	{
-
+	if(SecondaryInventory != NULL) {
 		short tx = pos.x + checked_range_cast<short>(InventoryX) - SHORT_INTERFACE_RATIO(2);
 		short ty = pos.y - SHORT_INTERFACE_RATIO(13);
 		tx /= SHORT_INTERFACE_RATIO(32);
 		ty /= SHORT_INTERFACE_RATIO(32);
 
-
-		if ((tx >= 0) && (tx <= SecondaryInventory->m_size.x) && (ty >= 0) && (ty <= SecondaryInventory->m_size.y))
+		if(   tx >= 0
+		   && tx <= SecondaryInventory->m_size.x
+		   && ty >= 0
+		   && ty <= SecondaryInventory->m_size.y
+		) {
 			return true;
+		}
 	}
 
 	return InPlayerInventoryPos(pos);
@@ -1550,35 +1551,37 @@ bool IsFlyingOverInventory(const Vec2s & pos)
 /*!
  * \brief Returns IO under position xx,yy in any INVENTORY or NULL if no IO was found
  */
-Entity * GetFromInventory(const Vec2s & pos)
-{
+Entity * GetFromInventory(const Vec2s & pos) {
 	HERO_OR_SECONDARY = 0;
 
-	if (!IsFlyingOverInventory(pos))
+	if(!IsFlyingOverInventory(pos))
 		return NULL;
 
-	if (SecondaryInventory != NULL)
-	{
+	if(SecondaryInventory != NULL) {
 		short tx = pos.x + checked_range_cast<short>(InventoryX) - SHORT_INTERFACE_RATIO(2);
 		short ty = pos.y - SHORT_INTERFACE_RATIO(13);
 
-		if ((tx >= 0) && (ty >= 0))
-		{
+		if(tx >= 0 && ty >= 0) {
 			tx = tx / SHORT_INTERFACE_RATIO(32); 
 			ty = ty / SHORT_INTERFACE_RATIO(32); 
 
-			if ((tx >= 0) && (tx <= SecondaryInventory->m_size.x)
-			        && (ty >= 0) && (ty <= SecondaryInventory->m_size.y))
-			{
-				if (SecondaryInventory->slot[tx][ty].io == NULL)
+			if(   tx >= 0
+			   && tx <= SecondaryInventory->m_size.x
+			   && ty >= 0
+			   && ty <= SecondaryInventory->m_size.y
+			) {
+				if(SecondaryInventory->slot[tx][ty].io == NULL)
 					return NULL;
 
-				if (((player.Interface & INTER_STEAL) && (!ARX_PLAYER_CanStealItem(SecondaryInventory->slot[tx][ty].io))))
+				if(   (player.Interface & INTER_STEAL)
+				   && !ARX_PLAYER_CanStealItem(SecondaryInventory->slot[tx][ty].io)
+				) {
 					return NULL;
+				}
 
 				Entity * io = SecondaryInventory->slot[tx][ty].io;
 
-				if (!(io->gameFlags & GFLAG_INTERACTIVITY))
+				if(!(io->gameFlags & GFLAG_INTERACTIVITY))
 					return NULL;
 
 				HERO_OR_SECONDARY = 2;
@@ -1597,14 +1600,12 @@ Entity * GetFromInventory(const Vec2s & pos)
  * Put the position in "pos". returns true if position was found
  * or false if object is invalid, or position not defined.
  */
-bool GetItemWorldPosition(Entity * io, Vec3f * pos)
-{
-	// Valid IO ?
-	if (!io) return false;
+bool GetItemWorldPosition(Entity * io, Vec3f * pos) {
+	if(!io)
+		return false;
 
 	// Is this object being Dragged by player ?
-	if (DRAGINTER == io)
-	{
+	if(DRAGINTER == io) {
 		// Set position to approximate center of player.
 		pos->x = player.pos.x;
 		pos->y = player.pos.y + 80.f; 
@@ -1613,11 +1614,9 @@ bool GetItemWorldPosition(Entity * io, Vec3f * pos)
 	}
 
 	// Not in scene ?
-	if (io->show != SHOW_FLAG_IN_SCENE)
-	{
+	if(io->show != SHOW_FLAG_IN_SCENE) {
 		// Is it equiped ?
-		if (IsEquipedByPlayer(io))
-		{
+		if(IsEquipedByPlayer(io)) {
 			// in player inventory
 			pos->x = player.pos.x;
 			pos->y = player.pos.y + 80.f; 
@@ -1672,7 +1671,7 @@ bool GetItemWorldPositionSound(const Entity * io, Vec3f * pos) {
 		return false;
 	}
 	
-	if (DRAGINTER == io) {
+	if(DRAGINTER == io) {
 		ARX_PLAYER_FrontPos(pos);
 		return true;
 	}
@@ -1769,7 +1768,7 @@ void CheckForInventoryReplaceMe(Entity * io, Entity * old) {
 				
 				for(long j = 0; j < id->m_size.y; j++) {
 					for(long k = 0; k < id->m_size.x; k++) {
-						if (id->slot[k][j].io == old) {
+						if(id->slot[k][j].io == old) {
 							long xx, yy;
 							if(CanBePutInSecondaryInventory(id, io, &xx, &yy)) {
 								return;
@@ -1790,31 +1789,25 @@ void CheckForInventoryReplaceMe(Entity * io, Entity * old) {
  *
  * \return true if an object was taken
  */
-bool TakeFromInventory(const Vec2s & pos)
-{
+bool TakeFromInventory(const Vec2s & pos) {
 	Entity * io = GetFromInventory(pos);
 	Entity * ioo;
 
-	if (io == NULL) return false;
+	if(io == NULL)
+		return false;
 
-	if (SecondaryInventory != NULL)
-	{
-		if (InSecondaryInventoryPos(pos))
-		{
+	if(SecondaryInventory != NULL) {
+		if(InSecondaryInventoryPos(pos)) {
 			ioo = (Entity *)SecondaryInventory->io;
 
-			if (ioo->ioflags & IO_SHOP)   // SHOP !
-			{
-				{
-					if (io->ioflags & IO_ITEM) // Just in case...
-					{
+			if(ioo->ioflags & IO_SHOP) {
+					if(io->ioflags & IO_ITEM) {
 						long cos = ARX_INTERACTIVE_GetPrice(io, ioo);
 
 						float fcos	= cos - cos * ((float)player.m_skillFull.intuition) * 0.005f;
 						cos = checked_range_cast<long>(fcos);
 
-						if (player.gold < cos)
-						{
+						if(player.gold < cos) {
 							return false;
 						}
 
@@ -1832,9 +1825,7 @@ bool TakeFromInventory(const Vec2s & pos)
 							return true;
 						}
 					}
-				}
-			}
-			else if ((io->ioflags & IO_ITEM) && io->_itemdata->count > 1) {
+			} else if((io->ioflags & IO_ITEM) && io->_itemdata->count > 1) {
 				
 				if(!GInput->actionPressed(CONTROLS_CUST_STEALTHMODE)) {
 					ioo = CloneIOItem(io);
@@ -1859,13 +1850,11 @@ bool TakeFromInventory(const Vec2s & pos)
 					return true;
 				}
 			}
-
 		}
 
 		for(long j = 0; j < SecondaryInventory->m_size.y; j++)
 			for(long i = 0; i < SecondaryInventory->m_size.x; i++) {
-				if (SecondaryInventory->slot[i][j].io == io)
-				{
+				if(SecondaryInventory->slot[i][j].io == io) {
 					SecondaryInventory->slot[i][j].io = NULL;
 					SecondaryInventory->slot[i][j].show = 1;
 					sInventory = 2;
@@ -1875,7 +1864,6 @@ bool TakeFromInventory(const Vec2s & pos)
 
 					sInventoryX = checked_range_cast<short>(fCalcX);
 					sInventoryY = checked_range_cast<short>(fCalcY);
-
 				}
 			}
 	}
@@ -1920,7 +1908,7 @@ bool TakeFromInventory(const Vec2s & pos)
 		for(int iNbBag = 0; iNbBag < player.bag; iNbBag++) {
 			for(size_t j = 0; j < INVENTORY_Y; j++) {
 				for(size_t i = 0; i < INVENTORY_X; i++) {
-					if (inventory[iNbBag][i][j].io == io) {
+					if(inventory[iNbBag][i][j].io == io) {
 						
 						inventory[iNbBag][i][j].io = NULL;
 						inventory[iNbBag][i][j].show = 1;
@@ -2107,22 +2095,18 @@ void ARX_INVENTORY_OpenClose(Entity * _io)
 }
 
 //-----------------------------------------------------------------------------
-void ARX_INVENTORY_TakeAllFromSecondaryInventory()
-{
+void ARX_INVENTORY_TakeAllFromSecondaryInventory() {
 	bool bSound = false;
 
-	if (TSecondaryInventory)
-	{
-		for (long j = 0; j < TSecondaryInventory->m_size.y; j++)
-			for (long i = 0; i < TSecondaryInventory->m_size.x; i++)
-			{
-				if (TSecondaryInventory->slot[i][j].io && TSecondaryInventory->slot[i][j].show)
-				{
+	if(TSecondaryInventory) {
+		for(long j = 0; j < TSecondaryInventory->m_size.y; j++)
+			for(long i = 0; i < TSecondaryInventory->m_size.x; i++) {
+				if(TSecondaryInventory->slot[i][j].io && TSecondaryInventory->slot[i][j].show) {
 					long sx = TSecondaryInventory->slot[i][j].io->m_inventorySize.x;
 					long sy = TSecondaryInventory->slot[i][j].io->m_inventorySize.y;
 					Entity * io = TSecondaryInventory->slot[i][j].io;
 
-					if (!(io->ioflags & IO_GOLD))
+					if(!(io->ioflags & IO_GOLD))
 						RemoveFromAllInventories(io);
 
 					if(playerInventory.insert(io)) {
@@ -2141,22 +2125,18 @@ void ARX_INVENTORY_TakeAllFromSecondaryInventory()
 			}
 	}
 
-	if (bSound)
+	if(bSound)
 		ARX_SOUND_PlayInterface(SND_INVSTD);
 	else
 		ARX_SOUND_PlayInterface(SND_INVSTD, 0.1f);
 }
 
 //-----------------------------------------------------------------------------
-void ARX_INVENTORY_ReOrder()
-{
-	if (TSecondaryInventory)
-	{
-		for (long j = 0; j < TSecondaryInventory->m_size.y; j++)
-			for (long i = 0; i < TSecondaryInventory->m_size.x; i++)
-			{
-				if (TSecondaryInventory->slot[i][j].io && TSecondaryInventory->slot[i][j].show)
-				{
+void ARX_INVENTORY_ReOrder() {
+	if(TSecondaryInventory) {
+		for(long j = 0; j < TSecondaryInventory->m_size.y; j++)
+			for(long i = 0; i < TSecondaryInventory->m_size.x; i++) {
+				if(TSecondaryInventory->slot[i][j].io && TSecondaryInventory->slot[i][j].show) {
 					long sx = TSecondaryInventory->slot[i][j].io->m_inventorySize.x;
 					long sy = TSecondaryInventory->slot[i][j].io->m_inventorySize.y;
 					Entity * io = TSecondaryInventory->slot[i][j].io;
@@ -2167,11 +2147,8 @@ void ARX_INVENTORY_ReOrder()
 					sInventoryX = 0;
 					sInventoryY = 0;
 
-					if (CanBePutInSecondaryInventory(TSecondaryInventory, io, &x, &y))
-					{
-					}
-					else
-					{
+					if(CanBePutInSecondaryInventory(TSecondaryInventory, io, &x, &y)) {
+					} else{
 						sInventory = 2;
 
 						sInventoryX = static_cast<short>(i);
