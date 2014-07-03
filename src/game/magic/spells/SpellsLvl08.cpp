@@ -175,8 +175,8 @@ void ManaDrainSpell::Update(float timeDelta)
 		light->pos.x = cabalpos.x;
 		light->pos.y = refpos;
 		light->pos.z = cabalpos.z;
-		light->rgb.b=rnd()*0.2f+0.8f;
-		light->fallstart=Es*1.5f;
+		light->rgb.b = rnd() * 0.2f + 0.8f;
+		light->fallstart = Es * 1.5f;
 	}
 	
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
@@ -440,7 +440,7 @@ void LifeDrainSpell::Update(float timeDelta)
 		refpos=player.pos.y+60.f;
 	} else {
 		cabalpos.x = entities[m_caster]->pos.x;
-		cabalpos.y = entities[m_caster]->pos.y - scaley-mov;
+		cabalpos.y = entities[m_caster]->pos.y - scaley - mov;
 		cabalpos.z = entities[m_caster]->pos.z;
 		refpos=entities[m_caster]->pos.y-scaley;
 	}
@@ -463,15 +463,15 @@ void LifeDrainSpell::Update(float timeDelta)
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	
 	Anglef cabalangle(0.f, 0.f, 0.f);
-	cabalangle.setPitch(m_fdata+(float)timeDelta*0.1f);
-	m_fdata=cabalangle.getPitch();
+	cabalangle.setPitch(m_fdata + (float)timeDelta*0.1f);
+	m_fdata = cabalangle.getPitch();
 	
 	Vec3f cabalscale = Vec3f(Es);
 	Color3f cabalcolor = Color3f(0.8f, 0.f, 0.f);
 	Draw3DObject(cabal, cabalangle, cabalpos, cabalscale, cabalcolor);
 	
 	mov=std::sin((float)(arxtime.get_frame_time()-30.f)*( 1.0f / 800 ))*scaley;
-	cabalpos.y=refpos-mov;
+	cabalpos.y = refpos - mov;
 	cabalcolor = Color3f(0.5f, 0.f, 0.f);
 	Draw3DObject(cabal, cabalangle, cabalpos, cabalscale, cabalcolor);
 	
