@@ -24,6 +24,7 @@
 #include <sstream>
 
 #include <boost/algorithm/string/case_conv.hpp>
+#include <boost/io/ios_state.hpp>
 
 #include "Configure.h"
 
@@ -76,7 +77,9 @@ inline void print_flag(F & flags, E flag, const string & name) {
 template <class F>
 inline void print_unknown_flags(F flags) {
 	if(flags) {
+		boost::io::ios_all_saver coutFlags(cout);
 		cout << " (unknown:0x" << std::hex << flags << ')';
+		coutFlags.restore();
 	}
 }
 
@@ -552,7 +555,9 @@ void print_anim_layers(const SavedAnimUse animlayer[SAVED_MAX_ANIM_LAYERS], cons
 Config config;
 
 void print_level(long level) {
+	boost::io::ios_all_saver coutFlags(cout);
 	cout << level << " (lvl" << std::setw(3) << std::setfill('0') << level << ')';
+	coutFlags.restore();
 }
 
 void print_type(s32 type) {
