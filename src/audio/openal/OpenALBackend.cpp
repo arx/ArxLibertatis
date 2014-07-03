@@ -83,7 +83,8 @@ aalError OpenALBackend::init(bool enableEffects) {
 	}
 	
 	// clear error
-	alGetError();
+	ALenum error = alGetError();
+	ARX_UNUSED(error);
 	
 	// Create OpenAL interface
 	device = alcOpenDevice(NULL);
