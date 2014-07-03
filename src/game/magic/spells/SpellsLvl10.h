@@ -45,12 +45,14 @@ public:
 
 class FreezeTimeSpell : public SpellBase {
 public:
+	FreezeTimeSpell();
+	
 	bool CanLaunch();
 	void Launch();
 	void End();
 	
 private:
-	float m_siz;
+	float m_slowdown;
 };
 
 class MassIncinerateSpell : public SpellBase {

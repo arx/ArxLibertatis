@@ -262,6 +262,12 @@ void ControlTargetSpell::Update(float timeDelta)
 
 extern float GLOBAL_SLOWDOWN;
 
+FreezeTimeSpell::FreezeTimeSpell()
+	: m_slowdown(0.f)
+{
+	
+}
+
 bool FreezeTimeSpell::CanLaunch()
 {
 	return !spells.ExistAnyInstanceForThisCaster(m_type, m_caster);
@@ -272,17 +278,17 @@ void FreezeTimeSpell::Launch()
 	ARX_SOUND_PlaySFX(SND_SPELL_FREEZETIME);
 	
 	float max_slowdown = std::max(0.f, GLOBAL_SLOWDOWN - 0.01f);
-	m_siz = glm::clamp(m_level * 0.08f, 0.f, max_slowdown);
-	GLOBAL_SLOWDOWN -= m_siz;
+	m_slowdown = glm::clamp(m_level * 0.08f, 0.f, max_slowdown);
+	GLOBAL_SLOWDOWN -= m_slowdown;
 	
 	m_duration = (m_launchDuration > -1) ? m_launchDuration : 200000;
 	m_bDuration = true;
-	m_fManaCostPerSecond = 30.f * m_siz;
+	m_fManaCostPerSecond = 30.f * m_slowdown;
 }
 
 void FreezeTimeSpell::End()
 {
-	GLOBAL_SLOWDOWN += m_siz;
+	GLOBAL_SLOWDOWN += m_slowdown;
 	ARX_SOUND_PlaySFX(SND_SPELL_TELEKINESIS_END, &entities[m_caster]->pos);
 }
 
