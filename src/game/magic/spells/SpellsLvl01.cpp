@@ -182,6 +182,13 @@ void MagicMissileSpell::Update(float timeDelta)
 	}
 }
 
+IgnitSpell::IgnitSpell()
+	: m_srcPos(Vec3f_ZERO)
+	, m_elapsed(0)
+{
+	
+}
+
 void IgnitSpell::Launch()
 {
 	m_duration = 500;

@@ -39,6 +39,8 @@ public:
 
 class IgnitSpell : public SpellBase {
 public:
+	IgnitSpell();
+	
 	void Launch();
 	void End();
 	void Update(float timeDelta);
