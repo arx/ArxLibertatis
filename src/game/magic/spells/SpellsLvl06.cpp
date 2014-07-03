@@ -312,6 +312,7 @@ void CreateFieldSpell::Launch()
 	ARX_SOUND_PlaySFX(SND_SPELL_CREATE_FIELD, &target);
 	
 	CCreateField * effect  = new CCreateField();
+	m_pSpellFx = effect;
 	
 	res::path cls = "graph/obj3d/interactive/fix_inter/blue_cube/blue_cube";
 	Entity * io = AddFix(cls, -1, IO_IMMEDIATELOAD);
@@ -339,7 +340,6 @@ void CreateFieldSpell::Launch()
 			light->pos = effect->eSrc - Vec3f(0.f, 150.f, 0.f);
 		}
 		
-		m_pSpellFx = effect;
 		m_duration = effect->GetDuration();
 		
 		if(m_flags & SPELLCAST_FLAG_RESTORE) {
