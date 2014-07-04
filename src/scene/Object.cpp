@@ -142,37 +142,25 @@ void EERIE_Object_Precompute_Fast_Access(EERIE_3DOBJ * eerie) {
 	if(!eerie)
 		return;
 
-	long lVRight		=	GetActionPointIdx(eerie, "v_right");
-	long lURight		=	GetActionPointIdx(eerie, "u_right");
+	// GetActionPointIdx(eerie, "v_right");
+	// GetActionPointIdx(eerie, "u_right");
+	// GetActionPointIdx(eerie, "carry_attach");
+	// EERIE_OBJECT_GetGroup(eerie, "jaw");
+	// EERIE_OBJECT_GetGroup(eerie, "mouth all");
+	
 	long lViewAttach	=	GetActionPointIdx(eerie, "view_attach") ;
 	long lPrimAttach	=	GetActionPointIdx(eerie, "primary_attach");
 	long lLeftAttach	=	GetActionPointIdx(eerie, "left_attach");
 
-	eerie->fastaccess.V_right = checked_range_cast<short>(lVRight);
-	eerie->fastaccess.U_right = checked_range_cast<short>(lURight);
 	eerie->fastaccess.view_attach = checked_range_cast<short>(lViewAttach);
 	eerie->fastaccess.primary_attach = checked_range_cast<short>(lPrimAttach);
 	eerie->fastaccess.left_attach = checked_range_cast<short>(lLeftAttach);
 
-
 	long lWeapAttach				=	GetActionPointIdx(eerie, "weapon_attach");
 	long lSecAttach					=	GetActionPointIdx(eerie, "secondary_attach");
-	long lJaw						=	EERIE_OBJECT_GetGroup(eerie, "jaw");
-	long lMouthAll					=	EERIE_OBJECT_GetGroup(eerie, "mouth all");
 
 	eerie->fastaccess.weapon_attach		=	checked_range_cast<short>(lWeapAttach);
 	eerie->fastaccess.secondary_attach	=	checked_range_cast<short>(lSecAttach);
-	eerie->fastaccess.jaw_group			=	checked_range_cast<short>(lJaw);
-	eerie->fastaccess.mouth_group		=	checked_range_cast<short>(lMouthAll);
-
-
-	if(eerie->fastaccess.mouth_group == -1)
-		eerie->fastaccess.mouth_group_origin = -1;
-	else
-	{
-		long lMouthOrigin = eerie->grouplist[eerie->fastaccess.mouth_group].origin;
-		eerie->fastaccess.mouth_group_origin = checked_range_cast<short>(lMouthOrigin);
-	}
 
 	long lHeadGroup					=	EERIE_OBJECT_GetGroup(eerie, "head");
 	eerie->fastaccess.head_group	=	checked_range_cast<short>(lHeadGroup);
@@ -185,15 +173,12 @@ void EERIE_Object_Precompute_Fast_Access(EERIE_3DOBJ * eerie) {
 		eerie->fastaccess.head_group_origin = checked_range_cast<short>(lHeadOrigin);
 	}
 
-
 	long lFire = GetActionPointIdx(eerie, "fire");
-	long lCarryAttach = GetActionPointIdx(eerie, "carry_attach");
 	long lHead = EERIE_OBJECT_GetSelection(eerie, "head");
 	long lChest = EERIE_OBJECT_GetSelection(eerie, "chest");
 	long lLeggings = EERIE_OBJECT_GetSelection(eerie, "leggings") ;
 	
 	eerie->fastaccess.fire = checked_range_cast<short>(lFire);
-	eerie->fastaccess.carry_attach = checked_range_cast<short>(lCarryAttach);
 	eerie->fastaccess.sel_head = checked_range_cast<short>(lHead);
 	eerie->fastaccess.sel_chest = checked_range_cast<short>(lChest);
 	eerie->fastaccess.sel_leggings = checked_range_cast<short>(lLeggings);
@@ -914,18 +899,12 @@ void EERIE_3DOBJ::clear() {
 		fastaccess.left_attach = 0;
 		fastaccess.weapon_attach = 0;
 		fastaccess.secondary_attach = 0;
-		fastaccess.mouth_group = 0;
-		fastaccess.jaw_group = 0;
 		fastaccess.head_group_origin = 0;
 		fastaccess.head_group = 0;
-		fastaccess.mouth_group_origin = 0;
-		fastaccess.V_right = 0;
-		fastaccess.U_right = 0;
 		fastaccess.fire = 0;
 		fastaccess.sel_head = 0;
 		fastaccess.sel_chest = 0;
 		fastaccess.sel_leggings = 0;
-		fastaccess.carry_attach = 0;
 		fastaccess.padding_ = 0;
 
 		m_skeleton = 0;

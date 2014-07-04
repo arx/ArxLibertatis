@@ -295,16 +295,10 @@ struct EERIE_FASTACCESS
 	short	weapon_attach;
 
 	short	secondary_attach;
-	short	mouth_group;
 
-	short	jaw_group;
 	short	head_group_origin;
 
 	short	head_group;
-	short	mouth_group_origin;
-
-	short	V_right;
-	short	U_right;
 
 	short	fire;
 	short	sel_head;
@@ -312,7 +306,6 @@ struct EERIE_FASTACCESS
 	short	sel_chest;
 	short	sel_leggings;
 
-	short	carry_attach;
 	short	padding_;
 };
 
@@ -354,18 +347,12 @@ struct EERIE_3DOBJ
 		fastaccess.left_attach = 0;
 		fastaccess.weapon_attach = 0;
 		fastaccess.secondary_attach = 0;
-		fastaccess.mouth_group = 0;
-		fastaccess.jaw_group = 0;
 		fastaccess.head_group_origin = 0;
 		fastaccess.head_group = 0;
-		fastaccess.mouth_group_origin = 0;
-		fastaccess.V_right = 0;
-		fastaccess.U_right = 0;
 		fastaccess.fire = 0;
 		fastaccess.sel_head = 0;
 		fastaccess.sel_chest = 0;
 		fastaccess.sel_leggings = 0;
-		fastaccess.carry_attach = 0;
 		fastaccess.padding_ = 0;
 
 		m_skeleton = NULL;
