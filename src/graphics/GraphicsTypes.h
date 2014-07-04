@@ -300,28 +300,19 @@ struct EERIE_FASTACCESS
 		, sel_head(0)
 		, sel_chest(0)
 		, sel_leggings(0)
-		, padding_(0)
 	{}
 	
-	short	view_attach;
-	short	primary_attach;
-
-	short	left_attach;
-	short	weapon_attach;
-
-	short	secondary_attach;
-
-	short	head_group_origin;
-
-	short	head_group;
-
-	short	fire;
-	short	sel_head;
-
-	short	sel_chest;
-	short	sel_leggings;
-
-	short	padding_;
+	long view_attach;
+	long primary_attach;
+	long left_attach;
+	long weapon_attach;
+	long secondary_attach;
+	long head_group_origin;
+	long head_group;
+	long fire;
+	long sel_head;
+	long sel_chest;
+	long sel_leggings;
 };
 
 /////////////////////////////////////////////////////////////////////////////////

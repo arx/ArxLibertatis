@@ -148,22 +148,14 @@ void EERIE_Object_Precompute_Fast_Access(EERIE_3DOBJ * eerie) {
 	// EERIE_OBJECT_GetGroup(eerie, "jaw");
 	// EERIE_OBJECT_GetGroup(eerie, "mouth all");
 	
-	long lViewAttach	=	GetActionPointIdx(eerie, "view_attach") ;
-	long lPrimAttach	=	GetActionPointIdx(eerie, "primary_attach");
-	long lLeftAttach	=	GetActionPointIdx(eerie, "left_attach");
-
-	eerie->fastaccess.view_attach = checked_range_cast<short>(lViewAttach);
-	eerie->fastaccess.primary_attach = checked_range_cast<short>(lPrimAttach);
-	eerie->fastaccess.left_attach = checked_range_cast<short>(lLeftAttach);
-
-	long lWeapAttach				=	GetActionPointIdx(eerie, "weapon_attach");
-	long lSecAttach					=	GetActionPointIdx(eerie, "secondary_attach");
-
-	eerie->fastaccess.weapon_attach		=	checked_range_cast<short>(lWeapAttach);
-	eerie->fastaccess.secondary_attach	=	checked_range_cast<short>(lSecAttach);
-
-	long lHeadGroup					=	EERIE_OBJECT_GetGroup(eerie, "head");
-	eerie->fastaccess.head_group	=	checked_range_cast<short>(lHeadGroup);
+	eerie->fastaccess.view_attach       = GetActionPointIdx(eerie, "view_attach");
+	eerie->fastaccess.primary_attach    = GetActionPointIdx(eerie, "primary_attach");
+	eerie->fastaccess.left_attach       = GetActionPointIdx(eerie, "left_attach");
+	eerie->fastaccess.weapon_attach     = GetActionPointIdx(eerie, "weapon_attach");
+	eerie->fastaccess.secondary_attach  = GetActionPointIdx(eerie, "secondary_attach");
+	eerie->fastaccess.fire              = GetActionPointIdx(eerie, "fire");
+	
+	eerie->fastaccess.head_group = EERIE_OBJECT_GetGroup(eerie, "head");
 
 	if(eerie->fastaccess.head_group == -1)
 		eerie->fastaccess.head_group_origin = -1;
@@ -172,16 +164,10 @@ void EERIE_Object_Precompute_Fast_Access(EERIE_3DOBJ * eerie) {
 		long lHeadOrigin  = eerie->grouplist[eerie->fastaccess.head_group].origin;
 		eerie->fastaccess.head_group_origin = checked_range_cast<short>(lHeadOrigin);
 	}
-
-	long lFire = GetActionPointIdx(eerie, "fire");
-	long lHead = EERIE_OBJECT_GetSelection(eerie, "head");
-	long lChest = EERIE_OBJECT_GetSelection(eerie, "chest");
-	long lLeggings = EERIE_OBJECT_GetSelection(eerie, "leggings") ;
 	
-	eerie->fastaccess.fire = checked_range_cast<short>(lFire);
-	eerie->fastaccess.sel_head = checked_range_cast<short>(lHead);
-	eerie->fastaccess.sel_chest = checked_range_cast<short>(lChest);
-	eerie->fastaccess.sel_leggings = checked_range_cast<short>(lLeggings);
+	eerie->fastaccess.sel_head     = EERIE_OBJECT_GetSelection(eerie, "head");
+	eerie->fastaccess.sel_chest    = EERIE_OBJECT_GetSelection(eerie, "chest");
+	eerie->fastaccess.sel_leggings = EERIE_OBJECT_GetSelection(eerie, "leggings");
 }
 
 void MakeUserFlag(TextureContainer * tc) {
