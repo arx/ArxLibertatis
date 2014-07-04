@@ -893,20 +893,9 @@ void EERIE_3DOBJ::clear() {
 		ndata = 0;
 		cdata = 0;
 		sdata = 0;
-
-		fastaccess.view_attach = 0;
-		fastaccess.primary_attach = 0;
-		fastaccess.left_attach = 0;
-		fastaccess.weapon_attach = 0;
-		fastaccess.secondary_attach = 0;
-		fastaccess.head_group_origin = 0;
-		fastaccess.head_group = 0;
-		fastaccess.fire = 0;
-		fastaccess.sel_head = 0;
-		fastaccess.sel_chest = 0;
-		fastaccess.sel_leggings = 0;
-		fastaccess.padding_ = 0;
-
+		
+		fastaccess = EERIE_FASTACCESS();
+		
 		m_skeleton = 0;
 		
 	cub.xmin = cub.ymin = cub.zmin = std::numeric_limits<float>::max();
