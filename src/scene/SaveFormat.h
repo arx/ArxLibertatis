@@ -598,7 +598,7 @@ struct ARX_CHANGELEVEL_IO_SAVE {
 	s32 ioflags;//type;
 	SavedVec3 pos;
 	SavedVec3 initpos;
-	SavedVec3 lastpos;
+	SavedVec3 lastpos; // unused
 	SavedVec3 move;
 	SavedVec3 lastmove;
 	SavedAnglef angle;

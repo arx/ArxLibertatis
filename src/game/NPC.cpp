@@ -1469,7 +1469,7 @@ void ARX_NPC_SpawnMember(Entity * ioo, long num) {
 	io->inv = NULL;
 	io->scriptload = 1;
 	io->obj = nouvo;
-	io->lastpos = io->initpos = io->pos = ioo->obj->vertexlist3[inpos].v;
+	io->initpos = io->pos = ioo->obj->vertexlist3[inpos].v;
 	io->angle = ioo->angle;
 	
 	io->gameFlags = ioo->gameFlags;
@@ -2446,8 +2446,6 @@ static void ManageNPCMovement(Entity * io)
 	   && !(ause0->flags & EA_ANIMEND)
 	) {
 		io->room_flags |= 1;
-		io->lastpos = (io->pos += io->move);
-
 		return;
 	}
 
@@ -3062,9 +3060,6 @@ static void ManageNPCMovement(Entity * io)
 			}
 		}
 	}
-	
-	// Now update lastpos values for next call use...
-	io->lastpos = io->pos;
 }
 
 float AngularDifference(float a1, float a2)
