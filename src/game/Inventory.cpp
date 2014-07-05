@@ -1607,9 +1607,7 @@ bool GetItemWorldPosition(Entity * io, Vec3f * pos) {
 	// Is this object being Dragged by player ?
 	if(DRAGINTER == io) {
 		// Set position to approximate center of player.
-		pos->x = player.pos.x;
-		pos->y = player.pos.y + 80.f; 
-		pos->z = player.pos.z;
+		*pos = player.pos + Vec3f(0.f, 80.f, 0.f);
 		return true;
 	}
 
@@ -1618,9 +1616,7 @@ bool GetItemWorldPosition(Entity * io, Vec3f * pos) {
 		// Is it equiped ?
 		if(IsEquipedByPlayer(io)) {
 			// in player inventory
-			pos->x = player.pos.x;
-			pos->y = player.pos.y + 80.f; 
-			pos->z = player.pos.z;
+			*pos = player.pos + Vec3f(0.f, 80.f, 0.f);
 			return true;
 		}
 
@@ -1629,9 +1625,7 @@ bool GetItemWorldPosition(Entity * io, Vec3f * pos) {
 			for(size_t j = 0; j < INVENTORY_Y; j++) {
 				for(size_t i = 0; i < INVENTORY_X; i++) {
 					if(inventory[iNbBag][i][j].io == io) {
-						pos->x = player.pos.x;
-						pos->y = player.pos.y + 80.f; 
-						pos->z = player.pos.z;
+						*pos = player.pos + Vec3f(0.f, 80.f, 0.f);
 						return true;
 					}
 				}
