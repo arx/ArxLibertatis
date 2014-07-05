@@ -781,26 +781,26 @@ void ArxGame::updateFirstPersonCamera() {
 	} else {
 		subj.angle = player.angle;
 		
-			long id = entities.player()->obj->fastaccess.view_attach;
-
-			if(id!=-1) {
-				subj.orgTrans.pos = entities.player()->obj->vertexlist3[id].v;
-				Vec3f vect;
-				vect.x = subj.orgTrans.pos.x - player.pos.x;
-				vect.y = 0;
-				vect.z = subj.orgTrans.pos.z - player.pos.z;
-				float len = ffsqrt(glm::length2(vect));
-
-				if(len > 46.f) {
-					float div = 46.f / len;
-					vect.x *= div;
-					vect.z *= div;
-					subj.orgTrans.pos.x = player.pos.x + vect.x;
-					subj.orgTrans.pos.z = player.pos.z + vect.z;
-				}
-			} else {
-				subj.orgTrans.pos = player.basePosition();
+		long id = entities.player()->obj->fastaccess.view_attach;
+		
+		if(id!=-1) {
+			subj.orgTrans.pos = entities.player()->obj->vertexlist3[id].v;
+			Vec3f vect;
+			vect.x = subj.orgTrans.pos.x - player.pos.x;
+			vect.y = 0;
+			vect.z = subj.orgTrans.pos.z - player.pos.z;
+			float len = ffsqrt(glm::length2(vect));
+			
+			if(len > 46.f) {
+				float div = 46.f / len;
+				vect.x *= div;
+				vect.z *= div;
+				subj.orgTrans.pos.x = player.pos.x + vect.x;
+				subj.orgTrans.pos.z = player.pos.z + vect.z;
 			}
+		} else {
+			subj.orgTrans.pos = player.basePosition();
+		}
 	}
 
 	if(EXTERNALVIEW) {
