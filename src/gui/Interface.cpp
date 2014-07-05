@@ -2091,36 +2091,36 @@ void ArxGame::manageKeyMouse() {
 								if(temp->ioflags & IO_SHOP)
 									bOk = false;
 						}
-
-							Entity * io = entities.player();
-							ANIM_USE * useanim = &io->animlayer[1];
-							WeaponType type = ARX_EQUIPMENT_GetPlayerWeaponType();
-
-							switch(type) {
-							case WEAPON_DAGGER:
-								if(useanim->cur_anim == io->anims[ANIM_DAGGER_UNREADY_PART_1])
-									bOk = false;
-
-								break;
-							case WEAPON_1H:
-								if(useanim->cur_anim == io->anims[ANIM_1H_UNREADY_PART_1])
-									bOk = false;
-
-								break;
-							case WEAPON_2H:
-								if(useanim->cur_anim == io->anims[ANIM_2H_UNREADY_PART_1])
-									bOk = false;
-
-								break;
-							case WEAPON_BOW:
-								if(useanim->cur_anim == io->anims[ANIM_MISSILE_UNREADY_PART_1])
-									bOk = false;
-
-								break;
-							default:
-								break;
-							}
-
+						
+						Entity * io = entities.player();
+						ANIM_USE * useanim = &io->animlayer[1];
+						WeaponType type = ARX_EQUIPMENT_GetPlayerWeaponType();
+						
+						switch(type) {
+						case WEAPON_DAGGER:
+							if(useanim->cur_anim == io->anims[ANIM_DAGGER_UNREADY_PART_1])
+								bOk = false;
+						
+							break;
+						case WEAPON_1H:
+							if(useanim->cur_anim == io->anims[ANIM_1H_UNREADY_PART_1])
+								bOk = false;
+						
+							break;
+						case WEAPON_2H:
+							if(useanim->cur_anim == io->anims[ANIM_2H_UNREADY_PART_1])
+								bOk = false;
+						
+							break;
+						case WEAPON_BOW:
+							if(useanim->cur_anim == io->anims[ANIM_MISSILE_UNREADY_PART_1])
+								bOk = false;
+						
+							break;
+						default:
+							break;
+						}
+						
 						if(bOk) {
 							if(!(FlyingOverIO->_itemdata->playerstacksize <= 1 && FlyingOverIO->_itemdata->count > 1)) {
 								SendIOScriptEvent(FlyingOverIO, SM_INVENTORYUSE);
