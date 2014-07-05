@@ -178,10 +178,11 @@ static unsigned long FALLING_TIME = 0;
 vector<STRUCT_QUEST> PlayerQuest;
 
 bool ARX_PLAYER_IsInFightMode() {
+	arx_assert(entities.player());
+	
 	if (player.Interface & INTER_COMBATMODE) return true;
 
-	if(entities.size() > 0 && entities.player()
-	   && entities.player()->animlayer[1].cur_anim) {
+	if(entities.player()->animlayer[1].cur_anim) {
 		
 		ANIM_USE * ause1 = &entities.player()->animlayer[1];
 		ANIM_HANDLE ** alist = entities.player()->anims;
@@ -255,8 +256,10 @@ void ARX_PLAYER_FrontPos(Vec3f * pos)
  * \brief Reset all extra-rotation groups of player
  */
 void ARX_PLAYER_RectifyPosition() {
+	arx_assert(entities.player());
+	
 	Entity * io = entities.player();
-	if(io && io->_npcdata->ex_rotate) {
+	if(io->_npcdata->ex_rotate) {
 		for(long n = 0; n < MAX_EXTRA_ROTATE; n++) {
 			io->_npcdata->ex_rotate->group_rotate[n] = Anglef::ZERO;
 		}
@@ -1309,14 +1312,14 @@ void ARX_PLAYER_StartFall()
  * \brief Called When player has just died
  */
 void ARX_PLAYER_BecomesDead() {
+	arx_assert(entities.player());
+		
 	// a mettre au final
 	BLOCK_PLAYER_CONTROLS = true;
 
-	if(entities.player()) {
-		player.Interface &= ~INTER_COMBATMODE;
-		player.Interface = 0;
-		DeadTime = 0;
-	}
+	player.Interface &= ~INTER_COMBATMODE;
+	player.Interface = 0;
+	DeadTime = 0;
 	
 	spells.endByCaster(PlayerEntityHandle);
 }
@@ -1331,6 +1334,7 @@ extern bool EXTERNALVIEW;
  * \brief Choose the set of animations to use to represent current player situation.
  */
 void ARX_PLAYER_Manage_Visual() {
+	arx_assert(entities.player());
 	
 	unsigned long tim = (unsigned long)(arxtime);
 	
@@ -1345,8 +1349,7 @@ void ARX_PLAYER_Manage_Visual() {
 		}
 	}
 	
-	if(entities.player()) {
-		
+	{
 		Entity * io = entities.player();
 		
 		if(!BLOCK_PLAYER_CONTROLS && sp_max) {
@@ -2706,23 +2709,23 @@ void ARX_PLAYER_Invulnerability(long flag) {
 extern Entity * FlyingOverIO;
 
 void ARX_GAME_Reset(long type) {
+	arx_assert(entities.player());
 	
 	DeadTime = 0;
 	
-	if(entities.player()) {
-		entities.player()->speed_modif = 0;
-	}
+	entities.player()->speed_modif = 0;
 	
 	LAST_JUMP_ENDTIME = 0;
 	FlyingOverIO = NULL;
 	g_miniMap.mapMarkerInit();
 	ClearDynLights();
 
-	if(!DONT_ERASE_PLAYER && entities.player()) {
+	if(!DONT_ERASE_PLAYER) {
 		entities.player()->halo.flags = 0;
 	}
 
-	if(entities.player())entities.player()->gameFlags &= ~GFLAG_INVISIBILITY;
+	entities.player()->gameFlags &= ~GFLAG_INVISIBILITY;
+	
 	ARX_PLAYER_Invulnerability(0);
 	PLAYER_PARALYSED = 0;
 
@@ -2740,10 +2743,8 @@ void ARX_GAME_Reset(long type) {
 	GLOBAL_SLOWDOWN = 1.f;
 
 	CheatReset();
-
-	if(entities.player()) {
-		entities.player()->spellcast_data.castingspell = SPELL_NONE;
-	}
+	
+	entities.player()->spellcast_data.castingspell = SPELL_NONE;
 	
 	ARX_INTERFACE_NoteClear();
 	player.Interface = INTER_LIFE_MANA | INTER_MINIBACK | INTER_MINIBOOK;
@@ -2870,11 +2871,9 @@ void ARX_GAME_Reset(long type) {
 	if(eyeball.exist) {
 		eyeball.exist = -100;
 	}
-
-	if(entities.size() > 0 && entities.player()) {
-		entities.player()->ouch_time = 0;
-		entities.player()->invisibility = 0.f;
-	}
+	
+	entities.player()->ouch_time = 0;
+	entities.player()->invisibility = 0.f;
 	
 	fadeReset();
 	

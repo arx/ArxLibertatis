@@ -689,11 +689,13 @@ void CleanScriptLoadedIO() {
  * \brief Restores an IO to its initial status (Game start Status)
  */
 void RestoreInitialIOStatus() {
+	arx_assert(entities.player());
+	
 	ARX_INTERACTIVE_HideGore(entities.player());
 	ARX_NPC_Behaviour_ResetAll();
-	if(entities.player()) {
-		entities.player()->spellcast_data.castingspell = SPELL_NONE;
-	}
+	
+	entities.player()->spellcast_data.castingspell = SPELL_NONE;
+	
 	for(size_t i = 1; i < entities.size(); i++) {
 		const EntityHandle handle = EntityHandle(i);
 		Entity * e = entities[handle];

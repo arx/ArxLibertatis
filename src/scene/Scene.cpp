@@ -1490,7 +1490,7 @@ void ARX_SCENE_Render() {
 	PopAllTriangleList();
 	
 	// *Now* draw the player
-	if(entities.player() && entities.player()->animlayer[0].cur_anim) {
+	if(entities.player()->animlayer[0].cur_anim) {
 		float invisibility = std::min(0.9f, entities.player()->invisibility);
 		AnimatedEntityRender(entities.player(), invisibility);
 		if(!EXTERNALVIEW) {

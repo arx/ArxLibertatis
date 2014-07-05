@@ -1768,9 +1768,7 @@ static long ARX_CHANGELEVEL_Pop_Player() {
 		sp_wep = 0;
 	}
 	
-	if(entities.player()) {
-		entities.player()->pos = player.basePosition();
-	}
+	entities.player()->pos = player.basePosition();
 	
 	WILL_RESTORE_PLAYER_POSITION = asp->pos.toVec3();
 	WILL_RESTORE_PLAYER_POSITION_FLAG = 1;
@@ -2912,6 +2910,7 @@ static bool ARX_CHANGELEVEL_Get_Player_LevelData(ARX_CHANGELEVEL_PLAYER_LEVEL_DA
 }
 
 long ARX_CHANGELEVEL_Load(const fs::path & savefile) {
+	arx_assert(entities.player());
 	
 	LogDebug("begin ARX_CHANGELEVEL_Load " << savefile);
 	
@@ -2957,7 +2956,7 @@ long ARX_CHANGELEVEL_Load(const fs::path & savefile) {
 	BLOCK_PLAYER_CONTROLS = false;
 	player.Interface &= ~INTER_COMBATMODE;
 	
-	if (entities.player()) entities.player()->animlayer[1].cur_anim = NULL;
+	entities.player()->animlayer[1].cur_anim = NULL;
 	
 	JUST_RELOADED = 1;
 	

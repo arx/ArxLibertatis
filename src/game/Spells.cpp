@@ -720,13 +720,12 @@ extern long PLAYER_PARALYSED;
 extern long passwall;
 
 void ARX_SPELLS_ManageMagic() {
+	arx_assert(entities.player());
+	
 	if(ARXmenu.currentmode!=AMCM_OFF)
 		return;
 
 	Entity *io = entities.player();
-
-	if(!io)
-		return;
 	
 	const ANIM_HANDLE * anim = io->animlayer[1].cur_anim;
 	

@@ -621,6 +621,7 @@ void ARX_PARTICLES_Add_Smoke(Vec3f * pos, long flags, long amount, Color3f * rgb
 extern long cur_mr;
 
 void ManageTorch() {
+	arx_assert(entities.player());
 	
 	EERIE_LIGHT * el = lightHandleGet(torchLightHandle);
 	
@@ -668,8 +669,9 @@ void ManageTorch() {
 		}
 	}
 	
-	if(entities.size() > 0 && entities.player() && entities.player()->obj
-	   && entities.player()->obj->fastaccess.head_group_origin > -1) {
+	if(   entities.player()->obj
+	   && entities.player()->obj->fastaccess.head_group_origin > -1
+	) {
 		short vertex = entities.player()->obj->fastaccess.head_group_origin;
 		el->pos.y = entities.player()->obj->vertexlist3[vertex].v.y;
 	}

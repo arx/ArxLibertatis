@@ -1745,13 +1745,10 @@ extern float STRIKE_AIMTIME;
  * \brief Checks if Player is currently striking.
  * \return
  */
-bool IsPlayerStriking()
-{
+bool IsPlayerStriking() {
+	arx_assert(entities.player());
 	Entity * io = entities.player();
-
-	if(!io)
-		return false;
-
+	
 	ANIM_USE * useanim = &io->animlayer[1];
 	WeaponType weapontype = ARX_EQUIPMENT_GetPlayerWeaponType();
 

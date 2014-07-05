@@ -740,6 +740,8 @@ bool ArxGame::beforeRun() {
 
 void ArxGame::updateFirstPersonCamera() {
 
+	arx_assert(entities.player());
+	
 	Entity * io = entities.player();
 	ANIM_USE * useanim = &io->animlayer[1];
 	ANIM_HANDLE ** alist = io->anims;
@@ -779,7 +781,6 @@ void ArxGame::updateFirstPersonCamera() {
 	} else {
 		subj.angle = player.angle;
 		
-		if(entities.player()) {
 			long id = entities.player()->obj->fastaccess.view_attach;
 
 			if(id!=-1) {
@@ -800,7 +801,6 @@ void ArxGame::updateFirstPersonCamera() {
 			} else {
 				subj.orgTrans.pos = player.basePosition();
 			}
-		}
 	}
 
 	if(EXTERNALVIEW) {
@@ -1233,6 +1233,8 @@ extern int iHighLight;
 
 void ArxGame::updateLevel() {
 
+	arx_assert(entities.player());
+	
 	RenderBatcher::getInstance().clear();
 
 	if(!PLAYER_PARALYSED) {
@@ -1297,7 +1299,7 @@ void ArxGame::updateLevel() {
 	g_miniMap.validatePlayerPos(CURRENTLEVEL, BLOCK_PLAYER_CONTROLS, Book_Mode);
 
 
-	if(entities.player() && entities.player()->animlayer[0].cur_anim) {
+	if(entities.player()->animlayer[0].cur_anim) {
 		ManageNONCombatModeAnimations();
 
 		AnimatedEntityUpdate(entities.player(), Original_framedelay);

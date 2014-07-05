@@ -176,6 +176,8 @@ long JUST_RELOADED = 0;
 
 void ARX_PATH_UpdateAllZoneInOutInside() {
 	
+	arx_assert(entities.player());
+	
 	static size_t count = 1;
 	
 	long f = glm::clamp(static_cast<long>(framedelay), 10l, 50l);
@@ -276,7 +278,7 @@ void ARX_PATH_UpdateAllZoneInOutInside() {
 		}
 
 	// player check*************************************************
-	if(entities.player()) {
+	{
 		ARX_PATH * p = ARX_PATH_CheckPlayerInZone();
 		ARX_PATH * op = (ARX_PATH *)player.inzone;
 

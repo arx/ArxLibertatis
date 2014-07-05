@@ -1130,8 +1130,8 @@ void GetInfosCombine()
 // 1 to force Combat Mode On
 // 0 to force Combat Mode Off
 //-----------------------------------------------------------------------------
-void ARX_INTERFACE_Combat_Mode(long i)
-{
+void ARX_INTERFACE_Combat_Mode(long i) {
+	arx_assert(entities.player());
 	arx_assert(arrowobj);
 	
 	if(i >= 1 && (player.Interface & INTER_COMBATMODE))
@@ -1140,21 +1140,21 @@ void ARX_INTERFACE_Combat_Mode(long i)
 	if(i == 0 && !(player.Interface & INTER_COMBATMODE))
 		return;
 
-	if((player.Interface & INTER_COMBATMODE) && entities.player()) {
+	if((player.Interface & INTER_COMBATMODE)) {
 		player.Interface&=~INTER_COMBATMODE;
 		player.Interface&=~INTER_NO_STRIKE;
 
 		ARX_EQUIPMENT_LaunchPlayerUnReadyWeapon();
 		WeaponType weapontype = ARX_EQUIPMENT_GetPlayerWeaponType();
 
-		if(entities.player() && (weapontype == WEAPON_BOW)) {
+		if(weapontype == WEAPON_BOW) {
 			EERIE_LINKEDOBJ_UnLinkObjectFromObject(entities.player()->obj, arrowobj);
 		}
 
 		player.doingmagic=0;
-	} else if((!entities.player()->animlayer[1].cur_anim
-	           || entities.player()->animlayer[1].cur_anim == entities.player()->anims[ANIM_WAIT])
-	          && entities.player()) {
+	} else if(   !entities.player()->animlayer[1].cur_anim
+	           || entities.player()->animlayer[1].cur_anim == entities.player()->anims[ANIM_WAIT]
+	) {
 		ARX_INTERFACE_BookOpenClose(2);
 
 		player.Interface|=INTER_COMBATMODE;
@@ -2027,6 +2027,7 @@ void ARX_INTERFACE_Reset()
 
 
 void ArxGame::manageKeyMouse() {
+	arx_assert(entities.player());
 	
 	if(ARXmenu.currentmode == AMCM_OFF) {
 		Entity * pIO = NULL;
@@ -2357,7 +2358,7 @@ void ArxGame::manageKeyMouse() {
 						player.desiredangle.setYaw(301.f);
 				}
 
-				if(entities.player() && EEfabs(ia)>2.f)
+				if(EEfabs(ia) > 2.f)
 					entities.player()->animBlend.lastanimtime = 0;
 
 				if(ib != 0.f)
@@ -2880,8 +2881,9 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 	}
 }
 
-void ARX_INTERFACE_ManageOpenedBook()
-{
+void ARX_INTERFACE_ManageOpenedBook() {
+	arx_assert(entities.player());
+	
 	GRenderer->SetRenderState(Renderer::Fog, false);
 	
 	BOOKDEC.x = 0;
@@ -3960,9 +3962,6 @@ void ARX_INTERFACE_ManageOpenedBook()
 		SetActiveCamera(oldcam);
 		PrepareCamera(oldcam, g_size);
 
-		Entity *io = entities.player();
-
-		if(io) {
 			player.bookAnimation[0].cur_anim = herowaitbook;
 
 			if(player.equiped[EQUIP_SLOT_WEAPON] && ValidIONum(player.equiped[EQUIP_SLOT_WEAPON])) {
@@ -4086,8 +4085,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 				ARX_EQUIPMENT_AttachPlayerWeaponToBack();
 
 			Halo_Render();
-		}
-	}	
+	}
 }
 
 

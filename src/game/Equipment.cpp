@@ -243,9 +243,9 @@ void ARX_EQUIPMENT_RecreatePlayerMesh() {
 	if(EXITING)
 		return;
 	
+	arx_assert(entities.player());
+	
 	Entity * io = entities.player();
-	if(!io)
-		return;
 	
 	if(io->obj != hero)
 		delete io->obj;
@@ -257,9 +257,7 @@ void ARX_EQUIPMENT_RecreatePlayerMesh() {
 	applyTweak(EQUIP_SLOT_LEGGINGS, TWEAK_LEGS, "leggings");
 	
 	Entity * target = entities.player();
-	if(!target)
-		return;
-
+	
 	for(long i = 0; i < MAX_EQUIPED; i++) {
 		if(player.equiped[i] && ValidIONum(player.equiped[i])) {
 			Entity *toequip = entities[player.equiped[i]];
@@ -306,14 +304,9 @@ void ARX_EQUIPMENT_UnEquipAllPlayer() {
 	ARX_PLAYER_ComputePlayerFullStats();
 }
 
-bool ARX_EQUIPMENT_IsPlayerEquip(Entity * _pIO)
-{
-	Entity * io = entities.player();
-	if(!io)
-		return false;
-
-	if (io != entities.player()) return false;
-
+bool ARX_EQUIPMENT_IsPlayerEquip(Entity * _pIO) {
+	arx_assert(entities.player());
+	
 	for(long i = 0; i < MAX_EQUIPED; i++) {
 		if(player.equiped[i] && ValidIONum(player.equiped[i])) {
 			Entity * toequip = entities[player.equiped[i]];
@@ -366,12 +359,10 @@ void ARX_EQUIPMENT_UnEquip(Entity * target, Entity * tounequip, long flags)
 		ARX_EQUIPMENT_RecreatePlayerMesh();
 }
 
-void ARX_EQUIPMENT_AttachPlayerWeaponToHand()
-{
+void ARX_EQUIPMENT_AttachPlayerWeaponToHand() {
+	arx_assert(entities.player());
 	Entity * target = entities.player();
-	if(!target)
-		return;
-
+	
 	for(long i = 0; i < MAX_EQUIPED; i++) {
 		if(player.equiped[i] && ValidIONum(player.equiped[i])) {
 			Entity *toequip = entities[player.equiped[i]];
@@ -387,12 +378,10 @@ void ARX_EQUIPMENT_AttachPlayerWeaponToHand()
 	}
 }
 
-void ARX_EQUIPMENT_AttachPlayerWeaponToBack()
-{
+void ARX_EQUIPMENT_AttachPlayerWeaponToBack() {
+	arx_assert(entities.player());
 	Entity * target = entities.player();
-
-	if (!target) return;
-
+	
 	for(long i = 0; i < MAX_EQUIPED; i++) {
 		if(player.equiped[i] && ValidIONum(player.equiped[i])) {
 			Entity *toequip = entities[player.equiped[i]];
@@ -419,12 +408,9 @@ void ARX_EQUIPMENT_AttachPlayerWeaponToBack()
 	}
 }
 
-WeaponType ARX_EQUIPMENT_GetPlayerWeaponType()
-{
-	Entity * io = entities.player();
-	if(!io)
-		return WEAPON_BARE;
-
+WeaponType ARX_EQUIPMENT_GetPlayerWeaponType() {
+	arx_assert(entities.player());
+	
 	if(player.equiped[EQUIP_SLOT_WEAPON] && ValidIONum(player.equiped[EQUIP_SLOT_WEAPON])) {
 		Entity * toequip = entities[player.equiped[EQUIP_SLOT_WEAPON]];
 
@@ -446,14 +432,12 @@ WeaponType ARX_EQUIPMENT_GetPlayerWeaponType()
 	return WEAPON_BARE;
 }
 
-void ARX_EQUIPMENT_LaunchPlayerUnReadyWeapon()
-{
+void ARX_EQUIPMENT_LaunchPlayerUnReadyWeapon() {
+	arx_assert(entities.player());
 	arx_assert(arrowobj);
 	
 	Entity * io = entities.player();
-	if(!io)
-		return;
-
+	
 	ANIM_HANDLE * anim;
 	WeaponType type = ARX_EQUIPMENT_GetPlayerWeaponType();
 
@@ -925,12 +909,10 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 	return ret;
 }
 
-void ARX_EQUIPMENT_LaunchPlayerReadyWeapon()
-{
+void ARX_EQUIPMENT_LaunchPlayerReadyWeapon() {
+	arx_assert(entities.player());
 	Entity *io = entities.player();
-	if(!io)
-		return;
-
+	
 	WeaponType type = ARX_EQUIPMENT_GetPlayerWeaponType();
 	ANIM_HANDLE * anim = NULL;
 
@@ -1223,14 +1205,9 @@ void ARX_EQUIPMENT_SetEquip(Entity * io, bool special,
 	}
 }
 
-void ARX_EQUIPMENT_IdentifyAll()
-{
-	Entity * io = entities.player();
-
-	if (io == NULL) return;
-
-	if (io != entities.player()) return;
-
+void ARX_EQUIPMENT_IdentifyAll() {
+	arx_assert(entities.player());
+	
 	for (long i = 0; i < MAX_EQUIPED; i++)
 	{
 		if ((player.equiped[i] != PlayerEntityHandle)

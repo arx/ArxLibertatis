@@ -866,6 +866,9 @@ Vec3f	WILL_RESTORE_PLAYER_POSITION;
 long WILL_RESTORE_PLAYER_POSITION_FLAG=0;
 
 void FirstFrameHandling() {
+	
+	arx_assert(entities.player());
+	
 	LogDebug("FirstFrameHandling");
 	Vec3f trans;
 	FirstFrame = true;
@@ -997,8 +1000,7 @@ void FirstFrameHandling() {
 	player.angle.setYaw(0.f);
 	ARX_PLAYER_RectifyPosition();
 
-	if(entities.player())
-		entities.player()->_npcdata->vvpos = -99999;
+	entities.player()->_npcdata->vvpos = -99999;
 
 	SendGameReadyMsg();
 	PLAYER_MOUSELOOK_ON = false;
@@ -1054,12 +1056,10 @@ void FirstFrameHandling() {
 
 //*************************************************************************************
 
-void ManageNONCombatModeAnimations()
-{
+void ManageNONCombatModeAnimations() {
+	arx_assert(entities.player());
+	
 	Entity *io = entities.player();
-
-	if(!io)
-		return;
 
 	ANIM_USE * useanim3=&io->animlayer[3];
 	ANIM_HANDLE ** alist=io->anims;
@@ -1169,12 +1169,11 @@ void strikeSpeak(Entity * io) {
 	ARX_SPEECH_AddSpeech(io, *str, ANIM_TALK_NEUTRAL, ARX_SPEECH_FLAG_NOTEXT);
 }
 
-void ManageCombatModeAnimations()
-{
+void ManageCombatModeAnimations() {
+	arx_assert(entities.player());
+		
 	Entity * const io = entities.player();
-	if(!io)
-		return;
-
+	
 	ANIM_USE * useanim=&io->animlayer[1];
 
 	ANIM_HANDLE ** alist=io->anims;
