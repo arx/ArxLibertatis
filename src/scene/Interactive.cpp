@@ -1866,11 +1866,14 @@ Entity * AddItem(const res::path & classPath_, EntityInstance instance, AddInter
 	}
 	
 	io->spellcast_data.castingspell = SPELL_NONE;
-	io->lastpos.x = io->initpos.x = io->pos.x = player.pos.x - std::sin(radians(player.angle.getPitch())) * 140.f;
-	io->lastpos.y = io->initpos.y = io->pos.y = player.pos.y;
-	io->lastpos.z = io->initpos.z = io->pos.z = player.pos.z + std::cos(radians(player.angle.getPitch())) * 140.f;
-	io->lastpos.x = io->initpos.x = (float)((long)(io->initpos.x / 20)) * 20.f;
-	io->lastpos.z = io->initpos.z = (float)((long)(io->initpos.z / 20)) * 20.f;
+	
+	io->pos = player.pos;
+	
+	io->pos.x = io->pos.x - std::sin(radians(player.angle.getPitch())) * 140.f;
+	io->pos.z = io->pos.z + std::cos(radians(player.angle.getPitch())) * 140.f;
+	
+	io->lastpos.x = io->initpos.x = (float)((long)(io->pos.x / 20)) * 20.f;
+	io->lastpos.z = io->initpos.z = (float)((long)(io->pos.z / 20)) * 20.f;
 
 	EERIEPOLY * ep;
 	ep = CheckInPoly(io->pos + Vec3f(0.f, -60.f, 0.f));
