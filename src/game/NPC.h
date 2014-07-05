@@ -216,7 +216,7 @@ const float ARX_NPC_AUDIBLE_FACTOR_DEFAULT(ARX_NPC_AUDIBLE_FACTOR_MIN);
 const float ARX_NPC_AUDIBLE_FACTOR_RANGE(ARX_NPC_AUDIBLE_FACTOR_MAX - ARX_NPC_AUDIBLE_FACTOR_MIN);
 const float ARX_NPC_AUDIBLE_PRESENCE_DEFAULT(1.0F);
 
-void ARX_NPC_Revive(Entity * io, long flag);
+void ARX_NPC_Revive(Entity * io, bool init);
 bool ARX_NPC_SetStat(Entity & io, const std::string & statname, float value);
 void ARX_NPC_TryToCutSomething(Entity * target, const Vec3f * pos);
 bool ARX_NPC_LaunchPathfind(Entity * io, EntityHandle target);

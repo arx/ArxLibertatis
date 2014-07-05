@@ -277,7 +277,7 @@ void ARX_NPC_CreateExRotateData(Entity * io) {
  * \param io
  * \param flags
  */
-void ARX_NPC_Revive(Entity * io, long flags)
+void ARX_NPC_Revive(Entity * io, bool init)
 {
 	if(TSecondaryInventory && TSecondaryInventory->io == io) {
 		TSecondaryInventory = NULL;
@@ -292,7 +292,7 @@ void ARX_NPC_Revive(Entity * io, long flags)
 		io->_npcdata->lifePool.current = io->_npcdata->lifePool.max;
 	}
 
-	if(flags & 1) {
+	if(init) {
 		io->requestRoomUpdate = true;
 		io->pos = io->initpos;
 	}
