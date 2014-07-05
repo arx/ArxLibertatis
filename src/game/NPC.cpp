@@ -293,7 +293,7 @@ void ARX_NPC_Revive(Entity * io, long flags)
 	}
 
 	if(flags & 1) {
-		io->room_flags |= 1;
+		io->requestRoomUpdate = true;
 		io->pos = io->initpos;
 	}
 	
@@ -1006,7 +1006,7 @@ void ARX_PHYSICS_Apply() {
 					io->obj->pbox->stopcount = 0;
 				}
 				
-				io->room_flags |= 1;
+				io->requestRoomUpdate = true;
 				io->pos = io->obj->pbox->vert[0].pos;
 				
 				continue;
@@ -2403,7 +2403,7 @@ static void ManageNPCMovement(Entity * io)
 	ARX_USE_PATH * aup = io->usepath;
 
 	if(aup && (aup->aupflags & ARX_USEPATH_WORM_SPECIFIC)) {
-		io->room_flags |= 1;
+		io->requestRoomUpdate = true;
 		Vec3f tv;
 
 		if(aup->_curtime - aup->_starttime > 500) {
@@ -2445,7 +2445,7 @@ static void ManageNPCMovement(Entity * io)
 	   && ause0->cur_anim != alist[ANIM_HIT_SHORT]
 	   && !(ause0->flags & EA_ANIMEND)
 	) {
-		io->room_flags |= 1;
+		io->requestRoomUpdate = true;
 		return;
 	}
 
@@ -2831,7 +2831,7 @@ static void ManageNPCMovement(Entity * io)
 		io->_npcdata->moveproblem += 3;
 	}
 
-	io->room_flags |= 1;
+	io->requestRoomUpdate = true;
 	io->physics.cyl.origin = io->pos = phys.cyl.origin;
 	io->physics.cyl.radius = GetIORadius(io);
 	io->physics.cyl.height = GetIOHeight(io);
@@ -3237,7 +3237,7 @@ void CheckNPCEx(Entity * io) {
 	if(entities.player()->invisibility <= 0.f && ds < square(2000.f) && player.lifePool.current > 0.f) {
 		
 		// checks for near contact +/- 15 cm --> force visibility
-		if(io->room_flags & 1) {
+		if(io->requestRoomUpdate) {
 			UpdateIORoom(io);
 		}
 		
@@ -3361,7 +3361,7 @@ void ARX_NPC_SpawnAudibleSound(const Vec3f & pos, Entity * source, const float f
 			float distance = fdist(pos, entity->pos);
 
 			if(distance < max_distance) {
-				if(entity->room_flags & 1)
+				if(entity->requestRoomUpdate)
 					UpdateIORoom(entity);
 
 				if(Source_Room > -1 && entity->room > -1) {

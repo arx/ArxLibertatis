@@ -89,7 +89,7 @@ Entity::Entity(const res::path & classPath)
 	angle = Anglef::ZERO;
 	std::memset(&physics, 0, sizeof(IO_PHYSICS)); // TODO use constructor
 	room = -1;
-	room_flags = 1;
+	requestRoomUpdate = 1;
 	original_height = 0.f;
 	original_radius = 0.f;
 	inv = NULL;

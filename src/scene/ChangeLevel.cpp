@@ -2022,7 +2022,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) {
 		
 		memset(Gaids[Gaids_Number], 0, sizeof(ARX_CHANGELEVEL_INVENTORY_DATA_SAVE));
 		
-		io->room_flags = 1;
+		io->requestRoomUpdate = 1;
 		io->room = -1;
 		io->no_collide = InvalidEntityHandle;
 		io->ioflags = EntityFlags::load(ais->ioflags); // TODO save/load flags

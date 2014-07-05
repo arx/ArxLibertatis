@@ -506,7 +506,7 @@ void PrepareIOTreatZone(long flag)
 
 			if(toequip) {
 				toequip->room = sGlobalPlayerRoom;
-				toequip->room_flags = 0;
+				toequip->requestRoomUpdate = 0;
 			}
 		}
 	}
@@ -559,7 +559,7 @@ void PrepareIOTreatZone(long flag)
 						GetItemWorldPosition(io, &pos);
 						dists = glm::distance2(ACTIVECAM->orgTrans.pos, pos);
 					} else {
-						if(io->room_flags & 1)
+						if(io->requestRoomUpdate)
 							UpdateIORoom(io);
 
 						dists = square(SP_GetRoomDist(io->pos, ACTIVECAM->orgTrans.pos, io->room, Cam_Room));
@@ -600,7 +600,7 @@ void PrepareIOTreatZone(long flag)
 				if((io->ioflags & IO_NPC) && io->_npcdata->weapon) {
 					Entity * iooo = io->_npcdata->weapon;
 					iooo->room = io->room;
-					iooo->room_flags = io->room_flags;
+					iooo->requestRoomUpdate = io->requestRoomUpdate;
 				}
 			} else {
 				io->gameFlags &= ~GFLAG_ISINTREATZONE;
@@ -940,7 +940,7 @@ void RestoreInitialIOStatusOfIO(Entity * io)
 			io->obj->pbox->active = 0;
 
 		io->room = -1;
-		io->room_flags = 1;
+		io->requestRoomUpdate = 1;
 		RestoreIOInitPos(io);
 		ARX_INTERACTIVE_Teleport(io, io->initpos);
 		io->animBlend.lastanimtime = 1;
@@ -1192,7 +1192,7 @@ void ARX_INTERACTIVE_TeleportBehindTarget(Entity * io)
 			pos.x = entities[t]->pos.x;
 			pos.y = entities[t]->pos.y + entities[t]->physics.cyl.height * ( 1.0f / 2 );
 			pos.z = entities[t]->pos.z;
-			io->room_flags |= 1;
+			io->requestRoomUpdate = true;
 			io->room = -1;
 			ARX_PARTICLES_Add_Smoke(&pos, 3, 20);
 			MakeCoolFx(io->pos);
@@ -1261,7 +1261,7 @@ void ARX_INTERACTIVE_Teleport(Entity * io, const Vec3f & target, bool flag) {
 		return;
 	
 	io->gameFlags &= ~GFLAG_NOCOMPUTATION;
-	io->room_flags |= 1;
+	io->requestRoomUpdate = true;
 	io->room = -1;
 	
 	if(io == entities.player()) {

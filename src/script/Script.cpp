@@ -547,7 +547,7 @@ ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const string & 
 					const char * obj = name.c_str() + 10;
 					
 					if(!strcmp(obj, "player")) {
-						if(entity->room_flags & 1) {
+						if(entity->requestRoomUpdate) {
 							UpdateIORoom(entity);
 						}
 						long Player_Room = ARX_PORTALS_GetRoomNumForPosition(player.pos, 1);
@@ -566,11 +566,11 @@ ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const string & 
 							GetItemWorldPosition(entity, &pos);
 							GetItemWorldPosition(entities[t], &pos2);
 							
-							if(entity->room_flags & 1) {
+							if(entity->requestRoomUpdate) {
 								UpdateIORoom(entity);
 							}
 							
-							if(entities[t]->room_flags & 1) {
+							if(entities[t]->requestRoomUpdate) {
 								UpdateIORoom(entities[t]);
 							}
 							

@@ -960,7 +960,7 @@ void UpdateIORoom(Entity * io)
 	if(roo >= 0)
 		io->room = checked_range_cast<short>(roo);
 
-	io->room_flags &= ~1;
+	io->requestRoomUpdate = false;
 }
 
 bool GetRoomCenter(long room_num, Vec3f * center) {

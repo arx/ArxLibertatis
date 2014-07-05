@@ -375,7 +375,7 @@ bool ARX_SCENE_PORTAL_ClipIO(Entity * io, const Vec3f & position) {
 		long room_num;
 
 		if(io) {
-			if(io->room_flags & 1)
+			if(io->requestRoomUpdate)
 				UpdateIORoom(io);
 
 			room_num = io->room;//

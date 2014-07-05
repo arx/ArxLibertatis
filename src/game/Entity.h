@@ -243,7 +243,7 @@ public:
 	Anglef angle; // IO angle
 	IO_PHYSICS physics;	// Movement Collision Data
 	short room;
-	short room_flags; // 1==need_update
+	bool requestRoomUpdate;
 	float original_height;
 	float original_radius;
 	TextureContainer * inv; // Object Icon
