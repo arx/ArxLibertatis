@@ -169,50 +169,45 @@ void ARX_SCRIPT_SetMainEvent(Entity * io, const string & newevent) {
 
 //*************************************************************************************
 //*************************************************************************************
-void ARX_SCRIPT_ResetObject(Entity * io, long flags)
-{
+void ARX_SCRIPT_ResetObject(Entity * io, bool init) {
+	if(!io)
+		return;
+	
 	// Now go for Script INIT/RESET depending on Mode
-	if(io) {
-		
 		EntityHandle num = io->index();
 		
-		if (entities[num] && entities[num]->script.data)
-		{
+		if(entities[num] && entities[num]->script.data) {
 			entities[num]->script.allowevents = 0;
 
-			if (flags)	ScriptEvent::send(&entities[num]->script, SM_INIT, "", entities[num], "");
+			if(init)
+				ScriptEvent::send(&entities[num]->script, SM_INIT, "", entities[num], "");
 
-
-			if (entities[num])
+			if(entities[num])
 				ARX_SCRIPT_SetMainEvent(entities[num], "main");
 		}
 
 		// Do the same for Local Script
-		if (entities[num] && entities[num]->over_script.data)
-		{
+		if(entities[num] && entities[num]->over_script.data) {
 			entities[num]->over_script.allowevents = 0;
 
-			if (flags)	ScriptEvent::send(&entities[num]->over_script, SM_INIT, "", entities[num], "");
-
-
+			if(init)
+				ScriptEvent::send(&entities[num]->over_script, SM_INIT, "", entities[num], "");
 		}
 
 		// Sends InitEnd Event
-		if (flags)
-		{
-			if (entities[num] && entities[num]->script.data)
+		if(init) {
+			if(entities[num] && entities[num]->script.data)
 				ScriptEvent::send(&entities[num]->script, SM_INITEND, "", entities[num], "");
 
-			if (entities[num] && entities[num]->over_script.data)
+			if(entities[num] && entities[num]->over_script.data)
 				ScriptEvent::send(&entities[num]->over_script, SM_INITEND, "", entities[num], "");
 		}
 
-		if (entities[num])
+		if(entities[num])
 			entities[num]->gameFlags &= ~GFLAG_NEEDINIT;
-	}
 }
 
-void ARX_SCRIPT_Reset(Entity * io, long flags) {
+void ARX_SCRIPT_Reset(Entity * io, bool init) {
 	
 	//Release Script Local Variables
 	if(io->script.lvar) {
@@ -237,17 +232,17 @@ void ARX_SCRIPT_Reset(Entity * io, long flags) {
 	}
 	
 	if(!io->scriptload) {
-		ARX_SCRIPT_ResetObject(io, flags);
+		ARX_SCRIPT_ResetObject(io, init);
 	}
 }
 
-void ARX_SCRIPT_ResetAll(long flags) {
+void ARX_SCRIPT_ResetAll(bool init) {
 	for(size_t i = 0; i < entities.size(); i++) {
 		const EntityHandle handle = EntityHandle(i);
 		Entity * e = entities[handle];
 		
 		if(e && !e->scriptload) {
-			ARX_SCRIPT_Reset(e, flags);
+			ARX_SCRIPT_Reset(e, init);
 		}
 	}
 }

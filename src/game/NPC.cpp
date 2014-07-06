@@ -288,7 +288,7 @@ void ARX_NPC_Revive(Entity * io, bool init)
 	if(io->ioflags & IO_NPC) {
 		io->ioflags &= ~IO_NO_COLLISIONS;
 		io->_npcdata->lifePool.current = io->_npcdata->lifePool.max;
-		ARX_SCRIPT_ResetObject(io, 1);
+		ARX_SCRIPT_ResetObject(io, true);
 		io->_npcdata->lifePool.current = io->_npcdata->lifePool.max;
 	}
 

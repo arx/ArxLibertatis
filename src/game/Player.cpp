@@ -2778,7 +2778,7 @@ void ARX_GAME_Reset(long type) {
 	// Scripts
 	ARX_SCRIPT_Timer_ClearAll();
 	ARX_SCRIPT_EventStackClear();
-	ARX_SCRIPT_ResetAll(0);
+	ARX_SCRIPT_ResetAll(false);
 
 	// Conversations
 	ARX_CONVERSATION_Reset();

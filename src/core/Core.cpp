@@ -777,7 +777,7 @@ void SetEditMode(long ed, const bool stop_sound) {
 	}
 	else
 	{
-		ARX_SCRIPT_ResetAll(1);
+		ARX_SCRIPT_ResetAll(true);
 		EERIE_ANIMMANAGER_PurgeUnused();
 	}
 	
@@ -837,7 +837,7 @@ void FirstFrameProc() {
 		CleanInventory();
 		ARX_SCRIPT_Timer_ClearAll();
 		UnlinkAllLinkedObjects();
-		ARX_SCRIPT_ResetAll(0);
+		ARX_SCRIPT_ResetAll(false);
 	}
 
 	SecondaryInventory=NULL;

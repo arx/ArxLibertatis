@@ -1626,7 +1626,7 @@ long ARX_CHANGELEVEL_Pop_Level(ARX_CHANGELEVEL_INDEX * asi, long num, bool first
 			Entity * e = entities[handle];
 			
 			if(e && !e->scriptload) {
-				ARX_SCRIPT_Reset(e, 1);
+				ARX_SCRIPT_Reset(e, true);
 			}
 		}
 		
