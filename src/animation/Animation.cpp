@@ -593,71 +593,71 @@ void PrepareAnim(ANIM_USE *eanim, unsigned long time, Entity *io) {
 
 	if(eanim->ctime > eanim->cur_anim->anims[eanim->altidx_cur]->anim_time) {
 	
-	if(eanim->flags & EA_STOPEND) {
-		eanim->ctime = eanim->cur_anim->anims[eanim->altidx_cur]->anim_time;
-	}
-
-	if((eanim->flags & EA_LOOP)
-	   || (io && ((eanim->cur_anim == io->anims[ANIM_WALK])
-	              || (eanim->cur_anim == io->anims[ANIM_WALK2])
-	              || (eanim->cur_anim == io->anims[ANIM_WALK3])
-				  || (eanim->cur_anim == io->anims[ANIM_RUN])
-				  || (eanim->cur_anim == io->anims[ANIM_RUN2])
-				  || (eanim->cur_anim == io->anims[ANIM_RUN3])))
-	) {
-			long lost = eanim->ctime - long(eanim->cur_anim->anims[eanim->altidx_cur]->anim_time);
-
-			if(!eanim->next_anim) {
-				long t = eanim->cur_anim->anims[eanim->altidx_cur]->anim_time;
-				eanim->ctime= eanim->ctime % t;
-
-				if(io)
+		if(eanim->flags & EA_STOPEND) {
+			eanim->ctime = eanim->cur_anim->anims[eanim->altidx_cur]->anim_time;
+		}
+		
+		if((eanim->flags & EA_LOOP)
+		   || (io && ((eanim->cur_anim == io->anims[ANIM_WALK])
+					  || (eanim->cur_anim == io->anims[ANIM_WALK2])
+					  || (eanim->cur_anim == io->anims[ANIM_WALK3])
+					  || (eanim->cur_anim == io->anims[ANIM_RUN])
+					  || (eanim->cur_anim == io->anims[ANIM_RUN2])
+					  || (eanim->cur_anim == io->anims[ANIM_RUN3])))
+		) {
+				long lost = eanim->ctime - long(eanim->cur_anim->anims[eanim->altidx_cur]->anim_time);
+				
+				if(!eanim->next_anim) {
+					long t = eanim->cur_anim->anims[eanim->altidx_cur]->anim_time;
+					eanim->ctime= eanim->ctime % t;
+	
+					if(io)
+						FinishAnim(io,eanim->cur_anim);
+				} else {
+					if(io) {
+						FinishAnim(io,eanim->cur_anim);
+						
+						if(io->animBlend.lastanimtime != 0)
+							AcquireLastAnim(io);
+						else
+							io->animBlend.lastanimtime = 1;
+					}
+					
+					eanim->cur_anim=eanim->next_anim;
+					eanim->altidx_cur=ANIM_GetAltIdx(eanim->next_anim,eanim->altidx_cur);
+					eanim->next_anim=NULL;
+					ResetAnim(eanim);
+					eanim->ctime = lost;
+					eanim->flags=eanim->nextflags;
+					eanim->flags&=~EA_ANIMEND;
+				}
+		} else {
+			if(io) {
+				long lost = eanim->ctime - eanim->cur_anim->anims[eanim->altidx_cur]->anim_time;
+				
+				if(eanim->next_anim) {
 					FinishAnim(io,eanim->cur_anim);
-			} else {
-				if(io) {
-					FinishAnim(io,eanim->cur_anim);
-
-					if(io->animBlend.lastanimtime != 0)
+					
+					if (io->animBlend.lastanimtime!=0)
 						AcquireLastAnim(io);
 					else
-						io->animBlend.lastanimtime = 1;
+						io->animBlend.lastanimtime=1;
+					
+					eanim->cur_anim=eanim->next_anim;
+					eanim->altidx_cur=ANIM_GetAltIdx(eanim->next_anim,eanim->altidx_cur);
+					eanim->next_anim=NULL;
+					ResetAnim(eanim);
+					eanim->ctime = lost;
+					eanim->flags=eanim->nextflags;
+					eanim->flags&=~EA_ANIMEND;
+					goto suite;
 				}
-
-				eanim->cur_anim=eanim->next_anim;
-				eanim->altidx_cur=ANIM_GetAltIdx(eanim->next_anim,eanim->altidx_cur);
-				eanim->next_anim=NULL;
-				ResetAnim(eanim);
-				eanim->ctime = lost;
-				eanim->flags=eanim->nextflags;
-				eanim->flags&=~EA_ANIMEND;
 			}
-	} else {
-		if(io) {
-			long lost = eanim->ctime - eanim->cur_anim->anims[eanim->altidx_cur]->anim_time;
-
-			if(eanim->next_anim) {
-				FinishAnim(io,eanim->cur_anim);
-
-				if (io->animBlend.lastanimtime!=0)
-					AcquireLastAnim(io);
-				else
-					io->animBlend.lastanimtime=1;
-
-				eanim->cur_anim=eanim->next_anim;
-				eanim->altidx_cur=ANIM_GetAltIdx(eanim->next_anim,eanim->altidx_cur);
-				eanim->next_anim=NULL;
-				ResetAnim(eanim);
-				eanim->ctime = lost;
-				eanim->flags=eanim->nextflags;
-				eanim->flags&=~EA_ANIMEND;
-				goto suite;
-			}
+			
+			eanim->flags |= EA_ANIMEND;
+			eanim->ctime = eanim->cur_anim->anims[eanim->altidx_cur]->anim_time;
 		}
-
-		eanim->flags |= EA_ANIMEND;
-		eanim->ctime = eanim->cur_anim->anims[eanim->altidx_cur]->anim_time;
-	}
-
+	
 	}
 suite:
 
