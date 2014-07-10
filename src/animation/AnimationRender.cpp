@@ -1310,7 +1310,7 @@ void Cedric_BlendAnimation(Skeleton & rig, AnimationBlendStatus * animBlend) {
 	float timm = (arxtime.get_frame_time() - animBlend->lastanimtime) + 0.0001f;
 
 	if(timm >= 300.f) {
-		animBlend->m_active = 0;
+		animBlend->m_active = false;
 		return;
 	} else {
 		timm *= ( 1.0f / 300 );
