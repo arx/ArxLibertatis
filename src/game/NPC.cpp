@@ -982,7 +982,8 @@ void ARX_PHYSICS_Apply() {
 
 			if(io->ioflags & IO_NPC) {
 				const float LAVA_DAMAGE = 10.f;
-				ARX_DAMAGES_DamageNPC(io, LAVA_DAMAGE * framedelay * ( 1.0f / 100 ), EntityHandle::Invalid, false, NULL);
+				float dmg = LAVA_DAMAGE * framedelay * (1.f/100);
+				ARX_DAMAGES_DamageNPC(io, dmg, EntityHandle::Invalid, false, NULL);
 			}
 		}
 
