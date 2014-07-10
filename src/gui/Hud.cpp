@@ -1999,7 +1999,7 @@ public:
 			
 			if(   spell
 			   && spell->m_caster == PlayerEntityHandle
-			   && spellicons[spell->m_type].bDuration
+			   && spellicons[spell->m_type].m_hasDuration
 			) {
 				ManageSpellIcon(*spell, intensity, false);
 			}
@@ -2016,7 +2016,7 @@ public:
 					continue;
 				}
 				
-				if(spell->m_caster != PlayerEntityHandle && spellicons[spell->m_type].bDuration) {
+				if(spell->m_caster != PlayerEntityHandle && spellicons[spell->m_type].m_hasDuration) {
 					ManageSpellIcon(*spell, intensity, true);
 				}
 			}

@@ -35,7 +35,7 @@ struct SPELL_ICON {
 	SpellType spellid;
 	Rune symbols[6];
 	bool bSecret;
-	bool bDuration;
+	bool m_hasDuration;
 	bool bAudibleAtStart;
 };
 

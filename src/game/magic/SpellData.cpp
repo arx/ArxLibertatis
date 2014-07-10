@@ -33,7 +33,7 @@ void spellDataInit() {
 		spellicons[i].spellid = SPELL_NONE;
 		spellicons[i].tc = NULL;
 		spellicons[i].bSecret = false;
-		spellicons[i].bDuration = true;
+		spellicons[i].m_hasDuration = true;
 		spellicons[i].bAudibleAtStart = false;
 	}
 	
@@ -55,7 +55,7 @@ void spellDataInit() {
 	current->description = getLocalised("system_spell_description_magic_projectile");
 	current->level=1;
 	current->spellid=SPELL_MAGIC_MISSILE;
-	current->bDuration = false;
+	current->m_hasDuration = false;
 	current->bAudibleAtStart = true;
 	current->tc=TextureContainer::LoadUI("graph/interface/icons/spell_magic_missile");
 	current->symbols[0]=RUNE_AAM;
@@ -67,7 +67,7 @@ void spellDataInit() {
 	current->description = getLocalised("system_spell_description_ignit");
 	current->level=1;
 	current->spellid=SPELL_IGNIT;
-	current->bDuration = false;
+	current->m_hasDuration = false;
 	current->tc=TextureContainer::LoadUI("graph/interface/icons/spell_ignite");
 	current->symbols[0]=RUNE_AAM;
 	current->symbols[1]=RUNE_YOK;
@@ -78,7 +78,7 @@ void spellDataInit() {
 	current->description = getLocalised("system_spell_description_douse");
 	current->level=1;
 	current->spellid=SPELL_DOUSE;
-	current->bDuration = false;
+	current->m_hasDuration = false;
 	current->tc=TextureContainer::LoadUI("graph/interface/icons/spell_douse");
 	current->symbols[0]=RUNE_NHI;
 	current->symbols[1]=RUNE_YOK;
@@ -174,7 +174,7 @@ void spellDataInit() {
 	current->description = getLocalised("system_spell_description_fireball");
 	current->level=3;
 	current->spellid=SPELL_FIREBALL;
-	current->bDuration = false;
+	current->m_hasDuration = false;
 	current->bAudibleAtStart = true;
 	current->tc=TextureContainer::LoadUI("graph/interface/icons/spell_fireball");
 	current->symbols[0]=RUNE_AAM;
@@ -198,7 +198,7 @@ void spellDataInit() {
 	current->description = getLocalised("system_spell_description_ice_projectile");
 	current->level=3;
 	current->spellid=SPELL_ICE_PROJECTILE;
-	current->bDuration = false;
+	current->m_hasDuration = false;
 	current->bAudibleAtStart = true;
 	current->tc=TextureContainer::LoadUI("graph/interface/icons/spell_iceball");
 	current->symbols[0]=RUNE_AAM;
@@ -319,7 +319,7 @@ void spellDataInit() {
 	current->description = getLocalised("system_spell_description_poison_projection");
 	current->level=5;
 	current->spellid=SPELL_POISON_PROJECTILE;
-	current->bDuration = false;
+	current->m_hasDuration = false;
 	current->tc=TextureContainer::LoadUI("graph/interface/icons/spell_poison_projection");
 	current->symbols[0]=RUNE_AAM;
 	current->symbols[1]=RUNE_CETRIUS;
@@ -420,7 +420,7 @@ void spellDataInit() {
 	current->description = getLocalised("system_spell_description_lightning_strike");
 	current->level=7;
 	current->spellid=SPELL_LIGHTNING_STRIKE;
-	current->bDuration = false;
+	current->m_hasDuration = false;
 	current->bAudibleAtStart = true;
 	current->tc=TextureContainer::LoadUI("graph/interface/icons/spell_lightning_strike");
 	current->symbols[0]=RUNE_AAM;
@@ -464,7 +464,7 @@ void spellDataInit() {
 	current->description = getLocalised("system_spell_description_explosion");
 	current->level=8;
 	current->spellid=SPELL_EXPLOSION;
-	current->bDuration = false;
+	current->m_hasDuration = false;
 	current->bAudibleAtStart = true;
 	current->tc=TextureContainer::LoadUI("graph/interface/icons/spell_explosion");
 	current->symbols[0]=RUNE_AAM;
@@ -536,7 +536,7 @@ void spellDataInit() {
 	current->description = getLocalised("system_spell_description_incinerate");
 	current->level=9;
 	current->spellid=SPELL_INCINERATE;
-	current->bDuration = false;
+	current->m_hasDuration = false;
 	current->bAudibleAtStart = true;
 	current->tc=TextureContainer::LoadUI("graph/interface/icons/spell_incinerate");
 	current->symbols[0]=RUNE_AAM;
@@ -560,7 +560,7 @@ void spellDataInit() {
 	current->description = getLocalised("system_spell_description_mass_lightning_strike");
 	current->level=10;
 	current->spellid=SPELL_MASS_LIGHTNING_STRIKE;
-	current->bDuration = false;
+	current->m_hasDuration = false;
 	current->bAudibleAtStart = true;
 	current->tc=TextureContainer::LoadUI("graph/interface/icons/spell_mass_lighting_strike");
 	current->symbols[0]=RUNE_AAM;
@@ -593,7 +593,7 @@ void spellDataInit() {
 	current->description = getLocalised("system_spell_description_mass_incinerate");
 	current->level=10;
 	current->spellid=SPELL_MASS_INCINERATE;
-	current->bDuration = false;
+	current->m_hasDuration = false;
 	current->bAudibleAtStart = true;
 	current->tc=TextureContainer::LoadUI("graph/interface/icons/spell_mass_incinerate");
 	current->symbols[0]=RUNE_MEGA;
