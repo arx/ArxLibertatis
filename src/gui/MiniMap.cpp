@@ -802,8 +802,7 @@ void MiniMap::drawDetectedEntities(int showLevel, float startX, float startY, fl
 			5.f * ratio,
 			5.f * ratio
 		);
-		EERIEDrawBitmap(rect, 0, m_pTexDetect,
-		Color3f(col, 0, 0).to<u8>());
+		EERIEDrawBitmap(rect, 0, m_pTexDetect, Color3f(col, 0, 0).to<u8>());
 	}
 	
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
