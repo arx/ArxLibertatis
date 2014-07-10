@@ -81,7 +81,7 @@ bool SummonCreatureSpell::CanLaunch()
 
 void SummonCreatureSpell::Launch()
 {
-	m_bDuration = true;
+	m_hasDuration = true;
 	m_fManaCostPerSecond = 1.9f;
 	m_longinfo_summon_creature = 0;
 	m_longinfo2_entity = PlayerEntityHandle; // TODO is this correct ?
@@ -292,7 +292,7 @@ bool FakeSummonSpell::CanLaunch()
 
 void FakeSummonSpell::Launch()
 {
-	m_bDuration = true;
+	m_hasDuration = true;
 	m_fManaCostPerSecond = 1.9f;
 	m_duration = 4000;
 	
@@ -360,7 +360,7 @@ void NegateMagicSpell::Launch()
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_NEGATE_MAGIC, &entities[m_target]->pos);
 	
-	m_bDuration = true;
+	m_hasDuration = true;
 	m_fManaCostPerSecond = 2.f;
 	m_duration = (m_launchDuration > -1) ? m_launchDuration : 1000000;
 	

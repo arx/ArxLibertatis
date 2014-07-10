@@ -42,7 +42,7 @@ bool InvisibilitySpell::CanLaunch()
 void InvisibilitySpell::Launch()
 {
 	m_duration = (m_launchDuration > -1) ? m_launchDuration : 6000000;
-	m_bDuration = true;
+	m_hasDuration = true;
 	m_fManaCostPerSecond = 3.f;
 	
 	if(m_caster == PlayerEntityHandle) {
@@ -97,7 +97,7 @@ void ManaDrainSpell::Launch()
 	spells.endByCaster(m_caster, SPELL_HARM);
 	
 	m_duration = (m_launchDuration > -1) ? m_launchDuration : 6000000;
-	m_bDuration = true;
+	m_hasDuration = true;
 	m_fManaCostPerSecond = 2.f;
 	
 	m_snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_MAGICAL_SHIELD,
@@ -378,7 +378,7 @@ void LifeDrainSpell::Launch()
 	spells.endByCaster(m_caster, SPELL_MANA_DRAIN);
 	
 	m_duration = (m_launchDuration > -1) ? m_launchDuration : 6000000;
-	m_bDuration = true;
+	m_hasDuration = true;
 	m_fManaCostPerSecond = 12.f;
 	
 	m_snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_MAGICAL_SHIELD,

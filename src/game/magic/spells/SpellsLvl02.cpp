@@ -43,7 +43,7 @@ void HealSpell::Launch()
 		ARX_SOUND_PlaySFX(SND_SPELL_HEALING, &m_caster_pos);
 	}
 	
-	m_bDuration = true;
+	m_hasDuration = true;
 	m_fManaCostPerSecond = 0.4f * m_level;
 	m_duration = (m_launchDuration > -1) ? m_launchDuration : 3500;
 	
@@ -127,7 +127,7 @@ void DetectTrapSpell::Launch()
 	
 	m_duration = 60000;
 	m_fManaCostPerSecond = 0.4f;
-	m_bDuration = true;
+	m_hasDuration = true;
 	
 	m_targets.push_back(m_target);
 }
@@ -181,7 +181,7 @@ void ArmorSpell::Launch()
 		m_duration = (m_caster == PlayerEntityHandle) ? 20000000 : 20000;
 	}
 	
-	m_bDuration = true;
+	m_hasDuration = true;
 	m_fManaCostPerSecond = 0.2f * m_level;
 		
 	if(ValidIONum(m_target)) {
@@ -249,7 +249,7 @@ void LowerArmorSpell::Launch()
 		m_duration = (m_caster == PlayerEntityHandle) ? 20000000 : 20000;
 	}
 	
-	m_bDuration = true;
+	m_hasDuration = true;
 	m_fManaCostPerSecond = 0.2f * m_level;
 	
 	if(ValidIONum(m_target)) {
@@ -329,7 +329,7 @@ void HarmSpell::Launch()
 	spells.endByCaster(m_caster, SPELL_MANA_DRAIN);
 	
 	m_duration = (m_launchDuration >-1) ? m_launchDuration : 6000000;
-	m_bDuration = true;
+	m_hasDuration = true;
 	m_fManaCostPerSecond = 0.4f;
 
 	DamageParameters damage;

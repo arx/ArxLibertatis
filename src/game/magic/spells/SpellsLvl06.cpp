@@ -89,7 +89,7 @@ void RiseDeadSpell::Launch()
 	
 	// TODO this tolive value is probably never read
 	m_duration = (m_launchDuration > -1) ? m_launchDuration : 2000000;
-	m_bDuration = true;
+	m_hasDuration = true;
 	m_fManaCostPerSecond = 1.2f;
 	m_entity = EntityHandle::Invalid;
 	
@@ -284,7 +284,7 @@ void CreateFieldSpell::Launch()
 	m_timcreation = start;
 	
 	m_duration = (m_launchDuration > -1) ? m_launchDuration : 800000;
-	m_bDuration = true;
+	m_hasDuration = true;
 	m_fManaCostPerSecond = 1.2f;
 	
 	Vec3f target;
@@ -438,7 +438,7 @@ void SlowDownSpell::Launch()
 		m_duration = m_launchDuration;
 	}
 	m_pSpellFx = NULL;
-	m_bDuration = true;
+	m_hasDuration = true;
 	m_fManaCostPerSecond = 1.2f;
 	
 	Vec3f targetPos = getTargetPos(m_caster, m_target);

@@ -44,7 +44,7 @@ bool MagicSightSpell::CanLaunch()
 void MagicSightSpell::Launch()
 {
 	m_fManaCostPerSecond = 0.36f;
-	m_bDuration = true;
+	m_hasDuration = true;
 	m_duration = (m_launchDuration > -1) ? m_launchDuration : 6000000l;
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_VISION_START, &m_caster_pos);

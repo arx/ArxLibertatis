@@ -51,7 +51,7 @@ void BlessSpell::Launch()
 	
 	// TODO this tolive value is probably never read
 	m_duration = (m_launchDuration > -1) ? m_launchDuration : 2000000;
-	m_bDuration = true;
+	m_hasDuration = true;
 	m_fManaCostPerSecond = 0.3333f * m_level;
 	
 	CBless * effect = new CBless();
@@ -178,7 +178,7 @@ void FireProtectionSpell::Launch()
 	
 	ARX_SOUND_PlaySFX(SND_SPELL_FIRE_PROTECTION, &entities[m_target]->pos);
 	
-	m_bDuration = true;
+	m_hasDuration = true;
 	m_fManaCostPerSecond = 1.f;
 	
 	if(ValidIONum(m_target)) {
@@ -244,7 +244,7 @@ void ColdProtectionSpell::Launch()
 		m_duration = (m_caster == PlayerEntityHandle) ? 2000000 : 20000;
 	}
 	
-	m_bDuration = true;
+	m_hasDuration = true;
 	m_fManaCostPerSecond = 1.f;
 	
 	if(ValidIONum(m_target)) {
@@ -299,7 +299,7 @@ bool TelekinesisSpell::CanLaunch()
 void TelekinesisSpell::Launch()
 {
 	m_duration = (m_launchDuration > -1) ? m_launchDuration : 6000000;
-	m_bDuration = true;
+	m_hasDuration = true;
 	m_fManaCostPerSecond = 0.9f;
 	
 	if(m_caster == PlayerEntityHandle) {
@@ -324,7 +324,7 @@ void CurseSpell::Launch()
 	ARX_SOUND_PlaySFX(SND_SPELL_CURSE, &entities[m_target]->pos);
 	
 	m_duration = (m_launchDuration > -1) ? m_launchDuration : 2000000;
-	m_bDuration = true;
+	m_hasDuration = true;
 	m_fManaCostPerSecond = 0.5f * m_level;
 	
 	CCurse * effect = new CCurse();

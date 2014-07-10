@@ -1954,7 +1954,7 @@ private:
 		
 		bool bOk=true;
 		
-		if(spell.m_bDuration) {
+		if(spell.m_hasDuration) {
 			if(player.manaPool.current < 20 || spell.m_timcreation + spell.m_duration - float(arxtime) < 2000) {
 				if(ucFlick&1)
 					bOk=false;

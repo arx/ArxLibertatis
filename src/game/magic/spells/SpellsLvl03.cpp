@@ -35,7 +35,7 @@
 
 void SpeedSpell::Launch()
 {
-	m_bDuration = true;
+	m_hasDuration = true;
 	m_fManaCostPerSecond = 2.f;
 	
 	if(m_caster == PlayerEntityHandle) {

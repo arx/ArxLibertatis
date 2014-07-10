@@ -282,7 +282,7 @@ void FreezeTimeSpell::Launch()
 	GLOBAL_SLOWDOWN -= m_slowdown;
 	
 	m_duration = (m_launchDuration > -1) ? m_launchDuration : 200000;
-	m_bDuration = true;
+	m_hasDuration = true;
 	m_fManaCostPerSecond = 30.f * m_slowdown;
 }
 

@@ -79,7 +79,7 @@ void FlyingEyeSpell::Launch()
 	
 	m_lastupdate = m_timcreation;
 	m_duration = 1000000;
-	m_bDuration = true;
+	m_hasDuration = true;
 	m_fManaCostPerSecond = 3.2f;
 	eyeball.exist = 1;
 	float angleb = MAKEANGLE(player.angle.getPitch());
@@ -229,7 +229,7 @@ void FireFieldSpell::Launch()
 	ARX_SOUND_PlaySFX(SND_SPELL_FIRE_FIELD_START);
 	
 	m_duration = (m_launchDuration > -1) ? m_launchDuration : 100000;
-	m_bDuration = true;
+	m_hasDuration = true;
 	m_fManaCostPerSecond = 2.8f;
 	m_light = LightHandle::Invalid;
 	
@@ -363,7 +363,7 @@ void IceFieldSpell::Launch()
 	ARX_SOUND_PlaySFX(SND_SPELL_ICE_FIELD);
 	
 	m_duration = (m_launchDuration > -1) ? m_launchDuration : 100000;
-	m_bDuration = true;
+	m_hasDuration = true;
 	m_fManaCostPerSecond = 2.8f;
 	m_light = LightHandle::Invalid;
 	
@@ -556,7 +556,7 @@ void ConfuseSpell::Launch()
 {
 	ARX_SOUND_PlaySFX(SND_SPELL_CONFUSE, &entities[m_target]->pos);
 	
-	m_bDuration = true;
+	m_hasDuration = true;
 	m_fManaCostPerSecond = 1.5f;
 	m_duration = (m_launchDuration > -1) ? m_launchDuration : 5000;
 	

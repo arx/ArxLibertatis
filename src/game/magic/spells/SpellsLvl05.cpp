@@ -84,7 +84,7 @@ void LevitateSpell::Launch()
 	ARX_SOUND_PlaySFX(SND_SPELL_LEVITATE_START, &entities[m_target]->pos);
 	
 	m_duration = (m_launchDuration > -1) ? m_launchDuration : 2000000000;
-	m_bDuration = true;
+	m_hasDuration = true;
 	m_fManaCostPerSecond = 1.f;
 	
 	CLevitate * effect = new CLevitate();
@@ -201,7 +201,7 @@ void RepelUndeadSpell::Launch()
 	}
 	
 	m_duration = (m_launchDuration > -1) ? m_launchDuration : 20000000;
-	m_bDuration = true;
+	m_hasDuration = true;
 	m_fManaCostPerSecond = 1.f;
 	
 	CRepelUndead * effect = new CRepelUndead();

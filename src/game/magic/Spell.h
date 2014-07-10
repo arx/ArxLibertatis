@@ -156,9 +156,9 @@ public:
 	
 	unsigned long m_timcreation;
 	
+	bool m_hasDuration;
 	unsigned long m_duration;
 	
-	bool m_bDuration;
 	float m_fManaCostPerSecond;
 	
 	SpellcastFlags m_flags;
