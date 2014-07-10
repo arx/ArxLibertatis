@@ -1507,13 +1507,14 @@ void ManageCombatModeAnimations() {
 	LAST_WEAPON_TYPE = weapontype;
 }
 
-void ManageCombatModeAnimationsEND()
-{
-	Entity * io=entities.player();
-	ANIM_USE * useanim=&io->animlayer[1];
-
-	ANIM_USE * useanim3=&io->animlayer[3];
-	ANIM_HANDLE ** alist=io->anims;
+void ManageCombatModeAnimationsEND() {
+	
+	Entity * io = entities.player();
+	
+	ANIM_USE * useanim = &io->animlayer[1];
+	ANIM_USE * useanim3 = &io->animlayer[3];
+	
+	ANIM_HANDLE ** alist = io->anims;
 
 	if(useanim->cur_anim
 		&&(		(useanim->cur_anim == alist[ANIM_BARE_READY])
