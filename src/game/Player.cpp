@@ -1440,8 +1440,10 @@ void ARX_PLAYER_Manage_Visual() {
 			goto makechanges;
 		}
 		
-		if(player.Current_Movement == 0 || player.Current_Movement == PLAYER_MOVE_STEALTH
-		   || (player.Current_Movement & PLAYER_ROTATE)) {
+		if(   player.Current_Movement == 0
+		   || player.Current_Movement == PLAYER_MOVE_STEALTH
+		   || (player.Current_Movement & PLAYER_ROTATE)
+		) {
 			if(player.Interface & INTER_COMBATMODE) {
 				ChangeMoveAnim = alist[ANIM_FIGHT_WAIT];
 			} else if(EXTERNALVIEW) {
