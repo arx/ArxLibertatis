@@ -1303,14 +1303,14 @@ static void Cedric_AnimateObject(Skeleton * obj, ANIM_USE * animlayer)
 
 void Cedric_BlendAnimation(Skeleton & rig, AnimationBlendStatus * animBlend) {
 
-	if(!animBlend->nb_lastanimvertex) {
+	if(!animBlend->m_active) {
 		return;
 	}
 
 	float timm = (arxtime.get_frame_time() - animBlend->lastanimtime) + 0.0001f;
 
 	if(timm >= 300.f) {
-		animBlend->nb_lastanimvertex = 0;
+		animBlend->m_active = 0;
 		return;
 	} else {
 		timm *= ( 1.0f / 300 );

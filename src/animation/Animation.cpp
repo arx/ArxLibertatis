@@ -778,7 +778,7 @@ void AcquireLastAnim(Entity * io)
 
 	// Stores Frametime and number of vertex for later interpolation
 	io->animBlend.lastanimtime = checked_range_cast<unsigned long>(arxtime.get_frame_time());
-	io->animBlend.nb_lastanimvertex = 1;
+	io->animBlend.m_active = 1;
 }
 
 // Declares an Animation as finished.

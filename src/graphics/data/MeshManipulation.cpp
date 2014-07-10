@@ -765,7 +765,7 @@ void EERIE_MESH_TWEAK_Do(Entity * io, TweakType tw, const res::path & path) {
 	EERIE_CreateCedricData(io->obj);
 	
 	io->animBlend.lastanimtime = 0;
-	io->animBlend.nb_lastanimvertex = 0;
+	io->animBlend.m_active = 0;
 	
 	delete tobj;
 }

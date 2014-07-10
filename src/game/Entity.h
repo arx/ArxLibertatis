@@ -223,7 +223,7 @@ enum EntityVisilibity {
 };
 
 struct AnimationBlendStatus {
-	long nb_lastanimvertex;
+	long m_active;
 	unsigned long lastanimtime;
 };
 

@@ -790,7 +790,7 @@ void ARX_INTERACTIVE_ClearIODynData_II(Entity * io)
 	io->weaponmaterial.clear();
 	io->strikespeech.clear();
 	
-	io->animBlend.nb_lastanimvertex = 0;
+	io->animBlend.m_active = 0;
 	
 	for(long j = 0; j < MAX_ANIMS; j++) {
 		EERIE_ANIMMANAGER_ReleaseHandle(io->anims[j]);
