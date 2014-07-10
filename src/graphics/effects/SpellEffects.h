@@ -70,7 +70,6 @@ class CSpellFx
 		virtual ~CSpellFx() { }
 		
 		virtual void SetDuration(const unsigned long ulaDuration);
-		virtual unsigned long getCurrentTime();
 		virtual unsigned long GetDuration();
 		
 		virtual void Update(float timeDelta) = 0;

@@ -180,7 +180,7 @@ void RiseDeadSpell::Update(float timeDelta)
 		light->time_creation = (unsigned long)(arxtime);
 	}
 	
-	unsigned long tim=effect->getCurrentTime();
+	unsigned long tim = effect->ulCurrentTime;
 	
 	if(tim > 3000 && m_entity == EntityHandle::Invalid) {
 		ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &m_targetPos);

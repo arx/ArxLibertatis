@@ -65,10 +65,6 @@ void CSpellFx::SetDuration(const unsigned long ulaDuration) {
 	ulCurrentTime = 0;
 }
 
-unsigned long CSpellFx::getCurrentTime() {
-	return ulCurrentTime;
-}
-
 unsigned long CSpellFx::GetDuration() {
 	return ulDuration;
 }
