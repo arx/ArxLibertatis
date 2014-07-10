@@ -81,6 +81,7 @@ Entity::Entity(const res::path & classPath)
 	m_index = entities.add(this);
 	
 	ioflags = 0;
+	lastpos = Vec3f_ZERO;
 	pos = Vec3f_ZERO;
 	move = Vec3f_ZERO;
 	lastmove = Vec3f_ZERO;

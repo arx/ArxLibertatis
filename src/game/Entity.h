@@ -235,6 +235,7 @@ public:
 	~Entity();
 	
 	EntityFlags ioflags; // IO type
+	Vec3f lastpos; // IO last position
 	Vec3f pos; // IO position
 	Vec3f move;
 	Vec3f lastmove;

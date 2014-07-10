@@ -946,7 +946,8 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 	if(io->obj && io->obj->pbox && io->obj->pbox->active) {
 		ais.pos.y -= io->obj->pbox->vert[0].initpos.y;
 	}
-	
+
+	ais.lastpos = io->lastpos;
 	ais.initpos = io->initpos;
 	ais.initangle = io->initangle;
 	ais.move = io->move;
@@ -2029,6 +2030,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) {
 		
 		io->ioflags &= ~IO_FREEZESCRIPT;
 		io->pos = ais->pos.toVec3();
+		io->lastpos = ais->lastpos.toVec3();
 		io->move = ais->move.toVec3();
 		io->lastmove = ais->lastmove.toVec3();
 		io->initpos = ais->initpos.toVec3();

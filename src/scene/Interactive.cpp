@@ -859,7 +859,7 @@ static void RestoreIOInitPos(Entity * io) {
 
 	{
 		ARX_INTERACTIVE_Teleport(io, io->initpos);
-		io->pos = io->initpos;
+		io->pos = io->lastpos = io->initpos;
 		io->move = Vec3f_ZERO;
 		io->lastmove = Vec3f_ZERO;
 		io->angle = io->initangle;
@@ -1278,7 +1278,7 @@ void ARX_INTERACTIVE_Teleport(Entity * io, const Vec3f & target, bool flag) {
 	}
 	
 	Vec3f translate = target - io->pos;
-	io->physics.cyl.origin = io->pos = target;
+	io->lastpos = io->physics.cyl.origin = io->pos = target;
 	
 	if(io->obj) {
 		if(io->obj->pbox) {
@@ -1488,20 +1488,20 @@ Entity * AddFix(const res::path & classPath, EntityInstance instance, AddInterac
 	io->pos = player.pos;
 	io->pos.x -= std::sin(radians(player.angle.getPitch())) * 140.f;
 	io->pos.z += std::cos(radians(player.angle.getPitch())) * 140.f;
-	io->initpos = io->pos;
-	io->initpos.x = EEfabs(io->initpos.x / 20) * 20.f;
-	io->initpos.z = EEfabs(io->initpos.z / 20) * 20.f;
+	io->lastpos = io->initpos = io->pos;
+	io->lastpos.x = io->initpos.x = EEfabs(io->initpos.x / 20) * 20.f;
+	io->lastpos.z = io->initpos.z = EEfabs(io->initpos.z / 20) * 20.f;
 	
 	float tempo;
 	EERIEPOLY * ep = CheckInPoly(io->pos + Vec3f(0.f, player.baseHeight(), 0.f));
 	if(ep && GetTruePolyY(ep, io->pos, &tempo)) {
-		io->initpos.y = io->pos.y = tempo;
+		io->lastpos.y = io->initpos.y = io->pos.y = tempo;
 	}
 	
 	ep = CheckInPoly(io->pos);
 	if(ep) {
 		io->pos.y = min(ep->v[0].p.y, ep->v[1].p.y);
-		io->initpos.y = io->pos.y = min(io->pos.y, ep->v[2].p.y);
+		io->lastpos.y = io->initpos.y = io->pos.y = min(io->pos.y, ep->v[2].p.y);
 	}
 	
 	if(!io->obj && !(flags & NO_MESH)) {
@@ -1550,24 +1550,24 @@ static Entity * AddCamera(const res::path & classPath, EntityInstance instance) 
 	io->pos = player.pos;
 	io->pos.x -= std::sin(radians(player.angle.getPitch())) * 140.f;
 	io->pos.z += std::cos(radians(player.angle.getPitch())) * 140.f;
-	io->initpos = io->pos;
-	io->initpos.x = EEfabs(io->initpos.x / 20) * 20.f;
-	io->initpos.z = EEfabs(io->initpos.z / 20) * 20.f;
+	io->lastpos = io->initpos = io->pos;
+	io->lastpos.x = io->initpos.x = EEfabs(io->initpos.x / 20) * 20.f;
+	io->lastpos.z = io->initpos.z = EEfabs(io->initpos.z / 20) * 20.f;
 	
 	float tempo;
 	EERIEPOLY * ep;
 	ep = CheckInPoly(io->pos + Vec3f(0.f, player.baseHeight(), 0.f), &tempo);
 	if(ep) {
-		io->initpos.y = io->pos.y = tempo;
+		io->lastpos.y = io->initpos.y = io->pos.y = tempo;
 	}
 	
 	ep = CheckInPoly(io->pos);
 	if(ep) {
 		io->pos.y = min(ep->v[0].p.y, ep->v[1].p.y);
-		io->initpos.y = io->pos.y = min(io->pos.y, ep->v[2].p.y);
+		io->lastpos.y = io->initpos.y = io->pos.y = min(io->pos.y, ep->v[2].p.y);
 	}
 	
-	io->initpos.y = io->pos.y += player.baseHeight();
+	io->lastpos.y = io->initpos.y = io->pos.y += player.baseHeight();
 	
 	io->obj = cameraobj;
 	
@@ -1604,24 +1604,24 @@ static Entity * AddMarker(const res::path & classPath, EntityInstance instance) 
 	io->pos = player.pos;
 	io->pos.x -= std::sin(radians(player.angle.getPitch())) * 140.f;
 	io->pos.z += std::cos(radians(player.angle.getPitch())) * 140.f;
-	io->initpos = io->pos;
-	io->initpos.x = EEfabs(io->initpos.x / 20) * 20.f;
-	io->initpos.z = EEfabs(io->initpos.z / 20) * 20.f;
+	io->lastpos = io->initpos = io->pos;
+	io->lastpos.x = io->initpos.x = EEfabs(io->initpos.x / 20) * 20.f;
+	io->lastpos.z = io->initpos.z = EEfabs(io->initpos.z / 20) * 20.f;
 	
 	float tempo;
 	EERIEPOLY * ep;
 	ep = CheckInPoly(io->pos + Vec3f(0.f, player.baseHeight(), 0.f));
 	if(ep && GetTruePolyY(ep, io->pos, &tempo)) {
-		io->initpos.y = io->pos.y = tempo;
+		io->lastpos.y = io->initpos.y = io->pos.y = tempo;
 	}
 	
 	ep = CheckInPoly(io->pos);
 	if(ep) {
 		io->pos.y = min(ep->v[0].p.y, ep->v[1].p.y);
-		io->initpos.y = io->pos.y = min(io->pos.y, ep->v[2].p.y);
+		io->lastpos.y = io->initpos.y = io->pos.y = min(io->pos.y, ep->v[2].p.y);
 	}
 	
-	io->initpos.y = io->pos.y += player.baseHeight();
+	io->lastpos.y = io->initpos.y = io->pos.y += player.baseHeight();
 	
 	io->obj = markerobj;
 	io->ioflags = IO_MARKER;
@@ -1739,20 +1739,20 @@ Entity * AddNPC(const res::path & classPath, EntityInstance instance, AddInterac
 	io->pos = player.pos;
 	io->pos.x -= std::sin(radians(player.angle.getPitch())) * 140.f;
 	io->pos.z += std::cos(radians(player.angle.getPitch())) * 140.f;
-	io->initpos = io->pos;
-	io->initpos.x = EEfabs(io->initpos.x / 20) * 20.f;
-	io->initpos.z = EEfabs(io->initpos.z / 20) * 20.f;
+	io->lastpos = io->initpos = io->pos;
+	io->lastpos.x = io->initpos.x = EEfabs(io->initpos.x / 20) * 20.f;
+	io->lastpos.z = io->initpos.z = EEfabs(io->initpos.z / 20) * 20.f;
 	
 	float tempo;
 	EERIEPOLY * ep = CheckInPoly(io->pos + Vec3f(0.f, player.baseHeight(), 0.f));
 	if(ep && GetTruePolyY(ep, io->pos, &tempo)) {
-		io->initpos.y = io->pos.y = tempo; 
+		io->lastpos.y = io->initpos.y = io->pos.y = tempo; 
 	}
 	
 	ep = CheckInPoly(io->pos);
 	if(ep) {
 		io->pos.y = min(ep->v[0].p.y, ep->v[1].p.y);
-		io->initpos.y = io->pos.y = min(io->pos.y, ep->v[2].p.y);
+		io->lastpos.y = io->initpos.y = io->pos.y = min(io->pos.y, ep->v[2].p.y);
 	}
 	
 	if(!io->obj && !(flags & NO_MESH)) {
@@ -1872,8 +1872,8 @@ Entity * AddItem(const res::path & classPath_, EntityInstance instance, AddInter
 	io->pos.x = io->pos.x - std::sin(radians(player.angle.getPitch())) * 140.f;
 	io->pos.z = io->pos.z + std::cos(radians(player.angle.getPitch())) * 140.f;
 	
-	io->initpos.x = (float)((long)(io->pos.x / 20)) * 20.f;
-	io->initpos.z = (float)((long)(io->pos.z / 20)) * 20.f;
+	io->lastpos.x = io->initpos.x = (float)((long)(io->pos.x / 20)) * 20.f;
+	io->lastpos.z = io->initpos.z = (float)((long)(io->pos.z / 20)) * 20.f;
 
 	EERIEPOLY * ep;
 	ep = CheckInPoly(io->pos + Vec3f(0.f, -60.f, 0.f));
@@ -1882,14 +1882,14 @@ Entity * AddItem(const res::path & classPath_, EntityInstance instance, AddInter
 		float tempo;
 
 		if(GetTruePolyY(ep, io->pos, &tempo))
-			io->initpos.y = io->pos.y = tempo; 
+			io->lastpos.y = io->initpos.y = io->pos.y = tempo; 
 	}
 
 	ep = CheckInPoly(io->pos);
 
 	if(ep) {
 		io->pos.y = min(ep->v[0].p.y, ep->v[1].p.y);
-		io->initpos.y = io->pos.y = min(io->pos.y, ep->v[2].p.y);
+		io->lastpos.y = io->initpos.y = io->pos.y = min(io->pos.y, ep->v[2].p.y);
 	}
 
 	if(io->ioflags & IO_GOLD) {
