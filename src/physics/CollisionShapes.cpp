@@ -95,13 +95,9 @@ void EERIE_COLLISION_Cylinder_Create(Entity * io)
 		float v = (-io->original_height) * ( 1.0f / 40 );
 		io->original_radius *= (0.5f + v * 0.5f);
 	}
-
-	if(io->original_height > -40)
-		io->original_height = -40;
-
-	if(io->original_height < -165)
-		io->original_height = -165;
-
+	
+	io->original_height = glm::clamp(io->original_height, -165.f, -40.f);
+	
 	if(io->original_radius > 40.f)
 		io->original_radius = 40.f;
 
