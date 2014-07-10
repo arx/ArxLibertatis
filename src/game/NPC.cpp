@@ -2362,7 +2362,7 @@ void ComputeTolerance(Entity * io, EntityHandle targ, float * dst) {
 			TOLERANCE += 20.f;
 
 		// If target is the player improve again tolerance
-		if(io->targetinfo == 0) // PLAYER TARGET
+		if(io->targetinfo == PlayerEntityHandle)
 			TOLERANCE += 10.f;
 
 		if(io->_npcdata->behavior & BEHAVIOUR_FIGHT)
@@ -2649,7 +2649,7 @@ static void ManageNPCMovement(Entity * io)
 		} else if(!io->_npcdata->reachedtarget) {
 			// Walking/running towards target
 			
-			if((io->targetinfo != EntityHandle(-2)
+			if((io->targetinfo != EntityHandle(TARGET_NONE)
 			     || (io->_npcdata->behavior & BEHAVIOUR_WANDER_AROUND)
 			     || (io->_npcdata->behavior & BEHAVIOUR_FLEE)
 			     || (io->_npcdata->behavior & BEHAVIOUR_GO_HOME))
@@ -2941,7 +2941,7 @@ static void ManageNPCMovement(Entity * io)
 					}
 				}
 				
-				if(io->targetinfo == -2) {
+				if(io->targetinfo == TARGET_NONE) {
 					desiredanim = alist[ANIM_DEFAULT];
 				}
 				
@@ -3641,7 +3641,7 @@ void GetTargetPos(Entity * io, unsigned long smoothing) {
 		return;
 	}
 	
-	if(io->targetinfo == TARGET_PLAYER || io->targetinfo == -1) {
+	if(io->targetinfo == TARGET_PLAYER || io->targetinfo == EntityHandle::Invalid) {
 		io->target = player.pos + Vec3f(0.f, player.size.y, 0.f);
 		return;
 	} else if(ValidIONum(io->targetinfo)) {

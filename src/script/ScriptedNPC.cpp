@@ -126,7 +126,7 @@ public:
 			behavior |= BEHAVIOUR_WANDER_AROUND;
 		} else if(command == "guard") {
 			behavior |= BEHAVIOUR_GUARD;
-			io->targetinfo = EntityHandle(-2);
+			io->targetinfo = EntityHandle(TARGET_NONE);
 			io->_npcdata->movemode = NOMOVEMODE;
 		} else if(command != "none") {
 			ScriptWarning << "unexpected command: " << options << " \"" << command << '"';

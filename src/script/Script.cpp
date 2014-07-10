@@ -1098,7 +1098,7 @@ ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const string & 
 			if(boost::starts_with(name, "^target")) {
 				if(!entity) {
 					txtcontent = "none";
-				} else if(entity->targetinfo == 0) {
+				} else if(entity->targetinfo == PlayerEntityHandle) {
 					txtcontent = "player";
 				} else if(!ValidIONum(entity->targetinfo)) {
 					txtcontent = "none";
