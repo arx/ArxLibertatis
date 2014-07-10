@@ -591,10 +591,12 @@ void PrepareAnim(ANIM_USE *eanim, unsigned long time, Entity *io) {
 
 	eanim->flags &= ~EA_ANIMEND;
 
-	if(eanim->ctime > eanim->cur_anim->anims[eanim->altidx_cur]->anim_time) {
+	const long animTime = eanim->cur_anim->anims[eanim->altidx_cur]->anim_time;
+	
+	if(eanim->ctime > animTime) {
 	
 		if(eanim->flags & EA_STOPEND) {
-			eanim->ctime = eanim->cur_anim->anims[eanim->altidx_cur]->anim_time;
+			eanim->ctime = animTime;
 		}
 		
 		if((eanim->flags & EA_LOOP)
@@ -605,10 +607,10 @@ void PrepareAnim(ANIM_USE *eanim, unsigned long time, Entity *io) {
 					  || (eanim->cur_anim == io->anims[ANIM_RUN2])
 					  || (eanim->cur_anim == io->anims[ANIM_RUN3])))
 		) {
-				long lost = eanim->ctime - long(eanim->cur_anim->anims[eanim->altidx_cur]->anim_time);
+				long lost = eanim->ctime - animTime;
 				
 				if(!eanim->next_anim) {
-					long t = eanim->cur_anim->anims[eanim->altidx_cur]->anim_time;
+					long t = animTime;
 					eanim->ctime= eanim->ctime % t;
 	
 					if(io)
@@ -633,7 +635,7 @@ void PrepareAnim(ANIM_USE *eanim, unsigned long time, Entity *io) {
 				}
 		} else {
 			if(io) {
-				long lost = eanim->ctime - eanim->cur_anim->anims[eanim->altidx_cur]->anim_time;
+				long lost = eanim->ctime - animTime;
 				
 				if(eanim->next_anim) {
 					FinishAnim(io,eanim->cur_anim);
@@ -666,7 +668,7 @@ suite:
 
 	long tim;
 	if(eanim->flags & EA_REVERSE)
-		tim = eanim->cur_anim->anims[eanim->altidx_cur]->anim_time - eanim->ctime;
+		tim = animTime - eanim->ctime;
 	else
 		tim = eanim->ctime;
 
