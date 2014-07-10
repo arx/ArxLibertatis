@@ -599,6 +599,8 @@ void PrepareAnim(ANIM_USE *eanim, unsigned long time, Entity *io) {
 			eanim->ctime = animTime;
 		}
 		
+		long lost = eanim->ctime - animTime;
+		
 		if((eanim->flags & EA_LOOP)
 		   || (io && ((eanim->cur_anim == io->anims[ANIM_WALK])
 					  || (eanim->cur_anim == io->anims[ANIM_WALK2])
@@ -607,8 +609,6 @@ void PrepareAnim(ANIM_USE *eanim, unsigned long time, Entity *io) {
 					  || (eanim->cur_anim == io->anims[ANIM_RUN2])
 					  || (eanim->cur_anim == io->anims[ANIM_RUN3])))
 		) {
-				long lost = eanim->ctime - animTime;
-				
 				if(!eanim->next_anim) {
 					long t = animTime;
 					eanim->ctime= eanim->ctime % t;
@@ -635,8 +635,6 @@ void PrepareAnim(ANIM_USE *eanim, unsigned long time, Entity *io) {
 				}
 		} else {
 			if(io) {
-				long lost = eanim->ctime - animTime;
-				
 				if(eanim->next_anim) {
 					FinishAnim(io,eanim->cur_anim);
 					
