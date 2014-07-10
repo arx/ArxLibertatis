@@ -591,8 +591,9 @@ void PrepareAnim(ANIM_USE *eanim, unsigned long time, Entity *io) {
 
 	eanim->flags &= ~EA_ANIMEND;
 
-	if((eanim->flags & EA_STOPEND) && eanim->ctime > eanim->cur_anim->anims[eanim->altidx_cur]->anim_time)
-	{
+	if(eanim->ctime > eanim->cur_anim->anims[eanim->altidx_cur]->anim_time) {
+	
+	if(eanim->flags & EA_STOPEND) {
 		eanim->ctime = eanim->cur_anim->anims[eanim->altidx_cur]->anim_time;
 	}
 
@@ -602,10 +603,8 @@ void PrepareAnim(ANIM_USE *eanim, unsigned long time, Entity *io) {
 	              || (eanim->cur_anim == io->anims[ANIM_WALK3])
 				  || (eanim->cur_anim == io->anims[ANIM_RUN])
 				  || (eanim->cur_anim == io->anims[ANIM_RUN2])
-				  || (eanim->cur_anim == io->anims[ANIM_RUN3])))) {
-		
-		if(eanim->ctime > eanim->cur_anim->anims[eanim->altidx_cur]->anim_time) {
-			
+				  || (eanim->cur_anim == io->anims[ANIM_RUN3])))
+	) {
 			long lost = eanim->ctime - long(eanim->cur_anim->anims[eanim->altidx_cur]->anim_time);
 
 			if(!eanim->next_anim) {
@@ -632,8 +631,7 @@ void PrepareAnim(ANIM_USE *eanim, unsigned long time, Entity *io) {
 				eanim->flags=eanim->nextflags;
 				eanim->flags&=~EA_ANIMEND;
 			}
-		}
-	} else if (eanim->ctime > eanim->cur_anim->anims[eanim->altidx_cur]->anim_time) {
+	} else {
 		if(io) {
 			long lost = eanim->ctime - eanim->cur_anim->anims[eanim->altidx_cur]->anim_time;
 
@@ -660,6 +658,7 @@ void PrepareAnim(ANIM_USE *eanim, unsigned long time, Entity *io) {
 		eanim->ctime = eanim->cur_anim->anims[eanim->altidx_cur]->anim_time;
 	}
 
+	}
 suite:
 
 	if (!eanim->cur_anim)
