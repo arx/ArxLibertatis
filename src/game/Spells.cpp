@@ -1387,8 +1387,11 @@ void ARX_SPELLS_Update() {
 			spell->m_duration = 0;
 		}
 		
-		if(spell->m_hasDuration && !CanPayMana(spell, spell->m_fManaCostPerSecond * (float)framedelay * (1.0f/1000), false))
+		if(   spell->m_hasDuration
+		   && !CanPayMana(spell, spell->m_fManaCostPerSecond * framedelay * (1.f/1000), false)
+		) {
 			ARX_SPELLS_Fizzle(spell);
+		}
 		
 		const long framediff = spell->m_timcreation + spell->m_duration - tim;
 		
