@@ -382,9 +382,9 @@ void Cedric_ApplyLightingFirstPartRefactor(Entity *io) {
 								damages = ARX_SPELLS_ApplyFireProtection(io, damages);
 
 								if (ValidIONum(spell->m_caster))
-									ARX_DAMAGES_DamageNPC(io, damages, spell->m_caster, 1, &entities[spell->m_caster]->pos);
+									ARX_DAMAGES_DamageNPC(io, damages, spell->m_caster, true, &entities[spell->m_caster]->pos);
 								else
-									ARX_DAMAGES_DamageNPC(io, damages, spell->m_caster, 1, &io->pos);
+									ARX_DAMAGES_DamageNPC(io, damages, spell->m_caster, true, &io->pos);
 
 								ARX_SOUND_PlaySFX(SND_SPELL_FIRE_HIT, &io->pos);
 							}

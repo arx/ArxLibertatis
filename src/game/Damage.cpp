@@ -434,7 +434,7 @@ float ARX_DAMAGES_DrainMana(Entity * io, float dmg)
 	return d;
 }
 
-void ARX_DAMAGES_DamageFIX(Entity * io, float dmg, EntityHandle source, long flags)
+void ARX_DAMAGES_DamageFIX(Entity * io, float dmg, EntityHandle source, bool isSpellHit)
 {
 	if ((!io)
 	        ||	(!io->show)
@@ -468,7 +468,7 @@ void ARX_DAMAGES_DamageFIX(Entity * io, float dmg, EntityHandle source, long fla
 		char dmm[32];
 
 		if(EVENT_SENDER == entities.player()) {
-			if(flags & 1) {
+			if(isSpellHit) {
 				sprintf(dmm, "%f spell", dmg);
 			}
 			else
@@ -700,7 +700,7 @@ float ARX_DAMAGES_DealDamages(EntityHandle target, float dmg, EntityHandle sourc
 				if(flags & DAMAGE_TYPE_DRAIN_MANA) {
 					damagesdone = ARX_DAMAGES_DrainMana(io_target, dmg);
 				} else {
-					damagesdone = ARX_DAMAGES_DamageNPC(io_target, dmg, source, 1, pos);
+					damagesdone = ARX_DAMAGES_DamageNPC(io_target, dmg, source, true, pos);
 				}
 			}
 
@@ -728,7 +728,7 @@ float ARX_DAMAGES_DealDamages(EntityHandle target, float dmg, EntityHandle sourc
 //*************************************************************************************
 // flags & 1 == spell damage
 //*************************************************************************************
-float ARX_DAMAGES_DamageNPC(Entity * io, float dmg, EntityHandle source, long flags, const Vec3f * pos) {
+float ARX_DAMAGES_DamageNPC(Entity * io, float dmg, EntityHandle source, bool isSpellHit, const Vec3f * pos) {
 	
 	if(!io || !io->show || (io->ioflags & IO_INVULNERABILITY) || !(io->ioflags & IO_NPC))
 		return 0.f;
@@ -778,7 +778,7 @@ float ARX_DAMAGES_DamageNPC(Entity * io, float dmg, EntityHandle source, long fl
 				if(player.equiped[EQUIP_SLOT_WEAPON] != PlayerEntityHandle && ValidIONum(player.equiped[EQUIP_SLOT_WEAPON])) {
 					pio = entities[player.equiped[EQUIP_SLOT_WEAPON]];
 
-					if((pio && (pio->poisonous == 0 || pio->poisonous_count == 0)) || (flags & 1)) {
+					if((pio && (pio->poisonous == 0 || pio->poisonous_count == 0)) || isSpellHit) {
 						pio = NULL;
 					}
 				}
@@ -814,7 +814,7 @@ float ARX_DAMAGES_DamageNPC(Entity * io, float dmg, EntityHandle source, long fl
 				char dmm[256];
 
 				if(EVENT_SENDER == entities.player()) {
-					if(flags & 1) {
+					if(isSpellHit) {
 						sprintf(dmm, "%f spell", dmg);
 					}
 					else
@@ -1128,7 +1128,7 @@ void ARX_DAMAGES_UpdateDamage(DamageHandle j, float tim) {
 								if(damage.params.type & DAMAGE_TYPE_COLD) {
 									dmg = ARX_SPELLS_ApplyColdProtection(entities[handle], dmg);
 								}
-								damagesdone = ARX_DAMAGES_DamageNPC(entities[handle], dmg, damage.params.source, 1, &damage.params.pos);
+								damagesdone = ARX_DAMAGES_DamageNPC(entities[handle], dmg, damage.params.source, true, &damage.params.pos);
 							}
 							if(damagesdone > 0 && (damage.params.flags & DAMAGE_SPAWN_BLOOD)) {
 								ARX_PARTICLES_Spawn_Blood(&damage.params.pos, damagesdone, damage.params.source);
@@ -1146,7 +1146,7 @@ void ARX_DAMAGES_UpdateDamage(DamageHandle j, float tim) {
 				sphere.radius = damage.params.radius + 15.f;
 				
 				if(CheckIOInSphere(sphere, EntityHandle(i))) {
-					ARX_DAMAGES_DamageFIX(io, dmg, damage.params.source, 1);
+					ARX_DAMAGES_DamageFIX(io, dmg, damage.params.source, true);
 				}
 			}
 		}
@@ -1220,7 +1220,7 @@ bool ARX_DAMAGES_TryToDoDamage(const Vec3f & pos, float dmg, float radius, Entit
 				}
 
 				if(io->ioflags & IO_FIX) {
-					ARX_DAMAGES_DamageFIX(io, dmg, source, 0);
+					ARX_DAMAGES_DamageFIX(io, dmg, source, false);
 					ret = true;
 				}
 			}
@@ -1386,7 +1386,7 @@ bool DoSphericDamage(const Vec3f & pos, float dmg, float radius, DamageArea flag
 						dmg = ARX_SPELLS_ApplyColdProtection(ioo, dmg * ratio);
 					}
 					
-					ARX_DAMAGES_DamageNPC(ioo, dmg * ratio, numsource, 1, &pos);
+					ARX_DAMAGES_DamageNPC(ioo, dmg * ratio, numsource, true, &pos);
 				}
 				
 				if(dmg > 1)
@@ -1404,7 +1404,7 @@ bool DoSphericDamage(const Vec3f & pos, float dmg, float radius, DamageArea flag
 				}
 				
 				if(entities[handle]->ioflags & IO_FIX)
-					ARX_DAMAGES_DamageFIX(entities[handle], dmg * ratio, numsource, 1);
+					ARX_DAMAGES_DamageFIX(entities[handle], dmg * ratio, numsource, true);
 				
 				if(dmg > 0.2f)
 					damagesdone = true;

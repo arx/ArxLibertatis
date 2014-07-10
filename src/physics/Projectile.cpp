@@ -608,7 +608,7 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 												}
 
 												ARX_PARTICLES_Spawn_Blood2(pos, damages, color, target);
-												ARX_DAMAGES_DamageNPC(target, damages, thrownObj->source, 0, &pos);
+												ARX_DAMAGES_DamageNPC(target, damages, thrownObj->source, false, &pos);
 
 												if(rnd() * 100.f > target->_npcdata->resist_poison) {
 													target->_npcdata->poisonned += thrownObj->poisonous;
@@ -624,7 +624,7 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 										// not NPC
 										if(target->ioflags & IO_FIX) {
 											if(ValidIONum(thrownObj->source))
-												ARX_DAMAGES_DamageFIX(target, 0.1f, thrownObj->source, 0);
+												ARX_DAMAGES_DamageFIX(target, 0.1f, thrownObj->source, false);
 										}
 
 										ARX_PARTICLES_Spawn_Spark(v0, 14, 0);

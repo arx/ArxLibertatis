@@ -211,7 +211,7 @@ static void CheckHit(Entity * io, float ratioaim) {
 			}
 		} else {
 			if(mindist <= 120.f) {
-				ARX_DAMAGES_DamageFIX(ioo, dmg * ratio, io->index(), 0);
+				ARX_DAMAGES_DamageFIX(ioo, dmg * ratio, io->index(), false);
 			}
 		}
 	}
@@ -870,7 +870,7 @@ void ARX_NPC_ManagePoison(Entity * io)
 
 		if(io->_npcdata->lifePool.current > 0 && io->_npcdata->lifePool.current - dmg <= 0.f) {
 			long xp = io->_npcdata->xpvalue;
-			ARX_DAMAGES_DamageNPC(io, dmg, EntityHandle::Invalid, 0, NULL);
+			ARX_DAMAGES_DamageNPC(io, dmg, EntityHandle::Invalid, false, NULL);
 			ARX_PLAYER_Modify_XP(xp);
 		}
 		else
@@ -982,7 +982,7 @@ void ARX_PHYSICS_Apply() {
 
 			if(io->ioflags & IO_NPC) {
 				const float LAVA_DAMAGE = 10.f;
-				ARX_DAMAGES_DamageNPC(io, LAVA_DAMAGE * framedelay * ( 1.0f / 100 ), EntityHandle::Invalid, 0, NULL);
+				ARX_DAMAGES_DamageNPC(io, LAVA_DAMAGE * framedelay * ( 1.0f / 100 ), EntityHandle::Invalid, false, NULL);
 			}
 		}
 

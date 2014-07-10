@@ -474,11 +474,11 @@ float ARX_EQUIPMENT_ComputeDamages(Entity * io_source, Entity * io_target, float
 	if(!(io_target->ioflags & IO_NPC)) {
 		if(io_target->ioflags & IO_FIX) {
 			if (io_source == entities.player())
-				ARX_DAMAGES_DamageFIX(io_target, player.m_miscFull.damages, PlayerEntityHandle, 0);
+				ARX_DAMAGES_DamageFIX(io_target, player.m_miscFull.damages, PlayerEntityHandle, false);
 			else if (io_source->ioflags & IO_NPC)
-				ARX_DAMAGES_DamageFIX(io_target, io_source->_npcdata->damages, io_source->index(), 0);
+				ARX_DAMAGES_DamageFIX(io_target, io_source->_npcdata->damages, io_source->index(), false);
 			else
-				ARX_DAMAGES_DamageFIX(io_target, 1, io_source->index(), 0);
+				ARX_DAMAGES_DamageFIX(io_target, 1, io_source->index(), false);
 		}
 
 		return 0.f;
@@ -634,7 +634,7 @@ float ARX_EQUIPMENT_ComputeDamages(Entity * io_source, Entity * io_target, float
 			io_target->forcedmove += ppos * -dmgs;
 			
 			Vec3f * pos = position ? position : &io_target->pos;
-			ARX_DAMAGES_DamageNPC(io_target, dmgs, io_source->index(), 0, pos);
+			ARX_DAMAGES_DamageNPC(io_target, dmgs, io_source->index(), false, pos);
 		}
 	}
 	
