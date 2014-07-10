@@ -196,7 +196,7 @@ static void ARX_INTERACTIVE_ForceIOLeaveZone(Entity * io, long flags) {
 		if(!op->controled.empty()) {
 			EntityHandle t = entities.getById(op->controled);
 
-			if(t != InvalidEntityHandle) {
+			if(t != EntityHandle::Invalid) {
 				std::string str = io->idString() + ' ' + temp;
 				SendIOScriptEvent( entities[t], SM_CONTROLLEDZONE_LEAVE, str ); 
 			}
@@ -804,7 +804,7 @@ void ARX_INTERACTIVE_ClearIODynData_II(Entity * io)
 		free(io->_npcdata->pathfind.list);
 		io->_npcdata->pathfind.list = NULL;
 		memset(&io->_npcdata->pathfind, 0, sizeof(IO_PATHFIND));
-		io->_npcdata->pathfind.truetarget = InvalidEntityHandle;
+		io->_npcdata->pathfind.truetarget = EntityHandle::Invalid;
 		io->_npcdata->pathfind.listnb = -1;
 		ARX_NPC_Behaviour_Reset(io);
 	}
@@ -891,14 +891,14 @@ void RestoreInitialIOStatusOfIO(Entity * io)
 		io->halo_native.flags = 0;
 
 		ARX_HALO_SetToNative(io);
-		io->halo.dynlight = InvalidLightHandle;
+		io->halo.dynlight = LightHandle::Invalid;
 
 		io->forcedmove = Vec3f_ZERO;
 		io->ioflags &= ~IO_NO_COLLISIONS;
 		io->ioflags &= ~IO_INVERTED;
 		io->lastspeechflag = 2;
 	
-		io->no_collide = InvalidEntityHandle;
+		io->no_collide = EntityHandle::Invalid;
 
 		MagicFlareReleaseEntity(io);
 
@@ -933,7 +933,7 @@ void RestoreInitialIOStatusOfIO(Entity * io)
 		io->ouch_time = 0;
 		io->dmg_sum = 0;
 		io->ignition = 0.f;
-		io->ignit_light = InvalidLightHandle;
+		io->ignit_light = LightHandle::Invalid;
 		io->ignit_sound = audio::INVALID_ID;
 
 		if(io->obj && io->obj->pbox)
@@ -1761,7 +1761,7 @@ Entity * AddNPC(const res::path & classPath, EntityInstance instance, AddInterac
 	
 	io->_npcdata->pathfind.listnb = -1;
 	io->_npcdata->behavior = BEHAVIOUR_NONE;
-	io->_npcdata->pathfind.truetarget = InvalidEntityHandle;
+	io->_npcdata->pathfind.truetarget = EntityHandle::Invalid;
 	
 	if(!(flags & NO_MESH) && (flags & IO_IMMEDIATELOAD)) {
 		EERIE_COLLISION_Cylinder_Create(io);
@@ -2204,7 +2204,7 @@ void SetYlsideDeath(Entity * io) {
 bool ARX_INTERACTIVE_CheckFULLCollision(EERIE_3DOBJ * obj, EntityHandle source)
 {
 	bool col = false;
-	EntityHandle avoid = InvalidEntityHandle;
+	EntityHandle avoid = EntityHandle::Invalid;
 	Entity * io_source = NULL;
 
 	if(ValidIONum(source)) {

@@ -85,7 +85,7 @@ void EntityManager::clear() {
 EntityHandle EntityManager::getById(const std::string & name) const {
 	
 	if(name.empty() || name == "none") {
-		return InvalidEntityHandle;
+		return EntityHandle::Invalid;
 	} else if(name == "self" || name == "me") {
 		return EntityHandle(-2);
 	} else if(name == "player") {
@@ -101,7 +101,7 @@ EntityHandle EntityManager::getById(const std::string & name) const {
 		}
 	}
 	
-	return InvalidEntityHandle;
+	return EntityHandle::Invalid;
 }
 
 Entity * EntityManager::getById(const std::string & name, Entity * self) const {

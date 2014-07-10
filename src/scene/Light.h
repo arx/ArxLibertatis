@@ -74,8 +74,7 @@ extern EERIE_LIGHT DynLight[MAX_DYNLIGHTS];
 extern long TOTPDL;
 extern long TOTIOPDL;
 
-ARX_HANDLE_TYPEDEF(long, LightHandle)
-static const LightHandle InvalidLightHandle = LightHandle(-1);
+ARX_HANDLE_TYPEDEF(long, LightHandle, -1)
 
 enum EERIE_TYPES_EXTRAS_MODE
 {

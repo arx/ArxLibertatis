@@ -663,7 +663,7 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 {
 	
 	bool ret = false;
-	EntityHandle source = (io_source == NULL) ? InvalidEntityHandle : io_source->index();
+	EntityHandle source = (io_source == NULL) ? EntityHandle::Invalid : io_source->index();
 	EntityHandle weapon = io_weapon->index();
 	Sphere sphere;
 
@@ -965,7 +965,7 @@ void ARX_EQUIPMENT_Equip(Entity * target, Entity * toequip)
 	if(!target || !toequip || target != entities.player())
 		return;
 
-	EntityHandle validid = InvalidEntityHandle;
+	EntityHandle validid = EntityHandle::Invalid;
 
 	for(size_t i = 0; i < entities.size(); i++) {
 		const EntityHandle handle = EntityHandle(i);
@@ -977,7 +977,7 @@ void ARX_EQUIPMENT_Equip(Entity * target, Entity * toequip)
 		}
 	}
 
-	if(validid == InvalidEntityHandle)
+	if(validid == EntityHandle::Invalid)
 		return;
 
 	RemoveFromAllInventories(toequip);

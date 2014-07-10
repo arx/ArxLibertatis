@@ -217,8 +217,8 @@ void FlyingEyeSpell::Update(float timeDelta)
 }
 
 FireFieldSpell::FireFieldSpell()
-	: m_light(InvalidLightHandle)
-	, m_damage(InvalidDamageHandle)
+	: m_light(LightHandle::Invalid)
+	, m_damage(DamageHandle::Invalid)
 {
 }
 
@@ -231,7 +231,7 @@ void FireFieldSpell::Launch()
 	m_duration = (m_launchDuration > -1) ? m_launchDuration : 100000;
 	m_bDuration = true;
 	m_fManaCostPerSecond = 2.8f;
-	m_light = InvalidLightHandle;
+	m_light = LightHandle::Invalid;
 	
 	CFireField * effect = new CFireField();
 	
@@ -351,8 +351,8 @@ void FireFieldSpell::Update(float timeDelta)
 }
 
 IceFieldSpell::IceFieldSpell()
-	: m_light(InvalidLightHandle)
-	, m_damage(InvalidDamageHandle)
+	: m_light(LightHandle::Invalid)
+	, m_damage(DamageHandle::Invalid)
 {
 }
 
@@ -365,7 +365,7 @@ void IceFieldSpell::Launch()
 	m_duration = (m_launchDuration > -1) ? m_launchDuration : 100000;
 	m_bDuration = true;
 	m_fManaCostPerSecond = 2.8f;
-	m_light = InvalidLightHandle;
+	m_light = LightHandle::Invalid;
 	
 	CIceField * effect = new CIceField();
 	

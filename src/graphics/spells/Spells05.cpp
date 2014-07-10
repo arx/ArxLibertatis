@@ -626,7 +626,7 @@ CMultiPoisonProjectile::~CMultiPoisonProjectile()
 			light->duration = 2000;
 			light->time_creation = (unsigned long)(arxtime);
 			
-			projectile->lLightId = InvalidLightHandle;
+			projectile->lLightId = LightHandle::Invalid;
 		}
 
 		delete projectile;

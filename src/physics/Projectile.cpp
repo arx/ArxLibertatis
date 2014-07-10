@@ -563,7 +563,7 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 
 						std::vector<EntityHandle> sphereContent;
 
-						if(CheckEverythingInSphere(sphere, thrownObj->source, InvalidEntityHandle, sphereContent)) {
+						if(CheckEverythingInSphere(sphere, thrownObj->source, EntityHandle::Invalid, sphereContent)) {
 							for(size_t jj = 0; jj < sphereContent.size(); jj++) {
 
 								if(ValidIONum(sphereContent[jj])

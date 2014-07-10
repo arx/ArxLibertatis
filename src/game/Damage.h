@@ -114,7 +114,7 @@ struct DamageParameters {
 		area = DAMAGE_AREA;
 		flags = 0;
 		type = 0;
-		source = InvalidEntityHandle;
+		source = EntityHandle::Invalid;
 	}
 };
 
@@ -128,14 +128,14 @@ void DamageRequestEnd(DamageHandle handle);
  */
 void CheckForIgnition(const Vec3f & pos, float radius, bool mode, long flag = 0);
 
-bool DoSphericDamage(const Vec3f & pos, float dmg, float radius, DamageArea flags, DamageType typ = 0, EntityHandle numsource = InvalidEntityHandle);
+bool DoSphericDamage(const Vec3f & pos, float dmg, float radius, DamageArea flags, DamageType typ = 0, EntityHandle numsource = EntityHandle::Invalid);
 
 void ARX_DAMAGE_Reset_Blood_Info();
 void ARX_DAMAGE_Show_Hit_Blood();
 void ARX_DAMAGES_Reset();
  
 void ARX_DAMAGES_UpdateAll();
-float ARX_DAMAGES_DamagePlayer(float dmg, DamageType type, EntityHandle source = InvalidEntityHandle);
+float ARX_DAMAGES_DamagePlayer(float dmg, DamageType type, EntityHandle source = EntityHandle::Invalid);
 void ARX_DAMAGES_DamageFIX(Entity * io, float dmg, EntityHandle source, long flags);
 float ARX_DAMAGES_DamageNPC(Entity * io, float dmg, EntityHandle source, long flags, const Vec3f * pos);
 bool ARX_DAMAGES_TryToDoDamage(const Vec3f & pos, float dmg, float radius, EntityHandle source);

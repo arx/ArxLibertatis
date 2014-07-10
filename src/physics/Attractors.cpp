@@ -62,14 +62,14 @@ static ARX_SPECIAL_ATTRACTOR attractors[MAX_ATTRACTORS];
 
 void ARX_SPECIAL_ATTRACTORS_Reset() {
 	for(size_t i = 0; i < MAX_ATTRACTORS; i++) {
-		attractors[i].ionum = InvalidEntityHandle;
+		attractors[i].ionum = EntityHandle::Invalid;
 	}
 }
 
 static void ARX_SPECIAL_ATTRACTORS_Remove(EntityHandle ionum) {
 	for(size_t i = 0; i < MAX_ATTRACTORS; i++) {
 		if(attractors[i].ionum == ionum) {
-			attractors[i].ionum = InvalidEntityHandle;
+			attractors[i].ionum = EntityHandle::Invalid;
 		}
 	}
 }
@@ -97,7 +97,7 @@ bool ARX_SPECIAL_ATTRACTORS_Add(EntityHandle ionum, float power, float radius) {
 	}
 	
 	for(size_t i = 0; i < MAX_ATTRACTORS; i++) {
-		if(attractors[i].ionum == InvalidEntityHandle) {
+		if(attractors[i].ionum == EntityHandle::Invalid) {
 			attractors[i].ionum = ionum;
 			attractors[i].power = power;
 			attractors[i].radius = radius;
@@ -114,7 +114,7 @@ void ARX_SPECIAL_ATTRACTORS_ComputeForIO(const Entity & ioo, Vec3f & force) {
 	
 	for(size_t i = 0; i < MAX_ATTRACTORS; i++) {
 		
-		if(attractors[i].ionum == InvalidEntityHandle || !ValidIONum(attractors[i].ionum)) {
+		if(attractors[i].ionum == EntityHandle::Invalid || !ValidIONum(attractors[i].ionum)) {
 			continue;
 		}
 		

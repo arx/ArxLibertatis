@@ -731,7 +731,7 @@ public:
 			return Failed;
 		}
 		
-		EntityHandle self = (context.getEntity() == NULL) ? InvalidEntityHandle : context.getEntity()->index();
+		EntityHandle self = (context.getEntity() == NULL) ? EntityHandle::Invalid : context.getEntity()->index();
 		ARX_DAMAGES_DealDamages(t->index(), damage, self, type, &t->pos);
 		
 		return Success;

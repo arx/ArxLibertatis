@@ -75,7 +75,7 @@ ParticleSystem::ParticleSystem() {
 		tex_tab[i] = NULL;
 	}
 	
-	m_lightHandle = InvalidLightHandle;
+	m_lightHandle = LightHandle::Invalid;
 	
 	m_parameters.m_nbMax = 50;
 	

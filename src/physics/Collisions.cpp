@@ -860,7 +860,7 @@ bool CheckEverythingInSphere(const Sphere & sphere, long source, EntityHandle ta
 	bool vreturn = false;
 	
 	Entity * io;
-	EntityHandle ret_idx = InvalidEntityHandle;
+	EntityHandle ret_idx = EntityHandle::Invalid;
 	
 	float sr30 = sphere.radius + 20.f;
 	float sr40 = sphere.radius + 30.f;
@@ -1027,7 +1027,7 @@ EERIEPOLY * CheckBackgroundInSphere(const Sphere & sphere) //except source...
 bool CheckAnythingInSphere(const Sphere & sphere, EntityHandle source, CASFlags flags, EntityHandle * num) //except source...
 {
 	if(num)
-		*num = InvalidEntityHandle;
+		*num = EntityHandle::Invalid;
 
 	long rad = sphere.radius * ACTIVEBKG->Xmul;
 	rad += 2;

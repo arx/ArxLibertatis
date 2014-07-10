@@ -54,7 +54,7 @@ void RiseDeadSpell::GetTargetAndBeta(Vec3f & target, float & beta)
 }
 
 RiseDeadSpell::RiseDeadSpell()
-	: m_entity(InvalidEntityHandle)
+	: m_entity(EntityHandle::Invalid)
 {
 	
 }
@@ -91,7 +91,7 @@ void RiseDeadSpell::Launch()
 	m_duration = (m_launchDuration > -1) ? m_launchDuration : 2000000;
 	m_bDuration = true;
 	m_fManaCostPerSecond = 1.2f;
-	m_entity = InvalidEntityHandle;
+	m_entity = EntityHandle::Invalid;
 	
 	CRiseDead * effect = new CRiseDead();
 	effect->Create(target, beta);
@@ -158,7 +158,7 @@ void RiseDeadSpell::Update(float timeDelta)
 		return;
 	
 	if(m_entity == -2) {
-		effect->lLightId = InvalidLightHandle;
+		effect->lLightId = LightHandle::Invalid;
 		return;
 	}
 	
@@ -182,7 +182,7 @@ void RiseDeadSpell::Update(float timeDelta)
 	
 	unsigned long tim=effect->getCurrentTime();
 	
-	if(tim > 3000 && m_entity == InvalidEntityHandle) {
+	if(tim > 3000 && m_entity == EntityHandle::Invalid) {
 		ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &m_targetPos);
 		
 		Cylinder phys;
@@ -226,7 +226,7 @@ void RiseDeadSpell::Update(float timeDelta)
 				MakeCoolFx(pos);
 			}
 			
-			effect->lLightId = InvalidLightHandle;
+			effect->lLightId = LightHandle::Invalid;
 		} else {
 			ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE);
 			m_entity = EntityHandle(-2); // FIXME inband signaling
@@ -271,7 +271,7 @@ void ParalyseSpell::End()
 }
 
 CreateFieldSpell::CreateFieldSpell()
-	: m_entity(InvalidEntityHandle)
+	: m_entity(EntityHandle::Invalid)
 {
 }
 

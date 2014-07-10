@@ -226,7 +226,7 @@ bool SpellManager::ExistAnyInstanceForThisCaster(SpellType typ, EntityHandle cas
 
 SpellBase * SpellManager::getSpellOnTarget(EntityHandle target, SpellType type)
 {
-	if(target == InvalidEntityHandle)
+	if(target == EntityHandle::Invalid)
 		return NULL;
 	
 	for(size_t i = 0; i < MAX_SPELLS; i++) {
@@ -640,7 +640,7 @@ void SPELLCAST_Notify(SpellBase & spell) {
 		const EntityHandle handle = EntityHandle(i);
 		
 		if(entities[handle] != NULL) {
-			EVENT_SENDER = (source != InvalidEntityHandle) ? entities[source] : NULL;
+			EVENT_SENDER = (source != EntityHandle::Invalid) ? entities[source] : NULL;
 			char param[256];
 			sprintf(param, "%s %ld", spellName, (long)spell.m_level);
 			SendIOScriptEvent(entities[handle], SM_SPELLCAST, param);
@@ -657,7 +657,7 @@ void SPELLCAST_NotifyOnlyTarget(SpellBase & spell) {
 	EntityHandle source = spell.m_caster;
 
 	if(MakeSpellName(spellName, spell.m_type)) {
-		if(source != InvalidEntityHandle)
+		if(source != EntityHandle::Invalid)
 			EVENT_SENDER = entities[source];
 		else
 			EVENT_SENDER = NULL;
@@ -1203,7 +1203,7 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flags,
 		return true;
 	}
 	
-	if(target == InvalidEntityHandle && source == PlayerEntityHandle)
+	if(target == EntityHandle::Invalid && source == PlayerEntityHandle)
 	switch(typ) {
 		case SPELL_LOWER_ARMOR:
 		case SPELL_CURSE:
@@ -1294,7 +1294,7 @@ bool ARX_SPELLS_Launch(SpellType typ, EntityHandle source, SpellcastFlags flags,
 	spell.m_caster = source; // Caster...
 	spell.m_target = target;
 	
-	if(target == InvalidEntityHandle)
+	if(target == EntityHandle::Invalid)
 		spell.m_target = TemporaryGetSpellTarget(&entities[spell.m_caster]->pos);
 
 	// Create hand position if a hand is defined

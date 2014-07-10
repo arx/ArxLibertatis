@@ -60,7 +60,7 @@ SummonCreatureSpell::SummonCreatureSpell()
 	: m_targetPos(Vec3f_ZERO)
 	, m_megaCheat(false)
 	, m_longinfo_summon_creature(-1) //TODO is this correct ?
-	, m_longinfo2_entity(InvalidEntityHandle)
+	, m_longinfo2_entity(EntityHandle::Invalid)
 {
 	
 }
@@ -174,7 +174,7 @@ void SummonCreatureSpell::Update(float timeDelta)
 			}	
 
 			m_longinfo_summon_creature = 1;
-			m_longinfo2_entity = InvalidEntityHandle;
+			m_longinfo2_entity = EntityHandle::Invalid;
 
 		} else if(m_longinfo_summon_creature) {
 			lightHandleDestroy(m_pSpellFx->lLightId);
@@ -271,7 +271,7 @@ void SummonCreatureSpell::Update(float timeDelta)
 					if(tokeep==1)
 						m_longinfo2_entity = io->index();
 					else
-						m_longinfo2_entity = InvalidEntityHandle;
+						m_longinfo2_entity = EntityHandle::Invalid;
 				}
 				}
 			}

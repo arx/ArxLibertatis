@@ -207,7 +207,7 @@ CMagicMissile::~CMagicMissile()
 		smissile = NULL;
 	}
 
-	lLightId = InvalidLightHandle;
+	lLightId = LightHandle::Invalid;
 
 	ARX_SOUND_Stop(snd_loop);
 }
@@ -259,7 +259,7 @@ void CMagicMissile::SetTTL(unsigned long aulTTL)
 	SetDuration(ulDuration);
 	ulCurrentTime = t;
 	
-	lLightId = InvalidLightHandle;
+	lLightId = LightHandle::Invalid;
 }
 
 void CMagicMissile::Update(float timeDelta)
@@ -440,7 +440,7 @@ CMultiMagicMissile::~CMultiMagicMissile()
 {
 	for(size_t i = 0; i < pTab.size(); i++) {
 		// no need to kill it because it's a duration light !
-		pTab[i]->lLightId = InvalidLightHandle;
+		pTab[i]->lLightId = LightHandle::Invalid;
 
 		delete pTab[i];
 	}
@@ -527,7 +527,7 @@ void CMultiMagicMissile::CheckCollision(float level, EntityHandle caster)
 			missile->bExplo = true;
 			missile->bMove  = false;
 			
-			missile->lLightId = InvalidLightHandle;
+			missile->lLightId = LightHandle::Invalid;
 			
 			DamageParameters damage;
 			damage.pos = missile->eCurPos;

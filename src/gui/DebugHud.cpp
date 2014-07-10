@@ -145,7 +145,7 @@ void ShowTestText() {
 }
 
 extern float CURRENT_PLAYER_COLOR;
-EntityHandle LastSelectedIONum = InvalidEntityHandle;
+EntityHandle LastSelectedIONum = EntityHandle::Invalid;
 
 void ShowInfoText() {
 

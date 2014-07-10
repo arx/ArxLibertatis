@@ -87,7 +87,7 @@ void CFireBall::SetTTL(unsigned long aulTTL)
 	SetDuration(ulDuration);
 	ulCurrentTime = t;
 	
-	lLightId = InvalidLightHandle;
+	lLightId = LightHandle::Invalid;
 }
 
 void CFireBall::Create(Vec3f aeSrc, float afBeta, float afAlpha)
@@ -103,7 +103,7 @@ void CFireBall::Create(Vec3f aeSrc, float afBeta, float afAlpha)
 	eMove.z = + std::cos(radians(afBeta)) * 80 * cos(radians(MAKEANGLE(afAlpha)));
 	
 	// Light
-	lLightId = InvalidLightHandle;
+	lLightId = LightHandle::Invalid;
 	eCurPos = eSrc;
 }
 

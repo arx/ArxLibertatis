@@ -217,7 +217,7 @@ void ARX_PATH_UpdateAllZoneInOutInside() {
 					if(!op->controled.empty()) {
 						EntityHandle t = entities.getById(op->controled);
 
-						if(t != InvalidEntityHandle) {
+						if(t != EntityHandle::Invalid) {
 							string str = io->idString() + ' ' + op->name;
 							SendIOScriptEvent(entities[t], SM_CONTROLLEDZONE_LEAVE, str);
 						}
@@ -236,7 +236,7 @@ void ARX_PATH_UpdateAllZoneInOutInside() {
 						if(!p->controled.empty()) {
 							EntityHandle t = entities.getById(p->controled);
 
-							if(t != InvalidEntityHandle) {
+							if(t != EntityHandle::Invalid) {
 								string params = io->idString() + ' ' + p->name;
 								SendIOScriptEvent(entities[t], SM_CONTROLLEDZONE_ENTER, params);
 							}
@@ -248,7 +248,7 @@ void ARX_PATH_UpdateAllZoneInOutInside() {
 					if(!op->controled.empty()) {
 						EntityHandle t = entities.getById(op->controled);
 
-						if(t != InvalidEntityHandle) {
+						if(t != EntityHandle::Invalid) {
 							string str = io->idString() + ' ' + op->name;
 							SendIOScriptEvent(entities[t], SM_CONTROLLEDZONE_LEAVE, str);
 						}
@@ -260,7 +260,7 @@ void ARX_PATH_UpdateAllZoneInOutInside() {
 					if(!p->controled.empty()) {
 						EntityHandle t = entities.getById(p->controled);
 
-						if(t != InvalidEntityHandle) {
+						if(t != EntityHandle::Invalid) {
 							string str = io->idString() + ' ' + p->name;
 							SendIOScriptEvent(entities[t], SM_CONTROLLEDZONE_ENTER, str);
 						}
@@ -297,7 +297,7 @@ void ARX_PATH_UpdateAllZoneInOutInside() {
 			if(!op->controled.empty()) {
 				EntityHandle t = entities.getById(op->controled);
 
-				if(t != InvalidEntityHandle) {
+				if(t != EntityHandle::Invalid) {
 					SendIOScriptEvent(entities[t], SM_CONTROLLEDZONE_LEAVE, "player " + op->name);
 				}
 			}
@@ -326,7 +326,7 @@ void ARX_PATH_UpdateAllZoneInOutInside() {
 			if(!p->controled.empty()) {
 				EntityHandle t = entities.getById(p->controled);
 
-				if(t != InvalidEntityHandle) {
+				if(t != EntityHandle::Invalid) {
 					SendIOScriptEvent(entities[t], SM_CONTROLLEDZONE_ENTER, "player " + p->name);
 				}
 			}
@@ -334,7 +334,7 @@ void ARX_PATH_UpdateAllZoneInOutInside() {
 			if(!op->controled.empty()) {
 				EntityHandle t = entities.getById(op->controled);
 
-				if(t != InvalidEntityHandle) {
+				if(t != EntityHandle::Invalid) {
 					SendIOScriptEvent(entities[t], SM_CONTROLLEDZONE_LEAVE, "player " + p->name);
 				}
 			}
@@ -342,7 +342,7 @@ void ARX_PATH_UpdateAllZoneInOutInside() {
 			if(!op->controled.empty()) {
 				EntityHandle t = entities.getById(p->controled);
 
-				if(t != InvalidEntityHandle) {
+				if(t != EntityHandle::Invalid) {
 					SendIOScriptEvent(entities[t], SM_CONTROLLEDZONE_ENTER, "player " + p->name);
 				}
 			}

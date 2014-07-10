@@ -172,7 +172,7 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 			}
 		} else if(lightHandleIsValid(io->dynlight)) {
 			lightHandleGet(io->dynlight)->exist = 0;
-			io->dynlight = InvalidLightHandle;
+			io->dynlight = LightHandle::Invalid;
 		}
 
 		if(io->symboldraw) {
@@ -185,7 +185,7 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 					
 					light->time_creation = (unsigned long)(arxtime);
 					light->duration = 600;
-					io->dynlight = InvalidLightHandle;
+					io->dynlight = LightHandle::Invalid;
 				}
 
 				free(io->symboldraw);

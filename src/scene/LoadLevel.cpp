@@ -475,7 +475,7 @@ Entity * LoadInter_Ex(const res::path & classPath, EntityInstance instance,
 	          << std::setfill('0') << std::setw(4) << instance;
 	
 	EntityHandle t = entities.getById(nameident.str());
-	if(t != InvalidEntityHandle) {
+	if(t != EntityHandle::Invalid) {
 		return entities[t];
 	}
 	
@@ -740,7 +740,7 @@ bool DanaeLoadLevel(const res::path & file, bool loadEntities) {
 				el->ex_frequency = dlight->ex_frequency;
 				el->ex_size = dlight->ex_size;
 				el->ex_speed = dlight->ex_speed;
-				el->tl = InvalidLightHandle;
+				el->tl = LightHandle::Invalid;
 				el->sample = audio::INVALID_ID;
 				
 				if((el->extras & EXTRAS_SPAWNFIRE)) {
@@ -932,7 +932,7 @@ bool DanaeLoadLevel(const res::path & file, bool loadEntities) {
 				}
 			}
 			
-			el->tl = InvalidLightHandle;
+			el->tl = LightHandle::Invalid;
 			el->sample = audio::INVALID_ID;
 		}
 	}

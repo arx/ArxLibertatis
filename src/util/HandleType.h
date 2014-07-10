@@ -20,17 +20,22 @@
 #ifndef ARX_UTIL_HANDLETYPE_H
 #define ARX_UTIL_HANDLETYPE_H
 
-#define ARX_HANDLE_TYPEDEF(T, D)                              \
+#define ARX_HANDLE_TYPEDEF(T, D, INVALID_VALUE)                 \
 struct D                                                        \
 {                                                               \
+    enum SpecialHandles {                                       \
+        Invalid = INVALID_VALUE                                 \
+    };                                                          \
     T t;                                                        \
     explicit D(const T t_) : t(t_) {};                          \
-    D(){};                                                      \
+    D() : t(Invalid) {};                                        \
     D(const D & t_) : t(t_.t){}                                 \
+    D(const SpecialHandles & value) : t(value){}                \
     D & operator=(const D & rhs) { t = rhs.t; return *this;}    \
     operator const T & () const {return t; }                    \
     operator T & () { return t; }                               \
     bool operator==(const D & rhs) const { return t == rhs.t; } \
+    bool operator==(const SpecialHandles & rhs) const { return t == rhs; } \
 };
 
 #endif // ARX_UTIL_HANDLETYPE_H

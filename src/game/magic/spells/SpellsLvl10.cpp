@@ -46,7 +46,7 @@ extern Rect g_size;
 MassLightningStrikeSpell::MassLightningStrikeSpell()
 	: m_targetPos(Vec3f_ZERO)
 	, m_soundEffectPlayed(false)
-	, m_light(InvalidLightHandle)
+	, m_light(LightHandle::Invalid)
 {
 }
 
@@ -117,7 +117,7 @@ void MassLightningStrikeSpell::End()
 		light->duration = 200;
 		light->time_creation = (unsigned long)(arxtime);
 	}
-	m_light = InvalidLightHandle;
+	m_light = LightHandle::Invalid;
 	
 	ARX_SOUND_Stop(m_snd_loop);
 	ARX_SOUND_PlaySFX(SND_SPELL_LIGHTNING_END);

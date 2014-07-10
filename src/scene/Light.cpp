@@ -148,7 +148,7 @@ long EERIE_LIGHT_Create() {
 			
 			memset(GLight[i], 0, sizeof(EERIE_LIGHT));
 			GLight[i]->sample = audio::INVALID_ID;
-			GLight[i]->tl = InvalidLightHandle;
+			GLight[i]->tl = LightHandle::Invalid;
 			return i;
 		}
 	}
@@ -177,7 +177,7 @@ void EERIE_LIGHT_GlobalAdd(const EERIE_LIGHT * el)
 	{
 		GLight[num] = (EERIE_LIGHT *)malloc(sizeof(EERIE_LIGHT));
 		memcpy(GLight[num], el, sizeof(EERIE_LIGHT));
-		GLight[num]->tl = InvalidLightHandle;
+		GLight[num]->tl = LightHandle::Invalid;
 		GLight[num]->sample = audio::INVALID_ID;
 	}
 }
@@ -233,7 +233,7 @@ void TreatBackgroundDynlights()
 				// just extinguished
 				if(lightHandleIsValid(light->tl)) {
 					lightHandleGet(light->tl)->exist = 0;
-					light->tl = InvalidLightHandle;
+					light->tl = LightHandle::Invalid;
 					Vec3f _pos2;
 
 					for(size_t l = 0; l < entities.size(); l++) {
@@ -392,7 +392,7 @@ void lightHandleDestroy(LightHandle & handle) {
 	if(lightHandleIsValid(handle)) {
 		lightHandleGet(handle)->exist = 0;
 	}
-	handle = InvalidLightHandle;
+	handle = LightHandle::Invalid;
 }
 
 LightHandle GetFreeDynLight() {

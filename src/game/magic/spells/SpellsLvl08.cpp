@@ -79,8 +79,8 @@ void InvisibilitySpell::Update(float timeDelta)
 }
 
 ManaDrainSpell::ManaDrainSpell()
-	: m_light(InvalidLightHandle)
-	, m_damage(InvalidDamageHandle)
+	: m_light(LightHandle::Invalid)
+	, m_damage(DamageHandle::Invalid)
 	, m_pitch(0.f)
 {
 	
@@ -236,8 +236,8 @@ void ManaDrainSpell::Update(float timeDelta)
 }
 
 ExplosionSpell::ExplosionSpell()
-	: m_light(InvalidLightHandle)
-	, m_damage(InvalidDamageHandle)
+	: m_light(LightHandle::Invalid)
+	, m_damage(DamageHandle::Invalid)
 {
 }
 
@@ -361,8 +361,8 @@ void EnchantWeaponSpell::Update(float timeDelta)
 }
 
 LifeDrainSpell::LifeDrainSpell()
-	: m_light(InvalidLightHandle)
-	, m_damage(InvalidDamageHandle)
+	: m_light(LightHandle::Invalid)
+	, m_damage(DamageHandle::Invalid)
 	, m_pitch(0.f)
 {
 }

@@ -105,7 +105,7 @@ public:
 		
 		DebugScript(' ' << target << ' ' << val << ' ' << radius);
 		
-		ARX_SPECIAL_ATTRACTORS_Add((t == NULL) ? InvalidEntityHandle : t->index(), val, radius);
+		ARX_SPECIAL_ATTRACTORS_Add((t == NULL) ? EntityHandle::Invalid : t->index(), val, radius);
 		
 		return Success;
 	}
@@ -198,8 +198,8 @@ public:
 		
 		DebugScript(' ' << sourceio << ' ' << source << ' ' << targetio << ' ' << target);
 		
-		EntityHandle i = (t == NULL) ? InvalidEntityHandle : t->index();
-		EntityHandle i2 = (t2 == NULL) ? InvalidEntityHandle : t2->index();
+		EntityHandle i = (t == NULL) ? EntityHandle::Invalid : t->index();
+		EntityHandle i2 = (t2 == NULL) ? EntityHandle::Invalid : t2->index();
 		
 		ARX_INTERACTIVE_Attach(i, i2, source, target);
 		

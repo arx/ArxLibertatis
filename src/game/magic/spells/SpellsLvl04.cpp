@@ -188,7 +188,7 @@ void FireProtectionSpell::Launch()
 		io->halo.color.g = 0.3f;
 		io->halo.color.b = 0.f;
 		io->halo.radius = 45.f;
-		io->halo.dynlight = InvalidLightHandle;
+		io->halo.dynlight = LightHandle::Invalid;
 	}
 	
 	m_targets.push_back(m_target);
@@ -219,7 +219,7 @@ void FireProtectionSpell::Update(float timeDelta)
 		io->halo.color.g = 0.3f;
 		io->halo.color.b = 0.f;
 		io->halo.radius = 45.f;
-		io->halo.dynlight = InvalidLightHandle;
+		io->halo.dynlight = LightHandle::Invalid;
 	}
 	
 	ARX_SOUND_RefreshPosition(m_snd_loop, entities[m_target]->pos);
@@ -254,7 +254,7 @@ void ColdProtectionSpell::Launch()
 		io->halo.color.g = 0.2f;
 		io->halo.color.b = 0.45f;
 		io->halo.radius = 45.f;
-		io->halo.dynlight = InvalidLightHandle;
+		io->halo.dynlight = LightHandle::Invalid;
 	}
 	
 	m_snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_COLD_PROTECTION_LOOP,
@@ -285,7 +285,7 @@ void ColdProtectionSpell::Update(float timeDelta)
 		io->halo.color.g = 0.2f;
 		io->halo.color.b = 0.45f;
 		io->halo.radius = 45.f;
-		io->halo.dynlight = InvalidLightHandle;
+		io->halo.dynlight = LightHandle::Invalid;
 	}
 	
 	ARX_SOUND_RefreshPosition(m_snd_loop, entities[m_target]->pos);

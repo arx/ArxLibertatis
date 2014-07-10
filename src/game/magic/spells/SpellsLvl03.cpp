@@ -121,7 +121,7 @@ void DispellIllusionSpell::Update(float timeDelta)
 }
 
 FireballSpell::FireballSpell()
-	: m_light(InvalidLightHandle)
+	: m_light(LightHandle::Invalid)
 {
 }
 
@@ -194,7 +194,7 @@ void FireballSpell::End()
 		light->duration = 500;
 		light->time_creation = (unsigned long)(arxtime);
 	}
-	m_light = InvalidLightHandle;
+	m_light = LightHandle::Invalid;
 }
 
 void FireballSpell::Update(float timeDelta)

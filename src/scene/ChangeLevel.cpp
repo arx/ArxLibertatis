@@ -175,14 +175,14 @@ static EntityHandle ReadTargetInfo(const char (&str)[N]) {
 	string ident = boost::to_lower_copy(util::loadString(str));
 	
 	if(ident == "none") {
-		return InvalidEntityHandle;
+		return EntityHandle::Invalid;
 	} else if(ident == "self") {
 		return EntityHandle(-2);
 	} else if(ident == "player") {
 		return PlayerEntityHandle;
 	} else {
 		Entity * e = convertToValidIO(ident);
-		return (e == NULL) ? InvalidEntityHandle : e->index();
+		return (e == NULL) ? EntityHandle::Invalid : e->index();
 	}
 }
 
@@ -1872,7 +1872,7 @@ static long ARX_CHANGELEVEL_Pop_Player() {
 	assert(SAVED_MAX_EQUIPED == MAX_EQUIPED);
 	for(size_t i = 0; i < SAVED_MAX_EQUIPED; i++) {
 		Entity * e = ConvertToValidIO(asp->equiped[i]);
-		player.equiped[i] = (e == NULL) ? InvalidEntityHandle : e->index();
+		player.equiped[i] = (e == NULL) ? EntityHandle::Invalid : e->index();
 		if(!ValidIONum(player.equiped[i])) {
 			player.equiped[i] = EntityHandle(0); // TODO inband signaling
 		}
@@ -2024,7 +2024,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) {
 		
 		io->requestRoomUpdate = 1;
 		io->room = -1;
-		io->no_collide = InvalidEntityHandle;
+		io->no_collide = EntityHandle::Invalid;
 		io->ioflags = EntityFlags::load(ais->ioflags); // TODO save/load flags
 		
 		io->ioflags &= ~IO_FREEZESCRIPT;
@@ -2082,8 +2082,8 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) {
 		io->shop_category = boost::to_lower_copy(util::loadString(ais->shop_category));
 		
 		io->halo_native = ais->halo;
-		io->halo_native.dynlight = InvalidLightHandle;
-		io->halo.dynlight = InvalidLightHandle;
+		io->halo_native.dynlight = LightHandle::Invalid;
+		io->halo.dynlight = LightHandle::Invalid;
 		ARX_HALO_SetToNative(io);
 		
 		io->inventory_skin = res::path::load(util::loadString(ais->inventory_skin));
@@ -2502,7 +2502,7 @@ static void ARX_CHANGELEVEL_PopAllIO_FINISH(bool reloadflag, bool firstTime) {
 			
 			io->targetinfo = ReadTargetInfo(aids->targetinfo);
 			if((io->ioflags & IO_NPC) && io->_npcdata->behavior == BEHAVIOUR_NONE) {
-				io->targetinfo = InvalidEntityHandle;
+				io->targetinfo = EntityHandle::Invalid;
 			}
 			
 			if(io->ioflags & IO_NPC) {
