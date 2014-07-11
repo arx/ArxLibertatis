@@ -59,7 +59,7 @@ void MassLightningStrikeSpell::Launch()
 		if(spell && spell->m_type == SPELL_MASS_LIGHTNING_STRIKE) {
 			MassLightningStrikeSpell * sp = static_cast<MassLightningStrikeSpell *>(spell);
 			lightHandleDestroy(sp->m_light);
-			spell->m_duration = 0;
+			spells.endSpell(spell);
 		}
 	}
 	

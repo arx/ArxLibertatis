@@ -75,6 +75,7 @@ public:
 	
 	SpellBase * operator[] (const SpellHandle handle);
 	
+	void endSpell(SpellBase * spell);
 	void endByCaster(EntityHandle caster);
 	void endByCaster(EntityHandle caster, SpellType type);
 	

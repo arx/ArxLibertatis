@@ -385,7 +385,7 @@ void DouseSpell::Launch()
 					              fPerimeter + radius)) {
 						spell->m_level -= m_level;
 						if(spell->m_level < 1) {
-							spell->m_duration = 0;
+							spells.endSpell(spell);
 						}
 					}
 				}
@@ -398,7 +398,7 @@ void DouseSpell::Launch()
 					if(closerThan(target, pos, fPerimeter + 200)) {
 						spell->m_level -= m_level;
 						if(spell->m_level < 1) {
-							spell->m_duration=0;
+							spells.endSpell(spell);
 						}
 					}
 				}

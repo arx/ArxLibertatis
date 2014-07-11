@@ -1667,7 +1667,7 @@ void ArxGame::managePlayerControls()
 			if(spell && spell->m_caster == PlayerEntityHandle)
 				if(spellicons[spell->m_type].m_hasDuration) {
 					ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE);
-					spell->m_duration = 0;
+					spells.endSpell(spell);
 					break;
 				}
 		}

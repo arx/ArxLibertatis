@@ -2607,7 +2607,7 @@ void ARX_PLAYER_PutPlayerInNormalStance(long val) {
 					case SPELL_LEVITATE:
 					case SPELL_SPEED:
 					case SPELL_FLYING_EYE:
-						spell->m_duration = 0;
+						spells.endSpell(spell);
 						break;
 					default: break;
 				}

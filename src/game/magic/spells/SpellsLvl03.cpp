@@ -105,7 +105,7 @@ void DispellIllusionSpell::Launch()
 			if(ValidIONum(spell->m_target) && ValidIONum(m_caster)) {
 				if(closerThan(entities[spell->m_target]->pos,
 				   entities[m_caster]->pos, 1000.f)) {
-					spell->m_duration = 0;
+					spells.endSpell(spell);
 				}
 			}
 		}

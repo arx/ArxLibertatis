@@ -411,7 +411,7 @@ void DisarmTrapSpell::Launch()
 		if(sphere.contains(static_cast<CRuneOfGuarding *>(effect)->eSrc)) {
 			spell->m_level -= m_level;
 			if(spell->m_level <= 0) {
-				spell->m_duration = 0;
+				spells.endSpell(spell);
 			}
 		}
 	}
@@ -422,7 +422,7 @@ bool SlowDownSpell::CanLaunch()
 	// TODO this seems to be the only spell that ends itself when cast twice
 	SpellBase * spell = spells.getSpellOnTarget(m_target, SPELL_SLOW_DOWN);
 	if(spell) {
-		spell->m_duration = 0;
+		spells.endSpell(spell);
 		return false;
 	}
 	

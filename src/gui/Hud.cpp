@@ -1927,7 +1927,7 @@ private:
 				if(EERIEMouseButton & 4) {
 					ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE);
 					EERIEMouseButton &= ~4;
-					spells[spellIndex]->m_duration = 0;
+					spells.endSpell(spells[spellIndex]);
 				}
 			}
 		}

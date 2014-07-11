@@ -414,9 +414,9 @@ void NegateMagicSpell::LaunchAntiMagicField() {
 		GetSpellPosition(&pos, spell);
 		if(closerThan(pos, entities[m_target]->pos, 600.f)) {
 			if(spell->m_type != SPELL_CREATE_FIELD) {
-				spell->m_duration = 0;
+				spells.endSpell(spell);
 			} else if(m_target == PlayerEntityHandle && spell->m_caster == PlayerEntityHandle) {
-				spell->m_duration = 0;
+				spells.endSpell(spell);
 			}
 		}
 	}

@@ -140,7 +140,7 @@ void DispellFieldSpell::Launch()
 		if(cancel && closerThan(pos, caster->pos, 400.f)) {
 			valid++;
 			if(spell->m_level <= m_level) {
-				spell->m_duration = 0;
+				spells.endSpell(spell);
 				dispelled++;
 			}
 		}

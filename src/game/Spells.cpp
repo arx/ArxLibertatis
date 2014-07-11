@@ -181,13 +181,18 @@ SpellBase * SpellManager::operator[](const SpellHandle handle) {
 	return m_spells[handle];
 }
 
+void SpellManager::endSpell(SpellBase * spell)
+{
+	spell->m_duration = 0;
+}
+
 void SpellManager::endByCaster(EntityHandle caster) {
 	
 	for(size_t i = 0; i < MAX_SPELLS; i++) {
 		SpellBase * spell = m_spells[i];
 		
 		if(spell && spell->m_caster == caster) {
-			spell->m_duration = 0;
+			spells.endSpell(spell);
 		}
 	}
 }
@@ -195,7 +200,7 @@ void SpellManager::endByCaster(EntityHandle caster) {
 void SpellManager::endByTarget(EntityHandle target, SpellType type) {
 	SpellBase * spell = spells.getSpellOnTarget(target, type);
 	if(spell) {
-		spell->m_duration = 0;
+		spells.endSpell(spell);
 	}
 }
 
@@ -205,7 +210,7 @@ void SpellManager::endByCaster(EntityHandle caster, SpellType type) {
 		SpellBase * spell = m_spells[i];
 		
 		if(spell && spell->m_type == type && spell->m_caster == caster) {
-			spell->m_duration = 0;
+			spells.endSpell(spell);
 			return;
 		}
 	}
@@ -708,7 +713,7 @@ void SPELLEND_Notify(SpellBase & spell) {
 //! Plays the sound of Fizzling spell
 void ARX_SPELLS_Fizzle(SpellBase * spell) {
 	
-	spell->m_duration = 0;
+	spells.endSpell(spell);
 	
 	if(spell->m_caster >= PlayerEntityHandle) {
 		ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE, &spell->m_caster_pos);
@@ -1384,7 +1389,7 @@ void ARX_SPELLS_Update() {
 			continue;
 		
 		if(!GLOBAL_MAGIC_MODE) {
-			spell->m_duration = 0;
+			spells.endSpell(spell);
 		}
 		
 		if(   spell->m_hasDuration
