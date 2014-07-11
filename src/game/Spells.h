@@ -76,10 +76,12 @@ public:
 	SpellBase * operator[] (const SpellHandle handle);
 	
 	void endSpell(SpellBase * spell);
+	
 	void endByCaster(EntityHandle caster);
 	void endByCaster(EntityHandle caster, SpellType type);
 	
 	void endByTarget(EntityHandle target, SpellType type);
+	void endByType(SpellType type);
 	
 	bool ExistAnyInstanceForThisCaster(SpellType typ, EntityHandle caster);
 	

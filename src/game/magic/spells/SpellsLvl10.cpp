@@ -52,16 +52,7 @@ MassLightningStrikeSpell::MassLightningStrikeSpell()
 
 void MassLightningStrikeSpell::Launch()
 {
-	// TODO don't manually end spell
-	for(size_t ii = 0; ii < MAX_SPELLS; ii++) {
-		SpellBase * spell = spells[SpellHandle(ii)];
-		
-		if(spell && spell->m_type == SPELL_MASS_LIGHTNING_STRIKE) {
-			MassLightningStrikeSpell * sp = static_cast<MassLightningStrikeSpell *>(spell);
-			lightHandleDestroy(sp->m_light);
-			spells.endSpell(spell);
-		}
-	}
+	spells.endByType(SPELL_MASS_LIGHTNING_STRIKE);
 	
 	m_duration = 5000; // TODO probably never read
 	m_soundEffectPlayed = false;

@@ -204,6 +204,17 @@ void SpellManager::endByTarget(EntityHandle target, SpellType type) {
 	}
 }
 
+void SpellManager::endByType(SpellType type)
+{
+	for(size_t i = 0; i < MAX_SPELLS; i++) {
+		SpellBase * spell = m_spells[i];
+		
+		if(spell && spell->m_type == type) {
+			spells.endSpell(spell);
+		}
+	}
+}
+
 void SpellManager::endByCaster(EntityHandle caster, SpellType type) {
 	
 	for(size_t i = 0; i < MAX_SPELLS; i++) {
