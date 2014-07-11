@@ -324,7 +324,7 @@ void ARX_Menu_Manage() {
 					bFade=true;			//active le fade
 					TRUE_PLAYER_MOUSELOOK_ON = false;
 
-					ARX_PLAYER_PutPlayerInNormalStance(1);
+					ARX_PLAYER_PutPlayerInNormalStance();
 				}
 			}
 			break;

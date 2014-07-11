@@ -329,7 +329,24 @@ public:
 			BLOCK_PLAYER_CONTROLS = false;
 		} else {
 			if(!BLOCK_PLAYER_CONTROLS) {
-				ARX_PLAYER_PutPlayerInNormalStance(0);
+				ARX_PLAYER_PutPlayerInNormalStance();
+				
+				for(size_t i = 0; i < MAX_SPELLS; i++) {
+					SpellBase * spell = spells[SpellHandle(i)];
+					
+					if(spell && (spell->m_caster == PlayerEntityHandle || spell->m_target == PlayerEntityHandle)) {
+						switch(spell->m_type) {
+							case SPELL_MAGIC_SIGHT:
+							case SPELL_LEVITATE:
+							case SPELL_SPEED:
+							case SPELL_FLYING_EYE:
+								spells.endSpell(spell);
+								break;
+							default: break;
+						}
+					}
+				}
+				
 				Stack_SendMsgToAllNPC_IO(SM_CONTROLS_OFF, "");
 				spells.endByCaster(PlayerEntityHandle);
 			}

@@ -378,7 +378,7 @@ void ARX_KEYRING_Combine(Entity * io);
 
 void ARX_PLAYER_Reset_Fall();
 void ARX_PLAYER_KillTorch();
-void ARX_PLAYER_PutPlayerInNormalStance(long val);
+void ARX_PLAYER_PutPlayerInNormalStance();
 void ARX_PLAYER_Start_New_Quest();
 void ARX_PLAYER_Rune_Add_All();
  

@@ -2572,7 +2572,7 @@ float GetPlayerStealth() {
  * \brief Force Player to standard stance
  * \param val
  */
-void ARX_PLAYER_PutPlayerInNormalStance(long val) {
+void ARX_PLAYER_PutPlayerInNormalStance() {
 	
 	if(player.Current_Movement & PLAYER_CROUCH) {
 		player.Current_Movement &= ~PLAYER_CROUCH;
@@ -2596,24 +2596,6 @@ void ARX_PLAYER_PutPlayerInNormalStance(long val) {
 	}
 	
 	ARX_SOUND_Stop(SND_MAGIC_DRAW);
-	
-	if(!val) {
-		for(size_t i = 0; i < MAX_SPELLS; i++) {
-			SpellBase * spell = spells[SpellHandle(i)];
-			
-			if(spell && (spell->m_caster == PlayerEntityHandle || spell->m_target == PlayerEntityHandle)) {
-				switch(spell->m_type) {
-					case SPELL_MAGIC_SIGHT:
-					case SPELL_LEVITATE:
-					case SPELL_SPEED:
-					case SPELL_FLYING_EYE:
-						spells.endSpell(spell);
-						break;
-					default: break;
-				}
-			}
-		}
-	}
 }
 
 /*!
