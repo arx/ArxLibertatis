@@ -125,17 +125,12 @@ void MassLightningStrikeSpell::Update(float timeDelta)
 		effect->Update(timeDelta);
 		effect->Render();
 	}
-	
-	float _fx;
-	_fx = 0.5f;
-	unsigned long _gct;
-	_gct = 0;
 
 	Vec3f position;
 
 	position = m_targetPos + randomVec(-250.f, 250.f);
 	ARX_SOUND_RefreshPosition(m_snd_loop, position);
-	ARX_SOUND_RefreshVolume(m_snd_loop, _fx + 0.5F);
+	ARX_SOUND_RefreshVolume(m_snd_loop, 1.f);
 	ARX_SOUND_RefreshPitch(m_snd_loop, 0.8F + 0.4F * rnd());
 	
 	if(rnd() > 0.62f) {
@@ -148,7 +143,7 @@ void MassLightningStrikeSpell::Update(float timeDelta)
 		ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &position, 0.8F + 0.4F * rnd());
 	}
 	
-	if((_gct > m_duration - 1800) && !m_soundEffectPlayed) {
+	if(0 > (long(m_duration) - 1800) && !m_soundEffectPlayed) {
 		m_soundEffectPlayed = true;
 		ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, NULL, 0.8F + 0.4F * rnd());
 	}
@@ -156,17 +151,10 @@ void MassLightningStrikeSpell::Update(float timeDelta)
 	if(lightHandleIsValid(m_light)) {
 		EERIE_LIGHT * light = lightHandleGet(m_light);
 		
-		float fxx;
-
-		if(_fx > 0.2f)
-			fxx = 1.f;
-		else
-			fxx = _fx * 5.f;
-
 		light->intensity = 1.3f + rnd() * 1.f;
 		light->fallend = 850.f;
 		light->fallstart = 500.f;
-		light->rgb = Color3f::red * fxx;
+		light->rgb = Color3f::red;
 	}	
 }
 
