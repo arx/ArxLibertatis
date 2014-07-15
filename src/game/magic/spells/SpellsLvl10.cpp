@@ -83,9 +83,9 @@ void MassLightningStrikeSpell::Launch()
 		EERIE_LIGHT * light = lightHandleGet(m_light);
 		
 		light->intensity = 1.8f;
-		light->fallend = 450.f;
-		light->fallstart = 380.f;
-		light->rgb = Color3f(1.f, 0.75f, 0.75f);
+		light->fallend = 850.f;
+		light->fallstart = 500.f;
+		light->rgb = Color3f::red; // Color3f(1.f, 0.75f, 0.75f);
 		light->pos = m_targetPos;
 	}
 	
@@ -152,9 +152,6 @@ void MassLightningStrikeSpell::Update(float timeDelta)
 		EERIE_LIGHT * light = lightHandleGet(m_light);
 		
 		light->intensity = 1.3f + rnd() * 1.f;
-		light->fallend = 850.f;
-		light->fallstart = 500.f;
-		light->rgb = Color3f::red;
 	}	
 }
 
