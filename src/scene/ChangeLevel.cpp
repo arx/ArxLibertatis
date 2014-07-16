@@ -311,12 +311,10 @@ void ARX_CHANGELEVEL_Change(const string & level, const string & target, long an
 	// not changing level, just teleported
 	if(num == CURRENTLEVEL) {
 		EntityHandle t = entities.getById(target);
-		if(t > 0) {
-			Vec3f pos;
-			if(entities[t] && GetItemWorldPosition(entities[t], &pos)) {
-				moveto = player.pos = pos + player.baseOffset();
-				NO_PLAYER_POSITION_RESET = 1;
-			}
+		if(t > 0 && entities[t]) {
+			Vec3f pos = GetItemWorldPosition(entities[t]);
+			moveto = player.pos = pos + player.baseOffset();
+			NO_PLAYER_POSITION_RESET = 1;
 		}
 		player.desiredangle.setPitch(angle);
 		player.angle.setPitch(angle);
@@ -346,13 +344,12 @@ void ARX_CHANGELEVEL_Change(const string & level, const string & target, long an
 	// Now restore player pos to destination
 	EntityHandle t = entities.getById(target);
 	if(t > 0 && entities[t]) {
-		Vec3f pos;
-		if(GetItemWorldPosition(entities[t], &pos)) {
-			moveto = player.pos = pos + player.baseOffset();
-			NO_PLAYER_POSITION_RESET = 1;
-			WILL_RESTORE_PLAYER_POSITION = moveto;
-			WILL_RESTORE_PLAYER_POSITION_FLAG = 1;
-		}
+		Vec3f pos = GetItemWorldPosition(entities[t]);
+		
+		moveto = player.pos = pos + player.baseOffset();
+		NO_PLAYER_POSITION_RESET = 1;
+		WILL_RESTORE_PLAYER_POSITION = moveto;
+		WILL_RESTORE_PLAYER_POSITION_FLAG = 1;
 	}
 	
 	CURRENTLEVEL = num;

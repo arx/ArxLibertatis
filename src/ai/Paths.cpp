@@ -144,9 +144,10 @@ long ARX_PATH_IsPosInZone(ARX_PATH * ap, Vec3f pos)
 }
 
 ARX_PATH * ARX_PATH_CheckInZone(Entity * io) {
+	arx_assert(io);
+	
 	if(ARXpaths) {
-		Vec3f curpos;
-		GetItemWorldPosition(io, &curpos);
+		Vec3f curpos = GetItemWorldPosition(io);
 
 		for(long i = 0; i < nbARXpaths; i++) {
 			if(ARXpaths[i] && ARXpaths[i]->height != 0) {

@@ -555,8 +555,7 @@ void PrepareIOTreatZone(long flag)
 
 				if(Cam_Room >= 0) {
 					if(io->show == SHOW_FLAG_TELEPORTING) {
-						Vec3f pos;
-						GetItemWorldPosition(io, &pos);
+						Vec3f pos = GetItemWorldPosition(io);
 						dists = glm::distance2(ACTIVECAM->orgTrans.pos, pos);
 					} else {
 						if(io->requestRoomUpdate)
@@ -566,8 +565,7 @@ void PrepareIOTreatZone(long flag)
 					}
 				} else {
 					if(io->show == SHOW_FLAG_TELEPORTING) {
-						Vec3f pos;
-						GetItemWorldPosition(io, &pos);
+						Vec3f pos = GetItemWorldPosition(io);
 						dists = glm::distance2(ACTIVECAM->orgTrans.pos, pos); //&io->pos,&pos);
 					}
 					else

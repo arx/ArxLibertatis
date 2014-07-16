@@ -1600,15 +1600,13 @@ Entity * GetFromInventory(const Vec2s & pos) {
  * Put the position in "pos". returns true if position was found
  * or false if object is invalid, or position not defined.
  */
-bool GetItemWorldPosition(Entity * io, Vec3f * pos) {
-	if(!io)
-		return false;
-
+Vec3f GetItemWorldPosition(Entity * io) {
+	arx_assert(io);
+	
 	// Is this object being Dragged by player ?
 	if(DRAGINTER == io) {
 		// Set position to approximate center of player.
-		*pos = player.pos + Vec3f(0.f, 80.f, 0.f);
-		return true;
+		return player.pos + Vec3f(0.f, 80.f, 0.f);
 	}
 
 	// Not in scene ?
@@ -1616,8 +1614,7 @@ bool GetItemWorldPosition(Entity * io, Vec3f * pos) {
 		// Is it equiped ?
 		if(IsEquipedByPlayer(io)) {
 			// in player inventory
-			*pos = player.pos + Vec3f(0.f, 80.f, 0.f);
-			return true;
+			return player.pos + Vec3f(0.f, 80.f, 0.f);
 		}
 
 		// Is it in any player inventory ?
@@ -1625,8 +1622,7 @@ bool GetItemWorldPosition(Entity * io, Vec3f * pos) {
 			for(size_t j = 0; j < INVENTORY_Y; j++) {
 				for(size_t i = 0; i < INVENTORY_X; i++) {
 					if(inventory[iNbBag][i][j].io == io) {
-						*pos = player.pos + Vec3f(0.f, 80.f, 0.f);
-						return true;
+						return player.pos + Vec3f(0.f, 80.f, 0.f);
 					}
 				}
 			}
@@ -1642,8 +1638,7 @@ bool GetItemWorldPosition(Entity * io, Vec3f * pos) {
 				for(long j = 0; j < id->m_size.y; j++) {
 					for(long k = 0; k < id->m_size.x; k++) {
 						if(id->slot[k][j].io == io) {
-							*pos = ioo->pos;
-							return true;
+							return ioo->pos;
 						}
 					}
 				}
@@ -1652,8 +1647,7 @@ bool GetItemWorldPosition(Entity * io, Vec3f * pos) {
 	}
 
 	// Default position.
-	*pos = io->pos;
-	return true;
+	return io->pos;
 }
 
 /*!

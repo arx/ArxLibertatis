@@ -4324,14 +4324,10 @@ void ArxGame::manageEditorControls() {
 		
 		if(COMBINE) {
 			if(!player.torch || (player.torch && (COMBINE != player.torch))) {
-				Vec3f pos;
+				Vec3f pos = GetItemWorldPosition(COMBINE);
 				
-				if(GetItemWorldPosition(COMBINE, &pos)) {
-					if(fartherThan(pos, player.pos, 300.f))
-						COMBINE=NULL;
-				}
-				else
-					COMBINE=NULL;
+				if(fartherThan(pos, player.pos, 300.f))
+					COMBINE = NULL;
 			}
 		}
 		

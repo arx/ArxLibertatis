@@ -585,11 +585,7 @@ public:
 				return Failed;
 			}
 			
-			Vec3f pos;
-			if(!GetItemWorldPosition(t, &pos)) {
-				ScriptWarning << "could not get world position";
-				return Failed;
-			}
+			Vec3f pos = GetItemWorldPosition(t);
 			
 			if(teleport_player) {
 				ARX_INTERACTIVE_Teleport(entities.player(), pos);
@@ -611,10 +607,8 @@ public:
 			}
 			
 			if(teleport_player) {
-				Vec3f pos;
-				if(GetItemWorldPosition(io, &pos)) {
-					ARX_INTERACTIVE_Teleport(entities.player(), pos);
-				}
+				Vec3f pos = GetItemWorldPosition(io);
+				ARX_INTERACTIVE_Teleport(entities.player(), pos);
 			} else if(!(io->ioflags & IO_NPC) || io->_npcdata->lifePool.current > 0) {
 				if(io->show != SHOW_FLAG_HIDDEN && io->show != SHOW_FLAG_MEGAHIDE) {
 					io->show = SHOW_FLAG_IN_SCENE;

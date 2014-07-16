@@ -3650,12 +3650,7 @@ void GetTargetPos(Entity * io, unsigned long smoothing) {
 		io->target = player.pos + Vec3f(0.f, player.size.y, 0.f);
 		return;
 	} else if(ValidIONum(io->targetinfo)) {
-		Vec3f pos;
-		if(GetItemWorldPosition(entities[io->targetinfo], &pos)) {
-			io->target = pos;
-			return;
-		}
-		io->target = entities[io->targetinfo]->pos;
+		io->target = GetItemWorldPosition(entities[io->targetinfo]);
 		return;
 	}
 	

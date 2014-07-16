@@ -234,14 +234,13 @@ void TreatBackgroundDynlights()
 				if(lightHandleIsValid(light->m_ignitionLightHandle)) {
 					lightHandleGet(light->m_ignitionLightHandle)->exist = 0;
 					light->m_ignitionLightHandle = LightHandle::Invalid;
-					Vec3f _pos2;
-
+					
 					for(size_t l = 0; l < entities.size(); l++) {
 						const EntityHandle handle = EntityHandle(l);
 						Entity * e = entities[handle];
 						
 						if(e && (e->ioflags & IO_MARKER)) {
-							GetItemWorldPosition(e, &_pos2);
+							Vec3f _pos2 = GetItemWorldPosition(e);
 							if(!fartherThan(light->pos, _pos2, 300.f)) {
 								SendIOScriptEvent(e, SM_CUSTOM, "douse");
 							}
@@ -251,14 +250,12 @@ void TreatBackgroundDynlights()
 			} else {
 				// just light up
 				if(!lightHandleIsValid(light->m_ignitionLightHandle)) {
-					Vec3f _pos2;
-
 					for(size_t l = 0; l < entities.size(); l++) {
 						const EntityHandle handle = EntityHandle(l);
 						Entity * e = entities[handle];
 						
 						if(e && (e->ioflags & IO_MARKER)) {
-							GetItemWorldPosition(e, &_pos2);
+							Vec3f _pos2 = GetItemWorldPosition(e);
 							if(!fartherThan(light->pos, _pos2, 300.f)) {
 								SendIOScriptEvent(e, SM_CUSTOM, "fire");
 							}

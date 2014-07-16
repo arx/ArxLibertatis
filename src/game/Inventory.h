@@ -245,7 +245,7 @@ bool putInInventory(Entity * item, const InventoryPos & pos);
 
 void PutInFrontOfPlayer(Entity * io);
 
-bool GetItemWorldPosition(Entity * io, Vec3f * pos);
+Vec3f GetItemWorldPosition(Entity * io);
 bool GetItemWorldPositionSound(const Entity * io, Vec3f * pos);
 
 Entity * GetInventoryObj_INVENTORYUSE(const Vec2s & pos);

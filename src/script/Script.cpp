@@ -557,9 +557,8 @@ ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const string & 
 						   && (entities[t]->show == SHOW_FLAG_IN_SCENE
 						       || entities[t]->show == SHOW_FLAG_IN_INVENTORY)) {
 							
-							Vec3f pos, pos2;
-							GetItemWorldPosition(entity, &pos);
-							GetItemWorldPosition(entities[t], &pos2);
+							Vec3f pos  = GetItemWorldPosition(entity);
+							Vec3f pos2 = GetItemWorldPosition(entities[t]);
 							
 							if(entity->requestRoomUpdate) {
 								UpdateIORoom(entity);
@@ -671,10 +670,11 @@ ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const string & 
 			}
 			
 			if(boost::starts_with(name, "^ininitpos")) {
-				Vec3f pos;
 				*lcontent = 0;
-				if(entity && GetItemWorldPosition(entity, &pos) && pos == entity->initpos) {
-					*lcontent = 1;
+				if(entity) {
+					Vec3f pos = GetItemWorldPosition(entity);
+					if(pos == entity->initpos)
+						*lcontent = 1;
 				}
 				return TYPE_LONG;
 			}
@@ -870,9 +870,8 @@ ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const string & 
 						    || entity->show == SHOW_FLAG_IN_INVENTORY)
 						   && (entities[t]->show == SHOW_FLAG_IN_SCENE
 						       || entities[t]->show == SHOW_FLAG_IN_INVENTORY)) {
-							Vec3f pos, pos2;
-							GetItemWorldPosition(entity, &pos);
-							GetItemWorldPosition(entities[t], &pos2);
+							Vec3f pos  = GetItemWorldPosition(entity);
+							Vec3f pos2 = GetItemWorldPosition(entities[t]);
 							*fcontent = fdist(pos, pos2);
 							return TYPE_FLOAT;
 						}

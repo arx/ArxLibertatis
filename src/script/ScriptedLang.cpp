@@ -328,9 +328,8 @@ public:
 				   || ((sendto & SEND_FIX) && (e->ioflags & IO_FIX))
 				   || ((sendto & SEND_ITEM) && (e->ioflags & IO_ITEM))) {
 					
-					Vec3f _pos, _pos2;
-					GetItemWorldPosition(e, &_pos);
-					GetItemWorldPosition(io, &_pos2);
+					Vec3f _pos  = GetItemWorldPosition(e);
+					Vec3f _pos2 = GetItemWorldPosition(io);
 					
 					if(!fartherThan(_pos, _pos2, rad)) {
 						io->stat_sent++;
@@ -364,8 +363,7 @@ public:
 				   || ((sendto & SEND_FIX) && (e->ioflags & IO_FIX))
 				   || ((sendto & SEND_ITEM) && (e->ioflags & IO_ITEM))) {
 					
-					Vec3f _pos;
-					GetItemWorldPosition(e, &_pos);
+					Vec3f _pos = GetItemWorldPosition(e);
 					
 					if(ARX_PATH_IsPosInZone(ap, _pos)) {
 						io->stat_sent++;
