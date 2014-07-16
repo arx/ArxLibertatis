@@ -363,10 +363,15 @@ void PrecalcIOLighting(const Vec3f * pos, float radius) {
 	for(size_t i = 0; i < MAX_LIGHTS; i++) {
 		EERIE_LIGHT * el = GLight[i];
 
-		if(el && el->exist && el->m_ignitionStatus && !(el->extras & EXTRAS_SEMIDYNAMIC)) {
-			if((el->pos.x >= pos->x - radius) && (el->pos.x <= pos->x + radius)
-					&& (el->pos.z >= pos->z - radius) && (el->pos.z <= pos->z + radius))
-			{
+		if(   el
+		   && el->exist
+		   && el->m_ignitionStatus
+		   && !(el->extras & EXTRAS_SEMIDYNAMIC)
+		   && (el->pos.x >= pos->x - radius)
+		   && (el->pos.x <= pos->x + radius)
+		   && (el->pos.z >= pos->z - radius)
+		   && (el->pos.z <= pos->z + radius)
+		) {
 				RecalcLight(el);
 				IO_PDL[TOTIOPDL] = el;
 
@@ -374,7 +379,6 @@ void PrecalcIOLighting(const Vec3f * pos, float radius) {
 
 				if((size_t)TOTIOPDL >= MAX_DYNLIGHTS)
 					TOTIOPDL--;
-			}
 		}
 	}
 }
