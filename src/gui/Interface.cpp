@@ -4372,15 +4372,15 @@ void ArxGame::manageEditorControls() {
 					   && (COMBINE->ioflags & IO_ITEM)
 					) {
 						if((COMBINE == player.torch) || (COMBINE->_itemdata->LightValue == 1)) {
-							if(!light->status) {
-								light->status = true;
+							if(!light->m_ignitionStatus) {
+								light->m_ignitionStatus = true;
 								ARX_SOUND_PlaySFX(SND_TORCH_START, &light->pos);
 							}
 						}
 						
 						if(COMBINE->_itemdata->LightValue == 0) {
-							if(light->status) {
-								light->status = false;
+							if(light->m_ignitionStatus) {
+								light->m_ignitionStatus = false;
 								ARX_SOUND_PlaySFX(SND_TORCH_END, &light->pos);
 								SendIOScriptEvent(COMBINE, SM_CUSTOM, "douse");
 							}

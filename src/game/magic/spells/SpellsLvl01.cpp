@@ -235,7 +235,7 @@ void IgnitSpell::Launch()
 			continue;
 		}
 		
-		if(light->status) {
+		if(light->m_ignitionStatus) {
 			continue;
 		}
 		
@@ -286,7 +286,7 @@ void IgnitSpell::End() {
 	
 	std::vector<T_LINKLIGHTTOFX>::iterator itr;
 	for(itr = m_lights.begin(); itr != m_lights.end(); ++itr) {
-		GLight[itr->iLightNum]->status = true;
+		GLight[itr->iLightNum]->m_ignitionStatus = true;
 		ARX_SOUND_PlaySFX(SND_SPELL_IGNITE, &itr->poslight);
 		lightHandleDestroy(itr->idl);
 	}
@@ -350,7 +350,7 @@ void DouseSpell::Launch()
 			continue;
 		}
 		
-		if(!light->status) {
+		if(!light->m_ignitionStatus) {
 			continue;
 		}
 		
@@ -414,7 +414,7 @@ void DouseSpell::End() {
 	
 	std::vector<T_LINKLIGHTTOFX>::const_iterator itr;
 	for(itr = m_lights.begin(); itr != m_lights.end(); ++itr) {
-		GLight[itr->iLightNum]->status = false;
+		GLight[itr->iLightNum]->m_ignitionStatus = false;
 		ARX_SOUND_PlaySFX(SND_SPELL_DOUSE, &itr->poslight);
 	}
 }

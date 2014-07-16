@@ -99,7 +99,7 @@ struct EERIE_LIGHT {
 	bool specialType; // TODO refactor special case
 	char treat;
 	ExtrasType extras;
-	bool status; // on/off
+	bool m_ignitionStatus; // on/off
 	Vec3f pos;
 	float fallstart;
 	float fallend;

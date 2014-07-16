@@ -229,7 +229,7 @@ void TreatBackgroundDynlights()
 				light->m_screenRect.min.x = 1;
 			}
 
-			if(!light->status) {
+			if(!light->m_ignitionStatus) {
 				// just extinguished
 				if(lightHandleIsValid(light->m_ignitionLightHandle)) {
 					lightHandleGet(light->m_ignitionLightHandle)->exist = 0;
@@ -363,7 +363,7 @@ void PrecalcIOLighting(const Vec3f * pos, float radius) {
 	for(size_t i = 0; i < MAX_LIGHTS; i++) {
 		EERIE_LIGHT * el = GLight[i];
 
-		if(el && el->exist && el->status && !(el->extras & EXTRAS_SEMIDYNAMIC)) {
+		if(el && el->exist && el->m_ignitionStatus && !(el->extras & EXTRAS_SEMIDYNAMIC)) {
 			if((el->pos.x >= pos->x - radius) && (el->pos.x <= pos->x + radius)
 					&& (el->pos.z >= pos->z - radius) && (el->pos.z <= pos->z + radius))
 			{

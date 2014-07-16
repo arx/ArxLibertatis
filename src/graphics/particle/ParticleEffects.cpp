@@ -1302,8 +1302,8 @@ void ARX_PARTICLES_Update(EERIE_CAMERA * cam)  {
 void RestoreAllLightsInitialStatus() {
 	for(size_t i = 0; i < MAX_LIGHTS; i++) {
 		if(GLight[i]) {
-			GLight[i]->status = !(GLight[i]->extras & EXTRAS_STARTEXTINGUISHED);
-			if(!GLight[i]->status) {
+			GLight[i]->m_ignitionStatus = !(GLight[i]->extras & EXTRAS_STARTEXTINGUISHED);
+			if(!GLight[i]->m_ignitionStatus) {
 				lightHandleDestroy(GLight[i]->m_ignitionLightHandle);
 			}
 		}
@@ -1330,7 +1330,7 @@ void TreatBackgroundActions() {
 			continue;
 		}
 		
-		if((gl->extras & EXTRAS_SPAWNFIRE) && gl->status) {
+		if((gl->extras & EXTRAS_SPAWNFIRE) && gl->m_ignitionStatus) {
 			DamageParameters damage;
 			damage.radius = gl->ex_radius;
 			damage.damages = gl->ex_radius * (1.0f / 7);
@@ -1343,8 +1343,8 @@ void TreatBackgroundActions() {
 			DamageCreate(damage);
 		}
 		
-		if(!(gl->extras & (EXTRAS_SPAWNFIRE | EXTRAS_SPAWNSMOKE)) || !gl->status) {
-			if(!gl->status && gl->sample != audio::INVALID_ID) {
+		if(!(gl->extras & (EXTRAS_SPAWNFIRE | EXTRAS_SPAWNSMOKE)) || !gl->m_ignitionStatus) {
+			if(!gl->m_ignitionStatus && gl->sample != audio::INVALID_ID) {
 				ARX_SOUND_Stop(gl->sample);
 				gl->sample = audio::INVALID_ID;
 			}

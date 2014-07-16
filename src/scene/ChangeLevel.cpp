@@ -522,7 +522,7 @@ static bool ARX_CHANGELEVEL_Push_Index(long num) {
 		if(el != NULL && !el->specialType) {
 			ARX_CHANGELEVEL_LIGHT * acl = (ARX_CHANGELEVEL_LIGHT *)(dat + pos);
 			memset(acl, 0, sizeof(ARX_CHANGELEVEL_LIGHT));
-			acl->status = el->status;
+			acl->status = el->m_ignitionStatus;
 			pos += sizeof(ARX_CHANGELEVEL_LIGHT);
 		}
 	}
@@ -1582,7 +1582,7 @@ long ARX_CHANGELEVEL_Pop_Zones_n_Lights(ARX_CHANGELEVEL_INDEX * asi, long num) {
 			EERIE_LIGHT * el = GLight[j];
 			if(el && !el->specialType) {
 				if(count == i) {
-					el->status = (acl->status != 0);
+					el->m_ignitionStatus = (acl->status != 0);
 					break;
 				}
 				count++;
