@@ -118,7 +118,7 @@ struct EERIE_LIGHT {
 	float ex_size;
 	float ex_speed;
 	float ex_flaresize;
-	LightHandle tl;
+	LightHandle m_ignitionLightHandle;
 	unsigned long time_creation;
 	long duration; // will start to fade before the end of duration...
 	audio::SourceId sample;

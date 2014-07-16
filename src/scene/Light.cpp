@@ -116,8 +116,8 @@ void EERIE_LIGHT_GlobalInit() {
 	
 	for(size_t i = 0; i < MAX_LIGHTS; i++) {
 		if(GLight[i]) {
-			if(lightHandleIsValid(GLight[i]->tl)) {
-				lightHandleGet(GLight[i]->tl)->exist = 0;
+			if(lightHandleIsValid(GLight[i]->m_ignitionLightHandle)) {
+				lightHandleGet(GLight[i]->m_ignitionLightHandle)->exist = 0;
 			}
 			free(GLight[i]);
 			GLight[i] = NULL;
@@ -148,7 +148,7 @@ long EERIE_LIGHT_Create() {
 			
 			memset(GLight[i], 0, sizeof(EERIE_LIGHT));
 			GLight[i]->sample = audio::INVALID_ID;
-			GLight[i]->tl = LightHandle::Invalid;
+			GLight[i]->m_ignitionLightHandle = LightHandle::Invalid;
 			return i;
 		}
 	}
@@ -177,7 +177,7 @@ void EERIE_LIGHT_GlobalAdd(const EERIE_LIGHT * el)
 	{
 		GLight[num] = (EERIE_LIGHT *)malloc(sizeof(EERIE_LIGHT));
 		memcpy(GLight[num], el, sizeof(EERIE_LIGHT));
-		GLight[num]->tl = LightHandle::Invalid;
+		GLight[num]->m_ignitionLightHandle = LightHandle::Invalid;
 		GLight[num]->sample = audio::INVALID_ID;
 	}
 }
@@ -231,9 +231,9 @@ void TreatBackgroundDynlights()
 
 			if(!light->status) {
 				// just extinguished
-				if(lightHandleIsValid(light->tl)) {
-					lightHandleGet(light->tl)->exist = 0;
-					light->tl = LightHandle::Invalid;
+				if(lightHandleIsValid(light->m_ignitionLightHandle)) {
+					lightHandleGet(light->m_ignitionLightHandle)->exist = 0;
+					light->m_ignitionLightHandle = LightHandle::Invalid;
 					Vec3f _pos2;
 
 					for(size_t l = 0; l < entities.size(); l++) {
@@ -250,7 +250,7 @@ void TreatBackgroundDynlights()
 				}
 			} else {
 				// just light up
-				if(!lightHandleIsValid(light->tl)) {
+				if(!lightHandleIsValid(light->m_ignitionLightHandle)) {
 					Vec3f _pos2;
 
 					for(size_t l = 0; l < entities.size(); l++) {
@@ -265,11 +265,11 @@ void TreatBackgroundDynlights()
 						}
 					}
 
-					light->tl = GetFreeDynLight();
+					light->m_ignitionLightHandle = GetFreeDynLight();
 				}
 				
-				if(lightHandleIsValid(light->tl)) {
-					EERIE_LIGHT *dynamicLight = lightHandleGet(light->tl);
+				if(lightHandleIsValid(light->m_ignitionLightHandle)) {
+					EERIE_LIGHT *dynamicLight = lightHandleGet(light->m_ignitionLightHandle);
 
 					dynamicLight->pos = light->pos;
 					dynamicLight->fallstart	=	light->fallstart;
@@ -423,8 +423,8 @@ void ClearDynLights() {
 	}
 
 	for(size_t i = 0; i < MAX_LIGHTS; i++) {
-		if(GLight[i] && GLight[i]->tl > 0) {
-			GLight[i]->tl = LightHandle(0); // TODO is this correct ?
+		if(GLight[i] && GLight[i]->m_ignitionLightHandle > 0) {
+			GLight[i]->m_ignitionLightHandle = LightHandle(0); // TODO is this correct ?
 		}
 	}
 

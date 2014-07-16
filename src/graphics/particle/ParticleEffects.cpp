@@ -1304,7 +1304,7 @@ void RestoreAllLightsInitialStatus() {
 		if(GLight[i]) {
 			GLight[i]->status = !(GLight[i]->extras & EXTRAS_STARTEXTINGUISHED);
 			if(!GLight[i]->status) {
-				lightHandleDestroy(GLight[i]->tl);
+				lightHandleDestroy(GLight[i]->m_ignitionLightHandle);
 			}
 		}
 	}
