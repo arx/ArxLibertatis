@@ -129,8 +129,6 @@ bool Quadable(EERIEPOLY * ep, EERIEPOLY * ep2, float tolerance)
 		ep2->tv[3].color = ep2->v[3].color = Color::white.toBGR();
 		ep2->tv[3].rhw = ep2->v[3].rhw = 1.f;
 
-	DeclareEGInfo(ep->v[3].p.x, ep->v[3].p.z);
-
 	ep2->center = (ep2->v[0].p + ep2->v[1].p + ep2->v[2].p + ep2->v[3].p) * 0.25f;
 	ep2->max = glm::max(ep2->max, ep2->v[3].p);
 	ep2->min = glm::min(ep2->min, ep2->v[3].p);

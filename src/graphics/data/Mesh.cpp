@@ -1105,7 +1105,6 @@ int InitBkg(EERIE_BACKGROUND * eb, short sx, short sz, short Xdiv, short Zdiv) {
 	for(int i = 0; i < eb->Xsize * eb->Zsize; i++) {
 		EERIE_BKG_INFO *eg = &eb->Backg[i];
 		eg->treat = 0;
-		eg->nothing = 1;
 		eg->nbianchors = 0;
 		eg->ianchors = NULL;
 	}
@@ -1129,18 +1128,6 @@ int InitBkg(EERIE_BACKGROUND * eb, short sx, short sz, short Xdiv, short Zdiv) {
 
 //*************************************************************************************
 //*************************************************************************************
-
-void DeclareEGInfo(float x, float z)
-{
-	long posx = x * ACTIVEBKG->Xmul;
-	long posz = z * ACTIVEBKG->Zmul;
-
-	if(posx < 0 || posx >= ACTIVEBKG->Xsize || posz < 0 || posz >= ACTIVEBKG->Zsize)
-		return;
-
-	EERIE_BKG_INFO *eg = &ACTIVEBKG->Backg[posx+posz*ACTIVEBKG->Xsize];
-	eg->nothing = 0;
-}
 
 void EERIEPOLY_Add_PolyIn(EERIE_BKG_INFO * eg, EERIEPOLY * ep)
 {
@@ -1221,11 +1208,6 @@ void EERIEPOLY_Compute_PolyIn()
 						}
 					}
 				}
-
-			if(eg->nbpolyin)
-				eg->nothing = 0;
-			else
-				eg->nothing = 1;
 		}
 
 	for(int j = 0; j < ACTIVEBKG->Zsize; j++)
@@ -1242,7 +1224,6 @@ void EERIEPOLY_Compute_PolyIn()
 
 			FAST_BKG_DATA * fbd = &ACTIVEBKG->fastdata[i][j];
 			fbd->treat = eg->treat;
-			fbd->nothing = eg->nothing;
 			fbd->nbpoly = eg->nbpoly;
 			fbd->nbianchors = eg->nbianchors;
 			fbd->nbpolyin = eg->nbpolyin;
@@ -1647,7 +1628,6 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 			}
 			
 			bkg.treat = 0;
-			bkg.nothing = fsi->nbpoly ? 0 : 1;
 			
 			bkg.frustrum_maxy = -99999999.f;
 			bkg.frustrum_miny = 99999999.f;
@@ -1719,14 +1699,6 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 					dist = max(dist, d);
 				}
 				ep2->v[0].rhw = dist;
-				
-				DeclareEGInfo(ep2->center.x, ep2->center.z);
-				DeclareEGInfo(ep2->v[0].p.x, ep2->v[0].p.z);
-				DeclareEGInfo(ep2->v[1].p.x, ep2->v[1].p.z);
-				DeclareEGInfo(ep2->v[2].p.x, ep2->v[2].p.z);
-				if(ep->type & POLY_QUAD) {
-					DeclareEGInfo(ep2->v[3].p.x, ep2->v[3].p.z);
-				}
 			}
 			
 			if(fsi->nbianchors <= 0) {
@@ -2180,12 +2152,7 @@ static int BkgAddPoly(EERIEPOLY * ep, EERIE_3DOBJ * eobj) {
 	else if (posz >= ACTIVEBKG->Zsize) return 0;
 
 	EERIE_BKG_INFO *eg = &ACTIVEBKG->Backg[posx+posz*ACTIVEBKG->Xsize];
-
-	DeclareEGInfo(cx * ( 1.0f / 3 ), cz * ( 1.0f / 3 ));
-	DeclareEGInfo(ep->v[0].p.x, ep->v[0].p.z);
-	DeclareEGInfo(ep->v[1].p.x, ep->v[1].p.z);
-	DeclareEGInfo(ep->v[2].p.x, ep->v[2].p.z);
-
+	
 	cx *= ( 1.0f / 3 );
 	cy *= ( 1.0f / 3 );
 	cz *= ( 1.0f / 3 );

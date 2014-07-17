@@ -58,7 +58,6 @@ class Entity;
 struct EERIE_BKG_INFO
 {
 	char				treat;
-	char				nothing;
 	short				nbpoly;
 	short				nbianchors;
 	short				nbpolyin;
@@ -81,7 +80,6 @@ struct EERIE_SMINMAX
 struct FAST_BKG_DATA
 {
 	char				treat;
-	char				nothing;
 	short				nbpoly;
 	short				nbianchors;
 	short				nbpolyin;
@@ -180,7 +178,6 @@ void EERIEAddPoly(TexturedVertex * vert, TexturedVertex * vert2, TextureContaine
 //****************************************************************************
 
 long MakeTopObjString(Entity * io, std::string& dest);
-void DeclareEGInfo(float x, float z);
 bool TryToQuadify(EERIEPOLY * ep,EERIE_3DOBJ * eobj);
 Vec2f getWaterFxUvOffset(const Vec3f & odtv, float power);
 
