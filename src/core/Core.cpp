@@ -959,7 +959,7 @@ void FirstFrameHandling() {
 
 	subj.angle = player.angle;
 	
-	RestoreLastLoadedLightning();
+	RestoreLastLoadedLightning(ACTIVEBKG);
 
 	progressBarAdvance();
 	LoadLevelScreen();

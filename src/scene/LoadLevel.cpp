@@ -1039,7 +1039,7 @@ void DanaeClearLevel(long flag)
 	FAST_RELEASE = 0;
 }
 
-void RestoreLastLoadedLightning()
+void RestoreLastLoadedLightning(EERIE_BACKGROUND * eb)
 {
 	long pos = 0;
 	long bcount = CountBkgVertex();
@@ -1056,8 +1056,6 @@ void RestoreLastLoadedLightning()
 		LastLoadedLightningNb = 0;
 		return;
 	}
-
-	EERIE_BACKGROUND * eb = ACTIVEBKG;
 
 	bcount = LastLoadedLightningNb;
 
