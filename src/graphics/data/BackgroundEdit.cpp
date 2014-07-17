@@ -170,7 +170,7 @@ bool TryToQuadify(EERIEPOLY * ep,EERIE_3DOBJ * eobj)
 		if(type != TYPE_ROOM)
 			return false;
 
-		EERIE_BKG_INFO *eg = (EERIE_BKG_INFO *)&ACTIVEBKG->Backg[xx+zz*ACTIVEBKG->Xsize];
+		EERIE_BKG_INFO *eg = &ACTIVEBKG->Backg[xx+zz*ACTIVEBKG->Xsize];
 
 		if(eg)
 		for(long n = 0; n < eg->nbpoly; n++) {

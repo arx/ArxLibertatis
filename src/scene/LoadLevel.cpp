@@ -393,7 +393,7 @@ long DanaeSaveLevel(const fs::path & _fic) {
 	for(long j = 0; j < eb->Zsize; j++) {
 		for(long i = 0; i < eb->Xsize; i++) {
 			
-			EERIE_BKG_INFO * eg = (EERIE_BKG_INFO *)&eb->Backg[i + j*eb->Xsize];
+			EERIE_BKG_INFO * eg = &eb->Backg[i + j*eb->Xsize];
 			for(long l = 0; l < eg->nbpoly; l++) {
 				
 				EERIEPOLY * ep = &eg->polydata[l];
@@ -1063,7 +1063,7 @@ void RestoreLastLoadedLightning()
 
 	for(long j = 0; j < eb->Zsize; j++)
 		for(long i = 0; i < eb->Xsize; i++) {
-			EERIE_BKG_INFO *eg = (EERIE_BKG_INFO *)&eb->Backg[i+j*eb->Xsize];
+			EERIE_BKG_INFO *eg = &eb->Backg[i+j*eb->Xsize];
 
 			for(long l = 0; l < eg->nbpoly; l++) {
 				EERIEPOLY *ep = &eg->polydata[l];
