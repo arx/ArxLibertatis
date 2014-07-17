@@ -78,9 +78,6 @@ struct EERIE_SMINMAX
 	short max;
 };
 
-#define FBD_TREAT		1
-#define FBD_NOTHING		2
-
 struct FAST_BKG_DATA
 {
 	char				treat;
@@ -95,6 +92,7 @@ struct FAST_BKG_DATA
 	EERIEPOLY **		polyin;
 	long *				ianchors; // index on anchors list
 };
+
 #define MAX_BKGX	160
 #define MAX_BKGZ	160
 #define BKG_SIZX	100
