@@ -1213,15 +1213,7 @@ void EERIEPOLY_Compute_PolyIn()
 	for(int j = 0; j < ACTIVEBKG->Zsize; j++)
 		for(long i = 0; i < ACTIVEBKG->Xsize; i++) {
 			EERIE_BKG_INFO *eg = &ACTIVEBKG->Backg[i+j*ACTIVEBKG->Xsize];
-			eg->tile_miny = 999999999.f;
-			eg->tile_maxy = -999999999.f;
-
-			for(long kk = 0; kk < eg->nbpolyin; kk++) {
-				EERIEPOLY *ep = eg->polyin[kk];
-				eg->tile_miny = min(eg->tile_miny, ep->min.y);
-				eg->tile_maxy = max(eg->tile_maxy, ep->max.y);
-			}
-
+			
 			FAST_BKG_DATA * fbd = &ACTIVEBKG->fastdata[i][j];
 			fbd->treat = eg->treat;
 			fbd->nbpoly = eg->nbpoly;

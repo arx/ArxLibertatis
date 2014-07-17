@@ -245,18 +245,7 @@ static float ANCHOR_CheckAnythingInCylinder(const Cylinder & cyl, CollisionFlags
 		return 0.f;
 
 	float anything = 999999.f; 
-
-	/* TO KEEP...
-		EERIE_BKG_INFO * eg=&ACTIVEBKG->Backg[px+pz*ACTIVEBKG->Xsize];
-		if (	(cyl.origin.y+cyl.height < eg->tile_miny)
-				&& (cyl.origin.y > eg->tile_miny)
-			//||	(cyl.origin.y > eg->tile_maxy)
-			)
-		{
-			return 999999.f;
-		}
-		*/
-
+	
 	for(long j = pz - rad; j <= pz + rad; j++) {
 		for(long i = px - rad; i <= px + rad; i++) {
 			FAST_BKG_DATA *feg = &ACTIVEBKG->fastdata[i][j];

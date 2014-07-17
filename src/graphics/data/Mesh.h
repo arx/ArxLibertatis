@@ -66,8 +66,6 @@ struct EERIE_BKG_INFO
 	EERIEPOLY *			polydata;
 	EERIEPOLY **		polyin;
 	long *				ianchors; // index on anchors list
-	float				tile_miny;
-	float				tile_maxy;
 };
 
 struct EERIE_SMINMAX
