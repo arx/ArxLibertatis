@@ -498,8 +498,8 @@ bool Cedric_IO_Visible(const Vec3f & pos) {
 		if(xx >= 1 && yy >= 1 && xx < ACTIVEBKG->Xsize-1 && yy < ACTIVEBKG->Zsize-1) {
 			for(long ky = yy - 1; ky <= yy + 1; ky++)
 				for(long kx = xx - 1; kx <= xx + 1; kx++) {
-					EERIE_BKG_INFO * feg = (EERIE_BKG_INFO *)&ACTIVEBKG->fastdata[kx][ky];
-					if(feg->treat)
+					const EERIE_BKG_INFO & feg = ACTIVEBKG->fastdata[kx][ky];
+					if(feg.treat)
 						return true;
 				}
 
