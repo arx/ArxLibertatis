@@ -146,8 +146,8 @@ void Draw3DObject(EERIE_3DOBJ * eobj, const Anglef & angle, const Vec3f & pos, c
 
 //****************************************************************************
 // BACKGROUND MANAGEMENT FUNCTIONS START
-long BKG_CountPolys(EERIE_BACKGROUND * eb);
-long BKG_CountIgnoredPolys(EERIE_BACKGROUND * eb);
+long BKG_CountPolys(const EERIE_BACKGROUND & eb);
+long BKG_CountIgnoredPolys(const EERIE_BACKGROUND & eb);
 
 #if BUILD_EDIT_LOADSAVE
 void SceneAddMultiScnToBackground(EERIE_MULTI3DSCENE * ms);

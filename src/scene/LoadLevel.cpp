@@ -150,8 +150,8 @@ long DanaeSaveLevel(const fs::path & _fic) {
 	DANAE_LS_HEADER dlh;
 	memset(&dlh, 0, sizeof(DANAE_LS_HEADER));
 	dlh.nb_fogs = ARX_FOGS_Count();
-	dlh.nb_bkgpolys = BKG_CountPolys(ACTIVEBKG);
-	dlh.nb_ignoredpolys = BKG_CountIgnoredPolys(ACTIVEBKG);
+	dlh.nb_bkgpolys = BKG_CountPolys(*ACTIVEBKG);
+	dlh.nb_ignoredpolys = BKG_CountIgnoredPolys(*ACTIVEBKG);
 	dlh.nb_paths = nbARXpaths;
 	
 	long bcount = CountBkgVertex();
@@ -343,7 +343,7 @@ long DanaeSaveLevel(const fs::path & _fic) {
 	// Preparing HEADER
 	llh.version = DLH_CURRENT_VERSION;
 	llh.nb_lights = EERIE_LIGHT_Count();
-	llh.nb_bkgpolys = BKG_CountPolys(ACTIVEBKG);
+	llh.nb_bkgpolys = BKG_CountPolys(*ACTIVEBKG);
 	strcpy(llh.ident, "DANAE_LLH_FILE");
 	
 	llh.time = std::time(NULL);
