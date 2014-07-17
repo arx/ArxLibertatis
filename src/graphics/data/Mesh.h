@@ -66,7 +66,6 @@ struct EERIE_BKG_INFO
 	EERIEPOLY *			polydata;
 	EERIEPOLY **		polyin;
 	long *				ianchors; // index on anchors list
-	long				flags;
 	float				tile_miny;
 	float				tile_maxy;
 };
@@ -83,7 +82,6 @@ struct FAST_BKG_DATA
 	short				nbpoly;
 	short				nbianchors;
 	short				nbpolyin;
-	long				flags;
 	float				frustrum_miny;
 	float				frustrum_maxy;
 	EERIEPOLY *			polydata;
