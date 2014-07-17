@@ -460,7 +460,7 @@ static bool ARX_CHANGELEVEL_Push_Index(long num) {
 	
 	for(size_t i = 0; i < MAX_LIGHTS; i++) {
 		EERIE_LIGHT * el = GLight[i];
-		if(el && !el->specialType) {
+		if(el && !el->m_isIgnitionLight) {
 			asi.nb_lights++;
 		}
 	}
@@ -516,7 +516,7 @@ static bool ARX_CHANGELEVEL_Push_Index(long num) {
 	
 	for(size_t i = 0; i < MAX_LIGHTS; i++) {
 		EERIE_LIGHT * el = GLight[i];
-		if(el != NULL && !el->specialType) {
+		if(el != NULL && !el->m_isIgnitionLight) {
 			ARX_CHANGELEVEL_LIGHT * acl = (ARX_CHANGELEVEL_LIGHT *)(dat + pos);
 			memset(acl, 0, sizeof(ARX_CHANGELEVEL_LIGHT));
 			acl->status = el->m_ignitionStatus;
@@ -1577,7 +1577,7 @@ long ARX_CHANGELEVEL_Pop_Zones_n_Lights(ARX_CHANGELEVEL_INDEX * asi, long num) {
 
 		for(size_t j = 0; j < MAX_LIGHTS; j++) {
 			EERIE_LIGHT * el = GLight[j];
-			if(el && !el->specialType) {
+			if(el && !el->m_isIgnitionLight) {
 				if(count == i) {
 					el->m_ignitionStatus = (acl->status != 0);
 					break;
