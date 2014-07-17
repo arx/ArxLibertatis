@@ -63,9 +63,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "physics/Box.h"
 #include "physics/Collisions.h"
 
-
-extern bool IsValidPos3(Vec3f * pos);
-
 static EERIEPOLY * LAST_COLLISION_POLY = NULL;
 extern long CUR_COLLISION_MATERIAL;
 
@@ -399,16 +396,7 @@ static bool ARX_EERIE_PHYSICS_BOX_Compute(EERIE_3DOBJ * obj, float framediff, En
 	sphere.origin = pv->pos;
 	sphere.radius = obj->pbox->radius;
 	long colidd = 0;
-
-	for(int kk = 0; kk < obj->pbox->nb_physvert; kk += 2) {
-		pv = &obj->pbox->vert[kk];
-
-		if(!IsValidPos3(&pv->pos)) {
-			colidd = 1;
-			break;
-		}
-	}
-
+	
 	if(!IsFULLObjectVertexInValidPosition(obj)
 	   || ARX_INTERACTIVE_CheckFULLCollision(obj, source)
 	   || colidd

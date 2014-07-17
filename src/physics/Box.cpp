@@ -97,22 +97,6 @@ void EERIE_PHYSICS_BOX_Launch(EERIE_3DOBJ * obj, const Vec3f & pos, const Anglef
 	obj->pbox->stopcount = 0;
 }
 
-bool IsValidPos3(Vec3f * pos)
-{
-	long px = pos->x * ACTIVEBKG->Xmul;
-	long pz = pos->z * ACTIVEBKG->Zmul;
-
-	if(px < 0 || px >= ACTIVEBKG->Xsize || pz < 0 || pz >= ACTIVEBKG->Zsize)
-		return false;
-
-	EERIE_BKG_INFO *eg = &ACTIVEBKG->Backg[px + pz * ACTIVEBKG->Xsize];
-
-	if(eg->nbpolyin <= 0 || pos->y > eg->tile_maxy)
-		return false;
-
-	return true;
-}
-
 // Checks is a triangle of a physical object is colliding a triangle
 bool IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, Vec3f * verts)
 {
