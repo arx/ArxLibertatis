@@ -1582,9 +1582,7 @@ bool IO_Visible(const Vec3f & orgn, const Vec3f & dest, EERIEPOLY * epp, Vec3f *
 {
 	float ix,iy,iz;
 	long px,pz;
-	EERIEPOLY *ep;
 
-	EERIE_BKG_INFO *feg;
 	float pas = 35.f;
  
 	Vec3f found_hit = Vec3f_ZERO;
@@ -1685,10 +1683,10 @@ bool IO_Visible(const Vec3f & orgn, const Vec3f & dest, EERIEPOLY * epp, Vec3f *
 		if(px < 0 || px >= ACTIVEBKG->Xsize || pz < 0 || pz >= ACTIVEBKG->Zsize)
 			goto fini;
 
-			feg = &ACTIVEBKG->fastdata[px][pz];
+			EERIE_BKG_INFO * feg = &ACTIVEBKG->fastdata[px][pz];
 
 			for(long k = 0; k < feg->nbpolyin; k++) {
-				ep = feg->polyin[k];
+				EERIEPOLY * ep = feg->polyin[k];
 
 				if(!(ep->type & (POLY_WATER | POLY_TRANS | POLY_NOCOL)))
 				if((ep->min.y - pas < y) && (ep->max.y + pas > y))
