@@ -308,11 +308,11 @@ EERIEPOLY * CheckArrowPolyCollision(const Vec3f & start, const Vec3f & end) {
 	for(long zz = iz; zz <= az; zz++)
 		for(long xx = ix; xx <= ax; xx++) {
 
-		EERIE_BKG_INFO * feg = &ACTIVEBKG->fastdata[xx][zz];
+		const EERIE_BKG_INFO & feg = ACTIVEBKG->fastdata[xx][zz];
 
-		for(long k = 0; k < feg->nbpolyin; k++) {
+		for(long k = 0; k < feg.nbpolyin; k++) {
 
-			EERIEPOLY * ep = feg->polyin[k];
+			EERIEPOLY * ep = feg.polyin[k];
 
 			if(ep->type & (POLY_WATER | POLY_TRANS | POLY_NOCOL)) {
 				continue;
