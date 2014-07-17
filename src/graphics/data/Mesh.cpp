@@ -974,11 +974,10 @@ bool GetRoomCenter(long room_num, Vec3f * center) {
 	bbox.max = Vec3f(-99999999.f);
 
 	for(long lll = 0; lll < room.nb_polys; lll++) {
-		EERIE_BKG_INFO * feg;
-		feg = &ACTIVEBKG->fastdata[room.epdata[lll].p.x][room.epdata[lll].p.y];
-		EERIEPOLY * ep = &feg->polydata[room.epdata[lll].idx];
-		bbox.min = glm::min(bbox.min, ep->center);
-		bbox.max = glm::max(bbox.max, ep->center);
+		const EERIE_BKG_INFO & feg = ACTIVEBKG->fastdata[room.epdata[lll].p.x][room.epdata[lll].p.y];
+		const EERIEPOLY & ep = feg.polydata[room.epdata[lll].idx];
+		bbox.min = glm::min(bbox.min, ep.center);
+		bbox.max = glm::max(bbox.max, ep.center);
 	}
 	
 	*center = (bbox.max + bbox.min) * .5f;
