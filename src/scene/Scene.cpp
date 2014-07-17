@@ -1058,12 +1058,12 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num, const EERIE_FRUSTRU
 			short iz = std::max(pEPDATA->p.y - 1, 0);
 			short az = std::min(pEPDATA->p.y + 1, ACTIVEBKG->Zsize - 1);
 
-			for(short nz=iz; nz<=az; nz++)
-			for(short nx=ix; nx<=ax; nx++) {
-				EERIE_BKG_INFO * feg2 = &ACTIVEBKG->fastdata[nx][nz];
+			for(short nz = iz; nz <= az; nz++)
+			for(short nx = ix; nx <= ax; nx++) {
+				EERIE_BKG_INFO & feg2 = ACTIVEBKG->fastdata[nx][nz];
 
-				if(!feg2->treat) {
-					feg2->treat=1;
+				if(!feg2.treat) {
+					feg2.treat = 1;
 					ComputeTileLights(nx, nz);
 				}
 			}
