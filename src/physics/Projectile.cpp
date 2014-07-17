@@ -308,7 +308,7 @@ EERIEPOLY * CheckArrowPolyCollision(const Vec3f & start, const Vec3f & end) {
 	for(long zz = iz; zz <= az; zz++)
 		for(long xx = ix; xx <= ax; xx++) {
 
-		FAST_BKG_DATA * feg = &ACTIVEBKG->fastdata[xx][zz];
+		EERIE_BKG_INFO * feg = &ACTIVEBKG->fastdata[xx][zz];
 
 		for(long k = 0; k < feg->nbpolyin; k++) {
 
@@ -402,7 +402,7 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 		{
 		// Is Object Visible & Near ?
 
-		FAST_BKG_DATA * bkgData = getFastBackgroundData(thrownObj->position.x, thrownObj->position.z);
+		EERIE_BKG_INFO * bkgData = getFastBackgroundData(thrownObj->position.x, thrownObj->position.z);
 
 		if(!bkgData || !bkgData->treat) {
 			continue;

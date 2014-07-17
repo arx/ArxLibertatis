@@ -1050,7 +1050,7 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num, const EERIE_FRUSTRU
 	EP_DATA *pEPDATA = &room.epdata[0];
 
 	for(long lll=0; lll<room.nb_polys; lll++, pEPDATA++) {
-		FAST_BKG_DATA *feg = &ACTIVEBKG->fastdata[pEPDATA->p.x][pEPDATA->p.y];
+		EERIE_BKG_INFO *feg = &ACTIVEBKG->fastdata[pEPDATA->p.x][pEPDATA->p.y];
 
 		if(!feg->treat) {
 			short ix = std::max(pEPDATA->p.x - 1, 0);
@@ -1060,7 +1060,7 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num, const EERIE_FRUSTRU
 
 			for(short nz=iz; nz<=az; nz++)
 			for(short nx=ix; nx<=ax; nx++) {
-				FAST_BKG_DATA * feg2 = &ACTIVEBKG->fastdata[nx][nz];
+				EERIE_BKG_INFO * feg2 = &ACTIVEBKG->fastdata[nx][nz];
 
 				if(!feg2->treat) {
 					feg2->treat=1;
@@ -1421,7 +1421,7 @@ void ARX_SCENE_Update() {
 
 	for(long j=z0; j<=z1; j++) {
 		for(long i=x0; i<x1; i++) {
-			FAST_BKG_DATA *feg = &ACTIVEBKG->fastdata[i][j];
+			EERIE_BKG_INFO *feg = &ACTIVEBKG->fastdata[i][j];
 			feg->treat = 0;
 		}
 	}

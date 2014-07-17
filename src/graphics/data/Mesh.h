@@ -74,19 +74,6 @@ struct EERIE_SMINMAX
 	short max;
 };
 
-struct FAST_BKG_DATA
-{
-	char				treat;
-	short				nbpoly;
-	short				nbianchors;
-	short				nbpolyin;
-	float				frustrum_miny;
-	float				frustrum_maxy;
-	EERIEPOLY *			polydata;
-	EERIEPOLY **		polyin;
-	long *				ianchors; // index on anchors list
-};
-
 #define MAX_BKGX	160
 #define MAX_BKGZ	160
 #define BKG_SIZX	100
@@ -96,7 +83,7 @@ struct ANCHOR_DATA;
 
 struct EERIE_BACKGROUND
 {
-	FAST_BKG_DATA	fastdata[MAX_BKGX][MAX_BKGZ];
+	EERIE_BKG_INFO	fastdata[MAX_BKGX][MAX_BKGZ];
 	long		exist;
 	short		Xsize;
 	short		Zsize;
@@ -122,7 +109,7 @@ extern EERIE_CAMERA * ACTIVECAM;
 bool Visible(const Vec3f & orgn, const Vec3f & dest, EERIEPOLY * epp, Vec3f * hit);
 void FaceTarget(Entity * io);
 
-FAST_BKG_DATA * getFastBackgroundData(float x, float z);
+EERIE_BKG_INFO * getFastBackgroundData(float x, float z);
 
 EERIEPOLY * CheckTopPoly(const Vec3f & pos);
 EERIEPOLY * CheckInPoly(const Vec3f & poss, float * needY = NULL);

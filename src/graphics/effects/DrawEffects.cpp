@@ -116,7 +116,7 @@ void ARXDRAW_DrawInterShadows()
 		}
 		
 		
-		FAST_BKG_DATA * bkgData = getFastBackgroundData(io->pos.x, io->pos.z);
+		EERIE_BKG_INFO * bkgData = getFastBackgroundData(io->pos.x, io->pos.z);
 		if(bkgData && !bkgData->treat) { //TODO is that correct ?
 			continue;
 		}

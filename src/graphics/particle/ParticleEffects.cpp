@@ -1064,7 +1064,7 @@ void ARX_PARTICLES_Update(EERIE_CAMERA * cam)  {
 		
 		if(!part->is2D) {
 
-			FAST_BKG_DATA * bkgData = getFastBackgroundData(part->ov.x, part->ov.z);
+			EERIE_BKG_INFO * bkgData = getFastBackgroundData(part->ov.x, part->ov.z);
 
 			if(!bkgData || !bkgData->treat) {
 				part->exist = false;

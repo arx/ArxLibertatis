@@ -539,7 +539,7 @@ float CheckAnythingInCylinder(const Cylinder & cyl, Entity * ioo, long flags) {
 			continue;
 
 
-		FAST_BKG_DATA * feg = &ACTIVEBKG->fastdata[i][j];
+		EERIE_BKG_INFO * feg = &ACTIVEBKG->fastdata[i][j];
 		for(long k = 0; k < feg->nbpoly; k++) {
 			ep = &feg->polydata[k];
 
@@ -1007,7 +1007,7 @@ EERIEPOLY * CheckBackgroundInSphere(const Sphere & sphere) //except source...
 
 	for(long j = spz; j <= epz; j++)
 	for(long i = spx; i <= epx; i++) {
-		FAST_BKG_DATA * feg = &ACTIVEBKG->fastdata[i][j];
+		EERIE_BKG_INFO * feg = &ACTIVEBKG->fastdata[i][j];
 
 		for(long k = 0; k < feg->nbpoly; k++) {
 			EERIEPOLY * ep = &feg->polydata[k];
@@ -1043,7 +1043,7 @@ bool CheckAnythingInSphere(const Sphere & sphere, EntityHandle source, CASFlags 
 
 		for(long j = spz; j <= epz; j++)
 		for(long i = spx; i <= epx; i++) {
-			FAST_BKG_DATA *feg = &ACTIVEBKG->fastdata[i][j];
+			EERIE_BKG_INFO *feg = &ACTIVEBKG->fastdata[i][j];
 
 			for(long k = 0; k < feg->nbpoly; k++) {
 				EERIEPOLY *ep = &feg->polydata[k];
@@ -1587,7 +1587,7 @@ bool IO_Visible(const Vec3f & orgn, const Vec3f & dest, EERIEPOLY * epp, Vec3f *
 	long px,pz;
 	EERIEPOLY *ep;
 
-	FAST_BKG_DATA *feg;
+	EERIE_BKG_INFO *feg;
 	float pas = 35.f;
  
 	Vec3f found_hit = Vec3f_ZERO;

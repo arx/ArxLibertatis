@@ -1736,7 +1736,7 @@ void ArxGame::update2DFX()
 	for(int i=0; i < TOTPDL; i++) {
 		EERIE_LIGHT *el = PDL[i];
 
-		FAST_BKG_DATA * bkgData = getFastBackgroundData(el->pos.x, el->pos.z);
+		EERIE_BKG_INFO * bkgData = getFastBackgroundData(el->pos.x, el->pos.z);
 
 		if(!bkgData || !bkgData->treat) {
 			el->treat=0;
