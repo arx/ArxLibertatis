@@ -875,7 +875,7 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 			}
 		}
 
-		EERIEPOLY * ep = CheckBackgroundInSphere(sphere);
+		const EERIEPOLY * ep = CheckBackgroundInSphere(sphere);
 		if(ep) {
 			if(io_source == entities.player()) {
 				if(!io_source->isHit) {

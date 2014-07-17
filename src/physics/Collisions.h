@@ -103,7 +103,7 @@ bool CheckAnythingInSphere(const Sphere & sphere, EntityHandle source, CASFlags 
 bool CheckEverythingInSphere(const Sphere & sphere, long source, EntityHandle targ, std::vector<EntityHandle> & sphereContent);
 
 //except source...
-EERIEPOLY * CheckBackgroundInSphere(const Sphere & sphere);
+const EERIEPOLY * CheckBackgroundInSphere(const Sphere & sphere);
  
 bool IsCollidingIO(Entity * io, Entity * ioo);
 

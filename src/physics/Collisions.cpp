@@ -227,40 +227,37 @@ inline float IsPolyInCylinder(EERIEPOLY * ep, const Cylinder & cyl, long flag) {
 	return anything;
 }
 
-inline bool IsPolyInSphere(EERIEPOLY *ep, const Sphere & sph) {
-
-	if(!ep)
+inline bool IsPolyInSphere(const EERIEPOLY & ep, const Sphere & sph) {
+	
+	if(ep.area < 100.f)
 		return false;
 
-	if(ep->area < 100.f)
-		return false;
-
-	long to = (ep->type & POLY_QUAD) ? 4 : 3;
+	long to = (ep.type & POLY_QUAD) ? 4 : 3;
 
 	long r = to - 1;
 	Vec3f center;
 
 	for(long n = 0; n < to; n++) {
-		if(ep->area > 2000.f) {
-			center = (ep->v[n].p + ep->v[r].p) * 0.5f;
+		if(ep.area > 2000.f) {
+			center = (ep.v[n].p + ep.v[r].p) * 0.5f;
 			if(sph.contains(center)) {
 				return true;
 			}
-			if(ep->area > 4000.f) {
-				center = (ep->v[n].p + ep->center) * 0.5f;
+			if(ep.area > 4000.f) {
+				center = (ep.v[n].p + ep.center) * 0.5f;
 				if(sph.contains(center)) {
 					return true;
 				}
 			}
-			if(ep->area > 6000.f) {
-				center = (center + ep->v[n].p) * 0.5f;
+			if(ep.area > 6000.f) {
+				center = (center + ep.v[n].p) * 0.5f;
 				if(sph.contains(center)) {
 					return true;
 				}
 			}
 		}
 		
-		Vec3f v(ep->v[n].p.x, ep->v[n].p.y, ep->v[n].p.z);
+		Vec3f v(ep.v[n].p.x, ep.v[n].p.y, ep.v[n].p.z);
 
 		if(sph.contains(v)) {
 			return true;
@@ -992,7 +989,7 @@ bool CheckEverythingInSphere(const Sphere & sphere, long source, EntityHandle ta
 	return vreturn;	
 }
 
-EERIEPOLY * CheckBackgroundInSphere(const Sphere & sphere) //except source...
+const EERIEPOLY * CheckBackgroundInSphere(const Sphere & sphere) //except source...
 {
 	long rad = sphere.radius*ACTIVEBKG->Xmul;
 	rad += 2;
@@ -1007,16 +1004,16 @@ EERIEPOLY * CheckBackgroundInSphere(const Sphere & sphere) //except source...
 
 	for(long j = spz; j <= epz; j++)
 	for(long i = spx; i <= epx; i++) {
-		EERIE_BKG_INFO * feg = &ACTIVEBKG->fastdata[i][j];
+		const EERIE_BKG_INFO & feg = ACTIVEBKG->fastdata[i][j];
 
-		for(long k = 0; k < feg->nbpoly; k++) {
-			EERIEPOLY * ep = &feg->polydata[k];
+		for(long k = 0; k < feg.nbpoly; k++) {
+			const EERIEPOLY & ep = feg.polydata[k];
 
-			if(ep->type & (POLY_WATER | POLY_TRANS | POLY_NOCOL))
+			if(ep.type & (POLY_WATER | POLY_TRANS | POLY_NOCOL))
 				continue;
 
 			if(IsPolyInSphere(ep, sphere)) {
-				return ep;					
+				return &ep;
 			}			
 		}
 	}	
@@ -1043,12 +1040,12 @@ bool CheckAnythingInSphere(const Sphere & sphere, EntityHandle source, CASFlags 
 
 		for(long j = spz; j <= epz; j++)
 		for(long i = spx; i <= epx; i++) {
-			EERIE_BKG_INFO *feg = &ACTIVEBKG->fastdata[i][j];
+			const EERIE_BKG_INFO feg = ACTIVEBKG->fastdata[i][j];
 
-			for(long k = 0; k < feg->nbpoly; k++) {
-				EERIEPOLY *ep = &feg->polydata[k];
+			for(long k = 0; k < feg.nbpoly; k++) {
+				const EERIEPOLY & ep = feg.polydata[k];
 
-				if(ep->type & (POLY_WATER | POLY_TRANS | POLY_NOCOL))
+				if(ep.type & (POLY_WATER | POLY_TRANS | POLY_NOCOL))
 					continue;
 
 				if(IsPolyInSphere(ep, sphere))
