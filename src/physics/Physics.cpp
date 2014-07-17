@@ -275,18 +275,15 @@ static bool IsFULLObjectVertexInValidPosition(EERIE_3DOBJ * obj) {
 	long az = std::min(pz + n, ACTIVEBKG->Zsize - 1L);
 
 	LAST_COLLISION_POLY = NULL;
-	EERIEPOLY * ep;
-	EERIE_BKG_INFO * eg;
-
+	
 	float rad = obj->pbox->radius;
 
 	for(pz = iz; pz <= az; pz++)
 		for(px = ix; px <= ax; px++) {
-			eg = &ACTIVEBKG->Backg[px+pz*ACTIVEBKG->Xsize];
+			EERIE_BKG_INFO * eg = &ACTIVEBKG->Backg[px+pz*ACTIVEBKG->Xsize];
 
 			for(long k = 0; k < eg->nbpoly; k++) {
-
-				ep = &eg->polydata[k];
+				EERIEPOLY * ep = &eg->polydata[k];
 
 				if(ep->area > 190.f
 				   && !(ep->type & POLY_WATER)

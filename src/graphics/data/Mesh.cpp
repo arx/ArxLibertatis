@@ -778,9 +778,7 @@ bool Visible(const Vec3f & orgn, const Vec3f & dest, EERIEPOLY * epp, Vec3f * hi
 {
 	float ix,iy,iz;
 	long px,pz;
-	EERIEPOLY *ep;
 
-	EERIE_BKG_INFO *eg;
 	float pas = 35.f;
 
 	Vec3f found_hit = Vec3f_ZERO;
@@ -857,10 +855,10 @@ bool Visible(const Vec3f & orgn, const Vec3f & dest, EERIEPOLY * epp, Vec3f * hi
 		if(px < 0 || px > ACTIVEBKG->Xsize - 1 || pz < 0 || pz > ACTIVEBKG->Zsize - 1)
 			break;
 
-		eg = &ACTIVEBKG->Backg[px+pz*ACTIVEBKG->Xsize];
+		EERIE_BKG_INFO * eg = &ACTIVEBKG->Backg[px+pz*ACTIVEBKG->Xsize];
 
 		for(long k = 0; k < eg->nbpolyin; k++) {
-			ep = eg->polyin[k];
+			EERIEPOLY * ep = eg->polyin[k];
 
 			if (ep)
 			if ((ep->min.y - pas < y) && (ep->max.y + pas > y))

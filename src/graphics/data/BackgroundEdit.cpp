@@ -209,20 +209,16 @@ void ARX_PrepareBackgroundNRMLs()
 {
 	long i, j, k;
 	long i2, j2, k2;
-	EERIE_BKG_INFO * eg;
-	EERIE_BKG_INFO * eg2;
-	EERIEPOLY * ep;
-	EERIEPOLY * ep2;
 	Vec3f nrml;
 	Vec3f cur_nrml;
 	float count;
 
 	for(j = 0; j < ACTIVEBKG->Zsize; j++)
 		for(i = 0; i < ACTIVEBKG->Xsize; i++) {
-			eg = &ACTIVEBKG->Backg[i+j*ACTIVEBKG->Xsize];
+			EERIE_BKG_INFO * eg = &ACTIVEBKG->Backg[i+j*ACTIVEBKG->Xsize];
 
 			for(long l = 0; l < eg->nbpoly; l++) {
-				ep = &eg->polydata[l];
+				EERIEPOLY * ep = &eg->polydata[l];
 
 				long nbvert = (ep->type & POLY_QUAD) ? 4 : 3;
 
@@ -250,10 +246,10 @@ void ARX_PrepareBackgroundNRMLs()
 
 					for(j2 = mij; j2 < maj; j2++)
 						for(i2 = mii; i2 < mai; i2++) {
-							eg2 = &ACTIVEBKG->Backg[i2+j2*ACTIVEBKG->Xsize];
+							EERIE_BKG_INFO * eg2 = &ACTIVEBKG->Backg[i2+j2*ACTIVEBKG->Xsize];
 
 							for(long kr = 0; kr < eg2->nbpoly; kr++) {
-								ep2 = &eg2->polydata[kr];
+								EERIEPOLY * ep2 = &eg2->polydata[kr];
 
 								long nbvert2 = (ep2->type & POLY_QUAD) ? 4 : 3;
 
@@ -296,10 +292,10 @@ void ARX_PrepareBackgroundNRMLs()
 
 	for(j = 0; j < ACTIVEBKG->Zsize; j++)
 		for(i = 0; i < ACTIVEBKG->Xsize; i++) {
-			eg = &ACTIVEBKG->Backg[i+j*ACTIVEBKG->Xsize];
+			EERIE_BKG_INFO * eg = &ACTIVEBKG->Backg[i+j*ACTIVEBKG->Xsize];
 
 			for(long l = 0; l < eg->nbpoly; l++) {
-				ep = &eg->polydata[l];
+				EERIEPOLY * ep = &eg->polydata[l];
 
 				long nbvert = (ep->type & POLY_QUAD) ? 4 : 3;
 

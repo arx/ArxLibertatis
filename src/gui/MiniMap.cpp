@@ -93,15 +93,12 @@ void MiniMap::getData(int showLevel) {
 			float minY = std::numeric_limits<float>::max();
 			float maxY = std::numeric_limits<float>::min();
 			
-			EERIEPOLY *ep = NULL;
-			EERIE_BKG_INFO *eg = NULL;
-			
 			for(int j = 0; j < m_activeBkg->Zsize; j++) {
 				
 				for(int i = 0; i < m_activeBkg->Xsize; i++) {
-					eg = &m_activeBkg->Backg[i+j*m_activeBkg->Xsize];
+					EERIE_BKG_INFO * eg = &m_activeBkg->Backg[i+j*m_activeBkg->Xsize];
 					for(int k = 0; k < eg->nbpoly; k++) {
-						ep = &eg->polydata[k];
+						EERIEPOLY * ep = &eg->polydata[k];
 						if(ep) {
 							minX = min(minX, ep->min.x);
 							maxX = max(maxX, ep->max.x);

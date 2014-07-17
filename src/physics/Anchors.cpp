@@ -526,11 +526,10 @@ void AnchorData_ClearAll(EERIE_BACKGROUND * eb) {
 	
 	//	EERIE_PATHFINDER_Release();
 	EERIE_PATHFINDER_Clear();
-	EERIE_BKG_INFO * eg;
 
 	for(long j = 0; j < eb->Zsize; j++) {
 		for(long i = 0; i < eb->Xsize; i++) {
-			eg = &eb->Backg[i+j*eb->Xsize];
+			EERIE_BKG_INFO * eg = &eb->Backg[i+j*eb->Xsize];
 
 			if(eg->nbianchors && eg->ianchors)
 				free(eg->ianchors);
@@ -836,8 +835,6 @@ static void AddAnchorLink(EERIE_BACKGROUND * eb, long anchor, long linked) {
 
 static void AnchorData_Create_Links_Original_Method(EERIE_BACKGROUND * eb) {
 	
-	EERIE_BKG_INFO * eg;
-	EERIE_BKG_INFO * eg2;
 	Vec3f p1, p2; 
 	long count = 0;
 	long per;
@@ -856,7 +853,7 @@ static void AnchorData_Create_Links_Original_Method(EERIE_BACKGROUND * eb) {
 			}
 
 			count++;
-			eg = &eb->Backg[i+j*eb->Xsize];
+			EERIE_BKG_INFO * eg = &eb->Backg[i+j*eb->Xsize];
 			long precise = 0;
 
 			for (long kkk = 0; kkk < eg->nbpolyin; kkk++)
@@ -881,7 +878,7 @@ static void AnchorData_Create_Links_Original_Method(EERIE_BACKGROUND * eb) {
 				for (long j2 = ji; j2 <= ja; j2++)
 					for (long i2 = ii; i2 <= ia; i2++)
 					{
-						eg2 = &eb->Backg[i2+j2*eb->Xsize];
+						EERIE_BKG_INFO * eg2 = &eb->Backg[i2+j2*eb->Xsize];
 						long precise2 = 0;
 
 						for (long kkk = 0; kkk < eg2->nbpolyin; kkk++)
@@ -984,7 +981,6 @@ static void AnchorData_Create_Links_Original_Method(EERIE_BACKGROUND * eb) {
 
 static void AnchorData_Create_Phase_II_Original_Method(EERIE_BACKGROUND * eb) {
 	
-	EERIE_BKG_INFO * eg;
 	Vec3f pos;
 	float count = 0;
 
@@ -1005,7 +1001,7 @@ static void AnchorData_Create_Phase_II_Original_Method(EERIE_BACKGROUND * eb) {
 
 			count += 1.f;
 
-			eg = &eb->Backg[i+j*eb->Xsize];
+			EERIE_BKG_INFO * eg = &eb->Backg[i+j*eb->Xsize];
 			pos.x = (float)((float)((float)i) * (float)eb->Xdiv);
 			pos.y = 0.f;
 			pos.z = (float)((float)((float)j) * (float)eb->Zdiv);
@@ -1090,8 +1086,6 @@ static void AnchorData_Create_Phase_II_Original_Method(EERIE_BACKGROUND * eb) {
 void AnchorData_Create(EERIE_BACKGROUND * eb) {
 	
 	AnchorData_ClearAll(eb);
-	EERIE_BKG_INFO * eg;
-	EERIEPOLY * ep;
 	Vec3f pos;
 
 	float count = 0;
@@ -1160,11 +1154,11 @@ void AnchorData_Create(EERIE_BACKGROUND * eb) {
 
 				if (LASTFOUND) break;
 
-				eg = &eb->Backg[i+j*eb->Xsize];
+				EERIE_BKG_INFO * eg = &eb->Backg[i+j*eb->Xsize];
 				pos.x = (float)((float)((float)i + 0.33f * (float)divvx) * (float)eb->Xdiv);
 				pos.y = 0.f;
 				pos.z = (float)((float)((float)j + 0.33f * (float)divvy) * (float)eb->Zdiv);
-				ep = GetMinPoly(pos);
+				EERIEPOLY * ep = GetMinPoly(pos);
 				Cylinder currcyl;
 				currcyl.radius = 20 - (4.f * divv);
 				currcyl.height = -120.f;
