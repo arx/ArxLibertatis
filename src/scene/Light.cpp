@@ -268,14 +268,14 @@ void TreatBackgroundDynlights()
 				if(lightHandleIsValid(light->m_ignitionLightHandle)) {
 					EERIE_LIGHT *dynamicLight = lightHandleGet(light->m_ignitionLightHandle);
 
-					dynamicLight->pos = light->pos;
-					dynamicLight->fallstart	=	light->fallstart;
-					dynamicLight->fallend		=	light->fallend;
-					dynamicLight->specialType		=	true;
-					dynamicLight->intensity	=	light->intensity;
-					dynamicLight->ex_flaresize =	light->ex_flaresize;
-					dynamicLight->extras		=	light->extras;
-					dynamicLight->duration = std::numeric_limits<long>::max();
+					dynamicLight->pos          = light->pos;
+					dynamicLight->fallstart    = light->fallstart;
+					dynamicLight->fallend      = light->fallend;
+					dynamicLight->specialType  = true;
+					dynamicLight->intensity    = light->intensity;
+					dynamicLight->ex_flaresize = light->ex_flaresize;
+					dynamicLight->extras       = light->extras;
+					dynamicLight->duration     = std::numeric_limits<long>::max();
 
 					dynamicLight->rgb.r = light->rgb.r - light->rgb.r * light->ex_flicker.r * rnd() * ( 1.0f / 2 );
 					dynamicLight->rgb.g = light->rgb.g - light->rgb.g * light->ex_flicker.g * rnd() * ( 1.0f / 2 );
