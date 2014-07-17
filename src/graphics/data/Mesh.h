@@ -57,7 +57,7 @@ class Entity;
 
 struct EERIE_BKG_INFO
 {
-	char				treat;
+	bool				treat;
 	short				nbpoly;
 	short				nbianchors;
 	short				nbpolyin;

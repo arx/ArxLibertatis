@@ -1101,7 +1101,7 @@ int InitBkg(EERIE_BACKGROUND * eb, short sx, short sz, short Xdiv, short Zdiv) {
 
 	for(int i = 0; i < eb->Xsize * eb->Zsize; i++) {
 		EERIE_BKG_INFO *eg = &eb->Backg[i];
-		eg->treat = 0;
+		eg->treat = false;
 		eg->nbianchors = 0;
 		eg->ianchors = NULL;
 	}
@@ -1616,7 +1616,7 @@ static bool loadFastScene(const res::path & file, const char * data, const char 
 				bkg.polydata = NULL;
 			}
 			
-			bkg.treat = 0;
+			bkg.treat = false;
 			
 			bkg.frustrum_maxy = -99999999.f;
 			bkg.frustrum_miny = 99999999.f;
@@ -2195,7 +2195,7 @@ static int BkgAddPoly(EERIEPOLY * ep, EERIE_3DOBJ * eobj) {
 
 	eg->nbpoly++;
 
-	eg->treat = 0;
+	eg->treat = false;
 
 	if(ep && ep->tex && !ep->tex->m_texName.empty()) {
 				if ( ep->tex->m_texName.string().find("stone") != std::string::npos )         ep->type |= POLY_STONE;

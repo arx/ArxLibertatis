@@ -1063,7 +1063,7 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num, const EERIE_FRUSTRU
 				EERIE_BKG_INFO & feg2 = ACTIVEBKG->fastdata[nx][nz];
 
 				if(!feg2.treat) {
-					feg2.treat = 1;
+					feg2.treat = true;
 					ComputeTileLights(nx, nz);
 				}
 			}
@@ -1412,7 +1412,7 @@ void ARX_SCENE_Update() {
 	long z0 = std::max(camZsnap - lcval, 0l);
 	long z1 = std::min(camZsnap + lcval, ACTIVEBKG->Zsize - 1l);
 
-	ACTIVEBKG->Backg[camXsnap + camZsnap * ACTIVEBKG->Xsize].treat = 1;
+	ACTIVEBKG->Backg[camXsnap + camZsnap * ACTIVEBKG->Xsize].treat = true;
 	TreatBackgroundDynlights();
 	PrecalcDynamicLighting(x0, z0, x1, z1);
 
@@ -1421,7 +1421,7 @@ void ARX_SCENE_Update() {
 
 	for(long j = z0; j <= z1; j++)
 	for(long i = x0; i < x1; i++) {
-		ACTIVEBKG->fastdata[i][j].treat = 0;
+		ACTIVEBKG->fastdata[i][j].treat = false;
 	}
 
 	ResetTileLights();
