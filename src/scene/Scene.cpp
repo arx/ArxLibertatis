@@ -1419,11 +1419,9 @@ void ARX_SCENE_Update() {
 	// Go for a growing-square-spirallike-render around the camera position
 	// (To maximize Z-Buffer efficiency)
 
-	for(long j=z0; j<=z1; j++) {
-		for(long i=x0; i<x1; i++) {
-			EERIE_BKG_INFO *feg = &ACTIVEBKG->fastdata[i][j];
-			feg->treat = 0;
-		}
+	for(long j = z0; j <= z1; j++)
+	for(long i = x0; i < x1; i++) {
+		ACTIVEBKG->fastdata[i][j].treat = 0;
 	}
 
 	ResetTileLights();
