@@ -1091,17 +1091,14 @@ void AnchorData_Create(EERIE_BACKGROUND * eb) {
 	long per;
 	float total		=	static_cast<float>(eb->Zsize * eb->Xsize * 9);
 
-	for (long j = 0; j < eb->Zsize; j++)
-		for (long i = 0; i < eb->Xsize; i++)
-		{
+	for(long j = 0; j < eb->Zsize; j++)
+		for(long i = 0; i < eb->Xsize; i++) {
 			long LASTFOUND = 0;
 
-			for (long divv = 0; divv < 9; divv++)
-			{
+			for(long divv = 0; divv < 9; divv++) {
 				long divvx, divvy;
 
-				switch (divv)
-				{
+				switch (divv) {
 				case 0:
 					divvx = 0;
 					divvy = 0;
@@ -1142,15 +1139,15 @@ void AnchorData_Create(EERIE_BACKGROUND * eb) {
 
 				per = count / total * 100.f;
 
-				if (per != lastper)
-				{
+				if(per != lastper) {
 					LogInfo << "Anchor Generation: %" << per;
 					lastper = per;
 				}
 
 				count += 1.f;
 
-				if (LASTFOUND) break;
+				if(LASTFOUND)
+					break;
 
 				EERIE_BKG_INFO * eg = &eb->Backg[i+j*eb->Xsize];
 				pos.x = (float)((float)((float)i + 0.33f * (float)divvx) * (float)eb->Xdiv);
@@ -1162,54 +1159,54 @@ void AnchorData_Create(EERIE_BACKGROUND * eb) {
 				currcyl.height = -120.f;
 				currcyl.origin = pos;
 
-				if (ep)
-				{
-
+				if(ep) {
 					EERIEPOLY * epmax;
 					epmax = GetMaxPoly(pos);
 					float roof = 9999999.f;
 
-					if (ep) roof = ep->min.y - 300;
+					if(ep)
+						roof = ep->min.y - 300;
 
-					if (epmax) roof = epmax->min.y - 300;
+					if(epmax)
+						roof = epmax->min.y - 300;
 
 					float current_y = ep->max.y;
 
-					while (current_y > roof)
-					{
+					while(current_y > roof) {
 						currcyl.origin.y = current_y;
 						EERIEPOLY * ep2 = ANCHOR_CheckInPolyPrecis(currcyl.origin + Vec3f(0.f, -30.f, 0.f));
 
-						if (ep2 && !(ep2->type & POLY_DOUBLESIDED) && (ep2->norm.y > 0.f))
+						if(   ep2
+						   && !(ep2->type & POLY_DOUBLESIDED)
+						   && (ep2->norm.y > 0.f)
+						) {
 							ep2 = NULL;
+						}
 
-						if ((ep2) && !(ep2->type & POLY_NOPATH))
-						{
+						if(ep2 && !(ep2->type & POLY_NOPATH)) {
 							bool bval = ANCHOR_AttemptValidCylinderPos(currcyl, NULL, CFLAG_NO_INTERCOL | CFLAG_EXTRA_PRECISION | CFLAG_RETURN_HEIGHT | CFLAG_ANCHOR_GENERATION);
 
-							if ((bval)
-							        && (currcyl.origin.y - 10.f <= current_y))
-							{
+							if(   bval
+							   && currcyl.origin.y - 10.f <= current_y
+							) {
 								EERIEPOLY * ep2 = ANCHOR_CheckInPolyPrecis(currcyl.origin + Vec3f(0.f, -38.f, 0.f));
 
-								if (ep2 && !(ep2->type & POLY_DOUBLESIDED) && (ep2->norm.y > 0.f))
-								{
+								if(ep2 && !(ep2->type & POLY_DOUBLESIDED) && (ep2->norm.y > 0.f)) {
 									current_y -= 10.f;
-								}
-								else if ((ep2) && (ep2->type & POLY_NOPATH))
-								{
+								} else if ((ep2) && (ep2->type & POLY_NOPATH)) {
 									current_y -= 10.f;
-								}
-								else if (AddAnchor_Original_Method(eb, eg, &currcyl.origin))
-								{
+								} else if (AddAnchor_Original_Method(eb, eg, &currcyl.origin)) {
 									LASTFOUND++;
 									current_y = currcyl.origin.y + currcyl.height;
+								} else {
+									current_y -= 10.f;
 								}
-								else current_y -= 10.f;
+							} else {
+								current_y -= 10.f;
 							}
-							else current_y -= 10.f;
+						} else {
+							current_y -= 10.f;
 						}
-						else current_y -= 10.f;
 					}
 				}
 			}
