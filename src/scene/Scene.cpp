@@ -1053,13 +1053,17 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num, const EERIE_FRUSTRU
 		EERIE_BKG_INFO *feg = &ACTIVEBKG->fastdata[pEPDATA->p.x][pEPDATA->p.y];
 
 		if(!feg->treat) {
-			short ix = std::max(pEPDATA->p.x - 1, 0);
-			short ax = std::min(pEPDATA->p.x + 1, ACTIVEBKG->Xsize - 1);
-			short iz = std::max(pEPDATA->p.y - 1, 0);
-			short az = std::min(pEPDATA->p.y + 1, ACTIVEBKG->Zsize - 1);
+			short tilex = pEPDATA->p.x;
+			short tilez = pEPDATA->p.y;
+			short radius = 1;
+			
+			short minx = std::max(tilex - radius, 0);
+			short maxx = std::min(tilex + radius, ACTIVEBKG->Xsize - 1);
+			short minz = std::max(tilez - radius, 0);
+			short maxz = std::min(tilez + radius, ACTIVEBKG->Zsize - 1);
 
-			for(short z = iz; z <= az; z++)
-			for(short x = ix; x <= ax; x++) {
+			for(short z = minz; z <= maxz; z++)
+			for(short x = minx; x <= maxx; x++) {
 				EERIE_BKG_INFO & feg2 = ACTIVEBKG->fastdata[x][z];
 
 				if(!feg2.treat) {
