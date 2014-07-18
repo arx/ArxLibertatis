@@ -391,22 +391,22 @@ long DanaeSaveLevel(const fs::path & _fic) {
 	pos += sizeof(DANAE_LS_LIGHTINGHEADER);
 	
 	for(long j = 0; j < eb->Zsize; j++) {
-		for(long i = 0; i < eb->Xsize; i++) {
+	for(long i = 0; i < eb->Xsize; i++) {
+		
+		EERIE_BKG_INFO * eg = &eb->Backg[i + j*eb->Xsize];
+		for(long l = 0; l < eg->nbpoly; l++) {
 			
-			EERIE_BKG_INFO * eg = &eb->Backg[i + j*eb->Xsize];
-			for(long l = 0; l < eg->nbpoly; l++) {
-				
-				EERIEPOLY * ep = &eg->polydata[l];
-				if(ep) {
-					long nbvert = (ep->type & POLY_QUAD) ? 4 : 3;
-					for(long k = 0; k < nbvert; k++) {
-						u32 tmp = (u32)ep->v[k].color;
-						memcpy(dat + pos, &tmp, sizeof(u32));
-						pos += sizeof(u32);
-					}
+			EERIEPOLY * ep = &eg->polydata[l];
+			if(ep) {
+				long nbvert = (ep->type & POLY_QUAD) ? 4 : 3;
+				for(long k = 0; k < nbvert; k++) {
+					u32 tmp = (u32)ep->v[k].color;
+					memcpy(dat + pos, &tmp, sizeof(u32));
+					pos += sizeof(u32);
 				}
 			}
 		}
+	}
 	}
 	
 	if(pos > allocsize) {
