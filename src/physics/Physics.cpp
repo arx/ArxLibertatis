@@ -269,22 +269,19 @@ void polyTypeToCollisionMaterial(const EERIEPOLY & ep) {
 static bool IsFULLObjectVertexInValidPosition(EERIE_3DOBJ * obj, EERIEPOLY *& collisionPoly) {
 
 	bool ret = true;
-	
-	long px = obj->pbox->vert[0].pos.x * ACTIVEBKG->Xmul;
-	long pz = obj->pbox->vert[0].pos.z * ACTIVEBKG->Zmul;
-
-	long n = obj->pbox->radius * ( 1.0f / 100 );
-	n = min(1L, n + 1);
-
-	long ix = std::max(px - n, 0L);
-	long ax = std::min(px + n, ACTIVEBKG->Xsize - 1L);
-	long iz = std::max(pz - n, 0L);
-	long az = std::min(pz + n, ACTIVEBKG->Zsize - 1L);
-	
 	float rad = obj->pbox->radius;
-
-	for(short z = iz; z <= az; z++)
-	for(short x = ix; x <= ax; x++) {
+	
+	short tilex = obj->pbox->vert[0].pos.x * ACTIVEBKG->Xmul;
+	short tilez = obj->pbox->vert[0].pos.z * ACTIVEBKG->Zmul;
+	short radius = std::min(1, short(rad * (1.0f/100)) + 1);
+	
+	short minx = std::max(tilex - radius, 0);
+	short maxx = std::min(tilex + radius, ACTIVEBKG->Xsize - 1);
+	short minz = std::max(tilez - radius, 0);
+	short maxz = std::min(tilez + radius, ACTIVEBKG->Zsize - 1);
+	
+	for(short z = minz; z <= maxz; z++)
+	for(short x = minx; x <= maxx; x++) {
 		EERIE_BKG_INFO & eg = ACTIVEBKG->Backg[x + z * ACTIVEBKG->Xsize];
 		
 		for(long k = 0; k < eg.nbpoly; k++) {
