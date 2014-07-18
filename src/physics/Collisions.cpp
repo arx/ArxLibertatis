@@ -509,15 +509,15 @@ float CheckAnythingInCylinder(const Cylinder & cyl, Entity * ioo, long flags) {
 	
 	EERIEPOLY * ep;
 	
-	for(long j = pz - rad; j <= pz + rad; j++)
-	for(long i = px - rad; i <= px + rad; i++) {
+	for(short z = pz - rad; z <= pz + rad; z++)
+	for(short x = px - rad; x <= px + rad; x++) {
 		float nearx,nearz;
 		float nearest = 99999999.f;
 
 		for(long num = 0; num < 4; num++) {
 
-			nearx = static_cast<float>(i * 100);
-			nearz = static_cast<float>(j * 100);
+			nearx = static_cast<float>(x * 100);
+			nearz = static_cast<float>(z * 100);
 
 			if(num == 1 || num == 2)
 				nearx += 100;
@@ -536,7 +536,7 @@ float CheckAnythingInCylinder(const Cylinder & cyl, Entity * ioo, long flags) {
 			continue;
 
 
-		EERIE_BKG_INFO * feg = &ACTIVEBKG->fastdata[i][j];
+		EERIE_BKG_INFO * feg = &ACTIVEBKG->fastdata[x][z];
 		for(long k = 0; k < feg->nbpoly; k++) {
 			ep = &feg->polydata[k];
 
@@ -1002,9 +1002,9 @@ const EERIEPOLY * CheckBackgroundInSphere(const Sphere & sphere) //except source
 	long spz = std::max(pz - rad, 0L);
 	long epz = std::min(pz + rad, ACTIVEBKG->Zsize - 1L);
 
-	for(long j = spz; j <= epz; j++)
-	for(long i = spx; i <= epx; i++) {
-		const EERIE_BKG_INFO & feg = ACTIVEBKG->fastdata[i][j];
+	for(short z = spz; z <= epz; z++)
+	for(short x = spx; x <= epx; x++) {
+		const EERIE_BKG_INFO & feg = ACTIVEBKG->fastdata[x][z];
 
 		for(long k = 0; k < feg.nbpoly; k++) {
 			const EERIEPOLY & ep = feg.polydata[k];
@@ -1038,9 +1038,9 @@ bool CheckAnythingInSphere(const Sphere & sphere, EntityHandle source, CASFlags 
 		long spz = std::max(pz - rad, 0L);
 		long epz = std::min(pz + rad, ACTIVEBKG->Zsize - 1L);
 
-		for(long j = spz; j <= epz; j++)
-		for(long i = spx; i <= epx; i++) {
-			const EERIE_BKG_INFO feg = ACTIVEBKG->fastdata[i][j];
+		for(short z = spz; z <= epz; z++)
+		for(short x = spx; x <= epx; x++) {
+			const EERIE_BKG_INFO feg = ACTIVEBKG->fastdata[x][z];
 
 			for(long k = 0; k < feg.nbpoly; k++) {
 				const EERIEPOLY & ep = feg.polydata[k];

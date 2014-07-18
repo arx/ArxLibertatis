@@ -243,9 +243,9 @@ EERIEPOLY * CheckInPoly(const Vec3f & poss, float * needY)
 	EERIEPOLY * found = NULL;
 	float foundY = 0.f;
 
-	for(short j = pzi; j <= pza; j++) {
-		for(short i = pxi; i <= pxa; i++) {
-			EERIE_BKG_INFO * feg = &ACTIVEBKG->fastdata[i][j];
+	for(short z = pzi; z <= pza; z++)
+	for(short x = pxi; x <= pxa; x++) {
+			EERIE_BKG_INFO * feg = &ACTIVEBKG->fastdata[x][z];
 
 			for(short k = 0; k < feg->nbpolyin; k++) {
 				EERIEPOLY * ep = feg->polyin[k];
@@ -266,7 +266,6 @@ EERIEPOLY * CheckInPoly(const Vec3f & poss, float * needY)
 					foundY = rz;
 				}
 			}
-		}
 	}
 
 	if(needY)
@@ -1106,11 +1105,11 @@ int InitBkg(EERIE_BACKGROUND * eb, short sx, short sz, short Xdiv, short Zdiv) {
 		eg->ianchors = NULL;
 	}
 
-	for(long j = 0; j < eb->Zsize; j++)
-		for(int i = 0; i < eb->Xsize; i++) {
-			EERIE_BKG_INFO *feg = &eb->fastdata[i][j];
-			memset(feg, 0, sizeof(EERIE_BKG_INFO));
-		}
+	for(short z = 0; z < eb->Zsize; z++)
+	for(short x = 0; x < eb->Xsize; x++) {
+		EERIE_BKG_INFO *feg = &eb->fastdata[x][z];
+		memset(feg, 0, sizeof(EERIE_BKG_INFO));
+	}
 
 	//todo free
 	eb->minmax = (EERIE_SMINMAX *)malloc(sizeof(EERIE_SMINMAX) * eb->Zsize);
@@ -1206,11 +1205,11 @@ void EERIEPOLY_Compute_PolyIn()
 		}
 	}
 	
-	for(int j = 0; j < ACTIVEBKG->Zsize; j++)
-	for(long i = 0; i < ACTIVEBKG->Xsize; i++) {
-		EERIE_BKG_INFO *eg = &ACTIVEBKG->Backg[i+j*ACTIVEBKG->Xsize];
+	for(short z = 0; z < ACTIVEBKG->Zsize; z++)
+	for(short x = 0; x < ACTIVEBKG->Xsize; x++) {
+		EERIE_BKG_INFO * eg = &ACTIVEBKG->Backg[x + z * ACTIVEBKG->Xsize];
+		EERIE_BKG_INFO * fbd = &ACTIVEBKG->fastdata[x][z];
 		
-		EERIE_BKG_INFO * fbd = &ACTIVEBKG->fastdata[i][j];
 		fbd->treat = eg->treat;
 		fbd->nbpoly = eg->nbpoly;
 		fbd->nbianchors = eg->nbianchors;

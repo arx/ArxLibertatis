@@ -305,10 +305,9 @@ EERIEPOLY * CheckArrowPolyCollision(const Vec3f & start, const Vec3f & end) {
 	long iz = std::max(pz - 2, 0L);
 	long az = std::min(pz + 2, ACTIVEBKG->Zsize - 1L);
 
-	for(long zz = iz; zz <= az; zz++)
-		for(long xx = ix; xx <= ax; xx++) {
-
-		const EERIE_BKG_INFO & feg = ACTIVEBKG->fastdata[xx][zz];
+	for(short z = iz; z <= az; z++)
+	for(short x = ix; x <= ax; x++) {
+		const EERIE_BKG_INFO & feg = ACTIVEBKG->fastdata[x][z];
 
 		for(long k = 0; k < feg.nbpolyin; k++) {
 

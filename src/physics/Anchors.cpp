@@ -73,9 +73,9 @@ static EERIEPOLY * ANCHOR_CheckInPolyPrecis(const Vec3f & pos) {
 	EERIEPOLY * found = NULL;
 	float foundY = 9999999.f;
 
-	for(long j = pz - 1; j <= pz + 1; j++) {
-		for(long i = px - 1; i <= px + 1; i++) {
-			EERIE_BKG_INFO *feg = &ACTIVEBKG->fastdata[i][j];
+	for(short z = pz - 1; z <= pz + 1; z++)
+	for(short x = px - 1; x <= px + 1; x++) {
+			EERIE_BKG_INFO *feg = &ACTIVEBKG->fastdata[x][z];
 
 			for(long k = 0; k < feg->nbpolyin; k++) {
 				EERIEPOLY *ep = feg->polyin[k];
@@ -90,7 +90,6 @@ static EERIEPOLY * ANCHOR_CheckInPolyPrecis(const Vec3f & pos) {
 					}
 				}
 			}
-		}
 	}
 
 	return found;
@@ -98,15 +97,15 @@ static EERIEPOLY * ANCHOR_CheckInPolyPrecis(const Vec3f & pos) {
 
 static EERIEPOLY * ANCHOR_CheckInPoly(const Vec3f & pos) {
 	
-	long px = pos.x * ACTIVEBKG->Xmul;
-	long pz = pos.z * ACTIVEBKG->Zmul;
+	long x = pos.x * ACTIVEBKG->Xmul;
+	long z = pos.z * ACTIVEBKG->Zmul;
 
-	if(px < 0 || px >= ACTIVEBKG->Xsize || pz < 0 || pz >= ACTIVEBKG->Zsize)
+	if(x < 0 || x >= ACTIVEBKG->Xsize || z < 0 || z >= ACTIVEBKG->Zsize)
 		return NULL;
 
 	EERIEPOLY *found = NULL;
 
-	EERIE_BKG_INFO *feg = &ACTIVEBKG->fastdata[px][pz];
+	EERIE_BKG_INFO *feg = &ACTIVEBKG->fastdata[x][z];
 
 	for(long k = 0; k < feg->nbpolyin; k++) {
 		EERIEPOLY *ep = feg->polyin[k];
@@ -246,9 +245,9 @@ static float ANCHOR_CheckAnythingInCylinder(const Cylinder & cyl, CollisionFlags
 
 	float anything = 999999.f; 
 	
-	for(long j = pz - rad; j <= pz + rad; j++) {
-		for(long i = px - rad; i <= px + rad; i++) {
-			EERIE_BKG_INFO *feg = &ACTIVEBKG->fastdata[i][j];
+	for(short z = pz - rad; z <= pz + rad; z++)
+	for(short x = px - rad; x <= px + rad; x++) {
+			EERIE_BKG_INFO *feg = &ACTIVEBKG->fastdata[x][z];
 
 			for(long k = 0; k < feg->nbpoly; k++) {
 				EERIEPOLY *ep = &feg->polydata[k];
@@ -264,7 +263,6 @@ static float ANCHOR_CheckAnythingInCylinder(const Cylinder & cyl, CollisionFlags
 				}
 			}
 		}
-	}
 
 	EERIEPOLY *ep = ANCHOR_CheckInPolyPrecis(cyl.origin + Vec3f(0.f, cyl.height, 0.f));
 

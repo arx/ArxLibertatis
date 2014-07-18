@@ -1058,13 +1058,13 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num, const EERIE_FRUSTRU
 			short iz = std::max(pEPDATA->p.y - 1, 0);
 			short az = std::min(pEPDATA->p.y + 1, ACTIVEBKG->Zsize - 1);
 
-			for(short nz = iz; nz <= az; nz++)
-			for(short nx = ix; nx <= ax; nx++) {
-				EERIE_BKG_INFO & feg2 = ACTIVEBKG->fastdata[nx][nz];
+			for(short z = iz; z <= az; z++)
+			for(short x = ix; x <= ax; x++) {
+				EERIE_BKG_INFO & feg2 = ACTIVEBKG->fastdata[x][z];
 
 				if(!feg2.treat) {
 					feg2.treat = true;
-					ComputeTileLights(nx, nz);
+					ComputeTileLights(x, z);
 				}
 			}
 		}
@@ -1419,9 +1419,9 @@ void ARX_SCENE_Update() {
 	// Go for a growing-square-spirallike-render around the camera position
 	// (To maximize Z-Buffer efficiency)
 
-	for(long j = z0; j <= z1; j++)
-	for(long i = x0; i < x1; i++) {
-		ACTIVEBKG->fastdata[i][j].treat = false;
+	for(short z = z0; z <= z1; z++)
+	for(short x = x0; x < x1; x++) {
+		ACTIVEBKG->fastdata[x][z].treat = false;
 	}
 
 	ResetTileLights();
