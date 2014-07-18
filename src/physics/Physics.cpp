@@ -227,21 +227,21 @@ static bool IsObjectInField(EERIE_3DOBJ * obj) {
 	return false;
 }
 
-static bool IsObjectVertexCollidingPoly(EERIE_3DOBJ * obj, EERIEPOLY * ep) {
+static bool IsObjectVertexCollidingPoly(EERIE_3DOBJ * obj, const EERIEPOLY & ep) {
 
 	Vec3f pol[3];
-	pol[0] = ep->v[0].p;
-	pol[1] = ep->v[1].p;
-	pol[2] = ep->v[2].p;
+	pol[0] = ep.v[0].p;
+	pol[1] = ep.v[1].p;
+	pol[2] = ep.v[2].p;
 
-	if(ep->type & POLY_QUAD) {
+	if(ep.type & POLY_QUAD) {
 
 		if(IsObjectVertexCollidingTriangle(obj, pol)) {
 			return true;
 		}
 
-		pol[1] = ep->v[2].p;
-		pol[2] = ep->v[3].p;
+		pol[1] = ep.v[2].p;
+		pol[2] = ep.v[3].p;
 
 		if(IsObjectVertexCollidingTriangle(obj, pol)) {
 			return true;
@@ -260,11 +260,9 @@ static bool IsObjectVertexCollidingPoly(EERIE_3DOBJ * obj, EERIEPOLY * ep) {
 static bool IsFULLObjectVertexInValidPosition(EERIE_3DOBJ * obj) {
 
 	bool ret = true;
-
-	float x = obj->pbox->vert[0].pos.x;
-	float z = obj->pbox->vert[0].pos.z;
-	long px = x * ACTIVEBKG->Xmul;
-	long pz = z * ACTIVEBKG->Zmul;
+	
+	long px = obj->pbox->vert[0].pos.x * ACTIVEBKG->Xmul;
+	long pz = obj->pbox->vert[0].pos.z * ACTIVEBKG->Zmul;
 
 	long n = obj->pbox->radius * ( 1.0f / 100 );
 	n = min(1L, n + 1);
@@ -278,40 +276,40 @@ static bool IsFULLObjectVertexInValidPosition(EERIE_3DOBJ * obj) {
 	
 	float rad = obj->pbox->radius;
 
-	for(pz = iz; pz <= az; pz++)
-	for(px = ix; px <= ax; px++) {
-		EERIE_BKG_INFO * eg = &ACTIVEBKG->Backg[px+pz*ACTIVEBKG->Xsize];
+	for(short z = iz; z <= az; z++)
+	for(short x = ix; x <= ax; x++) {
+		EERIE_BKG_INFO & eg = ACTIVEBKG->Backg[x + z * ACTIVEBKG->Xsize];
 		
-		for(long k = 0; k < eg->nbpoly; k++) {
-			EERIEPOLY * ep = &eg->polydata[k];
+		for(long k = 0; k < eg.nbpoly; k++) {
+			EERIEPOLY & ep = eg.polydata[k];
 			
-			if(ep->area > 190.f
-			   && !(ep->type & POLY_WATER)
-			   && !(ep->type & POLY_TRANS)
-			   && !(ep->type & POLY_NOCOL)
+			if(ep.area > 190.f
+			   && !(ep.type & POLY_WATER)
+			   && !(ep.type & POLY_TRANS)
+			   && !(ep.type & POLY_NOCOL)
 			) {
-				if(fartherThan(ep->center, obj->pbox->vert[0].pos, rad + 75.f))
+				if(fartherThan(ep.center, obj->pbox->vert[0].pos, rad + 75.f))
 					continue;
 				
 				for(long kk = 0; kk < obj->pbox->nb_physvert; kk++) {
 					float radd = 4.f;
 
-					if(!fartherThan(obj->pbox->vert[kk].pos, ep->center, radd)
-					   || !fartherThan(obj->pbox->vert[kk].pos, ep->v[0].p, radd)
-					   || !fartherThan(obj->pbox->vert[kk].pos, ep->v[1].p, radd)
-					   || !fartherThan(obj->pbox->vert[kk].pos, ep->v[2].p, radd)
-					   || !fartherThan(obj->pbox->vert[kk].pos, (ep->v[0].p + ep->v[1].p) * .5f, radd)
-					   || !fartherThan(obj->pbox->vert[kk].pos, (ep->v[2].p + ep->v[1].p) * .5f, radd)
-					   || !fartherThan(obj->pbox->vert[kk].pos, (ep->v[0].p + ep->v[2].p) * .5f, radd)
+					if(!fartherThan(obj->pbox->vert[kk].pos, ep.center, radd)
+					   || !fartherThan(obj->pbox->vert[kk].pos, ep.v[0].p, radd)
+					   || !fartherThan(obj->pbox->vert[kk].pos, ep.v[1].p, radd)
+					   || !fartherThan(obj->pbox->vert[kk].pos, ep.v[2].p, radd)
+					   || !fartherThan(obj->pbox->vert[kk].pos, (ep.v[0].p + ep.v[1].p) * .5f, radd)
+					   || !fartherThan(obj->pbox->vert[kk].pos, (ep.v[2].p + ep.v[1].p) * .5f, radd)
+					   || !fartherThan(obj->pbox->vert[kk].pos, (ep.v[0].p + ep.v[2].p) * .5f, radd)
 					) {
-						LAST_COLLISION_POLY = ep;
+						LAST_COLLISION_POLY = &ep;
 						
-						if (ep->type & POLY_METAL) CUR_COLLISION_MATERIAL = MATERIAL_METAL;
-						else if (ep->type & POLY_WOOD) CUR_COLLISION_MATERIAL = MATERIAL_WOOD;
-						else if (ep->type & POLY_STONE) CUR_COLLISION_MATERIAL = MATERIAL_STONE;
-						else if (ep->type & POLY_GRAVEL) CUR_COLLISION_MATERIAL = MATERIAL_GRAVEL;
-						else if (ep->type & POLY_WATER) CUR_COLLISION_MATERIAL = MATERIAL_WATER;
-						else if (ep->type & POLY_EARTH) CUR_COLLISION_MATERIAL = MATERIAL_EARTH;
+						if (ep.type & POLY_METAL) CUR_COLLISION_MATERIAL = MATERIAL_METAL;
+						else if (ep.type & POLY_WOOD) CUR_COLLISION_MATERIAL = MATERIAL_WOOD;
+						else if (ep.type & POLY_STONE) CUR_COLLISION_MATERIAL = MATERIAL_STONE;
+						else if (ep.type & POLY_GRAVEL) CUR_COLLISION_MATERIAL = MATERIAL_GRAVEL;
+						else if (ep.type & POLY_WATER) CUR_COLLISION_MATERIAL = MATERIAL_WATER;
+						else if (ep.type & POLY_EARTH) CUR_COLLISION_MATERIAL = MATERIAL_EARTH;
 						else CUR_COLLISION_MATERIAL = MATERIAL_STONE;
 						
 						return false;
@@ -322,22 +320,22 @@ static bool IsFULLObjectVertexInValidPosition(EERIE_3DOBJ * obj) {
 						if(kl != kk) {
 							Vec3f pos = (obj->pbox->vert[kk].pos + obj->pbox->vert[kl].pos) * .5f;
 							
-							if(!fartherThan(pos, ep->center, radd)
-							   || !fartherThan(pos, ep->v[0].p, radd)
-							   || !fartherThan(pos, ep->v[1].p, radd)
-							   || !fartherThan(pos, ep->v[2].p, radd)
-							   || !fartherThan(pos, (ep->v[0].p + ep->v[1].p) * .5f, radd)
-							   || !fartherThan(pos, (ep->v[2].p + ep->v[1].p) * .5f, radd)
-							   || !fartherThan(pos, (ep->v[0].p + ep->v[2].p) * .5f, radd)
+							if(!fartherThan(pos, ep.center, radd)
+							   || !fartherThan(pos, ep.v[0].p, radd)
+							   || !fartherThan(pos, ep.v[1].p, radd)
+							   || !fartherThan(pos, ep.v[2].p, radd)
+							   || !fartherThan(pos, (ep.v[0].p + ep.v[1].p) * .5f, radd)
+							   || !fartherThan(pos, (ep.v[2].p + ep.v[1].p) * .5f, radd)
+							   || !fartherThan(pos, (ep.v[0].p + ep.v[2].p) * .5f, radd)
 							) {
-								LAST_COLLISION_POLY = ep;
+								LAST_COLLISION_POLY = &ep;
 
-								if (ep->type & POLY_METAL) CUR_COLLISION_MATERIAL = MATERIAL_METAL;
-								else if (ep->type & POLY_WOOD) CUR_COLLISION_MATERIAL = MATERIAL_WOOD;
-								else if (ep->type & POLY_STONE) CUR_COLLISION_MATERIAL = MATERIAL_STONE;
-								else if (ep->type & POLY_GRAVEL) CUR_COLLISION_MATERIAL = MATERIAL_GRAVEL;
-								else if (ep->type & POLY_WATER) CUR_COLLISION_MATERIAL = MATERIAL_WATER;
-								else if (ep->type & POLY_EARTH) CUR_COLLISION_MATERIAL = MATERIAL_EARTH;
+								if (ep.type & POLY_METAL) CUR_COLLISION_MATERIAL = MATERIAL_METAL;
+								else if (ep.type & POLY_WOOD) CUR_COLLISION_MATERIAL = MATERIAL_WOOD;
+								else if (ep.type & POLY_STONE) CUR_COLLISION_MATERIAL = MATERIAL_STONE;
+								else if (ep.type & POLY_GRAVEL) CUR_COLLISION_MATERIAL = MATERIAL_GRAVEL;
+								else if (ep.type & POLY_WATER) CUR_COLLISION_MATERIAL = MATERIAL_WATER;
+								else if (ep.type & POLY_EARTH) CUR_COLLISION_MATERIAL = MATERIAL_EARTH;
 								else CUR_COLLISION_MATERIAL = MATERIAL_STONE;
 								
 								return false;
@@ -348,14 +346,14 @@ static bool IsFULLObjectVertexInValidPosition(EERIE_3DOBJ * obj) {
 				
 				if(IsObjectVertexCollidingPoly(obj, ep)) {
 					
-					LAST_COLLISION_POLY = ep;
+					LAST_COLLISION_POLY = &ep;
 					
-					if (ep->type & POLY_METAL) CUR_COLLISION_MATERIAL = MATERIAL_METAL;
-					else if (ep->type & POLY_WOOD) CUR_COLLISION_MATERIAL = MATERIAL_WOOD;
-					else if (ep->type & POLY_STONE) CUR_COLLISION_MATERIAL = MATERIAL_STONE;
-					else if (ep->type & POLY_GRAVEL) CUR_COLLISION_MATERIAL = MATERIAL_GRAVEL;
-					else if (ep->type & POLY_WATER) CUR_COLLISION_MATERIAL = MATERIAL_WATER;
-					else if (ep->type & POLY_EARTH) CUR_COLLISION_MATERIAL = MATERIAL_EARTH;
+					if (ep.type & POLY_METAL) CUR_COLLISION_MATERIAL = MATERIAL_METAL;
+					else if (ep.type & POLY_WOOD) CUR_COLLISION_MATERIAL = MATERIAL_WOOD;
+					else if (ep.type & POLY_STONE) CUR_COLLISION_MATERIAL = MATERIAL_STONE;
+					else if (ep.type & POLY_GRAVEL) CUR_COLLISION_MATERIAL = MATERIAL_GRAVEL;
+					else if (ep.type & POLY_WATER) CUR_COLLISION_MATERIAL = MATERIAL_WATER;
+					else if (ep.type & POLY_EARTH) CUR_COLLISION_MATERIAL = MATERIAL_EARTH;
 					else CUR_COLLISION_MATERIAL = MATERIAL_STONE;
 					
 					return false;
