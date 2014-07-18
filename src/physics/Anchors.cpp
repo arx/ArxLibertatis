@@ -839,13 +839,11 @@ static void AnchorData_Create_Links_Original_Method(EERIE_BACKGROUND * eb) {
 	long lastper = -1;
 	long total = eb->Zsize * eb->Xsize;
 
-	for (long j = 0; j < eb->Zsize; j++)
-		for (long i = 0; i < eb->Xsize; i++)
-		{
+	for(long j = 0; j < eb->Zsize; j++)
+		for(long i = 0; i < eb->Xsize; i++) {
 			per = count / total * 100.f;
 
-			if (per != lastper)
-			{
+			if(per != lastper) {
 				LogInfo << "Anchor Links Generation: %" << per;
 				lastper = per;
 			}
@@ -854,46 +852,40 @@ static void AnchorData_Create_Links_Original_Method(EERIE_BACKGROUND * eb) {
 			EERIE_BKG_INFO * eg = &eb->Backg[i+j*eb->Xsize];
 			long precise = 0;
 
-			for (long kkk = 0; kkk < eg->nbpolyin; kkk++)
-			{
+			for(long kkk = 0; kkk < eg->nbpolyin; kkk++) {
 				EERIEPOLY * ep = eg->polyin[kkk];
 
-				if (ep->type & POLY_PRECISE_PATH)
-				{
+				if(ep->type & POLY_PRECISE_PATH) {
 					precise = 1;
 					break;
 				}
 			}
 
 
-			for (long k = 0; k < eg->nbianchors; k++)
-			{
+			for(long k = 0; k < eg->nbianchors; k++) {
 				long ii = glm::clamp(i - 2, 0l, eb->Xsize - 1l);
 				long ia = glm::clamp(i + 2, 0l, eb->Xsize - 1l);
 				long ji = glm::clamp(j - 2, 0l, eb->Zsize - 1l);
 				long ja = glm::clamp(j + 2, 0l, eb->Zsize - 1l);
 
-				for (long j2 = ji; j2 <= ja; j2++)
-					for (long i2 = ii; i2 <= ia; i2++)
-					{
+				for(long j2 = ji; j2 <= ja; j2++)
+					for(long i2 = ii; i2 <= ia; i2++) {
 						EERIE_BKG_INFO * eg2 = &eb->Backg[i2+j2*eb->Xsize];
 						long precise2 = 0;
 
-						for (long kkk = 0; kkk < eg2->nbpolyin; kkk++)
-						{
+						for(long kkk = 0; kkk < eg2->nbpolyin; kkk++) {
 							EERIEPOLY * ep2 = eg2->polyin[kkk];
 
-							if (ep2->type & POLY_PRECISE_PATH)
-							{
+							if(ep2->type & POLY_PRECISE_PATH) {
 								precise2 = 1;
 								break;
 							}
 						}
 
-						for (long k2 = 0; k2 < eg2->nbianchors; k2++)
-						{
+						for(long k2 = 0; k2 < eg2->nbianchors; k2++) {
 							// don't treat currently treated anchor
-							if (eg->ianchors[k] == eg2->ianchors[k2]) continue;
+							if(eg->ianchors[k] == eg2->ianchors[k2])
+								continue;
 
 							p1 = eb->anchors[eg->ianchors[k]].pos;
 							p2 = eb->anchors[eg2->ianchors[k2]].pos;
@@ -904,18 +896,21 @@ static void AnchorData_Create_Links_Original_Method(EERIE_BACKGROUND * eb) {
 							float _dist = glm::distance(p1, p2);
 							float dd = glm::distance(Vec2f(p1.x, p1.z), Vec2f(p2.x, p2.z));
 
-							if (dd < 5.f) continue;
+							if(dd < 5.f)
+								continue;
 
-							if (dd > 200.f) continue; 
+							if(dd > 200.f)
+								continue; 
 
-							if (precise || precise2)
-							{
-								if (_dist > 120.f) continue;
+							if(precise || precise2) {
+								if(_dist > 120.f)
+									continue;
+							} else if(_dist > 200.f) {
+								continue;
 							}
-							else	if (_dist > 200.f) continue;
 
-							if (EEfabs(p1.y - p2.y) > dd * 0.9f) continue;
-
+							if(EEfabs(p1.y - p2.y) > dd * 0.9f)
+								continue;
 					
 							IO_PHYSICS ip;
 							ip.startpos = ip.cyl.origin = p1;
@@ -926,48 +921,48 @@ static void AnchorData_Create_Links_Original_Method(EERIE_BACKGROUND * eb) {
 
 							long t = 2;
 
-							if (ANCHOR_ARX_COLLISION_Move_Cylinder(&ip, NULL, 20, CFLAG_CHECK_VALID_POS | CFLAG_NO_INTERCOL | CFLAG_EASY_SLIDING | CFLAG_NPC | CFLAG_JUST_TEST | CFLAG_EXTRA_PRECISION)) //CFLAG_SPECIAL
-							{
+							//TODO check for dead code CFLAG_SPECIAL
+							if(ANCHOR_ARX_COLLISION_Move_Cylinder(&ip, NULL, 20, CFLAG_CHECK_VALID_POS | CFLAG_NO_INTERCOL | CFLAG_EASY_SLIDING | CFLAG_NPC | CFLAG_JUST_TEST | CFLAG_EXTRA_PRECISION)) {
 								if(fartherThan(Vec2f(ip.cyl.origin.x, ip.cyl.origin.z), Vec2f(ip.targetpos.x, ip.targetpos.z), 25.f)) { 
 									t--;
 								} else {
 									_onetwo = 1;
 								}
+							} else {
+								t--;
 							}
-							else t--;
 
-							if (t == 1)
-							{
+							if(t == 1) {
 								ip.startpos = ip.cyl.origin = p2;
 								ip.targetpos = p1;
 
 								ip.cyl.height = eb->anchors[eg2->ianchors[k2]].height;
 								ip.cyl.radius = eb->anchors[eg2->ianchors[k2]].radius; 
-
-								if (ANCHOR_ARX_COLLISION_Move_Cylinder(&ip, NULL, 20, CFLAG_CHECK_VALID_POS | CFLAG_NO_INTERCOL | CFLAG_EASY_SLIDING | CFLAG_NPC | CFLAG_JUST_TEST | CFLAG_EXTRA_PRECISION | CFLAG_RETURN_HEIGHT)) //CFLAG_SPECIAL
-								{
+								
+								//CFLAG_SPECIAL
+								if(ANCHOR_ARX_COLLISION_Move_Cylinder(&ip, NULL, 20, CFLAG_CHECK_VALID_POS | CFLAG_NO_INTERCOL | CFLAG_EASY_SLIDING | CFLAG_NPC | CFLAG_JUST_TEST | CFLAG_EXTRA_PRECISION | CFLAG_RETURN_HEIGHT)) {
 									if(fartherThan(Vec2f(ip.cyl.origin.x, ip.cyl.origin.z), Vec2f(ip.targetpos.x, ip.targetpos.z), 25.f)) {
 										t--;
 									} else {
 										_onetwo |= 2;
 									}
+								} else {
+									t--;
 								}
-								else t--;
+							} else {
+								t--;
 							}
-							else t--;
 
-							if (t <= 0)
+							if(t <= 0)
 								treat = false;
-							else treat = true;
+							else
+								treat = true;
 
-							if (treat)
-							{
-								if (_onetwo)
-								{
+							if(treat) {
+								if(_onetwo) {
 									AddAnchorLink(eb, eg->ianchors[k], eg2->ianchors[k2]);
 									AddAnchorLink(eb, eg2->ianchors[k2], eg->ianchors[k]);
 								}
-
 							}
 						}
 					}
