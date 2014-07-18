@@ -205,24 +205,21 @@ bool LittleAngularDiff(Vec3f * norm, Vec3f * norm2) {
     return closerThan(*norm, *norm2, 1.41421f);
 }
 
-void ARX_PrepareBackgroundNRMLs()
-{
-	long i, j, k;
-	long i2, j2, k2;
+void ARX_PrepareBackgroundNRMLs() {
+	
 	Vec3f nrml;
 	Vec3f cur_nrml;
 	float count;
 	
-	for(j = 0; j < ACTIVEBKG->Zsize; j++)
-	for(i = 0; i < ACTIVEBKG->Xsize; i++) {
-		EERIE_BKG_INFO * eg = &ACTIVEBKG->Backg[i+j*ACTIVEBKG->Xsize];
-		
-		for(long l = 0; l < eg->nbpoly; l++) {
+	for(short z = 0; z < ACTIVEBKG->Zsize; z++)
+	for(short x = 0; x < ACTIVEBKG->Xsize; x++) {
+		EERIE_BKG_INFO * eg = &ACTIVEBKG->Backg[x + z * ACTIVEBKG->Xsize];
+		for(short l = 0; l < eg->nbpoly; l++) {
 			EERIEPOLY * ep = &eg->polydata[l];
 			
-			long nbvert = (ep->type & POLY_QUAD) ? 4 : 3;
+			u8 nbvert = (ep->type & POLY_QUAD) ? 4 : 3;
 			
-			for(k = 0; k < nbvert; k++) {
+			for(u8 k = 0; k < nbvert; k++) {
 				float ttt = 1.f;
 				
 				if(k == 3) {
@@ -239,22 +236,24 @@ void ARX_PrepareBackgroundNRMLs()
 				
 				cur_nrml = nrml * ttt;
 				
-				long mii = std::max(i - 4, 0L);
-				long mai = std::min(i + 4, ACTIVEBKG->Xsize - 1L);
-				long mij = std::max(j - 4, 0L);
-				long maj = std::min(j + 4, ACTIVEBKG->Zsize - 1L);
+				short radius = 4;
 				
-				for(j2 = mij; j2 < maj; j2++)
-				for(i2 = mii; i2 < mai; i2++) {
+				short mii = std::max(x - radius, 0);
+				short mai = std::min(x + radius, ACTIVEBKG->Xsize - 1);
+				short mij = std::max(z - radius, 0);
+				short maj = std::min(z + radius, ACTIVEBKG->Zsize - 1);
+				
+				for(short j2 = mij; j2 < maj; j2++)
+				for(short i2 = mii; i2 < mai; i2++) {
 					EERIE_BKG_INFO * eg2 = &ACTIVEBKG->Backg[i2+j2*ACTIVEBKG->Xsize];
 					
 					for(long kr = 0; kr < eg2->nbpoly; kr++) {
 						EERIEPOLY * ep2 = &eg2->polydata[kr];
 
-						long nbvert2 = (ep2->type & POLY_QUAD) ? 4 : 3;
+						u8 nbvert2 = (ep2->type & POLY_QUAD) ? 4 : 3;
 
 						if(ep != ep2)
-							for(k2 = 0; k2 < nbvert2; k2++) {
+							for(u8 k2 = 0; k2 < nbvert2; k2++) {
 								if(EEfabs(ep2->v[k2].p.x - ep->v[k].p.x) < 2.f
 								   && EEfabs(ep2->v[k2].p.y - ep->v[k].p.y) < 2.f
 								   && EEfabs(ep2->v[k2].p.z - ep->v[k].p.z) < 2.f
@@ -290,16 +289,15 @@ void ARX_PrepareBackgroundNRMLs()
 		}
 	}
 	
-	for(j = 0; j < ACTIVEBKG->Zsize; j++)
-	for(i = 0; i < ACTIVEBKG->Xsize; i++) {
-		EERIE_BKG_INFO * eg = &ACTIVEBKG->Backg[i+j*ACTIVEBKG->Xsize];
-		
+	for(short z = 0; z < ACTIVEBKG->Zsize; z++)
+	for(short x = 0; x < ACTIVEBKG->Xsize; x++) {
+		EERIE_BKG_INFO * eg = &ACTIVEBKG->Backg[x + z * ACTIVEBKG->Xsize];
 		for(long l = 0; l < eg->nbpoly; l++) {
 			EERIEPOLY * ep = &eg->polydata[l];
 			
-			long nbvert = (ep->type & POLY_QUAD) ? 4 : 3;
+			u8 nbvert = (ep->type & POLY_QUAD) ? 4 : 3;
 			
-			for(k = 0; k < nbvert; k++) {
+			for(u8 k = 0; k < nbvert; k++) {
 				ep->nrml[k] = ep->tv[k].p;
 			}
 			
