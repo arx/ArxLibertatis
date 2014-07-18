@@ -742,15 +742,15 @@ void EERIERemovePrecalcLights() {
 		if(GLight[i] != NULL)
 			GLight[i]->treat = 1;
 	}
-
-	for(int j = 0; j < ACTIVEBKG->Zsize; j++) {
-		for(int i = 0; i < ACTIVEBKG->Xsize; i++) {
-			EERIE_BKG_INFO *eg = &ACTIVEBKG->Backg[i+j*ACTIVEBKG->Xsize];
-
-			for(long k = 0; k < eg->nbpoly; k++) {
-				EERIEPOLY *ep = &eg->polydata[k];
-				ep->v[3].color = ep->v[2].color = ep->v[1].color = ep->v[0].color = Color::white.toBGR();
-			}
+	
+	// TODO copy-paste poly iteration
+	for(short z = 0; z < ACTIVEBKG->Zsize; z++)
+	for(short x = 0; x < ACTIVEBKG->Xsize; x++) {
+		EERIE_BKG_INFO & eg = ACTIVEBKG->Backg[x + z * ACTIVEBKG->Xsize];
+		for(short l = 0; l < eg.nbpoly; l++) {
+			EERIEPOLY & ep = eg.polydata[l];
+			
+			ep.v[3].color = ep.v[2].color = ep.v[1].color = ep.v[0].color = Color::white.toBGR();
 		}
 	}
 }
