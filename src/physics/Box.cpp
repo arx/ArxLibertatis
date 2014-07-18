@@ -51,7 +51,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 using std::min;
 using std::max;
 
-long CUR_COLLISION_MATERIAL = 0;
+Material CUR_COLLISION_MATERIAL = MATERIAL_NONE;
 
 // Used to launch an object into the physical world...
 void EERIE_PHYSICS_BOX_Launch(EERIE_3DOBJ * obj, const Vec3f & pos, const Anglef & angle, const Vec3f & vect)

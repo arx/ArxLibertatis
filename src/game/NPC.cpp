@@ -779,7 +779,7 @@ bool ARX_NPC_SetStat(Entity& io, const string & statname, float value) {
 	return true;
 }
 
-extern long CUR_COLLISION_MATERIAL;
+extern Material CUR_COLLISION_MATERIAL;
 static Entity * PHYSICS_CURIO = NULL;
 
 void ARX_TEMPORARY_TrySound(float volume) {

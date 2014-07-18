@@ -63,7 +63,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "physics/Box.h"
 #include "physics/Collisions.h"
 
-extern long CUR_COLLISION_MATERIAL;
+extern Material CUR_COLLISION_MATERIAL;
 
 static const float VELOCITY_THRESHOLD = 400.f;
 
