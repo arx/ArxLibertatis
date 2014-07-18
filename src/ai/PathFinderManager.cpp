@@ -243,8 +243,7 @@ static bool EERIE_PATHFINDER_Get_Next_Request(PATHFINDER_REQUEST & request) {
 void PathFinderThread::run() {
 	
 	EERIE_BACKGROUND * eb = ACTIVEBKG;
-	PathFinder pathfinder(eb->nbanchors, eb->anchors,
-	                      MAX_LIGHTS, (EERIE_LIGHT **)GLight);
+	PathFinder pathfinder(eb->nbanchors, eb->anchors, MAX_LIGHTS, (EERIE_LIGHT **)GLight);
 
 	while(!isStopRequested()) {
 		
@@ -253,12 +252,10 @@ void PathFinderThread::run() {
 		PATHFINDER_WORKING = 1;
 
 		PATHFINDER_REQUEST curpr;
-		if (EERIE_PATHFINDER_Get_Next_Request(curpr) && curpr.isvalid)
-		{
+		if(EERIE_PATHFINDER_Get_Next_Request(curpr) && curpr.isvalid) {
 			PATHFINDER_WORKING = 2;
 
-			if (curpr.ioid && curpr.ioid->_npcdata)
-			{
+			if(curpr.ioid && curpr.ioid->_npcdata) {
 				float heuristic(PATHFINDER_HEURISTIC_MAX);
 
 				pathfinder.setCylinder(curpr.ioid->physics.cyl.radius, curpr.ioid->physics.cyl.height);
@@ -269,31 +266,24 @@ void PathFinderThread::run() {
 				
 				PathFinder::Result result;
 				
-				if ((curpr.ioid->_npcdata->behavior & BEHAVIOUR_MOVE_TO)
-				        || (curpr.ioid->_npcdata->behavior & BEHAVIOUR_GO_HOME))
-				{
+				if(   (curpr.ioid->_npcdata->behavior & BEHAVIOUR_MOVE_TO)
+				   || (curpr.ioid->_npcdata->behavior & BEHAVIOUR_GO_HOME)
+				) {
 					float distance = fdist(ACTIVEBKG->anchors[curpr.from].pos, ACTIVEBKG->anchors[curpr.to].pos);
 
-					if (distance < PATHFINDER_DISTANCE_MAX)
-						heuristic = PATHFINDER_HEURISTIC_MIN
-						            + PATHFINDER_HEURISTIC_RANGE * (distance / PATHFINDER_DISTANCE_MAX);
+					if(distance < PATHFINDER_DISTANCE_MAX)
+						heuristic = PATHFINDER_HEURISTIC_MIN + PATHFINDER_HEURISTIC_RANGE * (distance / PATHFINDER_DISTANCE_MAX);
 
 					pathfinder.setHeuristic(heuristic);
 					pathfinder.move(curpr.from, curpr.to, result, stealth);
-				}
-				else if (curpr.ioid->_npcdata->behavior & BEHAVIOUR_WANDER_AROUND)
-				{
-					if (curpr.ioid->_npcdata->behavior_param < PATHFINDER_DISTANCE_MAX)
-						heuristic = PATHFINDER_HEURISTIC_MIN
-						            + PATHFINDER_HEURISTIC_RANGE
-						              * (curpr.ioid->_npcdata->behavior_param / PATHFINDER_DISTANCE_MAX);
+				} else if(curpr.ioid->_npcdata->behavior & BEHAVIOUR_WANDER_AROUND) {
+					if(curpr.ioid->_npcdata->behavior_param < PATHFINDER_DISTANCE_MAX)
+						heuristic = PATHFINDER_HEURISTIC_MIN + PATHFINDER_HEURISTIC_RANGE * (curpr.ioid->_npcdata->behavior_param / PATHFINDER_DISTANCE_MAX);
 
 					pathfinder.setHeuristic(heuristic);
 					pathfinder.wanderAround(curpr.from, curpr.ioid->_npcdata->behavior_param, result, stealth);
-				}
-				else if (curpr.ioid->_npcdata->behavior & (BEHAVIOUR_FLEE | BEHAVIOUR_HIDE))
-				{
-					if (curpr.ioid->_npcdata->behavior_param < PATHFINDER_DISTANCE_MAX)
+				} else if(curpr.ioid->_npcdata->behavior & (BEHAVIOUR_FLEE | BEHAVIOUR_HIDE)) {
+					if(curpr.ioid->_npcdata->behavior_param < PATHFINDER_DISTANCE_MAX)
 						heuristic = PATHFINDER_HEURISTIC_MIN
 						            + PATHFINDER_HEURISTIC_RANGE
 						              * (curpr.ioid->_npcdata->behavior_param / PATHFINDER_DISTANCE_MAX);
@@ -303,14 +293,11 @@ void PathFinderThread::run() {
 					                 + fdist(curpr.ioid->target, curpr.ioid->pos);
 
 					pathfinder.flee(curpr.from, curpr.ioid->target, safedist, result, stealth);
-				}
-				else if (curpr.ioid->_npcdata->behavior & BEHAVIOUR_LOOK_FOR)
-				{
+				} else if(curpr.ioid->_npcdata->behavior & BEHAVIOUR_LOOK_FOR) {
 					float distance = fdist(curpr.ioid->pos, curpr.ioid->target);
 
-					if (distance < PATHFINDER_DISTANCE_MAX)
-						heuristic = PATHFINDER_HEURISTIC_MIN
-						            + PATHFINDER_HEURISTIC_RANGE * (distance / PATHFINDER_DISTANCE_MAX);
+					if(distance < PATHFINDER_DISTANCE_MAX)
+						heuristic = PATHFINDER_HEURISTIC_MIN + PATHFINDER_HEURISTIC_RANGE * (distance / PATHFINDER_DISTANCE_MAX);
 
 					pathfinder.setHeuristic(heuristic);
 					pathfinder.lookFor(curpr.from, curpr.ioid->target,
