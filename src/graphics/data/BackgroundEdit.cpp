@@ -238,13 +238,13 @@ void ARX_PrepareBackgroundNRMLs() {
 				
 				short radius = 4;
 				
-				short mii = std::max(x - radius, 0);
-				short mai = std::min(x + radius, ACTIVEBKG->Xsize - 1);
-				short mij = std::max(z - radius, 0);
-				short maj = std::min(z + radius, ACTIVEBKG->Zsize - 1);
+				short minx = std::max(x - radius, 0);
+				short maxx = std::min(x + radius, ACTIVEBKG->Xsize - 1);
+				short minz = std::max(z - radius, 0);
+				short maxz = std::min(z + radius, ACTIVEBKG->Zsize - 1);
 				
-				for(short j2 = mij; j2 < maj; j2++)
-				for(short i2 = mii; i2 < mai; i2++) {
+				for(short j2 = minz; j2 < maxz; j2++)
+				for(short i2 = minx; i2 < maxx; i2++) {
 					EERIE_BKG_INFO * eg2 = &ACTIVEBKG->Backg[i2+j2*ACTIVEBKG->Xsize];
 					
 					for(long kr = 0; kr < eg2->nbpoly; kr++) {
