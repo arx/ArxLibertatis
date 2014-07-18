@@ -74,10 +74,10 @@ struct EERIE_SMINMAX
 	short max;
 };
 
-#define MAX_BKGX	160
-#define MAX_BKGZ	160
-#define BKG_SIZX	100
-#define BKG_SIZZ	100
+static const short MAX_BKGX = 160;
+static const short MAX_BKGZ = 160;
+static const short BKG_SIZX = 100;
+static const short BKG_SIZZ = 100;
 
 struct ANCHOR_DATA;
 
