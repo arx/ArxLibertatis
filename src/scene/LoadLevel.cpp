@@ -241,26 +241,26 @@ long DanaeSaveLevel(const fs::path & _fic) {
 	
 	for(size_t i = 0; i < MAX_FOG; i++) {
 		FOG_DEF *fog = &fogs[i];
-
+		
 		if(!fog->exist)
 			continue;
-
-			DANAE_LS_FOG dlf;
-			memset(&dlf, 0, sizeof(DANAE_LS_FOG));
-			dlf.rgb = fog->rgb;
-			dlf.angle = fog->angle;
-			dlf.pos = fog->pos - Mscenepos;
-			dlf.blend = fog->blend;
-			dlf.frequency = fog->frequency;
-			dlf.move = fog->move;
-			dlf.rotatespeed = fog->rotatespeed;
-			dlf.scale = fog->scale;
-			dlf.size = fog->size;
-			dlf.special = fog->special;
-			dlf.speed = fog->speed;
-			dlf.tolive = fog->tolive;
-			memcpy(dat + pos, &dlf, sizeof(DANAE_LS_FOG));
-			pos += sizeof(DANAE_LS_FOG);
+		
+		DANAE_LS_FOG dlf;
+		memset(&dlf, 0, sizeof(DANAE_LS_FOG));
+		dlf.rgb = fog->rgb;
+		dlf.angle = fog->angle;
+		dlf.pos = fog->pos - Mscenepos;
+		dlf.blend = fog->blend;
+		dlf.frequency = fog->frequency;
+		dlf.move = fog->move;
+		dlf.rotatespeed = fog->rotatespeed;
+		dlf.scale = fog->scale;
+		dlf.size = fog->size;
+		dlf.special = fog->special;
+		dlf.speed = fog->speed;
+		dlf.tolive = fog->tolive;
+		memcpy(dat + pos, &dlf, sizeof(DANAE_LS_FOG));
+		pos += sizeof(DANAE_LS_FOG);
 	}
 	
 	for(long i = 0; i < nbARXpaths; i++) {
