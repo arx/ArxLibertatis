@@ -1053,6 +1053,7 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num, const EERIE_FRUSTRU
 		EERIE_BKG_INFO *feg = &ACTIVEBKG->fastdata[pEPDATA->p.x][pEPDATA->p.y];
 
 		if(!feg->treat) {
+			// TODO copy-paste background tiles
 			short tilex = pEPDATA->p.x;
 			short tilez = pEPDATA->p.y;
 			short radius = 1;
@@ -1406,6 +1407,7 @@ void ARX_SCENE_Update() {
 	long clip3D = (l / (long)BKG_SIZX) + 1;
 	short radius = clip3D + 4;
 
+	// TODO copy-paste background tiles
 	int tilex = ACTIVECAM->orgTrans.pos.x * ACTIVEBKG->Xmul;
 	int tilez = ACTIVECAM->orgTrans.pos.z * ACTIVEBKG->Zmul;
 	tilex = glm::clamp(tilex, 0, ACTIVEBKG->Xsize - 1);

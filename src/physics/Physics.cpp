@@ -271,6 +271,7 @@ static bool IsFULLObjectVertexInValidPosition(EERIE_3DOBJ * obj, EERIEPOLY *& co
 	bool ret = true;
 	float rad = obj->pbox->radius;
 	
+	// TODO copy-paste background tiles
 	short tilex = obj->pbox->vert[0].pos.x * ACTIVEBKG->Xmul;
 	short tilez = obj->pbox->vert[0].pos.z * ACTIVEBKG->Zmul;
 	short radius = std::min(1, short(rad * (1.0f/100)) + 1);

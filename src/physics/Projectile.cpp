@@ -297,6 +297,7 @@ EERIEPOLY * CheckArrowPolyCollision(const Vec3f & start, const Vec3f & end) {
 	pol.v[2] = end - Vec3f(2.f, 15.f, 2.f);
 	pol.v[1] = end;
 
+	// TODO copy-paste background tiles
 	short tilex = end.x * ACTIVEBKG->Xmul;
 	short tilez = end.z * ACTIVEBKG->Zmul;
 	short radius = 2;
