@@ -256,6 +256,16 @@ static bool IsObjectVertexCollidingPoly(EERIE_3DOBJ * obj, const EERIEPOLY & ep)
 	return false;
 }
 
+void polyTypeToCollisionMaterial(const EERIEPOLY & ep) {
+	if (ep.type & POLY_METAL) CUR_COLLISION_MATERIAL = MATERIAL_METAL;
+	else if (ep.type & POLY_WOOD) CUR_COLLISION_MATERIAL = MATERIAL_WOOD;
+	else if (ep.type & POLY_STONE) CUR_COLLISION_MATERIAL = MATERIAL_STONE;
+	else if (ep.type & POLY_GRAVEL) CUR_COLLISION_MATERIAL = MATERIAL_GRAVEL;
+	else if (ep.type & POLY_WATER) CUR_COLLISION_MATERIAL = MATERIAL_WATER;
+	else if (ep.type & POLY_EARTH) CUR_COLLISION_MATERIAL = MATERIAL_EARTH;
+	else CUR_COLLISION_MATERIAL = MATERIAL_STONE;
+}
+
 static bool IsFULLObjectVertexInValidPosition(EERIE_3DOBJ * obj, EERIEPOLY *& collisionPoly) {
 
 	bool ret = true;
@@ -301,13 +311,7 @@ static bool IsFULLObjectVertexInValidPosition(EERIE_3DOBJ * obj, EERIEPOLY *& co
 					) {
 						collisionPoly = &ep;
 						
-						if (ep.type & POLY_METAL) CUR_COLLISION_MATERIAL = MATERIAL_METAL;
-						else if (ep.type & POLY_WOOD) CUR_COLLISION_MATERIAL = MATERIAL_WOOD;
-						else if (ep.type & POLY_STONE) CUR_COLLISION_MATERIAL = MATERIAL_STONE;
-						else if (ep.type & POLY_GRAVEL) CUR_COLLISION_MATERIAL = MATERIAL_GRAVEL;
-						else if (ep.type & POLY_WATER) CUR_COLLISION_MATERIAL = MATERIAL_WATER;
-						else if (ep.type & POLY_EARTH) CUR_COLLISION_MATERIAL = MATERIAL_EARTH;
-						else CUR_COLLISION_MATERIAL = MATERIAL_STONE;
+						polyTypeToCollisionMaterial(ep);
 						
 						return false;
 					}
@@ -327,13 +331,7 @@ static bool IsFULLObjectVertexInValidPosition(EERIE_3DOBJ * obj, EERIEPOLY *& co
 							) {
 								collisionPoly = &ep;
 
-								if (ep.type & POLY_METAL) CUR_COLLISION_MATERIAL = MATERIAL_METAL;
-								else if (ep.type & POLY_WOOD) CUR_COLLISION_MATERIAL = MATERIAL_WOOD;
-								else if (ep.type & POLY_STONE) CUR_COLLISION_MATERIAL = MATERIAL_STONE;
-								else if (ep.type & POLY_GRAVEL) CUR_COLLISION_MATERIAL = MATERIAL_GRAVEL;
-								else if (ep.type & POLY_WATER) CUR_COLLISION_MATERIAL = MATERIAL_WATER;
-								else if (ep.type & POLY_EARTH) CUR_COLLISION_MATERIAL = MATERIAL_EARTH;
-								else CUR_COLLISION_MATERIAL = MATERIAL_STONE;
+								polyTypeToCollisionMaterial(ep);
 								
 								return false;
 							}
@@ -345,13 +343,7 @@ static bool IsFULLObjectVertexInValidPosition(EERIE_3DOBJ * obj, EERIEPOLY *& co
 					
 					collisionPoly = &ep;
 					
-					if (ep.type & POLY_METAL) CUR_COLLISION_MATERIAL = MATERIAL_METAL;
-					else if (ep.type & POLY_WOOD) CUR_COLLISION_MATERIAL = MATERIAL_WOOD;
-					else if (ep.type & POLY_STONE) CUR_COLLISION_MATERIAL = MATERIAL_STONE;
-					else if (ep.type & POLY_GRAVEL) CUR_COLLISION_MATERIAL = MATERIAL_GRAVEL;
-					else if (ep.type & POLY_WATER) CUR_COLLISION_MATERIAL = MATERIAL_WATER;
-					else if (ep.type & POLY_EARTH) CUR_COLLISION_MATERIAL = MATERIAL_EARTH;
-					else CUR_COLLISION_MATERIAL = MATERIAL_STONE;
+					polyTypeToCollisionMaterial(ep);
 					
 					return false;
 				}
