@@ -63,7 +63,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "physics/Box.h"
 #include "physics/Collisions.h"
 
-static EERIEPOLY * LAST_COLLISION_POLY = NULL;
 extern long CUR_COLLISION_MATERIAL;
 
 static const float VELOCITY_THRESHOLD = 400.f;
@@ -257,7 +256,7 @@ static bool IsObjectVertexCollidingPoly(EERIE_3DOBJ * obj, const EERIEPOLY & ep)
 	return false;
 }
 
-static bool IsFULLObjectVertexInValidPosition(EERIE_3DOBJ * obj) {
+static bool IsFULLObjectVertexInValidPosition(EERIE_3DOBJ * obj, EERIEPOLY *& collisionPoly) {
 
 	bool ret = true;
 	
@@ -271,8 +270,6 @@ static bool IsFULLObjectVertexInValidPosition(EERIE_3DOBJ * obj) {
 	long ax = std::min(px + n, ACTIVEBKG->Xsize - 1L);
 	long iz = std::max(pz - n, 0L);
 	long az = std::min(pz + n, ACTIVEBKG->Zsize - 1L);
-
-	LAST_COLLISION_POLY = NULL;
 	
 	float rad = obj->pbox->radius;
 
@@ -302,7 +299,7 @@ static bool IsFULLObjectVertexInValidPosition(EERIE_3DOBJ * obj) {
 					   || !fartherThan(obj->pbox->vert[kk].pos, (ep.v[2].p + ep.v[1].p) * .5f, radd)
 					   || !fartherThan(obj->pbox->vert[kk].pos, (ep.v[0].p + ep.v[2].p) * .5f, radd)
 					) {
-						LAST_COLLISION_POLY = &ep;
+						collisionPoly = &ep;
 						
 						if (ep.type & POLY_METAL) CUR_COLLISION_MATERIAL = MATERIAL_METAL;
 						else if (ep.type & POLY_WOOD) CUR_COLLISION_MATERIAL = MATERIAL_WOOD;
@@ -328,7 +325,7 @@ static bool IsFULLObjectVertexInValidPosition(EERIE_3DOBJ * obj) {
 							   || !fartherThan(pos, (ep.v[2].p + ep.v[1].p) * .5f, radd)
 							   || !fartherThan(pos, (ep.v[0].p + ep.v[2].p) * .5f, radd)
 							) {
-								LAST_COLLISION_POLY = &ep;
+								collisionPoly = &ep;
 
 								if (ep.type & POLY_METAL) CUR_COLLISION_MATERIAL = MATERIAL_METAL;
 								else if (ep.type & POLY_WOOD) CUR_COLLISION_MATERIAL = MATERIAL_WOOD;
@@ -346,7 +343,7 @@ static bool IsFULLObjectVertexInValidPosition(EERIE_3DOBJ * obj) {
 				
 				if(IsObjectVertexCollidingPoly(obj, ep)) {
 					
-					LAST_COLLISION_POLY = &ep;
+					collisionPoly = &ep;
 					
 					if (ep.type & POLY_METAL) CUR_COLLISION_MATERIAL = MATERIAL_METAL;
 					else if (ep.type & POLY_WOOD) CUR_COLLISION_MATERIAL = MATERIAL_WOOD;
@@ -390,8 +387,9 @@ static bool ARX_EERIE_PHYSICS_BOX_Compute(EERIE_3DOBJ * obj, float framediff, En
 	sphere.origin = pv->pos;
 	sphere.radius = obj->pbox->radius;
 	long colidd = 0;
+	EERIEPOLY * collisionPoly = NULL;
 	
-	if(!IsFULLObjectVertexInValidPosition(obj)
+	if(   !IsFULLObjectVertexInValidPosition(obj, collisionPoly)
 	   || ARX_INTERACTIVE_CheckFULLCollision(obj, source)
 	   || colidd
 	   || IsObjectInField(obj)
@@ -405,7 +403,7 @@ static bool ARX_EERIE_PHYSICS_BOX_Compute(EERIE_3DOBJ * obj, float framediff, En
 		if(!(ValidIONum(source) && (entities[source]->ioflags & IO_BODY_CHUNK)))
 			ARX_TEMPORARY_TrySound(0.4f + power);
 
-		if(!LAST_COLLISION_POLY) {
+		if(!collisionPoly) {
 			for(long k = 0; k < obj->pbox->nb_physvert; k++) {
 				pv = &obj->pbox->vert[k];
 
@@ -419,8 +417,8 @@ static bool ARX_EERIE_PHYSICS_BOX_Compute(EERIE_3DOBJ * obj, float framediff, En
 			for(long k = 0; k < obj->pbox->nb_physvert; k++) {
 				pv = &obj->pbox->vert[k];
 
-				float t = glm::dot(LAST_COLLISION_POLY->norm, pv->velocity);
-				pv->velocity -= LAST_COLLISION_POLY->norm * (2.f * t);
+				float t = glm::dot(collisionPoly->norm, pv->velocity);
+				pv->velocity -= collisionPoly->norm * (2.f * t);
 
 				pv->velocity.x *= 0.3f;
 				pv->velocity.z *= 0.3f;
