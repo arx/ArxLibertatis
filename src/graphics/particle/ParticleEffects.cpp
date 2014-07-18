@@ -715,18 +715,19 @@ void ARX_BOOMS_Add(const Vec3f & poss,long type) {
 	
 	static TextureContainer * tc2 = TextureContainer::Load("graph/particles/boom");
 	
-	// TODO was F2L at some point - should this be rounded?
-	long x0 = long(poss.x * ACTIVEBKG->Xmul) - 3;
-	long z0 = long(poss.z * ACTIVEBKG->Zmul) - 3;
-	long x1 = x0 + 6;
-	long z1 = z0 + 6;
-	x0 = glm::clamp(x0, 0l, ACTIVEBKG->Xsize - 1l);
-	x1 = glm::clamp(x1, 0l, ACTIVEBKG->Xsize - 1l);
-	z0 = glm::clamp(z0, 0l, ACTIVEBKG->Zsize - 1l);
-	z1 = glm::clamp(z1, 0l, ACTIVEBKG->Zsize - 1l);
-	
-	for(long j = z0; j <= z1; j++) for(long i = x0; i <= x1;i++) {
-		EERIE_BKG_INFO & eg = ACTIVEBKG->Backg[i + j * ACTIVEBKG->Xsize];
+	// TODO copy-paste background tiles
+	short tilex = poss.x * ACTIVEBKG->Xmul;
+	short tilez = poss.z * ACTIVEBKG->Zmul;
+	short radius = 3;
+
+	short minx = std::max(tilex - radius, 0);
+	short maxx = std::min(tilex + radius, ACTIVEBKG->Xsize - 1);
+	short minz = std::max(tilez - radius, 0);
+	short maxz = std::min(tilez + radius, ACTIVEBKG->Zsize - 1);
+
+	for(short z = minz; z <= maxz; z++)
+	for(short x = minx; x <= maxx; x++) {
+		EERIE_BKG_INFO & eg = ACTIVEBKG->Backg[x + z * ACTIVEBKG->Xsize];
 		for(long l = 0; l < eg.nbpoly; l++) {
 			EERIEPOLY * ep = &eg.polydata[l];
 			
@@ -763,8 +764,8 @@ void ARX_BOOMS_Add(const Vec3f & poss,long type) {
 			pb.tc = tc2;
 			pb.tolive = 10000;
 			pb.timecreation = long(arxtime);
-			pb.tx = short(i);
-			pb.tz = short(j);
+			pb.tx = x;
+			pb.tz = z;
 			for(int k = 0; k < nbvert; k++) {
 				pb.v[k] = pb.u[k] = temp_uv1[k];
 			}
