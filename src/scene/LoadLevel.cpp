@@ -1059,9 +1059,9 @@ void RestoreLastLoadedLightning(EERIE_BACKGROUND * eb)
 
 	bcount = LastLoadedLightningNb;
 
-	for(long j = 0; j < eb->Zsize; j++)
-		for(long i = 0; i < eb->Xsize; i++) {
-			EERIE_BKG_INFO *eg = &eb->Backg[i+j*eb->Xsize];
+	for(short z = 0; z < eb->Zsize; z++)
+	for(short x = 0; x < eb->Xsize; x++) {
+			EERIE_BKG_INFO *eg = &eb->Backg[x + z * eb->Xsize];
 
 			for(long l = 0; l < eg->nbpoly; l++) {
 				EERIEPOLY *ep = &eg->polydata[l];
@@ -1079,7 +1079,7 @@ void RestoreLastLoadedLightning(EERIE_BACKGROUND * eb)
 						goto plusloin;
 				}
 			}
-		}
+	}
 
 plusloin:
 	;
