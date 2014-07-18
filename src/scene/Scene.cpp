@@ -1400,27 +1400,27 @@ void ARX_SCENE_Update() {
 
 	long l = ACTIVECAM->cdepth * 0.42f;
 	long clip3D = (l / (long)BKG_SIZX) + 1;
-	long lcval = clip3D + 4;
+	short radius = clip3D + 4;
 
-	long camXsnap = ACTIVECAM->orgTrans.pos.x * ACTIVEBKG->Xmul;
-	long camZsnap = ACTIVECAM->orgTrans.pos.z * ACTIVEBKG->Zmul;
-	camXsnap = glm::clamp(camXsnap, 0l, ACTIVEBKG->Xsize - 1l);
-	camZsnap = glm::clamp(camZsnap, 0l, ACTIVEBKG->Zsize - 1l);
+	int camXsnap = ACTIVECAM->orgTrans.pos.x * ACTIVEBKG->Xmul;
+	int camZsnap = ACTIVECAM->orgTrans.pos.z * ACTIVEBKG->Zmul;
+	camXsnap = glm::clamp(camXsnap, 0, ACTIVEBKG->Xsize - 1);
+	camZsnap = glm::clamp(camZsnap, 0, ACTIVEBKG->Zsize - 1);
 
-	long x0 = std::max(camXsnap - lcval, 0l);
-	long x1 = std::min(camXsnap + lcval, ACTIVEBKG->Xsize - 1l);
-	long z0 = std::max(camZsnap - lcval, 0l);
-	long z1 = std::min(camZsnap + lcval, ACTIVEBKG->Zsize - 1l);
+	short minx = std::max(camXsnap - radius, 0);
+	short maxx = std::min(camXsnap + radius, ACTIVEBKG->Xsize - 1);
+	short minz = std::max(camZsnap - radius, 0);
+	short maxz = std::min(camZsnap + radius, ACTIVEBKG->Zsize - 1);
 
 	ACTIVEBKG->Backg[camXsnap + camZsnap * ACTIVEBKG->Xsize].treat = true;
 	TreatBackgroundDynlights();
-	PrecalcDynamicLighting(x0, z0, x1, z1);
+	PrecalcDynamicLighting(minx, minz, maxx, maxz);
 
 	// Go for a growing-square-spirallike-render around the camera position
 	// (To maximize Z-Buffer efficiency)
 
-	for(short z = z0; z <= z1; z++)
-	for(short x = x0; x < x1; x++) {
+	for(short z = minz; z <= maxz; z++)
+	for(short x = minx; x < maxx; x++) {
 		ACTIVEBKG->fastdata[x][z].treat = false;
 	}
 
