@@ -1061,24 +1061,24 @@ void RestoreLastLoadedLightning(EERIE_BACKGROUND * eb)
 
 	for(short z = 0; z < eb->Zsize; z++)
 	for(short x = 0; x < eb->Xsize; x++) {
-			EERIE_BKG_INFO *eg = &eb->Backg[x + z * eb->Xsize];
-
-			for(long l = 0; l < eg->nbpoly; l++) {
-				EERIEPOLY *ep = &eg->polydata[l];
-
-				long nbvert = (ep->type & POLY_QUAD) ? 4 : 3;
-
-				for(long k = 0; k < nbvert; k++) {
-					u32 dc = LastLoadedLightning[pos];
-					pos++;
-					dc = dc | 0xFF000000;
-					ep->tv[k].color = ep->v[k].color = dc;
-					bcount--;
-
-					if(bcount <= 0)
-						goto plusloin;
-				}
+		EERIE_BKG_INFO *eg = &eb->Backg[x + z * eb->Xsize];
+		
+		for(long l = 0; l < eg->nbpoly; l++) {
+			EERIEPOLY *ep = &eg->polydata[l];
+			
+			long nbvert = (ep->type & POLY_QUAD) ? 4 : 3;
+			
+			for(long k = 0; k < nbvert; k++) {
+				u32 dc = LastLoadedLightning[pos];
+				pos++;
+				dc = dc | 0xFF000000;
+				ep->tv[k].color = ep->v[k].color = dc;
+				bcount--;
+				
+				if(bcount <= 0)
+					goto plusloin;
 			}
+		}
 	}
 
 plusloin:
