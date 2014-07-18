@@ -1406,17 +1406,17 @@ void ARX_SCENE_Update() {
 	long clip3D = (l / (long)BKG_SIZX) + 1;
 	short radius = clip3D + 4;
 
-	int camXsnap = ACTIVECAM->orgTrans.pos.x * ACTIVEBKG->Xmul;
-	int camZsnap = ACTIVECAM->orgTrans.pos.z * ACTIVEBKG->Zmul;
-	camXsnap = glm::clamp(camXsnap, 0, ACTIVEBKG->Xsize - 1);
-	camZsnap = glm::clamp(camZsnap, 0, ACTIVEBKG->Zsize - 1);
+	int tilex = ACTIVECAM->orgTrans.pos.x * ACTIVEBKG->Xmul;
+	int tilez = ACTIVECAM->orgTrans.pos.z * ACTIVEBKG->Zmul;
+	tilex = glm::clamp(tilex, 0, ACTIVEBKG->Xsize - 1);
+	tilez = glm::clamp(tilez, 0, ACTIVEBKG->Zsize - 1);
 
-	short minx = std::max(camXsnap - radius, 0);
-	short maxx = std::min(camXsnap + radius, ACTIVEBKG->Xsize - 1);
-	short minz = std::max(camZsnap - radius, 0);
-	short maxz = std::min(camZsnap + radius, ACTIVEBKG->Zsize - 1);
+	short minx = std::max(tilex - radius, 0);
+	short maxx = std::min(tilex + radius, ACTIVEBKG->Xsize - 1);
+	short minz = std::max(tilez - radius, 0);
+	short maxz = std::min(tilez + radius, ACTIVEBKG->Zsize - 1);
 
-	ACTIVEBKG->Backg[camXsnap + camZsnap * ACTIVEBKG->Xsize].treat = true;
+	ACTIVEBKG->Backg[tilex + tilez * ACTIVEBKG->Xsize].treat = true;
 	TreatBackgroundDynlights();
 	PrecalcDynamicLighting(minx, minz, maxx, maxz);
 
