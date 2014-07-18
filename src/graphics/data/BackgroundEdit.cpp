@@ -145,22 +145,27 @@ bool Quadable(EERIEPOLY * ep, EERIEPOLY * ep2, float tolerance)
 }
 
 #define TYPE_ROOM	2
-bool TryToQuadify(EERIEPOLY * ep,EERIE_3DOBJ * eobj)
-{
-	float cx = (ep->v[0].p.x + ep->v[1].p.x + ep->v[2].p.x);
-	float cz = (ep->v[0].p.z + ep->v[1].p.z + ep->v[2].p.z);
-	long posx = cx * (1.0f/3) * ACTIVEBKG->Xmul;
-	long posz = cz * (1.0f/3) * ACTIVEBKG->Zmul;
-
-	long dx = std::max(0L, posx - 1);
-	long fx = std::min(posx + 1, ACTIVEBKG->Xsize - 1L);
-	long dz = std::max(0L, posz - 1);
-	long fz = std::min(posz + 1, ACTIVEBKG->Zsize - 1L);
-	float tolerance=0.1f;
-
+bool TryToQuadify(EERIEPOLY * ep,EERIE_3DOBJ * eobj) {
+	
+	const float tolerance = 0.1f;
+	
+	float centerx = (ep->v[0].p.x + ep->v[1].p.x + ep->v[2].p.x) * (1.f/3);
+	float centerz = (ep->v[0].p.z + ep->v[1].p.z + ep->v[2].p.z) * (1.f/3);
+	
+	short tilex = centerx * ACTIVEBKG->Xmul;
+	short tilez = centerz * ACTIVEBKG->Zmul;
+	short radius = 1;
+	
+	short minx = std::max(tilex - radius, 0);
+	short maxx = std::min(tilex + radius, ACTIVEBKG->Xsize - 1);
+	short minz = std::max(tilez - radius, 0);
+	short maxz = std::min(tilez + radius, ACTIVEBKG->Zsize - 1);
+	
 	for(long kl = 0; kl < 2; kl++)
-	for(long zz = dz; zz <= fz; zz++)
-	for(long xx = dx; xx <= fx; xx++) {
+	for(short z = minz; z <= maxz; z++)
+	for(short x = minx; x <= maxx; x++) {
+		EERIE_BKG_INFO *eg = &ACTIVEBKG->Backg[x + z * ACTIVEBKG->Xsize];
+		
 		long val1 = 0;
 
 		long type, val2;
@@ -169,8 +174,6 @@ bool TryToQuadify(EERIEPOLY * ep,EERIE_3DOBJ * eobj)
 
 		if(type != TYPE_ROOM)
 			return false;
-
-		EERIE_BKG_INFO *eg = &ACTIVEBKG->Backg[xx+zz*ACTIVEBKG->Xsize];
 
 		if(eg)
 		for(long n = 0; n < eg->nbpoly; n++) {
