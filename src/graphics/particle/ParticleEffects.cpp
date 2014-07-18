@@ -306,17 +306,19 @@ void SpawnGroundSplat(const Sphere & sp, const Color3f & col, long flags) {
 		++ pb;
 	}
 
-	long px = poss.x * ACTIVEBKG->Xmul;
-	long pz = poss.z * ACTIVEBKG->Zmul;
+	// TODO copy-paste background tiles
+	short tilex = poss.x * ACTIVEBKG->Xmul;
+	short tilez = poss.z * ACTIVEBKG->Zmul;
+	short radius = 3;
 
-	long x0 = glm::clamp(px - 3, 0l, ACTIVEBKG->Xsize - 1l);
-	long x1 = glm::clamp(px + 3, 0l, ACTIVEBKG->Xsize - 1l);
-	long z0 = glm::clamp(pz - 3, 0l, ACTIVEBKG->Zsize - 1l);
-	long z1 = glm::clamp(pz + 3, 0l, ACTIVEBKG->Zsize - 1l);
+	short minx = std::max(tilex - radius, 0);
+	short maxx = std::min(tilex + radius, ACTIVEBKG->Xsize - 1);
+	short minz = std::max(tilez - radius, 0);
+	short maxz = std::min(tilez + radius, ACTIVEBKG->Zsize - 1);
 
-	for(long j = z0; j <= z1; j++)
-	for(long i = x0; i <= x1; i++) {
-		EERIE_BKG_INFO *eg = &ACTIVEBKG->Backg[i + j * ACTIVEBKG->Xsize];
+	for(short z = minz; z <= maxz; z++)
+	for(short x = minx; x <= maxx; x++) {
+		EERIE_BKG_INFO *eg = &ACTIVEBKG->Backg[x + z * ACTIVEBKG->Xsize];
 
 		for(long l = 0; l < eg->nbpolyin; l++) {
 			EERIEPOLY *ep = eg->polyin[l];
@@ -375,8 +377,8 @@ void SpawnGroundSplat(const Sphere & sp, const Color3f & col, long flags) {
 					
 					pb.timecreation=tim;
 
-					pb.tx = static_cast<short>(i);
-					pb.tz = static_cast<short>(j);
+					pb.tx = x;
+					pb.tz = z;
 
 					pb.rgb = col;
 
