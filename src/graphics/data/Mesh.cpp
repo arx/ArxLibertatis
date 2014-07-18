@@ -2121,13 +2121,12 @@ static int BkgAddPoly(EERIEPOLY * ep, EERIE_3DOBJ * eobj) {
 
 	if(TryToQuadify(ep, eobj))
 		return 0;
-
-	float cx = (ep->v[0].p.x + ep->v[1].p.x + ep->v[2].p.x);
-	float cy = (ep->v[0].p.y + ep->v[1].p.y + ep->v[2].p.y);
-	float cz = (ep->v[0].p.z + ep->v[1].p.z + ep->v[2].p.z);
-	long posx = (long)(float)(cx * ( 1.0f / 3 ) * ACTIVEBKG->Xmul);
-	long posz = (long)(float)(cz * ( 1.0f / 3 ) * ACTIVEBKG->Zmul);
-	long posy = (long)(float)(cy * ( 1.0f / 3 ) * ACTIVEBKG->Xmul + ACTIVEBKG->Xsize * .5f);
+	
+	Vec3f center = (ep->v[0].p + ep->v[1].p + ep->v[2].p) * (1.f/3);
+	
+	long posx = (long)(float)(center.x * ACTIVEBKG->Xmul);
+	long posz = (long)(float)(center.z * ACTIVEBKG->Zmul);
+	long posy = (long)(float)(center.y * ACTIVEBKG->Xmul + ACTIVEBKG->Xsize * .5f);
 
 	if (posy < 0) return 0;
 	else if (posy >= ACTIVEBKG->Xsize) return 0;
@@ -2140,9 +2139,6 @@ static int BkgAddPoly(EERIEPOLY * ep, EERIE_3DOBJ * eobj) {
 
 	EERIE_BKG_INFO *eg = &ACTIVEBKG->Backg[posx+posz*ACTIVEBKG->Xsize];
 	
-	cx *= ( 1.0f / 3 );
-	cy *= ( 1.0f / 3 );
-	cz *= ( 1.0f / 3 );
 	long t = (((eg->nbpoly) >> 1) << 1) + 2; 
 	long tt = (((eg->nbpoly - 1) >> 1) << 1) + 2; 
 
@@ -2162,9 +2158,7 @@ static int BkgAddPoly(EERIEPOLY * ep, EERIE_3DOBJ * eobj) {
 		epp->tv[j].rhw = 1.f;
 	}
 	
-	epp->center.x = cx; 
-	epp->center.y = cy; 
-	epp->center.z = cz; 
+	epp->center = center;
 	epp->max.x = max(epp->v[0].p.x, epp->v[1].p.x);
 	epp->max.x = max(epp->max.x, epp->v[2].p.x);
 	epp->min.x = min(epp->v[0].p.x, epp->v[1].p.x);
