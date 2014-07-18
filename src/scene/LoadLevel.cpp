@@ -390,6 +390,7 @@ long DanaeSaveLevel(const fs::path & _fic) {
 	memcpy(dat + pos, &dll, sizeof(DANAE_LS_LIGHTINGHEADER));
 	pos += sizeof(DANAE_LS_LIGHTINGHEADER);
 	
+	// TODO copy-paste poly iteration
 	for(short z = 0; z < eb->Zsize; z++)
 	for(short x = 0; x < eb->Xsize; x++) {
 		EERIE_BKG_INFO & eg = eb->Backg[x + z * eb->Xsize];
@@ -1035,7 +1036,7 @@ void DanaeClearLevel(long flag)
 	FAST_RELEASE = 0;
 }
 
-void RestoreLastLoadedLightning(EERIE_BACKGROUND * eb)
+void RestoreLastLoadedLightning(EERIE_BACKGROUND & eb)
 {
 	long pos = 0;
 	long bcount = CountBkgVertex();
@@ -1054,21 +1055,21 @@ void RestoreLastLoadedLightning(EERIE_BACKGROUND * eb)
 	}
 
 	bcount = LastLoadedLightningNb;
-
-	for(short z = 0; z < eb->Zsize; z++)
-	for(short x = 0; x < eb->Xsize; x++) {
-		EERIE_BKG_INFO *eg = &eb->Backg[x + z * eb->Xsize];
-		
-		for(long l = 0; l < eg->nbpoly; l++) {
-			EERIEPOLY *ep = &eg->polydata[l];
+	
+	// TODO copy-paste poly iteration
+	for(short z = 0; z < eb.Zsize; z++)
+	for(short x = 0; x < eb.Xsize; x++) {
+		EERIE_BKG_INFO & eg = eb.Backg[x + z * eb.Xsize];
+		for(long l = 0; l < eg.nbpoly; l++) {
+			EERIEPOLY & ep = eg.polydata[l];
 			
-			long nbvert = (ep->type & POLY_QUAD) ? 4 : 3;
+			long nbvert = (ep.type & POLY_QUAD) ? 4 : 3;
 			
 			for(long k = 0; k < nbvert; k++) {
 				u32 dc = LastLoadedLightning[pos];
 				pos++;
 				dc = dc | 0xFF000000;
-				ep->tv[k].color = ep->v[k].color = dc;
+				ep.tv[k].color = ep.v[k].color = dc;
 				bcount--;
 				
 				if(bcount <= 0)

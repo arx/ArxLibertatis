@@ -67,7 +67,7 @@ void WriteIOInfo(Entity * io, const fs::path & dir);
 
 bool DanaeLoadLevel(const res::path & file, bool loadEntities = true);
 void DanaeClearLevel(long flags = 0);
-void RestoreLastLoadedLightning(EERIE_BACKGROUND * eb);
+void RestoreLastLoadedLightning(EERIE_BACKGROUND & eb);
 
 extern long FAST_RELEASE;
 
