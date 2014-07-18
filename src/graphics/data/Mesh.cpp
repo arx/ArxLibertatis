@@ -648,12 +648,9 @@ static bool RayIn3DPolyNoCull(const Vec3f & orgn, const Vec3f & dest, EERIEPOLY 
 int EERIELaunchRay3(const Vec3f & orgn, const Vec3f & dest,  Vec3f * hit, EERIEPOLY * epp, long flag) {
 	
 	Vec3f p; //current ray pos
-	Vec3f d; // ray incs
-	Vec3f ad; // absolute ray incs
 	Vec3f i;
 	long lpx, lpz;
 	long voidlast;
-	long px, pz;
 	float pas = 1.5f;
 	
 	long iii = 0;
@@ -662,12 +659,11 @@ int EERIELaunchRay3(const Vec3f & orgn, const Vec3f & dest,  Vec3f * hit, EERIEP
 	
 	voidlast = 0;
 	lpx = lpz = -1;
-	d.x = (dest.x - orgn.x);
-	ad.x = EEfabs(d.x);
-	d.y = (dest.y - orgn.y);
-	ad.y = EEfabs(d.y);
-	d.z = (dest.z - orgn.z);
-	ad.z = EEfabs(d.z);
+	
+	// ray incs
+	Vec3f d = (dest - orgn);
+	// absolute ray incs
+	Vec3f ad = glm::abs(d);
 	
 	if(ad.x >= ad.y && ad.x >= ad.z) {
 		i.x = (ad.x != d.x) ? (-1.f * pas) : (1.f * pas);
@@ -724,42 +720,47 @@ int EERIELaunchRay3(const Vec3f & orgn, const Vec3f & dest,  Vec3f * hit, EERIEP
 			return -1;
 		}
 		
-		px = long(p.x * ACTIVEBKG->Xmul);
-		pz = long(p.z * ACTIVEBKG->Zmul);
+		long tilex = long(p.x * ACTIVEBKG->Xmul);
+		long tilez = long(p.z * ACTIVEBKG->Zmul);
 		
-		if(px < 0 || px > ACTIVEBKG->Xsize - 1 || pz < 0 || pz > ACTIVEBKG->Zsize - 1) {
+		if(tilex < 0 || tilex > ACTIVEBKG->Xsize - 1 || tilez < 0 || tilez > ACTIVEBKG->Zsize - 1) {
 			*hit = p;
 			return -1;
 		}
 		
-		if(lpx == px && lpz == pz && voidlast) {
+		if(lpx == tilex && lpz == tilez && voidlast) {
 			continue;
 		}
 		
-		lpx = px;
-		lpz = pz;
+		lpx = tilex;
+		lpz = tilez;
 		voidlast = !flag;
-		long jx1 = glm::clamp(px - 1l, 0l, ACTIVEBKG->Xsize - 1l);
-		long jx2 = glm::clamp(px + 1l, 0l, ACTIVEBKG->Xsize - 1l);
-		long jz1 = glm::clamp(pz - 1l, 0l, ACTIVEBKG->Zsize - 1l);
-		long jz2 = glm::clamp(pz + 1l, 0l, ACTIVEBKG->Zsize - 1l);
+		long minx = glm::clamp(tilex - 1l, 0l, ACTIVEBKG->Xsize - 1l);
+		long maxx = glm::clamp(tilex + 1l, 0l, ACTIVEBKG->Xsize - 1l);
+		long minz = glm::clamp(tilez - 1l, 0l, ACTIVEBKG->Zsize - 1l);
+		long maxz = glm::clamp(tilez + 1l, 0l, ACTIVEBKG->Zsize - 1l);
 		
-		EERIE_BKG_INFO * eg = &ACTIVEBKG->Backg[px + pz * ACTIVEBKG->Xsize];
+		EERIE_BKG_INFO * eg = &ACTIVEBKG->Backg[tilex + tilez * ACTIVEBKG->Xsize];
 		if(eg->nbpoly == 0) {
 			*hit = p;
 			return 1;
 		}
 		
-		for(pz = jz1; pz < jz2; pz++) for (px = jx1; px < jx2; px++) {
-			eg = &ACTIVEBKG->Backg[px + pz * ACTIVEBKG->Xsize];
+		for(short z = minz; z < maxz; z++)
+		for(short x = minx; x < maxx; x++) {
+			EERIE_BKG_INFO * eg = &ACTIVEBKG->Backg[x + z * ACTIVEBKG->Xsize];
 			for(long k = 0; k < eg->nbpoly; k++) {
 				EERIEPOLY * ep = &eg->polydata[k];
 				if(ep->type & POLY_TRANS) {
 					continue;
 				}
-				if(p.y < ep->min.y - 10.f || p.y > ep->max.y + 10.f
-				   || p.x < ep->min.x - 10.f || p.x > ep->max.x + 10.f
-				   || p.z < ep->min.z - 10.f || p.z > ep->max.z + 10.f) {
+				if(   p.y < ep->min.y - 10.f
+				   || p.y > ep->max.y + 10.f
+				   || p.x < ep->min.x - 10.f
+				   || p.x > ep->max.x + 10.f
+				   || p.z < ep->min.z - 10.f
+				   || p.z > ep->max.z + 10.f
+				) {
 					continue;
 				}
 				voidlast = 0;
