@@ -297,21 +297,21 @@ EERIEPOLY * CheckArrowPolyCollision(const Vec3f & start, const Vec3f & end) {
 	pol.v[2] = end - Vec3f(2.f, 15.f, 2.f);
 	pol.v[1] = end;
 
-	long px = end.x * ACTIVEBKG->Xmul;
-	long pz = end.z * ACTIVEBKG->Zmul;
+	short px = end.x * ACTIVEBKG->Xmul;
+	short pz = end.z * ACTIVEBKG->Zmul;
 
-	long ix = std::max(px - 2, 0L);
-	long ax = std::min(px + 2, ACTIVEBKG->Xsize - 1L);
-	long iz = std::max(pz - 2, 0L);
-	long az = std::min(pz + 2, ACTIVEBKG->Zsize - 1L);
-
-	for(short z = iz; z <= az; z++)
-	for(short x = ix; x <= ax; x++) {
+	short radius = 2;
+	
+	short minx = std::max(px - radius, 0);
+	short maxx = std::min(px + radius, ACTIVEBKG->Xsize - 1);
+	short minz = std::max(pz - radius, 0);
+	short maxz = std::min(pz + radius, ACTIVEBKG->Zsize - 1);
+	
+	for(short z = minz; z <= maxz; z++)
+	for(short x = minx; x <= maxx; x++) {
 		const EERIE_BKG_INFO & feg = ACTIVEBKG->fastdata[x][z];
-
-		for(long k = 0; k < feg.nbpolyin; k++) {
-
-			EERIEPOLY * ep = feg.polyin[k];
+		for(long l = 0; l < feg.nbpolyin; l++) {
+			EERIEPOLY * ep = feg.polyin[l];
 
 			if(ep->type & (POLY_WATER | POLY_TRANS | POLY_NOCOL)) {
 				continue;
