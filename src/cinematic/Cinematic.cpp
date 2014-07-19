@@ -103,19 +103,13 @@ Cinematic::Cinematic(int _w, int _h)
 	, key(NULL)
 	, projectload(false)
 	, ti(INTERP_BEZIER)
-	, tichoose(INTERP_BEZIER)
 	, force()
 	, color()
 	, colord()
 	, colorflash()
 	, speed()
-	, colorchoose()
-	, colorchoosed()
-	, colorflashchoose()
-	, speedchoose(1.f)
 	, idsound(-1)
 	, light()
-	, lightchoose()
 	, lightd()
 	, posgrille()
 	, angzgrille()
@@ -222,7 +216,7 @@ void Cinematic::New() {
 	
 	AddKey(&key);
 	}
-	this->lightd = this->lightchoose = this->light;
+	this->lightd = this->light;
 	
 	SetCurrFrame(GetStartFrame());
 	
