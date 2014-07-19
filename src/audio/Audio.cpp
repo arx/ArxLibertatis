@@ -287,11 +287,11 @@ AmbianceId createAmbiance(const res::path & name) {
 
 EnvId createEnvironment(const res::path & name) {
 	
-	AAL_ENTRY_V(INVALID_ID)
+	AAL_ENTRY_V(EnvId::Invalid)
 	
 	Environment * env = new Environment(name);
-	EnvId e_id = INVALID_ID;
-	if(env->load() || (e_id = _env.add(env)) == INVALID_ID) {
+	EnvId e_id = EnvId::Invalid;
+	if(env->load() || (e_id = EnvId(_env.add(env))) == EnvId::Invalid) {
 		delete env;
 		LogError << "Environment " << name << " not found";
 	}
@@ -339,15 +339,15 @@ AmbianceId getAmbiance(const res::path & name) {
 
 EnvId getEnvironment(const res::path & name) {
 	
-	AAL_ENTRY_V(INVALID_ID)
+	AAL_ENTRY_V(EnvId::Invalid)
 	
 	for(size_t i = 0; i < _env.size(); i++) {
 		if(_env[i] && name == _env[i]->name) {
-			return i;
+			return EnvId(i);
 		}
 	}
 	
-	return INVALID_ID;
+	return EnvId::Invalid;
 }
 
 // Retrieve next resource by ID

@@ -129,7 +129,7 @@ const s32 INVALID_ID = -1;
 typedef s32 SourceId;
 typedef s32 SampleId;
 typedef s32 MixerId;
-typedef s32 EnvId;
+ARX_HANDLE_TYPEDEF(s32, EnvId, -1)
 ARX_HANDLE_TYPEDEF(s32, AmbianceId, -1)
 
 // Play channel initialization parameters
