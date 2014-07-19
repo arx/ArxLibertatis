@@ -273,11 +273,11 @@ SampleId createSample(const res::path & name) {
 
 AmbianceId createAmbiance(const res::path & name) {
 	
-	AAL_ENTRY_V(INVALID_ID)
+	AAL_ENTRY_V(AmbianceId::Invalid)
 	
 	Ambiance * ambiance = new Ambiance(name);
-	AmbianceId a_id = INVALID_ID;
-	if(ambiance->load() || (a_id = _amb.add(ambiance)) == INVALID_ID) {
+	AmbianceId a_id = AmbianceId::Invalid;
+	if(ambiance->load() || (a_id = AmbianceId(_amb.add(ambiance))) == AmbianceId::Invalid) {
 		delete ambiance;
 		LogError << "Ambiance " << name << " not found";
 	}
@@ -326,15 +326,15 @@ aalError deleteAmbiance(AmbianceId a_id) {
 
 AmbianceId getAmbiance(const res::path & name) {
 	
-	AAL_ENTRY_V(INVALID_ID)
+	AAL_ENTRY_V(AmbianceId::Invalid)
 	
 	for(size_t i = 0; i < _amb.size(); i++) {
 		if(_amb[i] && name == _amb[i]->getName()) {
-			return i;
+			return AmbianceId(i);
 		}
 	}
 	
-	return INVALID_ID;
+	return AmbianceId::Invalid;
 }
 
 EnvId getEnvironment(const res::path & name) {
@@ -354,17 +354,17 @@ EnvId getEnvironment(const res::path & name) {
 
 AmbianceId getNextAmbiance(AmbianceId ambiance_id) {
 	
-	AAL_ENTRY_V(INVALID_ID)
+	AAL_ENTRY_V(AmbianceId::Invalid)
 	
 	size_t i = _amb.isValid(ambiance_id) ? ambiance_id + 1 : 0;
 	
 	for(; i < _amb.size(); i++) {
 		if(_amb[i]) {
-			return i;
+			return AmbianceId(i);
 		}
 	}
 	
-	return INVALID_ID;
+	return AmbianceId::Invalid;
 }
 
 // Environment setup

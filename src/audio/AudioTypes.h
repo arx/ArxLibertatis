@@ -47,6 +47,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "platform/Platform.h"
 #include "platform/Flags.h"
 #include "math/Vector.h"
+#include "util/HandleType.h"
 
 namespace audio {
 
@@ -129,7 +130,7 @@ typedef s32 SourceId;
 typedef s32 SampleId;
 typedef s32 MixerId;
 typedef s32 EnvId;
-typedef s32 AmbianceId;
+ARX_HANDLE_TYPEDEF(s32, AmbianceId, -1)
 
 // Play channel initialization parameters
 struct Channel {

@@ -145,8 +145,8 @@ static const res::path ARX_SOUND_COLLISION_MAP_NAMES[] = {
 static bool bIsActive(false);
 
 
-static AmbianceId ambiance_zone(INVALID_ID);
-static AmbianceId ambiance_menu = INVALID_ID;
+static AmbianceId ambiance_zone = AmbianceId::Invalid;
+static AmbianceId ambiance_menu = AmbianceId::Invalid;
 
 static long Inter_Materials[MAX_MATERIALS][MAX_MATERIALS][MAX_VARIANTS];
 
@@ -976,7 +976,7 @@ bool ARX_SOUND_PlayZoneAmbiance(const res::path & name, SoundLoopMode loop, floa
 
 	if(name == "none") {
 		audio::ambianceStop(ambiance_zone, AMBIANCE_FADE_TIME);
-		ambiance_zone = INVALID_ID;
+		ambiance_zone = AmbianceId::Invalid;
 		return true;
 	}
 
@@ -1021,13 +1021,13 @@ void ARX_SOUND_KillAmbiances() {
 		ambiance_id = audio::getNextAmbiance(ambiance_id);
 	}
 	
-	ambiance_zone = INVALID_ID;
+	ambiance_zone = AmbianceId::Invalid;
 }
 
 AmbianceId ARX_SOUND_PlayMenuAmbiance(const res::path & ambiance_name) {
 	
 	if(!bIsActive) {
-		return INVALID_ID;
+		return AmbianceId::Invalid;
 	}
 	
 	audio::deleteAmbiance(ambiance_menu);
@@ -1050,7 +1050,7 @@ char * ARX_SOUND_AmbianceSavePlayList(size_t & size) {
 	
 	unsigned long count(0);
 	PlayingAmbiance * play_list = NULL;
-	long ambiance_id(INVALID_ID);
+	AmbianceId ambiance_id = AmbianceId::Invalid;
 
 	ambiance_id = audio::getNextAmbiance();
 
