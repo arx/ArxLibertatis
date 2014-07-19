@@ -659,11 +659,12 @@ static float ARX_EQUIPMENT_GetSpecialValue(Entity * io, long val) {
 // flags & 1 = blood spawn only
 //-----------------------------------------------------------------------------------------------
 //***********************************************************************************************
-bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ratioaim, long flags, EntityHandle targ)
-{
+bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ratioaim, long flags, EntityHandle targ) {
+	
+	arx_assert(io_source);
 	
 	bool ret = false;
-	EntityHandle source = (io_source == NULL) ? EntityHandle::Invalid : io_source->index();
+	EntityHandle source = io_source->index();
 	EntityHandle weapon = io_weapon->index();
 	Sphere sphere;
 
